@@ -358,7 +358,7 @@ function Header({ forceUpdate, ...rest }) {
       <FastCheckOrdersModal date={bill.date} open={openModal} setOpenModal={setOpenModal} />
       <Card {...rest} css={styles.root}>
         <div css={styles.titleGroup}>
-          <PageTitle title='打帳單' />
+          <PageTitle title='打帳單' style={{ color: '#1A73E8' }} />
           <Button
             onClick={() => setOpenModal(true)}
             variant='contained'

@@ -2,8 +2,9 @@
 import { useState, useEffect } from 'react'
 import {
   Container, Button, CircularProgress, Grid, TextField, Autocomplete,
-  ToggleButton, ToggleButtonGroup
+  ToggleButton, ToggleButtonGroup, Card, IconButton, Collapse
 } from '@mui/material'
+import FilterListIcon from '@mui/icons-material/FilterList'
 import useFetchGetProductInventoryList from 'hooks/useFetchGetProductInventoryList'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import Page from 'components/Page'
@@ -62,6 +63,7 @@ const sortEnum = [
 const ProductInventoryList = () => {
   const [sortType, setSortType] = useState('COUNT')
   const [selectCategory, setSelectCategory] = useState(null)
+  const [showFilter, setShowFilter] = useState(false)
   const [categoryOption, setCategoryOption] = useState([])
   const [reportData, setReportData] = useState([])
   const productInventoryList = useFetchGetProductInventoryList()
@@ -151,71 +153,85 @@ const ProductInventoryList = () => {
   return (
     <Page css={styles.root} className='ProductInventoryList' title="商品庫存表">
       <Container maxWidth={false} css={styles.container}>
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
-          <div className="merchantNamePrint">
-            {JSON.parse(localStorage.getItem('userMerchant')).name + '   ' + '商品庫存表'}
+        <Card
+          css={css({
+            display: 'flex',
+            padding: '12px 24px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: '#E8F0FE',
+            borderRadius: '12px',
+            boxShadow: 'none',
+            border: 'none !important',
+            marginBottom: '12px',
+          })}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <PageTitle title='商品庫存表' style={{ color: '#1A73E8' }} />
+            <IconButton
+              onClick={() => setShowFilter(!showFilter)}
+              css={css({
+                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
+                color: showFilter ? '#1A73E8 !important' : '#666 !important',
+                marginLeft: '4px !important',
+                '&:hover': {
+                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
+                }
+              })}
+            >
+              <FilterListIcon />
+            </IconButton>
           </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' + format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
+          <div>
+            <Button
+              onClick={() => window.print()}
+              variant="contained"
+              color="primary"
+            >
+              列印
+            </Button>
           </div>
-        </div>
-        <PageTitle title='商品庫存表' subTitle='product inventoryList' />
-        <Grid className="noprint" container style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', gap: '20px 10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Autocomplete
-              autoHighlight
-              style={{ width: 200 }}
-              value={selectCategory}
-              options={categoryOption}
-              getOptionLabel={option => option}
-              onChange={(event, value) => setSelectCategory(value)}
-              renderOption={(props, option) => {
-                props.key = props.id
-                return (
-                  <li {...props}>{option}</li>
-                )
-              }
-              }
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  label="篩選商品分類"
-                  placeholder="分類名稱"
-                  InputProps={{
-                    ...params.InputProps,
-                  }}
+        </Card>
+
+        <Collapse in={showFilter}>
+          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+            <Grid container spacing={2} alignItems='flex-end'>
+              <Grid item>
+                <Autocomplete
+                  autoHighlight
+                  size="small"
+                  style={{ width: 200 }}
+                  value={selectCategory}
+                  options={categoryOption}
+                  getOptionLabel={option => option}
+                  onChange={(event, value) => setSelectCategory(value)}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label="篩選商品分類"
+                    />
+                  )}
                 />
-              )}
-            />
+              </Grid>
+              <Grid item>
+                <div className="divText" style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>排序依據：</div>
+                <ToggleButtonGroup
+                  size="small"
+                  value={sortType}
+                  onChange={(e, value) => value && setSortType(value)}
+                  exclusive
+                >
+                  {sortEnum.map((data, idx) => (
+                    <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                      {data.label}
+                    </ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              </Grid>
+            </Grid>
           </div>
-          <Grid item css={styles.grid} className='noprint' style={{ gap: 20 }}>
-            <div style={{ marginTop: -22 }}>
-              <div className="divText">排序依據：</div>
-              <ToggleButtonGroup
-                size="small"
-                value={sortType}
-                onChange={(e, value) => value && setSortType(value)}
-                exclusive
-              >
-                {sortEnum.map((data, idx) => (
-                  <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                    {data.label}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
-            </div>
-            <div>
-              <Button
-                onClick={() => window.print()}
-                variant="contained"
-                color="primary"
-                css={styles.exportBtn}>
-                列印
-              </Button>
-            </div>
-          </Grid>
-        </Grid>
+        </Collapse>
         {/* <div className="noprint" style={{ display: 'flex', margin: '10px 0' }}>
           <Autocomplete
             multiple

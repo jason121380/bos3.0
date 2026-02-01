@@ -5,9 +5,9 @@ const white = 'rgb(255, 255, 255)'
 export default {
   primary: {
     contrastText: white,
-    dark: '#0056b3',
-    main: '#007AFF !important', // Apple Blue
-    light: '#5AC8FA',
+    dark: '#174EA6',
+    main: '#1A73E8 !important', // Google Blue
+    light: '#D2E3FC',
   },
   secondary: {
     contrastText: white,

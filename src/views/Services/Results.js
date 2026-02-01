@@ -53,6 +53,29 @@ const styles = {
     color: 'red',
     fontWeight: 'bold',
   }),
+  cardHeader: css({
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: '#1A73E8',
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
+  }),
+  tableRow: css({
+    backgroundColor: '#ffffff !important',
+    '&:hover': {
+      backgroundColor: '#ffffff !important',
+    },
+  }),
 }
 
 function Results({ className, services, refetchService, onPageChange, onRowsPerPageChange, ...rest }) {
@@ -351,11 +374,9 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
 
   return (
     <div {...rest} css={className}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        {services.data.length} 筆資料
-      </Typography>
       <Card>
         <CardHeader
+          css={styles.cardHeader}
           action={
             <CSVLink data={excelData} filename="服務項目.csv">
               <Button variant="contained" color="primary" size="small">
@@ -363,9 +384,15 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
               </Button>
             </CSVLink>
           }
-          title="所有營業服務"
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span>所有營業服務</span>
+              <Typography color="textSecondary" variant="body2">
+                共 {services.totalCount} 筆
+              </Typography>
+            </div>
+          }
         />
-        <Divider />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
@@ -404,8 +431,8 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
                 <TableBody>
                   {services.data.map((data, index) => (
                     <TableRow
-                      hover
                       key={`${data.name}-${index}`}
+                      css={styles.tableRow}
                       selected={selectedService.indexOf(data.id) > -1 || !data.isUsing}
                     >
                       <TableCell padding="checkbox">

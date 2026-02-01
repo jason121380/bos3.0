@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import { Container, Button, CircularProgress, Grid } from '@mui/material'
+import { Card, Container, Button, CircularProgress, Grid, IconButton, Collapse } from '@mui/material'
+import FilterListIcon from '@mui/icons-material/FilterList'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
 import PageTitle from 'components/PageTitle'
 import useFetchServices from 'hooks/useFetchServices'
 import idx from 'idx'
 import produce from 'immer'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import { red } from '@mui/material/colors'
 import { Link as RouterLink } from 'react-router-dom'
@@ -49,6 +50,7 @@ function Services() {
     keyword: '',
     categoryIds: [],
   })
+  const [showFilter, setShowFilter] = useState(false)
   const [serviceCategories, setServiceCategories] = useState([])
   const [services, setServices] = useState()
   const [selectedCategorie, setSelectedCategorie] = useState([])
@@ -103,60 +105,102 @@ function Services() {
   return (
     <Page css={styles.root} title="服務項目設定">
       <Container maxWidth={false}>
-        <Grid style={{ marginBottom: 24 }} container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='服務項目設定' subTitle='Services' />
-          <Grid item>
-            <Button
-              style={{ backgroundColor: '#3865AC' }}
-              color="primary"
-              variant="contained"
-              component={RouterLink}
-              to="/service/create"
+        <Card
+          css={css({
+            display: 'flex',
+            padding: '12px 24px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: '#E8F0FE',
+            borderRadius: '12px',
+            boxShadow: 'none',
+            border: 'none !important',
+            marginBottom: '12px',
+          })}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <PageTitle title='服務項目設定' style={{ color: '#1A73E8' }} />
+            <Link component={RouterLink} to="/service/create" style={{ textDecoration: 'none' }}>
+              <Button
+                variant="contained"
+                css={css({
+                  borderRadius: '20px !important',
+                  padding: '6px 20px !important',
+                  fontSize: '14px !important',
+                  boxShadow: 'none !important',
+                  fontWeight: 'bold !important',
+                  backgroundColor: '#FFFFFF !important',
+                  color: '#666 !important',
+                  '&:hover': {
+                    backgroundColor: '#f8f8f8 !important',
+                  }
+                })}
+              >
+                新增
+              </Button>
+            </Link>
+            <IconButton
+              onClick={() => setShowFilter(!showFilter)}
+              css={css({
+                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
+                color: showFilter ? '#1A73E8 !important' : '#666 !important',
+                marginLeft: '4px !important',
+                '&:hover': {
+                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
+                }
+              })}
             >
-              新增
-            </Button>
-          </Grid>
-        </Grid>
-        <SearchBar
-          onSearch={event =>
-            handlePageChange({
-              key: 'keyword',
-              value: event,
-            })
-          }
-        />
-        <div className="divText">點選服務類別進行篩選</div>
-        <div css={styles.categorieDiv}>
-          {serviceCategories.map(serviceCategorie => (
-            <Button
-              variant={
-                selectedCategorie.indexOf(serviceCategorie.id) !== -1 ? 'contained' : 'outlined'
+              <FilterListIcon />
+            </IconButton>
+          </div>
+        </Card>
+
+        <Collapse in={showFilter}>
+          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+            <SearchBar
+              onSearch={event =>
+                handlePageChange({
+                  key: 'keyword',
+                  value: event,
+                })
               }
-              color="primary"
-              size="small"
-              css={
-                selectedCategorie.indexOf(serviceCategorie.id) !== -1
-                  ? styles.clickedCategorieBtn
-                  : styles.categorieBtn
-              }
-              onClick={() => handleClickCategorie(serviceCategorie.id, serviceCategorie.name)}
-              key={serviceCategorie.id}
-              style={
-                selectedCategorie.indexOf(serviceCategorie.id) === -1 ? {} : { color: 'white' }
-              }
-            >
-              {serviceCategorie.name}
-            </Button>
-          ))}
-          <Button
-            variant="contained"
-            size="small"
-            css={styles.categorieClear}
-            onClick={handleClearCategorie}
-          >
-            清除
-          </Button>
-        </div>
+            />
+            <div style={{ marginTop: '12px' }}>
+              <div className="divText" style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>點選服務類別進行篩選</div>
+              <div css={styles.categorieDiv}>
+                {serviceCategories.map(serviceCategorie => (
+                  <Button
+                    variant={
+                      selectedCategorie.indexOf(serviceCategorie.id) !== -1 ? 'contained' : 'outlined'
+                    }
+                    color="primary"
+                    size="small"
+                    css={
+                      selectedCategorie.indexOf(serviceCategorie.id) !== -1
+                        ? styles.clickedCategorieBtn
+                        : styles.categorieBtn
+                    }
+                    onClick={() => handleClickCategorie(serviceCategorie.id, serviceCategorie.name)}
+                    key={serviceCategorie.id}
+                    style={
+                      selectedCategorie.indexOf(serviceCategorie.id) === -1 ? {} : { color: 'white' }
+                    }
+                  >
+                    {serviceCategorie.name}
+                  </Button>
+                ))}
+                <Button
+                  variant="contained"
+                  size="small"
+                  css={styles.categorieClear}
+                  onClick={handleClearCategorie}
+                >
+                  清除
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Collapse>
         {!servicesData.loading ?
           services !== undefined && (
             <Results

@@ -67,7 +67,30 @@ const styles = {
         color: 'red !important'
       }
     }
-  })
+  }),
+  cardHeader: css({
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: '#1A73E8',
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
+  }),
+  tableRow: css({
+    backgroundColor: '#ffffff !important',
+    '&:hover': {
+      backgroundColor: '#ffffff !important',
+    },
+  }),
 }
 
 function Results({
@@ -173,12 +196,18 @@ function Results({
   }
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        {customers.length} 筆資料, {pageOffset + 1}/{Math.ceil(customers.length / pageLimit)}
-      </Typography>
       <Card>
-        <CardHeader title="所有客戶列表" />
-        <Divider />
+        <CardHeader
+          css={styles.cardHeader}
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span>所有客戶列表</span>
+              <Typography color="textSecondary" variant="body2">
+                共 {totalCount} 筆
+              </Typography>
+            </div>
+          }
+        />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
@@ -215,8 +244,7 @@ function Results({
                 <TableBody>
                   {customers.map(data => (
                     <TableRow
-                      css={data.isUnwelcome ? styles.unWelcome : {}}
-                      hover
+                      css={css([styles.tableRow, data.isUnwelcome ? styles.unWelcome : {}])}
                       key={`customer-${data.id}`}
                       selected={selectedCustomers.indexOf(data.id) > -1}
                     >
@@ -243,15 +271,15 @@ function Results({
                           <Avatar css={styles.avatar}>
                             {data.name.charAt(0).toUpperCase()}
                           </Avatar>
-                            <Link
-                              color="inherit"
-                              underline='none'
-                              component={RouterLink}
-                              to={`/management/customers/${data.id}`}
-                              variant="h6"
-                            >
-                              {data.name}
-                            </Link>
+                          <Link
+                            color="inherit"
+                            underline='none'
+                            component={RouterLink}
+                            to={`/management/customers/${data.id}`}
+                            variant="h6"
+                          >
+                            {data.name}
+                          </Link>
                         </div>
                       </TableCell>
                       <TableCell>{data.cellphone}</TableCell>

@@ -7,7 +7,7 @@ import { theme } from '../../theme/index.js'
 
 const styles = {
   root: css({
-    margin: theme.spacing(3, 0, 3, 0),
+    margin: theme.spacing(1.5, 0),
   }),
   content: css({
     padding: 0,
@@ -38,7 +38,7 @@ const styles = {
     textAlign: 'center',
   }),
   overview: css({
-    margin: '20px 0',
+    margin: 0,
   }),
 }
 

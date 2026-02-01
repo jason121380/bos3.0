@@ -7,6 +7,7 @@ import {
   DialogTitle
 } from '@mui/material'
 import clsx from 'clsx'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import TableEditBar from 'components/TableEditBar'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
@@ -433,229 +434,231 @@ function Results({
         />
 
         <CardContent css={styles.content}>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell style={{ padding: '4px 8px', width: '130px' }}>
-                    <Checkbox
-                      checked={selectedOrders.length === noCloseOrder.length && noCloseOrder.length > 0}
-                      color="primary"
-                      indeterminate={
-                        selectedOrders.length > 0 && selectedOrders.length < noCloseOrder.length
-                      }
-                      onChange={handleSelectAll}
-                      disabled={orders.length === 0}
-                      sx={{ padding: '4px' }}
-                    />
-                  </TableCell>
-                  <TableCell>帳單編號/時間</TableCell>
-                  <TableCell>客戶</TableCell>
-                  <TableCell>設計師</TableCell>
-                  <TableCell>指定</TableCell>
-                  {raffleDisplay ? <TableCell>活動券</TableCell> : null}
-                  <TableCell className="cellHighlight">營業現金應收</TableCell>
-                  <TableCell>服務消費</TableCell>
-                  <TableCell>店販消費</TableCell>
-                  {membershipDisplay && <TableCell>會員卡販賣</TableCell>}
-                  <TableCell>卡券使用 (入業績)</TableCell>
-                  <TableCell>卡券販賣 (入業績)</TableCell>
-                  <TableCell>業績收入</TableCell>
-                  <TableCell>卡券販賣 (不入業績)</TableCell>
-                  <TableCell>卡券使用(-)</TableCell>
-                  <TableCell>第三方卡券(-)</TableCell>
-                  <TableCell>其他付款方式(-)</TableCell>
-                  <TableCell>入金使用(-)</TableCell>
-                  {bonusDisplay && <TableCell>點數折抵金額(-)</TableCell>}
-                  <TableCell>備註</TableCell>
-                  <TableCell>訂單來源</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody id="whiteSpace">
-                {orders.length > 0 &&
-                  orders.map((order, index) => (
-                    <Fragment key={order.id}>
-                      <TableRow data-testid={`order-row`}>
-                        <TableCell style={{ padding: '0 8px', whiteSpace: 'nowrap' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <Checkbox
-                              color="primary"
-                              checked={selectedOrders.indexOf(order.id) > -1}
-                              onChange={() => handleSelectOne(order.id)}
-                              sx={{ padding: '4px' }}
-                              inputProps={{
-                                'data-testid': `order-checkbox-${index}`,
-                              }}
-                              disabled={order.isCloseAccount || order.status === '建立中'}
-                            />
-                            <IconButton
-                              sx={{
-                                padding: '4px !important',
-                                color: '#999'
-                              }}
-                              aria-label="expand row"
-                              size="small"
-                              disabled={orderStaticDetailLoading || order.status === '建立中'}
-                              onClick={() => handleOrderExtend(order.id)}
-                            >
-                              {orderExtendArr.find(id => id === order.id) !== undefined ? (
-                                <KeyboardArrowUp fontSize="small" />
-                              ) : (
-                                <KeyboardArrowDown fontSize="small" />
-                              )}
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              sx={{ padding: '4px !important', color: '#999' }}
-                              onClick={() => {
-                                getOrderLazy({
-                                  variables: {
-                                    orderId: order.id,
-                                  },
-                                })
-                                setPrintOrderId(order.id)
-                                setIsPrint(true)
-                              }}
-                              disabled={disabled || order.status === '建立中'}
-                            >
-                              {orderDataLazy.loading && printOrderId === order.id ? <CircularProgress size={18} /> : <Print fontSize="small" />}
-                            </IconButton>
-                            <IconButton
-                              component={RouterLink}
-                              size="small"
-                              sx={{ padding: '4px !important', color: '#999' }}
-                              to={`/order/${location.search.length > 0
-                                ? `${order.id}?startDate=${location.search
-                                  .split('=')[1]
-                                  .substring(0, 13)}&endDate=${location.search.split('=')[2]}`
-                                : order.id
-                                }`}
-                              disabled={order.status === '建立中'}
-                              data-testid={`order-${index}`}
-                            >
-                              <Visibility fontSize="small" />
-                            </IconButton>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          {`#${order.orderNo}`}{serialNumberUsing && order.serialNumber ? ` (${order.serialNumber})` : ''}
-                          <Typography variant="body2">
-                            {format(new Date(order.date), 'MM/dd')}
-                            {weekDisplay(format(new Date(order.date), 'eeee'))}
-                            {format(new Date(order.date), 'HH:mm')}
-                          </Typography>
-                        </TableCell>
-                        {order.status === '建立中' ? <TableCell colSpan={19}>訂單建立中</TableCell> :
-                          <>
-                            <TableCell>
-                              <div style={{ display: 'flex' }}>
-                                {order.customerName}
-                                <Typography variant="body2">
-                                  {order.customerNo && `(${order.customerNo})`}
-                                </Typography>
-                              </div>
-                              <Typography variant="body2">
-                                {order.customerCellphone}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              {order.designerName}
-                              {order.designerNo ? `/${order.designerNo}` : ''}
-                            </TableCell>
-                            <TableCell>{order.isDesignate ? 'Y' : 'N'}</TableCell>
-                            {raffleDisplay ? <TableCell>{order.raffleCount}</TableCell> : null}
-                            <TableCell className="cellHighlight">
-                              {Math.round(order.businessCash)}
-                            </TableCell>
-                            <TableCell>
-                              {Math.round(order.service)}
-                              <Typography variant="body2">
-                                {order.TPTName.service.length > 0 && renderTpName(order.TPTName.service)}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              {Math.round(order.product)}
-                              <Typography variant="body2">
-                                {order.TPTName.product.length > 0 && renderTpName(order.TPTName.product)}
-                              </Typography>
-                            </TableCell>
-                            {membershipDisplay && (
+          <PerfectScrollbar>
+            <div css={styles.inner}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell style={{ padding: '4px 8px', width: '130px' }}>
+                      <Checkbox
+                        checked={selectedOrders.length === noCloseOrder.length && noCloseOrder.length > 0}
+                        color="primary"
+                        indeterminate={
+                          selectedOrders.length > 0 && selectedOrders.length < noCloseOrder.length
+                        }
+                        onChange={handleSelectAll}
+                        disabled={orders.length === 0}
+                        sx={{ padding: '4px' }}
+                      />
+                    </TableCell>
+                    <TableCell style={{ minWidth: '150px' }}>帳單編號/時間</TableCell>
+                    <TableCell style={{ minWidth: '150px' }}>客戶</TableCell>
+                    <TableCell>設計師</TableCell>
+                    <TableCell>指定</TableCell>
+                    {raffleDisplay ? <TableCell>活動券</TableCell> : null}
+                    <TableCell className="cellHighlight">營業現金應收</TableCell>
+                    <TableCell>服務消費</TableCell>
+                    <TableCell>店販消費</TableCell>
+                    {membershipDisplay && <TableCell>會員卡販賣</TableCell>}
+                    <TableCell>卡券使用 (入業績)</TableCell>
+                    <TableCell>卡券販賣 (入業績)</TableCell>
+                    <TableCell>業績收入</TableCell>
+                    <TableCell>卡券販賣 (不入業績)</TableCell>
+                    <TableCell>卡券使用(-)</TableCell>
+                    <TableCell>第三方卡券(-)</TableCell>
+                    <TableCell>其他付款方式(-)</TableCell>
+                    <TableCell>入金使用(-)</TableCell>
+                    {bonusDisplay && <TableCell>點數折抵金額(-)</TableCell>}
+                    <TableCell>備註</TableCell>
+                    <TableCell>訂單來源</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody id="whiteSpace">
+                  {orders.length > 0 &&
+                    orders.map((order, index) => (
+                      <Fragment key={order.id}>
+                        <TableRow data-testid={`order-row`}>
+                          <TableCell style={{ padding: '0 8px', whiteSpace: 'nowrap' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <Checkbox
+                                color="primary"
+                                checked={selectedOrders.indexOf(order.id) > -1}
+                                onChange={() => handleSelectOne(order.id)}
+                                sx={{ padding: '4px' }}
+                                inputProps={{
+                                  'data-testid': `order-checkbox-${index}`,
+                                }}
+                                disabled={order.isCloseAccount || order.status === '建立中'}
+                              />
+                              <IconButton
+                                sx={{
+                                  padding: '4px !important',
+                                  color: '#999'
+                                }}
+                                aria-label="expand row"
+                                size="small"
+                                disabled={orderStaticDetailLoading || order.status === '建立中'}
+                                onClick={() => handleOrderExtend(order.id)}
+                              >
+                                {orderExtendArr.find(id => id === order.id) !== undefined ? (
+                                  <KeyboardArrowUp fontSize="small" />
+                                ) : (
+                                  <KeyboardArrowDown fontSize="small" />
+                                )}
+                              </IconButton>
+                              <IconButton
+                                size="small"
+                                sx={{ padding: '4px !important', color: '#999' }}
+                                onClick={() => {
+                                  getOrderLazy({
+                                    variables: {
+                                      orderId: order.id,
+                                    },
+                                  })
+                                  setPrintOrderId(order.id)
+                                  setIsPrint(true)
+                                }}
+                                disabled={disabled || order.status === '建立中'}
+                              >
+                                {orderDataLazy.loading && printOrderId === order.id ? <CircularProgress size={18} /> : <Print fontSize="small" />}
+                              </IconButton>
+                              <IconButton
+                                component={RouterLink}
+                                size="small"
+                                sx={{ padding: '4px !important', color: '#999' }}
+                                to={`/order/${location.search.length > 0
+                                  ? `${order.id}?startDate=${location.search
+                                    .split('=')[1]
+                                    .substring(0, 13)}&endDate=${location.search.split('=')[2]}`
+                                  : order.id
+                                  }`}
+                                disabled={order.status === '建立中'}
+                                data-testid={`order-${index}`}
+                              >
+                                <Visibility fontSize="small" />
+                              </IconButton>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {`#${order.orderNo}`}{serialNumberUsing && order.serialNumber ? ` (${order.serialNumber})` : ''}
+                            <Typography variant="body2">
+                              {format(new Date(order.date), 'MM/dd')}
+                              {weekDisplay(format(new Date(order.date), 'eeee'))}
+                              {format(new Date(order.date), 'HH:mm')}
+                            </Typography>
+                          </TableCell>
+                          {order.status === '建立中' ? <TableCell colSpan={19}>訂單建立中</TableCell> :
+                            <>
                               <TableCell>
-                                {Math.round(order.membership)}
+                                <div style={{ display: 'flex' }}>
+                                  {order.customerName}
+                                  <Typography variant="body2">
+                                    {order.customerNo && `(${order.customerNo})`}
+                                  </Typography>
+                                </div>
                                 <Typography variant="body2">
-                                  {order.TPTName.membership.length > 0 && renderTpName(order.TPTName.membership)}
+                                  {order.customerCellphone}
                                 </Typography>
                               </TableCell>
-                            )}
-                            <TableCell>{parseInt(order.usedTicket * 100) / 100}</TableCell>
-                            <TableCell>{Math.round(order.ticketSellIntoPerformance)}</TableCell>
-                            <TableCell>{Math.round(order.performanceIncome)}</TableCell>
-                            <TableCell>{Math.round(order.ticketSellNotIntoPerformance)}</TableCell>
-                            <TableCell>{parseInt(order.usedTicketForDecount * 100) / 100}</TableCell>
-                            <TableCell>
-                              {Math.round(order.thirdPartTicketForDecount)}
-                              <Typography variant="body2">
-                                {order.TPTName.overAll.length > 0 && renderTpName(order.TPTName.overAll)}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              {Math.round(order.otherPayWayForDecount)}
-                              <Typography variant="body2">{order.otherPayName}</Typography>
-                            </TableCell>
-                            <TableCell>{order.walletUsedForDecount}</TableCell>
-                            {bonusDisplay && <TableCell>{order.bonusDecountForReport}</TableCell>}
-                            <TableCell>{order.remark}</TableCell>
-                            <TableCell>{order.source}</TableCell>
-                          </>
-                        }
-                      </TableRow>
-                      <TableRow >
-                        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={24}>
-                          <Collapse
-                            in={orderExtendArr.find(id => id === order.id) !== undefined}
-                            timeout="auto"
-                            unmountOnExit
-                          >
-                            <Box sx={{ p: 2, backgroundColor: '#fff', borderLeft: '4px solid #007AFF' }}>
-                              {/* Headers */}
-                              <div style={{ display: 'flex', marginBottom: '8px', borderBottom: '1px solid #f0f0f0', paddingBottom: '4px', gap: '12px' }}>
-                                <div style={{ width: '100px', flex: '0 0 100px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>設計師</div>
-                                <div style={{ width: '300px', flex: '0 0 300px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>項目</div>
-                                <div style={{ width: '80px', flex: '0 0 80px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>價格</div>
-                                <div style={{ width: '60px', flex: '0 0 60px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>數量</div>
-                                <div style={{ width: '200px', flex: '0 0 200px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>互助人</div>
-                              </div>
-                              {/* Body */}
-                              {order.staticDetail && order.staticDetail.map((data, index) => (
-                                <div key={index} style={{ display: 'flex', marginBottom: '6px', alignItems: 'flex-start', gap: '12px' }}>
-                                  <div style={{ width: '100px', flex: '0 0 100px', fontSize: '14px', color: '#333' }}>{data.designerName}</div>
-                                  <div style={{ width: '300px', flex: '0 0 300px', fontSize: '14px', color: '#333' }}>{`${data.itemName}(${data.serviceType})`}</div>
-                                  <div style={{ width: '80px', flex: '0 0 80px', fontSize: '14px', color: '#333' }}>
-                                    {data.serviceType === '卡券使用' ? parseInt(data.price * 100) / 100 : data.price}
-                                  </div>
-                                  <div style={{ width: '60px', flex: '0 0 60px', fontSize: '14px', color: '#333' }}>{data.count}</div>
-                                  <div style={{ width: '200px', flex: '0 0 200px', fontSize: '14px', color: '#333' }}>
-                                    {data.helperList.length > 0 ? (
-                                      data.helperList.map((helper, idx) => (
-                                        <div key={idx} style={{ fontSize: '14px', color: '#333' }}>
-                                          {`${helper.helperType}[${helper.helperName}]`}
-                                        </div>
-                                      ))
-                                    ) : (
-                                      '-'
-                                    )}
-                                  </div>
+                              <TableCell>
+                                {order.designerName}
+                                {order.designerNo ? `/${order.designerNo}` : ''}
+                              </TableCell>
+                              <TableCell>{order.isDesignate ? 'Y' : 'N'}</TableCell>
+                              {raffleDisplay ? <TableCell>{order.raffleCount}</TableCell> : null}
+                              <TableCell className="cellHighlight">
+                                {Math.round(order.businessCash)}
+                              </TableCell>
+                              <TableCell>
+                                {Math.round(order.service)}
+                                <Typography variant="body2">
+                                  {order.TPTName.service.length > 0 && renderTpName(order.TPTName.service)}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                {Math.round(order.product)}
+                                <Typography variant="body2">
+                                  {order.TPTName.product.length > 0 && renderTpName(order.TPTName.product)}
+                                </Typography>
+                              </TableCell>
+                              {membershipDisplay && (
+                                <TableCell>
+                                  {Math.round(order.membership)}
+                                  <Typography variant="body2">
+                                    {order.TPTName.membership.length > 0 && renderTpName(order.TPTName.membership)}
+                                  </Typography>
+                                </TableCell>
+                              )}
+                              <TableCell>{parseInt(order.usedTicket * 100) / 100}</TableCell>
+                              <TableCell>{Math.round(order.ticketSellIntoPerformance)}</TableCell>
+                              <TableCell>{Math.round(order.performanceIncome)}</TableCell>
+                              <TableCell>{Math.round(order.ticketSellNotIntoPerformance)}</TableCell>
+                              <TableCell>{parseInt(order.usedTicketForDecount * 100) / 100}</TableCell>
+                              <TableCell>
+                                {Math.round(order.thirdPartTicketForDecount)}
+                                <Typography variant="body2">
+                                  {order.TPTName.overAll.length > 0 && renderTpName(order.TPTName.overAll)}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                {Math.round(order.otherPayWayForDecount)}
+                                <Typography variant="body2">{order.otherPayName}</Typography>
+                              </TableCell>
+                              <TableCell>{order.walletUsedForDecount}</TableCell>
+                              {bonusDisplay && <TableCell>{order.bonusDecountForReport}</TableCell>}
+                              <TableCell>{order.remark}</TableCell>
+                              <TableCell>{order.source}</TableCell>
+                            </>
+                          }
+                        </TableRow>
+                        <TableRow >
+                          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={24}>
+                            <Collapse
+                              in={orderExtendArr.find(id => id === order.id) !== undefined}
+                              timeout="auto"
+                              unmountOnExit
+                            >
+                              <Box sx={{ p: 2, backgroundColor: '#fff', borderLeft: '4px solid #007AFF' }}>
+                                {/* Headers */}
+                                <div style={{ display: 'flex', marginBottom: '8px', borderBottom: '1px solid #f0f0f0', paddingBottom: '4px', gap: '12px' }}>
+                                  <div style={{ width: '100px', flex: '0 0 100px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>設計師</div>
+                                  <div style={{ width: '300px', flex: '0 0 300px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>項目</div>
+                                  <div style={{ width: '80px', flex: '0 0 80px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>價格</div>
+                                  <div style={{ width: '60px', flex: '0 0 60px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>數量</div>
+                                  <div style={{ width: '200px', flex: '0 0 200px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>互助人</div>
                                 </div>
-                              ))}
-                            </Box>
-                          </Collapse>
-                        </TableCell>
-                      </TableRow>
-                    </Fragment>
-                  ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                                {/* Body */}
+                                {order.staticDetail && order.staticDetail.map((data, index) => (
+                                  <div key={index} style={{ display: 'flex', marginBottom: '6px', alignItems: 'flex-start', gap: '12px' }}>
+                                    <div style={{ width: '100px', flex: '0 0 100px', fontSize: '14px', color: '#333' }}>{data.designerName}</div>
+                                    <div style={{ width: '300px', flex: '0 0 300px', fontSize: '14px', color: '#333' }}>{`${data.itemName}(${data.serviceType})`}</div>
+                                    <div style={{ width: '80px', flex: '0 0 80px', fontSize: '14px', color: '#333' }}>
+                                      {data.serviceType === '卡券使用' ? parseInt(data.price * 100) / 100 : data.price}
+                                    </div>
+                                    <div style={{ width: '60px', flex: '0 0 60px', fontSize: '14px', color: '#333' }}>{data.count}</div>
+                                    <div style={{ width: '200px', flex: '0 0 200px', fontSize: '14px', color: '#333' }}>
+                                      {data.helperList.length > 0 ? (
+                                        data.helperList.map((helper, idx) => (
+                                          <div key={idx} style={{ fontSize: '14px', color: '#333' }}>
+                                            {`${helper.helperType}[${helper.helperName}]`}
+                                          </div>
+                                        ))
+                                      ) : (
+                                        '-'
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              </Box>
+                            </Collapse>
+                          </TableCell>
+                        </TableRow>
+                      </Fragment>
+                    ))}
+                </TableBody>
+              </Table>
+            </div>
+          </PerfectScrollbar>
         </CardContent>
 
       </Card>

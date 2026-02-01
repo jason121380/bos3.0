@@ -1,22 +1,6 @@
-/** @jsxImportSource @emotion/react */
 import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Checkbox,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-  CardActions,
-  TablePagination,
-  Dialog,
-  DialogTitle,
-  DialogActions,
+  Button, Card, CardContent, CardHeader, Checkbox, Table, TableBody, TableCell, TableHead,
+  TableRow, Typography, CardActions, TablePagination, Dialog, DialogTitle, DialogActions
 } from '@mui/material'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
@@ -25,10 +9,47 @@ import { useState, useEffect } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from "react-csv";
-import styles from './styles/Results'
 import useFetchDeleteMembership from 'hooks/useFetchDeleteMembership'
 import useFetchMultipleUpdateMembershipCategory from 'hooks/useFetchMultipleUpdateMembershipCategory'
 import { css } from '@emotion/react'
+import { theme } from '../../theme'
+
+const styles = {
+  root: css({}),
+  content: css({
+    padding: 0,
+  }),
+  inner: css({
+    minWidth: 1000,
+  }),
+  cardHeader: css({
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: '#1A73E8',
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
+  }),
+  tableRow: css({
+    backgroundColor: '#ffffff !important',
+    '&:hover': {
+      backgroundColor: '#ffffff !important',
+    },
+  }),
+  actions: css({
+    padding: theme.spacing(1),
+    justifyContent: 'flex-end',
+  }),
+}
 
 import EditMemberCardRecordModal from './EditMemberCardRecordModal'
 
@@ -153,11 +174,9 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
 
   return (
     <div {...rest} css={css([styles.root, className])} className='MemberCardRecordResult'>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        {memberships.data.length} 筆資料
-      </Typography>
       <Card>
         <CardHeader
+          css={styles.cardHeader}
           action={
             <CSVLink data={excelData} filename="會員卡列表.csv" >
               <Button variant="contained" color="primary" size="small">
@@ -165,9 +184,15 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
               </Button>
             </CSVLink>
           }
-          title="所有會員卡"
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span>所有會員卡</span>
+              <Typography color="textSecondary" variant="body2">
+                共 {memberships.data.length} 筆
+              </Typography>
+            </div>
+          }
         />
-        <Divider />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
@@ -189,7 +214,7 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
                         disabled={
                           memberships.data.length === 0 ||
                           memberships.data.filter(d => !d.isUsing).length ===
-                            memberships.data.length
+                          memberships.data.length
                         }
                       />
                     </TableCell>
@@ -206,8 +231,8 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
                 <TableBody>
                   {memberships.data.map((data, idx) => (
                     <TableRow
-                      hover
                       key={`membership-${data.name}-${idx}`}
+                      css={styles.tableRow}
                       selected={selectedMembership.indexOf(data.uuid) > -1 || !data.isUsing}
                       data-testid="membership-row"
                     >

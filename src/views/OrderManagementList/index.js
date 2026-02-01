@@ -41,7 +41,7 @@ const styles = {
     paddingBottom: theme.spacing(3),
   }),
   results: css({
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(1.5),
   }),
 }
 
@@ -286,15 +286,15 @@ function OrderManagementList() {
             padding: '12px 24px',
             alignItems: 'center',
             justifyContent: 'space-between',
-            backgroundColor: '#fff',
-            borderRadius: '8px',
+            backgroundColor: '#E8F0FE', // Light Blue background
+            borderRadius: '12px',
             boxShadow: 'none',
-            border: '1px solid #f0f0f0',
+            border: 'none !important',
             marginBottom: '12px',
           })}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='帳單列表' />
+            <PageTitle title='帳單列表' style={{ color: '#1A73E8' }} />
             <Link component={RouterLink} to="/order/create" style={{ textDecoration: 'none' }}>
               <Button
                 variant="contained"
@@ -304,10 +304,10 @@ function OrderManagementList() {
                   fontSize: '14px !important',
                   boxShadow: 'none !important',
                   fontWeight: 'bold !important',
-                  backgroundColor: '#f5f5f5 !important',
+                  backgroundColor: '#FFFFFF !important',
                   color: '#666 !important',
                   '&:hover': {
-                    backgroundColor: '#eeeeee !important',
+                    backgroundColor: '#f8f8f8 !important',
                   }
                 })}
               >

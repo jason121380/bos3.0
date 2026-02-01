@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import {
+  Card,
   Container, Grid, Button, Typography, FormControl, Select,
-  InputLabel, MenuItem, CircularProgress,
+  InputLabel, MenuItem, CircularProgress, IconButton, Collapse
 } from '@mui/material'
+import FilterListIcon from '@mui/icons-material/FilterList'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
@@ -55,6 +57,7 @@ export default function SalaryOverview() {
   const [editBtnStatus, setEditBtnStatus] = React.useState(false)
   const [usersIsSalaryChecked, setUsersIsSalaryChecked] = React.useState([])
   const [borrowDisplay, setBorrowDisplay] = React.useState(false)
+  const [showFilter, setShowFilter] = useState(false)
   const getIsBorrowDisplayInSalaryOverview = useFetchGetIsBorrowDisplayInSalaryOverview()
 
   const monthlyCloseStatus = useFethcMonthlyCloseStatus(
@@ -205,38 +208,63 @@ export default function SalaryOverview() {
   return (
     <Page css={styles.root} title="薪資總表/月結">
       <Container maxWidth={false}>
-        <PageTitle title='薪資總表/月結' subTitle='Salary Overview' />
-        <Header
-          date={setting.date}
-          onChange={handleDateChange}
-          status={idx(monthlyCloseStatus, _ => _.data.merchant.monthlyCloseStatus)}
-        />
+        <Card
+          css={css({
+            display: 'flex',
+            padding: '12px 24px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: '#E8F0FE',
+            borderRadius: '12px',
+            boxShadow: 'none',
+            border: 'none !important',
+            marginBottom: '12px',
+          })}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <PageTitle title='薪資總表/月結' style={{ color: '#1A73E8' }} />
+            <IconButton
+              onClick={() => setShowFilter(!showFilter)}
+              css={css({
+                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
+                color: showFilter ? '#1A73E8 !important' : '#666 !important',
+                marginLeft: '4px !important',
+                '&:hover': {
+                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
+                }
+              })}
+            >
+              <FilterListIcon />
+            </IconButton>
+          </div>
+        </Card>
+
+        <Collapse in={showFilter}>
+          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+            <Header
+              date={setting.date}
+              onChange={handleDateChange}
+              status={idx(monthlyCloseStatus, _ => _.data.merchant.monthlyCloseStatus)}
+            />
+          </div>
+        </Collapse>
         {idx(salaryUserList, _ => _.data.getSalaryUserList) ?
           idx(
             salaryUserList,
             _ =>
               _.data.getSalaryUserList && (
                 <React.Fragment>
-                  <Grid container alignItems='center'>
+                  <Grid container alignItems='center' style={{ marginBottom: '16px' }}>
                     <Overview usersSalary={_.data.getSalaryUserList} />
                     <Grid item style={{ marginLeft: '30px' }}>
-                      <Typography variant="subtitle1" component="div">
-                        步驟1: 選擇要月結的人『打勾』或是全選
-                      </Typography>
-                      <Typography variant="subtitle1" component="div">
-                        步驟2: 下方按下『月結』
-                      </Typography>
-                      <Typography variant="subtitle1" component="div">
-                        步驟3: 月結完成後，按下『編輯』進入每個人加扣項核對
-                      </Typography>
-                      <Typography variant="subtitle1" component="div">
-                        步驟4: 全部確認正確後，按下『鎖定』
+                      <Typography variant="body2" color="textSecondary">
+                        步驟1: 選擇要月結的人『打勾』或是全選 | 步驟2: 下方按下『月結』 | 步驟3: 月結完成後，按下『編輯』進入每個人加扣項核對 | 步驟4: 全部確認正確後，按下『鎖定』
                       </Typography>
                     </Grid>
                   </Grid>
-                  <Grid container style={{ display: 'flex' }}>
+                  <Grid container spacing={2} alignItems='center' style={{ marginBottom: '16px' }}>
                     <Grid item>
-                      <FormControl variant="outlined" style={{ width: '150px' }}>
+                      <FormControl variant="outlined" size="small" style={{ width: '150px' }}>
                         <InputLabel id="select-item-label">狀態</InputLabel>
                         <Select
                           labelId="select-item-label"
@@ -255,29 +283,24 @@ export default function SalaryOverview() {
                     </Grid>
 
                     {isThisMonthSalaryChacked && (
-                      <Grid item style={{ display: 'flex', height: 40 }}>
+                      <Grid item style={{ display: 'flex', alignItems: 'center' }}>
                         <Button
                           color="error"
                           variant="contained"
                           onClick={handleIsSalaryItemsLock}
-                          style={{
-                            color: 'white',
-                            margin: '0px 10px',
-                            height: 54,
-                            width: 100,
-                          }}
+                          css={css({
+                            color: 'white !important',
+                            marginLeft: '10px !important',
+                            height: '40px !important',
+                          })}
                         >
                           {isSalaryItemsLock ? '取消鎖定薪資' : '鎖定薪資'}
                         </Button>
-                        <Typography style={{ margin: '10px', fontWeight: 'bold' }}>
-                          上次月結時間
-                          <Typography variant="caption" display="block">
-                            {format(
-                              new Date(monthlyCheckoutTime).toLocaleString(),
-                              'yyyy/MM/dd HH:mm'
-                            )}
+                        <div style={{ marginLeft: '12px' }}>
+                          <Typography variant="caption" color="textSecondary" style={{ fontWeight: 'bold' }}>
+                            上次月結時間: {format(new Date(monthlyCheckoutTime).toLocaleString(), 'yyyy/MM/dd HH:mm')}
                           </Typography>
-                        </Typography>
+                        </div>
                       </Grid>
                     )}
                   </Grid>

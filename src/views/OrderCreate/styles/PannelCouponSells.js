@@ -12,6 +12,17 @@ export default {
   heading: css({
     fontSize: '15px !important',
     fontWeight: 'bold',
+    display: 'flex',
+    alignItems: 'center',
+    '&::before': {
+      content: '""',
+      display: 'inline-block',
+      width: '4px',
+      height: '16px',
+      backgroundColor: theme.palette.primary.main,
+      marginRight: '8px',
+      borderRadius: '2px',
+    },
   }),
   fieldOutter: css({
     display: 'flex',

@@ -12,8 +12,12 @@ import {
   Checkbox,
   ToggleButton,
   ToggleButtonGroup,
-  FormControlLabel
+  FormControlLabel,
+  Card,
+  IconButton,
+  Collapse,
 } from '@mui/material'
+import FilterListIcon from '@mui/icons-material/FilterList'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import { Autocomplete } from '@mui/material'
@@ -92,6 +96,7 @@ export default function Employees() {
   const [openDateModal, setOpenDateModal] = useState(false)
   const [userOptions, setUserOptioons] = useState([])
   const [selectItem, setSelectItem] = useState(clockInFilter)
+  const [showFilter, setShowFilter] = useState(false)
   const [onClick, setOnClick] = useState(false)
   const [reClockInData, setReClockInData] = useState({
     date: new Date().getTime(),
@@ -286,9 +291,57 @@ export default function Employees() {
   return (
     <Page css={styles.root} title="全店打卡記錄">
       <Container maxWidth={false} css={styles.container}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='全店打卡記錄' subTitle='ATTENDANCE RECORDS' />
-          <Grid item>
+        <Card
+          css={css({
+            display: 'flex',
+            padding: '12px 24px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: '#E8F0FE',
+            borderRadius: '12px',
+            boxShadow: 'none',
+            border: 'none !important',
+            marginBottom: '12px',
+          })}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <PageTitle title='全店打卡記錄' style={{ color: '#1A73E8' }} />
+            {identity.add && (
+              <Button
+                variant="contained"
+                onClick={handleOpen}
+                disabled={attendanceRecordsLazyData.data === undefined || attendanceRecordsLazyData.loading}
+                css={css({
+                  borderRadius: '20px !important',
+                  padding: '6px 20px !important',
+                  fontSize: '14px !important',
+                  boxShadow: 'none !important',
+                  fontWeight: 'bold !important',
+                  backgroundColor: '#FFFFFF !important',
+                  color: '#666 !important',
+                  '&:hover': {
+                    backgroundColor: '#f8f8f8 !important',
+                  }
+                })}
+              >
+                補打卡
+              </Button>
+            )}
+            <IconButton
+              onClick={() => setShowFilter(!showFilter)}
+              css={css({
+                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
+                color: showFilter ? '#1A73E8 !important' : '#666 !important',
+                marginLeft: '4px !important',
+                '&:hover': {
+                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
+                }
+              })}
+            >
+              <FilterListIcon />
+            </IconButton>
+          </div>
+          <Grid item style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <FormControlLabel
               control={<Checkbox color="primary" />}
               label='匯出打卡類型'
@@ -301,117 +354,110 @@ export default function Employees() {
               color="secondary"
               onClick={handleHRExport}
               style={{
-                marginRight: '8px',
                 fontSize: '0.8rem'
               }}
             >
-              報表匯出<br />(人資格式)
+              報表匯出(人資格式)
             </Button>
             <Button disabled={attendanceRecordsExcelLazyDataV2.loading} variant="contained" color="primary" onClick={() => handleSearch(true)}>
               報表匯出
             </Button>
           </Grid>
-        </Grid>
-        <Grid item container style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '12px 0', flexWrap: 'wrap', gap: 10 }}>
-          <DateSelector
-            date={date}
-            attributes={['lastmonth', 'thismonth', 'startDate']}
-            dateChange={({ startDate, endDate }) => {
-              setDate({
-                startDate: startOfMonth(startDate).getTime(),
-                endDate: endOfMonth(endDate).getTime()
-              })
-            }}
-            onlyStart
-            inputFormat='yyyy/MM'
-            pickerOption={{
-              views: ['month', 'year']
-            }}
-          />
-          <Grid style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
-            {identity.add &&
-              <Button
-                onClick={handleOpen}
-                style={{ height: 'fit-content' }}
-                variant='contained'
-                disabled={attendanceRecordsLazyData.data === undefined || attendanceRecordsLazyData.loading}
-                color='primary'>
-                補打卡
-              </Button>
-            }
-            <div style={{ width: '250px' }}>
-              <Autocomplete
-                autoHighlight
-                css={styles.formControl}
-                options={userOptions}
-                onChange={(event, value) => {
-                  if (!!value) {
-                    setUserId(value.id)
-                  } else {
-                    setUserId('')
-                  }
-                }}
-                renderOption={(props, option) => (
-                  <li {...props}>
-                    {`${option.name}${!!option.designerNo ? '-' + option.designerNo : '(無代號)'}`}
-                  </li>
-                )}
-                filterOptions={(options, state) => {
-                  const keyword = state.inputValue
-                  if (keyword === '' || keyword.length === 0) {
-                    return options
-                  } else {
-                    const newOptions = options.filter(d => d.designerNo !== null && d.designerNo.includes(keyword) || d.name !== null && d.name.includes(keyword))
-                    return newOptions
-                  }
-                }}
-                getOptionLabel={option => option.name}
-                renderInput={(params) => <TextField {...params} label="員工姓名/編號" variant='outlined' />}
-              />
-            </div>
-          </Grid>
-        </Grid>
-        <div style={{ display: 'flex', margin: '12px 0' }}>
-          <Autocomplete
-            multiple
-            fullWidth
-            value={selectItem}
-            onChange={(e, v) => setSelectItem(v)}
-            options={clockInFilter}
-            disableCloseOnSelect
-            getOptionLabel={option => option.label}
-            renderOption={(props, option, { selected }) => (
-              <li {...props}>
-                <Checkbox
-                  style={{ color: '#202D50', marginRight: 8 }}
-                  icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-                  checkedIcon={<CheckBoxIcon fontSize="small" />}
-                  checked={selected}
+        </Card>
+
+        <Collapse in={showFilter}>
+          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+            <Grid container spacing={2} alignItems='center'>
+              <Grid item>
+                <DateSelector
+                  date={date}
+                  attributes={['lastmonth', 'thismonth', 'startDate']}
+                  dateChange={({ startDate, endDate }) => {
+                    setDate({
+                      startDate: startOfMonth(startDate).getTime(),
+                      endDate: endOfMonth(endDate).getTime()
+                    })
+                  }}
+                  onlyStart
+                  inputFormat='yyyy/MM'
+                  pickerOption={{
+                    views: ['month', 'year']
+                  }}
                 />
-                {option.label}
-              </li>
-            )}
-            renderInput={params => (
-              <TextField
-                {...params}
-                variant="outlined"
-                label="篩選打卡記錄"
-                placeholder="篩選條件"
-              />
-            )}
-          />
-          <div style={{ marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
-            <Button
-              variant="contained"
-              color="primary"
-              css={styles.searchBtn}
-              onClick={() => handleSearch()}
-              disabled={attendanceRecordsLazyData.data === undefined || attendanceRecordsLazyData.loading}
-            >
-              搜尋
-            </Button>
+              </Grid>
+              <Grid item xs={3}>
+                <Autocomplete
+                  autoHighlight
+                  options={userOptions}
+                  onChange={(event, value) => {
+                    if (!!value) {
+                      setUserId(value.id)
+                    } else {
+                      setUserId('')
+                    }
+                  }}
+                  renderOption={(props, option) => (
+                    <li {...props}>
+                      {`${option.name}${!!option.designerNo ? '-' + option.designerNo : '(無代號)'}`}
+                    </li>
+                  )}
+                  filterOptions={(options, state) => {
+                    const keyword = state.inputValue
+                    if (keyword === '' || keyword.length === 0) {
+                      return options
+                    } else {
+                      const newOptions = options.filter(d => d.designerNo !== null && d.designerNo.includes(keyword) || d.name !== null && d.name.includes(keyword))
+                      return newOptions
+                    }
+                  }}
+                  getOptionLabel={option => option.name}
+                  renderInput={(params) => <TextField {...params} label="員工姓名/編號" variant='outlined' size="small" />}
+                />
+              </Grid>
+              <Grid item xs={5}>
+                <Autocomplete
+                  multiple
+                  fullWidth
+                  size="small"
+                  value={selectItem}
+                  onChange={(e, v) => setSelectItem(v)}
+                  options={clockInFilter}
+                  disableCloseOnSelect
+                  getOptionLabel={option => option.label}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox
+                        style={{ color: '#202D50', marginRight: 8 }}
+                        icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                        checkedIcon={<CheckBoxIcon fontSize="small" />}
+                        checked={selected}
+                      />
+                      {option.label}
+                    </li>
+                  )}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label="篩選打卡記錄"
+                      placeholder="篩選條件"
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleSearch()}
+                  disabled={attendanceRecordsLazyData.data === undefined || attendanceRecordsLazyData.loading}
+                >
+                  搜尋
+                </Button>
+              </Grid>
+            </Grid>
           </div>
-        </div>
+        </Collapse>
         {attendanceRecordsLazyData.data !== undefined && !attendanceRecordsLazyData.loading ? idx(attendanceRecordsLazyData, _ => (
           <Results
             identity={identity}

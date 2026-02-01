@@ -11,9 +11,20 @@ const PageTitle = ({ title, subTitle, className, style }) => {
             {subTitle}
           </Typography>
         )}
-        <Typography component="h3" variant="h3">
-          {title}
-        </Typography>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div
+            style={{
+              width: '4px',
+              height: '18px',
+              backgroundColor: '#1A73E8',
+              marginRight: '8px',
+              borderRadius: '2px',
+            }}
+          />
+          <Typography component="h3" variant="h3" style={{ color: style && style.color }}>
+            {title}
+          </Typography>
+        </div>
       </Grid>
     </Grid>
   )

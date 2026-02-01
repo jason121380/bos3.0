@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { Container, Grid, TextField, Link, Button } from '@mui/material'
+import { Card, Container, Grid, TextField, Link, Button, IconButton, Collapse } from '@mui/material'
+import FilterListIcon from '@mui/icons-material/FilterList'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
+import DateSelector from 'components/DateSelector'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import { endOfDay, startOfMonth } from 'date-fns'
@@ -37,6 +39,7 @@ function EmployeePicking() {
     endDate: endOfDay(new Date()).getTime(),
     pickerId: '',
   })
+  const [showFilter, setShowFilter] = React.useState(false)
 
   const getPickingRecords = useFetchGetPickingRecords({
     input: {
@@ -86,47 +89,99 @@ function EmployeePicking() {
   return (
     <Page css={styles.root} title="材料自購登錄">
       <Container maxWidth={false} css={styles.container}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='材料自購登錄' subTitle='Employee Picking' />
-          <Grid item>
-            <Link component={RouterLink} to="/employee/picking/create">
-              <Button color="primary" variant="contained" data-testid="createOrder">
+        <Card
+          css={css({
+            display: 'flex',
+            padding: '12px 24px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: '#E8F0FE',
+            borderRadius: '12px',
+            boxShadow: 'none',
+            border: 'none !important',
+            marginBottom: '12px',
+          })}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <PageTitle title='材料自購登錄' style={{ color: '#1A73E8' }} />
+            <Link component={RouterLink} to="/employee/picking/create" style={{ textDecoration: 'none' }}>
+              <Button
+                variant="contained"
+                css={css({
+                  borderRadius: '20px !important',
+                  padding: '6px 20px !important',
+                  fontSize: '14px !important',
+                  boxShadow: 'none !important',
+                  fontWeight: 'bold !important',
+                  backgroundColor: '#FFFFFF !important',
+                  color: '#666 !important',
+                  '&:hover': {
+                    backgroundColor: '#f8f8f8 !important',
+                  }
+                })}
+              >
                 新增
               </Button>
             </Link>
-          </Grid>
-        </Grid>
-        <Grid container style={{ gap: 10 }}>
-          <Grid item>
-            <MerchantSearchBar
-              values={pageSetting}
-              onFilter={value => setPageSetting(value)}
-              outside
-              visible={['datePicker', 'employee']}
-              lastInLeaderBoard={true}
-            />
-          </Grid>
-          <Grid item style={{ width: 180, display: 'flex', alignItems: 'center' }}>
-            <Autocomplete
-              freeSolo
-              fullWidth
-              disableClearable
-              options={categoriesArr}
-              onChange={(event, value) => handleOnchange(event, value)}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label="分類"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    style: { height: '53px' },
-                  }}
+            <IconButton
+              onClick={() => setShowFilter(!showFilter)}
+              css={css({
+                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
+                color: showFilter ? '#1A73E8 !important' : '#666 !important',
+                marginLeft: '4px !important',
+                '&:hover': {
+                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
+                }
+              })}
+            >
+              <FilterListIcon />
+            </IconButton>
+          </div>
+          <DateSelector
+            date={pageSetting}
+            attributes={[
+              'thismonth', 'lastmonth', 'dbyesterday',
+              'yesterday', 'today', 'startDate', 'endDate'
+            ]}
+            dateChange={value => setPageSetting(value)}
+          />
+        </Card>
+
+        <Collapse in={showFilter}>
+          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+            <Grid container style={{ gap: 10 }}>
+              <Grid item>
+                <MerchantSearchBar
+                  values={pageSetting}
+                  onFilter={value => setPageSetting(value)}
+                  outside
+                  visible={['employee']}
+                  lastInLeaderBoard={true}
                 />
-              )}
-            />
-          </Grid>
-        </Grid>
+              </Grid>
+              <Grid item style={{ width: 180, display: 'flex', alignItems: 'center' }}>
+                <Autocomplete
+                  freeSolo
+                  fullWidth
+                  disableClearable
+                  options={categoriesArr}
+                  onChange={(event, value) => handleOnchange(event, value)}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label="分類"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        style: { height: '53px' },
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
+          </div>
+        </Collapse>
         {idx(
           getPickingRecords, _ => _.data.pickingRecords &&
             actionsBanned.data.getActionsBannedAfterDailyCheckout && (

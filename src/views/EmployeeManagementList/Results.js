@@ -56,10 +56,28 @@ const styles = {
     padding: theme.spacing(0, 1),
     justifyContent: 'flex-end',
   }),
-  deductionNotSet: css({
-    color: 'red',
-    fontWeight: 'bold',
-    fontSize: '10px',
+  cardHeader: css({
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: '#1A73E8',
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
+  }),
+  tableRow: css({
+    backgroundColor: '#ffffff !important',
+    '&:hover': {
+      backgroundColor: '#ffffff !important',
+    },
   }),
 }
 
@@ -242,7 +260,7 @@ export default function Results({
     return arr.length ? arr.join('/') : ''
   }
 
-  const isDeductionWaySet = (deductionWay) => 
+  const isDeductionWaySet = (deductionWay) =>
     deductionWay && deductionWay !== '' && deductionWay !== '無扣項'
 
   const getMessage = (isUserRakeSet, deductionWay) => {
@@ -278,12 +296,18 @@ export default function Results({
 
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        共 {employees.length} 筆, {page.offset + 1} / {Math.ceil(employees.length)}
-      </Typography>
       <Card>
-        <CardHeader title="所有員工" />
-        <Divider />
+        <CardHeader
+          css={styles.cardHeader}
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span>員工管理列表</span>
+              <Typography color="textSecondary" variant="body2">
+                共 {employees.length} 筆
+              </Typography>
+            </div>
+          }
+        />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
@@ -318,7 +342,7 @@ export default function Results({
                 </TableHead>
                 <TableBody>
                   {sortedEmployees.map((data, idx) => (
-                    <TableRow key={`employee-item-${idx}`}>
+                    <TableRow key={`employee-item-${idx}`} css={styles.tableRow}>
                       {rakeSetAble &&
                         <TableCell padding="checkbox">
                           <Checkbox
@@ -398,10 +422,10 @@ export default function Results({
                         {data.status === 'ok' || data.status === 'pending' ? '可登入' : '不可登入'}
                       </TableCell>
                       <TableCell>
-                        {data.isUserRakeSet  && isDeductionWaySet(data.deductionWay)
-                        ? '設定完成' 
-                        : <span style={{ color: 'red', fontWeight: 'bold' }}>
-                          {getMessage(data.isUserRakeSet, data.deductionWay)}
+                        {data.isUserRakeSet && isDeductionWaySet(data.deductionWay)
+                          ? '設定完成'
+                          : <span style={{ color: 'red', fontWeight: 'bold' }}>
+                            {getMessage(data.isUserRakeSet, data.deductionWay)}
                           </span>
                         }
                       </TableCell>

@@ -60,20 +60,43 @@ const styles = {
   sticky1: css({
     position: 'sticky',
     left: 0,
-    background: 'white',
+    background: '#ffffff !important',
     zIndex: '99',
   }),
   sticky2: css({
     position: 'sticky',
     left: "52px",
-    background: 'white',
+    background: '#ffffff !important',
     zIndex: '99',
   }),
   sticky3: css({
     position: 'sticky',
     left: "126px",
-    background: 'white',
+    background: '#ffffff !important',
     zIndex: '99',
+  }),
+  cardHeader: css({
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: '#1A73E8',
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
+  }),
+  tableRow: css({
+    backgroundColor: '#ffffff !important',
+    '&:hover': {
+      backgroundColor: '#ffffff !important',
+    },
   }),
 }
 
@@ -181,13 +204,9 @@ function Results({
   return (
     <Fragment>
       <div {...rest} css={css([styles.root, className])}>
-        <Typography color="textSecondary" gutterBottom variant="body2">
-          共 {pickingRecords.totalCount} 筆,
-          {pickingRecords.pageOffset + 1} /{' '}
-          {Math.ceil(pickingRecords.totalCount / pickingRecords.pageLimit)}
-        </Typography>
         <Card>
           <CardHeader
+            css={styles.cardHeader}
             action={
               <CSVLink
                 data={excelData}
@@ -198,9 +217,15 @@ function Results({
                 </Button>
               </CSVLink>
             }
-            title="材料自購登錄列表"
+            title={
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span>材料自購登錄列表</span>
+                <Typography color="textSecondary" variant="body2">
+                  共 {pickingRecords.totalCount} 筆
+                </Typography>
+              </div>
+            }
           />
-          <Divider />
           <CardContent css={styles.content}>
             <PerfectScrollbar>
               <div css={styles.inner}>
@@ -231,7 +256,7 @@ function Results({
                   <TableBody>
                     {pickingRecords.PickingRecord.map((record, index) => {
                       return (
-                        <TableRow key={record.id}>
+                        <TableRow key={record.id} css={styles.tableRow}>
                           <TableCell css={styles.sticky1} padding="checkbox">
                             <Checkbox
                               color="primary"
@@ -272,7 +297,7 @@ function Results({
                         </TableRow>
                       )
                     })}
-                    <TableRow>
+                    <TableRow css={styles.tableRow}>
                       <TableCell css={styles.sticky1} />
                       <TableCell css={styles.sticky2} style={{ fontWeight: 'bold', width: '70px' }}>合計</TableCell>
                       <TableCell css={styles.sticky3} style={{ width: '80px' }} />

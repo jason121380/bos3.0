@@ -1,5 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { Container, Grid, Link, Button, Card } from '@mui/material'
+import { Container, Grid, Link, Button, Card, Collapse, IconButton } from '@mui/material'
+import FilterListIcon from '@mui/icons-material/FilterList'
+import DateSelector from 'components/DateSelector'
 import MerchantSearchBar from 'components/MerchantSearchBar'
 import ProgressBar from 'components/ProgressBar'
 import Page from 'components/Page'
@@ -35,7 +37,7 @@ const styles = {
     paddingBottom: theme.spacing(3),
   }),
   results: css({
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(1.5),
   }),
 }
 
@@ -69,6 +71,7 @@ function DraftOrderManagementList() {
   const [isCustomerDataMarked, setIsCustomerDataMarked] = React.useState(false)
   const [membershipDisplay, setMembershipDisplay] = React.useState(false)
   const [bonusDisplay, setBonusDisplay] = React.useState(false)
+  const [showFilter, setShowFilter] = React.useState(false)
   const getDisablePendingOrder = useFetchGetDisablePendingOrder()
 
   const orders = useFetchPendingOrders({
@@ -207,15 +210,15 @@ function DraftOrderManagementList() {
             padding: '12px 24px',
             alignItems: 'center',
             justifyContent: 'space-between',
-            backgroundColor: '#fff',
-            borderRadius: '8px',
+            backgroundColor: '#E8F0FE', // Light Blue background
+            borderRadius: '12px',
             boxShadow: 'none',
-            border: '1px solid #f0f0f0',
+            border: 'none !important',
             marginBottom: '12px',
           })}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='掛單列表' />
+            <PageTitle title='掛單列表' style={{ color: '#1A73E8' }} />
             <Link component={RouterLink} to="/order/create" style={{ textDecoration: 'none' }}>
               <Button
                 variant="contained"
@@ -225,26 +228,53 @@ function DraftOrderManagementList() {
                   fontSize: '14px !important',
                   boxShadow: 'none !important',
                   fontWeight: 'bold !important',
-                  backgroundColor: '#f5f5f5 !important',
+                  backgroundColor: '#FFFFFF !important',
                   color: '#666 !important',
                   '&:hover': {
-                    backgroundColor: '#eeeeee !important',
+                    backgroundColor: '#f8f8f8 !important',
                   }
                 })}
               >
                 新開單
               </Button>
             </Link>
+            <IconButton
+              onClick={() => setShowFilter(!showFilter)}
+              css={css({
+                backgroundColor: showFilter ? 'rgba(0, 122, 255, 0.1) !important' : 'transparent !important',
+                color: showFilter ? '#007AFF !important' : '#666 !important',
+                marginLeft: '4px !important',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 122, 255, 0.15) !important',
+                }
+              })}
+            >
+              <FilterListIcon />
+            </IconButton>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <DateSelector
+              attributes={['dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              date={{ startDate: pageSetting.startDate, endDate: pageSetting.endDate }}
+              dateChange={value => setPageSetting(prev => ({ ...prev, ...value }))}
+              margin={false}
+            />
           </div>
         </Card>
-        <MerchantSearchBar
-          values={pageSetting}
-          onFilter={value => setPageSetting(value)}
-          outside
-          visible={['datePicker', 'employee', 'customer', 'payment', 'thirdPartyCoupon', 'source']}
-          hideStartDate={true}
-          getThirdPartyName={true}
-        />
+
+        <Collapse in={showFilter}>
+          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+            <MerchantSearchBar
+              values={pageSetting}
+              onFilter={value => setPageSetting(value)}
+              outside
+              visible={['employee', 'customer', 'payment', 'thirdPartyCoupon', 'source']}
+              hideStartDate={true}
+              getThirdPartyName={true}
+            />
+          </div>
+        </Collapse>
         {!orders.loading ? (
           <ResultsV2
             className={styles.results}

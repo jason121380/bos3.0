@@ -472,7 +472,7 @@ function Services({
                 </Fragment>
               ))}
             {(thirdPartTicket || (ticketDisabled && service.thirdPartyCouponMerchantId)) && (
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                 <ThirdPartyAutoComplete
                   className={styles.field}
                   label="第三方卡券"
@@ -502,13 +502,13 @@ function Services({
                         if (data.type === 'PERCENT') {
                           return (
                             <Typography key={index} css={styles.heading2} style={{ marginTop: '4px' }}>
-                              扣完後業績:{Math.round((service.price * (100 - data.fee)) / 100)}
+                              {`扣完後業績:${Math.round((service.price * (100 - data.fee)) / 100)}`}
                             </Typography>
                           )
                         } else {
                           return (
                             <Typography key={index} css={styles.heading2} style={{ marginTop: '4px' }}>
-                              扣完後業績:{Math.round(service.price - data.fee)}
+                              {`扣完後業績:${Math.round(service.price - data.fee)}`}
                             </Typography>
                           )
                         }

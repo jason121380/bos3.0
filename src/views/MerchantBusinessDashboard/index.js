@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Container } from '@mui/material'
+import { Container, Card } from '@mui/material'
 import ProgressBar from 'components/ProgressBar'
 import PageTitle from 'components/PageTitle'
 import Page from 'components/Page'
@@ -56,16 +56,31 @@ function MerchantBusinessDashboard() {
   return (
     <Page css={styles.root} title="營業儀表板">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='營業儀表板' subTitle='MERCHANT BUSINESS DASHBOARD' />
-        <DateSelector
-          margin
-          date={pageSetting}
-          attributes={[
-            'thismonth', 'lastmonth', 'dbyesterday',
-            'yesterday', 'today', 'startDate', 'endDate'
-          ]}
-          dateChange={value => setPageSetting(value)}
-        />
+        <Card
+          css={css({
+            display: 'flex',
+            padding: '8px 24px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: '#E8F0FE',
+            borderRadius: '12px',
+            boxShadow: 'none',
+            border: 'none !important',
+            marginBottom: '12px',
+            flexWrap: 'wrap',
+            gap: '12px'
+          })}
+        >
+          <PageTitle title='營業儀表板' style={{ color: '#1A73E8' }} />
+          <DateSelector
+            date={pageSetting}
+            attributes={[
+              'thismonth', 'lastmonth', 'dbyesterday',
+              'yesterday', 'today', 'startDate', 'endDate'
+            ]}
+            dateChange={value => setPageSetting(value)}
+          />
+        </Card>
         {!merchantDashboardData.loading ? (
           <Fragment>
             <Overview membershipDisplay={membershipDisplay} overview={overview} />

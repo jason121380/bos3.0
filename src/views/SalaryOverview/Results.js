@@ -53,11 +53,29 @@ const styles = {
     gap: '0px 20px',
     padding: 12
   }),
-  disabledBtn: {
-    '&.disabledBtn': {
-      color: 'rgba(0, 0, 0, 0.26) !important'
-    }
-  }
+  cardHeader: css({
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: '#1A73E8',
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
+  }),
+  tableRow: css({
+    backgroundColor: '#ffffff !important',
+    '&:hover': {
+      backgroundColor: '#ffffff !important',
+    },
+  }),
 }
 
 function Results({
@@ -192,12 +210,9 @@ function Results({
   }
   return (
     <div {...rest} css={css([styles.root, className])} className='SalaryOverviewResult'>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        {usersSalary.length} 筆資料, {pageSetting.pageOffset + 1}/
-        {Math.ceil(usersSalary.length / pageSetting.pageLimit)}
-      </Typography>
       <Card>
         <CardHeader
+          css={styles.cardHeader}
           action={
             <CSVLink data={excelData} filename="薪資總表.csv" >
               <Button variant="contained" color="primary" size="small">
@@ -205,10 +220,15 @@ function Results({
               </Button>
             </CSVLink>
           }
-          title="薪資總覽"
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span>薪資總覽</span>
+              <Typography color="textSecondary" variant="body2">
+                共 {usersSalary.length} 筆
+              </Typography>
+            </div>
+          }
         />
-
-        <Divider />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
@@ -242,7 +262,7 @@ function Results({
                   {usersSalary.map((data, index) => {
                     if ((isSalaryItemsLock && data.increaseItem > 0) || data.decreaseItem > 0) {
                       return (
-                        <TableRow key={data.id} hover>
+                        <TableRow key={data.id} css={styles.tableRow}>
                           <TableCell padding="checkbox">
                             <Checkbox
                               color="primary"
@@ -282,7 +302,7 @@ function Results({
                       )
                     } else if (!isSalaryItemsLock) {
                       return (
-                        <TableRow key={data.id} hover>
+                        <TableRow key={data.id} css={styles.tableRow}>
                           <TableCell padding="checkbox">
                             <Checkbox
                               color="primary"

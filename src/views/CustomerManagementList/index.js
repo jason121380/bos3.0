@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Container, InputLabel, Select, FormControl, MenuItem, CircularProgress, Grid, Button } from '@mui/material'
+import { Card, Container, InputLabel, Select, FormControl, MenuItem, CircularProgress, Grid, Button, IconButton, Collapse } from '@mui/material'
+import FilterListIcon from '@mui/icons-material/FilterList'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
 import useFetchCustomers from 'hooks/useFetchCustomers'
@@ -97,6 +98,7 @@ function CustomerManagementList() {
     membershipPreference: null,
     isUnwelcome: 'ALL'
   })
+  const [showFilter, setShowFilter] = React.useState(false)
 
   const [membershipFilter, setMemberShipFilter] = useState({
     membership: "UNSET",
@@ -170,116 +172,159 @@ function CustomerManagementList() {
   return (
     <Page css={styles.root} title="客戶列表">
       <Container maxWidth={false}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='客戶列表' subTitle='Customer Management List' />
-          <Grid item>
-            <Button
-              color="primary"
-              variant="contained"
-              component={RouterLink}
-              to="/management/customer/create"
-              style={{ backgroundColor: '#3865AC' }}
-            >
-              新增
-            </Button>
-          </Grid>
-        </Grid>
-        <SearchBar
-          inCustomerFilterExport
-          disableCustomerSource
-          handleClearData={handleClearData}
-          style={{ marginTop: 0 }}
-          onSearchV2={event =>
-            handlePageChange({
-              key: 'keyword',
-              value: event,
-            })
-          }
-          onDesignerV2={event =>
-            handlePageChange({
-              key: 'preferDesigner',
-              value: event.userId,
-            })
-          }
-          onDesignerV3={event =>
-            handlePageChange({
-              key: 'latestDesigner',
-              value: event.userId,
-            })
-          }
-          onBirthdayStart={event =>
-            handlePageChange({
-              key: 'birthday',
-              value: event,
-            })
-          }
-        />
-        <FormControl variant="outlined" css={styles.formGroup}>
-          <InputLabel>顧客排序方式</InputLabel>
-          <Select label='顧客排序方式' value={pageSetting.searchingOrder} onChange={event => handleOnChange({ key: "searchingOrder", event: event })}>
-            {sortByA.map((data, index) => (
-              <MenuItem value={data.value} key={index}>{data.label}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl variant="outlined" css={styles.formGroup}>
-          <InputLabel>呈現順序</InputLabel>
-          <Select label='呈現順序' value={pageSetting.orderWay} onChange={event => handleOnChange({ key: "orderWay", event: event })}>
-            {sortByB.map((data, index) => (
-              <MenuItem value={data.value} key={index}>{data.label}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        {!isMemberShipCardActive.loading && isMemberShipCardActive &&
-          <Fragment>
-            <FormControl variant="outlined" css={styles.formGroup}>
-              <InputLabel>會員</InputLabel>
-              <Select label='會員'
-                value={membershipFilter.membership}
-                onChange={event => {
-                  setMemberShipFilter({
-                    ...membershipFilter,
-                    membership: event.target.value
-                  })
-                }}
+        <Card
+          css={css({
+            display: 'flex',
+            padding: '12px 24px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            backgroundColor: '#E8F0FE',
+            borderRadius: '12px',
+            boxShadow: 'none',
+            border: 'none !important',
+            marginBottom: '12px',
+          })}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <PageTitle title='客戶列表' style={{ color: '#1A73E8' }} />
+            <Link component={RouterLink} to="/management/customer/create" style={{ textDecoration: 'none' }}>
+              <Button
+                variant="contained"
+                css={css({
+                  borderRadius: '20px !important',
+                  padding: '6px 20px !important',
+                  fontSize: '14px !important',
+                  boxShadow: 'none !important',
+                  fontWeight: 'bold !important',
+                  backgroundColor: '#FFFFFF !important',
+                  color: '#666 !important',
+                  '&:hover': {
+                    backgroundColor: '#f8f8f8 !important',
+                  }
+                })}
               >
-                {membership.map((data, index) => (
-                  <MenuItem value={data.value} key={index}>{data.label}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            {pageSetting.membershipPreference !== null && pageSetting.membershipPreference.membership === 'ALL' &&
+                新增
+              </Button>
+            </Link>
+            <IconButton
+              onClick={() => setShowFilter(!showFilter)}
+              css={css({
+                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
+                color: showFilter ? '#1A73E8 !important' : '#666 !important',
+                marginLeft: '4px !important',
+                '&:hover': {
+                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
+                }
+              })}
+            >
+              <FilterListIcon />
+            </IconButton>
+          </div>
+        </Card>
+
+        <Collapse in={showFilter}>
+          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+            <SearchBar
+              inCustomerFilterExport
+              disableCustomerSource
+              handleClearData={handleClearData}
+              style={{ marginTop: 0 }}
+              onSearchV2={event =>
+                handlePageChange({
+                  key: 'keyword',
+                  value: event,
+                })
+              }
+              onDesignerV2={event =>
+                handlePageChange({
+                  key: 'preferDesigner',
+                  value: event.userId,
+                })
+              }
+              onDesignerV3={event =>
+                handlePageChange({
+                  key: 'latestDesigner',
+                  value: event.userId,
+                })
+              }
+              onBirthdayStart={event =>
+                handlePageChange({
+                  key: 'birthday',
+                  value: event,
+                })
+              }
+            />
+            <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '12px' }}>
               <FormControl variant="outlined" css={styles.formGroup}>
-                <InputLabel>效期</InputLabel>
-                <Select
-                  label='效期'
-                  value={membershipFilter.membershipValidity}
-                  onChange={event => {
-                    setMemberShipFilter({
-                      ...membershipFilter,
-                      membershipValidity: event.target.value
-                    })
-                  }}
-                >
-                  {membershipValidity.map((data, index) => (
+                <InputLabel>顧客排序方式</InputLabel>
+                <Select label='顧客排序方式' value={pageSetting.searchingOrder} onChange={event => handleOnChange({ key: "searchingOrder", event: event })}>
+                  {sortByA.map((data, index) => (
                     <MenuItem value={data.value} key={index}>{data.label}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
-            }
-            <FormControl variant="outlined" css={styles.formGroup}>
-              <InputLabel>黑名單篩選</InputLabel>
-              <Select
-                value={pageSetting.isUnwelcome}
-                label='黑名單篩選'
-                onChange={e => setPageSetting({ ...pageSetting, isUnwelcome: e.target.value })}
-              >
-                <MenuItem value='ALL'>顯示全部</MenuItem>
-                <MenuItem value='UNWELCOME'>顯示黑名單</MenuItem>
-                <MenuItem value='WELCOME'>排除黑名單</MenuItem>
-              </Select>
-            </FormControl>
-          </Fragment>}
+              <FormControl variant="outlined" css={styles.formGroup}>
+                <InputLabel>呈現順序</InputLabel>
+                <Select label='呈現順序' value={pageSetting.orderWay} onChange={event => handleOnChange({ key: "orderWay", event: event })}>
+                  {sortByB.map((data, index) => (
+                    <MenuItem value={data.value} key={index}>{data.label}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {isMemberShipCardActive && (
+                <Fragment>
+                  <FormControl variant="outlined" css={styles.formGroup}>
+                    <InputLabel>會員</InputLabel>
+                    <Select label='會員'
+                      value={membershipFilter.membership}
+                      onChange={event => {
+                        setMemberShipFilter({
+                          ...membershipFilter,
+                          membership: event.target.value
+                        })
+                      }}
+                    >
+                      {membership.map((data, index) => (
+                        <MenuItem value={data.value} key={index}>{data.label}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  {pageSetting.membershipPreference !== null && pageSetting.membershipPreference.membership === 'ALL' &&
+                    <FormControl variant="outlined" css={styles.formGroup}>
+                      <InputLabel>效期</InputLabel>
+                      <Select
+                        label='效期'
+                        value={membershipFilter.membershipValidity}
+                        onChange={event => {
+                          setMemberShipFilter({
+                            ...membershipFilter,
+                            membershipValidity: event.target.value
+                          })
+                        }}
+                      >
+                        {membershipValidity.map((data, index) => (
+                          <MenuItem value={data.value} key={index}>{data.label}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  }
+                  <FormControl variant="outlined" css={styles.formGroup}>
+                    <InputLabel>黑名單篩選</InputLabel>
+                    <Select
+                      value={pageSetting.isUnwelcome}
+                      label='黑名單篩選'
+                      onChange={e => setPageSetting({ ...pageSetting, isUnwelcome: e.target.value })}
+                    >
+                      <MenuItem value='ALL'>顯示全部</MenuItem>
+                      <MenuItem value='UNWELCOME'>顯示黑名單</MenuItem>
+                      <MenuItem value='WELCOME'>排除黑名單</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Fragment>
+              )}
+            </div>
+          </div>
+        </Collapse>
         {(!isMemberShipCardActive.loading && !customerList.loading) ?
           idx(customerList.data, _ => (
             <Results

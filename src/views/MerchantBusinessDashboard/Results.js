@@ -39,10 +39,36 @@ const styles = {
     justifyContent: 'flex-end',
   }),
   cardHeader: css({
-    textAlign: 'center',
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: theme.palette.primary.main,
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
   }),
   orderNoLink: css({
     textDecorationLine: 'underline',
+  }),
+  tableRow: css({
+    backgroundColor: '#ffffff !important',
+    '&:hover': {
+      backgroundColor: '#ffffff !important',
+    },
+  }),
+  tableContainer: css({
+    boxShadow: 'none !important',
+    backgroundColor: '#ffffff !important',
+    border: 'none !important',
   }),
 }
 
@@ -52,14 +78,13 @@ function Results({ results }) {
       <Grid item xs={12} md={6} lg={4}>
         <Card>
           <CardHeader title="其他支付方式明細" css={styles.cardHeader} />
-          <Divider />
           <CardContent css={styles.content}>
             <div css={styles.inner}>
-              <TableContainer component={Paper}>
-                <Table css={styles.table} size="small" aria-label="a dense table">
+              <TableContainer component={Paper} css={styles.tableContainer} elevation={0}>
+                <Table size="small" aria-label="a dense table">
                   <TableBody>
                     {results.otherPayway.map((data, index) => (
-                      <TableRow key={index}>
+                      <TableRow key={index} css={styles.tableRow}>
                         <TableCell>{data.paywayName}</TableCell>
                         <TableCell>{data.usedPrice}</TableCell>
                         <TableCell>({data.usedPriceWithNoCash})</TableCell>
@@ -75,14 +100,13 @@ function Results({ results }) {
       <Grid item xs={12} md={6} lg={4}>
         <Card>
           <CardHeader title="第三方卡券明細" css={styles.cardHeader} />
-          <Divider />
           <CardContent css={styles.content}>
             <div css={styles.inner}>
-              <TableContainer component={Paper}>
-                <Table css={styles.table} size="small" aria-label="a dense table">
+              <TableContainer component={Paper} css={styles.tableContainer} elevation={0}>
+                <Table size="small" aria-label="a dense table">
                   <TableBody>
                     {results.thirdPartTicket.map((data, index) => (
-                      <TableRow key={index}>
+                      <TableRow key={index} css={styles.tableRow}>
                         <TableCell>{data.ticketName}</TableCell>
                         <TableCell>{data.usedPrice}</TableCell>
                         <TableCell>({data.usedPriceWithNoCash})</TableCell>
@@ -98,14 +122,13 @@ function Results({ results }) {
       <Grid item xs={12} md={6} lg={4}>
         <Card>
           <CardHeader title="入金儲值明細" css={styles.cardHeader} />
-          <Divider />
           <CardContent css={styles.content}>
             <div css={styles.inner}>
-              <TableContainer component={Paper}>
-                <Table css={styles.table} size="small" aria-label="a dense table">
+              <TableContainer component={Paper} css={styles.tableContainer} elevation={0}>
+                <Table size="small" aria-label="a dense table">
                   <TableBody>
                     {results.walletDeposit.map((data, index) => (
-                      <TableRow key={index}>
+                      <TableRow key={index} css={styles.tableRow}>
                         <TableCell>{data.paywayName}</TableCell>
                         <TableCell>{data.usedPrice}</TableCell>
                         <TableCell>({data.usedPriceWithNoCash})</TableCell>

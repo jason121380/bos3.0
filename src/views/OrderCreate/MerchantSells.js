@@ -256,7 +256,7 @@ function MerchantSells({
                 })
               }}
             />
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               {thirdPartTicket && (
                 <ThirdPartyAutoComplete
                   className={styles.field}
@@ -292,7 +292,7 @@ function MerchantSells({
                     if (data.id === sellsItem.thirdPartyCouponMerchantId) {
                       return (
                         <Typography css={styles.heading2} style={{ marginTop: '4px' }}>
-                          扣完後業績:{Math.round((sellsItem.price * (100 - data.fee)) / 100)}
+                          {`扣完後業績:${Math.round((sellsItem.price * (100 - data.fee)) / 100)}`}
                         </Typography>
                       )
                     }

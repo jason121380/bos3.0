@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Button, Card, CardActions, CardContent, Checkbox, Divider,
+  Button, Card, CardActions, CardContent, CardHeader, Checkbox, Divider,
   Table, TableBody, TableCell, TableHead, TablePagination,
   TableRow, Typography
 } from '@mui/material'
@@ -46,12 +46,28 @@ const styles = {
     marginRight: theme.spacing(1),
   }),
   cardHeader: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    padding: '8px 8px 0px 8px'
-  })
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: '#1A73E8',
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
+  }),
+  tableRow: css({
+    backgroundColor: '#ffffff !important',
+    '&:hover': {
+      backgroundColor: '#ffffff !important',
+    },
+  }),
 }
 
 function Results({
@@ -154,11 +170,11 @@ function Results({
         data['報到狀態'] = checkinStatus(order.isCheckin)
       }
       excelData.push(data)
-      
+
     })
     setExcelData(excelData)
   }, [orders, checkInDisplay])
-  
+
   useEffect(() => {
     if (pageRef.current && pageRef2.current) {
       pagenationLabel(pageRef.current)
@@ -169,26 +185,38 @@ function Results({
   return (
     <div {...rest} css={styles.root}>
       <Card>
-        <div css={styles.cardHeader}>
-          <CSVLink data={excelData} filename="預約訂單列表.csv">
-            <Button variant="contained" color="primary" size="small">
-              報表匯出
-            </Button>
-          </CSVLink>
-          <TablePagination
-            style={{ width: 'fit-content' }}
-            ref={pageRef2}
-            labelRowsPerPage='每頁顯示數量'
-            component="div"
-            count={pageSetting.totalCount}
-            onPageChange={onPageChange}
-            onRowsPerPageChange={onRowsPerPageChange}
-            page={pageSetting.pageOffset}
-            rowsPerPage={pageSetting.pageLimit}
-            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
-          />
-        </div>
-        <Divider />
+        <CardHeader
+          css={styles.cardHeader}
+          action={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <CSVLink data={excelData} filename="預約訂單列表.csv">
+                <Button variant="contained" color="primary" size="small">
+                  報表匯出
+                </Button>
+              </CSVLink>
+              <TablePagination
+                style={{ width: 'fit-content', border: 'none' }}
+                ref={pageRef2}
+                labelRowsPerPage='每頁顯示數量'
+                component="div"
+                count={pageSetting.totalCount}
+                onPageChange={onPageChange}
+                onRowsPerPageChange={onRowsPerPageChange}
+                page={pageSetting.pageOffset}
+                rowsPerPage={pageSetting.pageLimit}
+                rowsPerPageOptions={[5, 10, 25, 50, 1000]}
+              />
+            </div>
+          }
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span>預約管理列表</span>
+              <Typography color="textSecondary" variant="body2">
+                共 {pageSetting.totalCount} 筆
+              </Typography>
+            </div>
+          }
+        />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
@@ -223,7 +251,7 @@ function Results({
                 </TableHead>
                 <TableBody>
                   {orders.map(order => (
-                    <TableRow key={order.id} hover>
+                    <TableRow key={order.id} css={styles.tableRow}>
                       <TableCell padding="checkbox">
                         <Checkbox
                           color="primary"
@@ -244,7 +272,7 @@ function Results({
                         </Button>
                       </TableCell>
                       <TableCell>{order.status}</TableCell>
-                      {checkInDisplay && <TableCell>{ checkinStatus(order.isCheckin) }</TableCell>}
+                      {checkInDisplay && <TableCell>{checkinStatus(order.isCheckin)}</TableCell>}
                       <TableCell>
                         <Typography variant="body2">
                           {format(new Date(order.date), 'HH:mm')}
@@ -266,7 +294,7 @@ function Results({
                         }
                       </TableCell>
                       <TableCell>{order.isDesignate ? '指定' : '不指定'}</TableCell>
-                      {bookingCusCheck && <TableCell>{ order.isCusCheckRequired && '是' }</TableCell>}
+                      {bookingCusCheck && <TableCell>{order.isCusCheckRequired && '是'}</TableCell>}
                       <TableCell>
                         {order.designer ? order.designer.name ? idx(
                           order,

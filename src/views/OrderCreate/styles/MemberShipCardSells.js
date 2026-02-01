@@ -4,7 +4,7 @@ import { theme } from '../../../theme'
 export default {
   merchantSells: css({
     display: 'flex',
-    // alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
     marginBottom: theme.spacing(3),
   }),
@@ -37,18 +37,25 @@ export default {
     },
   }),
   action: css({
-    width: '50px',
+    width: '22px',
+    height: '22px',
     display: 'flex',
-    marginTop: '13px',
-    marginRight: '12px',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: '6px',
+    marginBottom: '6px',
     cursor: 'pointer',
+    fontSize: '18px',
+    color: '#999',
     '&:last-child': {
       marginRight: '0px',
     },
   }),
   createIcon: css({
     cursor: 'pointer',
-    margin: '10px',
+    margin: '0 6px 6px 6px',
+    fontSize: '18px',
+    color: '#999',
   }),
   heading2: css({
     fontSize: theme.typography.pxToRem(13),

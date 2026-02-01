@@ -24,6 +24,7 @@ import useFetchSetMultipleUpdateProductVendor from 'hooks/useFetchSetMultipleUpd
 import { useFetchGetMerchantVendorList } from 'hooks/useFetchGetVendor'
 import pagenationLabel from './../../helper/pagenationLabel'
 import { css } from '@emotion/react'
+import { theme } from '../../theme'
 
 import ProdudctDrawer from './ProdudctDrawer';
 
@@ -31,7 +32,31 @@ import styles from './styles/Results'
 import EditProductsCategoryModal from './EditProductsCategoryModal'
 import PublishedDialog from './PublishedDialog';
 import VendorDialog from './VendorDialog'
-
+const localStyles = {
+  cardHeader: css({
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: '#1A73E8',
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
+  }),
+  tableRow: css({
+    backgroundColor: '#ffffff !important',
+    '&:hover': {
+      backgroundColor: '#ffffff !important',
+    },
+  }),
+}
 function Results({ className, products, refetchProducts, onPageChange, ...rest }) {
   const pageRef = useRef(null)
   const { setProductsCategory } = useFetchSettingMultipleUpdateProductCategory()
@@ -259,11 +284,9 @@ function Results({ className, products, refetchProducts, onPageChange, ...rest }
 
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        {products.data.length} 筆資料
-      </Typography>
       <Card>
         <CardHeader
+          css={localStyles.cardHeader}
           action={
             <CSVLink data={excelData} filename="商品列表.csv" >
               <Button variant="contained" color="primary" size="small">
@@ -271,9 +294,15 @@ function Results({ className, products, refetchProducts, onPageChange, ...rest }
               </Button>
             </CSVLink>
           }
-          title="所有商品"
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span>所有商品</span>
+              <Typography color="textSecondary" variant="body2">
+                共 {products.totalCount} 筆
+              </Typography>
+            </div>
+          }
         />
-        <Divider />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
@@ -315,8 +344,8 @@ function Results({ className, products, refetchProducts, onPageChange, ...rest }
                 <TableBody>
                   {products.data.map((data, idx) => (
                     <TableRow
-                      hover
                       key={`product-${data.name}-${idx}`}
+                      css={localStyles.tableRow}
                       selected={selectedProducts.indexOf(data.id) > -1 || !data.isUsing}
                       data-testid="product-row"
                     >

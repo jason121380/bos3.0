@@ -17,7 +17,7 @@ import React, { useEffect, useRef, useState, Fragment } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink, useHistory } from 'react-router-dom'
 import { CSVLink } from "react-csv";
-import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material'
+import { KeyboardArrowDown, KeyboardArrowUp, Print, Visibility, Paid } from '@mui/icons-material'
 import { useLocation } from 'react-router'
 import useFetchReCheckoutOrder from 'hooks/useFetchReCheckoutOrder'
 import designerNameType from 'helper/designerNameType'
@@ -664,46 +664,44 @@ function Results({
 
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginBottom: '5px',
-          alignItems: 'center',
-        }}
-      >
-        <Typography color="textSecondary" variant="body2" data-testid="result-counter">
-          共 {totalCount} 筆, {pageSetting.pageOffset + 1} /{' '}
-          {Math.ceil(pageSetting.pageOffset + 1 / pageSetting.pageLimit)}
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          onClick={() => setAllExtend(!allExtend)}
-        >
-          全部展開
-        </Button>
-      </div>
       <Card>
         <CardHeader
+          sx={{ pb: 1 }}
           action={
-            <CSVLink data={excelData} filename="掛單列表.csv" >
-              <Button variant="contained" color="primary" size="small">
-                報表匯出
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <Button
+                variant="contained"
+                color="inherit"
+                size="small"
+                onClick={() => setAllExtend(!allExtend)}
+              >
+                {allExtend ? '全部收合' : '全部展開'}
               </Button>
-            </CSVLink>
+              <CSVLink data={excelData} filename="掛單列表.csv" >
+                <Button variant="contained" color="inherit" size="small">
+                  報表匯出
+                </Button>
+              </CSVLink>
+            </div>
           }
-          title="掛單列表"
+          title={
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold' }}>
+                掛單列表
+              </Typography>
+              <Typography color="textSecondary" variant="body2" data-testid="result-counter">
+                共 {totalCount} 筆
+              </Typography>
+            </div>
+          }
         />
-        <Divider />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell padding="checkbox">
+                    <TableCell style={{ padding: '4px 8px', width: '150px' }}>
                       <Checkbox
                         checked={selectedOrders.length === orders.length && orders.length > 0}
                         color="primary"
@@ -712,14 +710,11 @@ function Results({
                         }
                         onChange={handleSelectAll}
                         disabled={orders.length === 0}
+                        sx={{ padding: '4px' }}
                       />
                     </TableCell>
-                    <TableCell>展開</TableCell>
-                    <TableCell>列印</TableCell>
-                    <TableCell>操作</TableCell>
-                    <TableCell>結帳</TableCell>
-                    <TableCell>帳單編號/時間</TableCell>
-                    <TableCell>客戶</TableCell>
+                    <TableCell style={{ minWidth: '150px' }}>帳單編號/時間</TableCell>
+                    <TableCell style={{ minWidth: '150px' }}>客戶</TableCell>
                     <TableCell>設計師</TableCell>
                     <TableCell>指定/不指定</TableCell>
                     <TableCell className="cellHighlight">營業現金應收</TableCell>
@@ -744,74 +739,64 @@ function Results({
                     orders.map((order, index) => (
                       <Fragment key={index}>
                         <TableRow data-testid={`order-row`}>
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              color="primary"
-                              checked={selectedOrders.indexOf(order.id) > -1}
-                              onChange={() => handleSelectOne(order.id)}
-                              inputProps={{
-                                'data-testid': `order-checkbox-${index}`,
-                              }}
-                              disabled={order.isCloseAccount}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <IconButton
-                              aria-label="expand row"
-                              size="small"
-                              sx={{ padding: '3px !important' }}
-                              onClick={() => handleOrderExtend(order.id)}
-                            >
-                              {orderExtendArr.find(id => id === order.id) !== undefined ? (
-                                <KeyboardArrowUp />
-                              ) : (
-                                <KeyboardArrowDown />
-                              )}
-                            </IconButton>
-                          </TableCell>
-                          <TableCell align="right">
-                            <Button
-                              color="primary"
-                              size="small"
-                              variant="outlined"
-                              disabled={disabled}
-                              onClick={() => {
-                                handlePrintOrderDetail(order.id)
-                              }}
-                            >
-                              列印
-                            </Button>
-                          </TableCell>
-                          <TableCell align="right">
-                            <Button
-                              color="primary"
-                              component={RouterLink}
-                              size="small"
-                              to={`/draft-order/${location.search.length > 0
-                                ? `${order.id}?startDate=${location.search
-                                  .split('=')[1]
-                                  .substring(0, 13)}&endDate=${location.search.split('=')[2]}`
-                                : `${order.id}`
-                                }`}
-                              variant="outlined"
-                              data-testid={`order-${index}`}
-                            >
-                              詳情
-                            </Button>
-                          </TableCell>
-                          <TableCell align="right">
-                            <Button
-                              color="primary"
-                              size="small"
-                              disabled={isClick}
-                              onClick={() => {
-                                passwordEnabled.checkout ? handleCheckout(index) : handleCheckoutOrder(order)
-                              }}
-                              variant="outlined"
-                              data-testid={`order-${index}`}
-                            >
-                              結帳
-                            </Button>
+                          <TableCell style={{ padding: '0 8px', whiteSpace: 'nowrap' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              <Checkbox
+                                color="primary"
+                                checked={selectedOrders.indexOf(order.id) > -1}
+                                onChange={() => handleSelectOne(order.id)}
+                                sx={{ padding: '4px' }}
+                                inputProps={{
+                                  'data-testid': `order-checkbox-${index}`,
+                                }}
+                                disabled={order.isCloseAccount}
+                              />
+                              <IconButton
+                                sx={{ padding: '4px !important', color: '#999' }}
+                                aria-label="expand row"
+                                size="small"
+                                onClick={() => handleOrderExtend(order.id)}
+                              >
+                                {orderExtendArr.find(id => id === order.id) !== undefined ? (
+                                  <KeyboardArrowUp fontSize="small" />
+                                ) : (
+                                  <KeyboardArrowDown fontSize="small" />
+                                )}
+                              </IconButton>
+                              <IconButton
+                                sx={{ padding: '4px !important', color: '#999' }}
+                                size="small"
+                                disabled={disabled}
+                                onClick={() => handlePrintOrderDetail(order.id)}
+                              >
+                                <Print fontSize="small" />
+                              </IconButton>
+                              <IconButton
+                                sx={{ padding: '4px !important', color: '#999' }}
+                                component={RouterLink}
+                                size="small"
+                                to={`/draft-order/${location.search.length > 0
+                                  ? `${order.id}?startDate=${location.search
+                                    .split('=')[1]
+                                    .substring(0, 13)}&endDate=${location.search.split('=')[2]}`
+                                  : `${order.id}`
+                                  }`}
+                                data-testid={`order-${index}`}
+                              >
+                                <Visibility fontSize="small" />
+                              </IconButton>
+                              <IconButton
+                                sx={{ padding: '4px !important', color: '#999' }}
+                                size="small"
+                                disabled={isClick}
+                                onClick={() => {
+                                  passwordEnabled.checkout ? handleCheckout(index) : handleCheckoutOrder(order)
+                                }}
+                                data-testid={`order-checkout-${index}`}
+                              >
+                                <Paid fontSize="small" />
+                              </IconButton>
+                            </div>
                           </TableCell>
 
                           <TableCell>
@@ -889,49 +874,36 @@ function Results({
                               timeout="auto"
                               unmountOnExit
                             >
-                              <Box sx={{ margin: 1 }}>
-                                <Grid container style={{ justifyContent: 'space-between' }}>
-                                  <Grid item xs={2}>
-                                    <Typography variant="button">設計師</Typography>
-                                  </Grid>
-                                  <Grid item xs={5}>
-                                    <Typography variant="button">項目</Typography>
-                                  </Grid>
-                                  <Grid item xs={1}>
-                                    <Typography variant="button">價格</Typography>
-                                  </Grid>
-                                  <Grid item xs={1}>
-                                    <Typography variant="button">數量</Typography>
-                                  </Grid>
-                                  <Grid item xs={3}>
-                                    <Typography variant="button">互助人</Typography>
-                                  </Grid>
-                                </Grid>
+                              <Box sx={{ p: 2, backgroundColor: '#fff', borderLeft: '4px solid #007AFF' }}>
+                                {/* Headers */}
+                                <div style={{ display: 'flex', marginBottom: '8px', borderBottom: '1px solid #f0f0f0', paddingBottom: '4px', gap: '12px' }}>
+                                  <div style={{ width: '100px', flex: '0 0 100px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>設計師</div>
+                                  <div style={{ width: '300px', flex: '0 0 300px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>項目</div>
+                                  <div style={{ width: '80px', flex: '0 0 80px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>價格</div>
+                                  <div style={{ width: '60px', flex: '0 0 60px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>數量</div>
+                                  <div style={{ width: '200px', flex: '0 0 200px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>互助人</div>
+                                </div>
+                                {/* Body */}
                                 {order.staticDetail.map((data, index) => (
-                                  <Grid container key={index} style={{ justifyContent: 'space-between' }}>
-                                    <Grid item xs={2}>
-                                      <Typography variant="body1">{data.designerName}</Typography>
-                                    </Grid>
-                                    <Grid item xs={5}>
-                                      <Typography variant="body1">
-                                        {`${data.itemName}(${data.serviceType})`}
-                                      </Typography>
-                                    </Grid>
-                                    <Grid item xs={1}>
-                                      <Typography variant="body1">{data.price}</Typography>
-                                    </Grid>
-                                    <Grid item xs={1}>
-                                      <Typography variant="body1">{data.count}</Typography>
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                      {data.helperList.length > 0 &&
-                                        data.helperList.map((helper, index) => (
-                                          <Typography key={index} variant="body1">
+                                  <div key={index} style={{ display: 'flex', marginBottom: '6px', alignItems: 'flex-start', gap: '12px' }}>
+                                    <div style={{ width: '100px', flex: '0 0 100px', fontSize: '14px', color: '#333' }}>{data.designerName}</div>
+                                    <div style={{ width: '300px', flex: '0 0 300px', fontSize: '14px', color: '#333' }}>{`${data.itemName}(${data.serviceType})`}</div>
+                                    <div style={{ width: '80px', flex: '0 0 80px', fontSize: '14px', color: '#333' }}>
+                                      {data.serviceType === '卡券使用' ? parseInt(data.price * 100) / 100 : data.price}
+                                    </div>
+                                    <div style={{ width: '60px', flex: '0 0 60px', fontSize: '14px', color: '#333' }}>{data.count}</div>
+                                    <div style={{ width: '200px', flex: '0 0 200px', fontSize: '14px', color: '#333' }}>
+                                      {data.helperList.length > 0 ? (
+                                        data.helperList.map((helper, idx) => (
+                                          <div key={idx} style={{ fontSize: '14px', color: '#333' }}>
                                             {`${helper.helperType}[${helper.helperName}]`}
-                                          </Typography>
-                                        ))}
-                                    </Grid>
-                                  </Grid>
+                                          </div>
+                                        ))
+                                      ) : (
+                                        '-'
+                                      )}
+                                    </div>
+                                  </div>
                                 ))}
                               </Box>
                             </Collapse>
@@ -946,19 +918,6 @@ function Results({
             </div>
           </PerfectScrollbar>
         </CardContent>
-        <CardActions css={styles.actions}>
-          <TablePagination
-            ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
-            component="div"
-            count={totalCount}
-            onPageChange={onPageChange}
-            onRowsPerPageChange={onRowsPerPageChange}
-            page={pageSetting.pageOffset}
-            rowsPerPage={pageSetting.pageLimit}
-            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
-          />
-        </CardActions>
       </Card>
       <TableEditBar
         editBarOnClick={editBarOnClick}

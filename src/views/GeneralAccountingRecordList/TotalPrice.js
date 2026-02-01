@@ -15,7 +15,29 @@ import { theme } from '../../theme'
 
 const styles = {
   card: css({
-    margin: theme.spacing(3, 0, 3, 0),
+    margin: theme.spacing(1.5, 0),
+    boxShadow: 'none !important',
+    border: '1px solid #f0f0f0 !important',
+  }),
+  cardHeader: css({
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: '#1A73E8',
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
+  }),
+  tableRow: css({
+    backgroundColor: '#ffffff !important',
   }),
 }
 
@@ -23,6 +45,7 @@ export default function TotalPrice({ startDate, endDate, rev, exp }) {
   return (
     <Card css={styles.card}>
       <CardHeader
+        css={styles.cardHeader}
         title={`${format(startDate, 'yyyy-MM-dd')} ~ ${format(endDate, 'yyyy-MM-dd')} 合計`}
       />
       <CardContent>
@@ -35,7 +58,7 @@ export default function TotalPrice({ startDate, endDate, rev, exp }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
+            <TableRow css={styles.tableRow}>
               <TableCell>{rev}</TableCell>
               <TableCell>{exp}</TableCell>
               <TableCell>{rev - exp}</TableCell>

@@ -17,16 +17,16 @@ import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusAc
 import useFetchGetIsReportListExtended from 'hooks/useFetchGetIsReportListExtended'
 import useFetchGetUserPinnedTable from 'hooks/useFetchGetUserPinnedTable'
 import { useFetchGetDisablePendingOrder } from 'hooks/useFetchGetParameterAboutSettingFunction'
-import CardMembershipIcon from '@mui/icons-material/CardMembership'
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd'
-import BarChartIcon from '@mui/icons-material/BarChart'
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard'
-import CreditCardIcon from '@mui/icons-material/CreditCard'
-import DateRangeIcon from '@mui/icons-material/DateRange'
-import EventSeatIcon from '@mui/icons-material/EventSeat'
-import SettingsIcon from '@mui/icons-material/Settings'
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import InsightsIcon from '@mui/icons-material/Insights'
+import GroupsIcon from '@mui/icons-material/Groups'
+import BadgeIcon from '@mui/icons-material/Badge'
+import InventoryIcon from '@mui/icons-material/Inventory'
+import CampaignIcon from '@mui/icons-material/Campaign'
+import LoyaltyIcon from '@mui/icons-material/Loyalty'
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
 import LocalActivityIcon from '@mui/icons-material/LocalActivity';
-import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
 import { css } from '@emotion/react'
 import { createTheme } from '@mui/material/styles'
@@ -155,7 +155,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   const config = []
   const memberShipCardItem = {
     title: '會員卡管理',
-    icon: CardMembershipIcon,
+    icon: LoyaltyIcon,
     items: [
       { title: '會員卡分類設定', href: '/member-card-categories' },
       { title: '會員卡列表', href: '/member-card-record' },
@@ -170,7 +170,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const counterItem = {
     title: '櫃檯作業',
-    icon: CreditCardIcon,
+    icon: PointOfSaleIcon,
     items: [
       { title: '打帳單', href: '/order/create' },
       { title: '帳單列表', href: '/management/orders' },
@@ -186,7 +186,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const reservationItem = {
     title: '預約管理',
-    icon: DateRangeIcon,
+    icon: CalendarMonthIcon,
     items: [
       { title: '預約管理', href: '/management/weborders' },
       { title: '單日預約紀錄', href: '/management/reservation/calendar' },
@@ -195,7 +195,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const reportItem = {
     title: '報表及分析',
-    icon: BarChartIcon,
+    icon: InsightsIcon,
     items: [
       { title: '報表目錄', href: '/dashboard-list-detail' },
       { title: '消費分析儀表板', href: '/consumption-analytics-dashboard' },
@@ -244,7 +244,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const customerItem = {
     title: '客戶管理',
-    icon: EventSeatIcon,
+    icon: GroupsIcon,
     items: [
       { title: '客戶列表', href: '/management/customers' },
       { title: '客資篩選匯出', href: '/management/customer-filter-export' },
@@ -254,7 +254,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const employeeItem = {
     title: '員工及薪資',
-    icon: AssignmentIndIcon,
+    icon: BadgeIcon,
     items: [
       { title: '員工列表', href: '/management/employee' },
       { title: '員工離職列表', href: '/employee-resignation-list' },
@@ -268,7 +268,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const productItem = {
     title: '商品管理',
-    icon: CardGiftcardIcon,
+    icon: InventoryIcon,
     items: [
       { title: '商品分類設定', href: '/product/categories' },
       { title: '商品列表', href: '/products' },
@@ -279,7 +279,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const settingItem = {
     title: '資料設定',
-    icon: SettingsIcon,
+    icon: ManageAccountsIcon,
     items: [
       { title: '服務分類設定', href: '/service/categories' },
       { title: '服務項目設定', href: '/services' },
@@ -295,7 +295,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const marketingTools = {
     title: '行銷工具',
-    icon: QueryStatsIcon,
+    icon: CampaignIcon,
     items: [
       { title: '活動列表', href: '/main-event-list' },
       { title: '活動店家參與列表', href: '/merchant-participating-list' },

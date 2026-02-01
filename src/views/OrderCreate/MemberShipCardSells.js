@@ -173,9 +173,9 @@ const MemberShipCardSells = ({
       case "invalidDate":
         return "時間有誤";
       case "minDate":
-        return `時間不得小於${format(addDays(startOfDay(new Date(bill.date)), 1),'yyyy/MM/dd')}`
+        return `時間不得小於${format(addDays(startOfDay(new Date(bill.date)), 1), 'yyyy/MM/dd')}`
       case "maxDate":
-        return `時間不得大於${format(addYears(startOfDay(new Date(bill.date)), 50),'yyyy/MM/dd')}`
+        return `時間不得大於${format(addYears(startOfDay(new Date(bill.date)), 50), 'yyyy/MM/dd')}`
       default:
         return "";
     }
@@ -225,10 +225,10 @@ const MemberShipCardSells = ({
           setMembershipAlready={setMembershipAlready}
           getData={getData}
           onKeyDown={(event) => {
-            if(event.key === 'Enter'){
-              if(sellsItem.isLocked !== 'FALSE' && sellsItem.expiryDate === null){
+            if (event.key === 'Enter') {
+              if (sellsItem.isLocked !== 'FALSE' && sellsItem.expiryDate === null) {
                 handleKeyDown({ event, nextField: "checkbox" })
-              } else if(sellsItem.isLocked === 'FALSE'){
+              } else if (sellsItem.isLocked === 'FALSE') {
                 handleKeyDown({ event, nextField: "price" })
               } else {
                 handleKeyDown({ event, nextField: "date" })
@@ -249,12 +249,12 @@ const MemberShipCardSells = ({
                 },
               });
             });
-            if(value.isLocked !== 'FALSE' && value.effecitveDay === 0){
-              handleKeyDown({event:{key: 'Enter'}, nextField: "checkbox"})
-            } else if(value.isLocked === 'FALSE'){
-              handleKeyDown({event:{key: 'Enter'}, nextField: "price"})
+            if (value.isLocked !== 'FALSE' && value.effecitveDay === 0) {
+              handleKeyDown({ event: { key: 'Enter' }, nextField: "checkbox" })
+            } else if (value.isLocked === 'FALSE') {
+              handleKeyDown({ event: { key: 'Enter' }, nextField: "price" })
             } else {
-              handleKeyDown({event:{key: 'Enter'}, nextField: "date"})
+              handleKeyDown({ event: { key: 'Enter' }, nextField: "date" })
             }
           }}
         />
@@ -281,7 +281,8 @@ const MemberShipCardSells = ({
               autoFocus={focus === "price"}
               onFocus={(event) => handleFocus({ event, field: "price" })}
               onKeyDown={(event) => {
-                handleKeyDown({ event, nextField: sellsItem.expiryDate === null ? 'checkbox' : 'date'})}}
+                handleKeyDown({ event, nextField: sellsItem.expiryDate === null ? 'checkbox' : 'date' })
+              }}
               disabled={!!(sellsItem.isLocked === 'TRUE' || sellsItem.isLocked === 'UNSET')}
             />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -296,7 +297,7 @@ const MemberShipCardSells = ({
                 disabled={sellsItem.expiryDate === null}
                 autoFocus={focus === "date"}
                 onFocus={(event) => handleFocus({ event, field: "date" })}
-                onError={(error)=> setDateError(error)}
+                onError={(error) => setDateError(error)}
                 localeText={{
                   toolbarTitle: '選擇日期'
                 }}
@@ -338,30 +339,30 @@ const MemberShipCardSells = ({
                 }}
               />
             </div>
-            <div style={{ display: "block" }}>
-            {thirdPartTicket && (
-              <ThirdPartyAutoComplete
-                className={styles.field}
-                label="第三方卡券"
-                autoFocus={focus === "thirdParty"}
-                value={sellsItem.thirdPartyCouponMerchantId}
-                ref={thirdPartyRef}
-                onKeyDown={(event) =>
-                  handleKeyDown({ event, nextField: "remark" })
-                }
-                name="thirdParty"
-                onChange={(e) => {
-                  onCardChange({
-                    index,
-                    value: {
-                      ...sellsItem,
-                      thirdPartyCouponMerchantId: e ? e.id : null,
-                    },
-                  });
-                }}
-                onFocus={(event) => handleFocus({ event, field: "thirdParty" })}
-              />
-            )}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+              {thirdPartTicket && (
+                <ThirdPartyAutoComplete
+                  className={styles.field}
+                  label="第三方卡券"
+                  autoFocus={focus === "thirdParty"}
+                  value={sellsItem.thirdPartyCouponMerchantId}
+                  ref={thirdPartyRef}
+                  onKeyDown={(event) =>
+                    handleKeyDown({ event, nextField: "remark" })
+                  }
+                  name="thirdParty"
+                  onChange={(e) => {
+                    onCardChange({
+                      index,
+                      value: {
+                        ...sellsItem,
+                        thirdPartyCouponMerchantId: e ? e.id : null,
+                      },
+                    });
+                  }}
+                  onFocus={(event) => handleFocus({ event, field: "thirdParty" })}
+                />
+              )}
               {teachingMode && (
                 <Typography css={styles.heading2}>
                   勾選將入業績但不收費用**
@@ -373,11 +374,8 @@ const MemberShipCardSells = ({
                   _.data.merchant.thirdpartyCoupons.map((data) => {
                     if (data.id === sellsItem.thirdPartyCouponMerchantId) {
                       return (
-                        <Typography key={data.id} css={styles.heading2}>
-                          扣完後業績:
-                          {Math.round(
-                            (sellsItem.price * (100 - data.fee)) / 100
-                          )}
+                        <Typography key={data.id} css={styles.heading2} style={{ marginTop: '4px' }}>
+                          {`扣完後業績:${Math.round((sellsItem.price * (100 - data.fee)) / 100)}`}
                         </Typography>
                       );
                     }

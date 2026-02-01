@@ -1,22 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Paper,
-  Divider,
-  Drawer,
-  Grid,
-  Typography,
-  DialogActions,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  TextField,
-  Link
+  TablePagination, TableRow, TableContainer, Table, TableHead, TableBody, TableCell,
+  Typography, Dialog, DialogTitle, DialogContent, DialogContentText, TextField,
+  DialogActions, IconButton, Card, CardHeader, CardContent, Drawer, Paper, Grid, Link,
+  Divider
 } from '@mui/material'
 import { Button } from '@mui/material'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -105,15 +92,29 @@ const styles = {
     padding: theme.spacing(3),
     overflow: "auto"
   }),
-  cursor: css({
-    cursor: 'pointer',
-    transition: '.2s',
-    display: 'flex',
-    alignItems: 'center',
-    "&:hover": {
-      background: '#add8e675',
-    }
-  })
+  cardHeader: css({
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: '#1A73E8',
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
+  }),
+  tableRow: css({
+    backgroundColor: '#ffffff !important',
+    '&:hover': {
+      backgroundColor: '#ffffff !important',
+    },
+  }),
 }
 
 export default function Results({
@@ -468,65 +469,80 @@ export default function Results({
     }
   }
   return (
-    <TableContainer style={{ maxHeight: 'calc(100vh - 330px)' }} component={Paper} className="AttendanceRecordsTable">
-      <Table css={styles.table} size="small" aria-label="a dense table">
-        <TableHead>
-          <TableRow css={styles.stickyRow}>
-            <TableCell css={styles.sticky}>{year}年</TableCell>
-            <TableCell>總打卡天數</TableCell>
-            <TableCell>曠職天數</TableCell>
-            <TableCell>總遲到分鐘數</TableCell>
-            {displayDate.map((date, index) => (
-              <TableCell key={`TableCell-${index}`} style={{ whiteSpace: 'nowrap', paddingRight: '100px' }}>{date}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {attendanceRecords.map((data, index) => {
-            return (
-              <TableRow key={`TableRow-${index}`}>
-                <TableCell css={styles.sticky}>{data.userName}</TableCell>
-                {/* 計算總打卡天數 */}
-                <TableCell css={data.totalClockInDays < 22 ? styles.colorRed : {}}>{data.totalClockInDays + ` 天`}</TableCell>
-                <TableCell>{data.absenteeismDays}</TableCell>
-                <TableCell>{data.totalLateMinutes}</TableCell>
-                {displayDate.map(d => {
-                  return data.attendanceRecord.map((record, index) => {
-                    if (format(record.date, 'MM/dd') === d.substring(0, 5)) {
-                      if (record.clockInRecord.length > 0) {
-                        return (
-                          <TableCell key={index}>
-                            {record.clockInRecord.map((clockIn, clockInIndex) => {
-                              return (
-                                <Fragment key={clockInIndex}>
-                                  {renderDivider(clockIn, clockInIndex)}
-                                  {/* {clockInIndex === 0 ? '' : <Divider />} */}
-                                  {getClockInTime(clockIn.in, record.isLate, clockInIndex === 0)}
-                                  {clockIn.breakRecord.length > 0 &&
-                                    clockIn.breakRecord.map((br, index) => {
-                                      return getBreakTime(br, index)
-                                    })}
-                                  {getClockOutTime(
-                                    clockIn.out,
-                                    record.isLeaveEarly,
-                                    record.clockInRecord.length - 1 === clockInIndex
-                                  )}
-                                </Fragment>
-                              )
-                            })}
-                          </TableCell>
-                        )
-                      } else {
-                        return <TableCell key={index}></TableCell>
-                      }
-                    }
-                  })
-                })}
+    <Card css={styles.root}>
+      <CardHeader
+        css={styles.cardHeader}
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span>全店打卡記錄列表</span>
+            <Typography color="textSecondary" variant="body2">
+              共 {attendanceRecords.length} 筆
+            </Typography>
+          </div>
+        }
+      />
+      <CardContent style={{ padding: 0 }}>
+        <TableContainer style={{ maxHeight: 'calc(100vh - 430px)' }} component={Paper} className="AttendanceRecordsTable">
+          <Table css={styles.table} size="small" aria-label="a dense table">
+            <TableHead>
+              <TableRow css={styles.stickyRow}>
+                <TableCell css={styles.sticky}>{year}年</TableCell>
+                <TableCell>總打卡天數</TableCell>
+                <TableCell>曠職天數</TableCell>
+                <TableCell>總遲到分鐘數</TableCell>
+                {displayDate.map((date, index) => (
+                  <TableCell key={`TableCell-${index}`} style={{ whiteSpace: 'nowrap', paddingRight: '100px' }}>{date}</TableCell>
+                ))}
               </TableRow>
-            )
-          })}
-        </TableBody>
-      </Table>
+            </TableHead>
+            <TableBody>
+              {attendanceRecords.map((data, index) => {
+                return (
+                  <TableRow key={`TableRow-${index}`} css={styles.tableRow}>
+                    <TableCell css={styles.sticky}>{data.userName}</TableCell>
+                    {/* 計算總打卡天數 */}
+                    <TableCell css={data.totalClockInDays < 22 ? styles.colorRed : {}}>{data.totalClockInDays + ` 天`}</TableCell>
+                    <TableCell>{data.absenteeismDays}</TableCell>
+                    <TableCell>{data.totalLateMinutes}</TableCell>
+                    {displayDate.map(d => {
+                      return data.attendanceRecord.map((record, index) => {
+                        if (format(record.date, 'MM/dd') === d.substring(0, 5)) {
+                          if (record.clockInRecord.length > 0) {
+                            return (
+                              <TableCell key={index}>
+                                {record.clockInRecord.map((clockIn, clockInIndex) => {
+                                  return (
+                                    <Fragment key={clockInIndex}>
+                                      {renderDivider(clockIn, clockInIndex)}
+                                      {/* {clockInIndex === 0 ? '' : <Divider />} */}
+                                      {getClockInTime(clockIn.in, record.isLate, clockInIndex === 0)}
+                                      {clockIn.breakRecord.length > 0 &&
+                                        clockIn.breakRecord.map((br, index) => {
+                                          return getBreakTime(br, index)
+                                        })}
+                                      {getClockOutTime(
+                                        clockIn.out,
+                                        record.isLeaveEarly,
+                                        record.clockInRecord.length - 1 === clockInIndex
+                                      )}
+                                    </Fragment>
+                                  )
+                                })}
+                              </TableCell>
+                            )
+                          } else {
+                            return <TableCell key={index}></TableCell>
+                          }
+                        }
+                      })
+                    })}
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </CardContent>
       <Drawer anchor='bottom' open={open} onClose={handleCloseDrawer}>
         <Grid direction='column' justifyContent='center' alignItems="center" container style={{ padding: '16px', rowGap: '40px' }}>
           <Grid item direction='row' justifyContent='center' alignItems="center" container>
@@ -571,7 +587,7 @@ export default function Results({
 
         </DialogActions>
       </Dialog>
-    </TableContainer>
+    </Card>
   )
 }
 

@@ -38,6 +38,18 @@ const index = ({
     const dEnd = endOfDay(subDays(new Date(), 2)).getTime()
     return startDate === dStart && endDate === dEnd
   }
+
+  const isThisMonth = (startDate, endDate) => {
+    const mStart = startOfMonth(new Date()).getTime()
+    const mEnd = endOfMonth(new Date()).getTime()
+    return startDate === mStart && endDate === mEnd
+  }
+
+  const isLastMonth = (startDate, endDate) => {
+    const lStart = startOfMonth(subMonths(new Date(), 1)).getTime()
+    const lEnd = endOfMonth(subMonths(new Date(), 1)).getTime()
+    return startDate === lStart && endDate === lEnd
+  }
   const getButton = (title, func, isActive) => (
     <Button
       variant="text"
@@ -65,8 +77,8 @@ const index = ({
   )
 
   const buttonObj = {
-    lastmonth: () => getButton('上個月', lastmonth),
-    thismonth: () => getButton('本月', thismonth),
+    lastmonth: () => getButton('上個月', lastmonth, isLastMonth(date.startDate, date.endDate)),
+    thismonth: () => getButton('本月', thismonth, isThisMonth(date.startDate, date.endDate)),
     today: () => getButton('今天', today, isToday(date.startDate, date.endDate)),
     yesterday: () => getButton('昨天', yesterday, isYesterday(date.startDate, date.endDate)),
     dbyesterday: () => getButton('前天', dbyesterday, isDbyesterday(date.startDate, date.endDate)),
@@ -254,13 +266,23 @@ const index = ({
         gap: '4px',
         height: '42px',
         alignItems: 'center',
-        backgroundColor: '#f1f3f4',
+        backgroundColor: 'transparent',
         padding: '0 4px',
         borderRadius: '21px',
         margin: margin ? '24px 0px 24px 0' : ''
       }}
     >
-      {attributes.map(item => buttonObj[item]())}
+      {attributes.map((item, index) => {
+        if (item === 'startDate' && attributes[index + 1] === 'endDate') {
+          return (
+            <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              {buttonObj[item]()}
+              <span style={{ fontSize: '13px', fontWeight: 'bold' }}>至</span>
+            </div>
+          )
+        }
+        return buttonObj[item]()
+      })}
     </div>
   )
 }

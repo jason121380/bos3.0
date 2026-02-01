@@ -43,14 +43,37 @@ const styles = {
   sticky1: css({
     position: 'sticky',
     left: 0,
-    background: 'white',
+    background: '#ffffff !important',
     zIndex: '99',
   }),
   sticky2: css({
     position: 'sticky',
     left: "74px",
-    background: 'white',
+    background: '#ffffff !important',
     zIndex: '99',
+  }),
+  cardHeader: css({
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: '#1A73E8',
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
+  }),
+  tableRow: css({
+    backgroundColor: '#ffffff !important',
+    '&:hover': {
+      backgroundColor: '#ffffff !important',
+    },
   }),
 }
 
@@ -108,12 +131,9 @@ function Results({
 
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        共 {moneyFlows.totalCount} 筆, {moneyFlows.pageOffset + 1} /{' '}
-        {Math.ceil(moneyFlows.totalCount / moneyFlows.pageLimit)}
-      </Typography>
       <Card>
         <CardHeader
+          css={styles.cardHeader}
           action={
             <CSVLink data={excelData} filename="高階收支登錄.csv" >
               <Button variant="contained" color="primary" size="small">
@@ -121,9 +141,15 @@ function Results({
               </Button>
             </CSVLink>
           }
-          title="高階收支登錄"
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span>高階收支登錄</span>
+              <Typography color="textSecondary" variant="body2">
+                共 {moneyFlows.totalCount} 筆
+              </Typography>
+            </div>
+          }
         />
-        <Divider />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
@@ -144,7 +170,7 @@ function Results({
                 <TableBody>
                   {moneyFlows.moneyFlows.map((data, index) => {
                     return (
-                      <TableRow key={index}>
+                      <TableRow key={index} css={styles.tableRow}>
                         <TableCell css={styles.sticky1} >
                           <Button
                             color="primary"

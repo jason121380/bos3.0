@@ -6,10 +6,10 @@ export default {
     padding: '12px 24px',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
-    borderRadius: '8px',
+    backgroundColor: '#E8F0FE', // Light Blue background
+    borderRadius: '12px',
     boxShadow: 'none',
-    border: '1px solid #f0f0f0',
+    border: 'none !important',
     marginBottom: '12px',
   }),
   titleGroup: css({
@@ -33,10 +33,10 @@ export default {
     fontSize: '14px !important',
     boxShadow: 'none !important',
     fontWeight: 'bold !important',
-    backgroundColor: '#f5f5f5 !important',
+    backgroundColor: '#FFFFFF !important',
     color: '#666 !important',
     '&:hover': {
-      backgroundColor: '#eeeeee !important',
+      backgroundColor: '#f8f8f8 !important',
     }
   }),
   actionBtn: css({
@@ -45,10 +45,10 @@ export default {
     fontSize: '14px !important',
     boxShadow: 'none !important',
     fontWeight: 'bold !important',
-    backgroundColor: '#f5f5f5 !important',
+    backgroundColor: '#FFFFFF !important',
     color: '#666 !important',
     '&:hover': {
-      backgroundColor: '#eeeeee !important',
+      backgroundColor: '#f8f8f8 !important',
     }
   }),
   checkoutBtn: css({
