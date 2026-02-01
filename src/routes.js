@@ -745,11 +745,6 @@ export default [
         component: lazy(() => import('views/HelperPerformanceReport')),
       },
       {
-        path: '/seat-order-manage',
-        exact: true,
-        component: lazy(() => import('views/SeatOrderManagement')),
-      },
-      {
         path: '/merchant-leader-board',
         exact: true,
         component: lazy(() => import('views/MerchantLeaderBoard')),

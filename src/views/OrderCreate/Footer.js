@@ -321,72 +321,9 @@ function Footer({ width, setIsFooterFold, isFooterFixed }, footerRef) {
       setIsFooterFold(!fold)
     }
   }
-  const location = useLocation()
-  const [route, setRoute] = useState()
-  useEffect(() => {
-    const seatNum = location.search.replace('?order=', '')
-    setRoute(seatNum)
-  }, [location.pathname])
+  // 移除座位開單相關邏輯
 
-  // handle座位開單
-  const handleSeatOrderPendingConfirm = useCallback(() => {
-    setCheckoutBtn(true)
-    setIsClick(true)
-    setOpen(true)
-    const tmp = handleTidyBill(bill)
-    const checkService = checkServicesOrders(tmp.serviceOrders)
-    const checkProduct = checkProductOrders(tmp.productOrders)
-    const checkMember = checkMembershipOrders(tmp.membershipOrders)
-    if (route) {
-      tmp.seatNumber = parseInt(route);
-      tmp.isPending = true;
-    }
-    if (!checkService.verify) {
-      openSnackbar({
-        message: checkService.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return
-    } else if (!checkProduct.verify) {
-      openSnackbar({
-        message: checkProduct.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return;
-    } else if (!checkMember.verify) {
-      openSnackbar({
-        message: checkMember.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return;
-    } else {
-      useCreateOrder
-        .current(tmp)
-        .then(() => {
-          openSnackbar({
-            message: '座位開單新增成功',
-            variant: 'success',
-          })
-          setCheckoutBtn(false)
-          setIsClick(false)
-          history.push('/seat-order-manage')
-        })
-        .catch(err => {
-          openSnackbar({
-            message: err.message,
-            variant: 'error',
-          })
-          setCheckoutBtn(false)
-          setIsClick(false)
-        })
-        .finally(() => {
-          setOpen(false)
-        })
-    }
-  }, [bill, history])
+  // 移除座位開單相關功能函式
 
   useEffect(() => {
     if (
@@ -458,7 +395,7 @@ function Footer({ width, setIsFooterFold, isFooterFixed }, footerRef) {
       }}
     >
       <div style={{ textAlign: 'center', padding: '16px' }}>
-        {!disablePendingOrder && (!route ? (
+        {!disablePendingOrder && (
           <Button
             size="large"
             variant="contained"
@@ -469,18 +406,7 @@ function Footer({ width, setIsFooterFold, isFooterFixed }, footerRef) {
           >
             掛單
           </Button>
-        ) : (
-          <Button
-            size="large"
-            variant="contained"
-            color="primary"
-            css={styles.pendingBtn}
-            onClick={handleSeatOrderPendingConfirm}
-            disabled={valid || isClick || checkoutBtn}
-          >
-            座位掛單
-          </Button>
-        ))}
+        )}
 
         <Button
           size="large"

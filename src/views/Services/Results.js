@@ -76,6 +76,18 @@ const styles = {
       backgroundColor: '#ffffff !important',
     },
   }),
+  csvBtn: css({
+    borderRadius: '20px !important',
+    padding: '6px 20px !important',
+    fontSize: '14px !important',
+    boxShadow: 'none !important',
+    fontWeight: 'bold !important',
+    backgroundColor: '#f5f5f5 !important',
+    color: '#666 !important',
+    '&:hover': {
+      backgroundColor: '#eeeeee !important',
+    }
+  }),
 }
 
 function Results({ className, services, refetchService, onPageChange, onRowsPerPageChange, ...rest }) {
@@ -379,7 +391,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
           css={styles.cardHeader}
           action={
             <CSVLink data={excelData} filename="服務項目.csv">
-              <Button variant="contained" color="primary" size="small">
+              <Button variant="contained" css={styles.csvBtn} size="small">
                 報表匯出
               </Button>
             </CSVLink>

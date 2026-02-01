@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { Card, Container, Button, CircularProgress, Grid, IconButton, Collapse } from '@mui/material'
+import { Card, Container, Button, CircularProgress, Grid, IconButton, Collapse, Link } from '@mui/material'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
 import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchServices from 'hooks/useFetchServices'
 import idx from 'idx'
 import produce from 'immer'
@@ -105,21 +106,9 @@ function Services() {
   return (
     <Page css={styles.root} title="服務項目設定">
       <Container maxWidth={false}>
-        <Card
-          css={css({
-            display: 'flex',
-            padding: '12px 24px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#E8F0FE',
-            borderRadius: '12px',
-            boxShadow: 'none',
-            border: 'none !important',
-            marginBottom: '12px',
-          })}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='服務項目設定' style={{ color: '#1A73E8' }} />
+        <AdminPageHeader
+          title="服務項目設定"
+          primaryAction={
             <Link component={RouterLink} to="/service/create" style={{ textDecoration: 'none' }}>
               <Button
                 variant="contained"
@@ -139,6 +128,8 @@ function Services() {
                 新增
               </Button>
             </Link>
+          }
+          secondaryAction={
             <IconButton
               onClick={() => setShowFilter(!showFilter)}
               css={css({
@@ -152,8 +143,8 @@ function Services() {
             >
               <FilterListIcon />
             </IconButton>
-          </div>
-        </Card>
+          }
+        />
 
         <Collapse in={showFilter}>
           <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>

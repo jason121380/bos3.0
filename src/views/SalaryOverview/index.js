@@ -6,7 +6,7 @@ import {
 } from '@mui/material'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { openSnackbar } from 'elements/snackbars'
 import { useFethcMonthlyCloseStatus } from 'hooks/useFetchMerchant'
 import { useFetchUsersSalaryItems, useFetchUsersMonthCheckout } from 'hooks/useFetchUsers'
@@ -41,25 +41,25 @@ const styles = {
 
 export default function SalaryOverview() {
   const lastMonth = subMonths(startOfDay(new Date()), 1).getTime()
-  if (localStorage.getItem('currentTime') === null) {
-    localStorage.setItem('currentTime', lastMonth)
-  } else {
-    localStorage.removeItem('currentTime')
-    localStorage.setItem('currentTime', lastMonth)
-  }
+
+  // 初始化或更新當前選中的時間戳
+  localStorage.setItem('currentTime', lastMonth)
 
   const location = useLocation()
   const history = useHistory()
 
+  // Hooks 與狀態初始化
   const { setUserSalaryItemUnlock } = useFetchSettingUserSalaryItemUnlock()
-  const [isThisMonthSalaryChacked, setIsThisMonthSalaryChacked] = React.useState(false)
-  const [isSalaryItemsLock, setIsSalaryItemsLock] = React.useState(false)
+  const [isThisMonthSalaryChacked, setIsThisMonthSalaryChacked] = React.useState(false) // 本月是否已月結
+  const [isSalaryItemsLock, setIsSalaryItemsLock] = React.useState(false) // 薪資項是否已鎖定
   const [editBtnStatus, setEditBtnStatus] = React.useState(false)
   const [usersIsSalaryChecked, setUsersIsSalaryChecked] = React.useState([])
-  const [borrowDisplay, setBorrowDisplay] = React.useState(false)
+  const [borrowDisplay, setBorrowDisplay] = React.useState(false) // 是否顯示借支
   const [showFilter, setShowFilter] = useState(false)
+
   const getIsBorrowDisplayInSalaryOverview = useFetchGetIsBorrowDisplayInSalaryOverview()
 
+  // 取得月結狀態
   const monthlyCloseStatus = useFethcMonthlyCloseStatus(
     location.search.split('=')[1] === undefined
       ? JSON.parse(localStorage.getItem('currentTime'))
@@ -67,6 +67,8 @@ export default function SalaryOverview() {
   )
   const MerchantId = JSON.parse(localStorage.getItem('userMerchant')).id
   const userInput = { usagelimit: 'SALARY', MerchantId }
+
+  // 設置分頁與日期
   const [setting, setSetting] = React.useState({
     input: {
       pageLimit: 50,
@@ -78,6 +80,8 @@ export default function SalaryOverview() {
         ? JSON.parse(localStorage.getItem('currentTime'))
         : Number(location.search.split('=')[1]),
   })
+
+  // 取得薪資鎖定數據
   const salaryItemLockData = useFetchSalaryItemLock({ date: setting.date })
   React.useEffect(() => {
     if (!salaryItemLockData.loading) {
@@ -85,10 +89,11 @@ export default function SalaryOverview() {
       setIsSalaryItemsLock(data)
     }
   }, [salaryItemLockData.loading])
+
+  // 取得最近一次月結時間
   const latestMonthlyCheckoutTime = useFetchMerchantLatestMonthlyCheckoutTime({
     date: setting.date,
   })
-  // 拿月結時間----------------------------------------------------
   const [monthlyCheckoutTime, setMonthlyCheckoutTime] = useState(null)
   useEffect(() => {
     if (!latestMonthlyCheckoutTime.loading) {
@@ -97,22 +102,21 @@ export default function SalaryOverview() {
       )
     }
   }, [latestMonthlyCheckoutTime.loading])
-  // -------------------------------------------------------------
+
+  // 下拉選單選項
   const showOption = [
     { label: '全部', value: 'ALL' },
     { label: '已月結', value: 'CHECKED' },
     { label: '未結算', value: 'UNCHECKED' },
   ]
-  // 列表狀態----------------------------------------------------
-  const [listStatus, setListStatus] = useState('ALL')
-  // -------------------------------------------------------------
+
+  const [listStatus, setListStatus] = useState('ALL') // 列表過濾狀態
+
   const users = useFetchUsersMonthCheckout({
     usagelimit: 'SALARY',
-    date:
-      location.search.split('=')[1] === undefined
-        ? JSON.parse(localStorage.getItem('currentTime'))
-        : Number(location.search.split('=')[1]),
+    date: setting.date,
   })
+
   React.useEffect(() => {
     if (!users.loading) {
       const isUsersSalaryChacked = idx(users, _ => _.data.users.users)
@@ -124,16 +128,17 @@ export default function SalaryOverview() {
     date: setting.date,
     input: userInput,
   })
+
   const isSalaryChackedData = useFetchIsSalaryChacked({
     date: setting.date,
   })
-  // 列表input----------------------------------------------------
+
   const salaryUserList = useFetchGetSalaryUserList({
     date: setting.date,
     input: listStatus,
   })
-  // -------------------------------------------------------------
 
+  // 同步是否已月結狀態
   React.useEffect(() => {
     if (!isSalaryChackedData.loading) {
       const isSalaryChacked = idx(isSalaryChackedData, _ => _.data.isSalaryChacked)
@@ -208,36 +213,11 @@ export default function SalaryOverview() {
   return (
     <Page css={styles.root} title="薪資總表/月結">
       <Container maxWidth={false}>
-        <Card
-          css={css({
-            display: 'flex',
-            padding: '12px 24px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#E8F0FE',
-            borderRadius: '12px',
-            boxShadow: 'none',
-            border: 'none !important',
-            marginBottom: '12px',
-          })}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='薪資總表/月結' style={{ color: '#1A73E8' }} />
-            <IconButton
-              onClick={() => setShowFilter(!showFilter)}
-              css={css({
-                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
-                color: showFilter ? '#1A73E8 !important' : '#666 !important',
-                marginLeft: '4px !important',
-                '&:hover': {
-                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
-                }
-              })}
-            >
-              <FilterListIcon />
-            </IconButton>
-          </div>
-        </Card>
+        <AdminPageHeader
+          title='薪資總表/月結'
+          showFilter={showFilter}
+          onFilterClick={() => setShowFilter(!showFilter)}
+        />
 
         <Collapse in={showFilter}>
           <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>

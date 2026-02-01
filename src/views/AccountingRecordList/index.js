@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import PageTitle from 'components/PageTitle'
+import { Card, Container, Grid, Link, Button, IconButton, Collapse } from '@mui/material'
 import DateSelector from 'components/DateSelector'
 import MerchantSearchBar from 'components/MerchantSearchBar'
 import Page from 'components/Page'
-import { Card, Container, Grid, Link, Button, IconButton, Collapse } from '@mui/material'
+import AdminPageHeader from 'components/AdminPageHeader'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import useFetchGetMoneyFlowsForAccounting from 'hooks/useFetchGetMoneyFlowsForAccounting'
 import { endOfDay, startOfMonth } from 'date-fns'
@@ -60,63 +60,21 @@ function AccountingRecordList() {
   return (
     <Page css={styles.root} title="高階收支登錄">
       <Container maxWidth={false} css={styles.container}>
-        <Card
-          css={css({
-            display: 'flex',
-            padding: '12px 24px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#E8F0FE',
-            borderRadius: '12px',
-            boxShadow: 'none',
-            border: 'none !important',
-            marginBottom: '12px',
-          })}
+        <AdminPageHeader
+          title='高階收支登錄'
+          showFilter={showFilter}
+          onFilterClick={() => setShowFilter(!showFilter)}
+          primaryAction={{
+            label: '新增',
+            to: '/accounting/create'
+          }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='高階收支登錄' style={{ color: '#1A73E8' }} />
-            <Link component={RouterLink} to="/accounting/create" style={{ textDecoration: 'none' }}>
-              <Button
-                variant="contained"
-                css={css({
-                  borderRadius: '20px !important',
-                  padding: '6px 20px !important',
-                  fontSize: '14px !important',
-                  boxShadow: 'none !important',
-                  fontWeight: 'bold !important',
-                  backgroundColor: '#FFFFFF !important',
-                  color: '#666 !important',
-                  '&:hover': {
-                    backgroundColor: '#f8f8f8 !important',
-                  }
-                })}
-              >
-                新增
-              </Button>
-            </Link>
-            <IconButton
-              onClick={() => setShowFilter(!showFilter)}
-              css={css({
-                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
-                color: showFilter ? '#1A73E8 !important' : '#666 !important',
-                marginLeft: '4px !important',
-                '&:hover': {
-                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
-                }
-              })}
-            >
-              <FilterListIcon />
-            </IconButton>
-          </div>
           <DateSelector
             date={pageSetting}
-            attributes={[
-              'thismonth', 'lastmonth', 'dbyesterday',
-              'yesterday', 'today', 'startDate', 'endDate'
-            ]}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setPageSetting(value)}
           />
-        </Card>
+        </AdminPageHeader>
 
         <Collapse in={showFilter}>
           <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>

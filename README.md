@@ -1,68 +1,67 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 💄 BeautyOS (BOS v3.0) 專案開發規格文檔
 
-## Available Scripts
+Welcome to **BeautyOS (BOS v3.0)**。本專案是一個專為美業設計的管理系統（ERP/CRM），結合了高效的排班、薪資結算與預約管理功能。
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 🚀 快速開始
+1. **安裝依賴**: `npm install`
+2. **啟動開發伺服器**: `npm start` (預設啟動於 [http://localhost:3000](http://localhost:3000))
+3. **生產打包**: `npm run build`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+---
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console...
+## 🛠️ 技術棧 (Tech Stack)
+*   **Core**: React 17.0.2 (使用 `react-router-config` 管理路由)
+*   **UI Framework**: Material-UI (MUI) v5.15.7
+*   **Styling**: 
+    *   **Emotion**: 動態樣式處理 (`@emotion/react`)
+    *   **MUI Theme Overrides**: 全局 UI 組件外觀定義
+    *   **SCSS**: 全局樣式初始化
+*   **Data Flow**: 
+    *   **API**: GraphQL (Apollo Client) & Socket.io (實時推播)
+    *   **State**: Redux Toolkit (RTK)
+*   **Utilities**: `idx` (安全取值), `date-fns` (日期處理), `immer` (不可變狀態管理)
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🎨 UI/UX 設計規範
+本系統風格融合了 **Apple iPadOS** 的簡潔感與 **Professional Administrative** 的實用性。
 
-### `npm run build`
+### 1. 核心色調
+*   **Primary Blue**: `#1A73E8` (Google Blue) - 用於動作按鈕與主要高亮。
+*   **Background**: `#F2F2F7` - 全局灰色底色。
+*   **Pure White**: `#FFFFFF` - 用於內容卡片與數據容器，無 Shadow 渲染。
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 2. 層級架構 (Two-Level Pattern)
+*   **Level 1 (控制層)**: 淺藍色背景 (`#E8F0FE`) 的控制卡片，包含標題、`showFilter` 開關與 `DateSelector`。
+*   **Level 2 (數據層)**: 白色 `Card`。`CardHeader` 標題前必須帶有 `4x16px` 的藍色垂直條 decoration。
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+### 3. 組件標準
+*   **Input**: 統一高度 `42px`，文字垂直居中修正，圓角 `8px`。
+*   **Button**: 圓角 `20px` (Pill style)，`containedPrimary` 代表核心動作。
+*   **Table**: 無 Hover 變色渲染，維持數據閱讀的穩定性。
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 📂 目錄結構說明
+*   `src/layouts`: 定義頂層佈局 (Dashboard, Auth, Customer, Error)。
+*   `src/views`: 頁面功能模塊 (例如：`SalaryOverview`, `WebOrderManagementList`)。
+*   `src/theme`: 包含 `palette.js` (色彩), `typography.js` (字體) 與 `overrides/` (全站組件覆寫)。
+*   `src/hooks`: 封裝了所有與後端通訊的邏輯 (GraphQL Hooks)。
+*   `src/components`: 全局通用組件 (如 `DateSelector`, `PageTitle`)。
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+---
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## ⚠️ 開發注意事項與維持
+1.  **安全取值**: 強烈建議使用 `idx(object, _ => _.property)` 處理深度巢狀數據以防崩潰。
+2.  **樣式一致性**: 修改 UI 前務必先檢查 `src/theme/overrides/` 是否已有定義，避免重複撰寫樣式。
+3.  **WebSocket**: 全站實時更新依賴 `TopBar.js` 中建立的 Socket 連線，請遵守事件訂閱規範。
+4.  **薪資鎖定**: 薪資結算頁面具備鎖定機制，鎖定後的數據不可直接透過前端修改。
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+---
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+## 📜 原 README (CRA Default)
+(以下保留 React 原始文檔以供參考)
+[View Original CRA Documentation Below]
+...

@@ -193,7 +193,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
   const printThermalRef = useRef()
 
   useEffect(() => {
-    if(reset === 'reset') {
+    if (reset === 'reset') {
       setOrderDetail({
         servicesDetail: [],
         productsDetail: [],
@@ -203,7 +203,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
       })
     }
   }, [reset])
-  
+
   useEffect(() => {
     if (
       !getLogoDisplayOnInvoice.loading &&
@@ -656,13 +656,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
       .reduce((accu, curVal) => (accu += curVal), 0)
     setSellTicketTotal(sellTicketTotal)
   }, [orderDetail.sellTicketsDetail])
-  // 座位開單
-  const location = useLocation()
-  const [route, setRoute] = useState()
-  useEffect(() => {
-    const seatNum = location.search.replace('?order=', '')
-    setRoute(seatNum)
-  }, [location.pathname])
+  // 移除座號相關邏輯
 
   const handleOrderPendingConfirm = () => {
     openSnackbar({
@@ -674,67 +668,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
       usehandleCreateDraftOrder: usehandleCreateDraftOrder,
     })
   }
-  // handle座位開單
-  const handleSeatOrderPendingConfirm = useCallback(() => {
-    handleBtnDisabled(true)
-    const tmp = handleTidyBill(bill)
-    const checkService = checkServicesOrders(tmp.serviceOrders)
-    const checkProduct = checkProductOrders(tmp.productOrders)
-    const checkMember = checkMembershipOrders(tmp.membershipOrders)
-    if (route) {
-      tmp.seatNumber = parseInt(route);
-      tmp.isPending = true;
-    }
-    if (!checkService.verify) {
-      openSnackbar({
-        message: checkService.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return;
-    } else if (!checkProduct.verify) {
-      openSnackbar({
-        message: checkProduct.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return;
-    } else if (!checkMember.verify) {
-      openSnackbar({
-        message: checkMember.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return;
-    } else {
-      useCreateOrder
-        .current(tmp)
-        .then(() => {
-          setIsClick(false)
-          setCheckoutBtn(false)
-          openSnackbar({
-            message: '座位開單新增成功',
-            variant: 'success',
-          })
-          if (stayInCreateOrder) {
-            window.location.reload()
-          } else {
-            history.push('/seat-order-manage')
-          }
-        })
-        .catch(err => {
-          openSnackbar({
-            message: err.message,
-            variant: 'error',
-          })
-          setIsClick(false)
-          setCheckoutBtn(false)
-        })
-        .finally(() => {
-          setOpen(false)
-        })
-    }
-  }, [bill, history, route])
+  // 移除座位掛單相關功能
   const closeModal = () => {
     onClose()
     setAddKeyDown(addKeydown + 1)
@@ -1030,7 +964,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
             </Grid>
           </CardContent>
           <div css={styles.btnDiv}>
-            {!disablePendingOrder && (!route ? (
+            {!disablePendingOrder && (
               <Button
                 color="primary"
                 variant="contained"
@@ -1041,18 +975,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
               >
                 掛單
               </Button>
-            ) : (
-              <Button
-                color="primary"
-                variant="contained"
-                size="small"
-                onClick={handleSeatOrderPendingConfirm}
-                disabled={valid || isClick || checkoutBtn}
-                style={{ margin: '0 3px' }}
-              >
-                座位掛單
-              </Button>
-            ))}
+            )}
             <Button
               color="error"
               variant="contained"

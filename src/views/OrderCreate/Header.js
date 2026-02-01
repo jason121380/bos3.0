@@ -86,9 +86,7 @@ function Header({ forceUpdate, ...rest }) {
   }, [lastOrderStatusData.loading])
 
   useEffect(() => {
-    // 座位開單
-    const seatNum = location.search.replace('?order=', '')
-    setRoute(seatNum)
+    // 移除座位開單相關邏輯
   }, [location.pathname])
 
   const valid = !(
@@ -289,65 +287,7 @@ function Header({ forceUpdate, ...rest }) {
     })
   }
 
-  // handle座位開單
-  const handleSeatOrderPendingConfirm = useCallback(() => {
-    setCheckoutBtn(true);
-    setIsClick(true);
-    setOpen(true)
-    const tmp = handleTidyBill(bill)
-    const checkService = checkServicesOrders(tmp.serviceOrders)
-    const checkProduct = checkProductOrders(tmp.productOrders)
-    const checkMember = checkMembershipOrders(tmp.membershipOrders)
-    if (route) {
-      tmp.seatNumber = parseInt(route);
-      tmp.isPending = true;
-    }
-    if (!checkService.verify) {
-      openSnackbar({
-        message: checkService.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return
-    } else if (!checkProduct.verify) {
-      openSnackbar({
-        message: checkProduct.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return;
-    } else if (!checkMember.verify) {
-      openSnackbar({
-        message: checkMember.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return;
-    } else {
-      useCreateOrder
-        .current(tmp)
-        .then(() => {
-          openSnackbar({
-            message: "座位開單新增成功",
-            variant: "success",
-          });
-          setCheckoutBtn(false);
-          setIsClick(false);
-          history.push("/seat-order-manage");
-        })
-        .catch((err) => {
-          openSnackbar({
-            message: err.message,
-            variant: "error",
-          });
-          setCheckoutBtn(false);
-          setIsClick(false);
-        })
-        .finally(() => {
-          setOpen(false)
-        });
-    }
-  }, [bill, history]);
+  // 移除座位開單相關功能函式
 
   const shortCutClose = () => {
     setShortcutModal(false)
@@ -383,7 +323,7 @@ function Header({ forceUpdate, ...rest }) {
             onChange={handleCheckoutOrderDetail}
           />
 
-          {!disablePendingOrder && !route && (
+          {!disablePendingOrder && (
             <FormControlLabel
               css={styles.checkboxLabel}
               control={<Checkbox size="small" color="primary" />}
@@ -398,10 +338,10 @@ function Header({ forceUpdate, ...rest }) {
               <Button
                 variant="contained"
                 css={styles.actionBtn}
-                onClick={route ? handleSeatOrderPendingConfirm : handleOrderPendingConfirm}
+                onClick={handleOrderPendingConfirm}
                 disabled={valid || isClick || checkoutBtn || checkoutBtnClick}
               >
-                {route ? '座位掛單' : '掛單'}
+                掛單
               </Button>
             )}
 

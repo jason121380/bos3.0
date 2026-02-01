@@ -206,9 +206,6 @@ export default function KeyIn({ match }) {
           draft.bonusUsed = order.data.order.bonusUsed
           draft.remark = order.data.order.remark
           draft.withoutCustomerData = order.data.order.customer.name === '不留客資'
-          if (order.data.order.seatNumber != null) {
-            draft.seatNumber = order.data.order.seatNumber
-          }
           draft.source = order.data.order.source,
             draft.serialNumber = order.data.order.serialNumber ?? null
         })

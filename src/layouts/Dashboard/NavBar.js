@@ -322,8 +322,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       return d.title === '櫃檯作業'
     })
     if (idx !== -1) {
-      itemArr[idx].items.splice(2, 0, ...[{ title: '掛單列表', href: '/management/draft-orders' },
-      { title: '座位開單', href: '/seat-order-manage' }])
+      itemArr[idx].items.splice(2, 0, ...[{ title: '掛單列表', href: '/management/draft-orders' }])
     }
   }
   itemArr.push(settingItem)

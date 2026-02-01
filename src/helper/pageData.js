@@ -2,7 +2,6 @@ export default [
   { groupTitle: '櫃檯作業', title: '打帳單', href: '/order/create' },
   { groupTitle: '櫃檯作業', title: '帳單列表', href: '/management/orders' },
   { groupTitle: '櫃檯作業', title: '掛單列表', href: '/management/draft-orders' },
-  { groupTitle: '櫃檯作業', title: '座位開單', href: '/seat-order-manage' },
   { groupTitle: '櫃檯作業', title: '營業儀表板', href: '/merchant-business-dashboard' },
   { groupTitle: '櫃檯作業', title: '現金收支登錄', href: '/general/accounting/records' },
   { groupTitle: '櫃檯作業', title: '高階收支登錄', href: '/accounting/records' },
@@ -88,7 +87,7 @@ export default [
   { groupTitle: '會員卡管理', title: '會員卡列表', href: '/member-card-record' },
 
   { groupTitle: '紅利點數設定', title: '紅利點數紀錄', href: '/customer-bonus-record' },
-  
+
   { groupTitle: '資料設定', title: '服務分類設定', href: '/service/categories' },
   { groupTitle: '資料設定', title: '服務項目設定', href: '/services' },
   { groupTitle: '資料設定', title: '預收卡設定', href: '/coupons' },

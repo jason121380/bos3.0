@@ -370,23 +370,16 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     }
   }, [isNotification])
 
+  /**
+   * 建立 WebSocket 連線
+   * 根據當前環境 (prod, dev, localhost) 自動選擇 API 地址
+   */
   const connectWebSocket = () => {
     let url = 'https://beautyos-api-prod-htlfg34mhq-de.a.run.app'
-    if (window.location.href.indexOf('dev') !== -1) {
+    if (window.location.href.indexOf('dev') !== -1 || window.location.href.indexOf('beautyos2') !== -1 || window.location.href.indexOf('localhost') !== -1) {
       url = 'https://crt-test-htlfg34mhq-de.a.run.app'
-    } else if (window.location.href.indexOf('beautyos2') !== -1) {
-      url = 'https://crt-test-htlfg34mhq-de.a.run.app'
-    } else if (window.location.href.indexOf('localhost') !== -1) {
-      // 測試區的後端
-      url = 'https://crt-test-htlfg34mhq-de.a.run.app'
-
-      //後端local
-      // url = 'http://localhost:4849'
-
-      // 正式區的後端
-      // url = 'https://beautyos-api-prod-htlfg34mhq-de.a.run.app'
     }
-    //開啟
+
     setWs(webSocket(url, {
       transports: ["websocket"],
       autoConnect: true,
@@ -398,6 +391,8 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     if (ws) {
       const id = JSON.parse(localStorage.getItem('userMerchant')).id
       ws.emit('roomKey', id)
+
+      // 註冊 WebSocket 事件監聽
       ws.on('OrderQueue', order => {
         handlesetOrderDetail(order)
         setOrderDetail(order)
@@ -414,7 +409,6 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
       ws.on('disconnect', () => {
         connectWebSocket()
       })
-      // ws.on('connect', () => console.log('connect', new Date(), ws))
     }
   }, [ws])
 

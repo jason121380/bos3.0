@@ -2,24 +2,16 @@
 import {
   Avatar,
   Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
+  Checkbox,
   Divider,
   Link,
-  Table,
   TableBody,
   TableCell,
-  TableHead,
-  TablePagination,
   TableRow,
   Typography,
-  Checkbox,
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import TableEditBar from 'components/TableEditBar'
 import produce from 'immer'
@@ -31,6 +23,7 @@ import ProfileImportModal from './ProfileImportModal'
 import pagenationLabel from './../../helper/pagenationLabel'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import ManagementTable from 'components/ManagementTable'
 
 const styles = {
   root: css({}),
@@ -48,13 +41,6 @@ const styles = {
   }),
   content: css({
     padding: 0,
-  }),
-  inner: css({
-    minWidth: 1150,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
   }),
   cardHeader: css({
     '& .MuiCardHeader-title': {
@@ -288,169 +274,110 @@ export default function Results({
     setSortedEmployees(sortedEmployee)
   }, [employees])
 
-  useEffect(() => {
-    if (pageRef.current) {
-      pagenationLabel(pageRef.current)
-    }
-  }, [sortedEmployees, pageRef.current])
-
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Card>
-        <CardHeader
-          css={styles.cardHeader}
-          title={
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span>員工管理列表</span>
-              <Typography color="textSecondary" variant="body2">
-                共 {employees.length} 筆
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    {rakeSetAble &&
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={
-                            selectedDesigners.length === employees.length && employees.length > 0
-                          }
-                          color="primary"
-                          indeterminate={
-                            selectedDesigners.length > 0 &&
-                            selectedDesigners.length < employees.length
-                          }
-                          onChange={handleSelectAll}
-                          disabled={employees.length === 0}
-                        />
-                      </TableCell>
-                    }
-                    <TableCell>操作</TableCell>
-                    <TableCell>姓名/電話</TableCell>
-                    <TableCell>設計師編號</TableCell>
-                    <TableCell>暱稱</TableCell>
-                    <TableCell>權限設定</TableCell>
-                    <TableCell>帳號狀態</TableCell>
-                    <TableCell>設定狀態</TableCell>
-                    <TableCell>設置</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {sortedEmployees.map((data, idx) => (
-                    <TableRow key={`employee-item-${idx}`} css={styles.tableRow}>
-                      {rakeSetAble &&
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            color="primary"
-                            checked={selectedDesigners.indexOf(data.id) > -1}
-                            onChange={() => handleSelectOne(data.id)}
-                          />
-                        </TableCell>
-                      }
-                      {loginUserAuthName === '高階主管' ? (
-                        <TableCell>
-                          <Button
-                            color="primary"
-                            component={RouterLink}
-                            size="small"
-                            to={`/management/employee/${data.id}/general`}
-                            variant="outlined"
-                          >
-                            編輯
-                          </Button>
-                        </TableCell>
-                      ) : data.merchantIdentity.authorityName === '高階主管' ? (
-                        <TableCell>
-                          <Button
-                            color="primary"
-                            component={RouterLink}
-                            size="small"
-                            to={`/management/employee/${data.id}/general`}
-                            variant="outlined"
-                            disabled={true}
-                          >
-                            編輯
-                          </Button>
-                        </TableCell>
-                      ) : (
-                        <TableCell>
-                          <Button
-                            color="primary"
-                            component={RouterLink}
-                            size="small"
-                            to={`/management/employee/${data.id}/general`}
-                            variant="outlined"
-                          >
-                            編輯
-                          </Button>
-                        </TableCell>
+      <ManagementTable
+        title="員工管理列表"
+        totalCount={employees.length}
+        pageLimit={page.limit}
+        pageOffset={page.offset}
+        onPageChange={handleOnChangePage}
+        onRowsPerPageChange={handleOnChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 25, 50, 1000]}
+        minWidth={1150}
+        tableHead={
+          <>
+            {rakeSetAble && (
+              <TableCell padding="checkbox">
+                <Checkbox
+                  checked={selectedDesigners.length === employees.length && employees.length > 0}
+                  color="primary"
+                  indeterminate={selectedDesigners.length > 0 && selectedDesigners.length < employees.length}
+                  onChange={handleSelectAll}
+                  disabled={employees.length === 0}
+                />
+              </TableCell>
+            )}
+            <TableCell>操作</TableCell>
+            <TableCell>姓名/電話</TableCell>
+            <TableCell>設計師編號</TableCell>
+            <TableCell>暱稱</TableCell>
+            <TableCell>權限設定</TableCell>
+            <TableCell>帳號狀態</TableCell>
+            <TableCell>設定狀態</TableCell>
+            <TableCell>設置</TableCell>
+          </>
+        }
+      >
+        <TableBody>
+          {sortedEmployees.map((data, idx) => (
+            <TableRow key={`employee-item-${idx}`} css={styles.tableRow}>
+              {rakeSetAble && (
+                <TableCell padding="checkbox">
+                  <Checkbox
+                    color="primary"
+                    checked={selectedDesigners.indexOf(data.id) > -1}
+                    onChange={() => handleSelectOne(data.id)}
+                  />
+                </TableCell>
+              )}
+              <TableCell>
+                <Button
+                  color="primary"
+                  component={RouterLink}
+                  size="small"
+                  to={`/management/employee/${data.id}/general`}
+                  variant="outlined"
+                  disabled={loginUserAuthName !== '高階主管' && data.merchantIdentity.authorityName === '高階主管'}
+                >
+                  編輯
+                </Button>
+              </TableCell>
+              <TableCell>
+                <div css={styles.nameCell}>
+                  <Avatar css={styles.avatar} src={data.avatar} />
+                  <div>
+                    <Link
+                      underline='hover'
+                      color="inherit"
+                      component={RouterLink}
+                      to={`/management/employee/${data.id}/general`}
+                      variant="h6"
+                    >
+                      {data.lastName}
+                      {data.firstName}
+                      {data.status === 'pending' && (
+                        <span css={styles.deductionNotSet}>未設定抽成</span>
                       )}
-                      <TableCell>
-                        <div css={styles.nameCell}>
-                          <Avatar css={styles.avatar} src={data.avatar} />
-                          <div>
-                            <Link
-                              underline='hover'
-                              color="inherit"
-                              component={RouterLink}
-                              to={`/management/employee/${data.id}/general`}
-                              variant="h6"
-                            >
-                              {data.lastName}
-                              {data.firstName}
-                              {data.status === 'pending' && (
-                                <span css={styles.deductionNotSet}>未設定抽成</span>
-                              )}
-                            </Link>
-                            <div>{data.cellphone}</div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>{data.designerNo}</TableCell>
-                      <TableCell>{data.nickName}</TableCell>
-                      <TableCell>
-                        {data.merchantIdentity.authorityName.length > 0
-                          ? data.merchantIdentity.authorityName
-                          : '無設定'}
-                      </TableCell>
-                      <TableCell>
-                        {data.status === 'ok' || data.status === 'pending' ? '可登入' : '不可登入'}
-                      </TableCell>
-                      <TableCell>
-                        {data.isUserRakeSet && isDeductionWaySet(data.deductionWay)
-                          ? '設定完成'
-                          : <span style={{ color: 'red', fontWeight: 'bold' }}>
-                            {getMessage(data.isUserRakeSet, data.deductionWay)}
-                          </span>
-                        }
-                      </TableCell>
-                      <TableCell>{handleRenderStatus(data)}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
-          <TablePagination
-            ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
-            component="div"
-            count={pageCount}
-            onPageChange={handleOnChangePage}
-            onRowsPerPageChange={handleOnChangeRowsPerPage}
-            page={page.offset}
-            rowsPerPage={page.limit}
-            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
-          />
-        </CardActions>
-      </Card>
+                    </Link>
+                    <div>{data.cellphone}</div>
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell>{data.designerNo}</TableCell>
+              <TableCell>{data.nickName}</TableCell>
+              <TableCell>
+                {data.merchantIdentity.authorityName.length > 0
+                  ? data.merchantIdentity.authorityName
+                  : '無設定'}
+              </TableCell>
+              <TableCell>
+                {data.status === 'ok' || data.status === 'pending' ? '可登入' : '不可登入'}
+              </TableCell>
+              <TableCell>
+                {data.isUserRakeSet && isDeductionWaySet(data.deductionWay) ? (
+                  '設定完成'
+                ) : (
+                  <span style={{ color: 'red', fontWeight: 'bold' }}>
+                    {getMessage(data.isUserRakeSet, data.deductionWay)}
+                  </span>
+                )}
+              </TableCell>
+              <TableCell>{handleRenderStatus(data)}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </ManagementTable>
       {rakeSetAble && (
         <>
           <TableEditBar
@@ -481,10 +408,16 @@ export default function Results({
 }
 
 Results.propTypes = {
-  className: PropTypes.object,
-  orders: PropTypes.array,
+  className: PropTypes.string,
+  employees: PropTypes.array,
+  handleOnChangePage: PropTypes.func,
+  handleOnChangeRowsPerPage: PropTypes.func,
+  page: PropTypes.object,
+  pageCount: PropTypes.number,
+  loginUserAuthName: PropTypes.string,
+  rakeSetAble: PropTypes.bool,
 }
 
 Results.defaultProps = {
-  orders: [],
+  employees: [],
 }

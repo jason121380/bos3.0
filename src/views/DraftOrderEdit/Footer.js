@@ -442,31 +442,17 @@ export default function Footer() {
       })
         .then(() => {
           toggle()
-          if (tmp.seatNumber && tmp.seatNumber !== undefined) {
-            openSnackbar({
-              message: `座位開單結帳成功`,
-              variant: 'success',
-            })
-            history.push(
-              `/management/${location.search.length > 0
-                ? `orders?startDate=${location.search.split('=').substring(0, 13)}&endDate=${location.search.split('=')[1]
-                }`
-                : 'orders'
+          openSnackbar({
+            message: `掛單結帳成功`,
+            variant: 'success',
+          })
+          history.push(
+            `/management/${location.search.length > 0
+              ? `orders?startDate=${location.search.split('=').substring(0, 13)}&endDate=${location.search.split('=')[1]
               }`
-            )
-          } else {
-            openSnackbar({
-              message: `掛單結帳成功`,
-              variant: 'success',
-            })
-            history.push(
-              `/management/${location.search.length > 0
-                ? `orders?startDate=${location.search.split('=').substring(0, 13)}&endDate=${location.search.split('=')[1]
-                }`
-                : 'orders'
-              }`
-            )
-          }
+              : 'orders'
+            }`
+          )
           setIsClick(false)
           setOpenDialog(false)
           setIsRecheckoutOrders(false)
@@ -524,27 +510,13 @@ export default function Footer() {
         password: '',
       })
         .then(() => {
-          if (tmp.seatNumber && tmp.seatNumber !== undefined) {
-            openSnackbar({
-              message: `座位開單儲存成功`,
-              variant: 'success',
-            })
-            setIsClick(false)
-            if (stayInCreateOrder) {
-              window.location.reload()
-            } else {
-              history.push('/seat-order-manage')
-            }
-            setIsRecheckoutOrders(false)
-          } else {
-            openSnackbar({
-              message: '掛單儲存成功',
-              variant: 'success',
-            })
-            setIsClick(false)
-            setIsRecheckoutOrders(false)
-            history.push('/management/draft-orders')
-          }
+          openSnackbar({
+            message: '掛單儲存成功',
+            variant: 'success',
+          })
+          setIsClick(false)
+          setIsRecheckoutOrders(false)
+          history.push('/management/draft-orders')
         })
         .catch(err => {
           openSnackbar({
@@ -666,7 +638,7 @@ export default function Footer() {
     const clonePassword = cloneDeep(reCheckoutPwd)
     const delta = value.length - reCheckoutPwd.length
     let combineValue = ''
-    
+
     if (delta > 0) {
       combineValue = clonePassword.slice(0, start) + value.slice(start, start + delta) + clonePassword.slice(end, clonePassword.length)
       setTimeout(() => {
@@ -763,7 +735,7 @@ export default function Footer() {
   useEffect(() => {
     if (bonusSetting.isUsing) {
       let bonusDeposit = 0; // 預設為 0
-    
+
       if (!bonusRewardWithLINE || (bonusRewardWithLINE && isLineBinded)) {
         const total =
           serviceTotalPriceWithoutThirdPartyCoupon +
@@ -773,10 +745,10 @@ export default function Footer() {
           bill.walletPay -
           bill.amountByOtherPay -
           bill.bonusDecount;
-    
+
         bonusDeposit = giveBonus[bonusSetting.rule.mode](total, bonusSetting.rule.price, bonusSetting.rule.bonus);
       }
-    
+
       setBill(
         produce(draft => {
           draft.bonusDeposit = bonusDeposit;
@@ -789,7 +761,7 @@ export default function Footer() {
     bill.amountByOtherPay, bill.bonusDecount, bill.customerId, bonusRewardWithLINE,
     isLineBinded
   ])
-  
+
   return (
     <Card css={styles.card}>
       <CardContent css={styles.cardContent}>

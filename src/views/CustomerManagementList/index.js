@@ -4,6 +4,7 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
 import useFetchCustomers from 'hooks/useFetchCustomers'
+import AdminPageHeader from 'components/AdminPageHeader'
 import PageTitle from 'components/PageTitle'
 import idx from 'idx'
 import produce from 'immer'
@@ -172,55 +173,15 @@ function CustomerManagementList() {
   return (
     <Page css={styles.root} title="客戶列表">
       <Container maxWidth={false}>
-        <Card
-          css={css({
-            display: 'flex',
-            padding: '12px 24px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#E8F0FE',
-            borderRadius: '12px',
-            boxShadow: 'none',
-            border: 'none !important',
-            marginBottom: '12px',
-          })}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='客戶列表' style={{ color: '#1A73E8' }} />
-            <Link component={RouterLink} to="/management/customer/create" style={{ textDecoration: 'none' }}>
-              <Button
-                variant="contained"
-                css={css({
-                  borderRadius: '20px !important',
-                  padding: '6px 20px !important',
-                  fontSize: '14px !important',
-                  boxShadow: 'none !important',
-                  fontWeight: 'bold !important',
-                  backgroundColor: '#FFFFFF !important',
-                  color: '#666 !important',
-                  '&:hover': {
-                    backgroundColor: '#f8f8f8 !important',
-                  }
-                })}
-              >
-                新增
-              </Button>
-            </Link>
-            <IconButton
-              onClick={() => setShowFilter(!showFilter)}
-              css={css({
-                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
-                color: showFilter ? '#1A73E8 !important' : '#666 !important',
-                marginLeft: '4px !important',
-                '&:hover': {
-                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
-                }
-              })}
-            >
-              <FilterListIcon />
-            </IconButton>
-          </div>
-        </Card>
+        <AdminPageHeader
+          title='客戶列表'
+          showFilter={showFilter}
+          onFilterClick={() => setShowFilter(!showFilter)}
+          primaryAction={{
+            label: '新增',
+            to: '/management/customer/create'
+          }}
+        />
 
         <Collapse in={showFilter}>
           <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>

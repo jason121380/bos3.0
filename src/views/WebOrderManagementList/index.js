@@ -5,7 +5,6 @@ import {
 } from '@mui/material'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { addDays, endOfDay, startOfMonth } from 'date-fns'
 import useFetchGetBookingManagement from 'hooks/useFetchGetBookingManagement'
 import { useFetchGetCheckinSettingsForManagementList } from 'hooks/useFetchGetMerchantCheckinSettings'
@@ -18,6 +17,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import DateSelector from 'components/DateSelector'
+import AdminPageHeader from 'components/AdminPageHeader'
 
 import Results from './Results'
 
@@ -30,11 +30,14 @@ const styles = {
 }
 
 function WebOrderMangagementList() {
+  // 從本地存儲獲取商戶 ID
   const merchantid = localStorage.getItem('userMerchant')
     ? localStorage.getItem('userMerchant')
       ? JSON.parse(localStorage.getItem('userMerchant')).id
       : null
     : ''
+
+  // 分頁與過濾器狀態管理
   const [pageSetting, setPageSetting] = useState({
     pageLimit: 50,
     pageOffset: 0,
@@ -45,9 +48,13 @@ function WebOrderMangagementList() {
     isReserved: true,
     isCheckin: ''
   })
+
+  // UI 狀態：切換過濾器、報到功能顯示、未來預約確認邏輯
   const [showFilter, setShowFilter] = useState(false)
   const [checkInDisplay, setCheclInDisplay] = useState(false)
   const [bookingCusCheck, setBookingCusCheck] = useState(false)
+
+  // 獲取後端數據
   const getIsBookingCusCheckUsing = useFetchGetIsBookingCusCheckUsing()
   const getBookingManagement = useFetchGetBookingManagement({
     dateRange: {
@@ -61,6 +68,9 @@ function WebOrderMangagementList() {
   const getCheckinSettings = useFetchGetCheckinSettingsForManagementList()
   const getDeleteOrderUsing = useFetchGetDeleteOrderUsing()
 
+  /**
+   * 處理分頁切換
+   */
   const handlePageChange = (event, newPage) => {
     setPageSetting(
       produce(draft => {
@@ -68,6 +78,10 @@ function WebOrderMangagementList() {
       })
     )
   }
+
+  /**
+   * 處理每頁顯示筆數切換
+   */
   const handleRowsPerPageChange = event => {
     setPageSetting(
       produce(draft => {
@@ -77,6 +91,7 @@ function WebOrderMangagementList() {
     )
   }
 
+  // 同步報到設置
   useEffect(() => {
     if (!getCheckinSettings.loading) {
       const res = getCheckinSettings.data.getMerchantCheckinSettings.isBookingCheckinEnabled
@@ -84,6 +99,7 @@ function WebOrderMangagementList() {
     }
   }, [getCheckinSettings.loading])
 
+  // 同步未來預約確認設置
   useEffect(() => {
     if (!getIsBookingCusCheckUsing.loading) {
       const data = idx(getIsBookingCusCheckUsing, _ => _.data.getIsBookingCusCheckUsing)
@@ -94,60 +110,19 @@ function WebOrderMangagementList() {
   return (
     <Page css={styles.root} title="預約管理">
       <Container maxWidth={false} css={styles.container}>
-        <Card
-          css={css({
-            display: 'flex',
-            padding: '12px 24px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#E8F0FE',
-            borderRadius: '12px',
-            boxShadow: 'none',
-            border: 'none !important',
-            marginBottom: '12px',
-          })}
+
+        <AdminPageHeader
+          title='預約管理'
+          showFilter={showFilter}
+          onFilterClick={() => setShowFilter(!showFilter)}
+          primaryAction={{
+            label: '新預約',
+            to: `/customer/reservation/${merchantid}?usingLineLogin=0`
+          }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='預約管理' style={{ color: '#1A73E8' }} />
-            <Link component={RouterLink} to={`/customer/reservation/${merchantid}?usingLineLogin=0`} style={{ textDecoration: 'none' }}>
-              <Button
-                variant="contained"
-                css={css({
-                  borderRadius: '20px !important',
-                  padding: '6px 20px !important',
-                  fontSize: '14px !important',
-                  boxShadow: 'none !important',
-                  fontWeight: 'bold !important',
-                  backgroundColor: '#FFFFFF !important',
-                  color: '#666 !important',
-                  '&:hover': {
-                    backgroundColor: '#f8f8f8 !important',
-                  }
-                })}
-              >
-                新預約
-              </Button>
-            </Link>
-            <IconButton
-              onClick={() => setShowFilter(!showFilter)}
-              css={css({
-                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
-                color: showFilter ? '#1A73E8 !important' : '#666 !important',
-                marginLeft: '4px !important',
-                '&:hover': {
-                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
-                }
-              })}
-            >
-              <FilterListIcon />
-            </IconButton>
-          </div>
           <DateSelector
             date={{ startDate: pageSetting.startDate, endDate: pageSetting.endDate }}
-            attributes={[
-              'thismonth', 'lastmonth', 'dbyesterday',
-              'yesterday', 'today', 'startDate', 'endDate'
-            ]}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={({ startDate, endDate }) => {
               setPageSetting(
                 produce(draft => {
@@ -157,7 +132,7 @@ function WebOrderMangagementList() {
               )
             }}
           />
-        </Card>
+        </AdminPageHeader>
 
         <Collapse in={showFilter}>
           <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>

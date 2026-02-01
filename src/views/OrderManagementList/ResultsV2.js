@@ -44,6 +44,18 @@ const styles = {
     width: '50px',
     imageRendering: '-webkit-optimize-contrast',
   }),
+  csvBtn: css({
+    borderRadius: '20px !important',
+    padding: '6px 20px !important',
+    fontSize: '14px !important',
+    boxShadow: 'none !important',
+    fontWeight: 'bold !important',
+    backgroundColor: '#f5f5f5 !important',
+    color: '#666 !important',
+    '&:hover': {
+      backgroundColor: '#eeeeee !important',
+    }
+  }),
 }
 
 function Results({
@@ -415,7 +427,7 @@ function Results({
                 {allExtend ? '全部收合' : '全部展開'}
               </Button>
               <CSVLink data={excelData} filename="訂單列表.csv" >
-                <Button variant="contained" color="inherit" size="small">
+                <Button variant="contained" css={styles.csvBtn} size="small">
                   報表匯出
                 </Button>
               </CSVLink>

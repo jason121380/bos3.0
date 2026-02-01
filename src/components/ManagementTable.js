@@ -1,0 +1,150 @@
+/** @jsxImportSource @emotion/react */
+import {
+    Button, Card, CardActions, CardContent, CardHeader,
+    Table, TableHead, TableRow, TableCell, TablePagination, Typography
+} from '@mui/material'
+import PropTypes from 'prop-types'
+import { useRef, useEffect } from 'react'
+import PerfectScrollbar from 'react-perfect-scrollbar'
+import { CSVLink } from "react-csv"
+import pagenationLabel from './../helper/pagenationLabel'
+import { css } from '@emotion/react'
+import { theme } from '../theme'
+
+const styles = {
+    content: css({
+        padding: '0px !important',
+    }),
+    actions: css({
+        padding: theme.spacing(0, 1),
+        justifyContent: 'flex-end',
+    }),
+    cardHeader: css({
+        '& .MuiCardHeader-title': {
+            fontSize: '15px',
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            '&::before': {
+                content: '""',
+                display: 'inline-block',
+                width: '4px',
+                height: '16px',
+                backgroundColor: '#1A73E8',
+                marginRight: '8px',
+                borderRadius: '2px',
+            },
+        },
+    }),
+    csvBtn: css({
+        borderRadius: '20px !important',
+        padding: '6px 20px !important',
+        fontSize: '14px !important',
+        boxShadow: 'none !important',
+        fontWeight: 'bold !important',
+        backgroundColor: '#f5f5f5 !important',
+        color: '#666 !important',
+        '&:hover': {
+            backgroundColor: '#eeeeee !important',
+        }
+    }),
+}
+
+const ManagementTable = ({
+    title,
+    totalCount,
+    excelData,
+    excelFilename,
+    tableHead,
+    children,
+    pageLimit,
+    pageOffset,
+    onPageChange,
+    onRowsPerPageChange,
+    rowsPerPageOptions = [5, 10, 25, 50, 100],
+    minWidth = 1000,
+    headerAction,
+    className
+}) => {
+    const pageRef = useRef(null)
+
+    useEffect(() => {
+        if (pageRef.current) {
+            pagenationLabel(pageRef.current)
+        }
+    }, [children, pageRef.current])
+
+    return (
+        <Card className={className}>
+            <CardHeader
+                css={styles.cardHeader}
+                action={
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        {excelData && (
+                            <CSVLink data={excelData} filename={excelFilename || "data.csv"}>
+                                <Button variant="contained" css={styles.csvBtn} size="small">
+                                    報表匯出
+                                </Button>
+                            </CSVLink>
+                        )}
+                        {headerAction}
+                    </div>
+                }
+                title={
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <span>{title}</span>
+                        <Typography color="textSecondary" variant="body2">
+                            共 {totalCount} 筆
+                        </Typography>
+                    </div>
+                }
+            />
+            <CardContent css={styles.content}>
+                <PerfectScrollbar>
+                    <div style={{ minWidth }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    {tableHead}
+                                </TableRow>
+                            </TableHead>
+                            {children}
+                        </Table>
+                    </div>
+                </PerfectScrollbar>
+            </CardContent>
+            <CardActions css={styles.actions}>
+                <TablePagination
+                    ref={pageRef}
+                    labelRowsPerPage='每頁顯示數量'
+                    component="div"
+                    count={totalCount}
+                    onPageChange={onPageChange}
+                    onRowsPerPageChange={onRowsPerPageChange}
+                    page={pageOffset}
+                    rowsPerPage={pageLimit}
+                    rowsPerPageOptions={rowsPerPageOptions}
+                />
+            </CardActions>
+        </Card>
+    )
+}
+
+ManagementTable.propTypes = {
+    title: PropTypes.string.isRequired,
+    totalCount: PropTypes.number.isRequired,
+    excelData: PropTypes.array,
+    excelFilename: PropTypes.string,
+    tableHead: PropTypes.node.isRequired,
+    children: PropTypes.node.isRequired,
+    pageLimit: PropTypes.number.isRequired,
+    pageOffset: PropTypes.number.isRequired,
+    onPageChange: PropTypes.func.isRequired,
+    onRowsPerPageChange: PropTypes.func.isRequired,
+    rowsPerPageOptions: PropTypes.array,
+    minWidth: PropTypes.number,
+    headerAction: PropTypes.node,
+    className: PropTypes.any
+}
+
+export default ManagementTable

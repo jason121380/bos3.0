@@ -1,45 +1,22 @@
 /** @jsxImportSource @emotion/react */
 import {
   Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
   Divider,
-  Table,
   TableBody,
   TableCell,
-  TableHead,
-  TablePagination,
   TableRow,
-  Typography,
 } from '@mui/material'
 import { format } from 'date-fns'
 import useFetchMoneyFlowReportExcel from 'hooks/useFetchMoneyFlowReportExcel'
 import PropTypes from 'prop-types'
 import { useEffect, useState, useRef } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
-import { CSVLink } from "react-csv";
-import pagenationLabel from './../../helper/pagenationLabel'
 import { theme } from '../../theme'
 import { css } from '@emotion/react'
+import ManagementTable from 'components/ManagementTable'
 
 const styles = {
   root: css({}),
-  filterButton: css({
-    marginRight: theme.spacing(2),
-  }),
-  content: css({
-    padding: '0px !important',
-  }),
-  inner: css({
-    minWidth: 1300,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
   sticky1: css({
     position: 'sticky',
     left: 0,
@@ -51,23 +28,6 @@ const styles = {
     left: "74px",
     background: '#ffffff !important',
     zIndex: '99',
-  }),
-  cardHeader: css({
-    '& .MuiCardHeader-title': {
-      fontSize: '15px',
-      fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: '#1A73E8',
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
-    },
   }),
   tableRow: css({
     backgroundColor: '#ffffff !important',
@@ -120,10 +80,7 @@ function Results({
       })
     })
     setExcelData(excelData)
-    if (pageRef.current) {
-      pagenationLabel(pageRef.current)
-    }
-  }, [moneyFlows, pageRef.current])
+  }, [moneyFlows])
 
   if (!moneyFlows) {
     return 'Loading...'
@@ -131,93 +88,65 @@ function Results({
 
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Card>
-        <CardHeader
-          css={styles.cardHeader}
-          action={
-            <CSVLink data={excelData} filename="高階收支登錄.csv" >
-              <Button variant="contained" color="primary" size="small">
-                報表匯出
-              </Button>
-            </CSVLink>
-          }
-          title={
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span>高階收支登錄</span>
-              <Typography color="textSecondary" variant="body2">
-                共 {moneyFlows.totalCount} 筆
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table className='AccountingRecordListTable'>
-                <TableHead>
-                  <TableRow>
-                    <TableCell css={styles.sticky1} style={{ width: '74px' }}>操作</TableCell>
-                    <TableCell css={styles.sticky2} style={{ width: '85px' }}>日期</TableCell>
-                    <TableCell>科目名稱</TableCell>
-                    <TableCell>收入</TableCell>
-                    <TableCell>支出</TableCell>
-                    <TableCell>登錄者</TableCell>
-                    <TableCell>收付方式</TableCell>
-                    <TableCell>關係人</TableCell>
-                    <TableCell>備註</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {moneyFlows.moneyFlows.map((data, index) => {
-                    return (
-                      <TableRow key={index} css={styles.tableRow}>
-                        <TableCell css={styles.sticky1} >
-                          <Button
-                            color="primary"
-                            component={RouterLink}
-                            size="small"
-                            to={`/accounting/deatil/${data.id}`}
-                            variant="outlined"
-                          >
-                            修改
-                          </Button>
-                        </TableCell>
-                        <TableCell css={styles.sticky2}>{format(data.date, 'yyyy-MM-dd')}</TableCell>
-                        <TableCell>
-                          {data.accountingSubject !== null ? data.accountingSubject.name : ''}
-                        </TableCell>
-                        <TableCell>{data.inoutType === 'REVENUE' ? data.amount : ''}</TableCell>
-                        <TableCell>{data.inoutType === 'EXPENDITURE' ? data.amount : ''}</TableCell>
-                        <TableCell>
-                          {data.user ? `${data.user.name}/${data.user.designerNo || ''}` : ''}
-                        </TableCell>
-                        <TableCell>{data.walletType}</TableCell>
-                        <TableCell>
-                          {data.relationUser === null ? '' : data.relationUser.name}
-                        </TableCell>
-                        <TableCell>{data.remark}</TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
-          <TablePagination
-            ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
-            component="div"
-            count={moneyFlows.totalCount}
-            onPageChange={onPageChange}
-            onRowsPerPageChange={onRowsPerPageChange}
-            page={moneyFlows.pageOffset}
-            rowsPerPage={moneyFlows.pageLimit}
-            rowsPerPageOptions={[5, 10, 25, 100, 250, 500, 1000]}
-          />
-        </CardActions>
-      </Card>
+      <ManagementTable
+        title="高階收支登錄"
+        totalCount={moneyFlows.totalCount}
+        excelData={excelData}
+        excelFilename="高階收支登錄.csv"
+        pageLimit={moneyFlows.pageLimit}
+        pageOffset={moneyFlows.pageOffset}
+        onPageChange={onPageChange}
+        onRowsPerPageChange={onRowsPerPageChange}
+        rowsPerPageOptions={[5, 10, 25, 100, 250, 500, 1000]}
+        minWidth={1300}
+        tableHead={
+          <>
+            <TableCell css={styles.sticky1} style={{ width: '74px' }}>操作</TableCell>
+            <TableCell css={styles.sticky2} style={{ width: '85px' }}>日期</TableCell>
+            <TableCell>科目名稱</TableCell>
+            <TableCell>收入</TableCell>
+            <TableCell>支出</TableCell>
+            <TableCell>登錄者</TableCell>
+            <TableCell>收付方式</TableCell>
+            <TableCell>關係人</TableCell>
+            <TableCell>備註</TableCell>
+          </>
+        }
+      >
+        <TableBody>
+          {moneyFlows.moneyFlows.map((data, index) => {
+            return (
+              <TableRow key={index} css={styles.tableRow}>
+                <TableCell css={styles.sticky1} >
+                  <Button
+                    color="primary"
+                    component={RouterLink}
+                    size="small"
+                    to={`/accounting/deatil/${data.id}`}
+                    variant="outlined"
+                  >
+                    修改
+                  </Button>
+                </TableCell>
+                <TableCell css={styles.sticky2}>{format(data.date, 'yyyy-MM-dd')}</TableCell>
+                <TableCell>
+                  {data.accountingSubject !== null ? data.accountingSubject.name : ''}
+                </TableCell>
+                <TableCell>{data.inoutType === 'REVENUE' ? data.amount : ''}</TableCell>
+                <TableCell>{data.inoutType === 'EXPENDITURE' ? data.amount : ''}</TableCell>
+                <TableCell>
+                  {data.user ? `${data.user.name}/${data.user.designerNo || ''}` : ''}
+                </TableCell>
+                <TableCell>{data.walletType}</TableCell>
+                <TableCell>
+                  {data.relationUser === null ? '' : data.relationUser.name}
+                </TableCell>
+                <TableCell>{data.remark}</TableCell>
+              </TableRow>
+            )
+          })}
+        </TableBody>
+      </ManagementTable>
     </div>
   )
 }

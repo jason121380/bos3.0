@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Button, Card, CardActions, CardContent, CardHeader, Checkbox, Divider,
-  Table, TableBody, TableCell, TableHead, TablePagination,
+  Button, Checkbox, Divider,
+  TableBody, TableCell,
   TableRow, Typography
 } from '@mui/material'
 import red from '@mui/material/colors/red'
@@ -12,55 +12,16 @@ import useFetchDeleteOrder from 'hooks/useFetchDeleteOrder'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { useRef, useState, useEffect } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
-import { CSVLink } from "react-csv";
-import pagenationLabel from './../../helper/pagenationLabel'
 import PasswordDialog from 'components/PasswordDialog'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import ManagementTable from 'components/ManagementTable'
 
 const styles = {
   root: {},
   filterButton: css({
     marginRight: theme.spacing(2),
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 1300,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
-  deleteButton: css({
-    borderColor: red[500],
-    color: red[500],
-    '&:hover': {
-      borderColor: red[500],
-      color: red[500],
-      backgroundColor: 'rgba(244, 67, 54, 0.08)',
-    },
-    marginRight: theme.spacing(1),
-  }),
-  cardHeader: css({
-    '& .MuiCardHeader-title': {
-      fontSize: '15px',
-      fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: '#1A73E8',
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
-    },
   }),
   tableRow: css({
     backgroundColor: '#ffffff !important',
@@ -92,6 +53,9 @@ function Results({
   const [password, setPassword] = useState('')
   const [isClick, setIsClick] = useState(false)
 
+  /**
+   * 處理刪除操作的取消/確認邏輯
+   */
   const handleCancel = async () => {
     setIsClick(true)
     try {
@@ -99,7 +63,7 @@ function Results({
       setSelectedOrders([])
       refetch()
       openSnackbar({
-        message: '成功刪除預約',
+        message: ' 成功刪除預約',
         variant: 'success',
       })
       setDialogOpen(false)
@@ -113,13 +77,22 @@ function Results({
     }
   }
 
+  /**
+   * 獲取所有未完成訂單的 ID
+   */
   const allIds = () => (orders.filter(({ isDone }) => !isDone).map(order => order.id))
 
+  /**
+   * 處理全選邏輯
+   */
   const handleSelectAll = event => {
     const newSelectedPayment = event.target.checked ? allIds() : []
     setSelectedOrders(newSelectedPayment)
   }
 
+  /**
+   * 處理單選邏輯
+   */
   const handleSelectOne = id => {
     const newSelect = [...selectedOrders], index = newSelect.indexOf(id)
     if (index > -1) {
@@ -130,6 +103,9 @@ function Results({
     setSelectedOrders(newSelect)
   }
 
+  /**
+   * 格式化報到狀態文字
+   */
   const checkinStatus = status => {
     if (status === null) return ''
     return status ? '報到成功' : '未報到'
@@ -182,149 +158,101 @@ function Results({
     }
   }, [orders, pageRef.current, pageRef2.current])
 
+
   return (
     <div {...rest} css={styles.root}>
-      <Card>
-        <CardHeader
-          css={styles.cardHeader}
-          action={
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <CSVLink data={excelData} filename="預約訂單列表.csv">
-                <Button variant="contained" color="primary" size="small">
-                  報表匯出
-                </Button>
-              </CSVLink>
-              <TablePagination
-                style={{ width: 'fit-content', border: 'none' }}
-                ref={pageRef2}
-                labelRowsPerPage='每頁顯示數量'
-                component="div"
-                count={pageSetting.totalCount}
-                onPageChange={onPageChange}
-                onRowsPerPageChange={onRowsPerPageChange}
-                page={pageSetting.pageOffset}
-                rowsPerPage={pageSetting.pageLimit}
-                rowsPerPageOptions={[5, 10, 25, 50, 1000]}
+      <ManagementTable
+        title="預約管理列表"
+        totalCount={pageSetting.totalCount}
+        excelData={excelData}
+        excelFilename="預約訂單列表.csv"
+        pageLimit={pageSetting.pageLimit}
+        pageOffset={pageSetting.pageOffset}
+        onPageChange={onPageChange}
+        onRowsPerPageChange={onRowsPerPageChange}
+        minWidth={1300}
+        tableHead={
+          <>
+            <TableCell padding="checkbox">
+              <Checkbox
+                checked={selectedOrders.length === allIds().length && pageSetting.bookings.length > 0}
+                color="primary"
+                indeterminate={selectedOrders.length > 0 && selectedOrders.length < allIds().length}
+                onChange={handleSelectAll}
+                disabled={pageSetting.bookings.length === 0}
               />
-            </div>
-          }
-          title={
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span>預約管理列表</span>
-              <Typography color="textSecondary" variant="body2">
-                共 {pageSetting.totalCount} 筆
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={
-                          selectedOrders.length === allIds().length &&
-                          pageSetting.bookings.length > 0
-                        }
-                        color="primary"
-                        indeterminate={
-                          selectedOrders.length > 0 &&
-                          selectedOrders.length < allIds().length
-                        }
-                        onChange={handleSelectAll}
-                        disabled={pageSetting.bookings.length === 0}
-                      />
-                    </TableCell>
-                    <TableCell>操作</TableCell>
-                    <TableCell>訂單狀態</TableCell>
-                    {checkInDisplay && <TableCell>報到狀態</TableCell>}
-                    <TableCell>預約日期及時間</TableCell>
-                    <TableCell>客戶資訊</TableCell>
-                    <TableCell>指定/不指定</TableCell>
-                    {bookingCusCheck && <TableCell>未來預訂(待確認)</TableCell>}
-                    <TableCell>設計師</TableCell>
-                    <TableCell>來源</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {orders.map(order => (
-                    <TableRow key={order.id} css={styles.tableRow}>
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={selectedOrders.indexOf(order.id) > -1}
-                          onChange={() => handleSelectOne(order.id)}
-                          disabled={order.isDone}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          color="primary"
-                          component={RouterLink}
-                          size="small"
-                          to={`/order/${order.isDone ? order.createdOrderId : order.id}`}
-                          variant="outlined"
-                        >
-                          {order.isDone ? '查看訂單' : <>&emsp;修改&emsp;</>}
-                        </Button>
-                      </TableCell>
-                      <TableCell>{order.status}</TableCell>
-                      {checkInDisplay && <TableCell>{checkinStatus(order.isCheckin)}</TableCell>}
-                      <TableCell>
-                        <Typography variant="body2">
-                          {format(new Date(order.date), 'HH:mm')}
-                        </Typography>
-                        <Typography variant="body2">
-                          {format(new Date(order.date), 'yyyy年MM月dd日')}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        {
-                          idx(order, _ => _.customer.isAlive) ? (
-                            <>
-                              {idx(order, _ => _.customer.name)}
-                              <Typography variant="body2">
-                                {idx(order, _ => _.customer.cellphone)}
-                              </Typography>
-                            </>
-                          ) : '客資已刪除'
-                        }
-                      </TableCell>
-                      <TableCell>{order.isDesignate ? '指定' : '不指定'}</TableCell>
-                      {bookingCusCheck && <TableCell>{order.isCusCheckRequired && '是'}</TableCell>}
-                      <TableCell>
-                        {order.designer ? order.designer.name ? idx(
-                          order,
-                          _ =>
-                            _.designer.name +
-                            (_.designer.designerNo ? ' / ' + _.designer.designerNo : '')
-                        ) : '無設計師' : '不指定設計師'}
-                      </TableCell>
-                      <TableCell>{order.source}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
-          <TablePagination
-            ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
-            component="div"
-            count={pageSetting.totalCount}
-            onPageChange={onPageChange}
-            onRowsPerPageChange={onRowsPerPageChange}
-            page={pageSetting.pageOffset}
-            rowsPerPage={pageSetting.pageLimit}
-            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
-          />
-        </CardActions>
-      </Card>
+            </TableCell>
+            <TableCell>操作</TableCell>
+            <TableCell>訂單狀態</TableCell>
+            {checkInDisplay && <TableCell>報到狀態</TableCell>}
+            <TableCell>預約日期及時間</TableCell>
+            <TableCell>客戶資訊</TableCell>
+            <TableCell>指定/不指定</TableCell>
+            {bookingCusCheck && <TableCell>未來預訂(待確認)</TableCell>}
+            <TableCell>設計師</TableCell>
+            <TableCell>來源</TableCell>
+          </>
+        }
+      >
+        <TableBody>
+          {orders.map(order => (
+            <TableRow key={order.id} css={styles.tableRow}>
+              <TableCell padding="checkbox">
+                <Checkbox
+                  color="primary"
+                  checked={selectedOrders.indexOf(order.id) > -1}
+                  onChange={() => handleSelectOne(order.id)}
+                  disabled={order.isDone}
+                />
+              </TableCell>
+              <TableCell>
+                <Button
+                  color="primary"
+                  component={RouterLink}
+                  size="small"
+                  to={`/order/${order.isDone ? order.createdOrderId : order.id}`}
+                  variant="outlined"
+                >
+                  {order.isDone ? '查看訂單' : <>&emsp;修改&emsp;</>}
+                </Button>
+              </TableCell>
+              <TableCell>{order.status}</TableCell>
+              {checkInDisplay && <TableCell>{checkinStatus(order.isCheckin)}</TableCell>}
+              <TableCell>
+                <Typography variant="body2">
+                  {format(new Date(order.date), 'HH:mm')}
+                </Typography>
+                <Typography variant="body2">
+                  {format(new Date(order.date), 'yyyy年MM月dd日')}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                {
+                  idx(order, _ => _.customer.isAlive) ? (
+                    <>
+                      {idx(order, _ => _.customer.name)}
+                      <Typography variant="body2">
+                        {idx(order, _ => _.customer.cellphone)}
+                      </Typography>
+                    </>
+                  ) : '客資已刪除'
+                }
+              </TableCell>
+              <TableCell>{order.isDesignate ? '指定' : '不指定'}</TableCell>
+              {bookingCusCheck && <TableCell>{order.isCusCheckRequired && '是'}</TableCell>}
+              <TableCell>
+                {order.designer ? order.designer.name ? idx(
+                  order,
+                  _ =>
+                    _.designer.name +
+                    (_.designer.designerNo ? ' / ' + _.designer.designerNo : '')
+                ) : '無設計師' : '不指定設計師'}
+              </TableCell>
+              <TableCell>{order.source}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </ManagementTable>
       <TableEditBar selected={selectedOrders} onCancel={delOrderPassUsing ? openPasswordModal : handleCancel} />
       <PasswordDialog
         open={dialogOpen}
