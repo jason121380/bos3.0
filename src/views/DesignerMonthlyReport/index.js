@@ -1,0 +1,174 @@
+/** @jsxImportSource @emotion/react */
+import {
+  Container, CircularProgress, Button, ToggleButton, ToggleButtonGroup
+} from '@mui/material'
+import Page from 'components/Page'
+import idx from 'idx'
+import { useState, useEffect } from 'react'
+import PageTitle from 'components/PageTitle'
+import ReferToggleButton from 'components/ReferToggleButton'
+import DateSelector from 'components/DateSelector'
+import useFetchDesignerMonthlyReport from 'hooks/useFetchDesignerMonthlyReport'
+import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
+import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
+import { CSVLink } from "react-csv";
+import format from 'date-fns/format'
+import { css } from '@emotion/react'
+import { theme } from '../../theme'
+
+import Results from './Results'
+
+const styles = {
+  root: css({}),
+  container: css({
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3),
+  }),
+  results: css({
+    marginTop: theme.spacing(3),
+  }),
+}
+
+const sortEnum = [
+  { label: '業績', value: 'performance' },
+  { label: '設計師', value: 'designer' },
+]
+
+export default function Employees() {
+  const [isMemberShipCardActive, setIsMemberShipCardActive] = useState(false)
+  const [excelData, setExcelData] = useState([])
+  const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
+
+  const [date, setDate] = useState({
+    startDate: new Date().getTime(),
+    endDate: new Date().getTime(),
+  })
+
+  const [performReference, setPerformReference] = useState('FAKE')
+  const [sort, setSort] = useState('performance')
+
+  const designerMontlyListData = useFetchDesignerMonthlyReport({
+    dateRange: {
+      startDate: date.startDate,
+      endDate: date.endDate,
+    },
+    performanceDisplay: 'TRUTH', // 後端皆會回傳虛實業績，先寫死
+  })
+  // 隱藏虛實業績切換按鈕 --------------------------------------------------------------------------------
+  const isDisplayTogglePerformanceButtonData = useFetchGetIsDisplayTogglePerformanceButton()
+  const [isDisplayTogglePerformanceButton, setIsDisplayTogglePerformanceButton] = useState(false)
+
+  useEffect(() => {
+    if (!isDisplayTogglePerformanceButtonData.loading) {
+      const isDisplayTogglePerformanceButton = idx(
+        isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
+      setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
+    }
+  }, [isDisplayTogglePerformanceButtonData.loading])
+  // ---------------------------------------------------------------------------------------------------
+
+  const handleToggleButtonChange = value => {
+    value !== null && setPerformReference(value)
+  }
+  const handleToggleButtonChangeSort = (_event, state) => {
+    state !== null && setSort(state)
+  }
+  useEffect(() => {
+    if (!isMemberShipCardActiveData.loading) {
+      const isMemberShipCardActive = idx(
+        isMemberShipCardActiveData,
+        _ => _.data.getIsMemberShipCardActive
+      )
+      setIsMemberShipCardActive(isMemberShipCardActive)
+    }
+  }, [isMemberShipCardActiveData.loading])
+  return (
+    <Page css={styles.root} title="設計師業績月報表">
+      <Container maxWidth={false} css={styles.container}>
+        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "flex", justifyContent: "space-between" }}>
+          <div className="merchantNamePrint">
+            {JSON.parse(localStorage.getItem('userMerchant')).name +
+              '   ' +
+              format(new Date(date.startDate), 'yyyy-MM-dd').toLocaleString() +
+              '  - ' +
+              format(new Date(date.endDate), 'yyyy-MM-dd').toLocaleString() +
+              '   ' +
+              '設計師業績月報表'}
+          </div>
+          <div className="merchantNamePrint">
+            {'列印時間： ' +
+              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
+          </div>
+        </div>
+        <PageTitle title='設計師業績月報表' subTitle='Designer Monthly Report' />
+        <div className='noprint' style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+          <DateSelector
+            date={date}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            dateChange={value => setDate(value)}
+            margin
+          />
+          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '20px 10px' }}>
+            <div style={{ alignSelf: 'flex-start' }}>
+              <div className="divText">排序依序：</div>
+              <ToggleButtonGroup
+                size="small"
+                value={sort}
+                onChange={handleToggleButtonChangeSort}
+                exclusive
+              >
+                {sortEnum.map((data, idx) => (
+                  <ToggleButton style={{ wordBreak: 'keep-all' }} key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                    {data.label}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+            </div>
+            {
+              !isDisplayTogglePerformanceButton && <div style={{ alignSelf: 'flex-start' }}>
+                <div className="divText">業績依據：</div>
+                <ReferToggleButton
+                  value={performReference}
+                  onChange={handleToggleButtonChange}
+                />
+              </div>
+            }
+            <CSVLink
+              className="noprint"
+              data={excelData}
+              filename="設計師業績月報表.csv"
+            >
+              <Button
+                style={{ wordBreak: 'keep-all', height: 'fit-content' }}
+                disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading}
+                variant="contained"
+                color="primary"
+              >
+                報表匯出
+              </Button>
+            </CSVLink>
+            <Button
+              style={{ wordBreak: 'keep-all', height: 'fit-content' }}
+              disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading}
+              onClick={() => window.print()}
+              variant="contained"
+              color="primary"
+            >
+              列印
+            </Button>
+          </div>
+        </div>
+        {(!designerMontlyListData.loading && !isMemberShipCardActiveData.loading) ?
+          idx(designerMontlyListData, _ => (
+            <Results
+              setExcelData={setExcelData}
+              performReference={performReference}
+              designerMontlyListData={designerMontlyListData.data.designerMonthlyReport}
+              sort={sort}
+              isMemberShipCardActive={isMemberShipCardActive}
+            />
+          )) : <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>}
+      </Container>
+    </Page>
+  )
+}

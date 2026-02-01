@@ -1,0 +1,178 @@
+/** @jsxImportSource @emotion/react */
+import {
+  Typography, Paper, Button, List, ListItemButton,
+  Checkbox, ListItemText, ListItemIcon,
+} from '@mui/material'
+import Grid from '@mui/material/Unstable_Grid2';
+import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
+import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
+import { useState } from 'react';
+import { cloneDeep } from 'lodash';
+import { css } from '@emotion/react'
+import getLabel from 'utils/getTransferListLabel';
+
+import SearchField from './SearchField';
+
+const styles = {
+  paper: css({
+    height: 350, overflow: 'auto'
+  }),
+}
+
+const TransferList = ({
+  optionData, optionIds, handleSetValue, keyword, idsKey,
+  keyWordsOnChange, title, keywordKey
+}) => {
+  if (optionData === null) return null
+  const [selectLeftIds, setSelectLeftIds] = useState([])
+  const [selectRightIdx, setSelectRightIdx] = useState([])
+
+  const handleSelectId = id => {
+    const cloneData = cloneDeep(selectLeftIds)
+    const idx = cloneData.indexOf(id)
+    idx === -1 ? cloneData.push(id) : cloneData.splice(idx, 1)
+    setSelectLeftIds(cloneData)
+  }
+
+  const handleSelectRemoveIdx = i => {
+    const cloneData = cloneDeep(selectRightIdx)
+    const idx = cloneData.indexOf(i)
+    idx === -1 ? cloneData.push(i) : cloneData.splice(idx, 1)
+    setSelectRightIdx(cloneData)
+  }
+
+  const addIds = () => {
+    const ids = [...optionIds, ...selectLeftIds]
+    handleSetValue(ids, idsKey)
+    setSelectLeftIds([])
+  }
+
+  const removeIds = () => {
+    const cloneServiceIds = cloneDeep(optionIds)
+    const filtId = cloneServiceIds.filter((d, i) => !selectRightIdx.includes(i))
+    handleSetValue(filtId, idsKey)
+    setSelectRightIdx([])
+  }
+  return (
+    <>
+      <Typography variant='h5'>{title}</Typography>
+      <Grid container direction='column' spacing={1} >
+        <Grid sx={{ pt: '0px !important', mb: 1 }} >
+          <SearchField value={keyword} onChange={value => keyWordsOnChange(value, keywordKey)} />
+        </Grid>
+        <Grid
+          container
+          spacing={2}
+          rowGap
+          sx={{ mt: '0px !important' }}
+        >
+          <Grid sm={12} md sx={{ pt: '0px !important' }} >
+            <Paper css={styles.paper}>
+              <List dense component="div" role="list">
+                {optionData.map(value => {
+                  return value.display && (
+                    <ListItemButton
+                      key={`left-${value.id}`}
+                      role="listitem"
+                      disableRipple
+                      onClick={() => handleSelectId(value.id)}
+                      sx={{ padding: '2px 16px !important' }}
+                    >
+                      <ListItemIcon>
+                        <Checkbox
+                          tabIndex={-1}
+                          disableRipple
+                          sx={{ ":hover": { background: 'unset !important' } }}
+                          checked={selectLeftIds.includes(value.id)}
+                          inputProps={{
+                            'aria-labelledby': value.id,
+                          }}
+                        />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={getLabel(value)}
+                        id={value.id}
+                        primaryTypographyProps={{
+                          style: { fontSize: '16px', color: '#263238' }
+                        }} />
+                    </ListItemButton>
+                  )
+                })}
+              </List>
+            </Paper>
+          </Grid>
+          <Grid
+            sm={12}
+            md={1}
+            container
+            justifyContent='center'
+            alignItems='center'
+            sx={{
+              gap: 2,
+              pt: '0px !important',
+              flexDirection: {
+                md: 'column',
+                sm: 'row',
+              },
+            }}
+          >
+            <Button
+              variant='outlined'
+              color='primary'
+              onClick={addIds}
+              disabled={selectLeftIds.length === 0}
+            ><KeyboardArrowRightRoundedIcon /></Button>
+            <Button
+              variant='outlined'
+              color='primary'
+              onClick={removeIds}
+              disabled={selectRightIdx.length === 0}
+            ><RemoveRoundedIcon /></Button>
+
+          </Grid>
+          <Grid sm={12} md width='100%' sx={{ pt: '0px !important' }} >
+            <Paper css={styles.paper}>
+              <List dense component="div" role="list" sx={{ height: !optionIds.length ? '100%' : 'unset' }}>
+                {optionIds.length ? optionIds.map((id, i) => {
+                  const findData = optionData.find(d => d.id === id)
+                  if (!findData) {
+                    console.log('optionIds: ', optionIds, title);
+                  }
+                  return (
+                    <ListItemButton
+                      key={`right-${id}-${i}`}
+                      role="listitem"
+                      disableRipple
+                      onClick={() => handleSelectRemoveIdx(i)}
+                      sx={{ padding: '2px 16px !important' }}
+                    >
+                      <ListItemIcon>
+                        <Checkbox
+                          tabIndex={-1}
+                          disableRipple
+                          checked={selectRightIdx.includes(i)}
+                          sx={{ ":hover": { background: 'unset !important' } }}
+                          inputProps={{
+                            'aria-labelledby': `left-${id}-${i}`,
+                          }}
+                        />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={findData ? getLabel(findData) : ''}
+                        id={`left-${id}-${i}`}
+                        primaryTypographyProps={{
+                          style: { fontSize: '16px', color: '#263238' }
+                        }} />
+                    </ListItemButton>
+                  );
+                }) : <Typography textAlign='center' sx={{ height: '100%', alignContent: 'center' }} variant='h5' >選取左方選項加入組合</Typography>}
+              </List>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Grid>
+    </>
+  )
+}
+
+export default TransferList

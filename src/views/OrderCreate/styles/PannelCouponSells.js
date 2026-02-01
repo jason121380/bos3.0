@@ -1,0 +1,28 @@
+import { css } from '@emotion/react'
+import { theme } from '../../../theme'
+
+export default {
+  root: css({
+    width: '100%',
+    marginTop: theme.spacing(3),
+  }),
+  details: css({
+    overflowX: 'auto',
+  }),
+  heading: css({
+    fontSize: '15px !important',
+    fontWeight: 'bold',
+  }),
+  fieldOutter: css({
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flexDirection: 'column',
+  }),
+  couponTeachTitle: css({
+    fontSize: theme.typography.pxToRem(13),
+    fontWeight: theme.typography.fontWeightRegular,
+    marginLeft: '34px',
+    fontWeight: 'bold',
+  }),
+}

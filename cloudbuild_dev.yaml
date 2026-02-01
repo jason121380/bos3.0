@@ -1,0 +1,19 @@
+timeout: 3600s
+steps:
+  - name: 'node:20.12.1-alpine'
+    args: ['yarn', '--production']
+  - name: 'node:20.12.1-alpine'
+    args: ['yarn', 'build']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'asia-east1-docker.pkg.dev/ml-group-204107/beautyos-frontend-repo/dev:$SHORT_SHA', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'asia-east1-docker.pkg.dev/ml-group-204107/beautyos-frontend-repo/dev:$SHORT_SHA']
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args:
+      - 'set'
+      - 'image'
+      - 'deployment/mlg-beautyosdev-deployment'
+      - 'mlg-beautyosdev=asia-east1-docker.pkg.dev/ml-group-204107/beautyos-frontend-repo/dev:$SHORT_SHA'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=asia-east1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'

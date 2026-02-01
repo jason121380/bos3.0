@@ -1,0 +1,2045 @@
+.fc-license-message {
+  display: none;
+}
+
+/* scrollbar */
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+h1 {
+  font-weight: 1000 !important;
+  color: #dbdbdb !important;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #dddddd !important;
+}
+
+body {
+  //background-color: #1E1E2D; // Dark Blue
+  background-color: #00001c;
+}
+
+label {
+  color: #d5d5d5de !important;
+}
+
+.MuiMenuItem-root {
+  color: #d5d5d5de !important;
+}
+
+.MuiIconButton-label > .MuiSvgIcon-root {
+  color: #4581df !important;
+}
+
+.MuiButton-outlinedPrimary {
+  color: #fafafade !important;
+  border-color: #4581df !important;
+  border-width: 1.5px;
+}
+
+.MuiButton-outlinedPrimary:hover {
+  color: #d5d5d5de !important;
+  background-color: #4581df !important;
+}
+
+.MuiButtonGroup-root .MuiButtonBase-root {
+  color: #ffffff !important;
+  background-color: #32467c !important;
+  &:hover {
+    background-color: #3865ac !important;
+  }
+}
+
+.MuiButton-root {
+  color: #ffffff !important;
+  //background-color: #3865ac;
+}
+
+.MuiButton-root:hover {
+  color: #ffffff !important;
+  background-color: #3865ac;
+}
+
+div.MuiDrawer-paperAnchorDockedLeft {
+  border-right: none;
+}
+
+.MuiInputBase-root,
+.MuiCheckbox-root {
+  color: #ffffffd6;
+}
+
+.MuiSvgIcon-root {
+  color: #ffffffd6;
+}
+
+.MuiInput-underline:before {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.7)
+}
+
+.MuiInputAdornment-root {
+  svg {
+    color: #4581df
+  }
+}
+
+svg.MuiSvgIcon-root[data-testid=CheckBoxOutlineBlankIcon],
+svg.MuiSvgIcon-root[data-testid=CheckBoxIcon] {
+  color: #4581df !important
+}
+
+.MuiTabs-scroller {
+  button.MuiTab-root {
+    color: #ffffffd6;
+    &.Mui-selected {
+      color: #fff !important
+    }
+  }
+}
+
+.MuiOutlinedInput-root .Mui-disabled,
+.MuiInputLabel-outlined.Mui-disabled {
+  color: #525252;
+  -webkit-text-fill-color: #525252
+}
+
+.system-update-record-span {
+  &, span {
+    color: #fff !important;
+  }
+}
+
+.ScheduleCard {
+  svg {
+    color: #4581df !important
+  }
+}
+
+.MuiTab-textColorInherit {
+  color: #ffffffd6;
+}
+
+.MuiChip-root {
+  color: #ffffffd6 !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.MuiAutocomplete-root {
+  .MuiChip-root {
+    color: #ffffffd6 !important;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+  }
+}
+
+.MuiChip-deleteIcon {
+  fill: rgba(255, 255, 255, 0.5) !important;
+}
+
+.MuiListSubheader-root {
+  color: #3b8cff;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.divText {
+  color: #ffffff !important;
+}
+
+.MuiPickersCalendarHeader-switchHeader > .MuiButtonBase-root {
+  background-color: #202020 !important;
+}
+
+.fc-col-header,
+.fc-timeline-header,
+.fc-scroller-harness {
+  background-color: #202020 !important;
+  color: #ffffff !important;
+}
+
+.MuiIconButton-root {
+  color: #d5d5d5de !important;
+}
+
+.MuiToggleButton-root {
+  color: #d5d5d5de !important;
+  border-color: #ffffff40 !important;
+}
+
+.MuiChip-outlined {
+  border-color: #ffffff40 !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border-color: #92929f !important;
+}
+
+.MuiPaper-root {
+  color: #ffffffde !important;
+  background-color: #202020 !important;
+}
+
+.MuiListSubheader-root {
+  background-color: #202020 !important;
+}
+
+.MuiTablePagination-root {
+  .MuiTablePagination-selectLabel ,
+  .MuiTablePagination-displayedRows {
+    color: white
+  }
+}
+
+.MuiPickerDTTabs-tabs {
+  background-color: unset;
+}
+
+.MuiAutocomplete-option[aria-selected='true'] {
+  background-color: #182c9b !important;
+}
+.MuiAutocomplete-option[data-focus='true'],
+.MuiAutocomplete-option.Mui-focused {
+  background-color: #3865ac !important;
+}
+
+.MuiTypography-root {
+  color: #ffffffde;
+}
+
+div > p.MuiTypography-root {
+  color: #ffffffde;
+}
+
+span.MuiTypography-root {
+  color: #ffffffde;
+}
+
+input.MuiInputBase-input {
+  color: #ffffffde;
+}
+
+.MuiTypography-body1 {
+  color: #ffffffde;
+}
+
+header > .MuiToolbar-root {
+  background-color: #202d50 !important;
+}
+
+.MuiCardContent-root {
+  background-color: #202020 !important;
+}
+
+.tableItem > thead > tr > th,
+.tableItem > tbody > tr > td {
+  color: #ffffff;
+}
+
+.cashSaving {
+  font-weight: bold;
+  color: red !important;
+}
+
+.MuiAccordion-root:before {
+  background-color: #5c5c5c;
+}
+
+.MuiDivider-root {
+  border: none;
+  height: 1px;
+  margin: 0;
+  flex-shrink: 0;
+  background-color: #5c5c5c;
+}
+
+.cellHighlight {
+  color: #ff4747 !important;
+  font-weight: bold !important;
+}
+
+.th {
+  font-weight: 1000 !important;
+}
+
+.makeStyles-active {
+  background-color: #3865ac;
+}
+
+// button.MuiButtonBase-root.MuiButton-containedPrimary {
+//   background-color: #3865ac;
+// }
+
+.MuiButton-contained {
+  background-color: #2c4c7e;
+}
+
+button.MuiToggleButton-root.Mui-selected {
+  color: #ffffff;
+  background-color: #3865ac;
+}
+button.MuiToggleButton-root.Mui-selected:hover {
+  color: #ffffff;
+  background-color: #0d47a1;
+}
+.teachingMode span {
+  color: white;
+}
+div.versionUpdateTime {
+  color: white;
+  margin: 0 20px;
+  font-size: 15px;
+}
+
+td.MuiTableCell-sizeSmall,
+th.MuiTableCell-sizeSmall {
+  padding: 2px 5px;
+  white-space: pre;
+}
+span.PrivateSwitchBase-root-19 {
+  padding: 1px;
+}
+@media (min-width: 1280px) {
+  div.makeStyles-content-2,
+  div.makeStyles-content-66,
+  div.jss2 {
+    padding-left: 206px;
+  }
+}
+@media (max-width: 576px) {
+  .teachingMode span,
+  div.versionUpdateTime {
+    display: none;
+  }
+}
+
+.Mui-disabled {
+  color: #525252;
+}
+
+th.MuiTableCell-root.MuiTableCell-head {
+  padding: 2px 5px;
+  white-space: pre;
+  font-weight: 600;
+  background-color: #08424c;
+  color: #ffffff;
+  border-bottom: 1px solid #424242;
+}
+
+td.MuiTableCell-root.MuiTableCell-body {
+  padding: 2px 5px;
+  white-space: pre;
+  color: #ffffff;
+  border-bottom: 1px solid #424242;
+  background-color: #202020;
+}
+
+.moneyFlowCatReportSubtotal > .MuiTableCell-body {
+  background-color: #2c4c7e !important;
+}
+
+td.MuiTableCell-root > a {
+  color: #ffffff;
+  text-decoration-line: none;
+}
+
+.merchantNamePrint {
+  display: none !important;
+}
+.MuiOutlinedInput-input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 100px #202020 inset;
+}
+@media print {
+  #printContainer {
+    padding: 0;
+  }
+  div.MuiContainer-root {
+    padding: 0;
+  }
+  th.MuiTableCell-root.MuiTableCell-head {
+    background-color: #ffffff;
+    color: #000000 !important;
+  }
+  div.forPrint {
+    display: grid;
+    grid-template-columns: 190px 190px 190px 190px;
+    padding-top: 20px;
+    .MuiGrid-item {
+      padding: 0 !important;
+    }
+  }
+  div.forPrintHelper {
+    display: grid;
+    grid-template-columns: 250px 250px 250px;
+  }
+  div.MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-md-6.MuiGrid-grid-lg-4 {
+    padding: 10px;
+    line-height: 2em;
+  }
+  th.forPrint3,
+  td.forPrint4 {
+    width: 0;
+  }
+  th.categoryPrint,
+  td.categoryPrint2 {
+    width: 0;
+    padding: 0;
+    line-height: 2em;
+  }
+
+  td.itemPrint {
+    width: 0;
+    max-width: 3em;
+    overflow: hidden;
+    white-space: pre !important;
+  }
+
+  td.orderNumPrint {
+    width: 0;
+    max-width: 3em;
+    overflow: hidden;
+    white-space: pre !important;
+  }
+
+  th.categoryPrintService2,
+  td.categoryPrintService2 {
+    display: none;
+    line-height: 2em;
+  }
+  div.categoryPrintService {
+    width: 65px;
+    color: red;
+    word-wrap: break-word;
+    word-break: break-all;
+    line-height: 2em;
+  }
+
+  div.userRakeGrid {
+    display: grid;
+    grid-template-columns: 235px 235px 235px;
+  }
+
+  div.makeStyles-header-139,
+  div.makeStyles-header-156,
+  div.makeStyles-header-171,
+  div.makeStyles-btnDiv-141,
+  div.makeStyles-header-172,
+  div.makeStyles-btnDiv-158,
+  div.makeStyles-btnDiv-174 {
+    display: none;
+  }
+  div.MuiDrawer-paperAnchorDockedLeft {
+    display: none;
+  }
+
+  tr.salaryTransferNoDsiplay {
+    display: none;
+  }
+  @page {
+    margin: 7mm;
+  }
+  div.printGrid,
+  div.MuiToolbar-regular {
+    display: none;
+  }
+  .merchantNamePrint {
+    display: flex !important;
+    font-weight: bold;
+  }
+  .noprint {
+    position: absolute;
+    display: none !important;
+    left: -9999px;
+    visibility: hidden;
+  }
+  .printObject {
+    display: block;
+    width: 190px;
+    margin-bottom: 100px;
+    margin-left: 12px;
+    box-shadow: none;
+    border: none;
+    overflow: hidden;
+    height: 990px;
+    page-break-inside: always;
+    page-break-after: always;
+    page-break-before: always;
+  }
+  .printObjectHelper {
+    display: block;
+    width: 250px;
+    margin-bottom: 100px;
+    margin-left: 17px;
+    box-shadow: none;
+    border: none;
+    overflow: hidden;
+    height: 990px;
+    page-break-inside: always;
+    page-break-after: always;
+    page-break-before: always;
+  }
+  html * {
+    font-size: 9px !important;
+    line-height: 1.3em !important;
+    color: #000000 !important;
+  }
+
+  div.gridcard {
+    display: grid;
+    grid-template-columns: 260px 260px 260px;
+  }
+
+  td.MuiTableCell-root.MuiTableCell-body {
+    white-space: pre-line;
+  }
+  .DesignerPerforamnceAnalyzeReportPrint {
+    display: block;
+    margin: 0;
+    width: 100%;
+    .printLongCard {
+      box-shadow: none;
+      border-radius: 0px;
+      height: fit-content;
+      page-break-before: auto;
+      page-break-inside: avoid;
+      page-break-after: auto;
+      margin-bottom: 30px;
+      .MuiPaper-root {
+        border: 1px solid black;
+        &:first-child {
+          border-bottom: none !important;
+        }
+      }
+    }
+    .MuiCardHeader-root {
+      border: 1px solid black;
+      border-bottom: none;
+    }
+    .MuiTableContainer-root {
+      box-shadow: none;
+      border-radius: 0px;
+    }
+    table {
+      tbody tr {
+        border-top: 1px solid black !important;
+      }
+      tbody tr td,
+      thead tr th{
+        border: none;
+      }
+      td.MuiTableCell-root.MuiTableCell-body {
+        border-bottom: none;
+      }
+    }
+    .DesignerPerforamnceAnalyzeReportTableContainer {
+      padding: 0;
+    }
+  }
+  .MuiTableCell-root.MuiTableCell-body.lineHeight.MuiTableCell-sizeSmall,
+  .MuiCardHeader-root.lineHeight {
+    line-height: 1.2em !important;
+    border-bottom: 2px solid #4a4a4a !important;
+  }
+  .DesignersSalaryDetailReportInfo,
+  .MerchantBankTransferReportMerchantName {
+    display: block !important;
+    visibility: visible !important;
+  }
+  .DesignersSalaryDetailReport {
+    .searchBtnDiv {
+      display: none;
+    }
+    .DesignersSalaryDetailReportTable {
+      display: block !important;
+      overflow: visible !important;
+      border-radius: 0px;
+      box-shadow: none;
+      border: 1px solid rgb(0, 0, 0);
+      border-top: none;
+      margin-bottom: 50px;
+      table {
+        table-layout: fixed;
+        border: 1px solid black;
+        thead,
+        tr td:nth-child(2),
+        tr th:nth-child(2) {
+          position: relative;
+          left: 0;
+        }
+        thead {
+          outline: none;
+          tr th {
+            border-top: 1px solid black;
+          }
+        }
+        thead tr th,
+        tbody tr td {
+          border-bottom: none;
+          white-space: pre-line !important;
+          outline: none;
+          &:first-child {
+            width: 80px !important;
+          }
+        }
+        tbody tr {
+          border-top: 1px solid black;
+        }
+      }
+    }
+    .DesignersSalaryDetailReportTable-2 {
+      display: block !important;
+      overflow: visible !important;
+      border-radius: 0px;
+      box-shadow: none;
+      border: 1px solid rgb(0, 0, 0);
+      border-top: none;
+      page-break-inside: avoid;
+      // page-break-before: always;
+      table {
+        table-layout: fixed;
+        border: 1px solid black;
+        thead,
+        tr td:nth-child(2),
+        tr th:nth-child(2) {
+          position: relative;
+          left: 0;
+        }
+        thead {
+          outline: none;
+          tr {
+            outline: none;
+            th{
+              border-top: 1px solid black;
+            }
+          }
+        }
+        thead tr th,
+        tbody tr td {
+          border-bottom: none;
+          white-space: pre-line !important;
+          outline: none;
+          &:first-child {
+            width: 75px;
+          }
+        }
+        tbody tr {
+          border-top: 1px solid black !important;
+        }
+      }
+    }
+  }
+  .MerchantSearchBarDisplayNone {
+    display: none;
+  }
+  .TransferDetailpPrint .MuiTypography-subtitle1 {
+    margin-bottom: 10px;
+    &:first-child {
+      margin-top: 10px;
+    }
+  }
+  .TransferDetailpPrint .MuiTypography-subtitle1 .MuiInput-input {
+    margin-top: -2px;
+    padding-bottom: 2px;
+  }
+  .TransferDetailDateInput .MuiTypography-subtitle1 .MuiInput-input {
+    width: 20px;
+    text-align: center;
+  }
+  .TransferDetailDateInput .MuiTypography-subtitle1 .MuiTextField-root {
+    &:first-child {
+      .MuiInput-input {
+        width: 30px;
+      }
+    }
+  }
+  .MerchantBusinessIntervalReportTopTable {
+    .MuiTableContainer-root {
+      box-shadow: none;
+      border-radius: 0px;
+      table {
+        border: 1px solid black;
+        thead tr th,
+        tbody tr td {
+          border-bottom: 1px solid black;
+        }
+      }
+    }
+  }
+  .CostAnalysisReportCardHeader,
+  .IncomeStatementReportHeader {
+    padding: 5px;
+    border-bottom: 1px solid #eeeeee;
+  }
+  .BusinessAnalysisReport {
+    .BusinessAnalysisReportTable {
+      box-shadow: none;
+      border-radius: 0;
+      width: fit-content;
+      margin: 0 auto;
+      table {
+        // display: block;
+        // flex-direction: column;
+        // border-collapse: collapse !important;
+        border: 1px solid black;
+        border-top: none;
+        .MuiTableCell-root {
+          border-bottom: none !important;
+        }
+        thead tr th:first-child,
+        tbody tr td:first-child {
+          position: relative;
+          outline: none;
+        }
+        thead {
+          border-top: 1px solid black;
+          tr {
+            // display: flex;
+            outline: none;
+            position: relative;
+            th {
+              white-space: normal !important;
+              width: calc((100vw - 80px) / 18) !important;
+              padding-right: 0 !important;
+              border-left: 1px solid black;
+              &:first-child {
+                // min-width: 80px !important;
+                width: 60px !important;
+                border-left: none;
+              }
+            }
+          }
+        }
+        tbody {
+          tr {
+            // display: block;
+            border-top: 1px solid black;
+            td {
+              word-break: break-all !important;
+              width: calc((100vw - 88px) / 18) !important;
+              border-left: 1px solid black;
+              &:first-child {
+                // min-width: 80px;
+                border-left: none;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .MerchantDailyReportTable-1,
+  .MerchantDailyReportTable-3,
+  .MerchantDailyReportTable-4 {
+    box-shadow: none;
+    border-radius: 0px;
+    table {
+      border: 1px solid black;
+      table-layout: fixed;
+      tbody tr td,
+      thead tr th {
+        border: none;
+        white-space: break-spaces !important;
+      }
+      tbody tr {
+        border-top: 1px solid black;
+      }
+    }
+  }
+  .MerchantDailyReportTable-2 {
+    overflow: visible;
+    box-shadow: none;
+    border-radius: 0px;
+    table {
+      page-break-after: auto !important;
+      margin-bottom: 20px;
+      border: 1px solid black;
+      table-layout: fixed;
+      tbody tr td,
+      thead tr th {
+        border: none;
+        white-space: break-spaces !important;
+      }
+      tbody tr {
+        border-top: 1px solid black;
+      }
+    }
+  }
+  .MerchantDailyReportCardContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: unset;
+    width: unset;
+    margin: 0;
+    gap: 10px;
+    .MerchantDailyReportCard {
+      padding: 0 !important;
+      hr {
+        display: none;
+      }
+      .MuiCard-root {
+        box-shadow: none;
+        border-radius: 0px;
+        border: 1px solid black;
+        .MuiTableContainer-root {
+          border-radius: 0px;
+          box-shadow: none;
+          table {
+            border: none;
+            border-bottom: 1px solid black;
+            tbody {
+              tr {
+                border: none;
+                border-top: 1px solid black;
+                td {
+                  border: none;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .MergeResultCard {
+      padding: 0 !important;
+      hr {
+        display: none;
+      }
+      .MuiCard-root {
+        box-shadow: none;
+        border-radius: 0px;
+        border: 1px solid black;
+        .MuiTableContainer-root {
+          border-radius: 0px;
+          box-shadow: none;
+          table {
+            border: none;
+            border-bottom: 1px solid black;
+            thead tr th,
+            tbody tr td {
+              border-bottom: 1px solid black;
+            }
+          }
+        }
+      }
+    }
+  }
+  .MerchantBankTransferReport {
+    padding: 0;
+    .MerchantBankTransferReportTable {
+      box-shadow: none;
+      border: none;
+      border-radius: 0px;
+      table {
+        border-collapse: collapse;
+        border: 1px solid rgb(110, 110, 110) !important;
+        thead tr th,
+        tbody tr td {
+          border-bottom: 1px solid rgb(110, 110, 110) !important;
+          font-size: 14px !important;
+        }
+      }
+    }
+  }
+  .CostAnalysisReport {
+    padding: 0;
+    .CostAnalysisReportTableContainer {
+      margin: 0;
+      hr {
+        display: none;
+      }
+      .MuiCardContent-root {
+        padding-bottom: 0;
+      }
+      .MuiPaper-root {
+        border: none;
+      }
+      .MuiCard-root {
+        box-shadow: none;
+        border-radius: 0px;
+        .MuiCardHeader-root {
+          border: none !important;
+        }
+        table {
+          margin: 0;
+          border: 1px solid black;
+          thead {
+            tr {
+              th {
+                border: 1px solid black;
+                border-right: none;
+                border-left: none;
+              }
+            }
+          }
+          tbody {
+            tr {
+              td {
+                border-bottom: 1px solid rgb(135, 135, 135);
+                &:first-child {
+                  width: 220px;
+                  border-left: none !important;
+                }
+                &:last-child {
+                  border-right: none !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .IncomeStatementReport {
+    padding-top: 0;
+    .IncomeStatementReportTableContainer {
+      margin: 0;
+      hr {
+        display: none;
+      }
+      .IncomeStatementReportHeader {
+        display: none;
+      }
+      .MuiCard-root {
+        box-shadow: none;
+        border-radius: 0px;
+        .MuiCardContent-root {
+          padding: 0;
+        }
+        table {
+          border: 1px solid black;
+          thead {
+            tr {
+              th {
+                border: 1px solid black;
+                border-right: none;
+                border-left: none;
+              }
+            }
+          }
+          tbody {
+            tr {
+              td {
+                border-bottom: 1px solid rgb(135, 135, 135);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .EmployeeDailyReport,
+  .DecreaseDailyReport {
+    margin: 0;
+    width: 100%;
+    display: block;
+    .EmployeeDailyReportCardPrintContainer,
+    .DecreaseDailyReportCardPrintContainer {
+      display: flex;
+      page-break-after: always !important;
+      page-break-after: always;
+      width: calc(100% + 3px);
+      &:last-child {
+        page-break-after: avoid !important;
+        page-break-after: avoid;
+      }
+      .EmployeeDailyReportCardPrint,
+      .DecreaseDailyReportCardPrint {
+        width: 25%;
+        max-width: 25%;
+        padding: 0;
+        display: block;
+        margin-right: -1px;
+        .MuiPaper-root {
+          border-radius: 0px;
+          box-shadow: none;
+        }
+        .MuiCardContent-root {
+          padding-bottom: 0;
+        }
+        .MuiCardHeader-root {
+          border: 1px solid black;
+          border-bottom: none;
+          border-radius: 0px;
+        }
+        .MuiTableContainer-root {
+          overflow-x: visible;
+        }
+        .DecreaseDailyReportCardTable {
+          tr {
+            th, td {
+              word-break: break-all;
+              &:first-child {
+                min-width: 30px;
+                padding-right: 0;
+              }
+            }
+          }
+        }
+        table {
+          border: 1px solid black;
+          border-collapse: collapse;
+          box-shadow: none;
+          tbody tr td,
+          thead tr th {
+            border-bottom: 1px solid black;
+          }
+        }
+      } 
+    }
+  }
+  .HelperMonthlyReport {
+    box-shadow: none !important;
+    border-radius: 0;
+    border: 1px solid black;
+    table {
+      tr td, tr th {
+        border-bottom: 1px solid black !important;
+      }
+    }
+  }
+  .EmployeePayslip {
+    padding: 0;
+    .MuiPaper-root {
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .EmployeePayslipTableContainer {
+      display: block !important;
+      p.SMALL {
+        margin: 10px 0;
+      }
+      p.MEDIUM {
+        margin: 20px 0;
+      }
+      p.LARGE {
+        margin: 30px 0;
+      }
+      .EmployeePayslipTable {
+        box-shadow: none;
+        border-radius: 0;
+        border: 1px solid black;
+        page-break-inside: avoid;
+        margin-bottom: 0;
+        .MuiTableContainer-root {
+          padding-bottom: 15px !important;
+        }
+        .MuiCardHeader-root {
+          border-bottom: 1px solid black;
+          span {
+            font-weight: 800;
+            font-size: 16px !important;
+          }
+        }
+        table td {
+          border-bottom: .5px solid black;
+          padding: 1px 1px 1px 3px;
+          font-size: 13px !important;
+        }
+        td.tableRemark {
+          max-width: 85px;
+          word-break: break-all;
+          white-space: unset !important;
+        }
+        tbody.renderItem {
+          td {
+            width: 150px !important;
+            span {
+              font-size: 13px!important;
+            }
+            .nowrap {
+              width: 70px;
+              display: flex;
+              white-space: nowrap;
+              overflow: hidden;
+              height: 16px;
+            }
+          }
+          td.price {
+            width: 50px !important;
+          }
+        }
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  .MerchantLeaderBoard {
+    .MerchantLeaderBoardTable {
+      box-shadow: none;
+      overflow: visible;
+      table {
+        border: 1px solid black;
+        border-top: none;
+        border-bottom: none;
+        border-collapse: collapse;
+        box-shadow: none;
+        page-break-after: auto !important;
+        display: block;
+        margin-bottom: 50px;
+        tbody tr td,
+        thead tr th {
+          border-bottom: 1px solid black;
+        }
+        thead {
+          tr {
+            th {
+              white-space: normal !important;
+              width: calc(100vw / 9) !important;
+              border-top: 1px solid black;
+              &:first-child {
+                width: 40px !important;
+              }
+              &:nth-child(2) {
+                width: 80px !important;
+              }
+              &:nth-child(3) {
+                width: 80px !important;
+              }
+              &:last-child {
+                width: 180px !important;
+              }
+            }
+          }
+          &:first-child {
+            padding-top: 0 !important;
+          }
+        }
+      }
+    }
+  }
+  .DesignerPerformBasic {
+    .DesignerPerformBasicTable {
+      box-shadow: none;
+      overflow: visible;
+      width: fit-content;
+      margin: 0 auto;
+      border: 1px solid black;
+      border-top: none;
+      border-radius: 0;
+      table {
+        border-collapse: collapse;
+        box-shadow: none;
+        page-break-after: auto !important;
+        display: block;
+        tbody tr td,
+        thead tr th {
+          white-space: normal !important;
+          border-bottom: 1px solid black;
+          border-top: 1px solid black;
+        }
+        thead {
+          tr {
+            th {
+              width: calc(100vw / 12) !important;
+              &:first-child {
+                width: 50px !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .HelperLeaderBoard {
+    box-shadow: none;
+    border: none;
+    .HelperLeaderBoardTable {
+      box-shadow: none;
+      border-radius: 0;
+      border: none;
+      table {
+        border: 1px solid black;
+        border-collapse: collapse;
+        box-shadow: none;
+        tbody tr td,
+        thead tr th {
+          white-space: normal !important;
+          border-bottom: 1px solid black;
+        }
+      }
+    }
+  }
+  .designerPerformanceReport {
+    .designerPerformanceReportTable {
+      max-height: unset !important;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 0;
+      box-shadow: none;
+      overflow-x: hidden;
+      height: fit-content !important;
+      table {
+        width: 100%;
+        border: 1px solid black;
+        table-layout: fixed;
+        thead tr th{
+          border-bottom: 1px solid black !important;
+          white-space: break-spaces;
+          &:first-child {
+            width: 70px;
+          }
+          &:last-child {
+            width: 50px;
+            white-space: break-spaces;
+          }
+        }
+        tbody.designerPerformance {
+          tr {
+            td {
+              word-break: break-all;
+              border: none;
+              &:first-child {
+                word-wrap: break-word;
+              }
+            }
+            &:nth-child(even) td {
+              border-bottom: .5px solid black;
+            }
+            &:last-child td {
+              border-bottom: 1px solid black;
+            }
+          }
+          tr:nth-child(4n) , tr:nth-child(4n-1){
+            td {
+              background-color: #efefef;
+            }
+          }
+        }
+        tbody.sumPerformance {
+          tr td {
+            word-break: break-all;
+            border-bottom: .5px solid black;
+          }
+        }
+      }
+    }
+  }
+  .ProductInvoicingRecordReport {
+    box-shadow: none;
+    border: none;
+    .ProductInvoicingRecordReportTable {
+      box-shadow: none;
+      border-radius: 0;
+      border: none;
+      max-height: unset !important;
+      table, tr, th, td {
+        border: none;
+        outline: none;
+      }
+      table {
+        border-collapse: collapse;
+        box-shadow: none;
+        border: 1px solid black;
+        thead tr {
+          position: relative;
+        }
+        th, td {
+          border-top: 1px solid black;
+          &:first-child {
+            position: relative;
+          }
+        }
+      }
+    }
+  }
+  .BusinessItemsMonthlyAnalyzeReportTable {
+    border-radius: 0;
+    border: 1px solid black;
+    border-top: none;
+    box-shadow: none;
+    table {
+      thead tr th, 
+      tbody tr td {
+        white-space: pre-line !important;
+        word-break: break-all;
+        position: inherit;
+        border: none;
+        outline: none;
+        border-top: 1px solid black;
+        padding: 5px 3px !important;
+        &:first-child {
+          white-space: nowrap !important;
+        }
+      }
+    }
+  }
+  .multiMerchantsLeaderBoard {
+    .multiMerchantsLeaderBoardTable {
+      border-radius: 0;
+      border-top: none;
+      box-shadow: none;
+      max-height: unset !important;
+      table {
+        border: 1px solid black;
+        td, th {
+          border: none;
+        }
+        th {
+          border-top: 1px solid black;
+        }
+        tbody {
+          tr {
+            border-top: 1px solid black;
+          }
+        }
+      }
+    }
+  }
+  .ProductInventoryListTable {
+    box-shadow: none;
+    border-radius: 0;
+    border: none;
+    max-height: unset !important;
+    table, tr, th, td {
+      border: none;
+      outline: none;
+    }
+    table {
+      border-collapse: collapse;
+      box-shadow: none;
+      border: 1px solid black;
+      thead tr {
+        position: relative;
+      }
+      th, td {
+        border-top: 1px solid black;
+        &:first-child {
+          position: relative;
+        }
+      }
+    }
+  }
+  .DesignerMonthlyReportTableContainer {
+    box-shadow: none;
+    border-radius: 0;
+    margin: 0;
+    .DesignerMonthlyReportTable {
+      border: 1px solid black;
+      td, th {
+        border: none;
+        background-color: transparent;
+      }
+      tr {
+        border: none;
+        border-bottom: 1px solid black;
+        background-color: transparent;
+        &.subtotal {
+          background-color: #e5e5e5e5;
+          print-color-adjust: exact;
+          td {
+            background-color: transparent !important;
+          }
+        }
+      }
+    }
+  }
+  .InventoryWorkReview {
+    padding: 0;
+    .MuiPaper-root,
+    .MuiCardContent-root,
+    .MuiContainer-root {
+      margin: 0;
+      padding: 0;
+      max-width: unset;
+      border-radius: 0;
+      box-shadow: none;
+      overflow: visible
+    }
+    .InventoryWorkReviewTable {
+      border-radius: 0;
+      border: 1px solid black;
+      table tr td,
+      table tr th {
+        border-bottom: none;
+        border-top: 1px solid black !important;
+      }
+    }
+  }
+}
+td.MuiTableCell-root.MuiTableCell-body {
+  white-space: pre-line;
+}
+#whiteSpace > tr > td {
+  white-space: pre;
+}
+#printObjectSalary > .MuiTable-root > .MuiTableBody-root > td.MuiTableCell-root.MuiTableCell-body {
+  white-space: pre !important;
+  min-width: 93px !important;
+}
+#printObjectSalary {
+  line-height: 0.1em;
+}
+.containerBox {
+  background-color: #606060 !important;
+  width: 150px;
+  height: 150px;
+  color: #425664 !important;
+  position: relative;
+  border-radius: 15px;
+  padding: 10px;
+  box-shadow: rgba(0, 0, 0, 0.45) 0px 1px 27px 1px;
+}
+.containerBox:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 10px 20px 2px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+.containerBoxDesigner {
+  background-color: #5b687b !important;
+  width: 150px;
+  height: 150px;
+  color: #faf1cf !important;
+  position: relative;
+  border-radius: 15px;
+  padding: 10px;
+  box-shadow: rgba(0, 0, 0, 0.45) 0px 1px 27px 1px;
+}
+.containerBoxDesigner:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 10px 20px 2px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.containerBoxNoDesigner {
+  background-color: #faf1cf !important;
+  width: 150px;
+  height: 150px;
+  color: #2f558f !important;
+  position: relative;
+  border-radius: 15px;
+  padding: 10px;
+  box-shadow: rgba(0, 0, 0, 0.45) 0px 1px 27px 1px;
+}
+#seatOrderh3nonDesignate {
+  color: #5b687b !important;
+}
+#seatOrderh3 {
+  color: #faf1cf !important;
+}
+.containerBoxNoDesigner:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 10px 20px 2px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+.boxTop {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.boxBottom {
+  display: flex;
+  font-size: 12px;
+  justify-content: space-between;
+}
+.clickEvent:hover {
+  cursor: pointer;
+}
+
+.titleRemark {
+  background-color: #00001c !important;
+  color: #ffffff;
+}
+
+.ScheduleCard-body {
+  background-color: #202020;
+  color: #ffffff;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.ScheduleCard-header {
+  padding-bottom: 8px;
+  background-color: #202020;
+}
+
+.DesignersSalaryDetailReportInfo,
+.MerchantBankTransferReportMerchantName {
+  display: none;
+  visibility: hidden;
+}
+.DesignersSalaryDetailReportTable,
+.DesignersSalaryDetailReportTable-2 {
+  table {
+    thead {
+      tr {
+        display: flex;
+        th {
+          word-break: break-all;
+          width: 80px;
+          &:nth-child(2) {
+            width: 100px;
+          }
+          &:nth-child(3) {
+            width: 100px;
+          }
+        }
+      }
+    }
+    tbody {
+      tr {
+        display: flex;
+        td {
+          width: 80px;
+          &:nth-child(2) {
+            width: 100px;
+          }
+          &:nth-child(3) {
+            width: 100px;
+          }
+        }
+      }
+    }
+  }
+}
+.EmployeeScheduleAddDesignersModal
+  .MuiAutocomplete-hasClearIcon
+  .MuiFormControl-root
+  .MuiInputBase-root
+  .MuiAutocomplete-endAdornment {
+  display: none;
+}
+
+.ServiceCategoryCreateOption {
+  background-color: #202020 !important;
+}
+.ScheduleTags {
+  .btn {
+    width: 150px;
+    height: 50px;
+    margin-right: 10px;
+    margin-top: 10px;
+  }
+  .btn_focus {
+    width: 150px;
+    height: 50px;
+    margin-right: 10px;
+    margin-top: 10px;
+    border: 3px solid #fff;
+    box-shadow: 0px 0px 10px rgb(255, 255, 255);
+  }
+}
+.AttendanceEmployeeScheduleTable {
+  table {
+    thead {
+      tr {
+        display: flex;
+        th {
+          display: flex;
+          justify-content: center;
+          width: 150px;
+          &:first-child {
+            justify-content: flex-start;
+            width: 150px;
+          }
+        }
+      }
+    }
+    tbody {
+      tr {
+        display: flex;
+        td {
+          white-space: unset;
+          word-break: break-all;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 150px;
+          height: 40px;
+          border-right: 1px solid #eeeeee;
+          cursor: pointer;
+          &:hover {
+            background: #ababab;
+          }
+          &:first-child {
+            width: 150px;
+            cursor:default;
+            justify-content:flex-start;
+            &:hover{
+              background: #202020;
+            }
+          }
+          button {
+            width: 100%;
+          }
+        }
+        td.beforeToday {
+          background-color: rgb(0, 0, 0) !important;
+          button {
+            background-color: rgb(44, 44, 44) !important;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+}
+.circle-picker {
+  background-color: #1f1f1f;
+}
+.EmployeeClockInTableContainer {
+  table tbody tr {
+    height: 50px;
+  }
+  table tbody tr td.MuiTableCell-root.MuiTableCell-body {
+    white-space: pre;
+    b#breakTime {
+      color: rgb(60, 82, 147) !important;
+    }
+  }
+  table tbody tr td button.Mui-disabled {
+    border: 1px solid #4e4e4e;
+    span {
+      color: #4e4e4e;
+    }
+  }
+  .MuiTableCell-root {
+    span.time {
+      color: white !important
+    }
+    button.work {
+      color: #2e7d32 !important;
+      border-color: #2e7d32 !important;
+      &:disabled {
+        border-color: gray !important;
+        color: gray !important;
+      }
+      &:hover {
+        background-color: #2e7d32 !important;
+        color: white !important;
+        border: none;
+      }
+    }
+    button.offWork {
+      color: orange !important;
+      border-color: orange !important;
+      &:disabled {
+        border-color: gray !important;
+        color: gray !important;
+      }
+      &:hover {
+        background-color: orange !important;
+        color: white !important;
+        border: none;
+      }
+    }
+    button.break {
+      &:disabled {
+        border-color: gray !important;
+        color: gray !important;
+      }
+    }
+  }
+}
+.Mui-disabled {
+  color: rgba(0, 0, 0, 0.26) !important;
+  box-shadow: none !important;
+}
+.AttendanceRecordsTable {
+  table {
+    border-collapse: collapse;
+  }
+  table tbody tr {
+    border: 1px solid #424242;
+  }
+  table tbody tr td {
+    vertical-align: baseline;
+    border: 1px solid #424242;
+    a {
+      color: white;
+    }
+    svg {
+      fill: #fff;
+    }
+    span.lineicon {
+      display: inline-block;
+      width: 17px;
+      height: 17px;
+      background-image: url('./static/images/lineIcon-dark.svg');
+    }
+    div button.MuiButtonBase-root {
+      padding: 4px;
+      &:hover {
+        background-color: rgba(173, 216, 230, 0.65);
+      }
+    }
+    &:nth-child(2) {
+      border: none;
+    }
+  }
+  table tbody tr td:nth-child(1),
+  table tbody tr td:nth-child(2),
+  table tbody tr td:nth-child(3),
+  table tbody tr td:nth-child(4) {
+    vertical-align: inherit;
+    display: table-cell;
+  }
+}
+.ManagementReservationRecordNew {
+  table tbody tr {
+    display: flex;
+  }
+  table tbody tr td {
+    width: 100px !important;
+    display: inline-block;
+    padding: 0 !important;
+    &:hover {
+      background-color: rgba(82, 126, 99, 0.551) !important;
+      &:first-child {
+        background-color: #202020 !important;
+      }
+    }
+  }
+  table tbody tr td:hover #divHover {
+    background-color: rgba(82, 126, 99, 0.551) ;
+    transition: .2s;
+    cursor: pointer;
+  }
+}
+.ManagementReservationRecordDialog {
+  .MuiAvatar-root{
+    background-color: #809ab0 !important;
+  }
+}
+.ManagementDesignersReservationRecordNew {
+  .MuiAvatar-circular {
+    background-color: #809ab0 !important;
+  }
+  table tbody tr {
+    display: flex;
+  }
+  table tbody tr td {
+    &:hover {
+      background-color: rgba(82, 126, 99, 0.551) !important;
+      &:first-child {
+        background-color: #202020 !important;
+      }
+    }
+  }
+  table tbody tr td:hover #divHover {
+    background-color: rgba(82, 126, 99, 0.551) ;
+    transition: .2s;
+    cursor: pointer;
+  }
+}
+.wmde-markdown-color {
+  background-color: transparent;
+}
+
+.md-dark {
+  --md-bk-color: #202020 !important;
+}
+
+div#listSubheaderInQueue.MuiListSubheader-root {
+  font-size: 13px !important;
+  color: #3d7782 !important;
+  border-top-left-radius : 10px !important;
+  border-top-right-radius: 10px !important;
+  background-color: #202020 !important;
+}
+
+.MuiPickersToolbar-toolbar {
+  background-color: #3f51b5;
+}
+
+.MuiPickersDatePickerRoot-toolbar {
+  background-color: #32467c;
+}
+.MerchantBankTransferReportTransferDetail {
+  .MuiFormControl-root {
+    margin-top: -5px;
+  }
+  input {
+    text-align: center;
+    padding: 7px 0 2px !important;
+  }
+  .MuiInput-underline:before {
+    border-bottom: 1px solid #adadad;
+  }
+}
+.CostAnalysisReportTableContainer {
+  table tbody tr td {
+    border: 1px solid #393939 !important;
+    &:first-child {
+      width: 250px;
+    }
+  }
+}
+.SalaryOverviewResult {
+  td a.Mui-disabled span {
+    color: #404040;
+  }
+}
+.MemberCardRecordResult {
+  table tbody tr td a.Mui-disabled span {
+    color: #404040;
+  }
+}
+.AboutEmployeeSchedule {
+  label.Mui-disabled,
+  input.Mui-disabled {
+    color: #4a4a4a !important;
+  }
+}
+.hrBorderStyleInEmployeeClockin {
+  border: 0.1px dashed #6b6b6b;
+}
+// .MuiBackdrop-root {
+//   opacity: 0 !important;
+// }
+/* Chrome, Safari, Edge, Opera hide input type number arrow */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox hide input type number arrow*/
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+#Backdrop {
+  opacity: 1 !important;
+}
+
+.designerPerformanceReport {
+  .designerPerformanceReportTable {
+    table tbody.designerPerformance {
+      tr:nth-child(4n){
+        td {
+          background-color: #2f2f2f;
+        }
+      }
+      tr:nth-child(4n-1){
+        td {
+          background-color: #2f2f2f;
+          border-bottom: none !important;
+        }
+      }
+      tr:nth-child(2n+1){
+        td {
+          border-bottom: none !important;
+        }
+      }
+    }
+  }
+}
+
+.EmployeePickingCreateProductsModal {
+  .displayArrow {
+    /* Chrome, Safari, Edge, Opera hide input type number arrow */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: button;
+      margin: 0;
+    }
+    /* Firefox hide input type number arrow*/
+    input[type=number] {
+      -moz-appearance: button;
+      appearance: button;
+    }
+  }
+}
+
+.EmployeeDailyReportCardPrintContainer,
+.DecreaseDailyReportCardPrintContainer {
+  display: none;
+}
+.ProfileDetails {
+  .MuiDialog-paperWidthSm {
+    width: 100%;
+    .reactEasyCrop_Container {
+      width: 100%;
+      height: 300px;
+      position: relative !important;
+    }
+  }
+}
+.FastCheckOrdersModal {
+  .MuiPaper-root {
+    height: 80vh;
+  }
+  .MuiButtonGroup-root {
+    button {
+      color: white !important;
+    }
+  }
+}
+.AccountingRecordListTable,
+.GeneralAccountingRecordListTable {
+  thead tr th:nth-child(3), tbody tr td:nth-child(3) {
+    width: 0;
+    padding-right: 40px;
+    white-space:nowrap;
+  }
+  thead tr th:nth-child(4), tbody tr td:nth-child(4) {
+    width: 0;
+    padding-right: 40px;
+    white-space:nowrap;
+  }
+  thead tr th:nth-child(5), tbody tr td:nth-child(5) {
+    width: 0;
+    padding-right: 40px;
+    white-space:nowrap;
+  }
+  thead tr th:nth-child(6), tbody tr td:nth-child(6) {
+    width: 0;
+    padding-right: 40px;
+    white-space:nowrap;
+  }
+  thead tr th:nth-child(7), tbody tr td:nth-child(7) {
+    width: 0;
+    padding-right: 40px;
+    white-space:nowrap;
+  }
+  thead tr th:nth-child(8), tbody tr td:nth-child(8) {
+    width: 0;
+    padding-right: 40px;
+    white-space:nowrap;
+  }
+}
+.HelperPerformanceReportTable {
+  tbody tr td:nth-child(2n + 3) {
+    background-color: #2f2f2f;
+  }
+}
+.BusinessItemsMonthlyAnalyzeReportTable {
+  table-layout: auto;
+  th, td {
+    white-space: nowrap !important;
+  }
+  td {
+    padding: 5px !important;
+  }
+}
+.reactEasyCrop_CropAreaGrid::after {
+  border-top: 1px solid #9a9a9a !important;
+  border-bottom: 1px solid #9a9a9a !important;
+}
+.reactEasyCrop_CropAreaGrid::before {
+  border-left: 1px solid #9a9a9a !important;
+  border-right: 1px solid #9a9a9a !important;
+}
+.reactEasyCrop_Container {
+  background-color: white;
+}
+.DesignerMonthlyReportTable {
+  tbody {
+    tr.subtotal td {
+      background: #363636 !important;
+    }
+  }
+}
+.MerchantsListModal {
+  li.onSelect {
+    background-color: #638088;
+  }
+  span {
+    color: #fff;
+  }
+}
+.MuiTreeItem-content:hover {
+  background-color: #72949d !important;
+}
+.MuiPaper-root ul li.Mui-disabled {
+  color: unset !important;
+}
+.ManagementReservationRecord {
+  #darkBg {
+    background-color: #202020 !important;
+  }
+  #darkBorder {
+    border-color: #202020 !important;
+  }
+  .hoverItem {
+    &:hover {
+      transition: .3s background-color;
+      background-color: rgb(228, 252, 237);
+      mix-blend-mode: color;
+    }
+  }
+  .textAnimation {
+    animation: remark;
+    animation-duration: 6s;
+    animation-iteration-count: infinite;
+  }
+  @keyframes remark {
+    0% { transform: translateX(0px); }
+    45% { transform: translateX(calc(140px - 100%));  }
+    55% { transform: translateX(calc(140px - 100%));  }
+    100% { transform: translateX(0px);  }
+  }
+}
+
+.MuiPickersToolbar-root {
+  background-color: #1976d2;
+  & * {
+    color: #fff;
+  }
+  h4 {
+    font-size: 28px;
+  }
+  button {
+    display: none;
+  }
+}
+.MuiCalendarPicker-root {
+
+  .MuiButtonBase-root {
+    color: white;
+    background-color: transparent;
+  }
+}
+
+#DateSelector {
+  button {
+    background-color: #32467c !important;
+  }
+}
+
+.MuiPickersLayout-contentWrapper {
+  .MuiPickersDay-root, .MuiPickersCalendarHeader-label {
+    color: #fff
+  }
+}
+
+.merchantListTreeView {
+  span {
+    color: #fff
+  }
+}
+
+.orderButtonGroup {
+  button.fixDisabled.Mui-disabled {
+    background: #525252 !important
+  }
+}
+
+.CheckinMode {
+  .MuiSwitch-track {
+    background-color: #ffffff
+  }
+}

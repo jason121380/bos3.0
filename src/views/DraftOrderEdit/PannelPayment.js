@@ -1,0 +1,59 @@
+/** @jsxImportSource @emotion/react */
+import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import React from 'react'
+import billContext from 'context/keyInContext'
+import { css } from '@emotion/react'
+import { theme } from '../../theme'
+
+import Payment from './Payment'
+
+const styles = {
+  root: css({
+    width: '100%',
+    marginTop: theme.spacing(3),
+  }),
+  details: css({
+    overflowX: 'scroll',
+  }),
+  heading: css({
+    fontSize: '15px !important',
+    fontWeight: theme.typography.fontWeightRegular,
+  }),
+  fieldOutter: css({
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flexDirection: 'column',
+  }),
+}
+
+export default function PannelCouponUse() {
+  const { bill } = React.useContext(billContext)
+  const [expanded, setExpanded] = React.useState(false)
+
+  React.useEffect(() => {
+    if (bill.payType.length === 1 || bill.amountByOtherPay > 0 || bill.walletPay > 0) {
+      setExpanded(true)
+    }
+  }, [bill.payType])
+  const handleAccordionClick = () => {
+    setExpanded(val => !val)
+  }
+  return (
+    <Accordion defaultExpanded={expanded} expanded={expanded}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        data-testid="panelPayment"
+        onClick={handleAccordionClick}
+      >
+        <Typography css={styles.heading}>其他付款方式</Typography>
+      </AccordionSummary>
+      <AccordionDetails css={styles.details}>
+        <div css={styles.fieldOutter}>
+          <Payment />
+        </div>
+      </AccordionDetails>
+    </Accordion>
+  )
+}

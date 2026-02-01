@@ -1,0 +1,557 @@
+/** @jsxImportSource @emotion/react */
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Divider,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
+  TextField,
+  InputAdornment,
+  Typography
+} from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
+import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
+import { openSnackbar } from 'elements/snackbars'
+import useFetchUpdateCustomer from 'hooks/useFetchUpdateCustomer'
+import useFetchUsers from 'hooks/useFetchUsers'
+import usePageLoading from 'hooks/usePageLoading'
+import idx from 'idx'
+import produce from 'immer'
+import PropTypes from 'prop-types'
+import React from 'react'
+import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
+import useFetchGetCheckIsCustomerNoUsed from 'hooks/useFetchGetCheckIsCustomerNoUsed'
+import useFetchGetLastCustomerNo from 'hooks/useFetchGetLastCustomerNo'
+import _ from 'lodash'
+import SourceSelect from 'components/SourceSelect'
+import { css } from '@emotion/react'
+import { theme } from '../../theme'
+
+const styles = {
+  root: css({
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    outline: 'none',
+    boxShadow: theme.shadows[20],
+    width: 700,
+    maxHeight: '100%',
+    overflowY: 'auto',
+    maxWidth: '100%',
+    '& .MuiCardHeader-action': {
+      marginTop: 0,
+    }
+  }),
+  birthday: css({
+    width: '100%',
+  }),
+  actions: css({
+    justifyContent: 'flex-end',
+  }),
+  birthdayInput: css({
+    width: '80px',
+  }),
+  birthdayMonthDay: css({
+    width: '80px',
+    marginLeft: '10px !important',
+  }),
+}
+
+const gender = [
+  {
+    value: 'MALE',
+    label: '男',
+  },
+  {
+    value: 'FEMALE',
+    label: '女',
+  },
+]
+
+function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
+  const inputLabel = React.useRef()
+  const lastCustomerNo = useFetchGetLastCustomerNo()
+  const [lastNo, setLastNo] = React.useState(null)
+  const [quickAddCustomer, setQuickAddCustomer] = React.useState(true)
+  const [noVerify, setNoVerify] = React.useState(false)
+  const [isSetTime, setIsSetTime] = React.useState(false) // 是否在setTimeout時間差之內的判斷
+  const [checkIsCustomerNoUsedLazy, checkIsCustomerNoUsedLazyData] = useFetchGetCheckIsCustomerNoUsed()
+
+  const designers = useFetchUsers({ notDesigner: false, usagelimit: 'EMPLOYEE_LIST' })
+  const { updateCustomer } = useFetchUpdateCustomer()
+  const { addCustomer } = useFetchAddCustomer()
+  const [birthdayObj, setBirthdayObj] = React.useState({
+    year: customer.birthday ? customer.birthday.year : '',
+    month: customer.birthday ? customer.birthday.month : '',
+    day: customer.birthday ? customer.birthday.day : '',
+  })
+  const [values, setValues] = React.useState({
+    customerId: customer.customerId || '',
+    category: customer.category || '',
+    no: customer.no || '',
+    name: customer.name || '',
+    nickName: customer.nickName || '',
+    cellphone: customer.cellphone || 0,
+    birthday: customer.birthday || { year: '', month: '', day: '' },
+    PreferDesignerId: customer.PreferDesignerId || '',
+    OfficialBrandMerchantId:
+      customer.OfficialBrandMerchantId || localStorage.getItem('userMerchant')
+        ? JSON.parse(localStorage.getItem('userMerchant')).id
+        : null,
+    email: customer.email || '',
+    address: customer.address || '',
+    lineId: customer.lineId || '',
+    gender: customer.gender || 'UNKNOWN',
+    remark: customer.remark || '',
+    source: customer.source || '',
+  })
+
+  React.useEffect(() => {
+    setValues({
+      ...Object.keys(customer).reduce((acc, key) => {
+        acc[key] = customer[key] || ''
+        return acc
+      }, {}),
+      PreferDesignerId: customer.PreferDesignerId,
+      cellphone: customer.cellphone,
+      customerId: customer.customerId,
+      name: customer.name,
+    })
+  }, [customer])
+
+  React.useEffect(() => {
+    if (values.cellphone.length >= 10) {
+      setQuickAddCustomer(false)
+    }
+  }, [values])
+
+  const { loading } = usePageLoading()
+
+  const handleFieldChange = event => {
+    if (event.persist) event.persist()
+    setValues(
+      produce(draft => {
+        draft[event.target.name] = event.target.value
+      })
+    )
+  }
+
+  const handleBirthdayChange = e => {
+    switch (e.target.name) {
+      case 'year':
+        if (e.target.value.length <= 3) {
+          setBirthdayObj({ ...birthdayObj, year: e.target.value })
+        }
+        break
+      case 'month':
+        if (parseInt(e.target.value) <= 12 || e.target.value === '') {
+          setBirthdayObj({ ...birthdayObj, month: e.target.value })
+        }
+        break
+      case 'day':
+        if (parseInt(e.target.value) <= 31 || e.target.value === '') {
+          setBirthdayObj({ ...birthdayObj, day: e.target.value })
+        }
+        break
+      default:
+        break
+    }
+  }
+
+  const handleSubmit = () => {
+    if (values.customerId.length > 0) {
+      const newValues = _.cloneDeep(values)
+      delete newValues.id
+      delete newValues.latestDesigner
+      updateCustomer({ input: { ...newValues, birthday: birthdayObj } })
+        .then(() => {
+          openSnackbar({ variant: 'success', message: '成功更新顧客資訊' })
+          setBill(
+            produce(draft => {
+              draft.customerId = values.customerId
+              draft.customerCellphone = ''
+            })
+          )
+          onClose()
+        })
+        .catch(error => {
+          openSnackbar({ message: error.message, variant: 'error' })
+        })
+      setBill(
+        produce(draft => {
+          draft.customerId = null
+          draft.customerCellphone = ''
+        })
+      )
+    } else {
+      const newValues = _.cloneDeep(values)
+      delete newValues.customerId
+      delete newValues.source
+      if (newValues.name.length === 0 || newValues.cellphone.length === 0) {
+        openSnackbar({ variant: 'warning', message: '姓名與電話為必填' })
+      } else {
+        addCustomer({
+          input: { ...newValues, birthday: birthdayObj },
+        })
+          .then(res => {
+            setCustomer({
+              ...customer,
+              customerId: res.data.addCustomer.id,
+              birthday: res.data.addCustomer.birthday,
+              name: res.data.addCustomer.name,
+              gender: res.data.addCustomer.gender,
+            })
+            openSnackbar({
+              message: '成功新增客戶',
+              variant: 'success',
+            })
+            onClose()
+          })
+          .catch(error => {
+            openSnackbar({ message: error.message, variant: 'error' })
+          })
+      }
+    }
+  }
+
+  const checkNo = () => {
+    checkIsCustomerNoUsedLazy({
+      variables: {
+        input: values.no,
+        customerId: values.customerId === "" ? null : values.customerId,
+      }
+    })
+  }
+
+  React.useEffect(() => {
+    if (checkIsCustomerNoUsedLazyData.data !== undefined && !checkIsCustomerNoUsedLazyData.loading) {
+      const data = idx(checkIsCustomerNoUsedLazyData, _ => _.data.checkIsCustomerNoUsed)
+      setIsSetTime(false)
+      setNoVerify(data)
+    }
+  }, [checkIsCustomerNoUsedLazyData.loading])
+
+  React.useEffect(() => {
+    if (values.no !== "") {
+      setIsSetTime(true)
+      const timer = setTimeout(() => {
+        checkNo()
+      }, 500)
+      return () => {
+        clearTimeout(timer)
+      }
+    } else {
+      setNoVerify(false)
+    }
+  }, [values.no])
+
+  React.useEffect(() => {
+    if (!lastCustomerNo.loading) {
+      const data = idx(lastCustomerNo, _ => _.data.getLastCustomerNo)
+      setLastNo(data)
+    }
+  }, [lastCustomerNo.loading])
+
+  return (
+    <Modal open={open}>
+      <Card css={styles.root}>
+        <CardHeader
+          title={values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}
+          action={!lastCustomerNo.loading && <Typography variant="body1">{`最新顧客編號: ${lastNo}`}</Typography>}
+        />
+        <Divider />
+        <CardContent>
+          <Grid container spacing={3}>
+            <Grid item md={6} xs={12}>
+              <TextField
+                error={noVerify && !isSetTime}
+                helperText={noVerify && !isSetTime ? '客戶編號重複' : ''}
+                fullWidth
+                label="客戶編號"
+                name="no"
+                onChange={handleFieldChange}
+                value={values.no}
+                variant="outlined"
+                InputProps={{
+                  endAdornment: (
+                    (values.no === '') ? '' :
+                      isSetTime ?
+                        <InputAdornment position="start">
+                          <CircularProgress size={20} />
+                        </InputAdornment> :
+                        !noVerify ?
+                          <InputAdornment position="start">
+                            <CheckRoundedIcon color='success' />
+                          </InputAdornment> :
+                          <InputAdornment position="start">
+                            <WarningAmberRoundedIcon color='error' />
+                          </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="客戶姓名"
+                name="name"
+                onChange={handleFieldChange}
+                value={values.name}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <FormControl variant="outlined" fullWidth>
+                <InputLabel ref={inputLabel}>性別</InputLabel>
+                <Select
+                  label='性別'
+                  value={values.gender}
+                  name="gender"
+                  onChange={handleFieldChange}
+                >
+                  <MenuItem value="UNKNOWN">
+                    <em>未知</em>
+                  </MenuItem>
+                  {gender.map((data, index) => (
+                    <MenuItem value={data.value} key={`${data.value}-${index}`}>
+                      {data.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                value={values.email}
+                onChange={handleFieldChange}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="lineId"
+                name="lineId"
+                value={values.lineId}
+                onChange={handleFieldChange}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="地址"
+                name="address"
+                value={values.address}
+                onChange={handleFieldChange}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="客戶暱稱"
+                name="nickName"
+                value={values.nickName}
+                onChange={handleFieldChange}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                label="民國年"
+                name="year"
+                value={birthdayObj.year}
+                onChange={e => handleBirthdayChange(e)}
+                variant="outlined"
+                css={styles.birthdayInput}
+              />
+              <TextField
+                label="月"
+                name="month"
+                value={birthdayObj.month}
+                onChange={e => handleBirthdayChange(e)}
+                variant="outlined"
+                css={styles.birthdayMonthDay}
+              />
+              <TextField
+                label="日"
+                name="day"
+                value={birthdayObj.day}
+                onChange={e => handleBirthdayChange(e)}
+                variant="outlined"
+                css={styles.birthdayMonthDay}
+              />
+            </Grid>
+            {/* <Grid item md={6} xs={12}>
+              <KeyboardDatePicker
+                format="YYYY/MM/DD"
+                label="生日"
+                value={values.birthday}
+                name="birthday"
+                css={styles.birthday}
+                onChange={(_event, val) =>
+                  handleFieldChange({
+                    target: {
+                      name: 'birthday',
+                      value: new Date(val).getTime(),
+                    },
+                  })
+                }
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
+              />
+            </Grid> */}
+            {/* <Grid item md={6} xs={12}>
+                  <FormControl variant="outlined" fullWidth>
+                    <InputLabel ref={inputLabel}>客戶類別</InputLabel>
+                    <Select
+                      label='客戶類別'
+                      value={values.category}
+                      name="category"
+                      onChange={handleFieldChange}
+                    >
+                      <MenuItem value="">
+                        <em>None</em>
+                      </MenuItem>
+                      {idx(customerCategory, _ =>
+                        _.data.merchantCustomerCategory.map((data, index) => (
+                          <MenuItem value={data.name} key={`${data.name}-${index}`}>
+                            {data.name}
+                          </MenuItem>
+                        ))
+                      )}
+                    </Select>
+                  </FormControl>
+                </Grid> */}
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="電話"
+                onChange={handleFieldChange}
+                name="cellphone"
+                value={values.cellphone}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <SourceSelect
+                emptyOption
+                value={values.source}
+                onChange={handleFieldChange}
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <FormControl variant="outlined" fullWidth>
+                <InputLabel ref={inputLabel}>最近設計師</InputLabel>
+                <Select
+                  label='最近設計師'
+                  value={customer.latestDesigner || ''}
+                  onChange={handleFieldChange}
+                  name="DesignerId"
+                  disabled
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {idx(designers, _ =>
+                    _.data.users.users.map((data, index) => (
+                      <MenuItem value={data.id} key={`${data.id}-${index}`}>
+                        {data.name}
+                      </MenuItem>
+                    ))
+                  )}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <FormControl variant="outlined" fullWidth>
+                <InputLabel ref={inputLabel}>偏好設計師</InputLabel>
+                {designers.data ? (
+                  <Select
+                    label='偏好設計師'
+                    value={values.PreferDesignerId}
+                    onChange={handleFieldChange}
+                    name="PreferDesignerId"
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    {idx(designers, _ =>
+                      _.data.users.users.map((data, index) => (
+                        <MenuItem value={data.id} key={`${data.id}-${index}`}>
+                          {data.name}
+                        </MenuItem>
+                      ))
+                    )}
+                  </Select>
+                ) : (
+                  <Select
+                    label='偏好設計師'
+                    value='loading'
+                    onChange={handleFieldChange}
+                    name="PreferDesignerId"
+                    renderValue={() => <CircularProgress size={20} />}
+                  >
+                    <MenuItem value="loading">
+                      <em>Loading...</em>
+                    </MenuItem>
+                  </Select>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="備註"
+                onChange={handleFieldChange}
+                name="remark"
+                value={values.remark}
+                variant="outlined"
+              />
+            </Grid>
+          </Grid>
+        </CardContent>
+        <Divider />
+        <CardActions css={styles.actions}>
+          <Button onClick={onClose}>取消</Button>
+          <Button
+            color="primary"
+            onClick={handleSubmit}
+            variant="contained"
+            disabled={quickAddCustomer}
+          >
+            {values.customerId.length > 0 ? '儲存' : '新增'}
+          </Button>
+        </CardActions>
+      </Card>
+    </Modal>
+  )
+}
+
+AddCustomerModal.propTypes = {
+  className: PropTypes.string,
+  customer: PropTypes.any,
+  onClose: PropTypes.func,
+  open: PropTypes.bool,
+}
+
+AddCustomerModal.defaultProps = {
+  open: false,
+  onClose: () => { },
+}
+
+export default AddCustomerModal

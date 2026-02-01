@@ -1,0 +1,1125 @@
+/** @jsxImportSource @emotion/react */
+import {
+  Card, CardContent, CardHeader, Checkbox, Grid, TextField,
+  Typography, FormControlLabel, Tab, Tabs, ToggleButton,
+  ToggleButtonGroup
+} from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import _ from 'lodash'
+import PropTypes from 'prop-types'
+import React, { Fragment, useEffect, useState } from 'react'
+import { openSnackbar } from 'elements/snackbars'
+import PerfectScrollbar from 'react-perfect-scrollbar'
+import { css } from '@emotion/react'
+import { theme } from '../../../theme'
+
+const isSegmented = [
+  { label: '全段', value: false },
+  { label: '分段', value: true },
+]
+
+const styles = {
+  alert: css({
+    marginBottom: theme.spacing(3),
+  }),
+  formGroup: css({
+    marginBottom: theme.spacing(3),
+  }),
+  subtitle: css({
+    margin: '1rem 0',
+  }),
+  sharing: css({
+    margin: '0 3rem',
+  }),
+  width: css({
+    width: '100%',
+  }),
+  marginL: css({
+    marginLeft: '5px',
+  }),
+  deductionWayMarginL: css({
+    marginLeft: '20px',
+  }),
+  icons: css({
+    marginLeft: '20px',
+    cursor: 'pointer',
+  }),
+  verticleCenter: css({
+    display: 'flex',
+    alignItems: 'center',
+    borderBottom: '0px',
+    marginLeft: 16
+  }),
+  flex: css({
+    display: 'flex',
+    marginBottom: 10
+  }),
+  removeBottomLine: css({
+    borderBottom: '0px',
+  }),
+  separateInputBottom: css({
+    marginLeft: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    borderBottom: '0px',
+    whiteSpace: 'nowrap',
+    padding: 0,
+  }),
+  separateInput: css({
+    marginLeft: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    borderBottom: '0px',
+    whiteSpace: 'nowrap',
+  }),
+  separateInputRake: css({
+    marginLeft: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    borderBottom: '0px',
+    whiteSpace: 'nowrap',
+    padding: 0,
+  }),
+  isDesignateInput: css({
+    marginLeft: '5px',
+  }),
+  isDesignate: css({
+    display: 'flex',
+    justifyContent: 'space-evenly',
+  }),
+  inner: css({
+    minWidth: 995,
+    paddingBottom: 20
+  }),
+}
+
+function AboutPerformance({ className, profitSharing, onChange, attributions, ...rest }) {
+  const [tabValue, setTabValue] = useState('預設')
+  const [deductionIndex, setDeductionIndex] = useState(0)
+
+  const checkInput = (event, rakeType) => {
+    if (event.target.value === '') {
+      event.target.value = 0
+    }
+    switch (rakeType) {
+      case 'thresholdLowerLimit':
+        if (parseInt(event.target.value) < 0) {
+          event.target.value = 0
+          openSnackbar({
+            message: '請輸入0以上的數字',
+            variant: 'warning',
+          })
+        }
+        break
+      case 'thresholdUpperLimit':
+        if (parseInt(event.target.value) < 0) {
+          event.target.value = 0
+          openSnackbar({
+            message: '請輸入0以上的數字',
+            variant: 'warning',
+          })
+        }
+        break
+      case 'threshold':
+        if (parseInt(event.target.value) < 0) {
+          event.target.value = 0
+          openSnackbar({
+            message: '請輸入0以上的數字',
+            variant: 'warning',
+          })
+        }
+        break
+      case 'rake':
+        if (parseInt(event.target.value) > 100 || parseInt(event.target.value) < 0) {
+          event.target.value = 0
+          openSnackbar({
+            message: '請輸入0~100之間的數字',
+            variant: 'warning',
+          })
+        }
+        break
+      default:
+        break
+    }
+  }
+
+  // 指定不指定狀態
+  const handleDesignateChange = () => {
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    onChange({ value: !newProfitSharing.designationUsage, key: 'designationUsage' })
+    if (newProfitSharing.isSegmented) {
+      if (newProfitSharing.designationUsage) {
+        newProfitSharing.segmented[0].designate = []
+        newProfitSharing.segmented[0].nonDesignate = []
+        newProfitSharing.segmented[0].nonDistinguish = [
+          {
+            thresholdLowerLimit: 0,
+            thresholdUpperLimit: 0,
+            rake: 0,
+          },
+        ]
+        onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+      } else {
+        newProfitSharing.segmented[0].designate = [
+          {
+            thresholdLowerLimit: 0,
+            thresholdUpperLimit: 0,
+            rake: 0,
+          },
+        ]
+        newProfitSharing.segmented[0].nonDesignate = [
+          {
+            thresholdLowerLimit: 0,
+            thresholdUpperLimit: 0,
+            rake: 0,
+          },
+        ]
+        newProfitSharing.segmented[0].nonDistinguish = []
+        onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+      }
+    } else {
+      if (newProfitSharing.designationUsage) {
+        newProfitSharing.nonSegmented[deductionIndex].rakeData.designate = []
+        newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate = []
+        newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish = [
+          {
+            threshold: 0,
+            rake: 0,
+          },
+        ]
+        onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+      } else {
+        newProfitSharing.nonSegmented[deductionIndex].rakeData.designate = [
+          {
+            threshold: 0,
+            rake: 0,
+          },
+        ]
+        newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate = [
+          {
+            threshold: 0,
+            rake: 0,
+          },
+        ]
+        newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish = []
+        onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+      }
+    }
+  }
+  // 全段分段
+  const handleToggleButtonChange = () => {
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    if (profitSharing.isSegmented) {
+      if (newProfitSharing.designationUsage) {
+        newProfitSharing.segmented = []
+        newProfitSharing.nonSegmented = [
+          {
+            attribute: '預設',
+            rakeData: {
+              designate: [
+                {
+                  threshold: 0,
+                  rake: 0,
+                },
+              ],
+              nonDesignate: [
+                {
+                  threshold: 0,
+                  rake: 0,
+                },
+              ],
+              nonDistinguish: [],
+            },
+          },
+        ]
+        onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+        onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+        setTabValue('預設')
+        setDeductionIndex(0)
+      } else {
+        newProfitSharing.segmented = []
+        newProfitSharing.nonSegmented = [
+          {
+            attribute: '預設',
+            rakeData: {
+              designate: [],
+              nonDesignate: [],
+              nonDistinguish: [
+                {
+                  threshold: 0,
+                  rake: 0,
+                },
+              ],
+            },
+          },
+        ]
+        onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+        onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+      }
+    } else {
+      if (newProfitSharing.designationUsage) {
+        newProfitSharing.segmented = [
+          {
+            designate: [
+              {
+                thresholdLowerLimit: 0,
+                thresholdUpperLimit: 0,
+                rake: 0,
+              },
+            ],
+            nonDesignate: [
+              {
+                thresholdLowerLimit: 0,
+                thresholdUpperLimit: 0,
+                rake: 0,
+              },
+            ],
+            nonDistinguish: [],
+          },
+        ]
+        onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+        newProfitSharing.nonSegmented = []
+        onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+      } else {
+        newProfitSharing.segmented = [
+          {
+            designate: [],
+            nonDesignate: [],
+            nonDistinguish: [
+              {
+                thresholdLowerLimit: 0,
+                thresholdUpperLimit: 0,
+                rake: 0,
+              },
+            ],
+          },
+        ]
+        onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+        newProfitSharing.nonSegmented = []
+        onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+        setTabValue('預設')
+        setDeductionIndex(0)
+      }
+    }
+
+    onChange({ value: !newProfitSharing.isSegmented, key: 'isSegmented' })
+  }
+  // 抽成數字輸入
+  const handleAddSetDeductionNum = nonSegmentedType => {
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    switch (nonSegmentedType) {
+      case 'nonDistinguish':
+        newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.push({
+          threshold: 0,
+          rake: 0,
+        })
+        onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+        break
+      case 'designate':
+        newProfitSharing.nonSegmented[deductionIndex].rakeData.designate.push({
+          threshold: 0,
+          rake: 0,
+        })
+        onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+        break
+      case 'nonDesignate':
+        newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.push({
+          threshold: 0,
+          rake: 0,
+        })
+        onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+        break
+      default:
+        break
+    }
+  }
+
+  const handleDeleteSetDeductionNum = index => {
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.splice(index, 1)
+    onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+  }
+  const handleDeleteNonSegmentedDesignate = index => {
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.nonSegmented[deductionIndex].rakeData.designate.splice(index, 1)
+    onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+  }
+  const handleDeleteNonSegmentedNonDesignate = index => {
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.splice(index, 1)
+    onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+  }
+
+  const handleAddSegmented = segmentedType => {
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    switch (segmentedType) {
+      case 'nonDistinguish':
+        newProfitSharing.segmented[0].nonDistinguish.push({
+          thresholdLowerLimit: 0,
+          thresholdUpperLimit: 0,
+          rake: 0,
+        })
+        onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+        break
+      case 'designate':
+        newProfitSharing.segmented[0].designate.push({
+          thresholdLowerLimit: 0,
+          thresholdUpperLimit: 0,
+          rake: 0,
+        })
+        onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+        break
+      case 'nonDesignate':
+        newProfitSharing.segmented[0].nonDesignate.push({
+          thresholdLowerLimit: 0,
+          thresholdUpperLimit: 0,
+          rake: 0,
+        })
+        onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+        break
+      default:
+        break
+    }
+  }
+
+  const handleDeleteSegmented = index => {
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.segmented[0].nonDistinguish.splice(index, 1)
+    onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+  }
+  const handleDeleteSegmentedDesignate = index => {
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.segmented[0].designate.splice(index, 1)
+    onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+  }
+  const handleDeleteSegmentedNonDesignate = index => {
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.segmented[0].nonDesignate.splice(index, 1)
+    onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+  }
+
+  const handleNonSegmentedThresholdInput = (event, index, rakeType) => {
+    checkInput(event, rakeType)
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.forEach(
+      (data, index2) => {
+        if (index === index2) {
+          data.threshold = parseInt(event.target.value)
+        }
+      }
+    )
+    onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+  }
+  const handleNonSegmentedDesignateThresholdInput = (event, index, rakeType) => {
+    checkInput(event, rakeType)
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.nonSegmented[deductionIndex].rakeData.designate.forEach((data, index2) => {
+      if (index === index2) {
+        data.threshold = parseInt(event.target.value)
+      }
+    })
+    onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+  }
+  const handleNonSegmentedNonDesignateThresholdInput = (event, index, rakeType) => {
+    checkInput(event, rakeType)
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.forEach((data, index2) => {
+      if (index === index2) {
+        data.threshold = parseInt(event.target.value)
+      }
+    })
+    onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+  }
+
+  const handleNonSegmentedRakeInput = (event, index, rakeType) => {
+    checkInput(event, rakeType)
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.forEach(
+      (data, index2) => {
+        if (index === index2) {
+          data.rake = parseFloat(event.target.value)
+          onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+        }
+      }
+    )
+  }
+  const handleNonSegmentedDesignateRakeInput = (event, index, rakeType) => {
+    checkInput(event, rakeType)
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.nonSegmented[deductionIndex].rakeData.designate.forEach((data, index2) => {
+      if (index === index2) {
+        data.rake = parseFloat(event.target.value)
+        onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+      }
+    })
+  }
+  const handleNonSegmentedNonDesignateRakeInput = (event, index, rakeType) => {
+    checkInput(event, rakeType)
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.forEach((data, index2) => {
+      if (index === index2) {
+        data.rake = parseFloat(event.target.value)
+        onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+      }
+    })
+  }
+
+  const handleSegmentedInput = (event, index, rakeType) => {
+    checkInput(event, rakeType)
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.segmented[0].nonDistinguish.forEach((data, index2) => {
+      if (index === index2) {
+        switch (rakeType) {
+          case 'thresholdLowerLimit':
+            data.thresholdLowerLimit = parseInt(event.target.value)
+            onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+            break
+          case 'thresholdUpperLimit':
+            data.thresholdUpperLimit = parseInt(event.target.value)
+            onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+            break
+          case 'rake':
+            data.rake = parseFloat(event.target.value)
+            onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+            break
+          default:
+            break
+        }
+      }
+    })
+  }
+
+  const handleDesignateSegmentedInput = (event, index, rakeType) => {
+    checkInput(event, rakeType)
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.segmented[0].designate.forEach((data, index2) => {
+      if (index === index2) {
+        switch (rakeType) {
+          case 'thresholdLowerLimit':
+            data.thresholdLowerLimit = parseInt(event.target.value)
+            onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+            break
+          case 'thresholdUpperLimit':
+            data.thresholdUpperLimit = parseInt(event.target.value)
+            onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+            break
+          case 'rake':
+            data.rake = parseFloat(event.target.value)
+            onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+            break
+          default:
+            break
+        }
+      }
+    })
+  }
+  const handleNonDesignateSegmentedInput = (event, index, rakeType) => {
+    checkInput(event, rakeType)
+    const newProfitSharing = _.cloneDeep(profitSharing)
+    newProfitSharing.segmented[0].nonDesignate.forEach((data, index2) => {
+      if (index === index2) {
+        switch (rakeType) {
+          case 'thresholdLowerLimit':
+            data.thresholdLowerLimit = parseInt(event.target.value)
+            onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+            break
+          case 'thresholdUpperLimit':
+            data.thresholdUpperLimit = parseInt(event.target.value)
+            onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+            break
+          case 'rake':
+            data.rake = parseFloat(event.target.value)
+            onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+            break
+          default:
+            break
+        }
+      }
+    })
+  }
+  const handleTabsChange = (e, value) => {
+    const newProfitSharing = _.cloneDeep(profitSharing)
+
+    // 如果attribute是空字串的話改成'預設'
+    newProfitSharing.nonSegmented.map((data, index) => {
+      if (data.attribute === '') {
+        newProfitSharing.nonSegmented[index].attribute = '預設'
+      }
+    })
+    if (newProfitSharing.nonSegmented.filter(d => d.attribute === value).length === 0) {
+      if (profitSharing.designationUsage && !profitSharing.isSegmented) {
+        newProfitSharing.nonSegmented.push({
+          attribute: value,
+          rakeData: {
+            designate: [
+              {
+                threshold: 0,
+                rake: 0,
+              },
+            ],
+            nonDesignate: [
+              {
+                threshold: 0,
+                rake: 0,
+              },
+            ],
+            nonDistinguish: [],
+          },
+        })
+        onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+      } else {
+        newProfitSharing.nonSegmented.push({
+          attribute: value,
+          rakeData: {
+            designate: [],
+            nonDesignate: [],
+            nonDistinguish: [
+              {
+                threshold: 0,
+                rake: 0,
+              },
+            ],
+          },
+        })
+        onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+      }
+    } else {
+      newProfitSharing.nonSegmented.forEach((d, index) => {
+        if (d.attribute === value && profitSharing.designationUsage) {
+          if (newProfitSharing.nonSegmented[index].rakeData.nonDistinguish.length === 0) {
+            newProfitSharing.nonSegmented[index] = {
+              ...d,
+            }
+            onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+          } else {
+            newProfitSharing.nonSegmented[index] = {
+              ...d,
+            }
+            onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+            onChange({ value: !newProfitSharing.designationUsage, key: 'designationUsage' })
+          }
+        } else if (d.attribute === value && !profitSharing.designationUsag) {
+          if (newProfitSharing.nonSegmented[index].rakeData.designate.length === 0) {
+
+            newProfitSharing.nonSegmented[index] = {
+              ...d,
+            }
+            onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+          } else {
+            newProfitSharing.nonSegmented[index] = {
+              ...d,
+            }
+            onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
+            onChange({ value: !newProfitSharing.designationUsage, key: 'designationUsage' })
+          }
+        }
+      })
+    }
+    setTabValue(value)
+  }
+
+  useEffect(() => {
+    profitSharing.nonSegmented.forEach((d, index) => {
+      if (d.attribute === tabValue) {
+        setDeductionIndex(index)
+      }
+    })
+  }, [tabValue, profitSharing])
+  return (
+    <Fragment>
+      <Card {...rest} css={css([styles.root, className])}>
+        <CardHeader title="抽成方式設定" />
+        {!profitSharing.isSegmented && (
+          <Tabs
+            value={tabValue}
+            scrollButtons="auto"
+            variant="scrollable"
+            onChange={handleTabsChange}
+          >
+            {attributions.map(tab => (
+              <Tab key={tab.value} label={tab.label} value={tab.value} />
+            ))}
+          </Tabs>
+        )}
+        <CardContent>
+          <PerfectScrollbar>
+            <div css={styles.inner}>
+              <Grid >
+                <Typography variant="h5" css={styles.subtitle}>
+                  抽成模式
+                </Typography>
+                <ToggleButtonGroup
+                  size="small"
+                  css={styles.deductionWayMarginL}
+                  value={profitSharing.isSegmented}
+                  onChange={handleToggleButtonChange}
+                  exclusive
+                >
+                  {isSegmented.map((data, idx) => (
+                    <ToggleButton
+                      key={`${data.label}-${idx}`}
+                      value={data.value}
+                      data-testid={`assign-designer-${data.value}`}
+                    >
+                      {data.label}
+                    </ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+                <FormControlLabel
+                  css={styles.marginL}
+                  control={<Checkbox color="primary" />}
+                  label="分指定/不指定"
+                  checked={profitSharing.designationUsage}
+                  onClick={handleDesignateChange}
+                />
+              </Grid>
+              {!profitSharing.designationUsage ? (
+                !profitSharing.isSegmented ? (
+                  profitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.map(
+                    (data, index) => (
+                      <Grid css={styles.flex} key={index}>
+                        <span css={styles.deductionWayMarginL}>
+                          總業績從(含)
+                        </span>
+                        <TextField
+                          InputProps={{ inputProps: { min: 0 } }}
+                          type="number"
+                          css={styles.verticleCenter}
+                          variant="outlined"
+                          label="輸入業績"
+                          value={data.threshold ? data.threshold : 0}
+                          onChange={event =>
+                            handleNonSegmentedThresholdInput(event, index, 'threshold')
+                          }
+                          onWheel={() => document.activeElement.blur()}
+                        />
+                        <span css={styles.deductionWayMarginL}>
+                          抽成調整為
+                        </span>
+                        <TextField
+                          InputProps={{ inputProps: { min: 0 } }}
+                          type="number"
+                          css={styles.verticleCenter}
+                          variant="outlined"
+                          label="輸入抽成(%)"
+                          value={data.rake ? data.rake : 0}
+                          onChange={event => handleNonSegmentedRakeInput(event, index, 'rake')}
+                          onWheel={() => document.activeElement.blur()}
+                        />
+                        <div css={styles.verticleCenter}>
+                          {index !== 0 && (
+                            <DeleteForeverIcon
+                              css={styles.icons}
+                              onClick={handleDeleteSetDeductionNum}
+                            />
+                          )}
+                          {index ===
+                            profitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish
+                              .length -
+                            1 && (
+                              <AddIcon
+                                css={styles.icons}
+                                onClick={() => handleAddSetDeductionNum('nonDistinguish')}
+                              />
+                            )}
+                        </div>
+                      </Grid>
+                    )
+                  )
+                ) : (
+                  profitSharing.segmented[0].nonDistinguish.map((data, index) => (
+                    <Grid key={index} container>
+                      <Grid item css={styles.flex}>
+                        <span css={styles.deductionWayMarginL}>
+                          總業績從(含)
+                        </span>
+                        <TextField
+                          css={styles.separateInputBottom}
+                          InputProps={{ inputProps: { min: 0 } }}
+                          type="number"
+                          variant="outlined"
+                          label="輸入業績"
+                          value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
+                          onChange={event =>
+                            handleSegmentedInput(event, index, 'thresholdLowerLimit')
+                          }
+                          onWheel={() => document.activeElement.blur()}
+                        />
+                      </Grid>
+                      <Grid item css={styles.flex}>
+                        <span css={styles.deductionWayMarginL}>
+                          至
+                        </span>
+                        <TextField
+                          css={styles.separateInput}
+                          InputProps={{ inputProps: { min: 0 } }}
+                          type="number"
+                          variant="outlined"
+                          label="輸入業績"
+                          value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
+                          onChange={event =>
+                            handleSegmentedInput(event, index, 'thresholdUpperLimit')
+                          }
+                          onWheel={() => document.activeElement.blur()}
+                        />
+                      </Grid>
+                      <Grid item css={styles.flex}>
+                        <span css={styles.deductionWayMarginL}>
+                          抽成為
+                        </span>
+                        <TextField
+                          css={styles.separateInputRake}
+                          InputProps={{ inputProps: { min: 0 } }}
+                          type="number"
+                          variant="outlined"
+                          label="輸入抽成(%)"
+                          value={data.rake ? data.rake : 0}
+                          onChange={event => handleSegmentedInput(event, index, 'rake')}
+                          onWheel={() => document.activeElement.blur()}
+                        />
+                      </Grid>
+                      <Grid item css={styles.flex}>
+                        <div css={styles.verticleCenter}>
+                          {index !== 0 && (
+                            <DeleteForeverIcon
+                              css={styles.icons}
+                              onClick={() => handleDeleteSegmented(index)}
+                            />
+                          )}
+                          {index === profitSharing.segmented[0].nonDistinguish.length - 1 && (
+                            <AddIcon
+                              css={styles.icons}
+                              onClick={() => handleAddSegmented('nonDistinguish')}
+                            />
+                          )}
+                        </div>
+                      </Grid>
+                    </Grid>
+                  ))
+                )
+              ) : !profitSharing.isSegmented ? (
+                <Fragment>
+                  <Grid>
+                    <Typography variant="h5" css={styles.subtitle}>
+                      指定業績
+                    </Typography>
+                  </Grid>
+                  {profitSharing.nonSegmented[deductionIndex].rakeData.designate.map(
+                    (data, index) => {
+                      return (
+                        <Grid key={index} container>
+                          <Grid item css={styles.flex}>
+                            <span css={styles.deductionWayMarginL}>
+                              總業績從(含)
+                            </span>
+                            <TextField
+                              InputProps={{ inputProps: { min: 0 } }}
+                              type="number"
+                              css={styles.verticleCenter}
+                              variant="outlined"
+                              label="輸入業績"
+                              value={data.threshold ? data.threshold : 0}
+                              onChange={event =>
+                                handleNonSegmentedDesignateThresholdInput(
+                                  event,
+                                  index,
+                                  'threshold'
+                                )
+                              }
+                              onWheel={() => document.activeElement.blur()}
+                            />
+                          </Grid>
+                          <Grid item css={styles.flex}>
+                            <span css={styles.deductionWayMarginL}>
+                              抽成調整為
+                            </span>
+                            <TextField
+                              InputProps={{ inputProps: { min: 0 } }}
+                              type="number"
+                              css={styles.verticleCenter}
+                              variant="outlined"
+                              label="輸入抽成(%)"
+                              value={data.rake ? data.rake : 0}
+                              onChange={event =>
+                                handleNonSegmentedDesignateRakeInput(event, index, 'rake')
+                              }
+                              onWheel={() => document.activeElement.blur()}
+                            />
+                          </Grid>
+                          <Grid item css={styles.flex}>
+                            <div css={styles.verticleCenter}>
+                              {index !== 0 && (
+                                <DeleteForeverIcon
+                                  css={styles.icons}
+                                  onClick={() => handleDeleteNonSegmentedDesignate(index)}
+                                />
+                              )}
+                              {index ===
+                                profitSharing.nonSegmented[deductionIndex].rakeData.designate
+                                  .length -
+                                1 && (
+                                  <AddIcon
+                                    css={styles.icons}
+                                    onClick={() => handleAddSetDeductionNum('designate')}
+                                  />
+                                )}
+                            </div>
+                          </Grid>
+                        </Grid>
+                      )
+                    }
+                  )}
+                  <Grid>
+                    <Typography variant="h5" css={styles.subtitle}>
+                      不指定業績
+                    </Typography>
+                  </Grid>
+                  {profitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.map(
+                    (data, index) => {
+                      return (
+                        <Grid key={index} container>
+                          <Grid item css={styles.flex}>
+                            <span css={styles.deductionWayMarginL}>
+                              總業績從(含)
+                            </span>
+                            <TextField
+                              InputProps={{ inputProps: { min: 0 } }}
+                              type="number"
+                              css={styles.verticleCenter}
+                              variant="outlined"
+                              label="輸入業績"
+                              value={data.threshold ? data.threshold : 0}
+                              onChange={event =>
+                                handleNonSegmentedNonDesignateThresholdInput(
+                                  event,
+                                  index,
+                                  'threshold'
+                                )
+                              }
+                              onWheel={() => document.activeElement.blur()}
+                            />
+                          </Grid>
+                          <Grid item css={styles.flex}>
+                            <span css={styles.deductionWayMarginL}>
+                              抽成調整為
+                            </span>
+                            <TextField
+                              InputProps={{ inputProps: { min: 0 } }}
+                              type="number"
+                              css={styles.verticleCenter}
+                              variant="outlined"
+                              label="輸入抽成(%)"
+                              value={data.rake ? data.rake : 0}
+                              onChange={event =>
+                                handleNonSegmentedNonDesignateRakeInput(event, index, 'rake')
+                              }
+                              onWheel={() => document.activeElement.blur()}
+                            />
+                          </Grid>
+                          <Grid item css={styles.flex}>
+                            <div css={styles.verticleCenter}>
+                              {index !== 0 && (
+                                <DeleteForeverIcon
+                                  css={styles.icons}
+                                  onClick={() => handleDeleteNonSegmentedNonDesignate(index)}
+                                />
+                              )}
+                              {index ===
+                                profitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate
+                                  .length -
+                                1 && (
+                                  <AddIcon
+                                    css={styles.icons}
+                                    onClick={() => handleAddSetDeductionNum('nonDesignate')}
+                                  />
+                                )}
+                            </div>
+                          </Grid>
+                        </Grid>
+                      )
+                    }
+                  )}
+                </Fragment>
+              ) : (
+                <Fragment>
+                  <Grid>
+                    <Typography variant="h5" css={styles.subtitle}>
+                      指定業績
+                    </Typography>
+                  </Grid>
+                  {profitSharing.segmented[0].designate.map((data, index) => {
+                    return (
+                      <Grid key={index} container>
+                        <Grid item css={styles.flex}>
+                          <span css={styles.deductionWayMarginL}>
+                            指定業績從(含)
+                          </span>
+                          <TextField
+                            InputProps={{ inputProps: { min: 0 } }}
+                            type="number"
+                            css={styles.separateInputBottom}
+                            variant="outlined"
+                            label="輸入業績"
+                            value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
+                            onChange={event =>
+                              handleDesignateSegmentedInput(event, index, 'thresholdLowerLimit')
+                            }
+                            onWheel={() => document.activeElement.blur()}
+                          />
+                        </Grid>
+                        <Grid item css={styles.flex}>
+                          <span css={styles.deductionWayMarginL} >
+                            至
+                          </span>
+                          <TextField
+                            InputProps={{ inputProps: { min: 0 } }}
+                            type="number"
+                            css={styles.separateInput}
+                            variant="outlined"
+                            label="輸入業績"
+                            value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
+                            onChange={event =>
+                              handleDesignateSegmentedInput(event, index, 'thresholdUpperLimit')
+                            }
+                            onWheel={() => document.activeElement.blur()}
+                          />
+                        </Grid>
+                        <Grid item css={styles.flex}>
+                          <span css={styles.deductionWayMarginL}>
+                            抽成為
+                          </span>
+                          <TextField
+                            InputProps={{ inputProps: { min: 0 } }}
+                            type="number"
+
+                            css={styles.separateInputRake}
+                            variant="outlined"
+                            label="輸入抽成(%)"
+                            value={data.rake ? data.rake : 0}
+                            onChange={event =>
+                              handleDesignateSegmentedInput(event, index, 'rake')
+                            }
+                            onWheel={() => document.activeElement.blur()}
+                          />
+                        </Grid>
+                        <Grid item css={styles.flex}>
+                          <div css={styles.verticleCenter}>
+                            {index !== 0 && (
+                              <DeleteForeverIcon
+                                css={styles.icons}
+                                onClick={() => handleDeleteSegmentedDesignate(index)}
+                              />
+                            )}
+                            {index === profitSharing.segmented[0].designate.length - 1 && (
+                              <AddIcon
+                                css={styles.icons}
+                                onClick={() => handleAddSegmented('designate')}
+                              />
+                            )}
+                          </div>
+                        </Grid>
+                      </Grid>
+                    )
+                  })}
+                  <Grid>
+                    <Typography variant="h5" css={styles.subtitle}>
+                      不指定業績
+                    </Typography>
+                  </Grid>
+                  {profitSharing.segmented[0].nonDesignate.map((data, index) => {
+                    return (
+                      <Grid key={index} container>
+                        <Grid item css={styles.flex} >
+                          <span css={styles.deductionWayMarginL}>
+                            不指定業績從(含)
+                          </span>
+                          <TextField
+                            InputProps={{ inputProps: { min: 0 } }}
+                            type="number"
+                            css={styles.separateInputBottom}
+                            variant="outlined"
+                            label="輸入業績"
+                            value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
+                            onChange={event =>
+                              handleNonDesignateSegmentedInput(
+                                event,
+                                index,
+                                'thresholdLowerLimit'
+                              )
+                            }
+                            onWheel={() => document.activeElement.blur()}
+                          />
+                        </Grid>
+                        <Grid item css={styles.flex} >
+                          <span css={styles.deductionWayMarginL}>
+                            至
+                          </span>
+                          <TextField
+                            InputProps={{ inputProps: { min: 0 } }}
+                            type="number"
+                            css={styles.separateInput}
+                            variant="outlined"
+                            label="輸入業績"
+                            value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
+                            onChange={event =>
+                              handleNonDesignateSegmentedInput(
+                                event,
+                                index,
+                                'thresholdUpperLimit'
+                              )
+                            }
+                            onWheel={() => document.activeElement.blur()}
+                          />
+                        </Grid>
+                        <Grid item css={styles.flex} >
+                          <span css={styles.deductionWayMarginL}>
+                            抽成為
+                          </span>
+                          <TextField
+                            InputProps={{ inputProps: { min: 0 } }}
+                            type="number"
+                            css={styles.separateInputRake}
+                            variant="outlined"
+                            label="輸入抽成(%)"
+                            value={data.rake ? data.rake : 0}
+                            onChange={event =>
+                              handleNonDesignateSegmentedInput(event, index, 'rake')
+                            }
+                            onWheel={() => document.activeElement.blur()}
+                          />
+                        </Grid>
+                        <Grid item css={styles.flex} >
+                          <div css={styles.verticleCenter}>
+                            {index !== 0 && (
+                              <DeleteForeverIcon
+                                css={styles.icons}
+                                onClick={() => handleDeleteSegmentedNonDesignate(index)}
+                              />
+                            )}
+                            {index === profitSharing.segmented[0].nonDesignate.length - 1 && (
+                              <AddIcon
+                                css={styles.icons}
+                                onClick={() => handleAddSegmented('nonDesignate')}
+                              />
+                            )}
+                          </div>
+                        </Grid>
+                      </Grid>
+                    )
+                  })}
+                </Fragment>
+              )}
+            </div>
+          </PerfectScrollbar>
+        </CardContent>
+      </Card>
+    </Fragment>
+  )
+}
+
+AboutPerformance.propTypes = {
+  className: PropTypes.object,
+}
+
+export default AboutPerformance

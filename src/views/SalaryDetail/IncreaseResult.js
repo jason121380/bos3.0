@@ -1,0 +1,349 @@
+/** @jsxImportSource @emotion/react */
+import {
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Divider,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography,
+} from '@mui/material'
+import clsx from 'clsx'
+import GenericMoreButton from 'components/GenericMoreButton'
+import TableEditBar from 'components/TableEditBar'
+import PropTypes from 'prop-types'
+import PerfectScrollbar from 'react-perfect-scrollbar'
+import { css } from '@emotion/react'
+import { theme } from '../../theme'
+
+const styles = {
+  root: css({}),
+  content: css({
+    padding: 0,
+  }),
+  inner: css({
+    minWidth: 2400,
+  }),
+  nameCell: css({
+    display: 'flex',
+    alignItems: 'center',
+  }),
+  avatar: css({
+    height: 42,
+    width: 42,
+    marginRight: theme.spacing(1),
+  }),
+  actions: css({
+    padding: theme.spacing(1),
+    justifyContent: 'flex-end',
+  }),
+}
+
+function Results({
+  className,
+  pageSetting,
+  users,
+  handleOnChangePage,
+  handleOnChangeRowsPerPage,
+  ...rest
+}) {
+  return (
+    <div {...rest} css={css([styles.root, className])}>
+      <Typography color="textSecondary" gutterBottom variant="body2">
+        {users.length} 筆資料, {pageSetting.pageOffset + 1}/
+        {Math.ceil(users.length / pageSetting.pageLimit)}
+      </Typography>
+      <Card>
+        <CardHeader action={<GenericMoreButton />} title="加項總覽" />
+        <Divider />
+        <CardContent css={styles.content}>
+          <PerfectScrollbar>
+            <div css={styles.inner}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>代號</TableCell>
+                    <TableCell>姓名</TableCell>
+                    <TableCell>職稱</TableCell>
+                    <TableCell>實發金額</TableCell>
+                    <TableCell>工資</TableCell>
+                    <TableCell>伙食津貼</TableCell>
+                    <TableCell>職務加給</TableCell>
+                    <TableCell>勞健保勞退</TableCell>
+                    <TableCell>全勤獎金</TableCell>
+                    <TableCell>售貨獎金</TableCell>
+                    <TableCell>業績抽成</TableCell>
+                    <TableCell>特殊抽成</TableCell>
+                    <TableCell>洗髮抽成</TableCell>
+                    <TableCell>護髮抽成</TableCell>
+                    <TableCell>燙染抽成</TableCell>
+                    <TableCell>其它抽成</TableCell>
+                    <TableCell>其他津貼</TableCell>
+                    <TableCell>獎勵金</TableCell>
+                    <TableCell>顧客還單</TableCell>
+                    <TableCell>績效抽成</TableCell>
+                    <TableCell>加項合計</TableCell>
+                    <TableCell>指定業績</TableCell>
+                    <TableCell>不指定業績</TableCell>
+                    <TableCell>點數</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {users.map(data => (
+                    <TableRow key={data.id} hover>
+                      <TableCell>{data.designerNo}</TableCell>
+                      <TableCell>{data.name}</TableCell>
+                      <TableCell>{data.jobTitle}</TableCell>
+                      <TableCell>
+                        {data.salary.wage +
+                          data.salary.mealAllowance +
+                          data.salary.additionOfDuties +
+                          data.salary.laborhealthInsurance +
+                          data.salary.attendanceBonus +
+                          data.salary.salesBonus +
+                          data.salary.salesCommission +
+                          data.salary.specialCommission +
+                          data.salary.shampooCommission +
+                          data.salary.hairCareCommission +
+                          data.salary.hotDyeingCommission +
+                          data.salary.otherCommission +
+                          data.salary.otherAllowance +
+                          data.salary.reward +
+                          data.salary.customerReturn +
+                          data.salary.performanceCommission +
+                          data.salary.designateSales +
+                          data.salary.notDesignateSales}
+                      </TableCell>
+                      <TableCell>{data.salary.wage}</TableCell>
+                      <TableCell>{data.salary.mealAllowance}</TableCell>
+                      <TableCell>{data.salary.additionOfDuties}</TableCell>
+                      <TableCell>{data.salary.laborhealthInsurance}</TableCell>
+                      <TableCell>{data.salary.attendanceBonus}</TableCell>
+                      <TableCell>{data.salary.salesBonus}</TableCell>
+                      <TableCell>{data.salary.salesCommission}</TableCell>
+                      <TableCell>{data.salary.specialCommission}</TableCell>
+                      <TableCell>{data.salary.shampooCommission}</TableCell>
+                      <TableCell>{data.salary.hairCareCommission}</TableCell>
+                      <TableCell>{data.salary.hotDyeingCommission}</TableCell>
+                      <TableCell>{data.salary.otherCommission}</TableCell>
+                      <TableCell>{data.salary.otherAllowance}</TableCell>
+                      <TableCell>{data.salary.reward}</TableCell>
+                      <TableCell>{data.salary.customerReturn}</TableCell>
+                      <TableCell>{data.salary.performanceCommission}</TableCell>
+                      <TableCell>
+                        {data.salary.wage +
+                          data.salary.mealAllowance +
+                          data.salary.additionOfDuties +
+                          data.salary.laborhealthInsurance +
+                          data.salary.attendanceBonus +
+                          data.salary.salesBonus +
+                          data.salary.salesCommission +
+                          data.salary.specialCommission +
+                          data.salary.shampooCommission +
+                          data.salary.hairCareCommission +
+                          data.salary.hotDyeingCommission +
+                          data.salary.otherCommission +
+                          data.salary.otherAllowance +
+                          data.salary.reward +
+                          data.salary.customerReturn +
+                          data.salary.performanceCommission}
+                      </TableCell>
+                      <TableCell>{data.salary.designateSales}</TableCell>
+                      <TableCell>{data.salary.notDesignateSales}</TableCell>
+                      <TableCell>{data.salary.points}</TableCell>
+                    </TableRow>
+                  ))}
+                  <TableRow hover>
+                    <TableCell>合 計:</TableCell>
+                    <TableCell colSpan={2}></TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) =>
+                        (total =
+                          total +
+                          item.salary.wage +
+                          item.salary.mealAllowance +
+                          item.salary.additionOfDuties +
+                          item.salary.laborhealthInsurance +
+                          item.salary.attendanceBonus +
+                          item.salary.salesBonus +
+                          item.salary.salesCommission +
+                          item.salary.specialCommission +
+                          item.salary.shampooCommission +
+                          item.salary.hairCareCommission +
+                          item.salary.hotDyeingCommission +
+                          item.salary.otherCommission +
+                          item.salary.otherAllowance +
+                          item.salary.reward +
+                          item.salary.customerReturn +
+                          item.salary.performanceCommission +
+                          item.salary.designateSales +
+                          item.salary.notDesignateSales),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce((total, item) => (total = total + item.salary.wage), 0)}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.mealAllowance),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.additionOfDuties),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.laborhealthInsurance),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.attendanceBonus),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce((total, item) => (total = total + item.salary.salesBonus), 0)}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.salesCommission),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.specialCommission),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.shampooCommission),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.hairCareCommission),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.hotDyeingCommission),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.otherCommission),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.otherAllowance),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce((total, item) => (total = total + item.salary.reward), 0)}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.customerReturn),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.performanceCommission),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) =>
+                        (total =
+                          total +
+                          item.salary.wage +
+                          item.salary.mealAllowance +
+                          item.salary.additionOfDuties +
+                          item.salary.laborhealthInsurance +
+                          item.salary.attendanceBonus +
+                          item.salary.salesBonus +
+                          item.salary.salesCommission +
+                          item.salary.specialCommission +
+                          item.salary.shampooCommission +
+                          item.salary.hairCareCommission +
+                          item.salary.hotDyeingCommission +
+                          item.salary.otherCommission +
+                          item.salary.otherAllowance +
+                          item.salary.reward +
+                          item.salary.customerReturn +
+                          item.salary.performanceCommission),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.designateSales),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce(
+                        (total, item) => (total = total + item.salary.notDesignateSales),
+                        0
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {users.reduce((total, item) => (total = total + item.salary.points), 0)}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </PerfectScrollbar>
+        </CardContent>
+        <CardActions css={styles.actions}>
+          <TablePagination
+            labelRowsPerPage='每頁顯示數量'
+            component="div"
+            count={pageSetting.totalCount}
+            onPageChange={handleOnChangePage}
+            onRowsPerPageChange={handleOnChangeRowsPerPage}
+            page={pageSetting.pageOffset}
+            rowsPerPage={pageSetting.pageLimit}
+            rowsPerPageOptions={[5, 10, 20, 25, 1000]}
+          />
+        </CardActions>
+      </Card>
+      <TableEditBar />
+    </div>
+  )
+}
+
+Results.propTypes = {
+  className: PropTypes.object,
+  customers: PropTypes.array,
+}
+
+Results.defaultProps = {
+  customers: [],
+}
+
+export default Results

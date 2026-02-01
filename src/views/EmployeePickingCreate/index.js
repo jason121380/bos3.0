@@ -1,0 +1,165 @@
+/** @jsxImportSource @emotion/react */
+import { Button, Container, Grid, FormControlLabel, Checkbox } from '@mui/material'
+import Page from 'components/Page'
+import PageTitle from 'components/PageTitle'
+import { openSnackbar } from 'elements/snackbars'
+import useFetchAddPicking from 'hooks/useFetchAddPicking'
+import useFetchGetEmployeePickingPurpose from 'hooks/useFetchGetEmployeePickingPurpose'
+import idx from 'idx'
+import produce from 'immer'
+import { useState, useEffect } from 'react'
+import { useHistory } from 'react-router'
+import _ from 'lodash'
+import { css } from '@emotion/react'
+import { theme } from '../../theme'
+
+import General from './General'
+
+const styles = {
+  root: css({}),
+  general: css({
+    marginTop: theme.spacing(3),
+  }),
+  action: css({
+    marginTop: theme.spacing(3) + '!important',
+  }),
+}
+
+export default function EmployeePickingCreate({ location }) {
+  const stayInCreatePickingInMemory = JSON.parse(localStorage.getItem('stayInCreatePicking'))
+  const getEmployeePickingPurpose = useFetchGetEmployeePickingPurpose()
+  const history = useHistory()
+  const [stayInCreatePicking, setStayInCreatePicking] = useState(
+    stayInCreatePickingInMemory !== null ? stayInCreatePickingInMemory : false
+  )
+  const [purpose, setPurpose] = useState([])
+  const [picking, setPicking] = useState({
+    date: new Date().getTime(),
+    productList: [
+      {
+        productName: '',
+        productNo: '',
+        price: 0,
+        count: 0,
+        total: 0,
+      },
+    ],
+    purpose: '',
+    remark: '',
+    PickerId: '',
+  })
+  const [pageLoading, setPageLoading] = useState(true)
+  const { addPicking } = useFetchAddPicking()
+
+  useEffect(() => {
+    if (!getEmployeePickingPurpose.loading) {
+      const data = idx(getEmployeePickingPurpose, _ => _.data.getEmployeePickingPurpose)
+      setPurpose(data)
+    }
+  }, [getEmployeePickingPurpose.loading])
+
+  useEffect(() => {
+    if (location.search.split('=')[1] !== undefined) {
+      history.push(`/employee/picking/create?date=${location.search.split('=')[1]}`)
+      setPicking(
+        produce(draft => {
+          draft.date = Number(location.search.split('=')[1])
+        })
+      )
+    }
+  }, [])
+  const [isClick, setIsClick] = useState(true)
+  const handleOnChange = ({ event, key }) => {
+    if (event && event.persist) event.persist()
+    setPicking(
+      produce(draft => {
+        if (key === 'date') {
+          history.push(`/employee/picking/create?date=${event}`)
+          draft[key] = event
+        } else draft[key] = idx(event, _ => _.target.value)
+      })
+    )
+  }
+
+  const handleSubmit = () => {
+    setIsClick(true)
+
+    const newPicking = _.cloneDeep(picking)
+    let newProductList = newPicking.productList.filter(
+      data => data.productName !== '' || data.productNo !== ''
+    )
+    newProductList = newPicking.productList.map(({ productCategory, selected, ...keep }) => keep)
+    newProductList = newProductList.filter(data => data.productName !== '' || data.productNo !== '')
+    const subData = { ...picking, productList: newProductList }
+
+    addPicking({
+      input: subData,
+    }).then(res => {
+      if (res.data.addPicking) {
+        openSnackbar({ message: '成功新增領料', variant: 'success' })
+
+        if (stayInCreatePicking) {
+          if (location.search.split('=')[1] !== undefined) {
+            window.location.href = `/employee/picking/create?date=${location.search.split('=')[1]}`
+          } else {
+            window.location.href = '/employee/picking/create'
+          }
+        } else {
+          history.push('/employee/picking')
+        }
+      } else {
+        openSnackbar({ message: '新增領料失敗', variant: 'error' })
+        setIsClick(false)
+      }
+    }).catch(err => {
+      openSnackbar({ message: err.message, variant: 'error' })
+      setIsClick(false)
+    })
+  }
+  const handleStayInCreatePicking = () => {
+    if (!stayInCreatePicking) {
+      setStayInCreatePicking(true)
+      localStorage.setItem('stayInCreatePicking', true)
+    } else {
+      localStorage.removeItem('stayInCreatePicking')
+      setStayInCreatePicking(false)
+    }
+  }
+  return (
+    <Page title="新增材料自購" css={styles.root}>
+      <Container style={{ maxWidth: '700px', minWidth: '300px', padding: '20px' }}>
+        <Grid container item justifyContent='space-between' alignItems='center'>
+          <PageTitle title='新增材料自購' subTitle='Employee Picking Create' />
+          <Grid item>
+            <FormControlLabel
+              control={<Checkbox color="primary" />}
+              label="連續新增自購"
+              checked={stayInCreatePicking}
+              onChange={handleStayInCreatePicking}
+            />
+          </Grid>
+        </Grid>
+        <General
+          className={styles.general}
+          picking={picking}
+          setPicking={setPicking}
+          onChange={handleOnChange}
+          setPageLoading={setPageLoading}
+          setIsClick={setIsClick}
+          purpose={purpose}
+        />
+        {!pageLoading && (
+          <Button
+            color="primary"
+            variant="contained"
+            css={styles.action}
+            disabled={isClick}
+            onClick={handleSubmit}
+          >
+            新增
+          </Button>
+        )}
+      </Container>
+    </Page>
+  )
+}

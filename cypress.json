@@ -1,0 +1,7 @@
+{
+  "baseUrl": "http://localhost:3000",
+  "projectId": "2miooq",
+  "viewportWidth": 1024,
+  "viewportHeight": 768,
+  "defaultCommandTimeout": 40000
+}

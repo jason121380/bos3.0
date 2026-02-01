@@ -1,0 +1,229 @@
+/** @jsxImportSource @emotion/react */
+import { Button, Container } from '@mui/material'
+import Page from 'components/Page'
+import PageTitle from 'components/PageTitle'
+import { openSnackbar } from 'elements/snackbars'
+import useFetchProduct from 'hooks/useFetchProduct'
+import useFetchUpdateProduct from 'hooks/useFetchUpdateProduct'
+import useFetchCreateProduct from 'hooks/useFetchCreateProduct'
+import { useFetchGetMerchantVendorList } from 'hooks/useFetchGetVendor'
+import { useFetchGetisUnlimProdEmpPrice } from 'hooks/useFetchGetParameterAboutSettingFunction'
+import idx from 'idx'
+import produce from 'immer'
+import _ from 'lodash'
+import { useEffect, useState, useMemo } from 'react'
+import { useHistory } from 'react-router'
+import useFetchProducts from 'hooks/useFetchProducts'
+
+import AboutProduct from './AboutProduct'
+import AboutSalesProduct from './AboutSalesProduct'
+import styles from './styles/ProductEdit'
+
+export default function ProductCreate({ match }) {
+  const isDuplicate = location.href.includes('duplicate')
+  const itemId = match.params.id
+  const products = useFetchProducts()
+  const productDetail = useFetchProduct({ productId: itemId })
+  const { updateProduct } = useFetchUpdateProduct()
+  const { createProduct } = useFetchCreateProduct()
+  const history = useHistory()
+  const [productIndex, setProductIndex] = useState(0)
+  const [productsArr, setProductsArr] = useState([])
+  const [merchantVendor, setMerchantVendor] = useState([])
+  const merchantVendorList = useFetchGetMerchantVendorList()
+  const getisUnlimProdEmpPrice = useFetchGetisUnlimProdEmpPrice()
+  const [saveBtn, setSaveBtn] = useState(false)
+  const [vaild, setVaild] = useState(false)
+  const [product, setProduct] = useState({
+    itemId,
+    no: '',
+    name: '',
+    cost: 0,
+    sellPrice: 0,
+    employeePrice: 0,
+    safeLow: 0,
+    safeHigh: 0,
+    stockUnit: '',
+    commission: 0,
+    customerSellSetting: [],
+    ProductCategoryId: '',
+    isAvailableForSale: true,
+    isPublished: true,
+    isLocked: '',
+    VendorId: null,
+  })
+
+  const handleOnChange = ({ event, key }) => {
+    if (event.persist) event.persist()
+    setProduct(
+      produce(draft => {
+        draft[key] = idx(event, _ => _.target.value)
+        if (key === 'sellPrice')
+          draft.customerSellSetting = _.cloneDeep(product.customerSellSetting).map(data => {
+            data.price = idx(event, _ => _.target.value)
+            return data
+          })
+      })
+    )
+  }
+
+  const handleSubmit = async status => {
+    setSaveBtn(true)
+    try {
+      if (!isUnlimProdEmpPrice && (product.employeePrice < product.cost)) throw new Error('自購價不可低於成本價')
+      await updateProduct({ input: product })
+      openSnackbar({ variant: 'success', message: '成功儲存商品變更' })
+      if (status === 'toList') {
+        history.push('/products')
+      } else if (status === 'toLast') {
+        history.push(`/product/edit/${productsArr[productIndex - 1].id}`)
+      } else if (status === 'toNext') {
+        history.push(`/product/edit/${productsArr[productIndex + 1].id}`)
+      }
+    } catch (error) {
+      setSaveBtn(false)
+      openSnackbar({ variant: 'error', message: error.message })
+    }
+  }
+
+  const handleCreate = async () => {
+    setSaveBtn(true)
+    const { itemId, ...rest } = _.cloneDeep(product)
+    try {
+      if (!isUnlimProdEmpPrice && (product.employeePrice < product.cost)) throw new Error('自購價不可低於成本價')
+      await createProduct({ input: {
+          OfficialBrandMerchantId: JSON.parse(localStorage.getItem('userMerchant')).id,
+          ...rest
+      } })
+      openSnackbar({ variant: 'success', message: '成功新增商品' })
+      history.push('/products')
+    } catch (error) {
+      setSaveBtn(false)
+      openSnackbar({ variant: 'error', message: error.message })
+    }
+  }
+
+  const isUnlimProdEmpPrice = useMemo(() => {
+    if (!getisUnlimProdEmpPrice.loading && getisUnlimProdEmpPrice.data) {
+      return getisUnlimProdEmpPrice.data.getParameterAboutSettingFunction.isUnlimProdEmpPrice
+    }
+    return false
+  }, [getisUnlimProdEmpPrice.loading, getisUnlimProdEmpPrice.data])
+
+  useEffect(() => {
+    if (!productDetail.loading) {
+      const noIsNull = idx(productDetail.data, _ => _.product.no) === null
+      setProduct(
+        produce(draft => {
+          draft.itemId = idx(productDetail.data, _ => _.product.id)
+          draft.no = noIsNull ? '' : idx(productDetail.data, _ => _.product.no) + (isDuplicate ? '的副本' : '')
+          draft.name = idx(productDetail.data, _ => _.product.name) + (isDuplicate ? '的副本' : '')
+          draft.cost = idx(productDetail.data, _ => _.product.cost)
+          if (productDetail.data.product.isAvailableForSale) {
+            draft.sellPrice = idx(productDetail.data, _ => _.product.sellPrice)
+          } else {
+            draft.sellPrice = 0
+          }
+          draft.employeePrice = idx(productDetail.data, _ => _.product.employeePrice)
+          draft.safeLow = idx(productDetail.data, _ => _.product.safeLow)
+          draft.safeHigh = idx(productDetail.data, _ => _.product.safeHigh)
+          draft.stockUnit = idx(productDetail.data, _ => _.product.stockUnit)
+          if (productDetail.data.product.isAvailableForSale) {
+            draft.commissionWay = idx(productDetail.data, _ => _.product.commissionWay)
+          }
+          draft.commission = idx(productDetail.data, _ => _.product.commission)
+          draft.customerSellSetting = idx(productDetail.data, _ =>
+            _.product.customerSellSetting.map(data => ({
+              category: data.category,
+              price: data.price,
+            }))
+          )
+          draft.ProductCategoryId = idx(productDetail.data, _ => _.product.productCategory.id)
+          draft.isAvailableForSale = idx(productDetail.data, _ => _.product.isAvailableForSale)
+          draft.isLocked = idx(productDetail.data, _ => _.product.isLockedOriginalValue)
+          draft.VendorId = idx(productDetail.data, _ => _.product.merchantVendor.merchantVendorUUId)
+          draft.isPublished = idx(productDetail.data, _ => _.product.isPublished)
+        })
+      )
+    }
+  }, [productDetail.loading, productDetail.data])
+
+  useEffect(() => {
+    setSaveBtn(false)
+    if (!products.loading && !productDetail.loading) {
+      const productsArr = idx(products, _ => _.data.products.data)
+      const productId = idx(productDetail.data, _ => _.product.id)
+      setProductsArr(productsArr)
+      productsArr.forEach((product, index) => {
+        if (product.id === productId) {
+          setProductIndex(index)
+        }
+      })
+    }
+  }, [products.loading, productDetail.loading])
+
+  useEffect(() => {
+    if (!merchantVendorList.loading) {
+      const data = idx(merchantVendorList,_=>_.data.getMerchantVendorList)
+      setMerchantVendor(data)
+    }
+  }, [merchantVendorList.loading])
+
+  useEffect(() => {
+    const vaild = !(product.name && product.stockUnit && product.ProductCategoryId)
+    setVaild(vaild)
+  }, [product])
+
+  return (
+    <Page css={styles.root} title={isDuplicate ? "新增商品" : "編輯商品"} >
+      <Container maxWidth="lg">
+        <PageTitle title={isDuplicate ? "新增商品" : "編輯商品"} subTitle={isDuplicate ? "CREATE PRODUCT" : "Product Edit"}/>
+        <AboutProduct
+          className={styles.aboutPayment}
+          product={product}
+          onChange={handleOnChange}
+          setProduct={setProduct}
+          merchantVendor={merchantVendor}
+        />
+        {product.isAvailableForSale && !productDetail.loading && (
+          <AboutSalesProduct
+            className={styles.aboutPayment}
+            product={product}
+            onChange={handleOnChange}
+          />
+        )}
+        <div css={styles.actions}>
+          {isDuplicate ? (
+            <Button color="primary" variant="contained" disabled={saveBtn || vaild} onClick={handleCreate}>
+              新增
+            </Button>
+          ) : (
+            <>
+              <Button color="primary" variant="contained" disabled={saveBtn || vaild} onClick={() => handleSubmit('toList')}>
+                儲存
+              </Button>
+              <div css={styles.lastNextDiv}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  disabled={productIndex === 0 || saveBtn || vaild}
+                  onClick={() => handleSubmit('toLast')}
+                >
+                  儲存並上一筆
+                </Button>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  disabled={productIndex === productsArr.length - 1 || saveBtn || vaild}
+                  onClick={() => handleSubmit('toNext')}
+                >
+                  儲存並下一筆
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      </Container>
+    </Page>
+  )
+}

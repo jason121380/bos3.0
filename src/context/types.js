@@ -1,0 +1,1 @@
+export const TEACHING_MODE = 'TEACHING_MODE'
