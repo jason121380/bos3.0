@@ -44,7 +44,7 @@ const styles = {
   root: css({}),
   container: css({
     padding: '0px !important',
-    paddingTop: theme.spacing(1.5),
+    paddingTop: theme.spacing(1) + ' !important',
     paddingBottom: theme.spacing(1.5),
   }),
   results: css({

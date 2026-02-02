@@ -21,30 +21,61 @@ import { css } from '@emotion/react'
 import { theme } from '../../../theme'
 
 const styles = {
-  root: css({}),
-  saveButton: css({
-    color: theme.palette.common.white,
-    backgroundColor: colors.green[600] + '!important',
-    '&:hover': {
-      backgroundColor: colors.green[900] + '!important',
-    },
+  root: css({
+    borderRadius: '24px',
+    boxShadow: 'none',
+    border: 'none',
+  }),
+  section: css({
+    marginBottom: '32px',
+  }),
+  sectionTitle: css({
+    fontSize: '16px',
+    fontWeight: 'bold',
+    color: '#202124',
+    marginBottom: '20px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  }),
+  sectionTitleBar: css({
+    width: '4px',
+    height: '18px',
+    backgroundColor: '#1A73E8',
+    borderRadius: '2px',
   }),
   datePicker: css({
-    '& input.MuiInput-input': {
-      padding: '6px 0 7px'
+    width: '100%',
+    '& .MuiInputBase-root': {
+      borderRadius: '8px',
     }
   }),
-  gender: css({
+  genderContainer: css({
     display: 'flex',
-    flexDirection: 'row',
-    '& span.MuiRadio-root': {
-      padding: 9
-    }
+    alignItems: 'center',
+    gap: '24px',
+    padding: '16.5px 14px',
+    backgroundColor: 'transparent',
+    borderRadius: '4px',
+    border: '1px solid rgba(0, 0, 0, 0.23)',
+    minHeight: '56px',
+    boxSizing: 'border-box',
+    '&:hover': {
+      borderColor: 'rgba(0, 0, 0, 0.87)',
+    },
   }),
-  btnDiv: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-  })
+  genderLabel: css({
+    position: 'absolute',
+    top: '-10px',
+    left: '14px',
+    fontSize: '12px',
+    color: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: '#FFFFFF',
+    padding: '0 4px',
+  }),
+  genderWrapper: css({
+    position: 'relative',
+  }),
 }
 
 function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...rest }) {
@@ -54,380 +85,248 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
       .indexOf(true) !== -1
   return (
     <Card {...rest} css={styles.root}>
-      <CardHeader title="個人資料" />
-      <Divider />
-      <CardContent>
-        <Grid container spacing={4}>
-          <Grid item md={6} xs={12}>
-            <TextField
-              fullWidth
-              label="姓氏"
-              name="lastName"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              value={profile.lastName !== null ? profile.lastName : ""}
-              variant="outlined"
-            />
+      <CardContent sx={{ padding: '32px !important' }}>
+        {/* 基本資料 */}
+        <div css={styles.section}>
+          <div css={styles.sectionTitle}>
+            <div css={styles.sectionTitleBar} />
+            基本資料
+          </div>
+          <Grid container spacing={3}>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="姓氏"
+                name="lastName"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.lastName || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="名字"
+                name="firstName"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.firstName || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="暱稱"
+                name="nickName"
+                placeholder="例如: 小王"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.nickName || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <DatePicker
+                css={styles.datePicker}
+                label="出生日期"
+                value={profile.birthday || null}
+                format='yyyy/MM/dd'
+                onChange={value => onChange({ value: new Date(value).getTime(), key: 'birthday' })}
+                slotProps={{ textField: { variant: 'outlined', fullWidth: true } }}
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <div css={styles.genderWrapper}>
+                <span css={styles.genderLabel}>性別</span>
+                <div css={styles.genderContainer}>
+                  <RadioGroup
+                    row
+                    name="gender"
+                    value={profile.gender || ""}
+                    onChange={event => onChange({ value: event.target.value, key: 'gender' })}
+                  >
+                    <FormControlLabel value="MALE" control={<Radio size="small" />} label="男" />
+                    <FormControlLabel value="FEMALE" control={<Radio size="small" />} label="女" />
+                  </RadioGroup>
+                </div>
+              </div>
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="員工編號 / 代碼"
+                name="designerNo"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.designerNo || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="手機號碼"
+                name="cellphone"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.cellphone || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="電子信箱"
+                name="email"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.email || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <DatePicker
+                css={styles.datePicker}
+                label="到職日期"
+                value={profile.employmentStartDate || null}
+                format='yyyy/MM/dd'
+                onChange={value => onChange({ value: new Date(value).getTime(), key: 'employmentStartDate' })}
+                slotProps={{ textField: { variant: 'outlined', fullWidth: true } }}
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="通訊住址"
+                name="contactAddress"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.contactAddress || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="戶籍住址"
+                name="address"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.address || ""}
+                variant="outlined"
+              />
+            </Grid>
           </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField
-              fullWidth
-              label="名字"
-              name="firstName"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              value={profile.firstName !== null ? profile.firstName : ""}
-              variant="outlined"
-            />
+        </div>
+
+        {/* 銀行帳戶資料 */}
+        <div css={styles.section}>
+          <div css={styles.sectionTitle}>
+            <div css={styles.sectionTitleBar} />
+            匯款帳戶資料
+          </div>
+          <Grid container spacing={3}>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="銀行代號"
+                name="bankCode"
+                placeholder="例如: 822"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.bankCode || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="匯款銀行名稱"
+                name="bankName"
+                placeholder="例如: 中國信託"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.bankName || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="分行名稱"
+                name="bankBranchName"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.bankBranchName || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="銀行匯款帳號"
+                name="bankAccount"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.bankAccount || ""}
+                variant="outlined"
+              />
+            </Grid>
           </Grid>
-          <Grid item md={6} xs={12}>
-            <DatePicker
-              css={styles.datePicker}
-              label="生日"
-              value={profile.birthday !== null ? profile.birthday : ""}
-              format='yyyy/MM/dd'
-              openTo='year'
-              orientation='portrait'
-              localeText={{
-                toolbarTitle: '選擇日期'
-              }}
-              slotProps={{
-                toolbar: {
-                  toolbarFormat: 'yyyy年M月d日'
-                },
-                textField: {
-                  variant: 'standard',
-                  fullWidth: true
-                }
-              }}
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: new Date(event).getTime(), key: 'birthday' })))
-              }
-            />
+        </div>
+
+        {/* 其他與緊急聯繫人 */}
+        <div css={styles.section}>
+          <div css={styles.sectionTitle}>
+            <div css={styles.sectionTitleBar} />
+            其他與緊急聯繫人
+          </div>
+          <Grid container spacing={3}>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="聯絡人姓名"
+                name="familyMemberName"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.familyMemberName || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="關係"
+                name="familyMemberRelation"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.familyMemberRelation || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="聯絡電話"
+                name="familyMemberPhone"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.familyMemberPhone || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="聯絡地址"
+                name="familyMemberAddress"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.familyMemberAddress || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                multiline
+                rows={3}
+                label="員工備註"
+                name="remark"
+                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                value={profile.remark || ""}
+                variant="outlined"
+              />
+            </Grid>
           </Grid>
-          <Grid item md={6} xs={12}>
-            <FormLabel>性別</FormLabel>
-            <RadioGroup
-              aria-label="gender"
-              name="gender"
-              value={profile.gender !== null ? profile.gender : ""}
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: 'gender' })))
-              }
-              css={styles.gender}
-            >
-              <FormControlLabel value="MALE" control={<Radio />} label="男" />
-              <FormControlLabel value="FEMALE" control={<Radio />} label="女" />
-            </RadioGroup>
-          </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField
-              fullWidth
-              label="暱稱"
-              name="nickName"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              type="text"
-              value={profile.nickName !== null ? profile.nickName : ""}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField
-              fullWidth
-              label="員工編號"
-              name="designerNo"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              type="text"
-              value={profile.designerNo !== null ? profile.designerNo : ""}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item md={6} xs={12}>
-            <TextField
-              fullWidth
-              label="手機號碼"
-              name="cellphone"
-              type="text"
-              value={profile.cellphone !== null ? profile.cellphone : ""}
-              variant="outlined"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-            />
-          </Grid>
-          {/* <Grid item md={3} xs={12}>
-            <TextField
-              fullWidth
-              label="勞健保級距"
-              name="insuranceGrade"
-              type="number"
-              value={profile.insuranceGrade}
-              variant="outlined"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: parseInt(_.target.value), key: _.target.name })))
-              }
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <TextField
-              fullWidth
-              label="勞健保自付款"
-              name="insuranceDeductible"
-              type="number"
-              value={profile.insuranceDeductible}
-              variant="outlined"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: parseInt(_.target.value), key: _.target.name })))
-              }
-            />
-          </Grid> */}
-          <Grid item md={6} xs={12}>
-            <DatePicker
-              css={styles.datePicker}
-              label="到職日期"
-              value={profile.employmentStartDate !== null ? profile.employmentStartDate : ""}
-              format='yyyy/MM/dd'
-              openTo='year'
-              orientation='portrait'
-              localeText={{
-                toolbarTitle: '選擇日期'
-              }}
-              slotProps={{
-                toolbar: {
-                  toolbarFormat: 'yyyy年M月d日'
-                },
-                textField: {
-                  variant: 'standard',
-                  fullWidth: true
-                }
-              }}
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: new Date(event).getTime(), key: 'employmentStartDate' })))
-              }
-            />
-          </Grid>
-          <Grid item md={4} xs={12}>
-            <TextField
-              fullWidth
-              label="銀行代號"
-              name="bankCode"
-              type="text"
-              value={profile.bankCode !== null ? profile.bankCode : ""}
-              variant="outlined"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-            />
-          </Grid>
-          <Grid item md={4} xs={12}>
-            <TextField
-              fullWidth
-              label="匯款銀行"
-              name="bankName"
-              type="text"
-              value={profile.bankName !== null ? profile.bankName : ""}
-              variant="outlined"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-            />
-          </Grid>
-          <Grid item md={4} xs={12}>
-            <TextField
-              fullWidth
-              label="匯款分行"
-              name="bankBranchName"
-              type="text"
-              value={profile.bankBranchName !== null ? profile.bankBranchName : ""}
-              variant="outlined"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-            />
-          </Grid>
-          <Grid item md={12} xs={12}>
-            <TextField
-              fullWidth
-              label="匯款帳號"
-              name="bankAccount"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              type="text"
-              value={profile.bankAccount !== null ? profile.bankAccount : ""}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item md={12} xs={12}>
-            <TextField
-              fullWidth
-              label="身分證字號"
-              name="serialNumber"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              type="text"
-              value={profile.serialNumber !== null ? profile.serialNumber : ""}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item md={12} xs={12}>
-            <TextField
-              fullWidth
-              label="電子信箱"
-              name="email"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              value={profile.email !== null ? profile.email : ""}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item md={12} xs={12}>
-            <TextField
-              fullWidth
-              label="通訊住址"
-              name="contactAddress"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              type="text"
-              value={profile.contactAddress !== null ? profile.contactAddress : ""}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item md={12} xs={12}>
-            <TextField
-              fullWidth
-              label="戶籍住址"
-              name="address"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              type="text"
-              value={profile.address !== null ? profile.address : ""}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item md={12} xs={12}>
-            <TextField
-              fullWidth
-              label="自我介紹"
-              name="selfIntroduction"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              type="text"
-              value={profile.selfIntroduction !== null ? profile.selfIntroduction : ""}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item md={12} xs={12}>
-            <TextField
-              fullWidth
-              name='selfIntroductionLink'
-              variant='outlined'
-              label='自介連結'
-              placeholder='請輸入網址 ex: https://www.mlgroup.io'
-              value={profile.selfIntroductionLink !== null ? profile.selfIntroductionLink : ""}
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-            />
-          </Grid>
-          <Grid item md={12} xs={12}>
-            <TextField
-              fullWidth
-              label="備註"
-              name="remark"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              type="text"
-              value={profile.remark !== null ? profile.remark : ""}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <TextField
-              fullWidth
-              label="家屬姓名"
-              name="familyMemberName"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              type="text"
-              value={profile.familyMemberName !== null ? profile.familyMemberName : ""}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item md={2} xs={12}>
-            <TextField
-              fullWidth
-              label="關係"
-              name="familyMemberRelation"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              type="text"
-              value={profile.familyMemberRelation !== null ? profile.familyMemberRelation : ""}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item md={3} xs={12}>
-            <TextField
-              fullWidth
-              label="電話"
-              name="familyMemberPhone"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              type="text"
-              value={profile.familyMemberPhone !== null ? profile.familyMemberPhone : ""}
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item md={4} xs={12}>
-            <TextField
-              fullWidth
-              label="住址"
-              name="familyMemberAddress"
-              onChange={event =>
-                onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))
-              }
-              type="text"
-              value={profile.familyMemberAddress !== null ? profile.familyMemberAddress : ""}
-              variant="outlined"
-            />
-          </Grid>
-        </Grid>
+        </div>
       </CardContent>
-      <Divider />
-      <CardActions css={styles.btnDiv}>
-        <Button
-          type="submit"
-          variant="contained"
-          color='error'
-          onClick={onEmployeeResign}
-        >
-          員工離職
-        </Button>
-        <Button
-          css={styles.saveButton}
-          type="submit"
-          variant="contained"
-          disabled={vaild}
-          onClick={onSubmit}
-        >
-          儲存並返回列表
-        </Button>
-      </CardActions>
     </Card>
   )
 }

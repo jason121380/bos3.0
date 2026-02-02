@@ -2,290 +2,205 @@
 import {
   Avatar,
   Card,
-  CardActions,
   CardContent,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Typography,
-  FormControlLabel,
-  Checkbox,
-  Grid,
-  TextField,
-  CardHeader,
+  Button,
 } from '@mui/material'
 import idx from 'idx'
 import PropTypes from 'prop-types'
-import React, { Fragment } from 'react'
-import { cloneDeep } from 'lodash'
-import useFetchMerchantJobTitlePoint from 'hooks/useFetchMerchantJobTitlePoint'
+import React from 'react'
 import { css } from '@emotion/react'
-import { theme } from '../../../theme'
 
 const styles = {
-  root: css({}),
+  root: css({
+    borderRadius: '24px',
+    boxShadow: 'none',
+    border: 'none',
+    overflow: 'hidden',
+  }),
   content: css({
     display: 'flex',
     alignItems: 'center',
-    flexDirection: 'column',
-    textAlgin: 'center',
-  }),
-  name: css({
-    marginTop: theme.spacing(1) + '!important',
+    padding: '20px 24px',
+    gap: '20px',
   }),
   avatar: css({
-    height: 100,
-    width: 100,
+    height: 80,
+    width: 80,
+    border: 'none',
+    boxShadow: 'none',
+    flexShrink: 0,
   }),
-  action: css({
-    width: '100%',
-  }),
-  lineLogo: css({
-    width: '30px',
-    marginRight: '3px',
-  }),
-  lineOfflineLogo: css({
-    width: '30px',
-    marginRight: '3px',
-    opacity: '0.4',
-  }),
-  lineLogoAndId: css({
+  infoGroup: css({
     display: 'flex',
     alignItems: 'center',
+    gap: '16px',
+    flex: 1,
   }),
-  lineAccountId: css({
-    wordBreak: 'break-all',
-    textAlign: 'center',
+  name: css({
+    fontWeight: 'bold !important',
+    color: '#202124',
+    fontSize: '18px !important',
+    margin: '0 !important',
+    whiteSpace: 'nowrap',
   }),
-  spanFont: css({
-    fontSize: '10px',
-    color: 'grey',
+  role: css({
+    color: '#5F6368',
+    fontWeight: 500,
+    fontSize: '13px',
+    margin: '0 !important',
+    whiteSpace: 'nowrap',
   }),
-  newAddCard: css({
-    marginTop: '30px',
+  jobTitle: css({
+    color: '#80868B',
+    fontSize: '12px',
+    margin: '0 !important',
+    whiteSpace: 'nowrap',
   }),
-  secondContent: css({
-    display: 'flex',
+  lineStatus: (isBinded) => css({
+    display: 'inline-flex',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: '6px',
+    padding: '4px 12px',
+    borderRadius: '16px',
+    backgroundColor: isBinded ? '#E8F5E9' : '#F1F3F4',
+    whiteSpace: 'nowrap',
   }),
-  icons: css({
-    cursor: 'pointer',
+  lineIcon: css({
+    width: '16px',
+    height: '16px',
   }),
-  iconsGrid: css({
+  lineText: (isBinded) => css({
+    fontSize: '12px',
+    fontWeight: 600,
+    color: isBinded ? '#2E7D32' : '#5F6368',
+  }),
+  buttonContainer: css({
     display: 'flex',
-    alignItems: 'center',
-    padding: 0,
+    gap: '8px',
+    flexShrink: 0,
+  }),
+  resignButton: css({
+    borderRadius: '20px !important',
+    padding: '6px 20px !important',
+    fontWeight: '600 !important',
+    fontSize: '13px !important',
+    textTransform: 'none !important',
+    boxShadow: 'none !important',
+    backgroundColor: '#F1F3F4 !important',
+    color: '#5F6368 !important',
+    border: 'none !important',
+    '&:hover': {
+      backgroundColor: '#E8EAED !important',
+      boxShadow: 'none !important',
+    },
+  }),
+  saveButton: css({
+    borderRadius: '20px !important',
+    padding: '6px 20px !important',
+    fontWeight: '600 !important',
+    fontSize: '13px !important',
+    textTransform: 'none !important',
+    boxShadow: 'none !important',
+    backgroundColor: '#1A73E8 !important',
+    color: '#FFFFFF !important',
+    border: 'none !important',
+    '&:hover': {
+      backgroundColor: '#1557B0 !important',
+      boxShadow: 'none !important',
+    },
+  }),
+  settingsSection: css({
+    padding: '0 24px 32px 24px',
+  }),
+  settingsTitle: css({
+    fontSize: '15px',
+    fontWeight: 'bold',
+    color: '#202124',
+    marginBottom: '16px',
+    paddingLeft: '8px',
+    borderLeft: '4px solid #1A73E8',
+  }),
+  checkboxGroup: css({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+  }),
+  checkboxLabel: css({
+    margin: 0,
+    padding: '4px 8px',
+    borderRadius: '8px',
+    transition: 'background-color 0.2s',
+    '&:hover': {
+      backgroundColor: '#F8F9FA',
+    },
+    '& .MuiTypography-root': {
+      fontSize: '14.5px',
+      color: '#3C4043',
+    }
   }),
 }
 
 function ProfileDetails({
-  itemAuthority,
   profile,
-  onChange,
   avatar,
-  identity,
-  lineAccountId,
   isLineBinded,
-  userMerchantIdentity,
-  setUserMerchantIdentity,
-  userDisplaySituationState,
-  setUserDisplaySituationState,
   merchantIdentity,
-  bookingLimitInput,
-  handleBookingLimit,
-  profitSharing,
-  handleSalesWayChange,
-  setProfitSharing,
-  merchantDesigner,
-  setThemeChange,
-  themeChange,
-  handleThemeChange,
-  getTheme,
+  onEmployeeResign,
+  onSubmit,
   ...rest
 }) {
-  const merchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
-  const merchantJobTitlePointData = useFetchMerchantJobTitlePoint({ merchantId })
-  React.useEffect(() => {
-    if (!merchantJobTitlePointData.loading) {
-      let merchantJobTitlePointId = ''
-      const merchantJobTitlePoints = idx(
-        merchantJobTitlePointData,
-        _ => _.data.merchantJobTitlePoint
-      )
-      if (merchantJobTitlePoints.length > 0) {
-        merchantJobTitlePoints.forEach(data => {
-          if (data.jobTitle === '設計師') {
-            merchantJobTitlePointId = data.id
-          }
-        })
-      }
-
-      setProfitSharing({
-        userId: merchantDesigner.id,
-        MerchantJobTitlePointId:
-          merchantDesigner.userCategory !== null
-            ? merchantDesigner.userCategory.id
-            : merchantJobTitlePointId,
-        deductionWay:
-          merchantDesigner.deductionWay !== null ? merchantDesigner.deductionWay : '無扣項',
-      })
-    }
-  }, [merchantJobTitlePointData.loading])
-
-  const handleUserIdentityChange = key => {
-    const newSetting = cloneDeep(userDisplaySituationState)
-    newSetting[key] = !newSetting[key]
-    setUserDisplaySituationState(newSetting)
-  }
-
   return (
-    <Fragment>
-      <Card {...rest} css={styles.root}>
-        <CardContent css={styles.content}>
+    <Card css={styles.root}>
+      <CardContent sx={{ padding: '0 !important' }}>
+        <div css={styles.content}>
           <Avatar
             css={styles.avatar}
             src={profile.avatar}
           />
-          <Typography css={styles.name} gutterBottom variant="h3">
-            {idx(profile, _ => _.lastName + _.firstName)}
-          </Typography>
-          <Typography color="textSecondary" variant="body1">
-            {merchantIdentity.authorityName.length > 0
-              ? merchantIdentity.authorityName
-              : '權限未設定'}
-          </Typography>
-          <Typography color="textSecondary" variant="body2">
-            {idx(profile, _ => _.jobTitle)}
-          </Typography>
-          <div css={styles.lineLogoAndId}>
-            <img
-              css={isLineBinded ? styles.lineLogo : styles.lineOfflineLogo}
-              alt="lineAccountId"
-              src={require(`assets/images/${isLineBinded ? 'LINE_APP' : 'LINE_BLACK_LOGO'
-                }.png`)}
-            />
-            <Typography css={styles.lineAccountId} color="textSecondary" variant="body1">
-              {isLineBinded ? '有綁定' : '無綁定'}
+          <div css={styles.infoGroup}>
+            <Typography css={styles.name} variant="h3">
+              {idx(profile, _ => _.firstName + ' ' + _.lastName)}
             </Typography>
-          </div>
-        </CardContent>
-        <CardActions style={{ padding: 16 }}>
-          <div>
-            <div>設置</div>
-            <div>
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
-                label="出現於打單"
-                checked={userDisplaySituationState.isDisplayOnServiceList}
-                onChange={() => handleUserIdentityChange('isDisplayOnServiceList')}
+            <Typography css={styles.role} variant="body1">
+              {merchantIdentity.authorityName.length > 0
+                ? merchantIdentity.authorityName
+                : '權限未設定'}
+            </Typography>
+            <Typography css={styles.jobTitle} variant="body2">
+              {idx(profile, _ => _.jobTitle || '-')}
+            </Typography>
+            <div css={styles.lineStatus(isLineBinded)}>
+              <img
+                css={styles.lineIcon}
+                alt="line"
+                src={require(`assets/images/${isLineBinded ? 'LINE_APP' : 'LINE_BLACK_LOGO'}.png`)}
+                style={isLineBinded ? {} : { opacity: 0.4 }}
               />
-            </div>
-            <div>
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
-                label="出現於預約列表"
-                checked={userDisplaySituationState.isDisplayOnBookingRecord}
-                onChange={() => handleUserIdentityChange('isDisplayOnBookingRecord')}
-              />
-            </div>
-            <div>
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
-                label="可以被顧客預約"
-                checked={userDisplaySituationState.isDisplayOnBookingList}
-                onChange={() => handleUserIdentityChange('isDisplayOnBookingList')}
-              />
-            </div>
-            <div>
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
-                label="出現於業績相關報表"
-                checked={userDisplaySituationState.isDisplayOnPerformanceList}
-                onChange={() => handleUserIdentityChange('isDisplayOnPerformanceList')}
-              />
-            </div>
-            <div>
-              {/* 薪資 */}
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
-                label="出現於薪資相關報表"
-                checked={userDisplaySituationState.isDisplayOnSalaryReportList}
-                onChange={() => handleUserIdentityChange('isDisplayOnSalaryReportList')}
-              />
-            </div>
-            <div>
-              {/* 打卡 */}
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
-                label="出現於考勤排班/打卡相關報表"
-                checked={userDisplaySituationState.isDisplayOnClockInReportList}
-                onChange={() => handleUserIdentityChange('isDisplayOnClockInReportList')}
-              />
+              <span css={styles.lineText(isLineBinded)}>
+                {isLineBinded ? 'LINE 已綁定' : 'LINE 未綁定'}
+              </span>
             </div>
           </div>
-        </CardActions>
-      </Card>
-      <Card {...rest} css={styles.newAddCard}>
-        <CardHeader title="手機端設定" />
-        <CardContent css={styles.content}>
-          <Grid container spacing={4}>
-            <Grid item md={12} css={styles.action}>
-              <TextField
-                fullWidth
-                label="同時段預約人數上限"
-                type="number"
-                name="bookingLimit"
-                onChange={event =>
-                  handleBookingLimit(
-                    idx(event, _ => ({ value: parseInt(_.target.value), key: _.target.name }))
-                  )
-                }
-                value={bookingLimitInput.bookingLimit !== null ? bookingLimitInput.bookingLimit : 3}
-                variant="outlined"
-                onWheel={() => document.activeElement.blur()}
-              />
-            </Grid>
-            <Grid item md={12} css={styles.action}>
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel>是否開啟預約審核</InputLabel>
-                <Select
-                  label='是否開啟預約審核'
-                  value={profile.isBookingAutoAccept}
-                  onChange={event =>
-                    onChange({
-                      value: idx(event, _ => _.target.value),
-                      key: 'isBookingAutoAccept',
-                    })
-                  }
-                >
-                  <MenuItem value="TRUE">開啟</MenuItem>
-                  <MenuItem value="FALSE">關閉</MenuItem>
-                  <MenuItem value="BYSTORE">依店家設定</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item md={12} css={styles.action} style={{ paddingTop: 0 }}>
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
-                style={{ whiteSpace: 'nowrap' }}
-                label="待審核預約是否占用預約名額"
-                checked={profile.isRTCO}
-                onChange={event =>
-                  onChange({
-                    value: !profile.isRTCO,
-                    key: 'isRTCO',
-                  })
-                }
-              />
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
-    </Fragment>
+          <div css={styles.buttonContainer}>
+            <Button
+              css={styles.resignButton}
+              variant="contained"
+              onClick={onEmployeeResign}
+            >
+              辦理員工離職
+            </Button>
+            <Button
+              css={styles.saveButton}
+              variant="contained"
+              onClick={onSubmit}
+            >
+              儲存
+            </Button>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 

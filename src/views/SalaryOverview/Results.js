@@ -61,6 +61,23 @@ const styles = {
     gap: '0px 20px',
     padding: 12
   }),
+  cardHeader: css({
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: '#1A73E8',
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
+  }),
   disabledBtn: {
     '&.disabledBtn': {
       color: 'rgba(0, 0, 0, 0.26) !important'
@@ -202,6 +219,7 @@ function Results({
     <div {...rest} css={css([styles.root, className])} className='SalaryOverviewResult'>
       <Card sx={{ boxShadow: 'none', border: 'none' }}>
         <CardHeader
+          css={styles.cardHeader}
           sx={{ px: 3, pt: 2, pb: 1 }}
           action={
             <CSVLink data={excelData} filename="薪資總表.csv" >
@@ -227,12 +245,12 @@ function Results({
             </CSVLink>
           }
           title={
-            <Typography variant="h6" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}>
-              薪資總覽
-              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 'normal' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span>薪資總覽</span>
+              <Typography color="textSecondary" variant="body2">
                 共 {usersSalary.length} 筆
               </Typography>
-            </Typography>
+            </div>
           }
         />
 
@@ -256,13 +274,13 @@ function Results({
                       />
                     </TableCell>
 
-                    <TableCell sx={{ color: '#212121', fontWeight: 'bold' }}>狀態</TableCell>
-                    <TableCell sx={{ color: '#212121', fontWeight: 'bold' }}>姓名</TableCell>
-                    <TableCell sx={{ color: '#212121', fontWeight: 'bold' }}>代號</TableCell>
-                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', textAlign: 'center' }}>薪資加項</TableCell>
-                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', textAlign: 'center' }}>薪資扣項</TableCell>
-                    {borrowDisplay && <TableCell sx={{ color: '#212121', fontWeight: 'bold', textAlign: 'center' }}>員工借支</TableCell>}
-                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', textAlign: 'right', pr: 4 }}>實際匯款金額</TableCell>
+                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', width: '110px' }}>狀態</TableCell>
+                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', width: '180px' }}>姓名</TableCell>
+                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', width: '100px' }}>代號</TableCell>
+                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', textAlign: 'left', width: '130px' }}>薪資加項</TableCell>
+                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', textAlign: 'left', width: '130px' }}>薪資扣項</TableCell>
+                    {borrowDisplay && <TableCell sx={{ color: '#212121', fontWeight: 'bold', textAlign: 'left', width: '130px' }}>員工借支</TableCell>}
+                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', textAlign: 'left', width: '180px' }}>實際匯款金額</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -281,7 +299,7 @@ function Results({
                               disabled={!data.isOnDuty}
                             />
                           </TableCell>
-                          <TableCell>
+                          <TableCell sx={{ width: '110px' }}>
                             <Button
                               component={data.isSalaryChecked ? RouterLink : 'button'}
                               to={data.isSalaryChecked ? `/salary/edit/${data.id}?date=${calendarDate}` : undefined}
@@ -308,17 +326,17 @@ function Results({
                                 }
                               }}
                             >
-                              {data.isSalaryChecked ? '已結算' : '未結算'}
+                              {data.isSalaryChecked ? '詳情' : '未結算'}
                             </Button>
                           </TableCell>
-                          <TableCell sx={{ fontSize: '14px', fontWeight: 500, color: '#212121' }}>{data.name}</TableCell>
-                          <TableCell sx={{ fontSize: '14px', color: 'text.secondary' }}>{data.designerNo || '-'}</TableCell>
-                          <TableCell sx={{ fontSize: '14px', textAlign: 'center' }}>{data.increaseItem}</TableCell>
-                          <TableCell sx={{ fontSize: '14px', color: 'error.main', textAlign: 'center' }}>
+                          <TableCell sx={{ fontSize: '14.5px', fontWeight: 600, color: '#212121', width: '180px' }}>{data.name}</TableCell>
+                          <TableCell sx={{ fontSize: '14px', color: 'text.secondary', width: '100px' }}>{data.designerNo || '-'}</TableCell>
+                          <TableCell sx={{ fontSize: '14px', textAlign: 'left', width: '130px' }}>{data.increaseItem}</TableCell>
+                          <TableCell sx={{ fontSize: '14px', color: 'error.main', textAlign: 'left', width: '130px' }}>
                             {borrowDisplay ? (data.decreaseItem - findBorrow(data.decreaseItemDetail)) * -1 : data.decreaseItem * -1}
                           </TableCell>
-                          {borrowDisplay && <TableCell sx={{ fontSize: '14px', textAlign: 'center' }}>{findBorrow(data.decreaseItemDetail) * -1}</TableCell>}
-                          <TableCell sx={{ fontSize: '15px', fontWeight: 'bold', color: '#212121', textAlign: 'right', pr: 4 }}>{data.increaseItem - data.decreaseItem}</TableCell>
+                          {borrowDisplay && <TableCell sx={{ fontSize: '14px', textAlign: 'left', width: '130px' }}>{findBorrow(data.decreaseItemDetail) * -1}</TableCell>}
+                          <TableCell sx={{ fontSize: '16px', fontWeight: 'bold', color: theme.palette.primary.main, textAlign: 'left', width: '180px' }}>{data.increaseItem - data.decreaseItem}</TableCell>
                         </TableRow>
                       )
                     } else if (!isSalaryItemsLock) {
@@ -335,7 +353,7 @@ function Results({
                               disabled={!data.isOnDuty}
                             />
                           </TableCell>
-                          <TableCell>
+                          <TableCell sx={{ width: '110px' }}>
                             <Button
                               component={data.isSalaryChecked ? RouterLink : 'button'}
                               to={data.isSalaryChecked ? `/salary/edit/${data.id}?date=${calendarDate}` : undefined}
@@ -362,20 +380,20 @@ function Results({
                                 }
                               }}
                             >
-                              {data.isSalaryChecked ? '已結算' : '未結算'}
+                              {data.isSalaryChecked ? '詳情' : '未結算'}
                             </Button>
                           </TableCell>
-                          <TableCell sx={{ fontSize: '14px', fontWeight: 500, color: '#212121' }}>
+                          <TableCell sx={{ fontSize: '14.5px', fontWeight: 600, color: '#212121', width: '180px' }}>
                             {data.name}
                             {data.isOnDuty ? '' : <strong style={{ color: 'red', marginLeft: '4px' }}>{' (已離職)'}</strong>}
                           </TableCell>
-                          <TableCell sx={{ fontSize: '14px', color: 'text.secondary' }}>{data.designerNo || '-'}</TableCell>
-                          <TableCell sx={{ fontSize: '14px', textAlign: 'center' }}>{data.increaseItem}</TableCell>
-                          <TableCell sx={{ fontSize: '14px', textAlign: 'center' }}>
+                          <TableCell sx={{ fontSize: '14px', color: 'text.secondary', width: '100px' }}>{data.designerNo || '-'}</TableCell>
+                          <TableCell sx={{ fontSize: '14px', textAlign: 'left', width: '130px' }}>{data.increaseItem}</TableCell>
+                          <TableCell sx={{ fontSize: '14px', textAlign: 'left', width: '130px' }}>
                             {data.decreaseItem > 0 ? `-${data.decreaseItem}` : data.decreaseItem}
                           </TableCell>
-                          {borrowDisplay && <TableCell sx={{ fontSize: '14px', textAlign: 'center' }}>{findBorrow(data.decreaseItemDetail)}</TableCell>}
-                          <TableCell sx={{ fontSize: '15px', fontWeight: 'bold', color: '#212121', textAlign: 'right', pr: 4 }}>{data.increaseItem - data.decreaseItem}</TableCell>
+                          {borrowDisplay && <TableCell sx={{ fontSize: '14px', textAlign: 'left', width: '130px' }}>{findBorrow(data.decreaseItemDetail)}</TableCell>}
+                          <TableCell sx={{ fontSize: '16px', fontWeight: 'bold', color: theme.palette.primary.main, textAlign: 'left', width: '180px' }}>{data.increaseItem - data.decreaseItem}</TableCell>
                         </TableRow>
                       )
                     }

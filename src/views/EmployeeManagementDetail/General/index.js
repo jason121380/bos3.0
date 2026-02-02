@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Grid } from '@mui/material'
+import { Grid, Card, CardContent } from '@mui/material'
+import { css } from '@emotion/react'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchMerchantDesigner from 'hooks/useFetchMerchantDesigner'
 import useFetchUserGeneral from 'hooks/useFetchUserGeneral'
@@ -14,6 +15,9 @@ import _ from 'lodash'
 
 import ProfileDetails from './ProfileDetails'
 import GeneralSettings from './GeneralSettings'
+import MobileBookingSettings from './MobileBookingSettings'
+import PermissionSettings from './PermissionSettings'
+
 
 function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
   const { fetchUpdateUserGeneral } = useFetchUserGeneral()
@@ -34,6 +38,7 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
     birthday: 0,
     gender: '',
     nickName: '',
+    jobTitle: '',
     designerNo: '',
     remark: '',
     avatar: '',
@@ -100,8 +105,9 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
       setLineAccountId(designerDetail.data.merchantDesigner.lineAccountId)
       setIsLineBinded(designerDetail.data.merchantDesigner.isLineBinded)
       setNameInHeader(
-        designerDetail.data.merchantDesigner.lastName +
-          designerDetail.data.merchantDesigner.firstName
+        designerDetail.data.merchantDesigner.firstName +
+        ' ' +
+        designerDetail.data.merchantDesigner.lastName
       )
       setDesigner(
         produce(draft => {
@@ -116,6 +122,7 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
           draft.birthday = designerDetail.data.merchantDesigner.birthday
           draft.gender = designerDetail.data.merchantDesigner.gender
           draft.nickName = designerDetail.data.merchantDesigner.nickName
+          draft.jobTitle = designerDetail.data.merchantDesigner.jobTitle
           draft.status =
             designerDetail.data.merchantDesigner.status === 'pending'
               ? 'ok'
@@ -182,6 +189,7 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
     const userId = JSON.parse(localStorage.getItem('user')).id
     const newDesigner = _.cloneDeep(designer)
     delete newDesigner.avatar
+    delete newDesigner.jobTitle // jobTitle 只用於顯示，不傳送給後端
     if (newDesigner.cellphone.trim().length < 7) {
       openSnackbar({ message: '手機長度必須大於六碼', variant: 'warning' })
     } else {
@@ -210,7 +218,7 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
         })
         .catch(err => openSnackbar({ message: err.message, variant: 'error' }))
     }
-    
+
   }
 
   const handleBookingLimit = ({ key, value }) => {
@@ -234,27 +242,41 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
       {idx(designerDetail.data, _ =>
         _.merchantDesigner ? (
           <React.Fragment>
-            <Grid item lg={4} md={6} xl={3} xs={12}>
+            <Grid item xs={12}>
               <ProfileDetails
                 profile={designer}
-                onChange={handleFieldChange}
                 avatar={avatar}
-                identity={identity}
-                lineAccountId={lineAccountId}
                 isLineBinded={isLineBinded}
                 merchantIdentity={_.merchantDesigner.merchantIdentity}
-                userDisplaySituationState={userDisplaySituationState}
-                setUserDisplaySituationState={setUserDisplaySituationState}
-                bookingLimitInput={bookingLimitInput}
-                handleBookingLimit={handleBookingLimit}
-                profitSharing={profitSharing}
-                handleSalesWayChange={handleSalesWayChange}
-                setProfitSharing={setProfitSharing}
-                merchantDesigner={_.merchantDesigner}
-                itemAuthority={itemAuthority}
+                onEmployeeResign={handleEmployeeResign}
+                onSubmit={handleSubmit}
               />
             </Grid>
-            <Grid item lg={8} md={6} xl={9} xs={12}>
+            {/* 權限設置與手機端預約設定 */}
+            <Grid item xs={12}>
+              <Card css={css({ borderRadius: '24px', boxShadow: 'none', border: 'none' })}>
+                <CardContent sx={{ padding: '32px !important' }}>
+                  <Grid container spacing={4}>
+                    <Grid item xs={12} md={6}>
+                      <PermissionSettings
+                        userDisplaySituationState={userDisplaySituationState}
+                        setUserDisplaySituationState={setUserDisplaySituationState}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <MobileBookingSettings
+                        profile={designer}
+                        onChange={handleFieldChange}
+                        bookingLimitInput={bookingLimitInput}
+                        handleBookingLimit={handleBookingLimit}
+                      />
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+            {/* 基本資料表單 */}
+            <Grid item xs={12}>
               <GeneralSettings
                 profile={designer}
                 onChange={handleFieldChange}

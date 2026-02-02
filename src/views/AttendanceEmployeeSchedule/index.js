@@ -24,7 +24,7 @@ const styles = {
   root: css({}),
   container: css({
     padding: '0px !important',
-    paddingTop: theme.spacing(1.5),
+    paddingTop: theme.spacing(1) + ' !important',
     paddingBottom: theme.spacing(1.5),
   }),
   results: css({
@@ -207,41 +207,46 @@ export default function Employees() {
 
   return (
     <Page css={styles.root} title="考勤排班總表">
-      <AdminPageHeader
-        title="考勤排班總表"
-        subtitle="ATTENDANCE EMPLOYEE SCHEDULE"
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          {UESUsing && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '14px', color: '#666' }}>
-              <span>編輯過往班別</span>
-              <Switch
-                size="small"
-                checked={editBefore}
-                onChange={e => setEditBefore(e.target.checked)}
-              />
-            </div>
-          )}
-          <DateSelector
-            date={date}
-            attributes={['lastmonth', 'thismonth', 'startDate']}
-            dateChange={value => setDate(value)}
-            onlyStart
-            inputFormat='yyyy/MM'
-            pickerOption={{
-              views: ['month', 'year']
-            }}
-            css={css({
-              '& .MuiOutlinedInput-root': {
-                height: '32px',
-                width: '120px',
-                fontSize: '14px',
-              }
-            })}
-          />
-        </div>
-      </AdminPageHeader>
       <Container maxWidth={false} css={styles.container}>
+        <AdminPageHeader
+          title="考勤排班總表"
+          subtitle="ATTENDANCE EMPLOYEE SCHEDULE"
+          primaryAction={{
+            label: isEditing ? '儲存' : '編輯班表',
+            onClick: isEditing ? saveData : () => setIsEditing(true),
+            disabled: isEditing ? (employeeClockInSchedule.loading || isClick) : false
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {UESUsing && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '14px', color: '#666' }}>
+                <span>編輯過往班別</span>
+                <Switch
+                  size="small"
+                  checked={editBefore}
+                  onChange={e => setEditBefore(e.target.checked)}
+                />
+              </div>
+            )}
+            <DateSelector
+              date={date}
+              attributes={['lastmonth', 'thismonth', 'startDate']}
+              dateChange={value => setDate(value)}
+              onlyStart
+              inputFormat='yyyy/MM'
+              pickerOption={{
+                views: ['month', 'year']
+              }}
+              css={css({
+                '& .MuiOutlinedInput-root': {
+                  height: '32px',
+                  width: '120px',
+                  fontSize: '14px',
+                }
+              })}
+            />
+          </div>
+        </AdminPageHeader>
         <div style={{ marginBottom: '12px' }}>
           {!merchantClockInSchedule.loading && (
             <ScheduleTags

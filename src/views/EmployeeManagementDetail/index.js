@@ -4,7 +4,7 @@ import {
   Typography
 } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { Provider } from 'context/designerContext'
 import useFetchMerchantDesigner, {
   useFetcDesignerFixedSalaryItemsLazy,
@@ -47,19 +47,45 @@ import SalaryItems from './SalaryItems'
 
 const styles = {
   root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+    minHeight: '100vh',
   }),
-  tabs: css({
-    marginTop: theme.spacing(1),
-  }),
-  divider: css({
-    backgroundColor: colors.grey[300] + '!important',
+  sidebar: css({
+    backgroundColor: 'transparent',
+    padding: '0px',
     border: 'none',
-    height: 1
+    position: 'sticky',
+    top: theme.spacing(2),
+  }),
+  menuItem: (active) => css({
+    display: 'flex',
+    alignItems: 'center',
+    padding: '12px 24px',
+    borderRadius: '12px',
+    cursor: 'pointer',
+    marginBottom: '8px',
+    backgroundColor: 'transparent',
+    color: active ? '#1A73E8' : '#5F6368',
+    fontWeight: active ? 'bold' : 500,
+    fontSize: '14.5px',
+    transition: 'all 0.2s ease',
+    position: 'relative',
+    '&::before': {
+      content: active ? '""' : 'none',
+      position: 'absolute',
+      left: '10px',
+      width: '4px',
+      height: '18px',
+      backgroundColor: '#1A73E8',
+      borderRadius: '2px',
+    },
+    '&:hover': {
+      backgroundColor: '#F1F3F4',
+    },
   }),
   content: css({
-    marginTop: theme.spacing(3),
+    backgroundColor: 'transparent',
   }),
 }
 
@@ -159,7 +185,7 @@ function Settings({ match, history }) {
 
   useEffect(() => {
     if (!getIsBookingCusCheckUsing.loading) {
-      const data = idx(getIsBookingCusCheckUsing,_=>_.data.getIsBookingCusCheckUsing)
+      const data = idx(getIsBookingCusCheckUsing, _ => _.data.getIsBookingCusCheckUsing)
       setBookingCusCheck(data)
     }
   }, [getIsBookingCusCheckUsing.loading])
@@ -520,7 +546,7 @@ function Settings({ match, history }) {
 
   useEffect(() => {
     if (!getMerchantCheckinSettings.loading) {
-      const data = idx(getMerchantCheckinSettings,_=>_.data.getMerchantCheckinSettings)
+      const data = idx(getMerchantCheckinSettings, _ => _.data.getMerchantCheckinSettings)
       setCheckinSettings(data)
     }
   }, [getMerchantCheckinSettings.loading])
@@ -535,187 +561,193 @@ function Settings({ match, history }) {
 
   return (
     <Page css={styles.root} title={`${designerName} - ${findTabName()}`}>
-      <Container maxWidth="lg">
-        <Grid container justifyContent='space-between' alignItems='center' >
-          <Grid item>
-            <PageTitle title={`${designerName} - 變更帳戶資訊`} subTitle='設定' />
-          </Grid>
-          {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
-            <Grid className='CheckinMode' style={{ display: 'flex', alignItems: 'center' }} item >
-              <Typography sx={{ fontSize: 16 }} >報到模式</Typography><Switch checked={checkinMode} onChange={(e, v) => setCheckinMode(v)} />
-            </Grid>
-          )}
-        </Grid>
-       {/*  <PageTitle title={`${designerName} - 變更帳戶資訊`} subTitle='設定' /> */}
-        <Tabs
-          css={styles.tabs}
-          onChange={handleTabsChange}
-          scrollButtons="auto"
-          value={currentTab}
-          variant="scrollable"
-        >
-          {itemValue.map(item => (
-            <Tab key={item.value} value={item.value} label={item.label} />
-          ))}
-        </Tabs>
+      <Container maxWidth={false}>
+        <AdminPageHeader title={`${designerName} - 個人設定`} />
 
-        <Divider css={styles.divider} />
-        <div css={styles.content}>
-          {currentTab === 'general' && (
-            <General
-              designerId={id}
-              setNameInHeader={setNameInHeader}
-              itemAuthority={itemAuthority}
-            />
-          )}
-          {
-            currentTab === 'orderRecord' && (orderRecords.loading || orderRecords.data === undefined ?
-              <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 150 }}>
-                <CircularProgress />
-              </div> :
-              idx(
-                orderRecords,
-                _ =>
-                  _.data.getOrderList.orderList && (
-                    <OrderRecord
-                      bonusDisplay={bonusDisplay}
-                      results={_.data.getOrderList.orderList}
-                      membershipDisplay={membershipDisplay}
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={2.5} lg={2}>
+            <div css={styles.sidebar}>
+              {itemValue.map(item => (
+                <div
+                  key={item.value}
+                  css={styles.menuItem(currentTab === item.value)}
+                  onClick={() => history.push(item.value)}
+                >
+                  {item.label}
+                </div>
+              ))}
+              {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
+                <div style={{ marginTop: '24px', padding: '16px 20px', borderTop: '1px solid #eee' }}>
+                  <Typography sx={{ fontSize: 14, color: '#666', mb: 1 }}>報到模式</Typography>
+                  <Switch
+                    checked={checkinMode}
+                    onChange={(e, v) => setCheckinMode(v)}
+                    size="small"
+                  />
+                </div>
+              )}
+            </div>
+          </Grid>
+
+          <Grid item xs={12} md={9.5} lg={10}>
+            <div css={styles.content}>
+              {currentTab === 'general' && (
+                <General
+                  designerId={id}
+                  setNameInHeader={setNameInHeader}
+                  itemAuthority={itemAuthority}
+                />
+              )}
+              {
+                currentTab === 'orderRecord' && (orderRecords.loading || orderRecords.data === undefined ?
+                  <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 150 }}>
+                    <CircularProgress />
+                  </div> :
+                  idx(
+                    orderRecords,
+                    _ =>
+                      _.data.getOrderList.orderList && (
+                        <OrderRecord
+                          bonusDisplay={bonusDisplay}
+                          results={_.data.getOrderList.orderList}
+                          membershipDisplay={membershipDisplay}
+                          onChangePage={(_event, page) =>
+                            handlePageChange({
+                              value: page,
+                              key: 'pageOffset',
+                              name: 'orders',
+                            })
+                          }
+                          onChangeRowsPerPage={event => {
+                            handlePageChange({
+                              value: idx(event, _ => _.target.value),
+                              key: 'pageLimit',
+                              name: 'orders',
+                            })
+                          }}
+                          page={{
+                            limit: resultsSetting.orders.pageLimit,
+                            offset: resultsSetting.orders.pageOffset,
+                            count: _.data.getOrderList.orderList.length,
+                          }}
+                        />
+                      )
+                  ))}
+              {currentTab === 'AttendanceRecord' && (uerAttendanceLazyData.loading || uerAttendanceLazyData.data === undefined ?
+                <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 150 }}>
+                  <CircularProgress />
+                </div> : idx(attendance, _ =>
+                  _.data.user.attendanceRecords && (
+                    <AttendanceRecord
+                      results={_.data.user.attendanceRecords.records}
                       onChangePage={(_event, page) =>
                         handlePageChange({
                           value: page,
                           key: 'pageOffset',
-                          name: 'orders',
+                          name: 'attendanceRecords',
                         })
                       }
                       onChangeRowsPerPage={event => {
                         handlePageChange({
                           value: idx(event, _ => _.target.value),
                           key: 'pageLimit',
-                          name: 'orders',
+                          name: 'attendanceRecords',
                         })
                       }}
                       page={{
-                        limit: resultsSetting.orders.pageLimit,
-                        offset: resultsSetting.orders.pageOffset,
-                        count: _.data.getOrderList.orderList.length,
+                        limit: _.data.user.attendanceRecords.pageLimit,
+                        offset: _.data.user.attendanceRecords.pageOffset,
+                        count: _.data.user.attendanceRecords.totalCount,
                       }}
                     />
                   )
-              ))}
-          {currentTab === 'AttendanceRecord' && (uerAttendanceLazyData.loading || uerAttendanceLazyData.data === undefined ?
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 150 }}>
-              <CircularProgress />
-            </div> : idx(attendance, _ =>
-              _.data.user.attendanceRecords && (
-                <AttendanceRecord
-                  results={_.data.user.attendanceRecords.records}
-                  onChangePage={(_event, page) =>
-                    handlePageChange({
-                      value: page,
-                      key: 'pageOffset',
-                      name: 'attendanceRecords',
-                    })
+                ))}
+              {currentTab === 'rakeReport' && (
+                <RakeReport
+                  rakeReportDate={rakeReportDate}
+                  setRakeReportDate={setRakeReportDate}
+                  designerRakeReport={idx(designerRakeReportLazyData, _ => _.data.userRakeReport)}
+                  loading={
+                    designerRakeReportLazyData.loading || designerRakeReportLazyData.data === undefined
                   }
-                  onChangeRowsPerPage={event => {
-                    handlePageChange({
-                      value: idx(event, _ => _.target.value),
-                      key: 'pageLimit',
-                      name: 'attendanceRecords',
-                    })
-                  }}
-                  page={{
-                    limit: _.data.user.attendanceRecords.pageLimit,
-                    offset: _.data.user.attendanceRecords.pageOffset,
-                    count: _.data.user.attendanceRecords.totalCount,
-                  }}
                 />
-              )
-            ))}
-          {currentTab === 'rakeReport' && (
-            <RakeReport
-              rakeReportDate={rakeReportDate}
-              setRakeReportDate={setRakeReportDate}
-              designerRakeReport={idx(designerRakeReportLazyData, _ => _.data.userRakeReport)}
-              loading={
-                designerRakeReportLazyData.loading || designerRakeReportLazyData.data === undefined
-              }
-            />
-          )}
-          {idx(
-            designer,
-            _ =>
-              _.data.merchantDesigner && (
-                <Provider value={{ designer: _.data.merchantDesigner }}>
-                  {currentTab === 'reservation' && (
-                    <Reservation
-                      designerId={id}
-                      checkinSettings={checkinSettings}
-                      bookingCusCheck={bookingCusCheck}
-                      checkinMode={checkinMode}
-                      bookingHistoryDisplay={bookingHistoryDisplay}
-                    />
-                  )}
-                  {currentTab === 'security' && (
-                    <Security designerId={id} refetch={designer.refetch} />
-                  )}
-                  {currentTab === 'permission' && <Permission designerId={id} />}
-                  {currentTab === 'profitSharing' && (
-                    <ProfitSharing
-                      designerId={id}
-                      refetch={designer.refetch}
-                      designerDataLoading={designer.loading}
-                      itemAuthority={itemAuthority}
-                    />
-                  )}
-                  {currentTab === 'paySlip' && (
-                    <PaySlip
-                      userPaySlip={idx(userPaySlip, _ =>
-                        _.data.userSalaryReport.filter(d => {
-                          return d.userId === id
-                        })
+              )}
+              {idx(
+                designer,
+                _ =>
+                  _.data.merchantDesigner && (
+                    <Provider value={{ designer: _.data.merchantDesigner }}>
+                      {currentTab === 'reservation' && (
+                        <Reservation
+                          designerId={id}
+                          checkinSettings={checkinSettings}
+                          bookingCusCheck={bookingCusCheck}
+                          checkinMode={checkinMode}
+                          bookingHistoryDisplay={bookingHistoryDisplay}
+                        />
                       )}
-                      date={getLastMonth}
-                      setGetLastMonth={setGetLastMonth}
-                      isDisplayFakePerformance={isDisplayFakePerformance}
-                      EPWDDisplay={getIsEPWDDisplayLazyData.data.getIsEPWDDisplay}
-                      loading={
-                        !userSalaryReportLazyData.loading &&
-                        userSalaryReportLazyData.data !== undefined &&
-                        !getIsDisplayFakePerformanceInSalaryReportLazyData.loading &&
-                        getIsDisplayFakePerformanceInSalaryReportLazyData.data !== undefined &&
-                        !getIsEPWDDisplayLazyData.loading &&
-                        getIsEPWDDisplayLazyData.loading !== undefined
-                      }
-                    />
-                  )}
-                  {currentTab === 'salaryItems' && (
-                    (
-                      merchantSalaryIncreaseItemsLazyData.loading ||
-                      merchantSalaryIncreaseItemsLazyData.data === undefined ||
-                      designerFixedSalaryItemsLazyData.loading ||
-                      designerFixedSalaryItemsLazyData.data === undefined
-                    ) ? <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 150 }}>
-                      <CircularProgress />
-                    </div>
-                      : <SalaryItems
-                        salaryIncreaseItemsReformatted={salaryIncreaseItemsReformatted}
-                        setSalaryIncreaseItemsReformatted={setSalaryIncreaseItemsReformatted}
-                        salaryDecreaseItemsReformatted={salaryDecreaseItemsReformatted}
-                        setSalaryDecreaseItemsReformatted={setSalaryDecreaseItemsReformatted}
-                        increaseSecondContent={increaseSecondContent}
-                        setIncreaseSecondContent={setIncreaseSecondContent}
-                        decreaseSecondContent={decreaseSecondContent}
-                        setDecreaseSecondContent={setDecreaseSecondContent}
-                        setUserFixedSalaryItem={setUserFixedSalaryItem}
-                        designerId={id}
-                        salaryDecreaseItemsReformatted2={salaryDecreaseItemsReformatted2}
-                      />
-                  )}
-                </Provider>
-              )
-          )}
-        </div>
+                      {currentTab === 'security' && (
+                        <Security designerId={id} refetch={designer.refetch} />
+                      )}
+                      {currentTab === 'permission' && <Permission designerId={id} />}
+                      {currentTab === 'profitSharing' && (
+                        <ProfitSharing
+                          designerId={id}
+                          refetch={designer.refetch}
+                          designerDataLoading={designer.loading}
+                          itemAuthority={itemAuthority}
+                        />
+                      )}
+                      {currentTab === 'paySlip' && (
+                        <PaySlip
+                          userPaySlip={idx(userPaySlip, _ =>
+                            _.data.userSalaryReport.filter(d => {
+                              return d.userId === id
+                            })
+                          )}
+                          date={getLastMonth}
+                          setGetLastMonth={setGetLastMonth}
+                          isDisplayFakePerformance={isDisplayFakePerformance}
+                          EPWDDisplay={getIsEPWDDisplayLazyData.data.getIsEPWDDisplay}
+                          loading={
+                            !userSalaryReportLazyData.loading &&
+                            userSalaryReportLazyData.data !== undefined &&
+                            !getIsDisplayFakePerformanceInSalaryReportLazyData.loading &&
+                            getIsDisplayFakePerformanceInSalaryReportLazyData.data !== undefined &&
+                            !getIsEPWDDisplayLazyData.loading &&
+                            getIsEPWDDisplayLazyData.loading !== undefined
+                          }
+                        />
+                      )}
+                      {currentTab === 'salaryItems' && (
+                        (
+                          merchantSalaryIncreaseItemsLazyData.loading ||
+                          merchantSalaryIncreaseItemsLazyData.data === undefined ||
+                          designerFixedSalaryItemsLazyData.loading ||
+                          designerFixedSalaryItemsLazyData.data === undefined
+                        ) ? <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 150 }}>
+                          <CircularProgress />
+                        </div>
+                          : <SalaryItems
+                            salaryIncreaseItemsReformatted={salaryIncreaseItemsReformatted}
+                            setSalaryIncreaseItemsReformatted={setSalaryIncreaseItemsReformatted}
+                            salaryDecreaseItemsReformatted={salaryDecreaseItemsReformatted}
+                            setSalaryDecreaseItemsReformatted={setSalaryDecreaseItemsReformatted}
+                            increaseSecondContent={increaseSecondContent}
+                            setIncreaseSecondContent={setIncreaseSecondContent}
+                            decreaseSecondContent={decreaseSecondContent}
+                            setDecreaseSecondContent={setDecreaseSecondContent}
+                            setUserFixedSalaryItem={setUserFixedSalaryItem}
+                            designerId={id}
+                            salaryDecreaseItemsReformatted2={salaryDecreaseItemsReformatted2}
+                          />
+                      )}
+                    </Provider>
+                  )
+              )}
+            </div>
+          </Grid>
+        </Grid>
       </Container>
     </Page>
   )

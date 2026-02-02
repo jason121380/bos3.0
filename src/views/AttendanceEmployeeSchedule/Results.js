@@ -354,50 +354,6 @@ export default function Results({
             >
               報表匯出
             </Button>
-            {!isEditing ? (
-              <Button
-                variant="contained"
-                onClick={() => setIsEditing(true)}
-                size="small"
-                css={css({
-                  backgroundColor: '#E8F0FE !important',
-                  color: '#1A73E8 !important',
-                  boxShadow: 'none !important',
-                  borderRadius: '18px !important',
-                  padding: '4px 24px !important',
-                  fontWeight: 'bold !important',
-                  border: '1px solid #1A73E8 !important',
-                  '&:hover': {
-                    backgroundColor: '#D2E3FC !important',
-                    boxShadow: 'none !important',
-                  }
-                })}
-              >
-                編輯班表
-              </Button>
-            ) : (
-              <Button
-                disabled={loading || isClick}
-                variant="contained"
-                color="primary"
-                onClick={saveData}
-                size="small"
-                css={css({
-                  backgroundColor: '#1A73E8 !important',
-                  color: 'white !important',
-                  boxShadow: 'none !important',
-                  borderRadius: '18px !important',
-                  padding: '4px 24px !important',
-                  fontWeight: 'bold !important',
-                  '&:hover': {
-                    backgroundColor: '#1557b0 !important',
-                    boxShadow: 'none !important',
-                  }
-                })}
-              >
-                儲存
-              </Button>
-            )}
           </div>
         }
       />

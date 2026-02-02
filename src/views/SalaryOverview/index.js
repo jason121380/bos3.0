@@ -14,23 +14,23 @@ import useFetchSettingUserSalaryItemUnlock from 'hooks/useFetchSetUnlockUserSala
 import useFetchSalaryItemLock from 'hooks/useFetchIsSalaryitemLocked'
 import useFetchMerchantLatestMonthlyCheckoutTime from 'hooks/useFetchMerchantLatestMonthlyCheckoutTime'
 import useFetchGetIsBorrowDisplayInSalaryOverview from 'hooks/useFetchGetIsBorrowDisplayInSalaryOverview'
-import { startOfDay, subMonths } from 'date-fns'
+import { startOfDay, subMonths, startOfMonth, endOfMonth, format } from 'date-fns'
 import idx from 'idx'
 import produce from 'immer'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useHistory } from 'react-router'
 import useFetchGetSalaryUserList from 'hooks/useFetchGetSalaryUserList'
-import { format } from 'validate.js'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
-import Header from './Header'
+import useQueryString from 'hooks/useQueryString'
+import DateSelector from 'components/DateSelector'
 import Overview from './Overview'
 import Results from './Results'
 
 const styles = {
   root: css({
-    paddingTop: theme.spacing(3),
+    paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(6),
   }),
   results: css({
@@ -39,7 +39,7 @@ const styles = {
 }
 
 export default function SalaryOverview() {
-  const lastMonth = subMonths(startOfDay(new Date()), 1).getTime()
+  const lastMonth = startOfMonth(subMonths(new Date(), 1)).getTime()
   if (localStorage.getItem('currentTime') === null) {
     localStorage.setItem('currentTime', lastMonth)
   } else {
@@ -58,10 +58,12 @@ export default function SalaryOverview() {
   const [borrowDisplay, setBorrowDisplay] = React.useState(false)
   const getIsBorrowDisplayInSalaryOverview = useFetchGetIsBorrowDisplayInSalaryOverview()
 
+  const [getQueryString] = useQueryString()
+  const urlDate = getQueryString('startDate') || getQueryString('date')
+  const defaultDate = JSON.parse(localStorage.getItem('currentTime'))
+
   const monthlyCloseStatus = useFethcMonthlyCloseStatus(
-    location.search.split('=')[1] === undefined
-      ? JSON.parse(localStorage.getItem('currentTime'))
-      : Number(location.search.split('=')[1])
+    urlDate === "" ? defaultDate : Number(urlDate)
   )
   const MerchantId = JSON.parse(localStorage.getItem('userMerchant')).id
   const userInput = { usagelimit: 'SALARY', MerchantId }
@@ -71,10 +73,7 @@ export default function SalaryOverview() {
       pageOffset: 0,
       isStaff: false,
     },
-    date:
-      location.search.split('=')[1] === undefined
-        ? JSON.parse(localStorage.getItem('currentTime'))
-        : Number(location.search.split('=')[1]),
+    date: urlDate === "" ? defaultDate : Number(urlDate),
   })
   const salaryItemLockData = useFetchSalaryItemLock({ date: setting.date })
   React.useEffect(() => {
@@ -106,10 +105,7 @@ export default function SalaryOverview() {
   // -------------------------------------------------------------
   const users = useFetchUsersMonthCheckout({
     usagelimit: 'SALARY',
-    date:
-      location.search.split('=')[1] === undefined
-        ? JSON.parse(localStorage.getItem('currentTime'))
-        : Number(location.search.split('=')[1]),
+    date: urlDate === "" ? defaultDate : Number(urlDate),
   })
   React.useEffect(() => {
     if (!users.loading) {
@@ -163,7 +159,11 @@ export default function SalaryOverview() {
         draft.date = date
       })
     )
-    history.push(`/salary/overview?date=${date}`)
+    // DateSelector will handle history.push internally, 
+    // but we can keep this for safety or if called from elsewhere.
+    if (!location.search.includes(`startDate=${date}`)) {
+      history.push(`/salary/overview?startDate=${date}`)
+    }
   }
   const handleIsSalaryItemsLock = () => {
     if (isSalaryItemsLock) {
@@ -207,10 +207,19 @@ export default function SalaryOverview() {
     <Page css={styles.root} title="薪資總表/月結">
       <Container maxWidth={false}>
         <AdminPageHeader title='薪資總表/月結' sx={{ marginBottom: '8px !important' }}>
-          <Header
-            date={setting.date}
-            onChange={handleDateChange}
-            status={idx(monthlyCloseStatus, _ => _.data.merchant.monthlyCloseStatus)}
+          <DateSelector
+            date={{
+              startDate: startOfMonth(setting.date).getTime(),
+              endDate: endOfMonth(setting.date).getTime()
+            }}
+            attributes={['lastmonth', 'thismonth', 'startDate']}
+            dateChange={({ startDate }) => handleDateChange(startDate)}
+            onlyStart
+            inputFormat='yyyy/MM'
+            pickerOption={{
+              views: ['month', 'year']
+            }}
+            margin={false}
           />
         </AdminPageHeader>
         {idx(salaryUserList, _ => _.data.getSalaryUserList) ?
@@ -241,14 +250,13 @@ export default function SalaryOverview() {
                         </Typography>
                         <Grid container spacing={1}>
                           {[
-                            "步驟1: 選擇要月結的人『打勾』或是全選",
-                            "步驟2: 下方按下『批次月結』",
-                            "步驟3: 月結完成後，點擊「鉛筆圖示」進入每個人加扣項核對",
-                            "步驟4: 全部確認正確後，按下『鎖定』"
+                            "1. 選擇要月結的人「勾選」或是全選",
+                            "2. 下方按下「月結」",
+                            "3. 月結完成後，點擊「詳情」進入加扣項",
+                            "4. 確認正確後，按下「鎖定」 即不可更改"
                           ].map((step, i) => (
-                            <Grid item xs={12} sm={6} key={i}>
-                              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '14.5px', display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
-                                <span style={{ marginRight: '8px', color: theme.palette.primary.main, fontWeight: 'bold' }}>•</span>
+                            <Grid item xs={12} key={i}>
+                              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '14.5px', display: 'flex', alignItems: 'center', fontWeight: 'bold', mb: 0.5 }}>
                                 {step}
                               </Typography>
                             </Grid>
@@ -281,7 +289,7 @@ export default function SalaryOverview() {
                         variant="contained"
                         onClick={handleIsSalaryItemsLock}
                         css={css({
-                          backgroundColor: isSalaryItemsLock ? '#f4b400 !important' : '#1A73E8 !important',
+                          backgroundColor: isSalaryItemsLock ? '#9e9e9e !important' : '#1A73E8 !important',
                           color: 'white !important',
                           minWidth: '120px',
                           height: '40px !important',
@@ -292,8 +300,8 @@ export default function SalaryOverview() {
                           textTransform: 'none',
                           boxShadow: 'none',
                           '&:hover': {
-                            backgroundColor: isSalaryItemsLock ? '#e3a300 !important' : '#1557b0 !important',
-                            boxShadow: '0 2px 10px rgba(26, 115, 232, 0.3) !important'
+                            backgroundColor: isSalaryItemsLock ? '#757575 !important' : '#1557b0 !important',
+                            boxShadow: isSalaryItemsLock ? 'none !important' : '0 2px 10px rgba(26, 115, 232, 0.3) !important'
                           }
                         })}
                       >
@@ -301,12 +309,19 @@ export default function SalaryOverview() {
                       </Button>
 
                       {monthlyCheckoutTime && (
-                        <div style={{ marginLeft: '16px', display: 'flex', flexDirection: 'column' }}>
-                          <Typography variant="caption" color="textSecondary" style={{ fontWeight: 500, fontSize: '13px', lineHeight: 1.2 }}>
+                        <div style={{
+                          marginLeft: '16px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          backgroundColor: '#E8F0FE',
+                          padding: '6px 16px',
+                          borderRadius: '8px',
+                        }}>
+                          <Typography variant="caption" style={{ fontWeight: 700, color: '#1A73E8', fontSize: '13px', lineHeight: 1.5 }}>
                             上次月結完成時間
                           </Typography>
-                          <Typography variant="caption" color="textSecondary" style={{ fontWeight: 700, fontSize: '14px', color: theme.palette.text.primary }}>
-                            {format(new Date(monthlyCheckoutTime).toLocaleString(), 'yyyy/MM/dd HH:mm')}
+                          <Typography variant="caption" style={{ fontWeight: 900, color: '#1A73E8', fontSize: '15px', lineHeight: 1.2 }}>
+                            {format(new Date(monthlyCheckoutTime), 'yyyy/MM/dd HH:mm')}
                           </Typography>
                         </div>
                       )}
