@@ -66,6 +66,7 @@ const ManagementTable = ({
     headerAction,
     className,
     hidePagination = false,
+    size = 'medium',
 }) => {
     const pageRef = useRef(null)
 
@@ -103,7 +104,7 @@ const ManagementTable = ({
             <CardContent css={styles.content}>
                 <PerfectScrollbar>
                     <div style={{ minWidth }}>
-                        <Table>
+                        <Table size={size}>
                             <TableHead>
                                 <TableRow>
                                     {tableHead}
@@ -152,6 +153,7 @@ ManagementTable.propTypes = {
     headerAction: PropTypes.node,
     className: PropTypes.any,
     hidePagination: PropTypes.bool,
+    size: PropTypes.oneOf(['small', 'medium']),
 }
 
 export default ManagementTable

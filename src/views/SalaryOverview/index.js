@@ -1,12 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card,
   Container, Grid, Button, Typography, FormControl, Select,
-  InputLabel, MenuItem, CircularProgress, IconButton, Collapse
+  InputLabel, MenuItem, CircularProgress,
 } from '@mui/material'
-import FilterListIcon from '@mui/icons-material/FilterList'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
+import { Card } from '@mui/material'
 import { openSnackbar } from 'elements/snackbars'
 import { useFethcMonthlyCloseStatus } from 'hooks/useFetchMerchant'
 import { useFetchUsersSalaryItems, useFetchUsersMonthCheckout } from 'hooks/useFetchUsers'
@@ -41,25 +40,24 @@ const styles = {
 
 export default function SalaryOverview() {
   const lastMonth = subMonths(startOfDay(new Date()), 1).getTime()
-
-  // 初始化或更新當前選中的時間戳
-  localStorage.setItem('currentTime', lastMonth)
+  if (localStorage.getItem('currentTime') === null) {
+    localStorage.setItem('currentTime', lastMonth)
+  } else {
+    localStorage.removeItem('currentTime')
+    localStorage.setItem('currentTime', lastMonth)
+  }
 
   const location = useLocation()
   const history = useHistory()
 
-  // Hooks 與狀態初始化
   const { setUserSalaryItemUnlock } = useFetchSettingUserSalaryItemUnlock()
-  const [isThisMonthSalaryChacked, setIsThisMonthSalaryChacked] = React.useState(false) // 本月是否已月結
-  const [isSalaryItemsLock, setIsSalaryItemsLock] = React.useState(false) // 薪資項是否已鎖定
+  const [isThisMonthSalaryChacked, setIsThisMonthSalaryChacked] = React.useState(false)
+  const [isSalaryItemsLock, setIsSalaryItemsLock] = React.useState(false)
   const [editBtnStatus, setEditBtnStatus] = React.useState(false)
   const [usersIsSalaryChecked, setUsersIsSalaryChecked] = React.useState([])
-  const [borrowDisplay, setBorrowDisplay] = React.useState(false) // 是否顯示借支
-  const [showFilter, setShowFilter] = useState(false)
-
+  const [borrowDisplay, setBorrowDisplay] = React.useState(false)
   const getIsBorrowDisplayInSalaryOverview = useFetchGetIsBorrowDisplayInSalaryOverview()
 
-  // 取得月結狀態
   const monthlyCloseStatus = useFethcMonthlyCloseStatus(
     location.search.split('=')[1] === undefined
       ? JSON.parse(localStorage.getItem('currentTime'))
@@ -67,8 +65,6 @@ export default function SalaryOverview() {
   )
   const MerchantId = JSON.parse(localStorage.getItem('userMerchant')).id
   const userInput = { usagelimit: 'SALARY', MerchantId }
-
-  // 設置分頁與日期
   const [setting, setSetting] = React.useState({
     input: {
       pageLimit: 50,
@@ -80,8 +76,6 @@ export default function SalaryOverview() {
         ? JSON.parse(localStorage.getItem('currentTime'))
         : Number(location.search.split('=')[1]),
   })
-
-  // 取得薪資鎖定數據
   const salaryItemLockData = useFetchSalaryItemLock({ date: setting.date })
   React.useEffect(() => {
     if (!salaryItemLockData.loading) {
@@ -89,11 +83,10 @@ export default function SalaryOverview() {
       setIsSalaryItemsLock(data)
     }
   }, [salaryItemLockData.loading])
-
-  // 取得最近一次月結時間
   const latestMonthlyCheckoutTime = useFetchMerchantLatestMonthlyCheckoutTime({
     date: setting.date,
   })
+  // 拿月結時間----------------------------------------------------
   const [monthlyCheckoutTime, setMonthlyCheckoutTime] = useState(null)
   useEffect(() => {
     if (!latestMonthlyCheckoutTime.loading) {
@@ -102,21 +95,22 @@ export default function SalaryOverview() {
       )
     }
   }, [latestMonthlyCheckoutTime.loading])
-
-  // 下拉選單選項
+  // -------------------------------------------------------------
   const showOption = [
     { label: '全部', value: 'ALL' },
     { label: '已月結', value: 'CHECKED' },
     { label: '未結算', value: 'UNCHECKED' },
   ]
-
-  const [listStatus, setListStatus] = useState('ALL') // 列表過濾狀態
-
+  // 列表狀態----------------------------------------------------
+  const [listStatus, setListStatus] = useState('ALL')
+  // -------------------------------------------------------------
   const users = useFetchUsersMonthCheckout({
     usagelimit: 'SALARY',
-    date: setting.date,
+    date:
+      location.search.split('=')[1] === undefined
+        ? JSON.parse(localStorage.getItem('currentTime'))
+        : Number(location.search.split('=')[1]),
   })
-
   React.useEffect(() => {
     if (!users.loading) {
       const isUsersSalaryChacked = idx(users, _ => _.data.users.users)
@@ -128,17 +122,16 @@ export default function SalaryOverview() {
     date: setting.date,
     input: userInput,
   })
-
   const isSalaryChackedData = useFetchIsSalaryChacked({
     date: setting.date,
   })
-
+  // 列表input----------------------------------------------------
   const salaryUserList = useFetchGetSalaryUserList({
     date: setting.date,
     input: listStatus,
   })
+  // -------------------------------------------------------------
 
-  // 同步是否已月結狀態
   React.useEffect(() => {
     if (!isSalaryChackedData.loading) {
       const isSalaryChacked = idx(isSalaryChackedData, _ => _.data.isSalaryChacked)
@@ -213,43 +206,66 @@ export default function SalaryOverview() {
   return (
     <Page css={styles.root} title="薪資總表/月結">
       <Container maxWidth={false}>
-        <AdminPageHeader
-          title='薪資總表/月結'
-          showFilter={showFilter}
-          onFilterClick={() => setShowFilter(!showFilter)}
-        />
-
-        <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
-            <Header
-              date={setting.date}
-              onChange={handleDateChange}
-              status={idx(monthlyCloseStatus, _ => _.data.merchant.monthlyCloseStatus)}
-            />
-          </div>
-        </Collapse>
+        <AdminPageHeader title='薪資總表/月結' sx={{ marginBottom: '8px !important' }}>
+          <Header
+            date={setting.date}
+            onChange={handleDateChange}
+            status={idx(monthlyCloseStatus, _ => _.data.merchant.monthlyCloseStatus)}
+          />
+        </AdminPageHeader>
         {idx(salaryUserList, _ => _.data.getSalaryUserList) ?
           idx(
             salaryUserList,
             _ =>
               _.data.getSalaryUserList && (
                 <React.Fragment>
-                  <Grid container alignItems='center' style={{ marginBottom: '16px' }}>
-                    <Overview usersSalary={_.data.getSalaryUserList} />
-                    <Grid item style={{ marginLeft: '30px' }}>
-                      <Typography variant="body2" color="textSecondary">
-                        步驟1: 選擇要月結的人『打勾』或是全選 | 步驟2: 下方按下『月結』 | 步驟3: 月結完成後，按下『編輯』進入每個人加扣項核對 | 步驟4: 全部確認正確後，按下『鎖定』
-                      </Typography>
+                  <Grid container alignItems='stretch' spacing={2} style={{ marginBottom: '16px' }}>
+                    <Grid item xs={12} md={7}>
+                      <Overview usersSalary={_.data.getSalaryUserList} date={setting.date} />
+                    </Grid>
+                    <Grid item xs={12} md={5}>
+                      <Card sx={{
+                        height: '100%',
+                        border: '1px solid #f0f0f0',
+                        borderRadius: '12px',
+                        boxShadow: 'none',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        p: 2.5,
+                        backgroundColor: '#ffffff'
+                      }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'primary.main', mb: 1.5, display: 'flex', alignItems: 'center', fontSize: '14.5px' }}>
+                          <span style={{ backgroundColor: theme.palette.primary.main, width: '4px', height: '16px', display: 'inline-block', marginRight: '8px', borderRadius: '2px' }}></span>
+                          操作指南
+                        </Typography>
+                        <Grid container spacing={1}>
+                          {[
+                            "步驟1: 選擇要月結的人『打勾』或是全選",
+                            "步驟2: 下方按下『批次月結』",
+                            "步驟3: 月結完成後，點擊「鉛筆圖示」進入每個人加扣項核對",
+                            "步驟4: 全部確認正確後，按下『鎖定』"
+                          ].map((step, i) => (
+                            <Grid item xs={12} sm={6} key={i}>
+                              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '14.5px', display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
+                                <span style={{ marginRight: '8px', color: theme.palette.primary.main, fontWeight: 'bold' }}>•</span>
+                                {step}
+                              </Typography>
+                            </Grid>
+                          ))}
+                        </Grid>
+                      </Card>
                     </Grid>
                   </Grid>
-                  <Grid container spacing={2} alignItems='center' style={{ marginBottom: '16px' }}>
-                    <Grid item>
-                      <FormControl variant="outlined" size="small" style={{ width: '150px' }}>
+                  <Grid container spacing={2} alignItems='center' style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
+                    <Grid item style={{ display: 'flex', alignItems: 'center' }}>
+                      <FormControl variant="outlined" style={{ width: '150px', marginRight: '16px' }}>
                         <InputLabel id="select-item-label">狀態</InputLabel>
                         <Select
                           labelId="select-item-label"
                           id="select-item"
                           label='狀態'
+                          size="small"
                           value={listStatus}
                           onChange={event => setListStatus(event.target.value)}
                         >
@@ -260,29 +276,42 @@ export default function SalaryOverview() {
                           ))}
                         </Select>
                       </FormControl>
-                    </Grid>
 
-                    {isThisMonthSalaryChacked && (
-                      <Grid item style={{ display: 'flex', alignItems: 'center' }}>
-                        <Button
-                          color="error"
-                          variant="contained"
-                          onClick={handleIsSalaryItemsLock}
-                          css={css({
-                            color: 'white !important',
-                            marginLeft: '10px !important',
-                            height: '40px !important',
-                          })}
-                        >
-                          {isSalaryItemsLock ? '取消鎖定薪資' : '鎖定薪資'}
-                        </Button>
-                        <div style={{ marginLeft: '12px' }}>
-                          <Typography variant="caption" color="textSecondary" style={{ fontWeight: 'bold' }}>
-                            上次月結時間: {format(new Date(monthlyCheckoutTime).toLocaleString(), 'yyyy/MM/dd HH:mm')}
+                      <Button
+                        variant="contained"
+                        onClick={handleIsSalaryItemsLock}
+                        css={css({
+                          backgroundColor: isSalaryItemsLock ? '#f4b400 !important' : '#1A73E8 !important',
+                          color: 'white !important',
+                          minWidth: '120px',
+                          height: '40px !important',
+                          fontSize: '14px',
+                          fontWeight: 'bold',
+                          borderRadius: '50px',
+                          padding: '0 24px',
+                          textTransform: 'none',
+                          boxShadow: 'none',
+                          '&:hover': {
+                            backgroundColor: isSalaryItemsLock ? '#e3a300 !important' : '#1557b0 !important',
+                            boxShadow: '0 2px 10px rgba(26, 115, 232, 0.3) !important'
+                          }
+                        })}
+                      >
+                        {isSalaryItemsLock ? '取消鎖定薪資' : '鎖定薪資'}
+                      </Button>
+
+                      {monthlyCheckoutTime && (
+                        <div style={{ marginLeft: '16px', display: 'flex', flexDirection: 'column' }}>
+                          <Typography variant="caption" color="textSecondary" style={{ fontWeight: 500, fontSize: '13px', lineHeight: 1.2 }}>
+                            上次月結完成時間
+                          </Typography>
+                          <Typography variant="caption" color="textSecondary" style={{ fontWeight: 700, fontSize: '14px', color: theme.palette.text.primary }}>
+                            {format(new Date(monthlyCheckoutTime).toLocaleString(), 'yyyy/MM/dd HH:mm')}
                           </Typography>
                         </div>
-                      </Grid>
-                    )}
+                      )}
+                    </Grid>
+
                   </Grid>
                   <Results
                     status={idx(monthlyCloseStatus, _ => _.data.merchant.monthlyCloseStatus)}
