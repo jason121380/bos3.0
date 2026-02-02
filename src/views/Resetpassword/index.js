@@ -10,61 +10,53 @@ import ResetPasswordForm from './ResetPasswordForm'
 
 const styles = {
   root: css({
-    height: '100%',
+    minHeight: 'calc(100vh - 64px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: theme.spacing(6, 2),
+    backgroundColor: '#F2F2F7', // iOS System Background
+    padding: theme.spacing(3),
   }),
   card: css({
-    width: theme.breakpoints.values.sm,
+    width: 420,
     maxWidth: '100%',
-    overflow: 'visible',
-    display: 'flex',
-    position: 'relative',
-    '& > *': {
-      flexGrow: 1,
-      flexBasis: '50%',
-      width: '50%',
-    },
+    borderRadius: '28px !important',
+    boxShadow: '0 20px 48px rgba(0, 0, 0, 0.08) !important',
+    border: '1px solid rgba(0, 0, 0, 0.02) !important',
+    backgroundColor: '#FFFFFF !important',
+    overflow: 'hidden',
   }),
   content: css({
-    padding: theme.spacing(8, 4, 3, 4),
-  }),
-  icon: css({
-    backgroundImage: gradients.blue,
-    color: theme.palette.common.white,
-    borderRadius: theme.shape.borderRadius,
-    padding: theme.spacing(1),
-    position: 'absolute',
-    top: -32,
-    left: theme.spacing(3),
-    height: 64,
-    width: 64,
-    fontSize: 32,
+    padding: theme.spacing(10, 5, 8, 5),
+    textAlign: 'center',
+    [theme.breakpoints.down('xs')]: {
+      padding: theme.spacing(8, 3),
+    },
   }),
   resetPasswordForm: css({
     marginTop: theme.spacing(3),
-  }),
-  person: css({
-    marginTop: theme.spacing(2),
-    display: 'flex',
-  }),
-  avatar: css({
-    marginRight: theme.spacing(2),
+    width: '100%',
   }),
 }
 
 function ResetPassword() {
   return (
-    <Page css={styles.root} title="Login">
+    <Page css={styles.root} title="重設密碼">
       <Card css={styles.card}>
         <CardContent css={styles.content}>
-          <VpnKeyIcon css={styles.icon} />
-          <Typography gutterBottom variant="h3">
-            Reset password
+          <Typography
+            variant="h2"
+            sx={{
+              fontWeight: 700,
+              color: '#1D1D1F',
+              fontSize: '26px !important',
+              letterSpacing: '-0.4px',
+              mb: 1
+            }}
+          >
+            重設密碼
           </Typography>
-          <Typography variant="subtitle2">重設密碼</Typography>
+
           <ResetPasswordForm className={styles.resetPasswordForm} />
         </CardContent>
       </Card>

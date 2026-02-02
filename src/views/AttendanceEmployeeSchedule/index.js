@@ -3,7 +3,7 @@ import { Container, CircularProgress, Switch } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { startOfMonth, addDays, format, endOfMonth } from 'date-fns'
 import { useFetchGetMerchantClockInSchedule } from 'hooks/useFetchGetMerchantClockInSetting'
@@ -23,8 +23,9 @@ import Results from './Results'
 const styles = {
   root: css({}),
   container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
+    padding: '0px !important',
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5),
   }),
   results: css({
     marginTop: theme.spacing(3),
@@ -61,6 +62,7 @@ export default function Employees() {
   const [isClick, setIsClick] = useState(true)
   const [editBefore, setEditBefore] = useState(false)
   const [UESUsing, setUESUsing] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
 
   // 匯出 Excel
   const exportExcel = () => {
@@ -106,6 +108,7 @@ export default function Employees() {
       const res = await setEmployeeClockInSchedule({ input: inputData })
       if (res.data.setEmployeeClockInSchedule) {
         openSnackbar({ message: '儲存成功!', variant: 'success' })
+        setIsEditing(false)
       } else {
         openSnackbar({ message: '儲存失敗!', variant: 'warning' })
       }
@@ -116,7 +119,7 @@ export default function Employees() {
     }
 
   }
-  
+
   const weekDisplay = week => {
     switch (week) {
       case 'Monday':
@@ -197,37 +200,48 @@ export default function Employees() {
 
   useEffect(() => {
     if (!getUESUsingSetting.loading) {
-      const data = idx(getUESUsingSetting,_=>_.data.getUESUsingSetting)
+      const data = idx(getUESUsingSetting, _ => _.data.getUESUsingSetting)
       setUESUsing(data)
     }
   }, [getUESUsingSetting.loading])
 
   return (
     <Page css={styles.root} title="考勤排班總表">
-      <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='考勤排班總表' subTitle='ATTENDANCE EMPLOYEE SCHEDULE' />
-        <div css={styles.dateWrap} >
+      <AdminPageHeader
+        title="考勤排班總表"
+        subtitle="ATTENDANCE EMPLOYEE SCHEDULE"
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {UESUsing && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '14px', color: '#666' }}>
+              <span>編輯過往班別</span>
+              <Switch
+                size="small"
+                checked={editBefore}
+                onChange={e => setEditBefore(e.target.checked)}
+              />
+            </div>
+          )}
           <DateSelector
             date={date}
             attributes={['lastmonth', 'thismonth', 'startDate']}
             dateChange={value => setDate(value)}
             onlyStart
-            margin
             inputFormat='yyyy/MM'
             pickerOption={{
               views: ['month', 'year']
             }}
+            css={css({
+              '& .MuiOutlinedInput-root': {
+                height: '32px',
+                width: '120px',
+                fontSize: '14px',
+              }
+            })}
           />
-          {UESUsing && (
-            <p style={{ display: 'flex', alignItems: 'center' }}>
-              編輯過往班別:
-              <Switch
-                checked={editBefore}
-                onClick={e => setEditBefore(e.target.checked)}
-              />
-            </p>
-          )}
         </div>
+      </AdminPageHeader>
+      <Container maxWidth={false} css={styles.container}>
         <div style={{ marginBottom: '12px' }}>
           {!merchantClockInSchedule.loading && (
             <ScheduleTags
@@ -238,7 +252,6 @@ export default function Employees() {
               setTagId={setTagId}
               tagId={tagId}
               fontColor={fontColor}
-              saveData={saveData}
               exportExcel={exportExcel}
               exportLoading={getEmployeeClockInScheduleExcelData.loading}
               loading={employeeClockInSchedule.loading}
@@ -256,6 +269,13 @@ export default function Employees() {
             setEmployeeSchedule={setEmployeeSchedule}
             employeeSchedule={employeeSchedule}
             editBefore={editBefore}
+            exportExcel={exportExcel}
+            exportLoading={getEmployeeClockInScheduleExcelData.loading}
+            saveData={saveData}
+            isClick={isClick}
+            loading={employeeClockInSchedule.loading}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
           />
         ) :
           <div style={{ width: '100%', textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>

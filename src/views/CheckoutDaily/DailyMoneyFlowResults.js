@@ -20,7 +20,9 @@ import {
   DialogActions,
   TextField,
   TableContainer,
+  IconButton,
 } from '@mui/material'
+import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined'
 import { openSnackbar } from 'elements/snackbars'
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
@@ -47,6 +49,47 @@ const styles = {
   actions: css({
     padding: theme.spacing(0, 1),
     justifyContent: 'flex-end',
+  }),
+  cardHeader: css({
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: '#1A73E8',
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
+  }),
+  csvBtn: css({
+    borderRadius: '20px !important',
+    padding: '6px 20px !important',
+    fontSize: '14px !important',
+    boxShadow: 'none !important',
+    fontWeight: 'bold !important',
+    backgroundColor: '#f5f5f5 !important',
+    color: '#666 !important',
+    textTransform: 'none !important',
+    border: 'none !important',
+    '&:hover': {
+      backgroundColor: '#eeeeee !important',
+    }
+  }),
+  tableCell: css({
+    padding: '6px 16px !important',
+    fontSize: '13px !important',
+    whiteSpace: 'nowrap',
+    '&.cashSaving': {
+      backgroundColor: 'rgba(26, 115, 232, 0.1) !important',
+      color: '#1A73E8 !important',
+      fontWeight: 'bold !important',
+    }
   }),
 }
 
@@ -181,146 +224,151 @@ function Results({
 
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        共 {dailyMoneyFlowResult.data.length} 筆, {dailyMoneyFlowResult.pageOffset + 1} /{' '}
-        {Math.ceil(dailyMoneyFlowResult.data.length / dailyMoneyFlowResult.pageLimit)}
-      </Typography>
       <Card>
         <CardHeader
+          css={styles.cardHeader}
           action={
             <CSVLink data={excelData} filename="日結紀錄.csv" >
-              <Button variant="contained" color="primary" size="small">
+              <Button variant="contained" css={styles.csvBtn} size="small">
                 報表匯出
               </Button>
             </CSVLink>
           }
-          title="日結紀錄"
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span>日結紀錄</span>
+              <Typography color="textSecondary" variant="body2">
+                共 {dailyMoneyFlowResult.data.length} 筆
+              </Typography>
+            </div>
+          }
         />
-        <Divider />
         <CardContent css={styles.content}>
           <TableContainer>
             <Table className="tableItem">
               <TableHead>
                 <TableRow>
-                  <TableCell>解除日結</TableCell>
-                  <TableCell>營業日期</TableCell>
-                  <TableCell className="cashSaving">現金結存</TableCell>
-                  <TableCell>服務消費</TableCell>
-                  <TableCell>店販消費</TableCell>
-                  {isMemberShipCardActive && <TableCell>會員卡消費</TableCell>}
-                  <TableCell>卡券使用(入業績)</TableCell>
-                  <TableCell>卡券販賣(入業績)</TableCell>
-                  <TableCell>業績收入</TableCell>
-                  <TableCell>卡券販賣(不入業績)</TableCell>
-                  <TableCell>入金儲值(不入業績)</TableCell>
-                  <TableCell>卡券使用(-)</TableCell>
-                  <TableCell>第三方卡券(-)</TableCell>
-                  <TableCell>其他付款方式(-)</TableCell>
-                  <TableCell>入金使用(-)</TableCell>
-                  {bonusDisplay && <TableCell>點數折抵金額(-)</TableCell>}
-                  <TableCell>營業現金應收</TableCell>
-                  <TableCell>現金收支收入</TableCell>
-                  <TableCell>現金收支支出(-)</TableCell>
-                  <TableCell>現金自購收入</TableCell>
-                  <TableCell>最後結帳日期</TableCell>
-                  <TableCell>結帳人</TableCell>
+                  <TableCell css={styles.tableCell}>解除日結</TableCell>
+                  <TableCell css={styles.tableCell}>營業日期</TableCell>
+                  <TableCell css={styles.tableCell} className="cashSaving">現金結存</TableCell>
+                  <TableCell css={styles.tableCell}>服務消費</TableCell>
+                  <TableCell css={styles.tableCell}>店販消費</TableCell>
+                  {isMemberShipCardActive && <TableCell css={styles.tableCell}>會員卡消費</TableCell>}
+                  <TableCell css={styles.tableCell}>卡券使用(入業績)</TableCell>
+                  <TableCell css={styles.tableCell}>卡券販賣(入業績)</TableCell>
+                  <TableCell css={styles.tableCell}>業績收入</TableCell>
+                  <TableCell css={styles.tableCell}>卡券販賣(不入業績)</TableCell>
+                  <TableCell css={styles.tableCell}>入金儲值(不入業績)</TableCell>
+                  <TableCell css={styles.tableCell}>卡券使用(-)</TableCell>
+                  <TableCell css={styles.tableCell}>第三方卡券(-)</TableCell>
+                  <TableCell css={styles.tableCell}>其他付款方式(-)</TableCell>
+                  <TableCell css={styles.tableCell}>入金使用(-)</TableCell>
+                  {bonusDisplay && <TableCell css={styles.tableCell}>點數折抵金額(-)</TableCell>}
+                  <TableCell css={styles.tableCell} className="cashSaving">營業現金應收</TableCell>
+                  <TableCell css={styles.tableCell}>現金收支收入</TableCell>
+                  <TableCell css={styles.tableCell}>現金收支支出(-)</TableCell>
+                  <TableCell css={styles.tableCell}>現金自購收入</TableCell>
+                  <TableCell css={styles.tableCell}>最後結帳日期</TableCell>
+                  <TableCell css={styles.tableCell}>結帳人</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {dailyMoneyFlowResult.data.map(result => (
                   <TableRow key={result.date}>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        color="primary"
+                    <TableCell css={styles.tableCell}>
+                      <IconButton
                         size="small"
+                        color="primary"
                         onClick={() =>
                           disableRestoreCheckout
                             ? handleOpenDialog(result.date)
                             : handleRestoreDailyAccount(result.date)
                         }
+                        title="解除日結"
                       >
-                        解除
-                      </Button>
+                        <LockOpenOutlinedIcon fontSize="small" />
+                      </IconButton>
                     </TableCell>
-                    <TableCell>{format(new Date(result.date), 'yyyy/MM/dd')}</TableCell>
-                    <TableCell className="cashSaving">
+                    <TableCell css={styles.tableCell}>{format(new Date(result.date), 'yyyy/MM/dd')}</TableCell>
+                    <TableCell css={styles.tableCell} className="cashSaving">
                       {Math.round(result.cashBalance)}
                     </TableCell>
-                    <TableCell>{Math.round(result.service)}</TableCell>
-                    <TableCell>{Math.round(result.product)}</TableCell>
-                    {isMemberShipCardActive && <TableCell>{Math.round(result.membership)}</TableCell>}
-                    <TableCell>{roundDecimal(result.usedTicket)}</TableCell>
-                    <TableCell>{Math.round(result.ticketSellIntoPerformance)}</TableCell>
-                    <TableCell>{Math.round(result.performanceIncome)}</TableCell>
-                    <TableCell>{Math.round(result.ticketSellNotIntoPerformance)}</TableCell>
-                    <TableCell>{Math.round(result.walletDeposit)}</TableCell>
-                    <TableCell>{roundDecimal(result.usedTicketForDecount)}</TableCell>
-                    <TableCell>{Math.round(result.thirdPartTicketForDecount)}</TableCell>
-                    <TableCell>{Math.round(result.otherPayWayForDecount)}</TableCell>
-                    <TableCell>{Math.round(result.walletUsedForDecount)}</TableCell>
-                    {bonusDisplay && <TableCell>{result.bonusDecountForReport}</TableCell>}
-                    <TableCell>{Math.round(result.businessCash)}</TableCell>
-                    <TableCell>{Math.round(result.cashRevenue)}</TableCell>
-                    <TableCell>{Math.round(result.cashExpenditure)}</TableCell>
-                    <TableCell>{Math.round(result.picking)}</TableCell>
-                    <TableCell>{format(result.lastCheckoutDateTime, 'yyyy/MM/dd')}</TableCell>
-                    <TableCell>
+                    <TableCell css={styles.tableCell}>{Math.round(result.service)}</TableCell>
+                    <TableCell css={styles.tableCell}>{Math.round(result.product)}</TableCell>
+                    {isMemberShipCardActive && <TableCell css={styles.tableCell}>{Math.round(result.membership)}</TableCell>}
+                    <TableCell css={styles.tableCell}>{roundDecimal(result.usedTicket)}</TableCell>
+                    <TableCell css={styles.tableCell}>{Math.round(result.ticketSellIntoPerformance)}</TableCell>
+                    <TableCell css={styles.tableCell}>{Math.round(result.performanceIncome)}</TableCell>
+                    <TableCell css={styles.tableCell}>{Math.round(result.ticketSellNotIntoPerformance)}</TableCell>
+                    <TableCell css={styles.tableCell}>{Math.round(result.walletDeposit)}</TableCell>
+                    <TableCell css={styles.tableCell}>{roundDecimal(result.usedTicketForDecount)}</TableCell>
+                    <TableCell css={styles.tableCell}>{Math.round(result.thirdPartTicketForDecount)}</TableCell>
+                    <TableCell css={styles.tableCell}>{Math.round(result.otherPayWayForDecount)}</TableCell>
+                    <TableCell css={styles.tableCell}>{Math.round(result.walletUsedForDecount)}</TableCell>
+                    {bonusDisplay && <TableCell css={styles.tableCell}>{result.bonusDecountForReport}</TableCell>}
+                    <TableCell css={styles.tableCell} className="cashSaving">{Math.round(result.businessCash)}</TableCell>
+                    <TableCell css={styles.tableCell}>{Math.round(result.cashRevenue)}</TableCell>
+                    <TableCell css={styles.tableCell}>{Math.round(result.cashExpenditure)}</TableCell>
+                    <TableCell css={styles.tableCell}>{Math.round(result.picking)}</TableCell>
+                    <TableCell css={styles.tableCell}>{format(result.lastCheckoutDateTime, 'yyyy/MM/dd')}</TableCell>
+                    <TableCell css={styles.tableCell}>
                       {result.checkoutStaff === null ? '' : result.checkoutStaff.name}
                     </TableCell>
                   </TableRow>
                 ))}
                 <TableRow>
-                  <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
-                  <TableCell />
-                  <TableCell className="cashSaving">
+                  <TableCell css={styles.tableCell} style={{ fontWeight: 'bold' }}>合計</TableCell>
+                  <TableCell css={styles.tableCell} />
+                  <TableCell css={styles.tableCell} className="cashSaving">
                     {Math.round(dailyMoneyFlowResult.summary.cashBalance)}
                   </TableCell>
-                  <TableCell>{Math.round(dailyMoneyFlowResult.summary.service)}</TableCell>
-                  <TableCell>{Math.round(dailyMoneyFlowResult.summary.product)}</TableCell>
-                  {isMemberShipCardActive && <TableCell>{Math.round(dailyMoneyFlowResult.summary.membership)}</TableCell>}
-                  <TableCell>{Math.round(dailyMoneyFlowResult.summary.usedTicket)}</TableCell>
-                  <TableCell>
+                  <TableCell css={styles.tableCell}>{Math.round(dailyMoneyFlowResult.summary.service)}</TableCell>
+                  <TableCell css={styles.tableCell}>{Math.round(dailyMoneyFlowResult.summary.product)}</TableCell>
+                  {isMemberShipCardActive && <TableCell css={styles.tableCell}>{Math.round(dailyMoneyFlowResult.summary.membership)}</TableCell>}
+                  <TableCell css={styles.tableCell}>{Math.round(dailyMoneyFlowResult.summary.usedTicket)}</TableCell>
+                  <TableCell css={styles.tableCell}>
                     {Math.round(dailyMoneyFlowResult.summary.ticketSellIntoPerformance)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell css={styles.tableCell}>
                     {Math.round(dailyMoneyFlowResult.summary.performanceIncome)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell css={styles.tableCell}>
                     {Math.round(dailyMoneyFlowResult.summary.ticketSellNotIntoPerformance)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell css={styles.tableCell}>
                     {Math.round(dailyMoneyFlowResult.summary.walletDeposit)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell css={styles.tableCell}>
                     {Math.round(dailyMoneyFlowResult.summary.usedTicketForDecount)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell css={styles.tableCell}>
                     {Math.round(dailyMoneyFlowResult.summary.thirdPartTicketForDecount)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell css={styles.tableCell}>
                     {Math.round(dailyMoneyFlowResult.summary.otherPayWayForDecount)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell css={styles.tableCell}>
                     {Math.round(dailyMoneyFlowResult.summary.walletUsedForDecount)}
                   </TableCell>
-                  {bonusDisplay && <TableCell>{dailyMoneyFlowResult.summary.bonusDecountForReport}</TableCell>}
-                  <TableCell>{Math.round(dailyMoneyFlowResult.summary.businessCash)}</TableCell>
-                  <TableCell>{Math.round(dailyMoneyFlowResult.summary.cashRevenue)}</TableCell>
-                  <TableCell>
+                  {bonusDisplay && <TableCell css={styles.tableCell}>{dailyMoneyFlowResult.summary.bonusDecountForReport}</TableCell>}
+                  <TableCell css={styles.tableCell} className="cashSaving">
+                    {Math.round(dailyMoneyFlowResult.summary.businessCash)}
+                  </TableCell>
+                  <TableCell css={styles.tableCell}>{Math.round(dailyMoneyFlowResult.summary.cashRevenue)}</TableCell>
+                  <TableCell css={styles.tableCell}>
                     {Math.round(dailyMoneyFlowResult.summary.cashExpenditure)}
                   </TableCell>
-                  <TableCell>
+                  <TableCell css={styles.tableCell}>
                     {Math.round(dailyMoneyFlowResult.summary.picking)}
                   </TableCell>
-                  <TableCell />
-                  <TableCell />
+                  <TableCell css={styles.tableCell} />
+                  <TableCell css={styles.tableCell} />
                 </TableRow>
               </TableBody>
             </Table>
           </TableContainer>
         </CardContent>
-        <CardActions css={styles.actions}>
+        {/* <CardActions css={styles.actions}>
           <TablePagination
             ref={pageRef}
             labelRowsPerPage='每頁顯示數量'
@@ -332,7 +380,7 @@ function Results({
             rowsPerPage={dailyMoneyFlowResult.pageLimit}
             rowsPerPageOptions={[5, 10, 25, 50, 1000]}
           />
-        </CardActions>
+        </CardActions> */}
       </Card>
       <Dialog
         open={openDialog}

@@ -1,19 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import {
   Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  Table,
   TableBody,
   TableCell,
-  TableHead,
-  TablePagination,
   TableRow,
   Typography,
 } from '@mui/material'
+import ManagementTable from 'components/ManagementTable'
 import idx from 'idx'
 import format from 'date-fns/format'
 import { useState, useEffect, useRef } from 'react'
@@ -51,7 +44,10 @@ const styles = {
     '& .MuiCardHeader-action': {
       marginTop: 0
     }
-  })
+  }),
+  compactCell: css({
+    padding: '4px 8px !important',
+  }),
 }
 
 export default function UsagedResults({
@@ -102,104 +98,85 @@ export default function UsagedResults({
 
   return (
     <div {...rest} css={styles.root}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        共 {results.length} 筆, {page.offset + 1} /{Math.ceil(results.length / page.limit)}
-      </Typography>
-      <Card>
-        <CardHeader css={styles.cardHeader} action={
-          <CSVLink data={csvData} filename="卡券使用紀錄.csv" >
-            <Button variant="contained" color="primary" size="small">
-              報表匯出
-            </Button>
-          </CSVLink>
-        } title="卡券使用紀錄" />
-        <Divider />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>使用卡券之帳單編號/時間</TableCell>
-                    <TableCell>購買卡券之帳單編號/時間</TableCell>
-                    <TableCell>客戶</TableCell>
-                    <TableCell>設計師</TableCell>
-                    <TableCell>卡券代號</TableCell>
-                    <TableCell>卡券使用</TableCell>
-                    <TableCell>卡券使用金額</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {results.map((result, index) => (
-                    <TableRow hover key={`${result.id}-${index}`}>
-                      <TableCell>
-                        {idx(result, _ => _.usageOrder.no)}
-                        <Typography>
-                          {idx(result, _ => format(_.usageOrder.date, 'yyyy/MM/dd'))}
-                        </Typography>
-                        <Button
-                          color="primary"
-                          component={RouterLink}
-                          size="small"
-                          to={`/order/${result.usageOrder.id}`}
-                          variant="outlined"
-                        >
-                          訂單詳細
-                        </Button>
-                      </TableCell>
-                      <TableCell>
-                        {idx(result, _ => _.order.no)}
-                        <Typography>
-                          {idx(result, _ => format(_.order.date, 'yyyy/MM/dd'))}
-                        </Typography>
-                        <Button
-                          color="primary"
-                          component={RouterLink}
-                          size="small"
-                          to={`/order/${result.order.id}`}
-                          variant="outlined"
-                        >
-                          訂單詳細
-                        </Button>
-                      </TableCell>
-                      <TableCell>
-                        {idx(result, _ => _.order.customer.name + ' ' + _.order.customer.cellphone)}
-                      </TableCell>
-                      <TableCell>
-                        {idx(
-                          result,
-                          _ => _.usageOrder.designer.name + ' ' + _.usageOrder.designer.designerNo
-                        )}
-                      </TableCell>
-                      <TableCell>{idx(result, _ => _.no)}</TableCell>
-                      <TableCell>{idx(result, _ => _.service.name)}</TableCell>
-                      <TableCell>{roundDecimal(idx(result, _ => _.price))}</TableCell>
-                    </TableRow>
-                  ))}
-                  <TableRow>
-                    <TableCell colSpan={5} />
-                    <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
-                    <TableCell style={{ fontWeight: 'bold' }}>{totalPrice()}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
-          <TablePagination
-            ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
-            component="div"
-            count={page.count}
-            onPageChange={onChangePage}
-            onRowsPerPageChange={onChangeRowsPerPage}
-            page={page.offset}
-            rowsPerPage={page.limit}
-            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
-          />
-        </CardActions>
-      </Card>
-    </div>
+      <ManagementTable
+        title="卡券使用紀錄"
+        totalCount={page.count}
+        pageLimit={page.limit}
+        pageOffset={page.offset}
+        onPageChange={onChangePage}
+        onRowsPerPageChange={onChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 25, 50, 1000]}
+        excelData={csvData}
+        excelFilename="卡券使用紀錄.csv"
+        tableHead={(
+          <>
+            <TableCell css={styles.compactCell}>使用詳情</TableCell>
+            <TableCell css={styles.compactCell}>購買詳情</TableCell>
+            <TableCell css={styles.compactCell}>客戶</TableCell>
+            <TableCell css={styles.compactCell}>設計師</TableCell>
+            <TableCell css={styles.compactCell}>卡券代號</TableCell>
+            <TableCell css={styles.compactCell}>卡券使用</TableCell>
+            <TableCell css={styles.compactCell}>金額</TableCell>
+          </>
+        )}
+      >
+        <TableBody>
+          {results.map((result, index) => (
+            <TableRow hover key={`${result.id}-${index}`}>
+              <TableCell css={styles.compactCell}>
+                {idx(result, _ => _.usageOrder.no)}
+                <Typography variant="caption" display="block">
+                  {idx(result, _ => format(_.usageOrder.date, 'yyyy/MM/dd'))}
+                </Typography>
+                <Button
+                  color="primary"
+                  component={RouterLink}
+                  size="small"
+                  to={`/order/${result.usageOrder.id}`}
+                  variant="outlined"
+                >
+                  詳情
+                </Button>
+              </TableCell>
+              <TableCell css={styles.compactCell}>
+                {idx(result, _ => _.order.no)}
+                <Typography variant="caption" display="block">
+                  {idx(result, _ => format(_.order.date, 'yyyy/MM/dd'))}
+                </Typography>
+                <Button
+                  color="primary"
+                  component={RouterLink}
+                  size="small"
+                  to={`/order/${result.order.id}`}
+                  variant="outlined"
+                >
+                  詳情
+                </Button>
+              </TableCell>
+              <TableCell css={styles.compactCell}>
+                {idx(result, _ => _.order.customer.name)}
+                <Typography variant="caption" display="block">
+                  {idx(result, _ => _.order.customer.cellphone)}
+                </Typography>
+              </TableCell>
+              <TableCell css={styles.compactCell}>
+                {idx(result, _ => _.usageOrder.designer.name)}
+                <Typography variant="caption" display="block">
+                  {idx(result, _ => _.usageOrder.designer.designerNo)}
+                </Typography>
+              </TableCell>
+              <TableCell css={styles.compactCell}>{idx(result, _ => _.no)}</TableCell>
+              <TableCell css={styles.compactCell}>{idx(result, _ => _.service.name)}</TableCell>
+              <TableCell css={styles.compactCell}>{roundDecimal(idx(result, _ => _.price))}</TableCell>
+            </TableRow>
+          ))}
+          <TableRow>
+            <TableCell css={styles.compactCell} colSpan={5} />
+            <TableCell css={styles.compactCell} style={{ fontWeight: 'bold' }}>合計</TableCell>
+            <TableCell css={styles.compactCell} style={{ fontWeight: 'bold' }}>{totalPrice()}</TableCell>
+          </TableRow>
+        </TableBody>
+      </ManagementTable>
+    </div >
   )
 }

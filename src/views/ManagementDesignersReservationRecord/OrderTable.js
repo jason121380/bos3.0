@@ -17,8 +17,8 @@ const OrderTable = ({
   cusRemarkDisplay, ndsRef, checkinSettings, checkinMode,
   calendarSize, cancelPasswordUsing
 }) => {
-  const isCheckinIcon = <AssignmentTurnedInRoundedIcon style={{ top: 5, right: 5, position: 'absolute' }}/>
-  const noCheckinIcon = <DisabledByDefaultRoundedIcon style={{ top: 5, right: 5, position: 'absolute' }}/>
+  const isCheckinIcon = <AssignmentTurnedInRoundedIcon style={{ top: 5, right: 5, position: 'absolute' }} />
+  const noCheckinIcon = <DisabledByDefaultRoundedIcon style={{ top: 5, right: 5, position: 'absolute' }} />
   const [modalOpen, setModalOpen] = useState(false)
   const [holidayModel, setHolidayModel] = useState(false)
   const [modaltype, setModalType] = useState('')
@@ -108,7 +108,7 @@ const OrderTable = ({
             cusRemark.style.wordBreak = null
           }
         }
-      } 
+      }
     });
   }, [ndsRef, calendarData])
 
@@ -125,7 +125,7 @@ const OrderTable = ({
       <div css={styles.tableHead}>
         <div style={{ position: 'sticky', left: 0, zIndex: 1 }} css={css([styles.timeTitle, styles.title])}>時間</div>
         {calendarData.map(data => (
-          <div style={{ width: findTitleWidth(data.length, data.breakLength)}} key={`name-${data.title}`} css={(styles.title)}>
+          <div style={{ flex: 1 }} key={`name-${data.title}`} css={(styles.title)}>
             {data.title}
           </div>
         ))}
@@ -149,20 +149,19 @@ const OrderTable = ({
         {calendarData.map(({
           title, length, breakLength, countHoliday, orders, orderGroup, breakGroup, bookingLimit, countOrder
         }, index) => {
-          const width = findTitleWidth(length, breakLength)
           return (
-            <div key={`${title}-${index}`} style={{ width: width, minWidth: calendarSize.width < 100 ? calendarSize.width : 100 }} css={styles.desWrap}>
+            <div key={`${title}-${index}`} style={{ flex: 1 }} css={styles.desWrap}>
               {orderRange[index].map(d => (
                 <div
                   key={d}
                   css={styles.orderItem}
-                  style={{ width: width, height: calendarSize.height }}
+                  style={{ width: '100%', height: calendarSize.height }}
                   onClick={() => {
-                    if (countHoliday[d] && width === calendarSize.width) return
+                    if (countHoliday[d]) return
                     if (isOne) {
                       setModalType(countHoliday[d] ? 'openOrder' : 'default')
                     } else {
-                      setModalType(countHoliday[d] ? 'openAllOrder' :'defaultAll')
+                      setModalType(countHoliday[d] ? 'openAllOrder' : 'defaultAll')
                     }
                     setModalOpen(true)
                     setClickData({
@@ -171,13 +170,13 @@ const OrderTable = ({
                     })
                   }}
                 >
-                <div style={{ width: length > 1 ? ndWidth : calendarSize.width, zIndex: 2 }} className='hoverItem' css={css([styles.limitItem, length > 1 && countHoliday[d] ? styles.holiday : {}])}>
-                  {isOne ? length > 1 || breakLength > 0  ? handleCountLimit(countOrder[d], bookingLimit) : `可預約人數:${handleCountLimit(countOrder[d], bookingLimit)}` : ''}
-                </div>
+                  <div style={{ width: '100%', zIndex: 2 }} className='hoverItem' css={css([styles.limitItem, length > 1 && countHoliday[d] ? styles.holiday : {}])}>
+                    {isOne ? length > 1 || breakLength > 0 ? handleCountLimit(countOrder[d], bookingLimit) : `可預約人數:${handleCountLimit(countOrder[d], bookingLimit)}` : ''}
+                  </div>
                 </div>
               ))}
               {length > 1 && (
-                <div style={{ width: (length - 1) * calendarSize.width }} css={styles.calendarWrap}>
+                <div style={{ width: '100%' }} css={styles.calendarWrap}>
                   {orderGroup.map(({ data, parentStyle }, i) => (
                     <div key={`currentData-${i}`} css={styles.clickWrap} style={parentStyle}>
                       {data.map(({ key, start, end, style, type, designerId, ...rest }) => {
@@ -185,15 +184,15 @@ const OrderTable = ({
                           <div
                             key={key}
                             ref={e => e && ndsRef.current.push(e)}
-                            style={{ ...style, width: `${(length - 1) * calendarSize.width / data.length}px`, position: 'relative' }}
+                            style={{ ...style, width: `${100 / data.length}%`, position: 'relative' }}
                             css={styles.clickItem}
                             id='darkBorder'
                             onClick={() => {
-                              if(rest.isDone) {
+                              if (rest.isDone) {
                                 window.open(`/order/${rest.createdOrderId}`, '_blank');
                               } else if (type.includes('HOLIDAY')) {
                                 if (!isOne) {
-                                  setModalType(countHoliday[start] ? 'openAllOrder' :'defaultAll')
+                                  setModalType(countHoliday[start] ? 'openAllOrder' : 'defaultAll')
                                   setModalOpen(true)
                                   setClickData({
                                     dateTime: start,
@@ -241,7 +240,7 @@ const OrderTable = ({
                             {cusRemarkDisplay && <span id='cusRemark' style={{ fontSize: 12 }}>{rest.remarkForCustomer}</span>}
                             {remarkDisplay && <span id='remark' style={{ fontSize: 12 }}>{rest.remark}</span>}
                             {handleShowCheckinIcon(start, rest.isCheckin)}
-                            {(rest.isNoShow && !checkinMode) && <EventBusyIcon style={{ top: 5, left: 5, position: 'absolute' }}/>}
+                            {(rest.isNoShow && !checkinMode) && <EventBusyIcon style={{ top: 5, left: 5, position: 'absolute' }} />}
                           </div>
                         )
                       })}
@@ -250,7 +249,7 @@ const OrderTable = ({
                 </div>
               )}
               {breakLength > 0 && (
-                <div style={{ width: length > 1 ? calendarSize.breakWidth : calendarSize.width , left: findOrderWidth(length) }} css={styles.calendarWrap}>
+                <div style={{ width: '100%', left: 0 }} css={styles.calendarWrap}>
                   {breakGroup.map(({ data, parentStyle }, i) => (
                     <div key={`isBreakGroups-${i}`} css={styles.clickWrap} style={parentStyle}>
                       {data.map(({ key, nameToDisplay, start, end, style }, i) => {
@@ -262,7 +261,7 @@ const OrderTable = ({
                             id='darkBorder'
                             onClick={() => {
                               if (!isOne) {
-                                setModalType(countHoliday[start] ? 'openAllOrder' :'defaultAll')
+                                setModalType(countHoliday[start] ? 'openAllOrder' : 'defaultAll')
                                 setModalOpen(true)
                                 setClickData({
                                   dateTime: start,
@@ -310,8 +309,8 @@ const OrderTable = ({
       </Dialog>
       <Dialog className='ManagementReservationRecordDialog' fullWidth maxWidth="sm" open={holidayModel} onClose={() => setHolidayModel(false)}>
         <HolidayEdit
-          holidayData={holidayData} 
-          setHolidayData={setHolidayData} 
+          holidayData={holidayData}
+          setHolidayData={setHolidayData}
           setHolidayModel={setHolidayModel}
           refetchData={refetchData}
         />

@@ -5,7 +5,9 @@ import {
   TableBody,
   TableCell,
   TableRow,
+  IconButton,
 } from '@mui/material'
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import { format } from 'date-fns'
 import useFetchMoneyFlowReportExcel from 'hooks/useFetchMoneyFlowReportExcel'
 import PropTypes from 'prop-types'
@@ -25,15 +27,12 @@ const styles = {
   }),
   sticky2: css({
     position: 'sticky',
-    left: "74px",
+    left: "54px", // Adjusted based on narrower Action column
     background: '#ffffff !important',
     zIndex: '99',
   }),
   tableRow: css({
     backgroundColor: '#ffffff !important',
-    '&:hover': {
-      backgroundColor: '#ffffff !important',
-    },
   }),
 }
 
@@ -97,12 +96,13 @@ function Results({
         pageOffset={moneyFlows.pageOffset}
         onPageChange={onPageChange}
         onRowsPerPageChange={onRowsPerPageChange}
+        hidePagination={true}
         rowsPerPageOptions={[5, 10, 25, 100, 250, 500, 1000]}
         minWidth={1300}
         tableHead={
           <>
-            <TableCell css={styles.sticky1} style={{ width: '74px' }}>操作</TableCell>
-            <TableCell css={styles.sticky2} style={{ width: '85px' }}>日期</TableCell>
+            <TableCell css={styles.sticky1} style={{ width: '54px' }}>操作</TableCell>
+            <TableCell css={styles.sticky2} style={{ width: '120px' }}>日期</TableCell>
             <TableCell>科目名稱</TableCell>
             <TableCell>收入</TableCell>
             <TableCell>支出</TableCell>
@@ -118,15 +118,14 @@ function Results({
             return (
               <TableRow key={index} css={styles.tableRow}>
                 <TableCell css={styles.sticky1} >
-                  <Button
+                  <IconButton
                     color="primary"
                     component={RouterLink}
                     size="small"
                     to={`/accounting/deatil/${data.id}`}
-                    variant="outlined"
                   >
-                    修改
-                  </Button>
+                    <EditOutlinedIcon fontSize="small" />
+                  </IconButton>
                 </TableCell>
                 <TableCell css={styles.sticky2}>{format(data.date, 'yyyy-MM-dd')}</TableCell>
                 <TableCell>

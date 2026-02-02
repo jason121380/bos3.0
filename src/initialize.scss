@@ -136,13 +136,13 @@ td.MuiTableCell-root.MuiTableCell-body {
   border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-tr.MuiTableRow-root:nth-of-type(even) {
-  background-color: #F9F9FB;
-}
+// tr.MuiTableRow-root:nth-of-type(even) {
+//   background-color: #F9F9FB;
+// }
 
-tr.MuiTableRow-root:hover {
-  background-color: rgba(0, 122, 255, 0.03) !important;
-}
+// tr.MuiTableRow-root:hover {
+//   background-color: rgba(0, 122, 255, 0.03) !important;
+// }
 
 .merchantNamePrint {
   display: none !important;

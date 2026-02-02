@@ -11,47 +11,46 @@ export default {
     height: 'calc(100vh - 260px)',
     overflow: 'scroll',
     position: 'relative',
+    borderRadius: '16px !important',
+    boxShadow: 'none !important',
+    border: '1px solid #f0f0f0 !important',
     '& > div': {
       display: 'flex'
     }
   }),
   title: css({
-    padding: '2px 5px',
+    padding: '12px 16px',
     wordBreak: 'break-all',
-    fontWeight: 600,
-    backgroundColor: '#08424c',
-    color: '#fff',
+    fontWeight: '800',
+    backgroundColor: '#f8f9fa', // Light gray background
+    color: '#202D50', // Dark gray text
     minHeight: 56,
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
     flexShrink: 0,
-    borderRight: '1px solid lightgray',
-    fontSize: 14
+    borderRight: '1px solid #d0d7de',
+    fontSize: '14px',
+    letterSpacing: '0.5px',
+    textTransform: 'uppercase',
   }),
   timeTitle: css({
-    justifyContent: 'center'
+    width: 60,
   }),
   item: css({
     height: 70,
-    borderTop: '1px solid lightgray'
+    borderTop: '1px solid #f0f0f0'
   }),
   ndsTitle: css({
-    // width: 100,
-    borderRight: '1px solid lightgray',
-  }),
-  timeTitle: css({
-    alignItems: 'center',
-    width: 50,
-    borderRight: '1px solid lightgray',
-    justifyContent: 'center'
+    borderRight: '1px solid rgba(255, 255, 255, 0.1)',
   }),
   ndsItem: css({
-    // height: 70,
-    borderTop: '1px solid lightgray',
-    borderRight: '1px solid lightgray',
-    borderLeft: '1px solid lightgray',
+    borderTop: '1px solid #f0f0f0',
+    borderRight: '1px solid #f0f0f0',
+    borderLeft: '1px solid #f0f0f0',
     display: 'flex',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    backgroundColor: '#fafafa',
   }),
   ndsWrap: css({
     width: 100,
@@ -61,40 +60,53 @@ export default {
     alignItems: 'flex-end'
   }),
   timeItem: css({
-    // height: 70,
-    borderTop: '1px solid lightgray',
-    borderRight: '1px solid lightgray',
+    borderTop: '1px solid #f0f0f0',
+    borderRight: '1px solid #f0f0f0',
     textAlign: 'center',
     alignContent: 'center',
-    fontSize: 14
+    fontSize: '14px',
+    fontWeight: 'bold',
+    color: '#202D50',
+    backgroundColor: '#f8f9fa',
   }),
   timeWrap: css({
-    width: 50,
+    width: 60,
     flexShrink: 0
   }),
   desWrap: css({
-    // minWidth: 100,
     position: 'relative',
     flexShrink: 0
   }),
   orderItem: css({
-    // height: 70,
-    borderTop: '1px solid lightgray',
-    borderRight: '1px solid lightgray',
+    borderTop: '1px solid #f0f0f0',
+    borderRight: '1px solid #f0f0f0',
     display: 'flex',
     justifyContent: 'flex-end'
   }),
   limitItem: css({
-    width: 100,
-    color: '#8a8a8a',
+    width: '100%',
+    color: '#999',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '14px',
+    fontSize: '12px',
     overflow: 'hidden',
     flexDirection: 'column',
     cursor: 'pointer',
-    borderLeft: '1px solid lightgray',
+    transition: 'background-color 0.2s',
+    '&:hover': {
+      backgroundColor: 'rgba(26, 115, 232, 0.1) !important',
+    },
+    '& .capacity-label': {
+      fontSize: '10px',
+      color: '#bbb',
+      marginBottom: '2px',
+    },
+    '& .capacity-value': {
+      fontSize: '14px',
+      fontWeight: 'bold',
+      color: '#1A73E8',
+    }
   }),
   calendarWrap: css({
     position: 'absolute',
@@ -102,48 +114,54 @@ export default {
     top: 0,
     left: 0,
     overflow: 'hidden',
-    borderRight: '1px solid lightgray',
+    borderRight: '1px solid #f0f0f0',
   }),
   clickWrap: css({
     display: 'flex',
     gap: 0,
     position: 'absolute',
     width: '100%'
-    // '&:hover': {
-    //   zIndex: 9
-    // }
   }),
   clickItem: css({
-    borderRadius: 15,
+    borderRadius: '12px',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
-    fontSize: 14,
+    fontSize: '13px',
+    fontWeight: 'bold',
     color: '#fff',
-    border: '3px solid white',
+    border: '2px solid white',
+    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
     overflow: 'hidden',
+    transition: 'transform 0.1s ease',
     '&:hover': {
-      zIndex: 3
+      zIndex: 10,
+      transform: 'scale(1.02)',
     },
     '& span': {
-      padding: '0px 4px',
-      wordBreak: 'break-all'
+      padding: '0px 8px',
+      wordBreak: 'break-all',
+      textAlign: 'center'
     }
   }),
   holiday: css({
-    background: '#ffa9a9'
+    background: '#ffebee !important',
+    '& .capacity-value': {
+      color: '#f44336 !important',
+    }
   }),
   tableBody: css({
     position: 'relative',
     width: 'fit-content',
-    borderBottom: '1px solid lightgray'
+    borderBottom: '1px solid #f0f0f0'
   }),
   tableHead: css({
-    position: 'sticky', 
+    position: 'sticky',
     top: 0,
-    zIndex: 7,
-    width: 'fit-content'
+    zIndex: 10,
+    width: 'fit-content',
+    borderBottom: '1px solid #f0f0f0',
   })
 }

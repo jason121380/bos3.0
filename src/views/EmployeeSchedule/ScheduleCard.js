@@ -14,7 +14,8 @@ import {
   ListItemText,
   FormHelperText,
   FormControl,
-  OutlinedInput
+  OutlinedInput,
+  Box
 } from '@mui/material'
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded'
 import ModeEditOutlineRoundedIcon from '@mui/icons-material/ModeEditOutlineRounded'
@@ -29,7 +30,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import KeyboardDoubleArrowDownRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowDownRounded'
-import CancelRoundedIcon from '@mui/icons-material/CancelRounded'
+import CancelRoundedIcon from '@mui/icons-material/CloseRounded'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
@@ -38,55 +39,84 @@ const styles = {
   root: css({
     paddingTop: '0px !important',
     paddingBottom: theme.spacing(3),
-    '& button.checkbox': {
-      padding: '0px !important'
-    },
     '& .MuiListItemSecondaryAction-root': {
       position: 'relative',
-      transform: 'translate(0px)',
+      transform: 'none',
       flexGrow: 1,
-      justifyContent: 'space-between',
+      justifyContent: 'flex-end',
       right: 0,
-      display: 'flex'
-    }
-  }),
-  input: css({
-    color: 'white',
-  }),
-  closeIcon: css({
-    color: 'white',
-    float: 'right',
-    margin: '11px',
-    cursor: 'pointer',
-  }),
-  arrowIcon: css({
-    cursor: 'pointer',
-  }),
-  delete: css({
-    cursor: 'pointer',
-  }),
-  goBottomArrow: css({
-    cursor: 'pointer',
-    margin: '0 5px',
-  }),
-  cardHeader: css({
-    backgroundColor: '#202D50',
-    height: 50,
-    color: 'white',
-    fontSize: 24,
-    textAlign: 'center',
-    boxShadow:
-      '0px 4px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12)',
-    zIndex: 1100,
-  }),
-  secondItem: css({
-    '& .MuiListItemSecondaryAction-root': {
       display: 'flex',
-      alignItems: 'center'
+      alignItems: 'center',
+      gap: '4px',
     }
   }),
-  propper: css({
-    top: -10
+  card: css({
+    borderRadius: '16px',
+    minWidth: '332px',
+    width: 322,
+    position: 'relative',
+    boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.05)',
+    border: '1px solid rgba(0, 0, 0, 0.03)',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    '&:hover': {
+      boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.08)',
+    }
+  }),
+  closeButton: css({
+    position: 'absolute',
+    top: '-15px',
+    right: '-15px',
+    zIndex: 10,
+    backgroundColor: '#202D50 !important',
+    color: 'white !important',
+    width: '32px',
+    height: '32px',
+    padding: '0px',
+    '&:hover': {
+      backgroundColor: '#1a2540 !important',
+      transform: 'scale(1.1)',
+    }
+  }),
+  headerSection: css({
+    padding: '24px 20px 16px 20px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  }),
+  titleText: css({
+    fontSize: '20px',
+    fontWeight: '800',
+    color: '#202D50',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    maxWidth: '220px',
+  }),
+  rowItem: css({
+    padding: '12px 16px !important',
+    '&:hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.01)',
+    }
+  }),
+  actionIcons: css({
+    color: '#202D50',
+    fontSize: '18px !important',
+  }),
+  addPersonnelBtn: css({
+    marginTop: '8px',
+    padding: '16px 20px !important',
+    color: '#1A73E8 !important',
+    fontWeight: '700 !important',
+    '& .MuiListItemIcon-root': {
+      minWidth: '36px',
+      color: '#1A73E8',
+    }
+  }),
+  checkbox: css({
+    color: '#1A73E8 !important',
+    '&.Mui-checked': {
+      color: '#1A73E8 !important',
+    }
   })
 }
 
@@ -433,56 +463,44 @@ export default function ScheduleCard({
   return (
     scheduleCard.map((data, cardIndex) => (
       <Grid item key={cardIndex} css={styles.root} className='ScheduleCard'>
-        <Paper elevation={3} style={{ borderRadius: '10px', minWidth: '332px', width: 322, position: 'relative' }}>
-          <LightTooltip style={{ top: '-29px', right: '-17px', position: 'absolute', zIndex: 9 }} title="刪除班表">
-            <span>
-              <IconButton
-                disabled={disableButton}
-                edge="end"
-                onClick={() => handleClickOpen(cardIndex)}
-              >
-                <CancelRoundedIcon fontSize="large" style={{ color: '#202D50' }} />
-              </IconButton>
-            </span>
-          </LightTooltip>
+        <Paper elevation={0} css={styles.card}>
+          <IconButton
+            disabled={disableButton}
+            onClick={() => handleClickOpen(cardIndex)}
+            css={styles.closeButton}
+            size="small"
+          >
+            <CancelRoundedIcon sx={{ fontSize: 20 }} />
+          </IconButton>
+
           <List disablePadding>
-            <ListItem
-              style={{ padding: '8px 16px' }}
-              secondaryAction={
-                <LightTooltip title="修改班表的標題" style={{ zIndex: 9 }}>
-                  <span style={{ marginLeft: 'auto' }}>
-                    <IconButton style={{ zIndex: 9 }} disabled={disableButton} edge="end" onClick={() => handleClickTitle(cardIndex)}>
-                      <ModeEditOutlineRoundedIcon style={{ color: '#202D50' }} />
-                    </IconButton>
-                  </span>
-                </LightTooltip>
-              }
-            >
+            <Box css={styles.headerSection}>
               {!data.setName ? (
-                <FormControl style={{ width: '25ch', ml: 3, padding: '12px 30px' }}>
+                <FormControl variant="standard" fullWidth>
                   <OutlinedInput
                     placeholder="排版標題"
                     value={data.cardName}
                     disabled={disableButton}
                     onChange={e => handleCardTitleChange(cardIndex, e)}
                     onKeyDown={e => handleOnKeyDown(e, cardIndex)}
+                    sx={{ borderRadius: '8px' }}
                   />
                   <MyFormHelperText />
                 </FormControl>
               ) : (
-                <ListItemText
-                  primary={data.cardName}
-                  primaryTypographyProps={{
-                    fontSize: 22,
-                    fontWeight: 'bold',
-                    variant: 'h2',
-                    padding: '20px 30px !important',
-                    maxWidth: '250px',
-                    noWrap: true,
-                  }}
-                />
+                <Typography css={styles.titleText}>
+                  {data.cardName || '未命名班表'}
+                </Typography>
               )}
-            </ListItem>
+
+              <IconButton
+                disabled={disableButton}
+                onClick={() => handleClickTitle(cardIndex)}
+                size="small"
+              >
+                <ModeEditOutlineRoundedIcon sx={{ fontSize: 18, color: '#999' }} />
+              </IconButton>
+            </Box>
             {!employeeScheduleData.loading && progress < 100 ? (
               <Fragment>
                 <Divider variant="middle" />
@@ -491,104 +509,84 @@ export default function ScheduleCard({
                     return (
                       <Fragment key={`${rowIndex}-${eachRow.designerId}`}>
                         <ListItem
-                          style={{ padding: '0 12px 0 0' }}
-                          css={styles.secondItem}
+                          css={styles.rowItem}
                           disablePadding
                           secondaryAction={
                             <Fragment>
                               {eachRow.designerId !== '' &&
                                 data.scheduleRow.length > 1 &&
                                 !eachRow.timeAdded && (
-                                  <Fragment>
+                                  <Box sx={{ display: 'flex', gap: '2px' }}>
                                     <IconButton
-                                      edge="end"
                                       disabled={disableButton}
                                       onClick={() => handlePersonGoUp(cardIndex, rowIndex, eachRow)}
-                                      style={{ padding: '6px' }}
+                                      size="small"
                                     >
-                                      <ArrowUpwardIcon style={{ color: '#202D50' }} />
+                                      <ArrowUpwardIcon css={styles.actionIcons} />
                                     </IconButton>
                                     <IconButton
-                                      edge="end"
                                       disabled={disableButton}
                                       onClick={() => handlePersonGoDown(cardIndex, rowIndex, eachRow)}
-                                      style={{ padding: '6px' }}
+                                      size="small"
                                     >
-                                      <ArrowDownwardIcon style={{ color: '#202D50' }} />
+                                      <ArrowDownwardIcon css={styles.actionIcons} />
                                     </IconButton>
                                     <IconButton
-                                      edge="end"
                                       disabled={disableButton}
                                       onClick={() => handlePersonGoBottom(cardIndex, rowIndex, eachRow)}
-                                      style={{ padding: '6px !important' }}
+                                      size="small"
                                     >
-                                      <KeyboardDoubleArrowDownRoundedIcon style={{ color: '#202D50' }} />
+                                      <KeyboardDoubleArrowDownRoundedIcon css={styles.actionIcons} />
                                     </IconButton>
-                                  </Fragment>
+                                  </Box>
                                 )}
                               {eachRow.time != 0 ? (
-                                <div style={{ minWidth: '56px', paddingLeft: "12px", display: 'inline-flex', flexDirection: 'column', textAlign: 'center' }}>
-                                  <Typography edge="end" variant="overline">
+                                <Box sx={{ minWidth: '60px', ml: 1, textAlign: 'right' }}>
+                                  <Typography variant="caption" sx={{ display: 'block', color: '#999', lineHeight: 1.2 }}>
                                     {format(eachRow.time, 'MM/dd')}
                                   </Typography>
-                                  <Typography edge="end" variant="overline">
-                                    {format(eachRow.time, 'H:mm:ss')}
+                                  <Typography variant="caption" sx={{ display: 'block', color: '#666', fontWeight: 'bold' }}>
+                                    {format(eachRow.time, 'H:mm')}
                                   </Typography>
-                                </div>
-                              ) : (
-                                <span edge="end" style={{ minWidth: '56px', paddingLeft: "54px" }}>
-                                  {" "}
-                                </span>
-                              )}
+                                </Box>
+                              ) : null}
                               {eachRow.designerId !== '' && (
-                                <Fragment>
-                                  <IconButton
-                                    edge="end"
-                                    disabled={disableButton}
-                                    onClick={() => handleDeleteDesigner(cardIndex, rowIndex)}
-                                    style={{ padding: '6px' }}
-                                  >
-                                    <DeleteForeverIcon style={{ color: '#202D50' }} />
-                                  </IconButton>
-                                </Fragment>
+                                <IconButton
+                                  disabled={disableButton}
+                                  onClick={() => handleDeleteDesigner(cardIndex, rowIndex)}
+                                  size="small"
+                                  sx={{ ml: 1 }}
+                                >
+                                  <DeleteForeverIcon css={styles.actionIcons} />
+                                </IconButton>
                               )}
                             </Fragment>
                           }
                         >
                           {eachRow.designerId !== '' && (
-                            <Fragment>
-                              <IconButton className='checkbox' disabled={disableButton} onChange={() => handleAddTime(cardIndex, rowIndex)}>
-                                <Checkbox
-                                  checked={eachRow.timeAdded}
-                                  tabIndex={-1}
-                                  disableRipple
-                                  style={{ color: '#202D50' }}
-                                />
-                              </IconButton>
+                            <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+                              <Checkbox
+                                checked={eachRow.timeAdded}
+                                onChange={() => handleAddTime(cardIndex, rowIndex)}
+                                disabled={disableButton}
+                                css={styles.checkbox}
+                                size="small"
+                              />
                               <Typography
-                                variant="inherit"
+                                variant="body2"
                                 noWrap
-                                style={{ display: 'block', width: '120px' }}
+                                sx={{ color: '#202D50', fontWeight: 500, fontSize: '15px' }}
                               >
-                                {users.map((user, index) => {
-                                  if (user.id === eachRow.designerId) {
-                                    return (
-                                      <span key={index}>{`${user.nickName !== null && user.nickName !== ''
-                                        ? user.nickName
-                                        : user.name
-                                        }${user.designerNo !== '' && user.designerNo !== null
-                                          ? user.designerNo
-                                          : ''
-                                        }`}</span>
-                                    )
-                                  }
-                                })}
+                                {users.find(u => u.id === eachRow.designerId)?.nickName ||
+                                  users.find(u => u.id === eachRow.designerId)?.name || ''}
+                                <span style={{ color: '#999', marginLeft: '4px', fontSize: '12px' }}>
+                                  {users.find(u => u.id === eachRow.designerId)?.designerNo || ''}
+                                </span>
                               </Typography>
-                            </Fragment>
+                            </Box>
                           )}
-
                         </ListItem>
-                        {eachRow.designerId !== '' && <Divider variant="middle" style={{ marginLeft: '12px', marginRight: '16px' }} />}
+                        {eachRow.designerId !== '' && <Divider variant="middle" sx={{ opacity: 0.6 }} />}
                       </Fragment>
                     )
                   }
@@ -600,11 +598,15 @@ export default function ScheduleCard({
               </div>
             )
             }
-            <ListItemButton disabled={disableButton} onClick={() => handleOpenModal(cardIndex)}>
+            <ListItemButton
+              disabled={disableButton}
+              onClick={() => handleOpenModal(cardIndex)}
+              css={styles.addPersonnelBtn}
+            >
               <ListItemIcon>
-                <PersonAddRoundedIcon style={{ color: '#202D50' }} />
+                <PersonAddRoundedIcon />
               </ListItemIcon>
-              <ListItemText inset primary="新增人員" style={{ fontWeight: 'bold' }} />
+              <ListItemText primary="新增人員" />
             </ListItemButton>
           </List>
         </Paper>

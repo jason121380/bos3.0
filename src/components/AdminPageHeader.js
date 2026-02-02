@@ -39,6 +39,7 @@ const styles = {
 
 const AdminPageHeader = ({
     title,
+    subTitle,
     showFilter,
     onFilterClick,
     primaryAction,
@@ -47,7 +48,7 @@ const AdminPageHeader = ({
     return (
         <Card css={styles.headerCard}>
             <div css={styles.leftSection}>
-                <PageTitle title={title} style={{ color: '#1A73E8' }} />
+                <PageTitle title={title} subTitle={subTitle} style={{ color: '#1A73E8' }} />
 
                 {primaryAction && (
                     primaryAction.to ? (

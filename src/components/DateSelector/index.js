@@ -6,7 +6,7 @@ import {
   isBefore, startOfDay, endOfDay, subDays, addDays,
   startOfMonth, endOfMonth, addMonths, subMonths,
   startOfWeek, endOfWeek, addWeeks, subWeeks,
-  format
+  format, isSameDay
 } from 'date-fns'
 import { useHistory, useLocation } from 'react-router'
 import useQueryString from 'hooks/useQueryString'
@@ -39,6 +39,18 @@ const index = ({
     return startDate === dStart && endDate === dEnd
   }
 
+  const isTomorrow = (startDate, endDate) => {
+    const tStart = startOfDay(addDays(new Date(), 1)).getTime()
+    const tEnd = endOfDay(addDays(new Date(), 1)).getTime()
+    return startDate === tStart && endDate === tEnd
+  }
+
+  const isDatomorrow = (startDate, endDate) => {
+    const dStart = startOfDay(addDays(new Date(), 2)).getTime()
+    const dEnd = endOfDay(addDays(new Date(), 2)).getTime()
+    return startDate === dStart && endDate === dEnd
+  }
+
   const isThisMonth = (startDate, endDate) => {
     const mStart = startOfMonth(new Date()).getTime()
     const mEnd = endOfMonth(new Date()).getTime()
@@ -49,6 +61,18 @@ const index = ({
     const lStart = startOfMonth(subMonths(new Date(), 1)).getTime()
     const lEnd = endOfMonth(subMonths(new Date(), 1)).getTime()
     return startDate === lStart && endDate === lEnd
+  }
+
+  const isThisWeek = (startDate, endDate) => {
+    return isSameDay(startDate, startOfWeek(new Date())) && isSameDay(endDate, endOfWeek(new Date()))
+  }
+
+  const isLastWeek = (startDate, endDate) => {
+    return isSameDay(startDate, startOfWeek(subWeeks(new Date(), 1))) && isSameDay(endDate, endOfWeek(subWeeks(new Date(), 1)))
+  }
+
+  const isNextWeek = (startDate, endDate) => {
+    return isSameDay(startDate, startOfWeek(addWeeks(new Date(), 1))) && isSameDay(endDate, endOfWeek(addWeeks(new Date(), 1)))
   }
   const getButton = (title, func, isActive) => (
     <Button
@@ -83,11 +107,11 @@ const index = ({
     yesterday: () => getButton('昨天', yesterday, isYesterday(date.startDate, date.endDate)),
     dbyesterday: () => getButton('前天', dbyesterday, isDbyesterday(date.startDate, date.endDate)),
     nextmonth: () => getButton('下個月', nextmonth),
-    tomorrow: () => getButton('明天', tomorrow),
-    datomorrow: () => getButton('後天', datomorrow),
-    thisweek: () => getButton('本週', thisweek),
-    nextweek: () => getButton('下週', nextweek),
-    lastweek: () => getButton('上週', lastweek),
+    tomorrow: () => getButton('明天', tomorrow, isTomorrow(date.startDate, date.endDate)),
+    datomorrow: () => getButton('後天', datomorrow, isDatomorrow(date.startDate, date.endDate)),
+    thisweek: () => getButton('本週', thisweek, isThisWeek(date.startDate, date.endDate)),
+    nextweek: () => getButton('下週', nextweek, isNextWeek(date.startDate, date.endDate)),
+    lastweek: () => getButton('上週', lastweek, isLastWeek(date.startDate, date.endDate)),
     startDate: () => <DatePicker key='起始時間' type={'起始時間'} />,
     endDate: () => <DatePicker key='結束時間' type={'結束時間'} />,
   }

@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Card, Container, CircularProgress, ToggleButton, ToggleButtonGroup, } from '@mui/material'
+import { Card, Container, CircularProgress, ToggleButton, ToggleButtonGroup, Typography, Box } from '@mui/material'
+import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined'
 import format from 'date-fns/format'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
@@ -10,9 +11,35 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'column',
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3)
-  })
+    padding: theme.spacing(4, 3),
+    borderRadius: '16px',
+    boxShadow: '0px 10px 40px rgba(26, 115, 232, 0.08)',
+    border: 'none !important',
+  }),
+  timerContainer: css({
+    backgroundColor: 'rgba(26, 115, 232, 0.04)',
+    padding: '12px 24px',
+    borderRadius: '12px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginBottom: '20px',
+  }),
+  timerLabel: css({
+    color: '#666',
+    fontSize: '13px',
+    fontWeight: '500',
+    marginBottom: '4px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+  }),
+  timerValue: css({
+    color: '#1A73E8',
+    fontSize: '32px',
+    fontWeight: '800',
+    fontFamily: "'Inter', 'Roboto Mono', monospace",
+  }),
 }
 
 const clockInOptions = [
@@ -27,13 +54,21 @@ function Results({ clockInType, setClockInType, isLoading, url, countDownTime })
   return (
     <Container maxWidth='md' >
       <Card css={styles.root}>
-        有效時間{format(countDownTime, 'mm:ss')}
+        <Box css={styles.timerContainer}>
+          <Typography css={styles.timerLabel}>
+            <TimerOutlinedIcon sx={{ fontSize: 16 }} />
+            有效時間
+          </Typography>
+          <Typography css={styles.timerValue}>
+            {format(countDownTime, 'mm:ss')}
+          </Typography>
+        </Box>
         {isLoading ? (
-          <div style={{ width: 250, height: 250, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 250, height: 250, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
             <CircularProgress />
           </div>
         ) : (
-          <img src={url} alt="" style={{ width: 250, height: 250 }} />
+          <img src={url} alt="" style={{ width: 250, height: 250, marginBottom: '24px' }} />
         )}
         <ToggleButtonGroup
           size="small"
@@ -41,9 +76,40 @@ function Results({ clockInType, setClockInType, isLoading, url, countDownTime })
           disabled={isLoading}
           value={clockInType}
           onChange={(event, value) => value && setClockInType(value)}
+          sx={{
+            backgroundColor: '#f5f5f5',
+            borderRadius: '24px',
+            padding: '4px',
+            border: 'none',
+            '& .MuiToggleButtonGroup-grouped': {
+              border: 'none',
+              borderRadius: '20px !important',
+              margin: '0 2px',
+            },
+          }}
         >
           {clockInOptions.map((data, idx) => (
-            <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+            <ToggleButton
+              key={`${data.label}-${idx}`}
+              value={data.value}
+              name={data.label}
+              sx={{
+                padding: '6px 20px',
+                color: '#666',
+                fontSize: '14px',
+                fontWeight: 'bold',
+                textTransform: 'none',
+                border: 'none !important',
+                '&.Mui-selected': {
+                  backgroundColor: '#fff !important',
+                  color: '#1A73E8 !important',
+                  boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+                },
+                '&:hover': {
+                  backgroundColor: 'rgba(0,0,0,0.04)',
+                },
+              }}
+            >
               {data.label}
             </ToggleButton>
           ))}

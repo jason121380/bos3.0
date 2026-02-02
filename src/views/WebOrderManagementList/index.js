@@ -39,7 +39,7 @@ function WebOrderMangagementList() {
 
   // 分頁與過濾器狀態管理
   const [pageSetting, setPageSetting] = useState({
-    pageLimit: 50,
+    pageLimit: 1000,
     pageOffset: 0,
     startDate: startOfMonth(new Date()).getTime(),
     endDate: endOfDay(addDays(new Date(), +90)).getTime(),

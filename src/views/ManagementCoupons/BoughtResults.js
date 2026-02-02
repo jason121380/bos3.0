@@ -1,19 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import {
   Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  Table,
   TableBody,
   TableCell,
-  TableHead,
-  TablePagination,
   TableRow,
   Typography,
 } from '@mui/material'
+import ManagementTable from 'components/ManagementTable'
 import { format } from 'date-fns'
 import { useState, useEffect, useRef } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -55,7 +48,10 @@ const styles = {
     '& td': {
       fontWeight: 'bold'
     }
-  })
+  }),
+  compactCell: css({
+    padding: '4px 8px !important',
+  }),
 }
 
 export default function BoughtResults({
@@ -118,94 +114,78 @@ export default function BoughtResults({
 
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        共 {results.length} 筆, {pageOffset + 1} /{Math.ceil(results.length / pageLimit)}
-      </Typography>
-      <Card>
-        <CardHeader css={styles.cardHeader} action={
-          <CSVLink data={csvData} filename="卡券販賣紀錄.csv" >
-            <Button variant="contained" color="primary" size="small">
-              報表匯出
-            </Button>
-          </CSVLink>
-        } title="卡券販賣紀錄" />
-        <Divider />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>操作</TableCell>
-                    <TableCell>帳單編號/時間</TableCell>
-                    <TableCell>客戶</TableCell>
-                    <TableCell>設計師</TableCell>
-                    <TableCell>卡券代號</TableCell>
-                    <TableCell>卡券販賣</TableCell>
-                    <TableCell>卡券販賣金額</TableCell>
-                    <TableCell>總張數</TableCell>
-                    <TableCell>剩餘張數</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {reportData.map((data, index) => (
-                    <TableRow hover key={`${data.id}-${index}`}>
-                      <TableCell>
-                        <Button
-                          color="primary"
-                          component={RouterLink}
-                          size="small"
-                          to={`/order/${data.orderId}`}
-                          variant="outlined"
-                        >
-                          訂單詳情
-                        </Button>
-                      </TableCell>
-                      <TableCell>
-                        {data.orderNo}
-                        <Typography>
-                          {format(data.orderDate, 'yyyy/MM/dd')}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        {data.customerName + ' ' + data.customerPhone}
-                      </TableCell>
-                      <TableCell>
-                        {data.designerName + ' ' + data.designerNo}
-                      </TableCell>
-                      <TableCell>{data.ticketNo}</TableCell>
-                      <TableCell>{data.ticketName}</TableCell>
-                      <TableCell>{roundDecimal(data.price)}</TableCell>
-                      <TableCell>{data.totalCount}</TableCell>
-                      <TableCell>{data.leftCount}</TableCell>
-                    </TableRow>
-                  ))}
-                  <TableRow css={styles.fontWeight}>
-                    <TableCell colSpan={5} />
-                    <TableCell>合計</TableCell>
-                    <TableCell>{handleCountTotal('price')}</TableCell>
-                    <TableCell>{handleCountTotal('totalCount')}</TableCell>
-                    <TableCell>{handleCountTotal('leftCount')}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
-          <TablePagination
-            ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
-            component="div"
-            count={results.length}
-            onPageChange={onChangePage}
-            onRowsPerPageChange={onChangeRowsPerPage}
-            page={pageOffset}
-            rowsPerPage={pageLimit}
-            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
-          />
-        </CardActions>
-      </Card>
-    </div>
+      <ManagementTable
+        title="卡券販賣紀錄"
+        totalCount={results.length}
+        pageLimit={pageLimit}
+        pageOffset={pageOffset}
+        onPageChange={onChangePage}
+        onRowsPerPageChange={onChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 25, 50, 1000]}
+        excelData={csvData}
+        excelFilename="卡券販賣紀錄.csv"
+        tableHead={(
+          <>
+            <TableCell css={styles.compactCell}>操作</TableCell>
+            <TableCell css={styles.compactCell}>帳單編號/時間</TableCell>
+            <TableCell css={styles.compactCell}>客戶</TableCell>
+            <TableCell css={styles.compactCell}>設計師</TableCell>
+            <TableCell css={styles.compactCell}>卡券代號</TableCell>
+            <TableCell css={styles.compactCell}>卡券販賣</TableCell>
+            <TableCell css={styles.compactCell}>金額</TableCell>
+            <TableCell css={styles.compactCell}>總張數</TableCell>
+            <TableCell css={styles.compactCell}>現餘</TableCell>
+          </>
+        )}
+      >
+        <TableBody>
+          {reportData.map((data, index) => (
+            <TableRow hover key={`${data.id}-${index}`}>
+              <TableCell css={styles.compactCell}>
+                <Button
+                  color="primary"
+                  component={RouterLink}
+                  size="small"
+                  to={`/order/${data.orderId}`}
+                  variant="outlined"
+                >
+                  詳情
+                </Button>
+              </TableCell>
+              <TableCell css={styles.compactCell}>
+                {data.orderNo}
+                <Typography variant="caption" display="block">
+                  {format(data.orderDate, 'yyyy/MM/dd')}
+                </Typography>
+              </TableCell>
+              <TableCell css={styles.compactCell}>
+                {data.customerName}
+                <Typography variant="caption" display="block">
+                  {data.customerPhone}
+                </Typography>
+              </TableCell>
+              <TableCell css={styles.compactCell}>
+                {data.designerName}
+                <Typography variant="caption" display="block">
+                  {data.designerNo}
+                </Typography>
+              </TableCell>
+              <TableCell css={styles.compactCell}>{data.ticketNo}</TableCell>
+              <TableCell css={styles.compactCell}>{data.ticketName}</TableCell>
+              <TableCell css={styles.compactCell}>{roundDecimal(data.price)}</TableCell>
+              <TableCell css={styles.compactCell}>{data.totalCount}</TableCell>
+              <TableCell css={styles.compactCell}>{data.leftCount}</TableCell>
+            </TableRow>
+          ))}
+          <TableRow css={styles.fontWeight}>
+            <TableCell css={styles.compactCell} colSpan={5} />
+            <TableCell css={styles.compactCell}>合計</TableCell>
+            <TableCell css={styles.compactCell}>{handleCountTotal('price')}</TableCell>
+            <TableCell css={styles.compactCell}>{handleCountTotal('totalCount')}</TableCell>
+            <TableCell css={styles.compactCell}>{handleCountTotal('leftCount')}</TableCell>
+          </TableRow>
+        </TableBody>
+      </ManagementTable>
+    </div >
   )
 }

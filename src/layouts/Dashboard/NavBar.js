@@ -2,6 +2,7 @@
 import {
   Avatar, Badge, Divider, Drawer, IconButton,
   Link, List, ListSubheader, Typography, colors,
+  TextField, InputAdornment,
 } from '@mui/material'
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'
 import NavItem from 'components/NavItem'
@@ -28,6 +29,8 @@ import LoyaltyIcon from '@mui/icons-material/Loyalty'
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
 import LocalActivityIcon from '@mui/icons-material/LocalActivity';
 import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
+import SearchIcon from '@mui/icons-material/Search'
+import CardGiftcardIcon from '@mui/icons-material/CardGiftcard'
 import { css } from '@emotion/react'
 import { createTheme } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
@@ -56,7 +59,7 @@ function reduceChildRoutes({ acc, pathname, item, reportListExtended, depth = 0 
         icon={item.icon}
         key={item.title}
         label={item.label}
-        open={Boolean(open)}
+        open={Boolean(open) || item.forceOpen}
         title={item.title}
         reportListExtended={reportListExtended}
       >
@@ -93,6 +96,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   // 宣告usestate變數
   const [status, setStatus] = useState('online')
   const [userPageAuth, setUserPageAuth] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
 
   // 拿個人全部的資料
   const profile = useFetchProfile()
@@ -327,9 +331,30 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   itemArr.push(settingItem)
   // render出來的Array
+  const filteredPinnedTable = pinnedTable.filter(d =>
+    d.title.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  const filteredItemArr = searchTerm.trim() === ''
+    ? itemArr
+    : itemArr.map(category => {
+      const categoryMatches = category.title.toLowerCase().includes(searchTerm.toLowerCase())
+      const filteredItems = category.items.filter(item =>
+        item.title.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      if (categoryMatches || filteredItems.length > 0) {
+        return {
+          ...category,
+          items: categoryMatches ? category.items : filteredItems,
+          forceOpen: true
+        }
+      }
+      return null
+    }).filter(Boolean)
+
   config.push({
     subheader: merchantName,
-    items: itemArr,
+    items: filteredItemArr,
   })
 
   if (theme == 'DARK' && !profile.loading) {
@@ -630,15 +655,46 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
         {!profile.loading && (
           <div css={styles.root}>
             <nav css={styles.navigation}>
-              {pinnedTable.length > 0 && (
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="搜尋選單..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                sx={{
+                  mb: 1,
+                  px: 1,
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '24px',
+                    backgroundColor: theme === 'DARK' ? 'rgba(255, 255, 255, 0.05)' : '#f1f3f4',
+                    '& fieldset': {
+                      border: 'none',
+                    },
+                  },
+                  '& .MuiInputBase-input': {
+                    fontSize: '13px',
+                    py: '8px',
+                    color: theme === 'DARK' ? '#FFFFFF' : '#000000',
+                  }
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon fontSize="small" sx={{ ml: 1, color: theme === 'DARK' ? '#888' : '#666' }} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              {filteredPinnedTable.length > 0 && (
                 <List sx={{ pb: 0 }}>
                   <NavItem
                     depth={0}
                     title='釘選頁面'
                     icon={CardGiftcardIcon}
+                    open={searchTerm.trim() !== ''}
                   >
                     <List>
-                      {pinnedTable.map(d => (
+                      {filteredPinnedTable.map(d => (
                         <NavItem
                           key={d.title}
                           depth={0}
@@ -713,16 +769,47 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
         {!profile.loading && (
           <div css={styles.root}>
             <nav css={styles.navigation}>
-              {pinnedTable.length > 0 && (
+              <TextField
+                fullWidth
+                size="small"
+                placeholder="搜尋選單..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                sx={{
+                  mb: 1,
+                  px: 1,
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '24px',
+                    backgroundColor: theme === 'DARK' ? 'rgba(255, 255, 255, 0.05)' : '#f1f3f4',
+                    '& fieldset': {
+                      border: 'none',
+                    },
+                  },
+                  '& .MuiInputBase-input': {
+                    fontSize: '13px',
+                    py: '8px',
+                    color: theme === 'DARK' ? '#FFFFFF' : '#000000',
+                  }
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon fontSize="small" sx={{ ml: 1, color: theme === 'DARK' ? '#888' : '#666' }} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              {filteredPinnedTable.length > 0 && (
                 <List sx={{ pb: 0 }}>
                   <NavItem
                     depth={0}
                     title='釘選頁面'
                     href='dfdf'
                     icon={PushPinOutlinedIcon}
+                    open={searchTerm.trim() !== ''}
                   >
                     <List>
-                      {pinnedTable.map(d => (
+                      {filteredPinnedTable.map(d => (
                         <NavItem
                           key={d.title}
                           depth={0}

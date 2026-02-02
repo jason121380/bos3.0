@@ -163,6 +163,7 @@ function Results({
     <div {...rest} css={styles.root}>
       <ManagementTable
         title="預約管理列表"
+        hidePagination={true}
         totalCount={pageSetting.totalCount}
         excelData={excelData}
         excelFilename="預約訂單列表.csv"

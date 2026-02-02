@@ -1,28 +1,34 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Button, Card, CardActions, CardContent, CardHeader, Divider, Table,
-  TableBody, TableCell, TableHead, TablePagination, TableRow, Typography,
+  Button, TableBody, TableCell, TableRow, Typography,
 } from '@mui/material'
-import TableEditBar from 'components/TableEditBar'
+import ManagementTable from 'components/ManagementTable'
 import idx from 'idx'
 import format from 'date-fns/format'
 import PropTypes from 'prop-types'
-import { useEffect, useState, useRef } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
+import { useEffect, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { CSVLink } from "react-csv";
+import { CSVLink } from "react-csv"
 import { css } from '@emotion/react'
 
-import styles from './styles/UsagedResult'
+const styles = {
+  compactCell: css({
+    padding: '4px 8px !important',
+    fontSize: '13px !important',
+    whiteSpace: 'nowrap',
+  }),
+  fontWeight: css({
+    fontWeight: 'bold !important',
+  }),
+}
 
 function UsagedResult({ className, walletUseRecord, resultSetting, onChange, date, pagenationLabel, ...rest }) {
-  const pageRef = useRef(null)
   const [excelData, setExcelData] = useState([])
 
   useEffect(() => {
-    if(!walletUseRecord.loading) {
+    if (!walletUseRecord.loading) {
       const excelData = []
-      const useRecords = idx(walletUseRecord.data, _ =>_.walletUseRecord.record)
+      const useRecords = idx(walletUseRecord.data, _ => _.walletUseRecord.record)
       useRecords.forEach(data => {
         excelData.push({
           '帳單編號/時間': `#${data.orderNo}-` + format(data.date, 'yyyy/MM/dd'),
@@ -38,110 +44,76 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
         使用金額: useRecords.reduce((prev, next) => prev + next.money, 0),
       })
       setExcelData(excelData)
-      if (pageRef.current) {
-        pagenationLabel(pageRef.current)
-      }
     }
-  }, [walletUseRecord.loading, pageRef.current])
+  }, [walletUseRecord.loading])
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        共 {idx(walletUseRecord.data, _ => _.walletUseRecord.totalCount)} 筆資料,{' '}
-        {resultSetting.usaged.pageOffset + 1}/
-        {Math.ceil(
-          idx(walletUseRecord.data, _ => _.walletUseRecord.record.length) /
-            resultSetting.usaged.pageLimit
+    <div {...rest} css={className}>
+      <ManagementTable
+        title="入金使用"
+        totalCount={idx(walletUseRecord.data, _ => _.walletUseRecord.totalCount) || 0}
+        pageLimit={resultSetting.usaged.pageLimit}
+        pageOffset={resultSetting.usaged.pageOffset}
+        onPageChange={(_event, page) =>
+          onChange({ event: { target: { value: page } }, key: 'pageOffset' })
+        }
+        onRowsPerPageChange={event => onChange({ event, key: 'pageLimit' })}
+        rowsPerPageOptions={[5, 10, 25, 50, 1000]}
+        excelData={excelData}
+        excelFilename="入金使用.csv"
+        tableHead={(
+          <>
+            <TableCell css={styles.compactCell}>操作</TableCell>
+            <TableCell css={styles.compactCell}>帳單編號/時間</TableCell>
+            <TableCell css={styles.compactCell}>客戶</TableCell>
+            <TableCell css={styles.compactCell}>設計師</TableCell>
+            <TableCell css={styles.compactCell}>使用金額</TableCell>
+          </>
         )}
-      </Typography>
-      <Card>
-        <CardHeader
-          action={
-            <CSVLink data={excelData} filename="入金使用.csv" >
-              <Button variant="contained" color="primary" size="small">
-                報表匯出
-              </Button>
-            </CSVLink>
-          }
-          title="入金使用"
-        />
-        <Divider />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>操作</TableCell>
-                    <TableCell>帳單編號/時間</TableCell>
-                    <TableCell>客戶</TableCell>
-                    <TableCell>設計師</TableCell>
-                    <TableCell>使用金額</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {idx(walletUseRecord.data, _ =>
-                    _.walletUseRecord.record.map(data => (
-                      <TableRow hover key={`${data.id}-${data.index}`}>
-                        <TableCell>
-                          <Button
-                            color="primary"
-                            variant="outlined"
-                            component={RouterLink}
-                            to={`/order/${data.order.id}`}
-                          >
-                            訂單詳情
-                          </Button>
-                        </TableCell>
-                        <TableCell>
-                          {data.orderNo}
-                          <Typography>{format(data.date, 'yyyy/MM/dd')}</Typography>
-                        </TableCell>
-                        <TableCell>
-                          {idx(data.Customer, _ => _.name)}
-                          <Typography>{idx(data.Customer, _ => _.cellphone)}</Typography>
-                        </TableCell>
-                        <TableCell>
-                          {idx(
-                            data.Designer,
-                            _ => `${_.name}${_.designerNo ? ' / ' + _.designerNo : ''}`
-                          )}
-                        </TableCell>
-                        <TableCell>{data.money}</TableCell>
-                      </TableRow>
-                    ))
+      >
+        <TableBody>
+          {idx(walletUseRecord.data, _ =>
+            _.walletUseRecord.record.map(data => (
+              <TableRow hover key={`${data.id}-${data.index}`}>
+                <TableCell css={styles.compactCell}>
+                  <Button
+                    color="primary"
+                    variant="outlined"
+                    component={RouterLink}
+                    to={`/order/${data.order.id}`}
+                    size="small"
+                  >
+                    訂單詳情
+                  </Button>
+                </TableCell>
+                <TableCell css={styles.compactCell}>
+                  {data.orderNo}
+                  <Typography variant="caption" display="block">{format(data.date, 'yyyy/MM/dd')}</Typography>
+                </TableCell>
+                <TableCell css={styles.compactCell}>
+                  {idx(data.Customer, _ => _.name)}
+                  <Typography variant="caption" display="block">{idx(data.Customer, _ => _.cellphone)}</Typography>
+                </TableCell>
+                <TableCell css={styles.compactCell}>
+                  {idx(
+                    data.Designer,
+                    _ => `${_.name}${_.designerNo ? ' / ' + _.designerNo : ''}`
                   )}
-                  <TableRow>
-                    <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
-                    <TableCell colSpan={3}></TableCell>
-                    <TableCell>
-                      {idx(walletUseRecord, _ =>
-                        _.data.walletUseRecord.record.reduce((prev, next) => prev + next.money, 0)
-                      )}
-                    </TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
-          <TablePagination
-            ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
-            component="div"
-            count={idx(walletUseRecord.data, _ => _.walletUseRecord.totalCount) || 0}
-            onPageChange={(_event, page) =>
-              onChange({ event: { target: { value: page } }, key: 'pageOffset' })
-            }
-            onRowsPerPageChange={event => onChange({ event, key: 'pageLimit' })}
-            page={resultSetting.usaged.pageOffset}
-            rowsPerPage={resultSetting.usaged.pageLimit}
-            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
-          />
-        </CardActions>
-      </Card>
-      <TableEditBar />
+                </TableCell>
+                <TableCell css={styles.compactCell}>{data.money}</TableCell>
+              </TableRow>
+            ))
+          )}
+          <TableRow css={styles.fontWeight}>
+            <TableCell css={styles.compactCell}>合計</TableCell>
+            <TableCell css={styles.compactCell} colSpan={3} />
+            <TableCell css={styles.compactCell}>
+              {idx(walletUseRecord, _ =>
+                _.data.walletUseRecord.record.reduce((prev, next) => prev + next.money, 0)
+              )}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </ManagementTable>
     </div>
   )
 }

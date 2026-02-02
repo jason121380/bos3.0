@@ -3,10 +3,11 @@ import {
   Container, InputLabel, Select, FormControl, MenuItem, TextField,
   Grid, DialogActions, Dialog, DialogContent, DialogTitle, Button,
   Typography, CircularProgress, ToggleButton, ToggleButtonGroup,
-  Divider
+  Divider, Collapse
 } from '@mui/material'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
+import AdminPageHeader from 'components/AdminPageHeader'
 import PageTitle from 'components/PageTitle'
 import BelongAutocomplete from 'components/BelongAutocomplete'
 import { useFetchCustomersWithoutSorting } from 'hooks/useFetchCustomers'
@@ -28,11 +29,11 @@ let once = false
 
 const styles = {
   root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5),
   }),
   results: css({
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(0.5),
   }),
   formGroup: css({
     width: '170px',
@@ -124,6 +125,7 @@ function CustomerFilterExport() {
   const [disable, setDisable] = useState([false, false])
   const [belong, setBelong] = useState([])
   const [customerIsCome, setCustomerIsCome] = useState(null)
+  const [showFilter, setShowFilter] = useState(false)
   const customerList = useFetchCustomersWithoutSorting(pageSetting)
   const [getCustomersWithoutSortingExcelLazy, getCustomersWithoutSortingExcelLazyData] = useFetchCustomersWithoutSortingExcelLazy()
 
@@ -241,7 +243,7 @@ function CustomerFilterExport() {
       setBelong(parseData.category)
 
       if (startDate || endDate) setTimeValue({ startDate, endDate })
-        
+
       parseData.baseDateRange && setFromDateValue(parseData.baseDateRange)
 
       if (parseData.baseDateRange) {
@@ -264,16 +266,18 @@ function CustomerFilterExport() {
   return (
     <Page css={styles.root} title="客資篩選匯出">
       <Container maxWidth={false}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='客資篩選匯出' subTitle='Customer Filter Export' />
-          <Grid item>
-            <Button disabled={getCustomersWithoutSortingExcelLazyData.loading} variant="contained" color="primary" onClick={() => handleExcel()}>
-              報表匯出
-            </Button>
-          </Grid>
-        </Grid>
-        <Grid container>
-          <Grid item>
+        <AdminPageHeader
+          title='客資篩選匯出'
+          showFilter={showFilter}
+          onFilterClick={() => setShowFilter(!showFilter)}
+          primaryAction={{
+            label: '報表匯出',
+            onClick: handleExcel,
+            disabled: getCustomersWithoutSortingExcelLazyData.loading
+          }}
+        />
+        <Collapse in={showFilter}>
+          <div style={{ marginBottom: '8px', backgroundColor: '#fff', borderRadius: '12px', padding: '12px', border: '1px solid #f0f0f0' }}>
             <SearchBar
               setCustomerNoSort={setPageSetting}
               inCustomerFilterExport
@@ -481,8 +485,8 @@ function CustomerFilterExport() {
                 </DialogActions>
               </Dialog>
             </div>
-          </Grid>
-        </Grid>
+          </div>
+        </Collapse>
         {!customerList.loading ?
           idx(customerList.data, _ => (
             <Results

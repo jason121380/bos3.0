@@ -14,7 +14,10 @@ import {
   DialogContentText,
   DialogActions,
   TextField,
+  IconButton,
 } from '@mui/material'
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteCustomer from 'hooks/useFetchDeleteCustomer'
@@ -36,10 +39,22 @@ const styles = {
     alignItems: 'center',
   }),
   avatar: css({
-    height: 42,
-    width: 42,
+    height: 32,
+    width: 32,
     marginRight: theme.spacing(1),
-    background: '#757575'
+    background: '#757575',
+    fontSize: '14px'
+  }),
+  compactCell: css({
+    padding: '4px 8px !important',
+    fontSize: '13px !important',
+    whiteSpace: 'nowrap',
+  }),
+  membershipCell: css({
+    padding: '4px 8px !important',
+    fontSize: '12px !important',
+    lineHeight: '1.4',
+    minWidth: '180px',
   }),
   unWelcome: css({
     '& td': {
@@ -144,9 +159,10 @@ function Results({
         onRowsPerPageChange={handleRowsPerPageChangeInternal}
         rowsPerPageOptions={[5, 10, 25, 50, 1000]}
         minWidth={1100}
+        size="small"
         tableHead={
           <>
-            <TableCell padding="checkbox">
+            <TableCell padding="checkbox" css={styles.compactCell}>
               <Checkbox
                 checked={selectedCustomers.length === customers.length && customers.length > 0}
                 color="primary"
@@ -155,17 +171,17 @@ function Results({
                 disabled={customers.length === 0}
               />
             </TableCell>
-            <TableCell>詳細資料</TableCell>
-            <TableCell>姓名</TableCell>
-            <TableCell>電話</TableCell>
-            <TableCell>客戶編號</TableCell>
-            <TableCell>最近設計師</TableCell>
-            <TableCell>偏好設計師</TableCell>
-            <TableCell>上次消費日期</TableCell>
-            {isMemberShipCardActive && <TableCell>會員卡</TableCell>}
-            <TableCell>性別</TableCell>
-            <TableCell>生日</TableCell>
-            <TableCell>客戶來源</TableCell>
+            <TableCell css={styles.compactCell}>編輯</TableCell>
+            <TableCell css={styles.compactCell}>姓名</TableCell>
+            <TableCell css={styles.compactCell}>電話</TableCell>
+            <TableCell css={styles.compactCell}>客戶編號</TableCell>
+            <TableCell css={styles.compactCell}>最近設計師</TableCell>
+            <TableCell css={styles.compactCell}>偏好設計師</TableCell>
+            <TableCell css={styles.compactCell}>上次消費日期</TableCell>
+            {isMemberShipCardActive && <TableCell css={styles.compactCell}>會員卡</TableCell>}
+            <TableCell css={styles.compactCell}>性別</TableCell>
+            <TableCell css={styles.compactCell}>生日</TableCell>
+            <TableCell css={styles.compactCell}>客戶來源</TableCell>
           </>
         }
       >
@@ -176,25 +192,25 @@ function Results({
               key={`customer-${data.id}`}
               selected={selectedCustomers.indexOf(data.id) > -1}
             >
-              <TableCell padding="checkbox">
+              <TableCell padding="checkbox" css={styles.compactCell}>
                 <Checkbox
                   color="primary"
                   checked={selectedCustomers.indexOf(data.id) > -1}
                   onChange={() => handleSelectOne(data.id)}
                 />
               </TableCell>
-              <TableCell>
-                <Button
-                  color="primary"
+              <TableCell css={styles.compactCell}>
+                <IconButton
+                  color="inherit"
                   component={RouterLink}
                   size="small"
                   to={`/management/customers/${data.id}`}
-                  variant="outlined"
+                  sx={{ color: '#757575' }}
                 >
-                  查看
-                </Button>
+                  <EditIcon fontSize="small" />
+                </IconButton>
               </TableCell>
-              <TableCell>
+              <TableCell css={styles.compactCell}>
                 <div css={styles.nameCell}>
                   <Avatar css={styles.avatar}>
                     {data.name.charAt(0).toUpperCase()}
@@ -210,15 +226,15 @@ function Results({
                   </Link>
                 </div>
               </TableCell>
-              <TableCell>{data.cellphone}</TableCell>
-              <TableCell>{data.no ? data.no : ''}</TableCell>
-              <TableCell>{idx(data, _ => _.latestDesigner.name)}</TableCell>
-              <TableCell>{idx(data, _ => _.preferDesigner.name)}</TableCell>
-              <TableCell>
+              <TableCell css={styles.compactCell}>{data.cellphone}</TableCell>
+              <TableCell css={styles.compactCell}>{data.no ? data.no : ''}</TableCell>
+              <TableCell css={styles.compactCell}>{idx(data, _ => _.latestDesigner.name)}</TableCell>
+              <TableCell css={styles.compactCell}>{idx(data, _ => _.preferDesigner.name)}</TableCell>
+              <TableCell css={styles.compactCell}>
                 {data.lastTime ? format(data.lastTime, 'yyyy/MM/dd') : ''}
               </TableCell>
               {isMemberShipCardActive && (
-                <TableCell>
+                <TableCell css={styles.membershipCell}>
                   {data.membershipPurchaseRecord && data.membershipPurchaseRecord.length > 0 && (
                     <div key={data.membershipPurchaseRecord.length - 1}>
                       <div>{data.membershipPurchaseRecord[data.membershipPurchaseRecord.length - 1].membershipName}</div>
@@ -228,11 +244,11 @@ function Results({
                   )}
                 </TableCell>
               )}
-              <TableCell>{gender[data.gender]}</TableCell>
-              <TableCell>
+              <TableCell css={styles.compactCell}>{gender[data.gender]}</TableCell>
+              <TableCell css={styles.compactCell}>
                 {data.birthday ? `${data.birthday.year}/${data.birthday.month}/${data.birthday.day}` : ''}
               </TableCell>
-              <TableCell>{data.source}</TableCell>
+              <TableCell css={styles.compactCell}>{data.source}</TableCell>
             </TableRow>
           ))}
         </TableBody>

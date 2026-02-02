@@ -3,7 +3,7 @@ import {
   TablePagination, TableRow, TableContainer, Table, TableHead, TableBody, TableCell,
   Typography, Dialog, DialogTitle, DialogContent, DialogContentText, TextField,
   DialogActions, IconButton, Card, CardHeader, CardContent, Drawer, Paper, Grid, Link,
-  Divider
+  Divider, FormControlLabel, Checkbox
 } from '@mui/material'
 import { Button } from '@mui/material'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -52,12 +52,10 @@ const styles = {
   colorRed: css({
     color: 'red !important',
     fontWeight: 'bold',
-    transition: '.2s',
-    cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
-    "&:hover": {
-      background: '#add8e675',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
     }
   }),
   colorRedSticky: css({
@@ -72,19 +70,17 @@ const styles = {
   colorRedLinkLate: css({
     color: 'red !important',
     fontWeight: 'bold',
-    textDecoration: 'underline',
+    textDecoration: 'none',
   }),
   colorRedLink: css({
-    textDecoration: 'underline',
+    textDecoration: 'none',
   }),
   span: css({
     marginRight: '10px',
-    cursor: 'pointer',
-    transition: '.2s',
     display: 'flex',
     alignItems: 'center',
-    "&:hover": {
-      background: '#add8e675',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
     }
   }),
   content: css({
@@ -115,6 +111,80 @@ const styles = {
       backgroundColor: '#ffffff !important',
     },
   }),
+  compactCell: css({
+    padding: '4px 8px !important',
+    fontSize: '13px !important',
+    whiteSpace: 'nowrap',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    }
+  }),
+  compactHeaderCell: css({
+    padding: '8px 8px !important',
+    fontSize: '13px !important',
+    fontWeight: '600 !important',
+    whiteSpace: 'nowrap',
+    backgroundColor: '#fafafa !important',
+  }),
+  clockInCell: css({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+    padding: '4px 8px !important',
+    fontSize: '13px !important',
+  }),
+  clockInItem: css({
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+    padding: '2px 4px',
+    borderRadius: '4px',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    }
+  }),
+  iconStyle: css({
+    fontSize: '14px !important',
+    flexShrink: 0,
+  }),
+  dateCell: css({
+    minWidth: '180px !important',
+    width: '180px !important',
+    padding: '4px 8px !important',
+    fontSize: '13px !important',
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    }
+  }),
+  dateHeaderCell: css({
+    minWidth: '180px !important',
+    width: '180px !important',
+    padding: '8px 8px !important',
+    fontSize: '13px !important',
+    fontWeight: '600 !important',
+    whiteSpace: 'nowrap',
+    backgroundColor: '#fafafa !important',
+  }),
+  highlightHeaderCell: css({
+    padding: '8px 8px !important',
+    fontSize: '13px !important',
+    fontWeight: 'bold !important',
+    whiteSpace: 'nowrap',
+    backgroundColor: '#eef4ff !important',
+    color: '#1A73E8 !important',
+  }),
+  highlightCell: css({
+    padding: '4px 8px !important',
+    fontSize: '13px !important',
+    fontWeight: 'bold !important',
+    whiteSpace: 'nowrap',
+    backgroundColor: '#eef4ff !important',
+    color: '#1A73E8 !important',
+    '&:hover': {
+      backgroundColor: '#eef4ff !important',
+      color: '#1A73E8 !important',
+    }
+  }),
 }
 
 export default function Results({
@@ -123,6 +193,12 @@ export default function Results({
   year,
   displayDate,
   identity,
+  typeDisplay,
+  setTypeDisplay,
+  handleHRExport,
+  handleExport,
+  exportLoading,
+  exportHRLoading,
 }) {
   const [open, setOpen] = useState(false)
   const [openModal, setOpenModal] = useState(false)
@@ -238,9 +314,9 @@ export default function Results({
     if (time === null || time.uuid === null) return
     if (time.isLine) {
       return (
-        <div onClick={() => handleSetEditData(time, 'start')} key={`clickin-${time.uuid}`} css={(late && firstItem) ? styles.colorRed : styles.cursor}>
+        <div key={`clickin-${time.uuid}`} css={(late && firstItem) ? styles.colorRed : styles.clockInItem}>
           <span css="lineicon"></span>
-          上
+          <span>上</span>
           <a style={{ color: color(time.distanceValue) }} css={(late && firstItem) ? styles.colorRedLinkLate : styles.colorRedLink}>
             {format(time.time, 'HH:mm')}
           </a>
@@ -248,9 +324,9 @@ export default function Results({
       )
     } else if (time.checkinType === 'CELLPHONE' || (time.checkinType === null && time.latitude !== null && time.longitude !== null)) {
       return (
-        <div key={`clickin-${time.uuid}`} onClick={() => handleSetEditData(time, 'start')} css={(late && firstItem) ? styles.colorRed : styles.cursor}>
-          <PhoneIphoneIcon style={{ color: 'black', fontSize: '17px' }} />
-          上
+        <div key={`clickin-${time.uuid}`} css={(late && firstItem) ? styles.colorRed : styles.clockInItem}>
+          <PhoneIphoneIcon css={styles.iconStyle} />
+          <span>上</span>
           {time.latitude !== null && time.longitude !== null ? (
             <a style={{ color: color(time.distanceValue) }} css={(late && firstItem) ? styles.colorRedLinkLate : styles.colorRedLink}>
               {format(time.time, 'HH:mm')}
@@ -262,23 +338,23 @@ export default function Results({
       )
     } else if (time.checkinType === 'COMPUTER' || time.checkinType === null) {
       return (
-        <div key={`clickin-${time.uuid}`} onClick={() => handleSetEditData(time, 'start')} css={(late && firstItem) ? styles.colorRed : styles.cursor}>
-          <DesktopWindows style={{ color: 'black', fontSize: '17px' }} />
-          上{format(time.time, 'HH:mm')}
+        <div key={`clickin-${time.uuid}`} css={(late && firstItem) ? styles.colorRed : styles.clockInItem}>
+          <DesktopWindows css={styles.iconStyle} />
+          <span>上{format(time.time, 'HH:mm')}</span>
         </div>
       )
     } else if (time.checkinType === 'QRCODE' || time.checkinType === null) {
       return (
-        <div key={`clickin-${time.uuid}`} onClick={() => handleSetEditData(time, 'start')} css={(late && firstItem) ? styles.colorRed : styles.cursor}>
-          <QrCodeIcon style={{ color: 'black', fontSize: '17px' }} />
-          上{format(time.time, 'HH:mm')}
+        <div key={`clickin-${time.uuid}`} css={(late && firstItem) ? styles.colorRed : styles.clockInItem}>
+          <QrCodeIcon css={styles.iconStyle} />
+          <span>上{format(time.time, 'HH:mm')}</span>
         </div>
       )
     } else if (time.checkinType === 'ADMIN') {
       return (
-        <div key={`clickin-${time.uuid}`} onClick={() => handleSetEditData(time, 'start')} css={(late && firstItem) ? styles.colorRed : styles.cursor}>
-          <ManageAccountsRoundedIcon style={{ color: 'black', fontSize: '17px' }} />
-          上{format(time.time, 'HH:mm')}
+        <div key={`clickin-${time.uuid}`} css={(late && firstItem) ? styles.colorRed : styles.clockInItem}>
+          <ManageAccountsRoundedIcon css={styles.iconStyle} />
+          <span>上{format(time.time, 'HH:mm')}</span>
         </div>
       )
     }
@@ -289,9 +365,9 @@ export default function Results({
     if (time !== null) {
       if (time.isLine) {
         return (
-          <div key={`clickout-${time.uuid}`} onClick={() => handleSetEditData(time, 'end')} css={(late && lastItem) ? styles.colorRed : styles.cursor}>
+          <div key={`clickout-${time.uuid}`} css={(late && lastItem) ? styles.colorRed : styles.clockInItem}>
             <span className="lineicon"></span>
-            下
+            <span>下</span>
             <a style={{ color: color(time.distanceValue) }} css={(late && lastItem) ? styles.colorRedLinkLate : styles.colorRedLink}>
               {format(time.time, 'HH:mm')}
             </a>
@@ -299,9 +375,9 @@ export default function Results({
         )
       } else if (time.checkinType === 'CELLPHONE' || (time.checkinType === null && time.latitude !== null && time.longitude !== null)) {
         return (
-          <div key={`clickout-${time.uuid}`} onClick={() => handleSetEditData(time, 'end')} css={(late && lastItem) ? styles.colorRed : styles.cursor}>
-            <PhoneIphoneIcon style={{ color: 'black', fontSize: '17px' }} />
-            下
+          <div key={`clickout-${time.uuid}`} css={(late && lastItem) ? styles.colorRed : styles.clockInItem}>
+            <PhoneIphoneIcon css={styles.iconStyle} />
+            <span>下</span>
             {time.latitude !== null && time.longitude !== null ? (
               <a style={{ color: color(time.distanceValue) }} css={(late && lastItem) ? styles.colorRedLinkLate : styles.colorRedLink}>
                 {format(time.time, 'HH:mm')}
@@ -313,23 +389,23 @@ export default function Results({
         )
       } else if (time.checkinType === 'COMPUTER' || time.checkinType === null) {
         return (
-          <div key={`clickout-${time.uuid}`} onClick={() => handleSetEditData(time, 'end')} css={(late && lastItem) ? styles.colorRed : styles.cursor}>
-            <DesktopWindows style={{ color: 'black', fontSize: '17px' }} />
-            下{format(time.time, 'HH:mm')}{' '}
+          <div key={`clickout-${time.uuid}`} css={(late && lastItem) ? styles.colorRed : styles.clockInItem}>
+            <DesktopWindows css={styles.iconStyle} />
+            <span>下{format(time.time, 'HH:mm')}</span>
           </div>
         )
       } else if (time.checkinType === 'QRCODE' || time.checkinType === null) {
         return (
-          <div key={`clickout-${time.uuid}`} onClick={() => handleSetEditData(time, 'end')} css={(late && lastItem) ? styles.colorRed : styles.cursor}>
-            <QrCodeIcon style={{ color: 'black', fontSize: '17px' }} />
-            下{format(time.time, 'HH:mm')}{' '}
+          <div key={`clickout-${time.uuid}`} css={(late && lastItem) ? styles.colorRed : styles.clockInItem}>
+            <QrCodeIcon css={styles.iconStyle} />
+            <span>下{format(time.time, 'HH:mm')}</span>
           </div>
         )
       } else if (time.checkinType === 'ADMIN') {
         return (
-          <div key={`clickout-${time.uuid}`} onClick={() => handleSetEditData(time, 'end')} css={(late && lastItem) ? styles.colorRed : styles.cursor}>
-            <ManageAccountsRoundedIcon style={{ color: 'black', fontSize: '17px' }} />
-            下{format(time.time, 'HH:mm')}{' '}
+          <div key={`clickout-${time.uuid}`} css={(late && lastItem) ? styles.colorRed : styles.clockInItem}>
+            <ManageAccountsRoundedIcon css={styles.iconStyle} />
+            <span>下{format(time.time, 'HH:mm')}</span>
           </div>
         )
       }
@@ -341,9 +417,9 @@ export default function Results({
       if (start === null || start.uuid === null) return
       if (start.isLine) {
         return (
-          <span key={`breakOut-${start.uuid}`} onClick={() => handleSetEditData(start, 'breakStart')} css={styles.span}>
+          <span key={`breakOut-${start.uuid}`} css={styles.clockInItem}>
             <span className="lineicon"></span>
-            外
+            <span>外</span>
             <a style={{ color: color(start.distanceValue) }} css={styles.colorRedLink}>
               {format(start.time, 'HH:mm')}
             </a>
@@ -351,9 +427,9 @@ export default function Results({
         )
       } else if (start.checkinType === 'CELLPHONE' || (start.checkinType === null && start.latitude !== null && start.longitude !== null)) {
         return (
-          <span key={`breakOut-${start.uuid}`} onClick={() => handleSetEditData(start, 'breakStart')} css={styles.span}>
-            <PhoneIphoneIcon style={{ color: 'black', fontSize: '17px' }} />
-            外
+          <span key={`breakOut-${start.uuid}`} css={styles.clockInItem}>
+            <PhoneIphoneIcon css={styles.iconStyle} />
+            <span>外</span>
             {start.latitude !== null && start.longitude !== null ? (
               <a style={{ color: color(start.distanceValue) }} css={styles.colorRedLink}>
                 {format(start.time, 'HH:mm')}
@@ -365,23 +441,23 @@ export default function Results({
         )
       } else if (start.checkinType === 'COMPUTER' || start.checkinType === null) {
         return (
-          <span key={`breakOut-${start.uuid}`} onClick={() => handleSetEditData(start, 'breakStart')} css={styles.span}>
-            <DesktopWindows style={{ color: 'black', fontSize: '17px' }} />
-            外{format(start.time, 'HH:mm')}
+          <span key={`breakOut-${start.uuid}`} css={styles.clockInItem}>
+            <DesktopWindows css={styles.iconStyle} />
+            <span>外{format(start.time, 'HH:mm')}</span>
           </span>
         )
       } else if (start.checkinType === 'QRCODE' || start.checkinType === null) {
         return (
-          <span key={`breakOut-${start.uuid}`} onClick={() => handleSetEditData(start, 'breakStart')} css={styles.span}>
-            <QrCodeIcon style={{ color: 'black', fontSize: '17px' }} />
-            外{format(start.time, 'HH:mm')}
+          <span key={`breakOut-${start.uuid}`} css={styles.clockInItem}>
+            <QrCodeIcon css={styles.iconStyle} />
+            <span>外{format(start.time, 'HH:mm')}</span>
           </span>
         )
       } else if (start.checkinType === 'ADMIN') {
         return (
-          <span key={`breakOut-${start.uuid}`} onClick={() => handleSetEditData(start, 'breakStart')} css={styles.span}>
-            <ManageAccountsRoundedIcon style={{ color: 'black', fontSize: '17px' }} />
-            外{format(start.time, 'HH:mm')}
+          <span key={`breakOut-${start.uuid}`} css={styles.clockInItem}>
+            <ManageAccountsRoundedIcon css={styles.iconStyle} />
+            <span>外{format(start.time, 'HH:mm')}</span>
           </span>
         )
       }
@@ -392,9 +468,9 @@ export default function Results({
       if (end !== null) {
         if (end.isLine) {
           return (
-            <span css={styles.span} key={`breakBack-${end.uuid}`} onClick={() => handleSetEditData(end, 'breakEnd')}>
+            <span css={styles.clockInItem} key={`breakBack-${end.uuid}`}>
               <span className="lineicon"></span>
-              回
+              <span>回</span>
               <a style={{ color: color(end.distanceValue) }} css={styles.colorRedLink}>
                 {format(end.time, 'HH:mm')}
               </a>
@@ -402,9 +478,9 @@ export default function Results({
           )
         } else if (end.checkinType === 'CELLPHONE' || (end.checkinType === null && end.latitude !== null && end.longitude !== null)) {
           return (
-            <span css={styles.span} key={`breakBack-${end.uuid}`} onClick={() => handleSetEditData(end, 'breakEnd')}>
-              <PhoneIphoneIcon style={{ color: 'black', fontSize: '17px' }} />
-              回
+            <span css={styles.clockInItem} key={`breakBack-${end.uuid}`}>
+              <PhoneIphoneIcon css={styles.iconStyle} />
+              <span>回</span>
               {end.latitude !== null && end.longitude !== null ? (
                 <a style={{ color: color(end.distanceValue) }} css={styles.colorRedLink}>
                   {format(end.time, 'HH:mm')}
@@ -416,23 +492,23 @@ export default function Results({
           )
         } else if (end.checkinType === 'COMPUTER' || end.checkinType === null) {
           return (
-            <span css={styles.span} key={`breakBack-${end.uuid}`} onClick={() => handleSetEditData(end, 'breakEnd')}>
-              <DesktopWindows style={{ color: 'black', fontSize: '17px' }} />
-              回{format(end.time, 'HH:mm')}
+            <span css={styles.clockInItem} key={`breakBack-${end.uuid}`}>
+              <DesktopWindows css={styles.iconStyle} />
+              <span>回{format(end.time, 'HH:mm')}</span>
             </span>
           )
         } else if (end.checkinType === 'QRCODE' || end.checkinType === null) {
           return (
-            <span css={styles.span} key={`breakBack-${end.uuid}`} onClick={() => handleSetEditData(end, 'breakEnd')}>
-              <QrCodeIcon style={{ color: 'black', fontSize: '17px' }} />
-              回{format(end.time, 'HH:mm')}
+            <span css={styles.clockInItem} key={`breakBack-${end.uuid}`}>
+              <QrCodeIcon css={styles.iconStyle} />
+              <span>回{format(end.time, 'HH:mm')}</span>
             </span>
           )
         } else if (end.checkinType === 'ADMIN') {
           return (
-            <span css={styles.span} key={`breakBack-${end.uuid}`} onClick={() => handleSetEditData(end, 'breakEnd')}>
-              <ManageAccountsRoundedIcon style={{ color: 'black', fontSize: '17px' }} />
-              回{format(end.time, 'HH:mm')}
+            <span css={styles.clockInItem} key={`breakBack-${end.uuid}`}>
+              <ManageAccountsRoundedIcon css={styles.iconStyle} />
+              <span>回{format(end.time, 'HH:mm')}</span>
             </span>
           )
         }
@@ -480,18 +556,62 @@ export default function Results({
             </Typography>
           </div>
         }
+        action={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <FormControlLabel
+              control={<Checkbox color="primary" />}
+              label='匯出打卡類型'
+              checked={typeDisplay}
+              onChange={(e, v) => setTypeDisplay(v)}
+            />
+            <Button
+              disabled={exportHRLoading}
+              variant="contained"
+              onClick={handleHRExport}
+              size="small"
+              css={css({
+                backgroundColor: '#f5f5f5 !important',
+                color: '#666 !important',
+                boxShadow: 'none !important',
+                '&:hover': {
+                  backgroundColor: '#e0e0e0 !important',
+                  boxShadow: 'none !important',
+                }
+              })}
+            >
+              報表匯出(人資格式)
+            </Button>
+            <Button
+              disabled={exportLoading}
+              variant="contained"
+              onClick={handleExport}
+              size="small"
+              css={css({
+                backgroundColor: '#f5f5f5 !important',
+                color: '#666 !important',
+                boxShadow: 'none !important',
+                '&:hover': {
+                  backgroundColor: '#e0e0e0 !important',
+                  boxShadow: 'none !important',
+                }
+              })}
+            >
+              報表匯出
+            </Button>
+          </div>
+        }
       />
       <CardContent style={{ padding: 0 }}>
         <TableContainer style={{ maxHeight: 'calc(100vh - 430px)' }} component={Paper} className="AttendanceRecordsTable">
           <Table css={styles.table} size="small" aria-label="a dense table">
             <TableHead>
               <TableRow css={styles.stickyRow}>
-                <TableCell css={styles.sticky}>{year}年</TableCell>
-                <TableCell>總打卡天數</TableCell>
-                <TableCell>曠職天數</TableCell>
-                <TableCell>總遲到分鐘數</TableCell>
+                <TableCell css={css([styles.sticky, styles.compactHeaderCell])}>{year}年</TableCell>
+                <TableCell css={styles.highlightHeaderCell}>總打卡天數</TableCell>
+                <TableCell css={styles.compactHeaderCell}>曠職天數</TableCell>
+                <TableCell css={styles.compactHeaderCell}>總遲到分鐘數</TableCell>
                 {displayDate.map((date, index) => (
-                  <TableCell key={`TableCell-${index}`} style={{ whiteSpace: 'nowrap', paddingRight: '100px' }}>{date}</TableCell>
+                  <TableCell key={`TableCell-${index}`} css={styles.dateHeaderCell}>{date}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -499,17 +619,17 @@ export default function Results({
               {attendanceRecords.map((data, index) => {
                 return (
                   <TableRow key={`TableRow-${index}`} css={styles.tableRow}>
-                    <TableCell css={styles.sticky}>{data.userName}</TableCell>
+                    <TableCell css={css([styles.sticky, styles.compactCell])}>{data.userName}</TableCell>
                     {/* 計算總打卡天數 */}
-                    <TableCell css={data.totalClockInDays < 22 ? styles.colorRed : {}}>{data.totalClockInDays + ` 天`}</TableCell>
-                    <TableCell>{data.absenteeismDays}</TableCell>
-                    <TableCell>{data.totalLateMinutes}</TableCell>
+                    <TableCell css={styles.highlightCell}>{data.totalClockInDays + ` 天`}</TableCell>
+                    <TableCell css={styles.compactCell}>{data.absenteeismDays}</TableCell>
+                    <TableCell css={styles.compactCell}>{data.totalLateMinutes}</TableCell>
                     {displayDate.map(d => {
                       return data.attendanceRecord.map((record, index) => {
                         if (format(record.date, 'MM/dd') === d.substring(0, 5)) {
                           if (record.clockInRecord.length > 0) {
                             return (
-                              <TableCell key={index}>
+                              <TableCell key={index} css={styles.dateCell}>
                                 {record.clockInRecord.map((clockIn, clockInIndex) => {
                                   return (
                                     <Fragment key={clockInIndex}>
@@ -531,7 +651,7 @@ export default function Results({
                               </TableCell>
                             )
                           } else {
-                            return <TableCell key={index}></TableCell>
+                            return <TableCell key={index} css={styles.dateCell}></TableCell>
                           }
                         }
                       })

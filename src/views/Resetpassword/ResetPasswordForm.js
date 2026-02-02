@@ -11,19 +11,68 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
 const styles = {
-  root: css({}),
-  fields: css({
-    // margin: theme.spacing(-1),
+  root: css({
     display: 'flex',
-    flexWrap: 'wrap',
-    '& > *': {
-      flexGrow: 1,
-      margin: theme.spacing(1),
-    },
+    flexDirection: 'column',
+    alignItems: 'stretch',
+  }),
+  fields: css({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2.5),
   }),
   submitButton: css({
-    marginTop: theme.spacing(2),
-    width: '100%',
+    marginTop: theme.spacing(4),
+    height: '54px !important',
+    borderRadius: '27px !important', // Pill-shaped
+    fontSize: '17px !important',
+    fontWeight: '600 !important',
+    boxShadow: 'none !important',
+    textTransform: 'none !important',
+    transition: 'all 0.2s ease-in-out !important',
+    '&:hover': {
+      backgroundColor: '#0062CC !important',
+      boxShadow: 'none !important',
+    },
+    '&:active': {
+      backgroundColor: '#0056b3 !important',
+    },
+  }),
+  input: css({
+    '& .MuiOutlinedInput-root': {
+      borderRadius: '30px !important', // Pill-shaped
+      backgroundColor: '#F5F5F7',
+      height: '60px !important',
+      transition: 'all 0.2s ease',
+      '& fieldset': {
+        border: '1px solid transparent',
+        transition: 'all 0.2s ease',
+      },
+      '&:hover': {
+        backgroundColor: '#EBEBEF',
+        '& fieldset': {
+          borderColor: 'rgba(0, 122, 255, 0.1)',
+        },
+      },
+      '&.Mui-focused': {
+        backgroundColor: '#FFFFFF',
+        '& fieldset': {
+          borderColor: '#007AFF !important',
+          borderWidth: '2px !important',
+        },
+      },
+    },
+    '& .MuiInputBase-input': {
+      padding: '18px 24px !important',
+    },
+    '& .MuiInputLabel-root': {
+      fontSize: '15px',
+      color: '#86868B',
+      marginLeft: '8px',
+      '&.Mui-focused': {
+        color: '#007AFF',
+      },
+    },
   }),
 }
 
@@ -118,6 +167,7 @@ function ResetPasswordForm({ className, ...rest }) {
           variant="outlined"
           type="tel"
           disabled={showVerification.open}
+          css={styles.input}
         />
         {showVerification.open ? (
           <TextField
@@ -129,6 +179,7 @@ function ResetPasswordForm({ className, ...rest }) {
             onChange={handleOnChange}
             value={formState.values.verificationCode || ''}
             variant="outlined"
+            css={styles.input}
           />
         ) : (
           ''

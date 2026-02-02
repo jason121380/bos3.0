@@ -19,66 +19,53 @@ import { theme } from '../../theme'
 
 const styles = {
   root: css({}),
+  tableCell: css({
+    padding: '8px 16px !important',
+    fontSize: '13px !important',
+    whiteSpace: 'nowrap',
+  }),
   button: css({
-    height: 'fit-content',
-    marginRight: '10px',
-    '&:disabled': {
-      borderColor: '#gray!important',
-      color: 'gray',
-    },
-  }),
-  colorRed: css({
-    height: '20px',
-    color: 'red !important',
-    fontWeight: 'bold',
-  }),
-  fontHeight: css({
-    height: '20px',
-  }),
-  outButton: css({
-    height: 'fit-content',
-    marginRight: '10px',
-    borderColor: 'orange',
-    color: 'orange !important',
-    '&:disabled': {
-      borderColor: '#gray!important',
-      color: 'gray !important',
-    },
-    '&:hover': {
-      backgroundColor: 'orange',
-      color: 'white !important',
-      border: 'none !important'
-    },
+    borderRadius: '20px !important',
+    padding: '4px 16px !important',
+    fontSize: '12px !important',
+    fontWeight: 'bold !important',
+    height: '28px',
+    marginRight: '6px',
+    boxShadow: 'none !important',
   }),
   inButton: css({
-    height: 'fit-content',
-    marginRight: '10px',
-    borderColor: '#2e7d32',
+    borderColor: '#2e7d32 !important',
     color: '#2e7d32 !important',
-    '&:disabled': {
-      borderColor: '#gray!important',
-      color: 'gray !important',
-    },
     '&:hover': {
-      backgroundColor: '#2e7d32',
+      backgroundColor: '#2e7d32 !important',
       color: 'white !important',
-      border: 'none !important'
+    },
+  }),
+  outButton: css({
+    borderColor: '#ed6c02 !important',
+    color: '#ed6c02 !important',
+    '&:hover': {
+      backgroundColor: '#ed6c02 !important',
+      color: 'white !important',
     },
   }),
   breakTimeButton: css({
-    height: 'fit-content',
-    marginRight: '10px',
-    borderColor: '#202D50',
-    color: '#202D50 !important',
-    '&:disabled': {
-      borderColor: '#gray!important',
-      color: 'gray !important',
-    },
+    borderColor: '#1A73E8 !important',
+    color: '#1A73E8 !important',
     '&:hover': {
-      backgroundColor: '#202D50',
+      backgroundColor: '#1A73E8 !important',
       color: 'white !important',
-      border: 'none !important'
     },
+  }),
+  chip: css({
+    height: '24px !important',
+    fontSize: '11px !important',
+    fontWeight: 'bold !important',
+    borderRadius: '12px !important',
+  }),
+  colorRed: css({
+    color: '#d32f2f !important',
+    fontWeight: 'bold',
   }),
 }
 
@@ -215,7 +202,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
     if (lateOrEarly === true && lastIndex === index) {
       return styles.colorRed
     } else {
-      return styles.fontHeight
+      return null
     }
   }
   const clockInOutRender = (value, designer) => {
@@ -284,31 +271,32 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell>狀態</TableCell>
-              <TableCell>代號</TableCell>
-              <TableCell>暱稱</TableCell>
-              <TableCell>姓名</TableCell>
-              <TableCell>班別</TableCell>
-              <TableCell>時間</TableCell>
-              <TableCell>操作</TableCell>
+              <TableCell css={styles.tableCell}>狀態</TableCell>
+              <TableCell css={styles.tableCell}>代號</TableCell>
+              <TableCell css={styles.tableCell}>暱稱</TableCell>
+              <TableCell css={styles.tableCell}>姓名</TableCell>
+              <TableCell css={styles.tableCell}>班別</TableCell>
+              <TableCell css={styles.tableCell}>時間</TableCell>
+              <TableCell css={styles.tableCell}>操作</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {clockInRecord.map((designer, index) => (
-              <TableRow key={index}>
-                <TableCell>
+              <TableRow key={index} sx={{ '&:hover': { backgroundColor: '#fcfcfc' } }}>
+                <TableCell css={styles.tableCell}>
                   {btnStatus[index].clockInRecord.length > 0 ? (
                     btnStatus[index].clockInRecord.map((d, designerTimeIndex) => {
                       if (designerTimeIndex === designer.clockInRecord.length - 1) {
                         if (d.in !== null && d.out === null && d.breakRecord.length === 0) {
-                          return <Chip key={`designerTimeIndex-${designerTimeIndex}`} label="上班中" color="success" />
+                          return <Chip css={styles.chip} key={`designerTimeIndex-${designerTimeIndex}`} label="上班中" color="success" />
                         }
                         if (d.time !== null && d.out !== null) {
                           return (
                             <Chip
+                              css={styles.chip}
                               label="已下班"
                               key={`designerTimeIndex-${designerTimeIndex}`}
-                              style={{ backgroundColor: 'orange', color: 'white' }}
+                              style={{ backgroundColor: '#ed6c02', color: 'white' }}
                             />
                           )
                         }
@@ -321,24 +309,26 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                           if (d.breakRecord[d.breakRecord.length - 1].end === null) {
                             return (
                               <Chip
+                                css={styles.chip}
                                 label="外出中"
                                 key={`designerTimeIndex-${designerTimeIndex}`}
-                                style={{ backgroundColor: '#202D50', color: 'white' }}
+                                style={{ backgroundColor: '#1A73E8', color: 'white' }}
                               />
                             )
                           }
                           if (d.breakRecord[d.breakRecord.length - 1].end !== null) {
-                            return <Chip key={`designerTimeIndex-${designerTimeIndex}`} label="上班中" color="success" />
+                            return <Chip css={styles.chip} key={`designerTimeIndex-${designerTimeIndex}`} label="上班中" color="success" />
                           }
                         }
                       }
                     })
                   ) : (
-                    <Chip label="未打卡" color="default" variant="outlined" />
+                    <Chip css={styles.chip} label="未打卡" color="default" variant="outlined" />
                   )}
                 </TableCell>
-                <TableCell>{designer.userNo ? designer.userNo : '無代號'}</TableCell>
+                <TableCell css={styles.tableCell}>{designer.userNo ? designer.userNo : '無代號'}</TableCell>
                 <TableCell
+                  css={styles.tableCell}
                   style={{
                     maxWidth: 100,
                     overflow: 'hidden',
@@ -348,6 +338,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                   {designer.userNickName ? designer.userNickName : ''}
                 </TableCell>
                 <TableCell
+                  css={styles.tableCell}
                   style={{
                     minWidth: 100,
                   }}
@@ -355,6 +346,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                   {designer.userName}
                 </TableCell>
                 <TableCell
+                  css={styles.tableCell}
                   style={{
                     minWidth: 100,
                   }}
@@ -362,16 +354,17 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                   {designer.clockInSetting !== null && designer.clockInSetting.name}
                 </TableCell>
                 <TableCell
+                  css={styles.tableCell}
                   style={{
                     minWidth: 200,
                   }}
                 >
                   {designer.clockInRecord.length > 0 && clockInOutRender(designer.clockInRecord, designer)}
                 </TableCell>
-                <TableCell>
+                <TableCell css={styles.tableCell}>
                   <Button
                     disabled={btnDisabled(btnStatus[index].clockInRecord) || !isToday}
-                    css={styles.inButton}
+                    css={[styles.button, styles.inButton]}
                     variant="outlined"
                     className='work'
                     onClick={() => {
@@ -382,7 +375,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                   </Button>
                   <Button
                     disabled={!btnDisabled(btnStatus[index].clockInRecord) || !isToday}
-                    css={styles.outButton}
+                    css={[styles.button, styles.outButton]}
                     variant="outlined"
                     className='offWork'
                     onClick={() => {
@@ -393,7 +386,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                   </Button>
                   <Button
                     disabled={!btnDisabled(btnStatus[index].clockInRecord) || !isToday}
-                    css={styles.breakTimeButton}
+                    css={[styles.button, styles.breakTimeButton]}
                     variant="outlined"
                     className='break'
                     onClick={() => {

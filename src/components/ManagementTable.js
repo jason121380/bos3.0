@@ -64,15 +64,16 @@ const ManagementTable = ({
     rowsPerPageOptions = [5, 10, 25, 50, 100],
     minWidth = 1000,
     headerAction,
-    className
+    className,
+    hidePagination = false,
 }) => {
     const pageRef = useRef(null)
 
     useEffect(() => {
-        if (pageRef.current) {
+        if (pageRef.current && !hidePagination) {
             pagenationLabel(pageRef.current)
         }
-    }, [children, pageRef.current])
+    }, [children, pageRef.current, hidePagination])
 
     return (
         <Card className={className}>
@@ -113,19 +114,24 @@ const ManagementTable = ({
                     </div>
                 </PerfectScrollbar>
             </CardContent>
-            <CardActions css={styles.actions}>
-                <TablePagination
-                    ref={pageRef}
-                    labelRowsPerPage='每頁顯示數量'
-                    component="div"
-                    count={totalCount}
-                    onPageChange={onPageChange}
-                    onRowsPerPageChange={onRowsPerPageChange}
-                    page={pageOffset}
-                    rowsPerPage={pageLimit}
-                    rowsPerPageOptions={rowsPerPageOptions}
-                />
-            </CardActions>
+            {!hidePagination && (
+                <CardActions css={styles.actions}>
+                    <TablePagination
+                        ref={pageRef}
+                        labelRowsPerPage='每頁顯示數量'
+                        component="div"
+                        count={totalCount}
+                        onPageChange={onPageChange}
+                        onRowsPerPageChange={onRowsPerPageChange}
+                        page={pageOffset}
+                        rowsPerPage={pageLimit}
+                        rowsPerPageOptions={rowsPerPageOptions}
+                        SelectProps={{
+                            style: { width: '80px' }
+                        }}
+                    />
+                </CardActions>
+            )}
         </Card>
     )
 }
@@ -144,7 +150,8 @@ ManagementTable.propTypes = {
     rowsPerPageOptions: PropTypes.array,
     minWidth: PropTypes.number,
     headerAction: PropTypes.node,
-    className: PropTypes.any
+    className: PropTypes.any,
+    hidePagination: PropTypes.bool,
 }
 
 export default ManagementTable

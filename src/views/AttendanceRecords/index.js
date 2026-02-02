@@ -23,7 +23,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import { Autocomplete } from '@mui/material'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { useFetchAttendanceRecordsLazy } from 'hooks/useFetchAttendanceRecords'
 import { useFetchAttendanceRecordsExcelV2, useFetchAttendanceRecordsExcelV2ForHR } from 'hooks/useFetchAttendanceRecordsExcel'
@@ -43,7 +43,9 @@ import Results from './Results'
 const styles = {
   root: css({}),
   container: css({
-    padding: theme.spacing(3, 0, 3, 0),
+    padding: '0px !important',
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5),
   }),
   results: css({
     marginTop: theme.spacing(3),
@@ -291,100 +293,37 @@ export default function Employees() {
   return (
     <Page css={styles.root} title="全店打卡記錄">
       <Container maxWidth={false} css={styles.container}>
-        <Card
-          css={css({
-            display: 'flex',
-            padding: '12px 24px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#E8F0FE',
-            borderRadius: '12px',
-            boxShadow: 'none',
-            border: 'none !important',
-            marginBottom: '12px',
-          })}
+        <AdminPageHeader
+          title='全店打卡記錄'
+          showFilter={showFilter}
+          onFilterClick={() => setShowFilter(!showFilter)}
+          primaryAction={identity.add ? {
+            label: '補打卡',
+            onClick: handleOpen,
+            disabled: attendanceRecordsLazyData.data === undefined || attendanceRecordsLazyData.loading
+          } : undefined}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='全店打卡記錄' style={{ color: '#1A73E8' }} />
-            {identity.add && (
-              <Button
-                variant="contained"
-                onClick={handleOpen}
-                disabled={attendanceRecordsLazyData.data === undefined || attendanceRecordsLazyData.loading}
-                css={css({
-                  borderRadius: '20px !important',
-                  padding: '6px 20px !important',
-                  fontSize: '14px !important',
-                  boxShadow: 'none !important',
-                  fontWeight: 'bold !important',
-                  backgroundColor: '#FFFFFF !important',
-                  color: '#666 !important',
-                  '&:hover': {
-                    backgroundColor: '#f8f8f8 !important',
-                  }
-                })}
-              >
-                補打卡
-              </Button>
-            )}
-            <IconButton
-              onClick={() => setShowFilter(!showFilter)}
-              css={css({
-                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
-                color: showFilter ? '#1A73E8 !important' : '#666 !important',
-                marginLeft: '4px !important',
-                '&:hover': {
-                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
-                }
-              })}
-            >
-              <FilterListIcon />
-            </IconButton>
-          </div>
-          <Grid item style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <FormControlLabel
-              control={<Checkbox color="primary" />}
-              label='匯出打卡類型'
-              checked={typeDisplay}
-              onChange={(e, v) => setTypeDisplay(v)}
-            />
-            <Button
-              disabled={attendanceRecordsExcelLazyDataV2ForHR.loading}
-              variant="contained"
-              color="secondary"
-              onClick={handleHRExport}
-              style={{
-                fontSize: '0.8rem'
-              }}
-            >
-              報表匯出(人資格式)
-            </Button>
-            <Button disabled={attendanceRecordsExcelLazyDataV2.loading} variant="contained" color="primary" onClick={() => handleSearch(true)}>
-              報表匯出
-            </Button>
-          </Grid>
-        </Card>
+          <DateSelector
+            date={date}
+            attributes={['lastmonth', 'thismonth', 'startDate']}
+            dateChange={({ startDate, endDate }) => {
+              setDate({
+                startDate: startOfMonth(startDate).getTime(),
+                endDate: endOfMonth(endDate).getTime()
+              })
+            }}
+            onlyStart
+            inputFormat='yyyy/MM'
+            pickerOption={{
+              views: ['month', 'year']
+            }}
+            margin={false}
+          />
+        </AdminPageHeader>
 
         <Collapse in={showFilter}>
           <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
             <Grid container spacing={2} alignItems='center'>
-              <Grid item>
-                <DateSelector
-                  date={date}
-                  attributes={['lastmonth', 'thismonth', 'startDate']}
-                  dateChange={({ startDate, endDate }) => {
-                    setDate({
-                      startDate: startOfMonth(startDate).getTime(),
-                      endDate: endOfMonth(endDate).getTime()
-                    })
-                  }}
-                  onlyStart
-                  inputFormat='yyyy/MM'
-                  pickerOption={{
-                    views: ['month', 'year']
-                  }}
-                />
-              </Grid>
               <Grid item xs={3}>
                 <Autocomplete
                   autoHighlight
@@ -465,6 +404,12 @@ export default function Employees() {
             attendanceRecords={_.data.attendanceRecords}
             year={new Date(date.startDate).getFullYear()}
             displayDate={displayDate}
+            typeDisplay={typeDisplay}
+            setTypeDisplay={setTypeDisplay}
+            handleHRExport={handleHRExport}
+            handleExport={() => handleSearch(true)}
+            exportLoading={attendanceRecordsExcelLazyDataV2.loading}
+            exportHRLoading={attendanceRecordsExcelLazyDataV2ForHR.loading}
           />
         )) :
           <div css={styles.noReportDiv}>

@@ -9,7 +9,9 @@ import {
   TableCell,
   TableRow,
   Typography,
+  IconButton,
 } from '@mui/material'
+import EditIcon from '@mui/icons-material/Edit'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
@@ -63,6 +65,18 @@ const styles = {
     backgroundColor: '#ffffff !important',
     '&:hover': {
       backgroundColor: '#ffffff !important',
+    },
+  }),
+  compactCell: css({
+    padding: '4px 8px !important',
+    fontSize: '13px !important',
+    whiteSpace: 'nowrap',
+  }),
+  editIcon: css({
+    color: '#999',
+    padding: '4px',
+    '&:hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.04)',
     },
   }),
 }
@@ -288,7 +302,7 @@ export default function Results({
         tableHead={
           <>
             {rakeSetAble && (
-              <TableCell padding="checkbox">
+              <TableCell padding="checkbox" css={styles.compactCell}>
                 <Checkbox
                   checked={selectedDesigners.length === employees.length && employees.length > 0}
                   color="primary"
@@ -298,14 +312,14 @@ export default function Results({
                 />
               </TableCell>
             )}
-            <TableCell>操作</TableCell>
-            <TableCell>姓名/電話</TableCell>
-            <TableCell>設計師編號</TableCell>
-            <TableCell>暱稱</TableCell>
-            <TableCell>權限設定</TableCell>
-            <TableCell>帳號狀態</TableCell>
-            <TableCell>設定狀態</TableCell>
-            <TableCell>設置</TableCell>
+            <TableCell css={styles.compactCell}>操作</TableCell>
+            <TableCell css={styles.compactCell}>姓名/電話</TableCell>
+            <TableCell css={styles.compactCell}>設計師編號</TableCell>
+            <TableCell css={styles.compactCell}>暱稱</TableCell>
+            <TableCell css={styles.compactCell}>權限設定</TableCell>
+            <TableCell css={styles.compactCell}>帳號狀態</TableCell>
+            <TableCell css={styles.compactCell}>設定狀態</TableCell>
+            <TableCell css={styles.compactCell}>設置</TableCell>
           </>
         }
       >
@@ -313,7 +327,7 @@ export default function Results({
           {sortedEmployees.map((data, idx) => (
             <TableRow key={`employee-item-${idx}`} css={styles.tableRow}>
               {rakeSetAble && (
-                <TableCell padding="checkbox">
+                <TableCell padding="checkbox" css={styles.compactCell}>
                   <Checkbox
                     color="primary"
                     checked={selectedDesigners.indexOf(data.id) > -1}
@@ -321,19 +335,18 @@ export default function Results({
                   />
                 </TableCell>
               )}
-              <TableCell>
-                <Button
-                  color="primary"
+              <TableCell css={styles.compactCell}>
+                <IconButton
                   component={RouterLink}
-                  size="small"
                   to={`/management/employee/${data.id}/general`}
-                  variant="outlined"
+                  css={styles.editIcon}
+                  size="small"
                   disabled={loginUserAuthName !== '高階主管' && data.merchantIdentity.authorityName === '高階主管'}
                 >
-                  編輯
-                </Button>
+                  <EditIcon fontSize="small" />
+                </IconButton>
               </TableCell>
-              <TableCell>
+              <TableCell css={styles.compactCell}>
                 <div css={styles.nameCell}>
                   <Avatar css={styles.avatar} src={data.avatar} />
                   <div>
@@ -354,17 +367,17 @@ export default function Results({
                   </div>
                 </div>
               </TableCell>
-              <TableCell>{data.designerNo}</TableCell>
-              <TableCell>{data.nickName}</TableCell>
-              <TableCell>
+              <TableCell css={styles.compactCell}>{data.designerNo}</TableCell>
+              <TableCell css={styles.compactCell}>{data.nickName}</TableCell>
+              <TableCell css={styles.compactCell}>
                 {data.merchantIdentity.authorityName.length > 0
                   ? data.merchantIdentity.authorityName
                   : '無設定'}
               </TableCell>
-              <TableCell>
+              <TableCell css={styles.compactCell}>
                 {data.status === 'ok' || data.status === 'pending' ? '可登入' : '不可登入'}
               </TableCell>
-              <TableCell>
+              <TableCell css={styles.compactCell}>
                 {data.isUserRakeSet && isDeductionWaySet(data.deductionWay) ? (
                   '設定完成'
                 ) : (
@@ -373,7 +386,7 @@ export default function Results({
                   </span>
                 )}
               </TableCell>
-              <TableCell>{handleRenderStatus(data)}</TableCell>
+              <TableCell css={styles.compactCell}>{handleRenderStatus(data)}</TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Button } from '@mui/material'
+import { Container, CircularProgress, Button, Collapse } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
+import AdminPageHeader from 'components/AdminPageHeader'
+import DateSelector from 'components/DateSelector'
 import PageTitle from 'components/PageTitle'
 import TicketsAutocpmplete from 'components/TicketsAutocpmplete'
 import { endOfDay, startOfMonth } from 'date-fns'
@@ -21,19 +23,24 @@ import UsagedResults from './UsagedResults'
 
 const styles = {
   root: css({
-    padding: theme.spacing(3),
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5),
   }),
   container: css({
     padding: '0px !important',
   }),
   result: css({
-    marginBottom: theme.spacing(3),
+    marginBottom: theme.spacing(1.5),
   }),
   selector: css({
     display: 'flex',
     gap: 10,
     flexDirection: 'column',
-    marginBottom: 10
+    marginBottom: 8,
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    padding: '16px',
+    border: '1px solid #f0f0f0'
   })
 }
 
@@ -48,6 +55,7 @@ export default function ManagementCoupons() {
     customerId: '',
     ticketIds: []
   })
+  const [showFilter, setShowFilter] = useState(false)
 
   const [resultSetting, setResultSetting] = useState({
     boughtRecords: {
@@ -119,93 +127,112 @@ export default function ManagementCoupons() {
 
   return (
     <Page title="卡券管理" css={styles.root}>
-      <PageTitle title='卡券管理' subTitle='Coupon Management' />
-      <div css={styles.selector}>
-        <MerchantSearchBar
-          values={pageSetting}
-          onFilter={value => setPageSetting(value)}
-          outside
-          visible={['datePicker', 'employee', 'customer']}
-          lastInLeaderBoard={true}
-        />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{ flexGrow: 1 }}>
-            <TicketsAutocpmplete
-              value={pageSetting.ticketIds}
-              onChange={value => {
-                setPageSetting(
-                  produce(draft => {
-                    draft.ticketIds = value
-                  })
-                )
-              }}
-            />
-          </div>
-          <Button
-            style={{ height: 'fit-content' }}
-            color='primary'
-            variant='contained'
-            onClick={handleSearch}
-            disabled={ticketSellOverviewData.loading || usedTicketRecordsData.loading}
-          >查詢</Button>
-        </div>
-      </div>
       <Container maxWidth={false} css={styles.container}>
-        {!ticketSellOverviewData.loading && ticketSellOverviewData.data ?
-          <BoughtResults
-            pagenationLabel={pagenationLabel}
-            className={styles.result}
-            results={ticketSellOverviewData.data.ticketSellOverview}
-            page={resultSetting.boughtRecords}
-            onChangePage={(_event, page) =>
-              handlePageSettingChange({
-                value: page,
-                key: 'pageOffset',
-                name: 'boughtRecords',
-              })
-            }
-            onChangeRowsPerPage={event => {
-              handlePageSettingChange({
-                value: idx(event, _ => _.target.value),
-                key: 'pageLimit',
-                name: 'boughtRecords',
-              })
+        <AdminPageHeader
+          title='卡券管理'
+          showFilter={showFilter}
+          onFilterClick={() => setShowFilter(!showFilter)}
+        >
+          <DateSelector
+            attributes={['lastmonth', 'thismonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            date={{
+              startDate: pageSetting.startDate,
+              endDate: pageSetting.endDate
             }}
-            roundDecimal={roundDecimal}
-          /> : <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
-        }
-        {
-          !usedTicketRecordsData.loading && usedTicketRecordsData.data ? (
-            idx(usedTicketRecordsData,
-              _ => (
-                <UsagedResults
-                  pagenationLabel={pagenationLabel}
-                  results={_.data.usedTicketRecords.data}
-                  page={{
-                    limit: _.data.usedTicketRecords.pageLimit,
-                    offset: _.data.usedTicketRecords.pageOffset,
-                    count: _.data.usedTicketRecords.totalCount,
+            dateChange={value => setPageSetting(prev => ({ ...prev, ...value }))}
+            margin={false}
+          />
+        </AdminPageHeader>
+        <Collapse in={showFilter}>
+          <div css={styles.selector}>
+            <MerchantSearchBar
+              values={pageSetting}
+              onFilter={value => setPageSetting(value)}
+              outside
+              stopGetQueryString={true}
+              visible={['employee', 'customer']}
+              lastInLeaderBoard={true}
+            />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ flexGrow: 1 }}>
+                <TicketsAutocpmplete
+                  value={pageSetting.ticketIds}
+                  onChange={value => {
+                    setPageSetting(
+                      produce(draft => {
+                        draft.ticketIds = value
+                      })
+                    )
                   }}
-                  onChangePage={(_event, page) =>
-                    handlePageSettingChange({
-                      value: page,
-                      key: 'pageOffset',
-                      name: 'usagedResults',
-                    })
-                  }
-                  onChangeRowsPerPage={event => {
-                    handlePageSettingChange({
-                      value: idx(event, _ => _.target.value),
-                      key: 'pageLimit',
-                      name: 'usagedResults',
-                    })
-                  }}
-                  roundDecimal={roundDecimal}
                 />
+              </div>
+              <Button
+                style={{ height: 'fit-content' }}
+                color='primary'
+                variant='contained'
+                onClick={handleSearch}
+                disabled={ticketSellOverviewData.loading || usedTicketRecordsData.loading}
+              >查詢</Button>
+            </div>
+          </div>
+        </Collapse>
+        <div css={styles.container}>
+          {!ticketSellOverviewData.loading && ticketSellOverviewData.data ?
+            <BoughtResults
+              pagenationLabel={pagenationLabel}
+              className={styles.result}
+              results={ticketSellOverviewData.data.ticketSellOverview}
+              page={resultSetting.boughtRecords}
+              onChangePage={(_event, page) =>
+                handlePageSettingChange({
+                  value: page,
+                  key: 'pageOffset',
+                  name: 'boughtRecords',
+                })
+              }
+              onChangeRowsPerPage={event => {
+                handlePageSettingChange({
+                  value: idx(event, _ => _.target.value),
+                  key: 'pageLimit',
+                  name: 'boughtRecords',
+                })
+              }}
+              roundDecimal={roundDecimal}
+            /> : <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
+          }
+          {
+            !usedTicketRecordsData.loading && usedTicketRecordsData.data ? (
+              idx(usedTicketRecordsData,
+                _ => (
+                  <UsagedResults
+                    pagenationLabel={pagenationLabel}
+                    results={_.data.usedTicketRecords.data}
+                    page={{
+                      limit: _.data.usedTicketRecords.pageLimit,
+                      offset: _.data.usedTicketRecords.pageOffset,
+                      count: _.data.usedTicketRecords.totalCount,
+                    }}
+                    onChangePage={(_event, page) =>
+                      handlePageSettingChange({
+                        value: page,
+                        key: 'pageOffset',
+                        name: 'usagedResults',
+                      })
+                    }
+                    onChangeRowsPerPage={event => {
+                      handlePageSettingChange({
+                        value: idx(event, _ => _.target.value),
+                        key: 'pageLimit',
+                        name: 'usagedResults',
+                      })
+                    }}
+                    roundDecimal={roundDecimal}
+                  />
+                )
               )
-            )
-          ) : <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
-        }
+            ) : <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
+          }
+        </div>
       </Container>
     </Page>
   )

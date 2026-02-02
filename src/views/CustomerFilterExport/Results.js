@@ -2,18 +2,10 @@
 import {
   Avatar,
   Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
   Checkbox,
-  Divider,
   Link,
-  Table,
   TableBody,
   TableCell,
-  TableHead,
-  TablePagination,
   TableRow,
   Typography,
   Dialog,
@@ -22,7 +14,10 @@ import {
   DialogContentText,
   DialogActions,
   TextField,
+  IconButton,
 } from '@mui/material'
+import EditIcon from '@mui/icons-material/Edit';
+import ManagementTable from 'components/ManagementTable'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteCustomer from 'hooks/useFetchDeleteCustomer'
@@ -30,31 +25,29 @@ import idx from 'idx'
 import format from 'date-fns/format'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { gender } from 'types'
 import useFetchMerchantPassword from 'hooks/useFetchMerchantPassword'
-import pagenationLabel from './../../helper/pagenationLabel'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
 const styles = {
   root: css({}),
-  content: css({
-    padding: '0px !important',
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
   nameCell: css({
     display: 'flex',
     alignItems: 'center',
   }),
   avatar: css({
-    height: 42,
-    width: 42,
+    height: 32,
+    width: 32,
     marginRight: theme.spacing(1),
-    background: '#757575'
+    background: '#757575',
+    fontSize: '14px'
+  }),
+  compactCell: css({
+    padding: '4px 8px !important',
+    fontSize: '13px !important',
+    whiteSpace: 'nowrap',
   }),
   actions: css({
     padding: theme.spacing(1),
@@ -93,11 +86,6 @@ function Results({
     setSelectedCustomers(newSelectedPayment)
   }
 
-  useEffect(() => {
-    if (pageRef.current) {
-      pagenationLabel(pageRef.current)
-    }
-  }, [pageRef.current, customers])
 
   useEffect(() => {
     if (!merchantPassword.loading) {
@@ -158,122 +146,106 @@ function Results({
   }
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        {customers.length} 筆資料, {pageOffset + 1}/{Math.ceil(customers.length / pageLimit)}
-      </Typography>
-      <Card>
-        <CardHeader title="所有客戶列表" />
-        <Divider />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={
-                          selectedCustomers.length === customers.length && customers.length > 0
-                        }
-                        color="primary"
-                        indeterminate={
-                          selectedCustomers.length > 0 &&
-                          selectedCustomers.length < customers.length
-                        }
-                        onChange={handleSelectAll}
-                        disabled={customers.length === 0}
-                      />
-                    </TableCell>
-                    <TableCell>詳細資料</TableCell>
-                    <TableCell>姓名</TableCell>
-                    <TableCell>最近設計師</TableCell>
-                    <TableCell>偏好設計師</TableCell>
-                    <TableCell>上次消費日期</TableCell>
-                    <TableCell>性別</TableCell>
-                    <TableCell>生日</TableCell>
-                    <TableCell>電話</TableCell>
-                    <TableCell>客戶來源</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {customers.map(data => (
-                    <TableRow
-                      css={css([data.isUnwelcome ? styles.unWelcome : {}])}
-                      hover
-                      key={`customer-${data.id}`}
-                      selected={selectedCustomers.indexOf(data.id) > -1}
+      <ManagementTable
+        title="所有客戶列表"
+        totalCount={totalCount}
+        pageLimit={pageLimit}
+        pageOffset={pageOffset}
+        onPageChange={handleOnChangePage}
+        onRowsPerPageChange={handleOnChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 25, 50, 500, 1000]}
+        minWidth={700}
+        size="small"
+        tableHead={
+          <>
+            <TableCell padding="checkbox" css={styles.compactCell}>
+              <Checkbox
+                checked={
+                  selectedCustomers.length === customers.length && customers.length > 0
+                }
+                color="primary"
+                indeterminate={
+                  selectedCustomers.length > 0 &&
+                  selectedCustomers.length < customers.length
+                }
+                onChange={handleSelectAll}
+                disabled={customers.length === 0}
+              />
+            </TableCell>
+            <TableCell css={styles.compactCell}>編輯</TableCell>
+            <TableCell css={styles.compactCell}>姓名</TableCell>
+            <TableCell css={styles.compactCell}>最近設計師</TableCell>
+            <TableCell css={styles.compactCell}>偏好設計師</TableCell>
+            <TableCell css={styles.compactCell}>上次消費日期</TableCell>
+            <TableCell css={styles.compactCell}>性別</TableCell>
+            <TableCell css={styles.compactCell}>生日</TableCell>
+            <TableCell css={styles.compactCell}>電話</TableCell>
+            <TableCell css={styles.compactCell}>客戶來源</TableCell>
+          </>
+        }
+      >
+        <TableBody>
+          {customers.map(data => (
+            <TableRow
+              css={css([data.isUnwelcome ? styles.unWelcome : {}])}
+              hover
+              key={`customer-${data.id}`}
+              selected={selectedCustomers.indexOf(data.id) > -1}
+            >
+              <TableCell padding="checkbox" css={styles.compactCell}>
+                <Checkbox
+                  color="primary"
+                  checked={selectedCustomers.indexOf(data.id) > -1}
+                  onChange={() => handleSelectOne(data.id)}
+                />
+              </TableCell>
+              <TableCell css={styles.compactCell}>
+                <IconButton
+                  color="inherit"
+                  component={RouterLink}
+                  size="small"
+                  to={`/management/customers/${data.id}/general?backto=customer-filter`}
+                  sx={{ color: '#757575' }}
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+              </TableCell>
+              <TableCell css={styles.compactCell}>
+                <div css={styles.nameCell}>
+                  <Avatar css={styles.avatar}>
+                    {data.name.charAt(0).toUpperCase()}
+                  </Avatar>
+                  <div>
+                    <Link
+                      color="inherit"
+                      component={RouterLink}
+                      underline='none'
+                      to={`/management/customers/${data.id}/general?backto=customer-filter`}
+                      variant="h6"
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={selectedCustomers.indexOf(data.id) > -1}
-                          onChange={() => handleSelectOne(data.id)}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          color="primary"
-                          component={RouterLink}
-                          size="small"
-                          to={`/management/customers/${data.id}/general?backto=customer-filter`}
-                          variant="outlined"
-                        >
-                          查看
-                        </Button>
-                      </TableCell>
-                      <TableCell>
-                        <div css={styles.nameCell}>
-                          <Avatar css={styles.avatar}>
-                            {data.name.charAt(0).toUpperCase()}
-                          </Avatar>
-                          <div>
-                            <Link
-                              color="inherit"
-                              component={RouterLink}
-                              underline='none'
-                              to={`/management/customers/${data.id}/general?backto=customer-filter`}
-                              variant="h6"
-                            >
-                              {data.name}
-                            </Link>
-                            <Typography variant="body2" component='div' style={{ fontSize: '14px' }}>
-                              {data.no ? data.no : ''}
-                            </Typography>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>{idx(data, _ => _.latestDesigner.name)}</TableCell>
-                      <TableCell>{idx(data, _ => _.preferDesigner.name)}</TableCell>
-                      <TableCell>
-                        {data.lastTime ? format(data.lastTime, 'yyyy/MM/dd') : ''}
-                      </TableCell>
-                      <TableCell>{gender[data.gender]}</TableCell>
-                      <TableCell>
-                        {data.birthday ? `${data.birthday.year}/${data.birthday.month}/${data.birthday.day}` : ''}
-                      </TableCell>
-                      <TableCell>{data.cellphone}</TableCell>
-                      <TableCell>{data.source}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
-          <TablePagination
-            ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
-            component="div"
-            count={totalCount}
-            onPageChange={handleOnChangePage}
-            onRowsPerPageChange={handleOnChangeRowsPerPage}
-            page={pageOffset}
-            rowsPerPage={pageLimit}
-            rowsPerPageOptions={[5, 10, 25, 50, 500, 1000]}
-          />
-        </CardActions>
-      </Card>
+                      {data.name}
+                    </Link>
+                    <Typography variant="body2" component='div' style={{ fontSize: '14px' }}>
+                      {data.no ? data.no : ''}
+                    </Typography>
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell css={styles.compactCell}>{idx(data, _ => _.latestDesigner.name)}</TableCell>
+              <TableCell css={styles.compactCell}>{idx(data, _ => _.preferDesigner.name)}</TableCell>
+              <TableCell css={styles.compactCell}>
+                {data.lastTime ? format(data.lastTime, 'yyyy/MM/dd') : ''}
+              </TableCell>
+              <TableCell css={styles.compactCell}>{gender[data.gender]}</TableCell>
+              <TableCell css={styles.compactCell}>
+                {data.birthday ? `${data.birthday.year}/${data.birthday.month}/${data.birthday.day}` : ''}
+              </TableCell>
+              <TableCell css={styles.compactCell}>{data.cellphone}</TableCell>
+              <TableCell css={styles.compactCell}>{data.source}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </ManagementTable>
       <TableEditBar
         selected={selectedCustomers}
         onDeleteCustomer={deleteCustomerIsUsing ? handleOpenDialog : handeleteCustomer}

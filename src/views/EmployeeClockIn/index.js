@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react'
-import { Container, Button, TextField, Checkbox } from '@mui/material'
+import { Container, Button, TextField, Checkbox, Collapse, IconButton } from '@mui/material'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import FilterListIcon from '@mui/icons-material/FilterList'
 import Page from 'components/Page'
 import useFetchDailyClockInRecord, { useFetchDailyClockInRecordLazy } from 'hooks/useFetchDailyClockInRecord'
 import { format } from 'date-fns'
@@ -11,7 +12,7 @@ import useFetchSetUserClockIn from 'hooks/useFetchSettingUserClockIn'
 import { useFetchGetEmployeeClockInDisplay } from 'hooks/useFetchGetParameterReportSetting'
 import { openSnackbar } from 'elements/snackbars'
 import { Autocomplete } from '@mui/material'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
@@ -43,7 +44,11 @@ const styles = {
     alignItems: 'center',
   }),
   searchBtn: css({
-    width: '100px',
+    borderRadius: '20px !important',
+    padding: '6px 24px !important',
+    boxShadow: 'none !important',
+    fontWeight: 'bold !important',
+    minWidth: '100px',
   }),
 }
 
@@ -67,6 +72,7 @@ const EmployeeClockIn = () => {
   const [btnStatus, setBtnStatus] = useState([])
   const [dailyClockInRecordLazy, dailyClockInRecordLazyData] = useFetchDailyClockInRecordLazy()
   const [filterDisplay, setFilterDiaply] = useState(false)
+  const [showFilter, setShowFilter] = useState(false)
   const clockInDataForBtnStatus = useFetchDailyClockInRecord({ date: date.startDate })
   const getEmployeeClockInDisplay = useFetchGetEmployeeClockInDisplay()
 
@@ -90,7 +96,7 @@ const EmployeeClockIn = () => {
       setFilterDiaply(data)
     }
   }, [getEmployeeClockInDisplay.loading])
-  
+
 
   const handleClockIn = (id, status) => {
     setUserClockIn({
@@ -136,15 +142,29 @@ const EmployeeClockIn = () => {
   return (
     <Page css={styles.root} title="現場電腦打卡">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='現場電腦打卡' subTitle='Employee Daily Clock In' />
-        <DateSelector
-          date={date}
-          attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
-          dateChange={value => setDate(value)}
-          margin
-        />
-        {filterDisplay && (
-          <div style={{ display: 'flex', margin: '0 0 20px 0' }}>
+        <AdminPageHeader
+          title='現場電腦打卡'
+          onFilterClick={filterDisplay ? () => setShowFilter(!showFilter) : null}
+          showFilter={showFilter}
+        >
+          <DateSelector
+            date={date}
+            attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
+            dateChange={value => setDate(value)}
+            margin={false}
+          />
+        </AdminPageHeader>
+
+        <Collapse in={showFilter}>
+          <div style={{
+            marginBottom: '12px',
+            backgroundColor: '#fff',
+            borderRadius: '8px',
+            padding: '16px',
+            border: '1px solid #f0f0f0',
+            display: 'flex',
+            alignItems: 'center'
+          }}>
             <Autocomplete
               multiple
               fullWidth
@@ -185,7 +205,7 @@ const EmployeeClockIn = () => {
               </Button>
             </div>
           </div>
-        )}
+        </Collapse>
         <Results
           handleSearch={handleSearch}
           clockInRecord={clockInRecord}

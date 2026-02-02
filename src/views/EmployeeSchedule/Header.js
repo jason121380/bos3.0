@@ -1,45 +1,50 @@
 /** @jsxImportSource @emotion/react */
-import { Button, Grid, Typography } from '@mui/material'
+import { Button } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import RedoIcon from '@mui/icons-material/Redo'
 import UndoIcon from '@mui/icons-material/Undo'
 import { css } from '@emotion/react'
+import AdminPageHeader from 'components/AdminPageHeader'
 
 const styles = {
-  addButton: css({
-    color: '#202d50 !important',
-    borderColor: '#202d50 !important',
-    border: '1px solid #202d50',
+  button: css({
+    borderRadius: '24px !important',
+    padding: '6px 24px !important',
+    fontSize: '14px !important',
+    fontWeight: 'bold !important',
+    boxShadow: 'none !important',
     marginLeft: '10px !important',
-    "&:hover":{
-      backgroundColor: '#202d50',
-      borderColor: '#202d50',
-      color: 'white !important',
-    }
+    textTransform: 'none !important',
+    border: 'none !important',
   }),
-  undoButton: css({
-    color: 'white',
-    backgroundColor: '#cb0529 !important',
-    marginLeft: '10px',
-    "&:hover":{
-      backgroundColor: '#b00020 !important',
-    }
-  }),
-  redoButton: css({
-    color: 'white',
-    backgroundColor: '#cb0529 !important',
-    marginLeft: '10px',
-    "&:hover":{
-      backgroundColor: '#b00020 !important',
+  primaryButton: css({
+    backgroundColor: '#1A73E8 !important',
+    color: '#FFFFFF !important',
+    '&:hover': {
+      backgroundColor: '#1557b0 !important',
     },
     '&:disabled': {
-      backgroundColor: 'rgb(0 0 0 / 12%) !important'
+      backgroundColor: 'rgba(0, 0, 0, 0.12) !important',
+      color: 'rgba(0, 0, 0, 0.26) !important',
     }
   }),
-  btn: {
-    padding: '6px 16px',
-    borderRadius: 4
-  }
+  secondaryButton: css({
+    backgroundColor: '#FFFFFF !important',
+    color: '#666666 !important',
+    boxShadow: '0px 2px 4px rgba(0,0,0,0.05) !important',
+    '&:hover': {
+      backgroundColor: '#f8f9fa !important',
+    },
+    '&:disabled': {
+      backgroundColor: '#FFFFFF !important',
+      color: 'rgba(0, 0, 0, 0.26) !important',
+      opacity: 0.6,
+    }
+  }),
+  btnGroup: css({
+    display: 'flex',
+    alignItems: 'center',
+  })
 }
 
 function Header({
@@ -51,71 +56,43 @@ function Header({
   disableButtonRedo,
   undoActive
 }) {
-  const MerchantName = JSON.parse(localStorage.getItem('userMerchant')).name
-  return (
-    <div>
-      <Grid
-        container
-        style={{
-          alignItems: 'flex-start',
-          justifyContent: 'space-between',
-          margin: '10px 0 20px 0',
-        }}
-      >
-        <Grid item>
-          <Typography component="h2" gutterBottom variant="overline">
-            Employee Schedule
-          </Typography>
-          <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-            <Typography component="h3" variant="h3">
-              排班表
-            </Typography>
-            <Typography variant="subtitle2">
-              {'  —  ' + MerchantName}
-            </Typography>
-          </div>
-        </Grid>
+  const merchantName = JSON.parse(localStorage.getItem('userMerchant')).name
 
-        <Grid item style={{ marginTop: '10px' }}>
-          <Button
-            variant="outlined"
-            size="medium"
-            onClick={handleAddScheduleCard}
-            startIcon={<AddIcon />}
-            css={styles.addButton}
-            disabled={disableButton}
-          >
-            新增
-          </Button>
-          {undoActive && (
-            <>
-              <Button
-                variant="contained"
-                size="medium"
-                color='error'
-                startIcon={<UndoIcon />}
-                onClick={handleUndoScheduleCard}
-                css={styles.undoButton}
-                disabled={disableButton || disableButtonUndo}
-              >
-                復原
-              </Button>
-              <Button
-                variant="contained"
-                size="medium"
-                color='error'
-                startIcon={<RedoIcon />}
-                onClick={handleRedoScheduleCard}
-                css={styles.redoButton}
-                disabled={disableButton || disableButtonRedo}
-              > 
-                重做
-              </Button>
-            </>
-          )}
-        </Grid>
-      </Grid>
-    </div>
+  return (
+    <AdminPageHeader
+      title="排班表"
+    >
+      <div css={styles.btnGroup}>
+        {undoActive && (
+          <>
+            <Button
+              variant="contained"
+              onClick={handleUndoScheduleCard}
+              css={[styles.button, styles.secondaryButton]}
+              disabled={disableButton || disableButtonUndo}
+            >
+              復原
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleRedoScheduleCard}
+              css={[styles.button, styles.secondaryButton]}
+              disabled={disableButton || disableButtonRedo}
+            >
+              重做
+            </Button>
+          </>
+        )}
+        <Button
+          variant="contained"
+          onClick={handleAddScheduleCard}
+          css={[styles.button, styles.primaryButton]}
+          disabled={disableButton}
+        >
+          新增
+        </Button>
+      </div>
+    </AdminPageHeader>
   )
 }
 

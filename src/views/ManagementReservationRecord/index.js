@@ -2,15 +2,16 @@
 import {
   Card, Container, CircularProgress, Backdrop, Switch,
   Grid, FormControl, InputLabel, Select, MenuItem,
-  Typography, Popper, Slider, IconButton
+  Typography, Popper, Slider, IconButton, Button,
+  Collapse
 } from '@mui/material'
 import TuneIcon from '@mui/icons-material/Tune';
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import useFetchMerchant from 'hooks/useFetchMerchant'
 import { useState, useEffect, useRef } from 'react'
 import CalendarColorClip from 'components/CalendarColorClip'
 import DateSelector from 'components/DateSelector'
+import AdminPageHeader from 'components/AdminPageHeader'
 import {
   getYear, getMonth, getDate, startOfDay, endOfDay,
   addMinutes, differenceInMinutes, subMinutes, isSameDay
@@ -36,15 +37,15 @@ import OrderTable from './OrderTable'
 const styles = {
   root: css({}),
   container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: 0,
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(3),
   }),
   card: css({
-    marginTop: theme.spacing(3),
-    padding: '0px 20px 20px',
-    // width: 'fit-content',
-    // marginRight: 'auto',
-    // marginLeft: 'auto'
+    marginTop: theme.spacing(1.5),
+    padding: '16px 20px',
+    borderRadius: '12px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
   }),
   cardHeader: css({
     textAlign: 'center',
@@ -123,16 +124,21 @@ function Calendar() {
   const [unCheckDisplay, setUnCheckDisplay] = useState(true)
   const [bookingHistoryDisplay, setBookingHistoryDisplay] = useState(false)
   const [calendarSize, setCalendarSize] = useState({
-    width: 150,
-    height: 70,
-    breakHeight: 75
+    width: 95,
+    height: 40,
+    breakHeight: 45
   })
   const [anchorEl, setAnchorEl] = useState(null);
+  const [showFilter, setShowFilter] = useState(false);
   const open = Boolean(anchorEl);
   const ndsRef = useRef([])
 
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const handleFilterClick = () => {
+    setShowFilter(!showFilter);
   };
 
   const handleRefetch = () => {
@@ -192,48 +198,47 @@ function Calendar() {
         } else {
           switch (item.type) {
             case 'RH':
-              style.backgroundColor = '#414141'
+              style.backgroundColor = '#202D50'
               style.height = `${timeCost * calendarSize.height - 2}px`
               calendar[index].type = 'HOLIDAY'
               checkHorR(timeCost, startTime, false)
               break;
             case 'HOLIDAY':
-              style.backgroundColor = '#414141'
+              style.backgroundColor = '#202D50'
               style.height = `${timeCost * calendarSize.height - 2}px`
               checkHorR(timeCost, startTime, false)
               break;
             case 'EVENT':
-              style.backgroundColor = '#95BC95'
+              style.backgroundColor = '#66BB6A'
               style.height = `${timeCost * calendarSize.height - 2}px`
-              // checkHorR(timeCost, startTime, false)
               break;
             case 'RESERVATION':
               style.height = `${timeCost * calendarSize.height - 2}px`
               item.isBookingCostUsing && checkHorR(timeCost, startTime, true, isDone)
               switch (bookingStatus) {
                 case '預約成功':
-                  style.backgroundColor = isDesignate ? '#005fff' : '#e56969'
+                  style.backgroundColor = isDesignate ? '#1A73E8' : '#F06292'
                   // item.nameToDisplay = item.nameToDisplay + ` - ${isDesignate ? '預約成功(指定)' : '預約成功(不指定)'}`
                   break;
                 case '待審核':
-                  style.backgroundColor ='#69b8dd'
+                  style.backgroundColor = '#4FC3F7'
                   // item.nameToDisplay = item.nameToDisplay + ' - 待審核'
                   break;
                 case '已完成':
-                  style.backgroundColor ='purple'
+                  style.backgroundColor = '#AB47BC'
                   break;
                 default:
                   break;
               }
               break;
           }
-  
+
           if (isCusCheckRequired && bookingCusCheck) {
-            style.backgroundColor = '#ff9800'
+            style.backgroundColor = '#FF9800'
           }
 
           if (isDone) {
-            style.backgroundColor ='#9a9a9a'
+            style.backgroundColor = '#BDBDBD'
           }
 
         }
@@ -457,7 +462,7 @@ function Calendar() {
       }
     }
   }, [reservationData])
-  
+
   useEffect(() => {
     if (calendarRowData.nonDesignate && !merchant.loading) {
       const timeRange = handleSetTimeRange(calendarRowData.designate, calendarRowData.nonDesignate.calendar)
@@ -485,12 +490,12 @@ function Calendar() {
             }
             break;
         }
-        
+
       }
     }
 
   }, [
-    checkinMode,checkinSettings.isBookingCheckinEnabled,
+    checkinMode, checkinSettings.isBookingCheckinEnabled,
     calendarRowData, checkedType, unCheckDisplay, merchant.loading,
     calendarSize
   ])
@@ -557,104 +562,132 @@ function Calendar() {
         <CircularProgress />
       </Backdrop>
       <Container maxWidth={false} css={styles.container}>
-        <Grid container justifyContent='space-between' alignItems='center' >
-          <Grid item>
-            <PageTitle title='單日預約紀錄' subTitle='day Reservation records' />
-          </Grid>
-          {checkinSettings.isBookingCheckinEnabled && (
-            <Grid className='CheckinMode' style={{ display: 'flex', alignItems: 'center' }} item >
-              <Typography sx={{ fontSize: 16 }} >報到模式</Typography><Switch checked={checkinMode} onChange={(e, v) => setCheckinMode(v)} />
-            </Grid>
-          )}
-        </Grid>
-        <Card css={styles.card}>
-          <div css={styles.headerWrap}>
-            <div css={styles.headerWrap}>
-              <DateSelector
-                date={date}
-                attributes={['today', 'tomorrow', 'datomorrow', 'startDate']}
-                dateChange={value => setDate(value)}
-                onlyStart
-                margin
-              />
-              {checkinSettings.isBookingCheckinEnabled && (
-                <FormControl variant="outlined" style={{ width: 120 }} >
-                  <InputLabel>報到狀態</InputLabel>
+        <AdminPageHeader
+          title="單日預約紀錄"
+          onFilterClick={handleFilterClick}
+          showFilter={showFilter}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <DateSelector
+              date={date}
+              attributes={['today', 'tomorrow', 'datomorrow', 'startDate']}
+              dateChange={value => setDate(value)}
+              onlyStart
+            />
+          </div>
+        </AdminPageHeader>
+
+        <Collapse in={showFilter}>
+          <Card sx={{
+            mb: 2,
+            padding: '20px',
+            borderRadius: '12px',
+            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.05)',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: '24px',
+            border: '1px solid #f0f0f0',
+            flexWrap: 'wrap'
+          }}>
+            {checkinSettings.isBookingCheckinEnabled && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '8px 16px',
+                backgroundColor: checkinMode ? 'rgba(26, 115, 232, 0.05)' : '#f8f9fa',
+                borderRadius: '10px',
+                border: checkinMode ? '1px solid rgba(26, 115, 232, 0.2)' : '1px solid #eee',
+                transition: 'all 0.3s ease',
+                minWidth: '180px'
+              }}>
+                <Typography sx={{ fontSize: 14, fontWeight: '800', color: '#202D50' }}>報到模式</Typography>
+                <Switch
+                  size="small"
+                  checked={checkinMode}
+                  onChange={(e, v) => {
+                    setCheckinMode(v)
+                    if (!v) setCheckedType('')
+                  }}
+                  color="primary"
+                />
+              </div>
+            )}
+
+            {checkinSettings.isBookingCheckinEnabled && checkinMode && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                animation: 'fadeIn 0.3s ease'
+              }}>
+                <Typography sx={{ fontSize: 13, fontWeight: 'bold', color: '#666', whiteSpace: 'nowrap' }}>報到狀態篩選</Typography>
+                <FormControl variant="outlined" size="small" style={{ minWidth: '140px' }}>
                   <Select
-                    label='報到狀態'
                     onChange={e => setCheckedType(e.target.value)}
                     value={checkedType}
+                    sx={{ borderRadius: '8px', backgroundColor: '#fff' }}
+                    displayEmpty
                   >
-                    <MenuItem value=''><em>無</em></MenuItem>
+                    <MenuItem value=""><em>全部顯示</em></MenuItem>
                     <MenuItem value={true}>報到成功</MenuItem>
                     <MenuItem value={false}>未報到</MenuItem>
                   </Select>
                 </FormControl>
-              )}
-            </div>
-            <div css={styles.headerWrap}>
-              <CalendarColorClip
-                eventDisplay={eventDisplay}
-                bookingCusCheck={bookingCusCheck}
-                checkinMode={checkinMode}
-                bookingHistoryDisplay={bookingHistoryDisplay}
-              />
-              <IconButton onClick={handleClick}>
-                <TuneIcon/>
-              </IconButton>
-              <Popper placement='left-start' open={open} anchorEl={anchorEl} style={{ zIndex: 20 }}>
-                <Card style={{ padding: '14px 18px 14px 14px', overflow: 'visible', display: 'flex', flexDirection: 'column', gap: 16  }}>
-                  <div style={{ display: 'flex', gap: 8, justifyContent: 'space-between' }}>
-                    <span style={{ wordBreak: 'keep-all' }}>寬度</span>
-                    <Slider
-                      style={{ width: 150 }}
-                      max={150}
-                      value={calendarSize.width}
-                      valueLabelDisplay="auto"
-                      onChange={(e, v) => {
-                        setCalendarSize(
-                          produce(draft => {
-                            draft.width = v
-                          })
-                        )
-                      }}
-                    />
-                  </div>
-                  <div style={{ display: 'flex', gap: 8, justifyContent: 'space-between' }}>
-                    <span style={{ wordBreak: 'keep-all' }}>高度</span>
-                    <Slider
-                      style={{ width: 150 }}
-                      max={70}
-                      value={calendarSize.height}
-                      valueLabelDisplay="auto"
-                      onChange={(e, v) => {
-                        setCalendarSize(
-                          produce(draft => {
-                            draft.height = v
-                          })
-                        )
-                      }}
-                    />
-                  </div>
-                  {/* <div style={{ display: 'flex', gap: 8, justifyContent: 'space-between' }}>
-                    <span style={{ wordBreak: 'keep-all' }}>不可預約</span>
-                    <Slider
-                      style={{ width: 200 }}
-                      max={75}
-                      value={calendarSize.breakWidth}
-                      valueLabelDisplay="auto"
-                      onChange={(e, v) => {
-                        setCalendarSize(
-                          produce(draft => {
-                            draft.breakWidth = v
-                          })
-                        )
-                      }}
-                    />
-                  </div> */}
-                </Card>
-              </Popper>
-            </div>
+              </div>
+            )}
+          </Card>
+        </Collapse>
+        <div style={{ marginTop: '12px' }}>
+          <div css={styles.headerWrap} style={{ justifyContent: 'space-between', marginBottom: '16px' }}>
+            <CalendarColorClip
+              eventDisplay={eventDisplay}
+              bookingCusCheck={bookingCusCheck}
+              checkinMode={checkinMode}
+              bookingHistoryDisplay={bookingHistoryDisplay}
+            />
+            <IconButton onClick={handleClick} sx={{ color: '#1A73E8' }}>
+              <TuneIcon />
+            </IconButton>
+            <Popper placement='left-start' open={open} anchorEl={anchorEl} style={{ zIndex: 20 }}>
+              <Card style={{ padding: '14px 18px 14px 14px', overflow: 'visible', display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'space-between' }}>
+                  <span style={{ wordBreak: 'keep-all' }}>寬度</span>
+                  <Slider
+                    style={{ width: 150 }}
+                    sx={{ color: '#1A73E8' }}
+                    max={150}
+                    value={calendarSize.width}
+                    valueLabelDisplay="auto"
+                    onChange={(e, v) => {
+                      setCalendarSize(
+                        produce(draft => {
+                          draft.width = v
+                        })
+                      )
+                    }}
+                  />
+                </div>
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'space-between' }}>
+                  <span style={{ wordBreak: 'keep-all' }}>高度</span>
+                  <Slider
+                    style={{ width: 150 }}
+                    sx={{ color: '#1A73E8' }}
+                    max={70}
+                    value={calendarSize.height}
+                    valueLabelDisplay="auto"
+                    onChange={(e, v) => {
+                      setCalendarSize(
+                        produce(draft => {
+                          draft.height = v
+                        })
+                      )
+                    }}
+                  />
+                </div>
+              </Card>
+            </Popper>
           </div>
           {(!merchant.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length)) ?
             <OrderTable
@@ -678,9 +711,9 @@ function Calendar() {
               cancelPasswordUsing={cancelBookingUsing.loading ? false : cancelBookingUsing.data.merchantPassword.cancelReservation.isUsing}
             /> : ''
           }
-        </Card>
+        </div>
       </Container>
-    </Page>
+    </Page >
   )
 }
 

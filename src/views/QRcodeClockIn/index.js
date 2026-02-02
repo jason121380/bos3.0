@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { useEffect, useState } from 'react'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
@@ -13,7 +13,7 @@ import Results from './Results'
 
 const styles = {
   root: css({
-    paddingTop: theme.spacing(3),
+    paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(3)
   }),
 }
@@ -38,7 +38,7 @@ function QRcodeClockIn() {
   useEffect(() => {
     handleSetQRcodeData()
   }, [key, clockInType])
-  
+
   useEffect(() => {
     let timer
     if (!getQrcodeCheckinCode.loading) {
@@ -64,13 +64,13 @@ function QRcodeClockIn() {
       getQrcodeCheckinCode.refetch()
     }
   }, [keyFromStore])
-  
+
 
   return (
     <>
       <Page css={styles.root} title="掃碼打卡">
         <Container maxWidth={false}>
-          <PageTitle title='掃碼打卡' subTitle='QRcode Clock In' />
+          <AdminPageHeader title='掃碼打卡' />
           <Results
             clockInType={clockInType}
             setClockInType={setClockInType}

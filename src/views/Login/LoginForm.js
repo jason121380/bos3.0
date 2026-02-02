@@ -14,37 +14,92 @@ import { ThemeProvider } from '@mui/material/styles'
 import { theme } from '../../theme'
 
 const styles = {
-  root: css({}),
-  fields: css({
-    margin: theme.spacing(-1),
+  root: css({
     display: 'flex',
-    flexWrap: 'wrap',
-    '& > *': {
-      flexGrow: 1,
-      margin: theme.spacing(1) + '!important',
-    },
+    flexDirection: 'column',
+    alignItems: 'stretch',
+  }),
+  fields: css({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2.5),
   }),
   submitButton: css({
     marginTop: theme.spacing(4),
-    width: '100%',
-    height: '50px !important',
-    borderRadius: '12px !important',
-    fontSize: '16px !important',
-    fontWeight: '700 !important',
-    boxShadow: '0 4px 12px rgba(0, 122, 255, 0.3) !important',
+    height: '54px !important',
+    borderRadius: '27px !important', // Pill-shaped (half of height)
+    fontSize: '17px !important',
+    fontWeight: '600 !important',
+    boxShadow: 'none !important',
+    textTransform: 'none !important',
+    transition: 'all 0.2s ease-in-out !important',
+    '&:hover': {
+      backgroundColor: '#0062CC !important',
+      boxShadow: 'none !important',
+    },
+    '&:active': {
+      backgroundColor: '#0056b3 !important',
+    },
   }),
   input: css({
-    backgroundColor: '#F9F9FB',
-    borderRadius: '10px !important',
     '& .MuiOutlinedInput-root': {
-      borderRadius: '10px !important',
+      borderRadius: '30px !important', // Pill-shaped (half of 60px height)
+      backgroundColor: '#F5F5F7',
+      height: '60px !important',
+      transition: 'all 0.2s ease',
+      '& fieldset': {
+        border: '1px solid transparent',
+        transition: 'all 0.2s ease',
+      },
+      '&:hover': {
+        backgroundColor: '#EBEBEF',
+        '& fieldset': {
+          borderColor: 'rgba(0, 122, 255, 0.1)',
+        },
+      },
+      '&.Mui-focused': {
+        backgroundColor: '#FFFFFF',
+        '& fieldset': {
+          borderColor: '#007AFF !important',
+          borderWidth: '2px !important',
+        },
+      },
+    },
+    '& .MuiInputBase-input': {
+      padding: '18px 16px !important', // Adjusted internal padding for taller look
+    },
+    '& .MuiInputLabel-root': {
+      fontSize: '15px',
+      color: '#86868B',
+      '&.Mui-focused': {
+        color: '#007AFF',
+      },
     },
     '& :-webkit-autofill': {
-      'WebkitTextFillColor': 'black',
-      'WebkitBoxShadow': '0 0 0px 1000px #F9F9FB inset',
-      borderRadius: '10px'
+      'WebkitTextFillColor': '#1D1D1F',
+      'WebkitBoxShadow': '0 0 0px 1000px #F5F5F7 inset',
+      borderRadius: '14px',
     },
-  })
+  }),
+  checkboxLabel: css({
+    marginTop: theme.spacing(1.5),
+    alignSelf: 'flex-start',
+    marginLeft: '-11px !important',
+    color: '#86868B',
+    '& .MuiTypography-root': {
+      fontSize: '13.5px',
+      fontWeight: 500,
+    },
+    '& .MuiCheckbox-root': {
+      color: '#D2D2D7',
+      '&.Mui-checked': {
+        color: '#007AFF',
+      },
+      '&:hover': {
+        backgroundColor: 'rgba(0, 122, 255, 0.04)',
+      },
+    },
+  }),
 }
 
 function LoginForm({ className, location, ...rest }) {
@@ -168,8 +223,8 @@ function LoginForm({ className, location, ...rest }) {
         />
       </div>
       <FormControlLabel
-        style={{ marginTop: '16px', color: '#86868B' }}
-        control={<Checkbox color="primary" onChange={handleLoginSession} />}
+        css={styles.checkboxLabel}
+        control={<Checkbox onChange={handleLoginSession} />}
         label={<Typography variant="body2">保持登入狀態</Typography>}
       />
       <ThemeProvider theme={theme}>

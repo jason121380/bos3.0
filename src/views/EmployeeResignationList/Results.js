@@ -8,12 +8,11 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableRow,
   Typography,
   Checkbox,
-  TableContainer
 } from '@mui/material'
+import ManagementTable from 'components/ManagementTable'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import TableEditBar from 'components/TableEditBar'
@@ -36,6 +35,11 @@ const styles = {
   }),
   content: css({
     padding: 0,
+  }),
+  compactCell: css({
+    padding: '4px 8px !important',
+    fontSize: '13px !important',
+    whiteSpace: 'nowrap',
   }),
 }
 
@@ -80,72 +84,65 @@ export default function Results({ className, employees, resignationList, setCrea
   }
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        共 {employees.length} 筆
-      </Typography>
-      <Card>
-        <CardHeader title="離職員工" />
-        <Divider />
-        <CardContent css={styles.content}>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={
-                        selectedDesigners.length === employees.length && employees.length > 0
-                      }
-                      color="primary"
-                      indeterminate={
-                        selectedDesigners.length > 0 &&
-                        selectedDesigners.length < employees.length
-                      }
-                      onChange={handleSelectAll}
-                      disabled={employees.length === 0}
-                    />
-                  </TableCell>
-                  <TableCell>姓名/電話</TableCell>
-                  <TableCell>設計師編號</TableCell>
-                  <TableCell>暱稱</TableCell>
-                  <TableCell>離職日期</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {employees.map((data, idx) => (
-                  <TableRow key={`employee-item-${idx}`}>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={selectedDesigners.indexOf(data.id) > -1}
-                        onChange={() => handleSelectOne(data.id)}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <div css={styles.nameCell}>
-                        <Avatar css={styles.avatar} src={data.avatar} />
-                        <div>
-                          <div
-                            className='MuiTypography-h6'
-                            style={{ color: "inherit" }}
-                          >
-                            {data.lastName}
-                            {data.firstName}
-                          </div>
-                          <div>{data.cellphone}</div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{data.designerNo}</TableCell>
-                    <TableCell>{data.nickName}</TableCell>
-                    <TableCell>{format(data.deletedAt, 'yyyy/MM/dd')}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </CardContent>
-      </Card>
+      <ManagementTable
+        title="離職員工"
+        totalCount={employees.length}
+        hidePagination={true}
+        tableHead={
+          <>
+            <TableCell padding="checkbox" css={styles.compactCell}>
+              <Checkbox
+                checked={
+                  selectedDesigners.length === employees.length && employees.length > 0
+                }
+                color="primary"
+                indeterminate={
+                  selectedDesigners.length > 0 &&
+                  selectedDesigners.length < employees.length
+                }
+                onChange={handleSelectAll}
+                disabled={employees.length === 0}
+              />
+            </TableCell>
+            <TableCell css={styles.compactCell}>姓名/電話</TableCell>
+            <TableCell css={styles.compactCell}>設計師編號</TableCell>
+            <TableCell css={styles.compactCell}>暱稱</TableCell>
+            <TableCell css={styles.compactCell}>離職日期</TableCell>
+          </>
+        }
+      >
+        <TableBody>
+          {employees.map((data, idx) => (
+            <TableRow key={`employee-item-${idx}`}>
+              <TableCell padding="checkbox" css={styles.compactCell}>
+                <Checkbox
+                  color="primary"
+                  checked={selectedDesigners.indexOf(data.id) > -1}
+                  onChange={() => handleSelectOne(data.id)}
+                />
+              </TableCell>
+              <TableCell css={styles.compactCell}>
+                <div css={styles.nameCell}>
+                  <Avatar css={styles.avatar} src={data.avatar} />
+                  <div>
+                    <div
+                      className='MuiTypography-h6'
+                      style={{ color: "inherit" }}
+                    >
+                      {data.lastName}
+                      {data.firstName}
+                    </div>
+                    <div>{data.cellphone}</div>
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell css={styles.compactCell}>{data.designerNo}</TableCell>
+              <TableCell css={styles.compactCell}>{data.nickName}</TableCell>
+              <TableCell css={styles.compactCell}>{format(data.deletedAt, 'yyyy/MM/dd')}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </ManagementTable>
       <TableEditBar
         selected={selectedDesigners}
         onReinstatement={onReinstatement}

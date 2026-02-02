@@ -14,10 +14,12 @@ import {
   TableRow,
   Typography,
   Drawer,
+  IconButton,
   Checkbox,
   Grid,
   Hidden,
 } from '@mui/material'
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import PropTypes from 'prop-types'
 import { useState, useEffect, Fragment, useRef } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -71,7 +73,7 @@ const styles = {
   }),
   sticky3: css({
     position: 'sticky',
-    left: "126px",
+    left: "104px", // Adjusted based on narrower Action column (52+52)
     background: '#ffffff !important',
     zIndex: '99',
   }),
@@ -94,9 +96,20 @@ const styles = {
   }),
   tableRow: css({
     backgroundColor: '#ffffff !important',
+  }),
+  csvBtn: css({
+    borderRadius: '20px !important',
+    padding: '6px 20px !important',
+    fontSize: '14px !important',
+    boxShadow: 'none !important',
+    fontWeight: 'bold !important',
+    backgroundColor: '#f5f5f5 !important',
+    color: '#666 !important',
+    textTransform: 'none !important',
+    border: 'none !important',
     '&:hover': {
-      backgroundColor: '#ffffff !important',
-    },
+      backgroundColor: '#eeeeee !important',
+    }
   }),
 }
 
@@ -212,7 +225,7 @@ function Results({
                 data={excelData}
                 filename="材料自購登錄.csv"
               >
-                <Button variant="contained" color="primary" size="small">
+                <Button variant="contained" css={styles.csvBtn} size="small">
                   報表匯出
                 </Button>
               </CSVLink>
@@ -241,8 +254,8 @@ function Results({
                           disabled={recordArr.length === 0}
                         />
                       </TableCell>
-                      <TableCell css={styles.sticky2} style={{ width: '74px' }}>操作</TableCell>
-                      <TableCell css={styles.sticky3} style={{ width: '80px' }}>日期</TableCell>
+                      <TableCell css={styles.sticky2} style={{ width: '52px' }}>操作</TableCell>
+                      <TableCell css={styles.sticky3} style={{ width: '120px' }}>日期</TableCell>
                       <TableCell>商品代號/名稱</TableCell>
                       <TableCell>單價</TableCell>
                       <TableCell>數量</TableCell>
@@ -269,15 +282,14 @@ function Results({
                             />
                           </TableCell>
                           <TableCell css={styles.sticky2}>
-                            <Button
+                            <IconButton
                               color="primary"
                               component={RouterLink}
                               size="small"
                               to={`/employee/picking/edit/${record.id}`}
-                              variant="outlined"
                             >
-                              編輯
-                            </Button>
+                              <EditOutlinedIcon fontSize="small" />
+                            </IconButton>
                           </TableCell>
                           <TableCell css={styles.sticky3}>{format(new Date(record.date), 'MM/dd/yyyy')}</TableCell>
                           <TableCell>
@@ -299,8 +311,8 @@ function Results({
                     })}
                     <TableRow css={styles.tableRow}>
                       <TableCell css={styles.sticky1} />
-                      <TableCell css={styles.sticky2} style={{ fontWeight: 'bold', width: '70px' }}>合計</TableCell>
-                      <TableCell css={styles.sticky3} style={{ width: '80px' }} />
+                      <TableCell css={styles.sticky2} style={{ fontWeight: 'bold', width: '52px' }}>合計</TableCell>
+                      <TableCell css={styles.sticky3} style={{ width: '120px' }} />
                       <TableCell />
                       <TableCell />
                       <TableCell>{total('count')}</TableCell>
@@ -315,7 +327,7 @@ function Results({
               </div>
             </PerfectScrollbar>
           </CardContent>
-          <CardActions css={styles.actions}>
+          {/* <CardActions css={styles.actions}>
             <TablePagination
               ref={pageRef}
               labelRowsPerPage='每頁顯示數量'
@@ -327,7 +339,7 @@ function Results({
               rowsPerPage={pickingRecords.pageLimit}
               rowsPerPageOptions={[5, 10, 25, 50, 500, 1000]}
             />
-          </CardActions>
+          </CardActions> */}
         </Card>
       </div>
       <Drawer anchor="bottom" open={open} PaperProps={{ elevation: 1 }} variant="persistent">

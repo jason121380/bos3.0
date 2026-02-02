@@ -33,7 +33,7 @@ const styles = {
 function EmployeePicking() {
   const [categoryValue, setCategoryValue] = useState([])
   const [pageSetting, setPageSetting] = React.useState({
-    pageLimit: 500,
+    pageLimit: 1000,
     pageOffset: 0,
     startDate: startOfMonth(new Date()).getTime(),
     endDate: endOfDay(new Date()).getTime(),

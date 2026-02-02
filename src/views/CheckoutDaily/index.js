@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Container } from '@mui/material'
+import { Container, Card } from '@mui/material'
 import Page from 'components/Page'
 import { endOfDay, subDays } from 'date-fns'
 import useFetchDailyMoneyFlowReport from 'hooks/useFetchDailyMoneyFlowReport'
@@ -28,6 +28,23 @@ const styles = {
   results: css({
     marginTop: theme.spacing(3),
   }),
+  headerCard: css({
+    display: 'flex',
+    padding: '12px 24px',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#E8F0FE',
+    borderRadius: '12px',
+    boxShadow: 'none',
+    border: 'none !important',
+    marginBottom: '12px',
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      gap: '16px',
+      padding: '16px',
+    },
+  }),
 }
 
 function CheckoutDaily() {
@@ -41,11 +58,11 @@ function CheckoutDaily() {
   const [bonusDisplay, setBonusDisplay] = useState(false)
   const [resultsSetting, setResultsSetting] = useState({
     dailyMoneyFlowReport: {
-      pageLimit: 50,
+      pageLimit: 1000,
       pageOffset: 0,
     },
     waitCloseOrderDate: {
-      pageLimit: 50,
+      pageLimit: 1000,
       pageOffset: 0,
     },
   })
@@ -109,13 +126,16 @@ function CheckoutDaily() {
   return (
     <Page css={styles.root} title="每日結帳">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='每日結帳' subTitle='Order checkout daily' />
-        <DateSelector
-          date={pageSetting}
-          attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-          dateChange={value => setPageSetting(value)}
-          margin
-        />
+        <Card css={styles.headerCard}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <PageTitle title='每日結帳' style={{ color: '#1A73E8' }} />
+          </div>
+          <DateSelector
+            date={pageSetting}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            dateChange={value => setPageSetting(value)}
+          />
+        </Card>
         {idx(
           waitCloseOrderDate,
           _ =>

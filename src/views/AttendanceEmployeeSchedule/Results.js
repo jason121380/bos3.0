@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {
   Button, Table, TableBody, TableCell, TableHead, TableRow,
-  TableContainer, Paper,
+  TableContainer, Paper, Card, CardHeader, CardContent, Typography,
 } from '@mui/material'
 import { format, isBefore, isAfter, isToday } from 'date-fns'
 import PropTypes from 'prop-types'
@@ -10,7 +10,9 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
 const styles = {
-  root: css({}),
+  root: css({
+    marginTop: theme.spacing(2),
+  }),
   sticky: css({
     position: 'sticky',
     left: 0,
@@ -18,9 +20,10 @@ const styles = {
     zIndex: '99',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap !important',
+    minWidth: '150px !important',
     width: '150px !important',
-    display: 'inline-block !important',
-    overflow: 'hidden !important'
+    overflow: 'hidden !important',
+    outline: '1px solid #eeeeee',
   }),
   stickyRow: css({
     position: 'sticky',
@@ -68,14 +71,63 @@ const styles = {
     whiteSpace: 'nowrap !important',
     width: '100px !important',
     display: 'inline-block !important',
-  })
+  }),
+  cardHeader: css({
+    padding: '16px 16px !important',
+    '& .MuiCardHeader-title': {
+      fontSize: '15px',
+      fontWeight: 'bold',
+      display: 'flex',
+      alignItems: 'center',
+      '&::before': {
+        content: '""',
+        display: 'inline-block',
+        width: '4px',
+        height: '16px',
+        backgroundColor: '#1A73E8',
+        marginRight: '8px',
+        borderRadius: '2px',
+      },
+    },
+  }),
+  compactCell: css({
+    padding: '4px 8px !important',
+    fontSize: '13px !important',
+    whiteSpace: 'nowrap',
+  }),
+  compactHeaderCell: css({
+    padding: '8px 8px !important',
+    fontSize: '13px !important',
+    fontWeight: '600 !important',
+    whiteSpace: 'nowrap',
+    backgroundColor: '#fafafa !important',
+  }),
+  dateHeaderCell: css({
+    minWidth: '120px !important',
+    width: '120px !important',
+    padding: '8px 8px !important',
+    fontSize: '13px !important',
+    fontWeight: '600 !important',
+    whiteSpace: 'nowrap',
+    backgroundColor: '#fafafa !important',
+    textAlign: 'center',
+  }),
+  dateCell: css({
+    minWidth: '120px !important',
+    width: '120px !important',
+    padding: '4px 8px !important',
+    fontSize: '13px !important',
+    textAlign: 'center',
+  }),
 }
 
 export default function Results({
   displayDate, rawTime, fontColor, tagId, employeeSchedule,
-  setEmployeeSchedule, editBefore,
+  setEmployeeSchedule, editBefore, exportExcel, exportLoading,
+  saveData, isClick, loading, isEditing, setIsEditing,
 }) {
   const setSchedule = (dataIndex, time) => {
+    if (!isEditing) return
     if (tagId !== '') {
       const newData = _.cloneDeep(employeeSchedule)
       newData[dataIndex].clockInSchedule.push({
@@ -97,6 +149,7 @@ export default function Results({
   }
 
   const editSchedule = (scheduleId, dataIndex, time) => {
+    if (!isEditing) return
     const newData = _.cloneDeep(employeeSchedule)
     const index = newData[dataIndex].clockInSchedule.map(d => {
       return d.date
@@ -113,6 +166,7 @@ export default function Results({
   }
 
   const addMultiColumnSchedule = date => {
+    if (!isEditing) return
     if (checkTime(date)) {
       const newData = _.cloneDeep(employeeSchedule)
       newData.forEach((record, recordIndex) => {
@@ -144,6 +198,7 @@ export default function Results({
   }
 
   const addMultiRowSchedule = designerIndex => {
+    if (!isEditing) return
     const newData = _.cloneDeep(employeeSchedule)
     const verifyDate = rawTime.filter(d => checkTime(+d))
     verifyDate.map(date => {
@@ -188,6 +243,7 @@ export default function Results({
             return (
               <TableCell
                 key={time}
+                css={styles.dateCell}
                 onClick={() => {
                   editSchedule(filterData[0].clockInSetting.id, dataIndex, time)
                 }}
@@ -195,16 +251,16 @@ export default function Results({
             )
           } else {
             return (
-              <TableCell key={time}>
+              <TableCell key={time} css={styles.dateCell}>
                 <Button
-                  css={css([styles.button, css({background: `${filterData[0].clockInSetting.color} !important`})])}
+                  css={css([styles.button, css({ background: `${filterData[0].clockInSetting.color} !important`, borderRadius: '18px' })])}
                   onClick={() => {
                     editSchedule(filterData[0].clockInSetting.id, dataIndex, time)
                   }}
                   variant="contained"
                 >
                   <span
-                    css={css([styles.buttonLabel, css({color: `${fontColor(filterData[0].clockInSetting.color)} !important`})])}
+                    css={css([styles.buttonLabel, css({ color: `${fontColor(filterData[0].clockInSetting.color)} !important`, fontSize: '12px' })])}
                   >{filterData[0].clockInSetting.name}</span>
                 </Button>
               </TableCell>
@@ -214,6 +270,7 @@ export default function Results({
           return (
             <TableCell
               key={time}
+              css={styles.dateCell}
               onClick={() => {
                 setSchedule(dataIndex, time)
               }}
@@ -224,6 +281,7 @@ export default function Results({
         return (
           <TableCell
             key={time}
+            css={styles.dateCell}
             onClick={() => {
               setSchedule(dataIndex, time)
             }}
@@ -241,54 +299,150 @@ export default function Results({
         if (filterData.length > 0) {
           if (filterData[0].clockInSetting.id === null) {
             return (
-              <TableCell key={time} className="beforeToday" />
+              <TableCell key={time} className="beforeToday" css={styles.dateCell} />
             )
           } else {
             return (
-              <TableCell key={time} className="beforeToday">
+              <TableCell key={time} className="beforeToday" css={styles.dateCell}>
                 <Button
-                  css={styles.button}
+                  css={css([styles.button, css({ borderRadius: '18px' })])}
                   variant="contained">
-                  <span css={styles.buttonLabel}>{filterData[0].clockInSetting.name}</span>
+                  <span css={css([styles.buttonLabel, css({ fontSize: '12px' })])}>{filterData[0].clockInSetting.name}</span>
                 </Button>
               </TableCell>
             )
           }
         } else {
-          return <TableCell key={time} className="beforeToday" />
+          return <TableCell key={time} className="beforeToday" css={styles.dateCell} />
         }
       } else {
-        return <TableCell key={time} className="beforeToday" />
+        return <TableCell key={time} className="beforeToday" css={styles.dateCell} />
       }
     }
   }
 
   return (
-    <TableContainer style={{ maxHeight: 'calc(100vh - 340px)' }} component={Paper} className="AttendanceEmployeeScheduleTable">
-      <Table css={styles.table} size="small" aria-label="a dense table">
-        <TableHead css={styles.stickyRow}>
-          <TableRow>
-            <TableCell css={styles.sticky}>設計師</TableCell>
-            {displayDate.map((date, index) => (
-              <TableCell style={{ cursor: 'pointer' }} onClick={() => addMultiColumnSchedule(Number(rawTime[index]))} key={index}>{date}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {employeeSchedule.length > 0 &&
-            employeeSchedule.map((data, dataIndex) => {
-              return (
-                <TableRow key={dataIndex}>
-                  <TableCell style={{ cursor: 'pointer' }} onClick={() => addMultiRowSchedule(dataIndex)} css={styles.sticky} name={data.user.name} key={data.user.name}>{data.user.name}</TableCell>
-                  {rawTime.map(time => {
-                    return showTagData(parseInt(time), data, dataIndex)
-                  })}
-                </TableRow>
-              )
-            })}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Card css={styles.root}>
+      <CardHeader
+        css={styles.cardHeader}
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span>班表總表列表</span>
+            <Typography color="textSecondary" variant="body2">
+              共 {employeeSchedule.length} 人
+            </Typography>
+          </div>
+        }
+        action={
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Button
+              disabled={exportLoading}
+              variant="contained"
+              onClick={exportExcel}
+              size="small"
+              css={css({
+                backgroundColor: '#f5f5f5 !important',
+                color: '#666 !important',
+                boxShadow: 'none !important',
+                borderRadius: '18px !important',
+                padding: '4px 16px !important',
+                '&:hover': {
+                  backgroundColor: '#e0e0e0 !important',
+                  boxShadow: 'none !important',
+                }
+              })}
+            >
+              報表匯出
+            </Button>
+            {!isEditing ? (
+              <Button
+                variant="contained"
+                onClick={() => setIsEditing(true)}
+                size="small"
+                css={css({
+                  backgroundColor: '#E8F0FE !important',
+                  color: '#1A73E8 !important',
+                  boxShadow: 'none !important',
+                  borderRadius: '18px !important',
+                  padding: '4px 24px !important',
+                  fontWeight: 'bold !important',
+                  border: '1px solid #1A73E8 !important',
+                  '&:hover': {
+                    backgroundColor: '#D2E3FC !important',
+                    boxShadow: 'none !important',
+                  }
+                })}
+              >
+                編輯班表
+              </Button>
+            ) : (
+              <Button
+                disabled={loading || isClick}
+                variant="contained"
+                color="primary"
+                onClick={saveData}
+                size="small"
+                css={css({
+                  backgroundColor: '#1A73E8 !important',
+                  color: 'white !important',
+                  boxShadow: 'none !important',
+                  borderRadius: '18px !important',
+                  padding: '4px 24px !important',
+                  fontWeight: 'bold !important',
+                  '&:hover': {
+                    backgroundColor: '#1557b0 !important',
+                    boxShadow: 'none !important',
+                  }
+                })}
+              >
+                儲存
+              </Button>
+            )}
+          </div>
+        }
+      />
+      <CardContent style={{ padding: 0 }}>
+        <TableContainer style={{ maxHeight: 'calc(100vh - 380px)' }} component={Paper} className="AttendanceEmployeeScheduleTable">
+          <Table css={styles.table} size="small" aria-label="a dense table">
+            <TableHead css={styles.stickyRow}>
+              <TableRow>
+                <TableCell css={css([styles.sticky, styles.compactHeaderCell])}>設計師</TableCell>
+                {displayDate.map((date, index) => (
+                  <TableCell
+                    key={index}
+                    style={{ cursor: isEditing ? 'pointer' : 'default' }}
+                    onClick={() => addMultiColumnSchedule(Number(rawTime[index]))}
+                    css={styles.dateHeaderCell}
+                  >
+                    {date}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {employeeSchedule.length > 0 &&
+                employeeSchedule.map((data, dataIndex) => {
+                  return (
+                    <TableRow key={dataIndex}>
+                      <TableCell
+                        style={{ cursor: isEditing ? 'pointer' : 'default' }}
+                        onClick={() => addMultiRowSchedule(dataIndex)}
+                        css={css([styles.sticky, styles.compactCell])}
+                        key={data.user.name}
+                      >
+                        {data.user.name}
+                      </TableCell>
+                      {rawTime.map(time => {
+                        return showTagData(parseInt(time), data, dataIndex)
+                      })}
+                    </TableRow>
+                  )
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </CardContent>
+    </Card>
   )
 }
 

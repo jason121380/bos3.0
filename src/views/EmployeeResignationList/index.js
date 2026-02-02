@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { Container, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
+import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchGetEmployeeResignationList from 'hooks/useFetchGetEmployeeResignationList'
 import idx from 'idx'
-import PageTitle from 'components/PageTitle'
 import { useState, useEffect } from 'react'
 import useFetchMerchantDesigner from 'hooks/useFetchMerchantDesigner'
 import useFetchSetCreateResignedUser from 'hooks/useFetchSetCreateResignedUser'
@@ -15,11 +15,12 @@ import Results from './Results'
 const styles = {
   root: css({}),
   container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(6),
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5),
+    padding: '0px !important',
   }),
   results: css({
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(2),
   }),
 }
 
@@ -43,7 +44,7 @@ export default function Employees() {
     !designerDetail.loading && (
       <Page css={styles.root} title="員工離職列表">
         <Container maxWidth={false} css={styles.container}>
-          <PageTitle title='員工離職列表' subTitle='Employee Resignation List' />
+          <AdminPageHeader title='員工離職列表' />
           {!resignationList.loading ? idx(resignationList, _ => (
             <Results
               className={styles.results}
