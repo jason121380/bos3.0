@@ -7,6 +7,7 @@ import {
 } from '@mui/material'
 import { Link } from 'react-router-dom';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import EditIcon from '@mui/icons-material/Edit';
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteProducts from 'hooks/useFetchDeleteProducts'
 import format from 'date-fns/format'
@@ -33,27 +34,67 @@ import EditProductsCategoryModal from './EditProductsCategoryModal'
 import PublishedDialog from './PublishedDialog';
 import VendorDialog from './VendorDialog'
 const localStyles = {
-  cardHeader: css({
-    '& .MuiCardHeader-title': {
-      fontSize: '15px',
+  card: css({
+    borderRadius: '16px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+  }),
+  content: css({
+    padding: 0,
+  }),
+  tableHead: css({
+    backgroundColor: '#FFFFFF',
+    '& .MuiTableCell-head': {
+      color: '#212121',
       fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: '#1A73E8',
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
-    },
+      borderBottom: '1px solid #f0f0f0',
+      height: '40px !important',
+      padding: '2px 16px !important',
+      fontSize: '14px',
+    }
   }),
   tableRow: css({
-    backgroundColor: '#ffffff !important',
+    height: '40px !important',
+    minHeight: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      borderBottom: '1px solid #f0f0f0',
+      fontSize: '14px !important',
+      color: '#333',
+    },
     '&:hover': {
-      backgroundColor: '#ffffff !important',
+      backgroundColor: 'transparent !important',
+    },
+    '&.Mui-selected': {
+      backgroundColor: '#f9f9f9 !important',
+    },
+    '&.Mui-selected:hover': {
+      backgroundColor: '#f9f9f9 !important',
+    },
+  }),
+  pillButton: css({
+    borderRadius: '20px !important',
+    padding: '4px 20px !important',
+    fontSize: '14px !important',
+    boxShadow: 'none !important',
+    fontWeight: 'bold !important',
+    height: '32px !important',
+  }),
+  secondaryPill: css({
+    backgroundColor: '#f5f5f5 !important',
+    color: '#666 !important',
+    '&:hover': {
+      backgroundColor: '#eeeeee !important',
+    }
+  }),
+  actionButton: css({
+    color: '#9e9e9e',
+    padding: '4px',
+    '&:hover': {
+      color: '#1A73E8',
+      backgroundColor: 'rgba(26, 115, 232, 0.04)',
     },
   }),
 }
@@ -284,30 +325,31 @@ function Results({ className, products, refetchProducts, onPageChange, ...rest }
 
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Card>
+      <Card css={localStyles.card}>
         <CardHeader
-          css={localStyles.cardHeader}
           action={
-            <CSVLink data={excelData} filename="商品列表.csv" >
-              <Button variant="contained" color="primary" size="small">
+            <CSVLink data={excelData} filename="商品列表.csv" style={{ textDecoration: 'none' }}>
+              <Button css={[localStyles.pillButton, localStyles.secondaryPill]} variant="contained">
                 報表匯出
               </Button>
             </CSVLink>
           }
           title={
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span>所有商品</span>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+                所有商品
+              </Typography>
               <Typography color="textSecondary" variant="body2">
-                共 {products.totalCount} 筆
+                共 {products.totalCount} 筆資料
               </Typography>
             </div>
           }
         />
-        <CardContent css={styles.content}>
+        <CardContent css={localStyles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
-              <Table>
-                <TableHead>
+              <Table size="small">
+                <TableHead css={localStyles.tableHead}>
                   <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
@@ -327,7 +369,6 @@ function Results({ className, products, refetchProducts, onPageChange, ...rest }
                         }
                       />
                     </TableCell>
-                    <TableCell>操作</TableCell>
                     <TableCell>代號</TableCell>
                     <TableCell>類別</TableCell>
                     <TableCell>名稱</TableCell>
@@ -338,7 +379,8 @@ function Results({ className, products, refetchProducts, onPageChange, ...rest }
                     <TableCell>自購價格</TableCell>
                     <TableCell>變更者</TableCell>
                     <TableCell>變更時間</TableCell>
-                    <TableCell>建立副本</TableCell>
+                    <TableCell>副本</TableCell>
+                    <TableCell align="right">操作</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -359,23 +401,11 @@ function Results({ className, products, refetchProducts, onPageChange, ...rest }
                           }}
                         />
                       </TableCell>
-                      <TableCell>
-                        <Button
-                          color="primary"
-                          component={RouterLink}
-                          size="small"
-                          to={`/product/edit/${data.id}`}
-                          variant="outlined"
-                          disabled={!data.isUsing}
-                        >
-                          編輯
-                        </Button>
-                      </TableCell>
                       <TableCell>{data.no === null ? '無代號' : data.no}</TableCell>
                       <TableCell>
                         {data.productCategory === null ? '未分類' : data.productCategory.name}
                       </TableCell>
-                      <TableCell>{data.name}</TableCell>
+                      <TableCell style={{ fontWeight: '500' }}>{data.name}</TableCell>
                       {/* 成本顯示判斷 */}
                       {isDisplayCost && <TableCell>{data.cost}</TableCell>}
                       <TableCell>{data.stockUnit}</TableCell>
@@ -385,10 +415,21 @@ function Results({ className, products, refetchProducts, onPageChange, ...rest }
                       <TableCell>{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
                       <TableCell>
                         <Link to={`product/duplicate/${data.id}`}>
-                          <IconButton>
+                          <IconButton size="small" css={localStyles.actionButton}>
                             <ContentCopyIcon fontSize='small' />
                           </IconButton>
                         </Link>
+                      </TableCell>
+                      <TableCell align="right">
+                        <IconButton
+                          css={localStyles.actionButton}
+                          component={RouterLink}
+                          size="small"
+                          to={`/product/edit/${data.id}`}
+                          disabled={!data.isUsing}
+                        >
+                          <EditIcon fontSize="small" />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}

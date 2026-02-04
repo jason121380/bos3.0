@@ -14,6 +14,8 @@ import Autocomplete from '@mui/material/Autocomplete'
 import { Link as RouterLink } from 'react-router-dom'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import AdminPageHeader from 'components/AdminPageHeader'
+import { Collapse, Typography } from '@mui/material'
 
 import Results from './Results'
 import { openSnackbar } from 'elements/snackbars'
@@ -21,8 +23,22 @@ import { openSnackbar } from 'elements/snackbars'
 const styles = {
   root: css({}),
   container: css({
-    paddingTop: theme.spacing(3),
+    paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(3),
+  }),
+  filterPanel: css({
+    marginBottom: '12px',
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    padding: '20px',
+    border: '1px solid #f0f0f0',
+  }),
+  pillButton: css({
+    borderRadius: '20px !important',
+    padding: '4px 20px !important',
+    fontSize: '14px !important',
+    boxShadow: 'none !important',
+    fontWeight: 'bold !important',
   }),
 }
 
@@ -42,6 +58,7 @@ function ProductRestock() {
     stockIn: true,
     stockInUndo: true
   })
+  const [showFilter, setShowFilter] = useState(false)
   const [getPurchaseRecordsLazy, getPurchaseRecordsLazyData] = useFetchGetPurchaseRecord({
     input: { status: 'ALL', vendorUUIds: vendorUUId },
   })
@@ -186,52 +203,61 @@ function ProductRestock() {
   return (
     <Page css={styles.root} title="商品進貨作業">
       <Container maxWidth={false} css={styles.container}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='商品進貨作業' subTitle='Product Restock' />
-          <Grid item>
-            <Link component={RouterLink} to="/product/restock/create">
-              <Button color="primary" variant="contained">
-                新增
-              </Button>
-            </Link>
-          </Grid>
-        </Grid>
-        <Grid container style={{ margin: '24px 0 12px', alignItems: 'center', gap: '10px', justifyContent: 'space-between' }}>
-          <Grid item container alignItems='center' sm={10} xs={12}>
-            <Autocomplete
-              fullWidth
-              multiple
-              disableCloseOnSelect
-              disabled={dialogOpen}
-              options={vendorOptions}
-              onChange={(event, value) => {
-                setVendorUUId(value.map(d => d.vendor.uuid))
-              }}
-              getOptionLabel={option => option.name}
-              renderOption={(props, option, { selected }) => <li {...props}>{!!option.nickname.trim() ? option.nickname : option.name}</li>}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  label="選擇廠商"
-                  placeholder="廠商名稱"
-                  InputProps={{
-                    ...params.InputProps,
+        <AdminPageHeader
+          title="商品進貨作業"
+          showFilter={showFilter}
+          onFilterClick={() => setShowFilter(!showFilter)}
+          primaryAction={{
+            label: '新增進貨',
+            to: '/product/restock/create'
+          }}
+        />
+
+        <Collapse in={showFilter}>
+          <div css={styles.filterPanel}>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={12} sm={9}>
+                <Typography variant="caption" sx={{ color: '#666', mb: 1, display: 'block', fontWeight: 'bold' }}>
+                  按廠商篩選
+                </Typography>
+                <Autocomplete
+                  fullWidth
+                  multiple
+                  disableCloseOnSelect
+                  disabled={dialogOpen}
+                  options={vendorOptions}
+                  onChange={(event, value) => {
+                    setVendorUUId(value.map(d => d.vendor.uuid))
                   }}
+                  getOptionLabel={option => option.name}
+                  renderOption={(props, option, { selected }) => <li {...props}>{!!option.nickname.trim() ? option.nickname : option.name}</li>}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label="選擇廠商"
+                      placeholder="廠商名稱"
+                      InputProps={{
+                        ...params.InputProps,
+                      }}
+                    />
+                  )}
                 />
-              )}
-            />
-          </Grid>
-          <Grid item container sm={1} xs={12} style={{ display: 'flex' }} justifyContent="flex-end">
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSearch}
-            >
-              搜尋
-            </Button>
-          </Grid>
-        </Grid>
+              </Grid>
+              <Grid item xs={12} sm={3} sx={{ display: 'flex', alignItems: 'flex-end', height: '100%', pt: '30px !important' }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  css={styles.pillButton}
+                  fullWidth
+                  onClick={handleSearch}
+                >
+                  搜尋
+                </Button>
+              </Grid>
+            </Grid>
+          </div>
+        </Collapse>
         {!getPurchaseRecordsLazyData.loading && purchaseRecords !== undefined ? (
           <Results
             handleSearch={handleSearch}

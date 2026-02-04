@@ -20,26 +20,54 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
-const styles = {
-  root: css({}),
+const localStyles = {
+  card: css({
+    borderRadius: '16px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+  }),
   content: css({
     padding: '0px !important',
   }),
   inner: css({
     minWidth: 2300,
   }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
+  tableHead: css({
+    backgroundColor: '#FFFFFF',
+    '& .MuiTableCell-head': {
+      color: '#212121',
+      fontWeight: 'bold',
+      borderBottom: '1px solid #f0f0f0',
+      height: '40px !important',
+      padding: '2px 16px !important',
+      fontSize: '14px',
+    }
   }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
+  tableRow: css({
+    height: '40px !important',
+    minHeight: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      borderBottom: '1px solid #f0f0f0',
+      fontSize: '14px !important',
+      color: '#333',
+    },
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
+    '&.Mui-selected': {
+      backgroundColor: '#f9f9f9 !important',
+    },
+    '&.Mui-selected:hover': {
+      backgroundColor: '#f9f9f9 !important',
+    },
   }),
   actions: css({
     padding: theme.spacing(1),
     justifyContent: 'flex-end',
+    borderTop: '1px solid #f0f0f0',
   })
 }
 
@@ -52,19 +80,26 @@ function Results({
   ...rest
 }) {
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        {pageSetting.totalCount} 筆資料, {pageSetting.pageOffset + 1}/
-        {Math.ceil(pageSetting.totalCount / pageSetting.pageLimit)}
-      </Typography>
-      <Card>
-        <CardHeader action={<GenericMoreButton />} title="扣項總覽" />
-        <Divider />
-        <CardContent css={styles.content}>
+    <div {...rest} css={css([localStyles.root, className])}>
+      <Card css={localStyles.card}>
+        <CardHeader
+          action={<GenericMoreButton />}
+          title={
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+                扣項總覽
+              </Typography>
+              <Typography color="textSecondary" variant="body2">
+                共 {pageSetting.totalCount} 筆資料, {pageSetting.pageOffset + 1}/{Math.ceil(pageSetting.totalCount / pageSetting.pageLimit)} 頁
+              </Typography>
+            </div>
+          }
+        />
+        <CardContent css={localStyles.content}>
           <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
+            <div css={localStyles.inner}>
+              <Table size="small">
+                <TableHead css={localStyles.tableHead}>
                   <TableRow>
                     <TableCell>代號</TableCell>
                     <TableCell>姓名</TableCell>
@@ -95,7 +130,7 @@ function Results({
                 </TableHead>
                 <TableBody>
                   {users.map(data => (
-                    <TableRow key={data.id} hover>
+                    <TableRow key={data.id} css={localStyles.tableRow}>
                       <TableCell>{data.designerNo}</TableCell>
                       <TableCell>{data.name}</TableCell>
                       <TableCell>{data.jobTitle}</TableCell>
@@ -146,7 +181,7 @@ function Results({
                     </TableRow>
                   ))}
 
-                  <TableRow hover>
+                  <TableRow css={localStyles.tableRow}>
                     <TableCell>合 計:</TableCell>
                     <TableCell colSpan={2}></TableCell>
                     <TableCell>
@@ -286,7 +321,7 @@ function Results({
             </div>
           </PerfectScrollbar>
         </CardContent>
-        <CardActions css={styles.actions}>
+        <CardActions css={localStyles.actions}>
           <TablePagination
             labelRowsPerPage='每頁顯示數量'
             component="div"

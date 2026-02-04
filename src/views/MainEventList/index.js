@@ -13,14 +13,16 @@ import useFetchSetEndMainEvent from 'hooks/useFetchSetEndMainEvent'
 import useFetchEndEventRuleGroup from 'hooks/useFetchEndEventRuleGroup'
 import { openSnackbar } from 'elements/snackbars'
 import { cloneDeep } from 'lodash'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
 import Results from './Results'
 
 const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
+  root: css({}),
+  container: css({
+    paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(3)
   }),
   filterWrap: css({
@@ -180,6 +182,14 @@ function MainEventList() {
     setSelectIds(cloneIds)
   }
 
+  const handleToggleAll = () => {
+    if (selectIds.length === events.length) {
+      setSelectIds([])
+    } else {
+      setSelectIds(events.map(e => e.id))
+    }
+  }
+
   useEffect(() => {
     if (!getMainEvents.loading) {
       const data = idx(getMainEvents, _ => _.data.mainEvents)
@@ -190,18 +200,14 @@ function MainEventList() {
   return (
     <Fragment>
       <Page css={styles.root} title="活動列表">
-        <Container maxWidth={false}>
-          <Grid container item justifyContent='space-between' alignItems='center'>
-            <PageTitle title='活動列表' subTitle='Main Event List' />
-            <Grid item>
-              <Button
-                color="primary"
-                variant="contained"
-                to='/main-event-create'
-                component={RouterLink}
-              >建立活動</Button>
-            </Grid>
-          </Grid>
+        <Container maxWidth={false} css={styles.container}>
+          <AdminPageHeader
+            title="活動列表"
+            primaryAction={{
+              label: '建立活動',
+              to: '/main-event-create'
+            }}
+          />
           {getMainEvents.loading ?
             <div style={{ textAlign: 'center', marginTop: 100 }}><CircularProgress /></div>
             : <Results
@@ -211,6 +217,8 @@ function MainEventList() {
               setClickData={setClickData}
               setDialogOpen={setDialogOpen}
               setCollapse={handleSetCollapse}
+              onToggleAll={handleToggleAll}
+              isAllExpanded={events.length > 0 && selectIds.length === events.length}
               selectIds={selectIds}
               clickData={clickData}
             />

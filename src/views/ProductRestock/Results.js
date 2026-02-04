@@ -1,9 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Button, Card, CardActions, CardContent, Divider, Table, TableBody,
+  Button, Card, CardActions, CardContent, Table, TableBody,
   TableCell, TableHead, TableRow, Typography, Drawer, Checkbox,
-  Grid, Hidden, TableContainer
+  TableContainer, IconButton, Grid, Hidden
 } from '@mui/material'
+import EditIcon from '@mui/icons-material/Edit'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 import PropTypes from 'prop-types'
 import { useState, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
@@ -14,32 +16,67 @@ import _ from 'lodash'
 import useFetchDeletePurchase from 'hooks/useFetchDeletePurchase'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { CardHeader } from '@mui/material'
 
-const styles = {
+const localStyles = {
   root: css({}),
-  filterButton: css({
-    marginRight: theme.spacing(2),
+  card: css({
+    borderRadius: '16px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
   }),
   content: css({
-    padding: '0 0 20px 0',
+    padding: 0,
   }),
   inner: css({
     minWidth: 1300,
   }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
+  tableHead: css({
+    backgroundColor: '#FFFFFF',
+    '& .MuiTableCell-head': {
+      color: '#212121',
+      fontWeight: 'bold',
+      borderBottom: '1px solid #f0f0f0',
+      height: '40px !important',
+      padding: '2px 16px !important',
+      fontSize: '14px',
+    }
   }),
-  actionsDrawer: css({
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    '& > * + *': {
-      marginLeft: theme.spacing(2),
+  tableRow: css({
+    height: '40px !important',
+    minHeight: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      borderBottom: '1px solid #f0f0f0',
+      fontSize: '14px !important',
+      color: '#333',
+    },
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
+    '&.Mui-selected': {
+      backgroundColor: '#f9f9f9 !important',
+    },
+    '&.Mui-selected:hover': {
+      backgroundColor: '#f9f9f9 !important',
     },
   }),
-  buttonIcon: css({
-    marginRight: theme.spacing(1),
+  actionButton: css({
+    color: '#9e9e9e',
+    padding: '4px',
+    '&:hover': {
+      color: '#1A73E8',
+      backgroundColor: 'rgba(26, 115, 232, 0.04)',
+    },
+  }),
+  pillButton: css({
+    borderRadius: '20px !important',
+    padding: '2px 12px !important',
+    fontSize: '12px !important',
+    boxShadow: 'none !important',
+    minWidth: '70px',
   }),
 }
 
@@ -97,17 +134,26 @@ function Results({
 
   return (
     <Fragment>
-      <div {...rest} css={styles.root}>
-        <Typography color="textSecondary" gutterBottom variant="body2">
-        </Typography>
-        <Card>
-          <Divider />
-          <CardContent css={styles.content}>
+      <div {...rest} css={localStyles.root}>
+        <Card css={localStyles.card}>
+          <CardHeader
+            title={
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+                <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+                  所有進貨單
+                </Typography>
+                <Typography color="textSecondary" variant="body2">
+                  共 {purchaseRecords.length} 筆資料
+                </Typography>
+              </div>
+            }
+          />
+          <CardContent css={localStyles.content}>
             <TableContainer>
-              <Table>
-                <TableHead>
+              <Table size="small">
+                <TableHead css={localStyles.tableHead}>
                   <TableRow>
-                    <TableCell padding="checkbox">
+                    <TableCell padding="checkbox" width={50}>
                       <Checkbox
                         checked={selectId.length === selectAllRecords.length && selectAllRecords.length > 0}
                         color="primary"
@@ -118,58 +164,62 @@ function Results({
                         }
                       />
                     </TableCell>
-                    <TableCell />
-                    <TableCell>單號</TableCell>
-                    <TableCell>日期</TableCell>
-                    <TableCell>廠商</TableCell>
-                    <TableCell>進貨人</TableCell>
-                    <TableCell>金額</TableCell>
-                    <TableCell>異動日期</TableCell>
+                    <TableCell width={140}>單號</TableCell>
+                    <TableCell width={110}>日期</TableCell>
+                    <TableCell width={180}>廠商</TableCell>
+                    <TableCell width={100}>進貨人</TableCell>
+                    <TableCell width={100}>金額</TableCell>
+                    <TableCell width={150}>異動時間</TableCell>
                     <TableCell>備註</TableCell>
-                    <TableCell>入庫時間</TableCell>
-                    <TableCell></TableCell>
+                    <TableCell width={150}>入庫時間</TableCell>
+                    <TableCell align="center" width={110}>狀態處理</TableCell>
+                    <TableCell align="right" width={60}>操作</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {purchaseRecords.map((data, index) => {
+                    const isSelected = selectId.indexOf(data.uuid) > -1
                     return (
-                      <TableRow key={`${data.no}-${index}`}>
-                        <TableCell padding="checkbox">
+                      <TableRow
+                        key={`${data.no}-${index}`}
+                        css={localStyles.tableRow}
+                        selected={isSelected}
+                      >
+                        <TableCell padding="checkbox" width={50}>
                           <Checkbox
                             color="primary"
                             disabled={!!data.stockInDate}
-                            checked={selectId.indexOf(data.uuid) > -1}
+                            checked={isSelected}
                             onChange={() => selectOne(data.uuid)}
                           />
                         </TableCell>
-                        <TableCell>
+                        <TableCell width={140} style={{ fontWeight: '500' }}>{data.no}</TableCell>
+                        <TableCell width={110}>{format(new Date(data.date), 'yyyy/MM/dd')}</TableCell>
+                        <TableCell width={180}>{data.vendorName}</TableCell>
+                        <TableCell width={100}>{data.operatorName}</TableCell>
+                        <TableCell width={100}>{data.summary}</TableCell>
+                        <TableCell width={150}>
+                          {format(new Date(data.updatedAt), 'yyyy/MM/dd HH:mm')}
+                        </TableCell>
+                        <TableCell>{data.remark}</TableCell>
+                        <TableCell width={150}>{data.stockInDate && format(new Date(data.stockInDate), 'yyyy/MM/dd HH:mm')}</TableCell>
+                        <TableCell align="center" width={110}>
                           <Button
-                            color="primary"
+                            onClick={() => handleCheck(data)}
+                            css={localStyles.pillButton}
+                            variant='contained'
+                            color={data.stockInDate ? 'error' : 'success'}
+                          >{data.stockInDate ? '取消入庫' : '確認入庫'}</Button>
+                        </TableCell>
+                        <TableCell align="right" width={60}>
+                          <IconButton
+                            css={localStyles.actionButton}
                             component={RouterLink}
                             size="small"
                             to={`/product/restock/edit/${data.uuid}`}
-                            variant="outlined"
                           >
-                            {data.stockInDate ? '查看' : '編輯'}
-                          </Button>
-                        </TableCell>
-                        <TableCell>{data.no}</TableCell>
-                        <TableCell>{format(new Date(data.date), 'yyyy/MM/dd')}</TableCell>
-                        <TableCell>{data.vendorName}</TableCell>
-                        <TableCell>{data.operatorName}</TableCell>
-                        <TableCell>{data.summary}</TableCell>
-                        <TableCell>
-                          {format(new Date(data.updatedAt), 'yyyy-MM-dd-HH:MM')}
-                        </TableCell>
-                        <TableCell>{data.remark}</TableCell>
-                        <TableCell>{data.stockInDate && format(new Date(data.stockInDate), 'yyyy-MM-dd-HH:MM')}</TableCell>
-                        <TableCell>
-                          <Button
-                            onClick={() => handleCheck(data)}
-                            sx={{ wordBreak: 'keep-all' }}
-                            variant='contained'
-                            color={data.stockInDate ? 'error' : 'success'}
-                          >{data.stockInDate ? '取消入庫' : '入庫'}</Button>
+                            {data.stockInDate ? <VisibilityIcon fontSize="small" /> : <EditIcon fontSize="small" />}
+                          </IconButton>
                         </TableCell>
                       </TableRow>
                     )
@@ -178,24 +228,24 @@ function Results({
               </Table>
             </TableContainer>
           </CardContent>
-          <CardActions css={styles.actions}>
+          <CardActions css={localStyles.actions}>
           </CardActions>
         </Card>
       </div>
       <Drawer anchor="bottom" open={open} PaperProps={{ elevation: 1 }} variant="persistent">
-        <div {...rest} css={styles.root}>
+        <div {...rest} css={localStyles.root}>
           <Grid alignItems="center" container style={{ padding: '16px' }}>
             <Hidden smDown>
               <Grid item md={4}>
                 <Typography color="textSecondary" variant="subtitle1">
-                  {selectId.length} selected
+                  已選取 {selectId.length} 筆項目
                 </Typography>
               </Grid>
             </Hidden>
             <Grid item xs={4} container alignItems="center">
-              <div css={styles.actionsDrawer}>
-                <Button onClick={() => handleDelete()}>
-                  <DeleteForeverIcon css={styles.buttonIcon} />
+              <div>
+                <Button color="error" variant="contained" onClick={() => handleDelete()} css={localStyles.pillButton}>
+                  <DeleteForeverIcon sx={{ mr: 1, fontSize: '18px' }} />
                   刪除
                 </Button>
               </div>

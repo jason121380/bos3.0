@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Button } from '@mui/material'
+import { Container, CircularProgress, Button, Collapse } from '@mui/material'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import idx from 'idx'
@@ -11,30 +11,40 @@ import { useFetchGetVoucherIssuanceRecordLazy } from 'hooks/useFetchGetVoucherIs
 import produce from 'immer'
 import format from 'date-fns/format'
 import { CSVLink } from "react-csv";
+import AdminPageHeader from 'components/AdminPageHeader'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
 import Results from './Results'
 
 const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
+  root: css({}),
+  container: css({
+    paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(3)
   }),
   filterWrap: css({
     display: 'flex',
-    gap: 10,
+    gap: 12,
     flexWrap: 'wrap',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    '& .MerchantSearchBar': {
-      width: 'fit-content'
-    },
-    '& button': {
-      whiteSpace: 'nowrap',
-      height: 'fit-content'
+    marginBottom: theme.spacing(2),
+  }),
+  pillButton: css({
+    borderRadius: '20px !important',
+    padding: '4px 20px !important',
+    fontSize: '14px !important',
+    boxShadow: 'none !important',
+    fontWeight: 'bold !important',
+    height: '32px !important',
+  }),
+  secondaryPill: css({
+    backgroundColor: '#f5f5f5 !important',
+    color: '#666 !important',
+    '&:hover': {
+      backgroundColor: '#eeeeee !important',
     }
-  })
+  }),
 }
 
 function EventCouponIssuanceDetails() {
@@ -51,6 +61,7 @@ function EventCouponIssuanceDetails() {
   })
   const [recordData, setRecordData] = useState([])
   const [CSVData, setCSVData] = useState([])
+  const [showFilter, setShowFilter] = useState(false)
 
   const handlePageChange = (d, value) => {
     setPageSetting(
@@ -126,9 +137,12 @@ function EventCouponIssuanceDetails() {
   return (
     <Fragment>
       <Page css={styles.root} title="活動發券明細">
-        <Container maxWidth={false}>
-          <PageTitle title='活動發券明細' subTitle='event coupon issuance details' />
-          <div css={styles.filterWrap}>
+        <Container maxWidth={false} css={styles.container}>
+          <AdminPageHeader
+            title="活動發券明細"
+            showFilter={showFilter}
+            onFilterClick={() => setShowFilter(!showFilter)}
+          >
             <DateSelector
               date={inputData}
               attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
@@ -140,31 +154,39 @@ function EventCouponIssuanceDetails() {
                   })
                 )
               }}
-              margin
+              margin={false}
             />
-            <CSVLink data={CSVData} filename="活動發券明細.csv">
-              <Button color='primary' variant='contained'>報表匯出</Button>
-            </CSVLink>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <MainEventAutocomplete
-              value={inputData.eventIds}
-              onChange={value => {
-                setInputData(
-                  produce(draft => {
-                    draft.eventIds = value
-                  })
-                )
-              }}
-            />
-            <Button
-              style={{ height: 'fit-content' }}
-              color='primary'
-              variant='contained'
-              disabled={voucherIssuanceRecordData.loading}
-              onClick={handleSearch}
-            >搜尋</Button>
-          </div>
+          </AdminPageHeader>
+
+          <Collapse in={showFilter}>
+            <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+              <div css={styles.filterWrap} style={{ marginBottom: 0 }}>
+                <MainEventAutocomplete
+                  value={inputData.eventIds}
+                  onChange={value => {
+                    setInputData(
+                      produce(draft => {
+                        draft.eventIds = value
+                      })
+                    )
+                  }}
+                />
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <Button
+                    css={styles.pillButton}
+                    color='primary'
+                    variant='contained'
+                    disabled={voucherIssuanceRecordData.loading}
+                    onClick={handleSearch}
+                  >搜尋</Button>
+                  <CSVLink data={CSVData} filename="活動發券明細.csv" style={{ textDecoration: 'none' }}>
+                    <Button css={[styles.pillButton, styles.secondaryPill]} variant='contained'>報表匯出</Button>
+                  </CSVLink>
+                </div>
+              </div>
+            </div>
+          </Collapse>
+
           {voucherIssuanceRecordData.loading ?
             <div style={{ textAlign: 'center', marginTop: 100 }}><CircularProgress /></div>
             :

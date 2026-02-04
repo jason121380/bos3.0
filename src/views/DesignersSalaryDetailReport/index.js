@@ -11,12 +11,13 @@ import { format } from 'date-fns'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
+import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
 
 const styles = {
   root: css({}),
   container: css({
-    paddingTop: theme.spacing(3),
+    paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(3),
   }),
   results: css({
@@ -74,52 +75,33 @@ const DesignersSalaryDetailReport = () => {
   return (
     <Page css={styles.root} className='DesignersSalaryDetailReport' title="薪資明細表">
       <Container maxWidth={false} css={styles.container}>
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
-          <div className="merchantNamePrint">
-            {JSON.parse(localStorage.getItem('userMerchant')).name +
-              '   ' +
-              format(new Date(date.startDate), 'yyyy-MM').toLocaleString() +
-              '   ' +
-              '薪資明細表'}
-          </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' +
-              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-          </div>
-        </div>
-        <PageTitle title='薪資明細表' subTitle='Designer Salary Detail Report' />
-        <div css={styles.topDiv}>
+        <AdminPageHeader
+          title="薪資明細表"
+          secondaryActions={[
+            {
+              label: '報表匯出',
+              onClick: handleExportExcel,
+              disabled: getUserSalaryDetailExceLazyData.loading,
+              className: "noprint"
+            },
+            {
+              label: '列印',
+              onClick: () => window.print(),
+              className: "noprint"
+            }
+          ]}
+        >
           <DateSelector
             date={date}
             attributes={['lastmonth', 'thismonth', 'startDate']}
             dateChange={value => setDate(value)}
             onlyStart
-            margin
             inputFormat='yyyy/MM'
             pickerOption={{
               views: ['month', 'year']
             }}
           />
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <Button
-              disabled={getUserSalaryDetailExceLazyData.loading}
-              className="noprint"
-              variant="contained"
-              color="primary"
-              onClick={handleExportExcel}
-            >
-              報表匯出
-            </Button>
-            <Button
-              className="noprint"
-              variant="contained"
-              color="primary"
-              onClick={() => window.print()}
-            >
-              列印
-            </Button>
-          </div>
-        </div>
+        </AdminPageHeader>
         {!designersSalaryDetailReportData.loading ? (
           idx(designersSalaryDetailReportData, _ => (
             <Results

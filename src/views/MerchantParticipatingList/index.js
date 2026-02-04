@@ -6,14 +6,16 @@ import idx from 'idx'
 import { useState, useEffect, Fragment } from 'react'
 import useFetchGetMerchantParticipatingList from 'hooks/useFetchGetMerchantParticipatingList'
 import { cloneDeep } from 'lodash'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
 import Results from './Results'
 
 const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
+  root: css({}),
+  container: css({
+    paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(3)
   }),
   filterWrap: css({
@@ -40,6 +42,14 @@ function MerchantParticipatingList() {
     setSelectIds(cloneIds)
   }
 
+  const handleToggleAll = () => {
+    if (selectIds.length === events.length) {
+      setSelectIds([])
+    } else {
+      setSelectIds(events.map(e => e.id))
+    }
+  }
+
   useEffect(() => {
     if (!merchantParticipatingList.loading) {
       const data = idx(merchantParticipatingList, _ => _.data.merchantParticipatingList)
@@ -50,13 +60,15 @@ function MerchantParticipatingList() {
   return (
     <Fragment>
       <Page css={styles.root} title="活動店家參與列表">
-        <Container maxWidth={false}>
-          <PageTitle title='活動店家參與列表' subTitle='Merchant Participating List' />
+        <Container maxWidth={false} css={styles.container}>
+          <AdminPageHeader title="活動店家參與列表" />
           {merchantParticipatingList.loading ?
             <div style={{ textAlign: 'center', marginTop: 100 }}><CircularProgress /></div>
             : <Results
               events={events}
               setCollapse={handleSetCollapse}
+              onToggleAll={handleToggleAll}
+              isAllExpanded={events.length > 0 && selectIds.length === events.length}
               selectIds={selectIds}
             />
           }

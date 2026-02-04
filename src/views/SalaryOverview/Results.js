@@ -17,53 +17,48 @@ import useFetchDestroyUserSalaryMonthlyCheckoutRecord from 'hooks/useFetchDestro
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
-const styles = {
-  root: css({}),
+const localStyles = {
+  card: css({
+    borderRadius: '16px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+  }),
   content: css({
     padding: '0 !important',
-    marginTop: '-8px',
   }),
   inner: css({
     minWidth: 1000,
   }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-  actionsDrawer: css({
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    gap: '12px',
-    '& button': {
-      borderRadius: '50px !important',
-      padding: '8px 24px !important',
-      fontSize: '14px !important',
-      fontWeight: 'bold !important',
-      textTransform: 'none !important',
-      boxShadow: 'none !important',
-      transition: 'all 0.2s ease',
+  tableHead: css({
+    backgroundColor: '#FFFFFF',
+    '& .MuiTableCell-head': {
+      color: '#212121',
+      fontWeight: 'bold',
+      borderBottom: '1px solid #f0f0f0',
+      height: '40px !important',
+      padding: '2px 16px !important',
+      fontSize: '14px',
     }
   }),
-  buttonIcon: css({
-    marginRight: theme.spacing(1),
-  }),
-  drawContainer: css({
-    gap: '0px 20px',
-    padding: 12
+  tableRow: css({
+    height: '40px !important',
+    minHeight: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      borderBottom: '1px solid #f0f0f0',
+      fontSize: '14px !important',
+      color: '#333',
+    },
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   }),
   cardHeader: css({
+    padding: '12px 24px !important',
     '& .MuiCardHeader-title': {
-      fontSize: '15px',
+      fontSize: '16px',
       fontWeight: 'bold',
       display: 'flex',
       alignItems: 'center',
@@ -78,11 +73,11 @@ const styles = {
       },
     },
   }),
-  disabledBtn: {
-    '&.disabledBtn': {
-      color: 'rgba(0, 0, 0, 0.26) !important'
-    }
-  }
+  actions: css({
+    padding: theme.spacing(1),
+    justifyContent: 'flex-end',
+    borderTop: '1px solid #f0f0f0',
+  }),
 }
 
 function Results({
@@ -216,11 +211,10 @@ function Results({
     return editBtnStatus ? '檢視' : isSalaryChecked ? '編輯' : '未結算'
   }
   return (
-    <div {...rest} css={css([styles.root, className])} className='SalaryOverviewResult'>
-      <Card sx={{ boxShadow: 'none', border: 'none' }}>
+    <div {...rest} css={css([localStyles.root, className])} className='SalaryOverviewResult'>
+      <Card css={localStyles.card}>
         <CardHeader
-          css={styles.cardHeader}
-          sx={{ px: 3, pt: 2, pb: 1 }}
+          css={localStyles.cardHeader}
           action={
             <CSVLink data={excelData} filename="薪資總表.csv" >
               <Button
@@ -253,13 +247,13 @@ function Results({
             </div>
           }
         />
-
-        <CardContent css={styles.content}>
+        <Divider />
+        <CardContent css={localStyles.content}>
           <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead sx={{ backgroundColor: 'transparent' }}>
-                  <TableRow sx={{ height: '40px' }}>
+            <div css={localStyles.inner}>
+              <Table size="small">
+                <TableHead css={localStyles.tableHead}>
+                  <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
                         checked={
@@ -274,20 +268,20 @@ function Results({
                       />
                     </TableCell>
 
-                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', width: '110px' }}>狀態</TableCell>
-                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', width: '180px' }}>姓名</TableCell>
-                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', width: '100px' }}>代號</TableCell>
-                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', textAlign: 'left', width: '130px' }}>薪資加項</TableCell>
-                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', textAlign: 'left', width: '130px' }}>薪資扣項</TableCell>
-                    {borrowDisplay && <TableCell sx={{ color: '#212121', fontWeight: 'bold', textAlign: 'left', width: '130px' }}>員工借支</TableCell>}
-                    <TableCell sx={{ color: '#212121', fontWeight: 'bold', textAlign: 'left', width: '180px' }}>實際匯款金額</TableCell>
+                    <TableCell>狀態</TableCell>
+                    <TableCell>姓名</TableCell>
+                    <TableCell>代號</TableCell>
+                    <TableCell>薪資加項</TableCell>
+                    <TableCell>薪資扣項</TableCell>
+                    {borrowDisplay && <TableCell>員工借支</TableCell>}
+                    <TableCell>實際匯款金額</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {usersSalary.map((data, index) => {
                     if ((isSalaryItemsLock && data.increaseItem > 0) || data.decreaseItem > 0) {
                       return (
-                        <TableRow key={data.id} hover sx={{ height: '40px' }}>
+                        <TableRow key={data.id} css={localStyles.tableRow}>
                           <TableCell padding="checkbox">
                             <Checkbox
                               color="primary"
@@ -336,12 +330,12 @@ function Results({
                             {borrowDisplay ? (data.decreaseItem - findBorrow(data.decreaseItemDetail)) * -1 : data.decreaseItem * -1}
                           </TableCell>
                           {borrowDisplay && <TableCell sx={{ fontSize: '14px', textAlign: 'left', width: '130px' }}>{findBorrow(data.decreaseItemDetail) * -1}</TableCell>}
-                          <TableCell sx={{ fontSize: '16px', fontWeight: 'bold', color: theme.palette.primary.main, textAlign: 'left', width: '180px' }}>{data.increaseItem - data.decreaseItem}</TableCell>
+                          <TableCell sx={{ fontSize: '16px', fontWeight: 'bold', color: theme.palette.primary.main, textAlign: 'left' }}>{data.increaseItem - data.decreaseItem}</TableCell>
                         </TableRow>
                       )
                     } else if (!isSalaryItemsLock) {
                       return (
-                        <TableRow key={data.id} hover sx={{ height: '40px' }}>
+                        <TableRow key={data.id} css={localStyles.tableRow}>
                           <TableCell padding="checkbox">
                             <Checkbox
                               color="primary"
@@ -403,11 +397,11 @@ function Results({
             </div>
           </PerfectScrollbar>
         </CardContent>
-        <CardActions css={styles.actions}>
+        <CardActions css={localStyles.actions}>
         </CardActions>
       </Card>
       <Drawer anchor="bottom" open={open} PaperProps={{ elevation: 1 }} variant="persistent">
-        <Grid alignItems="center" container css={styles.drawContainer} >
+        <Grid alignItems="center" container sx={{ gap: '0px 20px', padding: 1.5 }} >
           <Hidden smDown>
             <Grid item md={4}>
               <Typography color="textSecondary" variant="subtitle1">
@@ -416,16 +410,27 @@ function Results({
             </Grid>
           </Hidden>
           <Grid item>
-            <div css={styles.actionsDrawer}>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              gap: '12px',
+              padding: '8px 0',
+            }}>
               <Button
                 variant="contained"
                 disabled={isSalaryItemsLock}
                 onClick={() => handleDeleteCheckout()}
                 startIcon={<DeleteForeverIcon />}
-                sx={{
-                  backgroundColor: '#ea4335 !important', // Google/BOS Red
-                  color: 'white !important',
-                  '&:hover': { backgroundColor: '#d32f2f !important' }
+                style={{
+                  borderRadius: '50px',
+                  padding: '8px 24px',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  textTransform: 'none',
+                  boxShadow: 'none',
+                  backgroundColor: '#ea4335',
+                  color: 'white',
                 }}
               >
                 刪除
@@ -435,16 +440,27 @@ function Results({
           {!isSalaryItemsLock && (
             <Fragment>
               <Grid item >
-                <div css={styles.actionsDrawer}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  flexWrap: 'wrap',
+                  gap: '12px',
+                  padding: '8px 0',
+                }}>
                   <Button
                     variant="contained"
                     onClick={() => handleCloseAccount(1)}
                     disabled={disabledBtn}
                     startIcon={<FactCheckIcon />}
-                    sx={{
-                      backgroundColor: '#1A73E8 !important',
-                      color: 'white !important',
-                      '&:hover': { backgroundColor: '#1557b0 !important' }
+                    style={{
+                      borderRadius: '50px',
+                      padding: '8px 24px',
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      textTransform: 'none',
+                      boxShadow: 'none',
+                      backgroundColor: '#1A73E8',
+                      color: 'white',
                     }}
                   >
                     {isThisMonthSalaryChacked ? '重新月結' : '月結訂單'}
@@ -452,16 +468,27 @@ function Results({
                 </div>
               </Grid>
               <Grid item >
-                <div css={styles.actionsDrawer}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  flexWrap: 'wrap',
+                  gap: '12px',
+                  padding: '8px 0',
+                }}>
                   <Button
                     variant="contained"
                     onClick={() => handleCloseAccount(2)}
                     disabled={disabledBtn}
                     startIcon={<FactCheckIcon />}
-                    sx={{
-                      backgroundColor: '#1A73E8 !important',
-                      color: 'white !important',
-                      '&:hover': { backgroundColor: '#1557b0 !important' }
+                    style={{
+                      borderRadius: '50px',
+                      padding: '8px 24px',
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      textTransform: 'none',
+                      boxShadow: 'none',
+                      backgroundColor: '#1A73E8',
+                      color: 'white',
                     }}
                   >
                     {isThisMonthSalaryChacked ? '重新月結不帶入加扣項' : '月結訂單不帶入加扣項'}

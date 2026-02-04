@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Grid, Button, CircularProgress, Typography } from '@mui/material'
+import { Container, Grid, Button, CircularProgress, Typography } from '@mui/material'
+import AdminPageHeader from 'components/AdminPageHeader'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import idx from 'idx'
@@ -25,8 +26,10 @@ import { theme } from '../../theme'
 import Results from './Results'
 
 const styles = {
-  root: css({
-    padding: theme.spacing(3),
+  root: css({}),
+  container: css({
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(3),
   })
 }
 
@@ -125,87 +128,70 @@ export default function Payroll() {
   }
   return (
     <Page title="薪資條" css={styles.root} className='EmployeePayslip'>
-      {(!isPrintdetailHidden && detailDisplay) && (
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
-          <div className="merchantNamePrint">
-            {JSON.parse(localStorage.getItem('userMerchant')).name +
-              '   ' +
-              format(new Date(date.startDate), 'yyyy-MM').toLocaleString() +
-              '   ' +
-              '薪資條'}
+      <Container maxWidth={false} css={styles.container}>
+        <AdminPageHeader
+          title="薪資條"
+          secondaryActions={[
+            {
+              label: '報表匯出',
+              onClick: handleExcel,
+              disabled: getUserSalaryExcelLazyData.loading,
+              className: "noprint"
+            },
+            {
+              label: '列印',
+              onClick: () => window.print(),
+              className: "noprint"
+            }
+          ]}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <DateSelector
+              date={date}
+              attributes={['lastmonth', 'thismonth', 'startDate']}
+              dateChange={value => setDate(value)}
+              onlyStart
+              inputFormat='yyyy/MM'
+              pickerOption={{
+                views: ['month', 'year']
+              }}
+            />
+            <DesignerSearch
+              value={searchId}
+              label="設計師編號/姓名"
+              onChange={value => setSearchId(value.userId)}
+            />
           </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' +
-              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-          </div>
-        </div>
-      )}
-      <PageTitle title='薪資條' subTitle='Employee Payslip' />
-      <Grid container alignItems='center' justifyContent='space-between' className="noprint" style={{ gap: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <DateSelector
-            date={date}
-            attributes={['lastmonth', 'thismonth', 'startDate']}
-            dateChange={value => setDate(value)}
-            onlyStart
-            margin
-            inputFormat='yyyy/MM'
-            pickerOption={{
-              views: ['month', 'year']
-            }}
-          />
-          <DesignerSearch
-            value={searchId}
-            label="設計師編號/姓名"
-            onChange={value => setSearchId(value.userId)}
-          />
-        </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-          <Grid item>
-            <Button disabled={getUserSalaryExcelLazyData.loading} variant="contained" color="primary" onClick={() => handleExcel()}>
-              報表匯出
-            </Button>
-          </Grid>
-          <Grid item className="printGrid">
-            <Button
-              size="medium"
-              variant="contained"
-              color="primary"
-              onClick={() => window.print()}
-            >
-              列印
-            </Button>
-          </Grid>
-        </div>
-      </Grid>
+        </AdminPageHeader>
 
-      {(!usersDalaryData.loading && !isDisplayFakePerformance.loading && !getIsPrintDetailDisplayOnSalaryReport.loading && !EPWDDisplay.loading) ?
-        idx(
-          usersDalaryData,
-          _ =>
-            _.data.userSalaryReport.length > 0 ? (
-              <Grid container className={'EmployeePayslipTableContainer'}>
-                <Results
-                  userSalaryReport={_.data.userSalaryReport}
-                  date={date.startDate}
-                  searchId={searchId}
-                  EPWDDisplay={EPWDDisplay.data.getIsEPWDDisplay}
-                  isDisplayFakePerformance={idx(
-                    isDisplayFakePerformance,
-                    _ => _.data.getIsDisplayFakePerformanceInSalaryReport
-                  )}
-                  printStyle={idx(
-                    employeePayslipPrintStyle,
-                    _ => _.data.getEmployeePayslipPrintStyle
-                  )}
-                  detailDisplay={!isPrintdetailHidden && !detailDisplay}
-                  payslipOptimization={payslipOptimization}
-                />
-              </Grid>
-            ) : <Typography style={{ textAlign: 'center', marginTop: '100px' }} variant="h3" gutterBottom component="div">無資料</Typography>
-        ) :
-        <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
-      }
+        {(!usersDalaryData.loading && !isDisplayFakePerformance.loading && !getIsPrintDetailDisplayOnSalaryReport.loading && !EPWDDisplay.loading) ?
+          idx(
+            usersDalaryData,
+            _ =>
+              _.data.userSalaryReport.length > 0 ? (
+                <Grid container className={'EmployeePayslipTableContainer'}>
+                  <Results
+                    userSalaryReport={_.data.userSalaryReport}
+                    date={date.startDate}
+                    searchId={searchId}
+                    EPWDDisplay={EPWDDisplay.data.getIsEPWDDisplay}
+                    isDisplayFakePerformance={idx(
+                      isDisplayFakePerformance,
+                      _ => _.data.getIsDisplayFakePerformanceInSalaryReport
+                    )}
+                    printStyle={idx(
+                      employeePayslipPrintStyle,
+                      _ => _.data.getEmployeePayslipPrintStyle
+                    )}
+                    detailDisplay={!isPrintdetailHidden && !detailDisplay}
+                    payslipOptimization={payslipOptimization}
+                  />
+                </Grid>
+              ) : <Typography style={{ textAlign: 'center', marginTop: '100px' }} variant="h3" gutterBottom component="div">無資料</Typography>
+          ) :
+          <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
+        }
+      </Container>
     </Page>
   )
 }

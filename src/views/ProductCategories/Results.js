@@ -5,14 +5,15 @@ import {
   CardContent,
   CardHeader,
   Checkbox,
-  Divider,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
   Typography,
+  IconButton,
 } from '@mui/material'
+import EditIconSlot from '@mui/icons-material/Edit'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteProductCategory from 'hooks/useFetchDeleteProductCategory'
@@ -23,8 +24,62 @@ import { useState } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { css } from '@emotion/react'
+import { theme } from '../../theme'
 
-import styles from './styles/Results'
+const styles = {
+  root: css({}),
+  card: css({
+    borderRadius: '16px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+  }),
+  content: css({
+    padding: 0,
+  }),
+  inner: css({
+    minWidth: 700,
+  }),
+  tableHead: css({
+    backgroundColor: '#FFFFFF',
+    '& .MuiTableCell-head': {
+      color: '#212121',
+      fontWeight: 'bold',
+      borderBottom: '1px solid #f0f0f0',
+      height: '40px !important',
+      padding: '2px 16px !important',
+      fontSize: '14px',
+    }
+  }),
+  tableRow: css({
+    height: '40px !important',
+    minHeight: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      borderBottom: '1px solid #f0f0f0',
+      fontSize: '14px !important',
+      color: '#333',
+    },
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
+    '&.Mui-selected': {
+      backgroundColor: '#f9f9f9 !important',
+    },
+    '&.Mui-selected:hover': {
+      backgroundColor: '#f9f9f9 !important',
+    },
+  }),
+  actionButton: css({
+    color: '#9e9e9e',
+    padding: '4px',
+    '&:hover': {
+      color: '#1A73E8',
+      backgroundColor: 'rgba(26, 115, 232, 0.04)',
+    },
+  }),
+}
 
 function Results({ className, categories, refetchCategories, ...rest }) {
   const [selectedCategories, setSelectedCcategories] = useState([])
@@ -58,17 +113,24 @@ function Results({ className, categories, refetchCategories, ...rest }) {
   }
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        {categories.length} 筆資料
-      </Typography>
-      <Card>
-        <CardHeader title="所有商品類別" />
-        <Divider />
+      <Card css={styles.card}>
+        <CardHeader
+          title={
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+                所有商品類別
+              </Typography>
+              <Typography color="textSecondary" variant="body2">
+                共 {categories.length} 筆資料
+              </Typography>
+            </div>
+          }
+        />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
-              <Table>
-                <TableHead>
+              <Table size="small">
+                <TableHead css={styles.tableHead}>
                   <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
@@ -87,49 +149,51 @@ function Results({ className, categories, refetchCategories, ...rest }) {
                         }
                       />
                     </TableCell>
-                    <TableCell>操作</TableCell>
                     <TableCell>代號</TableCell>
                     <TableCell>名稱</TableCell>
                     <TableCell>變更者</TableCell>
                     <TableCell>變更時間</TableCell>
+                    <TableCell align="right">操作</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {categories.map((data, index) => (
-                    <TableRow
-                      hover
-                      key={`${data.name}-${data.no}-${index}`}
-                      selected={selectedCategories.indexOf(data.id) > -1 || !data.isUsing}
-                      data-testid="category-row"
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          onChange={() => handleSelectOne(data.id)}
-                          checked={selectedCategories.indexOf(data.id) > -1}
-                          disabled={!data.isUsing}
-                          inputProps={{
-                            'data-testid': `category-${data.name}-checkbox`,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          color="primary"
-                          component={RouterLink}
-                          size="small"
-                          to={`/product/category/edit/${data.id}`}
-                          variant="outlined"
-                        >
-                          編輯
-                        </Button>
-                      </TableCell>
-                      <TableCell>{data.no}</TableCell>
-                      <TableCell>{data.name}</TableCell>
-                      <TableCell>{idx(data, _ => _.creator.name)}</TableCell>
-                      <TableCell>{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
-                    </TableRow>
-                  ))}
+                  {categories.map((data, index) => {
+                    const isSelected = selectedCategories.indexOf(data.id) > -1
+                    return (
+                      <TableRow
+                        key={`${data.name}-${data.no}-${index}`}
+                        css={styles.tableRow}
+                        selected={isSelected || !data.isUsing}
+                        data-testid="category-row"
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            onChange={() => handleSelectOne(data.id)}
+                            checked={isSelected}
+                            disabled={!data.isUsing}
+                            inputProps={{
+                              'data-testid': `category-${data.name}-checkbox`,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>{data.no}</TableCell>
+                        <TableCell style={{ fontWeight: 'bold' }}>{data.name}</TableCell>
+                        <TableCell>{idx(data, _ => _.creator.name)}</TableCell>
+                        <TableCell>{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
+                        <TableCell align="right">
+                          <IconButton
+                            css={styles.actionButton}
+                            component={RouterLink}
+                            size="small"
+                            to={`/product/category/edit/${data.id}`}
+                          >
+                            <EditIconSlot fontSize="small" />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
                 </TableBody>
               </Table>
             </div>

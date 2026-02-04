@@ -12,33 +12,63 @@ import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState, useRef } from 'react'
 import { css } from '@emotion/react'
 
-const styles = {
-  table: css({
-    minWidth: 650,
+const localStyles = {
+  tableHead: css({
+    backgroundColor: '#FFFFFF',
+    '& .MuiTableCell-head': {
+      color: '#212121',
+      fontWeight: 'bold',
+      borderBottom: '1px solid #f0f0f0',
+      height: '40px !important',
+      padding: '2px 16px !important',
+      fontSize: '14px',
+    }
+  }),
+  tableRow: css({
+    height: '40px !important',
+    minHeight: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      borderBottom: '1px solid #f0f0f0',
+      fontSize: '14px !important',
+      color: '#333',
+    },
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
+  }),
+  totalRow: css({
+    backgroundColor: '#f8f9fa !important',
+    height: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      fontWeight: 'bold !important',
+      color: '#212121 !important',
+      borderBottom: '1px solid #f0f0f0',
+    }
   }),
   sticky: css({
     position: 'sticky',
     left: 0,
-    background: 'white',
-    zIndex: '99',
-    outline: '1px solid #eeeeee',
+    background: '#FFFFFF !important',
+    zIndex: 99,
+    borderRight: '1px solid #f0f0f0',
   }),
   sticky2: css({
     position: 'sticky',
     left: 80,
-    background: 'white',
-    zIndex: '99',
-    outline: '1px solid #eeeeee',
+    background: '#FFFFFF !important',
+    zIndex: 99,
+    borderRight: '1px solid #f0f0f0',
   }),
-  stickyRow: css({
-    position: 'relative',
+  stickyHeader: css({
+    position: 'sticky',
     top: 0,
-    background: 'white',
-    zIndex: '100',
-    outline: '1px solid #eeeeee',
+    background: '#FFFFFF',
+    zIndex: 100,
   }),
   fixed: css({
-    position: 'fixed',
+    position: 'fixed'
   })
 }
 
@@ -89,7 +119,7 @@ function Results({
       }
     }
   }, [])
-  
+
   useEffect(() => {
     if (!designersSalaryDetailReportDataLoading && !merchantSalaryIncreaseItems.loading) {
       const increaseItemsSum = []
@@ -118,7 +148,7 @@ function Results({
   useEffect(() => {
     if (!designersSalaryDetailReportDataLoading && merchantSalaryDecreaseItems.length > 0) {
       const decreaseItemsSum = []
-      merchantSalaryDecreaseItems.forEach(data => {})
+      merchantSalaryDecreaseItems.forEach(data => { })
       merchantSalaryDecreaseItems.forEach((data, index) => {
         decreaseItemsSum.push(0)
 
@@ -147,61 +177,61 @@ function Results({
   }
   return (
     <Fragment>
-      <TableContainer ref={tableRef1} style={{ marginTop: 12 }} component={Paper} className="DesignersSalaryDetailReportTable">
-        <Table css={styles.table} size="small" aria-label="a dense table">
-          <TableHead ref={tHead1} css={styles.stickyRow}>
-            <TableRow style={{ top: fixedStatus1 && headerHeight, display: hide1 && 'none', left: xMove1 }} css={fixedStatus1 ? styles.fixed : {}}>
-              <TableCell css={styles.sticky} style={{ wordBreak: 'break-all', left: fixedStatus1 && tableGap}}>代號</TableCell>
-              <TableCell css={styles.sticky2} style={{ wordBreak: 'break-all', left: fixedStatus1 && (tableGap + 80)}}>姓名</TableCell>
-              <TableCell style={{ visibility: xMove1 < (-180 + tableGap ) && 'hidden' }}>身份</TableCell>
+      <TableContainer ref={tableRef1} style={{ marginTop: 12, border: '1px solid #f0f0f0', borderRadius: '8px', overflow: 'auto' }} className="DesignersSalaryDetailReportTable">
+        <Table size="small">
+          <TableHead ref={tHead1} css={localStyles.tableHead}>
+            <TableRow style={{ top: fixedStatus1 && headerHeight, display: hide1 && 'none', left: xMove1 }} css={fixedStatus1 ? localStyles.fixed : {}}>
+              <TableCell css={localStyles.sticky} style={{ wordBreak: 'break-all', left: fixedStatus1 && tableGap }}>代號</TableCell>
+              <TableCell css={localStyles.sticky2} style={{ wordBreak: 'break-all', left: fixedStatus1 && (tableGap + 80) }}>姓名</TableCell>
+              <TableCell style={{ visibility: xMove1 < (-180 + tableGap) && 'hidden' }}>身份</TableCell>
               {merchantSalaryIncreaseItems.map((data, index) => (
-                <TableCell style={{ visibility: headerVisible(xMove1, index + 1)}} key={`${data.name}-${index}`}>{data.name}</TableCell>
+                <TableCell style={{ visibility: headerVisible(xMove1, index + 1) }} key={`${data.name}-${index}`}>{data.name}</TableCell>
               ))}
-              <TableCell style={{ visibility: headerVisible(xMove1, merchantSalaryIncreaseItems.length + 1)}}>加項合計</TableCell>
-              <TableCell style={{ visibility: headerVisible(xMove1, merchantSalaryIncreaseItems.length + 2)}}>指定業績</TableCell>
-              <TableCell style={{ visibility: headerVisible(xMove1, merchantSalaryIncreaseItems.length + 3)}}>不指定業績</TableCell>
+              <TableCell style={{ visibility: headerVisible(xMove1, merchantSalaryIncreaseItems.length + 1) }}>加項合計</TableCell>
+              <TableCell style={{ visibility: headerVisible(xMove1, merchantSalaryIncreaseItems.length + 2) }}>指定業績</TableCell>
+              <TableCell style={{ visibility: headerVisible(xMove1, merchantSalaryIncreaseItems.length + 3) }}>不指定業績</TableCell>
               <TableCell>特殊抽業績</TableCell>
               <TableCell>點數</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {salaryDetailReport.userSalaryDetail.map((data, index) => {
-                return (
-                  <TableRow hover key={index}>
-                    <TableCell css={styles.sticky} style={{ wordBreak: 'break-all' }}>{data.userNo}</TableCell>
-                    <TableCell css={styles.sticky2} style={{ wordBreak: 'break-all' }}>{data.userName}</TableCell>
-                    <TableCell ref={tr1Ref}>{data.userHelperIdentity}</TableCell>
-                    {merchantSalaryIncreaseItems.map((merchantIncreaseItems, merchantIncreaseItemsIndex) => {
-                      if (
-                        data.increase.find(
-                          increase => increase.itemName === merchantIncreaseItems.name
-                        ) !== undefined
-                      ) {
-                        return (
-                          <TableCell key={merchantIncreaseItemsIndex}>
-                            {
-                              data.increase.find(
-                                increase => increase.itemName === merchantIncreaseItems.name
-                              ).price
-                            }
-                          </TableCell>
-                        )
-                      } else {
-                        return <TableCell key={merchantIncreaseItemsIndex}>0</TableCell>
-                      }
-                    })}
-                    <TableCell>{Math.round(data.increaseSum)}</TableCell>
-                    <TableCell>{Math.round(data.designatePerformance)}</TableCell>
-                    <TableCell>{Math.round(data.nonDesignatePerformance)}</TableCell>
-                    <TableCell>{Math.round(data.specialTruthPerformance)}</TableCell>
-                    <TableCell>{Math.round(data.helperRetrievePoint)}</TableCell>
-                  </TableRow>
-                )
-              }
+              return (
+                <TableRow key={index} css={localStyles.tableRow}>
+                  <TableCell css={localStyles.sticky} style={{ wordBreak: 'break-all' }}>{data.userNo}</TableCell>
+                  <TableCell css={localStyles.sticky2} style={{ wordBreak: 'break-all' }}>{data.userName}</TableCell>
+                  <TableCell ref={tr1Ref}>{data.userHelperIdentity}</TableCell>
+                  {merchantSalaryIncreaseItems.map((merchantIncreaseItems, merchantIncreaseItemsIndex) => {
+                    if (
+                      data.increase.find(
+                        increase => increase.itemName === merchantIncreaseItems.name
+                      ) !== undefined
+                    ) {
+                      return (
+                        <TableCell key={merchantIncreaseItemsIndex}>
+                          {
+                            data.increase.find(
+                              increase => increase.itemName === merchantIncreaseItems.name
+                            ).price
+                          }
+                        </TableCell>
+                      )
+                    } else {
+                      return <TableCell key={merchantIncreaseItemsIndex}>0</TableCell>
+                    }
+                  })}
+                  <TableCell>{Math.round(data.increaseSum)}</TableCell>
+                  <TableCell>{Math.round(data.designatePerformance)}</TableCell>
+                  <TableCell>{Math.round(data.nonDesignatePerformance)}</TableCell>
+                  <TableCell>{Math.round(data.specialTruthPerformance)}</TableCell>
+                  <TableCell>{Math.round(data.helperRetrievePoint)}</TableCell>
+                </TableRow>
+              )
+            }
             )}
-            <TableRow>
-              <TableCell css={styles.sticky} style={{ fontWeight: 'bold' }}>合計:</TableCell>
-              <TableCell css={styles.sticky2}/>
+            <TableRow css={localStyles.totalRow}>
+              <TableCell css={localStyles.sticky} style={{ fontWeight: 'bold', backgroundColor: '#f8f9fa !important' }}>合計:</TableCell>
+              <TableCell css={localStyles.sticky2} style={{ backgroundColor: '#f8f9fa !important' }} />
               <TableCell />
               {increaseItemsSum.map((data, index) => (
                 <TableCell key={index}>{Math.round(data)}</TableCell>
@@ -247,61 +277,61 @@ function Results({
       </TableContainer>
 
       <TableContainer
-        component={Paper}
+        style={{ marginTop: 24, border: '1px solid #f0f0f0', borderRadius: '8px', overflow: 'auto' }}
         className="DesignersSalaryDetailReportTable-2"
         ref={tableRef2}
       >
-        <Table css={styles.table} size="small" aria-label="a dense table">
-          <TableHead ref={tHead2} css={styles.stickyRow}>
-            <TableRow style={{ top: fixedStatus2 && headerHeight, left: xMove2 }} css={fixedStatus2 ? styles.fixed : {}}>
-              <TableCell css={styles.sticky} style={{ wordBreak: 'break-all', left: fixedStatus2 && tableGap }}>代號</TableCell>
-              <TableCell css={styles.sticky2} style={{ wordBreak: 'break-all', left: fixedStatus2 && (tableGap + 80) }}>姓名</TableCell>
-              <TableCell style={{ visibility: xMove2 < (-180 + tableGap ) && 'hidden' }}>實發金額</TableCell>
+        <Table size="small">
+          <TableHead ref={tHead2} css={localStyles.tableHead}>
+            <TableRow style={{ top: fixedStatus2 && headerHeight, left: xMove2 }} css={fixedStatus2 ? localStyles.fixed : {}}>
+              <TableCell css={localStyles.sticky} style={{ wordBreak: 'break-all', left: fixedStatus2 && tableGap }}>代號</TableCell>
+              <TableCell css={localStyles.sticky2} style={{ wordBreak: 'break-all', left: fixedStatus2 && (tableGap + 80) }}>姓名</TableCell>
+              <TableCell style={{ visibility: xMove2 < (-180 + tableGap) && 'hidden' }}>實發金額</TableCell>
               {merchantSalaryDecreaseItems.map((data, index) => (
-                <TableCell style={{ visibility: headerVisible(xMove2, index + 1)}} key={`${data.name}-${index}`}>{data.name}</TableCell>
+                <TableCell style={{ visibility: headerVisible(xMove2, index + 1) }} key={`${data.name}-${index}`}>{data.name}</TableCell>
               ))}
               <TableCell>扣項合計</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {salaryDetailReport.userSalaryDetail.map((data, index) => {
-                return (
-                  <TableRow hover key={index}>
-                    <TableCell css={styles.sticky} style={{ wordBreak: 'break-all' }}>{data.userNo}</TableCell>
-                    <TableCell css={styles.sticky2} style={{ wordBreak: 'break-all' }}>{data.userName}</TableCell>
-                    <TableCell ref={tr2Ref}>{Math.round(data.actualPaidPrice)}</TableCell>
-                    {merchantSalaryDecreaseItems.map((merchantDecreaseItems, merchantDecreaseItemsIndex) => {
-                      if (data.decrease.length === 0) {
-                        return <TableCell key={merchantDecreaseItemsIndex}>0</TableCell>
+              return (
+                <TableRow key={index} css={localStyles.tableRow}>
+                  <TableCell css={localStyles.sticky} style={{ wordBreak: 'break-all' }}>{data.userNo}</TableCell>
+                  <TableCell css={localStyles.sticky2} style={{ wordBreak: 'break-all' }}>{data.userName}</TableCell>
+                  <TableCell ref={tr2Ref}>{Math.round(data.actualPaidPrice)}</TableCell>
+                  {merchantSalaryDecreaseItems.map((merchantDecreaseItems, merchantDecreaseItemsIndex) => {
+                    if (data.decrease.length === 0) {
+                      return <TableCell key={merchantDecreaseItemsIndex}>0</TableCell>
+                    } else {
+                      if (
+                        data.decrease.find(
+                          decrease => decrease.itemName === merchantDecreaseItems.name
+                        ) !== undefined
+                      ) {
+                        return (
+                          <TableCell key={merchantDecreaseItemsIndex}>
+                            {
+                              data.decrease.find(
+                                decrease =>
+                                  decrease.itemName === merchantDecreaseItems.name
+                              ).price
+                            }
+                          </TableCell>
+                        )
                       } else {
-                        if (
-                          data.decrease.find(
-                            decrease => decrease.itemName === merchantDecreaseItems.name
-                          ) !== undefined
-                        ) {
-                          return (
-                            <TableCell key={merchantDecreaseItemsIndex}>
-                              {
-                                data.decrease.find(
-                                  decrease =>
-                                    decrease.itemName === merchantDecreaseItems.name
-                                ).price
-                              }
-                            </TableCell>
-                          )
-                        } else {
-                          return <TableCell>0</TableCell>
-                        }
+                        return <TableCell>0</TableCell>
                       }
-                    })}
-                    <TableCell>{Math.round(data.decreaseSum)}</TableCell>
-                  </TableRow>
-                )
-              }
+                    }
+                  })}
+                  <TableCell>{Math.round(data.decreaseSum)}</TableCell>
+                </TableRow>
+              )
+            }
             )}
-            <TableRow>
-              <TableCell css={styles.sticky} style={{ fontWeight: 'bold' }}>合計:</TableCell>
-              <TableCell  css={styles.sticky2}/>
+            <TableRow css={localStyles.totalRow}>
+              <TableCell css={localStyles.sticky} style={{ fontWeight: 'bold', backgroundColor: '#f8f9fa !important' }}>合計:</TableCell>
+              <TableCell css={localStyles.sticky2} style={{ backgroundColor: '#f8f9fa !important' }} />
               <TableCell>
                 {Math.round(
                   salaryDetailReport.userSalaryDetail

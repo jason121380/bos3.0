@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { Card, Container, Button, CircularProgress, Grid, IconButton, Collapse, Link } from '@mui/material'
-import FilterListIcon from '@mui/icons-material/FilterList'
+import { Container, Button, CircularProgress, Collapse, Typography } from '@mui/material'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
-import PageTitle from 'components/PageTitle'
 import useFetchProducts from 'hooks/useFetchProducts'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
@@ -12,9 +10,36 @@ import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import { Link as RouterLink } from 'react-router-dom'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
-
+import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
-import styles from './styles/Products'
+
+const localStyles = {
+  root: css({}),
+  container: css({
+    paddingTop: theme.spacing(1.5),
+    paddingBottom: theme.spacing(3)
+  }),
+  filterPanel: css({
+    marginBottom: '12px',
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    padding: '20px',
+    border: '1px solid #f0f0f0',
+  }),
+  categorieDiv: css({
+    marginTop: '12px',
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '8px',
+  }),
+  pillButton: css({
+    borderRadius: '20px !important',
+    padding: '4px 16px !important',
+    fontSize: '13px !important',
+    boxShadow: 'none !important',
+    fontWeight: 'bold !important',
+  }),
+}
 
 function CustomerManagementList() {
   const [setting, setSetting] = useState({
@@ -69,60 +94,20 @@ function CustomerManagementList() {
   }, [products.loading, products.data, productCategoriesData.loading, productCategoriesData.data])
 
   return (
-    <Page css={styles.root} title="商品列表">
-      <Container maxWidth={false}>
-        <Card
-          css={css({
-            display: 'flex',
-            padding: '12px 24px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#E8F0FE',
-            borderRadius: '12px',
-            boxShadow: 'none',
-            border: 'none !important',
-            marginBottom: '12px',
-          })}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='商品列表' style={{ color: '#1A73E8' }} />
-            <Link component={RouterLink} to="/product/create" style={{ textDecoration: 'none' }}>
-              <Button
-                variant="contained"
-                css={css({
-                  borderRadius: '20px !important',
-                  padding: '6px 20px !important',
-                  fontSize: '14px !important',
-                  boxShadow: 'none !important',
-                  fontWeight: 'bold !important',
-                  backgroundColor: '#FFFFFF !important',
-                  color: '#666 !important',
-                  '&:hover': {
-                    backgroundColor: '#f8f8f8 !important',
-                  }
-                })}
-              >
-                新增
-              </Button>
-            </Link>
-            <IconButton
-              onClick={() => setShowFilter(!showFilter)}
-              css={css({
-                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
-                color: showFilter ? '#1A73E8 !important' : '#666 !important',
-                marginLeft: '4px !important',
-                '&:hover': {
-                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
-                }
-              })}
-            >
-              <FilterListIcon />
-            </IconButton>
-          </div>
-        </Card>
+    <Page css={localStyles.root} title="商品列表">
+      <Container maxWidth={false} css={localStyles.container}>
+        <AdminPageHeader
+          title="商品列表"
+          showFilter={showFilter}
+          onFilterClick={() => setShowFilter(!showFilter)}
+          primaryAction={{
+            label: '新增商品',
+            to: '/product/create'
+          }}
+        />
 
         <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+          <div css={localStyles.filterPanel}>
             <SearchBar
               style={{ marginBottom: 16, marginTop: 0 }}
               onSearch={event =>
@@ -132,20 +117,20 @@ function CustomerManagementList() {
                 })
               }
             />
-            <div style={{ marginTop: '12px' }}>
-              <div className="divText" style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>點選商品類別進行篩選</div>
-              <div css={styles.categorieDiv}>
+            <div style={{ marginTop: '16px' }}>
+              <Typography variant="caption" sx={{ color: '#666', mb: 1, display: 'block', fontWeight: 'bold' }}>
+                按商品類別篩選
+              </Typography>
+              <div css={localStyles.categorieDiv}>
                 {productCategories.map(productCategory => (
                   <Button
-                    variant={
-                      selectedCategorie.indexOf(productCategory.id) !== -1 ? 'contained' : 'outlined'
-                    }
+                    key={productCategory.id}
+                    variant={selectedCategorie.indexOf(productCategory.id) !== -1 ? 'contained' : 'outlined'}
                     color="primary"
                     size="small"
+                    css={localStyles.pillButton}
                     onClick={() => handleClickCategorie(productCategory.id, productCategory.name)}
                     disabled={selectedCategorie.indexOf(productCategory.id) !== -1}
-                    key={productCategory.id}
-                    style={{ margin: 3 }}
                   >
                     {productCategory.name}
                   </Button>
@@ -154,10 +139,11 @@ function CustomerManagementList() {
                   variant="contained"
                   size="small"
                   color="error"
+                  css={localStyles.pillButton}
                   style={{ color: 'white' }}
                   onClick={handleClearCategorie}
                 >
-                  清除
+                  清除篩選
                 </Button>
               </div>
             </div>

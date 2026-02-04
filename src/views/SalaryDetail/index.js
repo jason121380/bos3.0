@@ -9,13 +9,17 @@ import React from 'react'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
+import { startOfMonth } from 'date-fns'
+import DateSelector from 'components/DateSelector'
+import AdminPageHeader from 'components/AdminPageHeader'
+
 import DecreaseResult from './DecreaseResult'
-import Header from './Header'
 import IncreaseResult from './IncreaseResult'
 
 const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
+  root: css({}),
+  container: css({
+    paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(3),
   }),
   results: css({
@@ -70,8 +74,19 @@ function CustomerManagementList() {
   }
   return (
     <Page css={styles.root} title="薪資明細表">
-      <Container maxWidth={false}>
-        <Header onDateChange={handleDateChange} />
+      <Container maxWidth={false} css={styles.container}>
+        <AdminPageHeader title="薪資明細表">
+          <DateSelector
+            date={{ startDate: setting.date }}
+            attributes={['startDate']}
+            dateChange={({ startDate }) => handleDateChange(startOfMonth(new Date(startDate)).getTime())}
+            onlyStart
+            inputFormat='yyyy/MM'
+            pickerOption={{
+              views: ['month', 'year']
+            }}
+          />
+        </AdminPageHeader>
         {idx(
           userIncrease,
           _ =>
