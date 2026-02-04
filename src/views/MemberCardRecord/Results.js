@@ -1,7 +1,9 @@
+/** @jsxImportSource @emotion/react */
 import {
   Button, Card, CardContent, CardHeader, Checkbox, Table, TableBody, TableCell, TableHead,
-  TableRow, Typography, CardActions, TablePagination, Dialog, DialogTitle, DialogActions
+  TableRow, Typography, CardActions, TablePagination, Dialog, DialogTitle, DialogActions, IconButton
 } from '@mui/material'
+import EditIconSlot from '@mui/icons-material/Edit';
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import format from 'date-fns/format'
@@ -16,38 +18,69 @@ import { theme } from '../../theme'
 
 const styles = {
   root: css({}),
+  card: css({
+    borderRadius: '16px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+  }),
   content: css({
     padding: 0,
   }),
   inner: css({
     minWidth: 1000,
   }),
-  cardHeader: css({
-    '& .MuiCardHeader-title': {
-      fontSize: '15px',
+  tableHead: css({
+    backgroundColor: '#FFFFFF',
+    '& .MuiTableCell-head': {
+      color: '#212121',
       fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: '#1A73E8',
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
-    },
+      borderBottom: '1px solid #f0f0f0',
+      height: '40px !important',
+      padding: '2px 16px !important',
+      fontSize: '14px',
+    }
   }),
   tableRow: css({
-    backgroundColor: '#ffffff !important',
+    height: '40px !important',
+    minHeight: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      borderBottom: '1px solid #f0f0f0',
+      fontSize: '14px !important',
+      color: '#333',
+    },
     '&:hover': {
-      backgroundColor: '#ffffff !important',
+      backgroundColor: 'transparent !important',
+    },
+    '&.Mui-selected': {
+      backgroundColor: '#f9f9f9 !important',
     },
   }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
+  actionButton: css({
+    padding: '4px !important',
+    '& .MuiSvgIcon-root': {
+      color: '#9e9e9e !important',
+    },
+    '&:hover .MuiSvgIcon-root': {
+      color: '#1A73E8 !important',
+    },
+    '&:hover': {
+      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
+    }
+  }),
+  exportButton: css({
+    backgroundColor: '#f5f5f5 !important',
+    color: '#666 !important',
+    borderRadius: '20px !important',
+    padding: '4px 16px !important',
+    boxShadow: 'none !important',
+    fontWeight: 'bold !important',
+    fontSize: '13px !important',
+    '&:hover': {
+      backgroundColor: '#eeeeee !important',
+    }
   }),
 }
 
@@ -174,19 +207,20 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
 
   return (
     <div {...rest} css={css([styles.root, className])} className='MemberCardRecordResult'>
-      <Card>
+      <Card css={styles.card}>
         <CardHeader
-          css={styles.cardHeader}
           action={
-            <CSVLink data={excelData} filename="會員卡列表.csv" >
-              <Button variant="contained" color="primary" size="small">
+            <CSVLink data={excelData} filename="會員卡列表.csv" style={{ textDecoration: 'none' }}>
+              <Button variant="contained" css={styles.exportButton}>
                 報表匯出
               </Button>
             </CSVLink>
           }
           title={
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span>所有會員卡</span>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+                所有會員卡
+              </Typography>
               <Typography color="textSecondary" variant="body2">
                 共 {memberships.data.length} 筆
               </Typography>
@@ -196,8 +230,8 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
-              <Table>
-                <TableHead>
+              <Table size="small">
+                <TableHead css={styles.tableHead}>
                   <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
@@ -247,16 +281,15 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
                         />
                       </TableCell>
                       <TableCell>
-                        <Button
-                          color="primary"
+                        <IconButton
                           component={RouterLink}
+                          css={styles.actionButton}
                           size="small"
                           to={`/member-card/edit/${data.uuid}`}
-                          variant="outlined"
                           disabled={!data.isUsing}
                         >
-                          編輯
-                        </Button>
+                          <EditIconSlot fontSize="small" />
+                        </IconButton>
                       </TableCell>
                       <TableCell>{data.no}</TableCell>
                       <TableCell>

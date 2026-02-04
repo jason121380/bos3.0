@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import idx from 'idx'
-import { Link as RouterLink } from 'react-router-dom'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
@@ -12,11 +11,12 @@ import Results from './Results'
 
 const styles = {
   root: css({
-    paddingTop: theme.spacing(3),
+    paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(6),
+    minHeight: '100vh',
   }),
   results: css({
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(2),
   }),
 }
 
@@ -25,20 +25,14 @@ function CustomerManagementList() {
   return (
     <Page css={styles.root} title="服務分類設定">
       <Container maxWidth={false}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='服務分類設定' subTitle='Service Category' />
-          <Grid item>
-            <Button
-              color="primary"
-              variant="contained"
-              component={RouterLink}
-              to="/service/category/create"
-              style={{ backgroundColor: '#3865AC' }}
-            >
-              新增服務類別
-            </Button>
-          </Grid>
-        </Grid>
+        <AdminPageHeader
+          title="服務分類設定"
+          sx={{ backgroundColor: 'transparent', mb: 0 }}
+          primaryAction={{
+            label: '新增服務類別',
+            to: '/service/category/create'
+          }}
+        />
         {!serviceCategories.loading ?
           <Results
             className={styles.results}

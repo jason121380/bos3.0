@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { Container, Button, CircularProgress, Grid } from '@mui/material'
+import { Container, Button, CircularProgress, Grid, Collapse } from '@mui/material'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import { useFetchTicketsForList } from 'hooks/useFetchTickets'
+import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
 import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
@@ -15,28 +16,39 @@ import Results from './Results'
 
 const styles = {
   root: css({
-    paddingTop: theme.spacing(3),
+    paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(6),
   }),
   results: css({
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
   }),
   categorieDiv: css({
-    margin: '10px 0px',
+    padding: '16px 20px',
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    border: '1px solid #f0f0f0',
+    marginBottom: '16px',
     '& button': {
       lineHeight: '1.5'
     }
   }),
   categorieBtn: css({
-    margin: '3px !important',
+    margin: '4px !important',
+    borderRadius: '8px !important',
+    border: '1px solid #e0e0e0 !important',
+    color: '#666 !important',
   }),
   clickedCategorieBtn: css({
-    margin: '3px !important',
-    color: 'white',
+    margin: '4px !important',
+    borderRadius: '8px !important',
+    backgroundColor: '#1A73E8 !important',
+    color: 'white !important',
   }),
   categorieClear: css({
+    margin: '4px !important',
+    borderRadius: '8px !important',
     backgroundColor: red[500] + '!important',
-    color: 'white',
+    color: 'white !important',
     '&:hover': {
       backgroundColor: red[700] + '!important',
     },
@@ -48,6 +60,7 @@ function CouponList() {
     keyword: '',
     categoryIds: [],
   })
+  const [showFilter, setShowFilter] = useState(false)
 
   const couponsData = useFetchTicketsForList(pageSetting)
   const [serviceCategories, setServiceCategories] = useState([])
@@ -91,52 +104,49 @@ function CouponList() {
   return (
     <Page css={styles.root} title="卡券列表">
       <Container maxWidth={false}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='卡券列表' subTitle='Coupon' />
-          <Grid item>
+        <AdminPageHeader
+          title="預收卡設定"
+          sx={{ backgroundColor: 'transparent', mb: 0 }}
+          showFilter={showFilter}
+          onFilterClick={() => setShowFilter(!showFilter)}
+          primaryAction={{
+            label: '新增預收卡',
+            to: '/coupon/create'
+          }}
+        />
+        <Collapse in={showFilter}>
+          <div css={styles.categorieDiv}>
+            {serviceCategories.map(serviceCategorie => (
+              <Button
+                variant={
+                  selectedCategorie.indexOf(serviceCategorie.id) !== -1 ? 'contained' : 'outlined'
+                }
+                color="primary"
+                size="small"
+                css={
+                  selectedCategorie.indexOf(serviceCategorie.id) !== -1
+                    ? styles.clickedCategorieBtn
+                    : styles.categorieBtn
+                }
+                onClick={() => handleClickCategorie(serviceCategorie.id, serviceCategorie.name)}
+                key={serviceCategorie.id}
+                style={
+                  selectedCategorie.indexOf(serviceCategorie.id) === -1 ? {} : { color: 'white' }
+                }
+              >
+                {serviceCategorie.name}
+              </Button>
+            ))}
             <Button
-              style={{ backgroundColor: '#3865AC' }}
-              color="primary"
               variant="contained"
-              component={RouterLink}
-              to="/coupon/create"
-            >
-              新增卡券
-            </Button>
-          </Grid>
-        </Grid>
-        <div style={{ marginTop: 24 }}>點選卡券類別進行篩選</div>
-        <div css={styles.categorieDiv}>
-          {serviceCategories.map(serviceCategorie => (
-            <Button
-              variant={
-                selectedCategorie.indexOf(serviceCategorie.id) !== -1 ? 'contained' : 'outlined'
-              }
-              color="primary"
               size="small"
-              css={
-                selectedCategorie.indexOf(serviceCategorie.id) !== -1
-                  ? styles.clickedCategorieBtn
-                  : styles.categorieBtn
-              }
-              onClick={() => handleClickCategorie(serviceCategorie.id, serviceCategorie.name)}
-              key={serviceCategorie.id}
-              style={
-                selectedCategorie.indexOf(serviceCategorie.id) === -1 ? {} : { color: 'white' }
-              }
+              css={styles.categorieClear}
+              onClick={handleClearCategorie}
             >
-              {serviceCategorie.name}
+              清除
             </Button>
-          ))}
-          <Button
-            variant="contained"
-            size="small"
-            css={styles.categorieClear}
-            onClick={handleClearCategorie}
-          >
-            清除
-          </Button>
-        </div>
+          </div>
+        </Collapse>
         {!couponsData.loading ?
           <Results
             className={styles.results}

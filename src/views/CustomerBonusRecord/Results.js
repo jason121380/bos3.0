@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Button,
   Card,
+  CardHeader,
   CardContent,
   Checkbox,
   Table,
@@ -10,8 +10,10 @@ import {
   TableHead,
   TableRow,
   Typography,
-  TableContainer
+  TableContainer,
+  IconButton
 } from '@mui/material'
+import EditIconSlot from '@mui/icons-material/Edit';
 import TableEditBar from 'components/TableEditBar'
 import useFetchDeleteBonusDeposit from 'hooks/useFetchDeleteBonusDeposit'
 import { openSnackbar } from 'elements/snackbars'
@@ -21,7 +23,50 @@ import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
 import { css } from '@emotion/react'
 
-import styles from './styles/Results'
+const styles = {
+  card: css({
+    borderRadius: '16px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+  }),
+  content: css({
+    padding: 0,
+  }),
+  tableHead: css({
+    backgroundColor: '#FFFFFF',
+    '& .MuiTableCell-head': {
+      color: '#212121',
+      fontWeight: 'bold',
+      borderBottom: '1px solid #f0f0f0',
+      height: '40px !important',
+      padding: '2px 16px !important',
+      fontSize: '14px',
+    }
+  }),
+  tableRow: css({
+    height: '40px !important',
+    minHeight: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      borderBottom: '1px solid #f0f0f0',
+      fontSize: '14px !important',
+      color: '#333',
+    },
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
+  }),
+  actionButton: css({
+    padding: '4px !important',
+    color: '#999 !important',
+    '&:hover': {
+      color: '#1A73E8 !important',
+      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
+    }
+  }),
+}
 
 function Results({ className, recordData, refetch, ...rest }) {
   const { deleteBonus } = useFetchDeleteBonusDeposit()
@@ -70,15 +115,24 @@ function Results({ className, recordData, refetch, ...rest }) {
   }
 
   return (
-    <div {...rest} css={css(styles.root, className)}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        {recordData.length} 筆資料
-      </Typography>
-      <Card>
+    <div {...rest} css={css([styles.root, className])}>
+      <Card css={styles.card}>
+        <CardHeader
+          title={
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+                紅利點數紀錄
+              </Typography>
+              <Typography color="textSecondary" variant="body2">
+                共 {recordData.length} 筆
+              </Typography>
+            </div>
+          }
+        />
         <CardContent css={styles.content}>
           <TableContainer style={{ maxHeight: 'calc(100vh - 240px)' }}>
-            <Table>
-              <TableHead>
+            <Table size="small">
+              <TableHead css={styles.tableHead}>
                 <TableRow css={styles.stickyRow}>
                   <TableCell padding="checkbox">
                     <Checkbox
@@ -105,8 +159,8 @@ function Results({ className, recordData, refetch, ...rest }) {
               <TableBody>
                 {recordData.map(data => (
                   <TableRow
-                    hover
                     key={data.id}
+                    css={styles.tableRow}
                     selected={selectedRecord.indexOf(data.id) > -1}
                     data-testid="category-row"
                   >
@@ -118,15 +172,14 @@ function Results({ className, recordData, refetch, ...rest }) {
                       />
                     </TableCell>
                     <TableCell>
-                      <Button
-                        color="primary"
+                      <IconButton
                         component={RouterLink}
+                        css={styles.actionButton}
                         size="small"
                         to={`/customer-bonus-record/edit/${data.id}`}
-                        variant="outlined"
                       >
-                        編輯
-                      </Button>
+                        <EditIconSlot fontSize="small" />
+                      </IconButton>
                     </TableCell>
                     <TableCell>{format(data.date, 'yyyy/MM/dd')}</TableCell>
                     <TableCell>{data.customerNo}</TableCell>

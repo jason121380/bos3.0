@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {
   Button, Card, CardContent, CardHeader, Checkbox, Divider, Table,
-  TableBody, TableCell, TableHead, TableRow, Typography,
+  TableBody, TableCell, TableHead, TableRow, Typography, IconButton,
 } from '@mui/material'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
@@ -12,6 +12,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import EditIcon from '@mui/icons-material/Edit'
+import idx from 'idx'
 
 const styles = {
   root: css({}),
@@ -20,6 +22,49 @@ const styles = {
   }),
   inner: css({
     minWidth: 700,
+  }),
+  card: css({
+    borderRadius: '16px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
+  }),
+  header: css({
+    padding: '12px 24px 4px 24px',
+    '& .MuiCardHeader-title': {
+      width: '100%',
+    }
+  }),
+  tableHead: css({
+    backgroundColor: '#FFFFFF',
+    '& .MuiTableCell-head': {
+      color: '#212121',
+      fontWeight: 'bold',
+      borderBottom: '1px solid #f0f0f0',
+      height: '40px !important',
+      padding: '2px 16px !important',
+      fontSize: '14px',
+    }
+  }),
+  tableRow: css({
+    height: '40px !important',
+    minHeight: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      borderBottom: '1px solid #f0f0f0',
+      fontSize: '14px !important',
+      color: '#333',
+    },
+    '\u0026:hover': {
+      backgroundColor: 'transparent !important',
+    },
+  }),
+  actionButton: css({
+    padding: '4px !important',
+    color: '#999 !important',
+    '&:hover': {
+      color: '#1A73E8 !important',
+      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
+    }
   }),
   nameCell: css({
     display: 'flex',
@@ -71,31 +116,40 @@ function Results({ className, categories, refetchCategories, ...rest }) {
   }
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        {categories.length} 筆資料
-      </Typography>
-      <Card>
-        <CardHeader title="所有服務類別" />
-        <Divider />
+      <Card css={styles.card}>
+        <CardHeader
+          css={styles.header}
+          title={
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+                所有服務類別
+              </Typography>
+              <Typography color="textSecondary" variant="body2">
+                共 {categories.length} 筆
+              </Typography>
+            </div>
+          }
+        />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
-              <Table>
-                <TableHead>
+              <Table size="small">
+                <TableHead css={styles.tableHead}>
                   <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedCategories.length === categories.length}
+                        checked={selectedCategories.length === categories.length && categories.length > 0}
                         color="primary"
                         indeterminate={
                           selectedCategories.length > 0 &&
                           selectedCategories.length < categories.length
                         }
                         onChange={handleSelectAll}
+                        sx={{ padding: '2px' }}
                       />
                     </TableCell>
                     <TableCell>操作</TableCell>
-                    <TableCell>代號</TableCell>
+                    <TableCell align="center">代號</TableCell>
                     <TableCell>名稱</TableCell>
                     <TableCell>歸屬</TableCell>
                     <TableCell>備註</TableCell>
@@ -107,6 +161,7 @@ function Results({ className, categories, refetchCategories, ...rest }) {
                   {categories.map((data, idx) => (
                     <TableRow
                       hover
+                      css={styles.tableRow}
                       key={`service-categories-${idx}`}
                       selected={selectedCategories.indexOf(data.id) !== -1}
                       disabled={!data.isUsing}
@@ -122,21 +177,21 @@ function Results({ className, categories, refetchCategories, ...rest }) {
                           inputProps={{
                             'data-testid': `category-${data.name}-checkbox`,
                           }}
+                          sx={{ padding: '2px' }}
                         />
                       </TableCell>
                       <TableCell>
-                        <Button
-                          color="primary"
+                        <IconButton
                           component={RouterLink}
-                          size="small"
+                          css={styles.actionButton}
                           to={`/service/category/edit/${data.id}`}
-                          variant="outlined"
                           disabled={!data.isUsing}
+                          size="small"
                         >
-                          編輯
-                        </Button>
+                          <EditIcon fontSize="small" />
+                        </IconButton>
                       </TableCell>
-                      <TableCell>{data.no}</TableCell>
+                      <TableCell align="center">{data.no}</TableCell>
                       <TableCell>{data.name}</TableCell>
                       <TableCell>{data.attribution}</TableCell>
                       <TableCell>{data.remark}</TableCell>

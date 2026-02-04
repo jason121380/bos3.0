@@ -166,7 +166,7 @@ function Results({
                         <TableCell>
                           <Button
                             onClick={() => handleCheck(data)}
-                            sx={{ wordBreak: 'keep-all' }} 
+                            sx={{ wordBreak: 'keep-all' }}
                             variant='contained'
                             color={data.stockInDate ? 'error' : 'success'}
                           >{data.stockInDate ? '取消入庫' : '入庫'}</Button>

@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { Card, Container, Button, CircularProgress, Grid, IconButton, Collapse } from '@mui/material'
+import { Card, Container, Button, CircularProgress, IconButton, Collapse } from '@mui/material'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { css } from '@emotion/react'
 import idx from 'idx'
+// ... rest of imports
 import { useState } from 'react'
 import produce from 'immer'
 import { useFetchGetMemberships } from 'hooks/useFetchGetMembership'
@@ -16,6 +17,7 @@ import Results from './Results'
 import styles from './styles/MemberCardRecord'
 
 function MemberCardRecord() {
+  // ... state definitions
   // set 類別篩選
   const [categoryFilter, setCategoryFilter] = useState([])
 
@@ -70,59 +72,19 @@ function MemberCardRecord() {
   return (
     <Page css={styles.root} title="會員卡列表">
       <Container maxWidth={false}>
-        <Card
-          css={css({
-            display: 'flex',
-            padding: '12px 24px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#E8F0FE',
-            borderRadius: '12px',
-            boxShadow: 'none',
-            border: 'none !important',
-            marginBottom: '12px',
-          })}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='會員卡列表' style={{ color: '#1A73E8' }} />
-            <IconButton
-              onClick={() => setShowFilter(!showFilter)}
-              css={css({
-                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
-                color: showFilter ? '#1A73E8 !important' : '#666 !important',
-                marginLeft: '4px !important',
-                '&:hover': {
-                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
-                }
-              })}
-            >
-              <FilterListIcon />
-            </IconButton>
-          </div>
-          <Button
-            color="primary"
-            variant="contained"
-            component={RouterLink}
-            to="/member-card/create"
-            css={css({
-              backgroundColor: '#fff !important',
-              color: '#1A73E8 !important',
-              borderRadius: '20px !important',
-              padding: '6px 20px !important',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.05) !important',
-              fontWeight: 'bold !important',
-              '&:hover': {
-                backgroundColor: '#f8f9fa !important',
-                boxShadow: '0 4px 6px rgba(0,0,0,0.1) !important',
-              }
-            })}
-          >
-            新增
-          </Button>
-        </Card>
+        <AdminPageHeader
+          title="會員卡列表"
+          sx={{ backgroundColor: 'transparent', mb: 0 }}
+          onFilterClick={() => setShowFilter(!showFilter)}
+          showFilter={showFilter}
+          primaryAction={{
+            label: '新增',
+            to: '/member-card/create'
+          }}
+        />
 
         <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+          <div style={{ marginBottom: '8px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
             <SearchBar
               onSearch={event =>
                 handlePageChange({
@@ -131,7 +93,6 @@ function MemberCardRecord() {
                 })
               }
             />
-            <div style={{ marginTop: 12, fontSize: '12px', color: '#666' }}>點選會員卡類別進行篩選:</div>
             <div css={styles.categorieDiv}>
               {categories != undefined &&
                 categories.map(category => (

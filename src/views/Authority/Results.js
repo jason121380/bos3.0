@@ -12,8 +12,10 @@ import {
   TableHead,
   TableRow,
   Typography,
-  Switch
+  Switch,
+  IconButton
 } from '@mui/material'
+import EditIconSlot from '@mui/icons-material/Edit';
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import PropTypes from 'prop-types'
@@ -26,25 +28,50 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
 const styles = {
-  root: css({}),
+  card: css({
+    borderRadius: '16px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+  }),
   content: css({
     padding: 0,
   }),
   inner: css({
     minWidth: 700,
   }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
+  tableHead: css({
+    backgroundColor: '#FFFFFF',
+    '& .MuiTableCell-head': {
+      color: '#212121',
+      fontWeight: 'bold',
+      borderBottom: '1px solid #f0f0f0',
+      height: '40px !important',
+      padding: '2px 16px !important',
+      fontSize: '14px',
+    }
   }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
+  tableRow: css({
+    height: '40px !important',
+    minHeight: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      borderBottom: '1px solid #f0f0f0',
+      fontSize: '14px !important',
+      color: '#333',
+    },
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
+  actionButton: css({
+    padding: '4px !important',
+    color: '#999 !important',
+    '&:hover': {
+      color: '#1A73E8 !important',
+      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
+    }
   }),
   switch: css({
     '& .MuiSwitch-track': {
@@ -130,17 +157,24 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
 
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        {merchantAuth.length}筆資料
-      </Typography>
-      <Card>
-        <CardHeader title="角色" />
-        <Divider />
+      <Card css={styles.card}>
+        <CardHeader
+          title={
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+                角色權限列表
+              </Typography>
+              <Typography color="textSecondary" variant="body2">
+                共 {merchantAuth.length} 筆
+              </Typography>
+            </div>
+          }
+        />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
-              <Table>
-                <TableHead>
+              <Table size="small">
+                <TableHead css={styles.tableHead}>
                   <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
@@ -169,7 +203,7 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
                 <TableBody>
                   {merchantAuth.length > 0 &&
                     merchantAuth.map((data, index) => (
-                      <TableRow hover key={data.id}>
+                      <TableRow key={data.id} css={styles.tableRow}>
                         <TableCell padding="checkbox">
                           <Checkbox
                             color="primary"
@@ -179,21 +213,21 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
                           />
                         </TableCell>
                         <TableCell>
-                          <Button
-                            color="primary"
+                          <IconButton
                             component={data.authorityName === '高階主管' ? undefined : RouterLink}
-                            size="small"
+                            css={styles.actionButton}
                             to={data.authorityName === '高階主管' ? undefined : `/role/edit/${data.id}`}
-                            variant="outlined"
+                            size="small"
                             disabled={data.authorityName === '高階主管'}
                           >
-                            編輯
-                          </Button>
+                            <EditIconSlot fontSize="small" />
+                          </IconButton>
                         </TableCell>
                         <TableCell>{data.authorityName}</TableCell>
                         <TableCell>{data.usingDesignerCount}</TableCell>
                         <TableCell>
                           <Switch
+                            size="small"
                             css={css([styles.switch, data.isDefault ? {} : styles.thumb])}
                             checked={data.isDefault}
                             onClick={() => handleSetDefaltAuth(data.id)}

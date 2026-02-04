@@ -5,6 +5,8 @@ import {
   DialogTitle, DialogContent, DialogContentText, TextField,
   DialogActions, IconButton
 } from '@mui/material'
+import EditIconSlot from '@mui/icons-material/Edit';
+
 import { Link } from 'react-router-dom';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import TableEditBar from 'components/TableEditBar'
@@ -31,24 +33,66 @@ import AssistantSettingEditModal from './AssistantSettingEditModal'
 import SaleStatusEditModal from './SaleStatusEditModal'
 
 const styles = {
+  card: css({
+    borderRadius: '16px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
+  }),
+  header: css({
+    padding: '12px 24px 4px 24px',
+    '& .MuiCardHeader-title': {
+      width: '100%',
+    }
+  }),
+  tableHead: css({
+    backgroundColor: '#FFFFFF',
+    '& .MuiTableCell-head': {
+      color: '#212121',
+      fontWeight: 'bold',
+      borderBottom: '1px solid #f0f0f0',
+      height: '40px !important',
+      padding: '2px 16px !important',
+      fontSize: '14px',
+    }
+  }),
+  tableRow: css({
+    height: '40px !important',
+    minHeight: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      borderBottom: '1px solid #f0f0f0',
+      fontSize: '14px !important',
+      color: '#333',
+    },
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
+  }),
+  actionButton: css({
+    padding: '4px !important',
+    color: '#999 !important',
+    '&:hover': {
+      color: '#1A73E8 !important',
+      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
+    }
+  }),
+  csvBtn: css({
+    borderRadius: '20px !important',
+    padding: '6px 20px !important',
+    fontSize: '14px !important',
+    boxShadow: 'none !important',
+    fontWeight: 'bold !important',
+    backgroundColor: '#f5f5f5 !important',
+    color: '#666 !important',
+    '&:hover': {
+      backgroundColor: '#eeeeee !important',
+    }
+  }),
   content: css({
     padding: 0,
   }),
   inner: css({
     minWidth: 700,
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
   }),
   notSetting: css({
     color: 'red',
@@ -355,7 +399,7 @@ function Results({ className, coupons, refetch, ...rest }) {
     switch (mode) {
       case 'SELLING':
         return '販賣時入業績'
-    
+
       case 'USING':
         return '使用時入業績'
 
@@ -366,26 +410,32 @@ function Results({ className, coupons, refetch, ...rest }) {
 
   return (
     <div {...rest} css={className}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        {coupons !== undefined && coupons.length} 筆資料
-      </Typography>
-      <Card>
+      <Card css={styles.card}>
         <CardHeader
+          css={styles.header}
           action={
             <CSVLink data={excelData} filename="卡券列表.csv">
-              <Button variant="contained" color="primary" size="small">
+              <Button variant="contained" css={styles.csvBtn} size="small">
                 報表匯出
               </Button>
             </CSVLink>
           }
-          title="卡券列表"
+          title={
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+                所有預收卡
+              </Typography>
+              <Typography color="textSecondary" variant="body2">
+                共 {coupons !== undefined && coupons.length} 筆
+              </Typography>
+            </div>
+          }
         />
-        <Divider />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
-              <Table>
-                <TableHead>
+              <Table size="small">
+                <TableHead css={styles.tableHead}>
                   <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
@@ -398,19 +448,19 @@ function Results({ className, coupons, refetch, ...rest }) {
                         disabled={coupons.filter(d => !d.isUsing).length === coupons.length}
                       />
                     </TableCell>
-                    <TableCell>操作</TableCell>
-                    <TableCell>代號</TableCell>
-                    <TableCell>類別</TableCell>
-                    <TableCell>名稱</TableCell>
-                    <TableCell>參考價格</TableCell>
-                    <TableCell>可使用次數</TableCell>
-                    <TableCell>業績</TableCell>
-                    <TableCell>變更者</TableCell>
-                    <TableCell>扣項設定數量</TableCell>
-                    <TableCell>互助設定數量</TableCell>
-                    <TableCell>上架狀態</TableCell>
-                    <TableCell>變更時間</TableCell>
-                    <TableCell>建立副本</TableCell>
+                    <TableCell sx={{ minWidth: '60px' }}>操作</TableCell>
+                    <TableCell sx={{ minWidth: '80px' }}>代號</TableCell>
+                    <TableCell sx={{ minWidth: '100px' }}>類別</TableCell>
+                    <TableCell sx={{ minWidth: '150px' }}>名稱</TableCell>
+                    <TableCell sx={{ minWidth: '100px' }}>參考價格</TableCell>
+                    <TableCell sx={{ minWidth: '100px' }}>可使用次數</TableCell>
+                    <TableCell sx={{ minWidth: '130px', whiteSpace: 'nowrap' }}>業績</TableCell>
+                    <TableCell sx={{ minWidth: '100px' }}>變更者</TableCell>
+                    <TableCell sx={{ minWidth: '120px' }}>扣項設定數量</TableCell>
+                    <TableCell sx={{ minWidth: '120px' }}>互助設定數量</TableCell>
+                    <TableCell sx={{ minWidth: '100px' }}>上架狀態</TableCell>
+                    <TableCell sx={{ minWidth: '120px' }}>變更時間</TableCell>
+                    <TableCell sx={{ minWidth: '80px' }}>建立副本</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -420,6 +470,7 @@ function Results({ className, coupons, refetch, ...rest }) {
                       key={`coupon-${idx}`}
                       disabled={!data.isUsing}
                       selected={selectedCoupons.indexOf(data.id) !== -1}
+                      css={styles.tableRow}
                     >
                       <TableCell padding="checkbox">
                         <Checkbox
@@ -431,41 +482,42 @@ function Results({ className, coupons, refetch, ...rest }) {
                         />
                       </TableCell>
                       <TableCell>
-                        <Button
-                          color="primary"
+                        <IconButton
                           component={RouterLink}
-                          size="small"
+                          css={styles.actionButton}
                           to={`/coupon/edit/${data.id}`}
-                          variant="outlined"
                           disabled={!data.isUsing}
+                          size="small"
                         >
-                          編輯
-                        </Button>
+                          <EditIconSlot fontSize="small" />
+                        </IconButton>
                       </TableCell>
-                      <TableCell>{data.no}</TableCell>
-                      <TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{data.no}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>
                         {data.ServiceCategory !== null ? data.ServiceCategory.name : '無類別'}
                       </TableCell>
-                      <TableCell>{data.name}</TableCell>
-                      <TableCell>{data.price}</TableCell>
-                      <TableCell>{data.ticketAvailableCount}</TableCell>
-                      <TableCell>{calcModeText(data.performanceCalculationMode)}</TableCell>
-                      <TableCell>{data.creator === null ? '' : data.creator.name}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{data.name}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{data.price}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{data.ticketAvailableCount}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{calcModeText(data.performanceCalculationMode)}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{data.creator === null ? '' : data.creator.name}</TableCell>
                       <TableCell
                         css={data.ticketDeductionCount === 0 ? styles.notSetting : {}}
+                        sx={{ whiteSpace: 'nowrap' }}
                       >
                         {data.ticketDeductionCount === 0 ? '無設定' : data.ticketDeductionCount}
                       </TableCell>
                       <TableCell
                         css={data.helperDeductionCount === 0 ? styles.notSetting : {}}
+                        sx={{ whiteSpace: 'nowrap' }}
                       >
                         {data.helperDeductionCount === 0 ? '無設定' : data.helperDeductionCount}
                       </TableCell>
-                      <TableCell>{data.isLaunched ? '上架' : '下架'}</TableCell>
-                      <TableCell>{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
-                      <TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{data.isLaunched ? '上架' : '下架'}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
+                      <TableCell sx={{ whiteSpace: 'nowrap' }}>
                         <Link to={`coupon/duplicate/${data.id}`}>
-                          <IconButton>
+                          <IconButton size="small">
                             <ContentCopyIcon fontSize='small' />
                           </IconButton>
                         </Link>

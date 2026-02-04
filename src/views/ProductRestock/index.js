@@ -128,7 +128,7 @@ function ProductRestock() {
       setIsClick(false)
     }
   }
-  
+
   const handleCheck = ({ uuid, stockInDate }) => {
     if (stockInDate && isUsing.stockInUndo) {
       setClickData({

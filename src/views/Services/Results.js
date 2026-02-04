@@ -5,6 +5,8 @@ import {
   Typography, Dialog, DialogTitle, DialogContent, DialogContentText, TextField,
   DialogActions, IconButton
 } from '@mui/material'
+import EditIconSlot from '@mui/icons-material/Edit';
+
 import { Link } from 'react-router-dom';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import TableEditBar from 'components/TableEditBar'
@@ -53,28 +55,49 @@ const styles = {
     color: 'red',
     fontWeight: 'bold',
   }),
-  cardHeader: css({
+  card: css({
+    borderRadius: '16px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
+  }),
+  header: css({
+    padding: '12px 24px 4px 24px',
     '& .MuiCardHeader-title': {
-      fontSize: '15px',
+      width: '100%',
+    }
+  }),
+  tableHead: css({
+    backgroundColor: '#FFFFFF',
+    '& .MuiTableCell-head': {
+      color: '#212121',
       fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: '#1A73E8',
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
-    },
+      borderBottom: '1px solid #f0f0f0',
+      height: '40px !important',
+      padding: '2px 16px !important',
+      fontSize: '14px',
+    }
   }),
   tableRow: css({
+    height: '40px !important',
+    minHeight: '40px !important',
     backgroundColor: '#ffffff !important',
-    '&:hover': {
-      backgroundColor: '#ffffff !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      borderBottom: '1px solid #f0f0f0',
+      fontSize: '14px !important',
+      color: '#333',
     },
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
+  }),
+  actionButton: css({
+    padding: '4px !important',
+    color: '#999 !important',
+    '&:hover': {
+      color: '#1A73E8 !important',
+      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
+    }
   }),
   csvBtn: css({
     borderRadius: '20px !important',
@@ -386,9 +409,9 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
 
   return (
     <div {...rest} css={className}>
-      <Card>
+      <Card css={styles.card}>
         <CardHeader
-          css={styles.cardHeader}
+          css={styles.header}
           action={
             <CSVLink data={excelData} filename="服務項目.csv">
               <Button variant="contained" css={styles.csvBtn} size="small">
@@ -397,8 +420,10 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
             </CSVLink>
           }
           title={
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span>所有營業服務</span>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+                所有營業服務
+              </Typography>
               <Typography color="textSecondary" variant="body2">
                 共 {services.totalCount} 筆
               </Typography>
@@ -408,8 +433,8 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
-              <Table>
-                <TableHead>
+              <Table size="small">
+                <TableHead css={styles.tableHead}>
                   <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
@@ -456,16 +481,15 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
                         />
                       </TableCell>
                       <TableCell>
-                        <Button
-                          color="primary"
+                        <IconButton
                           component={RouterLink}
-                          size="small"
+                          css={styles.actionButton}
                           to={`/service/edit/${data.id}`}
-                          variant="outlined"
                           disabled={!data.isUsing}
+                          size="small"
                         >
-                          編輯
-                        </Button>
+                          <EditIconSlot fontSize="small" />
+                        </IconButton>
                       </TableCell>
                       <TableCell>{data.no}</TableCell>
                       <TableCell>

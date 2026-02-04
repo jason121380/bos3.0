@@ -108,38 +108,22 @@ function Services() {
       <Container maxWidth={false}>
         <AdminPageHeader
           title="服務項目設定"
-          primaryAction={
-            <Link component={RouterLink} to="/service/create" style={{ textDecoration: 'none' }}>
-              <Button
-                variant="contained"
-                css={css({
-                  borderRadius: '20px !important',
-                  padding: '6px 20px !important',
-                  fontSize: '14px !important',
-                  boxShadow: 'none !important',
-                  fontWeight: 'bold !important',
-                  backgroundColor: '#FFFFFF !important',
-                  color: '#666 !important',
-                  '&:hover': {
-                    backgroundColor: '#f8f8f8 !important',
-                  }
-                })}
-              >
-                新增
-              </Button>
-            </Link>
-          }
+          sx={{ backgroundColor: 'transparent', mb: 0 }}
+          primaryAction={{
+            label: '新增',
+            to: '/service/create'
+          }}
           secondaryAction={
             <IconButton
               onClick={() => setShowFilter(!showFilter)}
-              css={css({
+              sx={{
                 backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
                 color: showFilter ? '#1A73E8 !important' : '#666 !important',
                 marginLeft: '4px !important',
                 '&:hover': {
                   backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
                 }
-              })}
+              }}
             >
               <FilterListIcon />
             </IconButton>

@@ -17,11 +17,11 @@ function MerchantVendor() {
 
   useEffect(() => {
     if (!merchantVendorList.loading) {
-      const data = idx(merchantVendorList,_=>_.data.getMerchantVendorList)
+      const data = idx(merchantVendorList, _ => _.data.getMerchantVendorList)
       setMerchantVendor(data)
     }
   }, [merchantVendorList.loading])
-  
+
   return (
     <Page css={styles.root} title="廠商列表">
       <Container maxWidth={false}>
@@ -41,11 +41,11 @@ function MerchantVendor() {
         </Grid>
         {!merchantVendorList.loading ?
           <Results
-          className={styles.results}
-          merchantVendor={merchantVendor}
-          merchantVendorList={merchantVendorList}
-        /> : <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress/></div>}
-        
+            className={styles.results}
+            merchantVendor={merchantVendor}
+            merchantVendorList={merchantVendorList}
+          /> : <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>}
+
       </Container>
     </Page>
   )

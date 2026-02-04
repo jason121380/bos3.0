@@ -8,15 +8,16 @@ import { Link as RouterLink } from 'react-router-dom'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
+import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
 
 const styles = {
   root: css({
-    paddingTop: theme.spacing(3),
+    paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(6),
   }),
   results: css({
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(1),
   }),
 }
 
@@ -25,20 +26,14 @@ function Authority() {
   return (
     <Page css={styles.root} title="角色權限管理">
       <Container maxWidth={false}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='角色權限管理' subTitle='authority' />
-          <Grid item>
-            <Button
-              style={{ backgroundColor: '#3865AC' }}
-              color="primary"
-              variant="contained"
-              component={RouterLink}
-              to="/role/create"
-            >
-              新增
-            </Button>
-          </Grid>
-        </Grid>
+        <AdminPageHeader
+          title="角色權限管理"
+          sx={{ backgroundColor: 'transparent', mb: 0 }}
+          primaryAction={{
+            label: '新增角色',
+            to: '/role/create'
+          }}
+        />
         {!merchantAuthData.loading ?
           idx(merchantAuthData, _ => (
             <Results

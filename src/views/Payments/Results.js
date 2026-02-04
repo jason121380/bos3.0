@@ -12,7 +12,9 @@ import {
   TableHead,
   TableRow,
   Typography,
+  IconButton,
 } from '@mui/material'
+import EditIconSlot from '@mui/icons-material/Edit';
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import { PaymentSymbol } from 'helper/enum'
@@ -26,25 +28,50 @@ import { theme } from '../../theme'
 import { css } from '@emotion/react'
 
 const styles = {
-  root: css({}),
+  card: css({
+    borderRadius: '16px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+  }),
   content: css({
     padding: 0,
   }),
   inner: css({
     minWidth: 700,
   }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
+  tableHead: css({
+    backgroundColor: '#FFFFFF',
+    '& .MuiTableCell-head': {
+      color: '#212121',
+      fontWeight: 'bold',
+      borderBottom: '1px solid #f0f0f0',
+      height: '40px !important',
+      padding: '2px 16px !important',
+      fontSize: '14px',
+    }
   }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
+  tableRow: css({
+    height: '40px !important',
+    minHeight: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      borderBottom: '1px solid #f0f0f0',
+      fontSize: '14px !important',
+      color: '#333',
+    },
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
+  actionButton: css({
+    padding: '4px !important',
+    color: '#999 !important',
+    '&:hover': {
+      color: '#1A73E8 !important',
+      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
+    }
   }),
 }
 
@@ -79,17 +106,24 @@ function Results({ className, paymentList = [], ...rest }) {
   }
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        {paymentList.length} 筆資料
-      </Typography>
-      <Card>
-        <CardHeader title="所有支付方式" />
-        <Divider />
+      <Card css={styles.card}>
+        <CardHeader
+          title={
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+                所有支付方式
+              </Typography>
+              <Typography color="textSecondary" variant="body2">
+                共 {paymentList.length} 筆
+              </Typography>
+            </div>
+          }
+        />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
-              <Table>
-                <TableHead>
+              <Table size="small">
+                <TableHead css={styles.tableHead}>
                   <TableRow>
                     <TableCell padding="checkbox">
                       <Checkbox
@@ -114,31 +148,26 @@ function Results({ className, paymentList = [], ...rest }) {
                 </TableHead>
                 <TableBody>
                   {paymentList.map((data, idx) => (
-                    <TableRow hover key={`${data.name}-${idx}`} data-testid="table-row">
+                    <TableRow key={`${data.name}-${idx}`} css={styles.tableRow}>
                       <TableCell padding="checkbox">
                         <Checkbox
                           color="primary"
                           onChange={() => handleSelectOne(data.id)}
                           checked={selectedPayment.indexOf(data.id) > -1}
-                          inputProps={{
-                            'data-testid': `payment-selector-${idx}`,
-                          }}
                         />
                       </TableCell>
                       <TableCell>
-                        <Button
-                          color="primary"
+                        <IconButton
                           component={RouterLink}
-                          size="small"
+                          css={styles.actionButton}
                           to={`/payment/edit/${data.id}`}
-                          variant="outlined"
-                          data-testid={`payment-edit-${idx}`}
+                          size="small"
                         >
-                          編輯
-                        </Button>
+                          <EditIconSlot fontSize="small" />
+                        </IconButton>
                       </TableCell>
                       <TableCell>{idx + 1}</TableCell>
-                      <TableCell data-testid={`payment-name-${data.name}`}>{data.name}</TableCell>
+                      <TableCell>{data.name}</TableCell>
                       <TableCell>
                         {(data.amountType === 'AMOUNT' ? PaymentSymbol[data.amountType] : '') +
                           data.fee +

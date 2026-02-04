@@ -34,7 +34,7 @@ function ComodityCategories() {
             className={styles.results}
             refetchCategories={productCategories.refetch}
             categories={categories}
-          />: <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>}
+          /> : <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>}
       </Container>
     </Page>
   )

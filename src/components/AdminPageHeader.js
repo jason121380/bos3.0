@@ -43,10 +43,12 @@ const AdminPageHeader = ({
     showFilter,
     onFilterClick,
     primaryAction,
-    children
+    children,
+    sx,
+    ...rest
 }) => {
     return (
-        <Card css={styles.headerCard}>
+        <Card css={styles.headerCard} sx={sx} {...rest}>
             <div css={styles.leftSection}>
                 <PageTitle title={title} subTitle={subTitle} style={{ color: '#1A73E8' }} />
 

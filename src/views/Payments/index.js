@@ -8,15 +8,16 @@ import { Link as RouterLink } from 'react-router-dom'
 import { theme } from '../../theme'
 import { css } from '@emotion/react'
 
+import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
 
 const styles = {
   root: css({
-    paddingTop: theme.spacing(3),
+    paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(6),
   }),
   results: css({
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(1),
   }),
 }
 
@@ -25,20 +26,14 @@ function CustomerManagementList() {
   return (
     <Page css={styles.root} title="支付方式設定">
       <Container maxWidth={false}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='支付方式設定' subTitle='Payments' />
-          <Grid item>
-            <Button
-              style={{ backgroundColor: '#3865AC' }}
-              color="primary"
-              variant="contained"
-              component={RouterLink}
-              to="/payment/create"
-            >
-              新增
-            </Button>
-          </Grid>
-        </Grid>
+        <AdminPageHeader
+          title="支付方式設定"
+          sx={{ backgroundColor: 'transparent', mb: 0 }}
+          primaryAction={{
+            label: '新增支付方式',
+            to: '/payment/create'
+          }}
+        />
         {!payments.loading ?
           <Results
             className={styles.results}
