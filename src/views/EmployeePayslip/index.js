@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Container, Grid, Button, CircularProgress, Typography } from '@mui/material'
+import { Container, Grid, Button, CircularProgress, Typography, Collapse } from '@mui/material'
 import AdminPageHeader from 'components/AdminPageHeader'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
@@ -30,13 +30,31 @@ const styles = {
   container: css({
     paddingTop: theme.spacing(1.5),
     paddingBottom: theme.spacing(3),
-  })
+  }),
+  filterWrap: css({
+    display: 'flex',
+    gap: '12px',
+    alignItems: 'center',
+    marginBottom: '12px',
+    backgroundColor: '#fff',
+    borderRadius: '12px',
+    padding: '16px',
+    border: '1px solid #f0f0f0',
+  }),
+  pillButton: css({
+    borderRadius: '20px !important',
+    padding: '4px 20px !important',
+    fontSize: '14px !important',
+    boxShadow: 'none !important',
+    fontWeight: 'bold !important',
+  }),
 }
 
 export default function Payroll() {
   const [date, setDate] = useState({
     startDate: subMonths(new Date(), 1).getTime(),
   })
+  const [showFilter, setShowFilter] = useState(false)
   const usersDalaryData = useFetchUserSalaryReport({ date: date.startDate })
   const [searchId, setSearchId] = useState()
   const userSalary = idx(usersDalaryData, _ => _.data.userSalaryReport)
@@ -131,6 +149,8 @@ export default function Payroll() {
       <Container maxWidth={false} css={styles.container}>
         <AdminPageHeader
           title="薪資條"
+          showFilter={showFilter}
+          onFilterClick={() => setShowFilter(!showFilter)}
           secondaryActions={[
             {
               label: '報表匯出',
@@ -145,24 +165,28 @@ export default function Payroll() {
             }
           ]}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-            <DateSelector
-              date={date}
-              attributes={['lastmonth', 'thismonth', 'startDate']}
-              dateChange={value => setDate(value)}
-              onlyStart
-              inputFormat='yyyy/MM'
-              pickerOption={{
-                views: ['month', 'year']
-              }}
-            />
+          <DateSelector
+            date={date}
+            attributes={['lastmonth', 'thismonth', 'startDate']}
+            dateChange={value => setDate(value)}
+            onlyStart
+            inputFormat='yyyy/MM'
+            pickerOption={{
+              views: ['month', 'year']
+            }}
+          />
+        </AdminPageHeader>
+
+        <Collapse in={showFilter}>
+          <div css={styles.filterWrap}>
+            <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#666' }}>篩選條件：</Typography>
             <DesignerSearch
               value={searchId}
               label="設計師編號/姓名"
               onChange={value => setSearchId(value.userId)}
             />
           </div>
-        </AdminPageHeader>
+        </Collapse>
 
         {(!usersDalaryData.loading && !isDisplayFakePerformance.loading && !getIsPrintDetailDisplayOnSalaryReport.loading && !EPWDDisplay.loading) ?
           idx(

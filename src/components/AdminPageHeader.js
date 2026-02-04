@@ -43,6 +43,7 @@ const AdminPageHeader = ({
     showFilter,
     onFilterClick,
     primaryAction,
+    secondaryActions,
     children,
     sx,
     ...rest
@@ -66,6 +67,19 @@ const AdminPageHeader = ({
                     )
                 )}
 
+                {secondaryActions && secondaryActions.map((action, index) => (
+                    <Button
+                        key={index}
+                        variant="contained"
+                        css={styles.primaryButton}
+                        onClick={action.onClick}
+                        disabled={action.disabled}
+                        className={action.className}
+                    >
+                        {action.label}
+                    </Button>
+                ))}
+
                 {onFilterClick && (
                     <IconButton
                         onClick={onFilterClick}
@@ -83,7 +97,9 @@ const AdminPageHeader = ({
                 )}
             </div>
 
-            {children}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                {children}
+            </div>
         </Card>
     )
 }
@@ -97,6 +113,12 @@ AdminPageHeader.propTypes = {
         to: PropTypes.string,
         onClick: PropTypes.func,
     }),
+    secondaryActions: PropTypes.arrayOf(PropTypes.shape({
+        label: PropTypes.string.isRequired,
+        onClick: PropTypes.func.isRequired,
+        disabled: PropTypes.bool,
+        className: PropTypes.string,
+    })),
     children: PropTypes.node,
 }
 
