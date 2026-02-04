@@ -59,6 +59,20 @@ const localStyles = {
     fontWeight: 'bold !important',
     color: '#212121',
     borderBottom: '1px solid #f0f0f0',
+    backgroundColor: '#f8f9fa',
+  }),
+  itemLabel: css({
+    padding: '4px 16px !important',
+    fontWeight: 'bold !important',
+    width: '120px',
+    borderBottom: '1px solid #f0f0f0',
+    backgroundColor: '#fff',
+  }),
+  itemValue: css({
+    padding: '4px 16px !important',
+    width: '100px',
+    borderBottom: '1px solid #f0f0f0',
+    textAlign: 'left',
   }),
   eachSlip: css({
     marginBottom: '24px',
@@ -108,16 +122,14 @@ function Results({
                   <TableBody className='renderItem'>
                     {user.increaseItem.length > 0 ? (
                       user.increaseItem.map((item, i) => {
-                        if (i % 6 === 0 && i != 0) {
+                        if (i % 6 === 0 && i !== 0) {
                           return (
                             <Fragment key={`increaseItem-${i}`}>
-                              <TableRow></TableRow>
-                              <TableCell
-                                style={{ fontWeight: 'bold', width: '100px' }}
-                              >
+                              <TableRow style={{ borderTop: '1px solid #f0f0f0' }}></TableRow>
+                              <TableCell css={localStyles.itemLabel}>
                                 <span className={clsx(payslipOptimization && 'nowrap')}>{item.itemName}</span>
                               </TableCell>
-                              <TableCell className='price' style={{ width: '100px' }}>
+                              <TableCell css={localStyles.itemValue}>
                                 {item.price}
                               </TableCell>
                             </Fragment>
@@ -125,12 +137,10 @@ function Results({
                         } else {
                           return (
                             <Fragment key={`increaseItem-${i}`}>
-                              <TableCell
-                                style={{ fontWeight: 'bold', width: '100px' }}
-                              >
+                              <TableCell css={localStyles.itemLabel}>
                                 <span className={clsx(payslipOptimization && 'nowrap')}>{item.itemName}</span>
                               </TableCell>
-                              <TableCell className='price' style={{ width: '100px' }}>
+                              <TableCell css={localStyles.itemValue}>
                                 {item.price}
                               </TableCell>
                             </Fragment>
@@ -138,46 +148,36 @@ function Results({
                         }
                       })
                     ) : (
-                      <TableCell></TableCell>
+                      <TableCell css={localStyles.itemLabel}>無加項</TableCell>
                     )}
-                  </TableBody>
-                  <TableBody>
-                    <TableRow>
-                      <br />
-                    </TableRow>
                   </TableBody>
                   <TableBody className='renderItem'>
                     {user.decreaseItem.length > 0 ? (
                       user.decreaseItem.map((item, i) => {
-                        if (i % 6 === 0 && i != 0) {
+                        if (i % 6 === 0 && i !== 0) {
                           return (
                             <Fragment key={`decreaseItem-${i}`}>
-                              <TableRow></TableRow>
-                              <TableCell style={{ fontWeight: 'bold' }}>
+                              <TableRow style={{ borderTop: '1px solid #f0f0f0' }}></TableRow>
+                              <TableCell css={localStyles.itemLabel}>
                                 <span className={clsx(payslipOptimization && 'nowrap')}>{item.itemName}</span>
                               </TableCell>
-                              <TableCell className='price'>{item.price}</TableCell>
+                              <TableCell css={localStyles.itemValue}>{item.price}</TableCell>
                             </Fragment>
                           )
                         } else {
                           return (
                             <Fragment key={`decreaseItem-${i}`}>
-                              <TableCell style={{ fontWeight: 'bold' }}>
+                              <TableCell css={localStyles.itemLabel}>
                                 <span className={clsx(payslipOptimization && 'nowrap')}>{item.itemName}</span>
                               </TableCell>
-                              <TableCell className='price'>{item.price}</TableCell>
+                              <TableCell css={localStyles.itemValue}>{item.price}</TableCell>
                             </Fragment>
                           )
                         }
                       })
                     ) : (
-                      <TableCell></TableCell>
+                      <TableCell css={localStyles.itemLabel}>無扣項</TableCell>
                     )}
-                  </TableBody>
-                  <TableBody>
-                    <TableRow>
-                      <br />
-                    </TableRow>
                   </TableBody>
                 </Table>
                 <Table size="small">
