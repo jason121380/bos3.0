@@ -57,9 +57,9 @@ const localStyles = {
     padding: '2px 16px !important',
     fontSize: '14px !important',
     fontWeight: 'bold !important',
-    color: '#212121',
+    color: '#1A73E8 !important',
     borderBottom: '1px solid #f0f0f0',
-    backgroundColor: '#f8f9fa',
+    backgroundColor: 'rgba(26, 115, 232, 0.05) !important',
   }),
   itemLabel: css({
     padding: '4px 16px !important',

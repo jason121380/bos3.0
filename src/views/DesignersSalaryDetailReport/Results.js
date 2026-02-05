@@ -43,12 +43,12 @@ const localStyles = {
     },
   }),
   totalRow: css({
-    backgroundColor: '#f8f9fa !important',
+    backgroundColor: 'rgba(26, 115, 232, 0.05) !important',
     height: '40px !important',
     '& .MuiTableCell-body': {
       padding: '2px 16px !important',
       fontWeight: 'bold !important',
-      color: '#212121 !important',
+      color: '#1A73E8 !important',
       borderBottom: '1px solid #f0f0f0',
     }
   }),
@@ -180,8 +180,8 @@ function Results({
             }
             )}
             <TableRow css={localStyles.totalRow}>
-              <TableCell css={localStyles.stickyLeft} style={{ fontWeight: 'bold', backgroundColor: '#f8f9fa !important' }}>合計:</TableCell>
-              <TableCell css={localStyles.stickyLeft2} style={{ backgroundColor: '#f8f9fa !important' }} />
+              <TableCell css={localStyles.stickyLeft} style={{ fontWeight: 'bold', backgroundColor: 'rgba(26, 115, 232, 0.05) !important', color: '#1A73E8 !important' }}>合計:</TableCell>
+              <TableCell css={localStyles.stickyLeft2} style={{ backgroundColor: 'rgba(26, 115, 232, 0.05) !important' }} />
               <TableCell />
               {increaseItemsSum.map((data, index) => (
                 <TableCell key={index}>{Math.round(data)}</TableCell>
