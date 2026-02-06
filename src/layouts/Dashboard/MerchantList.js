@@ -7,6 +7,8 @@ import StorefrontIcon from '@mui/icons-material/Storefront';
 import { useHistory } from 'react-router';
 import { css } from '@emotion/react'
 
+import React, { useState, useEffect } from 'react'
+
 const styles = {
   root: css({
     display: 'flex',
@@ -71,8 +73,31 @@ const styles = {
   })
 }
 
-const MerchantList = ({ merchants }) => {
+const MerchantList = ({ merchants, searchQuery }) => {
   const history = useHistory()
+  const [expanded, setExpanded] = useState([])
+
+  useEffect(() => {
+    if (searchQuery) {
+      const allIds = []
+      const collectIds = (groups) => {
+        groups.forEach((g, i) => {
+          allIds.push(`group-${g.name}-${i}`)
+          if (g.groups) collectIds(g.groups)
+        })
+      }
+      collectIds(merchants.groups)
+      allIds.push('全部')
+      setExpanded(allIds)
+    } else {
+      setExpanded([])
+    }
+  }, [searchQuery, merchants.groups])
+
+  const handleToggle = (event, nodeIds) => {
+    setExpanded(nodeIds)
+  }
+
   const handleItemClick = merchant => {
     localStorage.setItem('userMerchant', JSON.stringify({ id: merchant.id, name: merchant.name }))
     history.push('/order/create')
@@ -83,8 +108,8 @@ const MerchantList = ({ merchants }) => {
     return group.map((data, index) => (
       <TreeItem
         css={!(data.groups && data.groups.length) ? styles.ulGroup : styles.ulGroupAll}
-        key={`${data.name}-${index}`}
-        nodeId={`${data.name}-${index}`}
+        key={`group-${data.name}-${index}`}
+        nodeId={`group-${data.name}-${index}`}
         label={<RenderLabel isGroup={true} data={data} />}
       >
         {data.merchants.length ? renderItem(data.merchants) : ''}
@@ -120,6 +145,8 @@ const MerchantList = ({ merchants }) => {
       css={styles.root}
       defaultCollapseIcon={<ExpandMoreIcon sx={{ color: '#8E8E93' }} />}
       defaultExpandIcon={<ChevronRightIcon sx={{ color: '#8E8E93' }} />}
+      expanded={expanded}
+      onNodeToggle={handleToggle}
     >
       <TreeItem
         css={styles.ulGroupAll}
