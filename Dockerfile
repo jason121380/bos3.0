@@ -5,7 +5,8 @@ WORKDIR /usr/app
 COPY package*.json ./
 
 # 安裝相依套件 (包含 devDependencies 以便 build)
-RUN npm install
+# 使用 --legacy-peer-deps 來解決舊版套件之間的相依性衝突 (ERESOLVE)
+RUN npm install --legacy-peer-deps
 
 # 複製原始碼
 COPY . .
