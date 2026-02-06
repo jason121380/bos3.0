@@ -56,28 +56,24 @@ const authLink = setContext((_, { headers }) => {
 })
 // let url = 'https://apibeautyos.mlgroup.vip/graphql'
 // let url = 'https://api.beautyos.co/graphql'
-let url = 'https://beautyos-api-prod-htlfg34mhq-de.a.run.app/graphql'
-if (window.location.href.indexOf('dev') !== -1) {
-  url = 'https://crt-test-htlfg34mhq-de.a.run.app/graphql'
-} else if (window.location.href.indexOf('beautyos2') !== -1) {
-  url = 'https://crt-test-htlfg34mhq-de.a.run.app/graphql'
-} else if (window.location.href.indexOf('localhost') !== -1) {
-  // 測試區的後端
-  url = 'https://crt-test-htlfg34mhq-de.a.run.app/graphql'
+let url = process.env.REACT_APP_API_URL || 'https://beautyos-api-prod-htlfg34mhq-de.a.run.app/graphql'
 
-  //後端local
-  // url = 'http://localhost:4849/graphql'
-
-  // 正式區的後端
-  // url = 'https://apibeautyos.mlgroup.vip/graphql'
-  // url = 'https://beautyos-api-prod-htlfg34mhq-de.a.run.app/graphql'
+// 如果沒有設定環境變數，才執行自動網址判斷
+if (!process.env.REACT_APP_API_URL) {
+  if (window.location.href.indexOf('dev') !== -1) {
+    url = 'https://crt-test-htlfg34mhq-de.a.run.app/graphql'
+  } else if (window.location.href.indexOf('beautyos2') !== -1) {
+    url = 'https://crt-test-htlfg34mhq-de.a.run.app/graphql'
+  } else if (window.location.href.indexOf('localhost') !== -1) {
+    url = 'https://crt-test-htlfg34mhq-de.a.run.app/graphql'
+  }
 }
 
 // console.log('window',w)
 // console.log('NODE_ENV2', beautyos2
 const httpLink = createUploadLink({
   uri: url,
-  headers: {'Apollo-Require-Preflight': 'true'}
+  headers: { 'Apollo-Require-Preflight': 'true' }
   // uri:
   //   NODE_ENV2 === 'production'
   //     ? 'https://apibeautyos.mlgroup.vip/graphql'

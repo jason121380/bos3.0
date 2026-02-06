@@ -2,7 +2,7 @@
 import { Container } from '@mui/material'
 import { CircularProgress } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
 import { format } from 'date-fns'
 import { useState, useEffect } from 'react'
@@ -18,8 +18,10 @@ import Results from './Results'
 
 const styles = {
   root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
+    minHeight: '100%',
+  }),
+  container: css({
+    padding: theme.spacing(1.5),
   }),
   results: css({
     marginTop: theme.spacing(3),
@@ -66,33 +68,33 @@ export default function MerchantBankTransferReport() {
 
   return (
     <Page css={styles.root} className='MerchantBankTransferReport' title="薪資轉帳明細">
-      <Container maxWidth={false}>
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
-          <div className="merchantNamePrint">
-            {JSON.parse(localStorage.getItem('userMerchant')).name +
-              '   ' +
-              format(new Date(date.startDate), 'yyyy-MM').toLocaleString() +
-              '   ' +
-              '薪資轉帳明細'}
-          </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' +
-              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-          </div>
+      <Container maxWidth={false} css={styles.container}>
+        <AdminPageHeader
+          title='薪資轉帳明細'
+          secondaryActions={[
+            {
+              label: '列印',
+              onClick: () => window.print(),
+              className: "noprint"
+            }
+          ]}
+        >
+          <DateSelector
+            date={date}
+            attributes={['lastmonth', 'thismonth', 'startDate']}
+            dateChange={value => setDate(value)}
+            onlyStart
+            inputFormat='yyyy/MM'
+            pickerOption={{
+              views: ['month', 'year']
+            }}
+          />
+        </AdminPageHeader>
+
+        <div style={{ marginTop: 24 }}>
+          <TransferDetail merchantBankSettings={merchantBankSettings} />
         </div>
-        <PageTitle title='薪資轉帳明細' subTitle='Merchant Bank Transfer Report' />
-        <DateSelector
-          date={date}
-          attributes={['lastmonth', 'thismonth', 'startDate']}
-          dateChange={value => setDate(value)}
-          onlyStart
-          margin
-          inputFormat='yyyy/MM'
-          pickerOption={{
-            views: ['month', 'year']
-          }}
-        />
-        <TransferDetail merchantBankSettings={merchantBankSettings} />
+
         {getUserSalaryTransferReport.loading ? (
           <div style={{ textAlign: 'center', marginTop: 100 }}><CircularProgress /></div>
         ) : <Results salaryData={salaryData} />}

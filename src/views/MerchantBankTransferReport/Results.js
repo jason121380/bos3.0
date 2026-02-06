@@ -9,26 +9,48 @@ import { useState, useEffect } from 'react'
 import { theme } from '../../theme'
 import { css } from '@emotion/react'
 
-const styles = {
-  root: css({}),
-  content: css({
-    padding: 0,
+const localStyles = {
+  card: css({
+    borderRadius: '16px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+    marginTop: '24px',
   }),
-  inner: css({
-    minWidth: 700,
+  tableHead: css({
+    backgroundColor: '#FFFFFF',
+    '& .MuiTableCell-head': {
+      backgroundColor: '#f8f9fa',
+      color: '#212121',
+      fontWeight: 'bold',
+      borderBottom: '1px solid #f0f0f0',
+      height: '40px !important',
+      padding: '2px 16px !important',
+      fontSize: '14px',
+    }
   }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
+  tableRow: css({
+    height: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      borderBottom: '1px solid #f0f0f0',
+      fontSize: '14px !important',
+      color: '#333',
+    },
+    '&:hover': {
+      backgroundColor: 'transparent !important',
+    },
   }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
+  totalRow: css({
+    backgroundColor: '#FFFFFF !important',
+    height: '40px !important',
+    '& .MuiTableCell-body': {
+      padding: '2px 16px !important',
+      fontWeight: 'bold !important',
+      color: '#212121 !important',
+      borderBottom: '1px solid #f0f0f0',
+    }
   }),
 }
 
@@ -66,11 +88,11 @@ function Results({ salaryData }) {
           無資料
         </Typography>
       ) : (
-        <Card className="MerchantBankTransferReportTable">
-          <CardContent css={styles.content} style={{ paddingBottom: 0, paddingLeft: 0 }}>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
+        <Card css={localStyles.card} className="MerchantBankTransferReportTable">
+          <CardContent style={{ padding: 0 }}>
+            <div>
+              <Table size="small">
+                <TableHead css={localStyles.tableHead}>
                   <TableRow>
                     <TableCell padding="checkbox" className="noprint">
                       <Checkbox
@@ -92,7 +114,7 @@ function Results({ salaryData }) {
                   {salaryData.map((user, index) => (
                     <TableRow
                       key={index}
-                      style={{ background: 'white' }}
+                      css={localStyles.tableRow}
                       selected={selectedUser.indexOf(user.id) > -1}
                       className={
                         !selectedUser.find(userId => userId === user.id) ? 'salaryTransferNoDsiplay' : ''
@@ -113,7 +135,7 @@ function Results({ salaryData }) {
                       </TableCell>
                     </TableRow>
                   ))}
-                  <TableRow>
+                  <TableRow css={localStyles.totalRow}>
                     <TableCell className="noprint" />
                     <TableCell />
                     <TableCell />

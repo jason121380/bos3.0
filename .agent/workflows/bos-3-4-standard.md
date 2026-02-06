@@ -9,8 +9,6 @@ description: BOS 3.4 Compact Administrative Template Standards
 ## 1. 頁面標頭 (AdminPageHeader)
 使用 `AdminPageHeader` 組件作為所有行政頁面的頂部導航列。
 
-### 組件屬性與順序：
-- **藍色垂直提示條**：標題左側必須有 `#1A73E8` 藍色提示條（已內建於 `AdminPageHeader`）。
 - **按鈕順序 (左側區域)**：
   1. `PageTitle` (標題)
   2. `primaryAction` (主要動作，如「開始盤點」、「新增」)
@@ -34,6 +32,9 @@ description: BOS 3.4 Compact Administrative Template Standards
   - 背景色：單純白色 `#FFFFFF`。
   - 文字：加粗 `bold`，顏色 `#212121`。
   - 邊框：底部為 `1px solid #f0f0f0`。
+- **合計列 (Total Row)**：
+  - 背景色：單純白色 `#FFFFFF`。
+  - 文字：加粗 `bold`，顏色 `#212121`。
 - **懸停效果**：行政管理頁面通常**移除** `TableRow` 的 hover 背景色變換，保持報表閱讀穩定性。
 
 ## 3. 卡片外觀 (Card Styling)
@@ -55,6 +56,7 @@ description: BOS 3.4 Compact Administrative Template Standards
   - 底部外距：`12px`。
 
 ## 5. 常規容器規範
+- **頁面背景**：統一使用純白色背景，避免使用灰色或彩色背景色。
 - **外層 Container**：`paddingTop: theme.spacing(1.5)`。
 - **按鈕樣式**：優先使用藥丸型 (`borderRadius: '20px'`) 或高圓角按鈕，按鈕內文字加粗。
 

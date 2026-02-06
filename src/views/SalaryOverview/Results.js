@@ -36,7 +36,7 @@ const localStyles = {
     '& .MuiTableCell-head': {
       color: '#212121',
       fontWeight: 'bold',
-      borderBottom: '1px solid #f0f0f0',
+      borderBottom: 'none',
       height: '40px !important',
       padding: '2px 16px !important',
       fontSize: '14px',
@@ -47,7 +47,7 @@ const localStyles = {
     minHeight: '40px !important',
     '& .MuiTableCell-body': {
       padding: '2px 16px !important',
-      borderBottom: '1px solid #f0f0f0',
+      borderBottom: 'none',
       fontSize: '14px !important',
       color: '#333',
     },
@@ -62,21 +62,12 @@ const localStyles = {
       fontWeight: 'bold',
       display: 'flex',
       alignItems: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: '#1A73E8',
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
     },
   }),
   actions: css({
     padding: theme.spacing(1),
     justifyContent: 'flex-end',
-    borderTop: '1px solid #f0f0f0',
+    borderTop: 'none',
   }),
 }
 
@@ -247,7 +238,6 @@ function Results({
             </div>
           }
         />
-        <Divider />
         <CardContent css={localStyles.content}>
           <PerfectScrollbar>
             <div css={localStyles.inner}>

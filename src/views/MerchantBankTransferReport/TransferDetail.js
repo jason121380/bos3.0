@@ -1,108 +1,102 @@
 /** @jsxImportSource @emotion/react */
-import { Grid, Typography, TextField, Button } from '@mui/material'
+import { Grid, Typography, TextField, Button, Card } from '@mui/material'
 import PropTypes from 'prop-types'
 import { format } from 'date-fns'
 import { css } from '@emotion/react'
 
-const styles = {
-  root: css({}),
+const localStyles = {
+  card: css({
+    borderRadius: '16px',
+    boxShadow: 'none',
+    border: '1px solid #f0f0f0',
+    backgroundColor: '#fff',
+    padding: '24px',
+    marginBottom: '24px',
+  }),
   gridContainer: css({
-    margin: '12px auto',
     display: 'flex',
     justifyContent: 'space-between',
   }),
-  div: css({
-    width: '100%',
-    textAlign: 'center',
-    marginTop: '10px',
-  }),
   sign: css({
-    marginTop: '30px',
-  }),
-  printBtn: css({
-    backgroundColor: '#3865AC',
+    marginTop: '24px',
+    display: 'flex',
+    gap: '48px',
   }),
 }
 
 function TransferDetail({ merchantBankSettings }) {
   return (
-    <Grid css={styles.gridContainer}>
-      <div className='MerchantBankTransferReportTransferDetail'>
-        <div>
-          <Typography variant="subtitle1" component="div">
-            列印日期：{format(new Date(), 'yyyy/MM/dd')}
-          </Typography>
+    <Card css={localStyles.card}>
+      <Grid container css={localStyles.gridContainer}>
+        <div className='MerchantBankTransferReportTransferDetail' style={{ width: '100%' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <Typography variant="subtitle1" component="div">
+              列印日期：{format(new Date(), 'yyyy/MM/dd')}
+            </Typography>
+          </div>
+          <div className="TransferDetailpPrint TransferDetailDateInput" style={{ marginBottom: '8px' }}>
+            <Typography variant="body1" component="div">
+              本公司於
+              <TextField variant="standard" size="small" style={{ width: 60 }} defaultValue={format(new Date(), 'yyyy')} />
+              年
+              <TextField variant="standard" size="small" style={{ width: 40 }} defaultValue={format(new Date(), 'MM')} />
+              月
+              <TextField variant="standard" size="small" style={{ width: 40 }} defaultValue={format(new Date(), 'dd')} />日
+            </Typography>
+          </div>
+          <div className="TransferDetailpPrint" style={{ marginBottom: '8px' }}>
+            <Typography variant="body1" component="div">
+              指定由存款帳戶
+              <TextField variant="standard" size="small" style={{ width: 200 }} value={merchantBankSettings.remitterBankAccount !== null ? merchantBankSettings.remitterBankAccount : " "} /> 提領
+            </Typography>
+          </div>
+          <div className="TransferDetailpPrint" style={{ marginBottom: '8px' }}>
+            <Typography variant="body1" component="div">
+              合計新台幣：
+              <TextField
+                variant="standard"
+                size="small"
+                style={{ width: 200 }}
+              />
+              元整
+            </Typography>
+          </div>
+          <div className="TransferDetailpPrint" style={{ marginBottom: '16px' }}>
+            <Typography variant="body1" component="div">
+              煩請依下列名冊悉數入該活存帳戶內
+            </Typography>
+          </div>
+          <div style={{ marginBottom: '8px' }}>
+            <Typography variant="body1" component="div">
+              至此
+            </Typography>
+          </div>
+          <div className="TransferDetailpPrint" style={{ marginBottom: '16px' }}>
+            <Typography variant="body1" component="div">
+              <TextField variant="standard" size="small" style={{ width: 120 }} value={merchantBankSettings.remitterBankName !== null ? merchantBankSettings.remitterBankName : ""} /> 銀行
+              <TextField variant="standard" size="small" style={{ width: 120 }} value={merchantBankSettings.remitterBankBranchName !== null ? merchantBankSettings.remitterBankBranchName : ""} />
+              分行
+            </Typography>
+          </div>
+          <div css={localStyles.sign}>
+            <div>
+              <Typography variant="body1" component="div" style={{ marginBottom: '8px' }}>
+                簽章：
+              </Typography>
+              <div style={{ height: 60 }}></div>
+            </div>
+            <div>
+              <Typography variant="body1" component="div" style={{ marginBottom: '8px' }}>
+                聯絡人：{merchantBankSettings.trustorName !== null ? merchantBankSettings.trustorName : ""}
+              </Typography>
+              <Typography variant="body1" component="div">
+                電話：{merchantBankSettings.trustorPhone !== null ? merchantBankSettings.trustorPhone : ""}
+              </Typography>
+            </div>
+          </div>
         </div>
-        <div className="TransferDetailpPrint TransferDetailDateInput">
-          <Typography variant="subtitle1" component="div">
-            本公司於
-            <TextField variant="standard" type="text" defaultValue={format(new Date(), 'yyyy')}/>
-            年
-            <TextField variant="standard" type="text" defaultValue={format(new Date(), 'MM')}/>
-            月
-            <TextField variant="standard" type="text" defaultValue={format(new Date(), 'dd')}/>日
-          </Typography>
-        </div>
-        <div className="TransferDetailpPrint">
-          <Typography variant="subtitle1" component="div">
-            指定由存款帳戶
-            <TextField variant="standard" type="text" value={merchantBankSettings.remitterBankAccount !== null ? merchantBankSettings.remitterBankAccount : " "} /> 提領
-          </Typography>
-        </div>
-        <div className="TransferDetailpPrint">
-          <Typography variant="subtitle1" component="div">
-            合計新台幣：
-            <TextField
-              variant="standard"
-              type="text"
-            />
-            元整
-          </Typography>
-        </div>
-        <div className="TransferDetailpPrint">
-          <Typography variant="subtitle1" component="div">
-            煩請依下列名冊悉數入該活存帳戶內
-          </Typography>
-        </div>
-        <div>
-          <Typography variant="subtitle1" component="div">
-            至此
-          </Typography>
-        </div>
-        <div className="TransferDetailpPrint">
-          <Typography variant="subtitle1" component="div">
-            <TextField variant="standard" type="text" value={merchantBankSettings.remitterBankName !== null ? merchantBankSettings.remitterBankName : ""} /> 銀行
-            <TextField variant="standard" type="text" value={merchantBankSettings.remitterBankBranchName !== null ? merchantBankSettings.remitterBankBranchName : ""} />
-            分行
-          </Typography>
-        </div>
-        <div css={styles.sign}>
-          <Typography variant="subtitle1" component="div">
-            簽章：
-          </Typography>
-        </div>
-        <div css={styles.sign}>
-          <Typography variant="subtitle1" component="div">
-            聯絡人：{merchantBankSettings.trustorName !== null ? merchantBankSettings.trustorName: ""}
-          </Typography>
-          <Typography variant="subtitle1" component="div">
-            電話：{merchantBankSettings.trustorPhone !== null ? merchantBankSettings.trustorPhone : ""}
-          </Typography>
-        </div>
-      </div>
-      <div>
-        <Button
-          size="medium"
-          variant="contained"
-          color="primary"
-          onClick={() => window.print()}
-          css={styles.printBtn}
-          className='noprint'
-        >
-          列印
-        </Button>
-      </div>
-    </Grid>
+      </Grid>
+    </Card>
   )
 }
 

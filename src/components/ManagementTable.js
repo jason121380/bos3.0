@@ -12,29 +12,28 @@ import { css } from '@emotion/react'
 import { theme } from '../theme'
 
 const styles = {
+    card: css({
+        borderRadius: '16px',
+        boxShadow: 'none',
+        border: '1px solid #f0f0f0',
+        backgroundColor: '#fff',
+        overflow: 'hidden',
+    }),
+    cardHeader: css({
+        padding: '12px 24px !important',
+        '& .MuiCardHeader-title': {
+            fontSize: '15px',
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+        },
+    }),
     content: css({
         padding: '0px !important',
     }),
     actions: css({
         padding: theme.spacing(0, 1),
         justifyContent: 'flex-end',
-    }),
-    cardHeader: css({
-        '& .MuiCardHeader-title': {
-            fontSize: '15px',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-            '&::before': {
-                content: '""',
-                display: 'inline-block',
-                width: '4px',
-                height: '16px',
-                backgroundColor: '#1A73E8',
-                marginRight: '8px',
-                borderRadius: '2px',
-            },
-        },
     }),
     csvBtn: css({
         borderRadius: '20px !important',
@@ -77,7 +76,7 @@ const ManagementTable = ({
     }, [children, pageRef.current, hidePagination])
 
     return (
-        <Card className={className}>
+        <Card className={className} css={styles.card}>
             <CardHeader
                 css={styles.cardHeader}
                 action={
