@@ -4,6 +4,11 @@ WORKDIR /usr/app
 # 複製 package 檔案
 COPY package*.json ./
 
+# 設定 npm 下載重試與超時，應對大型 node_modules 下載時的網路不穩定
+RUN npm config set fetch-retries 5 && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000
+
 # 安裝相依套件 (包含 devDependencies 以便 build)
 # 使用 --legacy-peer-deps 來解決舊版套件之間的相依性衝突 (ERESOLVE)
 RUN npm install --legacy-peer-deps
