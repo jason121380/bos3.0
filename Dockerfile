@@ -1,15 +1,30 @@
+FROM node:20.12.1-alpine AS builder
+WORKDIR /usr/app
+
+# 複製 package 檔案
+COPY package*.json ./
+
+# 安裝相依套件 (包含 devDependencies 以便 build)
+RUN npm install
+
+# 複製原始碼
+COPY . .
+
+# 執行建置
+RUN npm run build
+
+# 執行階段
 FROM node:20.12.1-alpine
 WORKDIR /usr/app
 
-COPY package.json /usr/app/
-COPY ./build /usr/app/build
-COPY ./node_modules /usr/app/node_modules
+# 從編譯階段複製 build 資料夾
+COPY --from=builder /usr/app/build ./build
+
+# 安裝 serve
+RUN npm install -g serve
 
 EXPOSE 3000
-RUN yarn global add serve
+
+# 啟動應用程式
 CMD ["serve", "-s", "build"]
-
-
-# docker build -t gcr.io/ml-group-204107/github.com/mrsunboss/beautyos:ricktest25 .
-# docker push gcr.io/ml-group-204107/github.com/mrsunboss/beautyos:ricktest25
 
