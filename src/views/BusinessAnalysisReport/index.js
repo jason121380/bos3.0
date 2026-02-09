@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import useFetchGetBusinessAnalysisReport from 'hooks/useFetchGetBusinessAnalysisReport'
 import { startOfMonth, format } from 'date-fns'
@@ -149,7 +149,7 @@ const PaymentReport = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <PageTitle title='營業統計分析表' subTitle='Business Analysis Report' />
+        <AdminPageHeader title='營業統計分析表' />
         <Grid className='noprint' container justifyContent='space-between' alignItems='center'>
           <DateSelector
             date={date}

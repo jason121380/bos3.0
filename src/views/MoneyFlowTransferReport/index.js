@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
 import { startOfMonth, format } from 'date-fns'
 import useFetchMoneyFlowTransferReport from 'hooks/useFetchMoneyFlowTransferReport'
@@ -90,7 +90,7 @@ const MoneyFlowTransferReport = () => {
   return (
     <Page css={styles.root} title="收支匯款表">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='收支匯款表' subTitle='Money Flow Transfer Report' />
+        <AdminPageHeader title='收支匯款表' />
         <Grid container item justifyContent='space-between' alignItems='center'>
           <DateSelector
             date={date}

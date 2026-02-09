@@ -13,7 +13,7 @@ import Page from 'components/Page'
 import idx from 'idx'
 import { useEffect, useState } from 'react'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { startOfMonth, format } from 'date-fns'
 import useFetchProductConsumeList from 'hooks/useFetchProductConsumeList'
 import useFetchGetProductPurpose from 'hooks/useFetchGetProductPurpose'
@@ -152,7 +152,7 @@ export default function Employees() {
   return (
     <Page css={styles.root} title="商品消耗明細">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='商品消耗明細' subTitle='Product Consume Report' />
+        <AdminPageHeader title='商品消耗明細' />
         <Grid container style={{ gap: 10 }} alignItems="baseline" justifyContent="space-between">
           <Grid item>
             <Grid container alignItems="center" style={{ gap: 10 }}>

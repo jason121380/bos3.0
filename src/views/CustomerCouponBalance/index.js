@@ -6,7 +6,7 @@ import idx from 'idx'
 import useFetchCustomerCouponReport from 'hooks/useFetchCustomerCouponReport'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import TicketAutoComplete from 'components/TicketAutoComplete'
 import { CSVLink } from "react-csv";
 import { css } from '@emotion/react'
@@ -121,7 +121,7 @@ const CustomerWalletBalance = () => {
   return (
     <Page css={styles.root} title="顧客卡券餘額表">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='顧客卡券餘額表' subTitle='Customer Coupon Balance' style={{ color: 'red' }} />
+        <AdminPageHeader title='顧客卡券餘額表' />
         <Grid container alignItems='center' justifyContent="space-between" style={{ margin: '12px 0', gap: 10 }}>
           <Grid item style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
             <Grid item>

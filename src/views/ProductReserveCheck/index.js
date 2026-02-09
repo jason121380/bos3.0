@@ -7,7 +7,7 @@ import {
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { useFetchProductsInAutoComplete } from 'hooks/useFetchProducts'
 import { endOfDay, startOfMonth } from 'date-fns'
@@ -126,7 +126,7 @@ const ProductReserveCheck = () => {
   return (
     <Page css={styles.root} title="商品庫存盤點表">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='商品庫存盤點表' subTitle='product reserve check' />
+        <AdminPageHeader title='商品庫存盤點表' />
         <DateSelector
           date={date}
           attributes={['lastmonth', 'thismonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}

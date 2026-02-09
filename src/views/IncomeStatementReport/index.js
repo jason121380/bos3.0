@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { endOfMonth, format } from 'date-fns'
 import idx from 'idx'
@@ -47,7 +47,7 @@ export default function IncomeStatementReport() {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <PageTitle title='損益表' subTitle='Income Statement Report' />
+        <AdminPageHeader title='損益表' />
         <Grid container alignItems='center' justifyContent='space-between' className="noprint">
           <DateSelector
             date={date}

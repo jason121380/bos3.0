@@ -2,7 +2,7 @@
 import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { endOfMonth, format } from 'date-fns'
 import useFetchMerchantIncomeStatementV2 from 'hooks/useFetchMerchantIncomeStatementV2'
@@ -111,7 +111,7 @@ export default function MerchantIncomeStatementMonthly() {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <PageTitle title='費用分析表' subTitle='Cost analysis Report' />
+        <AdminPageHeader title='費用分析表' />
         <Grid
           container
           style={{ alignItems: 'center', justifyContent: 'space-between' }}

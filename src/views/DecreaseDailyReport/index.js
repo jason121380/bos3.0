@@ -5,7 +5,7 @@ import {
   TextField, Autocomplete,
 } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { format } from 'date-fns'
 import idx from 'idx'
@@ -149,7 +149,7 @@ const DecreaseDailyReport = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <PageTitle title='互助日報表' subTitle='Decrease Daily Report' />
+        <AdminPageHeader title='互助日報表' />
         <Grid container alignItems='center' justifyContent='space-between' className="noprint">
           <DateSelector
             date={date}

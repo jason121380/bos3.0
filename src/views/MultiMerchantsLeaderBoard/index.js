@@ -5,7 +5,7 @@ import {
 } from '@mui/material'
 import Page from 'components/Page'
 import { useState, useEffect } from 'react'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
 import DateSelector from 'components/DateSelector'
 import { startOfDay, endOfDay, format } from 'date-fns'
@@ -136,7 +136,7 @@ const MultiMerchantsLeaderBoard = () => {
 							format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
 					</div>
 				</div>
-				<PageTitle title='多店店販銷售排行' subTitle='multi merchants leader board' />
+				<AdminPageHeader title='多店店販銷售排行' />
 				<Grid container className='noprint' alignItems='center' style={{ justifyContent: 'space-between' }}>
 					<Grid style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 20 }} item>
 						<DateSelector

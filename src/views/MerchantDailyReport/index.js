@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Container, CircularProgress, Button, Grid } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
 import useFetchMerchantReportV3 from 'hooks/useFetchMerchantDailyReportV3'
 import useFetchIsPriceDisplayOnDailyReportSetting from 'hooks/useFetchIsPriceDisplayOnDailyReport'
@@ -158,7 +158,7 @@ const MerchantDailyReport = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <PageTitle title='店家日報表' subTitle='Merchant Daily Report' />
+        <AdminPageHeader title='店家日報表' />
         <Grid container justifyContent='space-between' style={{ alignItems: 'center' }} className="noprint">
           <DateSelector
             date={date}

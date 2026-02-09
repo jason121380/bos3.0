@@ -4,7 +4,7 @@ import Page from 'components/Page'
 import { endOfMonth, startOfMonth, differenceInDays } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import { useEffect, useState } from 'react'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import produce from 'immer'
 import useFetchGetCustomerConsumptionLeaderboard from 'hooks/useFetchGetCustomerConsumptionLeaderboard'
 import useFetchGetCustomerConsumptionLeaderboardExcel from 'hooks/useFetchGetCustomerConsumptionLeaderboardExcel'
@@ -104,7 +104,7 @@ function CustomerConsumptionLeaderboard() {
   return (
     <Page title="顧客消費排行榜">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='顧客消費排行榜' subTitle='customer consumption leaderboard' />
+        <AdminPageHeader title='顧客消費排行榜' />
         <Filter
           rangeLimit={rangeLimit}
           dataChange={handleDataChange}

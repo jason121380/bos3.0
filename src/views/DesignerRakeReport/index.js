@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { Container, Grid, Typography, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { startOfMonth } from 'date-fns'
 import idx from 'idx'
 import useFetchDesignerRakeReport from 'hooks/useFetchDesignersRakeReport'
@@ -56,7 +56,7 @@ const DesignerRakeReport = () => {
   return (
     <Page css={styles.root} title="設計師抽成報表">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='設計師抽成報表' subTitle='Designer Rake Report' />
+        <AdminPageHeader title='設計師抽成報表' />
         <DateSelector
           date={date}
           attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}

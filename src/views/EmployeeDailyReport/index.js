@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { Container, Grid, Typography, CircularProgress, Button } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchDesignerReport from 'hooks/useFetchDesignerDailyReport'
 import { format } from 'date-fns'
 import idx from 'idx'
@@ -127,7 +127,7 @@ const EmployeeDailyReport = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <PageTitle title='設計師日報表' subTitle='Employee Daily Report' />
+        <AdminPageHeader title='設計師日報表' />
         <Grid container alignItems='center' justifyContent='space-between' className="noprint">
           <DateSelector
             date={date}

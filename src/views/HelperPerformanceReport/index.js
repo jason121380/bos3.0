@@ -5,7 +5,7 @@ import {
 } from '@mui/material'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
 import { endOfDay, startOfMonth } from 'date-fns'
@@ -113,7 +113,7 @@ export default function HelperPerformance() {
   return (
     <Page title="互助業績報表" css={styles.root}>
       <Container style={{ padding: 0 }} maxWidth={false}>
-        <PageTitle title='互助業績報表' subTitle='Helper Performance Report' />
+        <AdminPageHeader title='互助業績報表' />
         <Grid container style={{ justifyContent: 'space-between' }}>
           <DateSelector
             date={pageSetting}

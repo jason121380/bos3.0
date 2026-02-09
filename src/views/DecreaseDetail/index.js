@@ -2,7 +2,7 @@
 import { Container, Typography, CircularProgress } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { endOfDay, startOfMonth } from 'date-fns'
 import { useFetchUserHelperRetrieve } from 'hooks/useFetchGetUserHelperRetrieve'
 import idx from 'idx'
@@ -46,7 +46,7 @@ export default function DecreaseDetail() {
   return (
     <Page title="互助點數明細" css={styles.root}>
       <Container maxWidth={false}>
-        <PageTitle title='互助點數明細' subTitle='Decrease Detail' />
+        <AdminPageHeader title='互助點數明細' />
         <div css={styles.searchBar}>
           <div>
             <MerchantSearchBar

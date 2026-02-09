@@ -5,7 +5,7 @@ import {
 import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
 import useFetchDesignerMonthlyReport from 'hooks/useFetchDesignerMonthlyReport'
@@ -100,7 +100,7 @@ export default function Employees() {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <PageTitle title='設計師業績月報表' subTitle='Designer Monthly Report' />
+        <AdminPageHeader title='設計師業績月報表' />
         <div className='noprint' style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
           <DateSelector
             date={date}

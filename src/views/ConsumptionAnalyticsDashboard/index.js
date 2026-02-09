@@ -5,7 +5,7 @@ import { endOfMonth, startOfMonth, getMonth } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import idx from 'idx'
 import { useEffect, useState } from 'react'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchGetConsumptionAnalyticsDashboard from 'hooks/useFetchGetConsumptionAnalyticsDashboard'
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
 import { css } from '@emotion/react'
@@ -247,7 +247,7 @@ function ConsumptionAnalyticsDashboard() {
   return (
     <Page css={styles.root} title="消費分析儀表板">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='消費分析儀表板' subTitle='consumption analytics dashboard' />
+        <AdminPageHeader title='消費分析儀表板' />
         <Filter
           loading={getConsumptionAnalyticsDashboardLazyData.loading}
           handleSearch={handleSearch}

@@ -8,7 +8,7 @@ import {
 } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { endOfDay, startOfMonth } from 'date-fns'
 import useFetchProductOrders from 'hooks/useFetchProductOrders'
 import idx from 'idx'
@@ -125,7 +125,7 @@ export default function DecreaseDetail({ history, location }) {
   return (
     <Page title="店販分類抽成明細">
       <Container maxWidth={false} css={styles.root}>
-        <PageTitle title='店販分類抽成明細' subTitle='Merchant Category Sells Records' />
+        <AdminPageHeader title='店販分類抽成明細' />
         <Grid container css={styles.container}>
           <Grid item>
             <MerchantSearchBar

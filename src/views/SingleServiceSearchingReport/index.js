@@ -18,7 +18,7 @@ import produce from 'immer'
 
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
@@ -139,7 +139,7 @@ const DesignerPerformBasic = () => {
   return (
     <Page css={styles.root} title="單一服務項目查詢">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='單一服務項目查詢' subTitle='Single Service Searching' />
+        <AdminPageHeader title='單一服務項目查詢' />
         <div style={{ display: 'flex', alignItems: 'center', gap: '0 20px', flexWrap: 'wrap' }}>
           <Grid item >
             <DateSelector

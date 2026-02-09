@@ -4,7 +4,7 @@ import {
   Container, Button, Grid, CircularProgress, ToggleButtonGroup,ToggleButton
 } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { endOfDay, startOfMonth } from 'date-fns'
 import { CSVLink } from "react-csv";
 import useFetchGetProductLeaderBoardV2 from 'hooks/useFetchGetProductLeaderBoardV2'
@@ -78,7 +78,7 @@ const ProductLeaderBoard = () => {
   return (
     <Page css={styles.root} title="商品銷售排行榜">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='商品銷售排行榜' subTitle='Product LeaderBoard' />
+        <AdminPageHeader title='商品銷售排行榜' />
         <Grid container justifyContent="space-between" alignItems="center">
           <DateSelector
             date={{

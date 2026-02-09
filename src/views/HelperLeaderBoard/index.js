@@ -5,7 +5,7 @@ import {
   ToggleButtonGroup, ToggleButton
 } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
 import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
@@ -179,7 +179,7 @@ const HelperLeaderBoard = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <PageTitle title='互助排行榜' subTitle='Helper Leader Board' />
+        <AdminPageHeader title='互助排行榜' />
         <Grid className="noprint" container style={{ display: 'flex', justifyContent: 'space-between' }}>
           <DateSelector
             date={{ startDate: inputValue.startDay, endDate: inputValue.endDay }}

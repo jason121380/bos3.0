@@ -6,7 +6,7 @@ import {
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
 import React, { useState, useEffect, Fragment } from 'react'
 import DateSelector from 'components/DateSelector'
@@ -191,7 +191,7 @@ export default function Employees() {
   return (
     <Page css={styles.root} title="非現金明細對帳單">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='非現金明細對帳單' subTitle='Non Cash Detail Statement Report' />
+        <AdminPageHeader title='非現金明細對帳單' />
         <Grid container style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
           <Grid item>
             <DateSelector

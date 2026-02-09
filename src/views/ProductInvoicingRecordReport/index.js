@@ -8,7 +8,7 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import Autocomplete from '@mui/material/Autocomplete'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { useFetchProductsInAutoComplete } from 'hooks/useFetchProducts'
 import { endOfDay, startOfMonth, format } from 'date-fns'
@@ -149,7 +149,7 @@ const ProductInvoicingRecordReport = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <PageTitle title='商品進銷貨報表' subTitle='Product Invoicing Record Report' />
+        <AdminPageHeader title='商品進銷貨報表' />
         <Grid className="noprint" container style={{ display: 'flex', justifyContent: 'space-between' }}>
           <DateSelector
             date={date}

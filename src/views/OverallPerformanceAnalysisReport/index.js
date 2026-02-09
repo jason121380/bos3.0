@@ -4,7 +4,7 @@ import {
   Container, Button, CircularProgress, Grid, ToggleButton, ToggleButtonGroup
 } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
 import DateSelector from 'components/DateSelector'
 import { endOfMonth, startOfMonth, format } from 'date-fns'
@@ -197,7 +197,7 @@ const OverallPerformanceAnalysisReport = () => {
   return (
     <Page css={styles.root} title="多店業績統計表">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='多店業績統計表' subTitle='Overall Performance Analysis Report' />
+        <AdminPageHeader title='多店業績統計表' />
         <Grid container alignItems='center' justifyContent='space-between' >
           <DateSelector
             date={date}

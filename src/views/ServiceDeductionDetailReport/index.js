@@ -8,7 +8,7 @@ import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import ServicesIncludesTicketsAutoComplete from 'components/ServicesIncludesTicketsAutoComplete'
 import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { endOfMonth } from 'date-fns'
 import idx from 'idx'
 import { CSVLink } from "react-csv";
@@ -92,7 +92,7 @@ const ServiceDeductionDetailReport = () => {
   return (
     <Page css={styles.root} title="服務扣項明細表">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='服務扣項明細表' subTitle='AService Deduction Detail Report' />
+        <AdminPageHeader title='服務扣項明細表' />
         <Grid style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
           <Grid item css={styles.topDiv}>
             <MerchantSearchBar

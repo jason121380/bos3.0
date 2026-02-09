@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 import Page from 'components/Page'
 import { useState, useEffect } from 'react'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
 import { startOfDay, endOfDay, format } from 'date-fns'
@@ -152,7 +152,7 @@ const DesignerPerformanceReport = () => {
 							format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
 					</div>
 				</div>
-				<PageTitle title='設計師業績表' subTitle='Designer Performance Report' />
+				<AdminPageHeader title='設計師業績表' />
 				<Grid container className='noprint' alignItems='center' style={{ justifyContent: 'space-between' }}>
 					<DateSelector
 						date={date}

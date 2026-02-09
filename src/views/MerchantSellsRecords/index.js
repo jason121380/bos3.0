@@ -3,7 +3,7 @@ import { Container, Grid, CircularProgress } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
 import ProductAutoComplete from 'components/ProductAutoComplete'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { endOfDay, startOfMonth } from 'date-fns'
 import useFetchProductOrders from 'hooks/useFetchProductOrders'
 import idx from 'idx'
@@ -73,7 +73,7 @@ export default function DecreaseDetail({ history, location }) {
   return (
     <Page title="店販抽成明細" css={styles.root}>
       <Container maxWidth={false}>
-        <PageTitle title='店販抽成明細' subTitle='Merchant Sells Records' />
+        <AdminPageHeader title='店販抽成明細' />
         <Grid container css={styles.container}>
           <Grid item>
             <MerchantSearchBar

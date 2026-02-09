@@ -4,7 +4,7 @@ import {
   Container, Button, CircularProgress, Grid, ToggleButton, ToggleButtonGroup
 } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
 import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
@@ -329,7 +329,7 @@ const DesignerPerformBasic = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <PageTitle title='設計師排行榜' subTitle='Designer Perform Basic' />
+        <AdminPageHeader title='設計師排行榜' />
         <Grid container style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <DateSelector
             date={date}

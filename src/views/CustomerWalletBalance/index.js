@@ -7,7 +7,7 @@ import useFetchCustomerWalletBalance from 'hooks/useFetchCustomerWalletReport'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import { CSVLink } from "react-csv";
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
@@ -85,7 +85,7 @@ const CustomerWalletBalance = () => {
   return (
     <Page css={styles.root} title="顧客入金餘額表">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='顧客入金餘額表' subTitle='Customer Wallet Balance' />
+        <AdminPageHeader title='顧客入金餘額表' />
         <Grid style={{ direction: 'row', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', margin: '12px 0', gap: 10 }}>
           <Grid style={{ gap: 10, display: 'flex', flexWrap: 'wrap' }}>
             <EmployeeAutoComplete

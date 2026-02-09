@@ -3,7 +3,7 @@ import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { startOfMonth, endOfMonth, format } from 'date-fns'
 import useFetchGetBusinessItemsMonthlyReport from 'hooks/useFetchGetBusinessItemsMonthlyReport'
@@ -81,7 +81,7 @@ export default function Employees() {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <PageTitle title='營業項目月分析表' subTitle='Business Items Monthly Analyze Report' />
+        <AdminPageHeader title='營業項目月分析表' />
         <Grid container style={{ alignItems: 'center', justifyContent: 'space-between' }} className="noprint">
           <DateSelector
             date={date}

@@ -3,7 +3,7 @@ import { Container, CircularProgress, Button } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { startOfMonth, addDays, format, differenceInDays } from 'date-fns'
 import useFetchMoneyFlowDailyReport from 'hooks/useFetchMoneyFlowDailyReport'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
@@ -88,7 +88,7 @@ export default function Employees() {
   return (
     <Page css={styles.root} title="每日收支明細">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='每日收支明細(已日結)' subTitle='Money Flow Daily Report' />
+        <AdminPageHeader title='每日收支明細(已日結)' />
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <DateSelector
             date={date}

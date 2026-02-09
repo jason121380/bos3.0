@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { Container, CircularProgress, Grid, Button, Card } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import ReferToggleButton from 'components/ReferToggleButton'
 import { endOfDay, startOfMonth, format } from 'date-fns'
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
@@ -133,7 +133,7 @@ function DesignerPerformOverview() {
             marginBottom: '12px',
           })}
         >
-          <PageTitle title='每日業績分析表' />
+          <AdminPageHeader title='每日業績分析表' />
           <CSVLink
             data={excelData}
             filename="每日業績分析表.csv"

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import ReferToggleButton from 'components/ReferToggleButton'
 import { endOfDay, startOfMonth } from 'date-fns'
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
@@ -176,7 +176,7 @@ function DesignerPerformOverview() {
   return (
     <Page css={styles.root} title="全店業績分析表">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='全店業績分析表' subTitle='Designer Perform Overview' />
+        <AdminPageHeader title='全店業績分析表' />
         <Grid container direction='row' alignItems='center' style={{ gap: 20 }}>
           <Grid item>
             <DateSelector

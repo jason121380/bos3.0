@@ -7,7 +7,7 @@ import idx from 'idx'
 import React, { useEffect, useState } from 'react'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import useFetchGetMembershipSellReport from 'hooks/useFetchGetMembershipSellReport'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { startOfDay, endOfDay, format } from 'date-fns'
 import { CSVLink } from "react-csv";
 import roundDecimal from './../../helper/roundDecimal.js'
@@ -104,7 +104,7 @@ export default function MembershipSellReport() {
   return (
     <Page css={styles.root} title="會員卡銷售報表">
       <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='會員卡銷售報表' subTitle='Membership Sell Report' />
+        <AdminPageHeader title='會員卡銷售報表' />
         <Grid container style={{ gap: 10 }} alignItems="baseline" justifyContent="space-between">
           <Grid item>
             <MerchantSearchBar

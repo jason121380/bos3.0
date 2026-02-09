@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { Container, CircularProgress, Button, Grid } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { format } from 'date-fns'
 import idx from 'idx'
@@ -80,7 +80,7 @@ const HelperMontlyReport = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <PageTitle title='互助月報表' subTitle='Helper Monthly Report' />
+        <AdminPageHeader title='互助月報表' />
         <Grid container style={{ alignItems: 'center', justifyContent: 'space-between' }} className="noprint">
           <DateSelector
             date={date}

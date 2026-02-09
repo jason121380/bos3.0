@@ -8,7 +8,7 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import useFetchGetProductInventoryList from 'hooks/useFetchGetProductInventoryList'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { format } from 'date-fns'
 import idx from 'idx'
 import Results from './Results'
@@ -167,7 +167,7 @@ const ProductInventoryList = () => {
           })}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='商品庫存表' style={{ color: '#1A73E8' }} />
+            <AdminPageHeader title='商品庫存表' style={{ color: '#1A73E8' }} />
             <IconButton
               onClick={() => setShowFilter(!showFilter)}
               css={css({

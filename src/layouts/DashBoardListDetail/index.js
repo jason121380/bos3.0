@@ -5,7 +5,7 @@ import {
   Container, Link, Grid,
 } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
 import { Link as RouterLink } from 'react-router-dom'
 import idx from 'idx'
 import useFetchUserPermission from 'hooks/useFetchUser'
@@ -132,7 +132,7 @@ export default function DashBoardListDetail() {
   return (
     <Page css={styles.root} title='報表目錄'>
       <Container maxWidth={false}>
-        <PageTitle title='報表目錄' subTitle='Reports Menu' />
+        <AdminPageHeader title='報表目錄' />
         <Grid
           container
           spacing={3}
