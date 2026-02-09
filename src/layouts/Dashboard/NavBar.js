@@ -459,7 +459,6 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
           height: 'calc(100% - 64px)',
           borderRight: '1px solid rgba(0, 0, 0, 0.1)',
           backgroundColor: '#FFFFFF',
-          boxShadow: '2px 0 8px rgba(0, 0, 0, 0.05)',
           zIndex: 1000,
           borderRadius: '0px !important',
         }
@@ -667,6 +666,9 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '24px',
                     backgroundColor: theme === 'DARK' ? 'rgba(255, 255, 255, 0.05)' : '#f1f3f4',
+                    '&.Mui-focused': {
+                      backgroundColor: theme === 'DARK' ? 'rgba(255, 255, 255, 0.05)' : '#f1f3f4',
+                    },
                     '& fieldset': {
                       border: 'none',
                     },
@@ -781,6 +783,9 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '24px',
                     backgroundColor: theme === 'DARK' ? 'rgba(255, 255, 255, 0.05)' : '#f1f3f4',
+                    '&.Mui-focused': {
+                      backgroundColor: theme === 'DARK' ? 'rgba(255, 255, 255, 0.05)' : '#f1f3f4',
+                    },
                     '& fieldset': {
                       border: 'none',
                     },

@@ -32,25 +32,24 @@ export default {
     },
   }),
   action: css({
-    width: '32px',
-    height: '32px',
+    width: '22px',
+    height: '22px',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: '12px',
+    marginRight: '6px',
+    marginBottom: '6px',
     cursor: 'pointer',
-    '& svg': {
-      fontSize: '22px', // Unify size
-      color: '#999',    // Gray color
-    },
+    fontSize: '18px',
+    color: '#999',
     '&:last-child': {
       marginRight: '0px',
     },
   }),
   createIcon: css({
     cursor: 'pointer',
-    margin: '0 12px',
-    fontSize: '22px', // Unify size
-    color: '#999',    // Gray color
+    margin: '0 6px 6px 6px',
+    fontSize: '18px',
+    color: '#999',
   }),
 }

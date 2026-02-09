@@ -116,7 +116,7 @@ function MerchantBar({ open, onClose, userMerchants }) {
       <div css={styles.searchContainer}>
         <TextField
           fullWidth
-          placeholder="搜尋店家或私有雲..."
+          placeholder="搜尋店家"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           css={styles.searchField}

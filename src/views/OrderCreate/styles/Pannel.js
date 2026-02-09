@@ -8,11 +8,13 @@ export default {
     flexDirection: 'column',
     gap: theme.spacing(1),
     marginTop: theme.spacing(2),
+    overflow: 'hidden',
   }),
   container: css({
     display: 'grid',
     gridTemplateColumns: '1fr 400px',
     gap: theme.spacing(1),
+    overflow: 'hidden',
     [theme.breakpoints.down('md')]: {
       gridTemplateColumns: '1fr',
     },
@@ -21,11 +23,14 @@ export default {
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing(1),
+    minWidth: 0,
   }),
   rightColumn: css({
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing(1),
+    minWidth: 0,
+    overflow: 'hidden',
   }),
   heading: css({
     fontSize: '15px',
