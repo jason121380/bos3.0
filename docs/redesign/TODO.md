@@ -99,6 +99,7 @@
 3. ~~是否要新增 `ui/combobox` 與 `ui/date-picker`~~ **已拍版（Jason 2026/10/19，四點新拍版）**：
    - **Autocomplete**：不新造 combobox；不動打字／選取行為；其他頁只改外層標籤（`Field` 上方標籤＋`placeholder`）。
    - **月曆**：排入 `ui/date-picker` 專項。先盤點 39–43 檔（`@mui/x-date-pickers`；口徑差異在盤點時對齊），必須保留民國年、顯示格式、locale、存值，分批進行。
+   - **報表 compact 進度**（2026/10/19，本分支 `ui-report3-box`，v3.0-1019-0410）：本批為本組第 5 個（前 #18、#19、#20、#21，整組待 merge）。IncomeStatementReport 1 頁（1 張表）換 `ui/table`＋`dense`；累計第一批 4＋第二批 12＋本批 1＝**17 頁，剩 11 頁 MUI Table 報表**。`ui/table` dense 補 `px-2`（與第二批同定義）。**待實機列印預覽**：①`initialize.scss` 對 `.IncomeStatementReport` 的 `table/thead/th` 黑框線規則與 `ui/table` 內建 print 格線疊加是否出現雙線；②`.MuiTableCell-root` 類規則不再命中，儲存格內距／框線是否仍合宜；③小計／損益紅字列印是否變黑；④`px-2` 欄寬變窄後一頁寬度；⑤報表匯出鈕與 hr 在列印時仍隱藏。
    - **22 張列印報表**：併入「報表 compact 專項」，只改樣式；列印預覽以唯讀方式確認，不動 `#printMain`／`#printThermal` 與 `className` 含 `print` 的元素。
 4. `ui/native-select` 的 `label`（外框上緣標籤）要不要整批改成「`Field` 上方標籤」？目前 25 檔引用、約 21 處有傳 `label`，與 STYLE「標籤在上」不一致；改法機械但檔案分散，建議納入 §四 批次 E。
 

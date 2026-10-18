@@ -4,15 +4,11 @@ import {
   CardContent,
   CardHeader,
   Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Grid,
 } from '@mui/material'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -171,16 +167,16 @@ function Results({ className, incomeStatement }) {
           <CardContent css={styles.content}>
             <PerfectScrollbar>
               <div css={styles.inner}>
-                <Table size="small">
-                  <TableHead>
+                <Table dense>
+                  <TableHeader>
                     <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell>加項</TableCell>
-                      <TableCell>%</TableCell>
-                      <TableCell>扣項</TableCell>
-                      <TableCell>%</TableCell>
+                      <TableHead></TableHead>
+                      <TableHead>加項</TableHead>
+                      <TableHead>%</TableHead>
+                      <TableHead>扣項</TableHead>
+                      <TableHead>%</TableHead>
                     </TableRow>
-                  </TableHead>
+                  </TableHeader>
                   <TableBody>
                     {incomeStatement.map((data, index) => {
                       if (
@@ -190,7 +186,7 @@ function Results({ className, incomeStatement }) {
                         data.subjectName !== '暫收墊款(ex.學費)'
                       ) {
                         return (
-                          <TableRow hover key={`IncomeStatement-${index}`}>
+                          <TableRow key={`IncomeStatement-${index}`}>
                             <TableCell>{data.subjectName}</TableCell>
                             <TableCell>
                               {data.cashRevenue > 0 ? Math.round(data.cashRevenue) : ''}
@@ -212,14 +208,14 @@ function Results({ className, incomeStatement }) {
                         )
                       }
                     })}
-                    <TableRow hover>
+                    <TableRow>
                       <TableCell css={styles.subtotal}>小計</TableCell>
                       <TableCell>{Math.round(cashRevenue)}</TableCell>
                       <TableCell>100%</TableCell>
                       <TableCell>{Math.round(cashExpenditure)}</TableCell>
                       <TableCell>100%</TableCell>
                     </TableRow>
-                    <TableRow hover>
+                    <TableRow>
                       <TableCell css={styles.subtotal}>損益</TableCell>
                       <TableCell>{Math.round(cashRevenue + cashExpenditure)}</TableCell>
                       <TableCell>
@@ -239,7 +235,7 @@ function Results({ className, incomeStatement }) {
                         data.subjectName === '暫收墊款(ex.學費)'
                       ) {
                         return (
-                          <TableRow hover key={`IncomeStatement-${index}`}>
+                          <TableRow key={`IncomeStatement-${index}`}>
                             <TableCell>{data.subjectName}</TableCell>
                             <TableCell>
                               {data.cashRevenue > 0 ? Math.round(data.cashRevenue) : ''}
