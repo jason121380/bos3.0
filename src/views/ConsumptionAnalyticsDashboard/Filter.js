@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
-// 設計師多選（Autocomplete）與業績切換鈕保留 MUI
+// 設計師多選（Autocomplete）保留 MUI
 import {
   TextField, Checkbox, Autocomplete,
-  ToggleButtonGroup, ToggleButton
 } from '@mui/material'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
@@ -13,6 +12,7 @@ import DateSelector from 'components/DateSelector'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import { Button } from 'ui/button'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 
 const styles = {
   root: css({}),
@@ -74,15 +74,15 @@ const Filter = ({ date, setDate, handleSearch, loading, inputData, setInputData,
             disabled={loading}
           />
         )}
-        <ToggleButtonGroup
+        <ToggleGroup
           size="small"
           exclusive
           value={inputData.performance}
           onChange={(e, value) => value && setInputData({ ...inputData, performance: value })}
         >
-          <ToggleButton disabled={loading} value='SUM'>總和業績</ToggleButton>
-          <ToggleButton disabled={loading} value='AVERAGE'>平均業績</ToggleButton>
-        </ToggleButtonGroup>
+          <ToggleGroupItem disabled={loading} value='SUM'>總和業績</ToggleGroupItem>
+          <ToggleGroupItem disabled={loading} value='AVERAGE'>平均業績</ToggleGroupItem>
+        </ToggleGroup>
       </div>
       <div className="flex flex-nowrap items-center gap-2.5">
         <div className="min-w-0 flex-1">
