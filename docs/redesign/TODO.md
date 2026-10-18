@@ -60,6 +60,9 @@
 
 ### P2 — 改版收尾
 - [x] **版本顯示（v3.0-1019-0232，分支 `claude/ui-version-box`）**：新增 `src/version.js`（`APP_VERSION`），`Dashboard/TopBar.js`、`Auth/Topbar.js` 改讀它，不再寫死 `v3.0`。狀態：提前 merge 中（待指揮者驗證與 PR）。
+- [x] **批次 8 [v3.0-1019-0303]（`claude/ui-batch8-box`，替代 Payment；目前組別第 3 個，前為 #13、#14；PR／commit 待補）**：`UpdateDeductionSetting/Results.js` 的 15 個 TextField（門檻／抽成，`min=0`、`type=number`、`onWheel` 不變）→ `Field`＋`Input`（標籤在上）；`ToggleButton`／`Tabs`／`Checkbox` 保留 MUI；`index.js` 沒有 MUI 欄位，未動。
+  - 既有 bug 不碰：非分段「刪除此級距」`onClick={handleDeleteSetDeductionNum}` 會把 event 當 index 傳入。
+- [ ] **待決策（Payment 批放棄）**：原定 `PaymentCreate` 因下拉選項的 `data-testid` 被 Cypress 點選，換 `NativeSelect` 會讓 e2e 失效而整批放棄。是否授權把相關 Cypress spec 改為 `.select()`？授權前 `PaymentCreate` 維持現狀。
 - [ ] **紀律**：之後每個完整 commit 都要更新 `src/version.js`（格式 `v3.0-MMDD-HHmm`，Asia/Taipei），並與 commit 訊息第一行 `[版號]` 一致；不自行升大版號。
 - [x] **批次 5 [v3.0-1019-0202]（`claude/ui-batch5-box`，PR #11 已 merge，merge commit cfc79cd，commit 079a7d0，GitHub Build/Unit pass；指揮者已驗證）**：`CouponEdit` 表單標籤改版，做法同批次 4 的 `CouponCreate`（PR #10）。
   - 本批完成：`AboutCoupon.js`、`AboutDeduction.js`、`AboutAssistantSetting.js` 的 TextField → `Field`＋`Input`（標籤在上）、單選 Select → `Field`＋`NativeSelect`；`index.js` 沒有 MUI 欄位，未動。三檔都沒有 helperText／error、Autocomplete、日期、鍵盤焦點鏈或列印，所以三檔皆在範圍內。`Checkbox`／`FormControlLabel`（分指定／互助均分）仍是 MUI。

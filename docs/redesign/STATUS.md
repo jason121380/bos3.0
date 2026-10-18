@@ -88,6 +88,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 | v3.0-1019-0152 | 2026-10-19 01:52 | 規則前已 push（對照） | #10 | 已 push，不 amend | GitHub Build/Unit pass；第一組已於 2026-10-19 merge（29630fa） |
 | v3.0-1019-0202 | 2026-10-19 02:02 | UI 批次5 CouponEdit | #11 | 079a7d0 | GitHub Build/Unit pass；已 merge（merge commit cfc79cd） |
 | v3.0-1019-0232 | 2026-10-19 02:32 | 版本顯示上線（`src/version.js`） | #12 | bca2950 | 狀態：提前 merge 中（對齊後 checks 待重跑） |
+| v3.0-1019-0303 | 2026-10-19 03:03 | UI 批次8（替代 Payment）：UpdateDeductionSetting/Results.js 15 個 TextField → `Field`＋`Input`；本批為目前組別第 3 個（前為 #13、#14）；版號由 0258 校正為 0303 | PR 待補 | commit 待補 | 驗證：eslint 0 error、verify-logic 通過、portal-root-scan 0/0、全域測試 52/52、build 成功；該次 build 的 bundle 含校正前版號字串 `v3.0-1019-0258`（校正僅字串差異），commit 後以最終版號 0303 重 build 由指揮者確認 |
 
 ## 刻意不改（需另外決定）
 
