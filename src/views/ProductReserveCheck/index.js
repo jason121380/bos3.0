@@ -5,8 +5,7 @@ import {
   Button as MuiButton, Checkbox, TextField,
   Autocomplete
 } from '@mui/material'
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
 import { useFetchProductsInAutoComplete } from 'hooks/useFetchProducts'
