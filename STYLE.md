@@ -137,7 +137,7 @@
 
 ## 11. 報表 compact 規格
 
-Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現**。範圍只限 presentation／print CSS；欄位、數字、計算、查詢、列印觸發（`window.print`、`#printMain` 等）一律不動。本節只寫「已有的能力」與「待盤點」，沒落地的不當成已實作。
+Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現**。範圍只限 presentation／print CSS；欄位、數字、計算、查詢、列印觸發（`window.print`、`#printMain` 等）一律不動。本節只寫「已有的能力」與「待盤點」，沒落地的不當成已實作。22 張會直接列印的報表同樣適用 compact（Jason 2026-10-19 拍版併入專項），只改樣式、不改欄位與數字，列印預覽僅唯讀確認。
 
 ### 已有能力（以 `src/ui/table.js`、`src/ui/format.js` 為準）
 
