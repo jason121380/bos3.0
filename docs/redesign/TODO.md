@@ -26,6 +26,12 @@
 | 11 | 窄螢幕：備註／訂單來源欄位不再超出卡片；金額彙總手機單欄 |
 | 12 | 文件：新增 `CLAUDE.md`、`docs/redesign/MEMORY.md`、本檔；更新 `STYLE.md`、`README.md`、`STATUS.md` |
 
+### 2026/10/19 產品決策（Jason 拍版，已完成）
+- [x] **電話不限 10 碼**：LoginForm 不做 10～13 碼驗證（只有 required）；`LoginForm.test.js` 由 skip 改為驗證「非 10 碼電話不會被長度規則擋下」。
+- [x] **店販售價可低於成本**：不做 `sellPrice >= cost` 驗證；`ProductCreate.test.js` 驗證 cost=9、sellPrice=5 不報錯，sellPrice<0 仍被擋。
+- 註記：`AboutProduct.js` 的 `min.value=watchList.cost` 為死代碼（RHF v6 不重新註冊、實際只擋負數），視為過時，本批不改元件。
+- 結果：相關測試 5/5；全域 17 檔／52 測試通過，0 失敗、0 skip。
+
 ### 驗證結果
 - Build 成功（本機 `CI=true` 與 GitHub CI）。
 - 測試：7 檔、13 個失敗，與改版前基準相同，**無新增失敗**；OrderCreate 與 `src/ui` 18 個測試全過。
@@ -57,7 +63,7 @@
 ### P4 — 既有問題（修了會動邏輯，需你同意才改）
 - 功能釘選分頁 `_` 未 import；`SalaryEdit` 日期只在模組載入時計算一次；`UpdateDeductionSetting` 刪除級距把 event 當 index；`CustomerBonusRecordEdit` 對字串呼叫 `splice`；`OrderEdit` 的 `_.cloneDeep` 未 import；三個帳單編輯頁的 `handlePannelClick` 未定義；`AdminPageHeader` 的 `primaryAction.disabled` 無作用。
 - `ServicesAutoComplete`：排序直接改動原陣列、`a.no - b.no` 遇非數字代號為 NaN、代號只支援完全比對。
-- 測試：13 個既有失敗（ProductCreate、ServiceCategoryEdit／Create、AccountingSubjectsAutocomplete、LoginForm、Products/Results、AccountingRecordCreate/Header）——修完 CI 的 Unit tests 才會轉綠。
+- [x] 測試：原 13 個既有失敗（ProductCreate、ServiceCategoryEdit／Create、AccountingSubjectsAutocomplete、LoginForm、Products/Results、AccountingRecordCreate/Header）已清零（PR #5 與 2026/10/19 決策改寫），全域 52/52 通過。
 
 ---
 

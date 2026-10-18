@@ -146,10 +146,15 @@ describe('<ProductCreate />', () => {
     await settle()
     expect(queryByText('庫存單位 為必填')).toBeNull()
 
-    // 店販售價的 min 驗證。注意：min 的下限是「成本價格」，但 react-hook-form v6 不會因 re-render 更新已註冊欄位的規則，
-    // 實測下限停留在初始成本 0（cost=9、sellPrice=5 不會報錯）——疑似元件行為問題，已列在 PR 說明待 Jason 決定，此處不改邏輯，
-    // 所以只驗證 sellPrice < 0 會報錯。
+    // 產品決策（2026-10-19 Jason 拍版）：店販售價可以低於成本，不做 sellPrice >= cost 驗證。
+    // 註：AboutProduct.js 的 min.value=watchList.cost 因 react-hook-form v6 不會重新註冊而停在初始成本 0，
+    // 實際只擋 sellPrice < 0（錯誤訊息沿用該 min 的文字）。該設定視為過時，本批不改元件，只在文件標註。
     fireEvent.change(getByTestId('cost'), { target: { value: '9' } })
+    fireEvent.change(getByTestId('sellPrice'), { target: { value: '5' } })
+    await settle()
+    expect(queryByText('店販售價 必須至少等於「成本價格」')).toBeNull()
+
+    // 負數仍會被擋
     fireEvent.change(getByTestId('sellPrice'), { target: { value: '-1' } })
     await settle()
     expect(queryByText('店販售價 必須至少等於「成本價格」')).toBeInTheDocument()
