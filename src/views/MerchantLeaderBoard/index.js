@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { ToggleButton, ToggleButtonGroup } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
@@ -15,6 +14,7 @@ import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisp
 import Results from './Results'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
 
 const isIncludeProductPerformanceValue = [
@@ -311,33 +311,33 @@ const MerchantLeaderBoard = () => {
               <div className="divText">總業績依據：</div>
               <div className="flex justify-between">
                 <div>
-                  <ToggleButtonGroup
+                  <ToggleGroup
                     size="small"
                     value={isIncludeProductPerformance}
                     onChange={handleProductPerformanceToggleButtonChange}
                     exclusive
                   >
                     {isIncludeProductPerformanceValue.map((data, idx) => (
-                      <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                      <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                         {data.label}
-                      </ToggleButton>
+                      </ToggleGroupItem>
                     ))}
-                  </ToggleButtonGroup>
+                  </ToggleGroup>
                 </div>
                 <div className="ml-2.5">
                   {displayReportWithMembership &&
-                    <ToggleButtonGroup
+                    <ToggleGroup
                       size="small"
                       value={isIncludeMembershipPerformance}
                       onChange={handleMembershipPerformanceToggleButtonChange}
                       exclusive
                     >
                       {isIncludeMembershipPerformanceValue.map((data, idx) => (
-                        <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                        <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                           {data.label}
-                        </ToggleButton>
+                        </ToggleGroupItem>
                       ))}
-                    </ToggleButtonGroup>}
+                    </ToggleGroup>}
                 </div>
               </div>
             </div>
