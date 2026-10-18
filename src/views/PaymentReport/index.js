@@ -1,14 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react'
-import { Container, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import { startOfMonth } from 'date-fns'
 import useFetchMerchantOtherPayWayDetailReport from 'hooks/useFetchMerchantOtherPayWayDetailReport'
-import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { theme } from '../../theme'
 import { css } from '@emotion/react'
+import { PageHeader, Toolbar } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -71,24 +71,22 @@ const PaymentReport = () => {
   }, [merchantOtherPayWayDetailReportData.loading])
 
   return (
-    <Page css={styles.root} title="每日非現金明細">
-      <Container maxWidth={false} css={styles.container}>
-        <AdminPageHeader title='每日非現金明細' />
+    <Page className="ui-root" title="每日非現金明細">
+      <PageHeader title="每日非現金明細" />
+      <Toolbar>
         <DateSelector
           date={date}
           attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
           dateChange={value => setDate(value)}
           margin
         />
-        {!merchantOtherPayWayDetailReportData.loading &&
-          reportForDisplay !== null ? (
-          <Results report={reportForDisplay} paymentsName={paymentsName} />
-        ) : (
-          <div css={styles.noReportDiv}>
-            <CircularProgress />
-          </div>
-        )}
-      </Container>
+      </Toolbar>
+      {!merchantOtherPayWayDetailReportData.loading &&
+        reportForDisplay !== null ? (
+        <Results report={reportForDisplay} paymentsName={paymentsName} />
+      ) : (
+        <Skeleton className="h-96" aria-busy="true" />
+      )}
     </Page>
   )
 }
