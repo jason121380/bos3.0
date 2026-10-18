@@ -16,8 +16,7 @@ import {
   TextField,
   IconButton,
 } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Edit as EditIcon, Visibility as VisibilityIcon } from 'ui/icons'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteCustomer from 'hooks/useFetchDeleteCustomer'

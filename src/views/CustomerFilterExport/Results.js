@@ -16,7 +16,7 @@ import {
   TextField,
   IconButton,
 } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit';
+import { Edit as EditIcon } from 'ui/icons'
 import ManagementTable from 'components/ManagementTable'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Card, Container, InputLabel, Select, FormControl, MenuItem, CircularProgress, Grid, Button, IconButton, Collapse } from '@mui/material'
-import FilterListIcon from '@mui/icons-material/FilterList'
+import { FilterList as FilterListIcon } from 'ui/icons'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
 import useFetchCustomers from 'hooks/useFetchCustomers'
