@@ -13,7 +13,7 @@ const PRINT = cn(
   'print:[&_thead]:bg-transparent print:[&_tfoot]:bg-transparent'
 )
 const Table = React.forwardRef(({ className, wrapperClassName, dense = false, ...props }, ref) => (
-  <div className={cn('ui-scroll-x w-full overflow-x-auto rounded-lg border border-solid border-border print:overflow-visible print:rounded-none print:border-0', wrapperClassName)}>
+  <div className={cn('ui-root ui-scroll-x w-full overflow-x-auto rounded-lg border border-solid border-border print:overflow-visible print:rounded-none print:border-0', wrapperClassName)}>
     <table
       ref={ref}
       className={cn('w-full border-collapse text-body', dense && '[&_td]:h-8 [&_td]:py-1 [&_th]:h-8', PRINT, className)}
@@ -82,7 +82,7 @@ const TablePagination = React.forwardRef(function TablePagination(
   const to = rowsPerPage === -1 ? count : Math.min(count, (page + 1) * rowsPerPage)
   const lastPage = rowsPerPage === -1 ? 0 : Math.max(0, Math.ceil(count / rowsPerPage) - 1)
   return (
-    <div ref={ref} className={cn('flex flex-wrap items-center justify-end gap-x-4 gap-y-2 pt-3 text-label text-text-secondary', className)}>
+    <div ref={ref} className={cn('ui-root flex flex-wrap items-center justify-end gap-x-4 gap-y-2 pt-3 text-label text-text-secondary', className)}>
       {onRowsPerPageChange && rowsPerPageOptions.length > 1 && (
         <div className="flex items-center gap-2">
           <span>{labelRowsPerPage}</span>

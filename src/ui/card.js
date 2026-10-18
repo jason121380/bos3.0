@@ -3,7 +3,7 @@ import { cn } from './utils'
 
 // STYLE.md §6：rounded-lg、1px border、內距 20px、不用陰影；標題用 heading
 const Card = React.forwardRef(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn('rounded-lg border border-solid border-border bg-background', className)} {...props} />
+  <div ref={ref} className={cn('ui-root rounded-lg border border-solid border-border bg-background', className)} {...props} />
 ))
 Card.displayName = 'Card'
 

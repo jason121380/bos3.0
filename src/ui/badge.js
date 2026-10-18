@@ -3,7 +3,7 @@ import { cva } from 'class-variance-authority'
 import { cn } from './utils'
 
 // STYLE.md §6：狀態專用；文字＋8% 底色；不加邊框陰影
-const badgeVariants = cva('inline-flex h-6 items-center gap-1 whitespace-nowrap rounded-md px-2 text-caption font-medium', {
+const badgeVariants = cva('ui-root inline-flex h-6 items-center gap-1 whitespace-nowrap rounded-md px-2 text-caption font-medium', {
   variants: {
     variant: {
       neutral: 'bg-text/8 text-text-secondary',

@@ -36,10 +36,10 @@
 ## 二、接下來要做（依建議優先順序）
 
 ### P1 — 影響使用者的問題
-- [ ] **約 16 個檔案（掃描結果，以重跑掃描為準）的 `ui` 元件放在 MUI Dialog／Popper 內，缺 `.ui-root`**（沒有 box-sizing／邊框重置，外觀可能跑掉）。
-  根本做法：讓 `Button`、`CheckboxField`、`Card`、`Table*` 的根元素自帶 `ui-root`（Switch／Input／Badge／Avatar 一併）。
-  受影響檔案：`GeneralAccountingRecordDetail/AccountingSubjectModal`、`MainEventList/ComfirmDialog`、`ManagementDesignersReservationRecord/index`、`ManagementReservationRecord/index`、`MemberCardRecord/EditMemberCardRecordModal`、`OrderEdit/Header`、`Parameter/AboutOrderDetail`、`Parameter/AboutSettingFunction`、`Parameter/OuterLinkModal`、`Parameter/OuterLinkSortModal`、`Products/EditProductsCategoryModal`、`Products/PublishedDialog`、`Products/VendorDialog`、`Profile/General/ProfileDetails`、`Services/AboutDeductionEditModal`、`Services/AssistantSettingEditModal`。
-  驗證：重跑 `portal-root` 掃描（應為 0 處）＋截圖各 Modal。
+- [x] **`ui` 元件放在 MUI Dialog／Popper 內缺 `.ui-root`**：已讓 `Button`、`Card`、`Checkbox`／`CheckboxField`、`Switch`、`Input`／`Textarea`／`Field`／`Label`、`Badge`、`Avatar`、`Table*` 共 8 個 `src/ui` 檔的根元素自帶 `ui-root`。
+  掃描（`node scripts/redesign/portal-root-scan.js`）：修前 25 個畫面檔缺 `ui-root`，修後 **0**；8 個 ui 元件檔全數自帶。
+  舊清單「約 16 個」是手動整理，與掃描不一致：其中 9 個在掃描內（`GeneralAccountingRecordDetail/AccountingSubjectModal`、`MainEventList/ComfirmDialog`、`Parameter` 4 檔、`Products/PublishedDialog`、`Products/VendorDialog`、`Profile/General/ProfileDetails`）；另 7 個（兩個 `Management*ReservationRecord/index`、`MemberCardRecord/EditMemberCardRecordModal`、`OrderEdit/Header`、`Products/EditProductsCategoryModal`、`Services/AboutDeductionEditModal`、`Services/AssistantSettingEditModal`）檔內本來就有 `ui-root`，掃描不列入；掃描另外多找出 16 個舊清單沒有的檔案。
+  待辦：實機／截圖各 Modal 確認外觀（尚未做）。
 - [ ] **非打帳單頁面的手機擠壓**：設計師績效頁「搜尋」按鈕被推出畫面、日期輸入框只剩 24px、薪資單儲存格換行等（全站審計結果在 `scratchpad/audit-*.json`）。
 - [ ] **打帳單其餘彈窗仍是浮動標籤的 MUI**（新增顧客 Modal 等），要統一為上方標籤。
 - [ ] **實機確認**：訂單列表捲軸、底部固定合計列（桌機／手機）、列印不出現合計列。
