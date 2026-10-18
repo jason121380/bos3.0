@@ -96,7 +96,7 @@ export default function Results({ reportData, open, openCollapse, onToggleAll })
         }
         title={
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-            <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+            <Typography variant="h6" style={{ fontWeight: 'bold', color: 'rgb(var(--text))' }}>
               組合設定列表
             </Typography>
             <Typography color="textSecondary" variant="body2">
@@ -153,7 +153,7 @@ export default function Results({ reportData, open, openCollapse, onToggleAll })
                   <Collapse timeout="auto" unmountOnExit in={open.indexOf(d.id) > -1}>
                     <Box margin={0} sx={{ borderLeft: '4px solid rgb(var(--accent))', ml: '24px', my: 1, pl: 2 }}>
                       {d.collapesData.length ? (
-                        <div style={{ border: '1px solid #f0f0f0', borderLeft: 'none', borderRadius: '0 8px 8px 0', overflow: 'hidden' }}>
+                        <div style={{ border: '1px solid rgb(var(--border))', borderLeft: 'none', borderRadius: '0 8px 8px 0', overflow: 'hidden' }}>
                           <Table size="small">
                             <TableHead css={styles.tableHead}>
                               <TableRow>

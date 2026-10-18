@@ -59,7 +59,7 @@ function AboutCustomerSettingFunction({
             renderOption={(props, option, { selected }) => (
               <li {...props}>
                 <Checkbox
-                  style={{ color: '#202D50', marginRight: 8 }}
+                  style={{ color: 'rgb(var(--text))', marginRight: 8 }}
                   icon={icon}
                   checkedIcon={checkedIcon}
                   checked={selected}

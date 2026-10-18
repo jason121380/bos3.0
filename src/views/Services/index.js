@@ -131,7 +131,7 @@ function Services() {
         />
 
         <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+          <div style={{ marginBottom: '12px', backgroundColor: 'rgb(var(--background))', borderRadius: '8px', padding: '16px', border: '1px solid rgb(var(--border))' }}>
             <SearchBar
               onSearch={event =>
                 handlePageChange({
@@ -141,7 +141,7 @@ function Services() {
               }
             />
             <div style={{ marginTop: '12px' }}>
-              <div className="divText" style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>點選服務類別進行篩選</div>
+              <div className="divText" style={{ fontSize: '12px', color: 'rgb(var(--text-secondary))', marginBottom: '8px' }}>點選服務類別進行篩選</div>
               <div css={styles.categorieDiv}>
                 {serviceCategories.map(serviceCategorie => (
                   <Button
