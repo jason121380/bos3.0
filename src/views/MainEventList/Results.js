@@ -3,10 +3,7 @@ import {
   Button, Card, Table, TableBody, TableCell, TableHead,
   TableRow, Box, TableContainer, Collapse, Typography, CardHeader, CardContent, IconButton
 } from '@mui/material'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import EditIconSlot from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon, Edit as EditIconSlot, Visibility as VisibilityIcon } from 'ui/icons'
 import { Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'

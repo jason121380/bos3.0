@@ -4,8 +4,7 @@ import {
     TableRow, Box, TableContainer, Chip, Collapse,
     Typography, Tooltip, CardHeader, CardContent, IconButton
 } from '@mui/material'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon } from 'ui/icons'
 import { Fragment } from 'react'
 import format from 'date-fns/format';
 import PerfectScrollbar from 'react-perfect-scrollbar'
