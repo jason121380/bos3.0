@@ -218,7 +218,7 @@ function DraftOrderManagementList() {
           })}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='掛單列表' style={{ color: '#1A73E8' }} />
+            <PageTitle title='掛單列表' style={{ color: 'rgb(var(--accent))' }} />
             <Link component={RouterLink} to="/order/create" style={{ textDecoration: 'none' }}>
               <Button
                 variant="contained"
@@ -264,7 +264,7 @@ function DraftOrderManagementList() {
         </Card>
 
         <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+          <div style={{ marginBottom: '12px', backgroundColor: 'rgb(var(--background))', borderRadius: '8px', padding: '16px', border: '1px solid rgb(var(--border))' }}>
             <MerchantSearchBar
               values={pageSetting}
               onFilter={value => setPageSetting(value)}

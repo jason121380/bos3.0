@@ -158,10 +158,10 @@ const EmployeeClockIn = () => {
         <Collapse in={showFilter}>
           <div style={{
             marginBottom: '12px',
-            backgroundColor: '#fff',
+            backgroundColor: 'rgb(var(--background))',
             borderRadius: '8px',
             padding: '16px',
-            border: '1px solid #f0f0f0',
+            border: '1px solid rgb(var(--border))',
             display: 'flex',
             alignItems: 'center'
           }}>
@@ -176,7 +176,7 @@ const EmployeeClockIn = () => {
               renderOption={(props, option, { selected }) => (
                 <li {...props}>
                   <Checkbox
-                    style={{ color: '#202D50', marginRight: 8 }}
+                    style={{ color: 'rgb(var(--text))', marginRight: 8 }}
                     icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                     checkedIcon={<CheckBoxIcon fontSize="small" />}
                     checked={selected}

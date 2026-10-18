@@ -579,7 +579,7 @@ export default function ScheduleCard({
                               >
                                 {users.find(u => u.id === eachRow.designerId)?.nickName ||
                                   users.find(u => u.id === eachRow.designerId)?.name || ''}
-                                <span style={{ color: '#999', marginLeft: '4px', fontSize: '12px' }}>
+                                <span style={{ color: 'rgb(var(--text-tertiary))', marginLeft: '4px', fontSize: '12px' }}>
                                   {users.find(u => u.id === eachRow.designerId)?.designerNo || ''}
                                 </span>
                               </Typography>

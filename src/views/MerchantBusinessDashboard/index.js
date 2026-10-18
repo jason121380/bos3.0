@@ -71,7 +71,7 @@ function MerchantBusinessDashboard() {
             gap: '12px'
           })}
         >
-          <PageTitle title='營業儀表板' style={{ color: '#1A73E8' }} />
+          <PageTitle title='營業儀表板' style={{ color: 'rgb(var(--accent))' }} />
           <DateSelector
             date={pageSetting}
             attributes={[

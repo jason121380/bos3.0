@@ -124,7 +124,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
   const showBreaktime = (breakTime, recordIndex, length) => {
     return (
       <Fragment>
-        {checkBreakTime(breakTime) && <b style={{ color: '#202D50' }} id='breakTime'>外出時間：</b>}
+        {checkBreakTime(breakTime) && <b style={{ color: 'rgb(var(--text))' }} id='breakTime'>外出時間：</b>}
         {breakTime.map((d, index) => {
           if (index === 0) {
             if (d.end === null) {
@@ -212,7 +212,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
           return (
             <Fragment key={`clockInOutRender-${index}`}>
               {checkBr(time, index) && <hr className='hrBorderStyleInEmployeeClockin' />}
-              <b style={{ color: '#2e7d32' }}>上班時間：</b>
+              <b style={{ color: 'rgb(var(--success))' }}>上班時間：</b>
               {(time.in !== null && time.in.time !== null) &&
                 <span css={lateOrEarly(
                   value.length - 1,
@@ -245,7 +245,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
               {checkBr(time, index) && <hr className='hrBorderStyleInEmployeeClockin' />}
               {time.in.time !== null &&
                 <Fragment>
-                  <b style={{ color: '#2e7d32' }}>上班時間：</b>
+                  <b style={{ color: 'rgb(var(--success))' }}>上班時間：</b>
                   <span css={lateOrEarly(
                     value.length - 1,
                     index,
@@ -296,7 +296,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                               css={styles.chip}
                               label="已下班"
                               key={`designerTimeIndex-${designerTimeIndex}`}
-                              style={{ backgroundColor: '#ed6c02', color: 'white' }}
+                              style={{ backgroundColor: 'rgb(var(--warning))', color: 'white' }}
                             />
                           )
                         }
@@ -312,7 +312,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                                 css={styles.chip}
                                 label="外出中"
                                 key={`designerTimeIndex-${designerTimeIndex}`}
-                                style={{ backgroundColor: '#1A73E8', color: 'white' }}
+                                style={{ backgroundColor: 'rgb(var(--accent))', color: 'white' }}
                               />
                             )
                           }

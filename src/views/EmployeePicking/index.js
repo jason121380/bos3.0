@@ -103,7 +103,7 @@ function EmployeePicking() {
           })}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='材料自購登錄' style={{ color: '#1A73E8' }} />
+            <PageTitle title='材料自購登錄' style={{ color: 'rgb(var(--accent))' }} />
             <Link component={RouterLink} to="/employee/picking/create" style={{ textDecoration: 'none' }}>
               <Button
                 variant="contained"
@@ -148,7 +148,7 @@ function EmployeePicking() {
         </Card>
 
         <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+          <div style={{ marginBottom: '12px', backgroundColor: 'rgb(var(--background))', borderRadius: '8px', padding: '16px', border: '1px solid rgb(var(--border))' }}>
             <Grid container style={{ gap: 10 }}>
               <Grid item>
                 <MerchantSearchBar

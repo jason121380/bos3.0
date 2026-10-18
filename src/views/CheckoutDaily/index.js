@@ -128,7 +128,7 @@ function CheckoutDaily() {
       <Container maxWidth={false} css={styles.container}>
         <Card css={styles.headerCard}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='每日結帳' style={{ color: '#1A73E8' }} />
+            <PageTitle title='每日結帳' style={{ color: 'rgb(var(--accent))' }} />
           </div>
           <DateSelector
             date={pageSetting}
