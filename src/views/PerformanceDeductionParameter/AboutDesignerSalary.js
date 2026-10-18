@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { 
-  Card, CardContent, CardHeader, Divider, TextField, Button, 
-  RadioGroup, FormControlLabel, Radio, FormControl, CircularProgress,
-  Select, InputLabel, MenuItem, IconButton
+import {
+  TextField, RadioGroup, FormControlLabel, Radio, FormControl, Select, InputLabel, MenuItem
 } from '@mui/material'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 import { Fragment, useState, useEffect } from 'react'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
@@ -320,14 +321,13 @@ export default function AboutDesignerSalary({ className,
   }  
 return (
     <Fragment>
-      <Card css={className}>
-        <CardHeader 
-          title="人員身分類別設定" 
+      <Card>
+        <CardHeader
           action={
             isSubmitForPoint ? (
               <Button
-                css={styles.saveButton}
-                variant="contained"
+                variant="primary"
+                size="sm"
                 onClick={handleSubmit}
                 data-testid="parameter"
               >
@@ -335,8 +335,8 @@ return (
               </Button>
             ) : (
               <Button
-                color="primary"
-                variant="contained"
+                variant="secondary"
+                size="sm"
                 onClick={handleEdit}
                 data-testid="parameter"
                 disabled={(merchantCommissionWay.loading && merchantJobTitlePoint.loading) || isSubmitForCommission || isSubmitForType}
@@ -344,8 +344,9 @@ return (
                 編輯
               </Button>
             )
-          }/>
-        <Divider />
+          }>
+          <CardTitle>人員身分類別設定</CardTitle>
+        </CardHeader>
         <CardContent>
           {(!merchantJobTitlePoint.loading && !merchantCommissionWay.loading && !deduction.loading && !merchantPointValueSettingsForSelect.loading) ? (
             service.point.map((data, index) => (
@@ -415,13 +416,16 @@ return (
                 </FormControl>
                 {service.point.length > 1 && (
                   data.usingPeopleCount === 0 ? ( 
-                  <IconButton
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="刪除"
                     disabled={!isSubmitForPoint} 
                     css={service.point.filter(d => d.usingPeopleCount === 0 ).length !== service.point.length ? styles.deleteButton : styles.deleteButtonWithCount} 
                     onClick={() => handleDeleteSetting('point', index)}
                   >
                     <DeleteForeverIcon/>
-                  </IconButton>) : (
+                  </Button>) : (
                   <div style={{display: 'grid', justifyItems: 'center', marginLeft:10}}>
                     <span>人數: {data.usingPeopleCount}人</span>
                     <span>使用中無法刪除</span>
@@ -441,31 +445,31 @@ return (
                   </RadioGroup>
                 </FormControl>
                 {index === service.point.length - 1 && (
-                <IconButton 
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="新增"
                   css={styles.action}
                   disabled={!isSubmitForPoint}
                   onClick={() => handleAddSetting('point')}
                 >
                   <AddIcon/>
-                </IconButton>
+                </Button>
               )}
               </div>
             ))
           ) : (
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-              <CircularProgress />
-            </div>
+            <Skeleton className="h-24 w-full" />
           )}
         </CardContent>
       </Card>
-      <Card css={className}>
-        <CardHeader 
-          title="互助類別名稱設定" 
+      <Card>
+        <CardHeader
           action={
             isSubmitForType ? (
               <Button
-                css={styles.saveButton}
-                variant="contained"
+                variant="primary"
+                size="sm"
                 onClick={handleSubmitForType}
                 data-testid="parameter"
               >
@@ -473,8 +477,8 @@ return (
               </Button>
             ) : (
               <Button
-                color="primary"
-                variant="contained"
+                variant="secondary"
+                size="sm"
                 onClick={handleEditForType}
                 data-testid="parameter"
                 disabled={merchantHelperItems.loading || isSubmitForCommission || isSubmitForPoint}
@@ -483,8 +487,9 @@ return (
               </Button>
             )
           }
-        />
-        <Divider />
+        >
+          <CardTitle>互助類別名稱設定</CardTitle>
+        </CardHeader>
         <CardContent>
           {!merchantHelperItems.loading ? (
             serviceForType.helperTypeName.map((data, index) => 
@@ -498,28 +503,32 @@ return (
                 onChange={event => handleHelperTypeName(event, index)}
               />
               {serviceForType.helperTypeName.length > 1 && (
-              <IconButton 
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="刪除"
                 css={styles.action}
                 disabled={!isSubmitForType}
                 onClick={() => handleDeleteSetting('helperTypeName', index)}
               >
                 <DeleteForeverIcon/>
-              </IconButton>
+              </Button>
               )}
               {index === serviceForType.helperTypeName.length - 1 && (
-                <IconButton
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="新增"
                   css={styles.action}
                   disabled={!isSubmitForType}
                   onClick={() => handleAddSetting('helperTypeName')}
                 >
                   <AddIcon/>
-                </IconButton>
+                </Button>
               )}
             </div>
           )) : (
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-              <CircularProgress />
-            </div>
+            <Skeleton className="h-24 w-full" />
           )}
         </CardContent>
       </Card>

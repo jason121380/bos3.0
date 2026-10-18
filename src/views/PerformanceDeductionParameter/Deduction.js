@@ -1,12 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Button,
-  CircularProgress
-} from '@mui/material'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 import { memo, Fragment, useState, useEffect } from 'react'
 import _ from 'lodash'
 import { Link as RouterLink } from 'react-router-dom'
@@ -22,22 +17,21 @@ function Deduction({ className, deduction }) {
   }, [deduction.loading])
   return (
     <Fragment>
-      <Card css={className}>
-        <CardHeader 
-          title="抽成方式設定" 
+      <Card>
+        <CardHeader
           action={
-            <Button
-              color="primary"
-              variant="contained"
-              component={RouterLink}
-              to={'/deduction-setting'}
-              data-testid="parameter"
-            >
-              新增
+            <Button asChild variant="secondary" size="sm">
+              <RouterLink
+                to={'/deduction-setting'}
+                data-testid="parameter"
+              >
+                新增
+              </RouterLink>
             </Button>
           }
-        />
-        <Divider />
+        >
+          <CardTitle>抽成方式設定</CardTitle>
+        </CardHeader>
         <CardContent>
           {!deductionData.loading ? (
             <DeductionResults
@@ -45,9 +39,7 @@ function Deduction({ className, deduction }) {
               deductionData={deductionData}
             />
             ) : (
-            <div style={{ textAlign: 'center' }}>
-              <CircularProgress />
-            </div>
+            <Skeleton className="h-24 w-full" />
           )}
         </CardContent>
       </Card>

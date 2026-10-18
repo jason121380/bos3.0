@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, Divider, TextField, FormControl, InputLabel,
-  MenuItem, Select, Button, CircularProgress, IconButton
+  TextField, FormControl, InputLabel, MenuItem, Select
 } from '@mui/material'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment, useState, useEffect } from 'react'
 import _ from 'lodash'
@@ -160,14 +162,13 @@ function Service({ className,
   }
   return (
     <Fragment>
-      <Card css={className}>
-        <CardHeader 
-          title="服務扣項方式命名" 
+      <Card>
+        <CardHeader
           action={
             isSubmitForCommission ? (
             <Button
-              css={styles.saveButton}
-              variant="contained"
+              variant="primary"
+              size="sm"
               onClick={handleSubmit}
               data-testid="parameter"
             >
@@ -175,8 +176,8 @@ function Service({ className,
             </Button>
             ) : (
             <Button
-              color='primary'
-              variant="contained"
+              variant="secondary"
+              size="sm"
               onClick={handleEdit}
               data-testid="parameter"
               disabled={merchantCommissionWay.loading || isSubmitForType || isSubmitForPoint}
@@ -184,8 +185,9 @@ function Service({ className,
               編輯
             </Button>
           )}
-        />
-        <Divider />
+        >
+          <CardTitle>服務扣項方式命名</CardTitle>
+        </CardHeader>
         <CardContent>
           {!merchantCommissionWay.loading ? (
             service.commission.map((data, index) => (
@@ -213,28 +215,32 @@ function Service({ className,
                   </Select>
                 </FormControl>
                 {service.commission.length > 1 && (
-                  <IconButton
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="刪除"
                     css={styles.action}
                     disabled={!isSubmitForCommission}
                     onClick={() => handleDeleteSetting('commission', index)}
                   >
                   <DeleteForeverIcon/>
-                  </IconButton>
+                  </Button>
                 )}
                 {index === service.commission.length - 1 && (
-                  <IconButton
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="新增"
                     css={styles.action}
                     disabled={!isSubmitForCommission}
                     onClick={() =>  handleAddSetting('commission')}
                   >
                     <AddIcon/>
-                  </IconButton>
+                  </Button>
               )}
               </div>
           ))):(
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-              <CircularProgress />
-            </div>
+            <Skeleton className="h-24 w-full" />
           )}
         </CardContent>
       </Card>

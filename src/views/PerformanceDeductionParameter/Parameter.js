@@ -1,7 +1,5 @@
-/** @jsxImportSource @emotion/react */
-import { Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import { PageHeader } from 'ui/page-header'
 import { memo, useState } from 'react'
 import _ from 'lodash'
 import { useFetchDeductionSettings } from 'hooks/useFetchGetDeductionSettings'
@@ -12,7 +10,6 @@ import AboutDesignerSalary from './AboutDesignerSalary'
 import Service from '../PerformanceDeductionParameter/Service'
 import Deduction from '../PerformanceDeductionParameter/Deduction'
 import HelperPoint from './HelperPoint'
-import styles from './styles/Parameter'
 
 function Parameter() {
   const deduction = useFetchDeductionSettings()
@@ -22,11 +19,10 @@ function Parameter() {
   const [isSubmitForPoint, setIsSubmitForPoint] = useState(false)
   const [isSubmitForType, setIsSubmitForType] = useState(false)
   return (
-    <Page css={styles.page} title="業績抽成參數設定">
-      <Container maxWidth={false}>
-        <PageTitle title='業績抽成參數設定' subTitle='Performance Deduction Parameter' />
+    <Page className="ui-root" title="業績抽成參數設定">
+      <PageHeader title="業績抽成參數設定" />
+      <div className="flex flex-col gap-6">
         <Service
-          className={styles.card}
           merchantCommissionWay={merchantCommissionWay}
           setIsSubmitForCommission={setIsSubmitForCommission}
           setIsSubmitForPoint={setIsSubmitForPoint}
@@ -36,7 +32,6 @@ function Parameter() {
           isSubmitForCommission={isSubmitForCommission}
         />
         <AboutDesignerSalary
-          className={styles.card}
           deduction={deduction}
           merchantCommissionWay={merchantCommissionWay}
           merchantPointValueSettingsForSelect={merchantPointValueSettingsForSelect}
@@ -48,14 +43,12 @@ function Parameter() {
           isSubmitForCommission={isSubmitForCommission}
         />
         <Deduction
-          className={styles.card}
           deduction={deduction}
         />
         <HelperPoint 
-          className={styles.card}
           merchantPointValueSettings={merchantPointValueSettingsForSelect}
         />
-      </Container>
+      </div>
     </Page>
   )
 }

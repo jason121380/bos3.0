@@ -1,20 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardContent,
-  Checkbox,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow
-} from '@mui/material'
+import { Button } from 'ui/button'
+import { Checkbox } from 'ui/checkbox'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { useFetchDeleteDeductionSetting } from 'hooks/useFetchSetDeductionSetting'
 import { css } from '@emotion/react'
@@ -71,67 +62,55 @@ function DeductionResults({ className, deductionData, deduction, ...rest }) {
   }
   return (
     <div {...rest} css={styles.root}>
-      <Card>
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell padding="checkbox">
+              <Table className="min-w-[700px]">
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="w-12">
                       <Checkbox
+                        aria-label="全選"
                         checked={
                           selected.length === deductionData.length && deductionData.length > 0
                         }
-                        color="primary"
                         indeterminate={
                           selected.length > 0 && selected.length < deductionData.length
                         }
                         onChange={handleSelectAll}
                         disabled={deductionData.length === 0}
                       />
-                    </TableCell>
-                    <TableCell style={{ width: '150px' }}>操作</TableCell>
-                    <TableCell>編號</TableCell>
-                    <TableCell>名稱</TableCell>
+                    </TableHead>
+                    <TableHead style={{ width: '150px' }}>操作</TableHead>
+                    <TableHead>編號</TableHead>
+                    <TableHead>名稱</TableHead>
                   </TableRow>
-                </TableHead>
+                </TableHeader>
                 <TableBody>
                   {deductionData.map((data, idx) => (
-                    <TableRow hover key={`${data.name}-${idx}`} data-testid="table-row">
-                      <TableCell padding="checkbox">
+                    <TableRow key={`${data.name}-${idx}`} data-testid="table-row" data-state={selected.indexOf(data.id) > -1 ? 'selected' : undefined}>
+                      <TableCell className="w-12">
                         <Checkbox
-                          color="primary"
+                          aria-label={`選取 ${data.name}`}
                           onChange={() => handleSelectOne(data.id)}
                           checked={selected.indexOf(data.id) > -1}
-                          inputProps={{
-                            'data-testid': `update-deduction-setting-selector-${idx}`,
-                          }}
+                          data-testid={`update-deduction-setting-selector-${idx}`}
                         />
                       </TableCell>
                       <TableCell>
-                        <Button
-                          color="primary"
-                          component={RouterLink}
-                          size="small"
-                          to={`/update-deduction-setting/${data.id}`}
-                          variant="outlined"
-                          data-testid={`update-deduction-setting-${idx}`}
-                        >
-                          編輯
+                        <Button asChild size="sm" variant="secondary">
+                          <RouterLink
+                            to={`/update-deduction-setting/${data.id}`}
+                            data-testid={`update-deduction-setting-${idx}`}
+                          >
+                            編輯
+                          </RouterLink>
                         </Button>
                       </TableCell>
-                      <TableCell >{data.no}</TableCell>
+                      <TableCell>{data.no}</TableCell>
                       <TableCell data-testid={`update-deduction-setting-${data.name}`}>{data.name}</TableCell>
 
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-      </Card>
       <TableEditBar selected={selected} onDelete={handleSeletedDelete} />
     </div>
   )
