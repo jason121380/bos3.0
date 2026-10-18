@@ -1,36 +1,11 @@
-/** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { Provider } from 'context/useReservationContext'
 import getQueryString from 'helper/getQueryString'
 import { useFetchMerchantLiff } from 'hooks/useFetchViewer'
 import produce from 'immer'
 import React from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import Form from './Form'
-
-const styles = {
-  root: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-  }),
-  field: css({
-    marginBottom: theme.spacing(2),
-  }),
-  bullet: css({
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  }),
-  title: css({
-    fontSize: 14,
-  }),
-  pos: css({
-    marginBottom: 12,
-  }),
-}
 
 function Reservation({ match, location }) {
   const merchantId = match.params.id
@@ -129,7 +104,7 @@ function Reservation({ match, location }) {
   }, [location, merchantLiff.data])
 
   return (
-    <Page css={styles.root} title="預約服務">
+    <Page className="ui-root flex flex-col gap-4" title="預約服務">
       <Provider
         value={{
           values,
@@ -138,7 +113,7 @@ function Reservation({ match, location }) {
           location,
         }}
       >
-        <PageTitle title='預約服務' subTitle='Apply Service' />
+        <h1 className="text-title !font-bold text-text">預約服務</h1>
         <Form />
       </Provider>
     </Page>

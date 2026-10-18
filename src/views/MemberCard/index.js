@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Button, TextField } from '@mui/material'
 import { openSnackbar } from 'elements/snackbars'
 import getQueryString from 'helper/getQueryString'
 import useFetchUpdateCustomerType from 'hooks/useFetchUpdateCustomerType'
@@ -7,35 +5,10 @@ import { useLazyFetchCustomerProfile } from 'hooks/useFetchViewer'
 import idx from 'idx'
 import React from 'react'
 import { useHistory } from 'react-router'
-import styled from '@emotion/styled'
-import { css } from '@emotion/react'
+import { Button } from 'ui/button'
+import { Card, CardContent } from 'ui/card'
+import { Field, Input } from 'ui/input'
 
-const StyledForm = styled.form`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 8px 16px;
-  & > *:first-child {
-    margin-right: 12px;
-  }
-`
-
-const styles = {
-  root: css({
-    position: 'relative',
-  }),
-  text: css({
-    position: 'absolute',
-    bottom: '80px',
-    left: 0,
-    right: 0,
-    textAlign: 'center',
-    fontFamily: 'Adam',
-    color: 'white',
-    fontWeight: 'bold',
-  }),
-}
 export default function Reservation({ location }) {
   const history = useHistory()
   const { fetchCustomerProfile, customerProfile } = useLazyFetchCustomerProfile({})
@@ -81,8 +54,9 @@ export default function Reservation({ location }) {
     })
   }
   return (
-    <React.Fragment>
-      <div css={styles.root}>
+    <div className="flex flex-col gap-4">
+      {/* 會員卡圖片與疊字：圖片來源、寬度 100% 與疊字位置沿用舊版 */}
+      <div className="relative overflow-hidden rounded-lg">
         {idx(customerProfile, _ => {
           let imgUrl = ''
           let text = ''
@@ -99,28 +73,35 @@ export default function Reservation({ location }) {
           return (
             <div>
               <img src={imgUrl} style={{ width: '100%' }} alt="" />
-              <p css={styles.text}>
-                <p>
+              <div className="absolute inset-x-0 bottom-20 text-center font-['Adam'] font-bold text-white">
+                <p className="tabular-nums">
                   {_.data.viewer.customer.cellphone} | {_.data.viewer.customer.type}
                 </p>
                 <p style={{ top: '5px', position: 'relative' }}>{text}</p>
-              </p>
+              </div>
             </div>
           )
         })}
       </div>
-      <StyledForm onSubmit={handleSubmit}>
-        <TextField
-          type="text"
-          placeholder="輸入推薦碼..."
-          variant="outlined"
-          value={recommandCode}
-          onChange={event => idx(event, _ => setRecommandCode(_.target.value))}
-        />
-        <Button type="submit" variant="outlined" color="primary">
-          送出
-        </Button>
-      </StyledForm>
-    </React.Fragment>
+      <Card>
+        <CardContent>
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            <Field label="推薦碼" htmlFor="member-card-recommand-code">
+              <Input
+                id="member-card-recommand-code"
+                className="h-11"
+                type="text"
+                placeholder="輸入推薦碼..."
+                value={recommandCode}
+                onChange={event => idx(event, _ => setRecommandCode(_.target.value))}
+              />
+            </Field>
+            <Button type="submit" variant="primary" size="lg" className="h-11 w-full">
+              送出
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

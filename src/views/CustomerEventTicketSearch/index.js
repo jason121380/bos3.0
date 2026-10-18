@@ -1,57 +1,16 @@
-/** @jsxImportSource @emotion/react */
 import { useRef, useState, useEffect } from 'react'
-import {
-  Card, CardContent, CardHeader, TextField, Grid,
-  Container, Divider, Button, CircularProgress,
-  Snackbar, Alert
-} from '@mui/material'
+import { Snackbar, Alert } from '@mui/material'
 import Page from 'components/Page'
 import ReCAPTCHA from "react-google-recaptcha-enterprise"
 import useFetchGetCustomerCheckTicket from 'hooks/useFetchGetCustomerCheckTicket'
 import produce from 'immer'
 import { cloneDeep } from 'lodash'
 import idx from 'idx'
+import { LoaderCircle } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card, CardContent } from 'ui/card'
+import { Field, Input } from 'ui/input'
 import EventTicketsRecord from './EventTicketsRecord'
-import { css } from '@emotion/react'
-import { ThemeProvider } from '@mui/material/styles'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-    '& input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active': {
-      'WebkitBoxShadow': '0 0 0 60px #fafafa inset !important',
-      'backgroundColor': '#fafafa !important',
-      'backgroundClip': 'content-box !important'
-    },
-    '& .MuiOutlinedInput-input': {
-      padding: '12px !important'
-    },
-    '& .MuiCardContent-root': {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 10
-    },
-    '& .MuiCardContent-root, input, .MuiFormControlLabel-label': {
-      fontSize: 16,
-    },
-    '& .MuiCardHeader-title': {
-      fontSize: 20
-    },
-    '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#3f51b5'
-    }
-  }),
-  label: css({
-    display: 'flex',
-    alignItems: 'center',
-    whiteSpace: 'nowrap',
-    '& span': {
-      color: 'red'
-    }
-  })
-}
 
 const index = () => {
   const [getCustomerTicket, customerTicketData] = useFetchGetCustomerCheckTicket()
@@ -135,61 +94,51 @@ const index = () => {
   }, [customerTicketData.loading])
 
   return (
-    <Page css={styles.root} title="抽獎券查詢">
-      <Container maxWidth='md'>
-        <Card>
-          <CardHeader title='抽獎券查詢' />
-          <Divider />
-          <CardContent>
-            {/* <Grid container spacing={2}>
-              <Grid item xs={3} css={styles.label}>
-                姓名<span>*</span>
-              </Grid>
-              <Grid item xs={9}>
-                <TextField
-                  value={submitData.name}
-                  fullWidth
-                  variant="outlined"
-                  onChange={e => handleSetInputValue(e.target.value, 'name')}
-                />
-              </Grid>
-            </Grid> */}
-            <Grid container spacing={2}>
-              <Grid item xs={3} css={styles.label}>
-                電話<span>*</span>
-              </Grid>
-              <Grid item xs={9}>
-                <TextField
-                  value={submitData.cellphone}
-                  fullWidth
-                  variant="outlined"
-                  onChange={e => handleSetInputValue(`${e.target.value}`, 'cellphone')}
-                />
-              </Grid>
+    <Page className="ui-root flex flex-col gap-4" title="抽獎券查詢">
+      <h1 className="text-title !font-bold text-text">抽獎券查詢</h1>
+      <Card>
+        <CardContent className="flex flex-col gap-4">
+          {/* <Grid container spacing={2}>
+            <Grid item xs={3} css={styles.label}>
+              姓名<span>*</span>
             </Grid>
-            <Grid container spacing={2} style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}>
-              <ReCAPTCHA
-                sitekey='6Ld-aOIoAAAAAGbZQp0OxepSjatcmlUIxPuJA8uq'
-                onChange={v => handleSetInputValue(v, 'recaptchaToken')}
-                ref={reCaptchaRef}
-                type='image'
+            <Grid item xs={9}>
+              <TextField
+                value={submitData.name}
+                fullWidth
+                variant="outlined"
+                onChange={e => handleSetInputValue(e.target.value, 'name')}
               />
             </Grid>
-          </CardContent>
-        </Card>
-        <ThemeProvider theme={theme}>
-          <Button
-            style={{ marginTop: 20, width: '100%', fontSize: 16, minHeight: 40 }}
-            disabled={!submitData.recaptchaToken || customerTicketData.loading}
-            color='primary'
-            variant='contained'
-            onClick={handleSearchData}
-          >{customerTicketData.loading ? <CircularProgress style={{ color: 'white' }} size={22} /> : '提交'}</Button>
-        </ThemeProvider>
-        {!customerTicketData.loading && customerTicketData.data && (
-          <EventTicketsRecord data={data} />
-        )}
-      </Container>
+          </Grid> */}
+          <Field label="電話" required htmlFor="ticket-search-cellphone">
+            <Input
+              id="ticket-search-cellphone"
+              className="h-11"
+              value={submitData.cellphone}
+              onChange={e => handleSetInputValue(`${e.target.value}`, 'cellphone')}
+            />
+          </Field>
+          <div className="flex justify-center">
+            <ReCAPTCHA
+              sitekey='6Ld-aOIoAAAAAGbZQp0OxepSjatcmlUIxPuJA8uq'
+              onChange={v => handleSetInputValue(v, 'recaptchaToken')}
+              ref={reCaptchaRef}
+              type='image'
+            />
+          </div>
+        </CardContent>
+      </Card>
+      <Button
+        variant="primary"
+        size="lg"
+        className="h-11 w-full"
+        disabled={!submitData.recaptchaToken || customerTicketData.loading}
+        onClick={handleSearchData}
+      >{customerTicketData.loading ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : '提交'}</Button>
+      {!customerTicketData.loading && customerTicketData.data && (
+        <EventTicketsRecord data={data} />
+      )}
       <Snackbar
         onClose={closeSnackBar}
         open={openSnack.open}
