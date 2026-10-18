@@ -1,10 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  TextField,
-  Typography,
-  Checkbox,
-  FormControlLabel,
-} from '@mui/material'
+import { TextField } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
 import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
 import EmployeeAutoComplete from "components/EmployeeAutoComplete";
 import MemberShipCardAutoComplete from "components/MemberShipCardAutoComplete";
@@ -314,10 +310,9 @@ const MemberShipCardSells = ({
                   });
                 }}
               />
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
+              <CheckboxField
                 label="永久會籍"
-                inputRef={checkbox}
+                ref={checkbox}
                 checked={sellsItem.expiryDate === null}
                 name="checkbox"
                 onFocus={(event) => handleFocus({ event, field: "checkbox" })}
@@ -361,9 +356,9 @@ const MemberShipCardSells = ({
                 />
               )}
               {teachingMode && (
-                <Typography css={styles.heading2}>
+                <p className="m-0" css={styles.heading2}>
                   勾選將入業績但不收費用**
-                </Typography>
+                </p>
               )}
               {!thirdPartyCouponsData.loading &&
                 sellsItem.thirdPartyCouponMerchantId &&
@@ -371,9 +366,9 @@ const MemberShipCardSells = ({
                   _.data.merchant.thirdpartyCoupons.map((data) => {
                     if (data.id === sellsItem.thirdPartyCouponMerchantId) {
                       return (
-                        <Typography key={data.id} css={styles.heading2} style={{ marginTop: '4px' }}>
+                        <p className="m-0" key={data.id} css={styles.heading2} style={{ marginTop: '4px' }}>
                           {`扣完後業績:${Math.round((sellsItem.price * (100 - data.fee)) / 100)}`}
-                        </Typography>
+                        </p>
                       );
                     }
                   })

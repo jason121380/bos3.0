@@ -1,8 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Box, Typography, Checkbox, ToggleButton,
-  FormControlLabel, TextField, CircularProgress, ToggleButtonGroup, InputAdornment
-} from '@mui/material'
+import { TextField, CircularProgress, InputAdornment } from '@mui/material'
 import PropTypes from 'prop-types'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
 import { useFetchCustomersInAutoComplete } from 'hooks/useFetchCustomers'
@@ -18,6 +15,8 @@ import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import useFetchCustomer from 'hooks/useFetchCustomer'
 import { UserCog, UserPlus } from 'lucide-react'
 import { Card } from 'ui/card'
+import { CheckboxField } from 'ui/checkbox'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import TeachingModeContext from 'context/teachingModeContext'
 import useFetchOrderWithoutCustomerSetting from 'hooks/useFetchOrderWithoutCustomerDefault'
 import useFetchGetIsLockDateSetting from 'hooks/useFetchGetIsLockDateSetting'
@@ -532,17 +531,12 @@ export default function Head() {
               />
             </div>
             {isLockDateDisplay && !isChangeDateTime && (
-              <FormControlLabel
+              <CheckboxField
                 css={styles.checkboxLabel}
+                labelClassName="font-bold"
                 label="鎖定日期"
-                control={
-                  <Checkbox
-                    size="small"
-                    onChange={handleLockDate}
-                    checked={JSON.parse(localStorage.getItem('lockDate'))}
-                    color="primary"
-                  />
-                }
+                onChange={handleLockDate}
+                checked={JSON.parse(localStorage.getItem('lockDate'))}
               />
             )}
           </div>
@@ -637,9 +631,9 @@ export default function Head() {
             </div>
 
             {orderWithoutCustomer && (
-              <FormControlLabel
+              <CheckboxField
                 css={styles.checkboxLabel}
-                control={<Checkbox size="small" color="primary" />}
+                labelClassName="font-bold"
                 label="不留客資"
                 checked={checkoutWithoutCustomer}
                 onChange={handleCheckoutWithoutCustomer}
@@ -671,8 +665,8 @@ export default function Head() {
                 }}
               />
 
-              <ToggleButtonGroup
-                css={styles.toggleGroup}
+              <ToggleGroup
+                className="shrink-0"
                 size="small"
                 value={designationSettingForOrderCreate}
                 onChange={handleToggleButtonChange}
@@ -680,7 +674,7 @@ export default function Head() {
                 disabled={designateStatus}
               >
                 {designate.map((data, idx) => (
-                  <ToggleButton
+                  <ToggleGroupItem
                     key={`${data.label}-${idx}`}
                     value={data.value}
                     ref={data.value ? designateRef : nonDesignateRef}
@@ -689,9 +683,9 @@ export default function Head() {
                     onClick={() => data.value ? designateRef.current.focus() : nonDesignateRef.current.focus()}
                   >
                     {data.label}
-                  </ToggleButton>
+                  </ToggleGroupItem>
                 ))}
-              </ToggleButtonGroup>
+              </ToggleGroup>
             </div>
           </div>
         </div>

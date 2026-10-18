@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { TextField, Typography } from '@mui/material'
+import { TextField } from '@mui/material'
 import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import ProductAutoComplete from 'components/ProductAutoComplete'
@@ -288,15 +288,15 @@ function MerchantSells({
                   _.merchant.thirdpartyCoupons.map(data => {
                     if (data.id === sellsItem.thirdPartyCouponMerchantId) {
                       return (
-                        <Typography css={styles.heading2} style={{ marginTop: '4px' }}>
+                        <p className="m-0" css={styles.heading2} style={{ marginTop: '4px' }}>
                           {`扣完後業績:${Math.round((sellsItem.price * (100 - data.fee)) / 100)}`}
-                        </Typography>
+                        </p>
                       )
                     }
                   })
                 )}
               {teachingMode && (
-                <Typography css={styles.heading2}>勾選將入業績但不收費用**</Typography>
+                <p className="m-0" css={styles.heading2}>勾選將入業績但不收費用**</p>
               )}
             </div>
           </React.Fragment>

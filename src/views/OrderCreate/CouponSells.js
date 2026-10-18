@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { TextField, Checkbox, FormControlLabel } from '@mui/material'
+import { TextField } from '@mui/material'
 import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
 import TicketAutoComplete from 'components/TicketAutoComplete'
 import idx from 'idx'

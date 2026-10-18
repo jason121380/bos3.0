@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import { useContext, useEffect, useState } from 'react'
 import Bonus from 'views/OrderCreate/Bonus'
@@ -51,7 +51,7 @@ export default function PannelBonus({ expanded, onPanelClick, bonusActive }) {
         onClick={onPanelClick}
         data-testid="panelRemark"
       >
-        <Typography css={styles.heading}>紅利點數
+        <p className="m-0" css={styles.heading}>紅利點數
           <span style={{ marginLeft: '10px', fontSize: '10px' }}>
             {bill.customerId ? `剩餘點數: ${customerBonus}` : ''}
           </span>
@@ -60,7 +60,7 @@ export default function PannelBonus({ expanded, onPanelClick, bonusActive }) {
               {`換算比率: ${bonusConversion.bonusConversionRate}`}
             </span>
           )}
-        </Typography>
+        </p>
       </AccordionSummary>
       <AccordionDetails css={styles.details}>
         <div css={styles.fieldOutter}>
