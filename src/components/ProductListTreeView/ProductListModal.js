@@ -27,7 +27,7 @@ const styles = {
       transition: '.2s',
       width: 'fit-content',
       '&:hover': {
-        background: '#e2f2ff'
+        background: 'rgb(var(--accent) / 0.08)'
       }
     },
     '& li': {
@@ -105,7 +105,7 @@ const styles = {
     height: 'fit-content'
   }),
   outline: css({
-    outline: '2px solid #ff6969 !important'
+    outline: '2px solid rgb(var(--danger)) !important'
   })
 }
 

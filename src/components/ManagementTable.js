@@ -15,8 +15,8 @@ const styles = {
     card: css({
         borderRadius: '16px',
         boxShadow: 'none',
-        border: '1px solid #f0f0f0',
-        backgroundColor: '#fff',
+        border: '1px solid rgb(var(--border))',
+        backgroundColor: 'rgb(var(--background))',
         overflow: 'hidden',
     }),
     cardHeader: css({
@@ -41,10 +41,10 @@ const styles = {
         fontSize: '14px !important',
         boxShadow: 'none !important',
         fontWeight: 'bold !important',
-        backgroundColor: '#f5f5f5 !important',
-        color: '#666 !important',
+        backgroundColor: 'rgb(var(--surface)) !important',
+        color: 'rgb(var(--text-secondary)) !important',
         '&:hover': {
-            backgroundColor: '#eeeeee !important',
+            backgroundColor: 'rgb(var(--surface)) !important',
         }
     }),
 }
