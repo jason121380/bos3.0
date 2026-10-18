@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
 import {
-  DialogContent, TextField, Button, Grid, FormControl, MenuItem,
+  DialogContent, TextField, FormControl, MenuItem,
   Select, FormControlLabel, Checkbox, InputLabel,
 } from '@mui/material'
 import { blue } from '@mui/material/colors'
@@ -12,6 +12,8 @@ import BookingRecordListAutoComplete from 'components/BookingRecordListAutoCompl
 import { MobileDatePicker } from '@mui/x-date-pickers'
 import _ from 'lodash'
 import { css } from '@emotion/react'
+// 大型表單：日期／下拉／Autocomplete 等細節保留 MUI，只換底部動作按鈕
+import { Button as UiButton } from 'ui/button'
 import { theme } from '../../../theme'
 
 const styles = {
@@ -266,32 +268,28 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
         </div>
       )}
 
-      <Grid style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button
+      <div className="ui-root flex justify-end gap-2 pt-2">
+        <UiButton
           type="submit"
-          variant="contained"
-          color="primary"
-          style={{ marginRight: '10px' }}
+          variant="primary"
           disabled={btnDisabled}
           onClick={() => {
             createBooking()
           }}
         >
           預約
-        </Button>
-        <Button
+        </UiButton>
+        <UiButton
           type="submit"
-          variant="contained"
-          color="primary"
-          style={{ background: 'red' }}
+          variant="secondary"
           disabled={btnDisabled}
           onClick={() => {
             setModalOpen(false)
           }}
         >
           取消
-        </Button>
-      </Grid>
+        </UiButton>
+      </div>
     </DialogContent>
   )
 }

@@ -1,21 +1,12 @@
-/** @jsxImportSource @emotion/react */
 import useFetchWalletDepositRecord from 'hooks/useFetchWalletDepositRecord'
 import useFetchWalletUseRecord from 'hooks/useFetchWalletUseRecord'
 import useFetchGetCustomerWallet from 'hooks/useFetchCustomerWallet'
 import idx from 'idx'
 import produce from 'immer'
 import React, { useEffect, useState } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
 
 import RecordResults from './RecordResults'
 import UsagedResult from './UsagedResult'
-
-const styles = {
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 export default function TopUp({ customer, pagenationLabel }) {
   const [resultSetting, setResultSetting] = useState({
@@ -60,9 +51,8 @@ export default function TopUp({ customer, pagenationLabel }) {
   }, [customerWallet.loading])
 
   return (
-    <React.Fragment>
+    <div className="flex flex-col gap-6">
       <RecordResults
-        className={styles.results}
         date={{ start: resultSetting.record.start, end: resultSetting.record.end }}
         resultSetting={resultSetting}
         walletDepositRecord={walletDepositRecord}
@@ -71,13 +61,12 @@ export default function TopUp({ customer, pagenationLabel }) {
         pagenationLabel={pagenationLabel}
       />
       <UsagedResult
-        className={styles.results}
         date={{ start: resultSetting.usaged.start, end: resultSetting.usaged.end }}
         resultSetting={resultSetting}
         walletUseRecord={walletUseRecord}
         onChange={event => handleChangeResult({ ...event, name: 'usaged' })}
         pagenationLabel={pagenationLabel}
       />
-    </React.Fragment>
+    </div>
   )
 }

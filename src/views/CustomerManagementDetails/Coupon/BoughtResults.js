@@ -1,53 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Typography,
-} from '@mui/material'
+// TablePagination 保留 MUI：pagenationLabel 依賴 MUI 的 DOM class
+import { TablePagination } from '@mui/material'
 import TableEditBar from 'components/TableEditBar'
 import idx from 'idx'
 import format from 'date-fns/format'
 import { useState, useRef, useEffect } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
-
-const styles = {
-  root: css({}),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  filterButton: css({
-    marginRight: theme.spacing(2),
-  }),
-  content: css({
-    padding: '0px !important',
-  }),
-  inner: css({
-    minWidth: 1150,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 export default function BoughtResults({
   className,
@@ -71,66 +33,60 @@ export default function BoughtResults({
   }, [pageRef.current, results])
 
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
+    <div {...rest} css={className}>
+      <p className="mb-2 text-label tabular-nums text-text-secondary">
         共 {results.length} 筆, {page.offset + 1} /{Math.ceil(results.length / page.limit)}
-      </Typography>
+      </p>
       <Card>
-        <CardHeader title="卡券購買紀錄" />
-        <Divider />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>操作</TableCell>
-                    <TableCell>帳單編號/時間</TableCell>
-                    <TableCell>客戶</TableCell>
-                    <TableCell>設計師</TableCell>
-                    <TableCell>卡券銷售</TableCell>
-                    <TableCell>銷售金額</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {results.map((result, index) => (
-                    <TableRow hover key={`${result.id}-${index}`}>
-                      <TableCell>
-                        <Button
-                          color="primary"
-                          component={RouterLink}
-                          size="small"
-                          to={`/order/${result.order.id}`}
-                          variant="outlined"
-                        >
-                          訂單詳情
-                        </Button>
-                      </TableCell>
-                      <TableCell>
-                        {idx(result, _ => _.order.no)}
-                        <Typography>
-                          {idx(result, _ => format(_.order.date, 'MM/dd/yyyy'))}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        {idx(result, _ => _.order.customer.name + ' ' + _.order.customer.cellphone)}
-                      </TableCell>
-                      <TableCell>
-                        {idx(
-                          result,
-                          _ => _.order.designer.name + ' ' + _.order.designer.designerNo
-                        )}
-                      </TableCell>
-                      <TableCell>{idx(result, _ => _.service.name)}</TableCell>
-                      <TableCell>{roundDecimal(idx(result, _ => _.price))}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
+        <CardHeader className="pb-4">
+          <CardTitle>卡券購買紀錄</CardTitle>
+        </CardHeader>
+        <div className="px-5">
+          <Table className="min-w-[1150px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead>操作</TableHead>
+                <TableHead>帳單編號/時間</TableHead>
+                <TableHead>客戶</TableHead>
+                <TableHead>設計師</TableHead>
+                <TableHead>卡券銷售</TableHead>
+                <TableHead numeric>銷售金額</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {results.map((result, index) => (
+                <TableRow key={`${result.id}-${index}`}>
+                  <TableCell>
+                    <Button asChild size="sm" variant="secondary">
+                      <RouterLink to={`/order/${result.order.id}`}>
+                        訂單詳情
+                      </RouterLink>
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <div className="font-medium tabular-nums">{idx(result, _ => _.order.no)}</div>
+                    <div className="text-caption tabular-nums text-text-secondary">
+                      {idx(result, _ => format(_.order.date, 'MM/dd/yyyy'))}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {idx(result, _ => _.order.customer.name + ' ' + _.order.customer.cellphone)}
+                  </TableCell>
+                  <TableCell>
+                    {idx(
+                      result,
+                      _ => _.order.designer.name + ' ' + _.order.designer.designerNo
+                    )}
+                  </TableCell>
+                  <TableCell>{idx(result, _ => _.service.name)}</TableCell>
+                  <TableCell numeric>{formatNumber(roundDecimal(idx(result, _ => _.price)))}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        {/* 分頁保留 MUI：pageRef 交給 helper/pagenationLabel 改寫顯示文字 */}
+        <div className="flex justify-end px-3 pb-2">
           <TablePagination
             ref={pageRef}
             labelRowsPerPage='每頁顯示數量'
@@ -142,7 +98,7 @@ export default function BoughtResults({
             rowsPerPage={page.limit}
             rowsPerPageOptions={[5, 10, 25, 50, 1000]}
           />
-        </CardActions>
+        </div>
       </Card>
       <TableEditBar selected={selectedOrders} />
     </div>

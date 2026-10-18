@@ -1,82 +1,16 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  Checkbox,
-  TableRow,
-  Typography,
-  Grid,
-} from '@mui/material'
-import clsx from 'clsx'
+import { Plus } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
 import useFetchDeleteBonusDeposit from 'hooks/useFetchDeleteBonusDeposit'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import { useState } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
-
-const styles = {
-  root: css({}),
-  content: css({
-    padding: 0
-  }),
-  inner: css({
-    minWidth: 800,
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-  addWalletDiv: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-  addWalletBtn: css({
-    marginBottom: '10px',
-  }),
-  valueContainer: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }),
-  item: css({
-    padding: theme.spacing(3),
-    textAlign: 'center',
-    [theme.breakpoints.up('md')]: {
-      '&:not(:last-of-type)': {
-        borderRight: `none`,
-      },
-    },
-    [theme.breakpoints.down('sm')]: {
-      '&:not(:last-of-type)': {
-        borderBottom: `1px solid #424242`,
-      },
-    },
-  }),
-  balance: css({
-    margin: theme.spacing(3, 0, 3, 0),
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Results({
   className,
@@ -130,105 +64,86 @@ function Results({
   }
 
   return (
-    <div {...rest} css={clsx([styles.root, className])}>
-      <Card css={styles.balance}>
-        <Grid alignItems="center" container justifyContent="space-between">
-          <Grid css={styles.item} item md={12} sm={12} xs={12}>
-            <Typography component="h2" gutterBottom variant="h6">
-              紅利點數餘額
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">{recordData.reduce((a, b) => a + b.bonus, 0)}</Typography>
-            </div>
-          </Grid>
-        </Grid>
+    <div {...rest} css={className} className="flex flex-col gap-4">
+      <Card className="flex flex-col items-center gap-1 px-5 py-6 text-center">
+        <span className="text-label text-text-secondary">
+          紅利點數餘額
+        </span>
+        <span className="text-display tabular-nums text-text">{formatNumber(recordData.reduce((a, b) => a + b.bonus, 0))}</span>
       </Card>
-      <div css={styles.addWalletDiv}>
-        <Typography color="textSecondary" variant="body2">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-label tabular-nums text-text-secondary">
           共 {recordData.length} 筆資料
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          style={{ backgroundColor: 'rgb(var(--accent))' }}
-          component={RouterLink}
-          css={styles.addWalletBtn}
-          to={`/customer-bonus-record/create/${customer.id}`}
-        >
-          新增紅利點數
+        </span>
+        <Button asChild variant="primary" size="sm">
+          <RouterLink to={`/customer-bonus-record/create/${customer.id}`}>
+            <Plus strokeWidth={1.75} />
+            新增紅利點數
+          </RouterLink>
         </Button>
       </div>
       <Card>
-        <CardHeader title="紅利點數紀錄" />
-        <Divider />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={
-                          selectedRecord.length === recordData.length && recordData.length > 0
-                        }
-                        color="primary"
-                        indeterminate={
-                          selectedRecord.length > 0 &&
-                          selectedRecord.length < recordData.length
-                        }
-                        onChange={handleSelectAll}
-                      />
-                    </TableCell>
-                    <TableCell>操作</TableCell>
-                    <TableCell>日期</TableCell>
-                    <TableCell>顧客代號</TableCell>
-                    <TableCell>顧客名稱</TableCell>
-                    <TableCell>點數</TableCell>
-                    <TableCell>設計師</TableCell>
-                    <TableCell>備註</TableCell>
-                  </TableRow>
+        <CardHeader className="pb-4">
+          <CardTitle>紅利點數紀錄</CardTitle>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table className="min-w-[800px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={
+                      selectedRecord.length === recordData.length && recordData.length > 0
+                    }
+                    indeterminate={
+                      selectedRecord.length > 0 &&
+                      selectedRecord.length < recordData.length
+                    }
+                    onChange={handleSelectAll}
+                  />
                 </TableHead>
-                <TableBody>
-                  {recordData.map(data => (
-                    <TableRow
-                      hover
-                      key={data.id}
-                      selected={selectedRecord.indexOf(data.id) > -1}
-                      data-testid="category-row"
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          onChange={() => handleSelectOne(data.id)}
-                          checked={selectedRecord.indexOf(data.id) > -1}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          color="primary"
-                          component={RouterLink}
-                          size="small"
-                          to={`/customer-bonus-record/edit/${data.id}`}
-                          variant="outlined"
-                        >
-                          編輯
-                        </Button>
-                      </TableCell>
-                      <TableCell>{format(data.date, 'yyyy/MM/dd')}</TableCell>
-                      <TableCell>{data.customerNo}</TableCell>
-                      <TableCell>{data.customerName}</TableCell>
-                      <TableCell>{data.bonus}</TableCell>
-                      <TableCell>{data.designerName}</TableCell>
-                      <TableCell>{data.remark}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
+                <TableHead>操作</TableHead>
+                <TableHead>日期</TableHead>
+                <TableHead>顧客代號</TableHead>
+                <TableHead>顧客名稱</TableHead>
+                <TableHead numeric>點數</TableHead>
+                <TableHead>設計師</TableHead>
+                <TableHead>備註</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {recordData.map(data => (
+                <TableRow
+                  key={data.id}
+                  data-state={selectedRecord.indexOf(data.id) > -1 ? 'selected' : undefined}
+                  data-testid="category-row"
+                >
+                  <TableCell className="w-12">
+                    <Checkbox
+                      aria-label="選取此筆"
+                      onChange={() => handleSelectOne(data.id)}
+                      checked={selectedRecord.indexOf(data.id) > -1}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Button asChild size="sm" variant="secondary">
+                      <RouterLink to={`/customer-bonus-record/edit/${data.id}`}>
+                        編輯
+                      </RouterLink>
+                    </Button>
+                  </TableCell>
+                  <TableCell className="tabular-nums">{format(data.date, 'yyyy/MM/dd')}</TableCell>
+                  <TableCell className="tabular-nums">{data.customerNo}</TableCell>
+                  <TableCell>{data.customerName}</TableCell>
+                  <TableCell numeric>{formatNumber(data.bonus)}</TableCell>
+                  <TableCell>{data.designerName}</TableCell>
+                  <TableCell>{data.remark}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
       <TableEditBar selected={selectedRecord} onDelete={handleDelete} />
     </div>
