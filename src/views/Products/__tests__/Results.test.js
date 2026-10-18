@@ -6,12 +6,30 @@ import { mockedDeleteProduct, DEL_PRODUCTS } from 'hooks/useFetchDeleteProducts'
 
 import Results from '../Results'
 
+// Results 載入時會查廠商清單，測試未提供該 query 的 mock（查詢失敗時 data 為 undefined 會讓畫面報錯），直接 mock hook
+jest.mock('hooks/useFetchGetVendor', () => ({
+  __esModule: true,
+  default: () => ({ loading: false, data: {} }),
+  useFetchGetMerchantVendorList: () => ({
+    loading: false,
+    data: { getMerchantVendorList: [] },
+  }),
+}))
+
 const mockedRefetch = jest.fn()
 
 const createWrapper = mocks => {
   return render(
     <CustomMockedProvider mocks={mocks}>
-      <Results products={mockedProducts.data.products} refetchProducts={mockedRefetch} />
+      <Results
+        products={{
+          data: mockedProducts.data.products,
+          totalCount: mockedProducts.data.products.length,
+          pageOffset: 0,
+          pageLimit: 10,
+        }}
+        refetchProducts={mockedRefetch}
+      />
     </CustomMockedProvider>
   )
 }
@@ -42,17 +60,17 @@ describe('<Results />', () => {
         result: mockedDeleteProduct,
       },
     ]
-    const { getByTestId } = createWrapper(mocks)
+    const { getByTestId, getByRole } = createWrapper(mocks)
 
     const rowDataPick = getByTestId('product-JuliArt 控油洗髮精-checkbox')
-    const deleteButton = getByTestId('delete')
-
     expect(rowDataPick.checked).toEqual(false)
 
     fireEvent.click(rowDataPick)
 
     expect(rowDataPick.checked).toEqual(true)
 
+    // 批次操作列的「刪除」按鈕沒有 data-testid（改版前也沒有），且勾選前列是 hidden，勾選後以角色與文字取得
+    const deleteButton = getByRole('button', { name: '刪除' })
     fireEvent.click(deleteButton)
 
     await new Promise(resolve => setTimeout(() => resolve(), 200))
