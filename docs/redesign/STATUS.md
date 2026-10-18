@@ -16,6 +16,25 @@
 | CI | 每個 branch push 跑 Build＋Unit tests |
 | 測試修復與產品決策（2026/10/19） | 電話不限 10 碼（LoginForm 無長度驗證）、店販售價可低於成本（不做 sellPrice>=cost）；`LoginForm.test.js`、`ProductCreate.test.js` 已依決策改寫。全域 17 檔／52 測試全數通過（0 失敗、0 skip） |
 
+## UI 第二批（分支 `claude/ui-batch2-box`，基於 main 7cb899a，未合併）
+
+| 項目 | 狀態 |
+|---|---|
+| `OrderEdit/WalletDepositModal` 標籤改上方（`Field`／`Input`，必填 `*` 依本檔提交檢查） | 已改檔 |
+| `OrderCreate/AddCustomerModal` | 評估後排下一批 A3（焦點鏈＋編號重複檢查風險高，見 `TODO.md`） |
+| F 批（icons-material／jss） | 未開始 |
+| 驗證（eslint、verify-logic、tests、build） | **指揮者已完成，全數通過**（結果見下） |
+
+指揮者驗證結果：
+- eslint：0 error。
+- verify-logic：FAIL 3 項，皆為純 presentation 差異——`slotProps` 的 `variant` 由 `standard` 改為 `outlined`；兩個 `fieldProps.label` 改為上方標籤＋`placeholder`。
+- portal-root-scan：0／0。
+- 全域 unit tests：17 suites，51 passed＋1 skipped（LoginForm 的 skip 待 PR #6），0 failed。
+- `CI=true npm run build`：成功。
+- 與 PR #7 的 OrderCreate 版 diff：僅註解與空白差異。
+
+verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `Field`／`Input`；`label`／`variant`／`css`／`inputProps`／`fieldProps.label` 屬性消失（改 `Field label`、`placeholder`、`min`）；`DateTimePicker` 的 `css` 與 `variant: 'standard'` 移除；金額列 wrapper `div` 改 className。依賴 PR #7 對 OrderCreate 版的相同改法。
+
 ## 進行中
 
 - **第二層第二輪**：用新元件換掉第一輪留下的 MUI（Select、ToggleButton、Checkbox、Switch、Avatar、MUI 分頁等）。6 批，清單見 `batches/r2-*.txt`。

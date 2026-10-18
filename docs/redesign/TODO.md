@@ -50,10 +50,10 @@
   待辦：實機／截圖各 Modal 確認外觀（尚未做）。
 - [ ] **非打帳單頁面的手機擠壓**：設計師績效頁「搜尋」按鈕被推出畫面、日期輸入框只剩 24px、薪資單儲存格換行等（全站審計結果在 `scratchpad/audit-*.json`）。
 - [~] **打帳單其餘彈窗仍是浮動標籤的 MUI**：2026/10/19 掃描（`label=`）後，`OrderCreate` 只剩 2 個檔案有浮動／外框標籤：
-  - [x] `WalletDepositModal`（異動入金）：本輪完成，6 個欄位標籤全部移到上方，必填 `*` 依 `handleSubWalletDeposit` 檢查；方法＝`Field` ＋ `label=''`／`placeholder`（與 `Head`、`Remark` 同一套，不改共用元件）。
-  - [ ] `AddCustomerModal`（新增／編輯顧客，676 行）：13 個 `TextField`＋性別 `Select`＋`ui/native-select` 外框標籤＋`Autocomplete`（偏好設計師）＋`SourceSelect`。同一套做法可完成，但每個欄位有 `inputRef`／`onKeyDown` 的 Enter 跳欄焦點鏈（`setFocus` effect）、號碼重複檢查的 `endAdornment`／`helperText`，需逐欄對照後才能改，另開一批（預估 1 檔、風險中）。
-  - [ ] 孿生檔：`OrderEdit/WalletDepositModal.js` 與改前的 `OrderCreate` 版幾乎相同（僅差一個空行、`WalletDepositToggleButton` 少傳 `identity`），同樣做法套用即可（預估 1 檔、風險低；少傳 `identity` 是既有行為，不順手改）。全 `src` 只有這兩份，`DraftOrderEdit`／`QueueOrderEdit` 沒有副本。
-  - 注意：`ui/native-select` 的 `label` 是「外框上緣標籤」（與 MUI 外框欄位並排用），與「上方標籤」規範不同；全站 25 檔引用、21 處有傳 `label`。是否整批改成 `Field` 上方標籤需決定（見 §二 P3 第 4 項）。
+  - [x] `WalletDepositModal`（異動入金，OrderCreate 版）：6 個欄位標籤全部移到上方，必填 `*` 依 `handleSubWalletDeposit` 檢查（PR #7）。
+  - [x] `OrderEdit/WalletDepositModal.js`（孿生檔，UI 第二批 PR #8）：7 欄（日期／金額／設計師／顧客／付款方式／手續費負擔方／備註）改上方標籤，用 `Field`／`Input`；必填 `*` 依本檔 `handleSubWalletDeposit`。DateTimePicker／Autocomplete／NativeSelect 本體與所有 handler、state、GraphQL、金額邏輯不變。（註：本檔原本就有傳 `identity` 給 `WalletDepositToggleButton`，與先前假設不同，未動。）
+  - [ ] **A3 `AddCustomerModal`（新增／編輯顧客，676 行，約 17 欄）**：評估後排後續——(1) Enter 跳欄焦點鏈：每欄 `inputRef`＋`onKeyDown → setFocus('下一欄')`，換 `ui/input` 需逐欄確認 ref 轉發；(2) 客戶編號重複檢查的 `error`／`helperText`＋`endAdornment`（轉圈／勾／警告）屬 helperText 邏輯，風險高；(3) 混用 Select、民國年／月／日、偏好設計師 Autocomplete。需獨立一批，逐欄保留焦點順序並以鍵盤 Enter 實測。
+  - 注意：`ui/native-select` 的 `label` 是「外框上緣標籤」，與「上方標籤」規範不同；全站 25 檔引用、21 處有傳 `label`。是否整批改成 `Field` 上方標籤需決定（見 §二 P3 第 4 項）。
 - [ ] **實機確認**：訂單列表捲軸、底部固定合計列（桌機／手機）、列印不出現合計列。
 
 ### P2 — 改版收尾
