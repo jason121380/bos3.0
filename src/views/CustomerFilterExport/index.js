@@ -277,7 +277,7 @@ function CustomerFilterExport() {
           }}
         />
         <Collapse in={showFilter}>
-          <div style={{ marginBottom: '8px', backgroundColor: '#fff', borderRadius: '12px', padding: '12px', border: '1px solid #f0f0f0' }}>
+          <div style={{ marginBottom: '8px', backgroundColor: 'rgb(var(--background))', borderRadius: '12px', padding: '12px', border: '1px solid rgb(var(--border))' }}>
             <SearchBar
               setCustomerNoSort={setPageSetting}
               inCustomerFilterExport

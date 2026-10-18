@@ -105,7 +105,7 @@ function CustomerManagementList() {
           />
         </AdminPageHeader>
         <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '12px', padding: '16px', border: '1px solid #f0f0f0' }}>
+          <div style={{ marginBottom: '12px', backgroundColor: 'rgb(var(--background))', borderRadius: '12px', padding: '16px', border: '1px solid rgb(var(--border))' }}>
             <MerchantSearchBar
               values={date}
               onFilter={value => setDate(value)}
