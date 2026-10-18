@@ -49,11 +49,11 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - `src/ui/`：新元件（Button、Input／Field、Select、NativeSelect、Table、Card、Dialog、Accordion、ToggleGroup、Switch、Checkbox、Badge、Avatar、Stat、Toast、Popover、DropdownMenu、Sidebar、PageHeader…）與 `icons`（lucide 轉接層）、`mui-theme`（MUI 橋接主題）、`format`（`formatNumber`／`formatMoney`）。
 - `src/styles/tokens.css`：CSS 變數 tokens＋`.ui-root` 基礎層（preflight 關閉）。
 - `src/views/OrderCreate/`：打帳單。`orderRequirements.js` 與 `Header.js` 的 `valid` 同步（有測試比對）；`RowAction.js` 是項目列的圖示鈕與「新增項目」。
-- `scripts/redesign/`：verify-logic／verify-style-only／verify-imports-only、tokenize-colors、swap-icons、page-checklist。
+- `scripts/redesign/`：verify-logic／verify-style-only／verify-imports-only、tokenize-colors、swap-icons、page-checklist、portal-root-scan、inventory-scan（改版盤點數字，口徑見 `docs/redesign/TODO.md` §三）。
 
 ## 踩雷清單
 
-- **`ui` 元件放在 MUI Dialog／Popper（Portal）內要有 `.ui-root`**，否則沒有 box-sizing／邊框重置（目前約 16 個檔案待修，見 TODO）。
+- **`ui` 元件放在 MUI Dialog／Popper（Portal）內要有 `.ui-root`**，否則沒有 box-sizing／邊框重置（8 個 `ui` 元件已自帶 `ui-root`，`portal-root-scan` 為 0；新增 `ui` 元件要記得自帶）。
 - Radix Dialog 會把 body 設 `pointer-events:none`，與 MUI Dialog 的 focus trap 互搶；Dialog 內若有 MUI Autocomplete／Select／DatePicker 就保留 MUI Dialog。
 - emotion `css` prop 與 Tailwind class 同權重，先後順序不可靠：要隱藏用 inline style；`css={…}` 傳給元件時要扣掉 margin 以免超出。
 - flex 子層沒有 `min-width:0`／`max-width:100%` 會被內容撐寬；欄位列要 `flex-wrap`。
