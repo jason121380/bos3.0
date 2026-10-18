@@ -5,7 +5,7 @@ import { Button } from './button'
 import { NativeSelect, NativeSelectOption } from './native-select'
 
 // STYLE.md §6：表頭 surface 底、label 字級；列高 44px；hover surface-hover；數字欄右對齊
-// dense：列高 32px（日報表、薪資條等密集表格）
+// dense（STYLE §11 報表 compact）：列高 32px、td 上下內距 4px、td／th 左右內距 8px（一般表格為 44px／px-4）
 // 列印：自動改為黑色細格線、白底黑字、不裁切（頁面自己的 @media print 規則權重較高，仍以頁面為準）
 const PRINT = cn(
   'print:[&_td]:border print:[&_th]:border print:[&_td]:border-solid print:[&_th]:border-solid',
@@ -16,7 +16,7 @@ const Table = React.forwardRef(({ className, wrapperClassName, dense = false, ..
   <div className={cn('ui-root ui-scroll-x w-full overflow-x-auto rounded-lg border border-solid border-border print:overflow-visible print:rounded-none print:border-0', wrapperClassName)}>
     <table
       ref={ref}
-      className={cn('w-full border-collapse text-body', dense && '[&_td]:h-8 [&_td]:py-1 [&_th]:h-8', PRINT, className)}
+      className={cn('w-full border-collapse text-body', dense && '[&_td]:h-8 [&_td]:px-2 [&_td]:py-1 [&_th]:h-8 [&_th]:px-2', PRINT, className)}
       {...props}
     />
   </div>

@@ -169,6 +169,33 @@
 
 ---
 
+## 三之二、報表 compact 專項盤點與進度（2026/10/19，`rg` 實查）
+
+**口徑**：`ls -d src/views/*Report`＝28 個目錄；`rg -l "window\.print" src`＝28 個檔案；`ui/table`／MUI Table 以「該目錄是否有檔案 `from 'ui/table'`」分。三個 28 **不是同一批**，不可互相推算。
+
+| 項目 | 數量 | 說明 |
+|---|---|---|
+| `*Report` 目錄 | 28 | 見上 |
+| `window.print` 檔案 | 28 | 其中 `*Report/index.js` 只有 **15** 個；另 7 個 `index.js` 在非 `*Report` 目錄（`EmployeePayslip`、`DesignerPerformBasic`、`HelperLeaderBoard`、`MerchantLeaderBoard`、`MultiMerchantsLeaderBoard`、`InventoryWorkReview`、`ProductInventoryList`），合計 22 個「報表型 index」（即舊文件的 22）；其餘 6 個為非純報表：`OrderManagementList/ResultsV2`、`DraftOrderManagementList/ResultsV2`、`DraftOrderEdit/Footer`、`OrderCreate/OrderDetailModal`、`InventoryWorkReview/General`、`ProductInventoryList/Results` |
+| `*Report` 已用 `ui/table` | 16 目錄 | 其中 `DecreaseDailyReport`、`MerchantDailyReport` 同檔仍有 MUI Table 殘留 |
+| `*Report` 仍用 MUI Table | 12 目錄／13 檔 | `BusinessAnalysis`、`CostAnalysis`、`DesignersSalaryDetail`、`DesignerMonthly`、`DesignerPerforamnceAnalyze`（含 `Compare.js`）、`DesignerRake`、`EmployeeDaily`、`IncomeStatement`、`MerchantBankTransfer`、`MerchantBusinessInterval`、`ProductInvoicingRecord`、`ServiceDeductionDetail`（先前估「約 13」＝檔案數 13，目錄數 12） |
+| 列印 CSS | `src/initialize.scss` 單檔 1 個 `@page`（第 253 行）；`initialize-dark.scss` 另有 1 個（第 459 行）；`thead tr th` 等報表列印規則散在 `initialize.scss` 第 355–550 行 | `ui/table` 自帶 `print:` 規則（黑細格線、白底、不裁切） |
+| 已套 compact（`dense`＋`px-2`） | **4 頁** | `MoneyFlowCategoryReport`、`MoneyFlowDailyReport`、`MoneyFlowTransferReport`、`PaymentReport` |
+| 剩餘 | **24 頁** | 12 頁已是 `ui/table`（只差 `dense`）＋ 12 頁 MUI Table |
+
+**第一批（`claude/ui-report1-box`，v3.0-1019-0357，未 commit）**：
+- `src/ui/table.js`：`dense` 由 `[&_td]:h-8 [&_td]:py-1 [&_th]:h-8` 補為 `… [&_td]:px-2 [&_th]:px-2`。因全專案原本沒有任何頁面傳 `dense`，共用層改動只影響本批 4 頁；非 dense 預設與 `PRINT` 規則未動。
+- 四頁各 1 張 Table，皆加 `dense`（`MoneyFlowCategoryReport/Results.js:7`、`MoneyFlowDailyReport/Results.js:91`、`MoneyFlowTransferReport/Results.js:8`、`PaymentReport/Results.js:78`）。
+- 數字欄 `numeric` 四頁原本就有，未改任何欄位對齊；欄位、數字、查詢、列印觸發皆未動。
+
+**下一批候選**：
+1. 其餘 12 頁已用 `ui/table` 的報表逐組加 `dense`（先 `NonCashDetailStatement`、`ProductConsume`、`MerchantDailyPerformance`、`MembershipSell`、`OverallPerformanceAnalysis`、`HelperMonthly`、`HelperPerformance`、`DesignerPerformance`、`BusinessItemsMonthlyAnalyze`、`SingleServiceSearching`；`DecreaseDaily`、`MerchantDaily` 因有 MUI 殘留最後）。這些頁的 `numeric`／右齊需逐頁先查，沒有的另列、不自行改。
+2. 12 個 MUI Table 報表另批（`EmployeeDaily` 等有 `#printMain`／列印區塊者先評估）。
+3. 共用層列印邊界：`@page` margin、`thead` 跨頁重複、`tr` 避免被切斷、表尾合計只出現一次。
+4. 篩選／工具列密度（STYLE §11 待盤點項）。
+
+**需實機列印預覽目視（本批 4 頁，唯讀）**：compact 後欄寬是否仍不換行／不裁切；`PaymentReport`、`MoneyFlowDailyReport`（欄數隨日期／付款方式增加）橫向捲動與列印是否超出紙張；合計列粗體與表尾；列印時 `print:` 黑細格線是否仍在。
+
 ## 四、剩餘工作分類與批次建議（2026/10/19）
 
 「頁數」以 views 目錄計；「檔案數」＝該範圍內仍引用 `@mui/*` 的檔案。估計為量級，不是承諾；每批仍依鐵則「只改畫面」，一批一個 PR、驗證通過再 merge（本輪不 merge）。
