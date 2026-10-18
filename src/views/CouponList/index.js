@@ -24,9 +24,9 @@ const styles = {
   }),
   categorieDiv: css({
     padding: '16px 20px',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgb(var(--background))',
     borderRadius: '12px',
-    border: '1px solid #f0f0f0',
+    border: '1px solid rgb(var(--border))',
     marginBottom: '16px',
     '& button': {
       lineHeight: '1.5'
@@ -35,13 +35,13 @@ const styles = {
   categorieBtn: css({
     margin: '4px !important',
     borderRadius: '8px !important',
-    border: '1px solid #e0e0e0 !important',
-    color: '#666 !important',
+    border: '1px solid rgb(var(--border)) !important',
+    color: 'rgb(var(--text-secondary)) !important',
   }),
   clickedCategorieBtn: css({
     margin: '4px !important',
     borderRadius: '8px !important',
-    backgroundColor: '#1A73E8 !important',
+    backgroundColor: 'rgb(var(--accent)) !important',
     color: 'white !important',
   }),
   categorieClear: css({

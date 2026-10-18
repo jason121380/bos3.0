@@ -16,17 +16,17 @@ const styles = {
   card: css({
     borderRadius: '16px',
     boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
+    border: '1px solid rgb(var(--border))',
+    backgroundColor: 'rgb(var(--background))',
     overflow: 'hidden',
     margin: '12px 0',
   }),
   tableHead: css({
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgb(var(--background))',
     '& .MuiTableCell-head': {
-      color: '#212121',
+      color: 'rgb(var(--text))',
       fontWeight: 'bold',
-      borderBottom: '1px solid #f0f0f0',
+      borderBottom: '1px solid rgb(var(--border))',
       height: '40px !important',
       padding: '2px 16px !important',
       fontSize: '14px',
@@ -37,9 +37,9 @@ const styles = {
     minHeight: '40px !important',
     '& .MuiTableCell-body': {
       padding: '2px 16px !important',
-      borderBottom: '1px solid #f0f0f0',
+      borderBottom: '1px solid rgb(var(--border))',
       fontSize: '14px !important',
-      color: '#333',
+      color: 'rgb(var(--text))',
     },
     '&:hover': {
       backgroundColor: 'transparent !important',
@@ -47,15 +47,15 @@ const styles = {
   }),
   actionButton: css({
     padding: '4px !important',
-    color: '#999 !important',
+    color: 'rgb(var(--text-tertiary)) !important',
     '&:hover': {
-      color: '#1A73E8 !important',
+      color: 'rgb(var(--accent)) !important',
       backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
     }
   }),
   expandButton: css({
     padding: '4px !important',
-    color: '#666 !important',
+    color: 'rgb(var(--text-secondary)) !important',
   }),
   header: css({
     padding: '12px 24px 4px 24px',
@@ -69,10 +69,10 @@ const styles = {
     fontSize: '14px !important',
     boxShadow: 'none !important',
     fontWeight: 'bold !important',
-    backgroundColor: '#f5f5f5 !important',
-    color: '#666 !important',
+    backgroundColor: 'rgb(var(--surface)) !important',
+    color: 'rgb(var(--text-secondary)) !important',
     '&:hover': {
-      backgroundColor: '#eeeeee !important',
+      backgroundColor: 'rgb(var(--surface)) !important',
     }
   }),
 }
@@ -151,7 +151,7 @@ export default function Results({ reportData, open, openCollapse, onToggleAll })
               <TableRow className='noprint'>
                 <TableCell style={{ padding: 0 }} colSpan={8}>
                   <Collapse timeout="auto" unmountOnExit in={open.indexOf(d.id) > -1}>
-                    <Box margin={0} sx={{ borderLeft: '4px solid #1A73E8', ml: '24px', my: 1, pl: 2 }}>
+                    <Box margin={0} sx={{ borderLeft: '4px solid rgb(var(--accent))', ml: '24px', my: 1, pl: 2 }}>
                       {d.collapesData.length ? (
                         <div style={{ border: '1px solid #f0f0f0', borderLeft: 'none', borderRadius: '0 8px 8px 0', overflow: 'hidden' }}>
                           <Table size="small">
@@ -178,7 +178,7 @@ export default function Results({ reportData, open, openCollapse, onToggleAll })
                           </Table>
                         </div>
                       ) : (
-                        <Typography sx={{ p: 2, textAlign: 'center', color: '#999' }} variant="body2">無詳細組合資料</Typography>
+                        <Typography sx={{ p: 2, textAlign: 'center', color: 'rgb(var(--text-tertiary))' }} variant="body2">無詳細組合資料</Typography>
                       )}
                     </Box>
                   </Collapse>

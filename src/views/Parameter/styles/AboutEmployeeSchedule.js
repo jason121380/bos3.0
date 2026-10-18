@@ -36,7 +36,7 @@ export default {
   colorTag: css({
     marginLeft: '10px',
     height: '40px',
-    border: '1px solid #92929F',
+    border: '1px solid rgb(var(--border-strong))',
   }),
   fixedBg: css({
     width: '100vw',
@@ -49,7 +49,7 @@ export default {
   colorPicker: css({
     boxSizing: 'content-box',
     padding: '20px 12px 12px 20px',
-    border: '1px solid #92929F',
+    border: '1px solid rgb(var(--border-strong))',
     zIndex: '999',
     position: 'fixed',
     top: '50%',
