@@ -225,3 +225,14 @@ export function MuiScope({ children }) {
   const theme = useMemo(() => createBridgeTheme(dark ? 'dark' : 'light'), [dark])
   return <ThemeProvider theme={theme}>{children}</ThemeProvider>
 }
+
+// 讓單一共用元件（如篩選列）在舊頁面中也套用橋接主題，不需改動元件本身
+export function withMuiScope(Component) {
+  const Scoped = React.forwardRef((props, ref) => (
+    <MuiScope>
+      <Component {...props} ref={ref} />
+    </MuiScope>
+  ))
+  Scoped.displayName = `withMuiScope(${Component.displayName || Component.name || 'Component'})`
+  return Scoped
+}

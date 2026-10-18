@@ -80,3 +80,23 @@ describe('AdminPageHeader（外觀改版、props 介面不變）', () => {
     expect(history.location.pathname).toBe('/coupons/create')
   })
 })
+
+describe('TableEditBar（批次操作列改版、行為不變）', () => {
+  const TableEditBar = require('../TableEditBar').default
+
+  // 沒有勾選任何資料時不可出現批次操作，避免誤刪
+  it('未勾選時不顯示', () => {
+    render(<TableEditBar selected={[]} onCancel={() => {}} />)
+    expect(screen.queryByRole('toolbar', { name: '批次操作' })).toBeNull()
+  })
+
+  it('勾選後顯示筆數，按鈕呼叫原 handler；editBarOnClick 時取消訂單不可按', () => {
+    const onCancel = jest.fn()
+    const { rerender } = render(<TableEditBar selected={['a', 'b']} onCancel={onCancel} />)
+    expect(screen.getByText('已選 2 筆')).toBeInTheDocument()
+    fireEvent.click(screen.getByTestId('cancelOrder'))
+    expect(onCancel).toHaveBeenCalledTimes(1)
+    rerender(<TableEditBar selected={['a', 'b']} onCancel={onCancel} editBarOnClick />)
+    expect(screen.getByTestId('cancelOrder')).toBeDisabled()
+  })
+})

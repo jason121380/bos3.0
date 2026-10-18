@@ -1,33 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { Button, Drawer, Grid, Hidden, Typography } from '@mui/material'
-import ClearIcon from '@mui/icons-material/Clear'
-import DeleteIcon from '@mui/icons-material/DeleteOutline'
-import EditIcon from '@mui/icons-material/Edit'
-import Employee from '@mui/icons-material/AssignmentIndRounded';
-import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
+import { FileDown, Pencil, Trash2, UserCheck, X } from 'lucide-react'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
-import { theme } from '../theme'
-
-const styles = {
-  root: css({
-    padding: theme.spacing(2),
-  }),
-  actions: css({
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    '& > * + *': {
-      marginLeft: theme.spacing(2),
-    },
-    '& button': {
-      color: '#263238 !important'
-    }
-  }),
-  buttonIcon: css({
-    marginRight: theme.spacing(1),
-  }),
-}
+import { Button } from 'ui/button'
 
 function TableEditBar({
   selected = [],
@@ -47,131 +21,47 @@ function TableEditBar({
   ...rest
 }) {
   const open = selected.length > 0
-
+  // 批次操作列（STYLE.md §5 浮層）：勾選資料後浮在畫面底部中央；各按鈕的顯示條件與 handler 與舊版相同
+  const item = (show, onClick, testId, Icon, label, { danger, disabled } = {}) =>
+    show && (
+      <Button
+        key={label}
+        size="sm"
+        variant="ghost"
+        onClick={onClick}
+        data-testid={testId}
+        disabled={disabled}
+        className={danger ? 'text-danger hover:bg-danger/8' : undefined}
+      >
+        <Icon strokeWidth={1.75} />
+        {label}
+      </Button>
+    )
+  if (!open) return null
   return (
-    <Drawer anchor="bottom" open={open} PaperProps={{ elevation: 1 }} variant="persistent">
-      <div {...rest} css={css([styles.root, className])}>
-        <Grid alignItems="center" container spacing={2}>
-          <Hidden smDown>
-            <Grid item md={3}>
-              <Typography color="textSecondary" variant="subtitle1">
-                {selected.length} selected
-              </Typography>
-            </Grid>
-          </Hidden>
-          {onReinstatement && (
-            <Grid item md={6} xs={12}>
-              <div css={styles.actions}>
-                <Button onClick={onReinstatement} data-testid="delete">
-                  <Employee css={styles.buttonIcon} />
-                  員工復職
-                </Button>
-              </div>
-            </Grid>
-          )}
-          {onDelete && (
-            <Grid item md={onDelete && onEdit && onEditDeduction ? 3 : 6} xs={12}>
-              <div css={styles.actions}>
-                <Button onClick={onDelete} data-testid="delete">
-                  <DeleteIcon css={styles.buttonIcon} />
-                  刪除
-                </Button>
-              </div>
-            </Grid>
-          )}
-          {onEditSaleStatus && (
-            <Grid item md={2} xs={12}>
-              <div css={styles.actions}>
-                <Button onClick={onEditSaleStatus} data-testid="edit">
-                  <EditIcon css={styles.buttonIcon} />
-                  編輯上架狀態
-                </Button>
-              </div>
-            </Grid>
-          )}
-          {onEditDeduction && (
-            <Grid item md={2} xs={12}>
-              <div css={styles.actions}>
-                <Button onClick={onEditDeduction} data-testid="edit">
-                  <EditIcon css={styles.buttonIcon} />
-                  編輯項目扣項
-                </Button>
-              </div>
-            </Grid>
-          )}
-          {onEdit && (
-            <Grid item md={2} xs={12}>
-              <div css={styles.actions}>
-                <Button onClick={onEdit} data-testid="edit">
-                  <EditIcon css={styles.buttonIcon} />
-                  編輯互助點數
-                </Button>
-              </div>
-            </Grid>
-          )}
-          {onCancel && (
-            <Grid item md={6} xs={12}>
-              <div css={styles.actions}>
-                <Button onClick={onCancel} data-testid="cancelOrder" disabled={editBarOnClick}>
-                  <ClearIcon css={styles.buttonIcon} />
-                  取消訂單(預約)
-                </Button>
-              </div>
-            </Grid>
-          )}
-          {onEditProductsCategory && (
-            <Grid item md={3} xs={12}>
-              <div css={styles.actions}>
-                <Button onClick={onEditProductsCategory} data-testid="editProductsCategory">
-                  <EditIcon css={styles.buttonIcon} />
-                  編輯商品類別
-                </Button>
-              </div>
-            </Grid>
-          )}
-          {onEditRakeSetting && (
-            <Grid item md={3} xs={12}>
-              <div css={styles.actions}>
-                <Button onClick={onEditRakeSetting} data-testid="editProductsCategory">
-                  <EditIcon css={styles.buttonIcon} />
-                  編輯設計師抽成
-                </Button>
-              </div>
-            </Grid>
-          )}
-          {onEditRakeSetting && (
-            <Grid item md={3} xs={12}>
-              <div css={styles.actions}>
-                <Button onClick={onEditPersonnelProfile} data-testid="editProductsCategory">
-                  <SimCardDownloadIcon css={styles.buttonIcon} />
-                  由人員身分設定檔導入
-                </Button>
-              </div>
-            </Grid>
-          )}
-          {onDeleteCustomer && (
-            <Grid item md={6} xs={12}>
-              <div css={styles.actions}>
-                <Button onClick={onDeleteCustomer} data-testid="editProductsCategory">
-                  <EditIcon css={styles.buttonIcon} />
-                  刪除客人
-                </Button>
-              </div>
-            </Grid>
-          )}
-          {onEditMembershipCategory && (
-            <Grid item md={3} xs={12}>
-              <div css={styles.actions}>
-                <Button onClick={onEditMembershipCategory} data-testid="onEditMembershipCategory">
-                  <EditIcon css={styles.buttonIcon} />
-                  編輯會員卡類別
-                </Button>
-              </div>
-            </Grid>
-          )}
-        </Grid>
+    <div className="ui-root noprint pointer-events-none fixed inset-x-0 bottom-6 z-[1200] flex justify-center px-4">
+      <div
+        {...rest}
+        css={className}
+        role="toolbar"
+        aria-label="批次操作"
+        className="pointer-events-auto flex max-w-full flex-wrap items-center gap-1 rounded-lg border border-solid border-border bg-background py-1.5 pl-4 pr-1.5 shadow-float"
+      >
+        <span className="mr-2 text-label tabular-nums text-text">已選 {selected.length} 筆</span>
+        <span aria-hidden="true" className="mr-1 h-5 w-px bg-border" />
+        {item(onReinstatement, onReinstatement, 'delete', UserCheck, '員工復職')}
+        {item(onDelete, onDelete, 'delete', Trash2, '刪除', { danger: true })}
+        {item(onEditSaleStatus, onEditSaleStatus, 'edit', Pencil, '編輯上架狀態')}
+        {item(onEditDeduction, onEditDeduction, 'edit', Pencil, '編輯項目扣項')}
+        {item(onEdit, onEdit, 'edit', Pencil, '編輯互助點數')}
+        {item(onCancel, onCancel, 'cancelOrder', X, '取消訂單(預約)', { danger: true, disabled: editBarOnClick })}
+        {item(onEditProductsCategory, onEditProductsCategory, 'editProductsCategory', Pencil, '編輯商品類別')}
+        {item(onEditRakeSetting, onEditRakeSetting, 'editProductsCategory', Pencil, '編輯設計師抽成')}
+        {item(onEditRakeSetting, onEditPersonnelProfile, 'editProductsCategory', FileDown, '由人員身分設定檔導入')}
+        {item(onDeleteCustomer, onDeleteCustomer, 'editProductsCategory', Trash2, '刪除客人', { danger: true })}
+        {item(onEditMembershipCategory, onEditMembershipCategory, 'onEditMembershipCategory', Pencil, '編輯會員卡類別')}
       </div>
-    </Drawer>
+    </div>
   )
 }
 
