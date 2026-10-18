@@ -1,10 +1,4 @@
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Switch,
-} from '@mui/material'
+import { Switch } from '@mui/material'
 import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
 import { useEffect, useState, Fragment } from 'react'
@@ -19,6 +13,7 @@ import { CirclePicker } from 'react-color'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input, Textarea } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { PageHeader } from 'ui/page-header'
 
 // 色票浮層：沿用舊版置中固定定位（CirclePicker 接受 className）
@@ -264,21 +259,19 @@ export default function MemberCardEdit({ match }) {
                 onChange={event => handleOnChange({ event, key: 'name' })}
               />
             </Field>
-            <FormControl variant="outlined" fullWidth className="mt-2">
-              <InputLabel>會員卡類別</InputLabel>
-              <Select
-                label='會員卡類別'
+            <Field label="會員卡類別">
+              <NativeSelect
                 value={submitValue.MembershipCategoryUUID}
                 onChange={event => handleOnChange({ event, key: 'MembershipCategoryUUID' })}
               >
                 {categories != undefined &&
                   categories.map((data, idx) => (
-                    <MenuItem key={`${data.uuid}-${idx}`} value={data.uuid}>
+                    <NativeSelectOption key={`${data.uuid}-${idx}`} value={data.uuid}>
                       {data.no} / {data.name}
-                    </MenuItem>
+                    </NativeSelectOption>
                   ))}
-              </Select>
-            </FormControl>
+              </NativeSelect>
+            </Field>
             <Field label="有效天數">
               <Input
                 type="number"
@@ -416,21 +409,19 @@ export default function MemberCardEdit({ match }) {
                 }}
               />
             </Field>
-            <FormControl variant="outlined" fullWidth className="mt-2">
-              <InputLabel>打帳單是否能更改預設價格</InputLabel>
-              <Select
-                label='打帳單是否能更改預設價格'
+            <Field label="打帳單是否能更改預設價格">
+              <NativeSelect
                 name="isLocked"
                 value={submitValue.isLocked}
                 onChange={event => handleOnChange({ event, key: 'isLocked' })}
               >
                 {lockStatus.map((data, idx) => (
-                  <MenuItem value={data.value} key={`${data.label}-${idx}`}>
+                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                     {data.label}
-                  </MenuItem>
+                  </NativeSelectOption>
                 ))}
-              </Select>
-            </FormControl>
+              </NativeSelect>
+            </Field>
           </CardContent>
         </Card>
         {submitValue.isAvailableForSale && !membership.loading && (
@@ -439,20 +430,18 @@ export default function MemberCardEdit({ match }) {
               <CardTitle>抽成</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
-              <FormControl variant="outlined" fullWidth className="mt-2">
-                <InputLabel>抽成方式</InputLabel>
-                <Select
-                  label='抽成方式'
+              <Field label="抽成方式">
+                <NativeSelect
                   value={submitValue.commissionWay !== undefined && submitValue.commissionWay}
                   onChange={event => handleOnChange({ event, key: 'commissionWay' })}
                 >
                   {commissionWay.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.label}-${idx}`}>
+                    <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                       {data.label}
-                    </MenuItem>
+                    </NativeSelectOption>
                   ))}
-                </Select>
-              </FormControl>
+                </NativeSelect>
+              </Field>
               <Field
                 label={
                   submitValue.commissionWay === 'byCost' || submitValue.commissionWay === 'byPrice'
