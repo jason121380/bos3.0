@@ -65,10 +65,11 @@
   - 前批 PR #11（v3.0-1019-0202）、#12（v3.0-1019-0232）、#13（v3.0-1019-0241，merge 8ec6b00）已 merge；批次 8 接續本批。
   - `src/version.js` 已由 PR #12 引入，本批僅更新 `APP_VERSION`。
 - [x] **版本顯示（v3.0-1019-0232，分支 `claude/ui-version-box`）**：新增 `src/version.js`（`APP_VERSION`），`Dashboard/TopBar.js`、`Auth/Topbar.js` 改讀它，不再寫死 `v3.0`。狀態：已 merge（PR #12）。
-- [x] **批次 8 [v3.0-1019-0303]（`claude/ui-batch8-box`，替代 Payment；PR #15，本組 merge 中，前為 #13、#14 已 merge；commit 待補）**：`UpdateDeductionSetting/Results.js` 的 15 個 TextField（門檻／抽成，`min=0`、`type=number`、`onWheel` 不變）→ `Field`＋`Input`（標籤在上）；`ToggleButton`／`Tabs`／`Checkbox` 保留 MUI；`index.js` 沒有 MUI 欄位，未動。
+- [x] **批次 8 [v3.0-1019-0303]（`claude/ui-batch8-box`，替代 Payment；PR #15，已 merge（c168506），前為 #13、#14 已 merge）**：`UpdateDeductionSetting/Results.js` 的 15 個 TextField（門檻／抽成，`min=0`、`type=number`、`onWheel` 不變）→ `Field`＋`Input`（標籤在上）；`ToggleButton`／`Tabs`／`Checkbox` 保留 MUI；`index.js` 沒有 MUI 欄位，未動。
   - 既有 bug 不碰：非分段「刪除此級距」`onClick={handleDeleteSetDeductionNum}` 會把 event 當 index 傳入。
 - [ ] **待決策（Payment 批放棄）**：原定 `PaymentCreate` 因下拉選項的 `data-testid` 被 Cypress 點選，換 `NativeSelect` 會讓 e2e 失效而整批放棄。是否授權把相關 Cypress spec 改為 `.select()`？授權前 `PaymentCreate` 維持現狀。
 - [ ] **紀律**：之後每個完整 commit 都要更新 `src/version.js`（格式 `v3.0-MMDD-HHmm`，Asia/Taipei），並與 commit 訊息第一行 `[版號]` 一致；不自行升大版號。
+- [ ] **批次 9 [v3.0-1019-0309]（`claude/ui-batch9-box`，PR #16，本組 merge 中，待指揮者驗證；前為 #13、#14、#15 已 merge）**：`CouponList` 三個編輯彈窗 `AboutDeductionEditModal`、`AssistantSettingEditModal`、`SaleStatusEditModal`，TextField／單選 Select → `Field`＋`Input`／`NativeSelect`（做法同批次 4、5）；MUI `Modal` 與 `Checkbox` 保留；`Results.js`／`index.js` 無待改欄位未動。
 - [x] **批次 5 [v3.0-1019-0202]（`claude/ui-batch5-box`，PR #11 已 merge，merge commit cfc79cd，commit 079a7d0，GitHub Build/Unit pass；指揮者已驗證）**：`CouponEdit` 表單標籤改版，做法同批次 4 的 `CouponCreate`（PR #10）。
   - 本批完成：`AboutCoupon.js`、`AboutDeduction.js`、`AboutAssistantSetting.js` 的 TextField → `Field`＋`Input`（標籤在上）、單選 Select → `Field`＋`NativeSelect`；`index.js` 沒有 MUI 欄位，未動。三檔都沒有 helperText／error、Autocomplete、日期、鍵盤焦點鏈或列印，所以三檔皆在範圍內。`Checkbox`／`FormControlLabel`（分指定／互助均分）仍是 MUI。
   - **與 `CouponCreate` 不對稱處（不可從孿生目錄照抄）**：

@@ -46,6 +46,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ## 進行中
 
 - **第二層第二輪**：用新元件換掉第一輪留下的 MUI（Select、ToggleButton、Checkbox、Switch、Avatar、MUI 分頁等）。6 批，清單見 `batches/r2-*.txt`。
+- **批次 9（分支 `claude/ui-batch9-box`，版本 v3.0-1019-0309，PR #16，本組 merge 中，checks 待驗證；前為 #13、#14、#15 已 merge）**：`CouponList` 的 `AboutDeductionEditModal`、`AssistantSettingEditModal`、`SaleStatusEditModal` 三個編輯彈窗，`TextField`／`Select` 改 `Field`＋`Input`／`NativeSelect`（做法同批次 4、5）；彈窗本體（MUI `Modal`）與 `FormControlLabel`＋`Checkbox` 保留；`Results.js`／`index.js` 查無待改欄位，未動。`AssistantSettingEditModal` 的「協助人員人數」原為未綁值的 MUI Select，改為 `value={content.peopleCount}`（僅顯示綁定，同 `CouponEdit`，handler 不變）。已移除不再使用的 `inputLabel` ref 與 `useRef` import。驗證（指揮者）：eslint 0 error；`verify-logic` 三檔中兩檔各 FAIL 一項，僅為 `inputLabel` ref 移除（純 presentation），另一檔通過；portal-root-scan 0/0；全域單元測試 52/52 通過；`CI=true npm run build` 成功，bundle 含校正前版號字串（0305），版號校正為 0309 後由指揮者重 build 確認；外觀待實機（欄位 `items-end` 對齊、`w-28` 換行）。
 - **批次 7（2026/10/19，分支 `claude/ui-batch7-box`，v3.0-1019-0245，PR #14，本組 merge 中；版本列見下方「版本清單」）**：`CreateDeductionSetting/Results.js` 15 個 TextField（門檻／抽成數字欄）改 `Field`＋`Input`（標籤在上，`min={0}`、`type="number"`、`onWheel` 保留）。選批理由：建立抽成設定、欄位重複單純，無下拉／Autocomplete／日期／helperText。`ToggleButton`／`Tabs`／`Checkbox`／`FormControlLabel` 依檔案頭註解的既定範圍保留 MUI 未動。`index.js` 查無 MUI 欄位未動。前批 PR #11、#12、#13 已 merge，本批為下一組第一個。驗證：eslint 0 error；verify-logic 通過；portal-root-scan 0／0；全域單元測試 52／52 通過；`CI=true npm run build` 成功。PR #12 已 merge、TopBar 已讀 `version.js`，bundle 含版號。**外觀待實機**：Field 在 flex 列內寬度、窄螢幕換行。
 - **批次 6（2026/10/19，分支 `claude/ui-batch6-box`，v3.0-1019-0241，PR #13 已 merge，merge commit 8ec6b00；版本列見下方「版本清單」）**：`AccountingSetting/AccountingItemCreate.js` 5 個 TextField 改 `Field`＋`Input`（標籤在上）。選批理由：會計設定表單、欄位單純，無下拉／Autocomplete／日期／helperText／`inputRef`。`AccountingSetting.js`、`index.js` 無 MUI 欄位未動。與 PR #11、PR #12 同組，皆已 merge。驗證：eslint 0 error；verify-logic 通過；portal-root-scan 0/0；全域單元測試 52/52 通過；`CI=true npm run build` 成功。bundle 備註：PR #12 已 merge、TopBar 已讀 version.js，本批 bundle 已含版號。**外觀待實機**：圖示與輸入框底對齊、`w-[700px]` 窄螢幕換行。
 - **批次 5（分支 `claude/ui-batch5-box`，版本 v3.0-1019-0202，PR #11，commit 079a7d0，GitHub Build/Unit pass，已 merge，merge commit cfc79cd）**：`CouponEdit` 三個 About 檔的欄位標籤改為上方標籤（`Field`＋`Input`／`NativeSelect`），做法同批次 4。驗證：**指揮者已完成**。
@@ -79,7 +80,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 - 格式 `v3.0-MMDD-HHmm`（時區 Asia/Taipei）。commit 訊息第一行開頭與 PR 標題都要帶版本號。
 - 正式格式 v3.0-MMDD-HHmm（Asia/Taipei，不寫年份，年份只在日期欄；不自行升大版號）。
 - #6–#10 為規則建立前已 push 的 commit，**不 amend**；下表依 commit 時間對照版本。
-- merge 組別：#6–#10 為第一組（五個完整 commit），已於 2026-10-19 merge（merge commits：#6 c9a8c8c、#7 503f4fa、#8 f32bf0e、#9 3f7b35f、#10 29630fa）；批次 5（#11）已 merge（cfc79cd），版本顯示批 v3.0-1019-0232（#12）已 merge，批次 6（#13）已 merge（8ec6b00），批次 7（#14）已 merge（20ded5b）；批次 8（#15）本組 merge 中。
+- merge 組別：#6–#10 為第一組（五個完整 commit），已於 2026-10-19 merge（merge commits：#6 c9a8c8c、#7 503f4fa、#8 f32bf0e、#9 3f7b35f、#10 29630fa）；批次 5（#11）已 merge（cfc79cd），版本顯示批 v3.0-1019-0232（#12）已 merge，批次 6（#13）已 merge（8ec6b00），批次 7（#14）已 merge（20ded5b）；批次 8（#15）已 merge（c168506）；批次 9（#16）本組 merge 中。
 
 | 版本 | 時間（Asia/Taipei） | 內容 | PR | commit | checks |
 |---|---|---|---|---|---|
@@ -92,7 +93,8 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 | v3.0-1019-0232 | 2026-10-19 02:32 | 版本顯示上線（`src/version.js`） | #12 | bca2950 | 已 merge |
 | v3.0-1019-0241 | 2026-10-19 02:41 | 批次 6：AccountingSetting 表單標籤改版 | #13 | 8ec6b00 | 已 merge（merge commit 8ec6b00）；eslint 0 error／verify-logic 通過／portal 0/0／全域 52/52／build 成功 |
 | v3.0-1019-0245 | 2026-10-19 02:45 | 批次 7：CreateDeductionSetting/Results 15 欄標籤改版 | #14 | 4d37654 | 已 merge（merge commit 20ded5b）；eslint 0 error／verify-logic 通過／portal 0/0／測試 52/52／build 成功 |
-| v3.0-1019-0303 | 2026-10-19 03:03 | UI 批次8（替代 Payment）：UpdateDeductionSetting/Results.js 15 個 TextField → `Field`＋`Input`；本批在本組 merge 中（前為 #13、#14 已 merge）；版號由 0258 校正為 0303 | #15 | commit 待補 | 驗證：eslint 0 error、verify-logic 通過、portal-root-scan 0/0、全域測試 52/52、build 成功；該次 build 的 bundle 含校正前版號字串 `v3.0-1019-0258`（校正僅字串差異），commit 後以最終版號 0303 重 build 由指揮者確認 |
+| v3.0-1019-0303 | 2026-10-19 03:03 | UI 批次8（替代 Payment）：UpdateDeductionSetting/Results.js 15 個 TextField → `Field`＋`Input`；本批已 merge（c168506；前為 #13、#14 已 merge）；版號由 0258 校正為 0303 | #15 | commit 待補 | 驗證：eslint 0 error、verify-logic 通過、portal-root-scan 0/0、全域測試 52/52、build 成功；該次 build 的 bundle 含校正前版號字串 `v3.0-1019-0258`（校正僅字串差異），commit 後以最終版號 0303 重 build 由指揮者確認 |
+| v3.0-1019-0309 | 2026-10-19 03:09 | UI 批次9 CouponList 三個編輯彈窗（PR #16 本組 merge 中；前為 #13、#14、#15 已 merge） | #16 | commit 待補 | checks 待驗證 |
 
 ## 刻意不改（需另外決定）
 
