@@ -3,8 +3,7 @@ import {
   Card, CardContent, CardHeader, Divider, TextField,
   Grid, Typography
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo } from 'react'
 import { cloneDeep } from 'lodash'
 import styles from './styles/AboutOrderSource'

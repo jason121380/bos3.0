@@ -5,9 +5,8 @@ import {
   Select, InputLabel, MenuItem, IconButton
 } from '@mui/material'
 import { Fragment, useState, useEffect } from 'react'
-import AddIcon from '@mui/icons-material/Add'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import useFetchMerchantJobTitlePoint from 'hooks/useFetchMerchantJobTitlePoint'
 import useFetchSettingJobTitlePoint from 'hooks/useFetchSettingJobTitlePoint'
 import useFetchMerchantHelperItems from 'hooks/useFetchMerchantHelperItems'

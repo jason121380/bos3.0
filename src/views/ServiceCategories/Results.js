@@ -12,7 +12,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
-import EditIcon from '@mui/icons-material/Edit'
+import { Edit as EditIcon } from 'ui/icons'
 import idx from 'idx'
 
 const styles = {

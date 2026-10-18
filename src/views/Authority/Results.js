@@ -15,7 +15,7 @@ import {
   Switch,
   IconButton
 } from '@mui/material'
-import EditIconSlot from '@mui/icons-material/Edit';
+import { Edit as EditIconSlot } from 'ui/icons'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import PropTypes from 'prop-types'

@@ -3,12 +3,10 @@ import {
   Card,CardContent,CardHeader, Grid, Divider,
   Button, Typography, createTheme, ThemeProvider 
 } from '@mui/material'
-import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import { KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon, Add as AddIcon, Edit as EditIcon } from 'ui/icons'
 import { memo, Fragment, useState } from 'react'
-import AddIcon from '@mui/icons-material/Add'
 import styles from './styles/AboutDesignerSideExternalLink'
 import { teal } from '@mui/material/colors';
-import EditIcon from '@mui/icons-material/Edit';
 import OuterLinkModal from './OuterLinkModal'
 import OuterLinkSortModal from './OuterLinkSortModal'
 

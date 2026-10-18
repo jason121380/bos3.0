@@ -3,9 +3,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableRow, TableContainer,
   Paper, Collapse, Box, IconButton, Button, Typography, CardHeader, Divider
 } from '@mui/material'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import EditIconSlot from '@mui/icons-material/Edit';
+import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon, Edit as EditIconSlot } from 'ui/icons'
 import { Link } from 'react-router-dom'
 import format from 'date-fns/format';
 import getLabel from 'utils/getTransferListLabel'

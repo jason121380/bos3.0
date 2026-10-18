@@ -4,8 +4,7 @@ import {
   Button, Typography, createTheme, ThemeProvider
 } from '@mui/material'
 import { memo, Fragment, useState } from 'react'
-import AddIcon from '@mui/icons-material/Add'
-import EditIcon from '@mui/icons-material/Edit';
+import { Add as AddIcon, Edit as EditIcon } from 'ui/icons'
 import { teal } from '@mui/material/colors';
 import styles from './styles/AboutDesignerSideExternalLink'
 import OuterLinkModal from './OuterLinkModal'

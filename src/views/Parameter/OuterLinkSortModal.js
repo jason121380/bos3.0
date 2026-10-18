@@ -4,7 +4,7 @@ import {
 } from '@mui/material'
 import { useState, memo, useEffect } from 'react'
 import styles from './styles/OuterLinkSortModal'
-import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import { KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon } from 'ui/icons'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { openSnackbar } from 'elements/snackbars'
 import { cloneDeep } from 'lodash'

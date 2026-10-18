@@ -14,7 +14,7 @@ import {
   Typography,
   IconButton,
 } from '@mui/material'
-import EditIconSlot from '@mui/icons-material/Edit';
+import { Edit as EditIconSlot } from 'ui/icons'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import { PaymentSymbol } from 'helper/enum'

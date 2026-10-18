@@ -4,7 +4,7 @@ import {
   DialogTitle, Button, Slider, Avatar, TextField, FormControlLabel
 } from '@mui/material'
 import { memo, useRef, useState, useCallback } from 'react'
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import { EditRounded as EditRoundedIcon } from 'ui/icons'
 import Resizer from "react-image-file-resizer";
 import Cropper from 'react-easy-crop'
 import CropImage from './CropImage'

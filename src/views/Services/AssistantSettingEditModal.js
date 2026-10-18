@@ -6,9 +6,7 @@ import {
 import PropTypes from 'prop-types'
 import { red, blue } from '@mui/material/colors'
 import _ from 'lodash'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
-import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon, BackspaceOutlined as BackspaceOutlinedIcon } from 'ui/icons'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 

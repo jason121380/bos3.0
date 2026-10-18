@@ -5,10 +5,9 @@ import {
   DialogTitle, DialogContent, DialogContentText, TextField,
   DialogActions, IconButton
 } from '@mui/material'
-import EditIconSlot from '@mui/icons-material/Edit';
+import { Edit as EditIconSlot, ContentCopy as ContentCopyIcon } from 'ui/icons'
 
 import { Link } from 'react-router-dom';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteService from 'hooks/useFetchDeleteService'

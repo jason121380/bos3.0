@@ -3,7 +3,7 @@ import {
   Button, Card, CardContent, CardHeader, Checkbox, Divider, Table,
   TableBody, TableCell, TableHead, TableRow, Typography, IconButton,
 } from '@mui/material'
-import EditIconSlot from '@mui/icons-material/Edit';
+import { Edit as EditIconSlot } from 'ui/icons'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteThirdPartyCoupon from 'hooks/useFetchDeleteThirdPartTicket'

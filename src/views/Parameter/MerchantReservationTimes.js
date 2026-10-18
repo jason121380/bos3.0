@@ -6,9 +6,7 @@ import {
 } from '@mui/material'
 import { memo } from 'react'
 import _ from 'lodash'
-import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Edit as EditIcon, Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import styles from './styles/MerchantReservationTimes'
 import { green } from '@mui/material/colors';
 import { openSnackbar } from 'elements/snackbars';

@@ -5,10 +5,9 @@ import {
   Button, Avatar, Dialog, DialogContent, DialogTitle, Slider,
   Autocomplete
 } from '@mui/material'
-import CheckIcon from '@mui/icons-material/Check';
+import { Check as CheckIcon, EditRounded as EditRoundedIcon } from 'ui/icons'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import Resizer from "react-image-file-resizer";
 import Cropper from 'react-easy-crop'
 import CropImage from './CropImage'

@@ -3,8 +3,7 @@ import {
   Card, CardContent, CardHeader, Divider, TextField, FormControl, InputLabel,
   MenuItem, Select, Button, CircularProgress, IconButton
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment, useState, useEffect } from 'react'
 import _ from 'lodash'
 import useFetchSettingCommissionWay from 'hooks/useFetchSettingCommissionWay'
