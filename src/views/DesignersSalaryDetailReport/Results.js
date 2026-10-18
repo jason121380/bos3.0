@@ -127,7 +127,7 @@ function Results({
 
   return (
     <Fragment>
-      <TableContainer style={{ marginTop: 24, padding: 0, border: '1px solid #f0f0f0', borderRadius: '16px', overflow: 'auto', backgroundColor: '#fff' }} className="DesignersSalaryDetailReportTable">
+      <TableContainer style={{ marginTop: 24, padding: 0, border: '1px solid rgb(var(--border))', borderRadius: '16px', overflow: 'auto', backgroundColor: 'rgb(var(--background))' }} className="DesignersSalaryDetailReportTable">
         <Table size="small" stickyHeader>
           <TableHead css={localStyles.tableHead}>
             <TableRow>
@@ -180,7 +180,7 @@ function Results({
             }
             )}
             <TableRow css={localStyles.totalRow}>
-              <TableCell css={localStyles.stickyLeft} style={{ fontWeight: 'bold', backgroundColor: 'rgba(26, 115, 232, 0.05) !important', color: '#1A73E8 !important' }}>合計:</TableCell>
+              <TableCell css={localStyles.stickyLeft} style={{ fontWeight: 'bold', backgroundColor: 'rgba(26, 115, 232, 0.05) !important', color: 'rgb(var(--accent)) !important' }}>合計:</TableCell>
               <TableCell css={localStyles.stickyLeft2} style={{ backgroundColor: 'rgba(26, 115, 232, 0.05) !important' }} />
               <TableCell />
               {increaseItemsSum.map((data, index) => (
@@ -227,7 +227,7 @@ function Results({
       </TableContainer>
 
       <TableContainer
-        style={{ marginTop: 24, padding: 0, border: '1px solid #f0f0f0', borderRadius: '16px', overflow: 'auto', backgroundColor: '#fff' }}
+        style={{ marginTop: 24, padding: 0, border: '1px solid rgb(var(--border))', borderRadius: '16px', overflow: 'auto', backgroundColor: 'rgb(var(--background))' }}
         className="DesignersSalaryDetailReportTable-2"
       >
         <Table size="small" stickyHeader>
@@ -279,8 +279,8 @@ function Results({
             }
             )}
             <TableRow css={localStyles.totalRow}>
-              <TableCell css={localStyles.stickyLeft} style={{ fontWeight: 'bold', backgroundColor: '#f8f9fa !important' }}>合計:</TableCell>
-              <TableCell css={localStyles.stickyLeft2} style={{ backgroundColor: '#f8f9fa !important' }} />
+              <TableCell css={localStyles.stickyLeft} style={{ fontWeight: 'bold', backgroundColor: 'rgb(var(--surface)) !important' }}>合計:</TableCell>
+              <TableCell css={localStyles.stickyLeft2} style={{ backgroundColor: 'rgb(var(--surface)) !important' }} />
               <TableCell>
                 {Math.round(
                   salaryDetailReport.userSalaryDetail

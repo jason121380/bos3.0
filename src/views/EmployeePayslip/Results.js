@@ -105,7 +105,7 @@ function Results({
                     )} - ${user.name}`}
                   </span>
                 </div>
-                <div style={{ textAlign: 'end', width: '33%', fontWeight: 'bold', color: '#1A73E8' }}>{EPWDDisplay ? `天數: ${user.workingDays}` : ''}</div>
+                <div style={{ textAlign: 'end', width: '33%', fontWeight: 'bold', color: 'rgb(var(--accent))' }}>{EPWDDisplay ? `天數: ${user.workingDays}` : ''}</div>
               </div>
               <Divider />
               <TableContainer style={{ paddingBottom: '12px' }}>
@@ -116,7 +116,7 @@ function Results({
                         if (i % 6 === 0 && i !== 0) {
                           return (
                             <Fragment key={`increaseItem-${i}`}>
-                              <TableRow style={{ borderTop: '1px solid #f0f0f0' }}></TableRow>
+                              <TableRow style={{ borderTop: '1px solid rgb(var(--border))' }}></TableRow>
                               <TableCell css={localStyles.itemLabel}>
                                 <span className={clsx(payslipOptimization && 'nowrap')}>{item.itemName}</span>
                               </TableCell>
@@ -148,7 +148,7 @@ function Results({
                         if (i % 6 === 0 && i !== 0) {
                           return (
                             <Fragment key={`decreaseItem-${i}`}>
-                              <TableRow style={{ borderTop: '1px solid #f0f0f0' }}></TableRow>
+                              <TableRow style={{ borderTop: '1px solid rgb(var(--border))' }}></TableRow>
                               <TableCell css={localStyles.itemLabel}>
                                 <span className={clsx(payslipOptimization && 'nowrap')}>{item.itemName}</span>
                               </TableCell>
@@ -279,7 +279,7 @@ function Results({
                     )} - ${user.name}`}
                   </span>
                 </div>
-                <div style={{ textAlign: 'end', width: '33%', fontWeight: 'bold', color: '#1A73E8' }}>天數: {user.workingDays}</div>
+                <div style={{ textAlign: 'end', width: '33%', fontWeight: 'bold', color: 'rgb(var(--accent))' }}>天數: {user.workingDays}</div>
               </div>
               <Divider />
               <TableContainer>

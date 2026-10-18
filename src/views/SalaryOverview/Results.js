@@ -449,7 +449,7 @@ function Results({
                       fontWeight: 'bold',
                       textTransform: 'none',
                       boxShadow: 'none',
-                      backgroundColor: '#1A73E8',
+                      backgroundColor: 'rgb(var(--accent))',
                       color: 'white',
                     }}
                   >
@@ -477,7 +477,7 @@ function Results({
                       fontWeight: 'bold',
                       textTransform: 'none',
                       boxShadow: 'none',
-                      backgroundColor: '#1A73E8',
+                      backgroundColor: 'rgb(var(--accent))',
                       color: 'white',
                     }}
                   >

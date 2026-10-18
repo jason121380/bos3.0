@@ -219,7 +219,7 @@ export default function Employees() {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             {UESUsing && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '14px', color: '#666' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '14px', color: 'rgb(var(--text-secondary))' }}>
                 <span>編輯過往班別</span>
                 <Switch
                   size="small"

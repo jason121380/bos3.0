@@ -322,7 +322,7 @@ export default function Employees() {
         </AdminPageHeader>
 
         <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+          <div style={{ marginBottom: '12px', backgroundColor: 'rgb(var(--background))', borderRadius: '8px', padding: '16px', border: '1px solid rgb(var(--border))' }}>
             <Grid container spacing={2} alignItems='center'>
               <Grid item xs={3}>
                 <Autocomplete
@@ -366,7 +366,7 @@ export default function Employees() {
                   renderOption={(props, option, { selected }) => (
                     <li {...props}>
                       <Checkbox
-                        style={{ color: '#202D50', marginRight: 8 }}
+                        style={{ color: 'rgb(var(--text))', marginRight: 8 }}
                         icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
                         checkedIcon={<CheckBoxIcon fontSize="small" />}
                         checked={selected}

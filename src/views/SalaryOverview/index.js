@@ -313,14 +313,14 @@ export default function SalaryOverview() {
                           marginLeft: '16px',
                           display: 'flex',
                           flexDirection: 'column',
-                          backgroundColor: '#E8F0FE',
+                          backgroundColor: 'rgb(var(--accent) / 0.08)',
                           padding: '6px 16px',
                           borderRadius: '8px',
                         }}>
-                          <Typography variant="caption" style={{ fontWeight: 700, color: '#1A73E8', fontSize: '13px', lineHeight: 1.5 }}>
+                          <Typography variant="caption" style={{ fontWeight: 700, color: 'rgb(var(--accent))', fontSize: '13px', lineHeight: 1.5 }}>
                             上次月結完成時間
                           </Typography>
-                          <Typography variant="caption" style={{ fontWeight: 900, color: '#1A73E8', fontSize: '15px', lineHeight: 1.2 }}>
+                          <Typography variant="caption" style={{ fontWeight: 900, color: 'rgb(var(--accent))', fontSize: '15px', lineHeight: 1.2 }}>
                             {format(new Date(monthlyCheckoutTime), 'yyyy/MM/dd HH:mm')}
                           </Typography>
                         </div>
