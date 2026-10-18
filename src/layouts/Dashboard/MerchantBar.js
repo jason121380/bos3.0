@@ -1,62 +1,9 @@
-/** @jsxImportSource @emotion/react */
-import { Dialog, DialogTitle, List, CircularProgress, DialogContent, TextField, InputAdornment } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
+import { LoaderCircle, Search } from 'lucide-react'
 import PropTypes from 'prop-types'
 import React, { useState, useMemo } from 'react'
 import MerchantList from './MerchantList'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  dialog: css({
-    '& .MuiPaper-root': {
-      borderRadius: 16,
-      width: '400px',
-      maxWidth: '90vw',
-      padding: '8px',
-      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
-    }
-  }),
-  root: css({
-    padding: '0 !important',
-  }),
-  list: css({
-    padding: 0,
-  }),
-  Circular: css({
-    width: '100%',
-    padding: '40px 0',
-    textAlign: 'center'
-  }),
-  title: css({
-    fontWeight: 700,
-    fontSize: '20px',
-    textAlign: 'center',
-    padding: '16px 24px 8px 24px',
-  }),
-  searchContainer: css({
-    padding: '0 24px 16px 24px',
-  }),
-  searchField: css({
-    '& .MuiOutlinedInput-root': {
-      borderRadius: '24px',
-      backgroundColor: '#f5f5f5',
-      '& fieldset': {
-        border: 'none',
-      },
-      '&:hover fieldset': {
-        border: 'none',
-      },
-      '&.Mui-focused fieldset': {
-        border: '1px solid #007AFF',
-      },
-    },
-    '& .MuiInputBase-input': {
-      padding: '8px 12px',
-      fontSize: '14px',
-    }
-  })
-}
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody } from 'ui/dialog'
+import { Input } from 'ui/input'
 
 function MerchantBar({ open, onClose, userMerchants }) {
   const [searchQuery, setSearchQuery] = useState('')
@@ -106,42 +53,26 @@ function MerchantBar({ open, onClose, userMerchants }) {
   }, [merchantsData, searchQuery])
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      css={styles.dialog}
-      scroll="paper"
-    >
-      <DialogTitle css={styles.title}>切換店家</DialogTitle>
-      <div css={styles.searchContainer}>
-        <TextField
-          fullWidth
-          placeholder="搜尋店家"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          css={styles.searchField}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ color: '#8E8E93', fontSize: '20px' }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </div>
-      <DialogContent css={styles.root}>
-        <List css={styles.list}>
+    <Dialog open={open} onOpenChange={o => !o && onClose()}>
+      <DialogContent size="sm">
+        <DialogHeader>
+          <DialogTitle>切換店家</DialogTitle>
+        </DialogHeader>
+        <div className="px-6 pb-2">
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.75} />
+            <Input aria-label="搜尋店家" placeholder="搜尋店家" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-9" />
+          </div>
+        </div>
+        <DialogBody className="px-2 pb-4 pt-0">
           {!userMerchants.loading && filteredMerchants ? (
-            <MerchantList
-              merchants={filteredMerchants}
-              searchQuery={searchQuery}
-            />
+            <MerchantList merchants={filteredMerchants} searchQuery={searchQuery} />
           ) : (
-            <div css={styles.Circular}>
-              <CircularProgress />
+            <div className="flex justify-center py-10">
+              <LoaderCircle className="h-6 w-6 animate-spin text-text-tertiary" strokeWidth={1.75} />
             </div>
           )}
-        </List>
+        </DialogBody>
       </DialogContent>
     </Dialog>
   )

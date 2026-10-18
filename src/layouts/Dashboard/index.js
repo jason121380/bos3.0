@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { LinearProgress } from '@mui/material'
 import ChangePassword from 'components/ChangePassword'
 import Snackbar, { openSnackbar } from 'elements/snackbars'
 import useToggle from 'hooks/useToggle'
@@ -10,35 +8,13 @@ import { renderRoutes } from 'react-router-config'
 import useFetchCheckPageAuthority from 'hooks/useFetchCheckPageAuthority'
 import useFetchGetUserMerchant from 'hooks/useFetchGetUserMerchant'
 import idx from 'idx'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Menu, PanelLeftOpen } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Sidebar, SidebarHeader } from 'ui/sidebar'
+import { cn } from 'ui/utils'
 
 import NavBar from './NavBar'
 import TopBar from './TopBar'
-
-const styles = {
-  container: ({ openDesktop }) => css({
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    paddingTop: 64,
-    transition: theme.transitions.create(['padding-left'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.shorter,
-    }),
-    [theme.breakpoints.up('lg')]: {
-      paddingLeft: openDesktop ? 260 : 0,
-    },
-    '@media all and (-ms-high-contrast:none)': {
-      height: 0 // IE11 fix
-    }
-  }),
-  content: css({
-    flexGrow: 1,
-    maxWidth: '100%',
-    overflowX: 'hidden',
-  })
-}
 
 function Dashboard({ route, location }) {
   const [openNavBarMobile, setOpenNavBarMobile] = useState(false)
@@ -95,28 +71,44 @@ function Dashboard({ route, location }) {
   }, [checkPageAuthorityData.loading])
 
   const handleToggleNavBar = () => {
-    if (window.innerWidth >= 1280) { // lg breakpoint
+    if (window.innerWidth >= 1024) { // Tailwind lg 斷點，與側欄常駐的斷點一致
       setOpenNavBarDesktop(!openNavBarDesktop)
     } else {
       setOpenNavBarMobile(true)
     }
   }
 
+  // 骨架（STYLE.md §4）：左側 Sidebar（Logo / 商家切換 / 導覽 / 使用者）＋右側內容
   return (
     <Fragment>
       <Snackbar />
-      <TopBar
-        userMerchants={userMerchants}
-        onOpenNavBarMobile={handleToggleNavBar}
-      />
-      <NavBar
-        onMobileClose={() => setOpenNavBarMobile(false)}
-        openMobile={openNavBarMobile}
-        openDesktop={openNavBarDesktop}
-      />
-      <div css={styles.container({ openDesktop: openNavBarDesktop })}>
-        <div id='printContainer' css={styles.content}>
-          <Suspense fallback={<LinearProgress />}>{renderRoutes(route.routes)}</Suspense>
+      <Sidebar mobileOpen={openNavBarMobile} onMobileClose={() => setOpenNavBarMobile(false)} desktopOpen={openNavBarDesktop}>
+        <SidebarHeader>
+          <TopBar userMerchants={userMerchants} onOpenNavBarMobile={handleToggleNavBar} />
+        </SidebarHeader>
+        <NavBar onMobileClose={() => setOpenNavBarMobile(false)} openMobile={openNavBarMobile} openDesktop={openNavBarDesktop} />
+      </Sidebar>
+      {/* 平板與手機：頂部列只放開啟側欄與 Logo */}
+      <header className="ui-root noprint sticky top-0 z-[1100] flex h-14 items-center gap-2 border-0 border-b border-solid border-border bg-background px-4 lg:hidden">
+        <Button variant="ghost" size="icon" aria-label="開啟選單" onClick={handleToggleNavBar}>
+          <Menu strokeWidth={1.75} />
+        </Button>
+        <img alt="BeautyOS" className="h-6 w-auto invert dark:invert-0" src={require('assets/images/bosLogoNew.png')} />
+      </header>
+      {!openNavBarDesktop && (
+        <Button
+          variant="secondary"
+          size="icon"
+          aria-label="展開側欄"
+          className="ui-root noprint fixed left-3 top-3 z-[1100] hidden bg-background lg:inline-flex"
+          onClick={handleToggleNavBar}
+        >
+          <PanelLeftOpen strokeWidth={1.75} />
+        </Button>
+      )}
+      <div className={cn('flow-root min-h-screen bg-background transition-[padding] duration-200 print:pl-0', openNavBarDesktop && 'lg:pl-60')}>
+        <div id="printContainer" className="max-w-full overflow-x-hidden">
+          <Suspense fallback={<div className="ui-root h-0.5 w-full animate-pulse bg-accent" />}>{renderRoutes(route.routes)}</Suspense>
         </div>
       </div>
       <ChangePassword open={open} handleClose={toggle} />

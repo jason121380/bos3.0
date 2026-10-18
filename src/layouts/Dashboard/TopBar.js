@@ -1,33 +1,14 @@
-/** @jsxImportSource @emotion/react */
-import {
-  AppBar, Badge, Button, Toolbar, FormGroup, FormControlLabel,
-  Switch, Typography, Popper, Fade, CircularProgress, Box, MenuItem,
-  List, Menu, Divider, Paper, IconButton, Fab, ListItemIcon, ListItem,
-  ListItemText, ListItemButton, ListSubheader, styled, Avatar,
-} from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
-import ArrowCircleUpRoundedIcon from '@mui/icons-material/ArrowCircleUpRounded'
-import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
-import LayersIcon from '@mui/icons-material/Layers';
-import KeyboardDoubleArrowUpRoundedIcon from '@mui/icons-material/KeyboardDoubleArrowUpRounded'
-import ErrorOutlineRoundedIcon from '@mui/icons-material/ErrorOutlineRounded'
-import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded'
-import SnoozeRoundedIcon from '@mui/icons-material/SnoozeRounded'
-
-import DeleteIcon from '@mui/icons-material/Delete'
-import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded'
-import NotificationImportantRoundedIcon from '@mui/icons-material/NotificationImportantRounded'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import InputIcon from '@mui/icons-material/Input'
-import MenuIcon from '@mui/icons-material/Menu'
-import StorefrontIcon from '@mui/icons-material/Storefront'
-import PersonIcon from '@mui/icons-material/Person'
+import { Link as RouterLink } from 'react-router-dom'
+import { Bell, BellRing, ChevronsUpDown, CircleAlert, CircleCheck, EllipsisVertical, LoaderCircle, Moon, PanelLeftClose, Pencil, RotateCcw, Store, Trash2 } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Popover, PopoverAnchor, PopoverContent } from 'ui/popover'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from 'ui/dropdown-menu'
+import { cn, focusRing } from 'ui/utils'
 import useFetchSystemUpdateRecord from 'hooks/useFetchSystemUpdateRecord'
 import useToggle from 'hooks/useToggle'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, useRef, Fragment } from 'react'
 import { useHistory } from 'react-router'
-import { Link as RouterLink } from 'react-router-dom'
 import useFetchProfile, { useFetchProfileIdentity } from 'hooks/useFetchProfile'
 import useFetchMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'
 import idx from 'idx'
@@ -46,227 +27,6 @@ import { socketActions } from './../../store/socket'
 import { reservationActions } from './../../store/reservation'
 import { QRcodeClockInActions } from './../../store/QRcodeClockIn'
 import { deductionDisplayActions } from './../../store/deductionDisplay'
-import { css, keyframes } from '@emotion/react'
-import { theme } from '../../theme'
-
-const shake = keyframes`
-  0% {
-    -webkit-transform: translate(0,0) rotate(0);
-    -ms-transform: translate(0,0) rotate(0);
-    transform: translate(0,0) rotate(0);
-  }
-  10.1% {
-    -webkit-transform: translate(0px,0px) rotate(-12.150006768751156deg);
-    -ms-transform: translate(0px,0px) rotate(-12.150006768751156deg);
-    transform: translate(0px,0px) rotate(-12.150006768751156deg);
-  }
-  20.2% {
-    -webkit-transform: translate(0px,0px) rotate(18.341532043913183deg);
-    -ms-transform: translate(0px,0px) rotate(18.341532043913183deg);
-    transform: translate(0px,0px) rotate(18.341532043913183deg);
-  }
-  30.3% {
-    -webkit-transform: translate(0px,0px) rotate(2.6825725745137206deg);
-    -ms-transform: translate(0px,0px) rotate(2.6825725745137206deg);
-    transform: translate(0px,0px) rotate(2.6825725745137206deg);
-  }
-  31% {
-    -webkit-transform: translate(0,0) rotate(0);
-    -ms-transform: translate(0,0) rotate(0);
-    transform: translate(0,0) rotate(0);
-  }
-`
-
-const styles = {
-  root: css({
-    boxShadow: 'none !important',
-    backgroundColor: '#1E1E1E !important',
-    color: '#FFFFFF !important',
-    padding: '0 16px',
-    zIndex: 1100,
-    borderRadius: '0px !important',
-    [theme.breakpoints.down('sm')]: {
-      padding: '0 8px',
-    },
-  }),
-  logo: css({
-    width: 'auto',
-    height: '25px',
-  }),
-  flexGrow: css({
-    flexGrow: 1,
-  }),
-  chatButton: css({
-    height: '40px !important',
-    width: 'auto !important',
-    minWidth: '40px !important',
-    padding: '0 12px !important',
-    marginLeft: 8,
-    borderRadius: '12px !important',
-    backgroundColor: 'rgba(255, 255, 255, 0.1) !important',
-    display: 'flex !important',
-    alignItems: 'center !important',
-    justifyContent: 'center !important',
-    '& svg': {
-      color: '#FFFFFF'
-    }
-  }),
-  menuButton: css({
-    padding: '8px !important',
-    color: '#FFFFFF'
-  }),
-  logoutButton: css({
-    height: '40px !important',
-    width: '40px !important',
-    padding: '0 !important',
-    marginLeft: 8,
-    borderRadius: '12px !important',
-    backgroundColor: 'rgba(255, 255, 255, 0.1) !important',
-    color: '#FFFFFF !important',
-    '&:hover': {
-      backgroundColor: 'rgba(255, 255, 255, 0.2) !important',
-    }
-  }),
-  icon: css({
-    cursor: 'pointer',
-    color: '#FFFFFF',
-    fontSize: '24px !important'
-  }),
-  subheader: css({
-    fontSize: 14,
-    fontWeight: 700,
-    color: '#000000',
-    backgroundColor: '#F2F2F7',
-    lineHeight: '36px',
-    padding: '0 16px'
-  }),
-  ListItem: css({
-    display: 'flex',
-    gap: 12,
-    padding: '12px 16px !important',
-    transition: 'background-color 0.2s',
-    '&:hover': {
-      backgroundColor: 'rgba(0, 122, 255, 0.05) !important'
-    }
-  }),
-  ListItemText: css({
-    lineHeight: '1.5 !important',
-    '& p': {
-      fontSize: 12,
-      lineHeight: '1.5 !important',
-      color: theme.palette.text.secondary
-    }
-  }),
-  Menu: css({
-    '& ul li': {
-      paddingLeft: 16,
-      paddingRight: 16
-    }
-  }),
-  shake: css({
-    animation: `${shake} 510ms infinite`
-  }),
-  badge: css({
-    '& .MuiBadge-badge': {
-      bottom: 0,
-      right: 0
-    }
-  }),
-  profile: css({
-    display: 'flex !important',
-    alignItems: 'center !important',
-    justifyContent: 'center !important',
-    height: '40px !important',
-    minWidth: '40px !important',
-    width: 'auto !important',
-    marginLeft: 8,
-    padding: '0 12px !important',
-    cursor: 'pointer',
-    borderRadius: '12px !important',
-    backgroundColor: 'rgba(255, 255, 255, 0.1) !important',
-    textDecoration: 'none',
-    '&:hover': {
-      backgroundColor: 'rgba(255, 255, 255, 0.2) !important',
-    }
-  }),
-  avatar: css({
-    width: 32,
-    height: 32,
-  }),
-  details: css({
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    [theme.breakpoints.down('md')]: {
-      display: 'none',
-    }
-  }),
-  versionTag: css({
-    height: '24px !important',
-    padding: '0 8px !important',
-    marginLeft: 12,
-    borderRadius: '8px !important',
-    backgroundColor: 'rgba(255, 255, 255, 0.1) !important',
-    color: '#FFFFFF !important',
-    fontSize: '11px !important',
-    fontWeight: 'bold !important',
-    display: 'flex !important',
-    alignItems: 'center !important',
-    justifyContent: 'center !important',
-    fontFamily: 'monospace !important',
-    opacity: 0.8,
-  }),
-}
-
-const MaterialUISwitch = styled(Switch)(({ theme }) => ({
-  width: 'fit-content !important',
-  height: 34,
-  padding: 7,
-  overflow: 'visible',
-  '& .MuiSwitch-switchBase': {
-    margin: 1,
-    padding: 0,
-    transform: 'translateX(10px)',
-    '&.Mui-checked': {
-      color: '#fff',
-      transform: 'translateX(30px)',
-      '& .MuiSwitch-thumb:before': {
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-          '#fff',
-        )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
-      },
-      '& + .MuiSwitch-track': {
-        opacity: 1,
-        backgroundColor: theme.palette.mode === 'dark' ? '#8796A5 !important' : '#aab4be !important',
-      },
-    },
-  },
-  '& .MuiSwitch-thumb': {
-    backgroundColor: theme.palette.mode === 'dark' ? '#003892' : '#001e3c',
-    width: 32,
-    height: 32,
-    '&::before': {
-      content: "''",
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      left: 0,
-      top: 0,
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'center',
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-        '#fff',
-      )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
-    },
-  },
-  '& .MuiSwitch-track': {
-    width: 45,
-    transform: 'translateX(5px)',
-    opacity: 1,
-    backgroundColor: theme.palette.mode === 'dark' ? '#8796A5 !important' : '#aab4be !important',
-    borderRadius: 20 / 2,
-  },
-}));
 
 function TopBar({ onOpenNavBarMobile, userMerchants }) {
   const dispatch = useDispatch()
@@ -600,397 +360,116 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
         })
     }
   }
+  // 側欄頂部：Logo、訂單佇列通知、收合按鈕、商家切換（STYLE.md §4 骨架）
+  const queueIcon = !isNotification ? (
+    <LoaderCircle className="animate-spin text-accent" strokeWidth={1.75} />
+  ) : error ? (
+    <BellRing className="text-danger" strokeWidth={1.75} />
+  ) : (
+    <Bell strokeWidth={1.75} />
+  )
   return (
-    <Fragment >
-      <AppBar css={styles.root}  >
-        <Toolbar>
-          <IconButton css={styles.menuButton} sx={{ display: { lg: 'none !important' } }} color="inherit" onClick={onOpenNavBarMobile}>
-            <MenuIcon />
-          </IconButton>
-          {loginUserAuth ? (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <RouterLink to="/">
-                <img
-                  alt="Logo"
-                  css={styles.logo}
-                  src={require('assets/images/bosLogoNew.png')}
-                />
-              </RouterLink>
-              <span css={styles.versionTag}>v3.0</span>
-            </div>
-          ) : (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <RouterLink to="/profile/general">
-                <img
-                  alt="Logo"
-                  css={styles.logo}
-                  src={require('assets/images/bosLogoNew.png')}
-                />
-              </RouterLink>
-              <span css={styles.versionTag}>v3.0</span>
-            </div>
-          )}
-          {/* lightdark mode function */}
-          <div css={styles.flexGrow} />
-          {/* notification button */}
-          <Box style={{ display: 'flex', alignItems: 'center', marginLeft: '8px' }} ref={ref} >
-            <Box style={{ position: 'relative' }}>
-              <Fab aria-label="save" size="small" style={{ borderRadius: '50%' }} sx={buttonSx} onClick={handleClickOpenNotification('bottom-end')}>
-                {isNotification ? (
-                  !error ? (
-                    <NotificationsNoneRoundedIcon />
-                  ) : (
-                    <Badge
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                      }}
-                      color="error"
-                      badgeContent={errorCount}
-                      overlap="circular"
-                      css={styles.badge}
-                    >
-                      <NotificationImportantRoundedIcon css={styles.shake} />
-                    </Badge>
-                  )
-                ) : (
-                  <KeyboardDoubleArrowUpRoundedIcon />
-                )}
-              </Fab>
-              {!isNotification &&
-                <CircularProgress
-                  size={50}
-                  style={{
-                    position: 'absolute',
-                    zIndex: 1,
-                    top: '-5px',
-                    left: '-5px',
-                    color: 'orange',
-
-                  }}
-                />
-              }
-            </Box>
-          </Box>
-          {/* store icon and name */}
-          <IconButton css={styles.chatButton} color="inherit" onClick={toggle}>
-            <StorefrontIcon sx={{ display: { xs: 'block', sm: 'none' }, fontSize: '20px' }} />
-            <Typography
-              variant="subtitle1"
-              component="div"
-              style={{
-                fontWeight: 600,
-                margin: 0,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                maxWidth: '150px'
-              }}
-              sx={{ display: { xs: 'none', sm: 'block' }, color: '#FFFFFF' }}
-            >
-              {JSON.parse(localStorage.getItem('userMerchant')).name}
-            </Typography>
-          </IconButton>
-
-          {/* User Profile Section moved to top right */}
-          {!profile.loading && (
-            <RouterLink to="/profile/general" style={{ textDecoration: 'none' }}>
-              <div css={styles.profile}>
-                <PersonIcon sx={{ display: { xs: 'block', sm: 'none' }, color: '#FFFFFF', fontSize: '20px' }} />
-                <div css={styles.details} sx={{ display: { xs: 'none', sm: 'flex' } }}>
-                  <Typography
-                    variant="subtitle1"
-                    style={{
-                      color: '#FFFFFF',
-                      fontWeight: 600,
-                      fontSize: '15px',
-                      lineHeight: 1.2,
-                      margin: 0,
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      maxWidth: '100px'
-                    }}
-                  >
-                    {idx(profile, _ => (_.data.me.name ? _.data.me.name : '使用者'))}
-                  </Typography>
-                </div>
-              </div>
-            </RouterLink>
-          )}
-
-          <IconButton css={styles.logoutButton} onClick={handleLogout}>
-            <InputIcon style={{ fontSize: '20px' }} />
-          </IconButton>
-          {/* log out button */}
-        </Toolbar>
-        <MerchantBar userMerchants={userMerchants} open={open} onClose={toggle} />
-      </AppBar>
-      {/* notification content */}
-      <Popper
-        open={openButton}
-        anchorEl={anchorEl}
-        placement={placement}
-        transition
-        style={{
-          zIndex: 1100,
-          marginTop: 10,
-          minWidth: '300px',
-          transform: 'translate3d(-44.5px, 41px, 0px)',
-        }}
-      >
-        {({ TransitionProps }) => (
-          <Fade {...TransitionProps} timeout={350}>
-            <Paper
+    <Fragment>
+      <div className="flex h-10 items-center gap-1">
+        <RouterLink to={loginUserAuth ? '/' : '/profile/general'} className={cn('flex items-center gap-2 rounded-md px-1', focusRing)}>
+          <img alt="BeautyOS" className="h-6 w-auto invert dark:invert-0" src={require('assets/images/bosLogoNew.png')} />
+          <span className="text-caption text-text-tertiary">v3.0</span>
+        </RouterLink>
+        <div className="flex-1" />
+        <Popover open={openButton} onOpenChange={o => !o && setOpenButton(false)}>
+          <PopoverAnchor asChild>
+            <Button
               ref={ref}
-              elevation={4}
-              style={{
-                maxWidth: 360,
-                transform: 'none',
-                borderRadius: '16px',
-                overflow: 'hidden',
-                boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)',
-                border: '1px solid rgba(0, 0, 0, 0.05)'
-              }}
+              variant="ghost"
+              size="icon"
+              className="relative h-8 w-8"
+              aria-label={error ? `訂單佇列：${errorCount} 筆失敗` : '訂單佇列'}
+              onClick={handleClickOpenNotification('bottom-end')}
             >
-              <List
-                style={{ maxHeight: '350px', overflowY: 'scroll' }}
-                component="nav"
-                aria-labelledby="nested-list-subheader"
-
-                subheader={
-                  <ListSubheader
-                    component="div"
-                    id="listSubheaderInQueue"
-                    css={styles.subheader}
+              {queueIcon}
+              {error && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[11px] font-medium leading-none text-white tabular-nums">
+                  {errorCount}
+                </span>
+              )}
+            </Button>
+          </PopoverAnchor>
+          <PopoverContent align="start" side="right" className="w-[360px] p-0">
+            <div className="border-0 border-b border-solid border-border px-4 py-3 text-heading text-text">訂單佇列</div>
+            <div className="max-h-[350px] overflow-y-auto">
+              {orderDetail.length > 0 ? (
+                orderDetail.map((order, index) => (
+                  <div
+                    key={`fail-order-${index}`}
+                    className={cn('flex items-start gap-3 px-4 py-3', index !== orderDetail.length - 1 && 'border-0 border-b border-solid border-border')}
                   >
-                    訂單
-                  </ListSubheader>
-                }
-              >
-                {orderDetail.length > 0 ? orderDetail.map((order, index) =>
-                  <Fragment key={`fail-order-${index}`}>
-                    <ListItem
-                      css={styles.ListItem}
-                      key={order.id}
-                      secondaryAction={
-                        order.status === 'fail' &&
-                        (<Fragment>
-                          <IconButton
-                            edge="end"
-                            aria-label="more"
-                            id="long-button"
-                            aria-controls={openForMoreBtn ? 'menu' : undefined}
-                            aria-expanded={openForMoreBtn ? 'true' : undefined}
-                            aria-haspopup="true"
-                            onClick={(e) => handleClickForMoreBtn(e, order.id)}
-                          >
-                            <MoreVertIcon />
-                          </IconButton>
-                          <Menu
-                            style={{ pointerEvents: isClick && 'none' }}
-                            css={styles.Menu}
-                            id="menu"
-                            MenuListProps={{
-                              'aria-labelledby': 'long-button',
-                            }}
-                            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                            transformOrigin={{ vertical: 'top', horizontal: 'center' }}
-                            anchorEl={anchorElForMoreBtn}
-                            open={openForMoreBtn}
-                            onClose={handleCloseForMoreBtn}
-                            slotProps={{
-                              elevation: 1,
-                              style: {
-                                left: '50% !important',
-                                transform: 'translateX(-50%) translateY(28%) !important'
-                              },
-                            }}
-                            TransitionComponent={Fade}
-                          >
-                            <MenuItem disabled={isClick} onClick={handleEditOrder}>
-                              <EditIcon />
-                              編輯
-                            </MenuItem>
-                            <Divider sx={{ my: 0.5 }} />
-                            <MenuItem disabled={isClick} onClick={handleDeleteOrder}>
-                              <DeleteIcon />
-                              刪除
-                            </MenuItem>
-                            <Divider sx={{ my: 0.5 }} />
-                            <MenuItem disabled={isClick} onClick={handleReCheckoutOrder}>
-                              <RestartAltRoundedIcon />
-                              重試
-                            </MenuItem>
-                          </Menu>
-                        </Fragment>)
-                      }
-                    >
-                      <ListItemIcon>
-                        {order.status === 'creating' ? (
-                          <Box position="relative" display="inline-flex">
-                            <CircularProgress
-                              size={35}
-                              style={{ color: 'orange' }}
-                            />
-                            <Box
-                              top={0}
-                              left={0}
-                              bottom={0}
-                              right={0}
-                              position="absolute"
-                              display="flex"
-                              alignItems="center"
-                              justifyContent="center"
-                            >
-                              <ArrowCircleUpRoundedIcon
-                                fontSize="large"
-                                style={{ color: '#08424c' }}
-                              />
-                            </Box>
-                          </Box>
-                        ) : (
-                          order.status === 'fail' ? (
-                            <Box position="relative" display="inline-flex">
-                              <ErrorOutlineRoundedIcon
-                                style={{ color: '#b00020' }}
-                                fontSize="large"
-                              />
-                            </Box>
-                          ) : (
-                            <Box position="relative" display="inline-flex">
-                              <Box>
-                                <CheckCircleOutlineRoundedIcon
-                                  style={{ color: '#08424c' }}
-                                  fontSize="large"
-                                />
-                              </Box>
-                            </Box>
-                          )
-                        )
-                        }
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={order.status !== 'creating' ? order.status === 'fail' ? '#' + order.orderNo + ' 訂單建立失敗' : '#' + order.orderNo + ' 訂單建立成功' : '#' + order.orderNo + " 訂單建立中"}
-                        css={styles.ListItemText}
-                        primaryTypographyProps={{
-                          fontWeight: 'bold !important',
-                          fontSize: '16px !important'
-                        }}
-                        secondary={
-                          <Fragment>
-                            <Typography
-                              style={{ display: 'inline' }}
-                              component="span"
-                              variant="body2"
-                              color="textPrimary"
-                            >
-                              {'訂單日期： '}
-                            </Typography>
-                            {format(order.orderDate, 'yyyy/MM/dd')}
-                            <br />
-                            <Typography
-                              style={{ display: 'inline' }}
-                              component="span"
-                              variant="body2"
-                              color="textPrimary"
-                            >
-                              {'建立時間： '}
-                            </Typography>
-                            {format(order.createTime, 'yyyy/MM/dd  HH:mm:ss')}
-                            {order.status === 'fail' &&
-                              <Fragment>
-                                <br />
-                                <Typography
-                                  style={{ display: 'inline', color: '#b00020' }}
-                                  component="span"
-                                  variant="body2"
-                                >
-                                  {'失敗原因： '}
-                                </Typography>
-                                {order.message}
-                              </Fragment>
-                            }
-                          </Fragment>
-                        }
-                      />
-                    </ListItem>
-                    {index !== orderDetail.length - 1 && <Divider />}
-                  </Fragment>
-                )
-                  : (
-                    <ListItem>
-                      <ListItemIcon>
-                        <Box position="relative" display="inline-flex">
-                          <SnoozeRoundedIcon fontSize="large" style={{ color: '#08424c' }} />
-                        </Box>
-                      </ListItemIcon>
-                      <ListItemText
-                        primary="佇列中沒有正在進行中的工作"
-                        primaryTypographyProps={{
-                          fontWeight: 'bold !important',
-                          fontSize: '16px !important'
-                        }}
-                      />
-                    </ListItem>
-                  )
-                }
-              </List>
-              {/* 版本記錄 */}
-              {/* <List
-                component="nav"
-                aria-labelledby="subheader"
-                style={{ overflowY: 'hidden' }}
-                subheader={
-                  <ListSubheader
-                    component="div"
-                    id="listSubheaderInQueue"
-                    css={styles.subheader}
-                  >
-                    版本紀錄
-                  </ListSubheader>
-                }
-              >
-                <ListItem style={{ padding: 0 }}>
-                  <ListItemButton css={styles.ListItem} style={{ padding: '8px 16px 8px 20px' }} onClick={() => history.push('/system-update-record')} >
-                    <ListItemIcon >
-                      <LayersIcon css={styles.icon} />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={record.title}
-                      primaryTypographyProps={{
-                        fontWeight: 'bold !important',
-                        fontSize: '16px !important'
-                      }}
-                      secondary={
-                        <span
-                          className='system-update-record-span'
-                          style={{
-                            fontSize: 12,
-                            lineHeight: '18px',
-                            color: theme.palette.text.secondary
-                          }}
-                        >
-                          <Typography
-                            sx={{ display: 'inline' }}
-                            component="span"
-                            variant="body2"
-                            color="textPrimary"
-                            style={{ color: theme.palette.text.primary }}
-                          >
-                            {record.updateTime}
-                          </Typography>
-                          {" - V" + record.versionNo}
-                        </span>
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
-              </List> */}
-            </Paper>
-          </Fade>
+                    {order.status === 'creating' ? (
+                      <LoaderCircle className="mt-0.5 h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
+                    ) : order.status === 'fail' ? (
+                      <CircleAlert className="mt-0.5 h-5 w-5 text-danger" strokeWidth={1.75} />
+                    ) : (
+                      <CircleCheck className="mt-0.5 h-5 w-5 text-success" strokeWidth={1.75} />
+                    )}
+                    <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                      <p className="text-body font-medium text-text">
+                        {order.status !== 'creating' ? order.status === 'fail' ? '#' + order.orderNo + ' 訂單建立失敗' : '#' + order.orderNo + ' 訂單建立成功' : '#' + order.orderNo + ' 訂單建立中'}
+                      </p>
+                      <p className="text-caption tabular-nums text-text-secondary">訂單日期：{format(order.orderDate, 'yyyy/MM/dd')}</p>
+                      <p className="text-caption tabular-nums text-text-secondary">建立時間：{format(order.createTime, 'yyyy/MM/dd  HH:mm:ss')}</p>
+                      {order.status === 'fail' && <p className="text-caption text-danger">失敗原因：{order.message}</p>}
+                    </div>
+                    {order.status === 'fail' && (
+                      <DropdownMenu modal={false} open={openForMoreBtn && targetID === order.id} onOpenChange={o => !o && handleCloseForMoreBtn()}>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="更多操作" onClick={e => handleClickForMoreBtn(e, order.id)}>
+                            <EllipsisVertical strokeWidth={1.75} />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem disabled={isClick} onSelect={handleEditOrder}>
+                            <Pencil strokeWidth={1.75} />
+                            編輯
+                          </DropdownMenuItem>
+                          <DropdownMenuItem disabled={isClick} onSelect={handleReCheckoutOrder}>
+                            <RotateCcw strokeWidth={1.75} />
+                            重試
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem danger disabled={isClick} onSelect={handleDeleteOrder}>
+                            <Trash2 strokeWidth={1.75} />
+                            刪除
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <div className="flex items-center gap-3 px-4 py-6 text-body text-text-secondary">
+                  <Moon className="h-5 w-5 text-text-tertiary" strokeWidth={1.75} />
+                  佇列中沒有正在進行中的工作
+                </div>
+              )}
+            </div>
+          </PopoverContent>
+        </Popover>
+        <Button variant="ghost" size="icon" className="hidden h-8 w-8 lg:inline-flex" aria-label="收合側欄" onClick={onOpenNavBarMobile}>
+          <PanelLeftClose strokeWidth={1.75} />
+        </Button>
+      </div>
+      <button
+        type="button"
+        onClick={toggle}
+        className={cn(
+          'flex h-10 w-full items-center gap-2 rounded-md border border-solid border-border bg-background px-3 text-left text-body font-medium text-text hover:bg-surface-hover',
+          focusRing
         )}
-      </Popper>
+      >
+        <Store className="h-4 w-4 text-text-secondary" strokeWidth={1.75} />
+        <span className="flex-1 truncate">{JSON.parse(localStorage.getItem('userMerchant')).name}</span>
+        <ChevronsUpDown className="h-4 w-4 text-text-tertiary" strokeWidth={1.75} />
+      </button>
+      <MerchantBar userMerchants={userMerchants} open={open} onClose={toggle} />
     </Fragment>
   )
 }

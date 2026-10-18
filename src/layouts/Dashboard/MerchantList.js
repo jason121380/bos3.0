@@ -19,9 +19,10 @@ const styles = {
     },
     '& .MuiTreeItem-content': {
       transition: '.2s',
-      padding: '12px 24px',
+      padding: '8px 16px',
+      borderRadius: 8,
       '&:hover': {
-        background: 'rgba(0, 122, 255, 0.05) !important'
+        background: 'rgb(var(--surface-hover)) !important'
       }
     },
   }),
@@ -37,7 +38,7 @@ const styles = {
     },
     '& ul': {
       marginLeft: '12px !important',
-      borderLeft: '1px solid rgba(0, 0, 0, 0.1)'
+      borderLeft: '1px solid rgb(var(--border))'
     }
   }),
   ulGroupAll: css({
@@ -46,7 +47,7 @@ const styles = {
     },
     '& ul': {
       marginLeft: '12px !important',
-      borderLeft: '1px solid rgba(0, 0, 0, 0.1)'
+      borderLeft: '1px solid rgb(var(--border))'
     }
   }),
   item: css({
@@ -63,13 +64,13 @@ const styles = {
     gap: 12,
     wordBreak: 'keep-all',
     whiteSpace: 'nowrap',
-    fontSize: '15px',
-    fontWeight: 500,
-    color: '#000000'
+    fontSize: '14px',
+    fontWeight: 400,
+    color: 'rgb(var(--text))'
   }),
   icon: css({
-    color: '#007AFF',
-    fontSize: '20px'
+    color: 'rgb(var(--text-secondary))',
+    fontSize: '16px'
   })
 }
 
@@ -143,8 +144,8 @@ const MerchantList = ({ merchants, searchQuery }) => {
   return (
     <TreeView
       css={styles.root}
-      defaultCollapseIcon={<ExpandMoreIcon sx={{ color: '#8E8E93' }} />}
-      defaultExpandIcon={<ChevronRightIcon sx={{ color: '#8E8E93' }} />}
+      defaultCollapseIcon={<ExpandMoreIcon sx={{ color: 'rgb(var(--text-tertiary))' }} />}
+      defaultExpandIcon={<ChevronRightIcon sx={{ color: 'rgb(var(--text-tertiary))' }} />}
       expanded={expanded}
       onNodeToggle={handleToggle}
     >

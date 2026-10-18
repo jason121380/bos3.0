@@ -1,54 +1,19 @@
-/** @jsxImportSource @emotion/react */
-import { AppBar, Toolbar, Typography } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { cn, focusRing } from 'ui/utils'
 
-const styles = {
-  root: css({
-    boxShadow: 'none !important',
-    backgroundColor: '#1E1E1E !important',
-    color: '#FFFFFF !important',
-    padding: '0 16px',
-    zIndex: 1100,
-    borderRadius: '0px !important',
-    [theme.breakpoints.down('sm')]: {
-      padding: '0 8px',
-    },
-  }),
-  logo: css({
-    width: 'auto',
-    height: '25px',
-  }),
-  versionTag: css({
-    height: '24px !important',
-    padding: '0 8px !important',
-    marginLeft: 12,
-    borderRadius: '8px !important',
-    backgroundColor: 'rgba(255, 255, 255, 0.1) !important',
-    color: '#FFFFFF !important',
-    fontSize: '11px !important',
-    fontWeight: 'bold !important',
-    display: 'flex !important',
-    alignItems: 'center !important',
-    justifyContent: 'center !important',
-    fontFamily: 'monospace !important',
-    opacity: 0.8,
-  }),
-}
-
-function Topbar({ ...rest }) {
+// 登入相關頁的頂部列：白底、細框，只放 Logo（STYLE.md §1 內容優先）
+function Topbar({ className, ...rest }) {
   return (
-    <AppBar {...rest} css={styles.root}>
-      <Toolbar>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <RouterLink to="/">
-            <img css={styles.logo} alt="Logo" src={require('assets/images/bosLogoNew.png')} />
-          </RouterLink>
-          <span css={styles.versionTag}>v3.0</span>
-        </div>
-      </Toolbar>
-    </AppBar>
+    <header
+      {...rest}
+      className={cn('ui-root noprint fixed inset-x-0 top-0 z-[1100] flex h-14 items-center border-0 border-b border-solid border-border bg-background px-4 sm:px-6', className)}
+    >
+      <RouterLink to="/" className={cn('flex items-center gap-2 rounded-md', focusRing)}>
+        <img className="h-6 w-auto invert dark:invert-0" alt="BeautyOS" src={require('assets/images/bosLogoNew.png')} />
+        <span className="text-caption text-text-tertiary">v3.0</span>
+      </RouterLink>
+    </header>
   )
 }
+
 export default Topbar

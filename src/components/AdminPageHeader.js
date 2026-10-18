@@ -1,42 +1,13 @@
-/** @jsxImportSource @emotion/react */
-import { Card, Button, IconButton, Link } from '@mui/material'
-import FilterListIcon from '@mui/icons-material/FilterList'
+import Box from '@mui/material/Box'
+import { ListFilter } from 'lucide-react'
 import { Link as RouterLink } from 'react-router-dom'
 import PageTitle from './PageTitle'
-import { css } from '@emotion/react'
 import PropTypes from 'prop-types'
+import { Button } from 'ui/button'
 
-const styles = {
-    headerCard: css({
-        display: 'flex',
-        padding: '12px 24px',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: '#E8F0FE',
-        borderRadius: '12px',
-        boxShadow: 'none',
-        border: 'none !important',
-        marginBottom: '12px',
-    }),
-    leftSection: css({
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-    }),
-    primaryButton: css({
-        borderRadius: '20px !important',
-        padding: '6px 20px !important',
-        fontSize: '14px !important',
-        boxShadow: 'none !important',
-        fontWeight: 'bold !important',
-        backgroundColor: '#FFFFFF !important',
-        color: '#666 !important',
-        '&:hover': {
-            backgroundColor: '#f8f8f8 !important',
-        }
-    }),
-}
-
+// 舊頁面共用的頁首，props 介面不變，外觀改為 STYLE.md §4 的 PageHeader：
+// 左側標題；右側依序為 children、次要動作、篩選開關、主要動作（實心黑，每頁最多一個）。
+// 以 MUI Box 為外框只為了相容既有呼叫端傳入的 sx；遷移完成的頁面請改用 ui/page-header。
 const AdminPageHeader = ({
     title,
     subTitle,
@@ -49,29 +20,14 @@ const AdminPageHeader = ({
     ...rest
 }) => {
     return (
-        <Card css={styles.headerCard} sx={sx} {...rest}>
-            <div css={styles.leftSection}>
-                <PageTitle title={title} subTitle={subTitle} style={{ color: '#1A73E8' }} />
-
-                {primaryAction && (
-                    primaryAction.to ? (
-                        <Link component={RouterLink} to={primaryAction.to} style={{ textDecoration: 'none' }}>
-                            <Button variant="contained" css={styles.primaryButton}>
-                                {primaryAction.label}
-                            </Button>
-                        </Link>
-                    ) : (
-                        <Button variant="contained" css={styles.primaryButton} onClick={primaryAction.onClick}>
-                            {primaryAction.label}
-                        </Button>
-                    )
-                )}
-
+        <Box className="ui-root noprint flex flex-wrap items-center justify-between gap-4 pb-6" sx={sx} {...rest}>
+            <PageTitle title={title} subTitle={subTitle} />
+            <div className="flex flex-wrap items-center gap-2">
+                {children}
                 {secondaryActions && secondaryActions.map((action, index) => (
                     <Button
                         key={index}
-                        variant="contained"
-                        css={styles.primaryButton}
+                        variant="secondary"
                         onClick={action.onClick}
                         disabled={action.disabled}
                         className={action.className}
@@ -79,28 +35,30 @@ const AdminPageHeader = ({
                         {action.label}
                     </Button>
                 ))}
-
                 {onFilterClick && (
-                    <IconButton
+                    <Button
+                        variant="secondary"
+                        aria-pressed={!!showFilter}
                         onClick={onFilterClick}
-                        css={css({
-                            backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
-                            color: showFilter ? '#1A73E8 !important' : '#666 !important',
-                            marginLeft: '4px !important',
-                            '&:hover': {
-                                backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
-                            }
-                        })}
+                        className={showFilter ? 'border-text bg-surface-hover' : undefined}
                     >
-                        <FilterListIcon />
-                    </IconButton>
+                        <ListFilter strokeWidth={1.75} />
+                        篩選
+                    </Button>
+                )}
+                {primaryAction && (
+                    primaryAction.to ? (
+                        <Button asChild variant="primary">
+                            <RouterLink to={primaryAction.to}>{primaryAction.label}</RouterLink>
+                        </Button>
+                    ) : (
+                        <Button variant="primary" onClick={primaryAction.onClick}>
+                            {primaryAction.label}
+                        </Button>
+                    )
                 )}
             </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                {children}
-            </div>
-        </Card>
+        </Box>
     )
 }
 
