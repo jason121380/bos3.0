@@ -45,7 +45,7 @@ const styles = {
     padding: '16px 20px',
     borderRadius: '12px',
     boxShadow: 'none',
-    border: '1px solid #f0f0f0',
+    border: '1px solid rgb(var(--border))',
   }),
   cardHeader: css({
     textAlign: 'center',
@@ -587,7 +587,7 @@ function Calendar() {
             flexDirection: 'row',
             alignItems: 'center',
             gap: '24px',
-            border: '1px solid #f0f0f0',
+            border: '1px solid rgb(var(--border))',
             flexWrap: 'wrap'
           }}>
             {checkinSettings.isBookingCheckinEnabled && (
@@ -602,7 +602,7 @@ function Calendar() {
                 transition: 'all 0.3s ease',
                 minWidth: '180px'
               }}>
-                <Typography sx={{ fontSize: 14, fontWeight: '800', color: '#202D50' }}>報到模式</Typography>
+                <Typography sx={{ fontSize: 14, fontWeight: '800', color: 'rgb(var(--text))' }}>報到模式</Typography>
                 <Switch
                   size="small"
                   checked={checkinMode}
@@ -622,12 +622,12 @@ function Calendar() {
                 gap: '12px',
                 animation: 'fadeIn 0.3s ease'
               }}>
-                <Typography sx={{ fontSize: 13, fontWeight: 'bold', color: '#666', whiteSpace: 'nowrap' }}>報到狀態篩選</Typography>
+                <Typography sx={{ fontSize: 13, fontWeight: 'bold', color: 'rgb(var(--text-secondary))', whiteSpace: 'nowrap' }}>報到狀態篩選</Typography>
                 <FormControl variant="outlined" size="small" style={{ minWidth: '140px' }}>
                   <Select
                     onChange={e => setCheckedType(e.target.value)}
                     value={checkedType}
-                    sx={{ borderRadius: '8px', backgroundColor: '#fff' }}
+                    sx={{ borderRadius: '8px', backgroundColor: 'rgb(var(--background))' }}
                     displayEmpty
                   >
                     <MenuItem value=""><em>全部顯示</em></MenuItem>
@@ -647,7 +647,7 @@ function Calendar() {
               checkinMode={checkinMode}
               bookingHistoryDisplay={bookingHistoryDisplay}
             />
-            <IconButton onClick={handleClick} sx={{ color: '#1A73E8' }}>
+            <IconButton onClick={handleClick} sx={{ color: 'rgb(var(--accent))' }}>
               <TuneIcon />
             </IconButton>
             <Popper placement='left-start' open={open} anchorEl={anchorEl} style={{ zIndex: 20 }}>
@@ -656,7 +656,7 @@ function Calendar() {
                   <span style={{ wordBreak: 'keep-all' }}>寬度</span>
                   <Slider
                     style={{ width: 150 }}
-                    sx={{ color: '#1A73E8' }}
+                    sx={{ color: 'rgb(var(--accent))' }}
                     max={150}
                     value={calendarSize.width}
                     valueLabelDisplay="auto"
@@ -673,7 +673,7 @@ function Calendar() {
                   <span style={{ wordBreak: 'keep-all' }}>高度</span>
                   <Slider
                     style={{ width: 150 }}
-                    sx={{ color: '#1A73E8' }}
+                    sx={{ color: 'rgb(var(--accent))' }}
                     max={70}
                     value={calendarSize.height}
                     valueLabelDisplay="auto"

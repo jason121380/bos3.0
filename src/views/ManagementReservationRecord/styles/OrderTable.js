@@ -13,7 +13,7 @@ export default {
     position: 'relative',
     borderRadius: '16px !important',
     boxShadow: 'none !important',
-    border: '1px solid #f0f0f0 !important',
+    border: '1px solid rgb(var(--border)) !important',
     '& > div': {
       display: 'flex'
     }
@@ -22,8 +22,8 @@ export default {
     padding: '12px 16px',
     wordBreak: 'break-all',
     fontWeight: '800',
-    backgroundColor: '#f8f9fa', // Light gray background
-    color: '#202D50', // Dark gray text
+    backgroundColor: 'rgb(var(--surface))', // Light gray background
+    color: 'rgb(var(--text))', // Dark gray text
     minHeight: 56,
     display: 'flex',
     alignItems: 'center',
@@ -39,18 +39,18 @@ export default {
   }),
   item: css({
     height: 70,
-    borderTop: '1px solid #f0f0f0'
+    borderTop: '1px solid rgb(var(--border))'
   }),
   ndsTitle: css({
     borderRight: '1px solid rgba(255, 255, 255, 0.1)',
   }),
   ndsItem: css({
-    borderTop: '1px solid #f0f0f0',
-    borderRight: '1px solid #f0f0f0',
-    borderLeft: '1px solid #f0f0f0',
+    borderTop: '1px solid rgb(var(--border))',
+    borderRight: '1px solid rgb(var(--border))',
+    borderLeft: '1px solid rgb(var(--border))',
     display: 'flex',
     justifyContent: 'flex-end',
-    backgroundColor: '#fafafa',
+    backgroundColor: 'rgb(var(--surface))',
   }),
   ndsWrap: css({
     width: 100,
@@ -60,14 +60,14 @@ export default {
     alignItems: 'flex-end'
   }),
   timeItem: css({
-    borderTop: '1px solid #f0f0f0',
-    borderRight: '1px solid #f0f0f0',
+    borderTop: '1px solid rgb(var(--border))',
+    borderRight: '1px solid rgb(var(--border))',
     textAlign: 'center',
     alignContent: 'center',
     fontSize: '14px',
     fontWeight: 'bold',
-    color: '#202D50',
-    backgroundColor: '#f8f9fa',
+    color: 'rgb(var(--text))',
+    backgroundColor: 'rgb(var(--surface))',
   }),
   timeWrap: css({
     width: 60,
@@ -78,14 +78,14 @@ export default {
     flexShrink: 0
   }),
   orderItem: css({
-    borderTop: '1px solid #f0f0f0',
-    borderRight: '1px solid #f0f0f0',
+    borderTop: '1px solid rgb(var(--border))',
+    borderRight: '1px solid rgb(var(--border))',
     display: 'flex',
     justifyContent: 'flex-end'
   }),
   limitItem: css({
     width: '100%',
-    color: '#999',
+    color: 'rgb(var(--text-tertiary))',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -105,7 +105,7 @@ export default {
     '& .capacity-value': {
       fontSize: '14px',
       fontWeight: 'bold',
-      color: '#1A73E8',
+      color: 'rgb(var(--accent))',
     }
   }),
   calendarWrap: css({
@@ -114,7 +114,7 @@ export default {
     top: 0,
     left: 0,
     overflow: 'hidden',
-    borderRight: '1px solid #f0f0f0',
+    borderRight: '1px solid rgb(var(--border))',
   }),
   clickWrap: css({
     display: 'flex',
@@ -149,19 +149,19 @@ export default {
   holiday: css({
     background: '#ffebee !important',
     '& .capacity-value': {
-      color: '#f44336 !important',
+      color: 'rgb(var(--danger)) !important',
     }
   }),
   tableBody: css({
     position: 'relative',
     width: 'fit-content',
-    borderBottom: '1px solid #f0f0f0'
+    borderBottom: '1px solid rgb(var(--border))'
   }),
   tableHead: css({
     position: 'sticky',
     top: 0,
     zIndex: 10,
     width: 'fit-content',
-    borderBottom: '1px solid #f0f0f0',
+    borderBottom: '1px solid rgb(var(--border))',
   })
 }

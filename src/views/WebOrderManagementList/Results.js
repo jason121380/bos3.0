@@ -24,9 +24,9 @@ const styles = {
     marginRight: theme.spacing(2),
   }),
   tableRow: css({
-    backgroundColor: '#ffffff !important',
+    backgroundColor: 'rgb(var(--background)) !important',
     '&:hover': {
-      backgroundColor: '#ffffff !important',
+      backgroundColor: 'rgb(var(--background)) !important',
     },
   }),
 }

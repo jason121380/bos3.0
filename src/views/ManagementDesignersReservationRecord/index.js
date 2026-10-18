@@ -44,7 +44,7 @@ const styles = {
     padding: '16px 20px',
     borderRadius: '12px',
     boxShadow: 'none',
-    border: '1px solid #f0f0f0',
+    border: '1px solid rgb(var(--border))',
   }),
   cardHeader: css({
     textAlign: 'center',
@@ -613,11 +613,11 @@ function Calendar() {
             flexDirection: 'row',
             alignItems: 'center',
             gap: '32px',
-            border: '1px solid #f0f0f0',
+            border: '1px solid rgb(var(--border))',
             flexWrap: 'wrap'
           }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '240px' }}>
-              <Typography sx={{ fontSize: 13, fontWeight: 'bold', color: '#666' }}>指定設計師</Typography>
+              <Typography sx={{ fontSize: 13, fontWeight: 'bold', color: 'rgb(var(--text-secondary))' }}>指定設計師</Typography>
               <BookingRecordListAutoComplete
                 label="搜尋姓名或編號..."
                 fullWidth
@@ -632,7 +632,7 @@ function Calendar() {
                 sx={{
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '10px',
-                    backgroundColor: '#f8f9fa',
+                    backgroundColor: 'rgb(var(--surface))',
                     height: '40px'
                   }
                 }}
@@ -652,7 +652,7 @@ function Calendar() {
                 height: '40px',
                 marginTop: 'auto'
               }}>
-                <Typography sx={{ fontSize: 14, fontWeight: '800', color: '#202D50' }}>報到模式</Typography>
+                <Typography sx={{ fontSize: 14, fontWeight: '800', color: 'rgb(var(--text))' }}>報到模式</Typography>
                 <Switch
                   size="small"
                   checked={checkinMode}
@@ -673,12 +673,12 @@ function Calendar() {
                 animation: 'fadeIn 0.3s ease',
                 minWidth: '160px'
               }}>
-                <Typography sx={{ fontSize: 13, fontWeight: 'bold', color: '#666' }}>報到狀態</Typography>
+                <Typography sx={{ fontSize: 13, fontWeight: 'bold', color: 'rgb(var(--text-secondary))' }}>報到狀態</Typography>
                 <FormControl variant="outlined" size="small" fullWidth>
                   <Select
                     onChange={e => setCheckedType(e.target.value)}
                     value={checkedType}
-                    sx={{ borderRadius: '8px', backgroundColor: '#fff', height: '40px' }}
+                    sx={{ borderRadius: '8px', backgroundColor: 'rgb(var(--background))', height: '40px' }}
                     displayEmpty
                   >
                     <MenuItem value=""><em>全部顯示</em></MenuItem>
@@ -697,7 +697,7 @@ function Calendar() {
               checkinMode={checkinMode}
               bookingHistoryDisplay={bookingHistoryDisplay}
             />
-            <IconButton onClick={handleClick} sx={{ color: '#1A73E8' }}>
+            <IconButton onClick={handleClick} sx={{ color: 'rgb(var(--accent))' }}>
               <TuneIcon />
             </IconButton>
             <Popper placement='left-start' open={open} anchorEl={anchorEl} style={{ zIndex: 20 }}>
@@ -706,7 +706,7 @@ function Calendar() {
                   <span style={{ wordBreak: 'keep-all' }}>高度</span>
                   <Slider
                     style={{ width: 150 }}
-                    sx={{ color: '#1A73E8' }}
+                    sx={{ color: 'rgb(var(--accent))' }}
                     max={70}
                     value={calendarSize.height}
                     valueLabelDisplay="auto"
