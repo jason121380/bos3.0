@@ -86,7 +86,7 @@ const styles = {
   titleText: css({
     fontSize: '20px',
     fontWeight: '800',
-    color: '#202D50',
+    color: 'rgb(var(--text))',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
@@ -99,23 +99,23 @@ const styles = {
     }
   }),
   actionIcons: css({
-    color: '#202D50',
+    color: 'rgb(var(--text))',
     fontSize: '18px !important',
   }),
   addPersonnelBtn: css({
     marginTop: '8px',
     padding: '16px 20px !important',
-    color: '#1A73E8 !important',
+    color: 'rgb(var(--accent)) !important',
     fontWeight: '700 !important',
     '& .MuiListItemIcon-root': {
       minWidth: '36px',
-      color: '#1A73E8',
+      color: 'rgb(var(--accent))',
     }
   }),
   checkbox: css({
-    color: '#1A73E8 !important',
+    color: 'rgb(var(--accent)) !important',
     '&.Mui-checked': {
-      color: '#1A73E8 !important',
+      color: 'rgb(var(--accent)) !important',
     }
   })
 }
@@ -498,7 +498,7 @@ export default function ScheduleCard({
                 onClick={() => handleClickTitle(cardIndex)}
                 size="small"
               >
-                <ModeEditOutlineRoundedIcon sx={{ fontSize: 18, color: '#999' }} />
+                <ModeEditOutlineRoundedIcon sx={{ fontSize: 18, color: 'rgb(var(--text-tertiary))' }} />
               </IconButton>
             </Box>
             {!employeeScheduleData.loading && progress < 100 ? (
@@ -542,10 +542,10 @@ export default function ScheduleCard({
                                 )}
                               {eachRow.time != 0 ? (
                                 <Box sx={{ minWidth: '60px', ml: 1, textAlign: 'right' }}>
-                                  <Typography variant="caption" sx={{ display: 'block', color: '#999', lineHeight: 1.2 }}>
+                                  <Typography variant="caption" sx={{ display: 'block', color: 'rgb(var(--text-tertiary))', lineHeight: 1.2 }}>
                                     {format(eachRow.time, 'MM/dd')}
                                   </Typography>
-                                  <Typography variant="caption" sx={{ display: 'block', color: '#666', fontWeight: 'bold' }}>
+                                  <Typography variant="caption" sx={{ display: 'block', color: 'rgb(var(--text-secondary))', fontWeight: 'bold' }}>
                                     {format(eachRow.time, 'H:mm')}
                                   </Typography>
                                 </Box>
@@ -575,7 +575,7 @@ export default function ScheduleCard({
                               <Typography
                                 variant="body2"
                                 noWrap
-                                sx={{ color: '#202D50', fontWeight: 500, fontSize: '15px' }}
+                                sx={{ color: 'rgb(var(--text))', fontWeight: 500, fontSize: '15px' }}
                               >
                                 {users.find(u => u.id === eachRow.designerId)?.nickName ||
                                   users.find(u => u.id === eachRow.designerId)?.name || ''}

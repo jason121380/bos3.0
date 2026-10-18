@@ -22,17 +22,17 @@ const styles = {
   sticky1: css({
     position: 'sticky',
     left: 0,
-    background: '#ffffff !important',
+    background: 'rgb(var(--background)) !important',
     zIndex: '99',
   }),
   sticky2: css({
     position: 'sticky',
     left: "54px", // Adjusted based on narrower Action column
-    background: '#ffffff !important',
+    background: 'rgb(var(--background)) !important',
     zIndex: '99',
   }),
   tableRow: css({
-    backgroundColor: '#ffffff !important',
+    backgroundColor: 'rgb(var(--background)) !important',
   }),
 }
 

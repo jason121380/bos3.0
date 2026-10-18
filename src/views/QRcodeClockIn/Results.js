@@ -26,7 +26,7 @@ const styles = {
     marginBottom: '20px',
   }),
   timerLabel: css({
-    color: '#666',
+    color: 'rgb(var(--text-secondary))',
     fontSize: '13px',
     fontWeight: '500',
     marginBottom: '4px',
@@ -35,7 +35,7 @@ const styles = {
     gap: '4px',
   }),
   timerValue: css({
-    color: '#1A73E8',
+    color: 'rgb(var(--accent))',
     fontSize: '32px',
     fontWeight: '800',
     fontFamily: "'Inter', 'Roboto Mono', monospace",
@@ -77,7 +77,7 @@ function Results({ clockInType, setClockInType, isLoading, url, countDownTime })
           value={clockInType}
           onChange={(event, value) => value && setClockInType(value)}
           sx={{
-            backgroundColor: '#f5f5f5',
+            backgroundColor: 'rgb(var(--surface))',
             borderRadius: '24px',
             padding: '4px',
             border: 'none',
@@ -95,14 +95,14 @@ function Results({ clockInType, setClockInType, isLoading, url, countDownTime })
               name={data.label}
               sx={{
                 padding: '6px 20px',
-                color: '#666',
+                color: 'rgb(var(--text-secondary))',
                 fontSize: '14px',
                 fontWeight: 'bold',
                 textTransform: 'none',
                 border: 'none !important',
                 '&.Mui-selected': {
-                  backgroundColor: '#fff !important',
-                  color: '#1A73E8 !important',
+                  backgroundColor: 'rgb(var(--background)) !important',
+                  color: 'rgb(var(--accent)) !important',
                   boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
                 },
                 '&:hover': {

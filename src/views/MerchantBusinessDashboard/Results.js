@@ -45,29 +45,20 @@ const styles = {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: theme.palette.primary.main,
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
     },
   }),
   orderNoLink: css({
     textDecorationLine: 'underline',
   }),
   tableRow: css({
-    backgroundColor: '#ffffff !important',
+    backgroundColor: 'rgb(var(--background)) !important',
     '&:hover': {
-      backgroundColor: '#ffffff !important',
+      backgroundColor: 'rgb(var(--background)) !important',
     },
   }),
   tableContainer: css({
     boxShadow: 'none !important',
-    backgroundColor: '#ffffff !important',
+    backgroundColor: 'rgb(var(--background)) !important',
     border: 'none !important',
   }),
 }

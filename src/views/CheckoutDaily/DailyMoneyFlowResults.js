@@ -56,15 +56,6 @@ const styles = {
       fontWeight: 'bold',
       display: 'flex',
       alignItems: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: '#1A73E8',
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
     },
   }),
   csvBtn: css({
@@ -73,12 +64,12 @@ const styles = {
     fontSize: '14px !important',
     boxShadow: 'none !important',
     fontWeight: 'bold !important',
-    backgroundColor: '#f5f5f5 !important',
-    color: '#666 !important',
+    backgroundColor: 'rgb(var(--surface)) !important',
+    color: 'rgb(var(--text-secondary)) !important',
     textTransform: 'none !important',
     border: 'none !important',
     '&:hover': {
-      backgroundColor: '#eeeeee !important',
+      backgroundColor: 'rgb(var(--surface)) !important',
     }
   }),
   tableCell: css({
@@ -87,7 +78,7 @@ const styles = {
     whiteSpace: 'nowrap',
     '&.cashSaving': {
       backgroundColor: 'rgba(26, 115, 232, 0.1) !important',
-      color: '#1A73E8 !important',
+      color: 'rgb(var(--accent)) !important',
       fontWeight: 'bold !important',
     }
   }),

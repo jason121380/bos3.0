@@ -17,7 +17,7 @@ const styles = {
   card: css({
     margin: theme.spacing(1.5, 0),
     boxShadow: 'none !important',
-    border: '1px solid #f0f0f0 !important',
+    border: '1px solid rgb(var(--border)) !important',
   }),
   cardHeader: css({
     '& .MuiCardHeader-title': {
@@ -25,19 +25,10 @@ const styles = {
       fontWeight: 'bold',
       display: 'flex',
       alignItems: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: '#1A73E8',
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
     },
   }),
   tableRow: css({
-    backgroundColor: '#ffffff !important',
+    backgroundColor: 'rgb(var(--background)) !important',
   }),
 }
 

@@ -752,7 +752,7 @@ function Results({
                                 disabled={order.isCloseAccount}
                               />
                               <IconButton
-                                sx={{ padding: '4px !important', color: '#999' }}
+                                sx={{ padding: '4px !important', color: 'rgb(var(--text-tertiary))' }}
                                 aria-label="expand row"
                                 size="small"
                                 onClick={() => handleOrderExtend(order.id)}
@@ -764,7 +764,7 @@ function Results({
                                 )}
                               </IconButton>
                               <IconButton
-                                sx={{ padding: '4px !important', color: '#999' }}
+                                sx={{ padding: '4px !important', color: 'rgb(var(--text-tertiary))' }}
                                 size="small"
                                 disabled={disabled}
                                 onClick={() => handlePrintOrderDetail(order.id)}
@@ -772,7 +772,7 @@ function Results({
                                 <Print fontSize="small" />
                               </IconButton>
                               <IconButton
-                                sx={{ padding: '4px !important', color: '#999' }}
+                                sx={{ padding: '4px !important', color: 'rgb(var(--text-tertiary))' }}
                                 component={RouterLink}
                                 size="small"
                                 to={`/draft-order/${location.search.length > 0
@@ -786,7 +786,7 @@ function Results({
                                 <Visibility fontSize="small" />
                               </IconButton>
                               <IconButton
-                                sx={{ padding: '4px !important', color: '#999' }}
+                                sx={{ padding: '4px !important', color: 'rgb(var(--text-tertiary))' }}
                                 size="small"
                                 disabled={isClick}
                                 onClick={() => {
@@ -874,7 +874,7 @@ function Results({
                               timeout="auto"
                               unmountOnExit
                             >
-                              <Box sx={{ p: 2, backgroundColor: '#fff', borderLeft: '4px solid #007AFF' }}>
+                              <Box sx={{ p: 2, backgroundColor: 'rgb(var(--background))', borderLeft: '4px solid rgb(var(--accent))' }}>
                                 {/* Headers */}
                                 <div style={{ display: 'flex', marginBottom: '8px', borderBottom: '1px solid #f0f0f0', paddingBottom: '4px', gap: '12px' }}>
                                   <div style={{ width: '100px', flex: '0 0 100px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>設計師</div>

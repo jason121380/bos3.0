@@ -83,10 +83,10 @@ function AccountingRecordList() {
                   fontSize: '14px !important',
                   boxShadow: 'none !important',
                   fontWeight: 'bold !important',
-                  backgroundColor: '#FFFFFF !important',
-                  color: '#666 !important',
+                  backgroundColor: 'rgb(var(--background)) !important',
+                  color: 'rgb(var(--text-secondary)) !important',
                   '&:hover': {
-                    backgroundColor: '#f8f8f8 !important',
+                    backgroundColor: 'rgb(var(--surface)) !important',
                   }
                 })}
               >
@@ -97,7 +97,7 @@ function AccountingRecordList() {
               onClick={() => setShowFilter(!showFilter)}
               css={css({
                 backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
-                color: showFilter ? '#1A73E8 !important' : '#666 !important',
+                color: showFilter ? 'rgb(var(--accent)) !important' : 'rgb(var(--text-secondary)) !important',
                 marginLeft: '4px !important',
                 '&:hover': {
                   backgroundColor: 'rgba(26, 115, 232, 0.15) !important',

@@ -34,26 +34,26 @@ const styles = {
     boxShadow: 'none !important',
   }),
   inButton: css({
-    borderColor: '#2e7d32 !important',
-    color: '#2e7d32 !important',
+    borderColor: 'rgb(var(--success)) !important',
+    color: 'rgb(var(--success)) !important',
     '&:hover': {
-      backgroundColor: '#2e7d32 !important',
+      backgroundColor: 'rgb(var(--success)) !important',
       color: 'white !important',
     },
   }),
   outButton: css({
-    borderColor: '#ed6c02 !important',
-    color: '#ed6c02 !important',
+    borderColor: 'rgb(var(--warning)) !important',
+    color: 'rgb(var(--warning)) !important',
     '&:hover': {
-      backgroundColor: '#ed6c02 !important',
+      backgroundColor: 'rgb(var(--warning)) !important',
       color: 'white !important',
     },
   }),
   breakTimeButton: css({
-    borderColor: '#1A73E8 !important',
-    color: '#1A73E8 !important',
+    borderColor: 'rgb(var(--accent)) !important',
+    color: 'rgb(var(--accent)) !important',
     '&:hover': {
-      backgroundColor: '#1A73E8 !important',
+      backgroundColor: 'rgb(var(--accent)) !important',
       color: 'white !important',
     },
   }),
@@ -64,7 +64,7 @@ const styles = {
     borderRadius: '12px !important',
   }),
   colorRed: css({
-    color: '#d32f2f !important',
+    color: 'rgb(var(--danger)) !important',
     fontWeight: 'bold',
   }),
 }

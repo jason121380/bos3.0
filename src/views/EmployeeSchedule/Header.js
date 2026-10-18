@@ -18,7 +18,7 @@ const styles = {
     border: 'none !important',
   }),
   primaryButton: css({
-    backgroundColor: '#1A73E8 !important',
+    backgroundColor: 'rgb(var(--accent)) !important',
     color: '#FFFFFF !important',
     '&:hover': {
       backgroundColor: '#1557b0 !important',
@@ -29,14 +29,14 @@ const styles = {
     }
   }),
   secondaryButton: css({
-    backgroundColor: '#FFFFFF !important',
-    color: '#666666 !important',
+    backgroundColor: 'rgb(var(--background)) !important',
+    color: 'rgb(var(--text-secondary)) !important',
     boxShadow: '0px 2px 4px rgba(0,0,0,0.05) !important',
     '&:hover': {
-      backgroundColor: '#f8f9fa !important',
+      backgroundColor: 'rgb(var(--surface)) !important',
     },
     '&:disabled': {
-      backgroundColor: '#FFFFFF !important',
+      backgroundColor: 'rgb(var(--background)) !important',
       color: 'rgba(0, 0, 0, 0.26) !important',
       opacity: 0.6,
     }

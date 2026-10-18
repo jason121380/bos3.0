@@ -48,15 +48,6 @@ const styles = {
       fontWeight: 'bold',
       display: 'flex',
       alignItems: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: '#1A73E8',
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
     },
   }),
   expand: css({
@@ -82,7 +73,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     padding: '0',
-    borderBottom: '1px solid #f5f5f5',
+    borderBottom: '1px solid rgb(var(--border))',
     '&:last-child': {
       borderBottom: 'none',
     },
@@ -91,8 +82,8 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     padding: '4px 24px',
-    backgroundColor: '#fafafa',
-    borderBottom: '1px solid #eeeeee',
+    backgroundColor: 'rgb(var(--surface))',
+    borderBottom: '1px solid rgb(var(--border))',
   }),
   orderAlertCompact: css({
     marginLeft: '8px',

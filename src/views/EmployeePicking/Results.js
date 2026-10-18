@@ -62,19 +62,19 @@ const styles = {
   sticky1: css({
     position: 'sticky',
     left: 0,
-    background: '#ffffff !important',
+    background: 'rgb(var(--background)) !important',
     zIndex: '99',
   }),
   sticky2: css({
     position: 'sticky',
     left: "52px",
-    background: '#ffffff !important',
+    background: 'rgb(var(--background)) !important',
     zIndex: '99',
   }),
   sticky3: css({
     position: 'sticky',
     left: "104px", // Adjusted based on narrower Action column (52+52)
-    background: '#ffffff !important',
+    background: 'rgb(var(--background)) !important',
     zIndex: '99',
   }),
   cardHeader: css({
@@ -83,19 +83,10 @@ const styles = {
       fontWeight: 'bold',
       display: 'flex',
       alignItems: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: '#1A73E8',
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
     },
   }),
   tableRow: css({
-    backgroundColor: '#ffffff !important',
+    backgroundColor: 'rgb(var(--background)) !important',
   }),
   csvBtn: css({
     borderRadius: '20px !important',
@@ -103,12 +94,12 @@ const styles = {
     fontSize: '14px !important',
     boxShadow: 'none !important',
     fontWeight: 'bold !important',
-    backgroundColor: '#f5f5f5 !important',
-    color: '#666 !important',
+    backgroundColor: 'rgb(var(--surface)) !important',
+    color: 'rgb(var(--text-secondary)) !important',
     textTransform: 'none !important',
     border: 'none !important',
     '&:hover': {
-      backgroundColor: '#eeeeee !important',
+      backgroundColor: 'rgb(var(--surface)) !important',
     }
   }),
 }
