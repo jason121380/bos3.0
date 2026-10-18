@@ -14,6 +14,7 @@
 | 第二層第一輪（元件替換） | 11 批、約 230 頁，一頁一個 commit；顧客端 11 頁（手機版）也已完成 |
 | 打帳單 UI 修復（第 1～5 組） | 標籤統一、必填 `*`、停用原因、操作列與按鈕文字、收合摘要、NT$ 千分位、底部固定合計列、服務下拉中文化與顯示代號 |
 | CI | 每個 branch push 跑 Build＋Unit tests |
+| 測試修復與產品決策（2026/10/19） | 電話不限 10 碼（LoginForm 無長度驗證）、店販售價可低於成本（不做 sellPrice>=cost）；`LoginForm.test.js`、`ProductCreate.test.js` 已依決策改寫。全域 17 檔／52 測試全數通過（0 失敗、0 skip） |
 
 ## 進行中
 
@@ -44,12 +45,13 @@
 - `CustomerBonusRecordEdit` 對字串呼叫 `splice`。
 - `AdminPageHeader` 的 `primaryAction.disabled` 沒有作用（舊版即如此）。
 - `OrderEdit` 的 `_.cloneDeep` 未 import；三個帳單編輯頁的 `handlePannelClick` 未定義。
+- `AboutProduct.js` 的 `min.value=watchList.cost` 為過時死代碼（RHF v6 不重新註冊，實際只擋負數；售價可低於成本已決策），本批不改元件。
 - 多頁直接使用全域 `location`、hooks 呼叫順序違規（eslint 舊錯誤）。
 
 ## 驗收方式
 
 - 本機 `npm start`（`.env.development.local` 指向測試機 crt-test）。
 - 每頁：`verify-logic.js` 通過（FAIL 只允許已審視的純畫面差異）、`eslint-check.json` 0 error。
-- 既有測試：改版前即有 7 個測試檔（13 個測試）失敗，改版後維持同樣 7 個，無新增失敗；`src/ui` 與 OrderCreate 測試 18/18 通過。
+- 測試：改版前有 7 檔 13 個既有失敗；PR #5 與 2026/10/19 兩項產品決策的測試改寫後，全域 17 檔／52 測試全數通過（0 失敗、0 skip）。
 - Production build：通過（無錯誤、無警告）。
 - 實機待驗：列印（設計師業績表、互助月報表、店家日報表各一頁）、iPhone 加到主畫面、打帳單／帳單編輯／預約流程。

@@ -73,10 +73,10 @@ describe('<Login />', () => {
     expect(getByText('密碼為必填')).toBeTruthy()
   })
 
-  // LoginForm 目前沒有電話長度驗證（改版前 c41b604 就沒有，只有 required）。
-  // 若產品要恢復 10～13 碼限制，需先在元件加入驗證再移除 skip（待 Jason 決定）。
-  it.skip('shoud shows cellphone limit error', async () => {
-    const { getByTestId, getByText } = createWrapper()
+  // 產品決策（2026-10-19 Jason 拍版）：電話不一定要 10 碼，LoginForm 不做 10～13 碼長度限制，只有 required。
+  // 因此不再期待「電話號碼最少為 10 碼／最多為 13 碼」，改驗證非 10 碼的電話不會被長度規則擋下。
+  it('should not limit cellphone length', async () => {
+    const { getByTestId, queryByText } = createWrapper()
 
     const cellphone = getByTestId('cellphone')
     const submit = getByTestId('login-btn')
@@ -90,7 +90,8 @@ describe('<Login />', () => {
       }, 0)
     )
 
-    expect(getByText('電話號碼最少為 10 碼')).toBeTruthy()
+    expect(queryByText('電話號碼最少為 10 碼')).toBeNull()
+    expect(queryByText('電話號碼為必填')).toBeNull()
 
     fireEvent.change(cellphone, { target: { value: '09123456789012' } })
     fireEvent.click(submit)
@@ -100,7 +101,8 @@ describe('<Login />', () => {
         resolve()
       }, 0)
     )
-    expect(getByText('電話號碼最多為 13 碼')).toBeTruthy()
+    expect(queryByText('電話號碼最多為 13 碼')).toBeNull()
+    expect(queryByText('電話號碼為必填')).toBeNull()
   })
 
   it('should login successful', async () => {
