@@ -1,18 +1,14 @@
-// 選項值可能為空字串或數字（協助人員人數），保留 MUI Select；同列的數字欄位也保留 MUI TextField 以維持標籤樣式一致
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Checkbox,
-  FormControlLabel,
-} from '@mui/material'
+// 欄位標籤放在上方（Field＋Input／NativeSelect）。協助人員人數的選項值是字串 '0'～'3'、state 存的是數字，
+// NativeSelect 以字串比對（與 MUI Select 一致）且 event.target.value 回傳選項原值（字串），handleAssistantName 的 parseInt 原樣保留；
+// 分指定／互助均分的 Checkbox 仍用 MUI
+import { Checkbox, FormControlLabel } from '@mui/material'
 import { Delete, Plus, Trash2 } from 'lucide-react'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
 const deductions = [
   {
@@ -287,111 +283,79 @@ function AboutAssistantSetting({
       <CardContent className="flex flex-col gap-4">
         {support.map((content, index) => (
           <div className="flex flex-wrap items-start gap-4" key={index}>
-            <div className="w-full sm:w-36">
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel id="select-item-label">
-                  扣項類別
-                </InputLabel>
-                <Select
-                  labelId="select-item-label"
-                  id="select-item"
-                  label='扣項類別'
-                  onChange={event => handleDeductionTypeChange(event, index)}
-                  value={content.helperDeductionType}
-                >
-                  {deductions.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.value}-${idx}`}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-            <div className="w-full sm:w-36">
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel id="select-item-label">
-                  類別
-                </InputLabel>
-                <Select
-                  labelId="select-item-label"
-                  id="select-item"
-                  label='類別'
-                  onChange={event => handleHelperType(event, index)}
-                  value={content.type}
-                >
-                  {merchantHelperItems?.map((data, idx) => (
-                    <MenuItem value={data.type} key={`${data.type}-${idx}`}>
-                      {data.type}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-            <div className="w-full sm:w-36">
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel id="select-item-label">
-                  協助人員人數
-                </InputLabel>
-                <Select
-                  label='協助人員人數'
-                  onChange={event => handleAssistantName(event, index)}
-                  value={content.peopleCount}
-                >
-                  {assistantNum.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
-            <div className="w-full sm:w-36">
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel id="select-item-label">
-                  扣項方式
-                </InputLabel>
-                <Select
-                  labelId="select-item-label"
-                  id="select-item"
-                  label='扣項方式'
-                  onChange={event => handleDeductionWayChange(event, index)}
-                  value={content.deductionWay}
-                >
-                  {deductionWay2.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </div>
+            <Field label="扣項類別" className="w-full sm:w-36">
+              <NativeSelect
+                onChange={event => handleDeductionTypeChange(event, index)}
+                value={content.helperDeductionType}
+              >
+                {deductions.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.value}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+            </Field>
+            <Field label="類別" className="w-full sm:w-36">
+              <NativeSelect
+                onChange={event => handleHelperType(event, index)}
+                value={content.type}
+              >
+                {merchantHelperItems?.map((data, idx) => (
+                  <NativeSelectOption value={data.type} key={`${data.type}-${idx}`}>
+                    {data.type}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+            </Field>
+            <Field label="協助人員人數" className="w-full sm:w-36">
+              <NativeSelect
+                onChange={event => handleAssistantName(event, index)}
+                value={content.peopleCount}
+              >
+                {assistantNum.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+            </Field>
+            <Field label="扣項方式" className="w-full sm:w-36">
+              <NativeSelect
+                onChange={event => handleDeductionWayChange(event, index)}
+                value={content.deductionWay}
+              >
+                {deductionWay2.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+            </Field>
             {content.isDesignate ? (
               <div className="flex flex-col gap-1">
                 <div className="flex gap-3">
-                  <TextField
-                    style={{ width: '5rem' }}
-                    type="number"
-                    name="designateInput"
-                    variant="outlined"
-                    label={`指定${content.deductionWay}`}
-                    value={handleReturnDeductionValue(content, content.deductionWay, true)}
-                    onChange={event =>
-                      handleDesignateDeductionWayInput(event, index, content.deductionWay)
-                    }
-                    onWheel={() => document.activeElement.blur()}
-                  />
-                  <TextField
-                    style={{ width: '5rem' }}
-                    type="number"
-                    name="NonDesignateInput"
-                    variant="outlined"
-                    label={`不指定${content.deductionWay}`}
-                    value={handleReturnDeductionValue(content, content.deductionWay, false)}
-                    onChange={event =>
-                      handleNonDesignateDeductionWayInput(event, index, content.deductionWay)
-                    }
-                    onWheel={() => document.activeElement.blur()}
-                  />
+                  <Field label={`指定${content.deductionWay}`} className="w-28">
+                    <Input
+                      type="number"
+                      name="designateInput"
+                      value={handleReturnDeductionValue(content, content.deductionWay, true)}
+                      onChange={event =>
+                        handleDesignateDeductionWayInput(event, index, content.deductionWay)
+                      }
+                      onWheel={() => document.activeElement.blur()}
+                    />
+                  </Field>
+                  <Field label={`不指定${content.deductionWay}`} className="w-28">
+                    <Input
+                      type="number"
+                      name="NonDesignateInput"
+                      value={handleReturnDeductionValue(content, content.deductionWay, false)}
+                      onChange={event =>
+                        handleNonDesignateDeductionWayInput(event, index, content.deductionWay)
+                      }
+                      onWheel={() => document.activeElement.blur()}
+                    />
+                  </Field>
                 </div>
                 <div className="flex flex-col whitespace-nowrap">
                   <FormControlLabel
@@ -414,17 +378,16 @@ function AboutAssistantSetting({
               content.deductionWay !== '' && (
                 <div className="flex flex-col gap-1">
                   <div>
-                    <TextField
-                      style={{ width: '5rem' }}
-                      type="number"
-                      variant="outlined"
-                      label={content.deductionWay}
-                      value={handleReturnValue(content, content.deductionWay)}
-                      onChange={event =>
-                        handleDeductionWayInput(event, index, content.deductionWay)
-                      }
-                      onWheel={() => document.activeElement.blur()}
-                    />
+                    <Field label={content.deductionWay} className="w-28">
+                      <Input
+                        type="number"
+                        value={handleReturnValue(content, content.deductionWay)}
+                        onChange={event =>
+                          handleDeductionWayInput(event, index, content.deductionWay)
+                        }
+                        onWheel={() => document.activeElement.blur()}
+                      />
+                    </Field>
                   </div>
                   <div className="flex flex-col whitespace-nowrap">
                     <FormControlLabel

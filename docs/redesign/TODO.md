@@ -59,6 +59,11 @@
 - [ ] **實機確認**：訂單列表捲軸、底部固定合計列（桌機／手機）、列印不出現合計列。
 
 ### P2 — 改版收尾
+- [x] **批次 4（`claude/ui-batch4-box`，PR #10，2026/10/19；指揮者驗證已完成；外觀待實機：小數字欄位 `w-24`／`w-28` 加寬需瞄換行）**：`CouponCreate` 表單標籤改版。
+  - 選批理由：範圍明確、低風險——無 Autocomplete、無日期選擇器、無 `window.print`、無 helperText／error 特殊驗證，TextField／Select 皆可直接 reuse 既有 `src/ui`。
+  - 本批完成：`AboutCoupon.js`、`AboutDeduction.js`、`AboutAssistantSetting.js` 的 TextField → `Field`＋`Input`（標籤在上）、單選 Select → `Field`＋`NativeSelect`；`index.js` 本來就沒有 MUI 欄位，未動。`Checkbox`／`FormControlLabel`（分指定／互助均分）仍是 MUI，不在本批範圍。
+  - **`CouponEdit`**（`CouponCreate` 的平行孿生目錄）：已由 PR #11（v3.0-1019-0202）完成、待下一組 merge；本分支文件先標「已開 PR #11」。
+  - 剩餘批次：盤點總表已併入（PR #7，見 §三、§四），這裡不重寫。
 - [ ] **合併第二輪未完成批次**：`r2-04`（表單頁，清單 15 頁，13 個 commit，worktree `agent-a7e481ba90389d29b`）與 `r2-06`（其他 63 頁，中途中止，worktree `agent-af60fcc4359cfd91c`）——需先 rebase 到最新 main、重新驗證再合併。
   **2026/10/19 現況**：本機 `git branch -a` 與 `git worktree list` 都找不到這兩個 worktree／分支（只有 `main`、`claude/*-box`、`origin/claude/upbeat-carson-pdc7rf`），**成果不在這個 repo**。r2-04 清單 15 個目錄**全部**在 `main` 上仍引用 `@mui/*`（合計 54 個檔案，例如 CustomerManagementDetails 12、ServiceCreate／ServiceEdit／SalaryEdit 各 5、Products 4）；r2-06 清單 63 個目錄抽查前 15 個也全部仍有 MUI。判定為「未合併」。若找不回 worktree，這 78 頁要重做（見 §四 批次 B）。
 - [ ] **階段 4 半遷移盤點**（見下方「盤點結果」），決定 MUI 何時可移除。
