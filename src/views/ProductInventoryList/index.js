@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
 import {
-  Container, Button, CircularProgress, Grid, TextField, Autocomplete,
-  ToggleButton, ToggleButtonGroup, Card, IconButton, Collapse
+  TextField, Autocomplete,
+  ToggleButton, ToggleButtonGroup
 } from '@mui/material'
-import { FilterList as FilterListIcon } from 'ui/icons'
 import useFetchGetProductInventoryList from 'hooks/useFetchGetProductInventoryList'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import Page from 'components/Page'
@@ -12,46 +11,10 @@ import AdminPageHeader from 'components/AdminPageHeader'
 import { format } from 'date-fns'
 import idx from 'idx'
 import Results from './Results'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  searchBtnDiv: css({
-    marginBottom: '24px',
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '100px',
-  }),
-  exportBtn: css({
-    float: 'right',
-  }),
-  formGroup: css({
-    width: '10rem',
-    marginLeft: theme.spacing(3),
-  }),
-  topDiv: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  grid: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-  })
-}
+import { Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 
 const sortEnum = [
   { label: '數量', value: 'COUNT' },
@@ -151,52 +114,26 @@ const ProductInventoryList = () => {
   }, [productInventoryList.loading, sortType, selectCategory])
 
   return (
-    <Page css={styles.root} className='ProductInventoryList' title="商品庫存表">
-      <Container maxWidth={false} css={styles.container}>
-        <Card
-          css={css({
-            display: 'flex',
-            padding: '0 0 24px 0',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: 'transparent',
-            borderRadius: 0,
-            boxShadow: 'none',
-            border: 'none !important',
-            marginBottom: 0,
-          })}
+    <Page className='ProductInventoryList ui-root' title="商品庫存表">
+      <div>
+        <AdminPageHeader
+          title='商品庫存表'
+          showFilter={showFilter}
+          onFilterClick={() => setShowFilter(!showFilter)}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <AdminPageHeader title='商品庫存表' style={{ color: '#1A73E8' }} />
-            <IconButton
-              onClick={() => setShowFilter(!showFilter)}
-              css={css({
-                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
-                color: showFilter ? 'rgb(var(--accent)) !important' : 'rgb(var(--text-secondary)) !important',
-                marginLeft: '4px !important',
-                '&:hover': {
-                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
-                }
-              })}
-            >
-              <FilterListIcon />
-            </IconButton>
-          </div>
-          <div>
-            <Button
-              onClick={() => window.print()}
-              variant="contained"
-              color="primary"
-            >
-              列印
-            </Button>
-          </div>
-        </Card>
+          <Button
+            onClick={() => window.print()}
+            variant="secondary"
+          >
+            <Printer strokeWidth={1.75} />
+            列印
+          </Button>
+        </AdminPageHeader>
 
-        <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
-            <Grid container spacing={2} alignItems='flex-end'>
-              <Grid item>
+        {showFilter && (
+          <Card className="mb-3 p-4">
+            <div className="flex flex-wrap items-end gap-4">
+              <div>
                 <Autocomplete
                   autoHighlight
                   size="small"
@@ -213,9 +150,9 @@ const ProductInventoryList = () => {
                     />
                   )}
                 />
-              </Grid>
-              <Grid item>
-                <div className="divText" style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>排序依據：</div>
+              </div>
+              <div>
+                <div className="divText mb-2 text-caption text-text-secondary">排序依據：</div>
                 <ToggleButtonGroup
                   size="small"
                   value={sortType}
@@ -228,10 +165,10 @@ const ProductInventoryList = () => {
                     </ToggleButton>
                   ))}
                 </ToggleButtonGroup>
-              </Grid>
-            </Grid>
-          </div>
-        </Collapse>
+              </div>
+            </div>
+          </Card>
+        )}
         {/* <div className="noprint" style={{ display: 'flex', margin: '10px 0' }}>
           <Autocomplete
             multiple
@@ -302,8 +239,13 @@ const ProductInventoryList = () => {
             </Button>
           </div>
         </div> */}
-        {!productInventoryList.loading ? <Results reportData={reportData} /> : <div style={{ marginTop: '100px' }} css={styles.noReportDiv}><CircularProgress /></div>}
-      </Container>
+        {!productInventoryList.loading ? <Results reportData={reportData} /> : (
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div className="noprint" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
+          </div>
+        )}
+      </div>
     </Page>
   )
 }
