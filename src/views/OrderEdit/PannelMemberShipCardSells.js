@@ -1,10 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Typography,
-} from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import billContext from "context/keyInContext";
 import { useFetchUseMembershipOrder } from "hooks/useFetchOrder";
@@ -207,7 +202,7 @@ const PannelMemberShipCardSells = ({ thirdPartTicket, expanded, setExpanded }) =
         onClick={handleAccordionClick}
         style={{ width: '100%' }}
       >
-        <Typography css={styles.heading}>會員卡銷售</Typography>
+        <p className="m-0" css={styles.heading}>會員卡銷售</p>
       </AccordionSummary>
       <AccordionDetails css={styles.details}>
         <div css={styles.fieldOutter}>

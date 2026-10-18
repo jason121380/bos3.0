@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import { ExpandMore as ExpandMoreIcon, Style as StyleIcon } from 'ui/icons'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
@@ -147,17 +147,17 @@ export default function PannelCouponUse({ expanded, onPanelClick, display, reset
         data-testid="panelCouponUse"
         style={{ width: '100%' }}
       >
-        <Typography css={styles.heading}>使用預收卡</Typography>
+        <p className="m-0" css={styles.heading}>使用預收卡</p>
         {teachingMode && (
-          <Typography css={styles.couponTeachTitle}>
+          <p className="m-0" css={styles.couponTeachTitle}>
             使用卡券必須設定好助理才能輸入助理**
-          </Typography>
+          </p>
         )}
         {totalCoupons !== 0 && (
           <Fragment>
-            <Typography css={styles.heading}>
+            <p className="m-0" css={styles.heading}>
               <StyleIcon />
-            </Typography>
+            </p>
             <span>{`x${totalCoupons}`}</span>
           </Fragment>
         )}

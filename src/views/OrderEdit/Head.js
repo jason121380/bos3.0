@@ -1,8 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Checkbox, FormControlLabel,
-  CircularProgress, TextField, ToggleButton, ToggleButtonGroup,
-} from '@mui/material'
+import { CircularProgress, TextField } from '@mui/material'
 import PropTypes from 'prop-types'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
@@ -15,6 +12,8 @@ import { useContext, useState, useRef, useEffect, Fragment } from 'react'
 import { DateTimePicker } from '@mui/x-date-pickers'
 import { UserCog, UserPlus } from 'lucide-react'
 import { Card } from 'ui/card'
+import { CheckboxField } from 'ui/checkbox'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import useFetchCustomer from 'hooks/useFetchCustomer'
 import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import MembershipCardList from 'components/MembershipCardList'
@@ -567,12 +566,11 @@ export default function Head() {
               />
             </div>
             <div style={{ maxWidth: '280px', display: 'flex', justifyContent: 'space-between' }}>
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
+              <CheckboxField
                 label="不留客資"
                 checked={bill.withoutCustomerData}
                 onChange={handleCheckoutWithoutCustomer}
-                style={{ marginLeft: '23px' }}
+                className="ml-6"
               />
               <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                 {(LBCusDisplay && isLineBinded) && <img style={{ width: 24, height: 24 }} alt='line_icon' src={lineIcon} />}
@@ -600,7 +598,7 @@ export default function Head() {
               }
             }}
           />
-          <ToggleButtonGroup
+          <ToggleGroup
             size="small"
             value={bill.isDesignate}
             onChange={handleToggleButtonChange}
@@ -608,7 +606,7 @@ export default function Head() {
             style={{ alignSelf: 'start' }}
           >
             {designate.map((data, idx) => (
-              <ToggleButton
+              <ToggleGroupItem
                 key={`${data.label}-${idx}`}
                 value={data.value}
                 ref={data.value ? designateRef : nonDesignateRef}
@@ -617,9 +615,9 @@ export default function Head() {
                 onKeyDown={e => handleDesignateBtnKeyDown(e)}
               >
                 {data.label}
-              </ToggleButton>
+              </ToggleGroupItem>
             ))}
-          </ToggleButtonGroup>
+          </ToggleGroup>
         </div>
       </div>
       {openModal && (
