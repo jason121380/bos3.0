@@ -5,6 +5,7 @@ import _ from 'lodash'
 import React, { useContext } from 'react'
 import uuid from 'uuid'
 import CouponSells from 'views/OrderCreate/CouponSells'
+import { panelSummary } from './summary'
 import styles from 'views/OrderCreate/styles/PannelCouponSells'
 import useFetchTickets from 'hooks/useFetchTickets'
 import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
@@ -17,7 +18,7 @@ export default function PannelCouponSells({ expanded, onPanelClick, reset }) {
   const techingModeContext = useContext(TeachingModeContext)
   const { teachingMode } = techingModeContext
   const {
-    handleBillChange, couponSells, setCouponSells, tData, setTData
+    handleBillChange, couponSells, setCouponSells, tData, setTData, bill
   } = React.useContext(billContext)
   const [couponModalOpen, setCouponModalOpen] = React.useState(false)
   const [conpunInModal, setConpunInModal] = React.useState([])
@@ -189,6 +190,10 @@ export default function PannelCouponSells({ expanded, onPanelClick, reset }) {
     <Accordion key="panelCouponSells" expanded={expanded}>
       <AccordionSummary
         onClick={onPanelClick}
+        summaryMeta={!expanded && panelSummary(
+          bill.ticketOrders.length,
+          bill.ticketOrders.reduce((total, d) => total + d.price * d.count, 0)
+        )}
         data-testid="couponSells"
         style={{ width: '100%' }}
       >

@@ -8,13 +8,11 @@ export default {
     flexDirection: 'column',
     gap: '12px',
     marginTop: 0,
-    overflow: 'hidden',
   }),
   container: css({
     display: 'grid',
     gridTemplateColumns: '1fr 420px',
     gap: '12px',
-    overflow: 'hidden',
     [theme.breakpoints.down('md')]: {
       gridTemplateColumns: '1fr',
     },
@@ -30,7 +28,6 @@ export default {
     flexDirection: 'column',
     gap: '12px',
     minWidth: 0,
-    overflow: 'hidden',
   }),
   heading: css({
     fontSize: '16px',

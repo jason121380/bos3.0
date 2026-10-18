@@ -4,11 +4,12 @@ import billContext from 'context/keyInContext'
 import _ from 'lodash'
 import React from 'react'
 import MerchantSells from 'views/OrderCreate/MerchantSells'
+import { panelSummary } from './summary'
 import styles from 'views/OrderCreate/styles/PannelMerchantSells'
 
 function PannelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset }) {
   const {
-    handleBillChange, sells, setSells,
+    handleBillChange, sells, setSells, bill,
     pData, setPData
   } = React.useContext(billContext)
   const [focusRow, setFocusRow] = React.useState(0)
@@ -158,6 +159,10 @@ function PannelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset })
     <Accordion key="panelMerchantSells" expanded={expanded}>
       <AccordionSummary
         onClick={onPanelClick}
+        summaryMeta={!expanded && panelSummary(
+          bill.productOrders.filter(d => d.productId).length,
+          bill.productOrders.reduce((total, d) => total + d.price * d.count, 0)
+        )}
         data-testid="merchantSell"
         style={{ width: '100%' }}
       >

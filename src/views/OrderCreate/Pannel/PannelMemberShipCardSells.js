@@ -5,11 +5,12 @@ import _ from 'lodash'
 import React from 'react'
 import { addDays } from "date-fns";
 import MemberShipCardSells from 'views/OrderCreate/MemberShipCardSells'
+import { panelSummary } from './summary'
 import styles from 'views/OrderCreate/styles/PannelMemberShipCardSells'
 
 const PannelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, reset }) => {
   const {
-    handleBillChange, memberCardSells, setMemberCardSells,
+    handleBillChange, memberCardSells, setMemberCardSells, bill,
     mData, setMData
   } = React.useContext(billContext)
   const [focusRow, setFocusRow] = React.useState(0)
@@ -167,6 +168,10 @@ const PannelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, re
     <Accordion key="panelMemberShipCardSells" expanded={expanded}>
       <AccordionSummary
         onClick={onPanelClick}
+        summaryMeta={!expanded && panelSummary(
+          bill.membershipOrders.length,
+          bill.membershipOrders.reduce((total, d) => total + d.price, 0)
+        )}
         data-testid="memberShipCardSells"
         style={{ width: '100%' }}
       >
