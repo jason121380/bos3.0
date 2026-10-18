@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
+// 大型頁：只換頁首、外框、卡片與按鈕；Backdrop、Switch、Select（值含 boolean／空字串）、Popper、Slider 保留 MUI
 import {
-  Card, Container, CircularProgress, Backdrop, Switch,
-  Grid, FormControl, InputLabel, Select, MenuItem,
-  Typography, Popper, Slider, IconButton, Button,
-  Collapse
+  CircularProgress, Backdrop, Switch,
+  FormControl, Select, MenuItem,
+  Popper, Slider,
 } from '@mui/material'
-import { Tune as TuneIcon } from 'ui/icons'
+import { SlidersHorizontal } from 'lucide-react'
 import Page from 'components/Page'
 import useFetchMerchant from 'hooks/useFetchMerchant'
 import { useState, useEffect, useRef } from 'react'
@@ -27,52 +27,22 @@ import useFetchGetBookingTypeForSocket from 'hooks/useFetchGetBookingTypeForSock
 import { useFetchGetBookinHistoryDisplay } from 'hooks/useFetchGetParameterAboutBookingSetting'
 import { useFetchGetCancelBookingUsing } from 'hooks/useFetchMerchantPassword'
 import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import useFetchGetIsBookingCusCheckUsing from 'hooks/useFetchGetIsBookingCusCheckUsing'
 import { useSelector } from 'react-redux'
 import produce from 'immer';
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { cn } from 'ui/utils'
 
 import OrderTable from './OrderTable'
 
 const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3),
-  }),
-  card: css({
-    marginTop: theme.spacing(1.5),
-    padding: '16px 20px',
-    borderRadius: '12px',
-    boxShadow: 'none',
-    border: '1px solid rgb(var(--border))',
-  }),
-  cardHeader: css({
-    textAlign: 'center',
-    fontSize: '36px',
-  }),
-  sticky: css({
-    position: 'sticky',
-    left: 0,
-    background: 'white',
-    boxShadow: '5px 2px 5px grey',
-    borderRight: '2px solid black',
-  }),
+  // 載入中遮罩：透明底、置頂（與舊版相同）
   opacity: css({
     opacity: '1 !important',
     zIndex: 999,
     background: 'rgba(0,0,0,0) !important',
   }),
-  headerWrap: css({
-    display: 'flex',
-    gap: 10,
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    '& > div': {
-      width: 'fit-content',
-    }
-  })
 }
 
 function Calendar() {
@@ -557,162 +527,146 @@ function Calendar() {
   }, [getBookinHistoryDisplay.loading])
 
   return (
+    // 不在 Page 加 ui-root：其 box-sizing 基礎樣式會改變下方自訂格線（OrderTable）的實際寬高；改為只包住新元件區塊
     <Page title="單日預約紀錄">
       <Backdrop id='Backdrop' css={styles.opacity} open={!(!merchant.loading && !DesignerCalendar.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length))}>
         <CircularProgress />
       </Backdrop>
-      <Container maxWidth={false} css={styles.container}>
-        <AdminPageHeader
-          title="單日預約紀錄"
-          onFilterClick={handleFilterClick}
-          showFilter={showFilter}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <DateSelector
-              date={date}
-              attributes={['today', 'tomorrow', 'datomorrow', 'startDate']}
-              dateChange={value => setDate(value)}
-              onlyStart
-            />
-          </div>
-        </AdminPageHeader>
+      <AdminPageHeader
+        title="單日預約紀錄"
+        onFilterClick={handleFilterClick}
+        showFilter={showFilter}
+      >
+        <div className="flex items-center gap-4">
+          <DateSelector
+            date={date}
+            attributes={['today', 'tomorrow', 'datomorrow', 'startDate']}
+            dateChange={value => setDate(value)}
+            onlyStart
+          />
+        </div>
+      </AdminPageHeader>
 
-        <Collapse in={showFilter}>
-          <Card sx={{
-            mb: 2,
-            padding: '20px',
-            borderRadius: '12px',
-            boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.05)',
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: '24px',
-            border: '1px solid rgb(var(--border))',
-            flexWrap: 'wrap'
-          }}>
-            {checkinSettings.isBookingCheckinEnabled && (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '8px 16px',
-                backgroundColor: checkinMode ? 'rgba(26, 115, 232, 0.05)' : 'rgb(var(--surface))',
-                borderRadius: '10px',
-                border: checkinMode ? '1px solid rgba(26, 115, 232, 0.2)' : '1px solid rgb(var(--border))',
-                transition: 'all 0.3s ease',
-                minWidth: '180px'
-              }}>
-                <Typography sx={{ fontSize: 14, fontWeight: '800', color: 'rgb(var(--text))' }}>報到模式</Typography>
-                <Switch
-                  size="small"
-                  checked={checkinMode}
+      {showFilter && (
+        <Card className="ui-root mb-4 flex flex-row flex-wrap items-center gap-6 p-5">
+          {checkinSettings.isBookingCheckinEnabled && (
+            <div
+              className={cn(
+                'flex min-w-[180px] items-center gap-3 rounded-lg border border-solid px-4 py-2 transition-colors',
+                checkinMode ? 'border-accent/20 bg-accent/8' : 'border-border bg-surface'
+              )}
+            >
+              <span className="text-body font-medium text-text">報到模式</span>
+              <Switch
+                size="small"
+                checked={checkinMode}
+                onChange={(e, v) => {
+                  setCheckinMode(v)
+                  if (!v) setCheckedType('')
+                }}
+                color="primary"
+              />
+            </div>
+          )}
+
+          {checkinSettings.isBookingCheckinEnabled && checkinMode && (
+            <div className="flex items-center gap-3">
+              <span className="whitespace-nowrap text-label text-text-secondary">報到狀態篩選</span>
+              <FormControl variant="outlined" size="small" style={{ minWidth: '140px' }}>
+                <Select
+                  onChange={e => setCheckedType(e.target.value)}
+                  value={checkedType}
+                  displayEmpty
+                >
+                  <MenuItem value=""><em>全部顯示</em></MenuItem>
+                  <MenuItem value={true}>報到成功</MenuItem>
+                  <MenuItem value={false}>未報到</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+          )}
+        </Card>
+      )}
+      <div>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2.5 [&>div]:w-fit">
+          <CalendarColorClip
+            eventDisplay={eventDisplay}
+            bookingCusCheck={bookingCusCheck}
+            checkinMode={checkinMode}
+            bookingHistoryDisplay={bookingHistoryDisplay}
+          />
+          <span className="ui-root">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-accent"
+              aria-label="調整格子寬度與高度"
+              aria-expanded={open}
+              onClick={handleClick}
+            >
+              <SlidersHorizontal strokeWidth={1.75} />
+            </Button>
+          </span>
+          <Popper placement='left-start' open={open} anchorEl={anchorEl} style={{ zIndex: 20 }}>
+            <Card className="ui-root flex flex-col gap-4 overflow-visible py-3.5 pl-3.5 pr-5 shadow-float">
+              <div className="flex justify-between gap-2">
+                <span className="text-label text-text-secondary [word-break:keep-all]">寬度</span>
+                <Slider
+                  style={{ width: 150 }}
+                  max={150}
+                  value={calendarSize.width}
+                  valueLabelDisplay="auto"
                   onChange={(e, v) => {
-                    setCheckinMode(v)
-                    if (!v) setCheckedType('')
+                    setCalendarSize(
+                      produce(draft => {
+                        draft.width = v
+                      })
+                    )
                   }}
-                  color="primary"
                 />
               </div>
-            )}
-
-            {checkinSettings.isBookingCheckinEnabled && checkinMode && (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                animation: 'fadeIn 0.3s ease'
-              }}>
-                <Typography sx={{ fontSize: 13, fontWeight: 'bold', color: 'rgb(var(--text-secondary))', whiteSpace: 'nowrap' }}>報到狀態篩選</Typography>
-                <FormControl variant="outlined" size="small" style={{ minWidth: '140px' }}>
-                  <Select
-                    onChange={e => setCheckedType(e.target.value)}
-                    value={checkedType}
-                    sx={{ borderRadius: '8px', backgroundColor: 'rgb(var(--background))' }}
-                    displayEmpty
-                  >
-                    <MenuItem value=""><em>全部顯示</em></MenuItem>
-                    <MenuItem value={true}>報到成功</MenuItem>
-                    <MenuItem value={false}>未報到</MenuItem>
-                  </Select>
-                </FormControl>
+              <div className="flex justify-between gap-2">
+                <span className="text-label text-text-secondary [word-break:keep-all]">高度</span>
+                <Slider
+                  style={{ width: 150 }}
+                  max={70}
+                  value={calendarSize.height}
+                  valueLabelDisplay="auto"
+                  onChange={(e, v) => {
+                    setCalendarSize(
+                      produce(draft => {
+                        draft.height = v
+                      })
+                    )
+                  }}
+                />
               </div>
-            )}
-          </Card>
-        </Collapse>
-        <div style={{ marginTop: '12px' }}>
-          <div css={styles.headerWrap} style={{ justifyContent: 'space-between', marginBottom: '16px' }}>
-            <CalendarColorClip
-              eventDisplay={eventDisplay}
-              bookingCusCheck={bookingCusCheck}
-              checkinMode={checkinMode}
-              bookingHistoryDisplay={bookingHistoryDisplay}
-            />
-            <IconButton onClick={handleClick} sx={{ color: 'rgb(var(--accent))' }}>
-              <TuneIcon />
-            </IconButton>
-            <Popper placement='left-start' open={open} anchorEl={anchorEl} style={{ zIndex: 20 }}>
-              <Card style={{ padding: '14px 18px 14px 14px', overflow: 'visible', display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <div style={{ display: 'flex', gap: 8, justifyContent: 'space-between' }}>
-                  <span style={{ wordBreak: 'keep-all' }}>寬度</span>
-                  <Slider
-                    style={{ width: 150 }}
-                    sx={{ color: 'rgb(var(--accent))' }}
-                    max={150}
-                    value={calendarSize.width}
-                    valueLabelDisplay="auto"
-                    onChange={(e, v) => {
-                      setCalendarSize(
-                        produce(draft => {
-                          draft.width = v
-                        })
-                      )
-                    }}
-                  />
-                </div>
-                <div style={{ display: 'flex', gap: 8, justifyContent: 'space-between' }}>
-                  <span style={{ wordBreak: 'keep-all' }}>高度</span>
-                  <Slider
-                    style={{ width: 150 }}
-                    sx={{ color: 'rgb(var(--accent))' }}
-                    max={70}
-                    value={calendarSize.height}
-                    valueLabelDisplay="auto"
-                    onChange={(e, v) => {
-                      setCalendarSize(
-                        produce(draft => {
-                          draft.height = v
-                        })
-                      )
-                    }}
-                  />
-                </div>
-              </Card>
-            </Popper>
-          </div>
-          {(!merchant.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length)) ?
-            <OrderTable
-              orderRange={orderRange}
-              calendarData={calendarData}
-              designerNameType={designerName}
-              merchantId={merchantId}
-              remarkDisplay={remarkDisplay}
-              cusRemarkDisplay={cusRemarkDisplay}
-              bookingCusCheck={bookingCusCheck}
-              refetchData={handleRefetch}
-              ndsRef={ndsRef}
-              checkinSettings={checkinSettings}
-              loading={DesignerCalendar.loading}
-              checkinMode={checkinMode}
-              modalOpen={modalOpen}
-              setModalOpen={setModalOpen}
-              editOrder={editOrder}
-              setEditOrder={setEditOrder}
-              calendarSize={calendarSize}
-              cancelPasswordUsing={cancelBookingUsing.loading ? false : cancelBookingUsing.data.merchantPassword.cancelReservation.isUsing}
-            /> : ''
-          }
+            </Card>
+          </Popper>
         </div>
-      </Container>
+        {(!merchant.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length)) ?
+          <OrderTable
+            orderRange={orderRange}
+            calendarData={calendarData}
+            designerNameType={designerName}
+            merchantId={merchantId}
+            remarkDisplay={remarkDisplay}
+            cusRemarkDisplay={cusRemarkDisplay}
+            bookingCusCheck={bookingCusCheck}
+            refetchData={handleRefetch}
+            ndsRef={ndsRef}
+            checkinSettings={checkinSettings}
+            loading={DesignerCalendar.loading}
+            checkinMode={checkinMode}
+            modalOpen={modalOpen}
+            setModalOpen={setModalOpen}
+            editOrder={editOrder}
+            setEditOrder={setEditOrder}
+            calendarSize={calendarSize}
+            cancelPasswordUsing={cancelBookingUsing.loading ? false : cancelBookingUsing.data.merchantPassword.cancelReservation.isUsing}
+          /> : ''
+        }
+      </div>
     </Page >
   )
 }
