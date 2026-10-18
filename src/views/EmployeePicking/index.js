@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Card, Container, Grid, TextField, Link, Button, IconButton, Collapse } from '@mui/material'
-import FilterListIcon from '@mui/icons-material/FilterList'
+import { FilterList as FilterListIcon } from 'ui/icons'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import DateSelector from 'components/DateSelector'
 import Page from 'components/Page'

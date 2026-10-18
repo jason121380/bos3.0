@@ -19,14 +19,13 @@ import {
   Grid,
   Hidden,
 } from '@mui/material'
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
+import { EditOutlined as EditOutlinedIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useState, useEffect, Fragment, useRef } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
 import { CSVLink } from "react-csv";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import useFetchDeletePicking from 'hooks/useFetchDeletePicking'
 import { openSnackbar } from 'elements/snackbars'
 import pagenationLabel from './../../helper/pagenationLabel'

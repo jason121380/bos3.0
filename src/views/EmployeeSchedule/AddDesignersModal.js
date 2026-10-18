@@ -5,7 +5,7 @@ import { memo } from 'react'
 import { red, blue } from '@mui/material/colors'
 import _ from 'lodash'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 

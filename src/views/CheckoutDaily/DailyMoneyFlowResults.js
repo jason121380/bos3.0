@@ -22,7 +22,7 @@ import {
   TableContainer,
   IconButton,
 } from '@mui/material'
-import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined'
+import { LockOpenOutlined as LockOpenOutlinedIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'

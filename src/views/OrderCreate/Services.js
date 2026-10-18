@@ -1,9 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Checkbox, FormControlLabel, TextField, Typography } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined'
-import FilterNoneIcon from '@mui/icons-material/FilterNone'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, FilterNone as FilterNoneIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import ServicesAutoComplete from 'components/ServicesAutoComplete'
 import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'

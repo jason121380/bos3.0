@@ -17,7 +17,7 @@ import React, { useEffect, useRef, useState, Fragment } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink, useHistory } from 'react-router-dom'
 import { CSVLink } from "react-csv";
-import { KeyboardArrowDown, KeyboardArrowUp, Print, Visibility, Paid } from '@mui/icons-material'
+import { KeyboardArrowDown, KeyboardArrowUp, Print, Visibility, Paid } from 'ui/icons'
 import { useLocation } from 'react-router'
 import useFetchReCheckoutOrder from 'hooks/useFetchReCheckoutOrder'
 import designerNameType from 'helper/designerNameType'

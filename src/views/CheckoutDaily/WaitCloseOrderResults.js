@@ -17,7 +17,7 @@ import {
   Collapse,
 } from '@mui/material'
 import TableCheckoutBar from 'components/TableCheckoutBar'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import { format, startOfDay } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import _ from 'lodash'

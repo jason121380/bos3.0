@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { TextField, FormControlLabel, Checkbox, Button } from '@mui/material'
 import billContext from 'context/keyInContext'
-import DragHandleRoundedIcon from '@mui/icons-material/DragHandleRounded';
-import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
+import { DragHandleRounded as DragHandleRoundedIcon, RemoveRounded as RemoveRoundedIcon } from 'ui/icons'
 import { useLazyFetchCustomerWallet } from 'hooks/useFetchCustomerWallet'
 import { useFetchProfileIdentity } from 'hooks/useFetchProfile'
 import useFetchGetMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'

@@ -18,8 +18,7 @@ import {
   Autocomplete,
   CircularProgress
 } from '@mui/material'
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
+import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchUpdateCustomer from 'hooks/useFetchUpdateCustomer'
 import usePageLoading from 'hooks/usePageLoading'

@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Button } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import RedoIcon from '@mui/icons-material/Redo'
-import UndoIcon from '@mui/icons-material/Undo'
+import { Add as AddIcon, Redo as RedoIcon, Undo as UndoIcon } from 'ui/icons'
 import { css } from '@emotion/react'
 import AdminPageHeader from 'components/AdminPageHeader'
 

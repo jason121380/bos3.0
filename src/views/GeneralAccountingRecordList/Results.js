@@ -5,7 +5,7 @@ import {
   IconButton,
   TableRow,
 } from '@mui/material'
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
+import { EditOutlined as EditOutlinedIcon } from 'ui/icons'
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'

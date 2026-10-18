@@ -7,7 +7,7 @@ import {
   TableRow,
   IconButton,
 } from '@mui/material'
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
+import { EditOutlined as EditOutlinedIcon } from 'ui/icons'
 import { format } from 'date-fns'
 import useFetchMoneyFlowReportExcel from 'hooks/useFetchMoneyFlowReportExcel'
 import PropTypes from 'prop-types'

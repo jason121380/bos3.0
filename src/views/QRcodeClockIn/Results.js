@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Card, Container, CircularProgress, ToggleButton, ToggleButtonGroup, Typography, Box } from '@mui/material'
-import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined'
+import { TimerOutlined as TimerOutlinedIcon } from 'ui/icons'
 import format from 'date-fns/format'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
