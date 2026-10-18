@@ -1,13 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-  TableContainer,
-} from '@mui/material'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import { format } from 'date-fns'
@@ -36,42 +28,41 @@ const styles = {
 
 function Results({ data, isServiceTicketMerged, isMemberShipCardActive, bonusDisplay }) {
   return (
-    <TableContainer component={Paper} className="BusinessAnalysisReportTable">
-      <Table css={styles.table} size="small" aria-label="a dense table">
-        <TableHead>
+      <Table dense wrapperClassName="BusinessAnalysisReportTable" css={styles.table} aria-label="a dense table">
+        <TableHeader>
           <TableRow css={styles.stickyRow}>
-            <TableCell css={styles.sticky}>營業日期</TableCell>
+            <TableHead css={styles.sticky}>營業日期</TableHead>
             {isServiceTicketMerged ? (
               <Fragment>
-                <TableCell>營業總業績</TableCell>
-                <TableCell>店販消費</TableCell>
-                {isMemberShipCardActive && <TableCell>會員卡消費</TableCell>}
+                <TableHead>營業總業績</TableHead>
+                <TableHead>店販消費</TableHead>
+                {isMemberShipCardActive && <TableHead>會員卡消費</TableHead>}
               </Fragment>
             ) : (
               <Fragment>
-                <TableCell>服務消費</TableCell>
-                <TableCell>店販消費</TableCell>
-                {isMemberShipCardActive && <TableCell>會員卡消費</TableCell>}
-                <TableCell>卡券使用(入業績)</TableCell>
-                <TableCell>卡券販賣(入業績)</TableCell>
+                <TableHead>服務消費</TableHead>
+                <TableHead>店販消費</TableHead>
+                {isMemberShipCardActive && <TableHead>會員卡消費</TableHead>}
+                <TableHead>卡券使用(入業績)</TableHead>
+                <TableHead>卡券販賣(入業績)</TableHead>
               </Fragment>
             )}
 
-            <TableCell>業績收入</TableCell>
-            <TableCell>卡券販賣(不入業績)</TableCell>
-            <TableCell>入金儲值(不入業績)</TableCell>
-            <TableCell>卡券使用(-)</TableCell>
-            <TableCell>第三方卡券(-)</TableCell>
-            <TableCell>其他付款方式(-)</TableCell>
-            <TableCell>入金使用(-)</TableCell>
-            {bonusDisplay && <TableCell>點數折抵金額(-)</TableCell>}
-            <TableCell>營業現金應收</TableCell>
-            <TableCell>現金收支收入</TableCell>
-            <TableCell>現金收支支出(-)</TableCell>
-            <TableCell>員工借支</TableCell>
-            <TableCell>現金結存</TableCell>
+            <TableHead>業績收入</TableHead>
+            <TableHead>卡券販賣(不入業績)</TableHead>
+            <TableHead>入金儲值(不入業績)</TableHead>
+            <TableHead>卡券使用(-)</TableHead>
+            <TableHead>第三方卡券(-)</TableHead>
+            <TableHead>其他付款方式(-)</TableHead>
+            <TableHead>入金使用(-)</TableHead>
+            {bonusDisplay && <TableHead>點數折抵金額(-)</TableHead>}
+            <TableHead>營業現金應收</TableHead>
+            <TableHead>現金收支收入</TableHead>
+            <TableHead>現金收支支出(-)</TableHead>
+            <TableHead>員工借支</TableHead>
+            <TableHead>現金結存</TableHead>
           </TableRow>
-        </TableHead>
+        </TableHeader>
         <TableBody>
           {data.data.map(row => (
             <TableRow key={row.date}>
@@ -150,7 +141,6 @@ function Results({ data, isServiceTicketMerged, isMemberShipCardActive, bonusDis
           </TableRow>
         </TableBody>
       </Table>
-    </TableContainer>
   )
 }
 Results.propTypes = {
