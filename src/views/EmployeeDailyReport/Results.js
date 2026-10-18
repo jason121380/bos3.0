@@ -4,15 +4,9 @@ import {
   CardContent,
   CardHeader,
   Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Paper,
   Grid,
 } from '@mui/material'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'
 import { format } from 'date-fns'
@@ -154,20 +148,20 @@ function Results({
             <div className="h-px bg-border" />
             <div>
               <div className="printCard">
-                <Table css={styles.table} size="small" aria-label="a dense table">
-                  <TableHead>
+                <Table dense aria-label="a dense table">
+                  <TableHeader>
                     <TableRow>
-                      <TableCell className="categoryPrint">單號</TableCell>
-                      <TableCell className="categoryPrintService2">類別</TableCell>
-                      <TableCell className="itemPrint">項目</TableCell>
-                      <TableCell className="categoryPrint">金額</TableCell>
-                      <TableCell className="categoryPrint">業績</TableCell>
+                      <TableHead className="categoryPrint">單號</TableHead>
+                      <TableHead className="categoryPrintService2">類別</TableHead>
+                      <TableHead className="itemPrint">項目</TableHead>
+                      <TableHead className="categoryPrint">金額</TableHead>
+                      <TableHead className="categoryPrint">業績</TableHead>
                     </TableRow>
-                  </TableHead>
+                  </TableHeader>
                   <TableBody>
                     {designer.currentPageOrder != 1 && (
                       <TableRow>
-                        <TableCell colSpan="5" style={{ textAlign: 'center' }}>
+                        <TableCell colSpan="5" className="text-center">
                           承上張
                         </TableCell>
                       </TableRow>
@@ -205,7 +199,7 @@ function Results({
 
                     {designer.isLastPage ? (
                       <TableRow>
-                        <TableCell style={{ fontWeight: '500' }}>合計</TableCell>
+                        <TableCell className="font-medium">合計</TableCell>
                         <TableCell className="categoryPrintService2"></TableCell>
                         <TableCell></TableCell>
                         {priceDisplayOnReport ? (
@@ -217,7 +211,7 @@ function Results({
                       </TableRow>
                     ) : (
                       <TableRow>
-                        <TableCell colSpan="5" style={{ textAlign: 'center' }}>
+                        <TableCell colSpan="5" className="text-center">
                           {/* 接續第 {designer.currentPageOrder+1} 頁 */}
                           接續下張
                         </TableCell>
@@ -226,15 +220,14 @@ function Results({
                   </TableBody>
                 </Table>
                 {designer.isLastPage && (
-                  <TableContainer component={Paper}>
-                    <Table css={styles.table} size="small" aria-label="a dense table">
-                      <TableHead>
+                    <Table dense aria-label="a dense table">
+                      <TableHeader>
                         <TableRow>
-                          <TableCell className="forPrint3"></TableCell>
-                          <TableCell>日合計</TableCell>
-                          <TableCell>累計</TableCell>
+                          <TableHead className="forPrint3"></TableHead>
+                          <TableHead>日合計</TableHead>
+                          <TableHead>累計</TableHead>
                         </TableRow>
-                      </TableHead>
+                      </TableHeader>
                       <TableBody>
                         {priceDisplayOnReport && (
                           <TableRow>
@@ -546,7 +539,6 @@ function Results({
                           )}
                       </TableBody>
                     </Table>
-                  </TableContainer>
                 )}
               </div>
             </div>
@@ -575,20 +567,20 @@ function Results({
                     />
                     <CardContent css={styles.content}>
                       <div className="printCard">
-                        <Table css={styles.table} size="small" aria-label="a dense table">
-                          <TableHead>
+                        <Table dense aria-label="a dense table">
+                          <TableHeader>
                             <TableRow>
-                              <TableCell className="categoryPrint">單號</TableCell>
-                              <TableCell className="categoryPrintService2">類別</TableCell>
-                              <TableCell className={printMode ? "itemPrint" : null}>項目</TableCell>
-                              <TableCell className="categoryPrint">金額</TableCell>
-                              <TableCell className="categoryPrint">業績</TableCell>
+                              <TableHead className="categoryPrint">單號</TableHead>
+                              <TableHead className="categoryPrintService2">類別</TableHead>
+                              <TableHead className={printMode ? "itemPrint" : null}>項目</TableHead>
+                              <TableHead className="categoryPrint">金額</TableHead>
+                              <TableHead className="categoryPrint">業績</TableHead>
                             </TableRow>
-                          </TableHead>
+                          </TableHeader>
                           <TableBody>
                             {designer.currentPageOrder != 1 && (
                               <TableRow>
-                                <TableCell colSpan="5" style={{ textAlign: 'center' }}>
+                                <TableCell colSpan="5" className="text-center">
                                   承上張
                                 </TableCell>
                               </TableRow>
@@ -626,7 +618,7 @@ function Results({
 
                             {designer.isLastPage ? (
                               <TableRow>
-                                <TableCell style={{ fontWeight: '500' }}>合計</TableCell>
+                                <TableCell className="font-medium">合計</TableCell>
                                 <TableCell className="categoryPrintService2"></TableCell>
                                 <TableCell></TableCell>
                                 {priceDisplayOnReport ? (
@@ -638,7 +630,7 @@ function Results({
                               </TableRow>
                             ) : (
                               <TableRow>
-                                <TableCell colSpan="5" style={{ textAlign: 'center' }}>
+                                <TableCell colSpan="5" className="text-center">
                                   {/* 接續第 {designer.currentPageOrder+1} 頁 */}
                                   接續下張
                                 </TableCell>
@@ -647,15 +639,14 @@ function Results({
                           </TableBody>
                         </Table>
                         {designer.isLastPage && (
-                          <TableContainer component={Paper}>
-                            <Table css={styles.table} size="small" aria-label="a dense table">
-                              <TableHead>
+                            <Table dense aria-label="a dense table">
+                              <TableHeader>
                                 <TableRow>
-                                  <TableCell></TableCell>
-                                  <TableCell>日合計</TableCell>
-                                  <TableCell>累計</TableCell>
+                                  <TableHead></TableHead>
+                                  <TableHead>日合計</TableHead>
+                                  <TableHead>累計</TableHead>
                                 </TableRow>
-                              </TableHead>
+                              </TableHeader>
                               <TableBody>
                                 {priceDisplayOnReport && (
                                   <TableRow>
@@ -967,7 +958,6 @@ function Results({
                                   )}
                               </TableBody>
                             </Table>
-                          </TableContainer>
                         )}
                       </div>
                     </CardContent>
