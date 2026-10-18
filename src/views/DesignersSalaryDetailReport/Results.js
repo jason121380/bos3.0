@@ -4,10 +4,9 @@ import {
   TableBody,
   TableCell,
   TableHead,
+  TableHeader,
   TableRow,
-  Paper,
-  TableContainer,
-} from '@mui/material'
+} from 'ui/table'
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState, useRef } from 'react'
 import { css } from '@emotion/react'
@@ -18,38 +17,17 @@ const localStyles = {
     position: 'sticky',
     top: 0,
     zIndex: 10,
-    '& .MuiTableCell-head': {
+    '& th': {
       backgroundColor: 'rgb(var(--surface))',
       color: 'rgb(var(--text))',
       fontWeight: 'bold',
-      borderBottom: '1px solid rgb(var(--border))',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-      whiteSpace: 'nowrap',
     }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid rgb(var(--border))',
-      fontSize: '14px !important',
-      color: 'rgb(var(--text))',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
   }),
   totalRow: css({
     backgroundColor: 'rgba(26, 115, 232, 0.05) !important',
-    height: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
+    '& td': {
       fontWeight: 'bold !important',
       color: 'rgb(var(--accent)) !important',
-      borderBottom: '1px solid rgb(var(--border))',
     }
   }),
   stickyLeft: css({
@@ -127,27 +105,26 @@ function Results({
 
   return (
     <Fragment>
-      <TableContainer style={{ marginTop: 24, padding: 0, border: '1px solid rgb(var(--border))', borderRadius: '16px', overflow: 'auto', backgroundColor: 'rgb(var(--background))' }} className="DesignersSalaryDetailReportTable">
-        <Table size="small" stickyHeader>
-          <TableHead css={localStyles.tableHead}>
+      <Table dense wrapperClassName="DesignersSalaryDetailReportTable mt-6 rounded-2xl bg-background">
+          <TableHeader css={localStyles.tableHead}>
             <TableRow>
-              <TableCell css={localStyles.stickyLeft} style={{ wordBreak: 'break-all' }}>代號</TableCell>
-              <TableCell css={localStyles.stickyLeft2} style={{ wordBreak: 'break-all' }}>姓名</TableCell>
-              <TableCell>身份</TableCell>
+              <TableHead css={localStyles.stickyLeft} style={{ wordBreak: 'break-all' }}>代號</TableHead>
+              <TableHead css={localStyles.stickyLeft2} style={{ wordBreak: 'break-all' }}>姓名</TableHead>
+              <TableHead>身份</TableHead>
               {merchantSalaryIncreaseItems.map((data, index) => (
-                <TableCell key={`${data.name}-${index}`}>{data.name}</TableCell>
+                <TableHead key={`${data.name}-${index}`}>{data.name}</TableHead>
               ))}
-              <TableCell>加項合計</TableCell>
-              <TableCell>指定業績</TableCell>
-              <TableCell>不指定業績</TableCell>
-              <TableCell>特殊抽業績</TableCell>
-              <TableCell>點數</TableCell>
+              <TableHead>加項合計</TableHead>
+              <TableHead>指定業績</TableHead>
+              <TableHead>不指定業績</TableHead>
+              <TableHead>特殊抽業績</TableHead>
+              <TableHead>點數</TableHead>
             </TableRow>
-          </TableHead>
+          </TableHeader>
           <TableBody>
             {salaryDetailReport.userSalaryDetail.map((data, index) => {
               return (
-                <TableRow key={index} css={localStyles.tableRow}>
+                <TableRow key={index}>
                   <TableCell css={localStyles.stickyLeft} style={{ wordBreak: 'break-all' }}>{data.userNo}</TableCell>
                   <TableCell css={localStyles.stickyLeft2} style={{ wordBreak: 'break-all' }}>{data.userName}</TableCell>
                   <TableCell>{data.userHelperIdentity}</TableCell>
@@ -223,29 +200,24 @@ function Results({
               </TableCell>
             </TableRow>
           </TableBody>
-        </Table>
-      </TableContainer>
+      </Table>
 
-      <TableContainer
-        style={{ marginTop: 24, padding: 0, border: '1px solid rgb(var(--border))', borderRadius: '16px', overflow: 'auto', backgroundColor: 'rgb(var(--background))' }}
-        className="DesignersSalaryDetailReportTable-2"
-      >
-        <Table size="small" stickyHeader>
-          <TableHead css={localStyles.tableHead}>
+      <Table dense wrapperClassName="DesignersSalaryDetailReportTable-2 mt-6 rounded-2xl bg-background">
+          <TableHeader css={localStyles.tableHead}>
             <TableRow>
-              <TableCell css={localStyles.stickyLeft} style={{ wordBreak: 'break-all' }}>代號</TableCell>
-              <TableCell css={localStyles.stickyLeft2} style={{ wordBreak: 'break-all' }}>姓名</TableCell>
-              <TableCell>實發金額</TableCell>
+              <TableHead css={localStyles.stickyLeft} style={{ wordBreak: 'break-all' }}>代號</TableHead>
+              <TableHead css={localStyles.stickyLeft2} style={{ wordBreak: 'break-all' }}>姓名</TableHead>
+              <TableHead>實發金額</TableHead>
               {merchantSalaryDecreaseItems.map((data, index) => (
-                <TableCell key={`${data.name}-${index}`}>{data.name}</TableCell>
+                <TableHead key={`${data.name}-${index}`}>{data.name}</TableHead>
               ))}
-              <TableCell>扣項合計</TableCell>
+              <TableHead>扣項合計</TableHead>
             </TableRow>
-          </TableHead>
+          </TableHeader>
           <TableBody>
             {salaryDetailReport.userSalaryDetail.map((data, index) => {
               return (
-                <TableRow key={index} css={localStyles.tableRow}>
+                <TableRow key={index}>
                   <TableCell css={localStyles.stickyLeft} style={{ wordBreak: 'break-all' }}>{data.userNo}</TableCell>
                   <TableCell css={localStyles.stickyLeft2} style={{ wordBreak: 'break-all' }}>{data.userName}</TableCell>
                   <TableCell>{Math.round(data.actualPaidPrice)}</TableCell>
@@ -300,8 +272,7 @@ function Results({
               </TableCell>
             </TableRow>
           </TableBody>
-        </Table>
-      </TableContainer>
+      </Table>
     </Fragment>
   )
 }
