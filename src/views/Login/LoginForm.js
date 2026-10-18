@@ -58,9 +58,9 @@ const styles = {
         },
       },
       '&.Mui-focused': {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'rgb(var(--background))',
         '& fieldset': {
-          borderColor: '#007AFF !important',
+          borderColor: 'rgb(var(--accent)) !important',
           borderWidth: '2px !important',
         },
       },
@@ -72,7 +72,7 @@ const styles = {
       fontSize: '15px',
       color: '#86868B',
       '&.Mui-focused': {
-        color: '#007AFF',
+        color: 'rgb(var(--accent))',
       },
     },
     '& :-webkit-autofill': {
@@ -93,7 +93,7 @@ const styles = {
     '& .MuiCheckbox-root': {
       color: '#D2D2D7',
       '&.Mui-checked': {
-        color: '#007AFF',
+        color: 'rgb(var(--accent))',
       },
       '&:hover': {
         backgroundColor: 'rgba(0, 122, 255, 0.04)',

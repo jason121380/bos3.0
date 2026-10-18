@@ -55,9 +55,9 @@ const styles = {
         },
       },
       '&.Mui-focused': {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: 'rgb(var(--background))',
         '& fieldset': {
-          borderColor: '#007AFF !important',
+          borderColor: 'rgb(var(--accent)) !important',
           borderWidth: '2px !important',
         },
       },
@@ -70,7 +70,7 @@ const styles = {
       color: '#86868B',
       marginLeft: '8px',
       '&.Mui-focused': {
-        color: '#007AFF',
+        color: 'rgb(var(--accent))',
       },
     },
   }),

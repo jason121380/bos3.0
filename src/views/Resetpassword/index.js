@@ -23,7 +23,7 @@ const styles = {
     borderRadius: '28px !important',
     boxShadow: '0 20px 48px rgba(0, 0, 0, 0.08) !important',
     border: '1px solid rgba(0, 0, 0, 0.02) !important',
-    backgroundColor: '#FFFFFF !important',
+    backgroundColor: 'rgb(var(--background)) !important',
     overflow: 'hidden',
   }),
   content: css({
