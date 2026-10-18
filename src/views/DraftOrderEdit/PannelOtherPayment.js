@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
@@ -30,7 +30,7 @@ export default function PannelOtherPayment() {
   return (
     <Accordion>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography css={styles.heading}>其他付款方式(線上版)</Typography>
+        <p className="m-0" css={styles.heading}>其他付款方式(線上版)</p>
       </AccordionSummary>
       <AccordionDetails css={styles.details}>
         <div css={styles.fieldOutter}>

@@ -3,7 +3,6 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Divider,
   Modal,
   Table,
   TableBody,
@@ -14,7 +13,6 @@ import {
   CardActions,
   Paper,
   Button,
-  Typography,
   TablePagination,
 } from '@mui/material'
 import PropTypes from 'prop-types'
@@ -243,7 +241,7 @@ function ServicesModal({
           </Button>
         </div>
 
-        <Divider />
+        <div className="h-px bg-border" />
         <CardContent>
           <div css={styles.categorieDiv}>
             {serviceCategories.map(serviceCategorie => (
@@ -276,9 +274,9 @@ function ServicesModal({
               清除
             </Button>
           </div>
-          <Typography color="textSecondary" gutterBottom variant="body2">
+          <p className="m-0 mb-1.5 text-body text-text-secondary">
             {services.totalCount} 筆服務
-          </Typography>
+          </p>
           <TableContainer component={Paper}>
             <Table>
               <TableHead>

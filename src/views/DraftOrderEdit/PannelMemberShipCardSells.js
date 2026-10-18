@@ -3,7 +3,6 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Typography,
 } from '@mui/material'
 import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import billContext from "context/keyInContext";
@@ -202,7 +201,7 @@ const PannelMemberShipCardSells = ({ thirdPartTicket }) => {
         data-testid="merchantSell"
         onClick={handleAccordionClick}
       >
-        <Typography css={styles.heading}>會員卡銷售</Typography>
+        <p className="m-0" css={styles.heading}>會員卡銷售</p>
       </AccordionSummary>
       <AccordionDetails css={styles.details}>
         <div css={styles.fieldOutter}>
