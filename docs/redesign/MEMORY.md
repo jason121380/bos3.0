@@ -40,3 +40,4 @@
 9. **`git fetch` 與 `log` 串在一起會被權限分類器擋**；單獨 `git fetch origin main` 可以。
 10. **合併後分支要重置到 main**，再推送（快轉）；否則 stop hook 會提示有未推送的 commit。
 11. **Portal 內缺 `ui-root` 要從根因修**：與其逐檔補 class，不如讓 `src/ui` 元件根元素自帶 `ui-root`（已做 8 檔）。檢查用 `node scripts/redesign/portal-root-scan.js`（純文字比對：檔案 import 8 個 ui 元件之一、使用 `<Dialog|Modal|Popper|Popover|Menu|Drawer`、檔內沒有 `ui-root`、且該 ui 元件自身未帶 `ui-root`）。手動整理的清單會漂移（舊「16 檔」實際掃描為 25），以掃描結果為準。限制：只比對同檔案，經由其他元件間接放進 Portal 的不會被抓到。
+12. **孿生目錄（Create／Edit）不可照抄**（[v3.0-1019-0202]）：`CouponEdit` 與 `CouponCreate` 的 About 檔看似相同，實際差在 `onChange` key 大小寫（`serviceDeductionItems` vs `ServiceDeductionItems`）、載入中防護（`loading ? '' : value`）、新增列初始值與圖示做法。改版時逐檔對照、只動 JSX，handler 一字不改。

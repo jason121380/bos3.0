@@ -46,6 +46,14 @@
 
 ### P2 — 改版收尾
 - [ ] **合併第二輪未完成批次**：`r2-04`（表單頁，13 個 commit，worktree `agent-a7e481ba90389d29b`）與 `r2-06`（其他 63 頁，中途中止，worktree `agent-af60fcc4359cfd91c`）——需先 rebase 到最新 main、重新驗證再合併。
+- [ ] **批次 5 [v3.0-1019-0202]（`claude/ui-batch5-box`，指揮者已驗證，待開 PR）**：`CouponEdit` 表單標籤改版，做法同批次 4 的 `CouponCreate`（PR #10）。
+  - 本批完成：`AboutCoupon.js`、`AboutDeduction.js`、`AboutAssistantSetting.js` 的 TextField → `Field`＋`Input`（標籤在上）、單選 Select → `Field`＋`NativeSelect`；`index.js` 沒有 MUI 欄位，未動。三檔都沒有 helperText／error、Autocomplete、日期、鍵盤焦點鏈或列印，所以三檔皆在範圍內。`Checkbox`／`FormControlLabel`（分指定／互助均分）仍是 MUI。
+  - **與 `CouponCreate` 不對稱處（不可從孿生目錄照抄）**：
+    - `AboutCoupon`：Edit 的服務類別 `value={loading ? '' : coupon.ServiceCategoryId}` 有載入中防護（Create 沒有），已保留；價格／次數有 `onWheel` blur，已保留。
+    - `AboutDeduction`：Edit 的 `onChange` key 是小寫 `serviceDeductionItems`（Create 是 `ServiceDeductionItems`），handler 一字未動；標題 `系統預設` 有 `text-danger`；清除／刪除／新增是 `ui/icons` 的圖示（帶 `data-testid`），本批**不**像 Create 改成 `Button`，只留原圖示（`marginTop:30px` 剛好對齊上方標籤版型的輸入框）。
+    - `AboutAssistantSetting`：Edit 的新增列初始值（`isDesignate:false`、`peopleCount:1`）與清除（無 `isSplitted`）和 Create 不同，handler 未動；圖示同上沒改成 `Button`。
+  - 外觀待實機：圖示 `marginTop` 對齊、序號 `mt-[26px]` 對齊、`w-24`／`w-28` 小數字欄位換行、類別選單空值顯示第一選項（原生行為，同 Create）。
+  - 後續（不在本批）：Edit／Create 的圖示列統一成 `Button`（含 `aria-label`）可另開一批；剩餘批次：盤點總表在 PR #7，待合併後對齊，這裡不重寫整份盤點。
 - [ ] **階段 4 半遷移盤點**（見下方「盤點結果」），決定 MUI 何時可移除。
 - [ ] 把打帳單的做法（欄位標籤、必填、停用原因、摘要、NT$）套用到 **帳單編輯／草稿／排隊帳單**（`OrderEdit`、`DraftOrderEdit`、`QueueOrderEdit`）——它們共用 `ServicesAutoComplete`，下拉已受益，但版面尚未對齊。
 

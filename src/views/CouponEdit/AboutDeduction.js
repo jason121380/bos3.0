@@ -1,21 +1,16 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Checkbox,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  FormControlLabel,
-  Grid,
-} from '@mui/material'
+// 欄位標籤放在上方（Field＋Input／NativeSelect）。扣項基準點的選項值是數字，NativeSelect 的 event.target.value 回傳原始數字，
+// 所以 handleDeductionReference 的 parseInt 等既有處理原樣保留；分指定／不指定的 Checkbox 仍用 MUI
+import { Checkbox, FormControlLabel } from '@mui/material'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Field, Input } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon, BackspaceOutlined as BackspaceOutlinedIcon } from 'ui/icons'
 import useFetchMerchantDeductionItems from 'hooks/useFetchMerchantDeductionItems'
 import idx from 'idx'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
-import { useRef, Fragment } from 'react'
+import { Fragment } from 'react'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
@@ -34,11 +29,6 @@ const styles = {
     width: '6rem',
     marginLeft: theme.spacing(3),
   }),
-  service: css({
-    display: 'flex',
-    justifyContent: 'flex-start',
-    marginBottom: theme.spacing(3),
-  }),
   icons: css({
     marginLeft: theme.spacing(3),
     marginTop: '30px',
@@ -46,17 +36,6 @@ const styles = {
   }),
   gap: css({
     marginLeft: theme.spacing(3),
-  }),
-  textField: css({
-    width: '5rem',
-  }),
-  nonDesignateTextField: css({
-    width: '5rem',
-    marginLeft: theme.spacing(3),
-  }),
-  orderNum: css({
-    marginBottom: '0',
-    marginRight: '15px',
   }),
   deductionTypeFormGroup: css({
     width: '6rem',
@@ -89,7 +68,6 @@ const deductions = [
 ]
 
 function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionItems, ...rest }) {
-  const inputLabel = useRef()
   const merchantDeductionItems = useFetchMerchantDeductionItems()
   const deductionItems = idx(merchantDeductionItems, _ => _.data.merchantDeductionItems)
 
@@ -292,36 +270,26 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
           <CardHeader>
             <CardTitle className={data.type === '系統預設' ? 'text-danger' : undefined}>{`項目扣項設定 - ${data.type}`}</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-col gap-4">
             {data.itemSettings.map((content, index) => {
               return (
-                <Grid container spacing={2} css={styles.service} key={index}>
-                  <span
-                    className="text-heading tabular-nums text-text"
-                    css={styles.orderNum}
-                  >
+                <div className="flex flex-wrap items-start gap-4" key={index}>
+                  {/* 序號對齊欄位輸入框（上方標籤約 26px） */}
+                  <span className="mt-[26px] flex h-9 w-6 items-center justify-center text-heading tabular-nums text-text">
                     {content.deductionOrder}
                   </span>
-                  <Grid item xs={12} sm={2}>
-                    <FormControl variant="outlined" fullWidth>
-                      <InputLabel ref={inputLabel} id="select-item-label">
-                        扣項類別
-                      </InputLabel>
-                      <Select
-                        labelId="select-item-label"
-                        id="select-item"
-                        label='扣項類別'
-                        onChange={event => handleDeductionTypeChange(data.type, event, index)}
-                        value={content.type}
-                      >
-                        {deductions.map((data, idx) => (
-                          <MenuItem value={data.value} key={`${data.value}-${idx}`}>
-                            {data.label}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
+                  <Field label="扣項類別" className="w-full sm:w-36">
+                    <NativeSelect
+                      onChange={event => handleDeductionTypeChange(data.type, event, index)}
+                      value={content.type}
+                    >
+                      {deductions.map((data, idx) => (
+                        <NativeSelectOption value={data.value} key={`${data.value}-${idx}`}>
+                          {data.label}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                  </Field>
                   {/* <FormControl variant="outlined" className={classes.formGroup} fullWidth>
                     <InputLabel ref={inputLabel} id="select-item-label">
                       項目
@@ -341,52 +309,48 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                     </Select>
                   </FormControl> */}
                   {content.name && (
-                    <Grid item xs={12} sm={2}>
-                      <FormControl variant="outlined" fullWidth>
-                        <InputLabel ref={inputLabel} id="select-item-label">
-                          扣成方式
-                        </InputLabel>
-                        <Select
-                          labelId="select-item-label"
-                          id="select-item"
-                          label='扣成方式'
-                          onChange={event => handleDeductionWay(data.type, event, index)}
-                          value={content.deductionWay}
-                        >
-                          {deductionWay2.map((data, idx) => (
-                            <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                              {data.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </Grid>
+                    <Field label="扣成方式" className="w-full sm:w-36">
+                      <NativeSelect
+                        onChange={event => handleDeductionWay(data.type, event, index)}
+                        value={content.deductionWay}
+                      >
+                        {deductionWay2.map((data, idx) => (
+                          <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                            {data.label}
+                          </NativeSelectOption>
+                        ))}
+                      </NativeSelect>
+                    </Field>
                   )}
                   {content.isSpecial && content.name ? (
-                    <Grid item xs={12} sm={3}>
-                      <div style={{ display: 'flex' }}>
-                        <TextField
-                          css={styles.textField}
-                          type="number"
-                          variant="outlined"
+                    <div className="flex flex-col gap-1">
+                      <div className="flex gap-3">
+                        <Field
                           label={content.deductionWay === '扣固定金額' ? '指定金額' : '指定%'}
-                          value={content.designatePrice}
-                          onChange={event =>
-                            handleDeductionNum(data.type, event, index, 'designatePrice')
-                          }
-                          onWheel={() => document.activeElement.blur()}
-                        />
-                        <TextField
-                          css={styles.nonDesignateTextField}
-                          type="number"
-                          variant="outlined"
+                          className="w-24"
+                        >
+                          <Input
+                            type="number"
+                            value={content.designatePrice}
+                            onChange={event =>
+                              handleDeductionNum(data.type, event, index, 'designatePrice')
+                            }
+                            onWheel={() => document.activeElement.blur()}
+                          />
+                        </Field>
+                        <Field
                           label={content.deductionWay === '扣固定金額' ? '不指定金額' : '不指定%'}
-                          value={content.nonDesignatePrice}
-                          onChange={event =>
-                            handleDeductionNum(data.type, event, index, 'nonDesignatePrice')
-                          }
-                          onWheel={() => document.activeElement.blur()}
-                        />
+                          className="w-24"
+                        >
+                          <Input
+                            type="number"
+                            value={content.nonDesignatePrice}
+                            onChange={event =>
+                              handleDeductionNum(data.type, event, index, 'nonDesignatePrice')
+                            }
+                            onWheel={() => document.activeElement.blur()}
+                          />
+                        </Field>
                       </div>
                       <div>
                         <FormControlLabel
@@ -397,20 +361,22 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                           onChange={() => handleCheckboxChange(data.type, index)}
                         />
                       </div>
-                    </Grid>
+                    </div>
                   ) : (
                     content.name && (
-                      <Grid item xs={12} sm={2}>
+                      <div className="flex flex-col gap-1">
                         <div>
-                          <TextField
-                            css={styles.textField}
-                            type="number"
-                            variant="outlined"
+                          <Field
                             label={content.deductionWay === '扣固定金額' ? '固定金額' : '業績%數'}
-                            value={content.price}
-                            onChange={event => handleDeductionNum(data.type, event, index, 'price')}
-                            onWheel={() => document.activeElement.blur()}
-                          />
+                            className="w-24"
+                          >
+                            <Input
+                              type="number"
+                              value={content.price}
+                              onChange={event => handleDeductionNum(data.type, event, index, 'price')}
+                              onWheel={() => document.activeElement.blur()}
+                            />
+                          </Field>
                         </div>
                         <div>
                           <FormControlLabel
@@ -421,29 +387,21 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                             onChange={() => handleCheckboxChange(data.type, index)}
                           />
                         </div>
-                      </Grid>
+                      </div>
                     )
                   )}
-                  <Grid item xs={12} sm={2}>
-                    <FormControl variant="outlined" fullWidth>
-                      <InputLabel ref={inputLabel} id="select-item-label">
-                        扣項基準點
-                      </InputLabel>
-                      <Select
-                        value={index === 0 ? 0 : content.deductionReference}
-                        label='扣項基準點'
-                        labelId="select-item-label"
-                        id="select-item"
-                        onChange={event => handleDeductionReference(data.type, event, index)}
-                      >
-                        {menuItemGenerate(content.deductionOrder).map((data, index) => (
-                          <MenuItem value={data.value} key={index}>
-                            {data.title}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
+                  <Field label="扣項基準點" className="w-full sm:w-36">
+                    <NativeSelect
+                      value={index === 0 ? 0 : content.deductionReference}
+                      onChange={event => handleDeductionReference(data.type, event, index)}
+                    >
+                      {menuItemGenerate(content.deductionOrder).map((data, index) => (
+                        <NativeSelectOption value={data.value} key={index}>
+                          {data.title}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                  </Field>
                   {content.name !== '' && (
                     <BackspaceOutlinedIcon
                       css={styles.icons}
@@ -461,7 +419,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                     css={styles.icons}
                     onClick={() => handleAddDeductionContent(data.type, content.deductionOrder)}
                   />
-                </Grid>
+                </div>
               )
             })}
           </CardContent>
