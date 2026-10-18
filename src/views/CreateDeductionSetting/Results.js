@@ -1,7 +1,7 @@
-// 門檻／抽成欄位使用 InputProps（min），抽成模式為 ToggleButton、類別為可捲動 Tabs，依遷移指南保留 MUI；外框、標題、圖示按鈕改為 src/ui
+// 門檻／抽成欄位為 Field＋Input（min=0），抽成模式為 ToggleButton、類別為可捲動 Tabs，依遷移指南保留 MUI；外框、標題、圖示按鈕改為 src/ui
 import {
   Checkbox,
-  TextField, FormControlLabel, Tab, Tabs,
+  FormControlLabel, Tab, Tabs,
   ToggleButton, ToggleButtonGroup
 } from '@mui/material'
 import { Plus, Trash2 } from 'lucide-react'
@@ -619,29 +619,29 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                         <span className="whitespace-nowrap text-body text-text-secondary">
                           總業績從(含)
                         </span>
-                        <TextField
-                          InputProps={{ inputProps: { min: 0 } }}
-                          type="number"
-                          variant="outlined"
-                          label="輸入業績"
-                          value={data.threshold ? data.threshold : 0}
-                          onChange={event =>
-                            handleNonSegmentedThresholdInput(event, index, 'threshold')
-                          }
-                          onWheel={() => document.activeElement.blur()}
-                        />
+                        <Field label="輸入業績" className="min-w-0">
+                          <Input
+                            min={0}
+                            type="number"
+                            value={data.threshold ? data.threshold : 0}
+                            onChange={event =>
+                              handleNonSegmentedThresholdInput(event, index, 'threshold')
+                            }
+                            onWheel={() => document.activeElement.blur()}
+                          />
+                        </Field>
                         <span className="whitespace-nowrap text-body text-text-secondary">
                           抽成調整為
                         </span>
-                        <TextField
-                          InputProps={{ inputProps: { min: 0 } }}
-                          type="number"
-                          variant="outlined"
-                          label="輸入抽成(%)"
-                          value={data.rake ? data.rake : 0}
-                          onChange={event => handleNonSegmentedRakeInput(event, index, 'rake')}
-                          onWheel={() => document.activeElement.blur()}
-                        />
+                        <Field label="輸入抽成(%)" className="min-w-0">
+                          <Input
+                            min={0}
+                            type="number"
+                            value={data.rake ? data.rake : 0}
+                            onChange={event => handleNonSegmentedRakeInput(event, index, 'rake')}
+                            onWheel={() => document.activeElement.blur()}
+                          />
+                        </Field>
                         <div className="flex items-center gap-1">
                           {index !== 0 && (
                             <Button
@@ -679,47 +679,47 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                         <span className="whitespace-nowrap text-body text-text-secondary">
                           總業績從(含)
                         </span>
-                        <TextField
-                          InputProps={{ inputProps: { min: 0 } }}
-                          type="number"
-                          variant="outlined"
-                          label="輸入業績"
-                          value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
-                          onChange={event =>
-                            handleSegmentedInput(event, index, 'thresholdLowerLimit')
-                          }
-                          onWheel={() => document.activeElement.blur()}
-                        />
+                        <Field label="輸入業績" className="min-w-0">
+                          <Input
+                            min={0}
+                            type="number"
+                            value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
+                            onChange={event =>
+                              handleSegmentedInput(event, index, 'thresholdLowerLimit')
+                            }
+                            onWheel={() => document.activeElement.blur()}
+                          />
+                        </Field>
                       </div>
                       <div className="flex items-center gap-3">
                         <span className="whitespace-nowrap text-body text-text-secondary">
                           至
                         </span>
-                        <TextField
-                          InputProps={{ inputProps: { min: 0 } }}
-                          type="number"
-                          variant="outlined"
-                          label="輸入業績"
-                          value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
-                          onChange={event =>
-                            handleSegmentedInput(event, index, 'thresholdUpperLimit')
-                          }
-                          onWheel={() => document.activeElement.blur()}
-                        />
+                        <Field label="輸入業績" className="min-w-0">
+                          <Input
+                            min={0}
+                            type="number"
+                            value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
+                            onChange={event =>
+                              handleSegmentedInput(event, index, 'thresholdUpperLimit')
+                            }
+                            onWheel={() => document.activeElement.blur()}
+                          />
+                        </Field>
                       </div>
                       <div className="flex items-center gap-3">
                         <span className="whitespace-nowrap text-body text-text-secondary">
                           抽成為
                         </span>
-                        <TextField
-                          InputProps={{ inputProps: { min: 0 } }}
-                          type="number"
-                          variant="outlined"
-                          label="輸入抽成(%)"
-                          value={data.rake ? data.rake : 0}
-                          onChange={event => handleSegmentedInput(event, index, 'rake')}
-                          onWheel={() => document.activeElement.blur()}
-                        />
+                        <Field label="輸入抽成(%)" className="min-w-0">
+                          <Input
+                            min={0}
+                            type="number"
+                            value={data.rake ? data.rake : 0}
+                            onChange={event => handleSegmentedInput(event, index, 'rake')}
+                            onWheel={() => document.activeElement.blur()}
+                          />
+                        </Field>
                       </div>
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-1">
@@ -765,37 +765,37 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                             <span className="whitespace-nowrap text-body text-text-secondary">
                               總業績從(含)
                             </span>
-                            <TextField
-                              InputProps={{ inputProps: { min: 0 } }}
-                              type="number"
-                              variant="outlined"
-                              label="輸入業績"
-                              value={data.threshold ? data.threshold : 0}
-                              onChange={event =>
-                                handleNonSegmentedDesignateThresholdInput(
-                                  event,
-                                  index,
-                                  'threshold'
-                                )
-                              }
-                              onWheel={() => document.activeElement.blur()}
-                            />
+                            <Field label="輸入業績" className="min-w-0">
+                              <Input
+                                min={0}
+                                type="number"
+                                value={data.threshold ? data.threshold : 0}
+                                onChange={event =>
+                                  handleNonSegmentedDesignateThresholdInput(
+                                    event,
+                                    index,
+                                    'threshold'
+                                  )
+                                }
+                                onWheel={() => document.activeElement.blur()}
+                              />
+                            </Field>
                           </div>
                           <div className="flex items-center gap-3">
                             <span className="whitespace-nowrap text-body text-text-secondary">
                               抽成調整為
                             </span>
-                            <TextField
-                              InputProps={{ inputProps: { min: 0 } }}
-                              type="number"
-                              variant="outlined"
-                              label="輸入抽成(%)"
-                              value={data.rake ? data.rake : 0}
-                              onChange={event =>
-                                handleNonSegmentedDesignateRakeInput(event, index, 'rake')
-                              }
-                              onWheel={() => document.activeElement.blur()}
-                            />
+                            <Field label="輸入抽成(%)" className="min-w-0">
+                              <Input
+                                min={0}
+                                type="number"
+                                value={data.rake ? data.rake : 0}
+                                onChange={event =>
+                                  handleNonSegmentedDesignateRakeInput(event, index, 'rake')
+                                }
+                                onWheel={() => document.activeElement.blur()}
+                              />
+                            </Field>
                           </div>
                           <div className="flex items-center gap-3">
                             <div className="flex items-center gap-1">
@@ -843,37 +843,37 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                             <span className="whitespace-nowrap text-body text-text-secondary">
                               總業績從(含)
                             </span>
-                            <TextField
-                              InputProps={{ inputProps: { min: 0 } }}
-                              type="number"
-                              variant="outlined"
-                              label="輸入業績"
-                              value={data.threshold ? data.threshold : 0}
-                              onChange={event =>
-                                handleNonSegmentedNonDesignateThresholdInput(
-                                  event,
-                                  index,
-                                  'threshold'
-                                )
-                              }
-                              onWheel={() => document.activeElement.blur()}
-                            />
+                            <Field label="輸入業績" className="min-w-0">
+                              <Input
+                                min={0}
+                                type="number"
+                                value={data.threshold ? data.threshold : 0}
+                                onChange={event =>
+                                  handleNonSegmentedNonDesignateThresholdInput(
+                                    event,
+                                    index,
+                                    'threshold'
+                                  )
+                                }
+                                onWheel={() => document.activeElement.blur()}
+                              />
+                            </Field>
                           </div>
                           <div className="flex items-center gap-3">
                             <span className="whitespace-nowrap text-body text-text-secondary">
                               抽成調整為
                             </span>
-                            <TextField
-                              InputProps={{ inputProps: { min: 0 } }}
-                              type="number"
-                              variant="outlined"
-                              label="輸入抽成(%)"
-                              value={data.rake ? data.rake : 0}
-                              onChange={event =>
-                                handleNonSegmentedNonDesignateRakeInput(event, index, 'rake')
-                              }
-                              onWheel={() => document.activeElement.blur()}
-                            />
+                            <Field label="輸入抽成(%)" className="min-w-0">
+                              <Input
+                                min={0}
+                                type="number"
+                                value={data.rake ? data.rake : 0}
+                                onChange={event =>
+                                  handleNonSegmentedNonDesignateRakeInput(event, index, 'rake')
+                                }
+                                onWheel={() => document.activeElement.blur()}
+                              />
+                            </Field>
                           </div>
                           <div className="flex items-center gap-3">
                             <div className="flex items-center gap-1">
@@ -923,49 +923,49 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                           <span className="whitespace-nowrap text-body text-text-secondary">
                             指定業績從(含)
                           </span>
-                          <TextField
-                            InputProps={{ inputProps: { min: 0 } }}
-                            type="number"
-                            variant="outlined"
-                            label="輸入業績"
-                            value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
-                            onChange={event =>
-                              handleDesignateSegmentedInput(event, index, 'thresholdLowerLimit')
-                            }
-                            onWheel={() => document.activeElement.blur()}
-                          />
+                          <Field label="輸入業績" className="min-w-0">
+                            <Input
+                              min={0}
+                              type="number"
+                              value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
+                              onChange={event =>
+                                handleDesignateSegmentedInput(event, index, 'thresholdLowerLimit')
+                              }
+                              onWheel={() => document.activeElement.blur()}
+                            />
+                          </Field>
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="whitespace-nowrap text-body text-text-secondary">
                             至
                           </span>
-                          <TextField
-                            InputProps={{ inputProps: { min: 0 } }}
-                            type="number"
-                            variant="outlined"
-                            label="輸入業績"
-                            value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
-                            onChange={event =>
-                              handleDesignateSegmentedInput(event, index, 'thresholdUpperLimit')
-                            }
-                            onWheel={() => document.activeElement.blur()}
-                          />
+                          <Field label="輸入業績" className="min-w-0">
+                            <Input
+                              min={0}
+                              type="number"
+                              value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
+                              onChange={event =>
+                                handleDesignateSegmentedInput(event, index, 'thresholdUpperLimit')
+                              }
+                              onWheel={() => document.activeElement.blur()}
+                            />
+                          </Field>
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="whitespace-nowrap text-body text-text-secondary">
                             抽成為
                           </span>
-                          <TextField
-                            InputProps={{ inputProps: { min: 0 } }}
-                            type="number"
-                            variant="outlined"
-                            label="輸入抽成(%)"
-                            value={data.rake ? data.rake : 0}
-                            onChange={event =>
-                              handleDesignateSegmentedInput(event, index, 'rake')
-                            }
-                            onWheel={() => document.activeElement.blur()}
-                          />
+                          <Field label="輸入抽成(%)" className="min-w-0">
+                            <Input
+                              min={0}
+                              type="number"
+                              value={data.rake ? data.rake : 0}
+                              onChange={event =>
+                                handleDesignateSegmentedInput(event, index, 'rake')
+                              }
+                              onWheel={() => document.activeElement.blur()}
+                            />
+                          </Field>
                         </div>
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-1">
@@ -1008,57 +1008,57 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                           <span className="whitespace-nowrap text-body text-text-secondary">
                             不指定業績從(含)
                           </span>
-                          <TextField
-                            InputProps={{ inputProps: { min: 0 } }}
-                            type="number"
-                            variant="outlined"
-                            label="輸入業績"
-                            value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
-                            onChange={event =>
-                              handleNonDesignateSegmentedInput(
-                                event,
-                                index,
-                                'thresholdLowerLimit'
-                              )
-                            }
-                            onWheel={() => document.activeElement.blur()}
-                          />
+                          <Field label="輸入業績" className="min-w-0">
+                            <Input
+                              min={0}
+                              type="number"
+                              value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
+                              onChange={event =>
+                                handleNonDesignateSegmentedInput(
+                                  event,
+                                  index,
+                                  'thresholdLowerLimit'
+                                )
+                              }
+                              onWheel={() => document.activeElement.blur()}
+                            />
+                          </Field>
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="whitespace-nowrap text-body text-text-secondary">
                             至
                           </span>
-                          <TextField
-                            InputProps={{ inputProps: { min: 0 } }}
-                            type="number"
-                            variant="outlined"
-                            label="輸入業績"
-                            value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
-                            onChange={event =>
-                              handleNonDesignateSegmentedInput(
-                                event,
-                                index,
-                                'thresholdUpperLimit'
-                              )
-                            }
-                            onWheel={() => document.activeElement.blur()}
-                          />
+                          <Field label="輸入業績" className="min-w-0">
+                            <Input
+                              min={0}
+                              type="number"
+                              value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
+                              onChange={event =>
+                                handleNonDesignateSegmentedInput(
+                                  event,
+                                  index,
+                                  'thresholdUpperLimit'
+                                )
+                              }
+                              onWheel={() => document.activeElement.blur()}
+                            />
+                          </Field>
                         </div>
                         <div className="flex items-center gap-3">
                           <span className="whitespace-nowrap text-body text-text-secondary">
                             抽成為
                           </span>
-                          <TextField
-                            InputProps={{ inputProps: { min: 0 } }}
-                            type="number"
-                            variant="outlined"
-                            label="輸入抽成(%)"
-                            value={data.rake ? data.rake : 0}
-                            onChange={event =>
-                              handleNonDesignateSegmentedInput(event, index, 'rake')
-                            }
-                            onWheel={() => document.activeElement.blur()}
-                          />
+                          <Field label="輸入抽成(%)" className="min-w-0">
+                            <Input
+                              min={0}
+                              type="number"
+                              value={data.rake ? data.rake : 0}
+                              onChange={event =>
+                                handleNonDesignateSegmentedInput(event, index, 'rake')
+                              }
+                              onWheel={() => document.activeElement.blur()}
+                            />
+                          </Field>
                         </div>
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-1">
