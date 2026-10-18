@@ -1,4 +1,3 @@
-import { Button, CardActions } from '@mui/material'
 import useReservationContext from 'context/useReservationContext'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
@@ -9,6 +8,7 @@ import produce from 'immer'
 import _ from 'lodash'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
+import { Button } from 'ui/button'
 
 import Basic from './Basic'
 import Customer from './Customer'
@@ -277,7 +277,7 @@ export default function () {
   }, [isClickFriends])
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <Basic
         asignDesigner={isAssign}
         onChange={handleChange}
@@ -318,17 +318,16 @@ export default function () {
         />
       ))}
 
-      <CardActions>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={!isValidInput || !isValidFriendsInput || isDisabled}
-          data-testid="booking-submit"
-        >
-          預約
-        </Button>
-      </CardActions>
+      <Button
+        type="submit"
+        variant="primary"
+        size="lg"
+        className="h-11 w-full"
+        disabled={!isValidInput || !isValidFriendsInput || isDisabled}
+        data-testid="booking-submit"
+      >
+        預約
+      </Button>
     </form>
   )
 }
