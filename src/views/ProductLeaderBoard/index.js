@@ -1,34 +1,17 @@
-/** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
-import {
-  Container, Button, Grid, CircularProgress, ToggleButtonGroup,ToggleButton
-} from '@mui/material'
+import { ToggleButtonGroup, ToggleButton } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import { endOfDay, startOfMonth } from 'date-fns'
 import { CSVLink } from "react-csv";
 import useFetchGetProductLeaderBoardV2 from 'hooks/useFetchGetProductLeaderBoardV2'
 import DateSelector from 'components/DateSelector'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Skeleton } from 'ui/skeleton'
 import ProductListTreeView from 'components/ProductListTreeView'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  exportBtn: css({
-    margin: '10px 0',
-  }),
-}
 
 const ProductLeaderBoard = () => {
   const [reportForDisplay, setReportForDisplay] = useState([])
@@ -76,10 +59,10 @@ const ProductLeaderBoard = () => {
   }, [inputData.startDay, inputData.endDay])
   
   return (
-    <Page css={styles.root} title="商品銷售排行榜">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className="ui-root" title="商品銷售排行榜">
+      <div>
         <AdminPageHeader title='商品銷售排行榜' />
-        <Grid container justifyContent="space-between" alignItems="center">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <DateSelector
             date={{
               startDate: inputData.startDay,
@@ -89,7 +72,7 @@ const ProductLeaderBoard = () => {
             dateChange={({ startDate, endDate }) => setInputData({...inputData, startDay: startDate, endDay: endDate})}
             margin
           />
-          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <div className="flex items-center gap-3">
             {excelData.length !== 0 && (
               <>
                 <ToggleButtonGroup
@@ -101,26 +84,26 @@ const ProductLeaderBoard = () => {
                   <ToggleButton value='SELLING'>店販</ToggleButton>
                   <ToggleButton value='PICKING'>自購</ToggleButton>
                 </ToggleButtonGroup>
-                <CSVLink
-                  data={excelData}
-                  filename="商品銷售排行榜.csv"
-                >
-                  <Button variant="contained" color="primary" css={styles.exportBtn}>
+                <Button asChild variant="secondary" className="my-2.5">
+                  <CSVLink
+                    data={excelData}
+                    filename="商品銷售排行榜.csv"
+                  >
+                    <Download strokeWidth={1.75} />
                     報表匯出
-                  </Button>
-                </CSVLink>
+                  </CSVLink>
+                </Button>
               </>
             )}
           </div>
-        </Grid>
-        <div style={{ margin: '10px 0 ', display: 'flex', gap: 10, alignItems: 'center' }}>
+        </div>
+        <div className="my-2.5 flex items-center gap-2.5">
           <ProductListTreeView
             onValueChange={v => setInputData({...inputData, productIds: v})}
           />
           <Button
-            variant='contained'
-            color='primary'
-            style={{ height: 'fit-content', width: 100 }}
+            variant='primary'
+            className="w-[100px]"
             onClick={handleSearch}
             disabled={productLeaderBoardV2Data.loading || !productLeaderBoardV2Data.data}
           >
@@ -130,11 +113,12 @@ const ProductLeaderBoard = () => {
         {!productLeaderBoardV2Data.loading && productLeaderBoardV2Data.data ? (
           <Results report={reportForDisplay} />
         ) : (
-          <div css={styles.noReportDiv}>
-            <CircularProgress />
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div>
         )}
-      </Container>
+      </div>
     </Page>
   )
 }
