@@ -11,7 +11,7 @@ const Avatar = React.forwardRef(({ src, alt = '', size = 'md', className, childr
   return (
     <span
       ref={ref}
-      className={cn('relative inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-surface-hover font-medium text-text-secondary', sizes[size], className)}
+      className={cn('ui-root relative inline-flex shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-surface-hover font-medium text-text-secondary', sizes[size], className)}
       {...props}
     >
       {showImage ? (

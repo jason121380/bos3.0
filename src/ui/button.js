@@ -35,7 +35,7 @@ const Button = React.forwardRef(({ className, variant, size, asChild = false, ty
     <Comp
       ref={ref}
       type={asChild ? undefined : type}
-      className={cn(buttonVariants({ variant, size }), className)}
+      className={cn('ui-root', buttonVariants({ variant, size }), className)}
       {...props}
     />
   )

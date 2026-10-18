@@ -35,10 +35,10 @@ const Switch = React.forwardRef(
         />
       </span>
     )
-    if (!label) return <span className={cn('inline-flex', className)}>{control}</span>
+    if (!label) return <span className={cn('ui-root inline-flex', className)}>{control}</span>
     return (
       <label
-        className={cn('inline-flex cursor-pointer select-none items-center gap-2 text-body text-text', disabled && 'cursor-not-allowed opacity-60', labelPlacement === 'start' && 'flex-row-reverse', className)}
+        className={cn('ui-root inline-flex cursor-pointer select-none items-center gap-2 text-body text-text', disabled && 'cursor-not-allowed opacity-60', labelPlacement === 'start' && 'flex-row-reverse', className)}
       >
         {control}
         <span>{label}</span>
