@@ -11,9 +11,9 @@
   --text: 13 13 13;
   --text-secondary: 93 93 93;
   --text-tertiary: 143 143 143;
-  --primary: 13 13 13;
+  --primary: 26 115 232; /* 主題色 #1A73E8（沿用舊版品牌藍） */
   --primary-foreground: 255 255 255;
-  --accent: 16 163 127;
+  --accent: 26 115 232;
   --success: 16 163 127;
   --warning: 183 121 31;
   --danger: 217 45 32;
@@ -27,9 +27,9 @@
   --text: 236 236 236;
   --text-secondary: 180 180 180;
   --text-tertiary: 143 143 143;
-  --primary: 236 236 236;
-  --primary-foreground: 13 13 13;
-  --accent: 16 163 127;
+  --primary: 26 115 232;
+  --primary-foreground: 255 255 255;
+  --accent: 76 141 246; /* 深色底上的連結與焦點用較亮的藍 #4C8DF6 */
   --success: 25 195 125;
   --warning: 240 180 41;
   --danger: 249 112 102;

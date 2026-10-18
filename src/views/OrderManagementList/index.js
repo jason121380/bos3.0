@@ -292,7 +292,7 @@ function OrderManagementList() {
         <Button
           variant="secondary"
           aria-pressed={showFilter}
-          className={showFilter ? 'border-text bg-surface-hover' : undefined}
+          className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
           onClick={() => setShowFilter(!showFilter)}
         >
           <ListFilter strokeWidth={1.75} />

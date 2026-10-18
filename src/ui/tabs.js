@@ -2,7 +2,7 @@ import React from 'react'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 import { cn, focusRing } from './utils'
 
-// STYLE.md §6：底線式；選取為 text + 2px 底線，未選 text-secondary
+// STYLE.md §6：底線式；選取為 text + 2px 主題色底線，未選 text-secondary
 const Tabs = TabsPrimitive.Root
 
 const TabsList = React.forwardRef(({ className, ...props }, ref) => (
@@ -19,7 +19,7 @@ const TabsTrigger = React.forwardRef(({ className, ...props }, ref) => (
     ref={ref}
     className={cn(
       '-mb-px inline-flex h-10 items-center whitespace-nowrap border-0 border-b-2 border-solid border-transparent text-body text-text-secondary transition-colors',
-      'hover:text-text data-[state=active]:border-text data-[state=active]:font-medium data-[state=active]:text-text',
+      'hover:text-text data-[state=active]:border-accent data-[state=active]:font-medium data-[state=active]:text-text',
       'disabled:pointer-events-none disabled:text-text-tertiary',
       focusRing,
       className

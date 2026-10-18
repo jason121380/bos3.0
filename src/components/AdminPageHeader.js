@@ -40,7 +40,7 @@ const AdminPageHeader = ({
                         variant="secondary"
                         aria-pressed={!!showFilter}
                         onClick={onFilterClick}
-                        className={showFilter ? 'border-text bg-surface-hover' : undefined}
+                        className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
                     >
                         <ListFilter strokeWidth={1.75} />
                         篩選

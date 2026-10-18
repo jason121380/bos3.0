@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
-import legacyComponents from 'theme/overrides'
 import legacyTypography from 'theme/typography'
 
 // 遷移期的 MUI 橋接主題：已改版頁面中「尚未換成 src/ui」的 MUI 元件（Autocomplete、日期選擇、Accordion…）
@@ -10,13 +9,13 @@ const TOKENS = {
   light: {
     background: '#FFFFFF', surface: '#F9F9F9', surfaceHover: '#F3F3F3', border: '#E5E5E5',
     text: '#0D0D0D', textSecondary: '#5D5D5D', textTertiary: '#8F8F8F',
-    primary: '#0D0D0D', primaryForeground: '#FFFFFF', accent: '#10A37F',
+    primary: '#1A73E8', primaryForeground: '#FFFFFF', accent: '#1A73E8',
     success: '#10A37F', warning: '#B7791F', danger: '#D92D20',
   },
   dark: {
     background: '#0D0D0D', surface: '#171717', surfaceHover: '#212121', border: '#2E2E2E',
     text: '#ECECEC', textSecondary: '#B4B4B4', textTertiary: '#8F8F8F',
-    primary: '#ECECEC', primaryForeground: '#0D0D0D', accent: '#10A37F',
+    primary: '#1A73E8', primaryForeground: '#FFFFFF', accent: '#4C8DF6',
     success: '#19C37D', warning: '#F0B429', danger: '#F97066',
   },
 }
@@ -47,10 +46,47 @@ export function createBridgeTheme(mode = 'light') {
       button: { textTransform: 'none', fontWeight: 500, letterSpacing: 0 },
     },
     components: {
-      // 日期選擇器沿用舊版尺寸設定；其餘元件以下方新樣式為準（舊版大量 !important 的藍色樣式不帶入）
-      MuiDayCalendar: legacyComponents.MuiDayCalendar,
-      MuiPickersLayout: legacyComponents.MuiPickersLayout,
-      MuiPickersToolbar: legacyComponents.MuiPickersToolbar,
+      // 日期選擇器：頂部用主題藍底白字（主題色點綴），選取日與確認按鈕用主題色（取代舊版灰色頂欄）
+      MuiPickersToolbar: {
+        styleOverrides: {
+          root: {
+            backgroundColor: `${t.primary} !important`,
+            '& *': { color: '#FFFFFF !important' },
+            '& span:not(.Mui-selected)': { opacity: 0.75 },
+            '& .MuiDateTimePickerToolbar-dateContainer button, & .MuiDateTimePickerToolbar-timeContainer button': { display: 'flex' },
+            '& .MuiDateTimePickerToolbar-timeDigitsContainer': { display: 'flex', alignItems: 'center', '& span': { fontSize: 30 } },
+            '& .MuiPickersToolbar-content': { marginTop: 8 },
+          },
+        },
+      },
+      MuiPickersLayout: {
+        styleOverrides: {
+          root: {
+            padding: 0,
+            overflow: 'hidden',
+            '& .MuiPickersLayout-header': { width: '100%' },
+            '& .MuiDialogActions-root button': { color: t.accent, fontWeight: 500 },
+          },
+        },
+      },
+      MuiDayCalendar: {
+        styleOverrides: {
+          root: {
+            '& .MuiDayCalendar-weekDayLabel': { fontSize: 12, margin: '0px 2px', color: t.textTertiary },
+            '& .MuiPickersDay-root': { fontSize: 12, margin: '0px 2px', borderRadius: '50%' },
+          },
+        },
+      },
+      MuiPickersDay: {
+        styleOverrides: {
+          root: {
+            '&.Mui-selected': { backgroundColor: `${t.accent} !important`, color: '#FFFFFF !important' },
+            '&.MuiPickersDay-today': { borderColor: `${t.accent} !important` },
+          },
+        },
+      },
+      MuiPickersCalendarHeader: { styleOverrides: { switchViewButton: { color: t.textSecondary } } },
+      MuiPickersArrowSwitcher: { styleOverrides: { button: { color: t.textSecondary } } },
       MuiPaper: {
         defaultProps: { elevation: 0 },
         styleOverrides: { root: { backgroundImage: 'none' } },
@@ -120,7 +156,7 @@ export function createBridgeTheme(mode = 'light') {
             fontSize: 14,
             fontWeight: 500,
             color: t.textSecondary,
-            '&.Mui-selected': { backgroundColor: t.background, color: t.text, boxShadow: `0 0 0 1px ${t.border}` },
+            '&.Mui-selected': { backgroundColor: t.background, color: t.accent, boxShadow: `0 0 0 1px ${t.border}` },
             '&.Mui-selected:hover': { backgroundColor: t.background },
           },
         },
@@ -173,8 +209,8 @@ export function createBridgeTheme(mode = 'light') {
           head: { backgroundColor: t.surface, color: t.textSecondary, fontSize: 13, fontWeight: 500 },
         },
       },
-      MuiTab: { styleOverrides: { root: { textTransform: 'none', fontSize: 14, minHeight: 40, color: t.textSecondary, '&.Mui-selected': { color: t.text, fontWeight: 500 } } } },
-      MuiTabs: { styleOverrides: { indicator: { backgroundColor: t.text, height: 2 } } },
+      MuiTab: { styleOverrides: { root: { textTransform: 'none', fontSize: 14, minHeight: 40, color: t.textSecondary, '&.Mui-selected': { color: t.accent, fontWeight: 500 } } } },
+      MuiTabs: { styleOverrides: { indicator: { backgroundColor: t.accent, height: 2 } } },
       MuiDivider: { styleOverrides: { root: { borderColor: t.border } } },
       MuiTooltip: { styleOverrides: { tooltip: { backgroundColor: t.text, color: t.background, fontSize: 12, borderRadius: 8 } } },
     },

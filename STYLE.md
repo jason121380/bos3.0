@@ -1,6 +1,6 @@
 # BOS 3.0 設計規範（STYLE.md）
 
-> 方向：現代、簡約、清楚。參考 OpenAI 產品介面的克制感——大量留白、中性色、黑白為主、單一強調色、極少陰影。
+> 方向：現代、簡約、清楚。參考 OpenAI 產品介面的克制感——大量留白、中性色、黑白灰為底、以品牌藍為唯一主題色點綴、極少陰影。
 > 技術：Tailwind CSS + shadcn/ui（Radix）。本文件是所有新畫面的唯一依據；與本文件衝突的舊樣式一律以本文件為準。
 
 ---
@@ -26,9 +26,9 @@
 | `--text` | `#0D0D0D` | `#ECECEC` | 主要文字 |
 | `--text-secondary` | `#5D5D5D` | `#B4B4B4` | 說明、標籤、欄位名 |
 | `--text-tertiary` | `#8F8F8F` | `#8F8F8F` | placeholder、停用 |
-| `--primary` | `#0D0D0D` | `#ECECEC` | 主要按鈕、選取狀態 |
-| `--primary-foreground` | `#FFFFFF` | `#0D0D0D` | 主要按鈕文字 |
-| `--accent` | `#10A37F` | `#10A37F` | 唯一強調色：連結、焦點框、進度 |
+| `--primary` | `#1A73E8` | `#1A73E8` | 主題色（沿用舊版品牌藍）：主要按鈕、勾選、選取狀態 |
+| `--primary-foreground` | `#FFFFFF` | `#FFFFFF` | 主要按鈕文字 |
+| `--accent` | `#1A73E8` | `#4C8DF6` | 主題色點綴：連結、焦點框、進度、側欄目前頁、Tabs 底線 |
 | `--success` | `#10A37F` | `#19C37D` | 成功、已付款 |
 | `--warning` | `#B7791F` | `#F0B429` | 待處理、即將到期 |
 | `--danger` | `#D92D20` | `#F97066` | 錯誤、刪除、退款 |
@@ -87,16 +87,16 @@
 
 | 元件 | 規則 |
 |---|---|
-| **Button** | 變體只有 `primary`（黑底白字、圓角 full）、`secondary`（白底、border）、`ghost`（無框）、`danger`；尺寸 `sm 32px / md 36px / lg 40px`。圖示 16px，與文字間距 6px。 |
-| **Input / Select / DatePicker** | 高 36px、`rounded-md`、1px border；focus 為 2px `accent` 外框。錯誤時 border 變 `danger`，下方 caption 顯示訊息。 |
+| **Button** | 變體只有 `primary`（主題藍底白字、圓角 full）、`secondary`（白底、border）、`ghost`（無框）、`danger`；尺寸 `sm 32px / md 36px / lg 40px`。圖示 16px，與文字間距 6px。 |
+| **Input / Select / DatePicker** | 高 36px、`rounded-md`、1px border；focus 為 2px `accent` 外框。錯誤時 border 變 `danger`，下方 caption 顯示訊息。日期區間一律用 `DateSelector`：「快速選擇」下拉 ＋ 一個日期區間欄位，不平鋪多顆按鈕。 |
 | **Form** | 標籤在上；必填以「*」標在標籤後；一列最多 2 欄（桌機）。底部固定動作列：右側「取消 / 儲存」。 |
 | **Table** | 表頭 `surface` 底、`label` 字級；列高 44px；hover `surface-hover`；數字欄右對齊；空狀態置中顯示說明＋主要動作。分頁固定在表格下方右側。 |
 | **Badge** | 狀態專用；文字＋8% 底色；不加邊框陰影。 |
 | **Card** | `rounded-lg`、1px border、內距 20px；標題用 `heading`。 |
 | **Dialog** | 寬 480 / 640 / 800；標題、內容、底部動作三段；危險操作需二次確認並寫出後果。 |
 | **Toast** | 右下角；成功 3 秒自動消失，錯誤需手動關閉。 |
-| **Sidebar** | 240px；群組標題 `caption` + `text-tertiary`；項目高 36px、`rounded-md`；選取為 `surface-hover` + 字重 500。 |
-| **Tabs** | 底線式；選取為 `text` + 2px 底線，未選 `text-secondary`。 |
+| **Sidebar** | 240px；群組標題 `caption` + `text-tertiary`；項目高 36px、`rounded-md`；選取為主題色 8% 底（`bg-accent/8`）+ 主題色文字 + 字重 500。 |
+| **Tabs** | 底線式；選取為 `text` + 2px 主題色底線，未選 `text-secondary`。 |
 | **Empty / Loading** | 一律用 `EmptyState`、`Skeleton` 元件，不得各頁自寫。 |
 
 ## 7. 文案

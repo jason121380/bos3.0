@@ -3,7 +3,7 @@ import { ChevronDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { cn, focusRing } from './utils'
 
-// STYLE.md §6 Sidebar：240px、surface 底；項目高 36px、rounded-md；選取為 surface-hover + 字重 500
+// STYLE.md §6 Sidebar：240px、surface 底；項目高 36px、rounded-md；選取為主題色 8% 底 + 主題色文字 + 字重 500
 // 桌機（lg 以上）固定在左側，可收合；平板與手機為由左滑出的抽屜。整個側欄只渲染一份。
 function Sidebar({ mobileOpen, onMobileClose, desktopOpen = true, className, children }) {
   return (
@@ -64,7 +64,7 @@ const SidebarLink = ({ to, active, icon: Icon, indent, className, children, ...p
   <Link
     to={to}
     aria-current={active ? 'page' : undefined}
-    className={cn(rowClass, indent && 'pl-8', active && 'bg-surface-hover font-medium text-text', className)}
+    className={cn(rowClass, indent && 'pl-8', active && 'bg-accent/8 font-medium text-accent hover:bg-accent/8 hover:text-accent', className)}
     {...props}
   >
     {Icon && <Icon className="h-4 w-4" strokeWidth={1.75} />}
