@@ -1,10 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardContent,
-  Grid
-} from '@mui/material'
 import billContext from 'context/keyInContext'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
@@ -16,37 +10,10 @@ import useFetchDestroyQueueById from 'hooks/useFetchDestroyQueueById'
 import _ from 'lodash'
 import { handleTidyBill, checkServicesOrders, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
 import produce from 'immer'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import giveBonus from 'helper/giveBonus'
-
-const styles = {
-  card: css({
-    marginTop: theme.spacing(3),
-  }),
-  cardContent: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  }),
-  price: css({
-    padding: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(3),
-  }),
-  action: css({
-    padding: theme.spacing(1),
-  }),
-  saveButton: css({
-    marginRight: theme.spacing(1),
-  }),
-  font: css({
-    fontWeight: 'bold',
-    color: 'rgb(var(--accent))',
-    padding: theme.spacing(1),
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { formatNumber } from 'ui/format'
 
 export default function Footer({ enable }) {
   const { bill, orderId, setBill, bonusSetting, isLineBinded, bonusRewardWithLINE } = useContext(billContext)
@@ -244,74 +211,66 @@ export default function Footer({ enable }) {
     isLineBinded
   ])
 
+  // 金額彙總：各數值的運算式與舊版相同，只加千分位與新版樣式
+  const Row = ({ label, value }) => (
+    <div className="flex items-center justify-between gap-3 py-1.5 text-body">
+      <span className="whitespace-nowrap text-text-secondary">{label}</span>
+      <span className="tabular-nums text-text">{formatNumber(value)}</span>
+    </div>
+  )
   return (
-    <Card css={styles.card}>
-      <CardContent css={styles.cardContent}>
-        <Grid container spacing={3}>
-          <Grid container item md={9} xs={12}>
-            <Grid item md={3} xs={12} css={styles.price}>
-              <span>服務消費 {serviceTotalPrice}</span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.price}>
-              <span>店販消費 {merchantSellTotalPrice}</span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.price}>
-              <span>使用預收卡 {Math.round(couponUsageTotalPrice)}</span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.font}>
-              <span>
-                業績合計{' '}
-                {Math.round(
-                  serviceTotalPrice +
-                  merchantSellTotalPrice +
-                  couponUsageTotalPrice +
-                  merberShipCardTotalPriceWithoutThirdPartyCoupon
-                )}
-              </span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.price}>
-              <span>預收卡販賣 {couponSellPrice}</span>
-            </Grid>
-            <Grid item xs={3} css={styles.price}>
-              <span>會員卡販賣 {merberShipCardTotalPrice}</span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.price}>
-              <span>扣入金 {bill.walletPay}</span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.font}>
-              <span>
-                現金應收{' '}
-                {serviceTotalPriceWithoutThirdPartyCoupon +
-                  productTotalPriceWithoutThirdPartyCoupon +
-                  couponSellPrice +
-                  merberShipCardTotalPriceWithoutThirdPartyCoupon -
-                  bill.walletPay -
-                  bill.amountByOtherPay}
-              </span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.price}>
-              <span>其他付款方式 {bill.amountByOtherPay}</span>
-            </Grid>
-          </Grid>
-
-          <Grid container item md={3} xs={12} css={styles.actions} justifyContent="flex-start">
-            <Grid item md={6} css={styles.action}>
-              <Button
-                size="large"
-                variant="contained"
-                color="primary"
-                onClick={handleReCheckoutOrder}
-                disabled={vaild || !enable}
-                data-testid="checkout"
-                style={{ whiteSpace: 'nowrap' }}
-              >
-                重試
-              </Button>
-            </Grid>
-          </Grid>
-
-        </Grid>
-      </CardContent>
+    <Card className="ui-root mt-6">
+      <CardHeader>
+        <CardTitle>金額彙總</CardTitle>
+      </CardHeader>
+      <div className="grid grid-cols-2 gap-x-6 px-5 pt-2 md:grid-cols-4">
+        <Row label="服務消費" value={serviceTotalPrice} />
+        <Row label="店販消費" value={merchantSellTotalPrice} />
+        <Row label="使用預收卡" value={Math.round(couponUsageTotalPrice)} />
+        <Row label="預收卡販賣" value={couponSellPrice} />
+        <Row label="會員卡販賣" value={merberShipCardTotalPrice} />
+        <Row label="扣入金" value={bill.walletPay} />
+        <Row label="其他付款方式" value={bill.amountByOtherPay} />
+      </div>
+      <div className="mt-3 flex flex-wrap items-end justify-between gap-6 border-0 border-t border-solid border-border px-5 py-4">
+        <div className="flex flex-wrap gap-x-10 gap-y-4">
+          <div className="flex flex-col gap-1">
+            <span className="text-label text-text-secondary">業績合計</span>
+            <span className="text-heading tabular-nums text-text">
+              {formatNumber(Math.round(
+                serviceTotalPrice +
+                merchantSellTotalPrice +
+                couponUsageTotalPrice +
+                merberShipCardTotalPriceWithoutThirdPartyCoupon
+              ))}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-label text-text-secondary">現金應收</span>
+            <span className="text-display tabular-nums text-text">
+              <span className="mr-1 text-body text-text-secondary">NT$</span>
+              {formatNumber(serviceTotalPriceWithoutThirdPartyCoupon +
+                productTotalPriceWithoutThirdPartyCoupon +
+                couponSellPrice +
+                merberShipCardTotalPriceWithoutThirdPartyCoupon -
+                bill.walletPay -
+                bill.amountByOtherPay)}
+            </span>
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="primary"
+            size="lg"
+            className="px-6"
+            onClick={handleReCheckoutOrder}
+            disabled={vaild || !enable}
+            data-testid="checkout"
+          >
+            重試
+          </Button>
+        </div>
+      </div>
     </Card>
   )
 }

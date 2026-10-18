@@ -23,8 +23,9 @@ const styles = {
     overflowX: 'auto',
   }),
   heading: css({
-    fontSize: '15px !important',
-    fontWeight: theme.typography.fontWeightRegular,
+    fontSize: '16px !important',
+    fontWeight: 'bold',
+    color: 'rgb(var(--text))',
   }),
   fieldOutter: css({
     display: 'flex',

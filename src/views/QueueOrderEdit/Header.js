@@ -1,42 +1,29 @@
 /** @jsxImportSource @emotion/react */
-import { Grid, Button, TextField } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useContext, useState } from 'react'
 import billContext from 'context/keyInContext'
 import FastCheckOrdersModal from 'components/FastCheckOrdersModal'
-import PageTitle from 'components/PageTitle'
 import produce from 'immer'
-import { css } from '@emotion/react'
-
-const styles = {
-  input: css({
-    marginLeft: 12,
-    width: 100,
-    '& input': {
-      padding: '8px !important'
-    }
-  })
-}
+import { ReceiptText } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Input } from 'ui/input'
 
 function Header() {
   const { bill, setBill, enable, serialNumberUsing } = useContext(billContext)
   const [openModal, setOpenModal] = useState(false)
 
+  // 頁首（STYLE.md §4）：左側標題與流水號，右側次要動作；主要按鈕在下方結帳列
   return (
-    <div>
+    <div className="ui-root noprint flex flex-wrap items-center justify-between gap-4 pb-6">
       <FastCheckOrdersModal date={bill.date} open={openModal} setOpenModal={setOpenModal}/>
-      <Grid alignItems="flex-end" container justifyContent="space-between">
-        <Grid item style={{ alignItems: 'center', display: 'flex', alignItems: 'flex-end' }}>
-          <PageTitle  title={`重新開單 ${bill.no ? `(${bill.no})` : ''}`} subTitle='Order detail' />
-          {serialNumberUsing && (
-            <TextField
+      <div className="flex flex-wrap items-center gap-3">
+        <h1 className="m-0 text-title !font-bold text-text">{`重新開單 ${bill.no ? `(${bill.no})` : ''}`}</h1>
+        {serialNumberUsing && (
+          <label className="flex items-center gap-2 text-label text-text-secondary">
+            流水號
+            <Input
               disabled={!enable}
-              css={styles.input}
-              variant='outlined'
-              label='流水號'
-              InputLabelProps={{
-                shrink: true,
-              }}
+              className="w-[100px] tabular-nums"
               value={bill.serialNumber == null ? '' : bill.serialNumber}
               onChange={e => {
                 const value = e.target.value === '' ? null : e.target.value
@@ -47,10 +34,15 @@ function Header() {
                 )
               }}
             />
-          )}
-        </Grid>
-        <Button onClick={() => setOpenModal(true)} variant='contained' color='primary'>帳單速查</Button>
-      </Grid>
+          </label>
+        )}
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <Button variant="secondary" onClick={() => setOpenModal(true)}>
+          <ReceiptText strokeWidth={1.75} />
+          帳單速查
+        </Button>
+      </div>
     </div>
   )
 }
