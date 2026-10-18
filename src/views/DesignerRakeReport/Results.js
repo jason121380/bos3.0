@@ -4,15 +4,8 @@ import {
   CardContent,
   CardHeader,
   Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Paper,
-  Grid,
 } from '@mui/material'
+import { Table, TableBody, TableCell, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'
 import { Fragment, useState, useEffect } from 'react'
 import { css } from '@emotion/react'
@@ -83,9 +76,7 @@ function Results({ designerRakeReport, isMemberShipCardActive }) {
             <Divider />
             <CardContent css={styles.content}>
               <div css={styles.inner}>
-                <TableContainer component={Paper}>
-                  <Table css={styles.table} size="small" aria-label="a dense table">
-                    <TableHead></TableHead>
+                <Table dense aria-label="a dense table">
                     <TableBody>
                       <TableRow>
                         <TableCell>服務虛業績</TableCell>
@@ -345,8 +336,7 @@ function Results({ designerRakeReport, isMemberShipCardActive }) {
                         </TableCell>
                       </TableRow>
                     </TableBody>
-                  </Table>
-                </TableContainer>
+                </Table>
               </div>
             </CardContent>
           </Card>
