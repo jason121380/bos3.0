@@ -30,14 +30,14 @@ const styles = {
   }),
   headerCard: css({
     display: 'flex',
-    padding: '12px 24px',
+    padding: '0 0 24px 0',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#E8F0FE',
-    borderRadius: '12px',
+    backgroundColor: 'transparent',
+    borderRadius: 0,
     boxShadow: 'none',
     border: 'none !important',
-    marginBottom: '12px',
+    marginBottom: 0,
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column',
       alignItems: 'flex-start',

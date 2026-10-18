@@ -30,7 +30,8 @@ export function createBridgeTheme(mode = 'light') {
     palette: {
       mode,
       primary: { main: t.primary, contrastText: t.primaryForeground },
-      secondary: { main: t.accent, contrastText: '#FFFFFF' },
+      // 沿用舊版語意：secondary 為中性灰（舊版 #8E8E93），不是第二個強調色
+      secondary: { main: t.textSecondary, contrastText: '#FFFFFF' },
       success: { main: t.success },
       warning: { main: t.warning },
       error: { main: t.danger },
@@ -99,6 +100,9 @@ export function createBridgeTheme(mode = 'light') {
         styleOverrides: {
           root: { borderRadius: 9999, minHeight: 36, padding: '0 16px', boxShadow: 'none' },
           sizeSmall: { minHeight: 32, padding: '0 12px', fontSize: 13 },
+          // 舊版語意：預設（primary）實心＝主要按鈕（主題藍）；inherit / secondary 實心＝次要按鈕（淺灰實心）
+          containedInherit: { backgroundColor: t.surfaceHover, color: t.text, '&:hover': { backgroundColor: t.surfaceActive } },
+          containedSecondary: { backgroundColor: t.surfaceHover, color: t.text, '&:hover': { backgroundColor: t.surfaceActive } },
           outlined: { border: 'none', backgroundColor: t.surfaceHover, color: t.text, '&:hover': { border: 'none', backgroundColor: t.surfaceActive } },
           text: { color: t.text, borderRadius: 8, '&:hover': { backgroundColor: t.surfaceHover } },
         },

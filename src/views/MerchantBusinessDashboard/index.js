@@ -59,14 +59,14 @@ function MerchantBusinessDashboard() {
         <Card
           css={css({
             display: 'flex',
-            padding: '8px 24px',
+            padding: '0 0 24px 0',
             alignItems: 'center',
             justifyContent: 'space-between',
-            backgroundColor: '#E8F0FE',
-            borderRadius: '12px',
+            backgroundColor: 'transparent',
+            borderRadius: 0,
             boxShadow: 'none',
             border: 'none !important',
-            marginBottom: '12px',
+            marginBottom: 0,
             flexWrap: 'wrap',
             gap: '12px'
           })}

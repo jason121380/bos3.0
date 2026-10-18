@@ -2,7 +2,7 @@ import ChangePassword from 'components/ChangePassword'
 import Snackbar, { openSnackbar } from 'elements/snackbars'
 import useToggle from 'hooks/useToggle'
 import PropTypes from 'prop-types'
-import React, { Fragment, Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { renderRoutes } from 'react-router-config'
 import useFetchCheckPageAuthority from 'hooks/useFetchCheckPageAuthority'
@@ -10,6 +10,7 @@ import useFetchGetUserMerchant from 'hooks/useFetchGetUserMerchant'
 import idx from 'idx'
 import { Menu, PanelLeftOpen } from 'lucide-react'
 import { Button } from 'ui/button'
+import { MuiScope } from 'ui/mui-theme'
 import { Sidebar, SidebarHeader } from 'ui/sidebar'
 import { cn } from 'ui/utils'
 
@@ -79,8 +80,9 @@ function Dashboard({ route, location }) {
   }
 
   // 骨架（STYLE.md §4）：左側 Sidebar（Logo / 商家切換 / 導覽 / 使用者）＋右側內容
+  // 全站套用 MUI 橋接主題：尚未改版頁面中的 MUI 元件也採用新配色與尺寸（STYLE.md §10）
   return (
-    <Fragment>
+    <MuiScope>
       <Snackbar />
       <Sidebar mobileOpen={openNavBarMobile} onMobileClose={() => setOpenNavBarMobile(false)} desktopOpen={openNavBarDesktop}>
         <SidebarHeader>
@@ -112,7 +114,7 @@ function Dashboard({ route, location }) {
         </div>
       </div>
       <ChangePassword open={open} handleClose={toggle} />
-    </Fragment>
+    </MuiScope>
   )
 }
 
