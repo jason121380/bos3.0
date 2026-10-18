@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from '@mui/material'
-import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
+import { Field, Input } from 'ui/input'
+import { Eraser, Copy, Trash2 } from 'lucide-react'
+import { RowIconButton, AddRowButton } from './RowAction'
 import TicketAutoComplete from 'components/TicketAutoComplete'
 import idx from 'idx'
 import _ from 'lodash'
@@ -88,157 +89,146 @@ export default function CouponSells({
     <Fragment>
       <div css={styles.couponSells}>
         {index === 0 ? (
-          <FilterNoneIcon css={styles.createIcon} onClick={handleOpenCouponModal} />
+          <RowIconButton label="從清單選擇預收卡" className="mx-1.5" onClick={handleOpenCouponModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span style={{ margin: '22px' }} />
+          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
         )}
-        <TicketAutoComplete
-          className={styles.fieldWidth}
-          label="卡券名稱/代號"
-          value={couponSell.serviceId}
-          ref={couponRef}
-          name="coupon"
-          fieldProps={{ InputLabelProps: { shrink: true } }}
-          autoFocus={focus === 'coupon'}
-          onFocus={handleFocus}
-          tabIndex={focusRow + '0'}
-          isLaunched
-          setCouponAlready={setCouponAlready}
-          getData={getData}
-          onKeyDown={event => {
-            if (couponSell.isLocked !== 'FALSE') {
-              handleKeyDown({ event, nextField: "count" })
-            } else {
-              handleKeyDown({ event, nextField: "availableCount" })
-            }
-          }}
-          onChange={function (value) {
-            const newCouponSell = _.cloneDeep(couponSell)
-            idx(value, _ => {
-              onChange({
-                index,
-                value: {
-                  ...newCouponSell,
-                  serviceId: _.id,
-                  availableCount: _.ticketAvailableCount,
-                  price: _.price,
-                  remark: _.remark,
-                  isLocked: _.isLocked,
-                },
+        <Field label="卡券">
+          <TicketAutoComplete
+            className={styles.fieldWidth}
+            value={couponSell.serviceId}
+            ref={couponRef}
+            name="coupon"
+            autoFocus={focus === 'coupon'}
+            onFocus={handleFocus}
+            tabIndex={focusRow + '0'}
+            isLaunched
+            setCouponAlready={setCouponAlready}
+            getData={getData}
+            onKeyDown={event => {
+              if (couponSell.isLocked !== 'FALSE') {
+                handleKeyDown({ event, nextField: "count" })
+              } else {
+                handleKeyDown({ event, nextField: "availableCount" })
+              }
+            }}
+            onChange={function (value) {
+              const newCouponSell = _.cloneDeep(couponSell)
+              idx(value, _ => {
+                onChange({
+                  index,
+                  value: {
+                    ...newCouponSell,
+                    serviceId: _.id,
+                    availableCount: _.ticketAvailableCount,
+                    price: _.price,
+                    remark: _.remark,
+                    isLocked: _.isLocked,
+                  },
+                })
               })
-            })
-            if (value.isLocked !== 'FALSE') {
-              handleKeyDown({ event: { key: 'Enter' }, nextField: "count" })
-            } else {
-              handleKeyDown({ event: { key: 'Enter' }, nextField: "availableCount" })
-            }
-          }}
-        />
+              if (value.isLocked !== 'FALSE') {
+                handleKeyDown({ event: { key: 'Enter' }, nextField: "count" })
+              } else {
+                handleKeyDown({ event: { key: 'Enter' }, nextField: "availableCount" })
+              }
+            }}
+            inputProps={{ placeholder: '卡券名稱/代號' }}
+          />
+        </Field>
         {couponSell.serviceId && (
           <Fragment>
-            <TextField
-              variant="outlined"
-              label="可使用次數"
-              value={couponSell.availableCount}
-              InputLabelProps={{ shrink: true }}
-              autoFocus={focus === 'availableCount'}
-              css={styles.priceField}
-              inputRef={availableCountRef}
-              name="availableCount"
-              onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
-              onFocus={handleFocus}
-              tabIndex={focusRow + '1'}
-              inputProps={{
-                'data-testid': `couponSells-${index}-count`,
-              }}
-              onChange={event => {
-                const newCouponSell = _.cloneDeep(couponSell)
-                newCouponSell.availableCount = idx(event, _ => +_.target.value || 1)
-                onChange({ index, value: newCouponSell })
-                if (event.keyCode === 13) setFocus('availableCount')
-              }}
-              disabled={!!(couponSell.isLocked === 'TRUE' || couponSell.isLocked === 'UNSET')}
-            />
-            <TextField
-              variant="outlined"
-              label="價格"
-              css={styles.priceField}
-              value={couponSell.price}
-              name="price"
-              InputLabelProps={{ shrink: true }}
-              tabIndex={focusRow + '2'}
-              autoFocus={focus === 'price'}
-              onKeyDown={event => handleKeyDown({ event, nextField: 'count' })}
-              inputProps={{
-                'data-testid': `couponSells-${index}-price`,
-              }}
-              onFocus={handleFocus}
-              inputRef={priceRef}
-              onChange={event => {
-                const newCouponSell = _.cloneDeep(couponSell)
-                newCouponSell.price = idx(event, _ => +_.target.value || 0)
-                onChange({ index, value: newCouponSell })
-                if (event.keyCode === 13) setFocus('count')
-              }}
-              disabled={!!(couponSell.isLocked === 'TRUE' || couponSell.isLocked === 'UNSET')}
-            />
-            <TextField
-              variant="outlined"
-              label="張數"
-              css={styles.priceField}
-              value={couponSell.count}
-              name="count"
-              InputLabelProps={{ shrink: true }}
-              tabIndex={focusRow + '2'}
-              autoFocus={focus === 'count'}
-              onKeyDown={event => handleKeyDown({ event, nextField: 'remark' })}
-              inputProps={{
-                'data-testid': `couponSells-${index}-count`,
-              }}
-              onFocus={handleFocus}
-              inputRef={countRef}
-              onChange={event => {
-                const newCouponSell = _.cloneDeep(couponSell)
-                newCouponSell.count = idx(event, _ => +_.target.value || 1)
-                onChange({ index, value: newCouponSell })
-                if (event.keyCode === 13) setFocus('remark')
-              }}
-            />
-            <TextField
-              value={couponSell.remark}
-              variant="outlined"
-              label="備註"
-              name="remark"
-              InputLabelProps={{ shrink: true }}
-              onFocus={handleFocus}
-              inputRef={remarkRef}
-              css={styles.field}
-              onKeyDown={event => {
-                if (event.key === 'Enter') {
-                  setTimeout(() => {
-                    changeRowFocus(index + 1)
-                  }, 1)
-                }
-              }}
-              onChange={event => {
-                const newCouponSell = _.cloneDeep(couponSell)
-                newCouponSell.remark = event.target.value
-                onChange({ index, value: newCouponSell })
-              }}
-            />
+            <Field label="可使用次數" css={styles.priceField}>
+              <Input
+                value={couponSell.availableCount}
+                autoFocus={focus === 'availableCount'}
+                ref={availableCountRef}
+                name="availableCount"
+                onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
+                onFocus={handleFocus}
+                tabIndex={focusRow + '1'}
+                data-testid={`couponSells-${index}-count`}
+                onChange={event => {
+                  const newCouponSell = _.cloneDeep(couponSell)
+                  newCouponSell.availableCount = idx(event, _ => +_.target.value || 1)
+                  onChange({ index, value: newCouponSell })
+                  if (event.keyCode === 13) setFocus('availableCount')
+                }}
+                disabled={!!(couponSell.isLocked === 'TRUE' || couponSell.isLocked === 'UNSET')}
+              />
+            </Field>
+            <Field label="價格" css={styles.priceField}>
+              <Input
+                value={couponSell.price}
+                name="price"
+                tabIndex={focusRow + '2'}
+                autoFocus={focus === 'price'}
+                onKeyDown={event => handleKeyDown({ event, nextField: 'count' })}
+                data-testid={`couponSells-${index}-price`}
+                onFocus={handleFocus}
+                ref={priceRef}
+                onChange={event => {
+                  const newCouponSell = _.cloneDeep(couponSell)
+                  newCouponSell.price = idx(event, _ => +_.target.value || 0)
+                  onChange({ index, value: newCouponSell })
+                  if (event.keyCode === 13) setFocus('count')
+                }}
+                disabled={!!(couponSell.isLocked === 'TRUE' || couponSell.isLocked === 'UNSET')}
+              />
+            </Field>
+            <Field label="張數" css={styles.priceField}>
+              <Input
+                value={couponSell.count}
+                name="count"
+                tabIndex={focusRow + '2'}
+                autoFocus={focus === 'count'}
+                onKeyDown={event => handleKeyDown({ event, nextField: 'remark' })}
+                data-testid={`couponSells-${index}-count`}
+                onFocus={handleFocus}
+                ref={countRef}
+                onChange={event => {
+                  const newCouponSell = _.cloneDeep(couponSell)
+                  newCouponSell.count = idx(event, _ => +_.target.value || 1)
+                  onChange({ index, value: newCouponSell })
+                  if (event.keyCode === 13) setFocus('remark')
+                }}
+              />
+            </Field>
+            <Field label="備註" css={styles.field}>
+              <Input
+                value={couponSell.remark}
+                name="remark"
+                onFocus={handleFocus}
+                ref={remarkRef}
+                onKeyDown={event => {
+                  if (event.key === 'Enter') {
+                    setTimeout(() => {
+                      changeRowFocus(index + 1)
+                    }, 1)
+                  }
+                }}
+                onChange={event => {
+                  const newCouponSell = _.cloneDeep(couponSell)
+                  newCouponSell.remark = event.target.value
+                  onChange({ index, value: newCouponSell })
+                }}
+              />
+            </Field>
           </Fragment>
         )}
-        <BackspaceOutlinedIcon
-          css={styles.action}
+        <RowIconButton
+          label="清除此列" className="mr-1.5"
           data-testid={`couponSells-${index}-clear`}
           onClick={() => {
             onClear({ index })
             setFocus('coupon')
           }}
-        />
+        >
+          <Eraser aria-hidden="true" strokeWidth={1.75} />
+        </RowIconButton>
         {!first && (
-          <DeleteForeverIcon
-            css={styles.action}
+          <RowIconButton
+            label="刪除此列" className="mr-1.5"
             data-testid={`couponSells-${index}-delete`}
             onClick={() => {
               removeCouponSell({
@@ -246,12 +236,13 @@ export default function CouponSells({
               })
               setFocus('coupon')
             }}
-          />
+          >
+            <Trash2 aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         )}
       </div>
       {last && (
-        <AddIcon
-          css={styles.action}
+        <AddRowButton
           data-testid={`couponSells-${index}-add`}
           onClick={() => {
             addCouponSell({

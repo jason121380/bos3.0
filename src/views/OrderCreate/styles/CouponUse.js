@@ -4,8 +4,10 @@ import { theme } from '../../../theme'
 export default {
   couponUse: css({
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    rowGap: '12px',
     marginBottom: theme.spacing(3),
   }),
   field: css({

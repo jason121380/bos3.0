@@ -13,7 +13,7 @@ const PRINT = cn(
   'print:[&_thead]:bg-transparent print:[&_tfoot]:bg-transparent'
 )
 const Table = React.forwardRef(({ className, wrapperClassName, dense = false, ...props }, ref) => (
-  <div className={cn('w-full overflow-x-auto rounded-lg border border-solid border-border print:overflow-visible print:rounded-none print:border-0', wrapperClassName)}>
+  <div className={cn('ui-scroll-x w-full overflow-x-auto rounded-lg border border-solid border-border print:overflow-visible print:rounded-none print:border-0', wrapperClassName)}>
     <table
       ref={ref}
       className={cn('w-full border-collapse text-body', dense && '[&_td]:h-8 [&_td]:py-1 [&_th]:h-8', PRINT, className)}

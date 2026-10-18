@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from '@mui/material'
-import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
+import { Field, Input } from 'ui/input'
+import { Eraser, Copy, Trash2 } from 'lucide-react'
+import { RowIconButton, AddRowButton } from './RowAction'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import ProductAutoComplete from 'components/ProductAutoComplete'
 import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
@@ -147,140 +148,136 @@ function MerchantSells({
   return (
     <Fragment>
       <div css={styles.merchantSells}>
-        <EmployeeAutoComplete
-          className={styles.field}
-          label="服務人員姓名/編號"
-          value={sellsItem.sellerId}
-          ref={employeeRef}
-          fieldProps={{ InputLabelProps: { shrink: true } }}
-          onChange={value => {
-            onChange({
-              index,
-              key: 'sellerId',
-              value: idx(value, _ => _.userId),
-            })
-          }}
-          autoFocus={focus === 'employee'}
-          onFocus={event => handleFocus({ event, field: 'employee' })}
-          onKeyDown={event => handleKeyDown({ event, nextField: 'product' })}
-          tabIndex={focusRow + '0'}
-        />
-        {index === 0 ? (
-          <FilterNoneIcon css={styles.createIcon} onClick={handleOpenProductsModal} />
-        ) : (
-          <span style={{ margin: '22px' }} />
-        )}
-        <ProductAutoComplete
-          className={styles.productField}
-          label="商品代號/名稱"
-          value={sellsItem.productId}
-          ref={productRef}
-          fieldProps={{ InputLabelProps: { shrink: true } }}
-          autoFocus={focus === 'product'}
-          onFocus={event => handleFocus({ event, field: 'product' })}
-          onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
-          tabIndex={focusRow + '1'}
-          getData={getData}
-          isPublished
-          setProductAlready={setProductAlready}
-          onChange={value => {
-            idx(value, _ => {
-              onProductChange({
+        {/* 必填 *：helper/billVerify.js checkProductOrders 要求 sellerId 與 productId；兩者都空的列會被 handleTidyBill 丟掉，所以該列有填任一欄才標必填 */}
+        <Field label="服務人員" required={!!sellsItem.sellerId || !!sellsItem.productId}>
+          <EmployeeAutoComplete
+            placeholder="服務人員姓名/編號"
+            className={styles.field}
+            value={sellsItem.sellerId}
+            ref={employeeRef}
+            onChange={value => {
+              onChange({
                 index,
-                value: {
-                  ...sellsItem,
-                  productId: _.id,
-                  price: _.sellPrice,
-                  count: 1,
-                  isLocked: _.isLocked,
-                },
+                key: 'sellerId',
+                value: idx(value, _ => _.userId),
               })
-            })
-          }}
-        />
+            }}
+            autoFocus={focus === 'employee'}
+            onFocus={event => handleFocus({ event, field: 'employee' })}
+            onKeyDown={event => handleKeyDown({ event, nextField: 'product' })}
+            tabIndex={focusRow + '0'}
+          />
+        </Field>
+        {index === 0 ? (
+          <RowIconButton label="從清單選擇商品" className="mx-1.5" onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+        ) : (
+          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
+        )}
+        <Field label="商品" required={!!sellsItem.sellerId || !!sellsItem.productId}>
+          <ProductAutoComplete
+            className={styles.productField}
+            value={sellsItem.productId}
+            ref={productRef}
+            autoFocus={focus === 'product'}
+            onFocus={event => handleFocus({ event, field: 'product' })}
+            onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
+            tabIndex={focusRow + '1'}
+            getData={getData}
+            isPublished
+            setProductAlready={setProductAlready}
+            onChange={value => {
+              idx(value, _ => {
+                onProductChange({
+                  index,
+                  value: {
+                    ...sellsItem,
+                    productId: _.id,
+                    price: _.sellPrice,
+                    count: 1,
+                    isLocked: _.isLocked,
+                  },
+                })
+              })
+            }}
+            inputProps={{ placeholder: '商品代號/名稱' }}
+          />
+        </Field>
         {sellsItem.productId && (
           <React.Fragment>
-            <TextField
-              variant="outlined"
-              label="價格"
-              css={styles.priceField}
-              value={sellsItem.price}
-              inputRef={priceRef}
-              tabIndex={focusRow + '2'}
-              InputLabelProps={{ shrink: true }}
-              autoFocus={focus === 'price'}
-              onFocus={event => handleFocus({ event, field: 'price' })}
-              onKeyDown={event => handleKeyDown({ event, nextField: 'count' })}
-              inputProps={{
-                'data-testid': `merchantSsell-${index}-price`,
-              }}
-              onChange={value => {
-                setFocus('price')
-                onChange({
-                  index,
-                  key: 'price',
-                  value: idx(value, _ => +_.target.value || 0),
-                })
-              }}
-              disabled={!!(sellsItem.isLocked === 'TRUE' || sellsItem.isLocked === 'UNSET')}
-            />
-            <TextField
-              variant="outlined"
-              label="數量"
-              css={styles.priceField}
-              value={sellsItem.count}
-              inputRef={countRef}
-              InputLabelProps={{ shrink: true }}
-              autoFocus={focus === 'count'}
-              tabIndex={focusRow + '3'}
-              onFocus={event => handleFocus({ event, field: 'count' })}
-              onKeyDown={event => {
-                if (event.key === 'Enter' && !thirdPartTicket) {
-                  changeRowFocus(index + 1)
-                } else {
-                  handleKeyDown({ event, nextField: 'thirdParty' })
-                }
-              }}
-              inputProps={{
-                'data-testid': `merchantSsell-${index}-count`,
-              }}
-              onChange={value => {
-                setFocus('count')
-                onChange({
-                  index,
-                  key: 'count',
-                  value: idx(value, _ => +_.target.value || 0),
-                })
-              }}
-            />
+            <Field label="價格" css={styles.priceField}>
+              <Input
+                value={sellsItem.price}
+                ref={priceRef}
+                tabIndex={focusRow + '2'}
+                autoFocus={focus === 'price'}
+                onFocus={event => handleFocus({ event, field: 'price' })}
+                onKeyDown={event => handleKeyDown({ event, nextField: 'count' })}
+                data-testid={`merchantSsell-${index}-price`}
+                onChange={value => {
+                  setFocus('price')
+                  onChange({
+                    index,
+                    key: 'price',
+                    value: idx(value, _ => +_.target.value || 0),
+                  })
+                }}
+                disabled={!!(sellsItem.isLocked === 'TRUE' || sellsItem.isLocked === 'UNSET')}
+              />
+            </Field>
+            <Field label="數量" css={styles.priceField}>
+              <Input
+                value={sellsItem.count}
+                ref={countRef}
+                autoFocus={focus === 'count'}
+                tabIndex={focusRow + '3'}
+                onFocus={event => handleFocus({ event, field: 'count' })}
+                onKeyDown={event => {
+                  if (event.key === 'Enter' && !thirdPartTicket) {
+                    changeRowFocus(index + 1)
+                  } else {
+                    handleKeyDown({ event, nextField: 'thirdParty' })
+                  }
+                }}
+                data-testid={`merchantSsell-${index}-count`}
+                onChange={value => {
+                  setFocus('count')
+                  onChange({
+                    index,
+                    key: 'count',
+                    value: idx(value, _ => +_.target.value || 0),
+                  })
+                }}
+              />
+            </Field>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               {thirdPartTicket && (
-                <ThirdPartyAutoComplete
-                  className={styles.field}
-                  label="第三方卡券"
-                  autoFocus={focus === 'thirdParty'}
-                  value={sellsItem.thirdPartyCouponMerchantId}
-                  ref={thirdPartyRef}
-                  fieldProps={{ InputLabelProps: { shrink: true } }}
-                  onKeyDown={event => {
-                    if (event.key === 'Enter') {
-                      changeRowFocus(index + 1)
-                    }
-                  }}
-                  name="thirdParty"
-                  onChange={e => {
-                    onProductChange({
-                      index,
-                      value: {
-                        ...sellsItem,
-                        thirdPartyCouponMerchantId: e ? e.id : null,
-                      },
-                    })
-                  }}
-                  inputProps={{
-                    'data-testid': `service-${index}-thirdParty`,
-                  }}
-                />
+                <Field label="第三方卡券">
+                  <ThirdPartyAutoComplete
+                    fieldProps={{ placeholder: '第三方卡券' }}
+                    className={styles.field}
+                    autoFocus={focus === 'thirdParty'}
+                    value={sellsItem.thirdPartyCouponMerchantId}
+                    ref={thirdPartyRef}
+                    onKeyDown={event => {
+                      if (event.key === 'Enter') {
+                        changeRowFocus(index + 1)
+                      }
+                    }}
+                    name="thirdParty"
+                    onChange={e => {
+                      onProductChange({
+                        index,
+                        value: {
+                          ...sellsItem,
+                          thirdPartyCouponMerchantId: e ? e.id : null,
+                        },
+                      })
+                    }}
+                    inputProps={{
+                      'data-testid': `service-${index}-thirdParty`,
+                    }}
+                  />
+                </Field>
               )}
               {!thirdPartyCouponsData.loading &&
                 sellsItem.thirdPartyCouponMerchantId &&
@@ -302,28 +299,31 @@ function MerchantSells({
           </React.Fragment>
         )}
 
-        <BackspaceOutlinedIcon
-          css={styles.action}
+        <RowIconButton
+          label="清除此列" className="mr-1.5"
           onClick={() => {
             onClear({ index })
             setFocus('employee')
           }}
           data-testid={`merchantSsell-${index}-clear`}
-        />
+        >
+          <Eraser aria-hidden="true" strokeWidth={1.75} />
+        </RowIconButton>
         {!first && (
-          <DeleteForeverIcon
-            css={styles.action}
+          <RowIconButton
+            label="刪除此列" className="mr-1.5"
             onClick={() => {
               removeSells({ index })
               setFocus('employee')
             }}
             data-testid={`merchantSsell-${index}-delete`}
-          />
+          >
+            <Trash2 aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         )}
       </div>
       {last && (
-        <AddIcon
-          css={styles.action}
+        <AddRowButton
           onClick={() => {
             addSells()
             setFocus('employee')

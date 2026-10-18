@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from '@mui/material'
+import { Field, Input } from 'ui/input'
 import billContext from 'context/keyInContext'
 import { useContext, memo, useEffect } from 'react'
 import produce from 'immer'
@@ -124,29 +124,26 @@ function Bonus({ customerBonus }) {
   }, [bill.bonusUsed])
   return (
     <div css={styles.bonus}>
-      <TextField
-        value={bill.bonusDeposit}
-        variant="outlined"
-        label="點數給點"
-        css={styles.field}
-        disabled={bonusDepositDisabled()}
-        onChange={event => bonusOnChange(event, 'bonusDeposit')}
-      />
-      <TextField
-        value={bill.bonusUsed}
-        variant="outlined"
-        label="點數扣點"
-        css={styles.field}
-        onChange={event => bonusOnChange(event, 'bonusUsed')}
-      />
-      <TextField
-        value={bill.bonusDecount}
-        variant="outlined"
-        label="點數折抵金額"
-        css={styles.field}
-        disabled={bonusConversion.isBonusConversion}
-        onChange={event => bonusOnChange(event, 'bonusDecount')}
-      />
+      <Field label="點數給點" css={styles.field}>
+        <Input
+          value={bill.bonusDeposit}
+          disabled={bonusDepositDisabled()}
+          onChange={event => bonusOnChange(event, 'bonusDeposit')}
+        />
+      </Field>
+      <Field label="點數扣點" css={styles.field}>
+        <Input
+          value={bill.bonusUsed}
+          onChange={event => bonusOnChange(event, 'bonusUsed')}
+        />
+      </Field>
+      <Field label="點數折抵金額" css={styles.field}>
+        <Input
+          value={bill.bonusDecount}
+          disabled={bonusConversion.isBonusConversion}
+          onChange={event => bonusOnChange(event, 'bonusDecount')}
+        />
+      </Field>
     </div>
   )
 }

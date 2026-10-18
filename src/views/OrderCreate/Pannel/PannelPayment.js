@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent } from '@mui/material'
+import { Card, CardContent } from 'ui/card'
 import React, { useContext } from 'react'
 import Payment from 'views/OrderCreate/Payment'
 import styles from 'views/OrderCreate/styles/PannelPayment'

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from '@mui/material'
+import { Field, Input } from 'ui/input'
 import PaymentAutoComplete from 'components/PaymentAutoComplete'
 import billContext from 'context/keyInContext'
 import idx from 'idx'
@@ -151,58 +151,56 @@ function Payment(props) {
     <Fragment>
       <div css={styles.payment}>
         <div css={styles.otherPaymentDiv}>
-          <PaymentAutoComplete
-            label="其他付款方式"
-            className={styles.fieldWidth}
-            value={bill.payType[0]}
-            name="payType"
-            autoFocus={focus === 'payType'}
-            ref={payTypeRef}
-            onKeyDown={handlePayTypeKeydown}
-            onFocus={handlePayFocus}
-            totalShouldPay={totalShouldPay}
-            onChange={value => {
-              if (value === null) {
-                handleBillChange({
-                  key: 'amountByOtherPay',
-                  value: 0,
-                })
-              }
-              handleBillChange({
-                key: 'payType',
-                value: value === null ? [] : [value.name],
-              })
-              setFocus(value === null ? '' : value.name)
-            }}
-          />
-          {bill.payType.map((payment, index) => (
-            <TextField
-              value={bill.amountByOtherPay}
-              key={`${payment}-${index}`}
-              inputRef={priceRefs[index]}
-              variant="outlined"
-              label={`${payment}金額`}
-              inputProps={{
-                'data-testid': `${payment}金額`,
-              }}
-              autoFocus={focus === payment}
-              css={styles.field}
-              name={payment}
+          <Field label="付款方式">
+            <PaymentAutoComplete
+              className={styles.fieldWidth}
+              value={bill.payType[0]}
+              name="payType"
+              autoFocus={focus === 'payType'}
+              ref={payTypeRef}
+              onKeyDown={handlePayTypeKeydown}
               onFocus={handlePayFocus}
-              onChange={event => {
-                amountByOtherPay(+event.target.value)
-                // const amountByOtherPay =
-                //   +event.target.value <= otherPayLimit &&
-                //   totalShouldPay > 0 &&
-                //   +event.target.value <= totalShouldPay
-                //     ? +event.target.value
-                //     : bill.amountByOtherPay
-                // handleBillChange({
-                //   key: 'amountByOtherPay',
-                //   value: amountByOtherPay,
-                // })
+              totalShouldPay={totalShouldPay}
+              onChange={value => {
+                if (value === null) {
+                  handleBillChange({
+                    key: 'amountByOtherPay',
+                    value: 0,
+                  })
+                }
+                handleBillChange({
+                  key: 'payType',
+                  value: value === null ? [] : [value.name],
+                })
+                setFocus(value === null ? '' : value.name)
               }}
+              inputProps={{ placeholder: '選擇付款方式' }}
             />
+          </Field>
+          {bill.payType.map((payment, index) => (
+            <Field key={`${payment}-${index}`} label={`${payment}金額`} css={styles.field}>
+              <Input
+                value={bill.amountByOtherPay}
+                ref={priceRefs[index]}
+                data-testid={`${payment}金額`}
+                autoFocus={focus === payment}
+                name={payment}
+                onFocus={handlePayFocus}
+                onChange={event => {
+                  amountByOtherPay(+event.target.value)
+                  // const amountByOtherPay =
+                  //   +event.target.value <= otherPayLimit &&
+                  //   totalShouldPay > 0 &&
+                  //   +event.target.value <= totalShouldPay
+                  //     ? +event.target.value
+                  //     : bill.amountByOtherPay
+                  // handleBillChange({
+                  //   key: 'amountByOtherPay',
+                  //   value: amountByOtherPay,
+                  // })
+                }}
+              />
+            </Field>
           ))}
         </div>
         {bill.customerId && <PaymentCustomerWallet />}

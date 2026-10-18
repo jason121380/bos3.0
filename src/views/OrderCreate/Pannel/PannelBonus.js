@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
-import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { useContext, useEffect, useState } from 'react'
 import Bonus from 'views/OrderCreate/Bonus'
+import { formatMoney } from 'ui/format'
 import styles from 'views/OrderCreate/styles/PannelPayment'
 import billContext from 'context/keyInContext'
 import { useFetchGetCustomerBonusRecordLazy } from 'hooks/useFetchGetCustomerBonusRecord'
@@ -46,9 +46,9 @@ export default function PannelBonus({ expanded, onPanelClick, bonusActive }) {
   return (
     <Accordion key="panelRemark" expanded={expanded}>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
         style={{ width: '100%' }}
         onClick={onPanelClick}
+        summaryMeta={!expanded && bill.bonusDecount > 0 ? `折抵 ${formatMoney(bill.bonusDecount)}` : ''}
         data-testid="panelRemark"
       >
         <p className="m-0" css={styles.heading}>紅利點數

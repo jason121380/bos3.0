@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { TextField, Button } from '@mui/material'
+import { Button } from '@mui/material'
 import { CheckboxField } from 'ui/checkbox'
+import { Input } from 'ui/input'
 import billContext from 'context/keyInContext'
 import { DragHandleRounded as DragHandleRoundedIcon, RemoveRounded as RemoveRoundedIcon } from 'ui/icons'
 import { useLazyFetchCustomerWallet } from 'hooks/useFetchCustomerWallet'
@@ -207,11 +208,10 @@ function PaymentCustomerWallet(props, ref) {
                 <p>入金剩餘：<strong style={{ color: 'red' }}>{`${usableCustomerWallet}元`}</strong></p>
                 <RemoveRoundedIcon />
                 <div style={{ position: 'relative' }} css={styles.walletDiv}>
-                  <TextField
-                    variant="outlined"
+                  <Input
                     css={styles.field}
                     value={bill.walletPay}
-                    inputRef={ref}
+                    ref={ref}
                     onFocus={handleFocus}
                     name="walletPay"
                     onChange={event => {

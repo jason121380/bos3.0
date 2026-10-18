@@ -6,6 +6,8 @@ export default {
     display: 'flex',
     alignItems: 'flex-end',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    rowGap: '12px',
     marginBottom: theme.spacing(3),
   }),
   field: css({

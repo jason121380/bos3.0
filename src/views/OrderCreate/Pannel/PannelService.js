@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
-import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
 import { memo, useContext, useEffect, useState, Fragment } from 'react'
 import Services from 'views/OrderCreate/Services'
+import { panelSummary } from './summary'
 import styles from 'views/OrderCreate/styles/PannelService'
 import { useFetchServicesForAutoComplete } from 'hooks/useFetchServices'
 import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
@@ -17,7 +17,7 @@ import ServicesModal from '../ServicesModal'
 
 function PannelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
   const {
-    handleBillChange, bindedThirdPart,
+    handleBillChange, bindedThirdPart, bill,
     services, setServices, sData, setSData
   } = useContext(billContext)
   const techingModeContext = useContext(TeachingModeContext)
@@ -250,8 +250,11 @@ function PannelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
     <Accordion key="panelService" expanded={expanded}>
       <AccordionSummary
         style={{ width: '100%' }}
-        expandIcon={<ExpandMoreIcon />}
         onClick={onPanelClick}
+        summaryMeta={!expanded && panelSummary(
+          bill.serviceOrders.filter(d => d.serviceId).length,
+          bill.serviceOrders.reduce((total, d) => total + d.price, 0)
+        )}
         data-testid="panelService"
       >
         <p className="m-0" css={styles.heading}>項目消費</p>

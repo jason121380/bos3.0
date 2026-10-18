@@ -4,18 +4,22 @@ import { theme } from '../../../theme'
 export default {
   payment: css({
     display: 'flex',
-    alignItems: 'center',
+    flexWrap: 'wrap', // 窄螢幕時「訂單來源」換到下一列，不再被切掉
+    gap: '12px 0',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
     marginBottom: theme.spacing(3),
   }),
   field: css({
     width: '350px !important',
+    maxWidth: '100%',
     display: 'flex',
     marginRight: '12px',
     justifyContent: 'flex-start',
   }),
   field2: css({
     width: '200px !important',
+    maxWidth: '100%',
     display: 'flex',
     marginRight: '12px',
     justifyContent: 'flex-start',

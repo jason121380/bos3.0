@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
-import { ExpandMore as ExpandMoreIcon, Style as StyleIcon } from 'ui/icons'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
+import { Style as StyleIcon } from 'ui/icons'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
 import React, { Fragment, useContext } from 'react'
 import uuid from 'uuid'
 import CouponUse from 'views/OrderCreate/CouponUse'
+import { panelSummary } from './summary'
 import styles from 'views/OrderCreate/styles/PannelCouponUse'
 import useFetchGetTicketRecordsForOrderV2 from 'hooks/useFetchGetTicketRecordsForOrderV2'
 import TeachingModeContext from 'context/teachingModeContext'
@@ -142,8 +143,8 @@ export default function PannelCouponUse({ expanded, onPanelClick, display, reset
   return (
     <Accordion key="panelCouponUse" expanded={expanded}>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
         onClick={onPanelClick}
+        summaryMeta={!expanded && panelSummary(bill.useTicketOrders.length)}
         data-testid="panelCouponUse"
         style={{ width: '100%' }}
       >

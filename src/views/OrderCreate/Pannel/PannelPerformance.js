@@ -5,7 +5,7 @@ import styles from 'views/OrderCreate/styles/PannelService'
 import idx from 'idx'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
 import { Card, CardHeader, CardTitle } from 'ui/card'
-import { formatNumber } from 'ui/format'
+import { formatMoney, formatNumber } from 'ui/format'
 
 function PannelPerformance() {
     const { bill } = useContext(billContext)
@@ -77,18 +77,20 @@ function PannelPerformance() {
 
     // 金額彙總：各數值的運算式與舊版相同，只加千分位與新版樣式
     const Row = ({ label, value }) => (
-        <div className="flex items-center justify-between py-1.5 text-body">
-            <span className="text-text-secondary">{label}</span>
-            <span className="tabular-nums text-text">{formatNumber(value)}</span>
+        <div className="flex items-center justify-between gap-3 py-1.5 text-body">
+            <span className="whitespace-nowrap text-text-secondary">{label}</span>
+            <span className="tabular-nums text-text">{formatMoney(value)}</span>
         </div>
     )
+    // sticky：捲動長帳單時金額彙總固定在視窗上緣附近（上層容器不能有 overflow:hidden，見 styles/Pannel.js）
     return (
-        <Card className="ui-root h-full">
+        <Card className="ui-root sticky top-4 w-full self-start">
             <CardHeader>
                 <CardTitle>金額彙總</CardTitle>
             </CardHeader>
             <div className="grid grid-cols-2 gap-x-6 px-5 pt-2">
                 <div className="flex flex-col">
+                    <p className="m-0 pb-1 text-label font-medium text-text-tertiary">消費明細</p>
                     <Row label="服務消費" value={serviceTotalPrice} />
                     <Row label="店販消費" value={merchantSellTotalPrice} />
                     <Row label="預收卡販賣" value={couponSellPrice} />
@@ -96,6 +98,7 @@ function PannelPerformance() {
                     <Row label="會員卡販賣" value={merberShipCardTotalPrice} />
                 </div>
                 <div className="flex flex-col">
+                    <p className="m-0 pb-1 text-label font-medium text-text-tertiary">付款與折抵</p>
                     <Row label="扣入金" value={bill.walletPay} />
                     <Row label="其他付款方式" value={bill.amountByOtherPay} />
                     <Row label="紅利點數折抵" value={bill.bonusDecount} />
@@ -105,6 +108,7 @@ function PannelPerformance() {
                 <div className="flex flex-col gap-1">
                     <span className="text-label text-text-secondary">業績合計</span>
                     <span className="text-heading tabular-nums text-text">
+                        <span className="mr-1 text-body text-text-secondary">NT$</span>
                         {formatNumber(Math.round(
                             serviceTotalPrice +
                             merchantSellTotalPrice +
