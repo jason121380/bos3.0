@@ -1,15 +1,11 @@
-// MUI Modal 保留：內含 MUI Select（Radix Dialog 會擋住其選單），且舊版無 onClose（點背景不關閉）
-import {
-  Modal,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from '@mui/material'
+// MUI Modal 保留（舊版無 onClose，點背景不關閉）；內部 Select 已換 NativeSelect（原生 select 無彈層）
+import { Modal } from '@mui/material'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
+import { Field } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
 function EditProductsCategoryModal({
   openEditProductsCategoryModal,
@@ -41,20 +37,18 @@ function EditProductsCategoryModal({
         </CardHeader>
 
         <CardContent>
-          <FormControl variant="outlined" fullWidth>
-            <InputLabel>商品類別</InputLabel>
-            <Select
-              label='商品類別'
+          <Field label="商品類別">
+            <NativeSelect
               value={selectedCategoryId}
               onChange={event => handleSelectCategoryId(event)}
             >
               {productCategories.map((data, idx) => (
-                <MenuItem key={`${data.id}-${idx}`} value={data.id}>
+                <NativeSelectOption key={`${data.id}-${idx}`} value={data.id}>
                   {data.no} {data.name}
-                </MenuItem>
+                </NativeSelectOption>
               ))}
-            </Select>
-          </FormControl>
+            </NativeSelect>
+          </Field>
         </CardContent>
         <CardFooter>
           <Button

@@ -1,15 +1,11 @@
-// 內含 MUI Select，依指南保留 MUI Modal（Radix Dialog 會擋住 MUI 彈出層的點擊）；只換卡片與按鈕
-import {
-  Modal,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from '@mui/material'
+// MUI Modal 保留；內部 Select 已換 NativeSelect（原生 select 無彈層，不受 Radix／MUI 影響）
+import { Modal } from '@mui/material'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
+import { Field } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
 function EditMemberCardRecordModal({
   openEditMembershipsCategoryModal,
@@ -41,20 +37,18 @@ function EditMemberCardRecordModal({
         </CardHeader>
 
         <CardContent>
-          <FormControl variant="outlined" fullWidth>
-            <InputLabel>會員卡</InputLabel>
-            <Select
-              label='會員卡'
+          <Field label="會員卡">
+            <NativeSelect
               value={selectedCategoryId}
               onChange={event => handleSelectCategoryId(event)}
             >
               {categories.map((data, idx) => (
-                <MenuItem key={`${data.uuid}-${idx}`} value={data.uuid}>
+                <NativeSelectOption key={`${data.uuid}-${idx}`} value={data.uuid}>
                   {data.no} {data.name}
-                </MenuItem>
+                </NativeSelectOption>
               ))}
-            </Select>
-          </FormControl>
+            </NativeSelect>
+          </Field>
         </CardContent>
         <CardFooter>
           <Button
