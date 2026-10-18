@@ -5,12 +5,9 @@ import {
   CardContent,
   Modal,
   Button,
-  InputLabel,
-  MenuItem,
-  Select,
   TextField,
-  FormControl,
 } from '@mui/material'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import PropTypes from 'prop-types'
 import { memo, useContext, useState, useRef } from 'react'
 import { red, blue } from '@mui/material/colors'
@@ -151,21 +148,21 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
   const { walletDeposit } = useFetchWalletDeposit()
 
   const paymentCashOption = [
-    <MenuItem value="現金" key={98}>
+    <NativeSelectOption value="現金" key={98}>
       現金
-    </MenuItem>,
+    </NativeSelectOption>,
   ]
 
   const paymentOptions = paymentCashOption.concat(
     payments.loading ? (
-      <MenuItem key={99} value={null}>
+      <NativeSelectOption key={99} value={null}>
         <em>None</em>
-      </MenuItem>
+      </NativeSelectOption>
     ) : (
       payments.data.merchantPayWays.map((data, index) => (
-        <MenuItem value={data.name} key={index}>
+        <NativeSelectOption value={data.name} key={index}>
           {data.name}
-        </MenuItem>
+        </NativeSelectOption>
       ))
     )
   )
@@ -294,41 +291,36 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
               }}
             />
           </div>
-          <FormControl variant="outlined" css={styles.formControl} fullWidth>
-            <InputLabel ref={inputLabel}>付款方式</InputLabel>
-            <Select
-              label='付款方式'
-              name="payType"
-              value={walletDepositData.payType}
+          <NativeSelect
+            css={styles.formControl}
+            label='付款方式'
+            name="payType"
+            value={walletDepositData.payType}
+            onChange={event => {
+              handleWalletDepositDataChange({ key: 'payType', value: event.target.value })
+            }}
+          >
+            {paymentOptions}
+          </NativeSelect>
+          {walletDepositData.payType !== '現金' && (
+            <NativeSelect
+              css={styles.formControl}
+              label='選擇入金儲值手續費負擔方'
+              name="handlingFeeDecountWay"
+              value={walletDepositData.handlingFeeDecountWay}
               onChange={event => {
-                handleWalletDepositDataChange({ key: 'payType', value: event.target.value })
+                handleWalletDepositDataChange({
+                  key: 'handlingFeeDecountWay',
+                  value: event.target.value,
+                })
               }}
             >
-              {paymentOptions}
-            </Select>
-          </FormControl>
-          {walletDepositData.payType !== '現金' && (
-            <FormControl variant="outlined" css={styles.formControl} fullWidth>
-              <InputLabel ref={inputLabel}>選擇入金儲值手續費負擔方</InputLabel>
-              <Select
-                label='選擇入金儲值手續費負擔方'
-                name="handlingFeeDecountWay"
-                defaultValue=""
-                value={walletDepositData.handlingFeeDecountWay}
-                onChange={event => {
-                  handleWalletDepositDataChange({
-                    key: 'handlingFeeDecountWay',
-                    value: event.target.value,
-                  })
-                }}
-              >
-                {handlingFeeDecountWayArray.map((data, index) => (
-                  <MenuItem value={data.value} key={index}>
-                    {data.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+              {handlingFeeDecountWayArray.map((data, index) => (
+                <NativeSelectOption value={data.value} key={index}>
+                  {data.label}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
           )}
           <TextField
             label="備註"

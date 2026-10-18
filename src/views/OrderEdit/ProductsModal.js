@@ -3,7 +3,6 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Divider,
   Modal,
   Table,
   TableBody,
@@ -14,7 +13,6 @@ import {
   CardActions,
   Paper,
   Button,
-  Typography,
   TablePagination,
 } from '@mui/material'
 import PropTypes from 'prop-types'
@@ -211,7 +209,7 @@ function ProductsModal({
           </Button>
         </div>
 
-        <Divider />
+        <div className="h-px bg-border" />
         <CardContent>
           <div css={styles.categorieDiv}>
             {productCategories.map(productCategory => (
@@ -238,9 +236,9 @@ function ProductsModal({
               清除
             </Button>
           </div>
-          <Typography color="textSecondary" gutterBottom variant="body2">
+          <p className="mb-2 mt-0 text-caption text-text-secondary">
             {productList.totalCount} 項商品
-          </Typography>
+          </p>
           <TableContainer component={Paper}>
             <Table>
               <TableHead>

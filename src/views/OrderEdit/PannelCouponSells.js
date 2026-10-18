@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import billContext from 'context/keyInContext'
 import useFetchOrder from 'hooks/useFetchOrder'
@@ -236,7 +236,7 @@ export default function PannelCouponSells({ expanded, setExpanded }) {
         onClick={handleAccordionClick}
         style={{ width: '100%' }}
       >
-        <Typography css={styles.heading}>預收卡販賣</Typography>
+        <p className="m-0" css={styles.heading}>預收卡販賣</p>
       </AccordionSummary>
       <AccordionDetails css={styles.details}>
         <div css={styles.fieldOutter}>
