@@ -1,7 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Container, Grid, Button, CircularProgress,
-} from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import React, { useEffect, useState } from 'react'
@@ -11,24 +7,11 @@ import AdminPageHeader from 'components/AdminPageHeader'
 import { startOfDay, endOfDay, format } from 'date-fns'
 import { CSVLink } from "react-csv";
 import roundDecimal from './../../helper/roundDecimal.js'
-import { theme } from '../../theme/index.js'
-import { css } from '@emotion/react'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  formControl: css({
-    width: '100px',
-  }),
-}
 
 export default function MembershipSellReport() {
   const [excelData, setExcelData] = useState([])
@@ -102,11 +85,11 @@ export default function MembershipSellReport() {
   }, [reportData])
 
   return (
-    <Page css={styles.root} title="會員卡銷售報表">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className="ui-root" title="會員卡銷售報表">
+      <div>
         <AdminPageHeader title='會員卡銷售報表' />
-        <Grid container style={{ gap: 10 }} alignItems="baseline" justifyContent="space-between">
-          <Grid item>
+        <div className="flex flex-wrap items-baseline justify-between gap-2.5">
+          <div>
             <MerchantSearchBar
               values={inputData}
               onFilter={values => setInputData(values)}
@@ -114,15 +97,16 @@ export default function MembershipSellReport() {
               visible={['datePicker', 'employee', 'customer', 'membershipcard']}
               lastInLeaderBoard={true}
             />
-          </Grid>
-          <Grid item style={{ marginBottom: 10 }}>
-            <CSVLink data={excelData} filename="會員卡銷售報表.csv">
-              <Button variant="contained" color="primary">
+          </div>
+          <div className="mb-2.5">
+            <Button asChild variant="secondary">
+              <CSVLink data={excelData} filename="會員卡銷售報表.csv">
+                <Download strokeWidth={1.75} />
                 報表匯出
-              </Button>
-            </CSVLink>
-          </Grid>
-        </Grid>
+              </CSVLink>
+            </Button>
+          </div>
+        </div>
         {!getMembershipSellReport.loading ? (
           <Results
             reportData={reportData}
@@ -131,11 +115,12 @@ export default function MembershipSellReport() {
             handleCountTotal={handleCountTotal}
           />
         ) : (
-          <div style={{ textAlign: 'center', marginTop: 100 }}>
-            <CircularProgress color="inherit" />
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div>
         )}
-      </Container>
+      </div>
     </Page>
   )
 }

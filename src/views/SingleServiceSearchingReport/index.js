@@ -1,7 +1,6 @@
-/** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
 import {
-  Container, Button, CircularProgress, Grid, TextField, Checkbox,
+  TextField, Checkbox,
   ToggleButton, ToggleButtonGroup, Autocomplete
 } from '@mui/material'
 import { endOfDay, startOfMonth } from 'date-fns'
@@ -12,9 +11,10 @@ import useFetchSingleServiceReportExcelV2 from 'hooks/useFetchSingleServiceRepor
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import useFetchTickets from 'hooks/useFetchTickets'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import produce from 'immer'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Skeleton } from 'ui/skeleton'
 
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
@@ -24,21 +24,6 @@ import Results from './Results'
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
 
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '100px',
-    marginTop: '5px',
-  })
-}
 
 const performanceEnum = [
   { label: '全店', value: 'ALL' },
@@ -137,26 +122,20 @@ const DesignerPerformBasic = () => {
   }, [services.loading, ticket.loading])
 
   return (
-    <Page css={styles.root} title="單一服務項目查詢">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className="ui-root" title="單一服務項目查詢">
+      <div>
         <AdminPageHeader title='單一服務項目查詢' />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0 20px', flexWrap: 'wrap' }}>
-          <Grid item >
+        <div className="flex flex-wrap items-center gap-x-5">
+          <div>
             <DateSelector
               date={inputData.dateRange}
               attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
               dateChange={value => handleSetInputData('dateRange', value)}
               margin
             />
-          </Grid>
-          <div style={{ display: 'flex', flexWrap: 'wrap', flexGrow: 1, alignItems: 'center', justifyContent: 'space-between' }}>
-            <Grid
-              style={{
-                marginBottom: '23px',
-                display: 'flex',
-                flexDirection: 'column'
-              }}
-            >
+          </div>
+          <div className="flex flex-grow flex-wrap items-center justify-between">
+            <div className="mb-[23px] flex flex-col">
               <div className="divText">排序依據:</div>
               <ToggleButtonGroup
                 value={sort}
@@ -172,11 +151,10 @@ const DesignerPerformBasic = () => {
                   </ToggleButton>
                 ))}
               </ToggleButtonGroup>
-            </Grid>
-            <Grid>
+            </div>
+            <div>
               <Button
-                variant="contained"
-                color="primary"
+                variant="secondary"
                 disabled={singleServiceReportExcelData.loading}
                 onClick={() => singleServiceReportExcel({
                   variables: {
@@ -187,12 +165,12 @@ const DesignerPerformBasic = () => {
                     sortBy: sort
                   }
                 })}
-              >報表匯出</Button>
-            </Grid>
+              ><Download strokeWidth={1.75} />報表匯出</Button>
+            </div>
           </div>
         </div>
-        <div style={{ display: 'flex', margin: '10px 0', flexWrap: 'nowrap', gap: 10, alignItems: 'center' }}>
-          <div style={{ flexGrow: 1 }}>
+        <div className="my-2.5 flex flex-nowrap items-center gap-2.5">
+          <div className="min-w-0 flex-grow">
             <Autocomplete
               freeSolo
               multiple
@@ -221,8 +199,7 @@ const DesignerPerformBasic = () => {
             />
           </div>
           <Button
-            variant="contained"
-            color="primary"
+            variant="primary"
             onClick={handleDoSearch}
           >
             搜尋
@@ -235,11 +212,12 @@ const DesignerPerformBasic = () => {
             sort={sort}
           />
         ) : (
-          <div css={styles.noReportDiv}>
-            <CircularProgress />
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div>
         )}
-      </Container>
+      </div>
     </Page>
   )
 }

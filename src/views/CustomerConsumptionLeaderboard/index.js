@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
 import { endOfMonth, startOfMonth, differenceInDays } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
@@ -8,22 +6,10 @@ import AdminPageHeader from 'components/AdminPageHeader'
 import produce from 'immer'
 import useFetchGetCustomerConsumptionLeaderboard from 'hooks/useFetchGetCustomerConsumptionLeaderboard'
 import useFetchGetCustomerConsumptionLeaderboardExcel from 'hooks/useFetchGetCustomerConsumptionLeaderboardExcel'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Skeleton } from 'ui/skeleton'
 
 import Filter from './Filter'
 import Results from './Results'
-
-const styles = {
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  circular: css({
-    textAlign: 'center',
-    marginTop: '100px',
-  })
-}
 
 function CustomerConsumptionLeaderboard() {
   const [getCustomerConsumption, customerConsumptionData] = useFetchGetCustomerConsumptionLeaderboard()
@@ -102,8 +88,8 @@ function CustomerConsumptionLeaderboard() {
   }
 
   return (
-    <Page title="顧客消費排行榜">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className="ui-root" title="顧客消費排行榜">
+      <div>
         <AdminPageHeader title='顧客消費排行榜' />
         <Filter
           rangeLimit={rangeLimit}
@@ -117,9 +103,12 @@ function CustomerConsumptionLeaderboard() {
         {(!customerConsumptionData.loading && customerConsumptionData.data) ? (
           <Results reportData={reportData} />
         ) : (
-          <div css={styles.circular}><CircularProgress /></div>
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
+          </div>
         )}
-      </Container>
+      </div>
     </Page>
   )
 }

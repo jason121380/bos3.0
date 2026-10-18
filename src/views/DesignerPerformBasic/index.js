@@ -1,8 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
-import {
-  Container, Button, CircularProgress, Grid, ToggleButton, ToggleButtonGroup
-} from '@mui/material'
+import { ToggleButton, ToggleButtonGroup } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
@@ -16,28 +13,11 @@ import useFetchMonthlyAverageDisplayForDesignerLeaderBoard from 'hooks/useFetchG
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
 import { useFetchGetDRRDataDisplay } from 'hooks/useFetchGetParameterReportSetting'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Download, Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '100px',
-  }),
-}
 
 const isIncludeProductPerformanceValue = [
   { label: '含店販', value: true },
@@ -312,8 +292,8 @@ const DesignerPerformBasic = () => {
   }
 
   return (
-    <Page css={styles.root} className='DesignerPerformBasic' title="設計師排行榜">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className='DesignerPerformBasic ui-root' title="設計師排行榜">
+      <div>
         <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
           <div className="merchantNamePrint">
             {JSON.parse(localStorage.getItem('userMerchant')).name +
@@ -330,25 +310,14 @@ const DesignerPerformBasic = () => {
           </div>
         </div>
         <AdminPageHeader title='設計師排行榜' />
-        <Grid container style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <DateSelector
             date={date}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
             margin
           />
-          <Grid
-            item
-            className="noprint"
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-              columnGap: '10px',
-              flexWrap: 'wrap',
-              rowGap: '30px',
-            }}
-          >
+          <div className="noprint flex flex-wrap items-center justify-start gap-x-2.5 gap-y-8">
             <div style={{ marginTop: -23 }}>
               <div className="divText">服務業績指定/不指定：</div>
               <ToggleButtonGroup
@@ -425,34 +394,34 @@ const DesignerPerformBasic = () => {
                   filename="設計師排行榜.csv"
                   style={{ display: 'inline' }}
                 >
-                  <Button variant="contained" color="primary" disabled={designersLeaboardData.loading}>
+                  <Button variant="secondary" disabled={designersLeaboardData.loading}>
+                    <Download strokeWidth={1.75} />
                     報表匯出
                   </Button>
                 </CSVLink>
                 <Button
-                  variant="contained"
-                  color="primary"
+                  variant="secondary"
                   disabled={designersLeaboardData.loading}
                   onClick={() => window.print()}
                 >
+                  <Printer strokeWidth={1.75} />
                   列印
                 </Button>
               </div>
             )}
-          </Grid>
-        </Grid>
-        <div className="noprint" style={{ display: 'flex', margin: '8px 0' }}>
+          </div>
+        </div>
+        <div className="noprint my-2 flex">
           <MerchantListAutocpmplete
             onValueChange={value => {
               handleChecked(value)
             }}
           />
-          <div style={{ marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
+          <div className="ml-2.5 flex items-center">
             <Button
-              variant="contained"
-              color="primary"
+              variant="primary"
               onClick={handleSearchReport}
-              css={styles.searchBtn}
+              className="w-[100px]"
             >
               搜尋
             </Button>
@@ -473,11 +442,12 @@ const DesignerPerformBasic = () => {
             performanceDisplay={performanceDisplay}
           />
         ) : (
-          <div css={styles.noReportDiv}>
-            <CircularProgress />
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div className="noprint" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div>
         )}
-      </Container>
+      </div>
     </Page>
   )
 }

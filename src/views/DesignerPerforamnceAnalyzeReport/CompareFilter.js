@@ -1,9 +1,10 @@
-/** @jsxImportSource @emotion/react */
+// Dialog 內含 MUI Autocomplete，依指南保留 MUI Dialog；內容區加 ui-root 以套用 ui 元件的基礎樣式
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions, Divider,
-  Button, IconButton, Autocomplete, TextField, Checkbox
+  Dialog, DialogTitle, DialogContent, DialogActions,
+  Autocomplete, TextField, Checkbox
 } from '@mui/material'
-import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
+import { Plus, Trash2 } from 'lucide-react'
+import { Button } from 'ui/button'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import DateSelector from 'components/DateSelector'
@@ -21,12 +22,12 @@ const CompareFilter = ({
   return (
     <Dialog maxWidth='md' fullWidth open={open}>
       <DialogTitle>比較條件</DialogTitle>
-      <Divider />
-      <DialogContent style={{ display: 'flex', flexDirection: 'column' }}>
+      <div className="h-px bg-border" />
+      <DialogContent className="ui-root" style={{ display: 'flex', flexDirection: 'column' }}>
         {compareInputData.map(({ dateRange, designerIds, displayReference }, i) => (
           <Fragment key={`filterRow-${i}`} >
-          { i !== 0 && <Divider sx={{ my: 4 }} />}
-            <h3 style={{ marginBottom: 6 }}>{i + 1}.</h3>
+          { i !== 0 && <div className="my-8 h-px bg-border" />}
+            <h3 className="mb-1.5 text-heading text-text">{i + 1}.</h3>
             <div style={{ display: 'flex', gap: 10, alignItems: 'center'  }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 16, flexGrow: 1 }}>
                 <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
@@ -37,7 +38,7 @@ const CompareFilter = ({
                     attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
                   />
                   <div style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-                    <p style={{ fontSize: 14 }} >業績依據：</p>
+                    <p className="text-body text-text-secondary">業績依據：</p>
                     <ReferToggleButton
                       value={displayReference}
                       onChange={value => value && handleSetData('displayReference', i ,value)}
@@ -82,34 +83,32 @@ const CompareFilter = ({
                   )}
                 />
               </div>
-              <IconButton onClick={handleRemoveRow}>
-                <DeleteForeverIcon />
-              </IconButton>
+              <Button variant="ghost" size="icon" aria-label="刪除條件" className="text-text-secondary hover:text-danger" onClick={handleRemoveRow}>
+                <Trash2 strokeWidth={1.75} />
+              </Button>
             </div>
           </Fragment>
         ))}
 
         {compareInputData.length <= 2 && (
           <div style={{ display: 'flex', alignItems: 'center', marginTop: compareInputData.length ? 16 : 0}}>
-            新增條件
-            <IconButton onClick={handleAddRow}>
-              <AddIcon />
-            </IconButton>
+            <Button variant="ghost" onClick={handleAddRow}>
+              <Plus strokeWidth={1.75} />
+              新增條件
+            </Button>
           </div>
         )}
       </DialogContent>
-      <Divider />
-      <DialogActions>
+      <div className="h-px bg-border" />
+      <DialogActions className="ui-root">
         <Button
-          color='primary'
-          variant='contained'
+          variant='secondary'
           onClick={() => setOpenModal(false)}
         >
           取消
         </Button>
         <Button
-          color='primary'
-          variant='contained'
+          variant='primary'
           onClick={() => {
             setOpenModal(false)
             handleGetCompareData()

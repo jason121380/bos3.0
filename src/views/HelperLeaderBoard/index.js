@@ -1,9 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
-import {
-  Container, Button, CircularProgress, Grid,
-  ToggleButtonGroup, ToggleButton
-} from '@mui/material'
+import { ToggleButtonGroup, ToggleButton } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
@@ -17,40 +13,9 @@ import useFetchHelperLeaderboard from 'hooks/useFetchHelperLeaderboard'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
 import Results from './Results'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  searchBtnDiv: css({
-    marginBottom: '24px',
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '100px',
-  }),
-  exportBtn: css({
-    float: 'right',
-  }),
-  formGroup: css({
-    width: '10rem',
-    marginLeft: theme.spacing(3),
-  }),
-  topDiv: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-}
+import { Download, Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Skeleton } from 'ui/skeleton'
 
 const HelperLeaderBoard = () => {
   const [reportForDisplay, setReportForDisplay] = useState(null)
@@ -162,8 +127,8 @@ const HelperLeaderBoard = () => {
   }, [inputValue.startDay, inputValue.endDay])
 
   return (
-    <Page css={styles.root} className='HelperLeaderBoard' title="互助排行榜">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className='HelperLeaderBoard ui-root' title="互助排行榜">
+      <div>
         <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
           <div className="merchantNamePrint">
             {JSON.parse(localStorage.getItem('userMerchant')).name +
@@ -180,23 +145,14 @@ const HelperLeaderBoard = () => {
           </div>
         </div>
         <AdminPageHeader title='互助排行榜' />
-        <Grid className="noprint" container style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className="noprint flex flex-wrap justify-between gap-3">
           <DateSelector
             date={{ startDate: inputValue.startDay, endDate: inputValue.endDay }}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => handleValueChange(undefined, value, true)}
             margin
           />
-          <Grid
-            item
-            className="noprint"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              rowGap: '20px',
-              flexWrap: 'wrap',
-            }}
-          >
+          <div className="noprint flex flex-wrap items-center gap-y-5">
             <div style={{ marginRight: '20px', marginTop: -23 }}>
               <div className="divText">排序依據：</div>
               <ToggleButtonGroup
@@ -217,36 +173,37 @@ const HelperLeaderBoard = () => {
                   onChange={value => value && handleValueChange('reference', value)}
                 />
               </div>}
-            <div style={{ marginRight: '20px' }}>
+            <div className="mr-2">
               <CSVLink
                 data={excelData}
                 filename="互助排行榜.csv"
                 style={{ display: 'inline' }}
               >
-                <Button variant="contained" color="primary" css={styles.exportBtn}>
+                <Button variant="secondary">
+                  <Download strokeWidth={1.75} />
                   報表匯出
                 </Button>
               </CSVLink>
             </div>
             <div>
-              <Button onClick={() => window.print()} variant="contained" color="primary" css={styles.exportBtn}>
+              <Button onClick={() => window.print()} variant="secondary">
+                <Printer strokeWidth={1.75} />
                 列印
               </Button>
             </div>
-          </Grid>
-        </Grid>
-        <div className="noprint" style={{ display: 'flex', margin: '10px 0' }}>
+          </div>
+        </div>
+        <div className="noprint my-2.5 flex">
           <MerchantListAutocpmplete
             onValueChange={value => {
               getSubmitValue(value)
             }}
           />
-          <div style={{ marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
+          <div className="ml-2.5 flex items-center">
             <Button
-              variant="contained"
-              color="primary"
+              variant="primary"
               onClick={handleSearchReport}
-              css={styles.searchBtn}
+              className="w-[100px]"
             >
               搜尋
             </Button>
@@ -254,15 +211,16 @@ const HelperLeaderBoard = () => {
         </div>
 
         {helperLeaboardData.loading ? (
-          <div style={{ marginTop: '50px' }} css={styles.noReportDiv}>
-            <CircularProgress />
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div className="noprint mt-3" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div>
         ) : reportForDisplay !== null && inputValue.merchantId.length > 0 ? (
           <Results report={reportForDisplay} performReference={inputValue.reference} displayReportWithMembership={displayReportWithMembership} />
         ) : (
           ''
         )}
-      </Container>
+      </div>
     </Page>
   )
 }

@@ -22,6 +22,7 @@ import useFetchGetIsDisplayHelperRetrieveInDailyReport from 'hooks/useFetchGetIs
 import useFetchGetIsUsingMathRoundInDesignerDailyReport from 'hooks/useFetchGetIsUsingMathRoundInDesignerDailyReport'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Card as UICard, CardHeader as UICardHeader, CardTitle } from 'ui/card'
 
 const styles = {
   root: css({}),
@@ -135,22 +136,23 @@ function Results({
     <Fragment>
       {(isMathRound ? mathRoundData : designerDailyReport).map((designer, index) => (
         <Grid item xs={12} sm={6} md={4} key={designer.user.id + index} className="EmployeeDailyReportCard, noprint">
-          <Card>
-            <CardHeader
-              title={`${designer.user.designerNo !== null && designer.user.designerNo !== ''
-                ? designer.user.designerNo
-                : ''
-                } ${designer.user.nickName !== null && designer.user.nickName !== ''
-                  ? designer.user.nickName
+          <UICard className="overflow-hidden">
+            <UICardHeader className="justify-center pb-4 text-center">
+              <CardTitle>
+                {`${designer.user.designerNo !== null && designer.user.designerNo !== ''
+                  ? designer.user.designerNo
                   : ''
-                } ${designer.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 日報表 ${designer.totalPageCount != 1
-                  ? `- ${designer.currentPageOrder}/${designer.totalPageCount}`
-                  : ''
-                }`}
-              css={styles.cardHeader}
-            />
-            <Divider />
-            <CardContent css={styles.content}>
+                  } ${designer.user.nickName !== null && designer.user.nickName !== ''
+                    ? designer.user.nickName
+                    : ''
+                  } ${designer.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 日報表 ${designer.totalPageCount != 1
+                    ? `- ${designer.currentPageOrder}/${designer.totalPageCount}`
+                    : ''
+                  }`}
+              </CardTitle>
+            </UICardHeader>
+            <div className="h-px bg-border" />
+            <div>
               <div className="printCard">
                 <Table css={styles.table} size="small" aria-label="a dense table">
                   <TableHead>
@@ -547,8 +549,8 @@ function Results({
                   </TableContainer>
                 )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </UICard>
         </Grid>
       ))}
       {(isMathRound ? mathRoundPrintData : printData).map((data, index) => {

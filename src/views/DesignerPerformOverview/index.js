@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import ReferToggleButton from 'components/ReferToggleButton'
@@ -11,35 +9,11 @@ import idx from 'idx'
 import { useEffect, useState } from 'react'
 import { CSVLink } from "react-csv";
 import DateSelector from 'components/DateSelector'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Skeleton } from 'ui/skeleton'
 
 import PerformResultsV2 from './PerformResultsV2'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(1),
-  }),
-  searchBtnDiv: css({
-    marginBottom: '24px',
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '284px',
-  }),
-  formGroup: css({
-    width: '150px',
-    margin: '10px',
-  }),
-}
 
 function DesignerPerformOverview() {
   const [performReference, setPerformReference] = useState('FAKE')
@@ -174,52 +148,53 @@ function DesignerPerformOverview() {
   }
 
   return (
-    <Page css={styles.root} title="全店業績分析表">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className="ui-root" title="全店業績分析表">
+      <div>
         <AdminPageHeader title='全店業績分析表' />
-        <Grid container direction='row' alignItems='center' style={{ gap: 20 }}>
-          <Grid item>
+        <div className="flex flex-row flex-wrap items-center gap-5">
+          <div>
             <DateSelector
               date={date}
               attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
               dateChange={value => setDate(value)}
               margin
             />
-          </Grid>
-          <Grid item style={{ display: 'flex', flexGrow: 1, justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0 20px' }}>
-            {!isDisplayTogglePerformanceButton && <Grid item style={{ marginTop: -22 }} >
+          </div>
+          <div className="flex flex-grow flex-wrap items-center justify-between gap-x-5">
+            {!isDisplayTogglePerformanceButton && <div style={{ marginTop: -22 }} >
               <div className="divText">業績依據：</div>
               <ReferToggleButton
                 value={performReference}
                 onChange={handleToggleButtonChange}
               />
-            </Grid>}
-            <Grid item>
+            </div>}
+            <div>
               <CSVLink
                 data={excelData}
                 filename="全店業績分析表.csv"
                 style={{ display: 'inline' }}
               >
-                <Button variant="contained" color="primary">
+                <Button variant="secondary">
+                  <Download strokeWidth={1.75} />
                   報表匯出
                 </Button>
               </CSVLink>
-            </Grid>
-          </Grid>
-        </Grid>
+            </div>
+          </div>
+        </div>
         {(!merchantImmediatePerformReportData.loading && merchantImmediatePerformReport !== null) ? (
           <PerformResultsV2
-            className={styles.results}
             results={merchantImmediatePerformReport}
             membershipDisplay={membershipDisplay}
             attributeSwitchs={attributeSwitchs}
           />
         ) : (
-          <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <CircularProgress />
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div className="mt-2" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div>
         )}
-      </Container>
+      </div>
     </Page>
   )
 }
