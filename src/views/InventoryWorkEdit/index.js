@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container, CircularProgress, ThemeProvider, createTheme, } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { useFetchProductCategoriesInCreatePicking } from 'hooks/useFetchProductCategories'
 import { useFetchGetInventory } from 'hooks/useFetchGetInventorys'
 import { useFetchGetProductInventory } from 'hooks/useFetchGetProductInventoryList'
@@ -12,33 +9,12 @@ import { useHistory } from 'react-router'
 import { useState, useEffect } from 'react'
 import idx from 'idx'
 import { cloneDeep } from 'lodash'
-import { red } from '@mui/material/colors'
 import sortData from 'helper/sortInventoryData'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import General from './General'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  headerWrap: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    gap: 10
-  })
-}
-
-const theme2 = createTheme({
-  palette: {
-    secondary: {
-      main: red[600]
-    }
-  }
-})
 
 function InventoryWorkEdit({ match }) {
   const history = useHistory()
@@ -160,15 +136,13 @@ function InventoryWorkEdit({ match }) {
   }
 
   return (
-    <Page css={styles.root} title="編輯盤點">
-      <Container maxWidth="md">
-        <div css={styles.headerWrap}>
-          <PageTitle title='編輯盤點' subTitle='Inventory Work edit' />
-          <ThemeProvider theme={theme2}>
+    <Page className="ui-root" title="編輯盤點">
+      <div className="mx-auto max-w-3xl">
+        <PageHeader
+          title="編輯盤點"
+          actions={
             <Button
-              color="secondary"
-              variant="contained"
-              style={{ height: 'fit-content' }}
+              variant="danger"
               disabled={isClick}
               onClick={() => {
                 openSnackbar({
@@ -183,11 +157,12 @@ function InventoryWorkEdit({ match }) {
             >
               刪除盤點
             </Button>
-          </ThemeProvider>
-        </div>
+          }
+        />
         {(products.loading || getInventory.loading || productCategories.loading) ?
-          <div style={{ textAlign: 'center', marginTop: 150 }}>
-            <CircularProgress />
+          <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[72px] w-full rounded-lg" />
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div> :
           <General
             sort={sort}
@@ -200,7 +175,7 @@ function InventoryWorkEdit({ match }) {
             categoriesData={productCategories.data.productCategories}
           />
         }
-      </Container>
+      </div>
     </Page>
   )
 }
