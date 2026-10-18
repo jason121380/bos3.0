@@ -1,16 +1,15 @@
-/** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
-import {
-  Card, CardContent, TextField, Container, Divider, Button, Avatar,
-  CircularProgress, Rating
-} from '@mui/material'
+import { Rating } from '@mui/material'
 import Page from 'components/Page'
 import Status from './Status'
 import { useParams } from 'react-router'
-import styles from './Styles'
 import { openSnackbar } from 'elements/snackbars';
 import useFetchSetOrderRanking from 'hooks/useFetchSetOrderRanking.js'
 import useFetchSetOrderRankingAndComment from 'hooks/useFetchSetOrderRankingAndComment.js'
+import { Button } from 'ui/button'
+import { Card, CardContent } from 'ui/card'
+import { Textarea } from 'ui/input'
+import { Skeleton } from 'ui/skeleton'
 
 const index = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -80,29 +79,30 @@ const index = () => {
   }, [])
 
   if (isLoading) return (
-    <div style={{ textAlign: 'center', marginTop: 100 }}>
-      <CircularProgress />
+    <div className="ui-root flex flex-col gap-4">
+      <Skeleton className="h-60 w-full rounded-lg" />
+      <Skeleton className="h-11 w-full rounded-full" />
     </div>
   )
 
   return (
-    <Page css={styles.root} title='顧客評論'>
+    <Page className="ui-root" title='顧客評論'>
       {statusOpen.open ? (
         <Status open={statusOpen.open} isComment={statusOpen.isComment} />
       ) : (
-        <Container maxWidth='md'>
+        <div className="flex flex-col gap-4">
           <Card>
-            <CardContent css={styles.cardContent} style={{ gap: 12 }} >
+            <CardContent className="flex flex-col items-center gap-3 text-center">
               {ratingData.avatar && (
-                <Avatar src={ratingData.avatar} css={styles.Avatar} />
+                <img src={ratingData.avatar} alt="" className="h-[100px] w-[100px] rounded-full object-cover" />
               )}
-              <div style={{ wordBreak: 'break-word' }}>{`設計師: ${ratingData.designerName}`}</div>
+              <div className="text-heading text-text" style={{ wordBreak: 'break-word' }}>{`設計師: ${ratingData.designerName}`}</div>
             </CardContent>
-            <Divider />
-            <CardContent css={styles.cardContent} style={{ gap: 20 }} >
+            <div className="h-px bg-border" />
+            <CardContent className="flex flex-col items-center gap-5 text-center">
               {ratingData.rank > 0 && (
-                <div>
-                  <div style={{ marginBottom: 6 }}>{`對於${ratingData.designerName}的服務，您給幾顆星呢？`}</div>
+                <div className="flex flex-col items-center gap-1.5">
+                  <div className="text-body text-text">{`對於${ratingData.designerName}的服務，您給幾顆星呢？`}</div>
                   <Rating
                     name='rating'
                     precision={1}
@@ -115,14 +115,11 @@ const index = () => {
                   />
                 </div>
               )}
-              <TextField
+              <Textarea
+                className="text-left"
                 value={ratingData.comment || ''}
-                style={{ fontSize: 18 }}
-                variant='outlined'
                 placeholder='留下您的評論'
-                minRows={3}
-                multiline
-                fullWidth
+                rows={3}
                 onChange={e => {
                   setRatingData({ ...ratingData, comment: e.target.value })
                 }}
@@ -130,13 +127,13 @@ const index = () => {
             </CardContent>
           </Card>
           <Button
+            variant="primary"
+            size="lg"
+            className="h-11 w-full"
             onClick={handleSubmit}
-            style={{ width: '100%', marginTop: 12 }}
-            variant='contained'
-            color='primary'
             disabled={isClick}
           >送出</Button>
-        </Container>
+        </div>
       )}
     </Page>
   )
