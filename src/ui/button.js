@@ -3,7 +3,7 @@ import { Slot } from '@radix-ui/react-slot'
 import { cva } from 'class-variance-authority'
 import { cn, focusRing } from './utils'
 
-// STYLE.md §6：變體 primary / secondary / ghost / danger；尺寸 sm 32 / md 36 / lg 40；圖示 16px、間距 6px
+// STYLE.md §6：變體 primary（主題藍實心）/ secondary（淺灰實心、無框）/ ghost / danger；尺寸 sm 32 / md 36 / lg 40；圖示 16px、間距 6px
 const buttonVariants = cva(
   cn(
     'inline-flex items-center justify-center gap-1.5 whitespace-nowrap font-medium transition-colors select-none',
@@ -14,7 +14,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary: 'rounded-full bg-primary text-primary-foreground hover:bg-primary/85',
-        secondary: 'rounded-full border border-solid border-border bg-background text-text hover:bg-surface-hover',
+        secondary: 'rounded-full bg-surface-hover text-text hover:bg-surface-active',
         ghost: 'rounded-md text-text hover:bg-surface-hover',
         danger: 'rounded-full bg-danger text-white hover:bg-danger/90',
       },

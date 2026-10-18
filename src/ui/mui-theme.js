@@ -7,13 +7,15 @@ import legacyTypography from 'theme/typography'
 // MUI 需要實際色碼計算透明度，因此色碼集中在這裡，數值與 src/styles/tokens.css 一一對應；其他檔案仍禁止寫死色碼。
 const TOKENS = {
   light: {
-    background: '#FFFFFF', surface: '#F9F9F9', surfaceHover: '#F3F3F3', border: '#E5E5E5',
+    canvas: '#F7F7F8', background: '#FFFFFF', surface: '#F2F2F3', surfaceHover: '#E9E9EB', surfaceActive: '#DEDEE1',
+    border: '#E5E5E5', borderStrong: '#C2C2C2', borderStrongHover: '#949494',
     text: '#0D0D0D', textSecondary: '#5D5D5D', textTertiary: '#8F8F8F',
     primary: '#1A73E8', primaryForeground: '#FFFFFF', accent: '#1A73E8',
     success: '#10A37F', warning: '#B7791F', danger: '#D92D20',
   },
   dark: {
-    background: '#0D0D0D', surface: '#171717', surfaceHover: '#212121', border: '#2E2E2E',
+    canvas: '#0A0A0A', background: '#171717', surface: '#1C1C1C', surfaceHover: '#262626', surfaceActive: '#323232',
+    border: '#2E2E2E', borderStrong: '#484848', borderStrongHover: '#6E6E6E',
     text: '#ECECEC', textSecondary: '#B4B4B4', textTertiary: '#8F8F8F',
     primary: '#1A73E8', primaryForeground: '#FFFFFF', accent: '#4C8DF6',
     success: '#19C37D', warning: '#F0B429', danger: '#F97066',
@@ -34,7 +36,7 @@ export function createBridgeTheme(mode = 'light') {
       error: { main: t.danger },
       text: { primary: t.text, secondary: t.textSecondary, disabled: t.textTertiary },
       divider: t.border,
-      background: { default: t.background, paper: t.background },
+      background: { default: t.canvas, paper: t.background },
       action: { hover: t.surfaceHover, selected: t.surfaceHover },
     },
     shape: { borderRadius: 8 },
@@ -97,7 +99,7 @@ export function createBridgeTheme(mode = 'light') {
         styleOverrides: {
           root: { borderRadius: 9999, minHeight: 36, padding: '0 16px', boxShadow: 'none' },
           sizeSmall: { minHeight: 32, padding: '0 12px', fontSize: 13 },
-          outlined: { borderColor: t.border, color: t.text, '&:hover': { borderColor: t.border, backgroundColor: t.surfaceHover } },
+          outlined: { border: 'none', backgroundColor: t.surfaceHover, color: t.text, '&:hover': { border: 'none', backgroundColor: t.surfaceActive } },
           text: { color: t.text, borderRadius: 8, '&:hover': { backgroundColor: t.surfaceHover } },
         },
       },
@@ -109,8 +111,8 @@ export function createBridgeTheme(mode = 'light') {
           root: {
             borderRadius: 8,
             backgroundColor: t.background,
-            '& .MuiOutlinedInput-notchedOutline': { borderColor: t.border },
-            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: t.textTertiary },
+            '& .MuiOutlinedInput-notchedOutline': { borderColor: t.borderStrong },
+            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: t.borderStrongHover },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: t.accent, borderWidth: 1 },
             '&.Mui-focused': { boxShadow: `0 0 0 2px ${t.accent}40` },
             '&.Mui-error .MuiOutlinedInput-notchedOutline': { borderColor: t.danger },
@@ -136,7 +138,7 @@ export function createBridgeTheme(mode = 'light') {
       },
       MuiFormHelperText: { styleOverrides: { root: { fontSize: 12, marginLeft: 0 } } },
       MuiFormControlLabel: { styleOverrides: { label: { fontSize: 14, color: t.text } } },
-      MuiCheckbox: { styleOverrides: { root: { color: t.textTertiary, '&.Mui-checked': { color: t.primary } } } },
+      MuiCheckbox: { styleOverrides: { root: { color: t.borderStrongHover, '&.Mui-checked': { color: t.primary } } } },
       MuiRadio: { styleOverrides: { root: { color: t.textTertiary, '&.Mui-checked': { color: t.primary } } } },
       MuiSwitch: {
         styleOverrides: {
@@ -144,7 +146,7 @@ export function createBridgeTheme(mode = 'light') {
         },
       },
       MuiToggleButtonGroup: {
-        styleOverrides: { root: { backgroundColor: t.surface, borderRadius: 9999, padding: 2, gap: 2, border: `1px solid ${t.border}` } },
+        styleOverrides: { root: { backgroundColor: t.surfaceHover, borderRadius: 9999, padding: 2, gap: 2 } },
       },
       MuiToggleButton: {
         styleOverrides: {
@@ -156,7 +158,7 @@ export function createBridgeTheme(mode = 'light') {
             fontSize: 14,
             fontWeight: 500,
             color: t.textSecondary,
-            '&.Mui-selected': { backgroundColor: t.background, color: t.accent, boxShadow: `0 0 0 1px ${t.border}` },
+            '&.Mui-selected': { backgroundColor: t.background, color: t.accent, boxShadow: '0 1px 2px rgba(0,0,0,0.08)' },
             '&.Mui-selected:hover': { backgroundColor: t.background },
           },
         },

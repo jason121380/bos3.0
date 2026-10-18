@@ -49,7 +49,7 @@ const rowClass = cn(
 
 // 可收合的群組列（如「櫃檯作業」）
 const SidebarGroupButton = React.forwardRef(({ icon: Icon, open, hideChevron, className, children, ...props }, ref) => (
-  <button ref={ref} type="button" aria-expanded={hideChevron ? undefined : open} className={cn(rowClass, 'font-medium', className)} {...props}>
+  <button ref={ref} type="button" aria-expanded={hideChevron ? undefined : open} className={cn(rowClass, 'font-medium text-text', className)} {...props}>
     {Icon && <Icon className="h-4 w-4" strokeWidth={1.75} />}
     <span className="flex-1 truncate">{children}</span>
     {!hideChevron && (

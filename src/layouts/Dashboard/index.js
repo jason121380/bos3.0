@@ -106,7 +106,7 @@ function Dashboard({ route, location }) {
           <PanelLeftOpen strokeWidth={1.75} />
         </Button>
       )}
-      <div className={cn('flow-root min-h-screen bg-background transition-[padding] duration-200 print:pl-0', openNavBarDesktop && 'lg:pl-60')}>
+      <div className={cn('flow-root min-h-screen bg-canvas transition-[padding] duration-200 print:pl-0', openNavBarDesktop && 'lg:pl-60')}>
         <div id="printContainer" className="max-w-full overflow-x-hidden">
           <Suspense fallback={<div className="ui-root h-0.5 w-full animate-pulse bg-accent" />}>{renderRoutes(route.routes)}</Suspense>
         </div>

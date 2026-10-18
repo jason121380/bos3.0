@@ -10,9 +10,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        canvas: token('canvas'),
         background: token('background'),
-        surface: { DEFAULT: token('surface'), hover: token('surface-hover') },
-        border: token('border'),
+        surface: { DEFAULT: token('surface'), hover: token('surface-hover'), active: token('surface-active') },
+        border: { DEFAULT: token('border'), strong: token('border-strong'), 'strong-hover': token('border-strong-hover') },
         text: {
           DEFAULT: token('text'),
           secondary: token('text-secondary'),

@@ -19,10 +19,13 @@
 
 | Token | 淺色 | 深色 | 用途 |
 |---|---|---|---|
-| `--background` | `#FFFFFF` | `#0D0D0D` | 頁面底色 |
-| `--surface` | `#F9F9F9` | `#171717` | 側欄、次要區塊、表頭 |
-| `--surface-hover` | `#F3F3F3` | `#212121` | 列 hover、選單 hover |
-| `--border` | `#E5E5E5` | `#2E2E2E` | 所有邊框、分隔線 |
+| `--canvas` | `#F7F7F8` | `#0A0A0A` | 頁面底色（卡片靠底色差浮出） |
+| `--background` | `#FFFFFF` | `#171717` | 卡片、輸入框、浮層底色 |
+| `--surface` | `#F2F2F3` | `#1C1C1C` | 側欄、次要區塊、表頭 |
+| `--surface-hover` | `#E9E9EB` | `#262626` | 列 hover、選單 hover、次要按鈕底色 |
+| `--surface-active` | `#DEDEE1` | `#323232` | 次要按鈕 hover |
+| `--border` | `#E5E5E5` | `#2E2E2E` | 裝飾性邊框：卡片框、分隔線、表格線 |
+| `--border-strong` | `#C2C2C2` | `#484848` | 可操作元件邊框：輸入框、下拉、日期欄位（hover `#949494`） |
 | `--text` | `#0D0D0D` | `#ECECEC` | 主要文字 |
 | `--text-secondary` | `#5D5D5D` | `#B4B4B4` | 說明、標籤、欄位名 |
 | `--text-tertiary` | `#8F8F8F` | `#8F8F8F` | placeholder、停用 |
@@ -34,6 +37,7 @@
 | `--danger` | `#D92D20` | `#F97066` | 錯誤、刪除、退款 |
 
 規則：
+- 「能點、能輸入」的元件用 `border-strong` 或實心底；「純裝飾」的卡片框與分隔線用 `border`，維持淡雅但不混淆。
 - 狀態色只用在 **Badge、圖示、細邊框**，不做大面積底色；底色一律用該色 8% 透明度（`bg-success/8`）。
 - 一個畫面最多一個 `primary` 實心按鈕。
 
@@ -87,8 +91,8 @@
 
 | 元件 | 規則 |
 |---|---|
-| **Button** | 變體只有 `primary`（主題藍底白字、圓角 full）、`secondary`（白底、border）、`ghost`（無框）、`danger`；尺寸 `sm 32px / md 36px / lg 40px`。圖示 16px，與文字間距 6px。 |
-| **Input / Select / DatePicker** | 高 36px、`rounded-md`、1px border；focus 為 2px `accent` 外框。錯誤時 border 變 `danger`，下方 caption 顯示訊息。日期區間一律用 `DateSelector`：「快速選擇」下拉 ＋ 一個日期區間欄位，不平鋪多顆按鈕。 |
+| **Button** | 變體只有 `primary`（主題藍底白字、圓角 full）、`secondary`（淺灰實心 `surface-hover`、無框，與輸入框區分）、`ghost`（無框）、`danger`；尺寸 `sm 32px / md 36px / lg 40px`。圖示 16px，與文字間距 6px。 |
+| **Input / Select / DatePicker** | 高 36px、`rounded-md`、1px `border-strong`（hover 加深）；focus 為 2px `accent` 外框。錯誤時 border 變 `danger`，下方 caption 顯示訊息。日期區間一律用 `DateSelector`：「快速選擇」下拉 ＋ 一個日期區間欄位，不平鋪多顆按鈕。 |
 | **Form** | 標籤在上；必填以「*」標在標籤後；一列最多 2 欄（桌機）。底部固定動作列：右側「取消 / 儲存」。 |
 | **Table** | 表頭 `surface` 底、`label` 字級；列高 44px；hover `surface-hover`；數字欄右對齊；空狀態置中顯示說明＋主要動作。分頁固定在表格下方右側。 |
 | **Badge** | 狀態專用；文字＋8% 底色；不加邊框陰影。 |

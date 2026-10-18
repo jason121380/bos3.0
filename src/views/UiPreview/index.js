@@ -39,7 +39,7 @@ export default function UiPreview() {
   }, [dark])
 
   return (
-    <div className="ui-root min-h-screen bg-background">
+    <div className="ui-root min-h-screen bg-canvas">
       <div className="mx-auto flex max-w-5xl flex-col gap-10 px-8 py-6">
         <header className="flex items-start justify-between gap-4">
           <div className="flex flex-col gap-1">

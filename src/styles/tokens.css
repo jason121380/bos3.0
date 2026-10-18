@@ -4,10 +4,14 @@
 @tailwind utilities;
 
 :root {
-  --background: 255 255 255;
-  --surface: 249 249 249;
-  --surface-hover: 243 243 243;
-  --border: 229 229 229;
+  --canvas: 247 247 248; /* 頁面底色：卡片（白）靠底色差浮出 */
+  --background: 255 255 255; /* 卡片、輸入框、浮層底色 */
+  --surface: 242 242 243; /* 側欄、表頭、次要區塊 */
+  --surface-hover: 233 233 235; /* hover、次要按鈕底色 */
+  --surface-active: 222 222 225; /* 次要按鈕 hover */
+  --border: 229 229 229; /* 裝飾性：卡片框、分隔線 */
+  --border-strong: 194 194 194; /* 可操作：輸入框、下拉外框 */
+  --border-strong-hover: 148 148 148;
   --text: 13 13 13;
   --text-secondary: 93 93 93;
   --text-tertiary: 143 143 143;
@@ -20,10 +24,14 @@
 }
 
 .dark {
-  --background: 13 13 13;
-  --surface: 23 23 23;
-  --surface-hover: 33 33 33;
+  --canvas: 10 10 10;
+  --background: 23 23 23;
+  --surface: 28 28 28;
+  --surface-hover: 38 38 38;
+  --surface-active: 50 50 50;
   --border: 46 46 46;
+  --border-strong: 72 72 72;
+  --border-strong-hover: 110 110 110;
   --text: 236 236 236;
   --text-secondary: 180 180 180;
   --text-tertiary: 143 143 143;

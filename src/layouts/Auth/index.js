@@ -19,7 +19,7 @@ function Auth({ route }) {
     <Fragment>
       <Topbar />
       <Snackbar />
-      <div className="flex min-h-screen bg-background">
+      <div className="flex min-h-screen bg-canvas">
         <div className="max-w-full flex-1 overflow-x-hidden pt-14">
           <Suspense fallback={<div className="h-0.5 w-full animate-pulse bg-accent" />}>{renderRoutes(route.routes)}</Suspense>
         </div>
