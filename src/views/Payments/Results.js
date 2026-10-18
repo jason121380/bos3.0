@@ -1,19 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Checkbox,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-  IconButton,
-} from '@mui/material'
 import { Edit as EditIconSlot } from 'ui/icons'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
@@ -22,58 +6,11 @@ import useFetchDeletePayment from 'hooks/useFetchDeletePayment'
 import useFetchPayments from 'hooks/useFetchPayments'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
-
-const styles = {
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid rgb(var(--border))',
-    backgroundColor: 'rgb(var(--background))',
-    overflow: 'hidden',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  tableHead: css({
-    backgroundColor: 'rgb(var(--background))',
-    '& .MuiTableCell-head': {
-      color: 'rgb(var(--text))',
-      fontWeight: 'bold',
-      borderBottom: '1px solid rgb(var(--border))',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid rgb(var(--border))',
-      fontSize: '14px !important',
-      color: 'rgb(var(--text))',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-  }),
-  actionButton: css({
-    padding: '4px !important',
-    color: 'rgb(var(--text-tertiary)) !important',
-    '&:hover': {
-      color: 'rgb(var(--accent)) !important',
-      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
-    }
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 const deductions = {
   onSales: '業績',
@@ -105,83 +42,77 @@ function Results({ className, paymentList = [], ...rest }) {
     })
   }
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <Card css={styles.card}>
-        <CardHeader
-          title={
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: 'rgb(var(--text))' }}>
-                所有支付方式
-              </Typography>
-              <Typography color="textSecondary" variant="body2">
-                共 {paymentList.length} 筆
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table size="small">
-                <TableHead css={styles.tableHead}>
-                  <TableRow>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={
-                          selectedPayment.length === paymentList.length && paymentList.length > 0
-                        }
-                        color="primary"
-                        indeterminate={
-                          selectedPayment.length > 0 && selectedPayment.length < paymentList.length
-                        }
-                        onChange={handleSelectAll}
-                        disabled={paymentList.length === 0}
-                      />
-                    </TableCell>
-                    <TableCell>操作</TableCell>
-                    <TableCell>#</TableCell>
-                    <TableCell>名稱</TableCell>
-                    <TableCell>手續費</TableCell>
-                    <TableCell>扣項方式</TableCell>
-                    <TableCell>金額是否為0</TableCell>
-                  </TableRow>
+    <div {...rest}>
+      <Card>
+        <CardHeader>
+          <div className="flex items-baseline gap-3">
+            <CardTitle>
+              所有支付方式
+            </CardTitle>
+            <span className="text-label tabular-nums text-text-secondary">
+              共 {paymentList.length} 筆
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5 pt-4">
+          <Table className="min-w-[700px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={
+                      selectedPayment.length === paymentList.length && paymentList.length > 0
+                    }
+                    indeterminate={
+                      selectedPayment.length > 0 && selectedPayment.length < paymentList.length
+                    }
+                    onChange={handleSelectAll}
+                    disabled={paymentList.length === 0}
+                  />
                 </TableHead>
-                <TableBody>
-                  {paymentList.map((data, idx) => (
-                    <TableRow key={`${data.name}-${idx}`} css={styles.tableRow}>
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          onChange={() => handleSelectOne(data.id)}
-                          checked={selectedPayment.indexOf(data.id) > -1}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          component={RouterLink}
-                          css={styles.actionButton}
-                          to={`/payment/edit/${data.id}`}
-                          size="small"
-                        >
-                          <EditIconSlot fontSize="small" />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell>{idx + 1}</TableCell>
-                      <TableCell>{data.name}</TableCell>
-                      <TableCell>
-                        {(data.amountType === 'AMOUNT' ? PaymentSymbol[data.amountType] : '') +
-                          data.fee +
-                          (data.amountType === 'PERCENT' ? PaymentSymbol[data.amountType] : '')}
-                      </TableCell>
-                      <TableCell>{deductions[data.type]}</TableCell>
-                      <TableCell>{data.isNoCash ? '是' : '否'}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
+                <TableHead className="w-16">操作</TableHead>
+                <TableHead numeric className="w-12">#</TableHead>
+                <TableHead>名稱</TableHead>
+                <TableHead numeric>手續費</TableHead>
+                <TableHead>扣項方式</TableHead>
+                <TableHead>金額是否為0</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {paymentList.map((data, idx) => (
+                <TableRow key={`${data.name}-${idx}`} data-state={selectedPayment.indexOf(data.id) > -1 ? 'selected' : undefined}>
+                  <TableCell className="w-12">
+                    <Checkbox
+                      aria-label={`選取 ${data.name}`}
+                      onChange={() => handleSelectOne(data.id)}
+                      checked={selectedPayment.indexOf(data.id) > -1}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                      <RouterLink
+                        aria-label={`編輯 ${data.name}`}
+                        to={`/payment/edit/${data.id}`}
+                      >
+                        <EditIconSlot fontSize="small" />
+                      </RouterLink>
+                    </Button>
+                  </TableCell>
+                  <TableCell numeric>{idx + 1}</TableCell>
+                  <TableCell>{data.name}</TableCell>
+                  <TableCell numeric>
+                    {(data.amountType === 'AMOUNT' ? PaymentSymbol[data.amountType] : '') +
+                      data.fee +
+                      (data.amountType === 'PERCENT' ? PaymentSymbol[data.amountType] : '')}
+                  </TableCell>
+                  <TableCell>{deductions[data.type]}</TableCell>
+                  <TableCell>{data.isNoCash ? '是' : '否'}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
       <TableEditBar selected={selectedPayment} onDelete={handleSeletedDelete} />
     </div>
