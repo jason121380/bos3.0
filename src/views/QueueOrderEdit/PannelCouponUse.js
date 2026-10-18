@@ -19,13 +19,15 @@ const styles = {
     overflowX: 'auto',
   }),
   heading: css({
-    fontSize: '15px !important',
-    fontWeight: theme.typography.fontWeightRegular,
+    fontSize: '16px !important',
+    fontWeight: 'bold',
+    color: 'rgb(var(--text))',
   }),
   subHeading: css({
     fontSize: theme.typography.pxToRem(12),
     fontWeight: theme.typography.fontWeightRegular,
-    marginLeft: '5px',
+    color: 'rgb(var(--text-secondary))',
+    marginLeft: '8px',
   }),
   fieldOutter: css({
     display: 'flex',

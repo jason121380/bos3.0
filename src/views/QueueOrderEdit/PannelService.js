@@ -21,8 +21,9 @@ const styles = {
     marginTop: theme.spacing(3),
   }),
   heading: css({
-    fontSize: '15px !important',
-    fontWeight: theme.typography.fontWeightRegular,
+    fontSize: '16px !important',
+    fontWeight: 'bold',
+    color: 'rgb(var(--text))',
   }),
   details: css({
     overflowX: 'auto',

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Box, Card, CardContent, Checkbox, FormControlLabel,
+  Checkbox, FormControlLabel,
   CircularProgress, TextField, ToggleButton, ToggleButtonGroup
 } from '@mui/material'
 import PropTypes from 'prop-types'
@@ -13,7 +13,8 @@ import produce from 'immer'
 import _ from 'lodash'
 import { useContext, useState, useRef, useEffect, Fragment } from 'react'
 import { DateTimePicker } from '@mui/x-date-pickers'
-import { PersonAddAltRounded as PersonAddAltRoundedIcon, ManageAccountsRounded as ManageAccountsRoundedIcon } from 'ui/icons'
+import { UserCog, UserPlus } from 'lucide-react'
+import { Card } from 'ui/card'
 import useFetchCustomer from 'hooks/useFetchCustomer'
 import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import MembershipCardList from 'components/MembershipCardList'
@@ -28,7 +29,6 @@ const styles = {
     minWidth: '225px',
   }),
   card: css({
-    marginTop: theme.spacing(3),
     overflowX: 'auto',
   }),
   cardContent: css({
@@ -56,6 +56,10 @@ const styles = {
   addPersonIcon: css({
     marginRight: '10px',
     cursor: 'pointer',
+    flexShrink: 0,
+    width: '24px',
+    height: '24px',
+    color: 'rgb(var(--text-tertiary))',
   }),
   date: css({
     minWidth: '200px',
@@ -367,9 +371,9 @@ export default function Head() {
     }
   }
   return (
-    <Card css={styles.card}>
-      <CardContent css={styles.cardContent}>
-        <Box color="text.secondary" css={styles.box}>
+    <Card className="ui-root mb-6" css={styles.card}>
+      <div className="px-4 py-4" css={styles.cardContent}>
+        <div className="text-text-secondary" css={styles.box}>
           <div css={styles.customer}>
             <DateTimePicker
               label="帳單日期"
@@ -393,15 +397,18 @@ export default function Head() {
           <div css={styles.customer}>
             <div css={styles.customerIcomAndAuto}>
               {bill.customerId !== undefined && !bill.withoutCustomerData ? (
-                <ManageAccountsRoundedIcon
-                  sx={{ fontSize: '30px !important' }}
+                <UserCog
+                  role="button"
+                  aria-label="編輯顧客資料"
+                  strokeWidth={1.75}
                   css={styles.addPersonIcon}
                   onClick={handleOpenEditCustomerModal}
                 />
               ) : (
-                <PersonAddAltRoundedIcon
-                  sx={{ fontSize: '30px !important' }}
-                  style={{ color: '#08424c' }}
+                <UserPlus
+                  role="button"
+                  aria-label="新增顧客"
+                  strokeWidth={1.75}
                   css={styles.addPersonIcon}
                   onClick={handleOpenAddCustomerModal}
                 />
@@ -607,8 +614,8 @@ export default function Head() {
               </ToggleButton>
             ))}
           </ToggleButtonGroup>
-        </Box>
-      </CardContent>
+        </div>
+      </div>
       {openModal && (
         <AddCustomerModal
           onClose={handleEditClose}

@@ -4,7 +4,6 @@ import { useState, useContext, useEffect } from 'react'
 import idx from "idx";
 import useFetchGetThirdPartTicketSetting from 'hooks/useFetchGetThirdPartTicketSetting'
 import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import PannelCouponSells from './PannelCouponSells'
 import PannelCouponUse from './PannelCouponUse'
@@ -18,13 +17,17 @@ import PannelBonus from "./PannelBonus";
 // import PannelOtherPayment from './PannelOtherPayment'
 
 const styles = {
+  // 各區塊（Accordion）之間 12px，與打帳單一致
   root: css({
     width: '100%',
-    marginTop: theme.spacing(3),
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
   }),
   heading: css({
-    fontSize: '15px !important',
-    fontWeight: theme.typography.fontWeightRegular,
+    fontSize: '16px !important',
+    fontWeight: 'bold',
+    color: 'rgb(var(--text))',
   }),
 }
 
