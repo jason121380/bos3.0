@@ -1,10 +1,6 @@
-/** @jsxImportSource @emotion/react */
+// 內含 MUI Select，依指南保留 MUI Modal（Radix Dialog 會擋住 MUI 彈出層的點擊）；只換卡片與按鈕
 import {
-  Card,
-  CardHeader,
-  CardContent,
   Modal,
-  Button,
   FormControl,
   InputLabel,
   Select,
@@ -12,8 +8,8 @@ import {
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
-
-import styles from './styles/EditMemberCardRecordModal'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 
 function EditMemberCardRecordModal({
   openEditMembershipsCategoryModal,
@@ -29,18 +25,20 @@ function EditMemberCardRecordModal({
 
   return (
     <Modal open={openEditMembershipsCategoryModal}>
-      <Card css={styles.root}>
-        <div css={styles.header}>
-          <CardHeader title="編輯會員卡" />
-          <Button
-            color="primary"
-            variant="contained"
-            css={styles.closeAtTop}
-            onClick={onClose}
-          >
-            關閉
-          </Button>
-        </div>
+      <Card className="ui-root absolute left-1/2 top-1/2 max-h-full w-[640px] max-w-[calc(100%-32px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto shadow-float outline-none">
+        <CardHeader
+          className="items-center"
+          action={
+            <Button
+              variant="secondary"
+              onClick={onClose}
+            >
+              關閉
+            </Button>
+          }
+        >
+          <CardTitle>編輯會員卡</CardTitle>
+        </CardHeader>
 
         <CardContent>
           <FormControl variant="outlined" fullWidth>
@@ -58,14 +56,14 @@ function EditMemberCardRecordModal({
             </Select>
           </FormControl>
         </CardContent>
-        <Button
-          color="primary"
-          variant="contained"
-          css={styles.saveAtBottom}
-          onClick={handleUpdateMembershipsCategory}
-        >
-          儲存
-        </Button>
+        <CardFooter>
+          <Button
+            variant="primary"
+            onClick={handleUpdateMembershipsCategory}
+          >
+            儲存
+          </Button>
+        </CardFooter>
       </Card>
     </Modal>
   )

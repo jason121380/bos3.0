@@ -1,88 +1,19 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button, Card, CardContent, CardHeader, Checkbox, Table, TableBody, TableCell, TableHead,
-  TableRow, Typography, CardActions, TablePagination, Dialog, DialogTitle, DialogActions, IconButton
-} from '@mui/material'
-import { Edit as EditIconSlot } from 'ui/icons'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import format from 'date-fns/format'
 import { useState, useEffect } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from "react-csv";
 import useFetchDeleteMembership from 'hooks/useFetchDeleteMembership'
 import useFetchMultipleUpdateMembershipCategory from 'hooks/useFetchMultipleUpdateMembershipCategory'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid rgb(var(--border))',
-    backgroundColor: 'rgb(var(--background))',
-    overflow: 'hidden',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 1000,
-  }),
-  tableHead: css({
-    backgroundColor: 'rgb(var(--background))',
-    '& .MuiTableCell-head': {
-      color: 'rgb(var(--text))',
-      fontWeight: 'bold',
-      borderBottom: '1px solid rgb(var(--border))',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid rgb(var(--border))',
-      fontSize: '14px !important',
-      color: 'rgb(var(--text))',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-    '&.Mui-selected': {
-      backgroundColor: 'rgb(var(--surface)) !important',
-    },
-  }),
-  actionButton: css({
-    padding: '4px !important',
-    '& .MuiSvgIcon-root': {
-      color: 'rgb(var(--text-tertiary)) !important',
-    },
-    '&:hover .MuiSvgIcon-root': {
-      color: 'rgb(var(--accent)) !important',
-    },
-    '&:hover': {
-      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
-    }
-  }),
-  exportButton: css({
-    backgroundColor: 'rgb(var(--surface)) !important',
-    color: 'rgb(var(--text-secondary)) !important',
-    borderRadius: '20px !important',
-    padding: '4px 16px !important',
-    boxShadow: 'none !important',
-    fontWeight: 'bold !important',
-    fontSize: '13px !important',
-    '&:hover': {
-      backgroundColor: 'rgb(var(--surface)) !important',
-    }
-  }),
-}
+import { Download, Pencil } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { cn } from 'ui/utils'
 
 import EditMemberCardRecordModal from './EditMemberCardRecordModal'
 
@@ -206,108 +137,105 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
   }, [memberships])
 
   return (
-    <div {...rest} css={css([styles.root, className])} className='MemberCardRecordResult'>
-      <Card css={styles.card}>
+    <div {...rest} className='MemberCardRecordResult mt-2'>
+      <Card>
         <CardHeader
+          className="items-center pb-4"
           action={
-            <CSVLink data={excelData} filename="會員卡列表.csv" style={{ textDecoration: 'none' }}>
-              <Button variant="contained" css={styles.exportButton}>
+            <Button asChild size="sm" variant="secondary">
+              <CSVLink data={excelData} filename="會員卡列表.csv">
+                <Download strokeWidth={1.75} />
                 報表匯出
-              </Button>
-            </CSVLink>
+              </CSVLink>
+            </Button>
           }
-          title={
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: 'rgb(var(--text))' }}>
-                所有會員卡
-              </Typography>
-              <Typography color="textSecondary" variant="body2">
-                共 {memberships.data.length} 筆
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table size="small">
-                <TableHead css={styles.tableHead}>
-                  <TableRow>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={
-                          selectedMembership.length === memberships.data.length &&
-                          memberships.data.length > 0
-                        }
-                        color="primary"
-                        indeterminate={
-                          selectedMembership.length > 0 &&
-                          selectedMembership.length < memberships.data.length
-                        }
-                        onChange={handleSelectAll}
-                        disabled={
-                          memberships.data.length === 0 ||
-                          memberships.data.filter(d => !d.isUsing).length ===
-                          memberships.data.length
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>操作</TableCell>
-                    <TableCell>代號</TableCell>
-                    <TableCell>類別</TableCell>
-                    <TableCell>名稱</TableCell>
-                    <TableCell>成本</TableCell>
-                    <TableCell>價格</TableCell>
-                    <TableCell>變更者</TableCell>
-                    <TableCell>變更時間</TableCell>
-                  </TableRow>
+        >
+          <div className="flex items-baseline gap-3">
+            <CardTitle>所有會員卡</CardTitle>
+            <span className="text-label text-text-secondary tabular-nums">
+              共 {memberships.data.length} 筆
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table className="min-w-[1000px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={
+                      selectedMembership.length === memberships.data.length &&
+                      memberships.data.length > 0
+                    }
+                    indeterminate={
+                      selectedMembership.length > 0 &&
+                      selectedMembership.length < memberships.data.length
+                    }
+                    onChange={handleSelectAll}
+                    disabled={
+                      memberships.data.length === 0 ||
+                      memberships.data.filter(d => !d.isUsing).length ===
+                      memberships.data.length
+                    }
+                  />
                 </TableHead>
-                <TableBody>
-                  {memberships.data.map((data, idx) => (
-                    <TableRow
-                      key={`membership-${data.name}-${idx}`}
-                      css={styles.tableRow}
-                      selected={selectedMembership.indexOf(data.uuid) > -1 || !data.isUsing}
-                      data-testid="membership-row"
+                <TableHead>操作</TableHead>
+                <TableHead>代號</TableHead>
+                <TableHead>類別</TableHead>
+                <TableHead>名稱</TableHead>
+                <TableHead numeric>成本</TableHead>
+                <TableHead numeric>價格</TableHead>
+                <TableHead>變更者</TableHead>
+                <TableHead>變更時間</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {memberships.data.map((data, idx) => (
+                <TableRow
+                  key={`membership-${data.name}-${idx}`}
+                  data-state={selectedMembership.indexOf(data.uuid) > -1 || !data.isUsing ? 'selected' : undefined}
+                  data-testid="membership-row"
+                >
+                  <TableCell>
+                    <Checkbox
+                      aria-label={`選取 ${data.name}`}
+                      checked={selectedMembership.indexOf(data.uuid) > -1}
+                      onChange={() => handleSelectOne(data.uuid)}
+                      data-testid={`membership-${data.name}-checkbox`}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    {/* 停用的會員卡：連結無 disabled 屬性，改用 aria-disabled＋取消指標事件 */}
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="icon"
+                      className={cn('h-8 w-8 text-text-tertiary', !data.isUsing && 'pointer-events-none opacity-40')}
+                      aria-label="編輯會員卡"
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={selectedMembership.indexOf(data.uuid) > -1}
-                          onChange={() => handleSelectOne(data.uuid)}
-                          inputProps={{
-                            'data-testid': `membership-${data.name}-checkbox`,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          component={RouterLink}
-                          css={styles.actionButton}
-                          size="small"
-                          to={`/member-card/edit/${data.uuid}`}
-                          disabled={!data.isUsing}
-                        >
-                          <EditIconSlot fontSize="small" />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell>{data.no}</TableCell>
-                      <TableCell>
-                        {data.membershipCategory === null ? '未分類' : data.membershipCategory.name}
-                      </TableCell>
-                      <TableCell>{data.name}</TableCell>
-                      <TableCell>{data.cost}</TableCell>
-                      <TableCell>{data.sellPrice}</TableCell>
-                      <TableCell>{data.creator !== null ? data.creator.name : ''}</TableCell>
-                      <TableCell>{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
+                      <RouterLink
+                        to={`/member-card/edit/${data.uuid}`}
+                        aria-disabled={!data.isUsing || undefined}
+                        tabIndex={!data.isUsing ? -1 : undefined}
+                      >
+                        <Pencil strokeWidth={1.75} />
+                      </RouterLink>
+                    </Button>
+                  </TableCell>
+                  <TableCell className="tabular-nums">{data.no}</TableCell>
+                  <TableCell>
+                    {data.membershipCategory === null ? '未分類' : data.membershipCategory.name}
+                  </TableCell>
+                  <TableCell>{data.name}</TableCell>
+                  <TableCell numeric>{formatNumber(data.cost)}</TableCell>
+                  <TableCell numeric>{formatNumber(data.sellPrice)}</TableCell>
+                  <TableCell>{data.creator !== null ? data.creator.name : ''}</TableCell>
+                  <TableCell className="tabular-nums">{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
           {/* <TablePagination
             labelRowsPerPage='每頁顯示數量'
             component="div"
@@ -318,7 +246,7 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
             rowsPerPage={memberships.pageLimit}
             rowsPerPageOptions={[5, 10, 25, 50, 1000]}
           /> */}
-        </CardActions>
+        </div>
       </Card>
       <TableEditBar
         selected={selectedMembership}
@@ -327,19 +255,21 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
       />
       <Dialog
         open={openDialog}
-        onClose={handleCloseDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        onOpenChange={o => !o && handleCloseDialog()}
       >
-        <DialogTitle id="alert-dialog-title">{'刪除會員卡'}</DialogTitle>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            取消
-          </Button>
-          <Button onClick={handleConfirmCancel} color="primary" autoFocus data-testid="confirm">
-            確認
-          </Button>
-        </DialogActions>
+        <DialogContent size="sm">
+          <DialogHeader>
+            <DialogTitle id="alert-dialog-title">{'刪除會員卡'}</DialogTitle>
+          </DialogHeader>
+          <DialogFooter className="mt-4">
+            <Button onClick={handleCloseDialog} variant="secondary">
+              取消
+            </Button>
+            <Button onClick={handleConfirmCancel} variant="danger" autoFocus data-testid="confirm">
+              確認
+            </Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
       {openEditMembershipsCategoryModal && (
         <EditMemberCardRecordModal
