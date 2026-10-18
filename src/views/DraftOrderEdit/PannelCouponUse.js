@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import billContext from 'context/keyInContext'
 import useFetchOrder from 'hooks/useFetchOrder'
@@ -151,8 +151,8 @@ export default function PannelCouponUse() {
   return (
     <Accordion defaultExpanded={expanded} expanded={expanded}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />} onClick={handleAccordionClick}>
-        <Typography css={styles.heading}>使用預收卡</Typography>
-        <Typography css={styles.subHeading}>編輯訂單不得編輯預收卡使用</Typography>
+        <p className="m-0" css={styles.heading}>使用預收卡</p>
+        <p className="m-0" css={styles.subHeading}>編輯訂單不得編輯預收卡使用</p>
       </AccordionSummary>
       <AccordionDetails css={styles.details}>
         <div css={styles.fieldOutter}>

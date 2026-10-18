@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import billContext from 'context/keyInContext'
 import { useFetchServiceOrders } from 'hooks/useFetchOrder'
@@ -297,7 +297,7 @@ export default function PannelService({ thirdPartTicket }) {
         data-testid="panelService"
         onClick={handleAccordionClick}
       >
-        <Typography css={styles.heading}>項目消費</Typography>
+        <p className="m-0" css={styles.heading}>項目消費</p>
       </AccordionSummary>
       <AccordionDetails css={styles.details}>
         <div css={styles.fieldOutter}>
