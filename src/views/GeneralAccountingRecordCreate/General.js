@@ -1,7 +1,7 @@
-/** @jsxImportSource @emotion/react */
+// 表單控制項（日期、收支切換、科目／人員 Autocomplete、備註快捷 Select、金額與備註 TextField）
+// 保留 MUI：皆以 ref 串接 Enter 鍵焦點流程（橋接主題已套新外觀）
 import {
-  Button, Card, CardContent, CardHeader, Divider, Grid, Table,
-  TableBody, TableCell, TableRow, TextField, FormControl, MenuItem,
+  TextField, FormControl, MenuItem,
   InputLabel, Select, Autocomplete, ToggleButton, ToggleButtonGroup
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
@@ -10,51 +10,14 @@ import idx from 'idx'
 import React, { useState, Fragment, useEffect, useRef } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { openSnackbar } from 'elements/snackbars'
-import { FilterNone as FilterNoneIcon } from 'ui/icons'
+import { Copy } from 'lucide-react'
 import { useFetchUsersForCreatePicking } from 'hooks/useFetchUsers'
 import useFetchAccountingSubjects from 'hooks/useFetchAccountingSubjects'
 import useFetchCreateMoneyFlow from 'hooks/useFetchCreateMoneyFlow'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 import AccountingSubjectModal from './AccountingSubjectModal'
-
-const styles = {
-  root: css({}),
-  actions: css({
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    '& > * + *': {
-      marginLeft: 0,
-    },
-  }),
-  buttonIcon: css({
-    marginRight: theme.spacing(1),
-  }),
-  content: css({
-    padding: 0,
-    marginTop: theme.spacing(3),
-  }),
-  action: css({
-    marginTop: theme.spacing(3) + '!important',
-  }),
-  createIcon: css({
-    cursor: 'pointer',
-    marginRight: '10px',
-  }),
-  subjectDiv: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  padding: css({
-    padding: '10px 5px !important'
-  }),
-  datePicker: css({
-    '& input.MuiInput-input': {
-      padding: '6px 0 7px'
-    }
-  }),
-}
 
 function Summary({ stayInCreateAccount, ...rest }) {
   const history = useHistory()
@@ -270,268 +233,247 @@ function Summary({ stayInCreateAccount, ...rest }) {
     }
   }
   return (
-    <div css={styles.content}>
-      <Grid {...rest} css={styles.root} container spacing={3}>
-        <Grid item xs={12}>
-          <Card {...rest} css={styles.root}>
-            <CardHeader title="一般" />
-            <Divider />
-            <CardContent css={styles.content}>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell style={{ width: '400px' }}>
-                      <DatePicker
-                        format="yyyy/MM/dd"
-                        label="開單日期"
-                        value={date}
-                        css={styles.datePicker}
-                        onChange={(e) => {
-                          history.push(
-                            `/general/accounting/create?date=${new Date(e).getTime()}`
-                          )
-                          setDate(e)
-                        }}
-                        localeText={{
-                          toolbarTitle: '選擇日期'
-                        }}
-                        slotProps={{
-                          toolbar: {
-                            toolbarFormat: 'yyyy年M月d日'
-                          },
-                          textField: {
-                            variant: 'standard',
-                            onKeyDown: event => {
-                              if (event.key === 'Enter') {
-                                if (inoutType === null || inoutType === 'REVENUE') {
-                                  setFocus('type1')
-                                  type1Ref.current.focus()
-                                } else if (inoutType === 'EXPENDITURE') {
-                                  setFocus('type2')
-                                  type2Ref.current.focus()
-                                }
-                              }
-                            }
-                          }
-                        }}
+    <div>
+      <Card {...rest}>
+        <CardHeader>
+          <CardTitle>一般</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <div className="w-full max-w-[400px]">
+            <DatePicker
+              format="yyyy/MM/dd"
+              label="開單日期"
+              value={date}
+              onChange={(e) => {
+                history.push(
+                  `/general/accounting/create?date=${new Date(e).getTime()}`
+                )
+                setDate(e)
+              }}
+              localeText={{
+                toolbarTitle: '選擇日期'
+              }}
+              slotProps={{
+                toolbar: {
+                  toolbarFormat: 'yyyy年M月d日'
+                },
+                textField: {
+                  variant: 'standard',
+                  onKeyDown: event => {
+                    if (event.key === 'Enter') {
+                      if (inoutType === null || inoutType === 'REVENUE') {
+                        setFocus('type1')
+                        type1Ref.current.focus()
+                      } else if (inoutType === 'EXPENDITURE') {
+                        setFocus('type2')
+                        type2Ref.current.focus()
+                      }
+                    }
+                  }
+                }
+              }}
+            />
+          </div>
+          <div>
+            <ToggleButtonGroup
+              value={inoutType}
+              exclusive
+              aria-label="text alignment"
+              onChange={(e, inoutType) => {
+                inoutType !== null && setInoutType(inoutType)
+              }}
+              onKeyDown={event => {
+                if (event.key === 'Enter') {
+                  setFocus('account')
+                } else if (event.key === 'ArrowRight') {
+                  setInoutType('EXPENDITURE')
+                  setFocus('type2')
+                } else if (event.key === 'ArrowLeft') {
+                  setInoutType('REVENUE')
+                  setFocus('type1')
+                }
+              }}
+            >
+              <ToggleButton
+                ref={type1Ref}
+                value="REVENUE"
+                aria-label="left aligned"
+                focused={focus === 'type1' ? 1 : 0}
+              >
+                收入
+              </ToggleButton>
+              <ToggleButton
+                ref={type2Ref}
+                value="EXPENDITURE"
+                aria-label="centered"
+                focused={focus === 'type2' ? 1 : 0}
+              >
+                支出
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </div>
+          {inoutType !== null && (
+            <Fragment>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0 text-text-secondary"
+                  aria-label="從科目列表選擇"
+                  onClick={handleOpenModal}
+                >
+                  <Copy strokeWidth={1.75} />
+                </Button>
+                <AccountingSubjectsAutocomplete
+                  value={accountingSubject}
+                  ref={accountRef}
+                  onFocus={event => setFocus('account')}
+                  onKeyDown={event => {
+                    if (event.key === 'Enter') {
+                      setFocus('price')
+                    }
+                  }}
+                  onChange={(e, completed) => {
+                    selectInoutType(completed)
+                    setFocus('price')
+                  }}
+                  inoutType={inoutType}
+                />
+              </div>
+              <div>
+                <TextField
+                  type="number"
+                  variant="outlined"
+                  label="金額"
+                  fullWidth
+                  value={amount || 0}
+                  inputRef={priceRef}
+                  onFocus={() => setFocus('price')}
+                  onChange={e => {
+                    setAmount(e.target.value)
+                  }}
+                  onKeyDown={event => {
+                    if (event.key === "Enter") {
+                      if (accountingSubject !== null && accountingSubject.title === '員工借支') {
+                        setFocus('relation')
+                      } else {
+                        setFocus('designer')
+                      }
+                    }
+                  }}
+                  onWheel={() => document.activeElement.blur()}
+                />
+              </div>
+              {accountingSubject !== null && accountingSubject.title === '員工借支' && (
+                <div>
+                  <Autocomplete
+                    autoHighlight
+                    options={employeeOptions}
+                    getOptionLabel={option =>
+                      option.title +
+                      '-' +
+                      (option.designerNo ? option.designerNo : '(無代號)')
+                    }
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="關係人"
+                        variant="outlined"
+                        fullWidth
+                        inputRef={relationRef}
                       />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell css={styles.padding}>
-                      <ToggleButtonGroup
-                        value={inoutType}
-                        exclusive
-                        aria-label="text alignment"
-                        onChange={(e, inoutType) => {
-                          inoutType !== null && setInoutType(inoutType)
-                        }}
-                        onKeyDown={event => {
-                          if (event.key === 'Enter') {
-                            setFocus('account')
-                          } else if (event.key === 'ArrowRight') {
-                            setInoutType('EXPENDITURE')
-                            setFocus('type2')
-                          } else if (event.key === 'ArrowLeft') {
-                            setInoutType('REVENUE')
-                            setFocus('type1')
-                          }
-                        }}
-                      >
-                        <ToggleButton
-                          ref={type1Ref}
-                          value="REVENUE"
-                          aria-label="left aligned"
-                          focused={focus === 'type1' ? 1 : 0}
-                        >
-                          收入
-                        </ToggleButton>
-                        <ToggleButton
-                          ref={type2Ref}
-                          value="EXPENDITURE"
-                          aria-label="centered"
-                          focused={focus === 'type2' ? 1 : 0}
-                        >
-                          支出
-                        </ToggleButton>
-                      </ToggleButtonGroup>
-                    </TableCell>
-                  </TableRow>
-                  {inoutType !== null && (
-                    <Fragment>
-                      <TableRow>
-                        <TableCell css={styles.padding}>
-                          <div css={styles.subjectDiv}>
-                            <FilterNoneIcon
-                              css={styles.createIcon}
-                              onClick={handleOpenModal}
-                            />
-                            <AccountingSubjectsAutocomplete
-                              value={accountingSubject}
-                              ref={accountRef}
-                              onFocus={event => setFocus('account')}
-                              onKeyDown={event => {
-                                if (event.key === 'Enter') {
-                                  setFocus('price')
-                                }
-                              }}
-                              onChange={(e, completed) => {
-                                selectInoutType(completed)
-                                setFocus('price')
-                              }}
-                              inoutType={inoutType}
-                            />
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell css={styles.padding}>
-                          <TextField
-                            type="number"
-                            variant="outlined"
-                            label="金額"
-                            fullWidth
-                            value={amount || 0}
-                            inputRef={priceRef}
-                            onFocus={() => setFocus('price')}
-                            onChange={e => {
-                              setAmount(e.target.value)
-                            }}
-                            onKeyDown={event => {
-                              if (event.key === "Enter") {
-                                if (accountingSubject !== null && accountingSubject.title === '員工借支') {
-                                  setFocus('relation')
-                                } else {
-                                  setFocus('designer')
-                                }
-                              }
-                            }}
-                            onWheel={() => document.activeElement.blur()}
-                          />
-                        </TableCell>
-                      </TableRow>
-                      {accountingSubject !== null && accountingSubject.title === '員工借支' && (
-                        <TableRow>
-                          <TableCell css={styles.padding}>
-                            <Autocomplete
-                              autoHighlight
-                              options={employeeOptions}
-                              getOptionLabel={option =>
-                                option.title +
-                                '-' +
-                                (option.designerNo ? option.designerNo : '(無代號)')
-                              }
-                              renderInput={params => (
-                                <TextField
-                                  {...params}
-                                  label="關係人"
-                                  variant="outlined"
-                                  fullWidth
-                                  inputRef={relationRef}
-                                />
-                              )}
-                              onFocus={() => setFocus('relation')}
-                              onChange={(event, completed) => {
-                                setRelationUserId(idx(completed, _ => _.value))
-                                setFocus('designer')
-                              }
-                              }
-                              onKeyDown={event => {
-                                if (event.key === 'Enter') {
-                                  setFocus('designer')
-                                }
-                              }}
-                              value={selectedrelationUser}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      )}
-                      <TableRow>
-                        <TableCell css={styles.padding}>
-                          <Autocomplete
-                            autoHighlight
-                            options={employeeOptions}
-                            getOptionLabel={option =>
-                              option.title +
-                              '-' +
-                              (option.designerNo ? option.designerNo : '(無代號)')
-                            }
-                            renderInput={params => (
-                              <TextField {...params} inputRef={designerRef} label="登錄者" variant="outlined" fullWidth />
-                            )}
-                            onFocus={() => setFocus('designer')}
-                            onChange={(event, completed) => {
-                              setUserId(idx(completed, _ => _.value))
-                              setFocus('remarkItem')
-                            }}
-                            onKeyDown={event => {
-                              if (event.key === 'Enter') {
-                                setFocus('remarkItem')
-                              }
-                            }}
-                            value={selectedEmployee}
-                          />
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell css={styles.padding}>
-                          <FormControl
-                            fullWidth
-                            variant="outlined"
-                            onKeyDown={event => {
-                              if (event.key === 'Enter') {
-                                setFocus('remark')
-                              }
-                            }}
-                          >
-                            <InputLabel>備註快捷鍵</InputLabel>
-                            <Select
-                              inputRef={remarkItemRef}
-                              label='備註快捷鍵'
-                              onFocus={() => setFocus('remarkItem')}
-                              onKeyDown={event => {
-                                if (event.key === 'Enter') {
-                                  setFocus('remark')
-                                }
-                              }}
-                              onChange={event => {
-                                onChange(event)
-                                setFocus('remark')
-                                remarkItemRef.current.focus()
-                              }}
-                            >
-                              {remarkItem.map((data, index) => (
-                                <MenuItem key={index} value={data.value}>{data.label}</MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell css={styles.padding}>
-                          <TextField
-                            variant="outlined"
-                            label="備註"
-                            multiline
-                            minRows="4"
-                            fullWidth
-                            value={remark}
-                            onFocus={() => setFocus('remark')}
-                            inputRef={remarkRef}
-                            onChange={e => {
-                              setRemark(e.target.value)
-                            }}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    </Fragment>
+                    )}
+                    onFocus={() => setFocus('relation')}
+                    onChange={(event, completed) => {
+                      setRelationUserId(idx(completed, _ => _.value))
+                      setFocus('designer')
+                    }
+                    }
+                    onKeyDown={event => {
+                      if (event.key === 'Enter') {
+                        setFocus('designer')
+                      }
+                    }}
+                    value={selectedrelationUser}
+                  />
+                </div>
+              )}
+              <div>
+                <Autocomplete
+                  autoHighlight
+                  options={employeeOptions}
+                  getOptionLabel={option =>
+                    option.title +
+                    '-' +
+                    (option.designerNo ? option.designerNo : '(無代號)')
+                  }
+                  renderInput={params => (
+                    <TextField {...params} inputRef={designerRef} label="登錄者" variant="outlined" fullWidth />
                   )}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+                  onFocus={() => setFocus('designer')}
+                  onChange={(event, completed) => {
+                    setUserId(idx(completed, _ => _.value))
+                    setFocus('remarkItem')
+                  }}
+                  onKeyDown={event => {
+                    if (event.key === 'Enter') {
+                      setFocus('remarkItem')
+                    }
+                  }}
+                  value={selectedEmployee}
+                />
+              </div>
+              <div>
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  onKeyDown={event => {
+                    if (event.key === 'Enter') {
+                      setFocus('remark')
+                    }
+                  }}
+                >
+                  <InputLabel>備註快捷鍵</InputLabel>
+                  <Select
+                    inputRef={remarkItemRef}
+                    label='備註快捷鍵'
+                    onFocus={() => setFocus('remarkItem')}
+                    onKeyDown={event => {
+                      if (event.key === 'Enter') {
+                        setFocus('remark')
+                      }
+                    }}
+                    onChange={event => {
+                      onChange(event)
+                      setFocus('remark')
+                      remarkItemRef.current.focus()
+                    }}
+                  >
+                    {remarkItem.map((data, index) => (
+                      <MenuItem key={index} value={data.value}>{data.label}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+              <div>
+                <TextField
+                  variant="outlined"
+                  label="備註"
+                  multiline
+                  minRows="4"
+                  fullWidth
+                  value={remark}
+                  onFocus={() => setFocus('remark')}
+                  inputRef={remarkRef}
+                  onChange={e => {
+                    setRemark(e.target.value)
+                  }}
+                />
+              </div>
+            </Fragment>
+          )}
+        </CardContent>
+      </Card>
       {openAccountingSubjectModal && (
         <AccountingSubjectModal
           openAccountingSubjectModal={openAccountingSubjectModal}
@@ -542,18 +484,18 @@ function Summary({ stayInCreateAccount, ...rest }) {
           setInoutType={setInoutType}
         />
       )}
-      <Button
-        variant="contained"
-        color="primary"
-        css={styles.action}
-        disabled={valid || isClick}
-        onClick={() => {
-          Submit()
-        }}
-      // onDoubleClick={valid === false}
-      >
-        新增
-      </Button>
+      <div className="flex justify-end py-6">
+        <Button
+          variant="primary"
+          disabled={valid || isClick}
+          onClick={() => {
+            Submit()
+          }}
+        // onDoubleClick={valid === false}
+        >
+          新增
+        </Button>
+      </div>
     </div>
   )
 }
