@@ -29,12 +29,12 @@ BOS 3.0 是美業 ERP 的純前端 SPA（CRA5 + React 17 + Apollo GraphQL + Redu
 npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps
 npm start                            # 開發（craco start）
 CI=true npm run build                # 正式 build（警告視為錯誤，與 CI 相同）
-CI=true npm run test:nowatch         # 全部單元測試（基準：7 檔、13 個既有失敗）
+CI=true npm run test:nowatch         # 全部單元測試（基準：17 檔／52 測試全數通過）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
 node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面驗證
 ```
 
-驗證標準：`verify-logic` 的 FAIL 必須逐項說明是純畫面差異；eslint 0 新增 error；build 成功；測試**不得有新增失敗**（改版前即有的 13 個失敗：ProductCreate 2、ServiceCategoryEdit 2、AccountingSubjectsAutocomplete 3、LoginForm 2、ServiceCategoryCreate 2、Products/Results 2、AccountingRecordCreate/Header 整檔無法執行）。
+驗證標準：`verify-logic` 的 FAIL 必須逐項說明是純畫面差異；eslint 0 新增 error；build 成功；測試**必須全數通過**（原 13 個既有失敗已於 PR #5 與 2026/10/19 產品決策改寫後清零）。
 
 ## Git 與合併
 
@@ -42,18 +42,18 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - **使用者已指示「always merge」**：一批工作做完且驗證通過（build 成功、測試無新增失敗），就開 PR 並 merge 進 `main`（merge commit），不必再問。驗證沒過就停下來回報，不硬 merge。
 - PR 合併後，分支從最新 `main` 重置再繼續（`git fetch origin main && git checkout -B <branch> origin/main`），不在已合併的歷史上堆疊。
 - Commit 訊息遵守 Angular 格式；沒有 `gh`，PR 用 GitHub MCP 工具。
-- CI：Node 20.12.1 + `npm ci --legacy-peer-deps`；Build 與 Unit tests 兩個獨立 job（Unit tests 目前因既有 13 個失敗而是紅的）。
+- CI：Node 20.12.1 + `npm ci --legacy-peer-deps`；Build 與 Unit tests 兩個獨立 job。
 
 ## 架構速記
 
 - `src/ui/`：新元件（Button、Input／Field、Select、NativeSelect、Table、Card、Dialog、Accordion、ToggleGroup、Switch、Checkbox、Badge、Avatar、Stat、Toast、Popover、DropdownMenu、Sidebar、PageHeader…）與 `icons`（lucide 轉接層）、`mui-theme`（MUI 橋接主題）、`format`（`formatNumber`／`formatMoney`）。
 - `src/styles/tokens.css`：CSS 變數 tokens＋`.ui-root` 基礎層（preflight 關閉）。
 - `src/views/OrderCreate/`：打帳單。`orderRequirements.js` 與 `Header.js` 的 `valid` 同步（有測試比對）；`RowAction.js` 是項目列的圖示鈕與「新增項目」。
-- `scripts/redesign/`：verify-logic／verify-style-only／verify-imports-only、tokenize-colors、swap-icons、page-checklist。
+- `scripts/redesign/`：verify-logic／verify-style-only／verify-imports-only、tokenize-colors、swap-icons、page-checklist、portal-root-scan、inventory-scan（改版盤點數字，口徑見 `docs/redesign/TODO.md` §三）。
 
 ## 踩雷清單
 
-- **`ui` 元件放在 MUI Dialog／Popper（Portal）內要有 `.ui-root`**，否則沒有 box-sizing／邊框重置（目前約 16 個檔案待修，見 TODO）。
+- **`ui` 元件放在 MUI Dialog／Popper（Portal）內要有 `.ui-root`**，否則沒有 box-sizing／邊框重置（8 個 `ui` 元件已自帶 `ui-root`，`portal-root-scan` 為 0；新增 `ui` 元件要記得自帶）。
 - Radix Dialog 會把 body 設 `pointer-events:none`，與 MUI Dialog 的 focus trap 互搶；Dialog 內若有 MUI Autocomplete／Select／DatePicker 就保留 MUI Dialog。
 - emotion `css` prop 與 Tailwind class 同權重，先後順序不可靠：要隱藏用 inline style；`css={…}` 傳給元件時要扣掉 margin 以免超出。
 - flex 子層沒有 `min-width:0`／`max-width:100%` 會被內容撐寬；欄位列要 `flex-wrap`。

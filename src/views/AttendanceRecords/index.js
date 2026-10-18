@@ -12,8 +12,7 @@ import {
   ToggleButtonGroup,
   Collapse,
 } from '@mui/material'
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import { Autocomplete } from '@mui/material'
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Page from 'components/Page'

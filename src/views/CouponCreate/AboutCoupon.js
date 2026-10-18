@@ -1,15 +1,12 @@
-// 欄位多為值可能為空字串或布林值的 MUI Select，為維持同一張卡片的標籤樣式一致，文字欄位也保留 MUI TextField（橋接主題已套新外觀）
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material'
+// 欄位標籤統一放在欄位上方（Field＋Input／NativeSelect）。
+// 下拉選項值可能是空字串或布林值（isLaunched），NativeSelect 的 onChange(event) 與 MUI Select 相容、
+// event.target.value 回傳原始型別值，所以既有的 onChange 包裝原樣保留（不改用 Radix Select 的 onValueChange）
 import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
 const lockStatus = [
   {
@@ -57,77 +54,63 @@ function AboutService({ className, onChange, coupon, ...rest }) {
         <CardTitle>一般資訊</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
-        <TextField
-          value={coupon.no}
-          label="代號"
-          variant="outlined"
-          fullWidth
-          onChange={event => onChange({ event, key: 'no' })}
-        />
-        <TextField
-          value={coupon.name}
-          label="名稱"
-          variant="outlined"
-          fullWidth
-          onChange={event => onChange({ event, key: 'name' })}
-        />
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel>服務類別</InputLabel>
-          <Select
-            label='服務類別'
+        <Field label="代號">
+          <Input value={coupon.no} onChange={event => onChange({ event, key: 'no' })} />
+        </Field>
+        <Field label="名稱">
+          <Input value={coupon.name} onChange={event => onChange({ event, key: 'name' })} />
+        </Field>
+        <Field label="服務類別">
+          <NativeSelect
             value={coupon.ServiceCategoryId}
             onChange={event => onChange({ event, key: 'ServiceCategoryId' })}
           >
-            <MenuItem value="" disabled>
-              <em>選擇服務類別</em>
-            </MenuItem>
+            <NativeSelectOption value="" disabled>
+              選擇服務類別
+            </NativeSelectOption>
             {idx(serviceCategories, _ =>
               _.data.serviceCategories.map((data, idx) => (
-                <MenuItem value={data.id} key={`service-category-${idx}`}>
+                <NativeSelectOption value={data.id} key={`service-category-${idx}`}>
                   {data.name}
-                </MenuItem>
+                </NativeSelectOption>
               ))
             )}
-          </Select>
-        </FormControl>
-        <TextField
-          type="number"
-          label="價格"
-          variant="outlined"
-          fullWidth
-          onChange={event =>
-            onChange({
-              event: {
-                target: {
-                  value: idx(event, _ => parseInt(_.target.value)),
+          </NativeSelect>
+        </Field>
+        <Field label="價格">
+          <Input
+            type="number"
+            onChange={event =>
+              onChange({
+                event: {
+                  target: {
+                    value: idx(event, _ => parseInt(_.target.value)),
+                  },
                 },
-              },
-              key: 'price',
-            })
-          }
-          value={coupon.price}
-        />
-        <TextField
-          type="number"
-          label="次數"
-          variant="outlined"
-          fullWidth
-          value={coupon.ticketAvailableCount}
-          onChange={event =>
-            onChange({
-              event: {
-                target: {
-                  value: idx(event, _ => +_.target.value || 1),
+                key: 'price',
+              })
+            }
+            value={coupon.price}
+          />
+        </Field>
+        <Field label="次數">
+          <Input
+            type="number"
+            value={coupon.ticketAvailableCount}
+            onChange={event =>
+              onChange({
+                event: {
+                  target: {
+                    value: idx(event, _ => +_.target.value || 1),
+                  },
                 },
-              },
-              key: 'ticketAvailableCount',
-            })
-          }
-        />
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel>打帳單是否能更改預設價格</InputLabel>
-          <Select
-            label='打帳單是否能更改預設價格'
+                key: 'ticketAvailableCount',
+              })
+            }
+          />
+        </Field>
+        <Field label="打帳單是否能更改預設價格">
+          <NativeSelect
             value={coupon.isLocked}
             onChange={event =>
               onChange({
@@ -141,16 +124,14 @@ function AboutService({ className, onChange, coupon, ...rest }) {
             }
           >
             {lockStatus.map((data, idx) => (
-              <MenuItem value={data.value} key={`${data.label}-${idx}`}>
+              <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                 {data.label}
-              </MenuItem>
+              </NativeSelectOption>
             ))}
-          </Select>
-        </FormControl>
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel>業績入帳模式</InputLabel>
-          <Select
-            label='業績入帳模式'
+          </NativeSelect>
+        </Field>
+        <Field label="業績入帳模式">
+          <NativeSelect
             value={coupon.performanceCalculationMode}
             onChange={event =>
               onChange({
@@ -164,16 +145,14 @@ function AboutService({ className, onChange, coupon, ...rest }) {
             }
           >
             {sellOption.map((data, idx) => (
-              <MenuItem value={data.value} key={`${data.label}-${idx}`}>
+              <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                 {data.label}
-              </MenuItem>
+              </NativeSelectOption>
             ))}
-          </Select>
-        </FormControl>
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel>手續費扣款模式</InputLabel>
-          <Select
-            label='手續費扣款模式'
+          </NativeSelect>
+        </Field>
+        <Field label="手續費扣款模式">
+          <NativeSelect
             value={coupon.handlingFeeDecountMode}
             onChange={event =>
               onChange({
@@ -187,16 +166,14 @@ function AboutService({ className, onChange, coupon, ...rest }) {
             }
           >
             {handlingFeeSelect.map((data, idx) => (
-              <MenuItem value={data.value} key={`${data.label}-${idx}`}>
+              <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                 {data.label}
-              </MenuItem>
+              </NativeSelectOption>
             ))}
-          </Select>
-        </FormControl>
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel>卡券上架狀態設定</InputLabel>
-          <Select
-            label='卡券上架狀態設定'
+          </NativeSelect>
+        </Field>
+        <Field label="卡券上架狀態設定">
+          <NativeSelect
             value={coupon.isLaunched}
             onChange={event =>
               onChange({
@@ -209,10 +186,10 @@ function AboutService({ className, onChange, coupon, ...rest }) {
               })
             }
           >
-            <MenuItem value={true}>上架</MenuItem>
-            <MenuItem value={false}>下架</MenuItem>
-          </Select>
-        </FormControl>
+            <NativeSelectOption value={true}>上架</NativeSelectOption>
+            <NativeSelectOption value={false}>下架</NativeSelectOption>
+          </NativeSelect>
+        </Field>
       </CardContent>
     </Card>
   )
