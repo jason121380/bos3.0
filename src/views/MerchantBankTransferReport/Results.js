@@ -1,8 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, Table, TableBody, TableCell,
-  TableHead, TableRow
-} from '@mui/material'
+import { Card, CardContent } from '@mui/material'
 import PropTypes from 'prop-types'
 import { cloneDeep } from 'lodash'
 import { useState, useEffect } from 'react'
@@ -11,6 +8,9 @@ import { css } from '@emotion/react'
 import { Card as UiCard } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Checkbox } from 'ui/checkbox'
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+} from 'ui/table'
 
 const localStyles = {
   card: css({
@@ -20,40 +20,6 @@ const localStyles = {
     backgroundColor: 'rgb(var(--background))',
     overflow: 'hidden',
     marginTop: '24px',
-  }),
-  tableHead: css({
-    backgroundColor: 'rgb(var(--background))',
-    '& .MuiTableCell-head': {
-      backgroundColor: 'rgb(var(--surface))',
-      color: 'rgb(var(--text))',
-      fontWeight: 'bold',
-      borderBottom: '1px solid rgb(var(--border))',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid rgb(var(--border))',
-      fontSize: '14px !important',
-      color: 'rgb(var(--text))',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-  }),
-  totalRow: css({
-    backgroundColor: 'rgb(var(--background)) !important',
-    height: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      fontWeight: 'bold !important',
-      color: 'rgb(var(--text)) !important',
-      borderBottom: '1px solid rgb(var(--border))',
-    }
   }),
 }
 
@@ -94,10 +60,10 @@ function Results({ salaryData }) {
         <Card css={localStyles.card} className="MerchantBankTransferReportTable">
           <CardContent style={{ padding: 0 }}>
             <div>
-              <Table size="small">
-                <TableHead css={localStyles.tableHead}>
+              <Table dense wrapperClassName="rounded-none border-0">
+                <TableHeader>
                   <TableRow>
-                    <TableCell padding="checkbox" className="noprint">
+                    <TableHead className="noprint w-10">
                       <Checkbox
                         aria-label="全選"
                         checked={selectedUser.length === salaryData.length}
@@ -106,24 +72,23 @@ function Results({ salaryData }) {
                         }
                         onChange={handleSelectAll}
                       />
-                    </TableCell>
-                    <TableCell>分行別</TableCell>
-                    <TableCell>帳號</TableCell>
-                    <TableCell>戶名</TableCell>
-                    <TableCell>轉帳金額</TableCell>
+                    </TableHead>
+                    <TableHead>分行別</TableHead>
+                    <TableHead>帳號</TableHead>
+                    <TableHead>戶名</TableHead>
+                    <TableHead>轉帳金額</TableHead>
                   </TableRow>
-                </TableHead>
+                </TableHeader>
                 <TableBody>
                   {salaryData.map((user, index) => (
                     <TableRow
                       key={index}
-                      css={localStyles.tableRow}
-                      selected={selectedUser.indexOf(user.id) > -1}
+                      data-state={selectedUser.indexOf(user.id) > -1 ? 'selected' : undefined}
                       className={
                         !selectedUser.find(userId => userId === user.id) ? 'salaryTransferNoDsiplay' : ''
                       }
                     >
-                      <TableCell padding="checkbox" className="noprint">
+                      <TableCell className="noprint w-10">
                         <Checkbox
                           aria-label="選取"
                           checked={selectedUser.indexOf(user.id) > -1}
@@ -138,7 +103,7 @@ function Results({ salaryData }) {
                       </TableCell>
                     </TableRow>
                   ))}
-                  <TableRow css={localStyles.totalRow}>
+                  <TableRow className="font-bold">
                     <TableCell className="noprint" />
                     <TableCell />
                     <TableCell />

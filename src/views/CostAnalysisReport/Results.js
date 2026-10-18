@@ -4,15 +4,11 @@ import {
   CardContent,
   CardHeader,
   Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Grid,
 } from '@mui/material'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -132,21 +128,21 @@ function Results({
             <CardContent css={styles.content}>
               <PerfectScrollbar>
                 <div css={styles.inner}>
-                  <Table size="small">
-                    <TableHead>
+                  <Table dense>
+                    <TableHeader>
                       <TableRow>
-                        <TableCell css={styles.width}></TableCell>
-                        <TableCell>加項</TableCell>
-                        {CARPTDISPLAY && <TableCell>%</TableCell>}
-                        <TableCell>扣項</TableCell>
-                        {CARPTDISPLAY && <TableCell>%</TableCell>}
-                        <TableCell>總佔比</TableCell>
+                        <TableHead css={styles.width}></TableHead>
+                        <TableHead>加項</TableHead>
+                        {CARPTDISPLAY && <TableHead>%</TableHead>}
+                        <TableHead>扣項</TableHead>
+                        {CARPTDISPLAY && <TableHead>%</TableHead>}
+                        <TableHead>總佔比</TableHead>
                       </TableRow>
-                    </TableHead>
+                    </TableHeader>
                     <TableBody>
                       {merchantIncomeStatement.map(
                         (data, index) => (
-                          <TableRow hover key={`IncomeStatement-${index}`}>
+                          <TableRow key={`IncomeStatement-${index}`}>
                             <TableCell>{data.subjectName}</TableCell>
                             <TableCell>
                               {data.cashRevenue > 0
@@ -176,7 +172,7 @@ function Results({
                           </TableRow>
                         )
                       )}
-                      <TableRow hover>
+                      <TableRow>
                         <TableCell css={styles.subtotal}>小計</TableCell>
                         <TableCell>{Math.round(cashRevenue)}</TableCell>
                         {CARPTDISPLAY && <TableCell>100%</TableCell>}
@@ -184,7 +180,7 @@ function Results({
                         {CARPTDISPLAY && <TableCell>100%</TableCell>}
                         <TableCell></TableCell>
                       </TableRow>
-                      <TableRow hover>
+                      <TableRow>
                         <TableCell css={styles.subtotal}>損益</TableCell>
                         <TableCell>
                           {Math.round(cashRevenue + cashExpenditure)}
