@@ -9,9 +9,10 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Button,
   Grid,
 } from '@mui/material'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -158,7 +159,8 @@ function Results({ className, incomeStatement }) {
                 className="noprint"
                 filename="損益表.csv"
               >
-                <Button variant="contained" color="primary" size="small">
+                <Button variant="secondary" size="sm">
+                  <Download strokeWidth={1.75} />
                   報表匯出
                 </Button>
               </CSVLink>
