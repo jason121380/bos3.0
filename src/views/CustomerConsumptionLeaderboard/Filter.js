@@ -1,22 +1,21 @@
 /** @jsxImportSource @emotion/react */
+// 排序依據保留 MUI Select（與同列 MUI Autocomplete 的浮動標籤外框一致）
 import {
-  Grid, TextField, Checkbox, Button, FormControl, InputLabel,
+  TextField, Checkbox, FormControl, InputLabel,
   Select, MenuItem, Autocomplete
 } from '@mui/material'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import DateSelector from 'components/DateSelector'
 import idx from 'idx'
+import { css } from '@emotion/react'
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
-import { css } from '@emotion/react'
 
 const styles = {
-  container: css({
-    margin: '24px 0 16px',
-    gap: 10
-  }),
   autocomplete: css({
     '& .MuiOutlinedInput-root': {
       paddingRight: '18px !important'
@@ -59,9 +58,9 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
   }
 
   return (
-    <Grid container direction='column' css={styles.container}>
-      <Grid item style={{ gap: 10 }} container alignItems='center'>
-        <Grid item>
+    <div className="mb-4 mt-6 flex flex-col gap-2.5">
+      <div className="flex flex-wrap items-center gap-2.5">
+        <div>
           <DateSelector
             date={inputData.dateRange}
             dateChange={value => dataChange(value, 'dateRange')}
@@ -69,8 +68,8 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
             disabled={loading || userOrderableList.loading}
             rangelimit={rangeLimit}
           />
-        </Grid>
-        <Grid item>
+        </div>
+        <div>
           <FormControl
             disabled={loading || userOrderableList.loading}
             fullWidth variant='outlined'
@@ -88,8 +87,8 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
               ))}
             </Select>
           </FormControl>
-        </Grid>
-        <Grid item style={{ maxWidth: 480, minWidth: 200 }}>
+        </div>
+        <div className="min-w-[200px] max-w-[480px]">
           <Autocomplete
             multiple
             autoHighlight
@@ -120,18 +119,17 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
               />
             )}
           />
-        </Grid>
-        <Grid item style={{ marginLeft: 'auto' }}>
+        </div>
+        <div className="ml-auto">
           <Button
-            color='primary'
-            variant='contained'
+            variant='secondary'
             disabled={excelLoading}
             onClick={getExcel}
-          >報表匯出</Button>
-        </Grid>
-      </Grid>
-      <Grid style={{ alignItems: 'center', display: 'flex', gap: 10 }}>
-        <Grid item style={{ flexGrow: 1 }}>
+          ><Download strokeWidth={1.75} />報表匯出</Button>
+        </div>
+      </div>
+      <div className="flex items-center gap-2.5">
+        <div className="min-w-0 flex-grow">
           <Autocomplete
             multiple
             autoHighlight
@@ -165,18 +163,17 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
               />
             )}
           />
-        </Grid>
-        <Grid item style={{ width: 'fit-content' }}>
+        </div>
+        <div className="w-fit">
           <Button
-            color='primary'
-            variant='contained'
+            variant='primary'
             onClick={handleSearch}
             disabled={loading || userOrderableList.loading}
           >搜尋</Button>
-        </Grid>
+        </div>
 
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   )
 }
 
