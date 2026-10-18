@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
+// 設計師多選（Autocomplete）與業績切換鈕保留 MUI
 import {
-  Button, Grid, TextField, Checkbox, Autocomplete,
+  TextField, Checkbox, Autocomplete,
   ToggleButtonGroup, ToggleButton
 } from '@mui/material'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
@@ -11,6 +12,7 @@ import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Button } from 'ui/button'
 
 const styles = {
   root: css({}),
@@ -57,8 +59,8 @@ const Filter = ({ date, setDate, handleSearch, loading, inputData, setInputData,
     }
   }
   return (
-    <Grid container direction='column' css={styles.container}>
-      <div css={styles.flex}>
+    <div className="flex flex-col gap-2 pb-6">
+      <div className="flex flex-wrap items-center gap-2.5">
         <DateSelector
           date={date}
           disabled={loading}
@@ -82,8 +84,8 @@ const Filter = ({ date, setDate, handleSearch, loading, inputData, setInputData,
           <ToggleButton disabled={loading} value='AVERAGE'>平均業績</ToggleButton>
         </ToggleButtonGroup>
       </div>
-      <div css={styles.flex} style={{ flexWrap: 'nowrap', marginTop: 8 }}>
-        <div style={{ flexGrow: 1 }}>
+      <div className="flex flex-nowrap items-center gap-2.5">
+        <div className="min-w-0 flex-1">
           <Autocomplete
             multiple
             autoHighlight
@@ -122,16 +124,14 @@ const Filter = ({ date, setDate, handleSearch, loading, inputData, setInputData,
           />
         </div>
         <Button
-          variant="contained"
-          color="primary"
+          variant="primary"
           onClick={handleSearch}
-          css={styles.searchBtn}
           disabled={loading}
         >
           搜尋
         </Button>
       </div>
-    </Grid>
+    </div>
   )
 }
 

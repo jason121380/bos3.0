@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent, Grid } from '@mui/material'
+import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
 import React from 'react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -181,12 +182,12 @@ const WeeklyOrderCountRanking = ({ display, data }) => {
     return null;
   };
   return (
-    <Grid item md={6} sm={12} xs={12}>
-      <Card>
-        <CardContent>
+    <div className="min-w-0">
+      <Card className="h-full min-h-[390px]">
+        <CardContent className="flex flex-col gap-4 p-4">
           <div>
-            <div className='cardTitle'>週間來客數排行</div>
-            <div className='subTitle'>期間內星期一到日，訂單數比較</div>
+            <CardTitle className="whitespace-nowrap">週間來客數排行</CardTitle>
+            <CardDescription className="whitespace-nowrap text-caption">期間內星期一到日，訂單數比較</CardDescription>
           </div>
           {display ?
             <div style={{ width: '100%', height: '320px', marginLeft: '-20px' }}>
@@ -206,11 +207,11 @@ const WeeklyOrderCountRanking = ({ display, data }) => {
                 </BarChart>
               </ResponsiveContainer>
             </div> :
-            <div css={styles.noDataDiv}><span css={styles.noData}>無資料</span></div>
+            <EmptyState title="無資料" className="h-[350px]" />
           }
         </CardContent>
       </Card>
-    </Grid>
+    </div>
   )
 }
 

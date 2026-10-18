@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Grid } from '@mui/material'
 import { useEffect, useState } from 'react'
 
 import OrderGender from './Charts/OrderGender';
@@ -22,27 +21,8 @@ const styles = {
     '& tspan': {
       fontSize: '14px',
     },
-    '& div.MuiGrid-root > .MuiPaper-root': {
-      minHeight: 390,
-      '& .MuiCardContent-root': {
-        padding: '8px 12px 12px !important',
-        '& .MuiTableContainer-root': {
-          marginTop: 16
-        }
-      }
-    },
     '& .recharts-legend-item-text': {
       fontSize: 14
-    },
-    '& .cardTitle': {
-      fontWeight: 500,
-      fontSize: '18px',
-      whiteSpace: 'nowrap'
-    },
-    '& .subTitle': {
-      fontSize: '12px',
-      color: 'gray',
-      whiteSpace: 'nowrap'
     },
   }),
 }
@@ -64,7 +44,7 @@ function Results({
     setWidth(window.innerWidth)
   }
   return (
-    <Grid container spacing={3} css={styles.root}>
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2" css={styles.root}>
 
       <PerformanceDetail // 設計師業績趨勢
         data={dashboardData.performanceTrendV2}
@@ -130,7 +110,7 @@ function Results({
         data={dashboardData.performanceTrend}
       /> */}
 
-    </Grid>
+    </div>
   )
 }
 

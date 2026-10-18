@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent, Grid, } from '@mui/material'
+import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
 import React from 'react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -79,12 +80,12 @@ const PerformanceTrend = ({ data }) => {
     return object.map((d, i) => <Bar key={d} dataKey={d} stackId='a' fill={pieChartColor[i % 13]} />)
   }
   return (
-    <Grid item md={6} sm={12} xs={12}>
-      <Card style={{ overflow: 'visible' }}>
-        <CardContent>
+    <div className="min-w-0">
+      <Card className="h-full min-h-[390px] overflow-visible">
+        <CardContent className="flex flex-col gap-4 p-4">
           <div>
-            <div className='cardTitle'>設計師業績趨勢表</div>
-            <div className='subTitle'>期間內各設計師業績佔比</div>
+            <CardTitle className="whitespace-nowrap">設計師業績趨勢表</CardTitle>
+            <CardDescription className="whitespace-nowrap text-caption">期間內各設計師業績佔比</CardDescription>
           </div>
           {data.length > 0 ?
             <div style={{ width: '105%', height: 320 + ((Object.keys(data[0]).length / 4) * 20), marginLeft: '-20px' }}>
@@ -111,11 +112,11 @@ const PerformanceTrend = ({ data }) => {
                 </BarChart>
               </ResponsiveContainer>
             </div> :
-            <div css={styles.noDataDiv}><span css={styles.noData}>無資料</span></div>
+            <EmptyState title="無資料" className="h-[350px]" />
           }
         </CardContent>
       </Card>
-    </Grid>
+    </div>
   )
 }
 
