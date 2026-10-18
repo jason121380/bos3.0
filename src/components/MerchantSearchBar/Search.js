@@ -1,5 +1,5 @@
 import { Button, Input, Paper } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
+import { Search as SearchIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import { css } from '@emotion/react'

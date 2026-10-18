@@ -4,7 +4,7 @@ import {
   DialogTitle, FormControl, IconButton, InputAdornment, InputLabel,
   OutlinedInput,
 } from '@mui/material'
-import { Visibility, VisibilityOff } from '@mui/icons-material'
+import { Visibility, VisibilityOff } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchChangePassword from 'hooks/useFetchChangePassword'
 import produce from 'immer'

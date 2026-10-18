@@ -6,12 +6,7 @@ import {
   InputAdornment
 } from '@mui/material'
 import { TreeView, TreeItem } from '@mui/x-tree-view';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
-import StorefrontIcon from '@mui/icons-material/Storefront';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
+import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, GroupsRounded as GroupsRoundedIcon, Storefront as StorefrontIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import _ from 'lodash';
 import { css } from '@emotion/react'

@@ -4,8 +4,7 @@ import {
   Checkbox, ListItemText, ListItemIcon,
 } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2';
-import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
-import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
+import { KeyboardArrowRightRounded as KeyboardArrowRightRoundedIcon, RemoveRounded as RemoveRoundedIcon } from 'ui/icons'
 import { useState } from 'react';
 import { cloneDeep } from 'lodash';
 import { css } from '@emotion/react'

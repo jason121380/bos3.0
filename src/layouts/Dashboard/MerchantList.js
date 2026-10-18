@@ -1,9 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { TreeView, TreeItem } from '@mui/x-tree-view';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
-import StorefrontIcon from '@mui/icons-material/Storefront';
+import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, GroupsRounded as GroupsRoundedIcon, Storefront as StorefrontIcon } from 'ui/icons'
 import { useHistory } from 'react-router';
 import { css } from '@emotion/react'
 

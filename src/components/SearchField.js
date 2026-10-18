@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { TextField, InputAdornment } from '@mui/material'
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
+import { SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import { css } from '@emotion/react'
 
 const SearchField = ({ value, onChange }) => {

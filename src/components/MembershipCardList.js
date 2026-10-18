@@ -3,7 +3,7 @@ import { useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles';
 import format from 'date-fns/format'
 import { Popper, Fade, Paper, IconButton, Grid, Divider, Typography } from '@mui/material'
-import CreditCardTwoToneIcon from '@mui/icons-material/CreditCardTwoTone'
+import { CreditCardTwoTone as CreditCardTwoToneIcon } from 'ui/icons'
 
 const C_Popper = styled(Popper)(() => ({
   zIndex: 1,
