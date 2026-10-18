@@ -1,10 +1,6 @@
 /** @jsxImportSource @emotion/react */
+// 表單欄位以 inputRef 串接 Enter 跳下一欄（含 Autocomplete、DatePicker、Select），保留 MUI；只換卡片外框
 import {
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
   TextField,
   Select,
   MenuItem,
@@ -19,6 +15,8 @@ import idx from 'idx'
 import { useRef, useState, useEffect, useMemo } from 'react'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
+import { formatNumber } from 'ui/format'
 
 const styles = {
   cardContent: css({}),
@@ -89,8 +87,9 @@ export default function General({
   }, [focus])
   return (
     <Card css={className}>
-      <CardHeader title="領料資訊" />
-      <Divider />
+      <CardHeader>
+        <CardTitle>領料資訊</CardTitle>
+      </CardHeader>
       <CardContent css={styles.cardContent}>
         <DatePicker
           format='yyyy/MM/dd'
@@ -278,8 +277,7 @@ export default function General({
           value={idx(formState, _ => _.remark ? _.remark : '')}
         />
       </CardContent>
-      <Divider />
-      <CardActions>合計：{idx(formState, _ => _.price * _.count)}</CardActions>
+      <CardFooter className="justify-start text-body font-medium tabular-nums">合計：{formatNumber(idx(formState, _ => _.price * _.count))}</CardFooter>
     </Card>
   )
 }
