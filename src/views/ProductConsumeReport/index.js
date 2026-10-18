@@ -1,13 +1,10 @@
 /** @jsxImportSource @emotion/react */
+// 用途下拉含空字串選項（全部），Radix Select 不支援空值，保留 MUI Select
 import {
-  Container,
-  Grid,
   MenuItem,
   InputLabel,
   FormControl,
   Select,
-  Button,
-  CircularProgress,
 } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
@@ -19,19 +16,13 @@ import useFetchProductConsumeList from 'hooks/useFetchProductConsumeList'
 import useFetchGetProductPurpose from 'hooks/useFetchGetProductPurpose'
 import { CSVLink } from "react-csv";
 import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
 const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
   formControl: css({
     width: '100px',
   }),
@@ -150,13 +141,13 @@ export default function Employees() {
     }
   }, [productConsumeListData.loading, value])
   return (
-    <Page css={styles.root} title="商品消耗明細">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className="ui-root" title="商品消耗明細">
+      <div>
         <AdminPageHeader title='商品消耗明細' />
-        <Grid container style={{ gap: 10 }} alignItems="baseline" justifyContent="space-between">
-          <Grid item>
-            <Grid container alignItems="center" style={{ gap: 10 }}>
-              <Grid item>
+        <div className="flex flex-wrap items-baseline justify-between gap-2.5">
+          <div>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <div>
                 <MerchantSearchBar
                   values={date}
                   onFilter={values => setDate(values)}
@@ -164,8 +155,8 @@ export default function Employees() {
                   visible={['datePicker', 'employee']}
                   lastInLeaderBoard={true}
                 />
-              </Grid>
-              <Grid item>
+              </div>
+              <div>
                 <FormControl variant="outlined" css={styles.formControl}>
                   <InputLabel>用途</InputLabel>
                   <Select label='用途' disabled={purpose.length === 0} onChange={event => onChange({ event, key: 'purpose' })}>
@@ -175,29 +166,30 @@ export default function Employees() {
                     ))}
                   </Select>
                 </FormControl>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item style={{ marginBottom: 10 }}>
-            <CSVLink data={excelData} filename="商品消耗明細.csv">
-              <Button variant="contained" color="primary">
+              </div>
+            </div>
+          </div>
+          <div className="mb-2.5">
+            <Button asChild variant="secondary">
+              <CSVLink data={excelData} filename="商品消耗明細.csv">
+                <Download strokeWidth={1.75} />
                 報表匯出
-              </Button>
-            </CSVLink>
-          </Grid>
-        </Grid>
+              </CSVLink>
+            </Button>
+          </div>
+        </div>
         {!productConsumeListData.loading ? (
           <Results
-            className={styles.results}
             value={value != null ? value : ''}
             productConsumeListReport={idx(productConsumeListData, _ => _.data.productConsumeList)}
           />
         ) : (
-          <div style={{ textAlign: 'center' }}>
-            <CircularProgress color="inherit" />
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div>
         )}
-      </Container>
+      </div>
     </Page>
   )
 }
