@@ -1,0 +1,14 @@
+Parameter
+CouponEdit
+PerformanceDeductionParameter
+AccountingSetting
+ShortcutEdit
+Shortcut
+ShortcutCreate
+ServiceCategories
+Payments
+SystemUpdateRecordEdit
+ServiceCategoryEdit
+AuthorityEdit
+ThirdPartyCouponCreate
+AuthorityCreate
