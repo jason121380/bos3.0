@@ -305,7 +305,7 @@ function CustomerManagementDetails({ match, history }) {
               color="primary"
               variant="contained"
               onClick={handleBack}
-              style={{ backgroundColor: '#3865AC' }}
+              style={{ backgroundColor: 'rgb(var(--accent))' }}
             >
               返回
             </Button>

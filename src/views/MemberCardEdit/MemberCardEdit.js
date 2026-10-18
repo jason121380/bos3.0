@@ -348,7 +348,7 @@ export default function MemberCardEdit({ match }) {
                   background: `${submitValue.color}`,
                   marginLeft: '10px',
                   height: '40px',
-                  border: '1px solid #92929F',
+                  border: '1px solid rgb(var(--border-strong))',
                 }}
                 onClick={() => {
                   setShowColorPicker(true)
@@ -385,7 +385,7 @@ export default function MemberCardEdit({ match }) {
                   background: `${submitValue.textColor}`,
                   marginLeft: '10px',
                   height: '40px',
-                  border: '1px solid #92929F',
+                  border: '1px solid rgb(var(--border-strong))',
                 }}
                 onClick={() => {
                   setShowTextColorPicker(true)

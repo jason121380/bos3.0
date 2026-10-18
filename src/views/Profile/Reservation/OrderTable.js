@@ -135,7 +135,7 @@ const OrderTable = ({
 
         {/* 時間 */}
         <div
-          style={{ position: 'sticky', left: 0, zIndex: 5, background: '#fff' }}
+          style={{ position: 'sticky', left: 0, zIndex: 5, background: 'rgb(var(--background))' }}
           css={styles.timeWrap}
           id='darkBg'
         >

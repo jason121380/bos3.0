@@ -442,7 +442,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
             <Divider />
             <CardContent style={{ height: 'calc(100vh - 500px)' }}>
               <Grid container spacing={2} style={{ height: '100%' }}>
-                <Grid item xs={8} style={{ borderRight: '1px solid #eeeeee', paddingRight: 12, overflow: 'hidden auto', height: '100%' }} >
+                <Grid item xs={8} style={{ borderRight: '1px solid rgb(var(--border))', paddingRight: 12, overflow: 'hidden auto', height: '100%' }} >
                   <TreeView
                     css={styles.root}
                     defaultCollapseIcon={<ExpandMoreIcon />}

@@ -328,7 +328,7 @@ function ProductsModal({
         </div>
 
         <Divider />
-        <CardContent style={{ backgroundColor: '#FFF', paddingTop: '0' }}>
+        <CardContent style={{ backgroundColor: 'rgb(var(--background))', paddingTop: '0' }}>
           <div css={styles.categorieDiv}
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', rowGap: '10px' }}
           >

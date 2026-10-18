@@ -305,7 +305,7 @@ function ProductsModal({
         </div>
 
         <Divider />
-        <CardContent style={{ backgroundColor: '#FFF', paddingTop: '0' }}>
+        <CardContent style={{ backgroundColor: 'rgb(var(--background))', paddingTop: '0' }}>
           <div css={styles.categorieDiv}>
             {productCategories.map(productCategory => (
               <Button

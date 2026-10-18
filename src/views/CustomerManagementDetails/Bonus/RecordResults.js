@@ -151,7 +151,7 @@ function Results({
           variant="contained"
           color="primary"
           size="small"
-          style={{ backgroundColor: '#3865AC' }}
+          style={{ backgroundColor: 'rgb(var(--accent))' }}
           component={RouterLink}
           css={styles.addWalletBtn}
           to={`/customer-bonus-record/create/${customer.id}`}

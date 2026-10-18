@@ -568,7 +568,7 @@ function Settings({ match, history }) {
                 </div>
               ))}
               {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
-                <div style={{ marginTop: '24px', padding: '16px 20px', borderTop: '1px solid #eee' }}>
+                <div style={{ marginTop: '24px', padding: '16px 20px', borderTop: '1px solid rgb(var(--border))' }}>
                   <Typography sx={{ fontSize: 14, color: 'rgb(var(--text-secondary))', mb: 1 }}>報到模式</Typography>
                   <Switch
                     checked={checkinMode}
