@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Grid } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchMerchantSalaryIncreaseItems from 'hooks/useFetchMerchantSalaryIncreaseItems'
 import useFetchMerchantSalaryDecreaseItems from 'hooks/useFetchMerchantSalaryDecreaseItems'
@@ -17,49 +14,12 @@ import React from 'react'
 import useFetchUserSalaryMonthlyCheckoutRecordV2 from 'hooks/useFetchUserSalaryMonthlyCheckoutRecordV2'
 import { useFetchGetAttendanceStatus } from 'hooks/useFetchAttendanceRecords'
 import { startOfMonth, format, endOfMonth } from 'date-fns'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
+import { Button } from 'ui/button'
 import Header from './Header'
 import SalaryDecrease from './SalaryDecrease'
 import SalaryIncrease from './SalaryIncrease'
 import DesignerSalaryReportV2 from './DesignerSalaryReportV2'
-
-const styles = {
-  root: css({
-    padding: theme.spacing(3),
-    '& .headWrap': {
-      display: 'flex',
-      gap: 10,
-      alignItems: 'flex-start',
-      justifyContent: 'space-between',
-      flexWrap: 'wrap',
-      '& .title': {
-        display: 'flex',
-        gap: 10,
-        alignItems: 'flex-start',
-        flexWrap: 'wrap',
-        flexDirection: 'row'
-      },
-      '& .attStatus': {
-        '& p': {
-          fontSize: 16
-        }
-      }
-    }
-  }),
-  action: css({
-    marginLeft: '10px',
-  }),
-  report: css({
-    margin: '15px 0',
-  }),
-  lastNextDiv: css({
-    width: '260px',
-    display: 'flex',
-    justifyContent: 'space-between',
-  }),
-}
 
 const date = Number(location.search.split('=')[1])
 
@@ -509,29 +469,30 @@ export default React.memo(function SalaryEdit(props) {
       }
     })
   }
+  // 頁面外距由 #printContainer 提供；「儲存」為本頁唯一主要按鈕
   return (
-    <Page title="薪資維護" css={styles.root}>
-      <div className='headWrap'>
-        <div className='title'>
-          <PageTitle title={`${userSalary.data ? userSalary.data.user.name : ''} ${format(date, 'yyyy/MM')} 薪資表`} subTitle='Salary Edit' />
+    <Page title="薪資維護" className="ui-root">
+      <div className="noprint flex flex-wrap items-start justify-between gap-4 pb-6">
+        <div className="flex flex-wrap items-end gap-4">
+          <h1 className="m-0 text-title !font-bold text-text">{`${userSalary.data ? userSalary.data.user.name : ''} ${format(date, 'yyyy/MM')} 薪資表`}</h1>
           <Header remark={remark} setRemark={setRemark} />
         </div>
         {(attendanceDisplay && !attendanceStatus.loading && attStatus) && (
-          <div className='attStatus'>
+          <div className="flex flex-col gap-1 text-body tabular-nums text-text-secondary">
             <p>總打卡天數：{attStatus.totalClockInDays}</p>
             <p>總曠職天數：{attStatus.absenteeismDays}</p>
             <p>總遲到分鐘數：{attStatus.totalLateMinutes}</p>
           </div>
         )}
       </div>
-      <Grid container style={{ justifyContent: 'space-between' }} spacing={2}>
+      <div className="flex flex-col gap-4">
         {!designerMonthlyCheckoutRedordData.loading &&
           !isMemberShipCardActiveData.loading &&
           increaseCombined !== undefined &&
           increaseSecondContent !== undefined &&
           decreaseCombined !== undefined &&
           decreaseSecondContent !== undefined ? (
-          <Grid item xs={12}>
+          <div>
             <DesignerSalaryReportV2
               userSalary={userSalary}
               designer={designerMonthlyCheckoutRedordData.data.getUserSalaryMonthlyCheckoutRecordV2}
@@ -543,17 +504,17 @@ export default React.memo(function SalaryEdit(props) {
                   decreaseSecondContent.decreaseItems.reduce((accu, curVal) => accu + curVal.price, 0))
               }
             />
-          </Grid>
+          </div>
         ) : (
-          <Grid item md={6} xs={12}></Grid>
+          <div></div>
         )}
-        <Grid item xs={12}>
+        <div>
           {idx(
             userSalary,
             _ =>
               _.data.user.salary && (
-                <Grid container spacing={3} style={{ marginTop: '20px' }}>
-                  <Grid item xs={6}>
+                <div className="mt-2 grid grid-cols-2 gap-6">
+                  <div>
                     {increaseCombined !== undefined && increaseSecondContent !== undefined && (
                       <SalaryIncrease
                         salaryIncreaseItemsReformatted={salaryIncreaseItemsReformatted}
@@ -570,8 +531,8 @@ export default React.memo(function SalaryEdit(props) {
                         setTabIndex={setTabIndex}
                       />
                     )}
-                  </Grid>
-                  <Grid item xs={6}>
+                  </div>
+                  <div>
                     {decreaseCombined !== undefined && decreaseSecondContent !== undefined && (
                       <SalaryDecrease
                         salaryDecreaseItemsReformatted={salaryDecreaseItemsReformatted}
@@ -588,38 +549,33 @@ export default React.memo(function SalaryEdit(props) {
                         setTabIndex={setTabIndex}
                       />
                     )}
-                  </Grid>
-                </Grid>
+                  </div>
+                </div>
               )
           )}
-          <div style={{ margin: '20px 0', display: 'flex', justifyContent: 'space-between' }}>
-            <div>
-              <Button color="primary" variant="contained" onClick={handleBack}>
+          <div className="my-5 flex justify-between">
+            <div className="flex items-center gap-2">
+              <Button variant="secondary" onClick={handleBack}>
                 返回
               </Button>
               {!isSalaryItemsLock && (
                 <Button
-                  color="error"
-                  variant="contained"
-                  css={styles.action}
+                  variant="primary"
                   onClick={handleSave}
-                  style={{ color: 'white', backgroundColor: 'red' }}
                 >
                   儲存
                 </Button>
               )}
             </div>
             {!isSalaryItemsLock && (
-              <div css={styles.lastNextDiv}>
+              <div className="flex items-center gap-2">
                 {userIndex === 0 ? (
                   ''
                 ) : (
                   <Button
-                    color="error"
-                    variant="contained"
+                    variant="secondary"
                     disabled={userIndex === 0}
                     onClick={handleToLastUser}
-                    style={{ color: 'white', backgroundColor: 'red' }}
                   >
                     儲存並上一筆
                   </Button>
@@ -628,11 +584,9 @@ export default React.memo(function SalaryEdit(props) {
                   ''
                 ) : (
                   <Button
-                    color="error"
-                    variant="contained"
+                    variant="secondary"
                     disabled={userIndex === usersArr.length - 1}
                     onClick={handleToNextUser}
-                    style={{ color: 'white', backgroundColor: 'red' }}
                   >
                     儲存並下一筆
                   </Button>
@@ -640,8 +594,8 @@ export default React.memo(function SalaryEdit(props) {
               </div>
             )}
           </div>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </Page>
   )
 })
