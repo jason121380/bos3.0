@@ -1,32 +1,18 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container, Grid, CircularProgress } from '@mui/material'
 import { openSnackbar } from 'elements/snackbars'
 import { useFetchCreateDeductionSetting } from 'hooks/useFetchSetDeductionSetting'
 import produce from 'immer'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'
 import idx from 'idx'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import React from 'react'
 import _ from 'lodash'
 
 import Results from './Results'
 
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  about: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 // 沒用到的code 大部分是之前用在AboutProfitSharing 留著怕之後改回來
 function Deduction() {
   const { createDeductionSetting } = useFetchCreateDeductionSetting()
@@ -91,25 +77,28 @@ function Deduction() {
     }
   }, [getAttributionForRake.loading])
   return (
-    <Page css={styles.root} title="抽成方式設定">
-      <Container maxWidth={false}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='抽成方式設定' subTitle='Deduction Setting' />
-          <Grid item>
-            <Button color="primary" variant="contained" onClick={handleSave}>
-              確認
-            </Button>
-          </Grid>
-        </Grid>
-        {!getAttributionForRake.loading ? (
-          <Results
-            className={styles.about}
-            profitSharing={profitSharing}
-            onChange={handleSalesWayChange}
-            attributions={attributions}
-          />
-        ) : <div style={{ textAlign: 'center', marginTop: 150 }}><CircularProgress /></div>}
-      </Container>
+    <Page className="ui-root" title="抽成方式設定">
+      <PageHeader
+        title='抽成方式設定'
+        actions={
+          <Button variant="primary" onClick={handleSave}>
+            確認
+          </Button>
+        }
+      />
+      {!getAttributionForRake.loading ? (
+        <Results
+          profitSharing={profitSharing}
+          onChange={handleSalesWayChange}
+          attributions={attributions}
+        />
+      ) : (
+        <div className="flex flex-col gap-3">
+          <Skeleton className="h-11 w-full" />
+          <Skeleton className="h-11 w-full" />
+          <Skeleton className="h-11 w-full" />
+        </div>
+      )}
     </Page>
   )
 }
