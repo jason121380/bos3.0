@@ -1,7 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
+// MUI Button 只用於 Autocomplete 的 popupIcon（全選），其餘按鈕改用 ui/button
 import {
-  Container, Button, CircularProgress, Grid, Checkbox, TextField,
+  Button, Checkbox, TextField,
   ToggleButton, ToggleButtonGroup
 } from '@mui/material'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
@@ -15,45 +15,9 @@ import { endOfDay, startOfMonth, format } from 'date-fns'
 import useFetchGetProductInvoicingRecordReport from 'hooks/useFetchGetProductInvoicingRecordReport'
 import idx from 'idx'
 import Results from './Results'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  searchBtnDiv: css({
-    marginBottom: '24px',
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '100px',
-  }),
-  exportBtn: css({
-    float: 'right',
-  }),
-  formGroup: css({
-    width: '10rem',
-    marginLeft: theme.spacing(3),
-  }),
-  topDiv: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  grid: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px 30px'
-  })
-}
+import { Printer } from 'lucide-react'
+import { Button as UIButton } from 'ui/button'
+import { Skeleton } from 'ui/skeleton'
 
 const performanceEnum = [
   { label: '店販', value: 'SALE' },
@@ -132,8 +96,8 @@ const ProductInvoicingRecordReport = () => {
   }
 
   return (
-    <Page css={styles.root} className='ProductInvoicingRecordReport' title="商品進銷貨報表">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className='ProductInvoicingRecordReport ui-root' title="商品進銷貨報表">
+      <div>
         <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
           <div className="merchantNamePrint">
             {JSON.parse(localStorage.getItem('userMerchant')).name +
@@ -150,18 +114,14 @@ const ProductInvoicingRecordReport = () => {
           </div>
         </div>
         <AdminPageHeader title='商品進銷貨報表' />
-        <Grid className="noprint" container style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className="noprint flex flex-wrap justify-between gap-3">
           <DateSelector
             date={date}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
             margin
           />
-          <Grid
-            item
-            css={styles.grid}
-            className='noprint'
-          >
+          <div className='noprint flex items-center gap-x-[30px] gap-y-2.5'>
             <div style={{ marginTop: -23 }}>
               <div className="divText">類型：</div>
               <ToggleButtonGroup
@@ -179,18 +139,18 @@ const ProductInvoicingRecordReport = () => {
               </ToggleButtonGroup>
             </div>
             <div>
-              <Button
+              <UIButton
                 onClick={() => window.print()}
-                variant="contained"
-                color="primary"
+                variant="secondary"
                 disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
-                css={styles.exportBtn}>
+              >
+                <Printer strokeWidth={1.75} />
                 列印
-              </Button>
+              </UIButton>
             </div>
-          </Grid>
-        </Grid>
-        <div className="noprint" style={{ display: 'flex', margin: '10px 0' }}>
+          </div>
+        </div>
+        <div className="noprint my-2.5 flex">
           <Autocomplete
             multiple
             fullWidth
@@ -248,22 +208,26 @@ const ProductInvoicingRecordReport = () => {
               />
             )}
           />
-          <div style={{ marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
-            <Button
-              variant="contained"
-              color="primary"
+          <div className="ml-2.5 flex items-center">
+            <UIButton
+              variant="primary"
               onClick={() => handleSearch()}
-              css={styles.searchBtn}
+              className="w-[100px]"
               disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
             >
               搜尋
-            </Button>
+            </UIButton>
           </div>
         </div>
         {(!getAllProducts.loading && !invoicingRecordReportLazyData.loading && invoicingRecordReportLazyData.data !== undefined) ?
-          <Results reportData={reportData} /> : <div style={{ marginTop: '100px' }} className={styles.noReportDiv}><CircularProgress /></div>
+          <Results reportData={reportData} /> : (
+            // 載入中：與舊版 CircularProgress 相同時機顯示
+            <div className="noprint mt-3" aria-busy="true" aria-label="載入中">
+              <Skeleton className="h-[320px] w-full rounded-lg" />
+            </div>
+          )
         }
-      </Container>
+      </div>
     </Page>
   )
 }
