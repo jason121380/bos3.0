@@ -4,8 +4,7 @@ import {
   TextField, Checkbox,
   ToggleButton, ToggleButtonGroup, Autocomplete
 } from '@mui/material'
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import Page from 'components/Page'
 import idx from 'idx'
 import React, { useState, useEffect, Fragment } from 'react'

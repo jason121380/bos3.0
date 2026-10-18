@@ -5,11 +5,7 @@ import {
   SnackbarContent, Snackbar
 } from '@mui/material'
 import IconButton from '@mui/material/IconButton'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import CloseIcon from '@mui/icons-material/Close'
-import ErrorIcon from '@mui/icons-material/Error'
-import InfoIcon from '@mui/icons-material/Info'
-import WarningIcon from '@mui/icons-material/Warning'
+import { CheckCircle as CheckCircleIcon, Close as CloseIcon, Error as ErrorIcon, Info as InfoIcon, Warning as WarningIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useEffect, useState, Fragment, forwardRef } from 'react'
 import useRemoveUserFromMerchant from 'hooks/useRemoveUserFromMerchant'

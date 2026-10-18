@@ -51,6 +51,8 @@ import {
   ShoppingCart as LucideShoppingCart,
   SlidersHorizontal as LucideSlidersHorizontal,
   Smartphone as LucideSmartphone,
+  Square as LucideSquare,
+  SquareCheck as LucideSquareCheck,
   SquareX as LucideSquareX,
   Store as LucideStore,
   Tag as LucideTag,
@@ -119,6 +121,8 @@ export const AttachFile = adapt(LucidePaperclip, 'AttachFile')
 export const BackspaceOutlined = adapt(LucideDelete, 'BackspaceOutlined')
 export const Cancel = adapt(LucideCircleX, 'Cancel')
 export const Check = adapt(LucideCheck, 'Check')
+export const CheckBox = adapt(LucideSquareCheck, 'CheckBox')
+export const CheckBoxOutlineBlank = adapt(LucideSquare, 'CheckBoxOutlineBlank')
 export const CheckCircle = adapt(LucideCircleCheck, 'CheckCircle')
 export const CheckCircleOutlineRounded = adapt(LucideCircleCheck, 'CheckCircleOutlineRounded')
 export const CheckRounded = adapt(LucideCheck, 'CheckRounded')

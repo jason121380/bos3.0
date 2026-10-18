@@ -20,6 +20,7 @@
 - **第二層第二輪**：用新元件換掉第一輪留下的 MUI（Select、ToggleButton、Checkbox、Switch、Avatar、MUI 分頁等）。6 批，清單見 `batches/r2-*.txt`。
 - 目前 `src/views` 仍有 340 個檔案引用 `@mui/*`（全 `src` 414 個）；第二輪 r2-04／r2-06 尚未合併。盤點細節與移除時程見 `TODO.md`。
 - 約 16 個檔案的 `ui` 元件放在 MUI 彈出層內缺 `.ui-root`（待修，見 `TODO.md`）。
+- **F 批（2026/10/19，`claude/ui-batch3-box`）**：`ui/icons` 補 `CheckBox`／`CheckBoxOutlineBlank`；23 檔 `@mui/icons-material` import 換為 `ui/icons`，`src` 內歸零（25 → 0）；`AboutAssistant.js`（死碼）的 `Chip` import 改指向 `@mui/material/Chip`；jss 實查為 0 檔（舊「2 檔」更正）。A3 `AddCustomerModal` 刻意延後（需鍵盤實測，見 `TODO.md`）。本批實改 28 檔（src 25＋docs 3）。驗證（指揮者已完成）：`@mui/icons-material` 在 `src` 僅剩 `ui/icons.js` 一行註解；`swap-icons` 乾跑 files 0／icons 0；`git diff` 非 import 行零變更；`verify-logic` 全部通過；eslint 改動檔 1 error／67 warnings，基線（改前）2 errors／67 warnings，故 0 新增且少 1；`portal-root-scan` 0／0；全域 unit 17 suites，51 passed＋1 skipped（LoginForm skip，待 PR #6）、0 failed；`CI=true npm run build` 成功。
 
 ## 刻意不改（需另外決定）
 

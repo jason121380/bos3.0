@@ -10,7 +10,7 @@ import {
   TextField,
   Autocomplete
 } from '@mui/material'
-import Chip from '@mui/icons-material/Chip'
+import Chip from '@mui/material/Chip'
 import idx from 'idx'
 import _ from 'lodash'
 import PropTypes from 'prop-types'

@@ -42,6 +42,9 @@
   待辦：實機／截圖各 Modal 確認外觀（尚未做）。
 - [ ] **非打帳單頁面的手機擠壓**：設計師績效頁「搜尋」按鈕被推出畫面、日期輸入框只剩 24px、薪資單儲存格換行等（全站審計結果在 `scratchpad/audit-*.json`）。
 - [ ] **打帳單其餘彈窗仍是浮動標籤的 MUI**（新增顧客 Modal 等），要統一為上方標籤。
+  - **A3 `AddCustomerModal`（`OrderCreate`／`OrderEdit`／`DraftOrderEdit`／`QueueOrderEdit` 各一份）——排後續，F 批刻意不做。**
+    風險：約 17 欄的 Enter 跳欄焦點鏈（`inputRef`／`onKeyDown` 依序聚焦）、`helperText` 驗證訊息、Dialog 內含 MUI Autocomplete／DatePicker（須保留 MUI Dialog）；換上方標籤可能動到焦點順序與錯誤訊息位置。
+    驗收條件（需**真實瀏覽器鍵盤實測**，headless 截圖不足）：① 由第一欄起連按 Enter 依原順序逐欄跳焦，最後一欄行為與改版前一致；② 各必填欄留空送出，`helperText` 位置與文字不變、不被標籤擠壓；③ Tab／Shift+Tab 順序不變；④ Autocomplete／日期選擇器可開關、可選取；⑤ 窄螢幕不橫向溢出；⑥ `verify-logic` 的 FAIL 僅限純畫面差異。
 - [ ] **實機確認**：訂單列表捲軸、底部固定合計列（桌機／手機）、列印不出現合計列。
 
 ### P2 — 改版收尾
@@ -68,7 +71,7 @@
 | `src/views` 仍引用 `@mui/*` 的檔案 | **340**（`src` 全部 414 個） |
 | `@mui` 套件分佈（import 次數） | material 474、icons-material 50（多為轉接層以外的殘留）、x-date-pickers 41、x-tree-view 6 |
 | 使用 emotion／`css=` 的檔案 | 481 |
-| 使用 jss／makeStyles／withStyles 的檔案 | 2 |
+| 使用 jss／makeStyles／withStyles 的檔案 | ~~2~~ → **0**（F 批更正，見下方） |
 | 引用舊 `src/theme` 的檔案 | 187 |
 
 **使用最多的 MUI 元件（次數／涵蓋目錄）**：TextField 183／99、FormControl 79／59、InputLabel 74／56、MenuItem 73／53、Select 73／53、Autocomplete 69／63、Checkbox 67／52、Card 66／28、Button 65／28、TableRow 58／39。
@@ -78,11 +81,20 @@
 **何時能移除**
 | 要移除 | 前提 | 估計 |
 |---|---|---|
-| `@mui/icons-material` | 全站圖示改走 `ui/icons`（已是轉接層） | 最容易，掃一遍殘留即可 |
-| jss（2 檔） | 改寫那 2 檔 | 很快 |
+| `@mui/icons-material` | 全站圖示改走 `ui/icons`（已是轉接層） | **F 批已完成**：`src` 的 import 歸零（僅剩 `ui/icons.js` 註解提及），可從 `package.json` 移除相依（待指揮者確認 build 後另批） |
+| jss | 無（實查 0 檔） | 已無須處理，只剩測試註解／mock／scss 舊 class 名（見下） |
 | `@mui/x-date-pickers` | 先做 `ui/date-picker`（41 處） | 中 |
 | `@mui/material`（含 Select／Autocomplete／TextField） | 先做 `ui/combobox`、完成 r2-04／r2-06、並決定 15 個列印報表（目前決定保留 MUI） | **只要列印報表維持 MUI，就無法完全移除** |
 | emotion（481 檔） | 所有 `css=` 改 Tailwind；與 MUI 橋接一起處理 | 最後一步 |
 | 舊 `src/theme`（187 檔引用） | MUI 與 emotion 移除後 | 最後一步 |
 
-結論：短期可移除的只有 icons-material 與 jss；MUI 本體取決於「列印報表」與「Autocomplete／日期選擇器」兩個決定（見 P3）。
+#### F 批更新（2026/10/19，分支 `claude/ui-batch3-box`，基於 main `7cb899a`）
+- **icons-material**：實查 `rg "@mui/icons-material" src` 為 25 檔（非舊盤點的 50 次／232 檔，那是改版前／含轉接層的口徑）：snackbars 5 個圖示 1 檔、CheckBox＋CheckBoxOutlineBlank 22 檔（Autocomplete 的 `icon`／`checkedIcon`）、`ServiceEdit/AboutAssistant.js` 的 `Chip` 1 檔。
+  - 在 `src/ui/icons.js` 補轉接：`CheckBox`（Lucide `SquareCheck`）、`CheckBoxOutlineBlank`（Lucide `Square`）。
+  - 23 檔 import 換成 `ui/icons`（只改 import 行；`AboutSettingFunction.js` 併入既有 `ui/icons` import）。
+  - `AboutAssistant.js` 的 `Chip`：該檔**無任何檔案 import**（路由與 `ServiceEdit/index.js` 用的是 `AboutAssistantSetting`），為死碼；且 `@mui/icons-material/Chip` 本就不存在、JSX 實際把它當 MUI Chip 用。僅把 import 來源改成正確的 `@mui/material/Chip`，不改邏輯、不刪檔，其餘留待死碼清理批。
+  - 結果：`@mui/icons-material` 在 `src` 的 import **25 → 0**。
+- **jss**：實查（2026/10/19）`rg "makeStyles|withStyles|@mui/styles|@material-ui/styles" src`，排除 scss 舊 class 名後，僅剩 `src/__mocks__/@material-ui/styles.js`（jest mock）與 `AccountingRecordCreate/__test__/index.test.js` 的**註解**，**程式碼 0 檔**。舊「jss 2 檔」說法不成立（應是把這兩處算進去）；不需改程式。`initialize*.scss` 內的 `.makeStyles-*` 是舊 jss 產生的 class 名選擇器，已無對應元素，屬死 CSS，另批清理（動它們要確認列印規則，故不在 F 批）。
+- **盤點總表**在 PR #7（INVENTORY／階段 4 數字），本分支待 PR #7 合併後再對齊上方 icons／jss 數字。
+
+結論：短期可移除的只有 icons-material 與 jss（兩者 `src` 內皆已歸零）；MUI 本體取決於「列印報表」與「Autocomplete／日期選擇器」兩個決定（見 P3）。

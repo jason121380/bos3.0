@@ -3,8 +3,7 @@ import { useState, useEffect } from 'react'
 import {
   Button, Checkbox, TextField,
 } from '@mui/material'
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import Autocomplete from '@mui/material/Autocomplete'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
