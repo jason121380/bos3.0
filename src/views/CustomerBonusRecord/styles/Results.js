@@ -10,6 +10,6 @@ export default {
     top: 0,
     background: 'white',
     zIndex: '100',
-    outline: '1px solid #eeeeee',
+    outline: '1px solid rgb(var(--border))',
   }),
 }
