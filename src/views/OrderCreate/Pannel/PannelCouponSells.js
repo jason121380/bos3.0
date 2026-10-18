@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
-import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
 import React, { useContext } from 'react'
@@ -189,7 +188,6 @@ export default function PannelCouponSells({ expanded, onPanelClick, reset }) {
   return (
     <Accordion key="panelCouponSells" expanded={expanded}>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
         onClick={onPanelClick}
         data-testid="couponSells"
         style={{ width: '100%' }}

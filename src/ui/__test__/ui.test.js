@@ -7,6 +7,7 @@ import { ToggleGroup, ToggleGroupItem } from '../toggle-group'
 import { Switch } from '../switch'
 import { CheckboxField } from '../checkbox'
 import { Avatar } from '../avatar'
+import { Accordion, AccordionSummary, AccordionDetails } from '../accordion'
 import { toast, Toaster } from '../toast'
 import { cn } from '../utils'
 
@@ -174,5 +175,56 @@ describe('Avatar', () => {
     render(<Avatar src="https://example.invalid/x.png" alt="王小美">王</Avatar>)
     fireEvent.error(screen.getByAltText('王小美'))
     expect(screen.getByText('王')).toBeInTheDocument()
+  })
+})
+
+describe('Accordion', () => {
+  const setup = (expanded, onClick = jest.fn()) =>
+    render(
+      <Accordion expanded={expanded}>
+        <AccordionSummary onClick={onClick} data-testid="sum">服務項目</AccordionSummary>
+        <AccordionDetails>
+          <input data-testid="price" defaultValue="500" />
+        </AccordionDetails>
+      </Accordion>
+    )
+
+  // 打帳單各區塊收合時，裡面的欄位值與 ref 不能遺失（MUI 的 Accordion 也是收合不卸載），否則使用者填到一半收起來再打開會被清空
+  it('收合時內容只是隱藏、仍然掛載，值保留；展開後可見', () => {
+    const { rerender } = setup(false)
+    const input = screen.getByTestId('price')
+    expect(input).toBeInTheDocument()
+    expect(input.parentElement).toHaveStyle('display: none')
+    fireEvent.change(input, { target: { value: '800' } })
+    rerender(
+      <Accordion expanded>
+        <AccordionSummary data-testid="sum">服務項目</AccordionSummary>
+        <AccordionDetails>
+          <input data-testid="price" defaultValue="500" />
+        </AccordionDetails>
+      </Accordion>
+    )
+    expect(screen.getByTestId('price').value).toBe('800')
+    expect(screen.getByTestId('price').parentElement).not.toHaveStyle('display: none')
+  })
+
+  // 展開狀態由外層決定：點標題只通知，不自己切換（與 MUI 受控模式相同）
+  it('點標題只呼叫 onClick，不自行展開；aria-expanded 反映外層傳入的 expanded', () => {
+    const onClick = jest.fn()
+    setup(false, onClick)
+    const sum = screen.getByTestId('sum')
+    expect(sum).toHaveAttribute('aria-expanded', 'false')
+    fireEvent.click(sum)
+    expect(onClick).toHaveBeenCalledTimes(1)
+    expect(sum).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  it('焦點在標題上按 Enter 或空白鍵等同點擊（鍵盤操作與原生按鈕一致）', () => {
+    const onClick = jest.fn()
+    setup(false, onClick)
+    const sum = screen.getByTestId('sum')
+    fireEvent.keyDown(sum, { key: 'Enter' })
+    fireEvent.keyDown(sum, { key: ' ' })
+    expect(onClick).toHaveBeenCalledTimes(2)
   })
 })

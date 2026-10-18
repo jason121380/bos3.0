@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
-import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
 import { memo, useContext, useEffect, useState, Fragment } from 'react'
@@ -250,7 +249,6 @@ function PannelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
     <Accordion key="panelService" expanded={expanded}>
       <AccordionSummary
         style={{ width: '100%' }}
-        expandIcon={<ExpandMoreIcon />}
         onClick={onPanelClick}
         data-testid="panelService"
       >

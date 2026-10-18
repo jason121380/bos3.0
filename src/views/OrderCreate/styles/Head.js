@@ -14,7 +14,8 @@ export default {
     }),
     box: css({
         display: 'flex',
-        gap: '12px',
+        flexWrap: 'wrap', // 窄螢幕時三欄自動換行，不再把欄位擠成一條細縫
+        gap: '16px 12px',
         alignItems: 'flex-start',
     }),
     column: css({
@@ -23,19 +24,19 @@ export default {
         gap: '4px',
     }),
     column1: css({
-        flex: 1.2,
+        flex: '1.2 1 220px',
     }),
     column2: css({
-        flex: 1.8,
+        flex: '1.8 1 280px',
     }),
     column3: css({
-        flex: 2,
+        flex: '2 1 340px',
     }),
     row: css({
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-end', // 上方有標籤，控制項靠底部對齊
         gap: '12px',
-        height: '42px', // Unify height for the first row of each column
+        flexWrap: 'wrap',
     }),
     label: css({
         fontSize: '12px',
@@ -46,7 +47,7 @@ export default {
         width: '100%',
         '& .MuiOutlinedInput-root': {
             backgroundColor: 'rgb(var(--background))',
-            '& fieldset': { borderColor: 'rgb(var(--border))' },
+            '& fieldset': { borderColor: 'rgb(var(--border-strong))' }, // 與 ui/input 的框線同色
             '& .MuiSvgIcon-root': {
                 color: 'rgb(var(--text-tertiary))',
                 fontSize: '22px', // Unify size
@@ -57,7 +58,7 @@ export default {
         width: '100%',
         '& .MuiOutlinedInput-root': {
             backgroundColor: 'rgb(var(--background))',
-            '& fieldset': { borderColor: 'rgb(var(--border))' },
+            '& fieldset': { borderColor: 'rgb(var(--border-strong))' }, // 與 ui/input 的框線同色
         }
     }),
     employeeInput: css({
@@ -66,7 +67,7 @@ export default {
         minWidth: 180,
         '& .MuiOutlinedInput-root': {
             backgroundColor: 'rgb(var(--background))',
-            '& fieldset': { borderColor: 'rgb(var(--border))' },
+            '& fieldset': { borderColor: 'rgb(var(--border-strong))' }, // 與 ui/input 的框線同色
         }
     }),
     addPersonIcon: css({
@@ -77,6 +78,7 @@ export default {
     }),
     checkboxLabel: css({
         margin: 0,
+        whiteSpace: 'nowrap', // 「鎖定日期」「不留客資」不可被擠成兩行
         '& .MuiFormControlLabel-label': {
             fontSize: '14px',
             fontWeight: 'bold',

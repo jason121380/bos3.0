@@ -18,7 +18,8 @@ function CustomerTicketRecordAutoCompleteForOrderCreate({
   onKeyDown,
   onFocus,
   autoFocus,
-  name
+  name,
+  label = '卡券代號/名稱' // 沒傳時與舊版相同；打帳單改成「標籤在上」時傳入 ''
 }, ref) {
   const [options, setOptions] = useState([])
   const [selectedValue, setSelectedValue] = useState(null)
@@ -66,7 +67,7 @@ function CustomerTicketRecordAutoCompleteForOrderCreate({
       renderInput={params => (
         <TextField
           {...params}
-          label='卡券代號/名稱'
+          label={label}
           fullWidth
           variant="outlined"
           inputRef={ref}

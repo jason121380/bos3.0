@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Checkbox, FormControlLabel, TextField } from '@mui/material'
+import { Checkbox, FormControlLabel } from '@mui/material'
+import { Field, Input } from 'ui/input'
 import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import CustomerTicketRecordAutoCompleteForOrderCreate from 'components/CustomerTicketRecordAutoCompleteForOrderCreate'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
@@ -124,78 +125,83 @@ export default function CouponUse({
     <Fragment>
       <div css={styles.couponUse}>
         {bill.customerId && (
-          <CustomerTicketRecordAutoCompleteForOrderCreate
-            className={styles.couponField}
-            customerId={bill.customerId}
-            value={couponUsage.customerTicketId}
-            onChange={value => {
-              handleCustomerTicketChange(value)
-              if(!value && helper[index].length > 0) {
-                helperRefs[0].current.focus()
-              }
-            }}
-            couponUsages={couponUsages}
-            ref={couponRef}
-            autoFocus={focus === 'coupon'}
-            onFocus={handleFocus}
-            name="coupon"
-            ticketRecordsForOrderLazyDataV2={ticketRecordsForOrderLazyDataV2}
-            onKeyDown={event => {
-              if (event.key === 'Enter' && couponUsage.customerTicketId) {
-                if (helper[index].length > 0) {
+          <Field label="預收卡">
+            <CustomerTicketRecordAutoCompleteForOrderCreate
+              label=''
+              className={styles.couponField}
+              customerId={bill.customerId}
+              value={couponUsage.customerTicketId}
+              onChange={value => {
+                handleCustomerTicketChange(value)
+                if(!value && helper[index].length > 0) {
                   helperRefs[0].current.focus()
-                } else {
-                  isLast && addCouponUse()
-                  setFocusRow(index + 1)
-                  setFocus('coupon')
                 }
-              }
-            }}
-          />
+              }}
+              couponUsages={couponUsages}
+              ref={couponRef}
+              autoFocus={focus === 'coupon'}
+              onFocus={handleFocus}
+              name="coupon"
+              ticketRecordsForOrderLazyDataV2={ticketRecordsForOrderLazyDataV2}
+              onKeyDown={event => {
+                if (event.key === 'Enter' && couponUsage.customerTicketId) {
+                  if (helper[index].length > 0) {
+                    helperRefs[0].current.focus()
+                  } else {
+                    isLast && addCouponUse()
+                    setFocusRow(index + 1)
+                    setFocus('coupon')
+                  }
+                }
+              }}
+              inputProps={{ 'data-testid': '', placeholder: '卡券代號/名稱' }}
+            />
+          </Field>
         )}
         {couponUsage.customerTicketId ? (
-          <TextField
-            label="金額"
-            variant="outlined"
-            disabled
-            value={Math.round(price)}
-            css={styles.priceField}
-            onChange={event =>
-              onChange({
-                value: idx(event, _ => _.target.value),
-                key: 'customerTicketId',
-                index,
-              })
-            }
-          />
+          <Field label="金額" css={styles.priceField}>
+            <Input
+              disabled
+              value={Math.round(price)}
+              onChange={event =>
+                onChange({
+                  value: idx(event, _ => _.target.value),
+                  key: 'customerTicketId',
+                  index,
+                })
+              }
+            />
+          </Field>
         ) : (
           ''
         )}
         {helper[index].map((data, helperIndex) => (
           <Fragment key={`${data.id}-ticketOrder-${helperIndex}`}>
-            <EmployeeAutoComplete
-              label={data.type}
-              value={data.helperId}
-              ref={helperRefs[helperIndex]}
-              name={data.type}
-              onFocus={event => {
-                setFocusRow(index)
-                setFocus(event.target.name)
-                handleFocus(event)
-              }}
-              onChange={value => {
-                handleAssistantChange({
-                  value: idx(value, _ => _.userId),
-                  assistantIndex: helperIndex,
-                  key: 'helperId',
-                })
-                helperDesignateRefs[helperIndex].current.focus()
-              }}
-              onKeyDown={event => {
-                if (event.key === 'Enter') helperDesignateRefs[helperIndex].current.focus()
-              }}
-              className={styles.field}
-            />
+            <Field label={data.type}>
+              <EmployeeAutoComplete
+                placeholder={data.type}
+                value={data.helperId}
+                ref={helperRefs[helperIndex]}
+                name={data.type}
+                onFocus={event => {
+                  setFocusRow(index)
+                  setFocus(event.target.name)
+                  handleFocus(event)
+                }}
+                onChange={value => {
+                  handleAssistantChange({
+                    value: idx(value, _ => _.userId),
+                    assistantIndex: helperIndex,
+                    key: 'helperId',
+                  })
+                  helperDesignateRefs[helperIndex].current.focus()
+                }}
+                onKeyDown={event => {
+                  if (event.key === 'Enter') helperDesignateRefs[helperIndex].current.focus()
+                }}
+                className={styles.field}
+              />
+            </Field>
             <FormControlLabel
               control={<Checkbox color="primary" />}
               label="指定"

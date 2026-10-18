@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
-import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { useContext, useEffect, useState } from 'react'
 import Bonus from 'views/OrderCreate/Bonus'
 import styles from 'views/OrderCreate/styles/PannelPayment'
@@ -46,7 +45,6 @@ export default function PannelBonus({ expanded, onPanelClick, bonusActive }) {
   return (
     <Accordion key="panelRemark" expanded={expanded}>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
         style={{ width: '100%' }}
         onClick={onPanelClick}
         data-testid="panelRemark"

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent } from '@mui/material'
+import { Card, CardContent } from 'ui/card'
 import Remark from 'views/OrderCreate/Remark'
 import styles from 'views/OrderCreate/styles/PannelPayment'
 

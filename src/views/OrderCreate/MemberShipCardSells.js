@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from '@mui/material'
+import { Field, Input } from 'ui/input'
 import { CheckboxField } from 'ui/checkbox'
 import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
 import EmployeeAutoComplete from "components/EmployeeAutoComplete";
@@ -176,29 +176,31 @@ const MemberShipCardSells = ({
   return (
     <Fragment>
       <div css={styles.merchantSells}>
-        <EmployeeAutoComplete
-          className={styles.field}
-          label="服務人員姓名/編號"
-          value={sellsItem.sellerId}
-          ref={employeeRef}
-          onChange={(value) => {
-            onChange({
-              index,
-              key: "sellerId",
-              value: idx(value, (_) => _.userId),
-            });
-          }}
-          autoFocus={focus === "employee"}
-          onFocus={(event) => handleFocus({ event, field: "employee" })}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              setTimeout(() => {
-                handleKeyDown({ event, nextField: "product" })
-              }, 1)
-            }
-          }}
-          tabIndex={focusRow + "0"}
-        />
+        <Field label="服務人員">
+          <EmployeeAutoComplete
+            placeholder="服務人員姓名/編號"
+            className={styles.field}
+            value={sellsItem.sellerId}
+            ref={employeeRef}
+            onChange={(value) => {
+              onChange({
+                index,
+                key: "sellerId",
+                value: idx(value, (_) => _.userId),
+              });
+            }}
+            autoFocus={focus === "employee"}
+            onFocus={(event) => handleFocus({ event, field: "employee" })}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                setTimeout(() => {
+                  handleKeyDown({ event, nextField: "product" })
+                }, 1)
+              }
+            }}
+            tabIndex={focusRow + "0"}
+          />
+        </Field>
         {index === 0 ? (
           <FilterNoneIcon
             css={styles.createIcon}
@@ -207,109 +209,109 @@ const MemberShipCardSells = ({
         ) : (
           <span style={{ margin: "22px" }} />
         )}
-        <MemberShipCardAutoComplete
-          className={styles.productField}
-          label="會員卡名稱/代號"
-          value={sellsItem.membershipUUID}
-          ref={productRef}
-          autoFocus={focus === "product"}
-          onFocus={(event) => handleFocus({ event, field: "product" })}
-          tabIndex={focusRow + "1"}
-          setMembershipAlready={setMembershipAlready}
-          getData={getData}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              if (sellsItem.isLocked !== 'FALSE' && sellsItem.expiryDate === null) {
-                handleKeyDown({ event, nextField: "checkbox" })
-              } else if (sellsItem.isLocked === 'FALSE') {
-                handleKeyDown({ event, nextField: "price" })
-              } else {
-                handleKeyDown({ event, nextField: "date" })
+        <Field label="會員卡">
+          <MemberShipCardAutoComplete
+            className={styles.productField}
+            value={sellsItem.membershipUUID}
+            ref={productRef}
+            autoFocus={focus === "product"}
+            onFocus={(event) => handleFocus({ event, field: "product" })}
+            tabIndex={focusRow + "1"}
+            setMembershipAlready={setMembershipAlready}
+            getData={getData}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                if (sellsItem.isLocked !== 'FALSE' && sellsItem.expiryDate === null) {
+                  handleKeyDown({ event, nextField: "checkbox" })
+                } else if (sellsItem.isLocked === 'FALSE') {
+                  handleKeyDown({ event, nextField: "price" })
+                } else {
+                  handleKeyDown({ event, nextField: "date" })
+                }
               }
-            }
-          }}
-          onChange={(value) => {
-            idx(value, (_) => {
-              onCardChange({
-                index,
-                value: {
-                  ...sellsItem,
-                  membershipUUID: _.uuid,
-                  price: _.sellPrice,
-                  expiryDate: _.effecitveDay === 0 ? null : addDays(new Date(), _.effecitveDay).getTime(),
-                  isLocked: _.isLocked,
-                  effecitveDay: _.effecitveDay,
-                },
+            }}
+            onChange={(value) => {
+              idx(value, (_) => {
+                onCardChange({
+                  index,
+                  value: {
+                    ...sellsItem,
+                    membershipUUID: _.uuid,
+                    price: _.sellPrice,
+                    expiryDate: _.effecitveDay === 0 ? null : addDays(new Date(), _.effecitveDay).getTime(),
+                    isLocked: _.isLocked,
+                    effecitveDay: _.effecitveDay,
+                  },
+                });
               });
-            });
-            if (value.isLocked !== 'FALSE' && value.effecitveDay === 0) {
-              handleKeyDown({ event: { key: 'Enter' }, nextField: "checkbox" })
-            } else if (value.isLocked === 'FALSE') {
-              handleKeyDown({ event: { key: 'Enter' }, nextField: "price" })
-            } else {
-              handleKeyDown({ event: { key: 'Enter' }, nextField: "date" })
-            }
-          }}
-        />
+              if (value.isLocked !== 'FALSE' && value.effecitveDay === 0) {
+                handleKeyDown({ event: { key: 'Enter' }, nextField: "checkbox" })
+              } else if (value.isLocked === 'FALSE') {
+                handleKeyDown({ event: { key: 'Enter' }, nextField: "price" })
+              } else {
+                handleKeyDown({ event: { key: 'Enter' }, nextField: "date" })
+              }
+            }}
+            inputProps={{ placeholder: '會員卡名稱/代號' }}
+          />
+        </Field>
         {sellsItem.membershipUUID && (
           <React.Fragment>
-            <TextField
-              variant="outlined"
-              label="價格"
-              css={styles.priceField}
-              value={sellsItem.price}
-              inputRef={dateRef}
-              tabIndex={focusRow + "3"}
-              inputProps={{
-                "data-testid": `memberShipCardSells-${index}-price`,
-              }}
-              onChange={(value) => {
-                setFocus("price");
-                onChange({
-                  index,
-                  key: "price",
-                  value: idx(value, (_) => +_.target.value || 0),
-                });
-              }}
-              autoFocus={focus === "price"}
-              onFocus={(event) => handleFocus({ event, field: "price" })}
-              onKeyDown={(event) => {
-                handleKeyDown({ event, nextField: sellsItem.expiryDate === null ? 'checkbox' : 'date' })
-              }}
-              disabled={!!(sellsItem.isLocked === 'TRUE' || sellsItem.isLocked === 'UNSET')}
-            />
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <MobileDatePicker
-                css={styles.dateField}
-                label="到期日"
-                inputRef={dateRef}
-                value={sellsItem.expiryDate}
-                format="yyyy/MM/dd"
-                minDate={addDays(new Date(bill.date), 1)}
-                maxDate={addYears(new Date(bill.date), 50)}
-                disabled={sellsItem.expiryDate === null}
-                autoFocus={focus === "date"}
-                onFocus={(event) => handleFocus({ event, field: "date" })}
-                onError={(error) => setDateError(error)}
-                localeText={{
-                  toolbarTitle: '選擇日期'
-                }}
-                slotProps={{
-                  textField: {
-                    onFocus: event => handleFocus({ event, field: "date" }),
-                    onKeyDown: event => handleKeyDown({ event, nextField: "checkbox" }),
-                    helperText: checkMessage(dateError)
-                  },
-                }}
+            <Field label="價格" css={styles.priceField}>
+              <Input
+                value={sellsItem.price}
+                ref={dateRef}
+                tabIndex={focusRow + "3"}
+                data-testid={`memberShipCardSells-${index}-price`}
                 onChange={(value) => {
-                  setFocus("date");
+                  setFocus("price");
                   onChange({
                     index,
-                    key: "expiryDate",
-                    value: new Date(value).getTime()
+                    key: "price",
+                    value: idx(value, (_) => +_.target.value || 0),
                   });
                 }}
+                autoFocus={focus === "price"}
+                onFocus={(event) => handleFocus({ event, field: "price" })}
+                onKeyDown={(event) => {
+                  handleKeyDown({ event, nextField: sellsItem.expiryDate === null ? 'checkbox' : 'date' })
+                }}
+                disabled={!!(sellsItem.isLocked === 'TRUE' || sellsItem.isLocked === 'UNSET')}
               />
+            </Field>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <Field label="到期日">
+                <MobileDatePicker
+                  css={styles.dateField}
+                  inputRef={dateRef}
+                  value={sellsItem.expiryDate}
+                  format="yyyy/MM/dd"
+                  minDate={addDays(new Date(bill.date), 1)}
+                  maxDate={addYears(new Date(bill.date), 50)}
+                  disabled={sellsItem.expiryDate === null}
+                  autoFocus={focus === "date"}
+                  onFocus={(event) => handleFocus({ event, field: "date" })}
+                  onError={(error) => setDateError(error)}
+                  localeText={{
+                    toolbarTitle: '選擇日期'
+                  }}
+                  slotProps={{
+                    textField: {
+                      onFocus: event => handleFocus({ event, field: "date" }),
+                      onKeyDown: event => handleKeyDown({ event, nextField: "checkbox" }),
+                      helperText: checkMessage(dateError)
+                    },
+                  }}
+                  onChange={(value) => {
+                    setFocus("date");
+                    onChange({
+                      index,
+                      key: "expiryDate",
+                      value: new Date(value).getTime()
+                    });
+                  }}
+                />
+              </Field>
               <CheckboxField
                 label="永久會籍"
                 ref={checkbox}
@@ -333,27 +335,29 @@ const MemberShipCardSells = ({
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               {thirdPartTicket && (
-                <ThirdPartyAutoComplete
-                  className={styles.field}
-                  label="第三方卡券"
-                  autoFocus={focus === "thirdParty"}
-                  value={sellsItem.thirdPartyCouponMerchantId}
-                  ref={thirdPartyRef}
-                  onKeyDown={(event) =>
-                    handleKeyDown({ event, nextField: "remark" })
-                  }
-                  name="thirdParty"
-                  onChange={(e) => {
-                    onCardChange({
-                      index,
-                      value: {
-                        ...sellsItem,
-                        thirdPartyCouponMerchantId: e ? e.id : null,
-                      },
-                    });
-                  }}
-                  onFocus={(event) => handleFocus({ event, field: "thirdParty" })}
-                />
+                <Field label="第三方卡券">
+                  <ThirdPartyAutoComplete
+                    fieldProps={{ placeholder: '第三方卡券' }}
+                    className={styles.field}
+                    autoFocus={focus === "thirdParty"}
+                    value={sellsItem.thirdPartyCouponMerchantId}
+                    ref={thirdPartyRef}
+                    onKeyDown={(event) =>
+                      handleKeyDown({ event, nextField: "remark" })
+                    }
+                    name="thirdParty"
+                    onChange={(e) => {
+                      onCardChange({
+                        index,
+                        value: {
+                          ...sellsItem,
+                          thirdPartyCouponMerchantId: e ? e.id : null,
+                        },
+                      });
+                    }}
+                    onFocus={(event) => handleFocus({ event, field: "thirdParty" })}
+                  />
+                </Field>
               )}
               {teachingMode && (
                 <p className="m-0" css={styles.heading2}>
@@ -374,32 +378,31 @@ const MemberShipCardSells = ({
                   })
                 )}
             </div>
-            <TextField
-              value={sellsItem.remark}
-              variant="outlined"
-              label="備註"
-              name="remark"
-              inputRef={remarkRef}
-              css={styles.field}
-              autoFocus={focus === "remark"}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  setTimeout(() => {
-                    changeRowFocus(index + 1);
-                  }, 1)
-                }
-              }}
-              onChange={(value) => {
-                onChange({
-                  index,
-                  key: "remark",
-                  value: idx(value, (_) => _.target.value),
-                });
-              }}
-            />
+            <Field label="備註" css={styles.field}>
+              <Input
+                value={sellsItem.remark}
+                name="remark"
+                ref={remarkRef}
+                autoFocus={focus === "remark"}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    setTimeout(() => {
+                      changeRowFocus(index + 1);
+                    }, 1)
+                  }
+                }}
+                onChange={(value) => {
+                  onChange({
+                    index,
+                    key: "remark",
+                    value: idx(value, (_) => _.target.value),
+                  });
+                }}
+              />
+            </Field>
           </React.Fragment>
         )}
 
