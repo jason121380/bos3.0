@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, FormControl, InputLabel, MenuItem,
+  FormControl, InputLabel, MenuItem,
   Select, TextField, FormHelperText,
   InputAdornment, Input
 } from '@mui/material'
@@ -12,7 +12,10 @@ import { useFormContext } from 'react-hook-form'
 import useFetchPayments from 'hooks/useFetchPayments'
 import { MobileDateTimePicker } from '@mui/x-date-pickers'
 import format from 'date-fns/format';
+import { Card, CardContent } from 'ui/card'
+import { Field, Input as UiInput } from 'ui/input'
 
+// styles.formControl 仍以 emotion 物件傳給 MUI 欄位與 EmployeeAutoComplete／CustomerAutoComplete（其 className 以 css prop 套用）
 import styles from './styles/General'
 
 export default function General() {
@@ -75,7 +78,7 @@ export default function General() {
   ]
 
   return (
-    <Card css={styles.card}>
+    <Card className="mb-6">
       <CardContent>
         <MobileDateTimePicker
           closeOnSelect
@@ -204,13 +207,12 @@ export default function General() {
             {errors.handlingFeeDecountWay && <FormHelperText>{errors.handlingFeeDecountWay.message}</FormHelperText>}
           </FormControl>
         )}
-        <TextField
-          label="備註"
-          fullWidth
-          variant="outlined"
-          name="remark"
-          inputRef={register}
-        />
+        <Field label="備註">
+          <UiInput
+            name="remark"
+            ref={register}
+          />
+        </Field>
       </CardContent>
     </Card>
   )

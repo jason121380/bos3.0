@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchWalletDeposit from 'hooks/useFetchWalletDeposit'
 import { useState } from 'react'
@@ -9,7 +6,8 @@ import { useHistory } from 'react-router'
 import { useForm, FormProvider } from 'react-hook-form'
 
 import General from './General'
-import styles from './styles/TopupCreate'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 export default function TopUpCreate() {
   const history = useHistory()
@@ -37,18 +35,20 @@ export default function TopUpCreate() {
   }
 
   return (
-    <Page title="新增入金" css={styles.root}>
-      <Container maxWidth="lg">
-        <PageTitle title='新增入金' subTitle='Top Up Create' />
+    <Page title="新增入金" className="ui-root">
+      <div className="max-w-lg">
+        <PageHeader title="新增入金" />
         <FormProvider {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <General />
-            <Button disabled={isClick} color="primary" variant="contained" type="submit">
-              新增
-            </Button>
+            <div className="flex justify-end">
+              <Button disabled={isClick} variant="primary" type="submit">
+                新增
+              </Button>
+            </div>
           </form>
         </FormProvider>
-      </Container>
+      </div>
     </Page>
   )
 }
