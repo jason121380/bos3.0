@@ -1,12 +1,4 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Paper,
-} from '@mui/material'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import { format } from 'date-fns'
@@ -191,22 +183,21 @@ export default function Results({ designerMontlyListData, performReference, sort
     setExcelData(excelData)
   }, [designerMontlyListData, performReference, sort, isMemberShipCardActive])
   return (
-    <TableContainer style={{ marginTop: 10 }} className='DesignerMonthlyReportTableContainer' component={Paper}>
-      <Table className='DesignerMonthlyReportTable' size="small" aria-label="a dense table">
-        <TableHead>
+      <Table dense wrapperClassName='DesignerMonthlyReportTableContainer mt-[10px]' className='DesignerMonthlyReportTable' aria-label="a dense table">
+        <TableHeader>
           <TableRow>
-            <TableCell>月份</TableCell>
-            <TableCell>設計師</TableCell>
-            <TableCell>總業績</TableCell>
-            <TableCell>{performReference === 'FAKE' ? '服務卡券業績(虛)' : '服務卡券業績(實)'}</TableCell>
-            <TableCell>總客數</TableCell>
-            <TableCell>客單價</TableCell>
-            <TableCell>指定</TableCell>
-            <TableCell>不指定</TableCell>
-            <TableCell>店販金額</TableCell>
-            {membershipDisplay && <TableCell>會員卡業績</TableCell>}
+            <TableHead>月份</TableHead>
+            <TableHead>設計師</TableHead>
+            <TableHead>總業績</TableHead>
+            <TableHead>{performReference === 'FAKE' ? '服務卡券業績(虛)' : '服務卡券業績(實)'}</TableHead>
+            <TableHead>總客數</TableHead>
+            <TableHead>客單價</TableHead>
+            <TableHead>指定</TableHead>
+            <TableHead>不指定</TableHead>
+            <TableHead>店販金額</TableHead>
+            {membershipDisplay && <TableHead>會員卡業績</TableHead>}
           </TableRow>
-        </TableHead>
+        </TableHeader>
         <TableBody>
           {reportData.map((d, index) => {
             if (d.designerName === '小計') {
@@ -226,7 +217,7 @@ export default function Results({ designerMontlyListData, performReference, sort
               )
             } else {
               return (
-                <TableRow key={`${d.date}-${d.designerName}`} hover>
+                <TableRow key={`${d.date}-${d.designerName}`}>
                   <TableCell>{format(d.date, 'yyyy/MM')}</TableCell>
                   <TableCell>{d.designerName}</TableCell>
                   <TableCell>{Math.round(d.performance) + Math.round(d.productFakePerformance) + (membershipDisplay ? Math.round(d.membershipFakePerformance) : 0)}</TableCell>
@@ -284,7 +275,6 @@ export default function Results({ designerMontlyListData, performReference, sort
           </TableRow>
         </TableBody>
       </Table>
-    </TableContainer>
   )
 }
 
