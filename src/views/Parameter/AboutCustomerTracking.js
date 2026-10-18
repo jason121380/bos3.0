@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  TextField, Grid
-} from '@mui/material'
+import { Grid } from '@mui/material'
 import { Button } from 'ui/button'
+import { Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment } from 'react'
@@ -57,12 +56,11 @@ function AboutCustomerTracking({ className, inputEnable, hairCondition, setHairC
                     >
                       {index + 1}
                     </span>
-                    <TextField
+                    <Input
+                      className="min-w-0 flex-1"
                       disabled={!inputEnable}
                       type="text"
-                      variant="outlined"
                       value={data}
-                      InputLabelProps={{ shrink: true }}
                       onChange={event => handleInputOnChange(event, key, index)}
                     />
                     <div style={{ display: 'flex' }}>
