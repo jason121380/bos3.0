@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Grid, Button } from '@mui/material'
+// printGrid 外框（列印時隱藏）依規則保留 MUI Grid
+import { Grid } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { endOfMonth, format } from 'date-fns'
 import useFetchMerchantIncomeStatementV2 from 'hooks/useFetchMerchantIncomeStatementV2'
@@ -14,6 +14,10 @@ import React, { useEffect, useState } from 'react'
 import { openSnackbar } from 'elements/snackbars'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader, Toolbar } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -96,64 +100,59 @@ export default function MerchantIncomeStatementMonthly() {
     })
   }
   return (
-    <Page title="費用分析表" css={styles.root} className='CostAnalysisReport'>
-      <Container maxWidth={false}>
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
-          <div className="merchantNamePrint">
-            {JSON.parse(localStorage.getItem('userMerchant')).name +
-              '   ' +
-              format(new Date(date.startDate), 'yyyy-MM').toLocaleString() +
-              '   ' +
-              '費用分析表'}
-          </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' +
-              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-          </div>
+    <Page title="費用分析表" className='CostAnalysisReport ui-root'>
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+        <div className="merchantNamePrint">
+          {JSON.parse(localStorage.getItem('userMerchant')).name +
+            '   ' +
+            format(new Date(date.startDate), 'yyyy-MM').toLocaleString() +
+            '   ' +
+            '費用分析表'}
         </div>
-        <AdminPageHeader title='費用分析表' />
-        <Grid
-          container
-          style={{ alignItems: 'center', justifyContent: 'space-between' }}
-          className="noprint"
-        >
-          <DateSelector
-            date={date}
-            attributes={['lastmonth', 'thismonth', 'startDate']}
-            dateChange={value => setDate(value)}
-            onlyStart
-            margin
-            inputFormat='yyyy/MM'
-            pickerOption={{
-              views: ['month', 'year']
-            }}
-          />
+        <div className="merchantNamePrint">
+          {'列印時間： ' +
+            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
+        </div>
+      </div>
+      <PageHeader
+        title="費用分析表"
+        actions={
           <Grid item className="printGrid">
             <Button
               className="noprint"
-              size="medium"
-              variant="contained"
-              color="primary"
+              variant="primary"
               onClick={() => window.print()}
             >
+              <Printer strokeWidth={1.75} />
               列印
             </Button>
           </Grid>
-        </Grid>
-        {!merchantIncomeStatementDataV2.loading && merchantIncomeStatement !== undefined ? (
-          <Results
-            className={styles.result}
-            merchantIncomeStatement={merchantIncomeStatement}
-            handleExcel={handleExcel}
-            excelLoading={getmerchantIncomeStatementV2ExcelLazyData.loading}
-            CARPTDISPLAY={CARPTDISPLAY}
-          />
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <CircularProgress />
-          </div>
-        )}
-      </Container>
+        }
+      />
+      <Toolbar>
+        <DateSelector
+          date={date}
+          attributes={['lastmonth', 'thismonth', 'startDate']}
+          dateChange={value => setDate(value)}
+          onlyStart
+          margin
+          inputFormat='yyyy/MM'
+          pickerOption={{
+            views: ['month', 'year']
+          }}
+        />
+      </Toolbar>
+      {!merchantIncomeStatementDataV2.loading && merchantIncomeStatement !== undefined ? (
+        <Results
+          className={styles.result}
+          merchantIncomeStatement={merchantIncomeStatement}
+          handleExcel={handleExcel}
+          excelLoading={getmerchantIncomeStatementV2ExcelLazyData.loading}
+          CARPTDISPLAY={CARPTDISPLAY}
+        />
+      ) : (
+        <Skeleton className="h-96" aria-busy="true" />
+      )}
     </Page>
   )
 }
