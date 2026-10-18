@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 import {
   TextField, Autocomplete,
-  ToggleButton, ToggleButtonGroup
 } from '@mui/material'
 import useFetchGetProductInventoryList from 'hooks/useFetchGetProductInventoryList'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
@@ -13,6 +12,7 @@ import idx from 'idx'
 import Results from './Results'
 import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 
@@ -153,18 +153,18 @@ const ProductInventoryList = () => {
               </div>
               <div>
                 <div className="divText mb-2 text-caption text-text-secondary">排序依據：</div>
-                <ToggleButtonGroup
+                <ToggleGroup
                   size="small"
                   value={sortType}
                   onChange={(e, value) => value && setSortType(value)}
                   exclusive
                 >
                   {sortEnum.map((data, idx) => (
-                    <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                    <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                       {data.label}
-                    </ToggleButton>
+                    </ToggleGroupItem>
                   ))}
-                </ToggleButtonGroup>
+                </ToggleGroup>
               </div>
             </div>
           </Card>
