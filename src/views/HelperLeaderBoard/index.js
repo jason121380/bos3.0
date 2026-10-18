@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { ToggleButtonGroup, ToggleButton } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
@@ -16,6 +15,7 @@ import Results from './Results'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 
 const HelperLeaderBoard = () => {
   const [reportForDisplay, setReportForDisplay] = useState(null)
@@ -155,15 +155,15 @@ const HelperLeaderBoard = () => {
           <div className="noprint flex flex-wrap items-center gap-y-5">
             <div style={{ marginRight: '20px', marginTop: -23 }}>
               <div className="divText">排序依據：</div>
-              <ToggleButtonGroup
+              <ToggleGroup
                 size="small"
                 exclusive
                 value={inputValue.orderBy}
                 onChange={(e, v) => handleValueChange('orderBy', v)}
               >
-                <ToggleButton value='POINT'>依點數</ToggleButton>
-                <ToggleButton value='PRICE'>依金額</ToggleButton>
-              </ToggleButtonGroup>
+                <ToggleGroupItem value='POINT'>依點數</ToggleGroupItem>
+                <ToggleGroupItem value='PRICE'>依金額</ToggleGroupItem>
+              </ToggleGroup>
             </div>
             {!isDisplayTogglePerformanceButton &&
               <div style={{ marginRight: '20px', marginTop: -23 }}>
