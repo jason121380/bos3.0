@@ -26,7 +26,7 @@ export default function Results({ data, total, bonusDisplay }) {
   return (
     <Fragment>
       {getData != undefined && (
-        <Table aria-label="a dense table">
+        <Table dense aria-label="a dense table">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead>帳單日期 </TableHead>

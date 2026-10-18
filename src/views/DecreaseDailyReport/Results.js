@@ -93,7 +93,7 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
               </UiCardTitle>
             </UiCardHeader>
             <div className="flex flex-col gap-4 px-5 pb-5">
-              <UiTable aria-label="a dense table">
+              <UiTable dense aria-label="a dense table">
                 <UiTableHeader>
                   <UiTableRow className="hover:bg-transparent">
                     <UiTableHead>#</UiTableHead>
@@ -134,7 +134,7 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
                   </UiTableRow>
                 </UiTableBody>
               </UiTable>
-              <UiTable aria-label="a dense table">
+              <UiTable dense aria-label="a dense table">
                 <UiTableHeader>
                   <UiTableRow className="hover:bg-transparent">
                     <UiTableHead></UiTableHead>

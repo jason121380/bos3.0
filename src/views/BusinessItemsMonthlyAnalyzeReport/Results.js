@@ -43,6 +43,7 @@ export default function Results({ reportData, className }) {
   return (
     // BusinessItemsMonthlyAnalyzeReportTable：@media print 與螢幕樣式的掛鉤（以 table／th／td 標籤選取），保留在表格外框
     <Table
+      dense
       wrapperClassName='BusinessItemsMonthlyAnalyzeReportTable max-h-[calc(100vh-260px)] overflow-auto'
       css={className}
       aria-label="a dense table"
