@@ -21,10 +21,10 @@ const localStyles = {
   }),
   filterPanel: css({
     marginBottom: '12px',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgb(var(--background))',
     borderRadius: '12px',
     padding: '20px',
-    border: '1px solid #f0f0f0',
+    border: '1px solid rgb(var(--border))',
   }),
   categorieDiv: css({
     marginTop: '12px',
@@ -118,7 +118,7 @@ function CustomerManagementList() {
               }
             />
             <div style={{ marginTop: '16px' }}>
-              <Typography variant="caption" sx={{ color: '#666', mb: 1, display: 'block', fontWeight: 'bold' }}>
+              <Typography variant="caption" sx={{ color: 'rgb(var(--text-secondary))', mb: 1, display: 'block', fontWeight: 'bold' }}>
                 按商品類別篩選
               </Typography>
               <div css={localStyles.categorieDiv}>

@@ -28,10 +28,10 @@ const styles = {
   }),
   filterPanel: css({
     marginBottom: '12px',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgb(var(--background))',
     borderRadius: '12px',
     padding: '20px',
-    border: '1px solid #f0f0f0',
+    border: '1px solid rgb(var(--border))',
   }),
   pillButton: css({
     borderRadius: '20px !important',
@@ -217,7 +217,7 @@ function ProductRestock() {
           <div css={styles.filterPanel}>
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={12} sm={9}>
-                <Typography variant="caption" sx={{ color: '#666', mb: 1, display: 'block', fontWeight: 'bold' }}>
+                <Typography variant="caption" sx={{ color: 'rgb(var(--text-secondary))', mb: 1, display: 'block', fontWeight: 'bold' }}>
                   按廠商篩選
                 </Typography>
                 <Autocomplete
