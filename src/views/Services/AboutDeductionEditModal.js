@@ -1,124 +1,21 @@
-/** @jsxImportSource @emotion/react */
+// 彈窗內有 MUI Select（值可能為數字），依遷移指南保留 MUI Modal；外框、標題、按鈕改為 src/ui
 import {
-  Card, CardHeader, CardContent, Modal, Button, FormControl,
-  InputLabel, Select, MenuItem, TextField, FormControlLabel,
-  Checkbox, Typography,
+  Modal,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useRef, Fragment } from 'react'
-import { red, blue } from '@mui/material/colors'
 import _ from 'lodash'
-import { Add as AddIcon, DeleteForever as DeleteForeverIcon, BackspaceOutlined as BackspaceOutlinedIcon } from 'ui/icons'
+import { Delete, Plus, Trash2 } from 'lucide-react'
 import useFetchMerchantDeductionItems from 'hooks/useFetchMerchantDeductionItems'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    outline: 'none',
-    boxShadow: theme.shadows[20],
-    width: 912,
-    maxHeight: '100%',
-    overflowY: 'auto',
-    maxWidth: '100%',
-  }),
-  birthday: css({
-    width: '100%',
-  }),
-  actions: css({
-    justifyContent: 'flex-end',
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  categorieDiv: css({
-    marginBottom: '5px',
-  }),
-  categorieBtn: css({
-    margin: '3px',
-  }),
-  clickedCategorieBtn: css({
-    margin: '3px',
-    color: 'white',
-  }),
-  categorieClear: css({
-    backgroundColor: red[500],
-    color: 'white',
-    '&:hover': {
-      backgroundColor: red[700],
-    },
-  }),
-  addBtn: css({
-    backgroundColor: blue[500],
-    color: 'white',
-    '&:hover': {
-      backgroundColor: blue[700],
-    },
-  }),
-  confirmBtn: css({
-    margin: '7px 0',
-    float: 'right',
-  }),
-  header: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-  closeAtTop: css({
-    margin: '16px 24px !important',
-  }),
-  deductionTypeFormGroup: css({
-    width: '6rem',
-  }),
-  formGroup: css({
-    width: '6rem',
-    marginLeft: theme.spacing(3),
-  }),
-  autocomplete: css({
-    marginLeft: theme.spacing(2),
-    width: '10rem',
-  }),
-  service: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginBottom: theme.spacing(3),
-  }),
-  gap: css({
-    marginLeft: theme.spacing(3),
-  }),
-  textField: css({
-    marginLeft: theme.spacing(2),
-    width: '5rem',
-  }),
-  icons: css({
-    marginLeft: theme.spacing(3),
-    cursor: 'pointer',
-  }),
-  saveAtBottom: css({
-    margin: '16px 24px !important',
-    float: 'right',
-  }),
-  subtitle: css({
-    marginBottom: '30px',
-  }),
-  upperArrowIcon: css({
-    cursor: 'pointer',
-  }),
-  orderNum: css({
-    marginBottom: '0',
-    marginRight: '15px !important',
-  }),
-  headerTitle: css({
-    '& span': {
-      color: 'red',
-    }
-  })
-}
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 
 const deductionWay2 = [
   { label: '依業績%數', value: '扣趴數' },
@@ -303,43 +200,32 @@ function AboutDeductionEditModal({
 
   return (
     <Modal open={openEditDeductionModal}>
-      <Card css={styles.root}>
-        <div css={styles.header}>
-          <CardHeader title="扣項項目設定" />
-          <Button
-            color="primary"
-            variant="contained"
-            css={styles.closeAtTop}
-            onClick={onClose}
-          >
-            關閉
-          </Button>
-        </div>
+      <Card className="ui-root absolute left-1/2 top-1/2 flex max-h-full w-[912px] max-w-full -translate-x-1/2 -translate-y-1/2 flex-col shadow-float outline-none">
+        <CardHeader
+          className="items-center pb-4"
+          action={
+            <Button variant="secondary" onClick={onClose}>
+              關閉
+            </Button>
+          }
+        >
+          <CardTitle>扣項項目設定</CardTitle>
+        </CardHeader>
 
-        <CardContent>
+        <CardContent className="flex flex-col gap-6 overflow-y-auto pt-0">
           {ServiceDeductionItems.map(data => (
             <Fragment key={`${data.type}`}>
-              <CardHeader
-                title={`項目扣項設定 - ${data.type}`}
-                css={
-                  data.type === '系統預設' ? styles.headerTitle : {}
-                }
-              />
-              <CardContent>
+              <div className="flex flex-col gap-4">
+                <h3 className="text-heading text-text">{`項目扣項設定 - ${data.type}`}</h3>
                 {data.itemSettings.map((content, index) => {
                   return (
-                    <div css={styles.service} key={index}>
-                      <Typography
-                        variant="h5"
-                        display="inline"
-                        gutterBottom
-                        css={styles.orderNum}
-                      >
+                    <div className="flex flex-wrap items-center gap-3" key={index}>
+                      <span className="w-6 text-center text-heading tabular-nums text-text-secondary">
                         {content.deductionOrder}
-                      </Typography>
+                      </span>
                       <FormControl
                         variant="outlined"
-                        css={styles.deductionTypeFormGroup}
+                        style={{ width: '6rem' }}
                         fullWidth
                       >
                         <InputLabel ref={inputLabel} id="select-item-label">
@@ -360,7 +246,7 @@ function AboutDeductionEditModal({
                         </Select>
                       </FormControl>
                       {content.name && (
-                        <FormControl variant="outlined" css={styles.formGroup} fullWidth>
+                        <FormControl variant="outlined" style={{ width: '6rem' }} fullWidth>
                           <InputLabel ref={inputLabel} id="select-item-label">
                             抽成方式
                           </InputLabel>
@@ -381,7 +267,7 @@ function AboutDeductionEditModal({
                       )}
                       {content.name && (
                         <FormControlLabel
-                          css={styles.gap}
+                          className="whitespace-nowrap"
                           control={<Checkbox color="primary" />}
                           label="分指定/不指定"
                           checked={content.isSpecial}
@@ -392,7 +278,7 @@ function AboutDeductionEditModal({
                       {content.isSpecial && content.name ? (
                         <>
                           <TextField
-                            css={styles.textField}
+                            style={{ width: '5rem' }}
                             type="number"
                             variant="outlined"
                             label={content.deductionWay === '扣固定金額' ? '指定金額' : '指定%'}
@@ -403,7 +289,7 @@ function AboutDeductionEditModal({
                             onWheel={() => document.activeElement.blur()}
                           />
                           <TextField
-                            css={styles.textField}
+                            style={{ width: '5rem' }}
                             type="number"
                             variant="outlined"
                             label={content.deductionWay === '扣固定金額' ? '不指定金額' : '不指定%'}
@@ -417,7 +303,7 @@ function AboutDeductionEditModal({
                       ) : (
                         content.name && (
                           <TextField
-                            css={styles.textField}
+                            style={{ width: '5rem' }}
                             type="number"
                             variant="outlined"
                             label={content.deductionWay === '扣固定金額' ? '固定金額' : '業績%數'}
@@ -428,13 +314,13 @@ function AboutDeductionEditModal({
                         )
                       )}
 
-                      <FormControl variant="outlined" css={styles.formGroup} fullWidth>
+                      <FormControl variant="outlined" style={{ width: '6rem' }} fullWidth>
                         <InputLabel ref={inputLabel} id="select-item-label">
                           扣項基準點
                         </InputLabel>
                         <Select
-                          label='扣項基準點'
                           value={index === 0 ? 0 : content.deductionReference}
+                          label='扣項基準點'
                           labelId="select-item-label"
                           id="select-item"
                           onChange={event => handleDeductionReference(data.type, event, index)}
@@ -446,38 +332,53 @@ function AboutDeductionEditModal({
                           ))}
                         </Select>
                       </FormControl>
-                      {content.name !== '' && (
-                        <BackspaceOutlinedIcon
-                          css={styles.icons}
-                          onClick={() => handleClear(data.type, index)}
-                          data-testid={`service-${index}-clear`}
-                        />
-                      )}
-                      {index !== 0 && content.type === 'onSales' && (
-                        <DeleteForeverIcon
-                          css={styles.icons}
-                          onClick={() => handleDeleteDeductionContent(data.type, index)}
-                        />
-                      )}
-                      <AddIcon
-                        css={styles.icons}
-                        onClick={() => handleAddDeductionContent(data.type, content.deductionOrder)}
-                      />
+                      <div className="flex items-center gap-1">
+                        {content.name !== '' && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-text-secondary"
+                            aria-label="清除此扣項"
+                            onClick={() => handleClear(data.type, index)}
+                            data-testid={`service-${index}-clear`}
+                          >
+                            <Delete strokeWidth={1.75} />
+                          </Button>
+                        )}
+                        {index !== 0 && content.type === 'onSales' && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-text-secondary hover:text-danger"
+                            aria-label="刪除此扣項"
+                            onClick={() => handleDeleteDeductionContent(data.type, index)}
+                          >
+                            <Trash2 strokeWidth={1.75} />
+                          </Button>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-text-secondary"
+                          aria-label="新增扣項"
+                          onClick={() => handleAddDeductionContent(data.type, content.deductionOrder)}
+                        >
+                          <Plus strokeWidth={1.75} />
+                        </Button>
+                      </div>
                     </div>
                   )
                 })}
-              </CardContent>
+              </div>
             </Fragment>
           ))}
         </CardContent>
-        <Button
-          variant="contained"
-          css={styles.saveAtBottom}
-          onClick={handleSubmitDeductionSettingWarning}
-          style={{ backgroundColor: 'red', color: 'white' }}
-        >
-          儲存
-        </Button>
+        <CardFooter>
+          {/* 批次儲存會覆蓋原先設定（送出前另有確認提示），以 danger 表示 */}
+          <Button variant="danger" onClick={handleSubmitDeductionSettingWarning}>
+            儲存
+          </Button>
+        </CardFooter>
       </Card>
     </Modal>
   )

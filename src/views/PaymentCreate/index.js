@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchCreatePayment from 'hooks/useFetchCreatePayment'
 import useFetchPayments from 'hooks/useFetchPayments'
@@ -10,23 +7,10 @@ import produce from 'immer'
 import React from 'react'
 import { useHistory } from 'react-router'
 import { cloneDeep } from 'lodash'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import AboutPayment from './AboutPayment'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  aboutPayment: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function ServiceCategoryCreate() {
   const { createPayment } = useFetchCreatePayment()
@@ -64,18 +48,17 @@ function ServiceCategoryCreate() {
   const vaild = !(payment.type && payment.name && payment.fee >= 0 && payment.amountType)
 
   return (
-    <Page css={styles.root} title="新增支付方式">
-      <Container maxWidth="lg">
-        <PageTitle title='新增支付方式' subTitle='New Payment' />
+    <Page className="ui-root" title="新增支付方式">
+      {/* 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-3xl */}
+      <div className="mx-auto flex max-w-3xl flex-col gap-6">
+        <PageHeader className="pb-0" title='新增支付方式' />
         <AboutPayment
-          className={styles.aboutPayment}
           payment={payment}
           onChange={handleOnchange}
         />
-        <div css={styles.actions}>
+        <div>
           <Button
-            color="primary"
-            variant="contained"
+            variant="primary"
             disabled={vaild}
             onClick={handleSubmit}
             data-testid="create-payment"
@@ -83,7 +66,7 @@ function ServiceCategoryCreate() {
             新增
           </Button>
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }

@@ -1,30 +1,14 @@
-/** @jsxImportSource @emotion/react */
-import { Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { PageHeader } from 'ui/page-header'
 
 import General from './General'
 
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-}
-
+// 不在 Page 加 ui-root：General 內的 Markdown 編輯器需避開 ui-root 的基礎樣式（見 General.js）
 const SystemUpdateRecordCreate = () => {
   return (
-    <Page css={styles.root} title="新增版本更新紀錄">
-      <Container maxWidth={false} css={styles.container}>
-        <PageTitle title='新增版本紀錄' subTitle='System Update Record Create' />
-        <General />
-      </Container>
+    <Page title="新增版本更新紀錄">
+      <PageHeader title='新增版本紀錄' />
+      <General />
     </Page>
   )
 }

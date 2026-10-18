@@ -1,49 +1,35 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Button, Grid } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import idx from 'idx'
 import useFetchThirdPartyCoupons from 'hooks/useFetchThirdPartTicket'
-import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Skeleton } from 'ui/skeleton'
 
 import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(6),
-  }),
-  results: css({
-    marginTop: theme.spacing(1),
-  }),
-}
 
 function ThirdPartyCoupons() {
   const thirdPartyCoupons = useFetchThirdPartyCoupons()
 
   return (
-    <Page css={styles.root} title="第三方卡券設定">
-      <Container maxWidth={false}>
-        <AdminPageHeader
-          title="第三方卡券設定"
-          sx={{ backgroundColor: 'transparent', mb: 0 }}
-          primaryAction={{
-            label: '新增第三方卡券',
-            to: '/thirdPartyCoupon/create'
-          }}
+    <Page className="ui-root" title="第三方卡券設定">
+      <AdminPageHeader
+        title="第三方卡券設定"
+        primaryAction={{
+          label: '新增第三方卡券',
+          to: '/thirdPartyCoupon/create'
+        }}
+      />
+      {!thirdPartyCoupons.loading ?
+        <Results
+          thirdPartyCouponList={idx(thirdPartyCoupons, _ => _.data.getThirdPartTicket)}
+          thirdPartyCouponsRefetch={thirdPartyCoupons.refetch}
         />
-        {!thirdPartyCoupons.loading ?
-          <Results
-            className={styles.results}
-            thirdPartyCouponList={idx(thirdPartyCoupons, _ => _.data.getThirdPartTicket)}
-            thirdPartyCouponsRefetch={thirdPartyCoupons.refetch}
-          />
-          : <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>}
-
-      </Container>
+        : (
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-11 w-full" />
+            <Skeleton className="h-11 w-full" />
+            <Skeleton className="h-11 w-full" />
+          </div>
+        )}
     </Page>
   )
 }

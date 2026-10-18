@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchCreateCoupon from 'hooks/useFetchCreateCoupon'
 import useFetchMerchantCommissionWay from 'hooks/useFetchMerchantCommissionWay'
@@ -12,25 +9,12 @@ import produce from 'immer'
 import React from 'react'
 import { useHistory } from 'react-router'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import AboutAssistantSetting from './AboutAssistantSetting'
 import AboutCoupon from './AboutCoupon'
 import AboutDeduction from './AboutDeduction'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  about: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function ServiceCategoryCreate() {
   const merchantId = localStorage.getItem('userMerchant')
@@ -158,30 +142,29 @@ function ServiceCategoryCreate() {
   }
 
   return (
-    <Page css={styles.root} title="新增卡券項目">
-      <Container maxWidth="md">
-        <PageTitle title='新增卡券項目' subTitle='New Coupon' />
-        <AboutCoupon className={styles.about} coupon={coupon} onChange={handleOnChange} />
+    <Page className="ui-root" title="新增卡券項目">
+      {/* 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-4xl（與舊版 Container md 相近） */}
+      <div className="mx-auto flex max-w-4xl flex-col gap-6">
+        <PageHeader className="pb-0" title='新增卡券項目' />
+        <AboutCoupon coupon={coupon} onChange={handleOnChange} />
 
         <AboutDeduction
-          className={styles.about}
           ServiceDeductionItems={coupon.ServiceDeductionItems}
           onChange={handleOnChange}
         />
 
         <AboutAssistantSetting
-          className={styles.about}
           merchantHelperItems={merchantHelperItems}
           support={coupon.helperDeductionSetting}
           onChange={handleOnChange}
         />
 
-        <div css={styles.actions}>
-          <Button color="primary" variant="contained" disabled={vaild || saveBtn} onClick={handleSubmit}>
+        <div>
+          <Button variant="primary" disabled={vaild || saveBtn} onClick={handleSubmit}>
             新增卡券
           </Button>
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }

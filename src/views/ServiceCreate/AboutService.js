@@ -1,8 +1,5 @@
-/** @jsxImportSource @emotion/react */
+// 欄位多為值可能為空字串的 MUI Select，為維持同一張卡片的標籤樣式一致，文字欄位也保留 MUI TextField（橋接主題已套新外觀）
 import {
-  Card,
-  CardContent,
-  CardHeader,
   FormControl,
   InputLabel,
   MenuItem,
@@ -16,15 +13,7 @@ import { useFetchTHirdPartys } from 'hooks/useFetchMerchant'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { useEffect, useRef, useState } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  formGroup: css({
-    marginBottom: theme.spacing(3) + '!important',
-  }),
-}
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 const lockStatus = [
   {
@@ -70,15 +59,16 @@ function AboutService({ className, onChange, service, handleCheckboxChange, ...r
   }, [getThirdPartys.loading])
 
   return (
-    <Card {...rest} css={css([styles.root, className])}>
-      <CardHeader title="一般資訊" />
-      <CardContent>
+    <Card {...rest}>
+      <CardHeader>
+        <CardTitle>一般資訊</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-6">
         <TextField
           value={service.no}
           label="代號"
           variant="outlined"
           fullWidth
-          css={styles.formGroup}
           onChange={event => onChange({ event, key: 'no' })}
         />
         <TextField
@@ -86,10 +76,9 @@ function AboutService({ className, onChange, service, handleCheckboxChange, ...r
           label="名稱"
           variant="outlined"
           fullWidth
-          css={styles.formGroup}
           onChange={event => onChange({ event, key: 'name' })}
         />
-        <FormControl variant="outlined" fullWidth css={styles.formGroup}>
+        <FormControl variant="outlined" fullWidth>
           <InputLabel ref={inputLabel}>服務類別</InputLabel>
           <Select
             label='服務類別'
@@ -124,10 +113,9 @@ function AboutService({ className, onChange, service, handleCheckboxChange, ...r
             })
           }
           value={service.price}
-          css={styles.formGroup}
           onWheel={() => document.activeElement.blur()}
         />
-        <FormControl variant="outlined" fullWidth css={styles.formGroup}>
+        <FormControl variant="outlined" fullWidth>
           <InputLabel >打帳單是否能更改預設價格</InputLabel>
           <Select
             label='打帳單是否能更改預設價格'
@@ -141,7 +129,7 @@ function AboutService({ className, onChange, service, handleCheckboxChange, ...r
             ))}
           </Select>
         </FormControl>
-        {/* <FormControl variant="outlined" fullWidth css={styles.formGroup}>
+        {/* <FormControl variant="outlined" fullWidth>
           <FormControlLabel
             // css={styles.isUsing}
             control={<Checkbox color="primary" />}
@@ -150,8 +138,8 @@ function AboutService({ className, onChange, service, handleCheckboxChange, ...r
             onChange={() => handleCheckboxChange({ value: !service.isNoCash, key: 'isNoCash' })}
           />
         </FormControl> */}
-        <FormControl variant="outlined" fullWidth css={styles.formGroup}>
-          <div style={{ display: 'flex' }}>
+        <FormControl variant="outlined" fullWidth>
+          <div className="flex items-center gap-3">
             <FormControlLabel
               // css={styles.isUsing}
               control={<Checkbox color="primary" />}
@@ -186,7 +174,7 @@ function AboutService({ className, onChange, service, handleCheckboxChange, ...r
             )}
           </div>
         </FormControl>
-        <FormControl variant="outlined" fullWidth css={styles.formGroup}>
+        <FormControl variant="outlined" fullWidth>
           <InputLabel >綁定第三方卡券</InputLabel>
           <Select
             label='綁定第三方卡券'
@@ -201,7 +189,7 @@ function AboutService({ className, onChange, service, handleCheckboxChange, ...r
             ))}
           </Select>
         </FormControl>
-        <FormControl variant="outlined" fullWidth css={styles.formGroup}>
+        <FormControl variant="outlined" fullWidth>
           <InputLabel >是否鎖定第三方卡券</InputLabel>
           <Select
             label='是否鎖定第三方卡券'
