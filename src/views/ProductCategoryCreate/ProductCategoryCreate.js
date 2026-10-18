@@ -1,30 +1,14 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchCreateProductCategory from 'hooks/useFetchCreateProductCategory'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import { useHistory } from 'react-router'
 import { useForm } from 'react-hook-form'
 import { Provider } from 'hooks/useStore'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import AboutProductCategory from './AboutProductCategory'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  aboutPayment: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function ServiceCategoryCreate() {
   const history = useHistory()
@@ -56,20 +40,20 @@ function ServiceCategoryCreate() {
     errors,
   }
   return (
-    <Page css={styles.root} title="新增商品分類">
-      <Container maxWidth="md">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <PageTitle title='新增商品分類' subTitle='Create Commodity Category' />
+    <Page className="ui-root" title="新增商品分類">
+      <div className="mx-auto max-w-3xl">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+          <PageHeader title="新增商品分類" className="pb-0" />
           <Provider value={value}>
-            <AboutProductCategory className={styles.aboutPayment} />
+            <AboutProductCategory />
           </Provider>
-          <div css={styles.actions}>
-            <Button color="primary" variant="contained" type="submit" data-testid="submit-create">
+          <div className="flex justify-end">
+            <Button variant="primary" type="submit" data-testid="submit-create">
               新增
             </Button>
           </div>
         </form>
-      </Container>
+      </div>
     </Page>
   )
 }
