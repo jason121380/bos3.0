@@ -1,6 +1,6 @@
 import React from 'react'
 import CustomMockedProvider from 'components/CustomMockedProvider'
-import { render, fireEvent, cleanup } from '@testing-library/react'
+import { render, fireEvent, cleanup, wait } from '@testing-library/react'
 import { REGISTER } from 'hooks/useFetchRegister'
 import { Router } from 'react-router-dom'
 
@@ -98,12 +98,7 @@ describe('<RegisterForm />', () => {
 
     fireEvent.click(submit)
 
-    await new Promise(resolve =>
-      setTimeout(() => {
-        resolve()
-      }, 2)
-    )
-
-    expect(historyMock.push).toBeCalled()
+    // 原本只等固定 2 毫秒：送出（驗證 → mutation → 導頁）比 2 毫秒慢時會誤判失敗，改為等到導頁發生（最久 4.5 秒）
+    await wait(() => expect(historyMock.push).toBeCalled())
   })
 })
