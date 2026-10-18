@@ -218,7 +218,7 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
           }
           title={
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold', color: 'rgb(var(--text))' }}>
                 所有會員卡
               </Typography>
               <Typography color="textSecondary" variant="body2">

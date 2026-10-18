@@ -84,7 +84,7 @@ function MemberCardRecord() {
         />
 
         <Collapse in={showFilter}>
-          <div style={{ marginBottom: '8px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
+          <div style={{ marginBottom: '8px', backgroundColor: 'rgb(var(--background))', borderRadius: '8px', padding: '16px', border: '1px solid rgb(var(--border))' }}>
             <SearchBar
               onSearch={event =>
                 handlePageChange({
