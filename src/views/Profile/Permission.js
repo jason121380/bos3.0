@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
 import { openSnackbar } from 'elements/snackbars'
 import { useFetchMerchantPermission } from 'hooks/useFetchMerchant'
 import { useFetchMePermissions } from 'hooks/useFetchProfile'
@@ -11,29 +11,25 @@ function CheckBoxCus({ action, defaultChecked }) {
     input: {},
   })
   return (
-    <FormControlLabel
-      control={
-        <Checkbox
-          color="primary"
-          defaultChecked={defaultChecked}
-          onChange={async event => {
-            const resp = await updateUserPermission({
-              input: {
-                userId: JSON.parse(localStorage.getItem('user')).id,
-                permissionActionId: action.id,
-                status: event.target.checked,
-              },
-            })
-            if (resp && resp.data) {
-              if (resp.data.updateUserPermission) {
-                openSnackbar({ message: '新增成功', variant: 'success' })
-              } else {
-                openSnackbar({ message: '刪除成功', variant: 'success' })
-              }
-            }
-          }}
-        />
-      }
+    <CheckboxField
+      className="py-1"
+      defaultChecked={defaultChecked}
+      onChange={async event => {
+        const resp = await updateUserPermission({
+          input: {
+            userId: JSON.parse(localStorage.getItem('user')).id,
+            permissionActionId: action.id,
+            status: event.target.checked,
+          },
+        })
+        if (resp && resp.data) {
+          if (resp.data.updateUserPermission) {
+            openSnackbar({ message: '新增成功', variant: 'success' })
+          } else {
+            openSnackbar({ message: '刪除成功', variant: 'success' })
+          }
+        }
+      }}
       label={action.name}
     />
   )

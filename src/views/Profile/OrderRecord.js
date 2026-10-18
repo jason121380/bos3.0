@@ -1,4 +1,3 @@
-import { TablePagination } from '@mui/material'
 import { format } from 'date-fns'
 import idx from 'idx'
 import PropTypes from 'prop-types'
@@ -7,7 +6,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
 const weekDisplay = week => {
   switch (week) {
@@ -78,7 +77,7 @@ function OrderRecord({
     setRaffleDisplay(display)
   }, [orders])
 
-  // 分頁沿用 MUI TablePagination：pagenationLabel 透過 ref 改寫分頁文字
+  // 分頁改用 ui/table 的 TablePagination：ref 原樣保留，pagenationLabel 找不到 MUI 元素時不動作
   return (
     <div {...rest}>
       <p className="pb-2 text-label tabular-nums text-text-secondary">
@@ -184,7 +183,6 @@ function OrderRecord({
           <TablePagination
             ref={pageRef}
             labelRowsPerPage='每頁顯示數量'
-            component="div"
             count={totalCount}
             onPageChange={handleOnChangePage}
             onRowsPerPageChange={handleOnChangeRowsPerPage}

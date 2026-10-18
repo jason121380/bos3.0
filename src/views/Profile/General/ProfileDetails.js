@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 裁切頭像的彈窗內含 react-easy-crop 與 MUI Slider，沿用 MUI Dialog
 import {
-  Avatar,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -16,6 +15,7 @@ import Resizer from "react-image-file-resizer";
 import { openSnackbar } from 'elements/snackbars'
 import useFetchSetUserAvatar from 'hooks/useFetchSetUserAvatar'
 import { EditRounded as EditRoundedIcon } from 'ui/icons'
+import { Avatar } from 'ui/avatar'
 import _ from 'lodash'
 import { css } from '@emotion/react'
 import { theme } from '../../../theme'
@@ -195,7 +195,7 @@ function ProfileDetails({
         <div className="flex flex-col items-center p-5 text-center">
           <div style={{ position: 'relative' }}>
             <Avatar
-              css={styles.avatar}
+              className="h-[100px] w-[100px]"
               src={avatarSrc}
             />
             <input

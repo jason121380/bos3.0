@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  TextField, FormControlLabel, Checkbox
-} from '@mui/material'
+import { TextField } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
@@ -71,10 +70,9 @@ function PasswordSetting({ className, setPasswordSetting, passwordSetting, input
               value={passwordSetting[key].password}
               onChange={e => handlePasswordOnchange(key, e.target.value)}
             />
-            <FormControlLabel
+            <CheckboxField
               disabled={!inputEnable}
               css={styles.isUsing}
-              control={<Checkbox color="primary" />}
               label="啟用"
               checked={passwordSetting[key].isUsing}
               onChange={(e, v) => handleIsUsingOnchange(key, v)}

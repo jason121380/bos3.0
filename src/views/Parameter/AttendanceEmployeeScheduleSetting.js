@@ -1,7 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  FormControlLabel, Checkbox
-} from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
@@ -18,10 +16,9 @@ function AttendanceEmployeeScheduleSetting({
       </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
             css={styles.isUsing}
-            control={<Checkbox color="primary" />}
             label="可編輯過往班別"
             checked={UESUsing}
             onChange={(e, v) => setUESUsing(v)}

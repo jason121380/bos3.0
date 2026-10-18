@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
+// 手機號碼欄位（helperText 驗證）與帳號欄位（InputLabelProps）保留 MUI TextField
 import {
-  TextField, Select, MenuItem, InputLabel, FormControl, Grid
+  TextField, Grid
 } from '@mui/material'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo } from 'react'
@@ -73,19 +75,18 @@ function BookingNotificationSetting({
           <div className="flex flex-wrap gap-6">
             {settingOptions.map(option => (
               <div key={key + option.label}>
-                <FormControl variant="outlined" css={styles.selectWidth}>
-                  <InputLabel>{option.label}</InputLabel>
-                  <Select
-                    name={option.key}
-                    label={option.label}
-                    value={merchantBookingNotification[key][option.key]}
-                    disabled={!inputEnable}
-                    onChange={event => handleChangeNotification(key, event)}
-                  >
-                    <MenuItem value={true}>開啟通知</MenuItem>
-                    <MenuItem value={false}>關閉通知</MenuItem>
-                  </Select>
-                </FormControl>
+                <NativeSelect
+                  fullWidth={false}
+                  css={styles.selectWidth}
+                  name={option.key}
+                  label={option.label}
+                  value={merchantBookingNotification[key][option.key]}
+                  disabled={!inputEnable}
+                  onChange={event => handleChangeNotification(key, event)}
+                >
+                  <NativeSelectOption value={true}>開啟通知</NativeSelectOption>
+                  <NativeSelectOption value={false}>關閉通知</NativeSelectOption>
+                </NativeSelect>
               </div>
             ))}
           </div>

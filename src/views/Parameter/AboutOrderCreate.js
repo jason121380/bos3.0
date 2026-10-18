@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem
-} from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo, Fragment } from 'react'
 import _ from 'lodash'
@@ -124,10 +123,9 @@ function AboutOrderCreate({
           return (
             <Fragment key={label}>
               <div css={styles.serviceInputGroup}>
-                <FormControlLabel
+                <CheckboxField
                   disabled={!inputEnable || isDisabled}
                   css={styles.isUsing}
-                  control={<Checkbox color="primary" />}
                   label={label}
                   checked={orderCreateSetting[key]}
                   onChange={(e, v) => {
@@ -144,24 +142,24 @@ function AboutOrderCreate({
         {optionArr.map(({label, key, options}) => (
           <div key={label} css={styles.serviceInputGroup}>
             <div className="flex flex-wrap items-center gap-2 p-2">
-              <FormControl disabled={!inputEnable} variant="outlined" css={styles.orderCreateField}>
-                <InputLabel>{label}</InputLabel>
-                <Select
-                  label={label}
-                  value={orderCreateSetting[key]}
-                  onChange={e => {
-                    setOrderCreateSetting(
-                      produce(draft => { draft[key] = e.target.value })
-                    )
-                  }}
-                >
-                  {options.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <NativeSelect
+                disabled={!inputEnable}
+                fullWidth={false}
+                css={styles.orderCreateField}
+                label={label}
+                value={orderCreateSetting[key]}
+                onChange={e => {
+                  setOrderCreateSetting(
+                    produce(draft => { draft[key] = e.target.value })
+                  )
+                }}
+              >
+                {options.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
             </div>
           </div>
         ))}

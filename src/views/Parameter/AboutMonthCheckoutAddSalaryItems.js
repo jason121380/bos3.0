@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem
-} from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import { cloneDeep } from 'lodash'
@@ -34,10 +33,9 @@ function AboutMonthCheckoutAddSalaryItems({
       <CardContent>
         {settingArr.map(d => (
           <div css={styles.serviceInputGroup} key={d.label}>
-            <FormControlLabel
+            <CheckboxField
               disabled={!inputEnable}
               css={styles.isUsing}
-              control={<Checkbox color="primary" />}
               label={d.label}
               checked={checkoutAndSalaryItem[d.key]}
               onChange={() => {
@@ -49,18 +47,18 @@ function AboutMonthCheckoutAddSalaryItems({
           </div>
         ))}
         <div css={styles.serviceInputGroup}>
-          <FormControl disabled={!inputEnable} variant="outlined" css={styles.field}>
-            <InputLabel>薪資條列印間距</InputLabel>
-            <Select
-              label='薪資條列印間距'
-              value={checkoutAndSalaryItem.employeePayslipPrintStyle}
-              onChange={e => setCheckoutAndSalaryItem({...checkoutAndSalaryItem, employeePayslipPrintStyle: e.target.value})}
-            >
-              <MenuItem value='SMALL'>小</MenuItem>
-              <MenuItem value='MEDIUM'>中</MenuItem>
-              <MenuItem value='LARGE'>大</MenuItem>
-            </Select>
-          </FormControl>
+          <NativeSelect
+            disabled={!inputEnable}
+            fullWidth={false}
+            css={styles.field}
+            label='薪資條列印間距'
+            value={checkoutAndSalaryItem.employeePayslipPrintStyle}
+            onChange={e => setCheckoutAndSalaryItem({...checkoutAndSalaryItem, employeePayslipPrintStyle: e.target.value})}
+          >
+            <NativeSelectOption value='SMALL'>小</NativeSelectOption>
+            <NativeSelectOption value='MEDIUM'>中</NativeSelectOption>
+            <NativeSelectOption value='LARGE'>大</NativeSelectOption>
+          </NativeSelect>
         </div>
       </CardContent>
     </Card>

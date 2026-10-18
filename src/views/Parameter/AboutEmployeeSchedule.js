@@ -1,7 +1,10 @@
 /** @jsxImportSource @emotion/react */
+// 排版 Grid（多欄 RWD）、時間與數字欄位保留 MUI
 import {
-  TextField, Grid, FormControlLabel, Checkbox, Button
+  TextField, Grid
 } from '@mui/material'
+import { Button } from 'ui/button'
+import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment, useState, useEffect } from 'react'
@@ -192,8 +195,11 @@ const AboutEmployeeSchedule = ({
                       <Grid>
                         選取顏色
                         <Button
+                          variant="secondary"
+                          aria-label="選取顏色"
                           disabled={!inputEnable}
                           css={styles.colorTag}
+                          className="w-16 rounded-md"
                           style={{ background: `${data.color}` }}
                           onClick={() => {
                             setShowColorPicker(true)
@@ -206,22 +212,14 @@ const AboutEmployeeSchedule = ({
                     <Grid sm={5} xs={12} item >
                       <Grid container direction="row" alignItems="center" css={styles.gap} >
                         <p css={styles.title}>可打卡時間</p>
-                        <FormControlLabel
+                        <CheckboxField
                           disabled={!inputEnable}
                           css={styles.isUsing}
-                          control={
-                            <Checkbox
-                              checked={data.isClockInUsing}
-                              disabled={!inputEnable}
-                              onChange={event => {
-                                handleChangeEnable('startTime', index, data.isClockInUsing)
-                              }}
-                              size="small"
-                              color="primary"
-                            />
-                          }
+                          checked={data.isClockInUsing}
+                          onChange={event => {
+                            handleChangeEnable('startTime', index, data.isClockInUsing)
+                          }}
                           label="啟用"
-                          labelPlacement="end"
                         />
                         <TextField
                           value={
@@ -242,22 +240,14 @@ const AboutEmployeeSchedule = ({
                       </Grid>
                       <Grid container direction="row" alignItems="center" css={styles.gap} >
                         <p css={styles.title}>下班時間 </p>
-                        <FormControlLabel
+                        <CheckboxField
                           disabled={!inputEnable}
                           css={styles.isUsing}
-                          control={
-                            <Checkbox
-                              disabled={!inputEnable}
-                              checked={data.isClockOutUsing}
-                              size="small"
-                              color="primary"
-                              onChange={event => {
-                                handleChangeEnable('endTime', index, data.isClockOutUsing)
-                              }}
-                            />
-                          }
+                          checked={data.isClockOutUsing}
+                          onChange={event => {
+                            handleChangeEnable('endTime', index, data.isClockOutUsing)
+                          }}
                           label="啟用"
-                          labelPlacement="end"
                         />
                         <TextField
                           type="time"
@@ -277,26 +267,18 @@ const AboutEmployeeSchedule = ({
                       </Grid>
                       <Grid container direction="row" alignItems="center" css={styles.gap}>
                         <p css={styles.title}>休息開始</p>
-                        <FormControlLabel
+                        <CheckboxField
                           disabled={!inputEnable}
                           css={styles.isUsing}
-                          control={
-                            <Checkbox
-                              checked={data.breakTimeSetting[0].isStartTimeUsing}
-                              disabled={!inputEnable}
-                              size="small"
-                              color="primary"
-                              onChange={event => {
-                                handleChangeEnable(
-                                  'breakStart',
-                                  index,
-                                  data.breakTimeSetting[0].isStartTimeUsing
-                                )
-                              }}
-                            />
-                          }
+                          checked={data.breakTimeSetting[0].isStartTimeUsing}
+                          onChange={event => {
+                            handleChangeEnable(
+                              'breakStart',
+                              index,
+                              data.breakTimeSetting[0].isStartTimeUsing
+                            )
+                          }}
                           label="啟用"
-                          labelPlacement="end"
                         />
                         <TextField
                           disabled={!inputEnable || !data.breakTimeSetting[0].isStartTimeUsing}
@@ -316,26 +298,18 @@ const AboutEmployeeSchedule = ({
                       </Grid>
                       <Grid container direction="row" alignItems="center" css={styles.gap}>
                         <p css={styles.title}>休息結束</p>
-                        <FormControlLabel
+                        <CheckboxField
                           disabled={!inputEnable}
                           css={styles.isUsing}
-                          control={
-                            <Checkbox
-                              checked={data.breakTimeSetting[0].isEndTimeHourUsing}
-                              disabled={!inputEnable}
-                              size="small"
-                              color="primary"
-                              onChange={event => {
-                                handleChangeEnable(
-                                  'breakEnd',
-                                  index,
-                                  data.breakTimeSetting[0].isEndTimeHourUsing
-                                )
-                              }}
-                            />
-                          }
+                          checked={data.breakTimeSetting[0].isEndTimeHourUsing}
+                          onChange={event => {
+                            handleChangeEnable(
+                              'breakEnd',
+                              index,
+                              data.breakTimeSetting[0].isEndTimeHourUsing
+                            )
+                          }}
                           label="啟用"
-                          labelPlacement="end"
                         />
                         <TextField
                           disabled={!inputEnable || !data.breakTimeSetting[0].isEndTimeHourUsing}
@@ -355,50 +329,34 @@ const AboutEmployeeSchedule = ({
                       </Grid>
                       <Grid container direction="row" alignItems="center" css={styles.gap}>
                         <p style={{ maxWidth: '150px' }}>計算加班分鐘數</p>
-                        <FormControlLabel
+                        <CheckboxField
                           disabled={!inputEnable}
                           css={styles.isUsing}
-                          control={
-                            <Checkbox
-                              checked={data.isWorkOverMinutesCalculated}
-                              disabled={!inputEnable}
-                              size="small"
-                              color="primary"
-                              onChange={event => {
-                                handleChangeEnable(
-                                  'overtime',
-                                  index,
-                                  data.isWorkOverMinutesCalculated
-                                )
-                              }}
-                            />
-                          }
+                          checked={data.isWorkOverMinutesCalculated}
+                          onChange={event => {
+                            handleChangeEnable(
+                              'overtime',
+                              index,
+                              data.isWorkOverMinutesCalculated
+                            )
+                          }}
                           label="啟用"
-                          labelPlacement="end"
                         />
                       </Grid>
                       <Grid container direction="row" alignItems="center" css={styles.gap}>
                         <p style={{ maxWidth: '150px' }}>不計加班時長</p>
-                        <FormControlLabel
+                        <CheckboxField
                           disabled={!inputEnable}
                           css={styles.isUsing}
-                          control={
-                            <Checkbox
-                              checked={data.isClockOutBufferMinutesUsing}
-                              disabled={!inputEnable}
-                              size="small"
-                              color="primary"
-                              onChange={event => {
-                                handleChangeEnable(
-                                  'bufferTime',
-                                  index,
-                                  data.isClockOutBufferMinutesUsing
-                                )
-                              }}
-                            />
-                          }
+                          checked={data.isClockOutBufferMinutesUsing}
+                          onChange={event => {
+                            handleChangeEnable(
+                              'bufferTime',
+                              index,
+                              data.isClockOutBufferMinutesUsing
+                            )
+                          }}
                           label="啟用"
-                          labelPlacement="end"
                         />
                       </Grid>
 

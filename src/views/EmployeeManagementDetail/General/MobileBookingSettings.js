@@ -1,15 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-// 數字輸入（onWheel 失焦）、下拉、勾選保留 MUI
-import {
-    TextField,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    Checkbox,
-    FormControlLabel,
-} from '@mui/material'
+// 數字輸入（onWheel 失焦）保留 MUI TextField
+import { TextField } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import idx from 'idx'
 
 function MobileBookingSettings({
@@ -43,27 +37,23 @@ function MobileBookingSettings({
                     />
                 </div>
                 <div>
-                    <FormControl variant="outlined" fullWidth>
-                        <InputLabel>預約審核模式</InputLabel>
-                        <Select
-                            label='預約審核模式'
-                            value={profile.isBookingAutoAccept}
-                            onChange={event =>
-                                onChange({
-                                    value: idx(event, _ => _.target.value),
-                                    key: 'isBookingAutoAccept',
-                                })
-                            }
-                        >
-                            <MenuItem value="TRUE">自動開啟</MenuItem>
-                            <MenuItem value="FALSE">手動關閉</MenuItem>
-                            <MenuItem value="BYSTORE">依店家系統設定</MenuItem>
-                        </Select>
-                    </FormControl>
+                    <NativeSelect
+                        label='預約審核模式'
+                        value={profile.isBookingAutoAccept}
+                        onChange={event =>
+                            onChange({
+                                value: idx(event, _ => _.target.value),
+                                key: 'isBookingAutoAccept',
+                            })
+                        }
+                    >
+                        <NativeSelectOption value="TRUE">自動開啟</NativeSelectOption>
+                        <NativeSelectOption value="FALSE">手動關閉</NativeSelectOption>
+                        <NativeSelectOption value="BYSTORE">依店家系統設定</NativeSelectOption>
+                    </NativeSelect>
                 </div>
                 <div>
-                    <FormControlLabel
-                        control={<Checkbox color="primary" />}
+                    <CheckboxField
                         className="m-0 w-full rounded-md bg-surface px-3 py-2"
                         label="待審核預約是否占用預約名額"
                         checked={profile.isRTCO}
