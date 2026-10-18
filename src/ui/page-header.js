@@ -5,7 +5,7 @@ import { cn } from './utils'
 // 每頁只有一個 title；舊版 initialize.scss 對 h1 有 font-weight !important，故以 !font-bold 覆蓋
 function PageHeader({ title, description, actions, className, children }) {
   return (
-    <div className={cn('ui-root noprint flex flex-wrap items-start justify-between gap-4 pb-6', className)}>
+    <div className={cn('ui-root noprint flex flex-wrap justify-between gap-4 pb-6', description ? 'items-start' : 'items-center', className)}>
       <div className="flex min-w-0 flex-col gap-1">
         <h1 className="m-0 text-title !font-bold text-text">{title}</h1>
         {description && <p className="text-body text-text-secondary">{description}</p>}

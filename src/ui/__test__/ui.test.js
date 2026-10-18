@@ -51,3 +51,15 @@ describe('cn', () => {
     expect(cn('text-body text-text', 'text-label')).toBe('text-text text-label')
   })
 })
+
+describe('formatNumber', () => {
+  // 改版只能改顯示：加千分位，但小數位必須與舊畫面完全相同（不可四捨五入），非數字原樣顯示
+  it('只加千分位，不改變小數與非數字', () => {
+    const { formatNumber } = require('../format')
+    expect(formatNumber(1234567)).toBe('1,234,567')
+    expect(formatNumber(-1234.567)).toBe('-1,234.567')
+    expect(formatNumber(0.30000000000000004)).toBe('0.30000000000000004')
+    expect(formatNumber('1880')).toBe('1,880')
+    expect([undefined, null, ''].map(formatNumber)).toEqual([undefined, null, ''])
+  })
+})

@@ -1,11 +1,5 @@
-/** @jsxImportSource @emotion/react */
-import { Container, Grid, Link, Button, Typography, Card, Collapse, IconButton } from '@mui/material'
-import FilterListIcon from '@mui/icons-material/FilterList'
 import MerchantSearchBar from 'components/MerchantSearchBar'
-import ProgressBar from 'components/ProgressBar'
-import PageTitle from 'components/PageTitle'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { endOfDay, startOfDay } from 'date-fns'
 import useFetchGetOrderList from 'hooks/useFetchGetOrderList'
@@ -29,22 +23,15 @@ import useFetchGetOrderListDateAuth from 'hooks/useFetchGetOrderListDateAuth'
 import { Link as RouterLink } from 'react-router-dom'
 import useQueryString from 'hooks/useQueryString'
 import QRCode from 'qrcode'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { ListFilter, Plus } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
+import { PageHeader, Toolbar, ToolbarSpacer } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import ResultsV2 from './ResultsV2'
 import Overview from './Overview'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(1.5),
-  }),
-}
 
 function OrderManagementList() {
   const [getQueryString] = useQueryString()
@@ -279,113 +266,121 @@ function OrderManagementList() {
     getMessageDisplayOnInvoice.loading
   ])
   return (
-    <Page css={styles.root} title="帳單列表">
-      <Container maxWidth={false} css={styles.container}>
-        <AdminPageHeader
-          title='帳單列表'
-          showFilter={showFilter}
-          onFilterClick={() => setShowFilter(!showFilter)}
-          primaryAction={{
-            label: '新開單',
-            to: '/order/create'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            {(!getIsOpenDateRangeInOrderMangement.loading && !getOrderListDateAuth.loading) && (
-              <DateSelector
-                attributes={attrs}
-                date={date}
-                dateChange={value => setDate(value)}
-                onlyStart={onlyStart}
-                margin={false}
-              />
-            )}
-          </div>
-        </AdminPageHeader>
-
-        <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
-            <MerchantSearchBar
-              values={pageSetting}
-              onFilter={value => setPageSetting(value)}
-              getThirdPartyId={true}
-              outside
-              stopGetQueryString={true}
-              visible={['employee', 'customer', 'payment', 'thirdPartyCoupon']}
-              inMerchantDailyReport={false}
-              lastInLeaderBoard={true}
-            />
-            <div style={{ marginTop: '12px' }}>
-              <MerchantSearchBar
-                values={pageSetting}
-                onFilter={value => setPageSetting(value)}
-                getThirdPartyId={true}
-                outside
-                stopGetQueryString={true}
-                visible={['sources']}
-                inMerchantDailyReport={false}
-                lastInLeaderBoard={true}
-              />
-            </div>
-          </div>
-        </Collapse>
-        {!getOrderList.loading ? (
-          getOrderList.data ? (
-            <Fragment>
-              <Overview membershipDisplay={membershipDisplay} orderList={idx(getOrderList, _ => _.data.getOrderList.intervalSummary) || {}} bonusDisplay={bonusDisplay} />
-              <ResultsV2
-                className={styles.results}
-                orders={orderList}
-                pageSetting={pageSetting}
-                setPageSetting={setPageSetting}
-                refetch2={getOrderList.refetch}
-                totalCount={idx(getOrderList, _ => _.data.getOrderList.orderList).length || 0}
-                onPageChange={handlePageChange}
-                onRowsPerPageChange={handleRowsPerPageChange}
-                isCustomerDataMarked={isCustomerDataMarked}
-                membershipDisplay={membershipDisplay}
-                bonusDisplay={bonusDisplay}
-                bonusActive={!customerBonusActive.loading ? idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) : false}
-                orderStaticDetailLoading={orderStaticDetail.loading}
-                qrcodeUrl={qrcodeUrl}
-                imgUrl={imgUrl}
-                detailInfo={detailInfo}
-                closureDelayed={closureDelayed}
-                disabled={
-                  getLogoDisplayOnInvoice.loading ||
-                  getQrcodeDisplayOnInvoice.loading ||
-                  getMessageDisplayOnInvoice.loading
-                }
-                disableDeleteOrders={
-                  !passwordData.loading ? idx(
-                    passwordData,
-                    _ => _.data.merchantPassword.deleteOrder.isUsing
-                  ) : false
-                }
-                orderDetailPrintLayout={
-                  !merchantOrderDetailPrintLayoutData.loading ? idx(merchantOrderDetailPrintLayoutData,
-                    _ => _.data.getMerchantPrintFormatSettings
-                  ) : 'A4'
-                }
-                nameDisplayOnInvoice={
-                  !getDesignerNameDisplayOnInvoice.loading ? idx(
-                    getDesignerNameDisplayOnInvoice, _ => _.data.getDesignerNameDisplayOnInvoice
-                  ) : 'NAME'
-                }
-                serialNumberUsing={serialNumberUsing}
-              />
-            </Fragment>
-          ) : <Typography style={{ marginTop: 50 }} align='center' component="h4" variant="h4">時間區間請選擇31日以內</Typography>
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <ProgressBar
-              setProgress={setProgress}
-              progress={progress}
-              dataLoading={getOrderList.loading}
-            />
-          </div>
+    <Page className="ui-root" title="帳單列表">
+      <PageHeader
+        title="帳單列表"
+        actions={
+          <Button asChild variant="primary">
+            <RouterLink to="/order/create">
+              <Plus strokeWidth={1.75} />
+              新開單
+            </RouterLink>
+          </Button>
+        }
+      />
+      <Toolbar>
+        {(!getIsOpenDateRangeInOrderMangement.loading && !getOrderListDateAuth.loading) && (
+          <DateSelector
+            attributes={attrs}
+            date={date}
+            dateChange={value => setDate(value)}
+            onlyStart={onlyStart}
+            margin={false}
+          />
         )}
-      </Container>
+        <ToolbarSpacer />
+        <Button
+          variant="secondary"
+          aria-pressed={showFilter}
+          className={showFilter ? 'border-text bg-surface-hover' : undefined}
+          onClick={() => setShowFilter(!showFilter)}
+        >
+          <ListFilter strokeWidth={1.75} />
+          篩選
+        </Button>
+      </Toolbar>
+
+      {showFilter && (
+        <Card className="mb-6 flex flex-col gap-3 p-4">
+          <MerchantSearchBar
+            values={pageSetting}
+            onFilter={value => setPageSetting(value)}
+            getThirdPartyId={true}
+            outside
+            stopGetQueryString={true}
+            visible={['employee', 'customer', 'payment', 'thirdPartyCoupon']}
+            inMerchantDailyReport={false}
+            lastInLeaderBoard={true}
+          />
+          <MerchantSearchBar
+            values={pageSetting}
+            onFilter={value => setPageSetting(value)}
+            getThirdPartyId={true}
+            outside
+            stopGetQueryString={true}
+            visible={['sources']}
+            inMerchantDailyReport={false}
+            lastInLeaderBoard={true}
+          />
+        </Card>
+      )}
+      {!getOrderList.loading ? (
+        getOrderList.data ? (
+          <Fragment>
+            <Overview membershipDisplay={membershipDisplay} orderList={idx(getOrderList, _ => _.data.getOrderList.intervalSummary) || {}} bonusDisplay={bonusDisplay} />
+            <ResultsV2
+              orders={orderList}
+              pageSetting={pageSetting}
+              setPageSetting={setPageSetting}
+              refetch2={getOrderList.refetch}
+              totalCount={idx(getOrderList, _ => _.data.getOrderList.orderList).length || 0}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
+              isCustomerDataMarked={isCustomerDataMarked}
+              membershipDisplay={membershipDisplay}
+              bonusDisplay={bonusDisplay}
+              bonusActive={!customerBonusActive.loading ? idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) : false}
+              orderStaticDetailLoading={orderStaticDetail.loading}
+              qrcodeUrl={qrcodeUrl}
+              imgUrl={imgUrl}
+              detailInfo={detailInfo}
+              closureDelayed={closureDelayed}
+              disabled={
+                getLogoDisplayOnInvoice.loading ||
+                getQrcodeDisplayOnInvoice.loading ||
+                getMessageDisplayOnInvoice.loading
+              }
+              disableDeleteOrders={
+                !passwordData.loading ? idx(
+                  passwordData,
+                  _ => _.data.merchantPassword.deleteOrder.isUsing
+                ) : false
+              }
+              orderDetailPrintLayout={
+                !merchantOrderDetailPrintLayoutData.loading ? idx(merchantOrderDetailPrintLayoutData,
+                  _ => _.data.getMerchantPrintFormatSettings
+                ) : 'A4'
+              }
+              nameDisplayOnInvoice={
+                !getDesignerNameDisplayOnInvoice.loading ? idx(
+                  getDesignerNameDisplayOnInvoice, _ => _.data.getDesignerNameDisplayOnInvoice
+                ) : 'NAME'
+              }
+              serialNumberUsing={serialNumberUsing}
+            />
+          </Fragment>
+        ) : (
+          <Card>
+            <EmptyState title="時間區間請選擇31日以內" description="請調整上方日期範圍後重新查詢。" />
+          </Card>
+        )
+      ) : (
+        // 載入中：與舊版 ProgressBar 相同時機顯示（getOrderList.loading）
+        <div className="flex flex-col gap-6" aria-busy="true" aria-label="載入中">
+          <Skeleton className="h-[148px] w-full rounded-lg" />
+          <Skeleton className="h-[320px] w-full rounded-lg" />
+        </div>
+      )}
     </Page>
   )
 }
