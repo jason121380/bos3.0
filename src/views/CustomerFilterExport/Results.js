@@ -205,7 +205,7 @@ function Results({
                   component={RouterLink}
                   size="small"
                   to={`/management/customers/${data.id}/general?backto=customer-filter`}
-                  sx={{ color: '#757575' }}
+                  sx={{ color: 'rgb(var(--text-secondary))' }}
                 >
                   <EditIcon fontSize="small" />
                 </IconButton>

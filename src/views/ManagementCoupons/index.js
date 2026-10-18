@@ -37,10 +37,10 @@ const styles = {
     gap: 10,
     flexDirection: 'column',
     marginBottom: 8,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgb(var(--background))',
     borderRadius: '12px',
     padding: '16px',
-    border: '1px solid #f0f0f0'
+    border: '1px solid rgb(var(--border))'
   })
 }
 

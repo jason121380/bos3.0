@@ -65,9 +65,9 @@ const styles = {
     }
   }),
   tableRow: css({
-    backgroundColor: '#ffffff !important',
+    backgroundColor: 'rgb(var(--background)) !important',
     '&:hover': {
-      backgroundColor: '#ffffff !important',
+      backgroundColor: 'rgb(var(--background)) !important',
     },
   }),
 }
@@ -205,7 +205,7 @@ function Results({
                   component={RouterLink}
                   size="small"
                   to={`/management/customers/${data.id}`}
-                  sx={{ color: '#757575' }}
+                  sx={{ color: 'rgb(var(--text-secondary))' }}
                 >
                   <EditIcon fontSize="small" />
                 </IconButton>
