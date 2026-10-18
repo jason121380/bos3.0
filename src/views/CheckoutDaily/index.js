@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Container, Card } from '@mui/material'
 import Page from 'components/Page'
 import { endOfDay, subDays } from 'date-fns'
 import useFetchDailyMoneyFlowReport from 'hooks/useFetchDailyMoneyFlowReport'
@@ -10,42 +8,12 @@ import useFetchGetisDailyCheckoutBlockedByDraftOrder from 'hooks/useFetchGetisDa
 import idx from 'idx'
 import produce from 'immer'
 import { useState, useEffect } from 'react'
-import PageTitle from 'components/PageTitle'
 import pagenationLabel from './../../helper/pagenationLabel'
 import DateSelector from 'components/DateSelector'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { PageHeader, Toolbar } from 'ui/page-header'
 
 import DailyMoneyFlowResults from './DailyMoneyFlowResults'
 import WaitCloseOrderResults from './WaitCloseOrderResults'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  headerCard: css({
-    display: 'flex',
-    padding: '0 0 24px 0',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'transparent',
-    borderRadius: 0,
-    boxShadow: 'none',
-    border: 'none !important',
-    marginBottom: 0,
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      gap: '16px',
-      padding: '16px',
-    },
-  }),
-}
 
 function CheckoutDaily() {
   const getisDailyCheckoutBlockedByDraftOrder = useFetchGetisDailyCheckoutBlockedByDraftOrder()
@@ -124,18 +92,16 @@ function CheckoutDaily() {
   }
 
   return (
-    <Page css={styles.root} title="每日結帳">
-      <Container maxWidth={false} css={styles.container}>
-        <Card css={styles.headerCard}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='每日結帳' style={{ color: 'rgb(var(--accent))' }} />
-          </div>
-          <DateSelector
-            date={pageSetting}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={value => setPageSetting(value)}
-          />
-        </Card>
+    <Page className="ui-root" title="每日結帳">
+      <PageHeader title="每日結帳" />
+      <Toolbar>
+        <DateSelector
+          date={pageSetting}
+          attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+          dateChange={value => setPageSetting(value)}
+        />
+      </Toolbar>
+      <div className="flex flex-col gap-6">
         {idx(
           waitCloseOrderDate,
           _ =>
@@ -163,7 +129,6 @@ function CheckoutDaily() {
           _ =>
             _.data.dailyMoneyFlowReport.data && (
               <DailyMoneyFlowResults
-                className={styles.results}
                 dailyMoneyFlowResult={_.data.dailyMoneyFlowReport}
                 pageSetting={pageSetting}
                 isMemberShipCardActive={isMemberShipCardActive}
@@ -179,7 +144,7 @@ function CheckoutDaily() {
               />
             )
         )}
-      </Container>
+      </div>
     </Page>
   )
 }

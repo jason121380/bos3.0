@@ -1,92 +1,12 @@
-/** @jsxImportSource @emotion/react */
-import { Card, CardHeader, CardContent, Modal, Button, Grid } from '@mui/material'
+// 保留 MUI Modal：內含 EmployeeAutoComplete（MUI Autocomplete），Radix Dialog 會擋住其彈出層點擊
+import { Modal } from '@mui/material'
 import PropTypes from 'prop-types'
 import { memo } from 'react'
-import { red, blue } from '@mui/material/colors'
 import _ from 'lodash'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
-import { DeleteForever as DeleteForeverIcon } from 'ui/icons'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    outline: 'none',
-    boxShadow: theme.shadows[20],
-    width: 500,
-    maxHeight: '100%',
-    overflowY: 'auto',
-    maxWidth: '100%',
-  }),
-  birthday: css({
-    width: '100%',
-  }),
-  actions: css({
-    justifyContent: 'flex-end',
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  categorieDiv: css({
-    marginBottom: '5px',
-  }),
-  categorieBtn: css({
-    margin: '3px',
-  }),
-  clickedCategorieBtn: css({
-    margin: '3px',
-    color: 'white',
-  }),
-  categorieClear: css({
-    backgroundColor: red[500],
-    color: 'white',
-    '&:hover': {
-      backgroundColor: red[700],
-    },
-  }),
-  addBtn: css({
-    backgroundColor: blue[500],
-    color: 'white',
-    '&:hover': {
-      backgroundColor: blue[700],
-    },
-  }),
-  confirmBtn: css({
-    margin: '7px 0',
-    float: 'right',
-  }),
-  header: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-  backBtn: css({
-    margin: '16px 24px',
-  }),
-  btnDiv: css({
-    margin: '10px 0',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }),
-  rowOfGrid: css({
-    margin: '5px 0px',
-  }),
-  dividerDiv: css({
-    margin: '8px 0px',
-  }),
-  detailBottomCash: css({
-    fontSize: '20px',
-    fontWeight: 'bold',
-  }),
-  icons: css({
-    cursor: 'pointer',
-  }),
-}
+import { Trash2 } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 function AddDesignersModal({
   designers,
@@ -183,21 +103,24 @@ function AddDesignersModal({
 
   return (
     <Modal open={openAddDesignerModal}>
-      <Card css={styles.root}>
-        <div css={styles.header}>
-          <CardHeader title="新增設計師" />
-          <Button color="primary" variant="contained" css={styles.backBtn} onClick={onClose}>
-            返回
-          </Button>
-        </div>
-        <CardContent>
+      <Card className="ui-root absolute left-1/2 top-1/2 max-h-full w-[500px] max-w-full -translate-x-1/2 -translate-y-1/2 overflow-y-auto shadow-float outline-none">
+        <CardHeader
+          className="items-center"
+          action={
+            <Button variant="secondary" onClick={onClose}>
+              返回
+            </Button>
+          }
+        >
+          <CardTitle>新增設計師</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
           {designers.map((designer, index) => (
-            <Grid
-              container
-              style={{ alignItems: 'center', justifyContent: 'center', marginBottom: '15px' }}
+            <div
+              className="flex items-center justify-center gap-2"
               key={`${designer.designerId}-${index}`}
             >
-              <Grid item xs={6}>
+              <div className="w-1/2">
                 <div className="EmployeeScheduleAddDesignersModal">
                   <EmployeeAutoComplete
                     label="服務人員姓名/編號"
@@ -208,25 +131,25 @@ function AddDesignersModal({
                     onChange={value => handleDesignerOnChange(value.userId, index)}
                   />
                 </div>
-              </Grid>
+              </div>
               {designers.length > 1 && (
-                <Grid item xs={1}>
-                  <DeleteForeverIcon
-                    onClick={() => handleDeleteDesigner(index)}
-                    css={styles.icons}
-                  />
-                </Grid>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:text-danger"
+                  aria-label="移除此人員"
+                  onClick={() => handleDeleteDesigner(index)}
+                >
+                  <Trash2 strokeWidth={1.75} />
+                </Button>
               )}
-            </Grid>
+            </div>
           ))}
         </CardContent>
-        <div css={styles.btnDiv}>
+        <div className="flex items-center justify-center px-5 pb-5">
           <Button
-            color="primary"
-            variant="contained"
-            size="small"
+            variant="primary"
             onClick={handleAddDesignersToSchedule}
-            style={{ margin: '0 3px' }}
             disabled={designers[0].designerId.length === 0}
           >
             新增

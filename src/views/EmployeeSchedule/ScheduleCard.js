@@ -1,118 +1,23 @@
 /** @jsxImportSource @emotion/react */
+// 標題輸入框保留 MUI FormControl/OutlinedInput：MyFormHelperText 依賴 useFormControl 的 focused 狀態顯示提示
 import {
-  Grid,
-  Checkbox,
-  Typography,
-  Paper,
-  IconButton,
-  Divider,
-  LinearProgress,
-  List,
-  ListItem,
-  ListItemButton,
   Tooltip,
-  ListItemText,
   FormHelperText,
   FormControl,
   OutlinedInput,
-  Box
 } from '@mui/material'
-import { PersonAddRounded as PersonAddRoundedIcon, ModeEditOutlineRounded as ModeEditOutlineRoundedIcon, ArrowUpward as ArrowUpwardIcon, ArrowDownward as ArrowDownwardIcon, DeleteForever as DeleteForeverIcon, KeyboardDoubleArrowDownRounded as KeyboardDoubleArrowDownRoundedIcon, CloseRounded as CancelRoundedIcon } from 'ui/icons'
+import { ArrowDown, ArrowUp, ChevronsDown, Pencil, Trash2, UserPlus, X } from 'lucide-react'
 import { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { useFormControl } from '@mui/material/FormControl'
 import { useState, Fragment, useMemo } from 'react'
 import _ from 'lodash'
 import { format } from 'date-fns'
-import ListItemIcon from '@mui/material/ListItemIcon'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    paddingTop: '0px !important',
-    paddingBottom: theme.spacing(3),
-    '& .MuiListItemSecondaryAction-root': {
-      position: 'relative',
-      transform: 'none',
-      flexGrow: 1,
-      justifyContent: 'flex-end',
-      right: 0,
-      display: 'flex',
-      alignItems: 'center',
-      gap: '4px',
-    }
-  }),
-  card: css({
-    borderRadius: '16px',
-    minWidth: '332px',
-    width: 322,
-    position: 'relative',
-    boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.05)',
-    border: '1px solid rgba(0, 0, 0, 0.03)',
-    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-    '&:hover': {
-      boxShadow: '0px 15px 40px rgba(0, 0, 0, 0.08)',
-    }
-  }),
-  closeButton: css({
-    position: 'absolute',
-    top: '-15px',
-    right: '-15px',
-    zIndex: 10,
-    backgroundColor: '#202D50 !important',
-    color: 'white !important',
-    width: '32px',
-    height: '32px',
-    padding: '0px',
-    '&:hover': {
-      backgroundColor: '#1a2540 !important',
-      transform: 'scale(1.1)',
-    }
-  }),
-  headerSection: css({
-    padding: '24px 20px 16px 20px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  }),
-  titleText: css({
-    fontSize: '20px',
-    fontWeight: '800',
-    color: 'rgb(var(--text))',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    maxWidth: '220px',
-  }),
-  rowItem: css({
-    padding: '12px 16px !important',
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.01)',
-    }
-  }),
-  actionIcons: css({
-    color: 'rgb(var(--text))',
-    fontSize: '18px !important',
-  }),
-  addPersonnelBtn: css({
-    marginTop: '8px',
-    padding: '16px 20px !important',
-    color: 'rgb(var(--accent)) !important',
-    fontWeight: '700 !important',
-    '& .MuiListItemIcon-root': {
-      minWidth: '36px',
-      color: 'rgb(var(--accent))',
-    }
-  }),
-  checkbox: css({
-    color: 'rgb(var(--accent)) !important',
-    '&.Mui-checked': {
-      color: 'rgb(var(--accent)) !important',
-    }
-  })
-}
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { Skeleton } from 'ui/skeleton'
 
 function MyFormHelperText() {
   const { focused } = useFormControl() || {}
@@ -456,155 +361,160 @@ export default function ScheduleCard({
   }
   return (
     scheduleCard.map((data, cardIndex) => (
-      <Grid item key={cardIndex} css={styles.root} className='ScheduleCard'>
-        <Paper elevation={0} css={styles.card}>
-          <IconButton
-            disabled={disableButton}
-            onClick={() => handleClickOpen(cardIndex)}
-            css={styles.closeButton}
-            size="small"
-          >
-            <CancelRoundedIcon sx={{ fontSize: 20 }} />
-          </IconButton>
+      <div key={cardIndex} className='ScheduleCard'>
+        <Card className="flex w-[332px] flex-col">
+          <div className="flex items-center justify-between gap-2 px-5 pb-4 pt-5">
+            {!data.setName ? (
+              <FormControl variant="standard" fullWidth>
+                <OutlinedInput
+                  placeholder="排版標題"
+                  value={data.cardName}
+                  disabled={disableButton}
+                  onChange={e => handleCardTitleChange(cardIndex, e)}
+                  onKeyDown={e => handleOnKeyDown(e, cardIndex)}
+                />
+                <MyFormHelperText />
+              </FormControl>
+            ) : (
+              <h3 className="m-0 min-w-0 max-w-[220px] truncate text-heading text-text">
+                {data.cardName || '未命名班表'}
+              </h3>
+            )}
 
-          <List disablePadding>
-            <Box css={styles.headerSection}>
-              {!data.setName ? (
-                <FormControl variant="standard" fullWidth>
-                  <OutlinedInput
-                    placeholder="排版標題"
-                    value={data.cardName}
-                    disabled={disableButton}
-                    onChange={e => handleCardTitleChange(cardIndex, e)}
-                    onKeyDown={e => handleOnKeyDown(e, cardIndex)}
-                    sx={{ borderRadius: '8px' }}
-                  />
-                  <MyFormHelperText />
-                </FormControl>
-              ) : (
-                <Typography css={styles.titleText}>
-                  {data.cardName || '未命名班表'}
-                </Typography>
-              )}
-
-              <IconButton
+            <div className="flex shrink-0 items-center">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-text-secondary"
+                aria-label="編輯班表名稱"
                 disabled={disableButton}
                 onClick={() => handleClickTitle(cardIndex)}
-                size="small"
               >
-                <ModeEditOutlineRoundedIcon sx={{ fontSize: 18, color: 'rgb(var(--text-tertiary))' }} />
-              </IconButton>
-            </Box>
-            {!employeeScheduleData.loading && progress < 100 ? (
-              <Fragment>
-                <Divider variant="middle" />
-                {data.scheduleRow.map((eachRow, rowIndex) => {
-                  if (eachRow !== null) {
-                    return (
-                      <Fragment key={`${rowIndex}-${eachRow.designerId}`}>
-                        <ListItem
-                          css={styles.rowItem}
-                          disablePadding
-                          secondaryAction={
-                            <Fragment>
-                              {eachRow.designerId !== '' &&
-                                data.scheduleRow.length > 1 &&
-                                !eachRow.timeAdded && (
-                                  <Box sx={{ display: 'flex', gap: '2px' }}>
-                                    <IconButton
-                                      disabled={disableButton}
-                                      onClick={() => handlePersonGoUp(cardIndex, rowIndex, eachRow)}
-                                      size="small"
-                                    >
-                                      <ArrowUpwardIcon css={styles.actionIcons} />
-                                    </IconButton>
-                                    <IconButton
-                                      disabled={disableButton}
-                                      onClick={() => handlePersonGoDown(cardIndex, rowIndex, eachRow)}
-                                      size="small"
-                                    >
-                                      <ArrowDownwardIcon css={styles.actionIcons} />
-                                    </IconButton>
-                                    <IconButton
-                                      disabled={disableButton}
-                                      onClick={() => handlePersonGoBottom(cardIndex, rowIndex, eachRow)}
-                                      size="small"
-                                    >
-                                      <KeyboardDoubleArrowDownRoundedIcon css={styles.actionIcons} />
-                                    </IconButton>
-                                  </Box>
-                                )}
-                              {eachRow.time != 0 ? (
-                                <Box sx={{ minWidth: '60px', ml: 1, textAlign: 'right' }}>
-                                  <Typography variant="caption" sx={{ display: 'block', color: 'rgb(var(--text-tertiary))', lineHeight: 1.2 }}>
-                                    {format(eachRow.time, 'MM/dd')}
-                                  </Typography>
-                                  <Typography variant="caption" sx={{ display: 'block', color: 'rgb(var(--text-secondary))', fontWeight: 'bold' }}>
-                                    {format(eachRow.time, 'H:mm')}
-                                  </Typography>
-                                </Box>
-                              ) : null}
-                              {eachRow.designerId !== '' && (
-                                <IconButton
+                <Pencil strokeWidth={1.75} />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-text-secondary hover:text-danger"
+                aria-label="刪除班表"
+                disabled={disableButton}
+                onClick={() => handleClickOpen(cardIndex)}
+              >
+                <X strokeWidth={1.75} />
+              </Button>
+            </div>
+          </div>
+          {!employeeScheduleData.loading && progress < 100 ? (
+            <Fragment>
+              <div className="mx-5 h-px bg-border" />
+              {data.scheduleRow.map((eachRow, rowIndex) => {
+                if (eachRow !== null) {
+                  return (
+                    <Fragment key={`${rowIndex}-${eachRow.designerId}`}>
+                      <div className="flex min-h-[48px] items-center gap-2 px-4 py-2 hover:bg-surface-hover">
+                        {eachRow.designerId !== '' && (
+                          <div className="flex min-w-0 flex-1 items-center gap-2">
+                            <Checkbox
+                              aria-label="標記時間"
+                              checked={eachRow.timeAdded}
+                              onChange={() => handleAddTime(cardIndex, rowIndex)}
+                              disabled={disableButton}
+                            />
+                            <span className="truncate text-body font-medium text-text">
+                              {users.find(u => u.id === eachRow.designerId)?.nickName ||
+                                users.find(u => u.id === eachRow.designerId)?.name || ''}
+                              <span className="ml-1 text-caption text-text-tertiary">
+                                {users.find(u => u.id === eachRow.designerId)?.designerNo || ''}
+                              </span>
+                            </span>
+                          </div>
+                        )}
+                        <div className="ml-auto flex shrink-0 items-center gap-1">
+                          {eachRow.designerId !== '' &&
+                            data.scheduleRow.length > 1 &&
+                            !eachRow.timeAdded && (
+                              <div className="flex gap-0.5">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  aria-label="上移"
                                   disabled={disableButton}
-                                  onClick={() => handleDeleteDesigner(cardIndex, rowIndex)}
-                                  size="small"
-                                  sx={{ ml: 1 }}
+                                  onClick={() => handlePersonGoUp(cardIndex, rowIndex, eachRow)}
                                 >
-                                  <DeleteForeverIcon css={styles.actionIcons} />
-                                </IconButton>
-                              )}
-                            </Fragment>
-                          }
-                        >
+                                  <ArrowUp strokeWidth={1.75} />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  aria-label="下移"
+                                  disabled={disableButton}
+                                  onClick={() => handlePersonGoDown(cardIndex, rowIndex, eachRow)}
+                                >
+                                  <ArrowDown strokeWidth={1.75} />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  aria-label="移到最後"
+                                  disabled={disableButton}
+                                  onClick={() => handlePersonGoBottom(cardIndex, rowIndex, eachRow)}
+                                >
+                                  <ChevronsDown strokeWidth={1.75} />
+                                </Button>
+                              </div>
+                            )}
+                          {eachRow.time != 0 ? (
+                            <div className="ml-1 min-w-[60px] text-right tabular-nums">
+                              <span className="block text-caption text-text-tertiary">
+                                {format(eachRow.time, 'MM/dd')}
+                              </span>
+                              <span className="block text-caption font-medium text-text-secondary">
+                                {format(eachRow.time, 'H:mm')}
+                              </span>
+                            </div>
+                          ) : null}
                           {eachRow.designerId !== '' && (
-                            <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-                              <Checkbox
-                                checked={eachRow.timeAdded}
-                                onChange={() => handleAddTime(cardIndex, rowIndex)}
-                                disabled={disableButton}
-                                css={styles.checkbox}
-                                size="small"
-                              />
-                              <Typography
-                                variant="body2"
-                                noWrap
-                                sx={{ color: 'rgb(var(--text))', fontWeight: 500, fontSize: '15px' }}
-                              >
-                                {users.find(u => u.id === eachRow.designerId)?.nickName ||
-                                  users.find(u => u.id === eachRow.designerId)?.name || ''}
-                                <span style={{ color: 'rgb(var(--text-tertiary))', marginLeft: '4px', fontSize: '12px' }}>
-                                  {users.find(u => u.id === eachRow.designerId)?.designerNo || ''}
-                                </span>
-                              </Typography>
-                            </Box>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="ml-1 h-8 w-8 hover:text-danger"
+                              aria-label="移除人員"
+                              disabled={disableButton}
+                              onClick={() => handleDeleteDesigner(cardIndex, rowIndex)}
+                            >
+                              <Trash2 strokeWidth={1.75} />
+                            </Button>
                           )}
-                        </ListItem>
-                        {eachRow.designerId !== '' && <Divider variant="middle" sx={{ opacity: 0.6 }} />}
-                      </Fragment>
-                    )
-                  }
-                })}
-              </Fragment>
-            ) : (
-              <div style={{ textAlign: 'center' }}>
-                <LinearProgress />
-              </div>
-            )
-            }
-            <ListItemButton
+                        </div>
+                      </div>
+                      {eachRow.designerId !== '' && <div className="mx-5 h-px bg-border" />}
+                    </Fragment>
+                  )
+                }
+              })}
+            </Fragment>
+          ) : (
+            <div className="px-5 py-3" aria-busy="true" aria-label="載入中">
+              <Skeleton className="h-8 w-full" />
+            </div>
+          )
+          }
+          <div className="p-3">
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-accent"
               disabled={disableButton}
               onClick={() => handleOpenModal(cardIndex)}
-              css={styles.addPersonnelBtn}
             >
-              <ListItemIcon>
-                <PersonAddRoundedIcon />
-              </ListItemIcon>
-              <ListItemText primary="新增人員" />
-            </ListItemButton>
-          </List>
-        </Paper>
-      </Grid>
+              <UserPlus strokeWidth={1.75} />
+              新增人員
+            </Button>
+          </div>
+        </Card>
+      </div>
     ))
   )
 }

@@ -1,22 +1,11 @@
-/** @jsxImportSource @emotion/react */
-import { Container } from '@mui/material'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { useEffect, useState } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import QRCode from 'qrcode'
 import { useSelector } from 'react-redux'
 import useFetchGetQrcodeCheckinCode from 'hooks/useFetchGetQrcodeCheckinCode'
+import { PageHeader } from 'ui/page-header'
 
 import Results from './Results'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3)
-  }),
-}
 
 function QRcodeClockIn() {
   const getQrcodeCheckinCode = useFetchGetQrcodeCheckinCode()
@@ -68,18 +57,16 @@ function QRcodeClockIn() {
 
   return (
     <>
-      <Page css={styles.root} title="掃碼打卡">
-        <Container maxWidth={false}>
-          <AdminPageHeader title='掃碼打卡' />
-          <Results
-            clockInType={clockInType}
-            setClockInType={setClockInType}
-            url={url}
-            setUrl={setUrl}
-            countDownTime={countDownTime}
-            isLoading={getQrcodeCheckinCode.loading}
-          />
-        </Container>
+      <Page className="ui-root" title="掃碼打卡">
+        <PageHeader title="掃碼打卡" />
+        <Results
+          clockInType={clockInType}
+          setClockInType={setClockInType}
+          url={url}
+          setUrl={setUrl}
+          countDownTime={countDownTime}
+          isLoading={getQrcodeCheckinCode.loading}
+        />
       </Page>
     </>
   )

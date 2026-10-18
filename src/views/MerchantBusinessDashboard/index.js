@@ -1,7 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Container, Card } from '@mui/material'
-import ProgressBar from 'components/ProgressBar'
-import PageTitle from 'components/PageTitle'
 import Page from 'components/Page'
 import { endOfDay, startOfDay } from 'date-fns'
 import useFetchMerchantDashboard from 'hooks/useFetchMerchantDashboard'
@@ -9,22 +5,11 @@ import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCard
 import idx from 'idx'
 import React, { Fragment, useEffect, useState } from 'react'
 import DateSelector from 'components/DateSelector'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
+import { PageHeader, Toolbar } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import Overview from './Overview'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function MerchantBusinessDashboard() {
   const [pageSetting, setPageSetting] = React.useState({
@@ -54,48 +39,30 @@ function MerchantBusinessDashboard() {
     }
   }, [isMemberShipCardActiveData.loading, merchantDashboardData.loading])
   return (
-    <Page css={styles.root} title="營業儀表板">
-      <Container maxWidth={false} css={styles.container}>
-        <Card
-          css={css({
-            display: 'flex',
-            padding: '0 0 24px 0',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: 'transparent',
-            borderRadius: 0,
-            boxShadow: 'none',
-            border: 'none !important',
-            marginBottom: 0,
-            flexWrap: 'wrap',
-            gap: '12px'
-          })}
-        >
-          <PageTitle title='營業儀表板' style={{ color: 'rgb(var(--accent))' }} />
-          <DateSelector
-            date={pageSetting}
-            attributes={[
-              'thismonth', 'lastmonth', 'dbyesterday',
-              'yesterday', 'today', 'startDate', 'endDate'
-            ]}
-            dateChange={value => setPageSetting(value)}
-          />
-        </Card>
-        {!merchantDashboardData.loading ? (
-          <Fragment>
-            <Overview membershipDisplay={membershipDisplay} overview={overview} />
-            <Results results={results} />
-          </Fragment>
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <ProgressBar
-              setProgress={setProgress}
-              progress={progress}
-              dataLoading={merchantDashboardData.loading}
-            />
-          </div>
-        )}
-      </Container>
+    <Page className="ui-root" title="營業儀表板">
+      <PageHeader title="營業儀表板" />
+      <Toolbar>
+        <DateSelector
+          date={pageSetting}
+          attributes={[
+            'thismonth', 'lastmonth', 'dbyesterday',
+            'yesterday', 'today', 'startDate', 'endDate'
+          ]}
+          dateChange={value => setPageSetting(value)}
+        />
+      </Toolbar>
+      {!merchantDashboardData.loading ? (
+        <Fragment>
+          <Overview membershipDisplay={membershipDisplay} overview={overview} />
+          <Results results={results} />
+        </Fragment>
+      ) : (
+        // 載入中：與舊版 ProgressBar 相同時機顯示（merchantDashboardData.loading）
+        <div className="flex flex-col gap-6" aria-busy="true" aria-label="載入中">
+          <Skeleton className="h-[148px] w-full rounded-lg" />
+          <Skeleton className="h-[240px] w-full rounded-lg" />
+        </div>
+      )}
     </Page>
   )
 }

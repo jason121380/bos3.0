@@ -1,107 +1,25 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Typography,
-  Drawer,
-  IconButton,
-  Checkbox,
-  Grid,
-  Hidden,
-} from '@mui/material'
-import { EditOutlined as EditOutlinedIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
+// 勾選後出現的底部操作列沿用 MUI Drawer（persistent）
+import { Drawer } from '@mui/material'
+import { Download, Pencil, Trash2 } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState, useEffect, Fragment, useRef } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
 import { CSVLink } from "react-csv";
 import useFetchDeletePicking from 'hooks/useFetchDeletePicking'
 import { openSnackbar } from 'elements/snackbars'
 import pagenationLabel from './../../helper/pagenationLabel'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
-const styles = {
-  root: css({}),
-  filterButton: css({
-    marginRight: theme.spacing(2),
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 1300,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
-  actionsDrawer: css({
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    '& > * + *': {
-      marginLeft: theme.spacing(2),
-    },
-  }),
-  buttonIcon: css({
-    marginRight: theme.spacing(1),
-  }),
-  sticky1: css({
-    position: 'sticky',
-    left: 0,
-    background: 'rgb(var(--background)) !important',
-    zIndex: '99',
-  }),
-  sticky2: css({
-    position: 'sticky',
-    left: "52px",
-    background: 'rgb(var(--background)) !important',
-    zIndex: '99',
-  }),
-  sticky3: css({
-    position: 'sticky',
-    left: "104px", // Adjusted based on narrower Action column (52+52)
-    background: 'rgb(var(--background)) !important',
-    zIndex: '99',
-  }),
-  cardHeader: css({
-    '& .MuiCardHeader-title': {
-      fontSize: '15px',
-      fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-    },
-  }),
-  tableRow: css({
-    backgroundColor: 'rgb(var(--background)) !important',
-  }),
-  csvBtn: css({
-    borderRadius: '20px !important',
-    padding: '6px 20px !important',
-    fontSize: '14px !important',
-    boxShadow: 'none !important',
-    fontWeight: 'bold !important',
-    backgroundColor: 'rgb(var(--surface)) !important',
-    color: 'rgb(var(--text-secondary)) !important',
-    textTransform: 'none !important',
-    border: 'none !important',
-    '&:hover': {
-      backgroundColor: 'rgb(var(--surface)) !important',
-    }
-  }),
-}
+// 左側三欄固定（勾選 / 操作 / 日期），與舊版 sticky1~3 相同位置
+const sticky1 = 'sticky left-0 z-[1] w-[52px] bg-background'
+const sticky2 = 'sticky left-[52px] z-[1] w-[52px] bg-background'
+const sticky3 = 'sticky left-[104px] z-[1] w-[120px] bg-background'
 
 function Results({
   pageSetting,
@@ -206,151 +124,126 @@ function Results({
   }
   return (
     <Fragment>
-      <div {...rest} css={css([styles.root, className])}>
+      <div {...rest} css={className}>
         <Card>
           <CardHeader
-            css={styles.cardHeader}
+            className="items-center pb-4"
             action={
-              <CSVLink
-                data={excelData}
-                filename="材料自購登錄.csv"
-              >
-                <Button variant="contained" css={styles.csvBtn} size="small">
+              <Button asChild size="sm" variant="secondary">
+                <CSVLink
+                  data={excelData}
+                  filename="材料自購登錄.csv"
+                >
+                  <Download strokeWidth={1.75} />
                   報表匯出
-                </Button>
-              </CSVLink>
+                </CSVLink>
+              </Button>
             }
-            title={
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>材料自購登錄列表</span>
-                <Typography color="textSecondary" variant="body2">
-                  共 {pickingRecords.totalCount} 筆
-                </Typography>
-              </div>
-            }
-          />
-          <CardContent css={styles.content}>
-            <PerfectScrollbar>
-              <div css={styles.inner}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell css={styles.sticky1} padding="checkbox">
+          >
+            <div className="flex items-baseline gap-3">
+              <CardTitle>材料自購登錄列表</CardTitle>
+              <span className="text-label text-text-secondary tabular-nums">
+                共 {pickingRecords.totalCount} 筆
+              </span>
+            </div>
+          </CardHeader>
+          <div className="px-5 pb-5">
+            <Table className="min-w-[1300px]">
+              <TableHeader>
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className={`${sticky1} bg-surface px-4`}>
+                    <Checkbox
+                      aria-label="全選"
+                      checked={handleCheckedAll()}
+                      indeterminate={handlecheckIndeterminate()}
+                      onChange={handleSelectAll}
+                      disabled={recordArr.length === 0}
+                    />
+                  </TableHead>
+                  <TableHead className={`${sticky2} bg-surface`}>操作</TableHead>
+                  <TableHead className={`${sticky3} bg-surface`}>日期</TableHead>
+                  <TableHead>商品代號/名稱</TableHead>
+                  <TableHead numeric>單價</TableHead>
+                  <TableHead numeric>數量</TableHead>
+                  <TableHead numeric>小計</TableHead>
+                  <TableHead>領料人</TableHead>
+                  <TableHead>用途</TableHead>
+                  <TableHead>備註</TableHead>
+                </TableRow>
+              </TableHeader>
+
+              <TableBody>
+                {pickingRecords.PickingRecord.map((record, index) => {
+                  return (
+                    <TableRow key={record.id} data-state={selectedOrders.indexOf(record.id) > -1 ? 'selected' : undefined}>
+                      <TableCell className={sticky1}>
                         <Checkbox
-                          checked={handleCheckedAll()}
-                          color="primary"
-                          indeterminate={handlecheckIndeterminate()}
-                          onChange={handleSelectAll}
-                          disabled={recordArr.length === 0}
+                          aria-label="選取此筆"
+                          disabled={blockPicking ? record.isClosed : false}
+                          checked={selectedOrders.indexOf(record.id) > -1}
+                          onChange={() => handleSelectOne(record.id)}
+                          data-testid={`order-checkbox-${index}`}
                         />
                       </TableCell>
-                      <TableCell css={styles.sticky2} style={{ width: '52px' }}>操作</TableCell>
-                      <TableCell css={styles.sticky3} style={{ width: '120px' }}>日期</TableCell>
-                      <TableCell>商品代號/名稱</TableCell>
-                      <TableCell>單價</TableCell>
-                      <TableCell>數量</TableCell>
-                      <TableCell>小計</TableCell>
-                      <TableCell>領料人</TableCell>
-                      <TableCell>用途</TableCell>
-                      <TableCell>備註</TableCell>
+                      <TableCell className={`${sticky2} px-2`}>
+                        <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-accent">
+                          <RouterLink
+                            aria-label="編輯"
+                            to={`/employee/picking/edit/${record.id}`}
+                          >
+                            <Pencil strokeWidth={1.75} />
+                          </RouterLink>
+                        </Button>
+                      </TableCell>
+                      <TableCell className={`${sticky3} tabular-nums`}>{format(new Date(record.date), 'MM/dd/yyyy')}</TableCell>
+                      <TableCell>
+                        {record.productNo === null || record.productNo === ''
+                          ? record.productName
+                          : record.productNo + ' / ' + record.productName}
+                      </TableCell>
+                      <TableCell numeric>{formatNumber(record.price)}</TableCell>
+                      <TableCell numeric>{formatNumber(record.count)}</TableCell>
+                      <TableCell numeric>{formatNumber(record.total)}</TableCell>
+                      <TableCell>
+                        {record.Picker.name}
+                        {record.Picker.designerNo ? `/${record.Picker.designerNo}` : ''}
+                      </TableCell>
+                      <TableCell className="text-text-secondary">{record.purpose}</TableCell>
+                      <TableCell className="text-text-secondary">{record.remark}</TableCell>
                     </TableRow>
-                  </TableHead>
-
-                  <TableBody>
-                    {pickingRecords.PickingRecord.map((record, index) => {
-                      return (
-                        <TableRow key={record.id} css={styles.tableRow}>
-                          <TableCell css={styles.sticky1} padding="checkbox">
-                            <Checkbox
-                              color="primary"
-                              disabled={blockPicking ? record.isClosed : false}
-                              checked={selectedOrders.indexOf(record.id) > -1}
-                              onChange={() => handleSelectOne(record.id)}
-                              inputProps={{
-                                'data-testid': `order-checkbox-${index}`,
-                              }}
-                            />
-                          </TableCell>
-                          <TableCell css={styles.sticky2}>
-                            <IconButton
-                              color="primary"
-                              component={RouterLink}
-                              size="small"
-                              to={`/employee/picking/edit/${record.id}`}
-                            >
-                              <EditOutlinedIcon fontSize="small" />
-                            </IconButton>
-                          </TableCell>
-                          <TableCell css={styles.sticky3}>{format(new Date(record.date), 'MM/dd/yyyy')}</TableCell>
-                          <TableCell>
-                            {record.productNo === null || record.productNo === ''
-                              ? record.productName
-                              : record.productNo + ' / ' + record.productName}
-                          </TableCell>
-                          <TableCell>{record.price}</TableCell>
-                          <TableCell>{record.count}</TableCell>
-                          <TableCell>{record.total}</TableCell>
-                          <TableCell>
-                            {record.Picker.name}
-                            {record.Picker.designerNo ? `/${record.Picker.designerNo}` : ''}
-                          </TableCell>
-                          <TableCell>{record.purpose}</TableCell>
-                          <TableCell>{record.remark}</TableCell>
-                        </TableRow>
-                      )
-                    })}
-                    <TableRow css={styles.tableRow}>
-                      <TableCell css={styles.sticky1} />
-                      <TableCell css={styles.sticky2} style={{ fontWeight: 'bold', width: '52px' }}>合計</TableCell>
-                      <TableCell css={styles.sticky3} style={{ width: '120px' }} />
-                      <TableCell />
-                      <TableCell />
-                      <TableCell>{total('count')}</TableCell>
-                      <TableCell>{total('total')}</TableCell>
-                      <TableCell />
-                      <TableCell />
-                      <TableCell />
-                      <TableCell />
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-            </PerfectScrollbar>
-          </CardContent>
-          {/* <CardActions css={styles.actions}>
-            <TablePagination
-              ref={pageRef}
-              labelRowsPerPage='每頁顯示數量'
-              component="div"
-              count={pickingRecords.totalCount}
-              onPageChange={onPageChange}
-              onRowsPerPageChange={onRowsPerPageChange}
-              page={pickingRecords.pageOffset}
-              rowsPerPage={pickingRecords.pageLimit}
-              rowsPerPageOptions={[5, 10, 25, 50, 500, 1000]}
-            />
-          </CardActions> */}
+                  )
+                })}
+                <TableRow className="bg-surface hover:bg-surface">
+                  <TableCell className={`${sticky1} bg-surface`} />
+                  <TableCell className={`${sticky2} bg-surface font-medium`}>合計</TableCell>
+                  <TableCell className={`${sticky3} bg-surface`} />
+                  <TableCell />
+                  <TableCell />
+                  <TableCell numeric className="font-medium">{formatNumber(total('count'))}</TableCell>
+                  <TableCell numeric className="font-medium">{formatNumber(total('total'))}</TableCell>
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                  <TableCell />
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
         </Card>
       </div>
       <Drawer anchor="bottom" open={open} PaperProps={{ elevation: 1 }} variant="persistent">
-        <div {...rest} css={css([styles.root, className])}>
-          <Grid alignItems="center" container style={{ padding: '16px' }}>
-            <Hidden smDown>
-              <Grid item md={4}>
-                <Typography color="textSecondary" variant="subtitle1">
-                  {selectedOrders.length} selected
-                </Typography>
-              </Grid>
-            </Hidden>
-            <Grid item xs={4} >
-              <div css={styles.actionsDrawer}>
-                <Button onClick={() => handleDelete()}>
-                  <DeleteForeverIcon css={styles.buttonIcon} />
-                  刪除
-                </Button>
-              </div>
-            </Grid>
-          </Grid>
+        <div {...rest} css={className} className="ui-root">
+          <div className="flex items-center gap-4 p-4">
+            <span className="hidden text-body text-text-secondary tabular-nums md:block md:w-1/3">
+              {selectedOrders.length} selected
+            </span>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button variant="danger" onClick={() => handleDelete()}>
+                <Trash2 strokeWidth={1.75} />
+                刪除
+              </Button>
+            </div>
+          </div>
         </div>
       </Drawer>
     </Fragment>

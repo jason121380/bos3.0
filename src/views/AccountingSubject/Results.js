@@ -1,41 +1,9 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Typography,
-} from '@mui/material'
 import GenericMoreButton from 'components/GenericMoreButton'
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
-import PerfectScrollbar from 'react-perfect-scrollbar'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  filterButton: css({
-    marginRight: theme.spacing(2),
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 7000,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
-}
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
 function Results({
   className,
@@ -46,89 +14,88 @@ function Results({
   ...rest
 }) {
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
+    <div {...rest} className="flex flex-col gap-2">
+      <span className="text-label text-text-secondary tabular-nums">
         共 {results.totalCount} 筆, {results.pageOffset + 1} /{' '}
         {Math.ceil(results.totalCount / results.pageLimit)}
-      </Typography>
+      </span>
       <Card>
-        <CardHeader action={<GenericMoreButton />} title="收支科目明細" />
-        <Divider />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>時間</TableCell>
-                    <TableCell>收入合計</TableCell>
-                    <TableCell>支出合計</TableCell>
-                    <TableCell>結餘合計</TableCell>
-                    <TableCell>材料貨款(員購)收入</TableCell>
-                    <TableCell>包套卡收入</TableCell>
-                    <TableCell>集點卡兌換</TableCell>
-                    <TableCell>顧客還單</TableCell>
-                    <TableCell>租金收入</TableCell>
-                    <TableCell>活動促銷贈品收入</TableCell>
-                    <TableCell>營業收入</TableCell>
-                    <TableCell>售貨收入</TableCell>
-                    <TableCell>入金卡收入</TableCell>
-                    <TableCell>其他收入</TableCell>
-                    <TableCell>髮券銷售</TableCell>
-                    <TableCell>信用卡手續費</TableCell>
-                    <TableCell>信用卡收入</TableCell>
-                    <TableCell>暫收款</TableCell>
-                    <TableCell>音樂視訊費用</TableCell>
-                    <TableCell>文具用品(匯影印)</TableCell>
-                    <TableCell>活動廣告費(印刷、廣告)</TableCell>
-                    <TableCell>折舊費(互助費)</TableCell>
-                    <TableCell>營業稅(稅捐)</TableCell>
-                    <TableCell>職工福利</TableCell>
-                    <TableCell>活動促銷贈品支出</TableCell>
-                    <TableCell>交通費</TableCell>
-                    <TableCell>交際費(公關)</TableCell>
-                    <TableCell>店用器材設備</TableCell>
-                    <TableCell>年度大項支出</TableCell>
-                    <TableCell>短溢金</TableCell>
-                    <TableCell>紅利支出</TableCell>
-                    <TableCell>信用卡手續費(支出)</TableCell>
-                    <TableCell>髮片支出</TableCell>
-                    <TableCell>入金卡使用</TableCell>
-                    <TableCell>信用卡使用</TableCell>
-                    <TableCell>暫付款</TableCell>
-                    <TableCell>包套卡支出</TableCell>
-                    <TableCell>客戶欠單</TableCell>
-                    <TableCell>現金禮券</TableCell>
-                    <TableCell>行政幹部薪資</TableCell>
-                    <TableCell>設計師薪資</TableCell>
-                    <TableCell>助理薪資</TableCell>
-                    <TableCell>業績獎金</TableCell>
-                    <TableCell>員工借支</TableCell>
-                    <TableCell>員工獎勵</TableCell>
-                    <TableCell>伙食費</TableCell>
-                    <TableCell>髮券使用</TableCell>
-                    <TableCell>房屋租金(租賃稅)</TableCell>
-                    <TableCell>勞健保勞退費</TableCell>
-                    <TableCell>教育訓練費</TableCell>
-                    <TableCell>總公司管理費</TableCell>
-                    <TableCell>材料貨款(員購)支出</TableCell>
-                    <TableCell>水費</TableCell>
-                    <TableCell>電費</TableCell>
-                    <TableCell>瓦斯費</TableCell>
-                    <TableCell>電話費(網路)</TableCell>
-                    <TableCell>修繕費</TableCell>
-                    <TableCell>店用耗材</TableCell>
-                    <TableCell>其他(雜項)支出</TableCell>
-                    <TableCell>清潔費用(毛巾清洗)</TableCell>
-                    <TableCell>書報雜誌費</TableCell>
+        <CardHeader className="items-center pb-4" action={<GenericMoreButton />}>
+          <CardTitle>收支科目明細</CardTitle>
+        </CardHeader>
+        <div className="px-5 pb-5">
+              <Table className="min-w-[7000px]">
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>時間</TableHead>
+                    <TableHead numeric>收入合計</TableHead>
+                    <TableHead numeric>支出合計</TableHead>
+                    <TableHead numeric>結餘合計</TableHead>
+                    <TableHead numeric>材料貨款(員購)收入</TableHead>
+                    <TableHead numeric>包套卡收入</TableHead>
+                    <TableHead numeric>集點卡兌換</TableHead>
+                    <TableHead numeric>顧客還單</TableHead>
+                    <TableHead numeric>租金收入</TableHead>
+                    <TableHead numeric>活動促銷贈品收入</TableHead>
+                    <TableHead numeric>營業收入</TableHead>
+                    <TableHead numeric>售貨收入</TableHead>
+                    <TableHead numeric>入金卡收入</TableHead>
+                    <TableHead numeric>其他收入</TableHead>
+                    <TableHead numeric>髮券銷售</TableHead>
+                    <TableHead numeric>信用卡手續費</TableHead>
+                    <TableHead numeric>信用卡收入</TableHead>
+                    <TableHead numeric>暫收款</TableHead>
+                    <TableHead numeric>音樂視訊費用</TableHead>
+                    <TableHead numeric>文具用品(匯影印)</TableHead>
+                    <TableHead numeric>活動廣告費(印刷、廣告)</TableHead>
+                    <TableHead numeric>折舊費(互助費)</TableHead>
+                    <TableHead numeric>營業稅(稅捐)</TableHead>
+                    <TableHead numeric>職工福利</TableHead>
+                    <TableHead numeric>活動促銷贈品支出</TableHead>
+                    <TableHead numeric>交通費</TableHead>
+                    <TableHead numeric>交際費(公關)</TableHead>
+                    <TableHead numeric>店用器材設備</TableHead>
+                    <TableHead numeric>年度大項支出</TableHead>
+                    <TableHead numeric>短溢金</TableHead>
+                    <TableHead numeric>紅利支出</TableHead>
+                    <TableHead numeric>信用卡手續費(支出)</TableHead>
+                    <TableHead numeric>髮片支出</TableHead>
+                    <TableHead numeric>入金卡使用</TableHead>
+                    <TableHead numeric>信用卡使用</TableHead>
+                    <TableHead numeric>暫付款</TableHead>
+                    <TableHead numeric>包套卡支出</TableHead>
+                    <TableHead numeric>客戶欠單</TableHead>
+                    <TableHead numeric>現金禮券</TableHead>
+                    <TableHead numeric>行政幹部薪資</TableHead>
+                    <TableHead numeric>設計師薪資</TableHead>
+                    <TableHead numeric>助理薪資</TableHead>
+                    <TableHead numeric>業績獎金</TableHead>
+                    <TableHead numeric>員工借支</TableHead>
+                    <TableHead numeric>員工獎勵</TableHead>
+                    <TableHead numeric>伙食費</TableHead>
+                    <TableHead numeric>髮券使用</TableHead>
+                    <TableHead numeric>房屋租金(租賃稅)</TableHead>
+                    <TableHead numeric>勞健保勞退費</TableHead>
+                    <TableHead numeric>教育訓練費</TableHead>
+                    <TableHead numeric>總公司管理費</TableHead>
+                    <TableHead numeric>材料貨款(員購)支出</TableHead>
+                    <TableHead numeric>水費</TableHead>
+                    <TableHead numeric>電費</TableHead>
+                    <TableHead numeric>瓦斯費</TableHead>
+                    <TableHead numeric>電話費(網路)</TableHead>
+                    <TableHead numeric>修繕費</TableHead>
+                    <TableHead numeric>店用耗材</TableHead>
+                    <TableHead numeric>其他(雜項)支出</TableHead>
+                    <TableHead numeric>清潔費用(毛巾清洗)</TableHead>
+                    <TableHead numeric>書報雜誌費</TableHead>
                   </TableRow>
-                </TableHead>
+                </TableHeader>
                 <TableBody>
                   {results.data.map((data, index) => (
                     <TableRow key={`account-detail-${index}`}>
-                      <TableCell>{format(new Date(data.date), 'MM/dd/yyyy')}</TableCell>
-                      <TableCell>
-                        {data.materialPaymentIncome +
+                      <TableCell className="tabular-nums">{format(new Date(data.date), 'MM/dd/yyyy')}</TableCell>
+                      <TableCell numeric>
+                        {formatNumber(data.materialPaymentIncome +
                           data.packageCardRevenue +
                           data.rendezvousCardExchange +
                           data.customerReturn +
@@ -141,10 +108,10 @@ function Results({
                           data.voucherSales +
                           data.creditCardFees +
                           data.creditCardIncome +
-                          data.temporaryCollection}
+                          data.temporaryCollection)}
                       </TableCell>
-                      <TableCell>
-                        {data.musicVideoFee +
+                      <TableCell numeric>
+                        {formatNumber(data.musicVideoFee +
                           data.stationery +
                           data.eventAdvertisingCosts +
                           data.depreciationFee +
@@ -186,10 +153,10 @@ function Results({
                           data.shopSupplies +
                           data.otherExpenses +
                           data.cleaningFee +
-                          data.booksMagazinesAndFees}
+                          data.booksMagazinesAndFees)}
                       </TableCell>
-                      <TableCell>
-                        {data.materialPaymentIncome +
+                      <TableCell numeric>
+                        {formatNumber(data.materialPaymentIncome +
                           data.packageCardRevenue +
                           data.rendezvousCardExchange +
                           data.customerReturn +
@@ -245,76 +212,70 @@ function Results({
                             data.shopSupplies +
                             data.otherExpenses +
                             data.cleaningFee +
-                            data.booksMagazinesAndFees)}
+                            data.booksMagazinesAndFees))}
                       </TableCell>
-                      <TableCell>{data.materialPaymentIncome}</TableCell>
-                      <TableCell>{data.packageCardRevenue}</TableCell>
-                      <TableCell>{data.rendezvousCardExchange}</TableCell>
-                      <TableCell>{data.customerReturn}</TableCell>
-                      <TableCell>{data.rentalIncome}</TableCell>
-                      <TableCell>{data.eventPromotionGiftIncome}</TableCell>
-                      <TableCell>{data.operatingIncome}</TableCell>
-                      <TableCell>{data.salesRevenue}</TableCell>
-                      <TableCell>{data.depositCardIncome}</TableCell>
-                      <TableCell>{data.otherIncome}</TableCell>
-                      <TableCell>{data.voucherSales}</TableCell>
-                      <TableCell>{data.creditCardFees}</TableCell>
-                      <TableCell>{data.creditCardIncome}</TableCell>
-                      <TableCell>{data.temporaryCollection}</TableCell>
-                      <TableCell>{data.musicVideoFee}</TableCell>
-                      <TableCell>{data.stationery}</TableCell>
-                      <TableCell>{data.eventAdvertisingCosts}</TableCell>
-                      <TableCell>{data.depreciationFee}</TableCell>
-                      <TableCell>{data.businessTax}</TableCell>
-                      <TableCell>{data.employeeBenefits}</TableCell>
-                      <TableCell>{data.eventPromotionGifts}</TableCell>
-                      <TableCell>{data.transportation}</TableCell>
-                      <TableCell>{data.communicationFees}</TableCell>
-                      <TableCell>{data.shopEquipment}</TableCell>
-                      <TableCell>{data.annualMajorExpenditure}</TableCell>
-                      <TableCell>{data.shortPremium}</TableCell>
-                      <TableCell>{data.dividendPayout}</TableCell>
-                      <TableCell>{data.creditCardFee}</TableCell>
-                      <TableCell>{data.filmingExpenditure}</TableCell>
-                      <TableCell>{data.depositCardUse}</TableCell>
-                      <TableCell>{data.creditCardUse}</TableCell>
-                      <TableCell>{data.provisionalPayment}</TableCell>
-                      <TableCell>{data.packageCardExpenditure}</TableCell>
-                      <TableCell>{data.customerArrears}</TableCell>
-                      <TableCell>{data.cashCoupon}</TableCell>
-                      <TableCell>{data.administrativeCadreSalary}</TableCell>
-                      <TableCell>{data.designerSalary}</TableCell>
-                      <TableCell>{data.assistantSalary}</TableCell>
-                      <TableCell>{data.performanceBonus}</TableCell>
-                      <TableCell>{data.employeeLoan}</TableCell>
-                      <TableCell>{data.employeeRewards}</TableCell>
-                      <TableCell>{data.foodExpenses}</TableCell>
-                      <TableCell>{data.voucherUse}</TableCell>
-                      <TableCell>{data.houseRent}</TableCell>
-                      <TableCell>{data.laborHealthInsuranceLaborRefund}</TableCell>
-                      <TableCell>{data.educationAndTrainingFees}</TableCell>
-                      <TableCell>{data.headOfficeManagementFee}</TableCell>
-                      <TableCell>{data.materialPurchase}</TableCell>
-                      <TableCell>{data.waterFee}</TableCell>
-                      <TableCell>{data.electricityFee}</TableCell>
-                      <TableCell>{data.wasfer}</TableCell>
-                      <TableCell>{data.telephoneCharges}</TableCell>
-                      <TableCell>{data.repairFee}</TableCell>
-                      <TableCell>{data.shopSupplies}</TableCell>
-                      <TableCell>{data.otherExpenses}</TableCell>
-                      <TableCell>{data.cleaningFee}</TableCell>
-                      <TableCell>{data.booksMagazinesAndFees}</TableCell>
+                      <TableCell numeric>{formatNumber(data.materialPaymentIncome)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.packageCardRevenue)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.rendezvousCardExchange)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.customerReturn)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.rentalIncome)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.eventPromotionGiftIncome)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.operatingIncome)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.salesRevenue)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.depositCardIncome)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.otherIncome)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.voucherSales)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.creditCardFees)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.creditCardIncome)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.temporaryCollection)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.musicVideoFee)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.stationery)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.eventAdvertisingCosts)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.depreciationFee)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.businessTax)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.employeeBenefits)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.eventPromotionGifts)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.transportation)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.communicationFees)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.shopEquipment)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.annualMajorExpenditure)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.shortPremium)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.dividendPayout)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.creditCardFee)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.filmingExpenditure)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.depositCardUse)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.creditCardUse)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.provisionalPayment)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.packageCardExpenditure)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.customerArrears)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.cashCoupon)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.administrativeCadreSalary)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.designerSalary)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.assistantSalary)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.performanceBonus)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.employeeLoan)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.employeeRewards)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.foodExpenses)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.voucherUse)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.houseRent)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.laborHealthInsuranceLaborRefund)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.educationAndTrainingFees)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.headOfficeManagementFee)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.materialPurchase)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.waterFee)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.electricityFee)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.wasfer)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.telephoneCharges)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.repairFee)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.shopSupplies)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.otherExpenses)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.cleaningFee)}</TableCell>
+                      <TableCell numeric>{formatNumber(data.booksMagazinesAndFees)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
           <TablePagination
-            labelRowsPerPage='每頁顯示數量'
-            component="div"
             count={results.totalCount}
             onPageChange={handleOnChangePage}
             onRowsPerPageChange={handleOnChangeRowsPerPage}
@@ -322,7 +283,7 @@ function Results({
             rowsPerPage={results.pageLimit}
             rowsPerPageOptions={[5, 10, 20, 25, 1000]}
           />
-        </CardActions>
+        </div>
       </Card>
     </div>
   )

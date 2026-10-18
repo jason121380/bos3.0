@@ -1,11 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button, Card, CardActions, CardContent, CardHeader, Checkbox,
-  Divider, TextField, Table, TableBody, TableCell, TableHead,
-  TablePagination, TableRow, Typography, IconButton, Collapse,
-  Box, Grid, Dialog, DialogActions, DialogContent, DialogContentText,
-  DialogTitle
-} from '@mui/material'
+// Divider 只用於下方列印範本（#printMain / #printThermal），維持列印輸出不變
+import { Divider } from '@mui/material'
 import TableEditBar from 'components/TableEditBar'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
@@ -14,38 +9,22 @@ import { useFetchDownloadOrderReport } from 'hooks/useFetchOrderReport'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import React, { useEffect, useRef, useState, Fragment } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink, useHistory } from 'react-router-dom'
 import { CSVLink } from "react-csv";
-import { KeyboardArrowDown, KeyboardArrowUp, Print, Visibility, Paid } from 'ui/icons'
+import { ChevronDown, ChevronUp, ChevronsDownUp, ChevronsUpDown, CircleDollarSign, Download, Eye, Printer } from 'lucide-react'
 import { useLocation } from 'react-router'
 import useFetchReCheckoutOrder from 'hooks/useFetchReCheckoutOrder'
 import designerNameType from 'helper/designerNameType'
 import _ from 'lodash'
 import pagenationLabel from './../../helper/pagenationLabel'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  filterButton: css({
-    marginRight: theme.spacing(2),
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 1400,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
-  paymentLinePay: css({
-    width: '50px',
-    imageRendering: '-webkit-optimize-contrast',
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
+import { EmptyState } from 'ui/empty-state'
+import { formatNumber } from 'ui/format'
+import { Field, Input } from 'ui/input'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Results({
   className,
@@ -663,261 +642,245 @@ function Results({
   }
 
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <Card>
+    <div {...rest} css={className}>
+      <Card className="mt-6">
         <CardHeader
-          sx={{ pb: 1 }}
+          className="items-center pb-4"
           action={
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <Button
-                variant="contained"
-                color="inherit"
-                size="small"
-                onClick={() => setAllExtend(!allExtend)}
-              >
+            <Fragment>
+              <Button size="sm" variant="secondary" onClick={() => setAllExtend(!allExtend)}>
+                {allExtend ? <ChevronsDownUp strokeWidth={1.75} /> : <ChevronsUpDown strokeWidth={1.75} />}
                 {allExtend ? '全部收合' : '全部展開'}
               </Button>
-              <CSVLink data={excelData} filename="掛單列表.csv" >
-                <Button variant="contained" color="inherit" size="small">
+              <Button asChild size="sm" variant="secondary">
+                <CSVLink data={excelData} filename="掛單列表.csv" >
+                  <Download strokeWidth={1.75} />
                   報表匯出
-                </Button>
-              </CSVLink>
-            </div>
+                </CSVLink>
+              </Button>
+            </Fragment>
           }
-          title={
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold' }}>
-                掛單列表
-              </Typography>
-              <Typography color="textSecondary" variant="body2" data-testid="result-counter">
-                共 {totalCount} 筆
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell style={{ padding: '4px 8px', width: '150px' }}>
-                      <Checkbox
-                        checked={selectedOrders.length === orders.length && orders.length > 0}
-                        color="primary"
-                        indeterminate={
-                          selectedOrders.length > 0 && selectedOrders.length < orders.length
-                        }
-                        onChange={handleSelectAll}
-                        disabled={orders.length === 0}
-                        sx={{ padding: '4px' }}
-                      />
-                    </TableCell>
-                    <TableCell style={{ minWidth: '150px' }}>帳單編號/時間</TableCell>
-                    <TableCell style={{ minWidth: '150px' }}>客戶</TableCell>
-                    <TableCell>設計師</TableCell>
-                    <TableCell>指定/不指定</TableCell>
-                    <TableCell className="cellHighlight">營業現金應收</TableCell>
-                    <TableCell>服務消費</TableCell>
-                    <TableCell>店販消費</TableCell>
-                    {membershipDisplay && <TableCell>會員卡販賣</TableCell>}
-                    <TableCell>卡券使用 (入業績)</TableCell>
-                    <TableCell>卡券販賣 (入業績)</TableCell>
-                    <TableCell>業績收入</TableCell>
-                    <TableCell>卡券販賣 (不入業績)</TableCell>
-                    <TableCell>卡券使用(-)</TableCell>
-                    <TableCell>第三方卡券(-)</TableCell>
-                    <TableCell>其他付款方式(-)</TableCell>
-                    <TableCell>入金使用(-)</TableCell>
-                    {bonusDisplay && <TableCell>點數折抵金額(-)</TableCell>}
-                    <TableCell>備註</TableCell>
-                    <TableCell>訂單來源</TableCell>
-                  </TableRow>
+        >
+          <div className="flex items-baseline gap-3">
+            <CardTitle>掛單列表</CardTitle>
+            <span className="text-label text-text-secondary tabular-nums" data-testid="result-counter">
+              共 {totalCount} 筆
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table className="min-w-[1400px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-[160px]">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={selectedOrders.length === orders.length && orders.length > 0}
+                    indeterminate={
+                      selectedOrders.length > 0 && selectedOrders.length < orders.length
+                    }
+                    onChange={handleSelectAll}
+                    disabled={orders.length === 0}
+                  />
                 </TableHead>
-                <TableBody>
-                  {orders.length > 0 &&
-                    orders.map((order, index) => (
-                      <Fragment key={index}>
-                        <TableRow data-testid={`order-row`}>
-                          <TableCell style={{ padding: '0 8px', whiteSpace: 'nowrap' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                              <Checkbox
-                                color="primary"
-                                checked={selectedOrders.indexOf(order.id) > -1}
-                                onChange={() => handleSelectOne(order.id)}
-                                sx={{ padding: '4px' }}
-                                inputProps={{
-                                  'data-testid': `order-checkbox-${index}`,
-                                }}
-                                disabled={order.isCloseAccount}
-                              />
-                              <IconButton
-                                sx={{ padding: '4px !important', color: 'rgb(var(--text-tertiary))' }}
-                                aria-label="expand row"
-                                size="small"
-                                onClick={() => handleOrderExtend(order.id)}
-                              >
-                                {orderExtendArr.find(id => id === order.id) !== undefined ? (
-                                  <KeyboardArrowUp fontSize="small" />
-                                ) : (
-                                  <KeyboardArrowDown fontSize="small" />
-                                )}
-                              </IconButton>
-                              <IconButton
-                                sx={{ padding: '4px !important', color: 'rgb(var(--text-tertiary))' }}
-                                size="small"
-                                disabled={disabled}
-                                onClick={() => handlePrintOrderDetail(order.id)}
-                              >
-                                <Print fontSize="small" />
-                              </IconButton>
-                              <IconButton
-                                sx={{ padding: '4px !important', color: 'rgb(var(--text-tertiary))' }}
-                                component={RouterLink}
-                                size="small"
-                                to={`/draft-order/${location.search.length > 0
-                                  ? `${order.id}?startDate=${location.search
-                                    .split('=')[1]
-                                    .substring(0, 13)}&endDate=${location.search.split('=')[2]}`
-                                  : `${order.id}`
-                                  }`}
-                                data-testid={`order-${index}`}
-                              >
-                                <Visibility fontSize="small" />
-                              </IconButton>
-                              <IconButton
-                                sx={{ padding: '4px !important', color: 'rgb(var(--text-tertiary))' }}
-                                size="small"
-                                disabled={isClick}
-                                onClick={() => {
-                                  passwordEnabled.checkout ? handleCheckout(index) : handleCheckoutOrder(order)
-                                }}
-                                data-testid={`order-checkout-${index}`}
-                              >
-                                <Paid fontSize="small" />
-                              </IconButton>
-                            </div>
-                          </TableCell>
-
-                          <TableCell>
-                            #{order.no}
-                            <Typography variant="body2">
-                              {format(new Date(order.date), 'yyyy/MM/dd')}/
-                              {weekDisplay(format(new Date(order.date), 'eeee'))}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            {idx(order, _ => _.customer.name)}
-                            <Typography variant="body2">
-                              {idx(order, _ => _.customer.cellphone)}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            {`${idx(order, _ => _.designer.lastName)}${idx(
-                              order,
-                              _ => _.designer.firstName
-                            )}`}
-                            {idx(order, _ => _.designer.designerNo)
-                              ? `/${idx(order, _ => _.designer.designerNo)}`
-                              : ''}
-                          </TableCell>
-                          <TableCell>{order.isDesignate ? 'Y' : 'N'}</TableCell>
-                          <TableCell className="cellHighlight">
-                            {Math.round(order.businessCash)}
-                          </TableCell>
-                          <TableCell>
-                            {Math.round(order.serviceFakeTotal)}
-                            <Typography variant="body2">
-                              {order.serviceOrders.length > 0 && serviceOrders(order)}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            {Math.round(order.productFakeTotal)}
-                            <Typography variant="body2">
-                              {order.productOrders.length > 0 && productOrders(order)}
-                            </Typography>
-                          </TableCell>
-                          {membershipDisplay && (
-                            <TableCell>
-                              {Math.round(order.membershipFakeTotal)}
-                              <Typography variant="body2">
-                                {order.membershipOrders.length > 0 && membershipOrders(order)}
-                              </Typography>
-                            </TableCell>
-                          )}
-                          <TableCell>{Math.round(order.useTicketTotal)}</TableCell>
-                          <TableCell>{Math.round(order.ticketSellIntoPerformance)}</TableCell>
-                          <TableCell>{Math.round(order.performanceIncome)}</TableCell>
-                          <TableCell>{Math.round(order.ticketSellNotIntoPerformance)}</TableCell>
-                          <TableCell>{Math.round(order.usedTicketForDecount)}</TableCell>
-                          <TableCell>
-                            {Math.round(order.thirdPartTicketForDecount)}
-                            <Typography variant="body2">
-                              {order.serviceOrders.length > 0 &&
-                                order.productOrders.length > 0 &&
-                                thirdParty(order)}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>
-                            {Math.round(order.otherPayWayForDecount)}
-                            <Typography variant="body2">{order.payType2}</Typography>
-                          </TableCell>
-                          <TableCell>{order.walletUsedForDecount}</TableCell>
-                          {bonusDisplay && <TableCell>{order.bonusDecountForReport}</TableCell>}
-                          <TableCell>{order.remark}</TableCell>
-                          <TableCell>{order.source}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
-                            <Collapse
-                              in={orderExtendArr.find(id => id === order.id) !== undefined}
-                              timeout="auto"
-                              unmountOnExit
+                <TableHead className="min-w-[150px]">帳單編號/時間</TableHead>
+                <TableHead className="min-w-[150px]">客戶</TableHead>
+                <TableHead>設計師</TableHead>
+                <TableHead>指定/不指定</TableHead>
+                <TableHead numeric className="text-text">營業現金應收</TableHead>
+                <TableHead numeric>服務消費</TableHead>
+                <TableHead numeric>店販消費</TableHead>
+                {membershipDisplay && <TableHead numeric>會員卡販賣</TableHead>}
+                <TableHead numeric>卡券使用 (入業績)</TableHead>
+                <TableHead numeric>卡券販賣 (入業績)</TableHead>
+                <TableHead numeric>業績收入</TableHead>
+                <TableHead numeric>卡券販賣 (不入業績)</TableHead>
+                <TableHead numeric>卡券使用(-)</TableHead>
+                <TableHead numeric>第三方卡券(-)</TableHead>
+                <TableHead numeric>其他付款方式(-)</TableHead>
+                <TableHead numeric>入金使用(-)</TableHead>
+                {bonusDisplay && <TableHead numeric>點數折抵金額(-)</TableHead>}
+                <TableHead>備註</TableHead>
+                <TableHead>訂單來源</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {orders.length > 0 &&
+                orders.map((order, index) => (
+                  <Fragment key={index}>
+                    <TableRow data-testid={`order-row`} data-state={selectedOrders.indexOf(order.id) > -1 ? 'selected' : undefined}>
+                      <TableCell className="whitespace-nowrap px-3">
+                        <div className="flex items-center gap-1">
+                          <Checkbox
+                            aria-label={`選取 #${order.no}`}
+                            checked={selectedOrders.indexOf(order.id) > -1}
+                            onChange={() => handleSelectOne(order.id)}
+                            data-testid={`order-checkbox-${index}`}
+                            disabled={order.isCloseAccount}
+                            className="mr-1"
+                          />
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-text-secondary"
+                            aria-label="expand row"
+                            onClick={() => handleOrderExtend(order.id)}
+                          >
+                            {orderExtendArr.find(id => id === order.id) !== undefined ? (
+                              <ChevronUp strokeWidth={1.75} />
+                            ) : (
+                              <ChevronDown strokeWidth={1.75} />
+                            )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-text-secondary"
+                            aria-label="列印帳單"
+                            disabled={disabled}
+                            onClick={() => handlePrintOrderDetail(order.id)}
+                          >
+                            <Printer strokeWidth={1.75} />
+                          </Button>
+                          <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                            <RouterLink
+                              aria-label="查看掛單"
+                              to={`/draft-order/${location.search.length > 0
+                                ? `${order.id}?startDate=${location.search
+                                  .split('=')[1]
+                                  .substring(0, 13)}&endDate=${location.search.split('=')[2]}`
+                                : `${order.id}`
+                                }`}
+                              data-testid={`order-${index}`}
                             >
-                              <Box sx={{ p: 2, backgroundColor: 'rgb(var(--background))', borderLeft: '4px solid rgb(var(--accent))' }}>
-                                {/* Headers */}
-                                <div style={{ display: 'flex', marginBottom: '8px', borderBottom: '1px solid #f0f0f0', paddingBottom: '4px', gap: '12px' }}>
-                                  <div style={{ width: '100px', flex: '0 0 100px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>設計師</div>
-                                  <div style={{ width: '300px', flex: '0 0 300px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>項目</div>
-                                  <div style={{ width: '80px', flex: '0 0 80px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>價格</div>
-                                  <div style={{ width: '60px', flex: '0 0 60px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>數量</div>
-                                  <div style={{ width: '200px', flex: '0 0 200px', fontWeight: 'bold', fontSize: '14px', color: '#000' }}>互助人</div>
-                                </div>
-                                {/* Body */}
-                                {order.staticDetail.map((data, index) => (
-                                  <div key={index} style={{ display: 'flex', marginBottom: '6px', alignItems: 'flex-start', gap: '12px' }}>
-                                    <div style={{ width: '100px', flex: '0 0 100px', fontSize: '14px', color: '#333' }}>{data.designerName}</div>
-                                    <div style={{ width: '300px', flex: '0 0 300px', fontSize: '14px', color: '#333' }}>{`${data.itemName}(${data.serviceType})`}</div>
-                                    <div style={{ width: '80px', flex: '0 0 80px', fontSize: '14px', color: '#333' }}>
-                                      {data.serviceType === '卡券使用' ? parseInt(data.price * 100) / 100 : data.price}
+                              <Eye strokeWidth={1.75} />
+                            </RouterLink>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-text-secondary"
+                            aria-label="結帳"
+                            disabled={isClick}
+                            onClick={() => {
+                              passwordEnabled.checkout ? handleCheckout(index) : handleCheckoutOrder(order)
+                            }}
+                            data-testid={`order-checkout-${index}`}
+                          >
+                            <CircleDollarSign strokeWidth={1.75} />
+                          </Button>
+                        </div>
+                      </TableCell>
+
+                      <TableCell>
+                        <div className="font-medium tabular-nums">#{order.no}</div>
+                        <div className="text-caption tabular-nums text-text-secondary">
+                          {format(new Date(order.date), 'yyyy/MM/dd')}/
+                          {weekDisplay(format(new Date(order.date), 'eeee'))}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {idx(order, _ => _.customer.name)}
+                        <div className="text-caption tabular-nums text-text-secondary">
+                          {idx(order, _ => _.customer.cellphone)}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {`${idx(order, _ => _.designer.lastName)}${idx(
+                          order,
+                          _ => _.designer.firstName
+                        )}`}
+                        {idx(order, _ => _.designer.designerNo)
+                          ? `/${idx(order, _ => _.designer.designerNo)}`
+                          : ''}
+                      </TableCell>
+                      <TableCell>{order.isDesignate ? 'Y' : 'N'}</TableCell>
+                      <TableCell numeric className="font-medium">
+                        {formatNumber(Math.round(order.businessCash))}
+                      </TableCell>
+                      <TableCell numeric>
+                        {formatNumber(Math.round(order.serviceFakeTotal))}
+                        <div className="text-caption text-text-secondary">
+                          {order.serviceOrders.length > 0 && serviceOrders(order)}
+                        </div>
+                      </TableCell>
+                      <TableCell numeric>
+                        {formatNumber(Math.round(order.productFakeTotal))}
+                        <div className="text-caption text-text-secondary">
+                          {order.productOrders.length > 0 && productOrders(order)}
+                        </div>
+                      </TableCell>
+                      {membershipDisplay && (
+                        <TableCell numeric>
+                          {formatNumber(Math.round(order.membershipFakeTotal))}
+                          <div className="text-caption text-text-secondary">
+                            {order.membershipOrders.length > 0 && membershipOrders(order)}
+                          </div>
+                        </TableCell>
+                      )}
+                      <TableCell numeric>{formatNumber(Math.round(order.useTicketTotal))}</TableCell>
+                      <TableCell numeric>{formatNumber(Math.round(order.ticketSellIntoPerformance))}</TableCell>
+                      <TableCell numeric>{formatNumber(Math.round(order.performanceIncome))}</TableCell>
+                      <TableCell numeric>{formatNumber(Math.round(order.ticketSellNotIntoPerformance))}</TableCell>
+                      <TableCell numeric>{formatNumber(Math.round(order.usedTicketForDecount))}</TableCell>
+                      <TableCell numeric>
+                        {formatNumber(Math.round(order.thirdPartTicketForDecount))}
+                        <div className="text-caption text-text-secondary">
+                          {order.serviceOrders.length > 0 &&
+                            order.productOrders.length > 0 &&
+                            thirdParty(order)}
+                        </div>
+                      </TableCell>
+                      <TableCell numeric>
+                        {formatNumber(Math.round(order.otherPayWayForDecount))}
+                        <div className="text-caption text-text-secondary">{order.payType2}</div>
+                      </TableCell>
+                      <TableCell numeric>{formatNumber(order.walletUsedForDecount)}</TableCell>
+                      {bonusDisplay && <TableCell numeric>{formatNumber(order.bonusDecountForReport)}</TableCell>}
+                      <TableCell className="text-text-secondary">{order.remark}</TableCell>
+                      <TableCell className="text-text-secondary">{order.source}</TableCell>
+                    </TableRow>
+                    {orderExtendArr.find(id => id === order.id) !== undefined && (
+                      <TableRow className="hover:bg-transparent">
+                        <TableCell colSpan={23} className="bg-surface px-4 py-3">
+                          {/* 明細：設計師 / 項目 / 價格 / 數量 / 互助人 */}
+                          <div className="flex gap-3 border-0 border-b border-solid border-border pb-2 text-label text-text-secondary">
+                            <div className="w-[100px] flex-none">設計師</div>
+                            <div className="w-[300px] flex-none">項目</div>
+                            <div className="w-[80px] flex-none text-right">價格</div>
+                            <div className="w-[60px] flex-none text-right">數量</div>
+                            <div className="w-[200px] flex-none">互助人</div>
+                          </div>
+                          {order.staticDetail.map((data, index) => (
+                            <div key={index} className="flex items-start gap-3 py-1.5 text-body text-text">
+                              <div className="w-[100px] flex-none">{data.designerName}</div>
+                              <div className="w-[300px] flex-none">{`${data.itemName}(${data.serviceType})`}</div>
+                              <div className="w-[80px] flex-none text-right tabular-nums">
+                                {formatNumber(data.serviceType === '卡券使用' ? parseInt(data.price * 100) / 100 : data.price)}
+                              </div>
+                              <div className="w-[60px] flex-none text-right tabular-nums">{data.count}</div>
+                              <div className="w-[200px] flex-none">
+                                {data.helperList.length > 0 ? (
+                                  data.helperList.map((helper, idx) => (
+                                    <div key={idx}>
+                                      {`${helper.helperType}[${helper.helperName}]`}
                                     </div>
-                                    <div style={{ width: '60px', flex: '0 0 60px', fontSize: '14px', color: '#333' }}>{data.count}</div>
-                                    <div style={{ width: '200px', flex: '0 0 200px', fontSize: '14px', color: '#333' }}>
-                                      {data.helperList.length > 0 ? (
-                                        data.helperList.map((helper, idx) => (
-                                          <div key={idx} style={{ fontSize: '14px', color: '#333' }}>
-                                            {`${helper.helperType}[${helper.helperName}]`}
-                                          </div>
-                                        ))
-                                      ) : (
-                                        '-'
-                                      )}
-                                    </div>
-                                  </div>
-                                ))}
-                              </Box>
-                            </Collapse>
-                          </TableCell>
-                          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6} />
-                          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7} />
-                        </TableRow>
-                      </Fragment>
-                    ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
+                                  ))
+                                ) : (
+                                  '-'
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </Fragment>
+                ))}
+            </TableBody>
+          </Table>
+          {orders.length === 0 && <EmptyState title="此區間沒有掛單" description="調整日期或篩選條件後再試一次。" />}
+        </div>
       </Card>
       <TableEditBar
         editBarOnClick={editBarOnClick}
@@ -925,42 +888,39 @@ function Results({
         onCancel={passwordEnabled.delete ? handleCancel : handleConfirmCancel}
       />
 
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{dialogType === 'delete' ? '刪除訂單？' : '訂單結帳'}</DialogTitle>
-        <DialogContent style={{ overflow: 'visible' }}>
-          <DialogContentText id="alert-dialog-description">
-            <TextField
-              value={password}
-              label={dialogType === 'delete' ? '刪除密碼' : '編輯訂單密碼'}
-              onChange={event => setPassword(event.target.value)}
-              inputProps={{
-                type: 'password',
-                'data-testid': 'delete-password',
+      <Dialog open={openDialog} onOpenChange={o => !o && handleCloseDialog()}>
+        <DialogContent size="sm" aria-describedby={undefined}>
+          <DialogHeader>
+            <DialogTitle>{dialogType === 'delete' ? '刪除訂單？' : '訂單結帳'}</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <Field label={dialogType === 'delete' ? '刪除密碼' : '編輯訂單密碼'} htmlFor="draft-order-password">
+              <Input
+                id="draft-order-password"
+                type="password"
+                value={password}
+                onChange={event => setPassword(event.target.value)}
+                data-testid="delete-password"
+              />
+            </Field>
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="ghost" onClick={handleCloseDialog}>
+              取消
+            </Button>
+            <Button
+              variant={dialogType === 'delete' ? 'danger' : 'primary'}
+              onClick={() => {
+                dialogType === 'delete' ? handleConfirmCancel() : handleComfirmCheckoutOrder()
               }}
-            />
-          </DialogContentText>
+              autoFocus
+              data-testid="confirm"
+              disabled={editBarOnClick || isClick}
+            >
+              確認
+            </Button>
+          </DialogFooter>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            取消
-          </Button>
-          <Button
-            onClick={() => {
-              dialogType === 'delete' ? handleConfirmCancel() : handleComfirmCheckoutOrder()
-            }}
-            color="primary"
-            autoFocus
-            data-testid="confirm"
-            disabled={editBarOnClick || isClick}
-          >
-            確認
-          </Button>
-        </DialogActions>
       </Dialog>
       <div style={{ display: 'none' }} id="printMain">
         {

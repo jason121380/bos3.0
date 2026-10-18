@@ -1,62 +1,32 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from '@mui/material'
 import { format } from 'date-fns'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
-
-const styles = {
-  card: css({
-    margin: theme.spacing(1.5, 0),
-    boxShadow: 'none !important',
-    border: '1px solid rgb(var(--border)) !important',
-  }),
-  cardHeader: css({
-    '& .MuiCardHeader-title': {
-      fontSize: '15px',
-      fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-    },
-  }),
-  tableRow: css({
-    backgroundColor: 'rgb(var(--background)) !important',
-  }),
-}
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 export default function TotalPrice({ startDate, endDate, rev, exp }) {
   return (
-    <Card css={styles.card}>
-      <CardHeader
-        css={styles.cardHeader}
-        title={`${format(startDate, 'yyyy-MM-dd')} ~ ${format(endDate, 'yyyy-MM-dd')} 合計`}
-      />
-      <CardContent>
+    <Card className="mb-6">
+      <CardHeader className="pb-4">
+        <CardTitle className="tabular-nums">{`${format(startDate, 'yyyy-MM-dd')} ~ ${format(endDate, 'yyyy-MM-dd')} 合計`}</CardTitle>
+      </CardHeader>
+      <div className="px-5 pb-5">
         <Table>
-          <TableHead>
-            <TableRow css={styles.tableRow}>
-              <TableCell>收入</TableCell>
-              <TableCell>支出</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead numeric>收入</TableHead>
+              <TableHead numeric>支出</TableHead>
+              <TableHead numeric className="text-text">合計</TableHead>
             </TableRow>
-          </TableHead>
+          </TableHeader>
           <TableBody>
-            <TableRow css={styles.tableRow}>
-              <TableCell>{rev}</TableCell>
-              <TableCell>{exp}</TableCell>
-              <TableCell>{rev - exp}</TableCell>
+            <TableRow>
+              <TableCell numeric>{formatNumber(rev)}</TableCell>
+              <TableCell numeric>{formatNumber(exp)}</TableCell>
+              <TableCell numeric className="font-medium">{formatNumber(rev - exp)}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
-      </CardContent>
+      </div>
     </Card>
   )
 }

@@ -1,138 +1,72 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Paper,
-  Grid,
-} from '@mui/material'
 import PropTypes from 'prop-types'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
-
-const styles = {
-  root: css({}),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    // minWidth: 900,
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-  cardHeader: css({
-    '& .MuiCardHeader-title': {
-      fontSize: '15px',
-      fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  }),
-  orderNoLink: css({
-    textDecorationLine: 'underline',
-  }),
-  tableRow: css({
-    backgroundColor: 'rgb(var(--background)) !important',
-    '&:hover': {
-      backgroundColor: 'rgb(var(--background)) !important',
-    },
-  }),
-  tableContainer: css({
-    boxShadow: 'none !important',
-    backgroundColor: 'rgb(var(--background)) !important',
-    border: 'none !important',
-  }),
-}
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableRow } from 'ui/table'
 
 function Results({ results }) {
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12} md={6} lg={4}>
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div>
         <Card>
-          <CardHeader title="其他支付方式明細" css={styles.cardHeader} />
-          <CardContent css={styles.content}>
-            <div css={styles.inner}>
-              <TableContainer component={Paper} css={styles.tableContainer} elevation={0}>
-                <Table size="small" aria-label="a dense table">
-                  <TableBody>
-                    {results.otherPayway.map((data, index) => (
-                      <TableRow key={index} css={styles.tableRow}>
-                        <TableCell>{data.paywayName}</TableCell>
-                        <TableCell>{data.usedPrice}</TableCell>
-                        <TableCell>({data.usedPriceWithNoCash})</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          </CardContent>
+          <CardHeader className="pb-4">
+            <CardTitle>其他支付方式明細</CardTitle>
+          </CardHeader>
+          <div className="px-5 pb-5">
+            <Table aria-label="a dense table">
+              <TableBody>
+                {results.otherPayway.map((data, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{data.paywayName}</TableCell>
+                    <TableCell numeric>{formatNumber(data.usedPrice)}</TableCell>
+                    <TableCell numeric className="text-text-secondary">({formatNumber(data.usedPriceWithNoCash)})</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </Card>
-      </Grid>
-      <Grid item xs={12} md={6} lg={4}>
+      </div>
+      <div>
         <Card>
-          <CardHeader title="第三方卡券明細" css={styles.cardHeader} />
-          <CardContent css={styles.content}>
-            <div css={styles.inner}>
-              <TableContainer component={Paper} css={styles.tableContainer} elevation={0}>
-                <Table size="small" aria-label="a dense table">
-                  <TableBody>
-                    {results.thirdPartTicket.map((data, index) => (
-                      <TableRow key={index} css={styles.tableRow}>
-                        <TableCell>{data.ticketName}</TableCell>
-                        <TableCell>{data.usedPrice}</TableCell>
-                        <TableCell>({data.usedPriceWithNoCash})</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          </CardContent>
+          <CardHeader className="pb-4">
+            <CardTitle>第三方卡券明細</CardTitle>
+          </CardHeader>
+          <div className="px-5 pb-5">
+            <Table aria-label="a dense table">
+              <TableBody>
+                {results.thirdPartTicket.map((data, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{data.ticketName}</TableCell>
+                    <TableCell numeric>{formatNumber(data.usedPrice)}</TableCell>
+                    <TableCell numeric className="text-text-secondary">({formatNumber(data.usedPriceWithNoCash)})</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </Card>
-      </Grid>
-      <Grid item xs={12} md={6} lg={4}>
+      </div>
+      <div>
         <Card>
-          <CardHeader title="入金儲值明細" css={styles.cardHeader} />
-          <CardContent css={styles.content}>
-            <div css={styles.inner}>
-              <TableContainer component={Paper} css={styles.tableContainer} elevation={0}>
-                <Table size="small" aria-label="a dense table">
-                  <TableBody>
-                    {results.walletDeposit.map((data, index) => (
-                      <TableRow key={index} css={styles.tableRow}>
-                        <TableCell>{data.paywayName}</TableCell>
-                        <TableCell>{data.usedPrice}</TableCell>
-                        <TableCell>({data.usedPriceWithNoCash})</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
-          </CardContent>
+          <CardHeader className="pb-4">
+            <CardTitle>入金儲值明細</CardTitle>
+          </CardHeader>
+          <div className="px-5 pb-5">
+            <Table aria-label="a dense table">
+              <TableBody>
+                {results.walletDeposit.map((data, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{data.paywayName}</TableCell>
+                    <TableCell numeric>{formatNumber(data.usedPrice)}</TableCell>
+                    <TableCell numeric className="text-text-secondary">({formatNumber(data.usedPriceWithNoCash)})</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </Card>
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   )
 }
 
