@@ -494,7 +494,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
             placeholder="搜尋選單"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="h-8 bg-background pl-8 text-label"
+            className="h-8 border-border bg-background pl-8 text-label hover:border-border-strong"
           />
         </div>
       </div>
