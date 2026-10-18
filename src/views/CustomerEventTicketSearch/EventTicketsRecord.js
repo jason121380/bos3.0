@@ -1,53 +1,13 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Card, Table, TableBody, TableCell, TableHead,
-  TableRow, Box, TableContainer, Collapse, Typography
-} from '@mui/material'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import { Fragment, useState } from 'react'
 import clsx from 'clsx';
 import { cloneDeep } from 'lodash';
 import { format } from 'date-fns';
-import { css } from '@emotion/react'
+import { Card } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
 
-const arrowUp = <KeyboardArrowUpIcon style={{ cursor: 'pointer' }} />
-const arrowDown = <KeyboardArrowDownIcon style={{ cursor: 'pointer' }} />
-
-const styles = {
-  root: css({
-    marginTop: 24,
-    '& th.MuiTableCell-root.MuiTableCell-head': {
-      padding: '2px 5px',
-      whiteSpace: 'pre',
-      fontWeight: 600,
-      backgroundColor: '#08424c',
-      color: '#ffffff',
-    },
-    '& td.MuiTableCell-root.MuiTableCell-body': {
-      padding: '2px 5px',
-      whiteSpace: 'pre'
-    }
-  }),
-  setPadding: css({
-    '& > .MuiTableCell-root': {
-      padding: '12px 16px !important'
-    }
-  }),
-  cursor: css({
-    cursor: 'pointer',
-  }),
-  box: css({
-    borderRadius: 4,
-    overflow: 'hidden',
-    boxShadow: '0px 1px 3px 0px rgb(0 0 0 / 12%)',
-    padding: 0,
-    margin: 16,
-    '& th': {
-      backgroundColor: '#b94831 !important'
-    },
-  }),
-}
+const arrowUp = <ChevronUp className="h-5 w-5 text-text-secondary" strokeWidth={1.75} />
+const arrowDown = <ChevronDown className="h-5 w-5 text-text-secondary" strokeWidth={1.75} />
 
 function EventTicketsRecord({ data }) {
   const { message, customerEventTickets } = data
@@ -67,67 +27,53 @@ function EventTicketsRecord({ data }) {
   return (
     <Fragment>
       {customerEventTickets.length > 0 ? (
-        <Card css={styles.root}>
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell></TableCell>
-                  <TableCell>名稱</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {customerEventTickets.map(({ eventName, tickets }, i) => {
-                  const isSelect = selectIds.includes(`${eventName}-${i}`)
-                  const Icon = () => isSelect ? arrowUp : arrowDown
-                  return (
-                    <Fragment key={`${eventName}-${i}`}>
-                      <TableRow css={clsx(tickets.length ? styles.cursor : '')} onClick={() => tickets.length && handleSetCollapse(`${eventName}-${i}`)}>
-                        <TableCell>
-                          {tickets.length ? <Icon /> : ''}
-                        </TableCell>
-                        <TableCell>{eventName}</TableCell>
-                      </TableRow>
-                      {tickets.length ? (
-                        <TableRow>
-                          <TableCell style={{ padding: 0 }} colSpan={10}>
-                            <Collapse timeout="auto" unmountOnExit in={selectIds.indexOf(`${eventName}-${i}`) > -1}>
-                              <Box padding={2} css={styles.box}>
-                                <TableContainer >
-                                  <Table>
-                                    <TableHead>
-                                      <TableRow>
-                                        <TableCell>流水號</TableCell>
-                                        <TableCell>發券日期</TableCell>
-                                        <TableCell>發券店家</TableCell>
-                                      </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                      {tickets.map(({ serialNumber, consumptionDate, consumptionStoreName }) => (
-                                        <TableRow key={serialNumber}>
-                                          <TableCell>{serialNumber}</TableCell>
-                                          <TableCell>{format(consumptionDate, 'yyyy/M/d')}</TableCell>
-                                          <TableCell>{consumptionStoreName}</TableCell>
-                                        </TableRow>
-                                      ))}
-                                    </TableBody>
-                                  </Table>
-                                </TableContainer>
-                              </Box>
-                            </Collapse>
-                          </TableCell>
-                        </TableRow>
-                      ) : null}
-                    </Fragment>
-                  )
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
+        <div className="flex flex-col gap-4">
+          {/* 手機版：每個活動一張卡片，點擊展開該活動的抽獎券列表 */}
+          {customerEventTickets.map(({ eventName, tickets }, i) => {
+            const isSelect = selectIds.includes(`${eventName}-${i}`)
+            const Icon = () => isSelect ? arrowUp : arrowDown
+            return (
+              <Fragment key={`${eventName}-${i}`}>
+                <Card className="overflow-hidden">
+                  <button
+                    type="button"
+                    className={clsx('flex min-h-11 w-full items-center justify-between gap-3 px-5 py-4 text-left', tickets.length ? 'cursor-pointer hover:bg-surface-hover' : 'cursor-default')}
+                    onClick={() => tickets.length && handleSetCollapse(`${eventName}-${i}`)}
+                  >
+                    <span className="flex min-w-0 flex-col gap-1">
+                      <span className="text-caption text-text-secondary">名稱</span>
+                      <span className="text-heading text-text">{eventName}</span>
+                    </span>
+                    {tickets.length ? <Icon /> : ''}
+                  </button>
+                  {tickets.length ? (
+                    selectIds.indexOf(`${eventName}-${i}`) > -1 && (
+                      <ul className="border-0 border-t border-solid border-border">
+                        {tickets.map(({ serialNumber, consumptionDate, consumptionStoreName }) => (
+                          <li key={serialNumber} className="border-0 border-b border-solid border-border px-5 py-3 last:border-b-0">
+                            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-body">
+                              <dt className="text-label text-text-secondary">流水號</dt>
+                              <dd className="m-0 break-all text-right tabular-nums text-text">{serialNumber}</dd>
+                              <dt className="text-label text-text-secondary">發券日期</dt>
+                              <dd className="m-0 text-right tabular-nums text-text">{format(consumptionDate, 'yyyy/M/d')}</dd>
+                              <dt className="text-label text-text-secondary">發券店家</dt>
+                              <dd className="m-0 text-right text-text">{consumptionStoreName}</dd>
+                            </dl>
+                          </li>
+                        ))}
+                      </ul>
+                    )
+                  ) : null}
+                </Card>
+              </Fragment>
+            )
+          })}
+        </div>
+      ) : (
+        <Card>
+          <EmptyState title={message} />
         </Card>
-      ) : <Typography variant="h3" style={{ textAlign: 'center', marginTop: 50 }}>
-        {message}
-      </Typography>}
+      )}
     </Fragment>
   )
 }
