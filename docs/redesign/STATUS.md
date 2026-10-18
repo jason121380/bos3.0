@@ -38,6 +38,13 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ## 進行中
 
 - **第二層第二輪**：用新元件換掉第一輪留下的 MUI（Select、ToggleButton、Checkbox、Switch、Avatar、MUI 分頁等）。6 批，清單見 `batches/r2-*.txt`。
+- **批次 6（2026/10/19，分支 `claude/ui-batch6-box`，v3.0-1019-0241）**：`AccountingSetting/AccountingItemCreate.js` 5 個 TextField 改 `Field`＋`Input`（標籤在上）。選批理由：會計設定表單、欄位單純，無下拉／Autocomplete／日期／helperText／`inputRef`。`AccountingSetting.js`、`index.js` 無 MUI 欄位未動。本批為下一組累積（與 PR #11、PR #12 同組，合併順序在後）。驗證：eslint 0 error；verify-logic 通過；portal-root-scan 0/0；全域單元測試 52/52 通過；`CI=true npm run build` 成功。bundle 備註：本分支 `TopBar` 尚未讀取 `version.js`（PR #12 未 merge），故版號字串尚未進 bundle，待整組 merge 後進 bundle。**外觀待實機**：圖示與輸入框底對齊、`w-[700px]` 窄螢幕換行。
+- **版本清單**：
+
+  | 版號 | 日期時間 | 批次內容 | PR | commit | checks |
+  |---|---|---|---|---|---|
+  | v3.0-1019-0241 | 2026/10/19 02:41 | 批次 6：AccountingSetting 表單標籤改版；新增 `src/version.js` | 待補 | 待補 | eslint 0 error／verify-logic 通過／portal 0/0／全域 52/52／build 成功；版號字串待整組 merge 後進 bundle |
+
 - **批次 4（2026/10/19，分支 `claude/ui-batch4-box`，PR #10）**：`CouponCreate` 三個 About 檔的欄位標籤改為上方標籤（`Field`＋`Input`／`NativeSelect`）；`CouponEdit` 已由 PR #11（v3.0-1019-0202）完成、待下一組 merge，本分支文件先標「已開 PR #11」。驗證：**指揮者已完成**——eslint（改動 3 檔）0 problems（基線亦 0）；verify-logic 三檔全部通過；portal-root-scan 0/0；三檔已無 MUI TextField／Select／FormControl／InputLabel／MenuItem（僅保留註解區塊與 FormControlLabel＋Checkbox，未動）；全域單元測試 17 suites、51 passed＋1 skipped（LoginForm skip，待 PR #6）、0 failed；`CI=true npm run build` 成功。**外觀待實機**：小數字欄位 `w-24`／`w-28` 加寬，需實機瞄一下是否換行。
 - **F 批（2026/10/19，`claude/ui-batch3-box`，PR #9）**：`ui/icons` 補 `CheckBox`／`CheckBoxOutlineBlank`；23 檔 `@mui/icons-material` import 換為 `ui/icons`，`src` 內歸零（25 → 0）；`AboutAssistant.js`（死碼）的 `Chip` import 改指向 `@mui/material/Chip`；jss 實查程式碼為 0 檔（舊「2 檔」更正，下方盤點寫的「jss 2 檔」以此為準）；下方盤點的 `@mui/icons-material` 25 檔是 F 批前的數字，PR #9 後 `src` 內為 0。A3 `AddCustomerModal` 刻意延後（需鍵盤實測，見 `TODO.md`）。本批實改 28 檔（src 25＋docs 3）。驗證（指揮者已完成）：`@mui/icons-material` 在 `src` 僅剩 `ui/icons.js` 一行註解；`swap-icons` 乾跑 files 0／icons 0；`git diff` 非 import 行零變更；`verify-logic` 全部通過；eslint 改動檔 1 error／67 warnings，基線（改前）2 errors／67 warnings，故 0 新增且少 1；`portal-root-scan` 0／0；全域 unit 17 suites，51 passed＋1 skipped（LoginForm skip，待 PR #6）、0 failed；`CI=true npm run build` 成功。
 - **2026/10/19 重新盤點（口徑與細節見 `TODO.md` §三、§四；本檔舊寫的 414／340、約 16 個檔缺 `ui-root` 已更新）**：

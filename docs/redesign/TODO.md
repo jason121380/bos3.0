@@ -59,6 +59,11 @@
 - [ ] **實機確認**：訂單列表捲軸、底部固定合計列（桌機／手機）、列印不出現合計列。
 
 ### P2 — 改版收尾
+- [x] **批次 6（`claude/ui-batch6-box`，v3.0-1019-0241，PR 待補；驗證已通過）**：`AccountingSetting` 收支科目設定表單標籤改版。
+  - 選批理由（白話）：這是會計設定表單，欄位單純——全是一般文字輸入，沒有下拉、Autocomplete、日期、helperText、`inputRef`，也沒有列印，改起來風險最低。
+  - 本批完成：`AccountingItemCreate.js` 的 5 個 TextField（收入／支出各「代號」「名稱」＋「收付方式」）→ `Field`＋`Input`，標籤改在欄位上方；`name`、`type`、`value`、`onChange` 原樣保留。列內 `alignItems` 改 `flex-end`、圖示加 `margin-bottom` 與輸入框底對齊；每列新增 `id`＋`htmlFor`（含 index）讓標籤可點。`AccountingSetting.js`、`index.js` 查無 MUI 欄位，未動。本批無下拉。
+  - 本批為下一組累積（與 PR #11 v3.0-1019-0202、PR #12 v3.0-1019-0232 同組，合併順序在後）。
+  - 新增 `src/version.js`（`APP_VERSION`）。
 - [x] **批次 4（`claude/ui-batch4-box`，PR #10，2026/10/19；指揮者驗證已完成；外觀待實機：小數字欄位 `w-24`／`w-28` 加寬需瞄換行）**：`CouponCreate` 表單標籤改版。
   - 選批理由：範圍明確、低風險——無 Autocomplete、無日期選擇器、無 `window.print`、無 helperText／error 特殊驗證，TextField／Select 皆可直接 reuse 既有 `src/ui`。
   - 本批完成：`AboutCoupon.js`、`AboutDeduction.js`、`AboutAssistantSetting.js` 的 TextField → `Field`＋`Input`（標籤在上）、單選 Select → `Field`＋`NativeSelect`；`index.js` 本來就沒有 MUI 欄位，未動。`Checkbox`／`FormControlLabel`（分指定／互助均分）仍是 MUI，不在本批範圍。
