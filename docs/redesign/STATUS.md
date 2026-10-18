@@ -87,7 +87,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 | v3.0-1019-0142 | 2026-10-19 01:42 | 規則前已 push（對照） | #9 | 已 push，不 amend | GitHub Build/Unit pass；第一組已於 2026-10-19 merge（3f7b35f） |
 | v3.0-1019-0152 | 2026-10-19 01:52 | 規則前已 push（對照） | #10 | 已 push，不 amend | GitHub Build/Unit pass；第一組已於 2026-10-19 merge（29630fa） |
 | v3.0-1019-0202 | 2026-10-19 02:02 | UI 批次5 CouponEdit | #11 | 079a7d0 | GitHub Build/Unit pass；已 merge（merge commit cfc79cd） |
-| v3.0-1019-0232 | 2026-10-19 02:32 | 版本顯示上線（`src/version.js`） | 待補 | bca2950 | 狀態：提前 merge 中（待指揮者驗證與 PR） |
+| v3.0-1019-0232 | 2026-10-19 02:32 | 版本顯示上線（`src/version.js`） | #12 | bca2950 | 狀態：提前 merge 中（對齊後 checks 待重跑） |
 
 ## 刻意不改（需另外決定）
 
