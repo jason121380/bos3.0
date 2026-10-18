@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container, CircularProgress, ThemeProvider, createTheme } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { useFetchProductCategoriesInCreatePicking } from 'hooks/useFetchProductCategories'
 import useFetchSetCreateInventory from 'hooks/useFetchSetCreateInventory'
 import { useFetchGetProductInventory, useFetchGetProductInventoryLazy } from 'hooks/useFetchGetProductInventoryList'
@@ -11,31 +8,12 @@ import { useHistory } from 'react-router'
 import idx from 'idx'
 import { cloneDeep } from 'lodash'
 import sortData from 'helper/sortInventoryData'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { RefreshCw } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import General from './General'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  headerWrap: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    gap: 10
-  })
-}
-
-const theme2 = createTheme({
-  palette: {
-    secondary: {
-      main: '#d36b00'
-    }
-  }
-})
 
 function InventoryWorkCreate() {
   const history = useHistory()
@@ -126,25 +104,25 @@ function InventoryWorkCreate() {
   }
 
   return (
-    <Page css={styles.root} title="新增盤點">
-      <Container maxWidth="md">
-        <div css={styles.headerWrap}>
-          <PageTitle title='新增盤點' subTitle='Inventory Work Create' />
-          <ThemeProvider theme={theme2}>
+    <Page className="ui-root" title="新增盤點">
+      <div className="mx-auto max-w-3xl">
+        <PageHeader
+          title="新增盤點"
+          actions={
             <Button
               onClick={() => getProductInventory()}
-              color="secondary"
-              variant="outlined"
-              style={{ height: 'fit-content' }}
+              variant="secondary"
               disabled={productInventoryData.loading}
             >
+              <RefreshCw strokeWidth={1.75} />
               更新即時庫存
             </Button>
-          </ThemeProvider>
-        </div>
+          }
+        />
         {(products.loading || productCategories.loading) ?
-          <div style={{ textAlign: 'center', marginTop: 150 }}>
-            <CircularProgress />
+          <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[72px] w-full rounded-lg" />
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div> :
           <General
             sort={sort}
@@ -156,7 +134,7 @@ function InventoryWorkCreate() {
             categoriesData={productCategories.data.productCategories}
           />
         }
-      </Container>
+      </div>
     </Page>
   )
 }
