@@ -18,6 +18,7 @@
 ## 進行中
 
 - **第二層第二輪**：用新元件換掉第一輪留下的 MUI（Select、ToggleButton、Checkbox、Switch、Avatar、MUI 分頁等）。6 批，清單見 `batches/r2-*.txt`。
+- **批次 4（分支 `claude/ui-batch4-box`）**：`CouponCreate` 三個 About 檔的欄位標籤改為上方標籤（`Field`＋`Input`／`NativeSelect`）；`CouponEdit` 排下一批。驗證：**指揮者已完成**——eslint（改動 3 檔）0 problems（基線亦 0）；verify-logic 三檔全部通過；portal-root-scan 0/0；三檔已無 MUI TextField／Select／FormControl／InputLabel／MenuItem（僅保留註解區塊與 FormControlLabel＋Checkbox，未動）；全域單元測試 17 suites、51 passed＋1 skipped（LoginForm skip，待 PR #6）、0 failed；`CI=true npm run build` 成功。**外觀待實機**：小數字欄位 `w-24`／`w-28` 加寬，需實機瞄一下是否換行。
 - 目前 `src/views` 仍有 340 個檔案引用 `@mui/*`（全 `src` 414 個）；第二輪 r2-04／r2-06 尚未合併。盤點細節與移除時程見 `TODO.md`。
 - 約 16 個檔案的 `ui` 元件放在 MUI 彈出層內缺 `.ui-root`（待修，見 `TODO.md`）。
 

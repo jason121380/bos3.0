@@ -46,6 +46,11 @@
 
 ### P2 — 改版收尾
 - [ ] **合併第二輪未完成批次**：`r2-04`（表單頁，13 個 commit，worktree `agent-a7e481ba90389d29b`）與 `r2-06`（其他 63 頁，中途中止，worktree `agent-af60fcc4359cfd91c`）——需先 rebase 到最新 main、重新驗證再合併。
+- [ ] **批次 4（`claude/ui-batch4-box`，指揮者驗證已完成，待開 PR；外觀待實機：小數字欄位 `w-24`／`w-28` 加寬需瞄換行）**：`CouponCreate` 表單標籤改版。
+  - 選批理由：範圍明確、低風險——無 Autocomplete、無日期選擇器、無 `window.print`、無 helperText／error 特殊驗證，TextField／Select 皆可直接 reuse 既有 `src/ui`。
+  - 本批完成：`AboutCoupon.js`、`AboutDeduction.js`、`AboutAssistantSetting.js` 的 TextField → `Field`＋`Input`（標籤在上）、單選 Select → `Field`＋`NativeSelect`；`index.js` 本來就沒有 MUI 欄位，未動。`Checkbox`／`FormControlLabel`（分指定／互助均分）仍是 MUI，不在本批範圍。
+  - **下一批：`CouponEdit`**（`CouponCreate` 的平行孿生目錄，三個 About 檔結構相同，可照本批做法）。本批刻意不做。
+  - 剩餘批次：盤點總表在 PR #7，本分支待合併後對齊，這裡不重寫整份盤點。
 - [ ] **階段 4 半遷移盤點**（見下方「盤點結果」），決定 MUI 何時可移除。
 - [ ] 把打帳單的做法（欄位標籤、必填、停用原因、摘要、NT$）套用到 **帳單編輯／草稿／排隊帳單**（`OrderEdit`、`DraftOrderEdit`、`QueueOrderEdit`）——它們共用 `ServicesAutoComplete`，下拉已受益，但版面尚未對齊。
 

@@ -40,3 +40,5 @@
 9. **`git fetch` 與 `log` 串在一起會被權限分類器擋**；單獨 `git fetch origin main` 可以。
 10. **合併後分支要重置到 main**，再推送（快轉）；否則 stop hook 會提示有未推送的 commit。
 11. **Portal 內缺 `ui-root` 要從根因修**：與其逐檔補 class，不如讓 `src/ui` 元件根元素自帶 `ui-root`（已做 8 檔）。檢查用 `node scripts/redesign/portal-root-scan.js`（純文字比對：檔案 import 8 個 ui 元件之一、使用 `<Dialog|Modal|Popper|Popover|Menu|Drawer`、檔內沒有 `ui-root`、且該 ui 元件自身未帶 `ui-root`）。手動整理的清單會漂移（舊「16 檔」實際掃描為 25），以掃描結果為準。限制：只比對同檔案，經由其他元件間接放進 Portal 的不會被抓到。
+12. **單選 MUI Select 換 `NativeSelect`、不換 Radix `ui/select`**：`NativeSelect` 的 `onChange(event)` 與 MUI 相容，`event.target.value` 回傳選項的原始型別值（空字串、數字、布林都行），所以既有的 `idx(event, _ => _.target.value)`、`parseInt(event.target.value)` 等包裝一字不改；Radix `onValueChange` 只給字串，換了就得動 handler（違反鐵則 1）。比對規則與 MUI 一致（非物件值以字串比較），例如 state 存數字 `0`、選項值是 `'0'` 仍會選中（CouponCreate 協助人員人數）。`CouponCreate` 批次（`claude/ui-batch4-box`）採用。
+13. **MUI Select 的 `labelId`／`id="select-item"` 在重複列裡是重複 id**：換成 `Field`＋`NativeSelect` 時不要照搬，否則每列 `<label htmlFor>` 都指向第一個 select；`NativeSelect` 會自動產生唯一 id。全 repo 沒有其他程式或測試用 `select-item` 當選擇器（`rg` 確認過，只出現在各 About 檔本身）。
