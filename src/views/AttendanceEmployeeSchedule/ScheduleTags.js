@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Button, Grid, Typography } from '@mui/material'
+// 班別按鈕底色為各班別自訂色（動態），沿用 MUI Button
+import { Button } from '@mui/material'
 import { css } from '@emotion/react'
 
 const ScheduleTags = ({
@@ -22,10 +23,10 @@ const ScheduleTags = ({
     return timeRange
   }
   return (
-    <Grid container alignItems="center" className="ScheduleTags" spacing={1}>
-      <Grid item xs={12}>
-        <div style={{ marginRight: '20px' }} key="考勤班別">考勤班別 :</div>
-        <div style={{ gap: '10px', display: 'flex', flexWrap: 'wrap' }} key="colorButtonGroup">
+    <div className="ScheduleTags flex items-center">
+      <div className="w-full">
+        <div className="mb-2 text-label text-text-secondary" key="考勤班別">考勤班別 :</div>
+        <div className="flex flex-wrap gap-2.5" key="colorButtonGroup">
           {merchantClockInSchedule && merchantClockInSchedule.length > 0 ? (
             merchantClockInSchedule.map(d => {
               return (
@@ -46,7 +47,7 @@ const ScheduleTags = ({
                     }
                   })}
                 >
-                  <Grid>
+                  <div>
                     <div
                       style={{
                         color: `${fontColor(d.color)}`,
@@ -72,18 +73,18 @@ const ScheduleTags = ({
                     </div>
                     {workingHourDisplay ?
                       <div style={{ color: `${fontColor(d.color)}`, fontSize: '11px' }}>{showScheduleTime(d)}</div> : ''}
-                  </Grid>
+                  </div>
                 </Button>
               )
             })
           ) : (
-            <Typography component="h1" variant="h3">
+            <span className="text-body text-text-secondary">
               無資料
-            </Typography>
+            </span>
           )}
         </div>
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   )
 }
 
