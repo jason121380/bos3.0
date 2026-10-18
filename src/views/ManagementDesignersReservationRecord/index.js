@@ -645,9 +645,9 @@ function Calendar() {
                 alignItems: 'center',
                 gap: '12px',
                 padding: '8px 16px',
-                backgroundColor: checkinMode ? 'rgba(26, 115, 232, 0.05)' : '#f8f9fa',
+                backgroundColor: checkinMode ? 'rgba(26, 115, 232, 0.05)' : 'rgb(var(--surface))',
                 borderRadius: '10px',
-                border: checkinMode ? '1px solid rgba(26, 115, 232, 0.2)' : '1px solid #eee',
+                border: checkinMode ? '1px solid rgba(26, 115, 232, 0.2)' : '1px solid rgb(var(--border))',
                 transition: 'all 0.3s ease',
                 height: '40px',
                 marginTop: 'auto'

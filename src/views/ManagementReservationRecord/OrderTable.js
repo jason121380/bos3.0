@@ -138,7 +138,7 @@ const OrderTable = ({
 
         {/* 不指定預約 */}
         <div
-          style={{ position: 'sticky', left: 0, zIndex: 5, background: '#fff', width: findNDSWidth() }}
+          style={{ position: 'sticky', left: 0, zIndex: 5, background: 'rgb(var(--background))', width: findNDSWidth() }}
           css={styles.ndsWrap}
           id='darkBg'
         >
@@ -211,7 +211,7 @@ const OrderTable = ({
 
         {/* 時間 */}
         <div
-          style={{ position: 'sticky', left: findNDSWidth(), zIndex: 5, background: '#fff' }}
+          style={{ position: 'sticky', left: findNDSWidth(), zIndex: 5, background: 'rgb(var(--background))' }}
           css={styles.timeWrap}
           id='darkBg'
         >
