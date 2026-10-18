@@ -1,22 +1,11 @@
-/** @jsxImportSource @emotion/react */
-import { Container, Button, Grid, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
 import { useState, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { getShortcuts } from 'hooks/useFetchShortcut'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import AdminPageHeader from 'components/AdminPageHeader'
-
-const styles = {
-	root: css({}),
-	container: css({
-		paddingTop: theme.spacing(1.5),
-		paddingBottom: theme.spacing(6),
-	}),
-}
 
 const Shortcut = () => {
 	const shortcuts = getShortcuts()
@@ -103,8 +92,8 @@ const Shortcut = () => {
 
 
 	return (
-		<Page css={styles.root} title="組合設定">
-			<Container maxWidth={false} css={styles.container}>
+		<Page className="ui-root" title="組合設定">
+			<div>
 				<AdminPageHeader
 					title="組合設定"
 					sx={{ backgroundColor: 'transparent', mb: 0 }}
@@ -114,12 +103,12 @@ const Shortcut = () => {
 					}}
 				/>
 				{shortcuts.loading ? (
-					<div style={{ textAlign: 'center', marginTop: 100 }}><CircularProgress /></div>
+					<Skeleton className="h-[320px] w-full rounded-lg" aria-label="載入中" />
 				) : (
 					<Results reportData={reportData} open={open} openCollapse={handleOpenCollapse} onToggleAll={handleToggleAll} />
 				)}
 
-			</Container>
+			</div>
 		</Page>
 	)
 }
