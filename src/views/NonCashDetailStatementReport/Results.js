@@ -1,17 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Paper,
-} from '@mui/material'
 import idx from 'idx'
 import { Fragment } from 'react'
 import { format } from 'date-fns'
 import { css } from '@emotion/react'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 const styles = {
   root: css({}),
@@ -33,117 +26,115 @@ export default function Results({ data, total, bonusDisplay }) {
   return (
     <Fragment>
       {getData != undefined && (
-        <TableContainer component={Paper}>
-          <Table css={styles.table} size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow>
-                <TableCell>帳單日期 </TableCell>
-                <TableCell>序號 </TableCell>
-                <TableCell>帳單編號 </TableCell>
-                <TableCell>客戶姓名</TableCell>
-                <TableCell>設計師代號 </TableCell>
-                <TableCell>設計師姓名 </TableCell>
+        <Table aria-label="a dense table">
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead>帳單日期 </TableHead>
+              <TableHead>序號 </TableHead>
+              <TableHead>帳單編號 </TableHead>
+              <TableHead>客戶姓名</TableHead>
+              <TableHead>設計師代號 </TableHead>
+              <TableHead>設計師姓名 </TableHead>
 
-                {getData.otherPayUsing.map((item, index) => {
-                  return (
-                    <TableCell key={index}>
-                      <span css={styles.centerTd}>{item}</span>
-                      <span css={styles.sepreateDiv}>
-                        <span>金額  </span>
+              {getData.otherPayUsing.map((item, index) => {
+                return (
+                  <TableHead key={index} className="min-w-[140px]">
+                    <span className="flex justify-center">{item}</span>
+                    <span className="flex justify-around">
+                      <span>金額  </span>
+                      <span>手續費</span>
+                    </span>
+                  </TableHead>
+                )
+              })}
+
+              {getData.thirdPartTicketUsing.map((item, index) => {
+                return (
+                  <TableHead key={index} className="min-w-[140px]">
+                    <span className="flex justify-center">{item}</span>
+                    <span className="flex justify-around">
+                        <span>金額   </span>
                         <span>手續費</span>
-                      </span>
-                    </TableCell>
-                  )
-                })}
+                    </span>
+                  </TableHead>
+                )
+              })}
 
-                {getData.thirdPartTicketUsing.map((item, index) => {
+              <TableHead numeric>入金使用金額</TableHead>
+              {bonusDisplay && <TableHead numeric>點數折抵金額</TableHead>}
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {getData != undefined &&
+              getData.nonCashDetailStatement.map((item, index) => {
+                return (
+                  <TableRow key={index}>
+                    <TableCell className="whitespace-nowrap tabular-nums">{format(item.date, 'yyyy/MM/dd')}</TableCell>
+                    <TableCell>{item.serialNumber}</TableCell>
+                    <TableCell>{item.orderNo}</TableCell>
+                    <TableCell>{item.customerName}</TableCell>
+                    <TableCell>{item.designerNo}</TableCell>
+                    <TableCell>{item.designerName}</TableCell>
+                    {item.otherPay.map((i, otherPayIndex) => {
+                      return (
+                        <TableCell key={otherPayIndex}>
+                          <span className="flex justify-around tabular-nums">
+                            <span>{formatNumber(i.price)}</span>
+                            <span>{formatNumber(Math.round(i.handlingFee))}</span>
+                          </span>
+                        </TableCell>
+                      )
+                    })}
+                    {item.thirdPartTicket.map((i, thirdPartTicketIndex) => {
+                      return (
+                        <TableCell key={thirdPartTicketIndex}>
+                          <span className="flex justify-around tabular-nums">
+                            <span>{formatNumber(i.price)}</span>
+                            <span>{formatNumber(Math.round(i.handlingFee))}</span>
+                          </span>
+                        </TableCell>
+                      )
+                    })}
+                    <TableCell numeric>{formatNumber(item.walletUsed)}</TableCell>
+                    {bonusDisplay && <TableCell numeric>{formatNumber(item.bonusDecount)}</TableCell>}
+                  </TableRow>
+                )
+              })}
+          </TableBody>
+          <TableBody className="bg-surface font-medium">
+            {total != undefined && (
+              <TableRow>
+                <TableCell colSpan={6}>
+                  <b>合計</b>
+                </TableCell>
+
+                {total.otherPay.map((i, totalOtherPayIndex)=> {
                   return (
-                    <TableCell key={index}>
-                      <span css={styles.centerTd}>{item}</span>
-                      <span css={styles.sepreateDiv} >
-                          <span>金額   </span>
-                          <span>手續費</span>
+                    <TableCell key={totalOtherPayIndex}>
+                      <span className="flex justify-around tabular-nums">
+                        <span>{formatNumber(i.price)}</span>
+                        <span>{formatNumber(Math.round(i.handlingFee))}</span>
                       </span>
                     </TableCell>
                   )
                 })}
-
-                <TableCell>入金使用金額</TableCell>
-                {bonusDisplay && <TableCell>點數折抵金額</TableCell>}
+                {total.thirdParty.map((i, totalThirdPartyIndex)=> {
+                  return (
+                    <TableCell key={totalThirdPartyIndex}>
+                      <span className="flex justify-around tabular-nums">
+                        <span>{formatNumber(i.price)}</span>
+                        <span>{formatNumber(Math.round(i.handlingFee))}</span>
+                      </span>
+                    </TableCell>
+                  )
+                })}
+                <TableCell numeric className="font-medium">{formatNumber(getData.summary.walletUsed)}</TableCell>
+                {bonusDisplay && <TableCell numeric className="font-medium">{formatNumber(getData.summary.bonusDecount)}</TableCell>}
               </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {getData != undefined &&
-                getData.nonCashDetailStatement.map((item, index) => {
-                  return (
-                    <TableRow key={index}>
-                      <TableCell>{format(item.date, 'yyyy/MM/dd')}</TableCell>
-                      <TableCell>{item.serialNumber}</TableCell>
-                      <TableCell>{item.orderNo}</TableCell>
-                      <TableCell>{item.customerName}</TableCell>
-                      <TableCell>{item.designerNo}</TableCell>
-                      <TableCell>{item.designerName}</TableCell>
-                      {item.otherPay.map((i, otherPayIndex) => {
-                        return (
-                          <TableCell key={otherPayIndex}>
-                            <span css={styles.sepreateDiv}>
-                              <span>{i.price}</span>
-                              <span>{Math.round(i.handlingFee)}</span>
-                            </span>
-                          </TableCell>
-                        )
-                      })}
-                      {item.thirdPartTicket.map((i, thirdPartTicketIndex) => {
-                        return (
-                          <TableCell key={thirdPartTicketIndex}>
-                            <span css={styles.sepreateDiv}>
-                              <span>{i.price}</span>
-                              <span>{Math.round(i.handlingFee)}</span>
-                            </span>
-                          </TableCell>
-                        )
-                      })}
-                      <TableCell css={styles.centerWalletUsed}>{item.walletUsed}</TableCell>
-                      {bonusDisplay && <TableCell css={styles.centerWalletUsed}>{item.bonusDecount}</TableCell>}
-                    </TableRow>
-                  )
-                })}
-            </TableBody>
-            <TableBody>
-              {total != undefined && (
-                <TableRow>
-                  <TableCell colSpan={6}>
-                    <b>合計</b>
-                  </TableCell>
-
-                  {total.otherPay.map((i, totalOtherPayIndex)=> {
-                    return (
-                      <TableCell key={totalOtherPayIndex}>
-                        <span css={styles.sepreateDiv}>
-                          <span>{i.price}</span>
-                          <span>{Math.round(i.handlingFee)}</span>
-                        </span>
-                      </TableCell>
-                    )
-                  })}
-                  {total.thirdParty.map((i, totalThirdPartyIndex)=> {
-                    return (
-                      <TableCell key={totalThirdPartyIndex}>
-                        <span css={styles.sepreateDiv}>
-                          <span>{i.price}</span>
-                          <span>{Math.round(i.handlingFee)}</span>
-                        </span>
-                      </TableCell>
-                    )
-                  })}
-                  <TableCell css={styles.centerWalletUsed}>{getData.summary.walletUsed}</TableCell>
-                  {bonusDisplay && <TableCell css={styles.centerWalletUsed}>{getData.summary.bonusDecount}</TableCell>}
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+            )}
+          </TableBody>
+        </Table>
       )}
     </Fragment>
   )
