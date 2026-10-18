@@ -1,8 +1,7 @@
-import {
-  Table, TableRow, TableBody, TableCell, TableHead, TableContainer,
-  Paper, Typography
-} from '@mui/material'
 import { css } from '@emotion/react'
+import { EmptyState } from 'ui/empty-state'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 const styles = {
   content: css({
@@ -17,34 +16,32 @@ function Results({ reportData }) {
   return (
     <>
       {reportData.length ? (
-        <TableContainer component={Paper} css={styles.inner}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>名次</TableCell>
-                <TableCell>姓名</TableCell>
-                <TableCell>編號</TableCell>
-                <TableCell>手機</TableCell>
-                <TableCell>入金儲值</TableCell>
-                <TableCell>入金使用</TableCell>
+        <Table className="min-w-[700px]">
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="w-16">名次</TableHead>
+              <TableHead>姓名</TableHead>
+              <TableHead>編號</TableHead>
+              <TableHead>手機</TableHead>
+              <TableHead numeric>入金儲值</TableHead>
+              <TableHead numeric>入金使用</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {reportData.map((data, i) => (
+              <TableRow key={data.customerId}>
+                <TableCell className="tabular-nums text-text-secondary">{i + 1}</TableCell>
+                <TableCell>{data.customerName}</TableCell>
+                <TableCell>{data.customerNo}</TableCell>
+                <TableCell className="tabular-nums">{data.customerPhone}</TableCell>
+                <TableCell numeric>{formatNumber(data.walletDeposit)}</TableCell>
+                <TableCell numeric>{formatNumber(data.walletUse)}</TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {reportData.map((data, i) => (
-                <TableRow key={data.customerId} hover>
-                  <TableCell>{i + 1}</TableCell>
-                  <TableCell>{data.customerName}</TableCell>
-                  <TableCell>{data.customerNo}</TableCell>
-                  <TableCell>{data.customerPhone}</TableCell>
-                  <TableCell>{data.walletDeposit}</TableCell>
-                  <TableCell>{data.walletUse}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+            ))}
+          </TableBody>
+        </Table>
       ) : (
-        <Typography style={{ marginTop: 100 }} align='center' component='h1' variant='h3' >無資料</Typography>
+        <EmptyState title="無資料" className="mt-[100px]" />
       )}
 
     </>
