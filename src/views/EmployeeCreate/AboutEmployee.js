@@ -1,9 +1,6 @@
 /** @jsxImportSource @emotion/react */
+// 人員身分下拉的值可能為空字串（尚未載入預設值），保留 MUI Select
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  TextField,
   FormControl,
   InputLabel,
   Select,
@@ -11,84 +8,44 @@ import {
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  alert: css({
-    marginBottom: theme.spacing(3),
-  }),
-  formGroup: css({
-    marginBottom: theme.spacing(3),
-  }),
-  fieldGroup: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  fieldHint: css({
-    margin: theme.spacing(1, 0),
-  }),
-  tags: css({
-    marginTop: theme.spacing(1),
-    '& > * + *': {
-      marginLeft: theme.spacing(1),
-    },
-  }),
-  flexGrow: css({
-    flexGrow: 1,
-  }),
-  dateField: css({
-    '& + &': {
-      marginLeft: theme.spacing(2),
-    },
-  }),
-  field: css({
-    width: "100%"
-  }),
-  serviceInputGroup: css({
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '24px',
-  }),
-}
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
 
 function AboutEmployee({ className, employee, onChange, service, setEmployee, ...rest }) {
   return (
     <Card {...rest} css={className}>
-      <CardHeader title="一般資訊" />
-      <CardContent>
-        <TextField
-          label="姓氏"
-          variant="outlined"
-          fullWidth
-          name="lastName"
-          css={styles.formGroup}
-          value={employee.lastName}
-          onChange={event => onChange({ event, key: 'lastName' })}
-        />
-        <TextField
-          label="名字"
-          variant="outlined"
-          fullWidth
-          name="firstName"
-          css={styles.formGroup}
-          value={employee.firstName}
-          onChange={event => onChange({ event, key: 'firstName' })}
-        />
-        <TextField
-          label="手機號碼"
-          variant="outlined"
-          type="number"
-          fullWidth
-          name="cellphone"
-          css={styles.formGroup}
-          value={employee.cellphone}
-          onChange={event => onChange({ event, key: 'cellphone' })}
-          onWheel={() => document.activeElement.blur()}
-        />
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <FormControl variant="outlined" css={styles.field}>
+      <CardHeader>
+        <CardTitle>一般資訊</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <Field label="姓氏" htmlFor="employee-create-lastName">
+          <Input
+            id="employee-create-lastName"
+            name="lastName"
+            value={employee.lastName}
+            onChange={event => onChange({ event, key: 'lastName' })}
+          />
+        </Field>
+        <Field label="名字" htmlFor="employee-create-firstName">
+          <Input
+            id="employee-create-firstName"
+            name="firstName"
+            value={employee.firstName}
+            onChange={event => onChange({ event, key: 'firstName' })}
+          />
+        </Field>
+        <Field label="手機號碼" htmlFor="employee-create-cellphone">
+          <Input
+            id="employee-create-cellphone"
+            type="number"
+            name="cellphone"
+            value={employee.cellphone}
+            onChange={event => onChange({ event, key: 'cellphone' })}
+            onWheel={() => document.activeElement.blur()}
+          />
+        </Field>
+        <div className="mt-2 flex justify-between">
+          <FormControl variant="outlined" fullWidth>
             <InputLabel>人員身分類別設定</InputLabel>
             <Select
               label='人員身分類別設定'
