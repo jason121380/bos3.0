@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, TextField, Divider, Button, CardActions,
-} from '@mui/material'
+import { TextField } from '@mui/material'
+import { Button } from 'ui/button'
+import { Card, CardContent } from 'ui/card'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import TransferList from '../../components/TransferList.js';
@@ -29,7 +29,7 @@ function General({
 }) {
   return (
     <>
-      <Card css={styles.root}>
+      <Card className="mt-6">
         <CardContent css={styles.content}>
           <TextField
             label='代號'
@@ -45,7 +45,7 @@ function General({
             value={submitData.name}
             onChange={e => handleSetValue(e.target.value, 'name')}
           />
-          <Divider sx={{ my: 2 }} />
+          <div className="my-4 h-px bg-border" />
           <TransferList
             idsKey='serviceIds'
             title='服務項目'
@@ -56,7 +56,7 @@ function General({
             keyword={servicesKeyword}
             keyWordsOnChange={keyWordsOnChange}
           />
-          <Divider sx={{ my: 2 }} />
+          <div className="my-4 h-px bg-border" />
           <TransferList
             idsKey='productIds'
             title='店販銷售'
@@ -67,7 +67,7 @@ function General({
             keyword={productKeyword}
             keyWordsOnChange={keyWordsOnChange}
           />
-          <Divider sx={{ my: 2 }} />
+          <div className="my-4 h-px bg-border" />
           <TransferList
             idsKey='ticketIds'
             title='預收卡'
@@ -78,7 +78,7 @@ function General({
             keyword={ticketKeyword}
             keyWordsOnChange={keyWordsOnChange}
           />
-          <Divider sx={{ my: 2 }} />
+          <div className="my-4 h-px bg-border" />
           <TransferList
             idsKey='membershipIds'
             title='會員卡'
@@ -91,11 +91,11 @@ function General({
           />
         </CardContent>
       </Card>
-      <CardActions style={{ paddingLeft: 0 }}>
-        <Button disabled={isClick} onClick={handleSubmit} color="primary" variant="contained">
+      <div className="mt-6 flex justify-end">
+        <Button disabled={isClick} onClick={handleSubmit} variant="primary">
           儲存
         </Button>
-      </CardActions>
+      </div>
     </>
   )
 }
