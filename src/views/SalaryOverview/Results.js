@@ -1,9 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button, Card, CardActions, CardContent, CardHeader, Divider, Table,
-  TableBody, TableCell, TableHead, TableRow, Typography, Checkbox,
-  Drawer, Grid, Hidden
-} from '@mui/material'
+// 底部操作列沿用 MUI Drawer（persistent），內容改為新元件
+import { Drawer } from '@mui/material'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, Fragment } from 'react'
@@ -13,62 +10,18 @@ import { CSVLink } from "react-csv";
 import { DeleteForever as DeleteForeverIcon, FactCheck as FactCheckIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDestroyUserSalaryMonthlyCheckoutRecord from 'hooks/useFetchDestroyUserSalaryMonthlyCheckoutRecord'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
-const localStyles = {
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid rgb(var(--border))',
-    backgroundColor: 'rgb(var(--background))',
-    overflow: 'hidden',
-  }),
-  content: css({
-    padding: '0 !important',
-  }),
-  inner: css({
-    minWidth: 1000,
-  }),
-  tableHead: css({
-    backgroundColor: 'rgb(var(--background))',
-    '& .MuiTableCell-head': {
-      color: 'rgb(var(--text))',
-      fontWeight: 'bold',
-      borderBottom: 'none',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: 'none',
-      fontSize: '14px !important',
-      color: 'rgb(var(--text))',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-  }),
-  cardHeader: css({
-    padding: '12px 24px !important',
-    '& .MuiCardHeader-title': {
-      fontSize: '16px',
-      fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-    },
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-    borderTop: 'none',
-  }),
-}
+// 「詳情」：已結算為連結、未結算為停用按鈕（與舊版 Button component 切換相同），供 ui/button asChild 包覆
+const DetailLink = React.forwardRef(({ checked, ...props }, ref) => {
+  const Comp = checked ? RouterLink : 'button'
+  return <Comp ref={ref} {...props} />
+})
+DetailLink.displayName = 'DetailLink'
 
 function Results({
   status,
@@ -201,292 +154,171 @@ function Results({
     return editBtnStatus ? '檢視' : isSalaryChecked ? '編輯' : '未結算'
   }
   return (
-    <div {...rest} css={css([localStyles.root, className])} className='SalaryOverviewResult'>
-      <Card css={localStyles.card}>
+    <div {...rest} css={className} className='SalaryOverviewResult'>
+      <Card>
         <CardHeader
-          css={localStyles.cardHeader}
+          className="items-center pb-4"
           action={
-            <CSVLink data={excelData} filename="薪資總表.csv" >
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: 'rgb(var(--surface)) !important',
-                  color: 'rgb(var(--text-secondary)) !important',
-                  borderRadius: '50px',
-                  padding: '6px 24px',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  boxShadow: 'none',
-                  textTransform: 'none',
-                  '&:hover': {
-                    backgroundColor: 'rgb(var(--surface)) !important',
-                    boxShadow: 'none',
-                  }
-                }}
-              >
+            <Button asChild size="sm" variant="secondary">
+              <CSVLink data={excelData} filename="薪資總表.csv" >
                 報表匯出
-              </Button>
-            </CSVLink>
+              </CSVLink>
+            </Button>
           }
-          title={
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span>薪資總覽</span>
-              <Typography color="textSecondary" variant="body2">
-                共 {usersSalary.length} 筆
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={localStyles.content}>
-          <PerfectScrollbar>
-            <div css={localStyles.inner}>
-              <Table size="small">
-                <TableHead css={localStyles.tableHead}>
-                  <TableRow>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={
-                          selectedOrders.length === userId.length && userId.length > 0
-                        }
-                        sx={{ color: 'rgba(0, 0, 0, 0.54) !important' }}
-                        indeterminate={
-                          selectedOrders.length > 0 && selectedOrders.length < usersSalary.length
-                        }
-                        onChange={handleSelectAll}
-                        disabled={usersSalary.length === 0}
-                      />
-                    </TableCell>
-
-                    <TableCell>狀態</TableCell>
-                    <TableCell>姓名</TableCell>
-                    <TableCell>代號</TableCell>
-                    <TableCell>薪資加項</TableCell>
-                    <TableCell>薪資扣項</TableCell>
-                    {borrowDisplay && <TableCell>員工借支</TableCell>}
-                    <TableCell>實際匯款金額</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {usersSalary.map((data, index) => {
-                    if ((isSalaryItemsLock && data.increaseItem > 0) || data.decreaseItem > 0) {
-                      return (
-                        <TableRow key={data.id} css={localStyles.tableRow}>
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              color="primary"
-                              checked={selectedOrders.indexOf(data.id) > -1}
-                              onChange={() => handleSelectOne(data.id)}
-                              inputProps={{
-                                'data-testid': `order-checkbox-${index}`,
-                              }}
-                              disabled={!data.isOnDuty}
-                            />
-                          </TableCell>
-                          <TableCell sx={{ width: '110px' }}>
-                            <Button
-                              component={data.isSalaryChecked ? RouterLink : 'button'}
-                              to={data.isSalaryChecked ? `/salary/edit/${data.id}?date=${calendarDate}` : undefined}
-                              variant="text"
-                              size="small"
-                              disabled={!data.isSalaryChecked}
-                              sx={{
-                                color: data.isSalaryChecked ? 'rgb(var(--text-secondary)) !important' : 'rgba(26, 115, 232, 0.5) !important',
-                                fontWeight: 'bold !important',
-                                fontSize: '14px !important',
-                                minWidth: '80px',
-                                padding: data.isSalaryChecked ? '4px 16px !important' : '4px 8px !important',
-                                backgroundColor: data.isSalaryChecked ? 'rgb(var(--surface)) !important' : 'transparent !important',
-                                border: 'none !important',
-                                borderRadius: '20px !important',
-                                cursor: data.isSalaryChecked ? 'pointer' : 'default',
-                                boxShadow: 'none !important',
-                                transition: 'all 0.2s ease',
-                                '&.Mui-disabled': {
-                                  color: 'rgba(26, 115, 232, 0.4) !important',
-                                },
-                                '&:hover': {
-                                  backgroundColor: data.isSalaryChecked ? 'rgb(var(--surface)) !important' : 'transparent !important',
-                                }
-                              }}
-                            >
-                              {data.isSalaryChecked ? '詳情' : '未結算'}
-                            </Button>
-                          </TableCell>
-                          <TableCell sx={{ fontSize: '14.5px', fontWeight: 600, color: 'rgb(var(--text))', width: '180px' }}>{data.name}</TableCell>
-                          <TableCell sx={{ fontSize: '14px', color: 'text.secondary', width: '100px' }}>{data.designerNo || '-'}</TableCell>
-                          <TableCell sx={{ fontSize: '14px', textAlign: 'left', width: '130px' }}>{data.increaseItem}</TableCell>
-                          <TableCell sx={{ fontSize: '14px', color: 'error.main', textAlign: 'left', width: '130px' }}>
-                            {borrowDisplay ? (data.decreaseItem - findBorrow(data.decreaseItemDetail)) * -1 : data.decreaseItem * -1}
-                          </TableCell>
-                          {borrowDisplay && <TableCell sx={{ fontSize: '14px', textAlign: 'left', width: '130px' }}>{findBorrow(data.decreaseItemDetail) * -1}</TableCell>}
-                          <TableCell sx={{ fontSize: '16px', fontWeight: 'bold', color: theme.palette.primary.main, textAlign: 'left' }}>{data.increaseItem - data.decreaseItem}</TableCell>
-                        </TableRow>
-                      )
-                    } else if (!isSalaryItemsLock) {
-                      return (
-                        <TableRow key={data.id} css={localStyles.tableRow}>
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              color="primary"
-                              checked={selectedOrders.indexOf(data.id) > -1}
-                              onChange={() => handleSelectOne(data.id)}
-                              inputProps={{
-                                'data-testid': `order-checkbox-${index}`,
-                              }}
-                              disabled={!data.isOnDuty}
-                            />
-                          </TableCell>
-                          <TableCell sx={{ width: '110px' }}>
-                            <Button
-                              component={data.isSalaryChecked ? RouterLink : 'button'}
-                              to={data.isSalaryChecked ? `/salary/edit/${data.id}?date=${calendarDate}` : undefined}
-                              variant="text"
-                              size="small"
-                              disabled={!data.isSalaryChecked}
-                              sx={{
-                                color: data.isSalaryChecked ? 'rgb(var(--text-secondary)) !important' : 'rgba(26, 115, 232, 0.5) !important',
-                                fontWeight: 'bold !important',
-                                fontSize: '14px !important',
-                                minWidth: '80px',
-                                padding: data.isSalaryChecked ? '4px 16px !important' : '4px 8px !important',
-                                backgroundColor: data.isSalaryChecked ? 'rgb(var(--surface)) !important' : 'transparent !important',
-                                border: 'none !important',
-                                borderRadius: '20px !important',
-                                cursor: data.isSalaryChecked ? 'pointer' : 'default',
-                                boxShadow: 'none !important',
-                                transition: 'all 0.2s ease',
-                                '&.Mui-disabled': {
-                                  color: 'rgba(26, 115, 232, 0.4) !important',
-                                },
-                                '&:hover': {
-                                  backgroundColor: data.isSalaryChecked ? 'rgb(var(--surface)) !important' : 'transparent !important',
-                                }
-                              }}
-                            >
-                              {data.isSalaryChecked ? '詳情' : '未結算'}
-                            </Button>
-                          </TableCell>
-                          <TableCell sx={{ fontSize: '14.5px', fontWeight: 600, color: 'rgb(var(--text))', width: '180px' }}>
-                            {data.name}
-                            {data.isOnDuty ? '' : <strong style={{ color: 'red', marginLeft: '4px' }}>{' (已離職)'}</strong>}
-                          </TableCell>
-                          <TableCell sx={{ fontSize: '14px', color: 'text.secondary', width: '100px' }}>{data.designerNo || '-'}</TableCell>
-                          <TableCell sx={{ fontSize: '14px', textAlign: 'left', width: '130px' }}>{data.increaseItem}</TableCell>
-                          <TableCell sx={{ fontSize: '14px', textAlign: 'left', width: '130px' }}>
-                            {data.decreaseItem > 0 ? `-${data.decreaseItem}` : data.decreaseItem}
-                          </TableCell>
-                          {borrowDisplay && <TableCell sx={{ fontSize: '14px', textAlign: 'left', width: '130px' }}>{findBorrow(data.decreaseItemDetail)}</TableCell>}
-                          <TableCell sx={{ fontSize: '16px', fontWeight: 'bold', color: theme.palette.primary.main, textAlign: 'left', width: '180px' }}>{data.increaseItem - data.decreaseItem}</TableCell>
-                        </TableRow>
-                      )
+        >
+          <div className="flex items-baseline gap-3">
+            <CardTitle>薪資總覽</CardTitle>
+            <span className="text-label tabular-nums text-text-secondary">
+              共 {usersSalary.length} 筆
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table className="min-w-[1000px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={
+                      selectedOrders.length === userId.length && userId.length > 0
                     }
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={localStyles.actions}>
-        </CardActions>
+                    indeterminate={
+                      selectedOrders.length > 0 && selectedOrders.length < usersSalary.length
+                    }
+                    onChange={handleSelectAll}
+                    disabled={usersSalary.length === 0}
+                  />
+                </TableHead>
+
+                <TableHead>狀態</TableHead>
+                <TableHead>姓名</TableHead>
+                <TableHead>代號</TableHead>
+                <TableHead numeric>薪資加項</TableHead>
+                <TableHead numeric>薪資扣項</TableHead>
+                {borrowDisplay && <TableHead numeric>員工借支</TableHead>}
+                <TableHead numeric>實際匯款金額</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {usersSalary.map((data, index) => {
+                if ((isSalaryItemsLock && data.increaseItem > 0) || data.decreaseItem > 0) {
+                  return (
+                        <TableRow key={data.id} className="hover:bg-transparent" data-state={selectedOrders.indexOf(data.id) > -1 ? 'selected' : undefined}>
+                          <TableCell className="w-12">
+                            <Checkbox
+                              aria-label={`選取 ${data.name}`}
+                              checked={selectedOrders.indexOf(data.id) > -1}
+                              onChange={() => handleSelectOne(data.id)}
+                              data-testid={`order-checkbox-${index}`}
+                              disabled={!data.isOnDuty}
+                            />
+                          </TableCell>
+                          <TableCell className="w-[110px]">
+                            <Button asChild variant={data.isSalaryChecked ? 'secondary' : 'ghost'} size="sm" className="min-w-[80px]">
+                              <DetailLink
+                                checked={data.isSalaryChecked}
+                                to={data.isSalaryChecked ? `/salary/edit/${data.id}?date=${calendarDate}` : undefined}
+                                disabled={!data.isSalaryChecked}
+                              >
+                                {data.isSalaryChecked ? '詳情' : '未結算'}
+                              </DetailLink>
+                            </Button>
+                          </TableCell>
+                          <TableCell className="w-[180px] font-medium">{data.name}</TableCell>
+                          <TableCell className="w-[100px] tabular-nums text-text-secondary">{data.designerNo || '-'}</TableCell>
+                          <TableCell numeric className="w-[130px]">{formatNumber(data.increaseItem)}</TableCell>
+                          <TableCell numeric className="w-[130px] text-danger">
+                            {formatNumber(borrowDisplay ? (data.decreaseItem - findBorrow(data.decreaseItemDetail)) * -1 : data.decreaseItem * -1)}
+                          </TableCell>
+                          {borrowDisplay && <TableCell numeric className="w-[130px]">{formatNumber(findBorrow(data.decreaseItemDetail) * -1)}</TableCell>}
+                          <TableCell numeric className="font-bold text-accent">{formatNumber(data.increaseItem - data.decreaseItem)}</TableCell>
+                        </TableRow>
+                  )
+                } else if (!isSalaryItemsLock) {
+                  return (
+                        <TableRow key={data.id} className="hover:bg-transparent" data-state={selectedOrders.indexOf(data.id) > -1 ? 'selected' : undefined}>
+                          <TableCell className="w-12">
+                            <Checkbox
+                              aria-label={`選取 ${data.name}`}
+                              checked={selectedOrders.indexOf(data.id) > -1}
+                              onChange={() => handleSelectOne(data.id)}
+                              data-testid={`order-checkbox-${index}`}
+                              disabled={!data.isOnDuty}
+                            />
+                          </TableCell>
+                          <TableCell className="w-[110px]">
+                            <Button asChild variant={data.isSalaryChecked ? 'secondary' : 'ghost'} size="sm" className="min-w-[80px]">
+                              <DetailLink
+                                checked={data.isSalaryChecked}
+                                to={data.isSalaryChecked ? `/salary/edit/${data.id}?date=${calendarDate}` : undefined}
+                                disabled={!data.isSalaryChecked}
+                              >
+                                {data.isSalaryChecked ? '詳情' : '未結算'}
+                              </DetailLink>
+                            </Button>
+                          </TableCell>
+                          <TableCell className="w-[180px] font-medium">
+                            {data.name}
+                            {data.isOnDuty ? '' : <strong className="ml-1 text-danger">{' (已離職)'}</strong>}
+                          </TableCell>
+                          <TableCell className="w-[100px] tabular-nums text-text-secondary">{data.designerNo || '-'}</TableCell>
+                          <TableCell numeric className="w-[130px]">{formatNumber(data.increaseItem)}</TableCell>
+                          <TableCell numeric className="w-[130px]">
+                            {formatNumber(data.decreaseItem > 0 ? `-${data.decreaseItem}` : data.decreaseItem)}
+                          </TableCell>
+                          {borrowDisplay && <TableCell numeric className="w-[130px]">{formatNumber(findBorrow(data.decreaseItemDetail))}</TableCell>}
+                          <TableCell numeric className="w-[180px] font-bold text-accent">{formatNumber(data.increaseItem - data.decreaseItem)}</TableCell>
+                        </TableRow>
+                  )
+                }
+              })}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
       <Drawer anchor="bottom" open={open} PaperProps={{ elevation: 1 }} variant="persistent">
-        <Grid alignItems="center" container sx={{ gap: '0px 20px', padding: 1.5 }} >
-          <Hidden smDown>
-            <Grid item md={4}>
-              <Typography color="textSecondary" variant="subtitle1">
-                {selectedOrders.length} selected
-              </Typography>
-            </Grid>
-          </Hidden>
-          <Grid item>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-              gap: '12px',
-              padding: '8px 0',
-            }}>
-              <Button
-                variant="contained"
-                disabled={isSalaryItemsLock}
-                onClick={() => handleDeleteCheckout()}
-                startIcon={<DeleteForeverIcon />}
-                style={{
-                  borderRadius: '50px',
-                  padding: '8px 24px',
-                  fontSize: '14px',
-                  fontWeight: 'bold',
-                  textTransform: 'none',
-                  boxShadow: 'none',
-                  backgroundColor: '#ea4335',
-                  color: 'white',
-                }}
-              >
-                刪除
-              </Button>
-            </div>
-          </Grid>
+        <div className="ui-root flex flex-wrap items-center gap-x-5 border-0 border-t border-solid border-border bg-background px-6 py-3">
+          <div className="hidden md:block md:w-1/3">
+            <span className="text-body tabular-nums text-text-secondary">
+              {selectedOrders.length} selected
+            </span>
+          </div>
+          <div className="flex flex-wrap justify-center gap-3 py-2">
+            <Button
+              variant="danger"
+              disabled={isSalaryItemsLock}
+              onClick={() => handleDeleteCheckout()}
+            >
+              <DeleteForeverIcon />
+              刪除
+            </Button>
+          </div>
           {!isSalaryItemsLock && (
             <Fragment>
-              <Grid item >
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  flexWrap: 'wrap',
-                  gap: '12px',
-                  padding: '8px 0',
-                }}>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleCloseAccount(1)}
-                    disabled={disabledBtn}
-                    startIcon={<FactCheckIcon />}
-                    style={{
-                      borderRadius: '50px',
-                      padding: '8px 24px',
-                      fontSize: '14px',
-                      fontWeight: 'bold',
-                      textTransform: 'none',
-                      boxShadow: 'none',
-                      backgroundColor: 'rgb(var(--accent))',
-                      color: 'white',
-                    }}
-                  >
-                    {isThisMonthSalaryChacked ? '重新月結' : '月結訂單'}
-                  </Button>
-                </div>
-              </Grid>
-              <Grid item >
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  flexWrap: 'wrap',
-                  gap: '12px',
-                  padding: '8px 0',
-                }}>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleCloseAccount(2)}
-                    disabled={disabledBtn}
-                    startIcon={<FactCheckIcon />}
-                    style={{
-                      borderRadius: '50px',
-                      padding: '8px 24px',
-                      fontSize: '14px',
-                      fontWeight: 'bold',
-                      textTransform: 'none',
-                      boxShadow: 'none',
-                      backgroundColor: 'rgb(var(--accent))',
-                      color: 'white',
-                    }}
-                  >
-                    {isThisMonthSalaryChacked ? '重新月結不帶入加扣項' : '月結訂單不帶入加扣項'}
-                  </Button>
-                </div>
-              </Grid>
+              <div className="flex flex-wrap justify-center gap-3 py-2">
+                <Button
+                  variant="primary"
+                  onClick={() => handleCloseAccount(1)}
+                  disabled={disabledBtn}
+                >
+                  <FactCheckIcon />
+                  {isThisMonthSalaryChacked ? '重新月結' : '月結訂單'}
+                </Button>
+              </div>
+              <div className="flex flex-wrap justify-center gap-3 py-2">
+                <Button
+                  variant="secondary"
+                  onClick={() => handleCloseAccount(2)}
+                  disabled={disabledBtn}
+                >
+                  <FactCheckIcon />
+                  {isThisMonthSalaryChacked ? '重新月結不帶入加扣項' : '月結訂單不帶入加扣項'}
+                </Button>
+              </div>
             </Fragment>
           )}
-        </Grid>
+        </div>
       </Drawer>
     </div>
   )
