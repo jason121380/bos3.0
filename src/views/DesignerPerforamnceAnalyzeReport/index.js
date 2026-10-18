@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Autocomplete, TextField, Checkbox, Switch } from '@mui/material'
+import { Autocomplete, TextField, Checkbox } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
@@ -18,6 +18,7 @@ import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
+import { Switch } from 'ui/switch'
 import CompareFilter from './CompareFilter'
 import Compare from './Compare'
 
@@ -252,9 +253,7 @@ const DesignerPerforamnceAnalyzeReport = () => {
                 設定條件
               </Button>
             )}
-            <label className="flex items-center text-body text-text">
-              <span>比較模式</span><Switch checked={compareDisplay} onChange={(e, v) => setCompareDisplay(v)} />
-            </label>
+            <Switch label="比較模式" labelPlacement="start" checked={compareDisplay} onChange={(e, v) => setCompareDisplay(v)} />
           </>
         }
       />
