@@ -1,6 +1,6 @@
-import { Switch } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
+import { Switch } from 'ui/switch'
 import { Provider } from 'context/designerContext'
 import useFetchMerchantDesigner, {
   useFetcDesignerFixedSalaryItemsLazy,
@@ -542,9 +542,9 @@ function Settings({ match, history }) {
               <div className="mt-6 flex flex-col gap-2 border-0 border-t border-solid border-border px-3 pt-4">
                 <p className="text-label text-text-secondary">報到模式</p>
                 <Switch
+                  aria-label="報到模式"
                   checked={checkinMode}
                   onChange={(e, v) => setCheckinMode(v)}
-                  size="small"
                 />
               </div>
             )}

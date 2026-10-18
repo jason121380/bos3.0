@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
-// 大型頁策略：只換卡片外框與區塊標題；抽成級距表單（TextField、ToggleButton、Tabs、Grid 排版）保留 MUI
+// 大型頁策略：抽成級距表單（TextField、Tabs、Grid 排版）保留 MUI
+// 「分指定/不指定」的 handler 掛在 FormControlLabel 的 onClick（label 上），換成 CheckboxField 會改變點擊文字時的觸發次數，保留 MUI
 import {
   Checkbox, Grid, TextField,
-  FormControlLabel, Tab, Tabs, ToggleButton,
-  ToggleButtonGroup
+  FormControlLabel, Tab, Tabs
 } from '@mui/material'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
@@ -652,7 +653,7 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                 <h4 className="my-4 text-heading text-text">
                   抽成模式
                 </h4>
-                <ToggleButtonGroup
+                <ToggleGroup
                   size="small"
                   css={styles.deductionWayMarginL}
                   value={profitSharing.isSegmented}
@@ -660,15 +661,15 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                   exclusive
                 >
                   {isSegmented.map((data, idx) => (
-                    <ToggleButton
+                    <ToggleGroupItem
                       key={`${data.label}-${idx}`}
                       value={data.value}
                       data-testid={`assign-designer-${data.value}`}
                     >
                       {data.label}
-                    </ToggleButton>
+                    </ToggleGroupItem>
                   ))}
-                </ToggleButtonGroup>
+                </ToggleGroup>
                 <FormControlLabel
                   css={styles.marginL}
                   control={<Checkbox color="primary" />}

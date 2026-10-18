@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
-// 大型頁策略：只換外框卡片；載入遮罩（Backdrop）、報到狀態下拉（值為布林）與行事曆表格保留
+// 大型頁策略：載入遮罩（Backdrop，#Backdrop 有全域樣式）與行事曆表格保留 MUI
 import {
-  CircularProgress, Backdrop, Select,
-  FormControl, InputLabel, MenuItem
+  CircularProgress, Backdrop
 } from '@mui/material'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import useFetchMerchant from 'hooks/useFetchMerchant'
 import idx from 'idx'
 import { useState, useEffect, useRef, Fragment } from 'react'
@@ -523,18 +523,17 @@ function Calendar({ designerId, checkinSettings, bookingCusCheck, checkinMode, b
               margin
             />
             {checkinSettings.isBookingCheckinEnabled && (
-              <FormControl variant="outlined" style={{ width: 120 }} >
-                <InputLabel>報到狀態</InputLabel>
-                <Select
-                  label='報到狀態'
-                  onChange={e => setCheckedType(e.target.value)}
-                  value={checkedType}
-                >
-                  <MenuItem value=''><em>無</em></MenuItem>
-                  <MenuItem value={true}>報到成功</MenuItem>
-                  <MenuItem value={false}>未報到</MenuItem>
-                </Select>
-              </FormControl>
+              <NativeSelect
+                fullWidth={false}
+                style={{ width: 120 }}
+                label='報到狀態'
+                onChange={e => setCheckedType(e.target.value)}
+                value={checkedType}
+              >
+                <NativeSelectOption value=''><em>無</em></NativeSelectOption>
+                <NativeSelectOption value={true}>報到成功</NativeSelectOption>
+                <NativeSelectOption value={false}>未報到</NativeSelectOption>
+              </NativeSelect>
             )}
           </div>
           <CalendarColorClip bookingCusCheck={bookingCusCheck} checkinMode={checkinMode} bookingHistoryDisplay={bookingHistoryDisplay}/>

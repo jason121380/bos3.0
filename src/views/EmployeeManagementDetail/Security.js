@@ -1,5 +1,3 @@
-// 下拉的值可能是空字串（尚未載入）或布林值，保留 MUI Select
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchChangePassword from 'hooks/useFetchChangePassword'
 import { useState, useContext, useEffect } from 'react'
@@ -13,6 +11,7 @@ import { useHistory } from 'react-router'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
 const accountStatus = [
   {
@@ -178,69 +177,60 @@ function Security({ designerId, refetch, ...rest }) {
       <CardContent className="pt-0">
         <form>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            <FormControl fullWidth variant="outlined">
-              <InputLabel>帳號狀態</InputLabel>
-              <Select
-                label='帳號狀態'
-                value={designerSetting.status === 'pending' ? 'ok' : designerSetting.status}
-                onChange={event =>
-                  handleDesignerSettingChange(
-                    idx(event, _ => ({ value: _.target.value, key: 'status' }))
-                  )
-                }
-              >
-                {accountStatus.map((data, idx) => (
-                  <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                    {data.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth variant="outlined">
-              <InputLabel>權限設定</InputLabel>
-              <Select
-                label='權限設定'
-                value={designerSetting.merchantIdentity}
-                onChange={event =>
-                  handleDesignerSettingChange(
-                    idx(event, _ => ({ value: _.target.value, key: 'merchantIdentity' }))
-                  )
-                }
-              >
-                {!authoritiesNameAndIdData.loading &&
-                  idx(authoritiesNameAndIdData, _ =>
-                    _.data.getMerchantAuthorities.map((data, idx) => (
-                      <MenuItem value={data.id} key={`${data.authorityName}-${idx}`}>
-                        {data.authorityName}
-                      </MenuItem>
-                    ))
-                  )}
-              </Select>
-            </FormControl>
+            <NativeSelect
+              label='帳號狀態'
+              value={designerSetting.status === 'pending' ? 'ok' : designerSetting.status}
+              onChange={event =>
+                handleDesignerSettingChange(
+                  idx(event, _ => ({ value: _.target.value, key: 'status' }))
+                )
+              }
+            >
+              {accountStatus.map((data, idx) => (
+                <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                  {data.label}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
+            <NativeSelect
+              label='權限設定'
+              value={designerSetting.merchantIdentity}
+              onChange={event =>
+                handleDesignerSettingChange(
+                  idx(event, _ => ({ value: _.target.value, key: 'merchantIdentity' }))
+                )
+              }
+            >
+              {!authoritiesNameAndIdData.loading &&
+                idx(authoritiesNameAndIdData, _ =>
+                  _.data.getMerchantAuthorities.map((data, idx) => (
+                    <NativeSelectOption value={data.id} key={`${data.authorityName}-${idx}`}>
+                      {data.authorityName}
+                    </NativeSelectOption>
+                  ))
+                )}
+            </NativeSelect>
           </div>
         </form>
       </CardContent>
       <CardContent className="pt-0">
         <form>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            <FormControl fullWidth variant="outlined">
-              <InputLabel>允許登入設計師手機端</InputLabel>
-              <Select
-                label='允許登入設計師手機端'
-                value={designerSetting.isCellphoneLogin}
-                onChange={event =>
-                  handleDesignerSettingChange(
-                    idx(event, _ => ({ value: _.target.value, key: 'isCellphoneLogin' }))
-                  )
-                }
-              >
-                {cellphoneLogin.map((data, idx) => (
-                  <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                    {data.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <NativeSelect
+              label='允許登入設計師手機端'
+              value={designerSetting.isCellphoneLogin}
+              onChange={event =>
+                handleDesignerSettingChange(
+                  idx(event, _ => ({ value: _.target.value, key: 'isCellphoneLogin' }))
+                )
+              }
+            >
+              {cellphoneLogin.map((data, idx) => (
+                <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                  {data.label}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
           </div>
         </form>
       </CardContent>

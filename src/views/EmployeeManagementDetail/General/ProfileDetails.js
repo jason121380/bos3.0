@@ -1,8 +1,7 @@
-// 頭像（無圖時顯示預設人像）保留 MUI Avatar
-import { Avatar } from '@mui/material'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { Avatar } from 'ui/avatar'
 import { Badge } from 'ui/badge'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
@@ -21,7 +20,7 @@ function ProfileDetails({
     <Card className="overflow-hidden">
       <div className="flex flex-wrap items-center gap-5 px-6 py-5">
         <Avatar
-          sx={{ width: 80, height: 80, flexShrink: 0 }}
+          className="h-20 w-20"
           src={profile.avatar}
         />
         <div className="flex flex-1 flex-wrap items-center gap-4">
