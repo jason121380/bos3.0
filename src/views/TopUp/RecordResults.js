@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
+// 表格列保留 MUI TableBody / TableRow / TableCell：外框為共用元件 components/ManagementTable（MUI Table）
 import {
-  Button, TableBody, TableCell, TableRow, Typography
+  TableBody, TableCell, TableRow
 } from '@mui/material'
+import { Button } from 'ui/button'
 import ManagementTable from 'components/ManagementTable'
 import idx from 'idx'
 import format from 'date-fns/format'
@@ -130,10 +132,9 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
               <TableRow hover key={record.id}>
                 <TableCell css={styles.compactCell}>
                   <Button
-                    color="primary"
-                    size="small"
+                    size="sm"
+                    variant="secondary"
                     onClick={() => handleEdit(record.id)}
-                    variant="outlined"
                   >
                     編輯
                   </Button>
@@ -141,10 +142,10 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
                 <TableCell css={styles.compactCell}>{format(record.date, 'yyyy/MM/dd')}</TableCell>
                 <TableCell css={styles.compactCell}>
                   {record.Customer.name}
-                  <Typography variant="caption" display="block">
+                  <div className="text-caption tabular-nums text-text-secondary">
                     {record.Customer.no ? `(${record.Customer.no})` : ''}
-                  </Typography>
-                  <Typography variant="caption" display="block">{record.Customer.cellphone}</Typography>
+                  </div>
+                  <div className="text-caption tabular-nums text-text-secondary">{record.Customer.cellphone}</div>
                 </TableCell>
                 <TableCell css={styles.compactCell}>
                   {record.handlingFeeDecountWay === 'BYCUSTOMER'
@@ -154,9 +155,9 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
                 <TableCell css={styles.compactCell}>{record.money}</TableCell>
                 <TableCell css={styles.compactCell}>
                   {record.Maker.name}
-                  <Typography variant="caption" display="block">
+                  <div className="text-caption tabular-nums text-text-secondary">
                     {record.Maker.designerNo ? record.Maker.designerNo : ''}
-                  </Typography>
+                  </div>
                 </TableCell>
                 <TableCell css={styles.compactCell}>{record.payType}</TableCell>
                 <TableCell css={styles.compactCell}>
