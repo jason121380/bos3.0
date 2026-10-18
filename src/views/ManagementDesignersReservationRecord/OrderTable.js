@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
 import { TableContainer, Paper, Dialog } from '@mui/material'
-import AssignmentTurnedInRoundedIcon from '@mui/icons-material/AssignmentTurnedInRounded';
-import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
-import EventBusyIcon from '@mui/icons-material/EventBusy';
+import { AssignmentTurnedInRounded as AssignmentTurnedInRoundedIcon, DisabledByDefaultRounded as DisabledByDefaultRoundedIcon, EventBusy as EventBusyIcon } from 'ui/icons'
 import { format } from 'date-fns'
 import styles from './styles/OrderTable'
 import { css } from '@emotion/react'

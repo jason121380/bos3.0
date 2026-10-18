@@ -21,16 +21,7 @@ import {
   ToggleButtonGroup,
   ToggleButton
 } from '@mui/material'
-import CancelIcon from '@mui/icons-material/Cancel'
-import CheckIcon from '@mui/icons-material/Check'
-import LockIcon from '@mui/icons-material/Lock'
-import LockOpenIcon from '@mui/icons-material/LockOpen'
-import EditIcon from '@mui/icons-material/Edit'
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
-import PersonIcon from '@mui/icons-material/Person'
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import MessageIcon from '@mui/icons-material/Message';
-import EventBusyIcon from '@mui/icons-material/EventBusy';
+import { Cancel as CancelIcon, Check as CheckIcon, Lock as LockIcon, LockOpen as LockOpenIcon, Edit as EditIcon, ShoppingCart as ShoppingCartIcon, Person as PersonIcon, AssignmentTurnedIn as AssignmentTurnedInIcon, Message as MessageIcon, EventBusy as EventBusyIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import { format, getMinutes, startOfDay, addMinutes } from 'date-fns'
 import { Link as RouterLink } from 'react-router-dom'

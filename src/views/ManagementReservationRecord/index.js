@@ -5,7 +5,7 @@ import {
   Typography, Popper, Slider, IconButton, Button,
   Collapse
 } from '@mui/material'
-import TuneIcon from '@mui/icons-material/Tune';
+import { Tune as TuneIcon } from 'ui/icons'
 import Page from 'components/Page'
 import useFetchMerchant from 'hooks/useFetchMerchant'
 import { useState, useEffect, useRef } from 'react'

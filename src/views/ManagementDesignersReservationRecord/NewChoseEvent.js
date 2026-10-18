@@ -5,14 +5,7 @@ import {
   ListItemAvatar, ListItemText, Typography, Button, Grid
 } from '@mui/material'
 import { blue } from '@mui/material/colors'
-import CancelIcon from '@mui/icons-material/Cancel'
-import CheckIcon from '@mui/icons-material/Check'
-import LockIcon from '@mui/icons-material/Lock'
-import LockOpenIcon from '@mui/icons-material/LockOpen'
-import EditIcon from '@mui/icons-material/Edit'
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
-import EventSeatIcon from '@mui/icons-material/EventSeat'
-import EventBusyIcon from '@mui/icons-material/EventBusy';
+import { Cancel as CancelIcon, Check as CheckIcon, Lock as LockIcon, LockOpen as LockOpenIcon, Edit as EditIcon, ShoppingCart as ShoppingCartIcon, EventSeat as EventSeatIcon, EventBusy as EventBusyIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import { format } from 'date-fns'
 import { Link as RouterLink } from 'react-router-dom'

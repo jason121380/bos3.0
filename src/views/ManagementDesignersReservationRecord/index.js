@@ -4,7 +4,7 @@ import {
   FormControl, InputLabel, Select, MenuItem, Popper,
   Slider, IconButton, Switch, Typography, Button, Collapse
 } from '@mui/material'
-import TuneIcon from '@mui/icons-material/Tune';
+import { Tune as TuneIcon } from 'ui/icons'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchMerchant from 'hooks/useFetchMerchant'

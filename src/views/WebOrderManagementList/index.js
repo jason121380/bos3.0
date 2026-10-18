@@ -3,7 +3,7 @@ import {
   Container, CircularProgress, Grid, Link, Button, FormControl,
   InputLabel, Select, MenuItem, Card, IconButton, Collapse
 } from '@mui/material'
-import FilterListIcon from '@mui/icons-material/FilterList'
+import { FilterList as FilterListIcon } from 'ui/icons'
 import Page from 'components/Page'
 import { addDays, endOfDay, startOfMonth } from 'date-fns'
 import useFetchGetBookingManagement from 'hooks/useFetchGetBookingManagement'
