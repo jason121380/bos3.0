@@ -3,10 +3,9 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions, Divider,
   Button, IconButton, Autocomplete, TextField, Checkbox
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import DateSelector from 'components/DateSelector'
 import ReferToggleButton from 'components/ReferToggleButton'
 import { Fragment } from 'react'

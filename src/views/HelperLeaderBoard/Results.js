@@ -15,8 +15,7 @@ import {
 import { useState, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import roundDecimal from './../../helper/roundDecimal.js'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon } from 'ui/icons'
 import { css } from '@emotion/react'
 
 const TABLE_COLUMNS = {

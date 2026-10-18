@@ -4,7 +4,7 @@ import {
   Container, Button, CircularProgress, Grid, TextField, Autocomplete,
   ToggleButton, ToggleButtonGroup, Card, IconButton, Collapse
 } from '@mui/material'
-import FilterListIcon from '@mui/icons-material/FilterList'
+import { FilterList as FilterListIcon } from 'ui/icons'
 import useFetchGetProductInventoryList from 'hooks/useFetchGetProductInventoryList'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import Page from 'components/Page'
