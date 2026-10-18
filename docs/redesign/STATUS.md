@@ -35,17 +35,25 @@
 
 verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `Field`／`Input`；`label`／`variant`／`css`／`inputProps`／`fieldProps.label` 屬性消失（改 `Field label`、`placeholder`、`min`）；`DateTimePicker` 的 `css` 與 `variant: 'standard'` 移除；金額列 wrapper `div` 改 className。依賴 PR #7 對 OrderCreate 版的相同改法。
 
+## 版本清單
+
+| 版本 | 時間 | 內容 | PR／commit | checks |
+|---|---|---|---|---|
+| v3.0-1019-0232 | 2026-10-19 02:32 | 版本顯示上線：TopBar／Auth Topbar 讀 `src/version.js`（完整版本清單詳見下方） | #12 | GitHub Build/Unit pass（先前已通過，push 對齊後待重跑確認） |
+
+給 Jason：PR #6–#10 已 merge 的舊版畫面左上角仍只顯示寫死的 `v3.0`；從本批 merge 之後，畫面才會顯示短版號（例如 `v3.0-1019-0232`），不用回頭改舊 commit。之後每個完整 commit 都會更新 `src/version.js`。
+
 ## 進行中
 
 - **第二層第二輪**：用新元件換掉第一輪留下的 MUI（Select、ToggleButton、Checkbox、Switch、Avatar、MUI 分頁等）。6 批，清單見 `batches/r2-*.txt`。
-- **批次 5（分支 `claude/ui-batch5-box`，版本 v3.0-1019-0202，PR #11，commit 079a7d0，GitHub Build/Unit pass，待下一組累積後 merge，未 merge）**：`CouponEdit` 三個 About 檔的欄位標籤改為上方標籤（`Field`＋`Input`／`NativeSelect`），做法同批次 4。驗證：**指揮者已完成**。
+- **批次 5（分支 `claude/ui-batch5-box`，版本 v3.0-1019-0202，PR #11，commit 079a7d0，GitHub Build/Unit pass，已 merge，merge commit cfc79cd）**：`CouponEdit` 三個 About 檔的欄位標籤改為上方標籤（`Field`＋`Input`／`NativeSelect`），做法同批次 4。驗證：**指揮者已完成**。
   - eslint 3 檔 0 problems。
   - `verify-logic`：`AboutCoupon` 通過；`AboutDeduction`、`AboutAssistantSetting` 各 FAIL 一項，為 `inputLabel` ref 移除（MUI `InputLabel` 的 ref，改 `NativeSelect` 後不需要，純 presentation，其餘敘述未缺）。
   - `portal-root-scan` 0/0。
   - 全域單元測試：17 suites，51 passed＋1 skipped（待 PR #6），0 failed。
   - `CI=true npm run build` 成功。
   - 實機待看：序號 `mt-[26px]`／圖示 `marginTop` 對齊、`w-24`／`w-28` 換行、類別選單空值時顯示第一個選項（原生 select 行為，與 `CouponCreate` 相同）。
-- **批次 4（2026/10/19，分支 `claude/ui-batch4-box`，PR #10）**：`CouponCreate` 三個 About 檔的欄位標籤改為上方標籤（`Field`＋`Input`／`NativeSelect`）；`CouponEdit` 已由 PR #11（v3.0-1019-0202）完成、待下一組 merge（見上方批次 5）。驗證：**指揮者已完成**——eslint（改動 3 檔）0 problems（基線亦 0）；verify-logic 三檔全部通過；portal-root-scan 0/0；三檔已無 MUI TextField／Select／FormControl／InputLabel／MenuItem（僅保留註解區塊與 FormControlLabel＋Checkbox，未動）；全域單元測試 17 suites、51 passed＋1 skipped（LoginForm skip，待 PR #6）、0 failed；`CI=true npm run build` 成功。**外觀待實機**：小數字欄位 `w-24`／`w-28` 加寬，需實機瞄一下是否換行。
+- **批次 4（2026/10/19，分支 `claude/ui-batch4-box`，PR #10）**：`CouponCreate` 三個 About 檔的欄位標籤改為上方標籤（`Field`＋`Input`／`NativeSelect`）；`CouponEdit` 已由 PR #11（v3.0-1019-0202）完成並 merge（cfc79cd，見上方批次 5）。驗證：**指揮者已完成**——eslint（改動 3 檔）0 problems（基線亦 0）；verify-logic 三檔全部通過；portal-root-scan 0/0；三檔已無 MUI TextField／Select／FormControl／InputLabel／MenuItem（僅保留註解區塊與 FormControlLabel＋Checkbox，未動）；全域單元測試 17 suites、51 passed＋1 skipped（LoginForm skip，待 PR #6）、0 failed；`CI=true npm run build` 成功。**外觀待實機**：小數字欄位 `w-24`／`w-28` 加寬，需實機瞄一下是否換行。
 - **F 批（2026/10/19，`claude/ui-batch3-box`，PR #9）**：`ui/icons` 補 `CheckBox`／`CheckBoxOutlineBlank`；23 檔 `@mui/icons-material` import 換為 `ui/icons`，`src` 內歸零（25 → 0）；`AboutAssistant.js`（死碼）的 `Chip` import 改指向 `@mui/material/Chip`；jss 實查程式碼為 0 檔（舊「2 檔」更正，下方盤點寫的「jss 2 檔」以此為準）；下方盤點的 `@mui/icons-material` 25 檔是 F 批前的數字，PR #9 後 `src` 內為 0。A3 `AddCustomerModal` 刻意延後（需鍵盤實測，見 `TODO.md`）。本批實改 28 檔（src 25＋docs 3）。驗證（指揮者已完成）：`@mui/icons-material` 在 `src` 僅剩 `ui/icons.js` 一行註解；`swap-icons` 乾跑 files 0／icons 0；`git diff` 非 import 行零變更；`verify-logic` 全部通過；eslint 改動檔 1 error／67 warnings，基線（改前）2 errors／67 warnings，故 0 新增且少 1；`portal-root-scan` 0／0；全域 unit 17 suites，51 passed＋1 skipped（LoginForm skip，待 PR #6）、0 failed；`CI=true npm run build` 成功。
 - **2026/10/19 重新盤點（口徑與細節見 `TODO.md` §三、§四；本檔舊寫的 414／340、約 16 個檔缺 `ui-root` 已更新）**：
   - 數字以 `inventory-scan.js` 實跑為準（已實跑，2026-10-19 指揮者驗證）：`@mui/*`：`src` 415 檔、`src/views` 341 檔（`src/views` 第一層 177 項，137 項仍有 MUI、40 項完全沒有；含單檔，扣單檔的「約 133 個目錄」為推估）；`@mui/material` 411 檔；`@mui/icons-material` 25 檔；`@mui/x-date-pickers` 39 檔；emotion 473 檔；舊 `src/theme` 247 檔；jss 2 檔（rg）。
@@ -69,7 +77,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 - 格式 `v3.0-MMDD-HHmm`（時區 Asia/Taipei）。commit 訊息第一行開頭與 PR 標題都要帶版本號。
 - 正式格式 v3.0-MMDD-HHmm（Asia/Taipei，不寫年份，年份只在日期欄；不自行升大版號）。
 - #6–#10 為規則建立前已 push 的 commit，**不 amend**；下表依 commit 時間對照版本。
-- merge 組別：#6–#10 為第一組（五個完整 commit），已於 2026-10-19 merge（merge commits：#6 c9a8c8c、#7 503f4fa、#8 f32bf0e、#9 3f7b35f、#10 29630fa）；批次 5 起算下一組第 1 個（1/5）。
+- merge 組別：#6–#10 為第一組（五個完整 commit），已於 2026-10-19 merge（merge commits：#6 c9a8c8c、#7 503f4fa、#8 f32bf0e、#9 3f7b35f、#10 29630fa）；批次 5（#11）已 merge（cfc79cd），版本顯示批 v3.0-1019-0232 提前 merge（不等湊滿一組）。
 
 | 版本 | 時間（Asia/Taipei） | 內容 | PR | commit | checks |
 |---|---|---|---|---|---|
@@ -78,7 +86,8 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 | v3.0-1019-0131 | 2026-10-19 01:31 | 規則前已 push（對照） | #8 | 已 push，不 amend | GitHub Build/Unit pass；第一組已於 2026-10-19 merge（f32bf0e） |
 | v3.0-1019-0142 | 2026-10-19 01:42 | 規則前已 push（對照） | #9 | 已 push，不 amend | GitHub Build/Unit pass；第一組已於 2026-10-19 merge（3f7b35f） |
 | v3.0-1019-0152 | 2026-10-19 01:52 | 規則前已 push（對照） | #10 | 已 push，不 amend | GitHub Build/Unit pass；第一組已於 2026-10-19 merge（29630fa） |
-| v3.0-1019-0202 | 2026-10-19 02:02 | UI 批次5 CouponEdit | #11 | 079a7d0 | GitHub Build/Unit pass；狀態：下一組第 1 個（1/5），未 merge |
+| v3.0-1019-0202 | 2026-10-19 02:02 | UI 批次5 CouponEdit | #11 | 079a7d0 | GitHub Build/Unit pass；已 merge（merge commit cfc79cd） |
+| v3.0-1019-0232 | 2026-10-19 02:32 | 版本顯示上線（`src/version.js`） | #12 | bca2950 | 狀態：提前 merge 中（對齊後 checks 待重跑） |
 
 ## 刻意不改（需另外決定）
 
