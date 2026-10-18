@@ -53,7 +53,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 
 ## 踩雷清單
 
-- **`ui` 元件放在 MUI Dialog／Popper（Portal）內要有 `.ui-root`**，否則沒有 box-sizing／邊框重置（目前有 14 個檔案待修，見 TODO）。
+- **`ui` 元件放在 MUI Dialog／Popper（Portal）內要有 `.ui-root`**，否則沒有 box-sizing／邊框重置（目前約 16 個檔案待修，見 TODO）。
 - Radix Dialog 會把 body 設 `pointer-events:none`，與 MUI Dialog 的 focus trap 互搶；Dialog 內若有 MUI Autocomplete／Select／DatePicker 就保留 MUI Dialog。
 - emotion `css` prop 與 Tailwind class 同權重，先後順序不可靠：要隱藏用 inline style；`css={…}` 傳給元件時要扣掉 margin 以免超出。
 - flex 子層沒有 `min-width:0`／`max-width:100%` 會被內容撐寬；欄位列要 `flex-wrap`。

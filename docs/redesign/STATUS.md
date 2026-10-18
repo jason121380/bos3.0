@@ -19,7 +19,7 @@
 
 - **第二層第二輪**：用新元件換掉第一輪留下的 MUI（Select、ToggleButton、Checkbox、Switch、Avatar、MUI 分頁等）。6 批，清單見 `batches/r2-*.txt`。
 - 目前 `src/views` 仍有 340 個檔案引用 `@mui/*`（全 `src` 414 個）；第二輪 r2-04／r2-06 尚未合併。盤點細節與移除時程見 `TODO.md`。
-- 14 個檔案的 `ui` 元件放在 MUI 彈出層內缺 `.ui-root`（待修，見 `TODO.md`）。
+- 約 16 個檔案的 `ui` 元件放在 MUI 彈出層內缺 `.ui-root`（待修，見 `TODO.md`）。
 
 ## 刻意不改（需另外決定）
 

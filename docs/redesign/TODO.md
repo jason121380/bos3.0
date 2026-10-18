@@ -36,7 +36,7 @@
 ## 二、接下來要做（依建議優先順序）
 
 ### P1 — 影響使用者的問題
-- [ ] **14 個檔案的 `ui` 元件放在 MUI Dialog／Popper 內，缺 `.ui-root`**（沒有 box-sizing／邊框重置，外觀可能跑掉）。
+- [ ] **約 16 個檔案（掃描結果，以重跑掃描為準）的 `ui` 元件放在 MUI Dialog／Popper 內，缺 `.ui-root`**（沒有 box-sizing／邊框重置，外觀可能跑掉）。
   根本做法：讓 `Button`、`CheckboxField`、`Card`、`Table*` 的根元素自帶 `ui-root`（Switch／Input／Badge／Avatar 一併）。
   受影響檔案：`GeneralAccountingRecordDetail/AccountingSubjectModal`、`MainEventList/ComfirmDialog`、`ManagementDesignersReservationRecord/index`、`ManagementReservationRecord/index`、`MemberCardRecord/EditMemberCardRecordModal`、`OrderEdit/Header`、`Parameter/AboutOrderDetail`、`Parameter/AboutSettingFunction`、`Parameter/OuterLinkModal`、`Parameter/OuterLinkSortModal`、`Products/EditProductsCategoryModal`、`Products/PublishedDialog`、`Products/VendorDialog`、`Profile/General/ProfileDetails`、`Services/AboutDeductionEditModal`、`Services/AssistantSettingEditModal`。
   驗證：重跑 `portal-root` 掃描（應為 0 處）＋截圖各 Modal。
