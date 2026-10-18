@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Container, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchGetEmployeeResignationList from 'hooks/useFetchGetEmployeeResignationList'
@@ -10,6 +9,7 @@ import useFetchSetCreateResignedUser from 'hooks/useFetchSetCreateResignedUser'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
+import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
 
 const styles = {
@@ -42,8 +42,8 @@ export default function Employees() {
   }, [designerDetail.loading])
   return (
     !designerDetail.loading && (
-      <Page css={styles.root} title="員工離職列表">
-        <Container maxWidth={false} css={styles.container}>
+      <Page className="ui-root" title="員工離職列表">
+        <div>
           <AdminPageHeader title='員工離職列表' />
           {!resignationList.loading ? idx(resignationList, _ => (
             <Results
@@ -52,9 +52,9 @@ export default function Employees() {
               setCreateResignedUser={setCreateResignedUser}
               resignationList={resignationList}
             />
-          )) : <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>
+          )) : <Skeleton className="h-64 w-full" />
           }
-        </Container>
+        </div>
       </Page>
     )
   )

@@ -1,9 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button, Card, CardActions, CardContent, CardHeader, Divider,
-  Grid, IconButton, Checkbox, TextField, InputAdornment,
-  CircularProgress
-} from '@mui/material'
+import { IconButton, Checkbox, TextField, InputAdornment } from '@mui/material'
 import MerchantListAutocpmpleteForPinnedTable from 'components/MerchantListAutocpmpleteForPinnedTable'
 import useFetchSetPinnedTable from 'hooks/useFetchSetPinnedTable'
 import { TreeView, TreeItem } from '@mui/x-tree-view';
@@ -17,6 +13,9 @@ import { css } from '@emotion/react'
 import { cloneDeep } from 'lodash';
 import { openSnackbar } from 'elements/snackbars';
 import produce from 'immer';
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 
 const styles = {
   root: css({
@@ -42,7 +41,7 @@ const styles = {
       width: 'fit-content'
     },
     '& .onSelect': {
-      background: '#b3e0ee',
+      background: 'rgb(var(--accent) / 0.12)',
     }
   }),
   ulGroup: css({
@@ -388,7 +387,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
   return (
     <>
       {isLoading ? (
-        <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
+        <Skeleton className="h-96 w-full" />
       ) : (
         <>
           <MerchantListAutocpmpleteForPinnedTable
@@ -398,12 +397,11 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
             selectIds={submitValue.stores}
             isClick={isClick}
           />
-          <Card sx={{ mt: 2 }}>
+          <Card className="mt-4">
             <CardHeader
-              title='功能釘選設定'
-              css={styles.title}
+              className="flex-wrap items-center pb-4"
               action={
-                <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+                <div className="flex items-center gap-2">
                   <TextField
                     css={styles.textField}
                     placeholder="搜尋頁面"
@@ -429,15 +427,16 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
                       )
                     }}
                   />
-                  <Button disabled={isClick} css={styles.button} onClick={() => handleSetValue('pages', [])} variant='contained' color='primary'>清除選取</Button>
-                  <Button disabled={isClick} css={styles.button} onClick={handleExpanedAll} variant='contained' color='primary'>展開全部</Button>
+                  <Button size="sm" variant="secondary" disabled={isClick} onClick={() => handleSetValue('pages', [])}>清除選取</Button>
+                  <Button size="sm" variant="secondary" disabled={isClick} onClick={handleExpanedAll}>展開全部</Button>
                 </div>
               }
-            ></CardHeader>
-            <Divider />
-            <CardContent style={{ height: 'calc(100vh - 500px)' }}>
-              <Grid container spacing={2} style={{ height: '100%' }}>
-                <Grid item xs={8} style={{ borderRight: '1px solid rgb(var(--border))', paddingRight: 12, overflow: 'hidden auto', height: '100%' }} >
+            >
+              <CardTitle>功能釘選設定</CardTitle>
+            </CardHeader>
+            <CardContent className="h-[calc(100vh-500px)] border-0 border-t border-solid border-border">
+              <div className="grid h-full grid-cols-3 gap-4">
+                <div className="col-span-2 h-full overflow-y-auto overflow-x-hidden border-0 border-r border-solid border-border pr-3">
                   <TreeView
                     css={styles.root}
                     defaultCollapseIcon={<ExpandMoreIcon />}
@@ -448,19 +447,19 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
                     {pages.length ? renderGroup(pages) : ''}
                   </TreeView>
 
-                </Grid>
-                <Grid item style={{ display: 'flex', height: '100%', flexDirection: 'column' }} xs={4}>
-                  <div style={{ marginBottom: 12 }}>拖動按鈕調整排序</div>
-                  <div style={{ flexGrow: 1, overflow: 'hidden auto', paddingRight: 12 }} >
+                </div>
+                <div className="flex h-full flex-col">
+                  <div className="mb-3 text-label text-text-secondary">拖動按鈕調整排序</div>
+                  <div className="flex-grow overflow-y-auto overflow-x-hidden pr-3">
                     <DragDropContext onDragEnd={onDragEnd}>
                       <Droppable droppableId="drop-id">
                         {(provided) => (
-                          <div css={styles.btnWrap} ref={provided.innerRef} {...provided.droppableProps}>
+                          <div className="flex flex-col gap-2" ref={provided.innerRef} {...provided.droppableProps}>
                             {submitValue.pages.map((name, i) => (
                               <Draggable draggableId={name} index={i} key={name}>
                                 {(provided) => (
                                   <div
-                                    css={styles.DragButton}
+                                    className="break-all rounded-md border border-solid border-border bg-background px-4 py-2 text-body font-medium text-text"
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
                                     ref={provided.innerRef}
@@ -476,20 +475,18 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
                       </Droppable>
                     </DragDropContext>
                   </div>
-                </Grid>
+                </div>
 
-              </Grid>
+              </div>
             </CardContent>
-            <Divider />
-            <CardActions>
+            <CardFooter>
               <Button
-                variant="contained"
-                color='primary'
+                variant="primary"
                 onClick={handleSetData}
               >
                 儲存變更
               </Button>
-            </CardActions>
+            </CardFooter>
           </Card>
 
         </>

@@ -1,31 +1,9 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  TextField,
-  colors,
-} from '@mui/material'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchChangePassword from 'hooks/useFetchChangePassword'
 import { useState } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  saveButton: css({
-    color: theme.palette.common.white,
-    backgroundColor: colors.green[600],
-    '&:hover': {
-      backgroundColor: colors.green[900],
-    },
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
 
 function Security({ className, ...rest }) {
   const [values, setValues] = useState({
@@ -59,48 +37,43 @@ function Security({ className, ...rest }) {
     })
   }
   return (
-    <Card {...rest} css={styles.root}>
-      <CardHeader title="更改密碼" />
-      <Divider />
+    <Card {...rest}>
+      <CardHeader>
+        <CardTitle>更改密碼</CardTitle>
+      </CardHeader>
       <CardContent>
         <form>
-          <Grid container spacing={3}>
-            <Grid item md={4} sm={6} xs={12}>
-              <TextField
-                fullWidth
-                label="密碼"
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+            <Field label="密碼" htmlFor="profile-security-password">
+              <Input
+                id="profile-security-password"
                 name="password"
                 onChange={handleOnChange}
                 type="password"
                 value={values.password}
-                variant="outlined"
               />
-            </Grid>
-            <Grid item md={4} sm={6} xs={12}>
-              <TextField
-                fullWidth
-                label="確認密碼"
+            </Field>
+            <Field label="確認密碼" htmlFor="profile-security-confirm">
+              <Input
+                id="profile-security-confirm"
                 name="confirm"
                 onChange={handleOnChange}
                 type="password"
                 value={values.confirm}
-                variant="outlined"
               />
-            </Grid>
-          </Grid>
+            </Field>
+          </div>
         </form>
       </CardContent>
-      <Divider />
-      <CardActions>
+      <CardFooter>
         <Button
-          css={styles.saveButton}
           disabled={!valid}
-          variant="contained"
+          variant="primary"
           onClick={handleOnChangePassword}
         >
           儲存變更
         </Button>
-      </CardActions>
+      </CardFooter>
     </Card>
   )
 }

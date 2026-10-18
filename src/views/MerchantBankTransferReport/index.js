@@ -1,6 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Container } from '@mui/material'
-import { CircularProgress } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
@@ -13,6 +11,8 @@ import useFetchGetUserSalaryTransferReport from 'hooks/useFetchGetUserSalaryTran
 import { theme } from '../../theme'
 import { css } from '@emotion/react'
 
+import { Skeleton } from 'ui/skeleton'
+// 本頁以 window.print() 列印整頁：TransferDetail（.TransferDetailpPrint）與 Results（.MerchantBankTransferReportTable）為列印內容，依列印範本規則保留
 import TransferDetail from './TransferDetail'
 import Results from './Results'
 
@@ -68,7 +68,7 @@ export default function MerchantBankTransferReport() {
 
   return (
     <Page css={styles.root} className='MerchantBankTransferReport' title="薪資轉帳明細">
-      <Container maxWidth={false} css={styles.container}>
+      <div>
         <AdminPageHeader
           title='薪資轉帳明細'
           secondaryActions={[
@@ -91,14 +91,14 @@ export default function MerchantBankTransferReport() {
           />
         </AdminPageHeader>
 
-        <div style={{ marginTop: 24 }}>
+        <div className="mt-6">
           <TransferDetail merchantBankSettings={merchantBankSettings} />
         </div>
 
         {getUserSalaryTransferReport.loading ? (
-          <div style={{ textAlign: 'center', marginTop: 100 }}><CircularProgress /></div>
+          <Skeleton className="h-64 w-full" />
         ) : <Results salaryData={salaryData} />}
-      </Container>
+      </div>
     </Page>
   )
 }

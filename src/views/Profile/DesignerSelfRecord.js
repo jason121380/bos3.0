@@ -1,14 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import {
   Card, CardContent, CardHeader, Divider, Table, TableBody,
-  TableCell, TableHead, TableRow, Typography, TableContainer, Paper,
-  CircularProgress
+  TableCell, TableHead, TableRow, TableContainer, Paper,
 } from '@mui/material'
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import { css } from '@emotion/react'
+import { Card as UiCard } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
+import { Skeleton } from 'ui/skeleton'
 
 const styles = {
   root: css({
@@ -55,16 +57,13 @@ function OrderRecord({
         hideStartDate={true}
         onlyDayTime={true}
       />
-      {isLoading ? 
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-          <CircularProgress />
-        </div> : designerDailyReport && (
-        designerDailyReport.length === 0 ? 
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-          <Typography component="h1" variant="h3">
-            無資料
-          </Typography>
-        </div>
+      {/* 日報表卡片內含列印用欄位（categoryPrint / itemPrint / forPrint*），依列印範本規則原封保留；只換載入與無資料畫面 */}
+      {isLoading ?
+        <Skeleton className="mx-auto h-96 w-full max-w-[800px]" /> : designerDailyReport && (
+        designerDailyReport.length === 0 ?
+        <UiCard>
+          <EmptyState title="無資料" />
+        </UiCard>
         : designerDailyReport.map(designer => (
           <Card style={{ margin: '0 auto', minWidth: '500px', maxWidth: '800px' }}>
             <CardHeader

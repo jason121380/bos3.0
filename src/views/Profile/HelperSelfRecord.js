@@ -1,16 +1,14 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, CardHeader, Divider, Table, TableBody,
-  TableCell, TableHead, TableRow, Typography, TableContainer,
-  Paper, CircularProgress
-} from '@mui/material'
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import roundDecimal from './../../helper/roundDecimal.js'
 import { css } from '@emotion/react'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
+import { Skeleton } from 'ui/skeleton'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 const styles = {
   root: css({
@@ -67,42 +65,36 @@ function OrderRecord({
         hideStartDate={true}
         onlyDayTime={true}
       />
-      {isLoading ? 
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-          <CircularProgress />
-        </div> :  sorted.length === 0 ?
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-          <Typography component="h3" variant="h3">
-            無資料
-          </Typography>
-        </div>
+      {isLoading ?
+        <Skeleton className="mx-auto h-96 w-full max-w-[800px]" /> :  sorted.length === 0 ?
+        <Card>
+          <EmptyState title="無資料" />
+        </Card>
         : sorted.map((data, i) => (
-            <Card key={`data-${i}`} style={{ margin: '0 auto', minWidth: '500px', maxWidth: '800px' }}>
-              <CardHeader
-                title={`${
-                  data.user.designerNo !== null && data.user.designerNo !== ''
-                    ? data.user.designerNo
-                    : ''
-                } ${
-                  data.user.nickName !== null && data.user.nickName !== '' ? data.user.nickName : ''
-                } ${data.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 互助報表`}
-                css={styles.cardHeader}
-              />
-              <Divider />
-              <CardContent css={styles.content}>
-                <PerfectScrollbar>
-                  <div css={styles.inner}>
-                    <TableContainer component={Paper}>
-                      <Table css={styles.table} size="small" aria-label="a dense table">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>#</TableCell>
-                            <TableCell>項目</TableCell>
-                            <TableCell>設計師</TableCell>
-                            <TableCell>金額</TableCell>
-                            <TableCell>點</TableCell>
+            <Card key={`data-${i}`} className="mx-auto mb-6 min-w-[500px] max-w-[800px]">
+              <CardHeader className="items-center pb-4 text-center">
+                <CardTitle>
+                  {`${
+                    data.user.designerNo !== null && data.user.designerNo !== ''
+                      ? data.user.designerNo
+                      : ''
+                  } ${
+                    data.user.nickName !== null && data.user.nickName !== '' ? data.user.nickName : ''
+                  } ${data.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 互助報表`}
+                </CardTitle>
+              </CardHeader>
+              <div className="px-5 pb-5">
+                  <div className="flex flex-col gap-4">
+                      <Table aria-label="a dense table">
+                        <TableHeader>
+                          <TableRow className="hover:bg-transparent">
+                            <TableHead>#</TableHead>
+                            <TableHead>項目</TableHead>
+                            <TableHead>設計師</TableHead>
+                            <TableHead numeric>金額</TableHead>
+                            <TableHead numeric>點</TableHead>
                           </TableRow>
-                        </TableHead>
+                        </TableHeader>
                         <TableBody>
                           {data.helperRecord.map((record, index) => (
                             <TableRow key={`record-${index}`}>
@@ -110,25 +102,25 @@ function OrderRecord({
                                 <a
                                   target="_blank"
                                   href={`/order/${record.orderId}`}
-                                  css={styles.orderNoLink}
+                                  className="text-text underline"
                                 >
                                   #{record.orderNo}
                                 </a>
                               </TableCell>
-                              <TableCell style={{ whiteSpace: 'pre-line' }}>
+                              <TableCell className="whitespace-pre-line">
                                 {record.service.name}
                               </TableCell>
-                              <TableCell style={{ whiteSpace: 'pre-line' }}>
+                              <TableCell className="whitespace-pre-line">
                                 {record.designer.name}
                               </TableCell>
                               {priceDisplayOnReport ? (
-                                <TableCell>{Math.abs(Math.round(record.helperFee))}</TableCell>
+                                <TableCell numeric>{Math.abs(Math.round(record.helperFee))}</TableCell>
                               ) : record.helperMoneyGivenWay === '點數換算金額' ? (
                                 <TableCell />
                               ) : (
-                                <TableCell>{Math.abs(Math.round(record.helperFee))}</TableCell>
+                                <TableCell numeric>{Math.abs(Math.round(record.helperFee))}</TableCell>
                               )}
-                              <TableCell>{roundDecimal(record.helperPoint)}</TableCell>
+                              <TableCell numeric>{roundDecimal(record.helperPoint)}</TableCell>
                             </TableRow>
                           ))}
                           {data.productRecord.map((record, index) => (
@@ -137,23 +129,23 @@ function OrderRecord({
                                 <a
                                   target="_blank"
                                   href={`/order/${record.orderId}`}
-                                  css={styles.orderNoLink}
+                                  className="text-text underline"
                                 >
                                   #{record.orderNo}
                                 </a>
                               </TableCell>
                               <TableCell>{`${record.productName} ${record.productUnitPrice}x${record.productCount}`}</TableCell>
                               <TableCell></TableCell>
-                              <TableCell>{Math.round(record.productRake)}</TableCell>
+                              <TableCell numeric>{Math.round(record.productRake)}</TableCell>
                               <TableCell></TableCell>
                             </TableRow>
                           ))}
                           <TableRow>
-                            <TableCell style={{ fontWeight: '500' }}>合計</TableCell>
+                            <TableCell className="font-medium">合計</TableCell>
                             <TableCell></TableCell>
                             <TableCell></TableCell>
                             {priceDisplayOnReport ? (
-                              <TableCell>
+                              <TableCell numeric>
                                 {Math.abs(
                                   Math.round(
                                     data.helperRecord.reduce((accu, curVal) => accu + curVal.helperFee, 0)
@@ -166,7 +158,7 @@ function OrderRecord({
                                   )}
                               </TableCell>
                             ) : (
-                              <TableCell>
+                              <TableCell numeric>
                                 {Math.abs(
                                   Math.round(
                                     data.helperRecord
@@ -185,7 +177,7 @@ function OrderRecord({
                                   )}
                               </TableCell>
                             )}
-                            <TableCell>
+                            <TableCell numeric>
                               {roundDecimal(
                                 data.helperRecord.reduce((accu, curVal) => accu + curVal.helperPoint, 0)
                               )}
@@ -193,16 +185,14 @@ function OrderRecord({
                           </TableRow>
                         </TableBody>
                       </Table>
-                    </TableContainer>
-                    <TableContainer component={Paper}>
-                      <Table css={styles.table} size="small" aria-label="a dense table">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell></TableCell>
-                            <TableCell>日合計</TableCell>
-                            <TableCell>累計</TableCell>
+                      <Table aria-label="a dense table">
+                        <TableHeader>
+                          <TableRow className="hover:bg-transparent">
+                            <TableHead></TableHead>
+                            <TableHead numeric>日合計</TableHead>
+                            <TableHead numeric>累計</TableHead>
                           </TableRow>
-                        </TableHead>
+                        </TableHeader>
                         <TableBody>
                           <TableRow>
                             <TableCell>
@@ -210,7 +200,7 @@ function OrderRecord({
                               <br />
                               (不含點)
                             </TableCell>
-                            <TableCell>
+                            <TableCell numeric>
                               {priceDisplayOnReport
                                 ? Math.abs(
                                     Math.round(
@@ -229,7 +219,7 @@ function OrderRecord({
                                     )
                                   )}
                             </TableCell>
-                            <TableCell>{Math.abs(Math.round(data.summaryNoPoint))}</TableCell>
+                            <TableCell numeric>{Math.abs(Math.round(data.summaryNoPoint))}</TableCell>
                           </TableRow>
                           {priceDisplayOnReport ? (
                             <TableRow>
@@ -238,7 +228,7 @@ function OrderRecord({
                                 <br />
                                 點數/換算金額
                               </TableCell>
-                              <TableCell>
+                              <TableCell numeric>
                                 {roundDecimal(
                                   data.helperRecord.reduce((accu, curVal) => accu + curVal.helperPoint, 0)
                                 )}
@@ -249,7 +239,7 @@ function OrderRecord({
                                   )
                                 )}
                               </TableCell>
-                              <TableCell>
+                              <TableCell numeric>
                                 {roundDecimal(data.helperPointTillNow)} /
                                 {Math.abs(Math.round(data.summaryOnlyPoint))}
                               </TableCell>
@@ -257,17 +247,17 @@ function OrderRecord({
                           ) : (
                             <TableRow>
                               <TableCell>互助獲得 - 點數</TableCell>
-                              <TableCell>
+                              <TableCell numeric>
                                 {roundDecimal(
                                   data.helperRecord.reduce((accu, curVal) => accu + curVal.helperPoint, 0)
                                 )}
                               </TableCell>
-                              <TableCell>{roundDecimal(data.helperPointTillNow)}</TableCell>
+                              <TableCell numeric>{roundDecimal(data.helperPointTillNow)}</TableCell>
                             </TableRow>
                           )}
                           <TableRow>
                             <TableCell>店販業績</TableCell>
-                            <TableCell>
+                            <TableCell numeric>
                               {Math.abs(
                                 Math.round(
                                   data.productRecord.reduce((accu, curVal) => accu + curVal.productUnitPrice, 0)
@@ -277,25 +267,23 @@ function OrderRecord({
                                   data.productRecord.reduce((accu, curVal) => accu + curVal.productCount, 0)
                                 )}
                             </TableCell>
-                            <TableCell>{Math.round(data.productPerformanceTillNow)}</TableCell>
+                            <TableCell numeric>{Math.round(data.productPerformanceTillNow)}</TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>店販抽成</TableCell>
-                            <TableCell>
+                            <TableCell numeric>
                               {Math.abs(
                                 Math.round(
                                   data.productRecord.reduce((accu, curVal) => accu + curVal.productRake, 0)
                                 )
                               )}
                             </TableCell>
-                            <TableCell>{roundDecimal(data.productRakeTillNow)}</TableCell>
+                            <TableCell numeric>{roundDecimal(data.productRakeTillNow)}</TableCell>
                           </TableRow>
                         </TableBody>
                       </Table>
-                    </TableContainer>
                   </div>
-                </PerfectScrollbar>
-              </CardContent>
+              </div>
             </Card>
         ))}
     </div>

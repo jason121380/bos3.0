@@ -1,13 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import {
   Card, CardContent, Table, TableBody, TableCell,
-  TableHead, TableRow, Checkbox, Typography
+  TableHead, TableRow, Checkbox
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { cloneDeep } from 'lodash'
 import { useState, useEffect } from 'react'
 import { theme } from '../../theme'
 import { css } from '@emotion/react'
+import { Card as UiCard } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
 
 const localStyles = {
   card: css({
@@ -84,9 +86,9 @@ function Results({ salaryData }) {
   return (
     <>
       {salaryData.length === 0 ? (
-        <Typography style={{ marginTop: 50 }} align='center' component="h1" variant="h3">
-          無資料
-        </Typography>
+        <UiCard className="mt-6">
+          <EmptyState title="無資料" />
+        </UiCard>
       ) : (
         <Card css={localStyles.card} className="MerchantBankTransferReportTable">
           <CardContent style={{ padding: 0 }}>

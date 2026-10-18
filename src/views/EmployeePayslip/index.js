@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { Container, Grid, Button, CircularProgress, Typography, Collapse } from '@mui/material'
+// Grid.EmployeePayslipTableContainer 為列印容器（@media print 樣式），依列印範本規則保留
+import { Grid } from '@mui/material'
 import AdminPageHeader from 'components/AdminPageHeader'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import idx from 'idx'
 import { format } from 'date-fns'
 import { useEffect, useState } from 'react'
@@ -23,6 +23,9 @@ import {
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
+import { Card } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
+import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
 
 const styles = {
@@ -146,7 +149,7 @@ export default function Payroll() {
   }
   return (
     <Page title="薪資條" css={styles.root} className='EmployeePayslip'>
-      <Container maxWidth={false} css={styles.container}>
+      <div>
         <AdminPageHeader
           title="薪資條"
           showFilter={showFilter}
@@ -177,16 +180,16 @@ export default function Payroll() {
           />
         </AdminPageHeader>
 
-        <Collapse in={showFilter}>
-          <div css={styles.filterWrap}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'rgb(var(--text-secondary))' }}>篩選條件：</Typography>
+        {showFilter && (
+          <Card className="mb-3 flex items-center gap-3 p-4">
+            <span className="text-label text-text-secondary">篩選條件：</span>
             <DesignerSearch
               value={searchId}
               label="設計師編號/姓名"
               onChange={value => setSearchId(value.userId)}
             />
-          </div>
-        </Collapse>
+          </Card>
+        )}
 
         {(!usersDalaryData.loading && !isDisplayFakePerformance.loading && !getIsPrintDetailDisplayOnSalaryReport.loading && !EPWDDisplay.loading) ?
           idx(
@@ -211,11 +214,11 @@ export default function Payroll() {
                     payslipOptimization={payslipOptimization}
                   />
                 </Grid>
-              ) : <Typography style={{ textAlign: 'center', marginTop: '100px' }} variant="h3" gutterBottom component="div">無資料</Typography>
+              ) : <Card><EmptyState title="無資料" /></Card>
           ) :
-          <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
+          <Skeleton className="h-96 w-full" />
         }
-      </Container>
+      </div>
     </Page>
   )
 }

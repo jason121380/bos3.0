@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Container } from '@mui/material'
 import Page from 'components/Page'
 import { startOfDay } from 'date-fns'
 import { useFetchUserDecrease, useFetchUserIncrease } from 'hooks/useFetchUsers'
@@ -73,8 +72,8 @@ function CustomerManagementList() {
     )
   }
   return (
-    <Page css={styles.root} title="薪資明細表">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className="ui-root" title="薪資明細表">
+      <div>
         <AdminPageHeader title="薪資明細表">
           <DateSelector
             date={{ startDate: setting.date }}
@@ -127,7 +126,7 @@ function CustomerManagementList() {
               />
             )
         )}
-      </Container>
+      </div>
     </Page>
   )
 }

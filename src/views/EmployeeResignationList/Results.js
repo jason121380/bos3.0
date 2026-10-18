@@ -1,18 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Avatar,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  Typography,
-  Checkbox,
-} from '@mui/material'
-import ManagementTable from 'components/ManagementTable'
+import { Avatar } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import TableEditBar from 'components/TableEditBar'
@@ -21,6 +8,10 @@ import { openSnackbar } from 'elements/snackbars'
 import { format } from 'date-fns'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { EmptyState } from 'ui/empty-state'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 const styles = {
   root: css({}),
@@ -84,65 +75,70 @@ export default function Results({ className, employees, resignationList, setCrea
   }
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <ManagementTable
-        title="離職員工"
-        totalCount={employees.length}
-        hidePagination={true}
-        tableHead={
-          <>
-            <TableCell padding="checkbox" css={styles.compactCell}>
-              <Checkbox
-                checked={
-                  selectedDesigners.length === employees.length && employees.length > 0
-                }
-                color="primary"
-                indeterminate={
-                  selectedDesigners.length > 0 &&
-                  selectedDesigners.length < employees.length
-                }
-                onChange={handleSelectAll}
-                disabled={employees.length === 0}
-              />
-            </TableCell>
-            <TableCell css={styles.compactCell}>姓名/電話</TableCell>
-            <TableCell css={styles.compactCell}>設計師編號</TableCell>
-            <TableCell css={styles.compactCell}>暱稱</TableCell>
-            <TableCell css={styles.compactCell}>離職日期</TableCell>
-          </>
-        }
-      >
-        <TableBody>
-          {employees.map((data, idx) => (
-            <TableRow key={`employee-item-${idx}`}>
-              <TableCell padding="checkbox" css={styles.compactCell}>
-                <Checkbox
-                  color="primary"
-                  checked={selectedDesigners.indexOf(data.id) > -1}
-                  onChange={() => handleSelectOne(data.id)}
-                />
-              </TableCell>
-              <TableCell css={styles.compactCell}>
-                <div css={styles.nameCell}>
-                  <Avatar css={styles.avatar} src={data.avatar} />
-                  <div>
-                    <div
-                      className='MuiTypography-h6'
-                      style={{ color: "inherit" }}
-                    >
-                      {data.lastName}
-                      {data.firstName}
+      {/* 原 components/ManagementTable（MUI）改為 ui/card + ui/table；無分頁（原 hidePagination） */}
+      <Card>
+        <CardHeader className="items-center pb-4">
+          <div className="flex items-baseline gap-3">
+            <CardTitle>離職員工</CardTitle>
+            <span className="text-label tabular-nums text-text-secondary">共 {employees.length} 筆</span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table className="min-w-[1000px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={
+                      selectedDesigners.length === employees.length && employees.length > 0
+                    }
+                    indeterminate={
+                      selectedDesigners.length > 0 &&
+                      selectedDesigners.length < employees.length
+                    }
+                    onChange={handleSelectAll}
+                    disabled={employees.length === 0}
+                  />
+                </TableHead>
+                <TableHead>姓名/電話</TableHead>
+                <TableHead>設計師編號</TableHead>
+                <TableHead>暱稱</TableHead>
+                <TableHead>離職日期</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {employees.map((data, idx) => (
+                <TableRow key={`employee-item-${idx}`} data-state={selectedDesigners.indexOf(data.id) > -1 ? 'selected' : undefined}>
+                  <TableCell>
+                    <Checkbox
+                      aria-label={`選取 ${data.lastName}${data.firstName}`}
+                      checked={selectedDesigners.indexOf(data.id) > -1}
+                      onChange={() => handleSelectOne(data.id)}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Avatar css={styles.avatar} src={data.avatar} />
+                      <div>
+                        <div className="font-medium">
+                          {data.lastName}
+                          {data.firstName}
+                        </div>
+                        <div className="text-caption tabular-nums text-text-secondary">{data.cellphone}</div>
+                      </div>
                     </div>
-                    <div>{data.cellphone}</div>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell css={styles.compactCell}>{data.designerNo}</TableCell>
-              <TableCell css={styles.compactCell}>{data.nickName}</TableCell>
-              <TableCell css={styles.compactCell}>{format(data.deletedAt, 'yyyy/MM/dd')}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </ManagementTable>
+                  </TableCell>
+                  <TableCell>{data.designerNo}</TableCell>
+                  <TableCell>{data.nickName}</TableCell>
+                  <TableCell className="tabular-nums">{format(data.deletedAt, 'yyyy/MM/dd')}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          {employees.length === 0 && <EmptyState title="目前沒有離職員工" />}
+        </div>
+      </Card>
       <TableEditBar
         selected={selectedDesigners}
         onReinstatement={onReinstatement}

@@ -1,13 +1,16 @@
 /** @jsxImportSource @emotion/react */
+// 班表格線使用 sticky 欄列、動態班別色與 .AttendanceEmployeeScheduleTable / .beforeToday 全域樣式，表格與班別按鈕沿用 MUI
 import {
   Button, Table, TableBody, TableCell, TableHead, TableRow,
-  TableContainer, Paper, Card, CardHeader, CardContent, Typography,
+  TableContainer, Paper,
 } from '@mui/material'
 import { format, isBefore, isAfter, isToday } from 'date-fns'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Button as UiButton } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
 
 const styles = {
   root: css({
@@ -313,42 +316,28 @@ export default function Results({
   }
 
   return (
-    <Card css={styles.root}>
+    <Card className="mt-4 overflow-hidden">
       <CardHeader
-        css={styles.cardHeader}
-        title={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span>班表總表列表</span>
-            <Typography color="textSecondary" variant="body2">
-              共 {employeeSchedule.length} 人
-            </Typography>
-          </div>
-        }
+        className="items-center pb-4"
         action={
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <Button
-              disabled={exportLoading}
-              variant="contained"
-              onClick={exportExcel}
-              size="small"
-              css={css({
-                backgroundColor: 'rgb(var(--surface)) !important',
-                color: 'rgb(var(--text-secondary)) !important',
-                boxShadow: 'none !important',
-                borderRadius: '18px !important',
-                padding: '4px 16px !important',
-                '&:hover': {
-                  backgroundColor: 'rgb(var(--surface)) !important',
-                  boxShadow: 'none !important',
-                }
-              })}
-            >
-              報表匯出
-            </Button>
-          </div>
+          <UiButton
+            size="sm"
+            variant="secondary"
+            disabled={exportLoading}
+            onClick={exportExcel}
+          >
+            報表匯出
+          </UiButton>
         }
-      />
-      <CardContent style={{ padding: 0 }}>
+      >
+        <div className="flex items-baseline gap-3">
+          <CardTitle>班表總表列表</CardTitle>
+          <span className="text-label tabular-nums text-text-secondary">
+            共 {employeeSchedule.length} 人
+          </span>
+        </div>
+      </CardHeader>
+      <div className="mt-0">
         <TableContainer style={{ maxHeight: 'calc(100vh - 380px)' }} component={Paper} className="AttendanceEmployeeScheduleTable">
           <Table css={styles.table} size="small" aria-label="a dense table">
             <TableHead css={styles.stickyRow}>
@@ -388,7 +377,7 @@ export default function Results({
             </TableBody>
           </Table>
         </TableContainer>
-      </CardContent>
+      </div>
     </Card>
   )
 }

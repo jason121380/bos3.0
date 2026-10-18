@@ -2,11 +2,12 @@
 import React, { useState, Fragment } from 'react'
 import {
   Avatar, DialogContent, Link, List, ListItemButton,
-  ListItemAvatar, ListItemText, Typography, Button, Grid
+  ListItemAvatar, ListItemText, Typography
 } from '@mui/material'
 import { blue } from '@mui/material/colors'
 import { Cancel as CancelIcon, Check as CheckIcon, Lock as LockIcon, LockOpen as LockOpenIcon, Edit as EditIcon, ShoppingCart as ShoppingCartIcon, EventSeat as EventSeatIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
+import { Button } from 'ui/button'
 import { format } from 'date-fns'
 import { Link as RouterLink } from 'react-router-dom'
 import useFetchAdminBookingTime, { useFetchAdminBookingTimeAllStore } from 'hooks/useFetchAdminBookingTime'
@@ -148,11 +149,10 @@ export default function NewChoseEvent({
             <ListItemText primary="關閉全店預約" />
           </ListItemButton>
         )}
-        <Grid container justifyContent="flex-end" style={{ display: 'flex' }}>
+        <div className="flex justify-end pt-2">
           <Button
             type="submit"
-            variant="contained"
-            color="primary"
+            variant="secondary"
             disabled={btnDisabled}
             onClick={() => {
               setModalOpen(false)
@@ -160,7 +160,7 @@ export default function NewChoseEvent({
           >
             取消
           </Button>
-        </Grid>
+        </div>
       </Fragment>}
       {(modaltype === 'default' || modaltype === 'openOrder') && <Fragment>
         <Link
@@ -196,11 +196,10 @@ export default function NewChoseEvent({
             <ListItemText primary="關閉預約" />
           </ListItemButton>
         )}
-        <Grid container justifyContent="flex-end" style={{ display: 'flex' }}>
+        <div className="flex justify-end pt-2">
           <Button
             type="submit"
-            variant="contained"
-            color="primary"
+            variant="secondary"
             disabled={btnDisabled}
             onClick={() => {
               setModalOpen(false)
@@ -208,7 +207,7 @@ export default function NewChoseEvent({
           >
             取消
           </Button>
-        </Grid>
+        </div>
       </Fragment>}
       {(modaltype === 'orderCheck' || modaltype === 'orderSuccess') && <Fragment>
         <Typography component='div' gutterBottom css={styles.breakWord}>
@@ -289,11 +288,10 @@ export default function NewChoseEvent({
             </ListItemButton>
           )}
         </List>
-        <Grid container justifyContent="flex-end" style={{ display: 'flex' }}>
+        <div className="flex justify-end pt-2">
           <Button
             type="submit"
-            variant="contained"
-            color="primary"
+            variant="secondary"
             disabled={btnDisabled}
             onClick={() => {
               setModalOpen(false)
@@ -301,7 +299,7 @@ export default function NewChoseEvent({
           >
             關閉
           </Button>
-        </Grid>
+        </div>
       </Fragment>}
     </DialogContent>
   )

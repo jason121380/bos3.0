@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Switch } from '@mui/material'
+import { Switch } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
@@ -17,6 +17,7 @@ import { openSnackbar } from 'elements/snackbars'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
+import { Skeleton } from 'ui/skeleton'
 import ScheduleTags from './ScheduleTags'
 import Results from './Results'
 
@@ -206,8 +207,8 @@ export default function Employees() {
   }, [getUESUsingSetting.loading])
 
   return (
-    <Page css={styles.root} title="考勤排班總表">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className="ui-root" title="考勤排班總表">
+      <div>
         <AdminPageHeader
           title="考勤排班總表"
           subtitle="ATTENDANCE EMPLOYEE SCHEDULE"
@@ -217,9 +218,9 @@ export default function Employees() {
             disabled: isEditing ? (employeeClockInSchedule.loading || isClick) : false
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="flex items-center gap-4">
             {UESUsing && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '14px', color: 'rgb(var(--text-secondary))' }}>
+              <div className="flex items-center gap-1 text-body text-text-secondary">
                 <span>編輯過往班別</span>
                 <Switch
                   size="small"
@@ -247,7 +248,7 @@ export default function Employees() {
             />
           </div>
         </AdminPageHeader>
-        <div style={{ marginBottom: '12px' }}>
+        <div className="mb-3">
           {!merchantClockInSchedule.loading && (
             <ScheduleTags
               merchantClockInSchedule={idx(
@@ -283,9 +284,9 @@ export default function Employees() {
             setIsEditing={setIsEditing}
           />
         ) :
-          <div style={{ width: '100%', textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
+          <Skeleton className="mt-4 h-96 w-full" />
         }
-      </Container>
+      </div>
     </Page>
   )
 }
