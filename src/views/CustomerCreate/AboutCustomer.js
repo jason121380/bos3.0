@@ -1,17 +1,12 @@
 /** @jsxImportSource @emotion/react */
+// 表單欄位（TextField / Select / ToggleButton / 來源下拉）保留 MUI，只換卡片外框與按鈕
 import {
-  Card,
-  CardContent,
-  CardHeader,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
-  Button,
   TextField,
-  Grid,
   InputAdornment,
-  Typography,
   ToggleButton,
   ToggleButtonGroup
 } from '@mui/material'
@@ -25,6 +20,8 @@ import useFetchGetCheckIsCustomerNoUsed from 'hooks/useFetchGetCheckIsCustomerNo
 import SourceSelect from 'components/SourceSelect'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 const styles = {
   formGroup: css({
@@ -98,16 +95,19 @@ function AboutProject({
 
   return (
     <Card {...rest} css={className}>
-      <Grid container style={{ justifyContent: 'space-between' }}>
-        <CardHeader title="一般資訊" />
-
-        <div css={styles.actions}>
-          {!isLoading && <Typography variant="body1">{`最新顧客編號: ${lastNo}`}</Typography>}
-          <Button color="primary" variant="contained" onClick={handleOnClick} disabled={vaild}>
-            新增
-          </Button>
-        </div>
-      </Grid>
+      <CardHeader
+        className="flex-wrap items-center"
+        action={
+          <div className="flex flex-wrap items-center gap-2.5">
+            {!isLoading && <span className="text-body tabular-nums text-text-secondary">{`最新顧客編號: ${lastNo}`}</span>}
+            <Button variant="secondary" onClick={handleOnClick} disabled={vaild}>
+              新增
+            </Button>
+          </div>
+        }
+      >
+        <CardTitle>一般資訊</CardTitle>
+      </CardHeader>
       <CardContent>
         <TextField
           error={noVerify && !isSetTime}
