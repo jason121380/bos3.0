@@ -1,8 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button, Card, CardActions, CardContent, Typography
-} from '@mui/material'
-import cyan from '@mui/material/colors/cyan'
 import Page from 'components/Page'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
@@ -12,34 +7,14 @@ import { useFetchCustomerBookingResults } from 'hooks/useFetchViewer'
 import idx from 'idx'
 import React from 'react'
 import { useHistory } from 'react-router'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Badge } from 'ui/badge'
+import { Button } from 'ui/button'
+import { Card, CardContent } from 'ui/card'
 
 import Header from './Header'
 
-const styles = {
-  root: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-    marginBottom: theme.spacing(2),
-  }),
-  title: css({
-    fontSize: 14,
-  }),
-  pos: css({
-    marginBottom: 12,
-  }),
-  cardInner: css({
-    padding: theme.spacing(1),
-  }),
-  cancelButton: css({
-    backgroundColor: cyan[500],
-    color: 'white',
-    '&:hover': {
-      backgroundColor: cyan[400],
-    },
-  }),
-}
+// 預約狀態的 Badge 顏色（只影響外觀）
+const statusVariant = status => (status === '預約成功' ? 'success' : status === '待審核' ? 'warning' : 'neutral')
 
 export default function Reservation({ location }) {
   const history = useHistory()
@@ -71,51 +46,53 @@ export default function Reservation({ location }) {
   }, [customer, history, location])
 
   return (
-    <Page css={styles.root} title="預約管理">
+    <Page className="ui-root flex flex-col gap-4" title="預約管理">
       <Header />
       {idx(customerBookingResults, _ =>
         _.data.viewer.customer.orders.orders.map((data, index) => (
-          <Card css={styles.root} key={`order-${index}`}>
-            <CardContent css={styles.cardInner}>
-              <Typography css={styles.title} color="textSecondary" gutterBottom>
-                {format(new Date(data.date), 'yyyy/MM/dd HH:mm')}
-              </Typography>
-              <Typography variant="h5" component="h2">
-                {data.designer ? data.designer.name + ' 設計師' : '不指定設計師'}
-              </Typography>
-              {data.isDesignate ? (
-                <Typography variant="body2" component="p">
-                  指定設計師
-                </Typography>
-              ) : (
-                ''
+          <Card key={`order-${index}`}>
+            <CardContent className="flex flex-col gap-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex min-w-0 flex-col gap-1">
+                  <p className="text-caption tabular-nums text-text-secondary">
+                    {format(new Date(data.date), 'yyyy/MM/dd HH:mm')}
+                  </p>
+                  <h2 className="text-heading text-text">
+                    {data.designer ? data.designer.name + ' 設計師' : '不指定設計師'}
+                  </h2>
+                  {data.isDesignate ? (
+                    <p className="text-body text-text-secondary">
+                      指定設計師
+                    </p>
+                  ) : (
+                    ''
+                  )}
+                </div>
+                <Badge variant={statusVariant(data.status)} className="shrink-0">
+                  {data.status}
+                </Badge>
+              </div>
+              {data.status === '待審核' && (
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  className="h-11 w-full"
+                  onClick={() => handleCancleOrder(data.id)}
+                >
+                  取消預約
+                </Button>
               )}
-              <Typography variant="h5" component="h2">
-                {data.status}
-              </Typography>
+              {data.status === '預約成功' && (
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  className="h-11 w-full"
+                  onClick={() => handleCancleOrder(data.id)}
+                >
+                  取消預約
+                </Button>
+              )}
             </CardContent>
-            {data.status === '待審核' && (
-              <CardActions css={styles.cardInner}>
-                <Button
-                  size="small"
-                  css={styles.cancelButton}
-                  onClick={() => handleCancleOrder(data.id)}
-                >
-                  取消預約
-                </Button>
-              </CardActions>
-            )}
-            {data.status === '預約成功' && (
-              <CardActions css={styles.cardInner}>
-                <Button
-                  size="small"
-                  css={styles.cancelButton}
-                  onClick={() => handleCancleOrder(data.id)}
-                >
-                  取消預約
-                </Button>
-              </CardActions>
-            )}
           </Card>
         ))
       )}
