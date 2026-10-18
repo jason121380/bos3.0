@@ -1,39 +1,8 @@
-/** @jsxImportSource @emotion/react */
-import { Card, CardContent, CardHeader, TextField, Autocomplete } from '@mui/material'
+// 廠商選擇保留 MUI Autocomplete（橋接主題已套新外觀）
+import { TextField, Autocomplete } from '@mui/material'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  alert: css({
-    marginBottom: theme.spacing(3),
-  }),
-  formGroup: css({
-    marginBottom: theme.spacing(3),
-  }),
-  fieldGroup: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  fieldHint: css({
-    margin: theme.spacing(1, 0),
-  }),
-  tags: css({
-    marginTop: theme.spacing(1),
-    '& > * + *': {
-      marginLeft: theme.spacing(1),
-    },
-  }),
-  flexGrow: css({
-    flexGrow: 1,
-  }),
-  dateField: css({
-    '& + &': {
-      marginLeft: theme.spacing(2),
-    },
-  }),
-}
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
 
 function AboutMerchantVendorEdit({ className, vendorOption, isLodaing, submitData, setSubmitData }) {
   const handleInputChange = (key, value) => {
@@ -43,12 +12,13 @@ function AboutMerchantVendorEdit({ className, vendorOption, isLodaing, submitDat
   }
 
   return (
-    <Card css={className}>
-      <CardHeader title="廠商資訊" style={{ paddingBottom: '0' }} />
-      <CardContent>
+    <Card className={className}>
+      <CardHeader>
+        <CardTitle>廠商資訊</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
         <Autocomplete
           disabled={isLodaing}
-          css={styles.formGroup}
           options={vendorOption}
           value={submitData.vendorUUId}
           autoHighlight
@@ -70,38 +40,34 @@ function AboutMerchantVendorEdit({ className, vendorOption, isLodaing, submitDat
             />
           )}
         />
-        <TextField
-          label="代號"
-          variant="outlined"
-          fullWidth
-          value={submitData.no}
-          onChange={event => handleInputChange('no', event.target.value)}
-          css={styles.formGroup}
-        />
-        <TextField
-          label="名稱"
-          variant="outlined"
-          fullWidth
-          value={submitData.name}
-          onChange={event => handleInputChange('name', event.target.value)}
-          css={styles.formGroup}
-        />
-        <TextField
-          label="暱稱"
-          variant="outlined"
-          fullWidth
-          value={submitData.nickname}
-          onChange={event => handleInputChange('nickname', event.target.value)}
-          css={styles.formGroup}
-        />
-        <TextField
-          label="備註"
-          variant="outlined"
-          fullWidth
-          value={submitData.remark}
-          onChange={event => handleInputChange('remark', event.target.value)}
-          css={styles.formGroup}
-        />
+        <Field label="代號" htmlFor="merchantVendorNo">
+          <Input
+            id="merchantVendorNo"
+            value={submitData.no}
+            onChange={event => handleInputChange('no', event.target.value)}
+          />
+        </Field>
+        <Field label="名稱" htmlFor="merchantVendorName">
+          <Input
+            id="merchantVendorName"
+            value={submitData.name}
+            onChange={event => handleInputChange('name', event.target.value)}
+          />
+        </Field>
+        <Field label="暱稱" htmlFor="merchantVendorNickname">
+          <Input
+            id="merchantVendorNickname"
+            value={submitData.nickname}
+            onChange={event => handleInputChange('nickname', event.target.value)}
+          />
+        </Field>
+        <Field label="備註" htmlFor="merchantVendorRemark">
+          <Input
+            id="merchantVendorRemark"
+            value={submitData.remark}
+            onChange={event => handleInputChange('remark', event.target.value)}
+          />
+        </Field>
       </CardContent>
     </Card>
   )
