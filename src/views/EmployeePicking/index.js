@@ -1,10 +1,8 @@
-/** @jsxImportSource @emotion/react */
-import { Card, Container, Grid, TextField, Link, Button, IconButton, Collapse } from '@mui/material'
-import { FilterList as FilterListIcon } from 'ui/icons'
+// 分類篩選 Autocomplete 保留 MUI
+import { TextField } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import DateSelector from 'components/DateSelector'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { endOfDay, startOfMonth } from 'date-fns'
 import idx from 'idx'
 import produce from 'immer'
@@ -14,21 +12,12 @@ import useFetchGetPickingRecords from 'hooks/useFetchGetPickingRecords'
 import useFetchGetActionsBannedAfterDailyCheckout from 'hooks/useFetchGetActionsBannedAfterDailyCheckout'
 import Autocomplete from '@mui/material/Autocomplete'
 import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { ListFilter, Plus } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { PageHeader, Toolbar, ToolbarSpacer } from 'ui/page-header'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function EmployeePicking() {
   const [categoryValue, setCategoryValue] = useState([])
@@ -87,115 +76,84 @@ function EmployeePicking() {
     }
   }
   return (
-    <Page css={styles.root} title="材料自購登錄">
-      <Container maxWidth={false} css={styles.container}>
-        <Card
-          css={css({
-            display: 'flex',
-            padding: '0 0 24px 0',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: 'transparent',
-            borderRadius: 0,
-            boxShadow: 'none',
-            border: 'none !important',
-            marginBottom: 0,
-          })}
+    <Page className="ui-root" title="材料自購登錄">
+      <PageHeader
+        title="材料自購登錄"
+        actions={
+          <Button asChild variant="primary">
+            <RouterLink to="/employee/picking/create">
+              <Plus strokeWidth={1.75} />
+              新增
+            </RouterLink>
+          </Button>
+        }
+      />
+      <Toolbar>
+        <DateSelector
+          date={pageSetting}
+          attributes={[
+            'thismonth', 'lastmonth', 'dbyesterday',
+            'yesterday', 'today', 'startDate', 'endDate'
+          ]}
+          dateChange={value => setPageSetting(value)}
+        />
+        <ToolbarSpacer />
+        <Button
+          variant="secondary"
+          aria-pressed={showFilter}
+          className={showFilter ? 'border-text bg-surface-hover' : undefined}
+          onClick={() => setShowFilter(!showFilter)}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='材料自購登錄' style={{ color: 'rgb(var(--accent))' }} />
-            <Link component={RouterLink} to="/employee/picking/create" style={{ textDecoration: 'none' }}>
-              <Button
-                variant="contained"
-                css={css({
-                  borderRadius: '20px !important',
-                  padding: '6px 20px !important',
-                  fontSize: '14px !important',
-                  boxShadow: 'none !important',
-                  fontWeight: 'bold !important',
-                  backgroundColor: 'rgb(var(--background)) !important',
-                  color: 'rgb(var(--text-secondary)) !important',
-                  '&:hover': {
-                    backgroundColor: 'rgb(var(--surface)) !important',
-                  }
-                })}
-              >
-                新增
-              </Button>
-            </Link>
-            <IconButton
-              onClick={() => setShowFilter(!showFilter)}
-              css={css({
-                backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
-                color: showFilter ? 'rgb(var(--accent)) !important' : 'rgb(var(--text-secondary)) !important',
-                marginLeft: '4px !important',
-                '&:hover': {
-                  backgroundColor: 'rgba(26, 115, 232, 0.15) !important',
-                }
-              })}
-            >
-              <FilterListIcon />
-            </IconButton>
-          </div>
-          <DateSelector
-            date={pageSetting}
-            attributes={[
-              'thismonth', 'lastmonth', 'dbyesterday',
-              'yesterday', 'today', 'startDate', 'endDate'
-            ]}
-            dateChange={value => setPageSetting(value)}
-          />
-        </Card>
+          <ListFilter strokeWidth={1.75} />
+          篩選
+        </Button>
+      </Toolbar>
 
-        <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: 'rgb(var(--background))', borderRadius: '8px', padding: '16px', border: '1px solid rgb(var(--border))' }}>
-            <Grid container style={{ gap: 10 }}>
-              <Grid item>
-                <MerchantSearchBar
-                  values={pageSetting}
-                  onFilter={value => setPageSetting(value)}
-                  outside
-                  visible={['employee']}
-                  lastInLeaderBoard={true}
-                />
-              </Grid>
-              <Grid item style={{ width: 180, display: 'flex', alignItems: 'center' }}>
-                <Autocomplete
-                  freeSolo
-                  fullWidth
-                  disableClearable
-                  options={categoriesArr}
-                  onChange={(event, value) => handleOnchange(event, value)}
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      label="分類"
-                      variant="outlined"
-                      InputProps={{
-                        ...params.InputProps,
-                        style: { height: '53px' },
-                      }}
-                    />
-                  )}
-                />
-              </Grid>
-            </Grid>
+      {showFilter && (
+        <Card className="mb-6 flex flex-wrap items-center gap-2.5 p-4">
+          <div>
+            <MerchantSearchBar
+              values={pageSetting}
+              onFilter={value => setPageSetting(value)}
+              outside
+              visible={['employee']}
+              lastInLeaderBoard={true}
+            />
           </div>
-        </Collapse>
-        {idx(
-          getPickingRecords, _ => _.data.pickingRecords &&
-            actionsBanned.data.getActionsBannedAfterDailyCheckout && (
-              <Results
-                pageSetting={pageSetting}
-                className={styles.results}
-                onPageChange={handlePageChange}
-                onRowsPerPageChange={handleRowsPerPageChange}
-                pickingRecords={_.data.pickingRecords}
-                actionsBanned={actionsBanned.data.getActionsBannedAfterDailyCheckout}
-              />
-            )
-        )}
-      </Container>
+          <div className="flex w-[180px] items-center">
+            <Autocomplete
+              freeSolo
+              fullWidth
+              disableClearable
+              options={categoriesArr}
+              onChange={(event, value) => handleOnchange(event, value)}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  label="分類"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    style: { height: '53px' },
+                  }}
+                />
+              )}
+            />
+          </div>
+        </Card>
+      )}
+      {idx(
+        getPickingRecords, _ => _.data.pickingRecords &&
+          actionsBanned.data.getActionsBannedAfterDailyCheckout && (
+            <Results
+              pageSetting={pageSetting}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
+              pickingRecords={_.data.pickingRecords}
+              actionsBanned={actionsBanned.data.getActionsBannedAfterDailyCheckout}
+            />
+          )
+      )}
     </Page>
   )
 }
