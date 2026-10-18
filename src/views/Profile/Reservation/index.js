@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
+// 報到狀態選單的值為布林／空字串，沿用 MUI Select
 import {
-  Card, CircularProgress, Backdrop, Select,
+  CircularProgress, Backdrop, Select,
   FormControl, InputLabel, MenuItem
 } from '@mui/material'
 import useFetchMerchant from 'hooks/useFetchMerchant'
@@ -21,6 +22,7 @@ import { cloneDeep } from 'lodash'
 import { css } from '@emotion/react'
 import { theme } from '../../../theme'
 
+import { Card } from 'ui/card'
 import OrderTable from './OrderTable'
 
 const styles = {
@@ -512,7 +514,7 @@ function Calendar({ designerId, checkinSettings, bookingCusCheck, checkinMode, b
       <Backdrop id='Backdrop' css={styles.opacity} open={merchant.loading || DesignerCalendar.loading}>
         <CircularProgress />
       </Backdrop>
-      <Card css={styles.card}>
+      <Card className="mt-6 px-5 pb-5">
         <div css={styles.headerWrap}>
           <div css={styles.headerWrap}>
             <DateSelector

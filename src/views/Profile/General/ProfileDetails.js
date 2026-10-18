@@ -1,13 +1,10 @@
 /** @jsxImportSource @emotion/react */
+// 裁切頭像的彈窗內含 react-easy-crop 與 MUI Slider，沿用 MUI Dialog
 import {
   Avatar,
-  Card,
-  CardContent,
-  Typography,
   Dialog,
   DialogContent,
   DialogTitle,
-  Button,
   Slider,
 } from '@mui/material'
 import idx from 'idx'
@@ -22,6 +19,8 @@ import { EditRounded as EditRoundedIcon } from 'ui/icons'
 import _ from 'lodash'
 import { css } from '@emotion/react'
 import { theme } from '../../../theme'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
 
 const styles = {
   root: css({}),
@@ -186,14 +185,14 @@ function ProfileDetails({
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', columnGap: '20px', margin: '10px 0' }}>
-            <Button disabled={btnDisable} color='primary' variant='contained' onClick={handleClose}>取消</Button>
-            <Button disabled={btnDisable} onClick={showCroppedImage} color='primary' variant='contained'>確認上傳</Button>
+          <div className="my-2.5 flex justify-end gap-2">
+            <Button disabled={btnDisable} variant='ghost' onClick={handleClose}>取消</Button>
+            <Button disabled={btnDisable} onClick={showCroppedImage} variant='primary'>確認上傳</Button>
           </div>
         </DialogContent>
       </Dialog>
-      <Card {...rest} css={css([styles.root, className])}>
-        <CardContent css={styles.content}>
+      <Card {...rest} css={className}>
+        <div className="flex flex-col items-center p-5 text-center">
           <div style={{ position: 'relative' }}>
             <Avatar
               css={styles.avatar}
@@ -208,22 +207,23 @@ function ProfileDetails({
               ref={inputRef}
             />
             <label
-              style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', position: 'absolute', right: '-15px', bottom: 0 }}
+              className="absolute bottom-0 right-[-15px] flex cursor-pointer items-center text-text-secondary hover:text-text"
               htmlFor="upload"
+              aria-label="更換頭像"
             >
               <EditRoundedIcon />
             </label>
           </div>
-          <Typography css={styles.name} gutterBottom variant="h3">
+          <h3 className="mt-3 text-heading text-text">
             {idx(profile, _ => _.name)}
-          </Typography>
-          <Typography color="textSecondary" variant="body1">
+          </h3>
+          <p className="mt-1 text-body text-text-secondary">
             {idx(profile, _ => _.userGroup)}
-          </Typography>
-          <Typography color="textSecondary" variant="body2">
+          </p>
+          <p className="text-caption text-text-secondary">
             {idx(profile, _ => _.merchantIdentity.authorityName)}
-          </Typography>
-        </CardContent>
+          </p>
+        </div>
       </Card>
     </Fragment>
   )

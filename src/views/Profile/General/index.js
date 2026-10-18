@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Grid } from '@mui/material'
 import useFetchProfile from 'hooks/useFetchProfile'
 import idx from 'idx'
 import PropTypes from 'prop-types'
@@ -24,10 +23,10 @@ function General({ className, ...rest }) {
   //   )
   // }
   return (
-    <Grid {...rest} css={className} container spacing={3}>
+    <div {...rest} css={className} className="grid grid-cols-12 gap-6">
       {idx(profile.data, _ => (
         <React.Fragment>
-          <Grid item lg={4} md={6} xl={3} xs={12}>
+          <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
             <ProfileDetails
               profile={_.me}
               // themeChange={themeChange}
@@ -35,18 +34,18 @@ function General({ className, ...rest }) {
               // handleThemeChange={handleThemeChange}
               // getTheme={userDetail.data.user.theme}
             />
-          </Grid>
-          <Grid item lg={8} md={6} xl={9} xs={12}>
+          </div>
+          <div className="col-span-12 md:col-span-6 lg:col-span-8 xl:col-span-9">
             <GeneralSettings
               profile={_.me}
               refetchProfile={profile.refetch}
               // themeChange={themeChange}
               // setThemeChangeData={setThemeChangeData}
             />
-          </Grid>
+          </div>
         </React.Fragment>
       ))}
-    </Grid>
+    </div>
   )
 }
 

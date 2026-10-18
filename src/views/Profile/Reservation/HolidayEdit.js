@@ -4,6 +4,7 @@ import { DialogContent, DialogTitle, Button, Divider, DialogActions } from '@mui
 import { cloneDeep } from 'lodash'
 import { format } from 'date-fns'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { Button as UiButton } from 'ui/button'
 import { green, grey } from '@mui/material/colors'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchSetAdminBookingTimes from 'hooks/useFetchSetAdminBookingTimes'
@@ -122,8 +123,8 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
         </ThemeProvider>
       </DialogContent>
       <DialogActions>
-        <Button variant='contained' disabled={isClick} color='primary' onClick={handleSetHoliday}>確定</Button>
-        <Button variant='contained' disabled={isClick} onClick={handleOnClose}>取消</Button>
+        <UiButton variant='primary' disabled={isClick} onClick={handleSetHoliday}>確定</UiButton>
+        <UiButton variant='ghost' disabled={isClick} onClick={handleOnClose}>取消</UiButton>
       </DialogActions>
     </Fragment>
   )
