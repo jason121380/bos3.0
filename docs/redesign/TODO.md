@@ -100,6 +100,7 @@
    - **Autocomplete**：不新造 combobox；不動打字／選取行為；其他頁只改外層標籤（`Field` 上方標籤＋`placeholder`）。
    - **月曆**：排入 `ui/date-picker` 專項。先盤點 39–43 檔（`@mui/x-date-pickers`；口徑差異在盤點時對齊），必須保留民國年、顯示格式、locale、存值，分批進行。
    - **22 張列印報表**：併入「報表 compact 專項」，只改樣式；列印預覽以唯讀方式確認，不動 `#printMain`／`#printThermal` 與 `className` 含 `print` 的元素。
+   - **報表 compact 進度**（2026/10/19）：承 PR #20 第一批 4 頁，**第二批（v3.0-1019-0406）+12 頁，累計 16 頁，剩 12 頁 MUI Table 報表＋列印共用層後續**。本批 12 個 Results 的主報表 `ui/table` 補 `dense`（共 19 張：MerchantDaily 4、SingleService 3、DecreaseDaily 2、ProductConsume 2、其餘 8 頁各 1）；`src/ui/table.js` 的 dense 補 `px-2`（以 PR #20 合併後最終版為準）。盤點總表（INVENTORY／口徑數字）在 PR #20 分支，待整組對齊後更新，本分支未寫入。
 4. `ui/native-select` 的 `label`（外框上緣標籤）要不要整批改成「`Field` 上方標籤」？目前 25 檔引用、約 21 處有傳 `label`，與 STYLE「標籤在上」不一致；改法機械但檔案分散，建議納入 §四 批次 E。
 
 ### P4 — 既有問題（修了會動邏輯，需你同意才改）

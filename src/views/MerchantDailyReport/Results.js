@@ -111,7 +111,7 @@ function Results({
   return (
     <Fragment>
       {/* 列印：MerchantDailyReportTable-* 的 @media print 樣式以 table / th / td 標籤選取，className 保留在表格外框 */}
-      <Table wrapperClassName="MerchantDailyReportTable-1" className="min-w-[650px]" aria-label="a dense table">
+      <Table dense wrapperClassName="MerchantDailyReportTable-1" className="min-w-[650px]" aria-label="a dense table">
         <TableHeader className={printHeader}>
           <TableRow>
             <TableHead></TableHead>
@@ -276,6 +276,7 @@ function Results({
         </p>
       ) : (
         <Table
+          dense
           wrapperClassName="MerchantDailyReportTable-2 my-[30px]"
           className="min-w-[650px]"
           aria-label="a dense table"
@@ -410,7 +411,7 @@ function Results({
         checked={displayIntervalData}
         onChange={() => setDisplayIntervalData(!displayIntervalData)}
       /> */}
-      <Table wrapperClassName="MerchantDailyReportTable-3" className="min-w-[650px]" aria-label="a dense table">
+      <Table dense wrapperClassName="MerchantDailyReportTable-3" className="min-w-[650px]" aria-label="a dense table">
         <TableHeader className={printHeader}>
           <TableRow>
             <TableHead></TableHead>
@@ -458,6 +459,7 @@ function Results({
         </TableBody>
       </Table>
       <Table
+        dense
         wrapperClassName="MerchantDailyReportTable-4 my-[30px]"
         className="min-w-[650px]"
         aria-label="a dense table"

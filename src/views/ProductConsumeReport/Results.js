@@ -7,7 +7,7 @@ import { format } from 'date-fns'
 export default function Results({ productConsumeListReport, value }) {
   return (
     <Fragment>
-      <Table aria-label="a dense table">
+      <Table dense aria-label="a dense table">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead>領料日期</TableHead>
@@ -63,7 +63,7 @@ export default function Results({ productConsumeListReport, value }) {
                 })}
           </TableBody>
       </Table>
-      <Table wrapperClassName="mt-6" aria-label="a dense table">
+      <Table dense wrapperClassName="mt-6" aria-label="a dense table">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead></TableHead>

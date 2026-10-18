@@ -19,7 +19,7 @@ function Results({
 }) {
   return (
     // HelperMonthlyReport：@media print 樣式掛鉤（以 table／th／td 標籤選取），保留在表格外框
-    <Table wrapperClassName='HelperMonthlyReport mt-2' className="min-w-[650px]" aria-label="a dense table">
+    <Table dense wrapperClassName='HelperMonthlyReport mt-2' className="min-w-[650px]" aria-label="a dense table">
       {/* 列印時表頭白底黑字，與舊版 th.MuiTableCell-head 的列印樣式一致 */}
       <TableHeader className="print:bg-transparent print:[&_th]:text-text">
         <TableRow className="hover:bg-transparent">
