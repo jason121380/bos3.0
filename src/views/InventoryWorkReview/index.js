@@ -1,11 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import { Container, CircularProgress } from '@mui/material'
+// Container 與 PageTitle 保留：整頁會被 window.print() 列印，列印樣式依賴 .MuiContainer-root
+import { Container } from '@mui/material'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import { useFetchGetInventory } from 'hooks/useFetchGetInventorys'
 import { useState, useEffect, Fragment } from 'react'
 import format from 'date-fns/format'
 import idx from 'idx'
+import { Skeleton } from 'ui/skeleton'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
@@ -81,8 +83,8 @@ function InventoryWorkEdit({ match }) {
       <Container maxWidth="md">
         <PageTitle title='盤點紀錄' subTitle='Inventory Work review' />
         {(getInventory.loading) ?
-          <div style={{ textAlign: 'center', marginTop: 150 }}>
-            <CircularProgress />
+          <div className="ui-root noprint mt-6 flex flex-col gap-3" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div> :
           <General
             info={info}

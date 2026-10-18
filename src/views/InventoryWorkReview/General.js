@@ -1,8 +1,12 @@
 /** @jsxImportSource @emotion/react */
+// 本頁以 window.print() 列印整頁，initialize.scss 的 .InventoryWorkReview 列印樣式依賴 MUI Card / CardContent / Paper / Table 的 class，
+// 因此列印內容（卡片與表格）原封保留，只替換不列印（noprint）的動作按鈕
 import {
-  Card, CardContent, CardHeader, Button, TableContainer,
+  Card, CardContent, CardHeader, TableContainer,
   Table, TableBody, TableRow, TableCell, TableHead, Paper
 } from '@mui/material'
+import { Download, Printer } from 'lucide-react'
+import { Button } from 'ui/button'
 import { Fragment } from 'react'
 import format from 'date-fns/format'
 import { CSVLink } from 'react-csv'
@@ -107,25 +111,23 @@ function General({ info, inventoryData, CSVData }) {
                 </div>
               )}
               <div css={styles.btnWrap}>
-                <CSVLink
-                  data={CSVData}
-                  filename="盤點紀錄.csv"
-                  style={{ display: 'inline' }}
-                >
-                  <Button
-                    className="noprint"
-                    variant="contained"
-                    color="primary"
+                <Button asChild size="sm" variant="secondary" className="noprint">
+                  <CSVLink
+                    data={CSVData}
+                    filename="盤點紀錄.csv"
+                    className="no-underline"
                   >
+                    <Download strokeWidth={1.75} />
                     報表匯出
-                  </Button>
-                </CSVLink>
+                  </CSVLink>
+                </Button>
                 <Button
+                  size="sm"
                   className="noprint"
-                  variant="contained"
-                  color="primary"
+                  variant="secondary"
                   onClick={() => window.print()}
                 >
+                  <Printer strokeWidth={1.75} />
                   列印
                 </Button>
               </div>
