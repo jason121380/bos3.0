@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Container, Grid } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
 import { endOfDay, startOfMonth } from 'date-fns'
@@ -10,8 +8,6 @@ import { useLazyFetchServiceOrderHelpers } from 'hooks/useFetchServiceOrderHelpe
 import { useLazyFetchDesignerSalesDetail } from 'hooks/useFetchUser'
 import idx from 'idx'
 import React from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import Customer from './Customer'
 import Header from './Header'
@@ -20,13 +16,6 @@ import OrderRecords from './OrderRecords'
 import Performance from './Performance'
 import Service from './Service'
 import SupportRecord from './SupportRecord'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-}
 
 function DesignerPerformDetail({ history, location }) {
   const [pageSetting, setPageSetting] = React.useState({
@@ -92,8 +81,8 @@ function DesignerPerformDetail({ history, location }) {
   ])
 
   return (
-    <Page css={styles.root} title="設計師細項分析">
-      <Container maxWidth={false}>
+    <Page className="ui-root" title="設計師細項分析">
+      <div>
         <Header />
         <MerchantSearchBar
           values={pageSetting}
@@ -102,18 +91,18 @@ function DesignerPerformDetail({ history, location }) {
           outside
           visible={['datePicker', 'employee', 'payment']}
         />
-        <Grid container spacing={3}>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {idx(
             designerSalesDetail,
             _ =>
               _.data.user.salesAnalytics && (
                 <React.Fragment>
-                  <Grid item md={6} xs={12}>
+                  <div className="min-w-0">
                     <Performance performance={_.data.user.salesAnalytics} />
-                  </Grid>
-                  <Grid item md={6} xs={12}>
+                  </div>
+                  <div className="min-w-0">
                     <Customer customer={_.data.user.salesAnalytics} />
-                  </Grid>
+                  </div>
                 </React.Fragment>
               )
           )}
@@ -121,9 +110,9 @@ function DesignerPerformDetail({ history, location }) {
             serviceCategoriesAnalytics,
             _ =>
               _.data.serviceCategories && (
-                <Grid item xs={12}>
+                <div className="min-w-0 md:col-span-2">
                   <Service services={_.data.serviceCategories} />
-                </Grid>
+                </div>
               )
           )}
 
@@ -131,9 +120,9 @@ function DesignerPerformDetail({ history, location }) {
             merchantSalesAnalytics,
             _ =>
               _.data.productCategories && (
-                <Grid item xs={12}>
+                <div className="min-w-0 md:col-span-2">
                   <MerchantSells merchantSells={_.data.productCategories} />
-                </Grid>
+                </div>
               )
           )}
 
@@ -141,9 +130,9 @@ function DesignerPerformDetail({ history, location }) {
             designerOrderRecords,
             _ =>
               _.data.orders.orders && (
-                <Grid item xs={12}>
+                <div className="min-w-0 md:col-span-2">
                   <OrderRecords orders={_.data.orders.orders} />
-                </Grid>
+                </div>
               )
           )}
 
@@ -151,13 +140,13 @@ function DesignerPerformDetail({ history, location }) {
             serviceOrderHelpers,
             _ =>
               _.data.serviceOrderHelpers && (
-                <Grid item xs={12}>
+                <div className="min-w-0 md:col-span-2">
                   <SupportRecord records={_.data.serviceOrderHelpers.data} />
-                </Grid>
+                </div>
               )
           )}
-        </Grid>
-      </Container>
+        </div>
+      </div>
     </Page>
   )
 }
