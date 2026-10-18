@@ -2,7 +2,8 @@
 import { TextField } from '@mui/material'
 import { Field, Input } from 'ui/input'
 import { CheckboxField } from 'ui/checkbox'
-import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, FilterNone as FilterNoneIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
+import { Eraser, Copy, Trash2 } from 'lucide-react'
+import { RowIconButton, AddRowButton } from './RowAction'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import ServicesAutoComplete from 'components/ServicesAutoComplete'
 import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
@@ -290,11 +291,12 @@ function Services({
     <Fragment>
       <div css={styles.service}>
         {index === 0 ? (
-          <FilterNoneIcon css={styles.createIcon} onClick={handleOpenServicesModal} />
+          <RowIconButton label="從清單選擇服務" className="mx-1.5" onClick={handleOpenServicesModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span style={{ margin: '22px' }} />
+          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
         )}
-        <Field label="服務項目">
+        {/* 必填 *：helper/billVerify.js checkServicesOrders 要求每一列都有 serviceId（空列不會被丟掉） */}
+        <Field label="服務項目" required>
           <ServicesAutoComplete
             onChange={handleServiceChange}
             className={styles.servicesField}
@@ -515,25 +517,28 @@ function Services({
             )}
           </Fragment>
         )}
-        <BackspaceOutlinedIcon
-          css={styles.action}
+        <RowIconButton
+          label="清除此列" className="mr-1.5"
           onClick={handleClear}
           data-testid={`service-${index}-clear`}
-        />
+        >
+          <Eraser aria-hidden="true" strokeWidth={1.75} />
+        </RowIconButton>
         {!first && (
-          <DeleteForeverIcon
-            css={styles.action}
+          <RowIconButton
+            label="刪除此列" className="mr-1.5"
             onClick={() => {
               removeService(index)
               setFocus('service')
             }}
             data-testid={`service-${index}-delete`}
-          />
+          >
+            <Trash2 aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         )}
       </div>
       {last && (
-        <AddIcon
-          css={styles.action}
+        <AddRowButton
           data-testid={`service-${index}-add`}
           onClick={() => {
             addService()

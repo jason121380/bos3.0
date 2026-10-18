@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { Checkbox, FormControlLabel } from '@mui/material'
 import { Field, Input } from 'ui/input'
-import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
+import { Eraser, Trash2 } from 'lucide-react'
+import { RowIconButton, AddRowButton } from './RowAction'
 import CustomerTicketRecordAutoCompleteForOrderCreate from 'components/CustomerTicketRecordAutoCompleteForOrderCreate'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import billContext from 'context/keyInContext'
@@ -232,20 +233,24 @@ export default function CouponUse({
             />
           </Fragment>
         ))}
-        <BackspaceOutlinedIcon css={styles.action} onClick={handleClear} />
+        <RowIconButton label="清除此列" className="mr-1.5" onClick={handleClear} >
+<Eraser aria-hidden="true" strokeWidth={1.75} />
+</RowIconButton>
         {!first ? (
-          <DeleteForeverIcon
-            css={styles.action}
+          <RowIconButton
+            label="刪除此列" className="mr-1.5"
             onClick={function () {
               removeCouponUse({ index })
             }}
-          />
+          >
+            <Trash2 aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           ''
         )}
       </div>
       {last && couponUsage.customerTicketId ? (
-        <AddIcon css={styles.action} onClick={addCouponUse} />
+        <AddRowButton onClick={addCouponUse} />
       ) : (
         ''
       )}

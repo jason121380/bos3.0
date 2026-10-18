@@ -516,7 +516,8 @@ export default function Head() {
           {/* 第 1 欄：日期與鎖定 */}
           <div css={[styles.column, styles.column1]}>
             <div css={styles.row}>
-              <Field label="訂單日期" className="w-full">
+              {/* 必填 *：依據 Header.js 的 valid（缺 bill.date 時「掛單／明細／結帳」停用） */}
+              <Field label="訂單日期" required className="w-full">
                 <DateTimePicker
                   value={bill.date}
                   format='yyyy/MM/dd HH:mm'
@@ -547,7 +548,8 @@ export default function Head() {
           {/* 第 2 欄：客戶與不留客資 */}
           <div css={[styles.column, styles.column2]}>
             <div css={styles.row}>
-              <Field label="顧客" className="w-full">
+              {/* 必填 *：Header.js 的 valid 要求有顧客（customerId／手機）或勾選「不留客資」；勾了不留客資就不必填 */}
+              <Field label="顧客" required={!checkoutWithoutCustomer} className="w-full">
                 <Autocomplete
                   disabled={checkoutWithoutCustomer}
                   autoComplete={false}
@@ -654,7 +656,8 @@ export default function Head() {
           {/* 第 3 欄：服務人員 */}
           <div css={[styles.column, styles.column3]}>
             <div css={styles.row}>
-              <Field label="服務人員" className="min-w-[180px] flex-1">
+              {/* 必填 *：Header.js 的 valid 要求 bill.designerId */}
+              <Field label="服務人員" required className="min-w-[180px] flex-1">
                 <EmployeeAutoComplete
                   css={styles.employeeInput}
                   getCustomerData={values => setCustomerInModal(values)}

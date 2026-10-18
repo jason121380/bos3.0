@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
-import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
+import { Eraser, Copy, Trash2 } from 'lucide-react'
+import { RowIconButton, AddRowButton } from './RowAction'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import ProductAutoComplete from 'components/ProductAutoComplete'
 import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
@@ -147,7 +148,8 @@ function MerchantSells({
   return (
     <Fragment>
       <div css={styles.merchantSells}>
-        <Field label="服務人員">
+        {/* 必填 *：helper/billVerify.js checkProductOrders 要求 sellerId 與 productId；兩者都空的列會被 handleTidyBill 丟掉，所以該列有填任一欄才標必填 */}
+        <Field label="服務人員" required={!!sellsItem.sellerId || !!sellsItem.productId}>
           <EmployeeAutoComplete
             placeholder="服務人員姓名/編號"
             className={styles.field}
@@ -167,11 +169,11 @@ function MerchantSells({
           />
         </Field>
         {index === 0 ? (
-          <FilterNoneIcon css={styles.createIcon} onClick={handleOpenProductsModal} />
+          <RowIconButton label="從清單選擇商品" className="mx-1.5" onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span style={{ margin: '22px' }} />
+          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
         )}
-        <Field label="商品">
+        <Field label="商品" required={!!sellsItem.sellerId || !!sellsItem.productId}>
           <ProductAutoComplete
             className={styles.productField}
             value={sellsItem.productId}
@@ -297,28 +299,31 @@ function MerchantSells({
           </React.Fragment>
         )}
 
-        <BackspaceOutlinedIcon
-          css={styles.action}
+        <RowIconButton
+          label="清除此列" className="mr-1.5"
           onClick={() => {
             onClear({ index })
             setFocus('employee')
           }}
           data-testid={`merchantSsell-${index}-clear`}
-        />
+        >
+          <Eraser aria-hidden="true" strokeWidth={1.75} />
+        </RowIconButton>
         {!first && (
-          <DeleteForeverIcon
-            css={styles.action}
+          <RowIconButton
+            label="刪除此列" className="mr-1.5"
             onClick={() => {
               removeSells({ index })
               setFocus('employee')
             }}
             data-testid={`merchantSsell-${index}-delete`}
-          />
+          >
+            <Trash2 aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         )}
       </div>
       {last && (
-        <AddIcon
-          css={styles.action}
+        <AddRowButton
           onClick={() => {
             addSells()
             setFocus('employee')

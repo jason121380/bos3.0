@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
-import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
+import { Eraser, Copy, Trash2 } from 'lucide-react'
+import { RowIconButton, AddRowButton } from './RowAction'
 import TicketAutoComplete from 'components/TicketAutoComplete'
 import idx from 'idx'
 import _ from 'lodash'
@@ -88,9 +89,9 @@ export default function CouponSells({
     <Fragment>
       <div css={styles.couponSells}>
         {index === 0 ? (
-          <FilterNoneIcon css={styles.createIcon} onClick={handleOpenCouponModal} />
+          <RowIconButton label="從清單選擇預收卡" className="mx-1.5" onClick={handleOpenCouponModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span style={{ margin: '22px' }} />
+          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
         )}
         <Field label="卡券">
           <TicketAutoComplete
@@ -215,17 +216,19 @@ export default function CouponSells({
             </Field>
           </Fragment>
         )}
-        <BackspaceOutlinedIcon
-          css={styles.action}
+        <RowIconButton
+          label="清除此列" className="mr-1.5"
           data-testid={`couponSells-${index}-clear`}
           onClick={() => {
             onClear({ index })
             setFocus('coupon')
           }}
-        />
+        >
+          <Eraser aria-hidden="true" strokeWidth={1.75} />
+        </RowIconButton>
         {!first && (
-          <DeleteForeverIcon
-            css={styles.action}
+          <RowIconButton
+            label="刪除此列" className="mr-1.5"
             data-testid={`couponSells-${index}-delete`}
             onClick={() => {
               removeCouponSell({
@@ -233,12 +236,13 @@ export default function CouponSells({
               })
               setFocus('coupon')
             }}
-          />
+          >
+            <Trash2 aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         )}
       </div>
       {last && (
-        <AddIcon
-          css={styles.action}
+        <AddRowButton
           data-testid={`couponSells-${index}-add`}
           onClick={() => {
             addCouponSell({
