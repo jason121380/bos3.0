@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from '@mui/material'
+import { Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo } from 'react'
@@ -41,12 +41,11 @@ function AboutOrderSource({ className, reference, setReference, inputEnable }) {
               >
                 {index + 1}
               </span>
-              <TextField
+              <Input
+                className="w-[214px] shrink-0"
                 disabled={!inputEnable}
                 type="text"
-                variant="outlined"
                 value={label}
-                InputLabelProps={{ shrink: true }}
                 onChange={event => handleInputOnChange(event, index)}
               />
               <div style={{ display: 'flex' }}>
