@@ -1,8 +1,5 @@
-/** @jsxImportSource @emotion/react */
+// 扣項欄位的值可能為空字串或數字（扣項基準點），保留 MUI Select；同列的數字欄位也保留 MUI TextField 以維持標籤樣式一致
 import {
-  Card,
-  CardContent,
-  CardHeader,
   Checkbox,
   FormControl,
   InputLabel,
@@ -10,66 +7,13 @@ import {
   Select,
   TextField,
   FormControlLabel,
-  Typography,
-  Grid,
 } from '@mui/material'
-import { Add as AddIcon, DeleteForever as DeleteForeverIcon, BackspaceOutlined as BackspaceOutlinedIcon } from 'ui/icons'
+import { Delete, Plus, Trash2 } from 'lucide-react'
 // import useFetchMerchantDeductionItems from 'hooks/useFetchMerchantDeductionItems'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
-import { Fragment } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  alert: css({
-    marginBottom: theme.spacing(3),
-  }),
-  tableBody: css({
-    padding: theme.spacing(2),
-  }),
-  formGroup: css({
-    width: '8rem',
-    marginLeft: theme.spacing(3),
-  }),
-  RefFormGroup: css({
-    width: '6rem',
-    marginLeft: theme.spacing(3),
-  }),
-  service: css({
-    display: 'flex',
-    justifyContent: 'flex-start',
-    marginBottom: theme.spacing(3),
-  }),
-  icons: css({
-    marginLeft: theme.spacing(3),
-    marginTop: '30px',
-    cursor: 'pointer',
-  }),
-  gap: css({
-    marginLeft: theme.spacing(3),
-  }),
-  textField: css({
-    width: '5rem',
-  }),
-  nonDesignateTextField: css({
-    width: '5rem',
-    marginLeft: theme.spacing(3),
-  }),
-  orderNum: css({
-    marginBottom: '0',
-    marginRight: '15px',
-  }),
-  deductionTypeFormGroup: css({
-    width: '6rem',
-  }),
-  headerTitle: css({
-    '& .MuiCardHeader-title': {
-      color: 'red',
-    }
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 const deductionWay2 = [
   { label: '依業績%數', value: '扣趴數' },
@@ -286,26 +230,20 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
   }
 
   return (
-    <Card {...rest} css={css([styles.root, className])}>
+    <Card {...rest}>
       {ServiceDeductionItems.map(data => (
-        <Fragment key={`${data.type}`}>
-          <CardHeader
-            title={`項目扣項設定 - ${data.type}`}
-            css={data.type === '系統預設' ? styles.headerTitle : {}}
-          />
-          <CardContent>
+        <div key={`${data.type}`} className="border-0 border-t border-solid border-border first:border-t-0">
+          <CardHeader>
+            <CardTitle>{`項目扣項設定 - ${data.type}`}</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
             {data.itemSettings.map((content, index) => {
               return (
-                <Grid container spacing={2} css={styles.service} key={index}>
-                  <Typography
-                    variant="h5"
-                    display="inline"
-                    gutterBottom
-                    css={styles.orderNum}
-                  >
+                <div className="flex flex-wrap items-start gap-4" key={index}>
+                  <span className="flex h-9 w-6 items-center justify-center text-heading tabular-nums text-text-secondary">
                     {content.deductionOrder}
-                  </Typography>
-                  <Grid item xs={12} sm={2}>
+                  </span>
+                  <div className="w-full sm:w-36">
                     <FormControl variant="outlined" fullWidth>
                       <InputLabel id="select-item-label">
                         扣項類別
@@ -324,7 +262,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                         ))}
                       </Select>
                     </FormControl>
-                  </Grid>
+                  </div>
                   {/* <FormControl variant="outlined" css={styles.formGroup} fullWidth>
                     <InputLabel id="select-item-label">
                       項目
@@ -344,7 +282,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                     </Select>
                   </FormControl> */}
                   {content.name && (
-                    <Grid item xs={12} sm={2}>
+                    <div className="w-full sm:w-36">
                       <FormControl variant="outlined" fullWidth>
                         <InputLabel id="select-item-label">
                           扣成方式
@@ -363,13 +301,13 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                           ))}
                         </Select>
                       </FormControl>
-                    </Grid>
+                    </div>
                   )}
                   {content.isSpecial && content.name ? (
-                    <Grid item xs={12} sm={3}>
-                      <div>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex gap-3">
                         <TextField
-                          css={styles.textField}
+                          style={{ width: '5rem' }}
                           type="number"
                           variant="outlined"
                           label={content.deductionWay === '扣固定金額' ? '指定金額' : '指定%'}
@@ -380,7 +318,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                           onWheel={() => document.activeElement.blur()}
                         />
                         <TextField
-                          css={styles.nonDesignateTextField}
+                          style={{ width: '5rem' }}
                           type="number"
                           variant="outlined"
                           label={content.deductionWay === '扣固定金額' ? '不指定金額' : '不指定%'}
@@ -395,17 +333,18 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                         <FormControlLabel
                           control={<Checkbox color="primary" />}
                           label="分指定/不指定"
+                          style={{ 'whiteSpace': 'nowrap' }}
                           checked={content.isSpecial}
                           onChange={() => handleCheckboxChange(data.type, index)}
                         />
                       </div>
-                    </Grid>
+                    </div>
                   ) : (
                     content.name && (
-                      <Grid item xs={12} sm={3}>
+                      <div className="flex flex-col gap-1">
                         <div>
                           <TextField
-                            css={styles.textField}
+                            style={{ width: '5rem' }}
                             type="number"
                             variant="outlined"
                             label={content.deductionWay === '扣固定金額' ? '固定金額' : '業績%數'}
@@ -418,14 +357,15 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                           <FormControlLabel
                             control={<Checkbox color="primary" />}
                             label="分指定/不指定"
+                            style={{ 'whiteSpace': 'nowrap' }}
                             checked={content.isSpecial}
                             onChange={() => handleCheckboxChange(data.type, index)}
                           />
                         </div>
-                      </Grid>
+                      </div>
                     )
                   )}
-                  <Grid item xs={12} sm={2}>
+                  <div className="w-full sm:w-36">
                     <FormControl variant="outlined" fullWidth>
                       <InputLabel id="select-item-label">
                         扣項基準點
@@ -444,29 +384,46 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                         ))}
                       </Select>
                     </FormControl>
-                  </Grid>
-                  {content.name !== '' && (
-                    <BackspaceOutlinedIcon
-                      css={styles.icons}
-                      onClick={() => handleClear(data.type, index)}
-                      data-testid={`service-${index}-clear`}
-                    />
-                  )}
-                  {index !== 0 && (
-                    <DeleteForeverIcon
-                      css={styles.icons}
-                      onClick={() => handleDeleteDeductionContent(data.type, index)}
-                    />
-                  )}
-                  <AddIcon
-                    css={styles.icons}
-                    onClick={() => handleAddDeductionContent(data.type, content.deductionOrder)}
-                  />
-                </Grid>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    {content.name !== '' && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-text-secondary"
+                        aria-label="清除此扣項"
+                        onClick={() => handleClear(data.type, index)}
+                        data-testid={`service-${index}-clear`}
+                      >
+                        <Delete strokeWidth={1.75} />
+                      </Button>
+                    )}
+                    {index !== 0 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-text-secondary hover:text-danger"
+                        aria-label="刪除此扣項"
+                        onClick={() => handleDeleteDeductionContent(data.type, index)}
+                      >
+                        <Trash2 strokeWidth={1.75} />
+                      </Button>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-text-secondary"
+                      aria-label="新增扣項"
+                      onClick={() => handleAddDeductionContent(data.type, content.deductionOrder)}
+                    >
+                      <Plus strokeWidth={1.75} />
+                    </Button>
+                  </div>
+                </div>
               )
             })}
           </CardContent>
-        </Fragment>
+        </div>
       ))}
     </Card>
   )
