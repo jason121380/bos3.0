@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {
   Modal,
-  TextField,
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
@@ -12,6 +11,7 @@ import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
+import { Input } from 'ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 const styles = {
@@ -338,29 +338,24 @@ function ProductsModal({
                       : product.productNo}
                   </TableCell>
                   <TableCell>
-                    <TextField
-                      label="價格"
-                      variant="outlined"
-                      fullWidth
+                    <Input
+                      type="number"
                       name="price"
+                      aria-label="價格"
                       onChange={e => handleProductInputOnChange(e, index, product.id)}
                       value={product.price}
-                      type="number"
-                      style={{ width: '90px', margin: '10px 0 5px 0' }}
+                      className="mb-[5px] mt-2.5 w-[90px]"
                       onWheel={() => document.activeElement.blur()}
                     />
                   </TableCell>
                   <TableCell>
-                    <TextField
-                      className='displayArrow'
-                      label="數量"
-                      variant="outlined"
-                      fullWidth
+                    <Input
+                      type="number"
                       name="count"
+                      aria-label="數量"
                       onChange={e => handleProductInputOnChange(e, index, product.id)}
                       value={product.count}
-                      type="number"
-                      style={{ width: '90px' }}
+                      className="w-[90px]"
                       onWheel={() => document.activeElement.blur()}
                     />
                   </TableCell>
