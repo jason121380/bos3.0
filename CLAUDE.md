@@ -41,6 +41,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - 功能分支 `claude/upbeat-carson-pdc7rf`；PR 範本在 `.github/PULL_REQUEST_TEMPLATE.md`（沿用其標題結構）。
 - **使用者已指示「always merge」**：一批工作做完且驗證通過（build 成功、測試無新增失敗），就開 PR 並 merge 進 `main`（merge commit），不必再問。驗證沒過就停下來回報，不硬 merge。
 - PR 合併後，分支從最新 `main` 重置再繼續（`git fetch origin main && git checkout -B <branch> origin/main`），不在已合併的歷史上堆疊。
+- 每個完整 commit 都要更新 `src/version.js` 的 `APP_VERSION`（`v3.0-MMDD-HHmm`，Asia/Taipei），commit 訊息第一行以 `[版號]` 開頭；不自行升大版號。
 - Commit 訊息遵守 Angular 格式；沒有 `gh`，PR 用 GitHub MCP 工具。
 - CI：Node 20.12.1 + `npm ci --legacy-peer-deps`；Build 與 Unit tests 兩個獨立 job。
 

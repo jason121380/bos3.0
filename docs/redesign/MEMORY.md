@@ -25,6 +25,7 @@
 
 | 2026/10/19 指示「UI 優先、全部改完」；本輪只做完整盤點＋第一批最安全 UI，**不 merge**，不新造 combobox／date-picker，不動列印報表 | 這三項要 Jason 拍版（`TODO.md` §二 P3） |
 | 浮動標籤的 MUI 欄位換成上方標籤時，**不改共用元件**：用 `Field`＋`label=''`／`placeholder`（`SourceSelect`、`EmployeeAutoComplete`、`CustomerAutoComplete` 都支援） | 這些元件全站共用；`Head`、`Remark` 已是這個做法，風險最低 |
+| 畫面版號以 `src/version.js` 的 `APP_VERSION` 為單一來源（格式 `v3.0-MMDD-HHmm`），兩個 TopBar 都讀它 | 原本寫死 `v3.0`，Jason 無法從手機畫面判斷跑的是哪個 build。不用 `package.json` 的 version（0.1.0，與產品版號無關），也不另做 build 注入，避免兩套來源；代價是每個完整 commit 要手動更新此檔 |
 
 ## 驗證基準
 
@@ -58,5 +59,7 @@
 16. **轉接層缺圖示時 swap-icons 會整檔跳過**（F 批，PR #9，2026/10/19）：`swap-icons.js` 只換 `ui/icons` 已有的名稱，沒有的保留 MUI import；Autocomplete 的 `CheckBox`／`CheckBoxOutlineBlank` 因缺 adapter 讓 22 檔一直殘留。先在 `ui/icons.js` 補轉接（Lucide `SquareCheck`／`Square`）再換。盤點殘留時以 `rg` 實查為準，別沿用舊數字（舊「jss 2 檔」實查為 0）。另：`@mui/icons-material/Chip` 這種不存在的 import 出現在死碼檔（`ServiceEdit/AboutAssistant.js`），因沒被 bundle 才沒讓 build 失敗。
 17. **單選 MUI Select 換 `NativeSelect`、不換 Radix `ui/select`**：`NativeSelect` 的 `onChange(event)` 與 MUI 相容，`event.target.value` 回傳選項的原始型別值（空字串、數字、布林都行），所以既有的 `idx(event, _ => _.target.value)`、`parseInt(event.target.value)` 等包裝一字不改；Radix `onValueChange` 只給字串，換了就得動 handler（違反鐵則 1）。比對規則與 MUI 一致（非物件值以字串比較），例如 state 存數字 `0`、選項值是 `'0'` 仍會選中（CouponCreate 協助人員人數）。`CouponCreate` 批次（`claude/ui-batch4-box`，PR #10，2026/10/19）採用。
 18. **MUI Select 的 `labelId`／`id="select-item"` 在重複列裡是重複 id**：換成 `Field`＋`NativeSelect` 時不要照搬，否則每列 `<label htmlFor>` 都指向第一個 select；`NativeSelect` 會自動產生唯一 id。全 repo 沒有其他程式或測試用 `select-item` 當選擇器（`rg` 確認過，只出現在各 About 檔本身）。
-19. **版號慣例**（批次 7，2026/10/19）：`src/version.js` 的 `APP_VERSION` 格式 `v3.0-MMDD-HHmm`，每個完整 commit 更新，不自行升大版號；commit 前由指揮者校正分鐘。STATUS 的「版本清單」逐批加一列。這批與 PR #11、PR #12 同組、合併順序在後。（批次 6 分支也有同號 19，整組合併時請合併為一條。）
-20. **`InputProps={{ inputProps: { min: 0 } }}` 直接對應 `Input` 的 `min={0}`**（批次 7）：`ui/input` 的 `Input` 是原生 `<input>`，`min`、`type="number"`、`onWheel`、`value`、`onChange` 都原樣傳入；`CreateDeductionSetting/Results.js` 的 `checkInput` 靠 `event.target.value` 做夾限，原生 input 的 event 與 MUI 相同，handler 不用動。重複列的門檻欄位沒有 `id`，所以標籤不綁 `htmlFor`（不新造會重複的 id）。
+19. **孿生目錄（Create／Edit）不可照抄**（PR #11，v3.0-1019-0202）：`CouponEdit` 與 `CouponCreate` 的 About 檔看似相同，實際差在 `onChange` key 大小寫（`serviceDeductionItems` vs `ServiceDeductionItems`）、載入中防護（`loading ? '' : value`）、新增列初始值與圖示做法。改版時逐檔對照、只動 JSX，handler 一字不改。
+20. **版號慣例**（批次 6，2026/10/19）：`src/version.js` 的 `APP_VERSION` 格式 `v3.0-MMDD-HHmm`，每個完整 commit 更新，不自行升大版號；commit 前由指揮者校正分鐘。STATUS 的「版本清單」逐批加一列。PR #11、#12、#13 皆已 merge。
+21. **重複列的欄位 id 要含 index**（批次 6）：`AccountingItemCreate` 每列都有「代號／名稱」，換 `Field`＋`Input` 時 `id`／`htmlFor` 用 `` `revenueNumber-${index}` `` 這類唯一值，`name` 不變（`onChange` 靠 `e.target.name` 分流）。
+22. **`InputProps={{ inputProps: { min: 0 } }}` 直接對應 `Input` 的 `min={0}`**（批次 7，PR #14，v3.0-1019-0245）：`ui/input` 的 `Input` 是原生 `<input>`，`min`、`type="number"`、`onWheel`、`value`、`onChange` 都原樣傳入；`CreateDeductionSetting/Results.js` 的 `checkInput` 靠 `event.target.value` 做夾限，原生 input 的 event 與 MUI 相同，handler 不用動。重複列的門檻欄位沒有 `id`，所以標籤不綁 `htmlFor`（不新造會重複的 id）。

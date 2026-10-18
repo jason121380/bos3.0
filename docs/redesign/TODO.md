@@ -59,15 +59,30 @@
 - [ ] **實機確認**：訂單列表捲軸、底部固定合計列（桌機／手機）、列印不出現合計列。
 
 ### P2 — 改版收尾
-- [x] **批次 7（`claude/ui-batch7-box`，v3.0-1019-0245，PR 待補；驗證待指揮者）**：`CreateDeductionSetting`（建立抽成設定）門檻／抽成欄位標籤改版。
+- [x] **批次 7（`claude/ui-batch7-box`，v3.0-1019-0245，PR #14，本組 merge 中；驗證待指揮者）**：`CreateDeductionSetting`（建立抽成設定）門檻／抽成欄位標籤改版。
   - 選批理由（白話）：建立抽成設定的欄位重複又單純——15 個都是數字輸入（門檻、抽成 %），只有 `min: 0`，沒有下拉、Autocomplete、日期、helperText。
   - 本批完成：`Results.js` 的 15 個 TextField → `Field`＋`Input`（`min={0}`、`type="number"`、`value`、`onChange`、`onWheel` 原樣保留）。`ToggleButton`／`Tabs`／`Checkbox`／`FormControlLabel` 為檔案既定保留範圍，未動；`index.js` 查無欄位，未動。本批無下拉。
-  - 本批為下一組第 4 個累積（前有 PR #11 v3.0-1019-0202、PR #12 v3.0-1019-0232、批次 6／#13），合併順序在後。
-  - 新增 `src/version.js`（`APP_VERSION`；批次 6 分支同檔，整組合併時以最新號為準）。
+  - 前批 PR #11（v3.0-1019-0202）、#12（v3.0-1019-0232）、#13（v3.0-1019-0241）已 merge；本批為下一組第一個。
+  - `src/version.js` 已由 PR #12 引入，本批僅更新 `APP_VERSION`。
+- [x] **版本顯示（v3.0-1019-0232，分支 `claude/ui-version-box`）**：新增 `src/version.js`（`APP_VERSION`），`Dashboard/TopBar.js`、`Auth/Topbar.js` 改讀它，不再寫死 `v3.0`。狀態：已 merge（PR #12）。
+- [ ] **紀律**：之後每個完整 commit 都要更新 `src/version.js`（格式 `v3.0-MMDD-HHmm`，Asia/Taipei），並與 commit 訊息第一行 `[版號]` 一致；不自行升大版號。
+- [x] **批次 5 [v3.0-1019-0202]（`claude/ui-batch5-box`，PR #11 已 merge，merge commit cfc79cd，commit 079a7d0，GitHub Build/Unit pass；指揮者已驗證）**：`CouponEdit` 表單標籤改版，做法同批次 4 的 `CouponCreate`（PR #10）。
+  - 本批完成：`AboutCoupon.js`、`AboutDeduction.js`、`AboutAssistantSetting.js` 的 TextField → `Field`＋`Input`（標籤在上）、單選 Select → `Field`＋`NativeSelect`；`index.js` 沒有 MUI 欄位，未動。三檔都沒有 helperText／error、Autocomplete、日期、鍵盤焦點鏈或列印，所以三檔皆在範圍內。`Checkbox`／`FormControlLabel`（分指定／互助均分）仍是 MUI。
+  - **與 `CouponCreate` 不對稱處（不可從孿生目錄照抄）**：
+    - `AboutCoupon`：Edit 的服務類別 `value={loading ? '' : coupon.ServiceCategoryId}` 有載入中防護（Create 沒有），已保留；價格／次數有 `onWheel` blur，已保留。
+    - `AboutDeduction`：Edit 的 `onChange` key 是小寫 `serviceDeductionItems`（Create 是 `ServiceDeductionItems`），handler 一字未動；標題 `系統預設` 有 `text-danger`；清除／刪除／新增是 `ui/icons` 的圖示（帶 `data-testid`），本批**不**像 Create 改成 `Button`，只留原圖示（`marginTop:30px` 剛好對齊上方標籤版型的輸入框）。
+    - `AboutAssistantSetting`：Edit 的新增列初始值（`isDesignate:false`、`peopleCount:1`）與清除（無 `isSplitted`）和 Create 不同，handler 未動；圖示同上沒改成 `Button`。
+  - 外觀待實機：圖示 `marginTop` 對齊、序號 `mt-[26px]` 對齊、`w-24`／`w-28` 小數字欄位換行、類別選單空值顯示第一選項（原生行為，同 Create）。
+  - 後續（不在本批）：Edit／Create 的圖示列統一成 `Button`（含 `aria-label`）可另開一批；剩餘批次見 §三、§四，這裡不重寫整份盤點。
+- [x] **批次 6（`claude/ui-batch6-box`，v3.0-1019-0241，PR #13 已 merge，merge commit 8ec6b00；驗證已通過）**：`AccountingSetting` 收支科目設定表單標籤改版。
+  - 選批理由（白話）：這是會計設定表單，欄位單純——全是一般文字輸入，沒有下拉、Autocomplete、日期、helperText、`inputRef`，也沒有列印，改起來風險最低。
+  - 本批完成：`AccountingItemCreate.js` 的 5 個 TextField（收入／支出各「代號」「名稱」＋「收付方式」）→ `Field`＋`Input`，標籤改在欄位上方；`name`、`type`、`value`、`onChange` 原樣保留。列內 `alignItems` 改 `flex-end`、圖示加 `margin-bottom` 與輸入框底對齊；每列新增 `id`＋`htmlFor`（含 index）讓標籤可點。`AccountingSetting.js`、`index.js` 查無 MUI 欄位，未動。本批無下拉。
+  - 與 PR #11（v3.0-1019-0202）、PR #12（v3.0-1019-0232）同組，皆已 merge。
+  - `src/version.js` 已由 PR #12 引入，本批僅沿用並更新 `APP_VERSION`。
 - [x] **批次 4（`claude/ui-batch4-box`，PR #10，2026/10/19；指揮者驗證已完成；外觀待實機：小數字欄位 `w-24`／`w-28` 加寬需瞄換行）**：`CouponCreate` 表單標籤改版。
   - 選批理由：範圍明確、低風險——無 Autocomplete、無日期選擇器、無 `window.print`、無 helperText／error 特殊驗證，TextField／Select 皆可直接 reuse 既有 `src/ui`。
   - 本批完成：`AboutCoupon.js`、`AboutDeduction.js`、`AboutAssistantSetting.js` 的 TextField → `Field`＋`Input`（標籤在上）、單選 Select → `Field`＋`NativeSelect`；`index.js` 本來就沒有 MUI 欄位，未動。`Checkbox`／`FormControlLabel`（分指定／互助均分）仍是 MUI，不在本批範圍。
-  - **`CouponEdit`**（`CouponCreate` 的平行孿生目錄）：已由 PR #11（v3.0-1019-0202）完成、待下一組 merge；本分支文件先標「已開 PR #11」。
+  - **`CouponEdit`**（`CouponCreate` 的平行孿生目錄）：已由 PR #11（v3.0-1019-0202）完成並 merge（cfc79cd，見上方批次 5）。
   - 剩餘批次：盤點總表已併入（PR #7，見 §三、§四），這裡不重寫。
 - [ ] **合併第二輪未完成批次**：`r2-04`（表單頁，清單 15 頁，13 個 commit，worktree `agent-a7e481ba90389d29b`）與 `r2-06`（其他 63 頁，中途中止，worktree `agent-af60fcc4359cfd91c`）——需先 rebase 到最新 main、重新驗證再合併。
   **2026/10/19 現況**：本機 `git branch -a` 與 `git worktree list` 都找不到這兩個 worktree／分支（只有 `main`、`claude/*-box`、`origin/claude/upbeat-carson-pdc7rf`），**成果不在這個 repo**。r2-04 清單 15 個目錄**全部**在 `main` 上仍引用 `@mui/*`（合計 54 個檔案，例如 CustomerManagementDetails 12、ServiceCreate／ServiceEdit／SalaryEdit 各 5、Products 4）；r2-06 清單 63 個目錄抽查前 15 個也全部仍有 MUI。判定為「未合併」。若找不回 worktree，這 78 頁要重做（見 §四 批次 B）。
