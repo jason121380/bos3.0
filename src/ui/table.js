@@ -60,10 +60,11 @@ const TableHead = React.forwardRef(({ className, numeric, ...props }, ref) => (
 ))
 TableHead.displayName = 'TableHead'
 
+// 手機螢幕：儲存格不換行、表格改橫向捲動（避免中文被擠成一字一行）；只限螢幕，不影響列印
 const TableCell = React.forwardRef(({ className, numeric, ...props }, ref) => (
   <td
     ref={ref}
-    className={cn('h-11 px-4 py-2 align-middle text-text', numeric && 'text-right tabular-nums', className)}
+    className={cn('h-11 px-4 py-2 align-middle text-text [@media_screen_and_(max-width:639.95px)]:whitespace-nowrap', numeric && 'text-right tabular-nums', className)}
     {...props}
   />
 ))

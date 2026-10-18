@@ -250,7 +250,8 @@ export function createBridgeTheme(mode = 'light') {
       MuiChip: { styleOverrides: { root: { borderRadius: 8, fontSize: 13 } } },
       MuiTableCell: {
         styleOverrides: {
-          root: { borderColor: t.border, fontSize: 14 },
+          // 手機螢幕：儲存格不換行、表格改橫向捲動（與 ui/table 一致）；只限螢幕，不影響列印
+          root: { borderColor: t.border, fontSize: 14, '@media screen and (max-width: 639.95px)': { whiteSpace: 'nowrap' } },
           head: { backgroundColor: t.surface, color: t.textSecondary, fontSize: 13, fontWeight: 500 },
         },
       },
