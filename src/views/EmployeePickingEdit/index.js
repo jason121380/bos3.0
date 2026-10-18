@@ -1,40 +1,17 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container, Grid } from '@mui/material'
 import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
 import { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { Provider } from 'hooks/useStore'
-import red from '@mui/material/colors/red'
-import PageTitle from 'components/PageTitle'
 import useFetchDeletePicking from 'hooks/useFetchDeletePicking'
 import useFetchGetEmployeePickingPurpose from 'hooks/useFetchGetEmployeePickingPurpose'
 import useFetchGetPicking from 'hooks/useFetchGetPicking'
 import useFetchUpdatePicking from 'hooks/useFetchUpdatePicking'
 import idx from 'idx'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import General from './General'
-
-const styles = {
-  root: css({
-    padding: theme.spacing(3),
-  }),
-  general: css({
-    marginTop: theme.spacing(3),
-  }),
-  action: css({
-    marginTop: theme.spacing(3) + '!important',
-  }),
-  delete: css({
-    backgroundColor: red[700] + '!important',
-    '&:hover, &:active': {
-      backgroundColor: red[600] + '!important',
-    },
-    color: '#fff !important'
-  }),
-}
 
 export default function EmployeePickingCreate() {
   const history = useHistory()
@@ -136,23 +113,21 @@ export default function EmployeePickingCreate() {
     })
   }
   return (
-    <Page title="編輯材料自購" css={styles.root}>
-      <Container maxWidth="sm">
+    <Page title="編輯材料自購" className="ui-root">
+      <div className="mx-auto max-w-3xl">
         <Provider value={value}>
-          <Grid container item justifyContent='space-between' alignItems='center'>
-            <PageTitle title='編輯材料自購' subTitle='Employee Picking Edit' />
-            <Grid item>
+          <PageHeader
+            title='編輯材料自購'
+            actions={
               <Button
-                css={styles.delete}
-                variant="contained"
+                variant="danger"
                 onClick={handleDelete}
               >
                 刪除
               </Button>
-            </Grid>
-          </Grid>
+            }
+          />
           <General
-            className={styles.general}
             formState={formState}
             changeHandler={changeHandler}
             productHandler={productHandler}
@@ -160,15 +135,15 @@ export default function EmployeePickingCreate() {
             purpose={purpose}
           />
         </Provider>
-        <Button
-          color="primary"
-          variant="contained"
-          css={styles.action}
-          onClick={submitHandler}
-        >
-          儲存
-        </Button>
-      </Container>
+        <div className="mt-6 flex justify-end">
+          <Button
+            variant="primary"
+            onClick={submitHandler}
+          >
+            儲存
+          </Button>
+        </div>
+      </div>
     </Page>
   )
 }

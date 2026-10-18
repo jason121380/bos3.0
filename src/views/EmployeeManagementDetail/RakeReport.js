@@ -11,15 +11,15 @@ import {
   TableRow,
   TableContainer,
   Paper,
-  Grid,
-  Typography,
-  CircularProgress,
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect, Fragment } from 'react'
 import DateSelector from 'components/DateSelector'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import idx from 'idx'
+import { Card as UiCard } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
+import { Skeleton } from 'ui/skeleton'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
@@ -77,35 +77,28 @@ function RakeReport({ setRakeReportDate, designerRakeReport, rakeReportDate, loa
     }
   }, [isMemberShipCardActiveData.loading, designerRakeReport])
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        flexDirection: 'column',
-      }}
-    >
-      <Grid item>
+    <div className="flex flex-col gap-6">
+      <div>
         <DateSelector
           date={rakeReportDate}
           attributes={['lastmonth', 'thismonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
           dateChange={value => setRakeReportDate(value)}
           margin
         />
-      </Grid>
-      <Grid container justifyContent='center' style={{ width: '100%', marginTop: '60px' }}>
+      </div>
+      <div className="flex w-full flex-wrap justify-center">
         {loading ? (
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            <CircularProgress />
+          <div className="w-full" aria-busy="true" aria-label="載入中">
+            <Skeleton className="mx-auto h-[480px] w-1/2 rounded-lg" />
           </div>
         ) : designerRakeReport.length === 0 ? (
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            <Typography component="h3" variant="h3">
-              無資料
-            </Typography>
-          </div>
+          <UiCard className="w-full">
+            <EmptyState title="無資料" />
+          </UiCard>
         ) : (
           designerRakeReport.map(designer => (
-            <Grid item xs={6} key={designer.user.id}>
+            // 列印用卡片（className="printCard"）與其內容原封保留
+            <div className="w-1/2" key={designer.user.id}>
               <Card className="printCard">
                 <CardHeader
                   title={`${designer.user.designerNo !== null && designer.user.designerNo !== ''
@@ -425,10 +418,10 @@ function RakeReport({ setRakeReportDate, designerRakeReport, rakeReportDate, loa
                   </div>
                 </CardContent>
               </Card>
-            </Grid>
+            </div>
           ))
         )}
-      </Grid>
+      </div>
     </div>
   )
 }

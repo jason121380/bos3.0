@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
+// 大型頁策略：只換外框卡片；載入遮罩（Backdrop）、報到狀態下拉（值為布林）與行事曆表格保留
 import {
-  Card, CircularProgress, Backdrop, Select,
+  CircularProgress, Backdrop, Select,
   FormControl, InputLabel, MenuItem
 } from '@mui/material'
 import useFetchMerchant from 'hooks/useFetchMerchant'
@@ -20,6 +21,7 @@ import useFetchGetIsCusBookingRemarkDisplay from 'hooks/useFetchGetIsCusBookingR
 import { cloneDeep } from 'lodash'
 import { css } from '@emotion/react'
 import { theme } from '../../../theme'
+import { Card } from 'ui/card'
 
 import OrderTable from './OrderTable'
 
@@ -511,7 +513,7 @@ function Calendar({ designerId, checkinSettings, bookingCusCheck, checkinMode, b
       <Backdrop id='Backdrop' css={styles.opacity} open={merchant.loading || DesignerCalendar.loading}>
         <CircularProgress />
       </Backdrop>
-      <Card css={styles.card}>
+      <Card className="px-5 pb-5 pt-4">
         <div css={styles.headerWrap}>
           <div css={styles.headerWrap}>
             <DateSelector

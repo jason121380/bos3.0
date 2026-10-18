@@ -1,34 +1,11 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  TextField,
-  Button,
-  Typography,
-} from '@mui/material'
+// 金額輸入框（浮動標籤為科目名稱、onWheel 失焦）保留 MUI TextField
+import { TextField } from '@mui/material'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
 import { openSnackbar } from 'elements/snackbars'
 import { useHistory } from 'react-router'
-import { css } from '@emotion/react'
-
-const styles = {
-  content: css({}),
-  secondContent: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  }),
-  secondInput: css({
-    width: '150px',
-  }),
-  icons: css({
-    cursor: 'pointer',
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 export default function SalaryInems({
   salaryIncreaseItemsReformatted,
@@ -209,43 +186,34 @@ export default function SalaryInems({
     })
   }
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={6}>
+    <div className="grid grid-cols-2 gap-6">
+      <div>
         <Card>
-          <CardHeader
-            title={`薪資加項小計:${
-              salaryIncreaseItemsReformatted
-                .map(data => data.price)
-                .reduce((accu, curVal) => (accu += curVal), 0) +
-                increaseSecondContent.increaseItems
+          <CardHeader>
+            <CardTitle className="tabular-nums">
+              {`薪資加項小計:${
+                salaryIncreaseItemsReformatted
                   .map(data => data.price)
-                  .reduce((accu, curVal) => (accu += curVal), 0) || 0
-            }`}
-          />
-          <Divider />
-          <CardContent css={styles.content}>
-            <Grid container spacing={4}>
+                  .reduce((accu, curVal) => (accu += curVal), 0) +
+                  increaseSecondContent.increaseItems
+                    .map(data => data.price)
+                    .reduce((accu, curVal) => (accu += curVal), 0) || 0
+              }`}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {salaryIncreaseItemsReformatted
                 .sort((a, b) => a.sorting - b.sorting)
                 .map((data, index) => {
                   return (
-                    <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={4}
-                      lg={3}
+                    <div
                       key={`increase-${index}`}
-                      style={{ display: 'flex', alignItems: 'center' }}
+                      className="flex items-center gap-1"
                     >
-                      <Typography
-                        variant="h5"
-                        display="inline"
-                        gutterBottom
-                        style={{ margin: '0 5px', width: '25px' }}
-                      >
+                      <span className="w-[25px] shrink-0 text-center text-label tabular-nums text-text-secondary">
                         {index + 1}
-                      </Typography>
+                      </span>
                       <TextField
                         variant="outlined"
                         label={data.itemName}
@@ -256,21 +224,21 @@ export default function SalaryInems({
                         onChange={e => handleIncreaseInput(e, index)}
                         onWheel={() => document.activeElement.blur()}              
                       />
-                    </Grid>
+                    </div>
                   )
                 })}
-            </Grid>
+            </div>
           </CardContent>
-          <Divider />
-          <CardContent css={styles.content}>
-            <Grid container spacing={4}>
+          <div className="h-px bg-border" />
+          <CardContent>
+            <div className="flex flex-col gap-4">
               {increaseSecondContent.increaseItems.map((data, index) => (
-                <Grid item xs={12} key={`increase-${index}`}>
-                  <div css={styles.secondContent}>
+                <div key={`increase-${index}`}>
+                  <div className="flex items-center justify-between gap-2">
                     <TextField
                       type="text"
                       variant="outlined"
-                      css={styles.secondInput}
+                      className="w-[150px]"
                       label="薪資加項科目"
                       name="itemName"
                       value={data.itemName}
@@ -279,7 +247,7 @@ export default function SalaryInems({
                     <TextField
                       type="number"
                       variant="outlined"
-                      css={styles.secondInput}
+                      className="w-[150px]"
                       label="加項金額"
                       name="price"
                       value={data.price || 0}
@@ -287,60 +255,64 @@ export default function SalaryInems({
                       onWheel={() => document.activeElement.blur()}              
                     />
                     {increaseSecondContent.increaseItems.length > 1 && (
-                      <DeleteForeverIcon
-                        css={styles.icons}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 shrink-0 text-text-secondary"
+                        aria-label="刪除此項"
                         onClick={() => handleDeductIncreaseItem(index)}
-                      />
+                      >
+                        <DeleteForeverIcon />
+                      </Button>
                     )}
                     {index === increaseSecondContent.increaseItems.length - 1 ? (
-                      <AddIcon css={styles.icons} onClick={() => handleAddItem()} />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 shrink-0 text-text-secondary"
+                        aria-label="新增一項"
+                        onClick={() => handleAddItem()}
+                      >
+                        <AddIcon />
+                      </Button>
                     ) : (
-                      <span style={{ width: '25px' }} />
+                      <span className="w-8 shrink-0" />
                     )}
                   </div>
-                </Grid>
+                </div>
               ))}
-            </Grid>
+            </div>
           </CardContent>
         </Card>
-      </Grid>
+      </div>
 
-      <Grid item xs={6}>
+      <div>
         <Card>
-          <CardHeader
-            title={`薪資扣項小計:${
-              salaryDecreaseItemsReformatted
-                .map(data => data.price)
-                .reduce((accu, curVal) => (accu += curVal), 0) +
-                decreaseSecondContent.decreaseItems
+          <CardHeader>
+            <CardTitle className="tabular-nums">
+              {`薪資扣項小計:${
+                salaryDecreaseItemsReformatted
                   .map(data => data.price)
-                  .reduce((accu, curVal) => (accu += curVal), 0) || 0
-            }`}
-          />
-          <Divider />
-          <CardContent css={styles.content}>
-            <Grid container spacing={4}>
+                  .reduce((accu, curVal) => (accu += curVal), 0) +
+                  decreaseSecondContent.decreaseItems
+                    .map(data => data.price)
+                    .reduce((accu, curVal) => (accu += curVal), 0) || 0
+              }`}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {salaryDecreaseItemsReformatted
                 .sort((a, b) => a.sorting - b.sorting)
                 .map((data, index) => {
                   return (
-                    <Grid
-                      item
-                      xs={12}
-                      sm={6}
-                      md={4}
-                      lg={3}
+                    <div
                       key={`increase-${index}`}
-                      style={{ display: 'flex', alignItems: 'center' }}
+                      className="flex items-center gap-1"
                     >
-                      <Typography
-                        variant="h5"
-                        display="inline"
-                        gutterBottom
-                        style={{ margin: '0 5px', width: '25px' }}
-                      >
+                      <span className="w-[25px] shrink-0 text-center text-label tabular-nums text-text-secondary">
                         {index + 1}
-                      </Typography>
+                      </span>
                       <TextField
                         variant="outlined"
                         label={data.itemName}
@@ -351,21 +323,21 @@ export default function SalaryInems({
                         onChange={e => handleDecreaseInput(e, index)}
                         onWheel={() => document.activeElement.blur()}              
                       />
-                    </Grid>
+                    </div>
                   )
                 })}
-            </Grid>
+            </div>
           </CardContent>
-          <Divider />
-          <CardContent css={styles.content}>
-            <Grid container spacing={4}>
+          <div className="h-px bg-border" />
+          <CardContent>
+            <div className="flex flex-col gap-4">
               {decreaseSecondContent.decreaseItems.map((data, index) => (
-                <Grid item xs={12} key={`decrease-${index}`}>
-                  <div css={styles.secondContent}>
+                <div key={`decrease-${index}`}>
+                  <div className="flex items-center justify-between gap-2">
                     <TextField
                       type="text"
                       variant="outlined"
-                      css={styles.secondInput}
+                      className="w-[150px]"
                       label="薪資扣項科目"
                       name="itemName"
                       value={data.itemName}
@@ -374,7 +346,7 @@ export default function SalaryInems({
                     <TextField
                       type="number"
                       variant="outlined"
-                      css={styles.secondInput}
+                      className="w-[150px]"
                       label="扣項金額"
                       name="price"
                       value={data.price}
@@ -382,27 +354,40 @@ export default function SalaryInems({
                       onWheel={() => document.activeElement.blur()}              
                     />
                     {decreaseSecondContent.decreaseItems.length > 1 && (
-                      <DeleteForeverIcon
-                        css={styles.icons}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 shrink-0 text-text-secondary"
+                        aria-label="刪除此項"
                         onClick={() => handleDeductDecreaseItem(index)}
-                      />
+                      >
+                        <DeleteForeverIcon />
+                      </Button>
                     )}
                     {index === decreaseSecondContent.decreaseItems.length - 1 ? (
-                      <AddIcon css={styles.icons} onClick={() => handleAddDecreaseItem()} />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 shrink-0 text-text-secondary"
+                        aria-label="新增一項"
+                        onClick={() => handleAddDecreaseItem()}
+                      >
+                        <AddIcon />
+                      </Button>
                     ) : (
-                      <span style={{ width: '25px' }} />
+                      <span className="w-8 shrink-0" />
                     )}
                   </div>
-                </Grid>
+                </div>
               ))}
-            </Grid>
+            </div>
           </CardContent>
         </Card>
-      </Grid>
-      <Grid item xs={12}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      </div>
+      <div className="col-span-2">
+        <div className="flex justify-between">
           <div>
-            <Typography variant="h5" display="inline" gutterBottom>
+            <span className="text-heading tabular-nums text-text">
               {`薪資加項小計:${
                 salaryIncreaseItemsReformatted
                   .map(data => data.price)
@@ -411,10 +396,10 @@ export default function SalaryInems({
                     .map(data => data.price)
                     .reduce((accu, curVal) => (accu += curVal), 0) || 0
               }`}
-            </Typography>
+            </span>
           </div>
           <div>
-            <Typography variant="h5" display="inline" gutterBottom>
+            <span className="text-heading tabular-nums text-text">
               {`薪資扣項小計:${
                 salaryDecreaseItemsReformatted
                   .map(data => data.price)
@@ -423,19 +408,18 @@ export default function SalaryInems({
                     .map(data => data.price)
                     .reduce((accu, curVal) => (accu += curVal), 0) || 0
               }`}
-            </Typography>
+            </span>
           </div>
         </div>
-      </Grid>
-      <Button
-        color="primary"
-        variant="contained"
-        css={styles.action}
-        onClick={handleSave}
-        style={{ color: 'white', backgroundColor: 'red' }}
-      >
-        儲存並返回列表
-      </Button>
-    </Grid>
+      </div>
+      <div className="col-span-2">
+        <Button
+          variant="primary"
+          onClick={handleSave}
+        >
+          儲存並返回列表
+        </Button>
+      </div>
+    </div>
   )
 }

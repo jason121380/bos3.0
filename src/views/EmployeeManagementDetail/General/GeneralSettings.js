@@ -1,84 +1,24 @@
 /** @jsxImportSource @emotion/react */
+// 大型頁策略：表單欄位（TextField、DatePicker、RadioGroup）保留 MUI，只換外框與區塊標題
 import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
   FormControlLabel,
-  FormLabel,
-  Grid,
   Radio,
   RadioGroup,
   TextField,
-  colors
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
-import { theme } from '../../../theme'
+import { Card, CardContent } from 'ui/card'
 
 const styles = {
-  root: css({
-    borderRadius: '24px',
-    boxShadow: 'none',
-    border: 'none',
-  }),
-  section: css({
-    marginBottom: '32px',
-  }),
-  sectionTitle: css({
-    fontSize: '16px',
-    fontWeight: 'bold',
-    color: 'rgb(var(--text))',
-    marginBottom: '20px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-  }),
-  sectionTitleBar: css({
-    width: '4px',
-    height: '18px',
-    backgroundColor: 'rgb(var(--accent))',
-    borderRadius: '2px',
-  }),
   datePicker: css({
     width: '100%',
-    '& .MuiInputBase-root': {
-      borderRadius: '8px',
-    }
-  }),
-  genderContainer: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: '24px',
-    padding: '0 14px',
-    backgroundColor: 'transparent',
-    borderRadius: '8px',
-    border: '1px solid rgba(0, 0, 0, 0.1)',
-    height: '42px',
-    boxSizing: 'border-box',
-    '&:hover': {
-      borderColor: 'rgb(var(--accent))',
-    },
-  }),
-  genderLabel: css({
-    position: 'absolute',
-    top: '-9px',
-    left: '10px',
-    fontSize: '12px',
-    fontWeight: 500,
-    color: 'rgba(0, 0, 0, 0.6)',
-    backgroundColor: 'rgb(var(--background))',
-    padding: '0 4px',
-    zIndex: 1,
-  }),
-  genderWrapper: css({
-    position: 'relative',
   }),
 }
+
+const SectionTitle = ({ children }) => <h3 className="mb-4 text-heading text-text">{children}</h3>
 
 function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...rest }) {
   const vaild =
@@ -86,16 +26,13 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
       .filter(d => profile[d] === '' || (profile[d] === 0 && d !== 'designerNo'))
       .indexOf(true) !== -1
   return (
-    <Card {...rest} css={styles.root}>
-      <CardContent sx={{ padding: '32px !important' }}>
+    <Card {...rest}>
+      <CardContent className="flex flex-col gap-8">
         {/* 基本資料 */}
-        <div css={styles.section}>
-          <div css={styles.sectionTitle}>
-            <div css={styles.sectionTitleBar} />
-            基本資料
-          </div>
-          <Grid container spacing={3}>
-            <Grid item md={6} xs={12}>
+        <section>
+          <SectionTitle>基本資料</SectionTitle>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
               <TextField
                 fullWidth
                 label="姓氏"
@@ -104,8 +41,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.lastName || ""}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="名字"
@@ -114,8 +51,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.firstName || ""}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="暱稱"
@@ -125,8 +62,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.nickName || ""}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <DatePicker
                 css={styles.datePicker}
                 label="出生日期"
@@ -135,11 +72,11 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 onChange={value => onChange({ value: new Date(value).getTime(), key: 'birthday' })}
                 slotProps={{ textField: { variant: 'outlined', fullWidth: true } }}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <div css={styles.genderWrapper}>
-                <span css={styles.genderLabel}>性別</span>
-                <div css={styles.genderContainer}>
+            </div>
+            <div>
+              <div className="relative">
+                <span className="absolute -top-2 left-2.5 z-[1] bg-background px-1 text-caption text-text-secondary">性別</span>
+                <div className="box-border flex h-[42px] items-center gap-6 rounded-md border border-solid border-border-strong px-3.5 hover:border-accent">
                   <RadioGroup
                     row
                     name="gender"
@@ -151,8 +88,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                   </RadioGroup>
                 </div>
               </div>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="員工編號 / 代碼"
@@ -161,8 +98,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.designerNo || ""}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="手機號碼"
@@ -171,8 +108,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.cellphone || ""}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="電子信箱"
@@ -181,8 +118,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.email || ""}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <DatePicker
                 css={styles.datePicker}
                 label="到職日期"
@@ -191,8 +128,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 onChange={value => onChange({ value: new Date(value).getTime(), key: 'employmentStartDate' })}
                 slotProps={{ textField: { variant: 'outlined', fullWidth: true } }}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="通訊住址"
@@ -201,8 +138,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.contactAddress || ""}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="戶籍住址"
@@ -211,18 +148,15 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.address || ""}
                 variant="outlined"
               />
-            </Grid>
-          </Grid>
-        </div>
+            </div>
+          </div>
+        </section>
 
         {/* 銀行帳戶資料 */}
-        <div css={styles.section}>
-          <div css={styles.sectionTitle}>
-            <div css={styles.sectionTitleBar} />
-            匯款帳戶資料
-          </div>
-          <Grid container spacing={3}>
-            <Grid item md={6} xs={12}>
+        <section>
+          <SectionTitle>匯款帳戶資料</SectionTitle>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
               <TextField
                 fullWidth
                 label="銀行代號"
@@ -232,8 +166,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.bankCode || ""}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="匯款銀行名稱"
@@ -243,8 +177,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.bankName || ""}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="分行名稱"
@@ -253,8 +187,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.bankBranchName || ""}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="銀行匯款帳號"
@@ -263,18 +197,15 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.bankAccount || ""}
                 variant="outlined"
               />
-            </Grid>
-          </Grid>
-        </div>
+            </div>
+          </div>
+        </section>
 
         {/* 其他與緊急聯繫人 */}
-        <div css={styles.section}>
-          <div css={styles.sectionTitle}>
-            <div css={styles.sectionTitleBar} />
-            其他與緊急聯繫人
-          </div>
-          <Grid container spacing={3}>
-            <Grid item md={6} xs={12}>
+        <section>
+          <SectionTitle>其他與緊急聯繫人</SectionTitle>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
               <TextField
                 fullWidth
                 label="聯絡人姓名"
@@ -283,8 +214,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.familyMemberName || ""}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="關係"
@@ -293,8 +224,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.familyMemberRelation || ""}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="聯絡電話"
@@ -303,8 +234,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.familyMemberPhone || ""}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="聯絡地址"
@@ -313,8 +244,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.familyMemberAddress || ""}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item xs={12}>
+            </div>
+            <div className="md:col-span-2">
               <TextField
                 fullWidth
                 multiline
@@ -325,9 +256,9 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
                 value={profile.remark || ""}
                 variant="outlined"
               />
-            </Grid>
-          </Grid>
-        </div>
+            </div>
+          </div>
+        </section>
       </CardContent>
     </Card>
   )

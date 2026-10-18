@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchCreateUser from 'hooks/useFetchCreateUser'
 import useFetchUsers from 'hooks/useFetchUsers'
@@ -10,23 +7,10 @@ import produce from 'immer'
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import useFetchMerchantJobTitlePoint from 'hooks/useFetchMerchantJobTitlePoint'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import AboutEmployee from './AboutEmployee'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  aboutPayment: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function ServiceCategoryCreate() {
   const history = useHistory()
@@ -135,22 +119,21 @@ function ServiceCategoryCreate() {
     !createBtnDisabled
   )
   return (
-    <Page css={styles.root} title="新增員工">
-      <Container maxWidth="md">
-        <PageTitle title='新增員工' subTitle='Create Employee' />
+    <Page className="ui-root" title="新增員工">
+      <div className="mx-auto max-w-3xl">
+        <PageHeader title='新增員工' />
         <AboutEmployee
-          className={styles.aboutPayment}
           onChange={handleOnChange}
           employee={employee}
           service={service}
           setEmployee={setEmployee}
         />
-        <div css={styles.actions}>
-          <Button color="primary" variant="contained" onClick={handleOnClick} disabled={vaild}>
+        <div className="mt-6 flex justify-end">
+          <Button variant="primary" onClick={handleOnClick} disabled={vaild}>
             新增
           </Button>
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }

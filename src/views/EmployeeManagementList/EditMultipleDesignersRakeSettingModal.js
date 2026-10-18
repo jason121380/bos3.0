@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
+// 抽成級距表單以 MUI Table 排版、含 Tabs / ToggleButton / TextField，保留 MUI；只換卡片外框、標題、按鈕與載入狀態
 import {
-  Card, CardHeader, CardContent, Modal, Button, TextField,
-  Typography, FormControlLabel, Tab, Tabs, Checkbox,
-  Table, TableBody, TableCell, TableRow, CircularProgress,
+  Modal, TextField,
+  FormControlLabel, Tab, Tabs, Checkbox,
+  Table, TableBody, TableCell, TableRow,
   ToggleButton, ToggleButtonGroup
 } from '@mui/material'
 import PropTypes from 'prop-types'
@@ -14,6 +15,9 @@ import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'
 import idx from 'idx'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 
 const styles = {
   root: css({
@@ -654,11 +658,13 @@ function EditMultipleDesignersRakeSettingModal({
 
   return (
     <Modal open={openEditRakeSettingModal}>
-      <Card css={styles.root}>
+      <Card className="ui-root" css={styles.root}>
         {!getAttributionForRake.loading ? (
           <>
             <div css={styles.header}>
-              <CardHeader title="編輯設計師抽成" />
+              <CardHeader className="pb-4">
+                <CardTitle>編輯設計師抽成</CardTitle>
+              </CardHeader>
               {!profitSharing.isSegmented && (
                 <Tabs
                   value={tabValue}
@@ -672,8 +678,7 @@ function EditMultipleDesignersRakeSettingModal({
                 </Tabs>
               )}
               <Button
-                color="primary"
-                variant="contained"
+                variant="secondary"
                 css={styles.closeAtTop}
                 onClick={onClose}
               >
@@ -686,9 +691,9 @@ function EditMultipleDesignersRakeSettingModal({
                 <TableBody>
                   <Fragment>
                     <TableRow>
-                      <Typography variant="h5" css={styles.subtitle}>
+                      <h4 className="my-4 text-heading text-text">
                         抽成模式
-                      </Typography>
+                      </h4>
                       <ToggleButtonGroup
                         size="small"
                         css={styles.deductionWayMarginL}
@@ -833,9 +838,9 @@ function EditMultipleDesignersRakeSettingModal({
                     ) : !profitSharing.isSegmented ? (
                       <Fragment>
                         <TableRow>
-                          <Typography variant="h5" css={styles.subtitle}>
+                          <h4 className="my-4 text-heading text-text">
                             指定業績
-                          </Typography>
+                          </h4>
                         </TableRow>
                         {profitSharing.nonSegmented[deductionIndex].rakeData.designate.map(
                           (data, index) => {
@@ -897,9 +902,9 @@ function EditMultipleDesignersRakeSettingModal({
                           }
                         )}
                         <TableRow>
-                          <Typography variant="h5" css={styles.subtitle}>
+                          <h4 className="my-4 text-heading text-text">
                             不指定業績
-                          </Typography>
+                          </h4>
                         </TableRow>
                         {profitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.map(
                           (data, index) => {
@@ -964,9 +969,9 @@ function EditMultipleDesignersRakeSettingModal({
                     ) : (
                       <Fragment>
                         <TableRow>
-                          <Typography variant="h5" css={styles.subtitle}>
+                          <h4 className="my-4 text-heading text-text">
                             指定業績
-                          </Typography>
+                          </h4>
                         </TableRow>
                         {profitSharing.segmented[0].designate.map((data, index) => {
                           return (
@@ -1034,9 +1039,9 @@ function EditMultipleDesignersRakeSettingModal({
                           )
                         })}
                         <TableRow>
-                          <Typography variant="h5" css={styles.subtitle}>
+                          <h4 className="my-4 text-heading text-text">
                             不指定業績
-                          </Typography>
+                          </h4>
                         </TableRow>
                         {profitSharing.segmented[0].nonDesignate.map((data, index) => {
                           return (
@@ -1118,15 +1123,19 @@ function EditMultipleDesignersRakeSettingModal({
               </Table>
             </CardContent>
             <Button
-              color="primary"
-              variant="contained"
+              variant="primary"
               css={styles.saveAtBottom}
               onClick={handleMultipleRakeSetting}
             >
               儲存
             </Button>
           </>
-        ) : <div style={{ textAlign: 'center', margin: '190px 0px' }}><CircularProgress /></div>}
+        ) : (
+          <div className="flex flex-col gap-4 p-6" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-8 w-1/3" />
+            <Skeleton className="h-[320px] w-full rounded-lg" />
+          </div>
+        )}
       </Card>
     </Modal>
   )
