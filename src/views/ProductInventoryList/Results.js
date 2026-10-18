@@ -21,7 +21,7 @@ const styles = {
     top: 0,
     background: 'white',
     zIndex: '100',
-    outline: '1px solid #eeeeee',
+    outline: '1px solid rgb(var(--border))',
   }),
   noData: css({
     fontSize: 24,
@@ -33,21 +33,12 @@ const styles = {
       fontWeight: 'bold',
       display: 'flex',
       alignItems: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: '#1A73E8',
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
     },
   }),
   tableRow: css({
-    backgroundColor: '#ffffff !important',
+    backgroundColor: 'rgb(var(--background)) !important',
     '&:hover': {
-      backgroundColor: '#ffffff !important',
+      backgroundColor: 'rgb(var(--background)) !important',
     },
   }),
 }

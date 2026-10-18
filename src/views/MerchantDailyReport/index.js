@@ -26,7 +26,7 @@ const styles = {
     marginTop: theme.spacing(3),
   }),
   printBtn: css({
-    backgroundColor: '#3865AC',
+    backgroundColor: 'rgb(var(--accent))',
   })
 }
 

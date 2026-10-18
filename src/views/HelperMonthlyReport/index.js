@@ -33,7 +33,7 @@ const styles = {
     width: '284px',
   }),
   printBtn: css({
-    backgroundColor: '#3865AC',
+    backgroundColor: 'rgb(var(--accent))',
   }),
 }
 

@@ -126,10 +126,10 @@ function DesignerPerformOverview() {
             padding: '12px 24px',
             alignItems: 'center',
             justifyContent: 'space-between',
-            backgroundColor: '#fff',
+            backgroundColor: 'rgb(var(--background))',
             borderRadius: '8px',
             boxShadow: 'none',
-            border: '1px solid #f0f0f0',
+            border: '1px solid rgb(var(--border))',
             marginBottom: '12px',
           })}
         >
@@ -147,10 +147,10 @@ function DesignerPerformOverview() {
                 fontSize: '14px !important',
                 boxShadow: 'none !important',
                 fontWeight: 'bold !important',
-                backgroundColor: '#f5f5f5 !important',
-                color: '#666 !important',
+                backgroundColor: 'rgb(var(--surface)) !important',
+                color: 'rgb(var(--text-secondary)) !important',
                 '&:hover': {
-                  backgroundColor: '#eeeeee !important',
+                  backgroundColor: 'rgb(var(--surface)) !important',
                 }
               })}
             >

@@ -23,14 +23,14 @@ const styles = {
     left: 0,
     background: 'white',
     zIndex: '99',
-    outline: '1px solid #eeeeee'
+    outline: '1px solid rgb(var(--border))'
   }),
   stickyRow: css({
     position: 'sticky',
     top: 0,
     background: 'white',
     zIndex: '100',
-    outline: '1px solid #eeeeee'
+    outline: '1px solid rgb(var(--border))'
   }),
 }
 

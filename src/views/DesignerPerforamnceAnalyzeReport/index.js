@@ -58,7 +58,7 @@ const styles = {
     alignItems: 'center',
   }),
   printBtn: css({
-    backgroundColor: '#3865AC',
+    backgroundColor: 'rgb(var(--accent))',
   }),
 }
 

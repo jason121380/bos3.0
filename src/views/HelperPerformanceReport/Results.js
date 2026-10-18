@@ -38,7 +38,7 @@ const styles = {
     justifyContent: 'flex-end',
   }),
   border: css({
-    borderRight: '1px solid #e0e0e0',
+    borderRight: '1px solid rgb(var(--border))',
   }),
   sticky: css({
     position: 'sticky',
@@ -54,7 +54,7 @@ const styles = {
     top: 0,
     background: 'white',
     zIndex: '100',
-    outline: '1px solid #eeeeee',
+    outline: '1px solid rgb(var(--border))',
   }),
 }
 

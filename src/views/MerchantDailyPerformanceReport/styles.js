@@ -27,7 +27,7 @@ export default {
   }),
   font: css({
     fontWeight: 'bold',
-    color: '#3f51b5',
+    color: 'rgb(var(--accent))',
   }),
   gap: css({
     padding: '10px 0px',
@@ -73,6 +73,6 @@ export default {
     top: 0,
     background: 'white',
     zIndex: '100',
-    outline: '1px solid #eeeeee',
+    outline: '1px solid rgb(var(--border))',
   })
 }

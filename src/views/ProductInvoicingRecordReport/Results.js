@@ -27,7 +27,7 @@ const styles = {
     left: 0,
     background: 'white',
     zIndex: '99',
-    outline: '1px solid #eeeeee',
+    outline: '1px solid rgb(var(--border))',
     width: '100px'
   }),
   stickyRow: css({
@@ -35,7 +35,7 @@ const styles = {
     top: 0,
     background: 'white',
     zIndex: '100',
-    outline: '1px solid #eeeeee'
+    outline: '1px solid rgb(var(--border))'
   }),
 }
 

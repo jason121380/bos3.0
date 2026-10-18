@@ -16,7 +16,7 @@ const styles = {
     minWidth: 650,
   }),
   dark: css({
-    background: '#ebebeb',
+    background: 'rgb(var(--surface))',
   }),
   light: css({
     background: 'white',

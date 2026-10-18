@@ -11,7 +11,7 @@ import { css } from '@emotion/react'
 const styles = {
   root: css({}),
   br: css({
-    borderRight: '1px solid #eeeeee'
+    borderRight: '1px solid rgb(var(--border))'
   }),
   brBold: css({
     borderRight: '1.5px solid grey'

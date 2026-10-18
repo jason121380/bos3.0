@@ -70,7 +70,7 @@ const styles = {
   toolTips: css({
     padding: '12px',
     fontSize: '16px',
-    background: '#fff',
+    background: 'rgb(var(--background))',
     color: 'black',
     borderRadius: '5px',
     boxShadow: '0 0 0 1px rgb(63 63 68 / 5%), 0 1px 3px 0 rgb(63 63 68 / 15%)',

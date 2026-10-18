@@ -172,7 +172,7 @@ const ProductInventoryList = () => {
               onClick={() => setShowFilter(!showFilter)}
               css={css({
                 backgroundColor: showFilter ? 'rgba(26, 115, 232, 0.1) !important' : 'transparent !important',
-                color: showFilter ? '#1A73E8 !important' : '#666 !important',
+                color: showFilter ? 'rgb(var(--accent)) !important' : 'rgb(var(--text-secondary)) !important',
                 marginLeft: '4px !important',
                 '&:hover': {
                   backgroundColor: 'rgba(26, 115, 232, 0.15) !important',

@@ -16,14 +16,14 @@ const styles = {
     left: 0,
     background: 'white',
     zIndex: '99',
-    outline: '1px solid #eeeeee',
+    outline: '1px solid rgb(var(--border))',
   }),
   stickyRow: css({
     position: 'sticky !important',
     top: 0,
     background: 'white',
     zIndex: '100',
-    outline: '1px solid #eeeeee !important',
+    outline: '1px solid rgb(var(--border)) !important',
   }),
   designerName: css({
     fontWeight: 'bold',
@@ -47,7 +47,7 @@ const styles = {
   subTotal: css({
     '& td.MuiTableCell-root.MuiTableCell-body': {
       backgroundColor: 'lightgray',
-      color: '#263238'
+      color: 'rgb(var(--text))'
     }
   })
 }
