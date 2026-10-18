@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from '@mui/material'
+import { Field, Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Fragment } from 'react'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
@@ -9,19 +9,12 @@ import { css } from '@emotion/react'
 const styles = {
   content: css({
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     margin: '20px 0px',
-  }),
-  numberInput: css({
-    width: '100px',
-    margin: '0px 10px',
-  }),
-  accountingTypeInput: css({
-    width: '700px',
   }),
   icons: css({
     cursor: 'pointer',
-    margin: '0 10px',
+    margin: '0 10px 8px',
   }),
 }
 
@@ -158,23 +151,24 @@ export default function AccountingItemCreate({
             <CardContent>
               {accountingRevenueSubjects.map((data, index) => (
                 <div css={styles.content} key={index}>
-                  <TextField
-                    label="代號"
-                    variant="outlined"
-                    type="text"
-                    name="revenueNumber"
-                    css={styles.numberInput}
-                    value={data.number}
-                    onChange={e => handleRevenueInput(e, index)}
-                  />
-                  <TextField
-                    label="名稱"
-                    variant="outlined"
-                    type="text"
-                    name="revenueName"
-                    value={data.name}
-                    onChange={e => handleRevenueInput(e, index)}
-                  />
+                  <Field label="代號" htmlFor={`revenueNumber-${index}`} className="mx-2.5 w-[100px]">
+                    <Input
+                      id={`revenueNumber-${index}`}
+                      type="text"
+                      name="revenueNumber"
+                      value={data.number}
+                      onChange={e => handleRevenueInput(e, index)}
+                    />
+                  </Field>
+                  <Field label="名稱" htmlFor={`revenueName-${index}`}>
+                    <Input
+                      id={`revenueName-${index}`}
+                      type="text"
+                      name="revenueName"
+                      value={data.name}
+                      onChange={e => handleRevenueInput(e, index)}
+                    />
+                  </Field>
                   <DeleteForeverIcon
                     css={styles.icons}
                     onClick={() => handleDeleteItem('revenue', index)}
@@ -193,23 +187,24 @@ export default function AccountingItemCreate({
             <CardContent>
               {accountingExpenditureSubjects.map((data, index) => (
                 <div css={styles.content} key={index}>
-                  <TextField
-                    label="代號"
-                    variant="outlined"
-                    type="text"
-                    name="expenditureNumber"
-                    css={styles.numberInput}
-                    value={data.number}
-                    onChange={e => handleExpenditureInput(e, index)}
-                  />
-                  <TextField
-                    label="名稱"
-                    variant="outlined"
-                    type="text"
-                    name="expenditureName"
-                    value={data.name}
-                    onChange={e => handleExpenditureInput(e, index)}
-                  />
+                  <Field label="代號" htmlFor={`expenditureNumber-${index}`} className="mx-2.5 w-[100px]">
+                    <Input
+                      id={`expenditureNumber-${index}`}
+                      type="text"
+                      name="expenditureNumber"
+                      value={data.number}
+                      onChange={e => handleExpenditureInput(e, index)}
+                    />
+                  </Field>
+                  <Field label="名稱" htmlFor={`expenditureName-${index}`}>
+                    <Input
+                      id={`expenditureName-${index}`}
+                      type="text"
+                      name="expenditureName"
+                      value={data.name}
+                      onChange={e => handleExpenditureInput(e, index)}
+                    />
+                  </Field>
                   <DeleteForeverIcon
                     css={styles.icons}
                     onClick={() => handleDeleteItem('expenditure', index)}
@@ -230,16 +225,19 @@ export default function AccountingItemCreate({
             <CardContent>
               {accountingType.map((data, index) => (
                 <div css={styles.content} key={index}>
-                  <TextField
-                    css={styles.accountingTypeInput}
+                  <Field
                     label="收付方式"
-                    variant="outlined"
-                    type="text"
-                    name="accountingTypeName"
-                    fullWidth
-                    value={data.accountingTypeName}
-                    onChange={e => handleAccountingTypeInput(e, index)}
-                  />
+                    htmlFor={`accountingTypeName-${index}`}
+                    className="w-[700px] max-w-full"
+                  >
+                    <Input
+                      id={`accountingTypeName-${index}`}
+                      type="text"
+                      name="accountingTypeName"
+                      value={data.accountingTypeName}
+                      onChange={e => handleAccountingTypeInput(e, index)}
+                    />
+                  </Field>
                   <DeleteForeverIcon
                     css={styles.icons}
                     onClick={() => handleDeleteItem('accountingType', index)}
