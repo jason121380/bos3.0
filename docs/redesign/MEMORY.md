@@ -25,6 +25,7 @@
 
 | 2026/10/19 指示「UI 優先、全部改完」；本輪只做完整盤點＋第一批最安全 UI，**不 merge**，不新造 combobox／date-picker，不動列印報表 | 這三項要 Jason 拍版（`TODO.md` §二 P3） |
 | 浮動標籤的 MUI 欄位換成上方標籤時，**不改共用元件**：用 `Field`＋`label=''`／`placeholder`（`SourceSelect`、`EmployeeAutoComplete`、`CustomerAutoComplete` 都支援） | 這些元件全站共用；`Head`、`Remark` 已是這個做法，風險最低 |
+| 畫面版號以 `src/version.js` 的 `APP_VERSION` 為單一來源（格式 `v3.0-MMDD-HHmm`），兩個 TopBar 都讀它 | 原本寫死 `v3.0`，Jason 無法從手機畫面判斷跑的是哪個 build。不用 `package.json` 的 version（0.1.0，與產品版號無關），也不另做 build 注入，避免兩套來源；代價是每個完整 commit 要手動更新此檔 |
 
 ## 驗證基準
 

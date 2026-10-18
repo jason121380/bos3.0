@@ -35,6 +35,14 @@
 
 verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `Field`／`Input`；`label`／`variant`／`css`／`inputProps`／`fieldProps.label` 屬性消失（改 `Field label`、`placeholder`、`min`）；`DateTimePicker` 的 `css` 與 `variant: 'standard'` 移除；金額列 wrapper `div` 改 className。依賴 PR #7 對 OrderCreate 版的相同改法。
 
+## 版本清單
+
+| 版本 | 時間 | 內容 | PR／commit | checks |
+|---|---|---|---|---|
+| v3.0-1019-0232 | 2026-10-19 02:32 | 版本顯示上線：TopBar／Auth Topbar 讀 `src/version.js` | 待補 | 待驗證 |
+
+給 Jason：PR #6–#10 已 merge 的舊版畫面左上角仍只顯示寫死的 `v3.0`；從本批 merge 之後，畫面才會顯示短版號（例如 `v3.0-1019-0232`），不用回頭改舊 commit。之後每個完整 commit 都會更新 `src/version.js`。
+
 ## 進行中
 
 - **第二層第二輪**：用新元件換掉第一輪留下的 MUI（Select、ToggleButton、Checkbox、Switch、Avatar、MUI 分頁等）。6 批，清單見 `batches/r2-*.txt`。
