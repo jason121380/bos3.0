@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from '@mui/material'
+import { Field, Input } from 'ui/input'
 import { Button } from 'ui/button'
 import { Card, CardContent } from 'ui/card'
 import { css } from '@emotion/react'
@@ -31,20 +31,20 @@ function General({
     <>
       <Card className="mt-6">
         <CardContent css={styles.content}>
-          <TextField
-            label='代號'
-            placeholder='請輸入代號'
-            variant='outlined'
-            value={submitData.no}
-            onChange={e => handleSetValue(e.target.value, 'no')}
-          />
-          <TextField
-            label='名稱*'
-            placeholder='請輸入名稱'
-            variant='outlined'
-            value={submitData.name}
-            onChange={e => handleSetValue(e.target.value, 'name')}
-          />
+          <Field label="代號">
+            <Input
+              placeholder="請輸入代號"
+              value={submitData.no}
+              onChange={e => handleSetValue(e.target.value, 'no')}
+            />
+          </Field>
+          <Field label="名稱" required>
+            <Input
+              placeholder="請輸入名稱"
+              value={submitData.name}
+              onChange={e => handleSetValue(e.target.value, 'name')}
+            />
+          </Field>
           <div className="my-4 h-px bg-border" />
           <TransferList
             idsKey='serviceIds'
