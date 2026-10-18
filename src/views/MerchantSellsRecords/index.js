@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { Container, Grid, CircularProgress } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
 import ProductAutoComplete from 'components/ProductAutoComplete'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { endOfDay, startOfMonth } from 'date-fns'
 import useFetchProductOrders from 'hooks/useFetchProductOrders'
 import idx from 'idx'
@@ -11,6 +9,8 @@ import produce from 'immer'
 import React from 'react'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { PageHeader } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -71,53 +71,49 @@ export default function DecreaseDetail({ history, location }) {
     )
   }
   return (
-    <Page title="店販抽成明細" css={styles.root}>
-      <Container maxWidth={false}>
-        <AdminPageHeader title='店販抽成明細' />
-        <Grid container css={styles.container}>
-          <Grid item>
-            <MerchantSearchBar
-              values={pageSetting}
-              onFilter={value => setPageSetting(value)}
-              outside
-              visible={['datePicker', 'employee', 'customer']}
-              lastInLeaderBoard={true}
-            />
-          </Grid>
-          <Grid item css={styles.field}>
-            <ProductAutoComplete
-              label="商品名稱"
-              value={pageSetting.productId}
-              onChange={handleProductChange}
-            />
-          </Grid>
-        </Grid>
+    <Page title="店販抽成明細" className="ui-root">
+      <PageHeader title="店販抽成明細" />
+      <div className="flex flex-wrap items-center gap-2.5 pb-4">
+        <div>
+          <MerchantSearchBar
+            values={pageSetting}
+            onFilter={value => setPageSetting(value)}
+            outside
+            visible={['datePicker', 'employee', 'customer']}
+            lastInLeaderBoard={true}
+          />
+        </div>
+        <div className="mt-2 w-[150px]">
+          <ProductAutoComplete
+            label="商品名稱"
+            value={pageSetting.productId}
+            onChange={handleProductChange}
+          />
+        </div>
+      </div>
 
-        {!productOrders.loading ? (
-          idx(
-            productOrders,
-            _ =>
-              _.data.productOrders && (
-                <Results
-                  results={_.data.productOrders}
-                  handleOnChangePage={(_event, page) =>
-                    handleOnChangePage({ page, key: 'merchantSell' })
-                  }
-                  handleOnChangeRowsPerPage={event =>
-                    handleOnChangeRowsPerPage({
-                      value: idx(event, _ => _.target.value),
-                      key: 'merchantSell',
-                    })
-                  }
-                />
-              )
-          )
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <CircularProgress />
-          </div>
-        )}
-      </Container>
+      {!productOrders.loading ? (
+        idx(
+          productOrders,
+          _ =>
+            _.data.productOrders && (
+              <Results
+                results={_.data.productOrders}
+                handleOnChangePage={(_event, page) =>
+                  handleOnChangePage({ page, key: 'merchantSell' })
+                }
+                handleOnChangeRowsPerPage={event =>
+                  handleOnChangeRowsPerPage({
+                    value: idx(event, _ => _.target.value),
+                    key: 'merchantSell',
+                  })
+                }
+              />
+            )
+        )
+      ) : (
+        <Skeleton className="h-96" aria-busy="true" />
+      )}
     </Page>
   )
 }
