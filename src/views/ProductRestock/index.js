@@ -1,7 +1,5 @@
-/** @jsxImportSource @emotion/react */
-import { Container, Grid, CircularProgress, TextField, Link, Button } from '@mui/material'
+import { TextField } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
 import useFetchGetPurchaseRecord from 'hooks/useFetchGetPurchaseRecords'
@@ -12,35 +10,14 @@ import useFetchSetPurchaseStockIn from 'hooks/useFetchSetPurchaseStockIn'
 import useFetchSetPurchaseStockInUndo from 'hooks/useFetchSetPurchaseStockInUndo'
 import Autocomplete from '@mui/material/Autocomplete'
 import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import AdminPageHeader from 'components/AdminPageHeader'
-import { Collapse, Typography } from '@mui/material'
+import { Search } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import { openSnackbar } from 'elements/snackbars'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3),
-  }),
-  filterPanel: css({
-    marginBottom: '12px',
-    backgroundColor: 'rgb(var(--background))',
-    borderRadius: '12px',
-    padding: '20px',
-    border: '1px solid rgb(var(--border))',
-  }),
-  pillButton: css({
-    borderRadius: '20px !important',
-    padding: '4px 20px !important',
-    fontSize: '14px !important',
-    boxShadow: 'none !important',
-    fontWeight: 'bold !important',
-  }),
-}
 
 function ProductRestock() {
   const [purchaseRecords, setPurchaseRecords] = useState([])
@@ -201,77 +178,73 @@ function ProductRestock() {
   }, [getStockInIsUsing.loading])
 
   return (
-    <Page css={styles.root} title="商品進貨作業">
-      <Container maxWidth={false} css={styles.container}>
-        <AdminPageHeader
-          title="商品進貨作業"
-          showFilter={showFilter}
-          onFilterClick={() => setShowFilter(!showFilter)}
-          primaryAction={{
-            label: '新增進貨',
-            to: '/product/restock/create'
-          }}
-        />
+    <Page className="ui-root" title="商品進貨作業">
+      <AdminPageHeader
+        title="商品進貨作業"
+        showFilter={showFilter}
+        onFilterClick={() => setShowFilter(!showFilter)}
+        primaryAction={{
+          label: '新增進貨',
+          to: '/product/restock/create'
+        }}
+      />
 
-        <Collapse in={showFilter}>
-          <div css={styles.filterPanel}>
-            <Grid container spacing={2} alignItems="center">
-              <Grid item xs={12} sm={9}>
-                <Typography variant="caption" sx={{ color: 'rgb(var(--text-secondary))', mb: 1, display: 'block', fontWeight: 'bold' }}>
-                  按廠商篩選
-                </Typography>
-                <Autocomplete
-                  fullWidth
-                  multiple
-                  disableCloseOnSelect
-                  disabled={dialogOpen}
-                  options={vendorOptions}
-                  onChange={(event, value) => {
-                    setVendorUUId(value.map(d => d.vendor.uuid))
-                  }}
-                  getOptionLabel={option => option.name}
-                  renderOption={(props, option, { selected }) => <li {...props}>{!!option.nickname.trim() ? option.nickname : option.name}</li>}
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      label="選擇廠商"
-                      placeholder="廠商名稱"
-                      InputProps={{
-                        ...params.InputProps,
-                      }}
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={3} sx={{ display: 'flex', alignItems: 'flex-end', height: '100%', pt: '30px !important' }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  css={styles.pillButton}
-                  fullWidth
-                  onClick={handleSearch}
-                >
-                  搜尋
-                </Button>
-              </Grid>
-            </Grid>
+      {/* 以 hidden 收合（取代 MUI Collapse）：廠商 Autocomplete 為非受控，需保持掛載，收合後選取內容與舊版一樣保留 */}
+      <div hidden={!showFilter}>
+        <Card className="mb-6 p-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              <span className="text-label text-text-secondary">
+                按廠商篩選
+              </span>
+              <Autocomplete
+                fullWidth
+                multiple
+                disableCloseOnSelect
+                disabled={dialogOpen}
+                options={vendorOptions}
+                onChange={(event, value) => {
+                  setVendorUUId(value.map(d => d.vendor.uuid))
+                }}
+                getOptionLabel={option => option.name}
+                renderOption={(props, option, { selected }) => <li {...props}>{!!option.nickname.trim() ? option.nickname : option.name}</li>}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label="選擇廠商"
+                    placeholder="廠商名稱"
+                    InputProps={{
+                      ...params.InputProps,
+                    }}
+                  />
+                )}
+              />
+            </div>
+            <Button
+              variant="secondary"
+              className="sm:w-40"
+              onClick={handleSearch}
+            >
+              <Search strokeWidth={1.75} />
+              搜尋
+            </Button>
           </div>
-        </Collapse>
-        {!getPurchaseRecordsLazyData.loading && purchaseRecords !== undefined ? (
-          <Results
-            handleSearch={handleSearch}
-            purchaseRecords={purchaseRecords}
-            setPurchaseRecords={setPurchaseRecords}
-            handleCheck={handleCheck}
-            selectAllRecords={selectAllRecords}
-          />
-        ) : (
-          <div style={{ width: '100%', textAlign: 'center', marginTop: '100px' }} >
-            <CircularProgress />
-          </div>
-        )}
-      </Container>
+        </Card>
+      </div>
+      {!getPurchaseRecordsLazyData.loading && purchaseRecords !== undefined ? (
+        <Results
+          handleSearch={handleSearch}
+          purchaseRecords={purchaseRecords}
+          setPurchaseRecords={setPurchaseRecords}
+          handleCheck={handleCheck}
+          selectAllRecords={selectAllRecords}
+        />
+      ) : (
+        <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
+          <Skeleton className="h-[320px] w-full rounded-lg" />
+        </div>
+      )}
       <PasswordDialog
         open={dialogOpen}
         title={clickData.stockInDate ? '進貨單取消入庫' : '進貨單入庫'}

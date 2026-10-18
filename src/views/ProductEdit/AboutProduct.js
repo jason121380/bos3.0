@@ -1,13 +1,11 @@
-/** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, FormControl, InputLabel, MenuItem, Select,
+  FormControl, InputLabel, MenuItem, Select,
   TextField, Switch, Autocomplete
 } from '@mui/material'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import idx from 'idx'
 import PropTypes from 'prop-types'
-
-import styles from './styles/AboutProduct'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 const stockUnit = [
   { label: '個', value: '個' },
@@ -50,27 +48,27 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
     })
   }
   return (
-    <Card {...rest} css={className}>
-      <CardHeader title="一般資訊" />
+    <Card {...rest} className={className}>
+      <CardHeader>
+        <CardTitle>一般資訊</CardTitle>
+      </CardHeader>
       <CardContent>
-        <form>
+        <form className="flex flex-col gap-6">
           <TextField
             label="代號"
             value={product.no}
             variant="outlined"
             fullWidth
             onChange={event => onChange({ event, key: 'no' })}
-            css={styles.formGroup}
           />
           <TextField
             label="名稱"
-            css={styles.formGroup}
             value={product.name}
             onChange={event => onChange({ event, key: 'name' })}
             variant="outlined"
             fullWidth
           />
-          <FormControl css={styles.formGroup} variant="outlined" fullWidth>
+          <FormControl variant="outlined" fullWidth>
             <InputLabel>商品類別</InputLabel>
             <Select
               label='商品類別'
@@ -90,7 +88,6 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
             </Select>
           </FormControl>
           <Autocomplete
-            css={styles.formGroup}
             options={merchantVendor}
             autoHighlight
             value={product.VendorId}
@@ -132,8 +129,8 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
               />
             )}
           />
-          <div css={styles.isAvailableForSaleDiv}>
-            <div>
+          <div className="flex flex-wrap gap-x-6">
+            <div className="flex items-center text-body text-text">
               <span>是否可販售</span>
               <Switch
                 checked={product.isAvailableForSale}
@@ -142,7 +139,7 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
                 name="isAvailableForSale"
               />
             </div>
-            <div>
+            <div className="flex items-center text-body text-text">
               <span>是否上架</span>
               <Switch
                 checked={product.isPublished}
@@ -169,7 +166,6 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
                   key: 'sellPrice',
                 })
               }
-              css={styles.formGroup}
               onWheel={() => document.activeElement.blur()}              
             />
           )}
@@ -178,7 +174,6 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
             label="成本價格"
             variant="outlined"
             fullWidth
-            css={styles.formGroup}
             value={product.cost}
             onChange={event =>
               onChange({
@@ -208,10 +203,9 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
                 key: 'employeePrice',
               })
             }
-            css={styles.formGroup}
             onWheel={() => document.activeElement.blur()}              
           />
-          <FormControl variant="outlined" fullWidth css={styles.formGroup}>
+          <FormControl variant="outlined" fullWidth>
             <InputLabel>庫存單位</InputLabel>
             <Select
               label='庫存單位'
@@ -233,7 +227,7 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
               ))}
             </Select>
           </FormControl>
-          <FormControl variant="outlined" fullWidth css={styles.formGroup}>
+          <FormControl variant="outlined" fullWidth>
             <InputLabel>打帳單是否能更改預設價格</InputLabel>
             <Select
               label='打帳單是否能更改預設價格'

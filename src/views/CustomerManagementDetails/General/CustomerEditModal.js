@@ -1,11 +1,6 @@
 /** @jsxImportSource @emotion/react */
+// 大型表單彈窗：外框（卡片、標題、底部動作）換成 ui/card、ui/button；Modal 與內部表單欄位保留 MUI
 import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
   FormControl,
   Grid,
   InputLabel,
@@ -31,6 +26,8 @@ import useFetchGetCheckIsCustomerNoUsed from 'hooks/useFetchGetCheckIsCustomerNo
 import SourceSelect from 'components/SourceSelect'
 import { css } from '@emotion/react'
 import { theme } from '../../../theme'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 
 const styles = {
   root: css({
@@ -244,9 +241,10 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
 
   return (
     <Modal onClose={onClose} open={open}>
-      <Card {...rest} css={css([styles.root, className])}>
-        <CardHeader title="編輯客戶資料" />
-        <Divider />
+      <Card {...rest} css={css([styles.root, className])} className="ui-root shadow-float">
+        <CardHeader className="pb-4">
+          <CardTitle>編輯客戶資料</CardTitle>
+        </CardHeader>
         <CardContent>
           <Grid container spacing={3}>
             <Grid item md={6} xs={12}>
@@ -493,13 +491,12 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
             </Grid>
           </Grid>
         </CardContent>
-        <Divider />
-        <CardActions css={styles.actions}>
-          <Button onClick={onClose}>取消</Button>
-          <Button color="primary" onClick={handleSubmit} variant="contained" disabled={vaild}>
+        <CardFooter>
+          <Button variant="secondary" onClick={onClose}>取消</Button>
+          <Button variant="primary" onClick={handleSubmit} disabled={vaild}>
             儲存
           </Button>
-        </CardActions>
+        </CardFooter>
       </Card>
     </Modal>
   )

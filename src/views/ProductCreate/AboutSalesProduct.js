@@ -1,6 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, FormControl, InputLabel, MenuItem,
+  FormControl, InputLabel, MenuItem,
   Select, TextField, FormHelperText
 } from '@mui/material'
 import clsx from 'clsx'
@@ -10,9 +9,7 @@ import { useEffect, useRef } from 'react'
 import useStore from 'hooks/useStore'
 import useFetchMerchantCustomerCategory from 'hooks/useFetchMerchantCustomerCategory'
 import { useFieldArray } from 'react-hook-form'
-import { css } from '@emotion/react'
-
-import styles from './styles/AboutSalesProduct'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 const commissionWay = [
   { label: '固定金額', value: 'fixed' },
@@ -53,12 +50,13 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
   }, [register])
 
   return (
-    <Card {...rest} css={css([styles.root, className])}>
-      <CardHeader title="抽成" />
-      <CardContent>
+    <Card {...rest} className={className}>
+      <CardHeader>
+        <CardTitle>抽成</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-6">
         <FormControl
           variant="outlined"
-          css={styles.formGroup}
           fullWidth
           error={!!errors.commissionWay}
         >
@@ -104,13 +102,12 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
               valueAsNumber: true,
             }),
           }}
-          css={styles.formGroup}
           onWheel={() => document.activeElement.blur()}              
         />
-        {/* <Typography variant="h5" component="h5" css={styles.formGroup}>
+        {/* <Typography variant="h5" component="h5">
           售價
         </Typography>
-        <Divider css={styles.formGroup} /> */}
+        <Divider /> */}
 
         {fields.map((data, index) => {
           const error = idx(
@@ -128,7 +125,7 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
           // return (
           // <Fragment key={data.id}>
           //   <TextField
-          //     css={styles.formGroup}
+          //    
           //     variant="outlined"
           //     fullWidth
           //     type="number"

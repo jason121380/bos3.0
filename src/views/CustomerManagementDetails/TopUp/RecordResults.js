@@ -1,82 +1,17 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Typography,
-  Grid,
-} from '@mui/material'
+// TablePagination 保留 MUI：pagenationLabel 依賴 MUI 的 DOM class
+import { TablePagination } from '@mui/material'
+import { Plus } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
 import idx from 'idx'
 import format from 'date-fns/format'
 import { useEffect, useRef } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { useHistory } from 'react-router'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
-
-const styles = {
-  root: css({}),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 800,
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-  addWalletDiv: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-  addWalletBtn: css({
-    marginBottom: '10px',
-  }),
-  valueContainer: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }),
-  item: css({
-    padding: theme.spacing(3),
-    textAlign: 'center',
-    [theme.breakpoints.up('md')]: {
-      '&:not(:last-of-type)': {
-        borderRight: `none`,
-      },
-    },
-    [theme.breakpoints.down('sm')]: {
-      '&:not(:last-of-type)': {
-        borderBottom: `1px solid #424242`,
-      },
-    },
-  }),
-  balance: css({
-    margin: theme.spacing(3, 0, 3, 0),
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Results({
   className,
@@ -102,124 +37,111 @@ function Results({
   }
 
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <Card css={styles.balance}>
-        <Grid alignItems="center" container justifyContent="space-between">
-          <Grid css={styles.item} item md={12} sm={12} xs={12}>
-            <Typography component="h2" gutterBottom variant="h6">
-              入金餘額
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">{walletBalance}</Typography>
-            </div>
-          </Grid>
-        </Grid>
+    <div {...rest} css={className} className="flex flex-col gap-4">
+      <Card className="flex flex-col items-center gap-1 px-5 py-6 text-center">
+        <span className="text-label text-text-secondary">
+          入金餘額
+        </span>
+        <span className="text-display tabular-nums text-text">{formatNumber(walletBalance)}</span>
       </Card>
-      <div css={styles.addWalletDiv}>
-        <Typography color="textSecondary" variant="body2">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-label tabular-nums text-text-secondary">
           共 {idx(walletDepositRecord.data, _ => _.walletDepositRecord.totalCount)} 筆資料,
           {resultSetting.record.pageOffset + 1}/
           {Math.ceil(
             idx(walletDepositRecord.data, _ => _.walletDepositRecord.totalCount) /
             resultSetting.record.pageLimit
           )}
-        </Typography>
+        </span>
         <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          css={styles.addWalletBtn}
+          variant="primary"
+          size="sm"
           onClick={handleAddWalletClick}
         >
+          <Plus strokeWidth={1.75} />
           新增入金
         </Button>
       </div>
 
       <Card>
-        <CardHeader title="入金紀錄" />
-        <Divider />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                {/* head */}
-                <TableHead>
-                  <TableRow>
-                    <TableCell>操作</TableCell>
+        <CardHeader className="pb-4">
+          <CardTitle>入金紀錄</CardTitle>
+        </CardHeader>
+        <div className="px-5">
+          <Table className="min-w-[800px]">
+            {/* head */}
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead>操作</TableHead>
 
-                    <TableCell>日期</TableCell>
-                    <TableCell>客戶</TableCell>
-                    <TableCell>實際付款金額</TableCell>
-                    <TableCell>入金金額</TableCell>
-                    <TableCell>設計師</TableCell>
-                    <TableCell>付款方式</TableCell>
-                    <TableCell>入金儲值手續費負擔方</TableCell>
-                    <TableCell>入金儲值手續費</TableCell>
-                    <TableCell>備註</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {idx(walletDepositRecord.data, _ =>
-                    _.walletDepositRecord.record.map(record => (
-                      <TableRow hover key={record.id}>
-                        <TableCell>
-                          <Button
-                            color="primary"
-                            component={RouterLink}
-                            size="small"
-                            to={`/topup/edit/${record.id}`}
-                            variant="outlined"
-                          >
-                            編輯
-                          </Button>
-                        </TableCell>
-                        <TableCell>{format(record.date, 'MM/dd/yyyy')}</TableCell>
-                        <TableCell>
-                          {record.Customer.name}
-                          <Typography>{record.Customer.cellphone}</Typography>
-                        </TableCell>
-                        <TableCell>
-                          {record.handlingFeeDecountWay === 'BYCUSTOMER'
-                            ? record.money + Math.abs(record.handlingFeeDecountPrice)
-                            : record.money}
-                        </TableCell>
-                        <TableCell>{record.money}</TableCell>
-                        <TableCell>
-                          {record.Maker.name}
-                          {record.Maker.designerNo ? ' / ' + record.Maker.designerNo : ''}
-                        </TableCell>
-                        <TableCell>{record.payType}</TableCell>
-                        <TableCell>
-                          {record.handlingFeeDecountWay === 'BYCUSTOMER'
-                            ? '由客人負擔'
-                            : record.handlingFeeDecountWay === 'BYDESIGNER'
-                              ? '由設計師負擔'
-                              : '不扣項'}
-                        </TableCell>
-                        <TableCell>{record.handlingFeeDecountPrice}</TableCell>
-                        <TableCell>{record.remark}</TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                  <TableRow hover>
-                    <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
-                    <TableCell colSpan={3} />
-                    <TableCell style={{ fontWeight: 'bold' }}>
-                      {idx(walletDepositRecord, _ =>
-                        _.data.walletDepositRecord.record.reduce(
-                          (prev, next) => prev + next.money,
-                          0
-                        )
-                      )}
+                <TableHead>日期</TableHead>
+                <TableHead>客戶</TableHead>
+                <TableHead numeric>實際付款金額</TableHead>
+                <TableHead numeric>入金金額</TableHead>
+                <TableHead>設計師</TableHead>
+                <TableHead>付款方式</TableHead>
+                <TableHead>入金儲值手續費負擔方</TableHead>
+                <TableHead numeric>入金儲值手續費</TableHead>
+                <TableHead>備註</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {idx(walletDepositRecord.data, _ =>
+                _.walletDepositRecord.record.map(record => (
+                  <TableRow key={record.id}>
+                    <TableCell>
+                      <Button asChild size="sm" variant="secondary">
+                        <RouterLink to={`/topup/edit/${record.id}`}>
+                          編輯
+                        </RouterLink>
+                      </Button>
                     </TableCell>
-                    <TableCell colSpan={5}></TableCell>
+                    <TableCell className="tabular-nums">{format(record.date, 'MM/dd/yyyy')}</TableCell>
+                    <TableCell>
+                      {record.Customer.name}
+                      <div className="text-caption tabular-nums text-text-secondary">{record.Customer.cellphone}</div>
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(record.handlingFeeDecountWay === 'BYCUSTOMER'
+                        ? record.money + Math.abs(record.handlingFeeDecountPrice)
+                        : record.money)}
+                    </TableCell>
+                    <TableCell numeric>{formatNumber(record.money)}</TableCell>
+                    <TableCell>
+                      {record.Maker.name}
+                      {record.Maker.designerNo ? ' / ' + record.Maker.designerNo : ''}
+                    </TableCell>
+                    <TableCell>{record.payType}</TableCell>
+                    <TableCell>
+                      {record.handlingFeeDecountWay === 'BYCUSTOMER'
+                        ? '由客人負擔'
+                        : record.handlingFeeDecountWay === 'BYDESIGNER'
+                          ? '由設計師負擔'
+                          : '不扣項'}
+                    </TableCell>
+                    <TableCell numeric>{formatNumber(record.handlingFeeDecountPrice)}</TableCell>
+                    <TableCell>{record.remark}</TableCell>
                   </TableRow>
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
+                ))
+              )}
+              <TableRow className="bg-surface hover:bg-surface">
+                <TableCell className="font-bold">合計</TableCell>
+                <TableCell colSpan={3} />
+                <TableCell numeric className="font-bold">
+                  {formatNumber(idx(walletDepositRecord, _ =>
+                    _.data.walletDepositRecord.record.reduce(
+                      (prev, next) => prev + next.money,
+                      0
+                    )
+                  ))}
+                </TableCell>
+                <TableCell colSpan={5}></TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
+        {/* 分頁保留 MUI：pageRef 交給 helper/pagenationLabel 改寫顯示文字 */}
+        <div className="flex justify-end px-3 pb-2">
           <TablePagination
             ref={pageRef}
             labelRowsPerPage='每頁顯示數量'
@@ -233,7 +155,7 @@ function Results({
             rowsPerPage={resultSetting.record.pageLimit}
             rowsPerPageOptions={[5, 10, 25, 50, 1000]}
           />
-        </CardActions>
+        </div>
       </Card>
       <TableEditBar />
     </div>

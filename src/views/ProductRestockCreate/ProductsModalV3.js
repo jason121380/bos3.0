@@ -1,71 +1,16 @@
-/** @jsxImportSource @emotion/react */
+// MUI Dialog 保留：舊版無 onClose（點背景、Esc 不會關閉），且內含 MUI ToggleButton / TextField
 import {
-  Card, CardHeader, CardContent, Divider, Table, TableBody,
-  TableCell, TableHead, TableRow, TableContainer, CardActions, Paper,
-  Button, TextField, FormControlLabel, Checkbox, ToggleButtonGroup,
+  TextField, ToggleButtonGroup,
   ToggleButton, Dialog
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { red, blue } from '@mui/material/colors'
 import { openSnackbar } from 'elements/snackbars'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-
-const styles = {
-  birthday: css({
-    width: '100%',
-  }),
-  actions: css({
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgb(var(--background))',
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  categorieDiv: css({
-    margin: '5px 0',
-  }),
-  categorieBtn: css({
-    margin: '3px !important',
-  }),
-  categorieClear: css({
-    backgroundColor: red[500] + '!important',
-    color: 'white',
-    width: '80px',
-    '&:hover': {
-      backgroundColor: red[700] + '!important',
-    },
-  }),
-  addBtn: css({
-    backgroundColor: blue[500],
-    color: 'white',
-    '&:hover': {
-      backgroundColor: blue[700],
-    },
-  }),
-  confirmBtn: css({
-    margin: '7px 0',
-    float: 'right',
-  }),
-  header: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'rgb(var(--background))',
-  }),
-  closeAtTop: css({
-    margin: '16px 24px !important',
-  }),
-  confirmAtTop: css({
-    margin: '16px 0px !important',
-  }),
-  sticky: css({
-    position: 'sticky',
-    top: 0,
-    zIndex: '99',
-  })
-}
+import { Button } from 'ui/button'
+import { Checkbox } from 'ui/checkbox'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { cn } from 'ui/utils'
 
 function ProductsModal({
   productsModalOpen,
@@ -288,8 +233,10 @@ function ProductsModal({
   }
 
   const Header = () => (
-    <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
-      {selectedCategorieName.length === 0 ? '所有商品' : `${categoryNameForDisplay}類商品`}
+    <div className="flex flex-wrap items-center gap-3">
+      <span className="text-heading text-text">
+        {selectedCategorieName.length === 0 ? '所有商品' : `${categoryNameForDisplay}類商品`}
+      </span>
       <ToggleButtonGroup
         size="small"
         exclusive
@@ -302,174 +249,158 @@ function ProductsModal({
       </ToggleButtonGroup>
     </div>
   )
+  // 篩選鈕的選取狀態（舊版以 contained / outlined 區分）
+  const chipClass = active => cn('h-7 px-3', active && 'bg-accent/8 text-accent hover:bg-accent/8')
   return (
     <Dialog maxWidth='md' open={productsModalOpen}>
-      <Card>
-        <div css={styles.header}>
-          <CardHeader title={<Header/>} />
-          <div>
+      <div className="ui-root flex flex-col bg-background">
+        <div className="flex items-center justify-between gap-4 px-6 py-4">
+          <Header/>
+          <div className="flex shrink-0 items-center gap-2">
             <Button
-              color="primary"
-              variant="contained"
+              variant="primary"
               onClick={handleSelectProductsConfirm}
-              css={styles.confirmAtTop}
             >
               確定
             </Button>
             <Button
-              color="primary"
-              variant="contained"
+              variant="secondary"
               onClick={closeModal}
-              css={styles.closeAtTop}
             >
               關閉
             </Button>
           </div>
         </div>
 
-        <Divider />
-        <CardContent style={{ backgroundColor: 'rgb(var(--background))', paddingTop: '0' }}>
-          <div css={styles.categorieDiv}
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', rowGap: '10px' }}
-          >
-            <div style={{ width: 'calc(100% - 90px)' }}>
-              {productCategories.map(productCategory => (
-                <Button
-                  variant={productCategory.id === categorie ? 'contained' : 'outlined'}
-                  color="primary"
-                  size="small"
-                  css={styles.categorieBtn}
-                  onClick={() => setCategorie(productCategory.id)}
-                  disabled={selectedCategorie.indexOf(productCategory.id) !== -1}
-                  key={productCategory.id}
-                >
-                  {productCategory.name}
-                </Button>
-              ))}
-              <Divider />
-              {vendorOptions.map(d => (
-                <Button
-                  variant={d.uuid === vendor ? 'contained' : 'outlined'}
-                  color="primary"
-                  size="small"
-                  css={styles.categorieBtn}
-                  onClick={() => setVendor(d.uuid)}
-                  key={d.uuid}
-                  selected
-                >
-                  {d.name}
-                </Button>
-              ))}
-            </div>
-            <div>
-              <Button
-                variant="contained"
-                size="small"
-                color="secondary"
-                css={styles.categorieClear}
-                onClick={() => {
-                  setCategorie('')
-                  setVendor('')
-                }}
-              >
-                清除篩選
-              </Button>
-            </div>
-          </div>
-          <TableContainer component={Paper} style={{ height: '60vh' }}>
-            <Table>
-              <TableHead>
-                <TableRow css={styles.sticky}>
-                  <TableCell padding="checkbox">
-                    <Button />
-                  </TableCell>
-                  <TableCell>代號</TableCell>
-                  <TableCell>類別</TableCell>
-                  <TableCell>廠商</TableCell>
-                  <TableCell>名稱</TableCell>
-                  <TableCell>價格</TableCell>
-                  <TableCell>數量</TableCell>
-                  <TableCell>目前庫存</TableCell>
-                  <TableCell>合計</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {selectedCategorieId.map((product, index) => (
-                  <TableRow key={index}>
-                    <TableCell style={{ textAlign: 'center' }}>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            name="selected"
-                            onChange={e => handleProductInputOnChange(e, index, product.id)}
-                            checked={product.selected}
-                            value={product.selected}
-                            color="primary"
-                          />
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>{product.productNo}</TableCell>
-                    <TableCell>
-                      {product.productCategory !== null ? product.productCategory.name : ''}
-                    </TableCell>
-                    <TableCell>
-                      {product.merchantVendor !== null ? product.merchantVendor.name : ''}
-                    </TableCell>
-                    <TableCell>{product.productName}</TableCell>
-                    <TableCell style={{ padding: '10px' }}>
-                      <TextField
-                        label="價格"
-                        variant="outlined"
-                        fullWidth
-                        name="price"
-                        onChange={e => handleProductInputOnChange(e, index, product.id)}
-                        InputProps={{ inputProps: { min: 0 } }}
-                        value={product.cost}
-                        type="number"
-                        style={{ width: '90px' }}
-                      />
-                    </TableCell>
-                    <TableCell style={{ padding: '10px' }}>
-                      <TextField
-                        label="數量"
-                        variant="outlined"
-                        fullWidth
-                        name="count"
-                        onChange={e => handleProductInputOnChange(e, index, product.id)}
-                        value={product.count}
-                        InputProps={{ inputProps: { min: 0 } }}
-                        type="number"
-                        style={{ width: '90px' }}
-                      />
-                    </TableCell>
-                    <TableCell>{product.remainingCount}</TableCell>
-                    <TableCell>{product.total}</TableCell>
-                  </TableRow>
+        <div className="h-px bg-border" />
+        <div className="flex flex-col gap-3 px-6 pb-4 pt-3">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
+              <div className="flex flex-wrap gap-1.5">
+                {productCategories.map(productCategory => (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className={chipClass(productCategory.id === categorie)}
+                    aria-pressed={productCategory.id === categorie}
+                    onClick={() => setCategorie(productCategory.id)}
+                    disabled={selectedCategorie.indexOf(productCategory.id) !== -1}
+                    key={productCategory.id}
+                  >
+                    {productCategory.name}
+                  </Button>
                 ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </CardContent>
-        <CardActions css={styles.actions} style={{ padding: '0 24px' }}>
+              </div>
+              <div className="h-px bg-border" />
+              <div className="flex flex-wrap gap-1.5">
+                {vendorOptions.map(d => (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    className={chipClass(d.uuid === vendor)}
+                    aria-pressed={d.uuid === vendor}
+                    onClick={() => setVendor(d.uuid)}
+                    key={d.uuid}
+                  >
+                    {d.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="shrink-0"
+              onClick={() => {
+                setCategorie('')
+                setVendor('')
+              }}
+            >
+              清除篩選
+            </Button>
+          </div>
+          <Table wrapperClassName="h-[60vh] overflow-auto">
+            <TableHeader className="sticky top-0 z-10">
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12" aria-label="選取" />
+                <TableHead>代號</TableHead>
+                <TableHead>類別</TableHead>
+                <TableHead>廠商</TableHead>
+                <TableHead>名稱</TableHead>
+                <TableHead>價格</TableHead>
+                <TableHead>數量</TableHead>
+                <TableHead numeric>目前庫存</TableHead>
+                <TableHead numeric>合計</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {selectedCategorieId.map((product, index) => (
+                <TableRow key={index} data-state={product.selected ? 'selected' : undefined}>
+                  <TableCell className="text-center">
+                    <Checkbox
+                      aria-label={`選取 ${product.productName}`}
+                      name="selected"
+                      onChange={e => handleProductInputOnChange(e, index, product.id)}
+                      checked={product.selected}
+                      value={product.selected}
+                    />
+                  </TableCell>
+                  <TableCell className="tabular-nums">{product.productNo}</TableCell>
+                  <TableCell>
+                    {product.productCategory !== null ? product.productCategory.name : ''}
+                  </TableCell>
+                  <TableCell>
+                    {product.merchantVendor !== null ? product.merchantVendor.name : ''}
+                  </TableCell>
+                  <TableCell>{product.productName}</TableCell>
+                  <TableCell className="py-2.5">
+                    <TextField
+                      label="價格"
+                      variant="outlined"
+                      fullWidth
+                      name="price"
+                      onChange={e => handleProductInputOnChange(e, index, product.id)}
+                      InputProps={{ inputProps: { min: 0 } }}
+                      value={product.cost}
+                      type="number"
+                      style={{ width: '90px' }}
+                    />
+                  </TableCell>
+                  <TableCell className="py-2.5">
+                    <TextField
+                      label="數量"
+                      variant="outlined"
+                      fullWidth
+                      name="count"
+                      onChange={e => handleProductInputOnChange(e, index, product.id)}
+                      value={product.count}
+                      InputProps={{ inputProps: { min: 0 } }}
+                      type="number"
+                      style={{ width: '90px' }}
+                    />
+                  </TableCell>
+                  <TableCell numeric>{product.remainingCount}</TableCell>
+                  <TableCell numeric>{product.total}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        <div className="flex items-center justify-end gap-2 border-0 border-t border-solid border-border px-6 py-4">
           <Button
-            color="primary"
-            variant="contained"
+            variant="primary"
             onClick={handleSelectProductsConfirm}
-            css={styles.confirmAtTop}
           >
             確定
           </Button>
           <Button
-            color="primary"
-            variant="contained"
+            variant="secondary"
             onClick={closeModal}
-            style={{ marginLeft: '24px' }}
           >
             關閉
           </Button>
-        </CardActions>
-      </Card>
+        </div>
+      </div>
     </Dialog>
   )
 }

@@ -1,21 +1,12 @@
-/** @jsxImportSource @emotion/react */
-import { CircularProgress } from '@mui/material'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
 import idx from 'idx'
 import produce from 'immer'
 import { Fragment, useState } from 'react'
 import roundDecimal from './../../../helper/roundDecimal.js'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme/index.js'
+import { Skeleton } from 'ui/skeleton'
 
 import BoughtResults from './BoughtResults'
 import UsagedResults from './UsagedResults'
-
-const styles = {
-  result: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 export default function Coupon({ customer, pagenationLabel }) {
   const [resultSetting, setResultSetting] = useState({
@@ -45,13 +36,12 @@ export default function Coupon({ customer, pagenationLabel }) {
   return (
     <Fragment>
       {!boughtTicketRecords.loading && !usagedTicketRecoeds.loading ? (
-        <>
+        <div className="flex flex-col gap-6">
           {idx(
             boughtTicketRecords,
             _ =>
               _.data.ticketRecords.data && (
                 <BoughtResults
-                  className={styles.result}
                   results={_.data.ticketRecords.data}
                   page={{
                     limit: _.data.ticketRecords.pageLimit,
@@ -78,7 +68,6 @@ export default function Coupon({ customer, pagenationLabel }) {
             _ =>
               _.data.ticketRecords.data && (
                 <UsagedResults
-                  className={styles.result}
                   results={_.data.ticketRecords.data}
                   page={{
                     limit: _.data.ticketRecords.pageLimit,
@@ -100,8 +89,8 @@ export default function Coupon({ customer, pagenationLabel }) {
                 />
               )
           )}
-        </>
-      ) : <div style={{ textAlign: 'center', marginTop: 100 }}><CircularProgress /></div>}
+        </div>
+      ) : <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中"><Skeleton className="h-[320px] w-full rounded-lg" /></div>}
     </Fragment>
   )
 }

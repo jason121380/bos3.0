@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
+// 表格列保留 MUI TableBody / TableRow / TableCell：外框為共用元件 components/ManagementTable（MUI Table）
 import {
-  Button, TableBody, TableCell, TableRow, Typography,
+  TableBody, TableCell, TableRow,
 } from '@mui/material'
+import { Button } from 'ui/button'
 import ManagementTable from 'components/ManagementTable'
 import idx from 'idx'
 import format from 'date-fns/format'
@@ -75,23 +77,19 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
             _.walletUseRecord.record.map(data => (
               <TableRow hover key={`${data.id}-${data.index}`}>
                 <TableCell css={styles.compactCell}>
-                  <Button
-                    color="primary"
-                    variant="outlined"
-                    component={RouterLink}
-                    to={`/order/${data.order.id}`}
-                    size="small"
-                  >
-                    訂單詳情
+                  <Button asChild size="sm" variant="secondary">
+                    <RouterLink to={`/order/${data.order.id}`}>
+                      訂單詳情
+                    </RouterLink>
                   </Button>
                 </TableCell>
                 <TableCell css={styles.compactCell}>
                   {data.orderNo}
-                  <Typography variant="caption" display="block">{format(data.date, 'yyyy/MM/dd')}</Typography>
+                  <div className="text-caption tabular-nums text-text-secondary">{format(data.date, 'yyyy/MM/dd')}</div>
                 </TableCell>
                 <TableCell css={styles.compactCell}>
                   {idx(data.Customer, _ => _.name)}
-                  <Typography variant="caption" display="block">{idx(data.Customer, _ => _.cellphone)}</Typography>
+                  <div className="text-caption tabular-nums text-text-secondary">{idx(data.Customer, _ => _.cellphone)}</div>
                 </TableCell>
                 <TableCell css={styles.compactCell}>
                   {idx(

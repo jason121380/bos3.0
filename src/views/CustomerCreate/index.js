@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import idx from 'idx'
@@ -10,23 +7,11 @@ import _ from 'lodash'
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import useFetchGetLastCustomerNo from 'hooks/useFetchGetLastCustomerNo'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import AboutCustomer from './AboutCustomer'
 
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  about: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 export default function Customer() {
   const history = useHistory()
@@ -135,11 +120,10 @@ export default function Customer() {
   }, [lastCustomerNo.loading])
 
   return (
-    <Page css={styles.root} title="新增客戶">
-      <Container maxWidth="md">
-        <PageTitle title='新增客戶' subTitle='Create Customer' />
+    <Page className="ui-root" title="新增客戶">
+      <div className="mx-auto max-w-3xl">
+        <PageHeader title="新增客戶" />
         <AboutCustomer
-          className={styles.about}
           onChange={handleOnChange}
           customer={customer}
           lastNo={lastNo}
@@ -148,12 +132,12 @@ export default function Customer() {
           handleOnClick={handleOnClick}
           handleBirthdayChange={handleBirthdayChange}
         />
-        <div css={styles.actions}>
-          <Button color="primary" variant="contained" onClick={handleOnClick} disabled={vaild || disableAfterSubmit}>
+        <div className="flex justify-end pt-6">
+          <Button variant="primary" onClick={handleOnClick} disabled={vaild || disableAfterSubmit}>
             新增
           </Button>
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }

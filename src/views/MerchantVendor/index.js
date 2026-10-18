@@ -1,23 +1,12 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
 import { useFetchGetMerchantVendorList } from 'hooks/useFetchGetVendor'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Skeleton } from 'ui/skeleton'
 
 import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
-
-const localStyles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3)
-  }),
-}
 
 function MerchantVendor() {
   const merchantVendorList = useFetchGetMerchantVendorList()
@@ -31,27 +20,25 @@ function MerchantVendor() {
   }, [merchantVendorList.loading])
 
   return (
-    <Page css={localStyles.root} title="廠商列表">
-      <Container maxWidth={false} css={localStyles.container}>
-        <AdminPageHeader
-          title="廠商列表"
-          primaryAction={{
-            label: '新增廠商',
-            to: '/merchant-vendor/create'
-          }}
+    <Page className="ui-root" title="廠商列表">
+      <AdminPageHeader
+        title="廠商列表"
+        primaryAction={{
+          label: '新增廠商',
+          to: '/merchant-vendor/create'
+        }}
+      />
+      {!merchantVendorList.loading ? (
+        <Results
+          merchantVendor={merchantVendor}
+          merchantVendorList={merchantVendorList}
         />
-        {!merchantVendorList.loading ? (
-          <Results
-            merchantVendor={merchantVendor}
-            merchantVendorList={merchantVendorList}
-          />
-        ) : (
-          <div style={{ textAlign: 'center', marginTop: '200px' }}>
-            <CircularProgress />
-          </div>
-        )}
+      ) : (
+        <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
+          <Skeleton className="h-[320px] w-full rounded-lg" />
+        </div>
+      )}
 
-      </Container>
     </Page>
   )
 }

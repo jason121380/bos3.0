@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Container, Divider, Tab, Tabs, colors, Button } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import useFetchCustomer from 'hooks/useFetchCustomer'
 import useFetchGetCustomerOrders from 'hooks/useFetchGetCustomerOrders'
 import useFetchGetOrderStaticDetail from 'hooks/useFetchGetOrderStaticDetail'
@@ -20,8 +17,10 @@ import { Redirect } from 'react-router-dom'
 import ProgressBar from 'components/ProgressBar'
 import _ from 'lodash'
 import pagenationLabel from './../../helper/pagenationLabel'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { ArrowLeft } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
+import { Tabs, TabsList, TabsTrigger } from 'ui/tabs'
 
 import { Provider } from '../../hooks/useStore'
 
@@ -34,23 +33,6 @@ import CustomerTracking from './CustomerTracking'
 import SMSRecord from './SMSRecord'
 import EventTicketsRecord from './EventTicketsRecord'
 import MembershipRecord from './MembershipRecord'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  tabs: css({
-    marginTop: theme.spacing(1),
-  }),
-  divider: css({
-    borderColor: 'rgb(var(--border)) !important',
-    background: 'rgb(var(--surface)) !important',
-  }),
-  content: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function CustomerManagementDetails({ match, history }) {
   const { id, tab: currentTab } = match.params
@@ -244,73 +226,69 @@ function CustomerManagementDetails({ match, history }) {
   }
 
   return (
-    <Page css={styles.root} title={`${customer.data.customer.name} - ${currentTabName}`}>
+    <Page className="ui-root" title={`${customer.data.customer.name} - ${currentTabName}`}>
       <Provider value={value}>
-        <Container maxWidth={false}>
-          {idx(customer, _ => (_.data.customer ? <PageTitle title={_.data.customer.name} subTitle='顧客詳細資料' /> : ''))}
-          <Tabs
-            css={styles.tabs}
-            onChange={handleTabsChange}
-            test={'testprops'}
-            scrollButtons="auto"
-            value={currentTab}
-            variant="scrollable"
-          >
+        {idx(customer, _ => (_.data.customer ? <PageHeader title={_.data.customer.name} description='顧客詳細資料' /> : ''))}
+        {/* 分頁值皆為字串、handler 只用到 value；activationMode="manual" 與舊版 MUI Tabs 相同：方向鍵只移動焦點，按 Enter／點擊才切換（切換會 history.push） */}
+        <Tabs
+          onValueChange={value => handleTabsChange(null, value)}
+          value={currentTab}
+          activationMode="manual"
+        >
+          <TabsList>
             {tabs.map(tab => (
-              <Tab key={tab.value} label={tab.label} value={tab.value} />
+              <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
             ))}
-          </Tabs>
-          <Divider css={styles.divider} />
-          <div css={styles.content}>
-            {currentTab === 'general' && (
-              <General
-                bookingCusCheck={bookingCusCheck}
-                customer={customer.data.customer}
-                isLoading={customer.loading}
-              />
-            )}
-            {currentTab === 'invoices' &&
-              <Invoices
-                orders={orderList}
-                isLoading={getCustomerOrders.loading}
-                membershipDisplay={membershipDisplay}
-                bonusDisplay={bonusDisplay}
-                pageSetting={pageSetting}
-                onPageChange={handlePageChange}
-                onRowsPerPageChange={handleRowsPerPageChange}
-                pagenationLabel={pagenationLabel}
-              />
-            }
-            {currentTab === 'coupon' && <Coupon customer={{ id }} pagenationLabel={pagenationLabel} />}
-            {currentTab === 'topup' && <TopUp customer={{ id }} pagenationLabel={pagenationLabel} />}
-            {currentTab === 'bonus' && <Bonus customer={{ id }} customerBonusRecords={customerBonusRecords} />}
-            {currentTab === 'customerTracking' &&
-              <CustomerTracking
-                customerId={id}
-                refetchHairInfo={() => customerHairInfo.refetch()}
-                isLoading={customerHairInfo.loading}
-                hairCondition={
-                  !customerHairInfo.loading ?
-                    idx(customerHairInfo, _ => _.data.getCustomerHairInfo) : hairCondition
-                }
-              />
-            }
-            {currentTab === 'SMS' && <SMSRecord records={!getCustomerSMSRecord.loading ? getCustomerSMSRecord.data.customerSMSRecord : []} />}
-            {currentTab === 'EventTicketsRecord' && <EventTicketsRecord data={eventTickets} isLoading={getCustomerEventTicketsForMerchant.loading} />}
-            {currentTab === 'membership' && <MembershipRecord records={customer.data.customer.membershipPurchaseRecord} />}
-          </div>
+          </TabsList>
+        </Tabs>
+        <div className="mt-6">
+          {currentTab === 'general' && (
+            <General
+              bookingCusCheck={bookingCusCheck}
+              customer={customer.data.customer}
+              isLoading={customer.loading}
+            />
+          )}
+          {currentTab === 'invoices' &&
+            <Invoices
+              orders={orderList}
+              isLoading={getCustomerOrders.loading}
+              membershipDisplay={membershipDisplay}
+              bonusDisplay={bonusDisplay}
+              pageSetting={pageSetting}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
+              pagenationLabel={pagenationLabel}
+            />
+          }
+          {currentTab === 'coupon' && <Coupon customer={{ id }} pagenationLabel={pagenationLabel} />}
+          {currentTab === 'topup' && <TopUp customer={{ id }} pagenationLabel={pagenationLabel} />}
+          {currentTab === 'bonus' && <Bonus customer={{ id }} customerBonusRecords={customerBonusRecords} />}
+          {currentTab === 'customerTracking' &&
+            <CustomerTracking
+              customerId={id}
+              refetchHairInfo={() => customerHairInfo.refetch()}
+              isLoading={customerHairInfo.loading}
+              hairCondition={
+                !customerHairInfo.loading ?
+                  idx(customerHairInfo, _ => _.data.getCustomerHairInfo) : hairCondition
+              }
+            />
+          }
+          {currentTab === 'SMS' && <SMSRecord records={!getCustomerSMSRecord.loading ? getCustomerSMSRecord.data.customerSMSRecord : []} />}
+          {currentTab === 'EventTicketsRecord' && <EventTicketsRecord data={eventTickets} isLoading={getCustomerEventTicketsForMerchant.loading} />}
+          {currentTab === 'membership' && <MembershipRecord records={customer.data.customer.membershipPurchaseRecord} />}
+        </div>
 
-          <div style={{ marginTop: 24 }}>
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={handleBack}
-              style={{ backgroundColor: 'rgb(var(--accent))' }}
-            >
-              返回
-            </Button>
-          </div>
-        </Container>
+        <div className="mt-6">
+          <Button
+            variant="secondary"
+            onClick={handleBack}
+          >
+            <ArrowLeft strokeWidth={1.75} />
+            返回
+          </Button>
+        </div>
       </Provider>
     </Page>
   )

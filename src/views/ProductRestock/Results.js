@@ -1,10 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button, Card, CardActions, CardContent, Table, TableBody,
-  TableCell, TableHead, TableRow, Typography, Drawer, Checkbox,
-  TableContainer, IconButton, Grid, Hidden
-} from '@mui/material'
-import { Edit as EditIcon, Visibility as VisibilityIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
+import { Eye, Pencil, Trash2 } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
@@ -12,71 +6,11 @@ import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import _ from 'lodash'
 import useFetchDeletePurchase from 'hooks/useFetchDeletePurchase'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-import { CardHeader } from '@mui/material'
-
-const localStyles = {
-  root: css({}),
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid rgb(var(--border))',
-    backgroundColor: 'rgb(var(--background))',
-    overflow: 'hidden',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 1300,
-  }),
-  tableHead: css({
-    backgroundColor: 'rgb(var(--background))',
-    '& .MuiTableCell-head': {
-      color: 'rgb(var(--text))',
-      fontWeight: 'bold',
-      borderBottom: '1px solid rgb(var(--border))',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid rgb(var(--border))',
-      fontSize: '14px !important',
-      color: 'rgb(var(--text))',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-    '&.Mui-selected': {
-      backgroundColor: 'rgb(var(--surface)) !important',
-    },
-    '&.Mui-selected:hover': {
-      backgroundColor: 'rgb(var(--surface)) !important',
-    },
-  }),
-  actionButton: css({
-    color: 'rgb(var(--text-tertiary))',
-    padding: '4px',
-    '&:hover': {
-      color: 'rgb(var(--accent))',
-      backgroundColor: 'rgba(26, 115, 232, 0.04)',
-    },
-  }),
-  pillButton: css({
-    borderRadius: '20px !important',
-    padding: '2px 12px !important',
-    fontSize: '12px !important',
-    boxShadow: 'none !important',
-    minWidth: '70px',
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Results({
   purchaseRecordsData,
@@ -132,125 +66,116 @@ function Results({
 
   return (
     <Fragment>
-      <div {...rest} css={localStyles.root}>
-        <Card css={localStyles.card}>
-          <CardHeader
-            title={
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-                <Typography variant="h6" style={{ fontWeight: 'bold', color: 'rgb(var(--text))' }}>
-                  所有進貨單
-                </Typography>
-                <Typography color="textSecondary" variant="body2">
-                  共 {purchaseRecords.length} 筆資料
-                </Typography>
-              </div>
-            }
-          />
-          <CardContent css={localStyles.content}>
-            <TableContainer>
-              <Table size="small">
-                <TableHead css={localStyles.tableHead}>
-                  <TableRow>
-                    <TableCell padding="checkbox" width={50}>
-                      <Checkbox
-                        checked={selectId.length === selectAllRecords.length && selectAllRecords.length > 0}
-                        color="primary"
-                        onChange={event => selectAllData(event)}
-                        disabled={selectAllRecords.length === 0}
-                        indeterminate={
-                          selectId.length > 0 && selectId.length < selectAllRecords.length
-                        }
-                      />
-                    </TableCell>
-                    <TableCell width={140}>單號</TableCell>
-                    <TableCell width={110}>日期</TableCell>
-                    <TableCell width={180}>廠商</TableCell>
-                    <TableCell width={100}>進貨人</TableCell>
-                    <TableCell width={100}>金額</TableCell>
-                    <TableCell width={150}>異動時間</TableCell>
-                    <TableCell>備註</TableCell>
-                    <TableCell width={150}>入庫時間</TableCell>
-                    <TableCell align="center" width={110}>狀態處理</TableCell>
-                    <TableCell align="right" width={60}>操作</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {purchaseRecords.map((data, index) => {
-                    const isSelected = selectId.indexOf(data.uuid) > -1
-                    return (
-                      <TableRow
-                        key={`${data.no}-${index}`}
-                        css={localStyles.tableRow}
-                        selected={isSelected}
-                      >
-                        <TableCell padding="checkbox" width={50}>
-                          <Checkbox
-                            color="primary"
-                            disabled={!!data.stockInDate}
-                            checked={isSelected}
-                            onChange={() => selectOne(data.uuid)}
-                          />
-                        </TableCell>
-                        <TableCell width={140} style={{ fontWeight: '500' }}>{data.no}</TableCell>
-                        <TableCell width={110}>{format(new Date(data.date), 'yyyy/MM/dd')}</TableCell>
-                        <TableCell width={180}>{data.vendorName}</TableCell>
-                        <TableCell width={100}>{data.operatorName}</TableCell>
-                        <TableCell width={100}>{data.summary}</TableCell>
-                        <TableCell width={150}>
-                          {format(new Date(data.updatedAt), 'yyyy/MM/dd HH:mm')}
-                        </TableCell>
-                        <TableCell>{data.remark}</TableCell>
-                        <TableCell width={150}>{data.stockInDate && format(new Date(data.stockInDate), 'yyyy/MM/dd HH:mm')}</TableCell>
-                        <TableCell align="center" width={110}>
-                          <Button
-                            onClick={() => handleCheck(data)}
-                            css={localStyles.pillButton}
-                            variant='contained'
-                            color={data.stockInDate ? 'error' : 'success'}
-                          >{data.stockInDate ? '取消入庫' : '確認入庫'}</Button>
-                        </TableCell>
-                        <TableCell align="right" width={60}>
-                          <IconButton
-                            css={localStyles.actionButton}
-                            component={RouterLink}
-                            size="small"
+      <div {...rest}>
+        <Card>
+          <CardHeader className="pb-4">
+            <div className="flex items-baseline gap-3">
+              <CardTitle>所有進貨單</CardTitle>
+              <span className="text-label tabular-nums text-text-secondary">
+                共 {purchaseRecords.length} 筆資料
+              </span>
+            </div>
+          </CardHeader>
+          <div className="px-5 pb-5">
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="w-[50px]">
+                    <Checkbox
+                      aria-label="全選"
+                      checked={selectId.length === selectAllRecords.length && selectAllRecords.length > 0}
+                      onChange={event => selectAllData(event)}
+                      disabled={selectAllRecords.length === 0}
+                      indeterminate={
+                        selectId.length > 0 && selectId.length < selectAllRecords.length
+                      }
+                    />
+                  </TableHead>
+                  <TableHead className="w-[140px]">單號</TableHead>
+                  <TableHead className="w-[110px]">日期</TableHead>
+                  <TableHead className="w-[180px]">廠商</TableHead>
+                  <TableHead className="w-[100px]">進貨人</TableHead>
+                  <TableHead numeric className="w-[100px]">金額</TableHead>
+                  <TableHead className="w-[150px]">異動時間</TableHead>
+                  <TableHead>備註</TableHead>
+                  <TableHead className="w-[150px]">入庫時間</TableHead>
+                  <TableHead className="w-[110px] text-center">狀態處理</TableHead>
+                  <TableHead className="w-[60px] text-right">操作</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {purchaseRecords.map((data, index) => {
+                  const isSelected = selectId.indexOf(data.uuid) > -1
+                  return (
+                    <TableRow
+                      key={`${data.no}-${index}`}
+                      data-state={isSelected ? 'selected' : undefined}
+                    >
+                      <TableCell className="w-[50px]">
+                        <Checkbox
+                          aria-label={`選取 ${data.no}`}
+                          disabled={!!data.stockInDate}
+                          checked={isSelected}
+                          onChange={() => selectOne(data.uuid)}
+                        />
+                      </TableCell>
+                      <TableCell className="w-[140px] font-medium tabular-nums">{data.no}</TableCell>
+                      <TableCell className="w-[110px] tabular-nums">{format(new Date(data.date), 'yyyy/MM/dd')}</TableCell>
+                      <TableCell className="w-[180px]">{data.vendorName}</TableCell>
+                      <TableCell className="w-[100px]">{data.operatorName}</TableCell>
+                      <TableCell numeric className="w-[100px]">{formatNumber(data.summary)}</TableCell>
+                      <TableCell className="w-[150px] tabular-nums">
+                        {format(new Date(data.updatedAt), 'yyyy/MM/dd HH:mm')}
+                      </TableCell>
+                      <TableCell>{data.remark}</TableCell>
+                      <TableCell className="w-[150px] tabular-nums">{data.stockInDate && format(new Date(data.stockInDate), 'yyyy/MM/dd HH:mm')}</TableCell>
+                      <TableCell className="w-[110px] text-center">
+                        <Button
+                          size="sm"
+                          onClick={() => handleCheck(data)}
+                          variant={data.stockInDate ? 'ghost' : 'secondary'}
+                          className={data.stockInDate ? 'text-danger hover:bg-danger/8' : undefined}
+                        >{data.stockInDate ? '取消入庫' : '確認入庫'}</Button>
+                      </TableCell>
+                      <TableCell className="w-[60px] text-right">
+                        <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                          <RouterLink
+                            aria-label={data.stockInDate ? '查看進貨單' : '編輯進貨單'}
                             to={`/product/restock/edit/${data.uuid}`}
                           >
-                            {data.stockInDate ? <VisibilityIcon fontSize="small" /> : <EditIcon fontSize="small" />}
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </CardContent>
-          <CardActions css={localStyles.actions}>
-          </CardActions>
+                            {data.stockInDate ? <Eye strokeWidth={1.75} /> : <Pencil strokeWidth={1.75} />}
+                          </RouterLink>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </div>
         </Card>
       </div>
-      <Drawer anchor="bottom" open={open} PaperProps={{ elevation: 1 }} variant="persistent">
-        <div {...rest} css={localStyles.root}>
-          <Grid alignItems="center" container style={{ padding: '16px' }}>
-            <Hidden smDown>
-              <Grid item md={4}>
-                <Typography color="textSecondary" variant="subtitle1">
-                  已選取 {selectId.length} 筆項目
-                </Typography>
-              </Grid>
-            </Hidden>
-            <Grid item xs={4} container alignItems="center">
-              <div>
-                <Button color="error" variant="contained" onClick={() => handleDelete()} css={localStyles.pillButton}>
-                  <DeleteForeverIcon sx={{ mr: 1, fontSize: '18px' }} />
-                  刪除
-                </Button>
-              </div>
-            </Grid>
-          </Grid>
+      {/* 批次操作列：外觀比照 components/TableEditBar；與舊版 persistent Drawer 相同，未勾選時仍在 DOM（隱藏） */}
+      <div
+        hidden={!open}
+        className={`ui-root noprint pointer-events-none fixed inset-x-0 bottom-6 z-[1200] justify-center px-4 ${open ? 'flex' : 'hidden'}`}
+      >
+        <div
+          {...rest}
+          role="toolbar"
+          aria-label="批次操作"
+          className="pointer-events-auto flex max-w-full flex-wrap items-center gap-1 rounded-lg border border-solid border-border bg-background py-1.5 pl-4 pr-1.5 shadow-float"
+        >
+          <span className="mr-2 hidden text-label tabular-nums text-text sm:inline">
+            已選取 {selectId.length} 筆項目
+          </span>
+          <span aria-hidden="true" className="mr-1 hidden h-5 w-px bg-border sm:inline-block" />
+          <Button size="sm" variant="ghost" className="text-danger hover:bg-danger/8" onClick={() => handleDelete()}>
+            <Trash2 strokeWidth={1.75} />
+            刪除
+          </Button>
         </div>
-      </Drawer>
+      </div>
     </Fragment>
   )
 }

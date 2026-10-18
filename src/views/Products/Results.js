@@ -1,17 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button, Card, CardContent, CardHeader, Checkbox, Divider, Table,
-  TableBody, TableCell, TableHead, TableRow, Typography, CardActions,
-  TablePagination, Dialog, DialogTitle, DialogContent, DialogContentText,
-  TextField, DialogActions, IconButton, Select, FormControl, MenuItem
-} from '@mui/material'
+// TablePagination 保留 MUI：pagenationLabel 依賴 MUI 的 DOM class
+import { TablePagination } from '@mui/material'
 import { Link } from 'react-router-dom';
-import { ContentCopy as ContentCopyIcon, Edit as EditIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteProducts from 'hooks/useFetchDeleteProducts'
 import format from 'date-fns/format'
 import { useState, useEffect, useRef } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from "react-csv";
 import useFetchMerchantPassword from 'hooks/useFetchMerchantPassword'
@@ -23,80 +17,20 @@ import useFetchSetMultipleUpdateProductIsPublished from 'hooks/useFetchSetMultip
 import useFetchSetMultipleUpdateProductVendor from 'hooks/useFetchSetMultipleUpdateProductVendor'
 import { useFetchGetMerchantVendorList } from 'hooks/useFetchGetVendor'
 import pagenationLabel from './../../helper/pagenationLabel'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Copy, Download, Pencil } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
+import { formatNumber } from 'ui/format'
+import { Field, Input } from 'ui/input'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 import ProdudctDrawer from './ProdudctDrawer';
 
-import styles from './styles/Results'
 import EditProductsCategoryModal from './EditProductsCategoryModal'
 import PublishedDialog from './PublishedDialog';
 import VendorDialog from './VendorDialog'
-const localStyles = {
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid rgb(var(--border))',
-    backgroundColor: 'rgb(var(--background))',
-    overflow: 'hidden',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  tableHead: css({
-    backgroundColor: 'rgb(var(--background))',
-    '& .MuiTableCell-head': {
-      color: 'rgb(var(--text))',
-      fontWeight: 'bold',
-      borderBottom: '1px solid rgb(var(--border))',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid rgb(var(--border))',
-      fontSize: '14px !important',
-      color: 'rgb(var(--text))',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-    '&.Mui-selected': {
-      backgroundColor: 'rgb(var(--surface)) !important',
-    },
-    '&.Mui-selected:hover': {
-      backgroundColor: 'rgb(var(--surface)) !important',
-    },
-  }),
-  pillButton: css({
-    borderRadius: '20px !important',
-    padding: '4px 20px !important',
-    fontSize: '14px !important',
-    boxShadow: 'none !important',
-    fontWeight: 'bold !important',
-    height: '32px !important',
-  }),
-  secondaryPill: css({
-    backgroundColor: 'rgb(var(--surface)) !important',
-    color: 'rgb(var(--text-secondary)) !important',
-    '&:hover': {
-      backgroundColor: 'rgb(var(--surface)) !important',
-    }
-  }),
-  actionButton: css({
-    color: 'rgb(var(--text-tertiary))',
-    padding: '4px',
-    '&:hover': {
-      color: 'rgb(var(--accent))',
-      backgroundColor: 'rgba(26, 115, 232, 0.04)',
-    },
-  }),
-}
 function Results({ className, products, refetchProducts, onPageChange, ...rest }) {
   const pageRef = useRef(null)
   const { setProductsCategory } = useFetchSettingMultipleUpdateProductCategory()
@@ -322,122 +256,117 @@ function Results({ className, products, refetchProducts, onPageChange, ...rest }
     setExcelData(excelData)
   }, [products, isDisplayCost])
 
+  // 停用商品的編輯連結：連結無 disabled 屬性，比照舊版 IconButton disabled 改用 aria-disabled + 取消指標事件
+  const linkDisabled = disabledLink => (disabledLink ? { 'aria-disabled': true, tabIndex: -1, className: 'pointer-events-none opacity-40' } : {})
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <Card css={localStyles.card}>
+    <div {...rest} css={className}>
+      <Card>
         <CardHeader
+          className="items-center pb-4"
           action={
-            <CSVLink data={excelData} filename="商品列表.csv" style={{ textDecoration: 'none' }}>
-              <Button css={[localStyles.pillButton, localStyles.secondaryPill]} variant="contained">
+            <Button asChild size="sm" variant="secondary">
+              <CSVLink data={excelData} filename="商品列表.csv" className="no-underline">
+                <Download strokeWidth={1.75} />
                 報表匯出
-              </Button>
-            </CSVLink>
+              </CSVLink>
+            </Button>
           }
-          title={
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: 'rgb(var(--text))' }}>
-                所有商品
-              </Typography>
-              <Typography color="textSecondary" variant="body2">
-                共 {products.totalCount} 筆資料
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={localStyles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table size="small">
-                <TableHead css={localStyles.tableHead}>
-                  <TableRow>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={
-                          selectedProducts.length === products.data.length &&
-                          products.data.length > 0
-                        }
-                        color="primary"
-                        indeterminate={
-                          selectedProducts.length > 0 &&
-                          selectedProducts.length < products.data.length
-                        }
-                        onChange={handleSelectAll}
-                        disabled={
-                          products.data.length === 0 ||
-                          products.data.filter(d => !d.isUsing).length === products.data.length
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>代號</TableCell>
-                    <TableCell>類別</TableCell>
-                    <TableCell>名稱</TableCell>
-                    {/* 成本顯示判斷 */}
-                    {isDisplayCost && <TableCell>成本</TableCell>}
-                    <TableCell>單位</TableCell>
-                    <TableCell>價格</TableCell>
-                    <TableCell>自購價格</TableCell>
-                    <TableCell>變更者</TableCell>
-                    <TableCell>變更時間</TableCell>
-                    <TableCell>副本</TableCell>
-                    <TableCell align="right">操作</TableCell>
-                  </TableRow>
+        >
+          <div className="flex items-baseline gap-3">
+            <CardTitle>所有商品</CardTitle>
+            <span className="text-label tabular-nums text-text-secondary">
+              共 {products.totalCount} 筆資料
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-2">
+          <Table className="min-w-[700px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={
+                      selectedProducts.length === products.data.length &&
+                      products.data.length > 0
+                    }
+                    indeterminate={
+                      selectedProducts.length > 0 &&
+                      selectedProducts.length < products.data.length
+                    }
+                    onChange={handleSelectAll}
+                    disabled={
+                      products.data.length === 0 ||
+                      products.data.filter(d => !d.isUsing).length === products.data.length
+                    }
+                  />
                 </TableHead>
-                <TableBody>
-                  {products.data.map((data, idx) => (
-                    <TableRow
-                      key={`product-${data.name}-${idx}`}
-                      css={localStyles.tableRow}
-                      selected={selectedProducts.indexOf(data.id) > -1 || !data.isUsing}
-                      data-testid="product-row"
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={selectedProducts.indexOf(data.id) > -1}
-                          onChange={() => handleSelectOne(data.id)}
-                          inputProps={{
-                            'data-testid': `product-${data.name}-checkbox`,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>{data.no === null ? '無代號' : data.no}</TableCell>
-                      <TableCell>
-                        {data.productCategory === null ? '未分類' : data.productCategory.name}
-                      </TableCell>
-                      <TableCell style={{ fontWeight: '500' }}>{data.name}</TableCell>
-                      {/* 成本顯示判斷 */}
-                      {isDisplayCost && <TableCell>{data.cost}</TableCell>}
-                      <TableCell>{data.stockUnit}</TableCell>
-                      <TableCell>{data.sellPrice}</TableCell>
-                      <TableCell>{data.employeePrice}</TableCell>
-                      <TableCell>{data.creator !== null ? data.creator.name : ''}</TableCell>
-                      <TableCell>{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
-                      <TableCell>
-                        <Link to={`product/duplicate/${data.id}`}>
-                          <IconButton size="small" css={localStyles.actionButton}>
-                            <ContentCopyIcon fontSize='small' />
-                          </IconButton>
-                        </Link>
-                      </TableCell>
-                      <TableCell align="right">
-                        <IconButton
-                          css={localStyles.actionButton}
-                          component={RouterLink}
-                          size="small"
-                          to={`/product/edit/${data.id}`}
-                          disabled={!data.isUsing}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
+                <TableHead>代號</TableHead>
+                <TableHead>類別</TableHead>
+                <TableHead>名稱</TableHead>
+                {/* 成本顯示判斷 */}
+                {isDisplayCost && <TableHead numeric>成本</TableHead>}
+                <TableHead>單位</TableHead>
+                <TableHead numeric>價格</TableHead>
+                <TableHead numeric>自購價格</TableHead>
+                <TableHead>變更者</TableHead>
+                <TableHead>變更時間</TableHead>
+                <TableHead>副本</TableHead>
+                <TableHead className="text-right">操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {products.data.map((data, idx) => (
+                <TableRow
+                  key={`product-${data.name}-${idx}`}
+                  data-state={selectedProducts.indexOf(data.id) > -1 || !data.isUsing ? 'selected' : undefined}
+                  data-testid="product-row"
+                >
+                  <TableCell className="w-12">
+                    <Checkbox
+                      aria-label={`選取 ${data.name}`}
+                      checked={selectedProducts.indexOf(data.id) > -1}
+                      onChange={() => handleSelectOne(data.id)}
+                      data-testid={`product-${data.name}-checkbox`}
+                    />
+                  </TableCell>
+                  <TableCell className="tabular-nums">{data.no === null ? '無代號' : data.no}</TableCell>
+                  <TableCell>
+                    {data.productCategory === null ? '未分類' : data.productCategory.name}
+                  </TableCell>
+                  <TableCell className="font-medium">{data.name}</TableCell>
+                  {/* 成本顯示判斷 */}
+                  {isDisplayCost && <TableCell numeric>{formatNumber(data.cost)}</TableCell>}
+                  <TableCell>{data.stockUnit}</TableCell>
+                  <TableCell numeric>{formatNumber(data.sellPrice)}</TableCell>
+                  <TableCell numeric>{formatNumber(data.employeePrice)}</TableCell>
+                  <TableCell>{data.creator !== null ? data.creator.name : ''}</TableCell>
+                  <TableCell className="tabular-nums">{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
+                  <TableCell>
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                      <Link to={`product/duplicate/${data.id}`} aria-label="複製商品">
+                        <Copy strokeWidth={1.75} />
+                      </Link>
+                    </Button>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                      <RouterLink
+                        aria-label="編輯商品"
+                        to={`/product/edit/${data.id}`}
+                        {...linkDisabled(!data.isUsing)}
+                      >
+                        <Pencil strokeWidth={1.75} />
+                      </RouterLink>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        {/* 分頁保留 MUI：pageRef 交給 helper/pagenationLabel 改寫 .MuiTablePagination-displayedRows 文字 */}
+        <div className="flex justify-end px-3 pb-2">
           <TablePagination
             ref={pageRef}
             labelRowsPerPage='每頁顯示數量'
@@ -449,7 +378,7 @@ function Results({ className, products, refetchProducts, onPageChange, ...rest }
             rowsPerPage={products.pageLimit}
             rowsPerPageOptions={[5, 10, 25, 50, 1000]}
           />
-        </CardActions>
+        </div>
       </Card>
       <ProdudctDrawer
         selectedProducts={selectedProducts}
@@ -479,32 +408,33 @@ function Results({ className, products, refetchProducts, onPageChange, ...rest }
       />
       <Dialog
         open={openDialog}
-        onClose={handleCloseDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        onOpenChange={o => !o && handleCloseDialog()}
       >
-        <DialogTitle id="alert-dialog-title">{'刪除商品'}</DialogTitle>
-        <DialogContent style={{ overflow: 'visible' }}>
-          <DialogContentText id="alert-dialog-description">
-            <TextField
-              value={deleteOrderPwd}
-              label="刪除密碼"
-              onChange={event => setDeleteOrderPwd(event.target.value)}
-              inputProps={{
-                type: 'password',
-                'data-testid': 'delete-password',
-              }}
-            />
-          </DialogContentText>
+        <DialogContent size="sm" aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogHeader>
+            <DialogTitle id="alert-dialog-title">{'刪除商品'}</DialogTitle>
+            <DialogDescription id="alert-dialog-description">刪除後商品將從列表移除，請輸入刪除密碼確認。</DialogDescription>
+          </DialogHeader>
+          <DialogBody>
+            <Field label="刪除密碼" htmlFor="delete-product-password">
+              <Input
+                id="delete-product-password"
+                type="password"
+                value={deleteOrderPwd}
+                onChange={event => setDeleteOrderPwd(event.target.value)}
+                data-testid="delete-password"
+              />
+            </Field>
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="secondary" onClick={handleCloseDialog}>
+              取消
+            </Button>
+            <Button variant="danger" onClick={handleConfirmCancel} autoFocus data-testid="confirm">
+              確認
+            </Button>
+          </DialogFooter>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            取消
-          </Button>
-          <Button onClick={handleConfirmCancel} color="primary" autoFocus data-testid="confirm">
-            確認
-          </Button>
-        </DialogActions>
       </Dialog>
       {openEditProductsCategoryModal && (
         <EditProductsCategoryModal

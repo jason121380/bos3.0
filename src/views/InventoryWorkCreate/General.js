@@ -1,84 +1,10 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, CardHeader, TextField,
-  Divider, Button, ThemeProvider, createTheme,
-  TableContainer, Table, TableBody, TableRow, TableCell,
-  TableHead, Paper
-} from '@mui/material'
 import { ToggleButton, ToggleButtonGroup } from '@mui/material'
 import { Fragment, useState } from 'react'
 import { cloneDeep } from 'lodash'
-import { green, red } from '@mui/material/colors'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    marginTop: theme.spacing(3),
-    whiteSpace: 'nowrap',
-    '& .MuiCardHeader-content > span': {
-      display: 'flex',
-      width: '100%'
-    }
-  }),
-  buttonGroup: css({
-    gap: 10,
-    display: 'flex',
-    flexWrap: 'wrap',
-  }),
-  hearderWrap: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    flexWrap: 'wrap',
-    gap: 10
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-    gap: 10,
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between'
-  }),
-  category: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    gap: 20
-  }),
-  categoryBtnWrap: css({
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '6px 10px'
-  }),
-  categoryBtn: css({
-    whiteSpace: 'nowrap',
-    flexWrap: 1
-  }),
-  divider: css({
-    margin: '12px 0 -12px 0 !important',
-    position: 'relative !important'
-  }),
-  plus: css({
-    fontWeight: 'bold',
-    color: '#3b3bff'
-  }),
-  minus: css({
-    fontWeight: 'bold',
-    color: 'red'
-  })
-}
-
-const theme2 = createTheme({
-  palette: {
-    primary: {
-      main: green[600]
-    },
-    secondary: {
-      main: red[600]
-    }
-  }
-})
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Input } from 'ui/input'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function General({
   isClick, inventoryData, setInventoryData, categoriesData,
@@ -105,9 +31,9 @@ function General({
     if (currentCount === 0) {
       return 0
     } else if (currentCount > 0) {
-      return <span css={styles.plus}>{`+${currentCount}`}</span>
+      return <span className="font-bold text-accent">{`+${currentCount}`}</span>
     } else {
-      return <span css={styles.minus}>{currentCount}</span>
+      return <span className="font-bold text-danger">{currentCount}</span>
     }
   }
 
@@ -119,7 +45,7 @@ function General({
   const Buttons = ({ sortDisplay = false }) => (
     <Fragment>
       {sortDisplay &&
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="flex items-center gap-2 text-body text-text-secondary">
           <span>排序：</span>
           <ToggleButtonGroup
             size="small"
@@ -133,106 +59,100 @@ function General({
           </ToggleButtonGroup>
         </div>
       }
-      <Button disabled={isClick} onClick={() => handleCreateIventory()} color="primary" variant="outlined">
+      <Button disabled={isClick} onClick={() => handleCreateIventory()} variant="secondary">
         儲存盤點
       </Button>
-      <ThemeProvider theme={theme2}>
-        <Button disabled={isClick} onClick={() => handleCreateIventory(false)} color="secondary" variant="contained">
-          完成盤點
-        </Button>
-      </ThemeProvider>
+      <Button disabled={isClick} onClick={() => handleCreateIventory(false)} variant="primary">
+        完成盤點
+      </Button>
     </Fragment>
   )
 
   return (
     <Fragment>
-      <Card css={styles.root}>
-        <CardHeader title={
-          <div css={styles.hearderWrap}>
-            <div>盤點列表</div>
-            <div css={styles.buttonGroup}>
+      <Card className="whitespace-nowrap">
+        <CardHeader
+          className="flex-wrap items-center"
+          action={
+            <div className="flex flex-wrap items-center gap-2.5">
               <Buttons sortDisplay />
             </div>
-          </div>
-        } style={{ paddingBottom: '0' }} />
-        <Divider css={styles.divider} />
-        <CardContent>
-          <div css={styles.category}>
-            <ThemeProvider theme={theme2}>
-              <div css={styles.categoryBtnWrap}>
-                {categoriesData.map(({ id, name }) => (
-                  <Button
-                    key={id}
-                    onClick={() => handleClickCategory(id)}
-                    color="primary"
-                    variant={handleSecectVariant(id)}
-                    css={styles.categoryBtn}
-                  >
-                    {name}
-                  </Button>
-                ))}
-              </div>
-              <div>
-                <Button onClick={() => setCategorys([])} color="primary" variant="contained">
-                  清除篩選
+          }
+        >
+          <CardTitle>盤點列表</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <div className="flex justify-between gap-5">
+            <div className="flex flex-wrap gap-x-2.5 gap-y-1.5">
+              {categoriesData.map(({ id, name }) => (
+                <Button
+                  key={id}
+                  size="sm"
+                  onClick={() => handleClickCategory(id)}
+                  variant="secondary"
+                  aria-pressed={handleSecectVariant(id) === 'contained'}
+                  className={handleSecectVariant(id) === 'contained' ? 'bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+                >
+                  {name}
                 </Button>
-              </div>
-            </ThemeProvider>
+              ))}
+            </div>
+            <div>
+              <Button size="sm" onClick={() => setCategorys([])} variant="ghost">
+                清除篩選
+              </Button>
+            </div>
           </div>
-          <TableContainer style={{ marginTop: 12 }} component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>商品名稱</TableCell>
-                  <TableCell>代號</TableCell>
-                  <TableCell>當前庫存</TableCell>
-                  <TableCell>盤點數量</TableCell>
-                  <TableCell>差異</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {inventoryData.map(({ productId, productName, productNo, currentCount, inventoryCount, productCategoryId }, index) => {
-                  if (handleCheckRenderItrm(productCategoryId)) {
-                    return (
-                      <TableRow key={productId}>
-                        <TableCell>{productName}</TableCell>
-                        <TableCell>{productNo}</TableCell>
-                        <TableCell>{currentCount}</TableCell>
-                        <TableCell>
-                          <TextField
-                            style={{ width: 100 }}
-                            value={inventoryCount === null ? '' : inventoryCount}
-                            placeholder=''
-                            variant='outlined'
-                            onChange={e => {
-                              const newData = cloneDeep(inventoryData)
-                              if (
-                                e.target.value.match(/^[0-9]*$/) === null ||
-                                e.target.value.match(/^[0-9]*$/)[0] === ''
-                              ) {
-                                newData[index].inventoryCount = null
-                              } else {
-                                newData[index].inventoryCount = Number(e.target.value)
-                              }
-                              setInventoryData(newData)
-                            }}
-                            inputProps={{
-                              min: 0,
-                            }}
-                            onWheel={() => document.activeElement.blur()}
-                          />
-                        </TableCell>
-                        <TableCell>{inventoryCount === null ? '' : handleCheckCount(inventoryCount - currentCount)}</TableCell>
-                      </TableRow>
-                    )
-                  }
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead>商品名稱</TableHead>
+                <TableHead>代號</TableHead>
+                <TableHead numeric>當前庫存</TableHead>
+                <TableHead>盤點數量</TableHead>
+                <TableHead numeric>差異</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {inventoryData.map(({ productId, productName, productNo, currentCount, inventoryCount, productCategoryId }, index) => {
+                if (handleCheckRenderItrm(productCategoryId)) {
+                  return (
+                    <TableRow key={productId}>
+                      <TableCell>{productName}</TableCell>
+                      <TableCell className="tabular-nums">{productNo}</TableCell>
+                      <TableCell numeric>{currentCount}</TableCell>
+                      <TableCell>
+                        <Input
+                          className="w-[100px]"
+                          aria-label={`${productName} 盤點數量`}
+                          value={inventoryCount === null ? '' : inventoryCount}
+                          placeholder=''
+                          onChange={e => {
+                            const newData = cloneDeep(inventoryData)
+                            if (
+                              e.target.value.match(/^[0-9]*$/) === null ||
+                              e.target.value.match(/^[0-9]*$/)[0] === ''
+                            ) {
+                              newData[index].inventoryCount = null
+                            } else {
+                              newData[index].inventoryCount = Number(e.target.value)
+                            }
+                            setInventoryData(newData)
+                          }}
+                          min={0}
+                          onWheel={() => document.activeElement.blur()}
+                        />
+                      </TableCell>
+                      <TableCell numeric>{inventoryCount === null ? '' : handleCheckCount(inventoryCount - currentCount)}</TableCell>
+                    </TableRow>
+                  )
+                }
+              })}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
-      <div css={styles.actions}>
+      <div className="mt-6 flex flex-wrap justify-between gap-2.5">
         <Buttons />
       </div>
     </Fragment>

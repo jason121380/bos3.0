@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchProduct from 'hooks/useFetchProduct'
 import useFetchUpdateProduct from 'hooks/useFetchUpdateProduct'
@@ -14,10 +11,11 @@ import _ from 'lodash'
 import { useEffect, useState, useMemo } from 'react'
 import { useHistory } from 'react-router'
 import useFetchProducts from 'hooks/useFetchProducts'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import AboutProduct from './AboutProduct'
 import AboutSalesProduct from './AboutSalesProduct'
-import styles from './styles/ProductEdit'
 
 export default function ProductCreate({ match }) {
   const isDuplicate = location.href.includes('duplicate')
@@ -175,11 +173,10 @@ export default function ProductCreate({ match }) {
   }, [product])
 
   return (
-    <Page css={styles.root} title={isDuplicate ? "新增商品" : "編輯商品"} >
-      <Container maxWidth="lg">
-        <PageTitle title={isDuplicate ? "新增商品" : "編輯商品"} subTitle={isDuplicate ? "CREATE PRODUCT" : "Product Edit"}/>
+    <Page className="ui-root" title={isDuplicate ? "新增商品" : "編輯商品"} >
+      <div className="mx-auto flex max-w-5xl flex-col gap-6">
+        <PageHeader title={isDuplicate ? "新增商品" : "編輯商品"} className="pb-0" />
         <AboutProduct
-          className={styles.aboutPayment}
           product={product}
           onChange={handleOnChange}
           setProduct={setProduct}
@@ -187,33 +184,30 @@ export default function ProductCreate({ match }) {
         />
         {product.isAvailableForSale && !productDetail.loading && (
           <AboutSalesProduct
-            className={styles.aboutPayment}
             product={product}
             onChange={handleOnChange}
           />
         )}
-        <div css={styles.actions}>
+        <div className="flex flex-wrap items-center justify-between gap-2">
           {isDuplicate ? (
-            <Button color="primary" variant="contained" disabled={saveBtn || vaild} onClick={handleCreate}>
+            <Button variant="primary" disabled={saveBtn || vaild} onClick={handleCreate}>
               新增
             </Button>
           ) : (
             <>
-              <Button color="primary" variant="contained" disabled={saveBtn || vaild} onClick={() => handleSubmit('toList')}>
+              <Button variant="primary" disabled={saveBtn || vaild} onClick={() => handleSubmit('toList')}>
                 儲存
               </Button>
-              <div css={styles.lastNextDiv}>
+              <div className="flex items-center gap-2">
                 <Button
-                  color="primary"
-                  variant="contained"
+                  variant="secondary"
                   disabled={productIndex === 0 || saveBtn || vaild}
                   onClick={() => handleSubmit('toLast')}
                 >
                   儲存並上一筆
                 </Button>
                 <Button
-                  color="primary"
-                  variant="contained"
+                  variant="secondary"
                   disabled={productIndex === productsArr.length - 1 || saveBtn || vaild}
                   onClick={() => handleSubmit('toNext')}
                 >
@@ -223,7 +217,7 @@ export default function ProductCreate({ match }) {
             </>
           )}
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }
