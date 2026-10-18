@@ -1,17 +1,11 @@
 /** @jsxImportSource @emotion/react */
+// 欄位使用 Autocomplete / Select / DatePicker 與 inputRef 焦點串接，沿用 MUI
 import {
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
   TextField,
   Select,
   MenuItem,
   FormControl,
   InputLabel,
-  Grid,
-  Typography,
   Autocomplete
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
@@ -26,6 +20,8 @@ import { openSnackbar } from 'elements/snackbars'
 import { theme } from '../../theme'
 import { css } from '@emotion/react'
 
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import ProductsModalV3 from './ProductsModalV3'
 
 const styles = {
@@ -345,9 +341,10 @@ export default function General({
   const inputEnabled = !products.loading && !users.loading
   return (
     <Card css={className}>
-      <CardHeader title="領料資訊" />
-      <Divider />
-      <CardContent css={styles.cardContent}>
+      <CardHeader className="pb-4">
+        <CardTitle>領料資訊</CardTitle>
+      </CardHeader>
+      <CardContent className="border-0 border-t border-solid border-border">
         <DatePicker
           disableFuture
           format='yyyy/MM/dd'
@@ -376,18 +373,20 @@ export default function General({
           }}
         />
         {picking.productList.map((data, index) => (
-          <Grid spacing={1} container css={styles.productArrayDiv} key={index}>
+          <div className="mb-6 grid grid-cols-12 items-center gap-2" key={index}>
             {/* 先隱藏 */}
             {index === 0 ? (
-              <Grid item sm={1}>
-                <FilterNoneIcon css={styles.createIcon} onClick={handleOpenProductsModal} />
-              </Grid>
+              <div className="col-span-1">
+                <Button variant="ghost" size="icon" aria-label="從商品清單選取" onClick={handleOpenProductsModal}>
+                  <FilterNoneIcon />
+                </Button>
+              </div>
             ) : (
-              <Grid item sm={1}>
+              <div className="col-span-1">
 
-              </Grid>
+              </div>
             )}
-            <Grid item sm={4}>
+            <div className="col-span-4">
               <Autocomplete
                 style={{ width: '100%' }}
                 options={productsOption}
@@ -429,8 +428,8 @@ export default function General({
                   />
                 )}
               />
-            </Grid>
-            <Grid item sm={2}>
+            </div>
+            <div className="col-span-2">
               <TextField
                 InputProps={{ inputProps: { min: 0 } }}
                 label="自購價"
@@ -453,8 +452,8 @@ export default function General({
                 type="number"
                 onWheel={() => document.activeElement.blur()}
               />
-            </Grid>
-            <Grid item sm={2}>
+            </div>
+            <div className="col-span-2">
               <TextField
                 InputProps={{ inputProps: { min: 0 } }}
                 label="數量"
@@ -478,32 +477,33 @@ export default function General({
                 onChange={event => handleProductCountOnChange(event, index)}
                 onWheel={() => document.activeElement.blur()}
               />
-            </Grid>
-            <Grid item sm={1} style={{ textAlign: 'center' }}>
-              <Typography variant="body1">{data.total !== 0 && data.total}</Typography>
-            </Grid>
+            </div>
+            <div className="col-span-1 text-center text-body tabular-nums text-text">
+              {data.total !== 0 && data.total}
+            </div>
             {index !== 0 ? (
-              <Grid item sm={1}>
-                <DeleteForeverIcon
-                  css={styles.productArrayIcons}
-                  onClick={() => handleDeleteProduct(index)}
-                />
-              </Grid>
+              <div className="col-span-1">
+                <Button variant="ghost" size="icon" aria-label="刪除此列" onClick={() => handleDeleteProduct(index)}>
+                  <DeleteForeverIcon />
+                </Button>
+              </div>
             ) : (
-              <Grid item sm={1}>
+              <div className="col-span-1">
 
-              </Grid>
+              </div>
             )}
             {index === picking.productList.length - 1 ? (
-              <Grid item sm={1}>
-                <AddIcon css={styles.productArrayIcons} onClick={handleAddProduct} />
-              </Grid>
+              <div className="col-span-1">
+                <Button variant="ghost" size="icon" aria-label="新增一列" onClick={handleAddProduct}>
+                  <AddIcon />
+                </Button>
+              </div>
             ) : (
-              <Grid item sm={1}>
+              <div className="col-span-1">
 
-              </Grid>
+              </div>
             )}
-          </Grid>
+          </div>
         ))}
         <Autocomplete
           css={styles.formControl}
@@ -607,8 +607,7 @@ export default function General({
           picking={picking}
         />
       )}
-      <Divider />
-      <CardActions>合計：{productTotal()}</CardActions>
+      <CardFooter className="justify-start text-body font-medium tabular-nums text-text">合計：{productTotal()}</CardFooter>
     </Card>
   )
 }

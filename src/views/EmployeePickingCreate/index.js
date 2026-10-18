@@ -1,7 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Button, Container, Grid, FormControlLabel, Checkbox } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchAddPicking from 'hooks/useFetchAddPicking'
 import useFetchGetEmployeePickingPurpose from 'hooks/useFetchGetEmployeePickingPurpose'
@@ -13,15 +11,14 @@ import _ from 'lodash'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
+import { Button } from 'ui/button'
+import { Checkbox } from 'ui/checkbox'
+import { PageHeader } from 'ui/page-header'
 import General from './General'
 
 const styles = {
-  root: css({}),
   general: css({
     marginTop: theme.spacing(3),
-  }),
-  action: css({
-    marginTop: theme.spacing(3) + '!important',
   }),
 }
 
@@ -125,20 +122,19 @@ export default function EmployeePickingCreate({ location }) {
       setStayInCreatePicking(false)
     }
   }
+  // 頁面外距由 #printContainer 提供；表單頁內容寬度沿用舊版 700px
   return (
-    <Page title="新增材料自購" css={styles.root}>
-      <Container style={{ maxWidth: '700px', minWidth: '300px', padding: '20px' }}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='新增材料自購' subTitle='Employee Picking Create' />
-          <Grid item>
-            <FormControlLabel
-              control={<Checkbox color="primary" />}
-              label="連續新增自購"
-              checked={stayInCreatePicking}
-              onChange={handleStayInCreatePicking}
-            />
-          </Grid>
-        </Grid>
+    <Page title="新增材料自購" className="ui-root">
+      <div className="mx-auto min-w-[300px] max-w-[700px]">
+        <PageHeader
+          title='新增材料自購'
+          actions={
+            <label className="flex cursor-pointer items-center gap-2 text-body text-text">
+              <Checkbox checked={stayInCreatePicking} onChange={handleStayInCreatePicking} />
+              連續新增自購
+            </label>
+          }
+        />
         <General
           className={styles.general}
           picking={picking}
@@ -150,16 +146,15 @@ export default function EmployeePickingCreate({ location }) {
         />
         {!pageLoading && (
           <Button
-            color="primary"
-            variant="contained"
-            css={styles.action}
+            variant="primary"
+            className="mt-6"
             disabled={isClick}
             onClick={handleSubmit}
           >
             新增
           </Button>
         )}
-      </Container>
+      </div>
     </Page>
   )
 }
