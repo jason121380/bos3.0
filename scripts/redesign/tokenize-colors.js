@@ -10,7 +10,8 @@
  *       任何邏輯、JSX 結構、非色碼字串。
  * 另外移除寬 4px 的「藍色左條」::before 裝飾。
  *
- * 用法：node scripts/redesign/tokenize-colors.js [--write] <檔案或目錄…>
+ * 用法：node scripts/redesign/tokenize-colors.js [--write] [--inline] <檔案或目錄…>
+ *   --inline：一併處理 inline style（自動略過含列印範本的檔案）
  */
 const fs = require('fs')
 const path = require('path')
@@ -61,7 +62,7 @@ function isStyleContext(p) {
     const n = cur.node
     if (n.type === 'JSXAttribute') {
       const name = n.name && n.name.name
-      return name === 'css' || name === 'sx'
+      return name === 'css' || name === 'sx' || (name === 'style' && allowInline)
     }
     if (n.type === 'CallExpression') {
       const c = n.callee
@@ -101,10 +102,14 @@ function isBlueBar(prop) {
 
 let currentFile = ''
 let src = ''
+let allowInline = false
+// 含列印範本的檔案：inline style 會被複製到列印視窗（讀不到 CSS 變數），一律不處理 inline style
+const PRINT_MARKERS = /printMain|printThermal|window\.print|newWin|forPrint|Print-Window|innerHTML/
 
 function transform(file) {
   currentFile = file
   src = fs.readFileSync(file, 'utf8')
+  allowInline = INLINE && !PRINT_MARKERS.test(src)
   let ast
   try {
     ast = parser.parse(src, { sourceType: 'module', plugins: ['jsx', 'classProperties', 'optionalChaining', 'nullishCoalescingOperator'] })
@@ -165,7 +170,8 @@ function walk(target, files = []) {
 
 const args = process.argv.slice(2)
 const write = args.includes('--write')
-const files = args.filter(a => a !== '--write').flatMap(t => walk(t))
+const INLINE = args.includes('--inline')
+const files = args.filter(a => !a.startsWith('--')).flatMap(t => walk(t))
 let total = { files: 0, colors: 0, bars: 0 }
 for (const f of files) {
   const r = transform(f)
