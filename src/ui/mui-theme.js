@@ -41,11 +41,23 @@ export function createBridgeTheme(mode = 'light') {
       action: { hover: t.surfaceHover, selected: t.surfaceHover },
     },
     shape: { borderRadius: 8 },
-    // 沿用舊版字級變體（h1–h6 等仍被頁面使用），只換字體與按鈕字重
+    // 字級對應 STYLE.md §3：舊頁面的 h1–h6、body、overline 等變體統一到新字級（不使用全大寫）
     typography: {
       ...legacyTypography,
       fontFamily: ['Roboto', '"Noto Sans TC"', 'Helvetica', 'Arial', 'sans-serif'].join(','),
       fontSize: 14,
+      h1: { fontSize: 28, lineHeight: '36px', fontWeight: 700, letterSpacing: 0, color: t.text },
+      h2: { fontSize: 24, lineHeight: '32px', fontWeight: 700, letterSpacing: 0, color: t.text },
+      h3: { fontSize: 20, lineHeight: '28px', fontWeight: 700, letterSpacing: 0, color: t.text },
+      h4: { fontSize: 18, lineHeight: '26px', fontWeight: 700, letterSpacing: 0, color: t.text },
+      h5: { fontSize: 16, lineHeight: '24px', fontWeight: 700, letterSpacing: 0, color: t.text },
+      h6: { fontSize: 15, lineHeight: '22px', fontWeight: 700, letterSpacing: 0, color: t.text },
+      subtitle1: { fontSize: 14, lineHeight: '20px', fontWeight: 500, letterSpacing: 0, color: t.text },
+      subtitle2: { fontSize: 13, lineHeight: '18px', fontWeight: 500, letterSpacing: 0, color: t.textSecondary },
+      body1: { fontSize: 14, lineHeight: '20px', letterSpacing: 0, color: t.text },
+      body2: { fontSize: 13, lineHeight: '20px', letterSpacing: 0, color: t.textSecondary },
+      caption: { fontSize: 12, lineHeight: '16px', letterSpacing: 0, color: t.textSecondary },
+      overline: { fontSize: 12, lineHeight: '16px', fontWeight: 500, letterSpacing: 0, textTransform: 'none', color: t.textSecondary },
       button: { textTransform: 'none', fontWeight: 500, letterSpacing: 0 },
     },
     components: {
@@ -188,6 +200,14 @@ export function createBridgeTheme(mode = 'light') {
       },
       MuiAccordionDetails: { styleOverrides: { root: { padding: '4px 20px 20px' } } },
       MuiCard: { styleOverrides: { root: { border: `1px solid ${t.border}`, borderRadius: 12, boxShadow: 'none' } } },
+      MuiCardHeader: {
+        styleOverrides: {
+          root: { padding: '16px 20px' },
+          title: { fontSize: 16, lineHeight: '24px', fontWeight: 700, color: t.text },
+          subheader: { fontSize: 13, color: t.textSecondary },
+        },
+      },
+      MuiCardContent: { styleOverrides: { root: { padding: '16px 20px', '&:last-child': { paddingBottom: 20 } } } },
       MuiDialog: {
         styleOverrides: { paper: { borderRadius: 12, border: `1px solid ${t.border}`, boxShadow: FLOAT_SHADOW } },
       },
