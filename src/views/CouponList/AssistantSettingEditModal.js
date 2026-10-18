@@ -1,10 +1,6 @@
-/** @jsxImportSource @emotion/react */
+// 彈窗內有 MUI Select（值可能為空字串），依遷移指南保留 MUI Modal；外框、標題、按鈕改為 src/ui
 import {
-  Card,
-  CardHeader,
-  CardContent,
   Modal,
-  Button,
   FormControl,
   InputLabel,
   Select,
@@ -15,106 +11,10 @@ import {
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useRef } from 'react'
-import { red, blue } from '@mui/material/colors'
 import _ from 'lodash'
-import { Add as AddIcon, DeleteForever as DeleteForeverIcon, BackspaceOutlined as BackspaceOutlinedIcon } from 'ui/icons'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    outline: 'none',
-    boxShadow: theme.shadows[20],
-    width: 912,
-    maxHeight: '100%',
-    overflowY: 'auto',
-    maxWidth: '100%',
-  }),
-  birthday: css({
-    width: '100%',
-  }),
-  actions: css({
-    justifyContent: 'flex-end',
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  categorieDiv: css({
-    marginBottom: '5px',
-  }),
-  categorieBtn: css({
-    margin: '3px',
-  }),
-  clickedCategorieBtn: css({
-    margin: '3px',
-    color: 'white',
-  }),
-  categorieClear: css({
-    backgroundColor: red[500],
-    color: 'white',
-    '&:hover': {
-      backgroundColor: red[700],
-    },
-  }),
-  addBtn: css({
-    backgroundColor: blue[500],
-    color: 'white',
-    '&:hover': {
-      backgroundColor: blue[700],
-    },
-  }),
-  confirmBtn: css({
-    margin: '7px 0',
-    float: 'right',
-  }),
-  header: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-  closeAtTop: css({
-    margin: '16px 24px !important',
-  }),
-  deductionTypeFormGroup: css({
-    width: '6rem',
-  }),
-  formGroup: css({
-    width: '7rem',
-    marginLeft: theme.spacing(3),
-  }),
-  autocomplete: css({
-    marginLeft: theme.spacing(2),
-    width: '10rem',
-  }),
-  service: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginBottom: theme.spacing(3),
-  }),
-  gap: css({
-    marginLeft: theme.spacing(3),
-  }),
-  textField: css({
-    marginLeft: theme.spacing(2),
-    width: '5rem',
-  }),
-  icons: ({
-    marginLeft: theme.spacing(3),
-    cursor: 'pointer',
-  }),
-  saveAtBottom: css({
-    margin: '16px 24px !important',
-    float: 'right',
-  }),
-  checkboxSpan: css({
-    width: '25%',
-  }),
-}
+import { Delete, Plus, Trash2 } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 
 const deductions = [
   {
@@ -360,23 +260,22 @@ function AssistantSettingEditModal({
 
   return (
     <Modal open={openEditAssistantModal}>
-      <Card css={styles.root}>
-        <div css={styles.header}>
-          <CardHeader title="互助點數設定" />
-          <Button
-            color="primary"
-            variant="contained"
-            css={styles.closeAtTop}
-            onClick={onClose}
-          >
-            關閉
-          </Button>
-        </div>
+      <Card className="ui-root absolute left-1/2 top-1/2 flex max-h-full w-[912px] max-w-full -translate-x-1/2 -translate-y-1/2 flex-col shadow-float outline-none">
+        <CardHeader
+          className="items-center pb-4"
+          action={
+            <Button variant="secondary" onClick={onClose}>
+              關閉
+            </Button>
+          }
+        >
+          <CardTitle>互助點數設定</CardTitle>
+        </CardHeader>
 
-        <CardContent>
+        <CardContent className="flex flex-col gap-4 overflow-y-auto pt-0">
           {helperDeductionSetting.map((content, index) => (
-            <div css={styles.service} key={index}>
-              <FormControl variant="outlined" css={styles.deductionTypeFormGroup} fullWidth>
+            <div className="flex flex-wrap items-center gap-3" key={index}>
+              <FormControl variant="outlined" style={{ width: '6rem' }} fullWidth>
                 <InputLabel ref={inputLabel}>扣項類別</InputLabel>
                 <Select
                   label='扣項類別'
@@ -390,7 +289,7 @@ function AssistantSettingEditModal({
                   ))}
                 </Select>
               </FormControl>
-              <FormControl variant="outlined" css={styles.formGroup} fullWidth>
+              <FormControl variant="outlined" style={{ width: '7rem' }} fullWidth>
                 <InputLabel>類別</InputLabel>
                 <Select
                   label='類別'
@@ -404,7 +303,7 @@ function AssistantSettingEditModal({
                   ))}
                 </Select>
               </FormControl>
-              <FormControl variant="outlined" css={styles.formGroup} fullWidth>
+              <FormControl variant="outlined" style={{ width: '7rem' }} fullWidth>
                 <InputLabel ref={inputLabel} id="select-item-label">
                   協助人員人數
                 </InputLabel>
@@ -416,7 +315,7 @@ function AssistantSettingEditModal({
                   ))}
                 </Select>
               </FormControl>
-              <FormControl variant="outlined" css={styles.formGroup} fullWidth>
+              <FormControl variant="outlined" style={{ width: '7rem' }} fullWidth>
                 <InputLabel>扣項方式</InputLabel>
                 <Select
                   label='扣項方式'
@@ -431,9 +330,8 @@ function AssistantSettingEditModal({
                 </Select>
               </FormControl>
               {content.deductionWay !== '' && (
-                <span css={styles.checkboxSpan}>
+                <span className="flex flex-col whitespace-nowrap">
                   <FormControlLabel
-                    css={styles.gap}
                     control={<Checkbox color="primary" />}
                     label="分指定/不指定"
                     checked={content.isDesignate}
@@ -441,7 +339,6 @@ function AssistantSettingEditModal({
                     disabled={content.isSplitted}
                   />
                   <FormControlLabel
-                    css={styles.gap}
                     control={<Checkbox color="primary" />}
                     label="互助均分"
                     checked={content.isSplitted}
@@ -459,7 +356,7 @@ function AssistantSettingEditModal({
                 content.isDesignate ? (
                 <>
                   <TextField
-                    css={styles.textField}
+                    style={{ width: '5rem' }}
                     type="number"
                     name="designateInput"
                     variant="outlined"
@@ -487,7 +384,7 @@ function AssistantSettingEditModal({
                     onWheel={() => document.activeElement.blur()}
                   />
                   <TextField
-                    css={styles.textField}
+                    style={{ width: '5rem' }}
                     type="number"
                     name="NonDesignateInput"
                     variant="outlined"
@@ -518,7 +415,7 @@ function AssistantSettingEditModal({
               ) : (
                 content.deductionWay !== '' && (
                   <TextField
-                    css={styles.textField}
+                    style={{ width: '5rem' }}
                     type="number"
                     name="designateInput"
                     variant="outlined"
@@ -541,33 +438,50 @@ function AssistantSettingEditModal({
                   />
                 )
               )}
-              {content.deductionWay !== '' && (
-                <BackspaceOutlinedIcon
-                  css={styles.icons}
-                  onClick={() => handleClear(index)}
-                />
-              )}
-              {helperDeductionSetting.length > 1 && (
-                <DeleteForeverIcon
-                  css={styles.icons}
-                  onClick={() => handleDeleteAssistantContent(index)}
-                />
-              )}
-              {index === helperDeductionSetting.length - 1 && (
-                <AddIcon css={styles.icons} onClick={handleAddAssistantContent} />
-              )}
+              <div className="flex items-center gap-1">
+                {content.deductionWay !== '' && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-text-secondary"
+                    aria-label="清除此互助設定"
+                    onClick={() => handleClear(index)}
+                  >
+                    <Delete strokeWidth={1.75} />
+                  </Button>
+                )}
+                {helperDeductionSetting.length > 1 && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-text-secondary hover:text-danger"
+                    aria-label="刪除此互助設定"
+                    onClick={() => handleDeleteAssistantContent(index)}
+                  >
+                    <Trash2 strokeWidth={1.75} />
+                  </Button>
+                )}
+                {index === helperDeductionSetting.length - 1 && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-text-secondary"
+                    aria-label="新增互助設定"
+                    onClick={handleAddAssistantContent}
+                  >
+                    <Plus strokeWidth={1.75} />
+                  </Button>
+                )}
+              </div>
             </div>
           ))}
         </CardContent>
-        <Button
-          color="primary"
-          variant="contained"
-          css={styles.saveAtBottom}
-          onClick={handleSubmitHelperDeductionSettingWarning}
-          style={{ backgroundColor: 'red', color: 'white' }}
-        >
-          儲存
-        </Button>
+        <CardFooter>
+          {/* 批次儲存會覆蓋原先設定（送出前另有確認提示），以 danger 表示 */}
+          <Button variant="danger" onClick={handleSubmitHelperDeductionSettingWarning}>
+            儲存
+          </Button>
+        </CardFooter>
       </Card>
     </Modal>
   )

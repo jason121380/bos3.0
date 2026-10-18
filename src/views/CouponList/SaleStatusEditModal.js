@@ -1,38 +1,8 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Card, CardHeader, CardContent, Modal,
-  Button, FormControl, Select, MenuItem,
-} from '@mui/material'
+// 上架狀態 Select 的值為布林值，依遷移指南保留 MUI Modal 與 Select；外框與按鈕改為 src/ui
+import { Modal, FormControl, Select, MenuItem } from '@mui/material'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    outline: 'none',
-    boxShadow: theme.shadows[20],
-  }),
-  header: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-  closeAtTop: css({
-    margin: '16px 24px !important',
-  }),
-  textField: css({
-    marginLeft: theme.spacing(2),
-    width: '5rem',
-  }),
-  saveAtBottom: css({
-    margin: '16px 24px !important',
-    float: 'right',
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 
 const SaleStatusEditModal = ({
   openEditSaleStatusModal,
@@ -43,19 +13,18 @@ const SaleStatusEditModal = ({
 }) => {
   return (
     <Modal open={openEditSaleStatusModal} onClose={onClose}>
-      <Card css={styles.root}>
-        <div css={styles.header}>
-          <CardHeader title="卡券上架狀態設定" />
-          <Button
-            color="primary"
-            variant="contained"
-            css={styles.closeAtTop}
-            onClick={onClose}
-          >
-            關閉
-          </Button>
-        </div>
-        <CardContent style={{ paddingTop: 0, paddingBottom: 0 }}>
+      <Card className="ui-root absolute left-1/2 top-1/2 w-[480px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 shadow-float outline-none">
+        <CardHeader
+          className="items-center pb-4"
+          action={
+            <Button variant="secondary" onClick={onClose}>
+              關閉
+            </Button>
+          }
+        >
+          <CardTitle>卡券上架狀態設定</CardTitle>
+        </CardHeader>
+        <CardContent className="py-0">
           <FormControl variant="outlined" fullWidth>
             <Select fullWidth value={saleStatus} onChange={e => setSaleStatus(e.target.value)}>
               <MenuItem value={true}>上架</MenuItem>
@@ -63,15 +32,11 @@ const SaleStatusEditModal = ({
             </Select>
           </FormControl>
         </CardContent>
-        <Button
-          color="primary"
-          variant="contained"
-          css={styles.saveAtBottom}
-          style={{ backgroundColor: 'red', color: 'white' }}
-          onClick={handleUpdateLaunchedStatus}
-        >
-          儲存
-        </Button>
+        <CardFooter className="mt-5">
+          <Button variant="primary" onClick={handleUpdateLaunchedStatus}>
+            儲存
+          </Button>
+        </CardFooter>
       </Card>
     </Modal>
   )
