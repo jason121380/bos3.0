@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { useState, useEffect } from 'react'
 import useFetchGetMainEvent from 'hooks/useFetchGetMainEvent'
 import useFetchUpdateMainEvent from 'hooks/useFetchUpdateMainEvent'
@@ -12,21 +9,8 @@ import General from './General'
 import { openSnackbar } from 'elements/snackbars'
 import idx from 'idx'
 import { startOfDay, endOfDay, isBefore } from 'date-fns'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  headerWrap: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    gap: 10
-  })
-}
+import { PageHeader } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 function MainEventEdit({ match }) {
   const history = useHistory()
@@ -130,9 +114,9 @@ function MainEventEdit({ match }) {
   }, [])
 
   return (
-    <Page css={styles.root} title="編輯活動">
-      <Container maxWidth="md">
-        <PageTitle title='編輯活動' subTitle='Main Event Edit' />
+    <Page className="ui-root" title="編輯活動">
+      <div className="mx-auto max-w-3xl">
+        <PageHeader title="編輯活動" />
         {!getMainEvent.loading ? (
           <General
             dateChange={handleDateChange}
@@ -141,8 +125,8 @@ function MainEventEdit({ match }) {
             isClick={isClick}
             submit={handleSubmit}
           />
-        ) : <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>}
-      </Container>
+        ) : <div className="flex flex-col gap-4"><Skeleton className="h-14 w-full" /><Skeleton className="h-64 w-full" /></div>}
+      </div>
     </Page>
   )
 }
