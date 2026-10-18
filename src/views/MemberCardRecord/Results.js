@@ -3,7 +3,7 @@ import {
   Button, Card, CardContent, CardHeader, Checkbox, Table, TableBody, TableCell, TableHead,
   TableRow, Typography, CardActions, TablePagination, Dialog, DialogTitle, DialogActions, IconButton
 } from '@mui/material'
-import EditIconSlot from '@mui/icons-material/Edit';
+import { Edit as EditIconSlot } from 'ui/icons'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import format from 'date-fns/format'
