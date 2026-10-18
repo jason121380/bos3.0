@@ -1,8 +1,4 @@
-/** @jsxImportSource @emotion/react */
 import {
-  Card,
-  CardContent,
-  CardHeader,
   FormControl,
   InputLabel,
   MenuItem,
@@ -11,9 +7,7 @@ import {
 } from '@mui/material'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
-
-import styles from './styles/AboutSalesProduct'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 const commissionWay = [
   { label: '固定金額', value: 'fixed' },
@@ -22,10 +16,12 @@ const commissionWay = [
 ]
 function AboutSalesCommission({ className, product, onChange, ...rest }) {
   return (
-    <Card {...rest} css={css([styles.root, className])}>
-      <CardHeader title="抽成" />
-      <CardContent>
-        <FormControl variant="outlined" css={styles.formGroup} fullWidth>
+    <Card {...rest} className={className}>
+      <CardHeader>
+        <CardTitle>抽成</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-6">
+        <FormControl variant="outlined" fullWidth>
           <InputLabel>抽成方式</InputLabel>
           <Select
             label='抽成方式'
@@ -59,7 +55,6 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
               key: 'commission',
             })
           }
-          css={styles.formGroup}
           onWheel={() => document.activeElement.blur()}              
         />
         {/* <Typography variant="h5" component="h5" css={styles.formGroup}>
