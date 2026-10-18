@@ -134,3 +134,26 @@
 7. **版面不可靠擠壓或超出**：欄位列用 `flex-wrap` 換行，不要讓操作鈕被推出可視範圍；flex 子層加 `min-width:0`／`max-width:100%`，並扣掉 `margin`；`overflow-x:auto` 會裁掉上方溢出的內容（浮動標籤），所以標籤才統一放上方。
 8. **層級（z-index）**：手機頂／底列 1100；側欄 1190/1200；MUI modal／popper 與 Radix Dialog 1300；Radix select／popover／dropdown 與 MUI snackbar 1400；toast 與 MUI tooltip 1500；底部固定合計列 1050。
 9. **驗證**：每次改動跑 `scripts/redesign/verify-logic.js`（FAIL 必須逐項說明是純畫面差異）、`eslint-check.json`（0 新增 error）、`CI=true npm run build`，測試不得有新增失敗（基準 13 個既有失敗）。
+
+## 11. 報表 compact 規格
+
+Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現**。範圍只限 presentation／print CSS；欄位、數字、計算、查詢、列印觸發（`window.print`、`#printMain` 等）一律不動。本節只寫「已有的能力」與「待盤點」，沒落地的不當成已實作。
+
+### 已有能力（以 `src/ui/table.js`、`src/ui/format.js` 為準）
+
+| 項目 | 規則 |
+|---|---|
+| 字級 | 只用 §3 既有級距：表格內容 `body`（14）、表頭 `label`（13）、輔助／備註 `caption`（12）；不為了塞更多資料放大或新增級距，也不使用 12px 以下。 |
+| 列高與內距 | `<Table dense>`：`td`／`th` 高 32px、`td` 上下內距 4px（一般表格為 44px）。報表一律用 `dense`。 |
+| 表頭 | `TableHeader`（`surface` 底）＋ `TableHead`（`label` 字級、`text-secondary`、不換行、底線 1px `border`）；各報表不自訂表頭顏色與字級。 |
+| 數字欄 | 數字欄用 `numeric`（`TableHead`／`TableCell`）：右對齊＋`tabular-nums`。 |
+| 金額 | 一律 `formatMoney`（`NT$ 1,234`，千分位）；數量用 `formatNumber`；同一畫面格式一致（§7）。 |
+| 列印 | `Table` 內建 `print:`：黑色細格線、白底黑字、表頭／表尾底色透明、外框不裁切（`print:overflow-visible`）；頁面自己的 `@media print` 權重較高，仍以頁面為準。 |
+| 分頁 | `TablePagination` 固定在表格下方右側。 |
+
+### 待盤點（尚未實作，不得寫進頁面當成既有）
+
+- `dense` 只調 `td`／`th` 的高度與上下內距，**沒有** `TableHead`／`TableCell` 層級的 compact prop；水平內距 `px-4` 尚無 compact 版本。是否要加（例如 `px-2`）需先盤點 28 個含 `window.print` 的檔案再決定。
+- **篩選／工具列密度**：目前沒有共用的報表工具列元件；各報表篩選列的間距、控制項高度（36px／32px）尚未統一，待盤點後訂規格。
+- **列印邊界（`@page` margin）與換頁**：尚無共用規則；`thead` 跨頁重複、`tr` 避免被切斷、表尾合計只出現一次，皆待盤點現有 `initialize.scss` 列印規則後再訂，且不得動 `#printMain`／`#printThermal` 與 `className` 含 `print` 的元素。
+- 各報表目前仍有 MUI Table 與自訂 CSS 混用；逐目錄改為 `ui/table` 時，先對照舊版欄位與數字一致（§10 第 4 點）。

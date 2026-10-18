@@ -88,6 +88,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 | v3.0-1019-0152 | 2026-10-19 01:52 | 規則前已 push（對照） | #10 | 已 push，不 amend | GitHub Build/Unit pass；第一組已於 2026-10-19 merge（29630fa） |
 | v3.0-1019-0202 | 2026-10-19 02:02 | UI 批次5 CouponEdit | #11 | 079a7d0 | GitHub Build/Unit pass；已 merge（merge commit cfc79cd） |
 | v3.0-1019-0232 | 2026-10-19 02:32 | 版本顯示上線（`src/version.js`） | #12 | bca2950 | 狀態：提前 merge 中（對齊後 checks 待重跑） |
+| v3.0-1019-0312 | 2026-10-19 03:12（與批次 9 已不同分鐘；commit 時如再變動再校正） | UI 批次10 PerformanceDeductionParameter（AboutDesignerSalary、Service：TextField→Field+Input、單選 Select→Field+NativeSelect；Radio 保留 MUI）。本批為目前組別第 5 個（前 #13、#14、#15、#16），湊滿後整組 merge | PR 待補 | commit 待補 | 驗證（commit 前）：eslint 0 error；verify-logic 兩檔（AboutDesignerSalary、Service）通過；portal-root-scan 0/0；全域單元測試 52/52；`CI=true npm run build` 成功，bundle 含校正前版號字串（0309）。指揮者 commit 後須重 build 確認最終版號為 0312。另：STYLE.md 新增 §11 報表 compact 規格（僅文件）。 |
 
 ## 刻意不改（需另外決定）
 
@@ -102,7 +103,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ## 需要使用者決定
 
 1. Services（服務項目設定）的篩選按鈕：舊版因 prop 名稱錯誤從未顯示，目前維持隱藏。要顯示嗎？
-2. 直接列印的報表是否改版：10/18 曾決定維持 MUI（選項 A）；10/19 指示「全部改完」，故重新請 Jason 拍版（實測 28 檔含 22 個報表 index，比舊寫「約 15 頁」多）。拍版前維持現狀、不動。
+2. ~~直接列印的報表是否改版~~ **已拍版（Jason 2026-10-19）**：所有報表樣式一致，以 compact 緊湊呈現。範圍只改 presentation／print CSS，不改內容欄位與數字計算。下一組優先做「報表 compact 專項」（先盤點共用層，再逐目錄）；本批只記錄決定，不做報表本體。（實測 28 檔含 22 個報表 index。）
 3. 是否新增 `ui/combobox`（56 個 Autocomplete）與 `ui/date-picker`（39 檔）。拍版前不新造。
 4. `ui/native-select` 外框標籤是否整批改上方標籤（約 21 處）。
 

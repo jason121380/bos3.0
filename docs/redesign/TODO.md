@@ -81,7 +81,7 @@
 
 ### P3 — 需要你決定
 1. `Services`（服務項目設定）的篩選按鈕：舊版因 prop 名稱錯誤從未顯示，要顯示嗎？
-2. 直接列印的報表是否要改版（目前決定維持 MUI）。2026/10/19 實測：`window.print` 出現在 28 個檔案，其中 22 個是報表目錄的 `index`（約 15 頁是舊口徑，實際更多），另 6 個是 `OrderManagementList/ResultsV2`、`DraftOrderManagementList/ResultsV2`、`DraftOrderEdit/Footer`、`OrderCreate/OrderDetailModal`、`InventoryWorkReview/General`、`ProductInventoryList/Results`。
+2. ~~直接列印的報表是否要改版~~ **已拍版（Jason 2026/10/19）**：所有報表樣式一致、以 compact 緊湊呈現；只改 presentation／print CSS，不改內容欄位與數字計算。**下一組優先：報表 compact 專項**（先盤點共用層，再逐目錄）。2026/10/19 實測：`window.print` 出現在 28 個檔案，其中 22 個是報表目錄的 `index`（約 15 頁是舊口徑，實際更多），另 6 個是 `OrderManagementList/ResultsV2`、`DraftOrderManagementList/ResultsV2`、`DraftOrderEdit/Footer`、`OrderCreate/OrderDetailModal`、`InventoryWorkReview/General`、`ProductInventoryList/Results`。
 3. 是否要新增 `ui/combobox`（取代 56 個 `<Autocomplete>`）與 `ui/date-picker`（`@mui/x-date-pickers` 39 檔、`<DatePicker>` 12＋`<DateTimePicker>` 7）——這是移除 MUI 的前提，但會是較大的元件工程。**本輪未新造，等你拍版。**
 4. `ui/native-select` 的 `label`（外框上緣標籤）要不要整批改成「`Field` 上方標籤」？目前 25 檔引用、約 21 處有傳 `label`，與 STYLE「標籤在上」不一致；改法機械但檔案分散，建議納入 §四 批次 E。
 

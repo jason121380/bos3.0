@@ -9,7 +9,7 @@
 | 技術走 Tailwind 3.4 + Radix 元件放 `src/ui/`；品牌藍 `#1A73E8` 為唯一主題色 | 參考 OpenAI 介面克制感；沿用舊版品牌色 |
 | Tailwind preflight 關閉，基礎樣式限定在 `.ui-root`，用 `:where()` 把權重歸零 | 遷移期間不能破壞還在用 MUI 的頁面 |
 | 只改畫面，不動 API／Redux／hooks／金額日期運算；列印範本不動 | 使用者鐵則 |
-| 會 `window.print()` 的報表表格（約 15 頁）維持 MUI（選項 A） | 列印規則直接寫在 MUI class 上，換了會動到列印 |
+| ~~會 `window.print()` 的報表表格（約 15 頁）維持 MUI（選項 A）~~ → 2026/10/19 Jason 新決策：所有報表樣式一致，以 compact 緊湊呈現（只改 presentation／print CSS，不改內容欄位與數字計算）；下一組優先做報表 compact 專項，先盤點共用層再逐目錄 | 舊理由：列印規則直接寫在 MUI class 上（`initialize.scss` 約 70 條），改寫時要特別小心；已由 Jason 拍版推翻選項 A，本批只記錄、未動報表 |
 | 後端 repo 唯讀；測試不建立真實帳單 | 使用者指示 |
 | 欄位標籤統一「上方標籤＋佔位字」，不用浮動標籤 | 浮動標籤被 `overflow` 裁掉、備註欄標籤太小；打帳單第 1 組 |
 | 必填 `*` 依既有驗證規則標示，並在原始碼註解寫明依據 | 打帳單第 2 組；`orderRequirements.js` 與 Header `valid` 有測試比對 |
