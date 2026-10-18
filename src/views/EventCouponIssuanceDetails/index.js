@@ -39,10 +39,10 @@ const styles = {
     height: '32px !important',
   }),
   secondaryPill: css({
-    backgroundColor: '#f5f5f5 !important',
-    color: '#666 !important',
+    backgroundColor: 'rgb(var(--surface)) !important',
+    color: 'rgb(var(--text-secondary)) !important',
     '&:hover': {
-      backgroundColor: '#eeeeee !important',
+      backgroundColor: 'rgb(var(--surface)) !important',
     }
   }),
 }

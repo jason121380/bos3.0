@@ -15,8 +15,8 @@ const styles = {
   card: css({
     borderRadius: '16px',
     boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
+    border: '1px solid rgb(var(--border))',
+    backgroundColor: 'rgb(var(--background))',
     overflow: 'hidden',
   }),
   content: css({
@@ -29,11 +29,11 @@ const styles = {
     },
   }),
   tableHead: css({
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgb(var(--background))',
     '& .MuiTableCell-head': {
-      color: '#212121',
+      color: 'rgb(var(--text))',
       fontWeight: 'bold',
-      borderBottom: '1px solid #f0f0f0',
+      borderBottom: '1px solid rgb(var(--border))',
       height: '40px !important',
       padding: '2px 16px !important',
       fontSize: '14px',
@@ -44,9 +44,9 @@ const styles = {
     minHeight: '40px !important',
     '& .MuiTableCell-body': {
       padding: '2px 16px !important',
-      borderBottom: '1px solid #f0f0f0',
+      borderBottom: '1px solid rgb(var(--border))',
       fontSize: '14px !important',
-      color: '#333',
+      color: 'rgb(var(--text))',
     },
     '&:hover': {
       backgroundColor: 'transparent !important',
@@ -61,7 +61,7 @@ const styles = {
   }),
   orderNoLink: css({
     textDecorationLine: 'underline',
-    color: '#1A73E8',
+    color: 'rgb(var(--accent))',
     fontWeight: '500',
   }),
 }

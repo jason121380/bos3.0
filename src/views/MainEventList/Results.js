@@ -24,8 +24,8 @@ const styles = {
   card: css({
     borderRadius: '16px',
     boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
+    border: '1px solid rgb(var(--border))',
+    backgroundColor: 'rgb(var(--background))',
     overflow: 'hidden',
   }),
   content: css({
@@ -38,11 +38,11 @@ const styles = {
     },
   }),
   tableHead: css({
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgb(var(--background))',
     '& .MuiTableCell-head': {
-      color: '#212121',
+      color: 'rgb(var(--text))',
       fontWeight: 'bold',
-      borderBottom: '1px solid #f0f0f0',
+      borderBottom: '1px solid rgb(var(--border))',
       height: '40px !important',
       padding: '2px 16px !important',
       fontSize: '14px',
@@ -53,40 +53,31 @@ const styles = {
     minHeight: '40px !important',
     '& .MuiTableCell-body': {
       padding: '2px 16px !important',
-      borderBottom: '1px solid #f0f0f0',
+      borderBottom: '1px solid rgb(var(--border))',
       fontSize: '14px !important',
-      color: '#333',
+      color: 'rgb(var(--text))',
     },
     '&:hover': {
       backgroundColor: 'transparent !important',
     },
     '&.Mui-selected': {
-      backgroundColor: '#f9f9f9 !important',
+      backgroundColor: 'rgb(var(--surface)) !important',
     },
     '&.Mui-selected:hover': {
-      backgroundColor: '#f9f9f9 !important',
+      backgroundColor: 'rgb(var(--surface)) !important',
     },
   }),
   expandedRow: css({
-    backgroundColor: '#fafafa',
+    backgroundColor: 'rgb(var(--surface))',
     position: 'relative',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      left: 0,
-      top: 0,
-      bottom: 0,
-      width: '4px',
-      backgroundColor: '#1A73E8',
-    }
   }),
   actionButton: css({
     padding: '4px !important',
     '& .MuiSvgIcon-root': {
-      color: '#9e9e9e !important',
+      color: 'rgb(var(--text-tertiary)) !important',
     },
     '&:hover .MuiSvgIcon-root': {
-      color: '#1A73E8 !important',
+      color: 'rgb(var(--accent)) !important',
     },
     '&:hover': {
       backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
@@ -101,15 +92,15 @@ const styles = {
     whiteSpace: 'nowrap',
   }),
   secondaryPill: css({
-    backgroundColor: '#f5f5f5 !important',
-    color: '#666 !important',
+    backgroundColor: 'rgb(var(--surface)) !important',
+    color: 'rgb(var(--text-secondary)) !important',
     '&:hover': {
-      backgroundColor: '#eeeeee !important',
+      backgroundColor: 'rgb(var(--surface)) !important',
     }
   }),
   redPill: css({
     backgroundColor: 'rgba(211, 47, 47, 0.1) !important',
-    color: '#d32f2f !important',
+    color: 'rgb(var(--danger)) !important',
     '&:hover': {
       backgroundColor: 'rgba(211, 47, 47, 0.2) !important',
     }
@@ -124,12 +115,12 @@ const styles = {
   subTableBox: css({
     borderRadius: '0 12px 12px 0',
     overflow: 'hidden',
-    border: '1px solid #f0f0f0',
+    border: '1px solid rgb(var(--border))',
     borderLeft: 'none',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgb(var(--background))',
     '& .MuiTableCell-head': {
-      backgroundColor: '#f8f9fa !important',
-      color: '#666 !important',
+      backgroundColor: 'rgb(var(--surface)) !important',
+      color: 'rgb(var(--text-secondary)) !important',
     }
   }),
 }
