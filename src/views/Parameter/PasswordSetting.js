@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, Divider, TextField,
-  FormControlLabel, Checkbox,
+  TextField, FormControlLabel, Checkbox
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
@@ -40,9 +40,10 @@ function PasswordSetting({ className, setPasswordSetting, passwordSetting, input
   }
 
   return (
-    <Card css={className}>
-      <CardHeader title="密碼設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>密碼設定</CardTitle>
+      </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
           <TextField

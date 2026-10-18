@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Dialog, DialogContent, DialogTitle, Divider, DialogActions, Button
+  Dialog, DialogContent, DialogTitle, Divider, DialogActions
 } from '@mui/material'
+import { Button } from 'ui/button'
 import { useState, memo, useEffect } from 'react'
 import styles from './styles/OuterLinkSortModal'
 import { KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon } from 'ui/icons'
@@ -96,11 +97,10 @@ const OuterLinkSortModal = ({
       </DialogContent>
       <DialogActions>
         <div css={styles.ButtonGroup}>
-          <Button disabled={isClick} variant='contained' onClick={onModalClose}>取消</Button>
+          <Button disabled={isClick} variant="secondary" onClick={onModalClose}>取消</Button>
           <Button
             disabled={isClick}
-            color='primary'
-            variant='contained'
+            variant="primary"
             onClick={handleSubmitData}
           >
             儲存

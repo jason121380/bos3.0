@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, Fragment } from 'react'
-import {
-  Card, CardContent, CardHeader, Divider, TextField, Grid,
-  Button,
-} from '@mui/material'
+import { TextField } from '@mui/material'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { format } from 'date-fns'
 import MdEditor from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
@@ -81,11 +80,12 @@ const General = ({ editData, setEditData, mdValue, setMdValue }) => {
   }, [mdValue])
   return (
     <Fragment>
-      <Card style={{ margin: '20px 0' }}>
-        <CardHeader title="版本資訊" />
-        <Divider />
+      <Card>
+        <CardHeader>
+          <CardTitle>版本資訊</CardTitle>
+        </CardHeader>
         <CardContent>
-          <Grid container direction="row" style={{ gap: '20px'}}>
+          <div className="flex flex-wrap gap-5">
             <TextField
               css={styles.textFieldWidth}
               label="更新日期"
@@ -110,7 +110,7 @@ const General = ({ editData, setEditData, mdValue, setMdValue }) => {
                 setEditData({ ...editData, versionNo: event.target.value })
               }}
             />
-          </Grid>
+          </div>
           <TextField
             css={styles.textFieldSpacing}
             fullWidth
@@ -162,15 +162,16 @@ const General = ({ editData, setEditData, mdValue, setMdValue }) => {
           />
         </CardContent>
       </Card>
-      <Button
-        color="primary"
-        variant="contained"
-        data-testid="createSystemUpdate"
-        onClick={onSubmit}
-        disabled={!enable}
-      >
-        儲存
-      </Button>
+      <div className="mt-6 flex justify-end">
+        <Button
+          variant="primary"
+          data-testid="createSystemUpdate"
+          onClick={onSubmit}
+          disabled={!enable}
+        >
+          儲存
+        </Button>
+      </div>
     </Fragment>
   )
 }

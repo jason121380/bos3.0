@@ -1,14 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card,
-  CardContent,
-  CardHeader,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   TextField,
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import idx from 'idx'
 import PropTypes from 'prop-types'
@@ -68,8 +66,10 @@ function AboutService({ className, onChange, coupon, ...rest }) {
   const serviceCategories = useFetchServiceCategories()
   const loading = !idx(serviceCategories, _ => _.data)
   return (
-    <Card {...rest} css={css([styles.root, className])}>
-      <CardHeader title="一般資訊" />
+    <Card {...rest}>
+      <CardHeader>
+        <CardTitle>一般資訊</CardTitle>
+      </CardHeader>
       <CardContent>
         <TextField
           value={coupon.no}

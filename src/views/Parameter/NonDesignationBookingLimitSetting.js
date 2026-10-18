@@ -1,5 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent, CardHeader, Divider, TextField, Checkbox, FormControlLabel } from '@mui/material'
+import {
+  TextField, Checkbox, FormControlLabel
+} from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import produce from 'immer'
 import _ from 'lodash'
@@ -17,9 +20,10 @@ function NonDesignationBookingLimitSetting({
     )
   }
   return (
-    <Card css={className}>
-      <CardHeader title="同時段預約人數上限" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>同時段預約人數上限</CardTitle>
+      </CardHeader>
       <CardContent>
         <div style={{ gap: 12, flexWrap: 'wrap' }} css={styles.serviceInputGroup}>
           <TextField

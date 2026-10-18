@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, Divider, FormControlLabel, Checkbox,
-  Typography, CardActions, FormControl, InputLabel, Select, MenuItem,
+  FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo, Fragment } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
@@ -89,9 +89,9 @@ function AboutOrderCreate({
       label: '顯示鎖定時間選項',
       key: 'isDateLockDisplay',
       lockDate: () => JSON.parse(localStorage.getItem('lockDate')) === true ? (
-        <Typography sx={{ m: '-30px 31px 24px ' }} variant="caption" display="block" gutterBottom>
+        <p className="text-caption text-text-secondary" style={{ margin: '-30px 31px 24px' }}>
           請至打帳單解除鎖定日期
-        </Typography>
+        </p>
       ) : ''
     },
     { label: '固定業績明細於視窗下方', key: 'isDetailBottomed' },
@@ -114,9 +114,10 @@ function AboutOrderCreate({
     { label: '服務項目第三方卡券是否鎖定', key: 'isServiceBindedThirdPartTicketLocked', options: BindedThirdPartlockStatus },
   ]
   return (
-    <Card css={className}>
-      <CardHeader title="打帳單相關設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>打帳單相關設定</CardTitle>
+      </CardHeader>
       <CardContent>
         {settingArr.map(({ label, key, lockDate }) => {
           const isDisabled = key === 'isDateLockDisplay' && orderCreateSetting.isAbleToChangeDateTimeInOrderCreate
@@ -142,7 +143,7 @@ function AboutOrderCreate({
         })}
         {optionArr.map(({label, key, options}) => (
           <div key={label} css={styles.serviceInputGroup}>
-            <CardActions>
+            <div className="flex flex-wrap items-center gap-2 p-2">
               <FormControl disabled={!inputEnable} variant="outlined" css={styles.orderCreateField}>
                 <InputLabel>{label}</InputLabel>
                 <Select
@@ -161,7 +162,7 @@ function AboutOrderCreate({
                   ))}
                 </Select>
               </FormControl>
-            </CardActions>
+            </div>
           </div>
         ))}
       </CardContent>

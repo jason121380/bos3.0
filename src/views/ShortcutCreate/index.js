@@ -1,27 +1,17 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress } from '@mui/material'
+import { PageHeader } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 import { useFetchServicesForTransferList } from 'hooks/useFetchServices'
 import { useFetchProductsInTransferList } from 'hooks/useFetchProducts'
 import { useFetchTicketsForTransferList } from 'hooks/useFetchTickets'
 import { useFetchGetMembershipsForTransferList } from 'hooks/useFetchGetMembership'
 import { createShortcutFunc } from 'hooks/useFetchShortcut'
 import { openSnackbar } from 'elements/snackbars'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { useMemo, useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import produce from 'immer'
 
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import General from './General'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-}
 
 function ShortcutCreate() {
   const history = useHistory()
@@ -152,12 +142,12 @@ function ShortcutCreate() {
   }, [memberCards.loading, memberCardsKeyword])
 
   return (
-    <Page css={styles.root} title="新增組合設定">
-      <Container maxWidth={false}  >
-        <PageTitle title='新增組合設定' subTitle='shortcut create' />
+    <Page className="ui-root" title="新增組合設定">
+      <div>
+        <PageHeader title="新增組合設定" />
         {isLoading ? (
-          <div style={{ width: '100%', marginTop: 200, display: 'flex', justifyContent: 'center' }} >
-            <CircularProgress color="primary" sx={{ textAlign: 'center' }} />
+          <div className="flex flex-col gap-4" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[480px] w-full rounded-lg" />
           </div>
         ) : (
           <General
@@ -177,7 +167,7 @@ function ShortcutCreate() {
             isClick={isClick}
           />
         )}
-      </Container>
+      </div>
     </Page>
   )
 }

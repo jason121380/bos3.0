@@ -1,171 +1,104 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Table, TableBody, TableCell, TableHead, TableRow, TableContainer,
-  Paper, Collapse, Box, IconButton, Button, Typography, CardHeader, Divider
-} from '@mui/material'
 import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon, Edit as EditIconSlot } from 'ui/icons'
 import { Link } from 'react-router-dom'
 import format from 'date-fns/format';
 import getLabel from 'utils/getTransferListLabel'
 import { Fragment } from 'react'
-import { css } from '@emotion/react'
-
-const styles = {
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid rgb(var(--border))',
-    backgroundColor: 'rgb(var(--background))',
-    overflow: 'hidden',
-    margin: '12px 0',
-  }),
-  tableHead: css({
-    backgroundColor: 'rgb(var(--background))',
-    '& .MuiTableCell-head': {
-      color: 'rgb(var(--text))',
-      fontWeight: 'bold',
-      borderBottom: '1px solid rgb(var(--border))',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid rgb(var(--border))',
-      fontSize: '14px !important',
-      color: 'rgb(var(--text))',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-  }),
-  actionButton: css({
-    padding: '4px !important',
-    color: 'rgb(var(--text-tertiary)) !important',
-    '&:hover': {
-      color: 'rgb(var(--accent)) !important',
-      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
-    }
-  }),
-  expandButton: css({
-    padding: '4px !important',
-    color: 'rgb(var(--text-secondary)) !important',
-  }),
-  header: css({
-    padding: '12px 24px 4px 24px',
-    '& .MuiCardHeader-title': {
-      width: '100%',
-    }
-  }),
-  csvBtn: css({
-    borderRadius: '20px !important',
-    padding: '6px 20px !important',
-    fontSize: '14px !important',
-    boxShadow: 'none !important',
-    fontWeight: 'bold !important',
-    backgroundColor: 'rgb(var(--surface)) !important',
-    color: 'rgb(var(--text-secondary)) !important',
-    '&:hover': {
-      backgroundColor: 'rgb(var(--surface)) !important',
-    }
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 export default function Results({ reportData, open, openCollapse, onToggleAll }) {
   const isAllOpen = open.length === reportData.length && reportData.length > 0;
 
   return reportData.length ? (
-    <div css={styles.card}>
+    <Card>
       <CardHeader
-        css={styles.header}
         action={
           <Button
-            variant="contained"
-            css={styles.csvBtn}
-            size="small"
+            variant="secondary"
+            size="sm"
             onClick={onToggleAll}
           >
             {isAllOpen ? '全部收合' : '全部展開'}
           </Button>
         }
-        title={
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-            <Typography variant="h6" style={{ fontWeight: 'bold', color: 'rgb(var(--text))' }}>
-              組合設定列表
-            </Typography>
-            <Typography color="textSecondary" variant="body2">
-              共 {reportData.length} 筆
-            </Typography>
-          </div>
-        }
-      />
-      <Table size="small">
-        <TableHead css={styles.tableHead}>
-          <TableRow>
-            <TableCell className='noprint'>展開</TableCell>
-            <TableCell>編輯</TableCell>
-            <TableCell>代號</TableCell>
-            <TableCell>名稱</TableCell>
-            <TableCell>建立者</TableCell>
-            <TableCell>建立時間</TableCell>
-            <TableCell>編輯者</TableCell>
-            <TableCell>編輯時間</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {reportData.map(d => (
-            <Fragment key={d.id}>
-              <TableRow css={styles.tableRow}>
-                <TableCell className='noprint'>
-                  <IconButton
-                    onClick={() => openCollapse(d.id)}
-                    css={styles.expandButton}
-                    size="small"
-                  >
-                    {open.indexOf(d.id) > -1 ? <KeyboardArrowUpIcon fontSize="small" /> : <KeyboardArrowDownIcon fontSize="small" />}
-                  </IconButton>
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    component={Link}
-                    css={styles.actionButton}
-                    to={`/shortcut/edit/${d.id}`}
-                    size="small"
-                  >
-                    <EditIconSlot fontSize="small" />
-                  </IconButton>
-                </TableCell>
-                <TableCell>{d.no}</TableCell>
-                <TableCell>{d.name}</TableCell>
-                <TableCell>{d.creator.name}</TableCell>
-                <TableCell>{format(d.createdAt, 'yyyy/MM/dd HH:mm')}</TableCell>
-                <TableCell>{d.editor && d.editor.name}</TableCell>
-                <TableCell>{format(d.updatedAt, 'yyyy/MM/dd HH:mm')}</TableCell>
-              </TableRow>
-              <TableRow className='noprint'>
-                <TableCell style={{ padding: 0 }} colSpan={8}>
-                  <Collapse timeout="auto" unmountOnExit in={open.indexOf(d.id) > -1}>
-                    <Box margin={0} sx={{ borderLeft: '4px solid rgb(var(--accent))', ml: '24px', my: 1, pl: 2 }}>
-                      {d.collapesData.length ? (
-                        <div style={{ border: '1px solid rgb(var(--border))', borderLeft: 'none', borderRadius: '0 8px 8px 0', overflow: 'hidden' }}>
-                          <Table size="small">
-                            <TableHead css={styles.tableHead}>
-                              <TableRow>
-                                <TableCell>服務項目</TableCell>
-                                <TableCell>店販銷售</TableCell>
-                                <TableCell>預收卡</TableCell>
-                                <TableCell>會員卡</TableCell>
+      >
+        <div className="flex items-baseline gap-3">
+          <CardTitle>
+            組合設定列表
+          </CardTitle>
+          <span className="text-label tabular-nums text-text-secondary">
+            共 {reportData.length} 筆
+          </span>
+        </div>
+      </CardHeader>
+      <div className="px-5 pb-5 pt-4">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className='noprint w-16'>展開</TableHead>
+              <TableHead className="w-16">編輯</TableHead>
+              <TableHead>代號</TableHead>
+              <TableHead>名稱</TableHead>
+              <TableHead>建立者</TableHead>
+              <TableHead>建立時間</TableHead>
+              <TableHead>編輯者</TableHead>
+              <TableHead>編輯時間</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {reportData.map(d => (
+              <Fragment key={d.id}>
+                <TableRow>
+                  <TableCell className='noprint'>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-text-secondary"
+                      aria-label={open.indexOf(d.id) > -1 ? '收合組合內容' : '展開組合內容'}
+                      aria-expanded={open.indexOf(d.id) > -1}
+                      onClick={() => openCollapse(d.id)}
+                    >
+                      {open.indexOf(d.id) > -1 ? <KeyboardArrowUpIcon fontSize="small" /> : <KeyboardArrowDownIcon fontSize="small" />}
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                      <Link
+                        aria-label={`編輯 ${d.name}`}
+                        to={`/shortcut/edit/${d.id}`}
+                      >
+                        <EditIconSlot fontSize="small" />
+                      </Link>
+                    </Button>
+                  </TableCell>
+                  <TableCell>{d.no}</TableCell>
+                  <TableCell>{d.name}</TableCell>
+                  <TableCell>{d.creator.name}</TableCell>
+                  <TableCell className="tabular-nums">{format(d.createdAt, 'yyyy/MM/dd HH:mm')}</TableCell>
+                  <TableCell>{d.editor && d.editor.name}</TableCell>
+                  <TableCell className="tabular-nums">{format(d.updatedAt, 'yyyy/MM/dd HH:mm')}</TableCell>
+                </TableRow>
+                <TableRow className='noprint border-b-0 hover:bg-transparent'>
+                  <TableCell className="h-auto p-0" colSpan={8}>
+                    {open.indexOf(d.id) > -1 && (
+                      <div className="my-2 ml-6 border-0 border-l-4 border-solid border-accent pl-4">
+                        {d.collapesData.length ? (
+                          <Table>
+                            <TableHeader>
+                              <TableRow className="hover:bg-transparent">
+                                <TableHead>服務項目</TableHead>
+                                <TableHead>店販銷售</TableHead>
+                                <TableHead>預收卡</TableHead>
+                                <TableHead>會員卡</TableHead>
                               </TableRow>
-                            </TableHead>
+                            </TableHeader>
                             <TableBody>
                               {d.collapesData.map(({
                                 service, product, ticket, membership
                               }, i) => (
-                                <TableRow key={`${d.id}-${i}-collapesData`} css={styles.tableRow}>
+                                <TableRow key={`${d.id}-${i}-collapesData`}>
                                   <TableCell>{service && getLabel(service)}</TableCell>
                                   <TableCell>{product && getLabel(product)}</TableCell>
                                   <TableCell>{ticket && getLabel(ticket)}</TableCell>
@@ -174,20 +107,22 @@ export default function Results({ reportData, open, openCollapse, onToggleAll })
                               ))}
                             </TableBody>
                           </Table>
-                        </div>
-                      ) : (
-                        <Typography sx={{ p: 2, textAlign: 'center', color: 'rgb(var(--text-tertiary))' }} variant="body2">無詳細組合資料</Typography>
-                      )}
-                    </Box>
-                  </Collapse>
-                </TableCell>
-              </TableRow>
-            </Fragment>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+                        ) : (
+                          <p className="p-4 text-center text-body text-text-tertiary">無詳細組合資料</p>
+                        )}
+                      </div>
+                    )}
+                  </TableCell>
+                </TableRow>
+              </Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </Card>
   ) : (
-    <Typography variant="h3" component="div">無資料</Typography>
+    <Card>
+      <EmptyState title="無資料" />
+    </Card>
   )
 }

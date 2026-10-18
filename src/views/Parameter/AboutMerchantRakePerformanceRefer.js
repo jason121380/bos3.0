@@ -1,15 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  CardActions,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  FormControl, InputLabel, Select, MenuItem
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import styles from './styles/AboutMerchantRakePerformanceRefer'
 import produce from 'immer'
@@ -40,12 +33,13 @@ function AboutMerchantRakePerformanceRefer({
     )
   }
   return (
-    <Card css={className}>
-      <CardHeader title="抽成門檻依據設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>抽成門檻依據設定</CardTitle>
+      </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
-          <CardActions>
+          <div className="flex flex-wrap items-center gap-2 p-2">
             <FormControl disabled={!inputEnable} variant="outlined" css={styles.field}>
               <InputLabel>指定</InputLabel>
               <Select
@@ -74,7 +68,7 @@ function AboutMerchantRakePerformanceRefer({
                 ))}
               </Select>
             </FormControl>
-          </CardActions>
+          </div>
         </div>
       </CardContent>
     </Card>

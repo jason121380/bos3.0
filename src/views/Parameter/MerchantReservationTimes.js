@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, Divider, TextField, IconButton,
-  Select, MenuItem, InputLabel, FormControl, InputAdornment, Button,
-  ThemeProvider, createTheme
+  TextField, Select, MenuItem, InputLabel, FormControl, InputAdornment, Button as MuiButton, ThemeProvider, createTheme
 } from '@mui/material'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 import { Edit as EditIcon, Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
@@ -93,9 +93,10 @@ function MerchantReservationTimes({
   }
   
   return (
-    <Card css={className}>
-      <CardHeader title="開放預約時段設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>開放預約時段設定</CardTitle>
+      </CardHeader>
       <CardContent css={styles.CardContent}>
         {merchantReservation.length ?
           merchantReservation.map(({ title, openingHours, closingHours, useDay }, index) => (
@@ -187,36 +188,36 @@ function MerchantReservationTimes({
                   const isInclude = useDay.includes(value)
                   return (
                     <ThemeProvider theme={theme} key={label}>
-                      <Button
+                      <MuiButton
                         onClick={() => handleAddDay(value, index)}
                         variant="contained"
                         color={isInclude ? 'primary' : 'inherit'}
                         style={{ color: isInclude ? 'white' : '' }}
                         disabled={!inputEnable || (isInclude ? false : handleCheckDisbaled(value, index))}
                         css={styles.box}
-                      >{label}</Button>
+                      >{label}</MuiButton>
                     </ThemeProvider>
                   )
                 })}
                 <div css={styles.iconWrap}>
                   {index === merchantReservation.length - 1 &&
-                    <IconButton disabled={!inputEnable || (merchantReservation.length >= 7)} onClick={() => merchantReservation.length < 7 && handleAddItem()}>
+                    <Button variant="ghost" size="icon" aria-label="新增時段" disabled={!inputEnable || (merchantReservation.length >= 7)} onClick={() => merchantReservation.length < 7 && handleAddItem()}>
                       <AddIcon />
-                    </IconButton>
+                    </Button>
                   }
-                  <IconButton disabled={!inputEnable} onClick={() => handleRemoveItem(index)}>
+                  <Button variant="ghost" size="icon" aria-label="刪除時段" disabled={!inputEnable} onClick={() => handleRemoveItem(index)}>
                     <DeleteForeverIcon />
-                  </IconButton>
+                  </Button>
                 </div>
               </div>
-              {index !== merchantReservation.length - 1 && <Divider/> }
+              {index !== merchantReservation.length - 1 && <div className="h-px bg-border" /> }
             </div>
           )) :
           <div style={{ alignItems: 'center', display: 'flex', gap: 50 }}>
             <span>無資料</span>
-            <IconButton disabled={!inputEnable} onClick={handleAddItem}>
+            <Button variant="ghost" size="icon" aria-label="新增時段" disabled={!inputEnable} onClick={handleAddItem}>
               <AddIcon />
-            </IconButton>
+            </Button>
           </div>
         }
       </CardContent>

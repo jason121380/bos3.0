@@ -1,14 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  FormControlLabel,
-  Checkbox,
-  ToggleButtonGroup,
-  ToggleButton
+  FormControlLabel, Checkbox, ToggleButtonGroup, ToggleButton
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import { cloneDeep } from 'lodash'
 
@@ -57,9 +51,10 @@ function AboutOtherReport({
     }
   }
   return (
-    <Card css={className}>
-      <CardHeader title="其他報表設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>其他報表設定</CardTitle>
+      </CardHeader>
       <CardContent>
         {checkboxSettings.map(d => (
           <div css={styles.serviceInputGroup} key={d.label}>

@@ -1,7 +1,6 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchMerchantHelperItems from 'hooks/useFetchMerchantHelperItems'
 import useFetchMerchantCommissionWay from 'hooks/useFetchMerchantCommissionWay'
@@ -15,33 +14,11 @@ import produce from 'immer'
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { useSelector } from 'react-redux'
 
 import AboutAssistantSetting from './AboutAssistantSetting'
 import AboutCoupon from './AboutCoupon'
 import AboutDeduction from './AboutDeduction'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  about: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-    display: 'flex',
-    justifyContent: 'space-between',
-  }),
-  lastNextDiv: css({
-    width: '260px',
-    display: 'flex',
-    justifyContent: 'space-between',
-  }),
-}
 
 function ServiceCategoryEdit({ match }) {
   const isDuplicate = location.href.includes('duplicate')
@@ -428,48 +405,44 @@ function ServiceCategoryEdit({ match }) {
   }, [coupon])
 
   return (
-    <Page css={styles.root} title={isDuplicate ? "新增卡券項目" : "編輯卡券項目"} >
-      <Container maxWidth="md">
-        <PageTitle title={isDuplicate ? "新增卡券項目" : "編輯卡券項目"} subTitle={isDuplicate ? 'new coupon' : 'Edit Coupon'} />
-        <AboutCoupon className={styles.about} coupon={coupon} onChange={handleOnChange} />
+    <Page className="ui-root" title={isDuplicate ? "新增卡券項目" : "編輯卡券項目"} >
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
+        <PageHeader className="pb-0" title={isDuplicate ? "新增卡券項目" : "編輯卡券項目"} />
+        <AboutCoupon coupon={coupon} onChange={handleOnChange} />
 
         {deductionDisplay && coupon2.itemId !== '' && (
           <AboutDeduction
-            className={styles.about}
             ServiceDeductionItems={coupon2.serviceDeductionItems}
             onChange={handleOnChange}
           />
         )}
 
         <AboutAssistantSetting
-          className={styles.about}
           merchantHelperItems={merchantHelperItems}
           support={coupon.helperDeductionSetting}
           onChange={handleOnChange}
         />
 
-        <div css={styles.actions}>
+        <div className="flex flex-wrap items-center justify-between gap-2">
         {isDuplicate ? (
-          <Button color="primary" variant="contained" disabled={saveBtn || vaild} onClick={handleCreate}>
+          <Button variant="primary" disabled={saveBtn || vaild} onClick={handleCreate}>
             新增
           </Button>
         ) : (
           <>
-            <Button color="primary" variant="contained" disabled={saveBtn || vaild} onClick={() => handleSubmit('toList')}>
+            <Button variant="primary" disabled={saveBtn || vaild} onClick={() => handleSubmit('toList')}>
               儲存
             </Button>
-            <div css={styles.lastNextDiv}>
+            <div className="flex flex-wrap gap-2">
               <Button
-                color="primary"
-                variant="contained"
+                variant="secondary"
                 disabled={couponIndex === 0 || saveBtn || vaild}
                 onClick={() => handleSubmit('toLast')}
               >
                 儲存並上一筆
               </Button>
               <Button
-                color="primary"
-                variant="contained"
+                variant="secondary"
                 disabled={couponIndex === couponsArr.length - 1 || saveBtn || vaild}
                 onClick={() => handleSubmit('toNext')}
               >
@@ -479,7 +452,7 @@ function ServiceCategoryEdit({ match }) {
           </>
         )}
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }

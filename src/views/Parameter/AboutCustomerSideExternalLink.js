@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card,CardContent,CardHeader, Grid, Divider,
-  Button, Typography, createTheme, ThemeProvider 
-} from '@mui/material'
+import { Button as MuiButton, createTheme, ThemeProvider } from '@mui/material'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon, Add as AddIcon, Edit as EditIcon } from 'ui/icons'
 import { memo, Fragment, useState } from 'react'
 import styles from './styles/AboutDesignerSideExternalLink'
@@ -48,15 +47,16 @@ function AboutCustomerSideExternalLink({
   }
 
   return (
-    <Card css={className}>
-      <CardHeader css={styles.header} title="外部連結設定" action={
+    <Card>
+      <CardHeader action={
         <Button
+          variant="secondary"
+          size="sm"
           disabled={!inputEnable || cusExternalLink.length < 2}
-          color='primary'
-          variant='contained'
           onClick={() => setOpenSort(true)}>調整排序</Button>
-      }/>
-      <Divider />
+      }>
+        <CardTitle>外部連結設定</CardTitle>
+      </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
           {cusExternalLink.length ? cusExternalLink.map((data, index) => {
@@ -64,7 +64,7 @@ function AboutCustomerSideExternalLink({
             return (
               <Fragment key={id}>
                 <ThemeProvider theme={theme}>
-                  <Button
+                  <MuiButton
                     disabled={!inputEnable}
                     onClick={() => handleOpenModal(false, data)}
                     css={styles.Button}
@@ -79,7 +79,7 @@ function AboutCustomerSideExternalLink({
                         <KeyboardDoubleArrowUpIcon/>
                       </div>
                     )}
-                  </Button>
+                  </MuiButton>
                 </ThemeProvider>
                 {index === (cusExternalLink.length - 1) ?
                 <AddIcon
@@ -90,15 +90,15 @@ function AboutCustomerSideExternalLink({
               </Fragment>
             )
           }) :
-            <Grid container direction="row" alignItems="center" key='無資料'>
-              <Typography component="h1" variant="h5">
+            <div className="flex items-center" key='無資料'>
+              <span className="text-heading text-text">
                 無資料
-              </Typography>
+              </span>
               <AddIcon
                 onClick={() => handleOpenModal()}
                 css={styles.icon}
               />
-            </Grid>}
+            </div>}
         </div>
       </CardContent>
       {open && 

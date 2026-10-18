@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, Divider, FormControlLabel, Checkbox
+  FormControlLabel, Checkbox
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
@@ -27,9 +28,10 @@ function BookingCheckInNotificationSetting({
   bookingTypeForSocket, setBookingTypeForSocket
 }) {
   return (
-    <Card css={className}>
-      <CardHeader title="報到通知設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>報到通知設定</CardTitle>
+      </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
           <FormControlLabel

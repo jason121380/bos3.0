@@ -1,5 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent, CardHeader, Divider, TextField, FormControlLabel, Checkbox } from '@mui/material'
+import {
+  TextField, FormControlLabel, Checkbox
+} from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 
@@ -14,9 +17,10 @@ function AboutMerchantBankSettings({
   displayNonBankAccountInBankTransferReport 
 }) {
   return (
-    <Card css={className}>
-      <CardHeader title="薪資轉帳設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>薪資轉帳設定</CardTitle>
+      </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
           <FormControlLabel

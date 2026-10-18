@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent, CardHeader, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import { css } from '@emotion/react'
@@ -23,8 +24,10 @@ const styles = {
 function AboutAuthority({ className, roleName, setRoleName, ...rest }) {
   return (
     <Fragment>
-      <Card {...rest} css={className}>
-        <CardHeader title="一般資訊" />
+      <Card {...rest}>
+        <CardHeader>
+          <CardTitle>一般資訊</CardTitle>
+        </CardHeader>
         <CardContent>
           <TextField
             css={styles.formControl}

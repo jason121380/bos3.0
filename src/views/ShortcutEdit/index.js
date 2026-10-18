@@ -1,7 +1,7 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Container, CircularProgress, Button, Dialog, DialogTitle, DialogActions
-} from '@mui/material'
+import { Button } from 'ui/button'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
+import { PageHeader } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 import { useFetchServicesForTransferList } from 'hooks/useFetchServices'
 import { useFetchProductsInTransferList } from 'hooks/useFetchProducts'
 import { useFetchTicketsForTransferList } from 'hooks/useFetchTickets'
@@ -9,22 +9,12 @@ import { useFetchGetMembershipsForTransferList } from 'hooks/useFetchGetMembersh
 import { updateShortcutFunc, deleteShortcutFunc } from 'hooks/useFetchShortcut'
 import { getShortcut } from 'hooks/useFetchShortcut'
 import { openSnackbar } from 'elements/snackbars'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { useMemo, useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import produce from 'immer'
 
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import General from './General'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-}
 
 function ShortcutEdit({ match }) {
   const history = useHistory()
@@ -197,15 +187,17 @@ function ShortcutEdit({ match }) {
 
   return (
     <>
-      <Page css={styles.root} title="編輯組合設定">
-        <Container maxWidth={false} >
-          <div style={{ width: '100%', gap: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <PageTitle title='編輯組合設定' subTitle='shortcut edit' />
-            <Button onClick={() => setOpenDialog(true)} disabled={isClick} color='error' variant='contained' >刪除</Button>
-          </div>
+      <Page className="ui-root" title="編輯組合設定">
+        <div>
+          <PageHeader
+            title="編輯組合設定"
+            actions={
+              <Button onClick={() => setOpenDialog(true)} disabled={isClick} variant="danger">刪除</Button>
+            }
+          />
           {isLoading ? (
-            <div style={{ width: '100%', marginTop: 200, display: 'flex', justifyContent: 'center' }} >
-              <CircularProgress color="primary" sx={{ textAlign: 'center' }} />
+            <div className="flex flex-col gap-4" aria-busy="true" aria-label="載入中">
+              <Skeleton className="h-[480px] w-full rounded-lg" />
             </div>
           ) : (
             <General
@@ -225,18 +217,24 @@ function ShortcutEdit({ match }) {
               isClick={isClick}
             />
           )}
-        </Container>
+        </div>
       </Page>
+      {/* 與舊版相同：不提供點背景或 Esc 關閉，只能按「取消」 */}
       <Dialog open={openDialog}>
-        <DialogTitle>確認要刪除此組合？</DialogTitle>
-        <DialogActions>
-          <Button disabled={isClick} onClick={() => setOpenDialog(false)} color="primary" variant='contained'>
-            取消
-          </Button>
-          <Button disabled={isClick} onClick={handleDelete} color="primary" variant='contained'>
-            確認
-          </Button>
-        </DialogActions>
+        <DialogContent size="sm" hideClose>
+          <DialogHeader>
+            <DialogTitle>確認要刪除此組合？</DialogTitle>
+            <DialogDescription>刪除後無法復原。</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button disabled={isClick} onClick={() => setOpenDialog(false)} variant="secondary">
+              取消
+            </Button>
+            <Button disabled={isClick} onClick={handleDelete} variant="danger">
+              確認
+            </Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
     </>
   )

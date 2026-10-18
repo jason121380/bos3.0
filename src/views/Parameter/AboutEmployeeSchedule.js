@@ -1,16 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  TextField,
-  Grid,
-  FormControlLabel,
-  Checkbox,
-  Button,
-  Typography,
+  TextField, Grid, FormControlLabel, Checkbox, Button
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment, useState, useEffect } from 'react'
 import _ from 'lodash'
@@ -174,9 +166,10 @@ const AboutEmployeeSchedule = ({
   }, [colorData])
   return (
     <Fragment>
-      <Card css={className} className='AboutEmployeeSchedule'>
-        <CardHeader title="班別設定" />
-        <Divider />
+      <Card className='AboutEmployeeSchedule'>
+        <CardHeader>
+          <CardTitle>班別設定</CardTitle>
+        </CardHeader>
         <CardContent>
           {isMerchantClockInSetting.length > 0 ? (
             isMerchantClockInSetting.map((data, index) => {
@@ -493,9 +486,9 @@ const AboutEmployeeSchedule = ({
             })
           ) : (
             <Grid container direction="row" alignItems="center" key='無資料'>
-              <Typography component="h1" variant="h5">
+              <span className="text-heading text-text">
                 無資料
-              </Typography>
+              </span>
               <AddIcon
                 onClick={() => {
                   inputEnable && addSchedule()

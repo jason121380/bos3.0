@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, Divider, FormControlLabel,
-  Checkbox
+  FormControlLabel, Checkbox
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 
@@ -12,9 +12,10 @@ function AttendanceEmployeeScheduleSetting({
   className, UESUsing, setUESUsing, inputEnable
 }) {
   return (
-    <Card css={className}>
-      <CardHeader title="考勤排班總表設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>考勤排班總表設定</CardTitle>
+      </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
           <FormControlLabel

@@ -1,7 +1,6 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 import { openSnackbar } from 'elements/snackbars'
 import idx from 'idx'
 import { memo, useState, useEffect } from 'react'
@@ -10,23 +9,8 @@ import useFetchSettingAccountingType from 'hooks/useFetchSettingAccountingType'
 import useFetchAccountingType from 'hooks/useFetchAccountingType'
 import useFetchAccountingSubjects from 'hooks/useFetchAccountingSubjects'
 import useFetchSettingAccountingSubjects from 'hooks/useFetchSettingAccountingSubjects'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
 
 import AccountingItemCreate from './AccountingItemCreate'
-
-const styles = {
-  page: css({
-    padding: theme.spacing(3),
-  }),
-  card: css({
-    marginTop: theme.spacing(3),
-  }),
-  saveBtn: css({
-    textAlign: 'right',
-    marginTop: '20px',
-  }),
-}
 
 function AccountingSetting() {
   const history = useHistory()
@@ -125,9 +109,9 @@ function AccountingSetting() {
   }
 
   return (
-    <Page css={styles.page} title="收支科目設定">
-      <Container maxWidth="md">
-        <PageTitle title='收支科目設定' subTitle='Accounting Setting' />
+    <Page className="ui-root" title="收支科目設定">
+      <div className="mx-auto w-full max-w-4xl">
+        <PageHeader title="收支科目設定" />
         <AccountingItemCreate
           accountingRevenueSubjects={accountingRevenueSubjects}
           setAccountingRevenueSubjects={setAccountingRevenueSubjects}
@@ -136,12 +120,12 @@ function AccountingSetting() {
           accountingType={accountingType}
           setAccountingType={setAccountingType}
         />
-        <div css={styles.saveBtn}>
-          <Button color="primary" variant="contained" onClick={handleSave}>
+        <div className="mt-6 flex justify-end">
+          <Button variant="primary" onClick={handleSave}>
             儲存
           </Button>
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }
