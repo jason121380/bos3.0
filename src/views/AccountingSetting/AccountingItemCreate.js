@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent, CardHeader, Divider, Grid, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Fragment } from 'react'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
 import { css } from '@emotion/react'
 
@@ -149,11 +149,12 @@ export default function AccountingItemCreate({
 
   return (
     <Fragment>
-      <Grid container spacing={3} style={{ marginTop: '8px' }}>
-        <Grid item md={6} xs={12}>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div>
           <Card>
-            <CardHeader title="收入科目設定" />
-            <Divider />
+            <CardHeader>
+              <CardTitle>收入科目設定</CardTitle>
+            </CardHeader>
             <CardContent>
               {accountingRevenueSubjects.map((data, index) => (
                 <div css={styles.content} key={index}>
@@ -183,11 +184,12 @@ export default function AccountingItemCreate({
               ))}
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item md={6} xs={12}>
+        </div>
+        <div>
           <Card>
-            <CardHeader title="支出科目設定" />
-            <Divider />
+            <CardHeader>
+              <CardTitle>支出科目設定</CardTitle>
+            </CardHeader>
             <CardContent>
               {accountingExpenditureSubjects.map((data, index) => (
                 <div css={styles.content} key={index}>
@@ -217,13 +219,14 @@ export default function AccountingItemCreate({
               ))}
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
-      <Grid container spacing={3} style={{ marginTop: '20px' }}>
-        <Grid item xs={12}>
+        </div>
+      </div>
+      <div className="mt-6">
+        <div>
           <Card>
-            <CardHeader title="收付方式設定" />
-            <Divider />
+            <CardHeader>
+              <CardTitle>收付方式設定</CardTitle>
+            </CardHeader>
             <CardContent>
               {accountingType.map((data, index) => (
                 <div css={styles.content} key={index}>
@@ -249,8 +252,8 @@ export default function AccountingItemCreate({
               ))}
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </Fragment>
   )
 }

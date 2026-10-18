@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from '@mui/material'
-import MoreIcon from '@mui/icons-material/MoreVert'
-import PrintIcon from '@mui/icons-material/Print'
+import { MoreVert as MoreIcon, Print as PrintIcon } from 'ui/icons'
 import { memo, useRef, useState } from 'react'
 
 function GenericMoreButton({ handleMenuItem }) {

@@ -4,7 +4,7 @@ import {
   Divider, Button, IconButton, CircularProgress,
   Typography, Grid
 } from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close';
+import { Close as CloseIcon } from 'ui/icons'
 import { useEffect } from 'react';
 import { css } from '@emotion/react'
 import { green } from '@mui/material/colors';

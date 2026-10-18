@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container, Grid } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteWalletDeposit from 'hooks/useFetchDeleteWalletDeposit'
 import useFetchUpdateWalletDeposit from 'hooks/useFetchUpdateWalletDeposit'
@@ -12,7 +9,9 @@ import { useForm, FormProvider } from 'react-hook-form'
 import idx from 'idx'
 
 import General from './General'
-import styles from './styles/TopupEdit'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 export default function TopUpCreate({ match }) {
   const history = useHistory()
@@ -104,41 +103,41 @@ export default function TopUpCreate({ match }) {
   }
 
   return (
-    <Page title="編輯入金" css={styles.root}>
-      <Container maxWidth="lg">
-        <Grid style={{ maxWidth: 500 }} container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='編輯入金' subTitle='Top Up Edit' />
-          <Grid item>
+    <Page title="編輯入金" className="ui-root">
+      <div className="max-w-lg">
+        <PageHeader
+          title="編輯入金"
+          actions={
             <Button
-              variant="contained"
-              css={styles.deleteButton}
+              variant="danger"
               onClick={handleDelete}
               disabled={isClick}
             >
               刪除
             </Button>
-          </Grid>
-        </Grid>
+          }
+        />
         <FormProvider {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
             {walletDepositDetail.loading ? (
-              'loading...'
+              <div className="flex flex-col gap-4"><Skeleton className="h-9 w-full" /><Skeleton className="h-9 w-full" /><Skeleton className="h-9 w-full" /></div>
             ) : (
               <>
                 <General handlingFeeDecountPrice={handlingFeeDecountPrice} />
-                <Button
-                  color="primary"
-                  variant="contained"
-                  type="submit"
-                  disabled={isClick}
-                >
-                  儲存
-                </Button>
+                <div className="flex justify-end">
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    disabled={isClick}
+                  >
+                    儲存
+                  </Button>
+                </div>
               </>
             )}
           </form>
         </FormProvider>
-      </Container>
+      </div>
     </Page>
   )
 }

@@ -1,34 +1,21 @@
 /** @jsxImportSource @emotion/react */
-import { Grid, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 
+// 頁面標題（STYLE.md §3 title）。舊版 subTitle 多為裝飾用的全大寫英文 overline，
+// 依 STYLE.md「不使用全大寫英文標題」只顯示含中文的 subTitle（作為標題上方的說明）。
+const hasCJK = text => typeof text === 'string' && /[一-鿿]/.test(text)
+
 const PageTitle = ({ title, subTitle, className, style }) => {
+  // 標題一律使用 text 色；保留呼叫端其他 style（如外距），忽略舊版指定的藍色
+  const { color, ...restStyle } = style || {}
   return (
-    <Grid css={className} className='noprint' style={style}>
-      <Grid item>
-        {subTitle && (
-          <Typography component="h2" gutterBottom variant="overline">
-            {subTitle}
-          </Typography>
-        )}
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div
-            style={{
-              width: '4px',
-              height: '18px',
-              backgroundColor: '#1A73E8',
-              marginRight: '8px',
-              borderRadius: '2px',
-            }}
-          />
-          <Typography component="h3" variant="h3" style={{ color: style && style.color }}>
-            {title}
-          </Typography>
-        </div>
-      </Grid>
-    </Grid>
+    <div css={className} className="ui-root noprint flex min-w-0 flex-col gap-1" style={restStyle}>
+      {hasCJK(subTitle) && <span className="text-caption text-text-tertiary">{subTitle}</span>}
+      <h1 className="m-0 text-title !font-bold text-text">{title}</h1>
+    </div>
   )
 }
+
 PageTitle.propTypes = {
   title: PropTypes.string,
   subTitle: PropTypes.string,

@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, CardHeader, Divider, TextField,
-  FormControlLabel, Checkbox,
-} from '@mui/material'
+import { TextField } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
@@ -40,9 +39,10 @@ function PasswordSetting({ className, setPasswordSetting, passwordSetting, input
   }
 
   return (
-    <Card css={className}>
-      <CardHeader title="密碼設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>密碼設定</CardTitle>
+      </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
           <TextField
@@ -70,10 +70,9 @@ function PasswordSetting({ className, setPasswordSetting, passwordSetting, input
               value={passwordSetting[key].password}
               onChange={e => handlePasswordOnchange(key, e.target.value)}
             />
-            <FormControlLabel
+            <CheckboxField
               disabled={!inputEnable}
               css={styles.isUsing}
-              control={<Checkbox color="primary" />}
               label="啟用"
               checked={passwordSetting[key].isUsing}
               onChange={(e, v) => handleIsUsingOnchange(key, v)}

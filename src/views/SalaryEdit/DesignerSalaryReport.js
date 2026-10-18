@@ -17,7 +17,7 @@ import { theme } from '../../theme'
 const styles = {
   font: css({
     fontWeight: 'bold',
-    color: '#3f51b5',
+    color: 'rgb(var(--accent))',
   }),
   spaces: css({
     padding: theme.spacing(2),

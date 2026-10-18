@@ -1,17 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
   FormControlLabel,
-  FormLabel,
-  Grid,
   Radio,
   RadioGroup,
-  TextField,
   colors,
 } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
@@ -22,6 +13,9 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { css } from '@emotion/react'
 import { theme } from '../../../theme'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input, Label } from 'ui/input'
 
 const styles = {
   root: css({}),
@@ -123,33 +117,34 @@ function GeneralSettings({
       .filter(d => values[d] === '' || (values[d] === 0 && d !== 'designerNo'))
       .indexOf(true) !== -1
   return (
-    <Card {...rest} css={styles.root}>
+    <Card {...rest}>
       <form onSubmit={handleSubmit}>
-        <CardHeader title="個人資料" />
-        <Divider />
+        <CardHeader>
+          <CardTitle>個人資料</CardTitle>
+        </CardHeader>
         <CardContent>
-          <Grid container spacing={4}>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="姓氏"
-                name="lastName"
-                onChange={handleFiledChange}
-                value={values.lastName !== null ? values.lastName : ""}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="名字"
-                name="firstName"
-                onChange={handleFiledChange}
-                value={values.firstName !== null ? values.firstName : ""}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div>
+              <Field label="姓氏" htmlFor="profile-general-lastName">
+                <Input
+                  id="profile-general-lastName"
+                  name="lastName"
+                  onChange={handleFiledChange}
+                  value={values.lastName !== null ? values.lastName : ""}
+                />
+              </Field>
+            </div>
+            <div>
+              <Field label="名字" htmlFor="profile-general-firstName">
+                <Input
+                  id="profile-general-firstName"
+                  name="firstName"
+                  onChange={handleFiledChange}
+                  value={values.firstName !== null ? values.firstName : ""}
+                />
+              </Field>
+            </div>
+            <div>
               <DatePicker
                 css={styles.datePicker}
                 label="生日"
@@ -171,9 +166,9 @@ function GeneralSettings({
                 }}
                 onChange={handleBirthday}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <FormLabel>性別</FormLabel>
+            </div>
+            <div>
+              <Label>性別</Label>
               <RadioGroup
                 aria-label="gender"
                 name="gender"
@@ -184,7 +179,7 @@ function GeneralSettings({
                 <FormControlLabel value="MALE" control={<Radio />} label="男" />
                 <FormControlLabel value="FEMALE" control={<Radio />} label="女" />
               </RadioGroup>
-            </Grid>
+            </div>
             {/* <Grid item md={6} xs={12}>
               <FormControl component="fieldset">
                 <FormLabel component="legend">身份</FormLabel>
@@ -208,117 +203,115 @@ function GeneralSettings({
                 </FormGroup>
               </FormControl>
             </Grid> */}
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="暱稱"
-                name="nickName"
-                onChange={handleFiledChange}
-                type="text"
-                value={values.nickName !== null ? values.nickName : ""}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="設計師編號"
-                name="designerNo"
-                onChange={handleFiledChange}
-                type="text"
-                value={values.designerNo !== null ? values.designerNo : ""}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="手機號碼"
-                name="cellphone"
-                type="text"
-                onChange={handleFiledChange}
-                value={values.cellphone !== null ? values.cellphone : ""}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={12} xs={12}>
-              <TextField
-                fullWidth
-                label="身分證字號"
-                name="serialNumber"
-                onChange={handleFiledChange}
-                type="text"
-                value={values.serialNumber !== null ? values.serialNumber : ""}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={12} xs={12}>
-              <TextField
-                fullWidth
-                label="電子信箱"
-                name="email"
-                onChange={handleFiledChange}
-                value={values.email !== null ? values.email : ""}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={12} xs={12}>
-              <TextField
-                fullWidth
-                label="通訊住址"
-                name="contactAddress"
-                onChange={handleFiledChange}
-                type="text"
-                value={values.contactAddress !== null ? values.contactAddress : ""}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={12} xs={12}>
-              <TextField
-                fullWidth
-                label="戶籍住址"
-                name="address"
-                onChange={handleFiledChange}
-                type="text"
-                value={values.address !== null ? values.address : ""}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={12} xs={12}>
-              <TextField
-                fullWidth
-                label="自我介紹"
-                name="selfIntroduction"
-                onChange={handleFiledChange}
-                type="text"
-                value={values.selfIntroduction !== null ? values.selfIntroduction : ""}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={12} xs={12}>
-              <TextField
-                fullWidth
-                name='selfIntroductionLink'
-                variant='outlined'
-                label='自介連結'
-                placeholder='請輸入網址 ex: https://www.mlgroup.io'
-                value={values.selfIntroductionLink !== null ? values.selfIntroductionLink : ""}
-                onChange={handleFiledChange}
-              />
-            </Grid>
-          </Grid>
+            <div>
+              <Field label="暱稱" htmlFor="profile-general-nickName">
+                <Input
+                  id="profile-general-nickName"
+                  name="nickName"
+                  onChange={handleFiledChange}
+                  type="text"
+                  value={values.nickName !== null ? values.nickName : ""}
+                />
+              </Field>
+            </div>
+            <div>
+              <Field label="設計師編號" htmlFor="profile-general-designerNo">
+                <Input
+                  id="profile-general-designerNo"
+                  name="designerNo"
+                  onChange={handleFiledChange}
+                  type="text"
+                  value={values.designerNo !== null ? values.designerNo : ""}
+                />
+              </Field>
+            </div>
+            <div>
+              <Field label="手機號碼" htmlFor="profile-general-cellphone">
+                <Input
+                  id="profile-general-cellphone"
+                  name="cellphone"
+                  type="text"
+                  onChange={handleFiledChange}
+                  value={values.cellphone !== null ? values.cellphone : ""}
+                />
+              </Field>
+            </div>
+            <div className="md:col-span-2">
+              <Field label="身分證字號" htmlFor="profile-general-serialNumber">
+                <Input
+                  id="profile-general-serialNumber"
+                  name="serialNumber"
+                  onChange={handleFiledChange}
+                  type="text"
+                  value={values.serialNumber !== null ? values.serialNumber : ""}
+                />
+              </Field>
+            </div>
+            <div className="md:col-span-2">
+              <Field label="電子信箱" htmlFor="profile-general-email">
+                <Input
+                  id="profile-general-email"
+                  name="email"
+                  onChange={handleFiledChange}
+                  value={values.email !== null ? values.email : ""}
+                />
+              </Field>
+            </div>
+            <div className="md:col-span-2">
+              <Field label="通訊住址" htmlFor="profile-general-contactAddress">
+                <Input
+                  id="profile-general-contactAddress"
+                  name="contactAddress"
+                  onChange={handleFiledChange}
+                  type="text"
+                  value={values.contactAddress !== null ? values.contactAddress : ""}
+                />
+              </Field>
+            </div>
+            <div className="md:col-span-2">
+              <Field label="戶籍住址" htmlFor="profile-general-address">
+                <Input
+                  id="profile-general-address"
+                  name="address"
+                  onChange={handleFiledChange}
+                  type="text"
+                  value={values.address !== null ? values.address : ""}
+                />
+              </Field>
+            </div>
+            <div className="md:col-span-2">
+              <Field label="自我介紹" htmlFor="profile-general-selfIntroduction">
+                <Input
+                  id="profile-general-selfIntroduction"
+                  name="selfIntroduction"
+                  onChange={handleFiledChange}
+                  type="text"
+                  value={values.selfIntroduction !== null ? values.selfIntroduction : ""}
+                />
+              </Field>
+            </div>
+            <div className="md:col-span-2">
+              <Field label="自介連結" htmlFor="profile-general-selfIntroductionLink">
+                <Input
+                  id="profile-general-selfIntroductionLink"
+                  name='selfIntroductionLink'
+                  placeholder='請輸入網址 ex: https://www.mlgroup.io'
+                  value={values.selfIntroductionLink !== null ? values.selfIntroductionLink : ""}
+                  onChange={handleFiledChange}
+                />
+              </Field>
+            </div>
+          </div>
         </CardContent>
-        <Divider />
-        <CardActions>
+        <CardFooter>
           <Button
-            css={styles.saveButton}
             type="submit"
-            variant="contained"
+            variant="primary"
             disabled={!vaild}
           >
             儲存變更
           </Button>
-        </CardActions>
+        </CardFooter>
       </form>
     </Card>
   )

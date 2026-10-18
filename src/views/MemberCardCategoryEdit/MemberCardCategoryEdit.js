@@ -1,14 +1,13 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container, Card, CardContent, CardHeader, TextField } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import React, { useState, useEffect } from 'react'
 import idx from 'idx'
 import { useFetchGetMembershipCategory } from 'hooks/useFetchGetMembershipCategory'
 import useFetchUpdateMembershipCategory from 'hooks/useFetchUpdateMembershipCategory'
-
-import styles from './styles/MemberCardCategoryEdit'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
+import { PageHeader } from 'ui/page-header'
 
 function MemberCardCategoryEdit({ match }) {
   // 拿到此會員卡的資料
@@ -56,44 +55,41 @@ function MemberCardCategoryEdit({ match }) {
       })
   }
   return (
-    <Page css={styles.root} title="編輯會員卡分類">
-      <Container maxWidth="md">
-        <PageTitle title='編輯會員卡分類' subTitle='Edit Membership Categories' />
-        <Card css={styles.aboutPayment}>
-          <CardHeader title="一般資訊" />
-          <CardContent>
-            <TextField
-              name="no"
-              label="代號"
-              variant="outlined"
-              fullWidth
-              css={styles.formControl}
-              value={submitValue.no}
-              onChange={event => setSubmitValue({ ...submitValue, no: event.target.value })}
-            />
-            <TextField
-              label="名稱"
-              variant="outlined"
-              fullWidth
-              css={styles.formControl}
-              name="name"
-              value={submitValue.name}
-              onChange={event => setSubmitValue({ ...submitValue, name: event.target.value })}
-            />
+    <Page className="ui-root" title="編輯會員卡分類">
+      <div className="mx-auto max-w-3xl">
+        <PageHeader title="編輯會員卡分類" />
+        <Card>
+          <CardHeader>
+            <CardTitle>一般資訊</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <Field label="代號">
+              <Input
+                name="no"
+                value={submitValue.no}
+                onChange={event => setSubmitValue({ ...submitValue, no: event.target.value })}
+              />
+            </Field>
+            <Field label="名稱">
+              <Input
+                name="name"
+                value={submitValue.name}
+                onChange={event => setSubmitValue({ ...submitValue, name: event.target.value })}
+              />
+            </Field>
           </CardContent>
+          <CardFooter>
+            <Button
+              variant="primary"
+              type="submit"
+              data-testid="save"
+              onClick={() => onSubmit()}
+            >
+              儲存
+            </Button>
+          </CardFooter>
         </Card>
-        <div css={styles.actions}>
-          <Button
-            color="primary"
-            variant="contained"
-            type="submit"
-            data-testid="save"
-            onClick={() => onSubmit()}
-          >
-            儲存
-          </Button>
-        </div>
-      </Container>
+      </div>
     </Page>
   )
 }

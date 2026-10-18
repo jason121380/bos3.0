@@ -1,90 +1,21 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Checkbox,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-  Switch,
-  IconButton
-} from '@mui/material'
-import EditIconSlot from '@mui/icons-material/Edit';
+// 預設權限開關保留 MUI Switch（橋接主題已套新外觀）
+import { Switch } from '@mui/material'
+import { Pencil } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import useFetchSettingUpdateDefaultAuthority from 'hooks/useFetctSetUpdateDefaultAuthority'
 import useFetchDeleteAuthority from 'hooks/useFetchDeleteAuthority'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Badge } from 'ui/badge'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
-const styles = {
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
-    overflow: 'hidden',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  tableHead: css({
-    backgroundColor: '#FFFFFF',
-    '& .MuiTableCell-head': {
-      color: '#212121',
-      fontWeight: 'bold',
-      borderBottom: '1px solid #f0f0f0',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid #f0f0f0',
-      fontSize: '14px !important',
-      color: '#333',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-  }),
-  actionButton: css({
-    padding: '4px !important',
-    color: '#999 !important',
-    '&:hover': {
-      color: '#1A73E8 !important',
-      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
-    }
-  }),
-  switch: css({
-    '& .MuiSwitch-track': {
-      marginLeft: 0
-    },
-  }),
-  thumb: {
-    '& .MuiSwitch-thumb': {
-      boxShadow: 'rgba(0, 0, 0, 0.2) 0px 2px 1px -1px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px',
-      backgroundColor: 'white'
-    }
-  }
-}
+// 權限狀態文字 → Badge 樣式（僅外觀）
+const authStatusVariant = status => (status === '完整權限' ? 'success' : status === '部分權限' ? 'warning' : 'neutral')
 
 function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) {
   const [selected, setSelected] = useState([])
@@ -156,91 +87,96 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
   }, [merchantAuth])
 
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <Card css={styles.card}>
-        <CardHeader
-          title={
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
-                角色權限列表
-              </Typography>
-              <Typography color="textSecondary" variant="body2">
-                共 {merchantAuth.length} 筆
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table size="small">
-                <TableHead css={styles.tableHead}>
-                  <TableRow>
-                    <TableCell padding="checkbox">
+    <div {...rest}>
+      <Card>
+        <CardHeader className="pb-4">
+          <div className="flex items-baseline gap-3">
+            <CardTitle>角色權限列表</CardTitle>
+            <span className="text-label tabular-nums text-text-secondary">
+              共 {merchantAuth.length} 筆
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table className="min-w-[700px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={
+                      selected.length ===
+                      merchantAuth.filter(d => d.authorityName !== '高階主管').length &&
+                      merchantAuth.length > 0
+                    }
+                    indeterminate={
+                      selected.length > 0 &&
+                      selected.length <
+                      merchantAuth.filter(d => d.authorityName !== '高階主管').length
+                    }
+                    onChange={handleSelectAll}
+                    disabled={merchantAuth.length === 0}
+                  />
+                </TableHead>
+                <TableHead>操作</TableHead>
+                <TableHead>名稱</TableHead>
+                <TableHead numeric>目前人數</TableHead>
+                <TableHead>是否為預設權限</TableHead>
+                <TableHead>狀態</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {merchantAuth.length > 0 &&
+                merchantAuth.map((data, index) => (
+                  <TableRow key={data.id} data-state={selected.indexOf(data.id) > -1 ? 'selected' : undefined}>
+                    <TableCell>
                       <Checkbox
-                        checked={
-                          selected.length ===
-                          merchantAuth.filter(d => d.authorityName !== '高階主管').length &&
-                          merchantAuth.length > 0
-                        }
-                        color="primary"
-                        indeterminate={
-                          selected.length > 0 &&
-                          selected.length <
-                          merchantAuth.filter(d => d.authorityName !== '高階主管').length
-                        }
-                        onChange={handleSelectAll}
-                        disabled={merchantAuth.length === 0}
+                        aria-label={`選取 ${data.authorityName}`}
+                        onChange={() => handleSelectOne(data.id)}
+                        checked={selected.indexOf(data.id) > -1}
+                        disabled={data.authorityName === '高階主管'}
                       />
                     </TableCell>
-                    <TableCell>操作</TableCell>
-                    <TableCell>名稱</TableCell>
-                    <TableCell>目前人數</TableCell>
-                    <TableCell>是否為預設權限</TableCell>
-                    <TableCell>狀態</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {merchantAuth.length > 0 &&
-                    merchantAuth.map((data, index) => (
-                      <TableRow key={data.id} css={styles.tableRow}>
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            color="primary"
-                            onChange={() => handleSelectOne(data.id)}
-                            checked={selected.indexOf(data.id) > -1}
-                            disabled={data.authorityName === '高階主管'}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <IconButton
-                            component={data.authorityName === '高階主管' ? undefined : RouterLink}
-                            css={styles.actionButton}
+                    <TableCell>
+                      {/* 高階主管不可編輯：與舊版相同呈現為停用的按鈕；其他角色為連結 */}
+                      {data.authorityName === '高階主管' ? (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-text-secondary"
+                          aria-label="編輯角色"
+                          disabled={data.authorityName === '高階主管'}
+                        >
+                          <Pencil strokeWidth={1.75} />
+                        </Button>
+                      ) : (
+                        <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                          <RouterLink
+                            aria-label="編輯角色"
                             to={data.authorityName === '高階主管' ? undefined : `/role/edit/${data.id}`}
-                            size="small"
-                            disabled={data.authorityName === '高階主管'}
                           >
-                            <EditIconSlot fontSize="small" />
-                          </IconButton>
-                        </TableCell>
-                        <TableCell>{data.authorityName}</TableCell>
-                        <TableCell>{data.usingDesignerCount}</TableCell>
-                        <TableCell>
-                          <Switch
-                            size="small"
-                            css={css([styles.switch, data.isDefault ? {} : styles.thumb])}
-                            checked={data.isDefault}
-                            onClick={() => handleSetDefaltAuth(data.id)}
-                          />
-                        </TableCell>
-                        <TableCell>{authStatus[index]}</TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
+                            <Pencil strokeWidth={1.75} />
+                          </RouterLink>
+                        </Button>
+                      )}
+                    </TableCell>
+                    <TableCell>{data.authorityName}</TableCell>
+                    <TableCell numeric>{data.usingDesignerCount}</TableCell>
+                    <TableCell>
+                      <Switch
+                        size="small"
+                        checked={data.isDefault}
+                        onClick={() => handleSetDefaltAuth(data.id)}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {authStatus[index] && <Badge variant={authStatusVariant(authStatus[index])}>{authStatus[index]}</Badge>}
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
       <TableEditBar selected={selected} onDelete={handleSeletedDelete} />
     </div>

@@ -1,62 +1,15 @@
-/** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
-import {
-  Card, CardContent, CardHeader, TextField, Grid, Alert,
-  Container, Divider, Button, CircularProgress, Snackbar
-} from '@mui/material'
+import { Alert, Snackbar } from '@mui/material'
 import Page from 'components/Page'
 import { useParams } from 'react-router'
 import produce from 'immer'
 import { cloneDeep } from 'lodash'
 import useFetchCheckIsCustomerExistForOuterStore from 'hooks/useFetchCheckIsCustomerExistForOuterStore'
 import useFetchGetMerchantName from 'hooks/useFetchGetMerchantName'
-import { css } from '@emotion/react'
-import { ThemeProvider } from '@mui/material/styles'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-    '& input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active': {
-      'WebkitBoxShadow': '0 0 0 60px #ffffff inset !important',
-      'backgroundColor': '#fafafa !important',
-      'backgroundClip': 'content-box !important'
-    },
-    '& .MuiOutlinedInput-input': {
-      padding: '12px !important'
-    },
-    '& .MuiCardContent-root': {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 10
-    },
-    '& .MuiCardContent-root, input, .MuiFormControlLabel-label': {
-      fontSize: 16,
-    },
-    '& .MuiCardHeader-title': {
-      fontSize: 20
-    },
-    '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: '#3f51b5'
-    },
-    '& .MuiAlert-message': {
-      fontSize: 16
-    },
-    '& .MuiOutlinedInput-input:-webkit-autofill': {
-      caretColor: '#000',
-      'WebkitTextFillColor': '#000'
-    }
-  }),
-  label: css({
-    display: 'flex',
-    alignItems: 'center',
-    whiteSpace: 'nowrap',
-    '& span': {
-      color: 'red'
-    }
-  })
-}
+import { LoaderCircle } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card, CardContent } from 'ui/card'
+import { Field, Input } from 'ui/input'
 
 const index = () => {
   const { id } = useParams()
@@ -181,86 +134,66 @@ const index = () => {
   }, [getMerchantName.loading])
 
   return (
-    <Page css={styles.root} title={`${data.merchantName}  抽獎資格登錄`}>
-      <Container maxWidth='md'>
-        <Card>
-          <CardHeader title={`${data.merchantName}  抽獎資格登錄`} />
-          <Divider />
-          <CardContent>
-            <Grid container spacing={2}>
-              <Grid item xs={3} css={styles.label}>
-                電話<span>*</span>
-              </Grid>
-              <Grid item xs={9}>
-                <TextField
-                  value={data.cellphone}
-                  fullWidth
-                  variant="outlined"
-                  type="tel"
-                  onBlur={() => {
-                    checkExist({
-                      variables: {
-                        input: {
-                          cellphone: data.cellphone,
-                          storeId: id
-                        }
-                      }
-                    })
-                  }}
-                  onChange={e => {
-                    if (e.target.value.match(/^[0-9]+$/) || e.target.value === '') {
-                      handleSetInputValue(e.target.value, 'cellphone')
+    <Page className="ui-root flex flex-col gap-4" title={`${data.merchantName}  抽獎資格登錄`}>
+      <h1 className="text-title !font-bold text-text">{`${data.merchantName}  抽獎資格登錄`}</h1>
+      <Card>
+        <CardContent className="flex flex-col gap-4">
+          <Field label="電話" required htmlFor="send-ticket-cellphone">
+            <Input
+              id="send-ticket-cellphone"
+              className="h-11"
+              value={data.cellphone}
+              type="tel"
+              onBlur={() => {
+                checkExist({
+                  variables: {
+                    input: {
+                      cellphone: data.cellphone,
+                      storeId: id
                     }
-                  }}
-                />
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item xs={3} css={styles.label}>
-                張數<span>*</span>
-              </Grid>
-              <Grid item xs={9}>
-                <TextField
-                  value={data.count}
-                  placeholder='張數範圍1~500'
-                  fullWidth
-                  variant="outlined"
-                  type="tel"
-                  onChange={e => {
-                    if (e.target.value.match(/^[0-9]+$/) || e.target.value === '') {
-                      handleSetInputValue(parseInt(e.target.value) ? parseInt(e.target.value) : '', 'count')
-                    }
-                  }}
-                />
-              </Grid>
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid item xs={3} css={styles.label}>
-                姓名<span>*</span>
-              </Grid>
-              <Grid item xs={9}>
-                <TextField
-                  disabled={data.isExist || checkExistData.loading}
-                  value={data.name}
-                  fullWidth
-                  variant="outlined"
-                  inputProps={{ maxLength: 20 }}
-                  onChange={e => handleSetInputValue(e.target.value, 'name')}
-                />
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
-        <ThemeProvider theme={theme}>
-          <Button
-            style={{ marginTop: 20, width: '100%', fontSize: 16, minHeight: 40 }}
-            disabled={checkExistData.loading || !data.name.trim()}
-            color='primary'
-            variant='contained'
-            onClick={handleSubmit}
-          >{isClick ? <CircularProgress style={{ color: 'white' }} size={22} /> : '提交'}</Button>
-        </ThemeProvider>
-      </Container>
+                  }
+                })
+              }}
+              onChange={e => {
+                if (e.target.value.match(/^[0-9]+$/) || e.target.value === '') {
+                  handleSetInputValue(e.target.value, 'cellphone')
+                }
+              }}
+            />
+          </Field>
+          <Field label="張數" required htmlFor="send-ticket-count">
+            <Input
+              id="send-ticket-count"
+              className="h-11 tabular-nums"
+              value={data.count}
+              placeholder='張數範圍1~500'
+              type="tel"
+              onChange={e => {
+                if (e.target.value.match(/^[0-9]+$/) || e.target.value === '') {
+                  handleSetInputValue(parseInt(e.target.value) ? parseInt(e.target.value) : '', 'count')
+                }
+              }}
+            />
+          </Field>
+          <Field label="姓名" required htmlFor="send-ticket-name">
+            <Input
+              id="send-ticket-name"
+              className="h-11"
+              disabled={data.isExist || checkExistData.loading}
+              value={data.name}
+              maxLength={20}
+              onChange={e => handleSetInputValue(e.target.value, 'name')}
+            />
+          </Field>
+        </CardContent>
+      </Card>
+      <Button
+        variant="primary"
+        size="lg"
+        className="h-11 w-full"
+        disabled={checkExistData.loading || !data.name.trim()}
+        onClick={handleSubmit}
+      >{isClick ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : '提交'}</Button>
       <Snackbar
         onClose={closeSnackBar}
         open={openSnack.open}

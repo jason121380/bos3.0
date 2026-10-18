@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
+// 大型頁策略：抽成級距表單（TextField、Tabs、Grid 排版）保留 MUI
+// 「分指定/不指定」的 handler 掛在 FormControlLabel 的 onClick（label 上），換成 CheckboxField 會改變點擊文字時的觸發次數，保留 MUI
 import {
-  Card, CardContent, CardHeader, Checkbox, Grid, TextField,
-  Typography, FormControlLabel, Tab, Tabs, ToggleButton,
-  ToggleButtonGroup
+  Checkbox, Grid, TextField,
+  FormControlLabel, Tab, Tabs
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Fragment, useEffect, useState } from 'react'
@@ -13,6 +14,7 @@ import { openSnackbar } from 'elements/snackbars'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { css } from '@emotion/react'
 import { theme } from '../../../theme'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 const isSegmented = [
   { label: '全段', value: false },
@@ -629,7 +631,9 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
   return (
     <Fragment>
       <Card {...rest} css={css([styles.root, className])}>
-        <CardHeader title="抽成方式設定" />
+        <CardHeader className="pb-4">
+          <CardTitle>抽成方式設定</CardTitle>
+        </CardHeader>
         {!profitSharing.isSegmented && (
           <Tabs
             value={tabValue}
@@ -646,10 +650,10 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
           <PerfectScrollbar>
             <div css={styles.inner}>
               <Grid >
-                <Typography variant="h5" css={styles.subtitle}>
+                <h4 className="my-4 text-heading text-text">
                   抽成模式
-                </Typography>
-                <ToggleButtonGroup
+                </h4>
+                <ToggleGroup
                   size="small"
                   css={styles.deductionWayMarginL}
                   value={profitSharing.isSegmented}
@@ -657,15 +661,15 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                   exclusive
                 >
                   {isSegmented.map((data, idx) => (
-                    <ToggleButton
+                    <ToggleGroupItem
                       key={`${data.label}-${idx}`}
                       value={data.value}
                       data-testid={`assign-designer-${data.value}`}
                     >
                       {data.label}
-                    </ToggleButton>
+                    </ToggleGroupItem>
                   ))}
-                </ToggleButtonGroup>
+                </ToggleGroup>
                 <FormControlLabel
                   css={styles.marginL}
                   control={<Checkbox color="primary" />}
@@ -801,9 +805,9 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
               ) : !profitSharing.isSegmented ? (
                 <Fragment>
                   <Grid>
-                    <Typography variant="h5" css={styles.subtitle}>
+                    <h4 className="my-4 text-heading text-text">
                       指定業績
-                    </Typography>
+                    </h4>
                   </Grid>
                   {profitSharing.nonSegmented[deductionIndex].rakeData.designate.map(
                     (data, index) => {
@@ -871,9 +875,9 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                     }
                   )}
                   <Grid>
-                    <Typography variant="h5" css={styles.subtitle}>
+                    <h4 className="my-4 text-heading text-text">
                       不指定業績
-                    </Typography>
+                    </h4>
                   </Grid>
                   {profitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.map(
                     (data, index) => {
@@ -944,9 +948,9 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
               ) : (
                 <Fragment>
                   <Grid>
-                    <Typography variant="h5" css={styles.subtitle}>
+                    <h4 className="my-4 text-heading text-text">
                       指定業績
-                    </Typography>
+                    </h4>
                   </Grid>
                   {profitSharing.segmented[0].designate.map((data, index) => {
                     return (
@@ -1023,9 +1027,9 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                     )
                   })}
                   <Grid>
-                    <Typography variant="h5" css={styles.subtitle}>
+                    <h4 className="my-4 text-heading text-text">
                       不指定業績
-                    </Typography>
+                    </h4>
                   </Grid>
                   {profitSharing.segmented[0].nonDesignate.map((data, index) => {
                     return (

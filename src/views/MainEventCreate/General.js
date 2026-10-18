@@ -1,52 +1,13 @@
-/** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, TextField, Checkbox,
-  Divider, Button, CardActions, FormControlLabel,
+  Checkbox, FormControlLabel,
   ToggleButton, ToggleButtonGroup
 } from '@mui/material'
 import { Fragment } from 'react'
 import { MobileDatePicker } from '@mui/x-date-pickers'
 import MLAutocpmplete from 'components/MerchantListAutocpmpleteForManagement'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    marginTop: theme.spacing(3),
-    '& .MuiCardHeader-action': {
-      alignItems: ''
-    }
-  }),
-  date: css({
-    display: 'flex',
-    gap: 20,
-    flexWrap: 'wrap',
-    '& input': {
-      cursor: 'pointer'
-    },
-    '& .MuiTextField-root': {
-      width: 150
-    }
-  }),
-  content: css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 25,
-    paddingTop: 16
-  }),
-  type: css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 15,
-    '& p': {
-      fontSize: 14,
-      fontWeight: 500
-    },
-    '& .MuiFormControl-root': {
-      width: 150
-    },
-  })
-}
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
 
 function General({ dateChange, inputValue, valueChange, isClick, submit }) {
   const PrivateToggle = () => (
@@ -58,11 +19,12 @@ function General({ dateChange, inputValue, valueChange, isClick, submit }) {
 
   return (
     <Fragment>
-      <Card css={styles.root}>
-        <CardHeader title='活動設定' action={<PrivateToggle />} />
-        <Divider />
-        <CardContent css={styles.content}>
-          <div css={styles.date}>
+      <Card>
+        <CardHeader className="items-center" action={<PrivateToggle />}>
+          <CardTitle>活動設定</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-6">
+          <div className="flex flex-wrap gap-5 [&_.MuiTextField-root]:w-[150px] [&_input]:cursor-pointer">
             <MobileDatePicker
               closeOnSelect
               label="預設起始時間"
@@ -96,32 +58,32 @@ function General({ dateChange, inputValue, valueChange, isClick, submit }) {
               onChange={value => dateChange(new Date(value).getTime(), 'endDateDefault')}
             />
           </div>
-          <TextField
-            label='活動名稱'
-            placeholder='請輸入活動名稱'
-            variant='outlined'
-            value={inputValue.nameDefault}
-            onChange={e => valueChange('nameDefault', e.target.value)}
-          />
+          <Field label='活動名稱'>
+            <Input
+              placeholder='請輸入活動名稱'
+              value={inputValue.nameDefault}
+              onChange={e => valueChange('nameDefault', e.target.value)}
+            />
+          </Field>
           {!inputValue.isPublic && (
             <MLAutocpmplete
               selectIds={inputValue.merchantIds}
               onValueChange={v => valueChange('merchantIds', v)}
             />
           )}
-          <div css={styles.type}>
-            <TextField
-              label='總張數上限'
-              variant='outlined'
-              value={inputValue.maxCountDefault}
-              onFocus={e => e.target.select()}
-              onChange={e => {
-                const value = e.target.value
-                if (value.match(/^[0-9]*$/)) {
-                  valueChange('maxCountDefault', Number(value))
-                }
-              }}
-            />
+          <div className="flex flex-col gap-4">
+            <Field label='總張數上限' className='w-40'>
+              <Input
+                value={inputValue.maxCountDefault}
+                onFocus={e => e.target.select()}
+                onChange={e => {
+                  const value = e.target.value
+                  if (value.match(/^[0-9]*$/)) {
+                    valueChange('maxCountDefault', Number(value))
+                  }
+                }}
+              />
+            </Field>
             <FormControlLabel
               style={{ width: 'fit-content' }}
               control={<Checkbox color="primary" />}
@@ -131,12 +93,12 @@ function General({ dateChange, inputValue, valueChange, isClick, submit }) {
             />
           </div>
         </CardContent>
+        <CardFooter>
+          <Button disabled={isClick} onClick={submit} variant="primary">
+            新增
+          </Button>
+        </CardFooter>
       </Card>
-      <CardActions style={{ paddingLeft: 0 }}>
-        <Button disabled={isClick} onClick={submit} color="primary" variant="contained">
-          新增
-        </Button>
-      </CardActions>
     </Fragment>
   )
 }

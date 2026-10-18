@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Button, Collapse } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import idx from 'idx'
 import { useState, useEffect, Fragment } from 'react'
 import { endOfDay, startOfDay } from 'date-fns'
@@ -12,40 +9,11 @@ import produce from 'immer'
 import format from 'date-fns/format'
 import { CSVLink } from "react-csv";
 import AdminPageHeader from 'components/AdminPageHeader'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3)
-  }),
-  filterWrap: css({
-    display: 'flex',
-    gap: 12,
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    marginBottom: theme.spacing(2),
-  }),
-  pillButton: css({
-    borderRadius: '20px !important',
-    padding: '4px 20px !important',
-    fontSize: '14px !important',
-    boxShadow: 'none !important',
-    fontWeight: 'bold !important',
-    height: '32px !important',
-  }),
-  secondaryPill: css({
-    backgroundColor: '#f5f5f5 !important',
-    color: '#666 !important',
-    '&:hover': {
-      backgroundColor: '#eeeeee !important',
-    }
-  }),
-}
 
 function EventCouponIssuanceDetails() {
   const [getVoucherIssuanceRecord, voucherIssuanceRecordData] = useFetchGetVoucherIssuanceRecordLazy()
@@ -136,8 +104,8 @@ function EventCouponIssuanceDetails() {
 
   return (
     <Fragment>
-      <Page css={styles.root} title="活動發券明細">
-        <Container maxWidth={false} css={styles.container}>
+      <Page className="ui-root" title="活動發券明細">
+        <div>
           <AdminPageHeader
             title="活動發券明細"
             showFilter={showFilter}
@@ -158,9 +126,9 @@ function EventCouponIssuanceDetails() {
             />
           </AdminPageHeader>
 
-          <Collapse in={showFilter}>
-            <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
-              <div css={styles.filterWrap} style={{ marginBottom: 0 }}>
+          {showFilter && (
+            <Card className="mb-4 p-4">
+              <div className="flex flex-wrap items-center gap-3">
                 <MainEventAutocomplete
                   value={inputData.eventIds}
                   onChange={value => {
@@ -171,24 +139,22 @@ function EventCouponIssuanceDetails() {
                     )
                   }}
                 />
-                <div style={{ display: 'flex', gap: 12 }}>
+                <div className="flex gap-3">
                   <Button
-                    css={styles.pillButton}
-                    color='primary'
-                    variant='contained'
+                    variant='primary'
                     disabled={voucherIssuanceRecordData.loading}
                     onClick={handleSearch}
                   >搜尋</Button>
-                  <CSVLink data={CSVData} filename="活動發券明細.csv" style={{ textDecoration: 'none' }}>
-                    <Button css={[styles.pillButton, styles.secondaryPill]} variant='contained'>報表匯出</Button>
-                  </CSVLink>
+                  <Button asChild variant='secondary'>
+                    <CSVLink data={CSVData} filename="活動發券明細.csv">報表匯出</CSVLink>
+                  </Button>
                 </div>
               </div>
-            </div>
-          </Collapse>
+            </Card>
+          )}
 
           {voucherIssuanceRecordData.loading ?
-            <div style={{ textAlign: 'center', marginTop: 100 }}><CircularProgress /></div>
+            <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
             :
             <Results
               recordData={recordData}
@@ -197,7 +163,7 @@ function EventCouponIssuanceDetails() {
               onRowsPerPageChange={handleRowsPerPageChange}
             />
           }
-        </Container>
+        </div>
       </Page>
     </Fragment>
   )

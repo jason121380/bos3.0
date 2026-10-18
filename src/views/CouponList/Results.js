@@ -1,21 +1,12 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button, Card, CardContent, CardHeader, Checkbox, Divider, Table,
-  TableBody, TableCell, TableHead, TableRow, Typography, Dialog,
-  DialogTitle, DialogContent, DialogContentText, TextField,
-  DialogActions, IconButton
-} from '@mui/material'
-import EditIconSlot from '@mui/icons-material/Edit';
+import { Copy, Download, Pencil } from 'lucide-react'
 
 import { Link } from 'react-router-dom';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteService from 'hooks/useFetchDeleteService'
 import format from 'date-fns/format'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from "react-csv";
 import useFetchMerchantHelperItems from 'hooks/useFetchMerchantHelperItems'
@@ -25,80 +16,19 @@ import useFetchSettingBatchSettingForDeduction from 'hooks/useFetchBatchSettingF
 import useFetchMerchantCommissionWay from 'hooks/useFetchMerchantCommissionWay'
 import useFetchMerchantPassword from 'hooks/useFetchMerchantPassword'
 import useFetchSetUpdateServicesLaunchedStatus from 'hooks/useFetchSetUpdateServicesLaunchedStatus'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Badge } from 'ui/badge'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
+import { formatNumber } from 'ui/format'
+import { Field, Input } from 'ui/input'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { cn } from 'ui/utils'
 
 import AboutDeductionEditModal from './AboutDeductionEditModal'
 import AssistantSettingEditModal from './AssistantSettingEditModal'
 import SaleStatusEditModal from './SaleStatusEditModal'
-
-const styles = {
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-  }),
-  header: css({
-    padding: '12px 24px 4px 24px',
-    '& .MuiCardHeader-title': {
-      width: '100%',
-    }
-  }),
-  tableHead: css({
-    backgroundColor: '#FFFFFF',
-    '& .MuiTableCell-head': {
-      color: '#212121',
-      fontWeight: 'bold',
-      borderBottom: '1px solid #f0f0f0',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid #f0f0f0',
-      fontSize: '14px !important',
-      color: '#333',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-  }),
-  actionButton: css({
-    padding: '4px !important',
-    color: '#999 !important',
-    '&:hover': {
-      color: '#1A73E8 !important',
-      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
-    }
-  }),
-  csvBtn: css({
-    borderRadius: '20px !important',
-    padding: '6px 20px !important',
-    fontSize: '14px !important',
-    boxShadow: 'none !important',
-    fontWeight: 'bold !important',
-    backgroundColor: '#f5f5f5 !important',
-    color: '#666 !important',
-    '&:hover': {
-      backgroundColor: '#eeeeee !important',
-    }
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  notSetting: css({
-    color: 'red',
-    fontWeight: 'bold',
-  }),
-}
 
 function Results({ className, coupons, refetch, ...rest }) {
   const merchantId = localStorage.getItem('userMerchant')
@@ -408,127 +338,118 @@ function Results({ className, coupons, refetch, ...rest }) {
     }
   }
 
+  // 不可點的列操作（停用的卡券）：連結無 disabled 屬性，比照 MUI ButtonBase 改用 aria-disabled + 取消指標事件
+  const linkDisabled = disabledLink => (disabledLink ? { 'aria-disabled': true, tabIndex: -1, className: 'pointer-events-none opacity-40' } : {})
   return (
-    <div {...rest} css={className}>
-      <Card css={styles.card}>
+    <div {...rest}>
+      <Card>
         <CardHeader
-          css={styles.header}
+          className="items-center pb-4"
           action={
-            <CSVLink data={excelData} filename="卡券列表.csv">
-              <Button variant="contained" css={styles.csvBtn} size="small">
+            <Button asChild size="sm" variant="secondary">
+              <CSVLink data={excelData} filename="卡券列表.csv">
+                <Download strokeWidth={1.75} />
                 報表匯出
-              </Button>
-            </CSVLink>
+              </CSVLink>
+            </Button>
           }
-          title={
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
-                所有預收卡
-              </Typography>
-              <Typography color="textSecondary" variant="body2">
-                共 {coupons !== undefined && coupons.length} 筆
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table size="small">
-                <TableHead css={styles.tableHead}>
-                  <TableRow>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={selectedCoupons.length === coupons.length}
-                        color="primary"
-                        indeterminate={
-                          selectedCoupons.length > 0 && selectedCoupons.length < coupons.length
-                        }
-                        onChange={handleSelectAll}
-                        disabled={coupons.filter(d => !d.isUsing).length === coupons.length}
-                      />
-                    </TableCell>
-                    <TableCell sx={{ minWidth: '60px' }}>操作</TableCell>
-                    <TableCell sx={{ minWidth: '80px' }}>代號</TableCell>
-                    <TableCell sx={{ minWidth: '100px' }}>類別</TableCell>
-                    <TableCell sx={{ minWidth: '150px' }}>名稱</TableCell>
-                    <TableCell sx={{ minWidth: '100px' }}>參考價格</TableCell>
-                    <TableCell sx={{ minWidth: '100px' }}>可使用次數</TableCell>
-                    <TableCell sx={{ minWidth: '130px', whiteSpace: 'nowrap' }}>業績</TableCell>
-                    <TableCell sx={{ minWidth: '100px' }}>變更者</TableCell>
-                    <TableCell sx={{ minWidth: '120px' }}>扣項設定數量</TableCell>
-                    <TableCell sx={{ minWidth: '120px' }}>互助設定數量</TableCell>
-                    <TableCell sx={{ minWidth: '100px' }}>上架狀態</TableCell>
-                    <TableCell sx={{ minWidth: '120px' }}>變更時間</TableCell>
-                    <TableCell sx={{ minWidth: '80px' }}>建立副本</TableCell>
-                  </TableRow>
+        >
+          <div className="flex items-baseline gap-3">
+            <CardTitle>所有預收卡</CardTitle>
+            <span className="text-label tabular-nums text-text-secondary">
+              共 {coupons !== undefined && coupons.length} 筆
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table className="min-w-[700px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={selectedCoupons.length === coupons.length}
+                    indeterminate={
+                      selectedCoupons.length > 0 && selectedCoupons.length < coupons.length
+                    }
+                    onChange={handleSelectAll}
+                    disabled={coupons.filter(d => !d.isUsing).length === coupons.length}
+                  />
                 </TableHead>
-                <TableBody>
-                  {coupons.map((data, idx) => (
-                    <TableRow
-                      hover
-                      key={`coupon-${idx}`}
+                <TableHead className="min-w-[60px]">操作</TableHead>
+                <TableHead className="min-w-[80px]">代號</TableHead>
+                <TableHead className="min-w-[100px]">類別</TableHead>
+                <TableHead className="min-w-[150px]">名稱</TableHead>
+                <TableHead numeric className="min-w-[100px]">參考價格</TableHead>
+                <TableHead numeric className="min-w-[100px]">可使用次數</TableHead>
+                <TableHead className="min-w-[130px]">業績</TableHead>
+                <TableHead className="min-w-[100px]">變更者</TableHead>
+                <TableHead className="min-w-[120px]">扣項設定數量</TableHead>
+                <TableHead className="min-w-[120px]">互助設定數量</TableHead>
+                <TableHead className="min-w-[100px]">上架狀態</TableHead>
+                <TableHead className="min-w-[120px]">變更時間</TableHead>
+                <TableHead className="min-w-[80px]">建立副本</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {coupons.map((data, idx) => (
+                <TableRow
+                  key={`coupon-${idx}`}
+                  disabled={!data.isUsing}
+                  data-state={selectedCoupons.indexOf(data.id) !== -1 ? 'selected' : undefined}
+                  className="whitespace-nowrap"
+                >
+                  <TableCell>
+                    <Checkbox
+                      aria-label={`選取 ${data.name}`}
+                      checked={selectedCoupons.indexOf(data.id) !== -1}
+                      value={selectedCoupons.indexOf(data.id) !== -1}
+                      onChange={() => handleSelectOne(data.id)}
                       disabled={!data.isUsing}
-                      selected={selectedCoupons.indexOf(data.id) !== -1}
-                      css={styles.tableRow}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={selectedCoupons.indexOf(data.id) !== -1}
-                          value={selectedCoupons.indexOf(data.id) !== -1}
-                          onChange={() => handleSelectOne(data.id)}
-                          disabled={!data.isUsing}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          component={RouterLink}
-                          css={styles.actionButton}
-                          to={`/coupon/edit/${data.id}`}
-                          disabled={!data.isUsing}
-                          size="small"
-                        >
-                          <EditIconSlot fontSize="small" />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{data.no}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                        {data.ServiceCategory !== null ? data.ServiceCategory.name : '無類別'}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{data.name}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{data.price}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{data.ticketAvailableCount}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{calcModeText(data.performanceCalculationMode)}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{data.creator === null ? '' : data.creator.name}</TableCell>
-                      <TableCell
-                        css={data.ticketDeductionCount === 0 ? styles.notSetting : {}}
-                        sx={{ whiteSpace: 'nowrap' }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                      <RouterLink
+                        aria-label="編輯卡券"
+                        to={`/coupon/edit/${data.id}`}
+                        {...linkDisabled(!data.isUsing)}
                       >
-                        {data.ticketDeductionCount === 0 ? '無設定' : data.ticketDeductionCount}
-                      </TableCell>
-                      <TableCell
-                        css={data.helperDeductionCount === 0 ? styles.notSetting : {}}
-                        sx={{ whiteSpace: 'nowrap' }}
-                      >
-                        {data.helperDeductionCount === 0 ? '無設定' : data.helperDeductionCount}
-                      </TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{data.isLaunched ? '上架' : '下架'}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
-                      <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                        <Link to={`coupon/duplicate/${data.id}`}>
-                          <IconButton size="small">
-                            <ContentCopyIcon fontSize='small' />
-                          </IconButton>
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
+                        <Pencil strokeWidth={1.75} />
+                      </RouterLink>
+                    </Button>
+                  </TableCell>
+                  <TableCell>{data.no}</TableCell>
+                  <TableCell>
+                    {data.ServiceCategory !== null ? data.ServiceCategory.name : '無類別'}
+                  </TableCell>
+                  <TableCell>{data.name}</TableCell>
+                  <TableCell numeric>{formatNumber(data.price)}</TableCell>
+                  <TableCell numeric>{data.ticketAvailableCount}</TableCell>
+                  <TableCell>{calcModeText(data.performanceCalculationMode)}</TableCell>
+                  <TableCell>{data.creator === null ? '' : data.creator.name}</TableCell>
+                  <TableCell className={cn('tabular-nums', data.ticketDeductionCount === 0 && 'font-medium text-danger')}>
+                    {data.ticketDeductionCount === 0 ? '無設定' : data.ticketDeductionCount}
+                  </TableCell>
+                  <TableCell className={cn('tabular-nums', data.helperDeductionCount === 0 && 'font-medium text-danger')}>
+                    {data.helperDeductionCount === 0 ? '無設定' : data.helperDeductionCount}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={data.isLaunched ? 'success' : 'neutral'}>{data.isLaunched ? '上架' : '下架'}</Badge>
+                  </TableCell>
+                  <TableCell className="tabular-nums">{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
+                  <TableCell>
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                      <Link to={`coupon/duplicate/${data.id}`} aria-label="建立副本">
+                        <Copy strokeWidth={1.75} />
+                      </Link>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
       <TableEditBar
         selected={selectedCoupons}
@@ -537,34 +458,32 @@ function Results({ className, coupons, refetch, ...rest }) {
         onEditDeduction={handleOpenEditDeductionModal}
         onEditSaleStatus={handleOpenEditSaleStatusModal}
       />
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{'刪除卡券'}</DialogTitle>
-        <DialogContent style={{ overflow: 'visible' }}>
-          <DialogContentText id="alert-dialog-description">
-            <TextField
-              value={deleteOrderPwd}
-              label="刪除密碼"
-              onChange={event => setDeleteOrderPwd(event.target.value)}
-              inputProps={{
-                type: 'password',
-                'data-testid': 'delete-password',
-              }}
-            />
-          </DialogContentText>
+      <Dialog open={openDialog} onOpenChange={o => !o && handleCloseDialog()}>
+        <DialogContent aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogHeader>
+            <DialogTitle id="alert-dialog-title">{'刪除卡券'}</DialogTitle>
+            <DialogDescription id="alert-dialog-description">刪除後無法復原，請輸入刪除密碼確認。</DialogDescription>
+          </DialogHeader>
+          <DialogBody>
+            <Field label="刪除密碼" htmlFor="delete-coupon-password">
+              <Input
+                id="delete-coupon-password"
+                type="password"
+                value={deleteOrderPwd}
+                onChange={event => setDeleteOrderPwd(event.target.value)}
+                data-testid="delete-password"
+              />
+            </Field>
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="secondary" onClick={handleCloseDialog}>
+              取消
+            </Button>
+            <Button variant="danger" onClick={handleConfirmCancel} autoFocus data-testid="confirm">
+              確認
+            </Button>
+          </DialogFooter>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            取消
-          </Button>
-          <Button onClick={handleConfirmCancel} color="primary" autoFocus data-testid="confirm">
-            確認
-          </Button>
-        </DialogActions>
       </Dialog>
       {openEditAssistantModal && (
         <AssistantSettingEditModal

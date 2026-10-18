@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Container, Button, CircularProgress, Collapse, Typography } from '@mui/material'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
 import useFetchProducts from 'hooks/useFetchProducts'
@@ -8,38 +6,11 @@ import { useState, useEffect } from 'react'
 import produce from 'immer'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import AdminPageHeader from 'components/AdminPageHeader'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
-
-const localStyles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3)
-  }),
-  filterPanel: css({
-    marginBottom: '12px',
-    backgroundColor: '#fff',
-    borderRadius: '12px',
-    padding: '20px',
-    border: '1px solid #f0f0f0',
-  }),
-  categorieDiv: css({
-    marginTop: '12px',
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '8px',
-  }),
-  pillButton: css({
-    borderRadius: '20px !important',
-    padding: '4px 16px !important',
-    fontSize: '13px !important',
-    boxShadow: 'none !important',
-    fontWeight: 'bold !important',
-  }),
-}
 
 function CustomerManagementList() {
   const [setting, setSetting] = useState({
@@ -94,70 +65,71 @@ function CustomerManagementList() {
   }, [products.loading, products.data, productCategoriesData.loading, productCategoriesData.data])
 
   return (
-    <Page css={localStyles.root} title="商品列表">
-      <Container maxWidth={false} css={localStyles.container}>
-        <AdminPageHeader
-          title="商品列表"
-          showFilter={showFilter}
-          onFilterClick={() => setShowFilter(!showFilter)}
-          primaryAction={{
-            label: '新增商品',
-            to: '/product/create'
-          }}
-        />
+    <Page className="ui-root" title="商品列表">
+      <AdminPageHeader
+        title="商品列表"
+        showFilter={showFilter}
+        onFilterClick={() => setShowFilter(!showFilter)}
+        primaryAction={{
+          label: '新增商品',
+          to: '/product/create'
+        }}
+      />
 
-        <Collapse in={showFilter}>
-          <div css={localStyles.filterPanel}>
-            <SearchBar
-              style={{ marginBottom: 16, marginTop: 0 }}
-              onSearch={event =>
-                handlePageChange({
-                  key: 'keyword',
-                  value: event,
-                })
-              }
-            />
-            <div style={{ marginTop: '16px' }}>
-              <Typography variant="caption" sx={{ color: '#666', mb: 1, display: 'block', fontWeight: 'bold' }}>
-                按商品類別篩選
-              </Typography>
-              <div css={localStyles.categorieDiv}>
-                {productCategories.map(productCategory => (
-                  <Button
-                    key={productCategory.id}
-                    variant={selectedCategorie.indexOf(productCategory.id) !== -1 ? 'contained' : 'outlined'}
-                    color="primary"
-                    size="small"
-                    css={localStyles.pillButton}
-                    onClick={() => handleClickCategorie(productCategory.id, productCategory.name)}
-                    disabled={selectedCategorie.indexOf(productCategory.id) !== -1}
-                  >
-                    {productCategory.name}
-                  </Button>
-                ))}
+      {/* 以 hidden 收合（取代 MUI Collapse），SearchBar 保持掛載，輸入內容與舊版一樣不會因收合而清空 */}
+      <div hidden={!showFilter}>
+        <Card className="mb-6 flex flex-col gap-4 p-5">
+          <SearchBar
+            onSearch={event =>
+              handlePageChange({
+                key: 'keyword',
+                value: event,
+              })
+            }
+          />
+          <div className="flex flex-col gap-2">
+            <span className="text-label text-text-secondary">
+              按商品類別篩選
+            </span>
+            <div className="flex flex-wrap gap-2">
+              {productCategories.map(productCategory => (
                 <Button
-                  variant="contained"
-                  size="small"
-                  color="error"
-                  css={localStyles.pillButton}
-                  style={{ color: 'white' }}
-                  onClick={handleClearCategorie}
+                  key={productCategory.id}
+                  size="sm"
+                  variant="secondary"
+                  aria-pressed={selectedCategorie.indexOf(productCategory.id) !== -1}
+                  className={selectedCategorie.indexOf(productCategory.id) !== -1 ? 'bg-accent/8 text-accent disabled:opacity-100' : undefined}
+                  onClick={() => handleClickCategorie(productCategory.id, productCategory.name)}
+                  disabled={selectedCategorie.indexOf(productCategory.id) !== -1}
                 >
-                  清除篩選
+                  {productCategory.name}
                 </Button>
-              </div>
+              ))}
+              <Button
+                size="sm"
+                variant="ghost"
+                className="text-danger hover:bg-danger/8"
+                onClick={handleClearCategorie}
+              >
+                清除篩選
+              </Button>
             </div>
           </div>
-        </Collapse>
-        {productList.length !== 0 ? (
-          <Results
-            products={productList}
-            refetchProducts={products.refetch}
-            onPageChange={handlePageChange}
-          />
-        ) : products.loading && <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
-        }
-      </Container>
+        </Card>
+      </div>
+      {productList.length !== 0 ? (
+        <Results
+          products={productList}
+          refetchProducts={products.refetch}
+          onPageChange={handlePageChange}
+        />
+      ) : products.loading && (
+        <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
+          <Skeleton className="h-[72px] w-full rounded-lg" />
+          <Skeleton className="h-[320px] w-full rounded-lg" />
+        </div>
+      )
+      }
     </Page>
   )
 }

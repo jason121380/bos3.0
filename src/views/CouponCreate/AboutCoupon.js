@@ -1,8 +1,5 @@
-/** @jsxImportSource @emotion/react */
+// 欄位多為值可能為空字串或布林值的 MUI Select，為維持同一張卡片的標籤樣式一致，文字欄位也保留 MUI TextField（橋接主題已套新外觀）
 import {
-  Card,
-  CardContent,
-  CardHeader,
   FormControl,
   InputLabel,
   MenuItem,
@@ -12,18 +9,7 @@ import {
 import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import idx from 'idx'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  alert: css({
-    marginBottom: theme.spacing(3) + '!important',
-  }),
-  formGroup: css({
-    marginBottom: theme.spacing(3) + '!important',
-  }),
-}
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 const lockStatus = [
   {
@@ -66,15 +52,16 @@ const handlingFeeSelect = [
 function AboutService({ className, onChange, coupon, ...rest }) {
   const serviceCategories = useFetchServiceCategories()
   return (
-    <Card {...rest} css={css([styles.root, className])}>
-      <CardHeader title="一般資訊" />
-      <CardContent>
+    <Card {...rest}>
+      <CardHeader>
+        <CardTitle>一般資訊</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-6">
         <TextField
           value={coupon.no}
           label="代號"
           variant="outlined"
           fullWidth
-          css={styles.formGroup}
           onChange={event => onChange({ event, key: 'no' })}
         />
         <TextField
@@ -82,10 +69,9 @@ function AboutService({ className, onChange, coupon, ...rest }) {
           label="名稱"
           variant="outlined"
           fullWidth
-          css={styles.formGroup}
           onChange={event => onChange({ event, key: 'name' })}
         />
-        <FormControl variant="outlined" fullWidth css={styles.formGroup}>
+        <FormControl variant="outlined" fullWidth>
           <InputLabel>服務類別</InputLabel>
           <Select
             label='服務類別'
@@ -120,7 +106,6 @@ function AboutService({ className, onChange, coupon, ...rest }) {
             })
           }
           value={coupon.price}
-          css={styles.formGroup}
         />
         <TextField
           type="number"
@@ -138,9 +123,8 @@ function AboutService({ className, onChange, coupon, ...rest }) {
               key: 'ticketAvailableCount',
             })
           }
-          css={styles.formGroup}
         />
-        <FormControl variant="outlined" fullWidth css={styles.formGroup}>
+        <FormControl variant="outlined" fullWidth>
           <InputLabel>打帳單是否能更改預設價格</InputLabel>
           <Select
             label='打帳單是否能更改預設價格'
@@ -163,7 +147,7 @@ function AboutService({ className, onChange, coupon, ...rest }) {
             ))}
           </Select>
         </FormControl>
-        <FormControl variant="outlined" fullWidth css={styles.formGroup}>
+        <FormControl variant="outlined" fullWidth>
           <InputLabel>業績入帳模式</InputLabel>
           <Select
             label='業績入帳模式'
@@ -186,7 +170,7 @@ function AboutService({ className, onChange, coupon, ...rest }) {
             ))}
           </Select>
         </FormControl>
-        <FormControl variant="outlined" fullWidth css={styles.formGroup}>
+        <FormControl variant="outlined" fullWidth>
           <InputLabel>手續費扣款模式</InputLabel>
           <Select
             label='手續費扣款模式'
@@ -209,7 +193,7 @@ function AboutService({ className, onChange, coupon, ...rest }) {
             ))}
           </Select>
         </FormControl>
-        <FormControl variant="outlined" fullWidth css={styles.formGroup}>
+        <FormControl variant="outlined" fullWidth>
           <InputLabel>卡券上架狀態設定</InputLabel>
           <Select
             label='卡券上架狀態設定'

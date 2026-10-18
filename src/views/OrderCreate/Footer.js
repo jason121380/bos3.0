@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Button, Card, CardHeader, CardContent, Grid, Typography } from '@mui/material'
+import { Button, Card, CardHeader, CardContent, Grid } from '@mui/material'
 import billContext from 'context/keyInContext'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchCreateOrder from 'hooks/useFetchCreateOrder'
@@ -8,7 +8,7 @@ import useToggle from 'hooks/useToggle'
 import idx from 'idx'
 import { useCallback, useContext, useEffect, useRef, useState, forwardRef } from 'react'
 import { useHistory, useLocation } from 'react-router'
-import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material'
+import { KeyboardArrowDown, KeyboardArrowUp } from 'ui/icons'
 import styles from './styles/Footer'
 import _ from 'lodash'
 import { handleTidyBill, checkServicesOrders, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
@@ -382,7 +382,7 @@ function Footer({ width, setIsFooterFold, isFooterFixed }, footerRef) {
   const Header = () => (
     <div onClick={handleFooterFold} css={styles.switchDiv}>
       {fold ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
-      <Typography css={styles.heading}>{fold ? '顯示業績明細' : '隱藏業績明細'}</Typography>
+      <p className="m-0" css={styles.heading}>{fold ? '顯示業績明細' : '隱藏業績明細'}</p>
     </div>
   )
 

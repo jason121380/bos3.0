@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchCreateService from 'hooks/useFetchCreateService'
 import useFetchMerchantCustomerCategory from 'hooks/useFetchMerchantCustomerCategory'
@@ -17,35 +14,16 @@ import { useHistory } from 'react-router'
 import _ from 'lodash'
 import { useSelector } from 'react-redux'
 import useFetchMerchantJobTitlePoint from 'hooks/useFetchMerchantJobTitlePoint'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import helperDeduction from './../../helper/helperDeduction.js'
 
 import AboutAssistantSetting from './AboutAssistantSetting'
 import AboutDeduction from './AboutDeduction'
 import AboutService from './AboutService'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  about: css({
-    marginTop: theme.spacing(3) + '!important',
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-    display: 'flex',
-    justifyContent: 'space-between',
-  }),
-  lastNextDiv: css({
-    width: '260px',
-    display: 'flex',
-    justifyContent: 'space-between',
-  }),
-}
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 function ServiceCategoryEdit({ match }) {
+  // eslint-disable-next-line no-restricted-globals -- 既有寫法（window.location），改版不動邏輯
   const isDuplicate = location.href.includes('duplicate')
   const deductionDisplay = useSelector(state => state.deductionDisplay.service)
   const merchantId = localStorage.getItem('userMerchant')
@@ -550,12 +528,12 @@ function ServiceCategoryEdit({ match }) {
     helperDeduction(helperDeductionOnSales, setHelperPoint, setHelperDeductionNums, newService.price)
   }, [service, merchantJobTitlePoint.loading])
 
+  // 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-4xl（與舊版 Container md 相近）
   return (
-    <Page css={styles.root} title={isDuplicate ? "新增服務項目" : "編輯服務項目"}>
-      <Container maxWidth="md">
-        <PageTitle title={isDuplicate ? "新增服務項目" : "編輯服務項目"} subTitle={isDuplicate ? "NEW SERVICE" : "Edit Service"} />
+    <Page className="ui-root" title={isDuplicate ? "新增服務項目" : "編輯服務項目"}>
+      <div className="mx-auto flex max-w-4xl flex-col gap-6">
+        <PageHeader className="pb-0" title={isDuplicate ? "新增服務項目" : "編輯服務項目"} />
         <AboutService
-          className={styles.about}
           service={service}
           onChange={handleOnChange}
           handleCheckboxChange={handleCheckboxChange}
@@ -563,7 +541,6 @@ function ServiceCategoryEdit({ match }) {
 
         {(isDuplicate || deductionDisplay) && service2.itemId !== '' && (
           <AboutDeduction
-            className={styles.about}
             ServiceDeductionItems={service2.serviceDeductionItems}
             onChange={handleOnChange}
             truthPerformPredict={truthPerformPredict}
@@ -573,33 +550,30 @@ function ServiceCategoryEdit({ match }) {
         )}
 
         <AboutAssistantSetting
-          className={styles.about}
           merchantHelperItems={merchantHelperItems}
           support={service.helperDeductionSetting}
           onChange={handleOnChange}
         />
-        <div css={styles.actions}>
+        <div className="flex items-center justify-between gap-2">
           {isDuplicate ? (
-            <Button color="primary" variant="contained" disabled={saveBtn || vaild} onClick={handleCreate}>
+            <Button variant="primary" disabled={saveBtn || vaild} onClick={handleCreate}>
               新增
             </Button>
           ) : (
             <>
-              <Button color="primary" variant="contained" disabled={saveBtn || vaild} onClick={() => handleSubmit('toList')}>
+              <Button variant="primary" disabled={saveBtn || vaild} onClick={() => handleSubmit('toList')}>
                 儲存
               </Button>
-              <div css={styles.lastNextDiv}>
+              <div className="flex items-center gap-2">
                 <Button
-                  color="primary"
-                  variant="contained"
+                  variant="secondary"
                   disabled={serviceIndex === 0 || saveBtn || vaild}
                   onClick={() => handleSubmit('toLast')}
                 >
                   儲存並上一筆
                 </Button>
                 <Button
-                  color="primary"
-                  variant="contained"
+                  variant="secondary"
                   disabled={serviceIndex === servicesArr.length - 1 || saveBtn || vaild}
                   onClick={() => handleSubmit('toNext')}
                 >
@@ -609,7 +583,7 @@ function ServiceCategoryEdit({ match }) {
             </>
           )}
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }

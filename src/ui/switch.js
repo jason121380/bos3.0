@@ -1,0 +1,51 @@
+import React from 'react'
+import { cn } from './utils'
+
+// 開關，取代 MUI Switch；onChange(event, checked) 與 MUI 相同（原生 handler 只讀 event 也相容）
+// label：取代 FormControlLabel + Switch 的組合；labelPlacement 'end'（預設）或 'start'
+// 其餘 props（data-testid、aria-*…）一律給 input；MUI 的 color / size 忽略
+const Switch = React.forwardRef(
+  ({ checked, defaultChecked, onChange, disabled, name, id, label, labelPlacement = 'end', className, inputProps, color, size, ...props }, ref) => {
+    const control = (
+      <span className="relative inline-flex h-5 w-9 shrink-0 items-center">
+        <input
+          ref={ref}
+          type="checkbox"
+          role="switch"
+          id={id}
+          name={name}
+          checked={checked}
+          defaultChecked={defaultChecked}
+          disabled={disabled}
+          onChange={e => onChange && onChange(e, e.target.checked)}
+          className="peer absolute inset-0 z-[1] m-0 h-full w-full cursor-pointer opacity-0 disabled:cursor-not-allowed"
+          {...inputProps}
+          {...props}
+        />
+        <span
+          aria-hidden="true"
+          className={cn(
+            'pointer-events-none h-5 w-9 rounded-full bg-border-strong transition-colors peer-checked:bg-primary',
+            'peer-focus-visible:ring-2 peer-focus-visible:ring-accent peer-focus-visible:ring-offset-1 peer-disabled:opacity-40'
+          )}
+        />
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute left-0.5 h-4 w-4 rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,0.2)] transition-transform peer-checked:translate-x-4"
+        />
+      </span>
+    )
+    if (!label) return <span className={cn('inline-flex', className)}>{control}</span>
+    return (
+      <label
+        className={cn('inline-flex cursor-pointer select-none items-center gap-2 text-body text-text', disabled && 'cursor-not-allowed opacity-60', labelPlacement === 'start' && 'flex-row-reverse', className)}
+      >
+        {control}
+        <span>{label}</span>
+      </label>
+    )
+  }
+)
+Switch.displayName = 'Switch'
+
+export { Switch }

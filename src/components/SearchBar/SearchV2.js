@@ -3,13 +3,12 @@ import {
   Button, Input, Paper, TextField, Grid, Select,
   MenuItem, FormControl, InputLabel,
 } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
+import { Search as SearchIcon, Delete as DeleteIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import React, { useState, useRef, Fragment, useEffect } from 'react'
 import { useLocation } from 'react-router'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import SourceSelect from 'components/SourceSelect'
-import DeleteIcon from '@mui/icons-material/Delete'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 

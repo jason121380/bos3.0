@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchServiceCategoryCreate from 'hooks/useFetchServiceCategoryCreate'
 import React, { useState, useEffect } from 'react'
@@ -10,23 +7,10 @@ import { useForm } from 'react-hook-form'
 import { Provider } from 'hooks/useStore'
 import useFetchGetAttribution from 'hooks/useFetchGetAttribution'
 import idx from 'idx'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import AboutServiceCategory from './AboutServiceCategory'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  aboutServiceCategory: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function ServiceCategoryCreate() {
   const history = useHistory()
@@ -79,20 +63,21 @@ function ServiceCategoryCreate() {
   }, [getAttribution.loading])
 
   return (
-    <Page css={styles.root} title="新增服務分類">
-      <Container maxWidth="lg">
-        <PageTitle title='新增服務分類' subTitle='New Service Category' />
-        <form onSubmit={handleSubmit(onSubmit)}>
+    <Page className="ui-root" title="新增服務分類">
+      {/* 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-3xl */}
+      <div className="mx-auto flex max-w-3xl flex-col gap-6">
+        <PageHeader className="pb-0" title='新增服務分類' />
+        <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
           <Provider value={value}>
-            <AboutServiceCategory attributions={attributions} className={styles.aboutServiceCategory} attr={attr} setAttr={setAttr} />
+            <AboutServiceCategory attributions={attributions} attr={attr} setAttr={setAttr} />
           </Provider>
-          <div css={styles.actions}>
-            <Button color="primary" variant="contained" type="submit" data-testid="submit">
+          <div>
+            <Button variant="primary" type="submit" data-testid="submit">
               新增服務類別
             </Button>
           </div>
         </form>
-      </Container>
+      </div>
     </Page>
   )
 }

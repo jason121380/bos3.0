@@ -1,0 +1,8 @@
+Profile
+SalaryEdit
+EmployeePickingCreate
+SalaryDetail
+AttendanceEmployeeSchedule
+EmployeePayslip
+MerchantBankTransferReport
+EmployeeResignationList

@@ -1,51 +1,12 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Typography,
-} from '@mui/material'
 import { format } from 'date-fns'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { useEffect, useState, useRef } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    '& .MuiTypography-root': {
-      whiteSpace: 'nowrap'
-    },
-    '& td': {
-      whiteSpace: 'nowrap !important'
-    }
-  }),
-  filterButton: css({
-    marginRight: theme.spacing(2),
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 1150,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
 const weekDisplay = week => {
   switch (week) {
@@ -116,119 +77,112 @@ function OrderRecord({
     setRaffleDisplay(display)
   }, [orders])
 
+  // 分頁改用 ui/table 的 TablePagination：ref 原樣保留，pagenationLabel 找不到 MUI 元素時不動作
   return (
-    <div {...rest} css={styles.root}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
+    <div {...rest}>
+      <p className="pb-2 text-label tabular-nums text-text-secondary">
         共 {totalCount} 筆, {page + 1} / {Math.ceil(totalCount / rowsPerPage)}
-      </Typography>
+      </p>
       <Card>
-        <CardHeader title="訂單列表" />
-        <Divider />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>操作</TableCell>
-                    <TableCell>帳單編號/時間</TableCell>
-                    <TableCell>客戶</TableCell>
-                    <TableCell>設計師</TableCell>
-                    <TableCell>指定/不指定</TableCell>
-                    {raffleDisplay ? <TableCell>活動券</TableCell> : null}
-                    <TableCell>服務消費</TableCell>
-                    <TableCell>店販消費</TableCell>
-                    {membershipDisplay && <TableCell>會員卡消費</TableCell>}
-                    <TableCell>卡券使用</TableCell>
-                    <TableCell>卡券銷售(預收款)</TableCell>
-                    <TableCell>扣入金</TableCell>
-                    {bonusDisplay && <TableCell>點數折抵金額</TableCell>}
-                    <TableCell>其他付款方式</TableCell>
-                    <TableCell>業績合計(含販賣)</TableCell>
-                    <TableCell>現金應收</TableCell>
-                    <TableCell>備註</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {orders.map(order => (
-                    <TableRow key={order.id}>
-                      <TableCell align="right">
-                        <Button
-                          color="primary"
-                          component={RouterLink}
-                          size="small"
-                          to={`/order/${order.id}`}
-                          variant="outlined"
-                        >
-                          詳情
-                        </Button>
-                      </TableCell>
-                      <TableCell>
-                        #{order.orderNo}
-                        <Typography variant="body2">
-                          {format(new Date(order.date), 'MM/dd/yyyy')}/
-                          {weekDisplay(format(new Date(order.date), 'eeee'))}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        {order.customerName}
-                        <Typography variant="body2">{order.customerCellphone}</Typography>
-                      </TableCell>
-                      <TableCell>
-                        {order.designerName}
-                        {order.designerNo ? `/${order.designerNo}` : ''}
-                      </TableCell>
-                      <TableCell>{order.isDesignate ? 'Y' : 'N'}</TableCell>
-                      {raffleDisplay ? <TableCell>{order.raffleCount}</TableCell> : null}
-                      <TableCell>
-                        {Math.round(order.service)}
-                        <Typography variant="body2">
-                          {order.TPTName.service.length > 0 && renderTpName(order.TPTName.service)}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        {Math.round(order.product)}
-                        <Typography variant="body2">
-                          {order.TPTName.product.length > 0 && renderTpName(order.TPTName.product)}
-                        </Typography>
-                      </TableCell>
-                      {membershipDisplay && (
-                        <TableCell>
-                          {Math.round(order.membership)}
-                          <Typography variant="body2">
-                            {order.TPTName.membership.length > 0 && renderTpName(order.TPTName.membership)}
-                          </Typography>
-                        </TableCell>
-                      )}
-                      <TableCell>{Math.round(order.ticketSellIntoPerformance)}</TableCell>
-                      <TableCell>
-                        {order.ticketSellNotIntoPerformance}
-                      </TableCell>
-                      <TableCell>{order.walletUsedForDecount}</TableCell>
-                      {bonusDisplay && <TableCell>{order.bonusDecountForReport}</TableCell>}
-                      <TableCell>
-                        {order.otherPayWayForDecount}
-                        <Typography variant="body2">{order.otherPayName}</Typography>
-                      </TableCell>
-                      <TableCell>
-                        {Math.round(
-                          order.service + order.product + order.usedTicket + order.membership
-                        )}
-                      </TableCell>
-                      <TableCell>{order.businessCash}</TableCell>
-                      <TableCell>{order.remark}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
+        <CardHeader className="pb-4">
+          <CardTitle>訂單列表</CardTitle>
+        </CardHeader>
+        <div className="px-5">
+          <Table className="min-w-[1150px] [&_td]:whitespace-nowrap">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead>操作</TableHead>
+                <TableHead>帳單編號/時間</TableHead>
+                <TableHead>客戶</TableHead>
+                <TableHead>設計師</TableHead>
+                <TableHead>指定/不指定</TableHead>
+                {raffleDisplay ? <TableHead numeric>活動券</TableHead> : null}
+                <TableHead numeric>服務消費</TableHead>
+                <TableHead numeric>店販消費</TableHead>
+                {membershipDisplay && <TableHead numeric>會員卡消費</TableHead>}
+                <TableHead numeric>卡券使用</TableHead>
+                <TableHead numeric>卡券銷售(預收款)</TableHead>
+                <TableHead numeric>扣入金</TableHead>
+                {bonusDisplay && <TableHead numeric>點數折抵金額</TableHead>}
+                <TableHead numeric>其他付款方式</TableHead>
+                <TableHead numeric>業績合計(含販賣)</TableHead>
+                <TableHead numeric>現金應收</TableHead>
+                <TableHead>備註</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {orders.map(order => (
+                <TableRow key={order.id}>
+                  <TableCell className="text-right">
+                    <Button asChild size="sm" variant="secondary">
+                      <RouterLink to={`/order/${order.id}`}>
+                        詳情
+                      </RouterLink>
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <div className="font-medium tabular-nums">#{order.orderNo}</div>
+                    <div className="text-caption tabular-nums text-text-secondary">
+                      {format(new Date(order.date), 'MM/dd/yyyy')}/
+                      {weekDisplay(format(new Date(order.date), 'eeee'))}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {order.customerName}
+                    <div className="text-caption tabular-nums text-text-secondary">{order.customerCellphone}</div>
+                  </TableCell>
+                  <TableCell>
+                    {order.designerName}
+                    {order.designerNo ? `/${order.designerNo}` : ''}
+                  </TableCell>
+                  <TableCell>{order.isDesignate ? 'Y' : 'N'}</TableCell>
+                  {raffleDisplay ? <TableCell numeric>{order.raffleCount}</TableCell> : null}
+                  <TableCell numeric>
+                    {formatNumber(Math.round(order.service))}
+                    <div className="text-caption text-text-secondary">
+                      {order.TPTName.service.length > 0 && renderTpName(order.TPTName.service)}
+                    </div>
+                  </TableCell>
+                  <TableCell numeric>
+                    {formatNumber(Math.round(order.product))}
+                    <div className="text-caption text-text-secondary">
+                      {order.TPTName.product.length > 0 && renderTpName(order.TPTName.product)}
+                    </div>
+                  </TableCell>
+                  {membershipDisplay && (
+                    <TableCell numeric>
+                      {formatNumber(Math.round(order.membership))}
+                      <div className="text-caption text-text-secondary">
+                        {order.TPTName.membership.length > 0 && renderTpName(order.TPTName.membership)}
+                      </div>
+                    </TableCell>
+                  )}
+                  <TableCell numeric>{formatNumber(Math.round(order.ticketSellIntoPerformance))}</TableCell>
+                  <TableCell numeric>
+                    {formatNumber(order.ticketSellNotIntoPerformance)}
+                  </TableCell>
+                  <TableCell numeric>{formatNumber(order.walletUsedForDecount)}</TableCell>
+                  {bonusDisplay && <TableCell numeric>{formatNumber(order.bonusDecountForReport)}</TableCell>}
+                  <TableCell numeric>
+                    {formatNumber(order.otherPayWayForDecount)}
+                    <div className="text-caption text-text-secondary">{order.otherPayName}</div>
+                  </TableCell>
+                  <TableCell numeric>
+                    {formatNumber(Math.round(
+                      order.service + order.product + order.usedTicket + order.membership
+                    ))}
+                  </TableCell>
+                  <TableCell numeric className="font-medium">{formatNumber(order.businessCash)}</TableCell>
+                  <TableCell className="text-text-secondary">{order.remark}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+        <div className="flex justify-end px-2 pb-2">
           <TablePagination
             ref={pageRef}
             labelRowsPerPage='每頁顯示數量'
-            component="div"
             count={totalCount}
             onPageChange={handleOnChangePage}
             onRowsPerPageChange={handleOnChangeRowsPerPage}
@@ -236,7 +190,7 @@ function OrderRecord({
             rowsPerPage={rowsPerPage}
             rowsPerPageOptions={[1, 5, 10, 25, 50, 1000]}
           />
-        </CardActions>
+        </div>
       </Card>
     </div>
   )

@@ -1,14 +1,15 @@
 /** @jsxImportSource @emotion/react */
+// 名稱欄位（endAdornment、onBlur 檢查）保留 MUI TextField
 import {
-  Card, CardContent, CardHeader, Divider, TextField, IconButton,
-  Select, MenuItem, InputLabel, FormControl, InputAdornment, Button,
-  ThemeProvider, createTheme
+  TextField, InputAdornment, createTheme
 } from '@mui/material'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
+import { ToggleGroupItem } from 'ui/toggle-group'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
-import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Edit as EditIcon, Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import styles from './styles/MerchantReservationTimes'
 import { green } from '@mui/material/colors';
 import { openSnackbar } from 'elements/snackbars';
@@ -95,9 +96,10 @@ function MerchantReservationTimes({
   }
   
   return (
-    <Card css={className}>
-      <CardHeader title="開放預約時段設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>開放預約時段設定</CardTitle>
+      </CardHeader>
       <CardContent css={styles.CardContent}>
         {merchantReservation.length ?
           merchantReservation.map(({ title, openingHours, closingHours, useDay }, index) => (
@@ -131,94 +133,91 @@ function MerchantReservationTimes({
               </div>
               <div css={styles.timeWrap}>
                 <div css={styles.timeWrap}>
-                  <FormControl variant="outlined">
-                    <InputLabel>開始</InputLabel>
-                    <Select
-                      label='開始'
-                      value={openingHours.split(':')[0]}
-                      disabled={!inputEnable}
-                      onChange={e => handleChangeBookingTime('openingHours', 0, e.target.value, index)}
-                    >
-                      {hours.map(d => (
-                        <MenuItem key={d} value={d}>{d}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <NativeSelect
+                    fullWidth={false}
+                    className="w-24"
+                    label='開始'
+                    value={openingHours.split(':')[0]}
+                    disabled={!inputEnable}
+                    onChange={e => handleChangeBookingTime('openingHours', 0, e.target.value, index)}
+                  >
+                    {hours.map(d => (
+                      <NativeSelectOption key={d} value={d}>{d}</NativeSelectOption>
+                    ))}
+                  </NativeSelect>
                   <span>:</span>
-                  <FormControl variant="outlined">
-                    <Select
-                      value={openingHours.split(':')[1]}
-                      disabled={!inputEnable}
-                      onChange={e => handleChangeBookingTime('openingHours', 1, e.target.value, index)}
-                    >
-                      <MenuItem value='00'>00</MenuItem>
-                      <MenuItem value='30'>30</MenuItem>
-                    </Select>
-                  </FormControl>
+                  <NativeSelect
+                    fullWidth={false}
+                    className="w-24"
+                    aria-label="開始（分）"
+                    value={openingHours.split(':')[1]}
+                    disabled={!inputEnable}
+                    onChange={e => handleChangeBookingTime('openingHours', 1, e.target.value, index)}
+                  >
+                    <NativeSelectOption value='00'>00</NativeSelectOption>
+                    <NativeSelectOption value='30'>30</NativeSelectOption>
+                  </NativeSelect>
                 </div>
                 <span>至</span>
                 <div css={styles.timeWrap}>
-                  <FormControl variant="outlined">
-                    <InputLabel>結束</InputLabel>
-                    <Select
-                      label='結束'
-                      value={closingHours.split(':')[0]}
-                      disabled={!inputEnable}
-                      onChange={e => handleChangeBookingTime('closingHours', 0, e.target.value, index)}
-                    >
-                      {hours.map(d => (
-                        <MenuItem key={d} value={d}>{d}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <NativeSelect
+                    fullWidth={false}
+                    className="w-24"
+                    label='結束'
+                    value={closingHours.split(':')[0]}
+                    disabled={!inputEnable}
+                    onChange={e => handleChangeBookingTime('closingHours', 0, e.target.value, index)}
+                  >
+                    {hours.map(d => (
+                      <NativeSelectOption key={d} value={d}>{d}</NativeSelectOption>
+                    ))}
+                  </NativeSelect>
                   <span>:</span>
-                  <FormControl variant="outlined">
-                    <Select
-                      value={closingHours.split(':')[1]}
-                      disabled={!inputEnable}
-                      onChange={e => handleChangeBookingTime('closingHours', 1, e.target.value, index)}
-                    >
-                      <MenuItem value='00'>00</MenuItem>
-                      <MenuItem value='30'>30</MenuItem>
-                    </Select>
-                  </FormControl>
+                  <NativeSelect
+                    fullWidth={false}
+                    className="w-24"
+                    aria-label="結束（分）"
+                    value={closingHours.split(':')[1]}
+                    disabled={!inputEnable}
+                    onChange={e => handleChangeBookingTime('closingHours', 1, e.target.value, index)}
+                  >
+                    <NativeSelectOption value='00'>00</NativeSelectOption>
+                    <NativeSelectOption value='30'>30</NativeSelectOption>
+                  </NativeSelect>
                 </div>
               </div>
               <div css={styles.timeWrap}>
                 {weekArray.map(({ label, value }) => {
                   const isInclude = useDay.includes(value)
                   return (
-                    <ThemeProvider theme={theme} key={label}>
-                      <Button
-                        onClick={() => handleAddDay(value, index)}
-                        variant="contained"
-                        color={isInclude ? 'primary' : 'inherit'}
-                        style={{ color: isInclude ? 'white' : '' }}
-                        disabled={!inputEnable || (isInclude ? false : handleCheckDisbaled(value, index))}
-                        css={styles.box}
-                      >{label}</Button>
-                    </ThemeProvider>
+                    <ToggleGroupItem
+                      key={label}
+                      selected={isInclude}
+                      onClick={() => handleAddDay(value, index)}
+                      disabled={!inputEnable || (isInclude ? false : handleCheckDisbaled(value, index))}
+                      className="h-10 w-10 px-0"
+                    >{label}</ToggleGroupItem>
                   )
                 })}
                 <div css={styles.iconWrap}>
                   {index === merchantReservation.length - 1 &&
-                    <IconButton disabled={!inputEnable || (merchantReservation.length >= 7)} onClick={() => merchantReservation.length < 7 && handleAddItem()}>
+                    <Button variant="ghost" size="icon" aria-label="新增時段" disabled={!inputEnable || (merchantReservation.length >= 7)} onClick={() => merchantReservation.length < 7 && handleAddItem()}>
                       <AddIcon />
-                    </IconButton>
+                    </Button>
                   }
-                  <IconButton disabled={!inputEnable} onClick={() => handleRemoveItem(index)}>
+                  <Button variant="ghost" size="icon" aria-label="刪除時段" disabled={!inputEnable} onClick={() => handleRemoveItem(index)}>
                     <DeleteForeverIcon />
-                  </IconButton>
+                  </Button>
                 </div>
               </div>
-              {index !== merchantReservation.length - 1 && <Divider/> }
+              {index !== merchantReservation.length - 1 && <div className="h-px bg-border" /> }
             </div>
           )) :
           <div style={{ alignItems: 'center', display: 'flex', gap: 50 }}>
             <span>無資料</span>
-            <IconButton disabled={!inputEnable} onClick={handleAddItem}>
+            <Button variant="ghost" size="icon" aria-label="新增時段" disabled={!inputEnable} onClick={handleAddItem}>
               <AddIcon />
-            </IconButton>
+            </Button>
           </div>
         }
       </CardContent>

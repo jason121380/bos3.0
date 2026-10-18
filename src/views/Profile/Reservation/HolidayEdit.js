@@ -1,9 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, Fragment } from 'react'
-import { DialogContent, DialogTitle, Button, Divider, DialogActions } from '@mui/material'
+// 外層為 MUI Dialog（由行事曆開啟），DialogContent / DialogTitle / DialogActions 保留
+import { DialogContent, DialogTitle, DialogActions } from '@mui/material'
+import { ToggleGroupItem } from 'ui/toggle-group'
 import { cloneDeep } from 'lodash'
 import { format } from 'date-fns'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { createTheme } from '@mui/material/styles'
+import { Button as UiButton } from 'ui/button'
 import { green, grey } from '@mui/material/colors'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchSetAdminBookingTimes from 'hooks/useFetchSetAdminBookingTimes'
@@ -107,23 +110,20 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
   return (
     <Fragment>
       <DialogTitle>編輯公休</DialogTitle>
-      <Divider />
+      <div className="h-px bg-border" />
       <DialogContent css={styles.content} dividers style={{ border: 'none' }}>
-        <ThemeProvider theme={theme}>
-          {timeOption.map(({ time, select }, i) => (
-            <Button
-              style={{ color: 'white' }}
-              key={time}
-              variant='contained'
-              color={select ? 'primary' : 'secondary'}
-              onClick={() => handleSelectTime(!select, i)}
-            >{format(time, 'HH:mm')}</Button>
-          ))}
-        </ThemeProvider>
+        {timeOption.map(({ time, select }, i) => (
+          <ToggleGroupItem
+            key={time}
+            selected={select}
+            className="tabular-nums"
+            onClick={() => handleSelectTime(!select, i)}
+          >{format(time, 'HH:mm')}</ToggleGroupItem>
+        ))}
       </DialogContent>
       <DialogActions>
-        <Button variant='contained' disabled={isClick} color='primary' onClick={handleSetHoliday}>確定</Button>
-        <Button variant='contained' disabled={isClick} onClick={handleOnClose}>取消</Button>
+        <UiButton variant='primary' disabled={isClick} onClick={handleSetHoliday}>確定</UiButton>
+        <UiButton variant='ghost' disabled={isClick} onClick={handleOnClose}>取消</UiButton>
       </DialogActions>
     </Fragment>
   )

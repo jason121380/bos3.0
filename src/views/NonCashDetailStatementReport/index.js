@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
+// 設計師多選（Autocomplete）與排序切換鈕（handler 使用 event, value）保留 MUI
 import {
-  Container, TextField, Button, Checkbox, CircularProgress, Grid,
+  TextField, Checkbox,
   ToggleButton, ToggleButtonGroup, Autocomplete
 } from '@mui/material'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
 import React, { useState, useEffect, Fragment } from 'react'
 import DateSelector from 'components/DateSelector'
@@ -18,6 +18,10 @@ import { CSVLink } from "react-csv";
 import Results from './Results'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader, Toolbar } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 const styles = {
   root: css({}),
@@ -189,104 +193,101 @@ export default function Employees() {
     state !== null && setOrderSubmit(state)
   }
   return (
-    <Page css={styles.root} title="非現金明細對帳單">
-      <Container maxWidth={false} css={styles.container}>
-        <AdminPageHeader title='非現金明細對帳單' />
-        <Grid container style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <Grid item>
-            <DateSelector
-              date={date}
-              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-              dateChange={value => setDate(value)}
-              margin
-            />
-          </Grid>
-          <Grid item style={{ flexGrow: 1, alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ marginTop: -23 }}>
-              <div className="divText">排序依序</div>
-              <ToggleButtonGroup
-                size="small"
-                value={orderSubmit}
-                onChange={handleToggleButtonChange}
-                exclusive
-              >
-                {orderBy.map((data, idx) => (
-                  <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                    {data.label}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
-            </div>
-          </Grid>
-          <Grid item style={{ margin: 'auto 0px' }}>
+    <Page className="ui-root" title="非現金明細對帳單">
+      <PageHeader
+        title="非現金明細對帳單"
+        actions={
+          <Button asChild variant="secondary">
             <CSVLink
               data={excelData}
               filename="非現金明細對帳單.csv"
             >
-              <Button variant="contained" color="primary">
-                報表匯出
-              </Button>
+              <Download strokeWidth={1.75} />
+              報表匯出
             </CSVLink>
-          </Grid>
-        </Grid>
-
-        {!userOrderableList.loading ? (
-          <Fragment>
-            <div style={{ display: 'flex', margin: '10px 0' }}>
-              <Autocomplete
-                multiple
-                fullWidth
-                options={selectDesignerDisplay}
-                disableCloseOnSelect
-                getOptionLabel={option => option.label}
-                onChange={(event, value) => handleChecked(value)}
-                renderOption={(props, option, { selected }) => (
-                  <li {...props}>
-                    <Checkbox
-                      style={{ color: '#202D50', marginRight: 8 }}
-                      icon={icon}
-                      checkedIcon={checkedIcon}
-                      checked={selected}
-                    />
-                    {option.label}
-                  </li>
-                )}
-                renderInput={params => (
-                  <TextField
-                    {...params}
-                    variant="outlined"
-                    label="設計師名稱"
-                    placeholder="設計師"
-                  />
-                )}
-              />
-              <div style={{ marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
-                <Button variant="contained" color="primary" onClick={handleSearchReport}>
-                  搜尋
-                </Button>
-              </div>
-            </div>
-
-            {!nonCashDetailStatement.loading ? (
-              nonCashDetailStatement !== undefined && (
-                <Results
-                  data={idx(nonCashDetailStatement, _ => _.data)}
-                  bonusDisplay={bonusDisplay}
-                  total={total}
-                />
-              )
-            ) : (
-              <div style={{ textAlign: 'center' }}>
-                <CircularProgress color="inherit" />
-              </div>
-            )}
-          </Fragment>
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <CircularProgress color="inherit" />
+          </Button>
+        }
+      />
+      <Toolbar className="gap-5">
+        <div>
+          <DateSelector
+            date={date}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            dateChange={value => setDate(value)}
+            margin
+          />
+        </div>
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <div className="divText text-label text-text-secondary">排序依序</div>
+            <ToggleButtonGroup
+              size="small"
+              value={orderSubmit}
+              onChange={handleToggleButtonChange}
+              exclusive
+            >
+              {orderBy.map((data, idx) => (
+                <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                  {data.label}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
           </div>
-        )}
-      </Container>
+        </div>
+      </Toolbar>
+
+      {!userOrderableList.loading ? (
+        <Fragment>
+          <div className="flex items-center gap-2.5 pb-6">
+            <Autocomplete
+              multiple
+              fullWidth
+              options={selectDesignerDisplay}
+              disableCloseOnSelect
+              getOptionLabel={option => option.label}
+              onChange={(event, value) => handleChecked(value)}
+              renderOption={(props, option, { selected }) => (
+                <li {...props}>
+                  <Checkbox
+                    style={{ color: 'rgb(var(--text))', marginRight: 8 }}
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    checked={selected}
+                  />
+                  {option.label}
+                </li>
+              )}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="設計師名稱"
+                  placeholder="設計師"
+                />
+              )}
+            />
+            <div className="flex items-center">
+              <Button variant="primary" onClick={handleSearchReport}>
+                搜尋
+              </Button>
+            </div>
+          </div>
+
+          {!nonCashDetailStatement.loading ? (
+            nonCashDetailStatement !== undefined && (
+              <Results
+                data={idx(nonCashDetailStatement, _ => _.data)}
+                bonusDisplay={bonusDisplay}
+                total={total}
+              />
+            )
+          ) : (
+            <Skeleton className="h-96" aria-busy="true" />
+          )}
+        </Fragment>
+      ) : (
+        <Skeleton className="h-96" aria-busy="true" />
+      )}
     </Page>
   )
 }

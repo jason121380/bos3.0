@@ -1,14 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { TextField, Typography } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { TextField } from '@mui/material'
+import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import ProductAutoComplete from 'components/ProductAutoComplete'
 import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
 import idx from 'idx'
 import React, { Fragment, useState, useEffect, useContext, useRef } from 'react'
-import FilterNoneIcon from '@mui/icons-material/FilterNone'
 import useFetchProducts from 'hooks/useFetchProducts'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import produce from 'immer'
@@ -328,15 +325,15 @@ export default function MerchantSells({
                 />
               )}
               {teachingMode && (
-                <Typography css={styles.heading2}>勾選將入業績但不收費用**</Typography>
+                <p className="m-0" css={styles.heading2}>勾選將入業績但不收費用**</p>
               )}
               {sells.thirdPartyCouponMerchantId &&
                 thirdPartyCoupons.map(data => {
                   if (data.id === sells.thirdPartyCouponMerchantId) {
                     return (
-                      <Typography css={styles.heading2}>
+                      <p className="m-0" css={styles.heading2}>
                         扣完後業績:{Math.round((sells.price * (100 - data.fee)) / 100)}
-                      </Typography>
+                      </p>
                     )
                   }
                 })}

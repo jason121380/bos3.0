@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, FormControl, InputLabel, MenuItem,
+  FormControl, InputLabel, MenuItem,
   Select, TextField, FormHelperText,
   InputAdornment, Input
 } from '@mui/material'
-import InsertInvitationIcon from '@mui/icons-material/InsertInvitation';
+import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import React from 'react'
@@ -12,7 +12,10 @@ import { useFormContext } from 'react-hook-form'
 import useFetchPayments from 'hooks/useFetchPayments'
 import { MobileDateTimePicker } from '@mui/x-date-pickers'
 import format from 'date-fns/format';
+import { Card, CardContent } from 'ui/card'
+import { Field, Input as UiInput } from 'ui/input'
 
+// styles.formControl 仍以 emotion 物件傳給 MUI 欄位與 EmployeeAutoComplete／CustomerAutoComplete（其 className 以 css prop 套用）
 import styles from './styles/General'
 
 const handlingFeeDecountWayArray = [
@@ -80,7 +83,7 @@ export default function General() {
   )
 
   return (
-    <Card css={styles.card}>
+    <Card className="mb-6">
       <CardContent>
         {date && (
           <MobileDateTimePicker
@@ -216,13 +219,12 @@ export default function General() {
             </Select>
           </FormControl>
         )}
-        <TextField
-          label="備註"
-          fullWidth
-          variant="outlined"
-          name="remark"
-          inputRef={register}
-        />
+        <Field label="備註">
+          <UiInput
+            name="remark"
+            ref={register}
+          />
+        </Field>
       </CardContent>
     </Card>
   )

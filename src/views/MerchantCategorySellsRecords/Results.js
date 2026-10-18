@@ -1,28 +1,17 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Typography,
-  Button,
-} from '@mui/material'
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { CSVLink } from "react-csv";
 import { startOfDay } from 'date-fns'
 import pagenationLabel from './../../helper/pagenationLabel'
 import { theme } from '../../theme'
 import { css } from '@emotion/react'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TablePagination, TableRow } from 'ui/table'
 
 const styles = {
   root: css({}),
@@ -282,151 +271,146 @@ function Results({
   }
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
+      <p className="pb-2 text-caption tabular-nums text-text-secondary">
         {results.totalCount} 筆資料, {results.pageOffset + 1}/
         {Math.ceil(results.totalCount / results.pageLimit)}
-      </Typography>
+      </p>
       <Card>
         <CardHeader
+          className="items-center pb-4"
           action={
-            <CSVLink data={excelData} filename="店販抽成明細.csv" >
-              <Button variant="contained" color="primary" size="small">
+            <Button asChild size="sm" variant="secondary">
+              <CSVLink data={excelData} filename="店販抽成明細.csv" >
+                <Download strokeWidth={1.75} />
                 報表匯出
-              </Button>
-            </CSVLink>
+              </CSVLink>
+            </Button>
           }
-          title="店販分類抽成明細"
-        />
-        <Divider />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>日期</TableCell>
-                    <TableCell>帳單編號</TableCell>
-                    <TableCell>姓名</TableCell>
-                    <TableCell>顧客姓名代號</TableCell>
-                    <TableCell>商品名稱代號</TableCell>
-                    <TableCell>實際售價</TableCell>
-                    <TableCell>數量</TableCell>
-                    <TableCell>小計</TableCell>
-                    <TableCell>手續費</TableCell>
-                    <TableCell>販賣業績(實)</TableCell>
-                    <TableCell>抽成(方式)</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {displayResults.map((display, i) =>
-                    display.result.map((data, index) => {
-                      if (data.designerName !== '小計') {
-                        return (
-                          <TableRow hover key={index}>
-                            <TableCell>{format(new Date(data.date), 'yyyy/MM/dd')}</TableCell>
-                            <TableCell>#{data.no}</TableCell>
-                            <TableCell>
-                              {data.designerNo !== ''
-                                ? data.designerName + ' / ' + data.designerNo
-                                : data.designerName}
-                            </TableCell>
-                            <TableCell>
-                              {data.customerNo
-                                ? data.customerName + ' / ' + data.customerNo
-                                : data.customerName}
-                            </TableCell>
-                            <TableCell>
-                              {data.productNo === null
-                                ? data.productName
-                                : data.productName + ' / ' + data.productNo}
-                            </TableCell>
-                            <TableCell>{Math.round(data.price)}</TableCell>
-                            <TableCell>{data.count}</TableCell>
-                            <TableCell>{data.count * Math.round(data.price)}</TableCell>
-                            <TableCell>{Math.round(data.handlingFee)}</TableCell>
-                            <TableCell>{Math.round(data.price2)}</TableCell>
-                            <TableCell>
-                              {Math.round(data.commission)}(
-                              {data.rakeType === 'fixed'
-                                ? '固定金額'
-                                : data.rakeType === 'byCost'
-                                  ? '毛利'
-                                  : '售價'}
-                              )
-                            </TableCell>
-                          </TableRow>
-                        )
-                      } else {
-                        return (
-                          <TableRow
-                            className="moneyFlowCatReportSubtotal"
-                            style={{ backgroundColor: 'lightgray' }}
-                            key={index}
-                          >
-                            <TableCell colSpan={3} />
-                            <TableCell style={{ fontWeight: 'bold' }}>小計</TableCell>
-                            <TableCell />
-                            <TableCell />
-                            <TableCell />
-                            <TableCell style={{ fontWeight: 'bold' }}>{data.totalCountPrice}</TableCell>
-                            <TableCell style={{ fontWeight: 'bold' }}>{Math.round(data.totalHandlingFee)}</TableCell>
-                            <TableCell style={{ fontWeight: 'bold' }}>{Math.round(data.totalPrice2)}</TableCell>
-                            <TableCell style={{ fontWeight: 'bold' }}>{Math.round(data.totalCommission)}</TableCell>
-                          </TableRow>
-                        )
-                      }
-                    })
-                  )}
-                  <TableRow hover>
-                    <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
-                    <TableCell colSpan={5}></TableCell>
-                    <TableCell style={{ fontWeight: 'bold' }}>
-                      {Math.round(
-                        results.data.reduce((total, item) => (total = total + item.count), 0)
-                      )}
-                    </TableCell>
-                    <TableCell style={{ fontWeight: 'bold' }}>
-                      {Math.round(
-                        results.data.reduce(
-                          (total, item) => (total = total + item.price * item.count),
-                          0
-                        )
-                      )}
-                    </TableCell>
-                    <TableCell style={{ fontWeight: 'bold' }}>
-                      {Math.round(
-                        results.data.reduce((total, item) => (total = total + item.handlingFee), 0)
-                      )}
-                    </TableCell>
-                    <TableCell style={{ fontWeight: 'bold' }}>
-                      {Math.round(
-                        results.data.reduce((total, item) => (total = total + item.price2), 0)
-                      )}
-                    </TableCell>
-                    <TableCell style={{ fontWeight: 'bold' }}>
-                      {Math.round(
-                        results.data.reduce((total, item) => (total = total + item.commission), 0)
-                      )}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
-          <TablePagination
-            ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
-            component="div"
-            count={results.totalCount}
-            onPageChange={handleOnChangePage}
-            onRowsPerPageChange={handleOnChangeRowsPerPage}
-            page={results.pageOffset}
-            rowsPerPage={results.pageLimit}
-            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
-          />
-        </CardActions>
+        >
+          <CardTitle>店販分類抽成明細</CardTitle>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table className="min-w-[900px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead>日期</TableHead>
+                <TableHead>帳單編號</TableHead>
+                <TableHead>姓名</TableHead>
+                <TableHead>顧客姓名代號</TableHead>
+                <TableHead>商品名稱代號</TableHead>
+                <TableHead numeric>實際售價</TableHead>
+                <TableHead numeric>數量</TableHead>
+                <TableHead numeric>小計</TableHead>
+                <TableHead numeric>手續費</TableHead>
+                <TableHead numeric>販賣業績(實)</TableHead>
+                <TableHead numeric>抽成(方式)</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {displayResults.map((display, i) =>
+                display.result.map((data, index) => {
+                  if (data.designerName !== '小計') {
+                    return (
+                      <TableRow key={index}>
+                        <TableCell className="whitespace-nowrap tabular-nums">{format(new Date(data.date), 'yyyy/MM/dd')}</TableCell>
+                        <TableCell className="tabular-nums">#{data.no}</TableCell>
+                        <TableCell>
+                          {data.designerNo !== ''
+                            ? data.designerName + ' / ' + data.designerNo
+                            : data.designerName}
+                        </TableCell>
+                        <TableCell>
+                          {data.customerNo
+                            ? data.customerName + ' / ' + data.customerNo
+                            : data.customerName}
+                        </TableCell>
+                        <TableCell>
+                          {data.productNo === null
+                            ? data.productName
+                            : data.productName + ' / ' + data.productNo}
+                        </TableCell>
+                        <TableCell numeric>{formatNumber(Math.round(data.price))}</TableCell>
+                        <TableCell numeric>{formatNumber(data.count)}</TableCell>
+                        <TableCell numeric>{formatNumber(data.count * Math.round(data.price))}</TableCell>
+                        <TableCell numeric>{formatNumber(Math.round(data.handlingFee))}</TableCell>
+                        <TableCell numeric>{formatNumber(Math.round(data.price2))}</TableCell>
+                        <TableCell numeric className="whitespace-nowrap">
+                          {formatNumber(Math.round(data.commission))}(
+                          {data.rakeType === 'fixed'
+                            ? '固定金額'
+                            : data.rakeType === 'byCost'
+                              ? '毛利'
+                              : '售價'}
+                          )
+                        </TableCell>
+                      </TableRow>
+                    )
+                  } else {
+                    return (
+                      <TableRow
+                        className="moneyFlowCatReportSubtotal bg-surface font-medium"
+                        key={index}
+                      >
+                        <TableCell colSpan={3} />
+                        <TableCell className="font-bold">小計</TableCell>
+                        <TableCell />
+                        <TableCell />
+                        <TableCell />
+                        <TableCell numeric className="font-bold">{formatNumber(data.totalCountPrice)}</TableCell>
+                        <TableCell numeric className="font-bold">{formatNumber(Math.round(data.totalHandlingFee))}</TableCell>
+                        <TableCell numeric className="font-bold">{formatNumber(Math.round(data.totalPrice2))}</TableCell>
+                        <TableCell numeric className="font-bold">{formatNumber(Math.round(data.totalCommission))}</TableCell>
+                      </TableRow>
+                    )
+                  }
+                })
+              )}
+              <TableRow>
+                <TableCell className="font-bold">合計</TableCell>
+                <TableCell colSpan={5}></TableCell>
+                <TableCell numeric className="font-bold">
+                  {formatNumber(Math.round(
+                    results.data.reduce((total, item) => (total = total + item.count), 0)
+                  ))}
+                </TableCell>
+                <TableCell numeric className="font-bold">
+                  {formatNumber(Math.round(
+                    results.data.reduce(
+                      (total, item) => (total = total + item.price * item.count),
+                      0
+                    )
+                  ))}
+                </TableCell>
+                <TableCell numeric className="font-bold">
+                  {formatNumber(Math.round(
+                    results.data.reduce((total, item) => (total = total + item.handlingFee), 0)
+                  ))}
+                </TableCell>
+                <TableCell numeric className="font-bold">
+                  {formatNumber(Math.round(
+                    results.data.reduce((total, item) => (total = total + item.price2), 0)
+                  ))}
+                </TableCell>
+                <TableCell numeric className="font-bold">
+                  {formatNumber(Math.round(
+                    results.data.reduce((total, item) => (total = total + item.commission), 0)
+                  ))}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+          {/* pageRef 原供 pagenationLabel 改寫 MUI 分頁文字；ui 分頁本身即為中文，保留 ref 於外框 */}
+          <div ref={pageRef}>
+            <TablePagination
+              count={results.totalCount}
+              onPageChange={handleOnChangePage}
+              onRowsPerPageChange={handleOnChangeRowsPerPage}
+              page={results.pageOffset}
+              rowsPerPage={results.pageLimit}
+              rowsPerPageOptions={[5, 10, 25, 50, 1000]}
+            />
+          </div>
+        </div>
       </Card>
     </div>
   )

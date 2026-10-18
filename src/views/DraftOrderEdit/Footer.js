@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
+// Divider 只用於下方列印範本（#printMain / #printThermal），維持列印輸出不變；
+// 重新結帳密碼欄位有游標位置與貼上處理，保留 MUI Dialog / TextField
 import {
-  Button,
-  Card,
-  CardContent,
-  Grid,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -36,7 +34,6 @@ import { useFetchMembershipsInOrderDetail } from 'hooks/useFetchGetMembership'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import useFetchGetDesignerNameDisplayOnInvoice from 'hooks/useFetchGetDesignerNameDisplayOnInvoice'
 import designerNameType from 'helper/designerNameType'
-import { red } from '@mui/material/colors'
 import useFetchGetLogoDisplayOnInvoice from 'hooks/useFetchGetLogoDisplayOnInvoice'
 import useFetchGetQrcodeDisplayOnInvoice from 'hooks/useFetchGetQrcodeDisplayOnInvoice'
 import useFetchGetMessageDisplayOnInvoice from 'hooks/useFetchGetMessageDisplayOnInvoice'
@@ -44,46 +41,11 @@ import QRCode from 'qrcode'
 import { handleTidyBill, checkServicesOrders, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
 import produce from 'immer'
 import { cloneDeep } from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import giveBonus from 'helper/giveBonus'
-
-const styles = {
-  card: css({
-    marginTop: theme.spacing(3),
-    '& span': {
-      whiteSpace: 'nowrap'
-    }
-  }),
-  cardContent: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  }),
-  price: css({
-    padding: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(3),
-  }),
-  action: css({
-    padding: theme.spacing(1),
-  }),
-  saveButton: css({
-    marginRight: theme.spacing(1),
-  }),
-  font: css({
-    fontWeight: 'bold',
-    color: '#3865AC',
-    padding: theme.spacing(1),
-  }),
-  checkoutBtn: css({
-    backgroundColor: red[500] + '!important',
-    '&:hover': {
-      backgroundColor: red[700] + '!important',
-    },
-  }),
-}
+import { Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { formatNumber } from 'ui/format'
 
 export default function Footer() {
   const history = useHistory()
@@ -762,103 +724,91 @@ export default function Footer() {
     isLineBinded
   ])
 
+  // 金額彙總：各數值的運算式與舊版相同，只加千分位與新版樣式
+  const Row = ({ label, value }) => (
+    <div className="flex items-center justify-between gap-3 py-1.5 text-body">
+      <span className="whitespace-nowrap text-text-secondary">{label}</span>
+      <span className="tabular-nums text-text">{formatNumber(value)}</span>
+    </div>
+  )
   return (
-    <Card css={styles.card}>
-      <CardContent css={styles.cardContent}>
-        <Grid container spacing={3}>
-          <Grid container item md={9} xs={12}>
-            <Grid item md={3} xs={12} css={styles.price}>
-              <span>服務消費 {serviceTotalPrice}</span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.price}>
-              <span>店販消費 {merchantSellTotalPrice}</span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.price}>
-              <span>使用預收卡 {Math.round(couponUsageTotalPrice)}</span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.font}>
-              <span>
-                業績合計{' '}
-                {Math.round(
-                  serviceTotalPrice +
-                  merchantSellTotalPrice +
-                  couponUsageTotalPrice +
-                  membershipTotalPrice
-                )}
-              </span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.price}>
-              <span>預收卡販賣 {couponSellPrice}</span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.price}>
-              <span>會員卡銷售 {membershipTotalPrice}</span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.price}>
-              <span>扣入金 {bill.walletPay}</span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.font}>
-              <span>
-                現金應收{' '}
-                {serviceTotalPriceWithoutThirdPartyCoupon +
-                  productTotalPriceWithoutThirdPartyCoupon +
-                  membershipTotalPriceWithoutThirdPartyCoupon +
-                  couponSellPrice -
-                  bill.walletPay -
-                  bill.amountByOtherPay -
-                  bill.bonusDecount}
-              </span>
-            </Grid>
-            <Grid item md={3} xs={12} css={styles.price}>
-              <span>其他付款方式 {bill.amountByOtherPay}</span>
-            </Grid>
-            <Grid item xs={3} css={styles.price}>
-              <span>紅利點數折抵 {bill.bonusDecount}</span>
-            </Grid>
-          </Grid>
-          <Grid className='orderButtonGroup' container item md={3} xs={12} css={styles.actions} justifyContent="flex-start">
-            <Grid item css={styles.action}>
-              <Button
-                className='fixDisabled'
-                size="large"
-                variant="contained"
-                color="error"
-                onClick={disableRecheckoutOrders ? handleOpenReCheckout : handleReCheckoutOrder}
-                disabled={open || vaild || isRecheckoutOrders}
-                data-testid="checkout"
-              >
-                結帳
-              </Button>
-            </Grid>
-            <Grid item css={styles.action}>
-              <Button
-                className='fixDisabled'
-                size="large"
-                variant="contained"
-                color="primary"
-                onClick={usehandleSaveDraftOrder}
-                disabled={open || vaild || isClick}
-                data-testid="savedraft"
-              >
-                儲存
-              </Button>
-            </Grid>
-            <Grid item css={styles.action}>
-              <Button
-                onClick={() => printDiv()}
-                size="large"
-                variant="contained"
-                color="primary"
-                disabled={
-                  getLogoDisplayOnInvoice.loading ||
-                  getQrcodeDisplayOnInvoice.loading ||
-                  getMessageDisplayOnInvoice.loading
-                }
-              >
-                列印
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
+    <Card className="ui-root mt-6">
+      <CardHeader>
+        <CardTitle>金額彙總</CardTitle>
+      </CardHeader>
+      <div className="grid grid-cols-2 gap-x-6 px-5 pt-2 md:grid-cols-4">
+        <Row label="服務消費" value={serviceTotalPrice} />
+        <Row label="店販消費" value={merchantSellTotalPrice} />
+        <Row label="使用預收卡" value={Math.round(couponUsageTotalPrice)} />
+        <Row label="預收卡販賣" value={couponSellPrice} />
+        <Row label="會員卡銷售" value={membershipTotalPrice} />
+        <Row label="扣入金" value={bill.walletPay} />
+        <Row label="其他付款方式" value={bill.amountByOtherPay} />
+        <Row label="紅利點數折抵" value={bill.bonusDecount} />
+      </div>
+      <div className="mt-3 flex flex-wrap items-end justify-between gap-6 border-0 border-t border-solid border-border px-5 py-4">
+        <div className="flex flex-wrap gap-x-10 gap-y-4">
+          <div className="flex flex-col gap-1">
+            <span className="text-label text-text-secondary">業績合計</span>
+            <span className="text-heading tabular-nums text-text">
+              {formatNumber(Math.round(
+                serviceTotalPrice +
+                merchantSellTotalPrice +
+                couponUsageTotalPrice +
+                membershipTotalPrice
+              ))}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1">
+            <span className="text-label text-text-secondary">現金應收</span>
+            <span className="text-display tabular-nums text-text">
+              <span className="mr-1 text-body text-text-secondary">NT$</span>
+              {formatNumber(serviceTotalPriceWithoutThirdPartyCoupon +
+                productTotalPriceWithoutThirdPartyCoupon +
+                membershipTotalPriceWithoutThirdPartyCoupon +
+                couponSellPrice -
+                bill.walletPay -
+                bill.amountByOtherPay -
+                bill.bonusDecount)}
+            </span>
+          </div>
+        </div>
+        <div className="orderButtonGroup flex flex-wrap items-center gap-2">
+          <Button
+            variant="secondary"
+            size="lg"
+            onClick={() => printDiv()}
+            disabled={
+              getLogoDisplayOnInvoice.loading ||
+              getQrcodeDisplayOnInvoice.loading ||
+              getMessageDisplayOnInvoice.loading
+            }
+          >
+            <Printer strokeWidth={1.75} />
+            列印
+          </Button>
+          <Button
+            variant="secondary"
+            size="lg"
+            onClick={usehandleSaveDraftOrder}
+            disabled={open || vaild || isClick}
+            data-testid="savedraft"
+          >
+            儲存
+          </Button>
+          <Button
+            variant="primary"
+            size="lg"
+            className="px-6"
+            onClick={disableRecheckoutOrders ? handleOpenReCheckout : handleReCheckoutOrder}
+            disabled={open || vaild || isRecheckoutOrders}
+            data-testid="checkout"
+          >
+            結帳
+          </Button>
+        </div>
+      </div>
+        {/* 以下列印範本（#printMain / #printThermal）原封不動 */}
         <div style={{ display: 'none' }} id="printMain">
           {
             (!detailInfo.logo.isDisplay || !detailInfo.logo.imageUrl) &&
@@ -1223,16 +1173,15 @@ export default function Footer() {
               />
             </DialogContentText>
           </DialogContent>
-          <DialogActions>
-            <Button color="primary" onClick={handleCloseDialog}>
+          <DialogActions className="ui-root">
+            <Button variant="ghost" onClick={handleCloseDialog}>
               取消
             </Button>
-            <Button disabled={isClick} color="primary" onClick={handleReCheckoutOrder} autoFocus data-testid="confirm">
+            <Button variant="primary" disabled={isClick} onClick={handleReCheckoutOrder} autoFocus data-testid="confirm">
               確認
             </Button>
           </DialogActions>
         </Dialog>
-      </CardContent>
     </Card>
   )
 }

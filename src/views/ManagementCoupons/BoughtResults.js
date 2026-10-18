@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
+// 表格列保留 MUI TableBody / TableRow / TableCell：外框為共用元件 components/ManagementTable（MUI Table）
 import {
-  Button,
   TableBody,
   TableCell,
   TableRow,
-  Typography,
 } from '@mui/material'
 import ManagementTable from 'components/ManagementTable'
 import { format } from 'date-fns'
@@ -14,6 +13,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from "react-csv";
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Button } from 'ui/button'
 
 const styles = {
   root: css({}),
@@ -142,33 +142,29 @@ export default function BoughtResults({
           {reportData.map((data, index) => (
             <TableRow hover key={`${data.id}-${index}`}>
               <TableCell css={styles.compactCell}>
-                <Button
-                  color="primary"
-                  component={RouterLink}
-                  size="small"
-                  to={`/order/${data.orderId}`}
-                  variant="outlined"
-                >
-                  詳情
+                <Button asChild size="sm" variant="secondary">
+                  <RouterLink to={`/order/${data.orderId}`}>
+                    詳情
+                  </RouterLink>
                 </Button>
               </TableCell>
               <TableCell css={styles.compactCell}>
                 {data.orderNo}
-                <Typography variant="caption" display="block">
+                <div className="text-caption tabular-nums text-text-secondary">
                   {format(data.orderDate, 'yyyy/MM/dd')}
-                </Typography>
+                </div>
               </TableCell>
               <TableCell css={styles.compactCell}>
                 {data.customerName}
-                <Typography variant="caption" display="block">
+                <div className="text-caption tabular-nums text-text-secondary">
                   {data.customerPhone}
-                </Typography>
+                </div>
               </TableCell>
               <TableCell css={styles.compactCell}>
                 {data.designerName}
-                <Typography variant="caption" display="block">
+                <div className="text-caption tabular-nums text-text-secondary">
                   {data.designerNo}
-                </Typography>
+                </div>
               </TableCell>
               <TableCell css={styles.compactCell}>{data.ticketNo}</TableCell>
               <TableCell css={styles.compactCell}>{data.ticketName}</TableCell>

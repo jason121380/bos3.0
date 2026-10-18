@@ -1,10 +1,12 @@
 /** @jsxImportSource @emotion/react */
+// 拖曳排序（react-beautiful-dnd）放在有 transform 的 Radix Dialog 內會定位錯誤，保留 MUI Dialog
 import {
-  Dialog, DialogContent, DialogTitle, Divider, DialogActions, Button
+  Dialog, DialogContent, DialogTitle, DialogActions
 } from '@mui/material'
+import { Button } from 'ui/button'
 import { useState, memo, useEffect } from 'react'
 import styles from './styles/OuterLinkSortModal'
-import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import { KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon } from 'ui/icons'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { openSnackbar } from 'elements/snackbars'
 import { cloneDeep } from 'lodash'
@@ -63,7 +65,7 @@ const OuterLinkSortModal = ({
         編輯排序
         <p css={styles.subTitle}>拖動按鈕調整排序</p>
       </DialogTitle>
-      <Divider />
+      <div className="h-px bg-border" />
       <DialogContent css={styles.Content}>
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="drop-id">
@@ -96,11 +98,10 @@ const OuterLinkSortModal = ({
       </DialogContent>
       <DialogActions>
         <div css={styles.ButtonGroup}>
-          <Button disabled={isClick} variant='contained' onClick={onModalClose}>取消</Button>
+          <Button disabled={isClick} variant="secondary" onClick={onModalClose}>取消</Button>
           <Button
             disabled={isClick}
-            color='primary'
-            variant='contained'
+            variant="primary"
             onClick={handleSubmitData}
           >
             儲存

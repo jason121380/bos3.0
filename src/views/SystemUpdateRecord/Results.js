@@ -1,41 +1,13 @@
-/** @jsxImportSource @emotion/react */
+// 每筆紀錄的展開區保留 MUI Accordion（橋接主題已套新外觀）；內含 Markdown 預覽，不套 ui-root（其基礎樣式會清掉 ol 編號）
 import React, { useState, Fragment } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, IconButton } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/DeleteOutlined'
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
+import { ChevronDown, Pencil, Trash2 } from 'lucide-react'
 import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
 import MdEditor from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
 import { openSnackbar } from 'elements/snackbars'
-import { css } from '@emotion/react'
-
-const styles = {
-  logList: css({
-    margin: '20px 0',
-  }),
-  details: css({
-    overflowX: 'auto',
-    padding: '20px',
-    display: 'flex',
-    flexDirection: 'column',
-  }),
-  listHead: css({
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-  bottomInfo: css({
-    display: 'flex',
-    justifyContent: 'flex-end',
-    width: '100%',
-    alignItems: 'center',
-    fontSize: '14px',
-    color: 'gray',
-  }),
-}
+import { Button } from 'ui/button'
 
 const Results = ({ data, systemUpdateRecord, isWhiteList }) => {
   const [open, setOpen] = useState(0)
@@ -69,39 +41,46 @@ const Results = ({ data, systemUpdateRecord, isWhiteList }) => {
   });
 
   return (
-    <div css={styles.logList}>
+    <div className="flex flex-col gap-3">
       {data.length > 0 &&
         data.map((d, index) => {
           return (
             <Accordion key={index} expanded={index === open}>
               <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                css={styles.listHead}
+                expandIcon={<ChevronDown className="h-4 w-4" strokeWidth={1.75} />}
                 onClick={() => {
                   index === open ? setOpen(-1) : setOpen(index)
                 }}
               >
-                <div css={styles.listHead}>
-                  <h2>{d.title}</h2>
-                  <div>版本:{d.versionNo}</div>
+                <div className="flex w-full items-center justify-between gap-4 pr-2">
+                  <h2 className="m-0 text-heading text-text">{d.title}</h2>
+                  <div className="shrink-0 text-label tabular-nums text-text-secondary">版本:{d.versionNo}</div>
                 </div>
               </AccordionSummary>
-              <AccordionDetails css={styles.details}>
+              <AccordionDetails className="flex flex-col overflow-x-auto">
                 <MdEditor theme={theme} modelValue={d.content} previewOnly language='en-US' />
-                <div css={styles.bottomInfo}>
-                  <div style={{ marginRight: '10px' }}>
+                <div className="ui-root flex w-full items-center justify-end gap-1 pt-3 text-caption text-text-secondary">
+                  <div className="mr-2 tabular-nums">
                     更新日期:{format(d.updateTime, 'MM/dd')}
                   </div>
                   {isWhiteList && <Fragment>
-                    <IconButton
-                      component={RouterLink}
-                      to={`/system-update-record/edit/${d.systemUpdateId}`}
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                      <RouterLink
+                        aria-label="編輯版本紀錄"
+                        to={`/system-update-record/edit/${d.systemUpdateId}`}
+                      >
+                        <Pencil strokeWidth={1.75} />
+                      </RouterLink>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-text-secondary hover:text-danger"
+                      aria-label="刪除版本紀錄"
+                      onClick={() => { handleDeleteRecord(d.systemUpdateId) }}
                     >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton onClick={() => { handleDeleteRecord(d.systemUpdateId) }}>
-                      <DeleteIcon />
-                    </IconButton>
+                      <Trash2 strokeWidth={1.75} />
+                    </Button>
                   </Fragment>}
                 </div>
               </AccordionDetails>

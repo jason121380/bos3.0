@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { TableContainer, Paper, Dialog } from '@mui/material'
 import { format } from 'date-fns'
-import AssignmentTurnedInRoundedIcon from '@mui/icons-material/AssignmentTurnedInRounded';
-import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
+import { AssignmentTurnedInRounded as AssignmentTurnedInRoundedIcon, DisabledByDefaultRounded as DisabledByDefaultRoundedIcon } from 'ui/icons'
 import styles from './styles/OrderTable'
 import { css } from '@emotion/react'
 
@@ -135,7 +134,7 @@ const OrderTable = ({
 
         {/* 時間 */}
         <div
-          style={{ position: 'sticky', left: 0, zIndex: 5, background: '#fff' }}
+          style={{ position: 'sticky', left: 0, zIndex: 5, background: 'rgb(var(--background))' }}
           css={styles.timeWrap}
           id='darkBg'
         >

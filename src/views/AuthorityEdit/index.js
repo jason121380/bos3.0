@@ -1,30 +1,14 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 import { openSnackbar } from 'elements/snackbars'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import useFetchUpdateAuthority from 'hooks/useFetchUpdateAuthority'
 import useFetchMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import AboutAuthority from './AboutAuthority'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  aboutPayment: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function AuthorityCreate({ match }) {
   const { updateAuthority } = useFetchUpdateAuthority()
@@ -57,24 +41,23 @@ function AuthorityCreate({ match }) {
   }
 
   return (
-    <Page css={styles.root} title="編輯角色">
-      <Container maxWidth="lg">
-        <PageTitle title='編輯角色' subTitle='Edit Role' />
+    <Page className="ui-root" title="編輯角色">
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
+        <PageHeader className="pb-0" title="編輯角色" />
         {userAuthorityName !== null && authoritySettings.length > 0 && (
           <AboutAuthority
-            className={styles.aboutPayment}
             userAuthorityName={userAuthorityName}
             setUserAuthorityName={setUserAuthorityName}
             authoritySettings={authoritySettings}
             setAuthoritySettings={setAuthoritySettings}
           />
         )}
-        <div css={styles.actions}>
-          <Button color="primary" variant="contained" onClick={handleSubmit}>
+        <div className="flex justify-end">
+          <Button variant="primary" onClick={handleSubmit}>
             儲存
           </Button>
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }

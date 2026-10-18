@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchThirdPartyCoupons from 'hooks/useFetchThirdPartTicket'
 import useFetchUpdateThirdPartyCoupon from 'hooks/useFetchUpdateThirdPartTicket'
@@ -9,23 +6,10 @@ import idx from 'idx'
 import produce from 'immer'
 import React from 'react'
 import { useHistory } from 'react-router'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import AboutThirdPartyCoupon from './AboutThirdPartyCoupon'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  aboutPayment: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function ServiceCategoryEdit(props) {
   const { updateThirdPartyCoupon } = useFetchUpdateThirdPartyCoupon()
@@ -88,20 +72,20 @@ function ServiceCategoryEdit(props) {
   )
 
   return (
-    <Page css={styles.root} title="編輯第三方卡券">
-      <Container maxWidth="lg">
-        <PageTitle title='編輯第三方卡券' subTitle='Edit Third Party Coupon' />
+    <Page className="ui-root" title="編輯第三方卡券">
+      {/* 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-3xl */}
+      <div className="mx-auto flex max-w-3xl flex-col gap-6">
+        <PageHeader className="pb-0" title='編輯第三方卡券' />
         <AboutThirdPartyCoupon
-          className={styles.aboutPayment}
           thirdPartyCoupon={thirdPartyCoupon}
           onChange={handleOnchange}
         />
-        <div css={styles.actions}>
-          <Button color="primary" variant="contained" disabled={vaild} onClick={handleSubmit}>
+        <div>
+          <Button variant="primary" disabled={vaild} onClick={handleSubmit}>
             儲存
           </Button>
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }

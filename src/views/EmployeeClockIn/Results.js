@@ -1,73 +1,22 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Paper,
-  Chip
-} from '@mui/material'
 import { Fragment } from 'react'
 import _ from 'lodash'
 import { format } from 'date-fns'
 import { css } from '@emotion/react'
-import { ThemeProvider } from '@mui/material/styles'
-import { theme } from '../../theme'
+import { Badge } from 'ui/badge'
+import { Button } from 'ui/button'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
+// 遲到／早退標紅（lateOrEarly 回傳），與舊版相同
 const styles = {
-  root: css({}),
-  tableCell: css({
-    padding: '8px 16px !important',
-    fontSize: '13px !important',
-    whiteSpace: 'nowrap',
-  }),
-  button: css({
-    borderRadius: '20px !important',
-    padding: '4px 16px !important',
-    fontSize: '12px !important',
-    fontWeight: 'bold !important',
-    height: '28px',
-    marginRight: '6px',
-    boxShadow: 'none !important',
-  }),
-  inButton: css({
-    borderColor: '#2e7d32 !important',
-    color: '#2e7d32 !important',
-    '&:hover': {
-      backgroundColor: '#2e7d32 !important',
-      color: 'white !important',
-    },
-  }),
-  outButton: css({
-    borderColor: '#ed6c02 !important',
-    color: '#ed6c02 !important',
-    '&:hover': {
-      backgroundColor: '#ed6c02 !important',
-      color: 'white !important',
-    },
-  }),
-  breakTimeButton: css({
-    borderColor: '#1A73E8 !important',
-    color: '#1A73E8 !important',
-    '&:hover': {
-      backgroundColor: '#1A73E8 !important',
-      color: 'white !important',
-    },
-  }),
-  chip: css({
-    height: '24px !important',
-    fontSize: '11px !important',
-    fontWeight: 'bold !important',
-    borderRadius: '12px !important',
-  }),
   colorRed: css({
-    color: '#d32f2f !important',
+    color: 'rgb(var(--danger)) !important',
     fontWeight: 'bold',
   }),
 }
+
+// 打卡操作按鈕：上班 / 下班 / 外出（歸來）以狀態色文字區分
+const clockBtn = 'h-7 px-3 text-caption font-medium'
 
 function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
   const color = value => {
@@ -124,7 +73,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
   const showBreaktime = (breakTime, recordIndex, length) => {
     return (
       <Fragment>
-        {checkBreakTime(breakTime) && <b style={{ color: '#202D50' }} id='breakTime'>外出時間：</b>}
+        {checkBreakTime(breakTime) && <b style={{ color: 'rgb(var(--text))' }} id='breakTime'>外出時間：</b>}
         {breakTime.map((d, index) => {
           if (index === 0) {
             if (d.end === null) {
@@ -212,7 +161,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
           return (
             <Fragment key={`clockInOutRender-${index}`}>
               {checkBr(time, index) && <hr className='hrBorderStyleInEmployeeClockin' />}
-              <b style={{ color: '#2e7d32' }}>上班時間：</b>
+              <b style={{ color: 'rgb(var(--success))' }}>上班時間：</b>
               {(time.in !== null && time.in.time !== null) &&
                 <span css={lateOrEarly(
                   value.length - 1,
@@ -245,7 +194,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
               {checkBr(time, index) && <hr className='hrBorderStyleInEmployeeClockin' />}
               {time.in.time !== null &&
                 <Fragment>
-                  <b style={{ color: '#2e7d32' }}>上班時間：</b>
+                  <b style={{ color: 'rgb(var(--success))' }}>上班時間：</b>
                   <span css={lateOrEarly(
                     value.length - 1,
                     index,
@@ -266,107 +215,84 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
     )
   }
   return (
-    <ThemeProvider theme={theme}>
-      <TableContainer component={Paper} className="EmployeeClockInTableContainer">
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell css={styles.tableCell}>狀態</TableCell>
-              <TableCell css={styles.tableCell}>代號</TableCell>
-              <TableCell css={styles.tableCell}>暱稱</TableCell>
-              <TableCell css={styles.tableCell}>姓名</TableCell>
-              <TableCell css={styles.tableCell}>班別</TableCell>
-              <TableCell css={styles.tableCell}>時間</TableCell>
-              <TableCell css={styles.tableCell}>操作</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {clockInRecord.map((designer, index) => (
-              <TableRow key={index} sx={{ '&:hover': { backgroundColor: '#fcfcfc' } }}>
-                <TableCell css={styles.tableCell}>
-                  {btnStatus[index].clockInRecord.length > 0 ? (
-                    btnStatus[index].clockInRecord.map((d, designerTimeIndex) => {
-                      if (designerTimeIndex === designer.clockInRecord.length - 1) {
-                        if (d.in !== null && d.out === null && d.breakRecord.length === 0) {
-                          return <Chip css={styles.chip} key={`designerTimeIndex-${designerTimeIndex}`} label="上班中" color="success" />
-                        }
-                        if (d.time !== null && d.out !== null) {
+    <div className="EmployeeClockInTableContainer">
+      <Table className="whitespace-nowrap">
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            <TableHead>狀態</TableHead>
+            <TableHead>代號</TableHead>
+            <TableHead>暱稱</TableHead>
+            <TableHead>姓名</TableHead>
+            <TableHead>班別</TableHead>
+            <TableHead>時間</TableHead>
+            <TableHead>操作</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {clockInRecord.map((designer, index) => (
+            <TableRow key={index}>
+              <TableCell>
+                {btnStatus[index].clockInRecord.length > 0 ? (
+                  btnStatus[index].clockInRecord.map((d, designerTimeIndex) => {
+                    if (designerTimeIndex === designer.clockInRecord.length - 1) {
+                      if (d.in !== null && d.out === null && d.breakRecord.length === 0) {
+                        return <Badge key={`designerTimeIndex-${designerTimeIndex}`} variant="success">上班中</Badge>
+                      }
+                      if (d.time !== null && d.out !== null) {
+                        return (
+                          <Badge
+                            key={`designerTimeIndex-${designerTimeIndex}`}
+                            variant="warning"
+                          >
+                            已下班
+                          </Badge>
+                        )
+                      }
+                      if (
+                        d.in !== null &&
+                        d.out === null &&
+                        d.breakRecord.length > 0 &&
+                        d.breakRecord[d.breakRecord.length - 1]
+                      ) {
+                        if (d.breakRecord[d.breakRecord.length - 1].end === null) {
                           return (
-                            <Chip
-                              css={styles.chip}
-                              label="已下班"
+                            <Badge
                               key={`designerTimeIndex-${designerTimeIndex}`}
-                              style={{ backgroundColor: '#ed6c02', color: 'white' }}
-                            />
+                              variant="accent"
+                            >
+                              外出中
+                            </Badge>
                           )
                         }
-                        if (
-                          d.in !== null &&
-                          d.out === null &&
-                          d.breakRecord.length > 0 &&
-                          d.breakRecord[d.breakRecord.length - 1]
-                        ) {
-                          if (d.breakRecord[d.breakRecord.length - 1].end === null) {
-                            return (
-                              <Chip
-                                css={styles.chip}
-                                label="外出中"
-                                key={`designerTimeIndex-${designerTimeIndex}`}
-                                style={{ backgroundColor: '#1A73E8', color: 'white' }}
-                              />
-                            )
-                          }
-                          if (d.breakRecord[d.breakRecord.length - 1].end !== null) {
-                            return <Chip css={styles.chip} key={`designerTimeIndex-${designerTimeIndex}`} label="上班中" color="success" />
-                          }
+                        if (d.breakRecord[d.breakRecord.length - 1].end !== null) {
+                          return <Badge key={`designerTimeIndex-${designerTimeIndex}`} variant="success">上班中</Badge>
                         }
                       }
-                    })
-                  ) : (
-                    <Chip css={styles.chip} label="未打卡" color="default" variant="outlined" />
-                  )}
-                </TableCell>
-                <TableCell css={styles.tableCell}>{designer.userNo ? designer.userNo : '無代號'}</TableCell>
-                <TableCell
-                  css={styles.tableCell}
-                  style={{
-                    maxWidth: 100,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
-                  }}
-                >
-                  {designer.userNickName ? designer.userNickName : ''}
-                </TableCell>
-                <TableCell
-                  css={styles.tableCell}
-                  style={{
-                    minWidth: 100,
-                  }}
-                >
-                  {designer.userName}
-                </TableCell>
-                <TableCell
-                  css={styles.tableCell}
-                  style={{
-                    minWidth: 100,
-                  }}
-                >
-                  {designer.clockInSetting !== null && designer.clockInSetting.name}
-                </TableCell>
-                <TableCell
-                  css={styles.tableCell}
-                  style={{
-                    minWidth: 200,
-                  }}
-                >
-                  {designer.clockInRecord.length > 0 && clockInOutRender(designer.clockInRecord, designer)}
-                </TableCell>
-                <TableCell css={styles.tableCell}>
+                    }
+                  })
+                ) : (
+                  <Badge variant="neutral">未打卡</Badge>
+                )}
+              </TableCell>
+              <TableCell className="tabular-nums">{designer.userNo ? designer.userNo : '無代號'}</TableCell>
+              <TableCell className="max-w-[100px] overflow-hidden text-ellipsis">
+                {designer.userNickName ? designer.userNickName : ''}
+              </TableCell>
+              <TableCell className="min-w-[100px]">
+                {designer.userName}
+              </TableCell>
+              <TableCell className="min-w-[100px]">
+                {designer.clockInSetting !== null && designer.clockInSetting.name}
+              </TableCell>
+              <TableCell className="min-w-[200px] whitespace-normal py-2 tabular-nums">
+                {designer.clockInRecord.length > 0 && clockInOutRender(designer.clockInRecord, designer)}
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center gap-1.5">
                   <Button
                     disabled={btnDisabled(btnStatus[index].clockInRecord) || !isToday}
-                    css={[styles.button, styles.inButton]}
-                    variant="outlined"
-                    className='work'
+                    variant="secondary"
+                    className={`work ${clockBtn} text-success`}
                     onClick={() => {
                       handleClockIn(btnStatus[index].userId, 'CLOCKIN')
                     }}
@@ -375,9 +301,8 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                   </Button>
                   <Button
                     disabled={!btnDisabled(btnStatus[index].clockInRecord) || !isToday}
-                    css={[styles.button, styles.outButton]}
-                    variant="outlined"
-                    className='offWork'
+                    variant="secondary"
+                    className={`offWork ${clockBtn} text-warning`}
                     onClick={() => {
                       handleClockIn(btnStatus[index].userId, 'CLOCKOUT')
                     }}
@@ -386,9 +311,8 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                   </Button>
                   <Button
                     disabled={!btnDisabled(btnStatus[index].clockInRecord) || !isToday}
-                    css={[styles.button, styles.breakTimeButton]}
-                    variant="outlined"
-                    className='break'
+                    variant="secondary"
+                    className={`break ${clockBtn} text-accent`}
                     onClick={() => {
                       handleClockIn(
                         btnStatus[index].userId,
@@ -398,13 +322,13 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                   >
                     {buttonStatus(btnStatus[index].clockInRecord)}
                   </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </ThemeProvider>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   )
 }
 

@@ -1,26 +1,10 @@
-/** @jsxImportSource @emotion/react */
 import React from 'react'
 import PropTypes from 'prop-types'
-import {
-    Grid,
-    TextField,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    Checkbox,
-    FormControlLabel,
-} from '@mui/material'
-import { css } from '@emotion/react'
+// 數字輸入（onWheel 失焦）保留 MUI TextField
+import { TextField } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import idx from 'idx'
-
-const styles = {
-    root: css({
-        borderRadius: '24px',
-        boxShadow: 'none',
-        border: 'none',
-    }),
-}
 
 function MobileBookingSettings({
     profile,
@@ -31,25 +15,11 @@ function MobileBookingSettings({
 }) {
     return (
         <div {...rest}>
-            <div css={css({
-                fontSize: '16px',
-                fontWeight: 'bold',
-                color: '#202124',
-                marginBottom: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-            })}>
-                <div css={css({
-                    width: '4px',
-                    height: '18px',
-                    backgroundColor: '#1A73E8',
-                    borderRadius: '2px',
-                })} />
+            <h3 className="mb-4 text-heading text-text">
                 手機端預約設定
-            </div>
-            <Grid container spacing={3}>
-                <Grid item xs={12}>
+            </h3>
+            <div className="flex flex-col gap-4">
+                <div>
                     <TextField
                         fullWidth
                         label="同時段預約人數上限"
@@ -65,37 +35,26 @@ function MobileBookingSettings({
                         variant="outlined"
                         onWheel={() => document.activeElement.blur()}
                     />
-                </Grid>
-                <Grid item xs={12}>
-                    <FormControl variant="outlined" fullWidth>
-                        <InputLabel>預約審核模式</InputLabel>
-                        <Select
-                            label='預約審核模式'
-                            value={profile.isBookingAutoAccept}
-                            onChange={event =>
-                                onChange({
-                                    value: idx(event, _ => _.target.value),
-                                    key: 'isBookingAutoAccept',
-                                })
-                            }
-                        >
-                            <MenuItem value="TRUE">自動開啟</MenuItem>
-                            <MenuItem value="FALSE">手動關閉</MenuItem>
-                            <MenuItem value="BYSTORE">依店家系統設定</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                    <FormControlLabel
-                        control={<Checkbox color="primary" />}
-                        sx={{
-                            backgroundColor: '#F8F9FA',
-                            width: '100%',
-                            margin: 0,
-                            padding: '8px 12px',
-                            borderRadius: '12px',
-                            '& .MuiTypography-root': { fontSize: '14px', color: '#5F6368' }
-                        }}
+                </div>
+                <div>
+                    <NativeSelect
+                        label='預約審核模式'
+                        value={profile.isBookingAutoAccept}
+                        onChange={event =>
+                            onChange({
+                                value: idx(event, _ => _.target.value),
+                                key: 'isBookingAutoAccept',
+                            })
+                        }
+                    >
+                        <NativeSelectOption value="TRUE">自動開啟</NativeSelectOption>
+                        <NativeSelectOption value="FALSE">手動關閉</NativeSelectOption>
+                        <NativeSelectOption value="BYSTORE">依店家系統設定</NativeSelectOption>
+                    </NativeSelect>
+                </div>
+                <div>
+                    <CheckboxField
+                        className="m-0 w-full rounded-md bg-surface px-3 py-2"
                         label="待審核預約是否占用預約名額"
                         checked={profile.isRTCO}
                         onChange={event =>
@@ -105,8 +64,8 @@ function MobileBookingSettings({
                             })
                         }
                     />
-                </Grid>
-            </Grid>
+                </div>
+            </div>
         </div>
     )
 }

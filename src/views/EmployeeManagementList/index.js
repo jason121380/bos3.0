@@ -1,6 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Card, Container, CircularProgress, Grid, Button, IconButton, Collapse, TextField, Link } from '@mui/material'
-import FilterListIcon from '@mui/icons-material/FilterList'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import { useFetchUsersInEmployeeList } from 'hooks/useFetchUsers'
@@ -9,22 +6,11 @@ import produce from 'immer'
 import React, { useState, useEffect } from 'react'
 import useFetchMerchantDesigner from 'hooks/useFetchMerchantDesigner'
 import useFetchMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'
-import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Card } from 'ui/card'
+import { Field, Input } from 'ui/input'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(2),
-  }),
-}
 
 export default function Employees() {
   const designerId = JSON.parse(localStorage.getItem('user')).id
@@ -82,44 +68,44 @@ export default function Employees() {
   }
   return (
     !designerDetail.loading && (
-      <Page css={styles.root} title="員工列表">
-        <Container maxWidth={false} css={styles.container}>
-          <AdminPageHeader
-            title='員工列表'
-            showFilter={showFilter}
-            onFilterClick={() => setShowFilter(!showFilter)}
-            primaryAction={{
-              label: '新增',
-              to: '/employee/create'
-            }}
-          />
+      <Page className="ui-root" title="員工列表">
+        <AdminPageHeader
+          title='員工列表'
+          showFilter={showFilter}
+          onFilterClick={() => setShowFilter(!showFilter)}
+          primaryAction={{
+            label: '新增',
+            to: '/employee/create'
+          }}
+        />
 
-          <Collapse in={showFilter}>
-            <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
-              <TextField
-                label="搜尋姓名或編號"
-                variant="outlined"
-                size="small"
+        {showFilter && (
+          <Card className="mb-6 p-4">
+            <Field label="搜尋姓名或編號" htmlFor="employee-keyword" className="w-[250px]">
+              <Input
+                id="employee-keyword"
                 value={page.keyword}
                 onChange={e => setPage({ ...page, keyword: e.target.value, offset: 0 })}
-                style={{ width: 250 }}
               />
-            </div>
-          </Collapse>
-          {!users.loading ? idx(users, _ => (
-            <Results
-              className={styles.results}
-              employees={_.data.users.users}
-              handleOnChangePage={handleOnChangePage}
-              handleOnChangeRowsPerPage={handleOnChangeRowsPerPage}
-              page={page}
-              pageCount={_.data.users.totalCount}
-              loginUserAuthName={loginUserAuthName}
-              rakeSetAble={rakeSetAble}
-            />
-          )) : <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
-          }
-        </Container>
+            </Field>
+          </Card>
+        )}
+        {!users.loading ? idx(users, _ => (
+          <Results
+            employees={_.data.users.users}
+            handleOnChangePage={handleOnChangePage}
+            handleOnChangeRowsPerPage={handleOnChangeRowsPerPage}
+            page={page}
+            pageCount={_.data.users.totalCount}
+            loginUserAuthName={loginUserAuthName}
+            rakeSetAble={rakeSetAble}
+          />
+        )) : (
+          // 載入中：與舊版 CircularProgress 相同時機顯示（users.loading）
+          <div aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[480px] w-full rounded-lg" />
+          </div>
+        )}
       </Page>
     )
   )

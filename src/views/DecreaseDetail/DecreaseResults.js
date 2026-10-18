@@ -1,38 +1,12 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, CardHeader, Divider, Table, TableBody,
-  TableCell, TableHead, TableRow, Typography, Button,
-} from '@mui/material'
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import { useEffect, useState, Fragment } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { CSVLink } from "react-csv";
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 900,
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-}
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Results({
   customers, results, summary, pointSummary, beenAssistedDesigner, ...rest
@@ -116,53 +90,55 @@ function Results({
   }
 
   return (
-    <div {...rest} css={styles.root}>
-      <Typography color="textSecondary" gutterBottom variant="body2">
-        {results.length} 筆資料
-      </Typography>
+    <div {...rest}>
       <Card>
         <CardHeader
+          className="items-center pb-4"
           action={
-            <CSVLink data={excelData} filename="互助點數明細.csv" >
-              <Button variant="contained" color="primary" size="small">
+            <Button asChild size="sm" variant="secondary">
+              <CSVLink data={excelData} filename="互助點數明細.csv" >
+                <Download strokeWidth={1.75} />
                 報表匯出
-              </Button>
-            </CSVLink>
+              </CSVLink>
+            </Button>
           }
-          title="互助紀錄"
-        />
-        <Divider />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>日期</TableCell>
-                    <TableCell>帳單編號</TableCell>
-                    <TableCell>服務項目(互助項目)</TableCell>
-                    <TableCell>設計師</TableCell>
-                    <TableCell>互助人</TableCell>
-                    <TableCell>互助換算金額(方式)</TableCell>
-                    <TableCell>點數</TableCell>
-                    <TableCell>互助扣項方式</TableCell>
+        >
+          <div className="flex items-baseline gap-3">
+            <CardTitle>互助紀錄</CardTitle>
+            <span className="text-label tabular-nums text-text-secondary">
+              {results.length} 筆資料
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
+              <Table className="min-w-[900px]">
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>日期</TableHead>
+                    <TableHead>帳單編號</TableHead>
+                    <TableHead>服務項目(互助項目)</TableHead>
+                    <TableHead>設計師</TableHead>
+                    <TableHead>互助人</TableHead>
+                    <TableHead numeric>互助換算金額(方式)</TableHead>
+                    <TableHead numeric>點數</TableHead>
+                    <TableHead>互助扣項方式</TableHead>
                   </TableRow>
-                </TableHead>
+                </TableHeader>
                 <TableBody>
                   {results !== undefined && beenAssistedDesigner === undefined
                     ? results.map((order, index) => (
-                      <TableRow hover key={`decrease-result-${index}`}>
-                        <TableCell>{format(new Date(order.date), 'yyyy/MM/dd')}</TableCell>
-                        <TableCell>#{order.orderNo}</TableCell>
+                      <TableRow key={`decrease-result-${index}`}>
+                        <TableCell className="tabular-nums">{format(new Date(order.date), 'yyyy/MM/dd')}</TableCell>
+                        <TableCell className="tabular-nums">#{order.orderNo}</TableCell>
                         <TableCell>
                           {order.service.name}({order.helperType})
                         </TableCell>
                         <TableCell>{order.designer.name}</TableCell>
                         <TableCell>{order.helper.name}</TableCell>
-                        <TableCell>
-                          {order.helperFee}({order.helperMoneyGivenWay})
+                        <TableCell numeric>
+                          {formatNumber(order.helperFee)}({order.helperMoneyGivenWay})
                         </TableCell>
-                        <TableCell>{pointFloatDisplay(order.helperPoint)}</TableCell>
+                        <TableCell numeric>{pointFloatDisplay(order.helperPoint)}</TableCell>
                         <TableCell>
                           {order.helperDeductionType === 'onSales'
                             ? '依業績'
@@ -175,18 +151,18 @@ function Results({
                     : results
                       .filter(data => data.designer.id === beenAssistedDesigner)
                       .map((order, index) => (
-                        <TableRow hover key={`decrease-result-${index}`}>
-                          <TableCell>{format(new Date(order.date), 'yyyy/MM/dd')}</TableCell>
-                          <TableCell>#{order.orderNo}</TableCell>
+                        <TableRow key={`decrease-result-${index}`}>
+                          <TableCell className="tabular-nums">{format(new Date(order.date), 'yyyy/MM/dd')}</TableCell>
+                          <TableCell className="tabular-nums">#{order.orderNo}</TableCell>
                           <TableCell>
                             {order.service.name}({order.helperType})
                           </TableCell>
                           <TableCell>{order.designer.name}</TableCell>
                           <TableCell>{order.helper.name}</TableCell>
-                          <TableCell>
-                            {order.helperFee}({order.helperMoneyGivenWay})
+                          <TableCell numeric>
+                            {formatNumber(order.helperFee)}({order.helperMoneyGivenWay})
                           </TableCell>
-                          <TableCell>{pointFloatDisplay(order.helperPoint)}</TableCell>
+                          <TableCell numeric>{pointFloatDisplay(order.helperPoint)}</TableCell>
                           <TableCell>
                             {order.helperDeductionType === 'onSales'
                               ? '依業績'
@@ -196,7 +172,7 @@ function Results({
                           </TableCell>
                         </TableRow>
                       ))}
-                  <TableRow>
+                  <TableRow className="font-bold">
                     <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
@@ -204,22 +180,20 @@ function Results({
                     <TableCell></TableCell>
                     {beenAssistedDesigner !== undefined ? (
                       <Fragment>
-                        <TableCell>{summary2}</TableCell>
-                        <TableCell>{pointFloatDisplay(pointSummary2)}</TableCell>
+                        <TableCell numeric>{formatNumber(summary2)}</TableCell>
+                        <TableCell numeric>{pointFloatDisplay(pointSummary2)}</TableCell>
                       </Fragment>
                     ) : (
                       <Fragment>
-                        <TableCell>{summary}</TableCell>
-                        <TableCell>{pointFloatDisplay(pointSummary)}</TableCell>
+                        <TableCell numeric>{formatNumber(summary)}</TableCell>
+                        <TableCell numeric>{pointFloatDisplay(pointSummary)}</TableCell>
                       </Fragment>
                     )}
                     <TableCell></TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
+        </div>
       </Card>
     </div>
   )

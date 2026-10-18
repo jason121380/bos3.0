@@ -1,18 +1,10 @@
-/** @jsxImportSource @emotion/react */
-import { ToggleButtonGroup, ToggleButton } from '@mui/material'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
 import { useEffect, useMemo, useCallback } from 'react'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 
 const WALLET_ACTIONS = {
   ADD: { value: 'ADD', label: '儲值' },
   MINUS: { value: 'MINUS', label: '扣除' }
-}
-
-const styles = {
-  button: css({
-    whiteSpace: 'nowrap'
-  })
 }
 
 function WalletDepositToggleButton({
@@ -38,23 +30,22 @@ function WalletDepositToggleButton({
     }, [onChange])
 
   return (
-    <ToggleButtonGroup
+    <ToggleGroup
       size="small"
       exclusive
       value={value}
       onChange={handleChange}
     >
       {buttons.map(({ value: btnValue, label }) => (
-        <ToggleButton 
+        <ToggleGroupItem
           key={btnValue}
-          css={styles.button} 
-          disabled={disabled} 
+          disabled={disabled}
           value={btnValue}
         >
           {label}
-        </ToggleButton>
+        </ToggleGroupItem>
       ))}
-    </ToggleButtonGroup>
+    </ToggleGroup>
   )
 }
 

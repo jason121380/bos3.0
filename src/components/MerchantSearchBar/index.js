@@ -5,6 +5,7 @@ import useQueryString from 'hooks/useQueryString'
 import produce from 'immer'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { withMuiScope } from 'ui/mui-theme'
 import { useHistory, useLocation } from 'react-router'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
@@ -423,4 +424,5 @@ MerchantSearchBar.propTypes = {
   onSearch: PropTypes.func,
 }
 
-export default MerchantSearchBar
+// 外觀套用新版橋接主題（篩選欄位 36px、控制項邊框），邏輯不變
+export default withMuiScope(MerchantSearchBar)

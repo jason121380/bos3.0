@@ -1,72 +1,55 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-  TableContainer,
-} from '@mui/material'
 import PropTypes from 'prop-types'
 import { format } from 'date-fns'
-import { css } from '@emotion/react'
-
-const styles = {
-  table: css({
-    minWidth: 650,
-  }),
-}
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Results({ reportForDisplay }) {
   return (
-    <TableContainer style={{marginTop: 8 }} component={Paper}>
-      <Table css={styles.table} size="small" aria-label="a dense table">
-        <TableHead>
-          <TableRow>
-            <TableCell>日期</TableCell>
-            <TableCell>營業現金應收</TableCell>
-            <TableCell>現金收支收入</TableCell>
-            <TableCell>現金收支支出(-)</TableCell>
-            <TableCell>匯款</TableCell>
-            <TableCell>當日現金結存</TableCell>
-            <TableCell>累計現金結存</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {reportForDisplay.map((report, index) => {
-            return (
-              <TableRow key={index}>
-                <TableCell>{format(report.date, 'yyyy/MM/dd')}</TableCell>
-                <TableCell>{report.businessCash}</TableCell>
-                <TableCell>{report.cashRevenue}</TableCell>
-                <TableCell>{report.cashExpenditure}</TableCell>
-                <TableCell>{report.bankTransfer}</TableCell>
-                <TableCell>{report.cashBalance}</TableCell>
-                <TableCell>{report.totalCashBalance}</TableCell>
-              </TableRow>
-            )
-          })}
-          <TableRow>
-            <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
-            <TableCell>
-              {reportForDisplay.reduce((total, item) => (total = total + item.businessCash), 0)}
-            </TableCell>
-            <TableCell>
-              {reportForDisplay.reduce((total, item) => (total = total + item.cashRevenue), 0)}
-            </TableCell>
-            <TableCell>
-              {reportForDisplay.reduce((total, item) => (total = total + item.cashExpenditure), 0)}
-            </TableCell>
-            <TableCell></TableCell>
-            <TableCell>
-              {reportForDisplay.reduce((total, item) => (total = total + item.cashBalance), 0)}
-            </TableCell>
-            <TableCell>N/A</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Table wrapperClassName="mt-2" className="min-w-[650px]" aria-label="a dense table">
+      <TableHeader>
+        <TableRow className="hover:bg-transparent">
+          <TableHead>日期</TableHead>
+          <TableHead numeric>營業現金應收</TableHead>
+          <TableHead numeric>現金收支收入</TableHead>
+          <TableHead numeric>現金收支支出(-)</TableHead>
+          <TableHead numeric>匯款</TableHead>
+          <TableHead numeric>當日現金結存</TableHead>
+          <TableHead numeric>累計現金結存</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {reportForDisplay.map((report, index) => {
+          return (
+            <TableRow key={index}>
+              <TableCell className="tabular-nums">{format(report.date, 'yyyy/MM/dd')}</TableCell>
+              <TableCell numeric>{formatNumber(report.businessCash)}</TableCell>
+              <TableCell numeric>{formatNumber(report.cashRevenue)}</TableCell>
+              <TableCell numeric>{formatNumber(report.cashExpenditure)}</TableCell>
+              <TableCell numeric>{formatNumber(report.bankTransfer)}</TableCell>
+              <TableCell numeric>{formatNumber(report.cashBalance)}</TableCell>
+              <TableCell numeric>{formatNumber(report.totalCashBalance)}</TableCell>
+            </TableRow>
+          )
+        })}
+        <TableRow className="font-bold">
+          <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
+          <TableCell numeric>
+            {formatNumber(reportForDisplay.reduce((total, item) => (total = total + item.businessCash), 0))}
+          </TableCell>
+          <TableCell numeric>
+            {formatNumber(reportForDisplay.reduce((total, item) => (total = total + item.cashRevenue), 0))}
+          </TableCell>
+          <TableCell numeric>
+            {formatNumber(reportForDisplay.reduce((total, item) => (total = total + item.cashExpenditure), 0))}
+          </TableCell>
+          <TableCell></TableCell>
+          <TableCell numeric>
+            {formatNumber(reportForDisplay.reduce((total, item) => (total = total + item.cashBalance), 0))}
+          </TableCell>
+          <TableCell numeric>N/A</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
   )
 }
 

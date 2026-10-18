@@ -1,53 +1,14 @@
-/** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react'
-import { Container, CircularProgress, Button } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import DateSelector from 'components/DateSelector'
 import useFetchDesignersSalaryDetailReport from 'hooks/useFetchUserSalaryDetail'
 import { useFetchGetUserSalaryDetailExceLazy } from 'hooks/useFetchGetUserSalaryDetailExcel'
 import idx from 'idx'
 import { format } from 'date-fns'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Skeleton } from 'ui/skeleton'
 
 import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  searchBtnDiv: css({
-    marginBottom: '24px',
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '284px',
-  }),
-  exportBtn: css({
-    float: 'right',
-  }),
-  formGroup: css({
-    width: '10rem',
-    marginLeft: theme.spacing(3),
-  }),
-  topDiv: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 10,
-    flexWrap: 'wrap'
-  }),
-}
 
 const DesignersSalaryDetailReport = () => {
   const [date, setDate] = useState({
@@ -73,8 +34,8 @@ const DesignersSalaryDetailReport = () => {
   }
 
   return (
-    <Page css={styles.root} className='DesignersSalaryDetailReport' title="薪資明細表">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className='DesignersSalaryDetailReport' title="薪資明細表">
+      <div>
         <AdminPageHeader
           title="薪資明細表"
           secondaryActions={[
@@ -112,11 +73,13 @@ const DesignersSalaryDetailReport = () => {
             />
           ))
         ) : (
-          <div css={styles.noReportDiv}>
-            <CircularProgress />
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div className="noprint flex flex-col gap-6" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[240px] w-full rounded-lg" />
+            <Skeleton className="h-[160px] w-full rounded-lg" />
           </div>
         )}
-      </Container>
+      </div>
     </Page>
   )
 }

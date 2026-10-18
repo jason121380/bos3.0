@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Card, CardContent, Divider, IconButton, Input, Paper, Tooltip } from '@mui/material'
-import AddPhotoIcon from '@mui/icons-material/AddPhotoAlternate'
-import AttachFileIcon from '@mui/icons-material/AttachFile'
-import SendIcon from '@mui/icons-material/Send'
+import { AddPhotoAlternate as AddPhotoIcon, AttachFile as AttachFileIcon, Send as SendIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useRef, useState } from 'react'
 import { css } from '@emotion/react'

@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, CardHeader, Divider, FormControlLabel, Checkbox,
-  TextField, Select, MenuItem, InputLabel, FormControl,
-} from '@mui/material'
+// 數字欄位（onWheel 失焦、onFocus 全選）與多行文字保留 MUI TextField
+import { TextField } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
@@ -51,16 +52,16 @@ function IsReservationNeedReview({
   }
 
   return (
-    <Card css={className}>
-      <CardHeader title="預約設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>預約設定</CardTitle>
+      </CardHeader>
       <CardContent>
         {settingArr.map(({ label, key }) => (
           <div css={styles.serviceInputGroup} key={label}>
-            <FormControlLabel
+            <CheckboxField
               disabled={!inputEnable}
               css={styles.isUsing}
-              control={<Checkbox color="primary" />}
               label={label}
               checked={aboutBooking[key]}
               onChange={e => handleSetValue(key, e.target.checked)}
@@ -68,10 +69,9 @@ function IsReservationNeedReview({
           </div>
         ))}
         <div css={styles.serviceInputGroup}>
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
             css={styles.isUsing}
-            control={<Checkbox color="primary" />}
             label="啟用「未來預訂(待確認)」的預約狀態"
             checked={bookingCusCheck}
             onChange={() => setBookingCusCheck(!bookingCusCheck)}
@@ -90,10 +90,9 @@ function IsReservationNeedReview({
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
-            <FormControlLabel
+            <CheckboxField
               disabled={!inputEnable}
               css={styles.isUsing}
-              control={<Checkbox color="primary" />}
               label="不限制次數"
               checked={aboutBooking.bookingLimitPerCellphoneInSameDay === null}
               onChange={e => handleSetValue('bookingLimitPerCellphoneInSameDay', e.target.checked ? null : 0)}
@@ -113,10 +112,9 @@ function IsReservationNeedReview({
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
-            <FormControlLabel
+            <CheckboxField
               disabled={!inputEnable}
               css={styles.isUsing}
-              control={<Checkbox color="primary" />}
               label="不限制次數"
               checked={aboutBooking.cusMaxBookingCount === null}
               onChange={e => handleSetValue('cusMaxBookingCount', e.target.checked ? null : 0)}
@@ -139,10 +137,9 @@ function IsReservationNeedReview({
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
-            <FormControlLabel
+            <CheckboxField
               style={{ margin: 0 }}
               disabled={!inputEnable}
-              control={<Checkbox color="primary" />}
               label="不限制"
               checked={aboutBooking.disableBookingDayLimit === null}
               onChange={e => handleSetValue('disableBookingDayLimit', e.target.checked ? null : 0)}
@@ -163,11 +160,10 @@ function IsReservationNeedReview({
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
-            <FormControlLabel
+            <CheckboxField
               style={{ margin: 0 }}
               disabled={!inputEnable}
               css={styles.isUsing}
-              control={<Checkbox color="primary" />}
               label="不限制"
               checked={aboutBooking.createBookingDayLimit === null}
               onChange={e => handleSetValue('createBookingDayLimit', e.target.checked ? null : 0)}
@@ -188,10 +184,9 @@ function IsReservationNeedReview({
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
-            <FormControlLabel
+            <CheckboxField
               disabled={!inputEnable}
               css={styles.isUsing}
-              control={<Checkbox color="primary" />}
               label="不限制天數"
               checked={aboutBooking.cancelBookingDayLimitByActionDate === null}
               onChange={e => handleSetValue('cancelBookingDayLimitByActionDate', e.target.checked ? null : 0)}
@@ -206,10 +201,9 @@ function IsReservationNeedReview({
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
-            <FormControlLabel
+            <CheckboxField
               disabled={!inputEnable}
               css={styles.isUsing}
-              control={<Checkbox color="primary" />}
               label="不限制天數"
               checked={aboutBooking.cancelBookingDayLimitByServiceDate === null}
               onChange={e => handleSetValue('cancelBookingDayLimitByServiceDate', e.target.checked ? null : 0)}
@@ -220,57 +214,57 @@ function IsReservationNeedReview({
           <div style={{ marginBottom: '15px' }}>設定店家可預約的時間範圍</div>
           <div style={{ flexWrap: 'wrap', gap: '10px 0' }} css={styles.timeWrap}>
             <div css={styles.timeWrap}>
-              <FormControl variant="outlined">
-                <InputLabel>開始</InputLabel>
-                <Select
-                  value={aboutBooking.bookingTimeSetting.openingHours.split(':')[0]}
-                  label='開始'
-                  disabled={!inputEnable}
-                  onChange={e => handleChangeBookingTime('openingHours', 0, e.target.value)}
-                >
+              <NativeSelect
+                fullWidth={false}
+                className="w-24"
+                value={aboutBooking.bookingTimeSetting.openingHours.split(':')[0]}
+                label='開始'
+                disabled={!inputEnable}
+                onChange={e => handleChangeBookingTime('openingHours', 0, e.target.value)}
+              >
                 {hours.map(d => (
-                  <MenuItem key={d} value={d}>{d}</MenuItem>
+                  <NativeSelectOption key={d} value={d}>{d}</NativeSelectOption>
                 ))}
-                </Select>
-              </FormControl>
+              </NativeSelect>
               <span style={{ margin: '0 10px' }}>:</span>
-              <FormControl variant="outlined">
-                <Select
-                  value={aboutBooking.bookingTimeSetting.openingHours.split(':')[1]}
-                  disabled={!inputEnable}
-                  onChange={e => handleChangeBookingTime('openingHours', 1, e.target.value)}
-                >
-                  <MenuItem value='00'>00</MenuItem>
-                  <MenuItem value='30'>30</MenuItem>
-                </Select>
-              </FormControl>
+              <NativeSelect
+                fullWidth={false}
+                className="w-24"
+                aria-label="開始（分）"
+                value={aboutBooking.bookingTimeSetting.openingHours.split(':')[1]}
+                disabled={!inputEnable}
+                onChange={e => handleChangeBookingTime('openingHours', 1, e.target.value)}
+              >
+                <NativeSelectOption value='00'>00</NativeSelectOption>
+                <NativeSelectOption value='30'>30</NativeSelectOption>
+              </NativeSelect>
             </div>
             <span style={{ margin: '0 30px' }}>至</span>
             <div css={styles.timeWrap}>
-              <FormControl variant="outlined">
-                <InputLabel>結束</InputLabel>
-                <Select
-                  value={aboutBooking.bookingTimeSetting.closingHours.split(':')[0]}
-                  label='結束'
-                  disabled={!inputEnable}
-                  onChange={e => handleChangeBookingTime('closingHours', 0, e.target.value)}
-                >
+              <NativeSelect
+                fullWidth={false}
+                className="w-24"
+                value={aboutBooking.bookingTimeSetting.closingHours.split(':')[0]}
+                label='結束'
+                disabled={!inputEnable}
+                onChange={e => handleChangeBookingTime('closingHours', 0, e.target.value)}
+              >
                 {hours.map(d => (
-                  <MenuItem key={d} value={d}>{d}</MenuItem>
+                  <NativeSelectOption key={d} value={d}>{d}</NativeSelectOption>
                 ))}
-                </Select>
-              </FormControl>
+              </NativeSelect>
               <span style={{ margin: '0 10px' }}>:</span>
-              <FormControl variant="outlined">
-                <Select
-                  value={aboutBooking.bookingTimeSetting.closingHours.split(':')[1]}
-                  disabled={!inputEnable}
-                  onChange={e => handleChangeBookingTime('closingHours', 1, e.target.value)}
-                >
-                  <MenuItem value='00'>00</MenuItem>
-                  <MenuItem value='30'>30</MenuItem>
-                </Select>
-              </FormControl>
+              <NativeSelect
+                fullWidth={false}
+                className="w-24"
+                aria-label="結束（分）"
+                value={aboutBooking.bookingTimeSetting.closingHours.split(':')[1]}
+                disabled={!inputEnable}
+                onChange={e => handleChangeBookingTime('closingHours', 1, e.target.value)}
+              >
+                <NativeSelectOption value='00'>00</NativeSelectOption>
+                <NativeSelectOption value='30'>30</NativeSelectOption>
+              </NativeSelect>
             </div>
           </div>
         </div>

@@ -6,7 +6,7 @@ export default {
         width: '100%',
         marginBottom: theme.spacing(1),
         boxShadow: 'none',
-        border: '1px solid #f0f0f0',
+        border: '1px solid rgb(var(--border))',
         borderRadius: '8px',
     }),
     cardContent: css({
@@ -39,16 +39,16 @@ export default {
     }),
     label: css({
         fontSize: '12px',
-        color: '#999',
+        color: 'rgb(var(--text-tertiary))',
         marginBottom: '-4px',
     }),
     dateInput: css({
         width: '100%',
         '& .MuiOutlinedInput-root': {
-            backgroundColor: '#fff',
-            '& fieldset': { borderColor: '#eee' },
+            backgroundColor: 'rgb(var(--background))',
+            '& fieldset': { borderColor: 'rgb(var(--border))' },
             '& .MuiSvgIcon-root': {
-                color: '#999',
+                color: 'rgb(var(--text-tertiary))',
                 fontSize: '22px', // Unify size
             }
         }
@@ -56,20 +56,22 @@ export default {
     customerInput: css({
         width: '100%',
         '& .MuiOutlinedInput-root': {
-            backgroundColor: '#fff',
-            '& fieldset': { borderColor: '#eee' },
+            backgroundColor: 'rgb(var(--background))',
+            '& fieldset': { borderColor: 'rgb(var(--border))' },
         }
     }),
     employeeInput: css({
         width: '100%',
+        flex: 1,
+        minWidth: 180,
         '& .MuiOutlinedInput-root': {
-            backgroundColor: '#fff',
-            '& fieldset': { borderColor: '#eee' },
+            backgroundColor: 'rgb(var(--background))',
+            '& fieldset': { borderColor: 'rgb(var(--border))' },
         }
     }),
     addPersonIcon: css({
         cursor: 'pointer',
-        color: '#999',
+        color: 'rgb(var(--text-tertiary))',
         fontSize: '22px',
         marginLeft: '14px',
     }),
@@ -78,7 +80,7 @@ export default {
         '& .MuiFormControlLabel-label': {
             fontSize: '14px',
             fontWeight: 'bold',
-            color: '#333',
+            color: 'rgb(var(--text))',
         },
         '& .MuiCheckbox-root': {
             padding: '4px',
@@ -86,10 +88,10 @@ export default {
     }),
     toggleGroup: css({
         height: '42px',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: 'rgb(var(--surface))',
         borderRadius: '21px !important',
         padding: '2px',
-        border: '1px solid #eee',
+        border: '1px solid rgb(var(--border))',
         minWidth: '130px', // Ensure enough space for "不指定"
         '& .MuiToggleButton-root': {
             flex: 1,
@@ -101,14 +103,14 @@ export default {
             borderRadius: '19px !important',
             transition: 'all 0.2s',
             '&.Mui-selected': {
-                backgroundColor: '#fff',
-                color: '#1976d2',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                '&:hover': { backgroundColor: '#fff' },
+                backgroundColor: 'rgb(var(--background))',
+                color: 'rgb(var(--text))',
+                boxShadow: '0 0 0 1px rgb(var(--border))',
+                '&:hover': { backgroundColor: 'rgb(var(--background))' },
             },
             '&:not(.Mui-selected)': {
-                color: '#666',
-                '&:hover': { backgroundColor: 'transparent', color: '#333' },
+                color: 'rgb(var(--text-secondary))',
+                '&:hover': { backgroundColor: 'transparent', color: 'rgb(var(--text))' },
             }
         }
     }),

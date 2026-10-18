@@ -11,9 +11,6 @@ import {
   TableRow,
   TableContainer,
   Paper,
-  Grid,
-  Typography,
-  CircularProgress,
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect, Fragment } from 'react'
@@ -22,6 +19,9 @@ import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCard
 import idx from 'idx'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Card as UiCard } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
+import { Skeleton } from 'ui/skeleton'
 
 const styles = {
   root: css({}),
@@ -77,29 +77,26 @@ function RakeReport({ loading, designerRakeReport, setRakeReportDate, rakeReport
     }
   }, [isMemberShipCardActiveData.loading, designerRakeReport])
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>
-      <Grid item>
+    // 抽成卡片（className="printCard"）依列印範本規則原封保留，只換外層排版、載入與無資料畫面
+    <div className="flex flex-col">
+      <div>
         <DateSelector
           date={rakeReportDate}
           attributes={['lastmonth', 'thismonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
           dateChange={value => setRakeReportDate(value)}
         />
-      </Grid>
-      <Grid container justifyContent='center' style={{ width: '100%', marginTop: '60px' }}>
+      </div>
+      <div className="mt-6 flex w-full flex-wrap justify-center">
         {loading ? (
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            <CircularProgress />
-          </div>
+          <Skeleton className="h-96 w-full" />
         ) : designerRakeReport !== undefined && designerRakeReport.length === 0 ? (
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            <Typography component="h3" variant="h3">
-              無資料
-            </Typography>
-          </div>
+          <UiCard className="w-full">
+            <EmptyState title="無資料" />
+          </UiCard>
         ) : (
           designerRakeReport !== undefined &&
           designerRakeReport.map(designer => (
-            <Grid item xs={6} key={designer.user.id}>
+            <div className="w-1/2" key={designer.user.id}>
               <Card className="printCard">
                 <CardHeader
                   title={`${designer.user.designerNo !== null && designer.user.designerNo !== ''
@@ -419,10 +416,10 @@ function RakeReport({ loading, designerRakeReport, setRakeReportDate, rakeReport
                   </div>
                 </CardContent>
               </Card>
-            </Grid>
+            </div>
           ))
         )}
-      </Grid>
+      </div>
     </div>
   )
 }

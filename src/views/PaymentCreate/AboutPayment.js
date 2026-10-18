@@ -1,8 +1,5 @@
-/** @jsxImportSource @emotion/react */
+// 手續費類別／扣項方式的值可能為空字串，保留 MUI Select；文字欄位用 inputProps 帶 data-testid，同卡片一併保留 MUI TextField（橋接主題已套新外觀）
 import {
-  Card,
-  CardContent,
-  CardHeader,
   FormControl,
   InputLabel,
   MenuItem,
@@ -15,18 +12,7 @@ import { PaymentEnum } from 'helper/enum'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
-
-const styles = {
-  formControl: css({
-    marginBottom: theme.spacing(3),
-    width: '100%',
-    '&:last-child': {
-      marginBottom: 0,
-    },
-  }),
-}
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 const deductions = [
   {
@@ -46,11 +32,12 @@ const deductions = [
 function AboutProject({ className, payment, onChange, ...rest }) {
   const categoryLabel = React.useRef(null)
   return (
-    <Card {...rest} css={className}>
-      <CardHeader title="一般資訊" />
-      <CardContent>
+    <Card {...rest}>
+      <CardHeader>
+        <CardTitle>一般資訊</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col items-start gap-6">
         <TextField
-          css={styles.formControl}
           value={payment.name}
           label="名稱"
           variant="outlined"
@@ -60,7 +47,7 @@ function AboutProject({ className, payment, onChange, ...rest }) {
             'data-testid': 'name',
           }}
         />
-        <FormControl variant="outlined" css={styles.formControl}>
+        <FormControl variant="outlined" fullWidth>
           <InputLabel ref={categoryLabel}>手續費類別</InputLabel>
           <Select
             label='手續費類別'
@@ -88,7 +75,6 @@ function AboutProject({ className, payment, onChange, ...rest }) {
           </Select>
         </FormControl>
         <TextField
-          css={styles.formControl}
           type="text"
           value={payment.fee}
           label={`手續費${payment.amountType ? ' - ' + PaymentEnum[payment.amountType] : ''}`}
@@ -112,7 +98,7 @@ function AboutProject({ className, payment, onChange, ...rest }) {
           fullWidth
           onWheel={() => document.activeElement.blur()}
         />
-        <FormControl variant="outlined" css={styles.formControl}>
+        <FormControl variant="outlined" fullWidth>
           <InputLabel>手續費扣項方式</InputLabel>
           <Select
             label='手續費扣項方式'

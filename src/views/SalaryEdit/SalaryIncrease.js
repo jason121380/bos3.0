@@ -1,19 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  TextField,
-  Typography,
-} from '@mui/material'
+// 金額輸入框使用 inputRef / onFocus / onKeyDown 做連續輸入的焦點管理，沿用 MUI TextField
+import { TextField } from '@mui/material'
 import { Fragment, useRef, useEffect } from 'react'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
 import idx from 'idx'
 import { css } from '@emotion/react'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 const styles = {
   content: css({}),
@@ -149,40 +143,29 @@ export default function SalaryIncrease({
   return (
     <Fragment>
       <Card>
-        <CardHeader
-          title={`${designer.name} ${
+        <CardHeader className="pb-4">
+          <CardTitle className="tabular-nums">{`${designer.name} ${
             designer.designerNo === '' ? '' : `(` + designer.designerNo + `)`
           } - 薪資加項小計:${
             increaseCombined.reduce((accu, curVal) => accu + curVal.price, 0) +
               increaseSecondContent.increaseItems.reduce((accu, curVal) => accu + curVal.price, 0) || 0
-          }`}
-        />
-        <Divider />
-        <CardContent css={styles.content}>
-          <Grid container spacing={4}>
+          }`}</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-4">
+          <div className="grid grid-cols-12 gap-4">
             {increaseCombined?.length > 0 &&
               increaseCombined
                 ?.sort((a, b) => a.sorting - b.sorting)
                 .map((data, index) => {
                   if (data.source === 'parameter') {
                     return (
-                      <Grid
-                        item
-                        xs={12}
-                        sm={6}
-                        md={4}
-                        lg={3}
+                      <div
                         key={`increase-${index}`}
-                        style={{ display: 'flex', alignItems: 'center' }}
+                        className="col-span-12 flex items-center sm:col-span-6 md:col-span-4 lg:col-span-3"
                       >
-                        <Typography
-                          variant="h5"
-                          display="inline"
-                          gutterBottom
-                          style={{ margin: '0 5px', width: '25px' }}
-                        >
+                        <span className="mx-1 w-[25px] shrink-0 text-heading tabular-nums text-text-secondary">
                           {index + 1}
-                        </Typography>
+                        </span>
                         <TextField
                           variant="outlined"
                           label={data.itemName}
@@ -208,7 +191,7 @@ export default function SalaryIncrease({
                           onChange={e => handleIncreaseInput(e, index)}
                           disabled={isSalaryItemsLock}
                         />
-                      </Grid>
+                      </div>
                     )
                   } else {
                     salaryIncreaseItemsReformatted !== undefined &&
@@ -216,20 +199,13 @@ export default function SalaryIncrease({
                         .sort((a, b) => a.sorting - b.sorting)
                         .map((data, index) => {
                           return (
-                            <Grid
-                              item
-                              xs={12}
+                            <div
                               key={`increase-${index}`}
-                              style={{ display: 'flex', alignItems: 'center' }}
+                              className="col-span-12 flex items-center"
                             >
-                              <Typography
-                                variant="h5"
-                                display="inline"
-                                gutterBottom
-                                style={{ margin: '0 5px', width: '25px' }}
-                              >
+                              <span className="mx-1 w-[25px] shrink-0 text-heading tabular-nums text-text-secondary">
                                 {data.sorting}
-                              </Typography>
+                              </span>
                               <TextField
                                 variant="outlined"
                                 label={data.itemName}
@@ -255,19 +231,18 @@ export default function SalaryIncrease({
                                 onChange={e => handleIncreaseInput(e, index)}
                                 disabled={isSalaryItemsLock}
                               />
-                            </Grid>
+                            </div>
                           )
                         })
                   }
                 })}
-          </Grid>
+          </div>
         </CardContent>
-        <Divider />
-        <CardContent css={styles.content}>
-          <Grid container spacing={4}>
+        <CardContent className="border-0 border-t border-solid border-border">
+          <div className="grid grid-cols-12 gap-4">
             {increaseSecondContent.increaseItems.map((data, index) => (
-              <Grid item xs={12} key={`increase-${index}`}>
-                <div css={styles.secondContent}>
+              <div className="col-span-12" key={`increase-${index}`}>
+                <div className="flex items-center justify-between gap-2">
                   <TextField
                     type="text"
                     variant="outlined"
@@ -318,32 +293,31 @@ export default function SalaryIncrease({
                     onWheel={() => document.activeElement.blur()}              
                   />
                   {increaseSecondContent.increaseItems.length > 1 && !isSalaryItemsLock && (
-                    <DeleteForeverIcon
-                      css={styles.icons}
-                      onClick={() => handleDeductItem(index)}
-                    />
+                    <Button variant="ghost" size="icon" aria-label="刪除此項" onClick={() => handleDeductItem(index)}>
+                      <DeleteForeverIcon />
+                    </Button>
                   )}
                   {index === increaseSecondContent.increaseItems.length - 1 &&
                   !isSalaryItemsLock ? (
-                    <AddIcon css={styles.icons} onClick={handleAddItem} />
+                    <Button variant="ghost" size="icon" aria-label="新增一項" onClick={handleAddItem}><AddIcon /></Button>
                   ) : (
-                    <span style={{ width: '25px' }} />
+                    <span className="w-9 shrink-0" />
                   )}
                 </div>
-              </Grid>
+              </div>
             ))}
-          </Grid>
+          </div>
         </CardContent>
       </Card>
-      <div style={{ marginTop: '12px' }}>
-        <Typography variant="h5" display="inline" gutterBottom>
+      <div className="mt-3">
+        <span className="text-heading tabular-nums text-text">
           {`${designer.name} ${
             designer.designerNo === '' ? '' : `(` + designer.designerNo + `)`
           } - 薪資加項小計:${
             increaseCombined.reduce((accu, curVal) => accu + curVal.price, 0) +
               increaseSecondContent.increaseItems.reduce((accu, curVal) => accu + curVal.price, 0) || 0
           }`}
-        </Typography>
+        </span>
       </div>
     </Fragment>
   )

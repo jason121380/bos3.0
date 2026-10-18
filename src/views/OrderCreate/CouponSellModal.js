@@ -3,7 +3,6 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Divider,
   Modal,
   Table,
   TableBody,
@@ -14,7 +13,6 @@ import {
   CardActions,
   Paper,
   Button,
-  Typography,
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { memo, useEffect, useState } from 'react'
@@ -178,7 +176,7 @@ function CouponSellModal({
           </Button>
         </div>
 
-        <Divider />
+        <div className="h-px bg-border" />
         <CardContent>
           <div css={styles.categorieDiv}>
             {couponCategories.map(couponCategorie => (
@@ -212,9 +210,9 @@ function CouponSellModal({
               清除
             </Button>
           </div>
-          <Typography color="textSecondary" gutterBottom variant="body2">
+          <p className="mb-2 mt-0 text-caption text-text-secondary">
             {coupons.length}張卡券
-          </Typography>
+          </p>
           <TableContainer component={Paper}>
             <Table>
               <TableHead>

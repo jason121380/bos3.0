@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent, Grid } from '@mui/material'
+import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
 import React from 'react'
 import {
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
@@ -104,7 +105,7 @@ const styles = {
   toolTips: css({
     padding: '12px',
     fontSize: '16px',
-    background: '#fff',
+    background: 'rgb(var(--background))',
     color: 'black',
     borderRadius: '5px',
     boxShadow: '0 0 0 1px rgb(63 63 68 / 5%), 0 1px 3px 0 rgb(63 63 68 / 15%)',
@@ -120,7 +121,7 @@ const styles = {
     minWidth: 150,
     padding: '12px',
     fontSize: '16px',
-    background: '#fff',
+    background: 'rgb(var(--background))',
     color: 'black',
     borderRadius: '5px',
     boxShadow: '0 0 0 1px rgb(63 63 68 / 5%), 0 1px 3px 0 rgb(63 63 68 / 15%)',
@@ -141,7 +142,7 @@ const styles = {
   OrderCountTooltip: css({
     padding: '12px',
     fontSize: '16px',
-    background: '#fff',
+    background: 'rgb(var(--background))',
     color: 'black',
     borderRadius: '5px',
     boxShadow: '0 0 0 1px rgb(63 63 68 / 5%), 0 1px 3px 0 rgb(63 63 68 / 15%)',
@@ -188,12 +189,12 @@ const OrderAgeDistribution = ({ display, data, width }) => {
     return null;
   };
   return (
-    <Grid item md={6} sm={12} xs={12}>
-      <Card>
-        <CardContent>
+    <div className="min-w-0">
+      <Card className="h-full min-h-[390px]">
+        <CardContent className="flex flex-col gap-4 p-4">
           <div>
-            <div className='cardTitle'>消費者年齡分佈</div>
-            <div className='subTitle'>期間內(訂單)來客的年齡分佈</div>
+            <CardTitle className="whitespace-nowrap">消費者年齡分佈</CardTitle>
+            <CardDescription className="whitespace-nowrap text-caption">期間內(訂單)來客的年齡分佈</CardDescription>
           </div>
           {display ?
             <div css={styles.pieWrap}>
@@ -219,11 +220,11 @@ const OrderAgeDistribution = ({ display, data, width }) => {
                 ))}
               </div>
             </div> :
-            <div css={styles.noDataDiv}><span css={styles.noData}>無資料</span></div>
+            <EmptyState title="無資料" className="h-[350px]" />
           }
         </CardContent>
       </Card>
-    </Grid>
+    </div>
   )
 }
 

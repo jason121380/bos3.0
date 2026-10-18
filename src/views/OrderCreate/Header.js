@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Grid, Typography, Button, FormControlLabel, Checkbox, TextField, Card } from '@mui/material'
 import { Fragment, useContext, useEffect, useState, useCallback, useRef } from 'react'
 import billContext from 'context/keyInContext'
 import useFetchCreateOrder from 'hooks/useFetchCreateOrder'
@@ -12,11 +11,12 @@ import idx from 'idx'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import FastCheckOrdersModal from 'components/FastCheckOrdersModal'
 import { handleTidyBill, checkServicesOrders, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
-import PageTitle from 'components/PageTitle'
 import produce from 'immer'
 import ShortcutDialog from '../../components/ShortcutDialog'
 
-import styles from './styles/Header'
+import { History, ReceiptText } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Checkbox } from 'ui/checkbox'
 import OrderDetailModal from './OrderDetailModal'
 import _ from 'lodash'
 
@@ -293,78 +293,61 @@ function Header({ forceUpdate, ...rest }) {
     setShortcutModal(false)
   }
 
+  const actionDisabled = valid || checkoutBtn || isClick || checkoutBtnClick
+  // 頁首（STYLE.md §4）：左側標題與輔助資訊，右側結帳設定與動作；「結帳」為本頁唯一的主要按鈕
   return (
     <Fragment>
       <FastCheckOrdersModal date={bill.date} open={openModal} setOpenModal={setOpenModal} />
-      <Card {...rest} css={styles.root}>
-        <div css={styles.titleGroup}>
-          <PageTitle title='打帳單' style={{ color: '#1A73E8' }} />
-          <Button
-            onClick={() => setOpenModal(true)}
-            variant='contained'
-            css={styles.searchBtn}
-          >
+      <div {...rest} className="ui-root noprint flex flex-wrap items-center justify-between gap-4 pb-6">
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="m-0 text-title !font-bold text-text">打帳單</h1>
+          <Button size="sm" variant="secondary" onClick={() => setOpenModal(true)}>
+            <ReceiptText strokeWidth={1.75} />
             帳單速查
           </Button>
           {lastOrderStatus !== undefined && lastOrderStatus.orderNo !== 0 && (
-            <Typography style={{ marginLeft: 12, fontSize: '14px', fontWeight: 'bold', color: '#333' }}>
-              上一筆訂單:#{lastOrderStatus.orderNo}
-            </Typography>
+            <span className="flex items-center gap-1 text-label tabular-nums text-text-secondary">
+              <History className="h-4 w-4" strokeWidth={1.75} />
+              上一筆訂單 #{lastOrderStatus.orderNo}
+            </span>
           )}
         </div>
 
-        <div css={styles.actionGroup}>
-
-          <FormControlLabel
-            css={styles.checkboxLabel}
-            control={<Checkbox size="small" color="primary" />}
-            label="結帳前確認明細"
-            checked={checkOrderDetail}
-            onChange={handleCheckoutOrderDetail}
-          />
-
+        <div className="flex flex-wrap items-center gap-4">
+          <label className="flex cursor-pointer items-center gap-2 text-body text-text">
+            <Checkbox checked={checkOrderDetail} onChange={handleCheckoutOrderDetail} />
+            結帳前確認明細
+          </label>
           {!disablePendingOrder && (
-            <FormControlLabel
-              css={styles.checkboxLabel}
-              control={<Checkbox size="small" color="primary" />}
-              label="連續打單結帳"
-              checked={stayInCreateOrder}
-              onChange={handleStayInCreateOrderBtn}
-            />
+            <label className="flex cursor-pointer items-center gap-2 text-body text-text">
+              <Checkbox checked={stayInCreateOrder} onChange={handleStayInCreateOrderBtn} />
+              連續打單結帳
+            </label>
           )}
-
-          <div css={styles.btnDiv}>
+          <div className="flex items-center gap-2">
             {!disablePendingOrder && (
               <Button
-                variant="contained"
-                css={styles.actionBtn}
+                variant="secondary"
                 onClick={handleOrderPendingConfirm}
                 disabled={valid || isClick || checkoutBtn || checkoutBtnClick}
               >
                 掛單
               </Button>
             )}
-
-            <Button
-              variant="contained"
-              css={styles.actionBtn}
-              onClick={() => handleDisplayOrderDetail()}
-              disabled={valid || checkoutBtn || isClick || checkoutBtnClick}
-            >
+            <Button variant="secondary" onClick={() => handleDisplayOrderDetail()} disabled={actionDisabled}>
               明細
             </Button>
-
             <Button
-              variant="contained"
-              css={styles.checkoutBtn}
+              variant="primary"
+              className="px-6"
               onClick={() => checkOrderDetail ? handleDisplayOrderDetail() : usehandleCreateOrder()}
-              disabled={valid || checkoutBtn || isClick || checkoutBtnClick}
+              disabled={actionDisabled}
             >
               結帳
             </Button>
           </div>
         </div>
-      </Card>
+      </div>
       {openOrderDetail && (
         <OrderDetailModal
           openOrderDetail={openOrderDetail}

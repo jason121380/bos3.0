@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { Checkbox, FormControlLabel, TextField, Typography } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined'
-import FilterNoneIcon from '@mui/icons-material/FilterNone'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { TextField } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, FilterNone as FilterNoneIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import ServicesAutoComplete from 'components/ServicesAutoComplete'
 import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
@@ -421,41 +419,34 @@ function Services({
                       onFocus={handleFocus}
                     />
                     {isHelperDesignation && (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            color="primary"
-                            tabIndex={focusRow + '3' + helperIdx}
-                            autoFocus={focus === data.type + 'designate'}
-                            inputRef={helperDesignateRefs[helperIdx]}
-                            onFocus={handleFocus}
-                            name={data.type + 'designate'}
-                            inputProps={{
-                              'data-testid': `service-${index}_helper-employee-${helperIdx}-assign`,
-                            }}
-                            onKeyDown={event => {
-                              if (event.key === 'Enter' && helperIdx + 1 < helper.length) {
-                                setFocus(helper[helperIdx + 1].type)
-                                helperRefs[helperIdx + 1].current.focus()
-                              } else if (
-                                event.key === 'Enter' &&
-                                helperIdx + 1 === helper.length &&
-                                thirdPartTicket
-                              ) {
-                                if (ticketDisabled) {
-                                  changeRowFocus(index + 1)
-                                  setFocus('service')
-                                } else {
-                                  setFocus('thirdParty')
-                                  thirdPartyRef.current.focus()
-                                }
-                              } else if (event.key === 'Enter' && !thirdPartTicket) {
-                                changeRowFocus(index + 1)
-                                setFocus('service')
-                              }
-                            }}
-                          />
-                        }
+                      <CheckboxField
+                        tabIndex={focusRow + '3' + helperIdx}
+                        autoFocus={focus === data.type + 'designate'}
+                        ref={helperDesignateRefs[helperIdx]}
+                        onFocus={handleFocus}
+                        name={data.type + 'designate'}
+                        data-testid={`service-${index}_helper-employee-${helperIdx}-assign`}
+                        onKeyDown={event => {
+                          if (event.key === 'Enter' && helperIdx + 1 < helper.length) {
+                            setFocus(helper[helperIdx + 1].type)
+                            helperRefs[helperIdx + 1].current.focus()
+                          } else if (
+                            event.key === 'Enter' &&
+                            helperIdx + 1 === helper.length &&
+                            thirdPartTicket
+                          ) {
+                            if (ticketDisabled) {
+                              changeRowFocus(index + 1)
+                              setFocus('service')
+                            } else {
+                              setFocus('thirdParty')
+                              thirdPartyRef.current.focus()
+                            }
+                          } else if (event.key === 'Enter' && !thirdPartTicket) {
+                            changeRowFocus(index + 1)
+                            setFocus('service')
+                          }
+                        }}
                         checked={data.isDesignate}
                         label="指定"
                         css={styles.checkbox}
@@ -501,15 +492,15 @@ function Services({
                       if (data.id === service.thirdPartyCouponMerchantId) {
                         if (data.type === 'PERCENT') {
                           return (
-                            <Typography key={index} css={styles.heading2} style={{ marginTop: '4px' }}>
+                            <p className="m-0" key={index} css={styles.heading2} style={{ marginTop: '4px' }}>
                               {`扣完後業績:${Math.round((service.price * (100 - data.fee)) / 100)}`}
-                            </Typography>
+                            </p>
                           )
                         } else {
                           return (
-                            <Typography key={index} css={styles.heading2} style={{ marginTop: '4px' }}>
+                            <p className="m-0" key={index} css={styles.heading2} style={{ marginTop: '4px' }}>
                               {`扣完後業績:${Math.round(service.price - data.fee)}`}
-                            </Typography>
+                            </p>
                           )
                         }
                       }
@@ -518,7 +509,7 @@ function Services({
               </div>
             )}
             {teachingMode && (
-              <Typography css={styles.heading2}>勾選將入業績但不收費用**</Typography>
+              <p className="m-0" css={styles.heading2}>勾選將入業績但不收費用**</p>
             )}
           </Fragment>
         )}

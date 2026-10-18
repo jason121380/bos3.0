@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, CardHeader, Divider, FormControl,
-  FormControlLabel, Checkbox, InputLabel, Select, MenuItem
-} from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
@@ -49,39 +48,34 @@ function AboutCustomerBooking({
     )
   }
   return (
-    <Card css={className}>
-      <CardHeader title="顧客端預約設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>顧客端預約設定</CardTitle>
+      </CardHeader>
       <CardContent>
         {optionArr.map(({ label, key }) => (
           <div key={label}>
-            <FormControlLabel
+            <CheckboxField
               disabled={!inputEnable}
               css={styles.isUsing}
-              control={<Checkbox color="primary" />}
               label={label}
               checked={aboutCustomer[key]}
               onChange={e => handleSetValue(key, e.target.checked)}
             />
           </div>
         ))}
-        <FormControl
+        <NativeSelect
           css={styles.isUsing}
-          sx={{ marginTop: '16px !important', width: '160px' }}
-          variant='outlined'
+          className="!mt-4 w-40"
+          fullWidth={false}
+          label='預約最短時長'
+          value={aboutCustomer.bookingMinumnTimeCost}
+          onChange={e => handleSetValue('bookingMinumnTimeCost', e.target.value)}
         >
-          <InputLabel>預約最短時長</InputLabel>
-          <Select
-            label='預約最短時長'
-            fullWidth
-            value={aboutCustomer.bookingMinumnTimeCost}
-            onChange={e => handleSetValue('bookingMinumnTimeCost', e.target.value)}
-          >
-            {timeCostArray.map(d => (
-              <MenuItem key={`${d.value}-${d.label}`} value={d.value}>{d.label}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+          {timeCostArray.map(d => (
+            <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
+          ))}
+        </NativeSelect>
       </CardContent>
     </Card>
   )

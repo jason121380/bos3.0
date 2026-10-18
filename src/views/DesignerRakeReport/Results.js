@@ -67,7 +67,8 @@ function Results({ designerRakeReport, isMemberShipCardActive }) {
   return (
     <Fragment>
       {designerRakeReport.map((designer, index) => (
-        <Grid item xs={12} sm={6} md={4} key={designer.user.id} style={{ margin: '20px 0px' }}>
+        <div key={designer.user.id} className="my-5 min-w-0">
+          {/* printCard 卡片依規則（className 含 print）原封保留 MUI */}
           <Card className="printCard">
             <CardHeader
               title={`${designer.user.designerNo !== null && designer.user.designerNo !== ''
@@ -349,7 +350,7 @@ function Results({ designerRakeReport, isMemberShipCardActive }) {
               </div>
             </CardContent>
           </Card>
-        </Grid>
+        </div>
       ))}
     </Fragment>
   )

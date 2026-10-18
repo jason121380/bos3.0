@@ -1,8 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container, Grid } from '@mui/material'
-import red from '@mui/material/colors/red'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import { useFetchGetPurchaseRecordForEdit } from 'hooks/useFetchGetPurchaseRecords'
 import PasswordDialog from 'components/PasswordDialog'
@@ -15,27 +11,10 @@ import idx from 'idx'
 import { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import General from './General'
-
-const styles = {
-  root: css({}),
-  general: css({
-    marginTop: theme.spacing(3),
-  }),
-  action: css({
-    marginTop: theme.spacing(3) + '!important',
-  }),
-  delete: css({
-    backgroundColor: red[700] + '!important',
-    color: 'white',
-    '&:hover, &:active': {
-      backgroundColor: red[600] + '!important',
-    },
-  }),
-}
 
 export default function ProductRestockEdit() {
   const history = useHistory()
@@ -206,57 +185,49 @@ export default function ProductRestockEdit() {
   }, [getStockInIsUsing.loading])
 
   return (
-    <Page title="編輯進貨單" css={styles.root}>
-      <Container style={{ padding: '20px' }}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='編輯進貨單' subTitle='PRODUCT RESTOCK EDIT' />
-          <Grid item>
-            {!disabled && (
-              <Button
-                css={styles.delete}
-                variant="contained"
-                onClick={() => {
-                  handleDelete()
-                }}
-              >
-                刪除
-              </Button>
-            )}
-          </Grid>
-        </Grid>
-        {!getPurchaseRecord.loading && purchaseRecord.uuid && (
-          <General
-            className={styles.general}
-            disabled={disabled}
-            purchaseRecord={purchaseRecord}
-            setPurchaseRecord={setPurchaseRecord}
-          />
+    <Page title="編輯進貨單" className="ui-root">
+      <PageHeader
+        title="編輯進貨單"
+        actions={
+          !disabled && (
+            <Button
+              variant="danger"
+              onClick={() => {
+                handleDelete()
+              }}
+            >
+              刪除
+            </Button>
+          )
+        }
+      />
+      {!getPurchaseRecord.loading && purchaseRecord.uuid && (
+        <General
+          disabled={disabled}
+          purchaseRecord={purchaseRecord}
+          setPurchaseRecord={setPurchaseRecord}
+        />
+      )}
+      <div className="flex items-center justify-end gap-2 pt-6">
+        {!disabled ? (
+          <Button
+            variant="primary"
+            disabled={checkPurchaseRecords}
+            onClick={handleUpdate}
+          >
+            儲存
+          </Button>
+        ) : <div />}
+        {(!getPurchaseRecord.loading && !getStockInIsUsing.loading) && (
+          <Button
+            variant={disabled ? 'danger' : 'secondary'}
+            disabled={checkPurchaseRecords}
+            onClick={handleCheck}
+          >
+            {disabled ? '取消入庫' : '入庫'}
+          </Button>
         )}
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {!disabled ? (
-            <Button
-              color="primary"
-              variant="contained"
-              css={styles.action}
-              disabled={checkPurchaseRecords}
-              onClick={handleUpdate}
-            >
-              儲存
-            </Button>
-          ) : <div />}
-          {(!getPurchaseRecord.loading && !getStockInIsUsing.loading) && (
-            <Button
-              color={disabled ? 'error' : 'success'}
-              variant="contained"
-              css={styles.action}
-              disabled={checkPurchaseRecords}
-              onClick={handleCheck}
-            >
-              {disabled ? '取消入庫' : '入庫'}
-            </Button>
-          )}
-        </div>
-      </Container>
+      </div>
       <PasswordDialog
         open={dialogOpen}
         title={disabled ? '進貨單取消入庫' : '進貨單入庫'}

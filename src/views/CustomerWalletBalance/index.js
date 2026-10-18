@@ -1,15 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react'
-import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import useFetchCustomerWalletBalance from 'hooks/useFetchCustomerWalletReport'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import { CSVLink } from "react-csv";
-import AdminPageHeader from 'components/AdminPageHeader'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader, Toolbar } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -83,49 +85,47 @@ const CustomerWalletBalance = () => {
     })
   }
   return (
-    <Page css={styles.root} title="顧客入金餘額表">
-      <Container maxWidth={false} css={styles.container}>
-        <AdminPageHeader title='顧客入金餘額表' />
-        <Grid style={{ direction: 'row', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', margin: '12px 0', gap: 10 }}>
-          <Grid style={{ gap: 10, display: 'flex', flexWrap: 'wrap' }}>
-            <EmployeeAutoComplete
-              label={'設計師編號/姓名'}
-              value={designerValue}
-              onChange={value => handleDesignerChange(value)}
-              className={styles.field}
-            />
-            <CustomerAutoComplete
-              className={styles.option}
-              label={'顧客編號/姓名'}
-              value={customerIdValue}
-              onChange={value =>
-                setPageSetting({
-                  ...pageSetting,
-                  customerId: value.id !== '' ? [value.id] : [],
-                })
-              }
-            />
-          </Grid>
-          <Grid style={{ display: 'flex', alignItems: 'center' }}>
+    <Page className="ui-root" title="顧客入金餘額表">
+      <PageHeader
+        title="顧客入金餘額表"
+        actions={
+          <Button asChild variant="secondary">
             <CSVLink
               data={excelData}
               filename="顧客入金餘額表.csv"
-              style={{ display: 'inline' }}
             >
-              <Button variant="contained" color="primary">
-                報表匯出
-              </Button>
+              <Download strokeWidth={1.75} />
+              報表匯出
             </CSVLink>
-          </Grid>
-        </Grid>
-        {!customerWalletBalanceData.loading && reportForDisplay !== null ? (
-          <Results report={reportForDisplay} />
-        ) : (
-          <div css={styles.noReportDiv}>
-            <CircularProgress />
-          </div>
-        )}
-      </Container>
+          </Button>
+        }
+      />
+      <Toolbar>
+        <div className="flex flex-wrap gap-2.5">
+          <EmployeeAutoComplete
+            label={'設計師編號/姓名'}
+            value={designerValue}
+            onChange={value => handleDesignerChange(value)}
+            className={styles.field}
+          />
+          <CustomerAutoComplete
+            className={styles.option}
+            label={'顧客編號/姓名'}
+            value={customerIdValue}
+            onChange={value =>
+              setPageSetting({
+                ...pageSetting,
+                customerId: value.id !== '' ? [value.id] : [],
+              })
+            }
+          />
+        </div>
+      </Toolbar>
+      {!customerWalletBalanceData.loading && reportForDisplay !== null ? (
+        <Results report={reportForDisplay} />
+      ) : (
+        <Skeleton className="h-96" aria-busy="true" />
+      )}
     </Page>
   )
 }

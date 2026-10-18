@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
+import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
 import React, { useContext } from 'react'
@@ -194,11 +194,11 @@ export default function PannelCouponSells({ expanded, onPanelClick, reset }) {
         data-testid="couponSells"
         style={{ width: '100%' }}
       >
-        <Typography css={styles.heading}>預收卡販賣</Typography>
+        <p className="m-0" css={styles.heading}>預收卡販賣</p>
         {teachingMode && (
-          <Typography css={styles.couponTeachTitle}>
+          <p className="m-0" css={styles.couponTeachTitle}>
             這邊賣的卡將『不入業績』，但會先跟客人『收費』**
-          </Typography>
+          </p>
         )}
       </AccordionSummary>
       <AccordionDetails css={styles.details}>

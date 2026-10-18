@@ -1,9 +1,12 @@
 /** @jsxImportSource @emotion/react */
+// 對話框內有 MUI Autocomplete，保留 MUI Dialog
 import {
-  Dialog, DialogContent, DialogTitle, Divider, DialogActions,
-  TextField, Button, ThemeProvider, Checkbox, FormControlLabel,
+  Dialog, DialogContent, DialogTitle, DialogActions,
+  TextField, Checkbox,
   Autocomplete
 } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { Button } from 'ui/button'
 import { useState, memo } from 'react'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
@@ -14,7 +17,7 @@ import useFetchDeleteMerchantExternalLink from 'hooks/useFetchDeleteMerchantExte
 import useFetchCreateMerchantCusExternalLink from 'hooks/useFetchCreateMerchantCusExternalLink'
 import useFetchUpdateMerchantCusExternalLink from 'hooks/useFetchUpdateMerchantCusExternalLink'
 import useFetchDeleteMerchantCusExternalLink from 'hooks/useFetchDeleteMerchantCusExternalLink'
-import { styles, theme } from './styles/OuterLinkModal'
+import { styles } from './styles/OuterLinkModal'
 import { openSnackbar } from 'elements/snackbars'
 import { cloneDeep } from 'lodash'
 import idx from 'idx'
@@ -146,15 +149,15 @@ const OuterLinkModal = ({
       <DialogTitle>
         {`${isCreate ? '新增' : '編輯'}外部連結`}
         {isCus && (
-          <FormControlLabel
-            control={<Checkbox color="primary" />}
+          <CheckboxField
+            className="ml-3"
             label="置頂"
             checked={handleGetValue('isTop')}
             onChange={(e, v) => handleInputOnChange('isTop', v)}
           />
         )}
       </DialogTitle>
-      <Divider />
+      <div className="h-px bg-border" />
       <DialogContent css={styles.Content}>
         <TextField
           variant='outlined'
@@ -185,7 +188,7 @@ const OuterLinkModal = ({
             renderOption={(props, option, { selected }) => (
               <li {...props}>
                 <Checkbox
-                  style={{ color: '#202D50', marginRight: 8 }}
+                  style={{ color: 'rgb(var(--text))', marginRight: 8 }}
                   icon={icon}
                   checkedIcon={checkedIcon}
                   checked={selected}
@@ -202,21 +205,17 @@ const OuterLinkModal = ({
       <DialogActions>
         <div>
           {isCreate ? '' :
-            <ThemeProvider theme={theme}>
-              <Button
-                onClick={handleDeleteLink}
-                disabled={isClick}
-                color='primary'
-                variant='contained'>刪除</Button>
-            </ThemeProvider>
+            <Button
+              onClick={handleDeleteLink}
+              disabled={isClick}
+              variant="danger">刪除</Button>
           }
         </div>
         <div css={styles.ButtonGroup}>
-          <Button disabled={isClick} variant='contained' onClick={onModalClose}>取消</Button>
+          <Button disabled={isClick} variant="secondary" onClick={onModalClose}>取消</Button>
           <Button
             disabled={isClick}
-            color='primary'
-            variant='contained'
+            variant="primary"
             onClick={() => isCreate ? handleCreateLink() : handleUpdateLink()}
             >
             {isCreate ? '新增' : '儲存'}

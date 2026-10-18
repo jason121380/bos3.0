@@ -1,22 +1,11 @@
-/** @jsxImportSource @emotion/react */
+// 扣項方式 Select 的值可能為空字串，保留 MUI Select；同卡片的 TextField（名稱以 inputProps 帶 data-testid）一併保留（橋接主題已套新外觀）
 import {
-  Card, CardContent, CardHeader, FormControl, InputLabel, MenuItem,
+  FormControl, InputLabel, MenuItem,
   Select, TextField, FormControlLabel, Checkbox,
 } from '@mui/material'
 import idx from 'idx'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  formControl: css({
-    marginBottom: theme.spacing(3),
-    width: '100%',
-    '&:last-child': {
-      marginBottom: 0,
-    },
-  }),
-}
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 const thirdPartyCouponDeductionType = [
   {
@@ -31,11 +20,12 @@ const thirdPartyCouponDeductionType = [
 
 function AboutThirdPartyCoupon({ className, thirdPartyCoupon, onChange, ...rest }) {
   return (
-    <Card {...rest} css={className}>
-      <CardHeader title="一般資訊" />
-      <CardContent>
+    <Card {...rest}>
+      <CardHeader>
+        <CardTitle>一般資訊</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col items-start gap-6">
         <TextField
-          css={styles.formControl}
           value={thirdPartyCoupon.name}
           label="名稱"
           variant="outlined"
@@ -46,7 +36,6 @@ function AboutThirdPartyCoupon({ className, thirdPartyCoupon, onChange, ...rest 
           }}
         />
         <TextField
-          css={styles.formControl}
           type="number"
           value={thirdPartyCoupon.handlingFee}
           label="手續費"
@@ -64,7 +53,7 @@ function AboutThirdPartyCoupon({ className, thirdPartyCoupon, onChange, ...rest 
           fullWidth
           onWheel={() => document.activeElement.blur()}
         />
-        <FormControl variant="outlined" css={styles.formControl}>
+        <FormControl variant="outlined" fullWidth>
           <InputLabel>手續費扣項方式</InputLabel>
           <Select
             label='手續費扣項方式'

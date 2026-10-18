@@ -1,10 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, CardHeader, Divider, TextField,
-  Grid, Typography
-} from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { TextField } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo } from 'react'
 import { cloneDeep } from 'lodash'
 import styles from './styles/AboutOrderSource'
@@ -30,21 +27,20 @@ function AboutOrderSource({ className, reference, setReference, inputEnable }) {
   }
 
   return (
-    <Card css={className}>
-      <CardHeader title='訂單來源' />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>訂單來源</CardTitle>
+      </CardHeader>
       <CardContent>
-        <Grid container spacing={2}>
+        <div className="flex flex-wrap gap-4">
           {reference.map((label, index) => (
-            <Grid item css={styles.serviceInputGroup} key={index}>
-              <Typography
-                variant="h5"
-                display="inline"
-                gutterBottom
+            <div css={styles.serviceInputGroup} key={index}>
+              <span
+                className="inline-block shrink-0 text-heading tabular-nums text-text"
                 style={{ margin: '0 5px', width: '25px' }}
               >
                 {index + 1}
-              </Typography>
+              </span>
               <TextField
                 disabled={!inputEnable}
                 type="text"
@@ -69,9 +65,9 @@ function AboutOrderSource({ className, reference, setReference, inputEnable }) {
                   />
                 )}
               </div>
-            </Grid>
+            </div>
           ))}
-        </Grid>
+        </div>
       </CardContent>
     </Card>
   )

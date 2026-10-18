@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { useState, useEffect } from 'react'
 import useFetchGetAttribution from 'hooks/useFetchGetAttribution'
 import { useFetchGetMainEventForRule } from 'hooks/useFetchGetMainEvent'
@@ -9,25 +6,12 @@ import useFetchCreateEventRuleGroup from 'hooks/useFetchCreateEventRuleGroup'
 import idx from 'idx'
 import { cloneDeep } from 'lodash'
 import { useHistory } from 'react-router'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { PageHeader } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import General from './General'
 import { openSnackbar } from 'elements/snackbars'
 import { startOfDay, endOfDay } from 'date-fns'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  headerWrap: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    gap: 10
-  })
-}
 
 function EventRuleCreate({ match }) {
   const history = useHistory()
@@ -258,12 +242,13 @@ function EventRuleCreate({ match }) {
   }
 
   return (
-    <Page css={styles.root} title="建立規則">
-      <Container maxWidth="md">
-        <PageTitle title='建立規則' subTitle='event rule Create' />
+    <Page className="ui-root" title="建立規則">
+      <div className="mx-auto max-w-3xl">
+        <PageHeader title="建立規則" />
         {getMainEvent.loading ? (
-          <div style={{ textAlign: 'center', marginTop: 150 }}>
-            <CircularProgress />
+          <div className="flex flex-col gap-4">
+            <Skeleton className="h-14 w-full" />
+            <Skeleton className="h-64 w-full" />
           </div>
         ) : (
           <General
@@ -276,7 +261,7 @@ function EventRuleCreate({ match }) {
             eventId={match.params.id}
           />
         )}
-      </Container>
+      </div>
     </Page>
   )
 }

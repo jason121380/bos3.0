@@ -1,17 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Paper,
-  Typography,
-} from '@mui/material'
 import { Fragment } from 'react'
 import { css } from '@emotion/react'
+import { EmptyState } from 'ui/empty-state'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 const styles = {
   root: css({}),
@@ -38,80 +30,83 @@ const styles = {
   }),
 }
 
+// 固定首欄與表頭（原 styles.sticky／stickyRow，改用 tokens 底色）
+const STICKY_COL = 'sticky left-0 z-[99] w-[150px] bg-background'
+// 列印時表頭白底黑字，與舊版 th.MuiTableCell-head 的列印樣式一致
+const STICKY_ROW = 'sticky top-0 z-[100] print:bg-transparent print:[&_th]:text-text'
+
 export default function Results({ designerPerformance, serviceCategory, membershipDisplay }) {
   return (
     designerPerformance.length === 0 ? 
-    <Typography variant="h3" gutterBottom component="div">
-      無資料
-    </Typography> : (
-      <TableContainer className='designerPerformanceReportTable' style={{ maxHeight: 'calc(100vh - 265px)', marginTop: 10 }} component={Paper}>
-        <Table size="small" aria-label="a dense table">
-          <TableHead css={styles.stickyRow}>
-            <TableRow >
-              <TableCell css={styles.sticky}>設計師</TableCell>
+    <EmptyState title="無資料" /> : (
+      // designerPerformanceReportTable／designerPerformance／sumPerformance 為列印與斑馬紋樣式的掛鉤（initialize.scss），保留
+      <Table wrapperClassName='designerPerformanceReportTable mt-2.5 max-h-[calc(100vh-265px)] overflow-auto' aria-label="a dense table">
+          <TableHeader className={STICKY_ROW}>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className={`${STICKY_COL} bg-surface`}>設計師</TableHead>
               {serviceCategory.map((data, index) => {
                 return (
                   <Fragment key={index}>
-                    <TableCell>{data}</TableCell>
-                    <TableCell>人數</TableCell>
+                    <TableHead numeric>{data}</TableHead>
+                    <TableHead numeric>人數</TableHead>
                   </Fragment>
                 )
               })}
-              <TableCell>業績</TableCell>
-              <TableCell>業績客單價</TableCell>
-              <TableCell>店販</TableCell>
-              {membershipDisplay && <TableCell>會員卡</TableCell>}
-              <TableCell>總業績</TableCell>
-              <TableCell>天數</TableCell>
-              <TableCell>總客數</TableCell>
-              <TableCell>總客單價</TableCell>
+              <TableHead numeric>業績</TableHead>
+              <TableHead numeric>業績客單價</TableHead>
+              <TableHead numeric>店販</TableHead>
+              {membershipDisplay && <TableHead numeric>會員卡</TableHead>}
+              <TableHead numeric>總業績</TableHead>
+              <TableHead numeric>天數</TableHead>
+              <TableHead numeric>總客數</TableHead>
+              <TableHead numeric>總客單價</TableHead>
             </TableRow>
-          </TableHead>
+          </TableHeader>
           <TableBody className='designerPerformance'>
             {designerPerformance[0].designerPerformanceData.map((data, index) => {
               return (
                 <Fragment key={index} >
                   <TableRow >
-                    <TableCell css={styles.sticky}>{data.designerName}</TableCell>
+                    <TableCell className={STICKY_COL}>{data.designerName}</TableCell>
                     {data.serviceCategory.map((service, index) => {
                       return (
                         <Fragment key={index}>
-                          <TableCell>{service.servicePerformance}</TableCell>
-                          <TableCell>{service.servicePerformanceCount}</TableCell>
+                          <TableCell numeric>{formatNumber(service.servicePerformance)}</TableCell>
+                          <TableCell numeric>{formatNumber(service.servicePerformanceCount)}</TableCell>
                         </Fragment> 
                       )
                     })}
-                    <TableCell>{data.performance}</TableCell>
-                    <TableCell>
-                      {isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer)}
+                    <TableCell numeric>{formatNumber(data.performance)}</TableCell>
+                    <TableCell numeric>
+                      {formatNumber(isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer))}
                     </TableCell>
-                    <TableCell>{data.productPerformance}</TableCell>
-                    {membershipDisplay && <TableCell>{data.membershipPerformance}</TableCell>}
-                    <TableCell>{data.totalPerformance}</TableCell>
-                    <TableCell>{data.performanceDay}</TableCell>
-                    <TableCell>{data.totalCustomer}</TableCell>
-                    <TableCell>{data.totalPerformanceCustomerUnit}</TableCell>
+                    <TableCell numeric>{formatNumber(data.productPerformance)}</TableCell>
+                    {membershipDisplay && <TableCell numeric>{formatNumber(data.membershipPerformance)}</TableCell>}
+                    <TableCell numeric>{formatNumber(data.totalPerformance)}</TableCell>
+                    <TableCell numeric>{formatNumber(data.performanceDay)}</TableCell>
+                    <TableCell numeric>{formatNumber(data.totalCustomer)}</TableCell>
+                    <TableCell numeric>{formatNumber(data.totalPerformanceCustomerUnit)}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell css={styles.sticky}>指定</TableCell>
+                    <TableCell className={STICKY_COL}>指定</TableCell>
                     {data.serviceCategory.map((service, index) => {
                       return (
                         <Fragment key={index}>
-                          <TableCell>{service.designateServicePerformance}</TableCell>
-                          <TableCell>{service.designateCount}</TableCell>
+                          <TableCell numeric>{formatNumber(service.designateServicePerformance)}</TableCell>
+                          <TableCell numeric>{formatNumber(service.designateCount)}</TableCell>
                         </Fragment> 
                       )
                     })}
-                    <TableCell>{data.designatePerformance}</TableCell>
-                    <TableCell>
-                      {isNaN(data.designatePerformance / data.totalDesignateCustomer) ? 0 : Math.round(data.designatePerformance / data.totalDesignateCustomer)}
+                    <TableCell numeric>{formatNumber(data.designatePerformance)}</TableCell>
+                    <TableCell numeric>
+                      {formatNumber(isNaN(data.designatePerformance / data.totalDesignateCustomer) ? 0 : Math.round(data.designatePerformance / data.totalDesignateCustomer))}
                     </TableCell>
-                    <TableCell>{data.designateProductPerformance}</TableCell>
-                    {membershipDisplay && <TableCell>{data.designateMembershipPerformance}</TableCell>}
-                    <TableCell>{data.designateTotalPerformance}</TableCell>
-                    <TableCell>{data.designatePerformanceDay}</TableCell>
-                    <TableCell>{data.totalDesignateCustomer}</TableCell>
-                    <TableCell>{data.designateTotalPerformanceCustomerUnit}</TableCell>
+                    <TableCell numeric>{formatNumber(data.designateProductPerformance)}</TableCell>
+                    {membershipDisplay && <TableCell numeric>{formatNumber(data.designateMembershipPerformance)}</TableCell>}
+                    <TableCell numeric>{formatNumber(data.designateTotalPerformance)}</TableCell>
+                    <TableCell numeric>{formatNumber(data.designatePerformanceDay)}</TableCell>
+                    <TableCell numeric>{formatNumber(data.totalDesignateCustomer)}</TableCell>
+                    <TableCell numeric>{formatNumber(data.designateTotalPerformanceCustomerUnit)}</TableCell>
                   </TableRow>
                 </Fragment>
               )
@@ -121,83 +116,83 @@ export default function Results({ designerPerformance, serviceCategory, membersh
             {designerPerformance[0].designerPerformanceSum.map((data, index) => {
               return (
                 <TableRow key={index}>
-                    <TableCell style={{fontWeight: 'bold'}} css={styles.sticky}>{data.designerName}</TableCell>
+                    <TableCell className={`${STICKY_COL} font-bold`}>{data.designerName}</TableCell>
                     {data.serviceCategory.map((service, index) => {
                       return (
                         <Fragment key={index}>
-                          <TableCell>{service.servicePerformance}</TableCell>
-                          <TableCell>{service.servicePerformanceCount}</TableCell>
+                          <TableCell numeric>{formatNumber(service.servicePerformance)}</TableCell>
+                          <TableCell numeric>{formatNumber(service.servicePerformanceCount)}</TableCell>
                         </Fragment> 
                       )
                     })}
-                    <TableCell>{data.performance}</TableCell>
-                    <TableCell>
-                      {isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer)}
+                    <TableCell numeric>{formatNumber(data.performance)}</TableCell>
+                    <TableCell numeric>
+                      {formatNumber(isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer))}
                     </TableCell>
-                    <TableCell>{data.productPerformance}</TableCell>
-                    {membershipDisplay && <TableCell>{data.membershipPerformance}</TableCell>}
-                    <TableCell>{data.totalPerformance}</TableCell>
-                    <TableCell>{data.performanceDay}</TableCell>
-                    <TableCell>{data.totalCustomer}</TableCell>
-                    <TableCell>{data.totalPerformanceCustomerUnit}</TableCell>
+                    <TableCell numeric>{formatNumber(data.productPerformance)}</TableCell>
+                    {membershipDisplay && <TableCell numeric>{formatNumber(data.membershipPerformance)}</TableCell>}
+                    <TableCell numeric>{formatNumber(data.totalPerformance)}</TableCell>
+                    <TableCell numeric>{formatNumber(data.performanceDay)}</TableCell>
+                    <TableCell numeric>{formatNumber(data.totalCustomer)}</TableCell>
+                    <TableCell numeric>{formatNumber(data.totalPerformanceCustomerUnit)}</TableCell>
                   </TableRow>
               )
             })}
             {designerPerformance[0].designerPerformanceSum.map((data, index) => {
               return (
                 <TableRow key={index} >
-                  <TableCell style={{fontWeight: 'bold'}} css={styles.sticky}>指定</TableCell>
+                  <TableCell className={`${STICKY_COL} font-bold`}>指定</TableCell>
                   {data.serviceCategory.map((service, index) => {
                       return (
                         <Fragment key={index}>
-                          <TableCell>{service.designateServicePerformance}</TableCell>
-                          <TableCell>{service.designateCount}</TableCell>
+                          <TableCell numeric>{formatNumber(service.designateServicePerformance)}</TableCell>
+                          <TableCell numeric>{formatNumber(service.designateCount)}</TableCell>
                         </Fragment> 
                       )
                   })}
-                  <TableCell>{data.designatePerformance}</TableCell>
-                  <TableCell>{isNaN(data.designatePerformance / data.totalDesignateCustomer) ? 0 : Math.round(data.designatePerformance / data.totalDesignateCustomer)}</TableCell>
-                  <TableCell>{data.designateProductPerformance}</TableCell>
-                  {membershipDisplay && <TableCell>{data.designateMembershipPerformance}</TableCell>}
-                  <TableCell>{data.designateTotalPerformance}</TableCell>
-                  <TableCell>{data.designatePerformanceDay}</TableCell>
-                  <TableCell>{data.totalDesignateCustomer}</TableCell>
-                  <TableCell>{data.designateTotalPerformanceCustomerUnit}</TableCell>
+                  <TableCell numeric>{formatNumber(data.designatePerformance)}</TableCell>
+                  <TableCell numeric>{formatNumber(isNaN(data.designatePerformance / data.totalDesignateCustomer) ? 0 : Math.round(data.designatePerformance / data.totalDesignateCustomer))}</TableCell>
+                  <TableCell numeric>{formatNumber(data.designateProductPerformance)}</TableCell>
+                  {membershipDisplay && <TableCell numeric>{formatNumber(data.designateMembershipPerformance)}</TableCell>}
+                  <TableCell numeric>{formatNumber(data.designateTotalPerformance)}</TableCell>
+                  <TableCell numeric>{formatNumber(data.designatePerformanceDay)}</TableCell>
+                  <TableCell numeric>{formatNumber(data.totalDesignateCustomer)}</TableCell>
+                  <TableCell numeric>{formatNumber(data.designateTotalPerformanceCustomerUnit)}</TableCell>
                 </TableRow>
               )
             })}
             {designerPerformance[0].designerPerformanceSum.map((data, index) => {
               return (
                 <TableRow key={index} >
-                  <TableCell style={{fontWeight: 'bold'}} css={styles.sticky}>不指定</TableCell>
+                  <TableCell className={`${STICKY_COL} font-bold`}>不指定</TableCell>
                   {data.serviceCategory.map((service, index) => {
                     return (
                       <Fragment key={index}>
-                        <TableCell>{service.nonDesignateServicePerformance}</TableCell>
-                        <TableCell>{service.nonDesignateCount}</TableCell>
+                        <TableCell numeric>{formatNumber(service.nonDesignateServicePerformance)}</TableCell>
+                        <TableCell numeric>{formatNumber(service.nonDesignateCount)}</TableCell>
                       </Fragment> 
                     )
                   })}
-                  <TableCell>{data.nonDesignatePerformance}</TableCell>
-                  <TableCell>{isNaN(data.nonDesignatePerformance / data.totalNonDesignateCustomer) ? 0 : Math.round(data.nonDesignatePerformance / data.totalNonDesignateCustomer)}</TableCell>
-                  <TableCell>{data.nonDesignateProductPerformance}</TableCell>
-                  {membershipDisplay && <TableCell>{data.nonDesignateMembershipPerformance}</TableCell>}
-                  <TableCell>{data.nonDesignateTotalPerformance}</TableCell>
+                  <TableCell numeric>{formatNumber(data.nonDesignatePerformance)}</TableCell>
+                  <TableCell numeric>{formatNumber(isNaN(data.nonDesignatePerformance / data.totalNonDesignateCustomer) ? 0 : Math.round(data.nonDesignatePerformance / data.totalNonDesignateCustomer))}</TableCell>
+                  <TableCell numeric>{formatNumber(data.nonDesignateProductPerformance)}</TableCell>
+                  {membershipDisplay && <TableCell numeric>{formatNumber(data.nonDesignateMembershipPerformance)}</TableCell>}
+                  <TableCell numeric>{formatNumber(data.nonDesignateTotalPerformance)}</TableCell>
                   <TableCell/>
-                  <TableCell>{data.totalNonDesignateCustomer}</TableCell>
-                  <TableCell>{data.nonDesignateTotalPerformanceCustomerUnit}</TableCell>
+                  <TableCell numeric>{formatNumber(data.totalNonDesignateCustomer)}</TableCell>
+                  <TableCell numeric>{formatNumber(data.nonDesignateTotalPerformanceCustomerUnit)}</TableCell>
                 </TableRow>
               )
             })}
             {designerPerformance[0].designerPerformancePercented.map((data, index) => {
               return (
                 <TableRow key={index} >
-                  <TableCell style={{fontWeight: 'bold'}} css={styles.sticky}>{data.designerName}</TableCell>
+                  <TableCell className={`${STICKY_COL} font-bold`}>{data.designerName}</TableCell>
                   {data.serviceCategory.map((service, index) => {
                     return (
                       <Fragment key={index}>
                         <TableCell/>
-                        <TableCell>{service.designateCount !== null && service.designateCount + '%'}</TableCell>
+                        <TableCell numeric>{service.designateCount !== null && service.designateCount + '%'}</TableCell>
                       </Fragment> 
                     )
                   })}
@@ -207,7 +202,7 @@ export default function Results({ designerPerformance, serviceCategory, membersh
                   {membershipDisplay && <TableCell/>}
                   <TableCell/>
                   <TableCell/>
-                  <TableCell>{data.totalDesignateCustomer !== null && data.totalDesignateCustomer + '%'}</TableCell>
+                  <TableCell numeric>{data.totalDesignateCustomer !== null && data.totalDesignateCustomer + '%'}</TableCell>
                   <TableCell/>
                 </TableRow>
               )
@@ -215,81 +210,80 @@ export default function Results({ designerPerformance, serviceCategory, membersh
             {designerPerformance[0].designerPerformanceMale.map((data, index) => {
               return (
                 <TableRow key={index} >
-                  <TableCell style={{fontWeight: 'bold'}} css={styles.sticky}>{data.designerName}</TableCell>
+                  <TableCell className={`${STICKY_COL} font-bold`}>{data.designerName}</TableCell>
                     {data.serviceCategory.map((service, index) => {
                       return (
                         <Fragment key={index}>
-                          <TableCell>{service.servicePerformance}</TableCell>
-                          <TableCell>{service.servicePerformanceCount}</TableCell>
+                          <TableCell numeric>{formatNumber(service.servicePerformance)}</TableCell>
+                          <TableCell numeric>{formatNumber(service.servicePerformanceCount)}</TableCell>
                         </Fragment> 
                       )
                     })}
-                    <TableCell>{data.performance}</TableCell>
-                    <TableCell>
-                      {isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer)}
+                    <TableCell numeric>{formatNumber(data.performance)}</TableCell>
+                    <TableCell numeric>
+                      {formatNumber(isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer))}
                     </TableCell>
-                    <TableCell>{data.productPerformance}</TableCell>
-                    {membershipDisplay && <TableCell>{data.membershipPerformance}</TableCell>}
-                    <TableCell>{data.totalPerformance}</TableCell>
-                    <TableCell>{data.performanceDay}</TableCell>
-                    <TableCell>{data.totalCustomer}</TableCell>
-                    <TableCell>{data.totalPerformanceCustomerUnit}</TableCell>
+                    <TableCell numeric>{formatNumber(data.productPerformance)}</TableCell>
+                    {membershipDisplay && <TableCell numeric>{formatNumber(data.membershipPerformance)}</TableCell>}
+                    <TableCell numeric>{formatNumber(data.totalPerformance)}</TableCell>
+                    <TableCell numeric>{formatNumber(data.performanceDay)}</TableCell>
+                    <TableCell numeric>{formatNumber(data.totalCustomer)}</TableCell>
+                    <TableCell numeric>{formatNumber(data.totalPerformanceCustomerUnit)}</TableCell>
                 </TableRow>
               )
             })}
             {designerPerformance[0].designerPerformanceFemale.map((data, index) => {
               return (
                 <TableRow key={index} >
-                  <TableCell style={{fontWeight: 'bold'}} css={styles.sticky}>{data.designerName}</TableCell>
+                  <TableCell className={`${STICKY_COL} font-bold`}>{data.designerName}</TableCell>
                   {data.serviceCategory.map((service, index) => {
                       return (
                         <Fragment key={index}>
-                          <TableCell>{service.servicePerformance}</TableCell>
-                          <TableCell>{service.servicePerformanceCount}</TableCell>
+                          <TableCell numeric>{formatNumber(service.servicePerformance)}</TableCell>
+                          <TableCell numeric>{formatNumber(service.servicePerformanceCount)}</TableCell>
                         </Fragment> 
                       )
                     })}
-                  <TableCell>{data.performance}</TableCell>
-                  <TableCell>
-                    {isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer)}
+                  <TableCell numeric>{formatNumber(data.performance)}</TableCell>
+                  <TableCell numeric>
+                    {formatNumber(isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer))}
                   </TableCell>
-                  <TableCell>{data.productPerformance}</TableCell>
-                  {membershipDisplay && <TableCell>{data.membershipPerformance}</TableCell>}
-                  <TableCell>{data.totalPerformance}</TableCell>
-                  <TableCell>{data.performanceDay}</TableCell>
-                  <TableCell>{data.totalCustomer}</TableCell>
-                  <TableCell>{data.totalPerformanceCustomerUnit}</TableCell>
+                  <TableCell numeric>{formatNumber(data.productPerformance)}</TableCell>
+                  {membershipDisplay && <TableCell numeric>{formatNumber(data.membershipPerformance)}</TableCell>}
+                  <TableCell numeric>{formatNumber(data.totalPerformance)}</TableCell>
+                  <TableCell numeric>{formatNumber(data.performanceDay)}</TableCell>
+                  <TableCell numeric>{formatNumber(data.totalCustomer)}</TableCell>
+                  <TableCell numeric>{formatNumber(data.totalPerformanceCustomerUnit)}</TableCell>
                 </TableRow>
               )
             })}
             {designerPerformance[0].designerPerformanceUnknown.map((data, index) => {
               return (
                 <TableRow key={index} >
-                  <TableCell style={{fontWeight: 'bold'}} css={styles.sticky}>{data.designerName}</TableCell>
+                  <TableCell className={`${STICKY_COL} font-bold`}>{data.designerName}</TableCell>
                   {data.serviceCategory.map((service, index) => {
                       return (
                         <Fragment key={index}>
-                          <TableCell>{service.servicePerformance}</TableCell>
-                          <TableCell>{service.servicePerformanceCount}</TableCell>
+                          <TableCell numeric>{formatNumber(service.servicePerformance)}</TableCell>
+                          <TableCell numeric>{formatNumber(service.servicePerformanceCount)}</TableCell>
                         </Fragment> 
                       )
                     })}
-                  <TableCell>{data.performance}</TableCell>
-                  <TableCell>
-                    {isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer)}
+                  <TableCell numeric>{formatNumber(data.performance)}</TableCell>
+                  <TableCell numeric>
+                    {formatNumber(isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer))}
                   </TableCell>
-                  <TableCell>{data.productPerformance}</TableCell>
-                  {membershipDisplay && <TableCell>{data.membershipPerformance}</TableCell>}
-                  <TableCell>{data.totalPerformance}</TableCell>
-                  <TableCell>{data.performanceDay}</TableCell>
-                  <TableCell>{data.totalCustomer}</TableCell>
-                  <TableCell>{data.totalPerformanceCustomerUnit}</TableCell>
+                  <TableCell numeric>{formatNumber(data.productPerformance)}</TableCell>
+                  {membershipDisplay && <TableCell numeric>{formatNumber(data.membershipPerformance)}</TableCell>}
+                  <TableCell numeric>{formatNumber(data.totalPerformance)}</TableCell>
+                  <TableCell numeric>{formatNumber(data.performanceDay)}</TableCell>
+                  <TableCell numeric>{formatNumber(data.totalCustomer)}</TableCell>
+                  <TableCell numeric>{formatNumber(data.totalPerformanceCustomerUnit)}</TableCell>
                 </TableRow>
               )
             })}
           </TableBody>
-        </Table>
-      </TableContainer>
+      </Table>
     )
   )
 }

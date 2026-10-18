@@ -1,30 +1,33 @@
 /** @jsxImportSource @emotion/react */
 import {
   Card, CardContent, Table, TableBody, TableCell,
-  TableHead, TableRow, Checkbox, Typography
+  TableHead, TableRow
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { cloneDeep } from 'lodash'
 import { useState, useEffect } from 'react'
 import { theme } from '../../theme'
 import { css } from '@emotion/react'
+import { Card as UiCard } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
+import { Checkbox } from 'ui/checkbox'
 
 const localStyles = {
   card: css({
     borderRadius: '16px',
     boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
+    border: '1px solid rgb(var(--border))',
+    backgroundColor: 'rgb(var(--background))',
     overflow: 'hidden',
     marginTop: '24px',
   }),
   tableHead: css({
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgb(var(--background))',
     '& .MuiTableCell-head': {
-      backgroundColor: '#f8f9fa',
-      color: '#212121',
+      backgroundColor: 'rgb(var(--surface))',
+      color: 'rgb(var(--text))',
       fontWeight: 'bold',
-      borderBottom: '1px solid #f0f0f0',
+      borderBottom: '1px solid rgb(var(--border))',
       height: '40px !important',
       padding: '2px 16px !important',
       fontSize: '14px',
@@ -34,22 +37,22 @@ const localStyles = {
     height: '40px !important',
     '& .MuiTableCell-body': {
       padding: '2px 16px !important',
-      borderBottom: '1px solid #f0f0f0',
+      borderBottom: '1px solid rgb(var(--border))',
       fontSize: '14px !important',
-      color: '#333',
+      color: 'rgb(var(--text))',
     },
     '&:hover': {
       backgroundColor: 'transparent !important',
     },
   }),
   totalRow: css({
-    backgroundColor: '#FFFFFF !important',
+    backgroundColor: 'rgb(var(--background)) !important',
     height: '40px !important',
     '& .MuiTableCell-body': {
       padding: '2px 16px !important',
       fontWeight: 'bold !important',
-      color: '#212121 !important',
-      borderBottom: '1px solid #f0f0f0',
+      color: 'rgb(var(--text)) !important',
+      borderBottom: '1px solid rgb(var(--border))',
     }
   }),
 }
@@ -84,9 +87,9 @@ function Results({ salaryData }) {
   return (
     <>
       {salaryData.length === 0 ? (
-        <Typography style={{ marginTop: 50 }} align='center' component="h1" variant="h3">
-          無資料
-        </Typography>
+        <UiCard className="mt-6">
+          <EmptyState title="無資料" />
+        </UiCard>
       ) : (
         <Card css={localStyles.card} className="MerchantBankTransferReportTable">
           <CardContent style={{ padding: 0 }}>
@@ -96,7 +99,7 @@ function Results({ salaryData }) {
                   <TableRow>
                     <TableCell padding="checkbox" className="noprint">
                       <Checkbox
-                        color="primary"
+                        aria-label="全選"
                         checked={selectedUser.length === salaryData.length}
                         indeterminate={
                           selectedUser.length > 0 && selectedUser.length < salaryData.length
@@ -122,7 +125,7 @@ function Results({ salaryData }) {
                     >
                       <TableCell padding="checkbox" className="noprint">
                         <Checkbox
-                          color="primary"
+                          aria-label="選取"
                           checked={selectedUser.indexOf(user.id) > -1}
                           onChange={() => handleSelectOne(user.id)}
                         />

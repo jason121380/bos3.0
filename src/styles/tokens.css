@@ -1,0 +1,106 @@
+/* BOS 3.0 設計 tokens（依 STYLE.md §2）。顏色以 RGB 分量定義，供 Tailwind 透明度修飾使用（如 bg-success/8）。 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --canvas: 247 247 248; /* 頁面底色：卡片（白）靠底色差浮出 */
+  --background: 255 255 255; /* 卡片、輸入框、浮層底色 */
+  --surface: 242 242 243; /* 側欄、表頭、次要區塊 */
+  --surface-hover: 233 233 235; /* hover、次要按鈕底色 */
+  --surface-active: 222 222 225; /* 次要按鈕 hover */
+  --border: 229 229 229; /* 裝飾性：卡片框、分隔線 */
+  --border-strong: 194 194 194; /* 可操作：輸入框、下拉外框 */
+  --border-strong-hover: 148 148 148;
+  --text: 13 13 13;
+  --text-secondary: 93 93 93;
+  --text-tertiary: 143 143 143;
+  --primary: 26 115 232; /* 主題色 #1A73E8（沿用舊版品牌藍） */
+  --primary-foreground: 255 255 255;
+  --accent: 26 115 232;
+  --success: 16 163 127;
+  --warning: 183 121 31;
+  --danger: 217 45 32;
+}
+
+.dark {
+  --canvas: 10 10 10;
+  --background: 23 23 23;
+  --surface: 28 28 28;
+  --surface-hover: 38 38 38;
+  --surface-active: 50 50 50;
+  --border: 46 46 46;
+  --border-strong: 72 72 72;
+  --border-strong-hover: 110 110 110;
+  --text: 236 236 236;
+  --text-secondary: 180 180 180;
+  --text-tertiary: 143 143 143;
+  --primary: 26 115 232;
+  --primary-foreground: 255 255 255;
+  --accent: 76 141 246; /* 深色底上的連結與焦點用較亮的藍 #4C8DF6 */
+  --success: 25 195 125;
+  --warning: 240 180 41;
+  --danger: 249 112 102;
+}
+
+/*
+ * 遷移期 preflight 關閉，改用限定範圍的基礎樣式：只作用在 .ui-root 之內，
+ * 不影響仍使用 MUI 的舊頁面。新骨架與 src/ui 的浮層都會帶上 .ui-root。
+ */
+@layer base {
+  /* 手機 App 化：點擊不閃灰底、橫向時不自動放大字級 */
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  /* 全部用 :where() 把權重歸零，確保 Tailwind 工具類永遠能覆蓋這些基礎樣式 */
+  :where(.ui-root, .ui-root *, .ui-root ::before, .ui-root ::after) {
+    box-sizing: border-box;
+    border: 0 solid rgb(var(--border));
+  }
+  :where(.ui-root) {
+    font-family: theme('fontFamily.sans');
+    font-size: 14px;
+    line-height: 20px;
+    color: rgb(var(--text));
+    -webkit-font-smoothing: antialiased;
+  }
+  :where(.ui-root) :where(h1, h2, h3, h4, h5, h6, p, ul, ol, figure, blockquote) {
+    margin: 0;
+  }
+  :where(.ui-root) :where(ul, ol) {
+    list-style: none;
+    padding: 0;
+  }
+  :where(.ui-root) :where(button, input, select, textarea) {
+    font: inherit;
+    color: inherit;
+    margin: 0;
+  }
+  :where(.ui-root) :where(button) {
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0;
+  }
+  :where(.ui-root) :where(button, [role='button']):disabled {
+    cursor: not-allowed;
+  }
+  :where(.ui-root) :where(table) {
+    border-collapse: collapse;
+  }
+  :where(.ui-root) :where(a) {
+    color: inherit;
+    text-decoration: inherit;
+  }
+  :where(.ui-root) :where(svg) {
+    display: block;
+    flex-shrink: 0;
+  }
+}
+
+/* 手機底部面板（MUI Dialog，見 ui/mui-theme.js）的進場動畫 */
+@keyframes ui-sheet-in {
+  from { transform: translateY(32px); opacity: 0.6; }
+  to { transform: none; opacity: 1; }
+}

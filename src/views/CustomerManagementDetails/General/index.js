@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Grid } from '@mui/material'
 import CustomerInfo from './CustomerInfo'
 
 export default function General({ customer, className = {}, isLoading, bookingCusCheck, ...rest }) {
@@ -7,13 +6,13 @@ export default function General({ customer, className = {}, isLoading, bookingCu
     return null
   }
   return (
-    <Grid {...rest} css={className} container spacing={3}>
-      <Grid item lg={6} md={6} xl={4} xs={12}>
+    <div {...rest} css={className} className="grid grid-cols-12 gap-6">
+      <div className="col-span-12 md:col-span-6 xl:col-span-4">
         <CustomerInfo bookingCusCheck={bookingCusCheck} customer={customer} isLoading={isLoading}/>
-      </Grid>
-      <Grid item lg={4} md={6} xl={3} xs={12}>
+      </div>
+      <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
         {/* <OtherActions /> */}
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   )
 }

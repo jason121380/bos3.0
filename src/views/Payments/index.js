@@ -1,31 +1,17 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import useFetchPayments from 'hooks/useFetchPayments'
 import idx from 'idx'
 import { Link as RouterLink } from 'react-router-dom'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
+import { Skeleton } from 'ui/skeleton'
 
 import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
 
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(6),
-  }),
-  results: css({
-    marginTop: theme.spacing(1),
-  }),
-}
-
 function CustomerManagementList() {
   const payments = useFetchPayments()
   return (
-    <Page css={styles.root} title="支付方式設定">
-      <Container maxWidth={false}>
+    <Page className="ui-root" title="支付方式設定">
+      <div>
         <AdminPageHeader
           title="支付方式設定"
           sx={{ backgroundColor: 'transparent', mb: 0 }}
@@ -36,12 +22,11 @@ function CustomerManagementList() {
         />
         {!payments.loading ?
           <Results
-            className={styles.results}
             paymentList={idx(payments, _ => _.data.merchantPayWays)}
           />
-          : <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>}
+          : <Skeleton className="h-[320px] w-full rounded-lg" aria-label="載入中" />}
 
-      </Container>
+      </div>
     </Page>
   )
 }

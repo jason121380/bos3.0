@@ -1,16 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect, useCallback } from 'react'
-import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import useFetchCustomerCouponReport from 'hooks/useFetchCustomerCouponReport'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
-import AdminPageHeader from 'components/AdminPageHeader'
 import TicketAutoComplete from 'components/TicketAutoComplete'
 import { CSVLink } from "react-csv";
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader, Toolbar } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -119,87 +121,85 @@ const CustomerWalletBalance = () => {
     })
   }
   return (
-    <Page css={styles.root} title="顧客卡券餘額表">
-      <Container maxWidth={false} css={styles.container}>
-        <AdminPageHeader title='顧客卡券餘額表' />
-        <Grid container alignItems='center' justifyContent="space-between" style={{ margin: '12px 0', gap: 10 }}>
-          <Grid item style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-            <Grid item>
-              <CustomerAutoComplete
-                label={'顧客編號/姓名'}
-                value={customerIdValue}
-                onChange={value =>
-                  setPageSetting({
-                    ...pageSetting,
-                    customerId: value.id !== '' ? [value.id] : [],
-                  })
-                }
-              />
-            </Grid>
-            <Grid item>
-              <TicketAutoComplete
-                className={styles.field}
-                label="卡券名稱/代號"
-                value={couponIdValue}
-                onChange={value =>
-                  setPageSetting({
-                    ...pageSetting,
-                    couponId: value.id !== '' ? [value.id] : [],
-                  })
-                }
-              />
-            </Grid>
-            <Grid item>
-              <EmployeeAutoComplete
-                className={styles.field}
-                label='偏好設計師'
-                value={pageSetting.preferDesignerId}
-                onChange={value => {
-                  setPageSetting({
-                    ...pageSetting,
-                    preferDesignerId: value.userId || null,
-                  })
-                }}
-              />
-            </Grid>
-            <Grid item>
-              <EmployeeAutoComplete
-                className={styles.field}
-                label='最近設計師'
-                value={pageSetting.latestDesignerId}
-                onChange={value => {
-                  setPageSetting({
-                    ...pageSetting,
-                    latestDesignerId: value.userId || null,
-                  })
-                }}
-              />
-            </Grid>
-          </Grid>
-          <Grid item>
+    <Page className="ui-root" title="顧客卡券餘額表">
+      <PageHeader
+        title="顧客卡券餘額表"
+        actions={
+          <Button asChild variant="secondary">
             <CSVLink
               data={excelData}
               filename="顧客卡券餘額表.csv"
-              style={{ display: 'inline' }}
             >
-              <Button variant="contained" color="primary" size="medium">
-                報表匯出
-              </Button>
+              <Download strokeWidth={1.75} />
+              報表匯出
             </CSVLink>
-          </Grid>
-        </Grid>
-        {!customerCouponBalanceData.loading ? (
-          <Results
-            report={reportForDisplay}
-            total={reportTotal}
-            countTotalPrice={handleCountTotalPrice}
-          />
-        ) : (
-          <div className={styles.noReportDiv}>
-            <CircularProgress />
+          </Button>
+        }
+      />
+      <Toolbar>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div>
+            <CustomerAutoComplete
+              label={'顧客編號/姓名'}
+              value={customerIdValue}
+              onChange={value =>
+                setPageSetting({
+                  ...pageSetting,
+                  customerId: value.id !== '' ? [value.id] : [],
+                })
+              }
+            />
           </div>
-        )}
-      </Container>
+          <div>
+            <TicketAutoComplete
+              className={styles.field}
+              label="卡券名稱/代號"
+              value={couponIdValue}
+              onChange={value =>
+                setPageSetting({
+                  ...pageSetting,
+                  couponId: value.id !== '' ? [value.id] : [],
+                })
+              }
+            />
+          </div>
+          <div>
+            <EmployeeAutoComplete
+              className={styles.field}
+              label='偏好設計師'
+              value={pageSetting.preferDesignerId}
+              onChange={value => {
+                setPageSetting({
+                  ...pageSetting,
+                  preferDesignerId: value.userId || null,
+                })
+              }}
+            />
+          </div>
+          <div>
+            <EmployeeAutoComplete
+              className={styles.field}
+              label='最近設計師'
+              value={pageSetting.latestDesignerId}
+              onChange={value => {
+                setPageSetting({
+                  ...pageSetting,
+                  latestDesignerId: value.userId || null,
+                })
+              }}
+            />
+          </div>
+        </div>
+      </Toolbar>
+      {!customerCouponBalanceData.loading ? (
+        <Results
+          report={reportForDisplay}
+          total={reportTotal}
+          countTotalPrice={handleCountTotalPrice}
+        />
+      ) : (
+        <Skeleton className="h-96" aria-busy="true" />
+      )}
     </Page>
   )
 }

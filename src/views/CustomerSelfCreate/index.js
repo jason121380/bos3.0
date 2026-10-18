@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import React, { /* useRef, */ useState, useEffect, Fragment } from 'react'
 import Page from 'components/Page'
 import { useParams, useLocation } from 'react-router'
@@ -6,7 +5,6 @@ import produce from 'immer'
 import useFetchCustomerSelfCreate from 'hooks/useFetchCustomerSelfCreate'
 import useFetchGetIsCustomerSelfCreateActive from 'hooks/useFetchGetIsCustomerSelfCreateActive'
 import useFetchGetMerchantName from 'hooks/useFetchGetMerchantName'
-import styles from './Styles'
 import { cloneDeep } from 'lodash'
 
 import General from './General'
@@ -141,7 +139,7 @@ const index = () => {
       {!customerSelfCreateActive.loading && !pageEnable ? (
         <Status />
       ) : isSuccess ? <Status isSuccess /> : (
-        <Page css={styles.root} title={`${data.merchantName}  顧客資料建立`}>
+        <Page className="ui-root" title={`${data.merchantName}  顧客資料建立`}>
           <General
             data={data}
             handleSetInputValue={handleSetInputValue}

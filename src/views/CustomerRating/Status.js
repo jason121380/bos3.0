@@ -1,6 +1,4 @@
-import { Typography } from '@mui/material'
-import Check from '@mui/icons-material/CheckCircleOutlineRounded';
-import Error from '@mui/icons-material/ErrorOutlineRounded';
+import { CircleAlert as Error, CircleCheck as Check } from 'lucide-react'
 
 const Status = ({ open = false, isComment }) => {
   const handleDisplayMessage = () => {
@@ -8,22 +6,22 @@ const Status = ({ open = false, isComment }) => {
       case 'isCommented':
         return (
           <>
-            <Check style={{ color: '#66bb6a', fontSize: 100 }} />
-            <Typography align='center' variant='h5'>本次服務已完成評論，可關閉本視窗。</Typography>
+            <Check className="h-24 w-24 text-success" strokeWidth={1.5} />
+            <p className="text-heading text-text">本次服務已完成評論，可關閉本視窗。</p>
           </>
         )
       case 'complete':
         return (
           <>
-            <Check style={{ color: '#66bb6a', fontSize: 100 }} />
-            <Typography align='center' variant='h5'>感謝您的評論，可關閉本視窗。</Typography>
+            <Check className="h-24 w-24 text-success" strokeWidth={1.5} />
+            <p className="text-heading text-text">感謝您的評論，可關閉本視窗。</p>
           </>
         )
       case 'error':
         return (
           <>
-            <Error style={{ color: 'red', fontSize: 100 }} />
-            <Typography align='center' variant='h5'>連結有誤</Typography>
+            <Error className="h-24 w-24 text-danger" strokeWidth={1.5} />
+            <p className="text-heading text-text">連結有誤</p>
           </>
         )
       case null:
@@ -33,7 +31,7 @@ const Status = ({ open = false, isComment }) => {
   return (
     <>
       {open && (
-        <div style={{ textAlign: 'center', marginTop: 80 }}>
+        <div className="ui-root flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center">
           {handleDisplayMessage()}
         </div>
       )}

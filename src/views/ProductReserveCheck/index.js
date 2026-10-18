@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react'
+// 商品多選 Autocomplete（含 popupIcon 內的全選鈕）保留 MUI
 import {
-  Container, Button, CircularProgress, Checkbox, TextField,
+  Button as MuiButton, Checkbox, TextField,
   Autocomplete
 } from '@mui/material'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { useFetchProductsInAutoComplete } from 'hooks/useFetchProducts'
 import { endOfDay, startOfMonth } from 'date-fns'
@@ -16,6 +16,9 @@ import idx from 'idx'
 import Results from './Results'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader, Toolbar } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 
 const styles = {
@@ -124,91 +127,90 @@ const ProductReserveCheck = () => {
   }
 
   return (
-    <Page css={styles.root} title="商品庫存盤點表">
-      <Container maxWidth={false} css={styles.container}>
-        <AdminPageHeader title='商品庫存盤點表' />
+    <Page className="ui-root" title="商品庫存盤點表">
+      <PageHeader title="商品庫存盤點表" />
+      <Toolbar>
         <DateSelector
           date={date}
           attributes={['lastmonth', 'thismonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
           dateChange={value => setDate(value)}
           margin
         />
-        <div style={{ display: 'flex', margin: '0 0 10px' }}>
-          <Autocomplete
-            multiple
-            fullWidth
-            popupIcon={
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                disabled={getAllProducts.loading || productReserveData.loading || (productReserveData.data === undefined && !productReserveData.error)}
-                onClick={selectAll}>全選</Button>
-            }
-            onOpen={() => setOpen(true)}
-            onClose={() => setOpen(false)}
-            value={productIds}
-            options={productsOptions}
-            disableCloseOnSelect
-            getOptionLabel={option => option.name}
-            onChange={(event, value) => setProductIds(value)}
-            renderOption={(props, option, { selected }) => {
-              props.key = props.id
-              return (
-                <li {...props}>
-                  <Checkbox
-                    style={{ color: '#202D50', marginRight: 8 }}
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    checked={selected}
-                  />
-                  {`${option.no === null ? '無代號' : option.no} - ${option.name}`}
-                </li>
-              )
-            }
-            }
-            filterOptions={(options, { inputValue }) => {
-              const keyWord = inputValue.toLocaleLowerCase()
-              const newOptions = options.filter(d => {
-                if (d.no) {
-                  const no = d.no.toLocaleLowerCase()
-                  const name = d.name.toLocaleLowerCase()
-                  return no.includes(keyWord) || name.includes(keyWord)
-                }
-              })
-              return newOptions
-            }}
-            renderInput={params => (
-              <TextField
-                {...params}
-                variant="outlined"
-                label="加入商品"
-                placeholder="商品名稱"
-                InputProps={{
-                  ...params.InputProps,
-                }}
-              />
-            )}
-          />
-          <div style={{ marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
-            <Button
+      </Toolbar>
+      <div className="flex items-center gap-2.5 pb-6">
+        <Autocomplete
+          multiple
+          fullWidth
+          popupIcon={
+            <MuiButton
               variant="contained"
               color="primary"
-              onClick={() => handleSearch()}
-              css={styles.searchBtn}
+              size="small"
+              style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
               disabled={getAllProducts.loading || productReserveData.loading || (productReserveData.data === undefined && !productReserveData.error)}
-            >
-              搜尋
-            </Button>
-          </div>
+              onClick={selectAll}>全選</MuiButton>
+          }
+          onOpen={() => setOpen(true)}
+          onClose={() => setOpen(false)}
+          value={productIds}
+          options={productsOptions}
+          disableCloseOnSelect
+          getOptionLabel={option => option.name}
+          onChange={(event, value) => setProductIds(value)}
+          renderOption={(props, option, { selected }) => {
+            props.key = props.id
+            return (
+              <li {...props}>
+                <Checkbox
+                  style={{ color: 'rgb(var(--text))', marginRight: 8 }}
+                  icon={icon}
+                  checkedIcon={checkedIcon}
+                  checked={selected}
+                />
+                {`${option.no === null ? '無代號' : option.no} - ${option.name}`}
+              </li>
+            )
+          }
+          }
+          filterOptions={(options, { inputValue }) => {
+            const keyWord = inputValue.toLocaleLowerCase()
+            const newOptions = options.filter(d => {
+              if (d.no) {
+                const no = d.no.toLocaleLowerCase()
+                const name = d.name.toLocaleLowerCase()
+                return no.includes(keyWord) || name.includes(keyWord)
+              }
+            })
+            return newOptions
+          }}
+          renderInput={params => (
+            <TextField
+              {...params}
+              variant="outlined"
+              label="加入商品"
+              placeholder="商品名稱"
+              InputProps={{
+                ...params.InputProps,
+              }}
+            />
+          )}
+        />
+        <div className="flex items-center">
+          <Button
+            variant="primary"
+            onClick={() => handleSearch()}
+            className="w-[100px]"
+            disabled={getAllProducts.loading || productReserveData.loading || (productReserveData.data === undefined && !productReserveData.error)}
+          >
+            搜尋
+          </Button>
         </div>
-        {productReserveData.loading || (productReserveData.data === undefined && !productReserveData.error) ? (
-          <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
-        ) : (
-          <Results reportData={reportData} />
-        )}
-      </Container>
+      </div>
+      {productReserveData.loading || (productReserveData.data === undefined && !productReserveData.error) ? (
+        <Skeleton className="h-96" aria-busy="true" />
+      ) : (
+        <Results reportData={reportData} />
+      )}
     </Page>
   )
 }

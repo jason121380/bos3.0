@@ -1,33 +1,18 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container, Grid, CircularProgress } from '@mui/material'
 import { openSnackbar } from 'elements/snackbars'
 import { useFetchDeductionSetting } from 'hooks/useFetchGetDeductionSettings'
 import { useFetchUpdateDeductionSetting } from 'hooks/useFetchSetDeductionSetting'
 import produce from 'immer'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'
 
 import React, { useState, useEffect } from 'react'
 import _ from 'lodash'
 import idx from 'idx'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  about: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 // 沒用到的code 大部分是之前用在AboutProfitSharing 留著怕之後改回來
 function ProfitSharing({ match }) {
@@ -136,25 +121,24 @@ function ProfitSharing({ match }) {
     )
   }
   return (
-    <Page css={styles.root} title="抽成方式設定">
-      <Container maxWidth={false}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='編輯抽成方式設定' subTitle='Update Deduction Setting' />
-          <Grid item>
-            <Button color="primary" variant="contained" onClick={handleSave}>
+    <Page className="ui-root" title="抽成方式設定">
+      <div>
+        <PageHeader
+          title="編輯抽成方式設定"
+          actions={
+            <Button variant="primary" onClick={handleSave}>
               儲存
             </Button>
-          </Grid>
-        </Grid>
+          }
+        />
         {!getAttributionForRake.loading ? (
           <Results
-            className={styles.about}
             profitSharing={profitSharing}
             onChange={handleSalesWayChange}
             attributions={attributions}
           />
-        ) : <div style={{ textAlign: 'center', marginTop: 150 }}><CircularProgress /></div>}
-      </Container>
+        ) : <div className="flex flex-col gap-4"><Skeleton className="h-14 w-full" /><Skeleton className="h-64 w-full" /></div>}
+      </div>
     </Page>
   )
 }

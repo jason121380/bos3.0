@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import useFetchProductCategory from 'hooks/useFetchProductCategory'
@@ -10,9 +7,10 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import { Provider } from 'hooks/useStore'
 import { useForm } from 'react-hook-form'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import AboutProductCategory from './AboutProductCategory'
-import styles from './styles/ProductCategoryEdit'
 
 function ServiceCategoryCreate({ match }) {
   const productCategoryDetail = useFetchProductCategory({ categoryId: match.params.id })
@@ -50,22 +48,22 @@ function ServiceCategoryCreate({ match }) {
   }
   const value = { register, errors }
   return (
-    <Page css={styles.root} title="編輯商品分類">
-      <Container maxWidth="md">
-        <PageTitle title='編輯商品分類' subTitle='Edit Commodity Category' />
-        <form onSubmit={handleSubmit(onSubmit)}>
+    <Page className="ui-root" title="編輯商品分類">
+      <div className="mx-auto max-w-3xl">
+        <PageHeader title="編輯商品分類" />
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <Provider value={value}>
             {!productCategoryDetail.loading && (
-              <AboutProductCategory className={styles.aboutPayment} />
+              <AboutProductCategory />
             )}
           </Provider>
-          <div css={styles.actions}>
-            <Button color="primary" variant="contained" type="submit" data-testid="save">
+          <div className="flex justify-end">
+            <Button variant="primary" type="submit" data-testid="save">
               儲存
             </Button>
           </div>
         </form>
-      </Container>
+      </div>
     </Page>
   )
 }

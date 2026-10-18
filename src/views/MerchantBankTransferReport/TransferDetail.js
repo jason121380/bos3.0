@@ -8,8 +8,8 @@ const localStyles = {
   card: css({
     borderRadius: '16px',
     boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
+    border: '1px solid rgb(var(--border))',
+    backgroundColor: 'rgb(var(--background))',
     padding: '24px',
     marginBottom: '24px',
   }),

@@ -1,49 +1,9 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Typography,
-  colors,
-} from '@mui/material'
 import { format } from 'date-fns'
 import { Fragment, useEffect, useRef } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  saveButton: css({
-    color: theme.palette.common.white,
-    backgroundColor: colors.green[600],
-    '&:hover': {
-      backgroundColor: colors.green[900],
-    },
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 1150,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
 const AttendanceRecord = ({
   page,
@@ -61,57 +21,57 @@ const AttendanceRecord = ({
     }
   }, [results, pageRef.current])
 
+  // 分頁改用 ui/table 的 TablePagination：ref 原樣保留，pagenationLabel 找不到 MUI 元素時不動作
   return (
-    <div {...rest} css={styles.root}>
+    <div {...rest}>
       {results && (results.length === 0 ?
-        <Typography css={styles.cardHeader} variant="h3" gutterBottom component="div">
-          無資料
-        </Typography>
+        <Card>
+          <EmptyState title="無資料" />
+        </Card>
         : <Fragment>
-          <Typography color="textSecondary" gutterBottom variant="body2">
+          <p className="pb-2 text-label tabular-nums text-text-secondary">
             共 {results.length} 筆, {page.offset + 1} / {Math.ceil(results.length / page.limit)}
-          </Typography>
-          <Card {...rest} css={styles.root}>
-            <CardHeader title="打卡紀錄" />
-            <Divider />
-            <CardContent css={styles.content}>
+          </p>
+          <Card {...rest}>
+            <CardHeader className="pb-4">
+              <CardTitle>打卡紀錄</CardTitle>
+            </CardHeader>
+            <div className="px-5">
               <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>時間</TableCell>
-                    <TableCell align="right">地點</TableCell>
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>時間</TableHead>
+                    <TableHead className="text-right">地點</TableHead>
                   </TableRow>
-                </TableHead>
+                </TableHeader>
                 <TableBody>
                   {results.map((data, idx) => (
                     <TableRow key={`attendance-record-${idx}`}>
                       <TableCell>
-                        {format(new Date(data.checkinDateTime), 'HH:mm:ss')}
-                        <Typography variant="body2">
+                        <div className="tabular-nums">{format(new Date(data.checkinDateTime), 'HH:mm:ss')}</div>
+                        <div className="text-caption tabular-nums text-text-secondary">
                           {format(new Date(data.checkinDateTime), 'MM/dd/yyyy')}
-                        </Typography>
+                        </div>
                       </TableCell>
-                      <TableCell align="right">
-                        <Button
-                          color="primary"
-                          size="small"
-                          href={`https://www.google.com/maps?q=${data.latitude},${data.longitude}`}
-                          variant="outlined"
-                          target="_blank"
-                        >
-                          地點
+                      <TableCell className="text-right">
+                        <Button asChild size="sm" variant="secondary">
+                          <a
+                            href={`https://www.google.com/maps?q=${data.latitude},${data.longitude}`}
+                            target="_blank"
+                          >
+                            地點
+                          </a>
                         </Button>
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-            </CardContent>
-            <CardActions css={styles.actions}>
+            </div>
+            <div className="flex justify-end px-2 pb-2">
               <TablePagination
                 ref={pageRef}
                 labelRowsPerPage='每頁顯示數量'
-                component="div"
                 count={page.count}
                 onPageChange={onChangePage}
                 onRowsPerPageChange={onChangeRowsPerPage}
@@ -119,7 +79,7 @@ const AttendanceRecord = ({
                 rowsPerPage={page.limit}
                 rowsPerPageOptions={[5, 10, 25, 50, 1000]}
               />
-            </CardActions>
+            </div>
           </Card>
         </Fragment>)
       }

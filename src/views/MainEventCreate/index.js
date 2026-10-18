@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { useState } from 'react'
 import useFetchCreateMainEvent from 'hooks/useFetchCreateMainEvent'
 import { cloneDeep } from 'lodash'
@@ -10,21 +7,7 @@ import produce from 'immer'
 import General from './General'
 import { openSnackbar } from 'elements/snackbars'
 import { startOfDay, endOfDay, isBefore } from 'date-fns'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  headerWrap: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    gap: 10
-  })
-}
+import { PageHeader } from 'ui/page-header'
 
 function MainEventCreate() {
   const history = useHistory()
@@ -102,9 +85,9 @@ function MainEventCreate() {
   }
 
   return (
-    <Page css={styles.root} title="建立活動">
-      <Container maxWidth="md">
-        <PageTitle title='建立活動' subTitle='Main Event Create' />
+    <Page className="ui-root" title="建立活動">
+      <div className="mx-auto max-w-3xl">
+        <PageHeader title="建立活動" />
         <General
           dateChange={handleDateChange}
           valueChange={handleValueChange}
@@ -112,7 +95,7 @@ function MainEventCreate() {
           isClick={isClick}
           submit={handleSubmit}
         />
-      </Container>
+      </div>
     </Page>
   )
 }

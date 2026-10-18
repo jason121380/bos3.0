@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
+import { MuiScope } from 'ui/mui-theme'
 import { Provider } from 'context/keyInContext'
 import useFetchCreateOrder from 'hooks/useFetchCreateOrder'
 import { useState, useEffect, useRef } from 'react'
@@ -27,7 +28,6 @@ import produce from 'immer'
 import Head from './Head'
 import Header from './Header'
 import Pannel from './Pannel'
-import styles from './styles/OrderCreate'
 
 function OrderCreate() {
   const [isClick, setIsClick] = useState(false)
@@ -534,7 +534,8 @@ function OrderCreate() {
   }, [height, width, footerRef.current, isFooterFold])
 
   return (
-    <Page title="打帳單" css={styles.root}>
+    <Page title="打帳單" className="ui-root">
+      <MuiScope>
       {updateUserOrderableListDone && (
         <Provider
           value={{
@@ -623,6 +624,7 @@ function OrderCreate() {
           <Pannel />
         </Provider>
       )}
+      </MuiScope>
     </Page>
   )
 }

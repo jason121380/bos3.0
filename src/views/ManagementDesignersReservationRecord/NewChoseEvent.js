@@ -1,18 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { useState, Fragment } from 'react'
 import {
-  Avatar, DialogContent, Link, List, ListItemButton,
+  DialogContent, Link, List, ListItemButton,
   ListItemAvatar, ListItemText, Typography, Button, Grid
 } from '@mui/material'
+import { Avatar } from 'ui/avatar'
 import { blue } from '@mui/material/colors'
-import CancelIcon from '@mui/icons-material/Cancel'
-import CheckIcon from '@mui/icons-material/Check'
-import LockIcon from '@mui/icons-material/Lock'
-import LockOpenIcon from '@mui/icons-material/LockOpen'
-import EditIcon from '@mui/icons-material/Edit'
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
-import EventSeatIcon from '@mui/icons-material/EventSeat'
-import EventBusyIcon from '@mui/icons-material/EventBusy';
+import { Cancel as CancelIcon, Check as CheckIcon, Lock as LockIcon, LockOpen as LockOpenIcon, Edit as EditIcon, ShoppingCart as ShoppingCartIcon, EventSeat as EventSeatIcon, EventBusy as EventBusyIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import { format } from 'date-fns'
 import { Link as RouterLink } from 'react-router-dom'
@@ -162,7 +156,7 @@ export default function NewChoseEvent({
         >
           <ListItemButton css={styles.field}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <EventSeatIcon />
               </Avatar>
             </ListItemAvatar>
@@ -172,7 +166,7 @@ export default function NewChoseEvent({
         {!checkinMode && (modaltype === 'openAllOrder' ? 
           <ListItemButton css={styles.field} onClick={closeAllOrderTime} disabled={btnDisabled}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <LockOpenIcon />
               </Avatar>
             </ListItemAvatar>
@@ -181,7 +175,7 @@ export default function NewChoseEvent({
           :
           <ListItemButton css={styles.field} onClick={closeAllOrderTime} disabled={btnDisabled}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <LockIcon />
               </Avatar>
             </ListItemAvatar>
@@ -210,7 +204,7 @@ export default function NewChoseEvent({
         >
           <ListItemButton css={styles.field}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <EventSeatIcon />
               </Avatar>
             </ListItemAvatar>
@@ -220,7 +214,7 @@ export default function NewChoseEvent({
         {!checkinMode && (modaltype === 'openOrder' ? 
           <ListItemButton css={styles.field} onClick={closeOrderTime} disabled={btnDisabled}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <LockOpenIcon />
               </Avatar>
             </ListItemAvatar>
@@ -229,7 +223,7 @@ export default function NewChoseEvent({
           :
           <ListItemButton css={styles.field} onClick={closeOrderTime} disabled={btnDisabled}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <LockIcon />
               </Avatar>
             </ListItemAvatar>
@@ -295,7 +289,7 @@ export default function NewChoseEvent({
             >
               <ListItemButton css={styles.field}>
                 <ListItemAvatar>
-                  <Avatar css={styles.avatar}>
+                  <Avatar className="bg-accent/8 text-accent">
                     <EditIcon />
                   </Avatar>
                 </ListItemAvatar>
@@ -313,7 +307,7 @@ export default function NewChoseEvent({
           >
             <ListItemButton css={styles.field}>
               <ListItemAvatar>
-                <Avatar css={styles.avatar}>
+                <Avatar className="bg-accent/8 text-accent">
                   <ShoppingCartIcon />
                 </Avatar>
               </ListItemAvatar>
@@ -324,7 +318,7 @@ export default function NewChoseEvent({
           {editOrder.status !== '預約成功' && editOrder.status !== '已完成' && (
             <ListItemButton css={styles.field} onClick={() => handleAcceptBooking(true)}>
               <ListItemAvatar>
-                <Avatar css={styles.avatar}>
+                <Avatar className="bg-accent/8 text-accent">
                   <CheckIcon />
                 </Avatar>
               </ListItemAvatar>
@@ -334,7 +328,7 @@ export default function NewChoseEvent({
           {editOrder.status !== '設計師已取消' && (
             <ListItemButton css={styles.field} onClick={() => cancelPasswordUsing ? openPassworDialog('cancel') : handleAcceptBooking(false)}>
               <ListItemAvatar>
-                <Avatar css={styles.avatar}>
+                <Avatar className="bg-accent/8 text-accent">
                   <CancelIcon />
                 </Avatar>
               </ListItemAvatar>
@@ -343,7 +337,7 @@ export default function NewChoseEvent({
           )}
           <ListItemButton disabled={btnDisabled} onClick={() => handleSetBookingNoShow()}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <EventBusyIcon />
               </Avatar>
             </ListItemAvatar>

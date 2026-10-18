@@ -11,7 +11,7 @@ import {
   TableRow,
   TextField,
 } from '@mui/material'
-import MaiIcon from '@mui/icons-material/MailOutline'
+import { MailOutline as MaiIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { css } from '@emotion/react'

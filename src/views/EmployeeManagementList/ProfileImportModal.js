@@ -1,5 +1,6 @@
+// 彈窗內有 MUI Select（Radix Dialog 會擋住其彈出層），保留 MUI Dialog；只換按鈕與分隔線
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions, Button, Divider,
+  Dialog, DialogTitle, DialogContent, DialogActions,
   FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem
 } from "@mui/material"
 import { useEffect, useState } from "react"
@@ -7,6 +8,7 @@ import { useFetchMerchantJobTitleForEmployeeList } from 'hooks/useFetchMerchantJ
 import useFetchSetPerformanceRuleFromPersonProfile from 'hooks/useFetchSetPerformanceRuleFromPersonProfile'
 import produce from "immer"
 import { openSnackbar } from "elements/snackbars"
+import { Button } from 'ui/button'
 
 const options = [
   { label: '人員身份', key: 'jobTitlePoint' },
@@ -102,7 +104,7 @@ const ProfileImportModal = ({ open, onClose, selectedDesigners, setSelectedDesig
   return (
     <Dialog fullWidth maxWidth='sm' open={open}>
       <DialogTitle>由人員身分設定檔導入</DialogTitle>
-      <Divider />
+      <div className="h-px bg-border" />
       <DialogContent>
         <FormControl fullWidth variant="outlined" >
           <InputLabel>選擇人員身份類別</InputLabel>
@@ -127,9 +129,9 @@ const ProfileImportModal = ({ open, onClose, selectedDesigners, setSelectedDesig
           </div>
         ))}
       </DialogContent>
-      <DialogActions>
-        <Button variant='contained' color='inherit' onClick={onClose} disabled={onSubmit}>關閉</Button>
-        <Button variant='contained' color='primary' onClick={handleSetProfileData} disabled={!vaild || onSubmit}>確認</Button>
+      <DialogActions className="ui-root">
+        <Button variant='secondary' onClick={onClose} disabled={onSubmit}>關閉</Button>
+        <Button variant='primary' onClick={handleSetProfileData} disabled={!vaild || onSubmit}>確認</Button>
       </DialogActions>
     </Dialog>
   )

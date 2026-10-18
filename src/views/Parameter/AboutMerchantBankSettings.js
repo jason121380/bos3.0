@@ -1,5 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent, CardHeader, Divider, TextField, FormControlLabel, Checkbox } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { Field, Input } from 'ui/input'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 
@@ -14,15 +16,15 @@ function AboutMerchantBankSettings({
   displayNonBankAccountInBankTransferReport 
 }) {
   return (
-    <Card css={className}>
-      <CardHeader title="薪資轉帳設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>薪資轉帳設定</CardTitle>
+      </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
             css={styles.isUsing}
-            control={<Checkbox color="primary" />}
             label="薪資轉帳明細顯示未設定銀行帳號的員工"
             checked={displayNonBankAccountInBankTransferReport}
             onChange={() =>
@@ -30,76 +32,69 @@ function AboutMerchantBankSettings({
             }
           />
         </div>
-        <div css={styles.input}>
-          <TextField
+        <Field css={styles.input} className="max-w-xs" label="匯款人姓名" htmlFor="merchantBank-remitterName">
+          <Input
+            id="merchantBank-remitterName"
             disabled={!inputEnable}
-            variant="outlined"
-            label="匯款人姓名"
             type="text"
             value={merchantBankSettings.remitterName}
             onChange={e => onChange({ changedData: e.target.value, key: 'remitterName' })}
           />
-        </div>
-        <div css={styles.input}>
-          <TextField
+        </Field>
+        <Field css={styles.input} className="max-w-xs" label="匯款人銀行名稱" htmlFor="merchantBank-remitterBankName">
+          <Input
+            id="merchantBank-remitterBankName"
             disabled={!inputEnable}
-            variant="outlined"
-            label="匯款人銀行名稱"
             type="text"
             value={merchantBankSettings.remitterBankName}
             onChange={e => onChange({ changedData: e.target.value, key: 'remitterBankName' })}
           />
-        </div>
-        <div css={styles.input}>
-          <TextField
+        </Field>
+        <Field css={styles.input} className="max-w-xs" label="匯款人帳號" htmlFor="merchantBank-remitterBankAccount">
+          <Input
+            id="merchantBank-remitterBankAccount"
             disabled={!inputEnable}
-            variant="outlined"
-            label="匯款人帳號"
             type="text"
             value={merchantBankSettings.remitterBankAccount}
             onChange={e => onChange({ changedData: e.target.value, key: 'remitterBankAccount' })}
           />
-        </div>
-        <div css={styles.input}>
-          <TextField
+        </Field>
+        <Field css={styles.input} className="max-w-xs" label="匯款人銀行分行名稱" htmlFor="merchantBank-remitterBankBranchName">
+          <Input
+            id="merchantBank-remitterBankBranchName"
             disabled={!inputEnable}
-            variant="outlined"
-            label="匯款人銀行分行名稱"
             type="text"
             value={merchantBankSettings.remitterBankBranchName}
             onChange={e => onChange({ changedData: e.target.value, key: 'remitterBankBranchName' })}
           />
-        </div>
-        <div css={styles.input}>
-          <TextField
+        </Field>
+        <Field css={styles.input} className="max-w-xs" label="匯款人銀行分行代號" htmlFor="merchantBank-remitterBankBranchCode">
+          <Input
+            id="merchantBank-remitterBankBranchCode"
             disabled={!inputEnable}
-            variant="outlined"
-            label="匯款人銀行分行代號"
             type="text"
             value={merchantBankSettings.remitterBankBranchCode}
             onChange={e => onChange({ changedData: e.target.value, key: 'remitterBankBranchCode' })}
           />
-        </div>
-        <div css={styles.input}>
-          <TextField
+        </Field>
+        <Field css={styles.input} className="max-w-xs" label="委託人名稱" htmlFor="merchantBank-trustorName">
+          <Input
+            id="merchantBank-trustorName"
             disabled={!inputEnable}
-            variant="outlined"
-            label="委託人名稱"
             type="text"
             value={merchantBankSettings.trustorName}
             onChange={e => onChange({ changedData: e.target.value, key: 'trustorName' })}
           />
-        </div>
-        <div css={styles.input}>
-          <TextField
+        </Field>
+        <Field css={styles.input} className="max-w-xs" label="委託人電話" htmlFor="merchantBank-trustorPhone">
+          <Input
+            id="merchantBank-trustorPhone"
             disabled={!inputEnable}
-            variant="outlined"
-            label="委託人電話"
             type="text"
             value={merchantBankSettings.trustorPhone}
             onChange={e => onChange({ changedData: e.target.value, key: 'trustorPhone' })}
           />
-        </div>
+        </Field>
       </CardContent>
     </Card>
   )

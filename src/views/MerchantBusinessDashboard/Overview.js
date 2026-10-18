@@ -1,157 +1,38 @@
-/** @jsxImportSource @emotion/react */
-import { Card, Grid, Typography } from '@mui/material'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
+import { formatNumber } from 'ui/format'
 
-const styles = {
-  root: css({
-    margin: theme.spacing(1.5, 0),
-  }),
-  content: css({
-    padding: 0,
-  }),
-  item: css({
-    padding: theme.spacing(3),
-    textAlign: 'center',
-    [theme.breakpoints.up('sm')]: {
-      '&:not(:last-of-type)': {
-        borderRight: `none`,
-      },
-    },
-    // [theme.breakpoints.down('sm')]: {
-    //   '&:not(:last-of-type)': {
-    //     borderBottom: `1px solid #424242`,
-    //   },
-    // },
-  }),
-  valueContainer: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }),
-  label: css({
-    marginLeft: theme.spacing(1),
-  }),
-  title: css({
-    textAlign: 'center',
-  }),
-  overview: css({
-    margin: '20px 0',
-  }),
-}
+// 區間統計：每格的數值運算與舊版相同，只加千分位與新版樣式
+const Stat = ({ label, children }) => (
+  <div className="flex flex-col gap-1 bg-background px-4 py-4">
+    <span className="text-label text-text-secondary">{label}</span>
+    <span className="text-heading tabular-nums text-text">{children}</span>
+  </div>
+)
 
 function Overview({ overview, membershipDisplay }) {
   return (
-    <div css={styles.overview}>
-      <Card css={styles.root}>
-        <Grid alignItems="center" container justifyContent="space-between">
-          <Grid css={styles.item} xs={3} sm={2} item>
-            <Typography component="h3" gutterBottom variant="overline">
-              服務消費
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">{Math.round(overview.service) || 0}</Typography>
-            </div>
-          </Grid>
-          <Grid css={styles.item} xs={3} sm={2} item>
-            <Typography component="h2" gutterBottom variant="overline">
-              店販消費
-              {membershipDisplay && '/會員卡消費'}
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">{`${overview.product || 0}${membershipDisplay ? '/' + overview.membership : ''}`}</Typography>
-            </div>
-          </Grid>
-          <Grid css={styles.item} xs={3} sm={2} item>
-            <Typography component="h2" gutterBottom variant="overline">
-              卡券使用 (入業績)
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">{Math.round(overview.usedTicket) || 0}</Typography>
-            </div>
-          </Grid>
-          <Grid css={styles.item} xs={3} sm={2} item>
-            <Typography component="h2" gutterBottom variant="overline">
-              卡券販賣 (入業績)
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
-                {Math.round(overview.ticketSellIntoPerformance) || 0}
-              </Typography>
-            </div>
-          </Grid>
-          <Grid css={styles.item} xs={3} sm={2} item>
-            <Typography component="h2" gutterBottom variant="overline">
-              業績收入
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">{Math.round(overview.performanceIncome) || 0}</Typography>
-            </div>
-          </Grid>
-          <Grid css={styles.item} xs={3} sm={2} item>
-            <Typography component="h2" gutterBottom variant="overline">
-              卡券販賣 (不入業績)
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
-                {Math.round(overview.ticketSellNotIntoPerformance) || 0}
-              </Typography>
-            </div>
-          </Grid>
-          <Grid css={styles.item} xs={3} sm={2} item>
-            <Typography component="h2" gutterBottom variant="overline">
-              卡券使用(-)
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">{Math.round(overview.usedTicketForDecount) || 0}</Typography>
-            </div>
-          </Grid>
-          <Grid css={styles.item} xs={3} sm={2} item>
-            <Typography component="h2" gutterBottom variant="overline">
-              第三方卡券(-)
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
-                {Math.round(overview.thirdPartTicketForDecount) || 0}
-              </Typography>
-            </div>
-          </Grid>
-          <Grid css={styles.item} xs={3} sm={2} item>
-            <Typography component="h2" gutterBottom variant="overline">
-              其他付款方式(-)
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
-                {Math.round(overview.otherPayWayForDecount) || 0}
-              </Typography>
-            </div>
-          </Grid>
-          <Grid css={styles.item} xs={3} sm={2} item>
-            <Typography component="h2" gutterBottom variant="overline">
-              入金使用(-)
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">{overview.walletUsedForDecount || 0}</Typography>
-            </div>
-          </Grid>
-          <Grid css={styles.item} xs={3} sm={2} item>
-            <Typography component="h2" gutterBottom variant="overline">
-              入金儲值
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">{overview.walletDeposit || 0}</Typography>
-            </div>
-          </Grid>
-          <Grid css={styles.item} xs={3} sm={2} item>
-            <Typography component="h2" gutterBottom variant="overline">
-              營業現金應收
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">{Math.round(overview.businessCash) || 0}</Typography>
-            </div>
-          </Grid>
-        </Grid>
-      </Card>
+    <div className="mb-6 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-solid border-border bg-border sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+      <Stat label="服務消費">{formatNumber(Math.round(overview.service) || 0)}</Stat>
+      <Stat label={<>店販消費{membershipDisplay && '/會員卡消費'}</>}>
+        {`${overview.product || 0}${membershipDisplay ? '/' + overview.membership : ''}`}
+      </Stat>
+      <Stat label="卡券使用 (入業績)">{formatNumber(Math.round(overview.usedTicket) || 0)}</Stat>
+      <Stat label="卡券販賣 (入業績)">
+        {formatNumber(Math.round(overview.ticketSellIntoPerformance) || 0)}
+      </Stat>
+      <Stat label="業績收入">{formatNumber(Math.round(overview.performanceIncome) || 0)}</Stat>
+      <Stat label="卡券販賣 (不入業績)">
+        {formatNumber(Math.round(overview.ticketSellNotIntoPerformance) || 0)}
+      </Stat>
+      <Stat label="卡券使用(-)">{formatNumber(Math.round(overview.usedTicketForDecount) || 0)}</Stat>
+      <Stat label="第三方卡券(-)">
+        {formatNumber(Math.round(overview.thirdPartTicketForDecount) || 0)}
+      </Stat>
+      <Stat label="其他付款方式(-)">
+        {formatNumber(Math.round(overview.otherPayWayForDecount) || 0)}
+      </Stat>
+      <Stat label="入金使用(-)">{formatNumber(overview.walletUsedForDecount || 0)}</Stat>
+      <Stat label="入金儲值">{formatNumber(overview.walletDeposit || 0)}</Stat>
+      <Stat label="營業現金應收">{formatNumber(Math.round(overview.businessCash) || 0)}</Stat>
     </div>
   )
 }

@@ -1,11 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { Container, Grid, Button, Link } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import PageTitle from 'components/PageTitle'
-import { Collapse } from '@mui/material'
 import { endOfDay, startOfMonth } from 'date-fns'
 import useFetchWalletDepositRecord from 'hooks/useFetchWalletDepositRecord'
 import useFetchWalletUseRecord from 'hooks/useFetchWalletUseRecord'
@@ -19,6 +17,7 @@ import RecordResults from './RecordResults'
 import UsagedResult from './UsagedResult'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Card } from 'ui/card'
 
 const styles = {
   root: css({
@@ -86,8 +85,7 @@ function CustomerManagementList() {
   }
 
   return (
-    <Page css={styles.root} title="入金管理">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className="ui-root" title="入金管理">
         <AdminPageHeader
           title='入金管理'
           showFilter={showFilter}
@@ -104,8 +102,9 @@ function CustomerManagementList() {
             margin={false}
           />
         </AdminPageHeader>
-        <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '12px', padding: '16px', border: '1px solid #f0f0f0' }}>
+        {/* 以 hidden 收合（取代 MUI Collapse）：篩選元件保持掛載，收合後內容與舊版一樣保留 */}
+        <div hidden={!showFilter}>
+          <Card className="mb-6 p-4">
             <MerchantSearchBar
               values={date}
               onFilter={value => setDate(value)}
@@ -114,11 +113,11 @@ function CustomerManagementList() {
               visible={['employee', 'customer', 'payment']}
               lastInLeaderBoard={true}
             />
-          </div>
-        </Collapse>
+          </Card>
+        </div>
+        <div className="flex flex-col gap-6">
         <RecordResults
           pagenationLabel={pagenationLabel}
-          className={styles.result}
           date={{ start: resultSetting.record.start, end: resultSetting.record.end }}
           resultSetting={resultSetting}
           walletDepositRecord={walletDepositRecord}
@@ -126,13 +125,12 @@ function CustomerManagementList() {
         />
         <UsagedResult
           pagenationLabel={pagenationLabel}
-          className={styles.result}
           date={{ start: resultSetting.usaged.start, end: resultSetting.usaged.end }}
           resultSetting={resultSetting}
           walletUseRecord={walletUseRecord}
           onChange={event => handleChangeResult({ ...event, name: 'usaged' })}
         />
-      </Container>
+        </div>
     </Page>
   )
 }

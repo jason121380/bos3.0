@@ -6,12 +6,7 @@ import {
   InputAdornment
 } from '@mui/material'
 import { TreeView, TreeItem } from '@mui/x-tree-view';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import GroupsRoundedIcon from '@mui/icons-material/GroupsRounded';
-import StorefrontIcon from '@mui/icons-material/Storefront';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
+import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, GroupsRounded as GroupsRoundedIcon, Storefront as StorefrontIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import _ from 'lodash';
 import { css } from '@emotion/react'
@@ -28,7 +23,7 @@ const styles = {
       transition: '.2s',
       width: 'fit-content',
       '&:hover': {
-        background: '#e2f2ff'
+        background: 'rgb(var(--accent) / 0.08)'
       }
     },
     '& li': {
@@ -106,7 +101,7 @@ const styles = {
     height: 'fit-content'
   }),
   outline: css({
-    outline: '2px solid #ff6969 !important'
+    outline: '2px solid rgb(var(--danger)) !important'
   }),
   textField: css({
     '& input': {

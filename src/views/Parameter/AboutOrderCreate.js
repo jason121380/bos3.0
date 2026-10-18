@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, CardHeader, Divider, FormControlLabel, Checkbox,
-  Typography, CardActions, FormControl, InputLabel, Select, MenuItem,
-} from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo, Fragment } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
@@ -89,9 +88,9 @@ function AboutOrderCreate({
       label: '顯示鎖定時間選項',
       key: 'isDateLockDisplay',
       lockDate: () => JSON.parse(localStorage.getItem('lockDate')) === true ? (
-        <Typography sx={{ m: '-30px 31px 24px ' }} variant="caption" display="block" gutterBottom>
+        <p className="text-caption text-text-secondary" style={{ margin: '-30px 31px 24px' }}>
           請至打帳單解除鎖定日期
-        </Typography>
+        </p>
       ) : ''
     },
     { label: '固定業績明細於視窗下方', key: 'isDetailBottomed' },
@@ -114,19 +113,19 @@ function AboutOrderCreate({
     { label: '服務項目第三方卡券是否鎖定', key: 'isServiceBindedThirdPartTicketLocked', options: BindedThirdPartlockStatus },
   ]
   return (
-    <Card css={className}>
-      <CardHeader title="打帳單相關設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>打帳單相關設定</CardTitle>
+      </CardHeader>
       <CardContent>
         {settingArr.map(({ label, key, lockDate }) => {
           const isDisabled = key === 'isDateLockDisplay' && orderCreateSetting.isAbleToChangeDateTimeInOrderCreate
           return (
             <Fragment key={label}>
               <div css={styles.serviceInputGroup}>
-                <FormControlLabel
+                <CheckboxField
                   disabled={!inputEnable || isDisabled}
                   css={styles.isUsing}
-                  control={<Checkbox color="primary" />}
                   label={label}
                   checked={orderCreateSetting[key]}
                   onChange={(e, v) => {
@@ -142,26 +141,26 @@ function AboutOrderCreate({
         })}
         {optionArr.map(({label, key, options}) => (
           <div key={label} css={styles.serviceInputGroup}>
-            <CardActions>
-              <FormControl disabled={!inputEnable} variant="outlined" css={styles.orderCreateField}>
-                <InputLabel>{label}</InputLabel>
-                <Select
-                  label={label}
-                  value={orderCreateSetting[key]}
-                  onChange={e => {
-                    setOrderCreateSetting(
-                      produce(draft => { draft[key] = e.target.value })
-                    )
-                  }}
-                >
-                  {options.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </CardActions>
+            <div className="flex flex-wrap items-center gap-2 p-2">
+              <NativeSelect
+                disabled={!inputEnable}
+                fullWidth={false}
+                css={styles.orderCreateField}
+                label={label}
+                value={orderCreateSetting[key]}
+                onChange={e => {
+                  setOrderCreateSetting(
+                    produce(draft => { draft[key] = e.target.value })
+                  )
+                }}
+              >
+                {options.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+            </div>
           </div>
         ))}
       </CardContent>

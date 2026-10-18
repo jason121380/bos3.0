@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, FormControl, FormHelperText, MenuItem,
-  InputLabel, Select, TextField,
+  FormControl, FormHelperText, MenuItem, InputLabel, Select, TextField,
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'
 import useStore from 'hooks/useStore'
@@ -49,8 +49,10 @@ function AboutServiceCategory({ serviceCategory, className, onChange, attributio
   }, [register])
 
   return (
-    <Card {...rest} css={css([styles.root, className])}>
-      <CardHeader title="一般資訊" />
+    <Card {...rest}>
+      <CardHeader>
+        <CardTitle>一般資訊</CardTitle>
+      </CardHeader>
       <CardContent>
         <TextField
           name="no"

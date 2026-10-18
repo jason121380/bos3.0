@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, useMemo } from 'react'
-import { Container, CircularProgress, Button, Grid } from '@mui/material'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
 import useFetchMerchantReportV3 from 'hooks/useFetchMerchantDailyReportV3'
 import useFetchIsPriceDisplayOnDailyReportSetting from 'hooks/useFetchIsPriceDisplayOnDailyReport'
@@ -13,6 +11,10 @@ import { useFetchGetNonCashDisplay } from 'hooks/useFetchGetParameterReportSetti
 import DateSelector from 'components/DateSelector'
 import { theme } from '../../theme'
 import { css } from '@emotion/react'
+import { Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader, Toolbar, ToolbarSpacer } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -26,7 +28,7 @@ const styles = {
     marginTop: theme.spacing(3),
   }),
   printBtn: css({
-    backgroundColor: '#3865AC',
+    backgroundColor: 'rgb(var(--accent))',
   })
 }
 
@@ -143,68 +145,67 @@ const MerchantDailyReport = () => {
     }
   }, [isServiceTicketMergedData.loading])
   return (
-    <Page css={styles.root} title="店家日報表">
-      <Container maxWidth={false} css={styles.container}>
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
-          <div className="merchantNamePrint">
-            {JSON.parse(localStorage.getItem('userMerchant')).name +
-              '   ' +
-              format(new Date(date.endDate), 'yyyy-MM-dd').toLocaleString() +
-              '   ' +
-              '店家日報表'}
-          </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' +
-              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-          </div>
+    <Page className="ui-root" title="店家日報表">
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+        <div className="merchantNamePrint">
+          {JSON.parse(localStorage.getItem('userMerchant')).name +
+            '   ' +
+            format(new Date(date.endDate), 'yyyy-MM-dd').toLocaleString() +
+            '   ' +
+            '店家日報表'}
         </div>
-        <AdminPageHeader title='店家日報表' />
-        <Grid container justifyContent='space-between' style={{ alignItems: 'center' }} className="noprint">
-          <DateSelector
-            date={date}
-            attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
-            onlyStart
-            dateChange={value => setDate(value)}
-            margin
-          />
-          <Button
-            size="medium"
-            variant="contained"
-            color="primary"
-            onClick={() => window.print()}
-          >
+        <div className="merchantNamePrint">
+          {'列印時間： ' +
+            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
+        </div>
+      </div>
+      <PageHeader
+        title="店家日報表"
+        actions={
+          <Button variant="primary" onClick={() => window.print()}>
+            <Printer strokeWidth={1.75} />
             列印
           </Button>
-        </Grid>
+        }
+      />
+      <Toolbar>
+        <DateSelector
+          date={date}
+          attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
+          onlyStart
+          dateChange={value => setDate(value)}
+          margin
+        />
+      </Toolbar>
 
-        {!merchantDailyReportDataV3.loading &&
-          !isServiceTicketMergedData.loading &&
-          !merchantDailyReportCurrentDayData.loading &&
-          !merchantDashboardData.loading &&
-          curentDayData !== null ? (
-          idx(
-            merchantDailyReportDataV3,
-            _ =>
-              _.data.merchantDailyReportV2 !== null && (
-                <Results
-                  merchantDailyReport={_.data.merchantDailyReportV2}
-                  isServiceTicketMerged={isServiceTicketMerged}
-                  curentDayData={curentDayData}
-                  displayDate={date}
-                  results={merchantDashboard}
-                  membershipDisplay={membershipDisplay}
-                  isMemberShipCardActive={isMemberShipCardActive}
-                  mergeData={mergeResultData}
-                  nonCashDisplay={nonCashDisplay}
-                />
-              )
-          )
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <CircularProgress />
-          </div>
-        )}
-      </Container>
+      {!merchantDailyReportDataV3.loading &&
+        !isServiceTicketMergedData.loading &&
+        !merchantDailyReportCurrentDayData.loading &&
+        !merchantDashboardData.loading &&
+        curentDayData !== null ? (
+        idx(
+          merchantDailyReportDataV3,
+          _ =>
+            _.data.merchantDailyReportV2 !== null && (
+              <Results
+                merchantDailyReport={_.data.merchantDailyReportV2}
+                isServiceTicketMerged={isServiceTicketMerged}
+                curentDayData={curentDayData}
+                displayDate={date}
+                results={merchantDashboard}
+                membershipDisplay={membershipDisplay}
+                isMemberShipCardActive={isMemberShipCardActive}
+                mergeData={mergeResultData}
+                nonCashDisplay={nonCashDisplay}
+              />
+            )
+        )
+      ) : (
+        <div className="flex flex-col gap-6" aria-busy="true">
+          <Skeleton className="h-32" />
+          <Skeleton className="h-64" />
+        </div>
+      )}
     </Page>
   )
 }

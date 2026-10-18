@@ -1,12 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Button,
-  CircularProgress
-} from '@mui/material'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 import { memo, Fragment, useState, useEffect } from 'react'
 import _ from 'lodash'
 import { Link as RouterLink } from 'react-router-dom'
@@ -24,22 +19,21 @@ function HelperPoint({ className, merchantPointValueSettings }) {
   
   return (
     <Fragment>
-      <Card css={className}>
-        <CardHeader 
-          title="互助點數設定" 
+      <Card>
+        <CardHeader
           action={
-            <Button
-              color="primary"
-              variant="contained"
-              component={RouterLink}
-              to={'/helper-point-setting-create'}
-              data-testid="parameter"
-            >
-              新增
+            <Button asChild variant="secondary" size="sm">
+              <RouterLink
+                to={'/helper-point-setting-create'}
+                data-testid="parameter"
+              >
+                新增
+              </RouterLink>
             </Button>
           }
-        />
-        <Divider />
+        >
+          <CardTitle>互助點數設定</CardTitle>
+        </CardHeader>
         <CardContent>
           {!merchantPointValueSettings.loading ? (
             <HelperPointResults
@@ -48,9 +42,7 @@ function HelperPoint({ className, merchantPointValueSettings }) {
               merchantPointValueData={merchantPointValueData}
             />
             ) : (
-            <div style={{ textAlign: 'center' }}>
-              <CircularProgress />
-            </div>
+            <Skeleton className="h-24 w-full" />
           )}
         </CardContent>
       </Card>

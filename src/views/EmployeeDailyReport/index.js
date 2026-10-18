@@ -1,6 +1,6 @@
-/** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
-import { Container, Grid, Typography, CircularProgress, Button } from '@mui/material'
+// Grid 只保留在報表外框（className="EmployeeDailyReport"）：列印樣式以此為根排版，且內含列印用卡片
+import { Grid } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchDesignerReport from 'hooks/useFetchDesignerDailyReport'
@@ -12,32 +12,14 @@ import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCard
 import useFetchGetIsOptimizationPrintModeOn from 'hooks/useFetchGetIsOptimizationPrintModeOn'
 import DateSelector from 'components/DateSelector'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
+import { Toolbar, ToolbarSpacer } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  searchBtnDiv: css({
-    marginBottom: '24px',
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '284px',
-  }),
-  printBtn: css({}),
-}
 
 const EmployeeDailyReport = () => {
   const [date, setDate] = useState({
@@ -112,68 +94,69 @@ const EmployeeDailyReport = () => {
     }
   }, [isPriceDisplayOnDailyReportData.loading])
   return (
-    <Page css={styles.root} title="設計師日報表">
-      <Container maxWidth={false} css={styles.container}>
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
-          <div className="merchantNamePrint">
-            {JSON.parse(localStorage.getItem('userMerchant')).name +
-              '   ' +
-              format(new Date(date.endDate), 'yyyy-MM-dd').toLocaleString() +
-              '   ' +
-              '設計師日報表'}
-          </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' +
-              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-          </div>
+    <Page className="ui-root" title="設計師日報表">
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+        <div className="merchantNamePrint">
+          {JSON.parse(localStorage.getItem('userMerchant')).name +
+            '   ' +
+            format(new Date(date.endDate), 'yyyy-MM-dd').toLocaleString() +
+            '   ' +
+            '設計師日報表'}
         </div>
-        <AdminPageHeader title='設計師日報表' />
-        <Grid container alignItems='center' justifyContent='space-between' className="noprint">
-          <DateSelector
-            date={date}
-            attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
-            onlyStart
-            dateChange={value => setDate(value)}
-            margin
-          />
-          <Button
-            className="noprint"
-            size="medium"
-            variant="contained"
-            color="primary"
-            onClick={() => window.print()}
-          >
-            列印
-          </Button>
-        </Grid>
+        <div className="merchantNamePrint">
+          {'列印時間： ' +
+            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
+        </div>
+      </div>
+      <AdminPageHeader title='設計師日報表' />
+      <Toolbar>
+        <DateSelector
+          date={date}
+          attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
+          onlyStart
+          dateChange={value => setDate(value)}
+          margin
+        />
+        <ToolbarSpacer />
+        <Button
+          className="noprint"
+          variant="secondary"
+          onClick={() => window.print()}
+        >
+          <Printer strokeWidth={1.75} />
+          列印
+        </Button>
+      </Toolbar>
 
-        {!designerReportData.loading && !isPriceDisplayOnDailyReportData.loading ? (
-          idx(designerReportData, _ =>
-            _.data.designerDailyReport.length > 0 ? (
-              <Grid container spacing={3} className='EmployeeDailyReport'>
-                <Results
-                  designerDailyReport={_.data.designerDailyReport}
-                  printData={printData}
-                  titleDate={date.endDate}
-                  priceDisplayOnReport={priceDisplayOnReport}
-                  isHelperPointPriceDisplay={isHelperPointPriceDisplay}
-                  isHiddenZero={isHiddenZero}
-                  isMemberShipCardActive={isMemberShipCardActive}
-                  printMode={printMode}
-                />
-              </Grid>
-            ) : (
-              <Typography variant="h3" gutterBottom component="div">
-                無資料
-              </Typography>
-            )
+      {!designerReportData.loading && !isPriceDisplayOnDailyReportData.loading ? (
+        idx(designerReportData, _ =>
+          _.data.designerDailyReport.length > 0 ? (
+            <Grid container spacing={3} className='EmployeeDailyReport'>
+              <Results
+                designerDailyReport={_.data.designerDailyReport}
+                printData={printData}
+                titleDate={date.endDate}
+                priceDisplayOnReport={priceDisplayOnReport}
+                isHelperPointPriceDisplay={isHelperPointPriceDisplay}
+                isHiddenZero={isHiddenZero}
+                isMemberShipCardActive={isMemberShipCardActive}
+                printMode={printMode}
+              />
+            </Grid>
+          ) : (
+            <Card>
+              <EmptyState title="無資料" />
+            </Card>
           )
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <CircularProgress />
-          </div>
-        )}
-      </Container>
+        )
+      ) : (
+        // 載入中：與舊版 CircularProgress 相同時機顯示
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3" aria-busy="true" aria-label="載入中">
+          <Skeleton className="h-[480px] w-full rounded-lg" />
+          <Skeleton className="h-[480px] w-full rounded-lg" />
+          <Skeleton className="h-[480px] w-full rounded-lg" />
+        </div>
+      )}
     </Page>
   )
 }

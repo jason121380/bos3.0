@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react'
-import AssignmentTurnedInRoundedIcon from '@mui/icons-material/AssignmentTurnedInRounded';
-import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
-import EventBusyIcon from '@mui/icons-material/EventBusy';
+import { AssignmentTurnedInRounded as AssignmentTurnedInRoundedIcon, DisabledByDefaultRounded as DisabledByDefaultRoundedIcon, EventBusy as EventBusyIcon } from 'ui/icons'
 import { TableContainer, Paper, Dialog } from '@mui/material'
 import { format } from 'date-fns'
 import styles from './styles/OrderTable'
@@ -138,7 +136,7 @@ const OrderTable = ({
 
         {/* 不指定預約 */}
         <div
-          style={{ position: 'sticky', left: 0, zIndex: 5, background: '#fff', width: findNDSWidth() }}
+          style={{ position: 'sticky', left: 0, zIndex: 5, background: 'rgb(var(--background))', width: findNDSWidth() }}
           css={styles.ndsWrap}
           id='darkBg'
         >
@@ -211,7 +209,7 @@ const OrderTable = ({
 
         {/* 時間 */}
         <div
-          style={{ position: 'sticky', left: findNDSWidth(), zIndex: 5, background: '#fff' }}
+          style={{ position: 'sticky', left: findNDSWidth(), zIndex: 5, background: 'rgb(var(--background))' }}
           css={styles.timeWrap}
           id='darkBg'
         >

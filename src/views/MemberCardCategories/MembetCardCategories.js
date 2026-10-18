@@ -1,12 +1,10 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
 import { useFetchGetMembershipCategories } from 'hooks/useFetchGetMembershipCategory'
 
 import Results from './Results'
-import styles from './styles/MemberCardCategories'
+import { Skeleton } from 'ui/skeleton'
 
 function ComodityCategories() {
   // 拿到會員卡全部類別
@@ -17,8 +15,8 @@ function ComodityCategories() {
     _ => _.data.membershipCategories
   )
   return (
-    <Page css={styles.root} title="會員卡分類設定">
-      <Container maxWidth={false}>
+    <Page className="ui-root" title="會員卡分類設定">
+      <div>
         <AdminPageHeader
           title="會員卡分類設定"
           sx={{ backgroundColor: 'transparent', mb: 0 }}
@@ -28,10 +26,10 @@ function ComodityCategories() {
           }}
         />
         {!useFetchGetMembershipCategories({ paranoid: true, }).loading ?
-          <Results className={styles.results} categories={categories} /> :
-          <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>
+          <Results categories={categories} /> :
+          <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
         }
-      </Container>
+      </div>
     </Page>
   )
 }

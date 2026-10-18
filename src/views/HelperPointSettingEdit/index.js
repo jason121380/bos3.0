@@ -1,33 +1,17 @@
-
-/** @jsxImportSource @emotion/react */
-import { Button, Container, Grid, CircularProgress } from '@mui/material'
 import { useFetchGetMerchantPointValueSettingsForEdit } from 'hooks/useFetchGetMerchantPointValueSettings'
 import useFetchUpdateMerchantPointValueSetting from 'hooks/useFetchUpdateMerchantPointValueSetting'
 import { openSnackbar } from 'elements/snackbars'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { useHistory } from 'react-router'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import { useState, useEffect } from 'react'
 import _ from 'lodash'
 import idx from 'idx'
 
 import Results from './Results'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  about: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function HelperPointSettingEdit({ match }) {
   const history = useHistory()
@@ -99,24 +83,28 @@ function HelperPointSettingEdit({ match }) {
     })
   }
   return (
-    <Page css={styles.root} title="編輯互助點數設定">
-      <Container maxWidth={false}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='編輯互助點數設定' subTitle='helper point setting create' />
-          <Grid item>
-            <Button disabled={isclick} onClick={handleUpdate} color="primary" variant="contained">
+    <Page className="ui-root" title="編輯互助點數設定">
+      <div>
+        <PageHeader
+          title="編輯互助點數設定"
+          actions={
+            <Button disabled={isclick} onClick={handleUpdate} variant="primary">
               儲存
             </Button>
-          </Grid>
-        </Grid>
+          }
+        />
         {!getMerchantPointValueSettingsForEdit.loading ?
           <Results
             status={submitData.retrievePointWay}
             submitData={submitData}
             setSubmitData={setSubmitData}
-            className={styles.about}
-          /> : <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>}
-      </Container>
+          /> : (
+            // 載入中：與舊版 CircularProgress 相同時機顯示
+            <div aria-busy="true" aria-label="載入中">
+              <Skeleton className="h-[360px] w-full max-w-3xl rounded-lg" />
+            </div>
+          )}
+      </div>
     </Page>
   )
 }

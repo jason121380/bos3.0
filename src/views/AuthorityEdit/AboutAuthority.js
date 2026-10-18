@@ -1,14 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-  Divider,
-  Button,
-} from '@mui/material'
+import { TextField, FormControlLabel, Checkbox } from '@mui/material'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import _ from 'lodash'
@@ -84,8 +77,10 @@ function AboutAuthority({
   }
   return (
     <Fragment>
-      <Card {...rest} css={className}>
-        <CardHeader title="一般資訊" />
+      <Card {...rest}>
+        <CardHeader>
+          <CardTitle>一般資訊</CardTitle>
+        </CardHeader>
         <CardContent>
           <TextField
             css={styles.formControl}
@@ -98,23 +93,20 @@ function AboutAuthority({
         </CardContent>
       </Card>
       {authoritySettings.map((item, index1) => (
-        <Card {...rest} style={{ marginTop: '20px' }} key={index1}>
-          <div css={styles.cardHeader}>
-            <div>
-              <CardHeader title={item.pageTitle} />
-            </div>
-            <div>
+        <Card {...rest} key={index1}>
+          <CardHeader
+            action={
               <Button
-                color="primary"
-                variant="contained"
-                style={{ marginRight: '20px' }}
+                variant="secondary"
+                size="sm"
                 onClick={() => handleClickAll(item.authority, index1)}
               >
                 全選/取消全選
               </Button>
-            </div>
-          </div>
-          <Divider />
+            }
+          >
+            <CardTitle>{item.pageTitle}</CardTitle>
+          </CardHeader>
           <CardContent>
             {item.pageAuthority.map((setting, index2) => (
               <FormControlLabel

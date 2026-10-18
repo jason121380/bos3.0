@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Checkbox, FormControlLabel, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
 import CustomerTicketRecordAutoCompleteForQueueOrder from 'components/CustomerTicketRecordAutoCompleteForQueueOrder'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import billContext from 'context/keyInContext'
@@ -202,8 +203,7 @@ export default function CouponUse({
                   }
                   className={styles.field}
                 />
-                <FormControlLabel
-                  control={<Checkbox color="primary" />}
+                <CheckboxField
                   label="指定"
                   checked={data.isDesignate}
                   css={styles.checkbox}

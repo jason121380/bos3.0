@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
+import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
 import { useEffect, useRef, useContext, useState } from 'react'
@@ -19,13 +19,15 @@ const styles = {
     overflowX: 'auto',
   }),
   heading: css({
-    fontSize: '15px !important',
-    fontWeight: theme.typography.fontWeightRegular,
+    fontSize: '16px !important',
+    fontWeight: 'bold',
+    color: 'rgb(var(--text))',
   }),
   subHeading: css({
     fontSize: theme.typography.pxToRem(12),
     fontWeight: theme.typography.fontWeightRegular,
-    marginLeft: '5px',
+    color: 'rgb(var(--text-secondary))',
+    marginLeft: '8px',
   }),
   fieldOutter: css({
     display: 'flex',
@@ -146,7 +148,7 @@ export default function PannelCouponUse() {
   return (
     <Accordion defaultExpanded={expanded} expanded={expanded}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />} onClick={handleAccordionClick}>
-        <Typography css={styles.heading}>使用預收卡</Typography>
+        <p className="m-0" css={styles.heading}>使用預收卡</p>
       </AccordionSummary>
       <AccordionDetails css={styles.details}>
         <div css={styles.fieldOutter}>

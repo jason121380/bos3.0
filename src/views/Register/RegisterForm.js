@@ -1,27 +1,9 @@
-/** @jsxImportSource @emotion/react */
-import { Button, TextField, colors } from '@mui/material'
 import useFetchRegister from 'hooks/useFetchRegister'
 import { useRef } from 'react'
 import { useHistory } from 'react-router'
 import { useForm } from 'react-hook-form'
-import { css } from '@emotion/react'
-import { ThemeProvider } from '@mui/material/styles'
-import { theme } from '../../theme'
-const styles = {
-  root: css({}),
-  fields: css({
-    display: 'flex',
-    flexWrap: 'wrap',
-    '& > *': {
-      flexGrow: 1,
-      margin: theme.spacing(1),
-    },
-  }),
-  submitButton: css({
-    marginTop: theme.spacing(2),
-    width: '100%',
-  }),
-}
+import { Button } from 'ui/button'
+import { Field, Input } from 'ui/input'
 
 function RegisterForm({ className, ...rest }) {
   const fetchRegister = useFetchRegister()
@@ -39,46 +21,43 @@ function RegisterForm({ className, ...rest }) {
   }
 
   return (
-    <form {...rest} css={css([styles.root, className])} onSubmit={handleSubmit(onSubmit)}>
-      <div css={styles.fields}>
-        <TextField
-          fullWidth
-          label="電話號碼"
+    <form {...rest} className="mt-6 flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+      <Field
+        label="電話號碼"
+        htmlFor="register-cellphone"
+        error={errors.cellphone && errors.cellphone.message}
+      >
+        <Input
+          id="register-cellphone"
           name="cellphone"
-          variant="outlined"
-          error={!!errors.cellphone}
-          helperText={errors.cellphone && errors.cellphone.message}
-          inputProps={{
-            'data-testid': 'cellphone',
-            ref: e => {
-              cellphoneRef.current = e
-              register(e, {
-                required: '電話號碼為必填',
-                minLength: {
-                  value: 10,
-                  message: '電話號碼最少為 10 碼',
-                },
-                maxLength: {
-                  value: 13,
-                  message: '電話號碼最多為 13 碼',
-                },
-              })
-            },
+          autoComplete="tel"
+          invalid={!!errors.cellphone}
+          data-testid='cellphone'
+          ref={e => {
+            cellphoneRef.current = e
+            register(e, {
+              required: '電話號碼為必填',
+              minLength: {
+                value: 10,
+                message: '電話號碼最少為 10 碼',
+              },
+              maxLength: {
+                value: 13,
+                message: '電話號碼最多為 13 碼',
+              },
+            })
           }}
         />
-      </div>
-      <ThemeProvider theme={theme}>
-        <Button
-          css={styles.submitButton}
-          color='primary'
-          size="large"
-          type="submit"
-          variant="contained"
-          data-testid="submit"
-        >
-          註冊
-        </Button>
-      </ThemeProvider>
+      </Field>
+      <Button
+        className="mt-6 w-full"
+        variant="primary"
+        size="lg"
+        type="submit"
+        data-testid="submit"
+      >
+        註冊
+      </Button>
     </form>
   )
 }

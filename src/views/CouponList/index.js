@@ -1,59 +1,15 @@
-/** @jsxImportSource @emotion/react */
-import { Container, Button, CircularProgress, Grid, Collapse } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { useFetchTicketsForList } from 'hooks/useFetchTickets'
 import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
 import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
-import { red } from '@mui/material/colors'
-import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
+import { cn } from 'ui/utils'
 
 import Results from './Results'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(6),
-  }),
-  results: css({
-    marginTop: theme.spacing(1),
-  }),
-  categorieDiv: css({
-    padding: '16px 20px',
-    backgroundColor: '#fff',
-    borderRadius: '12px',
-    border: '1px solid #f0f0f0',
-    marginBottom: '16px',
-    '& button': {
-      lineHeight: '1.5'
-    }
-  }),
-  categorieBtn: css({
-    margin: '4px !important',
-    borderRadius: '8px !important',
-    border: '1px solid #e0e0e0 !important',
-    color: '#666 !important',
-  }),
-  clickedCategorieBtn: css({
-    margin: '4px !important',
-    borderRadius: '8px !important',
-    backgroundColor: '#1A73E8 !important',
-    color: 'white !important',
-  }),
-  categorieClear: css({
-    margin: '4px !important',
-    borderRadius: '8px !important',
-    backgroundColor: red[500] + '!important',
-    color: 'white !important',
-    '&:hover': {
-      backgroundColor: red[700] + '!important',
-    },
-  }),
-}
 
 function CouponList() {
   const [pageSetting, setPageSetting] = useState({
@@ -102,59 +58,57 @@ function CouponList() {
   }
 
   return (
-    <Page css={styles.root} title="卡券列表">
-      <Container maxWidth={false}>
-        <AdminPageHeader
-          title="預收卡設定"
-          sx={{ backgroundColor: 'transparent', mb: 0 }}
-          showFilter={showFilter}
-          onFilterClick={() => setShowFilter(!showFilter)}
-          primaryAction={{
-            label: '新增預收卡',
-            to: '/coupon/create'
-          }}
-        />
-        <Collapse in={showFilter}>
-          <div css={styles.categorieDiv}>
-            {serviceCategories.map(serviceCategorie => (
-              <Button
-                variant={
-                  selectedCategorie.indexOf(serviceCategorie.id) !== -1 ? 'contained' : 'outlined'
-                }
-                color="primary"
-                size="small"
-                css={
-                  selectedCategorie.indexOf(serviceCategorie.id) !== -1
-                    ? styles.clickedCategorieBtn
-                    : styles.categorieBtn
-                }
-                onClick={() => handleClickCategorie(serviceCategorie.id, serviceCategorie.name)}
-                key={serviceCategorie.id}
-                style={
-                  selectedCategorie.indexOf(serviceCategorie.id) === -1 ? {} : { color: 'white' }
-                }
-              >
-                {serviceCategorie.name}
-              </Button>
-            ))}
+    <Page className="ui-root" title="卡券列表">
+      <AdminPageHeader
+        title="預收卡設定"
+        showFilter={showFilter}
+        onFilterClick={() => setShowFilter(!showFilter)}
+        primaryAction={{
+          label: '新增預收卡',
+          to: '/coupon/create'
+        }}
+      />
+      {showFilter && (
+        <Card className="mb-6 flex flex-wrap items-center gap-2 px-5 py-4">
+          {serviceCategories.map(serviceCategorie => (
             <Button
-              variant="contained"
-              size="small"
-              css={styles.categorieClear}
-              onClick={handleClearCategorie}
+              size="sm"
+              variant="secondary"
+              aria-pressed={selectedCategorie.indexOf(serviceCategorie.id) !== -1}
+              className={cn(
+                'rounded-md',
+                selectedCategorie.indexOf(serviceCategorie.id) !== -1
+                  ? 'bg-accent/8 text-accent hover:bg-accent/15'
+                  : 'bg-transparent text-text-secondary shadow-[inset_0_0_0_1px_rgb(var(--border))] hover:bg-surface-hover'
+              )}
+              onClick={() => handleClickCategorie(serviceCategorie.id, serviceCategorie.name)}
+              key={serviceCategorie.id}
             >
-              清除
+              {serviceCategorie.name}
             </Button>
+          ))}
+          <Button
+            size="sm"
+            variant="ghost"
+            className="text-danger hover:bg-danger/8"
+            onClick={handleClearCategorie}
+          >
+            清除
+          </Button>
+        </Card>
+      )}
+      {!couponsData.loading ?
+        <Results
+          refetch={couponsData.refetch}
+          coupons={coupons}
+        /> : (
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-11 w-full" />
+            <Skeleton className="h-11 w-full" />
+            <Skeleton className="h-11 w-full" />
+            <Skeleton className="h-11 w-full" />
           </div>
-        </Collapse>
-        {!couponsData.loading ?
-          <Results
-            className={styles.results}
-            refetch={couponsData.refetch}
-            coupons={coupons}
-          /> : <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>}
-
-      </Container>
+        )}
     </Page>
   )
 }

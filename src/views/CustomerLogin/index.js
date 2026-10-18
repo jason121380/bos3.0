@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { TextField, Button, Card, CardActions, CardContent } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchCustomerVerifySMS from 'hooks/useFetchCustomerVerifySMS'
 import useFetchLoginSMS from 'hooks/useFetchLoginSMS'
@@ -9,33 +6,9 @@ import idx from 'idx'
 import produce from 'immer'
 import React from 'react'
 import { useHistory } from 'react-router'
-import { css } from '@emotion/react'
-import { ThemeProvider } from '@mui/material/styles'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    minWidth: 275,
-    padding: theme.spacing(4)
-  }),
-  pageTitle: {
-    marginBottom: theme.spacing(3)
-  },
-  field: css({
-    marginBottom: theme.spacing(2),
-  }),
-  bullet: css({
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  }),
-  title: css({
-    fontSize: 14,
-  }),
-  pos: css({
-    marginBottom: 12,
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardContent } from 'ui/card'
+import { Field, Input } from 'ui/input'
 
 export default function Reservation(props) {
   const { loginSMS } = useFetchLoginSMS()
@@ -103,53 +76,51 @@ export default function Reservation(props) {
   }
 
   return (
-    <Page css={styles.root} title="預約服務">
+    <Page className="ui-root flex flex-col gap-4" title="預約服務">
       {/* <Header /> */}
-      <PageTitle className={styles.pageTitle} title='顧客登入' subTitle='Customer Login' />
+      <h1 className="text-title !font-bold text-text">顧客登入</h1>
       <form onSubmit={handleSubmit}>
-        <Card css={styles.root}>
-          <CardContent>
-            <TextField
-              value={values.cellphone}
-              css={styles.field}
-              placeholder="電話"
-              fullWidth
-              variant="outlined"
-              onChange={event =>
-                handleChange({
-                  key: 'cellphone',
-                  value: idx(event, _ => _.target.value),
-                })
-              }
-              disabled={openSNSCode}
-            />
-            {openSNSCode ? (
-              <TextField
-                type="number"
-                value={values.code}
-                css={styles.field}
-                placeholder="驗證碼"
-                fullWidth
-                variant="outlined"
+        <Card>
+          <CardContent className="flex flex-col gap-4">
+            <Field label="電話" htmlFor="customer-login-cellphone">
+              <Input
+                id="customer-login-cellphone"
+                className="h-11"
+                value={values.cellphone}
+                placeholder="電話"
                 onChange={event =>
                   handleChange({
-                    key: 'code',
+                    key: 'cellphone',
                     value: idx(event, _ => _.target.value),
                   })
                 }
-                onWheel={() => document.activeElement.blur()}
+                disabled={openSNSCode}
               />
+            </Field>
+            {openSNSCode ? (
+              <Field label="驗證碼" htmlFor="customer-login-code">
+                <Input
+                  id="customer-login-code"
+                  className="h-11"
+                  type="number"
+                  value={values.code}
+                  placeholder="驗證碼"
+                  onChange={event =>
+                    handleChange({
+                      key: 'code',
+                      value: idx(event, _ => _.target.value),
+                    })
+                  }
+                  onWheel={() => document.activeElement.blur()}
+                />
+              </Field>
             ) : (
               ''
             )}
+            <Button type="submit" variant="primary" size="lg" className="h-11 w-full">
+              {!openSNSCode ? '獲取驗證碼' : '登入'}
+            </Button>
           </CardContent>
-          <CardActions>
-            <ThemeProvider theme={theme}>
-              <Button type="submit" variant="contained" color="primary">
-                {!openSNSCode ? '獲取驗證碼' : '登入'}
-              </Button>
-            </ThemeProvider>
-          </CardActions>
         </Card>
       </form>
     </Page>

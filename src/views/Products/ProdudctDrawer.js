@@ -1,54 +1,44 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button, Typography, Drawer, Grid, Hidden
-} from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Pencil, Trash2 } from 'lucide-react'
+import { Button } from 'ui/button'
 
-import styles from './styles/Results'
-
+// 批次操作列：外觀比照 components/TableEditBar（浮在底部中央）；
+// 與舊版 persistent Drawer 相同，未勾選時仍在 DOM（隱藏），勾選後才顯示；各按鈕 onClick 與舊版相同
 const ProdudctDrawer = ({
   selectedProducts, disableDeleteProduct, handleCancel, handleConfirmCancel, setOpenPublishDialog,
   setOpenEditProductsCategoryModal, setOpenVendorDialog
 }) => {
   return (
-    <Drawer anchor="bottom" open={selectedProducts.length > 0} PaperProps={{ elevation: 1 }} variant="persistent">
-      <div css={styles.root}>
-        <Grid alignItems="center" justifyContent='space-between' container style={{ padding: '16px' }}>
-          <Hidden smDown>
-            <Grid item sm='auto'>
-              <Typography color="textSecondary" variant="subtitle1">
-                {selectedProducts.length} selected
-              </Typography>
-            </Grid>
-          </Hidden>
-          <Grid item xs={12} sm='auto' container justifyContent='center' alignItems="center">
-            <Button sx={{ color: 'black !important', fontWeight: 400, display: 'flex', gap: '8px' }} onClick={disableDeleteProduct ? handleCancel : handleConfirmCancel}>
-              <DeleteForeverIcon />
-              刪除
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm='auto' container justifyContent='center' alignItems="center">
-            <Button sx={{ color: 'black !important', fontWeight: 400, display: 'flex', gap: '8px' }} onClick={() => setOpenPublishDialog(true)}>
-              <EditIcon />
-              編輯上架狀態
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm='auto' container justifyContent='center' alignItems="center">
-            <Button onClick={() => setOpenVendorDialog(true)} sx={{ color: 'black !important', fontWeight: 400, display: 'flex', gap: '8px' }}>
-              <EditIcon />
-              編輯廠商
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm='auto' container justifyContent='center' alignItems="center">
-            <Button onClick={() => setOpenEditProductsCategoryModal(true)} sx={{ color: 'black !important', fontWeight: 400, display: 'flex', gap: '8px' }}>
-              <EditIcon />
-              編輯商品類別
-            </Button>
-          </Grid>
-        </Grid>
+    <div
+      hidden={!(selectedProducts.length > 0)}
+      className={`ui-root noprint pointer-events-none fixed inset-x-0 bottom-6 z-[1200] justify-center px-4 ${selectedProducts.length > 0 ? 'flex' : 'hidden'}`}
+    >
+      <div
+        role="toolbar"
+        aria-label="批次操作"
+        className="pointer-events-auto flex max-w-full flex-wrap items-center gap-1 rounded-lg border border-solid border-border bg-background py-1.5 pl-4 pr-1.5 shadow-float"
+      >
+        <span className="mr-2 hidden text-label tabular-nums text-text sm:inline">
+          已選 {selectedProducts.length} 筆
+        </span>
+        <span aria-hidden="true" className="mr-1 hidden h-5 w-px bg-border sm:inline-block" />
+        <Button size="sm" variant="ghost" className="text-danger hover:bg-danger/8" onClick={disableDeleteProduct ? handleCancel : handleConfirmCancel}>
+          <Trash2 strokeWidth={1.75} />
+          刪除
+        </Button>
+        <Button size="sm" variant="ghost" onClick={() => setOpenPublishDialog(true)}>
+          <Pencil strokeWidth={1.75} />
+          編輯上架狀態
+        </Button>
+        <Button size="sm" variant="ghost" onClick={() => setOpenVendorDialog(true)}>
+          <Pencil strokeWidth={1.75} />
+          編輯廠商
+        </Button>
+        <Button size="sm" variant="ghost" onClick={() => setOpenEditProductsCategoryModal(true)}>
+          <Pencil strokeWidth={1.75} />
+          編輯商品類別
+        </Button>
       </div>
-    </Drawer>
+    </div>
   )
 }
 

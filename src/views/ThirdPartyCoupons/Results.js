@@ -1,66 +1,14 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button, Card, CardContent, CardHeader, Checkbox, Divider, Table,
-  TableBody, TableCell, TableHead, TableRow, Typography, IconButton,
-} from '@mui/material'
-import EditIconSlot from '@mui/icons-material/Edit';
+import { Pencil } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteThirdPartyCoupon from 'hooks/useFetchDeleteThirdPartTicket'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
-    overflow: 'hidden',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  tableHead: css({
-    backgroundColor: '#FFFFFF',
-    '& .MuiTableCell-head': {
-      color: '#212121',
-      fontWeight: 'bold',
-      borderBottom: '1px solid #f0f0f0',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid #f0f0f0',
-      fontSize: '14px !important',
-      color: '#333',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-  }),
-  actionButton: css({
-    padding: '4px !important',
-    color: '#999 !important',
-    '&:hover': {
-      color: '#1A73E8 !important',
-      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
-    }
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetch, ...rest }) {
   const [selectedPayment, setSelectedPayment] = useState([])
@@ -94,81 +42,73 @@ function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetc
     }
   }
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <Card css={styles.card}>
-        <CardHeader
-          title={
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
-                所有第三方卡券
-              </Typography>
-              <Typography color="textSecondary" variant="body2">
-                共 {thirdPartyCouponList.length} 筆
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table size="small">
-                <TableHead css={styles.tableHead}>
-                  <TableRow>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={
-                          selectedPayment.length === thirdPartyCouponList.length &&
-                          thirdPartyCouponList.length > 0
-                        }
-                        color="primary"
-                        indeterminate={
-                          selectedPayment.length > 0 &&
-                          selectedPayment.length < thirdPartyCouponList.length
-                        }
-                        onChange={handleSelectAll}
-                        disabled={thirdPartyCouponList.length === 0}
-                      />
-                    </TableCell>
-                    <TableCell>操作</TableCell>
-                    <TableCell>#</TableCell>
-                    <TableCell>名稱</TableCell>
-                    <TableCell>手續費</TableCell>
-                    <TableCell>金額是否為0</TableCell>
-                  </TableRow>
+    <div {...rest}>
+      <Card>
+        <CardHeader className="pb-4">
+          <div className="flex items-baseline gap-3">
+            <CardTitle>所有第三方卡券</CardTitle>
+            <span className="text-label tabular-nums text-text-secondary">
+              共 {thirdPartyCouponList.length} 筆
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table className="min-w-[700px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={
+                      selectedPayment.length === thirdPartyCouponList.length &&
+                      thirdPartyCouponList.length > 0
+                    }
+                    indeterminate={
+                      selectedPayment.length > 0 &&
+                      selectedPayment.length < thirdPartyCouponList.length
+                    }
+                    onChange={handleSelectAll}
+                    disabled={thirdPartyCouponList.length === 0}
+                  />
                 </TableHead>
-                <TableBody>
-                  {thirdPartyCouponList.map((data, idx) => (
-                    <TableRow key={`${data.id}-${idx}`} css={styles.tableRow}>
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          onChange={() => handleSelectOne(data.id)}
-                          checked={selectedPayment.indexOf(data.id) > -1}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          component={RouterLink}
-                          css={styles.actionButton}
-                          to={`/thirdPartyCoupon/edit/${data.id}`}
-                          size="small"
-                        >
-                          <EditIconSlot fontSize="small" />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell>{idx + 1}</TableCell>
-                      <TableCell>{data.name}</TableCell>
-                      <TableCell>
-                        {data.type === 'PERCENT' ? `${data.handlingFee}%` : `$${data.handlingFee}`}
-                      </TableCell>
-                      <TableCell>{data.isNoCash ? '是' : '否'}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
+                <TableHead>操作</TableHead>
+                <TableHead>#</TableHead>
+                <TableHead>名稱</TableHead>
+                <TableHead numeric>手續費</TableHead>
+                <TableHead>金額是否為0</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {thirdPartyCouponList.map((data, idx) => (
+                <TableRow
+                  key={`${data.id}-${idx}`}
+                  data-state={selectedPayment.indexOf(data.id) > -1 ? 'selected' : undefined}
+                >
+                  <TableCell>
+                    <Checkbox
+                      aria-label={`選取 ${data.name}`}
+                      onChange={() => handleSelectOne(data.id)}
+                      checked={selectedPayment.indexOf(data.id) > -1}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                      <RouterLink aria-label="編輯第三方卡券" to={`/thirdPartyCoupon/edit/${data.id}`}>
+                        <Pencil strokeWidth={1.75} />
+                      </RouterLink>
+                    </Button>
+                  </TableCell>
+                  <TableCell className="tabular-nums text-text-secondary">{idx + 1}</TableCell>
+                  <TableCell>{data.name}</TableCell>
+                  <TableCell numeric>
+                    {data.type === 'PERCENT' ? `${data.handlingFee}%` : `$${data.handlingFee}`}
+                  </TableCell>
+                  <TableCell>{data.isNoCash ? '是' : '否'}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
       <TableEditBar selected={selectedPayment} onDelete={handleSeletedDelete} />
     </div>

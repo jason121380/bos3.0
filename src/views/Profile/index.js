@@ -1,10 +1,7 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Container, Divider, Tab, Tabs, colors, CircularProgress, Grid, Switch,
-  Typography
-} from '@mui/material'
+import { Tab, Tabs } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import AdminPageHeader from 'components/AdminPageHeader'
+import { Switch } from 'ui/switch'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import idx from 'idx'
@@ -30,8 +27,7 @@ import useFetchGetIsBookingCusCheckUsing from 'hooks/useFetchGetIsBookingCusChec
 import useFetchGetUserPinnedTableSettings from 'hooks/useFetchGetUserPinnedTableSettings'
 import useFetchGetPinnedTableDefStructures from 'hooks/useFetchGetPinnedTableDefStructures'
 import pagenationLabel from './../../helper/pagenationLabel'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Skeleton } from 'ui/skeleton'
 
 import General from './General'
 import OrderRecord from './OrderRecord'
@@ -44,23 +40,6 @@ import PaySlip from './PaySlip'
 import RakeReport from './RakeReport'
 import AttendanceRecord from './AttendanceRecord'
 import DesignerSelfRecord from './DesignerSelfRecord'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  tabs: css({
-    marginTop: theme.spacing(1),
-  }),
-  divider: css({
-    backgroundColor: colors.grey[300] + '!important',
-    borderColor: colors.grey[300] + '!important',
-  }),
-  content: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function Settings({ match, history }) {
   const employeeId = JSON.parse(localStorage.getItem('user')).id
@@ -563,22 +542,19 @@ function Settings({ match, history }) {
     return findData.label
   }
 
+  // 頁面外距由 #printContainer 提供；分頁籤沿用 MUI Tabs（handler 使用 (event, value) 簽名）
   return (
-    <Page css={styles.root} title={`${profile.data.me.name} - ${findTabName()}`}>
-      <Container maxWidth="lg">
-        <Grid container justifyContent='space-between' alignItems='center' >
-          <Grid item>
-            <PageTitle title='變更帳戶資訊' subTitle='設定' />
-          </Grid>
+    <Page className="ui-root" title={`${profile.data.me.name} - ${findTabName()}`}>
+      <div className="mx-auto w-full max-w-[1200px]">
+        <AdminPageHeader title='變更帳戶資訊' subTitle='設定'>
           {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
-            <Grid className='CheckinMode' style={{ display: 'flex', alignItems: 'center' }} item >
-              <Typography sx={{ fontSize: 16 }}>報到模式</Typography><Switch checked={checkinMode} onChange={(e, v) => setCheckinMode(v)} />
-            </Grid>
+            <div className='CheckinMode flex items-center gap-1 text-body text-text'>
+              <span>報到模式</span><Switch aria-label="報到模式" checked={checkinMode} onChange={(e, v) => setCheckinMode(v)} />
+            </div>
           )}
-        </Grid>
+        </AdminPageHeader>
         {itemValue.length > 0 ? (
           <Tabs
-            css={styles.tabs}
             onChange={handleTabsChange}
             scrollButtons="auto"
             value={currentTab}
@@ -590,13 +566,14 @@ function Settings({ match, history }) {
             <Tab label='功能釘選' value='pinnedTable' />
           </Tabs>
         ) : null}
-        <Divider css={styles.divider} />
-        <div css={styles.content}>
+        <div className="h-px bg-border" />
+        <div className="mt-6">
           {currentTab === 'general' && <General />}
           {currentTab === 'orderRecord' && (
             getOrderListLazyData.loading || getOrderListLazyData.data === undefined ?
-              <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 150 }}>
-                <CircularProgress />
+              <div className="flex flex-col gap-3">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-64 w-full" />
               </div> :
               <OrderRecord
                 pagenationLabel={pagenationLabel}
@@ -667,8 +644,9 @@ function Settings({ match, history }) {
           )}
           {currentTab === 'AttendanceRecord' && (
             uerAttendanceLazyData.loading || uerAttendanceLazyData.data === undefined ?
-              <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 150 }}>
-                <CircularProgress />
+              <div className="flex flex-col gap-3">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-64 w-full" />
               </div> :
               <AttendanceRecord
                 pagenationLabel={pagenationLabel}
@@ -717,7 +695,7 @@ function Settings({ match, history }) {
             />
           )}
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }

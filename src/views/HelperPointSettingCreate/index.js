@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { Button, Container, Grid } from '@mui/material'
 import useFetchCreateMerchantPointValueSetting from 'hooks/useFetchCreateMerchantPointValueSetting'
 import { openSnackbar } from 'elements/snackbars'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { useHistory } from 'react-router'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import { useState } from 'react'
 import _ from 'lodash'
@@ -76,23 +76,23 @@ function HelperPointSettingCreate() {
     })
   }
   return (
-    <Page css={styles.root} title="新增互助點數設定">
-      <Container maxWidth={false}>
-        <Grid container item justifyContent='space-between' alignItems='center'>
-          <PageTitle title='新增互助點數設定' subTitle='helper point setting create' />
-          <Grid item>
-            <Button disabled={isclick} onClick={handleSubmit} color="primary" variant="contained">
+    <Page className="ui-root" title="新增互助點數設定">
+      <div className="max-w-3xl">
+        <PageHeader
+          title="新增互助點數設定"
+          actions={
+            <Button disabled={isclick} onClick={handleSubmit} variant="primary">
               確認
             </Button>
-          </Grid>
-        </Grid>
+          }
+        />
         <Results
           status={submitData.retrievePointWay}
           submitData={submitData}
           setSubmitData={setSubmitData}
           className={styles.about}
         />
-      </Container>
+      </div>
     </Page>
   )
 }

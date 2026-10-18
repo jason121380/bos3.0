@@ -1,75 +1,14 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardContent,
-  Checkbox,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead, TableRow, Typography, TableContainer, CardHeader, IconButton
-} from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit';
+import { Pencil } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import useFetchSetDeleteMerchantVendor from 'hooks/useFetchSetDeleteMerchantVendor'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const localStyles = {
-  root: css({}),
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
-    overflow: 'hidden',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  tableHead: css({
-    backgroundColor: '#FFFFFF',
-    '& .MuiTableCell-head': {
-      color: '#212121',
-      fontWeight: 'bold',
-      borderBottom: '1px solid #f0f0f0',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid #f0f0f0',
-      fontSize: '14px !important',
-      color: '#333',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-    '&.Mui-selected': {
-      backgroundColor: '#f9f9f9 !important',
-    },
-    '&.Mui-selected:hover': {
-      backgroundColor: '#f9f9f9 !important',
-    },
-  }),
-  actionButton: css({
-    color: '#9e9e9e',
-    padding: '4px',
-    '&:hover': {
-      color: '#1A73E8',
-      backgroundColor: 'rgba(26, 115, 232, 0.04)',
-    },
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Results({ className, merchantVendor, merchantVendorList, ...rest }) {
   const [selectedVendor, setSelectedVendor] = useState([])
@@ -106,79 +45,72 @@ function Results({ className, merchantVendor, merchantVendorList, ...rest }) {
     })
   }
   return (
-    <div {...rest} css={localStyles.root}>
-      <Card css={localStyles.card}>
-        <CardHeader
-          title={
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
-                所有廠商
-              </Typography>
-              <Typography color="textSecondary" variant="body2">
-                共 {merchantVendor.length} 筆資料
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={localStyles.content}>
-          <TableContainer>
-            <Table size="small">
-              <TableHead css={localStyles.tableHead}>
-                <TableRow>
-                  <TableCell padding="checkbox" width={50}>
+    <div {...rest}>
+      <Card>
+        <CardHeader className="pb-4">
+          <div className="flex items-baseline gap-3">
+            <CardTitle>所有廠商</CardTitle>
+            <span className="text-label tabular-nums text-text-secondary">
+              共 {merchantVendor.length} 筆資料
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-[50px]">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={
+                      selectedVendor.length === merchantVendor.length && merchantVendor.length > 0
+                    }
+                    indeterminate={
+                      selectedVendor.length > 0 &&
+                      selectedVendor.length < merchantVendor.length
+                    }
+                    onChange={handleSelectAll}
+                  />
+                </TableHead>
+                <TableHead className="w-[80px]">代號</TableHead>
+                <TableHead>廠商名稱</TableHead>
+                <TableHead>暱稱</TableHead>
+                <TableHead>備註</TableHead>
+                <TableHead className="w-[60px] text-right">操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {merchantVendor.map(data => (
+                <TableRow
+                  key={data.uuid}
+                  data-state={selectedVendor.indexOf(data.uuid) > -1 ? 'selected' : undefined}
+                >
+                  <TableCell className="w-[50px]">
                     <Checkbox
-                      checked={
-                        selectedVendor.length === merchantVendor.length && merchantVendor.length > 0
-                      }
-                      color="primary"
-                      indeterminate={
-                        selectedVendor.length > 0 &&
-                        selectedVendor.length < merchantVendor.length
-                      }
-                      onChange={handleSelectAll}
+                      aria-label={`選取 ${data.name}`}
+                      onChange={() => handleSelectOne(data.uuid)}
+                      checked={selectedVendor.indexOf(data.uuid) > -1}
                     />
                   </TableCell>
-                  <TableCell width={80}>代號</TableCell>
-                  <TableCell>廠商名稱</TableCell>
-                  <TableCell>暱稱</TableCell>
-                  <TableCell>備註</TableCell>
-                  <TableCell align="right" width={60}>操作</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {merchantVendor.map(data => (
-                  <TableRow
-                    key={data.uuid}
-                    css={localStyles.tableRow}
-                    selected={selectedVendor.indexOf(data.uuid) > -1}
-                  >
-                    <TableCell padding="checkbox" width={50}>
-                      <Checkbox
-                        color="primary"
-                        onChange={() => handleSelectOne(data.uuid)}
-                        checked={selectedVendor.indexOf(data.uuid) > -1}
-                      />
-                    </TableCell>
-                    <TableCell width={80}>{data.no}</TableCell>
-                    <TableCell style={{ fontWeight: '500' }}>{data.name}</TableCell>
-                    <TableCell>{data.nickname}</TableCell>
-                    <TableCell>{data.remark}</TableCell>
-                    <TableCell align="right" width={60}>
-                      <IconButton
-                        css={localStyles.actionButton}
-                        component={RouterLink}
-                        size="small"
+                  <TableCell className="w-[80px] tabular-nums">{data.no}</TableCell>
+                  <TableCell className="font-medium">{data.name}</TableCell>
+                  <TableCell>{data.nickname}</TableCell>
+                  <TableCell>{data.remark}</TableCell>
+                  <TableCell className="w-[60px] text-right">
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                      <RouterLink
+                        aria-label="編輯廠商"
                         to={`/merchant-vendor/edit/${data.uuid}`}
                       >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </CardContent>
+                        <Pencil strokeWidth={1.75} />
+                      </RouterLink>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
       <TableEditBar selected={selectedVendor} onDelete={handleDelete} />
     </div>

@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Checkbox, FormControlLabel, TextField } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import CustomerTicketRecordAutoCompleteForOrderCreate from 'components/CustomerTicketRecordAutoCompleteForOrderCreate'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import billContext from 'context/keyInContext'

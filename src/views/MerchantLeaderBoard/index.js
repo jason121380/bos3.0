@@ -1,13 +1,4 @@
-/** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react'
-import {
-  Container,
-  Button,
-  CircularProgress,
-  Grid,
-  ToggleButton,
-  ToggleButtonGroup
-} from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
@@ -21,26 +12,10 @@ import useFetchGetIsMonthlyAverageDisplayForMerchantLeaderBoard from 'hooks/useF
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
 import Results from './Results'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '100px',
-  }),
-  exportBtn: css({
-    marginLeft: '15px',
-  }),
-}
+import { Download, Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
+import { Skeleton } from 'ui/skeleton'
 
 const isIncludeProductPerformanceValue = [
   { label: '含店販', value: true },
@@ -293,8 +268,8 @@ const MerchantLeaderBoard = () => {
   }
 
   return (
-    <Page css={styles.root} className='MerchantLeaderBoard' title="店家排行榜">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className='MerchantLeaderBoard ui-root' title="店家排行榜">
+      <div>
         <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
           <div className="merchantNamePrint">
             {JSON.parse(localStorage.getItem('userMerchant')).name +
@@ -311,12 +286,8 @@ const MerchantLeaderBoard = () => {
           </div>
         </div>
         <AdminPageHeader title='店家排行榜' />
-        <Grid
-          className="noprint"
-          container
-          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-        >
-          <Grid item>
+        <div className="noprint flex flex-wrap items-center justify-between gap-3">
+          <div>
             <DateSelector
               date={date}
               attributes={[
@@ -326,19 +297,9 @@ const MerchantLeaderBoard = () => {
               dateChange={value => setDate(value)}
               margin
             />
-          </Grid>
+          </div>
 
-          <Grid
-            item
-            style={{
-              marginBottom: '23px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'flex-end',
-              flexWrap: 'wrap',
-              rowGap: '10px',
-            }}
-          >
+          <div className="mb-[23px] flex flex-wrap items-end justify-between gap-y-2.5">
             {!isDisplayTogglePerformanceButton && <div>
               <div className="divText">業績依據：</div>
               <ReferToggleButton
@@ -348,68 +309,67 @@ const MerchantLeaderBoard = () => {
             </div>}
             <div style={{ display: 'grid', margin: '0px 10px', justifyContent: 'center', alignItems: 'center', justifyItems: 'center' }}>
               <div className="divText">總業績依據：</div>
-              <Grid container justifyContent='space-between' >
-                <Grid item>
-                  <ToggleButtonGroup
+              <div className="flex justify-between">
+                <div>
+                  <ToggleGroup
                     size="small"
                     value={isIncludeProductPerformance}
                     onChange={handleProductPerformanceToggleButtonChange}
                     exclusive
                   >
                     {isIncludeProductPerformanceValue.map((data, idx) => (
-                      <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                      <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                         {data.label}
-                      </ToggleButton>
+                      </ToggleGroupItem>
                     ))}
-                  </ToggleButtonGroup>
-                </Grid>
-                <Grid item style={{ marginLeft: '10px' }}>
+                  </ToggleGroup>
+                </div>
+                <div className="ml-2.5">
                   {displayReportWithMembership &&
-                    <ToggleButtonGroup
+                    <ToggleGroup
                       size="small"
                       value={isIncludeMembershipPerformance}
                       onChange={handleMembershipPerformanceToggleButtonChange}
                       exclusive
                     >
                       {isIncludeMembershipPerformanceValue.map((data, idx) => (
-                        <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                        <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                           {data.label}
-                        </ToggleButton>
+                        </ToggleGroupItem>
                       ))}
-                    </ToggleButtonGroup>}
-                </Grid>
-              </Grid>
+                    </ToggleGroup>}
+                </div>
+              </div>
             </div>
-            <div>
+            <div className="flex items-center gap-2">
               <CSVLink data={excelData} filename="店家排行榜.csv">
-                <Button variant="contained" color="primary" css={styles.exportBtn} disabled={merchantLeaderBoard.loading}>
+                <Button variant="secondary" disabled={merchantLeaderBoard.loading}>
+                  <Download strokeWidth={1.75} />
                   報表匯出
                 </Button>
               </CSVLink>
               <Button
-                variant="contained"
-                color="primary"
-                css={styles.exportBtn}
+                variant="secondary"
                 disabled={merchantLeaderBoard.loading}
                 onClick={() => window.print()}
               >
+                <Printer strokeWidth={1.75} />
                 列印
               </Button>
             </div>
-          </Grid>
-        </Grid>
-        <div className="noprint" style={{ display: 'flex', margin: '10px 0' }}>
+          </div>
+        </div>
+        <div className="noprint my-2.5 flex">
           <MerchantListAutocpmplete
             onValueChange={value => {
               handleChecked(value)
             }}
           />
-          <div style={{ marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
+          <div className="ml-2.5 flex items-center">
             <Button
-              variant="contained"
-              color="primary"
+              variant="primary"
               onClick={handleSearchReport}
-              css={styles.searchBtn}
+              className="w-[100px]"
             >
               搜尋
             </Button>
@@ -427,11 +387,12 @@ const MerchantLeaderBoard = () => {
             isIncludeMembershipPerformance={isIncludeMembershipPerformance}
           />
         ) : (
-          <div css={styles.noReportDiv}>
-            <CircularProgress />
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div className="noprint" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div>
         )}
-      </Container>
+      </div>
     </Page>
   )
 }

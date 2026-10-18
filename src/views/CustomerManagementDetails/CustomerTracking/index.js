@@ -1,49 +1,8 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Grid,
-  Card,
-  CardContent,
-  CardHeader,
-  CardActions,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-  TextField,
-  Button
-} from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
+import { Pencil } from 'lucide-react'
 import { useState, Fragment } from 'react'
 import TrackingEditModal from './TrackingEditModal'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
-
-const styles = {
-  root: css({
-    '& td': {
-      padding: '2px 5px',
-    },
-    '& .MuiInput-underline:before': {
-      display: 'none'
-    },
-    '& .MuiInput-underline:after': {
-      display: 'none'
-    },
-    '& .MuiInputBase-multiline': {
-      padding: 0
-    },
-    '& fieldset': {
-      border: 'none'
-    },
-    '& textarea': {
-      padding: '0px !important'
-    }
-  }),
-  buttonIcon: css({
-    marginRight: theme.spacing(1),
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardFooter, CardHeader, CardTitle } from 'ui/card'
 
 const optionsArray = [
   { "hairProperties": '髮質屬性' },
@@ -67,49 +26,36 @@ export default function index({ customerId, className, hairCondition, refetchHai
 
   return (
     <Fragment>
-      <Grid {...rest} css={styles.root} container>
-        <Grid item md={6} xs={12}>
-          <Card>
-            <CardHeader title='髮型狀況' />
-            <Divider />
-            <CardContent style={{ padding: 0 }} >
-              <Table style={{ borderCollapse: 'collapse' }}>
-                <TableBody>
-                  {optionsArray.map((d, i) => {
-                    const [[key, title]] = Object.entries(d)
-                    const options = hairCondition[key]
-                    return (
-                      <TableRow key={`${title}-${i}`} hover>
-                        <TableCell style={{ whiteSpace: 'nowrap' }}>{`${title}：`}</TableCell>
-                        <TableCell>{handleRenderOptions(options)}</TableCell>
-                      </TableRow>
-                    )
-                  })}
-                  <TableRow hover>
-                    <TableCell style={{ whiteSpace: 'nowrap' }}>染髮配方：</TableCell>
-                    <TableCell>
-                      <TextField
-                        multiline
-                        fullWidth
-                        value={hairCondition.hairDyeFormula}
-                        inputProps={{
-                          readOnly: true
-                        }}
-                      />
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </CardContent>
-            <CardActions>
-              <Button style={{ color: 'black' }} onClick={handleOpenModel}>
-                <EditIcon />
-                編輯
-              </Button>
-            </CardActions>
-          </Card>
-        </Grid>
-      </Grid>
+      <div {...rest} className="grid grid-cols-1 md:grid-cols-2">
+        <Card>
+          <CardHeader className="pb-4">
+            <CardTitle>髮型狀況</CardTitle>
+          </CardHeader>
+          <dl className="m-0 px-5">
+            {optionsArray.map((d, i) => {
+              const [[key, title]] = Object.entries(d)
+              const options = hairCondition[key]
+              return (
+                <div key={`${title}-${i}`} className="flex gap-4 border-0 border-b border-solid border-border py-2.5">
+                  <dt className="w-24 shrink-0 whitespace-nowrap text-label text-text-secondary">{`${title}：`}</dt>
+                  <dd className="m-0 text-body text-text">{handleRenderOptions(options)}</dd>
+                </div>
+              )
+            })}
+            <div className="flex gap-4 py-2.5">
+              <dt className="w-24 shrink-0 whitespace-nowrap text-label text-text-secondary">染髮配方：</dt>
+              {/* 舊版為唯讀 multiline TextField，改為保留換行的純文字顯示 */}
+              <dd className="m-0 whitespace-pre-wrap break-all text-body text-text">{hairCondition.hairDyeFormula}</dd>
+            </div>
+          </dl>
+          <CardFooter className="justify-start">
+            <Button variant="ghost" onClick={handleOpenModel}>
+              <Pencil strokeWidth={1.75} />
+              編輯
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
       <TrackingEditModal
         customerId={customerId}
         open={open}

@@ -1,47 +1,9 @@
-/** @jsxImportSource @emotion/react */
-import { Card, Grid, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import idx from 'idx'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Card } from 'ui/card'
 
-const styles = {
-  root: css({
-    margin: theme.spacing(3, 0, 3, 0),
-  }),
-  content: css({
-    padding: 0,
-  }),
-  item: css({
-    padding: theme.spacing(3),
-    textAlign: 'center',
-    [theme.breakpoints.up('sm')]: {
-      '&:not(:last-of-type)': {
-        borderRight: `none`,
-      },
-    },
-  }),
-  valueContainer: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }),
-  label: css({
-    marginLeft: theme.spacing(1),
-  }),
-  title: css({
-    textAlign: 'center',
-  }),
-  overview: css({
-    margin: '20px 0',
-  }),
-  subTitle: css({
-    fontSize: '16px !important',
-    lineHeight: '19px !important',
-  }),
-}
-
+// 薪資概覽：每格「標題（可多行）＋數值」，排列與舊版相同（手機 2 欄、平板 4 欄、桌機 6 欄）
 function OverviewV2({ designer, actualTransferFun, memberActive }) {
   const [salaryCheckoutRecord, setSalaryCheckoutRecord] = useState()
   const [isHelperRetrireveAutoSet, setIsHelperRetrireveAutoSet] = useState(false)
@@ -55,205 +17,177 @@ function OverviewV2({ designer, actualTransferFun, memberActive }) {
     setMembershipDisplay(memberActive || tmp.membershipPerformance !== 0 || tmp.membershipRake !== 0)
   }, [designer, memberActive])
   return (
-    <div css={styles.overview}>
-      <Card css={styles.root}>
-        <Grid alignItems="center" container justifyContent="space-between">
-          <Grid css={styles.item} xs={6} sm={3} md={2} item>
-            <Typography
-              component="h3"
-              gutterBottom
-              variant="overline"
-              style={{
-                color: 'red',
-                fontSize: '16px',
-              }}
-            >
+    <div className="my-5">
+      <Card>
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6">
+          <div className="flex flex-col items-center gap-0.5 p-6 text-center">
+            <span className="text-label font-medium text-danger">
               實際匯款金額
-            </Typography>
-            <Typography variant="body2" gutterBottom></Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">{Math.round(actualTransferFun * 10) / 10 || 0}</Typography>
+            </span>
+            <div className="mt-1 flex items-center justify-center">
+              <span className="text-heading tabular-nums text-text">{Math.round(actualTransferFun * 10) / 10 || 0}</span>
             </div>
-          </Grid>
-          <Grid css={styles.item} xs={6} sm={3} md={2} item>
-            <Typography component="h3" gutterBottom variant="overline" css={styles.subTitle}>
+          </div>
+          <div className="flex flex-col items-center gap-0.5 p-6 text-center">
+            <span className="text-label text-text-secondary">
               總實業績
-            </Typography>
-            <Typography variant="body2" gutterBottom></Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
+            </span>
+            <div className="mt-1 flex items-center justify-center">
+              <span className="text-heading tabular-nums text-text">
                 {salaryCheckoutRecord !== undefined
                   ? Math.round(salaryCheckoutRecord.totalTruthPerformance * 10) / 10 || 0
                   : 0}
-              </Typography>
+              </span>
             </div>
-          </Grid>
-          <Grid css={styles.item} xs={6} sm={3} md={2} item>
-            <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+          </div>
+          <div className="flex flex-col items-center gap-0.5 p-6 text-center">
+            <span className="text-label text-text-secondary">
               指定實業績
-            </Typography>
-            <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+            </span>
+            <span className="text-label text-text-secondary">
               不指定實業績
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
+            </span>
+            <div className="mt-1 flex items-center justify-center">
+              <span className="text-heading tabular-nums text-text">
                 {salaryCheckoutRecord !== undefined
                   ? Math.round(salaryCheckoutRecord.designateTruthPerformance * 10) / 10 || 0
                   : 0}
-              </Typography>
+              </span>
             </div>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
+            <div className="mt-1 flex items-center justify-center">
+              <span className="text-heading tabular-nums text-text">
                 {salaryCheckoutRecord !== undefined
                   ? Math.round(salaryCheckoutRecord.nonDesignateTruthPerformance * 10) / 10 || 0
                   : 0}
-              </Typography>
+              </span>
             </div>
-          </Grid>
-          <Grid css={styles.item} xs={6} sm={3} md={2} item>
-            <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+          </div>
+          <div className="flex flex-col items-center gap-0.5 p-6 text-center">
+            <span className="text-label text-text-secondary">
               指定抽成
-            </Typography>
-            <Typography variant="body2" gutterBottom></Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
+            </span>
+            <div className="mt-1 flex items-center justify-center">
+              <span className="text-heading tabular-nums text-text">
                 {salaryCheckoutRecord !== undefined
                   ? Math.round(salaryCheckoutRecord.designateRake * 10) / 10 || 0
                   : 0}
-              </Typography>
+              </span>
             </div>
-          </Grid>
-          <Grid css={styles.item} xs={6} sm={3} md={2} item>
-            <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+          </div>
+          <div className="flex flex-col items-center gap-0.5 p-6 text-center">
+            <span className="text-label text-text-secondary">
               不指定抽成
-            </Typography>
-            <Typography variant="body2" gutterBottom></Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
+            </span>
+            <div className="mt-1 flex items-center justify-center">
+              <span className="text-heading tabular-nums text-text">
                 {salaryCheckoutRecord !== undefined
                   ? Math.round(salaryCheckoutRecord.nonDesignateRake * 10) / 10 || 0
                   : 0}
-              </Typography>
+              </span>
             </div>
-          </Grid>
-          <Grid css={styles.item} xs={6} sm={3} md={2} item>
-            <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+          </div>
+          <div className="flex flex-col items-center gap-0.5 p-6 text-center">
+            <span className="text-label text-text-secondary">
               特殊業績
-            </Typography>
-            <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+            </span>
+            <span className="text-label text-text-secondary">
               特殊抽成
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
+            </span>
+            <div className="mt-1 flex items-center justify-center">
+              <span className="text-heading tabular-nums text-text">
                 {' '}
                 {salaryCheckoutRecord !== undefined
                   ? Math.round(salaryCheckoutRecord.specialTruthPerformance * 10) / 10 || 0
                   : 0}
-              </Typography>
+              </span>
             </div>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
+            <div className="mt-1 flex items-center justify-center">
+              <span className="text-heading tabular-nums text-text">
                 {salaryCheckoutRecord !== undefined
                   ? Math.round(salaryCheckoutRecord.specialRake * 10) / 10 || 0
                   : 0}
-              </Typography>
+              </span>
             </div>
-          </Grid>
-          <Grid css={styles.item} xs={6} sm={3} md={2} item>
-            <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+          </div>
+          <div className="flex flex-col items-center gap-0.5 p-6 text-center">
+            <span className="text-label text-text-secondary">
               店販實業績
-            </Typography>
+            </span>
             {membershipDisplay && (
-              <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+              <span className="text-label text-text-secondary">
                 會員卡實業績
-              </Typography>
+              </span>
             )}
-            <Typography variant="body2" gutterBottom></Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
+            <div className="mt-1 flex items-center justify-center">
+              <span className="text-heading tabular-nums text-text">
                 {salaryCheckoutRecord !== undefined
                   ? Math.round(salaryCheckoutRecord.productPerformance * 10) / 10 || 0
                   : 0}
-              </Typography>
+              </span>
             </div>
             {membershipDisplay && (
-              <div css={styles.valueContainer}>
-                <Typography variant="h3">
+              <div className="mt-1 flex items-center justify-center">
+                <span className="text-heading tabular-nums text-text">
                   {salaryCheckoutRecord !== undefined
                     ? Math.round(salaryCheckoutRecord.membershipPerformance * 10) / 10 || 0
                     : 0}
-                </Typography>
+                </span>
               </div>
             )}
-          </Grid>
-          <Grid css={styles.item} xs={6} sm={3} md={2} item>
-            <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+          </div>
+          <div className="flex flex-col items-center gap-0.5 p-6 text-center">
+            <span className="text-label text-text-secondary">
               店販抽成
-            </Typography>
+            </span>
             {membershipDisplay && (
-              <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+              <span className="text-label text-text-secondary">
                 會員卡抽成
-              </Typography>
+              </span>
             )}
-            <Typography variant="body2" gutterBottom></Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
+            <div className="mt-1 flex items-center justify-center">
+              <span className="text-heading tabular-nums text-text">
                 {salaryCheckoutRecord !== undefined
                   ? Math.round(salaryCheckoutRecord.productRake * 10) / 10 || 0
                   : 0}
-              </Typography>
+              </span>
             </div>
             {membershipDisplay && (
-              <div css={styles.valueContainer}>
-                <Typography variant="h3">
+              <div className="mt-1 flex items-center justify-center">
+                <span className="text-heading tabular-nums text-text">
                   {salaryCheckoutRecord !== undefined
                     ? Math.round(salaryCheckoutRecord.membershipRake * 10) / 10 || 0
                     : 0}
-                </Typography>
+                </span>
               </div>
             )}
-          </Grid>
-          <Grid css={styles.item} xs={6} sm={3} md={2} item>
-            <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+          </div>
+          <div className="flex flex-col items-center gap-0.5 p-6 text-center">
+            <span className="text-label text-text-secondary">
               服務/卡券扣項
-            </Typography>
-            <Typography
-              variant="body2"
-              gutterBottom
-              style={{
-                color: 'red',
-                fontWeight: 'bold',
-              }}
-            >
+            </span>
+            <span className="text-caption font-medium text-danger">
               (扣薪水)
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
+            </span>
+            <div className="mt-1 flex items-center justify-center">
+              <span className="text-heading tabular-nums text-text">
                 {salaryCheckoutRecord !== undefined
                   ? Math.round(salaryCheckoutRecord.deductionItemOnSalary * 10) / 10 || 0
                   : 0}
-              </Typography>
+              </span>
             </div>
-          </Grid>
-          <Grid css={styles.item} xs={6} sm={3} md={2} item>
-            <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+          </div>
+          <div className="flex flex-col items-center gap-0.5 p-6 text-center">
+            <span className="text-label text-text-secondary">
               互助使用總金額
-            </Typography>
-            <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+            </span>
+            <span className="text-label text-text-secondary">
               (包含的點數)
-            </Typography>
-            <Typography
-              variant="body2"
-              gutterBottom
-              style={{
-                color: 'red',
-                fontWeight: 'bold',
-              }}
-            >
+            </span>
+            <span className="text-caption font-medium text-danger">
               (扣薪水)
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
+            </span>
+            <div className="mt-1 flex items-center justify-center">
+              <span className="text-heading tabular-nums text-text">
                 {`${salaryCheckoutRecord != undefined
                     ? Math.round(salaryCheckoutRecord.helperPaidPriceOnSalary * 10) / 10
                     : 0
@@ -261,38 +195,23 @@ function OverviewV2({ designer, actualTransferFun, memberActive }) {
                     ? Math.round(salaryCheckoutRecord.helperPaidPointOnSalary * 10) / 10
                     : 0
                   })` || 0}
-              </Typography>
+              </span>
             </div>
-          </Grid>
-          <Grid css={styles.item}
-            xs={6}
-            sm={3}
-            md={2}
-            style={{
-              padding: '24px 14px',
-            }}
-            item
-          >
-            <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+          </div>
+          <div className="flex flex-col items-center gap-0.5 px-3.5 py-6 text-center">
+            <span className="text-label text-text-secondary">
               互助獲得總金額
-            </Typography>
-            <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+            </span>
+            <span className="text-label text-text-secondary">
               (包含的點數)
-            </Typography>
+            </span>
             {!isHelperRetrireveAutoSet && (
-              <Typography
-                variant="body2"
-                gutterBottom
-                style={{
-                  color: 'red',
-                  fontWeight: 'bold',
-                }}
-              >
+              <span className="text-caption font-medium text-danger">
                 (未自動帶入下方)
-              </Typography>
+              </span>
             )}
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
+            <div className="mt-1 flex items-center justify-center">
+              <span className="text-heading tabular-nums text-text">
                 {`${salaryCheckoutRecord !== undefined
                     ? Math.round(salaryCheckoutRecord.helperRetrievePrice * 10) / 10
                     : 0
@@ -300,25 +219,18 @@ function OverviewV2({ designer, actualTransferFun, memberActive }) {
                     ? Math.round(salaryCheckoutRecord.helperRetrievePoint * 10) / 10
                     : 0
                   })` || 0}
-              </Typography>
+              </span>
             </div>
-          </Grid>
-          <Grid css={styles.item} xs={6} sm={3} md={2} item>
-            <Typography component="h2" gutterBottom variant="overline" css={styles.subTitle}>
+          </div>
+          <div className="flex flex-col items-center gap-0.5 p-6 text-center">
+            <span className="text-label text-text-secondary">
               手續費
-            </Typography>
-            <Typography
-              variant="body2"
-              gutterBottom
-              style={{
-                color: 'red',
-                fontWeight: 'bold',
-              }}
-            >
+            </span>
+            <span className="text-caption font-medium text-danger">
               (其他付款方式/入金)
-            </Typography>
-            <div css={styles.valueContainer}>
-              <Typography variant="h3">
+            </span>
+            <div className="mt-1 flex items-center justify-center">
+              <span className="text-heading tabular-nums text-text">
                 {salaryCheckoutRecord !== undefined
                   ? Math.round(salaryCheckoutRecord.otherPayHandlingFeeOnSalary * 10) / 10
                   : 0 || 0}
@@ -326,10 +238,10 @@ function OverviewV2({ designer, actualTransferFun, memberActive }) {
                 {salaryCheckoutRecord !== undefined
                   ? Math.round(salaryCheckoutRecord.walletDepositHandlingFee * 10) / 10
                   : 0 || 0}
-              </Typography>
+              </span>
             </div>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       </Card>
     </div>
   )

@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, CardHeader, Divider, FormControlLabel, Checkbox
-} from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
@@ -27,15 +26,15 @@ function BookingCheckInNotificationSetting({
   bookingTypeForSocket, setBookingTypeForSocket
 }) {
   return (
-    <Card css={className}>
-      <CardHeader title="報到通知設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>報到通知設定</CardTitle>
+      </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
             css={styles.isUsing}
-            control={<Checkbox color="primary" />}
             label="開啟報到通知功能"
             checked={checkinSettings.isBookingCheckinEnabled}
             onChange={(e, v) => setCheckinSettings(
@@ -46,10 +45,9 @@ function BookingCheckInNotificationSetting({
         {checkinSettings.isBookingCheckinEnabled && (
           settings.map(({ label, key }) => (
             <div key={key} css={styles.serviceInputGroup}>
-              <FormControlLabel
+              <CheckboxField
                 disabled={!inputEnable}
                 css={styles.isUsing}
-                control={<Checkbox color="primary" />}
                 label={label}
                 checked={checkinSettings[key]}
                 onChange={(e, v) => setCheckinSettings(
@@ -60,10 +58,9 @@ function BookingCheckInNotificationSetting({
           ))
         )}
         <div css={styles.serviceInputGroup}>
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
             css={styles.isUsing}
-            control={<Checkbox color="primary" />}
             label="單日預約紀錄顯示待審核狀態的預約"
             checked={bookingTypeForSocket.includes('UNCHECK')}
             onChange={(e, v) => setBookingTypeForSocket(v ? ['UNCHECK', 'RESERVATION'] : ['RESERVATION'])}

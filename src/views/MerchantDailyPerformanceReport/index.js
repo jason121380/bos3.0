@@ -1,7 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Grid, Button, Card } from '@mui/material'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import ReferToggleButton from 'components/ReferToggleButton'
 import { endOfDay, startOfMonth, format } from 'date-fns'
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
@@ -14,6 +12,10 @@ import DateSelector from 'components/DateSelector'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import produce from 'immer'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader, Toolbar, ToolbarSpacer } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -118,79 +120,50 @@ function DesignerPerformOverview() {
   }, [merchantDailyPerformanceReportData.loading, isMemberShipCardActiveData.loading])
 
   return (
-    <Page title="每日業績分析表">
-      <Container maxWidth={false} css={styles.container}>
-        <Card
-          css={css({
-            display: 'flex',
-            padding: '12px 24px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#fff',
-            borderRadius: '8px',
-            boxShadow: 'none',
-            border: '1px solid #f0f0f0',
-            marginBottom: '12px',
-          })}
-        >
-          <AdminPageHeader title='每日業績分析表' />
-          <CSVLink
-            data={excelData}
-            filename="每日業績分析表.csv"
-            style={{ textDecoration: 'none' }}
-          >
-            <Button
-              variant="contained"
-              css={css({
-                borderRadius: '20px !important',
-                padding: '6px 20px !important',
-                fontSize: '14px !important',
-                boxShadow: 'none !important',
-                fontWeight: 'bold !important',
-                backgroundColor: '#f5f5f5 !important',
-                color: '#666 !important',
-                '&:hover': {
-                  backgroundColor: '#eeeeee !important',
-                }
-              })}
+    <Page title="每日業績分析表" className="ui-root">
+      <PageHeader
+        title="每日業績分析表"
+        actions={
+          <Button asChild variant="secondary">
+            <CSVLink
+              data={excelData}
+              filename="每日業績分析表.csv"
             >
+              <Download strokeWidth={1.75} />
               報表匯出
-            </Button>
-          </CSVLink>
-        </Card>
+            </CSVLink>
+          </Button>
+        }
+      />
 
-        <Grid container direction='row' alignItems='center' style={{ gap: 20 }}>
-          <Grid item>
-            <DateSelector
-              date={inputData.dateRange}
-              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-              dateChange={value => handleSetInputData('dateRange', value)}
-              margin
-            />
-          </Grid>
-          <Grid item style={{ display: 'flex', flexGrow: 1, justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0 20px' }}>
-            {!isDisplayTogglePerformanceButton && <Grid item >
-              <div className="divText">業績依據：</div>
-              <ReferToggleButton
-                value={inputData.displayReference}
-                onChange={value => handleSetInputData('displayReference', value)}
-              />
-            </Grid>}
-          </Grid>
-        </Grid>
-        {(!merchantDailyPerformanceReportData.loading && dailyPerformanceData !== null) ? (
-          <Results
-            className={styles.results}
-            results={dailyPerformanceData}
-            membershipDisplay={membershipDisplay}
-            attributeSwitchs={attributeSwitchs}
+      <Toolbar className="gap-5">
+        <div>
+          <DateSelector
+            date={inputData.dateRange}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            dateChange={value => handleSetInputData('dateRange', value)}
+            margin
           />
-        ) : (
-          <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <CircularProgress />
-          </div>
-        )}
-      </Container>
+        </div>
+        <ToolbarSpacer />
+        {!isDisplayTogglePerformanceButton && <div className="flex items-center gap-2">
+          <div className="divText text-label text-text-secondary">業績依據：</div>
+          <ReferToggleButton
+            value={inputData.displayReference}
+            onChange={value => handleSetInputData('displayReference', value)}
+          />
+        </div>}
+      </Toolbar>
+      {(!merchantDailyPerformanceReportData.loading && dailyPerformanceData !== null) ? (
+        <Results
+          className={styles.results}
+          results={dailyPerformanceData}
+          membershipDisplay={membershipDisplay}
+          attributeSwitchs={attributeSwitchs}
+        />
+      ) : (
+        <Skeleton className="h-96" aria-busy="true" />
+      )}
     </Page>
   )
 }

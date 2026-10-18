@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
@@ -9,23 +6,10 @@ import useFetchGetVendor, { useFetchGetMerchantVendor } from 'hooks/useFetchGetV
 import useFetchSetUpdateMerchantVendor from 'hooks/useFetchSetUpdateMerchantVendor'
 import idx from 'idx'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import AboutMerchantVendorEdit from './AboutMerchantVendorEdit'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  aboutPayment: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function MerchantVendorEdit({ match }) {
   const history = useHistory()
@@ -106,22 +90,21 @@ function MerchantVendorEdit({ match }) {
   }
 
   return (
-    <Page css={styles.root} title="編輯廠商">
-      <Container maxWidth="md">
-        <PageTitle title='編輯廠商' subTitle='MERCHANT VENDOR EDIT' />
+    <Page className="ui-root" title="編輯廠商">
+      <div className="max-w-3xl">
+        <PageHeader title="編輯廠商" />
         <AboutMerchantVendorEdit
-          className={styles.aboutPayment}
           vendorOption={vendorOption}
           isLodaing={vendorList.loading}
           submitData={submitData}
           setSubmitData={setSubmitData}
         />
-        <div css={styles.actions}>
-          <Button disabled={vendorList.loading || isClick} onClick={handleUpdateData} color="primary" variant="contained">
+        <div className="mt-6 flex justify-end">
+          <Button disabled={vendorList.loading || isClick} onClick={handleUpdateData} variant="primary">
             儲存
           </Button>
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }

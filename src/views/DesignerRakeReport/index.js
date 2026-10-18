@@ -1,15 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
-import { Container, Grid, Typography, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { startOfMonth } from 'date-fns'
 import idx from 'idx'
 import useFetchDesignerRakeReport from 'hooks/useFetchDesignersRakeReport'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { EmptyState } from 'ui/empty-state'
+import { PageHeader, Toolbar } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -54,36 +55,37 @@ const DesignerRakeReport = () => {
   }, [isMemberShipCardActiveData.loading])
 
   return (
-    <Page css={styles.root} title="設計師抽成報表">
-      <Container maxWidth={false} css={styles.container}>
-        <AdminPageHeader title='設計師抽成報表' />
+    <Page className="ui-root" title="設計師抽成報表">
+      <PageHeader title="設計師抽成報表" />
+      <Toolbar>
         <DateSelector
           date={date}
           attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
           dateChange={value => setDate(value)}
           margin
         />
-        {!designerRakeReportData.loading ? (
-          idx(designerRakeReportData, _ =>
-            _.data.userRakeReport.length > 0 ? (
-              <Grid container className="userRakeGrid" spacing={2}>
-                <Results
-                  designerRakeReport={_.data.userRakeReport}
-                  isMemberShipCardActive={isMemberShipCardActive}
-                />
-              </Grid>
-            ) : (
-              <Typography variant="h3" gutterBottom component="div">
-                無資料
-              </Typography>
-            )
+      </Toolbar>
+      {!designerRakeReportData.loading ? (
+        idx(designerRakeReportData, _ =>
+          _.data.userRakeReport.length > 0 ? (
+            // userRakeGrid：@media print 以 div.userRakeGrid 排成三欄，className 保留
+            <div className="userRakeGrid grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+              <Results
+                designerRakeReport={_.data.userRakeReport}
+                isMemberShipCardActive={isMemberShipCardActive}
+              />
+            </div>
+          ) : (
+            <EmptyState title="無資料" />
           )
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <CircularProgress />
-          </div>
-        )}
-      </Container>
+        )
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3" aria-busy="true">
+          <Skeleton className="h-[600px]" />
+          <Skeleton className="h-[600px]" />
+          <Skeleton className="h-[600px]" />
+        </div>
+      )}
     </Page>
   )
 }

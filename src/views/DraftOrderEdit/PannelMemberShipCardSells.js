@@ -3,9 +3,8 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Typography,
 } from '@mui/material'
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import billContext from "context/keyInContext";
 import { useFetchUseMembershipOrder } from "hooks/useFetchOrder";
 import _ from "lodash";
@@ -21,8 +20,9 @@ const styles = {
     overflowX: "scroll",
   }),
   heading: css({
-    fontSize: '15px !important',
-    fontWeight: theme.typography.fontWeightRegular,
+    fontSize: '16px !important',
+    fontWeight: 'bold',
+    color: 'rgb(var(--text))',
   }),
   fieldOutter: css({
     display: "flex",
@@ -201,7 +201,7 @@ const PannelMemberShipCardSells = ({ thirdPartTicket }) => {
         data-testid="merchantSell"
         onClick={handleAccordionClick}
       >
-        <Typography css={styles.heading}>會員卡銷售</Typography>
+        <p className="m-0" css={styles.heading}>會員卡銷售</p>
       </AccordionSummary>
       <AccordionDetails css={styles.details}>
         <div css={styles.fieldOutter}>

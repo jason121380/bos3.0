@@ -53,7 +53,7 @@ const PaywayAutocomplete = ({ value, onChange = () => { }, isReadOnly = false, .
       renderOption={(props, option, { selected }) => (
         <span {...props} css={styles.checkbox}>
           <Checkbox
-            style={{ color: '#202D50', padding: 2, marginRight: 4 }}
+            style={{ color: 'rgb(var(--text))', padding: 2, marginRight: 4 }}
             icon={icon}
             checkedIcon={checkedIcon}
             checked={selected}

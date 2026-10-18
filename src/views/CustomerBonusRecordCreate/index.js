@@ -1,29 +1,13 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import { useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import useFetchAddCustomerBonus from 'hooks/useFetchAddCustomerBonus'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import AboutCustomerBonusRecordCreate from './AboutCustomerBonusRecordCreate'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  aboutPayment: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function CustomerBonusRecordCreate() {
   const { id } = useParams()
@@ -91,25 +75,23 @@ function CustomerBonusRecordCreate() {
   }
 
   return (
-    <Page css={styles.root} title="新增紅利點數">
-      <Container maxWidth="md">
-        <PageTitle title='新增紅利點數' subTitle='Bonus Record CREATE' />
+    <Page className="ui-root" title="新增紅利點數">
+      <div className="mx-auto max-w-3xl">
+        <PageHeader title="新增紅利點數" className="pb-0" />
         <AboutCustomerBonusRecordCreate
-          className={styles.aboutPayment}
           submitData={submitData}
           setSubmitData={setSubmitData}
         />
-        <div css={styles.actions}>
+        <div className="mt-6 flex justify-end">
           <Button
             disabled={isClick}
             onClick={handleSubmitData}
-            color="primary"
-            variant="contained"
+            variant="primary"
           >
             新增
           </Button>
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }

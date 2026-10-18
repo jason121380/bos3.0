@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Container, Typography, CircularProgress } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
@@ -8,23 +6,11 @@ import { useFetchUserHelperRetrieve } from 'hooks/useFetchGetUserHelperRetrieve'
 import idx from 'idx'
 import React from 'react'
 import DesignerBeenAssistedAutoComplete from 'components/DesignerBeenAssistedAutoComplete'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Card } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
+import { Skeleton } from 'ui/skeleton'
 
 import DecreaseResults from './DecreaseResults'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  searchBar: css({
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: '15px 10px'
-  })
-}
 
 export default function DecreaseDetail() {
   const [pageSetting, setPageSetting] = React.useState({
@@ -44,10 +30,10 @@ export default function DecreaseDetail() {
   })
 
   return (
-    <Page title="互助點數明細" css={styles.root}>
-      <Container maxWidth={false}>
+    <Page title="互助點數明細" className="ui-root">
+      <div>
         <AdminPageHeader title='互助點數明細' />
-        <div css={styles.searchBar}>
+        <div className="mb-3 flex flex-wrap items-center gap-x-2.5 gap-y-[15px]">
           <div>
             <MerchantSearchBar
               values={pageSetting}
@@ -75,17 +61,18 @@ export default function DecreaseDetail() {
                 beenAssistedDesigner={beenAssistedDesigner}
               />
             ) : (
-              <Typography variant="h3" gutterBottom component="div">
-                無資料
-              </Typography>
+              <Card>
+                <EmptyState title="無資料" />
+              </Card>
             )
           )
         ) : (
-          <div style={{ textAlign: 'center', marginTop: 150 }}>
-            <CircularProgress />
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div>
         )}
-      </Container>
+      </div>
     </Page>
   )
 }

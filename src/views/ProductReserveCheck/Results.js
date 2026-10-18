@@ -1,17 +1,16 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Table, TableBody, TableCell, TableHead, TableRow, Paper,
-  TableContainer, Grid, Typography
-} from '@mui/material'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import clsx from 'clsx'
 import { css } from '@emotion/react'
+import { EmptyState } from 'ui/empty-state'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 const styles = {
   root: css({}),
   br: css({
-    borderRight: '1px solid #eeeeee'
+    borderRight: '1px solid rgb(var(--border))'
   }),
   brBold: css({
     borderRight: '1.5px solid grey'
@@ -43,84 +42,85 @@ const styles = {
   }),
 }
 
+// 欄線：一般分隔（border）、商品群組分隔（border-strong）；固定首欄改用 tokens 底色（原為寫死白底）
+const SEP = 'border-0 border-r border-solid border-border'
+const GROUP_END = 'border-0 border-r border-solid border-border-strong'
+const STICKY_COL = 'sticky left-0 z-[99] min-w-[120px] break-all'
+
 function Results({ reportData }) {
   const { reserveCheckSummary, productReserveChecks } = reportData
   return (
     <Fragment>
       {reserveCheckSummary.length === 0 ? (
-        <Typography style={{ textAlign: 'center', marginTop: 100 }} variant="h3" gutterBottom component="div">無資料</Typography>
+        <EmptyState title="無資料" className="mt-[100px]" />
       ) : (
-        <Grid style={{ overflow: 'auto', marginTop: 12 }} justifyContent='flex-start' spacing={2} container direction='row' >
-          <Grid item xs={12} md={3}>
-            <TableContainer style={{ maxHeight: '80vh', overflowY: 'auto' }} component={Paper}>
-              <Table size="small" aria-label="a dense table">
-                <TableHead>
-                  <TableRow css={styles.stickyRow} style={{ top: 0 }} >
-                    <TableCell style={{ border: 'none' }}>品名</TableCell>
-                    <TableCell style={{ border: 'none' }}>數量</TableCell>
-                    <TableCell style={{ border: 'none' }}>價格</TableCell>
-                    <TableCell style={{ border: 'none' }}>庫存金額</TableCell>
+        <div className="mt-3 grid grid-cols-1 items-start gap-4 overflow-auto md:grid-cols-4">
+          <div className="min-w-0 md:col-span-1">
+            <Table wrapperClassName="max-h-[80vh] overflow-y-auto" aria-label="a dense table">
+              <TableHeader className="sticky top-0 z-[100]">
+                <TableRow className="hover:bg-transparent">
+                  <TableHead>品名</TableHead>
+                  <TableHead numeric>數量</TableHead>
+                  <TableHead numeric>價格</TableHead>
+                  <TableHead numeric>庫存金額</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {reserveCheckSummary.map(d => (
+                  <TableRow key={d.id}>
+                    <TableCell>{d.productName}</TableCell>
+                    <TableCell numeric>{formatNumber(d.reserveCount)}</TableCell>
+                    <TableCell numeric>{formatNumber(d.price)}</TableCell>
+                    <TableCell numeric>{formatNumber(d.reservePrice)}</TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {reserveCheckSummary.map(d => (
-                    <TableRow key={d.id} hover>
-                      <TableCell>{d.productName}</TableCell>
-                      <TableCell>{d.reserveCount}</TableCell>
-                      <TableCell>{d.price}</TableCell>
-                      <TableCell>{d.reservePrice}</TableCell>
-                    </TableRow>
+                ))}
+                <TableRow className="bg-surface font-medium">
+                  <TableCell colSpan={2}></TableCell>
+                  <TableCell numeric><strong>合計</strong></TableCell>
+                  <TableCell numeric className="font-bold">{formatNumber(reserveCheckSummary.reduce((a, b) => a + b.reservePrice , 0))}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+          <div className="min-w-0 md:col-span-3">
+            <Table wrapperClassName="max-h-[80vh] overflow-y-auto">
+              <TableHeader>
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className={`${STICKY_COL} top-0 z-[101] border-r border-r-border-strong bg-surface`}>品名</TableHead>
+                  {productReserveChecks.map(d => (
+                    <TableHead key={d.id} className="sticky top-0 z-[100] min-w-[100px] border-r border-r-border-strong bg-surface text-center" colSpan={3}>{d.productName}</TableHead>
                   ))}
-                  <TableRow hover >
-                    <TableCell colSpan={2}></TableCell>
-                    <TableCell><strong>合計</strong></TableCell>
-                    <TableCell>{reserveCheckSummary.reduce((a, b) => a + b.reservePrice , 0)}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Grid>
-          <Grid xs={12} md={9} item>
-            <TableContainer style={{ maxHeight: '80vh', overflowY: 'auto' }} component={Paper}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow css={styles.stickyRow} style={{ top: 0 }}>
-                    <TableCell css={css([styles.brBold, styles.bbBold, styles.sticky])}>品名</TableCell>
-                    {productReserveChecks.map(d => (
-                      <TableCell key={d.id} align='center' css={css([styles.brBold, styles.bbBold, styles.cell])} colSpan={3}>{d.productName}</TableCell>
-                    ))}
-                  </TableRow>
-                  <TableRow css={styles.stickyRow} style={{ top: 30 }}>
-                    <TableCell css={css([styles.brBold, styles.sticky])}>本期</TableCell>
-                    {productReserveChecks.map((d, i) => (
-                      <Fragment key={`stockLabel-${i}`}>
-                        <TableCell style={{ border: 'none' }} align='center' >進</TableCell>
-                        <TableCell style={{ border: 'none' }} align='center' >發</TableCell>
-                        <TableCell align='center' style={{ borderBottom: 'none' }} css={styles.brBold}>存</TableCell>
-                      </Fragment>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {productReserveChecks[0].reserveChecks.map((d, i) => (
-                    <TableRow key={`${d.title}-${i}`} hover>
-                      <TableCell style={{ outline: '1px solid #eeeeee' }} css={css([styles.brBold, styles.sticky])}>{d.title}</TableCell>
-                      {productReserveChecks.map(({ reserveChecks }) => {
-                        return (
-                          <Fragment>
-                            <TableCell align='center' sx={{ color: '#6565ff !important' }} css={styles.br}>{reserveChecks[i].isCreated ? reserveChecks[i].in : '-'}</TableCell>
-                            <TableCell align='center' sx={{ color: '#ff4040 !important' }} css={styles.br}>{reserveChecks[i].isCreated ? reserveChecks[i].out : '-'}</TableCell>
-                            <TableCell align='center' css={styles.brBold}>{reserveChecks[i].isCreated ? reserveChecks[i].balance : '-'}</TableCell>
-                          </Fragment>
-                        )
-                      })}
-                    </TableRow>
+                </TableRow>
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className={`${STICKY_COL} top-11 z-[101] border-r border-r-border-strong bg-surface`}>本期</TableHead>
+                  {productReserveChecks.map((d, i) => (
+                    <Fragment key={`stockLabel-${i}`}>
+                      <TableHead className="sticky top-11 z-[100] bg-surface text-center">進</TableHead>
+                      <TableHead className="sticky top-11 z-[100] bg-surface text-center">發</TableHead>
+                      <TableHead className="sticky top-11 z-[100] border-r border-r-border-strong bg-surface text-center">存</TableHead>
+                    </Fragment>
                   ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Grid>
-        </Grid>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {productReserveChecks[0].reserveChecks.map((d, i) => (
+                  <TableRow key={`${d.title}-${i}`}>
+                    <TableCell className={`${STICKY_COL} ${GROUP_END} bg-background`}>{d.title}</TableCell>
+                    {productReserveChecks.map(({ reserveChecks }) => {
+                      return (
+                        <Fragment>
+                          <TableCell className={`${SEP} text-center tabular-nums text-accent`}>{reserveChecks[i].isCreated ? reserveChecks[i].in : '-'}</TableCell>
+                          <TableCell className={`${SEP} text-center tabular-nums text-danger`}>{reserveChecks[i].isCreated ? reserveChecks[i].out : '-'}</TableCell>
+                          <TableCell className={`${GROUP_END} text-center tabular-nums`}>{reserveChecks[i].isCreated ? reserveChecks[i].balance : '-'}</TableCell>
+                        </Fragment>
+                      )
+                    })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
       )}
     </Fragment>
   )

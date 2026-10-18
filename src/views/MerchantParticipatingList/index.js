@@ -1,30 +1,12 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import idx from 'idx'
 import { useState, useEffect, Fragment } from 'react'
 import useFetchGetMerchantParticipatingList from 'hooks/useFetchGetMerchantParticipatingList'
 import { cloneDeep } from 'lodash'
 import AdminPageHeader from 'components/AdminPageHeader'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3)
-  }),
-  filterWrap: css({
-    display: 'flex',
-    gap: 10,
-    flexWrap: 'wrap',
-    alignItems: 'center'
-  })
-}
 
 function MerchantParticipatingList() {
   const merchantParticipatingList = useFetchGetMerchantParticipatingList()
@@ -59,11 +41,11 @@ function MerchantParticipatingList() {
 
   return (
     <Fragment>
-      <Page css={styles.root} title="活動店家參與列表">
-        <Container maxWidth={false} css={styles.container}>
+      <Page className="ui-root" title="活動店家參與列表">
+        <div>
           <AdminPageHeader title="活動店家參與列表" />
           {merchantParticipatingList.loading ?
-            <div style={{ textAlign: 'center', marginTop: 100 }}><CircularProgress /></div>
+            <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
             : <Results
               events={events}
               setCollapse={handleSetCollapse}
@@ -73,7 +55,7 @@ function MerchantParticipatingList() {
             />
           }
 
-        </Container>
+        </div>
       </Page>
     </Fragment>
   )

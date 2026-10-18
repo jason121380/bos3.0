@@ -1,52 +1,22 @@
-/** @jsxImportSource @emotion/react */
 import {
-  Card, CardActions, CardContent, CardHeader, Divider,
-  TextField, Grid, Autocomplete, FormControl, InputLabel, Input,
-  InputAdornment, IconButton
+  TextField, Autocomplete, FormControl, InputLabel, Input,
+  InputAdornment
 } from '@mui/material'
 import { MobileDatePicker } from '@mui/x-date-pickers'
 import { useFetchProductsInProductRestock } from 'hooks/useFetchProducts'
 import { useFetchProductCategoriesInCreatePicking } from 'hooks/useFetchProductCategories'
 import idx from 'idx'
 import { useState, useEffect, useRef } from 'react'
-import FilterNoneIcon from '@mui/icons-material/FilterNone'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
-import InsertInvitationIcon from '@mui/icons-material/InsertInvitation'
+import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
 import _ from 'lodash'
 import { openSnackbar } from 'elements/snackbars'
 import format from 'date-fns/format'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Copy, Plus, Trash2 } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader } from 'ui/card'
+import { formatNumber } from 'ui/format'
 
 import ProductsModalV3 from './ProductsModalV3'
-
-const styles = {
-  cardContent: css({}),
-  formControl: css({
-    marginBottom: theme.spacing(3),
-    ':last:child': {
-      marginBottom: 0,
-    },
-    width: '100%',
-  }),
-  createIcon: css({
-    cursor: 'pointer',
-  }),
-  productArrayInput: css({
-    // width: '100%',
-  }),
-  productArrayDiv: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '24px',
-    flexWrap: 'nowrap',
-  }),
-  productArrayIcons: css({
-    cursor: 'pointer',
-  }),
-}
 
 export default function General({
   className,
@@ -243,10 +213,10 @@ export default function General({
   }
 
   const Title = () => (
-    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-      <span>進貨資訊-{purchaseRecord.vendorName}</span>
+    <div className="flex w-full flex-wrap items-baseline justify-between gap-2">
+      <span className="text-heading text-text">進貨資訊-{purchaseRecord.vendorName}</span>
       {purchaseRecord.stockInDate && (
-        <span style={{ marginLeft: 'auto' }} >
+        <span className="ml-auto text-caption tabular-nums text-text-secondary">
           入庫時間：{format(purchaseRecord.stockInDate, 'yyyy-MM-dd-HH:MM')}
         </span>
       )}
@@ -254,14 +224,14 @@ export default function General({
   )
 
   return (
-    <Card css={className}>
-      <CardHeader title={<Title />} />
-      <Divider />
-      <CardContent css={styles.cardContent}>
+    <Card className={className}>
+      <CardHeader className="[&>div:first-child]:w-full">
+        <Title />
+      </CardHeader>
+      <CardContent className="flex flex-col gap-6">
         <MobileDatePicker
           closeOnSelect
           label='進貨日期'
-          css={styles.formControl}
           value={purchaseRecord.date}
           disabled={disabled}
           onChange={val => setPurchaseRecord({ ...purchaseRecord, date: new Date(val).getTime() })}
@@ -276,7 +246,7 @@ export default function General({
           }}
           slots={{
             field: inputProps => (
-              <FormControl css={styles.formControl} variant="filled">
+              <FormControl fullWidth variant="filled">
                 <InputLabel htmlFor="date-picker">進貨日期</InputLabel>
                 <Input
                   id="date-picker"
@@ -293,126 +263,130 @@ export default function General({
             )
           }}
         />
-        {purchaseRecord.purchaseProduct.map((data, index) => (
-          <Grid container css={styles.productArrayDiv} key={index}>
-            {/* 先隱藏 */}
-            {index === 0 ? (
-              <Grid item sm={1}  >
-                <IconButton disabled={disabled} onClick={handleOpenProductsModal}>
-                  <FilterNoneIcon css={styles.createIcon} />
-                </IconButton>
-              </Grid>
-            ) : (
-              <Grid item sm={1}></Grid>
-            )}
-            <Grid item sm={4} style={{ marginRight: '20px' }}>
-              <Autocomplete
-                freeSolo
-                readOnly={disabled}
-                onFocus={() => { setFocusRow(index) }}
-                id="prodcut-select"
-                style={{ width: '100%' }}
-                options={productOptions || []}
-                autoHighlight
-                filterOptions={productFilter}
-                getOptionLabel={option => (data ? data.productName : '')}
-                value={data ? data.productName : ''}
-                onChange={(_event, value) => hadnleSelectProduct(value, index, 'notModal')}
-                renderOption={(props, option) => {
-                  return (
-                    <li {...props} key={option.id}>
-                      {`${option.no} ${option.name}`}
-                    </li>
-                  )
-                }}
-                renderInput={params => (
-                  <TextField
-                    {...params}
-                    label="選擇商品"
-                    variant="outlined"
-                    fullWidth
-                    name="product"
-                    tabIndex={focusRow + '0'}
-                    ref={(index === focusRow && focus === 'product') ? productRef : null}
-                    onChange={event => setProductKeyword(event.target.value)}
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: 'new-password',
-                    }}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item sm={2} style={{ marginRight: '20px' }}>
-              <TextField
-                InputProps={{ inputProps: { min: 0, readOnly: disabled } }}
-                onFocus={() => { setFocusRow(index) }}
-                label="價格"
-                ref={(index === focusRow && focus === 'price') ? priceRef : null}
-                variant="outlined"
-                fullWidth
-                name="price"
-                tabIndex={focusRow + '1'}
-                css={styles.productArrayInput}
-                onChange={event => handlePriceOnChange(event, index)}
-                InputLabelProps={{ shrink: true }}
-                onKeyDown={event => {
-                  if (event.key === 'Enter') {
-                    setFocus('count')
-                    countRef.current.focus()
-                  }
-                }}
-                value={data.unitPrice}
-                type="number"
-              />
-            </Grid>
-            <Grid item sm={2}>
-              <TextField
-                InputProps={{ inputProps: { min: 0, readOnly: disabled } }}
-                onFocus={() => { setFocusRow(index) }}
-                label="數量"
-                variant="outlined"
-                fullWidth
-                name="count"
-                ref={(index === focusRow && focus === 'count') ? countRef : null}
-                css={styles.productArrayInput}
-                onKeyDown={event => {
-                  if (event.key === 'Enter') {
-                    setFocus('product')
-                    handleChangeFocusRow(index + 1)
-                  }
-                }}
-                value={data.count}
-                type="number"
-                InputLabelProps={{ shrink: true }}
-                onChange={event => handleProductCountOnChange(event, index)}
-              />
-            </Grid>
-            {index !== 0 ? (
-              <Grid item sm={1} >
-                <IconButton disabled={disabled} onClick={() => handleDeleteProduct(index)}>
-                  <DeleteForeverIcon
-                    css={styles.productArrayIcons}
-                  />
-                </IconButton>
-              </Grid>
-            ) : (
-              <Grid item sm={1}></Grid>
-            )}
-            {index === purchaseRecord.purchaseProduct.length - 1 ? (
-              <Grid item sm={1} >
-                <IconButton disabled={disabled} onClick={handleAddProduct}>
-                  <AddIcon css={styles.purchaseProduct} />
-                </IconButton>
-              </Grid>
-            ) : (
-              <Grid item sm={1}></Grid>
-            )}
-          </Grid>
-        ))}
+        <div className="flex flex-col gap-4">
+          {purchaseRecord.purchaseProduct.map((data, index) => (
+            <div className="flex flex-nowrap items-center gap-4" key={index}>
+              {/* 先隱藏 */}
+              {index === 0 ? (
+                <div className="w-9 shrink-0">
+                  <Button variant="ghost" size="icon" aria-label="從商品清單挑選" disabled={disabled} onClick={handleOpenProductsModal}>
+                    <Copy strokeWidth={1.75} />
+                  </Button>
+                </div>
+              ) : (
+                <div className="w-9 shrink-0"></div>
+              )}
+              <div className="min-w-0 flex-[4]">
+                <Autocomplete
+                  freeSolo
+                  readOnly={disabled}
+                  onFocus={() => { setFocusRow(index) }}
+                  id="prodcut-select"
+                  style={{ width: '100%' }}
+                  options={productOptions || []}
+                  autoHighlight
+                  filterOptions={productFilter}
+                  getOptionLabel={option => (data ? data.productName : '')}
+                  value={data ? data.productName : ''}
+                  onChange={(_event, value) => hadnleSelectProduct(value, index, 'notModal')}
+                  renderOption={(props, option) => {
+                    return (
+                      <li {...props} key={option.id}>
+                        {`${option.no} ${option.name}`}
+                      </li>
+                    )
+                  }}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label="選擇商品"
+                      variant="outlined"
+                      fullWidth
+                      name="product"
+                      tabIndex={focusRow + '0'}
+                      ref={(index === focusRow && focus === 'product') ? productRef : null}
+                      onChange={event => setProductKeyword(event.target.value)}
+                      inputProps={{
+                        ...params.inputProps,
+                        autoComplete: 'new-password',
+                      }}
+                    />
+                  )}
+                />
+              </div>
+              <div className="min-w-0 flex-[2]">
+                <TextField
+                  InputProps={{ inputProps: { min: 0, readOnly: disabled } }}
+                  onFocus={() => { setFocusRow(index) }}
+                  label="價格"
+                  ref={(index === focusRow && focus === 'price') ? priceRef : null}
+                  variant="outlined"
+                  fullWidth
+                  name="price"
+                  tabIndex={focusRow + '1'}
+                  onChange={event => handlePriceOnChange(event, index)}
+                  InputLabelProps={{ shrink: true }}
+                  onKeyDown={event => {
+                    if (event.key === 'Enter') {
+                      setFocus('count')
+                      countRef.current.focus()
+                    }
+                  }}
+                  value={data.unitPrice}
+                  type="number"
+                />
+              </div>
+              <div className="min-w-0 flex-[2]">
+                <TextField
+                  InputProps={{ inputProps: { min: 0, readOnly: disabled } }}
+                  onFocus={() => { setFocusRow(index) }}
+                  label="數量"
+                  variant="outlined"
+                  fullWidth
+                  name="count"
+                  ref={(index === focusRow && focus === 'count') ? countRef : null}
+                  onKeyDown={event => {
+                    if (event.key === 'Enter') {
+                      setFocus('product')
+                      handleChangeFocusRow(index + 1)
+                    }
+                  }}
+                  value={data.count}
+                  type="number"
+                  InputLabelProps={{ shrink: true }}
+                  onChange={event => handleProductCountOnChange(event, index)}
+                />
+              </div>
+              {index !== 0 ? (
+                <div className="w-9 shrink-0">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="刪除此列"
+                    className="text-text-secondary hover:text-danger"
+                    disabled={disabled}
+                    onClick={() => handleDeleteProduct(index)}
+                  >
+                    <Trash2 strokeWidth={1.75} />
+                  </Button>
+                </div>
+              ) : (
+                <div className="w-9 shrink-0"></div>
+              )}
+              {index === purchaseRecord.purchaseProduct.length - 1 ? (
+                <div className="w-9 shrink-0">
+                  <Button variant="ghost" size="icon" aria-label="新增一列" disabled={disabled} onClick={handleAddProduct}>
+                    <Plus strokeWidth={1.75} />
+                  </Button>
+                </div>
+              ) : (
+                <div className="w-9 shrink-0"></div>
+              )}
+            </div>
+          ))}
+        </div>
         <TextField
           label="操作者"
-          css={styles.formControl}
           variant="outlined"
           fullWidth
           value={purchaseRecord.operatorName}
@@ -427,7 +401,6 @@ export default function General({
           label="備註"
           variant="outlined"
           fullWidth
-          css={styles.formControl}
           value={purchaseRecord.remark}
           InputProps={{ inputProps: { readOnly: disabled } }}
           onChange={event =>
@@ -454,8 +427,9 @@ export default function General({
           setPurchaseRecords={setPurchaseRecord}
         />
       )}
-      <Divider />
-      <CardActions>合計：{productTotal}</CardActions>
+      <CardFooter className="justify-start text-body text-text">
+        合計：<span className="font-medium tabular-nums">{formatNumber(productTotal)}</span>
+      </CardFooter>
     </Card>
   )
 }

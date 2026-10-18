@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { TextField, FormControlLabel, Checkbox, Button } from '@mui/material'
+import { TextField, Button } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
 import billContext from 'context/keyInContext'
-import DragHandleRoundedIcon from '@mui/icons-material/DragHandleRounded';
-import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
+import { DragHandleRounded as DragHandleRoundedIcon, RemoveRounded as RemoveRoundedIcon } from 'ui/icons'
 import { useLazyFetchCustomerWallet } from 'hooks/useFetchCustomerWallet'
 import { useFetchProfileIdentity } from 'hooks/useFetchProfile'
 import useFetchGetMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'
@@ -227,10 +227,9 @@ function PaymentCustomerWallet(props, ref) {
                     }}
                   />
                   <div style={{ marginTop: 20, position: 'absolute', left: 0, bottom: -40 }}>
-                    <FormControlLabel
-                      control={<Checkbox color="primary" />}
+                    <CheckboxField
                       label="整筆扣入金"
-                      style={{ whiteSpace: 'nowrap' }}
+                      className="whitespace-nowrap"
                       onChange={handleCheckWalletPay}
                     />
                   </div>

@@ -1,7 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Container, CircularProgress, Button, ToggleButton, ToggleButtonGroup
-} from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
@@ -13,21 +9,12 @@ import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCard
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
 import { CSVLink } from "react-csv";
 import format from 'date-fns/format'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Download, Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 const sortEnum = [
   { label: '業績', value: 'performance' },
@@ -83,8 +70,8 @@ export default function Employees() {
     }
   }, [isMemberShipCardActiveData.loading])
   return (
-    <Page css={styles.root} title="設計師業績月報表">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className="ui-root" title="設計師業績月報表">
+      <div>
         <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "flex", justifyContent: "space-between" }}>
           <div className="merchantNamePrint">
             {JSON.parse(localStorage.getItem('userMerchant')).name +
@@ -101,31 +88,31 @@ export default function Employees() {
           </div>
         </div>
         <AdminPageHeader title='設計師業績月報表' />
-        <div className='noprint' style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+        <div className='noprint flex flex-wrap justify-between gap-3'>
           <DateSelector
             date={date}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
             margin
           />
-          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '20px 10px' }}>
-            <div style={{ alignSelf: 'flex-start' }}>
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-5">
+            <div className="self-start">
               <div className="divText">排序依序：</div>
-              <ToggleButtonGroup
+              <ToggleGroup
                 size="small"
                 value={sort}
                 onChange={handleToggleButtonChangeSort}
                 exclusive
               >
                 {sortEnum.map((data, idx) => (
-                  <ToggleButton style={{ wordBreak: 'keep-all' }} key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                  <ToggleGroupItem style={{ wordBreak: 'keep-all' }} key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                     {data.label}
-                  </ToggleButton>
+                  </ToggleGroupItem>
                 ))}
-              </ToggleButtonGroup>
+              </ToggleGroup>
             </div>
             {
-              !isDisplayTogglePerformanceButton && <div style={{ alignSelf: 'flex-start' }}>
+              !isDisplayTogglePerformanceButton && <div className="self-start">
                 <div className="divText">業績依據：</div>
                 <ReferToggleButton
                   value={performReference}
@@ -139,21 +126,19 @@ export default function Employees() {
               filename="設計師業績月報表.csv"
             >
               <Button
-                style={{ wordBreak: 'keep-all', height: 'fit-content' }}
                 disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading}
-                variant="contained"
-                color="primary"
+                variant="secondary"
               >
+                <Download strokeWidth={1.75} />
                 報表匯出
               </Button>
             </CSVLink>
             <Button
-              style={{ wordBreak: 'keep-all', height: 'fit-content' }}
               disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading}
               onClick={() => window.print()}
-              variant="contained"
-              color="primary"
+              variant="secondary"
             >
+              <Printer strokeWidth={1.75} />
               列印
             </Button>
           </div>
@@ -167,8 +152,13 @@ export default function Employees() {
               sort={sort}
               isMemberShipCardActive={isMemberShipCardActive}
             />
-          )) : <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>}
-      </Container>
+          )) : (
+            // 載入中：與舊版 CircularProgress 相同時機顯示
+            <div className="noprint mt-3" aria-busy="true" aria-label="載入中">
+              <Skeleton className="h-[320px] w-full rounded-lg" />
+            </div>
+          )}
+      </div>
     </Page>
   )
 }

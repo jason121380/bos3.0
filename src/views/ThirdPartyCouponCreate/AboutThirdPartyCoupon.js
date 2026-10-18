@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, FormControl, InputLabel, MenuItem,
-  Select, TextField, FormControlLabel, Checkbox
+  FormControl, InputLabel, MenuItem, Select, TextField, FormControlLabel, Checkbox
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
@@ -31,8 +31,10 @@ const thirdPartyCouponDeductionType = [
 
 function AboutThirdPartyCoupon({ className, thirdPartyCoupon, onChange, ...rest }) {
   return (
-    <Card {...rest} css={className}>
-      <CardHeader title="一般資訊" />
+    <Card {...rest}>
+      <CardHeader>
+        <CardTitle>一般資訊</CardTitle>
+      </CardHeader>
       <CardContent>
         <TextField
           css={styles.formControl}

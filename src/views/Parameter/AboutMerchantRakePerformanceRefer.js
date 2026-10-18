@@ -1,15 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  CardActions,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from '@mui/material'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import styles from './styles/AboutMerchantRakePerformanceRefer'
 import produce from 'immer'
@@ -40,41 +31,42 @@ function AboutMerchantRakePerformanceRefer({
     )
   }
   return (
-    <Card css={className}>
-      <CardHeader title="抽成門檻依據設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>抽成門檻依據設定</CardTitle>
+      </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
-          <CardActions>
-            <FormControl disabled={!inputEnable} variant="outlined" css={styles.field}>
-              <InputLabel>指定</InputLabel>
-              <Select
-                label='指定'
-                value={merchantRakeReferemce.designate}
-                onChange={e => handleValueChange(e, 'designate')}
-              >
-                {options.des.map((data, idx) => (
-                  <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                    {data.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl disabled={!inputEnable} variant="outlined" css={styles.field}>
-              <InputLabel>不指定</InputLabel>
-              <Select
-                label='不指定'
-                value={merchantRakeReferemce.nonDesignate}
-                onChange={e => handleValueChange(e, 'nonDesignate')}
-              >
-                {options.nonDes.map((data, idx) => (
-                  <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                    {data.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </CardActions>
+          <div className="flex flex-wrap items-center gap-2 p-2">
+            <NativeSelect
+              disabled={!inputEnable}
+              fullWidth={false}
+              css={styles.field}
+              label='指定'
+              value={merchantRakeReferemce.designate}
+              onChange={e => handleValueChange(e, 'designate')}
+            >
+              {options.des.map((data, idx) => (
+                <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                  {data.label}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
+            <NativeSelect
+              disabled={!inputEnable}
+              fullWidth={false}
+              css={styles.field}
+              label='不指定'
+              value={merchantRakeReferemce.nonDesignate}
+              onChange={e => handleValueChange(e, 'nonDesignate')}
+            >
+              {options.nonDes.map((data, idx) => (
+                <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                  {data.label}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
+          </div>
         </div>
       </CardContent>
     </Card>

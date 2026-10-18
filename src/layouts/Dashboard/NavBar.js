@@ -1,10 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Avatar, Badge, Divider, Drawer, IconButton,
-  Link, List, ListSubheader, Typography, colors,
-  TextField, InputAdornment,
-} from '@mui/material'
-import ExitToAppIcon from '@mui/icons-material/ExitToApp'
+import { CalendarDays, ChartColumn, Contact, CreditCard, Gift, LogOut, Megaphone, Package, Pin, Receipt, Search, Settings, Users } from 'lucide-react'
 import NavItem from 'components/NavItem'
 import useFetchProfile from 'hooks/useFetchProfile'
 import idx from 'idx'
@@ -18,32 +12,19 @@ import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusAc
 import useFetchGetIsReportListExtended from 'hooks/useFetchGetIsReportListExtended'
 import useFetchGetUserPinnedTable from 'hooks/useFetchGetUserPinnedTable'
 import { useFetchGetDisablePendingOrder } from 'hooks/useFetchGetParameterAboutSettingFunction'
-import PointOfSaleIcon from '@mui/icons-material/PointOfSale'
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
-import InsightsIcon from '@mui/icons-material/Insights'
-import GroupsIcon from '@mui/icons-material/Groups'
-import BadgeIcon from '@mui/icons-material/Badge'
-import InventoryIcon from '@mui/icons-material/Inventory'
-import CampaignIcon from '@mui/icons-material/Campaign'
-import LoyaltyIcon from '@mui/icons-material/Loyalty'
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
-import LocalActivityIcon from '@mui/icons-material/LocalActivity';
-import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
-import SearchIcon from '@mui/icons-material/Search'
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard'
-import { css } from '@emotion/react'
-import { createTheme } from '@mui/material/styles'
 import { useDispatch, useSelector } from 'react-redux'
 import { pinnedTableActions } from './../../store/pinnedTable'
 import pageData from 'helper/pageData'
-const themeForStyle = createTheme()
+import { Button } from 'ui/button'
+import { Input } from 'ui/input'
+import { SidebarContent, SidebarFooter, SidebarLabel } from 'ui/sidebar'
+import { cn, focusRing } from 'ui/utils'
 
 function renderNavItems({ items, subheader, key, reportListExtended, isPinned = false, ...rest }) {
   return (
-    <List sx={{ pt: isPinned ? 0 : '' }} key={key}>
-      {subheader && <ListSubheader disableSticky></ListSubheader>}
+    <div className="flex flex-col gap-0.5" key={key}>
       {items.reduce((acc, item) => reduceChildRoutes({ acc, item, reportListExtended, ...rest }), [])}
-    </List>
+    </div>
   )
 }
 
@@ -159,7 +140,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   const config = []
   const memberShipCardItem = {
     title: '會員卡管理',
-    icon: LoyaltyIcon,
+    icon: CreditCard,
     items: [
       { title: '會員卡分類設定', href: '/member-card-categories' },
       { title: '會員卡列表', href: '/member-card-record' },
@@ -167,14 +148,14 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const CustomerBonusItem = {
     title: '紅利點數設定',
-    icon: LocalActivityIcon,
+    icon: Gift,
     items: [
       { title: '紅利點數紀錄', href: '/customer-bonus-record' },
     ],
   }
   const counterItem = {
     title: '櫃檯作業',
-    icon: PointOfSaleIcon,
+    icon: Receipt,
     items: [
       { title: '打帳單', href: '/order/create' },
       { title: '帳單列表', href: '/management/orders' },
@@ -190,7 +171,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const reservationItem = {
     title: '預約管理',
-    icon: CalendarMonthIcon,
+    icon: CalendarDays,
     items: [
       { title: '預約管理', href: '/management/weborders' },
       { title: '單日預約紀錄', href: '/management/reservation/calendar' },
@@ -199,7 +180,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const reportItem = {
     title: '報表及分析',
-    icon: InsightsIcon,
+    icon: ChartColumn,
     items: [
       { title: '報表目錄', href: '/dashboard-list-detail' },
       { title: '消費分析儀表板', href: '/consumption-analytics-dashboard' },
@@ -248,7 +229,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const customerItem = {
     title: '客戶管理',
-    icon: GroupsIcon,
+    icon: Users,
     items: [
       { title: '客戶列表', href: '/management/customers' },
       { title: '客資篩選匯出', href: '/management/customer-filter-export' },
@@ -258,7 +239,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const employeeItem = {
     title: '員工及薪資',
-    icon: BadgeIcon,
+    icon: Contact,
     items: [
       { title: '員工列表', href: '/management/employee' },
       { title: '員工離職列表', href: '/employee-resignation-list' },
@@ -272,7 +253,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const productItem = {
     title: '商品管理',
-    icon: InventoryIcon,
+    icon: Package,
     items: [
       { title: '商品分類設定', href: '/product/categories' },
       { title: '商品列表', href: '/products' },
@@ -283,7 +264,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const settingItem = {
     title: '資料設定',
-    icon: ManageAccountsIcon,
+    icon: Settings,
     items: [
       { title: '服務分類設定', href: '/service/categories' },
       { title: '服務項目設定', href: '/services' },
@@ -299,7 +280,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   const marketingTools = {
     title: '行銷工具',
-    icon: CampaignIcon,
+    icon: Megaphone,
     items: [
       { title: '活動列表', href: '/main-event-list' },
       { title: '活動店家參與列表', href: '/merchant-participating-list' },
@@ -366,155 +347,10 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       // Do something with the module.
     })
   }
-  if (theme == 'DARK' && !profile.loading) {
-    var styles = {
-      root: css({
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: '#2B2B40',
-        width: 200
-      }),
-      mobileDrawer: css({
-        width: 200,
-      }),
-      desktopDrawer: css({
-        '& > div.MuiPaper-root': {
-          width: 'auto',
-          top: 64,
-          height: 'calc(100% - 64px)',
-        }
-      }),
-      navigation: css({
-        overflow: 'auto',
-        padding: themeForStyle.spacing(0, 1, 2, 1),
-        flexGrow: 1,
-        width: 200,
-      }),
-      profile: css({
-        padding: themeForStyle.spacing(2, 1, 2, 2),
-        display: 'flex',
-        alignItems: 'center',
-        gap: 5
-      }),
-      badge: css({
-        boxShadow: `0 0 0 2px ${themeForStyle.palette.background.paper}`,
-      }),
-      badgeDot: css({
-        height: 9,
-        minWidth: 9,
-      }),
-      onlineBadge: css({
-        backgroundColor: colors.green[600],
-      }),
-      awayBadge: css({
-        backgroundColor: colors.orange[600],
-      }),
-      busyBadge: css({
-        backgroundColor: colors.red[600],
-      }),
-      offlineBadge: css({
-        backgroundColor: colors.grey[300],
-      }),
-      avatar: css({
-        cursor: 'pointer',
-        width: 40,
-        height: 40,
-        backgroundColor: '#ffffff00',
-      }),
-      details: css({
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        flexGrow: 1
-      }),
-      moreButton: css({
-        marginLeft: 'auto',
-        color: colors.blueGrey[200] + '!important',
-        padding: '0px !important'
-      }),
-      divider: css({
-        borderColor: '#E0E2E6'
-      }),
-    }
-  } else {
-    var styles = {
-      root: css({
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: 'transparent',
-        width: 260,
-      }),
-      mobileDrawer: css({
-        width: 260,
-        '& > div.MuiPaper-root': {
-          borderRadius: '0px !important',
-        }
-      }),
-      desktopDrawer: css({
-        '& > div.MuiPaper-root': {
-          width: 260,
-          top: 64,
-          height: 'calc(100% - 64px)',
-          borderRight: '1px solid rgba(0, 0, 0, 0.1)',
-          backgroundColor: '#FFFFFF',
-          zIndex: 1000,
-          borderRadius: '0px !important',
-        }
-      }),
-      navigation: css({
-        overflow: 'auto',
-        padding: themeForStyle.spacing(2, 1),
-        flexGrow: 1,
-        width: 260,
-      }),
-      profile: css({
-        padding: themeForStyle.spacing(2, 1, 2, 2),
-        display: 'flex',
-        alignItems: 'center',
-        gap: 5
-      }),
-      badge: css({
-        boxShadow: `0 0 0 2px ${themeForStyle.palette.background.paper}`,
-      }),
-      badgeDot: css({
-        height: 9,
-        minWidth: 9,
-      }),
-      onlineBadge: css({
-        backgroundColor: colors.green[600],
-      }),
-      awayBadge: css({
-        backgroundColor: colors.orange[600],
-      }),
-      busyBadge: css({
-        backgroundColor: colors.red[600],
-      }),
-      offlineBadge: css({
-        backgroundColor: colors.grey[300],
-      }),
-      avatar: css({
-        cursor: 'pointer',
-        width: 40,
-        height: 40,
-        backgroundColor: '#ffffff00',
-      }),
-      details: css({
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        flexGrow: 1
-      }),
-      moreButton: css({
-        color: colors.blueGrey[200] + '!important',
-        padding: '0px !important'
-      }),
-      divider: css({
-        borderColor: '#E0E2E6'
-      })
-    }
-  }
+  // 新版介面的深色 tokens 掛在 <html class="dark">，與舊版深色主題設定同步
+  useEffect(() => {
+    if (!profile.loading) document.documentElement.classList.toggle('dark', theme == 'DARK')
+  }, [theme, profile.loading])
   const location = useLocation()
   const history = useHistory()
 
@@ -641,206 +477,76 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       window.location = '/auth/login'
     }
   }
+  const userName = idx(profile, _ => (_.data.me.name ? _.data.me.name : '使用者名稱'))
+  const userRole = idx(profile, _ =>
+    _.data.me.merchantIdentity.authorityName.length > 0 ? _.data.me.merchantIdentity.authorityName : '權限未設定'
+  )
+  const avatar = idx(profile, _ => _.data.me.avatar)
+
+  // 側欄內容與底部使用者選單；外框（Sidebar）與頂部（TopBar）由 layouts/Dashboard 組合
   return (
     <Fragment>
-      <Drawer
-        sx={{ display: { xs: 'block', lg: 'none' } }}
-        anchor="left"
-        css={styles.mobileDrawer}
-        onClose={onMobileClose}
-        open={openMobile}
-        variant="temporary"
-      >
+      <div className="px-3 pb-2">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.75} />
+          <Input
+            aria-label="搜尋選單"
+            placeholder="搜尋選單"
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="h-8 bg-background pl-8 text-label"
+          />
+        </div>
+      </div>
+      <SidebarContent>
         {!profile.loading && (
-          <div css={styles.root}>
-            <nav css={styles.navigation}>
-              <TextField
-                fullWidth
-                size="small"
-                placeholder="搜尋選單..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                sx={{
-                  mb: 1,
-                  px: 1,
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '24px',
-                    backgroundColor: theme === 'DARK' ? 'rgba(255, 255, 255, 0.05)' : '#f1f3f4',
-                    '&.Mui-focused': {
-                      backgroundColor: theme === 'DARK' ? 'rgba(255, 255, 255, 0.05)' : '#f1f3f4',
-                    },
-                    '& fieldset': {
-                      border: 'none',
-                    },
-                  },
-                  '& .MuiInputBase-input': {
-                    fontSize: '13px',
-                    py: '8px',
-                    color: theme === 'DARK' ? '#FFFFFF' : '#000000',
-                  }
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon fontSize="small" sx={{ ml: 1, color: theme === 'DARK' ? '#888' : '#666' }} />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              {filteredPinnedTable.length > 0 && (
-                <List sx={{ pb: 0 }}>
-                  <NavItem
-                    depth={0}
-                    title='釘選頁面'
-                    icon={CardGiftcardIcon}
-                    open={searchTerm.trim() !== ''}
-                  >
-                    <List>
-                      {filteredPinnedTable.map(d => (
-                        <NavItem
-                          key={d.title}
-                          depth={0}
-                          href={d.href}
-                          title={d.title}
-                          reportListExtended={reportListExtended}
-                        />
-                      ))}
-                    </List>
-                  </NavItem>
-                </List>
-              )}
-              {config.map(list =>
-                renderNavItems({
-                  items: list.items,
-                  subheader: list.subheader,
-                  pathname: location.pathname,
-                  key: list.subheader,
-                  reportListExtended: reportListExtended,
-                  isPinned: pinnedTable.length > 0
-                })
-              )}
-            </nav>
-            <Divider css={styles.divider} />
-            <Link component={RouterLink} to="/profile/general" underline="none">
-              <div css={styles.profile}>
-                <Badge
-                  overlap="circular"
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                  }}
-                  variant="dot"
-                >
-                  <Avatar
-                    alt="Person"
-                    onClick={handleStatusToggle}
-                    css={styles.avatar}
-                    src={idx(profile, _ => _.data.me.avatar)}
-                  />
-                </Badge>
-                <div css={styles.details}>
-                  <Typography
-                    variant="h5"
-                    style={{ color: '#1E1E1E', fontWeight: 500, overflow: 'hidden', textOverflow: "ellipsis" }}
-                  >
-                    {idx(profile, _ => (_.data.me.name ? _.data.me.name : '使用者名稱'))}
-                  </Typography>
-                  <Typography variant="body2" style={{ color: '#444746' }}>
-                    {idx(profile, _ =>
-                      _.data.me.merchantIdentity.authorityName.length > 0
-                        ? _.data.me.merchantIdentity.authorityName
-                        : '權限未設定'
-                    )}
-                  </Typography>
-                </div>
-                <IconButton css={styles.moreButton} size="small" onClick={handleLogOut}>
-                  <ExitToAppIcon />
-                </IconButton>
-              </div>
-            </Link>
-          </div>
+          <Fragment>
+            {filteredPinnedTable.length > 0 && (
+              <Fragment>
+                <SidebarLabel className="pt-1">釘選</SidebarLabel>
+                <NavItem depth={0} title="釘選頁面" icon={Pin} open={searchTerm.trim() !== ''}>
+                  <div className="flex flex-col gap-0.5">
+                    {filteredPinnedTable.map(d => (
+                      <NavItem key={d.title} depth={0} href={d.href} title={d.title} reportListExtended={reportListExtended} />
+                    ))}
+                  </div>
+                </NavItem>
+              </Fragment>
+            )}
+            <SidebarLabel className={filteredPinnedTable.length > 0 ? undefined : 'pt-1'}>選單</SidebarLabel>
+            {config.map(list =>
+              renderNavItems({
+                items: list.items,
+                subheader: list.subheader,
+                pathname: location.pathname,
+                key: list.subheader,
+                reportListExtended: reportListExtended,
+                isPinned: pinnedTable.length > 0,
+              })
+            )}
+          </Fragment>
         )}
-      </Drawer>
-      <Drawer
-        sx={{ display: { xs: 'none', lg: 'block' } }}
-        anchor="left"
-        css={styles.desktopDrawer}
-        open={openDesktop}
-        variant="persistent"
-      >
-        {!profile.loading && (
-          <div css={styles.root}>
-            <nav css={styles.navigation}>
-              <TextField
-                fullWidth
-                size="small"
-                placeholder="搜尋選單..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                sx={{
-                  mb: 1,
-                  px: 1,
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '24px',
-                    backgroundColor: theme === 'DARK' ? 'rgba(255, 255, 255, 0.05)' : '#f1f3f4',
-                    '&.Mui-focused': {
-                      backgroundColor: theme === 'DARK' ? 'rgba(255, 255, 255, 0.05)' : '#f1f3f4',
-                    },
-                    '& fieldset': {
-                      border: 'none',
-                    },
-                  },
-                  '& .MuiInputBase-input': {
-                    fontSize: '13px',
-                    py: '8px',
-                    color: theme === 'DARK' ? '#FFFFFF' : '#000000',
-                  }
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon fontSize="small" sx={{ ml: 1, color: theme === 'DARK' ? '#888' : '#666' }} />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              {filteredPinnedTable.length > 0 && (
-                <List sx={{ pb: 0 }}>
-                  <NavItem
-                    depth={0}
-                    title='釘選頁面'
-                    href='dfdf'
-                    icon={PushPinOutlinedIcon}
-                    open={searchTerm.trim() !== ''}
-                  >
-                    <List>
-                      {filteredPinnedTable.map(d => (
-                        <NavItem
-                          key={d.title}
-                          depth={0}
-                          href={d.href}
-                          title={d.title}
-                          reportListExtended={reportListExtended}
-                        />
-                      ))}
-                    </List>
-                  </NavItem>
-                </List>
-              )}
-              {config.map(list =>
-                renderNavItems({
-                  items: list.items,
-                  subheader: list.subheader,
-                  pathname: location.pathname,
-                  key: list.subheader,
-                  reportListExtended: reportListExtended,
-                  isPinned: pinnedTable.length > 0
-                })
-              )}
-            </nav>
-          </div>
-        )}
-      </Drawer>
+      </SidebarContent>
+      {!profile.loading && (
+        <SidebarFooter className="flex items-center gap-2">
+          <RouterLink to="/profile/general" className={cn('flex min-w-0 flex-1 items-center gap-2 rounded-md p-1 hover:bg-surface-hover', focusRing)}>
+            {avatar ? (
+              <img alt="" src={avatar} onClick={handleStatusToggle} className="h-8 w-8 shrink-0 rounded-full border border-solid border-border object-cover" />
+            ) : (
+              <span onClick={handleStatusToggle} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-hover text-label text-text-secondary">
+                {String(userName).slice(0, 1)}
+              </span>
+            )}
+            <span className="flex min-w-0 flex-col">
+              <span className="truncate text-body font-medium text-text">{userName}</span>
+              <span className="truncate text-caption text-text-secondary">{userRole}</span>
+            </span>
+          </RouterLink>
+          <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label="登出" onClick={handleLogOut}>
+            <LogOut strokeWidth={1.75} />
+          </Button>
+        </SidebarFooter>
+      )}
     </Fragment>
   )
 }

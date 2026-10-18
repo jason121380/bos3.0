@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
-import {
-  Container, CircularProgress, Button, Grid, Select, InputLabel,
-  FormControl, MenuItem, Typography
-} from '@mui/material'
+// 抽成類別的選項含 value={null}（全部），Radix Select 不支援空值，保留 MUI Select
+import { Select, InputLabel, FormControl, MenuItem } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import ServicesIncludesTicketsAutoComplete from 'components/ServicesIncludesTicketsAutoComplete'
 import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'
@@ -14,43 +12,23 @@ import idx from 'idx'
 import { CSVLink } from "react-csv";
 import useFetchServiceDedcutionDetailMultiple from 'hooks/useFetchGetUserServiceDeductionDetialMultiple'
 import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
+// ServicesIncludesTicketsAutoComplete 以 css={className} 套用，需傳 emotion 樣式物件
 const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  searchBtnDiv: css({
-    marginBottom: '24px',
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '284px',
-  }),
-  topDiv: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: 10,
-    flexWrap: 'wrap',
-    flexDirection: 'row !important',
-    '& .MuiGrid-container': {
-      width: 'unset !important'
-    }
-  }),
   field: css({
     minWidth: '180px !important'
   }),
 }
+
+// MerchantSearchBar 內部為 MUI Grid container，沿用舊版取消其寬度
+const topDiv = 'flex flex-row flex-wrap items-center gap-2.5 [&_.MuiGrid-container]:!w-[unset]'
 
 const ServiceDeductionDetailReport = () => {
   const getAttributionForRake = useFetchGetAttributionForRake()
@@ -90,11 +68,11 @@ const ServiceDeductionDetailReport = () => {
   }, [getAttributionForRake.loading])
 
   return (
-    <Page css={styles.root} title="服務扣項明細表">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className="ui-root" title="服務扣項明細表">
+      <div>
         <AdminPageHeader title='服務扣項明細表' />
-        <Grid style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
-          <Grid item css={styles.topDiv}>
+        <div className="flex flex-wrap items-center justify-between gap-2.5">
+          <div className={topDiv}>
             <MerchantSearchBar
               values={inputData}
               onFilter={values => setInputData(values)}
@@ -102,7 +80,7 @@ const ServiceDeductionDetailReport = () => {
               visible={['datePicker', 'employee']}
               lastInLeaderBoard={true}
             />
-            <Grid css={styles.topDiv} item>
+            <div className={topDiv}>
               <ServicesIncludesTicketsAutoComplete
                 className={styles.field}
                 label="服務名稱/代號"
@@ -121,17 +99,18 @@ const ServiceDeductionDetailReport = () => {
                   ))}
                 </Select>
               </FormControl>
-            </Grid>
-          </Grid>
-          <CSVLink
-            data={excelData}
-            filename="服務扣項明細表.csv"
-          >
-            <Button variant="contained" color="primary">
+            </div>
+          </div>
+          <Button asChild variant="secondary">
+            <CSVLink
+              data={excelData}
+              filename="服務扣項明細表.csv"
+            >
+              <Download strokeWidth={1.75} />
               報表匯出
-            </Button>
-          </CSVLink>
-        </Grid>
+            </CSVLink>
+          </Button>
+        </div>
         {!serviceDedcutionDetailData.loading ? (
           idx(serviceDedcutionDetailData, _ =>
             _.data.getUserServiceDeductionDetialMultiple !== null ? (
@@ -141,22 +120,23 @@ const ServiceDeductionDetailReport = () => {
                   setExcelData={setExcelData}
                 />
               ) : (
-                <Typography variant="h3" gutterBottom component="div" style={{ marginTop: '10px', textAlign: 'center' }}>
-                  無資料
-                </Typography>
+                <Card className="mt-3">
+                  <EmptyState title="無資料" />
+                </Card>
               )
             ) : (
-              <Typography variant="h3" gutterBottom component="div" style={{ marginTop: '10px', textAlign: 'center' }}>
-                請選擇日期與設計師
-              </Typography>
+              <Card className="mt-3">
+                <EmptyState title="請選擇日期與設計師" />
+              </Card>
             )
           )
         ) : (
-          <div style={{ marginTop: '10px', textAlign: 'center' }}>
-            <CircularProgress />
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div className="mt-3" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div>
         )}
-      </Container>
+      </div>
     </Page>
   )
 }

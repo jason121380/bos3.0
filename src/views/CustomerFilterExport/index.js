@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
+// 「更多篩選」保留 MUI Dialog：內含 MUI DatePicker / Select（Radix Dialog 會擋住其彈出層）
 import {
-  Container, InputLabel, Select, FormControl, MenuItem, TextField,
-  Grid, DialogActions, Dialog, DialogContent, DialogTitle, Button,
-  Typography, CircularProgress, ToggleButton, ToggleButtonGroup,
-  Divider, Collapse
+  InputLabel, Select, FormControl, MenuItem, TextField,
+  DialogActions, Dialog, DialogContent, DialogTitle,
+  ToggleButton, ToggleButtonGroup
 } from '@mui/material'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
@@ -16,12 +16,14 @@ import produce from 'immer'
 import React, { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { ChevronDown, Trash2 } from 'lucide-react'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import DeleteIcon from '@mui/icons-material/Delete'
 import { useFetchCustomersWithoutSortingExcelLazy } from 'hooks/useFetchCustomersWithoutSortingExcel'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -264,8 +266,7 @@ function CustomerFilterExport() {
   }, [customerList.loading])
 
   return (
-    <Page css={styles.root} title="客資篩選匯出">
-      <Container maxWidth={false}>
+    <Page className="ui-root" title="客資篩選匯出">
         <AdminPageHeader
           title='客資篩選匯出'
           showFilter={showFilter}
@@ -276,8 +277,9 @@ function CustomerFilterExport() {
             disabled: getCustomersWithoutSortingExcelLazyData.loading
           }}
         />
-        <Collapse in={showFilter}>
-          <div style={{ marginBottom: '8px', backgroundColor: '#fff', borderRadius: '12px', padding: '12px', border: '1px solid #f0f0f0' }}>
+        {/* 以 hidden 收合（取代 MUI Collapse）：SearchBar 內有非受控輸入，保持掛載，收合後內容與舊版一樣保留 */}
+        <div hidden={!showFilter}>
+          <Card className="mb-6 p-4">
             <SearchBar
               setCustomerNoSort={setPageSetting}
               inCustomerFilterExport
@@ -285,7 +287,6 @@ function CustomerFilterExport() {
               setCustomerIsCome={setCustomerIsCome}
               handleClearData={handleClearData}
               getQuery
-              style={{ marginTop: 0 }}
               onSearchV2={event =>
                 handleSearch(event)
               }
@@ -321,11 +322,12 @@ function CustomerFilterExport() {
               }}
             />
 
-            <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end', marginTop: 10, flexWrap: 'wrap' }}>
-              <Button variant="contained" css={styles.filterButon} endIcon={<ExpandMoreIcon />} onClick={handleClickOpen} >
+            <div className="mt-3 flex flex-wrap items-end gap-2.5">
+              <Button variant="secondary" className="shrink-0" onClick={handleClickOpen} >
                 篩選最後消費週期
+                <ChevronDown strokeWidth={1.75} />
               </Button>
-              <div style={{ display: 'flex', flexDirection: 'column', width: 'fit-content' }}>
+              <div className="flex w-fit flex-col gap-1 text-label text-text-secondary">
                 來店消費：
                 <ToggleButtonGroup
                   size='small'
@@ -344,7 +346,7 @@ function CustomerFilterExport() {
                 </ToggleButtonGroup>
               </div>
               {customerIsCome !== null && (
-                <div style={{ flex: '1 1 250px' }}>
+                <div className="flex-[1_1_250px]">
                   <BelongAutocomplete
                     fetchData
                     value={belong}
@@ -376,7 +378,7 @@ function CustomerFilterExport() {
                       </Select>
                     </FormControl>
                   </div>
-                  <Divider spacing={1}></Divider>
+                  <div className="h-px bg-border" />
 
                   <div
                     style={{
@@ -395,7 +397,7 @@ function CustomerFilterExport() {
                         onChange={handleStartTimeChange}
                       />
                     </div>
-                    <Typography variant="caption">至</Typography>
+                    <span className="text-caption text-text-secondary">至</span>
                     <div css={styles.formGroup}>
                       <DatePicker
                         disabled={disable[0]}
@@ -406,7 +408,7 @@ function CustomerFilterExport() {
                       />
                     </div>
                   </div>
-                  <Divider spacing={1}></Divider>
+                  <div className="h-px bg-border" />
                   <div
                     style={{
                       display: 'flex',
@@ -463,34 +465,32 @@ function CustomerFilterExport() {
                     </div>
                   </div>
                 </DialogContent>
-                <DialogActions style={{ margin: '10px' }}>
+                <DialogActions className="ui-root gap-2" style={{ margin: '10px' }}>
                   <Button
-                    startIcon={<DeleteIcon />}
-                    css={styles.deleteBtn}
+                    variant="ghost"
+                    className="mr-auto text-danger hover:bg-danger/8"
                     onClick={handleClearData}
-                    variant="contained"
                   >
+                    <Trash2 strokeWidth={1.75} />
                     清除
                   </Button>
-                  <Button onClick={handleClose} variant="contained" css={styles.cancelBtn}>
+                  <Button onClick={handleClose} variant="secondary">
                     取消
                   </Button>
                   <Button
                     onClick={handleSearchDate}
-                    variant="contained"
-                    css={styles.submitButton}
+                    variant="primary"
                   >
                     確認
                   </Button>
                 </DialogActions>
               </Dialog>
             </div>
-          </div>
-        </Collapse>
+          </Card>
+        </div>
         {!customerList.loading ?
           idx(customerList.data, _ => (
             <Results
-              className={styles.results}
               customers={_.customersWithoutSorting.customers}
               refetch={customerList.refetch}
               pageLimit={_.customersWithoutSorting.pageLimit}
@@ -498,9 +498,8 @@ function CustomerFilterExport() {
               totalCount={_.customersWithoutSorting.totalCount}
               onPageChange={handlePageChange}
             />
-          )) : <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
+          )) : <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中"><Skeleton className="h-[320px] w-full rounded-lg" /></div>
         }
-      </Container>
     </Page>
   )
 }

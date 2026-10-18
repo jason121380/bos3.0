@@ -1,11 +1,7 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Container, Grid, Button, Typography, FormControl, Select,
-  InputLabel, MenuItem, CircularProgress,
-} from '@mui/material'
+// 狀態下拉的 onChange 依賴 event.target.value，保留 MUI Select
+import { FormControl, Select, InputLabel, MenuItem } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
-import { Card } from '@mui/material'
 import { openSnackbar } from 'elements/snackbars'
 import { useFethcMonthlyCloseStatus } from 'hooks/useFetchMerchant'
 import { useFetchUsersSalaryItems, useFetchUsersMonthCheckout } from 'hooks/useFetchUsers'
@@ -20,23 +16,14 @@ import produce from 'immer'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useHistory } from 'react-router'
 import useFetchGetSalaryUserList from 'hooks/useFetchGetSalaryUserList'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 
 import useQueryString from 'hooks/useQueryString'
 import DateSelector from 'components/DateSelector'
 import Overview from './Overview'
 import Results from './Results'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(6),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 export default function SalaryOverview() {
   const lastMonth = startOfMonth(subMonths(new Date(), 1)).getTime()
@@ -204,152 +191,117 @@ export default function SalaryOverview() {
     }
   }, [getIsBorrowDisplayInSalaryOverview.loading])
   return (
-    <Page css={styles.root} title="薪資總表/月結">
-      <Container maxWidth={false}>
-        <AdminPageHeader title='薪資總表/月結' sx={{ marginBottom: '8px !important' }}>
-          <DateSelector
-            date={{
-              startDate: startOfMonth(setting.date).getTime(),
-              endDate: endOfMonth(setting.date).getTime()
-            }}
-            attributes={['lastmonth', 'thismonth', 'startDate']}
-            dateChange={({ startDate }) => handleDateChange(startDate)}
-            onlyStart
-            inputFormat='yyyy/MM'
-            pickerOption={{
-              views: ['month', 'year']
-            }}
-            margin={false}
-          />
-        </AdminPageHeader>
-        {idx(salaryUserList, _ => _.data.getSalaryUserList) ?
-          idx(
-            salaryUserList,
-            _ =>
-              _.data.getSalaryUserList && (
-                <React.Fragment>
-                  <Grid container alignItems='stretch' spacing={2} style={{ marginBottom: '16px' }}>
-                    <Grid item xs={12} md={7}>
-                      <Overview usersSalary={_.data.getSalaryUserList} date={setting.date} />
-                    </Grid>
-                    <Grid item xs={12} md={5}>
-                      <Card sx={{
-                        height: '100%',
-                        border: '1px solid #f0f0f0',
-                        borderRadius: '12px',
-                        boxShadow: 'none',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        p: 2.5,
-                        backgroundColor: '#ffffff'
-                      }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'primary.main', mb: 1.5, display: 'flex', alignItems: 'center', fontSize: '14.5px' }}>
-                          <span style={{ backgroundColor: theme.palette.primary.main, width: '4px', height: '16px', display: 'inline-block', marginRight: '8px', borderRadius: '2px' }}></span>
-                          操作指南
-                        </Typography>
-                        <Grid container spacing={1}>
-                          {[
-                            "1. 選擇要月結的人「勾選」或是全選",
-                            "2. 下方按下「月結」",
-                            "3. 月結完成後，點擊「詳情」進入加扣項",
-                            "4. 確認正確後，按下「鎖定」 即不可更改"
-                          ].map((step, i) => (
-                            <Grid item xs={12} key={i}>
-                              <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: '14.5px', display: 'flex', alignItems: 'center', fontWeight: 'bold', mb: 0.5 }}>
-                                {step}
-                              </Typography>
-                            </Grid>
-                          ))}
-                        </Grid>
-                      </Card>
-                    </Grid>
-                  </Grid>
-                  <Grid container spacing={2} alignItems='center' style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
-                    <Grid item style={{ display: 'flex', alignItems: 'center' }}>
-                      <FormControl variant="outlined" style={{ width: '150px', marginRight: '16px' }}>
-                        <InputLabel id="select-item-label">狀態</InputLabel>
-                        <Select
-                          labelId="select-item-label"
-                          id="select-item"
-                          label='狀態'
-                          size="small"
-                          value={listStatus}
-                          onChange={event => setListStatus(event.target.value)}
-                        >
-                          {showOption.map((data, idx) => (
-                            <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                              {data.label}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+    <Page className="ui-root pb-12" title="薪資總表/月結">
+      <AdminPageHeader title='薪資總表/月結'>
+        <DateSelector
+          date={{
+            startDate: startOfMonth(setting.date).getTime(),
+            endDate: endOfMonth(setting.date).getTime()
+          }}
+          attributes={['lastmonth', 'thismonth', 'startDate']}
+          dateChange={({ startDate }) => handleDateChange(startDate)}
+          onlyStart
+          inputFormat='yyyy/MM'
+          pickerOption={{
+            views: ['month', 'year']
+          }}
+          margin={false}
+        />
+      </AdminPageHeader>
+      {idx(salaryUserList, _ => _.data.getSalaryUserList) ?
+        idx(
+          salaryUserList,
+          _ =>
+            _.data.getSalaryUserList && (
+              <React.Fragment>
+                <div className="mb-4 grid grid-cols-1 items-stretch gap-4 md:grid-cols-[7fr_5fr]">
+                  <div>
+                    <Overview usersSalary={_.data.getSalaryUserList} date={setting.date} />
+                  </div>
+                  <div>
+                    <Card className="flex h-full flex-col justify-center gap-3 p-5">
+                      <h3 className="m-0 text-heading text-text">
+                        操作指南
+                      </h3>
+                      <ol className="m-0 flex list-none flex-col gap-1 p-0">
+                        {[
+                          "1. 選擇要月結的人「勾選」或是全選",
+                          "2. 下方按下「月結」",
+                          "3. 月結完成後，點擊「詳情」進入加扣項",
+                          "4. 確認正確後，按下「鎖定」 即不可更改"
+                        ].map((step, i) => (
+                          <li key={i} className="text-body text-text-secondary">
+                            {step}
+                          </li>
+                        ))}
+                      </ol>
+                    </Card>
+                  </div>
+                </div>
+                <div className="mb-4 flex flex-wrap items-center gap-4">
+                  <FormControl variant="outlined" style={{ width: '150px' }}>
+                    <InputLabel id="select-item-label">狀態</InputLabel>
+                    <Select
+                      labelId="select-item-label"
+                      id="select-item"
+                      label='狀態'
+                      size="small"
+                      value={listStatus}
+                      onChange={event => setListStatus(event.target.value)}
+                    >
+                      {showOption.map((data, idx) => (
+                        <MenuItem value={data.value} key={`${data.label}-${idx}`}>
+                          {data.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
 
-                      <Button
-                        variant="contained"
-                        onClick={handleIsSalaryItemsLock}
-                        css={css({
-                          backgroundColor: isSalaryItemsLock ? '#9e9e9e !important' : '#1A73E8 !important',
-                          color: 'white !important',
-                          minWidth: '120px',
-                          height: '40px !important',
-                          fontSize: '14px',
-                          fontWeight: 'bold',
-                          borderRadius: '50px',
-                          padding: '0 24px',
-                          textTransform: 'none',
-                          boxShadow: 'none',
-                          '&:hover': {
-                            backgroundColor: isSalaryItemsLock ? '#757575 !important' : '#1557b0 !important',
-                            boxShadow: isSalaryItemsLock ? 'none !important' : '0 2px 10px rgba(26, 115, 232, 0.3) !important'
-                          }
-                        })}
-                      >
-                        {isSalaryItemsLock ? '取消鎖定薪資' : '鎖定薪資'}
-                      </Button>
+                  <Button
+                    variant={isSalaryItemsLock ? 'secondary' : 'primary'}
+                    className="min-w-[120px]"
+                    onClick={handleIsSalaryItemsLock}
+                  >
+                    {isSalaryItemsLock ? '取消鎖定薪資' : '鎖定薪資'}
+                  </Button>
 
-                      {monthlyCheckoutTime && (
-                        <div style={{
-                          marginLeft: '16px',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          backgroundColor: '#E8F0FE',
-                          padding: '6px 16px',
-                          borderRadius: '8px',
-                        }}>
-                          <Typography variant="caption" style={{ fontWeight: 700, color: '#1A73E8', fontSize: '13px', lineHeight: 1.5 }}>
-                            上次月結完成時間
-                          </Typography>
-                          <Typography variant="caption" style={{ fontWeight: 900, color: '#1A73E8', fontSize: '15px', lineHeight: 1.2 }}>
-                            {format(new Date(monthlyCheckoutTime), 'yyyy/MM/dd HH:mm')}
-                          </Typography>
-                        </div>
-                      )}
-                    </Grid>
-
-                  </Grid>
-                  <Results
-                    status={idx(monthlyCloseStatus, _ => _.data.merchant.monthlyCloseStatus)}
-                    calendarDate={setting.date}
-                    pageSetting={setting.input}
-                    className={styles.results}
-                    isSalaryChackedData={isSalaryChackedData}
-                    salaryUserList={salaryUserList}
-                    userSalayItemData={userSalayItemData}
-                    usersSalary={_.data.getSalaryUserList}
-                    handleOnChangePage={handleOnChangePage}
-                    handleOnChangeRowsPerPage={handleOnChangeRowsPerPage}
-                    isThisMonthSalaryChacked={isThisMonthSalaryChacked}
-                    editBtnStatus={editBtnStatus}
-                    usersIsSalaryChecked={usersIsSalaryChecked}
-                    isSalaryItemsLock={isSalaryItemsLock}
-                    borrowDisplay={borrowDisplay}
-                  />
-                </React.Fragment>
-              )
-          ) : <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
-        }
-      </Container>
+                  {monthlyCheckoutTime && (
+                    <div className="flex flex-col rounded-md bg-accent/8 px-4 py-1.5 text-accent">
+                      <span className="text-caption font-medium">
+                        上次月結完成時間
+                      </span>
+                      <span className="text-body font-bold tabular-nums">
+                        {format(new Date(monthlyCheckoutTime), 'yyyy/MM/dd HH:mm')}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <Results
+                  status={idx(monthlyCloseStatus, _ => _.data.merchant.monthlyCloseStatus)}
+                  calendarDate={setting.date}
+                  pageSetting={setting.input}
+                  isSalaryChackedData={isSalaryChackedData}
+                  salaryUserList={salaryUserList}
+                  userSalayItemData={userSalayItemData}
+                  usersSalary={_.data.getSalaryUserList}
+                  handleOnChangePage={handleOnChangePage}
+                  handleOnChangeRowsPerPage={handleOnChangeRowsPerPage}
+                  isThisMonthSalaryChacked={isThisMonthSalaryChacked}
+                  editBtnStatus={editBtnStatus}
+                  usersIsSalaryChecked={usersIsSalaryChecked}
+                  isSalaryItemsLock={isSalaryItemsLock}
+                  borrowDisplay={borrowDisplay}
+                />
+              </React.Fragment>
+            )
+        ) : (
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div className="flex flex-col gap-6" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[160px] w-full rounded-lg" />
+            <Skeleton className="h-[320px] w-full rounded-lg" />
+          </div>
+        )
+      }
     </Page>
   )
 }

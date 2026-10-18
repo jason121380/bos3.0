@@ -1,19 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Checkbox,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-  IconButton,
-} from '@mui/material'
-import EditIconSlot from '@mui/icons-material/Edit'
+import { Pencil } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteProductCategory from 'hooks/useFetchDeleteProductCategory'
@@ -21,65 +7,11 @@ import idx from 'idx'
 import format from 'date-fns/format'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
-    overflow: 'hidden',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  tableHead: css({
-    backgroundColor: '#FFFFFF',
-    '& .MuiTableCell-head': {
-      color: '#212121',
-      fontWeight: 'bold',
-      borderBottom: '1px solid #f0f0f0',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid #f0f0f0',
-      fontSize: '14px !important',
-      color: '#333',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-    '&.Mui-selected': {
-      backgroundColor: '#f9f9f9 !important',
-    },
-    '&.Mui-selected:hover': {
-      backgroundColor: '#f9f9f9 !important',
-    },
-  }),
-  actionButton: css({
-    color: '#9e9e9e',
-    padding: '4px',
-    '&:hover': {
-      color: '#1A73E8',
-      backgroundColor: 'rgba(26, 115, 232, 0.04)',
-    },
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Results({ className, categories, refetchCategories, ...rest }) {
   const [selectedCategories, setSelectedCcategories] = useState([])
@@ -112,93 +44,82 @@ function Results({ className, categories, refetchCategories, ...rest }) {
     }
   }
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <Card css={styles.card}>
-        <CardHeader
-          title={
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
-                所有商品類別
-              </Typography>
-              <Typography color="textSecondary" variant="body2">
-                共 {categories.length} 筆資料
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table size="small">
-                <TableHead css={styles.tableHead}>
-                  <TableRow>
-                    <TableCell padding="checkbox">
+    <div {...rest} css={className}>
+      <Card>
+        <CardHeader className="pb-4">
+          <div className="flex items-baseline gap-3">
+            <CardTitle>所有商品類別</CardTitle>
+            <span className="text-label tabular-nums text-text-secondary">
+              共 {categories.length} 筆資料
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table className="min-w-[700px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={
+                      selectedCategories.length === categories.length && categories.length > 0
+                    }
+                    indeterminate={
+                      selectedCategories.length > 0 &&
+                      selectedCategories.length < categories.length
+                    }
+                    onChange={handleSelectAll}
+                    disabled={
+                      categories.length === 0 ||
+                      categories.filter(d => !d.isUsing).length === categories.length
+                    }
+                  />
+                </TableHead>
+                <TableHead>代號</TableHead>
+                <TableHead>名稱</TableHead>
+                <TableHead>變更者</TableHead>
+                <TableHead>變更時間</TableHead>
+                <TableHead className="text-right">操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {categories.map((data, index) => {
+                const isSelected = selectedCategories.indexOf(data.id) > -1
+                return (
+                  <TableRow
+                    key={`${data.name}-${data.no}-${index}`}
+                    data-state={isSelected || !data.isUsing ? 'selected' : undefined}
+                    data-testid="category-row"
+                  >
+                    <TableCell className="w-12">
                       <Checkbox
-                        checked={
-                          selectedCategories.length === categories.length && categories.length > 0
-                        }
-                        color="primary"
-                        indeterminate={
-                          selectedCategories.length > 0 &&
-                          selectedCategories.length < categories.length
-                        }
-                        onChange={handleSelectAll}
-                        disabled={
-                          categories.length === 0 ||
-                          categories.filter(d => !d.isUsing).length === categories.length
-                        }
+                        aria-label={`選取 ${data.name}`}
+                        onChange={() => handleSelectOne(data.id)}
+                        checked={isSelected}
+                        disabled={!data.isUsing}
+                        data-testid={`category-${data.name}-checkbox`}
                       />
                     </TableCell>
-                    <TableCell>代號</TableCell>
-                    <TableCell>名稱</TableCell>
-                    <TableCell>變更者</TableCell>
-                    <TableCell>變更時間</TableCell>
-                    <TableCell align="right">操作</TableCell>
+                    <TableCell className="tabular-nums">{data.no}</TableCell>
+                    <TableCell className="font-medium">{data.name}</TableCell>
+                    <TableCell>{idx(data, _ => _.creator.name)}</TableCell>
+                    <TableCell className="tabular-nums">{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
+                    <TableCell className="text-right">
+                      <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                        <RouterLink
+                          aria-label="編輯類別"
+                          to={`/product/category/edit/${data.id}`}
+                        >
+                          <Pencil strokeWidth={1.75} />
+                        </RouterLink>
+                      </Button>
+                    </TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {categories.map((data, index) => {
-                    const isSelected = selectedCategories.indexOf(data.id) > -1
-                    return (
-                      <TableRow
-                        key={`${data.name}-${data.no}-${index}`}
-                        css={styles.tableRow}
-                        selected={isSelected || !data.isUsing}
-                        data-testid="category-row"
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            color="primary"
-                            onChange={() => handleSelectOne(data.id)}
-                            checked={isSelected}
-                            disabled={!data.isUsing}
-                            inputProps={{
-                              'data-testid': `category-${data.name}-checkbox`,
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell>{data.no}</TableCell>
-                        <TableCell style={{ fontWeight: 'bold' }}>{data.name}</TableCell>
-                        <TableCell>{idx(data, _ => _.creator.name)}</TableCell>
-                        <TableCell>{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
-                        <TableCell align="right">
-                          <IconButton
-                            css={styles.actionButton}
-                            component={RouterLink}
-                            size="small"
-                            to={`/product/category/edit/${data.id}`}
-                          >
-                            <EditIconSlot fontSize="small" />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
       <TableEditBar selected={selectedCategories} onDelete={handleDelete} />
     </div>

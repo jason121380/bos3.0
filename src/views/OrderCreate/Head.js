@@ -1,8 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Box, Card, CardContent, Typography, Checkbox, ToggleButton,
-  FormControlLabel, TextField, CircularProgress, ToggleButtonGroup, InputAdornment
-} from '@mui/material'
+import { TextField, CircularProgress, InputAdornment } from '@mui/material'
 import PropTypes from 'prop-types'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
 import { useFetchCustomersInAutoComplete } from 'hooks/useFetchCustomers'
@@ -16,10 +13,10 @@ import { useContext, useState, useRef, useEffect, Fragment } from 'react'
 import { DateTimePicker } from '@mui/x-date-pickers'
 import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import useFetchCustomer from 'hooks/useFetchCustomer'
-import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
-import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
-import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded';
-import AssignmentIndRoundedIcon from '@mui/icons-material/AssignmentIndRounded';
+import { UserCog, UserPlus } from 'lucide-react'
+import { Card } from 'ui/card'
+import { CheckboxField } from 'ui/checkbox'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import TeachingModeContext from 'context/teachingModeContext'
 import useFetchOrderWithoutCustomerSetting from 'hooks/useFetchOrderWithoutCustomerDefault'
 import useFetchGetIsLockDateSetting from 'hooks/useFetchGetIsLockDateSetting'
@@ -512,8 +509,8 @@ export default function Head() {
     }
   }
   return (
-    <Card css={styles.card}>
-      <CardContent css={styles.cardContent}>
+    <Card className="ui-root mb-6">
+      <div className="px-4 py-4">
         <div css={styles.box}>
           {/* 第 1 欄：日期與鎖定 */}
           <div css={[styles.column, styles.column1]}>
@@ -534,17 +531,12 @@ export default function Head() {
               />
             </div>
             {isLockDateDisplay && !isChangeDateTime && (
-              <FormControlLabel
+              <CheckboxField
                 css={styles.checkboxLabel}
+                labelClassName="font-bold"
                 label="鎖定日期"
-                control={
-                  <Checkbox
-                    size="small"
-                    onChange={handleLockDate}
-                    checked={JSON.parse(localStorage.getItem('lockDate'))}
-                    color="primary"
-                  />
-                }
+                onChange={handleLockDate}
+                checked={JSON.parse(localStorage.getItem('lockDate'))}
               />
             )}
           </div>
@@ -608,12 +600,18 @@ export default function Head() {
                       startAdornment: (
                         <InputAdornment position="start">
                           {bill.customerId !== undefined ? (
-                            <ManageAccountsRoundedIcon
+                            <UserCog
+                              role="button"
+                              aria-label="編輯顧客資料"
+                              strokeWidth={1.75}
                               css={styles.addPersonIcon}
                               onClick={handleOpenEditCustomerModal}
                             />
                           ) : (
-                            <PersonAddAltRoundedIcon
+                            <UserPlus
+                              role="button"
+                              aria-label="新增顧客"
+                              strokeWidth={1.75}
                               css={styles.addPersonIcon}
                               onClick={handleOpenAddCustomerModal}
                             />
@@ -633,9 +631,9 @@ export default function Head() {
             </div>
 
             {orderWithoutCustomer && (
-              <FormControlLabel
+              <CheckboxField
                 css={styles.checkboxLabel}
-                control={<Checkbox size="small" color="primary" />}
+                labelClassName="font-bold"
                 label="不留客資"
                 checked={checkoutWithoutCustomer}
                 onChange={handleCheckoutWithoutCustomer}
@@ -667,8 +665,8 @@ export default function Head() {
                 }}
               />
 
-              <ToggleButtonGroup
-                css={styles.toggleGroup}
+              <ToggleGroup
+                className="shrink-0"
                 size="small"
                 value={designationSettingForOrderCreate}
                 onChange={handleToggleButtonChange}
@@ -676,7 +674,7 @@ export default function Head() {
                 disabled={designateStatus}
               >
                 {designate.map((data, idx) => (
-                  <ToggleButton
+                  <ToggleGroupItem
                     key={`${data.label}-${idx}`}
                     value={data.value}
                     ref={data.value ? designateRef : nonDesignateRef}
@@ -685,13 +683,13 @@ export default function Head() {
                     onClick={() => data.value ? designateRef.current.focus() : nonDesignateRef.current.focus()}
                   >
                     {data.label}
-                  </ToggleButton>
+                  </ToggleGroupItem>
                 ))}
-              </ToggleButtonGroup>
+              </ToggleGroup>
             </div>
           </div>
         </div>
-      </CardContent>
+      </div>
       {openModal && (
         <AddCustomerModal
           onClose={handleEditClose}

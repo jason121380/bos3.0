@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Button, TextField, Checkbox, FormControlLabel, Typography } from '@mui/material'
 import useFetchLoginV2 from 'hooks/useFetchLoginV2'
 import useFetchLoginForLine from 'hooks/useFetchUserLoginForLine'
 import { useLazyFetchProfile } from 'hooks/useFetchProfile'
@@ -9,98 +7,9 @@ import { useHistory } from 'react-router'
 import { useForm } from 'react-hook-form'
 import { openSnackbar } from 'elements/snackbars'
 import getQueryString from 'helper/getQueryString'
-import { css } from '@emotion/react'
-import { ThemeProvider } from '@mui/material/styles'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'stretch',
-  }),
-  fields: css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(2.5),
-  }),
-  submitButton: css({
-    marginTop: theme.spacing(4),
-    height: '54px !important',
-    borderRadius: '27px !important', // Pill-shaped (half of height)
-    fontSize: '17px !important',
-    fontWeight: '600 !important',
-    boxShadow: 'none !important',
-    textTransform: 'none !important',
-    transition: 'all 0.2s ease-in-out !important',
-    '&:hover': {
-      backgroundColor: '#0062CC !important',
-      boxShadow: 'none !important',
-    },
-    '&:active': {
-      backgroundColor: '#0056b3 !important',
-    },
-  }),
-  input: css({
-    '& .MuiOutlinedInput-root': {
-      borderRadius: '30px !important', // Pill-shaped (half of 60px height)
-      backgroundColor: '#F5F5F7',
-      height: '60px !important',
-      transition: 'all 0.2s ease',
-      '& fieldset': {
-        border: '1px solid transparent',
-        transition: 'all 0.2s ease',
-      },
-      '&:hover': {
-        backgroundColor: '#EBEBEF',
-        '& fieldset': {
-          borderColor: 'rgba(0, 122, 255, 0.1)',
-        },
-      },
-      '&.Mui-focused': {
-        backgroundColor: '#FFFFFF',
-        '& fieldset': {
-          borderColor: '#007AFF !important',
-          borderWidth: '2px !important',
-        },
-      },
-    },
-    '& .MuiInputBase-input': {
-      padding: '18px 16px !important', // Adjusted internal padding for taller look
-    },
-    '& .MuiInputLabel-root': {
-      fontSize: '15px',
-      color: '#86868B',
-      '&.Mui-focused': {
-        color: '#007AFF',
-      },
-    },
-    '& :-webkit-autofill': {
-      'WebkitTextFillColor': '#1D1D1F',
-      'WebkitBoxShadow': '0 0 0px 1000px #F5F5F7 inset',
-      borderRadius: '14px',
-    },
-  }),
-  checkboxLabel: css({
-    marginTop: theme.spacing(1.5),
-    alignSelf: 'flex-start',
-    marginLeft: '-11px !important',
-    color: '#86868B',
-    '& .MuiTypography-root': {
-      fontSize: '13.5px',
-      fontWeight: 500,
-    },
-    '& .MuiCheckbox-root': {
-      color: '#D2D2D7',
-      '&.Mui-checked': {
-        color: '#007AFF',
-      },
-      '&:hover': {
-        backgroundColor: 'rgba(0, 122, 255, 0.04)',
-      },
-    },
-  }),
-}
+import { Button } from 'ui/button'
+import { Checkbox } from 'ui/checkbox'
+import { Field, Input } from 'ui/input'
 
 function LoginForm({ className, location, ...rest }) {
   const liffId = getQueryString({ key: 'liffId', location })
@@ -187,59 +96,57 @@ function LoginForm({ className, location, ...rest }) {
   }
   return (
 
-    <form {...rest} css={css([styles.root, className])} onSubmit={handleSubmit(onSubmit)}>
-      <div css={styles.fields}>
-        <TextField
-          fullWidth
+    <form {...rest} className="mt-6 flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+      <div className="flex flex-col gap-4">
+        <Field
           label="電話號碼"
-          name="cellphone"
-          variant="outlined"
-          error={!!errors.cellphone}
-          helperText={errors.cellphone && errors.cellphone.message}
-          inputProps={{
-            ref: e => {
+          htmlFor="login-cellphone"
+          error={errors.cellphone && errors.cellphone.message}
+        >
+          <Input
+            id="login-cellphone"
+            name="cellphone"
+            autoComplete="username"
+            invalid={!!errors.cellphone}
+            ref={e => {
               accountRef.current = e
               register(e, {
                 required: '電話號碼為必填',
               })
-            },
-            'data-testid': 'cellphone',
-          }}
-          css={styles.input}
-        />
-        <TextField
-          fullWidth
-          error={!!errors.password}
-          helperText={errors.password && errors.password.message}
+            }}
+            data-testid='cellphone'
+          />
+        </Field>
+        <Field
           label="密碼"
-          name="password"
-          type="password"
-          variant="outlined"
-          inputProps={{
-            ref: register({ required: '密碼為必填' }),
-            'data-testid': 'password',
-          }}
-          css={styles.input}
-        />
-      </div>
-      <FormControlLabel
-        css={styles.checkboxLabel}
-        control={<Checkbox onChange={handleLoginSession} />}
-        label={<Typography variant="body2">保持登入狀態</Typography>}
-      />
-      <ThemeProvider theme={theme}>
-        <Button
-          css={styles.submitButton}
-          color="primary"
-          size="large"
-          type="submit"
-          variant="contained"
-          data-testid="login-btn"
-          disabled={disabledLoginBtn}
+          htmlFor="login-password"
+          error={errors.password && errors.password.message}
         >
-          {!disabledLoginBtn ? '登入' : '登入中'}
-        </Button>
-      </ThemeProvider>
+          <Input
+            id="login-password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            invalid={!!errors.password}
+            ref={register({ required: '密碼為必填' })}
+            data-testid='password'
+          />
+        </Field>
+      </div>
+      <label className="mt-3 flex cursor-pointer items-center gap-2 self-start text-label text-text-secondary">
+        <Checkbox onChange={handleLoginSession} />
+        保持登入狀態
+      </label>
+      <Button
+        className="mt-6 w-full"
+        variant="primary"
+        size="lg"
+        type="submit"
+        data-testid="login-btn"
+        disabled={disabledLoginBtn}
+      >
+        {!disabledLoginBtn ? '登入' : '登入中'}
+      </Button>
     </form>
   )
 }

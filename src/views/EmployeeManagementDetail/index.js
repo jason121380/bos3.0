@@ -1,10 +1,6 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Container, Divider, Tab, Tabs, colors, CircularProgress, Grid, Switch,
-  Typography
-} from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
+import { Switch } from 'ui/switch'
 import { Provider } from 'context/designerContext'
 import useFetchMerchantDesigner, {
   useFetcDesignerFixedSalaryItemsLazy,
@@ -30,8 +26,6 @@ import { startOfDay, endOfDay } from 'date-fns'
 import useFetchSettingUserFixedSaleryItem from 'hooks/useFetchSettingUserFixedSalaryItem'
 import { useFetchGetIsEPWDDisplayLazy } from 'hooks/useFetchGetIsEPWDDisplay'
 import { useFetchGetCheckinSettingsForCalendar } from 'hooks/useFetchGetMerchantCheckinSettings'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import useFetchGetIsBookingCusCheckUsing from 'hooks/useFetchGetIsBookingCusCheckUsing'
 
 import AttendanceRecord from './AttendanceRecord'
@@ -44,50 +38,16 @@ import Security from './Security'
 import PaySlip from './PaySlip'
 import RakeReport from './RakeReport'
 import SalaryItems from './SalaryItems'
+import { cn } from 'ui/utils'
+import { Skeleton } from 'ui/skeleton'
 
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-    minHeight: '100vh',
-  }),
-  sidebar: css({
-    backgroundColor: 'transparent',
-    padding: '0px',
-    border: 'none',
-    position: 'sticky',
-    top: theme.spacing(2),
-  }),
-  menuItem: (active) => css({
-    display: 'flex',
-    alignItems: 'center',
-    padding: '12px 24px',
-    borderRadius: '12px',
-    cursor: 'pointer',
-    marginBottom: '8px',
-    backgroundColor: 'transparent',
-    color: active ? '#1A73E8' : '#5F6368',
-    fontWeight: active ? 'bold' : 500,
-    fontSize: '14.5px',
-    transition: 'all 0.2s ease',
-    position: 'relative',
-    '&::before': {
-      content: active ? '""' : 'none',
-      position: 'absolute',
-      left: '10px',
-      width: '4px',
-      height: '18px',
-      backgroundColor: '#1A73E8',
-      borderRadius: '2px',
-    },
-    '&:hover': {
-      backgroundColor: '#F1F3F4',
-    },
-  }),
-  content: css({
-    backgroundColor: 'transparent',
-  }),
-}
+// 分頁載入中：與舊版 CircularProgress 相同時機顯示
+const TabLoading = () => (
+  <div className="flex flex-col gap-4" aria-busy="true" aria-label="載入中">
+    <Skeleton className="h-10 w-full" />
+    <Skeleton className="h-[320px] w-full rounded-lg" />
+  </div>
+)
 
 function Settings({ match, history }) {
   const { tab: currentTab, id } = match.params
@@ -560,37 +520,39 @@ function Settings({ match, history }) {
   }, [getBookinHistoryDisplay.loading])
 
   return (
-    <Page css={styles.root} title={`${designerName} - ${findTabName()}`}>
-      <Container maxWidth={false}>
-        <AdminPageHeader title={`${designerName} - 個人設定`} />
+    <Page className="ui-root min-h-screen" title={`${designerName} - ${findTabName()}`}>
+      <AdminPageHeader title={`${designerName} - 個人設定`} />
 
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={2.5} lg={2}>
-            <div css={styles.sidebar}>
-              {itemValue.map(item => (
-                <div
-                  key={item.value}
-                  css={styles.menuItem(currentTab === item.value)}
-                  onClick={() => history.push(item.value)}
-                >
-                  {item.label}
-                </div>
-              ))}
-              {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
-                <div style={{ marginTop: '24px', padding: '16px 20px', borderTop: '1px solid #eee' }}>
-                  <Typography sx={{ fontSize: 14, color: '#666', mb: 1 }}>報到模式</Typography>
-                  <Switch
-                    checked={checkinMode}
-                    onChange={(e, v) => setCheckinMode(v)}
-                    size="small"
-                  />
-                </div>
-              )}
-            </div>
-          </Grid>
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-[200px_minmax(0,1fr)]">
+        <div>
+          <nav className="sticky top-4 flex flex-col gap-1">
+            {itemValue.map(item => (
+              <div
+                key={item.value}
+                className={cn(
+                  'flex h-9 cursor-pointer items-center rounded-md px-3 text-body transition-colors hover:bg-surface-hover',
+                  currentTab === item.value ? 'bg-accent/8 font-medium text-accent' : 'text-text-secondary'
+                )}
+                onClick={() => history.push(item.value)}
+              >
+                {item.label}
+              </div>
+            ))}
+            {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
+              <div className="mt-6 flex flex-col gap-2 border-0 border-t border-solid border-border px-3 pt-4">
+                <p className="text-label text-text-secondary">報到模式</p>
+                <Switch
+                  aria-label="報到模式"
+                  checked={checkinMode}
+                  onChange={(e, v) => setCheckinMode(v)}
+                />
+              </div>
+            )}
+          </nav>
+        </div>
 
-          <Grid item xs={12} md={9.5} lg={10}>
-            <div css={styles.content}>
+        <div className="min-w-0">
+          <div>
               {currentTab === 'general' && (
                 <General
                   designerId={id}
@@ -600,9 +562,7 @@ function Settings({ match, history }) {
               )}
               {
                 currentTab === 'orderRecord' && (orderRecords.loading || orderRecords.data === undefined ?
-                  <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 150 }}>
-                    <CircularProgress />
-                  </div> :
+                  <TabLoading /> :
                   idx(
                     orderRecords,
                     _ =>
@@ -634,9 +594,7 @@ function Settings({ match, history }) {
                       )
                   ))}
               {currentTab === 'AttendanceRecord' && (uerAttendanceLazyData.loading || uerAttendanceLazyData.data === undefined ?
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 150 }}>
-                  <CircularProgress />
-                </div> : idx(attendance, _ =>
+                <TabLoading /> : idx(attendance, _ =>
                   _.data.user.attendanceRecords && (
                     <AttendanceRecord
                       results={_.data.user.attendanceRecords.records}
@@ -725,9 +683,7 @@ function Settings({ match, history }) {
                           merchantSalaryIncreaseItemsLazyData.data === undefined ||
                           designerFixedSalaryItemsLazyData.loading ||
                           designerFixedSalaryItemsLazyData.data === undefined
-                        ) ? <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: 150 }}>
-                          <CircularProgress />
-                        </div>
+                        ) ? <TabLoading />
                           : <SalaryItems
                             salaryIncreaseItemsReformatted={salaryIncreaseItemsReformatted}
                             setSalaryIncreaseItemsReformatted={setSalaryIncreaseItemsReformatted}
@@ -745,10 +701,9 @@ function Settings({ match, history }) {
                     </Provider>
                   )
               )}
-            </div>
-          </Grid>
-        </Grid>
-      </Container>
+          </div>
+        </div>
+      </div>
     </Page>
   )
 }

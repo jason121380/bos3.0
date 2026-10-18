@@ -1,10 +1,12 @@
 /** @jsxImportSource @emotion/react */
+// 表格（className="ProductInventoryListTable"）即為 window.print() 的列印輸出，列印樣式依 MUI 結構撰寫，保留 MUI Table
 import {
-  TablePagination, TableRow, TableContainer, Table, TableHead, TableBody, TableCell,
-  Typography, Card, CardHeader, CardContent, Paper
+  TableRow, TableContainer, Table, TableHead, TableBody, TableCell, Paper
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
 
 const styles = {
   table: css({
@@ -21,7 +23,7 @@ const styles = {
     top: 0,
     background: 'white',
     zIndex: '100',
-    outline: '1px solid #eeeeee',
+    outline: '1px solid rgb(var(--border))',
   }),
   noData: css({
     fontSize: 24,
@@ -33,21 +35,12 @@ const styles = {
       fontWeight: 'bold',
       display: 'flex',
       alignItems: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: '#1A73E8',
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
     },
   }),
   tableRow: css({
-    backgroundColor: '#ffffff !important',
+    backgroundColor: 'rgb(var(--background)) !important',
     '&:hover': {
-      backgroundColor: '#ffffff !important',
+      backgroundColor: 'rgb(var(--background)) !important',
     },
   }),
 }
@@ -56,21 +49,20 @@ function Results({ reportData }) {
   return (
     <>
       {reportData.length === 0 ? (
-        <p css={styles.noData}>無資料</p>
-      ) : (
         <Card>
-          <CardHeader
-            css={styles.cardHeader}
-            title={
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span>商品庫存列表</span>
-                <Typography color="textSecondary" variant="body2">
-                  共 {reportData.length} 筆
-                </Typography>
-              </div>
-            }
-          />
-          <CardContent style={{ padding: 0 }}>
+          <EmptyState title="無資料" />
+        </Card>
+      ) : (
+        <Card className="overflow-hidden">
+          <CardHeader className="pb-4">
+            <div className="flex items-baseline gap-3">
+              <CardTitle>商品庫存列表</CardTitle>
+              <span className="text-label tabular-nums text-text-secondary">
+                共 {reportData.length} 筆
+              </span>
+            </div>
+          </CardHeader>
+          <div>
             <TableContainer style={{ maxHeight: 'calc(100vh - 360px)' }} className='ProductInventoryListTable' component={Paper} elevation={0}>
               <Table css={styles.table} size="small" aria-label="a dense table">
                 <TableHead>
@@ -95,7 +87,7 @@ function Results({ reportData }) {
                 </TableBody>
               </Table>
             </TableContainer>
-          </CardContent>
+          </div>
         </Card>
       )}
     </>

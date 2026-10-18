@@ -1,15 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  TextField,
-  Grid,
-  Typography,
-} from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { TextField } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment } from 'react'
 import _ from 'lodash'
 
@@ -66,21 +58,20 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
   }
   return (
     <Fragment>
-      <Card css={className}>
-        <CardHeader title="薪資加項科目設定" />
-        <Divider />
+      <Card>
+        <CardHeader>
+          <CardTitle>薪資加項科目設定</CardTitle>
+        </CardHeader>
         <CardContent>
-          <Grid container spacing={2}>
+          <div className="flex flex-wrap gap-4">
             {service.salaryIncreaseItem.map((data, index) => (
-              <Grid item css={styles.serviceInputGroup} key={index}>
-                <Typography
-                  variant="h5"
-                  display="inline"
-                  gutterBottom
+              <div css={styles.serviceInputGroup} key={index}>
+                <span
+                  className="inline-block shrink-0 text-heading tabular-nums text-text"
                   style={{ margin: '0 5px', width: '25px' }}
                 >
                   {data.sorting}
-                </Typography>
+                </span>
                 <TextField
                   disabled={!inputEnable}
                   type="text"
@@ -108,26 +99,25 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
                     />
                   )}
                 </div>
-              </Grid>
+              </div>
             ))}
-          </Grid>
+          </div>
         </CardContent>
       </Card>
-      <Card css={className}>
-        <CardHeader title="薪資扣項科目設定" />
-        <Divider />
+      <Card>
+        <CardHeader>
+          <CardTitle>薪資扣項科目設定</CardTitle>
+        </CardHeader>
         <CardContent>
-          <Grid container spacing={2}>
+          <div className="flex flex-wrap gap-4">
             {service.salaryDecreaseItem.map((data, index) => (
-              <Grid item css={styles.serviceInputGroup} key={index}>
-                <Typography
-                  variant="h5"
-                  display="inline"
-                  gutterBottom
+              <div css={styles.serviceInputGroup} key={index}>
+                <span
+                  className="inline-block shrink-0 text-heading tabular-nums text-text"
                   style={{ margin: '0 5px', width: '25px' }}
                 >
                   {data.sorting}
-                </Typography>
+                </span>
                 <TextField
                   disabled={!inputEnable}
                   type="text"
@@ -155,9 +145,9 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
                     />
                   )}
                 </div>
-              </Grid>
+              </div>
             ))}
-          </Grid>
+          </div>
         </CardContent>
       </Card>
     </Fragment>

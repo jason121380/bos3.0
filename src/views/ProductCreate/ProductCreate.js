@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchCreateProduct from 'hooks/useFetchCreateProduct'
 import { useFetchGetMerchantVendorList } from 'hooks/useFetchGetVendor'
@@ -11,10 +8,11 @@ import { useHistory } from 'react-router'
 import { useForm } from 'react-hook-form'
 import { Provider } from 'hooks/useStore'
 import idx from 'idx'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import AboutProduct from './AboutProduct'
 import AboutSalesProduct from './AboutSalesProduct'
-import styles from './styles/ProductCreate'
 
 export default function ProductCreate() {
   const [forSale, setForSale] = useState(true)
@@ -91,21 +89,21 @@ export default function ProductCreate() {
   
   const value = form
   return (
-    <Page css={styles.root} title="新增商品">
-      <Container maxWidth="md">
+    <Page className="ui-root" title="新增商品">
+      <div className="mx-auto max-w-3xl">
         <Provider value={value}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <PageTitle title='新增商品' subTitle='Create Product' />
-            <AboutProduct className={styles.aboutPayment} merchantVendor={merchantVendor} vendorUUId={vendorUUId} setVendorUUId={setVendorUUId} setForSale={setForSale} />
-            {forSale && <AboutSalesProduct className={styles.aboutPayment} />}
-            <div css={styles.actions}>
-              <Button color="primary" variant="contained" type="submit" data-testid="submit">
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+            <PageHeader title="新增商品" className="pb-0" />
+            <AboutProduct merchantVendor={merchantVendor} vendorUUId={vendorUUId} setVendorUUId={setVendorUUId} setForSale={setForSale} />
+            {forSale && <AboutSalesProduct />}
+            <div className="flex justify-end">
+              <Button variant="primary" type="submit" data-testid="submit">
                 新增
               </Button>
             </div>
           </form>
         </Provider>
-      </Container>
+      </div>
     </Page>
   )
 }

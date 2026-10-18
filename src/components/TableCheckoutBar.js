@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Button, Drawer, Grid, Hidden, Typography } from '@mui/material'
-import CheckIcon from '@mui/icons-material/Check'
+import { Check as CheckIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
 import { theme } from '../theme'

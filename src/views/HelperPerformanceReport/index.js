@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
+// 人員類別多選（Autocomplete）保留 MUI
 import {
-  Container, Typography, CircularProgress, Button, Grid, TextField,
+  TextField,
   Checkbox, Autocomplete
 } from '@mui/material'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
-import AdminPageHeader from 'components/AdminPageHeader'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
 import { endOfDay, startOfMonth } from 'date-fns'
@@ -16,6 +16,11 @@ import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCard
 import useFetchMerchantJobTitlePoint from 'hooks/useFetchMerchantJobTitlePoint'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { EmptyState } from 'ui/empty-state'
+import { PageHeader, Toolbar } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import { CSVLink } from "react-csv";
@@ -111,73 +116,69 @@ export default function HelperPerformance() {
     }
   }, [useFetchGetHelperPerformanceData.loading, isMemberShipCardActiveData.loading])
   return (
-    <Page title="互助業績報表" css={styles.root}>
-      <Container style={{ padding: 0 }} maxWidth={false}>
-        <AdminPageHeader title='互助業績報表' />
-        <Grid container style={{ justifyContent: 'space-between' }}>
-          <DateSelector
-            date={pageSetting}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={value => setPageSetting(value)}
-            margin
-          />
-          <Grid item css={styles.exportBtn}>
+    <Page title="互助業績報表" className="ui-root">
+      <PageHeader
+        title="互助業績報表"
+        actions={
+          <Button asChild variant="secondary">
             <CSVLink
               data={excelData}
               filename="互助業績報表.csv"
-              style={{ display: 'inline' }}
             >
-              <Button variant="contained" color="primary">
-                報表匯出
-              </Button>
+              <Download strokeWidth={1.75} />
+              報表匯出
             </CSVLink>
-          </Grid>
-        </Grid>
-        <Grid item className="noprint" style={{ marginBottom: '20px' }}>
-          <Autocomplete
-            multiple
-            options={jobTitle}
-            disableCloseOnSelect
-            getOptionLabel={option => option.jobTitle}
-            onChange={(event, value) => setSelectTitle(value.map(d => d.id))}
-            renderOption={(props, option, { selected }) => (
-              <li {...props}>
-                <Checkbox
-                  style={{ color: '#202D50', marginRight: 8 }}
-                  icon={icon}
-                  checkedIcon={checkedIcon}
-                  checked={selected}
-                />
-                {option.jobTitle}
-              </li>
-            )}
-            renderInput={params => (
-              <TextField {...params} variant="outlined" label="人員類別" placeholder="人員名稱" />
-            )}
-          />
-        </Grid>
-        {!useFetchGetHelperPerformanceData.loading ? (
-          idx(useFetchGetHelperPerformanceData, _ =>
-            _.data.helperPerformanceReport.length > 0 ? (
-              <Results
-                membershipDisplay={membershipDisplay}
-                helperPerformanceData={idx(
-                  useFetchGetHelperPerformanceData,
-                  _ => _.data.helperPerformanceReport
-                )}
+          </Button>
+        }
+      />
+      <Toolbar>
+        <DateSelector
+          date={pageSetting}
+          attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+          dateChange={value => setPageSetting(value)}
+          margin
+        />
+      </Toolbar>
+      <div className="noprint pb-6">
+        <Autocomplete
+          multiple
+          options={jobTitle}
+          disableCloseOnSelect
+          getOptionLabel={option => option.jobTitle}
+          onChange={(event, value) => setSelectTitle(value.map(d => d.id))}
+          renderOption={(props, option, { selected }) => (
+            <li {...props}>
+              <Checkbox
+                style={{ color: 'rgb(var(--text))', marginRight: 8 }}
+                icon={icon}
+                checkedIcon={checkedIcon}
+                checked={selected}
               />
-            ) : (
-              <Typography variant="h3" gutterBottom component="div">
-                無資料
-              </Typography>
-            )
+              {option.jobTitle}
+            </li>
+          )}
+          renderInput={params => (
+            <TextField {...params} variant="outlined" label="人員類別" placeholder="人員名稱" />
+          )}
+        />
+      </div>
+      {!useFetchGetHelperPerformanceData.loading ? (
+        idx(useFetchGetHelperPerformanceData, _ =>
+          _.data.helperPerformanceReport.length > 0 ? (
+            <Results
+              membershipDisplay={membershipDisplay}
+              helperPerformanceData={idx(
+                useFetchGetHelperPerformanceData,
+                _ => _.data.helperPerformanceReport
+              )}
+            />
+          ) : (
+            <EmptyState title="無資料" />
           )
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <CircularProgress />
-          </div>
-        )}
-      </Container>
+        )
+      ) : (
+        <Skeleton className="h-96" aria-busy="true" />
+      )}
     </Page>
   )
 }

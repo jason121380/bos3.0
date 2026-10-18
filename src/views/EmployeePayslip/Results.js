@@ -23,8 +23,8 @@ const localStyles = {
   card: css({
     borderRadius: '16px',
     boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
+    border: '1px solid rgb(var(--border))',
+    backgroundColor: 'rgb(var(--background))',
     overflow: 'hidden',
   }),
   cardHeader: css({
@@ -42,27 +42,27 @@ const localStyles = {
   tableCell: css({
     padding: '2px 16px !important',
     fontSize: '14px !important',
-    borderBottom: '1px solid #f0f0f0',
+    borderBottom: '1px solid rgb(var(--border))',
   }),
   boldCell: css({
     padding: '2px 16px !important',
     fontSize: '14px !important',
     fontWeight: 'bold !important',
-    color: '#1A73E8 !important',
-    borderBottom: '1px solid #f0f0f0',
+    color: 'rgb(var(--accent)) !important',
+    borderBottom: '1px solid rgb(var(--border))',
     backgroundColor: 'rgba(26, 115, 232, 0.05) !important',
   }),
   itemLabel: css({
     padding: '4px 16px !important',
     fontWeight: 'bold !important',
     width: '120px',
-    borderBottom: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
+    borderBottom: '1px solid rgb(var(--border))',
+    backgroundColor: 'rgb(var(--background))',
   }),
   itemValue: css({
     padding: '4px 16px !important',
     width: '100px',
-    borderBottom: '1px solid #f0f0f0',
+    borderBottom: '1px solid rgb(var(--border))',
     textAlign: 'left',
   }),
   eachSlip: css({
@@ -105,7 +105,7 @@ function Results({
                     )} - ${user.name}`}
                   </span>
                 </div>
-                <div style={{ textAlign: 'end', width: '33%', fontWeight: 'bold', color: '#1A73E8' }}>{EPWDDisplay ? `天數: ${user.workingDays}` : ''}</div>
+                <div style={{ textAlign: 'end', width: '33%', fontWeight: 'bold', color: 'rgb(var(--accent))' }}>{EPWDDisplay ? `天數: ${user.workingDays}` : ''}</div>
               </div>
               <Divider />
               <TableContainer style={{ paddingBottom: '12px' }}>
@@ -116,7 +116,7 @@ function Results({
                         if (i % 6 === 0 && i !== 0) {
                           return (
                             <Fragment key={`increaseItem-${i}`}>
-                              <TableRow style={{ borderTop: '1px solid #f0f0f0' }}></TableRow>
+                              <TableRow style={{ borderTop: '1px solid rgb(var(--border))' }}></TableRow>
                               <TableCell css={localStyles.itemLabel}>
                                 <span className={clsx(payslipOptimization && 'nowrap')}>{item.itemName}</span>
                               </TableCell>
@@ -148,7 +148,7 @@ function Results({
                         if (i % 6 === 0 && i !== 0) {
                           return (
                             <Fragment key={`decreaseItem-${i}`}>
-                              <TableRow style={{ borderTop: '1px solid #f0f0f0' }}></TableRow>
+                              <TableRow style={{ borderTop: '1px solid rgb(var(--border))' }}></TableRow>
                               <TableCell css={localStyles.itemLabel}>
                                 <span className={clsx(payslipOptimization && 'nowrap')}>{item.itemName}</span>
                               </TableCell>
@@ -279,7 +279,7 @@ function Results({
                     )} - ${user.name}`}
                   </span>
                 </div>
-                <div style={{ textAlign: 'end', width: '33%', fontWeight: 'bold', color: '#1A73E8' }}>天數: {user.workingDays}</div>
+                <div style={{ textAlign: 'end', width: '33%', fontWeight: 'bold', color: 'rgb(var(--accent))' }}>天數: {user.workingDays}</div>
               </div>
               <Divider />
               <TableContainer>

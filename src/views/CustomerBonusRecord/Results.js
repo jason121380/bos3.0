@@ -1,19 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  Checkbox,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-  TableContainer,
-  IconButton
-} from '@mui/material'
-import EditIconSlot from '@mui/icons-material/Edit';
 import TableEditBar from 'components/TableEditBar'
 import useFetchDeleteBonusDeposit from 'hooks/useFetchDeleteBonusDeposit'
 import { openSnackbar } from 'elements/snackbars'
@@ -21,52 +5,12 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
-import { css } from '@emotion/react'
-
-const styles = {
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
-    overflow: 'hidden',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  tableHead: css({
-    backgroundColor: '#FFFFFF',
-    '& .MuiTableCell-head': {
-      color: '#212121',
-      fontWeight: 'bold',
-      borderBottom: '1px solid #f0f0f0',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid #f0f0f0',
-      fontSize: '14px !important',
-      color: '#333',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-  }),
-  actionButton: css({
-    padding: '4px !important',
-    color: '#999 !important',
-    '&:hover': {
-      color: '#1A73E8 !important',
-      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
-    }
-  }),
-}
+import { Pencil } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Results({ className, recordData, refetch, ...rest }) {
   const { deleteBonus } = useFetchDeleteBonusDeposit()
@@ -115,84 +59,74 @@ function Results({ className, recordData, refetch, ...rest }) {
   }
 
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <Card css={styles.card}>
-        <CardHeader
-          title={
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
-                紅利點數紀錄
-              </Typography>
-              <Typography color="textSecondary" variant="body2">
-                共 {recordData.length} 筆
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={styles.content}>
-          <TableContainer style={{ maxHeight: 'calc(100vh - 240px)' }}>
-            <Table size="small">
-              <TableHead css={styles.tableHead}>
-                <TableRow css={styles.stickyRow}>
-                  <TableCell padding="checkbox">
+    <div {...rest} className="mt-2">
+      <Card>
+        <CardHeader className="pb-4">
+          <div className="flex items-baseline gap-3">
+            <CardTitle>紅利點數紀錄</CardTitle>
+            <span className="text-label text-text-secondary tabular-nums">
+              共 {recordData.length} 筆
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table wrapperClassName="max-h-[calc(100vh-240px)] overflow-y-auto">
+            <TableHeader className="sticky top-0 z-10">
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={
+                      selectedRecord.length === recordData.length && recordData.length > 0
+                    }
+                    indeterminate={
+                      selectedRecord.length > 0 &&
+                      selectedRecord.length < recordData.length
+                    }
+                    onChange={handleSelectAll}
+                  />
+                </TableHead>
+                <TableHead>操作</TableHead>
+                <TableHead>日期</TableHead>
+                <TableHead>顧客代號</TableHead>
+                <TableHead>顧客名稱</TableHead>
+                <TableHead numeric>點數</TableHead>
+                <TableHead>設計師</TableHead>
+                <TableHead>備註</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {recordData.map(data => (
+                <TableRow
+                  key={data.id}
+                  data-state={selectedRecord.indexOf(data.id) > -1 ? 'selected' : undefined}
+                  data-testid="category-row"
+                >
+                  <TableCell>
                     <Checkbox
-                      checked={
-                        selectedRecord.length === recordData.length && recordData.length > 0
-                      }
-                      color="primary"
-                      indeterminate={
-                        selectedRecord.length > 0 &&
-                        selectedRecord.length < recordData.length
-                      }
-                      onChange={handleSelectAll}
+                      aria-label="選取此筆紀錄"
+                      onChange={() => handleSelectOne(data.id)}
+                      checked={selectedRecord.indexOf(data.id) > -1}
                     />
                   </TableCell>
-                  <TableCell>操作</TableCell>
-                  <TableCell>日期</TableCell>
-                  <TableCell>顧客代號</TableCell>
-                  <TableCell>顧客名稱</TableCell>
-                  <TableCell>點數</TableCell>
-                  <TableCell>設計師</TableCell>
-                  <TableCell>備註</TableCell>
+                  <TableCell>
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-tertiary" aria-label="編輯紀錄">
+                      <RouterLink to={`/customer-bonus-record/edit/${data.id}`}>
+                        <Pencil strokeWidth={1.75} />
+                      </RouterLink>
+                    </Button>
+                  </TableCell>
+                  <TableCell className="tabular-nums">{format(data.date, 'yyyy/MM/dd')}</TableCell>
+                  <TableCell className="tabular-nums">{data.customerNo}</TableCell>
+                  <TableCell>{data.customerName}</TableCell>
+                  <TableCell numeric>{formatNumber(data.bonus)}</TableCell>
+                  <TableCell>{data.designerName}</TableCell>
+                  <TableCell>{data.remark}</TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {recordData.map(data => (
-                  <TableRow
-                    key={data.id}
-                    css={styles.tableRow}
-                    selected={selectedRecord.indexOf(data.id) > -1}
-                    data-testid="category-row"
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        onChange={() => handleSelectOne(data.id)}
-                        checked={selectedRecord.indexOf(data.id) > -1}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        component={RouterLink}
-                        css={styles.actionButton}
-                        size="small"
-                        to={`/customer-bonus-record/edit/${data.id}`}
-                      >
-                        <EditIconSlot fontSize="small" />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell>{format(data.date, 'yyyy/MM/dd')}</TableCell>
-                    <TableCell>{data.customerNo}</TableCell>
-                    <TableCell>{data.customerName}</TableCell>
-                    <TableCell>{data.bonus}</TableCell>
-                    <TableCell>{data.designerName}</TableCell>
-                    <TableCell>{data.remark}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </CardContent>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
       <TableEditBar selected={selectedRecord} onDelete={handleDelete} />
     </div>

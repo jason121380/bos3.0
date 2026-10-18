@@ -1,8 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Box, Card, CardContent, Checkbox, FormControlLabel,
-  CircularProgress, TextField, ToggleButton, ToggleButtonGroup
-} from '@mui/material'
+import { CircularProgress, TextField } from '@mui/material'
 import PropTypes from 'prop-types'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
@@ -13,8 +10,10 @@ import produce from 'immer'
 import _ from 'lodash'
 import { useContext, useState, useRef, useEffect, Fragment } from 'react'
 import { DateTimePicker } from '@mui/x-date-pickers'
-import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
-import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded';
+import { UserCog, UserPlus } from 'lucide-react'
+import { Card } from 'ui/card'
+import { CheckboxField } from 'ui/checkbox'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import useFetchCustomer from 'hooks/useFetchCustomer'
 import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import MembershipCardList from 'components/MembershipCardList'
@@ -29,7 +28,6 @@ const styles = {
     minWidth: '225px',
   }),
   card: css({
-    marginTop: theme.spacing(3),
     overflowX: 'auto',
   }),
   cardContent: css({
@@ -57,6 +55,10 @@ const styles = {
   addPersonIcon: css({
     marginRight: '10px',
     cursor: 'pointer',
+    flexShrink: 0,
+    width: '24px',
+    height: '24px',
+    color: 'rgb(var(--text-tertiary))',
   }),
   date: css({
     minWidth: '200px',
@@ -368,9 +370,9 @@ export default function Head() {
     }
   }
   return (
-    <Card css={styles.card}>
-      <CardContent css={styles.cardContent}>
-        <Box color="text.secondary" css={styles.box}>
+    <Card className="ui-root mb-6" css={styles.card}>
+      <div className="px-4 py-4" css={styles.cardContent}>
+        <div className="text-text-secondary" css={styles.box}>
           <div css={styles.customer}>
             <DateTimePicker
               label="帳單日期"
@@ -394,15 +396,18 @@ export default function Head() {
           <div css={styles.customer}>
             <div css={styles.customerIcomAndAuto}>
               {bill.customerId !== undefined && !bill.withoutCustomerData ? (
-                <ManageAccountsRoundedIcon
-                  sx={{ fontSize: '30px !important' }}
+                <UserCog
+                  role="button"
+                  aria-label="編輯顧客資料"
+                  strokeWidth={1.75}
                   css={styles.addPersonIcon}
                   onClick={handleOpenEditCustomerModal}
                 />
               ) : (
-                <PersonAddAltRoundedIcon
-                  sx={{ fontSize: '30px !important' }}
-                  style={{ color: '#08424c' }}
+                <UserPlus
+                  role="button"
+                  aria-label="新增顧客"
+                  strokeWidth={1.75}
                   css={styles.addPersonIcon}
                   onClick={handleOpenAddCustomerModal}
                 />
@@ -552,12 +557,11 @@ export default function Head() {
               />
             </div>
             <div style={{ maxWidth: '280px', display: 'flex', justifyContent: 'space-between' }}>
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
+              <CheckboxField
                 label="不留客資"
                 checked={bill.withoutCustomerData}
                 onChange={handleCheckoutWithoutCustomer}
-                style={{ marginLeft: '23px' }}
+                className="ml-8"
               />
               <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                 {(LBCusDisplay && isLineBinded) && <img style={{ width: 24, height: 24 }} alt='line_icon' src={lineIcon} />}
@@ -588,7 +592,7 @@ export default function Head() {
               }
             }}
           />
-          <ToggleButtonGroup
+          <ToggleGroup
             size="small"
             value={bill.isDesignate}
             onChange={handleToggleButtonChange}
@@ -596,7 +600,7 @@ export default function Head() {
             style={{ alignSelf: 'start' }}
           >
             {designate.map((data, idx) => (
-              <ToggleButton
+              <ToggleGroupItem
                 key={`${data.label}-${idx}`}
                 value={data.value}
                 ref={data.value ? designateRef : nonDesignateRef}
@@ -605,11 +609,11 @@ export default function Head() {
                 onKeyDown={e => handleDesignateBtnKeyDown(e)}
               >
                 {data.label}
-              </ToggleButton>
+              </ToggleGroupItem>
             ))}
-          </ToggleButtonGroup>
-        </Box>
-      </CardContent>
+          </ToggleGroup>
+        </div>
+      </div>
       {openModal && (
         <AddCustomerModal
           onClose={handleEditClose}

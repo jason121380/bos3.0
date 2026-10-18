@@ -1,17 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Avatar,
-  Button,
-  Checkbox,
-  Divider,
-  Link,
-  TableBody,
-  TableCell,
-  TableRow,
-  Typography,
-  IconButton,
-} from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
+// 頭像（無圖時顯示預設人像）保留 MUI Avatar
+import { Avatar } from '@mui/material'
+import { Edit as EditIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
@@ -23,63 +13,11 @@ import { openSnackbar } from 'elements/snackbars'
 import EditMultipleDesignersRakeSettingModal from './EditMultipleDesignersRakeSettingModal'
 import ProfileImportModal from './ProfileImportModal'
 import pagenationLabel from './../../helper/pagenationLabel'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-import ManagementTable from 'components/ManagementTable'
-
-const styles = {
-  root: css({}),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  filterButton: css({
-    marginRight: theme.spacing(2),
-  }),
-  content: css({
-    padding: 0,
-  }),
-  cardHeader: css({
-    '& .MuiCardHeader-title': {
-      fontSize: '15px',
-      fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: '#1A73E8',
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
-    },
-  }),
-  tableRow: css({
-    backgroundColor: '#ffffff !important',
-    '&:hover': {
-      backgroundColor: '#ffffff !important',
-    },
-  }),
-  compactCell: css({
-    padding: '4px 8px !important',
-    fontSize: '13px !important',
-    whiteSpace: 'nowrap',
-  }),
-  editIcon: css({
-    color: '#999',
-    padding: '4px',
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.04)',
-    },
-  }),
-}
+import { Badge } from 'ui/badge'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TablePagination, TableRow } from 'ui/table'
 
 export default function Results({
   className,
@@ -289,108 +227,118 @@ export default function Results({
   }, [employees])
 
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <ManagementTable
-        title="員工管理列表"
-        totalCount={employees.length}
-        pageLimit={page.limit}
-        pageOffset={page.offset}
-        onPageChange={handleOnChangePage}
-        onRowsPerPageChange={handleOnChangeRowsPerPage}
-        rowsPerPageOptions={[5, 10, 25, 50, 1000]}
-        minWidth={1150}
-        tableHead={
-          <>
-            {rakeSetAble && (
-              <TableCell padding="checkbox" css={styles.compactCell}>
-                <Checkbox
-                  checked={selectedDesigners.length === employees.length && employees.length > 0}
-                  color="primary"
-                  indeterminate={selectedDesigners.length > 0 && selectedDesigners.length < employees.length}
-                  onChange={handleSelectAll}
-                  disabled={employees.length === 0}
-                />
-              </TableCell>
-            )}
-            <TableCell css={styles.compactCell}>操作</TableCell>
-            <TableCell css={styles.compactCell}>姓名/電話</TableCell>
-            <TableCell css={styles.compactCell}>設計師編號</TableCell>
-            <TableCell css={styles.compactCell}>暱稱</TableCell>
-            <TableCell css={styles.compactCell}>權限設定</TableCell>
-            <TableCell css={styles.compactCell}>帳號狀態</TableCell>
-            <TableCell css={styles.compactCell}>設定狀態</TableCell>
-            <TableCell css={styles.compactCell}>設置</TableCell>
-          </>
-        }
-      >
-        <TableBody>
-          {sortedEmployees.map((data, idx) => (
-            <TableRow key={`employee-item-${idx}`} css={styles.tableRow}>
-              {rakeSetAble && (
-                <TableCell padding="checkbox" css={styles.compactCell}>
-                  <Checkbox
-                    color="primary"
-                    checked={selectedDesigners.indexOf(data.id) > -1}
-                    onChange={() => handleSelectOne(data.id)}
-                  />
-                </TableCell>
-              )}
-              <TableCell css={styles.compactCell}>
-                <IconButton
-                  component={RouterLink}
-                  to={`/management/employee/${data.id}/general`}
-                  css={styles.editIcon}
-                  size="small"
-                  disabled={loginUserAuthName !== '高階主管' && data.merchantIdentity.authorityName === '高階主管'}
-                >
-                  <EditIcon fontSize="small" />
-                </IconButton>
-              </TableCell>
-              <TableCell css={styles.compactCell}>
-                <div css={styles.nameCell}>
-                  <Avatar css={styles.avatar} src={data.avatar} />
-                  <div>
-                    <Link
-                      underline='hover'
-                      color="inherit"
-                      component={RouterLink}
-                      to={`/management/employee/${data.id}/general`}
-                      variant="h6"
-                    >
-                      {data.lastName}
-                      {data.firstName}
-                      {data.status === 'pending' && (
-                        <span css={styles.deductionNotSet}>未設定抽成</span>
-                      )}
-                    </Link>
-                    <div>{data.cellphone}</div>
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell css={styles.compactCell}>{data.designerNo}</TableCell>
-              <TableCell css={styles.compactCell}>{data.nickName}</TableCell>
-              <TableCell css={styles.compactCell}>
-                {data.merchantIdentity.authorityName.length > 0
-                  ? data.merchantIdentity.authorityName
-                  : '無設定'}
-              </TableCell>
-              <TableCell css={styles.compactCell}>
-                {data.status === 'ok' || data.status === 'pending' ? '可登入' : '不可登入'}
-              </TableCell>
-              <TableCell css={styles.compactCell}>
-                {data.isUserRakeSet && isDeductionWaySet(data.deductionWay) ? (
-                  '設定完成'
-                ) : (
-                  <span style={{ color: 'red', fontWeight: 'bold' }}>
-                    {getMessage(data.isUserRakeSet, data.deductionWay)}
-                  </span>
+    <div {...rest} css={className}>
+      <Card>
+        <CardHeader className="items-center pb-4">
+          <div className="flex items-baseline gap-3">
+            <CardTitle>員工管理列表</CardTitle>
+            <span className="text-label tabular-nums text-text-secondary">共 {employees.length} 筆</span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table className="min-w-[1150px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                {rakeSetAble && (
+                  <TableHead className="w-12">
+                    <Checkbox
+                      aria-label="全選"
+                      checked={selectedDesigners.length === employees.length && employees.length > 0}
+                      indeterminate={selectedDesigners.length > 0 && selectedDesigners.length < employees.length}
+                      onChange={handleSelectAll}
+                      disabled={employees.length === 0}
+                    />
+                  </TableHead>
                 )}
-              </TableCell>
-              <TableCell css={styles.compactCell}>{handleRenderStatus(data)}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </ManagementTable>
+                <TableHead>操作</TableHead>
+                <TableHead>姓名/電話</TableHead>
+                <TableHead>設計師編號</TableHead>
+                <TableHead>暱稱</TableHead>
+                <TableHead>權限設定</TableHead>
+                <TableHead>帳號狀態</TableHead>
+                <TableHead>設定狀態</TableHead>
+                <TableHead>設置</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {sortedEmployees.map((data, idx) => (
+                <TableRow key={`employee-item-${idx}`} data-state={selectedDesigners.indexOf(data.id) > -1 ? 'selected' : undefined}>
+                  {rakeSetAble && (
+                    <TableCell className="w-12">
+                      <Checkbox
+                        aria-label={`選取 ${data.lastName}${data.firstName}`}
+                        checked={selectedDesigners.indexOf(data.id) > -1}
+                        onChange={() => handleSelectOne(data.id)}
+                      />
+                    </TableCell>
+                  )}
+                  <TableCell>
+                    {/* 無權限時與舊版 IconButton disabled 相同：不可點（pointer-events-none）、不可聚焦 */}
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary aria-disabled:pointer-events-none aria-disabled:opacity-40">
+                      <RouterLink
+                        aria-label="編輯員工"
+                        to={`/management/employee/${data.id}/general`}
+                        aria-disabled={(loginUserAuthName !== '高階主管' && data.merchantIdentity.authorityName === '高階主管') || undefined}
+                        tabIndex={loginUserAuthName !== '高階主管' && data.merchantIdentity.authorityName === '高階主管' ? -1 : undefined}
+                      >
+                        <EditIcon />
+                      </RouterLink>
+                    </Button>
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <Avatar sx={{ width: 36, height: 36 }} src={data.avatar} />
+                      <div>
+                        <RouterLink
+                          className="font-medium text-text no-underline hover:underline"
+                          to={`/management/employee/${data.id}/general`}
+                        >
+                          {data.lastName}
+                          {data.firstName}
+                          {data.status === 'pending' && (
+                            <span className="ml-1 text-caption text-warning">未設定抽成</span>
+                          )}
+                        </RouterLink>
+                        <div className="text-caption tabular-nums text-text-secondary">{data.cellphone}</div>
+                      </div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="tabular-nums">{data.designerNo}</TableCell>
+                  <TableCell>{data.nickName}</TableCell>
+                  <TableCell>
+                    {data.merchantIdentity.authorityName.length > 0
+                      ? data.merchantIdentity.authorityName
+                      : '無設定'}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={data.status === 'ok' || data.status === 'pending' ? 'success' : 'neutral'}>
+                      {data.status === 'ok' || data.status === 'pending' ? '可登入' : '不可登入'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {data.isUserRakeSet && isDeductionWaySet(data.deductionWay) ? (
+                      '設定完成'
+                    ) : (
+                      <span className="font-medium text-danger">
+                        {getMessage(data.isUserRakeSet, data.deductionWay)}
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-text-secondary">{handleRenderStatus(data)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <TablePagination
+            count={employees.length}
+            onPageChange={handleOnChangePage}
+            onRowsPerPageChange={handleOnChangeRowsPerPage}
+            page={page.offset}
+            rowsPerPage={page.limit}
+            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
+          />
+        </div>
+      </Card>
       {rakeSetAble && (
         <>
           <TableEditBar

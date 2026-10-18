@@ -1,33 +1,60 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+# 任何 branch 的 push 與所有 PR 都會跑：安裝一次、build 與 test 各自獨立一個 job（其中一個失敗不會遮住另一個的結果）。
+# 套件安裝方式與 Dockerfile 一致：npm + --legacy-peer-deps（專案只有 package-lock.json，沒有 yarn.lock）。
 
 name: Node.js CI
 
 on:
   push:
-    branches: [develop]
+    branches: ['**']
   pull_request:
-    branches: [develop]
+  workflow_dispatch:
+
+# 同一個 branch 連續 push 時，取消尚未跑完的舊執行
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: 20.12.1 # 與 Dockerfile、cloudbuild.yaml 的 node:20.12.1 相同
+  CYPRESS_INSTALL_BINARY: 0 # build 與單元測試不需要 Cypress 執行檔，略過下載
 
 jobs:
-  uni-and-integration-test:
+  build:
+    name: Build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
-
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install project dependencies
-        if: steps.yarn-cache.outputs.cache-hit != 'true' # Over here!
-        run: yarn
-      - run: yarn test:nowatch
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+      - name: Build
+        run: npm run build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
 
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+      - name: Test
+        run: npm run test:nowatch
+
+  # 舊的 E2E 設定（Node 12、ubuntu-16.04 已被 GitHub 移除、yarn、Cypress 專案金鑰直接寫在檔案裡）。
+  # 尚未驗證能在新環境執行，所以不放進 push／PR 流程，只在手動觸發（Run workflow）時執行，等確認要不要保留再處理。
   cypress-run:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-16.04
     name: E2E on Chrome
     strategy:

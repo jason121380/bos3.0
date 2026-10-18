@@ -12,8 +12,7 @@ import { useHistory } from 'react-router';
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusActive'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import CloseIcon from '@mui/icons-material/Close';
+import { EditOutlined as EditOutlinedIcon, Close as CloseIcon } from 'ui/icons'
 import idx from 'idx'
 import DateSelector from 'components/DateSelector'
 import { css } from '@emotion/react'
@@ -32,7 +31,7 @@ const styles  = {
     top: 0,
     background: 'white',
     zIndex: '100',
-    outline: '1px solid #eeeeee !important',
+    outline: '1px solid rgb(var(--border)) !important',
   }),
   calendarButton: css({
     backgroundColor: 'white !important',

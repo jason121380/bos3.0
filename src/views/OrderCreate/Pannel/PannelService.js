@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
+import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
 import { memo, useContext, useEffect, useState, Fragment } from 'react'
@@ -254,9 +254,9 @@ function PannelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
         onClick={onPanelClick}
         data-testid="panelService"
       >
-        <Typography css={styles.heading}>項目消費</Typography>
+        <p className="m-0" css={styles.heading}>項目消費</p>
         {teachingMode && (
-          <Typography css={styles.heading2}>服務項目必須設定好助理才能輸入助理**</Typography>
+          <p className="m-0" css={styles.heading2}>服務項目必須設定好助理才能輸入助理**</p>
         )}
       </AccordionSummary>
       <AccordionDetails css={styles.details}>

@@ -1,19 +1,11 @@
-/** @jsxImportSource @emotion/react */
 import {
-  Button,
-  Container,
-  Card,
-  CardContent,
-  CardHeader,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
-  TextField,
   Switch,
 } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import idx from 'idx'
 import React, { useState, Fragment } from 'react'
@@ -22,8 +14,16 @@ import useFetchCreateMembership from 'hooks/useFetchCreateMembership'
 import { useFetchGetMembershipCategories } from 'hooks/useFetchGetMembershipCategory'
 import { useFetchGetMemberships } from 'hooks/useFetchGetMembership'
 import { CirclePicker } from 'react-color'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input, Textarea } from 'ui/input'
+import { PageHeader } from 'ui/page-header'
 
-import styles from './styles/MemberCardCreate'
+// 色票浮層：沿用舊版置中固定定位（CirclePicker 接受 className）
+const colorPickerClass = 'fixed left-1/2 top-1/2 z-[999] box-content -translate-x-1/2 -translate-y-1/2 rounded-md border border-solid border-border-strong bg-background pb-3 pl-5 pr-3 pt-5 shadow-float'
+// 顏色預覽按鈕：背景色由 style 帶入目前色碼
+const swatchClass = 'h-9 w-16 shrink-0 rounded-md border border-solid border-border-strong p-0'
+
 //isLocked
 const lockStatus = [
   {
@@ -135,37 +135,32 @@ export default function MemberCardCreate() {
   const valid = !(submitValue.no && submitValue.name && submitValue.MembershipCategoryUUID)
 
   return (
-    <Page css={styles.root} title="新增會員卡">
-      <Container maxWidth="md">
-        <PageTitle title='新增會員卡' subTitle='Create Membership' />
-        <Card css={styles.actions}>
-          <CardHeader title="一般資訊" />
-          <CardContent>
-            <TextField
-              label="代號"
-              variant="outlined"
-              fullWidth
-              css={styles.formGroup}
-              name="no"
-              inputProps={{
-                'data-testid': 'no',
-                required: '代號 為必填',
-              }}
-              onChange={e => setSubmitValue({ ...submitValue, no: e.target.value })}
-            />
-            <TextField
-              label="名稱"
-              css={styles.formGroup}
-              variant="outlined"
-              fullWidth
-              name="name"
-              inputProps={{
-                'data-testid': 'name',
-                required: '名稱 為必填',
-              }}
-              onChange={e => setSubmitValue({ ...submitValue, name: e.target.value })}
-            />
-            <FormControl variant="outlined" fullWidth>
+    <Page className="ui-root" title="新增會員卡">
+      <div className="mx-auto flex max-w-3xl flex-col gap-6">
+        <PageHeader title="新增會員卡" className="pb-0" />
+        <Card>
+          <CardHeader>
+            <CardTitle>一般資訊</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            {/* data-testid、required 原本經 inputProps 傳到 input，現直接放在原生 input 上 */}
+            <Field label="代號" required>
+              <Input
+                name="no"
+                data-testid='no'
+                required='代號 為必填'
+                onChange={e => setSubmitValue({ ...submitValue, no: e.target.value })}
+              />
+            </Field>
+            <Field label="名稱" required>
+              <Input
+                name="name"
+                data-testid='name'
+                required='名稱 為必填'
+                onChange={e => setSubmitValue({ ...submitValue, name: e.target.value })}
+              />
+            </Field>
+            <FormControl variant="outlined" fullWidth className="mt-2">
               <InputLabel>會員卡類別</InputLabel>
               <Select
                 label='會員卡類別'
@@ -188,92 +183,84 @@ export default function MemberCardCreate() {
                   ))}
               </Select>
             </FormControl>
-            <TextField
-              type="number"
-              label="有效天數"
-              variant="outlined"
-              fullWidth
-              css={styles.textFieldFormGroup}
-              name="effecitveDay"
-              onChange={event => {
-                setSubmitValue({ ...submitValue, effecitveDay: parseInt(event.target.value) })
-              }}
-              onWheel={() => document.activeElement.blur()}              
-            />
-            <div css={styles.isAvailableForSaleDiv}>
-              <span>是否可販售</span>
+            <Field label="有效天數">
+              <Input
+                type="number"
+                name="effecitveDay"
+                onChange={event => {
+                  setSubmitValue({ ...submitValue, effecitveDay: parseInt(event.target.value) })
+                }}
+                onWheel={() => document.activeElement.blur()}
+              />
+            </Field>
+            <div className="flex items-center gap-2">
+              <span className="text-label text-text">是否可販售</span>
               <Switch
                 name="isAvailableForSale"
                 checked={forSale}
                 onChange={() => {
                   setForSale(!forSale)
                   setSubmitValue({ ...submitValue, isAvailableForSale: !forSale})
-                }}              
+                }}
               />
             </div>
             {forSale && (
-            <TextField
-              type="number"
-              label="會員卡價格"
-              variant="outlined"
-              fullWidth
-              name="sellPrice"
-              css={styles.formGroup}
-              onChange={event => {
-                setSubmitValue({ ...submitValue, sellPrice: parseFloat(event.target.value) })
-              }}
-              onWheel={() => document.activeElement.blur()}              
-            />)}
-            <TextField
-              type="number"
-              label="成本價格"
-              variant="outlined"
-              fullWidth
-              name="cost"
-              css={styles.formGroup}
-              onChange={event => {
-                setSubmitValue({ ...submitValue, cost: parseFloat(event.target.value) })
-              }}
-              onWheel={() => document.activeElement.blur()}              
-            />
-            <TextField
-              type="number"
-              label="員工自購價格"
-              variant="outlined"
-              fullWidth
-              name="employeePrice"
-              css={styles.formGroup}
-              onChange={event => {
-                setSubmitValue({ ...submitValue, employeePrice: parseFloat(event.target.value) })
-              }}
-              onWheel={() => document.activeElement.blur()}              
-            />
-            <div css={styles.formGroup} style={{display: 'flex', alignItems: 'center'}}>
-              <TextField
-                label="會員卡的顏色"
-                variant="outlined"
-                name="color"
-                value={submitValue.color}
+              <Field label="會員卡價格">
+                <Input
+                  type="number"
+                  name="sellPrice"
+                  onChange={event => {
+                    setSubmitValue({ ...submitValue, sellPrice: parseFloat(event.target.value) })
+                  }}
+                  onWheel={() => document.activeElement.blur()}
+                />
+              </Field>
+            )}
+            <Field label="成本價格">
+              <Input
+                type="number"
+                name="cost"
                 onChange={event => {
-                  setSubmitValue({ ...submitValue, color: event.target.value})
+                  setSubmitValue({ ...submitValue, cost: parseFloat(event.target.value) })
                 }}
+                onWheel={() => document.activeElement.blur()}
               />
-              <Button
-                  style={{ 
+            </Field>
+            <Field label="員工自購價格">
+              <Input
+                type="number"
+                name="employeePrice"
+                onChange={event => {
+                  setSubmitValue({ ...submitValue, employeePrice: parseFloat(event.target.value) })
+                }}
+                onWheel={() => document.activeElement.blur()}
+              />
+            </Field>
+            <Field label="會員卡的顏色">
+              <div className="flex items-center gap-2.5">
+                <Input
+                  className="w-60"
+                  name="color"
+                  value={submitValue.color}
+                  onChange={event => {
+                    setSubmitValue({ ...submitValue, color: event.target.value})
+                  }}
+                />
+                <Button
+                  aria-label="選擇會員卡的顏色"
+                  className={swatchClass}
+                  style={{
                     background: `${submitValue.color}`,
-                    marginLeft: '10px',
-                    height: '40px',
-                    border: '1px solid #92929F',
                   }}
                   onClick={() => {
                     setShowColorPicker(true)
                     setColorData(submitValue.color)
                   }}
-              />
-              {showColorPicker && (
+                />
+                {showColorPicker && (
                   <Fragment>
                     <CirclePicker
-                      css={styles.colorPicker}
+                      className={colorPickerClass}
                       disableAlpha
                       color={colorData}
                       onChange={event => {
@@ -284,72 +271,68 @@ export default function MemberCardCreate() {
                     />
                   </Fragment>
                 )}
-            </div>
-            <div css={styles.formGroup} style={{display: 'flex', alignItems: 'center'}}>
-              <TextField
-                label="會員卡文字的顏色"
-                variant="outlined"
-                name="textColor"
-                value={submitValue.textColor}
-                onChange={event => {
-                  setSubmitValue({ ...submitValue, textColor: event.target.value })
-                }}
-              />
-              <Button
-                  style={{ 
+              </div>
+            </Field>
+            <Field label="會員卡文字的顏色">
+              <div className="flex items-center gap-2.5">
+                <Input
+                  className="w-60"
+                  name="textColor"
+                  value={submitValue.textColor}
+                  onChange={event => {
+                    setSubmitValue({ ...submitValue, textColor: event.target.value })
+                  }}
+                />
+                <Button
+                  aria-label="選擇會員卡文字的顏色"
+                  className={swatchClass}
+                  style={{
                     background: `${submitValue.textColor}`,
-                    marginLeft: '10px',
-                    height: '40px',
-                    border: '1px solid #92929F',
                   }}
                   onClick={() => {
                     setShowTextColorPicker(true)
                     setColorTextData(submitValue.textColor)
                   }}
+                />
+                {showTextColorPicker && (
+                  <Fragment>
+                    <CirclePicker
+                      className={colorPickerClass}
+                      disableAlpha
+                      color={colorTextData}
+                      onChange={event => {
+                        setColorTextData(event.hex)
+                        setSubmitValue({ ...submitValue, textColor: event.hex })
+                        setShowTextColorPicker(false)
+                      }}
+                    />
+                  </Fragment>
+                )}
+              </div>
+            </Field>
+            <Field label="圖片">
+              <Input
+                name="image"
+                onChange={event => {
+                  setSubmitValue({ ...submitValue, image: event.target.value })
+                }}
               />
-              {showTextColorPicker && (
-                <Fragment>
-                  <CirclePicker
-                    css={styles.colorPicker}
-                    disableAlpha
-                    color={colorTextData}
-                    onChange={event => {
-                      setColorTextData(event.hex)
-                      setSubmitValue({ ...submitValue, textColor: event.hex })
-                      setShowTextColorPicker(false)
-                    }}
-                  />
-                </Fragment>
-              )}
-            </div>
-            <TextField
-              label="圖片"
-              variant="outlined"
-              fullWidth
-              name="image"
-              css={styles.formGroup}
-              onChange={event => {
-                setSubmitValue({ ...submitValue, image: event.target.value })
-              }}
-            />
-             <TextField
-              label="會籍說明"
-              variant="outlined"
-              fullWidth
-              name="comment"
-              multiline
-              minRows="4"
-              css={styles.formGroup}
-              onChange={event => {
-                setSubmitValue({ ...submitValue, comment: event.target.value })
-              }}
-            />
-            <FormControl variant="outlined" fullWidth css={styles.formGroup}>
+            </Field>
+            <Field label="會籍說明">
+              <Textarea
+                name="comment"
+                rows={4}
+                onChange={event => {
+                  setSubmitValue({ ...submitValue, comment: event.target.value })
+                }}
+              />
+            </Field>
+            <FormControl variant="outlined" fullWidth className="mt-2">
               <InputLabel>打帳單是否能更改預設價格</InputLabel>
               <Select
                 label='打帳單是否能更改預設價格'
-                defaultValue="UNSET"
                 name="isLocked"
+                defaultValue="UNSET"
                 onChange={event => {
                   setSubmitValue({ ...submitValue, isLocked: event.target.value })
                 }}
@@ -364,14 +347,16 @@ export default function MemberCardCreate() {
           </CardContent>
         </Card>
         {forSale && (
-          <Card css={styles.aboutPayment}>
-            <CardHeader title="抽成" />
-            <CardContent>
+          <Card>
+            <CardHeader>
+              <CardTitle>抽成</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4">
               <FormControl
                 defaultValue=""
                 variant="outlined"
-                css={styles.formGroup}
                 fullWidth
+                className="mt-2"
               >
                 <InputLabel>抽成方式</InputLabel>
                 <Select
@@ -388,29 +373,28 @@ export default function MemberCardCreate() {
                   ))}
                 </Select>
               </FormControl>
-              <TextField
-                type="number"
+              <Field
                 label={
                   submitValue.commissionWay === 'byCost' || submitValue.commissionWay === 'byPrice'
                     ? '抽成數字%'
                     : '抽成數字'
                 }
-                variant="outlined"
-                fullWidth
-                name="commission"
-                css={styles.formGroup}
-                onChange={event => {
-                  setSubmitValue({ ...submitValue, commission: parseFloat(event.target.value) })
-                }}
-                onWheel={() => document.activeElement.blur()}              
-              />
+              >
+                <Input
+                  type="number"
+                  name="commission"
+                  onChange={event => {
+                    setSubmitValue({ ...submitValue, commission: parseFloat(event.target.value) })
+                  }}
+                  onWheel={() => document.activeElement.blur()}
+                />
+              </Field>
             </CardContent>
           </Card>
         )}
-        <div css={styles.actions}>
+        <div className="flex justify-end">
           <Button
-            color="primary"
-            variant="contained"
+            variant="primary"
             type="submit"
             data-testid="submit"
             onClick={() => handleSubmit()}
@@ -419,8 +403,7 @@ export default function MemberCardCreate() {
             新增
           </Button>
         </div>
-      </Container>
-     
+      </div>
     </Page>
   )
 }

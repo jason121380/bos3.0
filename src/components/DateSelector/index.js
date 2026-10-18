@@ -1,6 +1,8 @@
-/** @jsxImportSource @emotion/react */
-import { Button, ButtonGroup } from '@mui/material'
 import { MobileDatePicker } from '@mui/x-date-pickers'
+import { CalendarDays } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'ui/select'
+import { cn, focusRing } from 'ui/utils'
+import { MuiScope } from 'ui/mui-theme'
 import { cloneDeep } from 'lodash'
 import {
   isBefore, startOfDay, endOfDay, subDays, addDays,
@@ -74,31 +76,8 @@ const index = ({
   const isNextWeek = (startDate, endDate) => {
     return isSameDay(startDate, startOfWeek(addWeeks(new Date(), 1))) && isSameDay(endDate, endOfWeek(addWeeks(new Date(), 1)))
   }
-  const getButton = (title, func, isActive) => (
-    <Button
-      variant="text"
-      onClick={func}
-      key={title}
-      disabled={disabled}
-      css={{
-        wordBreak: 'keep-all',
-        height: '32px',
-        minWidth: '70px',
-        padding: '0 16px',
-        borderRadius: '16px',
-        backgroundColor: isActive ? '#FFFFFF' : 'transparent',
-        color: '#000000 !important',
-        fontWeight: 'bold',
-        fontSize: '13px',
-        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-        boxShadow: isActive ? '0 2px 6px rgba(0,0,0,0.1)' : 'none',
-        border: 'none',
-        margin: '0 2px',
-      }}
-    >
-      {title}
-    </Button>
-  )
+  // 快速區間選項：保留原本的標題、日期函式與「是否為目前區間」判斷，改由下拉選單呈現
+  const getButton = (title, func, isActive) => ({ title, func, isActive })
 
   const buttonObj = {
     lastmonth: () => getButton('上個月', lastmonth, isLastMonth(date.startDate, date.endDate)),
@@ -129,22 +108,15 @@ const index = ({
         }}
         slots={{
           field: inputProps => (
-            <Button
-              variant='text'
+            <button
+              type="button"
               onClick={inputProps.onClick}
               disabled={disabled}
-              css={{
-                wordBreak: 'keep-all',
-                height: '34px',
-                padding: '0 12px',
-                borderRadius: '17px',
-                color: '#000000 !important',
-                fontWeight: 'bold',
-                fontSize: '13px',
-              }}
+              aria-label={onlyStart ? '選擇日期' : type}
+              className={cn('h-full rounded-md px-2 text-body tabular-nums text-text hover:bg-surface-hover disabled:text-text-tertiary', focusRing)}
             >
               {format(inputProps.value, inputFormat)}
-            </Button>
+            </button>
           )
         }}
         slotProps={{
@@ -280,34 +252,51 @@ const index = ({
     }
   }, [])
 
+  const quickKeys = attributes.filter(key => key !== 'startDate' && key !== 'endDate')
+  const quickOptions = quickKeys.map(key => buttonObj[key]())
+  const activeQuick = quickOptions.find(option => option.isActive)
+  const hasStart = attributes.includes('startDate')
+  const hasEnd = attributes.includes('endDate')
+
+  // 精簡版（STYLE.md §6）：「快速選擇」下拉 ＋ 一個日期區間欄位
   return (
-    <div
-      id='DateSelector'
-      className='noprint'
-      style={{
-        display: 'inline-flex',
-        flexWrap: 'nowrap',
-        gap: '4px',
-        height: '42px',
-        alignItems: 'center',
-        backgroundColor: 'transparent',
-        padding: '0 4px',
-        borderRadius: '21px',
-        margin: margin ? '24px 0px 24px 0' : ''
-      }}
-    >
-      {attributes.map((item, index) => {
-        if (item === 'startDate' && attributes[index + 1] === 'endDate') {
-          return (
-            <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              {buttonObj[item]()}
-              <span style={{ fontSize: '13px', fontWeight: 'bold' }}>至</span>
-            </div>
-          )
-        }
-        return buttonObj[item]()
-      })}
+    <MuiScope>
+    <div id='DateSelector' className={cn('ui-root noprint inline-flex flex-wrap items-center gap-2', margin && 'my-6')}>
+      {quickOptions.length > 0 && (
+        <Select
+          value={activeQuick ? activeQuick.title : ''}
+          onValueChange={title => {
+            const option = quickOptions.find(d => d.title === title)
+            option && option.func()
+          }}
+          disabled={disabled}
+        >
+          <SelectTrigger aria-label="快速選擇日期區間" className={cn('w-auto min-w-[112px] gap-2', activeQuick && 'border-accent/40 text-accent')}>
+            <SelectValue placeholder="快速選擇" />
+          </SelectTrigger>
+          <SelectContent className="min-w-[140px]">
+            {quickOptions.map(option => (
+              <SelectItem key={option.title} value={option.title}>
+                {option.title}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+      {hasStart && (
+        <div className="flex h-9 items-center gap-0.5 rounded-md border border-solid border-border-strong bg-background pl-2.5 pr-1 hover:border-border-strong-hover">
+          <CalendarDays className="mr-1 h-4 w-4 text-text-tertiary" strokeWidth={1.75} />
+          {buttonObj.startDate()}
+          {hasEnd && (
+            <>
+              <span className="text-text-tertiary">–</span>
+              {buttonObj.endDate()}
+            </>
+          )}
+        </div>
+      )}
     </div>
+    </MuiScope>
   )
 }
 

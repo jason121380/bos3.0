@@ -1,17 +1,17 @@
-import { ToggleButtonGroup, ToggleButton } from '@mui/material'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import PropTypes from 'prop-types'
 
 function ReferToggleButton({ value, onChange, disabled = false }) {
   return (
-    <ToggleButtonGroup
+    <ToggleGroup
       size="small"
       exclusive
       value={value}
       onChange={(e, v) => onChange(v)}
     >
-      <ToggleButton disabled={disabled} value='FAKE'>虛業績</ToggleButton>
-      <ToggleButton disabled={disabled} value='TRUTH'>實業績</ToggleButton>
-    </ToggleButtonGroup>
+      <ToggleGroupItem disabled={disabled} value='FAKE'>虛業績</ToggleGroupItem>
+      <ToggleGroupItem disabled={disabled} value='TRUTH'>實業績</ToggleGroupItem>
+    </ToggleGroup>
   )
 }
 

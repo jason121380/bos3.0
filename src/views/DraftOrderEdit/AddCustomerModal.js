@@ -5,7 +5,6 @@ import {
   CardActions,
   CardContent,
   CardHeader,
-  Divider,
   FormControl,
   Grid,
   InputLabel,
@@ -13,12 +12,10 @@ import {
   Modal,
   Select,
   TextField,
-  InputAdornment,
-  Typography
+  InputAdornment
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
+import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchUpdateCustomer from 'hooks/useFetchUpdateCustomer'
 import useFetchUsers from 'hooks/useFetchUsers'
@@ -32,6 +29,7 @@ import useFetchGetCheckIsCustomerNoUsed from 'hooks/useFetchGetCheckIsCustomerNo
 import useFetchGetLastCustomerNo from 'hooks/useFetchGetLastCustomerNo'
 import _ from 'lodash'
 import SourceSelect from 'components/SourceSelect'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
@@ -256,9 +254,9 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
       <Card css={styles.root}>
         <CardHeader
           title={values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}
-          action={!lastCustomerNo.loading && <Typography variant="body1">{`最新顧客編號: ${lastNo}`}</Typography>}
+          action={!lastCustomerNo.loading && <span className="text-body text-text">{`最新顧客編號: ${lastNo}`}</span>}
         />
-        <Divider />
+        <div className="h-px bg-border" />
         <CardContent>
           <Grid container spacing={3}>
             <Grid item md={6} xs={12}>
@@ -300,24 +298,22 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel ref={inputLabel}>性別</InputLabel>
-                <Select
-                  label='性別'
-                  value={values.gender}
-                  name="gender"
-                  onChange={handleFieldChange}
-                >
-                  <MenuItem value="UNKNOWN">
-                    <em>未知</em>
-                  </MenuItem>
-                  {gender.map((data, index) => (
-                    <MenuItem value={data.value} key={`${data.value}-${index}`}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <NativeSelect
+                className="ui-root"
+                label='性別'
+                value={values.gender}
+                name="gender"
+                onChange={handleFieldChange}
+              >
+                <NativeSelectOption value="UNKNOWN">
+                  <em>未知</em>
+                </NativeSelectOption>
+                {gender.map((data, index) => (
+                  <NativeSelectOption value={data.value} key={`${data.value}-${index}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
             </Grid>
             <Grid item md={6} xs={12}>
               <TextField
@@ -445,50 +441,50 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel ref={inputLabel}>最近設計師</InputLabel>
-                <Select
-                  label='最近設計師'
-                  value={customer.latestDesigner || ''}
-                  onChange={handleFieldChange}
-                  name="DesignerId"
-                  disabled
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {idx(designers, _ =>
-                    _.data.users.users.map((data, index) => (
-                      <MenuItem value={data.id} key={`${data.id}-${index}`}>
-                        {data.name}
-                      </MenuItem>
-                    ))
-                  )}
-                </Select>
-              </FormControl>
+              <NativeSelect
+                className="ui-root"
+                label='最近設計師'
+                value={customer.latestDesigner || ''}
+                onChange={handleFieldChange}
+                name="DesignerId"
+                disabled
+              >
+                <NativeSelectOption value="">
+                  <em>None</em>
+                </NativeSelectOption>
+                {idx(designers, _ =>
+                  _.data.users.users.map((data, index) => (
+                    <NativeSelectOption value={data.id} key={`${data.id}-${index}`}>
+                      {data.name}
+                    </NativeSelectOption>
+                  ))
+                )}
+              </NativeSelect>
             </Grid>
             <Grid item md={6} xs={12}>
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel ref={inputLabel}>偏好設計師</InputLabel>
-                {designers.data ? (
-                  <Select
-                    label='偏好設計師'
-                    value={values.PreferDesignerId}
-                    onChange={handleFieldChange}
-                    name="PreferDesignerId"
-                  >
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
-                    {idx(designers, _ =>
-                      _.data.users.users.map((data, index) => (
-                        <MenuItem value={data.id} key={`${data.id}-${index}`}>
-                          {data.name}
-                        </MenuItem>
-                      ))
-                    )}
-                  </Select>
-                ) : (
+              {designers.data ? (
+                <NativeSelect
+                  className="ui-root"
+                  label='偏好設計師'
+                  value={values.PreferDesignerId}
+                  onChange={handleFieldChange}
+                  name="PreferDesignerId"
+                >
+                  <NativeSelectOption value="">
+                    <em>None</em>
+                  </NativeSelectOption>
+                  {idx(designers, _ =>
+                    _.data.users.users.map((data, index) => (
+                      <NativeSelectOption value={data.id} key={`${data.id}-${index}`}>
+                        {data.name}
+                      </NativeSelectOption>
+                    ))
+                  )}
+                </NativeSelect>
+              ) : (
+                // 載入中用 renderValue 顯示轉圈，保留 MUI Select
+                <FormControl variant="outlined" fullWidth>
+                  <InputLabel ref={inputLabel}>偏好設計師</InputLabel>
                   <Select
                     label='偏好設計師'
                     value='loading'
@@ -500,8 +496,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                       <em>Loading...</em>
                     </MenuItem>
                   </Select>
-                )}
-              </FormControl>
+                </FormControl>
+              )}
             </Grid>
             <Grid item md={6} xs={12}>
               <TextField
@@ -515,7 +511,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
             </Grid>
           </Grid>
         </CardContent>
-        <Divider />
+        <div className="h-px bg-border" />
         <CardActions css={styles.actions}>
           <Button style={{ color: 'black' }} onClick={onClose}>取消</Button>
           <Button

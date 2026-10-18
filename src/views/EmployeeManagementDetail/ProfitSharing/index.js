@@ -1,8 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button, Container, Grid, Card, CardContent,
-  FormControl, InputLabel, MenuItem, Select, CardHeader
-} from '@mui/material'
 import designerContext from 'context/designerContext'
 import { openSnackbar } from 'elements/snackbars'
 import { useFetchSetUserRake } from 'hooks/useFetchEmployeeSaleSetting'
@@ -16,32 +11,11 @@ import _ from 'lodash'
 import idx from 'idx'
 import { useHistory } from 'react-router'
 import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
 import AboutPerformance from './AboutPerformance'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  about: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-  action: css({
-    width: '100%',
-  }),
-  content: css({
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
-    textAlgin: 'center',
-  }),
-}
 
 // 沒用到的code 大部分是之前用在AboutProfitSharing 留著怕之後改回來
 function ProfitSharing({ refetch, itemAuthority }) {
@@ -197,74 +171,66 @@ function ProfitSharing({ refetch, itemAuthority }) {
   }
 
   return (
-    <Container >
-      <Grid css={styles.about} container spacing={3}>
-        <Grid item md={3} sm={12} xs={12}>
+    <div>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-[1fr_3fr]">
+        <div>
           {settingVisble && (
             <Card>
-              <CardHeader title="人員設定" />
-              <CardContent css={styles.content}>
-                <Grid container spacing={4}>
-                  <Grid item md={12} css={styles.action}>
-                    <FormControl variant="outlined" fullWidth>
-                      <InputLabel>服務扣項方式</InputLabel>
-                      <Select
-                        label='服務扣項方式'
-                        value={profitSharing.deductionWay}
-                        onChange={event =>
-                          handleSalesWayChange({
-                            value: idx(event, _ => _.target.value),
-                            key: 'deductionWay',
-                          })
-                        }
-                      >
-                        <MenuItem value="無扣項">
-                          <em>無扣項</em>
-                        </MenuItem>
-                        {idx(commissionWay, _ =>
-                          _.data.merchantCommissionWay.map(data => (
-                            <MenuItem key={data.name} value={data.name}>
-                              {data.name}
-                            </MenuItem>
-                          ))
-                        )}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item md={12} css={styles.action}>
-                    <FormControl variant="outlined" fullWidth>
-                      <InputLabel>互助點數設定依據</InputLabel>
-                      <Select
-                        label='互助點數設定依據'
-                        value={
-                          profitSharing.MerchantJobTitlePointId
-                            ? profitSharing.MerchantJobTitlePointId
-                            : ''
-                        }
-                        onChange={event =>
-                          handleSalesWayChange({
-                            value: idx(event, _ => _.target.value),
-                            key: 'MerchantJobTitlePointId',
-                          })
-                        }
-                      >
-                        <MenuItem value="">
-                          <em>None</em>
-                        </MenuItem>
-                        {merchantJobTitlePoints?.map((data, index) => (
-                          <MenuItem key={`${data.jobTitle}-${index}`} value={data.id}>
-                            {data.jobTitle}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
+              <CardHeader>
+                <CardTitle>人員設定</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col gap-4">
+                  <NativeSelect
+                    label='服務扣項方式'
+                    value={profitSharing.deductionWay}
+                    onChange={event =>
+                      handleSalesWayChange({
+                        value: idx(event, _ => _.target.value),
+                        key: 'deductionWay',
+                      })
+                    }
+                  >
+                    <NativeSelectOption value="無扣項">
+                      <em>無扣項</em>
+                    </NativeSelectOption>
+                    {idx(commissionWay, _ =>
+                      _.data.merchantCommissionWay.map(data => (
+                        <NativeSelectOption key={data.name} value={data.name}>
+                          {data.name}
+                        </NativeSelectOption>
+                      ))
+                    )}
+                  </NativeSelect>
+                  <NativeSelect
+                    label='互助點數設定依據'
+                    value={
+                      profitSharing.MerchantJobTitlePointId
+                        ? profitSharing.MerchantJobTitlePointId
+                        : ''
+                    }
+                    onChange={event =>
+                      handleSalesWayChange({
+                        value: idx(event, _ => _.target.value),
+                        key: 'MerchantJobTitlePointId',
+                      })
+                    }
+                  >
+                    <NativeSelectOption value="">
+                      <em>None</em>
+                    </NativeSelectOption>
+                    {merchantJobTitlePoints?.map((data, index) => (
+                      <NativeSelectOption key={`${data.jobTitle}-${index}`} value={data.id}>
+                        {data.jobTitle}
+                      </NativeSelectOption>
+                    ))}
+                  </NativeSelect>
+                </div>
               </CardContent>
             </Card>
           )}
-        </Grid>
-        <Grid item md={9} sm={12} xs={12}>
+        </div>
+        <div className="min-w-0">
           {profitSharing.segmented.length > 0 || profitSharing.nonSegmented.length > 0 ? (
             <AboutPerformance
               profitSharing={profitSharing}
@@ -274,14 +240,14 @@ function ProfitSharing({ refetch, itemAuthority }) {
           ) : (
             ''
           )}
-        </Grid>
-      </Grid>
-      <div css={styles.actions}>
-        <Button color="primary" variant="contained" onClick={handleSave}>
+        </div>
+      </div>
+      <div className="mt-6">
+        <Button variant="primary" onClick={handleSave}>
           儲存並返回列表
         </Button>
       </div>
-    </Container>
+    </div>
   )
 }
 

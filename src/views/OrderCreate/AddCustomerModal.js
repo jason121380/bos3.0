@@ -5,7 +5,6 @@ import {
   CardActions,
   CardContent,
   CardHeader,
-  Divider,
   FormControl,
   Grid,
   InputLabel,
@@ -14,12 +13,11 @@ import {
   Select,
   TextField,
   InputAdornment,
-  Typography,
   Autocomplete,
   CircularProgress
 } from '@mui/material'
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
+import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchUpdateCustomer from 'hooks/useFetchUpdateCustomer'
 import usePageLoading from 'hooks/usePageLoading'
@@ -390,9 +388,9 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
       <Card css={styles.root}>
         <CardHeader
           title={values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}
-          action={!lastCustomerNo.loading && <Typography variant="body1">{`最新顧客編號: ${lastNo}`}</Typography>}
+          action={!lastCustomerNo.loading && <span className="text-body text-text">{`最新顧客編號: ${lastNo}`}</span>}
         />
-        <Divider />
+        <div className="h-px bg-border" />
         <CardContent>
           <Grid container spacing={3}>
             <Grid item md={6} xs={12}>
@@ -566,26 +564,23 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <FormControl variant="outlined" fullWidth>
-                <InputLabel ref={inputLabel}>最近設計師</InputLabel>
-                <Select
-                  label='最近設計師'
-                  value={customer.latestDesigner || ''}
-                  onChange={handleFieldChange}
-                  name="DesignerId"
-                  disabled
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {customerInModal.map((data, index) => (
-                    <MenuItem value={data.userId} key={`${data.userId}-${index}`}>
-                      {data.userName}
-                    </MenuItem>
-                  ))
-                  }
-                </Select>
-              </FormControl>
+              <NativeSelect
+                label='最近設計師'
+                value={customer.latestDesigner || ''}
+                onChange={handleFieldChange}
+                name="DesignerId"
+                disabled
+              >
+                <NativeSelectOption value="">
+                  <em>None</em>
+                </NativeSelectOption>
+                {customerInModal.map((data, index) => (
+                  <NativeSelectOption value={data.userId} key={`${data.userId}-${index}`}>
+                    {data.userName}
+                  </NativeSelectOption>
+                ))
+                }
+              </NativeSelect>
             </Grid>
             <Grid item md={6} xs={12}>
               <Autocomplete
@@ -638,7 +633,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
             </Grid>
           </Grid>
         </CardContent>
-        <Divider />
+        <div className="h-px bg-border" />
         <CardActions css={styles.actions}>
           <div>
             {values.customerId.length > 0 && (

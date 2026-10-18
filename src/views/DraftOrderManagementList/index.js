@@ -1,11 +1,6 @@
-/** @jsxImportSource @emotion/react */
-import { Container, Grid, Link, Button, Card, Collapse, IconButton } from '@mui/material'
-import FilterListIcon from '@mui/icons-material/FilterList'
 import DateSelector from 'components/DateSelector'
 import MerchantSearchBar from 'components/MerchantSearchBar'
-import ProgressBar from 'components/ProgressBar'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { endOfDay, startOfDay } from 'date-fns'
 import { useFetchPendingOrders } from 'hooks/useFetchOrders'
 import idx from 'idx'
@@ -25,21 +20,13 @@ import { useFetchGetDisablePendingOrder } from 'hooks/useFetchGetParameterAboutS
 import useCheckDisablePendingOrder from 'hooks/useCheckDisablePendingOrder'
 import { Link as RouterLink } from 'react-router-dom'
 import QRCode from 'qrcode'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { ListFilter, Plus } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { PageHeader, Toolbar, ToolbarSpacer } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import ResultsV2 from './ResultsV2'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(1.5),
-  }),
-}
 
 function DraftOrderManagementList() {
   const customerDataMarkedData = useFetchCustomerDataMarked()
@@ -202,131 +189,96 @@ function DraftOrderManagementList() {
   useCheckDisablePendingOrder()
 
   return (
-    <Page css={styles.root} title="掛單列表">
-      <Container maxWidth={false} css={styles.container}>
-        <Card
-          css={css({
-            display: 'flex',
-            padding: '12px 24px',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#E8F0FE', // Light Blue background
-            borderRadius: '12px',
-            boxShadow: 'none',
-            border: 'none !important',
-            marginBottom: '12px',
-          })}
+    <Page className="ui-root" title="掛單列表">
+      <PageHeader
+        title="掛單列表"
+        actions={
+          <Button asChild variant="primary">
+            <RouterLink to="/order/create">
+              <Plus strokeWidth={1.75} />
+              新開單
+            </RouterLink>
+          </Button>
+        }
+      />
+      <Toolbar>
+        <DateSelector
+          attributes={['dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+          date={{ startDate: pageSetting.startDate, endDate: pageSetting.endDate }}
+          dateChange={value => setPageSetting(prev => ({ ...prev, ...value }))}
+          margin={false}
+        />
+        <ToolbarSpacer />
+        <Button
+          variant="secondary"
+          aria-pressed={showFilter}
+          className={showFilter ? 'border-text bg-surface-hover' : undefined}
+          onClick={() => setShowFilter(!showFilter)}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <PageTitle title='掛單列表' style={{ color: '#1A73E8' }} />
-            <Link component={RouterLink} to="/order/create" style={{ textDecoration: 'none' }}>
-              <Button
-                variant="contained"
-                css={css({
-                  borderRadius: '20px !important',
-                  padding: '6px 20px !important',
-                  fontSize: '14px !important',
-                  boxShadow: 'none !important',
-                  fontWeight: 'bold !important',
-                  backgroundColor: '#FFFFFF !important',
-                  color: '#666 !important',
-                  '&:hover': {
-                    backgroundColor: '#f8f8f8 !important',
-                  }
-                })}
-              >
-                新開單
-              </Button>
-            </Link>
-            <IconButton
-              onClick={() => setShowFilter(!showFilter)}
-              css={css({
-                backgroundColor: showFilter ? 'rgba(0, 122, 255, 0.1) !important' : 'transparent !important',
-                color: showFilter ? '#007AFF !important' : '#666 !important',
-                marginLeft: '4px !important',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 122, 255, 0.15) !important',
-                }
-              })}
-            >
-              <FilterListIcon />
-            </IconButton>
-          </div>
+          <ListFilter strokeWidth={1.75} />
+          篩選
+        </Button>
+      </Toolbar>
 
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <DateSelector
-              attributes={['dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-              date={{ startDate: pageSetting.startDate, endDate: pageSetting.endDate }}
-              dateChange={value => setPageSetting(prev => ({ ...prev, ...value }))}
-              margin={false}
-            />
-          </div>
-        </Card>
-
-        <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: '#fff', borderRadius: '8px', padding: '16px', border: '1px solid #f0f0f0' }}>
-            <MerchantSearchBar
-              values={pageSetting}
-              onFilter={value => setPageSetting(value)}
-              outside
-              visible={['employee', 'customer', 'payment', 'thirdPartyCoupon', 'source']}
-              hideStartDate={true}
-              getThirdPartyName={true}
-            />
-          </div>
-        </Collapse>
-        {!orders.loading ? (
-          <ResultsV2
-            className={styles.results}
-            orders={orderList}
-            pageSetting={pageSetting}
-            refetch2={refetch}
-            totalCount={totalCount}
-            onPageChange={handlePageChange}
-            onRowsPerPageChange={handleRowsPerPageChange}
-            isCustomerDataMarked={isCustomerDataMarked}
-            membershipDisplay={membershipDisplay}
-            bonusDisplay={bonusDisplay}
-            bonusActive={!customerBonusActive.loading ? idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) : false}
-            qrcodeUrl={qrcodeUrl}
-            imgUrl={imgUrl}
-            detailInfo={detailInfo}
-            closureDelayed={closureDelayed}
-            disabled={
-              getLogoDisplayOnInvoice.loading ||
-              getQrcodeDisplayOnInvoice.loading ||
-              getMessageDisplayOnInvoice.loading
-            }
-            passwordEnabled={
-              !passwordData.loading ? ({
-                delete: idx(passwordData, _ => _.data.merchantPassword.deleteOrder.isUsing),
-                checkout: idx(passwordData, _ => _.data.merchantPassword.reCheckoutOrder.isUsing),
-              }) : ({
-                delete: false,
-                checkout: false
-              })
-            }
-            orderDetailPrintLayout={
-              !merchantOrderDetailPrintLayoutData.loading ? idx(merchantOrderDetailPrintLayoutData,
-                _ => _.data.getMerchantPrintFormatSettings
-              ) : 'A4'
-            }
-            nameDisplayOnInvoice={
-              !getDesignerNameDisplayOnInvoice.loading ? idx(
-                getDesignerNameDisplayOnInvoice, _ => _.data.getDesignerNameDisplayOnInvoice
-              ) : 'NAME'
-            }
+      {showFilter && (
+        <Card className="mb-6 p-4">
+          <MerchantSearchBar
+            values={pageSetting}
+            onFilter={value => setPageSetting(value)}
+            outside
+            visible={['employee', 'customer', 'payment', 'thirdPartyCoupon', 'source']}
+            hideStartDate={true}
+            getThirdPartyName={true}
           />
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <ProgressBar
-              setProgress={setProgress}
-              progress={progress}
-              dataLoading={orders.loading}
-            />
-          </div>
-        )}
-      </Container>
+        </Card>
+      )}
+      {!orders.loading ? (
+        <ResultsV2
+          orders={orderList}
+          pageSetting={pageSetting}
+          refetch2={refetch}
+          totalCount={totalCount}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          isCustomerDataMarked={isCustomerDataMarked}
+          membershipDisplay={membershipDisplay}
+          bonusDisplay={bonusDisplay}
+          bonusActive={!customerBonusActive.loading ? idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) : false}
+          qrcodeUrl={qrcodeUrl}
+          imgUrl={imgUrl}
+          detailInfo={detailInfo}
+          closureDelayed={closureDelayed}
+          disabled={
+            getLogoDisplayOnInvoice.loading ||
+            getQrcodeDisplayOnInvoice.loading ||
+            getMessageDisplayOnInvoice.loading
+          }
+          passwordEnabled={
+            !passwordData.loading ? ({
+              delete: idx(passwordData, _ => _.data.merchantPassword.deleteOrder.isUsing),
+              checkout: idx(passwordData, _ => _.data.merchantPassword.reCheckoutOrder.isUsing),
+            }) : ({
+              delete: false,
+              checkout: false
+            })
+          }
+          orderDetailPrintLayout={
+            !merchantOrderDetailPrintLayoutData.loading ? idx(merchantOrderDetailPrintLayoutData,
+              _ => _.data.getMerchantPrintFormatSettings
+            ) : 'A4'
+          }
+          nameDisplayOnInvoice={
+            !getDesignerNameDisplayOnInvoice.loading ? idx(
+              getDesignerNameDisplayOnInvoice, _ => _.data.getDesignerNameDisplayOnInvoice
+            ) : 'NAME'
+          }
+        />
+      ) : (
+        // 載入中：與舊版 ProgressBar 相同時機顯示（orders.loading）
+        <div className="flex flex-col gap-6" aria-busy="true" aria-label="載入中">
+          <Skeleton className="h-[320px] w-full rounded-lg" />
+        </div>
+      )}
     </Page>
   )
 }

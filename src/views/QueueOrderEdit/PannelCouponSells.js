@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
+import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
 import { useContext, useState, useRef, useEffect } from 'react'
@@ -23,8 +23,9 @@ const styles = {
     overflowX: 'auto',
   }),
   heading: css({
-    fontSize: '15px !important',
-    fontWeight: theme.typography.fontWeightRegular,
+    fontSize: '16px !important',
+    fontWeight: 'bold',
+    color: 'rgb(var(--text))',
   }),
   fieldOutter: css({
     display: 'flex',
@@ -211,7 +212,7 @@ export default function PannelCouponSells() {
         onClick={handleAccordionClick}
         style={{ width: '100%' }}
       >
-        <Typography css={styles.heading}>預收卡販賣</Typography>
+        <p className="m-0" css={styles.heading}>預收卡販賣</p>
       </AccordionSummary>
       <AccordionDetails css={styles.details}>
         <div css={styles.fieldOutter}>

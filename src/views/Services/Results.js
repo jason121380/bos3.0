@@ -1,21 +1,12 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button, Card, CardActions, CardContent, CardHeader, Checkbox, Divider,
-  Table, TableBody, TableCell, TableHead, TablePagination, TableRow,
-  Typography, Dialog, DialogTitle, DialogContent, DialogContentText, TextField,
-  DialogActions, IconButton
-} from '@mui/material'
-import EditIconSlot from '@mui/icons-material/Edit';
+import { Copy, Download, Pencil } from 'lucide-react'
 
 import { Link } from 'react-router-dom';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteService from 'hooks/useFetchDeleteService'
 import idx from 'idx'
 import format from 'date-fns/format'
 import { useState, useEffect, useRef } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from "react-csv";
 import useFetchMerchantHelperItems from 'hooks/useFetchMerchantHelperItems'
@@ -24,94 +15,17 @@ import useFetchSettingBatchSettingForDeduction from 'hooks/useFetchBatchSettingF
 import useFetchMerchantCommissionWay from 'hooks/useFetchMerchantCommissionWay'
 import useFetchMerchantPassword from 'hooks/useFetchMerchantPassword'
 import pagenationLabel from './../../helper/pagenationLabel'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
+import { formatNumber } from 'ui/format'
+import { Field, Input } from 'ui/input'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TablePagination, TableRow } from 'ui/table'
+import { cn } from 'ui/utils'
 
 import AboutDeductionEditModal from './AboutDeductionEditModal'
 import AssistantSettingEditModal from './AssistantSettingEditModal'
-
-const styles = {
-  root: css({}),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-  notSetting: css({
-    color: 'red',
-    fontWeight: 'bold',
-  }),
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-  }),
-  header: css({
-    padding: '12px 24px 4px 24px',
-    '& .MuiCardHeader-title': {
-      width: '100%',
-    }
-  }),
-  tableHead: css({
-    backgroundColor: '#FFFFFF',
-    '& .MuiTableCell-head': {
-      color: '#212121',
-      fontWeight: 'bold',
-      borderBottom: '1px solid #f0f0f0',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    backgroundColor: '#ffffff !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid #f0f0f0',
-      fontSize: '14px !important',
-      color: '#333',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-  }),
-  actionButton: css({
-    padding: '4px !important',
-    color: '#999 !important',
-    '&:hover': {
-      color: '#1A73E8 !important',
-      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
-    }
-  }),
-  csvBtn: css({
-    borderRadius: '20px !important',
-    padding: '6px 20px !important',
-    fontSize: '14px !important',
-    boxShadow: 'none !important',
-    fontWeight: 'bold !important',
-    backgroundColor: '#f5f5f5 !important',
-    color: '#666 !important',
-    '&:hover': {
-      backgroundColor: '#eeeeee !important',
-    }
-  }),
-}
 
 function Results({ className, services, refetchService, onPageChange, onRowsPerPageChange, ...rest }) {
   const pageRef = useRef(null)
@@ -407,136 +321,125 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
     }
   }, [services, pageRef.current])
 
+  // 不可點的列操作（停用的服務）：連結無 disabled 屬性，比照 MUI ButtonBase 改用 aria-disabled + 取消指標事件
+  const linkDisabled = disabledLink => (disabledLink ? { 'aria-disabled': true, tabIndex: -1, className: 'pointer-events-none opacity-40' } : {})
   return (
-    <div {...rest} css={className}>
-      <Card css={styles.card}>
+    <div {...rest}>
+      <Card>
         <CardHeader
-          css={styles.header}
+          className="items-center pb-4"
           action={
-            <CSVLink data={excelData} filename="服務項目.csv">
-              <Button variant="contained" css={styles.csvBtn} size="small">
+            <Button asChild size="sm" variant="secondary">
+              <CSVLink data={excelData} filename="服務項目.csv">
+                <Download strokeWidth={1.75} />
                 報表匯出
-              </Button>
-            </CSVLink>
+              </CSVLink>
+            </Button>
           }
-          title={
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
-                所有營業服務
-              </Typography>
-              <Typography color="textSecondary" variant="body2">
-                共 {services.totalCount} 筆
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table size="small">
-                <TableHead css={styles.tableHead}>
-                  <TableRow>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={
-                          selectedService.length === services.data.length &&
-                          services.data.length > 0
-                        }
-                        color="primary"
-                        indeterminate={
-                          selectedService.length > 0 &&
-                          selectedService.length < services.data.length
-                        }
-                        onChange={handleSelectAll}
-                        disabled={
-                          services.data.length === 0 ||
-                          services.data.filter(d => !d.isUsing).length === services.data.length
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>操作</TableCell>
-                    <TableCell>代號</TableCell>
-                    <TableCell>類別</TableCell>
-                    <TableCell>名稱</TableCell>
-                    <TableCell>參考價格</TableCell>
-                    <TableCell>扣項設定數量</TableCell>
-                    <TableCell>互助設定數量</TableCell>
-                    <TableCell>變更時間</TableCell>
-                    <TableCell>建立副本</TableCell>
-                  </TableRow>
+        >
+          <div className="flex items-baseline gap-3">
+            <CardTitle>所有營業服務</CardTitle>
+            <span className="text-label tabular-nums text-text-secondary">
+              共 {services.totalCount} 筆
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table className="min-w-[700px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={
+                      selectedService.length === services.data.length &&
+                      services.data.length > 0
+                    }
+                    indeterminate={
+                      selectedService.length > 0 &&
+                      selectedService.length < services.data.length
+                    }
+                    onChange={handleSelectAll}
+                    disabled={
+                      services.data.length === 0 ||
+                      services.data.filter(d => !d.isUsing).length === services.data.length
+                    }
+                  />
                 </TableHead>
-                <TableBody>
-                  {services.data.map((data, index) => (
-                    <TableRow
-                      key={`${data.name}-${index}`}
-                      css={styles.tableRow}
-                      selected={selectedService.indexOf(data.id) > -1 || !data.isUsing}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          onChange={() => handleSelectOne(data.id)}
-                          checked={selectedService.indexOf(data.id) > -1}
-                          disabled={!data.isUsing}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          component={RouterLink}
-                          css={styles.actionButton}
-                          to={`/service/edit/${data.id}`}
-                          disabled={!data.isUsing}
-                          size="small"
-                        >
-                          <EditIconSlot fontSize="small" />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell>{data.no}</TableCell>
-                      <TableCell>
-                        {idx(data, _ =>
-                          _.serviceCategory !== null ? _.serviceCategory.name : '無分類'
-                        )}
-                      </TableCell>
-                      <TableCell>{data.name}</TableCell>
-                      <TableCell>{data.price}</TableCell>
-                      <TableCell
-                        css={data.serviceDeductionCount === 0 ? `${styles.notSetting}` : ''}
+                <TableHead>操作</TableHead>
+                <TableHead>代號</TableHead>
+                <TableHead>類別</TableHead>
+                <TableHead>名稱</TableHead>
+                <TableHead numeric>參考價格</TableHead>
+                <TableHead>扣項設定數量</TableHead>
+                <TableHead>互助設定數量</TableHead>
+                <TableHead>變更時間</TableHead>
+                <TableHead>建立副本</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {services.data.map((data, index) => (
+                <TableRow
+                  key={`${data.name}-${index}`}
+                  data-state={selectedService.indexOf(data.id) > -1 || !data.isUsing ? 'selected' : undefined}
+                >
+                  <TableCell>
+                    <Checkbox
+                      aria-label={`選取 ${data.name}`}
+                      onChange={() => handleSelectOne(data.id)}
+                      checked={selectedService.indexOf(data.id) > -1}
+                      disabled={!data.isUsing}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                      <RouterLink
+                        aria-label="編輯服務"
+                        to={`/service/edit/${data.id}`}
+                        {...linkDisabled(!data.isUsing)}
                       >
-                        {data.serviceDeductionCount === 0 ? '無扣項' : data.serviceDeductionCount}
-                      </TableCell>
-                      <TableCell
-                        css={data.helperDeductionCount === 0 ? `${styles.notSetting}` : ''}
-                      >
-                        {data.helperDeductionCount === 0 ? '無設定' : data.helperDeductionCount}
-                      </TableCell>
-                      <TableCell>{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
-                      <TableCell>
-                        <Link to={`service/duplicate/${data.id}`}>
-                          <IconButton>
-                            <ContentCopyIcon fontSize='small' />
-                          </IconButton>
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
-        <CardActions css={styles.actions}>
-          <TablePagination
-            ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
-            component="div"
-            count={services.totalCount}
-            onPageChange={handleOnChangePage}
-            onRowsPerPageChange={handleOnChangeRowsPerPage}
-            page={services.pageOffset}
-            rowsPerPage={services.pageLimit}
-            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
-          />
-        </CardActions>
+                        <Pencil strokeWidth={1.75} />
+                      </RouterLink>
+                    </Button>
+                  </TableCell>
+                  <TableCell>{data.no}</TableCell>
+                  <TableCell>
+                    {idx(data, _ =>
+                      _.serviceCategory !== null ? _.serviceCategory.name : '無分類'
+                    )}
+                  </TableCell>
+                  <TableCell>{data.name}</TableCell>
+                  <TableCell numeric>{formatNumber(data.price)}</TableCell>
+                  <TableCell className={cn('tabular-nums', data.serviceDeductionCount === 0 && 'font-medium text-danger')}>
+                    {data.serviceDeductionCount === 0 ? '無扣項' : data.serviceDeductionCount}
+                  </TableCell>
+                  <TableCell className={cn('tabular-nums', data.helperDeductionCount === 0 && 'font-medium text-danger')}>
+                    {data.helperDeductionCount === 0 ? '無設定' : data.helperDeductionCount}
+                  </TableCell>
+                  <TableCell className="tabular-nums">{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
+                  <TableCell>
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                      <Link to={`service/duplicate/${data.id}`} aria-label="建立副本">
+                        <Copy strokeWidth={1.75} />
+                      </Link>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          {/* pageRef 保留給 pagenationLabel（只改寫 MUI 分頁的英文標籤；新分頁已是中文，找不到 MUI 元素時不做事） */}
+          <div ref={pageRef}>
+            <TablePagination
+              count={services.totalCount}
+              onPageChange={handleOnChangePage}
+              onRowsPerPageChange={handleOnChangeRowsPerPage}
+              page={services.pageOffset}
+              rowsPerPage={services.pageLimit}
+              rowsPerPageOptions={[5, 10, 25, 50, 1000]}
+            />
+          </div>
+        </div>
       </Card>
       <TableEditBar
         selected={selectedService}
@@ -544,34 +447,32 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
         onEdit={handleOpenMutipleEditModal}
         onEditDeduction={handleOpenEditDeductionModal}
       />
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{'刪除服務'}</DialogTitle>
-        <DialogContent style={{ overflow: 'visible' }}>
-          <DialogContentText id="alert-dialog-description">
-            <TextField
-              value={deleteOrderPwd}
-              label="刪除密碼"
-              onChange={event => setDeleteOrderPwd(event.target.value)}
-              inputProps={{
-                type: 'password',
-                'data-testid': 'delete-password',
-              }}
-            />
-          </DialogContentText>
+      <Dialog open={openDialog} onOpenChange={o => !o && handleCloseDialog()}>
+        <DialogContent aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogHeader>
+            <DialogTitle id="alert-dialog-title">{'刪除服務'}</DialogTitle>
+            <DialogDescription id="alert-dialog-description">刪除後無法復原，請輸入刪除密碼確認。</DialogDescription>
+          </DialogHeader>
+          <DialogBody>
+            <Field label="刪除密碼" htmlFor="delete-service-password">
+              <Input
+                id="delete-service-password"
+                type="password"
+                value={deleteOrderPwd}
+                onChange={event => setDeleteOrderPwd(event.target.value)}
+                data-testid="delete-password"
+              />
+            </Field>
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="secondary" onClick={handleCloseDialog}>
+              取消
+            </Button>
+            <Button variant="danger" onClick={handleConfirmCancel} autoFocus data-testid="confirm">
+              確認
+            </Button>
+          </DialogFooter>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            取消
-          </Button>
-          <Button onClick={handleConfirmCancel} color="primary" autoFocus data-testid="confirm">
-            確認
-          </Button>
-        </DialogActions>
       </Dialog>
       {openEditAssistantModal && (
         <AssistantSettingEditModal
@@ -595,6 +496,5 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
     </div>
   )
 }
-
 
 export default Results

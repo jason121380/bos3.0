@@ -6,7 +6,7 @@ import {
   TextField, Grid, ThemeProvider
 } from '@mui/material'
 import { openSnackbar } from 'elements/snackbars'
-import EditIcon from '@mui/icons-material/Edit'
+import { Edit as EditIcon } from 'ui/icons'
 import idx from 'idx';
 import { cloneDeep } from 'lodash';
 import PropTypes from 'prop-types'
@@ -15,6 +15,8 @@ import useFetchSetCustomerHairInfo from 'hooks/useFetchSetCustomerHairInfo'
 import { green } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles'
 import { css } from '@emotion/react'
+// 大型彈窗：表單細節（Chip / TextField / 選項按鈕）保留 MUI，只換底部動作按鈕
+import { Button as UiButton } from 'ui/button'
 
 const theme = createTheme({
   palette: {
@@ -209,8 +211,8 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
           </div>
         </DialogContent>
         <DialogActions>
-          <Button variant='contained' color='inherit' onClick={handleOnClose}>關閉</Button>
-          <Button variant='contained' ref={submitRef} disabled={isLoading} onClick={handleComfirm}>確認</Button>
+          <UiButton variant="secondary" onClick={handleOnClose}>關閉</UiButton>
+          <UiButton variant="primary" ref={submitRef} disabled={isLoading} onClick={handleComfirm}>確認</UiButton>
         </DialogActions>
       </Dialog>
       {openOption && <Dialog maxWidth='sm' fullWidth open={openOption} onClose={handleOptionOnClose}>
@@ -236,8 +238,8 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
           </div>
         </DialogContent>
         <DialogActions>
-          <Button variant='contained' color='inherit' onClick={handleOptionOnClose}>關閉</Button>
-          <Button variant='contained' onClick={handleComfirmSelect}>確認</Button>
+          <UiButton variant="secondary" onClick={handleOptionOnClose}>關閉</UiButton>
+          <UiButton variant="primary" onClick={handleComfirmSelect}>確認</UiButton>
         </DialogActions>
       </Dialog>}
     </Fragment>

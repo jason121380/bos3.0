@@ -1,0 +1,7 @@
+EmployeeManagementDetail
+EmployeeManagementList
+AttendanceRecords
+SalaryOverview
+EmployeePickingEdit
+DesignersSalaryDetailReport
+EmployeeCreate

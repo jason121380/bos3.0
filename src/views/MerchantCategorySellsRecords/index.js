@@ -1,14 +1,11 @@
 /** @jsxImportSource @emotion/react */
+// 分類／排序切換鈕的 handler 使用 (event, value)，保留 MUI ToggleButtonGroup
 import {
-  Container,
-  Grid,
-  CircularProgress,
   ToggleButton,
   ToggleButtonGroup
 } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { endOfDay, startOfMonth } from 'date-fns'
 import useFetchProductOrders from 'hooks/useFetchProductOrders'
 import idx from 'idx'
@@ -16,6 +13,8 @@ import produce from 'immer'
 import React, { useState } from 'react'
 import { theme } from '../../theme'
 import { css } from '@emotion/react'
+import { PageHeader } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -123,78 +122,74 @@ export default function DecreaseDetail({ history, location }) {
     },
   ]
   return (
-    <Page title="店販分類抽成明細">
-      <Container maxWidth={false} css={styles.root}>
-        <AdminPageHeader title='店販分類抽成明細' />
-        <Grid container css={styles.container}>
-          <Grid item>
-            <MerchantSearchBar
-              values={pageSetting}
-              onFilter={value => setPageSetting(value)}
-              outside
-              visible={['datePicker', 'employee', 'customer', 'product']}
-              lastInLeaderBoard={true}
-            />
-          </Grid>
-          <Grid item css={styles.fieldToggle}>
-            <div className="divText">分類依據</div>
-            <ToggleButtonGroup
-              size="small"
-              value={sortWay}
-              onChange={handleToggleButtonChange}
-              exclusive
-            >
-              {sortBy.map((data, idx) => (
-                <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                  {data.label}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-          </Grid>
-          <Grid item css={styles.fieldToggle}>
-            <div className="divText">時間排序依據</div>
-            <ToggleButtonGroup
-              size="small"
-              value={sortTime}
-              onChange={handleToggleButtonTimeChange}
-              exclusive
-            >
-              {sortByTime.map((data, idx) => (
-                <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                  {data.label}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-          </Grid>
-        </Grid>
+    <Page className="ui-root" title="店販分類抽成明細">
+      <PageHeader title="店販分類抽成明細" />
+      <div className="flex flex-wrap items-center gap-2.5 pb-4">
+        <div>
+          <MerchantSearchBar
+            values={pageSetting}
+            onFilter={value => setPageSetting(value)}
+            outside
+            visible={['datePicker', 'employee', 'customer', 'product']}
+            lastInLeaderBoard={true}
+          />
+        </div>
+        <div className="flex items-center gap-2 self-start">
+          <div className="divText text-label text-text-secondary">分類依據</div>
+          <ToggleButtonGroup
+            size="small"
+            value={sortWay}
+            onChange={handleToggleButtonChange}
+            exclusive
+          >
+            {sortBy.map((data, idx) => (
+              <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                {data.label}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        </div>
+        <div className="flex items-center gap-2 self-start">
+          <div className="divText text-label text-text-secondary">時間排序依據</div>
+          <ToggleButtonGroup
+            size="small"
+            value={sortTime}
+            onChange={handleToggleButtonTimeChange}
+            exclusive
+          >
+            {sortByTime.map((data, idx) => (
+              <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                {data.label}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        </div>
+      </div>
 
-        {!productOrders.loading ? (
-          idx(
-            productOrders,
-            _ =>
-              _.data.productOrders && (
-                <Results
-                  className={styles.result}
-                  results={_.data.productOrders}
-                  handleOnChangePage={(_event, page) =>
-                    handleOnChangePage({ page, key: 'merchantSell' })
-                  }
-                  sortWay={sortWay}
-                  handleOnChangeRowsPerPage={event =>
-                    handleOnChangeRowsPerPage({
-                      value: idx(event, _ => _.target.value),
-                      key: 'merchantSell',
-                    })
-                  }
-                />
-              )
-          )
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <CircularProgress />
-          </div>
-        )}
-      </Container>
+      {!productOrders.loading ? (
+        idx(
+          productOrders,
+          _ =>
+            _.data.productOrders && (
+              <Results
+                className={styles.result}
+                results={_.data.productOrders}
+                handleOnChangePage={(_event, page) =>
+                  handleOnChangePage({ page, key: 'merchantSell' })
+                }
+                sortWay={sortWay}
+                handleOnChangeRowsPerPage={event =>
+                  handleOnChangeRowsPerPage({
+                    value: idx(event, _ => _.target.value),
+                    key: 'merchantSell',
+                  })
+                }
+              />
+            )
+        )
+      ) : (
+        <Skeleton className="h-96" aria-busy="true" />
+      )}
     </Page>
   )
 }

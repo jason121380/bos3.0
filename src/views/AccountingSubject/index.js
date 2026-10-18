@@ -1,26 +1,13 @@
-/** @jsxImportSource @emotion/react */
-import { Container } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { endOfDay, startOfMonth } from 'date-fns'
 import useFetchMoneyAccountDetail from 'hooks/useFetchMoneyAccountDetail'
 import idx from 'idx'
 import produce from 'immer'
 import React from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { PageHeader, Toolbar } from 'ui/page-header'
 
 import Results from './Results'
-
-const styles = {
-  root: css({
-    padding: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 export default function AccountingSubject({ history, location }) {
   const [date, setDate] = React.useState({
@@ -55,35 +42,34 @@ export default function AccountingSubject({ history, location }) {
     )
   }
   return (
-    <Page title="收支科目明細" css={styles.root}>
-      <Container maxWidth={false}>
-        <PageTitle title='收支科目明細' subTitle='Accounting Subject Detail' />
+    <Page title="收支科目明細" className="ui-root">
+      <PageHeader title="收支科目明細" />
+      <Toolbar>
         <MerchantSearchBar
           values={date}
           onFilter={values => setDate(values)}
           outside
           visible={['datePicker', 'payment']}
         />
-        {idx(
-          moneyAccountDetail,
-          _ =>
-            _.data.moneyAccountDetail && (
-              <Results
-                className={styles.results}
-                results={_.data.moneyAccountDetail}
-                handleOnChangePage={(_event, page) =>
-                  handleOnChangePage({ page, key: 'moneyAccountDetail' })
-                }
-                handleOnChangeRowsPerPage={event =>
-                  handleOnChangeRowsPerPage({
-                    value: idx(event, _ => _.target.value),
-                    key: 'moneyAccountDetail',
-                  })
-                }
-              />
-            )
-        )}
-      </Container>
+      </Toolbar>
+      {idx(
+        moneyAccountDetail,
+        _ =>
+          _.data.moneyAccountDetail && (
+            <Results
+              results={_.data.moneyAccountDetail}
+              handleOnChangePage={(_event, page) =>
+                handleOnChangePage({ page, key: 'moneyAccountDetail' })
+              }
+              handleOnChangeRowsPerPage={event =>
+                handleOnChangeRowsPerPage({
+                  value: idx(event, _ => _.target.value),
+                  key: 'moneyAccountDetail',
+                })
+              }
+            />
+          )
+      )}
     </Page>
   )
 }

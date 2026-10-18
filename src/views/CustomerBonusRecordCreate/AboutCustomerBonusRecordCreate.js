@@ -1,17 +1,20 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, TextField, FormControl, Input, InputLabel,
+  FormControl, Input, InputLabel,
   InputAdornment
 } from '@mui/material'
 import { MobileDatePicker } from '@mui/x-date-pickers'
-import InsertInvitationIcon from '@mui/icons-material/InsertInvitation'
+import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import _ from 'lodash'
 import format from 'date-fns/format'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Card, CardContent } from 'ui/card'
+import { Field, Input as UiInput } from 'ui/input'
 
+// styles 仍以 emotion 物件傳給 MUI FormControl 與 Employee／CustomerAutoComplete（其 className 以 css prop 套用）
 const styles = {
   formGroup: css({
     marginBottom: theme.spacing(3) + '!important',
@@ -23,7 +26,7 @@ const styles = {
 
 function AboutCustomerBonusRecordCreate({ className, submitData, setSubmitData }) {
   return (
-    <Card css={className}>
+    <Card className="mt-6">
       <CardContent>
         <MobileDatePicker
           closeOnSelect
@@ -73,30 +76,27 @@ function AboutCustomerBonusRecordCreate({ className, submitData, setSubmitData }
             setSubmitData({ ...submitData, customerId: e.id ? e.id : '' })
           }}
         />
-        <TextField
-          label="紅利點數"
-          type='number'
-          css={styles.formGroup}
-          variant="outlined"
-          fullWidth
-          value={submitData.bonus}
-          onFocus={e => e.target.select()}
-          onChange={e => {
-            let bonus = e.target.value
-            if (bonus.includes('.')) {
-              bonus = bonus.slice(bonus.indexOf('.'), 1)
-            }
-            setSubmitData({ ...submitData, bonus: bonus })
-          }}
-          onWheel={() => document.activeElement.blur()}
-        />
-        <TextField
-          label="備註"
-          variant="outlined"
-          fullWidth
-          value={submitData.remark}
-          onChange={e => setSubmitData({ ...submitData, remark: e.target.value })}
-        />
+        <Field label="紅利點數" className="mb-6">
+          <UiInput
+            type='number'
+            value={submitData.bonus}
+            onFocus={e => e.target.select()}
+            onChange={e => {
+              let bonus = e.target.value
+              if (bonus.includes('.')) {
+                bonus = bonus.slice(bonus.indexOf('.'), 1)
+              }
+              setSubmitData({ ...submitData, bonus: bonus })
+            }}
+            onWheel={() => document.activeElement.blur()}
+          />
+        </Field>
+        <Field label="備註">
+          <UiInput
+            value={submitData.remark}
+            onChange={e => setSubmitData({ ...submitData, remark: e.target.value })}
+          />
+        </Field>
       </CardContent>
     </Card>
   )

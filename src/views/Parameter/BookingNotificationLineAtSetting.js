@@ -1,8 +1,10 @@
 /** @jsxImportSource @emotion/react */
+// 多選 Autocomplete（含勾選圖示的選項）與數字欄位（onWheel）保留 MUI
 import {
-  Card, CardContent, CardHeader, Divider, TextField, FormControlLabel,
-  Checkbox, Grid, Autocomplete, 
+  TextField, Checkbox, Autocomplete
 } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import { memo } from 'react'
@@ -59,15 +61,16 @@ function NonDesignationBookingLimitSetting({
     )
   }
   return (
-    <Card css={className}>
-      <CardHeader title="預約通知LINE@設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>預約通知LINE@設定</CardTitle>
+      </CardHeader>
       {bookingLineNotificationArr.map(({label, key}, index) => (
         <CardContent key={label} style={{ padding: (index === 0 || index === 4) ? '24px 24px 12px 24px' : '8px 24px' }}>
           <div style={{ marginBottom: '15px' }}>{label}</div>
-          <Grid item container spacing={3}>
+          <div className="flex flex-wrap gap-6">
             {settingOptions.map(option => (
-              <Grid item key={key + option.label}>
+              <div key={key + option.label}>
                 <Autocomplete
                   multiple
                   options={designerStatus}
@@ -92,9 +95,9 @@ function NonDesignationBookingLimitSetting({
                     <TextField {...params} label={option.label} placeholder="" />
                   )}
                 />
-              </Grid>
+              </div>
             ))}
-          </Grid>
+          </div>
         </CardContent>
       ))}
       <CardContent>
@@ -117,10 +120,9 @@ function NonDesignationBookingLimitSetting({
           </div>
         </div>
         <div style={{ flexWrap: 'wrap' }} css={styles.serviceInputGroup}>
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
             css={styles.isUsing}
-            control={<Checkbox color="primary" />}
             label="啟用預約通知"
             checked={aboutBooking.bookingNotificationLine.isUsing}
             onChange={(e, v) => handleNotificationLineSetting('isUsing', v)}
@@ -140,10 +142,9 @@ function NonDesignationBookingLimitSetting({
           )}
         </div>
         <div style={{ flexWrap: 'wrap' }} css={styles.serviceInputGroup}>
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
             css={styles.isUsing}
-            control={<Checkbox color="primary" />}
             label="開啟評分邀請"
             checked={aboutBooking.inviteRatingDayCount !== null}
             onChange={(e, v) => handleSetValue('inviteRatingDayCount', v ? 0 : null)}

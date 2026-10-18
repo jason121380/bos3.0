@@ -1,7 +1,7 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container, Tab, Tabs, } from '@mui/material'
+import { Tab, Tabs } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchMerchantDeductionItems from 'hooks/useFetchMerchantDeductionItems'
 import useFetchMerchantSalaryIncreaseItems from 'hooks/useFetchMerchantSalaryIncreaseItems'
@@ -100,7 +100,6 @@ import produce from 'immer'
 import idx from 'idx'
 import { memo, useState, useEffect, Fragment } from 'react'
 import _ from 'lodash'
-import styles from './styles/Parameter'
 
 const requiredColumnOptions = [
   { label: '暱稱', value: 'NICKNAME' },
@@ -894,11 +893,10 @@ function Parameter() {
     { value: 'designer', label: '設計師端' },
   ]
   return (
-    <Page css={styles.page} title="系統參數設定">
-      <Container maxWidth="md">
-        <PageTitle title='系統參數設定' subTitle='Parameter' />
+    <Page className="ui-root" title="系統參數設定">
+      <div className="mx-auto w-full max-w-4xl">
+        <PageHeader title="系統參數設定" />
         <Tabs
-          css={styles.tabs}
           scrollButtons="auto"
           variant="scrollable"
           value={selectTab}
@@ -909,55 +907,48 @@ function Parameter() {
           ))}
         </Tabs>
         {selectTab === 'orderCreate' && (
-          <Fragment>
+          <div className="mt-6 flex flex-col gap-6">
             <AboutOrderCreate
-              className={styles.card}
               orderCreateSetting={orderCreateSetting}
               setOrderCreateSetting={setOrderCreateSetting}
               inputEnable={inputEnable}
             />
             <AboutOrderDetail
-              className={styles.card}
               orderCreateSetting={orderCreateSetting}
               setOrderCreateSetting={setOrderCreateSetting}
               uploadMerchantLogo={uploadMerchantLogo}
               inputEnable={inputEnable}
             />
             <AboutOrderSource
-              className={styles.card}
               reference={reference}
               setReference={setReference}
               inputEnable={inputEnable}
             />
-          </Fragment>
+          </div>
         )}
         {selectTab === 'employeeSchedule' && (
-          <Fragment>
+          <div className="mt-6 flex flex-col gap-6">
             <AboutEmployeeSchedule
-              className={styles.card}
               isMerchantClockInSetting={isMerchantClockInSetting}
               setIsMerchantClockInSetting={setIsMerchantClockInSetting}
               loading={merchantClockInSettingData.loading}
               inputEnable={inputEnable}
             />
             <AttendanceEmployeeScheduleSetting
-              className={styles.card}
               UESUsing={UESUsing}
               setUESUsing={setUESUsing}
               inputEnable={inputEnable}
             />
-          </Fragment>
+          </div>
         )}
         {selectTab === 'salary' && (
-          <Fragment>
+          <div className="mt-6 flex flex-col gap-6">
             <AboutSalaryAddAndDeduction
-              className={styles.card}
               service={service}
               onChange={handleServiceChange}
               inputEnable={inputEnable}
             />
             <AboutMerchantBankSettings
-              className={styles.card}
               merchantBankSettings={merchantBankSettings}
               setDisplayNonBankAccountInBankTransferReport={setDisplayNonBankAccountInBankTransferReport}
               displayNonBankAccountInBankTransferReport={displayNonBankAccountInBankTransferReport}
@@ -965,39 +956,34 @@ function Parameter() {
               inputEnable={inputEnable}
             />
             <AboutMonthCheckoutAddSalaryItems
-              className={styles.card}
               inputEnable={inputEnable}
               checkoutAndSalaryItem={checkoutAndSalaryItem}
               setCheckoutAndSalaryItem={setCheckoutAndSalaryItem}
             />
-          </Fragment>
+          </div>
         )}
         {selectTab === 'report' && (
-          <Fragment>
+          <div className="mt-6 flex flex-col gap-6">
             <AboutPriceDisplayOnDailyReport
-              className={styles.card}
               aboutReport={aboutReport}
               setAboutReport={setAboutReport}
               inputEnable={inputEnable}
             />
             <AboutOtherReport
-              className={styles.card}
               inputEnable={inputEnable}
               aboutReport={aboutReport}
               setAboutReport={setAboutReport}
             />
-          </Fragment>
+          </div>
         )}
         {selectTab === 'booking' && (
-          <Fragment>
+          <div className="mt-6 flex flex-col gap-6">
             <NonDesignationBookingLimitSetting
-              className={styles.card}
               aboutBooking={aboutBooking}
               setAboutBooking={setAboutBooking}
               inputEnable={inputEnable}
             />
             <IsReservationNeedReview
-              className={styles.card}
               aboutBooking={aboutBooking}
               setAboutBooking={setAboutBooking}
               bookingCusCheck={bookingCusCheck}
@@ -1005,7 +991,6 @@ function Parameter() {
               inputEnable={inputEnable}
             />
             <BookingNotificationSetting
-              className={styles.card}
               aboutBooking={aboutBooking}
               setAboutBooking={setAboutBooking}
               merchantBookingNotification={merchantBookingNotification}
@@ -1013,7 +998,6 @@ function Parameter() {
               inputEnable={inputEnable}
             />
             <BookingNotificationLineAtSetting
-              className={styles.card}
               aboutBooking={aboutBooking}
               setAboutBooking={setAboutBooking}
               lineConnectedUser={!lineConnectedUser.loading ? idx(lineConnectedUser, _ => _.data.getLineConnectedUser) : []}
@@ -1026,7 +1010,6 @@ function Parameter() {
               inputEnable={inputEnable}
             />
             <BookingCheckInNotificationSetting
-              className={styles.card}
               checkinSettings={checkinSettings}
               setCheckinSettings={setCheckinSettings}
               bookingTypeForSocket={bookingTypeForSocket}
@@ -1034,105 +1017,98 @@ function Parameter() {
               inputEnable={inputEnable}
             />
             <MerchantReservationTimes
-              className={styles.card}
               inputEnable={inputEnable}
               merchantReservation={merchantReservation}
               setMerchantReservation={setMerchantReservation}
             />
-          </Fragment>
+          </div>
         )}
         {selectTab === 'performanceRake' && (
-          <Fragment>
+          <div className="mt-6 flex flex-col gap-6">
             <AboutMerchantFakePerformanceReference
-              className={styles.card}
               merchantFakePerformanceRefer={merchantFakePerformanceRefer}
               setMerchantFakePerformanceRefer={setMerchantFakePerformanceRefer}
               inputEnable={inputEnable}
             />
             <AboutMerchantRakePerformanceRefer
-              className={styles.card}
               merchantRakeReferemce={merchantRakeReferemce}
               setMerchantRakeReferemce={setMerchantRakeReferemce}
               inputEnable={inputEnable}
             />
-          </Fragment>
+          </div>
         )}
         {selectTab === 'password' && (
-          <PasswordSetting
-            className={styles.card}
-            setPasswordSetting={setPasswordSetting}
-            passwordSetting={passwordSetting}
-            inputEnable={inputEnable}
-          />
+          <div className="mt-6 flex flex-col gap-6">
+            <PasswordSetting
+              setPasswordSetting={setPasswordSetting}
+              passwordSetting={passwordSetting}
+              inputEnable={inputEnable}
+            />
+          </div>
         )}
         {selectTab === 'function' && (
-          <AboutSettingFunction
-            className={styles.card}
-            aboutSettingFunction={aboutSettingFunction}
-            setAboutSettingFunction={setAboutSettingFunction}
-            setMerchantAvatar={setMerchantAvatar}
-            merchantLogo={merchantLogo}
-            setMerchantLogo={setMerchantLogo}
-            inputEnable={inputEnable}
-          />
+          <div className="mt-6 flex flex-col gap-6">
+            <AboutSettingFunction
+              aboutSettingFunction={aboutSettingFunction}
+              setAboutSettingFunction={setAboutSettingFunction}
+              setMerchantAvatar={setMerchantAvatar}
+              merchantLogo={merchantLogo}
+              setMerchantLogo={setMerchantLogo}
+              inputEnable={inputEnable}
+            />
+          </div>
         )}
         {selectTab === 'customer' && (
-          <Fragment>
+          <div className="mt-6 flex flex-col gap-6">
             <AboutCustomerSideSetting
-              className={styles.card}
               aboutCustomer={aboutCustomer}
               setAboutCustomer={setAboutCustomer}
               inputEnable={inputEnable}
             />
             <AboutCustomerSettingFunction
-              className={styles.card}
               aboutCustomer={aboutCustomer}
               setAboutCustomer={setAboutCustomer}
               requiredColumnOptions={requiredColumnOptions}
               inputEnable={inputEnable}
             />
             <AboutCustomerBooking
-              className={styles.card}
               aboutCustomer={aboutCustomer}
               setAboutCustomer={setAboutCustomer}
               inputEnable={inputEnable}
             />
             <AboutCustomerSideExternalLink
-              className={styles.card}
               cusExternalLink={cusExternalLink}
               refetchLink={getMerchantCusExternalLink.refetch}
               inputEnable={inputEnable}
             />
-          </Fragment>
+          </div>
         )}
         {selectTab === 'designer' && (
-          <>
+          <div className="mt-6 flex flex-col gap-6">
             <AboutDesignerSideExternalLink
-              className={styles.card}
               externalLink={externalLink}
               refetchLink={getMerchantExternalLink.refetch}
               inputEnable={inputEnable}
             />
             <ReservationSettingForStylist
-              className={styles.card}
               CBRDStylist={CBRDStylist}
               setCBRDStylist={setCBRDStylist}
               inputEnable={inputEnable}
             />
-          </>
+          </div>
         )}
         {selectTab === 'customerTracking' && (
-          <AboutCustomerTracking
-            className={styles.card}
-            hairCondition={hairCondition}
-            setHairCondition={setHairCondition}
-            inputEnable={inputEnable}
-          />
+          <div className="mt-6 flex flex-col gap-6">
+            <AboutCustomerTracking
+              hairCondition={hairCondition}
+              setHairCondition={setHairCondition}
+              inputEnable={inputEnable}
+            />
+          </div>
         )}
-        <div css={styles.actions}>
+        <div className="mt-6 flex justify-end">
           <Button
-            color="primary"
-            variant="contained"
+            variant="primary"
             onClick={handleSubmit}
             disabled={!inputEnable}
             data-testid="parameter"
@@ -1140,7 +1116,7 @@ function Parameter() {
             儲存
           </Button>
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }

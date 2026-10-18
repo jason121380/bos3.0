@@ -1,8 +1,5 @@
-/** @jsxImportSource @emotion/react */
+// 選項值可能為空字串或數字（協助人員人數），保留 MUI Select；同列的數字欄位也保留 MUI TextField 以維持標籤樣式一致
 import {
-  Card,
-  CardContent,
-  CardHeader,
   FormControl,
   InputLabel,
   MenuItem,
@@ -10,68 +7,13 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
-  Grid,
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Delete, Plus, Trash2 } from 'lucide-react'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
-import { useRef, } from 'react'
-import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  alert: css({
-    marginBottom: theme.spacing(3),
-  }),
-  tableBody: css({
-    padding: theme.spacing(2),
-  }),
-  deductionTypeFormGroup: css({
-    width: '6rem',
-  }),
-  formGroup: css({
-    width: '7rem',
-    marginLeft: theme.spacing(3),
-  }),
-  service: css({
-    display: 'flex',
-    justifyContent: 'flex-start',
-    marginBottom: theme.spacing(3),
-  }),
-  icons: css({
-    cursor: 'pointer',
-    marginTop: '30px',
-  }),
-  icons2: css({
-    cursor: 'pointer',
-    marginTop: '30px',
-  }),
-  textField: css({
-    marginLeft: theme.spacing(2),
-    width: '5rem',
-  }),
-  textField2: css({
-    width: '5rem',
-  }),
-  textFieldDiv: css({
-    marginLeft: theme.spacing(2),
-  }),
-  autocomplete: css({
-    marginLeft: theme.spacing(2),
-    width: '10rem',
-  }),
-  checkboxSpan: css({
-    width: '25%',
-  }),
-  gap: css({
-    '& span': {
-      whiteSpace: 'nowrap'
-    }
-  })
-}
+import { useRef } from 'react'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 const deductions = [
   {
@@ -315,12 +257,14 @@ function AboutAssistantSetting({
     onChange({ key: 'helperDeductionSetting', event: { target: { value: newSupport } } })
   }
   return (
-    <Card {...rest} css={css([styles.root, className])}>
-      <CardHeader title="互助點數設定" />
-      <CardContent>
+    <Card {...rest}>
+      <CardHeader>
+        <CardTitle>互助點數設定</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
         {support.map((content, index) => (
-          <Grid container spacing={2} key={index} style={{ marginBottom: '10px' }}>
-            <Grid item xs={12} sm={2}>
+          <div className="flex flex-wrap items-start gap-4" key={index}>
+            <div className="w-full sm:w-36">
               <FormControl variant="outlined" fullWidth>
                 <InputLabel ref={inputLabel} id="select-item-label">
                   扣項類別
@@ -339,8 +283,8 @@ function AboutAssistantSetting({
                   ))}
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={2}>
+            </div>
+            <div className="w-full sm:w-36">
               <FormControl variant="outlined" fullWidth>
                 <InputLabel ref={inputLabel} id="select-item-label">
                   類別
@@ -359,8 +303,8 @@ function AboutAssistantSetting({
                   ))}
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={2}>
+            </div>
+            <div className="w-full sm:w-36">
               <FormControl variant="outlined" fullWidth>
                 <InputLabel ref={inputLabel} id="select-item-label">
                   協助人員人數
@@ -377,8 +321,8 @@ function AboutAssistantSetting({
                   ))}
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={2}>
+            </div>
+            <div className="w-full sm:w-36">
               <FormControl variant="outlined" fullWidth>
                 <InputLabel ref={inputLabel} id="select-item-label">
                   扣項方式
@@ -397,12 +341,12 @@ function AboutAssistantSetting({
                   ))}
                 </Select>
               </FormControl>
-            </Grid>
+            </div>
             {content.isDesignate ? (
-              <Grid item xs={12} sm='auto'>
-                <div>
+              <div className="flex flex-col gap-1">
+                <div className="flex gap-3">
                   <TextField
-                    css={styles.textField2}
+                    style={{ width: '5rem' }}
                     type="number"
                     name="designateInput"
                     variant="outlined"
@@ -414,7 +358,7 @@ function AboutAssistantSetting({
                     onWheel={() => document.activeElement.blur()}
                   />
                   <TextField
-                    css={styles.textField}
+                    style={{ width: '5rem' }}
                     type="number"
                     name="NonDesignateInput"
                     variant="outlined"
@@ -426,37 +370,29 @@ function AboutAssistantSetting({
                     onWheel={() => document.activeElement.blur()}
                   />
                 </div>
-                <div>
-                  <span>
-                    <div>
-                      <FormControlLabel
-                        css={styles.gap}
-                        control={<Checkbox color="primary" />}
-                        label="分指定/不指定"
-                        checked={content.isDesignate}
-                        onChange={() => handleCheckboxChange(index)}
-                        disabled={content.isSplitted}
-                      />
-                    </div>
-                    <div>
-                      <FormControlLabel
-                        css={styles.gap}
-                        control={<Checkbox color="primary" />}
-                        label="互助均分"
-                        checked={content.isSplitted}
-                        onChange={() => handleIsSplittedChange(index)}
-                        disabled={content.isDesignate}
-                      />
-                    </div>
-                  </span>
+                <div className="flex flex-col whitespace-nowrap">
+                  <FormControlLabel
+                    control={<Checkbox color="primary" />}
+                    label="分指定/不指定"
+                    checked={content.isDesignate}
+                    onChange={() => handleCheckboxChange(index)}
+                    disabled={content.isSplitted}
+                  />
+                  <FormControlLabel
+                    control={<Checkbox color="primary" />}
+                    label="互助均分"
+                    checked={content.isSplitted}
+                    onChange={() => handleIsSplittedChange(index)}
+                    disabled={content.isDesignate}
+                  />
                 </div>
-              </Grid>
+              </div>
             ) : (
               content.deductionWay !== '' && (
-                <Grid item xs={12} sm={2}>
+                <div className="flex flex-col gap-1">
                   <div>
                     <TextField
-                      css={styles.textField2}
+                      style={{ width: '5rem' }}
                       type="number"
                       variant="outlined"
                       label={content.deductionWay}
@@ -467,51 +403,62 @@ function AboutAssistantSetting({
                       onWheel={() => document.activeElement.blur()}
                     />
                   </div>
-                  <div>
-                    <span>
-                      <div>
-                        <FormControlLabel
-                          css={styles.gap}
-                          control={<Checkbox color="primary" />}
-                          label="分指定/不指定"
-                          checked={content.isDesignate}
-                          onChange={() => handleCheckboxChange(index)}
-                          disabled={content.isSplitted}
-                        />
-                      </div>
-                      <div>
-                        <FormControlLabel
-                          css={styles.gap}
-                          control={<Checkbox color="primary" />}
-                          label="互助均分"
-                          checked={content.isSplitted}
-                          onChange={() => handleIsSplittedChange(index)}
-                          disabled={content.isDesignate}
-                        />
-                      </div>
-                    </span>
+                  <div className="flex flex-col whitespace-nowrap">
+                    <FormControlLabel
+                      control={<Checkbox color="primary" />}
+                      label="分指定/不指定"
+                      checked={content.isDesignate}
+                      onChange={() => handleCheckboxChange(index)}
+                      disabled={content.isSplitted}
+                    />
+                    <FormControlLabel
+                      control={<Checkbox color="primary" />}
+                      label="互助均分"
+                      checked={content.isSplitted}
+                      onChange={() => handleIsSplittedChange(index)}
+                      disabled={content.isDesignate}
+                    />
                   </div>
-                </Grid>
+                </div>
               )
             )}
-            {content.deductionWay !== '' && (
-              <BackspaceOutlinedIcon
-                css={styles.icons}
-                style={content.isDesignate ? { marginLeft: 'auto' } : {}}
-                onClick={() => handleClear(index)}
-                data-testid={`service-${index}-clear`}
-              />
-            )}
-            {support.length > 1 && (
-              <DeleteForeverIcon
-                css={styles.icons2}
-                onClick={() => handleDeleteAssistantContent(index)}
-              />
-            )}
-            {index === support.length - 1 && (
-              <AddIcon css={styles.icons2} onClick={handleAddAssistantContent} />
-            )}
-          </Grid>
+            <div className="flex items-center gap-1">
+              {content.deductionWay !== '' && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-text-secondary"
+                  aria-label="清除此互助設定"
+                  onClick={() => handleClear(index)}
+                  data-testid={`service-${index}-clear`}
+                >
+                  <Delete strokeWidth={1.75} />
+                </Button>
+              )}
+              {support.length > 1 && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-text-secondary hover:text-danger"
+                  aria-label="刪除此互助設定"
+                  onClick={() => handleDeleteAssistantContent(index)}
+                >
+                  <Trash2 strokeWidth={1.75} />
+                </Button>
+              )}
+              {index === support.length - 1 && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-text-secondary"
+                  aria-label="新增互助設定"
+                  onClick={handleAddAssistantContent}
+                >
+                  <Plus strokeWidth={1.75} />
+                </Button>
+              )}
+            </div>
+          </div>
         ))}
       </CardContent>
     </Card>

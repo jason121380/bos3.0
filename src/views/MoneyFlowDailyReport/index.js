@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Button } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
@@ -10,19 +8,9 @@ import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCard
 import Results from './Results'
 import { CSVLink } from "react-csv";
 import DateSelector from 'components/DateSelector'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-}
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Skeleton } from 'ui/skeleton'
 
 export default function Employees() {
   const [displayDate, setDisplayDate] = useState([])
@@ -86,26 +74,26 @@ export default function Employees() {
   }, [date])
 
   return (
-    <Page css={styles.root} title="每日收支明細">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className="ui-root" title="每日收支明細">
+      <div>
         <AdminPageHeader title='每日收支明細(已日結)' />
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="flex items-center justify-between gap-3">
           <DateSelector
             date={date}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
             margin
           />
-          <CSVLink data={excelData} filename="高階收支登錄.csv" >
-            <Button style={{ height: 'fit-content', whiteSpace: 'nowrap' }} variant="contained" color="primary">
+          <Button asChild variant="secondary">
+            <CSVLink data={excelData} filename="高階收支登錄.csv" >
+              <Download strokeWidth={1.75} />
               報表匯出
-            </Button>
-          </CSVLink>
+            </CSVLink>
+          </Button>
         </div>
         {!moneyFlowDailyReportData.loading && !isMemberShipCardActiveData.loading ?
           (idx(moneyFlowDailyReportData, _ => (
             <Results
-              className={styles.results}
               moneyFlowDailyReport={_.data.moneyFlowDailyReport}
               displayDate={displayDate}
               secExcelData={secExcelData}
@@ -113,11 +101,12 @@ export default function Employees() {
             />
           ))
           ) : (
-            <div style={{ textAlign: 'center' }}>
-              <CircularProgress />
+            // 載入中：與舊版 CircularProgress 相同時機顯示
+            <div aria-busy="true" aria-label="載入中">
+              <Skeleton className="h-[320px] w-full rounded-lg" />
             </div>
           )}
-      </Container>
+      </div>
     </Page>
   )
 }

@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, CardHeader, Divider, CardActions,
-  Checkbox, FormControlLabel
-} from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import produce from 'immer'
 import styles from './styles/AboutCustomerSideSetting'
@@ -41,16 +39,15 @@ function AboutCustomerSideSetting({
     )
   }
   return (
-    <Card css={className}>
-      <CardHeader title="頁面顯示設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>頁面顯示設定</CardTitle>
+      </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
-          <CardActions style={{ flexWrap: 'wrap', gap: '0px 20px' }}>
+          <div className="flex items-center p-2" style={{ flexWrap: 'wrap', gap: '0px 20px' }}>
             {pages.map(d => (
-              <FormControlLabel
-                style={{ margin: 0 }}
-                control={<Checkbox color="primary" />}
+              <CheckboxField
                 label={d.label}
                 checked={aboutCustomer.customerSidePageDisplay[d.key]}
                 key={`${d.label}`}
@@ -58,7 +55,7 @@ function AboutCustomerSideSetting({
                 onChange={(e, v) => handleSetValue(d.key, v)}
               />
             ))}
-          </CardActions>
+          </div>
         </div>
       </CardContent>
     </Card>

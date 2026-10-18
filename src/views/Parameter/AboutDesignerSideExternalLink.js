@@ -1,11 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, CardHeader, Grid, Divider,
-  Button, Typography, createTheme, ThemeProvider
-} from '@mui/material'
+import { Button as MuiButton, createTheme, ThemeProvider } from '@mui/material'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo, Fragment, useState } from 'react'
-import AddIcon from '@mui/icons-material/Add'
-import EditIcon from '@mui/icons-material/Edit';
+import { Add as AddIcon, Edit as EditIcon } from 'ui/icons'
 import { teal } from '@mui/material/colors';
 import styles from './styles/AboutDesignerSideExternalLink'
 import OuterLinkModal from './OuterLinkModal'
@@ -57,15 +55,16 @@ function AboutDesignerSideExternalLink({
   }
 
   return (
-    <Card css={className}>
-      <CardHeader title="外部連結設定" css={styles.header} action={
+    <Card>
+      <CardHeader action={
         <Button
+          variant="secondary"
+          size="sm"
           disabled={!inputEnable || externalLink.length < 2}
-          color='primary'
-          variant='contained'
           onClick={() => setOpenSort(true)}>調整排序</Button>
-      }/>
-      <Divider />
+      }>
+        <CardTitle>外部連結設定</CardTitle>
+      </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
           {externalLink.length ? externalLink.map((data, index) => {
@@ -73,7 +72,7 @@ function AboutDesignerSideExternalLink({
             return (
               <Fragment key={id}>
                 <ThemeProvider theme={theme}>
-                  <Button
+                  <MuiButton
                     disabled={!inputEnable}
                     onClick={() => handleOpenModal(false, data)}
                     css={styles.Button}
@@ -83,7 +82,7 @@ function AboutDesignerSideExternalLink({
                   >
                     {name}
                     <EditIcon className='editIcon' fontSize='small'/>
-                  </Button>
+                  </MuiButton>
                 </ThemeProvider>
                 {index === (externalLink.length - 1) ?
                 <AddIcon
@@ -95,15 +94,15 @@ function AboutDesignerSideExternalLink({
             )
           }
           ) :
-            <Grid container direction="row" alignItems="center" key='無資料'>
-              <Typography component="h1" variant="h5">
+            <div className="flex items-center" key='無資料'>
+              <span className="text-heading text-text">
                 無資料
-              </Typography>
+              </span>
               <AddIcon
                 onClick={() => handleOpenModal()}
                 css={styles.icon}
               />
-            </Grid>}
+            </div>}
         </div>
       </CardContent>
       {open && 

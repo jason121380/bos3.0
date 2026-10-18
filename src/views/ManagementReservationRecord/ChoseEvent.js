@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect, Fragment } from 'react'
+// 對話框內含 MobileDatePicker 與 Autocomplete，依指南保留 MUI DialogContent / List / TextField；
+// 預約時間的時段下拉與 standard 變體的 MobileDatePicker 並排、樣式依 .MuiSelect-select 撰寫，保留 MUI Select
 import {
-  Avatar,
   DialogContent,
   Link,
   List,
@@ -15,22 +16,12 @@ import {
   FormControl,
   MenuItem,
   Select,
-  FormControlLabel,
-  Checkbox,
-  InputLabel,
-  ToggleButtonGroup,
-  ToggleButton
 } from '@mui/material'
-import CancelIcon from '@mui/icons-material/Cancel'
-import CheckIcon from '@mui/icons-material/Check'
-import LockIcon from '@mui/icons-material/Lock'
-import LockOpenIcon from '@mui/icons-material/LockOpen'
-import EditIcon from '@mui/icons-material/Edit'
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
-import PersonIcon from '@mui/icons-material/Person'
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import MessageIcon from '@mui/icons-material/Message';
-import EventBusyIcon from '@mui/icons-material/EventBusy';
+import { Avatar } from 'ui/avatar'
+import { CheckboxField } from 'ui/checkbox'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
+import { Cancel as CancelIcon, Check as CheckIcon, Lock as LockIcon, LockOpen as LockOpenIcon, Edit as EditIcon, ShoppingCart as ShoppingCartIcon, Person as PersonIcon, AssignmentTurnedIn as AssignmentTurnedInIcon, Message as MessageIcon, EventBusy as EventBusyIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import { format, getMinutes, startOfDay, addMinutes } from 'date-fns'
 import { Link as RouterLink } from 'react-router-dom'
@@ -573,23 +564,17 @@ export default function ChoseEvent({
           }}
           required
         />
-        <FormControl
-          fullWidth
+        <NativeSelect
           css={styles.field}
-          variant='outlined'
+          className="ui-root"
+          label='服務時長'
+          value={values.timeCost}
+          onChange={event => setValues({ ...values, timeCost: event.target.value })}
         >
-          <InputLabel>服務時長</InputLabel>
-          <Select
-            label='服務時長'
-            fullWidth
-            value={values.timeCost}
-            onChange={event => setValues({ ...values, timeCost: event.target.value })}
-          >
-            {timeCostArray.map(d => (
-              <MenuItem key={`${d.value}-${d.label}`} value={d.value}>{d.label}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+          {timeCostArray.map(d => (
+            <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
+          ))}
+        </NativeSelect>
         <TextField
           label="備註"
           value={values.remark}
@@ -611,8 +596,8 @@ export default function ChoseEvent({
           }}
         />
         <div>
-          <FormControlLabel
-            control={<Checkbox color="primary" />}
+          <CheckboxField
+            className="ui-root py-2"
             label="佔用顧客端預約名額"
             checked={values.isBookingCostUsing}
             onChange={() => setValues({ ...values, isBookingCostUsing: !values.isBookingCostUsing })}
@@ -620,8 +605,8 @@ export default function ChoseEvent({
         </div>
         {bookingCusCheck && (
           <div>
-            <FormControlLabel
-              control={<Checkbox color="primary" />}
+            <CheckboxField
+              className="ui-root py-2"
               label="未來預訂(待確認)"
               checked={values.isCusCheckRequired}
               onChange={() => setValues({ ...values, isCusCheckRequired: !values.isCusCheckRequired })}
@@ -631,7 +616,7 @@ export default function ChoseEvent({
         {!checkinMode && (modaltype === 'openOrder' ?
           <ListItemButton css={styles.field} onClick={closeOrderTime} disabled={btnDisabled}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <LockOpenIcon />
               </Avatar>
             </ListItemAvatar>
@@ -640,7 +625,7 @@ export default function ChoseEvent({
           :
           <ListItemButton css={styles.field} onClick={closeOrderTime} disabled={btnDisabled}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <LockIcon />
               </Avatar>
             </ListItemAvatar>
@@ -713,7 +698,7 @@ export default function ChoseEvent({
             <React.Fragment>
               <ListItemButton disabled={btnDisabled} onClick={() => { setModalType('editOrderDetail') }}>
                 <ListItemAvatar>
-                  <Avatar css={styles.avatar}>
+                  <Avatar className="bg-accent/8 text-accent">
                     <EditIcon />
                   </Avatar>
                 </ListItemAvatar>
@@ -731,7 +716,7 @@ export default function ChoseEvent({
                 {editOrder.status === '預約成功' && (
                   <ListItemButton disabled={btnDisabled}>
                     <ListItemAvatar>
-                      <Avatar css={styles.avatar}>
+                      <Avatar className="bg-accent/8 text-accent">
                         <ShoppingCartIcon />
                       </Avatar>
                     </ListItemAvatar>
@@ -745,7 +730,7 @@ export default function ChoseEvent({
           {editOrder.status !== '預約成功' && editOrder.status !== '已完成' && (
             <ListItemButton disabled={btnDisabled} onClick={() => handleAcceptBooking(true)}>
               <ListItemAvatar>
-                <Avatar css={styles.avatar}>
+                <Avatar className="bg-accent/8 text-accent">
                   <CheckIcon />
                 </Avatar>
               </ListItemAvatar>
@@ -756,7 +741,7 @@ export default function ChoseEvent({
           {editOrder.status !== '設計師已取消' && (
             <ListItemButton disabled={btnDisabled} onClick={() => cancelPasswordUsing ? openPassworDialog('cancel') : handleAcceptBooking(false)}>
               <ListItemAvatar>
-                <Avatar css={styles.avatar}>
+                <Avatar className="bg-accent/8 text-accent">
                   <CancelIcon />
                 </Avatar>
               </ListItemAvatar>
@@ -767,7 +752,7 @@ export default function ChoseEvent({
             <>
               <ListItemButton disabled={btnDisabled} onClick={() => editOrder.isCheckin ? handleCancelCheckIn() : handleCheckIn()}>
                 <ListItemAvatar>
-                  <Avatar css={styles.avatar}>
+                  <Avatar className="bg-accent/8 text-accent">
                     <AssignmentTurnedInIcon />
                   </Avatar>
                 </ListItemAvatar>
@@ -776,7 +761,7 @@ export default function ChoseEvent({
               {checkinSettings.isUnDoneBookingManualNotify && (
                 <ListItemButton disabled={btnDisabled} onClick={() => setModalType('message')} >
                   <ListItemAvatar>
-                    <Avatar css={styles.avatar}>
+                    <Avatar className="bg-accent/8 text-accent">
                       <MessageIcon />
                     </Avatar>
                   </ListItemAvatar>
@@ -787,7 +772,7 @@ export default function ChoseEvent({
           )}
           <ListItemButton disabled={btnDisabled} onClick={() => handleSetBookingNoShow()}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <EventBusyIcon />
               </Avatar>
             </ListItemAvatar>
@@ -795,8 +780,8 @@ export default function ChoseEvent({
           </ListItemButton>
           {bookingCusCheck && (
             <div>
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
+              <CheckboxField
+                className="ui-root py-2"
                 label="未來預訂(待確認)"
                 checked={editOrder.isCusCheckRequired}
                 disabled={btnDisabled}
@@ -821,7 +806,7 @@ export default function ChoseEvent({
       </Fragment>}
       {(modaltype === 'editOrderDetail' || modaltype === "editNdsOrder") && <Fragment>
         <div css={styles.field} style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <ToggleButtonGroup
+          <ToggleGroup
             size="small"
             value={editOrder.isDesignate}
             onChange={() => {
@@ -832,15 +817,15 @@ export default function ChoseEvent({
             exclusive
           >
             {designate.map((data, idx) => (
-              <ToggleButton
+              <ToggleGroupItem
                 key={`${data.label}-${idx}`}
                 value={data.value}
                 data-testid={`assign-designer-${data.value}`}
               >
                 {data.label}
-              </ToggleButton>
+              </ToggleGroupItem>
             ))}
-          </ToggleButtonGroup>
+          </ToggleGroup>
           {(modaltype === 'editNdsOrder' && checkinSettings.isBookingCheckinEnabled && editOrder.isCheckin !== null) && (
             <p style={{ alignSelf: 'center' }}>{`報到狀態: ${editOrder.isCheckin ? '報到成功' : '未報到'}`}</p> 
           )}
@@ -904,23 +889,17 @@ export default function ChoseEvent({
             }}
           />
         </div>
-        <FormControl
-          fullWidth
+        <NativeSelect
           css={styles.field}
-          variant='outlined'
+          className="ui-root"
+          label='服務時長'
+          value={editOrder.timeCost}
+          onChange={event => setEditOrder({ ...editOrder, timeCost: event.target.value })}
         >
-          <InputLabel>服務時長</InputLabel>
-          <Select
-            label='服務時長'
-            fullWidth
-            value={editOrder.timeCost}
-            onChange={event => setEditOrder({ ...editOrder, timeCost: event.target.value })}
-          >
-            {timeCostArray.map(d => (
-              <MenuItem key={`${d.value}-${d.label}`} value={d.value}>{d.label}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+          {timeCostArray.map(d => (
+            <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
+          ))}
+        </NativeSelect>
         <TextField
           css={styles.field}
           value={editOrder.remark}
@@ -961,8 +940,8 @@ export default function ChoseEvent({
           onWheel={() => document.activeElement.blur()}
         />
         {modaltype === "editOrderDetail" && (
-          <FormControlLabel
-            control={<Checkbox color="primary" />}
+          <CheckboxField
+            className="ui-root py-2"
             label="佔用顧客端預約名額"
             checked={editOrder.isBookingCostUsing}
             onChange={() => setEditOrder({ ...editOrder, isBookingCostUsing: !editOrder.isBookingCostUsing })}
@@ -970,8 +949,8 @@ export default function ChoseEvent({
         )}
         {bookingCusCheck && (
           <div>
-            <FormControlLabel
-              control={<Checkbox color="primary" />}
+            <CheckboxField
+              className="ui-root py-2"
               label="未來預訂(待確認)"
               checked={editOrder.isCusCheckRequired}
               disabled={btnDisabled}
@@ -982,7 +961,7 @@ export default function ChoseEvent({
         {(modaltype === 'editNdsOrder' && checkinSettings.isBookingCheckinEnabled && editOrder.isCheckin !== null) && (
           <ListItemButton disabled={btnDisabled} onClick={() => editOrder.isCheckin ? handleCancelCheckIn() : handleCheckIn()}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <AssignmentTurnedInIcon />
               </Avatar>
             </ListItemAvatar>
@@ -1020,7 +999,7 @@ export default function ChoseEvent({
           onClick={() => { setOrderLimit(!orderLimit) }}
         >
           <ListItemAvatar>
-            <Avatar css={styles.avatar}>
+            <Avatar className="bg-accent/8 text-accent">
               <PersonIcon />
             </Avatar>
           </ListItemAvatar>
@@ -1052,23 +1031,17 @@ export default function ChoseEvent({
             }}
             required
           />
-          <FormControl
-            fullWidth
+          <NativeSelect
             css={styles.field}
-            variant='outlined'
+            className="ui-root"
+            label='服務時長'
+            value={values.timeCost}
+            onChange={event => setValues({ ...values, timeCost: event.target.value })}
           >
-            <InputLabel>服務時長</InputLabel>
-            <Select
-              label='服務時長'
-              fullWidth
-              value={values.timeCost}
-              onChange={event => setValues({ ...values, timeCost: event.target.value })}
-            >
-              {timeCostArray.map(d => (
-                <MenuItem key={`${d.value}-${d.label}`} value={d.value}>{d.label}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+            {timeCostArray.map(d => (
+              <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
+            ))}
+          </NativeSelect>
           <TextField
             label="備註"
             value={values.remark}
@@ -1091,8 +1064,8 @@ export default function ChoseEvent({
           />
           {bookingCusCheck && (
             <div>
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
+              <CheckboxField
+                className="ui-root py-2"
                 label="未來預訂(待確認)"
                 checked={values.isCusCheckRequired}
                 onChange={() => setValues({ ...values, isCusCheckRequired: !values.isCusCheckRequired })}

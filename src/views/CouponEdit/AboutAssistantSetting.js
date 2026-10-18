@@ -1,8 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card,
-  CardContent,
-  CardHeader,
   Checkbox,
   FormControl,
   InputLabel,
@@ -12,12 +9,11 @@ import {
   FormControlLabel,
   Grid,
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon, BackspaceOutlined as BackspaceOutlinedIcon } from 'ui/icons'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
-import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
@@ -343,8 +339,10 @@ function AboutAssistantSetting({
   }
 
   return (
-    <Card {...rest} css={className}>
-      <CardHeader title="互助點數設定" />
+    <Card {...rest}>
+      <CardHeader>
+        <CardTitle>互助點數設定</CardTitle>
+      </CardHeader>
       <CardContent>
         {support.map((content, index) => (
           <Grid container spacing={2} key={index} style={{ marginBottom: '10px' }}>

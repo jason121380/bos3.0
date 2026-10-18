@@ -1,14 +1,16 @@
 /** @jsxImportSource @emotion/react */
+// 裁切對話框（Slider）、多選 Autocomplete、數字欄位保留 MUI
 import {
-  Card, CardContent, CardHeader, Divider, InputLabel, Select,
-  MenuItem, FormControlLabel, FormControl, Checkbox, TextField,
-  Button, Avatar, Dialog, DialogContent, DialogTitle, Slider,
-  Autocomplete
+  Checkbox, TextField, Dialog, DialogContent, DialogTitle, Slider, Autocomplete
 } from '@mui/material'
-import CheckIcon from '@mui/icons-material/Check';
+import { Avatar } from 'ui/avatar'
+import { CheckboxField } from 'ui/checkbox'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Check as CheckIcon, EditRounded as EditRoundedIcon } from 'ui/icons'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import Resizer from "react-image-file-resizer";
 import Cropper from 'react-easy-crop'
 import CropImage from './CropImage'
@@ -171,9 +173,10 @@ function AboutSettingFunction({
   }, [])
 
   return (
-    <Card css={className}>
-      <CardHeader title="功能設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>功能設定</CardTitle>
+      </CardHeader>
       <CardContent>
         {settingArr.map(({ label, key }) => (
           <Fragment key={label}>
@@ -183,10 +186,9 @@ function AboutSettingFunction({
               }
               css={styles.serviceInputGroup}
             >
-              <FormControlLabel
+              <CheckboxField
                 disabled={!inputEnable}
                 css={(styles.isUsing)}
-                control={<Checkbox color="primary" />}
                 label={label}
                 checked={aboutSettingFunction[key]}
                 onChange={(e, v) => {
@@ -204,12 +206,11 @@ function AboutSettingFunction({
                   />
                   <CopyToClipboard onCopy={() => setIsCopy(true)} text={getLink()}>
                     <Button
-                      variant='contained'
-                      color='primary'
-                      size='small'
+                      variant="secondary"
+                      size="sm"
                     >複製連結{isCopy && <CheckIcon size='small' />}</Button>
                   </CopyToClipboard>
-                  <Button onClick={getQRCode} variant='contained' color='primary' size='small'>下載QRCode</Button>
+                  <Button onClick={getQRCode} variant="secondary" size="sm">下載QRCode</Button>
                 </div>
               )}
             </div>
@@ -219,10 +220,9 @@ function AboutSettingFunction({
           css={styles.serviceInputGroup}
           style={{ flexDirection: 'column', alignItems: 'flex-start' }}
         >
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
             css={styles.isUsing}
-            control={<Checkbox color="primary" />}
             label='啟用紅利點數給點自動換算'
             checked={aboutSettingFunction.bonusRewardRule.isUsing}
             onChange={(e, v) => {
@@ -263,24 +263,24 @@ function AboutSettingFunction({
                   )
                 }}
               />
-              <FormControl disabled={!inputEnable} variant="outlined" style={{ width: 120 }}>
-                <InputLabel>換算規則</InputLabel>
-                <Select
-                  label='換算規則'
-                  value={aboutSettingFunction.bonusRewardRule.rule.mode}
-                  onChange={e => {
-                    setAboutSettingFunction(
-                      produce(draft => { draft.bonusRewardRule.rule.mode = e.target.value })
-                    )
-                  }}
-                >
-                  {mode.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <NativeSelect
+                disabled={!inputEnable}
+                fullWidth={false}
+                style={{ width: 120 }}
+                label='換算規則'
+                value={aboutSettingFunction.bonusRewardRule.rule.mode}
+                onChange={e => {
+                  setAboutSettingFunction(
+                    produce(draft => { draft.bonusRewardRule.rule.mode = e.target.value })
+                  )
+                }}
+              >
+                {mode.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
             </div>
           )}
         </div>
@@ -288,10 +288,9 @@ function AboutSettingFunction({
           style={{ flexDirection: 'column', alignItems: 'flex-start', marginBottom: 40 }}
           css={styles.serviceInputGroup}
         >
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
             css={(styles.isUsing)}
-            control={<Checkbox color="primary" />}
             label='啟用紅利點數自動換算'
             checked={aboutSettingFunction.isBonusConversion}
             onChange={(e, v) => {
@@ -341,40 +340,38 @@ function AboutSettingFunction({
                 <div style={{ position: 'relative' }}>
                   <Avatar
                     src={merchantLogo}
-                    style={{ width: 80, height: 80 }}
-                    variant="square"
+                    className="h-20 w-20 rounded-md"
                   />
                   <EditRoundedIcon style={{ position: 'absolute', right: 0, bottom: 0, background: '#cccccc', borderRadius: "50%", padding: 5 }} />
                 </div>
               ) :
                 <Button
                   onClick={() => inputRef.current.click()}
-                  color='primary'
-                  variant='outlined'
+                  variant="secondary"
                   disabled={!inputEnable}
                 >上傳圖片</Button>
               }
             </label>
           </div>
         </div>
-        <FormControl disabled={!inputEnable} variant="outlined" css={styles.field}>
-          <InputLabel>顧客端顯示設計師名稱</InputLabel>
-          <Select
-            label='顧客端顯示設計師名稱'
-            value={aboutSettingFunction.designerNameForCustomerSide}
-            onChange={e => {
-              setAboutSettingFunction(
-                produce(draft => { draft.designerNameForCustomerSide = e.target.value })
-              )
-            }}
-          >
-            {nameDisplaySetting.map((data, idx) => (
-              <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                {data.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <NativeSelect
+          disabled={!inputEnable}
+          fullWidth={false}
+          css={styles.field}
+          label='顧客端顯示設計師名稱'
+          value={aboutSettingFunction.designerNameForCustomerSide}
+          onChange={e => {
+            setAboutSettingFunction(
+              produce(draft => { draft.designerNameForCustomerSide = e.target.value })
+            )
+          }}
+        >
+          {nameDisplaySetting.map((data, idx) => (
+            <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+              {data.label}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
         <div style={{ width: '100%', padding: '0px 20px 24px 20px' }}>
           <Autocomplete
             multiple
@@ -465,8 +462,8 @@ function AboutSettingFunction({
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', columnGap: '20px', margin: '10px 0' }}>
-            <Button disabled={btnDisable} color='primary' variant='contained' onClick={handleClose}>取消</Button>
-            <Button disabled={btnDisable} onClick={showCroppedImage} color='primary' variant='contained'>確認上傳</Button>
+            <Button disabled={btnDisable} variant="secondary" onClick={handleClose}>取消</Button>
+            <Button disabled={btnDisable} onClick={showCroppedImage} variant="primary">確認上傳</Button>
           </div>
         </DialogContent>
       </Dialog>

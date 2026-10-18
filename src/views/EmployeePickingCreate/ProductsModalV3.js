@@ -1,22 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card,
-  CardHeader,
-  CardContent,
-  Divider,
   Modal,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableContainer,
-  CardActions,
-  Paper,
-  Button,
   TextField,
-  FormControlLabel,
-  Checkbox,
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
@@ -24,6 +9,10 @@ import { red, blue } from '@mui/material/colors'
 import _ from 'lodash'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 const styles = {
   root: css({
@@ -37,7 +26,7 @@ const styles = {
     maxHeight: '100%',
     overflowY: 'auto',
     maxWidth: '100%',
-    backgroundColor: '#FFF',
+    backgroundColor: 'rgb(var(--background))',
   }),
   birthday: css({
     width: '100%',
@@ -276,41 +265,32 @@ function ProductsModal({
   return (
     <Modal open={productsModalOpen}>
       <Card css={styles.root} className='EmployeePickingCreateProductsModal'>
-        <div css={styles.header}>
-          <CardHeader
-            title={
-              selectedCategorieName.length === 0 ? '所有商品' : `${categoryNameForDisplay}類商品`
-            }
-          />
-          <div>
+        <div className="flex items-center justify-between gap-4 px-5 py-4">
+          <CardTitle>
+            {selectedCategorieName.length === 0 ? '所有商品' : `${categoryNameForDisplay}類商品`}
+          </CardTitle>
+          <div className="flex items-center gap-2">
             <Button
-              color="primary"
-              variant="contained"
+              variant="primary"
               onClick={handleSelectProductsConfirm}
-              css={styles.confirmAtTop}
             >
               確定
             </Button>
             <Button
-              color="primary"
-              variant="contained"
+              variant="ghost"
               onClick={closeModal}
-              css={styles.closeAtTop}
             >
               關閉
             </Button>
           </div>
         </div>
 
-        <Divider />
-        <CardContent style={{ backgroundColor: '#FFF' }}>
-          <div css={styles.categorieDiv}>
+        <CardContent className="border-0 border-t border-solid border-border">
+          <div className="mb-3 flex flex-wrap gap-2">
             {productCategories.map(productCategory => (
               <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                css={styles.categorieBtn}
+                variant="secondary"
+                size="sm"
                 onClick={() => handleClickCategorie(productCategory.id, productCategory.name)}
                 disabled={selectedCategorie.indexOf(productCategory.id) !== -1}
                 key={productCategory.id}
@@ -319,107 +299,95 @@ function ProductsModal({
               </Button>
             ))}
             <Button
-              variant="contained"
-              size="small"
-              color="secondary"
-              css={styles.categorieClear}
+              variant="ghost"
+              size="sm"
+              className="text-danger"
               onClick={() => handleClickCategorie(null, null)}
             >
               清除篩選
             </Button>
           </div>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell padding="checkbox">
-                    <Button />
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12">
+                </TableHead>
+                <TableHead>代號</TableHead>
+                <TableHead>價格</TableHead>
+                <TableHead>數量</TableHead>
+                <TableHead>類別</TableHead>
+                <TableHead>名稱</TableHead>
+                <TableHead numeric>合計</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {selectedCategorieId.map((product, index) => (
+                <TableRow key={index} data-state={product.selected ? 'selected' : undefined}>
+                  <TableCell className="text-center">
+                    <Checkbox
+                      aria-label={`選取 ${product.productName}`}
+                      name="selected"
+                      onChange={e => handleProductInputOnChange(e, index, product.id)}
+                      checked={product.selected}
+                      value={product.selected}
+                    />
                   </TableCell>
-                  <TableCell>代號</TableCell>
-                  <TableCell>價格</TableCell>
-                  <TableCell>數量</TableCell>
-                  <TableCell>類別</TableCell>
-                  <TableCell>名稱</TableCell>
-                  <TableCell>合計</TableCell>
+                  <TableCell>
+                    {product.productNo === null || product.productNo === ''
+                      ? '無代號'
+                      : product.productNo}
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      label="價格"
+                      variant="outlined"
+                      fullWidth
+                      name="price"
+                      onChange={e => handleProductInputOnChange(e, index, product.id)}
+                      value={product.price}
+                      type="number"
+                      style={{ width: '90px', margin: '10px 0 5px 0' }}
+                      onWheel={() => document.activeElement.blur()}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      className='displayArrow'
+                      label="數量"
+                      variant="outlined"
+                      fullWidth
+                      name="count"
+                      onChange={e => handleProductInputOnChange(e, index, product.id)}
+                      value={product.count}
+                      type="number"
+                      style={{ width: '90px' }}
+                      onWheel={() => document.activeElement.blur()}
+                    />
+                  </TableCell>
+                  <TableCell className="text-text-secondary">
+                    {product.productCategory !== null ? product.productCategory.name : ''}
+                  </TableCell>
+                  <TableCell>{product.productName}</TableCell>
+                  <TableCell numeric>{product.total}</TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {selectedCategorieId.map((product, index) => (
-                  <TableRow key={index}>
-                    <TableCell style={{ textAlign: 'center' }}>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            name="selected"
-                            onChange={e => handleProductInputOnChange(e, index, product.id)}
-                            checked={product.selected}
-                            value={product.selected}
-                            color="primary"
-                          />
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      {product.productNo === null || product.productNo === ''
-                        ? '無代號'
-                        : product.productNo}
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        label="價格"
-                        variant="outlined"
-                        fullWidth
-                        name="price"
-                        onChange={e => handleProductInputOnChange(e, index, product.id)}
-                        value={product.price}
-                        type="number"
-                        style={{ width: '90px', margin: '10px 0 5px 0' }}
-                        onWheel={() => document.activeElement.blur()}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        className='displayArrow'
-                        label="數量"
-                        variant="outlined"
-                        fullWidth
-                        name="count"
-                        onChange={e => handleProductInputOnChange(e, index, product.id)}
-                        value={product.count}
-                        type="number"
-                        style={{ width: '90px' }}
-                        onWheel={() => document.activeElement.blur()}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      {product.productCategory !== null ? product.productCategory.name : ''}
-                    </TableCell>
-                    <TableCell>{product.productName}</TableCell>
-                    <TableCell>{product.total}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
-        <CardActions css={styles.actions}>
+        <CardFooter>
           <Button
-            color="primary"
-            variant="contained"
-            onClick={handleSelectProductsConfirm}
-            css={styles.confirmAtTop}
-          >
-            確定
-          </Button>
-          <Button
-            color="primary"
-            variant="contained"
+            variant="ghost"
             onClick={closeModal}
-            style={{ marginLeft: '24px' }}
           >
             關閉
           </Button>
-        </CardActions>
+          <Button
+            variant="primary"
+            onClick={handleSelectProductsConfirm}
+          >
+            確定
+          </Button>
+        </CardFooter>
       </Card>
     </Modal>
   )

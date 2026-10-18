@@ -1,54 +1,16 @@
-/** @jsxImportSource @emotion/react */
-import {
-    Button, Card, CardActions, CardContent, CardHeader,
-    Table, TableHead, TableRow, TableCell, TablePagination, Typography
-} from '@mui/material'
+import { Table, TableHead, TableRow } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useRef, useEffect } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { CSVLink } from "react-csv"
 import pagenationLabel from './../helper/pagenationLabel'
-import { css } from '@emotion/react'
-import { theme } from '../theme'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { TablePagination } from 'ui/table'
+import { cn } from 'ui/utils'
 
-const styles = {
-    card: css({
-        borderRadius: '16px',
-        boxShadow: 'none',
-        border: '1px solid #f0f0f0',
-        backgroundColor: '#fff',
-        overflow: 'hidden',
-    }),
-    cardHeader: css({
-        padding: '12px 24px !important',
-        '& .MuiCardHeader-title': {
-            fontSize: '15px',
-            fontWeight: 'bold',
-            display: 'flex',
-            alignItems: 'center',
-        },
-    }),
-    content: css({
-        padding: '0px !important',
-    }),
-    actions: css({
-        padding: theme.spacing(0, 1),
-        justifyContent: 'flex-end',
-    }),
-    csvBtn: css({
-        borderRadius: '20px !important',
-        padding: '6px 20px !important',
-        fontSize: '14px !important',
-        boxShadow: 'none !important',
-        fontWeight: 'bold !important',
-        backgroundColor: '#f5f5f5 !important',
-        color: '#666 !important',
-        '&:hover': {
-            backgroundColor: '#eeeeee !important',
-        }
-    }),
-}
-
+// 列表頁共用表格卡片（STYLE.md §6）：卡片標題＋筆數＋匯出／自訂動作、可橫向捲動的表格、分頁
+// props 與舊版相同。表格本體保留 MUI Table / TableHead：
+// 舊頁面傳入的 MUI TableCell 需要它提供的表頭／尺寸 context；新頁面傳 ui/table 的 TableHead / TableCell 也能直接放進來
 const ManagementTable = ({
     title,
     totalCount,
@@ -76,61 +38,47 @@ const ManagementTable = ({
     }, [children, pageRef.current, hidePagination])
 
     return (
-        <Card className={className} css={styles.card}>
-            <CardHeader
-                css={styles.cardHeader}
-                action={
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        {excelData && (
+        <Card className={cn('ui-root overflow-hidden', typeof className === 'string' && className)}>
+            <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3">
+                <div className="flex min-w-0 items-baseline gap-3">
+                    <h2 className="text-heading text-text">{title}</h2>
+                    <span className="shrink-0 text-label tabular-nums text-text-secondary">共 {totalCount} 筆</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    {excelData && (
+                        <Button asChild size="sm">
                             <CSVLink data={excelData} filename={excelFilename || "data.csv"}>
-                                <Button variant="contained" css={styles.csvBtn} size="small">
-                                    報表匯出
-                                </Button>
+                                報表匯出
                             </CSVLink>
-                        )}
-                        {headerAction}
-                    </div>
-                }
-                title={
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <span>{title}</span>
-                        <Typography color="textSecondary" variant="body2">
-                            共 {totalCount} 筆
-                        </Typography>
-                    </div>
-                }
-            />
-            <CardContent css={styles.content}>
-                <PerfectScrollbar>
-                    <div style={{ minWidth }}>
-                        <Table size={size}>
-                            <TableHead>
-                                <TableRow>
-                                    {tableHead}
-                                </TableRow>
-                            </TableHead>
-                            {children}
-                        </Table>
-                    </div>
-                </PerfectScrollbar>
-            </CardContent>
+                        </Button>
+                    )}
+                    {headerAction}
+                </div>
+            </div>
+            <div className="w-full overflow-x-auto border-0 border-t border-solid border-border">
+                <div style={{ minWidth }}>
+                    <Table size={size}>
+                        <TableHead>
+                            <TableRow>
+                                {tableHead}
+                            </TableRow>
+                        </TableHead>
+                        {children}
+                    </Table>
+                </div>
+            </div>
             {!hidePagination && (
-                <CardActions css={styles.actions}>
-                    <TablePagination
-                        ref={pageRef}
-                        labelRowsPerPage='每頁顯示數量'
-                        component="div"
-                        count={totalCount}
-                        onPageChange={onPageChange}
-                        onRowsPerPageChange={onRowsPerPageChange}
-                        page={pageOffset}
-                        rowsPerPage={pageLimit}
-                        rowsPerPageOptions={rowsPerPageOptions}
-                        SelectProps={{
-                            style: { width: '80px' }
-                        }}
-                    />
-                </CardActions>
+                <TablePagination
+                    ref={pageRef}
+                    labelRowsPerPage='每頁顯示數量'
+                    count={totalCount}
+                    onPageChange={onPageChange}
+                    onRowsPerPageChange={onRowsPerPageChange}
+                    page={pageOffset}
+                    rowsPerPage={pageLimit}
+                    rowsPerPageOptions={rowsPerPageOptions}
+                    className="border-0 border-t border-solid border-border px-5 pb-3"
+                />
             )}
         </Card>
     )

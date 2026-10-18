@@ -1,50 +1,17 @@
-/** @jsxImportSource @emotion/react */
+// FormControlLabel＋Checkbox、ToggleButtonGroup 保留 MUI（橋接主題已套新外觀）
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  TextField,
-  IconButton,
   FormControlLabel,
   Checkbox,
   ToggleButton,
   ToggleButtonGroup
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Plus, Trash2 } from 'lucide-react'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
-
-const styles = {
-  marginTop: css({
-    marginTop: '30px'
-  }),
-  marginTop2: css({
-    marginTop: '20px',
-    display: 'flex',
-    flexDirection: 'column',
-    rowGap: '20px'
-  }),
-  marginBottom: css({
-    marginBottom: '12px'
-  }),
-  marginRight: css({
-    marginRight: '20px'
-  }),
-  inputWidth: css({
-    width: '200px'
-  }),
-  inputWrap: css({
-    display: 'flex',
-    gap: '10px 20px',
-    flexWrap: 'wrap',
-  }),
-  iconWrap: css({
-    display: 'flex',
-    width: '100px',
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
+import { cn } from 'ui/utils'
 
 const statusEnum = [
   { label: '固定金額', value: 'FIXED' },
@@ -69,20 +36,22 @@ function Results({ className, status, submitData, setSubmitData, isLoading, ...r
     setSubmitData(newSubmitData)
   }
   return (
-    <Card {...rest} css={css([styles.root, className])}>
-      <CardHeader title="互助點數設定" style={{ paddingBottom: 0 }} />
-      <CardContent>
-        <TextField
-          value={submitData.name}
-          variant='outlined'
-          label='互助點數設定名稱'
-          onFocus={e => e.target.select()}
-          onChange={e => setSubmitData({ ...submitData, name: e.target.value })}
-          fullWidth
-        />
-        <div css={styles.marginTop}>
-          <div css={styles.marginBottom} style={{ display: 'flex', gap: 30, flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', alignItems: 'center'}}>點數使用成本設定</div>
+    <Card {...rest} className={cn('max-w-3xl', className)}>
+      <CardHeader>
+        <CardTitle>互助點數設定</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-8">
+        <Field label="互助點數設定名稱" htmlFor="helperPointSettingName">
+          <Input
+            id="helperPointSettingName"
+            value={submitData.name}
+            onFocus={e => e.target.select()}
+            onChange={e => setSubmitData({ ...submitData, name: e.target.value })}
+          />
+        </Field>
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-wrap gap-8">
+            <div className="flex items-center text-heading text-text">點數使用成本設定</div>
             <FormControlLabel
               checked={submitData.isAccordingToHelper}
               onChange={(e, v) => setSubmitData({ ...submitData, isAccordingToHelper: v })}
@@ -90,22 +59,20 @@ function Results({ className, status, submitData, setSubmitData, isLoading, ...r
               label="依互助人固定金額"
             />
           </div>
-          <TextField
-            value={submitData.paidFixed}
-            fullWidth
-            type='number'
-            variant='outlined'
-            label='換算金額'
-            onFocus={e => e.target.select()}
-            onChange={e => setSubmitData({ ...submitData, paidFixed: parseInt(Math.abs(e.target.value)) })}
-            inputProps={{
-              min: 0,
-            }}
-            onWheel={() => document.activeElement.blur()}
-          />
+          <Field label="換算金額" htmlFor="helperPointPaidFixed">
+            <Input
+              id="helperPointPaidFixed"
+              value={submitData.paidFixed}
+              type='number'
+              min={0}
+              onFocus={e => e.target.select()}
+              onChange={e => setSubmitData({ ...submitData, paidFixed: parseInt(Math.abs(e.target.value)) })}
+              onWheel={() => document.activeElement.blur()}
+            />
+          </Field>
         </div>
-        <div css={styles.marginTop}>
-          <div css={styles.marginBottom}>點數獲得設定</div>
+        <div className="flex flex-col gap-3">
+          <div className="text-heading text-text">點數獲得設定</div>
           <ToggleButtonGroup
             size="small"
             value={submitData.retrievePointWay}
@@ -118,52 +85,49 @@ function Results({ className, status, submitData, setSubmitData, isLoading, ...r
               </ToggleButton>
             ))}
           </ToggleButtonGroup>
-          <div css={styles.marginTop2}>
+          <div className="mt-2 flex flex-col gap-5">
             {status === 'FIXED' ?
-              (<TextField
-                fullWidth
-                type='number'
-                css={styles.inputWidth}
-                variant='outlined'
-                label='換算金額'
-                value={submitData.retrieveFixed}
-                onFocus={e => e.target.select()}
-                onChange={e => setSubmitData({ ...submitData, retrieveFixed: parseInt(Math.abs(e.target.value)) })}
-                onWheel={() => document.activeElement.blur()}
-              />) :
+              (<Field label="換算金額" className="w-[200px]">
+                <Input
+                  type='number'
+                  aria-label="換算金額"
+                  value={submitData.retrieveFixed}
+                  onFocus={e => e.target.select()}
+                  onChange={e => setSubmitData({ ...submitData, retrieveFixed: parseInt(Math.abs(e.target.value)) })}
+                  onWheel={() => document.activeElement.blur()}
+                />
+              </Field>) :
               submitData[status].map((d, index) => (
-                <div css={styles.inputWrap} key={index}>
-                  <TextField
-                    fullWidth
-                    type='number'
-                    css={styles.inputWidth}
-                    variant='outlined'
-                    label='點數門檻'
-                    value={d.threshold}
-                    onChange={e => handleEditRow(index, parseInt(Math.abs(e.target.value)), 'threshold')}
-                    onFocus={e => e.target.select()}
-                    onWheel={() => document.activeElement.blur()}
-                  />
-                  <TextField
-                    fullWidth
-                    type='number'
-                    css={styles.inputWidth}
-                    variant='outlined'
-                    label='換算金額'
-                    value={d.price}
-                    onChange={e => handleEditRow(index, parseInt(Math.abs(e.target.value)), 'price')}
-                    onFocus={e => e.target.select()}
-                    onWheel={() => document.activeElement.blur()}
-                  />
-                  <div>
+                <div className="flex flex-wrap items-end gap-x-5 gap-y-2.5" key={index}>
+                  <Field label="點數門檻" className="w-[200px]">
+                    <Input
+                      type='number'
+                      aria-label="點數門檻"
+                      value={d.threshold}
+                      onChange={e => handleEditRow(index, parseInt(Math.abs(e.target.value)), 'threshold')}
+                      onFocus={e => e.target.select()}
+                      onWheel={() => document.activeElement.blur()}
+                    />
+                  </Field>
+                  <Field label="換算金額" className="w-[200px]">
+                    <Input
+                      type='number'
+                      aria-label="換算金額"
+                      value={d.price}
+                      onChange={e => handleEditRow(index, parseInt(Math.abs(e.target.value)), 'price')}
+                      onFocus={e => e.target.select()}
+                      onWheel={() => document.activeElement.blur()}
+                    />
+                  </Field>
+                  <div className="flex">
                     {index > 0 &&
-                      <IconButton onClick={() => handleDeleteRow(index)}>
-                        <DeleteForeverIcon />
-                      </IconButton>}
+                      <Button variant="ghost" size="icon" aria-label="刪除此段" className="text-text-secondary hover:text-danger" onClick={() => handleDeleteRow(index)}>
+                        <Trash2 strokeWidth={1.75} />
+                      </Button>}
                     {index === submitData[status].length - 1 &&
-                      <IconButton onClick={() => handleAddRow(index)}>
-                        <AddIcon />
-                      </IconButton>}
+                      <Button variant="ghost" size="icon" aria-label="新增一段" onClick={() => handleAddRow(index)}>
+                        <Plus strokeWidth={1.75} />
+                      </Button>}
                   </div>
                 </div>
               ))

@@ -1,15 +1,11 @@
 /** @jsxImportSource @emotion/react */
+// 排序切換鈕 handler 使用 (event, value)，保留 MUI ToggleButtonGroup
 import {
-	Container,
-	Button,
-	CircularProgress,
-	Grid,
 	ToggleButton,
 	ToggleButtonGroup
 } from '@mui/material'
 import Page from 'components/Page'
 import { useState, useEffect } from 'react'
-import AdminPageHeader from 'components/AdminPageHeader'
 import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
 import { startOfDay, endOfDay, format } from 'date-fns'
@@ -22,6 +18,10 @@ import idx from 'idx'
 import _ from 'lodash'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Download, Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader, Toolbar, ToolbarSpacer } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 const styles = {
 	root: css({}),
@@ -137,63 +137,27 @@ const DesignerPerformanceReport = () => {
 	}, [getDesignerPerformance.loading, isMemberShipCardActiveData.loading, sort])
 
 	return (
-		<Page css={styles.root} className='designerPerformanceReport' title="設計師業績表">
-			<Container maxWidth={false} css={styles.container}>
-				<div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
-					<div className="merchantNamePrint">
-						{JSON.parse(localStorage.getItem('userMerchant')).name +
-							'   ' +
-							format(new Date(date.startDate), 'yyyy-MM').toLocaleString() +
-							'   ' +
-							'設計師業績表'}
-					</div>
-					<div className="merchantNamePrint">
-						{'列印時間： ' +
-							format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-					</div>
+		<Page className='designerPerformanceReport ui-root' title="設計師業績表">
+			<div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+				<div className="merchantNamePrint">
+					{JSON.parse(localStorage.getItem('userMerchant')).name +
+						'   ' +
+						format(new Date(date.startDate), 'yyyy-MM').toLocaleString() +
+						'   ' +
+						'設計師業績表'}
 				</div>
-				<AdminPageHeader title='設計師業績表' />
-				<Grid container className='noprint' alignItems='center' style={{ justifyContent: 'space-between' }}>
-					<DateSelector
-						date={date}
-						attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-						dateChange={value => setDate(value)}
-						margin
-					/>
-					<Grid
-						item
-						style={{
-							display: 'flex',
-							alignItems: 'center',
-							flexWrap: 'wrap',
-							gap: "10px 20px"
-						}}
-					>
-						{!isDisplayTogglePerformanceButton && <div style={{ marginTop: '-23px' }}>
-							<div className="divText">業績類型：</div>
-							<ReferToggleButton
-								value={type}
-								onChange={value => value !== null && setType(value)}
-							/>
-						</div>
-						}
-						<div style={{ marginTop: '-23px' }}>
-							<div className="divText">排序依據：</div>
-							<ToggleButtonGroup
-								size="small"
-								value={sort}
-								onChange={(event, value) => value !== null && setSort(value)}
-								exclusive
-							>
-								<ToggleButton value='DESIGNERNO'>代號</ToggleButton>
-								<ToggleButton value="PERFORMANCE">業績</ToggleButton>
-							</ToggleButtonGroup>
-						</div>
+				<div className="merchantNamePrint">
+					{'列印時間： ' +
+						format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
+				</div>
+			</div>
+			<PageHeader
+				title="設計師業績表"
+				actions={
+					<>
 						<Button
-							color="primary"
-							variant="contained"
+							variant="secondary"
 							disabled={designerPerformanceExcelData.loading}
-							size="medium"
 							onClick={() => {
 								getDesignerPerformanceExcel({
 									variables: {
@@ -206,30 +170,60 @@ const DesignerPerformanceReport = () => {
 								})
 							}}
 						>
+							<Download strokeWidth={1.75} />
 							報表匯出
 						</Button>
 						<Button
-							color="primary"
-							variant="contained"
+							variant="primary"
 							onClick={() => window.print()}
-							disabled={getDesignerPerformance.loading} size="medium"
+							disabled={getDesignerPerformance.loading}
 						>
+							<Printer strokeWidth={1.75} />
 							列印
 						</Button>
-					</Grid>
-				</Grid>
-				{getDesignerPerformance.loading ?
-					<div style={{ textAlign: 'center', marginTop: '100px' }}>
-						<CircularProgress color="primary" />
-					</div>
-					:
-					<Results
-						designerPerformance={designerPerformance}
-						serviceCategory={serviceCategory}
-						membershipDisplay={membershipDisplay}
-					/>
+					</>
 				}
-			</Container>
+			/>
+			<Toolbar>
+				<DateSelector
+					date={date}
+					attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+					dateChange={value => setDate(value)}
+					margin
+				/>
+				<ToolbarSpacer />
+				<div className="flex flex-wrap items-center gap-x-5 gap-y-2.5">
+					{!isDisplayTogglePerformanceButton && <div className="flex items-center gap-2">
+						<div className="divText text-label text-text-secondary">業績類型：</div>
+						<ReferToggleButton
+							value={type}
+							onChange={value => value !== null && setType(value)}
+						/>
+					</div>
+					}
+					<div className="flex items-center gap-2">
+						<div className="divText text-label text-text-secondary">排序依據：</div>
+						<ToggleButtonGroup
+							size="small"
+							value={sort}
+							onChange={(event, value) => value !== null && setSort(value)}
+							exclusive
+						>
+							<ToggleButton value='DESIGNERNO'>代號</ToggleButton>
+							<ToggleButton value="PERFORMANCE">業績</ToggleButton>
+						</ToggleButtonGroup>
+					</div>
+				</div>
+			</Toolbar>
+			{getDesignerPerformance.loading ?
+				<Skeleton className="h-96" aria-busy="true" />
+				:
+				<Results
+					designerPerformance={designerPerformance}
+					serviceCategory={serviceCategory}
+					membershipDisplay={membershipDisplay}
+				/>
+			}
 		</Page>
 	)
 }

@@ -1,6 +1,4 @@
-/** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react'
-import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
@@ -9,42 +7,11 @@ import useFetchMoneyFlowTransferReport from 'hooks/useFetchMoneyFlowTransferRepo
 import _ from 'lodash'
 import { CSVLink } from "react-csv";
 import DateSelector from 'components/DateSelector'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  searchBtnDiv: ({
-    marginBottom: '24px',
-  }),
-  noReportDiv: {
-    textAlign: 'center',
-    margin: '30px 0',
-  },
-  searchBtn: {
-    width: '284px',
-  },
-  exportBtn: {
-    float: 'right',
-  },
-  formGroup: {
-    width: '10rem',
-    marginLeft: theme.spacing(3),
-  },
-  topDiv: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-}
 
 const MoneyFlowTransferReport = () => {
   const [excelData, setExcelData] = useState([])
@@ -88,10 +55,10 @@ const MoneyFlowTransferReport = () => {
   }, [moneyFlowTransferReport.loading])
 
   return (
-    <Page css={styles.root} title="收支匯款表">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className="ui-root" title="收支匯款表">
+      <div>
         <AdminPageHeader title='收支匯款表' />
-        <Grid container item justifyContent='space-between' alignItems='center'>
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <DateSelector
             date={date}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
@@ -103,19 +70,21 @@ const MoneyFlowTransferReport = () => {
             filename="收支匯款表.csv"
             style={{ display: 'inline' }}
           >
-            <Button variant="contained" color="primary">
+            <Button variant="secondary">
+              <Download strokeWidth={1.75} />
               報表匯出
             </Button>
           </CSVLink>
-        </Grid>
+        </div>
         {!moneyFlowTransferReport.loading && reportForDisplay && excelData ? (
           <Results reportForDisplay={reportForDisplay} />
         ) : (
-          <div css={styles.noReportDiv}>
-            <CircularProgress />
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div className="mt-2" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div>
         )}
-      </Container>
+      </div>
     </Page>
   )
 }

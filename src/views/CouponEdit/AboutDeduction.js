@@ -1,8 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card,
-  CardContent,
-  CardHeader,
   Checkbox,
   FormControl,
   InputLabel,
@@ -10,17 +7,15 @@ import {
   Select,
   TextField,
   FormControlLabel,
-  Typography,
   Grid,
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon, BackspaceOutlined as BackspaceOutlinedIcon } from 'ui/icons'
 import useFetchMerchantDeductionItems from 'hooks/useFetchMerchantDeductionItems'
 import idx from 'idx'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import { useRef, Fragment } from 'react'
-import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
@@ -291,25 +286,22 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
   }
 
   return (
-    <Card {...rest} css={className}>
+    <Card {...rest}>
       {ServiceDeductionItems.map(data => (
         <Fragment key={`${data.type}`}>
-          <CardHeader
-            title={`項目扣項設定 - ${data.type}`}
-            css={data.type === '系統預設' ? styles.headerTitle : {}}
-          />
+          <CardHeader>
+            <CardTitle className={data.type === '系統預設' ? 'text-danger' : undefined}>{`項目扣項設定 - ${data.type}`}</CardTitle>
+          </CardHeader>
           <CardContent>
             {data.itemSettings.map((content, index) => {
               return (
                 <Grid container spacing={2} css={styles.service} key={index}>
-                  <Typography
-                    variant="h5"
-                    display="inline"
-                    gutterBottom
+                  <span
+                    className="text-heading tabular-nums text-text"
                     css={styles.orderNum}
                   >
                     {content.deductionOrder}
-                  </Typography>
+                  </span>
                   <Grid item xs={12} sm={2}>
                     <FormControl variant="outlined" fullWidth>
                       <InputLabel ref={inputLabel} id="select-item-label">

@@ -1,0 +1,773 @@
+OK   src/App.js
+OK   src/components/AddPost.js
+OK   src/components/AdminPageHeader.js
+OK   src/components/BelongAutocomplete.js
+OK   src/components/ChangePassword.js
+FAIL src/components/DateSelector/index.js
+  缺少敘述：decl:getButton(title,func,isActive)
+  缺少敘述：ctrl:item==='startDate'&&attributes[index+1]==='endDate'
+  缺少敘述：return buttonObj[item]()
+  缺少屬性/運算式 [children]：attributes.map((item,index)=>{if(item==='startDate'&&attributes[index+1]==='endDate'){return __JSX__;}return buttonObj[item]();})
+  缺少屬性/運算式 [key]：item
+  缺少屬性/運算式 [children]：buttonObj[item]()
+  警告：文字不見了「至」
+OK   src/components/FastCheckOrdersModal.js
+OK   src/components/GenericMoreButton.js
+OK   src/components/MainEventAutocomplete.js
+FAIL src/components/ManagementTable.js
+  缺少屬性/運算式 [SelectProps]：({style:{width:'80px'}})
+OK   src/components/MembershipCardList.js
+OK   src/components/MerchantListAutocpmplete/MerchantsListModal.js
+OK   src/components/MerchantListAutocpmpleteForManagement/MerchantsListModal.js
+OK   src/components/MerchantListAutocpmpleteForPinnedTable/MerchantsListModal.js
+OK   src/components/MerchantSearchBar/Search.js
+OK   src/components/MerchantSearchBar/index.js
+FAIL src/components/NavItem.js
+  缺少敘述：let paddingLeft=8
+  缺少敘述：ctrl:depth>0
+  缺少敘述：paddingLeft=32+8*depth
+  缺少屬性/運算式 [children]：Icon&&__JSX__
+  缺少屬性/運算式 [children]：title==='報表及分析'&&!reportListExtended?'':open?__JSX__:__JSX__
+  缺少屬性/運算式 [children]：Icon&&__JSX__
+FAIL src/components/PageTitle.js
+  缺少屬性/運算式 [children]：subTitle&&__JSX__
+OK   src/components/PaywayAutocomplete.js
+OK   src/components/ProductListTreeView/ProductListModal.js
+OK   src/components/ReferToggleButton.js
+OK   src/components/SearchBar/Search.js
+OK   src/components/SearchBar/SearchV2.js
+OK   src/components/SearchField.js
+OK   src/components/ShortcutDialog.js
+OK   src/components/SourcesAutocomplete.js
+OK   src/components/TableCheckoutBar.js
+FAIL src/components/TableEditBar.js
+  缺少屬性/運算式 [children]：onReinstatement&&__JSX__
+  缺少屬性/運算式 [children]：onDelete&&__JSX__
+  缺少屬性/運算式 [children]：onEditSaleStatus&&__JSX__
+  缺少屬性/運算式 [children]：onEditDeduction&&__JSX__
+  缺少屬性/運算式 [children]：onEdit&&__JSX__
+  缺少屬性/運算式 [children]：onCancel&&__JSX__
+  缺少屬性/運算式 [children]：onEditProductsCategory&&__JSX__
+  缺少屬性/運算式 [children]：onEditRakeSetting&&__JSX__
+  缺少屬性/運算式 [children]：onEditRakeSetting&&__JSX__
+  缺少屬性/運算式 [children]：onDeleteCustomer&&__JSX__
+  缺少屬性/運算式 [children]：onEditMembershipCategory&&__JSX__
+  警告：文字不見了「編輯商品類別」
+  警告：文字不見了「編輯設計師抽成」
+  警告：文字不見了「刪除客人」
+  警告：文字不見了「編輯會員卡類別」
+OK   src/components/TicketsAutocpmplete.js
+OK   src/components/TransferList.js
+OK   src/components/WalletDepositToggleButton.js
+OK   src/layouts/Auth/Topbar.js
+OK   src/layouts/Auth/index.js
+OK   src/layouts/Customer/index.js
+OK   src/layouts/DashBoardListDetail/index.js
+OK   src/layouts/Dashboard/MerchantBar.js
+OK   src/layouts/Dashboard/MerchantList.js
+FAIL src/layouts/Dashboard/NavBar.js
+  缺少敘述：const themeForStyle=createTheme()
+  缺少敘述：const memberShipCardItem={title:'會員卡管理',icon:LoyaltyIcon,items:[{title:'會員卡分類設定',href:'/member-card-categories'},{title:'會員卡列表',href:'/member-card-record'}]}
+  缺少敘述：const CustomerBonusItem={title:'紅利點數設定',icon:LocalActivityIcon,items:[{title:'紅利點數紀錄',href:'/customer-bonus-record'}]}
+  缺少敘述：const counterItem={title:'櫃檯作業',icon:PointOfSaleIcon,items:[{title:'打帳單',href:'/order/create'},{title:'帳單列表',href:'/management/orders'},{title:'營業儀表板',href:'/merchant-business-dashboard'},{title:'現金收支
+  缺少敘述：const reservationItem={title:'預約管理',icon:CalendarMonthIcon,items:[{title:'預約管理',href:'/management/weborders'},{title:'單日預約紀錄',href:'/management/reservation/calendar'},{title:'單週預約紀錄',href:'/management
+  缺少敘述：const reportItem={title:'報表及分析',icon:InsightsIcon,items:[{title:'報表目錄',href:'/dashboard-list-detail'},{title:'消費分析儀表板',href:'/consumption-analytics-dashboard'},{title:'店家區間累計表',href:'/merchant-busines
+  缺少敘述：const customerItem={title:'客戶管理',icon:GroupsIcon,items:[{title:'客戶列表',href:'/management/customers'},{title:'客資篩選匯出',href:'/management/customer-filter-export'},{title:'卡券管理',href:'/management/coupons'}
+  缺少敘述：const employeeItem={title:'員工及薪資',icon:BadgeIcon,items:[{title:'員工列表',href:'/management/employee'},{title:'員工離職列表',href:'/employee-resignation-list'},{title:'全店打卡記錄',href:'/attendance/records'},{title
+  缺少敘述：const productItem={title:'商品管理',icon:InventoryIcon,items:[{title:'商品分類設定',href:'/product/categories'},{title:'商品列表',href:'/products'},{title:'商品進貨作業',href:'/product/restock'},{title:'廠商列表',href:'/merc
+  缺少敘述：const settingItem={title:'資料設定',icon:ManageAccountsIcon,items:[{title:'服務分類設定',href:'/service/categories'},{title:'服務項目設定',href:'/services'},{title:'預收卡設定',href:'/coupons'},{title:'組合設定',href:'/shortc
+  缺少敘述：const marketingTools={title:'行銷工具',icon:CampaignIcon,items:[{title:'活動列表',href:'/main-event-list'},{title:'活動店家參與列表',href:'/merchant-participating-list'},{title:'活動發券明細',href:'/event-coupon-issuance-d
+  缺少屬性/運算式 [children]：subheader&&__JSX__
+  缺少屬性/運算式 [anchorOrigin]：({vertical:'bottom',horizontal:'right'})
+  缺少屬性/運算式 [src]：idx(profile,_=>_.data.me.avatar)
+  缺少屬性/運算式 [children]：idx(profile,_=>_.data.me.name?_.data.me.name:'使用者名稱')
+  缺少屬性/運算式 [children]：idx(profile,_=>_.data.me.merchantIdentity.authorityName.length>0?_.data.me.merchantIdentity.authorityName:'權限未設定')
+  缺少屬性/運算式 [open]：openDesktop
+FAIL src/layouts/Dashboard/TopBar.js
+  缺少敘述：const shake=keyframes`
+  0% {
+    -webkit-transform: translate(0,0) rotate(0);
+    -ms-transform: translate(0,0) rotate(0);
+    transform: translate(0,0) rotate(0);
+  }
+  10.1% {
+    -webkit-transform
+  缺少敘述：decl:MaterialUISwitch()
+  缺少屬性/運算式 [children]：isNotification?!error?__JSX__:__JSX__:__JSX__
+  缺少屬性/運算式 [anchorOrigin]：({vertical:'bottom',horizontal:'right'})
+  缺少屬性/運算式 [children]：!profile.loading&&__JSX__
+  缺少屬性/運算式 [children]：idx(profile,_=>_.data.me.name?_.data.me.name:'使用者')
+  缺少屬性/運算式 [children]：({TransitionProps})=>__JSX__
+  缺少屬性/運算式 [aria-controls]：openForMoreBtn?'menu':undefined
+  缺少屬性/運算式 [aria-expanded]：openForMoreBtn?'true':undefined
+  缺少屬性/運算式 [MenuListProps]：({'aria-labelledby':'long-button'})
+  缺少屬性/運算式 [anchorOrigin]：({vertical:'bottom',horizontal:'left'})
+  缺少屬性/運算式 [transformOrigin]：({vertical:'top',horizontal:'center'})
+  缺少屬性/運算式 [slotProps]：({elevation:1,style:{left:'50% !important',transform:'translateX(-50%) translateY(28%) !important'}})
+  缺少屬性/運算式 [primary]：order.status!=='creating'?order.status==='fail'?'#'+order.orderNo+' 訂單建立失敗':'#'+order.orderNo+' 訂單建立成功':'#'+order.orderNo+" 訂單建立中"
+  缺少屬性/運算式 [children]：index!==orderDetail.length-1&&__JSX__
+FAIL src/layouts/Dashboard/index.js
+  缺少敘述：ctrl:window.innerWidth>=1280
+OK   src/layouts/Error.js
+OK   src/routes.js
+OK   src/views/AccountingRecordCreate/AccountingSubjectModal.js
+OK   src/views/AccountingRecordCreate/General.js
+OK   src/views/AccountingRecordCreate/index.js
+OK   src/views/AccountingRecordDetail/AccountingSubjectModal.js
+OK   src/views/AccountingRecordDetail/index.js
+FAIL src/views/AccountingRecordList/Results.js
+  缺少屬性/運算式 [pageLimit]：moneyFlows.pageLimit
+  缺少屬性/運算式 [pageOffset]：moneyFlows.pageOffset
+  缺少屬性/運算式 [onPageChange]：onPageChange
+  缺少屬性/運算式 [onRowsPerPageChange]：onRowsPerPageChange
+  缺少屬性/運算式 [rowsPerPageOptions]：[5,10,25,100,250,500,1000]
+OK   src/views/AccountingRecordList/TotalPrice.js
+OK   src/views/AccountingRecordList/index.js
+OK   src/views/AccountingSetting/AccountingItemCreate.js
+OK   src/views/AccountingSetting/AccountingSetting.js
+OK   src/views/AccountingSubject/Results.js
+OK   src/views/AccountingSubject/index.js
+OK   src/views/AttendanceEmployeeSchedule/Results.js
+OK   src/views/AttendanceEmployeeSchedule/ScheduleTags.js
+OK   src/views/AttendanceEmployeeSchedule/index.js
+OK   src/views/AttendanceRecords/Results.js
+OK   src/views/AttendanceRecords/index.js
+OK   src/views/Authority/Results.js
+OK   src/views/Authority/index.js
+OK   src/views/AuthorityCreate/AboutAuthority.js
+OK   src/views/AuthorityCreate/index.js
+OK   src/views/AuthorityEdit/AboutAuthority.js
+OK   src/views/AuthorityEdit/index.js
+OK   src/views/BusinessAnalysisReport/Results.js
+OK   src/views/BusinessAnalysisReport/index.js
+OK   src/views/BusinessItemsMonthlyAnalyzeReport/Results.js
+OK   src/views/BusinessItemsMonthlyAnalyzeReport/index.js
+OK   src/views/CheckoutDaily/DailyMoneyFlowResults.js
+OK   src/views/CheckoutDaily/WaitCloseOrderResults.js
+OK   src/views/CheckoutDaily/index.js
+FAIL src/views/ClearStorage/index.js
+  缺少敘述：return useMounted(()=>localStorage.clear())?'清除快取中...':__JSX__
+OK   src/views/ConsumptionAnalyticsDashboard/Charts/CustomerConsumptionCountRanking.js
+OK   src/views/ConsumptionAnalyticsDashboard/Charts/CustomerConsumptionPricePerCountRanking.js
+OK   src/views/ConsumptionAnalyticsDashboard/Charts/CustomerConsumptionPriceRanking.js
+OK   src/views/ConsumptionAnalyticsDashboard/Charts/NewCusStatistics.js
+OK   src/views/ConsumptionAnalyticsDashboard/Charts/OrderAgeDistribution.js
+OK   src/views/ConsumptionAnalyticsDashboard/Charts/OrderGender.js
+OK   src/views/ConsumptionAnalyticsDashboard/Charts/PerformanceDetail.js
+OK   src/views/ConsumptionAnalyticsDashboard/Charts/PerformanceTrend.js
+OK   src/views/ConsumptionAnalyticsDashboard/Charts/ProductSalesPriceRanking.js
+OK   src/views/ConsumptionAnalyticsDashboard/Charts/ProductSalesVolumeRanking.js
+OK   src/views/ConsumptionAnalyticsDashboard/Charts/ReturnedRatio.js
+OK   src/views/ConsumptionAnalyticsDashboard/Charts/SourceRatio.js
+OK   src/views/ConsumptionAnalyticsDashboard/Charts/WeeklyOrderCountRanking.js
+OK   src/views/ConsumptionAnalyticsDashboard/Filter.js
+OK   src/views/ConsumptionAnalyticsDashboard/Results.js
+OK   src/views/ConsumptionAnalyticsDashboard/index.js
+OK   src/views/ConsumptionRecords/Consumption.js
+OK   src/views/ConsumptionRecords/index.js
+OK   src/views/CostAnalysisReport/Results.js
+OK   src/views/CostAnalysisReport/index.js
+OK   src/views/CouponCreate/AboutAssistantSetting.js
+OK   src/views/CouponCreate/AboutCoupon.js
+OK   src/views/CouponCreate/AboutDeduction.js
+OK   src/views/CouponCreate/index.js
+OK   src/views/CouponEdit/AboutAssistantSetting.js
+OK   src/views/CouponEdit/AboutCoupon.js
+OK   src/views/CouponEdit/AboutDeduction.js
+FAIL src/views/CouponEdit/index.js
+  缺少屬性/運算式 [subTitle]：isDuplicate?'new coupon':'Edit Coupon'
+OK   src/views/CouponList/AboutDeductionEditModal.js
+OK   src/views/CouponList/AssistantSettingEditModal.js
+OK   src/views/CouponList/Results.js
+OK   src/views/CouponList/SaleStatusEditModal.js
+OK   src/views/CouponList/index.js
+OK   src/views/CreateDeductionSetting/Results.js
+OK   src/views/CreateDeductionSetting/index.js
+OK   src/views/CustomerBonusRecord/Results.js
+OK   src/views/CustomerBonusRecord/index.js
+OK   src/views/CustomerBonusRecord/styles/Results.js
+OK   src/views/CustomerBonusRecordCreate/AboutCustomerBonusRecordCreate.js
+OK   src/views/CustomerBonusRecordCreate/index.js
+OK   src/views/CustomerBonusRecordEdit/AboutCustomerBonusRecordEdit.js
+OK   src/views/CustomerBonusRecordEdit/index.js
+OK   src/views/CustomerConsumptionLeaderboard/Filter.js
+OK   src/views/CustomerConsumptionLeaderboard/Results.js
+OK   src/views/CustomerConsumptionLeaderboard/index.js
+OK   src/views/CustomerCouponBalance/Results.js
+OK   src/views/CustomerCouponBalance/index.js
+OK   src/views/CustomerCreate/AboutCustomer.js
+OK   src/views/CustomerCreate/index.js
+OK   src/views/CustomerEventTicketSearch/EventTicketsRecord.js
+FAIL src/views/CustomerEventTicketSearch/index.js
+  缺少屬性/運算式 [theme]：theme
+OK   src/views/CustomerFilterExport/Results.js
+OK   src/views/CustomerFilterExport/index.js
+FAIL src/views/CustomerLogin/index.js
+  缺少屬性/運算式 [theme]：theme
+OK   src/views/CustomerManagementDetails/Bonus/RecordResults.js
+OK   src/views/CustomerManagementDetails/Bonus/index.js
+OK   src/views/CustomerManagementDetails/Coupon/BoughtResults.js
+OK   src/views/CustomerManagementDetails/Coupon/UsagedResults.js
+OK   src/views/CustomerManagementDetails/Coupon/index.js
+OK   src/views/CustomerManagementDetails/CustomerTracking/TrackingEditModal.js
+OK   src/views/CustomerManagementDetails/CustomerTracking/index.js
+OK   src/views/CustomerManagementDetails/EventTicketsRecord.js
+OK   src/views/CustomerManagementDetails/General/ChoseEvent.js
+OK   src/views/CustomerManagementDetails/General/CustomerEditModal.js
+OK   src/views/CustomerManagementDetails/General/CustomerInfo.js
+OK   src/views/CustomerManagementDetails/General/Invoices.js
+OK   src/views/CustomerManagementDetails/General/OtherActions.js
+OK   src/views/CustomerManagementDetails/General/SendEmails.js
+OK   src/views/CustomerManagementDetails/General/index.js
+OK   src/views/CustomerManagementDetails/Invoices.js
+OK   src/views/CustomerManagementDetails/MembershipRecord.js
+OK   src/views/CustomerManagementDetails/SMSRecord.js
+OK   src/views/CustomerManagementDetails/TopUp/RecordResults.js
+OK   src/views/CustomerManagementDetails/TopUp/UsagedResult.js
+OK   src/views/CustomerManagementDetails/TopUp/index.js
+OK   src/views/CustomerManagementDetails/index.js
+OK   src/views/CustomerManagementList/Results.js
+OK   src/views/CustomerManagementList/index.js
+OK   src/views/CustomerRating/Status.js
+OK   src/views/CustomerRating/index.js
+FAIL src/views/CustomerSelfCreate/General.js
+  缺少屬性/運算式 [theme]：theme
+OK   src/views/CustomerSelfCreate/Status.js
+OK   src/views/CustomerSelfCreate/index.js
+FAIL src/views/CustomerSendEventTicket/index.js
+  缺少屬性/運算式 [theme]：theme
+OK   src/views/CustomerWalletBalance/Results.js
+OK   src/views/CustomerWalletBalance/index.js
+OK   src/views/CustomerWalletLeaderboard/Filter.js
+OK   src/views/CustomerWalletLeaderboard/Results.js
+OK   src/views/CustomerWalletLeaderboard/index.js
+OK   src/views/DecreaseDailyReport/Results.js
+OK   src/views/DecreaseDailyReport/index.js
+OK   src/views/DecreaseDetail/DecreaseResults.js
+OK   src/views/DecreaseDetail/index.js
+OK   src/views/DesignerMonthlyReport/index.js
+OK   src/views/DesignerPerforamnceAnalyzeReport/CompareFilter.js
+OK   src/views/DesignerPerforamnceAnalyzeReport/index.js
+OK   src/views/DesignerPerformBasic/Results.js
+OK   src/views/DesignerPerformBasic/index.js
+FAIL src/views/DesignerPerformDetail/Customer.js
+  缺少屬性/運算式 [options]：({suppressScrollY:true})
+OK   src/views/DesignerPerformDetail/Header.js
+FAIL src/views/DesignerPerformDetail/MerchantSells.js
+  缺少屬性/運算式 [options]：({suppressScrollY:true})
+OK   src/views/DesignerPerformDetail/OrderRecords.js
+FAIL src/views/DesignerPerformDetail/Performance.js
+  缺少屬性/運算式 [options]：({suppressScrollY:true})
+FAIL src/views/DesignerPerformDetail/Service.js
+  缺少屬性/運算式 [options]：({suppressScrollY:true})
+FAIL src/views/DesignerPerformDetail/SupportRecord.js
+  缺少屬性/運算式 [options]：({suppressScrollY:true})
+OK   src/views/DesignerPerformDetail/index.js
+OK   src/views/DesignerPerformOverview/PerformResultsV2.js
+OK   src/views/DesignerPerformOverview/index.js
+OK   src/views/DesignerPerformanceReport/Results.js
+OK   src/views/DesignerPerformanceReport/index.js
+OK   src/views/DesignerRakeReport/Results.js
+OK   src/views/DesignerRakeReport/index.js
+OK   src/views/DesignersSalaryDetailReport/Results.js
+OK   src/views/DesignersSalaryDetailReport/index.js
+OK   src/views/DraftOrderEdit/AddCustomerModal.js
+OK   src/views/DraftOrderEdit/CouponSellModal.js
+OK   src/views/DraftOrderEdit/CouponSells.js
+OK   src/views/DraftOrderEdit/CouponUse.js
+OK   src/views/DraftOrderEdit/Footer.js
+OK   src/views/DraftOrderEdit/Head.js
+OK   src/views/DraftOrderEdit/Header.js
+OK   src/views/DraftOrderEdit/MemberShipCardSells.js
+OK   src/views/DraftOrderEdit/MemberShipCardSellsModal.js
+OK   src/views/DraftOrderEdit/MerchantSells.js
+OK   src/views/DraftOrderEdit/Pannel.js
+OK   src/views/DraftOrderEdit/PannelBonus.js
+OK   src/views/DraftOrderEdit/PannelCouponSells.js
+OK   src/views/DraftOrderEdit/PannelCouponUse.js
+OK   src/views/DraftOrderEdit/PannelMemberShipCardSells.js
+OK   src/views/DraftOrderEdit/PannelMerchantSells.js
+OK   src/views/DraftOrderEdit/PannelOtherPayment.js
+OK   src/views/DraftOrderEdit/PannelPayment.js
+OK   src/views/DraftOrderEdit/PannelRemark.js
+OK   src/views/DraftOrderEdit/PannelService.js
+OK   src/views/DraftOrderEdit/ProductsModal.js
+OK   src/views/DraftOrderEdit/Services.js
+OK   src/views/DraftOrderEdit/ServicesModal.js
+OK   src/views/DraftOrderEdit/index.js
+OK   src/views/DraftOrderManagementList/ResultsV2.js
+OK   src/views/DraftOrderManagementList/index.js
+FAIL src/views/EmployeeClockIn/Results.js
+  缺少屬性/運算式 [theme]：theme
+OK   src/views/EmployeeClockIn/index.js
+OK   src/views/EmployeeCreate/AboutEmployee.js
+OK   src/views/EmployeeCreate/index.js
+OK   src/views/EmployeeDailyReport/Results.js
+OK   src/views/EmployeeDailyReport/index.js
+OK   src/views/EmployeeManagementDetail/AttendanceRecord.js
+OK   src/views/EmployeeManagementDetail/General/GeneralSettings.js
+OK   src/views/EmployeeManagementDetail/General/MobileBookingSettings.js
+OK   src/views/EmployeeManagementDetail/General/PermissionSettings.js
+OK   src/views/EmployeeManagementDetail/General/ProfileDetails.js
+OK   src/views/EmployeeManagementDetail/General/index.js
+OK   src/views/EmployeeManagementDetail/OrderRecord.js
+OK   src/views/EmployeeManagementDetail/PaySlip.js
+OK   src/views/EmployeeManagementDetail/Permission.js
+OK   src/views/EmployeeManagementDetail/ProfitSharing/AboutPerformance.js
+OK   src/views/EmployeeManagementDetail/ProfitSharing/index.js
+OK   src/views/EmployeeManagementDetail/RakeReport.js
+OK   src/views/EmployeeManagementDetail/Reservation/HolidayEdit.js
+OK   src/views/EmployeeManagementDetail/Reservation/NewChoseEvent.js
+OK   src/views/EmployeeManagementDetail/Reservation/OrderTable.js
+OK   src/views/EmployeeManagementDetail/Reservation/index.js
+OK   src/views/EmployeeManagementDetail/SalaryItems.js
+OK   src/views/EmployeeManagementDetail/Security.js
+OK   src/views/EmployeeManagementDetail/index.js
+OK   src/views/EmployeeManagementList/EditMultipleDesignersRakeSettingModal.js
+OK   src/views/EmployeeManagementList/ProfileImportModal.js
+OK   src/views/EmployeeManagementList/Results.js
+OK   src/views/EmployeeManagementList/index.js
+OK   src/views/EmployeePayslip/Results.js
+OK   src/views/EmployeePayslip/index.js
+OK   src/views/EmployeePicking/Results.js
+OK   src/views/EmployeePicking/index.js
+OK   src/views/EmployeePickingCreate/General.js
+OK   src/views/EmployeePickingCreate/ProductsModalV3.js
+OK   src/views/EmployeePickingCreate/index.js
+OK   src/views/EmployeePickingEdit/General.js
+OK   src/views/EmployeePickingEdit/index.js
+OK   src/views/EmployeeResignationList/Results.js
+OK   src/views/EmployeeResignationList/index.js
+OK   src/views/EmployeeSchedule/AddDesignersModal.js
+OK   src/views/EmployeeSchedule/Header.js
+OK   src/views/EmployeeSchedule/ScheduleCard.js
+OK   src/views/EmployeeSchedule/index.js
+OK   src/views/Error401.js
+OK   src/views/Error404.js
+OK   src/views/Error500.js
+OK   src/views/EventCouponIssuanceDetails/Results.js
+OK   src/views/EventCouponIssuanceDetails/index.js
+OK   src/views/EventRuleCreate/General.js
+OK   src/views/EventRuleCreate/index.js
+OK   src/views/EventRuleEdit/General.js
+OK   src/views/EventRuleEdit/index.js
+OK   src/views/GeneralAccountingRecordCreate/AccountingSubjectModal.js
+OK   src/views/GeneralAccountingRecordCreate/General.js
+OK   src/views/GeneralAccountingRecordCreate/index.js
+OK   src/views/GeneralAccountingRecordDetail/AccountingSubjectModal.js
+OK   src/views/GeneralAccountingRecordDetail/index.js
+FAIL src/views/GeneralAccountingRecordList/Results.js
+  缺少屬性/運算式 [pageLimit]：moneyFlows.pageLimit
+  缺少屬性/運算式 [pageOffset]：moneyFlows.pageOffset
+  缺少屬性/運算式 [onPageChange]：onPageChange
+  缺少屬性/運算式 [onRowsPerPageChange]：onRowsPerPageChange
+  缺少屬性/運算式 [rowsPerPageOptions]：[5,10,25,100,250,500,1000]
+OK   src/views/GeneralAccountingRecordList/TotalPrice.js
+OK   src/views/GeneralAccountingRecordList/index.js
+OK   src/views/GettingStarted.js
+OK   src/views/HelperLeaderBoard/Results.js
+OK   src/views/HelperLeaderBoard/index.js
+OK   src/views/HelperMonthlyReport/Results.js
+OK   src/views/HelperMonthlyReport/index.js
+OK   src/views/HelperPerformanceReport/Results.js
+OK   src/views/HelperPerformanceReport/index.js
+OK   src/views/HelperPointSettingCreate/Results.js
+OK   src/views/HelperPointSettingCreate/index.js
+OK   src/views/HelperPointSettingEdit/Results.js
+OK   src/views/HelperPointSettingEdit/index.js
+OK   src/views/IncomeStatementReport/Results.js
+OK   src/views/IncomeStatementReport/index.js
+OK   src/views/InventoryWork/Results.js
+OK   src/views/InventoryWork/index.js
+FAIL src/views/InventoryWorkCreate/General.js
+  缺少敘述：const theme2=createTheme({palette:{primary:{main:green[600]},secondary:{main:red[600]}}})
+  缺少屬性/運算式 [theme]：theme2
+  缺少屬性/運算式 [theme]：theme2
+FAIL src/views/InventoryWorkCreate/index.js
+  缺少敘述：const theme2=createTheme({palette:{secondary:{main:'#d36b00'}}})
+  缺少屬性/運算式 [theme]：theme2
+FAIL src/views/InventoryWorkEdit/General.js
+  缺少敘述：const theme2=createTheme({palette:{primary:{main:'rgb(67, 160, 71) !important'},secondary:{main:red[600]}}})
+  缺少屬性/運算式 [theme]：theme2
+  缺少屬性/運算式 [theme]：theme2
+FAIL src/views/InventoryWorkEdit/index.js
+  缺少敘述：const theme2=createTheme({palette:{secondary:{main:red[600]}}})
+  缺少屬性/運算式 [theme]：theme2
+OK   src/views/InventoryWorkReview/General.js
+OK   src/views/InventoryWorkReview/index.js
+OK   src/views/Login/Login.js
+FAIL src/views/Login/LoginForm.js
+  缺少屬性/運算式 [theme]：theme
+OK   src/views/MainEventCreate/General.js
+OK   src/views/MainEventCreate/index.js
+OK   src/views/MainEventEdit/General.js
+OK   src/views/MainEventEdit/index.js
+OK   src/views/MainEventList/ComfirmDialog.js
+OK   src/views/MainEventList/Results.js
+OK   src/views/MainEventList/index.js
+OK   src/views/ManagementCoupons/BoughtResults.js
+OK   src/views/ManagementCoupons/UsagedResults.js
+OK   src/views/ManagementCoupons/index.js
+FAIL src/views/ManagementDesignersReservationRecord/HolidayEdit.js
+  缺少敘述：const theme=createTheme({palette:{primary:{main:green[400]+'!important'},secondary:{main:grey[400]+'!important'}}})
+  缺少屬性/運算式 [theme]：theme
+OK   src/views/ManagementDesignersReservationRecord/NewChoseEvent.js
+OK   src/views/ManagementDesignersReservationRecord/OrderTable.js
+OK   src/views/ManagementDesignersReservationRecord/index.js
+OK   src/views/ManagementDesignersReservationRecord/styles/OrderTable.js
+OK   src/views/ManagementReservationRecord/ChoseEvent.js
+FAIL src/views/ManagementReservationRecord/HolidayEdit.js
+  缺少敘述：const theme=createTheme({palette:{primary:{main:green[400]+'!important'},secondary:{main:grey[400]+'!important'}}})
+  缺少屬性/運算式 [theme]：theme
+OK   src/views/ManagementReservationRecord/OrderTable.js
+OK   src/views/ManagementReservationRecord/index.js
+OK   src/views/ManagementReservationRecord/styles/OrderTable.js
+FAIL src/views/MemberCard/index.js
+  缺少敘述：const StyledForm=styled.form`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 8px 16px;
+  & > *:first-child {
+    margin-right: 12px;
+  }
+`
+OK   src/views/MemberCardCategories/MembetCardCategories.js
+OK   src/views/MemberCardCategories/Results.js
+OK   src/views/MemberCardCategoryCreate/MemberCardCategoryCreate.js
+OK   src/views/MemberCardCategoryEdit/MemberCardCategoryEdit.js
+OK   src/views/MemberCardCreate/MemberCardCreate.js
+OK   src/views/MemberCardEdit/MemberCardEdit.js
+OK   src/views/MemberCardRecord/EditMemberCardRecordModal.js
+OK   src/views/MemberCardRecord/MemberCardRecord.js
+OK   src/views/MemberCardRecord/Results.js
+FAIL src/views/MemberCreate/index.js
+  缺少屬性/運算式 [slotProps]：({toolbar:{toolbarFormat:'yyyy年M月d日'},textField:{variant:'standard'}})
+OK   src/views/MembershipSellReport/Results.js
+OK   src/views/MembershipSellReport/index.js
+OK   src/views/MerchantBankTransferReport/Results.js
+OK   src/views/MerchantBankTransferReport/TransferDetail.js
+OK   src/views/MerchantBankTransferReport/index.js
+OK   src/views/MerchantBusinessDashboard/Overview.js
+OK   src/views/MerchantBusinessDashboard/Results.js
+OK   src/views/MerchantBusinessDashboard/index.js
+OK   src/views/MerchantBusinessIntervalReport/index.js
+OK   src/views/MerchantCategorySellsRecords/Results.js
+OK   src/views/MerchantCategorySellsRecords/index.js
+OK   src/views/MerchantDailyPerformanceReport/Results.js
+OK   src/views/MerchantDailyPerformanceReport/index.js
+OK   src/views/MerchantDailyPerformanceReport/styles.js
+OK   src/views/MerchantDailyReport/Results.js
+OK   src/views/MerchantDailyReport/index.js
+OK   src/views/MerchantLeaderBoard/index.js
+OK   src/views/MerchantParticipatingList/Results.js
+OK   src/views/MerchantParticipatingList/index.js
+OK   src/views/MerchantSellsRecords/Results.js
+OK   src/views/MerchantSellsRecords/index.js
+OK   src/views/MerchantVendor/Results.js
+OK   src/views/MerchantVendor/index.js
+OK   src/views/MerchantVendorCreate/AboutMerchantVendorCreate.js
+OK   src/views/MerchantVendorCreate/index.js
+OK   src/views/MerchantVendorEdit/AboutMerchantVendorEdit.js
+OK   src/views/MerchantVendorEdit/index.js
+OK   src/views/MoneyFlowCategoryReport/Results.js
+OK   src/views/MoneyFlowCategoryReport/index.js
+OK   src/views/MoneyFlowDailyReport/Results.js
+OK   src/views/MoneyFlowDailyReport/index.js
+OK   src/views/MoneyFlowTransferReport/Results.js
+OK   src/views/MoneyFlowTransferReport/index.js
+OK   src/views/MultiMerchantsLeaderBoard/Results.js
+OK   src/views/MultiMerchantsLeaderBoard/index.js
+OK   src/views/NonCashDetailStatementReport/Results.js
+OK   src/views/NonCashDetailStatementReport/index.js
+OK   src/views/OrderCreate/AddCustomerModal.js
+OK   src/views/OrderCreate/CouponSellModal.js
+OK   src/views/OrderCreate/CouponSells.js
+OK   src/views/OrderCreate/CouponUse.js
+OK   src/views/OrderCreate/Footer.js
+OK   src/views/OrderCreate/Head.js
+OK   src/views/OrderCreate/Header.js
+  警告：文字不見了「上一筆訂單:#」
+OK   src/views/OrderCreate/MemberShipCardSells.js
+OK   src/views/OrderCreate/MemberShipCardSellsModal.js
+OK   src/views/OrderCreate/MerchantSells.js
+OK   src/views/OrderCreate/OrderCreate.js
+OK   src/views/OrderCreate/Pannel/PannelBonus.js
+OK   src/views/OrderCreate/Pannel/PannelCouponSells.js
+OK   src/views/OrderCreate/Pannel/PannelCouponUse.js
+OK   src/views/OrderCreate/Pannel/PannelMemberShipCardSells.js
+OK   src/views/OrderCreate/Pannel/PannelMerchantSells.js
+OK   src/views/OrderCreate/Pannel/PannelOtherPayment.js
+OK   src/views/OrderCreate/Pannel/PannelPayment.js
+OK   src/views/OrderCreate/Pannel/PannelPerformance.js
+OK   src/views/OrderCreate/Pannel/PannelRemark.js
+OK   src/views/OrderCreate/Pannel/PannelService.js
+OK   src/views/OrderCreate/PaymentCustomerWallet.js
+OK   src/views/OrderCreate/ProductsModal.js
+OK   src/views/OrderCreate/Services.js
+OK   src/views/OrderCreate/ServicesModal.js
+OK   src/views/OrderCreate/WalletDepositModal.js
+OK   src/views/OrderCreate/styles/CouponSells.js
+OK   src/views/OrderCreate/styles/Footer.js
+OK   src/views/OrderCreate/styles/Head.js
+OK   src/views/OrderCreate/styles/MemberShipCardSells.js
+OK   src/views/OrderCreate/styles/MerchantSells.js
+OK   src/views/OrderCreate/styles/Pannel.js
+OK   src/views/OrderCreate/styles/PannelCouponSells.js
+OK   src/views/OrderCreate/styles/PannelCouponUse.js
+OK   src/views/OrderCreate/styles/PannelMemberShipCardSells.js
+OK   src/views/OrderCreate/styles/PannelMerchantSells.js
+OK   src/views/OrderCreate/styles/PannelOtherPayment.js
+OK   src/views/OrderCreate/styles/PannelPayment.js
+OK   src/views/OrderCreate/styles/PannelService.js
+OK   src/views/OrderCreate/styles/Services.js
+OK   src/views/OrderEdit/AddCustomerModal.js
+OK   src/views/OrderEdit/CouponSellModal.js
+OK   src/views/OrderEdit/CouponSells.js
+OK   src/views/OrderEdit/CouponUse.js
+OK   src/views/OrderEdit/Footer.js
+OK   src/views/OrderEdit/Head.js
+OK   src/views/OrderEdit/Header.js
+OK   src/views/OrderEdit/MemberShipCardSells.js
+OK   src/views/OrderEdit/MemberShipCardSellsModal.js
+OK   src/views/OrderEdit/MerchantSells.js
+OK   src/views/OrderEdit/Pannel.js
+OK   src/views/OrderEdit/PannelBonus.js
+OK   src/views/OrderEdit/PannelCouponSells.js
+OK   src/views/OrderEdit/PannelCouponUse.js
+OK   src/views/OrderEdit/PannelMemberShipCardSells.js
+OK   src/views/OrderEdit/PannelMerchantSells.js
+OK   src/views/OrderEdit/PannelOtherPayment.js
+OK   src/views/OrderEdit/PannelPayment.js
+OK   src/views/OrderEdit/PannelRemark.js
+OK   src/views/OrderEdit/PannelService.js
+OK   src/views/OrderEdit/ProductsModal.js
+OK   src/views/OrderEdit/Services.js
+OK   src/views/OrderEdit/ServicesModal.js
+OK   src/views/OrderEdit/WalletDepositModal.js
+OK   src/views/OrderEdit/index.js
+FAIL src/views/OrderManagementList/Overview.js
+  缺少屬性/運算式 [children]：membershipDisplay&&'/會員卡消費'
+  缺少屬性/運算式 [children]：`${roundDecimal(orderList.product)||0}${membershipDisplay?'/'+roundDecimal(orderList.membership):''}`
+  缺少屬性/運算式 [children]：bonusDisplay&&'/點數折抵金額(-)'
+  缺少屬性/運算式 [children]：bonusDisplay&&`/${roundDecimal(orderList.bonusDecountForReport)}`
+FAIL src/views/OrderManagementList/ResultsV2.js
+  缺少屬性/運算式 [children]：orderExtendArr.find(id=>id===order.id)!==undefined?__JSX__:__JSX__
+  缺少屬性/運算式 [in]：orderExtendArr.find(id=>id===order.id)!==undefined
+FAIL src/views/OrderManagementList/index.js
+  缺少屬性/運算式 [primaryAction]：({label:'新開單',to:'/order/create'})
+OK   src/views/OverallPerformanceAnalysisReport/Results.js
+OK   src/views/OverallPerformanceAnalysisReport/index.js
+OK   src/views/Parameter/AboutCustomerBooking.js
+OK   src/views/Parameter/AboutCustomerSettingFunction.js
+OK   src/views/Parameter/AboutCustomerSideExternalLink.js
+OK   src/views/Parameter/AboutCustomerSideSetting.js
+OK   src/views/Parameter/AboutCustomerTracking.js
+OK   src/views/Parameter/AboutDesignerSalary.js
+OK   src/views/Parameter/AboutDesignerSideExternalLink.js
+OK   src/views/Parameter/AboutEmployeeSchedule.js
+OK   src/views/Parameter/AboutMerchantBankSettings.js
+OK   src/views/Parameter/AboutMerchantFakePerformanceReference.js
+OK   src/views/Parameter/AboutMerchantRakePerformanceRefer.js
+OK   src/views/Parameter/AboutMonthCheckoutAddSalaryItems.js
+OK   src/views/Parameter/AboutOrderCreate.js
+OK   src/views/Parameter/AboutOrderDetail.js
+OK   src/views/Parameter/AboutOrderSource.js
+OK   src/views/Parameter/AboutOtherReport.js
+OK   src/views/Parameter/AboutPriceDisplayOnDailyReport.js
+OK   src/views/Parameter/AboutSalaryAddAndDeduction.js
+OK   src/views/Parameter/AboutSettingFunction.js
+OK   src/views/Parameter/AttendanceEmployeeScheduleSetting.js
+OK   src/views/Parameter/BookingCheckInNotificationSetting.js
+OK   src/views/Parameter/BookingNotificationLineAtSetting.js
+OK   src/views/Parameter/BookingNotificationSetting.js
+OK   src/views/Parameter/IsReservationNeedReview.js
+OK   src/views/Parameter/MerchantReservationTimes.js
+OK   src/views/Parameter/NonDesignationBookingLimitSetting.js
+FAIL src/views/Parameter/OuterLinkModal.js
+  缺少屬性/運算式 [theme]：theme
+OK   src/views/Parameter/OuterLinkSortModal.js
+OK   src/views/Parameter/Parameter.js
+OK   src/views/Parameter/PasswordSetting.js
+OK   src/views/Parameter/ReservationSettingForStylist.js
+OK   src/views/Parameter/styles/AboutEmployeeSchedule.js
+OK   src/views/PaymentCreate/AboutPayment.js
+OK   src/views/PaymentCreate/index.js
+OK   src/views/PaymentEdit/AboutPayment.js
+OK   src/views/PaymentEdit/index.js
+OK   src/views/PaymentReport/Results.js
+OK   src/views/PaymentReport/index.js
+OK   src/views/Payments/Results.js
+OK   src/views/Payments/index.js
+OK   src/views/PerformanceDeductionParameter/AboutDesignerSalary.js
+OK   src/views/PerformanceDeductionParameter/Deduction.js
+OK   src/views/PerformanceDeductionParameter/DeductionResults.js
+OK   src/views/PerformanceDeductionParameter/HelperPoint.js
+OK   src/views/PerformanceDeductionParameter/HelperPointResults.js
+OK   src/views/PerformanceDeductionParameter/Parameter.js
+OK   src/views/PerformanceDeductionParameter/Service.js
+OK   src/views/PerformanceDeductionParameter/styles/AboutDesignerSalary.js
+OK   src/views/PerformanceDeductionParameter/styles/Services.js
+OK   src/views/ProductCategories/ProductCategories.js
+OK   src/views/ProductCategories/Results.js
+OK   src/views/ProductCategoryCreate/AboutProductCategory.js
+OK   src/views/ProductCategoryCreate/ProductCategoryCreate.js
+OK   src/views/ProductCategoryEdit/AboutProductCategory.js
+OK   src/views/ProductCategoryEdit/ProductCategoryEdit.js
+OK   src/views/ProductConsumeReport/Results.js
+OK   src/views/ProductConsumeReport/index.js
+OK   src/views/ProductCreate/AboutProduct.js
+OK   src/views/ProductCreate/AboutSalesProduct.js
+OK   src/views/ProductCreate/ProductCreate.js
+OK   src/views/ProductEdit/AboutProduct.js
+OK   src/views/ProductEdit/AboutSalesProduct.js
+FAIL src/views/ProductEdit/ProductEdit.js
+  缺少屬性/運算式 [subTitle]：isDuplicate?"CREATE PRODUCT":"Product Edit"
+OK   src/views/ProductInventoryList/Results.js
+OK   src/views/ProductInventoryList/index.js
+OK   src/views/ProductInvoicingRecordReport/Results.js
+OK   src/views/ProductInvoicingRecordReport/index.js
+OK   src/views/ProductLeaderBoard/Results.js
+OK   src/views/ProductLeaderBoard/index.js
+OK   src/views/ProductReserveCheck/Results.js
+OK   src/views/ProductReserveCheck/index.js
+OK   src/views/ProductRestock/Results.js
+OK   src/views/ProductRestock/index.js
+OK   src/views/ProductRestockCreate/General.js
+OK   src/views/ProductRestockCreate/ProductsModalV3.js
+OK   src/views/ProductRestockCreate/index.js
+OK   src/views/ProductRestockEdit/General.js
+OK   src/views/ProductRestockEdit/ProductsModalV3.js
+OK   src/views/ProductRestockEdit/index.js
+OK   src/views/Products/EditProductsCategoryModal.js
+OK   src/views/Products/Products.js
+OK   src/views/Products/ProdudctDrawer.js
+OK   src/views/Products/PublishedDialog.js
+OK   src/views/Products/Results.js
+OK   src/views/Products/VendorDialog.js
+OK   src/views/Profile/AttendanceRecord.js
+OK   src/views/Profile/DesignerSelfRecord.js
+OK   src/views/Profile/General/GeneralSettings.js
+OK   src/views/Profile/General/ProfileDetails.js
+OK   src/views/Profile/General/index.js
+OK   src/views/Profile/HelperSelfRecord.js
+OK   src/views/Profile/OrderRecord.js
+OK   src/views/Profile/PaySlip.js
+OK   src/views/Profile/Permission.js
+OK   src/views/Profile/PinnedTable.js
+OK   src/views/Profile/RakeReport.js
+OK   src/views/Profile/Reservation/HolidayEdit.js
+OK   src/views/Profile/Reservation/NewChoseEvent.js
+OK   src/views/Profile/Reservation/OrderTable.js
+OK   src/views/Profile/Reservation/index.js
+OK   src/views/Profile/Security.js
+OK   src/views/Profile/index.js
+OK   src/views/QRcodeClockIn/Results.js
+OK   src/views/QRcodeClockIn/index.js
+OK   src/views/QueueOrderEdit/AddCustomerModal.js
+OK   src/views/QueueOrderEdit/CouponSellModal.js
+OK   src/views/QueueOrderEdit/CouponSells.js
+OK   src/views/QueueOrderEdit/CouponUse.js
+OK   src/views/QueueOrderEdit/Footer.js
+OK   src/views/QueueOrderEdit/Head.js
+OK   src/views/QueueOrderEdit/Header.js
+OK   src/views/QueueOrderEdit/MemberShipCardSells.js
+OK   src/views/QueueOrderEdit/MemberShipCardSellsModal.js
+OK   src/views/QueueOrderEdit/MerchantSells.js
+OK   src/views/QueueOrderEdit/Pannel.js
+OK   src/views/QueueOrderEdit/PannelBonus.js
+OK   src/views/QueueOrderEdit/PannelCouponSells.js
+OK   src/views/QueueOrderEdit/PannelCouponUse.js
+OK   src/views/QueueOrderEdit/PannelMemberShipCardSells.js
+OK   src/views/QueueOrderEdit/PannelMerchantSells.js
+OK   src/views/QueueOrderEdit/PannelPayment.js
+OK   src/views/QueueOrderEdit/PannelRemark.js
+OK   src/views/QueueOrderEdit/PannelService.js
+OK   src/views/QueueOrderEdit/ProductsModal.js
+OK   src/views/QueueOrderEdit/Services.js
+OK   src/views/QueueOrderEdit/ServicesModal.js
+OK   src/views/QueueOrderEdit/index.js
+OK   src/views/Register/Register.js
+FAIL src/views/Register/RegisterForm.js
+  缺少屬性/運算式 [theme]：theme
+FAIL src/views/Reservation/Basic.js
+  缺少屬性/運算式 [slotProps]：({toolbar:{toolbarFormat:'yyyy年M月d日'},textField:{variant:'standard'}})
+OK   src/views/Reservation/Customer.js
+OK   src/views/Reservation/Form.js
+OK   src/views/Reservation/index.js
+OK   src/views/ReservationList/Header.js
+OK   src/views/ReservationList/index.js
+OK   src/views/Resetpassword/ResetPasswordForm.js
+OK   src/views/Resetpassword/index.js
+OK   src/views/SalaryDetail/DecreaseResult.js
+OK   src/views/SalaryDetail/IncreaseResult.js
+OK   src/views/SalaryDetail/index.js
+OK   src/views/SalaryEdit/DesignerSalaryReport.js
+OK   src/views/SalaryEdit/Header.js
+OK   src/views/SalaryEdit/OverviewV2.js
+OK   src/views/SalaryEdit/SalaryDecrease.js
+OK   src/views/SalaryEdit/SalaryIncrease.js
+OK   src/views/SalaryEdit/index.js
+OK   src/views/SalaryOverview/Overview.js
+OK   src/views/SalaryOverview/Results.js
+OK   src/views/SalaryOverview/index.js
+OK   src/views/ServiceCategories/Results.js
+OK   src/views/ServiceCategories/ServiceCategories.js
+OK   src/views/ServiceCategoryCreate/AboutServiceCategory.js
+OK   src/views/ServiceCategoryCreate/ServiceCategoryCreate.js
+OK   src/views/ServiceCategoryEdit/AboutServiceCategory.js
+OK   src/views/ServiceCategoryEdit/ServiceCategoryEdit.js
+OK   src/views/ServiceCreate/AboutAssistantSetting.js
+OK   src/views/ServiceCreate/AboutDeduction.js
+OK   src/views/ServiceCreate/AboutService.js
+OK   src/views/ServiceCreate/index.js
+OK   src/views/ServiceDeductionDetailReport/index.js
+OK   src/views/ServiceEdit/AboutAssistantSetting.js
+OK   src/views/ServiceEdit/AboutDeduction.js
+OK   src/views/ServiceEdit/AboutService.js
+FAIL src/views/ServiceEdit/index.js
+  缺少屬性/運算式 [subTitle]：isDuplicate?"NEW SERVICE":"Edit Service"
+OK   src/views/Services/AboutDeductionEditModal.js
+OK   src/views/Services/AssistantSettingEditModal.js
+OK   src/views/Services/Results.js
+FAIL src/views/Services/index.js
+  缺少屬性/運算式 [onClick]：()=>setShowFilter(!showFilter)
+OK   src/views/Shortcut/Results.js
+OK   src/views/Shortcut/index.js
+OK   src/views/ShortcutCreate/General.js
+OK   src/views/ShortcutCreate/index.js
+OK   src/views/ShortcutEdit/General.js
+OK   src/views/ShortcutEdit/index.js
+OK   src/views/SingleServiceSearchingReport/Results.js
+OK   src/views/SingleServiceSearchingReport/index.js
+OK   src/views/SystemUpdateRecord/Results.js
+OK   src/views/SystemUpdateRecord/index.js
+OK   src/views/SystemUpdateRecordCreate/General.js
+OK   src/views/SystemUpdateRecordCreate/index.js
+OK   src/views/SystemUpdateRecordEdit/General.js
+OK   src/views/SystemUpdateRecordEdit/index.js
+OK   src/views/ThirdPartyCouponCreate/AboutThirdPartyCoupon.js
+OK   src/views/ThirdPartyCouponCreate/index.js
+OK   src/views/ThirdPartyCouponEdit/AboutThirdPartyCoupon.js
+OK   src/views/ThirdPartyCouponEdit/index.js
+OK   src/views/ThirdPartyCoupons/Results.js
+OK   src/views/ThirdPartyCoupons/index.js
+OK   src/views/TopUp/RecordResults.js
+OK   src/views/TopUp/TopUp.js
+OK   src/views/TopUp/UsagedResult.js
+OK   src/views/TopUpCreate/General.js
+OK   src/views/TopUpCreate/TopUpCreate.js
+OK   src/views/TopUpEdit/General.js
+FAIL src/views/TopUpEdit/TopUpEdit.js
+  缺少屬性/運算式 [children]：walletDepositDetail.loading?'loading...':__JSX__
+OK   src/views/UpdateDeductionSetting/Results.js
+OK   src/views/UpdateDeductionSetting/index.js
+FAIL src/views/WebOrderManagementList/Results.js
+  缺少屬性/運算式 [pageLimit]：pageSetting.pageLimit
+  缺少屬性/運算式 [pageOffset]：pageSetting.pageOffset
+  缺少屬性/運算式 [onPageChange]：onPageChange
+  缺少屬性/運算式 [onRowsPerPageChange]：onRowsPerPageChange
+OK   src/views/WebOrderManagementList/index.js
+
+42 個檔案未通過

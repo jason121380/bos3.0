@@ -1,7 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import {
-	Container, Button, CircularProgress, TextField,
-	Grid, Autocomplete, ToggleButtonGroup, ToggleButton
+	TextField, Autocomplete
 } from '@mui/material'
 import Page from 'components/Page'
 import { useState, useEffect } from 'react'
@@ -14,36 +12,10 @@ import useFetchGetMultiMerchantsLeaderBoard from 'hooks/useFetchGetMultiMerchant
 import useFetchGetMultiMerchantsLeaderBoardExcel from 'hooks/useFetchGetMultiMerchantsLeaderBoardExcel'
 import Results from './Results'
 import idx from 'idx'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-	root: css({}),
-	container: css({
-		paddingTop: theme.spacing(3),
-		paddingBottom: theme.spacing(3),
-	}),
-	results: css({
-		marginTop: theme.spacing(3),
-	}),
-	disable: css({
-		display: 'none',
-	}),
-	enable: css({
-		display: 'flex',
-	}),
-	btnWrap: css({
-		display: 'flex',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		flexWrap: 'wrap',
-		rowGap: '10px',
-		columnGap: '100px'
-	}),
-	searchBtn: css({
-		width: '100px',
-	}),
-}
+import { Download, Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
+import { Skeleton } from 'ui/skeleton'
 
 const MultiMerchantsLeaderBoard = () => {
 	const [date, setDate] = useState({
@@ -121,8 +93,8 @@ const MultiMerchantsLeaderBoard = () => {
 	}
 
 	return (
-		<Page css={styles.root} className='multiMerchantsLeaderBoard' title="多店店販銷售排行">
-			<Container maxWidth={false} css={styles.container}>
+		<Page className='multiMerchantsLeaderBoard ui-root' title="多店店販銷售排行">
+			<div>
 				<div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
 					<div className="merchantNamePrint">
 						{JSON.parse(localStorage.getItem('userMerchant')).name +
@@ -137,8 +109,8 @@ const MultiMerchantsLeaderBoard = () => {
 					</div>
 				</div>
 				<AdminPageHeader title='多店店販銷售排行' />
-				<Grid container className='noprint' alignItems='center' style={{ justifyContent: 'space-between' }}>
-					<Grid style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 20 }} item>
+				<div className='noprint flex flex-wrap items-center justify-between'>
+					<div className="flex flex-wrap items-center gap-5">
 						<DateSelector
 							date={date}
 							attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
@@ -185,67 +157,65 @@ const MultiMerchantsLeaderBoard = () => {
 						/>
 						<div style={{ marginTop: -23 }}>
 							<div className="divText">排序依據：</div>
-							<ToggleButtonGroup
+							<ToggleGroup
 								size="small"
 								value={sort}
 								onChange={(e, value) => setSort(value)}
 								exclusive
 							>
-								<ToggleButton value='PERFORMANCE'>業績</ToggleButton>
-								<ToggleButton value='TOTALCOUNT'>數量</ToggleButton>
-							</ToggleButtonGroup>
+								<ToggleGroupItem value='PERFORMANCE'>業績</ToggleGroupItem>
+								<ToggleGroupItem value='TOTALCOUNT'>數量</ToggleGroupItem>
+							</ToggleGroup>
 						</div>
-					</Grid>
-					<Grid css={styles.btnWrap} style={{ justifySelf: 'flex-end', margin: '10px 0' }} item>
-						<div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+					</div>
+					<div className="my-2.5 flex flex-wrap items-center justify-between gap-x-[100px] gap-y-2.5 justify-self-end">
+						<div className="flex flex-wrap gap-2.5">
 							<Button
-								color="primary"
-								variant="contained"
-								size="medium"
+								variant="secondary"
 								disabled={getMultiMerchantsLeaderBoardExcelLazyData.loading}
 								onClick={handleGetExcelUrl}
 							>
+								<Download strokeWidth={1.75} />
 								報表匯出
 							</Button>
 							<Button
-								color="primary"
-								variant="contained"
+								variant="secondary"
 								disabled={getMultiMerchantsLeaderBoardLazyData.loading}
 								onClick={() => window.print()}
-								size="medium"
 							>
+								<Printer strokeWidth={1.75} />
 								列印
 							</Button>
 						</div>
-					</Grid>
-				</Grid>
-				<div className="noprint" style={{ display: 'flex', margin: '12px 0' }}>
+					</div>
+				</div>
+				<div className="noprint my-3 flex">
 					<MerchantListAutocpmplete
 						onValueChange={value => {
 							setSubmitValue({ ...submitValue, merchantId: value })
 							value.length === 0 && handleSearch(date, undefined, [])
 						}}
 					/>
-					<div style={{ marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
+					<div className="ml-2.5 flex items-center">
 						<Button
-							variant="contained"
-							color="primary"
+							variant="primary"
 							onClick={() => handleSearch()}
 							disabled={getMultiMerchantsLeaderBoardLazyData.loading || getMultiMerchantsLeaderBoardLazyData.data === undefined}
-							css={styles.searchBtn}
+							className="w-[100px]"
 						>
 							搜尋
 						</Button>
 					</div>
 				</div>
 				{getMultiMerchantsLeaderBoardLazyData.loading && getMultiMerchantsLeaderBoardLazyData.data === undefined ?
-					<div style={{ textAlign: 'center', marginTop: '100px' }}>
-						<CircularProgress color="primary" />
+					// 載入中：與舊版 CircularProgress 相同時機顯示
+					<div className="noprint" aria-busy="true" aria-label="載入中">
+						<Skeleton className="h-[320px] w-full rounded-lg" />
 					</div>
 					:
 					<Results reportData={reportData} />
 				}
-			</Container>
+			</div>
 		</Page>
 	)
 }

@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent, Grid } from '@mui/material'
+import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
 import React from 'react'
 import {
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts";
-import { performanceColor } from '../Colors';
+import { gendercolor, performanceColor } from '../Colors';
 import { theme } from '../../../theme'
 import { css } from '@emotion/react'
 
@@ -70,7 +71,7 @@ const styles = {
   toolTips: css({
     padding: '12px',
     fontSize: '16px',
-    background: '#fff',
+    background: 'rgb(var(--background))',
     color: 'black',
     borderRadius: '5px',
     boxShadow: '0 0 0 1px rgb(63 63 68 / 5%), 0 1px 3px 0 rgb(63 63 68 / 15%)',
@@ -123,12 +124,12 @@ const NewCusStatistics = ({ data, width }) => {
   };
   
   return (
-    <Grid item xs={12}>
-      <Card>
-        <CardContent>
+    <div className="min-w-0 lg:col-span-2">
+      <Card className="h-full min-h-[390px]">
+        <CardContent className="flex flex-col gap-4 p-4">
           <div>
-            <div className='cardTitle'>新客比例</div>
-            <div className='subTitle'>期間新客來數比例</div>
+            <CardTitle className="whitespace-nowrap">新客比例</CardTitle>
+            <CardDescription className="whitespace-nowrap text-caption">期間新客來數比例</CardDescription>
           </div>
           {data.length ?
             <div css={styles.pieWrap2}>
@@ -162,11 +163,11 @@ const NewCusStatistics = ({ data, width }) => {
                 ))}
               </div>
             </div> :
-            <div css={styles.noDataDiv}><span css={styles.noData}>無資料</span></div>
+            <EmptyState title="無資料" className="h-[350px]" />
           }
         </CardContent>
       </Card>
-    </Grid>
+    </div>
   )
 }
 

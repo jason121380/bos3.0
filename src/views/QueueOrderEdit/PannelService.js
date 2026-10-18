@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
+import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
 import { useContext, useEffect, useState, useRef } from 'react'
@@ -21,8 +21,9 @@ const styles = {
     marginTop: theme.spacing(3),
   }),
   heading: css({
-    fontSize: '15px !important',
-    fontWeight: theme.typography.fontWeightRegular,
+    fontSize: '16px !important',
+    fontWeight: 'bold',
+    color: 'rgb(var(--text))',
   }),
   details: css({
     overflowX: 'auto',
@@ -301,7 +302,7 @@ export default function PannelService({ thirdPartTicket }) {
         onClick={handleAccordionClick}
         style={{ width: '100%' }}
       >
-        <Typography css={styles.heading}>項目消費</Typography>
+        <p className="m-0" css={styles.heading}>項目消費</p>
       </AccordionSummary>
       <AccordionDetails css={styles.details}>
         <div css={styles.fieldOutter}>

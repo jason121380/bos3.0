@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
+// 手機號碼欄位（helperText 驗證）與帳號欄位（InputLabelProps）保留 MUI TextField
 import {
-  Card, CardContent, CardHeader, Divider, TextField, Select,
-  MenuItem, InputLabel, FormControl, Grid,
+  TextField, Grid
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
@@ -64,38 +65,38 @@ function BookingNotificationSetting({
   }
   
   return (
-    <Card css={className}>
-      <CardHeader title="預約通知簡訊設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>預約通知簡訊設定</CardTitle>
+      </CardHeader>
       {bookingNotificationArr.map(({label, key}, index) => (
         <CardContent key={label} style={{ padding: (index === 0 || index === 4) ? '24px 24px 12px 24px' : '8px 24px' }}>
           <div style={{ marginBottom: '15px' }}>{label}</div>
-          <Grid item container spacing={3}>
+          <div className="flex flex-wrap gap-6">
             {settingOptions.map(option => (
-              <Grid item key={key + option.label}>
-                <FormControl variant="outlined" css={styles.selectWidth}>
-                  <InputLabel>{option.label}</InputLabel>
-                  <Select
-                    name={option.key}
-                    label={option.label}
-                    value={merchantBookingNotification[key][option.key]}
-                    disabled={!inputEnable}
-                    onChange={event => handleChangeNotification(key, event)}
-                  >
-                    <MenuItem value={true}>開啟通知</MenuItem>
-                    <MenuItem value={false}>關閉通知</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
+              <div key={key + option.label}>
+                <NativeSelect
+                  fullWidth={false}
+                  css={styles.selectWidth}
+                  name={option.key}
+                  label={option.label}
+                  value={merchantBookingNotification[key][option.key]}
+                  disabled={!inputEnable}
+                  onChange={event => handleChangeNotification(key, event)}
+                >
+                  <NativeSelectOption value={true}>開啟通知</NativeSelectOption>
+                  <NativeSelectOption value={false}>關閉通知</NativeSelectOption>
+                </NativeSelect>
+              </div>
             ))}
-          </Grid>
+          </div>
         </CardContent>
       ))}
       <CardContent>
         <div style={{ marginBottom: '15px' }}>簡訊發送帳號設定</div>
         <form method='post' action='/form' autoComplete='off' onSubmit={event => event.preventDefault()}>
-          <Grid item container spacing={3}>
-            <Grid item>
+          <div className="flex flex-wrap gap-6">
+            <div>
               <TextField
                 label='API帳號'
                 type="text"
@@ -114,8 +115,8 @@ function BookingNotificationSetting({
                   shrink: true,
                 }}
               />
-            </Grid>
-            <Grid item>
+            </div>
+            <div>
               <TextField
                 label='API密碼'
                 type="text"
@@ -134,8 +135,8 @@ function BookingNotificationSetting({
                   shrink: true,
                 }}
               />
-            </Grid>
-          </Grid>
+            </div>
+          </div>
         </form>
       </CardContent>
       <CardContent>

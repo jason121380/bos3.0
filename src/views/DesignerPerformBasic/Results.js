@@ -3,8 +3,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableRow,
   Paper, TableContainer, Typography, Collapse, Box, IconButton
 } from '@mui/material'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon } from 'ui/icons'
 import { useState, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { isSameDay } from 'date-fns'

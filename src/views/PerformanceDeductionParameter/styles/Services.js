@@ -31,7 +31,7 @@ export default {
     },
   }),
   saveButton: css({
-    backgroundColor: "#e53935",
+    backgroundColor: "rgb(var(--danger))",
     color: "white",
     "&:hover": {
       backgroundColor: "#b22e2b",

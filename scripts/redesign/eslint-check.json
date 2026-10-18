@@ -1,0 +1,12 @@
+{
+  "root": true,
+  "extends": ["react-app"],
+  "settings": { "import/resolver": { "node": { "paths": ["src"], "extensions": [".js", ".jsx"] } } },
+  "rules": {
+    "no-undef": "error",
+    "react/jsx-no-undef": "error",
+    "import/named": "error",
+    "import/no-unresolved": "error",
+    "no-unused-vars": "off"
+  }
+}
