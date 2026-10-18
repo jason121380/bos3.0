@@ -96,6 +96,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 | v3.0-1019-0303 | 2026-10-19 03:03 | UI 批次8（替代 Payment）：UpdateDeductionSetting/Results.js 15 個 TextField → `Field`＋`Input`；本批已 merge（c168506；前為 #13、#14 已 merge）；版號由 0258 校正為 0303 | #15 | commit 待補 | 驗證：eslint 0 error、verify-logic 通過、portal-root-scan 0/0、全域測試 52/52、build 成功；該次 build 的 bundle 含校正前版號字串 `v3.0-1019-0258`（校正僅字串差異），commit 後以最終版號 0303 重 build 由指揮者確認 |
 | v3.0-1019-0309 | 2026-10-19 03:09 | UI 批次9 CouponList 三個編輯彈窗（前為 #13、#14、#15 已 merge） | #16 | d15b367 | 已 merge（merge commit d15b367） |
 | v3.0-1019-0312 | 2026-10-19 03:12 | UI 批次10 PerformanceDeductionParameter（AboutDesignerSalary、Service：TextField→Field+Input、單選 Select→Field+NativeSelect；Radio 保留 MUI）。本批為本組最後一個（前 #13、#14、#15、#16 已 merge），本組 merge 中；`APP_VERSION` 用本批 0312（整組最後 merge 版號） | #17 | commit 待補 | 驗證（commit 前）：eslint 0 error；verify-logic 兩檔（AboutDesignerSalary、Service）通過；portal-root-scan 0/0；全域單元測試 52/52；`CI=true npm run build` 成功，bundle 含校正前版號字串（0309）。指揮者 commit 後須重 build 確認最終版號為 0312。另：STYLE.md 新增 §11 報表 compact 規格（僅文件）。 |
+| v3.0-1019-0352 | 2026-10-19 03:52 | UI 批次12 PaymentEdit/AboutPayment（TextField→Field+Input、Select→Field+NativeSelect；Cypress updatePayment_spec 下拉改 `.select('顯示文字')`；Checkbox 保留 MUI）。新一組第 2 個；合併順序在 PR #18（批次11，PaymentCreate）之後；版號由 0350 校正為 0352 | 待開 | commit 待補 | 驗證（commit 前）：eslint 0 error；verify-logic FAIL 僅 `ref` 與子項標籤（純 presentation）；portal-root-scan 0/0；全域單元測試 52/52；`CI=true npm run build` 成功，bundle 含校正前版號字串 `v3.0-1019-0350`；Cypress 未在本機跑，待測試環境。指揮者 commit 後須重 build 確認最終版號為 0352。 |
 
 ## 刻意不改（需另外決定）
 
