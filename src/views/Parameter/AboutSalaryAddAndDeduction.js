@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from '@mui/material'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Input } from 'ui/input'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment } from 'react'
 import _ from 'lodash'
@@ -72,13 +72,12 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
                 >
                   {data.sorting}
                 </span>
-                <TextField
+                <Input
+                  className="min-w-0 flex-1"
                   disabled={!inputEnable}
                   type="text"
-                  variant="outlined"
-                  label="薪資加項科目設定"
+                  aria-label="薪資加項科目設定"
                   value={data.itemSetting}
-                  InputLabelProps={{ shrink: true }}
                   onChange={event => handleSalaryIncreaseName(index, event)}
                 />
                 <div style={{ display: 'flex' }}>
@@ -118,13 +117,12 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
                 >
                   {data.sorting}
                 </span>
-                <TextField
+                <Input
+                  className="min-w-0 flex-1"
                   disabled={!inputEnable}
                   type="text"
-                  variant="outlined"
-                  label="薪資扣項科目設定"
+                  aria-label="薪資扣項科目設定"
                   value={data.itemSetting}
-                  InputLabelProps={{ shrink: true }}
                   onChange={event => handleSalaryDecreaseItemName(index, event)}
                 />
                 <div style={{ display: 'flex' }}>
