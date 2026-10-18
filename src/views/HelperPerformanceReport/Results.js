@@ -74,7 +74,7 @@ function Results({
               <Table className='HelperPerformanceReportTable'>
                 <TableHead>
                   <TableRow css={styles.stickyRow}>
-                    <TableCell style={{ borderRight: '1px solid #e0e0e0', }} css={styles.sticky}>設計師名稱</TableCell>
+                    <TableCell style={{ borderRight: '1px solid rgb(var(--border))', }} css={styles.sticky}>設計師名稱</TableCell>
                     <TableCell>洗髮人數</TableCell>
                     <TableCell css={styles.border}>抽成元</TableCell>
                     <TableCell>洗髮指定</TableCell>

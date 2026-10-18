@@ -104,7 +104,7 @@ function Results({ reportData }) {
                 <TableBody>
                   {productReserveChecks[0].reserveChecks.map((d, i) => (
                     <TableRow key={`${d.title}-${i}`} hover>
-                      <TableCell style={{ outline: '1px solid #eeeeee' }} css={css([styles.brBold, styles.sticky])}>{d.title}</TableCell>
+                      <TableCell style={{ outline: '1px solid rgb(var(--border))' }} css={css([styles.brBold, styles.sticky])}>{d.title}</TableCell>
                       {productReserveChecks.map(({ reserveChecks }) => {
                         return (
                           <Fragment>
