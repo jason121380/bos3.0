@@ -4,6 +4,7 @@ import { Button } from 'ui/button'
 import { Popover, PopoverAnchor, PopoverContent } from 'ui/popover'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from 'ui/dropdown-menu'
 import { cn, focusRing } from 'ui/utils'
+import { APP_VERSION } from '../../version'
 import useFetchSystemUpdateRecord from 'hooks/useFetchSystemUpdateRecord'
 import useToggle from 'hooks/useToggle'
 import PropTypes from 'prop-types'
@@ -373,7 +374,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
       <div className="flex h-10 items-center gap-1">
         <RouterLink to={loginUserAuth ? '/' : '/profile/general'} className={cn('flex items-center gap-2 rounded-md px-1', focusRing)}>
           <img alt="BeautyOS" className="h-6 w-auto invert dark:invert-0" src={require('assets/images/bosLogoNew.png')} />
-          <span className="text-caption text-text-tertiary">v3.0</span>
+          <span className="text-caption text-text-tertiary">{APP_VERSION}</span>
         </RouterLink>
         <div className="flex-1" />
         <Popover open={openButton} onOpenChange={o => !o && setOpenButton(false)}>
