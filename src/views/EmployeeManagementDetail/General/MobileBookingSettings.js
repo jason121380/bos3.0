@@ -1,8 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import React from 'react'
 import PropTypes from 'prop-types'
+// 數字輸入（onWheel 失焦）、下拉、勾選保留 MUI
 import {
-    Grid,
     TextField,
     FormControl,
     InputLabel,
@@ -11,16 +10,7 @@ import {
     Checkbox,
     FormControlLabel,
 } from '@mui/material'
-import { css } from '@emotion/react'
 import idx from 'idx'
-
-const styles = {
-    root: css({
-        borderRadius: '24px',
-        boxShadow: 'none',
-        border: 'none',
-    }),
-}
 
 function MobileBookingSettings({
     profile,
@@ -31,25 +21,11 @@ function MobileBookingSettings({
 }) {
     return (
         <div {...rest}>
-            <div css={css({
-                fontSize: '16px',
-                fontWeight: 'bold',
-                color: 'rgb(var(--text))',
-                marginBottom: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-            })}>
-                <div css={css({
-                    width: '4px',
-                    height: '18px',
-                    backgroundColor: 'rgb(var(--accent))',
-                    borderRadius: '2px',
-                })} />
+            <h3 className="mb-4 text-heading text-text">
                 手機端預約設定
-            </div>
-            <Grid container spacing={3}>
-                <Grid item xs={12}>
+            </h3>
+            <div className="flex flex-col gap-4">
+                <div>
                     <TextField
                         fullWidth
                         label="同時段預約人數上限"
@@ -65,8 +41,8 @@ function MobileBookingSettings({
                         variant="outlined"
                         onWheel={() => document.activeElement.blur()}
                     />
-                </Grid>
-                <Grid item xs={12}>
+                </div>
+                <div>
                     <FormControl variant="outlined" fullWidth>
                         <InputLabel>預約審核模式</InputLabel>
                         <Select
@@ -84,18 +60,11 @@ function MobileBookingSettings({
                             <MenuItem value="BYSTORE">依店家系統設定</MenuItem>
                         </Select>
                     </FormControl>
-                </Grid>
-                <Grid item xs={12}>
+                </div>
+                <div>
                     <FormControlLabel
                         control={<Checkbox color="primary" />}
-                        sx={{
-                            backgroundColor: 'rgb(var(--surface))',
-                            width: '100%',
-                            margin: 0,
-                            padding: '8px 12px',
-                            borderRadius: '12px',
-                            '& .MuiTypography-root': { fontSize: '14px', color: 'rgb(var(--text-secondary))' }
-                        }}
+                        className="m-0 w-full rounded-md bg-surface px-3 py-2"
                         label="待審核預約是否占用預約名額"
                         checked={profile.isRTCO}
                         onChange={event =>
@@ -105,8 +74,8 @@ function MobileBookingSettings({
                             })
                         }
                     />
-                </Grid>
-            </Grid>
+                </div>
+            </div>
         </div>
     )
 }

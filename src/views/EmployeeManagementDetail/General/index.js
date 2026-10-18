@@ -1,6 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Grid, Card, CardContent } from '@mui/material'
-import { css } from '@emotion/react'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchMerchantDesigner from 'hooks/useFetchMerchantDesigner'
 import useFetchUserGeneral from 'hooks/useFetchUserGeneral'
@@ -12,6 +9,7 @@ import { useHistory } from 'react-router'
 import { Redirect } from 'react-router-dom'
 import useFetchSetUserBookingLimit from 'hooks/useFetchSettingUserBookingLimit'
 import _ from 'lodash'
+import { Card, CardContent } from 'ui/card'
 
 import ProfileDetails from './ProfileDetails'
 import GeneralSettings from './GeneralSettings'
@@ -238,11 +236,11 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
   }
 
   return (
-    <Grid {...rest} container spacing={3}>
+    <div {...rest} className="flex flex-col gap-6">
       {idx(designerDetail.data, _ =>
         _.merchantDesigner ? (
           <React.Fragment>
-            <Grid item xs={12}>
+            <div>
               <ProfileDetails
                 profile={designer}
                 avatar={avatar}
@@ -251,45 +249,45 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
                 onEmployeeResign={handleEmployeeResign}
                 onSubmit={handleSubmit}
               />
-            </Grid>
+            </div>
             {/* 權限設置與手機端預約設定 */}
-            <Grid item xs={12}>
-              <Card css={css({ borderRadius: '24px', boxShadow: 'none', border: 'none' })}>
-                <CardContent sx={{ padding: '32px !important' }}>
-                  <Grid container spacing={4}>
-                    <Grid item xs={12} md={6}>
+            <div>
+              <Card>
+                <CardContent>
+                  <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                    <div>
                       <PermissionSettings
                         userDisplaySituationState={userDisplaySituationState}
                         setUserDisplaySituationState={setUserDisplaySituationState}
                       />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
+                    </div>
+                    <div>
                       <MobileBookingSettings
                         profile={designer}
                         onChange={handleFieldChange}
                         bookingLimitInput={bookingLimitInput}
                         handleBookingLimit={handleBookingLimit}
                       />
-                    </Grid>
-                  </Grid>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
-            </Grid>
+            </div>
             {/* 基本資料表單 */}
-            <Grid item xs={12}>
+            <div>
               <GeneralSettings
                 profile={designer}
                 onChange={handleFieldChange}
                 onEmployeeResign={handleEmployeeResign}
                 onSubmit={handleSubmit}
               />
-            </Grid>
+            </div>
           </React.Fragment>
         ) : (
           <Redirect to="/management/employee" />
         )
       )}
-    </Grid>
+    </div>
   )
 }
 
