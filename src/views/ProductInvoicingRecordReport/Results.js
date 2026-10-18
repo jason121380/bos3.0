@@ -1,13 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-  TableContainer,
-} from '@mui/material'
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+} from 'ui/table'
 import PropTypes from 'prop-types'
 import { format } from 'date-fns'
 import { css } from '@emotion/react'
@@ -52,22 +46,26 @@ function Results({ reportData }) {
   }
 
   return (
-    <TableContainer style={{ marginTop: '12px', maxHeight: 'calc(100vh - 340px)' }} className='ProductInvoicingRecordReportTable' component={Paper}>
-      <Table css={styles.table} size="small" aria-label="a dense table">
-        <TableHead>
+    <Table
+      dense
+      css={styles.table}
+      wrapperClassName="ProductInvoicingRecordReportTable mt-3 max-h-[calc(100vh-340px)] overflow-y-auto"
+      aria-label="a dense table"
+    >
+        <TableHeader>
           <TableRow css={styles.stickyRow}>
-            <TableCell css={styles.sticky}>時間</TableCell>
-            <TableCell>編號</TableCell>
-            <TableCell>商品名稱</TableCell>
-            <TableCell>商品代號</TableCell>
-            <TableCell>商品單位</TableCell>
-            <TableCell>類型</TableCell>
-            <TableCell>數量</TableCell>
+            <TableHead css={styles.sticky}>時間</TableHead>
+            <TableHead>編號</TableHead>
+            <TableHead>商品名稱</TableHead>
+            <TableHead>商品代號</TableHead>
+            <TableHead>商品單位</TableHead>
+            <TableHead>類型</TableHead>
+            <TableHead>數量</TableHead>
           </TableRow>
-        </TableHead>
+        </TableHeader>
         <TableBody>
           {reportData.map((d, index) => (
-            <TableRow hover key={`reportDataRow-${index}`}>
+            <TableRow key={`reportDataRow-${index}`}>
               <TableCell css={styles.sticky}>{format(d.date, 'yyyy/MM/dd')}</TableCell>
               <TableCell style={{ wordBreak: 'break-all' }}>{d.no}</TableCell>
               <TableCell>{d.productName}</TableCell>
@@ -77,15 +75,14 @@ function Results({ reportData }) {
               <TableCell>{d.count}</TableCell>
             </TableRow>
           ))}
-          <TableRow hover>
+          <TableRow>
             <TableCell></TableCell>
             <TableCell colSpan={4}></TableCell>
             <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
             <TableCell style={{ fontWeight: 'bold' }}>{reportData.reduce((a, b) => a + b.count, 0)}</TableCell>
           </TableRow>
         </TableBody>
-      </Table>
-    </TableContainer>
+    </Table>
   )
 }
 

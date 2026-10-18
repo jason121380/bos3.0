@@ -217,3 +217,5 @@
 | **P3（待決策）** | `ui/combobox`（取代 56 個 Autocomplete）、`ui/date-picker`（39 檔）、22 個列印報表是否改版、Services 篩選鈕 | combobox／date-picker 各為一個元件工程（中）；列印報表約 22 頁（高，需改 `initialize.scss` 約 70 條列印規則） | 高 | **等 Jason 拍版，未動** |
 
 **預估批數**：A2 1 批；B1 1～2 批；B2 1～2 批；B3 3～5 批；C 3 批；D 2～3 批；E 與 B2／B3 合併計；F 已完成（PR #9）。合計約 **11～16 批**（不含 P3 的元件與列印報表）。MUI 本體要完全移除，另需 P3 三項定案後再加 combobox、date-picker 與列印報表各一批以上。
+
+- **報表 compact 進度（第四批，新一組第 1 個，2026/10/19，`ui-report4-box`，v3.0-1019-0443）**：`MerchantBankTransferReport`、`ProductInvoicingRecordReport` 的 Results 各 1 張表換 `ui/table`＋`dense`；累計 **19 頁已套，剩 9 目錄（10 檔）MUI Table**（見 STATUS）。**待實機列印預覽**：①`initialize.scss` `.MerchantBankTransferReportTable table` 的 `border-collapse`／框線與 `ui/table` 內建 print 格線是否雙線；`salaryTransferNoDsiplay` 取消勾選列列印隱藏、`noprint` 勾選欄隱藏；②`.ProductInvoicingRecordReportTable` 的 `max-height: unset`、`border: none` 與外層 `overflow-y-auto` 列印時是否整表展開不裁切；③sticky 表頭／首欄（`outline`、`z-index`）螢幕捲動與列印；④`px-2` 欄寬變窄後一頁寬度；⑤`hover:bg-transparent` 已不保留（合計列、列 hover 改用 `ui` 預設）。
