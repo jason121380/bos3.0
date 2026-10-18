@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
+// 表格列保留 MUI TableBody / TableRow / TableCell：外框為共用元件 components/ManagementTable（MUI Table）
 import {
-  Button,
   TableBody,
   TableCell,
   TableRow,
-  Typography,
 } from '@mui/material'
 import ManagementTable from 'components/ManagementTable'
 import idx from 'idx'
@@ -15,6 +14,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from "react-csv";
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Button } from 'ui/button'
 
 const styles = {
   root: css({}),
@@ -125,45 +125,37 @@ export default function UsagedResults({
             <TableRow hover key={`${result.id}-${index}`}>
               <TableCell css={styles.compactCell}>
                 {idx(result, _ => _.usageOrder.no)}
-                <Typography variant="caption" display="block">
+                <div className="text-caption tabular-nums text-text-secondary">
                   {idx(result, _ => format(_.usageOrder.date, 'yyyy/MM/dd'))}
-                </Typography>
-                <Button
-                  color="primary"
-                  component={RouterLink}
-                  size="small"
-                  to={`/order/${result.usageOrder.id}`}
-                  variant="outlined"
-                >
-                  詳情
+                </div>
+                <Button asChild size="sm" variant="secondary">
+                  <RouterLink to={`/order/${result.usageOrder.id}`}>
+                    詳情
+                  </RouterLink>
                 </Button>
               </TableCell>
               <TableCell css={styles.compactCell}>
                 {idx(result, _ => _.order.no)}
-                <Typography variant="caption" display="block">
+                <div className="text-caption tabular-nums text-text-secondary">
                   {idx(result, _ => format(_.order.date, 'yyyy/MM/dd'))}
-                </Typography>
-                <Button
-                  color="primary"
-                  component={RouterLink}
-                  size="small"
-                  to={`/order/${result.order.id}`}
-                  variant="outlined"
-                >
-                  詳情
+                </div>
+                <Button asChild size="sm" variant="secondary">
+                  <RouterLink to={`/order/${result.order.id}`}>
+                    詳情
+                  </RouterLink>
                 </Button>
               </TableCell>
               <TableCell css={styles.compactCell}>
                 {idx(result, _ => _.order.customer.name)}
-                <Typography variant="caption" display="block">
+                <div className="text-caption tabular-nums text-text-secondary">
                   {idx(result, _ => _.order.customer.cellphone)}
-                </Typography>
+                </div>
               </TableCell>
               <TableCell css={styles.compactCell}>
                 {idx(result, _ => _.usageOrder.designer.name)}
-                <Typography variant="caption" display="block">
+                <div className="text-caption tabular-nums text-text-secondary">
                   {idx(result, _ => _.usageOrder.designer.designerNo)}
-                </Typography>
+                </div>
               </TableCell>
               <TableCell css={styles.compactCell}>{idx(result, _ => _.no)}</TableCell>
               <TableCell css={styles.compactCell}>{idx(result, _ => _.service.name)}</TableCell>

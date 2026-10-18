@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Button, Collapse } from '@mui/material'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
@@ -15,34 +13,13 @@ import { useState, useEffect } from 'react'
 import pagenationLabel from './../../helper/pagenationLabel'
 import useQueryString from 'hooks/useQueryString'
 import roundDecimal from './../../helper/roundDecimal.js'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Search } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 
 import BoughtResults from './BoughtResults'
 import UsagedResults from './UsagedResults'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5),
-  }),
-  container: css({
-    padding: '0px !important',
-  }),
-  result: css({
-    marginBottom: theme.spacing(1.5),
-  }),
-  selector: css({
-    display: 'flex',
-    gap: 10,
-    flexDirection: 'column',
-    marginBottom: 8,
-    backgroundColor: 'rgb(var(--background))',
-    borderRadius: '12px',
-    padding: '16px',
-    border: '1px solid rgb(var(--border))'
-  })
-}
 
 export default function ManagementCoupons() {
   const [ticketSellOverviewLazy, ticketSellOverviewData] = useFetchTicketSellOverviewLazy()
@@ -126,8 +103,7 @@ export default function ManagementCoupons() {
   }, [])
 
   return (
-    <Page title="卡券管理" css={styles.root}>
-      <Container maxWidth={false} css={styles.container}>
+    <Page title="卡券管理" className="ui-root">
         <AdminPageHeader
           title='卡券管理'
           showFilter={showFilter}
@@ -143,8 +119,9 @@ export default function ManagementCoupons() {
             margin={false}
           />
         </AdminPageHeader>
-        <Collapse in={showFilter}>
-          <div css={styles.selector}>
+        {/* 以 hidden 收合（取代 MUI Collapse）：篩選元件保持掛載，收合後內容與舊版一樣保留 */}
+        <div hidden={!showFilter}>
+          <Card className="mb-6 flex flex-col gap-2.5 p-4">
             <MerchantSearchBar
               values={pageSetting}
               onFilter={value => setPageSetting(value)}
@@ -153,8 +130,8 @@ export default function ManagementCoupons() {
               visible={['employee', 'customer']}
               lastInLeaderBoard={true}
             />
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ flexGrow: 1 }}>
+            <div className="flex items-center gap-2.5">
+              <div className="min-w-0 flex-1">
                 <TicketsAutocpmplete
                   value={pageSetting.ticketIds}
                   onChange={value => {
@@ -167,20 +144,17 @@ export default function ManagementCoupons() {
                 />
               </div>
               <Button
-                style={{ height: 'fit-content' }}
-                color='primary'
-                variant='contained'
+                variant="secondary"
                 onClick={handleSearch}
                 disabled={ticketSellOverviewData.loading || usedTicketRecordsData.loading}
-              >查詢</Button>
+              ><Search strokeWidth={1.75} />查詢</Button>
             </div>
-          </div>
-        </Collapse>
-        <div css={styles.container}>
+          </Card>
+        </div>
+        <div className="flex flex-col gap-6">
           {!ticketSellOverviewData.loading && ticketSellOverviewData.data ?
             <BoughtResults
               pagenationLabel={pagenationLabel}
-              className={styles.result}
               results={ticketSellOverviewData.data.ticketSellOverview}
               page={resultSetting.boughtRecords}
               onChangePage={(_event, page) =>
@@ -198,7 +172,7 @@ export default function ManagementCoupons() {
                 })
               }}
               roundDecimal={roundDecimal}
-            /> : <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
+            /> : <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中"><Skeleton className="h-[320px] w-full rounded-lg" /></div>
           }
           {
             !usedTicketRecordsData.loading && usedTicketRecordsData.data ? (
@@ -230,10 +204,9 @@ export default function ManagementCoupons() {
                   />
                 )
               )
-            ) : <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
+            ) : <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中"><Skeleton className="h-[320px] w-full rounded-lg" /></div>
           }
         </div>
-      </Container>
     </Page>
   )
 }
