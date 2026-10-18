@@ -66,22 +66,13 @@ const styles = {
     cursor: 'pointer',
     marginBottom: '8px',
     backgroundColor: 'transparent',
-    color: active ? '#1A73E8' : '#5F6368',
+    color: active ? 'rgb(var(--accent))' : 'rgb(var(--text-secondary))',
     fontWeight: active ? 'bold' : 500,
     fontSize: '14.5px',
     transition: 'all 0.2s ease',
     position: 'relative',
-    '&::before': {
-      content: active ? '""' : 'none',
-      position: 'absolute',
-      left: '10px',
-      width: '4px',
-      height: '18px',
-      backgroundColor: '#1A73E8',
-      borderRadius: '2px',
-    },
     '&:hover': {
-      backgroundColor: '#F1F3F4',
+      backgroundColor: 'rgb(var(--surface))',
     },
   }),
   content: css({
@@ -578,7 +569,7 @@ function Settings({ match, history }) {
               ))}
               {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
                 <div style={{ marginTop: '24px', padding: '16px 20px', borderTop: '1px solid #eee' }}>
-                  <Typography sx={{ fontSize: 14, color: '#666', mb: 1 }}>報到模式</Typography>
+                  <Typography sx={{ fontSize: 14, color: 'rgb(var(--text-secondary))', mb: 1 }}>報到模式</Typography>
                   <Switch
                     checked={checkinMode}
                     onChange={(e, v) => setCheckinMode(v)}

@@ -34,7 +34,7 @@ function MobileBookingSettings({
             <div css={css({
                 fontSize: '16px',
                 fontWeight: 'bold',
-                color: '#202124',
+                color: 'rgb(var(--text))',
                 marginBottom: '20px',
                 display: 'flex',
                 alignItems: 'center',
@@ -43,7 +43,7 @@ function MobileBookingSettings({
                 <div css={css({
                     width: '4px',
                     height: '18px',
-                    backgroundColor: '#1A73E8',
+                    backgroundColor: 'rgb(var(--accent))',
                     borderRadius: '2px',
                 })} />
                 手機端預約設定
@@ -89,12 +89,12 @@ function MobileBookingSettings({
                     <FormControlLabel
                         control={<Checkbox color="primary" />}
                         sx={{
-                            backgroundColor: '#F8F9FA',
+                            backgroundColor: 'rgb(var(--surface))',
                             width: '100%',
                             margin: 0,
                             padding: '8px 12px',
                             borderRadius: '12px',
-                            '& .MuiTypography-root': { fontSize: '14px', color: '#5F6368' }
+                            '& .MuiTypography-root': { fontSize: '14px', color: 'rgb(var(--text-secondary))' }
                         }}
                         label="待審核預約是否占用預約名額"
                         checked={profile.isRTCO}

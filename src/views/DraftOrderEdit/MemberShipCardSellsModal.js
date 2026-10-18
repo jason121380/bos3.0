@@ -53,7 +53,7 @@ const styles = {
   }),
   categorieBtn: css({
     margin: '3px !important',
-    color: '#3f51b5 !important',
+    color: 'rgb(var(--accent)) !important',
     border: '1px solid rgba(63, 81, 181, 0.5) !important',
     borderRadius: '4px !important'
   }),

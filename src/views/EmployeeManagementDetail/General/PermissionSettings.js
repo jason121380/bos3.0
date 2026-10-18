@@ -19,7 +19,7 @@ const styles = {
     settingsTitle: css({
         fontSize: '16px',
         fontWeight: 'bold',
-        color: '#202124',
+        color: 'rgb(var(--text))',
         marginBottom: '20px',
         display: 'flex',
         alignItems: 'center',
@@ -28,7 +28,7 @@ const styles = {
     settingsTitleBar: css({
         width: '4px',
         height: '18px',
-        backgroundColor: '#1A73E8',
+        backgroundColor: 'rgb(var(--accent))',
         borderRadius: '2px',
     }),
     checkboxGroup: css({
@@ -42,7 +42,7 @@ const styles = {
         borderRadius: '8px',
         transition: 'background-color 0.2s',
         '&:hover': {
-            backgroundColor: '#F8F9FA',
+            backgroundColor: 'rgb(var(--surface))',
         },
     }),
 }

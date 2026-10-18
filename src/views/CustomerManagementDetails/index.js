@@ -44,8 +44,8 @@ const styles = {
     marginTop: theme.spacing(1),
   }),
   divider: css({
-    borderColor: '#e0e0e0 !important',
-    background: '#e0e0e0 !important',
+    borderColor: 'rgb(var(--border)) !important',
+    background: 'rgb(var(--surface)) !important',
   }),
   content: css({
     marginTop: theme.spacing(3),

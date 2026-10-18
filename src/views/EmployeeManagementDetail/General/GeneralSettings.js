@@ -32,7 +32,7 @@ const styles = {
   sectionTitle: css({
     fontSize: '16px',
     fontWeight: 'bold',
-    color: '#202124',
+    color: 'rgb(var(--text))',
     marginBottom: '20px',
     display: 'flex',
     alignItems: 'center',
@@ -41,7 +41,7 @@ const styles = {
   sectionTitleBar: css({
     width: '4px',
     height: '18px',
-    backgroundColor: '#1A73E8',
+    backgroundColor: 'rgb(var(--accent))',
     borderRadius: '2px',
   }),
   datePicker: css({
@@ -61,7 +61,7 @@ const styles = {
     height: '42px',
     boxSizing: 'border-box',
     '&:hover': {
-      borderColor: '#007AFF',
+      borderColor: 'rgb(var(--accent))',
     },
   }),
   genderLabel: css({
@@ -71,7 +71,7 @@ const styles = {
     fontSize: '12px',
     fontWeight: 500,
     color: 'rgba(0, 0, 0, 0.6)',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgb(var(--background))',
     padding: '0 4px',
     zIndex: 1,
   }),

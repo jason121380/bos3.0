@@ -18,7 +18,7 @@ const styles = {
   }),
   actions: css({
     justifyContent: 'flex-end',
-    backgroundColor: '#FFF',
+    backgroundColor: 'rgb(var(--background))',
   }),
   inner: css({
     minWidth: 700,
@@ -51,7 +51,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#FFF',
+    backgroundColor: 'rgb(var(--background))',
   }),
   closeAtTop: css({
     margin: '16px 24px !important',

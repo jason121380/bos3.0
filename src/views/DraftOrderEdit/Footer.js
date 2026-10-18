@@ -74,7 +74,7 @@ const styles = {
   }),
   font: css({
     fontWeight: 'bold',
-    color: '#3865AC',
+    color: 'rgb(var(--accent))',
     padding: theme.spacing(1),
   }),
   checkoutBtn: css({

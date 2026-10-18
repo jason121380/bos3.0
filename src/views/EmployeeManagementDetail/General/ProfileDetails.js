@@ -39,13 +39,13 @@ const styles = {
   }),
   name: css({
     fontWeight: 'bold !important',
-    color: '#202124',
+    color: 'rgb(var(--text))',
     fontSize: '18px !important',
     margin: '0 !important',
     whiteSpace: 'nowrap',
   }),
   role: css({
-    color: '#5F6368',
+    color: 'rgb(var(--text-secondary))',
     fontWeight: 500,
     fontSize: '13px',
     margin: '0 !important',
@@ -63,7 +63,7 @@ const styles = {
     gap: '6px',
     padding: '4px 12px',
     borderRadius: '16px',
-    backgroundColor: isBinded ? '#E8F5E9' : '#F1F3F4',
+    backgroundColor: isBinded ? '#E8F5E9' : 'rgb(var(--surface))',
     whiteSpace: 'nowrap',
   }),
   lineIcon: css({
@@ -73,7 +73,7 @@ const styles = {
   lineText: (isBinded) => css({
     fontSize: '12px',
     fontWeight: 600,
-    color: isBinded ? '#2E7D32' : '#5F6368',
+    color: isBinded ? 'rgb(var(--success))' : 'rgb(var(--text-secondary))',
   }),
   buttonContainer: css({
     display: 'flex',
@@ -87,8 +87,8 @@ const styles = {
     fontSize: '13px !important',
     textTransform: 'none !important',
     boxShadow: 'none !important',
-    backgroundColor: '#F1F3F4 !important',
-    color: '#5F6368 !important',
+    backgroundColor: 'rgb(var(--surface)) !important',
+    color: 'rgb(var(--text-secondary)) !important',
     border: 'none !important',
     '&:hover': {
       backgroundColor: '#E8EAED !important',
@@ -102,7 +102,7 @@ const styles = {
     fontSize: '13px !important',
     textTransform: 'none !important',
     boxShadow: 'none !important',
-    backgroundColor: '#1A73E8 !important',
+    backgroundColor: 'rgb(var(--accent)) !important',
     color: '#FFFFFF !important',
     border: 'none !important',
     '&:hover': {
@@ -116,10 +116,10 @@ const styles = {
   settingsTitle: css({
     fontSize: '15px',
     fontWeight: 'bold',
-    color: '#202124',
+    color: 'rgb(var(--text))',
     marginBottom: '16px',
     paddingLeft: '8px',
-    borderLeft: '4px solid #1A73E8',
+    borderLeft: '4px solid rgb(var(--accent))',
   }),
   checkboxGroup: css({
     display: 'flex',
@@ -132,11 +132,11 @@ const styles = {
     borderRadius: '8px',
     transition: 'background-color 0.2s',
     '&:hover': {
-      backgroundColor: '#F8F9FA',
+      backgroundColor: 'rgb(var(--surface))',
     },
     '& .MuiTypography-root': {
       fontSize: '14.5px',
-      color: '#3C4043',
+      color: 'rgb(var(--text))',
     }
   }),
 }

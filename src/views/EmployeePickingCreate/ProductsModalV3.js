@@ -37,7 +37,7 @@ const styles = {
     maxHeight: '100%',
     overflowY: 'auto',
     maxWidth: '100%',
-    backgroundColor: '#FFF',
+    backgroundColor: 'rgb(var(--background))',
   }),
   birthday: css({
     width: '100%',
