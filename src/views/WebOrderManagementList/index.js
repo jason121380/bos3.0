@@ -1,9 +1,5 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Container, CircularProgress, Grid, Link, Button, FormControl,
-  InputLabel, Select, MenuItem, Card, IconButton, Collapse
-} from '@mui/material'
-import { FilterList as FilterListIcon } from 'ui/icons'
+// 報到狀態篩選 Select 保留 MUI（值為 true／false／空字串，不適用 Radix Select）
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import Page from 'components/Page'
 import { addDays, endOfDay, startOfMonth } from 'date-fns'
 import useFetchGetBookingManagement from 'hooks/useFetchGetBookingManagement'
@@ -13,21 +9,12 @@ import { useFetchGetDeleteOrderUsing } from 'hooks/useFetchMerchantPassword'
 import idx from 'idx'
 import produce from 'immer'
 import { useState, useEffect } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import DateSelector from 'components/DateSelector'
 import AdminPageHeader from 'components/AdminPageHeader'
+import { Card } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: {},
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3),
-  })
-}
 
 function WebOrderMangagementList() {
   // 從本地存儲獲取商戶 ID
@@ -108,79 +95,79 @@ function WebOrderMangagementList() {
   }, [getIsBookingCusCheckUsing.loading])
 
   return (
-    <Page css={styles.root} title="預約管理">
-      <Container maxWidth={false} css={styles.container}>
-
-        <AdminPageHeader
-          title='預約管理'
-          showFilter={showFilter}
-          onFilterClick={() => setShowFilter(!showFilter)}
-          primaryAction={{
-            label: '新預約',
-            to: `/customer/reservation/${merchantid}?usingLineLogin=0`
+    <Page className="ui-root" title="預約管理">
+      <AdminPageHeader
+        title='預約管理'
+        showFilter={showFilter}
+        onFilterClick={() => setShowFilter(!showFilter)}
+        primaryAction={{
+          label: '新預約',
+          to: `/customer/reservation/${merchantid}?usingLineLogin=0`
+        }}
+      >
+        <DateSelector
+          date={{ startDate: pageSetting.startDate, endDate: pageSetting.endDate }}
+          attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+          dateChange={({ startDate, endDate }) => {
+            setPageSetting(
+              produce(draft => {
+                draft.startDate = startDate
+                draft.endDate = endDate
+              })
+            )
           }}
-        >
-          <DateSelector
-            date={{ startDate: pageSetting.startDate, endDate: pageSetting.endDate }}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={({ startDate, endDate }) => {
-              setPageSetting(
-                produce(draft => {
-                  draft.startDate = startDate
-                  draft.endDate = endDate
-                })
-              )
-            }}
-          />
-        </AdminPageHeader>
+        />
+      </AdminPageHeader>
 
-        <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: 'rgb(var(--background))', borderRadius: '8px', padding: '16px', border: '1px solid rgb(var(--border))' }}>
-            <Grid container spacing={2} alignItems='center'>
-              {checkInDisplay && (
-                <Grid item>
-                  <FormControl variant="outlined" style={{ width: 120 }} >
-                    <InputLabel>報到狀態</InputLabel>
-                    <Select
-                      label='報到狀態'
-                      onChange={e => setPageSetting(
-                        produce(draft => {
-                          draft.isCheckin = e.target.value
-                        })
-                      )}
-                      value={pageSetting.isCheckin}
-                    >
-                      <MenuItem value=''><em>無</em></MenuItem>
-                      <MenuItem value={true}>報到成功</MenuItem>
-                      <MenuItem value={false}>未報到</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-              )}
-            </Grid>
+      {showFilter && (
+        <Card className="mb-6 flex flex-wrap items-center gap-4 p-4">
+          {checkInDisplay && (
+            <div>
+              <FormControl variant="outlined" style={{ width: 120 }} >
+                <InputLabel>報到狀態</InputLabel>
+                <Select
+                  label='報到狀態'
+                  onChange={e => setPageSetting(
+                    produce(draft => {
+                      draft.isCheckin = e.target.value
+                    })
+                  )}
+                  value={pageSetting.isCheckin}
+                >
+                  <MenuItem value=''><em>無</em></MenuItem>
+                  <MenuItem value={true}>報到成功</MenuItem>
+                  <MenuItem value={false}>未報到</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+          )}
+        </Card>
+      )}
+      {!getBookingManagement.loading ?
+        idx(
+          getBookingManagement,
+          _ =>
+            _.data.bookingManagement.bookings && (
+              <Results
+                orders={_.data.bookingManagement.bookings}
+                checkInDisplay={checkInDisplay}
+                startDate={pageSetting.startDate}
+                endDate={pageSetting.endDate}
+                bookingCusCheck={bookingCusCheck}
+                pageSetting={_.data.bookingManagement}
+                onPageChange={handlePageChange}
+                onRowsPerPageChange={handleRowsPerPageChange}
+                refetch={_.refetch}
+                delOrderPassUsing={getDeleteOrderUsing.loading ? false : getDeleteOrderUsing.data.merchantPassword.deleteOrder.isUsing}
+              />
+            )
+        ) : (
+          // 載入中：與舊版 CircularProgress 相同時機顯示（getBookingManagement.loading）
+          <div aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[320px] w-full rounded-lg" />
           </div>
-        </Collapse>
-        {!getBookingManagement.loading ?
-          idx(
-            getBookingManagement,
-            _ =>
-              _.data.bookingManagement.bookings && (
-                <Results
-                  orders={_.data.bookingManagement.bookings}
-                  checkInDisplay={checkInDisplay}
-                  startDate={pageSetting.startDate}
-                  endDate={pageSetting.endDate}
-                  bookingCusCheck={bookingCusCheck}
-                  pageSetting={_.data.bookingManagement}
-                  onPageChange={handlePageChange}
-                  onRowsPerPageChange={handleRowsPerPageChange}
-                  refetch={_.refetch}
-                  delOrderPassUsing={getDeleteOrderUsing.loading ? false : getDeleteOrderUsing.data.merchantPassword.deleteOrder.isUsing}
-                />
-              )
-          ) : <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>
-        }
-      </Container>
+        )
+      }
     </Page>
   )
 }
