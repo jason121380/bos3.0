@@ -1,6 +1,6 @@
 # 改版決策與教訓（MEMORY）
 
-> 目的：記下「為什麼這樣做」，避免日後重複討論或重踩坑。規範本身見 `STYLE.md`，守則見根目錄 `CLAUDE.md`。更新：2026/10/18
+> 目的：記下「為什麼這樣做」，避免日後重複討論或重踩坑。規範本身見 `STYLE.md`，守則見根目錄 `CLAUDE.md`。更新：2026/10/19
 
 ## 已定案的決策
 
@@ -19,13 +19,24 @@
 | 金額一律 `NT$` ＋千分位；長帳單用**底部固定合計列**（方案 B）而非 sticky 側欄卡 | sticky 卡只能在並排區內移動，幾乎沒效果；整頁兩欄會壓縮項目列 |
 | 服務下拉：選項顯示 `名稱(代號) - 價格`、以 `id` 當 key、中文「查無符合／載入中」 | 同名同價服務分不出來；MUI 以標籤當 key 會重複 |
 | 「always merge」：驗證通過就開 PR 並 merge 進 main，不必再問 | 使用者 2026/10/18 指示 |
+| 電話不限 10 碼：LoginForm 不做 10～13 碼長度驗證，只有 required | Jason 2026/10/19 拍版；改版前（c41b604）本來就沒有。測試改為驗證非 10 碼電話不會被長度規則擋下 |
+| 店販售價可以低於成本：不做 `sellPrice >= cost` 驗證 | Jason 2026/10/19 拍版；ProductCreate 測試改為 cost=9、sellPrice=5 不報錯，sellPrice<0 仍被擋 |
 | `handleToggleNavBar` 判斷寬度 1280→1024 | 側欄改用 Tailwind `lg`(1024)，判斷值必須與 CSS 斷點一致（唯一的邏輯常數修改） |
+
+| 2026/10/19 指示「UI 優先、全部改完」；本輪只做完整盤點＋第一批最安全 UI，**不 merge**，不新造 combobox／date-picker，不動列印報表 | 這三項要 Jason 拍版（`TODO.md` §二 P3） |
+| 浮動標籤的 MUI 欄位換成上方標籤時，**不改共用元件**：用 `Field`＋`label=''`／`placeholder`（`SourceSelect`、`EmployeeAutoComplete`、`CustomerAutoComplete` 都支援） | 這些元件全站共用；`Head`、`Remark` 已是這個做法，風險最低 |
 
 ## 驗證基準
 
 - 測試：改版前 14 檔／25 測試，7 檔 13 個失敗；現在 17 檔／50 測試，仍是同樣 7 檔 13 個失敗（無新增失敗）。
 - RegisterForm 競態：舊測試只等 2ms 就檢查導頁，改版後頁面變輕才暴露；已改用 RTL `wait`。
 - verify-logic 對 `c41b604` 的 42 個 FAIL 已逐一分類（見 `VERIFY_REPORT.md`），其中 2 處是實際差異（斷點常數、Services 篩選鈕）。
+
+- 2026/10/19：兩項產品決策落地後，全域測試 17 檔／52 測試全數通過（0 失敗、0 skip），原 13 個既有失敗已清零（PR #5 與本批）。
+
+## 已知死代碼註記
+
+- `src/views/ProductCreate/AboutProduct.js` 的 `min.value = watchList.cost`：react-hook-form v6 不會因 re-render 重新註冊欄位規則，下限實際停在初始成本 0，只擋負數。因售價可低於成本的決策，視為過時設定；本批不改元件（鐵則：只改畫面），僅於此與測試註解標註。日後若要清理，需 Jason 同意（動到驗證邏輯）。
 
 ## 教訓（踩過的坑）
 
@@ -40,4 +51,8 @@
 9. **`git fetch` 與 `log` 串在一起會被權限分類器擋**；單獨 `git fetch origin main` 可以。
 10. **合併後分支要重置到 main**，再推送（快轉）；否則 stop hook 會提示有未推送的 commit。
 11. **Portal 內缺 `ui-root` 要從根因修**：與其逐檔補 class，不如讓 `src/ui` 元件根元素自帶 `ui-root`（已做 8 檔）。檢查用 `node scripts/redesign/portal-root-scan.js`（純文字比對：檔案 import 8 個 ui 元件之一、使用 `<Dialog|Modal|Popper|Popover|Menu|Drawer`、檔內沒有 `ui-root`、且該 ui 元件自身未帶 `ui-root`）。手動整理的清單會漂移（舊「16 檔」實際掃描為 25），以掃描結果為準。限制：只比對同檔案，經由其他元件間接放進 Portal 的不會被抓到。
-12. **轉接層缺圖示時 swap-icons 會整檔跳過**：`swap-icons.js` 只換 `ui/icons` 已有的名稱，沒有的保留 MUI import；Autocomplete 的 `CheckBox`／`CheckBoxOutlineBlank` 因缺 adapter 讓 22 檔一直殘留。先在 `ui/icons.js` 補轉接（Lucide `SquareCheck`／`Square`）再換。盤點殘留時以 `rg` 實查為準，別沿用舊數字（舊「jss 2 檔」實查為 0）。另：`@mui/icons-material/Chip` 這種不存在的 import 出現在死碼檔（`ServiceEdit/AboutAssistant.js`），因沒被 bundle 才沒讓 build 失敗。
+12. **盤點數字要附口徑與日期**（2026/10/19）：舊文件的 340／414／706／481／187／「icons-material 50」／「約 15 頁列印」混用「檔案數」「import 次數」「標籤數」「目錄數」，且基準時間不同，互相對不上。現在一律用 `TODO.md` §三 的表（寫明日期與 `rg` 口徑），腳本 `scripts/redesign/inventory-scan.js` 可重跑。`rg -l` 算檔案、`rg -o … | wc -l` 算標籤；views 目錄數用 `cut -d/ -f3` 取第一層（會把單檔如 `Error404.js` 算成一項）。
+13. **`ui/native-select` 的 `label` 是外框上緣標籤**（為了和 MUI 外框欄位並排），不是「上方標籤」；`ui/input` 的 `Field` 才是。同一個彈窗混用兩種會不一致，換標籤時要整個彈窗一起換（WalletDepositModal 即如此處理）。
+14. **非互動工作階段可能不能執行 `node`／`npx`／`npm`／`sed`／`sort -k`**（權限提示無人可核准）：只能用 `rg`、`git`、`cut`、`sort`、`uniq`。遇到時不要繞過，把驗證留給指揮者；`rg` 的 pattern 含 `[`／`<`／`>` 時也可能被分類器擋，可改 `\x3c`、`\w` 或只用 `rg -l`＋`cut`。
+15. **舊 worktree 的成果不在 repo 就等於沒有**：r2-04／r2-06 的 worktree 與分支在本機都找不到，不能假設可以 rebase 合併。未 push 的 worktree 要先確認再算進進度。
+16. **轉接層缺圖示時 swap-icons 會整檔跳過**（F 批，PR #9，2026/10/19）：`swap-icons.js` 只換 `ui/icons` 已有的名稱，沒有的保留 MUI import；Autocomplete 的 `CheckBox`／`CheckBoxOutlineBlank` 因缺 adapter 讓 22 檔一直殘留。先在 `ui/icons.js` 補轉接（Lucide `SquareCheck`／`Square`）再換。盤點殘留時以 `rg` 實查為準，別沿用舊數字（舊「jss 2 檔」實查為 0）。另：`@mui/icons-material/Chip` 這種不存在的 import 出現在死碼檔（`ServiceEdit/AboutAssistant.js`），因沒被 bundle 才沒讓 build 失敗。
