@@ -12,7 +12,7 @@ import {
   TableRow,
   Dialog
 } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
+import { Edit as EditIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import useFetchSetCustomerIsUnwelcome from 'hooks/useFetchSetCustomerIsUnwelcome'

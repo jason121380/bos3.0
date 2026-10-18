@@ -4,8 +4,7 @@ import {
   Typography, FormControlLabel, Tab, Tabs, ToggleButton,
   ToggleButtonGroup
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'

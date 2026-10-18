@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 

@@ -17,8 +17,7 @@ import {
   Typography
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
+import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchUpdateCustomer from 'hooks/useFetchUpdateCustomer'
 import useFetchUsers from 'hooks/useFetchUsers'

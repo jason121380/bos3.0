@@ -5,8 +5,7 @@ import {
   InputLabel, Select, Autocomplete, ToggleButton, ToggleButtonGroup,
   InputAdornment, Input
 } from '@mui/material'
-import InsertInvitationIcon from '@mui/icons-material/InsertInvitation'
-import FilterNoneIcon from '@mui/icons-material/FilterNone'
+import { InsertInvitation as InsertInvitationIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
 import { MobileDatePicker } from '@mui/x-date-pickers'
 import AccountingSubjectsAutocomplete from 'components/AccountingSubjectsAutocomplete'
 import useFetchAccountingType from 'hooks/useFetchAccountingType'

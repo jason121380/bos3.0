@@ -16,8 +16,7 @@ import {
   InputAdornment,
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
+import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchMerchantCustomerCategory from 'hooks/useFetchMerchantCustomerCategory'
 import useFetchUpdateCustomer from 'hooks/useFetchUpdateCustomer'

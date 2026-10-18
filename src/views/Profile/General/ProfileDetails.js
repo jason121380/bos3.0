@@ -18,7 +18,7 @@ import CropImage from './CropImage'
 import Resizer from "react-image-file-resizer";
 import { openSnackbar } from 'elements/snackbars'
 import useFetchSetUserAvatar from 'hooks/useFetchSetUserAvatar'
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import { EditRounded as EditRoundedIcon } from 'ui/icons'
 import _ from 'lodash'
 import { css } from '@emotion/react'
 import { theme } from '../../../theme'

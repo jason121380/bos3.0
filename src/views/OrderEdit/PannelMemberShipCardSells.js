@@ -5,7 +5,7 @@ import {
   AccordionSummary,
   Typography,
 } from '@mui/material'
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import billContext from "context/keyInContext";
 import { useFetchUseMembershipOrder } from "hooks/useFetchOrder";
 import _ from "lodash";

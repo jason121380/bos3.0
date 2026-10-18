@@ -16,8 +16,7 @@ import {
   ToggleButtonGroup
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
+import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
 import useFetchMerchantDesigners from 'hooks/useFetchMerchantDesigners'
 import idx from 'idx'
 import PropTypes from 'prop-types'

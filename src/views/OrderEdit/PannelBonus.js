@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import { useContext, useEffect, useState } from 'react'
 import Bonus from './Bonus'
 import styles from 'views/OrderCreate/styles/PannelPayment'

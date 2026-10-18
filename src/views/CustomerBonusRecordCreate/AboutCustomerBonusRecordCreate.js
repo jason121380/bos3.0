@@ -4,7 +4,7 @@ import {
   InputAdornment
 } from '@mui/material'
 import { MobileDatePicker } from '@mui/x-date-pickers'
-import InsertInvitationIcon from '@mui/icons-material/InsertInvitation'
+import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import _ from 'lodash'

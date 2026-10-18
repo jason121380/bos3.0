@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Checkbox, FormControlLabel, TextField, Typography } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import ServicesAutoComplete from 'components/ServicesAutoComplete'
 import ThirdPartyAutoCompleteforQueueOrder from 'components/ThirdPartyAutoCompleteforQueueOrder'
@@ -11,7 +9,6 @@ import { useLazyFetchServiceNew } from 'hooks/useFetchService'
 import idx from 'idx'
 import _ from 'lodash'
 import { Fragment, useRef, useEffect, useContext, useState, createRef } from 'react'
-import FilterNoneIcon from '@mui/icons-material/FilterNone'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 

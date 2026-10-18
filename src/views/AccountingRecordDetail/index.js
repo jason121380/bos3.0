@@ -7,9 +7,7 @@ import {
   ToggleButton, ToggleButtonGroup, Input, InputAdornment
 } from '@mui/material'
 import red from '@mui/material/colors/red'
-import DeleteIcon from '@mui/icons-material/DeleteOutline'
-import FilterNoneIcon from '@mui/icons-material/FilterNone'
-import InsertInvitationIcon from '@mui/icons-material/InsertInvitation'
+import { DeleteOutline as DeleteIcon, FilterNone as FilterNoneIcon, InsertInvitation as InsertInvitationIcon } from 'ui/icons'
 import { MobileDatePicker } from '@mui/x-date-pickers'
 import AccountingSubjectsAutocomplete from 'components/AccountingSubjectsAutocomplete'
 import useFetchAccountingType from 'hooks/useFetchAccountingType'

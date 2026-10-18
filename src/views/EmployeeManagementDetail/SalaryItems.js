@@ -9,8 +9,7 @@ import {
   Button,
   Typography,
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
 import { openSnackbar } from 'elements/snackbars'
 import { useHistory } from 'react-router'

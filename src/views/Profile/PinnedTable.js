@@ -8,12 +8,7 @@ import MerchantListAutocpmpleteForPinnedTable from 'components/MerchantListAutoc
 import useFetchSetPinnedTable from 'hooks/useFetchSetPinnedTable'
 import { TreeView, TreeItem } from '@mui/x-tree-view';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import ClearRoundedIcon from '@mui/icons-material/ClearRounded';
+import { ArticleOutlined as ArticleOutlinedIcon, DescriptionOutlined as DescriptionOutlinedIcon, ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import { useDispatch } from 'react-redux'
 import { pinnedTableActions } from './../../store/pinnedTable'
 import { useState, useEffect } from 'react'

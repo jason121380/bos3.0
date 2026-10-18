@@ -13,14 +13,12 @@ import {
   Typography,
   Grid,
 } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon, BackspaceOutlined as BackspaceOutlinedIcon } from 'ui/icons'
 import useFetchMerchantDeductionItems from 'hooks/useFetchMerchantDeductionItems'
 import idx from 'idx'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import { useRef, Fragment } from 'react'
-import BackspaceOutlinedIcon from '@mui/icons-material/BackspaceOutlined'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 

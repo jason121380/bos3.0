@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Button, Card, CardContent, CardHeader, Divider, Typography } from '@mui/material'
-import DeleteIcon from '@mui/icons-material/DeleteOutline'
-import GetAppIcon from '@mui/icons-material/GetApp'
-import NotInterestedIcon from '@mui/icons-material/NotInterested'
+import { DeleteOutline as DeleteIcon, GetApp as GetAppIcon, NotInterested as NotInterestedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
 import { theme } from '../../../theme'

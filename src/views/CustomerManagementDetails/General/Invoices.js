@@ -12,7 +12,7 @@ import {
   TableRow,
   colors,
 } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
+import { Edit as EditIcon } from 'ui/icons'
 import Label from 'elements/label'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'

@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { TableContainer, Paper, Dialog } from '@mui/material'
 import { format } from 'date-fns'
-import AssignmentTurnedInRoundedIcon from '@mui/icons-material/AssignmentTurnedInRounded';
-import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
+import { AssignmentTurnedInRounded as AssignmentTurnedInRoundedIcon, DisabledByDefaultRounded as DisabledByDefaultRoundedIcon } from 'ui/icons'
 import styles from './styles/OrderTable'
 import { css } from '@emotion/react'
 

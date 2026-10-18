@@ -4,8 +4,7 @@ import {
   TableRow, Box, TableContainer, CircularProgress, Collapse,
   Typography
 } from '@mui/material'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon } from 'ui/icons'
 import { Fragment, useState } from 'react'
 import { cloneDeep } from 'lodash';
 import { format } from 'date-fns';

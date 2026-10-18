@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, Fragment } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, IconButton } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/DeleteOutlined'
+import { ExpandMore as ExpandMoreIcon, Edit as EditIcon, DeleteOutlined as DeleteIcon } from 'ui/icons'
 import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
 import MdEditor from 'md-editor-rt';

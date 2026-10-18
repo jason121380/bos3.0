@@ -9,8 +9,7 @@ import {
   Typography,
 } from '@mui/material'
 import { Fragment, useRef, useEffect } from 'react'
-import AddIcon from '@mui/icons-material/Add'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
 import idx from 'idx'
 import { css } from '@emotion/react'

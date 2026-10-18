@@ -6,7 +6,7 @@ import {
   Box, Grid, Dialog, DialogActions, DialogContent, DialogContentText,
   DialogTitle
 } from '@mui/material'
-import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material'
+import { KeyboardArrowDown, KeyboardArrowUp } from 'ui/icons'
 import TableEditBar from 'components/TableEditBar'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'

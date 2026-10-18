@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
 import { useContext, useEffect, useState, useRef } from 'react'

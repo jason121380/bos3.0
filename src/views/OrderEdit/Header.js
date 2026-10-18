@@ -6,7 +6,7 @@ import {
 import { useContext, useState, Fragment } from 'react'
 import billContext from 'context/keyInContext'
 import FastCheckOrdersModal from 'components/FastCheckOrdersModal'
-import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import { ConfirmationNumber as ConfirmationNumberIcon } from 'ui/icons'
 import { css } from '@emotion/react'
 import produce from 'immer'
 import ShortcutDialog from '../../components/ShortcutDialog'

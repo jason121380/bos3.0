@@ -13,8 +13,7 @@ import produce from 'immer'
 import _ from 'lodash'
 import { useContext, useState, useEffect, useRef, Fragment } from 'react'
 import { DateTimePicker } from '@mui/x-date-pickers'
-import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
-import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded';
+import { PersonAddAltRounded as PersonAddAltRoundedIcon, ManageAccountsRounded as ManageAccountsRoundedIcon } from 'ui/icons'
 import useFetchCustomer from 'hooks/useFetchCustomer'
 import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import MembershipCardList from 'components/MembershipCardList'

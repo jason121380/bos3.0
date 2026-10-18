@@ -4,7 +4,7 @@ import {
   Select, TextField, FormHelperText,
   InputAdornment, Input
 } from '@mui/material'
-import InsertInvitationIcon from '@mui/icons-material/InsertInvitation';
+import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import React from 'react'

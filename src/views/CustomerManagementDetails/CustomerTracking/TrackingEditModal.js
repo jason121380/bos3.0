@@ -6,7 +6,7 @@ import {
   TextField, Grid, ThemeProvider
 } from '@mui/material'
 import { openSnackbar } from 'elements/snackbars'
-import EditIcon from '@mui/icons-material/Edit'
+import { Edit as EditIcon } from 'ui/icons'
 import idx from 'idx';
 import { cloneDeep } from 'lodash';
 import PropTypes from 'prop-types'
