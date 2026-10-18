@@ -37,9 +37,9 @@ function TableEditBar({
         {label}
       </Button>
     )
-  if (!open) return null
+  // 與舊版 persistent Drawer 相同：未勾選時元件仍在 DOM（隱藏），勾選後才顯示
   return (
-    <div className="ui-root noprint pointer-events-none fixed inset-x-0 bottom-6 z-[1200] flex justify-center px-4">
+    <div hidden={!open} className={`ui-root noprint pointer-events-none fixed inset-x-0 bottom-6 z-[1200] justify-center px-4 ${open ? 'flex' : 'hidden'}`}>
       <div
         {...rest}
         css={className}
