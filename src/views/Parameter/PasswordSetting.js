@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from '@mui/material'
+import { Field, Input } from 'ui/input'
 import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
@@ -45,31 +45,31 @@ function PasswordSetting({ className, setPasswordSetting, passwordSetting, input
       </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
-          <TextField
-            disabled={!inputEnable}
-            type="password"
-            variant="outlined"
-            label="萬能密碼"
-            value={passwordSetting.superPassword}
-            onChange={e => {
-              setPasswordSetting(
-                produce(draft => {
-                  draft.superPassword = e.target.value
-                })
-              )
-            }}
-          />
+          <Field label="萬能密碼" className="w-56">
+            <Input
+              type="password"
+              disabled={!inputEnable}
+              value={passwordSetting.superPassword}
+              onChange={e => {
+                setPasswordSetting(
+                  produce(draft => {
+                    draft.superPassword = e.target.value
+                  })
+                )
+              }}
+            />
+          </Field>
         </div>
         {passwordArr.map(({ label, key }) => (
           <div key={label} css={styles.serviceInputGroup}>
-            <TextField
-              disabled={!inputEnable}
-              type="password"
-              variant="outlined"
-              label={label}
-              value={passwordSetting[key].password}
-              onChange={e => handlePasswordOnchange(key, e.target.value)}
-            />
+            <Field label={label} className="w-56">
+              <Input
+                type="password"
+                disabled={!inputEnable}
+                value={passwordSetting[key].password}
+                onChange={e => handlePasswordOnchange(key, e.target.value)}
+              />
+            </Field>
             <CheckboxField
               disabled={!inputEnable}
               css={styles.isUsing}
