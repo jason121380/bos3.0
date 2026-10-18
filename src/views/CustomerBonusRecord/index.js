@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchGetCustomerBonusDepositRecords from 'hooks/useFetchGetCustomerBonusDepositRecords'
@@ -7,14 +5,14 @@ import idx from 'idx'
 import { Link as RouterLink } from 'react-router-dom'
 
 import Results from './Results'
-import styles from './styles/ProductCategories'
+import { Skeleton } from 'ui/skeleton'
 
 function CustomerBonusRecord() {
   const customerBonusDepositRecords = useFetchGetCustomerBonusDepositRecords()
 
   return (
-    <Page css={styles.root} title="紅利點數紀錄">
-      <Container maxWidth={false}>
+    <Page className="ui-root" title="紅利點數紀錄">
+      <div>
         <AdminPageHeader
           title="紅利點數紀錄"
           sx={{ backgroundColor: 'transparent', mb: 0 }}
@@ -27,9 +25,8 @@ function CustomerBonusRecord() {
           <Results
             recordData={idx(customerBonusDepositRecords, _ => _.data.customerBonusDepositRecords)}
             refetch={() => customerBonusDepositRecords.refetch()}
-            className={styles.results}
-          /> : <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>}
-      </Container>
+          /> : <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>}
+      </div>
     </Page>
   )
 }
