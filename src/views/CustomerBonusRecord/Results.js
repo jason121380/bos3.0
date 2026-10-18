@@ -13,7 +13,7 @@ import {
   TableContainer,
   IconButton
 } from '@mui/material'
-import EditIconSlot from '@mui/icons-material/Edit';
+import { Edit as EditIconSlot } from 'ui/icons'
 import TableEditBar from 'components/TableEditBar'
 import useFetchDeleteBonusDeposit from 'hooks/useFetchDeleteBonusDeposit'
 import { openSnackbar } from 'elements/snackbars'
