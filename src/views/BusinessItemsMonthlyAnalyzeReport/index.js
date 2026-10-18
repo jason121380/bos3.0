@@ -1,15 +1,17 @@
 /** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
-import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { startOfMonth, endOfMonth, format } from 'date-fns'
 import useFetchGetBusinessItemsMonthlyReport from 'hooks/useFetchGetBusinessItemsMonthlyReport'
 import useFetchGetBusinessItemsMonthlyReportExcel from 'hooks/useFetchGetBusinessItemsMonthlyReportExcel'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Download, Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader, Toolbar } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -64,37 +66,29 @@ export default function Employees() {
   }, [businessItemsMonthlyReportData.loading])
 
   return (
-    <Page css={styles.root} title="營業項目月分析表">
-      <Container maxWidth={false} css={styles.container}>
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
-          <div className="merchantNamePrint">
-            {JSON.parse(localStorage.getItem('userMerchant')).name +
-              '   ' +
-              format(new Date(date.startDate), 'yyyy-MM-dd').toLocaleString() +
-              '  - ' +
-              format(new Date(date.endDate), 'yyyy-MM-dd').toLocaleString() +
-              '   ' +
-              '營業項目月分析表'}
-          </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' +
-              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-          </div>
+    <Page className="ui-root" title="營業項目月分析表">
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+        <div className="merchantNamePrint">
+          {JSON.parse(localStorage.getItem('userMerchant')).name +
+            '   ' +
+            format(new Date(date.startDate), 'yyyy-MM-dd').toLocaleString() +
+            '  - ' +
+            format(new Date(date.endDate), 'yyyy-MM-dd').toLocaleString() +
+            '   ' +
+            '營業項目月分析表'}
         </div>
-        <AdminPageHeader title='營業項目月分析表' />
-        <Grid container style={{ alignItems: 'center', justifyContent: 'space-between' }} className="noprint">
-          <DateSelector
-            date={date}
-            attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-            margin
-          />
-          <Grid item style={{ gap: 10, display: 'flex' }}>
+        <div className="merchantNamePrint">
+          {'列印時間： ' +
+            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
+        </div>
+      </div>
+      <PageHeader
+        title="營業項目月分析表"
+        actions={
+          <>
             <Button
               className="noprint"
-              size="medium"
-              variant="contained"
-              color="primary"
+              variant="secondary"
               disabled={businessItemsMonthlyReportData.loading}
               onClick={() => {
                 getBusinessItemsMonthlyReport({
@@ -107,26 +101,34 @@ export default function Employees() {
                 })
               }}
             >
+              <Download strokeWidth={1.75} />
               報表匯出
             </Button>
             <Button
               className="noprint"
-              size="medium"
-              variant="contained"
-              color="primary"
+              variant="primary"
               onClick={() => window.print()}
             >
+              <Printer strokeWidth={1.75} />
               列印
             </Button>
-          </Grid>
-        </Grid>
-        {!businessItemsMonthlyReport.loading ?
-          <Results
-            reportData={reportData}
-            className={styles.results}
-          /> : <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
+          </>
         }
-      </Container>
+      />
+      <Toolbar>
+        <DateSelector
+          date={date}
+          attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
+          dateChange={value => setDate(value)}
+          margin
+        />
+      </Toolbar>
+      {!businessItemsMonthlyReport.loading ?
+        <Results
+          reportData={reportData}
+          className={styles.results}
+        /> : <Skeleton className="h-96" aria-busy="true" />
+      }
     </Page>
   )
 }
