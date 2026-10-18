@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, Divider, FormControlLabel, Checkbox,
-  TextField, Select, MenuItem, InputLabel, FormControl,
+  FormControlLabel, Checkbox, TextField, Select, MenuItem, InputLabel, FormControl
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
@@ -51,9 +51,10 @@ function IsReservationNeedReview({
   }
 
   return (
-    <Card css={className}>
-      <CardHeader title="預約設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>預約設定</CardTitle>
+      </CardHeader>
       <CardContent>
         {settingArr.map(({ label, key }) => (
           <div css={styles.serviceInputGroup} key={label}>

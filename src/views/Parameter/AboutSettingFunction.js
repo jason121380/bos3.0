@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, Divider, InputLabel, Select,
-  MenuItem, FormControlLabel, FormControl, Checkbox, TextField,
-  Button, Avatar, Dialog, DialogContent, DialogTitle, Slider,
-  Autocomplete
+  InputLabel, Select, MenuItem, FormControlLabel, FormControl, Checkbox, TextField, Avatar, Dialog, DialogContent, DialogTitle, Slider, Autocomplete
 } from '@mui/material'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Check as CheckIcon, EditRounded as EditRoundedIcon } from 'ui/icons'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
@@ -170,9 +169,10 @@ function AboutSettingFunction({
   }, [])
 
   return (
-    <Card css={className}>
-      <CardHeader title="功能設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>功能設定</CardTitle>
+      </CardHeader>
       <CardContent>
         {settingArr.map(({ label, key }) => (
           <Fragment key={label}>
@@ -203,12 +203,11 @@ function AboutSettingFunction({
                   />
                   <CopyToClipboard onCopy={() => setIsCopy(true)} text={getLink()}>
                     <Button
-                      variant='contained'
-                      color='primary'
-                      size='small'
+                      variant="secondary"
+                      size="sm"
                     >複製連結{isCopy && <CheckIcon size='small' />}</Button>
                   </CopyToClipboard>
-                  <Button onClick={getQRCode} variant='contained' color='primary' size='small'>下載QRCode</Button>
+                  <Button onClick={getQRCode} variant="secondary" size="sm">下載QRCode</Button>
                 </div>
               )}
             </div>
@@ -348,8 +347,7 @@ function AboutSettingFunction({
               ) :
                 <Button
                   onClick={() => inputRef.current.click()}
-                  color='primary'
-                  variant='outlined'
+                  variant="secondary"
                   disabled={!inputEnable}
                 >上傳圖片</Button>
               }
@@ -464,8 +462,8 @@ function AboutSettingFunction({
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', columnGap: '20px', margin: '10px 0' }}>
-            <Button disabled={btnDisable} color='primary' variant='contained' onClick={handleClose}>取消</Button>
-            <Button disabled={btnDisable} onClick={showCroppedImage} color='primary' variant='contained'>確認上傳</Button>
+            <Button disabled={btnDisable} variant="secondary" onClick={handleClose}>取消</Button>
+            <Button disabled={btnDisable} onClick={showCroppedImage} variant="primary">確認上傳</Button>
           </div>
         </DialogContent>
       </Dialog>

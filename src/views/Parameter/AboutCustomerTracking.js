@@ -1,14 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  TextField,
-  Grid,
-  Typography,
-  IconButton
+  TextField, Grid
 } from '@mui/material'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment } from 'react'
 import { cloneDeep } from 'lodash'
@@ -48,21 +43,20 @@ function AboutCustomerTracking({ className, inputEnable, hairCondition, setHairC
         const [[key, title]] = Object.entries(d)
         const options = hairCondition[key]
         return (
-          <Card css={className} key={`${title}-${i}`}>
-            <CardHeader title={`${title}設定`} />
-            <Divider />
+          <Card key={`${title}-${i}`}>
+            <CardHeader>
+              <CardTitle>{`${title}設定`}</CardTitle>
+            </CardHeader>
             <CardContent>
               <Grid container spacing={2}>
                 {options.length ? options.map((data, index) => (
                   <Grid style={{ width: index === options.length - 1 ? 214 : '' }} item sm={4} css={styles.serviceInputGroup} key={index}>
-                    <Typography
-                      variant="h5"
-                      display="inline"
-                      gutterBottom
+                    <span
+                      className="inline-block shrink-0 text-heading tabular-nums text-text"
                       style={{ margin: '0 5px', width: '25px' }}
                     >
                       {index + 1}
-                    </Typography>
+                    </span>
                     <TextField
                       disabled={!inputEnable}
                       type="text"
@@ -90,12 +84,12 @@ function AboutCustomerTracking({ className, inputEnable, hairCondition, setHairC
                   </Grid>
                 )) : (
                   <Grid container direction="row" alignItems="center" style={{ gap: 20 }}>
-                    <Typography component="h1" variant="h5">
+                    <span className="text-heading text-text">
                       無資料
-                    </Typography>
-                    <IconButton disabled={!inputEnable} onClick={() => handleAddOption(key)} >
+                    </span>
+                    <Button variant="ghost" size="icon" aria-label={`新增${title}`} disabled={!inputEnable} onClick={() => handleAddOption(key)} >
                       <AddIcon/>
-                    </IconButton>
+                    </Button>
                   </Grid>
                 )}
               </Grid>

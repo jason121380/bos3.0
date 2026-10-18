@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, Divider,
   FormControlLabel, Checkbox
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 import styles from './styles/ReservationSettingForStylist'
@@ -11,9 +11,10 @@ function ReservationSettingForStylist({
   className, inputEnable, CBRDStylist, setCBRDStylist
 }) {
   return (
-    <Card css={className}>
-      <CardHeader title="預約設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>預約設定</CardTitle>
+      </CardHeader>
       <CardContent>
         <div >
           <FormControlLabel

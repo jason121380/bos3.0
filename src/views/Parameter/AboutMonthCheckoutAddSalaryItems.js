@@ -1,16 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  FormControlLabel,
-  Checkbox,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem
+  FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import { cloneDeep } from 'lodash'
 
@@ -35,9 +27,10 @@ function AboutMonthCheckoutAddSalaryItems({
   setCheckoutAndSalaryItem
 }) {
   return (
-    <Card css={className}>
-      <CardHeader title="薪資及月結設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>薪資及月結設定</CardTitle>
+      </CardHeader>
       <CardContent>
         {settingArr.map(d => (
           <div css={styles.serviceInputGroup} key={d.label}>

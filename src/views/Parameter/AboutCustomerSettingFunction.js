@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, Divider, TextField,
-  FormControlLabel, Checkbox, Autocomplete
+  TextField, FormControlLabel, Checkbox, Autocomplete
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
@@ -31,9 +31,10 @@ function AboutCustomerSettingFunction({
   }
 
   return (
-    <Card css={className}>
-      <CardHeader title="顧客端功能設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>顧客端功能設定</CardTitle>
+      </CardHeader>
       <CardContent>
         {optionArr.map(({ label, key }) => (
           <div key={label}>

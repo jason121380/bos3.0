@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import {
   Dialog, DialogContent, DialogTitle, Divider, DialogActions,
-  TextField, Button, ThemeProvider, Checkbox, FormControlLabel,
+  TextField, Checkbox, FormControlLabel,
   Autocomplete
 } from '@mui/material'
+import { Button } from 'ui/button'
 import { useState, memo } from 'react'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
@@ -14,7 +15,7 @@ import useFetchDeleteMerchantExternalLink from 'hooks/useFetchDeleteMerchantExte
 import useFetchCreateMerchantCusExternalLink from 'hooks/useFetchCreateMerchantCusExternalLink'
 import useFetchUpdateMerchantCusExternalLink from 'hooks/useFetchUpdateMerchantCusExternalLink'
 import useFetchDeleteMerchantCusExternalLink from 'hooks/useFetchDeleteMerchantCusExternalLink'
-import { styles, theme } from './styles/OuterLinkModal'
+import { styles } from './styles/OuterLinkModal'
 import { openSnackbar } from 'elements/snackbars'
 import { cloneDeep } from 'lodash'
 import idx from 'idx'
@@ -202,21 +203,17 @@ const OuterLinkModal = ({
       <DialogActions>
         <div>
           {isCreate ? '' :
-            <ThemeProvider theme={theme}>
-              <Button
-                onClick={handleDeleteLink}
-                disabled={isClick}
-                color='primary'
-                variant='contained'>刪除</Button>
-            </ThemeProvider>
+            <Button
+              onClick={handleDeleteLink}
+              disabled={isClick}
+              variant="danger">刪除</Button>
           }
         </div>
         <div css={styles.ButtonGroup}>
-          <Button disabled={isClick} variant='contained' onClick={onModalClose}>取消</Button>
+          <Button disabled={isClick} variant="secondary" onClick={onModalClose}>取消</Button>
           <Button
             disabled={isClick}
-            color='primary'
-            variant='contained'
+            variant="primary"
             onClick={() => isCreate ? handleCreateLink() : handleUpdateLink()}
             >
             {isCreate ? '新增' : '儲存'}

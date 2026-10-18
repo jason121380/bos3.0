@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, Divider, Checkbox, Dialog, DialogContent,
-  DialogTitle, Button, Slider, Avatar, TextField, FormControlLabel
+  Checkbox, Dialog, DialogContent, DialogTitle, Slider, Avatar, TextField, FormControlLabel
 } from '@mui/material'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo, useRef, useState, useCallback } from 'react'
 import { EditRounded as EditRoundedIcon } from 'ui/icons'
 import Resizer from "react-image-file-resizer";
@@ -152,9 +153,10 @@ function AboutOrderCreate({
     )
   }
   return (
-    <Card css={className}>
-      <CardHeader title="帳單明細顯示設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>帳單明細顯示設定</CardTitle>
+      </CardHeader>
       <CardContent>
         <div css={styles.serviceInputGroup}>
           <div css={styles.serviceInputTitle}>店家Logo設定</div>
@@ -184,8 +186,7 @@ function AboutOrderCreate({
               ) :
                 <Button
                   onClick={() => inputRef.current.click()}
-                  color='primary'
-                  variant='outlined'
+                  variant="secondary"
                   disabled={!inputEnable}
                 >上傳圖片</Button>
               }
@@ -280,8 +281,8 @@ function AboutOrderCreate({
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', columnGap: '20px', margin: '10px 0' }}>
-            <Button disabled={btnDisable} color='primary' variant='contained' onClick={handleClose}>取消</Button>
-            <Button disabled={btnDisable} onClick={showCroppedImage} color='primary' variant='contained'>確認上傳</Button>
+            <Button disabled={btnDisable} variant="secondary" onClick={handleClose}>取消</Button>
+            <Button disabled={btnDisable} onClick={showCroppedImage} variant="primary">確認上傳</Button>
           </div>
         </DialogContent>
       </Dialog>

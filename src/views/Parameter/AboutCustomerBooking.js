@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, Divider, FormControl,
-  FormControlLabel, Checkbox, InputLabel, Select, MenuItem
+  FormControl, FormControlLabel, Checkbox, InputLabel, Select, MenuItem
 } from '@mui/material'
+import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
@@ -49,9 +49,10 @@ function AboutCustomerBooking({
     )
   }
   return (
-    <Card css={className}>
-      <CardHeader title="顧客端預約設定" />
-      <Divider />
+    <Card>
+      <CardHeader>
+        <CardTitle>顧客端預約設定</CardTitle>
+      </CardHeader>
       <CardContent>
         {optionArr.map(({ label, key }) => (
           <div key={label}>
