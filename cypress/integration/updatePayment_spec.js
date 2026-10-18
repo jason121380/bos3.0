@@ -19,8 +19,7 @@ describe('Edit payment', () => {
 
     cy.get('[data-testid=name]').type('{selectall}').type('123').invoke('val').should('eq', '123')
 
-    cy.get('[data-testid="fee-category"]').click()
-    cy.get('[data-testid="fee-category-百分比(%)"]').click()
+    cy.get('[data-testid="fee-category"]').select('百分比(%)')
     cy.contains('百分比(%)')
       .invoke('text')
       .then(text => {
@@ -35,8 +34,7 @@ describe('Edit payment', () => {
       .invoke('val')
       .should('not.empty')
 
-    cy.get('[data-testid=payment-deductions]').click()
-    cy.get('[data-testid="payment-deduction-業績"]').click()
+    cy.get('[data-testid=payment-deductions]').select('業績')
 
     cy.contains('業績').invoke('text').should('eq', '業績')
 
