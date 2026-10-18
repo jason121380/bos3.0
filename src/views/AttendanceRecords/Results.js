@@ -6,11 +6,7 @@ import {
   Divider, FormControlLabel, Checkbox
 } from '@mui/material'
 import { Button } from '@mui/material'
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded';
-import DesktopWindows from '@mui/icons-material/DesktopWindowsRounded';
-import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
-import QrCodeIcon from '@mui/icons-material/QrCode';
+import { LocationOn as LocationOnIcon, ManageAccountsRounded as ManageAccountsRoundedIcon, DesktopWindowsRounded as DesktopWindows, PhoneIphone as PhoneIphoneIcon, QrCode as QrCodeIcon } from 'ui/icons'
 import { format, setHours, setMinutes } from 'date-fns'
 import PropTypes from 'prop-types'
 import { Fragment, useState } from 'react'

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Card, Container, CircularProgress, Grid, Button, IconButton, Collapse, TextField, Link } from '@mui/material'
-import FilterListIcon from '@mui/icons-material/FilterList'
+import { FilterList as FilterListIcon } from 'ui/icons'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import { useFetchUsersInEmployeeList } from 'hooks/useFetchUsers'

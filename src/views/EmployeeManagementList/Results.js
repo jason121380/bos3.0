@@ -11,7 +11,7 @@ import {
   Typography,
   IconButton,
 } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
+import { Edit as EditIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
