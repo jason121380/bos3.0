@@ -1,27 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { TextField, FormControlLabel, Checkbox } from '@mui/material'
+import { FormControlLabel, Checkbox } from '@mui/material'
+import { Field, Input } from 'ui/input'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  formControl: css({
-    marginBottom: theme.spacing(3),
-    width: '100%',
-    '&:last-child': {
-      marginBottom: 0,
-    },
-  }),
-  cardHeader: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-}
 
 function AboutAuthority({
   className,
@@ -82,14 +66,12 @@ function AboutAuthority({
           <CardTitle>一般資訊</CardTitle>
         </CardHeader>
         <CardContent>
-          <TextField
-            css={styles.formControl}
-            value={userAuthorityName}
-            label="名稱"
-            variant="outlined"
-            fullWidth
-            onChange={event => setUserAuthorityName(event.target.value)}
-          />
+          <Field label="名稱">
+            <Input
+              value={userAuthorityName}
+              onChange={event => setUserAuthorityName(event.target.value)}
+            />
+          </Field>
         </CardContent>
       </Card>
       {authoritySettings.map((item, index1) => (

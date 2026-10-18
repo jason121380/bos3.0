@@ -1,25 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from '@mui/material'
+import { Field, Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  formControl: css({
-    marginBottom: theme.spacing(3),
-    width: '100%',
-    '&:last-child': {
-      marginBottom: 0,
-    },
-  }),
-  cardHeader: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-}
 
 function AboutAuthority({ className, roleName, setRoleName, ...rest }) {
   return (
@@ -29,17 +12,13 @@ function AboutAuthority({ className, roleName, setRoleName, ...rest }) {
           <CardTitle>一般資訊</CardTitle>
         </CardHeader>
         <CardContent>
-          <TextField
-            css={styles.formControl}
-            value={roleName}
-            label="名稱"
-            variant="outlined"
-            fullWidth
-            onChange={event => setRoleName(event.target.value)}
-            inputProps={{
-              'data-testid': 'name',
-            }}
-          />
+          <Field label="名稱">
+            <Input
+              value={roleName}
+              onChange={event => setRoleName(event.target.value)}
+              data-testid="name"
+            />
+          </Field>
         </CardContent>
       </Card>
       {/* <Card {...rest} style={{ marginTop: '20px' }}>
