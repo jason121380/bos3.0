@@ -13,8 +13,7 @@ describe('Creaate payment', () => {
       .then(val => {
         expect(val).equal('LINEPAY')
       })
-    cy.get('[data-testid="fee-category"]').click()
-    cy.get('[data-testid="fee-category-固定金額"]').click()
+    cy.get('[data-testid="fee-category"]').select('固定金額')
     cy.contains('固定金額')
       .invoke('text')
       .then(text => {
@@ -28,8 +27,7 @@ describe('Creaate payment', () => {
         expect(val).equal('999')
       })
 
-    cy.get('[data-testid=payment-deductions]').click()
-    cy.get('[data-testid="payment-deduction-薪水"]').click()
+    cy.get('[data-testid=payment-deductions]').select('薪水')
 
     cy.contains('薪水')
       .invoke('text')
