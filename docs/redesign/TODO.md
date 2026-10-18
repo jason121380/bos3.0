@@ -53,6 +53,8 @@
   - [x] `WalletDepositModal`（異動入金，OrderCreate 版）：6 個欄位標籤全部移到上方，必填 `*` 依 `handleSubWalletDeposit` 檢查（PR #7）。
   - [x] `OrderEdit/WalletDepositModal.js`（孿生檔，UI 第二批 PR #8）：7 欄（日期／金額／設計師／顧客／付款方式／手續費負擔方／備註）改上方標籤，用 `Field`／`Input`；必填 `*` 依本檔 `handleSubWalletDeposit`。DateTimePicker／Autocomplete／NativeSelect 本體與所有 handler、state、GraphQL、金額邏輯不變。（註：本檔原本就有傳 `identity` 給 `WalletDepositToggleButton`，與先前假設不同，未動。）
   - [ ] **A3 `AddCustomerModal`（新增／編輯顧客，676 行，約 17 欄）**：評估後排後續——(1) Enter 跳欄焦點鏈：每欄 `inputRef`＋`onKeyDown → setFocus('下一欄')`，換 `ui/input` 需逐欄確認 ref 轉發；(2) 客戶編號重複檢查的 `error`／`helperText`＋`endAdornment`（轉圈／勾／警告）屬 helperText 邏輯，風險高；(3) 混用 Select、民國年／月／日、偏好設計師 Autocomplete。需獨立一批，逐欄保留焦點順序並以鍵盤 Enter 實測。
+    - 範圍：`OrderCreate`／`OrderEdit`／`DraftOrderEdit`／`QueueOrderEdit` 各一份。**F 批（PR #9）刻意不做，排後續。** Dialog 內含 MUI Autocomplete／DatePicker，須保留 MUI Dialog。
+    - 驗收條件（需**真實瀏覽器鍵盤實測**，headless 截圖不足）：① 由第一欄起連按 Enter 依原順序逐欄跳焦，最後一欄行為與改版前一致；② 各必填欄留空送出，`helperText` 位置與文字不變、不被標籤擠壓；③ Tab／Shift+Tab 順序不變；④ Autocomplete／日期選擇器可開關、可選取；⑤ 窄螢幕不橫向溢出；⑥ `verify-logic` 的 FAIL 僅限純畫面差異。
   - 注意：`ui/native-select` 的 `label` 是「外框上緣標籤」，與「上方標籤」規範不同；全站 25 檔引用、21 處有傳 `label`。是否整批改成 `Field` 上方標籤需決定（見 §二 P3 第 4 項）。
 - [ ] **實機確認**：訂單列表捲軸、底部固定合計列（桌機／手機）、列印不出現合計列。
 
@@ -77,19 +79,19 @@
 
 ## 三、階段 4：半遷移盤點結果（2026/10/19 重新掃描，取代 10/18 舊數字）
 
-**掃描口徑（2026/10/19，基準 `main` 7cb899a）**：對 `src` 做純文字比對，只算 `*.js`、排除 `*.test.js`；「檔案數」＝符合的檔案數，「標籤數」＝`<Tag` 出現次數。腳本 `scripts/redesign/inventory-scan.js` 可重跑同口徑——**已實跑（2026-10-19 指揮者驗證）**，下表數字**以腳本實跑輸出為準**；先前工作階段（無法執行 `node`）用 `rg` 取得的數字與腳本有小差異（例如 `@mui/*` 414→415），已改為腳本值。標「（rg）」或「（推估）」者不是腳本輸出，不可與腳本數字混用。
+**掃描口徑（2026/10/19，基準 `main` 7cb899a）**：對 `src` 做純文字比對，只算 `*.js`、排除 `*.test.js`；「檔案數」＝符合的檔案數，「標籤數」＝`<Tag` 出現次數。腳本 `scripts/redesign/inventory-scan.js` 可重跑同口徑——**已實跑（2026-10-19 指揮者驗證）**，下表數字**以腳本實跑輸出為準**；先前工作階段（無法執行 `node`）用 `rg` 取得的數字與腳本有小差異（例如 `@mui/*` 414→415），已改為腳本值。標「（rg）」或「（推估）」者不是腳本輸出，不可與腳本數字混用。**F 批（PR #9，2026/10/19）之後**：`@mui/icons-material` 與 jss 兩列已更正，見下表註記與「F 批更新」。
 
 | 項目 | 本輪數字（10/19） | 舊數字（為何不同） |
 |---|---|---|
 | `src` 非測試 `.js` 檔 | 1,497（`src/views` 716）（腳本 `srcFiles`／`viewsFiles`） | — |
 | 引用 `@mui/*` 的檔案 | **415**（`src/views` **341**） | 10/18 的 414／340 與腳本差 1（先前 rg 值）；INVENTORY 的 706／232 是改版前基準（含已換掉的檔案） |
 | 引用 `@mui/material` 的檔案 | 411（`src/views` 340） | 先前 rg 為 410／339 |
-| 引用 `@mui/icons-material` 的檔案 | **25** | 舊 TODO「icons-material 50」是 import 次數，不是檔案數 |
+| 引用 `@mui/icons-material` 的檔案 | **25**（F 批前）→ **0**（PR #9 後，`src` 僅剩 `ui/icons.js` 一行註解） | 舊 TODO「icons-material 50」是 import 次數，不是檔案數 |
 | 引用 `@mui/x-date-pickers`／`x-tree-view` 的檔案 | 39／6（腳本） | 舊 41 是 import 次數 |
 | 引用 `@mui/styles`／`lab`／`system`／`utils`／`base` | 0 | — |
 | 使用 emotion（`@emotion`）的檔案 | 473（腳本） | 舊 481 含測試或 css 字串，口徑不同 |
 | `css={` 檔案／`sx={` 檔案 | 361／22（腳本 `cssProp`／`sxProp`） | — |
-| 使用 makeStyles／withStyles（jss）的檔案 | 2（rg，腳本未輸出） | 相同 |
+| 使用 makeStyles／withStyles（jss）的檔案 | ~~2~~ → **0**（F 批實查更正；僅剩 jest mock 與測試註解，程式碼 0 檔） | 舊「2 檔」是把 mock／註解算進去 |
 | 引用舊 `src/theme` 的檔案 | **247**（腳本 `themeRef`；先前 rg 兩種 regex 為 245、246） | 舊 187 口徑不明（可能漏了相對路徑寫法） |
 | 缺 `ui-root`（portal-root-scan） | 0；`ui` 元件未自帶 0（本輪已重跑，2026-10-19 指揮者驗證） | 舊 TODO 約 16 → 實際曾為 25 |
 | 已用 `src/ui` 的檔案（不含 `src/ui` 自身） | 571（`src/views` 537）（腳本 `uiUserFiles`／`uiUserFilesViews`） | — |
@@ -113,14 +115,23 @@
 **何時能移除**
 | 要移除 | 前提 | 估計 |
 |---|---|---|
-| `@mui/icons-material` | 全站圖示改走 `ui/icons`（已是轉接層）；剩 25 檔 | 最容易，掃一遍殘留即可（批次 F） |
-| jss（2 檔） | 改寫那 2 檔 | 很快 |
+| `@mui/icons-material` | 全站圖示改走 `ui/icons`（已是轉接層） | **已完成（F 批，PR #9，2026/10/19）**：`src` 的 import 25 → 0，僅剩 `ui/icons.js` 註解提及；可從 `package.json` 移除相依（待指揮者確認 build 後另批） |
+| jss | 無（實查程式碼 0 檔） | 已無須處理，只剩 jest mock／測試註解／scss 舊 class 名（見下 F 批更新） |
 | `@mui/x-date-pickers` | 先做 `ui/date-picker`（39 檔） | 中 |
 | `@mui/material`（含 Select／Autocomplete／TextField） | 先做 `ui/combobox`、完成 r2-04／r2-06 與高 MUI 頁、並決定 22 個列印報表（目前決定保留 MUI） | **只要列印報表維持 MUI，就無法完全移除** |
 | emotion（473 檔） | 所有 `css=` 改 Tailwind；與 MUI 橋接一起處理 | 最後一步 |
 | 舊 `src/theme`（約 245 檔引用） | MUI 與 emotion 移除後 | 最後一步 |
 
-結論：短期可移除的只有 icons-material 與 jss；MUI 本體取決於「列印報表」與「Autocomplete／日期選擇器」兩個決定（見 P3）。
+結論：短期可移除的只有 icons-material 與 jss（兩者 `src` 內皆已於 F 批、PR #9 歸零）；MUI 本體取決於「列印報表」與「Autocomplete／日期選擇器」兩個決定（見 P3）。
+
+#### F 批更新（2026/10/19，PR #9，分支 `claude/ui-batch3-box`，基於 main `7cb899a`）
+- **icons-material**：實查 `rg "@mui/icons-material" src` 為 25 檔（非舊盤點的 50 次／232 檔，那是改版前／含轉接層的口徑）：snackbars 5 個圖示 1 檔、CheckBox＋CheckBoxOutlineBlank 22 檔（Autocomplete 的 `icon`／`checkedIcon`）、`ServiceEdit/AboutAssistant.js` 的 `Chip` 1 檔。
+  - 在 `src/ui/icons.js` 補轉接：`CheckBox`（Lucide `SquareCheck`）、`CheckBoxOutlineBlank`（Lucide `Square`）。
+  - 23 檔 import 換成 `ui/icons`（只改 import 行；`AboutSettingFunction.js` 併入既有 `ui/icons` import）。
+  - `AboutAssistant.js` 的 `Chip`：該檔**無任何檔案 import**（路由與 `ServiceEdit/index.js` 用的是 `AboutAssistantSetting`），為死碼；且 `@mui/icons-material/Chip` 本就不存在、JSX 實際把它當 MUI Chip 用。僅把 import 來源改成正確的 `@mui/material/Chip`，不改邏輯、不刪檔，其餘留待死碼清理批。
+  - 結果：`@mui/icons-material` 在 `src` 的 import **25 → 0**。
+- **jss**：實查（2026/10/19）`rg "makeStyles|withStyles|@mui/styles|@material-ui/styles" src`，排除 scss 舊 class 名後，僅剩 `src/__mocks__/@material-ui/styles.js`（jest mock）與 `AccountingRecordCreate/__test__/index.test.js` 的**註解**，**程式碼 0 檔**。舊「jss 2 檔」說法不成立（應是把這兩處算進去）；不需改程式。`initialize*.scss` 內的 `.makeStyles-*` 是舊 jss 產生的 class 名選擇器，已無對應元素，屬死 CSS，另批清理（動它們要確認列印規則，故不在 F 批）。
+- **盤點總表**已在 PR #7（上方 §三）；其 `@mui/icons-material` 25 檔、jss 2 檔兩列為 F 批前數字，已在表內註記更正。
 
 ---
 
@@ -131,14 +142,14 @@
 | 批次 | 範圍 | 規模 | 風險 | 備註 |
 |---|---|---|---|---|
 | **A（本輪已做）** | P1：打帳單 `WalletDepositModal` 標籤統一 | 1 檔 | 低 | 見 STATUS「本輪改動」 |
-| A2 | P1：`OrderEdit/WalletDepositModal`（孿生檔）、`OrderCreate/AddCustomerModal` | 2 檔 | 低／中 | AddCustomerModal 有 Enter 跳欄焦點鏈與編號重複檢查，需逐欄對照，建議拆成單獨一批 |
+| A2 | P1：~~`OrderEdit/WalletDepositModal`（孿生檔）~~ ✅ 已完成（PR #8）；`OrderCreate/AddCustomerModal` 未做（即 A3） | 1 檔（剩 AddCustomerModal） | 低／中 | AddCustomerModal 有 Enter 跳欄焦點鏈與編號重複檢查，需逐欄對照，建議拆成單獨一批 |
 | B1 | P1：非打帳單頁面手機擠壓共用修正（設計師績效頁搜尋鈕被推出、日期欄只剩 24px、薪資單儲存格換行） | 估 5～10 頁；審計資料在 `scratchpad/audit-*.json`（不在 repo，**需重跑審計**） | 低～中 | 多為 `flex-wrap`／`min-w-0` 這類共用修正，要用 Playwright 手機寬度確認；本輪未做，原因：審計來源不在 repo，無法在無法執行 `node`／瀏覽器的階段安全修 |
 | B2 | P2：`r2-04` 表單頁 | 15 目錄／54 檔 | 中 | 清單 `batches/r2-04-forms.txt`；原 worktree 找不到，需重做；表單有驗證與送出，逐頁 verify-logic |
 | B3 | P2：`r2-06` 其他頁 | 63 目錄（檔案數未全掃） | 中 | 清單 `batches/r2-06-misc.txt`；同上 |
 | C | P2：高 MUI 頁 `OrderEdit`(28)／`DraftOrderEdit`(26)／`QueueOrderEdit`(24) 套用打帳單做法 | 78 檔、3 頁 | **高** | 金額／付款／卡券邏輯都在；三頁結構高度重複，建議先做 `OrderEdit` 一頁當樣板，每次一頁一個 PR |
 | D | 其他大頁：`Parameter`(20)、`EmployeeManagementDetail`(12)、`CustomerManagementDetails`(12，已在 r2-04 清單)、`Profile`(11) | 約 55 檔、4 頁 | 中 | 設定與會員資料，表單為主；`CustomerManagementDetails` 併入 B2 |
 | E | 一般頁面長尾：約 125 個目錄各 1～3 檔（設定／報表／會員／商品／服務），含 `ui/native-select` 外框標籤改上方標籤（約 21 處） | 約 130 目錄（與 B2／B3 重疊） | 低～中 | 依 `PAGE_CHECKLIST.md` 的順序處理；先處理沒有列印的頁 |
-| F | `@mui/icons-material` 殘留 25 檔、jss 2 檔 | 27 檔 | 低 | 與批次無關，可穿插；可讓 icons-material 套件移除 |
+| **F（已完成，PR #9，2026/10/19）** | `@mui/icons-material` 殘留 25 檔 → 0；jss 實查程式碼 0 檔（原「2 檔」更正） | 23 檔換 import＋`ui/icons` 補 2 個轉接＋1 檔死碼改指向 | 低 | 可讓 icons-material 套件移除（另批）；`initialize*.scss` 的 `.makeStyles-*` 死 CSS 與 `AboutAssistant.js` 死碼留待清理批 |
 | **P3（待決策）** | `ui/combobox`（取代 56 個 Autocomplete）、`ui/date-picker`（39 檔）、22 個列印報表是否改版、Services 篩選鈕 | combobox／date-picker 各為一個元件工程（中）；列印報表約 22 頁（高，需改 `initialize.scss` 約 70 條列印規則） | 高 | **等 Jason 拍版，未動** |
 
-**預估批數**：A2 1 批；B1 1～2 批；B2 1～2 批；B3 3～5 批；C 3 批；D 2～3 批；E 與 B2／B3 合併計；F 1 批。合計約 **12～17 批**（不含 P3 的元件與列印報表）。MUI 本體要完全移除，另需 P3 三項定案後再加 combobox、date-picker 與列印報表各一批以上。
+**預估批數**：A2 1 批；B1 1～2 批；B2 1～2 批；B3 3～5 批；C 3 批；D 2～3 批；E 與 B2／B3 合併計；F 已完成（PR #9）。合計約 **11～16 批**（不含 P3 的元件與列印報表）。MUI 本體要完全移除，另需 P3 三項定案後再加 combobox、date-picker 與列印報表各一批以上。

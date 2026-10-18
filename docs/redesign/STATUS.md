@@ -38,6 +38,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ## 進行中
 
 - **第二層第二輪**：用新元件換掉第一輪留下的 MUI（Select、ToggleButton、Checkbox、Switch、Avatar、MUI 分頁等）。6 批，清單見 `batches/r2-*.txt`。
+- **F 批（2026/10/19，`claude/ui-batch3-box`，PR #9）**：`ui/icons` 補 `CheckBox`／`CheckBoxOutlineBlank`；23 檔 `@mui/icons-material` import 換為 `ui/icons`，`src` 內歸零（25 → 0）；`AboutAssistant.js`（死碼）的 `Chip` import 改指向 `@mui/material/Chip`；jss 實查程式碼為 0 檔（舊「2 檔」更正，下方盤點寫的「jss 2 檔」以此為準）；下方盤點的 `@mui/icons-material` 25 檔是 F 批前的數字，PR #9 後 `src` 內為 0。A3 `AddCustomerModal` 刻意延後（需鍵盤實測，見 `TODO.md`）。本批實改 28 檔（src 25＋docs 3）。驗證（指揮者已完成）：`@mui/icons-material` 在 `src` 僅剩 `ui/icons.js` 一行註解；`swap-icons` 乾跑 files 0／icons 0；`git diff` 非 import 行零變更；`verify-logic` 全部通過；eslint 改動檔 1 error／67 warnings，基線（改前）2 errors／67 warnings，故 0 新增且少 1；`portal-root-scan` 0／0；全域 unit 17 suites，51 passed＋1 skipped（LoginForm skip，待 PR #6）、0 failed；`CI=true npm run build` 成功。
 - **2026/10/19 重新盤點（口徑與細節見 `TODO.md` §三、§四；本檔舊寫的 414／340、約 16 個檔缺 `ui-root` 已更新）**：
   - 數字以 `inventory-scan.js` 實跑為準（已實跑，2026-10-19 指揮者驗證）：`@mui/*`：`src` 415 檔、`src/views` 341 檔（`src/views` 第一層 177 項，137 項仍有 MUI、40 項完全沒有；含單檔，扣單檔的「約 133 個目錄」為推估）；`@mui/material` 411 檔；`@mui/icons-material` 25 檔；`@mui/x-date-pickers` 39 檔；emotion 473 檔；舊 `src/theme` 247 檔；jss 2 檔（rg）。
   - 已用 `src/ui` 的檔案 571 個（`src/views` 537）；177 項 views 目錄中 169 項至少有一檔用到 `ui`。

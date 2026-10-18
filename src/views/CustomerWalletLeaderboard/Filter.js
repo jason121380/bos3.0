@@ -4,8 +4,7 @@ import {
   TextField, Checkbox, FormControl, InputLabel,
   Select, MenuItem, Autocomplete
 } from '@mui/material'
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import DateSelector from 'components/DateSelector'
 import idx from 'idx'

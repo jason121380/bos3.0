@@ -55,3 +55,4 @@
 13. **`ui/native-select` 的 `label` 是外框上緣標籤**（為了和 MUI 外框欄位並排），不是「上方標籤」；`ui/input` 的 `Field` 才是。同一個彈窗混用兩種會不一致，換標籤時要整個彈窗一起換（WalletDepositModal 即如此處理）。
 14. **非互動工作階段可能不能執行 `node`／`npx`／`npm`／`sed`／`sort -k`**（權限提示無人可核准）：只能用 `rg`、`git`、`cut`、`sort`、`uniq`。遇到時不要繞過，把驗證留給指揮者；`rg` 的 pattern 含 `[`／`<`／`>` 時也可能被分類器擋，可改 `\x3c`、`\w` 或只用 `rg -l`＋`cut`。
 15. **舊 worktree 的成果不在 repo 就等於沒有**：r2-04／r2-06 的 worktree 與分支在本機都找不到，不能假設可以 rebase 合併。未 push 的 worktree 要先確認再算進進度。
+16. **轉接層缺圖示時 swap-icons 會整檔跳過**（F 批，PR #9，2026/10/19）：`swap-icons.js` 只換 `ui/icons` 已有的名稱，沒有的保留 MUI import；Autocomplete 的 `CheckBox`／`CheckBoxOutlineBlank` 因缺 adapter 讓 22 檔一直殘留。先在 `ui/icons.js` 補轉接（Lucide `SquareCheck`／`Square`）再換。盤點殘留時以 `rg` 實查為準，別沿用舊數字（舊「jss 2 檔」實查為 0）。另：`@mui/icons-material/Chip` 這種不存在的 import 出現在死碼檔（`ServiceEdit/AboutAssistant.js`），因沒被 bundle 才沒讓 build 失敗。

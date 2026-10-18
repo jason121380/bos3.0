@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Checkbox, TextField, Autocomplete } from '@mui/material'
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import useFetchGetCustomerReference from 'hooks/useFetchGetCustomerReference'
 import idx from 'idx'
 import { css } from '@emotion/react'
