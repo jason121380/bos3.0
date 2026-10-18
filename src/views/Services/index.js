@@ -74,11 +74,9 @@ function Services() {
   }
   return (
     <Page className="ui-root" title="服務項目設定">
-      {/* 篩選開關改用 AdminPageHeader 既有的 onFilterClick（舊版傳入的 secondaryAction 不在其 props 內，按鈕未顯示） */}
+      {/* 舊版的篩選開關以 secondaryAction 傳入，但 AdminPageHeader 不支援這個 prop，按鈕從未顯示；維持原行為 */}
       <AdminPageHeader
         title="服務項目設定"
-        showFilter={showFilter}
-        onFilterClick={() => setShowFilter(!showFilter)}
         primaryAction={{
           label: '新增',
           to: '/service/create'
