@@ -46,6 +46,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ## 進行中
 
 - **第二層第二輪**：用新元件換掉第一輪留下的 MUI（Select、ToggleButton、Checkbox、Switch、Avatar、MUI 分頁等）。6 批，清單見 `batches/r2-*.txt`。
+- **批次 9（分支 `claude/ui-batch9-box`，版本 v3.0-1019-0309，PR／commit 待補，checks 待驗證；目前組第 4 個，前為 #13、#14、#15）**：`CouponList` 的 `AboutDeductionEditModal`、`AssistantSettingEditModal`、`SaleStatusEditModal` 三個編輯彈窗，`TextField`／`Select` 改 `Field`＋`Input`／`NativeSelect`（做法同批次 4、5）；彈窗本體（MUI `Modal`）與 `FormControlLabel`＋`Checkbox` 保留；`Results.js`／`index.js` 查無待改欄位，未動。`AssistantSettingEditModal` 的「協助人員人數」原為未綁值的 MUI Select，改為 `value={content.peopleCount}`（僅顯示綁定，同 `CouponEdit`，handler 不變）。已移除不再使用的 `inputLabel` ref 與 `useRef` import。驗證（指揮者）：eslint 0 error；`verify-logic` 三檔中兩檔各 FAIL 一項，僅為 `inputLabel` ref 移除（純 presentation），另一檔通過；portal-root-scan 0/0；全域單元測試 52/52 通過；`CI=true npm run build` 成功，bundle 含校正前版號字串（0305），版號校正為 0309 後由指揮者重 build 確認；外觀待實機（欄位 `items-end` 對齊、`w-28` 換行）。
 - **批次 5（分支 `claude/ui-batch5-box`，版本 v3.0-1019-0202，PR #11，commit 079a7d0，GitHub Build/Unit pass，已 merge，merge commit cfc79cd）**：`CouponEdit` 三個 About 檔的欄位標籤改為上方標籤（`Field`＋`Input`／`NativeSelect`），做法同批次 4。驗證：**指揮者已完成**。
   - eslint 3 檔 0 problems。
   - `verify-logic`：`AboutCoupon` 通過；`AboutDeduction`、`AboutAssistantSetting` 各 FAIL 一項，為 `inputLabel` ref 移除（MUI `InputLabel` 的 ref，改 `NativeSelect` 後不需要，純 presentation，其餘敘述未缺）。
@@ -88,6 +89,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 | v3.0-1019-0152 | 2026-10-19 01:52 | 規則前已 push（對照） | #10 | 已 push，不 amend | GitHub Build/Unit pass；第一組已於 2026-10-19 merge（29630fa） |
 | v3.0-1019-0202 | 2026-10-19 02:02 | UI 批次5 CouponEdit | #11 | 079a7d0 | GitHub Build/Unit pass；已 merge（merge commit cfc79cd） |
 | v3.0-1019-0232 | 2026-10-19 02:32 | 版本顯示上線（`src/version.js`） | #12 | bca2950 | 狀態：提前 merge 中（對齊後 checks 待重跑） |
+| v3.0-1019-0309 | 2026-10-19 03:09 | UI 批次9 CouponList 三個編輯彈窗（本批為目前組第 4 個，前為 #13、#14、#15） | PR 待補 | commit 待補 | checks 待驗證 |
 
 ## 刻意不改（需另外決定）
 

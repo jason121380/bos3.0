@@ -1,19 +1,12 @@
-// 彈窗內有 MUI Select（值可能為空字串），依遷移指南保留 MUI Modal；外框、標題、按鈕改為 src/ui
-import {
-  Modal,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-} from '@mui/material'
+// 下拉改為 NativeSelect（值可能為空字串，以索引對應、回傳原始型別）；保留 MUI Modal 與 Checkbox，外框、標題、欄位、按鈕改為 src/ui
+import { Modal, FormControlLabel, Checkbox } from '@mui/material'
 import PropTypes from 'prop-types'
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import _ from 'lodash'
 import { Delete, Plus, Trash2 } from 'lucide-react'
 import { Button } from 'ui/button'
+import { Field, Input } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 
 const deductions = [
@@ -51,12 +44,6 @@ function AssistantSettingEditModal({
   setHelperDeductionSetting,
   handleSubmitHelperDeductionSettingWarning,
 }) {
-  const inputLabel = useRef()
-
-  //   useEffect(() => {
-  //     setLabelWidth(inputLabel.current.offsetWidth)
-  //   }, [])
-
   const handleAddAssistantContent = () => {
     const newHelperDeductionSetting = _.cloneDeep(helperDeductionSetting)
     newHelperDeductionSetting.push({
@@ -274,61 +261,52 @@ function AssistantSettingEditModal({
 
         <CardContent className="flex flex-col gap-4 overflow-y-auto pt-0">
           {helperDeductionSetting.map((content, index) => (
-            <div className="flex flex-wrap items-center gap-3" key={index}>
-              <FormControl variant="outlined" style={{ width: '6rem' }} fullWidth>
-                <InputLabel ref={inputLabel}>扣項類別</InputLabel>
-                <Select
-                  label='扣項類別'
+            <div className="flex flex-wrap items-end gap-3" key={index}>
+              <Field label="扣項類別" className="w-full sm:w-36">
+                <NativeSelect
                   onChange={event => handleDeductionTypeChange(event, index)}
                   value={content.helperDeductionType}
                 >
                   {deductions.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.value}-${idx}`}>
+                    <NativeSelectOption value={data.value} key={`${data.value}-${idx}`}>
                       {data.label}
-                    </MenuItem>
+                    </NativeSelectOption>
                   ))}
-                </Select>
-              </FormControl>
-              <FormControl variant="outlined" style={{ width: '7rem' }} fullWidth>
-                <InputLabel>類別</InputLabel>
-                <Select
-                  label='類別'
-                  value={content.type}
-                  onChange={event => handleHelperType(event, index)}
-                >
+                </NativeSelect>
+              </Field>
+              <Field label="類別" className="w-full sm:w-36">
+                <NativeSelect value={content.type} onChange={event => handleHelperType(event, index)}>
                   {merchantHelperItems?.map((data, idx) => (
-                    <MenuItem value={data.type} key={`${data.type}-${idx}`}>
+                    <NativeSelectOption value={data.type} key={`${data.type}-${idx}`}>
                       {data.type}
-                    </MenuItem>
+                    </NativeSelectOption>
                   ))}
-                </Select>
-              </FormControl>
-              <FormControl variant="outlined" style={{ width: '7rem' }} fullWidth>
-                <InputLabel ref={inputLabel} id="select-item-label">
-                  協助人員人數
-                </InputLabel>
-                <Select label='協助人員人數' onChange={event => handleAssistantName(event, index)}>
+                </NativeSelect>
+              </Field>
+              <Field label="協助人員人數" className="w-full sm:w-36">
+                <NativeSelect
+                  onChange={event => handleAssistantName(event, index)}
+                  value={content.peopleCount}
+                >
                   {assistantNum.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.label}-${idx}`}>
+                    <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                       {data.label}
-                    </MenuItem>
+                    </NativeSelectOption>
                   ))}
-                </Select>
-              </FormControl>
-              <FormControl variant="outlined" style={{ width: '7rem' }} fullWidth>
-                <InputLabel>扣項方式</InputLabel>
-                <Select
-                  label='扣項方式'
+                </NativeSelect>
+              </Field>
+              <Field label="扣項方式" className="w-full sm:w-36">
+                <NativeSelect
                   value={content.deductionWay}
                   onChange={event => handleDeductionWayChange(event, index)}
                 >
                   {deductionWay2.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.label}-${idx}`}>
+                    <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                       {data.label}
-                    </MenuItem>
+                    </NativeSelectOption>
                   ))}
-                </Select>
-              </FormControl>
+                </NativeSelect>
+              </Field>
               {content.deductionWay !== '' && (
                 <span className="flex flex-col whitespace-nowrap">
                   <FormControlLabel
@@ -355,11 +333,8 @@ function AssistantSettingEditModal({
                 content.designatePoint > 0 ||
                 content.isDesignate ? (
                 <>
-                  <TextField
-                    style={{ width: '5rem' }}
-                    type="number"
-                    name="designateInput"
-                    variant="outlined"
+                  <Field
+                    className="w-28"
                     label={
                       content.deductionWay
                         ? `指定${content.deductionWay}`
@@ -369,25 +344,27 @@ function AssistantSettingEditModal({
                             ? '指定固定金額'
                             : '指定業績%數'
                     }
-                    value={
-                      content.designatePercent ||
-                        content.designateCash ||
-                        content.designatePoint > 0
-                        ? content.designatePercent ||
-                        content.designateCash ||
-                        content.designatePoint
-                        : 0
-                    }
-                    onChange={event =>
-                      handleDesignateDeductionWayInput(event, index, content.deductionWay)
-                    }
-                    onWheel={() => document.activeElement.blur()}
-                  />
-                  <TextField
-                    style={{ width: '5rem' }}
-                    type="number"
-                    name="NonDesignateInput"
-                    variant="outlined"
+                  >
+                    <Input
+                      type="number"
+                      name="designateInput"
+                      value={
+                        content.designatePercent ||
+                          content.designateCash ||
+                          content.designatePoint > 0
+                          ? content.designatePercent ||
+                          content.designateCash ||
+                          content.designatePoint
+                          : 0
+                      }
+                      onChange={event =>
+                        handleDesignateDeductionWayInput(event, index, content.deductionWay)
+                      }
+                      onWheel={() => document.activeElement.blur()}
+                    />
+                  </Field>
+                  <Field
+                    className="w-28"
                     label={
                       content.deductionWay
                         ? `不指定${content.deductionWay}`
@@ -397,28 +374,30 @@ function AssistantSettingEditModal({
                             ? '不指定固定金額'
                             : '不指定業績%數'
                     }
-                    value={
-                      content.nonDesignatePercent ||
-                        content.nonDesignateCash ||
-                        content.nonDesignatePoint > 0
-                        ? content.nonDesignatePercent ||
-                        content.nonDesignateCash ||
-                        content.nonDesignatePoint
-                        : 0
-                    }
-                    onChange={event =>
-                      handleNonDesignateDeductionWayInput(event, index, content.deductionWay)
-                    }
-                    onWheel={() => document.activeElement.blur()}
-                  />
+                  >
+                    <Input
+                      type="number"
+                      name="NonDesignateInput"
+                      value={
+                        content.nonDesignatePercent ||
+                          content.nonDesignateCash ||
+                          content.nonDesignatePoint > 0
+                          ? content.nonDesignatePercent ||
+                          content.nonDesignateCash ||
+                          content.nonDesignatePoint
+                          : 0
+                      }
+                      onChange={event =>
+                        handleNonDesignateDeductionWayInput(event, index, content.deductionWay)
+                      }
+                      onWheel={() => document.activeElement.blur()}
+                    />
+                  </Field>
                 </>
               ) : (
                 content.deductionWay !== '' && (
-                  <TextField
-                    style={{ width: '5rem' }}
-                    type="number"
-                    name="designateInput"
-                    variant="outlined"
+                  <Field
+                    className="w-28"
                     label={
                       content.deductionWay
                         ? content.deductionWay
@@ -428,14 +407,19 @@ function AssistantSettingEditModal({
                             ? '固定金額'
                             : '業績%數'
                     }
-                    value={
-                      content.percent || content.cash || content.point > 0
-                        ? content.percent || content.cash || content.point
-                        : 0
-                    }
-                    onChange={event => handleDeductionWayInput(event, index, content.deductionWay)}
-                    onWheel={() => document.activeElement.blur()}
-                  />
+                  >
+                    <Input
+                      type="number"
+                      name="designateInput"
+                      value={
+                        content.percent || content.cash || content.point > 0
+                          ? content.percent || content.cash || content.point
+                          : 0
+                      }
+                      onChange={event => handleDeductionWayInput(event, index, content.deductionWay)}
+                      onWheel={() => document.activeElement.blur()}
+                    />
+                  </Field>
                 )
               )}
               <div className="flex items-center gap-1">

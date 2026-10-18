@@ -61,6 +61,7 @@
 ### P2 — 改版收尾
 - [x] **版本顯示（v3.0-1019-0232，分支 `claude/ui-version-box`）**：新增 `src/version.js`（`APP_VERSION`），`Dashboard/TopBar.js`、`Auth/Topbar.js` 改讀它，不再寫死 `v3.0`。狀態：提前 merge 中（待指揮者驗證與 PR）。
 - [ ] **紀律**：之後每個完整 commit 都要更新 `src/version.js`（格式 `v3.0-MMDD-HHmm`，Asia/Taipei），並與 commit 訊息第一行 `[版號]` 一致；不自行升大版號。
+- [ ] **批次 9 [v3.0-1019-0309]（`claude/ui-batch9-box`，PR／commit 待補，待指揮者驗證；目前組第 4 個，前為 #13、#14、#15）**：`CouponList` 三個編輯彈窗 `AboutDeductionEditModal`、`AssistantSettingEditModal`、`SaleStatusEditModal`，TextField／單選 Select → `Field`＋`Input`／`NativeSelect`（做法同批次 4、5）；MUI `Modal` 與 `Checkbox` 保留；`Results.js`／`index.js` 無待改欄位未動。
 - [x] **批次 5 [v3.0-1019-0202]（`claude/ui-batch5-box`，PR #11 已 merge，merge commit cfc79cd，commit 079a7d0，GitHub Build/Unit pass；指揮者已驗證）**：`CouponEdit` 表單標籤改版，做法同批次 4 的 `CouponCreate`（PR #10）。
   - 本批完成：`AboutCoupon.js`、`AboutDeduction.js`、`AboutAssistantSetting.js` 的 TextField → `Field`＋`Input`（標籤在上）、單選 Select → `Field`＋`NativeSelect`；`index.js` 沒有 MUI 欄位，未動。三檔都沒有 helperText／error、Autocomplete、日期、鍵盤焦點鏈或列印，所以三檔皆在範圍內。`Checkbox`／`FormControlLabel`（分指定／互助均分）仍是 MUI。
   - **與 `CouponCreate` 不對稱處（不可從孿生目錄照抄）**：
