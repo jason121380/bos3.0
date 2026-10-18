@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchCreateService from 'hooks/useFetchCreateService'
 import useFetchMerchantCommissionWay from 'hooks/useFetchMerchantCommissionWay'
@@ -14,27 +11,13 @@ import React from 'react'
 import { useHistory } from 'react-router'
 import _ from 'lodash'
 import useFetchMerchantJobTitlePoint from 'hooks/useFetchMerchantJobTitlePoint'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import helperDeduction from './../../helper/helperDeduction.js'
-
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import AboutAssistantSetting from './AboutAssistantSetting'
 import AboutDeduction from './AboutDeduction'
 import AboutService from './AboutService'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  about: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function ServiceCategoryCreate() {
   const merchantId = localStorage.getItem('userMerchant')
@@ -292,18 +275,17 @@ function ServiceCategoryCreate() {
   }, [service, merchantJobTitlePoint.loading])
 
   return (
-    <Page css={styles.root} title="新增服務項目">
-      <Container maxWidth="md">
-        <PageTitle title='新增服務項目' subTitle='New Service' />
+    <Page className="ui-root" title="新增服務項目">
+      {/* 頁面外距由 #printContainer 提供；表單頁內容寬度 max-w-4xl（與舊版 Container md 相近） */}
+      <div className="mx-auto flex max-w-4xl flex-col gap-6">
+        <PageHeader className="pb-0" title='新增服務項目' />
         <AboutService
-          className={styles.about}
           service={service}
           onChange={handleOnChange}
           handleCheckboxChange={handleCheckboxChange}
         />
 
         <AboutDeduction
-          className={styles.about}
           ServiceDeductionItems={service.ServiceDeductionItems}
           onChange={handleOnChange}
           truthPerformPredict={truthPerformPredict}
@@ -312,18 +294,17 @@ function ServiceCategoryCreate() {
         />
 
         <AboutAssistantSetting
-          className={styles.about}
           merchantHelperItems={merchantHelperItems}
           support={service.helperDeductionSetting}
           onChange={handleOnChange}
         />
 
-        <div css={styles.actions}>
-          <Button color="primary" variant="contained" disabled={vaild || saveBtn} onClick={handleSubmit}>
+        <div>
+          <Button variant="primary" disabled={vaild || saveBtn} onClick={handleSubmit}>
             新增
           </Button>
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }
