@@ -13,18 +13,18 @@ const localStyles = {
   card: css({
     borderRadius: '16px',
     boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
+    border: '1px solid rgb(var(--border))',
+    backgroundColor: 'rgb(var(--background))',
     overflow: 'hidden',
     marginTop: '24px',
   }),
   tableHead: css({
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgb(var(--background))',
     '& .MuiTableCell-head': {
-      backgroundColor: '#f8f9fa',
-      color: '#212121',
+      backgroundColor: 'rgb(var(--surface))',
+      color: 'rgb(var(--text))',
       fontWeight: 'bold',
-      borderBottom: '1px solid #f0f0f0',
+      borderBottom: '1px solid rgb(var(--border))',
       height: '40px !important',
       padding: '2px 16px !important',
       fontSize: '14px',
@@ -34,22 +34,22 @@ const localStyles = {
     height: '40px !important',
     '& .MuiTableCell-body': {
       padding: '2px 16px !important',
-      borderBottom: '1px solid #f0f0f0',
+      borderBottom: '1px solid rgb(var(--border))',
       fontSize: '14px !important',
-      color: '#333',
+      color: 'rgb(var(--text))',
     },
     '&:hover': {
       backgroundColor: 'transparent !important',
     },
   }),
   totalRow: css({
-    backgroundColor: '#FFFFFF !important',
+    backgroundColor: 'rgb(var(--background)) !important',
     height: '40px !important',
     '& .MuiTableCell-body': {
       padding: '2px 16px !important',
       fontWeight: 'bold !important',
-      color: '#212121 !important',
-      borderBottom: '1px solid #f0f0f0',
+      color: 'rgb(var(--text)) !important',
+      borderBottom: '1px solid rgb(var(--border))',
     }
   }),
 }

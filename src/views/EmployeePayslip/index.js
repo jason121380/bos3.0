@@ -36,10 +36,10 @@ const styles = {
     gap: '12px',
     alignItems: 'center',
     marginBottom: '12px',
-    backgroundColor: '#fff',
+    backgroundColor: 'rgb(var(--background))',
     borderRadius: '12px',
     padding: '16px',
-    border: '1px solid #f0f0f0',
+    border: '1px solid rgb(var(--border))',
   }),
   pillButton: css({
     borderRadius: '20px !important',
@@ -179,7 +179,7 @@ export default function Payroll() {
 
         <Collapse in={showFilter}>
           <div css={styles.filterWrap}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold', color: '#666' }}>篩選條件：</Typography>
+            <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'rgb(var(--text-secondary))' }}>篩選條件：</Typography>
             <DesignerSearch
               value={searchId}
               label="設計師編號/姓名"

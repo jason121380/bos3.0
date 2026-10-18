@@ -27,14 +27,14 @@ const styles = {
     left: 0,
     background: 'white',
     zIndex: '99',
-    outline: '1px solid #eeeeee',
+    outline: '1px solid rgb(var(--border))',
   }),
   stickyRow: css({
     position: 'sticky',
     top: 0,
     background: 'white',
     zIndex: '100',
-    outline: '1px solid #eeeeee',
+    outline: '1px solid rgb(var(--border))',
   }),
   filterButton: css({
     marginRight: theme.spacing(2),
@@ -65,7 +65,7 @@ const styles = {
     left: 0,
     background: 'white',
     zIndex: '99',
-    outline: '1px solid #eeeeee',
+    outline: '1px solid rgb(var(--border))',
   }),
   colorRedLinkLate: css({
     color: 'red !important',
@@ -97,9 +97,9 @@ const styles = {
     },
   }),
   tableRow: css({
-    backgroundColor: '#ffffff !important',
+    backgroundColor: 'rgb(var(--background)) !important',
     '&:hover': {
-      backgroundColor: '#ffffff !important',
+      backgroundColor: 'rgb(var(--background)) !important',
     },
   }),
   compactCell: css({
@@ -115,7 +115,7 @@ const styles = {
     fontSize: '13px !important',
     fontWeight: '600 !important',
     whiteSpace: 'nowrap',
-    backgroundColor: '#fafafa !important',
+    backgroundColor: 'rgb(var(--surface)) !important',
   }),
   clockInCell: css({
     display: 'flex',
@@ -154,7 +154,7 @@ const styles = {
     fontSize: '13px !important',
     fontWeight: '600 !important',
     whiteSpace: 'nowrap',
-    backgroundColor: '#fafafa !important',
+    backgroundColor: 'rgb(var(--surface)) !important',
   }),
   highlightHeaderCell: css({
     padding: '8px 8px !important',
@@ -162,7 +162,7 @@ const styles = {
     fontWeight: 'bold !important',
     whiteSpace: 'nowrap',
     backgroundColor: '#eef4ff !important',
-    color: '#1A73E8 !important',
+    color: 'rgb(var(--accent)) !important',
   }),
   highlightCell: css({
     padding: '4px 8px !important',
@@ -170,10 +170,10 @@ const styles = {
     fontWeight: 'bold !important',
     whiteSpace: 'nowrap',
     backgroundColor: '#eef4ff !important',
-    color: '#1A73E8 !important',
+    color: 'rgb(var(--accent)) !important',
     '&:hover': {
       backgroundColor: '#eef4ff !important',
-      color: '#1A73E8 !important',
+      color: 'rgb(var(--accent)) !important',
     }
   }),
 }
@@ -561,11 +561,11 @@ export default function Results({
               onClick={handleHRExport}
               size="small"
               css={css({
-                backgroundColor: '#f5f5f5 !important',
-                color: '#666 !important',
+                backgroundColor: 'rgb(var(--surface)) !important',
+                color: 'rgb(var(--text-secondary)) !important',
                 boxShadow: 'none !important',
                 '&:hover': {
-                  backgroundColor: '#e0e0e0 !important',
+                  backgroundColor: 'rgb(var(--surface)) !important',
                   boxShadow: 'none !important',
                 }
               })}
@@ -578,11 +578,11 @@ export default function Results({
               onClick={handleExport}
               size="small"
               css={css({
-                backgroundColor: '#f5f5f5 !important',
-                color: '#666 !important',
+                backgroundColor: 'rgb(var(--surface)) !important',
+                color: 'rgb(var(--text-secondary)) !important',
                 boxShadow: 'none !important',
                 '&:hover': {
-                  backgroundColor: '#e0e0e0 !important',
+                  backgroundColor: 'rgb(var(--surface)) !important',
                   boxShadow: 'none !important',
                 }
               })}

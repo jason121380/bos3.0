@@ -23,14 +23,14 @@ const styles = {
     minWidth: '150px !important',
     width: '150px !important',
     overflow: 'hidden !important',
-    outline: '1px solid #eeeeee',
+    outline: '1px solid rgb(var(--border))',
   }),
   stickyRow: css({
     position: 'sticky',
     top: 0,
     background: 'white',
     zIndex: '100',
-    outline: '1px solid #eeeeee',
+    outline: '1px solid rgb(var(--border))',
   }),
   nameCell: css({
     display: 'flex',
@@ -91,7 +91,7 @@ const styles = {
     fontSize: '13px !important',
     fontWeight: '600 !important',
     whiteSpace: 'nowrap',
-    backgroundColor: '#fafafa !important',
+    backgroundColor: 'rgb(var(--surface)) !important',
   }),
   dateHeaderCell: css({
     minWidth: '120px !important',
@@ -100,7 +100,7 @@ const styles = {
     fontSize: '13px !important',
     fontWeight: '600 !important',
     whiteSpace: 'nowrap',
-    backgroundColor: '#fafafa !important',
+    backgroundColor: 'rgb(var(--surface)) !important',
     textAlign: 'center',
   }),
   dateCell: css({
@@ -332,13 +332,13 @@ export default function Results({
               onClick={exportExcel}
               size="small"
               css={css({
-                backgroundColor: '#f5f5f5 !important',
-                color: '#666 !important',
+                backgroundColor: 'rgb(var(--surface)) !important',
+                color: 'rgb(var(--text-secondary)) !important',
                 boxShadow: 'none !important',
                 borderRadius: '18px !important',
                 padding: '4px 16px !important',
                 '&:hover': {
-                  backgroundColor: '#e0e0e0 !important',
+                  backgroundColor: 'rgb(var(--surface)) !important',
                   boxShadow: 'none !important',
                 }
               })}

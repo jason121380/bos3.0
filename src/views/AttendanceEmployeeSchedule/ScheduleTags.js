@@ -42,7 +42,7 @@ const ScheduleTags = ({
                     padding: '4px 16px !important',
                     minHeight: '40px !important',
                     '&.btn_focus': {
-                      boxShadow: '0 0 0 2px #1A73E8 !important',
+                      boxShadow: '0 0 0 2px rgb(var(--accent)) !important',
                     }
                   })}
                 >

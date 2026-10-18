@@ -50,21 +50,12 @@ const styles = {
       fontWeight: 'bold',
       display: 'flex',
       alignItems: 'center',
-      '&::before': {
-        content: '""',
-        display: 'inline-block',
-        width: '4px',
-        height: '16px',
-        backgroundColor: '#1A73E8',
-        marginRight: '8px',
-        borderRadius: '2px',
-      },
     },
   }),
   tableRow: css({
-    backgroundColor: '#ffffff !important',
+    backgroundColor: 'rgb(var(--background)) !important',
     '&:hover': {
-      backgroundColor: '#ffffff !important',
+      backgroundColor: 'rgb(var(--background)) !important',
     },
   }),
   compactCell: css({
@@ -73,7 +64,7 @@ const styles = {
     whiteSpace: 'nowrap',
   }),
   editIcon: css({
-    color: '#999',
+    color: 'rgb(var(--text-tertiary))',
     padding: '4px',
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.04)',

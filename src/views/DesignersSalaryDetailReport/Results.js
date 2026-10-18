@@ -14,15 +14,15 @@ import { css } from '@emotion/react'
 
 const localStyles = {
   tableHead: css({
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgb(var(--background))',
     position: 'sticky',
     top: 0,
     zIndex: 10,
     '& .MuiTableCell-head': {
-      backgroundColor: '#f8f9fa',
-      color: '#212121',
+      backgroundColor: 'rgb(var(--surface))',
+      color: 'rgb(var(--text))',
       fontWeight: 'bold',
-      borderBottom: '1px solid #f0f0f0',
+      borderBottom: '1px solid rgb(var(--border))',
       height: '40px !important',
       padding: '2px 16px !important',
       fontSize: '14px',
@@ -34,9 +34,9 @@ const localStyles = {
     minHeight: '40px !important',
     '& .MuiTableCell-body': {
       padding: '2px 16px !important',
-      borderBottom: '1px solid #f0f0f0',
+      borderBottom: '1px solid rgb(var(--border))',
       fontSize: '14px !important',
-      color: '#333',
+      color: 'rgb(var(--text))',
     },
     '&:hover': {
       backgroundColor: 'transparent !important',
@@ -48,23 +48,23 @@ const localStyles = {
     '& .MuiTableCell-body': {
       padding: '2px 16px !important',
       fontWeight: 'bold !important',
-      color: '#1A73E8 !important',
-      borderBottom: '1px solid #f0f0f0',
+      color: 'rgb(var(--accent)) !important',
+      borderBottom: '1px solid rgb(var(--border))',
     }
   }),
   stickyLeft: css({
     position: 'sticky',
     left: 0,
-    background: '#FFFFFF !important',
+    background: 'rgb(var(--background)) !important',
     zIndex: 20,
-    borderRight: '1px solid #f0f0f0',
+    borderRight: '1px solid rgb(var(--border))',
   }),
   stickyLeft2: css({
     position: 'sticky',
     left: 80,
-    background: '#FFFFFF !important',
+    background: 'rgb(var(--background)) !important',
     zIndex: 20,
-    borderRight: '1px solid #f0f0f0',
+    borderRight: '1px solid rgb(var(--border))',
   }),
 }
 

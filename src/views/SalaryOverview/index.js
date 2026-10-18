@@ -235,14 +235,14 @@ export default function SalaryOverview() {
                     <Grid item xs={12} md={5}>
                       <Card sx={{
                         height: '100%',
-                        border: '1px solid #f0f0f0',
+                        border: '1px solid rgb(var(--border))',
                         borderRadius: '12px',
                         boxShadow: 'none',
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'center',
                         p: 2.5,
-                        backgroundColor: '#ffffff'
+                        backgroundColor: 'rgb(var(--background))'
                       }}>
                         <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'primary.main', mb: 1.5, display: 'flex', alignItems: 'center', fontSize: '14.5px' }}>
                           <span style={{ backgroundColor: theme.palette.primary.main, width: '4px', height: '16px', display: 'inline-block', marginRight: '8px', borderRadius: '2px' }}></span>
@@ -289,7 +289,7 @@ export default function SalaryOverview() {
                         variant="contained"
                         onClick={handleIsSalaryItemsLock}
                         css={css({
-                          backgroundColor: isSalaryItemsLock ? '#9e9e9e !important' : '#1A73E8 !important',
+                          backgroundColor: isSalaryItemsLock ? '#9e9e9e !important' : 'rgb(var(--accent)) !important',
                           color: 'white !important',
                           minWidth: '120px',
                           height: '40px !important',

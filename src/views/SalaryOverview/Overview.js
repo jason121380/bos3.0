@@ -19,25 +19,25 @@ const styles = {
   card: css({
     width: 240,
     borderRadius: '12px',
-    border: '1px solid #f0f0f0',
+    border: '1px solid rgb(var(--border))',
     boxShadow: 'none',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     height: '100%',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgb(var(--background))',
   }),
   remarkCard: css({
     flex: 1,
     minWidth: 300,
     borderRadius: '12px',
-    border: '1px solid #f0f0f0',
+    border: '1px solid rgb(var(--border))',
     boxShadow: 'none',
     padding: theme.spacing(2, 3),
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'rgb(var(--background))',
   }),
   item: css({
     padding: theme.spacing(3, 3),
@@ -50,7 +50,7 @@ const styles = {
   label: css({
     fontSize: '14.5px !important', // 稍微增大字體
     fontWeight: '700 !important',
-    color: '#333',
+    color: 'rgb(var(--text))',
     marginBottom: theme.spacing(1),
     letterSpacing: '0.05em',
   }),
@@ -70,7 +70,7 @@ const styles = {
     '& .MuiInputBase-root': {
       height: '100%',
       fontSize: '14.5px', // 統一字體大小
-      backgroundColor: '#fafafa',
+      backgroundColor: 'rgb(var(--surface))',
       borderRadius: '8px',
       padding: '12px',
       alignItems: 'flex-start', // 文字從頂部開始
@@ -79,7 +79,7 @@ const styles = {
       padding: '0px !important'
     },
     '& fieldset': {
-      borderColor: '#eee !important',
+      borderColor: 'rgb(var(--border)) !important',
     }
   }),
 }

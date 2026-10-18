@@ -23,8 +23,8 @@ const localStyles = {
   card: css({
     borderRadius: '16px',
     boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
+    border: '1px solid rgb(var(--border))',
+    backgroundColor: 'rgb(var(--background))',
     overflow: 'hidden',
   }),
   cardHeader: css({
@@ -42,27 +42,27 @@ const localStyles = {
   tableCell: css({
     padding: '2px 16px !important',
     fontSize: '14px !important',
-    borderBottom: '1px solid #f0f0f0',
+    borderBottom: '1px solid rgb(var(--border))',
   }),
   boldCell: css({
     padding: '2px 16px !important',
     fontSize: '14px !important',
     fontWeight: 'bold !important',
-    color: '#1A73E8 !important',
-    borderBottom: '1px solid #f0f0f0',
+    color: 'rgb(var(--accent)) !important',
+    borderBottom: '1px solid rgb(var(--border))',
     backgroundColor: 'rgba(26, 115, 232, 0.05) !important',
   }),
   itemLabel: css({
     padding: '4px 16px !important',
     fontWeight: 'bold !important',
     width: '120px',
-    borderBottom: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
+    borderBottom: '1px solid rgb(var(--border))',
+    backgroundColor: 'rgb(var(--background))',
   }),
   itemValue: css({
     padding: '4px 16px !important',
     width: '100px',
-    borderBottom: '1px solid #f0f0f0',
+    borderBottom: '1px solid rgb(var(--border))',
     textAlign: 'left',
   }),
   eachSlip: css({

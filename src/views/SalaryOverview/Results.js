@@ -21,8 +21,8 @@ const localStyles = {
   card: css({
     borderRadius: '16px',
     boxShadow: 'none',
-    border: '1px solid #f0f0f0',
-    backgroundColor: '#fff',
+    border: '1px solid rgb(var(--border))',
+    backgroundColor: 'rgb(var(--background))',
     overflow: 'hidden',
   }),
   content: css({
@@ -32,9 +32,9 @@ const localStyles = {
     minWidth: 1000,
   }),
   tableHead: css({
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'rgb(var(--background))',
     '& .MuiTableCell-head': {
-      color: '#212121',
+      color: 'rgb(var(--text))',
       fontWeight: 'bold',
       borderBottom: 'none',
       height: '40px !important',
@@ -49,7 +49,7 @@ const localStyles = {
       padding: '2px 16px !important',
       borderBottom: 'none',
       fontSize: '14px !important',
-      color: '#333',
+      color: 'rgb(var(--text))',
     },
     '&:hover': {
       backgroundColor: 'transparent !important',
@@ -211,8 +211,8 @@ function Results({
               <Button
                 variant="contained"
                 sx={{
-                  backgroundColor: '#f5f5f5 !important',
-                  color: '#5f6368 !important',
+                  backgroundColor: 'rgb(var(--surface)) !important',
+                  color: 'rgb(var(--text-secondary)) !important',
                   borderRadius: '50px',
                   padding: '6px 24px',
                   fontSize: '14px',
@@ -220,7 +220,7 @@ function Results({
                   boxShadow: 'none',
                   textTransform: 'none',
                   '&:hover': {
-                    backgroundColor: '#eeeeee !important',
+                    backgroundColor: 'rgb(var(--surface)) !important',
                     boxShadow: 'none',
                   }
                 }}
@@ -291,12 +291,12 @@ function Results({
                               size="small"
                               disabled={!data.isSalaryChecked}
                               sx={{
-                                color: data.isSalaryChecked ? '#5f6368 !important' : 'rgba(26, 115, 232, 0.5) !important',
+                                color: data.isSalaryChecked ? 'rgb(var(--text-secondary)) !important' : 'rgba(26, 115, 232, 0.5) !important',
                                 fontWeight: 'bold !important',
                                 fontSize: '14px !important',
                                 minWidth: '80px',
                                 padding: data.isSalaryChecked ? '4px 16px !important' : '4px 8px !important',
-                                backgroundColor: data.isSalaryChecked ? '#f5f5f5 !important' : 'transparent !important',
+                                backgroundColor: data.isSalaryChecked ? 'rgb(var(--surface)) !important' : 'transparent !important',
                                 border: 'none !important',
                                 borderRadius: '20px !important',
                                 cursor: data.isSalaryChecked ? 'pointer' : 'default',
@@ -306,14 +306,14 @@ function Results({
                                   color: 'rgba(26, 115, 232, 0.4) !important',
                                 },
                                 '&:hover': {
-                                  backgroundColor: data.isSalaryChecked ? '#eeeeee !important' : 'transparent !important',
+                                  backgroundColor: data.isSalaryChecked ? 'rgb(var(--surface)) !important' : 'transparent !important',
                                 }
                               }}
                             >
                               {data.isSalaryChecked ? '詳情' : '未結算'}
                             </Button>
                           </TableCell>
-                          <TableCell sx={{ fontSize: '14.5px', fontWeight: 600, color: '#212121', width: '180px' }}>{data.name}</TableCell>
+                          <TableCell sx={{ fontSize: '14.5px', fontWeight: 600, color: 'rgb(var(--text))', width: '180px' }}>{data.name}</TableCell>
                           <TableCell sx={{ fontSize: '14px', color: 'text.secondary', width: '100px' }}>{data.designerNo || '-'}</TableCell>
                           <TableCell sx={{ fontSize: '14px', textAlign: 'left', width: '130px' }}>{data.increaseItem}</TableCell>
                           <TableCell sx={{ fontSize: '14px', color: 'error.main', textAlign: 'left', width: '130px' }}>
@@ -345,12 +345,12 @@ function Results({
                               size="small"
                               disabled={!data.isSalaryChecked}
                               sx={{
-                                color: data.isSalaryChecked ? '#5f6368 !important' : 'rgba(26, 115, 232, 0.5) !important',
+                                color: data.isSalaryChecked ? 'rgb(var(--text-secondary)) !important' : 'rgba(26, 115, 232, 0.5) !important',
                                 fontWeight: 'bold !important',
                                 fontSize: '14px !important',
                                 minWidth: '80px',
                                 padding: data.isSalaryChecked ? '4px 16px !important' : '4px 8px !important',
-                                backgroundColor: data.isSalaryChecked ? '#f5f5f5 !important' : 'transparent !important',
+                                backgroundColor: data.isSalaryChecked ? 'rgb(var(--surface)) !important' : 'transparent !important',
                                 border: 'none !important',
                                 borderRadius: '20px !important',
                                 cursor: data.isSalaryChecked ? 'pointer' : 'default',
@@ -360,14 +360,14 @@ function Results({
                                   color: 'rgba(26, 115, 232, 0.4) !important',
                                 },
                                 '&:hover': {
-                                  backgroundColor: data.isSalaryChecked ? '#eeeeee !important' : 'transparent !important',
+                                  backgroundColor: data.isSalaryChecked ? 'rgb(var(--surface)) !important' : 'transparent !important',
                                 }
                               }}
                             >
                               {data.isSalaryChecked ? '詳情' : '未結算'}
                             </Button>
                           </TableCell>
-                          <TableCell sx={{ fontSize: '14.5px', fontWeight: 600, color: '#212121', width: '180px' }}>
+                          <TableCell sx={{ fontSize: '14.5px', fontWeight: 600, color: 'rgb(var(--text))', width: '180px' }}>
                             {data.name}
                             {data.isOnDuty ? '' : <strong style={{ color: 'red', marginLeft: '4px' }}>{' (已離職)'}</strong>}
                           </TableCell>
