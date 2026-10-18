@@ -1,70 +1,9 @@
-import {
-  Card, Table, TableBody, TableCell, TableHead, CardActions,
-  TableRow, TableContainer, TablePagination, Typography, CardHeader, CardContent
-} from '@mui/material'
 import { Fragment, useRef, useEffect } from 'react'
 import pagenationLabel from '../../helper/pagenationLabel'
 import { format } from 'date-fns'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    marginTop: theme.spacing(1),
-  }),
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid rgb(var(--border))',
-    backgroundColor: 'rgb(var(--background))',
-    overflow: 'hidden',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 900,
-    '& td': {
-      whiteSpace: 'nowrap !important'
-    },
-  }),
-  tableHead: css({
-    backgroundColor: 'rgb(var(--background))',
-    '& .MuiTableCell-head': {
-      color: 'rgb(var(--text))',
-      fontWeight: 'bold',
-      borderBottom: '1px solid rgb(var(--border))',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid rgb(var(--border))',
-      fontSize: '14px !important',
-      color: 'rgb(var(--text))',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-  }),
-  cursor: css({
-    cursor: 'pointer',
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
-  orderNoLink: css({
-    textDecorationLine: 'underline',
-    color: 'rgb(var(--accent))',
-    fontWeight: '500',
-  }),
-}
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
 function Results({ recordData, pageSetting, onPageChange, onRowsPerPageChange }) {
   const pageRef1 = useRef(null)
@@ -80,67 +19,58 @@ function Results({ recordData, pageSetting, onPageChange, onRowsPerPageChange })
   }, [pageRef1.current, pageRef2.current, pageSetting])
 
   return (
-    <div css={styles.root}>
-      <Card css={styles.card}>
-        <CardHeader
-          title={
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: 'rgb(var(--text))' }}>
-                發券明細清單
-              </Typography>
-              <Typography color="textSecondary" variant="body2">
-                共 {pageSetting.totalCount} 筆資料
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={styles.content}>
+    <div>
+      <Card>
+        <CardHeader className="pb-4">
+          <div className="flex items-baseline gap-3">
+            <CardTitle>發券明細清單</CardTitle>
+            <span className="text-label text-text-secondary tabular-nums">
+              共 {pageSetting.totalCount} 筆資料
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
           {recordData.length ? (
             <Fragment>
-              <TableContainer>
-                <Table size="small">
-                  <TableHead css={styles.tableHead}>
-                    <TableRow>
-                      <TableCell>流水號</TableCell>
-                      <TableCell>活動名稱</TableCell>
-                      <TableCell>規則名稱</TableCell>
-                      <TableCell>訂單日期</TableCell>
-                      <TableCell>訂單編號</TableCell>
-                      <TableCell>顧客姓名</TableCell>
-                      <TableCell>顧客手機</TableCell>
-                      <TableCell>使用手機端</TableCell>
-                      <TableCell>寄送簡訊</TableCell>
+              <Table className="min-w-[900px] [&_td]:whitespace-nowrap">
+                <TableHeader>
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead>流水號</TableHead>
+                    <TableHead>活動名稱</TableHead>
+                    <TableHead>規則名稱</TableHead>
+                    <TableHead>訂單日期</TableHead>
+                    <TableHead>訂單編號</TableHead>
+                    <TableHead>顧客姓名</TableHead>
+                    <TableHead>顧客手機</TableHead>
+                    <TableHead>使用手機端</TableHead>
+                    <TableHead>寄送簡訊</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {recordData.map(d => (
+                    <TableRow key={d.number}>
+                      <TableCell className="tabular-nums">{d.number}</TableCell>
+                      <TableCell className="font-medium">{d.eventName}</TableCell>
+                      <TableCell>{d.ruleName}</TableCell>
+                      <TableCell className="tabular-nums">{format(d.orderDate, 'yyyy/MM/dd')}</TableCell>
+                      <TableCell>
+                        <a
+                          target='_blank'
+                          href={`/order/${d.orderId}`}
+                          className="font-medium text-accent underline"
+                          rel="noreferrer"
+                        >{d.orderNo === null ? '' : `#${d.orderNo}`}</a>
+                      </TableCell>
+                      <TableCell>{d.customerName}</TableCell>
+                      <TableCell className="tabular-nums">{d.customerCellphone}</TableCell>
+                      <TableCell>{d.isCustomerSideUsing ? '是' : '否'}</TableCell>
+                      <TableCell>{d.isSMSSended ? '是' : '否'}</TableCell>
                     </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {recordData.map(d => (
-                      <TableRow key={d.number} css={styles.tableRow}>
-                        <TableCell>{d.number}</TableCell>
-                        <TableCell style={{ fontWeight: '500' }}>{d.eventName}</TableCell>
-                        <TableCell>{d.ruleName}</TableCell>
-                        <TableCell>{format(d.orderDate, 'yyyy/MM/dd')}</TableCell>
-                        <TableCell>
-                          <a
-                            target='_blank'
-                            href={`/order/${d.orderId}`}
-                            css={styles.orderNoLink}
-                            rel="noreferrer"
-                          >{d.orderNo === null ? '' : `#${d.orderNo}`}</a>
-                        </TableCell>
-                        <TableCell>{d.customerName}</TableCell>
-                        <TableCell>{d.customerCellphone}</TableCell>
-                        <TableCell>{d.isCustomerSideUsing ? '是' : '否'}</TableCell>
-                        <TableCell>{d.isSMSSended ? '是' : '否'}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <CardActions css={styles.actions}>
+                  ))}
+                </TableBody>
+              </Table>
+              <div ref={pageRef1}>
                 <TablePagination
-                  ref={pageRef1}
-                  labelRowsPerPage='每頁顯示數量'
-                  component="div"
                   onPageChange={onPageChange}
                   onRowsPerPageChange={onRowsPerPageChange}
                   count={pageSetting.totalCount}
@@ -148,14 +78,12 @@ function Results({ recordData, pageSetting, onPageChange, onRowsPerPageChange })
                   rowsPerPage={pageSetting.pageLimit}
                   rowsPerPageOptions={[5, 10, 25, 50, 100]}
                 />
-              </CardActions>
+              </div>
             </Fragment>
           ) : (
-            <div style={{ padding: '40px 0', textAlign: 'center' }}>
-              <Typography color="textSecondary">無發券明細資料</Typography>
-            </div>
+            <EmptyState title="無發券明細資料" />
           )}
-        </CardContent>
+        </div>
       </Card>
     </div>
   )
