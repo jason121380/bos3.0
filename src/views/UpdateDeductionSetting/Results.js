@@ -1,7 +1,6 @@
-/** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, Checkbox, Grid, TextField,
-  Typography, FormControlLabel, Tab, Tabs, ToggleButton,
+  Checkbox, TextField,
+  FormControlLabel, Tab, Tabs, ToggleButton,
   ToggleButtonGroup
 } from '@mui/material'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
@@ -9,76 +8,14 @@ import _ from 'lodash'
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'
 import { openSnackbar } from 'elements/snackbars'
-import PerfectScrollbar from 'react-perfect-scrollbar'
-import { css } from '@emotion/react'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
 
 const isSegmented = [
   { label: '全段', value: false },
   { label: '分段', value: true },
 ]
-
-const styles = {
-  subtitle: css({
-    margin: '1rem 0 !important',
-  }),
-  width: css({
-    width: '100%',
-  }),
-  marginL: css({
-    marginLeft: '5px',
-  }),
-  deductionWayMarginL: css({
-    marginLeft: '20px',
-  }),
-  icons: css({
-    marginLeft: '20px',
-    cursor: 'pointer',
-  }),
-  verticleCenter: css({
-    display: 'flex',
-    alignItems: 'center',
-    borderBottom: '0px',
-    marginLeft: 16
-  }),
-  flex: css({
-    display: 'flex',
-    marginBottom: 10
-  }),
-  separateInputBottom: css({
-    marginLeft: '16px',
-    display: 'flex',
-    alignItems: 'center',
-    borderBottom: '0px',
-    whiteSpace: 'nowrap',
-    padding: 0,
-  }),
-  separateInput: css({
-    marginLeft: '16px',
-    display: 'flex',
-    alignItems: 'center',
-    borderBottom: '0px',
-    whiteSpace: 'nowrap',
-  }),
-  separateInputRake: css({
-    marginLeft: '16px',
-    display: 'flex',
-    alignItems: 'center',
-    borderBottom: '0px',
-    whiteSpace: 'nowrap',
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 995,
-    paddingBottom: 20
-  }),
-  serviceInputGroup: css({
-    margin: '24px',
-    display: 'grid'
-  }),
-  field: css({
-    marginBottom: '12px',
-  }),
-}
 
 function Results({ className, profitSharing, onChange, attributions, ...rest }) {
   const [tabValue, setTabValue] = useState('預設')
@@ -614,32 +551,31 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
   }, [tabValue, profitSharing])
   return (
     <Fragment>
-      <Card {...rest} css={css([styles.root, className])}>
-        <CardHeader title="抽成方式設定" />
-        <div css={styles.serviceInputGroup}>
-          <TextField
-            type="text"
-            variant="outlined"
-            label="抽成設定編號"
-            css={styles.field}
-            value={profitSharing.deductionNo}
-            fullWidth
-            onChange={event => onChange({ value: event.target.value, key: 'deductionNo' })
-          }
-          />
-          <TextField
-            type="text"
-            variant="outlined"
-            label="抽成設定名稱"
-            value={profitSharing.deductionName}
-            css={styles.field}
-            fullWidth
-            onChange={event => onChange({ value: event.target.value, key: 'deductionName' })
-          }
-          />
+      <Card {...rest}>
+        <CardHeader>
+          <CardTitle>抽成方式設定</CardTitle>
+        </CardHeader>
+        <div className="grid gap-4 px-5 pb-4 pt-4">
+          <Field label="抽成設定編號">
+            <Input
+              type="text"
+              value={profitSharing.deductionNo}
+              onChange={event => onChange({ value: event.target.value, key: 'deductionNo' })
+            }
+            />
+          </Field>
+          <Field label="抽成設定名稱">
+            <Input
+              type="text"
+              value={profitSharing.deductionName}
+              onChange={event => onChange({ value: event.target.value, key: 'deductionName' })
+            }
+            />
+          </Field>
         </div>
         {!profitSharing.isSegmented && (
           <Tabs
+            className="border-0 border-b border-solid border-border px-3"
             value={tabValue}
             scrollButtons="auto"
             variant="scrollable"
@@ -651,15 +587,15 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
           </Tabs>
         )}
         <CardContent>
-        <PerfectScrollbar>
-          <div css={styles.inner}>
-            <Grid >
-              <Typography variant="h5" css={styles.subtitle}>
+        <div className="overflow-x-auto">
+          <div className="min-w-[995px] pb-5">
+            <div className="flex flex-wrap items-center">
+              <h3 className="my-4 text-heading text-text">
                 抽成模式
-              </Typography>
+              </h3>
               <ToggleButtonGroup
                 size="small"
-                css={styles.deductionWayMarginL}
+                className="!ml-5"
                 value={profitSharing.isSegmented}
                 onChange={handleToggleButtonChange}
                 exclusive
@@ -675,26 +611,26 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                 ))}
               </ToggleButtonGroup>
               <FormControlLabel
-                css={styles.marginL}
+                className="!ml-1"
                 control={<Checkbox color="primary" />}
                 label="分指定/不指定"
                 checked={profitSharing.designationUsage}
                 onClick={handleDesignateChange}
               />
-            </Grid>
+            </div>
             {!profitSharing.designationUsage ? (
               !profitSharing.isSegmented ? (
                 profitSharing.nonSegmented.length > 0 
                 && profitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.map(
                   (data, index) => (
-                    <Grid css={styles.flex} key={index}>
-                      <span css={styles.deductionWayMarginL}>
+                    <div className="mb-2.5 flex items-center" key={index}>
+                      <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                         總業績從(含)
                       </span>
                       <TextField
                           InputProps={{ inputProps: { min: 0 } }}
                           type="number"
-                          css={styles.verticleCenter}
+                          className="!ml-4"
                           variant="outlined"
                           label="輸入業績"
                           value={data.threshold ? data.threshold : 0}
@@ -703,47 +639,57 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                           }
                           onWheel={() => document.activeElement.blur()}              
                         />
-                      <span css={styles.deductionWayMarginL}>
+                      <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                         抽成調整為
                       </span>
                       <TextField
                           InputProps={{ inputProps: { min: 0 } }}
                           type="number"
-                          css={styles.verticleCenter}
+                          className="!ml-4"
                           variant="outlined"
                           label="輸入抽成(%)"
                           value={data.rake ? data.rake : 0}
                           onChange={event => handleNonSegmentedRakeInput(event, index, 'rake')}
                         />
-                      <div css={styles.verticleCenter}>
+                      <div className="ml-4 flex items-center gap-1">
                         {index !== 0 && (
-                          <DeleteForeverIcon
-                            css={styles.icons}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-text-tertiary hover:text-danger"
+                            aria-label="刪除此級距"
                             onClick={handleDeleteSetDeductionNum}
-                          />
+                          >
+                            <DeleteForeverIcon fontSize="small" />
+                          </Button>
                         )}
                         {index ===
                           profitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish
                             .length -
                             1 && (
-                          <AddIcon
-                            css={styles.icons}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-text-tertiary"
+                            aria-label="新增級距"
                             onClick={() => handleAddSetDeductionNum('nonDistinguish')}
-                          />
+                          >
+                            <AddIcon fontSize="small" />
+                          </Button>
                         )}
                       </div>
-                    </Grid>
+                    </div>
                   )
                 )
               ) : (
                 profitSharing.segmented[0].nonDistinguish.map((data, index) => (
-                  <Grid key={index} container>
-                    <Grid item css={styles.flex}>
-                      <span css={styles.deductionWayMarginL}>
+                  <div key={index} className="flex flex-wrap">
+                    <div className="mb-2.5 flex items-center">
+                      <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                         總業績從(含)
                       </span>
                       <TextField
-                        css={styles.separateInputBottom}
+                        className="!ml-4"
                         InputProps={{ inputProps: { min: 0 } }}
                         type="number"
                         variant="outlined"
@@ -754,13 +700,13 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                         }
                         onWheel={() => document.activeElement.blur()}              
                       />
-                    </Grid>
-                    <Grid item css={styles.flex}>
-                      <span css={styles.deductionWayMarginL}>
+                    </div>
+                    <div className="mb-2.5 flex items-center">
+                      <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                         至
                       </span>
                       <TextField
-                        css={styles.separateInput}
+                        className="!ml-4"
                         InputProps={{ inputProps: { min: 0 } }}
                         type="number"
                         variant="outlined"
@@ -771,13 +717,13 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                         }
                         onWheel={() => document.activeElement.blur()}              
                       />
-                    </Grid>
-                    <Grid item css={styles.flex}>
-                      <span css={styles.deductionWayMarginL}>
+                    </div>
+                    <div className="mb-2.5 flex items-center">
+                      <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                         抽成為
                       </span>
                       <TextField
-                        css={styles.separateInputRake}
+                        className="!ml-4"
                         InputProps={{ inputProps: { min: 0 } }}
                         type="number"
                         variant="outlined"
@@ -786,45 +732,55 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                         onChange={event => handleSegmentedInput(event, index, 'rake')}
                         onWheel={() => document.activeElement.blur()}              
                       />
-                    </Grid>
-                    <Grid item css={styles.flex}>
-                      <div css={styles.verticleCenter}>
+                    </div>
+                    <div className="mb-2.5 flex items-center">
+                      <div className="ml-4 flex items-center gap-1">
                         {index !== 0 && (
-                          <DeleteForeverIcon
-                            css={styles.icons}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-text-tertiary hover:text-danger"
+                            aria-label="刪除此級距"
                             onClick={() => handleDeleteSegmented(index)}
-                          />
+                          >
+                            <DeleteForeverIcon fontSize="small" />
+                          </Button>
                         )}
                         {index === profitSharing.segmented[0].nonDistinguish.length - 1 && (
-                          <AddIcon
-                            css={styles.icons}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-text-tertiary"
+                            aria-label="新增級距"
                             onClick={() => handleAddSegmented('nonDistinguish')}
-                          />
+                          >
+                            <AddIcon fontSize="small" />
+                          </Button>
                         )}
                       </div>
-                    </Grid>
-                  </Grid>
+                    </div>
+                  </div>
                 ))
               )
             ) : !profitSharing.isSegmented ? (
               <Fragment>
-                <Grid>
-                  <Typography variant="h5" css={styles.subtitle}>
+                <div>
+                  <h3 className="my-4 text-heading text-text">
                     指定業績
-                  </Typography>
-                </Grid>
+                  </h3>
+                </div>
                 {profitSharing.nonSegmented[deductionIndex].rakeData.designate.map(
                   (data, index) => {
                     return (
-                      <Grid  key={index} container>
-                        <Grid item css={styles.flex}>
-                          <span css={styles.deductionWayMarginL}>
+                      <div key={index} className="flex flex-wrap">
+                        <div className="mb-2.5 flex items-center">
+                          <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                             總業績從(含)
                           </span>
                           <TextField
                             InputProps={{ inputProps: { min: 0 } }}
                             type="number"
-                            css={styles.verticleCenter}
+                            className="!ml-4"
                             variant="outlined"
                             label="輸入業績"
                             value={data.threshold ? data.threshold : 0}
@@ -837,15 +793,15 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                             }
                             onWheel={() => document.activeElement.blur()}              
                           />
-                        </Grid>
-                        <Grid item css={styles.flex}>
-                          <span css={styles.deductionWayMarginL}>
+                        </div>
+                        <div className="mb-2.5 flex items-center">
+                          <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                             抽成調整為
                           </span>
                           <TextField
                             InputProps={{ inputProps: { min: 0 } }}
                             type="number"
-                            css={styles.verticleCenter}
+                            className="!ml-4"
                             variant="outlined"
                             label="輸入抽成(%)"
                             value={data.rake ? data.rake : 0}
@@ -854,47 +810,57 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                             }
                             onWheel={() => document.activeElement.blur()}              
                           />
-                        </Grid>
-                        <Grid item css={styles.flex}>
-                          <div css={styles.verticleCenter}>
+                        </div>
+                        <div className="mb-2.5 flex items-center">
+                          <div className="ml-4 flex items-center gap-1">
                             {index !== 0 && (
-                              <DeleteForeverIcon
-                                css={styles.icons}
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-text-tertiary hover:text-danger"
+                                aria-label="刪除此級距"
                                 onClick={() => handleDeleteNonSegmentedDesignate(index)}
-                              />
+                              >
+                                <DeleteForeverIcon fontSize="small" />
+                              </Button>
                             )}
                             {index ===
                               profitSharing.nonSegmented[deductionIndex].rakeData.designate
                                 .length -
                                 1 && (
-                              <AddIcon
-                                css={styles.icons}
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-text-tertiary"
+                                aria-label="新增級距"
                                 onClick={() => handleAddSetDeductionNum('designate')}
-                              />
+                              >
+                                <AddIcon fontSize="small" />
+                              </Button>
                             )}
                           </div>
-                        </Grid>
-                      </Grid>
+                        </div>
+                      </div>
                     )
                   }
                 )}
-                <Grid>
-                  <Typography variant="h5" css={styles.subtitle}>
+                <div>
+                  <h3 className="my-4 text-heading text-text">
                     不指定業績
-                  </Typography>
-                </Grid>
+                  </h3>
+                </div>
                 {profitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.map(
                   (data, index) => {
                     return (
-                      <Grid key={index} container>
-                        <Grid item css={styles.flex}>
-                          <span css={styles.deductionWayMarginL}>
+                      <div key={index} className="flex flex-wrap">
+                        <div className="mb-2.5 flex items-center">
+                          <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                             總業績從(含)
                           </span>
                           <TextField
                             InputProps={{ inputProps: { min: 0 } }}
                             type="number"
-                            css={styles.verticleCenter}
+                            className="!ml-4"
                             variant="outlined"
                             label="輸入業績"
                             value={data.threshold ? data.threshold : 0}
@@ -907,15 +873,15 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                             }
                             onWheel={() => document.activeElement.blur()}              
                           />
-                        </Grid>
-                        <Grid item css={styles.flex}>
-                          <span css={styles.deductionWayMarginL}>
+                        </div>
+                        <div className="mb-2.5 flex items-center">
+                          <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                             抽成調整為
                           </span>
                           <TextField
                             InputProps={{ inputProps: { min: 0 } }}
                             type="number"
-                            css={styles.verticleCenter}
+                            className="!ml-4"
                             variant="outlined"
                             label="輸入抽成(%)"
                             value={data.rake ? data.rake : 0}
@@ -924,49 +890,59 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                             }
                             onWheel={() => document.activeElement.blur()}              
                           />
-                        </Grid>
-                        <Grid item css={styles.flex}>
-                          <div css={styles.verticleCenter}>
+                        </div>
+                        <div className="mb-2.5 flex items-center">
+                          <div className="ml-4 flex items-center gap-1">
                             {index !== 0 && (
-                              <DeleteForeverIcon
-                                css={styles.icons}
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-text-tertiary hover:text-danger"
+                                aria-label="刪除此級距"
                                 onClick={() => handleDeleteNonSegmentedNonDesignate(index)}
-                              />
+                              >
+                                <DeleteForeverIcon fontSize="small" />
+                              </Button>
                             )}
                             {index ===
                               profitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate
                                 .length -
                                 1 && (
-                              <AddIcon
-                                css={styles.icons}
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-text-tertiary"
+                                aria-label="新增級距"
                                 onClick={() => handleAddSetDeductionNum('nonDesignate')}
-                              />
+                              >
+                                <AddIcon fontSize="small" />
+                              </Button>
                             )}
                           </div>
-                        </Grid>
-                      </Grid>
+                        </div>
+                      </div>
                     )
                   }
                 )}
               </Fragment>
             ) : (
               <Fragment>
-                <Grid>
-                  <Typography variant="h5" css={styles.subtitle}>
+                <div>
+                  <h3 className="my-4 text-heading text-text">
                     指定業績
-                  </Typography>
-                </Grid>
+                  </h3>
+                </div>
                 {profitSharing.segmented[0].designate.map((data, index) => {
                   return (
-                    <Grid key={index} container>
-                      <Grid item css={styles.flex}>
-                        <span css={styles.deductionWayMarginL}>
+                    <div key={index} className="flex flex-wrap">
+                      <div className="mb-2.5 flex items-center">
+                        <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                           指定業績從(含)
                         </span>
                         <TextField
                           InputProps={{ inputProps: { min: 0 } }}
                           type="number"
-                          css={styles.separateInputBottom}
+                          className="!ml-4"
                           variant="outlined"
                           label="輸入業績"
                           value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
@@ -975,15 +951,15 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                           }
                           onWheel={() => document.activeElement.blur()}              
                         />
-                      </Grid>
-                      <Grid item css={styles.flex}>
-                        <span css={styles.deductionWayMarginL} >
+                      </div>
+                      <div className="mb-2.5 flex items-center">
+                        <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                           至
                         </span>
                         <TextField
                           InputProps={{ inputProps: { min: 0 } }}
                           type="number"
-                          css={styles.separateInput}
+                          className="!ml-4"
                           variant="outlined"
                           label="輸入業績"
                           value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
@@ -992,15 +968,15 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                           }
                           onWheel={() => document.activeElement.blur()}              
                         />
-                      </Grid>
-                      <Grid item css={styles.flex}>
-                        <span css={styles.deductionWayMarginL}>
+                      </div>
+                      <div className="mb-2.5 flex items-center">
+                        <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                           抽成為
                         </span>
                         <TextField
                           InputProps={{ inputProps: { min: 0 } }}
                           type="number"
-                          css={styles.separateInputRake}
+                          className="!ml-4"
                           variant="outlined"
                           label="輸入抽成(%)"
                           value={data.rake ? data.rake : 0}
@@ -1009,42 +985,52 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                           }
                           onWheel={() => document.activeElement.blur()}              
                         />
-                      </Grid>
-                      <Grid item css={styles.flex}>
-                        <div css={styles.verticleCenter}>
+                      </div>
+                      <div className="mb-2.5 flex items-center">
+                        <div className="ml-4 flex items-center gap-1">
                           {index !== 0 && (
-                            <DeleteForeverIcon
-                              css={styles.icons}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-text-tertiary hover:text-danger"
+                              aria-label="刪除此級距"
                               onClick={() => handleDeleteSegmentedDesignate(index)}
-                            />
+                            >
+                              <DeleteForeverIcon fontSize="small" />
+                            </Button>
                           )}
                           {index === profitSharing.segmented[0].designate.length - 1 && (
-                            <AddIcon
-                              css={styles.icons}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-text-tertiary"
+                              aria-label="新增級距"
                               onClick={() => handleAddSegmented('designate')}
-                            />
+                            >
+                              <AddIcon fontSize="small" />
+                            </Button>
                           )}
                         </div>
-                      </Grid>
-                    </Grid>
+                      </div>
+                    </div>
                   )
                 })}
-                <Grid>
-                  <Typography variant="h5" css={styles.subtitle}>
+                <div>
+                  <h3 className="my-4 text-heading text-text">
                     不指定業績
-                  </Typography>
-                </Grid>
+                  </h3>
+                </div>
                 {profitSharing.segmented[0].nonDesignate.map((data, index) => {
                   return (
-                    <Grid key={index} container>
-                      <Grid item css={styles.flex} >
-                        <span css={styles.deductionWayMarginL}>
+                    <div key={index} className="flex flex-wrap">
+                      <div className="mb-2.5 flex items-center">
+                        <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                           不指定業績從(含)
                         </span>
                         <TextField
                           InputProps={{ inputProps: { min: 0 } }}
                           type="number"
-                          css={styles.separateInputBottom}
+                          className="!ml-4"
                           variant="outlined"
                           label="輸入業績"
                           value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
@@ -1057,15 +1043,15 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                           }
                           onWheel={() => document.activeElement.blur()}              
                         />
-                      </Grid>
-                      <Grid item css={styles.flex} > 
-                        <span css={styles.deductionWayMarginL}>
+                      </div>
+                      <div className="mb-2.5 flex items-center">
+                        <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                           至
                         </span>
                         <TextField
                           InputProps={{ inputProps: { min: 0 } }}
                           type="number"
-                          css={styles.separateInput}
+                          className="!ml-4"
                           variant="outlined"
                           label="輸入業績"
                           value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
@@ -1078,15 +1064,15 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                           }
                           onWheel={() => document.activeElement.blur()}              
                         />
-                      </Grid>
-                      <Grid item css={styles.flex} >
-                        <span css={styles.deductionWayMarginL}>
+                      </div>
+                      <div className="mb-2.5 flex items-center">
+                        <span className="ml-5 whitespace-nowrap text-body text-text-secondary">
                           抽成為
                         </span>
                         <TextField
                           InputProps={{ inputProps: { min: 0 } }}
                           type="number"
-                          css={styles.separateInputRake}
+                          className="!ml-4"
                           variant="outlined"
                           label="輸入抽成(%)"
                           value={data.rake ? data.rake : 0}
@@ -1095,30 +1081,40 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                           }
                           onWheel={() => document.activeElement.blur()}              
                         />
-                      </Grid>
-                      <Grid item css={styles.flex} >
-                        <div css={styles.verticleCenter}>
+                      </div>
+                      <div className="mb-2.5 flex items-center">
+                        <div className="ml-4 flex items-center gap-1">
                           {index !== 0 && (
-                            <DeleteForeverIcon
-                              css={styles.icons}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-text-tertiary hover:text-danger"
+                              aria-label="刪除此級距"
                               onClick={() => handleDeleteSegmentedNonDesignate(index)}
-                            />
+                            >
+                              <DeleteForeverIcon fontSize="small" />
+                            </Button>
                           )}
                           {index === profitSharing.segmented[0].nonDesignate.length - 1 && (
-                            <AddIcon
-                              css={styles.icons}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-text-tertiary"
+                              aria-label="新增級距"
                               onClick={() => handleAddSegmented('nonDesignate')}
-                            />
+                            >
+                              <AddIcon fontSize="small" />
+                            </Button>
                           )}
                         </div>
-                      </Grid>
-                    </Grid>
+                      </div>
+                    </div>
                   )
                 })}
               </Fragment>
             )}
           </div>
-        </PerfectScrollbar>
+        </div>
         </CardContent>
       </Card>
     </Fragment>

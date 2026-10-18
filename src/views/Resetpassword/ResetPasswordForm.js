@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Button, TextField } from '@mui/material'
 import useFetchVerificationCode from 'hooks/useFetchVerificationCode'
 import useForgotPasswordVerify from 'hooks/useForgotPasswordVerify'
 import useToggle from 'hooks/useToggle'
@@ -7,74 +5,8 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import validate from 'validate.js'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'stretch',
-  }),
-  fields: css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing(2.5),
-  }),
-  submitButton: css({
-    marginTop: theme.spacing(4),
-    height: '54px !important',
-    borderRadius: '27px !important', // Pill-shaped
-    fontSize: '17px !important',
-    fontWeight: '600 !important',
-    boxShadow: 'none !important',
-    textTransform: 'none !important',
-    transition: 'all 0.2s ease-in-out !important',
-    '&:hover': {
-      backgroundColor: '#0062CC !important',
-      boxShadow: 'none !important',
-    },
-    '&:active': {
-      backgroundColor: '#0056b3 !important',
-    },
-  }),
-  input: css({
-    '& .MuiOutlinedInput-root': {
-      borderRadius: '30px !important', // Pill-shaped
-      backgroundColor: '#F5F5F7',
-      height: '60px !important',
-      transition: 'all 0.2s ease',
-      '& fieldset': {
-        border: '1px solid transparent',
-        transition: 'all 0.2s ease',
-      },
-      '&:hover': {
-        backgroundColor: '#EBEBEF',
-        '& fieldset': {
-          borderColor: 'rgba(0, 122, 255, 0.1)',
-        },
-      },
-      '&.Mui-focused': {
-        backgroundColor: 'rgb(var(--background))',
-        '& fieldset': {
-          borderColor: 'rgb(var(--accent)) !important',
-          borderWidth: '2px !important',
-        },
-      },
-    },
-    '& .MuiInputBase-input': {
-      padding: '18px 24px !important',
-    },
-    '& .MuiInputLabel-root': {
-      fontSize: '15px',
-      color: '#86868B',
-      marginLeft: '8px',
-      '&.Mui-focused': {
-        color: 'rgb(var(--accent))',
-      },
-    },
-  }),
-}
+import { Button } from 'ui/button'
+import { Field, Input } from 'ui/input'
 
 function ResetPasswordForm({ className, ...rest }) {
   const [schema, setSchema] = useState({
@@ -154,44 +86,49 @@ function ResetPasswordForm({ className, ...rest }) {
   }, [formState.values, schema])
 
   return (
-    <form {...rest} css={css([styles.root, className])} onSubmit={handleSubmit}>
-      <div css={styles.fields}>
-        <TextField
-          error={hasError('phone')}
-          fullWidth
-          helperText={hasError('phone') ? formState.errors.phone[0] : null}
+    <form {...rest} className="mt-6 flex flex-col" onSubmit={handleSubmit}>
+      <div className="flex flex-col gap-4">
+        <Field
           label="電話號碼"
-          name="phone"
-          onChange={handleOnChange}
-          value={formState.values.phone || ''}
-          variant="outlined"
-          type="tel"
-          disabled={showVerification.open}
-          css={styles.input}
-        />
-        {showVerification.open ? (
-          <TextField
-            error={hasError('verificationCode')}
-            fullWidth
-            helperText={hasError('verificationCode') ? formState.errors.verificationCode[0] : null}
-            label="驗證碼"
-            name="verificationCode"
+          htmlFor="reset-phone"
+          error={hasError('phone') ? formState.errors.phone[0] : null}
+        >
+          <Input
+            id="reset-phone"
+            invalid={hasError('phone')}
+            name="phone"
             onChange={handleOnChange}
-            value={formState.values.verificationCode || ''}
-            variant="outlined"
-            css={styles.input}
+            value={formState.values.phone || ''}
+            type="tel"
+            autoComplete="tel"
+            disabled={showVerification.open}
           />
+        </Field>
+        {showVerification.open ? (
+          <Field
+            label="驗證碼"
+            htmlFor="reset-verification-code"
+            error={hasError('verificationCode') ? formState.errors.verificationCode[0] : null}
+          >
+            <Input
+              id="reset-verification-code"
+              invalid={hasError('verificationCode')}
+              name="verificationCode"
+              onChange={handleOnChange}
+              value={formState.values.verificationCode || ''}
+              autoComplete="one-time-code"
+            />
+          </Field>
         ) : (
           ''
         )}
       </div>
       <Button
-        css={styles.submitButton}
-        color="primary"
+        className="mt-6 w-full"
+        variant="primary"
         disabled={!formState.isValid}
-        size="large"
+        size="lg"
         type="submit"
-        variant="contained"
       >
         {showVerification.open ? '重設密碼' : `發送驗證碼`}
       </Button>

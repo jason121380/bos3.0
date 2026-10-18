@@ -1,10 +1,6 @@
-/** @jsxImportSource @emotion/react */
-import { Card, Container, Button, CircularProgress, IconButton, Collapse } from '@mui/material'
-import { FilterList as FilterListIcon } from 'ui/icons'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
 import AdminPageHeader from 'components/AdminPageHeader'
-import { css } from '@emotion/react'
 import idx from 'idx'
 // ... rest of imports
 import { useState } from 'react'
@@ -14,7 +10,10 @@ import { useFetchGetMembershipCategories } from 'hooks/useFetchGetMembershipCate
 import { Link as RouterLink } from 'react-router-dom'
 
 import Results from './Results'
-import styles from './styles/MemberCardRecord'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
+import { cn } from 'ui/utils'
 
 function MemberCardRecord() {
   // ... state definitions
@@ -70,8 +69,8 @@ function MemberCardRecord() {
   }
 
   return (
-    <Page css={styles.root} title="會員卡列表">
-      <Container maxWidth={false}>
+    <Page className="ui-root" title="會員卡列表">
+      <div>
         <AdminPageHeader
           title="會員卡列表"
           sx={{ backgroundColor: 'transparent', mb: 0 }}
@@ -83,8 +82,8 @@ function MemberCardRecord() {
           }}
         />
 
-        <Collapse in={showFilter}>
-          <div style={{ marginBottom: '8px', backgroundColor: 'rgb(var(--background))', borderRadius: '8px', padding: '16px', border: '1px solid rgb(var(--border))' }}>
+        {showFilter && (
+          <Card className="mb-4 p-4">
             <SearchBar
               onSearch={event =>
                 handlePageChange({
@@ -93,48 +92,42 @@ function MemberCardRecord() {
                 })
               }
             />
-            <div css={styles.categorieDiv}>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
               {categories != undefined &&
                 categories.map(category => (
                   <Button
-                    variant={categoryFilter.indexOf(category.uuid) !== -1 ? 'contained' : 'outlined'}
-                    color="primary"
-                    size="small"
-                    css={
-                      categoryFilter.indexOf(category.uuid) !== -1
-                        ? styles.clickedCategorieBtn
-                        : styles.categorieBtn
-                    }
+                    variant="secondary"
+                    size="sm"
+                    className={cn(categoryFilter.indexOf(category.uuid) !== -1 && 'bg-accent/8 text-accent disabled:opacity-100')}
+                    aria-pressed={categoryFilter.indexOf(category.uuid) !== -1}
                     onClick={() => handleClickCategory(category.uuid, category.name)}
                     disabled={categoryFilter.indexOf(category.uuid) !== -1}
                     key={category.uuid}
-                    style={categoryFilter.indexOf(category.uuid) === -1 ? {} : { color: 'white' }}
                   >
                     {category.name}
                   </Button>
                 ))}
               <Button
-                variant="contained"
-                size="small"
-                color="error"
+                variant="ghost"
+                size="sm"
+                className="text-danger"
                 onClick={handleClearCategory}
               >
                 清除
               </Button>
             </div>
-          </div>
-        </Collapse>
+          </Card>
+        )}
         {memberships !== undefined ? (
           <Results
-            className={styles.results}
             memberships={memberships}
             categories={categories}
             setCategoryFilter={setCategoryFilter}
             onPageChange={handlePageChange}
           />
-        ) : <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
+        ) : <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
         }
-      </Container>
+      </div>
     </Page>
   )
 }

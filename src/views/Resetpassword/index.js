@@ -1,63 +1,18 @@
-/** @jsxImportSource @emotion/react */
-import { Card, CardContent, Typography } from '@mui/material'
-import { VpnKey as VpnKeyIcon } from 'ui/icons'
 import Page from 'components/Page'
-import gradients from 'utils/gradients'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Card, CardContent } from 'ui/card'
 
 import ResetPasswordForm from './ResetPasswordForm'
 
-const styles = {
-  root: css({
-    minHeight: 'calc(100vh - 64px)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F2F2F7', // iOS System Background
-    padding: theme.spacing(3),
-  }),
-  card: css({
-    width: 420,
-    maxWidth: '100%',
-    borderRadius: '28px !important',
-    boxShadow: '0 20px 48px rgba(0, 0, 0, 0.08) !important',
-    border: '1px solid rgba(0, 0, 0, 0.02) !important',
-    backgroundColor: 'rgb(var(--background)) !important',
-    overflow: 'hidden',
-  }),
-  content: css({
-    padding: theme.spacing(10, 5, 8, 5),
-    textAlign: 'center',
-    [theme.breakpoints.down('xs')]: {
-      padding: theme.spacing(8, 3),
-    },
-  }),
-  resetPasswordForm: css({
-    marginTop: theme.spacing(3),
-    width: '100%',
-  }),
-}
-
 function ResetPassword() {
   return (
-    <Page css={styles.root} title="重設密碼">
-      <Card css={styles.card}>
-        <CardContent css={styles.content}>
-          <Typography
-            variant="h2"
-            sx={{
-              fontWeight: 700,
-              color: '#1D1D1F',
-              fontSize: '26px !important',
-              letterSpacing: '-0.4px',
-              mb: 1
-            }}
-          >
+    <Page className="ui-root flex min-h-[calc(100vh-56px)] items-center justify-center px-4 py-12" title="重設密碼">
+      <Card className="w-full max-w-sm">
+        <CardContent className="p-8">
+          <h1 className="m-0 text-center text-title !font-bold text-text">
             重設密碼
-          </Typography>
+          </h1>
 
-          <ResetPasswordForm className={styles.resetPasswordForm} />
+          <ResetPasswordForm />
         </CardContent>
       </Card>
     </Page>

@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Button, Grid } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import idx from 'idx'
 import { useState, useEffect, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
@@ -14,24 +11,9 @@ import useFetchEndEventRuleGroup from 'hooks/useFetchEndEventRuleGroup'
 import { openSnackbar } from 'elements/snackbars'
 import { cloneDeep } from 'lodash'
 import AdminPageHeader from 'components/AdminPageHeader'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3)
-  }),
-  filterWrap: css({
-    display: 'flex',
-    gap: 10,
-    flexWrap: 'wrap',
-    alignItems: 'center'
-  })
-}
 
 function MainEventList() {
   const getMainEvents = useFetchGetMainEvents()
@@ -199,8 +181,8 @@ function MainEventList() {
 
   return (
     <Fragment>
-      <Page css={styles.root} title="活動列表">
-        <Container maxWidth={false} css={styles.container}>
+      <Page className="ui-root" title="活動列表">
+        <div>
           <AdminPageHeader
             title="活動列表"
             primaryAction={{
@@ -209,7 +191,7 @@ function MainEventList() {
             }}
           />
           {getMainEvents.loading ?
-            <div style={{ textAlign: 'center', marginTop: 100 }}><CircularProgress /></div>
+            <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
             : <Results
               events={events}
               setEventUsing={handleSetMainEventUsing}
@@ -223,7 +205,7 @@ function MainEventList() {
               clickData={clickData}
             />
           }
-        </Container>
+        </div>
       </Page>
       <ComfirmDialog
         clickData={clickData}

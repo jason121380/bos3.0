@@ -1,78 +1,16 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Checkbox,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Typography,
-  IconButton
-} from '@mui/material'
-import { Edit as EditIconSlot } from 'ui/icons'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import idx from 'idx'
 import format from 'date-fns/format'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import useFetchDeleteMembershipCategory from 'hooks/useFetchDeleteMembershipCategory'
-import { css } from '@emotion/react'
-
-const styles = {
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid rgb(var(--border))',
-    backgroundColor: 'rgb(var(--background))',
-    overflow: 'hidden',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  tableHead: css({
-    backgroundColor: 'rgb(var(--background))',
-    '& .MuiTableCell-head': {
-      color: 'rgb(var(--text))',
-      fontWeight: 'bold',
-      borderBottom: '1px solid rgb(var(--border))',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid rgb(var(--border))',
-      fontSize: '14px !important',
-      color: 'rgb(var(--text))',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-  }),
-  actionButton: css({
-    padding: '4px !important',
-    color: 'rgb(var(--text-tertiary)) !important',
-    '&:hover': {
-      color: 'rgb(var(--accent)) !important',
-      backgroundColor: 'rgba(26, 115, 232, 0.04) !important',
-    }
-  }),
-}
+import { Pencil } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Results({ className, categories, ...rest }) {
   // 被選的checkbox
@@ -111,90 +49,76 @@ function Results({ className, categories, ...rest }) {
       })
   }
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <Card css={styles.card}>
-        <CardHeader
-          title={
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: 'rgb(var(--text))' }}>
-                會員卡分類列表
-              </Typography>
-              <Typography color="textSecondary" variant="body2">
-                共 {categories.length} 筆
-              </Typography>
-            </div>
-          }
-        />
-        <CardContent css={styles.content}>
-          <PerfectScrollbar>
-            <div css={styles.inner}>
-              <Table size="small">
-                <TableHead css={styles.tableHead}>
-                  <TableRow>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={
-                          selectedCategories.length === categories.length && categories.length > 0
-                        }
-                        color="primary"
-                        indeterminate={
-                          selectedCategories.length > 0 &&
-                          selectedCategories.length < categories.length
-                        }
-                        onChange={handleSelectAll}
-                        disabled={
-                          categories.length === 0 ||
-                          categories.filter(d => !d.isUsing).length === categories.length
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>操作</TableCell>
-                    <TableCell>代號</TableCell>
-                    <TableCell>名稱</TableCell>
-                    <TableCell>變更者</TableCell>
-                    <TableCell>變更時間</TableCell>
-                  </TableRow>
+    <div {...rest} className="mt-2">
+      <Card>
+        <CardHeader className="pb-4">
+          <div className="flex items-baseline gap-3">
+            <CardTitle>會員卡分類列表</CardTitle>
+            <span className="text-label text-text-secondary tabular-nums">
+              共 {categories.length} 筆
+            </span>
+          </div>
+        </CardHeader>
+        <div className="px-5 pb-5">
+          <Table className="min-w-[700px]">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-12">
+                  <Checkbox
+                    aria-label="全選"
+                    checked={
+                      selectedCategories.length === categories.length && categories.length > 0
+                    }
+                    indeterminate={
+                      selectedCategories.length > 0 &&
+                      selectedCategories.length < categories.length
+                    }
+                    onChange={handleSelectAll}
+                    disabled={
+                      categories.length === 0 ||
+                      categories.filter(d => !d.isUsing).length === categories.length
+                    }
+                  />
                 </TableHead>
-                <TableBody>
-                  {categories.map((data, index) => (
-                    <TableRow
-                      key={`${data.name}-${data.no}-${index}`}
-                      css={styles.tableRow}
-                      selected={selectedCategories.indexOf(data.uuid) > -1 || !data.isUsing}
-                      data-testid="category-row"
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          onChange={() => handleSelectOne(data.uuid)}
-                          checked={selectedCategories.indexOf(data.uuid) > -1}
-                          disabled={!data.isUsing}
-                          inputProps={{
-                            'data-testid': `category-${data.name}-checkbox`,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          component={RouterLink}
-                          css={styles.actionButton}
-                          size="small"
-                          to={`/member-card-category/edit/${data.uuid}`}
-                        >
-                          <EditIconSlot fontSize="small" />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell>{data.no}</TableCell>
-                      <TableCell>{data.name}</TableCell>
-                      <TableCell>{idx(data, _ => _.creator.name)}</TableCell>
-                      <TableCell>{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </PerfectScrollbar>
-        </CardContent>
+                <TableHead>操作</TableHead>
+                <TableHead>代號</TableHead>
+                <TableHead>名稱</TableHead>
+                <TableHead>變更者</TableHead>
+                <TableHead>變更時間</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {categories.map((data, index) => (
+                <TableRow
+                  key={`${data.name}-${data.no}-${index}`}
+                  data-state={selectedCategories.indexOf(data.uuid) > -1 || !data.isUsing ? 'selected' : undefined}
+                  data-testid="category-row"
+                >
+                  <TableCell>
+                    <Checkbox
+                      aria-label={`選取 ${data.name}`}
+                      onChange={() => handleSelectOne(data.uuid)}
+                      checked={selectedCategories.indexOf(data.uuid) > -1}
+                      disabled={!data.isUsing}
+                      data-testid={`category-${data.name}-checkbox`}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-tertiary" aria-label="編輯分類">
+                      <RouterLink to={`/member-card-category/edit/${data.uuid}`}>
+                        <Pencil strokeWidth={1.75} />
+                      </RouterLink>
+                    </Button>
+                  </TableCell>
+                  <TableCell className="tabular-nums">{data.no}</TableCell>
+                  <TableCell>{data.name}</TableCell>
+                  <TableCell>{idx(data, _ => _.creator.name)}</TableCell>
+                  <TableCell className="tabular-nums">{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
       <TableEditBar selected={selectedCategories} onDelete={handleDelete} />
     </div>

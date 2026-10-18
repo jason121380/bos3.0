@@ -1,7 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, TextField, Checkbox,
-  Divider, Button, CardActions, Select, MenuItem,
+  Checkbox, Select, MenuItem,
   FormControl, InputLabel, FormControlLabel, ToggleButton,
   ToggleButtonGroup
 } from '@mui/material'
@@ -14,70 +12,9 @@ import BelongAutocomplete from 'components/BelongAutocomplete'
 import PaywayAutocomplete from 'components/PaywayAutocomplete'
 import produce from 'immer'
 import { openSnackbar } from 'elements/snackbars'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    marginTop: theme.spacing(3),
-  }),
-  date: css({
-    display: 'flex',
-    gap: 20,
-    flexWrap: 'wrap',
-    '& input': {
-      cursor: 'pointer'
-    },
-    '& .MuiTextField-root': {
-      width: 150
-    }
-  }),
-  content: css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 25,
-    paddingTop: 16
-  }),
-  midTitle: css({
-    marginBottom: 12,
-    fontSize: 14,
-    fontWeight: 500
-  }),
-  type: css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 15,
-    '& p': {
-      fontSize: 14,
-      fontWeight: 500
-    },
-    '& .title': {
-      display: 'flex',
-      gap: 10,
-      alignItems: 'center',
-      flexWrap: 'wrap'
-    },
-    '& .MuiFormControl-root': {
-      width: 150
-    },
-    '& .container': {
-      display: 'flex',
-      gap: 20,
-      flexDirection: 'column',
-      '& .Autocomplete .MuiFormControl-root': {
-        width: '100% !important'
-      },
-      '& > div': {
-        display: 'flex',
-        gap: 20,
-        flexWrap: 'wrap'
-      },
-    },
-    '& .card': {
-      gap: 12
-    }
-  })
-}
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
 
 function General({ inputValue, attributions, setInputValue, handleSubmit, isClick, mainEvent, eventId }) {
 
@@ -127,18 +64,19 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
   }
   return (
     <Fragment>
-      <Card css={styles.root}>
-        <CardHeader title={`${mainEvent.name} ${format(mainEvent.start, "yyyy/M/d")} ~ ${format(mainEvent.end, "yyyy/M/d")}`} />
-        <Divider />
-        <CardContent css={styles.content}>
-          <TextField
-            label='規則名稱'
-            placeholder='請輸入規則名稱'
-            variant='outlined'
-            value={inputValue.nameForGroup}
-            onChange={e => handleValueChange('nameForGroup', e.target.value)}
-          />
-          <div css={styles.date}>
+      <Card>
+        <CardHeader>
+          <CardTitle>{`${mainEvent.name} ${format(mainEvent.start, "yyyy/M/d")} ~ ${format(mainEvent.end, "yyyy/M/d")}`}</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-6">
+          <Field label='規則名稱'>
+            <Input
+              placeholder='請輸入規則名稱'
+              value={inputValue.nameForGroup}
+              onChange={e => handleValueChange('nameForGroup', e.target.value)}
+            />
+          </Field>
+          <div className="flex flex-wrap gap-5 [&_.MuiTextField-root]:w-[150px] [&_input]:cursor-pointer">
             <MobileDatePicker
               maxDate={mainEvent.end}
               minDate={mainEvent.start}
@@ -159,7 +97,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
             />
           </div>
           <div>
-            <p css={styles.midTitle}>適用店家：</p>
+            <p className="mb-3 text-label text-text">適用店家：</p>
             <MerchantListAutocpmpleteForManagement
               onValueChange={value => handleValueChange('merchants', value)}
               selectIds={inputValue.merchants}
@@ -167,9 +105,9 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
               eventId={eventId}
             />
           </div>
-          <div css={styles.type}>
-            <div className='title'>
-              <p>適用消費類型：</p>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <p className="text-label text-text">適用消費類型：</p>
               <ToggleButtonGroup
                 size="small"
                 exclusive
@@ -182,7 +120,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
             </div>
             {inputValue.consumptionTypeUsing === 'CUSTOMIZE' && (
               <>
-                <FormControl variant="outlined">
+                <FormControl variant="outlined" className="w-[150px]">
                   <InputLabel>店販</InputLabel>
                   <Select
                     label='店販'
@@ -193,8 +131,8 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                     <MenuItem value={true}>套用</MenuItem>
                   </Select>
                 </FormControl>
-                <Divider />
-                <FormControl variant="outlined">
+                <div className="h-px bg-border" />
+                <FormControl variant="outlined" className="w-[150px]">
                   <InputLabel>會員卡</InputLabel>
                   <Select
                     label='會員卡'
@@ -205,10 +143,10 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                     <MenuItem value={true}>套用</MenuItem>
                   </Select>
                 </FormControl>
-                <Divider />
-                <div className='container'>
-                  <div>
-                    <FormControl variant="outlined">
+                <div className="h-px bg-border" />
+                <div className="flex flex-col gap-5">
+                  <div className="flex flex-wrap gap-5">
+                    <FormControl variant="outlined" className="w-[150px]">
                       <InputLabel>服務</InputLabel>
                       <Select
                         label='服務'
@@ -220,7 +158,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                       </Select>
                     </FormControl>
                     {inputValue.service.type != '' && (
-                      <FormControl variant="outlined">
+                      <FormControl variant="outlined" className="w-[150px]">
                         <InputLabel>歸屬</InputLabel>
                         <Select
                           label='歸屬'
@@ -243,10 +181,10 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                     />
                   )}
                 </div>
-                <Divider />
-                <div className='container card'>
-                  <div>
-                    <FormControl variant="outlined">
+                <div className="h-px bg-border" />
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-wrap gap-5">
+                    <FormControl variant="outlined" className="w-[150px]">
                       <InputLabel>賣卡先入</InputLabel>
                       <Select
                         label='賣卡先入'
@@ -259,7 +197,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                     </FormControl>
                     {inputValue.ticketSellInPerformance.type !== '' && (
                       <>
-                        <FormControl variant="outlined">
+                        <FormControl variant="outlined" className="w-[150px]">
                           <InputLabel>歸屬</InputLabel>
                           <Select
                             label='歸屬'
@@ -283,9 +221,9 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                     />
                   )}
                 </div>
-                <div style={{ marginTop: 25 }} className='container card'>
-                  <div>
-                    <FormControl variant="outlined">
+                <div className="mt-6 flex flex-col gap-3">
+                  <div className="flex flex-wrap gap-5">
+                    <FormControl variant="outlined" className="w-[150px]">
                       <InputLabel>賣卡後入</InputLabel>
                       <Select
                         label='賣卡後入'
@@ -298,7 +236,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                     </FormControl>
                     {inputValue.ticketSellNotInPerformance.type !== '' && (
                       <>
-                        <FormControl variant="outlined">
+                        <FormControl variant="outlined" className="w-[150px]">
                           <InputLabel>歸屬</InputLabel>
                           <Select
                             label='歸屬'
@@ -322,10 +260,10 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                     />
                   )}
                 </div>
-                <Divider />
-                <div className='container card'>
-                  <div>
-                    <FormControl variant="outlined">
+                <div className="h-px bg-border" />
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-wrap gap-5">
+                    <FormControl variant="outlined" className="w-[150px]">
                       <InputLabel>用卡先入</InputLabel>
                       <Select
                         label='用卡先入'
@@ -338,7 +276,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                     </FormControl>
                     {inputValue.ticketUsePerformanceEntered.type !== '' && (
                       <>
-                        <FormControl variant="outlined">
+                        <FormControl variant="outlined" className="w-[150px]">
                           <InputLabel>歸屬</InputLabel>
                           <Select
                             label='歸屬'
@@ -362,9 +300,9 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                     />
                   )}
                 </div>
-                <div style={{ marginTop: 25 }} className='container card'>
-                  <div>
-                    <FormControl variant="outlined">
+                <div className="mt-6 flex flex-col gap-3">
+                  <div className="flex flex-wrap gap-5">
+                    <FormControl variant="outlined" className="w-[150px]">
                       <InputLabel>用卡後入</InputLabel>
                       <Select
                         label='用卡後入'
@@ -377,7 +315,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                     </FormControl>
                     {inputValue.ticketUsePerformanceNotEntered.type !== '' && (
                       <>
-                        <FormControl variant="outlined">
+                        <FormControl variant="outlined" className="w-[150px]">
                           <InputLabel>歸屬</InputLabel>
                           <Select
                             label='歸屬'
@@ -404,11 +342,11 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
               </>
             )}
           </div>
-          <div css={styles.type}>
-            <div className='title'>
-              <p>適用付款方式：</p>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <p className="text-label text-text">適用付款方式：</p>
             </div>
-            <div className="container">
+            <div className="flex flex-col gap-5">
               <PaywayAutocomplete
                 value={inputValue.payTypeUsing}
                 onChange={value => handleValueChange('payTypeUsing', value)}
@@ -416,66 +354,66 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
               />
             </div>
           </div>
-          <div css={styles.type}>
-            <div className='title'>
-              <p>適用規則：</p>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <p className="text-label text-text">適用規則：</p>
             </div>
-            <div className="container">
-              <div>
-                <TextField
-                  label='門檻'
-                  variant='outlined'
-                  value={inputValue.thresholdPrice}
-                  onFocus={e => e.target.select()}
-                  onChange={e => {
-                    const value = e.target.value
-                    if (value.match(/^[0-9]*$/)) {
-                      handleValueChange('thresholdPrice', Number(value))
-                    }
-                  }}
-                />
-                <TextField
-                  label='每單發券上限'
-                  variant='outlined'
-                  value={inputValue.maxCountPerOrder}
-                  onFocus={e => e.target.select()}
-                  onChange={e => {
-                    const value = e.target.value
-                    if (value.match(/^[0-9]*$/)) {
-                      handleValueChange('maxCountPerOrder', Number(value))
-                    }
-                  }}
-                />
-                <TextField
-                  label='總張數上限'
-                  variant='outlined'
-                  value={inputValue.maxCountForGroup}
-                  onFocus={e => e.target.select()}
-                  onChange={e => {
-                    const value = e.target.value
-                    if (value.match(/^[0-9]*$/)) {
-                      if (Number(value) > mainEvent.maxCount) {
-                        openSnackbar({
-                          message: `張數上限為${mainEvent.maxCount}`,
-                          variant: 'warning'
-                        })
-                      } else {
-                        handleValueChange('maxCountForGroup', Number(value))
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-wrap gap-5">
+                <Field label='門檻' className='w-40'>
+                  <Input
+                    value={inputValue.thresholdPrice}
+                    onFocus={e => e.target.select()}
+                    onChange={e => {
+                      const value = e.target.value
+                      if (value.match(/^[0-9]*$/)) {
+                        handleValueChange('thresholdPrice', Number(value))
                       }
-                    }
-                  }}
-                />
+                    }}
+                  />
+                </Field>
+                <Field label='每單發券上限' className='w-40'>
+                  <Input
+                    value={inputValue.maxCountPerOrder}
+                    onFocus={e => e.target.select()}
+                    onChange={e => {
+                      const value = e.target.value
+                      if (value.match(/^[0-9]*$/)) {
+                        handleValueChange('maxCountPerOrder', Number(value))
+                      }
+                    }}
+                  />
+                </Field>
+                <Field label='總張數上限' className='w-40'>
+                  <Input
+                    value={inputValue.maxCountForGroup}
+                    onFocus={e => e.target.select()}
+                    onChange={e => {
+                      const value = e.target.value
+                      if (value.match(/^[0-9]*$/)) {
+                        if (Number(value) > mainEvent.maxCount) {
+                          openSnackbar({
+                            message: `張數上限為${mainEvent.maxCount}`,
+                            variant: 'warning'
+                          })
+                        } else {
+                          handleValueChange('maxCountForGroup', Number(value))
+                        }
+                      }
+                    }}
+                  />
+                </Field>
               </div>
             </div>
           </div>
-          <Divider />
-          <div css={styles.type}>
-            <div className='title'>
-              <p>入金儲值：</p>
+          <div className="h-px bg-border" />
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <p className="text-label text-text">入金儲值：</p>
             </div>
-            <div className="container">
-              <div>
-                <FormControl variant="outlined">
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-wrap gap-5">
+                <FormControl variant="outlined" className="w-[150px]">
                   <InputLabel>現金</InputLabel>
                   <Select
                     label='現金'
@@ -489,24 +427,24 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                   </Select>
                 </FormControl>
                 {inputValue.walletDepositForCash.using && (
-                  <TextField
-                    label='金額門檻'
-                    variant='outlined'
-                    value={inputValue.walletDepositForCash.price}
-                    onFocus={e => e.target.select()}
-                    onChange={e => {
-                      const value = e.target.value
-                      if (value.match(/^[0-9]*$/)) {
-                        handleTypeChange('walletDepositForCash', 'price', Number(value))
-                      }
-                    }}
-                  />
+                  <Field label='金額門檻' className='w-40'>
+                    <Input
+                      value={inputValue.walletDepositForCash.price}
+                      onFocus={e => e.target.select()}
+                      onChange={e => {
+                        const value = e.target.value
+                        if (value.match(/^[0-9]*$/)) {
+                          handleTypeChange('walletDepositForCash', 'price', Number(value))
+                        }
+                      }}
+                    />
+                  </Field>
                 )}
               </div>
             </div>
-            <div className="container" style={{ marginTop: 25 }}>
-              <div>
-                <FormControl variant="outlined">
+            <div className="mt-6 flex flex-col gap-5">
+              <div className="flex flex-wrap gap-5">
+                <FormControl variant="outlined" className="w-[150px]">
                   <InputLabel>其他付款方式</InputLabel>
                   <Select
                     label='其他付款方式'
@@ -518,23 +456,23 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                   </Select>
                 </FormControl>
                 {inputValue.walletDepositForOtherPay.using && (
-                  <TextField
-                    label='金額門檻'
-                    variant='outlined'
-                    value={inputValue.walletDepositForOtherPay.price}
-                    onFocus={e => e.target.select()}
-                    onChange={e => {
-                      const value = e.target.value
-                      if (value.match(/^[0-9]*$/)) {
-                        handleTypeChange('walletDepositForOtherPay', 'price', Number(value))
-                      }
-                    }}
-                  />
+                  <Field label='金額門檻' className='w-40'>
+                    <Input
+                      value={inputValue.walletDepositForOtherPay.price}
+                      onFocus={e => e.target.select()}
+                      onChange={e => {
+                        const value = e.target.value
+                        if (value.match(/^[0-9]*$/)) {
+                          handleTypeChange('walletDepositForOtherPay', 'price', Number(value))
+                        }
+                      }}
+                    />
+                  </Field>
                 )}
               </div>
             </div>
           </div>
-          <Divider />
+          <div className="h-px bg-border" />
           <FormControlLabel
             style={{ width: 'fit-content' }}
             control={<Checkbox color="primary" />}
@@ -543,12 +481,12 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
             onChange={(e, v) => handleValueChange('isSMSNotifyForGroup', v)}
           />
         </CardContent>
+        <CardFooter>
+          <Button disabled={isClick} onClick={handleSubmit} variant="primary">
+            新增
+          </Button>
+        </CardFooter>
       </Card>
-      <CardActions style={{ paddingLeft: 0 }}>
-        <Button disabled={isClick} onClick={handleSubmit} color="primary" variant="contained">
-          新增
-        </Button>
-      </CardActions>
     </Fragment>
   )
 }
