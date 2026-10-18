@@ -144,3 +144,9 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 - 測試：改版前有 7 檔 13 個既有失敗；PR #5 與 2026/10/19 兩項產品決策的測試改寫後，全域 17 檔／52 測試全數通過（0 失敗、0 skip）。
 - Production build：通過（無錯誤、無警告）。
 - 實機待驗：列印（設計師業績表、互助月報表、店家日報表各一頁）、iPhone 加到主畫面、打帳單／帳單編輯／預約流程。
+
+### 報表 compact 第四批（新一組第 1 個，分支 `claude/ui-report4-box`，v3.0-1019-0443，未 commit／未 merge）
+
+- 範圍：`MerchantBankTransferReport/Results.js`（1 張）、`ProductInvoicingRecordReport/Results.js`（1 張）改 `ui/table`＋`dense`；兩檔 `index.js` 只查不動。
+- 報表累計：先前 17＋本批 2＝**19 頁已用 `ui/table`**（逐目錄實查 `*Report*/*.js`）；**剩 9 個目錄（10 個檔）仍為 MUI Table**：`BusinessAnalysisReport`、`CostAnalysisReport`、`DesignerMonthlyReport`、`DesignerPerforamnceAnalyzeReport`（Results＋Compare）、`DesignerRakeReport`、`DesignersSalaryDetailReport`、`EmployeeDailyReport`、`MerchantBusinessIntervalReport`、`ServiceDeductionDetailReport`。
+- 驗證（指揮者回報；版號校正 0441→0443 時 Claude 未重跑）：eslint 0 error；`verify-logic` 兩檔通過；`portal-root-scan` 0/0；單元測試 52/52 通過；`CI=true npm run build` 成功，且 bundle 內含校正前版號 `v3.0-1019-0441`（build 在校正前產出，校正後需重新 build 才會出現 `v3.0-1019-0443`）。
