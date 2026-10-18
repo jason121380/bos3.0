@@ -58,7 +58,7 @@ const TableCell = React.forwardRef(({ className, numeric, ...props }, ref) => (
 ))
 TableCell.displayName = 'TableCell'
 
-// 分頁：props 名稱與 MUI TablePagination 相同，遷移時可直接沿用原本的 state 與 handler
+// 分頁：手機上換頁按鈕 40px（觸控目標），桌機 32px；props 名稱與 MUI TablePagination 相同，遷移時可直接沿用原本的 state 與 handler
 function TablePagination({
   count,
   page,
@@ -97,10 +97,10 @@ function TablePagination({
         {from}–{to} / 共 {count} 筆
       </span>
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="上一頁" disabled={page <= 0} onClick={e => onPageChange(e, page - 1)}>
+        <Button variant="ghost" size="icon" className="h-10 w-10 sm:h-8 sm:w-8" aria-label="上一頁" disabled={page <= 0} onClick={e => onPageChange(e, page - 1)}>
           <ChevronLeft strokeWidth={1.75} />
         </Button>
-        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="下一頁" disabled={page >= lastPage} onClick={e => onPageChange(e, page + 1)}>
+        <Button variant="ghost" size="icon" className="h-10 w-10 sm:h-8 sm:w-8" aria-label="下一頁" disabled={page >= lastPage} onClick={e => onPageChange(e, page + 1)}>
           <ChevronRight strokeWidth={1.75} />
         </Button>
       </div>
