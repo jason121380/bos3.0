@@ -1,46 +1,9 @@
-/** @jsxImportSource @emotion/react */
-import { Card, Container, CircularProgress, ToggleButton, ToggleButtonGroup, Typography, Box } from '@mui/material'
-import { TimerOutlined as TimerOutlinedIcon } from 'ui/icons'
+// 打卡類型切換保留 MUI ToggleButtonGroup（onChange(event, value) 簽名；橋接主題已套新外觀）
+import { ToggleButton, ToggleButtonGroup } from '@mui/material'
+import { Timer } from 'lucide-react'
 import format from 'date-fns/format'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    marginTop: 24,
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
-    padding: theme.spacing(4, 3),
-    borderRadius: '16px',
-    boxShadow: '0px 10px 40px rgba(26, 115, 232, 0.08)',
-    border: 'none !important',
-  }),
-  timerContainer: css({
-    backgroundColor: 'rgba(26, 115, 232, 0.04)',
-    padding: '12px 24px',
-    borderRadius: '12px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginBottom: '20px',
-  }),
-  timerLabel: css({
-    color: 'rgb(var(--text-secondary))',
-    fontSize: '13px',
-    fontWeight: '500',
-    marginBottom: '4px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
-  }),
-  timerValue: css({
-    color: 'rgb(var(--accent))',
-    fontSize: '32px',
-    fontWeight: '800',
-    fontFamily: "'Inter', 'Roboto Mono', monospace",
-  }),
-}
+import { Card } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 
 const clockInOptions = [
   { label: '上班', value: 'CLOCKIN' },
@@ -52,23 +15,21 @@ const clockInOptions = [
 function Results({ clockInType, setClockInType, isLoading, url, countDownTime }) {
 
   return (
-    <Container maxWidth='md' >
-      <Card css={styles.root}>
-        <Box css={styles.timerContainer}>
-          <Typography css={styles.timerLabel}>
-            <TimerOutlinedIcon sx={{ fontSize: 16 }} />
+    <div className="mx-auto w-full max-w-3xl">
+      <Card className="flex flex-col items-center px-6 py-8">
+        <div className="mb-5 flex flex-col items-center rounded-lg bg-accent/8 px-6 py-3">
+          <span className="mb-1 flex items-center gap-1 text-label text-text-secondary">
+            <Timer className="h-4 w-4" strokeWidth={1.75} />
             有效時間
-          </Typography>
-          <Typography css={styles.timerValue}>
+          </span>
+          <span className="text-display tabular-nums text-accent">
             {format(countDownTime, 'mm:ss')}
-          </Typography>
-        </Box>
+          </span>
+        </div>
         {isLoading ? (
-          <div style={{ width: 250, height: 250, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '24px' }}>
-            <CircularProgress />
-          </div>
+          <Skeleton className="mb-6 h-[250px] w-[250px]" aria-label="載入中" />
         ) : (
-          <img src={url} alt="" style={{ width: 250, height: 250, marginBottom: '24px' }} />
+          <img src={url} alt="" className="mb-6 h-[250px] w-[250px]" />
         )}
         <ToggleButtonGroup
           size="small"
@@ -97,16 +58,16 @@ function Results({ clockInType, setClockInType, isLoading, url, countDownTime })
                 padding: '6px 20px',
                 color: 'rgb(var(--text-secondary))',
                 fontSize: '14px',
-                fontWeight: 'bold',
+                fontWeight: 500,
                 textTransform: 'none',
                 border: 'none !important',
                 '&.Mui-selected': {
                   backgroundColor: 'rgb(var(--background)) !important',
-                  color: 'rgb(var(--accent)) !important',
-                  boxShadow: '0px 2px 4px rgba(0,0,0,0.1)',
+                  color: 'rgb(var(--text)) !important',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
                 },
                 '&:hover': {
-                  backgroundColor: 'rgba(0,0,0,0.04)',
+                  backgroundColor: 'rgb(var(--surface-hover))',
                 },
               }}
             >
@@ -115,7 +76,7 @@ function Results({ clockInType, setClockInType, isLoading, url, countDownTime })
           ))}
         </ToggleButtonGroup>
       </Card>
-    </Container>
+    </div>
   )
 }
 export default Results
