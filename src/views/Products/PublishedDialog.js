@@ -1,8 +1,9 @@
-/** @jsxImportSource @emotion/react */
+// MUI Dialog 保留：內含 MUI Select（值為布林，Radix Select 不支援）
 import {
-  Button, Dialog, DialogTitle, DialogContent, DialogActions, Select,
+  Dialog, DialogTitle, DialogContent, DialogActions, Select,
   FormControl, MenuItem
 } from '@mui/material'
+import { Button } from 'ui/button'
 
 const PublishedDialog = ({
   open, isPublished, setIsPublished, handleClosePublishDialog,
@@ -23,10 +24,10 @@ const PublishedDialog = ({
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button disabled={isClick} variant='contained' onClick={handleClosePublishDialog} color="primary">
+        <Button disabled={isClick} variant="secondary" onClick={handleClosePublishDialog}>
           取消
         </Button>
-        <Button disabled={isClick} variant='contained' onClick={handleSetPublished} color="primary" autoFocus data-testid="confirm">
+        <Button disabled={isClick} variant="primary" onClick={handleSetPublished} autoFocus data-testid="confirm">
           確認
         </Button>
       </DialogActions>

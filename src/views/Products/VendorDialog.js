@@ -1,8 +1,9 @@
-/** @jsxImportSource @emotion/react */
+// MUI Dialog 保留：內含 MUI Autocomplete（Radix Dialog 會擋住其彈出層）
 import {
-  Button, Dialog, DialogTitle, DialogContent, DialogActions, Autocomplete,
+  Dialog, DialogTitle, DialogContent, DialogActions, Autocomplete,
   TextField
 } from '@mui/material'
+import { Button } from 'ui/button'
 
 const VendorDialog = ({
   open, handleClosePublishDialog, isClick, option, setMerchantVendorId,
@@ -48,10 +49,10 @@ const VendorDialog = ({
         />
       </DialogContent>
       <DialogActions>
-        <Button disabled={isClick} variant='contained' onClick={handleClosePublishDialog} color="primary">
+        <Button disabled={isClick} variant="secondary" onClick={handleClosePublishDialog}>
           取消
         </Button>
-        <Button disabled={isClick || !merchantVendorId} variant='contained' onClick={handleSetVendor} color="primary" autoFocus data-testid="confirm">
+        <Button disabled={isClick || !merchantVendorId} variant="primary" onClick={handleSetVendor} autoFocus data-testid="confirm">
           確認
         </Button>
       </DialogActions>
