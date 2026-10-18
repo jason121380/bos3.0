@@ -2,6 +2,11 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import React from 'react'
 
 import { TablePagination } from '../table'
+import { NativeSelect, NativeSelectOption } from '../native-select'
+import { ToggleGroup, ToggleGroupItem } from '../toggle-group'
+import { Switch } from '../switch'
+import { CheckboxField } from '../checkbox'
+import { Avatar } from '../avatar'
 import { toast, Toaster } from '../toast'
 import { cn } from '../utils'
 
@@ -61,5 +66,113 @@ describe('formatNumber', () => {
     expect(formatNumber(0.30000000000000004)).toBe('0.30000000000000004')
     expect(formatNumber('1880')).toBe('1,880')
     expect([undefined, null, ''].map(formatNumber)).toEqual([undefined, null, ''])
+  })
+})
+
+// ---- 第二輪元件：替換 MUI 時 handler 一字不改，所以「回傳給 handler 的值與簽名」必須和 MUI 相同 ----
+
+describe('NativeSelect', () => {
+  // 舊頁面的 Select 值常是布林、數字或空字串；handler 讀 event.target.value 後直接存進 state 或送 API，型別不能變成字串
+  it('onChange 拿回選項的原始型別（布林、數字），並帶 name', () => {
+    const onChange = jest.fn()
+    render(
+      <NativeSelect aria-label="狀態" name="status" value={true} onChange={onChange}>
+        <NativeSelectOption value={true}>啟用</NativeSelectOption>
+        <NativeSelectOption value={false}>停用</NativeSelectOption>
+        <NativeSelectOption value={0}>全部</NativeSelectOption>
+      </NativeSelect>
+    )
+    const select = screen.getByLabelText('狀態')
+    fireEvent.change(select, { target: { value: '1' } })
+    fireEvent.change(select, { target: { value: '2' } })
+    expect(onChange.mock.calls.map(c => c[0].target.value)).toEqual([false, 0])
+    expect(onChange.mock.calls[0][0].target.name).toBe('status')
+  })
+
+  // MUI 以字串比對非物件值：state 是數字 1、選項是 '1' 時仍要顯示為已選，否則換元件後畫面會像沒選
+  it('與 MUI 相同，數字與字串值視為相同選項；空字串且無對應選項時顯示 placeholder', () => {
+    const { rerender } = render(
+      <NativeSelect aria-label="類別" value={1} onChange={() => {}}>
+        <NativeSelectOption value="1">剪髮</NativeSelectOption>
+      </NativeSelect>
+    )
+    expect(screen.getByLabelText('類別').selectedOptions[0].textContent).toBe('剪髮')
+    rerender(
+      <NativeSelect aria-label="類別" value="" placeholder="請選擇" onChange={() => {}}>
+        <NativeSelectOption value="1">剪髮</NativeSelectOption>
+      </NativeSelect>
+    )
+    expect(screen.getByLabelText('類別').selectedOptions[0].textContent).toBe('請選擇')
+  })
+})
+
+describe('ToggleGroup', () => {
+  // MUI exclusive 群組再按一次已選項目會回傳 null；多數頁面的 handler 依此判斷「不改變」，行為必須一致
+  it('exclusive：選新值回傳該值，再按已選項目回傳 null', () => {
+    const onChange = jest.fn()
+    render(
+      <ToggleGroup exclusive value={1} onChange={onChange}>
+        <ToggleGroupItem value={1}>日</ToggleGroupItem>
+        <ToggleGroupItem value={2}>月</ToggleGroupItem>
+      </ToggleGroup>
+    )
+    fireEvent.click(screen.getByText('月'))
+    fireEvent.click(screen.getByText('日'))
+    expect(onChange.mock.calls.map(c => c[1])).toEqual([2, null])
+    expect(screen.getByText('日')).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('非 exclusive：回傳加入或移除後的新陣列', () => {
+    const onChange = jest.fn()
+    render(
+      <ToggleGroup value={['a']} onChange={onChange}>
+        <ToggleGroupItem value="a">A</ToggleGroupItem>
+        <ToggleGroupItem value="b">B</ToggleGroupItem>
+      </ToggleGroup>
+    )
+    fireEvent.click(screen.getByText('B'))
+    fireEvent.click(screen.getByText('A'))
+    expect(onChange.mock.calls.map(c => c[1])).toEqual([['a', 'b'], []])
+  })
+})
+
+describe('Switch / CheckboxField', () => {
+  // MUI Switch、Checkbox 的 handler 常寫成 (e, checked) => …，第二個參數必須是勾選後的狀態
+  it('onChange 以 (event, checked) 呼叫', () => {
+    const onSwitch = jest.fn()
+    const onCheck = jest.fn()
+    render(
+      <>
+        <Switch label="報到模式" checked={false} onChange={onSwitch} />
+        <CheckboxField label="連續新增" checked={false} onChange={onCheck} />
+      </>
+    )
+    fireEvent.click(screen.getByLabelText('報到模式'))
+    fireEvent.click(screen.getByLabelText('連續新增'))
+    expect(onSwitch.mock.calls[0][1]).toBe(true)
+    expect(onCheck.mock.calls[0][1]).toBe(true)
+  })
+})
+
+describe('TablePagination（第二輪）', () => {
+  // 舊頁面把 ref 傳給分頁、handler 用 parseInt(event.target.value)；兩者都要能直接沿用
+  it('ref 指向外框；每頁筆數回傳數字', () => {
+    const ref = React.createRef()
+    const onRows = jest.fn()
+    render(
+      <TablePagination ref={ref} count={100} page={0} rowsPerPage={10} rowsPerPageOptions={[10, 25]} onPageChange={() => {}} onRowsPerPageChange={onRows} />
+    )
+    expect(ref.current).toBeInstanceOf(HTMLDivElement)
+    fireEvent.change(screen.getByLabelText('每頁筆數'), { target: { value: '1' } })
+    expect(onRows.mock.calls[0][0].target.value).toBe(25)
+  })
+})
+
+describe('Avatar', () => {
+  // 員工、顧客常沒有照片或圖片網址失效；不能顯示破圖
+  it('圖片載入失敗時改顯示 children（姓名首字）', () => {
+    render(<Avatar src="https://example.invalid/x.png" alt="王小美">王</Avatar>)
+    fireEvent.error(screen.getByAltText('王小美'))
+    expect(screen.getByText('王')).toBeInTheDocument()
   })
 })

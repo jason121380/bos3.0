@@ -11,6 +11,12 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from 'ui/tabs'
 import { toast, Toaster } from 'ui/toast'
 import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
+import { Switch } from 'ui/switch'
+import { CheckboxField } from 'ui/checkbox'
+import { Avatar } from 'ui/avatar'
+import { StatGrid, Stat, StatCard } from 'ui/stat'
 
 // 開發用元件預覽頁（/ui-preview），只在非正式建置註冊路由。資料皆為假資料，不呼叫任何 API。
 const rows = [
@@ -32,6 +38,10 @@ export default function UiPreview() {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [dark, setDark] = useState(false)
+  const [range, setRange] = useState('day')
+  const [status, setStatus] = useState(true)
+  const [checkIn, setCheckIn] = useState(true)
+  const [chip, setChip] = useState(false)
   // 深色切換掛在 <html>，讓 Dialog / Select 等浮層一併套用
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
@@ -176,6 +186,46 @@ export default function UiPreview() {
             </Dialog>
             <Button onClick={() => toast.success('已儲存帳單')}>成功提示</Button>
             <Button onClick={() => toast.error('儲存失敗', '網路連線中斷，請確認網路後再按一次儲存。')}>錯誤提示</Button>
+          </div>
+        </Section>
+
+        <Section title="第二輪：NativeSelect / ToggleGroup / Switch / Checkbox">
+          <div className="grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2">
+            <NativeSelect label="帳號狀態" value={status} onChange={e => setStatus(e.target.value)}>
+              <NativeSelectOption value={true}>啟用</NativeSelectOption>
+              <NativeSelectOption value={false}>停用</NativeSelectOption>
+            </NativeSelect>
+            <NativeSelect label="服務類別" value="" placeholder="請選擇" onChange={() => {}}>
+              <NativeSelectOption value="1">剪髮</NativeSelectOption>
+            </NativeSelect>
+          </div>
+          <div className="flex flex-wrap items-center gap-4">
+            <ToggleGroup exclusive value={range} onChange={(e, v) => v && setRange(v)}>
+              <ToggleGroupItem value="day">日</ToggleGroupItem>
+              <ToggleGroupItem value="week">週</ToggleGroupItem>
+              <ToggleGroupItem value="month">月</ToggleGroupItem>
+            </ToggleGroup>
+            <ToggleGroupItem selected={chip} onChange={() => setChip(c => !c)}>只看指定</ToggleGroupItem>
+            <Switch label="報到模式" checked={checkIn} onChange={(e, c) => setCheckIn(c)} />
+            <CheckboxField label="連續新增" defaultChecked />
+          </div>
+        </Section>
+
+        <Section title="第二輪：Avatar / Stat">
+          <div className="flex items-center gap-3">
+            <Avatar size="sm">王</Avatar>
+            <Avatar>林</Avatar>
+            <Avatar size="lg" />
+          </div>
+          <StatGrid cols={4}>
+            <Stat label="服務消費">12,880</Stat>
+            <Stat label="店販消費">3,200</Stat>
+            <Stat label="業績收入" hint="含卡券入業績">16,080</Stat>
+            <Stat label="營業現金應收">9,500</Stat>
+          </StatGrid>
+          <div className="grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2">
+            <StatCard label="入金餘額" hint="最後異動 2026/10/18">NT$ 12,000</StatCard>
+            <StatCard label="紅利點數">1,880</StatCard>
           </div>
         </Section>
       </div>
