@@ -1,11 +1,10 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, wait } from '@testing-library/react'
 import CustomMockedProvider from 'components/CustomMockedProvider'
 import React from 'react'
 import { spy } from 'sinon'
 
-import AccountingSubjectsAutocomplete, {
-  ACCOUNTING_SUBJECTS,
-} from '../AccountingSubjectsAutocomplete'
+import AccountingSubjectsAutocomplete from '../AccountingSubjectsAutocomplete'
+import { GET_ACCOUNTING_SUBJECTS } from 'hooks/useFetchAccountingSubjects'
 
 describe('<AccountingSubjectsAutocomplete />', () => {
   let mocks = []
@@ -25,7 +24,7 @@ describe('<AccountingSubjectsAutocomplete />', () => {
     mocks = [
       {
         request: {
-          query: ACCOUNTING_SUBJECTS,
+          query: GET_ACCOUNTING_SUBJECTS,
         },
         result: {
           data: {
@@ -35,6 +34,7 @@ describe('<AccountingSubjectsAutocomplete />', () => {
                 name: 'name',
                 number: 1,
                 inoutType: 'REVENUE',
+                isUsing: true,
               },
             ],
           },
@@ -43,12 +43,12 @@ describe('<AccountingSubjectsAutocomplete />', () => {
     ]
     wrapper = render(
       <CustomMockedProvider mocks={mocks}>
-        <AccountingSubjectsAutocomplete onChange={handleChange} />
+        <AccountingSubjectsAutocomplete onChange={handleChange} inoutType="REVENUE" />
       </CustomMockedProvider>
     )
 
     await new Promise(resolve => setTimeout(() => resolve(), 0))
-    const textbox = screen.getByRole('textbox')
+    const textbox = screen.getByRole('combobox')
 
     const selectedValue = {
       title: 'name',
@@ -62,7 +62,7 @@ describe('<AccountingSubjectsAutocomplete />', () => {
 
     expect(handleChange.callCount).toEqual(1)
     expect(handleChange.args[0][1]).toEqual(selectedValue)
-    expect(handleChange.args[0][2]).toEqual('select-option')
+    expect(handleChange.args[0][2]).toEqual('selectOption')
     expect(handleChange.args[0][3]).toEqual({ option: selectedValue })
   })
 
@@ -70,7 +70,7 @@ describe('<AccountingSubjectsAutocomplete />', () => {
     mocks = [
       {
         request: {
-          query: ACCOUNTING_SUBJECTS,
+          query: GET_ACCOUNTING_SUBJECTS,
         },
         result: {
           data: {
@@ -80,12 +80,14 @@ describe('<AccountingSubjectsAutocomplete />', () => {
                 name: 'name',
                 number: 1,
                 inoutType: 'REVENUE',
+                isUsing: true,
               },
               {
                 id: '2',
                 name: 'name2',
                 number: 2,
-                inoutType: 'REVENUE2',
+                inoutType: 'REVENUE',
+                isUsing: true,
               },
             ],
           },
@@ -94,11 +96,11 @@ describe('<AccountingSubjectsAutocomplete />', () => {
     ]
     wrapper = render(
       <CustomMockedProvider mocks={mocks}>
-        <AccountingSubjectsAutocomplete open />
+        <AccountingSubjectsAutocomplete open inoutType="REVENUE" />
       </CustomMockedProvider>
     )
     await new Promise(resolve => setTimeout(() => resolve(), 0))
-    const options = wrapper.getAllByRole('option')
+    const options = await wait(() => wrapper.getAllByRole('option')).then(() => wrapper.getAllByRole('option'))
     expect(options).toHaveLength(2)
   })
 
@@ -106,7 +108,7 @@ describe('<AccountingSubjectsAutocomplete />', () => {
     mocks = [
       {
         request: {
-          query: ACCOUNTING_SUBJECTS,
+          query: GET_ACCOUNTING_SUBJECTS,
         },
         result: {
           data: {
@@ -116,6 +118,7 @@ describe('<AccountingSubjectsAutocomplete />', () => {
                 name: 'name',
                 number: 1,
                 inoutType: 'REVENUE',
+                isUsing: true,
               },
             ],
           },
@@ -131,10 +134,11 @@ describe('<AccountingSubjectsAutocomplete />', () => {
     }
     wrapper = render(
       <CustomMockedProvider mocks={mocks}>
-        <AccountingSubjectsAutocomplete open value={selectedValue} autoFocus />
+        <AccountingSubjectsAutocomplete open inoutType="REVENUE" value={selectedValue} autoFocus />
       </CustomMockedProvider>
     )
     await new Promise(resolve => setTimeout(() => resolve(), 0))
+    await wait(() => expect(wrapper.queryByText('1 name')).not.toBeNull())
     const textbox = wrapper.queryByText('1 name')
     expect(textbox).not.toBeNull()
   })

@@ -39,7 +39,8 @@ var localStorageMock = (function () {
   var store = {}
   return {
     getItem: function (key) {
-      return store[key]
+      // 與真實 localStorage 一致：不存在的 key 回傳 null（元件以 !== null 判斷 liffId）
+      return key in store ? store[key] : null
     },
     setItem: function (key, value) {
       store[key] = JSON.stringify(value)

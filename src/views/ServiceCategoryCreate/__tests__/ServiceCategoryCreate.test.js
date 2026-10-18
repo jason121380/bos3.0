@@ -6,6 +6,15 @@ import { Router } from 'react-router-dom'
 
 import ServiceCategoryCreate from '../ServiceCategoryCreate'
 
+// 頁面載入時會查「服務歸屬」選項；測試未提供該 query 的 mock，直接 mock hook 回傳選項
+jest.mock('hooks/useFetchGetAttribution', () => ({
+  __esModule: true,
+  default: () => ({
+    loading: false,
+    data: { getAttribution: [{ name: '燙', value: '燙' }] },
+  }),
+}))
+
 const historyMock = { push: jest.fn(), location: {}, listen: jest.fn() }
 const createWrapper = () => {
   const merchantId = window.localStorage.getItem('userMerchant')
@@ -80,12 +89,7 @@ describe('<ServiceCategoryCreate />', () => {
       },
     })
 
-    const attribution = getByTestId('attribution')
-    fireEvent.change(attribution, {
-      target: {
-        value: '燙',
-      },
-    })
+    // 服務歸屬是 MUI Select（沒有 data-testid="attribution"），預設值即為 '燙'，不必操作
 
     fireEvent.click(submit)
     await new Promise(resolve =>

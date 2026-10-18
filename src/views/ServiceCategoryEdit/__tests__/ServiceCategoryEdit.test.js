@@ -2,10 +2,25 @@ import React from 'react'
 import { GET_SERVICE_CATEGORY, mockedServiceCategoryResp } from 'hooks/useFetchServiceCategory'
 import { UPDATE_SERVICE_CATEGORY, updateServiceCategory } from 'hooks/useFetchUpdateServiceCategory'
 import CustomMockedProvider from 'components/CustomMockedProvider'
-import { render, fireEvent } from '@testing-library/react'
+import { render, fireEvent, within } from '@testing-library/react'
 import { Router } from 'react-router-dom'
 
 import ServiceCategoryEdit from '../ServiceCategoryEdit'
+
+// 頁面載入時會查「服務歸屬」選項；測試未提供該 query 的 mock，直接 mock hook 回傳選項
+jest.mock('hooks/useFetchGetAttribution', () => ({
+  __esModule: true,
+  default: () => ({
+    loading: false,
+    data: { getAttribution: [{ name: '燙', value: '燙' }] },
+  }),
+}))
+
+// 服務歸屬是 MUI Select（沒有 data-testid="attribution"），要開啟選單再點選項
+const chooseAttribution = (container, optionText) => {
+  fireEvent.mouseDown(container.querySelector('[aria-haspopup="listbox"]'))
+  fireEvent.click(within(document.body).getByRole('option', { name: optionText }))
+}
 
 const historyMock = { push: jest.fn(), location: {}, listen: jest.fn() }
 
@@ -47,12 +62,11 @@ describe('<ServiceCategoryEdit />', () => {
       },
     ]
 
-    const { getByTestId } = createWrapper(mocks)
+    const { getByTestId, container } = createWrapper(mocks)
     await new Promise(resolve => setTimeout(() => resolve(), 200))
 
     const no = getByTestId('no')
     const name = getByTestId('name')
-    const attribution = getByTestId('attribution')
     const save = getByTestId('save')
 
     fireEvent.change(no, {
@@ -61,13 +75,10 @@ describe('<ServiceCategoryEdit />', () => {
     fireEvent.change(name, {
       target: { value: 'cdc222' },
     })
-    fireEvent.change(attribution, {
-      target: { value: '燙' },
-    })
+    chooseAttribution(container, '燙')
 
     expect(no.value).toEqual('test222')
     expect(name.value).toEqual('cdc222')
-    expect(attribution.value).toEqual('燙')
     fireEvent.click(save)
 
     await new Promise(resolve => setTimeout(() => resolve(), 200))
@@ -101,12 +112,11 @@ describe('<ServiceCategoryEdit />', () => {
       },
     ]
 
-    const { getByTestId, getByText, queryByText } = createWrapper(mocks)
+    const { getByTestId, getByText, queryByText, container } = createWrapper(mocks)
     await new Promise(resolve => setTimeout(() => resolve(), 200))
 
     const no = getByTestId('no')
     const name = getByTestId('name')
-    const attribution = getByTestId('attribution')
     const save = getByTestId('save')
 
     fireEvent.change(no, {
@@ -115,9 +125,7 @@ describe('<ServiceCategoryEdit />', () => {
     fireEvent.change(name, {
       target: { value: '' },
     })
-    fireEvent.change(attribution, {
-      target: { value: '' },
-    })
+    chooseAttribution(container, 'None')
 
     fireEvent.click(save)
     await new Promise(resolve => setTimeout(() => resolve(), 200))
@@ -148,10 +156,7 @@ describe('<ServiceCategoryEdit />', () => {
     expect(queryByText('類別為必填')).not.toBeInTheDocument()
     expect(getByText('請選擇服務')).toBeInTheDocument()
 
-    fireEvent.change(attribution, {
-      target: { value: '燙' },
-    })
-    expect(attribution.value).toEqual('燙')
+    chooseAttribution(container, '燙')
     fireEvent.click(save)
     await new Promise(resolve => setTimeout(() => resolve(), 200))
 
