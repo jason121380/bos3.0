@@ -1,101 +1,14 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  Checkbox,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Typography,
-  IconButton,
-  Collapse,
-} from '@mui/material'
 import TableCheckoutBar from 'components/TableCheckoutBar'
-import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
+import { ChevronDown } from 'lucide-react'
 import { format, startOfDay } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  filterButton: css({
-    marginRight: theme.spacing(2),
-  }),
-  content: css({
-    padding: 0,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
-  orderAlert: css({
-    color: 'red',
-    fontWeight: 'bold'
-  }),
-  cardHeader: css({
-    '& .MuiCardHeader-title': {
-      fontSize: '15px',
-      fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-    },
-  }),
-  expand: css({
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  }),
-  expandOpen: css({
-    transform: 'rotate(180deg)',
-  }),
-  gridContainer: css({
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '0 24px',
-    padding: '8px 24px',
-    [theme.breakpoints.down('sm')]: {
-      gridTemplateColumns: '1fr',
-    },
-  }),
-  gridItem: css({
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0',
-    borderBottom: '1px solid rgb(var(--border))',
-    '&:last-child': {
-      borderBottom: 'none',
-    },
-  }),
-  selectAllHeader: css({
-    display: 'flex',
-    alignItems: 'center',
-    padding: '4px 24px',
-    backgroundColor: 'rgb(var(--surface))',
-    borderBottom: '1px solid rgb(var(--border))',
-  }),
-  orderAlertCompact: css({
-    marginLeft: '8px',
-    color: 'red',
-    fontSize: '11px',
-    fontWeight: 'bold'
-  }),
-  tableCell: css({
-    padding: '4px 16px !important',
-    height: 'auto !important',
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Checkbox } from 'ui/checkbox'
+import { cn } from 'ui/utils'
 
 function Results({
   pageSetting,
@@ -172,86 +85,71 @@ function Results({
   }
 
   return (
-    <div {...rest} css={styles.root}>
+    <div {...rest}>
       <Card>
         <CardHeader
-          css={styles.cardHeader}
+          className="items-center pb-5"
           action={
-            <IconButton
-              css={[styles.expand, expanded && styles.expandOpen]}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-text-secondary"
               onClick={handleExpandClick}
               aria-expanded={expanded}
               aria-label="show more"
-              size="small"
             >
-              <ExpandMoreIcon />
-            </IconButton>
+              <ChevronDown className={cn('transition-transform', expanded && 'rotate-180')} strokeWidth={1.75} />
+            </Button>
           }
-          title={
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <span>尚未日結紀錄</span>
-              <Typography color="textSecondary" variant="body2">
-                共 {results.length} 筆
-              </Typography>
-            </div>
-          }
-        />
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <div css={styles.selectAllHeader}>
-            <Checkbox
-              checked={
-                selectedOrders.length > 0
-                  ? selectedOrders.length === canCheckoutOrder
-                  : false
-              }
-              color="primary"
-              indeterminate={
-                selectedOrders.length > 0 && selectedOrders.length < canCheckoutOrder
-              }
-              onChange={handleSelectAll}
-              size="small"
-            />
-            <Typography variant="subtitle2" style={{ fontWeight: 'bold', marginLeft: '8px' }}>
-              全選 / 營業日期
-            </Typography>
+        >
+          <div className="flex items-baseline gap-3">
+            <CardTitle>尚未日結紀錄</CardTitle>
+            <span className="text-label text-text-secondary tabular-nums">
+              共 {results.length} 筆
+            </span>
           </div>
-          <CardContent css={styles.content}>
-            <div css={styles.gridContainer}>
+        </CardHeader>
+        {expanded && (
+          <div className="border-0 border-t border-solid border-border">
+            <div className="flex items-center gap-2 border-0 border-b border-solid border-border bg-surface px-5 py-2">
+              <Checkbox
+                aria-label="全選"
+                checked={
+                  selectedOrders.length > 0
+                    ? selectedOrders.length === canCheckoutOrder
+                    : false
+                }
+                indeterminate={
+                  selectedOrders.length > 0 && selectedOrders.length < canCheckoutOrder
+                }
+                onChange={handleSelectAll}
+              />
+              <span className="text-label text-text-secondary">
+                全選 / 營業日期
+              </span>
+            </div>
+            <div className="grid grid-cols-1 gap-x-6 px-5 py-2 sm:grid-cols-2">
               {results.map(result => (
-                <div key={result.date} css={styles.gridItem}>
+                <div key={result.date} className="flex h-10 items-center gap-2 border-0 border-b border-solid border-border">
                   <Checkbox
-                    color="primary"
+                    aria-label={format(new Date(result.date), 'yyyy/MM/dd')}
                     onChange={() => handleSelectOne(result.date)}
                     checked={selectedOrders.indexOf(result.date) > -1}
                     disabled={checkoutStatus && result.pendingOrderCount > 0}
-                    size="small"
                   />
-                  <Typography variant="body2" style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <span className="flex flex-wrap items-center text-body tabular-nums text-text">
                     {format(new Date(result.date), 'yyyy/MM/dd')}
                     {checkoutStatus && result.pendingOrderCount > 0 && (
-                      <span css={styles.orderAlertCompact}>
+                      <span className="ml-2 text-caption font-medium text-danger">
                         ({result.pendingOrderCount}筆掛單未結)
                       </span>
                     )}
-                  </Typography>
+                  </span>
                 </div>
               ))}
             </div>
-          </CardContent>
-          {/* <CardActions css={styles.actions}>
-          <TablePagination
-            ref={pageRef}
-            labelRowsPerPage='每頁顯示數量'
-            component="div"
-            count={pageSetting.totalCount}
-            onPageChange={onPageChange}
-            onRowsPerPageChange={onRowsPerPageChange}
-            page={pageSetting.pageOffset}
-            rowsPerPage={pageSetting.pageLimit}
-            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
-          />
-        </CardActions> */}
-        </Collapse>
+          </div>
+        )}
       </Card>
       <TableCheckoutBar
         selected={selectedOrders}
