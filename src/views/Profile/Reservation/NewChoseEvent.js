@@ -1,9 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, Fragment } from 'react'
+// 動作清單（List / ListItemButton / Link component）沒有對應元件，保留 MUI
 import {
-  Avatar, DialogContent, Link, List, ListItemButton,
-  ListItemAvatar, ListItemText, Typography
+  DialogContent, Link, List, ListItemButton,
+  ListItemAvatar, ListItemText
 } from '@mui/material'
+import { Avatar } from 'ui/avatar'
 import { blue } from '@mui/material/colors'
 import { Cancel as CancelIcon, Check as CheckIcon, Lock as LockIcon, LockOpen as LockOpenIcon, Edit as EditIcon, ShoppingCart as ShoppingCartIcon, EventSeat as EventSeatIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
@@ -123,7 +125,7 @@ export default function NewChoseEvent({
         >
           <ListItemButton css={styles.field}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <EventSeatIcon />
               </Avatar>
             </ListItemAvatar>
@@ -133,7 +135,7 @@ export default function NewChoseEvent({
         {!checkinMode && (modaltype === 'openAllOrder' ? 
           <ListItemButton css={styles.field} onClick={closeAllOrderTime} disabled={btnDisabled}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <LockOpenIcon />
               </Avatar>
             </ListItemAvatar>
@@ -142,7 +144,7 @@ export default function NewChoseEvent({
           :
           <ListItemButton css={styles.field} onClick={closeAllOrderTime} disabled={btnDisabled}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <LockIcon />
               </Avatar>
             </ListItemAvatar>
@@ -170,7 +172,7 @@ export default function NewChoseEvent({
         >
           <ListItemButton css={styles.field}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <EventSeatIcon />
               </Avatar>
             </ListItemAvatar>
@@ -180,7 +182,7 @@ export default function NewChoseEvent({
         {!checkinMode && (modaltype === 'openOrder' ? 
           <ListItemButton css={styles.field} onClick={closeOrderTime} disabled={btnDisabled}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <LockOpenIcon />
               </Avatar>
             </ListItemAvatar>
@@ -189,7 +191,7 @@ export default function NewChoseEvent({
           :
           <ListItemButton css={styles.field} onClick={closeOrderTime} disabled={btnDisabled}>
             <ListItemAvatar>
-              <Avatar css={styles.avatar}>
+              <Avatar className="bg-accent/8 text-accent">
                 <LockIcon />
               </Avatar>
             </ListItemAvatar>
@@ -210,7 +212,7 @@ export default function NewChoseEvent({
         </div>
       </Fragment>}
       {(modaltype === 'orderCheck' || modaltype === 'orderSuccess') && <Fragment>
-        <Typography component='div' gutterBottom css={styles.breakWord}>
+        <div className="mb-2 text-body text-text" css={styles.breakWord}>
           <div>{`姓名: ${editOrder.customer.name}`}</div>
           <div>{`電話: ${editOrder.customer.cellphone}`}</div>
           <div>{`日期: ${format(new Date(editOrder.date), 'yyyy/MM/dd')}`}</div>
@@ -228,7 +230,7 @@ export default function NewChoseEvent({
               `提醒日期: ${format(new Date(editOrder.notificationDate), 'yyyy/MM/dd')} (${editOrder.notificationDayCount}天前)`
             }</div>
           )}
-        </Typography>
+        </div>
         <List>
           {modaltype === 'orderSuccess' && (
             <Link
@@ -241,7 +243,7 @@ export default function NewChoseEvent({
             >
               <ListItemButton>
                 <ListItemAvatar>
-                  <Avatar css={styles.avatar}>
+                  <Avatar className="bg-accent/8 text-accent">
                     <EditIcon />
                   </Avatar>
                 </ListItemAvatar>
@@ -259,7 +261,7 @@ export default function NewChoseEvent({
           >
             <ListItemButton>
               <ListItemAvatar>
-                <Avatar css={styles.avatar}>
+                <Avatar className="bg-accent/8 text-accent">
                   <ShoppingCartIcon />
                 </Avatar>
               </ListItemAvatar>
@@ -270,7 +272,7 @@ export default function NewChoseEvent({
           {editOrder.status !== '預約成功' && editOrder.status !== '已完成' && (
             <ListItemButton onClick={() => handleAcceptBooking(true)}>
               <ListItemAvatar>
-                <Avatar css={styles.avatar}>
+                <Avatar className="bg-accent/8 text-accent">
                   <CheckIcon />
                 </Avatar>
               </ListItemAvatar>
@@ -280,7 +282,7 @@ export default function NewChoseEvent({
           {editOrder.status !== '設計師已取消' && (
             <ListItemButton onClick={() => handleAcceptBooking(false)}>
               <ListItemAvatar>
-                <Avatar css={styles.avatar}>
+                <Avatar className="bg-accent/8 text-accent">
                   <CancelIcon />
                 </Avatar>
               </ListItemAvatar>

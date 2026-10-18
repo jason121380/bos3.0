@@ -1,6 +1,7 @@
-import { Tab, Tabs, Switch } from '@mui/material'
+import { Tab, Tabs } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
+import { Switch } from 'ui/switch'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import idx from 'idx'
@@ -548,7 +549,7 @@ function Settings({ match, history }) {
         <AdminPageHeader title='變更帳戶資訊' subTitle='設定'>
           {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
             <div className='CheckinMode flex items-center gap-1 text-body text-text'>
-              <span>報到模式</span><Switch checked={checkinMode} onChange={(e, v) => setCheckinMode(v)} />
+              <span>報到模式</span><Switch aria-label="報到模式" checked={checkinMode} onChange={(e, v) => setCheckinMode(v)} />
             </div>
           )}
         </AdminPageHeader>

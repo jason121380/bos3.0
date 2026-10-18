@@ -1,10 +1,9 @@
-import { TablePagination } from '@mui/material'
 import { format } from 'date-fns'
 import { Fragment, useEffect, useRef } from 'react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
 const AttendanceRecord = ({
   page,
@@ -22,7 +21,7 @@ const AttendanceRecord = ({
     }
   }, [results, pageRef.current])
 
-  // 分頁沿用 MUI TablePagination：pagenationLabel 透過 ref 改寫分頁文字
+  // 分頁改用 ui/table 的 TablePagination：ref 原樣保留，pagenationLabel 找不到 MUI 元素時不動作
   return (
     <div {...rest}>
       {results && (results.length === 0 ?
@@ -73,7 +72,6 @@ const AttendanceRecord = ({
               <TablePagination
                 ref={pageRef}
                 labelRowsPerPage='每頁顯示數量'
-                component="div"
                 count={page.count}
                 onPageChange={onChangePage}
                 onRowsPerPageChange={onChangeRowsPerPage}
