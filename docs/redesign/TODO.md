@@ -59,6 +59,11 @@
 - [ ] **實機確認**：訂單列表捲軸、底部固定合計列（桌機／手機）、列印不出現合計列。
 
 ### P2 — 改版收尾
+- [x] **批次 7（`claude/ui-batch7-box`，v3.0-1019-0245，PR 待補；驗證待指揮者）**：`CreateDeductionSetting`（建立抽成設定）門檻／抽成欄位標籤改版。
+  - 選批理由（白話）：建立抽成設定的欄位重複又單純——15 個都是數字輸入（門檻、抽成 %），只有 `min: 0`，沒有下拉、Autocomplete、日期、helperText。
+  - 本批完成：`Results.js` 的 15 個 TextField → `Field`＋`Input`（`min={0}`、`type="number"`、`value`、`onChange`、`onWheel` 原樣保留）。`ToggleButton`／`Tabs`／`Checkbox`／`FormControlLabel` 為檔案既定保留範圍，未動；`index.js` 查無欄位，未動。本批無下拉。
+  - 本批為下一組第 4 個累積（前有 PR #11 v3.0-1019-0202、PR #12 v3.0-1019-0232、批次 6／#13），合併順序在後。
+  - 新增 `src/version.js`（`APP_VERSION`；批次 6 分支同檔，整組合併時以最新號為準）。
 - [x] **批次 4（`claude/ui-batch4-box`，PR #10，2026/10/19；指揮者驗證已完成；外觀待實機：小數字欄位 `w-24`／`w-28` 加寬需瞄換行）**：`CouponCreate` 表單標籤改版。
   - 選批理由：範圍明確、低風險——無 Autocomplete、無日期選擇器、無 `window.print`、無 helperText／error 特殊驗證，TextField／Select 皆可直接 reuse 既有 `src/ui`。
   - 本批完成：`AboutCoupon.js`、`AboutDeduction.js`、`AboutAssistantSetting.js` 的 TextField → `Field`＋`Input`（標籤在上）、單選 Select → `Field`＋`NativeSelect`；`index.js` 本來就沒有 MUI 欄位，未動。`Checkbox`／`FormControlLabel`（分指定／互助均分）仍是 MUI，不在本批範圍。
