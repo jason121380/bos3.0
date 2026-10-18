@@ -10,7 +10,7 @@
 | 骨架 | 側欄、頁首、登入／錯誤頁外框；全站 MUI 橋接主題（`src/ui/mui-theme.js`） |
 | 完整改版（第二層） | 打帳單、帳單列表、報表目錄 |
 | 共用元件 | DateSelector（精簡版）、TableEditBar（浮動操作列）、MerchantSearchBar、AdminPageHeader、PageTitle |
-| 第一層外觀統一 | 後台全部頁面：樣式物件與 inline style 的舊色碼改為 tokens、移除藍色左條（工具：`scripts/redesign/`） |
+| 第一層外觀統一 | 後台全部頁面：樣式物件與 inline style 的舊色碼改為 tokens、移除藍色左條；MUI 圖示改為 lucide（`ui/icons` 轉接層，199 檔）；MUI 字級對應新字級（工具：`scripts/redesign/`） |
 
 ## 兩個層次
 
@@ -28,4 +28,5 @@
 ## 驗收方式
 
 - 本機 `npm start`（`.env.development.local` 指向測試機 crt-test）。
-- 每次第一層批次：`node scripts/redesign/verify-style-only.js <檔案>` 必須全部通過。
+- 每次第一層批次：`verify-style-only.js`（色碼）或 `verify-imports-only.js`（圖示）必須全部通過。
+- 既有測試：改版前即有 7 個測試檔（13 個測試）失敗，改版後維持同樣 7 個，無新增失敗。
