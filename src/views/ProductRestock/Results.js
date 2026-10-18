@@ -4,13 +4,11 @@ import {
   TableCell, TableHead, TableRow, Typography, Drawer, Checkbox,
   TableContainer, IconButton, Grid, Hidden
 } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
-import VisibilityIcon from '@mui/icons-material/Visibility'
+import { Edit as EditIcon, Visibility as VisibilityIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useState, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { openSnackbar } from 'elements/snackbars'
 import _ from 'lodash'
 import useFetchDeletePurchase from 'hooks/useFetchDeletePurchase'

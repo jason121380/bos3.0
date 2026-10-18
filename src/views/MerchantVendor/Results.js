@@ -9,7 +9,7 @@ import {
   TableCell,
   TableHead, TableRow, Typography, TableContainer, CardHeader, IconButton
 } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit';
+import { Edit as EditIcon } from 'ui/icons'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import PropTypes from 'prop-types'

@@ -2,8 +2,7 @@
 import {
   Button, Typography, Drawer, Grid, Hidden
 } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { Edit as EditIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 
 import styles from './styles/Results'
 

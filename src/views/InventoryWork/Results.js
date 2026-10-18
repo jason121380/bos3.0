@@ -3,8 +3,7 @@ import {
   Button, Card, Table, TableBody, TableCell, TableHead,
   TableRow, Typography, TableContainer, CardHeader, IconButton
 } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility'
+import { Edit as EditIcon, Visibility as VisibilityIcon } from 'ui/icons'
 import { css } from '@emotion/react'
 import { Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'

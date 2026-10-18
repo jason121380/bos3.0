@@ -6,8 +6,7 @@ import {
   TextField, DialogActions, IconButton, Select, FormControl, MenuItem
 } from '@mui/material'
 import { Link } from 'react-router-dom';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import EditIcon from '@mui/icons-material/Edit';
+import { ContentCopy as ContentCopyIcon, Edit as EditIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteProducts from 'hooks/useFetchDeleteProducts'
 import format from 'date-fns/format'
