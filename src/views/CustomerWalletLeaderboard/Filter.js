@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
+// 排序依據 Select（handler 讀 e.target.value）與設計師多選 Autocomplete 保留 MUI
 import {
-  Grid, TextField, Checkbox, Button, FormControl, InputLabel,
+  TextField, Checkbox, FormControl, InputLabel,
   Select, MenuItem, Autocomplete
 } from '@mui/material'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
@@ -8,9 +9,12 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import DateSelector from 'components/DateSelector'
 import idx from 'idx'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { css } from '@emotion/react'
+
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
-import { css } from '@emotion/react'
 
 const styles = {
   container: css({
@@ -45,9 +49,9 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
   }
 
   return (
-    <Grid container direction='column' css={styles.container}>
-      <Grid item style={{ gap: 10 }} container alignItems='center'>
-        <Grid item>
+    <div className="flex flex-col gap-2.5 pb-4">
+      <div className="flex flex-wrap items-center gap-2.5">
+        <div>
           <DateSelector
             date={inputData.dateRange}
             dateChange={value => dataChange(value, 'dateRange')}
@@ -55,8 +59,8 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
             disabled={loading || userOrderableList.loading}
             rangelimit={rangeLimit}
           />
-        </Grid>
-        <Grid item>
+        </div>
+        <div>
           <FormControl
             disabled={loading || userOrderableList.loading}
             fullWidth variant='outlined'
@@ -74,18 +78,17 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
               ))}
             </Select>
           </FormControl>
-        </Grid>
-        <Grid item style={{ marginLeft: 'auto' }}>
+        </div>
+        <div className="ml-auto">
           <Button
-            color='primary'
-            variant='contained'
+            variant='secondary'
             disabled={excelLoading}
             onClick={getExcel}
-          >報表匯出</Button>
-        </Grid>
-      </Grid>
-      <Grid style={{ alignItems: 'center', display: 'flex', gap: 10 }}>
-        <Grid item style={{ flexGrow: 1 }}>
+          ><Download strokeWidth={1.75} />報表匯出</Button>
+        </div>
+      </div>
+      <div className="flex items-center gap-2.5">
+        <div className="min-w-0 flex-1">
           <Autocomplete
             multiple
             autoHighlight
@@ -119,18 +122,17 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
               />
             )}
           />
-        </Grid>
-        <Grid item style={{ width: 'fit-content' }}>
+        </div>
+        <div className="w-fit">
           <Button
-            color='primary'
-            variant='contained'
+            variant='primary'
             onClick={handleSearch}
             disabled={loading || userOrderableList.loading}
           >搜尋</Button>
-        </Grid>
+        </div>
 
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   )
 }
 

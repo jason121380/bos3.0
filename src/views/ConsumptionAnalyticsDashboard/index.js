@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import { Container, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
 import { endOfMonth, startOfMonth, getMonth } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import idx from 'idx'
 import { useEffect, useState } from 'react'
-import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchGetConsumptionAnalyticsDashboard from 'hooks/useFetchGetConsumptionAnalyticsDashboard'
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { PageHeader } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Filter from './Filter'
 import Results from './Results'
@@ -245,31 +245,33 @@ function ConsumptionAnalyticsDashboard() {
   }
 
   return (
-    <Page css={styles.root} title="消費分析儀表板">
-      <Container maxWidth={false} css={styles.container}>
-        <AdminPageHeader title='消費分析儀表板' />
-        <Filter
-          loading={getConsumptionAnalyticsDashboardLazyData.loading}
-          handleSearch={handleSearch}
-          date={date}
-          setDate={setDate}
+    <Page className="ui-root" title="消費分析儀表板">
+      <PageHeader title="消費分析儀表板" />
+      <Filter
+        loading={getConsumptionAnalyticsDashboardLazyData.loading}
+        handleSearch={handleSearch}
+        date={date}
+        setDate={setDate}
+        inputData={inputData}
+        setInputData={setInputData}
+        referDisplay={referDisplay}
+      />
+      {getConsumptionAnalyticsDashboardLazyData.loading ?
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2" aria-busy="true">
+          <Skeleton className="h-[390px] lg:col-span-2" />
+          <Skeleton className="h-[390px]" />
+          <Skeleton className="h-[390px]" />
+        </div> :
+        <Results
+          dashboardData={dashboardData}
+          chartDisplay={chartDisplay}
           inputData={inputData}
-          setInputData={setInputData}
-          referDisplay={referDisplay}
+          dataType={dataType}
+          setDataType={setDataType}
+          sortType={sortType}
+          setSortType={setSortType}
         />
-        {getConsumptionAnalyticsDashboardLazyData.loading ?
-          <div css={styles.circular}><CircularProgress /></div> :
-          <Results
-            dashboardData={dashboardData}
-            chartDisplay={chartDisplay}
-            inputData={inputData}
-            dataType={dataType}
-            setDataType={setDataType}
-            sortType={sortType}
-            setSortType={setSortType}
-          />
-        }
-      </Container>
+      }
     </Page>
   )
 }

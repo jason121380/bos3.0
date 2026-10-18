@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent, Grid } from '@mui/material'
+import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
 import React from 'react'
 import {
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts";
-import { performanceColor } from '../Colors';
+import { gendercolor, performanceColor } from '../Colors';
 import { theme } from './../../../theme'
 import { css } from '@emotion/react'
 
@@ -121,12 +122,12 @@ const SourceRatio = ({ data, width }) => {
     return null;
   };
   return (
-    <Grid item md={6} sm={12} xs={12}>
-      <Card>
-        <CardContent>
+    <div className="min-w-0">
+      <Card className="h-full min-h-[390px]">
+        <CardContent className="flex flex-col gap-4 p-4">
           <div>
-            <div className='cardTitle'>顧客來源比例</div>
-            <div className='subTitle'>期間內顧客來源比例</div>
+            <CardTitle className="whitespace-nowrap">顧客來源比例</CardTitle>
+            <CardDescription className="whitespace-nowrap text-caption">期間內顧客來源比例</CardDescription>
           </div>
           {checkSourceRatio(data) ?
             <div css={styles.pieWrap2}>
@@ -160,11 +161,11 @@ const SourceRatio = ({ data, width }) => {
                 ))}
               </div>
             </div> :
-            <div css={styles.noDataDiv}><span css={styles.noData}>無資料</span></div>
+            <EmptyState title="無資料" className="h-[350px]" />
           }
         </CardContent>
       </Card>
-    </Grid>
+    </div>
   )
 }
 

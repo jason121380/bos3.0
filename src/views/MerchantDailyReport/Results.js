@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
+// 下方明細卡片區（MerchantDailyReportCardContainer）的列印樣式依賴 MUI 結構，保留 MUI
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
+  Table as MuiTable,
+  TableBody as MuiTableBody,
+  TableCell as MuiTableCell,
+  TableHead as MuiTableHead,
+  TableRow as MuiTableRow,
   Paper,
   TableContainer,
-  Typography,
   Grid,
   Card,
   CardContent,
@@ -19,6 +19,8 @@ import { Fragment } from 'react'
 import { format, startOfMonth } from 'date-fns'
 import roundDecimal from './../../helper/roundDecimal.js'
 import { css } from '@emotion/react'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 const styles = {
   table: css({
@@ -31,6 +33,9 @@ const styles = {
     padding: 0,
   }),
 }
+
+// 列印時表頭維持白底黑字（與舊版 th.MuiTableCell-head 的列印樣式一致）
+const printHeader = 'print:bg-transparent print:[&_th]:text-text'
 
 function Results({
   merchantDailyReport,
@@ -105,157 +110,156 @@ function Results({
   }
   return (
     <Fragment>
-      <TableContainer component={Paper} className="MerchantDailyReportTable-1">
-        <Table css={styles.table} size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow>
-              <TableCell></TableCell>
-              {isServiceTicketMerged ? (
-                <Fragment>
-                  <TableCell>營業總業績</TableCell>
-                  <TableCell>店販業績</TableCell>
-                  {membershipDisplay || isMemberShipCardActive ? <TableCell>會員卡銷售</TableCell> : null}
-                </Fragment>
-              ) : (
-                <Fragment>
-                  <TableCell>服務業績</TableCell>
-                  <TableCell>店販業績</TableCell>
-                  {membershipDisplay || isMemberShipCardActive ? <TableCell>會員卡銷售</TableCell> : null}
-                  <TableCell style={{ textAlign: 'center' }}>
-                    <div>卡券使用</div>
-                    <div>(入業績)</div>
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    <div>卡券販賣</div>
-                    <div>(入業績)</div>
-                  </TableCell>
-                </Fragment>
-              )}
-              <TableCell>業績收入</TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                <div>卡券販賣</div>
-                <div>(不入業績)</div>
-              </TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                <div>卡券使用</div>
-                <div>(-)</div>
-              </TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                <div>第三方卡券</div>
-                <div>(-)</div>
-              </TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                <div>其他付款方式</div>
-                <div>(-)</div>
-              </TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                <div>入金使用</div>
-                <div>(-)</div>
-              </TableCell>
-              <TableCell>營業現金應收</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>{format(displayDate.endDate, 'MM/dd')}</TableCell>
-              {isServiceTicketMerged ? (
-                <Fragment>
-                  <TableCell>
-                    {Math.round(
-                      curentDayData.currentDay.service +
-                      curentDayData.currentDay.usedTicket +
-                      curentDayData.currentDay.ticketSellIntoPerformance
-                    )}
-                  </TableCell>
-                  <TableCell>{Math.round(curentDayData.currentDay.product)}</TableCell>
-                  {membershipDisplay || isMemberShipCardActive ? <TableCell>{Math.round(curentDayData.currentDay.membership)}</TableCell> : null}
-                </Fragment>
-              ) : (
-                <Fragment>
-                  <TableCell>{Math.round(curentDayData.currentDay.service)}</TableCell>
-                  <TableCell>{Math.round(curentDayData.currentDay.product)}</TableCell>
-                  {membershipDisplay || isMemberShipCardActive ? <TableCell>{Math.round(curentDayData.currentDay.membership)}</TableCell> : null}
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {Math.round(curentDayData.currentDay.usedTicket)}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {Math.round(curentDayData.currentDay.ticketSellIntoPerformance)}
-                  </TableCell>
-                </Fragment>
-              )}
+      {/* 列印：MerchantDailyReportTable-* 的 @media print 樣式以 table / th / td 標籤選取，className 保留在表格外框 */}
+      <Table wrapperClassName="MerchantDailyReportTable-1" className="min-w-[650px]" aria-label="a dense table">
+        <TableHeader className={printHeader}>
+          <TableRow>
+            <TableHead></TableHead>
+            {isServiceTicketMerged ? (
+              <Fragment>
+                <TableHead numeric>營業總業績</TableHead>
+                <TableHead numeric>店販業績</TableHead>
+                {membershipDisplay || isMemberShipCardActive ? <TableHead numeric>會員卡銷售</TableHead> : null}
+              </Fragment>
+            ) : (
+              <Fragment>
+                <TableHead numeric>服務業績</TableHead>
+                <TableHead numeric>店販業績</TableHead>
+                {membershipDisplay || isMemberShipCardActive ? <TableHead numeric>會員卡銷售</TableHead> : null}
+                <TableHead numeric>
+                  <div>卡券使用</div>
+                  <div>(入業績)</div>
+                </TableHead>
+                <TableHead numeric>
+                  <div>卡券販賣</div>
+                  <div>(入業績)</div>
+                </TableHead>
+              </Fragment>
+            )}
+            <TableHead numeric>業績收入</TableHead>
+            <TableHead numeric>
+              <div>卡券販賣</div>
+              <div>(不入業績)</div>
+            </TableHead>
+            <TableHead numeric>
+              <div>卡券使用</div>
+              <div>(-)</div>
+            </TableHead>
+            <TableHead numeric>
+              <div>第三方卡券</div>
+              <div>(-)</div>
+            </TableHead>
+            <TableHead numeric>
+              <div>其他付款方式</div>
+              <div>(-)</div>
+            </TableHead>
+            <TableHead numeric>
+              <div>入金使用</div>
+              <div>(-)</div>
+            </TableHead>
+            <TableHead numeric className="text-text">營業現金應收</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell className="whitespace-nowrap tabular-nums">{format(displayDate.endDate, 'MM/dd')}</TableCell>
+            {isServiceTicketMerged ? (
+              <Fragment>
+                <TableCell numeric>
+                  {formatNumber(Math.round(
+                    curentDayData.currentDay.service +
+                    curentDayData.currentDay.usedTicket +
+                    curentDayData.currentDay.ticketSellIntoPerformance
+                  ))}
+                </TableCell>
+                <TableCell numeric>{formatNumber(Math.round(curentDayData.currentDay.product))}</TableCell>
+                {membershipDisplay || isMemberShipCardActive ? <TableCell numeric>{formatNumber(Math.round(curentDayData.currentDay.membership))}</TableCell> : null}
+              </Fragment>
+            ) : (
+              <Fragment>
+                <TableCell numeric>{formatNumber(Math.round(curentDayData.currentDay.service))}</TableCell>
+                <TableCell numeric>{formatNumber(Math.round(curentDayData.currentDay.product))}</TableCell>
+                {membershipDisplay || isMemberShipCardActive ? <TableCell numeric>{formatNumber(Math.round(curentDayData.currentDay.membership))}</TableCell> : null}
+                <TableCell numeric>
+                  {formatNumber(Math.round(curentDayData.currentDay.usedTicket))}
+                </TableCell>
+                <TableCell numeric>
+                  {formatNumber(Math.round(curentDayData.currentDay.ticketSellIntoPerformance))}
+                </TableCell>
+              </Fragment>
+            )}
 
-              <TableCell>{Math.round(curentDayData.currentDay.performanceIncome)}</TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                {Math.round(curentDayData.currentDay.ticketSellNotIntoPerformance)}
-              </TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                {Math.round(curentDayData.currentDay.usedTicketForDecount)}
-              </TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                {Math.round(curentDayData.currentDay.thirdPartTicketForDecount)}
-              </TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                {Math.round(curentDayData.currentDay.otherPayWayForDecount)}
-              </TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                {Math.round(curentDayData.currentDay.walletUsedForDecount)}
-              </TableCell>
-              <TableCell>{Math.round(curentDayData.currentDay.businessCash)}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>
-                {`${format(startOfMonth(displayDate.endDate), 'MM/dd')} - ${format(
-                  displayDate.endDate,
-                  'MM/dd'
-                )}`}
-              </TableCell>
-              {isServiceTicketMerged ? (
-                <Fragment>
-                  <TableCell>
-                    {Math.round(
-                      merchantDailyReport.currentDay.service +
-                      merchantDailyReport.currentDay.usedTicket +
-                      merchantDailyReport.currentDay.ticketSellIntoPerformance
-                    )}
-                  </TableCell>
-                  <TableCell>{Math.round(merchantDailyReport.currentDay.product)}</TableCell>
-                  {membershipDisplay || isMemberShipCardActive ? <TableCell>{Math.round(merchantDailyReport.currentDay.membership)}</TableCell> : null}
-                </Fragment>
-              ) : (
-                <Fragment>
-                  <TableCell>{Math.round(merchantDailyReport.currentDay.service)}</TableCell>
-                  <TableCell>{Math.round(merchantDailyReport.currentDay.product)}</TableCell>
-                  {membershipDisplay || isMemberShipCardActive ? <TableCell>{Math.round(merchantDailyReport.currentDay.membership)}</TableCell> : null}
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {Math.round(merchantDailyReport.currentDay.usedTicket)}
-                  </TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>
-                    {Math.round(merchantDailyReport.currentDay.ticketSellIntoPerformance)}
-                  </TableCell>
-                </Fragment>
-              )}
+            <TableCell numeric>{formatNumber(Math.round(curentDayData.currentDay.performanceIncome))}</TableCell>
+            <TableCell numeric>
+              {formatNumber(Math.round(curentDayData.currentDay.ticketSellNotIntoPerformance))}
+            </TableCell>
+            <TableCell numeric>
+              {formatNumber(Math.round(curentDayData.currentDay.usedTicketForDecount))}
+            </TableCell>
+            <TableCell numeric>
+              {formatNumber(Math.round(curentDayData.currentDay.thirdPartTicketForDecount))}
+            </TableCell>
+            <TableCell numeric>
+              {formatNumber(Math.round(curentDayData.currentDay.otherPayWayForDecount))}
+            </TableCell>
+            <TableCell numeric>
+              {formatNumber(Math.round(curentDayData.currentDay.walletUsedForDecount))}
+            </TableCell>
+            <TableCell numeric className="font-medium">{formatNumber(Math.round(curentDayData.currentDay.businessCash))}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="whitespace-nowrap tabular-nums">
+              {`${format(startOfMonth(displayDate.endDate), 'MM/dd')} - ${format(
+                displayDate.endDate,
+                'MM/dd'
+              )}`}
+            </TableCell>
+            {isServiceTicketMerged ? (
+              <Fragment>
+                <TableCell numeric>
+                  {formatNumber(Math.round(
+                    merchantDailyReport.currentDay.service +
+                    merchantDailyReport.currentDay.usedTicket +
+                    merchantDailyReport.currentDay.ticketSellIntoPerformance
+                  ))}
+                </TableCell>
+                <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.currentDay.product))}</TableCell>
+                {membershipDisplay || isMemberShipCardActive ? <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.currentDay.membership))}</TableCell> : null}
+              </Fragment>
+            ) : (
+              <Fragment>
+                <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.currentDay.service))}</TableCell>
+                <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.currentDay.product))}</TableCell>
+                {membershipDisplay || isMemberShipCardActive ? <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.currentDay.membership))}</TableCell> : null}
+                <TableCell numeric>
+                  {formatNumber(Math.round(merchantDailyReport.currentDay.usedTicket))}
+                </TableCell>
+                <TableCell numeric>
+                  {formatNumber(Math.round(merchantDailyReport.currentDay.ticketSellIntoPerformance))}
+                </TableCell>
+              </Fragment>
+            )}
 
-              <TableCell>{Math.round(merchantDailyReport.currentDay.performanceIncome)}</TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                {Math.round(merchantDailyReport.currentDay.ticketSellNotIntoPerformance)}
-              </TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                {Math.round(merchantDailyReport.currentDay.usedTicketForDecount)}
-              </TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                {Math.round(merchantDailyReport.currentDay.thirdPartTicketForDecount)}
-              </TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                {Math.round(merchantDailyReport.currentDay.otherPayWayForDecount)}
-              </TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                {Math.round(merchantDailyReport.currentDay.walletUsedForDecount)}
-              </TableCell>
-              <TableCell>{Math.round(merchantDailyReport.currentDay.businessCash)}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
+            <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.currentDay.performanceIncome))}</TableCell>
+            <TableCell numeric>
+              {formatNumber(Math.round(merchantDailyReport.currentDay.ticketSellNotIntoPerformance))}
+            </TableCell>
+            <TableCell numeric>
+              {formatNumber(Math.round(merchantDailyReport.currentDay.usedTicketForDecount))}
+            </TableCell>
+            <TableCell numeric>
+              {formatNumber(Math.round(merchantDailyReport.currentDay.thirdPartTicketForDecount))}
+            </TableCell>
+            <TableCell numeric>
+              {formatNumber(Math.round(merchantDailyReport.currentDay.otherPayWayForDecount))}
+            </TableCell>
+            <TableCell numeric>
+              {formatNumber(Math.round(merchantDailyReport.currentDay.walletUsedForDecount))}
+            </TableCell>
+            <TableCell numeric className="font-medium">{formatNumber(Math.round(merchantDailyReport.currentDay.businessCash))}</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
 
       {merchantDailyReport.currentDay.categoryPerformance.filter(
         data =>
@@ -267,138 +271,136 @@ function Results({
           data.orderTypeAveragePerformance > 0 ||
           data.averagePerformance > 0
       ).length === 0 ? (
-        <Typography variant="h5" gutterBottom component="div" style={{ margin: '10px 0' }}>
+        <p className="my-2.5 text-heading text-text">
           無資料
-        </Typography>
+        </p>
       ) : (
-        <TableContainer
-          component={Paper}
-          style={{ margin: '30px 0' }}
-          className="MerchantDailyReportTable-2"
+        <Table
+          wrapperClassName="MerchantDailyReportTable-2 my-[30px]"
+          className="min-w-[650px]"
+          aria-label="a dense table"
         >
-          <Table css={styles.table} size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow>
-                <TableCell style={{ minWidth: '68px' }} />
-                <TableCell>類別總業績</TableCell>
-                <TableCell>客次(人次)</TableCell>
-                <TableCell>指定/不指定</TableCell>
-                <TableCell>客項次</TableCell>
-                <TableCell>平均項次單價</TableCell>
-                <TableCell>單均價(客次價)</TableCell>
-                <TableCell>類別總業績(累積)</TableCell>
-                <TableCell>客次(人次)(累積)</TableCell>
-                <TableCell>指定/不指定(累積)</TableCell>
-                <TableCell>客項次(累積)</TableCell>
-                <TableCell>平均項次單價(累積)</TableCell>
-                <TableCell>單均價(客次價)(累積)</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {stillNowData.map((data, index) => (
-                <TableRow key={index}>
-                  <TableCell style={{ minWidth: '68px' }}>{data.name}</TableCell>
-                  <TableCell>{Math.round(data.curPerformance)}</TableCell>
-                  <TableCell>{Math.round(data.curTotalCount)}</TableCell>
-                  <TableCell>
-                    {Math.round(data.curDesignationCount)}/{Math.round(data.curNonDesignationCount)}
+          <TableHeader className={printHeader}>
+            <TableRow>
+              <TableHead className="min-w-[68px]" />
+              <TableHead numeric>類別總業績</TableHead>
+              <TableHead numeric>客次(人次)</TableHead>
+              <TableHead numeric>指定/不指定</TableHead>
+              <TableHead numeric>客項次</TableHead>
+              <TableHead numeric>平均項次單價</TableHead>
+              <TableHead numeric>單均價(客次價)</TableHead>
+              <TableHead numeric>類別總業績(累積)</TableHead>
+              <TableHead numeric>客次(人次)(累積)</TableHead>
+              <TableHead numeric>指定/不指定(累積)</TableHead>
+              <TableHead numeric>客項次(累積)</TableHead>
+              <TableHead numeric>平均項次單價(累積)</TableHead>
+              <TableHead numeric>單均價(客次價)(累積)</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {stillNowData.map((data, index) => (
+              <TableRow key={index}>
+                <TableCell className="min-w-[68px]">{data.name}</TableCell>
+                <TableCell numeric>{formatNumber(Math.round(data.curPerformance))}</TableCell>
+                <TableCell numeric>{formatNumber(Math.round(data.curTotalCount))}</TableCell>
+                <TableCell numeric>
+                  {formatNumber(Math.round(data.curDesignationCount))}/{formatNumber(Math.round(data.curNonDesignationCount))}
+                </TableCell>
+                <TableCell numeric>{formatNumber(Math.round(data.curOrderTypeCount))}</TableCell>
+                <TableCell numeric>{formatNumber(Math.round(data.curOrderTypeAveragePerformance))}</TableCell>
+                <TableCell numeric>{formatNumber(Math.round(data.curAveragePerformance))}</TableCell>
+
+                <Fragment>
+                  <TableCell numeric>{formatNumber(Math.round(data.nowPerformance))}</TableCell>
+                  <TableCell numeric>{formatNumber(Math.round(data.nowTotalCount))}</TableCell>
+                  <TableCell numeric>
+                    {formatNumber(Math.round(data.nowDesignationCount))}/
+                    {formatNumber(Math.round(data.nowNonDesignationCount))}
                   </TableCell>
-                  <TableCell>{Math.round(data.curOrderTypeCount)}</TableCell>
-                  <TableCell>{Math.round(data.curOrderTypeAveragePerformance)}</TableCell>
-                  <TableCell>{Math.round(data.curAveragePerformance)}</TableCell>
-
-                  <Fragment>
-                    <TableCell>{Math.round(data.nowPerformance)}</TableCell>
-                    <TableCell>{Math.round(data.nowTotalCount)}</TableCell>
-                    <TableCell>
-                      {Math.round(data.nowDesignationCount)}/
-                      {Math.round(data.nowNonDesignationCount)}
-                    </TableCell>
-                    <TableCell>{Math.round(data.nowOrderTypeCount)}</TableCell>
-                    <TableCell>{Math.round(data.nowOrderTypeAveragePerformance)}</TableCell>
-                    <TableCell>{Math.round(data.nowAveragePerformance)}</TableCell>
-                  </Fragment>
-                </TableRow>
-              ))}
-              <TableRow>
-                <TableCell style={{ minWidth: '68px', fontWeight: 'bold' }}>合計</TableCell>
-
-                {/* 類別總業績 */}
-                <TableCell>{curentDayData.currentDay.performanceIncome}</TableCell>
-
-                {/* 客次(人次) */}
-                <TableCell>{curentDayData.currentDay.orderCount}</TableCell>
-
-                {/* 指定/不指定 */}
-                <TableCell>
-                  {`${curentDayData.currentDay.orderDesignateCount}/${curentDayData.currentDay.orderNonDesignateCount}`}
-                </TableCell>
-
-                {/* 客項次 */}
-                <TableCell>
-                  {Math.round(
-                    curentDayData.currentDay.categoryPerformance
-                      .map(data => data.orderTypeCount)
-                      .reduce((accu, curVal) => (accu += curVal), 0)
-                  )}
-                </TableCell>
-
-                {/* 平均項次單價 */}
-                <TableCell>
-                  {Math.round(
-                    curentDayData.currentDay.performanceIncome /
-                    curentDayData.currentDay.categoryPerformance
-                      .map(data => data.orderTypeCount)
-                      .reduce((accu, curVal) => (accu += curVal), 0)
-                  ) || 0}
-                </TableCell>
-
-                {/* 單均價(客次價) */}
-                <TableCell>
-                  {Math.round(curentDayData.currentDay.performanceIncome / curentDayData.currentDay.orderCount) || 0}
-                </TableCell>
-
-                {/* 類別總業績(累積) */}
-                <TableCell>{merchantDailyReport.currentDay.performanceIncome}</TableCell>
-
-                {/* 客次(人次)(累積) */}
-                <TableCell>{merchantDailyReport.currentDay.orderCount}</TableCell>
-
-                {/* 指定/不指定(累積) */}
-                <TableCell>
-                  {`${merchantDailyReport.currentDay.orderDesignateCount}/${merchantDailyReport.currentDay.orderNonDesignateCount}`}
-                </TableCell>
-
-                {/* 客項次(累積) */}
-                <TableCell>
-                  {Math.round(
-                    stillNowData
-                      .map(data => data.nowOrderTypeCount)
-                      .reduce((accu, curVal) => (accu += curVal), 0)
-                  )}
-                </TableCell>
-
-                {/* 平均項次單價(累積) */}
-                <TableCell>
-                  {Math.round(
-                    stillNowData
-                      .map(data => data.nowOrderTypeAveragePerformance)
-                      .reduce((accu, curVal) => (accu += curVal), 0)
-                  )}
-                </TableCell>
-
-                {/* 單均價(客次價)(累積) */}
-                <TableCell>
-                  {Math.round(
-                    stillNowData
-                      .map(data => data.nowAveragePerformance)
-                      .reduce((accu, curVal) => (accu += curVal), 0)
-                  )}
-                </TableCell>
+                  <TableCell numeric>{formatNumber(Math.round(data.nowOrderTypeCount))}</TableCell>
+                  <TableCell numeric>{formatNumber(Math.round(data.nowOrderTypeAveragePerformance))}</TableCell>
+                  <TableCell numeric>{formatNumber(Math.round(data.nowAveragePerformance))}</TableCell>
+                </Fragment>
               </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+            ))}
+            <TableRow className="bg-surface font-medium">
+              <TableCell className="min-w-[68px] font-bold">合計</TableCell>
+
+              {/* 類別總業績 */}
+              <TableCell numeric>{formatNumber(curentDayData.currentDay.performanceIncome)}</TableCell>
+
+              {/* 客次(人次) */}
+              <TableCell numeric>{formatNumber(curentDayData.currentDay.orderCount)}</TableCell>
+
+              {/* 指定/不指定 */}
+              <TableCell numeric>
+                {`${curentDayData.currentDay.orderDesignateCount}/${curentDayData.currentDay.orderNonDesignateCount}`}
+              </TableCell>
+
+              {/* 客項次 */}
+              <TableCell numeric>
+                {formatNumber(Math.round(
+                  curentDayData.currentDay.categoryPerformance
+                    .map(data => data.orderTypeCount)
+                    .reduce((accu, curVal) => (accu += curVal), 0)
+                ))}
+              </TableCell>
+
+              {/* 平均項次單價 */}
+              <TableCell numeric>
+                {formatNumber(Math.round(
+                  curentDayData.currentDay.performanceIncome /
+                  curentDayData.currentDay.categoryPerformance
+                    .map(data => data.orderTypeCount)
+                    .reduce((accu, curVal) => (accu += curVal), 0)
+                ) || 0)}
+              </TableCell>
+
+              {/* 單均價(客次價) */}
+              <TableCell numeric>
+                {formatNumber(Math.round(curentDayData.currentDay.performanceIncome / curentDayData.currentDay.orderCount) || 0)}
+              </TableCell>
+
+              {/* 類別總業績(累積) */}
+              <TableCell numeric>{formatNumber(merchantDailyReport.currentDay.performanceIncome)}</TableCell>
+
+              {/* 客次(人次)(累積) */}
+              <TableCell numeric>{formatNumber(merchantDailyReport.currentDay.orderCount)}</TableCell>
+
+              {/* 指定/不指定(累積) */}
+              <TableCell numeric>
+                {`${merchantDailyReport.currentDay.orderDesignateCount}/${merchantDailyReport.currentDay.orderNonDesignateCount}`}
+              </TableCell>
+
+              {/* 客項次(累積) */}
+              <TableCell numeric>
+                {formatNumber(Math.round(
+                  stillNowData
+                    .map(data => data.nowOrderTypeCount)
+                    .reduce((accu, curVal) => (accu += curVal), 0)
+                ))}
+              </TableCell>
+
+              {/* 平均項次單價(累積) */}
+              <TableCell numeric>
+                {formatNumber(Math.round(
+                  stillNowData
+                    .map(data => data.nowOrderTypeAveragePerformance)
+                    .reduce((accu, curVal) => (accu += curVal), 0)
+                ))}
+              </TableCell>
+
+              {/* 單均價(客次價)(累積) */}
+              <TableCell numeric>
+                {formatNumber(Math.round(
+                  stillNowData
+                    .map(data => data.nowAveragePerformance)
+                    .reduce((accu, curVal) => (accu += curVal), 0)
+                ))}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       )}
 
       {/* <FormControlLabel
@@ -408,198 +410,194 @@ function Results({
         checked={displayIntervalData}
         onChange={() => setDisplayIntervalData(!displayIntervalData)}
       /> */}
-      <TableContainer component={Paper}></TableContainer>
-      <TableContainer component={Paper} className="MerchantDailyReportTable-3">
-        <Table css={styles.table} size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell>總客數</TableCell>
-              <TableCell>指定客/不指定客</TableCell>
-              <TableCell>男/女/未知</TableCell>
-              <TableCell>入金儲值</TableCell>
-              <TableCell>入金使用</TableCell>
-              <TableCell>卡券販賣</TableCell>
-              <TableCell>卡券使用</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell>{format(displayDate.endDate, 'MM/dd')}</TableCell>
-              <TableCell>{Math.round(curentDayData.orderTotalCount)}</TableCell>
-              <TableCell>{`${Math.round(curentDayData.orderDesignateCount)}/${Math.round(
-                curentDayData.orderNonDesignateCount
-              )}`}</TableCell>
-              <TableCell>{`${Math.round(curentDayData.orderMaleCount)}/${Math.round(
-                curentDayData.orderFemaleCount
-              )}/${Math.round(curentDayData.orderUnknownCount)}`}</TableCell>
-              <TableCell>{Math.round(curentDayData.currentDay.walletDepositTotal)}</TableCell>
-              <TableCell>{Math.round(curentDayData.currentDay.walletUsedTotal)}</TableCell>
-              <TableCell>{Math.round(curentDayData.currentDay.ticketSellTotal)}</TableCell>
-              <TableCell>{Math.round(curentDayData.currentDay.ticketUsedTital)}</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>{`${format(startOfMonth(displayDate.endDate), 'MM/dd')} - ${format(
-                displayDate.endDate,
-                'MM/dd'
-              )}`}</TableCell>
-              <TableCell>{Math.round(merchantDailyReport.orderTotalCount)}</TableCell>
-              <TableCell>{`${Math.round(merchantDailyReport.orderDesignateCount)}/${Math.round(
-                merchantDailyReport.orderNonDesignateCount
-              )}`}</TableCell>
-              <TableCell>{`${Math.round(merchantDailyReport.orderMaleCount)}/${Math.round(
-                merchantDailyReport.orderFemaleCount
-              )}/${Math.round(merchantDailyReport.orderUnknownCount)}`}</TableCell>
-              <TableCell>{Math.round(merchantDailyReport.currentDay.walletDepositTotal)}</TableCell>
-              <TableCell>{Math.round(merchantDailyReport.currentDay.walletUsedTotal)}</TableCell>
-              <TableCell>{Math.round(merchantDailyReport.currentDay.ticketSellTotal)}</TableCell>
-              <TableCell>{Math.round(merchantDailyReport.currentDay.ticketUsedTital)}</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TableContainer
-        component={Paper}
-        style={{ margin: '30px 0 ' }}
-        className="MerchantDailyReportTable-4"
+      <Table wrapperClassName="MerchantDailyReportTable-3" className="min-w-[650px]" aria-label="a dense table">
+        <TableHeader className={printHeader}>
+          <TableRow>
+            <TableHead></TableHead>
+            <TableHead numeric>總客數</TableHead>
+            <TableHead numeric>指定客/不指定客</TableHead>
+            <TableHead numeric>男/女/未知</TableHead>
+            <TableHead numeric>入金儲值</TableHead>
+            <TableHead numeric>入金使用</TableHead>
+            <TableHead numeric>卡券販賣</TableHead>
+            <TableHead numeric>卡券使用</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell className="whitespace-nowrap tabular-nums">{format(displayDate.endDate, 'MM/dd')}</TableCell>
+            <TableCell numeric>{formatNumber(Math.round(curentDayData.orderTotalCount))}</TableCell>
+            <TableCell numeric>{`${Math.round(curentDayData.orderDesignateCount)}/${Math.round(
+              curentDayData.orderNonDesignateCount
+            )}`}</TableCell>
+            <TableCell numeric>{`${Math.round(curentDayData.orderMaleCount)}/${Math.round(
+              curentDayData.orderFemaleCount
+            )}/${Math.round(curentDayData.orderUnknownCount)}`}</TableCell>
+            <TableCell numeric>{formatNumber(Math.round(curentDayData.currentDay.walletDepositTotal))}</TableCell>
+            <TableCell numeric>{formatNumber(Math.round(curentDayData.currentDay.walletUsedTotal))}</TableCell>
+            <TableCell numeric>{formatNumber(Math.round(curentDayData.currentDay.ticketSellTotal))}</TableCell>
+            <TableCell numeric>{formatNumber(Math.round(curentDayData.currentDay.ticketUsedTital))}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="whitespace-nowrap tabular-nums">{`${format(startOfMonth(displayDate.endDate), 'MM/dd')} - ${format(
+              displayDate.endDate,
+              'MM/dd'
+            )}`}</TableCell>
+            <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.orderTotalCount))}</TableCell>
+            <TableCell numeric>{`${Math.round(merchantDailyReport.orderDesignateCount)}/${Math.round(
+              merchantDailyReport.orderNonDesignateCount
+            )}`}</TableCell>
+            <TableCell numeric>{`${Math.round(merchantDailyReport.orderMaleCount)}/${Math.round(
+              merchantDailyReport.orderFemaleCount
+            )}/${Math.round(merchantDailyReport.orderUnknownCount)}`}</TableCell>
+            <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.currentDay.walletDepositTotal))}</TableCell>
+            <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.currentDay.walletUsedTotal))}</TableCell>
+            <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.currentDay.ticketSellTotal))}</TableCell>
+            <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.currentDay.ticketUsedTital))}</TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+      <Table
+        wrapperClassName="MerchantDailyReportTable-4 my-[30px]"
+        className="min-w-[650px]"
+        aria-label="a dense table"
       >
-        <Table css={styles.table} size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow>
-              <TableCell>科目編號</TableCell>
-              <TableCell>科目名稱</TableCell>
-              <TableCell>收入金額</TableCell>
-              <TableCell>支出金額</TableCell>
-              <TableCell>備註</TableCell>
+        <TableHeader className={printHeader}>
+          <TableRow>
+            <TableHead>科目編號</TableHead>
+            <TableHead>科目名稱</TableHead>
+            <TableHead numeric>收入金額</TableHead>
+            <TableHead numeric>支出金額</TableHead>
+            <TableHead>備註</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {curentDayData.generalMoneyFlow.map((data, index) => (
+            <TableRow key={index}>
+              <TableCell>{data.subjectNumber}</TableCell>
+              <TableCell>{data.subjectName}</TableCell>
+              <TableCell numeric>{formatNumber(roundDecimal(data.cashRevenue))}</TableCell>
+              <TableCell numeric>{formatNumber(roundDecimal(data.cashExpenditure))}</TableCell>
+              <TableCell>{data.remark}</TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {curentDayData.generalMoneyFlow.map((data, index) => (
-              <TableRow key={index}>
-                <TableCell>{data.subjectNumber}</TableCell>
-                <TableCell>{data.subjectName}</TableCell>
-                <TableCell>{roundDecimal(data.cashRevenue)}</TableCell>
-                <TableCell>{roundDecimal(data.cashExpenditure)}</TableCell>
-                <TableCell>{data.remark}</TableCell>
-              </TableRow>
-            ))}
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell>{`營業現金結存:${Math.round(curentDayData.businessCash)}`}</TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
+          ))}
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell className="font-medium">{`營業現金結存:${Math.round(curentDayData.businessCash)}`}</TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+          {curentDayData.moneyFlow.map((data, index) => (
+            <TableRow key={index}>
+              <TableCell>{data.subjectNumber}</TableCell>
+              <TableCell>{data.subjectName}</TableCell>
+              <TableCell numeric>{formatNumber(roundDecimal(data.cashRevenue))}</TableCell>
+              <TableCell numeric>{formatNumber(roundDecimal(data.cashExpenditure))}</TableCell>
+              <TableCell>{data.remark}</TableCell>
             </TableRow>
-            {curentDayData.moneyFlow.map((data, index) => (
-              <TableRow key={index}>
-                <TableCell>{data.subjectNumber}</TableCell>
-                <TableCell>{data.subjectName}</TableCell>
-                <TableCell>{roundDecimal(data.cashRevenue)}</TableCell>
-                <TableCell>{roundDecimal(data.cashExpenditure)}</TableCell>
-                <TableCell>{data.remark}</TableCell>
-              </TableRow>
-            ))}
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>{Math.round(curentDayData.summaryRevenue)}</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>{Math.round(curentDayData.summaryExpenditure)}</TableCell>
-              <TableCell></TableCell>
+          ))}
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell className="font-bold">合計</TableCell>
+            <TableCell numeric className="font-bold">{formatNumber(Math.round(curentDayData.summaryRevenue))}</TableCell>
+            <TableCell numeric className="font-bold">{formatNumber(Math.round(curentDayData.summaryExpenditure))}</TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell className="font-bold text-danger">{`當日現金結存:${Math.round(
+              curentDayData.cashBalance
+            )}`}</TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+          {/* 材料自購 */}
+          {curentDayData.pickingRecord.map((data, index) => (
+            <TableRow key={index}>
+              <TableCell>{data.productNumber}</TableCell>
+              <TableCell>{data.productName}</TableCell>
+              <TableCell numeric>{formatNumber(roundDecimal(data.cashRevenue))}</TableCell>
+              <TableCell numeric>{formatNumber(roundDecimal(data.cashExpenditure))}</TableCell>
+              <TableCell>{data.remark}</TableCell>
             </TableRow>
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell style={{ color: 'red', fontWeight: 'bold' }}>{`當日現金結存:${Math.round(
-                curentDayData.cashBalance
-              )}`}</TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-            {/* 材料自購 */}
-            {curentDayData.pickingRecord.map((data, index) => (
-              <TableRow key={index}>
-                <TableCell>{data.productNumber}</TableCell>
-                <TableCell>{data.productName}</TableCell>
-                <TableCell>{roundDecimal(data.cashRevenue)}</TableCell>
-                <TableCell>{roundDecimal(data.cashExpenditure)}</TableCell>
-                <TableCell>{data.remark}</TableCell>
-              </TableRow>
-            ))}
-            {/* 材料自購合計 */}
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>{Math.round(totalCashRevenue)}</TableCell>
-              <TableCell style={{ fontWeight: 'bold' }}>{Math.round(totalCashExpenditure)}</TableCell>
-              <TableCell></TableCell>
-            </TableRow>
-            {/* 材料自購合計+今日現金結存 */}
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell
-                style={{ color: 'red', fontWeight: 'bold' }}
-              >{`當日現金結存（含自購）:${Math.round(
-                curentDayData.cashBalance + totalCashRevenue
-              )}`}</TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-            </TableRow>
+          ))}
+          {/* 材料自購合計 */}
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell className="font-bold">合計</TableCell>
+            <TableCell numeric className="font-bold">{formatNumber(Math.round(totalCashRevenue))}</TableCell>
+            <TableCell numeric className="font-bold">{formatNumber(Math.round(totalCashExpenditure))}</TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+          {/* 材料自購合計+今日現金結存 */}
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell
+              className="font-bold text-danger"
+            >{`當日現金結存（含自購）:${Math.round(
+              curentDayData.cashBalance + totalCashRevenue
+            )}`}</TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+          </TableRow>
 
-            {curentDayData.moneyFlowNotCash.length > 0 && (
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell>非現場現金收支：</TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            )}
-            {curentDayData.moneyFlowNotCash.map((data, index) => (
-              <TableRow key={index}>
-                <TableCell>{data.subjectNumber}</TableCell>
-                <TableCell>{data.subjectName}</TableCell>
-                <TableCell>{roundDecimal(data.cashRevenue)}</TableCell>
-                <TableCell>{roundDecimal(data.cashExpenditure)}</TableCell>
-                <TableCell>{data.remark}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          {curentDayData.moneyFlowNotCash.length > 0 && (
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell className="font-medium">非現場現金收支：</TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+            </TableRow>
+          )}
+          {curentDayData.moneyFlowNotCash.map((data, index) => (
+            <TableRow key={index}>
+              <TableCell>{data.subjectNumber}</TableCell>
+              <TableCell>{data.subjectName}</TableCell>
+              <TableCell numeric>{formatNumber(roundDecimal(data.cashRevenue))}</TableCell>
+              <TableCell numeric>{formatNumber(roundDecimal(data.cashExpenditure))}</TableCell>
+              <TableCell>{data.remark}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      {/* 下方明細卡片：@media print 依 .MuiCard-root / .MuiTableContainer-root 排版（MerchantDailyReportCardContainer），保留 MUI 以維持列印輸出 */}
       <Grid container spacing={3} className="MerchantDailyReportCardContainer">
         {nonCashDisplay ? (
           <Grid item xs={12} md={12} lg={8} className="MergeResultCard">
             <Card>
               <TableContainer component={Paper}>
-                <Table size="small" aria-label="a dense table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell></TableCell>
-                      <TableCell>其他支付方式明細</TableCell>
-                      <TableCell>第三方卡券明細</TableCell>
-                      <TableCell sx={{ fontWeight: 'bold' }}>小計</TableCell>
-                    </TableRow>
+                <MuiTable size="small" aria-label="a dense table">
+                  <MuiTableHead>
+                    <MuiTableRow>
+                      <MuiTableCell></MuiTableCell>
+                      <MuiTableCell>其他支付方式明細</MuiTableCell>
+                      <MuiTableCell>第三方卡券明細</MuiTableCell>
+                      <MuiTableCell sx={{ fontWeight: 'bold' }}>小計</MuiTableCell>
+                    </MuiTableRow>
 
-                  </TableHead>
-                  <TableBody>
+                  </MuiTableHead>
+                  <MuiTableBody>
                     {mergeData.map(({ name, otherPayment, thirdParty }) => (
-                      <TableRow key={name} hover>
-                        <TableCell>{name}</TableCell>
-                        <TableCell>{`${otherPayment.usedPrice} / (${otherPayment.usedPriceWithNoCash})`}</TableCell>
-                        <TableCell>{`${thirdParty.usedPrice} / (${thirdParty.usedPriceWithNoCash})`}</TableCell>
-                        <TableCell sx={{ fontWeight: 'bold' }}>{
+                      <MuiTableRow key={name} hover>
+                        <MuiTableCell>{name}</MuiTableCell>
+                        <MuiTableCell>{`${otherPayment.usedPrice} / (${otherPayment.usedPriceWithNoCash})`}</MuiTableCell>
+                        <MuiTableCell>{`${thirdParty.usedPrice} / (${thirdParty.usedPriceWithNoCash})`}</MuiTableCell>
+                        <MuiTableCell sx={{ fontWeight: 'bold' }}>{
                           `${otherPayment.usedPrice + thirdParty.usedPrice} / (${otherPayment.usedPriceWithNoCash + thirdParty.usedPriceWithNoCash})`
-                        }</TableCell>
-                      </TableRow>
+                        }</MuiTableCell>
+                      </MuiTableRow>
                     ))}
-                    <TableRow hover>
-                      <TableCell colSpan={2} />
-                      <TableCell sx={{ fontWeight: 'bold', color: 'red' }}>合計</TableCell>
-                      <TableCell sx={{ fontWeight: 'bold', color: 'red' }}>{`${totalSummury('usedPrice')} / ${totalSummury('usedPriceWithNoCash')}`}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
+                    <MuiTableRow hover>
+                      <MuiTableCell colSpan={2} />
+                      <MuiTableCell sx={{ fontWeight: 'bold', color: 'red' }}>合計</MuiTableCell>
+                      <MuiTableCell sx={{ fontWeight: 'bold', color: 'red' }}>{`${totalSummury('usedPrice')} / ${totalSummury('usedPriceWithNoCash')}`}</MuiTableCell>
+                    </MuiTableRow>
+                  </MuiTableBody>
+                </MuiTable>
               </TableContainer>
             </Card>
           </Grid>
@@ -612,17 +610,17 @@ function Results({
                 <CardContent css={styles.content}>
                   <div css={styles.inner}>
                     <TableContainer component={Paper}>
-                      <Table size="small" aria-label="a dense table">
-                        <TableBody>
+                      <MuiTable size="small" aria-label="a dense table">
+                        <MuiTableBody>
                           {results.otherPayway.map((data, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{data.paywayName}</TableCell>
-                              <TableCell>{data.usedPrice}</TableCell>
-                              <TableCell>({data.usedPriceWithNoCash})</TableCell>
-                            </TableRow>
+                            <MuiTableRow key={index}>
+                              <MuiTableCell>{data.paywayName}</MuiTableCell>
+                              <MuiTableCell>{data.usedPrice}</MuiTableCell>
+                              <MuiTableCell>({data.usedPriceWithNoCash})</MuiTableCell>
+                            </MuiTableRow>
                           ))}
-                        </TableBody>
-                      </Table>
+                        </MuiTableBody>
+                      </MuiTable>
                     </TableContainer>
                   </div>
                 </CardContent>
@@ -635,17 +633,17 @@ function Results({
                 <CardContent css={styles.content}>
                   <div css={styles.inner}>
                     <TableContainer component={Paper}>
-                      <Table size="small" aria-label="a dense table">
-                        <TableBody>
+                      <MuiTable size="small" aria-label="a dense table">
+                        <MuiTableBody>
                           {results.thirdPartTicket.map((data, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{data.ticketName}</TableCell>
-                              <TableCell>{data.usedPrice}</TableCell>
-                              <TableCell>({data.usedPriceWithNoCash})</TableCell>
-                            </TableRow>
+                            <MuiTableRow key={index}>
+                              <MuiTableCell>{data.ticketName}</MuiTableCell>
+                              <MuiTableCell>{data.usedPrice}</MuiTableCell>
+                              <MuiTableCell>({data.usedPriceWithNoCash})</MuiTableCell>
+                            </MuiTableRow>
                           ))}
-                        </TableBody>
-                      </Table>
+                        </MuiTableBody>
+                      </MuiTable>
                     </TableContainer>
                   </div>
                 </CardContent>
@@ -660,17 +658,17 @@ function Results({
             <CardContent css={styles.content}>
               <div css={styles.inner}>
                 <TableContainer component={Paper}>
-                  <Table size="small" aria-label="a dense table">
-                    <TableBody>
+                  <MuiTable size="small" aria-label="a dense table">
+                    <MuiTableBody>
                       {results.walletDeposit.map((data, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{data.paywayName}</TableCell>
-                          <TableCell>{data.usedPrice}</TableCell>
-                          <TableCell>({data.usedPriceWithNoCash})</TableCell>
-                        </TableRow>
+                        <MuiTableRow key={index}>
+                          <MuiTableCell>{data.paywayName}</MuiTableCell>
+                          <MuiTableCell>{data.usedPrice}</MuiTableCell>
+                          <MuiTableCell>({data.usedPriceWithNoCash})</MuiTableCell>
+                        </MuiTableRow>
                       ))}
-                    </TableBody>
-                  </Table>
+                    </MuiTableBody>
+                  </MuiTable>
                 </TableContainer>
               </div>
             </CardContent>

@@ -1,8 +1,11 @@
 /** @jsxImportSource @emotion/react */
+// 多選篩選（值為陣列）與切換鈕保留 MUI
 import {
-  Card, CardContent, Grid, InputLabel, MenuItem, FormControl,
+  InputLabel, MenuItem, FormControl,
   ListItemText, Select, Checkbox, ToggleButton, ToggleButtonGroup
 } from '@mui/material'
+import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
 import React from 'react'
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
@@ -124,16 +127,16 @@ const PerformanceDetail = ({
   }
   
   return (
-    <Grid item xs={12}>
-      <Card style={{ overflow: 'visible' }}>
-        <CardContent>
-        <Grid container spacing={1}>
-          <Grid container flexGrow={1} width='unset' alignItems='center' justifyContent='space-between' item>
-            <Grid item>
-              <div className='cardTitle'>設計師業績趨勢表</div>
-              <div className='subTitle'>期間內各設計師業績佔比</div>
-            </Grid>
-            <Grid item>
+    <div className="min-w-0 lg:col-span-2">
+      <Card className="h-full min-h-[390px] overflow-visible">
+        <CardContent className="flex flex-col gap-4 p-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-1 flex-wrap items-center justify-between gap-2">
+            <div>
+              <CardTitle className="whitespace-nowrap">設計師業績趨勢表</CardTitle>
+              <CardDescription className="whitespace-nowrap text-caption">期間內各設計師業績佔比</CardDescription>
+            </div>
+            <div>
               <ToggleButtonGroup
                 size="small"
                 exclusive
@@ -143,9 +146,9 @@ const PerformanceDetail = ({
                 <ToggleButton value='designer'>設計師</ToggleButton>
                 <ToggleButton value='merchant'>總和</ToggleButton>
               </ToggleButtonGroup>
-            </Grid>
-          </Grid>
-          <Grid style={{ maxWidth: 350 }} alignItems='center' container item>
+            </div>
+          </div>
+          <div className="flex w-full max-w-[350px] items-center">
             <FormControl fullWidth css={styles.select}>
               <InputLabel>篩選</InputLabel>
               <Select
@@ -163,8 +166,8 @@ const PerformanceDetail = ({
                 ))}
               </Select>
             </FormControl>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
           {data.length > 0 ?
             <div style={{ width: '100%', height: 500 }}>
               <ResponsiveContainer>
@@ -191,11 +194,11 @@ const PerformanceDetail = ({
                 </LineChart>
               </ResponsiveContainer>
             </div> :
-            <div css={styles.noDataDiv}><span className={styles.noData}>無資料</span></div>
+            <EmptyState title="無資料" className="h-[350px]" />
           }
         </CardContent>
       </Card>
-    </Grid>
+    </div>
   )
 }
 

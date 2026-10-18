@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, Table, TableBody, TableCell, TableHead,
-  TableRow, TableContainer, Grid,
-} from '@mui/material'
+import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
+import { formatNumber } from 'ui/format'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import React from 'react'
 import { css } from '@emotion/react'
 
@@ -21,45 +21,43 @@ const styles = {
 
 const CustomerConsumptionCountRanking = ({ data }) => {
   return (
-    <Grid item md={6} sm={12} xs={12}>
-      <Card>
-        <CardContent>
+    <div className="min-w-0">
+      <Card className="h-full min-h-[390px]">
+        <CardContent className="flex flex-col gap-4 p-4">
           <div>
-            <div className='cardTitle'>消費總次數排行</div>
-            <div className='subTitle'>期間內來最多次的客人(訂單)</div>
+            <CardTitle className="whitespace-nowrap">消費總次數排行</CardTitle>
+            <CardDescription className="whitespace-nowrap text-caption">期間內來最多次的客人(訂單)</CardDescription>
           </div>
           {data.length > 0 ?
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell style={{ width: 25 }}></TableCell>
-                    <TableCell>姓名</TableCell>
-                    <TableCell>手機</TableCell>
-                    <TableCell>總訂單數</TableCell>
-                    <TableCell>總金額</TableCell>
-                    <TableCell>客單價</TableCell>
+            <Table wrapperClassName="mt-0">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-10"></TableHead>
+                  <TableHead>姓名</TableHead>
+                  <TableHead>手機</TableHead>
+                  <TableHead numeric>總訂單數</TableHead>
+                  <TableHead numeric>總金額</TableHead>
+                  <TableHead numeric>客單價</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.map((d, index) => (
+                  <TableRow key={`customerConsumptionCount-${index}`}>
+                    <TableCell className="tabular-nums text-text-secondary">{`${index + 1}.`}</TableCell>
+                    <TableCell>{d.name}</TableCell>
+                    <TableCell>{d.cellphone}</TableCell>
+                    <TableCell numeric>{formatNumber(d.orderCount)}</TableCell>
+                    <TableCell numeric>{formatNumber(d.totalPrice)}</TableCell>
+                    <TableCell numeric>{formatNumber(d.pricePerCount)}</TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {data.map((d, index) => (
-                    <TableRow key={`customerConsumptionCount-${index}`} hover>
-                      <TableCell>{`${index + 1}.`}</TableCell>
-                      <TableCell>{d.name}</TableCell>
-                      <TableCell>{d.cellphone}</TableCell>
-                      <TableCell>{d.orderCount}</TableCell>
-                      <TableCell>{d.totalPrice}</TableCell>
-                      <TableCell>{d.pricePerCount}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer> :
-            <div css={styles.noDataDiv}><span css={styles.noData}>無資料</span></div>
+                ))}
+              </TableBody>
+            </Table> :
+            <EmptyState title="無資料" className="h-[350px]" />
           }
         </CardContent>
       </Card>
-    </Grid>
+    </div>
   )
 }
 

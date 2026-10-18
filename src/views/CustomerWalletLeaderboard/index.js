@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import { Container, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
 import { endOfMonth, startOfMonth, differenceInDays } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import { useEffect, useState } from 'react'
-import AdminPageHeader from 'components/AdminPageHeader'
 import produce from 'immer'
 import useFetchGetCustomerWalletLeaderboard from 'hooks/useFetchGetCustomerWalletLeaderboard'
 import useFetchGetCustomerWalletLeaderboardExcel from 'hooks/useFetchGetCustomerWalletLeaderboardExcel'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { PageHeader } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Filter from './Filter'
 import Results from './Results'
@@ -101,24 +101,22 @@ function CustomerWalletLeaderboard() {
   }
 
   return (
-    <Page title="顧客入金排行榜">
-      <Container maxWidth={false} css={styles.container}>
-        <AdminPageHeader title='顧客入金排行榜' />
-        <Filter
-          rangeLimit={rangeLimit}
-          dataChange={handleDataChange}
-          inputData={inputData}
-          handleSearch={handleSearch}
-          loading={customerWalletData.loading}
-          getExcel={handleGetExcelData}
-          excelLoading={customerWalletDateExcel.loading}
-        />
-        {(!customerWalletData.loading && customerWalletData.data) ? (
-          <Results reportData={reportData} />
-        ) : (
-          <div css={styles.circular}><CircularProgress /></div>
-        )}
-      </Container>
+    <Page title="顧客入金排行榜" className="ui-root">
+      <PageHeader title="顧客入金排行榜" />
+      <Filter
+        rangeLimit={rangeLimit}
+        dataChange={handleDataChange}
+        inputData={inputData}
+        handleSearch={handleSearch}
+        loading={customerWalletData.loading}
+        getExcel={handleGetExcelData}
+        excelLoading={customerWalletDateExcel.loading}
+      />
+      {(!customerWalletData.loading && customerWalletData.data) ? (
+        <Results reportData={reportData} />
+      ) : (
+        <Skeleton className="h-96" aria-busy="true" />
+      )}
     </Page>
   )
 }

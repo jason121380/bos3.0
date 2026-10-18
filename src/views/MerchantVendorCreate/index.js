@@ -1,7 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
@@ -11,6 +9,8 @@ import idx from 'idx'
 import _ from 'lodash'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import AboutMerchantVendorCreate from './AboutMerchantVendorCreate'
 
@@ -94,9 +94,9 @@ function MerchantVendorCreate() {
   }
 
   return (
-    <Page css={styles.root} title="新增廠商">
-      <Container maxWidth="md">
-        <PageTitle title='新增廠商' subTitle='MERCHANT VENDOR CREATE' />
+    <Page className="ui-root" title="新增廠商">
+      <div className="max-w-3xl">
+        <PageHeader title="新增廠商" />
         <AboutMerchantVendorCreate
           className={styles.aboutPayment}
           vendorOption={vendorOption}
@@ -104,12 +104,12 @@ function MerchantVendorCreate() {
           submitData={submitData}
           setSubmitData={setSubmitData}
         />
-        <div css={styles.actions}>
-          <Button disabled={vendorList.loading || isClick} onClick={handleSubmitData} color="primary" variant="contained">
+        <div className="flex justify-end pt-6">
+          <Button disabled={vendorList.loading || isClick} onClick={handleSubmitData} variant="primary">
             新增
           </Button>
         </div>
-      </Container>
+      </div>
     </Page>
   )
 }
