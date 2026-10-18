@@ -1,48 +1,35 @@
-/** @jsxImportSource @emotion/react */
-import { Container, CircularProgress, Grid, Button } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import idx from 'idx'
 import useFetchMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'
-import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Skeleton } from 'ui/skeleton'
 
 import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
 
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(6),
-  }),
-  results: css({
-    marginTop: theme.spacing(1),
-  }),
-}
-
 function Authority() {
   const merchantAuthData = useFetchMerchantAuthorities()
   return (
-    <Page css={styles.root} title="角色權限管理">
-      <Container maxWidth={false}>
-        <AdminPageHeader
-          title="角色權限管理"
-          sx={{ backgroundColor: 'transparent', mb: 0 }}
-          primaryAction={{
-            label: '新增角色',
-            to: '/role/create'
-          }}
-        />
-        {!merchantAuthData.loading ?
-          idx(merchantAuthData, _ => (
-            <Results
-              className={styles.results}
-              merchantAuth={_.data.getMerchantAuthorities}
-              merchantAuthDataRefetch={merchantAuthData.refetch}
-            />
-          )) : <div style={{ textAlign: 'center', marginTop: '200px' }}><CircularProgress /></div>}
-      </Container>
+    <Page className="ui-root" title="角色權限管理">
+      <AdminPageHeader
+        title="角色權限管理"
+        primaryAction={{
+          label: '新增角色',
+          to: '/role/create'
+        }}
+      />
+      {!merchantAuthData.loading ?
+        idx(merchantAuthData, _ => (
+          <Results
+            merchantAuth={_.data.getMerchantAuthorities}
+            merchantAuthDataRefetch={merchantAuthData.refetch}
+          />
+        )) : (
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-11 w-full" />
+            <Skeleton className="h-11 w-full" />
+            <Skeleton className="h-11 w-full" />
+          </div>
+        )}
     </Page>
   )
 }
