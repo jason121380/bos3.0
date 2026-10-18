@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
+// 業績包含（多選）切換鈕的 handler 使用 (event, value)，保留 MUI ToggleButtonGroup
 import {
-  Container, Button, CircularProgress, Grid, ToggleButton, ToggleButtonGroup
+  ToggleButton, ToggleButtonGroup
 } from '@mui/material'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
 import DateSelector from 'components/DateSelector'
 import { endOfMonth, startOfMonth, format } from 'date-fns'
@@ -13,6 +13,10 @@ import { CSVLink } from "react-csv";
 import useFetchGetOverallPerformanceAnalysisReport from 'hooks/useFetchGetOverallPerformanceAnalysisReport'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader, Toolbar, ToolbarSpacer } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -195,87 +199,75 @@ const OverallPerformanceAnalysisReport = () => {
     })
   }
   return (
-    <Page css={styles.root} title="多店業績統計表">
-      <Container maxWidth={false} css={styles.container}>
-        <AdminPageHeader title='多店業績統計表' />
-        <Grid container alignItems='center' justifyContent='space-between' >
-          <DateSelector
-            date={date}
-            attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-            margin
-          />
-
-          <Grid
-            item
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 10
-            }}
-          >
-            <Grid style={{ marginTop: -22 }}>
-              <div>業績包含</div>
-              <ToggleButtonGroup
-                size="small"
-                value={performanceInclude}
-                onChange={handleToggleButtonChange}
-              >
-                {include.map((data, idx) => (
-                  <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                    {data.label}
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
-            </Grid>
-            <div>
-              <CSVLink data={excelData} filename="多店業績統計表.csv"
-                onClick={() => {
-                  if (overallPerformanceAnalysisReportLazyData.loading ||
-                    overallPerformanceAnalysisReportLazyData.data === undefined ||
-                    excelData.length === 0) {
-                    return false
-                  }
-                }}>
-                <Button disabled={overallPerformanceAnalysisReportLazyData.loading ||
-                  overallPerformanceAnalysisReportLazyData.data === undefined ||
-                  excelData.length === 0}
-                  variant="contained" color="primary">
-                  報表匯出
-                </Button>
-              </CSVLink>
-            </div>
-          </Grid>
-        </Grid>
-        <div style={{ display: 'flex', margin: '10px 0' }}>
-          <MerchantListAutocpmplete
-            onValueChange={value => {
-              handleChecked(value)
-            }}
-          />
-          <div style={{ marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSearchReport}
-              css={styles.searchBtn}
+    <Page className="ui-root" title="多店業績統計表">
+      <PageHeader title="多店業績統計表" />
+      <Toolbar>
+        <DateSelector
+          date={date}
+          attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
+          dateChange={value => setDate(value)}
+          margin
+        />
+        <ToolbarSpacer />
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex items-center gap-2">
+            <div className="text-label text-text-secondary">業績包含</div>
+            <ToggleButtonGroup
+              size="small"
+              value={performanceInclude}
+              onChange={handleToggleButtonChange}
             >
-              搜尋
-            </Button>
+              {include.map((data, idx) => (
+                <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                  {data.label}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+          </div>
+          <div>
+            <CSVLink data={excelData} filename="多店業績統計表.csv"
+              onClick={() => {
+                if (overallPerformanceAnalysisReportLazyData.loading ||
+                  overallPerformanceAnalysisReportLazyData.data === undefined ||
+                  excelData.length === 0) {
+                  return false
+                }
+              }}>
+              <Button disabled={overallPerformanceAnalysisReportLazyData.loading ||
+                overallPerformanceAnalysisReportLazyData.data === undefined ||
+                excelData.length === 0}
+                variant="secondary">
+                <Download strokeWidth={1.75} />
+                報表匯出
+              </Button>
+            </CSVLink>
           </div>
         </div>
-        {!overallPerformanceAnalysisReportLazyData.loading && overallPerformanceAnalysisReportLazyData.data !== undefined ? (
-          <Results
-            weekDisplay={weekDisplay}
-            overAllReport={overAllReport}
-          />
-        ) : (
-          <div css={styles.noReportDiv}>
-            <CircularProgress />
-          </div>
-        )}
-      </Container>
+      </Toolbar>
+      <div className="flex items-center gap-2.5 pb-6">
+        <MerchantListAutocpmplete
+          onValueChange={value => {
+            handleChecked(value)
+          }}
+        />
+        <div className="flex items-center">
+          <Button
+            variant="primary"
+            onClick={handleSearchReport}
+            className="w-[100px]"
+          >
+            搜尋
+          </Button>
+        </div>
+      </div>
+      {!overallPerformanceAnalysisReportLazyData.loading && overallPerformanceAnalysisReportLazyData.data !== undefined ? (
+        <Results
+          weekDisplay={weekDisplay}
+          overAllReport={overAllReport}
+        />
+      ) : (
+        <Skeleton className="h-96" aria-busy="true" />
+      )}
     </Page>
   )
 }
