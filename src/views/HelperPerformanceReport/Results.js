@@ -62,7 +62,7 @@ function Results({
     <div {...rest} css={styles.root}>
       <Card className="p-5">
         {/* HelperPerformanceReportTable：initialize.scss 的斑馬欄樣式掛鉤，保留 */}
-        <Table className='HelperPerformanceReportTable min-w-[900px]'>
+        <Table dense className='HelperPerformanceReportTable min-w-[900px]'>
           <TableHeader className="sticky top-0 z-[100]">
             <TableRow className="hover:bg-transparent">
               <TableHead className={`${STICKY_COL} ${GROUP_END} bg-surface`}>設計師名稱</TableHead>

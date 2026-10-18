@@ -12,7 +12,7 @@ const STICKY_COL = 'sticky left-0 top-0 z-[99] min-w-[100px] max-w-[100px] break
 function Results({ className, results, excelData, attributeSwitchs, membershipDisplay, ...rest }) {
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Table aria-label="a dense table">
+      <Table dense aria-label="a dense table">
         <TableHeader className="sticky top-0 z-[100]">
           <TableRow className="hover:bg-transparent">
             <TableHead className={`${STICKY_COL} bg-surface`}>日期</TableHead>

@@ -40,7 +40,7 @@ export default function Results({ designerPerformance, serviceCategory, membersh
     designerPerformance.length === 0 ? 
     <EmptyState title="無資料" /> : (
       // designerPerformanceReportTable／designerPerformance／sumPerformance 為列印與斑馬紋樣式的掛鉤（initialize.scss），保留
-      <Table wrapperClassName='designerPerformanceReportTable mt-2.5 max-h-[calc(100vh-265px)] overflow-auto' aria-label="a dense table">
+      <Table dense wrapperClassName='designerPerformanceReportTable mt-2.5 max-h-[calc(100vh-265px)] overflow-auto' aria-label="a dense table">
           <TableHeader className={STICKY_ROW}>
             <TableRow className="hover:bg-transparent">
               <TableHead className={`${STICKY_COL} bg-surface`}>設計師</TableHead>

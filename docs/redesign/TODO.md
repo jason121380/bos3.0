@@ -67,9 +67,11 @@
 - [x] **版本顯示（v3.0-1019-0232，分支 `claude/ui-version-box`）**：新增 `src/version.js`（`APP_VERSION`），`Dashboard/TopBar.js`、`Auth/Topbar.js` 改讀它，不再寫死 `v3.0`。狀態：已 merge（PR #12）。
 - [x] **批次 8 [v3.0-1019-0303]（`claude/ui-batch8-box`，替代 Payment；PR #15，已 merge（c168506），前為 #13、#14 已 merge）**：`UpdateDeductionSetting/Results.js` 的 15 個 TextField（門檻／抽成，`min=0`、`type=number`、`onWheel` 不變）→ `Field`＋`Input`（標籤在上）；`ToggleButton`／`Tabs`／`Checkbox` 保留 MUI；`index.js` 沒有 MUI 欄位，未動。
   - 既有 bug 不碰：非分段「刪除此級距」`onClick={handleDeleteSetDeductionNum}` 會把 event 當 index 傳入。
-- [ ] **待辦（Jason 2026/10/19 已授權）— `PaymentCreate` 恢復排批**：授權把相關 Cypress spec 的下拉選取改為 `.select()` 寫法，再把 `PaymentCreate` 的 Select 換 `NativeSelect`（TextField→`Field`＋`Input`）。順序：先改 Cypress spec、確認選取寫法對得上原生 `<select>`，再改畫面；只改 JSX／spec，不動 handler。
+- [x] **批次 12 [v3.0-1019-0352]（`claude/ui-batch12-box`，新一組第 2 個；前一組 #13–#17 已 merge）**：`PaymentEdit/AboutPayment.js` 的 2 個 TextField → `Field`＋`Input`、2 個 Select → `Field`＋`NativeSelect`＋`NativeSelectOption`（`data-testid` 直接傳到 `<select>`／`<input>`；動態 `fee-${PaymentEnum[amountType]}`、`onFocus`／`onWheel`／`Math.floor` 原樣；disabled 空值選項保留）；`FormControlLabel`＋`Checkbox` 保留 MUI；移除不再使用的 `categoryLabel` ref 與 MUI `FormControl`／`InputLabel`／`MenuItem`／`Select`／`TextField` import。`cypress/integration/updatePayment_spec.js` 兩處「click 下拉 → click 選項 testid」改為 `.select('百分比(%)')`、`.select('業績')`，其餘斷言不動。**提醒：Cypress（updatePayment_spec、createPayment_spec）未在本機實跑，待測試環境確認。**
+- [x] **`PaymentCreate` 恢復排批（Jason 2026/10/19 已授權）— Create 已由 PR #18（批次 11）完成**：授權把 Cypress spec 下拉選取改為 `.select()` 寫法後，`PaymentCreate` 的 Select 換 `NativeSelect`（TextField→`Field`＋`Input`）已在 #18 落地。批次 12（`PaymentEdit`，沿用同寫法）的合併順序在 #18 之後；本項不再是待辦。
 - [ ] **紀律**：之後每個完整 commit 都要更新 `src/version.js`（格式 `v3.0-MMDD-HHmm`，Asia/Taipei），並與 commit 訊息第一行 `[版號]` 一致；不自行升大版號。
 - [x] **批次 9 [v3.0-1019-0309]（`claude/ui-batch9-box`，PR #16，已 merge（d15b367）；前為 #13、#14、#15 已 merge）**：`CouponList` 三個編輯彈窗 `AboutDeductionEditModal`、`AssistantSettingEditModal`、`SaleStatusEditModal`，TextField／單選 Select → `Field`＋`Input`／`NativeSelect`（做法同批次 4、5）；MUI `Modal` 與 `Checkbox` 保留；`Results.js`／`index.js` 無待改欄位未動。
+- [x] **批次 11 [v3.0-1019-0349]（`claude/ui-batch11-box`，新一組第 1 個；前 #13–#17 已 merge）**：`PaymentCreate/AboutPayment.js` 的 2 個 TextField → `Field`＋`Input`、2 個 Select（手續費類別、扣項方式）→ `Field`＋`NativeSelect`（`data-testid` 在 `<select>`，disabled 空值選項保留）；`Checkbox` 保留；移除 `categoryLabel` ref。選項的 `data-testid` 因原生 `<option>` 無法保留而移除，`cypress/integration/createPayment_spec.js` 兩處「click 下拉 → click 選項」改 `.select('顯示文字')`（業務斷言不動）；`index.js` 無欄位未動。
 - [x] **批次 5 [v3.0-1019-0202]（`claude/ui-batch5-box`，PR #11 已 merge，merge commit cfc79cd，commit 079a7d0，GitHub Build/Unit pass；指揮者已驗證）**：`CouponEdit` 表單標籤改版，做法同批次 4 的 `CouponCreate`（PR #10）。
   - 本批完成：`AboutCoupon.js`、`AboutDeduction.js`、`AboutAssistantSetting.js` 的 TextField → `Field`＋`Input`（標籤在上）、單選 Select → `Field`＋`NativeSelect`；`index.js` 沒有 MUI 欄位，未動。三檔都沒有 helperText／error、Autocomplete、日期、鍵盤焦點鏈或列印，所以三檔皆在範圍內。`Checkbox`／`FormControlLabel`（分指定／互助均分）仍是 MUI。
   - **與 `CouponCreate` 不對稱處（不可從孿生目錄照抄）**：
@@ -99,8 +101,9 @@
 3. ~~是否要新增 `ui/combobox` 與 `ui/date-picker`~~ **已拍版（Jason 2026/10/19，四點新拍版）**：
    - **Autocomplete**：不新造 combobox；不動打字／選取行為；其他頁只改外層標籤（`Field` 上方標籤＋`placeholder`）。
    - **月曆**：排入 `ui/date-picker` 專項。先盤點 39–43 檔（`@mui/x-date-pickers`；口徑差異在盤點時對齊），必須保留民國年、顯示格式、locale、存值，分批進行。
-   - **報表 compact 進度**（2026/10/19，本分支 `ui-report3-box`，v3.0-1019-0410）：本批為本組第 5 個（前 #18、#19、#20、#21，整組待 merge）。IncomeStatementReport 1 頁（1 張表）換 `ui/table`＋`dense`；累計第一批 4＋第二批 12＋本批 1＝**17 頁，剩 11 頁 MUI Table 報表**。`ui/table` dense 補 `px-2`（與第二批同定義）。**待實機列印預覽**：①`initialize.scss` 對 `.IncomeStatementReport` 的 `table/thead/th` 黑框線規則與 `ui/table` 內建 print 格線疊加是否出現雙線；②`.MuiTableCell-root` 類規則不再命中，儲存格內距／框線是否仍合宜；③小計／損益紅字列印是否變黑；④`px-2` 欄寬變窄後一頁寬度；⑤報表匯出鈕與 hr 在列印時仍隱藏。
+   - **報表 compact 進度**（2026/10/19，本分支 `ui-report3-box`，v3.0-1019-0410）：本批為本組第 5 個（PR #22；前 #18、#19、#20、#21，本組五個待全 merge 後確認 main）。IncomeStatementReport 1 頁（1 張表）換 `ui/table`＋`dense`；累計第一批 4＋第二批 12＋本批 1＝**17 頁，剩 11 頁 MUI Table 報表**。`ui/table` dense 補 `px-2`（與第二批同定義）。**待實機列印預覽**：①`initialize.scss` 對 `.IncomeStatementReport` 的 `table/thead/th` 黑框線規則與 `ui/table` 內建 print 格線疊加是否出現雙線；②`.MuiTableCell-root` 類規則不再命中，儲存格內距／框線是否仍合宜；③小計／損益紅字列印是否變黑；④`px-2` 欄寬變窄後一頁寬度；⑤報表匯出鈕與 hr 在列印時仍隱藏。
    - **22 張列印報表**：併入「報表 compact 專項」，只改樣式；列印預覽以唯讀方式確認，不動 `#printMain`／`#printThermal` 與 `className` 含 `print` 的元素。
+   - **報表 compact 進度**（2026/10/19）：承 PR #20 第一批 4 頁，**第二批（v3.0-1019-0406）+12 頁，累計 16 頁，剩 12 頁 MUI Table 報表＋列印共用層後續**。本批 12 個 Results 的主報表 `ui/table` 補 `dense`（共 19 張：MerchantDaily 4、SingleService 3、DecreaseDaily 2、ProductConsume 2、其餘 8 頁各 1）；`src/ui/table.js` 的 dense 補 `px-2`（以 PR #20 合併後最終版為準）。盤點總表（INVENTORY／口徑數字）在 PR #20 分支，待整組對齊後更新，本分支未寫入。
 4. `ui/native-select` 的 `label`（外框上緣標籤）要不要整批改成「`Field` 上方標籤」？目前 25 檔引用、約 21 處有傳 `label`，與 STYLE「標籤在上」不一致；改法機械但檔案分散，建議納入 §四 批次 E。
 
 ### P4 — 既有問題（修了會動邏輯，需你同意才改）
@@ -167,6 +170,33 @@
 - **盤點總表**已在 PR #7（上方 §三）；其 `@mui/icons-material` 25 檔、jss 2 檔兩列為 F 批前數字，已在表內註記更正。
 
 ---
+
+## 三之二、報表 compact 專項盤點與進度（2026/10/19，`rg` 實查）
+
+**口徑**：`ls -d src/views/*Report`＝28 個目錄；`rg -l "window\.print" src`＝28 個檔案；`ui/table`／MUI Table 以「該目錄是否有檔案 `from 'ui/table'`」分。三個 28 **不是同一批**，不可互相推算。
+
+| 項目 | 數量 | 說明 |
+|---|---|---|
+| `*Report` 目錄 | 28 | 見上 |
+| `window.print` 檔案 | 28 | 其中 `*Report/index.js` 只有 **15** 個；另 7 個 `index.js` 在非 `*Report` 目錄（`EmployeePayslip`、`DesignerPerformBasic`、`HelperLeaderBoard`、`MerchantLeaderBoard`、`MultiMerchantsLeaderBoard`、`InventoryWorkReview`、`ProductInventoryList`），合計 22 個「報表型 index」（即舊文件的 22）；其餘 6 個為非純報表：`OrderManagementList/ResultsV2`、`DraftOrderManagementList/ResultsV2`、`DraftOrderEdit/Footer`、`OrderCreate/OrderDetailModal`、`InventoryWorkReview/General`、`ProductInventoryList/Results` |
+| `*Report` 已用 `ui/table` | 16 目錄 | 其中 `DecreaseDailyReport`、`MerchantDailyReport` 同檔仍有 MUI Table 殘留 |
+| `*Report` 仍用 MUI Table | 12 目錄／13 檔 | `BusinessAnalysis`、`CostAnalysis`、`DesignersSalaryDetail`、`DesignerMonthly`、`DesignerPerforamnceAnalyze`（含 `Compare.js`）、`DesignerRake`、`EmployeeDaily`、`IncomeStatement`、`MerchantBankTransfer`、`MerchantBusinessInterval`、`ProductInvoicingRecord`、`ServiceDeductionDetail`（先前估「約 13」＝檔案數 13，目錄數 12） |
+| 列印 CSS | `src/initialize.scss` 單檔 1 個 `@page`（第 253 行）；`initialize-dark.scss` 另有 1 個（第 459 行）；`thead tr th` 等報表列印規則散在 `initialize.scss` 第 355–550 行 | `ui/table` 自帶 `print:` 規則（黑細格線、白底、不裁切） |
+| 已套 compact（`dense`＋`px-2`） | **4 頁** | `MoneyFlowCategoryReport`、`MoneyFlowDailyReport`、`MoneyFlowTransferReport`、`PaymentReport` |
+| 剩餘 | **24 頁** | 12 頁已是 `ui/table`（只差 `dense`）＋ 12 頁 MUI Table |
+
+**第一批（`claude/ui-report1-box`，v3.0-1019-0357，未 commit）**：
+- `src/ui/table.js`：`dense` 由 `[&_td]:h-8 [&_td]:py-1 [&_th]:h-8` 補為 `… [&_td]:px-2 [&_th]:px-2`。因全專案原本沒有任何頁面傳 `dense`，共用層改動只影響本批 4 頁；非 dense 預設與 `PRINT` 規則未動。
+- 四頁各 1 張 Table，皆加 `dense`（`MoneyFlowCategoryReport/Results.js:7`、`MoneyFlowDailyReport/Results.js:91`、`MoneyFlowTransferReport/Results.js:8`、`PaymentReport/Results.js:78`）。
+- 數字欄 `numeric` 四頁原本就有，未改任何欄位對齊；欄位、數字、查詢、列印觸發皆未動。
+
+**下一批候選**：
+1. 其餘 12 頁已用 `ui/table` 的報表逐組加 `dense`（先 `NonCashDetailStatement`、`ProductConsume`、`MerchantDailyPerformance`、`MembershipSell`、`OverallPerformanceAnalysis`、`HelperMonthly`、`HelperPerformance`、`DesignerPerformance`、`BusinessItemsMonthlyAnalyze`、`SingleServiceSearching`；`DecreaseDaily`、`MerchantDaily` 因有 MUI 殘留最後）。這些頁的 `numeric`／右齊需逐頁先查，沒有的另列、不自行改。
+2. 12 個 MUI Table 報表另批（`EmployeeDaily` 等有 `#printMain`／列印區塊者先評估）。
+3. 共用層列印邊界：`@page` margin、`thead` 跨頁重複、`tr` 避免被切斷、表尾合計只出現一次。
+4. 篩選／工具列密度（STYLE §11 待盤點項）。
+
+**需實機列印預覽目視（本批 4 頁，唯讀）**：compact 後欄寬是否仍不換行／不裁切；`PaymentReport`、`MoneyFlowDailyReport`（欄數隨日期／付款方式增加）橫向捲動與列印是否超出紙張；合計列粗體與表尾；列印時 `print:` 黑細格線是否仍在。
 
 ## 四、剩餘工作分類與批次建議（2026/10/19）
 

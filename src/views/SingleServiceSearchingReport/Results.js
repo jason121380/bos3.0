@@ -39,7 +39,7 @@ function Results({ reportData, sort }) {
     switch (sort) {
       case 'ALL':
         return (
-          <Table wrapperClassName="max-h-[calc(100vh-250px)] overflow-auto" className="min-w-[650px]">
+          <Table dense wrapperClassName="max-h-[calc(100vh-250px)] overflow-auto" className="min-w-[650px]">
               <TableHeader className="sticky top-0 z-[100]">
                 <TableRow>
                   <TableHead className={stickyHead}>日期</TableHead>
@@ -84,7 +84,7 @@ function Results({ reportData, sort }) {
         )
       case 'BYDATE':
         return (
-          <Table wrapperClassName="max-h-[calc(100vh-250px)] overflow-auto" className="min-w-[650px]">
+          <Table dense wrapperClassName="max-h-[calc(100vh-250px)] overflow-auto" className="min-w-[650px]">
               <TableHeader className="sticky top-0 z-[100]">
                 <TableRow>
                   <TableHead className={stickyHead}>日期</TableHead>
@@ -159,7 +159,7 @@ function Results({ reportData, sort }) {
 
       case 'BYDESIGNER':
         return (
-          <Table wrapperClassName="max-h-[calc(100vh-250px)] overflow-auto" className="min-w-[650px]">
+          <Table dense wrapperClassName="max-h-[calc(100vh-250px)] overflow-auto" className="min-w-[650px]">
               <TableHeader className="sticky top-0 z-[100]">
                 <TableRow>
                   <TableHead className={stickyHead}>日期</TableHead>

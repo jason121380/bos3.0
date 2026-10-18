@@ -14,7 +14,7 @@ export default function Results({ reportData, format, roundDecimal, handleCountT
   return (
     <Fragment>
       {reportData.length > 0 ? (
-        <Table className="[&_tbody_tr:last-child_td]:font-bold" aria-label="a dense table">
+        <Table dense className="[&_tbody_tr:last-child_td]:font-bold" aria-label="a dense table">
           <TableHeader className="sticky top-0 z-[100]">
             <TableRow className="hover:bg-transparent">
               <TableHead className={cn(sticky, 'bg-surface')}>訂單日期</TableHead>

@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 
 function Results({ reportForDisplay }) {
   return (
-    <Table wrapperClassName="mt-2" className="min-w-[650px]" aria-label="a dense table">
+    <Table dense wrapperClassName="mt-2" className="min-w-[650px]" aria-label="a dense table">
       <TableHeader>
         <TableRow className="hover:bg-transparent">
           <TableHead>日期</TableHead>

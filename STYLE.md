@@ -144,7 +144,7 @@ Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現*
 | 項目 | 規則 |
 |---|---|
 | 字級 | 只用 §3 既有級距：表格內容 `body`（14）、表頭 `label`（13）、輔助／備註 `caption`（12）；不為了塞更多資料放大或新增級距，也不使用 12px 以下。 |
-| 列高與內距 | `<Table dense>`：`td`／`th` 高 32px、`td`／`th` 左右內距 8px（`px-2`）、`td` 上下內距 4px（一般表格為 44px、`px-4`）。報表一律用 `dense`；`aria-label="a dense table"` 只是字串，不等於 `dense` prop。 |
+| 列高與內距 | `<Table dense>`：`td`／`th` 高 32px、`td` 上下內距 4px、`td`／`th` 左右內距 8px（`px-2`）（一般表格為 44px／左右 16px）。報表一律用 `dense`；`aria-label="a dense table"` 只是字串，不等於 `dense` prop。 |
 | 表頭 | `TableHeader`（`surface` 底）＋ `TableHead`（`label` 字級、`text-secondary`、不換行、底線 1px `border`）；各報表不自訂表頭顏色與字級。 |
 | 數字欄 | 數字欄用 `numeric`（`TableHead`／`TableCell`）：右對齊＋`tabular-nums`。 |
 | 金額 | 一律 `formatMoney`（`NT$ 1,234`，千分位）；數量用 `formatNumber`；同一畫面格式一致（§7）。 |
@@ -153,7 +153,7 @@ Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現*
 
 ### 待盤點（尚未實作，不得寫進頁面當成既有）
 
-- `dense` 調 `td`／`th` 的高度與左右內距（`px-2`）、`td` 上下內距；**沒有** `TableHead`／`TableCell` 層級的 compact prop。`px-2` 與報表 compact 第二批（`ui-report2-box`）相同定義，整組合併時以最終版為準；欄寬變窄對列印版面的影響待實機列印預覽確認。
+- `dense` 以 `Table` 層級的後代選擇器實作，**沒有** `TableHead`／`TableCell` 層級的 compact prop（水平內距 `px-2` 已於報表 compact 第一批補上，PR #20）。目前 17 頁實際傳 `dense`（第一批 4 頁＋第二批 12 頁＋第三批 1 頁），其餘報表待後續批次；欄寬變窄對列印版面的影響待實機列印預覽確認。
 - **篩選／工具列密度**：目前沒有共用的報表工具列元件；各報表篩選列的間距、控制項高度（36px／32px）尚未統一，待盤點後訂規格。
 - **列印邊界（`@page` margin）與換頁**：尚無共用規則；`thead` 跨頁重複、`tr` 避免被切斷、表尾合計只出現一次，皆待盤點現有 `initialize.scss` 列印規則後再訂，且不得動 `#printMain`／`#printThermal` 與 `className` 含 `print` 的元素。
 - 各報表目前仍有 MUI Table 與自訂 CSS 混用；逐目錄改為 `ui/table` 時，先對照舊版欄位與數字一致（§10 第 4 點）。
