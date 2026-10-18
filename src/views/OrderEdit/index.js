@@ -13,20 +13,13 @@ import { useFetchGetSerialNumberUsing, useFetchGetIsLBCusDisplay } from 'hooks/u
 import { useFetchGetDisablePendingOrder } from 'hooks/useFetchGetParameterAboutSettingFunction'
 import { useFetchGetIsBonusRewardWithLine, useFetchGetIsComboSetting } from 'hooks/useFetchGetParameterAboutSettingFunction'
 import idx from 'idx'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import addDays from 'date-fns/addDays'
+import { MuiScope } from 'ui/mui-theme'
 
 import Footer from './Footer'
 import Head from './Head'
 import Header from './Header'
 import Pannel from './Pannel'
-
-const styles = {
-  root: css({
-    padding: theme.spacing(3),
-  }),
-}
 
 export default function KeyIn({ match }) {
   const onceRef = useRef(true)
@@ -451,7 +444,8 @@ export default function KeyIn({ match }) {
       : paymentAlready
 
   return (
-    <Page title={`帳單詳細 ${orderNo ? `(${orderNo})` : ''}`} css={styles.root}>
+    <Page title={`帳單詳細 ${orderNo ? `(${orderNo})` : ''}`} className="ui-root">
+      <MuiScope>
       <Provider
         value={{
           handleBillChange,
@@ -515,6 +509,7 @@ export default function KeyIn({ match }) {
         <Pannel />
         <Footer enable={enable} />
       </Provider>
+      </MuiScope>
     </Page>
   )
 }
