@@ -67,9 +67,9 @@
 - [x] **版本顯示（v3.0-1019-0232，分支 `claude/ui-version-box`）**：新增 `src/version.js`（`APP_VERSION`），`Dashboard/TopBar.js`、`Auth/Topbar.js` 改讀它，不再寫死 `v3.0`。狀態：已 merge（PR #12）。
 - [x] **批次 8 [v3.0-1019-0303]（`claude/ui-batch8-box`，替代 Payment；PR #15，已 merge（c168506），前為 #13、#14 已 merge）**：`UpdateDeductionSetting/Results.js` 的 15 個 TextField（門檻／抽成，`min=0`、`type=number`、`onWheel` 不變）→ `Field`＋`Input`（標籤在上）；`ToggleButton`／`Tabs`／`Checkbox` 保留 MUI；`index.js` 沒有 MUI 欄位，未動。
   - 既有 bug 不碰：非分段「刪除此級距」`onClick={handleDeleteSetDeductionNum}` 會把 event 當 index 傳入。
-- [ ] **待決策（Payment 批放棄）**：原定 `PaymentCreate` 因下拉選項的 `data-testid` 被 Cypress 點選，換 `NativeSelect` 會讓 e2e 失效而整批放棄。是否授權把相關 Cypress spec 改為 `.select()`？授權前 `PaymentCreate` 維持現狀。
+- [ ] **待辦（Jason 2026/10/19 已授權）— `PaymentCreate` 恢復排批**：授權把相關 Cypress spec 的下拉選取改為 `.select()` 寫法，再把 `PaymentCreate` 的 Select 換 `NativeSelect`（TextField→`Field`＋`Input`）。順序：先改 Cypress spec、確認選取寫法對得上原生 `<select>`，再改畫面；只改 JSX／spec，不動 handler。
 - [ ] **紀律**：之後每個完整 commit 都要更新 `src/version.js`（格式 `v3.0-MMDD-HHmm`，Asia/Taipei），並與 commit 訊息第一行 `[版號]` 一致；不自行升大版號。
-- [ ] **批次 9 [v3.0-1019-0309]（`claude/ui-batch9-box`，PR #16，本組 merge 中，待指揮者驗證；前為 #13、#14、#15 已 merge）**：`CouponList` 三個編輯彈窗 `AboutDeductionEditModal`、`AssistantSettingEditModal`、`SaleStatusEditModal`，TextField／單選 Select → `Field`＋`Input`／`NativeSelect`（做法同批次 4、5）；MUI `Modal` 與 `Checkbox` 保留；`Results.js`／`index.js` 無待改欄位未動。
+- [x] **批次 9 [v3.0-1019-0309]（`claude/ui-batch9-box`，PR #16，已 merge（d15b367）；前為 #13、#14、#15 已 merge）**：`CouponList` 三個編輯彈窗 `AboutDeductionEditModal`、`AssistantSettingEditModal`、`SaleStatusEditModal`，TextField／單選 Select → `Field`＋`Input`／`NativeSelect`（做法同批次 4、5）；MUI `Modal` 與 `Checkbox` 保留；`Results.js`／`index.js` 無待改欄位未動。
 - [x] **批次 5 [v3.0-1019-0202]（`claude/ui-batch5-box`，PR #11 已 merge，merge commit cfc79cd，commit 079a7d0，GitHub Build/Unit pass；指揮者已驗證）**：`CouponEdit` 表單標籤改版，做法同批次 4 的 `CouponCreate`（PR #10）。
   - 本批完成：`AboutCoupon.js`、`AboutDeduction.js`、`AboutAssistantSetting.js` 的 TextField → `Field`＋`Input`（標籤在上）、單選 Select → `Field`＋`NativeSelect`；`index.js` 沒有 MUI 欄位，未動。三檔都沒有 helperText／error、Autocomplete、日期、鍵盤焦點鏈或列印，所以三檔皆在範圍內。`Checkbox`／`FormControlLabel`（分指定／互助均分）仍是 MUI。
   - **與 `CouponCreate` 不對稱處（不可從孿生目錄照抄）**：
@@ -95,8 +95,11 @@
 
 ### P3 — 需要你決定
 1. `Services`（服務項目設定）的篩選按鈕：舊版因 prop 名稱錯誤從未顯示，要顯示嗎？
-2. 直接列印的報表是否要改版（目前決定維持 MUI）。2026/10/19 實測：`window.print` 出現在 28 個檔案，其中 22 個是報表目錄的 `index`（約 15 頁是舊口徑，實際更多），另 6 個是 `OrderManagementList/ResultsV2`、`DraftOrderManagementList/ResultsV2`、`DraftOrderEdit/Footer`、`OrderCreate/OrderDetailModal`、`InventoryWorkReview/General`、`ProductInventoryList/Results`。
-3. 是否要新增 `ui/combobox`（取代 56 個 `<Autocomplete>`）與 `ui/date-picker`（`@mui/x-date-pickers` 39 檔、`<DatePicker>` 12＋`<DateTimePicker>` 7）——這是移除 MUI 的前提，但會是較大的元件工程。**本輪未新造，等你拍版。**
+2. ~~直接列印的報表是否要改版~~ **已拍版（Jason 2026/10/19）**：所有報表樣式一致、以 compact 緊湊呈現；只改 presentation／print CSS，不改內容欄位與數字計算。**下一組優先：報表 compact 專項**（先盤點共用層，再逐目錄）。2026/10/19 實測：`window.print` 出現在 28 個檔案，其中 22 個是報表目錄的 `index`（約 15 頁是舊口徑，實際更多），另 6 個是 `OrderManagementList/ResultsV2`、`DraftOrderManagementList/ResultsV2`、`DraftOrderEdit/Footer`、`OrderCreate/OrderDetailModal`、`InventoryWorkReview/General`、`ProductInventoryList/Results`。
+3. ~~是否要新增 `ui/combobox` 與 `ui/date-picker`~~ **已拍版（Jason 2026/10/19，四點新拍版）**：
+   - **Autocomplete**：不新造 combobox；不動打字／選取行為；其他頁只改外層標籤（`Field` 上方標籤＋`placeholder`）。
+   - **月曆**：排入 `ui/date-picker` 專項。先盤點 39–43 檔（`@mui/x-date-pickers`；口徑差異在盤點時對齊），必須保留民國年、顯示格式、locale、存值，分批進行。
+   - **22 張列印報表**：併入「報表 compact 專項」，只改樣式；列印預覽以唯讀方式確認，不動 `#printMain`／`#printThermal` 與 `className` 含 `print` 的元素。
 4. `ui/native-select` 的 `label`（外框上緣標籤）要不要整批改成「`Field` 上方標籤」？目前 25 檔引用、約 21 處有傳 `label`，與 STYLE「標籤在上」不一致；改法機械但檔案分散，建議納入 §四 批次 E。
 
 ### P4 — 既有問題（修了會動邏輯，需你同意才改）

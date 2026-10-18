@@ -9,7 +9,7 @@
 | 技術走 Tailwind 3.4 + Radix 元件放 `src/ui/`；品牌藍 `#1A73E8` 為唯一主題色 | 參考 OpenAI 介面克制感；沿用舊版品牌色 |
 | Tailwind preflight 關閉，基礎樣式限定在 `.ui-root`，用 `:where()` 把權重歸零 | 遷移期間不能破壞還在用 MUI 的頁面 |
 | 只改畫面，不動 API／Redux／hooks／金額日期運算；列印範本不動 | 使用者鐵則 |
-| 會 `window.print()` 的報表表格（約 15 頁）維持 MUI（選項 A） | 列印規則直接寫在 MUI class 上，換了會動到列印 |
+| ~~會 `window.print()` 的報表表格（約 15 頁）維持 MUI（選項 A）~~ → 2026/10/19 Jason 新決策：所有報表樣式一致，以 compact 緊湊呈現（只改 presentation／print CSS，不改內容欄位與數字計算）；下一組優先做報表 compact 專項，先盤點共用層再逐目錄 | 舊理由：列印規則直接寫在 MUI class 上（`initialize.scss` 約 70 條），改寫時要特別小心；已由 Jason 拍版推翻選項 A，本批只記錄、未動報表 |
 | 後端 repo 唯讀；測試不建立真實帳單 | 使用者指示 |
 | 欄位標籤統一「上方標籤＋佔位字」，不用浮動標籤 | 浮動標籤被 `overflow` 裁掉、備註欄標籤太小；打帳單第 1 組 |
 | 必填 `*` 依既有驗證規則標示，並在原始碼註解寫明依據 | 打帳單第 2 組；`orderRequirements.js` 與 Header `valid` 有測試比對 |
@@ -25,6 +25,7 @@
 
 | 2026/10/19 指示「UI 優先、全部改完」；本輪只做完整盤點＋第一批最安全 UI，**不 merge**，不新造 combobox／date-picker，不動列印報表 | 這三項要 Jason 拍版（`TODO.md` §二 P3） |
 | 浮動標籤的 MUI 欄位換成上方標籤時，**不改共用元件**：用 `Field`＋`label=''`／`placeholder`（`SourceSelect`、`EmployeeAutoComplete`、`CustomerAutoComplete` 都支援） | 這些元件全站共用；`Head`、`Remark` 已是這個做法，風險最低 |
+| **Jason 2026/10/19 四點拍版**：①`PaymentCreate` 授權改 Cypress 下拉選取為 `.select()` 寫法並恢復排批；②Autocomplete 不新造 combobox、不動打字／選取，其他頁只改外層標籤；③月曆排 `ui/date-picker` 專項（先盤點 39–43 檔，保留民國年／格式／locale／存值，分批）；④22 張列印報表併入 compact 專項（只改樣式、列印預覽唯讀確認） | 取代先前「等拍版／維持 MUI」的待決策；見 `TODO.md` §二 P3、`STATUS.md`、`STYLE.md` §11 |
 | 畫面版號以 `src/version.js` 的 `APP_VERSION` 為單一來源（格式 `v3.0-MMDD-HHmm`），兩個 TopBar 都讀它 | 原本寫死 `v3.0`，Jason 無法從手機畫面判斷跑的是哪個 build。不用 `package.json` 的 version（0.1.0，與產品版號無關），也不另做 build 注入，避免兩套來源；代價是每個完整 commit 要手動更新此檔 |
 
 ## 驗證基準

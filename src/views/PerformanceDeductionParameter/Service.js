@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  TextField, FormControl, InputLabel, MenuItem, Select
-} from '@mui/material'
 import { Button } from 'ui/button'
+import { Field, Input } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
@@ -192,28 +191,27 @@ function Service({ className,
           {!merchantCommissionWay.loading ? (
             service.commission.map((data, index) => (
               <div css={styles.serviceInputGroup} key={index}>
-                <TextField
-                  type="text"
-                  variant="outlined"
-                  label="服務扣項命名"
-                  value={data.name}
-                  disabled={!isSubmitForCommission}
-                  onChange={event => handleCommissionName(index, event)}
-                />
-                <FormControl disabled={!isSubmitForCommission} variant="outlined" css={styles.field}>
-                  <InputLabel>扣項依據方式</InputLabel>
-                  <Select
-                    label='扣項依據方式'
+                <Field label="服務扣項命名" className="w-44">
+                  <Input
+                    type="text"
+                    value={data.name}
+                    disabled={!isSubmitForCommission}
+                    onChange={event => handleCommissionName(index, event)}
+                  />
+                </Field>
+                <Field label="扣項依據方式" className="ml-3 w-[150px]">
+                  <NativeSelect
                     value={data.basisForDeduction}
+                    disabled={!isSubmitForCommission}
                     onChange={event => handleCommissionBasisForDeduction(index, event)}
                   >
                     {basisForDeductionSelection.map((data, idx) => (
-                      <MenuItem value={data.value} key={`${data.label}-${idx}`}>
+                      <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
                         {data.label}
-                      </MenuItem>
+                      </NativeSelectOption>
                     ))}
-                  </Select>
-                </FormControl>
+                  </NativeSelect>
+                </Field>
                 {service.commission.length > 1 && (
                   <Button
                     variant="ghost"

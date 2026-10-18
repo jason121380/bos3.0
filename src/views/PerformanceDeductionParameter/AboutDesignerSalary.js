@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import {
-  TextField, RadioGroup, FormControlLabel, Radio, FormControl, Select, InputLabel, MenuItem
-} from '@mui/material'
+import { RadioGroup, FormControlLabel, Radio, FormControl } from '@mui/material'
 import { Button } from 'ui/button'
+import { Field, Input } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 import { Fragment, useState, useEffect } from 'react'
@@ -351,69 +351,66 @@ return (
           {(!merchantJobTitlePoint.loading && !merchantCommissionWay.loading && !deduction.loading && !merchantPointValueSettingsForSelect.loading) ? (
             service.point.map((data, index) => (
               <div css={styles.service} key={index}>
-                <TextField
-                  type="text"
-                  variant="outlined"
-                  label="人員類別"
-                  name="jobTitle"
-                  value={data.jobTitle}
-                  disabled={!isSubmitForPoint}
-                  onChange={event => handlePointSetting(event, index)}
-                />
-                <FormControl disabled={!isSubmitForPoint} variant="outlined" css={styles.field}>
-                  <InputLabel>服務扣項依據方式</InputLabel>
-                  <Select
-                    label='服務扣項依據方式'
+                <Field label="人員類別" className="w-44">
+                  <Input
+                    type="text"
+                    name="jobTitle"
+                    value={data.jobTitle}
+                    disabled={!isSubmitForPoint}
+                    onChange={event => handlePointSetting(event, index)}
+                  />
+                </Field>
+                <Field label="服務扣項依據方式" className="ml-3 w-[150px]">
+                  <NativeSelect
                     value={data.commissionWayId}
                     name="commissionWayId"
+                    disabled={!isSubmitForPoint}
                     onChange={event => handlePointSetting(event, index)}
-                    >
-                    <MenuItem value="unset" key="unset">
+                  >
+                    <NativeSelectOption value="unset" key="unset">
                       無扣項
-                    </MenuItem>
+                    </NativeSelectOption>
                     {service.commission.map((data, idx) => (
-                      <MenuItem value={data.id} key={`${data.label}-${idx}`} disabled={!isSubmitForPoint}>
+                      <NativeSelectOption value={data.id} key={`${data.label}-${idx}`}>
                         {data.name}
-                      </MenuItem>
+                      </NativeSelectOption>
                     ))}
-                  </Select> 
-                </FormControl>
-                <FormControl disabled={!isSubmitForPoint} variant="outlined" css={styles.field}>
-                  <InputLabel>抽成方式設定</InputLabel>
-                  <Select
-                    label='抽成方式設定'
+                  </NativeSelect>
+                </Field>
+                <Field label="抽成方式設定" className="ml-3 w-[150px]">
+                  <NativeSelect
                     value={data.deductionId}
                     name="deductionId"
+                    disabled={!isSubmitForPoint}
                     onChange={event => handlePointSetting(event, index)}
-                    >
-                    <MenuItem value="unset"  key="unset">
-                        無抽成
-                    </MenuItem>
+                  >
+                    <NativeSelectOption value="unset" key="unset">
+                      無抽成
+                    </NativeSelectOption>
                     {deductionData.map((data, idx) => (
-                      <MenuItem value={data.id} key={data.id}>
+                      <NativeSelectOption value={data.id} key={data.id}>
                         {data.name}
-                      </MenuItem>
+                      </NativeSelectOption>
                     ))}
-                  </Select> 
-                </FormControl>
-                <FormControl disabled={!isSubmitForPoint} variant="outlined" css={styles.field}>
-                  <InputLabel>互助方式設定</InputLabel>
-                  <Select
-                    label='互助方式設定'
+                  </NativeSelect>
+                </Field>
+                <Field label="互助方式設定" className="ml-3 w-[150px]">
+                  <NativeSelect
                     value={data.merchantPointValueSettingId}
                     name="merchantPointValueSettingId"
+                    disabled={!isSubmitForPoint}
                     onChange={event => handlePointSetting(event, index)}
-                    >
-                    <MenuItem value="unset"  key="unset">
-                        無互助
-                    </MenuItem>
+                  >
+                    <NativeSelectOption value="unset" key="unset">
+                      無互助
+                    </NativeSelectOption>
                     {merchantPointValueData.map((data, idx) => (
-                      <MenuItem value={data.id} key={data.id}>
+                      <NativeSelectOption value={data.id} key={data.id}>
                         {data.name}
-                      </MenuItem>
+                      </NativeSelectOption>
                     ))}
-                  </Select> 
-                </FormControl>
+                  </NativeSelect>
+                </Field>
                 {service.point.length > 1 && (
                   data.usingPeopleCount === 0 ? ( 
                   <Button
@@ -494,14 +491,14 @@ return (
           {!merchantHelperItems.loading ? (
             serviceForType.helperTypeName.map((data, index) => 
             <div css={styles.service} key={index}>
-              <TextField
-                type="text"
-                variant="outlined"
-                label="互助類別"
-                value={data.type}
-                disabled={!isSubmitForType}
-                onChange={event => handleHelperTypeName(event, index)}
-              />
+              <Field label="互助類別" className="w-44">
+                <Input
+                  type="text"
+                  value={data.type}
+                  disabled={!isSubmitForType}
+                  onChange={event => handleHelperTypeName(event, index)}
+                />
+              </Field>
               {serviceForType.helperTypeName.length > 1 && (
               <Button
                 variant="ghost"

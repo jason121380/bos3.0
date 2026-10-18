@@ -80,7 +80,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 - 格式 `v3.0-MMDD-HHmm`（時區 Asia/Taipei）。commit 訊息第一行開頭與 PR 標題都要帶版本號。
 - 正式格式 v3.0-MMDD-HHmm（Asia/Taipei，不寫年份，年份只在日期欄；不自行升大版號）。
 - #6–#10 為規則建立前已 push 的 commit，**不 amend**；下表依 commit 時間對照版本。
-- merge 組別：#6–#10 為第一組（五個完整 commit），已於 2026-10-19 merge（merge commits：#6 c9a8c8c、#7 503f4fa、#8 f32bf0e、#9 3f7b35f、#10 29630fa）；批次 5（#11）已 merge（cfc79cd），版本顯示批 v3.0-1019-0232（#12）已 merge，批次 6（#13）已 merge（8ec6b00），批次 7（#14）已 merge（20ded5b）；批次 8（#15）已 merge（c168506）；批次 9（#16）本組 merge 中。
+- merge 組別：#6–#10 為第一組（五個完整 commit），已於 2026-10-19 merge（merge commits：#6 c9a8c8c、#7 503f4fa、#8 f32bf0e、#9 3f7b35f、#10 29630fa）；批次 5（#11）已 merge（cfc79cd），版本顯示批 v3.0-1019-0232（#12）已 merge，批次 6（#13）已 merge（8ec6b00），批次 7（#14）已 merge（20ded5b）；批次 8（#15）已 merge（c168506）；批次 9（#16）已 merge（d15b367）；批次 10（#17，v3.0-1019-0312）本組 merge 中。
 
 | 版本 | 時間（Asia/Taipei） | 內容 | PR | commit | checks |
 |---|---|---|---|---|---|
@@ -94,7 +94,8 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 | v3.0-1019-0241 | 2026-10-19 02:41 | 批次 6：AccountingSetting 表單標籤改版 | #13 | 8ec6b00 | 已 merge（merge commit 8ec6b00）；eslint 0 error／verify-logic 通過／portal 0/0／全域 52/52／build 成功 |
 | v3.0-1019-0245 | 2026-10-19 02:45 | 批次 7：CreateDeductionSetting/Results 15 欄標籤改版 | #14 | 4d37654 | 已 merge（merge commit 20ded5b）；eslint 0 error／verify-logic 通過／portal 0/0／測試 52/52／build 成功 |
 | v3.0-1019-0303 | 2026-10-19 03:03 | UI 批次8（替代 Payment）：UpdateDeductionSetting/Results.js 15 個 TextField → `Field`＋`Input`；本批已 merge（c168506；前為 #13、#14 已 merge）；版號由 0258 校正為 0303 | #15 | commit 待補 | 驗證：eslint 0 error、verify-logic 通過、portal-root-scan 0/0、全域測試 52/52、build 成功；該次 build 的 bundle 含校正前版號字串 `v3.0-1019-0258`（校正僅字串差異），commit 後以最終版號 0303 重 build 由指揮者確認 |
-| v3.0-1019-0309 | 2026-10-19 03:09 | UI 批次9 CouponList 三個編輯彈窗（PR #16 本組 merge 中；前為 #13、#14、#15 已 merge） | #16 | commit 待補 | checks 待驗證 |
+| v3.0-1019-0309 | 2026-10-19 03:09 | UI 批次9 CouponList 三個編輯彈窗（前為 #13、#14、#15 已 merge） | #16 | d15b367 | 已 merge（merge commit d15b367） |
+| v3.0-1019-0312 | 2026-10-19 03:12 | UI 批次10 PerformanceDeductionParameter（AboutDesignerSalary、Service：TextField→Field+Input、單選 Select→Field+NativeSelect；Radio 保留 MUI）。本批為本組最後一個（前 #13、#14、#15、#16 已 merge），本組 merge 中；`APP_VERSION` 用本批 0312（整組最後 merge 版號） | #17 | commit 待補 | 驗證（commit 前）：eslint 0 error；verify-logic 兩檔（AboutDesignerSalary、Service）通過；portal-root-scan 0/0；全域單元測試 52/52；`CI=true npm run build` 成功，bundle 含校正前版號字串（0309）。指揮者 commit 後須重 build 確認最終版號為 0312。另：STYLE.md 新增 §11 報表 compact 規格（僅文件）。 |
 
 ## 刻意不改（需另外決定）
 
@@ -109,8 +110,8 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ## 需要使用者決定
 
 1. Services（服務項目設定）的篩選按鈕：舊版因 prop 名稱錯誤從未顯示，目前維持隱藏。要顯示嗎？
-2. 直接列印的報表是否改版：10/18 曾決定維持 MUI（選項 A）；10/19 指示「全部改完」，故重新請 Jason 拍版（實測 28 檔含 22 個報表 index，比舊寫「約 15 頁」多）。拍版前維持現狀、不動。
-3. 是否新增 `ui/combobox`（56 個 Autocomplete）與 `ui/date-picker`（39 檔）。拍版前不新造。
+2. ~~直接列印的報表是否改版~~ **已拍版（Jason 2026-10-19）**：所有報表樣式一致，以 compact 緊湊呈現。範圍只改 presentation／print CSS，不改內容欄位與數字計算。下一組優先做「報表 compact 專項」（先盤點共用層，再逐目錄）；本批只記錄決定，不做報表本體。（實測 28 檔含 22 個報表 index。）**四點新拍版補充（Jason 2026-10-19）**：22 張列印報表併入 compact 專項，只改樣式、列印預覽唯讀確認。
+3. ~~是否新增 `ui/combobox`~~ **已拍版（Jason 2026-10-19）**：不新造 combobox；Autocomplete 不動打字／選取，其他頁只改外層標籤。~~`ui/date-picker`~~ **已拍版**：月曆排 `ui/date-picker` 專項（先盤點 39–43 檔，保留民國年／格式／locale／存值，分批）。
 4. `ui/native-select` 外框標籤是否整批改上方標籤（約 21 處）。
 
 ## 發現但未修的既有問題（修了會動到邏輯）
