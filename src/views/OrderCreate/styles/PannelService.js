@@ -7,19 +7,11 @@ export default {
     marginTop: theme.spacing(3),
   }),
   heading: css({
-    fontSize: '15px !important',
+    fontSize: '16px !important',
     fontWeight: 'bold',
+    color: 'rgb(var(--text))',
     display: 'flex',
     alignItems: 'center',
-    '&::before': {
-      content: '""',
-      display: 'inline-block',
-      width: '4px',
-      height: '16px',
-      backgroundColor: theme.palette.primary.main,
-      marginRight: '8px',
-      borderRadius: '2px',
-    },
   }),
   heading2: css({
     fontSize: theme.typography.pxToRem(13),

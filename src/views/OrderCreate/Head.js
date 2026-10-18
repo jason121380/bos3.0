@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Box, Card, CardContent, Typography, Checkbox, ToggleButton,
+  Box, Typography, Checkbox, ToggleButton,
   FormControlLabel, TextField, CircularProgress, ToggleButtonGroup, InputAdornment
 } from '@mui/material'
 import PropTypes from 'prop-types'
@@ -16,10 +16,8 @@ import { useContext, useState, useRef, useEffect, Fragment } from 'react'
 import { DateTimePicker } from '@mui/x-date-pickers'
 import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import useFetchCustomer from 'hooks/useFetchCustomer'
-import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
-import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
-import ManageAccountsRoundedIcon from '@mui/icons-material/ManageAccountsRounded';
-import AssignmentIndRoundedIcon from '@mui/icons-material/AssignmentIndRounded';
+import { UserCog, UserPlus } from 'lucide-react'
+import { Card } from 'ui/card'
 import TeachingModeContext from 'context/teachingModeContext'
 import useFetchOrderWithoutCustomerSetting from 'hooks/useFetchOrderWithoutCustomerDefault'
 import useFetchGetIsLockDateSetting from 'hooks/useFetchGetIsLockDateSetting'
@@ -512,8 +510,8 @@ export default function Head() {
     }
   }
   return (
-    <Card css={styles.card}>
-      <CardContent css={styles.cardContent}>
+    <Card className="ui-root mb-6">
+      <div className="px-4 py-4">
         <div css={styles.box}>
           {/* 第 1 欄：日期與鎖定 */}
           <div css={[styles.column, styles.column1]}>
@@ -608,12 +606,18 @@ export default function Head() {
                       startAdornment: (
                         <InputAdornment position="start">
                           {bill.customerId !== undefined ? (
-                            <ManageAccountsRoundedIcon
+                            <UserCog
+                              role="button"
+                              aria-label="編輯顧客資料"
+                              strokeWidth={1.75}
                               css={styles.addPersonIcon}
                               onClick={handleOpenEditCustomerModal}
                             />
                           ) : (
-                            <PersonAddAltRoundedIcon
+                            <UserPlus
+                              role="button"
+                              aria-label="新增顧客"
+                              strokeWidth={1.75}
                               css={styles.addPersonIcon}
                               onClick={handleOpenAddCustomerModal}
                             />
@@ -691,7 +695,7 @@ export default function Head() {
             </div>
           </div>
         </div>
-      </CardContent>
+      </div>
       {openModal && (
         <AddCustomerModal
           onClose={handleEditClose}

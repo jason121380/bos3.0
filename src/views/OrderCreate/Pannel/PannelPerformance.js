@@ -1,44 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent, Typography, Grid } from '@mui/material'
 import billContext from 'context/keyInContext'
 import React, { useContext } from 'react'
 import styles from 'views/OrderCreate/styles/PannelService'
 import idx from 'idx'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
-import { css } from '@emotion/react'
-
-const detailStyles = {
-    price: css({
-        padding: '8px 12px',
-        fontSize: '14px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        '& > span:first-of-type': {
-            fontWeight: 'bold',
-        },
-    }),
-    font: css({
-        fontWeight: 'bold',
-        color: '#4581df',
-        padding: '8px 12px',
-        fontSize: '14px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    }),
-    highlighted: css({
-        fontWeight: 'bold',
-        color: '#4581df',
-        padding: '8px 12px',
-        fontSize: '14px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: '#f0f7ff',
-        borderRadius: '6px',
-    }),
-}
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { formatNumber } from 'ui/format'
 
 function PannelPerformance() {
     const { bill } = useContext(billContext)
@@ -108,82 +75,59 @@ function PannelPerformance() {
         _.data.ticketRecords.data.reduce((total, item) => (total = total + item.price), 0)
     ) ?? 0
 
+    // 金額彙總：各數值的運算式與舊版相同，只加千分位與新版樣式
+    const Row = ({ label, value }) => (
+        <div className="flex items-center justify-between py-1.5 text-body">
+            <span className="text-text-secondary">{label}</span>
+            <span className="tabular-nums text-text">{formatNumber(value)}</span>
+        </div>
+    )
     return (
-        <Card style={{ height: '100%' }}>
-            <CardContent>
-                <Grid container spacing={1}>
-                    {/* 左側 */}
-                    <Grid item xs={6} css={detailStyles.price}>
-                        <span>服務消費</span>
-                        <span>{serviceTotalPrice}</span>
-                    </Grid>
-                    {/* 右側 */}
-                    <Grid item xs={6} css={detailStyles.price}>
-                        <span>扣入金</span>
-                        <span>{bill.walletPay}</span>
-                    </Grid>
-
-                    <Grid item xs={6} css={detailStyles.price}>
-                        <span>店販消費</span>
-                        <span>{merchantSellTotalPrice}</span>
-                    </Grid>
-                    <Grid item xs={6} css={detailStyles.price}>
-                        <span>其他付款方式</span>
-                        <span>{bill.amountByOtherPay}</span>
-                    </Grid>
-
-                    <Grid item xs={6} css={detailStyles.price}>
-                        <span>預收卡販賣</span>
-                        <span>{couponSellPrice}</span>
-                    </Grid>
-                    <Grid item xs={6} css={detailStyles.price}>
-                        <span>紅利點數折抵</span>
-                        <span>{bill.bonusDecount}</span>
-                    </Grid>
-
-                    <Grid item xs={6} css={detailStyles.price}>
-                        <span>使用預收卡</span>
-                        <span>{Math.round(couponUsageTotalPrice)}</span>
-                    </Grid>
-                    <Grid item xs={6}>
-                        {/* 空白 */}
-                    </Grid>
-
-                    <Grid item xs={6} css={detailStyles.price}>
-                        <span>會員卡販賣</span>
-                        <span>{merberShipCardTotalPrice}</span>
-                    </Grid>
-                    <Grid item xs={6}>
-                        {/* 空白 */}
-                    </Grid>
-
-                    {/* 下方標示底色區塊 */}
-                    <Grid item xs={6} css={detailStyles.highlighted}>
-                        <span>業績合計</span>
-                        <span>
-                            {Math.round(
-                                serviceTotalPrice +
-                                merchantSellTotalPrice +
-                                couponUsageTotalPrice +
-                                ticketOrdersWithIntoPerformPrice +
-                                merberShipCardTotalPrice
-                            )}
-                        </span>
-                    </Grid>
-                    <Grid item xs={6} css={detailStyles.highlighted}>
-                        <span>現金應收</span>
-                        <span>
-                            {serviceTotalPriceWithoutThirdPartyCoupon +
-                                productTotalPriceWithoutThirdPartyCoupon +
-                                merberShipCardTotalPriceWithoutThirdPartyCoupon +
-                                couponSellPrice -
-                                bill.walletPay -
-                                bill.amountByOtherPay -
-                                bill.bonusDecount}
-                        </span>
-                    </Grid>
-                </Grid>
-            </CardContent>
+        <Card className="ui-root h-full">
+            <CardHeader>
+                <CardTitle>金額彙總</CardTitle>
+            </CardHeader>
+            <div className="grid grid-cols-2 gap-x-6 px-5 pt-2">
+                <div className="flex flex-col">
+                    <Row label="服務消費" value={serviceTotalPrice} />
+                    <Row label="店販消費" value={merchantSellTotalPrice} />
+                    <Row label="預收卡販賣" value={couponSellPrice} />
+                    <Row label="使用預收卡" value={Math.round(couponUsageTotalPrice)} />
+                    <Row label="會員卡販賣" value={merberShipCardTotalPrice} />
+                </div>
+                <div className="flex flex-col">
+                    <Row label="扣入金" value={bill.walletPay} />
+                    <Row label="其他付款方式" value={bill.amountByOtherPay} />
+                    <Row label="紅利點數折抵" value={bill.bonusDecount} />
+                </div>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-x-6 border-0 border-t border-solid border-border px-5 py-4">
+                <div className="flex flex-col gap-1">
+                    <span className="text-label text-text-secondary">業績合計</span>
+                    <span className="text-heading tabular-nums text-text">
+                        {formatNumber(Math.round(
+                            serviceTotalPrice +
+                            merchantSellTotalPrice +
+                            couponUsageTotalPrice +
+                            ticketOrdersWithIntoPerformPrice +
+                            merberShipCardTotalPrice
+                        ))}
+                    </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                    <span className="text-label text-text-secondary">現金應收</span>
+                    <span className="text-display tabular-nums text-text">
+                        <span className="mr-1 text-body text-text-secondary">NT$</span>
+                        {formatNumber(serviceTotalPriceWithoutThirdPartyCoupon +
+                            productTotalPriceWithoutThirdPartyCoupon +
+                            merberShipCardTotalPriceWithoutThirdPartyCoupon +
+                            couponSellPrice -
+                            bill.walletPay -
+                            bill.amountByOtherPay -
+                            bill.bonusDecount)}
+                    </span>
+                </div>
+            </div>
         </Card>
     )
 }

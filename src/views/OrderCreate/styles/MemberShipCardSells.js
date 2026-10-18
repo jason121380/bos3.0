@@ -46,7 +46,7 @@ export default {
     marginBottom: '6px',
     cursor: 'pointer',
     fontSize: '18px',
-    color: '#999',
+    color: 'rgb(var(--text-tertiary))',
     '&:last-child': {
       marginRight: '0px',
     },
@@ -55,7 +55,7 @@ export default {
     cursor: 'pointer',
     margin: '0 6px 6px 6px',
     fontSize: '18px',
-    color: '#999',
+    color: 'rgb(var(--text-tertiary))',
   }),
   heading2: css({
     fontSize: theme.typography.pxToRem(13),
