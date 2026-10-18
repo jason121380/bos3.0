@@ -41,7 +41,11 @@
   舊清單「約 16 個」是手動整理，與掃描不一致：其中 9 個在掃描內（`GeneralAccountingRecordDetail/AccountingSubjectModal`、`MainEventList/ComfirmDialog`、`Parameter` 4 檔、`Products/PublishedDialog`、`Products/VendorDialog`、`Profile/General/ProfileDetails`）；另 7 個（兩個 `Management*ReservationRecord/index`、`MemberCardRecord/EditMemberCardRecordModal`、`OrderEdit/Header`、`Products/EditProductsCategoryModal`、`Services/AboutDeductionEditModal`、`Services/AssistantSettingEditModal`）檔內本來就有 `ui-root`，掃描不列入；掃描另外多找出 16 個舊清單沒有的檔案。
   待辦：實機／截圖各 Modal 確認外觀（尚未做）。
 - [ ] **非打帳單頁面的手機擠壓**：設計師績效頁「搜尋」按鈕被推出畫面、日期輸入框只剩 24px、薪資單儲存格換行等（全站審計結果在 `scratchpad/audit-*.json`）。
-- [ ] **打帳單其餘彈窗仍是浮動標籤的 MUI**（新增顧客 Modal 等），要統一為上方標籤。
+- [ ] **打帳單其餘彈窗仍是浮動標籤的 MUI**，要統一為上方標籤。進度（UI 第二批，分支 `claude/ui-batch2-box`）：
+  - [x] `OrderEdit/WalletDepositModal`（異動入金，OrderCreate 版的孿生檔）：7 欄（日期／金額／設計師／顧客／付款方式／手續費負擔方／備註）改上方標籤，用 `Field`／`Input`；必填 `*` 依本檔 `handleSubWalletDeposit`（日期、金額、設計師、顧客、付款方式；備註與手續費負擔方不必填）。DateTimePicker／Autocomplete／NativeSelect 本體與所有 handler、state、GraphQL、金額邏輯不變。
+  - [ ] **A3（下一批）`OrderCreate/AddCustomerModal`**（676 行，約 17 個欄位）：本批評估後**不做**——(1) Enter 跳欄焦點鏈：每欄 `inputRef`（`noRef`／`nameRef`／`genderRef`／`emailRef`／…／`remarkRef`）加 `onKeyDown → setFocus('下一欄')`，由 effect 依 `focus` state 對應 ref 取得焦點，換成 `ui/input` 要確認 ref 轉發（MUI 的 `inputRef` 與 `Input` 的 `ref` 不同）逐欄對照；(2) 客戶編號欄的重複檢查（`error`／`helperText`「客戶編號重複」＋`endAdornment` 的轉圈／勾／警告）換 `Field` 需重做 hint／adornment 版面，屬 helperText 邏輯，風險高；(3) 內含 Select、日期（民國年／月／日）、偏好設計師 Autocomplete 混用，無法一次機械替換。需獨立一批，逐欄保留焦點順序並用截圖＋鍵盤 Enter 實測。
+  - 其餘批次進度：F 批（`@mui/icons-material`、jss 2 檔）**尚未開始**，列為後續。
+  - 盤點見 PR #7（`claude/ui-complete-box`，含 §四），本分支待 PR #7 合併後對齊，避免重複盤點；本分支 TODO 尚無該盤點章節。
 - [ ] **實機確認**：訂單列表捲軸、底部固定合計列（桌機／手機）、列印不出現合計列。
 
 ### P2 — 改版收尾
