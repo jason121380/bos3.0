@@ -239,6 +239,8 @@ function Pannel() {
           <PannelPerformance />
         </div>
       </div>
+      {/* 讓出底部固定合計列的高度，最後一張卡不會被蓋住 */}
+      <div aria-hidden="true" className="h-12" />
       {/* <PannelOtherPayment
         expanded={pannel.otherPament.expaned}
         onPanelClick={() => handlePannelClick('otherPament')}

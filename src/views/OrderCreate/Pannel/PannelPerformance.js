@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import billContext from 'context/keyInContext'
-import React, { useContext } from 'react'
+import React, { Fragment, useContext } from 'react'
 import styles from 'views/OrderCreate/styles/PannelService'
 import idx from 'idx'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
@@ -75,20 +75,37 @@ function PannelPerformance() {
         _.data.ticketRecords.data.reduce((total, item) => (total = total + item.price), 0)
     ) ?? 0
 
+    // 業績合計、現金應收：運算式與舊版相同，只是算一次，下方彙總卡與底部固定列共用同一個值
+    const performanceTotal = Math.round(
+        serviceTotalPrice +
+        merchantSellTotalPrice +
+        couponUsageTotalPrice +
+        ticketOrdersWithIntoPerformPrice +
+        merberShipCardTotalPrice
+    )
+    const cashDue =
+        serviceTotalPriceWithoutThirdPartyCoupon +
+        productTotalPriceWithoutThirdPartyCoupon +
+        merberShipCardTotalPriceWithoutThirdPartyCoupon +
+        couponSellPrice -
+        bill.walletPay -
+        bill.amountByOtherPay -
+        bill.bonusDecount
+
     // 金額彙總：各數值的運算式與舊版相同，只加千分位與新版樣式
     const Row = ({ label, value }) => (
         <div className="flex items-center justify-between gap-3 py-1.5 text-body">
             <span className="whitespace-nowrap text-text-secondary">{label}</span>
-            <span className="tabular-nums text-text">{formatMoney(value)}</span>
+            <span className="whitespace-nowrap tabular-nums text-text">{formatMoney(value)}</span>
         </div>
     )
-    // sticky：捲動長帳單時金額彙總固定在視窗上緣附近（上層容器不能有 overflow:hidden，見 styles/Pannel.js）
     return (
-        <Card className="ui-root sticky top-4 w-full self-start">
+        <Fragment>
+        <Card className="ui-root w-full self-start">
             <CardHeader>
                 <CardTitle>金額彙總</CardTitle>
             </CardHeader>
-            <div className="grid grid-cols-2 gap-x-6 px-5 pt-2">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-3 px-5 pt-2 max-sm:grid-cols-1">
                 <div className="flex flex-col">
                     <p className="m-0 pb-1 text-label font-medium text-text-tertiary">消費明細</p>
                     <Row label="服務消費" value={serviceTotalPrice} />
@@ -109,30 +126,33 @@ function PannelPerformance() {
                     <span className="text-label text-text-secondary">業績合計</span>
                     <span className="text-heading tabular-nums text-text">
                         <span className="mr-1 text-body text-text-secondary">NT$</span>
-                        {formatNumber(Math.round(
-                            serviceTotalPrice +
-                            merchantSellTotalPrice +
-                            couponUsageTotalPrice +
-                            ticketOrdersWithIntoPerformPrice +
-                            merberShipCardTotalPrice
-                        ))}
+                        {formatNumber(performanceTotal)}
                     </span>
                 </div>
                 <div className="flex flex-col gap-1">
                     <span className="text-label text-text-secondary">現金應收</span>
                     <span className="text-display tabular-nums text-text">
                         <span className="mr-1 text-body text-text-secondary">NT$</span>
-                        {formatNumber(serviceTotalPriceWithoutThirdPartyCoupon +
-                            productTotalPriceWithoutThirdPartyCoupon +
-                            merberShipCardTotalPriceWithoutThirdPartyCoupon +
-                            couponSellPrice -
-                            bill.walletPay -
-                            bill.amountByOtherPay -
-                            bill.bonusDecount)}
+                        {formatNumber(cashDue)}
                     </span>
                 </div>
             </div>
         </Card>
+        {/* 底部固定列：長帳單捲動時，業績合計與現金應收隨時看得到。
+            左側讓出側欄（lg 以上 240px）；手機讓出底部導覽列（56px）；列印時不顯示 */}
+        <div className="ui-root fixed inset-x-0 bottom-14 z-[1050] border-0 border-t border-solid border-border bg-background px-4 py-2 shadow-[0_-2px_8px_rgba(0,0,0,0.06)] print:hidden lg:bottom-0 lg:left-60">
+            <div className="mx-auto flex max-w-[1200px] items-center justify-end gap-8">
+                <div className="flex items-baseline gap-2">
+                    <span className="text-label text-text-secondary">業績合計</span>
+                    <span className="text-heading tabular-nums text-text">{formatMoney(performanceTotal)}</span>
+                </div>
+                <div className="flex items-baseline gap-2">
+                    <span className="text-label text-text-secondary">現金應收</span>
+                    <span className="text-heading font-semibold tabular-nums text-text">{formatMoney(cashDue)}</span>
+                </div>
+            </div>
+        </div>
+        </Fragment>
     )
 }
 

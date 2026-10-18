@@ -1,7 +1,7 @@
 # 💄 BeautyOS (BOS v3.0) — 美業智慧管理系統
 
 > **專案代號**：`beautyos_website`
-> **版本**：v3.0 | **最後更新**：2026-02-09
+> **版本**：v3.0 | **最後更新**：2026-10-18（UI 改版進行中，見 [改版進度](docs/redesign/STATUS.md)）
 > **技術責任人**：名留集團技術團隊
 
 BeautyOS 是一套專為**美髮 / 美容 / 美甲 / SPA 產業**設計的全方位管理系統（ERP / CRM），
@@ -77,7 +77,8 @@ npm run build
 | 類別 | 技術 | 版本 |
 |---|---|---|
 | **UI 框架** | React | `17.0.2` |
-| **UI 元件庫** | Material-UI (MUI) | `5.15.7` |
+| **UI 元件庫（新）** | Tailwind CSS 3.4 + `src/ui/`（shadcn/Radix 風格元件） | 規範見 `STYLE.md` |
+| **UI 元件庫（舊，遷移中）** | Material-UI (MUI) | `5.15.7` |
 | **路由** | React Router | `5.1.2` |
 | **路由配置** | react-router-config | `5.0.1` |
 | **建置工具** | Create React App (react-scripts) | `5.0.1` |
@@ -95,7 +96,8 @@ npm run build
 
 | 類別 | 技術 | 說明 |
 |---|---|---|
-| **CSS-in-JS** | Emotion (`@emotion/react`) | 主要樣式方案，使用 `css()` 函數 |
+| **Tailwind** | `tailwind.config.js`、`src/styles/tokens.css` | 新畫面的樣式方案；preflight 關閉，基礎樣式只作用在 `.ui-root` 之內 |
+| **CSS-in-JS（舊）** | Emotion (`@emotion/react`) | 尚未改版的頁面仍用 `css()`；遷移完成後移除 |
 | **MUI Theme** | `createTheme()` overrides | 33 個元件全局覆寫 |
 | **SCSS** | Sass (`1.75.0`) | 全局初始化樣式 |
 
@@ -326,103 +328,36 @@ localStorage 儲存：
 
 ---
 
-## 🎨 主題系統與設計規範 (BOS 3.4)
+## 🎨 主題系統與設計規範
 
-### 1. 調色盤 (`src/theme/palette.js`)
+> 2026-10 起全站改版為 **Tailwind + `src/ui/` 元件**。舊的 MUI 主題（`src/theme/`）只留給尚未改版的頁面，會隨遷移完成移除。
 
-| 語義 | 色碼 | 用途 |
-|---|---|---|
-| **Primary Blue** | `#1A73E8` | 主要強調色、連結、Active 狀態 |
-| **Primary Dark** | `#174EA6` | 按鈕按下狀態 |
-| **Primary Light** | `#D2E3FC` | 輕強調背景 |
-| **Secondary Grey** | `#8E8E93` | 次要文字、圖示 (iOS Grey) |
-| **Error Red** | `#FF3B30` | 錯誤/刪除 (iOS Red) |
-| **Link Blue** | `#007AFF` | 連結文字、圖示 (iOS Blue) |
-| **Text Primary** | `#000000` | 主要文字 |
-| **Text Secondary** | `#3C3C43` | 次要文字 |
-| **Background** | `#F2F2F7` | 全局背景 (iPadOS Style) |
-| **Paper** | `#FFFFFF` | 內容卡片 |
-| **Divider** | `#C6C6C8` | 分隔線 |
+### 文件地圖
 
-### 2. 字型系統 (`src/theme/typography.js`)
-
-```
-字型堆疊 (Font Stack):
-  -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-  "Helvetica Neue", Arial, sans-serif
-```
-
-| 層級 | 大小 | 字重 | 用途 |
-|---|---|---|---|
-| `h1` | 34px | 700 | 極少使用 |
-| `h2` | 24px | 700 | 頁面大標題 |
-| `h3` | 20px | 700 | 區塊標題 |
-| `h4` | 18px | 600 | 子標題 |
-| `h5` | 16px | 600 | 卡片標題 |
-| `h6` | 14px | 600 | 小標題 |
-| `subtitle1` | 15px | 500 | 副標題 |
-| `subtitle2` | 13px | 500 | 次要副標題 |
-| `body1` | 14px | 400 | 主要內文 |
-| `body2` | 13px | 400 | 次要內文 |
-| `caption` | 11px | 400 | 說明文字 |
-
-### 3. 層級架構 (Two-Level Pattern)
-
-#### Level 1：控制層 (`AdminPageHeader`)
-- 背景色：`#E8F0FE` (淺藍)
-- 圓角：`12px`
-- 無陰影 (`boxShadow: none`)
-- 包含：頁面標題 (帶藍色垂直條 `4×18px #1A73E8`)、篩選按鈕、日期選擇器、操作按鈕 (Pill 圓角 `20px`)
-
-#### Level 2：數據層 (`ManagementTable`)
-- 背景色：`#FFFFFF` (白色)
-- 圓角：`16px`
-- 邊框：`1px solid #f0f0f0`
-- 無陰影 (`boxShadow: none`)
-- `CardHeader` 字型：`15px bold`
-
-### 4. 元件標準
-
-| 元件 | 規格 |
+| 文件 | 內容 |
 |---|---|
-| **Input** | 高度 `42px`，圓角 `8px`，文字垂直居中 |
-| **Button (Contained)** | 圓角 `20px` (Pill)，`boxShadow: none` |
-| **Table** | 無 Hover 變色，`TableHead` 背景 `#FAFAFA` |
-| **Card** | 圓角 `16px`，無陰影，border `1px solid #f0f0f0` |
-| **Toggle Button** | 圓角 `24px`，高度 `42px` |
-| **Chip** | 圓角 `8px` |
-| **Dialog** | 圓角 `16px` |
+| [`STYLE.md`](STYLE.md) | **設計規範（唯一依據）**：色彩 tokens、字型、間距、元件規則、文案、無障礙、遷移規則 |
+| [`CLAUDE.md`](CLAUDE.md) | AI 代理／新進工程師的工作守則：鐵則、指令、驗證方式、踩雷清單 |
+| [`docs/redesign/STATUS.md`](docs/redesign/STATUS.md) | 改版進度、刻意不改的項目 |
+| [`docs/redesign/TODO.md`](docs/redesign/TODO.md) | **待辦清單**：今天完成什麼、接下來做什麼 |
+| [`docs/redesign/MEMORY.md`](docs/redesign/MEMORY.md) | 決策與教訓（為什麼這樣做、踩過哪些坑） |
+| [`docs/redesign/MIGRATION_GUIDE.md`](docs/redesign/MIGRATION_GUIDE.md) | 頁面遷移指南（MUI → `src/ui/`） |
+| [`docs/redesign/VERIFY_REPORT.md`](docs/redesign/VERIFY_REPORT.md) | 驗證報告（verify-logic、測試對照） |
 
-### 5. TopBar 樣式
+### 新畫面怎麼寫
 
-- 背景色：`#1E1E1E` (深色)
-- 高度：`64px`
-- 文字/圖示：白色 `#FFFFFF`
-- 版本標籤：Chip 圖標 (monospace 字型)
+- 元件一律從 `ui/xxx` import（Button、Input／Field、Select、Table、Card、Dialog、Accordion…），不要新增 MUI import。
+- 顏色只用 tokens（`text-text`、`bg-surface`、`border-border`…），不寫死 hex。
+- 欄位：標籤在上＋佔位字；必填加 `required`（`*`）並在註解寫明依據；圖示按鈕一律要有 `title`／`aria-label`；金額一律 `NT$ 1,234`（`ui/format`）。
+- `ui` 元件放在 MUI 彈出層（Dialog、Popper）內時，外層要有 `.ui-root`（見 `CLAUDE.md` 踩雷清單）。
 
-### 6. NavBar 樣式
+### 舊 MUI 主題（遷移期間仍有效）
 
-- 寬度：`260px` (可收合)
-- 背景：白色
-- Active 項目：背景 `rgba(0, 122, 255, 0.1)`，文字 `#007AFF`
-- 群組標題：背景 `#F2F2F7`，字重 `700`
-
-### 7. MUI 元件覆寫 (33 個)
-
-以下元件已在 `src/theme/overrides/` 中定義全局樣式：
+調色盤與字型設定在 `src/theme/`；全域覆寫在 `src/theme/overrides/`。修改尚未改版的頁面前，先檢查對應的 override 檔案，避免重複定義造成衝突。
 
 ```
-MuiAccordion, MuiAccordionSummary, MuiAppBar, MuiAutocomplete,
-MuiButton, MuiButtonGroup, MuiCardActions, MuiCardContent,
-MuiCardHeader, MuiCheckbox, MuiChip, MuiDayCalendar,
-MuiDialogTitle, MuiIconButton, MuiInputBase, MuiInputLabel,
-MuiLinearProgress, MuiList, MuiListItem, MuiListItemButton,
-MuiListItemIcon, MuiMenuItem, MuiOutlinedInput, MuiPaper,
-MuiPickersLayout, MuiPickersToolbar, MuiTableCell, MuiTableHead,
-MuiTableRow, MuiTabs, MuiToggleButton, MuiTypography
+MuiAutocomplete, MuiButton, MuiCard, MuiCheckbox, MuiDialog, MuiTable*, MuiTabs, MuiToggleButton …（共 33 個）
 ```
-
-> ⚠️ 修改 UI 前**務必先檢查**對應的 override 檔案，避免重複定義造成衝突。
 
 ---
 
@@ -800,7 +735,7 @@ const handleSubmit = () => createOrder({ variables: { input } })
 
 | 分支 | 用途 |
 |---|---|
-| `main` | 主要開發分支 |
+| `main` | 主要開發分支；功能分支驗證通過（build 成功、測試無新增失敗）後以 PR 合併 |
 
 ### Commit Message 格式
 
