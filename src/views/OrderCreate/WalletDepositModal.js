@@ -5,8 +5,8 @@ import {
   CardContent,
   Modal,
   Button,
-  TextField,
 } from '@mui/material'
+import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import PropTypes from 'prop-types'
 import { memo, useContext, useState, useRef } from 'react'
@@ -221,120 +221,114 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
           </Button>
         </div>
         <CardContent>
-          <DateTimePicker
-            label="日期"
-            value={walletDepositData.date}
-            css={css([styles.formControl, styles.dateTimeInput])}
-            format="yyyy/MM/dd HH:mm"
-            onChange={e => handleWalletDepositDataChange({ key: 'date', value: new Date(e).getTime() })}
-            localeText={{
-              toolbarTitle: '選擇日期'
-            }}
-            slotProps={{
-              textField: {
-                variant: 'standard'
-              },
-              toolbar: {
-                toolbarFormat: 'M月d日 HH:mm'
-              }
-            }}
-          />
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <TextField
-              label="金額"
-              type="number"
-              fullWidth
-              variant="outlined"
-              css={styles.formControl}
-              name="money"
-              value={walletDepositData.money}
-              inputProps={{
-                min: 0
+          {/* 標籤統一放欄位上方（與打帳單主表一致）。必填 *：依據 handleSubWalletDeposit 的檢查
+              （日期／金額／設計師／顧客／付款方式為空會中止）；備註與手續費負擔方不必填 */}
+          <Field label="日期" required className="mb-6">
+            <DateTimePicker
+              value={walletDepositData.date}
+              format="yyyy/MM/dd HH:mm"
+              onChange={e => handleWalletDepositDataChange({ key: 'date', value: new Date(e).getTime() })}
+              localeText={{
+                toolbarTitle: '選擇日期'
               }}
-              onFocus={e => e.target.select()}
-              onChange={e => {
-                const value = parseInt(Math.abs(e.target.value))
-                handleWalletDepositDataChange({ key: 'money', value })
+              slotProps={{
+                textField: {
+                  variant: 'outlined',
+                  size: 'small'
+                },
+                toolbar: {
+                  toolbarFormat: 'M月d日 HH:mm'
+                }
               }}
-              onWheel={() => document.activeElement.blur()}
             />
-            <div css={styles.formControl}>
-              <WalletDepositToggleButton
-                value={moneyStatus}
-                identity={identity}
-                onChange={v => setMoneyStatus(v)}
+          </Field>
+          <div className="mb-6 flex flex-wrap items-end gap-2">
+            <Field label="金額" required className="min-w-[160px] flex-1">
+              <Input
+                type="number"
+                name="money"
+                min={0}
+                value={walletDepositData.money}
+                onFocus={e => e.target.select()}
+                onChange={e => {
+                  const value = parseInt(Math.abs(e.target.value))
+                  handleWalletDepositDataChange({ key: 'money', value })
+                }}
+                onWheel={() => document.activeElement.blur()}
               />
-            </div>
+            </Field>
+            <WalletDepositToggleButton
+              value={moneyStatus}
+              identity={identity}
+              onChange={v => setMoneyStatus(v)}
+            />
           </div>
-          <EmployeeAutoComplete
-            className={styles.formControl}
-            onChange={val => {
-              handleWalletDepositDataChange({ key: 'designerId', value: val.userId })
-            }}
-            value={walletDepositData.designerId}
-            fieldProps={{
-              label: '選擇設計師',
-            }}
-          />
-          <div css={styles.formControl}>
+          <Field label="設計師" required className="mb-6">
+            <EmployeeAutoComplete
+              placeholder="選擇設計師"
+              onChange={val => {
+                handleWalletDepositDataChange({ key: 'designerId', value: val.userId })
+              }}
+              value={walletDepositData.designerId}
+            />
+          </Field>
+          <Field label="顧客" required className="mb-6">
             <CustomerAutoComplete
               styles={{
                 option: styles.option,
               }}
               fieldProps={{
-                label: '選擇顧客',
+                placeholder: '選擇顧客',
               }}
               value={walletDepositData.customerId}
               onChange={val => {
                 handleWalletDepositDataChange({ key: 'customerId', value: val.id })
               }}
             />
-          </div>
-          <NativeSelect
-            css={styles.formControl}
-            label='付款方式'
-            name="payType"
-            value={walletDepositData.payType}
-            onChange={event => {
-              handleWalletDepositDataChange({ key: 'payType', value: event.target.value })
-            }}
-          >
-            {paymentOptions}
-          </NativeSelect>
-          {walletDepositData.payType !== '現金' && (
+          </Field>
+          <Field label="付款方式" required className="mb-6">
             <NativeSelect
-              css={styles.formControl}
-              label='選擇入金儲值手續費負擔方'
-              name="handlingFeeDecountWay"
-              value={walletDepositData.handlingFeeDecountWay}
+              name="payType"
+              value={walletDepositData.payType}
               onChange={event => {
-                handleWalletDepositDataChange({
-                  key: 'handlingFeeDecountWay',
-                  value: event.target.value,
-                })
+                handleWalletDepositDataChange({ key: 'payType', value: event.target.value })
               }}
             >
-              {handlingFeeDecountWayArray.map((data, index) => (
-                <NativeSelectOption value={data.value} key={index}>
-                  {data.label}
-                </NativeSelectOption>
-              ))}
+              {paymentOptions}
             </NativeSelect>
+          </Field>
+          {walletDepositData.payType !== '現金' && (
+            <Field label="入金儲值手續費負擔方" className="mb-6">
+              <NativeSelect
+                name="handlingFeeDecountWay"
+                value={walletDepositData.handlingFeeDecountWay}
+                onChange={event => {
+                  handleWalletDepositDataChange({
+                    key: 'handlingFeeDecountWay',
+                    value: event.target.value,
+                  })
+                }}
+              >
+                {handlingFeeDecountWayArray.map((data, index) => (
+                  <NativeSelectOption value={data.value} key={index}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+            </Field>
           )}
-          <TextField
-            label="備註"
-            fullWidth
-            variant="outlined"
-            // css={styles.formControl}
-            name="remark"
-            value={walletDepositData.remark}
-            onChange={e => {
-              handleWalletDepositDataChange({
-                key: 'remark',
-                value: e.target.value,
-              })
-            }}
-          />
+          <Field label="備註">
+            <Input
+              name="remark"
+              value={walletDepositData.remark}
+              onChange={e => {
+                handleWalletDepositDataChange({
+                  key: 'remark',
+                  value: e.target.value,
+                })
+              }}
+            />
+          </Field>
         </CardContent>
         <div css={styles.btnDiv}>
           <Button
