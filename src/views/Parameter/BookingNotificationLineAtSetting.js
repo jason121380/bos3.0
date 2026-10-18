@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
+// 多選 Autocomplete（含勾選圖示的選項）與數字欄位（onWheel）保留 MUI
 import {
-  TextField, FormControlLabel, Checkbox, Autocomplete
+  TextField, Checkbox, Autocomplete
 } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
@@ -118,10 +120,9 @@ function NonDesignationBookingLimitSetting({
           </div>
         </div>
         <div style={{ flexWrap: 'wrap' }} css={styles.serviceInputGroup}>
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
             css={styles.isUsing}
-            control={<Checkbox color="primary" />}
             label="啟用預約通知"
             checked={aboutBooking.bookingNotificationLine.isUsing}
             onChange={(e, v) => handleNotificationLineSetting('isUsing', v)}
@@ -141,10 +142,9 @@ function NonDesignationBookingLimitSetting({
           )}
         </div>
         <div style={{ flexWrap: 'wrap' }} css={styles.serviceInputGroup}>
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
             css={styles.isUsing}
-            control={<Checkbox color="primary" />}
             label="開啟評分邀請"
             checked={aboutBooking.inviteRatingDayCount !== null}
             onChange={(e, v) => handleSetValue('inviteRatingDayCount', v ? 0 : null)}

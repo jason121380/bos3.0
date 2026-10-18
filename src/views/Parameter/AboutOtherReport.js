@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  FormControlLabel, Checkbox, ToggleButtonGroup, ToggleButton
-} from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import { cloneDeep } from 'lodash'
@@ -58,10 +57,9 @@ function AboutOtherReport({
       <CardContent>
         {checkboxSettings.map(d => (
           <div css={styles.serviceInputGroup} key={d.label}>
-            <FormControlLabel
+            <CheckboxField
               disabled={!inputEnable}
               css={styles.isUsing}
-              control={<Checkbox color="primary" />}
               label={d.label}
               checked={aboutReport[d.key]}
               onChange={() => handleCheckboxChange(d.key)}
@@ -71,16 +69,16 @@ function AboutOtherReport({
         {toggleSettings.map(d => (
           <div css={styles.serviceInputGroup} key={d.label}>
             <p>{d.label}：</p>
-            <ToggleButtonGroup
+            <ToggleGroup
               css={styles.isUsing}
               size="small"
               exclusive
               value={aboutReport[d.key]}
               onChange={(e, v) => handleToggleChange(d.key, v)}
             >
-              <ToggleButton value='EACH'>依各店</ToggleButton>
-              <ToggleButton value='CURRENT'>依當前店家</ToggleButton>
-            </ToggleButtonGroup>
+              <ToggleGroupItem value='EACH'>依各店</ToggleGroupItem>
+              <ToggleGroupItem value='CURRENT'>依當前店家</ToggleGroupItem>
+            </ToggleGroup>
           </div>
         ))}
       </CardContent>

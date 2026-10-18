@@ -1,7 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  FormControlLabel, Checkbox
-} from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
@@ -17,10 +15,9 @@ function ReservationSettingForStylist({
       </CardHeader>
       <CardContent>
         <div >
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
             css={styles.isUsing}
-            control={<Checkbox color="primary" />}
             label='預約總覽顯示顧客備註'
             checked={CBRDStylist}
             onChange={(e, v) => setCBRDStylist(v)}

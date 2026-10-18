@@ -1,9 +1,11 @@
 /** @jsxImportSource @emotion/react */
+// 對話框內有 MUI Autocomplete，保留 MUI Dialog
 import {
-  Dialog, DialogContent, DialogTitle, Divider, DialogActions,
-  TextField, Checkbox, FormControlLabel,
+  Dialog, DialogContent, DialogTitle, DialogActions,
+  TextField, Checkbox,
   Autocomplete
 } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
 import { Button } from 'ui/button'
 import { useState, memo } from 'react'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
@@ -147,15 +149,15 @@ const OuterLinkModal = ({
       <DialogTitle>
         {`${isCreate ? '新增' : '編輯'}外部連結`}
         {isCus && (
-          <FormControlLabel
-            control={<Checkbox color="primary" />}
+          <CheckboxField
+            className="ml-3"
             label="置頂"
             checked={handleGetValue('isTop')}
             onChange={(e, v) => handleInputOnChange('isTop', v)}
           />
         )}
       </DialogTitle>
-      <Divider />
+      <div className="h-px bg-border" />
       <DialogContent css={styles.Content}>
         <TextField
           variant='outlined'

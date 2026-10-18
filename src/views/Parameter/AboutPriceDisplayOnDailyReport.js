@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem
-} from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import { cloneDeep } from 'lodash'
@@ -39,10 +38,9 @@ function AboutPriceDisplayOnDailyReport({
       <CardContent>
         {settingArr.map(d => (
           <div css={styles.serviceInputGroup} key={d.label}>
-            <FormControlLabel
+            <CheckboxField
               disabled={!inputEnable}
               css={styles.isUsing}
-              control={<Checkbox color="primary" />}
               label={d.label}
               checked={aboutReport[d.key]}
               onChange={() => {
@@ -54,20 +52,20 @@ function AboutPriceDisplayOnDailyReport({
           </div>
         ))}
         <div css={styles.serviceInputGroup}>
-          <FormControl disabled={!inputEnable} variant="outlined" css={styles.field}>
-            <InputLabel>日報表設計師名稱顯示</InputLabel>
-            <Select
-              label='日報表設計師名稱顯示'
-              value={aboutReport.designerNameForReportType}
-              onChange={e => setAboutReport({...aboutReport, designerNameForReportType: e.target.value})}
-            >
-              {designerNameForReportTypeArr.map((data, idx) => (
-                <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                  {data.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <NativeSelect
+            disabled={!inputEnable}
+            fullWidth={false}
+            css={styles.field}
+            label='日報表設計師名稱顯示'
+            value={aboutReport.designerNameForReportType}
+            onChange={e => setAboutReport({...aboutReport, designerNameForReportType: e.target.value})}
+          >
+            {designerNameForReportTypeArr.map((data, idx) => (
+              <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                {data.label}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
         </div>
       </CardContent>
     </Card>

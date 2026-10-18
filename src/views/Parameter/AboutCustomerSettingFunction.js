@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
+// 「完全新客必填欄位」為多選 Autocomplete（含勾選圖示的選項），保留 MUI
 import {
-  TextField, FormControlLabel, Checkbox, Autocomplete
+  TextField, Checkbox, Autocomplete
 } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
@@ -38,10 +40,9 @@ function AboutCustomerSettingFunction({
       <CardContent>
         {optionArr.map(({ label, key }) => (
           <div key={label}>
-            <FormControlLabel
+            <CheckboxField
               disabled={!inputEnable}
               css={styles.isUsing}
-              control={<Checkbox color="primary" />}
               label={label}
               checked={aboutCustomer[key]}
               onChange={(e, v) => handleSetValue(key, v)}

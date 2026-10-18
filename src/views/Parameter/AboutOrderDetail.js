@@ -1,7 +1,10 @@
 /** @jsxImportSource @emotion/react */
+// 裁切對話框內有 MUI Slider，保留 MUI Dialog；多行與 InputLabelProps 的文字欄位保留 MUI TextField
 import {
-  Checkbox, Dialog, DialogContent, DialogTitle, Slider, Avatar, TextField, FormControlLabel
+  Dialog, DialogContent, DialogTitle, Slider, TextField
 } from '@mui/material'
+import { Avatar } from 'ui/avatar'
+import { CheckboxField } from 'ui/checkbox'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo, useRef, useState, useCallback } from 'react'
@@ -178,8 +181,7 @@ function AboutOrderCreate({
                 <div style={{ position: 'relative' }}>
                   <Avatar
                     src={orderCreateSetting.logoDisplayOnInvoice.imageUrl}
-                    style={{ width: 80, height: 80 }}
-                    variant="square"
+                    className="h-20 w-20 rounded-md"
                   />
                   <EditRoundedIcon style={{ position: 'absolute', right: 0, bottom: 0, background: '#cccccc', borderRadius: "50%", padding: 5 }} />
                 </div>
@@ -192,9 +194,8 @@ function AboutOrderCreate({
               }
             </label>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <FormControlLabel
+              <CheckboxField
                 disabled={!inputEnable}
-                control={<Checkbox color="primary" />}
                 label="啟用"
                 checked={orderCreateSetting.logoDisplayOnInvoice.isDisplay}
                 onChange={e => handleSetValue(e.target.checked, 'logoDisplayOnInvoice', 'isDisplay')}
@@ -206,8 +207,7 @@ function AboutOrderCreate({
           <div style={{ marginBottom: '0' }} css={styles.serviceInputTitle}>
             店家Qrcode設定
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: 20 }}>
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
+              <CheckboxField
                 label="啟用"
                 checked={orderCreateSetting.qrcodeDisplayOnInvoice.isDisplay}
                 disabled={!inputEnable}
@@ -229,8 +229,7 @@ function AboutOrderCreate({
           <div style={{ marginBottom: '0' }} css={styles.serviceInputTitle}>
             文字內容設定
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: 20 }}>
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
+              <CheckboxField
                 label="啟用"
                 disabled={!inputEnable}
                 checked={orderCreateSetting.messageDisplayOnInvoice.isDisplay}

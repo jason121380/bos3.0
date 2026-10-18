@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {
-  TextField, Checkbox, FormControlLabel
-} from '@mui/material'
+// 數字欄位（onWheel 失焦、onFocus 全選）保留 MUI TextField
+import { TextField } from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import produce from 'immer'
@@ -36,9 +36,8 @@ function NonDesignationBookingLimitSetting({
             onFocus={e => e.target.select()}
             onWheel={() => document.activeElement.blur()}       
           />
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
-            control={<Checkbox color="primary" />}
             label='浮動式預約人數上限'
             checked={aboutBooking.isDynamicBookingLimitUsing}
             onChange={(e, v) => {

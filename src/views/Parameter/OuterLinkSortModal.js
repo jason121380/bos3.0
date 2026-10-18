@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
+// 拖曳排序（react-beautiful-dnd）放在有 transform 的 Radix Dialog 內會定位錯誤，保留 MUI Dialog
 import {
-  Dialog, DialogContent, DialogTitle, Divider, DialogActions
+  Dialog, DialogContent, DialogTitle, DialogActions
 } from '@mui/material'
 import { Button } from 'ui/button'
 import { useState, memo, useEffect } from 'react'
@@ -64,7 +65,7 @@ const OuterLinkSortModal = ({
         編輯排序
         <p css={styles.subTitle}>拖動按鈕調整排序</p>
       </DialogTitle>
-      <Divider />
+      <div className="h-px bg-border" />
       <DialogContent css={styles.Content}>
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="drop-id">

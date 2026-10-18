@@ -1,7 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Checkbox, FormControlLabel
-} from '@mui/material'
+import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import produce from 'immer'
@@ -49,9 +47,7 @@ function AboutCustomerSideSetting({
         <div css={styles.serviceInputGroup}>
           <div className="flex items-center p-2" style={{ flexWrap: 'wrap', gap: '0px 20px' }}>
             {pages.map(d => (
-              <FormControlLabel
-                style={{ margin: 0 }}
-                control={<Checkbox color="primary" />}
+              <CheckboxField
                 label={d.label}
                 checked={aboutCustomer.customerSidePageDisplay[d.key]}
                 key={`${d.label}`}

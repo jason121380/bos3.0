@@ -1,7 +1,11 @@
 /** @jsxImportSource @emotion/react */
+// 裁切對話框（Slider）、多選 Autocomplete、數字欄位保留 MUI
 import {
-  InputLabel, Select, MenuItem, FormControlLabel, FormControl, Checkbox, TextField, Avatar, Dialog, DialogContent, DialogTitle, Slider, Autocomplete
+  Checkbox, TextField, Dialog, DialogContent, DialogTitle, Slider, Autocomplete
 } from '@mui/material'
+import { Avatar } from 'ui/avatar'
+import { CheckboxField } from 'ui/checkbox'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Check as CheckIcon, EditRounded as EditRoundedIcon } from 'ui/icons'
@@ -182,10 +186,9 @@ function AboutSettingFunction({
               }
               css={styles.serviceInputGroup}
             >
-              <FormControlLabel
+              <CheckboxField
                 disabled={!inputEnable}
                 css={(styles.isUsing)}
-                control={<Checkbox color="primary" />}
                 label={label}
                 checked={aboutSettingFunction[key]}
                 onChange={(e, v) => {
@@ -217,10 +220,9 @@ function AboutSettingFunction({
           css={styles.serviceInputGroup}
           style={{ flexDirection: 'column', alignItems: 'flex-start' }}
         >
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
             css={styles.isUsing}
-            control={<Checkbox color="primary" />}
             label='啟用紅利點數給點自動換算'
             checked={aboutSettingFunction.bonusRewardRule.isUsing}
             onChange={(e, v) => {
@@ -261,24 +263,24 @@ function AboutSettingFunction({
                   )
                 }}
               />
-              <FormControl disabled={!inputEnable} variant="outlined" style={{ width: 120 }}>
-                <InputLabel>換算規則</InputLabel>
-                <Select
-                  label='換算規則'
-                  value={aboutSettingFunction.bonusRewardRule.rule.mode}
-                  onChange={e => {
-                    setAboutSettingFunction(
-                      produce(draft => { draft.bonusRewardRule.rule.mode = e.target.value })
-                    )
-                  }}
-                >
-                  {mode.map((data, idx) => (
-                    <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                      {data.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <NativeSelect
+                disabled={!inputEnable}
+                fullWidth={false}
+                style={{ width: 120 }}
+                label='換算規則'
+                value={aboutSettingFunction.bonusRewardRule.rule.mode}
+                onChange={e => {
+                  setAboutSettingFunction(
+                    produce(draft => { draft.bonusRewardRule.rule.mode = e.target.value })
+                  )
+                }}
+              >
+                {mode.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
             </div>
           )}
         </div>
@@ -286,10 +288,9 @@ function AboutSettingFunction({
           style={{ flexDirection: 'column', alignItems: 'flex-start', marginBottom: 40 }}
           css={styles.serviceInputGroup}
         >
-          <FormControlLabel
+          <CheckboxField
             disabled={!inputEnable}
             css={(styles.isUsing)}
-            control={<Checkbox color="primary" />}
             label='啟用紅利點數自動換算'
             checked={aboutSettingFunction.isBonusConversion}
             onChange={(e, v) => {
@@ -339,8 +340,7 @@ function AboutSettingFunction({
                 <div style={{ position: 'relative' }}>
                   <Avatar
                     src={merchantLogo}
-                    style={{ width: 80, height: 80 }}
-                    variant="square"
+                    className="h-20 w-20 rounded-md"
                   />
                   <EditRoundedIcon style={{ position: 'absolute', right: 0, bottom: 0, background: '#cccccc', borderRadius: "50%", padding: 5 }} />
                 </div>
@@ -354,24 +354,24 @@ function AboutSettingFunction({
             </label>
           </div>
         </div>
-        <FormControl disabled={!inputEnable} variant="outlined" css={styles.field}>
-          <InputLabel>顧客端顯示設計師名稱</InputLabel>
-          <Select
-            label='顧客端顯示設計師名稱'
-            value={aboutSettingFunction.designerNameForCustomerSide}
-            onChange={e => {
-              setAboutSettingFunction(
-                produce(draft => { draft.designerNameForCustomerSide = e.target.value })
-              )
-            }}
-          >
-            {nameDisplaySetting.map((data, idx) => (
-              <MenuItem value={data.value} key={`${data.label}-${idx}`}>
-                {data.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <NativeSelect
+          disabled={!inputEnable}
+          fullWidth={false}
+          css={styles.field}
+          label='顧客端顯示設計師名稱'
+          value={aboutSettingFunction.designerNameForCustomerSide}
+          onChange={e => {
+            setAboutSettingFunction(
+              produce(draft => { draft.designerNameForCustomerSide = e.target.value })
+            )
+          }}
+        >
+          {nameDisplaySetting.map((data, idx) => (
+            <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+              {data.label}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
         <div style={{ width: '100%', padding: '0px 20px 24px 20px' }}>
           <Autocomplete
             multiple
