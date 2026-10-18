@@ -39,14 +39,15 @@
 
 ## 3. 字型
 
-- 字體：`Inter`（英數）＋ `"Noto Sans TC"`（中文），後備 `system-ui, -apple-system, "PingFang TC", sans-serif`。
+- 字體：沿用全站既有字型 `Roboto`（英數）＋ `"Noto Sans TC"`（中文），後備 `Helvetica, Arial, sans-serif`；不另外載入新字型。
+  （既有設定見 `src/assets/scss/main.scss`，以 `!important` 套用全站；字重只用 400 / 500 / 700。）
 - 數字一律加 `font-variant-numeric: tabular-nums`（Tailwind `tabular-nums`）。
 
 | 名稱 | 大小 / 行高 | 字重 | 用途 |
 |---|---|---|---|
-| `display` | 28 / 36 | 600 | 儀表板大數字 |
-| `title` | 20 / 28 | 600 | 頁面標題（每頁一個） |
-| `heading` | 16 / 24 | 600 | 區塊標題、卡片標題 |
+| `display` | 28 / 36 | 700 | 儀表板大數字 |
+| `title` | 20 / 28 | 700 | 頁面標題（每頁一個） |
+| `heading` | 16 / 24 | 700 | 區塊標題、卡片標題 |
 | `body` | 14 / 20 | 400 | 內文、表格內容、表單值 |
 | `label` | 13 / 18 | 500 | 欄位名稱、表頭 |
 | `caption` | 12 / 16 | 400 | 輔助說明、時間戳 |

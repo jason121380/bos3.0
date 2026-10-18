@@ -29,12 +29,13 @@ module.exports = {
       borderRadius: { md: '8px', lg: '12px' },
       boxShadow: { float: '0 4px 16px rgba(0,0,0,0.08)' },
       fontFamily: {
-        sans: ['Inter', '"Noto Sans TC"', 'system-ui', '-apple-system', '"PingFang TC"', 'sans-serif'],
+        // 與全站既有字型一致（src/assets/scss/main.scss 以 !important 套用在所有元素）
+        sans: ['Roboto', '"Noto Sans TC"', 'Helvetica', 'Arial', 'sans-serif'],
       },
       fontSize: {
-        display: ['28px', { lineHeight: '36px', fontWeight: '600' }],
-        title: ['20px', { lineHeight: '28px', fontWeight: '600' }],
-        heading: ['16px', { lineHeight: '24px', fontWeight: '600' }],
+        display: ['28px', { lineHeight: '36px', fontWeight: '700' }],
+        title: ['20px', { lineHeight: '28px', fontWeight: '700' }],
+        heading: ['16px', { lineHeight: '24px', fontWeight: '700' }],
         body: ['14px', { lineHeight: '20px', fontWeight: '400' }],
         label: ['13px', { lineHeight: '18px', fontWeight: '500' }],
         caption: ['12px', { lineHeight: '16px', fontWeight: '400' }],
