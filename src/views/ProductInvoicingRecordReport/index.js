@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 // MUI Button 只用於 Autocomplete 的 popupIcon（全選），其餘按鈕改用 ui/button
 import {
   Button, Checkbox, TextField,
-  ToggleButton, ToggleButtonGroup
 } from '@mui/material'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
@@ -17,6 +16,7 @@ import idx from 'idx'
 import Results from './Results'
 import { Printer } from 'lucide-react'
 import { Button as UIButton } from 'ui/button'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
 
 const performanceEnum = [
@@ -124,7 +124,7 @@ const ProductInvoicingRecordReport = () => {
           <div className='noprint flex items-center gap-x-[30px] gap-y-2.5'>
             <div style={{ marginTop: -23 }}>
               <div className="divText">類型：</div>
-              <ToggleButtonGroup
+              <ToggleGroup
                 size="small"
                 value={submitValue.recordType}
                 onChange={(e, value) => setSubmitValue({ ...submitValue, recordType: value })}
@@ -132,11 +132,11 @@ const ProductInvoicingRecordReport = () => {
                 exclusive={false}
               >
                 {performanceEnum.map((data, idx) => (
-                  <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                  <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                     {data.label}
-                  </ToggleButton>
+                  </ToggleGroupItem>
                 ))}
-              </ToggleButtonGroup>
+              </ToggleGroup>
             </div>
             <div>
               <UIButton

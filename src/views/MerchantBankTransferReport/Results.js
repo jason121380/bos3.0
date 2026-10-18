@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {
   Card, CardContent, Table, TableBody, TableCell,
-  TableHead, TableRow, Checkbox
+  TableHead, TableRow
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { cloneDeep } from 'lodash'
@@ -10,6 +10,7 @@ import { theme } from '../../theme'
 import { css } from '@emotion/react'
 import { Card as UiCard } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
+import { Checkbox } from 'ui/checkbox'
 
 const localStyles = {
   card: css({
@@ -98,7 +99,7 @@ function Results({ salaryData }) {
                   <TableRow>
                     <TableCell padding="checkbox" className="noprint">
                       <Checkbox
-                        color="primary"
+                        aria-label="全選"
                         checked={selectedUser.length === salaryData.length}
                         indeterminate={
                           selectedUser.length > 0 && selectedUser.length < salaryData.length
@@ -124,7 +125,7 @@ function Results({ salaryData }) {
                     >
                       <TableCell padding="checkbox" className="noprint">
                         <Checkbox
-                          color="primary"
+                          aria-label="選取"
                           checked={selectedUser.indexOf(user.id) > -1}
                           onChange={() => handleSelectOne(user.id)}
                         />

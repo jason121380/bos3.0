@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
-// 多選篩選（值為陣列）與切換鈕保留 MUI
+// 多選篩選（值為陣列）保留 MUI
 import {
   InputLabel, MenuItem, FormControl,
-  ListItemText, Select, Checkbox, ToggleButton, ToggleButtonGroup
+  ListItemText, Select, Checkbox
 } from '@mui/material'
 import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { EmptyState } from 'ui/empty-state'
 import React from 'react'
 import {
@@ -137,15 +138,15 @@ const PerformanceDetail = ({
               <CardDescription className="whitespace-nowrap text-caption">期間內各設計師業績佔比</CardDescription>
             </div>
             <div>
-              <ToggleButtonGroup
+              <ToggleGroup
                 size="small"
                 exclusive
                 value={dataType}
                 onChange={(e, v) => v && setDataType(v)}
               >
-                <ToggleButton value='designer'>設計師</ToggleButton>
-                <ToggleButton value='merchant'>總和</ToggleButton>
-              </ToggleButtonGroup>
+                <ToggleGroupItem value='designer'>設計師</ToggleGroupItem>
+                <ToggleGroupItem value='merchant'>總和</ToggleGroupItem>
+              </ToggleGroup>
             </div>
           </div>
           <div className="flex w-full max-w-[350px] items-center">

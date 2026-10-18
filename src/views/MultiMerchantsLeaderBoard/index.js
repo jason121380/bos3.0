@@ -1,5 +1,5 @@
 import {
-	TextField, Autocomplete, ToggleButtonGroup, ToggleButton
+	TextField, Autocomplete
 } from '@mui/material'
 import Page from 'components/Page'
 import { useState, useEffect } from 'react'
@@ -14,6 +14,7 @@ import Results from './Results'
 import idx from 'idx'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
 
 const MultiMerchantsLeaderBoard = () => {
@@ -156,15 +157,15 @@ const MultiMerchantsLeaderBoard = () => {
 						/>
 						<div style={{ marginTop: -23 }}>
 							<div className="divText">排序依據：</div>
-							<ToggleButtonGroup
+							<ToggleGroup
 								size="small"
 								value={sort}
 								onChange={(e, value) => setSort(value)}
 								exclusive
 							>
-								<ToggleButton value='PERFORMANCE'>業績</ToggleButton>
-								<ToggleButton value='TOTALCOUNT'>數量</ToggleButton>
-							</ToggleButtonGroup>
+								<ToggleGroupItem value='PERFORMANCE'>業績</ToggleGroupItem>
+								<ToggleGroupItem value='TOTALCOUNT'>數量</ToggleGroupItem>
+							</ToggleGroup>
 						</div>
 					</div>
 					<div className="my-2.5 flex flex-wrap items-center justify-between gap-x-[100px] gap-y-2.5 justify-self-end">

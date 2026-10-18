@@ -1,4 +1,3 @@
-import { ToggleButton, ToggleButtonGroup } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
@@ -12,6 +11,7 @@ import { CSVLink } from "react-csv";
 import format from 'date-fns/format'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
@@ -98,18 +98,18 @@ export default function Employees() {
           <div className="flex flex-wrap items-center gap-x-2.5 gap-y-5">
             <div className="self-start">
               <div className="divText">排序依序：</div>
-              <ToggleButtonGroup
+              <ToggleGroup
                 size="small"
                 value={sort}
                 onChange={handleToggleButtonChangeSort}
                 exclusive
               >
                 {sortEnum.map((data, idx) => (
-                  <ToggleButton style={{ wordBreak: 'keep-all' }} key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                  <ToggleGroupItem style={{ wordBreak: 'keep-all' }} key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                     {data.label}
-                  </ToggleButton>
+                  </ToggleGroupItem>
                 ))}
-              </ToggleButtonGroup>
+              </ToggleGroup>
             </div>
             {
               !isDisplayTogglePerformanceButton && <div className="self-start">

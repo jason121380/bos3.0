@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
-// 大型頁：只換外框、卡片與按鈕；Backdrop、Select（值含 boolean／空字串）、Popper、Slider、Switch 保留 MUI
+// 大型頁：Backdrop、Popper、Slider 保留 MUI；Page 根元素不加 ui-root（box-sizing 會改變行事曆格子寬度）
 import {
   CircularProgress, Backdrop,
-  FormControl, Select, MenuItem, Popper,
-  Slider, Switch,
+  Popper,
+  Slider,
 } from '@mui/material'
 import { SlidersHorizontal } from 'lucide-react'
 import Page from 'components/Page'
@@ -33,6 +33,8 @@ import produce from 'immer';
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { cn } from 'ui/utils'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
+import { Switch } from 'ui/switch'
 
 import OrderTable from './OrderTable'
 
@@ -608,13 +610,12 @@ function Calendar() {
             >
               <span className="text-body font-medium text-text">報到模式</span>
               <Switch
-                size="small"
+                aria-label="報到模式"
                 checked={checkinMode}
                 onChange={(e, v) => {
                   setCheckinMode(v)
                   if (!v) setCheckedType('')
                 }}
-                color="primary"
               />
             </div>
           )}
@@ -622,17 +623,15 @@ function Calendar() {
           {checkinSettings.isBookingCheckinEnabled && checkinMode && (
             <div className="flex min-w-[160px] flex-col gap-2">
               <span className="text-label text-text-secondary">報到狀態</span>
-              <FormControl variant="outlined" size="small" fullWidth>
-                <Select
-                  onChange={e => setCheckedType(e.target.value)}
-                  value={checkedType}
-                  displayEmpty
-                >
-                  <MenuItem value=""><em>全部顯示</em></MenuItem>
-                  <MenuItem value={true}>報到成功</MenuItem>
-                  <MenuItem value={false}>未報到</MenuItem>
-                </Select>
-              </FormControl>
+              <NativeSelect
+                aria-label="報到狀態"
+                onChange={e => setCheckedType(e.target.value)}
+                value={checkedType}
+              >
+                <NativeSelectOption value="">全部顯示</NativeSelectOption>
+                <NativeSelectOption value={true}>報到成功</NativeSelectOption>
+                <NativeSelectOption value={false}>未報到</NativeSelectOption>
+              </NativeSelect>
             </div>
           )}
         </Card>

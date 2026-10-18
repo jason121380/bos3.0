@@ -9,9 +9,10 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Button,
   Grid,
 } from '@mui/material'
+import { Download } from 'lucide-react'
+import { Button } from 'ui/button'
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -120,7 +121,8 @@ function Results({
             <CardHeader
               className="CostAnalysisReportCardHeader noprint"
               action={
-                <Button disabled={excelLoading} onClick={handleExcel} variant="contained" color="primary" size="small">
+                <Button disabled={excelLoading} onClick={handleExcel} variant="secondary" size="sm">
+                  <Download strokeWidth={1.75} />
                   報表匯出
                 </Button>
               }

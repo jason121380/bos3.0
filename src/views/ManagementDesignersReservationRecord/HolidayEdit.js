@@ -1,25 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, Fragment } from 'react'
-import { DialogContent, DialogTitle, Button, Divider, DialogActions } from '@mui/material'
+// 外層為 MUI Dialog（OrderTable），保留 DialogTitle / DialogContent / DialogActions
+import { DialogContent, DialogTitle, DialogActions } from '@mui/material'
+import { Button } from 'ui/button'
+import { ToggleGroupItem } from 'ui/toggle-group'
 import { cloneDeep } from 'lodash'
 import { format } from 'date-fns'
-import { green, grey } from '@mui/material/colors'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchSetAdminBookingTimes from 'hooks/useFetchSetAdminBookingTimes'
 import { css } from '@emotion/react'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: green[400] + '!important'
-    },
-    secondary: {
-      main: grey[400] + '!important'
-    },
-  }
-})
 
 const styles = {
   root: {},
@@ -108,23 +97,19 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
   return (
     <Fragment>
       <DialogTitle>編輯公休</DialogTitle>
-      <Divider />
-      <DialogContent css={styles.content} dividers style={{ border: 'none' }}>
-        <ThemeProvider theme={theme}>
-          {timeOption.map(({ time, select }, i) => (
-            <Button
-              style={{ color: 'white' }}
-              key={time}
-              variant='contained'
-              color={select ? 'primary' : 'secondary'}
-              onClick={() => handleSelectTime(!select, i)}
-            >{format(time, 'HH:mm')}</Button>
-          ))}
-        </ThemeProvider>
+      <div className="h-px bg-border" />
+      <DialogContent className="ui-root" css={styles.content} dividers style={{ border: 'none' }}>
+        {timeOption.map(({ time, select }, i) => (
+          <ToggleGroupItem
+            key={time}
+            selected={select}
+            onClick={() => handleSelectTime(!select, i)}
+          >{format(time, 'HH:mm')}</ToggleGroupItem>
+        ))}
       </DialogContent>
-      <DialogActions>
-        <Button variant='contained' disabled={isClick} color='primary' onClick={handleSetHoliday}>確定</Button>
-        <Button variant='contained' disabled={isClick} onClick={handleOnClose}>取消</Button>
+      <DialogActions className="ui-root">
+        <Button variant='secondary' disabled={isClick} onClick={handleOnClose}>取消</Button>
+        <Button variant='primary' disabled={isClick} onClick={handleSetHoliday}>確定</Button>
       </DialogActions>
     </Fragment>
   )
