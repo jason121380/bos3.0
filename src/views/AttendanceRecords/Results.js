@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
+// 保留 MUI：Drawer（底部操作面板）、編輯彈窗（由 Drawer 內開啟，避免兩層焦點鎖互搶）、FormControlLabel + Checkbox；
+// 打卡時間格內的圖示列與 Divider 屬深層細節，維持原樣
 import {
-  TablePagination, TableRow, TableContainer, Table, TableHead, TableBody, TableCell,
-  Typography, Dialog, DialogTitle, DialogContent, DialogContentText, TextField,
-  DialogActions, IconButton, Card, CardHeader, CardContent, Drawer, Paper, Grid, Link,
+  Dialog, DialogTitle, DialogContent,
+  DialogActions, Drawer,
   Divider, FormControlLabel, Checkbox
 } from '@mui/material'
-import { Button } from '@mui/material'
 import { LocationOn as LocationOnIcon, ManageAccountsRounded as ManageAccountsRoundedIcon, DesktopWindowsRounded as DesktopWindows, PhoneIphone as PhoneIphoneIcon, QrCode as QrCodeIcon } from 'ui/icons'
 import { format, setHours, setMinutes } from 'date-fns'
 import PropTypes from 'prop-types'
@@ -15,6 +15,10 @@ import useFetchUpdateAttendantRecord from 'hooks/useFetchUpdateAttendantRecord'
 import { openSnackbar } from 'elements/snackbars'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 const styles = {
   root: css({}),
@@ -531,20 +535,13 @@ export default function Results({
       }
     }
   }
+  const stickyCell = 'sticky left-0 z-[99] bg-background outline outline-1 outline-border'
   return (
-    <Card css={styles.root}>
+    <Card>
       <CardHeader
-        css={styles.cardHeader}
-        title={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span>全店打卡記錄列表</span>
-            <Typography color="textSecondary" variant="body2">
-              共 {attendanceRecords.length} 筆
-            </Typography>
-          </div>
-        }
+        className="items-center pb-4"
         action={
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Fragment>
             <FormControlLabel
               control={<Checkbox color="primary" />}
               label='匯出打卡類型'
@@ -553,139 +550,131 @@ export default function Results({
             />
             <Button
               disabled={exportHRLoading}
-              variant="contained"
+              variant="secondary"
               onClick={handleHRExport}
-              size="small"
-              css={css({
-                backgroundColor: 'rgb(var(--surface)) !important',
-                color: 'rgb(var(--text-secondary)) !important',
-                boxShadow: 'none !important',
-                '&:hover': {
-                  backgroundColor: 'rgb(var(--surface)) !important',
-                  boxShadow: 'none !important',
-                }
-              })}
+              size="sm"
             >
               報表匯出(人資格式)
             </Button>
             <Button
               disabled={exportLoading}
-              variant="contained"
+              variant="secondary"
               onClick={handleExport}
-              size="small"
-              css={css({
-                backgroundColor: 'rgb(var(--surface)) !important',
-                color: 'rgb(var(--text-secondary)) !important',
-                boxShadow: 'none !important',
-                '&:hover': {
-                  backgroundColor: 'rgb(var(--surface)) !important',
-                  boxShadow: 'none !important',
-                }
-              })}
+              size="sm"
             >
               報表匯出
             </Button>
-          </div>
+          </Fragment>
         }
-      />
-      <CardContent style={{ padding: 0 }}>
-        <TableContainer style={{ maxHeight: 'calc(100vh - 430px)' }} component={Paper} className="AttendanceRecordsTable">
-          <Table css={styles.table} size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow css={styles.stickyRow}>
-                <TableCell css={css([styles.sticky, styles.compactHeaderCell])}>{year}年</TableCell>
-                <TableCell css={styles.highlightHeaderCell}>總打卡天數</TableCell>
-                <TableCell css={styles.compactHeaderCell}>曠職天數</TableCell>
-                <TableCell css={styles.compactHeaderCell}>總遲到分鐘數</TableCell>
-                {displayDate.map((date, index) => (
-                  <TableCell key={`TableCell-${index}`} css={styles.dateHeaderCell}>{date}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {attendanceRecords.map((data, index) => {
-                return (
-                  <TableRow key={`TableRow-${index}`} css={styles.tableRow}>
-                    <TableCell css={css([styles.sticky, styles.compactCell])}>{data.userName}</TableCell>
-                    {/* 計算總打卡天數 */}
-                    <TableCell css={styles.highlightCell}>{data.totalClockInDays + ` 天`}</TableCell>
-                    <TableCell css={styles.compactCell}>{data.absenteeismDays}</TableCell>
-                    <TableCell css={styles.compactCell}>{data.totalLateMinutes}</TableCell>
-                    {displayDate.map(d => {
-                      return data.attendanceRecord.map((record, index) => {
-                        if (format(record.date, 'MM/dd') === d.substring(0, 5)) {
-                          if (record.clockInRecord.length > 0) {
-                            return (
-                              <TableCell key={index} css={styles.dateCell}>
-                                {record.clockInRecord.map((clockIn, clockInIndex) => {
-                                  return (
-                                    <Fragment key={clockInIndex}>
-                                      {renderDivider(clockIn, clockInIndex)}
-                                      {/* {clockInIndex === 0 ? '' : <Divider />} */}
-                                      {getClockInTime(clockIn.in, record.isLate, clockInIndex === 0)}
-                                      {clockIn.breakRecord.length > 0 &&
-                                        clockIn.breakRecord.map((br, index) => {
-                                          return getBreakTime(br, index)
-                                        })}
-                                      {getClockOutTime(
-                                        clockIn.out,
-                                        record.isLeaveEarly,
-                                        record.clockInRecord.length - 1 === clockInIndex
-                                      )}
-                                    </Fragment>
-                                  )
-                                })}
-                              </TableCell>
-                            )
-                          } else {
-                            return <TableCell key={index} css={styles.dateCell}></TableCell>
-                          }
+      >
+        <div className="flex items-baseline gap-3">
+          <CardTitle>全店打卡記錄列表</CardTitle>
+          <span className="text-label tabular-nums text-text-secondary">
+            共 {attendanceRecords.length} 筆
+          </span>
+        </div>
+      </CardHeader>
+      <div className="px-5 pb-5">
+        <Table wrapperClassName="AttendanceRecordsTable max-h-[calc(100vh-430px)] overflow-auto" aria-label="a dense table">
+          <TableHeader className="sticky top-0 z-[100]">
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="sticky left-0 z-[99] bg-surface px-2 outline outline-1 outline-border">{year}年</TableHead>
+              <TableHead className="bg-accent/8 px-2 font-bold text-accent">總打卡天數</TableHead>
+              <TableHead className="px-2">曠職天數</TableHead>
+              <TableHead className="px-2">總遲到分鐘數</TableHead>
+              {displayDate.map((date, index) => (
+                <TableHead key={`TableCell-${index}`} className="w-[180px] min-w-[180px] px-2">{date}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {attendanceRecords.map((data, index) => {
+              return (
+                <TableRow key={`TableRow-${index}`} className="hover:bg-transparent">
+                  <TableCell className={`${stickyCell} whitespace-nowrap px-2 py-1 text-label`}>{data.userName}</TableCell>
+                  {/* 計算總打卡天數 */}
+                  <TableCell className="whitespace-nowrap bg-accent/8 px-2 py-1 text-label font-bold tabular-nums text-accent">{data.totalClockInDays + ` 天`}</TableCell>
+                  <TableCell numeric className="whitespace-nowrap px-2 py-1 text-label">{data.absenteeismDays}</TableCell>
+                  <TableCell numeric className="whitespace-nowrap px-2 py-1 text-label">{data.totalLateMinutes}</TableCell>
+                  {displayDate.map(d => {
+                    return data.attendanceRecord.map((record, index) => {
+                      if (format(record.date, 'MM/dd') === d.substring(0, 5)) {
+                        if (record.clockInRecord.length > 0) {
+                          return (
+                            <TableCell key={index} className="w-[180px] min-w-[180px] px-2 py-1 text-label">
+                              {record.clockInRecord.map((clockIn, clockInIndex) => {
+                                return (
+                                  <Fragment key={clockInIndex}>
+                                    {renderDivider(clockIn, clockInIndex)}
+                                    {/* {clockInIndex === 0 ? '' : <Divider />} */}
+                                    {getClockInTime(clockIn.in, record.isLate, clockInIndex === 0)}
+                                    {clockIn.breakRecord.length > 0 &&
+                                      clockIn.breakRecord.map((br, index) => {
+                                        return getBreakTime(br, index)
+                                      })}
+                                    {getClockOutTime(
+                                      clockIn.out,
+                                      record.isLeaveEarly,
+                                      record.clockInRecord.length - 1 === clockInIndex
+                                    )}
+                                  </Fragment>
+                                )
+                              })}
+                            </TableCell>
+                          )
+                        } else {
+                          return <TableCell key={index} className="w-[180px] min-w-[180px] px-2 py-1 text-label"></TableCell>
                         }
-                      })
-                    })}
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </CardContent>
+                      }
+                    })
+                  })}
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
       <Drawer anchor='bottom' open={open} onClose={handleCloseDrawer}>
-        <Grid direction='column' justifyContent='center' alignItems="center" container style={{ padding: '16px', rowGap: '40px' }}>
-          <Grid item direction='row' justifyContent='center' alignItems="center" container>
-            <Typography variant="h4" component="h4">已選取打卡記錄:  {showSelectDate && `${format(showSelectDate, 'yyyy/MM/dd  HH:mm')} - ${findClockInType(editData.clockInType)}`}</Typography>
+        <div className="ui-root flex flex-col items-center justify-center gap-10 p-4">
+          <div className="flex flex-wrap items-center justify-center gap-6">
+            <h4 className="m-0 text-heading text-text">已選取打卡記錄:  {showSelectDate && `${format(showSelectDate, 'yyyy/MM/dd  HH:mm')} - ${findClockInType(editData.clockInType)}`}</h4>
             {googleMapUrl !== '' && (
-              <Link href={googleMapUrl} target="_blank">
-                <Button style={{ marginLeft: '30px' }} variant="contained" color='primary' size='small'>
-                  <LocationOnIcon style={{ width: '16px' }} />查看位置
-                </Button>
-              </Link>
+              <Button asChild variant="secondary" size="sm">
+                <a href={googleMapUrl} target="_blank">
+                  <LocationOnIcon />查看位置
+                </a>
+              </Button>
             )}
-          </Grid>
-          <Grid item style={{ columnGap: '80px' }} container justifyContent='center'>
-            {identity.edit && <Button onClick={() => setOpenModal(true)} variant='contained' color='primary'>編輯</Button>}
-            {identity.delete && <Button variant='contained' style={{ background: 'red' }} disabled={delBtn} onClick={handleDeleteRecord}>刪除</Button>}
-          </Grid>
-        </Grid>
+          </div>
+          <div className="flex justify-center gap-20">
+            {identity.edit && <Button onClick={() => setOpenModal(true)} variant='primary'>編輯</Button>}
+            {identity.delete && <Button variant='danger' disabled={delBtn} onClick={handleDeleteRecord}>刪除</Button>}
+          </div>
+        </div>
       </Drawer>
       <Dialog open={openModal} onClose={handleCloseModal}>
         <DialogTitle style={{ paddingBottom: 0 }}>編輯打卡記錄</DialogTitle>
         <DialogContent style={{ overflow: 'visible', display: 'flex' }} >
-          <div style={{ width: '350px', display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="subtitle2" gutterBottom component="div">
+          <div className="ui-root flex w-[350px] flex-col gap-4">
+            <p className="text-label text-text-secondary">
               已選取打卡記錄:  {showSelectDate && `${format(showSelectDate, 'yyyy/MM/dd  HH:mm')} - ${findClockInType(editData.clockInType)}`}
-            </Typography>
-            <TextField margin="normal" value={!!editData.date && format(new Date(editData.date), 'HH:mm')} label='選取時間' variant='outlined'
-              fullWidth type='time' onChange={event => handleChangeTime(event.target.value)} ></TextField>
+            </p>
+            <Field label="選取時間" htmlFor="attendance-edit-time">
+              <Input
+                id="attendance-edit-time"
+                value={!!editData.date && format(new Date(editData.date), 'HH:mm')}
+                type='time'
+                onChange={event => handleChangeTime(event.target.value)}
+              />
+            </Field>
           </div>
         </DialogContent>
-        <DialogActions style={{ margin: '10px' }}>
-          <Button color='inherit' onClick={handleCloseModal} variant="contained" style={{ marginRight: '10px' }}>
+        <DialogActions className="ui-root" style={{ margin: '10px' }}>
+          <Button onClick={handleCloseModal} variant="secondary">
             取消
           </Button>
           <Button
-            variant="contained"
-            color='primary'
+            variant="primary"
             onClick={handleSubmit}
             disabled={editBtn}
           >

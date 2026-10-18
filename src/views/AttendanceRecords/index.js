@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
+// 篩選區的員工 Autocomplete 未受控（選取值存在元件內），保留 MUI Collapse 以免收合時遺失；
+// 補打卡彈窗內有 Autocomplete / DateTimePicker，保留 MUI Dialog
 import {
-  Container,
-  Button,
-  Grid,
-  CircularProgress,
   DialogActions,
   Dialog,
   DialogContent,
@@ -12,12 +10,8 @@ import {
   Checkbox,
   ToggleButton,
   ToggleButtonGroup,
-  FormControlLabel,
-  Card,
-  IconButton,
   Collapse,
 } from '@mui/material'
-import { FilterList as FilterListIcon } from 'ui/icons'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@mui/icons-material/CheckBox'
 import { Autocomplete } from '@mui/material'
@@ -37,6 +31,9 @@ import { startOfMonth, addDays, format, endOfMonth } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -291,8 +288,8 @@ export default function Employees() {
     attendanceRecordsExcelLazyV2ForHR(submitData)
   }
   return (
-    <Page css={styles.root} title="全店打卡記錄">
-      <Container maxWidth={false} css={styles.container}>
+    <Page className="ui-root" title="全店打卡記錄">
+      <div>
         <AdminPageHeader
           title='全店打卡記錄'
           showFilter={showFilter}
@@ -322,9 +319,9 @@ export default function Employees() {
         </AdminPageHeader>
 
         <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: 'rgb(var(--background))', borderRadius: '8px', padding: '16px', border: '1px solid rgb(var(--border))' }}>
-            <Grid container spacing={2} alignItems='center'>
-              <Grid item xs={3}>
+          <Card className="mb-6 p-4">
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="w-1/4 min-w-[200px]">
                 <Autocomplete
                   autoHighlight
                   options={userOptions}
@@ -352,8 +349,8 @@ export default function Employees() {
                   getOptionLabel={option => option.name}
                   renderInput={(params) => <TextField {...params} label="員工姓名/編號" variant='outlined' size="small" />}
                 />
-              </Grid>
-              <Grid item xs={5}>
+              </div>
+              <div className="w-5/12 min-w-[280px]">
                 <Autocomplete
                   multiple
                   fullWidth
@@ -383,19 +380,18 @@ export default function Employees() {
                     />
                   )}
                 />
-              </Grid>
-              <Grid item>
+              </div>
+              <div>
                 <Button
-                  variant="contained"
-                  color="primary"
+                  variant="secondary"
                   onClick={() => handleSearch()}
                   disabled={attendanceRecordsLazyData.data === undefined || attendanceRecordsLazyData.loading}
                 >
                   搜尋
                 </Button>
-              </Grid>
-            </Grid>
-          </div>
+              </div>
+            </div>
+          </Card>
         </Collapse>
         {attendanceRecordsLazyData.data !== undefined && !attendanceRecordsLazyData.loading ? idx(attendanceRecordsLazyData, _ => (
           <Results
@@ -412,11 +408,12 @@ export default function Employees() {
             exportHRLoading={attendanceRecordsExcelLazyDataV2ForHR.loading}
           />
         )) :
-          <div css={styles.noReportDiv}>
-            <CircularProgress />
+          // 載入中：與舊版 CircularProgress 相同時機顯示
+          <div className="flex flex-col gap-6" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[480px] w-full rounded-lg" />
           </div>
         }
-      </Container>
+      </div>
       <Dialog open={openDateModal} onClose={handleClose}>
         <DialogTitle>補打卡</DialogTitle>
         <DialogContent style={{ overflow: 'visible', display: 'flex' }} >
@@ -468,13 +465,12 @@ export default function Employees() {
             />
           </div>
         </DialogContent>
-        <DialogActions style={{ margin: '10px' }}>
-          <Button onClick={handleClose} variant="contained" style={{ marginRight: '10px' }}>
+        <DialogActions className="ui-root" style={{ margin: '10px' }}>
+          <Button onClick={handleClose} variant="secondary">
             取消
           </Button>
           <Button
-            variant="contained"
-            color='primary'
+            variant="primary"
             onClick={handleSubmit}
             disabled={onClick}
           >
