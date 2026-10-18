@@ -31,7 +31,7 @@ export default function SourcesAutocomplete({
         <span style={{ fontSize: 14, padding: 6 }} {...props}>
           <Checkbox
             css={css({ padding: '2px !important' })}
-            style={{ color: '#202D50', marginRight: 4}}
+            style={{ color: 'rgb(var(--text))', marginRight: 4}}
             icon={icon}
             checkedIcon={checkedIcon}
             checked={selected}

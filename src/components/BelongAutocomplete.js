@@ -43,7 +43,7 @@ const BelongAutocomplete = ({ value, onChange = () => { }, fetchData = false, op
       renderOption={(props, option, { selected }) => (
         <span style={{ fontSize: 14, padding: 6 }} {...props}>
           <Checkbox
-            style={{ color: '#202D50', padding: 2, marginRight: 4 }}
+            style={{ color: 'rgb(var(--text))', padding: 2, marginRight: 4 }}
             icon={icon}
             checkedIcon={checkedIcon}
             checked={selected}
