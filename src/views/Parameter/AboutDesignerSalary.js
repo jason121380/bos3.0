@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent, CardHeader, Divider, TextField } from '@mui/material'
+import { Card, CardContent, CardHeader, Divider } from '@mui/material'
+import { Input } from 'ui/input'
 import { Fragment } from 'react'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
@@ -69,21 +70,21 @@ export default function AboutDesignerSalary({ className, onChange, service, inpu
         <CardContent>
           {service.point.map((data, index) => (
             <div css={styles.service} key={index}>
-              <TextField
+              <Input
+                className="w-[214px] shrink-0"
                 disabled={!inputEnable}
                 type="text"
-                variant="outlined"
-                label="人員類別"
+                aria-label="人員類別"
                 name="jobTitle"
                 value={data.jobTitle}
                 onChange={event => handlePointSetting(event, index)}
               />
-              <TextField
+              <Input
+                className="w-[214px] shrink-0"
                 disabled={!inputEnable}
                 type="number"
                 css={styles.point}
-                variant="outlined"
-                label="點數換算金額"
+                aria-label="點數換算金額"
                 name="pointValue"
                 value={data.pointValue}
                 onChange={event => handlePointSetting(event, index)}
@@ -111,11 +112,11 @@ export default function AboutDesignerSalary({ className, onChange, service, inpu
         <CardContent>
           {service.helperTypeName.map((data, index) => (
             <div css={styles.service} key={index}>
-              <TextField
+              <Input
+                className="w-[214px] shrink-0"
                 disabled={!inputEnable}
                 type="text"
-                variant="outlined"
-                label="互助類別"
+                aria-label="互助類別"
                 value={data.type}
                 onChange={event => handleHelperTypeName(event, index)}
               />
