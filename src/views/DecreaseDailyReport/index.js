@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
+// 人員類別多選（Autocomplete）保留 MUI
 import {
-  Container, Grid, Typography, CircularProgress, Button, Checkbox,
+  Checkbox,
   TextField, Autocomplete,
 } from '@mui/material'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { format } from 'date-fns'
 import idx from 'idx'
@@ -19,6 +19,11 @@ import useFetchGetDesignerNameForReportType from 'hooks/useFetchGetDesignerNameF
 import useFetchGetHelperDailyReport from 'hooks/useFetchGetHelperDailyReport'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { EmptyState } from 'ui/empty-state'
+import { PageHeader, Toolbar } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -134,86 +139,83 @@ const DecreaseDailyReport = () => {
     )
   }
   return (
-    <Page css={styles.root} title="互助日報表">
-      <Container maxWidth={false} css={styles.container}>
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
-          <div className="merchantNamePrint">
-            {JSON.parse(localStorage.getItem('userMerchant')).name +
-              '   ' +
-              format(new Date(date.endDate), 'yyyy-MM-dd').toLocaleString() +
-              '   ' +
-              '互助日報表'}
-          </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' +
-              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-          </div>
+    <Page className="ui-root" title="互助日報表">
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+        <div className="merchantNamePrint">
+          {JSON.parse(localStorage.getItem('userMerchant')).name +
+            '   ' +
+            format(new Date(date.endDate), 'yyyy-MM-dd').toLocaleString() +
+            '   ' +
+            '互助日報表'}
         </div>
-        <AdminPageHeader title='互助日報表' />
-        <Grid container alignItems='center' justifyContent='space-between' className="noprint">
-          <DateSelector
-            date={date}
-            attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
-            onlyStart
-            dateChange={value => setDate(value)}
-            margin
-          />
-          <Button
-            className="noprint"
-            size="medium"
-            variant="contained"
-            color="primary"
-            onClick={() => window.print()}
-          >
+        <div className="merchantNamePrint">
+          {'列印時間： ' +
+            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
+        </div>
+      </div>
+      <PageHeader
+        title="互助日報表"
+        actions={
+          <Button className="noprint" variant="primary" onClick={() => window.print()}>
+            <Printer strokeWidth={1.75} />
             列印
           </Button>
-        </Grid>
-        <Grid item className="noprint" style={{ marginBottom: '20px' }}>
-          <Autocomplete
-            multiple
-            options={jobTitle}
-            disableCloseOnSelect
-            getOptionLabel={option => option.jobTitle}
-            onChange={(event, value) => handleChecked(value)}
-            renderOption={(props, option, { selected }) => (
-              <li {...props}>
-                <Checkbox
-                  style={{ color: '#202D50', marginRight: 8 }}
-                  icon={icon}
-                  checkedIcon={checkedIcon}
-                  checked={selected}
-                />
-                {option.jobTitle}
-              </li>
-            )}
-            renderInput={params => (
-              <TextField {...params} variant="outlined" label="人員類別" placeholder="人員名稱" />
-            )}
-          />
-        </Grid>
-        {!getHelperDailyReport.loading ? (
-          helperReport.length > 0 ? (
-            <Grid container spacing={3} className="DecreaseDailyReport">
-              <Results
-                helperReport={helperReport}
-                titleDate={date.endDate}
-                priceDisplayOnReport={priceDisplayOnReport}
-                designerNameForReportTypeData={designerNameForReportTypeData}
-                isMemberShipCardActive={isMemberShipCardActive}
-                printMode={printMode}
+        }
+      />
+      <Toolbar>
+        <DateSelector
+          date={date}
+          attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
+          onlyStart
+          dateChange={value => setDate(value)}
+          margin
+        />
+      </Toolbar>
+      <div className="noprint pb-6">
+        <Autocomplete
+          multiple
+          options={jobTitle}
+          disableCloseOnSelect
+          getOptionLabel={option => option.jobTitle}
+          onChange={(event, value) => handleChecked(value)}
+          renderOption={(props, option, { selected }) => (
+            <li {...props}>
+              <Checkbox
+                style={{ color: '#202D50', marginRight: 8 }}
+                icon={icon}
+                checkedIcon={checkedIcon}
+                checked={selected}
               />
-            </Grid>
-          ) : (
-            <Typography variant="h3" gutterBottom component="div">
-              無資料
-            </Typography>
-          )
-        ) : (
-          <div style={{ textAlign: 'center', marginTop: 100 }}>
-            <CircularProgress />
+              {option.jobTitle}
+            </li>
+          )}
+          renderInput={params => (
+            <TextField {...params} variant="outlined" label="人員類別" placeholder="人員名稱" />
+          )}
+        />
+      </div>
+      {!getHelperDailyReport.loading ? (
+        helperReport.length > 0 ? (
+          <div className="DecreaseDailyReport grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 print:block">
+            <Results
+              helperReport={helperReport}
+              titleDate={date.endDate}
+              priceDisplayOnReport={priceDisplayOnReport}
+              designerNameForReportTypeData={designerNameForReportTypeData}
+              isMemberShipCardActive={isMemberShipCardActive}
+              printMode={printMode}
+            />
           </div>
-        )}
-      </Container>
+        ) : (
+          <EmptyState title="無資料" />
+        )
+      ) : (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" aria-busy="true">
+          <Skeleton className="h-80" />
+          <Skeleton className="h-80" />
+          <Skeleton className="h-80" />
+        </div>
+      )}
     </Page>
   )
 }
