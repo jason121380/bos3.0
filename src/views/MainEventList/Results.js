@@ -144,7 +144,7 @@ function Results({
         <CardHeader
           title={
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold', color: 'rgb(var(--text))' }}>
                 活動清單
               </Typography>
               <Typography color="textSecondary" variant="body2">
@@ -305,7 +305,7 @@ function Results({
                                                       <Button
                                                         variant="text"
                                                         size="small"
-                                                        style={{ fontSize: '12px', fontWeight: 'bold', color: rule.isUsingForGroup ? '#d32f2f' : '#388e3c' }}
+                                                        style={{ fontSize: '12px', fontWeight: 'bold', color: rule.isUsingForGroup ? 'rgb(var(--danger))' : '#388e3c' }}
                                                         onClick={e => {
                                                           e.stopPropagation()
                                                           setEventRuleUsing(rule.id, !rule.isUsingForGroup)
@@ -316,7 +316,7 @@ function Results({
                                                       <Button
                                                         variant="text"
                                                         size="small"
-                                                        style={{ fontSize: '12px', fontWeight: 'bold', color: '#d32f2f' }}
+                                                        style={{ fontSize: '12px', fontWeight: 'bold', color: 'rgb(var(--danger))' }}
                                                         onClick={e => {
                                                           e.stopPropagation()
                                                           setClickData({
