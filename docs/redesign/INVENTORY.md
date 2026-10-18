@@ -68,7 +68,7 @@
 
 | # | 議題 | 決定 |
 |---|---|---|
-| 1 | 測試後端 | 待提供。`init-apollo.js:59` 未設定時會 fallback 到正式環境；本機測試一律以 `REACT_APP_API_URL` 指定，未取得測試網址前只用無效位址 `http://127.0.0.1:9/graphql` 截圖 |
+| 1 | 測試後端 | `https://crt-test-htlfg34mhq-de.a.run.app/graphql`（來源：beautyos_api `doc/beautyos_api 專案交接文件.md` §API 網址；測試庫 `beautyos_dev2`）。本機寫在 `.env.development.local`（已 gitignore）；`npm run build` 為 production 模式不讀此檔。注意：`init-apollo.js:59` 未設定時會 fallback 到正式環境 |
 | 2 | 分支 | 沿用 `claude/upbeat-carson-pdc7rf` 作為改版分支，不碰 main |
 | 3 | PR 粒度 | 一頁一個 PR（STYLE.md §10.3） |
 | 4 | 顧客端 | `layouts/Customer` 11 頁放最後一批、獨立 PR；Line、EHS、`/ar` 不改版 |
