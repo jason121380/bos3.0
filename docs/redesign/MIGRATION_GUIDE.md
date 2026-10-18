@@ -90,3 +90,36 @@ feat(ui): 第二層改版——<頁面中文名>（<views 目錄名>）
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01BUenXFDZo7NpQzri398TMd
 ```
+
+---
+
+# 第二輪：換掉剩下的 MUI（基準 commit：見各批次檔）
+
+第一輪為了保住邏輯而留下的 MUI，多數是因為缺元件。這些元件現在都有了，第二輪就是把這些 MUI 換掉。**第 0 節鐵則全部照舊。**
+
+## 6. 新元件與替換方式
+
+| MUI | 換成 | 規則 |
+|---|---|---|
+| `FormControl` + `InputLabel` + `Select` + `MenuItem`（單選） | `ui/native-select` 的 `NativeSelect` + `NativeSelectOption` | `value`、`onChange`、`name`、`disabled`、`error`、`required` 原樣搬過去；InputLabel 的文字放 `label`；`MenuItem value={x}` → `NativeSelectOption value={x}`（值型別不變）。`onChange(event)` 與 MUI 相同，`event.target.value` 是原始值。**以下保留 MUI**：`multiple`、`renderValue`、`MenuProps`、handler 用到第二個參數（child）、用 `inputRef` / `inputProps.ref` 註冊（react-hook-form）、MenuItem 內含圖示 / Checkbox 等非純文字內容 |
+| `TextField select` | 同上 | 只在沒有 `helperText` 邏輯、`InputProps` adornment、`inputRef` 時才換 |
+| `ToggleButtonGroup` + `ToggleButton` | `ui/toggle-group` 的 `ToggleGroup` + `ToggleGroupItem` | `value`、`exclusive`、`onChange(event, newValue)`、`disabled` 原樣；`size="small"` 可保留；`color`、`orientation` 刪除。handler 一字不改 |
+| 單獨的 `ToggleButton selected onChange`、用 secondary Button 拼出來的篩選鈕 | `ToggleGroupItem selected onChange` | 外觀為篩選鈕（選取時主題色） |
+| `FormControlLabel control={<Checkbox …/>} label=…` | `ui/checkbox` 的 `CheckboxField label=… checked onChange` | `onChange(event, checked)` 與 MUI 相同；`name`、`value`、`disabled`、`inputProps` 內的 `data-testid` 改放到 CheckboxField 上（會傳給 input） |
+| `Switch`、`FormControlLabel control={<Switch/>}` | `ui/switch` 的 `Switch`（可加 `label`、`labelPlacement`） | `onChange(event, checked)` 與 MUI 相同 |
+| `Avatar` | `ui/avatar` | `src`、`alt`、children 原樣；`sx` 尺寸改 `size` sm / md / lg 或 className |
+| MUI `TablePagination` | `ui/table` 的 `TablePagination` | 現在支援 `ref`、`labelRowsPerPage`、`{ value, label }` 選項；原本的 `ref={pageRef}` 與 `pagenationLabel` effect 原樣保留（找不到 MUI 元素時不動作） |
+| 統計格（標題＋數值）、單一大數字卡片 | `ui/stat` 的 `StatGrid` + `Stat`、`StatCard` | 數值運算式一字不改，可包 `formatNumber` |
+| `components/ManagementTable` 的內容列 | 可直接放 `ui/table` 的 `TableBody` / `TableRow` / `TableCell`，`tableHead` 放 `TableHead` | ManagementTable 已改版，不需要再在頁內展開 |
+| 密集表格 | `<Table dense>` | 列高 32px |
+| 第一輪留下的 `Card` / `Typography` / `Grid` / `Button` / `IconButton` / `Divider` / `CircularProgress` / `Collapse` / `Paper` / `Container` | 依第 2 節對照表 | 第一輪因為「大型頁只換結構」而留下的，這一輪可以繼續往深層換，但仍以「寧可少換」為原則 |
+
+## 7. 第二輪仍然保留 MUI 的情況
+
+- **列印**：第 0 節第 3 條，加上 **`src/initialize.scss` 的 `@media print` 規則選取到的元素**。改任何區塊前，先用 `grep -n "<該區塊的 className>" src/initialize.scss` 檢查；列印規則若寫在 `.MuiCard-root`、`.MuiTableContainer-root`、`.MuiTableCell-root`、`.MuiGrid-item`、`.MuiContainer-root`、`.MuiPaper-root`、`.MuiCardHeader-root`、`.MuiCardContent-root` 底下，且該頁會 `window.print()`，該頁的這些元件**整段保留**。
+- `TextField`（有 `helperText` 邏輯、adornment、`inputRef`、`onWheel` 等）、`Autocomplete`、日期／時間選擇器、`Radio`、`Slider`、`Tooltip`、`Drawer`、`Tabs`（handler 用 event）、`Accordion`、含上述元件的 `Dialog` / `Modal`、`Menu`（複雜）。
+- 打帳單／帳單編輯類頁面（OrderCreate、OrderEdit、DraftOrderEdit、QueueOrderEdit）：**只換第 6 節的表單元件（Select、ToggleButton、Checkbox、Switch）與純裝飾的 Typography / Divider**，不動排版結構。金額、折扣、付款相關的欄位若 handler 讀 `event.target.value` 後直接計算，替換前確認 NativeSelect 回傳的型別與原本相同（相同就可換）。
+
+## 8. 第二輪的檢查與 commit
+
+與第 4、5 節相同。commit 標題改為：`feat(ui): 第二輪——<頁面中文名>（<views 目錄名>）`。

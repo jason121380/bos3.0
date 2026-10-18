@@ -1,0 +1,15 @@
+CustomerManagementDetails
+ServiceCreate
+ServiceEdit
+CouponEdit
+CouponCreate
+CouponList
+Services
+EmployeeManagementList
+SalaryDetail
+SalaryEdit
+PerformanceDeductionParameter
+ProductCreate
+ProductEdit
+AttendanceEmployeeSchedule
+Products
