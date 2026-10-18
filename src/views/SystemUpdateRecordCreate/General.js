@@ -1,26 +1,13 @@
-/** @jsxImportSource @emotion/react */
 import { useState, useEffect, Fragment } from 'react'
-import {
-  Card, CardContent, CardHeader, Divider, TextField, Grid,
-  Button,
-} from '@mui/material'
 import { format } from 'date-fns'
 import MdEditor from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
 import { openSnackbar } from 'elements/snackbars'
 import { useHistory } from 'react-router'
 import { useFetchCreateSystemUpdateCreate } from 'hooks/useFetchSystemUpdateRecord'
-import { css } from '@emotion/react'
-
-const styles = {
-  root: css({}),
-  textFieldWidth: css({
-    width: '300px',
-  }),
-  textFieldSpacing: css({
-    margin: '20px 0px',
-  }),
-}
+import { Button } from 'ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
 
 const General = () => {
   const history = useHistory()
@@ -89,44 +76,52 @@ const General = () => {
 
   return (
     <Fragment>
-      <Card style={{ margin: '20px 0' }}>
-        <CardHeader title="版本資訊" />
-        <Divider />
-        <CardContent>
-          <Grid container direction="row" style={{ gap: '20px'}}>
-            <TextField
-              css={styles.textFieldWidth}
-              label="更新日期"
-              variant="outlined"
-              type="date"
-              value={format(updateRecord.updateTime, 'yyyy-MM-dd')}
-              onChange={event => {
-                setUpdateRecord({
-                  ...updateRecord,
-                  updateTime: new Date(event.target.value).getTime(),
-                })
-              }}
-            />
-            <TextField
-              css={styles.textFieldWidth}
-              label="版本"
-              variant="outlined"
-              type="text"
-              onChange={event => {
-                setUpdateRecord({ ...updateRecord, versionNo: event.target.value })
-              }}
-            />
-          </Grid>
-          <TextField
-            css={styles.textFieldSpacing}
-            fullWidth
-            label="標題"
-            variant="outlined"
-            type="text"
-            onChange={event => {
-              setUpdateRecord({ ...updateRecord, title: event.target.value })
-            }}
-          />
+      {/*
+        .ui-root 的基礎樣式（清除 ul/ol 清單符號、標題外距）會影響 Markdown 編輯器的預覽，
+        因此只把 ui-root 套在表單欄位與按鈕區，MdEditor 放在 ui-root 之外，維持原本的編輯／預覽外觀
+      */}
+      <Card className="mb-6">
+        <div className="ui-root">
+          <CardHeader>
+            <CardTitle>版本資訊</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <div className="flex flex-wrap gap-5">
+              <Field label="更新日期" htmlFor="system-update-time" className="w-[300px] max-w-full">
+                <Input
+                  id="system-update-time"
+                  type="date"
+                  value={format(updateRecord.updateTime, 'yyyy-MM-dd')}
+                  onChange={event => {
+                    setUpdateRecord({
+                      ...updateRecord,
+                      updateTime: new Date(event.target.value).getTime(),
+                    })
+                  }}
+                />
+              </Field>
+              <Field label="版本" htmlFor="system-update-version" className="w-[300px] max-w-full">
+                <Input
+                  id="system-update-version"
+                  type="text"
+                  onChange={event => {
+                    setUpdateRecord({ ...updateRecord, versionNo: event.target.value })
+                  }}
+                />
+              </Field>
+            </div>
+            <Field label="標題" htmlFor="system-update-title">
+              <Input
+                id="system-update-title"
+                type="text"
+                onChange={event => {
+                  setUpdateRecord({ ...updateRecord, title: event.target.value })
+                }}
+              />
+            </Field>
+          </CardContent>
+        </div>
+        <div className="px-5 pb-5">
           <MdEditor
             theme={theme}
             style={{ height: '700px' }}
@@ -165,17 +160,18 @@ const General = () => {
               'github'
             ]}
           />
-        </CardContent>
+        </div>
       </Card>
-      <Button
-        color="primary"
-        variant="contained"
-        data-testid="createSystemUpdate"
-        onClick={onSubmit}
-        disabled={enable}
-      >
-        新增
-      </Button>
+      <div className="ui-root">
+        <Button
+          variant="primary"
+          data-testid="createSystemUpdate"
+          onClick={onSubmit}
+          disabled={enable}
+        >
+          新增
+        </Button>
+      </div>
     </Fragment>
   )
 }
