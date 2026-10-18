@@ -248,6 +248,18 @@ export function createBridgeTheme(mode = 'light') {
         },
       },
       MuiChip: { styleOverrides: { root: { borderRadius: 8, fontSize: 13 } } },
+      MuiTableContainer: {
+        styleOverrides: {
+          // 與 ui/table 一致：橫向捲軸常駐可見（見 styles/tokens.css 的 .ui-scroll-x）
+          root: {
+            '&::-webkit-scrollbar': { width: 10, height: 10 },
+            '&::-webkit-scrollbar-track': { background: t.surface, borderRadius: 9999 },
+            '&::-webkit-scrollbar-thumb': { background: t.borderStrong, border: `2px solid ${t.surface}`, borderRadius: 9999 },
+            '&::-webkit-scrollbar-thumb:hover': { background: t.borderStrongHover },
+            '@supports (-moz-appearance: none)': { scrollbarWidth: 'thin', scrollbarColor: `${t.borderStrong} ${t.surface}` },
+          },
+        },
+      },
       MuiTableCell: {
         styleOverrides: {
           // 手機螢幕：儲存格不換行、表格改橫向捲動（與 ui/table 一致）；只限螢幕，不影響列印
