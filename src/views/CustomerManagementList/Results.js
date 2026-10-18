@@ -1,22 +1,17 @@
 /** @jsxImportSource @emotion/react */
+// 表格列保留 MUI TableBody / TableRow / TableCell：外框為共用元件 components/ManagementTable（MUI Table）
+// 刪除確認保留 MUI Dialog：舊版不設 onClose（點背景、Esc 不關閉）
 import {
-  Avatar,
-  Button,
-  Checkbox,
   Link,
   TableBody,
   TableCell,
   TableRow,
-  Typography,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
-  TextField,
-  IconButton,
 } from '@mui/material'
-import { Edit as EditIcon, Visibility as VisibilityIcon } from 'ui/icons'
+import { Pencil } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteCustomer from 'hooks/useFetchDeleteCustomer'
@@ -30,6 +25,9 @@ import { format } from 'date-fns'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import ManagementTable from 'components/ManagementTable'
+import { Button } from 'ui/button'
+import { Checkbox } from 'ui/checkbox'
+import { Field, Input } from 'ui/input'
 
 const styles = {
   root: css({}),
@@ -163,8 +161,8 @@ function Results({
           <>
             <TableCell padding="checkbox" css={styles.compactCell}>
               <Checkbox
+                aria-label="全選"
                 checked={selectedCustomers.length === customers.length && customers.length > 0}
-                color="primary"
                 indeterminate={selectedCustomers.length > 0 && selectedCustomers.length < customers.length}
                 onChange={handleSelectAll}
                 disabled={customers.length === 0}
@@ -193,27 +191,26 @@ function Results({
             >
               <TableCell padding="checkbox" css={styles.compactCell}>
                 <Checkbox
-                  color="primary"
+                  aria-label={`選取 ${data.name}`}
                   checked={selectedCustomers.indexOf(data.id) > -1}
                   onChange={() => handleSelectOne(data.id)}
                 />
               </TableCell>
               <TableCell css={styles.compactCell}>
-                <IconButton
-                  color="inherit"
-                  component={RouterLink}
-                  size="small"
-                  to={`/management/customers/${data.id}`}
-                  sx={{ color: 'rgb(var(--text-secondary))' }}
-                >
-                  <EditIcon fontSize="small" />
-                </IconButton>
+                <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                  <RouterLink
+                    aria-label="編輯客戶"
+                    to={`/management/customers/${data.id}`}
+                  >
+                    <Pencil strokeWidth={1.75} />
+                  </RouterLink>
+                </Button>
               </TableCell>
               <TableCell css={styles.compactCell}>
                 <div css={styles.nameCell}>
-                  <Avatar css={styles.avatar}>
+                  <span aria-hidden="true" className="mr-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-hover text-label text-text-secondary">
                     {data.name.charAt(0).toUpperCase()}
-                  </Avatar>
+                  </span>
                   <Link
                     color="inherit"
                     underline='none'
@@ -260,20 +257,23 @@ function Results({
 
       <Dialog open={openDialog} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
         <DialogTitle id="alert-dialog-title">{'刪除客人'}</DialogTitle>
-        <DialogContent style={{ overflow: 'visible' }}>
-          <DialogContentText id="alert-dialog-description">
-            <TextField
-              value={deletePwd}
-              label="刪除密碼"
-              fullWidth
-              onChange={event => setDeletePwd(event.target.value)}
-              inputProps={{ type: 'password', 'data-testid': 'delete-password' }}
-            />
-          </DialogContentText>
+        <DialogContent className="ui-root" style={{ overflow: 'visible' }}>
+          <div id="alert-dialog-description" className="flex flex-col gap-4">
+            <p className="m-0 text-body text-text-secondary">刪除後客戶資料將無法復原，請輸入刪除密碼確認。</p>
+            <Field label="刪除密碼" htmlFor="delete-customer-password">
+              <Input
+                id="delete-customer-password"
+                type="password"
+                value={deletePwd}
+                onChange={event => setDeletePwd(event.target.value)}
+                data-testid="delete-password"
+              />
+            </Field>
+          </div>
         </DialogContent>
-        <DialogActions>
-          <Button color="primary" onClick={handleCloseDialog} disabled={clickComfirmBtn}>取消</Button>
-          <Button color="primary" autoFocus onClick={handeleteCustomer} disabled={clickComfirmBtn}>確認</Button>
+        <DialogActions className="ui-root">
+          <Button variant="secondary" onClick={handleCloseDialog} disabled={clickComfirmBtn}>取消</Button>
+          <Button variant="danger" autoFocus onClick={handeleteCustomer} disabled={clickComfirmBtn}>確認</Button>
         </DialogActions>
       </Dialog>
     </div>

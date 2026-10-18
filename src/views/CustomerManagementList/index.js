@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Card, Container, InputLabel, Select, FormControl, MenuItem, CircularProgress, Grid, Button, IconButton, Collapse } from '@mui/material'
+// 篩選區的排序／會員／黑名單下拉保留 MUI Select（值可能非字串或含 null）
+import { InputLabel, Select, FormControl, MenuItem } from '@mui/material'
 import { FilterList as FilterListIcon } from 'ui/icons'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
@@ -13,6 +14,8 @@ import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCard
 import { Link as RouterLink } from 'react-router-dom'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Card } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -171,8 +174,7 @@ function CustomerManagementList() {
   }
 
   return (
-    <Page css={styles.root} title="客戶列表">
-      <Container maxWidth={false}>
+    <Page className="ui-root" title="客戶列表">
         <AdminPageHeader
           title='客戶列表'
           showFilter={showFilter}
@@ -183,13 +185,13 @@ function CustomerManagementList() {
           }}
         />
 
-        <Collapse in={showFilter}>
-          <div style={{ marginBottom: '12px', backgroundColor: 'rgb(var(--background))', borderRadius: '8px', padding: '16px', border: '1px solid rgb(var(--border))' }}>
+        {/* 以 hidden 收合（取代 MUI Collapse）：SearchBar 內有非受控輸入，保持掛載，收合後內容與舊版一樣保留 */}
+        <div hidden={!showFilter}>
+          <Card className="mb-6 p-4">
             <SearchBar
               inCustomerFilterExport
               disableCustomerSource
               handleClearData={handleClearData}
-              style={{ marginTop: 0 }}
               onSearchV2={event =>
                 handlePageChange({
                   key: 'keyword',
@@ -215,7 +217,7 @@ function CustomerManagementList() {
                 })
               }
             />
-            <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: '12px' }}>
+            <div className="mt-3 flex flex-wrap">
               <FormControl variant="outlined" css={styles.formGroup}>
                 <InputLabel>顧客排序方式</InputLabel>
                 <Select label='顧客排序方式' value={pageSetting.searchingOrder} onChange={event => handleOnChange({ key: "searchingOrder", event: event })}>
@@ -284,8 +286,8 @@ function CustomerManagementList() {
                 </Fragment>
               )}
             </div>
-          </div>
-        </Collapse>
+          </Card>
+        </div>
         {(!isMemberShipCardActive.loading && !customerList.loading) ?
           idx(customerList.data, _ => (
             <Results
@@ -297,9 +299,8 @@ function CustomerManagementList() {
               onPageChange={handlePageChange}
               isMemberShipCardActive={isMemberShipCardActive}
             />
-          )) : <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
+          )) : <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中"><Skeleton className="h-[320px] w-full rounded-lg" /></div>
         }
-      </Container>
     </Page>
   )
 }
