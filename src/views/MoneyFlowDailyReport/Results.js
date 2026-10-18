@@ -88,7 +88,7 @@ export default function Results({ moneyFlowDailyReport, displayDate, isMemberShi
   }, [moneyFlowDailyReport])
 
   return (
-    <Table aria-label="a dense table">
+    <Table dense aria-label="a dense table">
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             <TableHead>科目</TableHead>

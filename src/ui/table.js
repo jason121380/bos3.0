@@ -5,7 +5,7 @@ import { Button } from './button'
 import { NativeSelect, NativeSelectOption } from './native-select'
 
 // STYLE.md §6：表頭 surface 底、label 字級；列高 44px；hover surface-hover；數字欄右對齊
-// dense：列高 32px＋儲存格左右 px-2（日報表、薪資條、報表 compact 等密集表格）
+// dense（STYLE §11 報表 compact）：列高 32px、td 上下內距 4px、td／th 左右內距 8px（一般表格為 44px／px-4）
 // 列印：自動改為黑色細格線、白底黑字、不裁切（頁面自己的 @media print 規則權重較高，仍以頁面為準）
 const PRINT = cn(
   'print:[&_td]:border print:[&_th]:border print:[&_td]:border-solid print:[&_th]:border-solid',

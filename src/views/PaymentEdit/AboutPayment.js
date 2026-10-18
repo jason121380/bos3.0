@@ -1,18 +1,13 @@
-// 手續費類別／扣項方式的值可能為空字串，保留 MUI Select；文字欄位用 inputProps 帶 data-testid，同卡片一併保留 MUI TextField（橋接主題已套新外觀）
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-} from '@mui/material'
+// 欄位標籤放在上方（Field＋Input／NativeSelect）；下拉選項值為字串（含空字串），event.target.value 回傳選項原值，onChange 原樣保留。
+// 原生 option 無法帶 data-testid，Cypress 改以 .select('顯示文字') 選取；FormControlLabel＋Checkbox 保留 MUI
+import { FormControlLabel, Checkbox } from '@mui/material'
 import { PaymentEnum } from 'helper/enum'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
 const deductions = [
   {
@@ -30,28 +25,21 @@ const deductions = [
 ]
 
 function AboutProject({ className, payment, onChange, ...rest }) {
-  const categoryLabel = React.useRef(null)
-
   return (
     <Card {...rest}>
       <CardHeader>
         <CardTitle>一般資訊</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col items-start gap-6">
-        <TextField
-          value={payment.name}
-          label="名稱"
-          variant="outlined"
-          fullWidth
-          inputProps={{
-            'data-testid': 'name',
-          }}
-          onChange={event => onChange({ event, key: 'name' })}
-        />
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel ref={categoryLabel}>手續費類別</InputLabel>
-          <Select
-            label='手續費類別'
+        <Field label="名稱" className="w-full">
+          <Input
+            value={payment.name}
+            data-testid="name"
+            onChange={event => onChange({ event, key: 'name' })}
+          />
+        </Field>
+        <Field label="手續費類別" className="w-full">
+          <NativeSelect
             value={payment.amountType}
             onChange={event =>
               onChange({
@@ -61,48 +49,42 @@ function AboutProject({ className, payment, onChange, ...rest }) {
             }
             data-testid="fee-category"
           >
-            <MenuItem value="" disabled>
-              <em>選擇手續費類別</em>
-            </MenuItem>
+            <NativeSelectOption value="" disabled>
+              選擇手續費類別
+            </NativeSelectOption>
             {Object.keys(PaymentEnum).map(key => (
-              <MenuItem
-                value={key}
-                key={`payment-${key}`}
-                data-testid={`fee-category-${PaymentEnum[key]}`}
-              >
+              <NativeSelectOption value={key} key={`payment-${key}`}>
                 {PaymentEnum[key]}
-              </MenuItem>
+              </NativeSelectOption>
             ))}
-          </Select>
-        </FormControl>
-        <TextField
-          type="text"
-          value={payment.fee}
+          </NativeSelect>
+        </Field>
+        <Field
           label={`手續費${payment.amountType ? ' - ' + PaymentEnum[payment.amountType] : ''}`}
-          variant="outlined"
-          inputProps={{
-            'data-testid': `fee-${PaymentEnum[payment.amountType]}`,
-          }}
-          onFocus={event => {
-            idx(event, _ => _.target.select())
-          }}
-          onChange={event =>
-            onChange({
-              event: {
-                target: {
-                  value: payment.amountType === 'AMOUNT' ? Math.floor(idx(event, _ => _.target.value)) : idx(event, _ => _.target.value),
+          className="w-full"
+        >
+          <Input
+            type="text"
+            value={payment.fee}
+            data-testid={`fee-${PaymentEnum[payment.amountType]}`}
+            onFocus={event => {
+              idx(event, _ => _.target.select())
+            }}
+            onChange={event =>
+              onChange({
+                event: {
+                  target: {
+                    value: payment.amountType === 'AMOUNT' ? Math.floor(idx(event, _ => _.target.value)) : idx(event, _ => _.target.value),
+                  },
                 },
-              },
-              key: 'fee',
-            })
-          }
-          fullWidth
-          onWheel={() => document.activeElement.blur()}
-        />
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel>手續費扣項方式</InputLabel>
-          <Select
-            label='手續費扣項方式'
+                key: 'fee',
+              })
+            }
+            onWheel={() => document.activeElement.blur()}
+          />
+        </Field>
+        <Field label="手續費扣項方式" className="w-full">
+          <NativeSelect
             value={payment.type}
             onChange={event =>
               onChange({
@@ -112,20 +94,16 @@ function AboutProject({ className, payment, onChange, ...rest }) {
             }
             data-testid="payment-deductions"
           >
-            <MenuItem value="" disabled>
-              <em>選擇手續費扣項方式</em>
-            </MenuItem>
-            {deductions.map((data, idx) => (
-              <MenuItem
-                value={data.value}
-                key={`payment-${data.value}-${data.label}`}
-                data-testid={`payment-deduction-${data.label}`}
-              >
+            <NativeSelectOption value="" disabled>
+              選擇手續費扣項方式
+            </NativeSelectOption>
+            {deductions.map(data => (
+              <NativeSelectOption value={data.value} key={`payment-${data.value}-${data.label}`}>
                 {data.label}
-              </MenuItem>
+              </NativeSelectOption>
             ))}
-          </Select>
-        </FormControl>
+          </NativeSelect>
+        </Field>
         <FormControlLabel
           control={<Checkbox color="primary" />}
           label="金額呈現為0"
