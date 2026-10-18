@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Card, CardContent, Typography } from '@mui/material'
-import VpnKeyIcon from '@mui/icons-material/VpnKey'
+import { VpnKey as VpnKeyIcon } from 'ui/icons'
 import Page from 'components/Page'
 import gradients from 'utils/gradients'
 import { css } from '@emotion/react'

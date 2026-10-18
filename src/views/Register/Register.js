@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { Card, CardContent, Divider, Link, Typography } from '@mui/material'
-import PersonAddIcon from '@mui/icons-material/PersonAddOutlined'
+import { PersonAddOutlined as PersonAddIcon } from 'ui/icons'
 import Page from 'components/Page'
 import { Link as RouterLink } from 'react-router-dom'
 import gradients from 'utils/gradients'
