@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react'
-import { Container, CircularProgress, Button, Grid } from '@mui/material'
+// printGrid 外框（列印時隱藏）依規則保留 MUI Grid
+import { Grid } from '@mui/material'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { format } from 'date-fns'
 import idx from 'idx'
@@ -10,6 +10,10 @@ import { useFetchGetHelperMonthlyReport } from 'hooks/useFetchGetHelperMonthlyRe
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader, Toolbar } from 'ui/page-header'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
@@ -63,60 +67,59 @@ const HelperMontlyReport = () => {
   }, [isMemberShipCardActiveData.loading, helperMonthlyData.loading])
 
   return (
-    <Page css={styles.root} title="互助月報表">
-      <Container maxWidth={false} css={styles.container}>
-        <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
-          <div className="merchantNamePrint">
-            {JSON.parse(localStorage.getItem('userMerchant')).name +
-              '   ' +
-              format(new Date(date.startDate), 'yyyy-MM-dd').toLocaleString() +
-              '  - ' +
-              format(new Date(date.endDate), 'yyyy-MM-dd').toLocaleString() +
-              '   ' +
-              '互助月報表'}
-          </div>
-          <div className="merchantNamePrint">
-            {'列印時間： ' +
-              format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
-          </div>
+    <Page className="ui-root" title="互助月報表">
+      <div className="merchantNamePrint" style={{ marginBottom: '10px', display: "none", justifyContent: "space-between" }}>
+        <div className="merchantNamePrint">
+          {JSON.parse(localStorage.getItem('userMerchant')).name +
+            '   ' +
+            format(new Date(date.startDate), 'yyyy-MM-dd').toLocaleString() +
+            '  - ' +
+            format(new Date(date.endDate), 'yyyy-MM-dd').toLocaleString() +
+            '   ' +
+            '互助月報表'}
         </div>
-        <AdminPageHeader title='互助月報表' />
-        <Grid container style={{ alignItems: 'center', justifyContent: 'space-between' }} className="noprint">
-          <DateSelector
-            date={date}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-            margin
-          />
+        <div className="merchantNamePrint">
+          {'列印時間： ' +
+            format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
+        </div>
+      </div>
+      <PageHeader
+        title="互助月報表"
+        actions={
           <Grid className="printGrid">
             <Button
-              size="medium"
-              variant="contained"
-              color="primary"
+              variant="primary"
               onClick={() => window.print()}
             >
+              <Printer strokeWidth={1.75} />
               列印
             </Button>
           </Grid>
-        </Grid>
+        }
+      />
+      <Toolbar>
+        <DateSelector
+          date={date}
+          attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+          dateChange={value => setDate(value)}
+          margin
+        />
+      </Toolbar>
 
-        {!helperMonthlyData.loading ? (
-          idx(
-            helperMonthlyData,
-            _ =>
-              _.data.helperMonthlyReport !== null && (
-                <Results
-                  helperMonthlyReport={_.data.helperMonthlyReport}
-                  membershipDisplay={membershipDisplay}
-                />
-              )
-          )
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <CircularProgress />
-          </div>
-        )}
-      </Container>
+      {!helperMonthlyData.loading ? (
+        idx(
+          helperMonthlyData,
+          _ =>
+            _.data.helperMonthlyReport !== null && (
+              <Results
+                helperMonthlyReport={_.data.helperMonthlyReport}
+                membershipDisplay={membershipDisplay}
+              />
+            )
+        )
+      ) : (
+        <Skeleton className="h-96" aria-busy="true" />
+      )}
     </Page>
   )
 }
