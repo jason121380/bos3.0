@@ -1,7 +1,4 @@
-/** @jsxImportSource @emotion/react */
-import { Button, Container } from '@mui/material'
 import Page from 'components/Page'
-import PageTitle from 'components/PageTitle'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchCreatePurchase from 'hooks/useFetchCreatePurchase'
 import PasswordDialog from 'components/PasswordDialog'
@@ -10,20 +7,10 @@ import { useFetchGetStockInIsUsing } from 'hooks/useFetchMerchantPassword'
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 import General from './General'
-
-const styles = {
-  root: css({}),
-  general: css({
-    marginTop: theme.spacing(3),
-  }),
-  action: css({
-    marginTop: theme.spacing(3) + '!important',
-  }),
-}
 
 export default function ProductRestockCreate() {
   const { addPurchase } = useFetchCreatePurchase()
@@ -143,38 +130,31 @@ export default function ProductRestockCreate() {
 
 
   return (
-    <Page title="新增商品進貨" css={styles.root}>
-      <Container style={{ padding: '20px' }}>
-        <PageTitle title='新增商品進貨' subTitle='PRODUCT RESTOCK CREATE' />
-        <General
-          className={styles.general}
-          purchaseRecords={purchaseRecords}
-          setPurchaseRecords={setPurchaseRecords}
-          setPageLoading={setPageLoading}
-        />
-        {(!pageLoading && !getStockInIsUsing.loading) && (
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button
-              color="primary"
-              variant="contained"
-              css={styles.action}
-              disabled={checkPurchaseRecords}
-              onClick={handleSubmit}
-            >
-              新增
-            </Button>
-            <Button
-              color="success"
-              variant="contained"
-              css={styles.action}
-              disabled={checkPurchaseRecords}
-              onClick={handleCheck}
-            >
-              新增並入庫
-            </Button>
-          </div>
-        )}
-      </Container>
+    <Page title="新增商品進貨" className="ui-root">
+      <PageHeader title="新增商品進貨" />
+      <General
+        purchaseRecords={purchaseRecords}
+        setPurchaseRecords={setPurchaseRecords}
+        setPageLoading={setPageLoading}
+      />
+      {(!pageLoading && !getStockInIsUsing.loading) && (
+        <div className="flex items-center justify-end gap-2 pt-6">
+          <Button
+            variant="secondary"
+            disabled={checkPurchaseRecords}
+            onClick={handleSubmit}
+          >
+            新增
+          </Button>
+          <Button
+            variant="primary"
+            disabled={checkPurchaseRecords}
+            onClick={handleCheck}
+          >
+            新增並入庫
+          </Button>
+        </div>
+      )}
       <PasswordDialog
         open={dialogOpen}
         title='進貨單入庫'
