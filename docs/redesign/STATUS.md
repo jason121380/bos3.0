@@ -79,7 +79,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 - 格式 `v3.0-MMDD-HHmm`（時區 Asia/Taipei）。commit 訊息第一行開頭與 PR 標題都要帶版本號。
 - 正式格式 v3.0-MMDD-HHmm（Asia/Taipei，不寫年份，年份只在日期欄；不自行升大版號）。
 - #6–#10 為規則建立前已 push 的 commit，**不 amend**；下表依 commit 時間對照版本。
-- merge 組別：#6–#10 為第一組（五個完整 commit），已於 2026-10-19 merge（merge commits：#6 c9a8c8c、#7 503f4fa、#8 f32bf0e、#9 3f7b35f、#10 29630fa）；批次 5（#11）已 merge（cfc79cd），版本顯示批 v3.0-1019-0232（#12）已 merge，批次 6（#13）已 merge（8ec6b00）；批次 7（#14）本組 merge 中。
+- merge 組別：#6–#10 為第一組（五個完整 commit），已於 2026-10-19 merge（merge commits：#6 c9a8c8c、#7 503f4fa、#8 f32bf0e、#9 3f7b35f、#10 29630fa）；批次 5（#11）已 merge（cfc79cd），版本顯示批 v3.0-1019-0232（#12）已 merge，批次 6（#13）已 merge（8ec6b00），批次 7（#14）已 merge（20ded5b）；批次 8（#15）本組 merge 中。
 
 | 版本 | 時間（Asia/Taipei） | 內容 | PR | commit | checks |
 |---|---|---|---|---|---|
@@ -91,7 +91,8 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 | v3.0-1019-0202 | 2026-10-19 02:02 | UI 批次5 CouponEdit | #11 | 079a7d0 | GitHub Build/Unit pass；已 merge（merge commit cfc79cd） |
 | v3.0-1019-0232 | 2026-10-19 02:32 | 版本顯示上線（`src/version.js`） | #12 | bca2950 | 已 merge |
 | v3.0-1019-0241 | 2026-10-19 02:41 | 批次 6：AccountingSetting 表單標籤改版 | #13 | 8ec6b00 | 已 merge（merge commit 8ec6b00）；eslint 0 error／verify-logic 通過／portal 0/0／全域 52/52／build 成功 |
-| v3.0-1019-0245 | 2026-10-19 02:45 | 批次 7：CreateDeductionSetting/Results 15 欄標籤改版 | #14 | 4d37654 | 狀態：本組 merge 中；eslint 0 error／verify-logic 通過／portal 0/0／測試 52/52／build 成功 |
+| v3.0-1019-0245 | 2026-10-19 02:45 | 批次 7：CreateDeductionSetting/Results 15 欄標籤改版 | #14 | 4d37654 | 已 merge（merge commit 20ded5b）；eslint 0 error／verify-logic 通過／portal 0/0／測試 52/52／build 成功 |
+| v3.0-1019-0303 | 2026-10-19 03:03 | UI 批次8（替代 Payment）：UpdateDeductionSetting/Results.js 15 個 TextField → `Field`＋`Input`；本批在本組 merge 中（前為 #13、#14 已 merge）；版號由 0258 校正為 0303 | #15 | commit 待補 | 驗證：eslint 0 error、verify-logic 通過、portal-root-scan 0/0、全域測試 52/52、build 成功；該次 build 的 bundle 含校正前版號字串 `v3.0-1019-0258`（校正僅字串差異），commit 後以最終版號 0303 重 build 由指揮者確認 |
 
 ## 刻意不改（需另外決定）
 
