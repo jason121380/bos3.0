@@ -9,7 +9,7 @@
 |---|---:|
 | `src/views` 目錄/檔案 | 176 |
 | `src/views` 內 .js 檔 | 756 |
-| `src/routes.js` 路由 | 187（DashboardLayout 161、Customer 12、EHS 5、Line 3、Auth 3、Error 3） |
+| `src/routes.js` 路由 | 187（DashboardLayout 161、Customer 12、EHS 5、Line 1、無 layout 的 `/ar` `/ar2` 2、Auth 3、Error 3） |
 | 側欄列出的頁面 | 90（10 個群組） |
 | 側欄未列的次頁（明細 / 編輯 / 新增） | 71 |
 | 引用 `@mui/*` 的檔案 | 706 |
@@ -26,9 +26,9 @@
 | Dashboard | `layouts/Dashboard/{index,NavBar(858 行),TopBar(1002 行),MerchantBar,MerchantList}.js` | 後台主骨架、側欄、頂欄、商家切換、釘選頁面、權限過濾選單 | C |
 | DashBoardListDetail | `layouts/DashBoardListDetail/index.js` | **報表目錄**（`/dashboard-list-detail`），實際上是頁面 | D |
 | Auth | `layouts/Auth/{index,Topbar}.js` | 登入 | C |
-| Customer | `layouts/Customer/index.js` | 顧客端（會員卡、自助建檔、評分） | C（範圍待確認） |
-| Line | `layouts/Line/index.js` | LINE 內嵌頁 | C（範圍待確認） |
-| EHS | `layouts/EHS/index.js` | EHS 頁 | C |
+| Customer | `layouts/Customer/index.js` | 顧客端 11 頁（手機版） | 最後一批，獨立 PR |
+| Line | `layouts/Line/index.js` | LINE 內嵌地圖 `/line/map/:id` | 不改版 |
+| EHS | `layouts/EHS/index.js` | EHS、LINE 選單切換、隱私權 | 不改版 |
 | Seat / Empty / Error | `layouts/{Seat,Empty}/index.js`、`layouts/Error.js` | 錯誤頁、空白殼 | C |
 
 注意：`NavBar.js` 內含權限過濾（`useFetchUserPermission`、`authority` 比對）與「掛單列表」動態插入邏輯，改版時只換 JSX，這段邏輯原封保留。
@@ -64,12 +64,15 @@
 `OrderCreate` 11,242、`OrderEdit` 8,481、`DraftOrderEdit` 8,261、`EmployeeManagementDetail` 7,382、`QueueOrderEdit` 6,992、`Parameter` 6,517、`Profile` 5,810。
 其中 OrderCreate / OrderEdit / DraftOrderEdit / QueueOrderEdit 結構高度重複，建議同一批處理。
 
-## 6. 風險與待確認
+## 6. 決策紀錄
 
-1. **API 預設指向正式環境**：`src/lib/init-apollo.js:59` 在未設定 `REACT_APP_API_URL` 時 fallback 到 `beautyos-api-prod-…/graphql`，且 `.env` 未設定此變數。本機測試前必須提供測試後端網址，否則會打到正式環境。
-2. 已存在的 `.env` 被 git 追蹤；測試網址建議放 `.env.development.local`（CRA 預設忽略），不 commit。
-3. 分支：指示為「redesign 分支」，本 session 指定分支為 `claude/upbeat-carson-pdc7rf`，以此作為改版分支。
-4. STYLE.md「一頁一個 PR」與執行指示「每組頁面一個 commit」——以 commit 粒度為一頁一 commit、一組一 PR 執行。
+| # | 議題 | 決定 |
+|---|---|---|
+| 1 | 測試後端 | 待提供。`init-apollo.js:59` 未設定時會 fallback 到正式環境；本機測試一律以 `REACT_APP_API_URL` 指定，未取得測試網址前只用無效位址 `http://127.0.0.1:9/graphql` 截圖 |
+| 2 | 分支 | 沿用 `claude/upbeat-carson-pdc7rf` 作為改版分支，不碰 main |
+| 3 | PR 粒度 | 一頁一個 PR（STYLE.md §10.3） |
+| 4 | 顧客端 | `layouts/Customer` 11 頁放最後一批、獨立 PR；Line、EHS、`/ar` 不改版 |
+| 5 | 報表首頁 | `/dashboard-list-detail`（報表目錄） |
 
 ## 7. 路由清單（全部）
 
@@ -213,7 +216,7 @@
 |---|---|---|---:|
 | `/customer-bonus-record` | `views/CustomerBonusRecord` | 紅利點數紀錄 | 275 |
 
-### Line（3）
+### Line（3，其中 `/ar` `/ar2` 實際無 layout）
 
 | 路由 | 元件 | 側欄名稱 | 行數 |
 |---|---|---|---:|

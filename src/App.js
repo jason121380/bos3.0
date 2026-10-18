@@ -4,6 +4,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css'
 import './mixins/validate'
 import './mixins/prismjs'
 import './assets/scss/main.scss'
+import './styles/tokens.css'
 // import './initialize.scss'
 
 import { ApolloProvider } from '@apollo/client'

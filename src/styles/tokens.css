@@ -1,0 +1,86 @@
+/* BOS 3.0 設計 tokens（依 STYLE.md §2）。顏色以 RGB 分量定義，供 Tailwind 透明度修飾使用（如 bg-success/8）。 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 255 255 255;
+  --surface: 249 249 249;
+  --surface-hover: 243 243 243;
+  --border: 229 229 229;
+  --text: 13 13 13;
+  --text-secondary: 93 93 93;
+  --text-tertiary: 143 143 143;
+  --primary: 13 13 13;
+  --primary-foreground: 255 255 255;
+  --accent: 16 163 127;
+  --success: 16 163 127;
+  --warning: 183 121 31;
+  --danger: 217 45 32;
+}
+
+.dark {
+  --background: 13 13 13;
+  --surface: 23 23 23;
+  --surface-hover: 33 33 33;
+  --border: 46 46 46;
+  --text: 236 236 236;
+  --text-secondary: 180 180 180;
+  --text-tertiary: 143 143 143;
+  --primary: 236 236 236;
+  --primary-foreground: 13 13 13;
+  --accent: 16 163 127;
+  --success: 25 195 125;
+  --warning: 240 180 41;
+  --danger: 249 112 102;
+}
+
+/*
+ * 遷移期 preflight 關閉，改用限定範圍的基礎樣式：只作用在 .ui-root 之內，
+ * 不影響仍使用 MUI 的舊頁面。新骨架與 src/ui 的浮層都會帶上 .ui-root。
+ */
+@layer base {
+  /* 全部用 :where() 把權重歸零，確保 Tailwind 工具類永遠能覆蓋這些基礎樣式 */
+  :where(.ui-root, .ui-root *, .ui-root ::before, .ui-root ::after) {
+    box-sizing: border-box;
+    border: 0 solid rgb(var(--border));
+  }
+  :where(.ui-root) {
+    font-family: theme('fontFamily.sans');
+    font-size: 14px;
+    line-height: 20px;
+    color: rgb(var(--text));
+    -webkit-font-smoothing: antialiased;
+  }
+  :where(.ui-root) :where(h1, h2, h3, h4, h5, h6, p, ul, ol, figure, blockquote) {
+    margin: 0;
+  }
+  :where(.ui-root) :where(ul, ol) {
+    list-style: none;
+    padding: 0;
+  }
+  :where(.ui-root) :where(button, input, select, textarea) {
+    font: inherit;
+    color: inherit;
+    margin: 0;
+  }
+  :where(.ui-root) :where(button) {
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0;
+  }
+  :where(.ui-root) :where(button, [role='button']):disabled {
+    cursor: not-allowed;
+  }
+  :where(.ui-root) :where(table) {
+    border-collapse: collapse;
+  }
+  :where(.ui-root) :where(a) {
+    color: inherit;
+    text-decoration: inherit;
+  }
+  :where(.ui-root) :where(svg) {
+    display: block;
+    flex-shrink: 0;
+  }
+}

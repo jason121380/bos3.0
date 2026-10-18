@@ -1,6 +1,6 @@
 import Customer from 'layouts/Customer'
 import Line from 'layouts/Line'
-import React, { lazy } from 'react'
+import React, { lazy, Suspense } from 'react'
 import { Redirect } from 'react-router-dom'
 import AR2 from 'views/AR2'
 import LineMap from 'views/Line/map'
@@ -17,6 +17,8 @@ import AuthLayout from './layouts/Auth'
 import DashboardLayout from './layouts/Dashboard'
 import ErrorLayout from './layouts/Error'
 import EHSLayout from './layouts/EHS'
+
+const UiPreview = lazy(() => import('views/UiPreview'))
 
 export default [
   {
@@ -43,6 +45,20 @@ export default [
     path: '/ar2',
     component: AR2,
   },
+  // 開發用：src/ui 元件預覽，正式建置不包含
+  ...(process.env.NODE_ENV !== 'production'
+    ? [
+        {
+          path: '/ui-preview',
+          exact: true,
+          component: () => (
+            <Suspense fallback={null}>
+              <UiPreview />
+            </Suspense>
+          ),
+        },
+      ]
+    : []),
   // {
   //   path: '/ar2',
   //   component: AR2
