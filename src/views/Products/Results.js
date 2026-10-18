@@ -336,7 +336,7 @@ function Results({ className, products, refetchProducts, onPageChange, ...rest }
           }
           title={
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-              <Typography variant="h6" style={{ fontWeight: 'bold', color: '#202124' }}>
+              <Typography variant="h6" style={{ fontWeight: 'bold', color: 'rgb(var(--text))' }}>
                 所有商品
               </Typography>
               <Typography color="textSecondary" variant="body2">
