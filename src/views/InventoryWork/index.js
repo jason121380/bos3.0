@@ -1,7 +1,6 @@
-/** @jsxImportSource @emotion/react */
 import {
-  Container, CircularProgress, Button, TextField,
-  Snackbar, Autocomplete, Typography, Collapse
+  TextField,
+  Snackbar, Autocomplete
 } from '@mui/material'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
@@ -12,36 +11,13 @@ import { Link as RouterLink } from 'react-router-dom'
 import { useFetchUsersForCreatePicking } from 'hooks/useFetchUsers'
 import { useFetchGetInventorysLazy } from 'hooks/useFetchGetInventorys'
 import Alert from '@mui/material/Alert';
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import AdminPageHeader from 'components/AdminPageHeader'
+import { Search } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Card } from 'ui/card'
+import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3),
-  }),
-  filterWrap: css({
-    display: 'flex',
-    gap: '12px',
-    alignItems: 'center',
-    marginBottom: '12px',
-    backgroundColor: 'rgb(var(--background))',
-    borderRadius: '12px',
-    padding: '16px',
-    border: '1px solid rgb(var(--border))',
-  }),
-  pillButton: css({
-    borderRadius: '20px !important',
-    padding: '4px 20px !important',
-    fontSize: '14px !important',
-    boxShadow: 'none !important',
-    fontWeight: 'bold !important',
-  }),
-}
 
 function InventoryWork() {
   const [draftId, setDraftId] = useState(null)
@@ -92,7 +68,7 @@ function InventoryWork() {
 
 
   return (
-    <Page css={styles.root} title="盤點作業">
+    <Page className="ui-root" title="盤點作業">
       <Snackbar open={open}
         style={{ top: '40vh' }}
         autoHideDuration={3000}
@@ -104,76 +80,74 @@ function InventoryWork() {
       >
         <Alert variant='filled' severity="warning">尚有未完成的盤點草稿，請按右上角按鈕完成盤點。</Alert>
       </Snackbar>
-      <Container maxWidth={false} css={styles.container}>
-        <AdminPageHeader
-          title="盤點作業"
-          showFilter={showFilter}
-          onFilterClick={() => setShowFilter(!showFilter)}
-          primaryAction={{
-            label: draftId === null ? '開始盤點' : '繼續盤點',
-            disabled: inventorysData.loading || !inventorysData.data,
-            to: draftId === null ? '/inventory-work/create' : `/inventory-work/edit/${draftId}`
-          }}
-        >
-          <DateSelector
-            date={date}
-            attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-          />
-        </AdminPageHeader>
+      <AdminPageHeader
+        title="盤點作業"
+        showFilter={showFilter}
+        onFilterClick={() => setShowFilter(!showFilter)}
+        primaryAction={{
+          label: draftId === null ? '開始盤點' : '繼續盤點',
+          disabled: inventorysData.loading || !inventorysData.data,
+          to: draftId === null ? '/inventory-work/create' : `/inventory-work/edit/${draftId}`
+        }}
+      >
+        <DateSelector
+          date={date}
+          attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
+          dateChange={value => setDate(value)}
+        />
+      </AdminPageHeader>
 
-        <Collapse in={showFilter}>
-          <div css={styles.filterWrap}>
-            <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'rgb(var(--text-secondary))' }}>篩選條件：</Typography>
-            <Autocomplete
-              options={
-                !users.loading ? idx(users, _ => _.data.users.users) : []
-              }
-              disabled={users.loading}
-              size="small"
-              style={{ width: 220 }}
-              autoHighlight
-              getOptionLabel={option =>
-                option.designerNo === creatorKeyword
-                  ? `${option.designerNo} ${option.name}`
-                  : option.name
-              }
-              renderOption={(props, option) => (
-                <li {...props} style={{ fontSize: '13px' }}>{`${option.designerNo || ''} ${option.name}`}</li>
-              )}
-              onChange={(e, value) => {
-                setCreatorId(value?.id || null)
-              }}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label="盤點人員"
-                  variant="outlined"
-                  fullWidth
-                  onChange={handleInputChange}
-                  InputProps={{
-                    ...params.InputProps,
-                    style: { borderRadius: '8px' }
-                  }}
-                />
-              )}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => getInventorysLazy()}
-              css={styles.pillButton}
-              size="small"
-            >
-              查詢
-            </Button>
-          </div>
-        </Collapse>
-        {(!inventorysData.loading && inventorysData.data) ?
-          <Results inventorys={inventorys} /> :
-          <div style={{ textAlign: 'center', marginTop: '100px' }}><CircularProgress /></div>
-        }
-      </Container>
+      {/* 以 hidden 收合（取代 MUI Collapse）：盤點人員 Autocomplete 為非受控，保持掛載，收合後選取內容與舊版一樣保留 */}
+      <div hidden={!showFilter}>
+        <Card className="mb-6 flex flex-wrap items-center gap-3 p-4">
+          <span className="text-label text-text-secondary">篩選條件：</span>
+          <Autocomplete
+            options={
+              !users.loading ? idx(users, _ => _.data.users.users) : []
+            }
+            disabled={users.loading}
+            size="small"
+            style={{ width: 220 }}
+            autoHighlight
+            getOptionLabel={option =>
+              option.designerNo === creatorKeyword
+                ? `${option.designerNo} ${option.name}`
+                : option.name
+            }
+            renderOption={(props, option) => (
+              <li {...props} style={{ fontSize: '13px' }}>{`${option.designerNo || ''} ${option.name}`}</li>
+            )}
+            onChange={(e, value) => {
+              setCreatorId(value?.id || null)
+            }}
+            renderInput={params => (
+              <TextField
+                {...params}
+                label="盤點人員"
+                variant="outlined"
+                fullWidth
+                onChange={handleInputChange}
+                InputProps={{
+                  ...params.InputProps,
+                }}
+              />
+            )}
+          />
+          <Button
+            variant="secondary"
+            onClick={() => getInventorysLazy()}
+          >
+            <Search strokeWidth={1.75} />
+            查詢
+          </Button>
+        </Card>
+      </div>
+      {(!inventorysData.loading && inventorysData.data) ?
+        <Results inventorys={inventorys} /> :
+        <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
+          <Skeleton className="h-[320px] w-full rounded-lg" />
+        </div>
+      }
     </Page>
   )
 }
