@@ -11,22 +11,15 @@ import useFetchGetBindedThirdPartTicketLockedSetting from 'hooks/useFetchGetBind
 import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusActive'
 import { useFetchGetIsPrintWindowClosureDelayed, useFetchGetIsLBCusDisplay } from 'hooks/useFetchGetParameterOrderCreateSetting'
 import { useFetchGetIsBonusRewardWithLine } from 'hooks/useFetchGetParameterAboutSettingFunction'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import useFetchGetBonusRewardRule from 'hooks/useFetchGetBonusRewardRule'
 import useFetchGetIsBonusConversion from 'hooks/useFetchGetIsBonusConversion'
 import useCheckDisablePendingOrder from 'hooks/useCheckDisablePendingOrder'
+import { MuiScope } from 'ui/mui-theme'
 
 import Footer from './Footer'
 import Head from './Head'
 import Header from './Header'
 import Pannel from './Pannel'
-
-const styles = {
-  root: css({
-    padding: theme.spacing(3),
-  }),
-}
 
 export default function KeyIn({ match }) {
   const onceRef = useRef(true)
@@ -248,7 +241,8 @@ export default function KeyIn({ match }) {
   }, [getIsBonusConversion.loading])
 
   return (
-    <Page title={`掛單詳細 ${orderNo && `(${orderNo})`}`} css={styles.root}>
+    <Page title={`掛單詳細 ${orderNo && `(${orderNo})`}`} className="ui-root">
+      <MuiScope>
       <Provider
         value={{
           handleBillChange,
@@ -284,6 +278,7 @@ export default function KeyIn({ match }) {
         <Pannel />
         <Footer />
       </Provider>
+      </MuiScope>
     </Page>
   )
 }
