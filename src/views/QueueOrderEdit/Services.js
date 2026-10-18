@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Checkbox, FormControlLabel, TextField, Typography } from '@mui/material'
+import { Checkbox, FormControlLabel, TextField } from '@mui/material'
 import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import ServicesAutoComplete from 'components/ServicesAutoComplete'
@@ -529,15 +529,15 @@ export default function Services({
               if (data.id === service.thirdPartyCouponMerchantId) {
                 if (data.type === 'PERCENT') {
                   return (
-                    <Typography key={index} css={styles.heading2}>
+                    <p key={index} className="m-0" css={styles.heading2}>
                       扣完後業績:{Math.round((service.price * (100 - data.fee)) / 100)}
-                    </Typography>
+                    </p>
                   )
                 } else {
                   return (
-                    <Typography key={index} css={styles.heading2}>
+                    <p key={index} className="m-0" css={styles.heading2}>
                       扣完後業績:{Math.round(service.price - data.fee)}
-                    </Typography>
+                    </p>
                   )
                 }
               }
