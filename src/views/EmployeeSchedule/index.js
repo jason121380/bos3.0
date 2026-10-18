@@ -1,5 +1,3 @@
-/** @jsxImportSource @emotion/react */
-import { Container, Grid, Button, Divider, CircularProgress } from '@mui/material'
 import Page from 'components/Page'
 import React, { useState, useEffect } from 'react'
 import _, { cloneDeep } from 'lodash'
@@ -10,24 +8,15 @@ import useFetchRedoEmployeeSchedule from 'hooks/useFetchRedoEmployeeSchedule'
 import { useFetchUsersInEmployeeSchedule } from 'hooks/useFetchUsers'
 import useFetchGetIsEmployeeScheduleUndoActive from 'hooks/useFetchGetIsEmployeeScheduleUndoActive'
 import idx from 'idx'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogTitle from '@mui/material/DialogTitle'
 import { openSnackbar } from 'elements/snackbars'
 import { useSelector } from 'react-redux'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { Button } from 'ui/button'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
+import { Skeleton } from 'ui/skeleton'
 
 import ScheduleCard from './ScheduleCard'
 import Header from './Header'
 import AddDesignersModal from './AddDesignersModal'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(2) + '!important',
-    paddingBottom: theme.spacing(1) + '!important',
-  }),
-}
 
 const EmployeeSchedule = () => {
   const socketSchedule = useSelector(state => state.socket.schedule)
@@ -228,86 +217,76 @@ const EmployeeSchedule = () => {
     socketSchedule && handleSetData(socketSchedule, undefined, true)
   }, [socketSchedule])
   return (
-    <Page css={styles.root} title="排班表">
-      <Container maxWidth={false}>
-        <Header
-          handleAddScheduleCard={handleAddScheduleCard}
-          handleRedoScheduleCard={handleRedoScheduleCard}
-          handleUndoScheduleCard={handleUndoScheduleCard}
-          disableButton={disableButton}
-          disableButtonUndo={disableButtonUndo}
-          disableButtonRedo={disableButtonRedo}
-          undoActive={undoActive}
-        />
-        <Grid container spacing={3} style={{ marginTop: '16px' }}>
-          {!usersData.loading ? (
-            <ScheduleCard
-              users={users}
-              scheduleCard={scheduleCard}
-              setScheduleCard={setScheduleCard}
-              handleClickOpen={handleClickOpen}
-              setEmployeeSchedule={setEmployeeSchedule}
-              setOpenAddDesignerModal={setOpenAddDesignerModal}
-              setModalCardIndex={setModalCardIndex}
-              setDisableButton={setDisableButton}
-              disableButton={disableButton}
-              employeeScheduleData={employeeScheduleData}
-              setDisableButtonUndo={setDisableButtonUndo}
-              setDisableButtonRedo={setDisableButtonRedo}
-              handleSetSchedule={handleSetSchedule}
-            />
-          ) : (
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-              <CircularProgress color="inherit" />
-            </div>
-          )}
-        </Grid>
-        <AddDesignersModal
-          designers={designers}
-          setDesigners={setDesigners}
-          openAddDesignerModal={openAddDesignerModal}
-          onClose={handleCloseModal}
-          modalCardIndex={modalCardIndex}
-          scheduleCard={scheduleCard}
-          setScheduleCard={setScheduleCard}
-          setOpenAddDesignerModal={setOpenAddDesignerModal}
-          handleSetSchedule={handleSetSchedule}
-          setDisableButton={setDisableButton}
-        />
-      </Container>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        PaperProps={{
-          style: {
-            width: '300px',
-            height: '125px',
-          },
-        }}
-      >
-        <DialogTitle id="alert-dialog-title">確定要刪除此班表嗎？</DialogTitle>
-        <Divider />
-        <DialogActions style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button
-            disabled={disableButton}
-            onClick={handleClose}
-            variant="outlined"
-            style={{ margin: ' -1px 19px' }}
-          >
-            取消
-          </Button>
-          <Button
-            onClick={handleDeleteCard}
-            disabled={disableButton}
-            autoFocus
-            variant="outlined"
-            style={{ margin: ' -1px 19px' }}
-          >
-            確定
-          </Button>
-        </DialogActions>
+    <Page className="ui-root" title="排班表">
+      <Header
+        handleAddScheduleCard={handleAddScheduleCard}
+        handleRedoScheduleCard={handleRedoScheduleCard}
+        handleUndoScheduleCard={handleUndoScheduleCard}
+        disableButton={disableButton}
+        disableButtonUndo={disableButtonUndo}
+        disableButtonRedo={disableButtonRedo}
+        undoActive={undoActive}
+      />
+      <div className="flex flex-wrap items-start gap-6">
+        {!usersData.loading ? (
+          <ScheduleCard
+            users={users}
+            scheduleCard={scheduleCard}
+            setScheduleCard={setScheduleCard}
+            handleClickOpen={handleClickOpen}
+            setEmployeeSchedule={setEmployeeSchedule}
+            setOpenAddDesignerModal={setOpenAddDesignerModal}
+            setModalCardIndex={setModalCardIndex}
+            setDisableButton={setDisableButton}
+            disableButton={disableButton}
+            employeeScheduleData={employeeScheduleData}
+            setDisableButtonUndo={setDisableButtonUndo}
+            setDisableButtonRedo={setDisableButtonRedo}
+            handleSetSchedule={handleSetSchedule}
+          />
+        ) : (
+          <div className="flex flex-wrap gap-6" aria-busy="true" aria-label="載入中">
+            <Skeleton className="h-[240px] w-[332px] rounded-lg" />
+            <Skeleton className="h-[240px] w-[332px] rounded-lg" />
+          </div>
+        )}
+      </div>
+      <AddDesignersModal
+        designers={designers}
+        setDesigners={setDesigners}
+        openAddDesignerModal={openAddDesignerModal}
+        onClose={handleCloseModal}
+        modalCardIndex={modalCardIndex}
+        scheduleCard={scheduleCard}
+        setScheduleCard={setScheduleCard}
+        setOpenAddDesignerModal={setOpenAddDesignerModal}
+        handleSetSchedule={handleSetSchedule}
+        setDisableButton={setDisableButton}
+      />
+      <Dialog open={open} onOpenChange={o => !o && handleClose()}>
+        <DialogContent size="sm">
+          <DialogHeader>
+            <DialogTitle>確定要刪除此班表嗎？</DialogTitle>
+            <DialogDescription>刪除後此班表與其中的人員排序會一併移除。</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="ghost"
+              disabled={disableButton}
+              onClick={handleClose}
+            >
+              取消
+            </Button>
+            <Button
+              variant="danger"
+              onClick={handleDeleteCard}
+              disabled={disableButton}
+              autoFocus
+            >
+              確定
+            </Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
     </Page>
   )
