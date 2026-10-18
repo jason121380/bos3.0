@@ -26,6 +26,7 @@
 | 2026/10/19 指示「UI 優先、全部改完」；本輪只做完整盤點＋第一批最安全 UI，**不 merge**，不新造 combobox／date-picker，不動列印報表 | 這三項要 Jason 拍版（`TODO.md` §二 P3） |
 | 浮動標籤的 MUI 欄位換成上方標籤時，**不改共用元件**：用 `Field`＋`label=''`／`placeholder`（`SourceSelect`、`EmployeeAutoComplete`、`CustomerAutoComplete` 都支援） | 這些元件全站共用；`Head`、`Remark` 已是這個做法，風險最低 |
 | **Jason 2026/10/19 四點拍版**：①`PaymentCreate` 授權改 Cypress 下拉選取為 `.select()` 寫法並恢復排批；②Autocomplete 不新造 combobox、不動打字／選取，其他頁只改外層標籤；③月曆排 `ui/date-picker` 專項（先盤點 39–43 檔，保留民國年／格式／locale／存值，分批）；④22 張列印報表併入 compact 專項（只改樣式、列印預覽唯讀確認） | 取代先前「等拍版／維持 MUI」的待決策；見 `TODO.md` §二 P3、`STATUS.md`、`STYLE.md` §11 |
+| 報表 compact 以 `ui/table` 的 `dense` 為單一定義（列高 32px、td 上下 4px、td／th 左右 `px-2`），共用層修改、頁面只傳 `dense` | 實查發現全專案原本沒有任何頁面傳 `dense`（`aria-label="a dense table"` 只是字串），改共用層不會波及既有頁面，比每頁寫 className 一致；非 dense 預設與 `PRINT` 規則不動。數字欄對齊不由本批處理（四頁原本就有 `numeric`）。三個「28」（`*Report` 目錄、`window.print` 檔案、舊文件的報表數）口徑不同，見 `TODO.md` §三之二 |
 | 畫面版號以 `src/version.js` 的 `APP_VERSION` 為單一來源（格式 `v3.0-MMDD-HHmm`），兩個 TopBar 都讀它 | 原本寫死 `v3.0`，Jason 無法從手機畫面判斷跑的是哪個 build。不用 `package.json` 的 version（0.1.0，與產品版號無關），也不另做 build 注入，避免兩套來源；代價是每個完整 commit 要手動更新此檔 |
 
 ## 驗證基準

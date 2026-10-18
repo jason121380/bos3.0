@@ -40,6 +40,13 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 | 版本 | 時間 | 內容 | PR／commit | checks |
 |---|---|---|---|---|
 | v3.0-1019-0232 | 2026-10-19 02:32 | 版本顯示上線：TopBar／Auth Topbar 讀 `src/version.js`（完整版本清單詳見下方） | #12 | GitHub Build/Unit pass；已 merge |
+| v3.0-1019-0357 | 2026-10-19 03:57 | 報表 compact 專項第一批（`claude/ui-report1-box`）：`ui/table` 的 `dense` 補儲存格左右內距 `px-2`；`MoneyFlowCategoryReport`／`MoneyFlowDailyReport`／`MoneyFlowTransferReport`／`PaymentReport` 主表格加 `dense` | 未 commit，待指揮者驗證 | eslint 0 error；verify-logic 五檔通過；portal-root-scan 0/0；全域測試 52/52；build 成功且 bundle 含校正前版號；已確認此前無頁面使用 ui Table 的 `dense`（`aria-label` 字串與 MUI List `dense` 不算） |
+
+### 報表 compact 專項進度（2026/10/19，數字為 rg 實查，口徑見 `TODO.md` §三之二）
+
+- **已套 compact：4 頁**（`MoneyFlowCategoryReport`、`MoneyFlowDailyReport`、`MoneyFlowTransferReport`、`PaymentReport`；各檔僅 1 張 Table，皆為主報表）。
+- **尚未套：24 頁**（28 個 `*Report` 目錄 − 4）：其中 12 頁已用 `ui/table` 只差加 `dense`（`BusinessItemsMonthlyAnalyze`、`DecreaseDaily`＊、`DesignerPerformance`、`HelperMonthly`、`HelperPerformance`、`MembershipSell`、`MerchantDaily`＊、`MerchantDailyPerformance`、`NonCashDetailStatement`、`OverallPerformanceAnalysis`、`ProductConsume`、`SingleServiceSearching`）；12 頁仍是 MUI Table（見 `TODO.md`）。＊＝同檔仍有 MUI Table 殘留，需另外處理。
+- 修正舊說法：全專案此前**沒有任何頁面真的傳 `dense`**（`aria-label="a dense table"` 只是字串），所以改 `ui/table` 的 `dense` 只影響本批 4 頁。
 
 給 Jason：PR #6–#10 已 merge 的舊版畫面左上角仍只顯示寫死的 `v3.0`；從本批 merge 之後，畫面才會顯示短版號（例如 `v3.0-1019-0232`），不用回頭改舊 commit。之後每個完整 commit 都會更新 `src/version.js`。
 

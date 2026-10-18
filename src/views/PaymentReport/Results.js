@@ -75,7 +75,7 @@ function Results({ report, paymentsName }) {
         <CardTitle>每日非現金明細</CardTitle>
       </CardHeader>
       <div className="px-5 pb-5">
-        <Table className="min-w-[650px]" aria-label="a dense table">
+        <Table dense className="min-w-[650px]" aria-label="a dense table">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead>日期</TableHead>
