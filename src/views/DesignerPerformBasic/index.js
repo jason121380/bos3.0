@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { ToggleButton, ToggleButtonGroup } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
@@ -15,6 +14,7 @@ import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisp
 import { useFetchGetDRRDataDisplay } from 'hooks/useFetchGetParameterReportSetting'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
@@ -320,16 +320,16 @@ const DesignerPerformBasic = () => {
           <div className="noprint flex flex-wrap items-center justify-start gap-x-2.5 gap-y-8">
             <div style={{ marginTop: -23 }}>
               <div className="divText">服務業績指定/不指定：</div>
-              <ToggleButtonGroup
+              <ToggleGroup
                 style={{ marginRight: '10px' }}
                 size="small"
                 exclusive
                 value={performanceDisplay}
                 onChange={(e, v) => v && setPerformanceDisplay(v)}
               >
-                <ToggleButton value='VISIBLE'>顯示</ToggleButton>
-                <ToggleButton value='HIDDEN'>不顯示</ToggleButton>
-              </ToggleButtonGroup>
+                <ToggleGroupItem value='VISIBLE'>顯示</ToggleGroupItem>
+                <ToggleGroupItem value='HIDDEN'>不顯示</ToggleGroupItem>
+              </ToggleGroup>
             </div>
             {!isDisplayTogglePerformanceButton && <div style={{ marginTop: -23 }}>
               <div className="divText">業績依據：</div>
@@ -344,7 +344,7 @@ const DesignerPerformBasic = () => {
                 總業績依據：
               </div>
               <div>
-                <ToggleButtonGroup
+                <ToggleGroup
                   style={{ marginRight: '10px' }}
                   size="small"
                   value={isIncludeProductPerformance}
@@ -352,37 +352,37 @@ const DesignerPerformBasic = () => {
                   exclusive
                 >
                   {isIncludeProductPerformanceValue.map((data, idx) => (
-                    <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                    <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                       {data.label}
-                    </ToggleButton>
+                    </ToggleGroupItem>
                   ))}
-                </ToggleButtonGroup>
+                </ToggleGroup>
                 {isMemberShipCardActive ?
-                  <ToggleButtonGroup
+                  <ToggleGroup
                     size="small"
                     value={isIncludeMemberPerformance}
                     onChange={handleMemberPerformanceToggleButtonChange}
                     exclusive
                   >
                     {isIncludeMemberPerformanceValue.map((data, idx) => (
-                      <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                      <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                         {data.label}
-                      </ToggleButton>
+                      </ToggleGroupItem>
                     ))}
-                  </ToggleButtonGroup> :
+                  </ToggleGroup> :
                   membershipDisplay ?
-                    <ToggleButtonGroup
+                    <ToggleGroup
                       size="small"
                       value={isIncludeMemberPerformance}
                       onChange={handleMemberPerformanceToggleButtonChange}
                       exclusive
                     >
                       {isIncludeMemberPerformanceValue.map((data, idx) => (
-                        <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                        <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                           {data.label}
-                        </ToggleButton>
+                        </ToggleGroupItem>
                       ))}
-                    </ToggleButtonGroup> : ''
+                    </ToggleGroup> : ''
                 }
 
               </div>
