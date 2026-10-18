@@ -23,6 +23,7 @@ const TOKENS = {
 }
 
 const FLOAT_SHADOW = '0 4px 16px rgba(0,0,0,0.08)'
+const SHEET = '@media (max-width: 639.95px)'
 
 export function createBridgeTheme(mode = 'light') {
   const t = TOKENS[mode]
@@ -209,7 +210,25 @@ export function createBridgeTheme(mode = 'light') {
       },
       MuiCardContent: { styleOverrides: { root: { padding: '16px 20px', '&:last-child': { paddingBottom: 20 } } } },
       MuiDialog: {
-        styleOverrides: { paper: { borderRadius: 12, border: `1px solid ${t.border}`, boxShadow: FLOAT_SHADOW } },
+        styleOverrides: {
+          paper: { borderRadius: 12, border: `1px solid ${t.border}`, boxShadow: FLOAT_SHADOW },
+          // 手機（< 640px，與 Tailwind sm 一致）：非全螢幕的對話框改為底部面板
+          container: { [SHEET]: { alignItems: 'flex-end' } },
+          root: {
+            [SHEET]: {
+              '& .MuiDialog-paper:not(.MuiDialog-paperFullScreen)': {
+                margin: 0,
+                width: '100%',
+                maxWidth: '100%',
+                maxHeight: 'calc(100% - 48px)',
+                borderRadius: '16px 16px 0 0',
+                borderBottom: 0,
+                paddingBottom: 'env(safe-area-inset-bottom)',
+                animation: 'ui-sheet-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+              },
+            },
+          },
+        },
       },
       MuiDialogTitle: { styleOverrides: { root: { fontSize: 16, fontWeight: 700, padding: '20px 24px 8px' } } },
       MuiDialogActions: { styleOverrides: { root: { padding: '12px 24px 20px', gap: 8 } } },

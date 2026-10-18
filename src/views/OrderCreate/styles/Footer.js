@@ -7,6 +7,8 @@ export default {
     marginTop: theme.spacing(2),
     position: 'fixed',
     bottom: '0px',
+    // 平板與手機：位於底部分頁列上方（見 layouts/Dashboard/MobileNav）
+    '@media (max-width: 1023.95px)': { bottom: 'calc(56px + env(safe-area-inset-bottom))' },
     zIndex: 1100,
     borderRadius: '0px',
     backgroundColor: 'rgb(var(--background))',

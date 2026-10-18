@@ -48,6 +48,12 @@
  * 不影響仍使用 MUI 的舊頁面。新骨架與 src/ui 的浮層都會帶上 .ui-root。
  */
 @layer base {
+  /* 手機 App 化：點擊不閃灰底、橫向時不自動放大字級 */
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
   /* 全部用 :where() 把權重歸零，確保 Tailwind 工具類永遠能覆蓋這些基礎樣式 */
   :where(.ui-root, .ui-root *, .ui-root ::before, .ui-root ::after) {
     box-sizing: border-box;
@@ -91,4 +97,10 @@
     display: block;
     flex-shrink: 0;
   }
+}
+
+/* 手機底部面板（MUI Dialog，見 ui/mui-theme.js）的進場動畫 */
+@keyframes ui-sheet-in {
+  from { transform: translateY(32px); opacity: 0.6; }
+  to { transform: none; opacity: 1; }
 }

@@ -8,12 +8,13 @@ import { renderRoutes } from 'react-router-config'
 import useFetchCheckPageAuthority from 'hooks/useFetchCheckPageAuthority'
 import useFetchGetUserMerchant from 'hooks/useFetchGetUserMerchant'
 import idx from 'idx'
-import { Menu, PanelLeftOpen } from 'lucide-react'
+import { PanelLeftOpen } from 'lucide-react'
 import { Button } from 'ui/button'
 import { MuiScope } from 'ui/mui-theme'
 import { Sidebar, SidebarHeader } from 'ui/sidebar'
 import { cn } from 'ui/utils'
 
+import { MobileAppBar, MobileTabBar, useMobileTabs, useShowTabBar } from './MobileNav'
 import NavBar from './NavBar'
 import TopBar from './TopBar'
 
@@ -25,6 +26,8 @@ function Dashboard({ route, location }) {
   const history = useHistory()
   const [checkPageAuthorityLazy, checkPageAuthorityData] = useFetchCheckPageAuthority()
   const userMerchants = useFetchGetUserMerchant()
+  const mobileTabs = useMobileTabs()
+  const showTabBar = useShowTabBar(mobileTabs)
 
   useEffect(() => {
     history.listen((location) => {
@@ -90,13 +93,9 @@ function Dashboard({ route, location }) {
         </SidebarHeader>
         <NavBar onMobileClose={() => setOpenNavBarMobile(false)} openMobile={openNavBarMobile} openDesktop={openNavBarDesktop} />
       </Sidebar>
-      {/* 平板與手機：頂部列只放開啟側欄與 Logo */}
-      <header className="ui-root noprint sticky top-0 z-[1100] flex h-14 items-center gap-2 border-0 border-b border-solid border-border bg-background px-4 lg:hidden">
-        <Button variant="ghost" size="icon" aria-label="開啟選單" onClick={handleToggleNavBar}>
-          <Menu strokeWidth={1.75} />
-        </Button>
-        <img alt="BeautyOS" className="h-6 w-auto invert dark:invert-0" src={require('assets/images/bosLogoNew.png')} />
-      </header>
+      {/* 平板與手機：App 式頂部列＋底部分頁列（選單鈕開啟側欄抽屜） */}
+      <MobileAppBar tabs={mobileTabs} showTabBar={showTabBar} onOpenMenu={handleToggleNavBar} />
+      {showTabBar && <MobileTabBar tabs={mobileTabs} menuOpen={openNavBarMobile} onOpenMenu={handleToggleNavBar} />}
       {!openNavBarDesktop && (
         <Button
           variant="secondary"
@@ -108,7 +107,15 @@ function Dashboard({ route, location }) {
           <PanelLeftOpen strokeWidth={1.75} />
         </Button>
       )}
-      <div className={cn('flow-root min-h-screen bg-canvas transition-[padding] duration-200 print:pl-0', openNavBarDesktop && 'lg:pl-60')}>
+      <div
+        className={cn(
+          'flow-root min-h-screen bg-canvas transition-[padding] duration-200 print:pl-0',
+          // iOS：輸入框字級小於 16px 時聚焦會自動放大畫面
+          'max-sm:[&_input]:!text-[16px] max-sm:[&_select]:!text-[16px] max-sm:[&_textarea]:!text-[16px]',
+          showTabBar && 'max-lg:pb-[calc(56px+env(safe-area-inset-bottom))] print:pb-0',
+          openNavBarDesktop && 'lg:pl-60'
+        )}
+      >
         <div id="printContainer" className="max-w-full overflow-x-hidden">
           <Suspense fallback={<div className="ui-root h-0.5 w-full animate-pulse bg-accent" />}>{renderRoutes(route.routes)}</Suspense>
         </div>

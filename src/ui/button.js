@@ -20,9 +20,9 @@ const buttonVariants = cva(
       },
       size: {
         sm: 'h-8 px-3 text-label',
-        md: 'h-9 px-4 text-body font-medium',
+        md: 'h-9 px-4 text-body font-medium max-sm:h-10', // 手機觸控目標 40px
         lg: 'h-10 px-5 text-body font-medium',
-        icon: 'h-9 w-9',
+        icon: 'h-9 w-9 max-sm:h-10 max-sm:w-10',
       },
     },
     defaultVariants: { variant: 'secondary', size: 'md' },

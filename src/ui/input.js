@@ -3,7 +3,7 @@ import { cn } from './utils'
 
 // STYLE.md §6：高 36px、rounded-md、1px 控制項邊框（border-strong）；focus 2px accent；錯誤時 border 變 danger
 export const inputClass = cn(
-  'h-9 w-full rounded-md border border-solid border-border-strong bg-background px-3 text-body text-text',
+  'h-9 max-sm:h-10 w-full rounded-md border border-solid border-border-strong bg-background px-3 text-body text-text',
   'placeholder:text-text-tertiary transition-colors hover:border-border-strong-hover',
   'outline-none focus-visible:border-accent focus-visible:ring-2 focus-visible:ring-accent/30',
   'disabled:cursor-not-allowed disabled:bg-surface disabled:text-text-tertiary'

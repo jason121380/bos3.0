@@ -15,6 +15,8 @@ function Sidebar({ mobileOpen, onMobileClose, desktopOpen = true, className, chi
         className={cn(
           'ui-root noprint fixed inset-y-0 left-0 z-[1200] flex w-60 flex-col border-0 border-r border-solid border-border bg-surface',
           'transition-transform duration-200',
+          // 手機抽屜：加寬、避開瀏海與底部指示條
+          'max-lg:w-[min(84vw,320px)] max-lg:pb-[env(safe-area-inset-bottom)] max-lg:pt-[env(safe-area-inset-top)] max-lg:shadow-float',
           mobileOpen ? 'translate-x-0' : '-translate-x-full',
           desktopOpen ? 'lg:translate-x-0' : 'lg:-translate-x-full',
           className

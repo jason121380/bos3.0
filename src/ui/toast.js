@@ -43,7 +43,7 @@ function Toaster() {
   }, [])
 
   return (
-    <div className="ui-root pointer-events-none fixed bottom-0 right-0 z-[1500] flex w-full max-w-[400px] flex-col gap-2 p-6">
+    <div className="ui-root pointer-events-none fixed bottom-0 right-0 z-[1500] flex w-full max-w-[400px] flex-col gap-2 p-6 max-lg:pb-[calc(72px+env(safe-area-inset-bottom))] max-sm:px-4">
       {list.map(({ id, variant, title, description }) => {
         const Icon = ICON[variant]
         return (
