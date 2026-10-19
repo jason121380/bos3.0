@@ -10,7 +10,7 @@ import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import React from 'react'
 import { useFormContext } from 'react-hook-form'
 import useFetchPayments from 'hooks/useFetchPayments'
-import { MobileDateTimePicker } from '@mui/x-date-pickers'
+import { MobileDateTimePicker } from 'ui/date-picker'
 import format from 'date-fns/format';
 import { Card, CardContent } from 'ui/card'
 import { Field, Input as UiInput } from 'ui/input'
