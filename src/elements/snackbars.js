@@ -4,7 +4,7 @@ import {
   Button, colors, CircularProgress, Box, Typography,
   SnackbarContent, Snackbar
 } from '@mui/material'
-import IconButton from '@mui/material/IconButton'
+import { Button as UiButton } from 'ui/button'
 import { CheckCircle as CheckCircleIcon, Close as CloseIcon, Error as ErrorIcon, Info as InfoIcon, Warning as WarningIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useEffect, useState, Fragment, forwardRef } from 'react'
@@ -347,9 +347,9 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
         )
       }
       action={[
-        <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
+        <UiButton key="close" variant="ghost" size="icon" className="h-8 w-8" aria-label="close" title="關閉" onClick={onClose}>
           {!checkoutProcessing && <CloseIcon css={styles.icon} />}
-        </IconButton>,
+        </UiButton>,
       ]}
       {...other}
     />

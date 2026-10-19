@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
-import { Button, Autocomplete, TextField, InputAdornment } from '@mui/material'
+import { Button as MuiButton, Autocomplete, TextField, InputAdornment } from '@mui/material'
+import { Button } from 'ui/button'
 import useFetchGetUserMerchant from 'hooks/useFetchGetUserMerchant'
 import MerchantsListModal from './MerchantsListModal'
 import PropTypes from 'prop-types'
@@ -47,7 +48,7 @@ const index = ({ onValueChange = () => { } }) => {
           open={false}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           popupIcon={
-            <Button component='div' onClick={handleSelectAll} variant="contained" color="primary" size="small">全選</Button>
+            <MuiButton component='div' onClick={handleSelectAll} variant="contained" color="primary" size="small">全選</MuiButton>
           }
           value={values}
           onChange={(e, v) => {
@@ -76,7 +77,7 @@ const index = ({ onValueChange = () => { } }) => {
             />
           )}
         />
-        <Button onClick={() => setOpen(true)} style={{ whiteSpace: 'nowrap', height: 'fit-content' }} variant="contained" color="primary">選擇店家</Button>
+        <Button onClick={() => setOpen(true)} style={{ whiteSpace: 'nowrap', height: 'fit-content' }} variant="primary">選擇店家</Button>
       </div>
       {!userMerchants.loading &&
         <MerchantsListModal

@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, Fragment } from 'react'
-import { Button, Autocomplete, TextField } from '@mui/material'
+import { Button as MuiButton, Autocomplete, TextField } from '@mui/material'
+import { Button } from 'ui/button'
 import useFetchProductTreeview from 'hooks/useFetchProductTreeview'
 import ProductListModal from './ProductListModal'
 import PropTypes from 'prop-types'
@@ -62,7 +63,7 @@ const index = ({ onValueChange = () => { } }) => {
           style={{ cursor: 'pointer' }}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           popupIcon={
-            <Button component='div' onClick={handleSelectAll} variant="contained" color="primary" size="small">全選</Button>
+            <MuiButton component='div' onClick={handleSelectAll} variant="contained" color="primary" size="small">全選</MuiButton>
           }
           value={values}
           onChange={(e, v) => {
@@ -91,7 +92,7 @@ const index = ({ onValueChange = () => { } }) => {
             />
           )}
         />
-        <Button onClick={() => setOpen(true)} style={{ whiteSpace: 'nowrap', height: 'fit-content' }} variant="contained" color="primary">選擇商品</Button>
+        <Button onClick={() => setOpen(true)} style={{ whiteSpace: 'nowrap', height: 'fit-content' }} variant="primary">選擇商品</Button>
       </div>
       {!productTreeview.loading &&
         <ProductListModal

@@ -2,7 +2,8 @@
 import { useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles';
 import format from 'date-fns/format'
-import { Popper, Fade, Paper, IconButton, Grid, Typography } from '@mui/material'
+import { Popper, Fade, Paper, Grid, Typography } from '@mui/material'
+import { Button } from 'ui/button'
 import { CreditCardTwoTone as CreditCardTwoToneIcon } from 'ui/icons'
 
 const C_Popper = styled(Popper)(() => ({
@@ -56,12 +57,16 @@ const MembershipCardList = ({ data }) => {
 
   return (
     <Fragment>
-      <IconButton
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label="會員卡清單"
+        title="會員卡清單"
         onClick={handleClickMembership}
         style={{ float: 'right', color: 'gold' }}
       >
         <CreditCardTwoToneIcon fontSize="inherit" />
-      </IconButton>
+      </Button>
       <C_Popper open={open} anchorEl={anchorEl} placement={placement} transition>
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={350}>
