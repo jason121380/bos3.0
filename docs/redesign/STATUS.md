@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| PrimeStay 全站地基第一批（v3.0-1019-2249，未合併待截圖驗收） | 外框＋共用樣式地基（STYLE §13／MEMORY #98）：canvas `#F3F4F6`、內容 `#printContainer` 白卡大圓角＋細邊＋柔和陰影（print 還原）、側欄選中白 pill＋品牌藍字、Card/Dialog 16px 圓角、Button secondary 白 pill、Tabs 藍字藍線、Input 10px 圓角；主色維持 bos 深藍不換截圖綠。示範頁顧客列表。逐頁換色留後續批次；報表/帳單密度與列印不動。 |
 | MUI 批次6・Dialog/Modal 第二小批（線4，v3.0-1019-2233） | 9 窗換 ui/dialog（只換外殼）：CouponList 扣項/互助設定 2 窗（保留 912px）、進貨 Create/Edit 與領料商品選擇 3 窗（保留 960/700px，MUI TextField 價格數量本體不動）、店家/商品樹狀選擇 4 窗（onOpenChange 轉接、保留 .MerchantsListModal 掛點）；handler/存值不動。跳過 PasswordDialog 巢狀、MUI Select 彈層、拖曳、帳單四兄弟、Autocomplete/DatePicker 彈層、Slider、預約巢狀與複雜金額窗，見 TODO/MEMORY #96。待實機逐窗點驗開關/背景/儲存/樹狀選取。 |
 | MUI批次5 TextField第二小批（AGY線，v3.0-1019-2238） | 僅 2 檔 3 欄→ui Input：SalaryItems 科目名稱×2（aria-label＋name 原樣）、AboutEmployeeSchedule 人員班別（Field 上方標籤）；實查剩餘全屬 Autocomplete/RHF/金額/密碼日期/搜尋/焦點鏈/帳單/列印/保留類，不足額不湊數（見 TODO/MEMORY #97）。待實機輸入存值與並排間距。 |
 | MUI 批次6・Dialog/Modal 第一小批（線4，v3.0-1019-2224） | 6 窗換 ui/dialog：ChangePassword（無 onClose 強制窗）、SaleStatusEditModal（onOpenChange 轉接原 onClose）、EditMemberCardRecordModal、EditProductsCategoryModal（保留 912px）、顧客清單/篩選匯出刪除確認孿生窗；窗內欄位/handler/存值不動。跳過 PasswordDialog（巢狀預約）、MUI Select 彈層窗、拖曳排序、帳單/預約與複雜欄位窗，見 TODO/MEMORY #95。待實機逐窗點驗開關/背景/focus。 |
