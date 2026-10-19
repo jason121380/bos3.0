@@ -2,7 +2,7 @@
 // 多選篩選（值為陣列）保留 MUI
 import {
   InputLabel, MenuItem, FormControl,
-  ListItemText, Select, Checkbox
+  Select, Checkbox
 } from '@mui/material'
 import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
@@ -162,7 +162,7 @@ const PerformanceDetail = ({
                 {selectOptions.map(({ label, value }) => (
                   <MenuItem key={value} value={value}>
                     <Checkbox checked={sortType.includes(value)} />
-                    <ListItemText primary={label} />
+                    <span className="flex-1">{label}</span>
                   </MenuItem>
                 ))}
               </Select>
