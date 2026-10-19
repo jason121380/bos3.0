@@ -6,6 +6,7 @@ import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
 import { Switch } from 'ui/switch'
 
 const stockUnit = [
@@ -55,20 +56,18 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
       </CardHeader>
       <CardContent>
         <form className="flex flex-col gap-6">
-          <TextField
-            label="代號"
-            value={product.no}
-            variant="outlined"
-            fullWidth
-            onChange={event => onChange({ event, key: 'no' })}
-          />
-          <TextField
-            label="名稱"
-            value={product.name}
-            onChange={event => onChange({ event, key: 'name' })}
-            variant="outlined"
-            fullWidth
-          />
+          <Field label="代號">
+            <Input
+              value={product.no}
+              onChange={event => onChange({ event, key: 'no' })}
+            />
+          </Field>
+          <Field label="名稱">
+            <Input
+              value={product.name}
+              onChange={event => onChange({ event, key: 'name' })}
+            />
+          </Field>
           <FormControl variant="outlined" fullWidth>
             <InputLabel>商品類別</InputLabel>
             <Select

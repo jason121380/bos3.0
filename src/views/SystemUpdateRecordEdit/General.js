@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, Fragment } from 'react'
-import { TextField } from '@mui/material'
 import { Button } from 'ui/button'
+import { Field, Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { format } from 'date-fns'
 import { MobileDatePicker } from 'ui/date-picker'
@@ -10,18 +10,6 @@ import 'md-editor-rt/lib/style.css';
 import { openSnackbar } from 'elements/snackbars'
 import { useHistory } from 'react-router'
 import { useFetchCreateSystemUpdateEdit } from 'hooks/useFetchSystemUpdateRecord'
-import { css } from '@emotion/react'
-
-const styles = {
-  root: css({}),
-  textFieldWidth: css({
-    width: '300px',
-  }),
-  textFieldSpacing: css({
-    margin: '20px 0',
-  }),
-}
-
 const General = ({ editData, setEditData, mdValue, setMdValue }) => {
   const history = useHistory()
   const { SystemUpdateEdit } = useFetchCreateSystemUpdateEdit()
@@ -100,28 +88,25 @@ const General = ({ editData, setEditData, mdValue, setMdValue }) => {
                 })
               }}
             />
-            <TextField
-              css={styles.textFieldWidth}
-              value={editData.versionNo}
-              label="版本"
-              variant="outlined"
+            <Field label="版本" className="w-[300px] max-w-full">
+              <Input
+                type="text"
+                value={editData.versionNo}
+                onChange={event => {
+                  setEditData({ ...editData, versionNo: event.target.value })
+                }}
+              />
+            </Field>
+          </div>
+          <Field label="標題" className="my-5">
+            <Input
               type="text"
+              value={editData.title}
               onChange={event => {
-                setEditData({ ...editData, versionNo: event.target.value })
+                setEditData({ ...editData, title: event.target.value })
               }}
             />
-          </div>
-          <TextField
-            css={styles.textFieldSpacing}
-            fullWidth
-            label="標題"
-            variant="outlined"
-            type="text"
-            value={editData.title}
-            onChange={event => {
-              setEditData({ ...editData, title: event.target.value })
-            }}
-          />
+          </Field>
           <MdEditor
             theme={theme}
             style={{height: '700px'}}
