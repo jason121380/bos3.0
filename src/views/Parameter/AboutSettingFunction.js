@@ -374,33 +374,35 @@ function AboutSettingFunction({
           </NativeSelect>
         </Field>
         <div style={{ width: '100%', padding: '0px 20px 24px 20px' }}>
-          <Autocomplete
-            multiple
-            options={AfterCheckoutBanned}
-            disableCloseOnSelect
-            disabled={!inputEnable}
-            getOptionLabel={option => option.label}
-            value={AfterCheckoutBanned.filter(d => aboutSettingFunction.actionsBannedAfterDailyCheckout.includes(d.value))}
-            onChange={(e, v) => {
-              setAboutSettingFunction(
-                produce(draft => { draft.actionsBannedAfterDailyCheckout = v.map(d => d.value) })
-              )
-            }}
-            renderOption={(props, option, { selected }) => (
-              <li {...props}>
-                <Checkbox
-                  style={{ color: '#202D50', marginRight: 8 }}
-                  icon={icon}
-                  checkedIcon={checkedIcon}
-                  checked={selected}
-                />
-                {option.label}
-              </li>
-            )}
-            renderInput={params => (
-              <TextField {...params} variant="outlined" label="日結後鎖定的功能" placeholder="功能名稱" />
-            )}
-          />
+          <Field label="日結後鎖定的功能">
+            <Autocomplete
+              multiple
+              options={AfterCheckoutBanned}
+              disableCloseOnSelect
+              disabled={!inputEnable}
+              getOptionLabel={option => option.label}
+              value={AfterCheckoutBanned.filter(d => aboutSettingFunction.actionsBannedAfterDailyCheckout.includes(d.value))}
+              onChange={(e, v) => {
+                setAboutSettingFunction(
+                  produce(draft => { draft.actionsBannedAfterDailyCheckout = v.map(d => d.value) })
+                )
+              }}
+              renderOption={(props, option, { selected }) => (
+                <li {...props}>
+                  <Checkbox
+                    style={{ color: '#202D50', marginRight: 8 }}
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    checked={selected}
+                  />
+                  {option.label}
+                </li>
+              )}
+              renderInput={params => (
+                <TextField {...params} variant="outlined" placeholder="功能名稱" />
+              )}
+            />
+          </Field>
         </div>
         <div css={styles.bookingInputGroup}>
           <div style={{ marginBottom: '15px', marginLeft: 20 }}>設定店家營業時間</div>
