@@ -205,3 +205,5 @@
 5. **焦點鏈**：Enter 跳欄（AccountingRecord、GeneralAccountingRecord、EmployeePickingEdit、MemberShipCardSells）換外觀後仍可跳。
 6. **自訂 `slots.field` 欄位**：`DateSelector` 的 `<button>`、`MerchantSearchBar` 的 `Button`、各表單的 `Input type='text'`（只有 `onClick`）外觀換新後仍能點開、`disabled`／`readOnly` 樣式。
 7. **列印／匯出**：本專項不碰列印範本，但確認含日期欄的頁面列印預覽沒有受影響。
+
+批 6 進度（收尾）：`OrderCreate/WalletDepositModal.js`、`OrderEdit/WalletDepositModal.js` 各 1 個 `DateTimePicker` 已換用 `ui/date-picker` facade（`codex/ui-datepicker-wallet-deposit-box`，v3.0-1019-1538）；只換 import，存值與金額、手續費連動原樣。月曆專項（批 1-6）至此完成，待實機清單見第八節。
