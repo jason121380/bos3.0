@@ -1,5 +1,5 @@
-// 下拉改為 NativeSelect（值可能為數字，以索引對應、回傳原始型別）；保留 MUI Modal 與 Checkbox，外框、標題、欄位、按鈕改為 src/ui
-import { Modal, FormControlLabel, Checkbox } from '@mui/material'
+// 下拉改為 NativeSelect（值可能為數字，以索引對應、回傳原始型別）；外框已換 ui/dialog（舊 Modal 無 onClose，點背景/Esc 不關閉）、MUI Checkbox 保留，欄位與按鈕為 src/ui
+import { FormControlLabel, Checkbox } from '@mui/material'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import _ from 'lodash'
@@ -7,9 +7,9 @@ import { Delete, Plus, Trash2 } from 'lucide-react'
 import useFetchMerchantDeductionItems from 'hooks/useFetchMerchantDeductionItems'
 import idx from 'idx'
 import { Button } from 'ui/button'
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 
 const deductionWay2 = [
   { label: '依業績%數', value: '扣趴數' },
@@ -208,20 +208,17 @@ function AboutDeductionEditModal({
   }
 
   return (
-    <Modal open={openEditDeductionModal}>
-      <Card className="ui-root absolute left-1/2 top-1/2 flex max-h-full w-[912px] max-w-full -translate-x-1/2 -translate-y-1/2 flex-col shadow-float outline-none">
-        <CardHeader
-          className="items-center pb-4"
-          action={
-            <Button variant="secondary" onClick={onClose}>
-              關閉
-            </Button>
-          }
-        >
-          <CardTitle>扣項項目設定</CardTitle>
-        </CardHeader>
+    // 舊版 Modal 未設 onClose（點背景／Esc 不關閉），故不傳 onOpenChange；hideClose 保留原「關閉」按鈕，寬度保留原 912px
+    <Dialog open={openEditDeductionModal}>
+      <DialogContent size="lg" className="max-w-[912px]" hideClose aria-describedby={undefined}>
+        <DialogHeader className="flex-row items-center justify-between pr-6">
+          <DialogTitle>扣項項目設定</DialogTitle>
+          <Button variant="secondary" onClick={onClose}>
+            關閉
+          </Button>
+        </DialogHeader>
 
-        <CardContent className="flex flex-col gap-6 overflow-y-auto pt-0">
+        <DialogBody className="flex flex-col gap-6">
           {ServiceDeductionItems.map(data => (
             <Fragment key={`${data.type}`}>
               <div className="flex flex-col gap-4">
@@ -383,15 +380,15 @@ function AboutDeductionEditModal({
               </div>
             </Fragment>
           ))}
-        </CardContent>
-        <CardFooter>
+        </DialogBody>
+        <DialogFooter>
           {/* 批次儲存會覆蓋原先設定（送出前另有確認提示），以 danger 表示 */}
           <Button variant="danger" onClick={handleSubmitDeductionSettingWarning}>
             儲存
           </Button>
-        </CardFooter>
-      </Card>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 

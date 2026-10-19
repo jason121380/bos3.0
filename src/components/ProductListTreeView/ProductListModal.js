@@ -1,10 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
-import {
-  Dialog, DialogTitle, DialogContent,
-  DialogActions, Checkbox, TextField, InputAdornment
-} from '@mui/material'
+import { Checkbox, TextField, InputAdornment } from '@mui/material'
 import { Button } from 'ui/button'
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { TreeView, TreeItem } from '@mui/x-tree-view';
 import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, Inventory2Outlined as Inventory2OutlinedIcon, DashboardOutlined as DashboardOutlinedIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
@@ -285,9 +283,11 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
   }
 
   return (
-    <Dialog className='MerchantsListModal' maxWidth='md' fullWidth open={open} onClose={handleOnClose}>
-      <DialogTitle css={styles.title}>
-        商品列表
+    // 舊版 MUI Dialog 有 onClose（點背景／Esc 關閉），以 onOpenChange 轉接；hideClose 不另加 X 鈕，寬度保留 MUI md（960px），className 保留 scss 掛點
+    <Dialog open={open} onOpenChange={o => { if (!o) handleOnClose() }}>
+      <DialogContent size="lg" className="MerchantsListModal max-w-[960px]" hideClose aria-describedby={undefined}>
+      <DialogHeader className="flex-row flex-wrap items-center justify-between gap-4 pr-6">
+          <DialogTitle>商品列表</DialogTitle>
         <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
           <TextField
             placeholder="搜尋商品"
@@ -312,8 +312,8 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
           <Button css={styles.button} onClick={() => setModalValues([])} variant="secondary">清除選取</Button>
           <Button css={styles.button} onClick={handleExpanedAll} variant="secondary">展開全部</Button>
         </div>
-      </DialogTitle>
-      <DialogContent>
+      </DialogHeader>
+      <DialogBody>
         <TreeView
           css={styles.root}
           defaultCollapseIcon={<ExpandMoreIcon />}
@@ -343,11 +343,12 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
           </div>
           {productList.category.length ? renderGroup(productList.category) : ''}
         </TreeView>
-      </DialogContent>
-      <DialogActions>
+      </DialogBody>
+      <DialogFooter>
         <Button variant="secondary" onClick={handleOnClose}>關閉</Button>
         <Button variant="primary" onClick={handleComfirm}>確認</Button>
-      </DialogActions>
+      </DialogFooter>
+      </DialogContent>
     </Dialog>
   )
 }
