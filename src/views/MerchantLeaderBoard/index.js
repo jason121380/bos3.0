@@ -16,6 +16,7 @@ import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
+import { Toolbar } from 'ui/page-header'
 
 const isIncludeProductPerformanceValue = [
   { label: '含店販', value: true },
@@ -285,96 +286,85 @@ const MerchantLeaderBoard = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <AdminPageHeader title='店家排行榜' />
-        <div className="noprint flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <DateSelector
-              date={date}
-              attributes={[
-                'thismonth', 'lastmonth', 'dbyesterday',
-                'yesterday', 'today', 'startDate', 'endDate'
-              ]}
-              dateChange={value => setDate(value)}
-              margin
+        <AdminPageHeader title='店家排行榜'>
+          <CSVLink data={excelData} filename="店家排行榜.csv">
+            <Button variant="secondary" disabled={merchantLeaderBoard.loading}>
+              <Download strokeWidth={1.75} />
+              報表匯出
+            </Button>
+          </CSVLink>
+          <Button
+            variant="secondary"
+            disabled={merchantLeaderBoard.loading}
+            onClick={() => window.print()}
+          >
+            <Printer strokeWidth={1.75} />
+            列印
+          </Button>
+        </AdminPageHeader>
+        <Toolbar className="items-end">
+          <DateSelector
+            date={date}
+            attributes={[
+              'thismonth', 'lastmonth', 'dbyesterday',
+              'yesterday', 'today', 'startDate', 'endDate'
+            ]}
+            dateChange={value => setDate(value)}
+          />
+          {!isDisplayTogglePerformanceButton && <div className="flex flex-col gap-1.5">
+            <span className="text-label text-text-secondary">業績依據</span>
+            <ReferToggleButton
+              value={performReference}
+              onChange={handleToggleButtonChange}
+            />
+          </div>}
+          <div className="flex flex-col gap-1.5">
+            <span className="text-label text-text-secondary">總業績依據</span>
+            <div className="flex flex-wrap gap-2.5">
+              <ToggleGroup
+                size="small"
+                value={isIncludeProductPerformance}
+                onChange={handleProductPerformanceToggleButtonChange}
+                exclusive
+              >
+                {isIncludeProductPerformanceValue.map((data, idx) => (
+                  <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                    {data.label}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+              {displayReportWithMembership &&
+                <ToggleGroup
+                  size="small"
+                  value={isIncludeMembershipPerformance}
+                  onChange={handleMembershipPerformanceToggleButtonChange}
+                  exclusive
+                >
+                  {isIncludeMembershipPerformanceValue.map((data, idx) => (
+                    <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                      {data.label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>}
+            </div>
+          </div>
+        </Toolbar>
+        <Toolbar className="flex-nowrap items-start">
+          <div className="min-w-0 flex-1">
+            <MerchantListAutocpmplete
+              onValueChange={value => {
+                handleChecked(value)
+              }}
             />
           </div>
-
-          <div className="mb-[23px] flex flex-wrap items-end justify-between gap-y-2.5">
-            {!isDisplayTogglePerformanceButton && <div>
-              <div className="divText">業績依據：</div>
-              <ReferToggleButton
-                value={performReference}
-                onChange={handleToggleButtonChange}
-              />
-            </div>}
-            <div style={{ display: 'grid', margin: '0px 10px', justifyContent: 'center', alignItems: 'center', justifyItems: 'center' }}>
-              <div className="divText">總業績依據：</div>
-              <div className="flex justify-between">
-                <div>
-                  <ToggleGroup
-                    size="small"
-                    value={isIncludeProductPerformance}
-                    onChange={handleProductPerformanceToggleButtonChange}
-                    exclusive
-                  >
-                    {isIncludeProductPerformanceValue.map((data, idx) => (
-                      <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                        {data.label}
-                      </ToggleGroupItem>
-                    ))}
-                  </ToggleGroup>
-                </div>
-                <div className="ml-2.5">
-                  {displayReportWithMembership &&
-                    <ToggleGroup
-                      size="small"
-                      value={isIncludeMembershipPerformance}
-                      onChange={handleMembershipPerformanceToggleButtonChange}
-                      exclusive
-                    >
-                      {isIncludeMembershipPerformanceValue.map((data, idx) => (
-                        <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                          {data.label}
-                        </ToggleGroupItem>
-                      ))}
-                    </ToggleGroup>}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <CSVLink data={excelData} filename="店家排行榜.csv">
-                <Button variant="secondary" disabled={merchantLeaderBoard.loading}>
-                  <Download strokeWidth={1.75} />
-                  報表匯出
-                </Button>
-              </CSVLink>
-              <Button
-                variant="secondary"
-                disabled={merchantLeaderBoard.loading}
-                onClick={() => window.print()}
-              >
-                <Printer strokeWidth={1.75} />
-                列印
-              </Button>
-            </div>
-          </div>
-        </div>
-        <div className="noprint my-2.5 flex">
-          <MerchantListAutocpmplete
-            onValueChange={value => {
-              handleChecked(value)
-            }}
-          />
-          <div className="ml-2.5 flex items-center">
-            <Button
-              variant="primary"
-              onClick={handleSearchReport}
-              className="w-[100px]"
-            >
-              搜尋
-            </Button>
-          </div>
-        </div>
+          <Button
+            variant="primary"
+            onClick={handleSearchReport}
+            className="w-[100px] shrink-0"
+          >
+            搜尋
+          </Button>
+        </Toolbar>
         {!merchantLeaderBoard.loading && !isMonthlyAverageDisplayForMerchantLeaderBoard.loading && !isMemberShipCardActiveData.loading ? (
           <Results
             performReference={performReference}

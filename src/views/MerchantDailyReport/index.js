@@ -162,7 +162,7 @@ const MerchantDailyReport = () => {
       <PageHeader
         title="店家日報表"
         actions={
-          <Button variant="primary" onClick={() => window.print()}>
+          <Button variant="secondary" onClick={() => window.print()}>
             <Printer strokeWidth={1.75} />
             列印
           </Button>
@@ -174,7 +174,6 @@ const MerchantDailyReport = () => {
           attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
           onlyStart
           dateChange={value => setDate(value)}
-          margin
         />
       </Toolbar>
 

@@ -17,6 +17,7 @@ import { Printer } from 'lucide-react'
 import { Button as UIButton } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
+import { Toolbar } from 'ui/page-header'
 
 const performanceEnum = [
   { label: '店販', value: 'SALE' },
@@ -112,17 +113,25 @@ const ProductInvoicingRecordReport = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <AdminPageHeader title='商品進銷貨報表' />
-        <div className="noprint flex flex-wrap justify-between gap-3">
+        <AdminPageHeader title='商品進銷貨報表'>
+          <UIButton
+            onClick={() => window.print()}
+            variant="secondary"
+            disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
+          >
+            <Printer strokeWidth={1.75} />
+            列印
+          </UIButton>
+        </AdminPageHeader>
+        <Toolbar className="items-end">
           <DateSelector
             date={date}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
-            margin
           />
-          <div className='noprint flex items-center gap-x-[30px] gap-y-2.5'>
-            <div style={{ marginTop: -23 }}>
-              <div className="divText">類型：</div>
+          <div className='noprint flex flex-wrap items-end gap-3'>
+            <div className="flex flex-col gap-1.5">
+              <span className="text-label text-text-secondary">類型</span>
               <ToggleGroup
                 size="small"
                 value={submitValue.recordType}
@@ -137,19 +146,9 @@ const ProductInvoicingRecordReport = () => {
                 ))}
               </ToggleGroup>
             </div>
-            <div>
-              <UIButton
-                onClick={() => window.print()}
-                variant="secondary"
-                disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
-              >
-                <Printer strokeWidth={1.75} />
-                列印
-              </UIButton>
-            </div>
           </div>
-        </div>
-        <div className="noprint my-2.5 flex">
+        </Toolbar>
+        <Toolbar className="flex-nowrap items-start">
           <Autocomplete
             multiple
             fullWidth
@@ -207,17 +206,15 @@ const ProductInvoicingRecordReport = () => {
               />
             )}
           />
-          <div className="ml-2.5 flex items-center">
-            <UIButton
-              variant="primary"
-              onClick={() => handleSearch()}
-              className="w-[100px]"
-              disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
-            >
-              搜尋
-            </UIButton>
-          </div>
-        </div>
+          <UIButton
+            variant="primary"
+            onClick={() => handleSearch()}
+            className="w-[100px] shrink-0"
+            disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
+          >
+            搜尋
+          </UIButton>
+        </Toolbar>
         {(!getAllProducts.loading && !invoicingRecordReportLazyData.loading && invoicingRecordReportLazyData.data !== undefined) ?
           <Results reportData={reportData} /> : (
             // 載入中：與舊版 CircularProgress 相同時機顯示

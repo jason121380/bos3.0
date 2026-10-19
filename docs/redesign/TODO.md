@@ -8,6 +8,7 @@
 
 ## 一、今天完成了什麼
 
+- **報表統一第一批**（2026/10/20，`claude/upbeat-carson-pdc7rf`，v3.0-1020-0247）：Jason 拍版「頁首＋篩選列＋表格一起統一」，STYLE 新增 §14 報表頁版型；36 頁頁首動作與篩選列統一（詳 STATUS／MEMORY #128）。**待實機**：抽查 5 頁（店家排行榜、多店店販銷售排行、設計師業績分析表、薪資明細表、顧客入金排行榜）桌機與 390px 手機的篩選列換行、匯出與列印可用。
 - **完整 debug 修復**（2026/10/20，`claude/upbeat-carson-pdc7rf`，v3.0-1020-0156）：全 `src` 以 ESLint（no-undef／rules-of-hooks／import）掃描＋import 可達性分析，修 P4 七項既有 bug 與顧客詳細資料 404；死碼與非真 bug 不修（見 MEMORY #127）。
 - **交接收尾＋移除 `@mui/icons-material` 套件**（2026/10/20，`claude/upbeat-carson-pdc7rf`，v3.0-1020-0145）：交接文件 11 件待合併 PR 已全部合併（另含 #170、#173）；`package.json` 移除已無引用的 `@mui/icons-material`；測試基準更正為 17 檔／54 測試；P3-4 實查更新。見 MEMORY #126。
 - **商品消耗明細日期區緊急修正**（2026/10/20，`claude/fix-product-consume-date-box`，v3.0-1020-0012）：Jason 截圖「這頁怎麼了」——快捷鈕一排、日期鈕掉第二排且各壓「選擇日期」標籤重疊。根因：共用 `MerchantSearchBar/DatePicker` 傳 `label` 給 `ui/date-picker` facade，facade 以 Field 上方標籤渲染，塞進 MUI ButtonGroup 被擠成兩層。修：兩處不傳 `label`（`toolbarTitle='選擇日期'` 保留），所有舊版日期欄頁面一併恢復；僅 `/product-consume-report` 開 `uiDateField`（比照 DecreaseDetail：快捷鈕 ui Button、日期欄 UiDateField 單排），快捷鈕逐項對照 `lastInLeaderBoard` 原順序（本月、上個月、前天、昨天、今天）不增減，日期存值/onChange/查詢/匯出/用途下拉與報表內容不動。見 MEMORY #112。**待實機**：商品消耗明細與 DecreaseDetail 各點開一次月曆、選日後日期與查詢結果不變。
@@ -126,7 +127,7 @@
 ### P3 — 需要你決定
 1. `Services`（服務項目設定）的篩選按鈕：舊版因 prop 名稱錯誤從未顯示，要顯示嗎？
 2. ~~直接列印的報表是否要改版~~ **已拍版（Jason 2026/10/19）**：所有報表樣式一致、以 compact 緊湊呈現；只改 presentation／print CSS，不改內容欄位與數字計算。**下一組優先：報表 compact 專項**（先盤點共用層，再逐目錄）。2026/10/19 實測：`window.print` 出現在 28 個檔案，其中 22 個是報表目錄的 `index`（約 15 頁是舊口徑，實際更多），另 6 個是 `OrderManagementList/ResultsV2`、`DraftOrderManagementList/ResultsV2`、`DraftOrderEdit/Footer`、`OrderCreate/OrderDetailModal`、`InventoryWorkReview/General`、`ProductInventoryList/Results`。
-3. ~~是否要新增 `ui/combobox` 與 `ui/date-picker`~~ **已拍版（Jason 2026/10/19，四點新拍版）**：
+3. ~~是否要新增 `ui/combobox` 與 `ui/date-picker`~~ **2026/10/20 Jason 新拍版取代下方 10/19 內容：兩者都改為自己做，目標徹底移除 MUI（見 MEMORY 決策表）**。以下為 10/19 歷史紀錄：**已拍版（Jason 2026/10/19，四點新拍版）**：
    - **Autocomplete**：不新造 combobox；不動打字／選取行為；其他頁只改外層標籤（`Field` 上方標籤＋`placeholder`）。
    - **月曆**：排入 `ui/date-picker` 專項。先盤點 39–43 檔（`@mui/x-date-pickers`；口徑差異在盤點時對齊），必須保留民國年、顯示格式、locale、存值，分批進行。
    - **報表 compact 進度（第七批）**（2026/10/19，分支 `ui-report7-box`，v3.0-1019-0459，本組第 4 個，PR #26；前 #23 已 merge 6b9aa7d、#24 已 merge f398c5d、#25 已 merge 5cb001a，本批 #26 已 merge f4689e2）：DesignerPerforamnceAnalyzeReport（Results＋Compare）換 `ui/table`＋`dense`，累計 22＋1＝**23 頁，剩 5 頁**。**待實機列印預覽**：①`initialize.scss` 對 `.DesignerPerforamnceAnalyzeReportPrint`／`printLongCard` 的表格規則與 `ui/table` 內建 print 格線是否雙線；②`.MuiTableCell-root` 類規則不再命中後內距／框線；③Compare 多欄並排時 `min-w-[650px]` 與 `Table` 外框 `ui-scroll-x` 的橫向捲動／列印是否被裁；④合計列粗體（inline style 保留）列印仍為粗體；⑤原 Results 無 hover，換後列有 hover 底色（僅螢幕）。

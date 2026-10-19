@@ -16,6 +16,7 @@ import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
+import { Toolbar } from 'ui/page-header'
 
 const MultiMerchantsLeaderBoard = () => {
 	const [date, setDate] = useState({
@@ -108,15 +109,32 @@ const MultiMerchantsLeaderBoard = () => {
 							format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
 					</div>
 				</div>
-				<AdminPageHeader title='多店店販銷售排行' />
-				<div className='noprint flex flex-wrap items-center justify-between'>
-					<div className="flex flex-wrap items-center gap-5">
-						<DateSelector
-							date={date}
-							attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-							dateChange={value => setDate(value)}
-							margin
-						/>
+				<AdminPageHeader title='多店店販銷售排行'>
+					<Button
+						variant="secondary"
+						disabled={getMultiMerchantsLeaderBoardExcelLazyData.loading}
+						onClick={handleGetExcelUrl}
+					>
+						<Download strokeWidth={1.75} />
+						報表匯出
+					</Button>
+					<Button
+						variant="secondary"
+						disabled={getMultiMerchantsLeaderBoardLazyData.loading}
+						onClick={() => window.print()}
+					>
+						<Printer strokeWidth={1.75} />
+						列印
+					</Button>
+				</AdminPageHeader>
+				<Toolbar className="items-end">
+					<DateSelector
+						date={date}
+						attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+						dateChange={value => setDate(value)}
+					/>
+					<div className="flex flex-col gap-1.5">
+						<span className="text-label text-text-secondary">選擇廠商</span>
 						<Autocomplete
 							style={{ width: 200 }}
 							autoHighlight
@@ -147,66 +165,47 @@ const MultiMerchantsLeaderBoard = () => {
 								<TextField
 									{...params}
 									variant="outlined"
-									label="選擇廠商"
+									size="small"
 									placeholder="廠商名稱"
+									inputProps={{ ...params.inputProps, 'aria-label': '選擇廠商' }}
 									InputProps={{
 										...params.InputProps,
 									}}
 								/>
 							)}
 						/>
-						<div style={{ marginTop: -23 }}>
-							<div className="divText">排序依據：</div>
-							<ToggleGroup
-								size="small"
-								value={sort}
-								onChange={(e, value) => setSort(value)}
-								exclusive
-							>
-								<ToggleGroupItem value='PERFORMANCE'>業績</ToggleGroupItem>
-								<ToggleGroupItem value='TOTALCOUNT'>數量</ToggleGroupItem>
-							</ToggleGroup>
-						</div>
 					</div>
-					<div className="my-2.5 flex flex-wrap items-center justify-between gap-x-[100px] gap-y-2.5 justify-self-end">
-						<div className="flex flex-wrap gap-2.5">
-							<Button
-								variant="secondary"
-								disabled={getMultiMerchantsLeaderBoardExcelLazyData.loading}
-								onClick={handleGetExcelUrl}
-							>
-								<Download strokeWidth={1.75} />
-								報表匯出
-							</Button>
-							<Button
-								variant="secondary"
-								disabled={getMultiMerchantsLeaderBoardLazyData.loading}
-								onClick={() => window.print()}
-							>
-								<Printer strokeWidth={1.75} />
-								列印
-							</Button>
-						</div>
-					</div>
-				</div>
-				<div className="noprint my-3 flex">
-					<MerchantListAutocpmplete
-						onValueChange={value => {
-							setSubmitValue({ ...submitValue, merchantId: value })
-							value.length === 0 && handleSearch(date, undefined, [])
-						}}
-					/>
-					<div className="ml-2.5 flex items-center">
-						<Button
-							variant="primary"
-							onClick={() => handleSearch()}
-							disabled={getMultiMerchantsLeaderBoardLazyData.loading || getMultiMerchantsLeaderBoardLazyData.data === undefined}
-							className="w-[100px]"
+					<div className="flex flex-col gap-1.5">
+						<span className="text-label text-text-secondary">排序依據</span>
+						<ToggleGroup
+							size="small"
+							value={sort}
+							onChange={(e, value) => setSort(value)}
+							exclusive
 						>
-							搜尋
-						</Button>
+							<ToggleGroupItem value='PERFORMANCE'>業績</ToggleGroupItem>
+							<ToggleGroupItem value='TOTALCOUNT'>數量</ToggleGroupItem>
+						</ToggleGroup>
 					</div>
-				</div>
+				</Toolbar>
+				<Toolbar className="flex-nowrap items-start">
+					<div className="min-w-0 flex-1">
+						<MerchantListAutocpmplete
+							onValueChange={value => {
+								setSubmitValue({ ...submitValue, merchantId: value })
+								value.length === 0 && handleSearch(date, undefined, [])
+							}}
+						/>
+					</div>
+					<Button
+						variant="primary"
+						onClick={() => handleSearch()}
+						disabled={getMultiMerchantsLeaderBoardLazyData.loading || getMultiMerchantsLeaderBoardLazyData.data === undefined}
+						className="w-[100px] shrink-0"
+					>
+						搜尋
+					</Button>
+				</Toolbar>
 				{getMultiMerchantsLeaderBoardLazyData.loading && getMultiMerchantsLeaderBoardLazyData.data === undefined ?
 					// 載入中：與舊版 CircularProgress 相同時機顯示
 					<div className="noprint" aria-busy="true" aria-label="載入中">

@@ -52,7 +52,7 @@ export default function IncomeStatementReport() {
         title="損益表"
         actions={
           <Button
-            variant="primary"
+            variant="secondary"
             onClick={() => window.print()}
           >
             <Printer strokeWidth={1.75} />
@@ -66,7 +66,6 @@ export default function IncomeStatementReport() {
           attributes={['lastmonth', 'thismonth', 'startDate']}
           dateChange={value => setDate(value)}
           onlyStart
-          margin
           inputFormat='yyyy/MM'
           pickerOption={{
             views: ['month', 'year']

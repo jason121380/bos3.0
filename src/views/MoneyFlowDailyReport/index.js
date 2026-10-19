@@ -11,6 +11,7 @@ import DateSelector from 'components/DateSelector'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
+import { Toolbar } from 'ui/page-header'
 
 export default function Employees() {
   const [displayDate, setDisplayDate] = useState([])
@@ -76,23 +77,21 @@ export default function Employees() {
   return (
     <Page className="ui-root" title="每日收支明細">
       <div>
-        <AdminPageHeader title='每日收支明細(已日結)' />
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
-            <DateSelector
-              date={date}
-              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-              dateChange={value => setDate(value)}
-              margin
-            />
-          </div>
+        <AdminPageHeader title='每日收支明細(已日結)'>
           <Button asChild variant="secondary" className="shrink-0">
             <CSVLink data={excelData} filename="高階收支登錄.csv" >
               <Download strokeWidth={1.75} />
               報表匯出
             </CSVLink>
           </Button>
-        </div>
+        </AdminPageHeader>
+        <Toolbar>
+          <DateSelector
+            date={date}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            dateChange={value => setDate(value)}
+          />
+        </Toolbar>
         {!moneyFlowDailyReportData.loading && !isMemberShipCardActiveData.loading ?
           (idx(moneyFlowDailyReportData, _ => (
             <Results

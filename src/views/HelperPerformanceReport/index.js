@@ -136,11 +136,10 @@ export default function HelperPerformance() {
             date={pageSetting}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setPageSetting(value)}
-            margin
           />
         </div>
       </Toolbar>
-      <div className="noprint pb-6">
+      <div className="noprint pb-4">
         <Autocomplete
           multiple
           options={jobTitle}

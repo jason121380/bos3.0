@@ -13,7 +13,7 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
-import { PageHeader, Toolbar, ToolbarSpacer } from 'ui/page-header'
+import { PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
@@ -198,19 +198,37 @@ const OverallPerformanceAnalysisReport = () => {
   }
   return (
     <Page className="ui-root" title="多店業績統計表">
-      <PageHeader title="多店業績統計表" />
-      <Toolbar>
+      <PageHeader
+        title="多店業績統計表"
+        actions={
+          <CSVLink data={excelData} filename="多店業績統計表.csv"
+            onClick={() => {
+              if (overallPerformanceAnalysisReportLazyData.loading ||
+                overallPerformanceAnalysisReportLazyData.data === undefined ||
+                excelData.length === 0) {
+                return false
+              }
+            }}>
+            <Button disabled={overallPerformanceAnalysisReportLazyData.loading ||
+              overallPerformanceAnalysisReportLazyData.data === undefined ||
+              excelData.length === 0}
+              variant="secondary">
+              <Download strokeWidth={1.75} />
+              報表匯出
+            </Button>
+          </CSVLink>
+        }
+      />
+      <Toolbar className="items-end">
         <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
           <DateSelector
             date={date}
             attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
-            margin
           />
         </div>
-        <ToolbarSpacer />
-        <div className="flex w-full min-w-0 flex-wrap items-center gap-x-2.5 gap-y-2.5 sm:w-auto sm:shrink-0">
-          <div className="flex min-w-0 flex-wrap items-center gap-2">
+        <div className="flex w-full min-w-0 flex-wrap items-end gap-3 sm:w-auto sm:shrink-0">
+          <div className="flex min-w-0 flex-col gap-1.5">
             <div className="text-label text-text-secondary">業績包含</div>
             <ToggleGroup
               size="small"
@@ -224,27 +242,9 @@ const OverallPerformanceAnalysisReport = () => {
               ))}
             </ToggleGroup>
           </div>
-          <div className="w-full sm:w-auto">
-            <CSVLink data={excelData} filename="多店業績統計表.csv"
-              onClick={() => {
-                if (overallPerformanceAnalysisReportLazyData.loading ||
-                  overallPerformanceAnalysisReportLazyData.data === undefined ||
-                  excelData.length === 0) {
-                  return false
-                }
-              }}>
-              <Button disabled={overallPerformanceAnalysisReportLazyData.loading ||
-                overallPerformanceAnalysisReportLazyData.data === undefined ||
-                excelData.length === 0}
-                variant="secondary">
-                <Download strokeWidth={1.75} />
-                報表匯出
-              </Button>
-            </CSVLink>
-          </div>
         </div>
       </Toolbar>
-      <div className="flex w-full min-w-0 flex-wrap items-center gap-2.5 pb-6">
+      <div className="flex w-full min-w-0 flex-wrap items-start gap-3 pb-4">
         <div className="w-full min-w-0 sm:w-auto sm:flex-1">
           <MerchantListAutocpmplete
             onValueChange={value => {

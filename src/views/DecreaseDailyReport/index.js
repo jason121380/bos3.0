@@ -155,7 +155,7 @@ const DecreaseDailyReport = () => {
       <PageHeader
         title="互助日報表"
         actions={
-          <Button className="noprint" variant="primary" onClick={() => window.print()}>
+          <Button className="noprint" variant="secondary" onClick={() => window.print()}>
             <Printer strokeWidth={1.75} />
             列印
           </Button>
@@ -167,7 +167,6 @@ const DecreaseDailyReport = () => {
           attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
           onlyStart
           dateChange={value => setDate(value)}
-          margin
         />
       </Toolbar>
       <div className="noprint pb-6">

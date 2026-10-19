@@ -15,6 +15,7 @@ import Results from './Results'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
+import { Toolbar } from 'ui/page-header'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 
 const HelperLeaderBoard = () => {
@@ -144,71 +145,65 @@ const HelperLeaderBoard = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <AdminPageHeader title='互助排行榜' />
-        <div className="noprint flex flex-wrap justify-between gap-3">
+        <AdminPageHeader title='互助排行榜'>
+          <CSVLink
+            data={excelData}
+            filename="互助排行榜.csv"
+            style={{ display: 'inline' }}
+          >
+            <Button variant="secondary">
+              <Download strokeWidth={1.75} />
+              報表匯出
+            </Button>
+          </CSVLink>
+          <Button onClick={() => window.print()} variant="secondary">
+            <Printer strokeWidth={1.75} />
+            列印
+          </Button>
+        </AdminPageHeader>
+        <Toolbar className="items-end">
           <DateSelector
             date={{ startDate: inputValue.startDay, endDate: inputValue.endDay }}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => handleValueChange(undefined, value, true)}
-            margin
           />
-          <div className="noprint flex flex-wrap items-center gap-y-5">
-            <div style={{ marginRight: '20px', marginTop: -23 }}>
-              <div className="divText">排序依據：</div>
-              <ToggleGroup
-                size="small"
-                exclusive
-                value={inputValue.orderBy}
-                onChange={(e, v) => handleValueChange('orderBy', v)}
-              >
-                <ToggleGroupItem value='POINT'>依點數</ToggleGroupItem>
-                <ToggleGroupItem value='PRICE'>依金額</ToggleGroupItem>
-              </ToggleGroup>
-            </div>
-            {!isDisplayTogglePerformanceButton &&
-              <div style={{ marginRight: '20px', marginTop: -23 }}>
-                <div className="divText">業績依據：</div>
-                <ReferToggleButton
-                  value={inputValue.reference}
-                  onChange={value => value && handleValueChange('reference', value)}
-                />
-              </div>}
-            <div className="mr-2">
-              <CSVLink
-                data={excelData}
-                filename="互助排行榜.csv"
-                style={{ display: 'inline' }}
-              >
-                <Button variant="secondary">
-                  <Download strokeWidth={1.75} />
-                  報表匯出
-                </Button>
-              </CSVLink>
-            </div>
-            <div>
-              <Button onClick={() => window.print()} variant="secondary">
-                <Printer strokeWidth={1.75} />
-                列印
-              </Button>
-            </div>
-          </div>
-        </div>
-        <div className="noprint my-2.5 flex">
-          <MerchantListAutocpmplete
-            onValueChange={value => {
-              getSubmitValue(value)
-            }}
-          />
-          <div className="ml-2.5 flex items-center">
-            <Button
-              variant="primary"
-              onClick={handleSearchReport}
-              className="w-[100px]"
+          <div className="flex flex-col gap-1.5">
+            <span className="text-label text-text-secondary">排序依據</span>
+            <ToggleGroup
+              size="small"
+              exclusive
+              value={inputValue.orderBy}
+              onChange={(e, v) => handleValueChange('orderBy', v)}
             >
-              搜尋
-            </Button>
+              <ToggleGroupItem value='POINT'>依點數</ToggleGroupItem>
+              <ToggleGroupItem value='PRICE'>依金額</ToggleGroupItem>
+            </ToggleGroup>
           </div>
-        </div>
+          {!isDisplayTogglePerformanceButton &&
+            <div className="flex flex-col gap-1.5">
+              <span className="text-label text-text-secondary">業績依據</span>
+              <ReferToggleButton
+                value={inputValue.reference}
+                onChange={value => value && handleValueChange('reference', value)}
+              />
+            </div>}
+        </Toolbar>
+        <Toolbar className="flex-nowrap items-start">
+          <div className="min-w-0 flex-1">
+            <MerchantListAutocpmplete
+              onValueChange={value => {
+                getSubmitValue(value)
+              }}
+            />
+          </div>
+          <Button
+            variant="primary"
+            onClick={handleSearchReport}
+            className="w-[100px] shrink-0"
+          >
+            搜尋
+          </Button>
+        </Toolbar>
 
         {helperLeaboardData.loading ? (
           // 載入中：與舊版 CircularProgress 相同時機顯示

@@ -88,7 +88,7 @@ const HelperMontlyReport = () => {
         actions={
           <Grid className="printGrid">
             <Button
-              variant="primary"
+              variant="secondary"
               onClick={() => window.print()}
             >
               <Printer strokeWidth={1.75} />
@@ -103,7 +103,6 @@ const HelperMontlyReport = () => {
             date={date}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
-            margin
           />
         </div>
       </Toolbar>

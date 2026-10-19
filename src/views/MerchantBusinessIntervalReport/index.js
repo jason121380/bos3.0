@@ -156,7 +156,7 @@ const MerchantBusinessIntervalReport = () => {
       <PageHeader
         title="店家區間累計表"
         actions={
-          <Button variant="primary" onClick={() => window.print()}>
+          <Button variant="secondary" onClick={() => window.print()}>
             <Printer strokeWidth={1.75} />
             列印
           </Button>
@@ -170,7 +170,6 @@ const MerchantBusinessIntervalReport = () => {
             'yesterday', 'today', 'startDate', 'endDate'
           ]}
           dateChange={value => setDate(value)}
-          margin
         />
       </Toolbar>
 

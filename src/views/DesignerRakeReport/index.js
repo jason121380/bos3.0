@@ -63,7 +63,6 @@ const DesignerRakeReport = () => {
             date={date}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
-            margin
           />
         </div>
       </Toolbar>

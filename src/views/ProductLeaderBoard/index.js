@@ -9,6 +9,7 @@ import DateSelector from 'components/DateSelector'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
+import { Toolbar } from 'ui/page-header'
 import ProductListTreeView from 'components/ProductListTreeView'
 
 import Results from './Results'
@@ -61,9 +62,20 @@ const ProductLeaderBoard = () => {
   return (
     <Page className="ui-root" title="商品銷售排行榜">
       <div>
-        <AdminPageHeader title='商品銷售排行榜' />
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+        <AdminPageHeader title='商品銷售排行榜'>
+          {excelData.length !== 0 && (
+            <Button asChild variant="secondary" className="shrink-0">
+              <CSVLink
+                data={excelData}
+                filename="商品銷售排行榜.csv"
+              >
+                <Download strokeWidth={1.75} />
+                報表匯出
+              </CSVLink>
+            </Button>
+          )}
+        </AdminPageHeader>
+        <Toolbar className="items-end">
           <DateSelector
             date={{
               startDate: inputData.startDay,
@@ -71,39 +83,26 @@ const ProductLeaderBoard = () => {
             }}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={({ startDate, endDate }) => setInputData({...inputData, startDay: startDate, endDay: endDate})}
-            margin
           />
-          </div>
-          <div className="flex w-full min-w-0 flex-wrap items-center gap-3 sm:w-auto sm:shrink-0">
-            {excelData.length !== 0 && (
-              <>
-                <ToggleGroup
-                  style={{ height: 'fit-content' }}
-                  size="small"
-                  value={inputData.types}
-                  onChange={(e, v) => setInputData({...inputData, types: v})}
-                >
-                  <ToggleGroupItem value='SELLING'>店販</ToggleGroupItem>
-                  <ToggleGroupItem value='PICKING'>自購</ToggleGroupItem>
-                </ToggleGroup>
-                <Button asChild variant="secondary" className="my-2.5 shrink-0">
-                  <CSVLink
-                    data={excelData}
-                    filename="商品銷售排行榜.csv"
-                  >
-                    <Download strokeWidth={1.75} />
-                    報表匯出
-                  </CSVLink>
-                </Button>
-              </>
-            )}
-          </div>
-        </div>
-        <div className="my-2.5 flex w-full min-w-0 flex-wrap items-center gap-2.5">
+          {excelData.length !== 0 && (
+            <div className="flex flex-col gap-1.5">
+              <span className="text-label text-text-secondary">類型</span>
+              <ToggleGroup
+                size="small"
+                value={inputData.types}
+                onChange={(e, v) => setInputData({...inputData, types: v})}
+              >
+                <ToggleGroupItem value='SELLING'>店販</ToggleGroupItem>
+                <ToggleGroupItem value='PICKING'>自購</ToggleGroupItem>
+              </ToggleGroup>
+            </div>
+          )}
+        </Toolbar>
+        <Toolbar className="items-start">
           <div className="w-full min-w-0 sm:w-auto sm:flex-1">
-          <ProductListTreeView
-            onValueChange={v => setInputData({...inputData, productIds: v})}
-          />
+            <ProductListTreeView
+              onValueChange={v => setInputData({...inputData, productIds: v})}
+            />
           </div>
           <Button
             variant='primary'
@@ -113,7 +112,7 @@ const ProductLeaderBoard = () => {
           >
             搜尋
           </Button>
-        </div>
+        </Toolbar>
         {!productLeaderBoardV2Data.loading && productLeaderBoardV2Data.data ? (
           <Results report={reportForDisplay} />
         ) : (

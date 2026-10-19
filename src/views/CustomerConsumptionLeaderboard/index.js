@@ -1,3 +1,5 @@
+import { Button } from 'ui/button'
+import { Download } from 'lucide-react'
 import Page from 'components/Page'
 import { endOfMonth, startOfMonth, differenceInDays } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
@@ -90,15 +92,19 @@ function CustomerConsumptionLeaderboard() {
   return (
     <Page className="ui-root" title="顧客消費排行榜">
       <div>
-        <AdminPageHeader title='顧客消費排行榜' />
+        <AdminPageHeader title='顧客消費排行榜'>
+          <Button
+            variant='secondary'
+            disabled={customerConsumptionDataExcel.loading}
+            onClick={handleGetExcelData}
+          ><Download strokeWidth={1.75} />報表匯出</Button>
+        </AdminPageHeader>
         <Filter
           rangeLimit={rangeLimit}
           dataChange={handleDataChange}
           inputData={inputData}
           handleSearch={handleSearch}
           loading={customerConsumptionData.loading}
-          getExcel={handleGetExcelData}
-          excelLoading={customerConsumptionDataExcel.loading}
         />
         {(!customerConsumptionData.loading && customerConsumptionData.data) ? (
           <Results reportData={reportData} />

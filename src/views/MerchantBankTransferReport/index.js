@@ -12,6 +12,9 @@ import { theme } from '../../theme'
 import { css } from '@emotion/react'
 
 import { Skeleton } from 'ui/skeleton'
+import { Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Toolbar } from 'ui/page-header'
 // 本頁以 window.print() 列印整頁：TransferDetail（.TransferDetailpPrint）與 Results（.MerchantBankTransferReportTable）為列印內容，依列印範本規則保留
 import TransferDetail from './TransferDetail'
 import Results from './Results'
@@ -69,16 +72,17 @@ export default function MerchantBankTransferReport() {
   return (
     <Page css={styles.root} className='MerchantBankTransferReport' title="薪資轉帳明細">
       <div>
-        <AdminPageHeader
-          title='薪資轉帳明細'
-          secondaryActions={[
-            {
-              label: '列印',
-              onClick: () => window.print(),
-              className: "noprint"
-            }
-          ]}
-        >
+        <AdminPageHeader title='薪資轉帳明細'>
+          <Button
+            variant="secondary"
+            className="noprint"
+            onClick={() => window.print()}
+          >
+            <Printer strokeWidth={1.75} />
+            列印
+          </Button>
+        </AdminPageHeader>
+        <Toolbar>
           <DateSelector
             date={date}
             attributes={['lastmonth', 'thismonth', 'startDate']}
@@ -89,7 +93,7 @@ export default function MerchantBankTransferReport() {
               views: ['month', 'year']
             }}
           />
-        </AdminPageHeader>
+        </Toolbar>
 
         <div className="mt-6">
           <TransferDetail merchantBankSettings={merchantBankSettings} />

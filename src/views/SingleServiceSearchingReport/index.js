@@ -15,6 +15,7 @@ import produce from 'immer'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
+import { Toolbar } from 'ui/page-header'
 
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
@@ -124,19 +125,30 @@ const DesignerPerformBasic = () => {
   return (
     <Page className="ui-root" title="單一服務項目查詢">
       <div>
-        <AdminPageHeader title='單一服務項目查詢' />
-        <div className="flex flex-wrap items-center gap-x-5">
-          <div>
-            <DateSelector
-              date={inputData.dateRange}
-              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-              dateChange={value => handleSetInputData('dateRange', value)}
-              margin
-            />
-          </div>
-          <div className="flex flex-grow flex-wrap items-center justify-between">
-            <div className="mb-[23px] flex flex-col">
-              <div className="divText">排序依據:</div>
+        <AdminPageHeader title='單一服務項目查詢'>
+          <Button
+            variant="secondary"
+            disabled={singleServiceReportExcelData.loading}
+            onClick={() => singleServiceReportExcel({
+              variables: {
+                input: {
+                  dateRange: inputData.dateRange,
+                  serviceIds: inputData.serviceIds.map(d => d.value)
+                },
+                sortBy: sort
+              }
+            })}
+          ><Download strokeWidth={1.75} />報表匯出</Button>
+        </AdminPageHeader>
+        <Toolbar className="items-end">
+          <DateSelector
+            date={inputData.dateRange}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            dateChange={value => handleSetInputData('dateRange', value)}
+          />
+          <div className="flex flex-wrap items-end gap-3">
+            <div className="flex flex-col gap-1.5">
+              <span className="text-label text-text-secondary">排序依據</span>
               <ToggleGroup
                 value={sort}
                 size="small"
@@ -152,24 +164,9 @@ const DesignerPerformBasic = () => {
                 ))}
               </ToggleGroup>
             </div>
-            <div>
-              <Button
-                variant="secondary"
-                disabled={singleServiceReportExcelData.loading}
-                onClick={() => singleServiceReportExcel({
-                  variables: {
-                    input: {
-                      dateRange: inputData.dateRange,
-                      serviceIds: inputData.serviceIds.map(d => d.value)
-                    },
-                    sortBy: sort
-                  }
-                })}
-              ><Download strokeWidth={1.75} />報表匯出</Button>
-            </div>
           </div>
-        </div>
-        <div className="my-2.5 flex flex-nowrap items-center gap-2.5">
+        </Toolbar>
+        <Toolbar className="flex-nowrap items-start">
           <div className="min-w-0 flex-grow">
             <Autocomplete
               freeSolo
@@ -201,10 +198,11 @@ const DesignerPerformBasic = () => {
           <Button
             variant="primary"
             onClick={handleDoSearch}
+            className="w-[100px] shrink-0"
           >
             搜尋
           </Button>
-        </div>
+        </Toolbar>
         {!serviceItemData.loading ? (
           <Results
             reportData={reportData}

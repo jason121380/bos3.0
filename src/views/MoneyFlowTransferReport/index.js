@@ -10,6 +10,7 @@ import DateSelector from 'components/DateSelector'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
+import { Toolbar } from 'ui/page-header'
 
 import Results from './Results'
 
@@ -57,14 +58,7 @@ const MoneyFlowTransferReport = () => {
   return (
     <Page className="ui-root" title="收支匯款表">
       <div>
-        <AdminPageHeader title='收支匯款表' />
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <DateSelector
-            date={date}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-            margin
-          />
+        <AdminPageHeader title='收支匯款表'>
           <CSVLink
             data={excelData}
             filename="收支匯款表.csv"
@@ -75,7 +69,14 @@ const MoneyFlowTransferReport = () => {
               報表匯出
             </Button>
           </CSVLink>
-        </div>
+        </AdminPageHeader>
+        <Toolbar>
+          <DateSelector
+            date={date}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            dateChange={value => setDate(value)}
+          />
+        </Toolbar>
         {!moneyFlowTransferReport.loading && reportForDisplay && excelData ? (
           <Results reportForDisplay={reportForDisplay} />
         ) : (
