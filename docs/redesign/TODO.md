@@ -43,6 +43,12 @@
 
 ## 二、接下來要做（依建議優先順序）
 
+### 設定頁樣板（Jason 2026/10/19 拍版「do it」，待看樣板）
+- [x] 盤點設定類路由：`/parameter`（Parameter，11 分頁）、`/profile/:tab`（Profile，含基本資料／密碼設定／功能釘選等，但多數分頁是個人報表，非純設定）、`/performanceDeductionParameter`（業績抽成參數，Tabs）、`/deduction-setting`、`/update-deduction-setting/:id`、`/helper-point-setting-create`、`/helper-point-setting-edit/:id`、EmployeeManagementDetail 權限／一般設定、`/accountingSetting`（會計設定）、`/authority`（權限設定）亦屬設定類待推廣；`/system-update-record*` 是系統更新紀錄列表／編輯、非使用者設定頁，不列入本樣板推廣（日後若改版走表單頁規範）。
+- [x] 第一批樣板（本 PR，`claude/ui-settings-style-sample-box`，v3.0-1019-2220）：只做 Parameter 主頁——頂部橫向分頁改桌機左側窄選單＋右側分段標題與既有卡片直疊（`src/ui/settings-nav.js`）；手機維持頂部橫向捲動分頁。欄位存值／儲存／開關／權限未動。STYLE.md 新增 §12。
+- [ ] Jason 看 Parameter 樣板截圖／實機確認後，才逐頁推廣：建議順序 Profile 的設定性分頁（密碼設定／功能釘選／基本資料）→ PerformanceDeductionParameter → 其餘設定頁；報表／帳單／列印不套本樣板。
+
+
 ### P1 — 影響使用者的問題
 - [x] **`ui` 元件放在 MUI Dialog／Popper 內缺 `.ui-root`**：已讓 `Button`、`Card`、`Checkbox`／`CheckboxField`、`Switch`、`Input`／`Textarea`／`Field`／`Label`、`Badge`、`Avatar`、`Table*` 共 8 個 `src/ui` 檔的根元素自帶 `ui-root`。
   掃描（`node scripts/redesign/portal-root-scan.js`）：修前 25 個畫面檔缺 `ui-root`，修後 **0**；8 個 ui 元件檔全數自帶。
