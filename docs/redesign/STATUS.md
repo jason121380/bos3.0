@@ -280,3 +280,6 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ### EmployeeDailyReport 手機擠壓修正（B1 切片，AGY 線，`agy/ui-mobile-employee-daily-box`，v3.0-1019-1625）
 
 - 範圍：`EmployeeDailyReport/index.js` Toolbar 加 min-w-0 flex-wrap，DateSelector 外層手機滿列、桌機自動寬不收縮，列印按鈕加 shrink-0，只改排版。待實機：390px 日期欄不溢出、桌機版面不變、列印按鈕位置。
+### HelperMonthlyReport 手機擠壓修正（B1 切片，Codex Luna 線，`codex/ui-mobile-helper-monthly-box`，v3.0-1019-1630）
+
+- 範圍：`HelperMonthlyReport/index.js` Toolbar 的 DateSelector 外層包 `w-full min-w-0 sm:w-auto sm:shrink-0`，手機滿列、桌機自動寬且不收縮。只改排版，state/handler/日期/查詢/列印原樣。該頁 Toolbar 無獨立搜尋鈕，PageHeader 有列印鈕。待實機：390px 日期區不溢出、桌機版面不變。
