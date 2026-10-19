@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import Chip from '@mui/material/Chip'
 import { css } from '@emotion/react'
 import { theme } from '../theme'
 import { useEffect, useState } from 'react'
@@ -15,18 +14,6 @@ const styles = {
       margin: theme.spacing(0.5),
     },
   }),
-  chip: css({
-    color: 'white !important',
-    borderRadius: '8px !important',
-    height: '32px !important',
-    fontSize: '13px !important',
-    fontWeight: 'bold !important',
-    boxShadow: 'none !important',
-    '& .MuiChip-label': {
-      paddingLeft: '12px !important',
-      paddingRight: '12px !important',
-    }
-  })
 }
 
 const checkin = [
@@ -78,12 +65,13 @@ export default function ({
   return (
     <div css={styles.root}>
       {(checkinMode ? checkin : statusArray).map(({ label, color, display }) => display ? (
-        <Chip
-          label={label}
+        <span
           key={label + color}
-          size="small"
-          css={css([styles.chip, css({ backgroundColor: color + '!important' })])}
-        />
+          className="inline-flex h-8 items-center rounded-lg px-3 text-[13px] font-bold text-white"
+          style={{ backgroundColor: color }}
+        >
+          {label}
+        </span>
       ) : null)}
     </div>
   )

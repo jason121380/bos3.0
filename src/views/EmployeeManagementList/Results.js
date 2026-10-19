@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-// 頭像（無圖時顯示預設人像）保留 MUI Avatar
-import { Avatar } from '@mui/material'
+import { Avatar } from 'ui/avatar'
 import { Edit as EditIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
@@ -287,7 +286,7 @@ export default function Results({
                   </TableCell>
                   <TableCell className="whitespace-nowrap">
                     <div className="flex items-center gap-2">
-                      <Avatar sx={{ width: 36, height: 36 }} src={data.avatar} />
+                      <Avatar className="h-9 w-9" src={data.avatar} />
                       <div>
                         <RouterLink
                           className="font-medium text-text no-underline hover:underline"
