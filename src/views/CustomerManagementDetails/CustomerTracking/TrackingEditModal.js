@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef, Fragment } from 'react'
 import {
   Dialog, DialogTitle, DialogContent,
-  DialogActions, Button, Chip, IconButton,
+  DialogActions, Chip,
   TextField, Grid, ThemeProvider
 } from '@mui/material'
 import { openSnackbar } from 'elements/snackbars'
@@ -15,7 +15,7 @@ import useFetchSetCustomerHairInfo from 'hooks/useFetchSetCustomerHairInfo'
 import { green } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles'
 import { css } from '@emotion/react'
-// 大型彈窗：表單細節（Chip / TextField / 選項按鈕）保留 MUI，只換底部動作按鈕
+// 大型彈窗：表單細節（Chip / TextField）保留 MUI，動作與選項按鈕改 ui/button（選取綠色以 inline style 原樣保留）
 import { Button as UiButton } from 'ui/button'
 
 const theme = createTheme({
@@ -187,12 +187,13 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
                       readOnly: true
                     }}
                   />
-                  <IconButton
+                  <UiButton
+                    variant="ghost" size="icon" className="h-8 w-8" aria-label="編輯選項" title="編輯選項"
                     disabled={merchantHairConditionData.loading || !merchantHairConditionData.data}
                     onClick={() => handleOpenOptionModal({ key: key, title: title })}
                   >
                     <EditIcon />
-                  </IconButton>
+                  </UiButton>
                 </Grid>
               )
             })}
@@ -225,13 +226,12 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
               const select = selectOption.includes(data)
               return (
                 <ThemeProvider theme={theme} key={`${data}-${index}`}>
-                  <Button
-                    variant={select ? 'contained' : 'outlined'}
-                    color='primary'
+                  <UiButton
+                    variant={select ? 'primary' : 'secondary'}
                     style={{ backgroundColor: select ? green[600] : '' }}
                     css={styles.box}
                     onClick={() => handleSelectItem(data, select)}
-                  >{data}</Button>
+                  >{data}</UiButton>
                 </ThemeProvider>
               )
             }) : '無資料'}

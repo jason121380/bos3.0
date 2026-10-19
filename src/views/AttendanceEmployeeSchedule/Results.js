@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-// 班表格線使用 sticky 欄列、動態班別色與 .AttendanceEmployeeScheduleTable / .beforeToday 全域樣式，表格與班別按鈕沿用 MUI
+// 班表格線使用 sticky 欄列、動態班別色與 .AttendanceEmployeeScheduleTable / .beforeToday 全域樣式，表格沿用 MUI；班別按鈕改 ui/button（動態色以 css 原樣保留）
 import {
-  Button, Table, TableBody, TableCell, TableHead, TableRow,
+  Table, TableBody, TableCell, TableHead, TableRow,
   TableContainer, Paper,
 } from '@mui/material'
 import { format, isBefore, isAfter, isToday } from 'date-fns'
@@ -246,17 +246,17 @@ export default function Results({
           } else {
             return (
               <TableCell key={time} css={styles.dateCell}>
-                <Button
+                <UiButton
+                  variant="ghost"
                   css={css([styles.button, css({ background: `${filterData[0].clockInSetting.color} !important`, borderRadius: '18px' })])}
                   onClick={() => {
                     editSchedule(filterData[0].clockInSetting.id, dataIndex, time)
                   }}
-                  variant="contained"
                 >
                   <span
                     css={css([styles.buttonLabel, css({ color: `${fontColor(filterData[0].clockInSetting.color)} !important`, fontSize: '12px' })])}
                   >{filterData[0].clockInSetting.name}</span>
-                </Button>
+                </UiButton>
               </TableCell>
             )
           }
@@ -298,11 +298,11 @@ export default function Results({
           } else {
             return (
               <TableCell key={time} className="beforeToday" css={styles.dateCell}>
-                <Button
-                  css={css([styles.button, css({ borderRadius: '18px' })])}
-                  variant="contained">
+                <UiButton
+                  variant="ghost"
+                  css={css([styles.button, css({ borderRadius: '18px' })])}>
                   <span css={css([styles.buttonLabel, css({ fontSize: '12px' })])}>{filterData[0].clockInSetting.name}</span>
-                </Button>
+                </UiButton>
               </TableCell>
             )
           }

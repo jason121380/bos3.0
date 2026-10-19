@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
 import {
-  Dialog, DialogTitle, DialogContent, IconButton,
-  DialogActions, Button, Checkbox, TextField,
+  Dialog, DialogTitle, DialogContent,
+  DialogActions, Checkbox, TextField,
   InputAdornment
 } from '@mui/material'
+import { Button } from 'ui/button'
 import { TreeView, TreeItem } from '@mui/x-tree-view';
 import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, GroupsRounded as GroupsRoundedIcon, Storefront as StorefrontIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
@@ -344,15 +345,12 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
                 </InputAdornment>
               ),
               endAdornment: value && (
-                <IconButton
-                  style={{ padding: 4 }}
-                  onClick={() => setValue("")}
-                ><ClearRoundedIcon/></IconButton>
+                <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="清除搜尋文字" title="清除搜尋文字" onClick={() => setValue("")}><ClearRoundedIcon /></Button>
               )
             }}
           />
-          <Button css={styles.button} onClick={() => setModalValues([])} variant='contained' color='primary'>清除選取</Button>
-          <Button css={styles.button} onClick={handleExpanedAll} variant='contained' color='primary'>展開全部</Button>
+          <Button css={styles.button} onClick={() => setModalValues([])} variant="secondary">清除選取</Button>
+          <Button css={styles.button} onClick={handleExpanedAll} variant="secondary">展開全部</Button>
         </div>
       </DialogTitle>
       <DialogContent>
@@ -388,8 +386,8 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
         </TreeView>
       </DialogContent>
       <DialogActions>
-        <Button variant='contained' color='inherit' onClick={handleOnClose}>關閉</Button>
-        <Button variant='contained' onClick={handleComfirm}>確認</Button>
+        <Button variant="secondary" onClick={handleOnClose}>關閉</Button>
+        <Button variant="primary" onClick={handleComfirm}>確認</Button>
       </DialogActions>
     </Dialog>
   )

@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Button, Dialog, DialogActions, DialogContent, DialogContentText,
-  DialogTitle, FormControl, IconButton, InputAdornment, InputLabel,
+  Dialog, DialogActions, DialogContent, DialogContentText,
+  DialogTitle, FormControl, InputAdornment, InputLabel,
   OutlinedInput,
 } from '@mui/material'
+import { Button } from 'ui/button'
 import { Visibility, VisibilityOff } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchChangePassword from 'hooks/useFetchChangePassword'
@@ -118,12 +119,13 @@ export default function ChangePassword({ open, handleClose }) {
                 error={formData.password.error}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
+                    <Button
+                      variant="ghost" size="icon" className="h-8 w-8"
+                      aria-label="toggle password visibility" title="切換密碼顯示"
                       onClick={() => handleClickShowPassword('password')}
                     >
                       {formData.password.showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
+                    </Button>
                   </InputAdornment>
                 }
               />
@@ -139,13 +141,14 @@ export default function ChangePassword({ open, handleClose }) {
                 fullWidth
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
+                    <Button
+                      variant="ghost" size="icon" className="h-8 w-8"
+                      aria-label="toggle password visibility" title="切換密碼顯示"
                       onClick={() => handleClickShowPassword('secondPassword')}
                       onMouseDown={handleMouseDownPassword}
                     >
                       {formData.secondPassword.showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
+                    </Button>
                   </InputAdornment>
                 }
               />
@@ -153,7 +156,7 @@ export default function ChangePassword({ open, handleClose }) {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleOnChangePassword} color="primary">
+          <Button variant="primary" onClick={handleOnChangePassword}>
             更新密碼
           </Button>
         </DialogActions>

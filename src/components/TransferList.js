@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Typography, Paper, Button, List, ListItemButton,
+  Typography, Paper, List, ListItemButton,
   Checkbox, ListItemText, ListItemIcon,
 } from '@mui/material'
+import { Button } from 'ui/button'
 import Grid from '@mui/material/Unstable_Grid2';
 import { KeyboardArrowRightRounded as KeyboardArrowRightRoundedIcon, RemoveRounded as RemoveRoundedIcon } from 'ui/icons'
 import { useState } from 'react';
@@ -116,14 +117,12 @@ const TransferList = ({
             }}
           >
             <Button
-              variant='outlined'
-              color='primary'
+              variant="secondary" size="icon" aria-label="加入選取項目" title="加入選取項目"
               onClick={addIds}
               disabled={selectLeftIds.length === 0}
             ><KeyboardArrowRightRoundedIcon /></Button>
             <Button
-              variant='outlined'
-              color='primary'
+              variant="secondary" size="icon" aria-label="移除選取項目" title="移除選取項目"
               onClick={removeIds}
               disabled={selectRightIdx.length === 0}
             ><RemoveRoundedIcon /></Button>

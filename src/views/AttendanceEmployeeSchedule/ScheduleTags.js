@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-// 班別按鈕底色為各班別自訂色（動態），沿用 MUI Button
-import { Button } from '@mui/material'
+// 班別按鈕改 ui/button（ghost）；底色為各班別自訂色（動態），以 inline style 原樣保留
 import { css } from '@emotion/react'
+import { Button } from 'ui/button'
 
 const ScheduleTags = ({
   setTagId, tagId, fontColor, merchantClockInSchedule,
@@ -31,6 +31,7 @@ const ScheduleTags = ({
             merchantClockInSchedule.map(d => {
               return (
                 <Button
+                  variant="ghost"
                   key={d.id}
                   name={d.name}
                   style={{ backgroundColor: `${d.color}` }}
