@@ -202,15 +202,17 @@ const OverallPerformanceAnalysisReport = () => {
     <Page className="ui-root" title="多店業績統計表">
       <PageHeader title="多店業績統計表" />
       <Toolbar>
-        <DateSelector
-          date={date}
-          attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
-          dateChange={value => setDate(value)}
-          margin
-        />
+        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+          <DateSelector
+            date={date}
+            attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
+            dateChange={value => setDate(value)}
+            margin
+          />
+        </div>
         <ToolbarSpacer />
-        <div className="flex flex-wrap items-center gap-2.5">
-          <div className="flex items-center gap-2">
+        <div className="flex w-full min-w-0 flex-wrap items-center gap-x-2.5 gap-y-2.5 sm:w-auto sm:shrink-0">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
             <div className="text-label text-text-secondary">業績包含</div>
             <ToggleButtonGroup
               size="small"
@@ -224,7 +226,7 @@ const OverallPerformanceAnalysisReport = () => {
               ))}
             </ToggleButtonGroup>
           </div>
-          <div>
+          <div className="w-full sm:w-auto">
             <CSVLink data={excelData} filename="多店業績統計表.csv"
               onClick={() => {
                 if (overallPerformanceAnalysisReportLazyData.loading ||
@@ -244,13 +246,15 @@ const OverallPerformanceAnalysisReport = () => {
           </div>
         </div>
       </Toolbar>
-      <div className="flex items-center gap-2.5 pb-6">
-        <MerchantListAutocpmplete
-          onValueChange={value => {
-            handleChecked(value)
-          }}
-        />
-        <div className="flex items-center">
+      <div className="flex w-full min-w-0 flex-wrap items-center gap-2.5 pb-6">
+        <div className="w-full min-w-0 sm:w-auto sm:flex-1">
+          <MerchantListAutocpmplete
+            onValueChange={value => {
+              handleChecked(value)
+            }}
+          />
+        </div>
+        <div className="flex w-full items-center sm:w-auto">
           <Button
             variant="primary"
             onClick={handleSearchReport}
