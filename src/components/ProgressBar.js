@@ -16,7 +16,7 @@ const ProgressBar = ({ dataLoading, setProgress, progress }) => {
   }, [dataLoading])
 
   return (
-    <div className="my-[30px] w-full">
+    <div className="w-full my-[30px]">
       <Progress value={progress} />
     </div>
   )
