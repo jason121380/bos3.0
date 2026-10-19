@@ -4,6 +4,9 @@ import { MobileDatePicker } from '@mui/x-date-pickers'
 import { endOfDay, startOfDay, startOfMonth, endOfMonth, format } from 'date-fns'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { CalendarDays } from 'lucide-react'
+import { inputClass } from 'ui/input'
+import { cn } from 'ui/utils'
 
 const styles = {
   container: css({
@@ -25,6 +28,23 @@ const styles = {
   }),
 }
 
+// uiDateField 開啟時的日期欄：外觀比照 ui Input 的原生 button；onClick 與顯示文字與舊版 Button 相同
+function UiDateField({ onClick, value, format: valueFormat }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        'ui-root inline-flex w-[140px] cursor-pointer items-center justify-between gap-2 text-left',
+        inputClass
+      )}
+    >
+      <span>{format(value, valueFormat)}</span>
+      <CalendarDays className="h-4 w-4 text-text-tertiary" strokeWidth={1.75} />
+    </button>
+  )
+}
+
 export default function DatePicker({
   jumpToToday,
   jumpToYesterday,
@@ -42,10 +62,14 @@ export default function DatePicker({
   inMerchantDailyReport,
   lastInLeaderBoard,
   onlyDayTime,
-  futureDate
+  futureDate,
+  uiDateField = false
 }) {
 
   const { startDate, endDate } = date
+  // uiDateField 時日期欄不放進 ButtonGroup（避免 contained 群組樣式與 cloneElement 套用到自訂 button），改用 flex 容器
+  const DateGroup = uiDateField ? 'div' : ButtonGroup
+  const dateGroupProps = uiDateField ? { className: 'ui-root flex items-center gap-2' } : { variant: 'contained' }
 
   const handleCalendarAccept = (date, edge) => {
     date = new Date(date).getTime()
@@ -171,7 +195,7 @@ export default function DatePicker({
         </Grid>
       )}
       <Grid item>
-        <ButtonGroup variant="contained">
+        <DateGroup {...dateGroupProps}>
           {!hideStartDate && (
             <MobileDatePicker
               closeOnSelect
@@ -183,7 +207,7 @@ export default function DatePicker({
                 toolbarTitle: '選擇日期'
               }}
               slots={{
-                field: inputProps => (
+                field: uiDateField ? UiDateField : inputProps => (
                   <Button
                     onClick={inputProps.onClick}
                     variant='contained'
@@ -210,7 +234,7 @@ export default function DatePicker({
                 toolbarTitle: '選擇日期'
               }}
               slots={{
-                field: inputProps => (
+                field: uiDateField ? UiDateField : inputProps => (
                   <Button
                     onClick={inputProps.onClick}
                     variant='contained'
@@ -224,7 +248,7 @@ export default function DatePicker({
               }}
             />
           )}
-        </ButtonGroup>
+        </DateGroup>
       </Grid>
     </Grid>
   )

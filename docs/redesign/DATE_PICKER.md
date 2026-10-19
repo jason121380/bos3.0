@@ -1,6 +1,7 @@
 # 月曆 date-picker 專項（盤點＋設計）
 
 > 專項第 1 批（2026/10/19，分支 `claude/ui-datepicker-spec-box`，v3.0-1019-0908 暫定）：**只有文件，沒有換任何元件、沒有改任何程式**。
+> 專項第 2 批（試行，2026/10/19，分支 `claude/ui-datepicker-pilot-box`，v3.0-1019-0958 暫定）：已建立 `src/ui/date-picker.js` facade，並換 2 檔（`MemberCreate/index.js`、`Profile/General/GeneralSettings.js`）。**目前已換 facade 的檔數：2／37**（下方盤點數字仍是第 1 批當時口徑，其餘 35 檔仍直接用 `@mui/x-date-pickers`）。
 > 依據：Jason 2026/10/19 拍版「月曆排入 `ui/date-picker` 專項，先盤點、分批進行」（見 `TODO.md` P3 第 3 點）。
 > 盤點口徑：`rg` 實查 `src/`，套件 `@mui/x-date-pickers` **6.19.4**（`package.json`）。
 
@@ -33,7 +34,7 @@
 | 檔案 | 元件 | format | toolbarFormat | 特殊 props／備註 |
 |---|---|---|---|---|
 | `components/DateSelector/index.js` | MobileDatePicker（1，渲染起／迄各一次） | `inputFormat` prop，預設 `yyyy/MM/dd` | `M月d日` | `{...pickerOption}` 展開（呼叫端可傳 minDate／views 等）；自訂 `slots.field` 為 `<button>`（純點選）；`disabled`；`aria-label`；報表查詢情境 |
-| `components/MerchantSearchBar/DatePicker.js` | MobileDatePicker（2：起／迄） | 起：`onlyMonthYear ? 'yyyy/MM' : 'yyyy/MM/dd'`；迄：`yyyy/MM/dd` | `M月d日` | `closeOnSelect`；自訂 `slots.field` 為 MUI `Button`（`ButtonGroup` 內，純點選）；篩選情境；**`yyyy/MM` 是月模式**，但仍是完整日 picker＋月格式顯示，與值的處理在 `handleCalendarAccept` |
+| `components/MerchantSearchBar/DatePicker.js` | MobileDatePicker（2：起／迄） | 起：`onlyMonthYear ? 'yyyy/MM' : 'yyyy/MM/dd'`；迄：`yyyy/MM/dd` | `M月d日` | `closeOnSelect`；自訂 `slots.field` 為 MUI `Button`（`ButtonGroup` 內，純點選）；**2026/10/19 起新增 `uiDateField` prop（預設 `false`）逐頁 opt-in：開啟時日期欄改為 `inputClass` 外觀的原生 `<button>`＋`CalendarDays` 圖示、容器由 `ButtonGroup` 改 flex `div`；目前僅 `DecreaseDetail` 開啟，其餘引用未動**；篩選情境；**`yyyy/MM` 是月模式**，但仍是完整日 picker＋月格式顯示，與值的處理在 `handleCalendarAccept` |
 
 ### B. 一般表單頁（MobileDatePicker 群）
 
@@ -142,7 +143,7 @@
 
 ## 六、`ui/date-picker` 設計方向
 
-**檔案**：`src/ui/date-picker.js`（尚未建立）。
+**檔案**：`src/ui/date-picker.js`（第 2 批已建立）。
 
 **第一階段＝外觀門面（facade）**
 
@@ -160,9 +161,9 @@
 | 批 | 範圍 | 說明 |
 |---|---|---|
 | 1（本批） | 盤點＋設計文件 | 只有文件，未換元件 |
-| 2（試行） | `MemberCreate/index.js`、`Profile/General/GeneralSettings.js` | 各只有 1 個 `yyyy/MM/dd` DatePicker、toolbarFormat `yyyy年M月d日`、無列印、無 Modal 焦點鏈、無自訂 `slots`。**注意**：兩檔都有 `openTo='year'`，Profile 另有 `orientation='portrait'`、`value` 為 `null` 時傳 `""`、`handleBirthday`；MemberCreate 的 `handleFieldChange` 與其他欄位共用——換時 handler 與值型別一概不動 |
+| 2（試行，**已做**） | `MemberCreate/index.js`、`Profile/General/GeneralSettings.js` | 各只有 1 個 `yyyy/MM/dd` DatePicker、toolbarFormat `yyyy年M月d日`、無列印、無 Modal 焦點鏈、無自訂 `slots`。**注意**：兩檔都有 `openTo='year'`，Profile 另有 `orientation='portrait'`、`value` 為 `null` 時傳 `""`、`handleBirthday`；MemberCreate 的 `handleFieldChange` 與其他欄位共用——換時 handler 與值型別一概不動。**已做（v3.0-1019-0958 暫定）**：建立 `src/ui/date-picker.js`（匯出 `DatePicker`／`MobileDatePicker`／`DateTimePicker`／`MobileDateTimePicker`），並換上述 2 檔。facade 作法：①內部仍是 x-date-pickers 6.19.4 同名元件，整個包在 `MuiScope`；②不取代 MUI 的 field（桌機版為分段鍵盤輸入，自寫 input 會破壞打字）；③新增 `label`／`required`／`fieldClassName`，`label` 不傳給 MUI，改用 `ui/input` 的 `Field` 放欄位上方，無 label 時直接渲染 picker；④`slotProps` 透傳並合併，只有 `textField` 被強制 `variant:'outlined'`（呼叫端傳的 variant 以 outlined 覆蓋；`textField` 是函式時先呼叫再合併），其餘 `fullWidth`／`helperText`／`onKeyDown` 等照舊；`slots`（含自訂 `slots.field`）與其他 props 一律 `...props` 原樣傳給 MUI；⑤存值原樣（Date／null），不轉型。**決定：textField 統一 outlined。** `MemberCreate` 本來就是 outlined，外層重複的 `Field label="生日"` 改為 facade 的 `label`；`Profile` 原為 `variant:'standard'`，統一成 outlined 是本批預期的視覺改變（`styles.datePicker` 的 `& input.MuiInput-input` 規則在 outlined 下不命中，無害，保留未動）。待實機：生日欄鍵盤打字、`openTo='year'` 選年、彈層、手機 |
 | 3 | 一般表單頁：MobileDatePicker 群（B 組）＋DatePicker 群（C 組）；先無焦點鏈者（BonusRecord、ProductRestock、MainEvent、EventRule、CustomerSelfCreate、EmployeeManagementDetail、Reservation、CustomerFilterExport），再有焦點鏈者（AccountingRecord ×2、GeneralAccountingRecord ×2、EmployeePicking ×2） | 自訂 `slots.field` 的 11 個要特別處理（門面需支援自訂欄位或明確取代並保留 `onClick`／`onKeyDown` 焦點鏈） |
-| 4 | 篩選／共用元件：`DateSelector`、`MerchantSearchBar/DatePicker.js` | 牽動 9 個報表頁與約 60 處引用，**另批、謹慎**，逐一驗報表查詢仍可選日、區間邏輯不變 |
+| 4 | 篩選／共用元件：`DateSelector`、`MerchantSearchBar/DatePicker.js` | 牽動 9 個報表頁與約 60 處引用，**另批、謹慎**，逐一驗報表查詢仍可選日、區間邏輯不變。**進度（2026/10/19）**：`DecreaseDetail` 已透過 `uiDateField` 逐頁 opt-in 提前處理（共用層預設不變、其餘引用未動）；其餘引用的預設換法與是否移除 opt-in 旗標，**仍排獨立一批** |
 | 5 | DateTime 群：TopUp ×2、AttendanceRecords | `HH:mm` 時間選擇與 `maxDateTime` |
 | 6（C 批，最後） | 訂單三頁 Head（OrderCreate／OrderEdit／QueueOrderEdit／DraftOrderEdit）、四個 MemberShipCardSells、兩個 WalletDepositModal | 含 `inputRef` 焦點鏈、`minDate`／`maxDate`、`onError`、Modal 內彈層；與打帳單 `Header.js` 的 `valid` 連動，最後做 |
 | 另議 | 原生 `type="date"` 3 檔 | 見第五節 |

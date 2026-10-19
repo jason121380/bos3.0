@@ -59,7 +59,8 @@ function MerchantSearchBar({
   lastInLeaderBoard = false,
   getThirdPartyName = false,
   futureDate = false,
-  stopGetQueryString = false
+  stopGetQueryString = false,
+  uiDateField = false
 }) {
   const [setting, setSetting] = React.useState(values)
 
@@ -400,6 +401,7 @@ function MerchantSearchBar({
             inMerchantDailyReport={inMerchantDailyReport}
             lastInLeaderBoard={lastInLeaderBoard}
             futureDate={futureDate}
+            uiDateField={uiDateField}
           />
         </Grid>
       )}

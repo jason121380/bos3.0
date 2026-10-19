@@ -1,5 +1,4 @@
 import { ToggleButton, ToggleButtonGroup } from '@mui/material'
-import { DatePicker } from '@mui/x-date-pickers'
 import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
 import getQueryString from 'helper/getQueryString'
@@ -10,6 +9,7 @@ import React from 'react'
 import { useHistory } from 'react-router'
 import { Button } from 'ui/button'
 import { Card, CardContent } from 'ui/card'
+import { DatePicker } from 'ui/date-picker'
 import { Field, Input } from 'ui/input'
 
 export default function Reservation({ location }) {
@@ -101,26 +101,25 @@ export default function Reservation({ location }) {
                 女
               </ToggleButton>
             </ToggleButtonGroup>
-            <Field label="生日">
-              <DatePicker
-                format="yyyy/MM/dd"
-                onChange={handleFieldChange}
-                value={profile.birthday}
-                openTo='year'
-                localeText={{
-                  toolbarTitle: '選擇日期'
-                }}
-                slotProps={{
-                  toolbar: {
-                    toolbarFormat: 'yyyy年M月d日'
-                  },
-                  textField: {
-                    variant: 'outlined',
-                    fullWidth: true,
-                  }
-                }}
-              />
-            </Field>
+            <DatePicker
+              label="生日"
+              format="yyyy/MM/dd"
+              onChange={handleFieldChange}
+              value={profile.birthday}
+              openTo='year'
+              localeText={{
+                toolbarTitle: '選擇日期'
+              }}
+              slotProps={{
+                toolbar: {
+                  toolbarFormat: 'yyyy年M月d日'
+                },
+                textField: {
+                  variant: 'outlined',
+                  fullWidth: true,
+                }
+              }}
+            />
             <Field label="推薦碼" htmlFor="member-create-recommand-code">
               <Input
                 id="member-create-recommand-code"
