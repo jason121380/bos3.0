@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Card, Button, Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
+import { Card } from 'ui/card'
 import React from 'react'
 import getQueryString from 'helper/getQueryString'
 import Page from 'components/Page'

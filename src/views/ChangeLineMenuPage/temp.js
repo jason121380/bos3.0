@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React from 'react'
-import Card from '@mui/material/Card'
+import { Card } from 'ui/card'
 import Page from 'components/Page'
 import { useHistory } from 'react-router'
 import { css } from '@emotion/react'
