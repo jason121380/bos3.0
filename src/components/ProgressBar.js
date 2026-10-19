@@ -1,5 +1,6 @@
-import { LinearProgress } from '@mui/material'
 import { useEffect } from 'react'
+import { Progress } from 'ui/progress'
+
 const ProgressBar = ({ dataLoading, setProgress, progress }) => {
   useEffect(() => {
     const timer = setInterval(() => {
@@ -16,7 +17,7 @@ const ProgressBar = ({ dataLoading, setProgress, progress }) => {
 
   return (
     <div className="w-full my-[30px]">
-      <LinearProgress variant="determinate" value={progress} />
+      <Progress value={progress} />
     </div>
   )
 }
