@@ -7,6 +7,7 @@ import { theme } from '../../theme'
 import { CalendarDays } from 'lucide-react'
 import { inputClass } from 'ui/input'
 import { cn } from 'ui/utils'
+import { Button as UiButton } from 'ui/button'
 
 const styles = {
   container: css({
@@ -144,54 +145,104 @@ export default function DatePicker({
   }
   return (
     <Grid container css={styles.container} className='DatePicker'>
+      {/* 快捷鈕：uiDateField 開啟時（目前僅 DecreaseDetail）改 ui Button；關閉時維持原 MUI ButtonGroup，其餘引用不變 */}
       {displayMonth ? (
         <Grid item>
-          <ButtonGroup variant="contained">
-            <Button onClick={handleJumpLastMonth}>
-              上個月
-            </Button>
-            <Button onClick={handleJumpWholeMonth}>
-              本月
-            </Button>
-          </ButtonGroup>
-        </Grid>
-      ) : (
-        <Grid item>
-          <ButtonGroup variant="contained">
-            {(!inMerchantDailyReport || !onlyDayTime) && (
-              <Button onClick={handleJumpWholeMonth}>
+          {uiDateField ? (
+            <div className="ui-root flex items-center gap-2">
+              <UiButton variant="secondary" size="sm" onClick={handleJumpLastMonth}>
+                上個月
+              </UiButton>
+              <UiButton variant="secondary" size="sm" onClick={handleJumpWholeMonth}>
                 本月
-              </Button>
-            )}
-            {lastInLeaderBoard && (
+              </UiButton>
+            </div>
+          ) : (
+            <ButtonGroup variant="contained">
               <Button onClick={handleJumpLastMonth}>
                 上個月
               </Button>
-            )}
-            {!futureDate &&
-              <Button onClick={handleJumpBeforeYesterday}>
-                前天
+              <Button onClick={handleJumpWholeMonth}>
+                本月
               </Button>
-            }
-            {!futureDate &&
-              <Button onClick={handleJumpYesterday}>
-                昨天
+            </ButtonGroup>
+          )}
+        </Grid>
+      ) : (
+        <Grid item>
+          {uiDateField ? (
+            <div className="ui-root flex items-center gap-2">
+              {(!inMerchantDailyReport || !onlyDayTime) && (
+                <UiButton variant="secondary" size="sm" onClick={handleJumpWholeMonth}>
+                  本月
+                </UiButton>
+              )}
+              {lastInLeaderBoard && (
+                <UiButton variant="secondary" size="sm" onClick={handleJumpLastMonth}>
+                  上個月
+                </UiButton>
+              )}
+              {!futureDate &&
+                <UiButton variant="secondary" size="sm" onClick={handleJumpBeforeYesterday}>
+                  前天
+                </UiButton>
+              }
+              {!futureDate &&
+                <UiButton variant="secondary" size="sm" onClick={handleJumpYesterday}>
+                  昨天
+                </UiButton>
+              }
+              <UiButton variant="secondary" size="sm" onClick={handleJumpToday}>
+                今天
+              </UiButton>
+              {futureDate &&
+                <UiButton variant="secondary" size="sm" onClick={handleJumpToTomorrow}>
+                  明天
+                </UiButton>
+              }
+              {futureDate &&
+                <UiButton variant="secondary" size="sm" onClick={handleJumpAfterToTomorrow}>
+                  後天
+                </UiButton>
+              }
+            </div>
+          ) : (
+            <ButtonGroup variant="contained">
+              {(!inMerchantDailyReport || !onlyDayTime) && (
+                <Button onClick={handleJumpWholeMonth}>
+                  本月
+                </Button>
+              )}
+              {lastInLeaderBoard && (
+                <Button onClick={handleJumpLastMonth}>
+                  上個月
+                </Button>
+              )}
+              {!futureDate &&
+                <Button onClick={handleJumpBeforeYesterday}>
+                  前天
+                </Button>
+              }
+              {!futureDate &&
+                <Button onClick={handleJumpYesterday}>
+                  昨天
+                </Button>
+              }
+              <Button onClick={handleJumpToday}>
+                今天
               </Button>
-            }
-            <Button onClick={handleJumpToday}>
-              今天
-            </Button>
-            {futureDate &&
-              <Button onClick={handleJumpToTomorrow}>
-                明天
-              </Button>
-            }
-            {futureDate &&
-              <Button onClick={handleJumpAfterToTomorrow}>
-                後天
-              </Button>
-            }
-          </ButtonGroup>
+              {futureDate &&
+                <Button onClick={handleJumpToTomorrow}>
+                  明天
+                </Button>
+              }
+              {futureDate &&
+                <Button onClick={handleJumpAfterToTomorrow}>
+                  後天
+                </Button>
+              }
+            </ButtonGroup>
+          )}
         </Grid>
       )}
       <Grid item>

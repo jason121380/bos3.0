@@ -34,7 +34,7 @@
 | 檔案 | 元件 | format | toolbarFormat | 特殊 props／備註 |
 |---|---|---|---|---|
 | `components/DateSelector/index.js` | MobileDatePicker（1，渲染起／迄各一次） | `inputFormat` prop，預設 `yyyy/MM/dd` | `M月d日` | `{...pickerOption}` 展開（呼叫端可傳 minDate／views 等）；自訂 `slots.field` 為 `<button>`（純點選）；`disabled`；`aria-label`；報表查詢情境 |
-| `components/MerchantSearchBar/DatePicker.js` | MobileDatePicker（2：起／迄） | 起：`onlyMonthYear ? 'yyyy/MM' : 'yyyy/MM/dd'`；迄：`yyyy/MM/dd` | `M月d日` | `closeOnSelect`；自訂 `slots.field` 為 MUI `Button`（`ButtonGroup` 內，純點選）；**2026/10/19 起新增 `uiDateField` prop（預設 `false`）逐頁 opt-in：開啟時日期欄改為 `inputClass` 外觀的原生 `<button>`＋`CalendarDays` 圖示、容器由 `ButtonGroup` 改 flex `div`；目前僅 `DecreaseDetail` 開啟，其餘引用未動**；篩選情境；**`yyyy/MM` 是月模式**，但仍是完整日 picker＋月格式顯示，與值的處理在 `handleCalendarAccept` |
+| `components/MerchantSearchBar/DatePicker.js` | MobileDatePicker（2：起／迄） | 起：`onlyMonthYear ? 'yyyy/MM' : 'yyyy/MM/dd'`；迄：`yyyy/MM/dd` | `M月d日` | `closeOnSelect`；自訂 `slots.field` 為 MUI `Button`（`ButtonGroup` 內，純點選）；**2026/10/19 起新增 `uiDateField` prop（預設 `false`）逐頁 opt-in：開啟時日期欄改為 `inputClass` 外觀的原生 `<button>`＋`CalendarDays` 圖示、容器由 `ButtonGroup` 改 flex `div`；目前僅 `DecreaseDetail` 開啟，其餘引用未動；開啟時左側快捷鈕（本月／上個月／前天／昨天／今天等）也同步換 `ui/button` 的 `secondary`＋`sm`（flex `gap-2` 容器），其餘引用快捷鈕仍為舊 MUI 樣式，排共用元件批再議**；篩選情境；**`yyyy/MM` 是月模式**，但仍是完整日 picker＋月格式顯示，與值的處理在 `handleCalendarAccept` |
 
 ### B. 一般表單頁（MobileDatePicker 群）
 
@@ -153,6 +153,13 @@
 - 彈層（Popper／Dialog）在 MUI Portal 內，門面要自帶 `ui-root`（見 CLAUDE.md 踩雷），並實機確認被 MUI Dialog／Modal 包住時不被擋（`pointer-events`、focus trap、z-index）。
 
 **為何不一次全自寫月曆**：格線、鍵盤解析（分段輸入）、時間選擇、月／年切換、無障礙、locale（zh-TW 週起始與月名）、`minDate`／`maxDate` 與 `onError` 協定，都要重做並重測；而且會碰到存值（Date／null／Invalid Date）與訂單頁的焦點鏈（`inputRef`、`autoFocus`、`onKeyDown` 跳欄），風險與測試成本過高。門面作法**可逐檔驗證、可回退**（換一檔、驗一檔，出問題改回 `@mui/x-date-pickers` 的原寫法即可）。
+
+**彈層主題（日曆 B 批，2026/10/19，v3.0-1019-1030 暫定）**
+
+- 改動集中在 `src/ui/mui-theme.js` 的 `MuiPickers*` 覆寫，只動 `styleOverrides` 視覺值，不碰選取行為、format、回傳型別。
+- 新增／補強：`MuiPickersPopper.paper`（圓角 12、1px `border`、浮層陰影、`background`）；`MuiPickersDay`（13 字級、hover `surfaceHover`、選中 accent 底白字＋600、disabled `textTertiary`）；`MuiPickersCalendarHeader`（月份標籤 14/600、`text` 色、切換檢視鈕 hover）；`MuiPickersArrowSwitcher`（箭頭鈕 hover）；`MuiPickersYear.yearButton`／`MuiPickersMonth.monthButton`（圓角 8、hover、選中 accent）；`MuiDigitalClock.item`／`MuiMultiSectionDigitalClockSection.item`（14 字級、圓角 8、hover、選中 accent）。元件名稱已對照 `node_modules/@mui/x-date-pickers` 6.19.4 的 `themeAugmentation/overrides.d.ts` 與各元件 `styled` 的 `name`／`slot`。手機 Dialog 版沿用既有 `MuiPickersLayout`／`MuiPickersToolbar`（主題藍底白字）與 `MuiDialog` paper 覆寫，本批未另改。
+- 影響範圍：所有包在 `MuiScope` 內的 picker（facade 與既有共用元件）；未包 `MuiScope` 的舊頁面仍用舊主題，逐頁換 facade 後才套用。
+- **待實機**：深色模式、手機 Dialog 版、年選擇（`openTo='year'`）、時間選擇（DateTime）。
 
 **第二階段（全自寫）**：待第一階段全數換完，並實機驗證鍵盤輸入與各情境後再評估，不預先承諾。
 

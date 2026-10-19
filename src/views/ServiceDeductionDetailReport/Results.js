@@ -1,32 +1,7 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Table, TableBody, TableCell, TableHead, TableRow, Paper, TableContainer,
-} from '@mui/material'
 import PropTypes from 'prop-types'
 import { Fragment, useEffect } from 'react'
 import { format } from 'date-fns'
-import { css } from '@emotion/react'
-
-const styles = {
-  table: css({
-    minWidth: 650,
-  }),
-  designerName: css({
-    fontWeight: 'bold',
-  }),
-  sepreateDiv: css({
-    display: 'flex',
-    justifyContent: 'space-around',
-  }),
-  sepreateDiv2: css({
-    display: 'flex',
-    justifyContent: 'space-around',
-    width: '100%',
-    '& td': {
-      width: '100%'
-    }
-  }),
-}
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Results({ userServiceDeductionDetial, setExcelData }) {
   const countTotal = key => {
@@ -113,57 +88,43 @@ function Results({ userServiceDeductionDetial, setExcelData }) {
 
   return (
     <Fragment>
-      <TableContainer component={Paper} style={{ marginTop: '12px' }}>
-        <Table css={styles.table} size="small" aria-label="a dense table">
-          <TableHead>
+      <div className="mt-3">
+        <Table dense className="min-w-[650px]" aria-label="a dense table">
+          <TableHeader>
             <TableRow>
-              <TableCell>日期</TableCell>
-              <TableCell>帳單編號</TableCell>
-              <TableCell>類別</TableCell>
-              <TableCell>項目</TableCell>
-              <TableCell>設計師</TableCell>
-              <TableCell>金額</TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                扣業績
-                <div css={styles.sepreateDiv}>
-                  <TableCell>手續費</TableCell>
-                  <TableCell>扣項</TableCell>
-                  <TableCell>互助</TableCell>
-                </div>
-              </TableCell>
-              <TableCell>實業績</TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                依特殊抽成
-                <div css={styles.sepreateDiv}>
-                  <TableCell>實業績</TableCell>
-                  <TableCell>特殊抽成</TableCell>
-                </div>
-              </TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                依服務歸屬
-                <div css={styles.sepreateDiv}>
-                  <TableCell>服務歸屬</TableCell>
-                  <TableCell>不分實業績</TableCell>
-                  <TableCell>不分實業績 抽成</TableCell>
-                  <TableCell>指定實業績</TableCell>
-                  <TableCell>指定實業績 抽成</TableCell>
-                  <TableCell>不指定實業績</TableCell>
-                  <TableCell>不指定實業績 抽成</TableCell>
-                </div>
-              </TableCell>
-              <TableCell>%</TableCell>
-              <TableCell>服務抽成</TableCell>
-              <TableCell style={{ textAlign: 'center' }}>
-                扣薪水
-                <div css={styles.sepreateDiv}>
-                  <TableCell>手續費</TableCell>
-                  <TableCell>扣項</TableCell>
-                  <TableCell>互助</TableCell>
-                </div>
-              </TableCell>
-              <TableCell>小計</TableCell>
+              <TableHead rowSpan={2}>日期</TableHead>
+              <TableHead rowSpan={2}>帳單編號</TableHead>
+              <TableHead rowSpan={2}>類別</TableHead>
+              <TableHead rowSpan={2}>項目</TableHead>
+              <TableHead rowSpan={2}>設計師</TableHead>
+              <TableHead rowSpan={2} numeric>金額</TableHead>
+              <TableHead colSpan={3} className="text-center">扣業績</TableHead>
+              <TableHead rowSpan={2} numeric>實業績</TableHead>
+              <TableHead colSpan={2} className="text-center">依特殊抽成</TableHead>
+              <TableHead colSpan={7} className="text-center">依服務歸屬</TableHead>
+              <TableHead rowSpan={2} numeric>%</TableHead>
+              <TableHead rowSpan={2} numeric>服務抽成</TableHead>
+              <TableHead colSpan={3} className="text-center">扣薪水</TableHead>
+              <TableHead rowSpan={2} numeric>小計</TableHead>
             </TableRow>
-          </TableHead>
+            <TableRow>
+              <TableHead numeric>手續費</TableHead>
+              <TableHead numeric>扣項</TableHead>
+              <TableHead numeric>互助</TableHead>
+              <TableHead numeric>實業績</TableHead>
+              <TableHead numeric>特殊抽成</TableHead>
+              <TableHead>服務歸屬</TableHead>
+              <TableHead numeric>不分實業績</TableHead>
+              <TableHead numeric>不分實業績 抽成</TableHead>
+              <TableHead numeric>指定實業績</TableHead>
+              <TableHead numeric>指定實業績 抽成</TableHead>
+              <TableHead numeric>不指定實業績</TableHead>
+              <TableHead numeric>不指定實業績 抽成</TableHead>
+              <TableHead numeric>手續費</TableHead>
+              <TableHead numeric>扣項</TableHead>
+              <TableHead numeric>互助</TableHead>
+            </TableRow>
+          </TableHeader>
           <TableBody id="whiteSpace">
             {userServiceDeductionDetial.map((data, index) => (
               <TableRow key={index}>
@@ -172,104 +133,60 @@ function Results({ userServiceDeductionDetial, setExcelData }) {
                 <TableCell>{data.type}</TableCell>
                 <TableCell>{data.item}</TableCell>
                 <TableCell>{data.designerName}</TableCell>
-                <TableCell>{floatDisplay(data.cash)}</TableCell>
-                <TableCell css={styles.sepreateDiv}>
-                  <TableCell>{floatDisplay(data.handlingFeeOnSales)}</TableCell>
-                  <TableCell>{floatDisplay(data.deductionOnSales)}</TableCell>
-                  <TableCell>{floatDisplay(data.helperPriceOnSales)}</TableCell>
-                </TableCell>
-                <TableCell>{floatDisplay(data.truthPerformance)}</TableCell>
-                <TableCell css={styles.sepreateDiv}>
-                  <TableCell>{floatDisplay(data.specialRake_truthPerformance)}</TableCell>
-                  <TableCell>{floatDisplay(data.specialRake_specialRake)}</TableCell>
-                </TableCell>
+                <TableCell numeric>{floatDisplay(data.cash)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.handlingFeeOnSales)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.deductionOnSales)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.helperPriceOnSales)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.truthPerformance)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.specialRake_truthPerformance)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.specialRake_specialRake)}</TableCell>
                 <TableCell>
-                  <div css={styles.sepreateDiv2}>
-                    <TableCell>
-                      {data.category_categoryName !== '' ? data.category_categoryName : '預設'}
-                    </TableCell>
-                    <TableCell>
-                      {floatDisplay(data.category_normalTruthPerformance)}
-                    </TableCell>
-                    <TableCell>
-                      {floatDisplay(data.category_normalRake)}
-                    </TableCell>
-                    <TableCell>
-                      {floatDisplay(data.category_designateTruthPerformance)}
-                    </TableCell>
-                    <TableCell>
-                      {floatDisplay(data.category_designateRake)}
-                    </TableCell>
-                    <TableCell>
-                      {floatDisplay(data.category_nonDesignateTruthPerformance)}
-                    </TableCell>
-                    <TableCell>
-                      {floatDisplay(data.category_nonDesignateRake)}
-                    </TableCell>
-                  </div>
+                  {data.category_categoryName !== '' ? data.category_categoryName : '預設'}
                 </TableCell>
-                <TableCell>{data.percentage}</TableCell>
-                <TableCell>{floatDisplay(data.serviceRake)}</TableCell>
-                <TableCell css={styles.sepreateDiv}>
-                  <TableCell>{floatDisplay(data.handlingFeeOnSalary)}</TableCell>
-                  <TableCell>{floatDisplay(data.deductionOnSalary)}</TableCell>
-                  <TableCell>{floatDisplay(data.helperPriceOnSalary)}</TableCell>
-                </TableCell>
-                <TableCell>{floatDisplay(data.summary)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.category_normalTruthPerformance)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.category_normalRake)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.category_designateTruthPerformance)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.category_designateRake)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.category_nonDesignateTruthPerformance)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.category_nonDesignateRake)}</TableCell>
+                <TableCell numeric>{data.percentage}</TableCell>
+                <TableCell numeric>{floatDisplay(data.serviceRake)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.handlingFeeOnSalary)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.deductionOnSalary)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.helperPriceOnSalary)}</TableCell>
+                <TableCell numeric>{floatDisplay(data.summary)}</TableCell>
               </TableRow>
             ))}
             <TableRow>
-              <TableCell style={{ fontWeight: 'bold' }}>合計</TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
-              <TableCell>{countTotal('cash')}</TableCell>
-              <div css={styles.sepreateDiv}>
-                <TableCell>{countTotal('handlingFeeOnSales')}</TableCell>
-                <TableCell>{countTotal('deductionOnSales')}</TableCell>
-                <TableCell>{countTotal('helperPriceOnSales')}</TableCell>
-              </div>
-              <TableCell>{countTotal('truthPerformance')}</TableCell>
-              <div css={styles.sepreateDiv}>
-                <TableCell>{countTotal('specialRake_truthPerformance')}</TableCell>
-                <TableCell>{countTotal('specialRake_specialRake')}</TableCell>
-              </div>
-              <TableCell>
-                <div css={styles.sepreateDiv2}>
-                  <TableCell></TableCell>
-                  <TableCell>
-                    {countTotal('category_normalTruthPerformance')}
-                  </TableCell>
-                  <TableCell>
-                    {countTotal('category_normalRake')}
-                  </TableCell>
-                  <TableCell>
-                    {countTotal('category_designateTruthPerformance')}
-                  </TableCell>
-                  <TableCell>
-                    {countTotal('category_designateRake')}
-                  </TableCell>
-                  <TableCell>
-                    {countTotal('category_nonDesignateTruthPerformance')}
-                  </TableCell>
-                  <TableCell>
-                    {countTotal('category_nonDesignateRake')}
-                  </TableCell>
-                </div>
-              </TableCell>
-              <TableCell></TableCell>
-              <TableCell>{countTotal('serviceRake')}</TableCell>
-              <TableCell css={styles.sepreateDiv}>
-                <TableCell>{countTotal('handlingFeeOnSalary')}</TableCell>
-                <TableCell>{countTotal('deductionOnSalary')}</TableCell>
-                <TableCell>{countTotal('helperPriceOnSalary')}</TableCell>
-              </TableCell>
-              <TableCell>{countTotal('summary')}</TableCell>
+              <TableCell className="font-bold">合計</TableCell>
+              <TableCell />
+              <TableCell />
+              <TableCell />
+              <TableCell />
+              <TableCell numeric>{countTotal('cash')}</TableCell>
+              <TableCell numeric>{countTotal('handlingFeeOnSales')}</TableCell>
+              <TableCell numeric>{countTotal('deductionOnSales')}</TableCell>
+              <TableCell numeric>{countTotal('helperPriceOnSales')}</TableCell>
+              <TableCell numeric>{countTotal('truthPerformance')}</TableCell>
+              <TableCell numeric>{countTotal('specialRake_truthPerformance')}</TableCell>
+              <TableCell numeric>{countTotal('specialRake_specialRake')}</TableCell>
+              <TableCell />
+              <TableCell numeric>{countTotal('category_normalTruthPerformance')}</TableCell>
+              <TableCell numeric>{countTotal('category_normalRake')}</TableCell>
+              <TableCell numeric>{countTotal('category_designateTruthPerformance')}</TableCell>
+              <TableCell numeric>{countTotal('category_designateRake')}</TableCell>
+              <TableCell numeric>{countTotal('category_nonDesignateTruthPerformance')}</TableCell>
+              <TableCell numeric>{countTotal('category_nonDesignateRake')}</TableCell>
+              <TableCell numeric />
+              <TableCell numeric>{countTotal('serviceRake')}</TableCell>
+              <TableCell numeric>{countTotal('handlingFeeOnSalary')}</TableCell>
+              <TableCell numeric>{countTotal('deductionOnSalary')}</TableCell>
+              <TableCell numeric>{countTotal('helperPriceOnSalary')}</TableCell>
+              <TableCell numeric>{countTotal('summary')}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
-      </TableContainer>
+      </div>
     </Fragment>
   )
 }
