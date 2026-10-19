@@ -1,14 +1,11 @@
 /** @jsxImportSource @emotion/react */
 // 標題輸入框保留 MUI FormControl/OutlinedInput：MyFormHelperText 依賴 useFormControl 的 focused 狀態顯示提示
 import {
-  Tooltip,
   FormHelperText,
   FormControl,
   OutlinedInput,
 } from '@mui/material'
 import { ArrowDown, ArrowUp, ChevronsDown, Pencil, Trash2, UserPlus, X } from 'lucide-react'
-import { tooltipClasses } from '@mui/material/Tooltip'
-import { styled } from '@mui/material/styles'
 import { useFormControl } from '@mui/material/FormControl'
 import { useState, Fragment, useMemo } from 'react'
 import _ from 'lodash'
@@ -33,16 +30,6 @@ function MyFormHelperText() {
   return <FormHelperText>{helperText}</FormHelperText>
 }
 
-const LightTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.common.white,
-    color: 'rgba(0, 0, 0, 0.87)',
-    boxShadow: theme.shadows[1],
-    fontSize: 11,
-  },
-}))
 export default function ScheduleCard({
   scheduleCard,
   setScheduleCard,

@@ -12,9 +12,9 @@ import {
   Modal,
   Select,
   TextField,
-  Autocomplete,
-  CircularProgress
+  Autocomplete
 } from '@mui/material'
+import { LoaderCircle } from 'lucide-react'
 import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
@@ -406,7 +406,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                   {values.no !== '' && (
                     <span className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center">
                       {isSetTime ? (
-                        <CircularProgress size={20} />
+                        <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
                       ) : !noVerify ? (
                         <CheckRoundedIcon color='success' />
                       ) : (
