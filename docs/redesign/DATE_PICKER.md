@@ -33,7 +33,7 @@
 | 檔案 | 元件 | format | toolbarFormat | 特殊 props／備註 |
 |---|---|---|---|---|
 | `components/DateSelector/index.js` | MobileDatePicker（1，渲染起／迄各一次） | `inputFormat` prop，預設 `yyyy/MM/dd` | `M月d日` | `{...pickerOption}` 展開（呼叫端可傳 minDate／views 等）；自訂 `slots.field` 為 `<button>`（純點選）；`disabled`；`aria-label`；報表查詢情境 |
-| `components/MerchantSearchBar/DatePicker.js` | MobileDatePicker（2：起／迄） | 起：`onlyMonthYear ? 'yyyy/MM' : 'yyyy/MM/dd'`；迄：`yyyy/MM/dd` | `M月d日` | `closeOnSelect`；自訂 `slots.field` 為 MUI `Button`（`ButtonGroup` 內，純點選）；篩選情境；**`yyyy/MM` 是月模式**，但仍是完整日 picker＋月格式顯示，與值的處理在 `handleCalendarAccept` |
+| `components/MerchantSearchBar/DatePicker.js` | MobileDatePicker（2：起／迄） | 起：`onlyMonthYear ? 'yyyy/MM' : 'yyyy/MM/dd'`；迄：`yyyy/MM/dd` | `M月d日` | `closeOnSelect`；自訂 `slots.field` 為 MUI `Button`（`ButtonGroup` 內，純點選）；**2026/10/19 起新增 `uiDateField` prop（預設 `false`）逐頁 opt-in：開啟時日期欄改為 `inputClass` 外觀的原生 `<button>`＋`CalendarDays` 圖示、容器由 `ButtonGroup` 改 flex `div`；目前僅 `DecreaseDetail` 開啟，其餘引用未動**；篩選情境；**`yyyy/MM` 是月模式**，但仍是完整日 picker＋月格式顯示，與值的處理在 `handleCalendarAccept` |
 
 ### B. 一般表單頁（MobileDatePicker 群）
 
@@ -162,7 +162,7 @@
 | 1（本批） | 盤點＋設計文件 | 只有文件，未換元件 |
 | 2（試行） | `MemberCreate/index.js`、`Profile/General/GeneralSettings.js` | 各只有 1 個 `yyyy/MM/dd` DatePicker、toolbarFormat `yyyy年M月d日`、無列印、無 Modal 焦點鏈、無自訂 `slots`。**注意**：兩檔都有 `openTo='year'`，Profile 另有 `orientation='portrait'`、`value` 為 `null` 時傳 `""`、`handleBirthday`；MemberCreate 的 `handleFieldChange` 與其他欄位共用——換時 handler 與值型別一概不動 |
 | 3 | 一般表單頁：MobileDatePicker 群（B 組）＋DatePicker 群（C 組）；先無焦點鏈者（BonusRecord、ProductRestock、MainEvent、EventRule、CustomerSelfCreate、EmployeeManagementDetail、Reservation、CustomerFilterExport），再有焦點鏈者（AccountingRecord ×2、GeneralAccountingRecord ×2、EmployeePicking ×2） | 自訂 `slots.field` 的 11 個要特別處理（門面需支援自訂欄位或明確取代並保留 `onClick`／`onKeyDown` 焦點鏈） |
-| 4 | 篩選／共用元件：`DateSelector`、`MerchantSearchBar/DatePicker.js` | 牽動 9 個報表頁與約 60 處引用，**另批、謹慎**，逐一驗報表查詢仍可選日、區間邏輯不變 |
+| 4 | 篩選／共用元件：`DateSelector`、`MerchantSearchBar/DatePicker.js` | 牽動 9 個報表頁與約 60 處引用，**另批、謹慎**，逐一驗報表查詢仍可選日、區間邏輯不變。**進度（2026/10/19）**：`DecreaseDetail` 已透過 `uiDateField` 逐頁 opt-in 提前處理（共用層預設不變、其餘引用未動）；其餘引用的預設換法與是否移除 opt-in 旗標，**仍排獨立一批** |
 | 5 | DateTime 群：TopUp ×2、AttendanceRecords | `HH:mm` 時間選擇與 `maxDateTime` |
 | 6（C 批，最後） | 訂單三頁 Head（OrderCreate／OrderEdit／QueueOrderEdit／DraftOrderEdit）、四個 MemberShipCardSells、兩個 WalletDepositModal | 含 `inputRef` 焦點鏈、`minDate`／`maxDate`、`onError`、Modal 內彈層；與打帳單 `Header.js` 的 `valid` 連動，最後做 |
 | 另議 | 原生 `type="date"` 3 檔 | 見第五節 |
