@@ -6,6 +6,8 @@
 
 | 範圍 | 內容 |
 |---|---|
+| MUI 移除・TreeView 專項試點（AGY 線，v3.0-1019-2334） | 只做 `layouts/Dashboard/MerchantList.js` 1 檔：MUI TreeView 改自家 `ul/button` 樹（role=tree/treeitem、roving tabindex、↑↓←→/Home/End/Enter/Space/type-ahead 鍵盤補齊），節點 id／搜尋自動展開／點店家存值導頁不動；其餘 5 檔樹（多選彈窗/商品/釘選）不動，`@mui/x-tree-view` 套件待全清後才卸。待實機展開/點選/鍵盤逐項。 |
+| 全站外框扁平修正（v3.0-1019-2314，未合併待截圖驗收） | 覆蓋 #151 部分視覺（STYLE §13／MEMORY #107）：白底 canvas、灰卡 surface #F3F4F6、移除 shadow-card、Card/#printContainer/Dialog 去框去影、側欄選中純色塊、secondary 灰 pill；深藍主色與密度/列印不變。示範頁顧客列表由 token 自動生效。待截圖：白底灰卡、側欄、彈窗、深色、列印。 |
 | MUI 移除・Progress 第三小批（AGY 線，v3.0-1019-2318） | 2 檔不定值小圈換 lucide `LoaderCircle animate-spin`：OrderEdit/AddCustomerModal、QueueOrderEdit/AddCustomerModal 各 2 處（編號驗證 20px＋MUI Select renderValue 載入小圈）；Select 本體／value='loading'／handler／載入邏輯不動。連同第二小批（#156）後，不定值可獨立轉圈清完；定值線／圓、Autocomplete 內圈、結帳 snackbar、Suspense 頂線仍專項不碰。待實機兩窗載入小圈與欄寬不跳動。 |
 | MUI 移除・Progress 第二小批（AGY 線，v3.0-1019-2315） | 8 檔不定值轉圈換 lucide `LoaderCircle animate-spin`：Backdrop 四檔（EmployeeManagementDetail/Reservation、ManagementDesignersReservationRecord、ManagementReservationRecord、Profile/Reservation，40px，只換圈不動 Backdrop）＋欄位小圈四檔（CustomerCreate/AboutCustomer、OrderCreate/AddCustomerModal 各 1 處 20px；CustomerEditModal、DraftOrderEdit/AddCustomerModal 各 2 處含 MUI Select renderValue）；載入邏輯／顯示條件／handler 不動。不碰 Autocomplete 內圈、定值線／圓、結帳 snackbar 與切頁頂線。待實機八處載入轉圈。 |
 | 設定頁左選單左右底色（Jason Cursor Billing 截圖指定，v3.0-1020-0023） | `ui/settings-nav` 左欄桌機 `bg-surface` 淺灰整欄，四頁 Tabs 去 gap 改等高相鄰、右欄 `bg-background` 白底，中間無分隔線；選中主題藍與卡片邊框保留，手機頂部分頁不變。待實機四頁桌機／手機確認，見 TODO／MEMORY #115。 |
