@@ -1,10 +1,8 @@
 // MUI Dialog 保留：內含 MUI Autocomplete（Radix Dialog 會擋住其彈出層）
-import {
-  Dialog, DialogTitle, DialogContent, DialogActions, Autocomplete,
-  TextField
-} from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material'
 import { Button } from 'ui/button'
 import { Field } from 'ui/input'
+import { Autocomplete } from 'ui/combobox'
 
 const VendorDialog = ({
   open, handleClosePublishDialog, isClick, option, setMerchantVendorId,

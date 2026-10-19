@@ -1,10 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
 // 人員類別多選（Autocomplete）保留 MUI
-import {
-  Checkbox,
-  TextField, Autocomplete,
-} from '@mui/material'
+import { Checkbox, TextField } from '@mui/material'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
 import { format } from 'date-fns'
@@ -25,6 +22,7 @@ import { PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   root: css({}),

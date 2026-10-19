@@ -1,7 +1,4 @@
-import {
-  TextField, Autocomplete, FormControl, InputLabel, Input,
-  InputAdornment
-} from '@mui/material'
+import { TextField, FormControl, InputLabel, Input, InputAdornment } from '@mui/material'
 import { MobileDatePicker } from 'ui/date-picker'
 import { useFetchProductsInProductRestock } from 'hooks/useFetchProducts'
 import { useFetchGetMerchantVendorList } from 'hooks/useFetchGetVendor'
@@ -19,6 +16,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
 
 import ProductsModalV3 from './ProductsModalV3'
+import { Autocomplete } from 'ui/combobox'
 
 export default function General({
   className,

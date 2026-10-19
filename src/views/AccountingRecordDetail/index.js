@@ -1,10 +1,6 @@
 // 表單控制項（日期、收支切換、科目／人員／收付方式 Autocomplete、備註快捷 Select、金額與備註 TextField）
 // 保留 MUI：皆以 ref 串接 Enter 鍵焦點流程（橋接主題已套新外觀）
-import {
-  TextField,
-  FormControl, MenuItem, InputLabel, Select, Autocomplete,
-    Input, InputAdornment
-} from '@mui/material'
+import { TextField, FormControl, MenuItem, InputLabel, Select, Input, InputAdornment } from '@mui/material'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
 import { Copy, Trash2 } from 'lucide-react'
@@ -30,6 +26,7 @@ import { Field, Input as UiInput } from 'ui/input'
 import { PageHeader } from 'ui/page-header'
 
 import AccountingSubjectModal from './AccountingSubjectModal'
+import { Autocomplete } from 'ui/combobox'
 
 //備註快捷
 const remarkItem = [

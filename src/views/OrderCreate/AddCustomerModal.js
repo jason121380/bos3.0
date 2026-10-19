@@ -1,19 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Select,
-  TextField,
-  Autocomplete
-} from '@mui/material'
+import { Button, Card, CardActions, CardContent, CardHeader, FormControl, Grid, InputLabel, MenuItem, Modal, Select, TextField } from '@mui/material'
 import { LoaderCircle } from 'lucide-react'
 import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
@@ -33,6 +19,7 @@ import { useHistory } from 'react-router'
 import SourceSelect from 'components/SourceSelect'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   root: css({

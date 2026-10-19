@@ -1,7 +1,4 @@
-import {
-  TextField,
-  Snackbar, Autocomplete
-} from '@mui/material'
+import { TextField, Snackbar } from '@mui/material'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
 import idx from 'idx'
@@ -18,6 +15,7 @@ import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import { Autocomplete } from 'ui/combobox'
 
 function InventoryWork() {
   const [draftId, setDraftId] = useState(null)

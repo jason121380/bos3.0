@@ -1,10 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 對話框內有 MUI Autocomplete，保留 MUI Dialog；名稱／網址已換 Field＋Input
-import {
-  Dialog, DialogContent, DialogTitle, DialogActions,
-  TextField, Checkbox,
-  Autocomplete
-} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, DialogActions, TextField, Checkbox } from '@mui/material'
 import { CheckboxField } from 'ui/checkbox'
 import { Button } from 'ui/button'
 import { Field, Input } from 'ui/input'
@@ -21,6 +17,7 @@ import { styles } from './styles/OuterLinkModal'
 import { openSnackbar } from 'elements/snackbars'
 import { cloneDeep } from 'lodash'
 import idx from 'idx'
+import { Autocomplete } from 'ui/combobox'
 
 const OuterLinkModal = ({
   isCus = false,

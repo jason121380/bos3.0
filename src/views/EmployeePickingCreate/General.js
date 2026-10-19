@@ -1,13 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 欄位使用 Autocomplete / Select / DatePicker 與 inputRef 焦點串接，沿用 MUI
-import {
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Autocomplete
-} from '@mui/material'
+import { TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
 import { DatePicker } from 'ui/date-picker'
 import { useFetchProductsInEmployeePicking } from 'hooks/useFetchProducts'
 import { useFetchProductCategoriesInCreatePicking } from 'hooks/useFetchProductCategories'
@@ -23,6 +16,7 @@ import { css } from '@emotion/react'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import ProductsModalV3 from './ProductsModalV3'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   cardContent: css({}),

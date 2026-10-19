@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 「完全新客必填欄位」為多選 Autocomplete（含勾選圖示的選項），標籤改上方 Field、本體保留 MUI
-import {
-  TextField, Checkbox, Autocomplete
-} from '@mui/material'
+import { TextField, Checkbox } from '@mui/material'
 import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Field } from 'ui/input'
@@ -11,6 +9,7 @@ import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxI
 import _ from 'lodash'
 import produce from 'immer'
 import styles from './styles/AboutCustomerSettingFunction'
+import { Autocomplete } from 'ui/combobox'
 
 const optionArr = [
   { label: "同步顧客個人資料", key: 'isCustomerProfileSync' },

@@ -212,3 +212,5 @@
 
 132. **帳單四兄弟的 Autocomplete 是「可新增選項」寫法，相容層需處理字串值與空字串（`ui/combobox` 第三批，2026/10/20，v3.0-1020-0336）**：打帳單顧客欄以 `createFilterOptions` 篩選後追加「新增 "…"」選項、`value` 可能是物件／字串／`''`，`startAdornment` 放新增／編輯顧客圖示、`endAdornment` 放載入圈、`onKeyDown` 記錄 Enter。相容層的空字串視為「無值」（不顯示清除鈕）、未輸入時篩選以空字串呼叫（不會冒出「新增」選項）。四兄弟 Head.js 用 `import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'` 合併寫法，第一版轉換腳本漏掉，跑完要以「從 MUI 匯入 Autocomplete 的檔案數＝0」覆核。
 
+133. **「整類結案」一律用 AST 覆核，不用逐行 grep（`ui/combobox` 第四批，2026/10/20，v3.0-1020-0342）**：#180 以 `grep "import[^;]*Autocomplete[^;]*from '@mui/material'"` 判定為 0，實際還有 21 檔是跨行 `import {\n  TextField,\n  Autocomplete,\n} from '@mui/material'`，逐行 grep 抓不到，導致 PR #180 與 STATUS 誤寫「整類結案」。之後宣稱某類 MUI 歸零前，必須以 `@babel/parser` 解析每個檔案的 ImportDeclaration（scratchpad `tools/mui-scan2.js` 同法）覆核，並在 PR 寫明覆核方式。
+

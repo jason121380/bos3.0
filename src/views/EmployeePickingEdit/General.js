@@ -1,13 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 表單欄位以 inputRef 串接 Enter 跳下一欄（含 Autocomplete、DatePicker、Select），保留 MUI；只換卡片外框
-import {
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Autocomplete
-} from '@mui/material'
+import { TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
 import { useFetchProductsInEmployeePickingEdit } from 'hooks/useFetchProducts'
 import { useFetchUsersForCreatePicking } from 'hooks/useFetchUsers'
 import { DatePicker } from 'ui/date-picker'
@@ -17,6 +10,7 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   cardContent: css({}),
