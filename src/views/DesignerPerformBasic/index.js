@@ -310,18 +310,19 @@ const DesignerPerformBasic = () => {
           </div>
         </div>
         <AdminPageHeader title='設計師排行榜' />
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <DateSelector
-            date={date}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-            margin
-          />
-          <div className="noprint flex flex-wrap items-center justify-start gap-x-2.5 gap-y-8">
-            <div style={{ marginTop: -23 }}>
-              <div className="divText">服務業績指定/不指定：</div>
+        {/* 篩選區：分列分組、標籤在切換鈕上方（STYLE.md §6）、間距統一；桌機排不下整齊換行不擠壓 */}
+        <div className="flex flex-col gap-3 pb-4">
+          <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
+            <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+              <DateSelector
+                date={date}
+                attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+                dateChange={value => setDate(value)}
+              />
+            </div>
+            <div className="noprint flex min-w-0 flex-col gap-1.5">
+              <div className="text-label text-text-secondary">服務業績指定/不指定：</div>
               <ToggleGroup
-                style={{ marginRight: '10px' }}
                 size="small"
                 exclusive
                 value={performanceDisplay}
@@ -331,21 +332,19 @@ const DesignerPerformBasic = () => {
                 <ToggleGroupItem value='HIDDEN'>不顯示</ToggleGroupItem>
               </ToggleGroup>
             </div>
-            {!isDisplayTogglePerformanceButton && <div style={{ marginTop: -23 }}>
-              <div className="divText">業績依據：</div>
+            {!isDisplayTogglePerformanceButton && <div className="noprint flex min-w-0 flex-col gap-1.5">
+              <div className="text-label text-text-secondary">業績依據：</div>
               <ReferToggleButton
                 value={performReference}
                 onChange={handleToggleButtonChange}
               />
             </div>}
-            <div style={{ display: 'flex', flexDirection: 'column', justifyItems: 'center', marginTop: -23 }}>
-              <div className="divText"
-                style={{ width: '100%', textAlign: membershipDisplay ? 'center' : 'start' }}>
+            <div className="noprint flex min-w-0 flex-col gap-1.5">
+              <div className="text-label text-text-secondary">
                 總業績依據：
               </div>
-              <div>
+              <div className="flex flex-wrap items-center gap-2">
                 <ToggleGroup
-                  style={{ marginRight: '10px' }}
                   size="small"
                   value={isIncludeProductPerformance}
                   onChange={handleProductPerformanceToggleButtonChange}
@@ -388,7 +387,7 @@ const DesignerPerformBasic = () => {
               </div>
             </div>
             {excelData.length !== 0 && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div className="noprint flex flex-wrap items-center gap-2 sm:ml-auto">
                 <CSVLink
                   data={excelData}
                   filename="設計師排行榜.csv"
@@ -410,18 +409,18 @@ const DesignerPerformBasic = () => {
               </div>
             )}
           </div>
-        </div>
-        <div className="noprint my-2 flex">
-          <MerchantListAutocpmplete
-            onValueChange={value => {
-              handleChecked(value)
-            }}
-          />
-          <div className="ml-2.5 flex items-center">
+          <div className="noprint flex flex-wrap items-center gap-2.5">
+            <div className="w-full min-w-0 sm:flex-1">
+              <MerchantListAutocpmplete
+                onValueChange={value => {
+                  handleChecked(value)
+                }}
+              />
+            </div>
             <Button
               variant="primary"
               onClick={handleSearchReport}
-              className="w-[100px]"
+              className="shrink-0 max-sm:w-full"
             >
               搜尋
             </Button>
