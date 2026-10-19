@@ -123,7 +123,7 @@ export default function DatePicker({
   }
   return (
     <Grid container className='DatePicker my-6 flex items-center'>
-      {/* 快捷鈕：uiDateField 開啟時（目前僅 DecreaseDetail）改 ui Button；關閉時維持原 MUI ButtonGroup，其餘引用不變 */}
+      {/* 快捷鈕：uiDateField 開啟時（DecreaseDetail、ProductConsumeReport）改 ui Button；關閉時維持原 MUI ButtonGroup，其餘引用不變 */}
       {displayMonth ? (
         <Grid item>
           {uiDateField ? (
@@ -224,11 +224,11 @@ export default function DatePicker({
         </Grid>
       )}
       <Grid item>
+        {/* 不傳 label 給 facade：facade 有 label 會以 Field 在欄位上方渲染標籤，塞進 ButtonGroup/flex 會擠成兩層重疊；彈層標題仍由 localeText.toolbarTitle='選擇日期' 提供 */}
         <DateGroup {...dateGroupProps}>
           {!hideStartDate && (
             <MobileDatePicker
               closeOnSelect
-              label='選擇日期'
               value={startDate}
               onChange={date => handleCalendarAccept(date, 'start')}
               format={onlyMonthYear ? 'yyyy/MM' : 'yyyy/MM/dd'}
@@ -255,7 +255,6 @@ export default function DatePicker({
           {!hideEndDate && (
             <MobileDatePicker
               closeOnSelect
-              label='選擇日期'
               value={endDate}
               onChange={date => handleCalendarAccept(date, 'end')}
               format='yyyy/MM/dd'

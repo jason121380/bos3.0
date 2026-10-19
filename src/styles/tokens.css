@@ -4,12 +4,12 @@
 @tailwind utilities;
 
 :root {
-  --canvas: 243 244 246; /* 頁面底色 #F3F4F6（PrimeStay 式淺灰，STYLE §13）：內容白卡靠底色差浮出 */
+  --canvas: 247 247 248; /* 頁面底色：卡片（白）靠底色差浮出 */
   --background: 255 255 255; /* 卡片、輸入框、浮層底色 */
   --surface: 242 242 243; /* 側欄、表頭、次要區塊 */
   --surface-hover: 233 233 235; /* hover、次要按鈕底色 */
   --surface-active: 222 222 225; /* 次要按鈕 hover */
-  --border: 229 231 235; /* 裝飾性 #E5E7EB：卡片框、分隔線（細淺邊框，STYLE §13） */
+  --border: 229 229 229; /* 裝飾性：卡片框、分隔線 */
   --border-strong: 194 194 194; /* 可操作：輸入框、下拉外框 */
   --border-strong-hover: 148 148 148;
   --text: 13 13 13;

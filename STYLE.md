@@ -19,12 +19,12 @@
 
 | Token | 淺色 | 深色 | 用途 |
 |---|---|---|---|
-| `--canvas` | `#F3F4F6` | `#0A0A0A` | 頁面底色（PrimeStay 式淺灰，§13；內容白卡靠底色差浮出） |
+| `--canvas` | `#F7F7F8` | `#0A0A0A` | 頁面底色（卡片靠底色差浮出） |
 | `--background` | `#FFFFFF` | `#171717` | 卡片、輸入框、浮層底色 |
 | `--surface` | `#F2F2F3` | `#1C1C1C` | 側欄、次要區塊、表頭 |
 | `--surface-hover` | `#E9E9EB` | `#262626` | 列 hover、選單 hover、次要按鈕底色 |
 | `--surface-active` | `#DEDEE1` | `#323232` | 次要按鈕 hover |
-| `--border` | `#E5E7EB` | `#2E2E2E` | 裝飾性邊框：卡片框、分隔線、表格線（細淺邊框，§13） |
+| `--border` | `#E5E5E5` | `#2E2E2E` | 裝飾性邊框：卡片框、分隔線、表格線 |
 | `--border-strong` | `#C2C2C2` | `#484848` | 可操作元件邊框：輸入框、下拉、日期欄位（hover `#949494`） |
 | `--text` | `#0D0D0D` | `#ECECEC` | 主要文字 |
 | `--text-secondary` | `#5D5D5D` | `#B4B4B4` | 說明、標籤、欄位名 |
@@ -92,21 +92,23 @@
 | 元件 | 規則 |
 |---|---|
 | **Button** | 變體只有 `primary`（主題藍底白字、圓角 full）、`secondary`（淺灰實心 `surface-hover`、無框，與輸入框區分）、`ghost`（無框）、`danger`；尺寸 `sm 32px / md 36px / lg 40px`。圖示 16px，與文字間距 6px。 |
-| **Input / Select / DatePicker** | 高 36px、`rounded-md`、1px `border-strong`（hover 加深）；focus 為 2px `accent` 外框。錯誤時 border 變 `danger`，下方 caption 顯示訊息。日期區間一律用 `DateSelector`：「快速選擇」下拉 ＋ 一個日期區間欄位，不平鋪多顆按鈕。月曆 date-picker 專項方向：標籤放欄位上方；`format`／存值（`onChange` 原樣回傳 `Date`／`null`）／鍵盤輸入逐檔保留；內部第一階段沿用 `@mui/x-date-pickers` 做外觀門面，詳見 `docs/redesign/DATE_PICKER.md`。月曆彈層（日格、表頭、年／月／時間選擇）的視覺統一歸 `src/ui/mui-theme.js` 的 `MuiPickers*` 覆寫，不逐頁寫樣式。彈層頂欄（手機 Dialog 實際為 `MuiPickersToolbar`＋`MuiDatePickerToolbar`／`MuiDateTimePickerToolbar`／`MuiTimePickerToolbar`，DateTime 才出現時間欄）跟隨主題：`background` 底、`text` 字色、底部 1px `border`，**不要大面主題藍底白字**，且覆寫須用 `!important` 壓過後載入的舊全域 CSS（`initialize.scss` 不得再寫死藍底白字）；主題色 `accent` 只保留在選取日、今天邊框、年／月／時間選取與確認按鈕等小面積。 |
-| **Form** | 標籤在上；必填以「*」標在標籤後；一列最多 2 欄（桌機）。底部固定動作列：右側「取消 / 儲存」。<br>**標籤只有一種寫法：標籤在欄位上方＋佔位字**，不使用浮動（卡在框線上）的小標籤；備註欄也一樣。<br>**必填 `*` 要有依據**：依該頁既有的驗證規則（例如 `valid`、`billVerify`），並在原始碼註解寫明；空列會被丟掉的欄位，只在該列有填任一欄時才標必填。<br>**按鈕停用要說明原因**：在按鈕旁以文字（`role="status"`）與 `title` 寫出「尚缺：…」。 |
+| **Input / Select / DatePicker** | 高 36px、`rounded-md`、1px `border-strong`（hover 加深）；focus 為 2px `accent` 外框。錯誤時 border 變 `danger`，下方 caption 顯示訊息。日期區間一律用 `DateSelector`：「快速選擇」下拉 ＋ 一個日期區間欄位，不平鋪多顆按鈕。月曆 date-picker 專項方向：標籤放欄位上方；`format`／存值（`onChange` 原樣回傳 `Date`／`null`）／鍵盤輸入逐檔保留；內部第一階段沿用 `@mui/x-date-pickers` 做外觀門面，詳見 `docs/redesign/DATE_PICKER.md`。月曆彈層（日格、表頭、年／月／時間選擇）的視覺統一歸 `src/ui/mui-theme.js` 的 `MuiPickers*` 覆寫，不逐頁寫樣式。彈層頂欄（手機 Dialog 實際為 `MuiPickersToolbar`＋`MuiDatePickerToolbar`／`MuiDateTimePickerToolbar`／`MuiTimePickerToolbar`，DateTime 才出現時間欄）跟隨主題：`background` 底、`text` 字色、底部 1px `border`，**不要大面主題藍底白字**，且覆寫須用 `!important` 壓過後載入的舊全域 CSS（`initialize.scss` 不得再寫死藍底白字）；主題色 `accent` 只保留在選取日、今天邊框、年／月／時間選取與確認按鈕等小面積。**篩選列例外（MerchantSearchBar/DatePicker）**：自訂 field 本身是日期按鈕且置於 ButtonGroup／flex 單排，不得傳 `label` 給 facade（facade 有 label 會以 `Field` 在欄位上方渲染標籤，會把按鈕群組擠成兩層重疊，見 MEMORY #112）；彈層標題以 `localeText.toolbarTitle` 保留。此類頁面改版以 `uiDateField` 逐頁 opt-in（快捷鈕 ui Button＋UiDateField 單排），其餘引用維持舊版。 |
+| **Form** | 標籤在上；必填以「*」標在標籤後；一列最多 2 欄（桌機）。底部固定動作列：右側「取消 / 儲存」。<br>**標籤只有一種寫法：標籤在欄位上方＋佔位字**，不使用浮動（卡在框線上）的小標籤；備註欄也一樣。<br>**必填 `*` 要有依據**：依該頁既有的驗證規則（例如 `valid`、`billVerify`），並在原始碼註解寫明；空列會被丟掉的欄位，只在該列有填任一欄時才標必填。<br>**RHF 錯誤 aria**：`Field` 的 error 訊息 `<p>` 以 `${htmlFor}-helper-text` 為 id（對齊 MUI TextField helperText 慣例），欄位以 `invalid` 呈現 `aria-invalid` 並以 `aria-describedby` 指向該 id；無 error 時不產生 id。**按鈕停用要說明原因**：在按鈕旁以文字（`role="status"`）與 `title` 寫出「尚缺：…」。 |
 | **Table** | 表頭 `surface` 底、`label` 字級；列高 44px；hover `surface-hover`；數字欄右對齊；空狀態置中顯示說明＋主要動作。分頁固定在表格下方右側。 |
 | **Badge** | 狀態專用；文字＋8% 底色；不加邊框陰影。 |
-| **Card** | `rounded-2xl`（16px，§13）、1px `border`、`shadow-card` 柔和陰影、內距 20px；標題用 `heading`。 |
+| **Card** | `rounded-lg`、1px border、內距 20px；標題用 `heading`。 |
 | **Accordion（可展開卡片）** | 用 `ui/accordion`（與 MUI 介面相容）。收合時標題右側以 `summaryMeta` 顯示摘要（「已填 N 筆 · NT$ 小計」，沒填就不顯示），一眼看得到內容概況。 |
 | **圖示按鈕** | 一律是真的 `<button>`，帶 `title` 與 `aria-label`；「新增」類動作要有文字（例如「新增項目」），不能只放「+」。 |
 | **總計列** | 長表單的「業績合計／現金應收」另放底部固定列（`fixed`，lg 以上讓出 240px 側欄、手機讓出 56px 底部導覽、列印隱藏），不靠 `sticky` 側欄卡。 |
 | **Dialog** | 寬 480 / 640 / 800；標題、內容、底部動作三段；危險操作需二次確認並寫出後果。 |
-| **樹狀選擇（TreeView）** | 共用選店等樹狀窗保留 `@mui/x-tree-view` 行為時只做視覺覆寫：列高 38px compact、整列 hover `surface-hover`、層級縮排 24px、展開箭頭 16px 置中對齊、勾選框 `ui` Checkbox 16px、群組／店家圖示 16px＋間距 6px；搜尋用 `ui` Input、頂部動作 ghost 描邊 `sm` 同高、底部關閉 `secondary`／確認 `primary`。不為換而換自寫樹，避免勾選／展開／搜尋行為回歸。 |
+| **樹狀選擇（TreeView）** | 共用選店等樹狀窗保留 `@mui/x-tree-view` 行為時只做視覺覆寫：列高 38px compact、整列 hover `surface-hover`、層級縮排 24px、展開箭頭 16px 置中對齊、勾選框 `ui` Checkbox 16px、群組／店家圖示 16px＋間距 6px；已選店家（`.onSelect`）一律主題色選中態：`accent` 12% 底＋`accent` 文字／店家圖示＋字重 500（淺色 `#1A73E8`、深色 `#4C8DF6`，皆走 `--accent` token，不得寫死水藍／灰藍），未選中維持原文字色與 `surface-hover` hover；搜尋用 `ui` Input、頂部動作 ghost 描邊 `sm` 同高、底部關閉 `secondary`／確認 `primary`。不為換而換自寫樹，避免勾選／展開／搜尋行為回歸。 |**例外（專項試點）**：無 checkbox、展開為標準受控 state 的單純樹（如側欄 `Dashboard/MerchantList`）可自寫 `ul[role=tree]`＋原生 `<button>` 列取代，但必須自補 MUI 原有鍵盤模型（roving tabindex、↑↓←→/Home/End、Enter/Space、type-ahead）並保留原節點 id 規則與列 padding/縮排/左線/hover；含群組半選或 DOM 反查展開的樹不在此例外，仍逐檔專項。 |
 | **Toast** | 右下角；成功 3 秒自動消失，錯誤需手動關閉。 |
-| **Sidebar** | 240px；群組標題 `caption` + `text-tertiary`；項目高 36px、`rounded-lg`；選取為白 pill（`bg-background`＋細邊＋`shadow-card`）+ 品牌藍文字 + 字重 500（§13）。 |
-| **Tabs** | 底線式；選取為品牌藍文字 + 2px 品牌藍底線，未選 `text-secondary`（§13）。 |
-| **Radio** | 用 `ui/radio` 的 `Radio`／`RadioField`（原生 `<input type="radio">`，16px 圓點、`accent` 主色 `primary`、focus 2px `accent` 外框、disabled 40% 透明）：保留圓點外觀，不改成分段按鈕；`RadioField` 以 `<label>` 包覆使點文字可選，`onChange(event, value)` 對齊 MUI `RadioGroup` 簽名（只讀 `event.target.value` 的 handler 亦相容）。同組必須給相同 `name`，互斥、方向鍵移動＋選取、Tab 只停已選／第一顆、空白鍵選取皆由原生行為保留；未選狀態以 `checked` 皆 false 表示，不以空字串另設狀態。 |
-| **Empty / Loading** | 一律用 `EmptyState`、`Skeleton` 元件，不得各頁自寫。不定值載入轉圈用 lucide `LoaderCircle`＋`animate-spin`＋`strokeWidth={1.75}`：置中大圈 `h-10 w-10 text-accent`（對原 MUI `CircularProgress` 預設 40px 與主題色）、欄位小圈依原尺寸（如 20px），原置中容器與間距不動；定值進度（線／圓＋%）另案，不以轉圈冒充。 |
+| **Sidebar** | 240px；群組標題 `caption` + `text-tertiary`；項目高 36px、`rounded-md`；選取為主題色 8% 底（`bg-accent/8`）+ 主題色文字 + 字重 500。 |
+| **Tabs** | 底線式；選取為 `text` + 2px 主題色底線，未選 `text-secondary`。 |
+| **Slider** | 用 `ui/slider`（原生 `<input type="range">`）：主色深藍 `accent-[rgb(var(--primary))]`（對齊 Checkbox／Radio）；對外維持 MUI 簽名 `onChange(event, Number(value))`，`min`／`max`／`step` 原生傳遞，浮點 `step` 依其小數位數四捨五入修正（避免 0.1 步進產生 1.200000047）；`disabled` 與 `aria-label` 原生透傳；鍵盤用原生方向鍵／PageUp／Down／Home／End。**不做數值泡泡**：`valueLabelDisplay` 不支援（行事曆格子尺寸的泡泡去留待 Jason 拍板後另案，不得默默以本元件替換該兩檔）。 |
+| **Radio** | 用 `ui/radio` 的 `Radio`／`RadioField`（原生 `<input type="radio">`，16px 圓點、`accent` 主色 `primary`、focus 2px `accent` 外框、disabled 40% 透明）：保留圓點外觀，不改成分段按鈕；`RadioField` 以 `<label>` 包覆使點文字可選，`onChange(event, value)` 對齊 MUI `RadioGroup` 簽名（只讀 `event.target.value` 的 handler 亦相容）。同組必須給相同 `name`，互斥、方向鍵移動＋選取、Tab 只停已選／第一顆、空白鍵選取皆由原生行為保留；未選狀態以 `checked` 皆 false 表示，不以空字串另設狀態。 一列一顆「預設」型（如業績扣點參數）同樣用 `RadioField`：各列共用同一 `name`、`value="true"`、`checked` 由資料布林決定、互斥靠 handler 資料回寫（點已選者不取消，不改 checkbox）、`disabled` 原樣傳入。 |
+| **Progress（定值線）** | 用 `ui/progress` 的 `Progress`：只做定值線條（`value` 0–100，超出夾限顯示），高 4px、圓角 3px、軌道 `surface-hover`、進度桿 `primary` 深藍、`role="progressbar"`＋`aria-valuenow`（四捨五入）；寬度以 300ms linear 過渡對齊原呼叫端 timer 節奏。元件只呈現、不計算百分比、不判斷顯示條件；百分比計算／假進度 timer／載入邏輯留在呼叫端，不得搬進元件。定值圓＋%（如結帳 snackbar）與不定值頂線（Suspense）不在此元件範圍，待拍板另案。 |
+| **Empty / Loading** | 一律用 `EmptyState`、`Skeleton` 元件，不得各頁自寫。不定值載入轉圈用 lucide `LoaderCircle`＋`animate-spin`＋`strokeWidth={1.75}`：置中大圈 `h-10 w-10 text-accent`（對原 MUI `CircularProgress` 預設 40px 與主題色）、欄位小圈依原尺寸（如 20px→`h-5 w-5`），原置中容器與間距不動；Backdrop 內轉圈只換圈本體（`h-10 w-10`）、Backdrop 的 open／z-index／透明度不動，MUI Select `renderValue` 的載入小圈同以 20px `LoaderCircle` 回傳、不改 Select 本體與顯示寬度邏輯；定值線用 `ui/progress`（見上列 Progress），定值圓＋% 另案，不以轉圈冒充。 |
 
 ## 7. 文案
 
@@ -138,7 +140,7 @@
 9. **驗證**：每次改動跑 `scripts/redesign/verify-logic.js`（FAIL 必須逐項說明是純畫面差異）、`eslint-check.json`（0 新增 error）、`CI=true npm run build`，測試不得有新增失敗（基準 13 個既有失敗）。
 10. **MUI Typography 字級映射**（以 `src/ui/mui-theme.js` 橋接字級為準，對照 §3）：`h1`→`text-display`、`h3`→`text-title`、`h5`→`text-heading`、`subtitle1`→`text-body font-medium`、`subtitle2`→`text-label`（色 `text-text-secondary`）、`body1`→`text-body`、`caption`→`text-caption`（色 `text-text-secondary`）、`overline`→`text-caption font-medium`（色 `text-text-secondary`、不全大寫）；主色用 `text-text`、`color="textSecondary"` 改 `text-text-secondary`。`h2`（24px）、`h4`（18px）、`h6`（15px）、`body2`（13px/20px/400）在 §3 無對應級距，**不硬套**，留原 Typography 或另案拍版；`gutterBottom` 以 `mb-[0.35em]` 保留。`Box` 純排版改原生 div（系統 props 逐鍵轉 className/style）；`Paper` 改 `rounded-md bg-background` 原生 div（橋接主題 elevation 預設 0、paper 底色即 background token，陰影不保留），原 emotion `css` 掛點保留。
 
-11. **emotion `css` 清理（MUI 整包移除）**：順序不可反——先清頁面/元件的 emotion 引用，再清 `mui-theme` 與 scss 的 `.Mui` 規則，最後才刪 `@emotion`／`@mui` package。換置只做視覺等效：扁平 margin/padding/顏色/寬高逐值換 Tailwind（`theme.spacing(n)`＝`n×8px`；任意 px 用任意值如 `w-[150px]`／`my-[20px]`；原 `!important` 值以 `!` 前綴如 `!text-danger` 保留），不自創間距或改版面結構。pragma-only 判定須逐檔 grep 證明無 `css={}`／`css()` 使用才刪 pragma；仍以 `css()` 定義 styles 物件者（即使無 css prop）不算 pragma-only。含巢狀 `&`、`.Mui*`、動態 css、共用 `styles/` 模組（56 檔）不機械直換；`className` 契約為 emotion 物件的共用元件（下游以 `css={className}` 套用）不可逕換字串，屬跨元件契約專項。列印檔不碰（列印專項）。
+11. **emotion `css` 清理（MUI 整包移除）**：順序不可反——先清頁面/元件的 emotion 引用，再清 `mui-theme` 與 scss 的 `.Mui` 規則，最後才刪 `@emotion`／`@mui` package。換置只做視覺等效：扁平 margin/padding/顏色/寬高逐值換 Tailwind（`theme.spacing(n)`＝`n×8px`，如 spacing 4→`p-8`、3→`mt-6`、2→`mb-4`；任意 px 用任意值如 `w-[150px]`／`min-w-[275px]`／`my-[30px]` 等原值；原 `!important` 值以 `!` 前綴如 `!text-danger` 保留），不自創間距或改版面結構。pragma-only 判定須逐檔 grep 證明無 `css={}`／`css()` 使用才刪 pragma；仍以 `css()` 定義 styles 物件者（即使無 css prop）不算 pragma-only。含巢狀 `&`、`.Mui*` 選擇器、`@media`、動態/條件 css、共用 `styles/` 模組（56 檔）者不機械直換，須先定共用轉換方式或另開專項；`className` 契約為 emotion 物件的共用元件（下游以 `css={className}` 套用）不可逕換字串，屬跨元件契約專項；套用點元件不吃 `className` 者跳過。列印檔不碰（列印專項）。
 
 ## 11. 報表 compact 規格
 
@@ -165,16 +167,17 @@ Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現*
 
 ## 12. 設定頁樣板（OpenAI 設定頁式，Jason 2026/10/19 拍版）
 
-Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比照其設計語言統一。本節只適用設定類（系統參數、個人檔案內的設定分頁、業績／抽成參數等），**報表、帳單四兄弟、列印頁不適用**——那些維持 §11 compact 與既有合計／列印規範，不得因本節改成寬鬆留白。
+Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比照其設計語言統一。本節只適用設定類（系統參數、個人檔案內的設定分頁、業績／抽成參數等），**報表、帳單四兄弟、列印頁不適用**——那些維持 §11 compact 與既有合計／列印規範，不得因本節改成寬鬆留白。**唯一例外（Jason 2026/10/19 新指示，覆蓋先前「報表不套設定樣板」僅限本頁）：報表目錄頁（`/dashboard-list-detail`）套左選單＋右側內容**，僅目錄頁本身比照本節版面，各報表頁、帳單頁仍不套、維持原規範。此頁桌機再依 Jason 同日追加指示採 Billing 式左右底色：左選單欄整欄 `bg-surface` 淺灰、右內容 `bg-background` 白，兩欄相接不加 border／shadow 分隔（手機維持頂部橫向分頁、不套底色）。
 
 ### 版面（共用元件 `src/ui/settings-nav.js`）
 
 | 部位 | 規則 |
 |---|---|
 | 頁首 | 沿用 `PageHeader`（頁面標題一個）；不在右側內容區再重複大標題。 |
-| 左選單（桌機 `md` 以上） | 頁內窄選單寬 `w-60`（240px）、`sticky top-6`；項目高 36px、`rounded-md`、左圖示 16px（lucide）＋標籤；未選 `text-secondary`＋hover `surface-hover`；選中比照 §6 Sidebar：`bg-accent/8`＋`text-accent`＋字重 500。**不用截圖的粉紅色**，開關與選取一律既有品牌藍 token。 |
+| 左選單（桌機 `md` 以上） | 頁內窄選單寬 `w-60`（240px）、整欄 `bg-surface` 淺灰底（深色以 token 自動對應，不得寫死淺色）＋內距 `p-3`；項目高 36px、`rounded-md`、左圖示 16px（lucide）＋標籤；未選 `text-secondary`＋hover `surface-hover`；選中比照 §6 Sidebar：`bg-accent/8`＋`text-accent`＋字重 500（在 `surface` 上仍須清楚可辨）。**不用截圖的粉紅色**，開關與選取一律既有品牌藍 token。 |
+| 左右底色（桌機 `md` 以上，Jason 2026/10/19 以 Cursor Billing 截圖指定） | 左選單欄 `surface` 淺灰、右內容區 `background` 白底（右欄 `md:bg-background md:px-6 md:py-6`）；兩欄以 `md:items-stretch` 等高、直接相鄰，Tabs 容器**不得**用 `gap` 留白溝槽，兩欄相接處**不得**加 `border`、陰影或分隔線。右側既有白色卡片在白底上仍保留既有 1px 卡片邊框辨識，不得拿掉。 |
 | 左選單（手機） | 不做第二套側欄：退回頁面頂部橫向可捲動的分頁列（底線式，與 `ui/tabs` 既有呈現一致），避免 390px 擠壓；觸控目標仍 ≥40px 由分頁列高度承擔。 |
-| 右內容 | `min-w-0 flex-1`；先一段分段標題（`heading`，即目前分類名），其下既有卡片以 `gap-6` 直疊。每張卡片沿用 §6 Card（`rounded-lg`、1px `border`、`bg-background`、內距 20px、無陰影）；卡片內每列維持「標題／說明在左、控制在右」的既有表單結構，本樣板不發明新欄位列元件。 |
+| 右內容 | `min-w-0 flex-1 md:bg-background md:px-6 md:py-6`（桌機白底，與左灰欄等高相鄰、無分隔線）；先一段分段標題（`heading`，即目前分類名），其下既有卡片以 `gap-6` 直疊。每張卡片沿用 §6 Card（`rounded-lg`、1px `border`、`bg-background`、內距 20px、無陰影）；卡片內每列維持「標題／說明在左、控制在右」的既有表單結構，本樣板不發明新欄位列元件。 |
 | 容器寬度 | 有頁內左選單的設定頁容器上限 `max-w-6xl`（選單 240＋內容約 880），內容卡片內的欄位寬度維持各頁既有值；無頁內選單的表單頁仍依 §4 `max-w-3xl`／設定頁 `max-w-4xl`。 |
 
 ### 紅線
@@ -193,51 +196,12 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
   - `/accountingSetting`：本頁原無頁級分頁、三區直疊（收入科目／支出科目／收付方式），比照第一批 Parameter 新增純呈現分類選單＋右分段標題＋`max-w-6xl`；三區以 `hidden` 保留掛載不卸載，全域「儲存」鈕仍一次存三區，`handleSave` 與各欄位 handler／存值一字未動。原收入／支出桌機並排改為選單切換分區呈現。
   - `/helper-point-setting-create` 與 `/helper-point-setting-edit/:id`：兩頁皆單一表單、無真分頁，不造假選單；原單卡依既有三區塊（設定名稱／點數使用成本／點數獲得）切成三張分段卡片直疊，容器維持 `max-w-3xl`；欄位、`ToggleGroup` 切換、增刪列與建立／儲存 handler 全原樣，Create／Edit 孿生差異保留不互相照抄。
   - `/authority` **本批跳過**：角色權限管理為單一清單卡＋`min-w-[700px]` 寬表，無表單分區；套左選單只剩單一項目屬假選單且會擠壓寬表，故維持原清單版面（compact），日後如改版走清單／表格規範另案，不在本樣板批硬套。
+- 2026/10/19 Jason 新指示例外（`claude/report-catalog-nav-box`，v3.0-1020-0019）：報表目錄 `/dashboard-list-detail` 原六分類卡片 grid 改比照 Parameter：`ui/tabs`＋`ui/settings-nav` 左選單（桌機 240px、選中 `bg-accent/8`＋主題藍字）＋右側分類標題與單張連結卡，手機回到頂部橫向捲動分頁；六分類順序與圖示（日報表 CalendarDays／營業 ChartColumn／設計師 Users／互助 HeartHandshake／商品 Package／管理分析 LayoutDashboard）、各連結列樣式與權限判斷全保留，左選單只列有權限分類並預設第一個有權限者；桌機左欄整欄 `bg-surface`、右側 `bg-background` 白、兩欄 `gap-0` 相接無分隔線（Jason 追加 Billing 截圖指示，不新色票、不動共用 `settings-nav`、手機不套）。此例外僅限目錄頁本身，各報表頁與帳單頁不套本樣板。
 
-## 13. PrimeStay 版式語言（全站地基，Jason 2026/10/19 拍版；#157 已退回，回到 #151 規格）
 
-> #157 白底灰卡扁平修正（白底、灰卡、去陰影去框線）已於 2026/10/19 依 Jason 指示退回；本節回到 #151 規格：淺灰底 `#F3F4F6`、白卡、1px 細邊、`shadow-card`，不得再套 #157 的白底灰卡扁平版。
 
-Jason 提供 PrimeStay「People」截圖拍版：**只借版式語言，不借主色**。截圖的綠色（`#22c55e` 系）**不得**作為 bos 主色；所有重點色一律沿用 bos 現行品牌深藍 `--primary`／`--accent` `#1A73E8`（§2）。後續逐頁批次不得自行換綠，也不得把品牌藍一頁一頁偷換成其他色。
+- 2026/10/20 顧客追蹤補改（`claude/fix-customer-tracking-box`，v3.0-1020-0016）：`/parameter`「顧客追蹤」六卡的動態清單列依 §6 既有規範落地——序號用內文字級＋次要色固定寬、輸入欄 flex-1 可換行、增刪用 `ghost size=icon` 真按鈕（lucide 16px＋aria-label/title，disabled 須套真 Button 不得用裸圖示假 disabled）；無新樣式規則，本節僅記錄套用結果。
 
-### 色票（沿用 §2，只列本節相關）
+## 13. 【已作廢】PrimeStay 版式語言
 
-| 角色 | Token／值 | 用途 |
-|---|---|---|
-| 頁面底 | `--canvas` `#F3F4F6` | 外框淺灰底（截圖上下灰帶） |
-| 內容／卡片底 | `--background` `#FFFFFF` | 白卡、輸入框、浮層 |
-| 側欄底 | `--surface` `#F2F2F3` | 左選單淺底、表頭 |
-| 細邊框 | `--border` `#E5E7EB` | 卡片框、分隔線、表格線（1px 細淺邊） |
-| 控制項邊框 | `--border-strong` `#C2C2C2` | 輸入框／下拉外框（可操作才用） |
-| 主色（唯一重點色） | `--primary`／`--accent` `#1A73E8` | 主要按鈕、頁籤選中（藍字＋2px 藍底線）、選中態、連結、focus 框 |
-| 狀態色 | `--success`／`--warning`／`--danger`（§2） | 只表狀態（成功仍可用既有 success 綠，但**不是主色**，不做主要按鈕／選中態） |
-
-### 形狀與層次
-
-| 部位 | 規格 |
-|---|---|
-| 內容外框 | `#printContainer`（外距／內距沿用 `initialize.scss` 既有值）升級為白卡：`rounded-2xl`（16px）＋1px `border`＋`shadow-card`，浮在 `canvas` 淺灰上；`print:` 時還原透明、無圓角、無框、無陰影，報表／帳單列印版面不變 |
-| 卡片／彈窗 | `rounded-2xl`（16px；截圖約 16–20px）、1px `border`、`shadow-card`（`0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.05)`，定義於 `tailwind.config.js`）；Card 內距仍 20px |
-| 按鈕 | `primary` 品牌藍實心 pill（`rounded-full`）；`secondary` 白底＋1px `border` pill、hover `surface-hover`；尺寸仍 sm 32／md 36／lg 40、圖示 16px |
-| 輸入／搜尋 | 高 36px 不變、白底、`rounded-[10px]`、1px `border-strong`；focus 2px 品牌藍。搜尋欄同此語彙，不另做一套 |
-| 表格 | **密度不變**：一般列高、`dense` 列高（§11）一律不放寬；只借圓角／邊框／底色對齊，`ui/table` 外框與列印規則本批不動 |
-
-### 左側主選單（Dashboard）
-
-- 淺底（`surface`）、桌機不加硬右框，靠內容白卡的邊框分界；手機抽屜保留右框與 `shadow-float`。
-- 項目：高 36px、`rounded-lg`、圖示 16px＋文字間距 10px（`gap-2.5`）、左右內距 10px。
-- 選中態：**白 pill**（`bg-background`＋1px `border`＋`shadow-card`）＋品牌藍文字＋字重 500；hover 仍 `surface-hover`。群組標題列（可收合）維持文字色，不做 pill。
-- 與 §12 設定頁頁內選單協調：同為淺底＋圓角項目＋藍色選中，只是頁內選單選中可用 `bg-accent/8` 淺藍底；兩者不得在同一畫面互相搶色，推廣時以本節白 pill 為優先對齊方向（§12 頁內選單是否跟進由推廣批決定，本批不動 §12 元件行為）。
-
-### 逐頁推廣規則（後續批次）
-
-1. 地基只收在 `src/styles/tokens.css`、`tailwind.config.js`、`src/ui/`、`src/layouts/Dashboard/`；逐頁批次只換 class／元件，不在頁面寫死 hex、不自創圓角／陰影值。
-2. 逐頁換色留後續批次：本批不把各頁既有的藍／黑／灰按鈕逐頁翻色，避免全站一半新一半舊；PR 須白話說明此取捨。
-3. 報表／帳單維持 compact（§11）：可對齊底色、邊框、圓角，**行高、內距、列印規則不放寬**。
-4. 不改 handler／存值／路由／資料／權限；設定頁 §12 推廣中頁面不得被本批外框打架（外框只包一層白卡，頁內左選單＋分段卡片結構不變）。
-
-### 第一批落地與示範頁（本 PR）
-
-- 外框：Dashboard `#printContainer` 白卡化＋`canvas` 改 `#F3F4F6`；側欄選中白 pill；TopBar 商家切換鈕改 `rounded-lg`＋`shadow-card`（白底細邊不變）。
-- 共用：`ui/card`、`ui/dialog` 大圓角＋柔和陰影；`ui/button` secondary 白 pill；`ui/tabs` 選中藍字藍線；`ui/input` 10px 圓角。
-- 示範頁：顧客列表（`/management/customers`）——外框白卡＋篩選 Card＋列表 Card（`ManagementTable`）＋primary／secondary 按鈕同框驗收方向；該頁 handler、篩選存值、表格欄位與分頁一字未動（僅載入 Skeleton 圓角對齊）。
+> 本章已作廢：#151 PrimeStay 全站地基已於 2026/10/19 依 Jason 指示退回（v3.0-1019-2344），全站回到 Jason 發 PrimeStay 參考圖之前、即 #150 合併後（v3.0-1019-2301 當時）的外觀。不得再依本章的淺灰底、白卡大圓角、側欄白 pill、`shadow-card` 等規格做任何頁面；現行規格一律回到 §2／§6。#152 Radio、#153 Tooltip、#154 設定頁推廣（§12）不受影響、保留不動。

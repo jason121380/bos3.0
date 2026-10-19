@@ -154,6 +154,7 @@ export default function Employees() {
                   outside
                   visible={['datePicker', 'employee']}
                   lastInLeaderBoard={true}
+                  uiDateField
                 />
               </div>
               <div>
