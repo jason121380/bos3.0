@@ -213,6 +213,8 @@
 
 ## 四、剩餘工作分類與批次建議（2026/10/19）
 
+- **CustomerFilterExport 日期欄改 `ui/date-picker` facade（月曆專項，2026/10/19，`codex/ui-datepicker-customer-filter-box`，v3.0-1019-1428）**：`CustomerFilterExport/index.js` 的 3 個 `DatePicker`（最後消費開始日期、最後消費結束日期、基準日期）只換 import；`disabled={disable[0|1]}`、`label`、`format="yyyy/MM/dd"`、`value`、`onChange` 原樣，MUI Dialog、Select／TextField 與篩選匯出邏輯不動。STYLE.md §6 已涵蓋月曆 facade，無需修改。**待實機確認**：Dialog 內 3 欄寬度與並排、disabled 狀態、彈層開啟選日後存值。
+
 - **月曆頂欄真正未套用追修（Claude 線，2026/10/19，`claude/ui-datepicker-toolbar-fix-box`，v3.0-1019-1410）**：實機 1358 仍藍的根因是 `NavBar` 後載入的 `initialize(.dark).scss` 舊藍底白字同權重蓋過橋接主題。共用層修：`mui-theme.js` 頂欄色值 `!important`＋補 `MuiDatePickerToolbar`／`MuiDateTimePickerToolbar`／`MuiTimePickerToolbar`／`ToolbarText.selected`，兩份舊全域 CSS 移除藍底白字。不逐頁改、不改選取行為／format／存值。待 Jason 部署後強刷實機確認。
 
 - **Reservation 希望服務日期欄改 facade（Codex 線第二批，2026/10/19，`codex/ui-datepicker-reservation-basic-box`，v3.0-1019-1404）**：`Reservation/Basic.js` 唯一 `DatePicker` import 改 `ui/date-picker`；`label="希望服務日期"`、value、擋 `null`／`Invalid Date` 的 onChange、format、localeText、toolbar／textField slotProps 原樣。ToggleButtonGroup 與三個 MUI Select／FormControl 不動。待實機確認欄寬、桌機鍵盤輸入與月曆彈層。
