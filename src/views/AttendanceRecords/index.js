@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import { Autocomplete } from '@mui/material'
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DateTimePicker } from 'ui/date-picker';
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
