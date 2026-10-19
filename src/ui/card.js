@@ -1,9 +1,9 @@
 import React from 'react'
 import { cn } from './utils'
 
-// STYLE.md §13（扁平修正 2026/10/19，覆蓋 #151）：灰卡 bg-surface(#F3F4F6)、rounded-2xl、無 border、無陰影，靠灰/白色差在白底上分層；內距 20px 不變。深色 surface(#1C1C1C) 比 canvas(#0A0A0A) 亮一階，同理分層。報表 compact 只借圓角/底色，列高不放寬。
+// STYLE.md §13（PrimeStay 地基）：rounded-2xl（16px）、1px 細邊框、柔和 shadow-card、內距 20px 不變；標題用 heading。報表 compact 只借圓角/邊框/底色，列高不放寬。
 const Card = React.forwardRef(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn('ui-root rounded-2xl bg-surface', className)} {...props} />
+  <div ref={ref} className={cn('ui-root rounded-2xl border border-solid border-border bg-background shadow-card', className)} {...props} />
 ))
 Card.displayName = 'Card'
 

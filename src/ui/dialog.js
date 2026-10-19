@@ -17,13 +17,13 @@ const DialogContent = React.forwardRef(({ className, size = 'sm', children, hide
       ref={ref}
       className={cn(
         'ui-root fixed left-1/2 top-1/2 z-[1300] flex max-h-[calc(100vh-48px)] w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 flex-col',
-        'rounded-2xl bg-background outline-none', // STYLE §13 扁平修正：彈窗大圓角(16px)、白底、無框無陰影，靠 overlay 黑底分層；寬度/焦點/handler 不變
+        'rounded-2xl border border-solid border-border bg-background shadow-float outline-none', // STYLE §13：彈窗同卡片大圓角（16px），寬度/焦點/handler 不變
         'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
         'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
         sizes[size],
         // 手機：改為由底部滑出的面板（bottom sheet），避開底部指示條
         'max-sm:inset-x-0 max-sm:bottom-0 max-sm:left-0 max-sm:top-auto max-sm:w-full max-sm:max-w-none max-sm:translate-x-0 max-sm:translate-y-0',
-        'max-sm:rounded-b-none max-sm:rounded-t-2xl max-sm:pb-[env(safe-area-inset-bottom)]',
+        'max-sm:rounded-b-none max-sm:rounded-t-2xl max-sm:border-x-0 max-sm:border-b-0 max-sm:pb-[env(safe-area-inset-bottom)]',
         'max-sm:data-[state=open]:zoom-in-100 max-sm:data-[state=open]:slide-in-from-bottom-1/2 max-sm:data-[state=closed]:zoom-out-100 max-sm:data-[state=closed]:slide-out-to-bottom-1/2',
         className
       )}
