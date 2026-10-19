@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Divider,
   Table,
   TableBody,
   TableCell,
@@ -40,7 +39,7 @@ function AccountingRecords() {
   return (
     <Card>
       <CardHeader action={<GenericMoreButton />} title="收支報表" />
-      <Divider />
+      <div className="h-px bg-border" />
       <CardContent css={styles.content}>
         <PerfectScrollbar options={{ suppressScrollY: true }}>
           <div css={styles.inner}>

@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Divider,
   Table,
   TableBody,
   TableCell,
@@ -38,7 +37,7 @@ function Designer() {
   return (
     <Card>
       <CardHeader action={<GenericMoreButton />} title="設計師分析" />
-      <Divider />
+      <div className="h-px bg-border" />
       <CardContent css={styles.content}>
         <PerfectScrollbar options={{ suppressScrollY: true }}>
           <div css={styles.inner}>

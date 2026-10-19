@@ -6,7 +6,6 @@ import {
   CardContent,
   CardHeader,
   Checkbox,
-  Divider,
   Table,
   TableBody,
   TableCell,
@@ -65,7 +64,7 @@ function Results({ className, customers, ...rest }) {
       </Typography>
       <Card>
         <CardHeader action={<GenericMoreButton />} title="薪資總覽" />
-        <Divider />
+        <div className="h-px bg-border" />
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import {
   Dialog, DialogTitle, DialogContent, TableContainer,
   Table, TableHead, TableBody, TableCell, TableRow,
-  Divider, Button, ToggleButtonGroup, ToggleButton,
+  Button, ToggleButtonGroup, ToggleButton,
   IconButton, CircularProgress, Typography
 } from '@mui/material'
 import { startOfDay, endOfDay } from 'date-fns'
@@ -247,7 +247,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
           <CloseIcon/>
         </IconButton>
       </DialogTitle>
-      <Divider />
+      <div className="h-px bg-border" />
       <DialogContent style={{ padding: '0px 24px 24px' }}>
         <div css={styles.filterBar}>
           <DateSelector
