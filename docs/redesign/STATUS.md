@@ -241,3 +241,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ### 最後 3 處日期欄改 facade（月曆專項，`codex/ui-datepicker-final3-box`，v3.0-1019-1515）
 
 - `MerchantSearchBar/DatePicker.js` 兩個 picker 只換 import；`SystemUpdateRecordCreate/General.js`、`SystemUpdateRecordEdit/General.js` 的更新日期改 `MobileDatePicker`，顯示 `yyyy-MM-dd`。選日先以 `format(date, 'yyyy-MM-dd')` 轉回字串，再用 `new Date(...).getTime()` 存 timestamp，保留原生 `type=date` 的 UTC 零點解析語意，同日存值與改版前一致。原生日期欄由鍵盤輸入改為點選月曆。STYLE.md 與 MEMORY.md 既有規範已涵蓋，無需修改。待實機：MerchantSearchBar 自訂 field 在 ButtonGroup 內新增上方標籤的版面、兩頁日期欄寬與點選存值。
+
+### WalletDepositModal 儲值日期時間欄改 facade（月曆專項最後一批，`codex/ui-datepicker-wallet-deposit-box`，v3.0-1019-1538）
+
+- 範圍：`OrderCreate/WalletDepositModal.js`、`OrderEdit/WalletDepositModal.js` 各 1 個 `DateTimePicker` 只換 import 為 `ui/date-picker`，其餘 props、存值、金額、手續費連動原樣。月曆專項至此收尾。待實機：Modal 內彈層、欄寬、選日時後存值。
