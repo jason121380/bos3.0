@@ -10,10 +10,23 @@ import useFetchAccountingType from 'hooks/useFetchAccountingType'
 import useFetchAccountingSubjects from 'hooks/useFetchAccountingSubjects'
 import useFetchSettingAccountingSubjects from 'hooks/useFetchSettingAccountingSubjects'
 
+import { Tabs } from 'ui/tabs'
+import { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
+import { CircleDollarSign, TrendingDown, TrendingUp } from 'lucide-react'
+
 import AccountingItemCreate from './AccountingItemCreate'
 
 function AccountingSetting() {
   const history = useHistory()
+  // 設定頁樣板（STYLE §12）：本頁原無分頁、三區直疊；新增的 selectTab 只管呈現。
+  // 三區以 hidden 保留掛載（見 AccountingItemCreate），全域儲存 handleSave 與存值一字未動。
+  const [selectTab, setSelectTab] = useState('revenue')
+  const handleTabsChange = (event, value) => setSelectTab(value)
+  const tabs = [
+    { value: 'revenue', label: '收入科目設定', icon: TrendingUp },
+    { value: 'expenditure', label: '支出科目設定', icon: TrendingDown },
+    { value: 'accountingType', label: '收付方式設定', icon: CircleDollarSign },
+  ]
   const [accountingRevenueSubjects, setAccountingRevenueSubjects] = useState([
     {
       number: '',
@@ -110,16 +123,32 @@ function AccountingSetting() {
 
   return (
     <Page className="ui-root" title="收支科目設定">
-      <div className="mx-auto w-full max-w-4xl">
+      <div className="mx-auto w-full max-w-6xl">
         <PageHeader title="收支科目設定" />
-        <AccountingItemCreate
-          accountingRevenueSubjects={accountingRevenueSubjects}
-          setAccountingRevenueSubjects={setAccountingRevenueSubjects}
-          accountingExpenditureSubjects={accountingExpenditureSubjects}
-          setAccountingExpenditureSubjects={setAccountingExpenditureSubjects}
-          accountingType={accountingType}
-          setAccountingType={setAccountingType}
-        />
+        <Tabs
+          className="md:flex md:items-start md:gap-8"
+          value={selectTab}
+          onValueChange={value => handleTabsChange(null, value)}
+          activationMode="manual"
+        >
+          <SettingsTabsList>
+            {tabs.map((tab, index) => (
+              <SettingsTabsTrigger key={index} value={tab.value} icon={tab.icon}>{tab.label}</SettingsTabsTrigger>
+            ))}
+          </SettingsTabsList>
+          <div className="min-w-0 flex-1">
+            <SettingsSectionHeading title={tabs.find(tab => tab.value === selectTab)?.label} />
+            <AccountingItemCreate
+              activeSection={selectTab}
+              accountingRevenueSubjects={accountingRevenueSubjects}
+              setAccountingRevenueSubjects={setAccountingRevenueSubjects}
+              accountingExpenditureSubjects={accountingExpenditureSubjects}
+              setAccountingExpenditureSubjects={setAccountingExpenditureSubjects}
+              accountingType={accountingType}
+              setAccountingType={setAccountingType}
+            />
+          </div>
+        </Tabs>
         <div className="mt-6 flex justify-end">
           <Button variant="primary" onClick={handleSave}>
             儲存

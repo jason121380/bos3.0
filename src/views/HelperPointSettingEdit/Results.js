@@ -37,29 +37,34 @@ function Results({ className, status, submitData, setSubmitData, isLoading, ...r
     setSubmitData(newSubmitData)
   }
   return (
-    <Card {...rest} className={cn('max-w-3xl', className)}>
-      <CardHeader>
-        <CardTitle>互助點數設定</CardTitle>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-8">
-        <Field label="互助點數設定名稱" htmlFor="helperPointSettingName">
-          <Input
-            id="helperPointSettingName"
-            value={submitData.name}
-            onFocus={e => e.target.select()}
-            onChange={e => setSubmitData({ ...submitData, name: e.target.value })}
-          />
-        </Field>
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-wrap gap-8">
-            <div className="flex items-center text-heading text-text">點數使用成本設定</div>
-            <FormControlLabel
-              checked={submitData.isAccordingToHelper}
-              onChange={(e, v) => setSubmitData({ ...submitData, isAccordingToHelper: v })}
-              control={<Checkbox color="primary" />}
-              label="依互助人固定金額"
+    // 設定頁樣板（STYLE §12）：單一表單頁不造假選單，依既有三區塊切分段卡片；欄位、ToggleGroup、增刪與存值 handler 原樣（本檔與 Create 孿生差異保留）
+    <div {...rest} className={cn('flex max-w-3xl flex-col gap-6', className)}>
+      <Card>
+        <CardHeader>
+          <CardTitle>基本設定</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Field label="互助點數設定名稱" htmlFor="helperPointSettingName">
+            <Input
+              id="helperPointSettingName"
+              value={submitData.name}
+              onFocus={e => e.target.select()}
+              onChange={e => setSubmitData({ ...submitData, name: e.target.value })}
             />
-          </div>
+          </Field>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>點數使用成本設定</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3">
+          <FormControlLabel
+            checked={submitData.isAccordingToHelper}
+            onChange={(e, v) => setSubmitData({ ...submitData, isAccordingToHelper: v })}
+            control={<Checkbox color="primary" />}
+            label="依互助人固定金額"
+          />
           <Field label="換算金額" htmlFor="helperPointPaidFixed">
             <Input
               id="helperPointPaidFixed"
@@ -71,9 +76,13 @@ function Results({ className, status, submitData, setSubmitData, isLoading, ...r
               onWheel={() => document.activeElement.blur()}
             />
           </Field>
-        </div>
-        <div className="flex flex-col gap-3">
-          <div className="text-heading text-text">點數獲得設定</div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>點數獲得設定</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3">
           <ToggleGroup
             size="small"
             value={submitData.retrievePointWay}
@@ -134,9 +143,9 @@ function Results({ className, status, submitData, setSubmitData, isLoading, ...r
               ))
             }
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 

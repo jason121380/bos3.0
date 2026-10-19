@@ -4,12 +4,12 @@
 @tailwind utilities;
 
 :root {
-  --canvas: 247 247 248; /* 頁面底色：卡片（白）靠底色差浮出 */
-  --background: 255 255 255; /* 卡片、輸入框、浮層底色 */
-  --surface: 242 242 243; /* 側欄、表頭、次要區塊 */
+  --canvas: 255 255 255; /* 頁面底色 #FFFFFF（白底，STYLE §13 Jason 2026/10/19 修正：灰白對調）：灰卡靠色差分層 */
+  --background: 255 255 255; /* 輸入框、浮層、側欄選中 pill 底色（白色，與白底同值但語意為浮起層） */
+  --surface: 243 244 246; /* 卡片／區塊／側欄底 #F3F4F6（淺灰，STYLE §13）：Card 與次要區塊靠此灰色與白底分層 */
   --surface-hover: 233 233 235; /* hover、次要按鈕底色 */
   --surface-active: 222 222 225; /* 次要按鈕 hover */
-  --border: 229 229 229; /* 裝飾性：卡片框、分隔線 */
+  --border: 229 231 235; /* 裝飾性 #E5E7EB：僅分隔線／表格線／頁尾分隔（STYLE §13：卡片不再用此作外框） */
   --border-strong: 194 194 194; /* 可操作：輸入框、下拉外框 */
   --border-strong-hover: 148 148 148;
   --text: 13 13 13;
@@ -23,6 +23,7 @@
   --danger: 217 45 32;
 }
 
+/* 深色不做灰白對調：canvas 仍近黑、surface(#1C1C1C) 仍比 canvas 亮一階，Card 靠灰階差分層（不靠框/影），不會變全黑塊（STYLE §13） */
 .dark {
   --canvas: 10 10 10;
   --background: 23 23 23;

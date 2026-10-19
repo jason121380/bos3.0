@@ -28,7 +28,7 @@ module.exports = {
       borderColor: { DEFAULT: token('border') },
       opacity: { 8: '0.08' },
       borderRadius: { md: '8px', lg: '12px' },
-      boxShadow: { float: '0 4px 16px rgba(0,0,0,0.08)' },
+      boxShadow: { float: '0 4px 16px rgba(0,0,0,0.08)' }, // STYLE §13 扁平修正（2026/10/19）：已移除 shadow-card，卡片／外框一律無陰影；float 僅保留給浮層（下拉/彈出）與卡片無關
       fontFamily: {
         // 與全站既有字型一致（src/assets/scss/main.scss 以 !important 套用在所有元素）
         sans: ['Roboto', '"Noto Sans TC"', 'Helvetica', 'Arial', 'sans-serif'],
