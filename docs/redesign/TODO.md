@@ -310,3 +310,5 @@
 - **WalletDepositModal 儲值日期時間欄改 `ui/date-picker` facade（月曆專項最後一批，2026/10/19，`codex/ui-datepicker-wallet-deposit-box`，v3.0-1019-1538）**：`OrderCreate/WalletDepositModal.js`、`OrderEdit/WalletDepositModal.js` 各 1 個 `DateTimePicker` 只換 import；存值（new Date(e).getTime()）、金額、手續費負擔方、付款方式等 handler、state、GraphQL 一字不動。月曆專項至此收尾。待實機：Modal 內彈層層級、欄寬、選日時後存值、金額與手續費連動。
 
 - **DesignerPerformanceReport 手機擠壓修正（B1 切片，Codex Luna 線，2026/10/19，`codex/ui-mobile-designer-perf-box`，v3.0-1019-1550）**：`DesignerPerformanceReport/index.js` 篩選列排版修正：DateSelector 外層手機滿列、桌機自動寬且不收縮；業績類型/排序控制組手機另起一列可換行。只改排版，state/handler/日期/列印原樣；該頁實查無獨立搜尋按鈕（Luna 回報）。待實機：390px 日期欄寬、搜尋/篩選不溢出、桌機版面不變。
+
+- **SalaryDetail 手機擠壓修正（B1 薪資切片，Claude 線，2026/10/19，`claude/ui-mobile-salary-box`，v3.0-1019-1557）**：`SalaryDetail/IncreaseResult.js`、`DecreaseResult.js` 卡片標題列改 flex-wrap、筆數文字 whitespace-nowrap，窄寬時整段移到下一行不中途折斷。只改 className，金額/計算/列印原樣。此為預防性修正，待實機 390px 確認標題列原折行情形。
