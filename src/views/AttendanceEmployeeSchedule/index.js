@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Switch } from '@mui/material'
+import { Switch } from 'ui/switch'
 import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
