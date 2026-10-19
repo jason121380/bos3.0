@@ -185,14 +185,16 @@ const DesignerPerformanceReport = () => {
 				}
 			/>
 			<Toolbar>
-				<DateSelector
-					date={date}
-					attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-					dateChange={value => setDate(value)}
-					margin
-				/>
+				<div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+					<DateSelector
+						date={date}
+						attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+						dateChange={value => setDate(value)}
+						margin
+					/>
+				</div>
 				<ToolbarSpacer />
-				<div className="flex flex-wrap items-center gap-x-5 gap-y-2.5">
+				<div className="flex w-full min-w-0 flex-wrap items-center gap-x-5 gap-y-2.5 sm:w-auto sm:shrink-0">
 					{!isDisplayTogglePerformanceButton && <div className="flex items-center gap-2">
 						<div className="divText text-label text-text-secondary">業績類型：</div>
 						<ReferToggleButton
