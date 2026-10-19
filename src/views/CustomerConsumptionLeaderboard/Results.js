@@ -7,7 +7,7 @@ function Results({ reportData }) {
   return (
     <>
       {reportData.length ? (
-        <Table className="min-w-[700px]">
+        <Table dense className="min-w-[700px]">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead numeric>名次</TableHead>

@@ -174,7 +174,7 @@ function Results({
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
-          <Table className="min-w-[1000px]">
+          <Table dense className="min-w-[1000px]">
             <TableHeader>
               <TableRow className="hover:bg-transparent">
                 <TableHead className="w-12">

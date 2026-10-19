@@ -2,28 +2,17 @@
 
 > 掃描日期：2026/10/19　版號：v3.0-1019-1005（暫定）　性質：**盤點文件，只記事實與待辦，不代表任何一頁已通過實機驗收**。
 > 口徑：以 `src/views/<目錄>` 為單位；「ui/table」＝該目錄有檔案 `from 'ui/table'`；「有 dense」＝該目錄有 `Table` 實際傳 `dense`（`rg -lw dense` 命中）；「MUI 表格」＝仍有 `@mui/material` 的 Table 系列。
-> **數量註記**：下列分類加總為 **42** 個目錄（28＋1＋6＋5＋2）；原指令口徑為 41，差 1 尚未對出是哪一個目錄，待核對，不影響各目錄分類。
+> **數量註記**：下列分類加總為 **42** 個目錄（已 compact 35＋仍用 MUI 7）；原指令口徑為 41，差 1 尚未對出是哪一個目錄，待核對，不影響各目錄分類。
 
-## 一、已 compact（ui/table 且有 dense）— 28 個
+## 一、已 compact（ui/table 且有 dense）— 35 個
 
-BusinessAnalysisReport、BusinessItemsMonthlyAnalyzeReport、CostAnalysisReport、DecreaseDailyReport、DesignerMonthlyReport、DesignerPerforamnceAnalyzeReport、DesignerPerformanceReport、DesignerRakeReport、DesignersSalaryDetailReport、EmployeeDailyReport、HelperMonthlyReport、HelperPerformanceReport、IncomeStatementReport、MembershipSellReport、MerchantBankTransferReport、MerchantBusinessIntervalReport、MerchantDailyPerformanceReport、MerchantDailyReport、MoneyFlowCategoryReport、MoneyFlowDailyReport、MoneyFlowTransferReport、NonCashDetailStatementReport、OverallPerformanceAnalysisReport、PaymentReport、ProductConsumeReport、ProductInvoicingRecordReport、ProductLeaderBoard、SingleServiceSearchingReport。
+BusinessAnalysisReport、BusinessItemsMonthlyAnalyzeReport、CostAnalysisReport、DecreaseDailyReport、DesignerMonthlyReport、DesignerPerforamnceAnalyzeReport、DesignerPerformanceReport、DesignerRakeReport、DesignersSalaryDetailReport、EmployeeDailyReport、HelperMonthlyReport、HelperPerformanceReport、IncomeStatementReport、MembershipSellReport、MerchantBankTransferReport、MerchantBusinessIntervalReport、MerchantDailyPerformanceReport、MerchantDailyReport、MoneyFlowCategoryReport、MoneyFlowDailyReport、MoneyFlowTransferReport、NonCashDetailStatementReport、OverallPerformanceAnalysisReport、PaymentReport、ProductConsumeReport、ProductInvoicingRecordReport、ProductLeaderBoard、SingleServiceSearchingReport、DecreaseDetail（互助點數明細，PR #50 補）、SalaryDetail、SalaryOverview、CustomerConsumptionLeaderboard、CustomerWalletLeaderboard、MerchantCategorySellsRecords、ConsumptionAnalyticsDashboard（儀表板排行表，PR #51 補）。
 
 備註：`DecreaseDailyReport`、`MerchantDailyReport` 同檔仍有 MUI `TableContainer`（下方明細卡片，列印 CSS 依 `.MuiTableContainer-root` 排版），主報表已 compact、MUI 殘留部分未動。
 
-## 二、本批補改 — 1 個
+## 二、已補改（原漏 dense）— 7 個目錄
 
-| 目錄 | 原狀 | 本批 |
-|---|---|---|
-| DecreaseDetail（互助點數明細） | `ui/table`、無 `dense` | `DecreaseResults.js` 主表格 `<Table className="min-w-[900px]">` 加 `dense`；欄位、數字、合計列、CSV 匯出皆未動 |
-
-## 三、待下一批補改（ui/table、無 dense）— 6 個
-
-- SalaryDetail（3 檔表格）
-- SalaryOverview
-- CustomerConsumptionLeaderboard
-- CustomerWalletLeaderboard
-- MerchantCategorySellsRecords
-- ConsumptionAnalyticsDashboard（圖表區表格，**性質待確認**，可能不屬報表表格）
+DecreaseDetail（PR #50）與 SalaryDetail（3 檔）、SalaryOverview、CustomerConsumptionLeaderboard、CustomerWalletLeaderboard、MerchantCategorySellsRecords、ConsumptionAnalyticsDashboard 五個 Ranking 排行表（PR #51）：主表格只加 `dense`，欄位、數字、合計列、CSV 匯出皆未動。此類漏改已清零。
 
 ## 四、仍用 MUI 表格 — 7 個
 

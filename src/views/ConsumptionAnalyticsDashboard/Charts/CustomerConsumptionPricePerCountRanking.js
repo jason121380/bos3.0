@@ -29,7 +29,7 @@ const CustomerConsumptionPricePerCountRanking = ({ data }) => {
             <CardDescription className="whitespace-nowrap text-caption">期間內來客(訂單)的消費總額</CardDescription>
           </div>
           {data.length > 0 ?
-            <Table wrapperClassName="mt-0">
+            <Table dense wrapperClassName="mt-0">
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-10"></TableHead>

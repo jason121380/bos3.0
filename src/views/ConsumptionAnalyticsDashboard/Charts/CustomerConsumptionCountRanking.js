@@ -29,7 +29,7 @@ const CustomerConsumptionCountRanking = ({ data }) => {
             <CardDescription className="whitespace-nowrap text-caption">期間內來最多次的客人(訂單)</CardDescription>
           </div>
           {data.length > 0 ?
-            <Table wrapperClassName="mt-0">
+            <Table dense wrapperClassName="mt-0">
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-10"></TableHead>

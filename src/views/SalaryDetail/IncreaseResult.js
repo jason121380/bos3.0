@@ -80,7 +80,7 @@ function Results({
           </div>
         </CardHeader>
         <div className="px-5 pb-5">
-              <Table className="min-w-[2400px]">
+              <Table dense className="min-w-[2400px]">
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
                     <TableHead>代號</TableHead>
