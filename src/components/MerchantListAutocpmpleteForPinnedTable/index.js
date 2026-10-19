@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, Fragment } from 'react'
-import { Button, Autocomplete, TextField } from '@mui/material'
+import { Button as MuiButton, Autocomplete, TextField } from '@mui/material'
+import { Button } from 'ui/button'
 import { useFetchGetUserGroupsWOCS } from 'hooks/useFetchGetUserMerchant'
 import MerchantsListModal from './MerchantsListModal'
 import PropTypes from 'prop-types'
@@ -66,7 +67,7 @@ const index = ({
           open={false}
           style={{ cursor: 'pointer' }}
           isOptionEqualToValue={(option, value) => option.id === value.id}
-          popupIcon={<Button disabled={getUserGroupsWOCS.loading || isClick} component='div' onClick={handleSelectAll} variant="contained" color="primary" size="small">全選</Button>}
+          popupIcon={<MuiButton disabled={getUserGroupsWOCS.loading || isClick} component='div' onClick={handleSelectAll} variant="contained" color="primary" size="small">全選</MuiButton>}
           value={merchantList.allMerchants.filter(d => selectIds.includes(d.id))}
           onChange={(e, v) => {
             onValueChange(v.map(d => d.id))
@@ -95,7 +96,7 @@ const index = ({
             />
           )}
         />
-        <Button disabled={getUserGroupsWOCS.loading || isClick} onClick={() => setOpen(true)} style={{ whiteSpace: 'nowrap', height: 'fit-content' }} variant="contained" color="primary">選擇店家</Button>
+        <Button disabled={getUserGroupsWOCS.loading || isClick} onClick={() => setOpen(true)} style={{ whiteSpace: 'nowrap', height: 'fit-content' }} variant="primary">選擇店家</Button>
       </div>
       <MerchantsListModal
         open={open}
