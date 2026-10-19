@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Button, Input } from '@mui/material'
+import { Input } from '@mui/material'
+import { Button } from 'ui/button'
 import { Search as SearchIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
@@ -55,8 +56,8 @@ function Search({ onSearch, className, ...rest }) {
       <Button
         css={styles.searchButton}
         onClick={() => onSearch(keyword)}
-        size="large"
-        variant="contained"
+        size="lg"
+        variant="primary"
       >
         搜尋
       </Button>

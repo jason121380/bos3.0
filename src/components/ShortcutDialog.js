@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import {
   Dialog, DialogTitle, DialogContent, ThemeProvider,
-  Divider, Button, IconButton, CircularProgress,
+  Divider, Button, CircularProgress,
   Typography, Grid
 } from '@mui/material'
+import { Button as UiButton } from 'ui/button'
 import { Close as CloseIcon } from 'ui/icons'
 import { useEffect } from 'react';
 import { css } from '@emotion/react'
@@ -46,9 +47,9 @@ const ShortcutDialog = ({ open, handleOnClose, handleShortcutChange }) => {
     <Dialog fullWidth maxWidth='sm' open={open} onClose={handleOnClose} >
       <DialogTitle css={styles.title}>
         快捷組合
-        <IconButton sx={{ padding: '8px !important' }} onClick={handleOnClose}>
+        <UiButton variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label="關閉" title="關閉" onClick={handleOnClose}>
           <CloseIcon />
-        </IconButton>
+        </UiButton>
       </DialogTitle>
       <Divider />
       <DialogContent>
