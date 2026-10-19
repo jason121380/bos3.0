@@ -116,8 +116,8 @@ function Dashboard({ route, location }) {
           openNavBarDesktop && 'lg:pl-60'
         )}
       >
-        {/* PrimeStay 外框（STYLE §13）：#printContainer 原有 margin/padding 不變，外層升級為浮在淺灰 canvas 上的白卡（大圓角＋細邊＋柔和陰影）；列印時還原透明無框，避免影響報表/帳單列印版面 */}
-        <div id="printContainer" className="max-w-full overflow-x-hidden rounded-2xl border border-solid border-border bg-background shadow-card print:rounded-none print:border-0 print:bg-transparent print:shadow-none">
+        {/* 外框（STYLE §13 扁平修正 2026/10/19）：白底（canvas #FFF）＋透明容器，不再包白卡——無圓角卡框、無邊框、無陰影；頁面內的灰卡（ui/card bg-surface）靠色差分層。列印維持透明，報表/帳單列印版面不變 */}
+        <div id="printContainer" className="max-w-full overflow-x-hidden bg-transparent print:bg-transparent">
           <Suspense fallback={<div className="ui-root h-0.5 w-full animate-pulse bg-accent" />}>{renderRoutes(route.routes)}</Suspense>
         </div>
       </div>
