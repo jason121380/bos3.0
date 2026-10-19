@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import {
   Dialog, DialogTitle, DialogContent, ThemeProvider,
-  Divider, Button, CircularProgress,
+  Divider, Button,
   Typography, Grid
 } from '@mui/material'
 import { Button as UiButton } from 'ui/button'
+import { LoaderCircle } from 'lucide-react'
 import { Close as CloseIcon } from 'ui/icons'
 import { useEffect } from 'react';
 import { css } from '@emotion/react'
@@ -54,7 +55,7 @@ const ShortcutDialog = ({ open, handleOnClose, handleShortcutChange }) => {
       <Divider />
       <DialogContent>
         {isLoading ? (
-          <Grid container item ><CircularProgress sx={{ m: 'auto' }} /></Grid>
+          <Grid container item ><LoaderCircle className="m-auto h-10 w-10 animate-spin text-accent" strokeWidth={1.75} /></Grid>
         ) : (
           <ThemeProvider theme={theme}>
             <Grid container item spacing={2}>

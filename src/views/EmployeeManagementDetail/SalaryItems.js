@@ -1,4 +1,4 @@
-// 金額輸入框（浮動標籤為科目名稱、onWheel 失焦）保留 MUI TextField
+// 金額輸入框（浮動標籤為科目名稱、onWheel 失焦）保留 MUI TextField；科目名稱單行文字欄改 ui Input（列內不加可見標籤，原 label 改 aria-label）
 import { TextField } from '@mui/material'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
@@ -6,6 +6,7 @@ import { openSnackbar } from 'elements/snackbars'
 import { useHistory } from 'react-router'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Input } from 'ui/input'
 
 export default function SalaryInems({
   salaryIncreaseItemsReformatted,
@@ -235,11 +236,10 @@ export default function SalaryInems({
               {increaseSecondContent.increaseItems.map((data, index) => (
                 <div key={`increase-${index}`}>
                   <div className="flex items-center justify-between gap-2">
-                    <TextField
+                    <Input
                       type="text"
-                      variant="outlined"
                       className="w-[150px]"
-                      label="薪資加項科目"
+                      aria-label="薪資加項科目"
                       name="itemName"
                       value={data.itemName}
                       onChange={e => handleIncreaseSecondInput(e, index)}
@@ -334,11 +334,10 @@ export default function SalaryInems({
               {decreaseSecondContent.decreaseItems.map((data, index) => (
                 <div key={`decrease-${index}`}>
                   <div className="flex items-center justify-between gap-2">
-                    <TextField
+                    <Input
                       type="text"
-                      variant="outlined"
                       className="w-[150px]"
-                      label="薪資扣項科目"
+                      aria-label="薪資扣項科目"
                       name="itemName"
                       value={data.itemName}
                       onChange={e => handleDecreaseSecondInput(e, index)}
