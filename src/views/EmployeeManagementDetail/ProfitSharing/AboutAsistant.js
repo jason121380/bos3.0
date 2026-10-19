@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
+import { Card, CardContent, CardHeader } from 'ui/card-compat'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
-import { Card, CardContent, CardHeader } from '@mui/material'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { useEffect, useRef, useState } from 'react'

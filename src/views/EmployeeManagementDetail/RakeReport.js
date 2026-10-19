@@ -1,17 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Paper,
-} from '@mui/material'
+import { Card, CardContent, CardHeader } from 'ui/card-compat'
+import { Divider, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect, Fragment } from 'react'
 import DateSelector from 'components/DateSelector'

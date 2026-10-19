@@ -1,4 +1,5 @@
-import { Card, CardContent, Container, Divider, Grid, Typography } from '@mui/material'
+import { Card, CardContent } from 'ui/card-compat'
+import { Container, Divider, Grid, Typography } from '@mui/material'
 
 import Page from 'components/Page'
 

@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Grid, Card,
-  CardHeader, CardContent, Typography
-} from "@mui/material"
+import { Card, CardHeader, CardContent } from 'ui/card-compat'
+import { Grid, Typography } from '@mui/material'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table'
 import { Fragment } from 'react'
 import { format } from 'date-fns'
@@ -34,7 +32,7 @@ const Compare = ({ compareData, loading, isMemberShipCardActive, compareInputDat
             <Grid spacing={2} container item>
               {compareData.map((rowData, i) => (
                 <Grid key={i} className="MuiCard-root" xs={12 / compareData.length} item>
-                  <Card sx={{ p: 2, gap: 2, display: 'flex', flexDirection: 'column' }}>
+                  <Card className="flex flex-col gap-4 p-4">
                     {rowData.length ? rowData.map((data, index) => (
                       <Grid item key={index} >
                         {index === 0 && <h3 style={{ textAlign: 'center', marginBottom: 6 }}>{i + 1}</h3>}
