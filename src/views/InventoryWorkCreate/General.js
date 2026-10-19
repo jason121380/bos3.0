@@ -1,6 +1,6 @@
-import { ToggleButton, ToggleButtonGroup } from '@mui/material'
 import { Fragment, useState } from 'react'
 import { cloneDeep } from 'lodash'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Input } from 'ui/input'
@@ -47,16 +47,16 @@ function General({
       {sortDisplay &&
         <div className="flex items-center gap-2 text-body text-text-secondary">
           <span>排序：</span>
-          <ToggleButtonGroup
+          <ToggleGroup
             size="small"
             exclusive
             value={sort}
             onChange={(e, value) => value && setSort(value)}
           >
-            <ToggleButton value='inventory'>庫存</ToggleButton>
-            <ToggleButton value='no'>代號</ToggleButton>
-            <ToggleButton value='count'>差異</ToggleButton>
-          </ToggleButtonGroup>
+            <ToggleGroupItem value='inventory'>庫存</ToggleGroupItem>
+            <ToggleGroupItem value='no'>代號</ToggleGroupItem>
+            <ToggleGroupItem value='count'>差異</ToggleGroupItem>
+          </ToggleGroup>
         </div>
       }
       <Button disabled={isClick} onClick={() => handleCreateIventory()} variant="secondary">
