@@ -154,6 +154,13 @@
 
 **為何不一次全自寫月曆**：格線、鍵盤解析（分段輸入）、時間選擇、月／年切換、無障礙、locale（zh-TW 週起始與月名）、`minDate`／`maxDate` 與 `onError` 協定，都要重做並重測；而且會碰到存值（Date／null／Invalid Date）與訂單頁的焦點鏈（`inputRef`、`autoFocus`、`onKeyDown` 跳欄），風險與測試成本過高。門面作法**可逐檔驗證、可回退**（換一檔、驗一檔，出問題改回 `@mui/x-date-pickers` 的原寫法即可）。
 
+**彈層主題（日曆 B 批，2026/10/19，v3.0-1019-1030 暫定）**
+
+- 改動集中在 `src/ui/mui-theme.js` 的 `MuiPickers*` 覆寫，只動 `styleOverrides` 視覺值，不碰選取行為、format、回傳型別。
+- 新增／補強：`MuiPickersPopper.paper`（圓角 12、1px `border`、浮層陰影、`background`）；`MuiPickersDay`（13 字級、hover `surfaceHover`、選中 accent 底白字＋600、disabled `textTertiary`）；`MuiPickersCalendarHeader`（月份標籤 14/600、`text` 色、切換檢視鈕 hover）；`MuiPickersArrowSwitcher`（箭頭鈕 hover）；`MuiPickersYear.yearButton`／`MuiPickersMonth.monthButton`（圓角 8、hover、選中 accent）；`MuiDigitalClock.item`／`MuiMultiSectionDigitalClockSection.item`（14 字級、圓角 8、hover、選中 accent）。元件名稱已對照 `node_modules/@mui/x-date-pickers` 6.19.4 的 `themeAugmentation/overrides.d.ts` 與各元件 `styled` 的 `name`／`slot`。手機 Dialog 版沿用既有 `MuiPickersLayout`／`MuiPickersToolbar`（主題藍底白字）與 `MuiDialog` paper 覆寫，本批未另改。
+- 影響範圍：所有包在 `MuiScope` 內的 picker（facade 與既有共用元件）；未包 `MuiScope` 的舊頁面仍用舊主題，逐頁換 facade 後才套用。
+- **待實機**：深色模式、手機 Dialog 版、年選擇（`openTo='year'`）、時間選擇（DateTime）。
+
 **第二階段（全自寫）**：待第一階段全數換完，並實機驗證鍵盤輸入與各情境後再評估，不預先承諾。
 
 ## 七、分批計畫

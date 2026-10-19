@@ -93,16 +93,77 @@ export function createBridgeTheme(mode = 'light') {
           },
         },
       },
+      // 桌機版月曆彈層容器（Popper 的 paper）：浮層規格 rounded-xl、1px border、浮層陰影（STYLE 浮層）
+      MuiPickersPopper: {
+        styleOverrides: {
+          paper: { backgroundColor: t.background, borderRadius: 12, border: `1px solid ${t.border}`, boxShadow: FLOAT_SHADOW, overflow: 'hidden' },
+        },
+      },
       MuiPickersDay: {
         styleOverrides: {
           root: {
-            '&.Mui-selected': { backgroundColor: `${t.accent} !important`, color: '#FFFFFF !important' },
+            fontSize: 13,
+            color: t.text,
+            // hover 底色用 surfaceHover（STYLE 互動狀態）；選中日在下方以 !important 維持主題色
+            '&:hover': { backgroundColor: t.surfaceHover },
+            '&.Mui-selected': { backgroundColor: `${t.accent} !important`, color: '#FFFFFF !important', fontWeight: 600 },
             '&.MuiPickersDay-today': { borderColor: `${t.accent} !important` },
+            '&.Mui-disabled:not(.Mui-selected)': { color: t.textTertiary },
           },
         },
       },
-      MuiPickersCalendarHeader: { styleOverrides: { switchViewButton: { color: t.textSecondary } } },
-      MuiPickersArrowSwitcher: { styleOverrides: { button: { color: t.textSecondary } } },
+      // 月曆表頭：月份標籤 14/600、顏色 text（STYLE 字級 body 14）
+      MuiPickersCalendarHeader: {
+        styleOverrides: {
+          label: { fontSize: 14, fontWeight: 600, color: t.text },
+          switchViewButton: { color: t.textSecondary, '&:hover': { backgroundColor: t.surfaceHover } },
+        },
+      },
+      MuiPickersArrowSwitcher: { styleOverrides: { button: { color: t.textSecondary, '&:hover': { backgroundColor: t.surfaceHover } } } },
+      // 年／月選擇檢視（openTo='year'／'month'）：按鈕圓角 8、hover surfaceHover、選中 accent 底白字（STYLE 互動狀態）
+      MuiPickersYear: {
+        styleOverrides: {
+          yearButton: {
+            fontSize: 14,
+            borderRadius: 8,
+            '&:hover, &:focus': { backgroundColor: t.surfaceHover },
+            '&.Mui-selected': { backgroundColor: `${t.accent} !important`, color: '#FFFFFF !important', fontWeight: 600 },
+            '&.Mui-disabled': { color: t.textTertiary },
+          },
+        },
+      },
+      MuiPickersMonth: {
+        styleOverrides: {
+          monthButton: {
+            fontSize: 14,
+            borderRadius: 8,
+            '&:hover, &:focus': { backgroundColor: t.surfaceHover },
+            '&.Mui-selected': { backgroundColor: `${t.accent} !important`, color: '#FFFFFF !important', fontWeight: 600 },
+            '&.Mui-disabled': { color: t.textTertiary },
+          },
+        },
+      },
+      // 時間選擇（DateTime 用）：項目 14 字級、圓角 8、hover surfaceHover、選中 accent 底白字
+      MuiDigitalClock: {
+        styleOverrides: {
+          item: {
+            fontSize: 14,
+            borderRadius: 8,
+            '&:hover': { backgroundColor: t.surfaceHover },
+            '&.Mui-selected': { backgroundColor: `${t.accent} !important`, color: '#FFFFFF !important', fontWeight: 600 },
+          },
+        },
+      },
+      MuiMultiSectionDigitalClockSection: {
+        styleOverrides: {
+          item: {
+            fontSize: 14,
+            borderRadius: 8,
+            '&:hover': { backgroundColor: t.surfaceHover },
+            '&.Mui-selected': { backgroundColor: `${t.accent} !important`, color: '#FFFFFF !important', fontWeight: 600 },
+          },
+        },
+      },
       MuiPaper: {
         defaultProps: { elevation: 0 },
         styleOverrides: { root: { backgroundImage: 'none' } },
