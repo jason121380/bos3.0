@@ -1,9 +1,8 @@
-// MUI Modal 保留；內部 Select 已換 NativeSelect（原生 select 無彈層，不受 Radix／MUI 影響）
-import { Modal } from '@mui/material'
+// 外框已換 ui/dialog；內部 Select 已換 NativeSelect（原生 select 無彈層，不受 Radix／MUI 影響）
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import { Button } from 'ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
@@ -20,23 +19,19 @@ function EditMemberCardRecordModal({
   }
 
   return (
-    <Modal open={openEditMembershipsCategoryModal}>
-      <Card className="ui-root absolute left-1/2 top-1/2 max-h-full w-[640px] max-w-[calc(100%-32px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto shadow-float outline-none">
-        <CardHeader
-          className="items-center"
-          action={
-            <Button
-              variant="secondary"
-              onClick={onClose}
-            >
-              關閉
-            </Button>
-          }
-        >
-          <CardTitle>編輯會員卡</CardTitle>
-        </CardHeader>
-
-        <CardContent>
+    // 舊版 MUI Modal 未設 onClose（點背景／Esc 不關閉），故不傳 onOpenChange；hideClose 保留原「關閉」按鈕
+    <Dialog open={openEditMembershipsCategoryModal}>
+      <DialogContent size="md" hideClose aria-describedby={undefined}>
+        <DialogHeader className="flex-row items-center justify-between pr-6">
+          <DialogTitle>編輯會員卡</DialogTitle>
+          <Button
+            variant="secondary"
+            onClick={onClose}
+          >
+            關閉
+          </Button>
+        </DialogHeader>
+        <DialogBody>
           <Field label="會員卡">
             <NativeSelect
               value={selectedCategoryId}
@@ -49,17 +44,17 @@ function EditMemberCardRecordModal({
               ))}
             </NativeSelect>
           </Field>
-        </CardContent>
-        <CardFooter>
+        </DialogBody>
+        <DialogFooter>
           <Button
             variant="primary"
             onClick={handleUpdateMembershipsCategory}
           >
             儲存
           </Button>
-        </CardFooter>
-      </Card>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 

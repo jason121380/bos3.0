@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Dialog, DialogActions, DialogContent, DialogContentText,
-  DialogTitle, FormControl, InputAdornment, InputLabel,
+  FormControl, InputAdornment, InputLabel,
   OutlinedInput,
 } from '@mui/material'
 import { Button } from 'ui/button'
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Visibility, VisibilityOff } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchChangePassword from 'hooks/useFetchChangePassword'
@@ -102,10 +102,14 @@ export default function ChangePassword({ open, handleClose }) {
   }
   return (
     <Fragment>
-      <Dialog open={open} aria-labelledby="max-width-dialog-title">
-        <DialogTitle id="max-width-dialog-title">重新設定密碼</DialogTitle>
-        <DialogContent>
-          <DialogContentText style={{ marginBottom: 12 }}>為了您的帳號安全, 您必須變更預設密碼才能繼續使用。</DialogContentText>
+      {/* 舊版 MUI Dialog 未設 onClose（強制改密碼、只能成功後關閉），故不傳 onOpenChange 並 hideClose */}
+      <Dialog open={open}>
+        <DialogContent size="sm" hideClose aria-describedby={undefined}>
+          <DialogHeader>
+            <DialogTitle>重新設定密碼</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+          <p className="m-0 mb-3 text-body text-text-secondary">為了您的帳號安全, 您必須變更預設密碼才能繼續使用。</p>
           <form css={styles.form} noValidate>
             <FormControl css={styles.margin} variant="outlined">
               <InputLabel htmlFor="password">密碼</InputLabel>
@@ -154,12 +158,13 @@ export default function ChangePassword({ open, handleClose }) {
               />
             </FormControl>
           </form>
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="primary" onClick={handleOnChangePassword}>
+              更新密碼
+            </Button>
+          </DialogFooter>
         </DialogContent>
-        <DialogActions>
-          <Button variant="primary" onClick={handleOnChangePassword}>
-            更新密碼
-          </Button>
-        </DialogActions>
       </Dialog>
     </Fragment>
   )
