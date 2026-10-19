@@ -37,7 +37,7 @@ function Parameter() {
       <div className="mx-auto w-full max-w-6xl">
         <PageHeader title="業績抽成參數設定" />
         <Tabs
-          className="md:flex md:items-start md:gap-8"
+          className="md:flex md:items-stretch"
           value={selectTab}
           onValueChange={value => handleTabsChange(null, value)}
           activationMode="manual"
@@ -47,7 +47,7 @@ function Parameter() {
               <SettingsTabsTrigger key={index} value={tab.value} icon={tab.icon}>{tab.label}</SettingsTabsTrigger>
             ))}
           </SettingsTabsList>
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">
             <SettingsSectionHeading title={tabs.find(tab => tab.value === selectTab)?.label} />
             <div className={selectTab === 'commissionWay' ? 'flex flex-col gap-6' : 'hidden'}>
               <Service

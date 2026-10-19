@@ -1,28 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import React, { useEffect } from 'react'
 import { gql, useMutation } from '@apollo/client'
 import { Card } from 'ui/card'
 import Page from 'components/Page'
 import getQueryString from 'helper/getQueryString'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-    marginTop: theme.spacing(3),
-  }),
-  card: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-    marginTop: theme.spacing(3),
-  }),
-  field: css({
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  }),
-}
 
 const ChangeLineMenu = gql`
   mutation ChangeLineMenu($input: ChangeLineMenuInput!) {
@@ -87,8 +67,8 @@ function Reservation({ match, location }) {
   }, [])
 
   return (
-    <Page css={styles.root} title="切換選單">
-      <Card css={styles.card}>Loading</Card>
+    <Page className="min-w-[275px] p-8 mt-6" title="切換選單">
+      <Card className="min-w-[275px] p-8 mt-6">Loading</Card>
     </Page>
   )
 }
