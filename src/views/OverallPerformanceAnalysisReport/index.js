@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
-// 業績包含（多選）切換鈕的 handler 使用 (event, value)，保留 MUI ToggleButtonGroup
-import {
-  ToggleButton, ToggleButtonGroup
-} from '@mui/material'
+// 業績包含（多選）切換鈕改 ui/toggle-group（非 exclusive、陣列值原樣傳遞）
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import Page from 'components/Page'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
 import DateSelector from 'components/DateSelector'
@@ -214,17 +212,17 @@ const OverallPerformanceAnalysisReport = () => {
         <div className="flex w-full min-w-0 flex-wrap items-center gap-x-2.5 gap-y-2.5 sm:w-auto sm:shrink-0">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <div className="text-label text-text-secondary">業績包含</div>
-            <ToggleButtonGroup
+            <ToggleGroup
               size="small"
               value={performanceInclude}
               onChange={handleToggleButtonChange}
             >
               {include.map((data, idx) => (
-                <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                   {data.label}
-                </ToggleButton>
+                </ToggleGroupItem>
               ))}
-            </ToggleButtonGroup>
+            </ToggleGroup>
           </div>
           <div className="w-full sm:w-auto">
             <CSVLink data={excelData} filename="多店業績統計表.csv"

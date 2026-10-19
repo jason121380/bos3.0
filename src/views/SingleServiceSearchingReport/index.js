@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import {
   TextField, Checkbox,
-  ToggleButton, ToggleButtonGroup, Autocomplete
+  Autocomplete
 } from '@mui/material'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { endOfDay, startOfMonth } from 'date-fns'
 import idx from 'idx'
 import { useFetchServicesForAutoComplete } from 'hooks/useFetchServices'
@@ -136,7 +137,7 @@ const DesignerPerformBasic = () => {
           <div className="flex flex-grow flex-wrap items-center justify-between">
             <div className="mb-[23px] flex flex-col">
               <div className="divText">排序依據:</div>
-              <ToggleButtonGroup
+              <ToggleGroup
                 value={sort}
                 size="small"
                 exclusive
@@ -145,11 +146,11 @@ const DesignerPerformBasic = () => {
                 }}
               >
                 {performanceEnum.map((data, idx) => (
-                  <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                  <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                     {data.label}
-                  </ToggleButton>
+                  </ToggleGroupItem>
                 ))}
-              </ToggleButtonGroup>
+              </ToggleGroup>
             </div>
             <div>
               <Button

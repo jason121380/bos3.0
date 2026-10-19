@@ -1,9 +1,6 @@
 /** @jsxImportSource @emotion/react */
-// 分類／排序切換鈕的 handler 使用 (event, value)，保留 MUI ToggleButtonGroup
-import {
-  ToggleButton,
-  ToggleButtonGroup
-} from '@mui/material'
+// 分類／排序切換鈕改 ui/toggle-group（handler (event, value) 原樣、`state !== null` 守衛不變）
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
 import { endOfDay, startOfMonth } from 'date-fns'
@@ -136,33 +133,33 @@ export default function DecreaseDetail({ history, location }) {
         </div>
         <div className="flex items-center gap-2 self-start">
           <div className="divText text-label text-text-secondary">分類依據</div>
-          <ToggleButtonGroup
+          <ToggleGroup
             size="small"
             value={sortWay}
             onChange={handleToggleButtonChange}
             exclusive
           >
             {sortBy.map((data, idx) => (
-              <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+              <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                 {data.label}
-              </ToggleButton>
+              </ToggleGroupItem>
             ))}
-          </ToggleButtonGroup>
+          </ToggleGroup>
         </div>
         <div className="flex items-center gap-2 self-start">
           <div className="divText text-label text-text-secondary">時間排序依據</div>
-          <ToggleButtonGroup
+          <ToggleGroup
             size="small"
             value={sortTime}
             onChange={handleToggleButtonTimeChange}
             exclusive
           >
             {sortByTime.map((data, idx) => (
-              <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+              <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                 {data.label}
-              </ToggleButton>
+              </ToggleGroupItem>
             ))}
-          </ToggleButtonGroup>
+          </ToggleGroup>
         </div>
       </div>
 

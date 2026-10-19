@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ToggleButtonGroup, ToggleButton } from '@mui/material'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import { endOfDay, startOfMonth } from 'date-fns'
@@ -77,15 +77,15 @@ const ProductLeaderBoard = () => {
           <div className="flex w-full min-w-0 flex-wrap items-center gap-3 sm:w-auto sm:shrink-0">
             {excelData.length !== 0 && (
               <>
-                <ToggleButtonGroup
+                <ToggleGroup
                   style={{ height: 'fit-content' }}
                   size="small"
                   value={inputData.types}
                   onChange={(e, v) => setInputData({...inputData, types: v})}
                 >
-                  <ToggleButton value='SELLING'>店販</ToggleButton>
-                  <ToggleButton value='PICKING'>自購</ToggleButton>
-                </ToggleButtonGroup>
+                  <ToggleGroupItem value='SELLING'>店販</ToggleGroupItem>
+                  <ToggleGroupItem value='PICKING'>自購</ToggleGroupItem>
+                </ToggleGroup>
                 <Button asChild variant="secondary" className="my-2.5 shrink-0">
                   <CSVLink
                     data={excelData}
