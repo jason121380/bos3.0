@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 設定頁左選單左右底色（Jason Cursor Billing 截圖指定，v3.0-1020-0023） | `ui/settings-nav` 左欄桌機 `bg-surface` 淺灰整欄，四頁 Tabs 去 gap 改等高相鄰、右欄 `bg-background` 白底，中間無分隔線；選中主題藍與卡片邊框保留，手機頂部分頁不變。待實機四頁桌機／手機確認，見 TODO／MEMORY #115。 |
 | 報表目錄改設定樣板版面（v3.0-1020-0019） | `/dashboard-list-detail` 依 Jason 新指示改左選單＋右側分類標題／單卡（六分類圖示與順序保留、權限六次固定呼叫與 42 連結逐字保留、選單只列有權限分類）；桌機左欄淺灰（surface）／右側白（background）／無分隔線，手機橫向分頁不套底色；僅目錄頁例外，各報表／帳單頁不套。待實機桌機左選單切換＋手機橫向分頁、左右底色與無分隔線。 |
 | 商品消耗明細日期區緊急修正（v3.0-1020-0012） | 根因：共用 `MerchantSearchBar/DatePicker` 傳 `label='選擇日期'` 給 facade，facade 以 Field 在欄位上方渲染標籤，塞進 MUI ButtonGroup 擠成兩排重疊。修：共用層兩處不傳 label（toolbarTitle 保留），舊版頁面一併恢復；僅商品消耗明細開 `uiDateField`（快捷鈕 ui Button＋UiDateField 單排，比照 DecreaseDetail），快捷鈕順序本月/上個月/前天/昨天/今天不變，日期存值/查詢/匯出/用途下拉不動。待實機：本頁與 DecreaseDetail 各開一次月曆，見 MEMORY #112。 |
 | 店家列表已選店家主題色修正（緊急截圖，v3.0-1020-0005） | 三份 `MerchantsListModal` 已選店家由水藍 `rgb(179,224,238)`／深色 `#638088`（舊全域後載入蓋過元件）改主題色選中態：`accent/0.12` 底＋accent 文字／圖示＋500（深色 `#4C8DF6`）；深色 hover 在視窗範圍內收斂、全域 TreeItem hover 不動其他頁。選取／展開／搜尋／確認邏輯未動，待實機三版開窗確認，見 TODO／MEMORY #111。 |

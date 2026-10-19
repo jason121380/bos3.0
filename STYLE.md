@@ -171,9 +171,10 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
 | 部位 | 規則 |
 |---|---|
 | 頁首 | 沿用 `PageHeader`（頁面標題一個）；不在右側內容區再重複大標題。 |
-| 左選單（桌機 `md` 以上） | 頁內窄選單寬 `w-60`（240px）、`sticky top-6`；項目高 36px、`rounded-md`、左圖示 16px（lucide）＋標籤；未選 `text-secondary`＋hover `surface-hover`；選中比照 §6 Sidebar：`bg-accent/8`＋`text-accent`＋字重 500。**不用截圖的粉紅色**，開關與選取一律既有品牌藍 token。 |
+| 左選單（桌機 `md` 以上） | 頁內窄選單寬 `w-60`（240px）、整欄 `bg-surface` 淺灰底（深色以 token 自動對應，不得寫死淺色）＋內距 `p-3`；項目高 36px、`rounded-md`、左圖示 16px（lucide）＋標籤；未選 `text-secondary`＋hover `surface-hover`；選中比照 §6 Sidebar：`bg-accent/8`＋`text-accent`＋字重 500（在 `surface` 上仍須清楚可辨）。**不用截圖的粉紅色**，開關與選取一律既有品牌藍 token。 |
+| 左右底色（桌機 `md` 以上，Jason 2026/10/19 以 Cursor Billing 截圖指定） | 左選單欄 `surface` 淺灰、右內容區 `background` 白底（右欄 `md:bg-background md:px-6 md:py-6`）；兩欄以 `md:items-stretch` 等高、直接相鄰，Tabs 容器**不得**用 `gap` 留白溝槽，兩欄相接處**不得**加 `border`、陰影或分隔線。右側既有白色卡片在白底上仍保留既有 1px 卡片邊框辨識，不得拿掉。 |
 | 左選單（手機） | 不做第二套側欄：退回頁面頂部橫向可捲動的分頁列（底線式，與 `ui/tabs` 既有呈現一致），避免 390px 擠壓；觸控目標仍 ≥40px 由分頁列高度承擔。 |
-| 右內容 | `min-w-0 flex-1`；先一段分段標題（`heading`，即目前分類名），其下既有卡片以 `gap-6` 直疊。每張卡片沿用 §6 Card（`rounded-lg`、1px `border`、`bg-background`、內距 20px、無陰影）；卡片內每列維持「標題／說明在左、控制在右」的既有表單結構，本樣板不發明新欄位列元件。 |
+| 右內容 | `min-w-0 flex-1 md:bg-background md:px-6 md:py-6`（桌機白底，與左灰欄等高相鄰、無分隔線）；先一段分段標題（`heading`，即目前分類名），其下既有卡片以 `gap-6` 直疊。每張卡片沿用 §6 Card（`rounded-lg`、1px `border`、`bg-background`、內距 20px、無陰影）；卡片內每列維持「標題／說明在左、控制在右」的既有表單結構，本樣板不發明新欄位列元件。 |
 | 容器寬度 | 有頁內左選單的設定頁容器上限 `max-w-6xl`（選單 240＋內容約 880），內容卡片內的欄位寬度維持各頁既有值；無頁內選單的表單頁仍依 §4 `max-w-3xl`／設定頁 `max-w-4xl`。 |
 
 ### 紅線
