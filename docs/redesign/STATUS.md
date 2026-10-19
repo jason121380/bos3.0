@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| MUI 移除・TreeView 專項試點（AGY 線，v3.0-1019-2334） | 只做 `layouts/Dashboard/MerchantList.js` 1 檔：MUI TreeView 改自家 `ul/button` 樹（role=tree/treeitem、roving tabindex、↑↓←→/Home/End/Enter/Space/type-ahead 鍵盤補齊），節點 id／搜尋自動展開／點店家存值導頁不動；其餘 5 檔樹（多選彈窗/商品/釘選）不動，`@mui/x-tree-view` 套件待全清後才卸。待實機展開/點選/鍵盤逐項。 |
 | 全站外框扁平修正（v3.0-1019-2314，未合併待截圖驗收） | 覆蓋 #151 部分視覺（STYLE §13／MEMORY #107）：白底 canvas、灰卡 surface #F3F4F6、移除 shadow-card、Card/#printContainer/Dialog 去框去影、側欄選中純色塊、secondary 灰 pill；深藍主色與密度/列印不變。示範頁顧客列表由 token 自動生效。待截圖：白底灰卡、側欄、彈窗、深色、列印。 |
 | 設定頁樣板推廣第二批（v3.0-1019-2305） | `/accountingSetting` 三區改左選單＋右分段卡片（hidden 保留掛載、全域儲存原樣）；`/helper-point-setting-create`／`-edit/:id` 單表單切三張分段卡（不造假選單）；`/authority` 單一清單寬表本批跳過（理由見 STYLE §12／MEMORY #106）。待實機逐頁截圖確認。 |
 | MUI 移除・Tooltip 第一小批（AGY 線，v3.0-1019-2303） | `GenericMoreButton` 移除重複 MUI Tooltip、保留原生 title/aria-label（影響 7 頁：AccountingSubject、DesignerPerformDetail×4、SalaryDetail×2，選單/handler 不動）；`ScheduleCard` 刪未使用 LightTooltip 死定義與專用 import。`MerchantParticipatingList/Results` 富內容 Tooltip（arrow＋JSX 日期）跳過留 ui/tooltip 專項，mui-theme MuiTooltip 覆寫保留。STYLE 無新規則不改。待實機抽查 2 頁更多選單 hover/開合與排班頁，見 TODO/MEMORY #105。 |
