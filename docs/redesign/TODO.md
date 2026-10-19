@@ -320,6 +320,9 @@
 
 - **A3 第三份 QueueOrderEdit/AddCustomerModal 標籤改上方（AGY 線，2026/10/19，`agy/ui-a3-addcustomer-queue-box`，v3.0-1019-1619）**：`QueueOrderEdit/AddCustomerModal.js` 將 7 個單純 TextField（客戶姓名、Email、lineId、地址、客戶暱稱、電話、備註）改為 Field 上方標籤＋ui/input Input；保留客戶編號（重複檢查 error/helperText/endAdornment）、民國年/月/日三格、性別 NativeSelect、SourceSelect、最近/偏好設計師本體；handler/state/GraphQL/存值一字不動，本檔無 Enter 焦點鏈未自創。待實機：Modal 並排對齊與列高、編號重複檢查提示、新增/更新顧客存值。DraftOrderEdit 份留待另一線。
 
+- **帳單三頁對齊第二切片 OrderEdit Head（Claude 線，2026/10/19，`claude/ui-bill-align-orderedit-head-box`，v3.0-1019-1625）**：`OrderEdit/Head.js` 改三欄 flex 上方標籤（帳單日期／顧客姓名/手機號碼/編號／服務人員姓名/編號／指定方式，標籤文字保留原文）、窄螢幕換行、顧客圖示移入框內左側；handler/state/焦點鏈/日期存值/金額/GraphQL 原樣。必填 `*` 未加：OrderEdit 的 `vaild` 有零元重結帳例外（第二條不要求日期/顧客/設計師），與 Draft 不同，不硬套。verify-logic 兩項 FAIL 為純畫面（移除無作用的拼錯 `ocaleText`、facade 已統一 outlined 故移除 `textField.variant:standard`）。待實機：三欄並排與換行、顧客搜尋與 Enter 焦點鏈、日期鍵盤輸入與彈層存值。
+
+- **DesignerRakeReport 手機擠壓修正（B1 切片，Claude 線，2026/10/19，`claude/ui-mobile-designer-rake-box`，v3.0-1019-1627）**：`DesignerRakeReport/index.js` Toolbar 的 DateSelector 外層包 `w-full min-w-0 sm:w-auto sm:shrink-0`，手機滿列、桌機自動寬且不收縮。只改排版，state/handler/日期/查詢/列印/Results 原樣。待實機：390px 日期欄寬不溢出、桌機版面不變。
 - **帳單三頁對齊第二切片 OrderEdit Head（Claude 線，2026/10/19，`claude/ui-bill-align-orderedit-head-box`，v3.0-1019-1624）**：`OrderEdit/Head.js` 改三欄 flex 上方標籤（帳單日期／顧客姓名/手機號碼/編號／服務人員姓名/編號／指定方式，標籤文字保留原文）、窄螢幕換行、顧客圖示移入框內左側；handler/state/焦點鏈/日期存值/金額/GraphQL 原樣。必填 `*` 未加：OrderEdit 的 `vaild` 有零元重結帳例外（第二條不要求日期/顧客/設計師），與 Draft 不同，不硬套。verify-logic 兩項 FAIL 為純畫面（移除無作用的拼錯 `ocaleText`、facade 已統一 outlined 故移除 `textField.variant:standard`）。待實機：三欄並排與換行、顧客搜尋與 Enter 焦點鏈、日期鍵盤輸入與彈層存值。
 
 - **EmployeeDailyReport 手機擠壓修正（B1 切片，AGY 線，2026/10/19，`agy/ui-mobile-employee-daily-box`，v3.0-1019-1625）**：`EmployeeDailyReport/index.js` Toolbar 加 `min-w-0 flex-wrap`，DateSelector 外層包 `w-full min-w-0 sm:w-auto sm:shrink-0`，列印 Button 加 `shrink-0`。只改 className，state/handler/日期/列印/Results 傳參原樣。待實機：390px 日期欄寬不溢出、桌機版面不變。

@@ -270,10 +270,13 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 
 - 範圍：`QueueOrderEdit/AddCustomerModal.js` 7 欄改 Field 上方標籤＋Input；編號重複檢查、生曰三格、Select 本體保留。待實機：並排對齊、編號檢查提示、存值。
 
-### 帳單三頁對齊第二切片 OrderEdit Head（Claude 線，`claude/ui-bill-align-orderedit-head-box`，v3.0-1019-1624）
+### 帳單三頁對齊第二切片 OrderEdit Head（Claude 線，`claude/ui-bill-align-orderedit-head-box`，v3.0-1019-1625）
 
 - 範圍：`OrderEdit/Head.js` 表頭三欄 flex 對齊 OrderCreate/Draft/Queue，只改畫面；必填星號因零元重結帳例外未加。待實機：並排/換行、顧客搜尋、日期彈層、焦點鏈。
 
+### DesignerRakeReport 手機擠壓修正（B1 切片，Claude 線，`claude/ui-mobile-designer-rake-box`，v3.0-1019-1627）
+
+- 範圍：`DesignerRakeReport/index.js` Toolbar 的 DateSelector 外層包 `w-full min-w-0 sm:w-auto sm:shrink-0` 容器，比照 HelperPerformanceReport 做法，只改排版。待實機：390px 日期區不溢出、桌機不變。
 ### EmployeeDailyReport 手機擠壓修正（B1 切片，AGY 線，`agy/ui-mobile-employee-daily-box`，v3.0-1019-1625）
 
 - 範圍：`EmployeeDailyReport/index.js` Toolbar 加 min-w-0 flex-wrap，DateSelector 外層手機滿列、桌機自動寬不收縮，列印按鈕加 shrink-0，只改排版。待實機：390px 日期欄不溢出、桌機版面不變、列印按鈕位置。
