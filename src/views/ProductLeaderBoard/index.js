@@ -63,6 +63,7 @@ const ProductLeaderBoard = () => {
       <div>
         <AdminPageHeader title='商品銷售排行榜' />
         <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
           <DateSelector
             date={{
               startDate: inputData.startDay,
@@ -72,7 +73,8 @@ const ProductLeaderBoard = () => {
             dateChange={({ startDate, endDate }) => setInputData({...inputData, startDay: startDate, endDay: endDate})}
             margin
           />
-          <div className="flex items-center gap-3">
+          </div>
+          <div className="flex w-full min-w-0 flex-wrap items-center gap-3 sm:w-auto sm:shrink-0">
             {excelData.length !== 0 && (
               <>
                 <ToggleButtonGroup
@@ -84,7 +86,7 @@ const ProductLeaderBoard = () => {
                   <ToggleButton value='SELLING'>店販</ToggleButton>
                   <ToggleButton value='PICKING'>自購</ToggleButton>
                 </ToggleButtonGroup>
-                <Button asChild variant="secondary" className="my-2.5">
+                <Button asChild variant="secondary" className="my-2.5 shrink-0">
                   <CSVLink
                     data={excelData}
                     filename="商品銷售排行榜.csv"
@@ -97,13 +99,15 @@ const ProductLeaderBoard = () => {
             )}
           </div>
         </div>
-        <div className="my-2.5 flex items-center gap-2.5">
+        <div className="my-2.5 flex w-full min-w-0 flex-wrap items-center gap-2.5">
+          <div className="w-full min-w-0 sm:w-auto sm:flex-1">
           <ProductListTreeView
             onValueChange={v => setInputData({...inputData, productIds: v})}
           />
+          </div>
           <Button
             variant='primary'
-            className="w-[100px]"
+            className="w-[100px] shrink-0"
             onClick={handleSearch}
             disabled={productLeaderBoardV2Data.loading || !productLeaderBoardV2Data.data}
           >
