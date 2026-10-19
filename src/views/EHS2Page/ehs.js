@@ -2,8 +2,9 @@
 import React, { useState } from 'react'
 import { gql, useLazyQuery, useMutation } from '@apollo/client'
 import {
-  Card, TextField, Button, Checkbox, FormControlLabel
+  TextField, Button, Checkbox, FormControlLabel
 } from '@mui/material'
+import { Card } from 'ui/card'
 import Page from 'components/Page'
 import { useHistory } from 'react-router'
 import { css } from '@emotion/react'
