@@ -59,7 +59,7 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
   return (
     <div className="mb-4 mt-6 flex flex-col gap-2.5">
       <div className="flex flex-wrap items-center gap-2.5">
-        <div>
+        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
           <DateSelector
             date={inputData.dateRange}
             dateChange={value => dataChange(value, 'dateRange')}
@@ -68,7 +68,7 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
             rangelimit={rangeLimit}
           />
         </div>
-        <div>
+        <div className="shrink-0">
           <FormControl
             disabled={loading || userOrderableList.loading}
             fullWidth variant='outlined'
@@ -87,7 +87,7 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
             </Select>
           </FormControl>
         </div>
-        <div className="min-w-[200px] max-w-[480px]">
+        <div className="min-w-0 flex-1 sm:w-auto sm:min-w-[200px] sm:max-w-[480px] sm:flex-initial">
           <Autocomplete
             multiple
             autoHighlight
@@ -119,7 +119,7 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
             )}
           />
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto shrink-0">
           <Button
             variant='secondary'
             disabled={excelLoading}
