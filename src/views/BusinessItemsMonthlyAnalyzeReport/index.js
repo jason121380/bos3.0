@@ -106,7 +106,7 @@ export default function Employees() {
             </Button>
             <Button
               className="noprint"
-              variant="primary"
+              variant="secondary"
               onClick={() => window.print()}
             >
               <Printer strokeWidth={1.75} />
@@ -120,7 +120,6 @@ export default function Employees() {
           date={date}
           attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
           dateChange={value => setDate(value)}
-          margin
         />
       </Toolbar>
       {!businessItemsMonthlyReport.loading ?

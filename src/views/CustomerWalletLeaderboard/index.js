@@ -1,4 +1,6 @@
 /** @jsxImportSource @emotion/react */
+import { Button } from 'ui/button'
+import { Download } from 'lucide-react'
 import Page from 'components/Page'
 import { endOfMonth, startOfMonth, differenceInDays } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
@@ -102,15 +104,22 @@ function CustomerWalletLeaderboard() {
 
   return (
     <Page title="顧客入金排行榜" className="ui-root">
-      <PageHeader title="顧客入金排行榜" />
+      <PageHeader
+        title="顧客入金排行榜"
+        actions={
+          <Button
+            variant='secondary'
+            disabled={customerWalletDateExcel.loading}
+            onClick={handleGetExcelData}
+          ><Download strokeWidth={1.75} />報表匯出</Button>
+        }
+      />
       <Filter
         rangeLimit={rangeLimit}
         dataChange={handleDataChange}
         inputData={inputData}
         handleSearch={handleSearch}
         loading={customerWalletData.loading}
-        getExcel={handleGetExcelData}
-        excelLoading={customerWalletDateExcel.loading}
       />
       {(!customerWalletData.loading && customerWalletData.data) ? (
         <Results reportData={reportData} />

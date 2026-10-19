@@ -15,7 +15,7 @@ import Results from './Results'
 import produce from 'immer'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
-import { PageHeader } from 'ui/page-header'
+import { PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 import { Switch } from 'ui/switch'
 import CompareFilter from './CompareFilter'
@@ -253,57 +253,55 @@ const DesignerPerforamnceAnalyzeReport = () => {
               </Button>
             )}
             <Switch label="比較模式" labelPlacement="start" checked={compareDisplay} onChange={(e, v) => setCompareDisplay(v)} />
+            {/* 報表版型（STYLE §14）：匯出／列印固定在頁首右側；比較模式下原本整區隱藏，維持不顯示 */}
+            {!compareDisplay && (
+              <>
+                <Button
+                  variant="secondary"
+                  onClick={handleExcel}
+                  disabled={designerPerforamnceAnalyzeExcelLazyData.loading}
+                >
+                  <Download strokeWidth={1.75} />
+                  報表匯出
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => window.print()}
+                >
+                  <Printer strokeWidth={1.75} />
+                  列印
+                </Button>
+              </>
+            )}
           </>
         }
       />
 
       <div className="flex flex-col gap-3" style={{ display: compareDisplay ? 'none' : '' }}>
-        <div className="noprint flex flex-wrap items-center justify-between gap-3">
-          <div className="noprint flex flex-wrap items-center gap-x-3 gap-y-8">
-            <div>
-              <DateSelector
-                date={inputData.dateRange}
-                margin
-                attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-                dateChange={date => {
-                  setInputData(
-                    produce(draft => {
-                      draft.dateRange = date
-                    })
-                  )
-                }}
-              />
-            </div>
+        <Toolbar className="items-end pb-0">
+          <DateSelector
+            date={inputData.dateRange}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            dateChange={date => {
+              setInputData(
+                produce(draft => {
+                  draft.dateRange = date
+                })
+              )
+            }}
+          />
+          <div className="printGrid flex flex-wrap items-end gap-3">
+            {!isDisplayTogglePerformanceButton && (
+              <div className="flex flex-col gap-1.5">
+                <span className="divText text-label text-text-secondary">業績依據</span>
+                <ReferToggleButton
+                  value={inputData.displayReference}
+                  onChange={value => value && setInputData({ ...inputData, displayReference: value })}
+                />
+              </div>
+            )}
           </div>
-          <div className="printGrid flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-3">
-              {!isDisplayTogglePerformanceButton && (
-                <div style={{ marginTop: '-23px' }}>
-                  <div className="divText">業績依據：</div>
-                  <ReferToggleButton
-                    value={inputData.displayReference}
-                    onChange={value => value && setInputData({ ...inputData, displayReference: value })}
-                  />
-                </div>
-              )}
-              <Button
-                variant="secondary"
-                onClick={handleExcel}
-                disabled={designerPerforamnceAnalyzeExcelLazyData.loading}
-              >
-                <Download strokeWidth={1.75} />
-                報表匯出
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => window.print()}
-              >
-                <Printer strokeWidth={1.75} />
-                列印
-              </Button>
-            </div>
-          </div>
-        </div>
+        </Toolbar>
         <div className="flex flex-nowrap items-center gap-3">
           <div className="min-w-0 flex-grow">
             <Autocomplete

@@ -17,7 +17,7 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
-import { PageHeader, Toolbar, ToolbarSpacer } from 'ui/page-header'
+import { PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 const styles = {
@@ -171,7 +171,7 @@ const DesignerPerformanceReport = () => {
 							報表匯出
 						</Button>
 						<Button
-							variant="primary"
+							variant="secondary"
 							onClick={() => window.print()}
 							disabled={getDesignerPerformance.loading}
 						>
@@ -181,27 +181,25 @@ const DesignerPerformanceReport = () => {
 					</>
 				}
 			/>
-			<Toolbar>
+			<Toolbar className="items-end">
 				<div className="w-full min-w-0 sm:w-auto sm:shrink-0">
 					<DateSelector
 						date={date}
 						attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
 						dateChange={value => setDate(value)}
-						margin
 					/>
 				</div>
-				<ToolbarSpacer />
-				<div className="flex w-full min-w-0 flex-wrap items-center gap-x-5 gap-y-2.5 sm:w-auto sm:shrink-0">
-					{!isDisplayTogglePerformanceButton && <div className="flex items-center gap-2">
-						<div className="divText text-label text-text-secondary">業績類型：</div>
+				<div className="flex w-full min-w-0 flex-wrap items-end gap-3 sm:w-auto sm:shrink-0">
+					{!isDisplayTogglePerformanceButton && <div className="flex flex-col gap-1.5">
+						<div className="divText text-label text-text-secondary">業績類型</div>
 						<ReferToggleButton
 							value={type}
 							onChange={value => value !== null && setType(value)}
 						/>
 					</div>
 					}
-					<div className="flex items-center gap-2">
-						<div className="divText text-label text-text-secondary">排序依據：</div>
+					<div className="flex flex-col gap-1.5">
+						<div className="divText text-label text-text-secondary">排序依據</div>
 						<ToggleGroup
 							size="small"
 							value={sort}

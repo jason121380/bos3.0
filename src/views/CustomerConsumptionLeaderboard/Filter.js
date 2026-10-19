@@ -4,7 +4,6 @@ import {
   TextField, Checkbox, FormControl, InputLabel,
   Select, MenuItem, Autocomplete
 } from '@mui/material'
-import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
@@ -36,7 +35,7 @@ const type = [
   { label: '會員卡', value: 'MEMBERSHIP' },
 ]
 
-const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, excelLoading, getExcel }) => {
+const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit }) => {
   const userOrderableList = useFetchUsersOrderableList()
 
   const filterOptions = (options, state) => {
@@ -118,13 +117,6 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
               />
             )}
           />
-        </div>
-        <div className="ml-auto shrink-0">
-          <Button
-            variant='secondary'
-            disabled={excelLoading}
-            onClick={getExcel}
-          ><Download strokeWidth={1.75} />報表匯出</Button>
         </div>
       </div>
       <div className="flex items-center gap-2.5">

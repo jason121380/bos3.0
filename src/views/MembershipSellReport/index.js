@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import useFetchGetMembershipSellReport from 'hooks/useFetchGetMembershipSellReport'
 import AdminPageHeader from 'components/AdminPageHeader'
+import { Toolbar } from 'ui/page-header'
 import { startOfDay, endOfDay, format } from 'date-fns'
 import { CSVLink } from "react-csv";
 import roundDecimal from './../../helper/roundDecimal.js'
@@ -87,26 +88,23 @@ export default function MembershipSellReport() {
   return (
     <Page className="ui-root" title="會員卡銷售報表">
       <div>
-        <AdminPageHeader title='會員卡銷售報表' />
-        <div className="flex flex-wrap items-baseline justify-between gap-2.5">
-          <div>
-            <MerchantSearchBar
-              values={inputData}
-              onFilter={values => setInputData(values)}
-              outside
-              visible={['datePicker', 'employee', 'customer', 'membershipcard']}
-              lastInLeaderBoard={true}
-            />
-          </div>
-          <div className="mb-2.5">
-            <Button asChild variant="secondary">
-              <CSVLink data={excelData} filename="會員卡銷售報表.csv">
-                <Download strokeWidth={1.75} />
-                報表匯出
-              </CSVLink>
-            </Button>
-          </div>
-        </div>
+        <AdminPageHeader title='會員卡銷售報表'>
+          <Button asChild variant="secondary">
+            <CSVLink data={excelData} filename="會員卡銷售報表.csv">
+              <Download strokeWidth={1.75} />
+              報表匯出
+            </CSVLink>
+          </Button>
+        </AdminPageHeader>
+        <Toolbar className="items-end">
+          <MerchantSearchBar
+            values={inputData}
+            onFilter={values => setInputData(values)}
+            outside
+            visible={['datePicker', 'employee', 'customer', 'membershipcard']}
+            lastInLeaderBoard={true}
+          />
+        </Toolbar>
         {!getMembershipSellReport.loading ? (
           <Results
             reportData={reportData}

@@ -6,6 +6,9 @@ import { useFetchGetUserSalaryDetailExceLazy } from 'hooks/useFetchGetUserSalary
 import idx from 'idx'
 import { format } from 'date-fns'
 import { Skeleton } from 'ui/skeleton'
+import { Download, Printer } from 'lucide-react'
+import { Button } from 'ui/button'
+import { Toolbar } from 'ui/page-header'
 
 import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
@@ -36,22 +39,26 @@ const DesignersSalaryDetailReport = () => {
   return (
     <Page className='DesignersSalaryDetailReport' title="薪資明細表">
       <div>
-        <AdminPageHeader
-          title="薪資明細表"
-          secondaryActions={[
-            {
-              label: '報表匯出',
-              onClick: handleExportExcel,
-              disabled: getUserSalaryDetailExceLazyData.loading,
-              className: "noprint"
-            },
-            {
-              label: '列印',
-              onClick: () => window.print(),
-              className: "noprint"
-            }
-          ]}
-        >
+        <AdminPageHeader title="薪資明細表">
+          <Button
+            variant="secondary"
+            className="noprint"
+            onClick={handleExportExcel}
+            disabled={getUserSalaryDetailExceLazyData.loading}
+          >
+            <Download strokeWidth={1.75} />
+            報表匯出
+          </Button>
+          <Button
+            variant="secondary"
+            className="noprint"
+            onClick={() => window.print()}
+          >
+            <Printer strokeWidth={1.75} />
+            列印
+          </Button>
+        </AdminPageHeader>
+        <Toolbar>
           <DateSelector
             date={date}
             attributes={['lastmonth', 'thismonth', 'startDate']}
@@ -62,7 +69,7 @@ const DesignersSalaryDetailReport = () => {
               views: ['month', 'year']
             }}
           />
-        </AdminPageHeader>
+        </Toolbar>
         {!designersSalaryDetailReportData.loading ? (
           idx(designersSalaryDetailReportData, _ => (
             <Results

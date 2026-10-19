@@ -11,6 +11,7 @@ import idx from 'idx'
 import { useEffect, useState } from 'react'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import AdminPageHeader from 'components/AdminPageHeader'
+import { Toolbar } from 'ui/page-header'
 import { startOfMonth, format } from 'date-fns'
 import useFetchProductConsumeList from 'hooks/useFetchProductConsumeList'
 import useFetchGetProductPurpose from 'hooks/useFetchGetProductPurpose'
@@ -143,8 +144,15 @@ export default function Employees() {
   return (
     <Page className="ui-root" title="商品消耗明細">
       <div>
-        <AdminPageHeader title='商品消耗明細' />
-        <div className="flex flex-wrap items-baseline justify-between gap-2.5">
+        <AdminPageHeader title='商品消耗明細'>
+          <Button asChild variant="secondary">
+            <CSVLink data={excelData} filename="商品消耗明細.csv">
+              <Download strokeWidth={1.75} />
+              報表匯出
+            </CSVLink>
+          </Button>
+        </AdminPageHeader>
+        <Toolbar className="items-end">
           <div>
             <div className="flex flex-wrap items-center gap-2.5">
               <div>
@@ -170,15 +178,7 @@ export default function Employees() {
               </div>
             </div>
           </div>
-          <div className="mb-2.5">
-            <Button asChild variant="secondary">
-              <CSVLink data={excelData} filename="商品消耗明細.csv">
-                <Download strokeWidth={1.75} />
-                報表匯出
-              </CSVLink>
-            </Button>
-          </div>
-        </div>
+        </Toolbar>
         {!productConsumeListData.loading ? (
           <Results
             value={value != null ? value : ''}

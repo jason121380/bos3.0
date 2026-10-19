@@ -29,7 +29,7 @@ BOS 3.0 是美業 ERP 的純前端 SPA（CRA5 + React 17 + Apollo GraphQL + Redu
 npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps
 npm start                            # 開發（craco start）
 CI=true npm run build                # 正式 build（警告視為錯誤，與 CI 相同）
-CI=true npm run test:nowatch         # 全部單元測試（基準：17 檔／54 測試全數通過）
+CI=true npm run test:nowatch         # 全部單元測試（基準：17 檔／55 測試全數通過）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
 node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面驗證
 ```

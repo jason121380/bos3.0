@@ -78,7 +78,6 @@ const PaymentReport = () => {
           date={date}
           attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
           dateChange={value => setDate(value)}
-          margin
         />
       </Toolbar>
       {!merchantOtherPayWayDetailReportData.loading &&

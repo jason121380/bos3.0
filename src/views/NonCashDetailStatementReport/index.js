@@ -208,17 +208,16 @@ export default function Employees() {
           </Button>
         }
       />
-      <Toolbar className="gap-5">
+      <Toolbar className="items-end">
         <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
           <DateSelector
             date={date}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
-            margin
           />
         </div>
-        <div className="w-full min-w-0 sm:w-auto sm:flex-1">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+          <div className="flex flex-col items-start gap-1.5">
             <div className="divText text-label text-text-secondary">排序依序</div>
             <ToggleGroup
               size="small"
@@ -238,7 +237,7 @@ export default function Employees() {
 
       {!userOrderableList.loading ? (
         <Fragment>
-          <div className="flex w-full min-w-0 flex-wrap items-center gap-2.5 pb-6">
+          <div className="flex w-full min-w-0 flex-wrap items-center gap-3 pb-4">
             <div className="w-full min-w-0 sm:w-auto sm:flex-1">
             <Autocomplete
               multiple

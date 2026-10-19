@@ -120,7 +120,7 @@ export default function MerchantIncomeStatementMonthly() {
           <Grid item className="printGrid">
             <Button
               className="noprint"
-              variant="primary"
+              variant="secondary"
               onClick={() => window.print()}
             >
               <Printer strokeWidth={1.75} />
@@ -135,7 +135,6 @@ export default function MerchantIncomeStatementMonthly() {
           attributes={['lastmonth', 'thismonth', 'startDate']}
           dateChange={value => setDate(value)}
           onlyStart
-          margin
           inputFormat='yyyy/MM'
           pickerOption={{
             views: ['month', 'year']

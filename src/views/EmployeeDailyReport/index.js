@@ -16,7 +16,7 @@ import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
-import { Toolbar, ToolbarSpacer } from 'ui/page-header'
+import { Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
@@ -108,18 +108,7 @@ const EmployeeDailyReport = () => {
             format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
         </div>
       </div>
-      <AdminPageHeader title='設計師日報表' />
-      <Toolbar className="min-w-0 flex-wrap">
-        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
-          <DateSelector
-            date={date}
-            attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
-            onlyStart
-            dateChange={value => setDate(value)}
-            margin
-          />
-        </div>
-        <ToolbarSpacer />
+      <AdminPageHeader title='設計師日報表'>
         <Button
           className="noprint shrink-0"
           variant="secondary"
@@ -128,6 +117,16 @@ const EmployeeDailyReport = () => {
           <Printer strokeWidth={1.75} />
           列印
         </Button>
+      </AdminPageHeader>
+      <Toolbar className="min-w-0 flex-wrap">
+        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+          <DateSelector
+            date={date}
+            attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
+            onlyStart
+            dateChange={value => setDate(value)}
+          />
+        </div>
       </Toolbar>
 
       {!designerReportData.loading && !isPriceDisplayOnDailyReportData.loading ? (

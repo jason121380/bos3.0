@@ -7,6 +7,7 @@ import ServicesIncludesTicketsAutoComplete from 'components/ServicesIncludesTick
 import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
+import { Toolbar } from 'ui/page-header'
 import { endOfMonth } from 'date-fns'
 import idx from 'idx'
 import { CSVLink } from "react-csv";
@@ -70,8 +71,18 @@ const ServiceDeductionDetailReport = () => {
   return (
     <Page className="ui-root" title="服務扣項明細表">
       <div>
-        <AdminPageHeader title='服務扣項明細表' />
-        <div className="flex flex-wrap items-center justify-between gap-2.5">
+        <AdminPageHeader title='服務扣項明細表'>
+          <Button asChild variant="secondary">
+            <CSVLink
+              data={excelData}
+              filename="服務扣項明細表.csv"
+            >
+              <Download strokeWidth={1.75} />
+              報表匯出
+            </CSVLink>
+          </Button>
+        </AdminPageHeader>
+        <Toolbar className="items-end">
           <div className={topDiv}>
             <MerchantSearchBar
               values={inputData}
@@ -101,16 +112,7 @@ const ServiceDeductionDetailReport = () => {
               </FormControl>
             </div>
           </div>
-          <Button asChild variant="secondary">
-            <CSVLink
-              data={excelData}
-              filename="服務扣項明細表.csv"
-            >
-              <Download strokeWidth={1.75} />
-              報表匯出
-            </CSVLink>
-          </Button>
-        </div>
+        </Toolbar>
         {!serviceDedcutionDetailData.loading ? (
           idx(serviceDedcutionDetailData, _ =>
             _.data.getUserServiceDeductionDetialMultiple !== null ? (

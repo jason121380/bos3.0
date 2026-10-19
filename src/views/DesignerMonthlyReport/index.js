@@ -13,6 +13,7 @@ import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
+import { Toolbar } from 'ui/page-header'
 
 import Results from './Results'
 
@@ -87,17 +88,38 @@ export default function Employees() {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <AdminPageHeader title='設計師業績月報表' />
-        <div className='noprint flex flex-wrap justify-between gap-3'>
+        <AdminPageHeader title='設計師業績月報表'>
+          <CSVLink
+            className="noprint"
+            data={excelData}
+            filename="設計師業績月報表.csv"
+          >
+            <Button
+              disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading}
+              variant="secondary"
+            >
+              <Download strokeWidth={1.75} />
+              報表匯出
+            </Button>
+          </CSVLink>
+          <Button
+            disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading}
+            onClick={() => window.print()}
+            variant="secondary"
+          >
+            <Printer strokeWidth={1.75} />
+            列印
+          </Button>
+        </AdminPageHeader>
+        <Toolbar className="items-end">
           <DateSelector
             date={date}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
-            margin
           />
-          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-5">
-            <div className="self-start">
-              <div className="divText">排序依序：</div>
+          <div className="flex flex-wrap items-end gap-3">
+            <div className="flex flex-col gap-1.5">
+              <span className="text-label text-text-secondary">排序依序</span>
               <ToggleGroup
                 size="small"
                 value={sort}
@@ -112,37 +134,16 @@ export default function Employees() {
               </ToggleGroup>
             </div>
             {
-              !isDisplayTogglePerformanceButton && <div className="self-start">
-                <div className="divText">業績依據：</div>
+              !isDisplayTogglePerformanceButton && <div className="flex flex-col gap-1.5">
+                <span className="text-label text-text-secondary">業績依據</span>
                 <ReferToggleButton
                   value={performReference}
                   onChange={handleToggleButtonChange}
                 />
               </div>
             }
-            <CSVLink
-              className="noprint"
-              data={excelData}
-              filename="設計師業績月報表.csv"
-            >
-              <Button
-                disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading}
-                variant="secondary"
-              >
-                <Download strokeWidth={1.75} />
-                報表匯出
-              </Button>
-            </CSVLink>
-            <Button
-              disabled={designerMontlyListData.loading || isMemberShipCardActiveData.loading}
-              onClick={() => window.print()}
-              variant="secondary"
-            >
-              <Printer strokeWidth={1.75} />
-              列印
-            </Button>
           </div>
-        </div>
+        </Toolbar>
         {(!designerMontlyListData.loading && !isMemberShipCardActiveData.loading) ?
           idx(designerMontlyListData, _ => (
             <Results

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Page from 'components/Page'
 import idx from 'idx'
 import AdminPageHeader from 'components/AdminPageHeader'
+import { Toolbar } from 'ui/page-header'
 import DateSelector from 'components/DateSelector'
 import useFetchGetBusinessAnalysisReport from 'hooks/useFetchGetBusinessAnalysisReport'
 import { startOfMonth, format } from 'date-fns'
@@ -136,31 +137,29 @@ const PaymentReport = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <AdminPageHeader title='營業統計分析表' />
-        <div className='noprint flex flex-wrap items-center justify-between gap-3'>
+        <AdminPageHeader title='營業統計分析表'>
+          <CSVLink
+            data={excelData}
+            filename="營業統計分析表.csv"
+            style={{ display: 'inline' }}
+          >
+            <Button variant="secondary">
+              <Download strokeWidth={1.75} />
+              報表匯出
+            </Button>
+          </CSVLink>
+          <Button
+            variant="secondary"
+            onClick={() => window.print()}
+          ><Printer strokeWidth={1.75} />列印</Button>
+        </AdminPageHeader>
+        <Toolbar>
           <DateSelector
             date={date}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
-            margin
           />
-          <div className="flex flex-wrap gap-2.5">
-            <CSVLink
-              data={excelData}
-              filename="營業統計分析表.csv"
-              style={{ display: 'inline' }}
-            >
-              <Button variant="secondary">
-                <Download strokeWidth={1.75} />
-                報表匯出
-              </Button>
-            </CSVLink>
-            <Button
-              variant="secondary"
-              onClick={() => window.print()}
-            ><Printer strokeWidth={1.75} />列印</Button>
-          </div>
-        </div>
+        </Toolbar>
         {!businessAnalysisReportData.loading && !isMemberShipCardActive.loading ? (
           <Results
             isServiceTicketMerged={isServiceTicketMerged}

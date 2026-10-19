@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 報表統一第一批：頁首動作＋篩選列（v3.0-1020-0247） | 依 STYLE §14（新增）統一 36 頁報表骨架：匯出／列印一律移到頁首右側、`secondary`＋圖示（8 頁藍色實心列印改次要、約 20 頁從篩選列搬到頁首、薪資兩頁補圖示並把日期移回篩選列）；篩選列一律 `Toolbar`、日期在最左、其餘條件「標籤在上」並底部對齊（去掉 `marginTop:-23`、`ToolbarSpacer` 靠右與冒號標籤）；報表頁的 `DateSelector` 不再傳 `margin`，間距由 `PageHeader`／`Toolbar` 決定；店家／商品／服務挑選列改第 2 列 `Toolbar`、搜尋鈕緊接右側。查詢、匯出內容、列印範本不動；列印模式截圖與修改前逐像素比對。待第二批：`MerchantSearchBar`（4 頁藍色按鈕列日期）改 DateSelector 外觀、店家／商品挑選元件內部排版、MUI 浮動標籤下拉改上方標籤、匯出鈕仍在 `Results` 內的 3 頁（費用分析、損益表、付款報表）。 |
 | 完整 debug 修復（P4 既有 bug，v3.0-1020-0156） | Jason 指示「完整 debug 修復」授權改邏輯：①`OrderEdit` 套快捷組合、功能釘選選頁的 `_.cloneDeep` 未 import（build 實測 `window._` 為 undefined，會 ReferenceError）；②建立／編輯抽成設定「刪除此級距」永遠刪第一列；③紅利點數輸入小數：編輯頁崩潰、建立頁整欄清空，改為捨去小數；④`SalaryEdit` 月份只在模組載入時讀一次，從薪資總覽換月再進來沿用舊月份（存檔寫錯月）；⑤`AdminPageHeader` 主按鈕 `disabled` 無作用（匯出／班表儲存／盤點可重複點）；⑥顧客詳細資料重新整理紅利／會員卡分頁被導 404、未開會員卡店家看不到紅利分頁；⑦三個帳單編輯頁移除引用未定義函式的無效 prop。新增 AdminPageHeader disabled 測試。 |
 | 交接收尾・文件同步＋移除 `@mui/icons-material` 套件（v3.0-1020-0145） | 交接文件 11 件待合併 PR（#156／#158／#159／#160／#162／#163／#164／#166／#167／#171／#172）與 #170、#173 皆已合併；`package.json` 移除已無引用的 `@mui/icons-material`（`npm ls` 確認無其他套件依賴，lockfile 只少該套件）；測試基準更正為 17 檔／54 測試；P3-4 NativeSelect 外框標籤實查剩 9 處（皆在帳單四兄弟 AddCustomerModal）。 |
 | 顧客詳細資料改左選單（Jason 新指示，v3.0-1020-0108） | `/management/customers/:id/:tab` 比照系統參數設定：左選單＋右目前分頁標題（共用 settings-nav 左灰右白無分隔線、手機橫向分頁），九分頁配 lucide 圖示；分頁 value／條件分頁順序／history.push＋backto／各分頁內容／返回鈕保留。待實機桌機切換各分頁、手機分頁、條件分頁位置，見 TODO／MEMORY #125。 |
