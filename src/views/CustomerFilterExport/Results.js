@@ -1,11 +1,8 @@
 /** @jsxImportSource @emotion/react */
-// 表格列保留 MUI TableBody / TableRow / TableCell：外框為共用元件 components/ManagementTable（MUI Table）
+// 表格列使用 ui/table（外框 components/ManagementTable 亦為 ui/table）
 // 刪除確認保留 MUI Dialog：舊版刻意不設 onClose（點背景、Esc 不關閉）
 import {
   Link,
-  TableBody,
-  TableCell,
-  TableRow,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -13,6 +10,7 @@ import {
 } from '@mui/material'
 import { Pencil } from 'lucide-react'
 import ManagementTable from 'components/ManagementTable'
+import { TableBody, TableCell, TableHead, TableRow } from 'ui/table'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteCustomer from 'hooks/useFetchDeleteCustomer'
@@ -156,7 +154,7 @@ function Results({
         size="small"
         tableHead={
           <>
-            <TableCell padding="checkbox" css={styles.compactCell}>
+            <TableHead css={styles.compactCell} className="w-12">
               <Checkbox
                 aria-label="全選"
                 checked={
@@ -169,16 +167,16 @@ function Results({
                 onChange={handleSelectAll}
                 disabled={customers.length === 0}
               />
-            </TableCell>
-            <TableCell css={styles.compactCell}>編輯</TableCell>
-            <TableCell css={styles.compactCell}>姓名</TableCell>
-            <TableCell css={styles.compactCell}>最近設計師</TableCell>
-            <TableCell css={styles.compactCell}>偏好設計師</TableCell>
-            <TableCell css={styles.compactCell}>上次消費日期</TableCell>
-            <TableCell css={styles.compactCell}>性別</TableCell>
-            <TableCell css={styles.compactCell}>生日</TableCell>
-            <TableCell css={styles.compactCell}>電話</TableCell>
-            <TableCell css={styles.compactCell}>客戶來源</TableCell>
+            </TableHead>
+            <TableHead css={styles.compactCell}>編輯</TableHead>
+            <TableHead css={styles.compactCell}>姓名</TableHead>
+            <TableHead css={styles.compactCell}>最近設計師</TableHead>
+            <TableHead css={styles.compactCell}>偏好設計師</TableHead>
+            <TableHead css={styles.compactCell}>上次消費日期</TableHead>
+            <TableHead css={styles.compactCell}>性別</TableHead>
+            <TableHead css={styles.compactCell}>生日</TableHead>
+            <TableHead css={styles.compactCell}>電話</TableHead>
+            <TableHead css={styles.compactCell}>客戶來源</TableHead>
           </>
         }
       >
@@ -188,9 +186,9 @@ function Results({
               css={css([data.isUnwelcome ? styles.unWelcome : {}])}
               hover
               key={`customer-${data.id}`}
-              selected={selectedCustomers.indexOf(data.id) > -1}
+              data-state={(selectedCustomers.indexOf(data.id) > -1) ? 'selected' : undefined}
             >
-              <TableCell padding="checkbox" css={styles.compactCell}>
+              <TableCell css={styles.compactCell} className="w-12">
                 <Checkbox
                   aria-label={`選取 ${data.name}`}
                   checked={selectedCustomers.indexOf(data.id) > -1}

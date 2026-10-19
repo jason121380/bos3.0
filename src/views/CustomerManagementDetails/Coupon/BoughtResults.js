@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-// TablePagination 保留 MUI：pagenationLabel 依賴 MUI 的 DOM class
-import { TablePagination } from '@mui/material'
+// 分頁使用 ui/table TablePagination（pagenationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
 import TableEditBar from 'components/TableEditBar'
 import idx from 'idx'
 import format from 'date-fns/format'
@@ -9,7 +8,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
 export default function BoughtResults({
   className,
@@ -85,12 +84,10 @@ export default function BoughtResults({
             </TableBody>
           </Table>
         </div>
-        {/* 分頁保留 MUI：pageRef 交給 helper/pagenationLabel 改寫顯示文字 */}
         <div className="flex justify-end px-3 pb-2">
           <TablePagination
             ref={pageRef}
             labelRowsPerPage='每頁顯示數量'
-            component="div"
             count={page.count}
             onPageChange={onChangePage}
             onRowsPerPageChange={onChangeRowsPerPage}

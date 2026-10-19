@@ -1,16 +1,15 @@
-import { Table, TableHead, TableRow } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useRef, useEffect } from 'react'
 import { CSVLink } from "react-csv"
 import pagenationLabel from './../helper/pagenationLabel'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
-import { TablePagination } from 'ui/table'
+import { Table, TableHeader, TablePagination, TableRow } from 'ui/table'
 import { cn } from 'ui/utils'
 
 // 列表頁共用表格卡片（STYLE.md §6）：卡片標題＋筆數＋匯出／自訂動作、可橫向捲動的表格、分頁
-// props 與舊版相同。表格本體保留 MUI Table / TableHead：
-// 舊頁面傳入的 MUI TableCell 需要它提供的表頭／尺寸 context；新頁面傳 ui/table 的 TableHead / TableCell 也能直接放進來
+// props 與舊版相同。表格本體使用 ui/table（size='small' 對應 dense）：
+// 傳入的 tableHead/children 須為 ui/table 的 TableHead/TableCell（消費者已逐頁換置）
 const ManagementTable = ({
     title,
     totalCount,
@@ -57,12 +56,12 @@ const ManagementTable = ({
             </div>
             <div className="w-full overflow-x-auto border-0 border-t border-solid border-border">
                 <div style={{ minWidth }}>
-                    <Table size={size}>
-                        <TableHead>
-                            <TableRow>
+                    <Table dense={size === 'small'} wrapperClassName="overflow-visible rounded-none border-0">
+                        <TableHeader>
+                            <TableRow className="hover:bg-transparent">
                                 {tableHead}
                             </TableRow>
-                        </TableHead>
+                        </TableHeader>
                         {children}
                     </Table>
                 </div>

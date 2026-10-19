@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-// TablePagination 保留 MUI：pagenationLabel 依賴 MUI 的 DOM class
-import { TablePagination } from '@mui/material'
+// 分頁使用 ui/table TablePagination（pagenationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
 import { format } from 'date-fns'
@@ -16,7 +15,7 @@ import { EmptyState } from 'ui/empty-state'
 import { formatNumber } from 'ui/format'
 import { Field, Input } from 'ui/input'
 import { Skeleton } from 'ui/skeleton'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
 function Invoices({
   className,
@@ -283,13 +282,11 @@ function Invoices({
                 </TableBody>
               </Table>
             </div>
-            {/* 分頁保留 MUI：pageRef 交給 helper/pagenationLabel 改寫 .MuiTablePagination-displayedRows 文字 */}
-            <div className="flex justify-end px-3 pb-2">
+                <div className="flex justify-end px-3 pb-2">
               <TablePagination
                 ref={pageRef}
                 labelRowsPerPage='每頁顯示數量'
-                component="div"
-                count={pageSetting.totalCount}
+                    count={pageSetting.totalCount}
                 onPageChange={(e, newPage) => {
                   setOrderExtendArr([])
                   onPageChange(e, newPage)
