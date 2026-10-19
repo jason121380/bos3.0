@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { CircularProgress, TextField , Autocomplete} from '@mui/material'
+import { CircularProgress, TextField } from '@mui/material'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
 import React from 'react'
+import { Autocomplete } from 'ui/combobox'
 
 export default function CustomerTicketRecordAutoComplete({
   className,

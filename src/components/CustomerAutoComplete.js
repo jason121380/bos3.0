@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { CircularProgress, TextField, Autocomplete } from '@mui/material'
+import { CircularProgress, TextField } from '@mui/material'
 import { useFetchCustomersInAutoComplete } from 'hooks/useFetchCustomers'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
 import React, { useEffect, useState } from 'react'
+import { Autocomplete } from 'ui/combobox'
 
 export default React.forwardRef(function CustomerAutoComplete(
   {

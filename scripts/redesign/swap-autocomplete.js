@@ -5,6 +5,7 @@
  *   - import { A, Autocomplete, createFilterOptions } from '@mui/material'  → 從清單移除，另加 import { Autocomplete, createFilterOptions } from 'ui/combobox'
  *   - import Autocomplete from '@mui/material/Autocomplete'                 → import Autocomplete from 'ui/combobox'
  *   - import { createFilterOptions } from '@mui/material/Autocomplete'      → import { createFilterOptions } from 'ui/combobox'
+ *   - import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete' → 同上（預設＋具名）
  */
 const fs = require('fs')
 
@@ -21,6 +22,11 @@ function swap(src) {
     changed = true
     take.forEach(t => moved.add(t))
     return keep.length ? `import { ${keep.join(', ')} } from '@mui/material'\n` : ''
+  })
+  // 預設＋具名合併：import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
+  out = out.replace(/import\s+(\w+)\s*,\s*\{([^}]*)\}\s*from\s*(['"])@mui\/material\/Autocomplete\3/g, (m, local, names) => {
+    changed = true
+    return `import ${local}, {${names}} from 'ui/combobox'`
   })
   out = out.replace(/import\s+(\w+)\s+from\s*(['"])@mui\/material\/Autocomplete\2/g, (m, local) => {
     changed = true

@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { Autocomplete, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import useFetchMerchantPayWays from 'hooks/useFetchMerchantPayWays'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
 import { forwardRef, memo, Fragment, useEffect } from 'react'
 import compose from 'utils/compose'
+import { Autocomplete } from 'ui/combobox'
 
 function PaymentAutoComplete(
   {

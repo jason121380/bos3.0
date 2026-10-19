@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| MUI 移除・`ui/combobox` 第三批（帳單，v3.0-1020-0336）：**Autocomplete 整類結案** | 帳單相關 16 檔換用 `ui/combobox`：共用元件 12 個（顧客、設計師、會員卡、付款、商品、服務、第三方票券兩版、票券、顧客票券三版）＋打帳單／編輯／草稿／排隊四兄弟 `Head.js`。轉換腳本補「預設＋具名合併 import」寫法。全站從 MUI 匯入 Autocomplete 的檔案 **0**。帳單依拍版「先合併後驗收」，待實機清單見 TODO。 |
 | MUI 移除・`ui/combobox` 第二批（v3.0-1020-0332） | 非帳單 21 檔換用 `ui/combobox`：共用元件 15 個（會計科目、歸屬、預約紀錄、被協助設計師、活動、店家多選三變體、MerchantSearchBar 條件／科目、付款方式、商品樹、含票券服務、來源、票券）＋頁面 6 個（打卡紀錄、現場打卡、領料、廠商新增／編輯、進貨）。相容層補 MUI `onChange` 第 4 參數 `details: { option }`（既有 `AccountingSubjectsAutocomplete` 測試抓到）。店家／商品挑選列改為「欄位撐滿＋全選在欄位內（32px）＋選擇／搜尋鈕同列底部對齊」，店家挑選另兩變體與商品挑選的 MUI 全選鈕換 ui Button（停用以 `aria-disabled`＋`pointer-events-none` 保留）。剩帳單相關 16 檔。 |
 | MUI 移除・自家搜尋下拉 `ui/combobox` 第一批（v3.0-1020-0322） | 新增 `src/ui/combobox.js`（downshift 8.5.0 為行為層、外觀依 STYLE、介面與 MUI Autocomplete／createFilterOptions 相容）＋12 個單元測試（事件順序、inputRef、失焦不偷選、非受控、多選、freeSolo、自訂篩選）；`scripts/redesign/swap-autocomplete.js` 只換 import。報表 9 檔先換（非現金對帳、互助業績、單一服務查詢、多店店販、設計師業績分析、顧客消費／入金排行 Filter、消費分析 Filter、商品進銷貨），搜尋鈕改底部對齊。實機（mock build＋假資料）打字篩選、點選、鍵盤 Enter、Backspace 移除皆通過。Autocomplete 剩 58 檔待換（含帳單）。 |
 | 全站 Grok 化（v3.0-1020-0305） | 依 Grok Billing 後台規格（STYLE §15）只改共用層：白底、`#FAFAFA` 側欄與無框卡片（16px 圓角、內距 16）、側欄 264px 無框線、膠囊分頁（品牌藍淡底選中）、按鈕 14px medium＋按下縮放、標題 24px 一般字重、介面內文 16px（表格 14px）、表格無外框＋透明表頭；MUI 橋接主題同步（Card／Accordion 無框表面、輸入與選單 16px、表頭 tertiary）；深色模式依同規則推導；品牌藍保留。代表頁截圖前後對照；36 頁列印模式容差比對，列印內容不變。 |

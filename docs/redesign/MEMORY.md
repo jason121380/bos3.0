@@ -210,3 +210,5 @@
 
 131. **既有的 MUI 行為測試是相容層最好的驗收：`AccountingSubjectsAutocomplete` 測試直接抓到漏了 `onChange` 第 4 參數 `details`（`ui/combobox` 第二批，2026/10/20，v3.0-1020-0332）**：換 import 後原測試只錯在 `args[3]` 應為 `{ option }`，補上後原測試不改一字即通過，證明相容層與 MUI 同介面。另：`asChild` 讓 ui Button 落在 `div` 時 `disabled` 無效，比照 MUI 以 `aria-disabled`＋`pointer-events-none` 擋點擊；挑選元件原外層 `flexWrap` 會讓 100% 寬的欄位把「選擇店家」擠到下一行，改 `alignItems:flex-end`＋欄位 `min-w-0 flex-1`。
 
+132. **帳單四兄弟的 Autocomplete 是「可新增選項」寫法，相容層需處理字串值與空字串（`ui/combobox` 第三批，2026/10/20，v3.0-1020-0336）**：打帳單顧客欄以 `createFilterOptions` 篩選後追加「新增 "…"」選項、`value` 可能是物件／字串／`''`，`startAdornment` 放新增／編輯顧客圖示、`endAdornment` 放載入圈、`onKeyDown` 記錄 Enter。相容層的空字串視為「無值」（不顯示清除鈕）、未輸入時篩選以空字串呼叫（不會冒出「新增」選項）。四兄弟 Head.js 用 `import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'` 合併寫法，第一版轉換腳本漏掉，跑完要以「從 MUI 匯入 Autocomplete 的檔案數＝0」覆核。
+

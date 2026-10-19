@@ -2,7 +2,7 @@
 import { CircularProgress, TextField, InputAdornment } from '@mui/material'
 import PropTypes from 'prop-types'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
-import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
+import Autocomplete, { createFilterOptions } from 'ui/combobox'
 import { useFetchCustomersInAutoComplete } from 'hooks/useFetchCustomers'
 import billContext from 'context/keyInContext'
 import idx from 'idx'
