@@ -8,6 +8,7 @@
 
 ## 一、今天完成了什麼
 
+- **商品消耗明細日期區緊急修正**（2026/10/20，`claude/fix-product-consume-date-box`，v3.0-1020-0002）：Jason 截圖「這頁怎麼了」——快捷鈕一排、日期鈕掉第二排且各壓「選擇日期」標籤重疊。根因：共用 `MerchantSearchBar/DatePicker` 傳 `label` 給 `ui/date-picker` facade，facade 以 Field 上方標籤渲染，塞進 MUI ButtonGroup 被擠成兩層。修：兩處不傳 `label`（`toolbarTitle='選擇日期'` 保留），所有舊版日期欄頁面一併恢復；僅 `/product-consume-report` 開 `uiDateField`（比照 DecreaseDetail：快捷鈕 ui Button、日期欄 UiDateField 單排），快捷鈕逐項對照 `lastInLeaderBoard` 原順序（本月、上個月、前天、昨天、今天）不增減，日期存值/onChange/查詢/匯出/用途下拉與報表內容不動。見 MEMORY #111。**待實機**：商品消耗明細與 DecreaseDetail 各點開一次月曆、選日後日期與查詢結果不變。
 - **#151 已退回，回到 PrimeStay 之前外觀**（2026/10/19，v3.0-1019-2344）：連 PrimeStay 全站地基（淺灰底、外框白卡、側欄白 pill、卡片 16px 圓角等）一起退掉，回到 #150 合併後（v3.0-1019-2301 當時）樣子；STYLE §13 整章作廢。#152 Radio／#153 Tooltip／#154 設定推廣保留不動。待 Jason 實機看版號 v3.0-1019-2344 確認外觀。
 - **#157 已退回，回到 #151 外框樣式**（2026/10/19，v3.0-1019-2333）：白底灰卡扁平修正退回，恢復淺灰底、白卡、細邊與 shadow-card；#152–#154 保留。
 
