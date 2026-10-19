@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useEffect } from 'react'
 import { gql, useMutation } from '@apollo/client'
-import Card from '@mui/material/Card'
+import { Card } from 'ui/card'
 import { openSnackbar } from 'elements/snackbars'
 import Page from 'components/Page'
 import getQueryString from 'helper/getQueryString'
