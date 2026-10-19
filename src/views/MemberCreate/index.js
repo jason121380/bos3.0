@@ -1,4 +1,3 @@
-import { ToggleButton, ToggleButtonGroup } from '@mui/material'
 import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
 import getQueryString from 'helper/getQueryString'
@@ -7,6 +6,7 @@ import idx from 'idx'
 import produce from 'immer'
 import React from 'react'
 import { useHistory } from 'react-router'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Button } from 'ui/button'
 import { Card, CardContent } from 'ui/card'
 import { DatePicker } from 'ui/date-picker'
@@ -87,20 +87,20 @@ export default function Reservation({ location }) {
                 onChange={handleFieldChange}
               />
             </Field>
-            <ToggleButtonGroup
+            <ToggleGroup
               exclusive
               fullWidth
               value={profile.gender}
               name="gender"
-              onChange={handleFieldChange}
+              onChange={(event, newValue) => newValue !== null && handleFieldChange(event, newValue)}
             >
-              <ToggleButton className="h-11" value="MALE" aria-label="男">
+              <ToggleGroupItem className="h-11" value="MALE" aria-label="男">
                 男
-              </ToggleButton>
-              <ToggleButton className="h-11" value="FEMALE" aria-label="女">
+              </ToggleGroupItem>
+              <ToggleGroupItem className="h-11" value="FEMALE" aria-label="女">
                 女
-              </ToggleButton>
-            </ToggleButtonGroup>
+              </ToggleGroupItem>
+            </ToggleGroup>
             <DatePicker
               label="生日"
               format="yyyy/MM/dd"

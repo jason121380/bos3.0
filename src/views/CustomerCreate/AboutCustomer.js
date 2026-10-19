@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-// 表單欄位（TextField / Select / ToggleButton / 來源下拉）保留 MUI，只換卡片外框與按鈕
+// 表單欄位（TextField / Select / 來源下拉）保留 MUI；性別 ToggleButton 改 ui/toggle-group（合成 event.target.value 傳遞不變）；卡片外框與按鈕為 src/ui
 import {
   FormControl,
   InputLabel,
@@ -7,10 +7,9 @@ import {
   Select,
   TextField,
   InputAdornment,
-  ToggleButton,
-  ToggleButtonGroup
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
 import useFetchMerchantDesigners from 'hooks/useFetchMerchantDesigners'
 import idx from 'idx'
@@ -202,7 +201,7 @@ function AboutProject({
           fullWidth
           css={styles.formGroup}
         />
-        <ToggleButtonGroup
+        <ToggleGroup
           size="medium"
           value={customer.gender}
           onChange={(event, newAlignment) =>
@@ -218,13 +217,13 @@ function AboutProject({
           exclusive
           css={styles.formGroup}
         >
-          <ToggleButton key="MALE" value="MALE">
+          <ToggleGroupItem key="MALE" value="MALE">
             男
-          </ToggleButton>
-          <ToggleButton key="FEMALE" value="FEMALE">
+          </ToggleGroupItem>
+          <ToggleGroupItem key="FEMALE" value="FEMALE">
             女
-          </ToggleButton>
-        </ToggleButtonGroup>
+          </ToggleGroupItem>
+        </ToggleGroup>
         <TextField
           label="LINE ID"
           value={customer.lineId}
