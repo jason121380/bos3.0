@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-// 抽成級距表單以 MUI Table 排版、含 Tabs / ToggleButton / TextField，保留 MUI；只換卡片外框、標題、按鈕與載入狀態
+// 抽成級距表單以 MUI Table 排版、含 ToggleButton / TextField，保留 MUI；Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）；卡片外框、標題、按鈕與載入狀態為 src/ui
 import {
   Modal, TextField,
-  FormControlLabel, Tab, Tabs, Checkbox,
+  FormControlLabel, Checkbox,
   Table, TableBody, TableCell, TableRow,
   ToggleButton, ToggleButtonGroup
 } from '@mui/material'
@@ -18,6 +18,7 @@ import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
+import { Tabs, TabsList, TabsTrigger } from 'ui/tabs'
 
 const styles = {
   root: css({
@@ -668,13 +669,14 @@ function EditMultipleDesignersRakeSettingModal({
               {!profitSharing.isSegmented && (
                 <Tabs
                   value={tabValue}
-                  scrollButtons="auto"
-                  variant="scrollable"
-                  onChange={handleTabsChange}
+                  onValueChange={value => handleTabsChange(null, value)}
+                  activationMode="manual"
                 >
-                  {attributions.map(tab => (
-                    <Tab key={tab.value} label={tab.label} value={tab.value} />
-                  ))}
+                  <TabsList>
+                    {attributions.map(tab => (
+                      <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
+                    ))}
+                  </TabsList>
                 </Tabs>
               )}
               <Button

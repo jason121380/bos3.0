@@ -1,5 +1,5 @@
-// 預設權限開關保留 MUI Switch（橋接主題已套新外觀）
-import { Switch } from '@mui/material'
+// 預設權限開關改 ui/switch（onClick 經 props 傳至原生 input，checked 仍由 data.isDefault 控制、點擊行為不變）
+import { Switch } from 'ui/switch'
 import { Pencil } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'

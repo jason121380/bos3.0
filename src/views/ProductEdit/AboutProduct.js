@@ -1,11 +1,12 @@
 import {
   FormControl, InputLabel, MenuItem, Select,
-  TextField, Switch, Autocomplete
+  TextField, Autocomplete
 } from '@mui/material'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Switch } from 'ui/switch'
 
 const stockUnit = [
   { label: '個', value: '個' },

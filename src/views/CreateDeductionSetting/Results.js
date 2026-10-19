@@ -1,7 +1,7 @@
-// 門檻／抽成欄位為 Field＋Input（min=0），抽成模式為 ToggleButton、類別為可捲動 Tabs，依遷移指南保留 MUI；外框、標題、圖示按鈕改為 src/ui
+// 門檻／抽成欄位為 Field＋Input（min=0），抽成模式為 ToggleButton 保留 MUI；類別 Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）；外框、標題、圖示按鈕改為 src/ui
 import {
   Checkbox,
-  FormControlLabel, Tab, Tabs,
+  FormControlLabel,
   ToggleButton, ToggleButtonGroup
 } from '@mui/material'
 import { Plus, Trash2 } from 'lucide-react'
@@ -10,6 +10,7 @@ import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'
 import { openSnackbar } from 'elements/snackbars'
 import { Button } from 'ui/button'
+import { Tabs, TabsList, TabsTrigger } from 'ui/tabs'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
 
@@ -570,15 +571,15 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
         </div>
         {!profitSharing.isSegmented && (
           <Tabs
-            className="px-5"
             value={tabValue}
-            scrollButtons="auto"
-            variant="scrollable"
-            onChange={handleTabsChange}
+            onValueChange={value => handleTabsChange(null, value)}
+            activationMode="manual"
           >
-            {attributions.map(tab => (
-              <Tab key={tab.value} label={tab.label} value={tab.value} />
-            ))}
+            <TabsList className="px-5">
+              {attributions.map(tab => (
+                <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
+              ))}
+            </TabsList>
           </Tabs>
         )}
         <CardContent>
