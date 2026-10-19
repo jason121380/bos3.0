@@ -150,6 +150,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 | v3.0-1019-1221 | 2026-10-19 12:12 | UiPreview/index.js 2 處 `NativeSelect`（帳號狀態、服務類別）外框 `label` → `Field` 上方標籤（AGY 線第一批，`agy/ui-batch1-box`）；value／onChange／placeholder／選項原樣，只改 presentation；版號暫定，由指揮者校正 | 待開 | 待補 | 驗證：eslint 0 error；verify-logic 通過；portal-root-scan 0/0；待指揮者確認 |
 | v3.0-1019-1220 | 2026-10-19 12:20 | EmployeeManagementDetail `Security.js` 三處 `NativeSelect` 外框標籤改 `Field` 上方標籤（帳號狀態、權限設定、允許登入設計師手機端）；沿用 PR #56，只改外觀 | 待開（Codex 線，待排序） | 待補 | eslint 0 error（1 既有 hooks warning）；verify-logic 通過；portal-root-scan 0/0；全域測試 52/52；原樣 build 因唯讀 `.eslintcache` 失敗，關閉 build 內 ESLint 外掛後成功；待實機確認列高與對齊；**不自行 merge、不解衝突** |
 | v3.0-1019-1308 | 2026-10-19 13:08 | Profile/Reservation/index.js 1 處 `NativeSelect`（報到狀態）外框 `label` → `Field` 上方標籤（AGY 線，`agy/ui-profile-reservation-ns-box`）；`fullWidth={false}`／`style={{ width: 120 }}`／`value`／`onChange`／選項（無、true、false）及 `DateSelector` 原樣，只改 presentation（STYLE.md §6 已規範，不需改） | 待開 | 待補 | 驗證：verify-logic 通過；portal-root-scan 0/0；待實機確認篩選列內與 DateSelector 並排對齊 |
+| v3.0-1019-1315 | 2026-10-19 13:15 | Parameter/MerchantReservationTimes.js 時間複合列（開始、結束各「時 : 分」）外框 `label` → `Field` 上方標籤（AGY 線，`agy/ui-merchant-res-times-box`）：`Field label='開始'`／`Field label='結束'` 包住 `flex items-center gap-2` 的 `div`（時 `NativeSelect` 拿掉 `label`、`<span>:</span>`、分 `NativeSelect` 保留 `aria-label`），其他欄位／週期／handler／存值原樣（STYLE.md §6 已涵蓋，不改） | 待開 | 待補 | 驗證：verify-logic 通過；portal-root-scan 0/0；待實機確認「開始／至／結束」列高與對齊 |
 
 ## 刻意不改（需另外決定）
 

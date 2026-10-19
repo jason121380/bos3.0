@@ -4,6 +4,7 @@ import {
   TextField, InputAdornment, createTheme
 } from '@mui/material'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
+import { Field } from 'ui/input'
 import { ToggleGroupItem } from 'ui/toggle-group'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
@@ -132,59 +133,61 @@ function MerchantReservationTimes({
                 />
               </div>
               <div css={styles.timeWrap}>
-                <div css={styles.timeWrap}>
-                  <NativeSelect
-                    fullWidth={false}
-                    className="w-24"
-                    label='開始'
-                    value={openingHours.split(':')[0]}
-                    disabled={!inputEnable}
-                    onChange={e => handleChangeBookingTime('openingHours', 0, e.target.value, index)}
-                  >
-                    {hours.map(d => (
-                      <NativeSelectOption key={d} value={d}>{d}</NativeSelectOption>
-                    ))}
-                  </NativeSelect>
-                  <span>:</span>
-                  <NativeSelect
-                    fullWidth={false}
-                    className="w-24"
-                    aria-label="開始（分）"
-                    value={openingHours.split(':')[1]}
-                    disabled={!inputEnable}
-                    onChange={e => handleChangeBookingTime('openingHours', 1, e.target.value, index)}
-                  >
-                    <NativeSelectOption value='00'>00</NativeSelectOption>
-                    <NativeSelectOption value='30'>30</NativeSelectOption>
-                  </NativeSelect>
-                </div>
+                <Field label='開始'>
+                  <div className="flex items-center gap-2">
+                    <NativeSelect
+                      fullWidth={false}
+                      className="w-24"
+                      value={openingHours.split(':')[0]}
+                      disabled={!inputEnable}
+                      onChange={e => handleChangeBookingTime('openingHours', 0, e.target.value, index)}
+                    >
+                      {hours.map(d => (
+                        <NativeSelectOption key={d} value={d}>{d}</NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                    <span>:</span>
+                    <NativeSelect
+                      fullWidth={false}
+                      className="w-24"
+                      aria-label="開始（分）"
+                      value={openingHours.split(':')[1]}
+                      disabled={!inputEnable}
+                      onChange={e => handleChangeBookingTime('openingHours', 1, e.target.value, index)}
+                    >
+                      <NativeSelectOption value='00'>00</NativeSelectOption>
+                      <NativeSelectOption value='30'>30</NativeSelectOption>
+                    </NativeSelect>
+                  </div>
+                </Field>
                 <span>至</span>
-                <div css={styles.timeWrap}>
-                  <NativeSelect
-                    fullWidth={false}
-                    className="w-24"
-                    label='結束'
-                    value={closingHours.split(':')[0]}
-                    disabled={!inputEnable}
-                    onChange={e => handleChangeBookingTime('closingHours', 0, e.target.value, index)}
-                  >
-                    {hours.map(d => (
-                      <NativeSelectOption key={d} value={d}>{d}</NativeSelectOption>
-                    ))}
-                  </NativeSelect>
-                  <span>:</span>
-                  <NativeSelect
-                    fullWidth={false}
-                    className="w-24"
-                    aria-label="結束（分）"
-                    value={closingHours.split(':')[1]}
-                    disabled={!inputEnable}
-                    onChange={e => handleChangeBookingTime('closingHours', 1, e.target.value, index)}
-                  >
-                    <NativeSelectOption value='00'>00</NativeSelectOption>
-                    <NativeSelectOption value='30'>30</NativeSelectOption>
-                  </NativeSelect>
-                </div>
+                <Field label='結束'>
+                  <div className="flex items-center gap-2">
+                    <NativeSelect
+                      fullWidth={false}
+                      className="w-24"
+                      value={closingHours.split(':')[0]}
+                      disabled={!inputEnable}
+                      onChange={e => handleChangeBookingTime('closingHours', 0, e.target.value, index)}
+                    >
+                      {hours.map(d => (
+                        <NativeSelectOption key={d} value={d}>{d}</NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                    <span>:</span>
+                    <NativeSelect
+                      fullWidth={false}
+                      className="w-24"
+                      aria-label="結束（分）"
+                      value={closingHours.split(':')[1]}
+                      disabled={!inputEnable}
+                      onChange={e => handleChangeBookingTime('closingHours', 1, e.target.value, index)}
+                    >
+                      <NativeSelectOption value='00'>00</NativeSelectOption>
+                      <NativeSelectOption value='30'>30</NativeSelectOption>
+                    </NativeSelect>
+                  </div>
+                </Field>
               </div>
               <div css={styles.timeWrap}>
                 {weekArray.map(({ label, value }) => {
