@@ -6,11 +6,12 @@
 
 | 範圍 | 內容 |
 |---|---|
+| #151 緊急退回第二段（v3.0-1019-2344） | #151 PrimeStay 全站地基已退回，回到 Jason 發參考圖之前（#150 後、v3.0-1019-2301 當時）外觀；STYLE §13 整章標明作廢。#152 Radio／#153 Tooltip／#154 設定推廣保留不動。待 Jason 實機看版號 v3.0-1019-2344 確認。 |
 | #157 緊急退回（v3.0-1019-2333） | #157 已退回，回到 #151 外框樣式（淺灰底、白卡、細邊、shadow-card）；#152–#154 保留不動。 |
 | 設定頁樣板推廣第二批（v3.0-1019-2305） | `/accountingSetting` 三區改左選單＋右分段卡片（hidden 保留掛載、全域儲存原樣）；`/helper-point-setting-create`／`-edit/:id` 單表單切三張分段卡（不造假選單）；`/authority` 單一清單寬表本批跳過（理由見 STYLE §12／MEMORY #106）。待實機逐頁截圖確認。 |
 | MUI 移除・Tooltip 第一小批（AGY 線，v3.0-1019-2303） | `GenericMoreButton` 移除重複 MUI Tooltip、保留原生 title/aria-label（影響 7 頁：AccountingSubject、DesignerPerformDetail×4、SalaryDetail×2，選單/handler 不動）；`ScheduleCard` 刪未使用 LightTooltip 死定義與專用 import。`MerchantParticipatingList/Results` 富內容 Tooltip（arrow＋JSX 日期）跳過留 ui/tooltip 專項，mui-theme MuiTooltip 覆寫保留。STYLE 無新規則不改。待實機抽查 2 頁更多選單 hover/開合與排班頁，見 TODO/MEMORY #105。 |
 | MUI 移除・Radio 第一小批（Codex 線，v3.0-1019-2257） | 新建 `src/ui/radio`（原生圓點 Radio/RadioField），換 CustomerSelfCreate 與 Profile 個人資料的性別二選一 2 檔；保留圓點/互斥/鍵盤、value/onChange/存值不動。AboutDesignerSalary 預設列與 Employee 小尺寸留後批/專項。待實機兩頁性別選取與儲存。 |
-| PrimeStay 全站地基第一批（v3.0-1019-2249，未合併待截圖驗收） | 外框＋共用樣式地基（STYLE §13／MEMORY #103）：canvas `#F3F4F6`、內容 `#printContainer` 白卡大圓角＋細邊＋柔和陰影（print 還原）、側欄選中白 pill＋品牌藍字、Card/Dialog 16px 圓角、Button secondary 白 pill、Tabs 藍字藍線、Input 10px 圓角；主色維持 bos 深藍不換截圖綠。示範頁顧客列表。逐頁換色留後續批次；報表/帳單密度與列印不動。 |
+| PrimeStay 全站地基第一批（v3.0-1019-2249，已退回，見本表第一列） | 外框＋共用樣式地基（STYLE §13／MEMORY #103）：canvas `#F3F4F6`、內容 `#printContainer` 白卡大圓角＋細邊＋柔和陰影（print 還原）、側欄選中白 pill＋品牌藍字、Card/Dialog 16px 圓角、Button secondary 白 pill、Tabs 藍字藍線、Input 10px 圓角；主色維持 bos 深藍不換截圖綠。示範頁顧客列表。逐頁換色留後續批次；報表/帳單密度與列印不動。 |
 | 設定頁樣板推廣第一批（Jason 已確認樣板，v3.0-1019-2248） | `/performanceDeductionParameter` 四區改左選單＋右分段卡片（hidden 保留掛載、儲存 handler 原樣）；`/profile/:tab` 僅基本資料／密碼／功能釘選套左選單＋max-w-6xl，報表型分頁維持 compact 不套；`/deduction-setting` 與 `/update-deduction-setting/:id` 單卡寬表本批跳過（理由見 STYLE §12／MEMORY #102）。待實機逐頁截圖確認選單與卡片。 |
 | MUI 批次6・Dialog/Modal 第三小批盤點結案（線4，v3.0-1019-2238） | 真 MUI Dialog/Modal 剩 60 檔全分類：帳單四兄弟＋Shortcut 25／MUI Select 彈層 5／Autocomplete・DatePicker 彈層 8／Slider 裁切 3／拖曳 1／巢狀・片段・Drawer 16／金額・列印 2，低風險可只換殼者 0 窗，本批零程式改動不湊數，Dialog/Modal 低風險清單結案；MerchantsListModal 已 #144 換殼且並行店家線重改中、本批避讓。後續各專項逐檔另案。無待實機（畫面不變），見 TODO/MEMORY #101。 |
 | MUI 移除・Progress 第一小批（Codex 線，v3.0-1019-2251） | 3 檔不定值轉圈換 lucide `LoaderCircle animate-spin`：FastCheckOrdersModal（置中）、ShortcutDialog（m-auto）、DesignerPerforamnceAnalyzeReport/Compare（mt-12）；40px/主題色/置中不變，載入邏輯與顯示條件不動。不碰 Autocomplete 內圈與定值進度。待實機三處載入轉圈。 |
