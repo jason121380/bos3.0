@@ -317,3 +317,5 @@
 - **帳單三頁對齊第一切片 Draft/Queue Head（AGY 線，2026/10/19，`agy/ui-bill-align-draft-queue-box`，v3.0-1019-1601）**：`DraftOrderEdit/Head.js`、`QueueOrderEdit/Head.js` 表頭改比照 OrderCreate 的三欄 flex 排版（上方標籤、窄螢幕換行不擠壓、日期/顧客/服務人員欄對齊）；state/handler/焦點鏈/日期存值/金額/GraphQL 原樣，標籤文字保留兩頁原「帳單日期」。OrderEdit/Head 對齊留下一切片。待實機：三欄並排與窄螢幕換行、顧客搜尋、日期彈層。
 
 - **MerchantDailyPerformanceReport 手機擠壓修正（B1 切片，Codex Luna 線，2026/10/19，`codex/ui-mobile-merchant-daily-box`，v3.0-1019-1616）**：`MerchantDailyPerformanceReport/index.js` Toolbar 加 flex-wrap/min-w-0，DateSelector 外層手機滿列、桌機自動寬，業績依據 ReferToggleButton 控制組手機另起一列可換行。只改 className，state/handler/日期/CSV/列印原樣。待實機：390px 日期區與業績依據不溢出、桌機版面不變。
+
+- **A3 第三份 QueueOrderEdit/AddCustomerModal 標籤改上方（AGY 線，2026/10/19，`agy/ui-a3-addcustomer-queue-box`，v3.0-1019-1619）**：`QueueOrderEdit/AddCustomerModal.js` 將 7 個單純 TextField（客戶姓名、Email、lineId、地址、客戶暱稱、電話、備註）改為 Field 上方標籤＋ui/input Input；保留客戶編號（重複檢查 error/helperText/endAdornment）、民國年/月/日三格、性別 NativeSelect、SourceSelect、最近/偏好設計師本體；handler/state/GraphQL/存值一字不動，本檔無 Enter 焦點鏈未自創。待實機：Modal 並排對齊與列高、編號重複檢查提示、新增/更新顧客存值。DraftOrderEdit 份留待另一線。
