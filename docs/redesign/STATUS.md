@@ -269,3 +269,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ### A3 第三份 QueueOrderEdit/AddCustomerModal 標籤改上方（AGY 線，`agy/ui-a3-addcustomer-queue-box`，v3.0-1019-1619）
 
 - 範圍：`QueueOrderEdit/AddCustomerModal.js` 7 欄改 Field 上方標籤＋Input；編號重複檢查、生曰三格、Select 本體保留。待實機：並排對齊、編號檢查提示、存值。
+
+### 帳單三頁對齊第二切片 OrderEdit Head（Claude 線，`claude/ui-bill-align-orderedit-head-box`，v3.0-1019-1624）
+
+- 範圍：`OrderEdit/Head.js` 表頭三欄 flex 對齊 OrderCreate/Draft/Queue，只改畫面；必填星號因零元重結帳例外未加。待實機：並排/換行、顧客搜尋、日期彈層、焦點鏈。
