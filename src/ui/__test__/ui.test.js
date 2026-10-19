@@ -10,6 +10,7 @@ import { Avatar } from '../avatar'
 import { Accordion, AccordionSummary, AccordionDetails } from '../accordion'
 import { toast, Toaster } from '../toast'
 import { cn } from '../utils'
+import { Field, Input } from '../input'
 
 afterEach(cleanup)
 
@@ -48,6 +49,31 @@ describe('toast', () => {
     expect(screen.getByText('儲存失敗')).toBeInTheDocument()
     fireEvent.click(screen.getByLabelText('關閉'))
     expect(screen.queryByText('儲存失敗')).toBeNull()
+  })
+})
+
+describe('Field / Input（RHF error 等效）', () => {
+  // MUI TextField 的錯誤 helper 以 `${id}-helper-text` 連到 input 的 aria-describedby；RHF 換 ui 後螢幕報讀器須仍找得到同一段錯誤文字
+  it('error 以 htmlFor 衍生 helper id，Input 呈現 aria-invalid', () => {
+    render(
+      <Field label="代號" htmlFor="demo-no" error="代號為必填">
+        <Input id="demo-no" invalid aria-describedby="demo-no-helper-text" />
+      </Field>
+    )
+    const helper = screen.getByText('代號為必填')
+    expect(helper).toHaveAttribute('id', 'demo-no-helper-text')
+    expect(screen.getByLabelText('代號')).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByLabelText('代號')).toHaveAttribute('aria-describedby', 'demo-no-helper-text')
+  })
+
+  it('無 error 時不產生 helper id（既有 Field 用法 DOM 行為不變）', () => {
+    render(
+      <Field label="名稱" htmlFor="demo-name" hint="說明">
+        <Input id="demo-name" />
+      </Field>
+    )
+    expect(screen.getByText('說明')).not.toHaveAttribute('id')
+    expect(screen.getByLabelText('名稱')).not.toHaveAttribute('aria-invalid')
   })
 })
 

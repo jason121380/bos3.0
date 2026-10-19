@@ -8,7 +8,7 @@ import {
   TextField,
   InputAdornment,
 } from '@mui/material'
-import CircularProgress from '@mui/material/CircularProgress'
+import { LoaderCircle } from 'lucide-react'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Field, Input } from 'ui/input'
 import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
@@ -123,7 +123,7 @@ function AboutProject({
               (customer.no === '') ? '' :
                 isSetTime ?
                   <InputAdornment position="start">
-                    <CircularProgress size={20} />
+                    <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
                   </InputAdornment> :
                   !noVerify ?
                     <InputAdornment position="start">

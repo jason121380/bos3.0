@@ -1,4 +1,4 @@
-// 文字欄位以 inputProps.ref 掛 react-hook-form 的 register 並有 helperText 驗證訊息，依遷移指南保留 MUI TextField／Select
+// 代號／類別名稱改 Field＋ui Input：register 仍以 ref 掛 react-hook-form、error 訊息由 Field 呈現（文字／驗證時機不變）；備註 multiline 與 Select 保留 MUI
 import {
   FormControl, InputLabel, Select,
   TextField, FormHelperText, MenuItem
@@ -6,6 +6,7 @@ import {
 import PropTypes from 'prop-types'
 import useStore from 'hooks/useStore'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
 
 function AboutServiceCategory({ className, attributions, setAttr, attr, ...rest }) {
   const { register, errors } = useStore()
@@ -15,34 +16,30 @@ function AboutServiceCategory({ className, attributions, setAttr, attr, ...rest 
         <CardTitle>一般資訊</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
-        <TextField
-          name="no"
-          label="代號"
-          variant="outlined"
-          fullWidth
-          inputProps={{
-            ref: register({
+        <Field label="代號" htmlFor="service-category-create-no" error={errors.no && errors.no.message}>
+          <Input
+            id="service-category-create-no"
+            name="no"
+            invalid={!!errors.no}
+            aria-describedby={errors.no ? 'service-category-create-no-helper-text' : undefined}
+            data-testid="no"
+            ref={register({
               required: '請填入代號',
-            }),
-            'data-testid': 'no',
-          }}
-          error={!!errors.no}
-          helperText={errors.no && errors.no.message}
-        />
-        <TextField
-          name="name"
-          label="類別名稱"
-          variant="outlined"
-          fullWidth
-          inputProps={{
-            ref: register({
+            })}
+          />
+        </Field>
+        <Field label="類別名稱" htmlFor="service-category-create-name" error={errors.name && errors.name.message}>
+          <Input
+            id="service-category-create-name"
+            name="name"
+            invalid={!!errors.name}
+            aria-describedby={errors.name ? 'service-category-create-name-helper-text' : undefined}
+            data-testid="name"
+            ref={register({
               required: '請填入類別',
-            }),
-            'data-testid': 'name',
-          }}
-          error={!!errors.name}
-          helperText={errors.name && errors.name.message}
-        />
+            })}
+          />
+        </Field>
         <FormControl
           variant="outlined"
           fullWidth
