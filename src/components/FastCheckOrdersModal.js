@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import {
   Dialog, DialogTitle, DialogContent, TableContainer,
   Table, TableHead, TableBody, TableCell, TableRow,
-  Button, ToggleButtonGroup, ToggleButton,
+  Button,
   IconButton, CircularProgress, Typography
 } from '@mui/material'
 import { startOfDay, endOfDay } from 'date-fns'
@@ -12,6 +12,7 @@ import { useHistory } from 'react-router';
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusActive'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { EditOutlined as EditOutlinedIcon, Close as CloseIcon } from 'ui/icons'
 import idx from 'idx'
 import DateSelector from 'components/DateSelector'
@@ -266,15 +267,15 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                 setSubmitData({ ...submitData, designerId: '' })
             }
           />
-          <ToggleButtonGroup
+          <ToggleGroup
             size="small"
             exclusive
             value={submitData.designate}
             onChange={(e, value) => setSubmitData({ ...submitData, designate: value })}
           >
-            <ToggleButton value={true}>指定</ToggleButton>
-            <ToggleButton value={false}>不指定</ToggleButton>
-          </ToggleButtonGroup>
+            <ToggleGroupItem value={true}>指定</ToggleGroupItem>
+            <ToggleGroupItem value={false}>不指定</ToggleGroupItem>
+          </ToggleGroup>
           <Button 
             disabled={ordersFastCheckLazyData.data === undefined || ordersFastCheckLazyData.loading} 
             variant='contained' onClick={handleReset}
