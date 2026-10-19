@@ -25,6 +25,7 @@
 | 死碼刪除18檔（線C，v3.0-1019-1819） | 依核實報告＋Jason 拍版刪 18 個零引用檔（清單見 TODO），並清 General/index.js 的 OtherActions 註解殘留；刪前重跑 import/re-export/dynamic/routes/元件名解析皆 0、刪後路徑與獨有名 0 殘留。保留 Jason 指定 3 檔與活檔 TransferList.js。STYLE.md 檢查無新增規則不改。待 PR 驗證後合併，無實機畫面變更。 |
 | MUI批次3表格1（AGY線，v3.0-1019-1730） | 12 檔非列印：ManagementTable 本體＋6 消費者列→ui/table、客戶明細 5 檔分頁→ui TablePagination。handler/存值不變，列印/報表/帳單不碰。待實機列表與分頁。 |
 | MUI批次3表格2（AGY線，v3.0-1019-1815） | 5 檔：Products 分頁→ui TablePagination、預約日曆 4 孿生 OrderTable 的 TableContainer/Paper→原生 div 殼。handler/存值不變。待實機分頁與日曆捲動。 |
+| MUI批次3表格3盤點結案（AGY線，v3.0-1019-1824） | 真 MUI Table 剩 29 檔全分類：帳單16＋Report 5＋列印4＋複雜3＋保留死碼1，低風險活檔 0，本批零程式改動不湊數；後續列印/帳單/sticky 巢狀須專項。 |
 | 整體績效分析手機擠壓（接手 Codex 線，v3.0-1019-1636） | `OverallPerformanceAnalysisReport/index.js` 篩選列與商家選擇列加手機換行/滿版寬度，只改 className 版面，日期、查詢、匯出邏輯原樣。驗證：eslint 0 error、verify-logic 通過、portal 0/0。待實機確認 390px。 |
 | 帳單編輯金額彙總版面對齊（Claude 線，v3.0-1019-1635） | `OrderEdit/Footer.js` 金額彙總比照打帳單 `PannelPerformance` 分「消費明細／付款與折抵」兩欄分組、合計區兩欄並排與 NT$ 呈現；OrderEdit 業績合計／現金應收公式、按鈕 handler/disabled/顯示條件、重新結帳 Dialog 與列印行為原樣，未新增底部固定列。驗證：eslint 0 error（4 warnings 既有）、verify-logic 通過、portal 0/0、unit 52/52、build 含 1635。待實機確認彙總欄寬與按鈕列。 |
 | Reservation 希望服務日期欄（Codex 線第二批，v3.0-1019-1404） | `Reservation/Basic.js` 唯一 `DatePicker` 改由 `ui/date-picker` 匯入；label、value、onChange 防呆、format、localeText、slotProps 原樣，ToggleButtonGroup 與三個 MUI Select／FormControl 不動。待實機確認欄寬、鍵盤輸入與彈層。 |
