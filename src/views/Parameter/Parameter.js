@@ -1,7 +1,9 @@
-import { Tabs, TabsList, TabsTrigger } from 'ui/tabs'
+import { Tabs } from 'ui/tabs'
+import { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
 import Page from 'components/Page'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
+import { CalendarDays, ChartColumn, CircleDollarSign, Lock, Receipt, SlidersHorizontal, Star, Timer, User, UserCheck, Users } from 'lucide-react'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchMerchantDeductionItems from 'hooks/useFetchMerchantDeductionItems'
 import useFetchMerchantSalaryIncreaseItems from 'hooks/useFetchMerchantSalaryIncreaseItems'
@@ -881,35 +883,37 @@ function Parameter() {
   const [selectTab, setSelectTab] = useState('orderCreate')
   const handleTabsChange = (event, value) => setSelectTab(value)
   const tabs = [
-    { value: 'orderCreate', label: '打帳單' },
-    { value: 'employeeSchedule', label: '排班及打卡' },
-    { value: 'salary', label: '薪資' },
-    { value: 'report', label: '報表' },
-    { value: 'booking', label: '預約' },
-    { value: 'performanceRake', label: '業績依據及抽成' },
-    { value: 'password', label: '密碼' },
-    { value: 'function', label: '功能設定' },
-    { value: 'customerTracking', label: '顧客追蹤' },
-    { value: 'customer', label: '顧客端' },
-    { value: 'designer', label: '設計師端' },
+    { value: 'orderCreate', label: '打帳單', icon: Receipt },
+    { value: 'employeeSchedule', label: '排班及打卡', icon: Timer },
+    { value: 'salary', label: '薪資', icon: CircleDollarSign },
+    { value: 'report', label: '報表', icon: ChartColumn },
+    { value: 'booking', label: '預約', icon: CalendarDays },
+    { value: 'performanceRake', label: '業績依據及抽成', icon: Star },
+    { value: 'password', label: '密碼', icon: Lock },
+    { value: 'function', label: '功能設定', icon: SlidersHorizontal },
+    { value: 'customerTracking', label: '顧客追蹤', icon: UserCheck },
+    { value: 'customer', label: '顧客端', icon: Users },
+    { value: 'designer', label: '設計師端', icon: User },
   ]
   return (
     <Page className="ui-root" title="系統參數設定">
-      <div className="mx-auto w-full max-w-4xl">
+      <div className="mx-auto w-full max-w-6xl">
         <PageHeader title="系統參數設定" />
         <Tabs
+          className="md:flex md:items-start md:gap-8"
           value={selectTab}
           onValueChange={value => handleTabsChange(null, value)}
           activationMode="manual"
         >
-          <TabsList>
+          <SettingsTabsList>
             {tabs.map((tab, index) => (
-              <TabsTrigger key={index} value={tab.value}>{tab.label}</TabsTrigger>
+              <SettingsTabsTrigger key={index} value={tab.value} icon={tab.icon}>{tab.label}</SettingsTabsTrigger>
             ))}
-          </TabsList>
-        </Tabs>
+          </SettingsTabsList>
+          <div className="min-w-0 flex-1">
+            <SettingsSectionHeading title={tabs.find(tab => tab.value === selectTab)?.label} />
         {selectTab === 'orderCreate' && (
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <AboutOrderCreate
               orderCreateSetting={orderCreateSetting}
               setOrderCreateSetting={setOrderCreateSetting}
@@ -929,7 +933,7 @@ function Parameter() {
           </div>
         )}
         {selectTab === 'employeeSchedule' && (
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <AboutEmployeeSchedule
               isMerchantClockInSetting={isMerchantClockInSetting}
               setIsMerchantClockInSetting={setIsMerchantClockInSetting}
@@ -944,7 +948,7 @@ function Parameter() {
           </div>
         )}
         {selectTab === 'salary' && (
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <AboutSalaryAddAndDeduction
               service={service}
               onChange={handleServiceChange}
@@ -965,7 +969,7 @@ function Parameter() {
           </div>
         )}
         {selectTab === 'report' && (
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <AboutPriceDisplayOnDailyReport
               aboutReport={aboutReport}
               setAboutReport={setAboutReport}
@@ -979,7 +983,7 @@ function Parameter() {
           </div>
         )}
         {selectTab === 'booking' && (
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <NonDesignationBookingLimitSetting
               aboutBooking={aboutBooking}
               setAboutBooking={setAboutBooking}
@@ -1026,7 +1030,7 @@ function Parameter() {
           </div>
         )}
         {selectTab === 'performanceRake' && (
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <AboutMerchantFakePerformanceReference
               merchantFakePerformanceRefer={merchantFakePerformanceRefer}
               setMerchantFakePerformanceRefer={setMerchantFakePerformanceRefer}
@@ -1040,7 +1044,7 @@ function Parameter() {
           </div>
         )}
         {selectTab === 'password' && (
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <PasswordSetting
               setPasswordSetting={setPasswordSetting}
               passwordSetting={passwordSetting}
@@ -1049,7 +1053,7 @@ function Parameter() {
           </div>
         )}
         {selectTab === 'function' && (
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <AboutSettingFunction
               aboutSettingFunction={aboutSettingFunction}
               setAboutSettingFunction={setAboutSettingFunction}
@@ -1061,7 +1065,7 @@ function Parameter() {
           </div>
         )}
         {selectTab === 'customer' && (
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <AboutCustomerSideSetting
               aboutCustomer={aboutCustomer}
               setAboutCustomer={setAboutCustomer}
@@ -1086,7 +1090,7 @@ function Parameter() {
           </div>
         )}
         {selectTab === 'designer' && (
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <AboutDesignerSideExternalLink
               externalLink={externalLink}
               refetchLink={getMerchantExternalLink.refetch}
@@ -1100,7 +1104,7 @@ function Parameter() {
           </div>
         )}
         {selectTab === 'customerTracking' && (
-          <div className="mt-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
             <AboutCustomerTracking
               hairCondition={hairCondition}
               setHairCondition={setHairCondition}
@@ -1108,16 +1112,18 @@ function Parameter() {
             />
           </div>
         )}
-        <div className="mt-6 flex justify-end">
-          <Button
-            variant="primary"
-            onClick={handleSubmit}
-            disabled={!inputEnable}
-            data-testid="parameter"
-          >
-            儲存
-          </Button>
-        </div>
+            <div className="mt-6 flex justify-end">
+              <Button
+                variant="primary"
+                onClick={handleSubmit}
+                disabled={!inputEnable}
+                data-testid="parameter"
+              >
+                儲存
+              </Button>
+            </div>
+          </div>
+        </Tabs>
       </div>
     </Page>
   )
