@@ -1,5 +1,5 @@
+import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
-import { Checkbox } from '@mui/material'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import { useEffect, useState } from 'react'
 import { useFetchGetMainEventsForAutocomplete } from 'hooks/useFetchGetMainEvent'

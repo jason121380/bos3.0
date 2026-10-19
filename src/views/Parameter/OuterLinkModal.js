@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 // 對話框內有 MUI Autocomplete，保留 MUI Dialog；名稱／網址已換 Field＋Input
+import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
-import { Dialog, DialogContent, DialogTitle, DialogActions, Checkbox } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, DialogActions } from '@mui/material'
 import { CheckboxField } from 'ui/checkbox'
 import { Button } from 'ui/button'
 import { Field, Input } from 'ui/input'

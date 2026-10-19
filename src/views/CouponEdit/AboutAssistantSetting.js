@@ -2,7 +2,7 @@
 // 欄位標籤放在上方（Field＋Input／NativeSelect）。協助人員人數的選項值是字串 '0'～'3'、state 存的是數字，
 // NativeSelect 以字串比對（與 MUI Select 一致）且 event.target.value 回傳選項原值（字串），handleAssistantName 的 parseInt 原樣保留；
 // 分指定／互助均分的 Checkbox 仍用 MUI
-import { Checkbox, FormControlLabel } from '@mui/material'
+import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'

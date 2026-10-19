@@ -1,8 +1,7 @@
 // 彈窗內有 MUI Select（Radix Dialog 會擋住其彈出層），保留 MUI Dialog；只換按鈕與分隔線
-import {
-  Dialog, DialogTitle, DialogContent, DialogActions,
-  FormControlLabel, Checkbox, FormControl, InputLabel, Select, MenuItem
-} from "@mui/material"
+import { FormControlLabel, Checkbox } from 'ui/checkbox'
+import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
 import { useEffect, useState } from "react"
 import { useFetchMerchantJobTitleForEmployeeList } from 'hooks/useFetchMerchantJobTitlePoint'
 import useFetchSetPerformanceRuleFromPersonProfile from 'hooks/useFetchSetPerformanceRuleFromPersonProfile'

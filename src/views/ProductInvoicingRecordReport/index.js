@@ -1,7 +1,8 @@
+import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { useState, useEffect } from 'react'
 // MUI Button 只用於 Autocomplete 的 popupIcon（全選），其餘按鈕改用 ui/button
-import { Button, Checkbox } from '@mui/material'
+import { Button } from '@mui/material'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import Autocomplete from 'ui/combobox'
 import Page from 'components/Page'

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
+import { Checkbox } from 'ui/checkbox'
 import { TextField, InputAdornment } from 'ui/text-field'
-import { Checkbox } from '@mui/material'
 import MerchantListAutocpmpleteForPinnedTable from 'components/MerchantListAutocpmpleteForPinnedTable'
 import useFetchSetPinnedTable from 'hooks/useFetchSetPinnedTable'
 import { TreeView, TreeItem } from '@mui/x-tree-view';

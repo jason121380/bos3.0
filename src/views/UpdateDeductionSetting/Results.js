@@ -1,8 +1,4 @@
-import {
-  Checkbox,
-  FormControlLabel,
-
-} from '@mui/material'
+import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'

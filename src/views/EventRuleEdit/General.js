@@ -1,8 +1,5 @@
-import {
-  Checkbox, Select, MenuItem,
-  FormControl, InputLabel, FormControlLabel,
-
-} from '@mui/material'
+import { Checkbox, FormControlLabel } from 'ui/checkbox'
+import { Select, MenuItem, FormControl, InputLabel } from 'ui/form-control'
 import { Fragment } from 'react'
 import { cloneDeep } from 'lodash'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'

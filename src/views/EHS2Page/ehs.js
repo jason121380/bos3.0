@@ -1,7 +1,7 @@
+import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import React, { useState } from 'react'
 import { gql, useLazyQuery, useMutation } from '@apollo/client'
-import { Checkbox, FormControlLabel } from '@mui/material'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import Page from 'components/Page'

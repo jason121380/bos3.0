@@ -1,9 +1,5 @@
 // 門檻／抽成欄位為 Field＋Input（min=0），抽成模式 ToggleButton 改 ui/toggle-group（布林值原樣、handler 不讀參數）；類別 Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）；外框、標題、圖示按鈕改為 src/ui
-import {
-  Checkbox,
-  FormControlLabel,
-
-} from '@mui/material'
+import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { Plus, Trash2 } from 'lucide-react'
 import _ from 'lodash'
 import PropTypes from 'prop-types'

@@ -1,6 +1,6 @@
+import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { useState, useEffect } from 'react'
-import { Checkbox } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'

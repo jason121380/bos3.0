@@ -1,6 +1,6 @@
 // 欄位標籤放在上方（Field＋Input／NativeSelect）；扣項方式的值可為空字串，NativeSelect 以 disabled 空值選項顯示提示、onChange 回原始值。
 // 原「保留 MUI Select／TextField」註記已由 Jason 同意推翻，比照 ThirdPartyCouponCreate 改版；Checkbox 保留 MUI
-import { FormControlLabel, Checkbox } from '@mui/material'
+import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
