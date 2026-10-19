@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react'
-import { TableContainer, Paper, Dialog } from '@mui/material'
+import { Dialog } from '@mui/material'
 import { format } from 'date-fns'
 import { AssignmentTurnedInRounded as AssignmentTurnedInRoundedIcon, DisabledByDefaultRounded as DisabledByDefaultRoundedIcon } from 'ui/icons'
 import styles from './styles/OrderTable'
@@ -117,7 +117,7 @@ const OrderTable = ({
   }
 
   return (
-    <TableContainer component={Paper} css={styles.TableContainer} className='ManagementReservationRecord'>
+    <div css={styles.TableContainer} className='ManagementReservationRecord bg-background'>
 
       {/* table head */}
       <div css={styles.tableHead}>
@@ -288,7 +288,7 @@ const OrderTable = ({
           refetchData={refetchData}
         />
       </Dialog>
-    </TableContainer>
+    </div>
   )
 }
 
