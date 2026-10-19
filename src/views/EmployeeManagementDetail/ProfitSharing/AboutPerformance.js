@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
-// 大型頁策略：抽成級距表單（TextField、Tabs、Grid 排版）保留 MUI
+// 大型頁策略：抽成級距表單（TextField、Grid 排版）保留 MUI；Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）
 // 「分指定/不指定」的 handler 掛在 FormControlLabel 的 onClick（label 上），換成 CheckboxField 會改變點擊文字時的觸發次數，保留 MUI
 import {
   Checkbox, Grid, TextField,
-  FormControlLabel, Tab, Tabs
+  FormControlLabel
 } from '@mui/material'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
+import { Tabs, TabsList, TabsTrigger } from 'ui/tabs'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
@@ -637,13 +638,14 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
         {!profitSharing.isSegmented && (
           <Tabs
             value={tabValue}
-            scrollButtons="auto"
-            variant="scrollable"
-            onChange={handleTabsChange}
+            onValueChange={value => handleTabsChange(null, value)}
+            activationMode="manual"
           >
-            {attributions.map(tab => (
-              <Tab key={tab.value} label={tab.label} value={tab.value} />
-            ))}
+            <TabsList>
+              {attributions.map(tab => (
+                <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
+              ))}
+            </TabsList>
           </Tabs>
         )}
         <CardContent>

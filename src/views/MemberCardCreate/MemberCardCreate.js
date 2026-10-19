@@ -1,4 +1,4 @@
-import { Switch } from '@mui/material'
+import { Switch } from 'ui/switch'
 import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
 import idx from 'idx'

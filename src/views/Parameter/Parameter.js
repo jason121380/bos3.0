@@ -1,4 +1,4 @@
-import { Tab, Tabs } from '@mui/material'
+import { Tabs, TabsList, TabsTrigger } from 'ui/tabs'
 import Page from 'components/Page'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
@@ -879,6 +879,7 @@ function Parameter() {
   }
 
   const [selectTab, setSelectTab] = useState('orderCreate')
+  const handleTabsChange = (event, value) => setSelectTab(value)
   const tabs = [
     { value: 'orderCreate', label: '打帳單' },
     { value: 'employeeSchedule', label: '排班及打卡' },
@@ -897,14 +898,15 @@ function Parameter() {
       <div className="mx-auto w-full max-w-4xl">
         <PageHeader title="系統參數設定" />
         <Tabs
-          scrollButtons="auto"
-          variant="scrollable"
           value={selectTab}
-          onChange={(event, value) => setSelectTab(value)}
+          onValueChange={value => handleTabsChange(null, value)}
+          activationMode="manual"
         >
-          {tabs.map((tab, index) => (
-            <Tab key={index} label={tab.label} value={tab.value} />
-          ))}
+          <TabsList>
+            {tabs.map((tab, index) => (
+              <TabsTrigger key={index} value={tab.value}>{tab.label}</TabsTrigger>
+            ))}
+          </TabsList>
         </Tabs>
         {selectTab === 'orderCreate' && (
           <div className="mt-6 flex flex-col gap-6">

@@ -1,6 +1,6 @@
 import {
   Checkbox,
-  FormControlLabel, Tab, Tabs, ToggleButton,
+  FormControlLabel, ToggleButton,
   ToggleButtonGroup
 } from '@mui/material'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
@@ -10,6 +10,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { openSnackbar } from 'elements/snackbars'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Tabs, TabsList, TabsTrigger } from 'ui/tabs'
 import { Field, Input } from 'ui/input'
 
 const isSegmented = [
@@ -575,15 +576,15 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
         </div>
         {!profitSharing.isSegmented && (
           <Tabs
-            className="border-0 border-b border-solid border-border px-3"
             value={tabValue}
-            scrollButtons="auto"
-            variant="scrollable"
-            onChange={handleTabsChange}
+            onValueChange={value => handleTabsChange(null, value)}
+            activationMode="manual"
           >
-            {attributions.map(tab => (
-              <Tab key={tab.value} label={tab.label} value={tab.value} />
-            ))}
+            <TabsList className="px-3">
+              {attributions.map(tab => (
+                <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
+              ))}
+            </TabsList>
           </Tabs>
         )}
         <CardContent>
