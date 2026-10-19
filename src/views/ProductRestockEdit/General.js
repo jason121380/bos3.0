@@ -2,7 +2,7 @@ import {
   TextField, Autocomplete, FormControl, InputLabel, Input,
   InputAdornment
 } from '@mui/material'
-import { MobileDatePicker } from '@mui/x-date-pickers'
+import { MobileDatePicker } from 'ui/date-picker'
 import { useFetchProductsInProductRestock } from 'hooks/useFetchProducts'
 import { useFetchProductCategoriesInCreatePicking } from 'hooks/useFetchProductCategories'
 import idx from 'idx'
