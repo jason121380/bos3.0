@@ -3,7 +3,7 @@ import { ChevronDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { cn, focusRing } from './utils'
 
-// STYLE.md §13 Sidebar（PrimeStay 版式、bos 藍）：240px、surface 淺底不加硬右框（靠內容白卡分界）；項目高 36px、rounded-lg、圖示/文字 gap 10px；選取為白 pill（bg-background＋細邊＋shadow-card）＋品牌藍文字＋字重 500，不用截圖綠、不用藍底
+// STYLE.md §6 Sidebar：240px、surface 底；項目高 36px、rounded-md；選取為主題色 8% 底 + 主題色文字 + 字重 500
 // 桌機（lg 以上）固定在左側，可收合；平板與手機為由左滑出的抽屜。整個側欄只渲染一份。
 function Sidebar({ mobileOpen, onMobileClose, desktopOpen = true, className, children }) {
   return (
@@ -13,7 +13,7 @@ function Sidebar({ mobileOpen, onMobileClose, desktopOpen = true, className, chi
       )}
       <aside
         className={cn(
-          'ui-root noprint fixed inset-y-0 left-0 z-[1200] flex w-60 flex-col border-0 border-r border-solid border-border bg-surface lg:border-r-0',
+          'ui-root noprint fixed inset-y-0 left-0 z-[1200] flex w-60 flex-col border-0 border-r border-solid border-border bg-surface',
           'transition-transform duration-200',
           // 手機抽屜：加寬、避開瀏海與底部指示條
           'max-lg:w-[min(84vw,320px)] max-lg:pb-[env(safe-area-inset-bottom)] max-lg:pt-[env(safe-area-inset-top)] max-lg:shadow-float',
@@ -44,7 +44,7 @@ const SidebarLabel = ({ className, ...props }) => (
 )
 
 const rowClass = cn(
-  'flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-left text-body text-text-secondary transition-colors',
+  'flex h-9 w-full items-center gap-2 rounded-md px-2 text-left text-body text-text-secondary transition-colors',
   'hover:bg-surface-hover hover:text-text',
   focusRing
 )
@@ -66,7 +66,7 @@ const SidebarLink = ({ to, active, icon: Icon, indent, className, children, ...p
   <Link
     to={to}
     aria-current={active ? 'page' : undefined}
-    className={cn(rowClass, indent && 'pl-8', active && 'border border-solid border-border bg-background font-medium text-accent shadow-card hover:bg-background hover:text-accent', className)}
+    className={cn(rowClass, indent && 'pl-8', active && 'bg-accent/8 font-medium text-accent hover:bg-accent/8 hover:text-accent', className)}
     {...props}
   >
     {Icon && <Icon className="h-4 w-4" strokeWidth={1.75} />}
