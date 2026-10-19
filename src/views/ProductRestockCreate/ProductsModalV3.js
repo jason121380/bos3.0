@@ -1,12 +1,13 @@
-// MUI Dialog 保留：舊版無 onClose（點背景、Esc 不會關閉），且內含 MUI ToggleButton / TextField
+// MUI Dialog 保留：舊版無 onClose（點背景、Esc 不會關閉），且內含 MUI TextField（ToggleButton 已改 ui/toggle-group）
 import {
-  TextField, ToggleButtonGroup,
-  ToggleButton, Dialog
+  TextField,
+   Dialog
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { openSnackbar } from 'elements/snackbars'
 import _ from 'lodash'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Button } from 'ui/button'
 import { Checkbox } from 'ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
@@ -237,16 +238,16 @@ function ProductsModal({
       <span className="text-heading text-text">
         {selectedCategorieName.length === 0 ? '所有商品' : `${categoryNameForDisplay}類商品`}
       </span>
-      <ToggleButtonGroup
+      <ToggleGroup
         size="small"
         exclusive
         value={sortType}
         onChange={(e, v) => v && setSortType(v)}
       >
-        <ToggleButton value='NO'>編號</ToggleButton>
-        <ToggleButton value='STOCK_DESC'>庫存多到少</ToggleButton>
-        <ToggleButton value='STOCK_ASC'>庫存少到多</ToggleButton>
-      </ToggleButtonGroup>
+        <ToggleGroupItem value='NO'>編號</ToggleGroupItem>
+        <ToggleGroupItem value='STOCK_DESC'>庫存多到少</ToggleGroupItem>
+        <ToggleGroupItem value='STOCK_ASC'>庫存少到多</ToggleGroupItem>
+      </ToggleGroup>
     </div>
   )
   // 篩選鈕的選取狀態（舊版以 contained / outlined 區分）

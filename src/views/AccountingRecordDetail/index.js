@@ -3,8 +3,9 @@
 import {
   TextField,
   FormControl, MenuItem, InputLabel, Select, Autocomplete,
-  ToggleButton, ToggleButtonGroup, Input, InputAdornment
+    Input, InputAdornment
 } from '@mui/material'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
 import { Copy, Trash2 } from 'lucide-react'
 import { MobileDatePicker } from 'ui/date-picker'
@@ -392,7 +393,7 @@ export default function AccountingRecordDetail(props) {
                 />
               </div>
               <div className="flex flex-wrap items-center gap-5">
-                <ToggleButtonGroup
+                <ToggleGroup
                   value={inoutType}
                   exclusive
                   aria-label="text alignment"
@@ -427,23 +428,21 @@ export default function AccountingRecordDetail(props) {
                     }
                   }}
                 >
-                  <ToggleButton
+                  <ToggleGroupItem
                     ref={type1Ref}
                     value="REVENUE"
                     aria-label="left aligned"
-                    focused={focus === 'type1' ? 1 : 0}
                   >
                     收入
-                  </ToggleButton>
-                  <ToggleButton
+                  </ToggleGroupItem>
+                  <ToggleGroupItem
                     ref={type2Ref}
                     value="EXPENDITURE"
                     aria-label="centered"
-                    focused={focus === 'type2' ? 1 : 0}
                   >
                     支出
-                  </ToggleButton>
-                </ToggleButtonGroup>
+                  </ToggleGroupItem>
+                </ToggleGroup>
                 {showMessage && <p className="text-label font-medium text-danger">收支更動，請重新選擇科目或關係人。</p>}
               </div>
               {inoutType !== null && (

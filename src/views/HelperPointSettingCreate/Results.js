@@ -3,10 +3,11 @@
 import {
   FormControlLabel,
   Checkbox,
-  ToggleButton,
-  ToggleButtonGroup
+
+
 } from '@mui/material'
 import { Plus, Trash2 } from 'lucide-react'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
@@ -105,18 +106,18 @@ function Results({ className, status, submitData, setSubmitData, ...rest }) {
         </div>
         <div className="flex flex-col gap-3">
           <div className="text-heading text-text">點數獲得設定</div>
-          <ToggleButtonGroup
+          <ToggleGroup
             size="small"
             value={submitData.retrievePointWay}
             onChange={(e, value) => value && setSubmitData({ ...submitData, retrievePointWay: value })}
             exclusive
           >
             {statusEnum.map((data, idx) => (
-              <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+              <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                 {data.label}
-              </ToggleButton>
+              </ToggleGroupItem>
             ))}
-          </ToggleButtonGroup>
+          </ToggleGroup>
           <div className="mt-2 flex flex-col gap-5">
             {status === 'FIXED' ?
               (<Field label="換算金額" htmlFor="helperPointRetrieveFixed" className="w-[200px]">
