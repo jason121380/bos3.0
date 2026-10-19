@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { TextField, Autocomplete } from '@mui/material'
+import { TextField } from '@mui/material'
 import useFetchGetUserBookingRecordList from 'hooks/useFetchGetUserBookingRecordList'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
 import React, {useEffect} from 'react'
 import { css } from '@emotion/react'
+import { Autocomplete } from 'ui/combobox'
 
 function BookingRecordListAutoComplete(
   {

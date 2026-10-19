@@ -1,8 +1,9 @@
-import { TextField, Checkbox, Autocomplete } from '@mui/material'
+import { TextField, Checkbox } from '@mui/material'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import { useEffect, useState } from 'react'
 import { useFetchTicketsForAutocomplete } from 'hooks/useFetchTickets'
 import idx from 'idx'
+import { Autocomplete } from 'ui/combobox'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />

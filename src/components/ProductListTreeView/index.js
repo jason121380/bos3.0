@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, Fragment } from 'react'
-import { Button as MuiButton, Autocomplete, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import { Button } from 'ui/button'
 import useFetchProductTreeview from 'hooks/useFetchProductTreeview'
 import ProductListModal from './ProductListModal'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   root: css({
@@ -53,8 +54,9 @@ const index = ({ onValueChange = () => { } }) => {
 
   return (
     <Fragment>
-      <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'center' }}>
+      <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'flex-end' }}>
         <Autocomplete
+          className="min-w-0 flex-1"
           css={styles.root}
           multiple
           fullWidth
@@ -63,7 +65,8 @@ const index = ({ onValueChange = () => { } }) => {
           style={{ cursor: 'pointer' }}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           popupIcon={
-            <MuiButton component='div' onClick={handleSelectAll} variant="contained" color="primary" size="small">全選</MuiButton>
+            // 全選：比照店家挑選（MerchantListAutocpmplete）用 ui Button；popupIcon 外層可點，故以 asChild 落在 div 上避免巢狀 button，onClick 原樣
+            <Button asChild variant="primary" size="sm" onClick={handleSelectAll}><div>全選</div></Button>
           }
           value={values}
           onChange={(e, v) => {
@@ -92,7 +95,7 @@ const index = ({ onValueChange = () => { } }) => {
             />
           )}
         />
-        <Button onClick={() => setOpen(true)} style={{ whiteSpace: 'nowrap', height: 'fit-content' }} variant="primary">選擇商品</Button>
+        <Button onClick={() => setOpen(true)} variant="primary" className="shrink-0">選擇商品</Button>
       </div>
       {!productTreeview.loading &&
         <ProductListModal

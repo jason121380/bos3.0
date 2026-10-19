@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { Checkbox, TextField, Autocomplete } from '@mui/material'
+import { Checkbox, TextField } from '@mui/material'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import useFetchGetCustomerReference from 'hooks/useFetchGetCustomerReference'
 import idx from 'idx'
 import { css } from '@emotion/react'
+import { Autocomplete } from 'ui/combobox'
 
 export default function SourcesAutocomplete({
   className = {},

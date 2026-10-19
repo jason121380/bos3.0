@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { TextField, Autocomplete } from '@mui/material'
+import { TextField } from '@mui/material'
 import useFetchServiecAndTicketList from 'hooks/useFetchServiecAndTicketList'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
 import { Fragment, forwardRef, useState, useEffect } from 'react'
+import { Autocomplete } from 'ui/combobox'
 
 function ServicesIncludesTicketsAutoComplete(
   {
