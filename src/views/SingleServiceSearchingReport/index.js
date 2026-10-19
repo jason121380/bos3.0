@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react'
-import {
-  TextField, Checkbox,
-  Autocomplete
-} from '@mui/material'
+import { TextField, Checkbox } from '@mui/material'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { endOfDay, startOfMonth } from 'date-fns'
 import idx from 'idx'
@@ -21,6 +18,7 @@ import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
 import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
+import { Autocomplete } from 'ui/combobox'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
@@ -166,7 +164,7 @@ const DesignerPerformBasic = () => {
             </div>
           </div>
         </Toolbar>
-        <Toolbar className="flex-nowrap items-start">
+        <Toolbar className="flex-nowrap items-end">
           <div className="min-w-0 flex-grow">
             <Autocomplete
               freeSolo

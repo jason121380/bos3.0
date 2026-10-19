@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Autocomplete, TextField, Checkbox } from '@mui/material'
+import { TextField, Checkbox } from '@mui/material'
 import Page from 'components/Page'
 import idx from 'idx'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
@@ -20,6 +20,7 @@ import { Skeleton } from 'ui/skeleton'
 import { Switch } from 'ui/switch'
 import CompareFilter from './CompareFilter'
 import Compare from './Compare'
+import { Autocomplete } from 'ui/combobox'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
@@ -302,7 +303,7 @@ const DesignerPerforamnceAnalyzeReport = () => {
             )}
           </div>
         </Toolbar>
-        <div className="flex flex-nowrap items-center gap-3">
+        <div className="flex flex-nowrap items-end gap-3">
           <div className="min-w-0 flex-grow">
             <Autocomplete
               multiple

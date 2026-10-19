@@ -1,6 +1,4 @@
-import {
-	TextField, Autocomplete
-} from '@mui/material'
+import { TextField } from '@mui/material'
 import Page from 'components/Page'
 import { useState, useEffect } from 'react'
 import AdminPageHeader from 'components/AdminPageHeader'
@@ -17,6 +15,7 @@ import { Button } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
 import { Toolbar } from 'ui/page-header'
+import { Autocomplete } from 'ui/combobox'
 
 const MultiMerchantsLeaderBoard = () => {
 	const [date, setDate] = useState({

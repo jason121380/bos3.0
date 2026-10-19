@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 設計師多選（Autocomplete）保留 MUI
-import {
-  TextField, Checkbox, Autocomplete,
-} from '@mui/material'
+import { TextField, Checkbox } from '@mui/material'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import idx from 'idx'
@@ -13,6 +11,7 @@ import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { Field } from 'ui/input'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   root: css({}),

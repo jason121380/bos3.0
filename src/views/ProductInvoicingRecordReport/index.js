@@ -4,7 +4,7 @@ import {
   Button, Checkbox, TextField,
 } from '@mui/material'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
-import Autocomplete from '@mui/material/Autocomplete'
+import Autocomplete from 'ui/combobox'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
@@ -148,7 +148,7 @@ const ProductInvoicingRecordReport = () => {
             </div>
           </div>
         </Toolbar>
-        <Toolbar className="flex-nowrap items-start">
+        <Toolbar className="flex-nowrap items-end">
           <Autocomplete
             multiple
             fullWidth

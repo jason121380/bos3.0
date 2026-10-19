@@ -1,15 +1,13 @@
 /** @jsxImportSource @emotion/react */
 // 排序依據保留 MUI Select（與同列 MUI Autocomplete 的浮動標籤外框一致）
-import {
-  TextField, Checkbox, FormControl, InputLabel,
-  Select, MenuItem, Autocomplete
-} from '@mui/material'
+import { TextField, Checkbox, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import { Button } from 'ui/button'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import DateSelector from 'components/DateSelector'
 import idx from 'idx'
 import { css } from '@emotion/react'
+import { Autocomplete } from 'ui/combobox'
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
 
@@ -119,7 +117,7 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit }) =>
           />
         </div>
       </div>
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-end gap-2.5">
         <div className="min-w-0 flex-grow">
           <Autocomplete
             multiple
