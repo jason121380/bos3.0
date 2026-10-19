@@ -106,7 +106,8 @@
 | **Sidebar** | 240px（`surface` 淺灰區塊）；群組標題 `caption` + `text-tertiary`；項目高 36px、`rounded-lg`；選取為白 pill（`bg-background`，無框無影、靠色塊區分）+ 品牌藍文字 + 字重 500（§13）。 |
 | **Tabs** | 底線式；選取為品牌藍文字 + 2px 品牌藍底線，未選 `text-secondary`（§13）。 |
 | **Radio** | 用 `ui/radio` 的 `Radio`／`RadioField`（原生 `<input type="radio">`，16px 圓點、`accent` 主色 `primary`、focus 2px `accent` 外框、disabled 40% 透明）：保留圓點外觀，不改成分段按鈕；`RadioField` 以 `<label>` 包覆使點文字可選，`onChange(event, value)` 對齊 MUI `RadioGroup` 簽名（只讀 `event.target.value` 的 handler 亦相容）。同組必須給相同 `name`，互斥、方向鍵移動＋選取、Tab 只停已選／第一顆、空白鍵選取皆由原生行為保留；未選狀態以 `checked` 皆 false 表示，不以空字串另設狀態。 |
-| **Empty / Loading** | 一律用 `EmptyState`、`Skeleton` 元件，不得各頁自寫。不定值載入轉圈用 lucide `LoaderCircle`＋`animate-spin`＋`strokeWidth={1.75}`：置中大圈 `h-10 w-10 text-accent`（對原 MUI `CircularProgress` 預設 40px 與主題色）、欄位小圈依原尺寸（如 20px），原置中容器與間距不動；定值進度（線／圓＋%）另案，不以轉圈冒充。 |
+| **Progress（定值線）** | 用 `ui/progress` 的 `Progress`：只做定值線條（`value` 0–100，超出夾限顯示），高 4px、圓角 3px、軌道 `surface-hover`、進度桿 `primary` 深藍、`role="progressbar"`＋`aria-valuenow`（四捨五入）；寬度以 300ms linear 過渡對齊原呼叫端 timer 節奏。元件只呈現、不計算百分比、不判斷顯示條件；百分比計算／假進度 timer／載入邏輯留在呼叫端，不得搬進元件。定值圓＋%（如結帳 snackbar）與不定值頂線（Suspense）不在此元件範圍，待拍板另案。 |
+| **Empty / Loading** | 一律用 `EmptyState`、`Skeleton` 元件，不得各頁自寫。不定值載入轉圈用 lucide `LoaderCircle`＋`animate-spin`＋`strokeWidth={1.75}`：置中大圈 `h-10 w-10 text-accent`（對原 MUI `CircularProgress` 預設 40px 與主題色）、欄位小圈依原尺寸（如 20px），原置中容器與間距不動；定值線用 `ui/progress`（見上列），定值圓＋% 另案，不以轉圈冒充。 |
 
 ## 7. 文案
 
