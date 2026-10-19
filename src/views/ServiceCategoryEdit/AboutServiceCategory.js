@@ -3,6 +3,7 @@ import {
   FormControl, FormHelperText, MenuItem, InputLabel, Select, TextField,
 } from '@mui/material'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Field, Input } from 'ui/input'
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'
 import useStore from 'hooks/useStore'
@@ -54,36 +55,30 @@ function AboutServiceCategory({ serviceCategory, className, onChange, attributio
         <CardTitle>一般資訊</CardTitle>
       </CardHeader>
       <CardContent>
-        <TextField
-          name="no"
-          label="代號"
-          variant="outlined"
-          fullWidth
-          css={styles.formGroup}
-          inputProps={{
-            ref: register({
+        <Field label="代號" htmlFor="service-category-edit-no" className="mb-6" error={errors.no && errors.no.message}>
+          <Input
+            id="service-category-edit-no"
+            name="no"
+            invalid={!!errors.no}
+            aria-describedby={errors.no ? 'service-category-edit-no-helper-text' : undefined}
+            data-testid="no"
+            ref={register({
               required: '代號為必填',
-            }),
-            'data-testid': 'no',
-          }}
-          error={!!errors.no}
-          helperText={errors.no && errors.no.message}
-        />
-        <TextField
-          name="name"
-          label="類別名稱"
-          variant="outlined"
-          fullWidth
-          css={styles.formGroup}
-          inputProps={{
-            ref: register({
+            })}
+          />
+        </Field>
+        <Field label="類別名稱" htmlFor="service-category-edit-name" className="mb-6" error={errors.name && errors.name.message}>
+          <Input
+            id="service-category-edit-name"
+            name="name"
+            invalid={!!errors.name}
+            aria-describedby={errors.name ? 'service-category-edit-name-helper-text' : undefined}
+            data-testid="name"
+            ref={register({
               required: '類別為必填',
-            }),
-            'data-testid': 'name',
-          }}
-          error={!!errors.name}
-          helperText={errors.name && errors.name.message}
-        />
+            })}
+          />
+        </Field>
         <FormControl
           variant="outlined"
           fullWidth

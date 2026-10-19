@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| MUI批次5 TextField RHF專項第一批（Codex線，v3.0-1019-2341） | 4 檔 8 欄 RHF＋error 純文字欄→Field＋ui Input（ProductCategory Create/Edit、ServiceCategory Create/Edit 的代號／名稱）；register 以 ref 直掛、錯誤原文／驗證時機／送出不變，Field error 補 helper id 連 aria。金額／密碼／日期／Autocomplete／multiline 不碰，RHF 剩 6 檔 10 實例待專項。待實機故意輸入錯誤看訊息、修正後送出。 |
 | MUI 整包移除・emotion css 第一小批（v3.0-1019-2338） | 盤點分類（447 檔，見 TODO／MEMORY #120）：css prop 331 檔／1668 處、共用 styles 模組 56、pragma-only 66、emotion styled 2、CacheProvider 0；本批 9 檔單純間距/寬高 emotion→Tailwind 等效（ChangeLineMenuPage×4、EHS2Page×3、ProgressBar、TransferList），移除該 9 檔 @emotion import 與 jsx pragma；handler/存值/版面結構不動，列印檔不碰。待實機：LIFF 切換選單/EHS 加入會員欄距、顧客明細載入條、捷徑 TransferList 雙欄高度。 |
 | MUI 移除・TreeView 專項試點（AGY 線，v3.0-1019-2334） | 只做 `layouts/Dashboard/MerchantList.js` 1 檔：MUI TreeView 改自家 `ul/button` 樹（role=tree/treeitem、roving tabindex、↑↓←→/Home/End/Enter/Space/type-ahead 鍵盤補齊），節點 id／搜尋自動展開／點店家存值導頁不動；其餘 5 檔樹（多選彈窗/商品/釘選）不動，`@mui/x-tree-view` 套件待全清後才卸。待實機展開/點選/鍵盤逐項。 |
 | 全站外框扁平修正（v3.0-1019-2314，未合併待截圖驗收） | 覆蓋 #151 部分視覺（STYLE §13／MEMORY #107）：白底 canvas、灰卡 surface #F3F4F6、移除 shadow-card、Card/#printContainer/Dialog 去框去影、側欄選中純色塊、secondary 灰 pill；深藍主色與密度/列印不變。示範頁顧客列表由 token 自動生效。待截圖：白底灰卡、側欄、彈窗、深色、列印。 |
