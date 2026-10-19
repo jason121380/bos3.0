@@ -61,12 +61,15 @@ const Filter = ({ date, setDate, handleSearch, loading, inputData, setInputData,
   return (
     <div className="flex flex-col gap-2 pb-6">
       <div className="flex flex-wrap items-center gap-2.5">
-        <DateSelector
-          date={date}
-          disabled={loading}
-          attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
-          dateChange={value => setDate(value)}
-        />
+        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+          <DateSelector
+            date={date}
+            disabled={loading}
+            attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
+            dateChange={value => setDate(value)}
+          />
+        </div>
+        <div className="flex w-full min-w-0 flex-wrap items-center gap-2.5 sm:w-auto sm:shrink-0">
         {!referDisplay && (
           <ReferToggleButton
             value={inputData.reference}
@@ -83,6 +86,7 @@ const Filter = ({ date, setDate, handleSearch, loading, inputData, setInputData,
           <ToggleGroupItem disabled={loading} value='SUM'>總和業績</ToggleGroupItem>
           <ToggleGroupItem disabled={loading} value='AVERAGE'>平均業績</ToggleGroupItem>
         </ToggleGroup>
+        </div>
       </div>
       <div className="flex flex-nowrap items-end gap-2.5">
         <Field label="設計師篩選" htmlFor="designerFilter" className="min-w-0 flex-1">
