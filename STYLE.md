@@ -105,6 +105,7 @@
 | **Toast** | 右下角；成功 3 秒自動消失，錯誤需手動關閉。 |
 | **Sidebar** | 240px；群組標題 `caption` + `text-tertiary`；項目高 36px、`rounded-lg`；選取為白 pill（`bg-background`＋細邊＋`shadow-card`）+ 品牌藍文字 + 字重 500（§13）。 |
 | **Tabs** | 底線式；選取為品牌藍文字 + 2px 品牌藍底線，未選 `text-secondary`（§13）。 |
+| **Radio** | 用 `ui/radio` 的 `Radio`／`RadioField`（原生 `<input type="radio">`，16px 圓點、`accent` 主色 `primary`、focus 2px `accent` 外框、disabled 40% 透明）：保留圓點外觀，不改成分段按鈕；`RadioField` 以 `<label>` 包覆使點文字可選，`onChange(event, value)` 對齊 MUI `RadioGroup` 簽名（只讀 `event.target.value` 的 handler 亦相容）。同組必須給相同 `name`，互斥、方向鍵移動＋選取、Tab 只停已選／第一顆、空白鍵選取皆由原生行為保留；未選狀態以 `checked` 皆 false 表示，不以空字串另設狀態。 |
 | **Empty / Loading** | 一律用 `EmptyState`、`Skeleton` 元件，不得各頁自寫。不定值載入轉圈用 lucide `LoaderCircle`＋`animate-spin`＋`strokeWidth={1.75}`：置中大圈 `h-10 w-10 text-accent`（對原 MUI `CircularProgress` 預設 40px 與主題色）、欄位小圈依原尺寸（如 20px），原置中容器與間距不動；定值進度（線／圓＋%）另案，不以轉圈冒充。 |
 
 ## 7. 文案

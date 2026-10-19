@@ -1,10 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import {
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  colors,
-} from '@mui/material'
+import { colors } from '@mui/material'
 import { DatePicker } from 'ui/date-picker'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchUserGeneral from 'hooks/useFetchUserGeneral'
@@ -16,6 +11,7 @@ import { theme } from '../../../theme'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input, Label } from 'ui/input'
+import { RadioField } from 'ui/radio'
 
 const styles = {
   root: css({}),
@@ -171,16 +167,10 @@ function GeneralSettings({
             </div>
             <div>
               <Label>性別</Label>
-              <RadioGroup
-                aria-label="gender"
-                name="gender"
-                value={values.gender !== null ? values.gender : ""}
-                onChange={handleGenderChange}
-                css={styles.gender}
-              >
-                <FormControlLabel value="MALE" control={<Radio />} label="男" />
-                <FormControlLabel value="FEMALE" control={<Radio />} label="女" />
-              </RadioGroup>
+              <div css={styles.gender} className="gap-4" role="radiogroup" aria-label="gender">
+                <RadioField name="gender" value="MALE" checked={(values.gender !== null ? values.gender : "") === 'MALE'} onChange={handleGenderChange} label="男" />
+                <RadioField name="gender" value="FEMALE" checked={(values.gender !== null ? values.gender : "") === 'FEMALE'} onChange={handleGenderChange} label="女" />
+              </div>
             </div>
             {/* <Grid item md={6} xs={12}>
               <FormControl component="fieldset">
