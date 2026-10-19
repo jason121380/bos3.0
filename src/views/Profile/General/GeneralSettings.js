@@ -5,7 +5,7 @@ import {
   RadioGroup,
   colors,
 } from '@mui/material'
-import { DatePicker } from '@mui/x-date-pickers'
+import { DatePicker } from 'ui/date-picker'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchUserGeneral from 'hooks/useFetchUserGeneral'
 import produce from 'immer'
@@ -147,6 +147,8 @@ function GeneralSettings({
             <div>
               <DatePicker
                 css={styles.datePicker}
+                // 月曆 facade：label 改由 ui/date-picker 放在欄位上方；textField 的 variant 由 facade 統一成 outlined
+                // （原 standard，屬本批預期的視覺改變；styles.datePicker 的 MuiInput 規則在 outlined 下不命中，無害）
                 label="生日"
                 value={profile.birthday !== null ? profile.birthday : ""}
                 format='yyyy/MM/dd'
