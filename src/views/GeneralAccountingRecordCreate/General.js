@@ -1,9 +1,6 @@
 // 表單控制項（日期、收支切換、科目／人員 Autocomplete、備註快捷 Select、金額與備註 TextField）
 // 保留 MUI：皆以 ref 串接 Enter 鍵焦點流程（橋接主題已套新外觀）
-import {
-  TextField, FormControl, MenuItem,
-  InputLabel, Select, Autocomplete,
-} from '@mui/material'
+import { TextField, FormControl, MenuItem, InputLabel, Select } from '@mui/material'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { DatePicker } from 'ui/date-picker'
 import AccountingSubjectsAutocomplete from 'components/AccountingSubjectsAutocomplete'
@@ -19,6 +16,7 @@ import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 import AccountingSubjectModal from './AccountingSubjectModal'
+import { Autocomplete } from 'ui/combobox'
 
 function Summary({ stayInCreateAccount, ...rest }) {
   const history = useHistory()

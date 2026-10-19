@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 多選 Autocomplete（含勾選圖示的選項）與數字欄位（onWheel）保留 MUI
-import {
-  TextField, Checkbox, Autocomplete
-} from '@mui/material'
+import { TextField, Checkbox } from '@mui/material'
 import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Field } from 'ui/input'
@@ -12,6 +10,7 @@ import _ from 'lodash'
 import produce from 'immer'
 
 import styles from './styles/BookingNotificationLineAtSetting'
+import { Autocomplete } from 'ui/combobox'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />

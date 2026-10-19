@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
-import {
-  TextField, Autocomplete,
-} from '@mui/material'
+import { TextField } from '@mui/material'
 import useFetchGetProductInventoryList from 'hooks/useFetchGetProductInventoryList'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import Page from 'components/Page'
@@ -15,6 +13,7 @@ import { Button } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
+import { Autocomplete } from 'ui/combobox'
 
 const sortEnum = [
   { label: '數量', value: 'COUNT' },

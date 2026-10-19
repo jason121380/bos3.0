@@ -1,13 +1,11 @@
-import {
-  FormControl, InputLabel, MenuItem,
-  Select, TextField, Switch, Autocomplete, FormHelperText
-} from '@mui/material'
+import { FormControl, InputLabel, MenuItem, Select, TextField, Switch, FormHelperText } from '@mui/material'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { useEffect, useRef } from 'react'
 import useStore from 'hooks/useStore'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Autocomplete } from 'ui/combobox'
 
 const stockUnit = [
   { label: '個', value: '個' },

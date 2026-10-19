@@ -1,10 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react'
 // 商品多選 Autocomplete（含 popupIcon 內的全選鈕）保留 MUI
-import {
-  Button as MuiButton, Checkbox, TextField,
-  Autocomplete
-} from '@mui/material'
+import { Button as MuiButton, Checkbox, TextField } from '@mui/material'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
@@ -18,6 +15,7 @@ import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
+import { Autocomplete } from 'ui/combobox'
 
 
 const styles = {
