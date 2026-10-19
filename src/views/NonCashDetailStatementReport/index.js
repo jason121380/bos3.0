@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
-// 設計師多選（Autocomplete）與排序切換鈕（handler 使用 event, value）保留 MUI
+// 設計師多選（Autocomplete）保留 MUI；排序切換鈕改 ui/toggle-group（handler (event, value) 原樣、`state !== null` 守衛不變）
 import {
   TextField, Checkbox,
-  ToggleButton, ToggleButtonGroup, Autocomplete
+  Autocomplete
 } from '@mui/material'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import Page from 'components/Page'
 import idx from 'idx'
@@ -219,18 +220,18 @@ export default function Employees() {
         <div className="w-full min-w-0 sm:w-auto sm:flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <div className="divText text-label text-text-secondary">排序依序</div>
-            <ToggleButtonGroup
+            <ToggleGroup
               size="small"
               value={orderSubmit}
               onChange={handleToggleButtonChange}
               exclusive
             >
               {orderBy.map((data, idx) => (
-                <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                   {data.label}
-                </ToggleButton>
+                </ToggleGroupItem>
               ))}
-            </ToggleButtonGroup>
+            </ToggleGroup>
           </div>
         </div>
       </Toolbar>
