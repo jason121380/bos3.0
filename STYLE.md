@@ -178,3 +178,10 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
 1. 只改版面結構／呈現：分頁欄位 `value`、切換 handler、表單欄位存值、儲存 handler、權限判斷、開關 `checked`／`onChange` 一字不動；分頁沿用 `ui/tabs`（含 `activationMode="manual"` 等既有轉接），`settings-nav` 只提供選單 className，不自帶狀態。
 2. 截圖的右側箭頭／數值／粉紅開關只是版式參考：bos3.0 不新增假連結列；既有可點列才可點，開關沿用 `ui/switch` 品牌色，不換色。
 3. 推廣方式：先做 1–2 頁樣板給 Jason 看，確認後才逐頁（一頁一 PR）推廣到其他設定頁；未確認前不得宣稱設定類已全數統一。
+
+### 推廣紀錄
+
+- 2026/10/19 Jason 確認 Parameter 樣板（回覆「可以」）後，推廣第一批（`claude/ui-settings-promo1-box`）：
+  - `/performanceDeductionParameter`：本頁原無頁級分頁、四區直疊（盤點文件寫 Tabs 與現況不符，已更正）。新增純呈現的分類選單（服務扣項方式命名／人員身分類別／抽成方式設定／互助點數設定），各區以 `hidden` 保留掛載、不卸載，避免切換時編輯中欄位的 local state 被重置；子元件 props 與儲存 handler 全原樣。
+  - `/profile/:tab`：僅設定性分頁（基本資料 `general`／密碼設定 `security`／功能釘選 `pinnedTable`）套左選單＋`max-w-6xl`＋分段標題，選單仍列全部有權限分頁、不刪導覽；其餘個人報表分頁維持原 `max-w-[1200px]`＋頂部分頁＋compact，本批不套。
+  - `/deduction-setting` 與 `/update-deduction-setting/:id` **本批跳過**：兩頁皆為單一卡片表單、卡內已有動態屬性分頁，且含 `min-w-[995px]` 的抽成門檻寬表；套左選單只剩單一項目（等於假選單）且會擠壓寬表，故維持原版面，日後如要處理只依 §4 表單頁容器另批評估，不在本樣板批硬套。

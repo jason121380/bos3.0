@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 設定頁樣板推廣第一批（Jason 已確認樣板，v3.0-1019-2246） | `/performanceDeductionParameter` 四區改左選單＋右分段卡片（hidden 保留掛載、儲存 handler 原樣）；`/profile/:tab` 僅基本資料／密碼／功能釘選套左選單＋max-w-6xl，報表型分頁維持 compact 不套；`/deduction-setting` 與 `/update-deduction-setting/:id` 單卡寬表本批跳過（理由見 STYLE §12／MEMORY #97）。待實機逐頁截圖確認選單與卡片。 |
 | MUI 批次6・Dialog/Modal 第二小批（線4，v3.0-1019-2233） | 9 窗換 ui/dialog（只換外殼）：CouponList 扣項/互助設定 2 窗（保留 912px）、進貨 Create/Edit 與領料商品選擇 3 窗（保留 960/700px，MUI TextField 價格數量本體不動）、店家/商品樹狀選擇 4 窗（onOpenChange 轉接、保留 .MerchantsListModal 掛點）；handler/存值不動。跳過 PasswordDialog 巢狀、MUI Select 彈層、拖曳、帳單四兄弟、Autocomplete/DatePicker 彈層、Slider、預約巢狀與複雜金額窗，見 TODO/MEMORY #96。待實機逐窗點驗開關/背景/儲存/樹狀選取。 |
 | MUI 批次6・Dialog/Modal 第一小批（線4，v3.0-1019-2224） | 6 窗換 ui/dialog：ChangePassword（無 onClose 強制窗）、SaleStatusEditModal（onOpenChange 轉接原 onClose）、EditMemberCardRecordModal、EditProductsCategoryModal（保留 912px）、顧客清單/篩選匯出刪除確認孿生窗；窗內欄位/handler/存值不動。跳過 PasswordDialog（巢狀預約）、MUI Select 彈層窗、拖曳排序、帳單/預約與複雜欄位窗，見 TODO/MEMORY #95。待實機逐窗點驗開關/背景/focus。 |
 | 設定頁樣板第一批（OpenAI 設定頁式，v3.0-1019-2220，未合併待 Jason 看樣板） | 新增 `src/ui/settings-nav.js`（桌機左窄選單＋手機頂部分頁＋右側分段標題，只提供呈現）；Parameter 主頁頂部分頁改左選單、容器 `max-w-4xl`→`max-w-6xl`、右側加目前分類標題，11 個分頁的 value／`handleTabsChange` 轉接／各卡片欄位與 `handleSubmit` 儲存全原樣。STYLE.md §12 定版「設定頁樣板」與紅線（報表／帳單／列印不套、開關不換粉紅色）。其餘設定頁未翻，待 Jason 確認樣板。 |
