@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-// TablePagination 保留 MUI：pagenationLabel 依賴 MUI 的 DOM class
-import { TablePagination } from '@mui/material'
+// 分頁使用 ui/table TablePagination（pagenationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
 import { Link } from 'react-router-dom';
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteProducts from 'hooks/useFetchDeleteProducts'
@@ -24,7 +23,7 @@ import { Checkbox } from 'ui/checkbox'
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { formatNumber } from 'ui/format'
 import { Field, Input } from 'ui/input'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
 import ProdudctDrawer from './ProdudctDrawer';
 
@@ -365,12 +364,10 @@ function Results({ className, products, refetchProducts, onPageChange, ...rest }
             </TableBody>
           </Table>
         </div>
-        {/* 分頁保留 MUI：pageRef 交給 helper/pagenationLabel 改寫 .MuiTablePagination-displayedRows 文字 */}
         <div className="flex justify-end px-3 pb-2">
           <TablePagination
             ref={pageRef}
             labelRowsPerPage='每頁顯示數量'
-            component="div"
             count={products.totalCount}
             onPageChange={handleOnChangePage}
             onRowsPerPageChange={handleOnChangeRowsPerPage}

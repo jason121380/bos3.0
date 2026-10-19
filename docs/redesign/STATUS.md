@@ -22,6 +22,7 @@
 | MUI批次2a Card換殼（AGY線，v3.0-1019-1712） | 6 檔活獨立頁 MUI Card→`ui/card` 只換 import/殼（ChangeLineMenuPage×4、EHS2Page×2），內層表單/GraphQL原樣。實查 65 Card 檔：活40（獨立6/報表15/帳單19）、死碼25不換殼。待實機卡片外觀。 |
 | MUI批次2b Avatar/Chip/List（AGY線，v3.0-1019-1718） | 活低風險 5 檔：員工/離職清單 Avatar→ui/avatar、GenericMoreButton 與 PerformanceDetail 的 ListItem*→原生 span、CalendarColorClip 靜態 Chip→原生 span（原色保留）。預約 List 4 孿生＋可刪 Chip 跳過註明、死碼不做。待實機。 |
 | MUI批次3表格1（AGY線，v3.0-1019-1730） | 12 檔非列印：ManagementTable 本體＋6 消費者列→ui/table、客戶明細 5 檔分頁→ui TablePagination。handler/存值不變，列印/報表/帳單不碰。待實機列表與分頁。 |
+| MUI批次3表格2（AGY線，v3.0-1019-1815） | 5 檔：Products 分頁→ui TablePagination、預約日曆 4 孿生 OrderTable 的 TableContainer/Paper→原生 div 殼。handler/存值不變。待實機分頁與日曆捲動。 |
 | 整體績效分析手機擠壓（接手 Codex 線，v3.0-1019-1636） | `OverallPerformanceAnalysisReport/index.js` 篩選列與商家選擇列加手機換行/滿版寬度，只改 className 版面，日期、查詢、匯出邏輯原樣。驗證：eslint 0 error、verify-logic 通過、portal 0/0。待實機確認 390px。 |
 | 帳單編輯金額彙總版面對齊（Claude 線，v3.0-1019-1635） | `OrderEdit/Footer.js` 金額彙總比照打帳單 `PannelPerformance` 分「消費明細／付款與折抵」兩欄分組、合計區兩欄並排與 NT$ 呈現；OrderEdit 業績合計／現金應收公式、按鈕 handler/disabled/顯示條件、重新結帳 Dialog 與列印行為原樣，未新增底部固定列。驗證：eslint 0 error（4 warnings 既有）、verify-logic 通過、portal 0/0、unit 52/52、build 含 1635。待實機確認彙總欄寬與按鈕列。 |
 | Reservation 希望服務日期欄（Codex 線第二批，v3.0-1019-1404） | `Reservation/Basic.js` 唯一 `DatePicker` 改由 `ui/date-picker` 匯入；label、value、onChange 防呆、format、localeText、slotProps 原樣，ToggleButtonGroup 與三個 MUI Select／FormControl 不動。待實機確認欄寬、鍵盤輸入與彈層。 |
