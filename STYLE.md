@@ -247,6 +247,7 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
 | 表格 | 無外框；表頭透明底、14px tertiary medium、高 36px、底線；資料列高 40px、內距 `8px 12px`。 |
 | 側欄 | 寬 264px、`surface` 底、無右框線與底部框線；項目 `px-2.5`、圖示與文字間距 10px；分組標籤 14px tertiary。 |
 | 深色模式 | 依同規則推導：`canvas` `#0B0B0B`、`background` `#111`、`surface` `#161616`、`surface-hover` `#1F1F1F`、文字 `#EDEDED`／`#A8A8A8`／`#8A8A8A`。 |
+| 搜尋下拉 | `ui/combobox`（取代 MUI Autocomplete，行為由 headless 的 downshift 處理）：介面與 MUI Autocomplete 相容，頁面只換 import；`renderInput` 的 TextField 只當 props 載體，`label` 一律成為欄位上方標籤，旁邊的搜尋鈕要底部對齊（`items-end`）；多選已選項目為膠囊、可 Backspace 移除；選單在對話框內會掛在對話框裡。 |
 | 未採用 | 主內容 `max-width 1136px`（ERP 報表與列表需要寬度，維持滿版；設定頁已是 `max-w-6xl`）；Inter 字型（全站沿用 Roboto＋Noto Sans TC）；內容區外距沿用舊全域 `#printContainer`（約 40px，與 Grok 32px 接近，避免動到列印相關樣式）。 |
 
 ## 13. 【已作廢】PrimeStay 版式語言

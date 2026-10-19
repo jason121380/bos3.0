@@ -1,15 +1,13 @@
 /** @jsxImportSource @emotion/react */
 // 排序依據 Select（handler 讀 e.target.value）與設計師多選 Autocomplete 保留 MUI
-import {
-  TextField, Checkbox, FormControl, InputLabel,
-  Select, MenuItem, Autocomplete
-} from '@mui/material'
+import { TextField, Checkbox, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import DateSelector from 'components/DateSelector'
 import idx from 'idx'
 import { Button } from 'ui/button'
 import { css } from '@emotion/react'
+import { Autocomplete } from 'ui/combobox'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
@@ -78,7 +76,7 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit }) =>
           </FormControl>
         </div>
       </div>
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-end gap-2.5">
         <div className="min-w-0 flex-1">
           <Autocomplete
             multiple

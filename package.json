@@ -61,6 +61,7 @@
     "concurrently": "^5.0.0",
     "cypress": "^6.0.1",
     "date-fns": "^2.9.0",
+    "downshift": "8.5.0",
     "google-map-react": "^1.1.7",
     "graphql": "^15.3.0",
     "history": "^4.10.1",

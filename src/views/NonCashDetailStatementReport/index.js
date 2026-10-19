@@ -1,9 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 設計師多選（Autocomplete）保留 MUI；排序切換鈕改 ui/toggle-group（handler (event, value) 原樣、`state !== null` 守衛不變）
-import {
-  TextField, Checkbox,
-  Autocomplete
-} from '@mui/material'
+import { TextField, Checkbox } from '@mui/material'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import Page from 'components/Page'
@@ -22,6 +19,7 @@ import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   root: css({}),
@@ -237,7 +235,7 @@ export default function Employees() {
 
       {!userOrderableList.loading ? (
         <Fragment>
-          <div className="flex w-full min-w-0 flex-wrap items-center gap-3 pb-4">
+          <div className="flex w-full min-w-0 flex-wrap items-end gap-3 pb-4">
             <div className="w-full min-w-0 sm:w-auto sm:flex-1">
             <Autocomplete
               multiple
