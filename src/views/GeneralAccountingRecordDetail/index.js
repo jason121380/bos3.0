@@ -6,7 +6,7 @@ import {
   ToggleButtonGroup
 } from '@mui/material'
 import { Copy, Trash2 } from 'lucide-react'
-import { DatePicker } from '@mui/x-date-pickers'
+import { DatePicker } from 'ui/date-picker'
 import AccountingSubjectsAutocomplete from 'components/AccountingSubjectsAutocomplete'
 import Page from 'components/Page'
 import idx from 'idx'
