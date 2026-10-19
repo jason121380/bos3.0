@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  FormControl, Input, InputLabel,
-  InputAdornment
-} from '@mui/material'
+import { InputAdornment } from 'ui/text-field'
+import { FormControl, Input, InputLabel } from '@mui/material'
 import { MobileDatePicker } from 'ui/date-picker'
 import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'

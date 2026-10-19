@@ -1,4 +1,5 @@
-import { TextField, FormControl, InputLabel, Input, InputAdornment } from '@mui/material'
+import { TextField, InputAdornment } from 'ui/text-field'
+import { FormControl, InputLabel, Input } from '@mui/material'
 import { MobileDatePicker } from 'ui/date-picker'
 import { useFetchProductsInProductRestock } from 'hooks/useFetchProducts'
 import { useFetchProductCategoriesInCreatePicking } from 'hooks/useFetchProductCategories'

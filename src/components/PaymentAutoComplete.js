@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from '@mui/material'
+import { TextField } from 'ui/text-field'
 import useFetchMerchantPayWays from 'hooks/useFetchMerchantPayWays'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'

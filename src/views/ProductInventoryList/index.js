@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
+import { TextField } from 'ui/text-field'
 import { useState, useEffect } from 'react'
-import { TextField } from '@mui/material'
 import useFetchGetProductInventoryList from 'hooks/useFetchGetProductInventoryList'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import Page from 'components/Page'

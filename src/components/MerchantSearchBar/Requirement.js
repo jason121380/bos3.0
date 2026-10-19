@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Grid, TextField, CircularProgress } from '@mui/material'
+import { TextField } from 'ui/text-field'
+import { Grid, CircularProgress } from '@mui/material'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import PaymentAutoComplete from 'components/PaymentAutoComplete'

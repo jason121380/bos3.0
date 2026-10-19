@@ -1,10 +1,7 @@
 /** @jsxImportSource @emotion/react */
+import { TextField } from 'ui/text-field'
 import { useState, useEffect, useRef, Fragment } from 'react'
-import {
-  Dialog, DialogTitle, DialogContent,
-  DialogActions, Chip,
-  TextField, Grid, ThemeProvider
-} from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, DialogActions, Chip, Grid, ThemeProvider } from '@mui/material'
 import { openSnackbar } from 'elements/snackbars'
 import { Edit as EditIcon } from 'ui/icons'
 import idx from 'idx';

@@ -1,14 +1,6 @@
 // 彈窗內有 MUI Select（值可能為空字串），依遷移指南保留 MUI Modal；外框、標題、按鈕改為 src/ui
-import {
-  Modal,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-  FormControlLabel,
-  Checkbox,
-} from '@mui/material'
+import { TextField } from 'ui/text-field'
+import { Modal, FormControl, InputLabel, Select, MenuItem, FormControlLabel, Checkbox } from '@mui/material'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import { Delete, Plus, Trash2 } from 'lucide-react'

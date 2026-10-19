@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 // 人員類別多選（Autocomplete）保留 MUI
-import { TextField, Checkbox } from '@mui/material'
+import { TextField } from 'ui/text-field'
+import { Checkbox } from '@mui/material'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'

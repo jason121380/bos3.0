@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  FormControl, InputAdornment, InputLabel,
-  OutlinedInput,
-} from '@mui/material'
+import { InputAdornment } from 'ui/text-field'
+import { FormControl, InputLabel, OutlinedInput } from '@mui/material'
 import { Button } from 'ui/button'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Visibility, VisibilityOff } from 'ui/icons'

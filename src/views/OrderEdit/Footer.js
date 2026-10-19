@@ -1,11 +1,5 @@
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  TextField,
-  DialogActions,
-} from '@mui/material'
+import { TextField } from 'ui/text-field'
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material'
 import billContext from 'context/keyInContext'
 import { openSnackbar } from 'elements/snackbars'
 import getQueryString from 'helper/getQueryString'

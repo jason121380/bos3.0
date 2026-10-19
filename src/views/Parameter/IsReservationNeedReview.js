@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 數字欄位（onWheel 失焦、onFocus 全選）與多行文字保留 MUI TextField
-import { TextField } from '@mui/material'
+import { TextField } from 'ui/text-field'
 import { CheckboxField } from 'ui/checkbox'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Field } from 'ui/input'
