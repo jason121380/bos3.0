@@ -113,7 +113,7 @@ function Dashboard({ route, location }) {
           // iOS：輸入框字級小於 16px 時聚焦會自動放大畫面
           'max-sm:[&_input]:!text-[16px] max-sm:[&_select]:!text-[16px] max-sm:[&_textarea]:!text-[16px]',
           showTabBar && 'max-lg:pb-[calc(56px+env(safe-area-inset-bottom))] print:pb-0',
-          openNavBarDesktop && 'lg:pl-60'
+          openNavBarDesktop && 'lg:pl-[264px]'
         )}
       >
         <div id="printContainer" className="max-w-full overflow-x-hidden">

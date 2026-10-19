@@ -13,10 +13,11 @@ const PRINT = cn(
   'print:[&_thead]:bg-transparent print:[&_tfoot]:bg-transparent'
 )
 const Table = React.forwardRef(({ className, wrapperClassName, dense = false, ...props }, ref) => (
-  <div className={cn('ui-root ui-scroll-x w-full overflow-x-auto rounded-lg border border-solid border-border print:overflow-visible print:rounded-none print:border-0', wrapperClassName)}>
+  <div className={cn('ui-root ui-scroll-x w-full overflow-x-auto print:overflow-visible', wrapperClassName)}>
     <table
       ref={ref}
-      className={cn('w-full border-collapse text-body', dense && '[&_td]:h-8 [&_td]:px-2 [&_td]:py-1 [&_th]:h-8 [&_th]:px-2', PRINT, className)}
+      // Grok 式：無外框；表格字級固定 14px（table），不隨介面內文 16px 放大
+      className={cn('w-full border-collapse text-table', dense && '[&_td]:h-8 [&_td]:px-2 [&_td]:py-1 [&_th]:h-8 [&_th]:px-2', PRINT, className)}
       {...props}
     />
   </div>
@@ -24,7 +25,7 @@ const Table = React.forwardRef(({ className, wrapperClassName, dense = false, ..
 Table.displayName = 'Table'
 
 const TableHeader = React.forwardRef(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn('bg-surface', className)} {...props} />
+  <thead ref={ref} className={cn('bg-transparent', className)} {...props} />
 ))
 TableHeader.displayName = 'TableHeader'
 
@@ -51,7 +52,7 @@ const TableHead = React.forwardRef(({ className, numeric, ...props }, ref) => (
   <th
     ref={ref}
     className={cn(
-      'h-11 whitespace-nowrap border-0 border-b border-solid border-border px-4 text-left align-middle text-label text-text-secondary',
+      'h-9 whitespace-nowrap border-0 border-b border-solid border-border px-3 text-left align-middle text-label text-text-tertiary',
       numeric && 'text-right',
       className
     )}
@@ -64,7 +65,7 @@ TableHead.displayName = 'TableHead'
 const TableCell = React.forwardRef(({ className, numeric, ...props }, ref) => (
   <td
     ref={ref}
-    className={cn('h-11 px-4 py-2 align-middle text-text [@media_screen_and_(max-width:639.95px)]:whitespace-nowrap', numeric && 'text-right tabular-nums', className)}
+    className={cn('h-10 px-3 py-2 align-middle text-text [@media_screen_and_(max-width:639.95px)]:whitespace-nowrap', numeric && 'text-right tabular-nums', className)}
     {...props}
   />
 ))

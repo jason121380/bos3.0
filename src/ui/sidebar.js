@@ -3,7 +3,8 @@ import { ChevronDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { cn, focusRing } from './utils'
 
-// STYLE.md §6 Sidebar：240px、surface 底；項目高 36px、rounded-md；選取為主題色 8% 底 + 主題色文字 + 字重 500
+// STYLE.md §6 Sidebar（Grok 式）：264px、#FAFAFA（surface）底、無右框線；項目高 36px、圓角 8px、圖示與文字間距 10px；
+// 選取為主題色 8% 底 + 主題色文字 + 字重 500（保留品牌藍）
 // 桌機（lg 以上）固定在左側，可收合；平板與手機為由左滑出的抽屜。整個側欄只渲染一份。
 function Sidebar({ mobileOpen, onMobileClose, desktopOpen = true, className, children }) {
   return (
@@ -13,7 +14,7 @@ function Sidebar({ mobileOpen, onMobileClose, desktopOpen = true, className, chi
       )}
       <aside
         className={cn(
-          'ui-root noprint fixed inset-y-0 left-0 z-[1200] flex w-60 flex-col border-0 border-r border-solid border-border bg-surface',
+          'ui-root noprint fixed inset-y-0 left-0 z-[1200] flex w-[264px] flex-col bg-surface',
           'transition-transform duration-200',
           // 手機抽屜：加寬、避開瀏海與底部指示條
           'max-lg:w-[min(84vw,320px)] max-lg:pb-[env(safe-area-inset-bottom)] max-lg:pt-[env(safe-area-inset-top)] max-lg:shadow-float',
@@ -35,16 +36,16 @@ const SidebarContent = ({ className, ...props }) => (
 )
 
 const SidebarFooter = ({ className, ...props }) => (
-  <div className={cn('border-0 border-t border-solid border-border px-3 py-3', className)} {...props} />
+  <div className={cn('px-3 py-3', className)} {...props} />
 )
 
-// 區段標題：caption + text-tertiary
+// 區段標題：14px、text-tertiary（Grok 式分組標籤）
 const SidebarLabel = ({ className, ...props }) => (
-  <div className={cn('px-2 pb-1 pt-4 text-caption text-text-tertiary', className)} {...props} />
+  <div className={cn('px-2.5 pb-1.5 pt-4 text-label font-normal text-text-tertiary', className)} {...props} />
 )
 
 const rowClass = cn(
-  'flex h-9 w-full items-center gap-2 rounded-md px-2 text-left text-body text-text-secondary transition-colors',
+  'flex h-9 w-full items-center gap-2.5 rounded-md px-2.5 text-left text-body text-text-secondary transition-colors duration-150',
   'hover:bg-surface-hover hover:text-text',
   focusRing
 )

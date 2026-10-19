@@ -3,10 +3,12 @@ import { Slot } from '@radix-ui/react-slot'
 import { cva } from 'class-variance-authority'
 import { cn, focusRing } from './utils'
 
-// STYLE.md §6：變體 primary（主題藍實心）/ secondary（淺灰實心、無框）/ ghost / danger；尺寸 sm 32 / md 36 / lg 40；圖示 16px、間距 6px
+// STYLE.md §6（Grok 式）：全膠囊；primary（主題藍實心）/ secondary（#F5F5F5 實心、無框）/ ghost / danger；
+// 尺寸 sm 32 / md 36 / lg 40、字級 14 medium；150ms 過渡、按下 scale(0.97)；圖示 16px、間距 6px
 const buttonVariants = cva(
   cn(
-    'inline-flex items-center justify-center gap-1.5 whitespace-nowrap font-medium transition-colors select-none',
+    'inline-flex items-center justify-center gap-1.5 whitespace-nowrap font-medium select-none',
+    'transition-[background-color,color,transform] duration-150 ease-out active:scale-[0.97]',
     'disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-4',
     focusRing
   ),
@@ -19,10 +21,10 @@ const buttonVariants = cva(
         danger: 'rounded-full bg-danger text-white hover:bg-danger/90',
       },
       size: {
-        sm: 'h-8 px-3 text-label',
-        md: 'h-9 px-4 text-body font-medium max-sm:h-10', // 手機觸控目標 40px
-        lg: 'h-10 px-5 text-body font-medium',
-        icon: 'h-9 w-9 max-sm:h-10 max-sm:w-10',
+        sm: 'h-8 px-3.5 text-label',
+        md: 'h-9 px-4 text-label max-sm:h-10', // 手機觸控目標 40px
+        lg: 'h-10 px-[18px] text-label',
+        icon: 'h-8 w-8 rounded-full max-sm:h-10 max-sm:w-10',
       },
     },
     defaultVariants: { variant: 'secondary', size: 'md' },

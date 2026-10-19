@@ -13,7 +13,7 @@ import { cn, focusRing } from './utils'
 
 const GroupContext = createContext(null)
 
-const sizes = { sm: 'h-7 px-2.5 text-label', md: 'h-8 px-3 text-body max-sm:h-9' }
+const sizes = { sm: 'h-7 px-2.5 text-label', md: 'h-8 px-3.5 text-label max-sm:h-9' }
 // 也接受 MUI 的 size 名稱，替換時可原樣保留
 const sizeKey = size => ({ small: 'sm', medium: 'md', large: 'md' }[size] || size)
 

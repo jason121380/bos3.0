@@ -2,13 +2,13 @@ import React from 'react'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 import { cn, focusRing } from './utils'
 
-// STYLE.md §6：底線式；選取為 text + 2px 主題色底線，未選 text-secondary
+// STYLE.md §6（Grok 式）：膠囊分頁；每顆高 32px、圓角 full、間距 4px；選取為主題色淡底＋主題色文字（保留品牌藍），未選 text-secondary
 const Tabs = TabsPrimitive.Root
 
 const TabsList = React.forwardRef(({ className, ...props }, ref) => (
   <TabsPrimitive.List
     ref={ref}
-    className={cn('flex items-center gap-6 overflow-x-auto border-0 border-b border-solid border-border', className)}
+    className={cn('flex items-center gap-1 overflow-x-auto', className)}
     {...props}
   />
 ))
@@ -18,8 +18,8 @@ const TabsTrigger = React.forwardRef(({ className, ...props }, ref) => (
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      '-mb-px inline-flex h-10 items-center whitespace-nowrap border-0 border-b-2 border-solid border-transparent text-body text-text-secondary transition-colors',
-      'hover:text-text data-[state=active]:border-accent data-[state=active]:font-medium data-[state=active]:text-text',
+      'inline-flex h-8 items-center whitespace-nowrap rounded-full border-0 bg-transparent px-4 text-body text-text-secondary transition-colors duration-150 ease-out',
+      'hover:text-text data-[state=active]:bg-accent/10 data-[state=active]:font-medium data-[state=active]:text-accent',
       'disabled:pointer-events-none disabled:text-text-tertiary',
       focusRing,
       className

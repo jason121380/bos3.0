@@ -12,7 +12,7 @@ module.exports = {
       colors: {
         canvas: token('canvas'),
         background: token('background'),
-        surface: { DEFAULT: token('surface'), hover: token('surface-hover'), active: token('surface-active') },
+        surface: { DEFAULT: token('surface'), hover: token('surface-hover'), active: token('surface-active'), selected: token('surface-selected') },
         border: { DEFAULT: token('border'), strong: token('border-strong'), 'strong-hover': token('border-strong-hover') },
         text: {
           DEFAULT: token('text'),
@@ -28,17 +28,21 @@ module.exports = {
       borderColor: { DEFAULT: token('border') },
       opacity: { 8: '0.08' },
       borderRadius: { md: '8px', lg: '12px' },
+      // Grok 式動效：150ms、cubic-bezier(0.22, 1, 0.36, 1)
+      transitionTimingFunction: { out: 'cubic-bezier(0.22, 1, 0.36, 1)' },
       boxShadow: { float: '0 4px 16px rgba(0,0,0,0.08)' },
       fontFamily: {
         // 與全站既有字型一致（src/assets/scss/main.scss 以 !important 套用在所有元素）
         sans: ['Roboto', '"Noto Sans TC"', 'Helvetica', 'Arial', 'sans-serif'],
       },
       fontSize: {
-        display: ['28px', { lineHeight: '36px', fontWeight: '700' }],
-        title: ['20px', { lineHeight: '28px', fontWeight: '700' }],
-        heading: ['16px', { lineHeight: '24px', fontWeight: '700' }],
-        body: ['14px', { lineHeight: '20px', fontWeight: '400' }],
-        label: ['13px', { lineHeight: '18px', fontWeight: '500' }],
+        // Grok 式字級（Jason 2026/10/20）：介面內文 16px；表格（含報表 compact）維持 14px（table）
+        display: ['28px', { lineHeight: '36px', fontWeight: '500', letterSpacing: '-0.01em' }],
+        title: ['24px', { lineHeight: '32px', fontWeight: '400', letterSpacing: '-0.01em' }],
+        heading: ['18px', { lineHeight: '26px', fontWeight: '500' }],
+        body: ['16px', { lineHeight: '24px', fontWeight: '400' }],
+        table: ['14px', { lineHeight: '20px', fontWeight: '400' }],
+        label: ['14px', { lineHeight: '20px', fontWeight: '500' }],
         caption: ['12px', { lineHeight: '16px', fontWeight: '400' }],
       },
     },
