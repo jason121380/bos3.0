@@ -24,7 +24,7 @@ import { cloneDeep } from 'lodash'
 import giveBonus from 'helper/giveBonus'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
-import { formatNumber } from 'ui/format'
+import { formatNumber, formatMoney } from 'ui/format'
 
 export default function Footer({ enable }) {
   const {
@@ -454,7 +454,7 @@ export default function Footer({ enable }) {
   const Row = ({ label, value }) => (
     <div className="flex items-center justify-between gap-3 py-1.5 text-body">
       <span className="whitespace-nowrap text-text-secondary">{label}</span>
-      <span className="tabular-nums text-text">{formatNumber(value)}</span>
+      <span className="whitespace-nowrap tabular-nums text-text">{formatMoney(value)}</span>
     </div>
   )
   return (
@@ -462,21 +462,28 @@ export default function Footer({ enable }) {
       <CardHeader>
         <CardTitle>金額彙總</CardTitle>
       </CardHeader>
-      <div className="grid grid-cols-2 gap-x-6 px-5 pt-2 md:grid-cols-4">
-        <Row label="服務消費" value={serviceTotalPrice} />
-        <Row label="店販消費" value={merchantSellTotalPrice} />
-        <Row label="使用預收卡" value={Math.round(couponUsageTotalPrice)} />
-        <Row label="預收卡販賣" value={couponSellPrice} />
-        <Row label="會員卡販賣" value={merberShipCardTotalPrice} />
-        <Row label="扣入金" value={bill.walletPay} />
-        <Row label="其他付款方式" value={bill.amountByOtherPay} />
-        <Row label="紅利點數折抵" value={bill.bonusDecount} />
+      <div className="grid grid-cols-2 gap-x-6 gap-y-3 px-5 pt-2 max-sm:grid-cols-1">
+        <div className="flex flex-col">
+          <p className="m-0 pb-1 text-label font-medium text-text-tertiary">消費明細</p>
+          <Row label="服務消費" value={serviceTotalPrice} />
+          <Row label="店販消費" value={merchantSellTotalPrice} />
+          <Row label="預收卡販賣" value={couponSellPrice} />
+          <Row label="使用預收卡" value={Math.round(couponUsageTotalPrice)} />
+          <Row label="會員卡販賣" value={merberShipCardTotalPrice} />
+        </div>
+        <div className="flex flex-col">
+          <p className="m-0 pb-1 text-label font-medium text-text-tertiary">付款與折抵</p>
+          <Row label="扣入金" value={bill.walletPay} />
+          <Row label="其他付款方式" value={bill.amountByOtherPay} />
+          <Row label="紅利點數折抵" value={bill.bonusDecount} />
+        </div>
       </div>
       <div className="mt-3 flex flex-wrap items-end justify-between gap-6 border-0 border-t border-solid border-border px-5 py-4">
-        <div className="flex flex-wrap gap-x-10 gap-y-4">
+        <div className="grid grid-cols-2 gap-x-10 gap-y-4">
           <div className="flex flex-col gap-1">
             <span className="text-label text-text-secondary">業績合計</span>
             <span className="text-heading tabular-nums text-text">
+              <span className="mr-1 text-body text-text-secondary">NT$</span>
               {formatNumber(Math.round(
                 serviceTotalPrice +
                 merchantSellTotalPrice +

@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 帳單編輯金額彙總版面對齊（Claude 線，v3.0-1019-1635） | `OrderEdit/Footer.js` 金額彙總比照打帳單 `PannelPerformance` 分「消費明細／付款與折抵」兩欄分組、合計區兩欄並排與 NT$ 呈現；OrderEdit 業績合計／現金應收公式、按鈕 handler/disabled/顯示條件、重新結帳 Dialog 與列印行為原樣，未新增底部固定列。驗證：eslint 0 error（4 warnings 既有）、verify-logic 通過、portal 0/0、unit 52/52、build 含 1635。待實機確認彙總欄寬與按鈕列。 |
 | Reservation 希望服務日期欄（Codex 線第二批，v3.0-1019-1404） | `Reservation/Basic.js` 唯一 `DatePicker` 改由 `ui/date-picker` 匯入；label、value、onChange 防呆、format、localeText、slotProps 原樣，ToggleButtonGroup 與三個 MUI Select／FormControl 不動。待實機確認欄寬、鍵盤輸入與彈層。 |
 | EmployeeManagementDetail 一般設定日期欄（Codex 線，v3.0-1019-1358） | `General/GeneralSettings.js` 出生、到職 2 個 `DatePicker` 只換 import 至 `ui/date-picker`；label 由 facade 的 Field 顯示，value／onChange／format／slotProps／css 原樣。待實機確認兩欄寬度與彈層。 |
 | IsReservationNeedReview 時間欄標籤（Codex 線，v3.0-1019-1323） | 開始／結束兩處時間複合列改用 `Field` 上方標籤，時分選單置於 flex 列；值、事件、停用條件與選項不變，其他欄位不動。待實機確認列高與對齊。 |
