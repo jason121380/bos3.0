@@ -190,3 +190,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 - 範圍：`MerchantBankTransferReport/Results.js`（1 張）、`ProductInvoicingRecordReport/Results.js`（1 張）改 `ui/table`＋`dense`；兩檔 `index.js` 只查不動。
 - 報表累計：先前 17＋本批 2＝**19 頁已用 `ui/table`**（逐目錄實查 `*Report*/*.js`）；**剩 9 個目錄（10 個檔）仍為 MUI Table**：`BusinessAnalysisReport`、`CostAnalysisReport`、`DesignerMonthlyReport`、`DesignerPerforamnceAnalyzeReport`（Results＋Compare）、`DesignerRakeReport`、`DesignersSalaryDetailReport`、`EmployeeDailyReport`、`MerchantBusinessIntervalReport`、`ServiceDeductionDetailReport`。
 - 驗證（指揮者回報；版號校正 0441→0443 時 Claude 未重跑）：eslint 0 error；`verify-logic` 兩檔通過；`portal-root-scan` 0/0；單元測試 52/52 通過；`CI=true npm run build` 成功，且 bundle 內含校正前版號 `v3.0-1019-0441`（build 在校正前產出，校正後需重新 build 才會出現 `v3.0-1019-0443`）。
+
+### MainEvent 日期欄改 facade（月曆專項，分支 `claude/ui-datepicker-mainevent-box`，v3.0-1019-1306，未 merge）
+
+- 範圍：`MainEventCreate/General.js`、`MainEventEdit/General.js` 共 4 個 `MobileDatePicker` 改 `ui/date-picker`，其餘欄位不動；存值（`getTime()`）與 handler 原樣。待實機：欄寬 150px、並排對齊、Edit `readOnly` 外觀。
