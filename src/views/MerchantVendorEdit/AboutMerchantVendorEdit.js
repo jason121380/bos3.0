@@ -17,29 +17,30 @@ function AboutMerchantVendorEdit({ className, vendorOption, isLodaing, submitDat
         <CardTitle>廠商資訊</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <Autocomplete
-          disabled={isLodaing}
-          options={vendorOption}
-          value={submitData.vendorUUId}
-          autoHighlight
-          getOptionLabel={option => option ? option.name : ''}
-          onChange={(event, value) => handleInputChange('vendorUUId', value)}
-          renderOption={(props, option) => (
-            <li {...props}>{option.name}</li>
-          )}
-          renderInput={params => (
-            <TextField
-              {...params}
-              label="選擇廠商"
-              variant="outlined"
-              fullWidth
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: 'new-password',
-              }}
-            />
-          )}
-        />
+        <Field label="選擇廠商">
+          <Autocomplete
+            disabled={isLodaing}
+            options={vendorOption}
+            value={submitData.vendorUUId}
+            autoHighlight
+            getOptionLabel={option => option ? option.name : ''}
+            onChange={(event, value) => handleInputChange('vendorUUId', value)}
+            renderOption={(props, option) => (
+              <li {...props}>{option.name}</li>
+            )}
+            renderInput={params => (
+              <TextField
+                {...params}
+                variant="outlined"
+                fullWidth
+                inputProps={{
+                  ...params.inputProps,
+                  autoComplete: 'new-password',
+                }}
+              />
+            )}
+          />
+        </Field>
         <Field label="代號" htmlFor="merchantVendorNo">
           <Input
             id="merchantVendorNo"
