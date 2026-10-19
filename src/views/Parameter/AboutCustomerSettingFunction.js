@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
-// 「完全新客必填欄位」為多選 Autocomplete（含勾選圖示的選項），保留 MUI
+// 「完全新客必填欄位」為多選 Autocomplete（含勾選圖示的選項），標籤改上方 Field、本體保留 MUI
 import {
   TextField, Checkbox, Autocomplete
 } from '@mui/material'
 import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Field } from 'ui/input'
 import { memo } from 'react'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import _ from 'lodash'
@@ -49,29 +50,31 @@ function AboutCustomerSettingFunction({
           </div>
         ))}
         <div style={{ width: '100%', padding: '8px 20px 24px 20px' }}>
-          <Autocomplete
-            multiple
-            options={requiredColumnOptions}
-            disableCloseOnSelect
-            disabled={!inputEnable}
-            getOptionLabel={option => option.label}
-            value={aboutCustomer.requiredColumnForNewCustomer}
-            onChange={(e, v) => handleSetValue('requiredColumnForNewCustomer', v)}
-            renderOption={(props, option, { selected }) => (
-              <li {...props}>
-                <Checkbox
-                  style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                  icon={icon}
-                  checkedIcon={checkedIcon}
-                  checked={selected}
-                />
-                {option.label}
-              </li>
-            )}
-            renderInput={params => (
-              <TextField {...params} variant="outlined" label="完全新客必填欄位" placeholder="欄位名稱" />
-            )}
-          />
+          <Field label="完全新客必填欄位">
+            <Autocomplete
+              multiple
+              options={requiredColumnOptions}
+              disableCloseOnSelect
+              disabled={!inputEnable}
+              getOptionLabel={option => option.label}
+              value={aboutCustomer.requiredColumnForNewCustomer}
+              onChange={(e, v) => handleSetValue('requiredColumnForNewCustomer', v)}
+              renderOption={(props, option, { selected }) => (
+                <li {...props}>
+                  <Checkbox
+                    style={{ color: 'rgb(var(--text))', marginRight: 8 }}
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    checked={selected}
+                  />
+                  {option.label}
+                </li>
+              )}
+              renderInput={params => (
+                <TextField {...params} variant="outlined" placeholder="欄位名稱" />
+              )}
+            />
+          </Field>
         </div>
       </CardContent>
     </Card>
