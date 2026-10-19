@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
-// 裁切對話框（Slider）、多選 Autocomplete、數字欄位保留 MUI
+// 裁切對話框 Slider 已換 ui/slider；多選 Autocomplete、數字欄位保留 MUI
 import {
-  Checkbox, TextField, Dialog, DialogContent, DialogTitle, Slider, Autocomplete
+  Checkbox, TextField, Dialog, DialogContent, DialogTitle, Autocomplete
 } from '@mui/material'
 import { Avatar } from 'ui/avatar'
+import { Slider } from 'ui/slider'
 import { CheckboxField } from 'ui/checkbox'
 import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
