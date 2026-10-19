@@ -5,6 +5,7 @@ import {
 } from '@mui/material'
 import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Field } from 'ui/input'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import { memo } from 'react'
 import _ from 'lodash'
@@ -70,30 +71,32 @@ function NonDesignationBookingLimitSetting({
           <div className="flex flex-wrap gap-6">
             {settingOptions.map(option => (
               <div key={key + option.label}>
-                <Autocomplete
-                  multiple
-                  options={designerStatus}
-                  onChange={(event, value) => handleChangeNotification(key, option.key, value)}
-                  value={designerStatus.filter(({ value }) => BookingLineNotify[key][option.key].includes(value))}
-                  disableCloseOnSelect
-                  renderOption={(props, option, { selected }) => {
-                    const { key, ...optionProps } = props;
-                    return (
-                      <li key={key} {...optionProps}>
-                        <Checkbox
-                          icon={icon}
-                          checkedIcon={checkedIcon}
-                          checked={selected}   
-                        />
-                        {option.label}
-                      </li>
-                    );
-                  }}
-                  style={{ width: 250 }}
-                  renderInput={(params) => (
-                    <TextField {...params} label={option.label} placeholder="" />
-                  )}
-                />
+                <Field label={option.label}>
+                  <Autocomplete
+                    multiple
+                    options={designerStatus}
+                    onChange={(event, value) => handleChangeNotification(key, option.key, value)}
+                    value={designerStatus.filter(({ value }) => BookingLineNotify[key][option.key].includes(value))}
+                    disableCloseOnSelect
+                    renderOption={(props, option, { selected }) => {
+                      const { key, ...optionProps } = props;
+                      return (
+                        <li key={key} {...optionProps}>
+                          <Checkbox
+                            icon={icon}
+                            checkedIcon={checkedIcon}
+                            checked={selected}   
+                          />
+                          {option.label}
+                        </li>
+                      );
+                    }}
+                    style={{ width: 250 }}
+                    renderInput={(params) => (
+                      <TextField {...params} placeholder="" />
+                    )}
+                  />
+                </Field>
               </div>
             ))}
           </div>
@@ -175,30 +178,32 @@ function NonDesignationBookingLimitSetting({
             </div>
           )}
         </div>
-        <Autocomplete
-          multiple
-          autoHighlight
-          options={lineConnectedUser}
-          disableCloseOnSelect
-          disabled={!inputEnable}
-          getOptionLabel={option => option.name}
-          value={NDBRecipients}
-          onChange={(e, v) => setNDBRecipients(v)}
-          renderOption={(props, option, { selected }) => (
-            <li {...props}>
-              <Checkbox
-                style={{ marginRight: 8 }}
-                icon={icon}
-                checkedIcon={checkedIcon}
-                checked={selected}
-              />
-              {option.name}
-            </li>
-          )}
-          renderInput={params => (
-            <TextField {...params} variant="outlined" label="不指定預約 通知接收人" placeholder="選擇設計師" />
-          )}
-        />
+        <Field label="不指定預約 通知接收人">
+          <Autocomplete
+            multiple
+            autoHighlight
+            options={lineConnectedUser}
+            disableCloseOnSelect
+            disabled={!inputEnable}
+            getOptionLabel={option => option.name}
+            value={NDBRecipients}
+            onChange={(e, v) => setNDBRecipients(v)}
+            renderOption={(props, option, { selected }) => (
+              <li {...props}>
+                <Checkbox
+                  style={{ marginRight: 8 }}
+                  icon={icon}
+                  checkedIcon={checkedIcon}
+                  checked={selected}
+                />
+                {option.name}
+              </li>
+            )}
+            renderInput={params => (
+              <TextField {...params} variant="outlined" placeholder="選擇設計師" />
+            )}
+          />
+        </Field>
       </CardContent>
     </Card>
   )
