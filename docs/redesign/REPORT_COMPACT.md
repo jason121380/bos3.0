@@ -2,11 +2,11 @@
 
 > 掃描日期：2026/10/19　版號：v3.0-1019-1005（暫定）　性質：**盤點文件，只記事實與待辦，不代表任何一頁已通過實機驗收**。
 > 口徑：以 `src/views/<目錄>` 為單位；「ui/table」＝該目錄有檔案 `from 'ui/table'`；「有 dense」＝該目錄有 `Table` 實際傳 `dense`（`rg -lw dense` 命中）；「MUI 表格」＝仍有 `@mui/material` 的 Table 系列。
-> **數量註記**：下列分類加總為 **42** 個目錄（已 compact 38＋仍用 MUI 4）；原指令口徑為 41，差 1 尚未對出是哪一個目錄，待核對，不影響各目錄分類。
+> **數量註記**：下列分類加總為 **42** 個目錄（已 compact 39＋仍用 MUI 3）；原指令口徑為 41，差 1 尚未對出是哪一個目錄，待核對，不影響各目錄分類。
 
-## 一、已 compact（ui/table 且有 dense）— 38 個
+## 一、已 compact（ui/table 且有 dense）— 39 個
 
-BusinessAnalysisReport、BusinessItemsMonthlyAnalyzeReport、CostAnalysisReport、DecreaseDailyReport、DesignerMonthlyReport、DesignerPerforamnceAnalyzeReport、DesignerPerformanceReport、DesignerRakeReport、DesignersSalaryDetailReport、EmployeeDailyReport、HelperMonthlyReport、HelperPerformanceReport、IncomeStatementReport、MembershipSellReport、MerchantBankTransferReport、MerchantBusinessIntervalReport、MerchantDailyPerformanceReport、MerchantDailyReport、MoneyFlowCategoryReport、MoneyFlowDailyReport、MoneyFlowTransferReport、NonCashDetailStatementReport、OverallPerformanceAnalysisReport、PaymentReport、ProductConsumeReport、ProductInvoicingRecordReport、ProductLeaderBoard、SingleServiceSearchingReport、ServiceDeductionDetailReport（風險頁專批，v3.0-1019-1047 暫定）、DecreaseDetail（互助點數明細，PR #50 補）、SalaryDetail、SalaryOverview、CustomerConsumptionLeaderboard、CustomerWalletLeaderboard、MerchantCategorySellsRecords、ConsumptionAnalyticsDashboard（儀表板排行表，PR #51 補）、MerchantLeaderBoard（MUI `size=small` 轉 `ui/table` dense，v3.0-1019-1038 暫定；列印規則 `.MerchantLeaderBoardTable table` 的掛點以 `wrapperClassName` 保留在 `ui/table` 外框 div）、DesignerPerformBasic（原風險頁，v3.0-1019-1055 暫定；主表與展開列內的明細子表一併轉 `ui/table` dense，MUI `Collapse` 改條件渲染 `{isOpen(index) && …}`，動畫消失；`.DesignerPerformBasicTable` 以 `wrapperClassName` 保留、`multiMerchantsLeaderBoardCollapse` 掛在內表 `table`）。
+BusinessAnalysisReport、BusinessItemsMonthlyAnalyzeReport、CostAnalysisReport、DecreaseDailyReport、DesignerMonthlyReport、DesignerPerforamnceAnalyzeReport、DesignerPerformanceReport、DesignerRakeReport、DesignersSalaryDetailReport、EmployeeDailyReport、HelperMonthlyReport、HelperPerformanceReport、IncomeStatementReport、MembershipSellReport、MerchantBankTransferReport、MerchantBusinessIntervalReport、MerchantDailyPerformanceReport、MerchantDailyReport、MoneyFlowCategoryReport、MoneyFlowDailyReport、MoneyFlowTransferReport、NonCashDetailStatementReport、OverallPerformanceAnalysisReport、PaymentReport、ProductConsumeReport、ProductInvoicingRecordReport、ProductLeaderBoard、SingleServiceSearchingReport、ServiceDeductionDetailReport（風險頁專批，v3.0-1019-1047 暫定）、DecreaseDetail（互助點數明細，PR #50 補）、SalaryDetail、SalaryOverview、CustomerConsumptionLeaderboard、CustomerWalletLeaderboard、MerchantCategorySellsRecords、ConsumptionAnalyticsDashboard（儀表板排行表，PR #51 補）、MerchantLeaderBoard（MUI `size=small` 轉 `ui/table` dense，v3.0-1019-1038 暫定；列印規則 `.MerchantLeaderBoardTable table` 的掛點以 `wrapperClassName` 保留在 `ui/table` 外框 div）、DesignerPerformBasic（原風險頁，v3.0-1019-1055 暫定；主表與展開列內的明細子表一併轉 `ui/table` dense，MUI `Collapse` 改條件渲染 `{isOpen(index) && …}`，動畫消失；`.DesignerPerformBasicTable` 以 `wrapperClassName` 保留、`multiMerchantsLeaderBoardCollapse` 掛在內表 `table`）、HelperLeaderBoard（互助排行榜，v3.0-1019-1103 暫定；沿用 DesignerPerformBasic 作法，主表與展開列內明細子表轉 `ui/table` dense，`Collapse` 改條件渲染，動畫消失；`.HelperLeaderBoardTable` 以 `wrapperClassName` 保留）。
 
 備註：`DecreaseDailyReport`、`MerchantDailyReport` 同檔仍有 MUI `TableContainer`（下方明細卡片，列印 CSS 依 `.MuiTableContainer-root` 排版），主報表已 compact、MUI 殘留部分未動。
 
@@ -14,13 +14,12 @@ BusinessAnalysisReport、BusinessItemsMonthlyAnalyzeReport、CostAnalysisReport�
 
 DecreaseDetail（PR #50）與 SalaryDetail（3 檔）、SalaryOverview、CustomerConsumptionLeaderboard、CustomerWalletLeaderboard、MerchantCategorySellsRecords、ConsumptionAnalyticsDashboard 五個 Ranking 排行表（PR #51）：主表格只加 `dense`，欄位、數字、合計列、CSV 匯出皆未動。此類漏改已清零。
 
-## 四、仍用 MUI 表格 — 4 個
+## 四、仍用 MUI 表格 — 3 個
 
 | 目錄 | 原因／備註 |
 |---|---|
 | AttendanceEmployeeSchedule | 排班格線、特殊 dateCell。後續：排班格線專批（格子互動與 dateCell 樣式需獨立設計，不套一般 dense），暫保留 MUI |
 | EmployeePayslip | 薪資條列印、MUI `size=small`。後續：薪資條專批（列印版面為產品交付物，需實機列印比對後再轉），暫保留原因＝列印風險 |
-| HelperLeaderBoard | MUI＋可展開列。後續：展開列排行榜專批，可沿用 DesignerPerformBasic 的作法（colSpan 列保留、`Collapse` 改條件渲染） |
 | MultiMerchantsLeaderBoard | MUI＋展開列＋sticky。後續：展開列排行榜專批，同上作法，另需處理 sticky 表頭／欄 |
 
 > 已移出：**DesignerPerformBasic**（原風險頁，v3.0-1019-1055 暫定）——扁平欄位主表（`tableHeadCells` 設定陣列加 `numeric` 旗標）＋展開列 `colSpan` 整列內的明細子表一併轉 `ui/table` dense；`Collapse` 改條件渲染（展開／收合動畫消失，屬可接受差異）。風險頁清零。待實機：展開列與內表欄寬、列印 `.DesignerPerformBasicTable` 規則。
