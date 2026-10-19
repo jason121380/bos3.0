@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| BookingNotificationSetting 下拉標籤（Codex 線，v3.0-1019-1305） | map 內 1 處 `NativeSelect` 改用 `Field` 上方標籤，涵蓋 15 個實例；事件、存值與布林選項不變，手機／帳號 MUI TextField 保留。STYLE.md §6 已規範標籤在上，無需修改；待實機確認列高與對齊。 |
 | 基礎 | Tailwind（preflight 關閉）、tokens、`src/ui/` 元件：Button、Input／Field、Select、NativeSelect（任意值）、Table（dense、列印格線）／TablePagination、Dialog（手機為底部面板）、Badge、Card、Tabs、ToggleGroup、Switch、Checkbox／CheckboxField、Avatar、Stat／StatGrid／StatCard、Toast、EmptyState、Skeleton、Popover、DropdownMenu、Sidebar、PageHeader、Toolbar |
 | 骨架 | 側欄、頁首、登入／錯誤頁外框；全站 MUI 橋接主題（`src/ui/mui-theme.js`） |
 | 手機版 App 化 | 底部分頁列（釘選頁優先）、App 式頂部列（返回／捲動後顯示頁名）、底部面板對話框、40px 觸控尺寸、iOS 16px 輸入框、安全區、PWA（可加到主畫面） |
