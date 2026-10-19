@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 import { useFetchProductsInEmployeePickingEdit } from 'hooks/useFetchProducts'
 import { useFetchUsersForCreatePicking } from 'hooks/useFetchUsers'
-import { DatePicker } from '@mui/x-date-pickers'
+import { DatePicker } from 'ui/date-picker'
 import idx from 'idx'
 import { useRef, useState, useEffect, useMemo } from 'react'
 import { css } from '@emotion/react'
