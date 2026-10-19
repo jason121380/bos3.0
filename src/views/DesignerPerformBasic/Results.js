@@ -62,8 +62,8 @@ function Results({
 
   return (
     isSubmit &&
-    <Table dense wrapperClassName='DesignerPerformBasicTable' className="min-w-[650px]" aria-label="a dense table">
-      <TableHeader>
+    <Table dense wrapperClassName='DesignerPerformBasicTable max-h-[calc(100vh-320px)] print:max-h-none' className="min-w-[1240px] print:min-w-0" aria-label="a dense table">
+      <TableHeader className="sticky top-0 z-20 bg-surface [&_th]:bg-surface print:static">
         <TableRow>
           {tableHeadCells.map(({label, ...cell}, index) => (
             <TableHead key={index} {...cell}>
@@ -162,7 +162,7 @@ function Results({
             </Fragment>
           )
         })}
-        <TableRow>
+        <TableRow className="sticky bottom-0 z-10 bg-surface font-medium hover:bg-surface [&_td]:sticky [&_td]:bottom-0 [&_td]:bg-surface print:static [&_td]:print:static">
           {hasMergedDetailsRows &&
             <TableCell className='noprint'/>
           }
