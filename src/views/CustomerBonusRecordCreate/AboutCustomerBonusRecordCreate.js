@@ -3,7 +3,7 @@ import {
   FormControl, Input, InputLabel,
   InputAdornment
 } from '@mui/material'
-import { MobileDatePicker } from '@mui/x-date-pickers'
+import { MobileDatePicker } from 'ui/date-picker'
 import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
