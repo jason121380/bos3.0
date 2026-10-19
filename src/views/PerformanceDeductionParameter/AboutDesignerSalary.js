@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { RadioGroup, FormControlLabel, Radio, FormControl } from '@mui/material'
+import { RadioField } from 'ui/radio'
 import { Button } from 'ui/button'
 import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
@@ -429,18 +429,7 @@ return (
                   </div>
                   )
                 )}
-                <FormControl >
-                  <RadioGroup 
-                    value={data.isDefaultValue.toString()} 
-                    name="isDefaultValue" 
-                    onChange={event => {
-                      handlePointSetting(event, index)
-                    }} 
-                    disabled={!isSubmitForPoint}
-                  >
-                    <FormControlLabel style={{marginLeft: 10}} value='true' control={<Radio />} label="預設" disabled={!isSubmitForPoint}/>
-                  </RadioGroup>
-                </FormControl>
+                <RadioField className="ml-2.5 mr-4" name="isDefaultValue" value="true" checked={data.isDefaultValue.toString() === 'true'} onChange={event => { handlePointSetting(event, index) }} label="預設" disabled={!isSubmitForPoint} />
                 {index === service.point.length - 1 && (
                 <Button
                   variant="ghost"
