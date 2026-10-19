@@ -119,3 +119,5 @@
 73. **EventRule 日期欄同 MainEvent，只換 import 即套用 facade**（`EventRuleCreate`／`EventRuleEdit` `General.js`，2026/10/19，v3.0-1019-1314）：先 grep 確認無 `slots.field`／`inputRef` 焦點鏈才換；`label` 不自包 `Field`，交給 facade。見 #70。
 
 74. **月曆彈層頂欄不要大面主題藍，跟隨主題底色與字色**（Jason 2026/10/19 拍版「改的跟主題符合」，v3.0-1019-1350）：PR #53 只改日格／表頭／選取日，`MuiPickersToolbar` 仍藍底白字，故手機截圖看似未改。本批集中改 `mui-theme.js` 共用層（background/text/border＋ToolbarText/Button），accent 只留選取日、今天、確認鈕等小面積；桌面 Popper 與手機 Dialog 共用。影響以 `MuiScope` 覆蓋範圍為準（Dashboard/Customer/Auth 版面、facade、DateSelector、MerchantSearchBar），未包者不得宣稱全站完成。待實機抽查消費分析、每日業績、互助點數明細。
+
+75. **月曆頂欄被舊全域 CSS 蓋掉：同權重比載入順序，隔離 render 會誤判**（2026/10/19，v3.0-1019-1410 追修 #74）：`NavBar` 動態 import 的 `initialize(.dark).scss` 後載入，其 `.MuiPickersToolbar-root` 藍底（#1976d2）＋`*` 白字與橋接 emotion 規則同為單 class，先前只測未載入該 CSS 的理想路徑才會白。教訓：彈層／Portal 樣式驗證必須模擬實機載入順序與實際元件名稱（手機是 `MuiDatePickerToolbar` 等專屬名稱與 `MuiPickersToolbar` 同一 DOM）。修法在共用層雙保險：橋接頂欄色值 `!important`＋補專屬元件覆寫，並移除舊全域藍底白字；日後舊 CSS 不得再對 `MuiPickers*` 寫死顏色。

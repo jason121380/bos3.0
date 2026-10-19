@@ -213,6 +213,8 @@
 
 ## 四、剩餘工作分類與批次建議（2026/10/19）
 
+- **月曆頂欄真正未套用追修（Claude 線，2026/10/19，`claude/ui-datepicker-toolbar-fix-box`，v3.0-1019-1410）**：實機 1358 仍藍的根因是 `NavBar` 後載入的 `initialize(.dark).scss` 舊藍底白字同權重蓋過橋接主題。共用層修：`mui-theme.js` 頂欄色值 `!important`＋補 `MuiDatePickerToolbar`／`MuiDateTimePickerToolbar`／`MuiTimePickerToolbar`／`ToolbarText.selected`，兩份舊全域 CSS 移除藍底白字。不逐頁改、不改選取行為／format／存值。待 Jason 部署後強刷實機確認。
+
 - **Reservation 希望服務日期欄改 facade（Codex 線第二批，2026/10/19，`codex/ui-datepicker-reservation-basic-box`，v3.0-1019-1404）**：`Reservation/Basic.js` 唯一 `DatePicker` import 改 `ui/date-picker`；`label="希望服務日期"`、value、擋 `null`／`Invalid Date` 的 onChange、format、localeText、toolbar／textField slotProps 原樣。ToggleButtonGroup 與三個 MUI Select／FormControl 不動。待實機確認欄寬、桌機鍵盤輸入與月曆彈層。
 
 - **EmployeeManagementDetail 一般設定日期欄改 facade（Codex 線，2026/10/19，`codex/ui-datepicker-employee-general-box`，v3.0-1019-1358）**：`General/GeneralSettings.js` 的出生日期、到職日期 2 個 `DatePicker` 只換 import 為 `ui/date-picker`；`label` 原樣傳入，value／onChange／format／slotProps／css 原樣。待實機確認出生／到職欄寬度與彈層。

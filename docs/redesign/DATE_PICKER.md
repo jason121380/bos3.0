@@ -168,6 +168,13 @@
 - 影響範圍：包在 `MuiScope` 內的 picker——含 Dashboard／Customer／Auth 版面、facade、`DateSelector`、`MerchantSearchBar`；未包 `MuiScope` 且自帶舊 `ThemeProvider` 的孤立元件不在本批保證內，不宣稱全站每一處皆已套用。
 - **待實機抽查**：消費分析、每日業績、互助點數明細（手機 Dialog 頂欄白底／淺色、深色模式、DateTime 時間欄）。
 
+**頂欄追修（2026/10/19，實機 1358 仍藍後追查，v3.0-1019-1410）**
+
+- 根因：`NavBar` 以動態 `import()` 後載入 `initialize.scss`／`initialize-dark.scss`，其中舊規則 `.MuiPickersToolbar-root{background-color:#1976d2}` 與 `*{color:#fff}` 與橋接主題的 emotion 單 class 規則同權重，後載入者勝出，故 #74 的白底覆寫在實機被蓋掉（本機隔離 render 未載入該 CSS 才誤判正確）。正式站 1358 的 CSS chunk 亦驗到同一藍色規則。
+- 修法（共用層兩處）：①`src/ui/mui-theme.js` 頂欄底色／字色改 `!important`，並補齊手機實際元件 `MuiDatePickerToolbar`／`MuiDateTimePickerToolbar`／`MuiTimePickerToolbar` 及 `MuiPickersToolbarText.selected` 覆寫；②兩份 `initialize*.scss` 移除寫死藍底＋白字（保留原 `h4` 字級與隱藏鉛筆鈕行為）。
+- 重現／驗證：同款 `MobileDatePicker`＋後載入舊全域規則，本機 jsdom 生成規則修前無 `!important`、修後有；以真實 Chrome 計算同組規則修後為白底 `rgb(255,255,255)`／深字 `rgb(13,13,13)`。jsdom 對 `!important` 的 computed style 不可靠，故不以其 computed 值為準。
+- 影響範圍：所有走 `DateSelector`／`ui/date-picker` facade／`MuiScope` 的月曆（含店家區間累計表、每日業績分析表）；不改選取行為、format、回傳 `Date`／`null`。待 Jason 實機強刷確認手機 Dialog 頂欄、深色模式、DateTime。
+
 **第二階段（全自寫）**：待第一階段全數換完，並實機驗證鍵盤輸入與各情境後再評估，不預先承諾。
 
 ## 七、分批計畫
