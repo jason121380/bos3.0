@@ -265,3 +265,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ### MerchantDailyPerformanceReport 手機擠壓修正（B1 切片，Codex Luna 線，`codex/ui-mobile-merchant-daily-box`，v3.0-1019-1616）
 
 - 範圍：`MerchantDailyPerformanceReport/index.js` Toolbar 改 flex-wrap，DateSelector 手機滿列、業績依據控制組另起一列可換行，只改排版。待實機：390px 不溢出、桌機不變。
+
+### A3 第三份 QueueOrderEdit/AddCustomerModal 標籤改上方（AGY 線，`agy/ui-a3-addcustomer-queue-box`，v3.0-1019-1619）
+
+- 範圍：`QueueOrderEdit/AddCustomerModal.js` 7 欄改 Field 上方標籤＋Input；編號重複檢查、生曰三格、Select 本體保留。待實機：並排對齊、編號檢查提示、存值。

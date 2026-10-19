@@ -15,6 +15,7 @@ import {
   InputAdornment
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
+import { Field, Input } from 'ui/input'
 import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchUpdateCustomer from 'hooks/useFetchUpdateCustomer'
@@ -297,14 +298,13 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="客戶姓名"
-                name="name"
-                onChange={handleFieldChange}
-                value={values.name}
-                variant="outlined"
-              />
+              <Field label="客戶姓名">
+                <Input
+                  name="name"
+                  onChange={handleFieldChange}
+                  value={values.name}
+                />
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
               <NativeSelect
@@ -325,44 +325,40 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               </NativeSelect>
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Email"
-                name="email"
-                value={values.email}
-                onChange={handleFieldChange}
-                variant="outlined"
-              />
+              <Field label="Email">
+                <Input
+                  name="email"
+                  value={values.email}
+                  onChange={handleFieldChange}
+                />
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="lineId"
-                name="lineId"
-                value={values.lineId}
-                onChange={handleFieldChange}
-                variant="outlined"
-              />
+              <Field label="lineId">
+                <Input
+                  name="lineId"
+                  value={values.lineId}
+                  onChange={handleFieldChange}
+                />
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="地址"
-                name="address"
-                value={values.address}
-                onChange={handleFieldChange}
-                variant="outlined"
-              />
+              <Field label="地址">
+                <Input
+                  name="address"
+                  value={values.address}
+                  onChange={handleFieldChange}
+                />
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="客戶暱稱"
-                name="nickName"
-                value={values.nickName}
-                onChange={handleFieldChange}
-                variant="outlined"
-              />
+              <Field label="客戶暱稱">
+                <Input
+                  name="nickName"
+                  value={values.nickName}
+                  onChange={handleFieldChange}
+                />
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
               <TextField
@@ -391,14 +387,13 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="電話"
-                onChange={handleFieldChange}
-                name="cellphone"
-                value={values.cellphone}
-                variant="outlined"
-              />
+              <Field label="電話">
+                <Input
+                  onChange={handleFieldChange}
+                  name="cellphone"
+                  value={values.cellphone}
+                />
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
               <SourceSelect
@@ -467,14 +462,13 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               )}
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="備註"
-                onChange={handleFieldChange}
-                name="remark"
-                value={values.remark}
-                variant="outlined"
-              />
+              <Field label="備註">
+                <Input
+                  onChange={handleFieldChange}
+                  name="remark"
+                  value={values.remark}
+                />
+              </Field>
             </Grid>
           </Grid>
         </CardContent>
