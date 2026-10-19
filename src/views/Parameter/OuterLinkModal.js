@@ -174,32 +174,34 @@ const OuterLinkModal = ({
           />
         </Field>
         {!isCus && (
-          <Autocomplete
-            multiple
-            fullWidth
-            autoHighlight
-            options={!authoritiesNameAndId.loading ? idx(authoritiesNameAndId, _ => _.data.getMerchantAuthorities) : []}
-            disableCloseOnSelect
-            disabled={authoritiesNameAndId.loading}
-            getOptionLabel={option => option.authorityName}
-            value={handleGetValue('userAuthIds')}
-            onChange={(e, v) => handleInputOnChange('userAuthIds', v)}
-            isOptionEqualToValue={(option, value) => option.id === value.id}
-            renderOption={(props, option, { selected }) => (
-              <li {...props}>
-                <Checkbox
-                  style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                  icon={icon}
-                  checkedIcon={checkedIcon}
-                  checked={selected}
-                />
-                {option.authorityName}
-              </li>
-            )}
-            renderInput={params => (
-              <TextField {...params} variant="outlined" label="套用的角色權限" placeholder="選擇權限" />
-            )}
-          /> 
+          <Field label="套用的角色權限">
+            <Autocomplete
+              multiple
+              fullWidth
+              autoHighlight
+              options={!authoritiesNameAndId.loading ? idx(authoritiesNameAndId, _ => _.data.getMerchantAuthorities) : []}
+              disableCloseOnSelect
+              disabled={authoritiesNameAndId.loading}
+              getOptionLabel={option => option.authorityName}
+              value={handleGetValue('userAuthIds')}
+              onChange={(e, v) => handleInputOnChange('userAuthIds', v)}
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              renderOption={(props, option, { selected }) => (
+                <li {...props}>
+                  <Checkbox
+                    style={{ color: 'rgb(var(--text))', marginRight: 8 }}
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    checked={selected}
+                  />
+                  {option.authorityName}
+                </li>
+              )}
+              renderInput={params => (
+                <TextField {...params} variant="outlined" placeholder="選擇權限" />
+              )}
+            />
+          </Field>
         )}
       </DialogContent>
       <DialogActions>
