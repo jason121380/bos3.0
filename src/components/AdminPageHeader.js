@@ -59,7 +59,7 @@ const AdminPageHeader = ({
                             <RouterLink to={primaryAction.to}>{primaryAction.label}</RouterLink>
                         </Button>
                     ) : (
-                        <Button variant="primary" onClick={primaryAction.onClick}>
+                        <Button variant="primary" onClick={primaryAction.onClick} disabled={primaryAction.disabled}>
                             {primaryAction.label}
                         </Button>
                     )

@@ -84,7 +84,7 @@ function AboutCustomerBonusRecordCreate({ className, submitData, setSubmitData }
             onChange={e => {
               let bonus = e.target.value
               if (bonus.includes('.')) {
-                bonus = bonus.slice(bonus.indexOf('.'), 1)
+                bonus = bonus.slice(0, bonus.indexOf('.'))
               }
               setSubmitData({ ...submitData, bonus: bonus })
             }}

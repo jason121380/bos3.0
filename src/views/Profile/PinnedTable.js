@@ -223,7 +223,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
 
   const handleItemClick = data => {
     let index
-    const arr = _.cloneDeep(submitValue.pages)
+    const arr = cloneDeep(submitValue.pages)
     const findData = arr.find((d, i) => {
       if (d === data) {
         index = i
@@ -249,7 +249,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
     const groupPages = data.pageAuthority
     const inModalValues = []
     const notInModalValues = []
-    const newValue = _.cloneDeep(submitValue.pages)
+    const newValue = cloneDeep(submitValue.pages)
     if (checked) {
       groupPages.forEach(d => {
         const findData = submitValue.pages.find(data => data === d.pageName)

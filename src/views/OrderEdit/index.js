@@ -12,6 +12,7 @@ import { useFetchGetSerialNumberUsing, useFetchGetIsLBCusDisplay } from 'hooks/u
 import { useFetchGetDisablePendingOrder } from 'hooks/useFetchGetParameterAboutSettingFunction'
 import { useFetchGetIsBonusRewardWithLine, useFetchGetIsComboSetting } from 'hooks/useFetchGetParameterAboutSettingFunction'
 import idx from 'idx'
+import { cloneDeep } from 'lodash'
 import addDays from 'date-fns/addDays'
 import { MuiScope } from 'ui/mui-theme'
 
@@ -311,10 +312,10 @@ export default function KeyIn({ match }) {
       })
     }
 
-    let newServices = _.cloneDeep(services)
-    let newSells = _.cloneDeep(sells)
-    let newCouponSells = _.cloneDeep(couponSells)
-    let newMemberCardSells = _.cloneDeep(memberCardSells)
+    let newServices = cloneDeep(services)
+    let newSells = cloneDeep(sells)
+    let newCouponSells = cloneDeep(couponSells)
+    let newMemberCardSells = cloneDeep(memberCardSells)
 
     if (newServices.length === 1 && newServices[0].serviceId === '' && serviceArr.length > 0) {
       newServices = serviceArr

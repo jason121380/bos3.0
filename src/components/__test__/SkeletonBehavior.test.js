@@ -79,6 +79,16 @@ describe('AdminPageHeader（外觀改版、props 介面不變）', () => {
     fireEvent.click(screen.getByRole('link', { name: '新增' }))
     expect(history.location.pathname).toBe('/coupons/create')
   })
+
+  // 匯出／儲存載入中要擋重複點擊：呼叫端傳的 primaryAction.disabled 必須真的讓按鈕停用
+  it('primaryAction.disabled 為 true 時按鈕停用、點擊不觸發 handler', () => {
+    const onPrimary = jest.fn()
+    renderWithRouter(<AdminPageHeader title="匯出" primaryAction={{ label: '匯出', onClick: onPrimary, disabled: true }} />)
+    const button = screen.getByRole('button', { name: '匯出' })
+    expect(button).toBeDisabled()
+    fireEvent.click(button)
+    expect(onPrimary).not.toHaveBeenCalled()
+  })
 })
 
 describe('TableEditBar（批次操作列改版、行為不變）', () => {

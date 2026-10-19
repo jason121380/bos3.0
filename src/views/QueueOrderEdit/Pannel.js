@@ -71,7 +71,6 @@ export default function SimpleAccordion() {
       />
       {(bonusActive && !bill.withoutCustomerData) &&
         <PannelBonus
-          onPanelClick={() => handlePannelClick('bonus')}
           bonusActive={bonusActive}
         />
       }
