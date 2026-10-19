@@ -213,6 +213,8 @@
 
 ## 四、剩餘工作分類與批次建議（2026/10/19）
 
+- **月曆彈層頂欄主題化（Claude 線，2026/10/19，`claude/ui-datepicker-toolbar-theme-box`，v3.0-1019-1350）**：Jason 拍版「改的跟主題符合」；`src/ui/mui-theme.js` 的 `MuiPickersToolbar` 改 background 底＋text 字色＋底部 1px border（不再大面主題藍），補 `MuiPickersToolbarText`／`MuiPickersToolbarButton`；`date-picker.js` 只補註解。不逐頁改 37 檔，不改選取行為／format／`Date`／null／可打字現況。待實機抽查：消費分析、每日業績、互助點數明細之手機 Dialog 頂欄、深色模式、DateTime。
+
 - **MobileBookingSettings 同時段預約人數上限輸入框（Codex 線第二批，2026/10/19，`codex/ui-mobilebooking-input-box`，v3.0-1019-1340）**：唯一 MUI `TextField` 改為 `Field` 上方標籤＋`ui/input` `Input`；保留 `type="number"`、`name="bookingLimit"`、placeholder、value 運算式、`parseInt` 更新、`onWheel` 失焦及滿寬。`NativeSelect`／`Checkbox` 不動。待實機確認欄位寬度與標籤間距。
 
 - **IsReservationNeedReview 時間複合列標籤上移（Codex 線，2026/10/19，`codex/ui-ns-isreservation-box`，v3.0-1019-1323）**：`Parameter/IsReservationNeedReview.js` 的開始／結束兩組時分 `NativeSelect` 改由 `Field` 顯示上方標籤，時分以 flex 排列；value／onChange／disabled／hours 選項與 `handleChangeBookingTime` 原樣，其他 TextField／Checkbox 不動。待實機確認列高與對齊。

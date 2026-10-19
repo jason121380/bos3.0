@@ -161,6 +161,13 @@
 - 影響範圍：所有包在 `MuiScope` 內的 picker（facade 與既有共用元件）；未包 `MuiScope` 的舊頁面仍用舊主題，逐頁換 facade 後才套用。
 - **待實機**：深色模式、手機 Dialog 版、年選擇（`openTo='year'`）、時間選擇（DateTime）。
 
+**頂欄主題化（2026/10/19，Jason 拍版「改的跟主題符合」，v3.0-1019-1350）**
+
+- 只改 `src/ui/mui-theme.js`：`MuiPickersToolbar.root` 由主題藍底白字改為 `background` 底、`text` 字色、底部 1px `border`；新增 `MuiPickersToolbarText`（未選 `textSecondary`／選取 `text`）與 `MuiPickersToolbarButton`（`inherit` 色、hover `surfaceHover`）；`src/ui/date-picker.js` 只補檔首註解。選取日／今天／hover／年月時間選取／Dialog 確認鈕維持既有 accent 小面積點綴。
+- 不改選取行為、format、回傳 `Date`／`null`、可否打字現況；桌面 Popper 與手機 Dialog 共用同一橋接主題（Portal 仍走 React context 的 MuiScope 主題）。
+- 影響範圍：包在 `MuiScope` 內的 picker——含 Dashboard／Customer／Auth 版面、facade、`DateSelector`、`MerchantSearchBar`；未包 `MuiScope` 且自帶舊 `ThemeProvider` 的孤立元件不在本批保證內，不宣稱全站每一處皆已套用。
+- **待實機抽查**：消費分析、每日業績、互助點數明細（手機 Dialog 頂欄白底／淺色、深色模式、DateTime 時間欄）。
+
 **第二階段（全自寫）**：待第一階段全數換完，並實機驗證鍵盤輸入與各情境後再評估，不預先承諾。
 
 ## 七、分批計畫
