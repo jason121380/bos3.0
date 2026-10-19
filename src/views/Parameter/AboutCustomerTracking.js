@@ -1,12 +1,9 @@
-/** @jsxImportSource @emotion/react */
-import { Grid } from '@mui/material'
 import { Button } from 'ui/button'
 import { Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
-import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
+import { Plus, Trash2 } from 'lucide-react'
 import { memo, Fragment } from 'react'
 import { cloneDeep } from 'lodash'
-import styles from './styles/AboutCustomerTracking'
 
 const optionsArray = [
   { "hairProperties": '髮質屬性' },
@@ -47,50 +44,62 @@ function AboutCustomerTracking({ className, inputEnable, hairCondition, setHairC
               <CardTitle>{`${title}設定`}</CardTitle>
             </CardHeader>
             <CardContent>
-              <Grid container spacing={2}>
+              <div className="flex flex-col gap-2">
                 {options.length ? options.map((data, index) => (
-                  <Grid style={{ width: index === options.length - 1 ? 214 : '' }} item sm={4} css={styles.serviceInputGroup} key={index}>
-                    <span
-                      className="inline-block shrink-0 text-heading tabular-nums text-text"
-                      style={{ margin: '0 5px', width: '25px' }}
-                    >
+                  <div className="flex flex-wrap items-center gap-2" key={index}>
+                    <span className="inline-block w-7 shrink-0 text-body tabular-nums text-text-secondary">
                       {index + 1}
                     </span>
                     <Input
-                      className="min-w-0 flex-1"
+                      className="min-w-[10rem] flex-1"
                       disabled={!inputEnable}
                       type="text"
                       value={data}
                       onChange={event => handleInputOnChange(event, key, index)}
                     />
-                    <div style={{ display: 'flex' }}>
-                      {options.length >= 1 && (
-                        <DeleteForeverIcon
-                          disabled={!inputEnable}
-                          onClick={() => handleDeleteOption(key, index)}
-                          style={{ cursor: 'pointer' }}
-                        />
-                      )}
-                      {index === options.length - 1 && (
-                        <AddIcon
-                          disabled={!inputEnable}
-                          onClick={() => handleAddOption(key)}
-                          style={{ cursor: 'pointer' }}
-                        />
-                      )}
-                    </div>
-                  </Grid>
+                    {options.length >= 1 && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={`刪除第 ${index + 1} 項`}
+                      title={`刪除第 ${index + 1} 項`}
+                      disabled={!inputEnable}
+                      onClick={() => handleDeleteOption(key, index)}
+                    >
+                      <Trash2 size={16} />
+                    </Button>
+                    )}
+                    {index === options.length - 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label="新增一項"
+                        title="新增一項"
+                        disabled={!inputEnable}
+                        onClick={() => handleAddOption(key)}
+                      >
+                        <Plus size={16} />
+                      </Button>
+                    )}
+                  </div>
                 )) : (
-                  <Grid container direction="row" alignItems="center" style={{ gap: 20 }}>
-                    <span className="text-heading text-text">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-body text-text-secondary">
                       無資料
                     </span>
-                    <Button variant="ghost" size="icon" aria-label={`新增${title}`} disabled={!inputEnable} onClick={() => handleAddOption(key)} >
-                      <AddIcon/>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label="新增一項"
+                      title="新增一項"
+                      disabled={!inputEnable}
+                      onClick={() => handleAddOption(key)}
+                    >
+                      <Plus size={16} />
                     </Button>
-                  </Grid>
+                  </div>
                 )}
-              </Grid>
+              </div>
             </CardContent>
           </Card>
         )

@@ -10,7 +10,7 @@ import {
   TextField,
   InputAdornment,
 } from '@mui/material'
-import CircularProgress from '@mui/material/CircularProgress'
+import { LoaderCircle } from 'lucide-react'
 import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchMerchantCustomerCategory from 'hooks/useFetchMerchantCustomerCategory'
@@ -264,7 +264,7 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                     (values.no === '') ? '' :
                       isSetTime ?
                         <InputAdornment position="start">
-                          <CircularProgress size={20} />
+                          <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
                         </InputAdornment> :
                         !noVerify ?
                           <InputAdornment position="start">
@@ -470,7 +470,7 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                     value='loading'
                     onChange={handleFieldChange}
                     name="PreferDesignerId"
-                    renderValue={() => <CircularProgress size={20} />}
+                    renderValue={() => <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />}
                   >
                     <MenuItem value="loading">
                       <em>Loading...</em>

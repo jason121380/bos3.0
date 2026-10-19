@@ -126,7 +126,7 @@ function AccountingSetting() {
       <div className="mx-auto w-full max-w-6xl">
         <PageHeader title="收支科目設定" />
         <Tabs
-          className="md:flex md:items-start md:gap-8"
+          className="md:flex md:items-stretch"
           value={selectTab}
           onValueChange={value => handleTabsChange(null, value)}
           activationMode="manual"
@@ -136,7 +136,7 @@ function AccountingSetting() {
               <SettingsTabsTrigger key={index} value={tab.value} icon={tab.icon}>{tab.label}</SettingsTabsTrigger>
             ))}
           </SettingsTabsList>
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">
             <SettingsSectionHeading title={tabs.find(tab => tab.value === selectTab)?.label} />
             <AccountingItemCreate
               activeSection={selectTab}

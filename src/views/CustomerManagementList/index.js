@@ -299,7 +299,7 @@ function CustomerManagementList() {
               onPageChange={handlePageChange}
               isMemberShipCardActive={isMemberShipCardActive}
             />
-          )) : <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中"><Skeleton className="h-[320px] w-full rounded-2xl" /></div>
+          )) : <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中"><Skeleton className="h-[320px] w-full rounded-lg" /></div>
         }
     </Page>
   )
