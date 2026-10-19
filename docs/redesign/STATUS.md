@@ -202,3 +202,5 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 
 - 範圍：`EventRuleCreate/General.js`、`EventRuleEdit/General.js` 共 4 個 `MobileDatePicker` 改 `ui/date-picker`，其餘欄位與 handler／存值原樣。
 - 待實機：欄位寬度、並排對齊、彈層開啟與選日後存值。
+
+- **消費分析儀表板日期區改 facade（月曆專項，2026/10/19，`claude/ui-datepicker-consumption-box`，v3.0-1019-1320）**：消費頁沒有獨立 picker，上方日期區用共用 `components/DateSelector`；該檔 `MobileDatePicker` import 改 `ui/date-picker`（不再傳 `label`，避免 facade 的 `Field` 上方標籤破壞區間欄位；`slots.field`、`localeText`、`slotProps.toolbar`、`value`／`onChange`／`format` 與快速區間邏輯原樣）。`Filter.js` 設計師 `Autocomplete` 本體不動，外層改 `Field label='設計師篩選'`（加 `id`／`htmlFor` 關聯），`renderInput` 移除浮動 `label` 保留 placeholder，搜尋列改 `items-end` 對齊。**影響範圍：所有引用 DateSelector 的頁面，其 picker 外殼（彈層外觀）皆會改變。待實機**：手機月曆彈層、各引用頁區間欄位寬度與對齊、設計師欄標籤上移後的列高。
