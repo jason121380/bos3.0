@@ -1,4 +1,4 @@
-// 欄位多為值可能為空字串的 MUI Select，為維持同一張卡片的標籤樣式一致，文字欄位也保留 MUI TextField（橋接主題已套新外觀）
+// 純文字欄（代號／名稱）改 Field 上方標籤＋ui Input（TextField 試點）；Select 與金額／%數欄位保留 MUI
 import {
   FormControl,
   InputLabel,
@@ -14,6 +14,7 @@ import idx from 'idx'
 import PropTypes from 'prop-types'
 import { useEffect, useRef, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
 
 const lockStatus = [
   {
@@ -64,20 +65,18 @@ function AboutService({ className, onChange, service, handleCheckboxChange, ...r
         <CardTitle>一般資訊</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
-        <TextField
-          value={service.no}
-          label="代號"
-          variant="outlined"
-          fullWidth
-          onChange={event => onChange({ event, key: 'no' })}
-        />
-        <TextField
-          value={service.name}
-          label="名稱"
-          variant="outlined"
-          fullWidth
-          onChange={event => onChange({ event, key: 'name' })}
-        />
+        <Field label="代號">
+          <Input
+            value={service.no}
+            onChange={event => onChange({ event, key: 'no' })}
+          />
+        </Field>
+        <Field label="名稱">
+          <Input
+            value={service.name}
+            onChange={event => onChange({ event, key: 'name' })}
+          />
+        </Field>
         <FormControl variant="outlined" fullWidth>
           <InputLabel ref={inputLabel}>服務類別</InputLabel>
           <Select
