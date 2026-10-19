@@ -246,3 +246,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ### WalletDepositModal 儲值日期時間欄改 facade（月曆專項最後一批，`codex/ui-datepicker-wallet-deposit-box`，v3.0-1019-1538）
 
 - 範圍：`OrderCreate/WalletDepositModal.js`、`OrderEdit/WalletDepositModal.js` 各 1 個 `DateTimePicker` 只換 import 為 `ui/date-picker`，其餘 props、存值、金額、手續費連動原樣。月曆專項至此收尾。待實機：Modal 內彈層、欄寬、選日時後存值。
+
+### DesignerPerformanceReport 手機擠壓修正（B1 切片，Codex Luna 線，`codex/ui-mobile-designer-perf-box`，v3.0-1019-1550）
+
+- 範圍：`DesignerPerformanceReport/index.js` 篩選列手機滿列/換行、桌機自動寬，只改排版。待實機：390px 不溢出、桌機不變。
