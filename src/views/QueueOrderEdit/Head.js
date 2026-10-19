@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { CircularProgress, TextField } from '@mui/material'
+import { CircularProgress, TextField, InputAdornment } from '@mui/material'
 import PropTypes from 'prop-types'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
@@ -13,59 +13,88 @@ import { DateTimePicker } from 'ui/date-picker'
 import { UserCog, UserPlus } from 'lucide-react'
 import { Card } from 'ui/card'
 import { CheckboxField } from 'ui/checkbox'
+import { Field } from 'ui/input'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import useFetchCustomer from 'hooks/useFetchCustomer'
 import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import MembershipCardList from 'components/MembershipCardList'
 import lineIcon from 'assets/images/LINE_APP.png'
 import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import AddCustomerModal from './AddCustomerModal'
 
 const styles = {
-  datePicker: css({
-    minWidth: '225px',
-  }),
-  card: css({
-    overflowX: 'auto',
-  }),
-  cardContent: css({
-    minWidth: '1000px',
-  }),
-  formGroup: css({
-    maxWidth: '300px',
-  }),
   box: css({
     display: 'flex',
-    '& > *': {
-      marginLeft: theme.spacing(2),
-      display: 'flex',
-      flex: 1,
+    flexWrap: 'wrap', // 窄螢幕時三欄自動換行，不再把欄位擠成一條細縫
+    gap: '16px 12px',
+    alignItems: 'flex-start',
+  }),
+  column: css({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
+  }),
+  column1: css({
+    flex: '1.2 1 220px',
+  }),
+  column2: css({
+    flex: '1.8 1 280px',
+  }),
+  column3: css({
+    flex: '2 1 340px',
+  }),
+  row: css({
+    display: 'flex',
+    alignItems: 'flex-end', // 上方有標籤，控制項靠底部對齊
+    gap: '12px',
+    flexWrap: 'wrap',
+  }),
+  dateInput: css({
+    width: '100%',
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'rgb(var(--background))',
+      '& fieldset': { borderColor: 'rgb(var(--border-strong))' }, // 與 ui/input 的框線同色
+      '& .MuiSvgIcon-root': {
+        color: 'rgb(var(--text-tertiary))',
+        fontSize: '22px',
+      },
     },
   }),
-  customer: css({
-    display: 'block',
-    alignItems: 'center',
+  customerInput: css({
+    width: '100%',
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'rgb(var(--background))',
+      '& fieldset': { borderColor: 'rgb(var(--border-strong))' }, // 與 ui/input 的框線同色
+    },
   }),
-  customerIcomAndAuto: css({
-    display: 'flex',
-    alignItems: 'center',
+  employeeInput: css({
+    width: '100%',
+    flex: 1,
+    minWidth: 180,
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'rgb(var(--background))',
+      '& fieldset': { borderColor: 'rgb(var(--border-strong))' }, // 與 ui/input 的框線同色
+    },
   }),
   addPersonIcon: css({
-    marginRight: '10px',
     cursor: 'pointer',
-    flexShrink: 0,
-    width: '24px',
-    height: '24px',
     color: 'rgb(var(--text-tertiary))',
+    fontSize: '22px',
+    marginLeft: '14px',
   }),
-  date: css({
-    minWidth: '200px',
-    '& input': {
-      padding: '6px 0 7px !important'
-    }
-  })
+  checkboxLabel: css({
+    margin: 0,
+    whiteSpace: 'nowrap', // 「不留客資」不可被擠成兩行
+    '& .MuiFormControlLabel-label': {
+      fontSize: '14px',
+      fontWeight: 'bold',
+      color: 'rgb(var(--text))',
+    },
+    '& .MuiCheckbox-root': {
+      padding: '4px',
+    },
+  }),
 }
 
 const designate = [
@@ -370,248 +399,274 @@ export default function Head() {
     }
   }
   return (
-    <Card className="ui-root mb-6" css={styles.card}>
-      <div className="px-4 py-4" css={styles.cardContent}>
-        <div className="text-text-secondary" css={styles.box}>
-          <div css={styles.customer}>
-            <DateTimePicker
-              label="帳單日期"
-              value={bill.date}
-              format='yyyy/MM/dd HH:mm'
-              onChange={handleDateChange}
-              css={css([styles.formGroup, styles.date])}
-              ocaleText={{
-                toolbarTitle: '選擇日期'
-              }}
-              slotProps={{
-                toolbar: {
-                  toolbarFormat: 'M月d日'
-                },
-                textField: {
-                  variant: 'standard'
-                }
-              }}
+    <Card className="ui-root mb-6">
+      <div className="px-4 py-4">
+        <div css={styles.box}>
+          {/* 第 1 欄：日期 */}
+          <div css={[styles.column, styles.column1]}>
+            <div css={styles.row}>
+              {/* 必填 *：依據 Footer.js 的 vaild（缺 bill.date 時「重試」停用） */}
+              <Field label="帳單日期" required className="w-full">
+                <DateTimePicker
+                  value={bill.date}
+                  format='yyyy/MM/dd HH:mm'
+                  onChange={handleDateChange}
+                  css={styles.dateInput}
+                  ocaleText={{
+                    toolbarTitle: '選擇日期'
+                  }}
+                  slotProps={{
+                    toolbar: {
+                      toolbarFormat: 'M月d日'
+                    },
+                    textField: {
+                      variant: 'standard'
+                    }
+                  }}
+                />
+              </Field>
+            </div>
+          </div>
+
+          {/* 第 2 欄：客戶與不留客資 */}
+          <div css={[styles.column, styles.column2]}>
+            <div css={styles.row}>
+              {/* 必填 *：Footer.js 的 vaild 要求有顧客（customerId／手機）或勾選「不留客資」 */}
+              <Field label="顧客" required={!bill.withoutCustomerData} className="w-full">
+                <Autocomplete
+                  disabled={bill.withoutCustomerData}
+                  name="customer"
+                  className="customer"
+                  css={styles.customerInput}
+                  value={value}
+                  clearOnBlur={true}
+                  onFocus={handleFocus}
+                  onChange={(event, newValue) => {
+                    // after press enter, the newValue is string -> which means it is the input
+                    if (typeof newValue === 'string') {
+                      setValue(newValue)
+                      setBill(
+                        produce(draft => {
+                          draft.customerId = undefined
+                          draft.customerCellphone = newValue
+                        })
+                      )
+                      designerRef.current.focus()
+                    } else if (newValue && newValue.inputValue) {
+                      // Create a new value from the user input
+                      setValue(newValue.inputValue)
+                      setIsLineBinded(false)
+                      setMembershipPurchase([])
+                      setBill(
+                        produce(draft => {
+                          draft.customerId = undefined
+                          draft.customerCellphone = newValue.inputValue
+                        })
+                      )
+                      designerRef.current.focus()
+                      // beginning
+                    } else if (newValue !== null) {
+                      setBill(
+                        produce(draft => {
+                          draft.customerId = newValue.id
+                          draft.customerCellphone = newValue.cellphone
+                        })
+                      )
+                      setValue(newValue)
+                      designerRef.current.focus()
+                      // press clear button
+                    } else if (newValue === null) {
+                      setBill(
+                        produce(draft => {
+                          draft.customerId = undefined
+                          draft.customerCellphone = ''
+                        })
+                      )
+                      setKeyCode(null)
+                      setValue('')
+                      setTmpCustomerKeyword('')
+                      setMembershipPurchase([])
+                      setIsLineBinded(false)
+                      setCustomer({
+                        customerId: '',
+                        category: '',
+                        name: '',
+                        cellphone: '',
+                        birthday: {
+                          year: '',
+                          month: '',
+                          day: '',
+                        },
+                        OfficialBrandMerchantId: localStorage.getItem('userMerchant')
+                          ? JSON.parse(localStorage.getItem('userMerchant')).id
+                          : null,
+                        gender: 'MALE',
+                        no: '',
+                        nickName: '',
+                        PreferDesignerId: '',
+                        email: '',
+                        address: '',
+                        lineId: '',
+                        remark: '',
+                      })
+                    }
+                  }}
+                  // determines the filtered options to be rendered on search
+                  filterOptions={(options, params) => {
+                    const filtered = filter(options, params)
+                    const { inputValue } = params
+                    const isExisting = options.some(option => inputValue === option.cellphone)
+                    if (inputValue !== '' && !isExisting) {
+                      filtered.push({
+                        inputValue,
+                        cellphone: `新增 "${inputValue}"`,
+                      })
+                    }
+                    return filtered
+                  }}
+                  handleHomeEndKeys
+                  options={options}
+                  // It's used to fill the input
+                  getOptionLabel={option => {
+                    // Value selected with enter, right from the input
+                    if (typeof option === 'string') {
+                      return option
+                    }
+                    // Add "xxx" option created dynamically
+                    if (option.inputValue) {
+                      return option.inputValue
+                    }
+                    // Regular option
+                    return option.name === undefined || option.no === undefined
+                      ? option.cellphone
+                      : option.name + '/' + option.cellphone + '/' + option.no
+                  }}
+                  // Render the option, use getOptionLabel by default
+                  renderOption={({ key, ...props }, option) => {
+                    return (
+                      <li key={option.id || option.cellphone} {...props}>
+                        {option.name === undefined || option.no === undefined
+                          ? option.cellphone
+                          : option.name + '/' + option.cellphone + '/' + option.no}
+                      </li>
+                    )
+                  }}
+                  freeSolo
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      // press enter button handle
+                      onKeyDown={event => handleBtnKeyDown(event)}
+                      inputRef={customerRef}
+                      variant="outlined"
+                      size="small"
+                      // autoFocus={focus === 'customer'}
+                      placeholder="顧客姓名/手機號碼/編號"
+                      onChange={event => setTmpCustomerKeyword(event.target.value)}
+                      InputProps={{
+                        ...params.InputProps,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            {bill.customerId !== undefined && !bill.withoutCustomerData ? (
+                              <UserCog
+                                role="button"
+                                aria-label="編輯顧客資料"
+                                strokeWidth={1.75}
+                                css={styles.addPersonIcon}
+                                onClick={handleOpenEditCustomerModal}
+                              />
+                            ) : (
+                              <UserPlus
+                                role="button"
+                                aria-label="新增顧客"
+                                strokeWidth={1.75}
+                                css={styles.addPersonIcon}
+                                onClick={handleOpenAddCustomerModal}
+                              />
+                            )}
+                          </InputAdornment>
+                        ),
+                        endAdornment: (
+                          <Fragment>
+                            {customers.loading ? (
+                              <CircularProgress color="inherit" size={20} />
+                            ) : null}
+                            {params.InputProps.endAdornment}
+                          </Fragment>
+                        ),
+                      }}
+                    />
+                  )}
+                />
+              </Field>
+            </div>
+            <CheckboxField
+              css={styles.checkboxLabel}
+              labelClassName="font-bold"
+              label="不留客資"
+              checked={bill.withoutCustomerData}
+              onChange={handleCheckoutWithoutCustomer}
             />
-          </div>
-          <div css={styles.customer}>
-            <div css={styles.customerIcomAndAuto}>
-              {bill.customerId !== undefined && !bill.withoutCustomerData ? (
-                <UserCog
-                  role="button"
-                  aria-label="編輯顧客資料"
-                  strokeWidth={1.75}
-                  css={styles.addPersonIcon}
-                  onClick={handleOpenEditCustomerModal}
-                />
-              ) : (
-                <UserPlus
-                  role="button"
-                  aria-label="新增顧客"
-                  strokeWidth={1.75}
-                  css={styles.addPersonIcon}
-                  onClick={handleOpenAddCustomerModal}
-                />
-              )}
-              <Autocomplete
-                disabled={bill.withoutCustomerData}
-                name="customer"
-                className="customer"
-                style={{ width: '15rem' }}
-                value={value}
-                clearOnBlur={true}
-                onFocus={handleFocus}
-                onChange={(event, newValue) => {
-                  // after press enter, the newValue is string -> which means it is the input
-                  if (typeof newValue === 'string') {
-                    setValue(newValue)
-                    setBill(
-                      produce(draft => {
-                        draft.customerId = undefined
-                        draft.customerCellphone = newValue
-                      })
-                    )
-                    designerRef.current.focus()
-                  } else if (newValue && newValue.inputValue) {
-                    // Create a new value from the user input
-                    setValue(newValue.inputValue)
-                    setIsLineBinded(false)
-                    setMembershipPurchase([])
-                    setBill(
-                      produce(draft => {
-                        draft.customerId = undefined
-                        draft.customerCellphone = newValue.inputValue
-                      })
-                    )
-                    designerRef.current.focus()
-                    // beginning
-                  } else if (newValue !== null) {
-                    setBill(
-                      produce(draft => {
-                        draft.customerId = newValue.id
-                        draft.customerCellphone = newValue.cellphone
-                      })
-                    )
-                    setValue(newValue)
-                    designerRef.current.focus()
-                    // press clear button
-                  } else if (newValue === null) {
-                    setBill(
-                      produce(draft => {
-                        draft.customerId = undefined
-                        draft.customerCellphone = ''
-                      })
-                    )
-                    setKeyCode(null)
-                    setValue('')
-                    setTmpCustomerKeyword('')
-                    setMembershipPurchase([])
-                    setIsLineBinded(false)
-                    setCustomer({
-                      customerId: '',
-                      category: '',
-                      name: '',
-                      cellphone: '',
-                      birthday: {
-                        year: '',
-                        month: '',
-                        day: '',
-                      },
-                      OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-                        ? JSON.parse(localStorage.getItem('userMerchant')).id
-                        : null,
-                      gender: 'MALE',
-                      no: '',
-                      nickName: '',
-                      PreferDesignerId: '',
-                      email: '',
-                      address: '',
-                      lineId: '',
-                      remark: '',
-                    })
-                  }
-                }}
-                // determines the filtered options to be rendered on search
-                filterOptions={(options, params) => {
-                  const filtered = filter(options, params)
-                  const { inputValue } = params
-                  const isExisting = options.some(option => inputValue === option.cellphone)
-                  if (inputValue !== '' && !isExisting) {
-                    filtered.push({
-                      inputValue,
-                      cellphone: `新增 "${inputValue}"`,
-                    })
-                  }
-                  return filtered
-                }}
-                handleHomeEndKeys
-                options={options}
-                // It's used to fill the input
-                getOptionLabel={option => {
-                  // Value selected with enter, right from the input
-                  if (typeof option === 'string') {
-                    return option
-                  }
-                  // Add "xxx" option created dynamically
-                  if (option.inputValue) {
-                    return option.inputValue
-                  }
-                  // Regular option
-                  return option.name === undefined || option.no === undefined
-                    ? option.cellphone
-                    : option.name + '/' + option.cellphone + '/' + option.no
-                }}
-                // Render the option, use getOptionLabel by default
-                renderOption={({ key, ...props }, option) => {
-                  return (
-                    <li key={option.id || option.cellphone} {...props}>
-                      {option.name === undefined || option.no === undefined
-                        ? option.cellphone
-                        : option.name + '/' + option.cellphone + '/' + option.no}
-                    </li>
-                  )
-                }}
-                freeSolo
-                renderInput={params => (
-                  <TextField
-                    {...params}
-                    // press enter button handle
-                    onKeyDown={event => handleBtnKeyDown(event)}
-                    inputRef={customerRef}
-                    variant="outlined"
-                    // autoFocus={focus === 'customer'}
-                    label="顧客姓名/手機號碼/編號"
-                    onChange={event => setTmpCustomerKeyword(event.target.value)}
-                    InputProps={{
-                      ...params.InputProps,
-                      endAdornment: (
-                        <Fragment>
-                          {customers.loading ? (
-                            <CircularProgress color="inherit" size={20} />
-                          ) : null}
-                          {params.InputProps.endAdornment}
-                        </Fragment>
-                      ),
-                    }}
-                  />
-                )}
-              />
-            </div>
-            <div style={{ maxWidth: '280px', display: 'flex', justifyContent: 'space-between' }}>
-              <CheckboxField
-                label="不留客資"
-                checked={bill.withoutCustomerData}
-                onChange={handleCheckoutWithoutCustomer}
-                className="ml-8"
-              />
-              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                {(LBCusDisplay && isLineBinded) && <img style={{ width: 24, height: 24 }} alt='line_icon' src={lineIcon} />}
-                {membershipPurchase.length > 0 && <MembershipCardList data={membershipPurchase} />}
-              </div>
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+              {(LBCusDisplay && isLineBinded) && <img style={{ width: 24, height: 24 }} alt='line_icon' src={lineIcon} />}
+              {membershipPurchase.length > 0 && <MembershipCardList data={membershipPurchase} />}
             </div>
           </div>
-          <EmployeeAutoComplete
-            setEmployeeAlready={setEmployeeAlready}
-            label="服務人員姓名/編號"
-            value={bill.designerId}
-            ref={designerRef}
-            onFocus={handleFocus}
-            name="designer"
-            inputProps={{
-              'data-testid': 'designer',
-            }}
-            onChange={value => {
-              handleBillChange({ value: idx(value, _ => _.userId), key: 'designerId' })
-            }}
-            onKeyDown={e => {
-              if (e.keyCode === 13) {
-                if (bill.isDesignate) {
-                  designateRef.current.focus()
-                } else {
-                  nonDesignateRef.current.focus()
-                }
-              }
-            }}
-          />
-          <ToggleGroup
-            size="small"
-            value={bill.isDesignate}
-            onChange={handleToggleButtonChange}
-            exclusive
-            style={{ alignSelf: 'start' }}
-          >
-            {designate.map((data, idx) => (
-              <ToggleGroupItem
-                key={`${data.label}-${idx}`}
-                value={data.value}
-                ref={data.value ? designateRef : nonDesignateRef}
-                name={data.label}
-                data-testid={`assign-designer-${data.value}`}
-                onKeyDown={e => handleDesignateBtnKeyDown(e)}
-              >
-                {data.label}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
+
+          {/* 第 3 欄：服務人員 */}
+          <div css={[styles.column, styles.column3]}>
+            <div css={styles.row}>
+              {/* 必填 *：Footer.js 的 vaild 要求 bill.designerId */}
+              <Field label="服務人員" required className="min-w-[180px] flex-1">
+                <EmployeeAutoComplete
+                  css={styles.employeeInput}
+                  setEmployeeAlready={setEmployeeAlready}
+                  placeholder="服務人員姓名/編號"
+                  value={bill.designerId}
+                  ref={designerRef}
+                  onFocus={handleFocus}
+                  name="designer"
+                  inputProps={{
+                    'data-testid': 'designer',
+                  }}
+                  onChange={value => {
+                    handleBillChange({ value: idx(value, _ => _.userId), key: 'designerId' })
+                  }}
+                  onKeyDown={e => {
+                    if (e.keyCode === 13) {
+                      if (bill.isDesignate) {
+                        designateRef.current.focus()
+                      } else {
+                        nonDesignateRef.current.focus()
+                      }
+                    }
+                  }}
+                />
+              </Field>
+              <Field label="指定方式" className="shrink-0">
+                <ToggleGroup
+                  className="shrink-0"
+                  size="small"
+                  value={bill.isDesignate}
+                  onChange={handleToggleButtonChange}
+                  exclusive
+                >
+                  {designate.map((data, idx) => (
+                    <ToggleGroupItem
+                      key={`${data.label}-${idx}`}
+                      value={data.value}
+                      ref={data.value ? designateRef : nonDesignateRef}
+                      name={data.label}
+                      data-testid={`assign-designer-${data.value}`}
+                      onKeyDown={e => handleDesignateBtnKeyDown(e)}
+                    >
+                      {data.label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              </Field>
+            </div>
+          </div>
         </div>
       </div>
       {openModal && (
