@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 帳單編輯金額彙總版面對齊（Claude 線，v3.0-1019-1635） | `OrderEdit/Footer.js` 金額彙總比照打帳單 `PannelPerformance` 分「消費明細／付款與折抵」兩欄分組、合計區兩欄並排與 NT$ 呈現；OrderEdit 業績合計／現金應收公式、按鈕 handler/disabled/顯示條件、重新結帳 Dialog 與列印行為原樣，未新增底部固定列。驗證：eslint 0 error（4 warnings 既有）、verify-logic 通過、portal 0/0、unit 52/52、build 含 1635。待實機確認彙總欄寬與按鈕列。 |
 | Reservation 希望服務日期欄（Codex 線第二批，v3.0-1019-1404） | `Reservation/Basic.js` 唯一 `DatePicker` 改由 `ui/date-picker` 匯入；label、value、onChange 防呆、format、localeText、slotProps 原樣，ToggleButtonGroup 與三個 MUI Select／FormControl 不動。待實機確認欄寬、鍵盤輸入與彈層。 |
 | EmployeeManagementDetail 一般設定日期欄（Codex 線，v3.0-1019-1358） | `General/GeneralSettings.js` 出生、到職 2 個 `DatePicker` 只換 import 至 `ui/date-picker`；label 由 facade 的 Field 顯示，value／onChange／format／slotProps／css 原樣。待實機確認兩欄寬度與彈層。 |
 | IsReservationNeedReview 時間欄標籤（Codex 線，v3.0-1019-1323） | 開始／結束兩處時間複合列改用 `Field` 上方標籤，時分選單置於 flex 列；值、事件、停用條件與選項不變，其他欄位不動。待實機確認列高與對齊。 |
@@ -280,3 +281,6 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ### EmployeeDailyReport 手機擠壓修正（B1 切片，AGY 線，`agy/ui-mobile-employee-daily-box`，v3.0-1019-1625）
 
 - 範圍：`EmployeeDailyReport/index.js` Toolbar 加 min-w-0 flex-wrap，DateSelector 外層手機滿列、桌機自動寬不收縮，列印按鈕加 shrink-0，只改排版。待實機：390px 日期欄不溢出、桌機版面不變、列印按鈕位置。
+### HelperMonthlyReport 手機擠壓修正（B1 切片，Codex Luna 線，`codex/ui-mobile-helper-monthly-box`，v3.0-1019-1630）
+
+- 範圍：`HelperMonthlyReport/index.js` Toolbar 的 DateSelector 外層包 `w-full min-w-0 sm:w-auto sm:shrink-0`，手機滿列、桌機自動寬且不收縮。只改排版，state/handler/日期/查詢/列印原樣。該頁 Toolbar 無獨立搜尋鈕，PageHeader 有列印鈕。待實機：390px 日期區不溢出、桌機版面不變。
