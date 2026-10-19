@@ -1,11 +1,12 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/19　分支：`claude/ui-complete-box`（基於 main 7cb899a；先前 PR #1～#5 已合併；本輪 PR 未 merge）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/20（v3.0-1020-0145，main 已含 PR #1～#173，無 open PR）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
 | 範圍 | 內容 |
 |---|---|
+| 交接收尾・文件同步＋移除 `@mui/icons-material` 套件（v3.0-1020-0145） | 交接文件 11 件待合併 PR（#156／#158／#159／#160／#162／#163／#164／#166／#167／#171／#172）與 #170、#173 皆已合併；`package.json` 移除已無引用的 `@mui/icons-material`（`npm ls` 確認無其他套件依賴，lockfile 只少該套件）；測試基準更正為 17 檔／54 測試；P3-4 NativeSelect 外框標籤實查剩 9 處（皆在帳單四兄弟 AddCustomerModal）。 |
 | 顧客詳細資料改左選單（Jason 新指示，v3.0-1020-0108） | `/management/customers/:id/:tab` 比照系統參數設定：左選單＋右目前分頁標題（共用 settings-nav 左灰右白無分隔線、手機橫向分頁），九分頁配 lucide 圖示；分頁 value／條件分頁順序／history.push＋backto／各分頁內容／返回鈕保留。待實機桌機切換各分頁、手機分頁、條件分頁位置，見 TODO／MEMORY #125。 |
 | MUI 整包移除・emotion css 第二小批（v3.0-1019-2350） | pragma-only 查核：66 檔中真零 css使用者 25 檔僅刪 pragma；扁平 css 10 檔換 Tailwind 等效（會計科目列、薪資加扣項欄寬、打卡遲到紅字、顧客列表篩選欄、員工生日/到職日寬、Typography 示範、商家搜尋日期列、離職員工孿生）；`@emotion` 447→412 檔。共用 styles 56 與列印檔不碰，見 TODO／MEMORY #124。待實機：會計科目列圖示間距、薪資加扣項欄寬、打卡紅字、顧客列表篩選、離職列表上距。 |
 | MUI 移除・Progress 定值線第一小批（AGY 線，v3.0-1019-2340，未合併待 CEO 排序） | 新建 `src/ui/progress` 定值線元件，`components/ProgressBar.js` 換掉 MUI LinearProgress＋emotion；假進度 timer／顯示條件／百分比計算不動。結帳定值圓＋%、Suspense 頂線、Autocomplete 內圈不碰（待拍板／擱置）。待實機顧客詳情頁載入進度線。 |

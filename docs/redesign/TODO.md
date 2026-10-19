@@ -1,13 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/19　給：Jason　規則：只改畫面、不動邏輯；驗證通過就合併進 `main`（always merge）。
-> **2026/10/19 本輪（分支 `claude/ui-complete-box`，指示「UI 優先、全部改完」）**：完整重新盤點（見 §三、§四）＋第一批 UI（打帳單「異動入金」彈窗標籤統一）。本輪 PR **不 merge**，等 Jason 拍版 §二 P3。
+> 更新：2026/10/20（v3.0-1020-0145）　給：Jason　規則：只改畫面、不動邏輯；驗證通過就合併進 `main`（always merge）。CI 停用中，驗證以本機為準（eslint／17 檔 54 測試／`CI=true npm run build`）。
+> **現況（2026/10/20）**：交接文件列的 11 件待合併 PR 已全部合併，另含 #170、#173；main 無 open PR。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
 
+- **交接收尾＋移除 `@mui/icons-material` 套件**（2026/10/20，`claude/upbeat-carson-pdc7rf`，v3.0-1020-0145）：交接文件 11 件待合併 PR 已全部合併（另含 #170、#173）；`package.json` 移除已無引用的 `@mui/icons-material`；測試基準更正為 17 檔／54 測試；P3-4 實查更新。見 MEMORY #126。
 - **商品消耗明細日期區緊急修正**（2026/10/20，`claude/fix-product-consume-date-box`，v3.0-1020-0012）：Jason 截圖「這頁怎麼了」——快捷鈕一排、日期鈕掉第二排且各壓「選擇日期」標籤重疊。根因：共用 `MerchantSearchBar/DatePicker` 傳 `label` 給 `ui/date-picker` facade，facade 以 Field 上方標籤渲染，塞進 MUI ButtonGroup 被擠成兩層。修：兩處不傳 `label`（`toolbarTitle='選擇日期'` 保留），所有舊版日期欄頁面一併恢復；僅 `/product-consume-report` 開 `uiDateField`（比照 DecreaseDetail：快捷鈕 ui Button、日期欄 UiDateField 單排），快捷鈕逐項對照 `lastInLeaderBoard` 原順序（本月、上個月、前天、昨天、今天）不增減，日期存值/onChange/查詢/匯出/用途下拉與報表內容不動。見 MEMORY #112。**待實機**：商品消耗明細與 DecreaseDetail 各點開一次月曆、選日後日期與查詢結果不變。
 - **#151 已退回，回到 PrimeStay 之前外觀**（2026/10/19，v3.0-1019-2344）：連 PrimeStay 全站地基（淺灰底、外框白卡、側欄白 pill、卡片 16px 圓角等）一起退掉，回到 #150 合併後（v3.0-1019-2301 當時）樣子；STYLE §13 整章作廢。#152 Radio／#153 Tooltip／#154 設定推廣保留不動。待 Jason 實機看版號 v3.0-1019-2344 確認外觀。
 - **#157 已退回，回到 #151 外框樣式**（2026/10/19，v3.0-1019-2333）：白底灰卡扁平修正退回，恢復淺灰底、白卡、細邊與 shadow-card；#152–#154 保留。
@@ -138,7 +139,7 @@
    - **報表 compact 第六批**（2026/10/19，分支 `ui-report6-box`，v3.0-1019-0455）：本組第 3 個（PR #25，已 merge 5cb001a；前 #23 已 merge 6b9aa7d、#24 已 merge f398c5d）。BusinessAnalysisReport/Results.js、DesignerMonthlyReport/Results.js 各 1 張（共 2 頁 2 張）換 `ui/table`＋`dense`；報表累計以逐頁實查為準：承接已套 20 頁＋本批 2＝**22 頁，剩 6 目錄**（DesignerPerforamnceAnalyze〔Results＋Compare〕、DesignerRake、DesignersSalaryDetail、EmployeeDaily、MerchantBusinessInterval、ServiceDeductionDetail），另風險頁 DesignerPerformBasic（巢狀表）保留 MUI；以指揮者合併後盤點為準。**待實機列印預覽**：①BusinessAnalysis：`.BusinessAnalysisReportTable table` 的 `border:1px solid black` 與 `ui/table` print 格線是否雙線；`.MuiTableCell-root{border-bottom:none}` 不再命中，列印列線是否變多；sticky 首欄／表頭列（白底、outline、z-index）在螢幕橫向捲動與列印是否正常；②DesignerMonthly：`td,th{border:none}` 權重高於 ui print 格線，理論上維持只剩列底線，請確認；`tr.subtotal` 灰底（深色 `#363636`）與合計列粗體仍生效；③`px-2` 欄寬變窄後一頁寬度。
    - **22 張列印報表**：併入「報表 compact 專項」，只改樣式；列印預覽以唯讀方式確認，不動 `#printMain`／`#printThermal` 與 `className` 含 `print` 的元素。
    - **報表 compact 進度**（2026/10/19）：承 PR #20 第一批 4 頁，**第二批（v3.0-1019-0406）+12 頁，累計 16 頁，剩 12 頁 MUI Table 報表＋列印共用層後續**。本批 12 個 Results 的主報表 `ui/table` 補 `dense`（共 19 張：MerchantDaily 4、SingleService 3、DecreaseDaily 2、ProductConsume 2、其餘 8 頁各 1）；`src/ui/table.js` 的 dense 補 `px-2`（以 PR #20 合併後最終版為準）。盤點總表（INVENTORY／口徑數字）在 PR #20 分支，待整組對齊後更新，本分支未寫入。
-4. `ui/native-select` 的 `label`（外框上緣標籤）要不要整批改成「`Field` 上方標籤」？目前 25 檔引用、約 21 處有傳 `label`，與 STYLE「標籤在上」不一致；改法機械但檔案分散，建議納入 §四 批次 E。
+4. `ui/native-select` 的 `label`（外框上緣標籤）要不要整批改成「`Field` 上方標籤」？**2026/10/20 實查（v3.0-1020-0145，排除 `aria-label`）**：其他頁已全數改完，只剩帳單四兄弟 `AddCustomerModal` 9 處（OrderCreate 最近設計師；OrderEdit 性別／最近設計師；DraftOrderEdit、QueueOrderEdit 性別／最近設計師／偏好設計師）。同列鄰欄仍是 MUI 外框欄位（客戶編號、SourceSelect、MUI Select、Autocomplete），單改這 9 處會讓同列標籤高低不齊，須與 A3 其餘欄位整列一起做並真實瀏覽器鍵盤實測，待 Jason 決定是否開工。
 
 ### P4 — 既有問題（修了會動邏輯，需你同意才改）
 - 功能釘選分頁 `_` 未 import；`SalaryEdit` 日期只在模組載入時計算一次；`UpdateDeductionSetting` 刪除級距把 event 當 index；`CustomerBonusRecordEdit` 對字串呼叫 `splice`；`OrderEdit` 的 `_.cloneDeep` 未 import；三個帳單編輯頁的 `handlePannelClick` 未定義；`AdminPageHeader` 的 `primaryAction.disabled` 無作用。
@@ -185,7 +186,7 @@
 **何時能移除**
 | 要移除 | 前提 | 估計 |
 |---|---|---|
-| `@mui/icons-material` | 全站圖示改走 `ui/icons`（已是轉接層） | **已完成（F 批，PR #9，2026/10/19）**：`src` 的 import 25 → 0，僅剩 `ui/icons.js` 註解提及；可從 `package.json` 移除相依（待指揮者確認 build 後另批） |
+| `@mui/icons-material` | 全站圖示改走 `ui/icons`（已是轉接層） | **已完成（F 批，PR #9，2026/10/19）**：`src` 的 import 25 → 0，僅剩 `ui/icons.js` 註解提及；`package.json` 相依已移除（v3.0-1020-0145，`npm ls` 無其他依賴，build／測試通過） |
 | jss | 無（實查程式碼 0 檔） | 已無須處理，只剩 jest mock／測試註解／scss 舊 class 名（見下 F 批更新） |
 | `@mui/x-date-pickers` | 先做 `ui/date-picker`（39 檔） | 中 |
 | `@mui/material`（含 Select／Autocomplete／TextField） | 先做 `ui/combobox`、完成 r2-04／r2-06 與高 MUI 頁、並決定 22 個列印報表（目前決定保留 MUI） | **只要列印報表維持 MUI，就無法完全移除** |
