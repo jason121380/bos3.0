@@ -19,6 +19,7 @@ const styles = {
 }
 
 export default function AccountingItemCreate({
+  activeSection,
   accountingRevenueSubjects,
   setAccountingRevenueSubjects,
   accountingExpenditureSubjects,
@@ -142,8 +143,8 @@ export default function AccountingItemCreate({
 
   return (
     <Fragment>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div>
+      {/* 設定頁樣板（STYLE §12）：三區以 hidden 保留掛載不卸載，切換不重置編輯中欄位；卡片內欄位與 handler 原樣 */}
+      <div className={activeSection && activeSection !== 'revenue' ? 'hidden' : ''}>
           <Card>
             <CardHeader>
               <CardTitle>收入科目設定</CardTitle>
@@ -178,8 +179,8 @@ export default function AccountingItemCreate({
               ))}
             </CardContent>
           </Card>
-        </div>
-        <div>
+      </div>
+      <div className={activeSection === 'expenditure' ? '' : 'hidden'}>
           <Card>
             <CardHeader>
               <CardTitle>支出科目設定</CardTitle>
@@ -214,10 +215,8 @@ export default function AccountingItemCreate({
               ))}
             </CardContent>
           </Card>
-        </div>
       </div>
-      <div className="mt-6">
-        <div>
+      <div className={activeSection === 'accountingType' ? '' : 'hidden'}>
           <Card>
             <CardHeader>
               <CardTitle>收付方式設定</CardTitle>
@@ -250,7 +249,6 @@ export default function AccountingItemCreate({
               ))}
             </CardContent>
           </Card>
-        </div>
       </div>
     </Fragment>
   )

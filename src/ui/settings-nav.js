@@ -2,7 +2,7 @@ import React from 'react'
 import { TabsList, TabsTrigger } from './tabs'
 import { cn } from './utils'
 
-// 設定頁樣板（STYLE.md §12）：桌機左側窄選單、手機回到頂部橫向捲動分頁。
+// 設定頁樣板（STYLE.md §12）：桌機左側窄選單（surface 淺灰整欄、與右側 background 白底直接相鄰、無分隔線）、手機回到頂部橫向捲動分頁。
 // 沿用 ui/tabs 的 Radix 行為（value/onValueChange/activationMode 由呼叫端原樣傳入），
 // 本元件只提供選單呈現，不自帶狀態、不改分頁切換語意。
 const SettingsTabsList = React.forwardRef(({ className, ...props }, ref) => (
@@ -10,7 +10,7 @@ const SettingsTabsList = React.forwardRef(({ className, ...props }, ref) => (
     ref={ref}
     aria-label="設定分類"
     className={cn(
-      'md:sticky md:top-6 md:w-60 md:shrink-0 md:flex-col md:items-stretch md:gap-1 md:overflow-x-visible md:border-b-0',
+      'md:w-60 md:shrink-0 md:flex-col md:items-stretch md:gap-1 md:overflow-x-visible md:border-b-0 md:bg-surface md:p-3',
       className
     )}
     {...props}

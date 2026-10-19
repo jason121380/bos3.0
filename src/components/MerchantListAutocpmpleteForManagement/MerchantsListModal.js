@@ -60,9 +60,23 @@ const styles = {
       width: 'auto'
     },
     '& .onSelect': {
-      backgroundColor: 'rgb(var(--accent) / 0.10)',
+      backgroundColor: 'rgb(var(--accent) / 0.12)',
+      color: 'rgb(var(--accent))',
+      fontWeight: 500,
       '& > .MuiTreeItem-content': {
-        backgroundColor: 'rgb(var(--accent) / 0.10)'
+        backgroundColor: 'rgb(var(--accent) / 0.12)',
+        color: 'rgb(var(--accent))',
+        fontWeight: 500,
+        '&:hover': {
+          backgroundColor: 'rgb(var(--accent) / 0.12)'
+        }
+      },
+      '& .MuiTreeItem-label': {
+        color: 'rgb(var(--accent))',
+        fontWeight: 500
+      },
+      '& .MuiTreeItem-label svg': {
+        color: 'rgb(var(--accent))'
       }
     }
   }),
