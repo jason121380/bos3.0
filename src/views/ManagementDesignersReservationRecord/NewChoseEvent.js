@@ -2,7 +2,7 @@
 import { useState, Fragment } from 'react'
 import {
   DialogContent, Link, List, ListItemButton,
-  ListItemAvatar, ListItemText, Typography, Button, Grid
+  ListItemAvatar, ListItemText, Button, Grid
 } from '@mui/material'
 import { Avatar } from 'ui/avatar'
 import { blue } from '@mui/material/colors'
@@ -246,7 +246,7 @@ export default function NewChoseEvent({
         </Grid>
       </Fragment>}
       {(modaltype === 'orderCheck' || modaltype === 'orderSuccess') && <Fragment>
-        <Typography component='div' gutterBottom css={styles.breakWord}>
+        <div css={styles.breakWord} className="mb-[0.35em] text-body text-text">
           <div>
             <p>{`姓名: `}
               <Link
@@ -276,7 +276,7 @@ export default function NewChoseEvent({
             }</div>
           )}
           {editOrder.isNoShow && <div>出席狀況: 未出席</div>}
-        </Typography>
+        </div>
         <List style={{ display: 'flex', flexDirection: 'column' }}>
           {modaltype === 'orderSuccess' && (
             <Link

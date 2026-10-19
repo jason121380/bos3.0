@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Typography, Paper, List, ListItemButton,
+  List, ListItemButton,
   Checkbox, ListItemText, ListItemIcon,
 } from '@mui/material'
 import { Button } from 'ui/button'
@@ -55,7 +55,7 @@ const TransferList = ({
   }
   return (
     <>
-      <Typography variant='h5'>{title}</Typography>
+      <h5 className="m-0 text-heading text-text">{title}</h5>
       <Grid container direction='column' spacing={1} >
         <Grid sx={{ pt: '0px !important', mb: 1 }} >
           <SearchField value={keyword} onChange={value => keyWordsOnChange(value, keywordKey)} />
@@ -67,7 +67,7 @@ const TransferList = ({
           sx={{ mt: '0px !important' }}
         >
           <Grid sm={12} md sx={{ pt: '0px !important' }} >
-            <Paper css={styles.paper}>
+            <div css={styles.paper} className="rounded-md bg-background">
               <List dense component="div" role="list">
                 {optionData.map(value => {
                   return value.display && (
@@ -99,7 +99,7 @@ const TransferList = ({
                   )
                 })}
               </List>
-            </Paper>
+            </div>
           </Grid>
           <Grid
             sm={12}
@@ -129,7 +129,7 @@ const TransferList = ({
 
           </Grid>
           <Grid sm={12} md width='100%' sx={{ pt: '0px !important' }} >
-            <Paper css={styles.paper}>
+            <div css={styles.paper} className="rounded-md bg-background">
               <List dense component="div" role="list" sx={{ height: !optionIds.length ? '100%' : 'unset' }}>
                 {optionIds.length ? optionIds.map((id, i) => {
                   const findData = optionData.find(d => d.id === id)
@@ -163,9 +163,9 @@ const TransferList = ({
                         }} />
                     </ListItemButton>
                   );
-                }) : <Typography textAlign='center' sx={{ height: '100%', alignContent: 'center' }} variant='h5' >選取左方選項加入組合</Typography>}
+                }) : <div className="h-full text-center text-heading text-text [align-content:center]">選取左方選項加入組合</div>}
               </List>
-            </Paper>
+            </div>
           </Grid>
         </Grid>
       </Grid>

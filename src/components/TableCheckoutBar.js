@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Button, Drawer, Grid, Hidden, Typography } from '@mui/material'
+import { Button, Drawer, Grid, Hidden } from '@mui/material'
 import { Check as CheckIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
@@ -38,9 +38,9 @@ function TableCheckoutBar({
         <Grid alignItems="center" container spacing={2}>
           <Hidden smDown>
             <Grid item md={3}>
-              <Typography color="textSecondary" variant="subtitle1">
+              <div className="text-body font-medium text-text-secondary">
                 {selected.length} selected
-              </Typography>
+              </div>
             </Grid>
           </Hidden>
           <Grid item md={6} xs={12}>

@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Button, Input, Paper, TextField, Grid, Select,
+  Input, TextField, Grid, Select,
   MenuItem, FormControl, InputLabel,
 } from '@mui/material'
+import { Button } from 'ui/button'
 import { Search as SearchIcon, Delete as DeleteIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import React, { useState, useRef, Fragment, useEffect } from 'react'
@@ -162,7 +163,7 @@ function SearchV2({
   return (
     <Grid {...rest} css={className} container style={{ gap: '10px' }}>
       <Grid item css={styles.birthdayGrid}>
-        <Paper css={styles.search} elevation={1}>
+        <div css={styles.search} className="rounded-md bg-background">
           <SearchIcon css={styles.searchIcon} />
           <Input
             css={styles.searchInput}
@@ -172,7 +173,7 @@ function SearchV2({
             onChange={handleOnChange}
             onKeyDown={handleOnKeyPress}
           />
-        </Paper>
+        </div>
       </Grid>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
         {inCustomerFilterExport ?
@@ -289,12 +290,11 @@ function SearchV2({
             onSearchV2(keyword)
             onBirthdayStart(birthdayObj)
           }}
-          variant="contained"
+          variant="primary"
         >
           搜尋
         </Button>
         <Button
-          startIcon={<DeleteIcon />}
           css={styles.deleteBtn}
           onClick={() => {
             handleClearData()
@@ -325,8 +325,9 @@ function SearchV2({
               category: []
             })
           }}
-          variant="contained"
+          variant="primary"
         >
+          <DeleteIcon />
           清除
         </Button>
       </div>

@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import { amber, green } from '@mui/material/colors'
 import {
-  Button, colors, CircularProgress, Box, Typography,
+  Button, colors, CircularProgress,
   SnackbarContent, Snackbar
 } from '@mui/material'
-import IconButton from '@mui/material/IconButton'
+import { Button as UiButton } from 'ui/button'
 import { CheckCircle as CheckCircleIcon, Close as CloseIcon, Error as ErrorIcon, Info as InfoIcon, Warning as WarningIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useEffect, useState, Fragment, forwardRef } from 'react'
@@ -325,31 +325,22 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
             <Icon css={css([styles.icon, styles.iconVariant])} />
             {message}
             {checkoutProcessing && (
-              <Box position="relative" display="inline-flex">
+              <div className="relative inline-flex">
                 <CircularProgress variant="determinate" value={progress <= 100 ? progress : 99} />
-                <Box
-                  top={0}
-                  left={0}
-                  bottom={0}
-                  right={0}
-                  position="absolute"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Typography variant="caption" component="div">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-caption text-text-secondary">
                     {progress <= 100 ? progress : 99}%
-                  </Typography>
-                </Box>
-              </Box>
+                  </div>
+                </div>
+              </div>
             )}
           </span>
         )
       }
       action={[
-        <IconButton key="close" aria-label="close" color="inherit" onClick={onClose}>
+        <UiButton key="close" variant="ghost" size="icon" className="h-8 w-8" aria-label="close" title="關閉" onClick={onClose}>
           {!checkoutProcessing && <CloseIcon css={styles.icon} />}
-        </IconButton>,
+        </UiButton>,
       ]}
       {...other}
     />

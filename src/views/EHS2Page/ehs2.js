@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Typography } from '@mui/material'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import React from 'react'
@@ -45,13 +44,13 @@ ${reg === '0000'
   return (
     <Page css={styles.root} title="立即登入查看我的東森幣">
       <Card css={styles.card}>
-        <Typography variant="subtitle1" gutterBottom>
+        <div className="mb-[0.35em] text-body font-medium text-text">
           <div
             dangerouslySetInnerHTML={{
               __html: queryString === 'true' ? isExist : newText,
             }}
           ></div>
-        </Typography>
+        </div>
         <a href="https://etu.tw/ABfNWQ" target="_blank" rel="noopener noreferrer">
           <Button variant="primary" className="w-full">
             立即登入查看我的東森幣

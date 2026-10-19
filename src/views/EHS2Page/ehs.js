@@ -2,8 +2,9 @@
 import React, { useState } from 'react'
 import { gql, useLazyQuery, useMutation } from '@apollo/client'
 import {
-  TextField, Button, Checkbox, FormControlLabel
+  TextField, Checkbox, FormControlLabel
 } from '@mui/material'
+import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import Page from 'components/Page'
 import { useHistory } from 'react-router'
@@ -210,7 +211,7 @@ function Reservation({ match, location }) {
         <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} />
           我同意名留暨東森購物會員條款
         </Typography> */}
-        <Button disabled={disabled} variant="contained" fullWidth color="primary" onClick={submit}>
+        <Button disabled={disabled} variant="primary" className="w-full" onClick={submit}>
           {btnLoading ? '努力加入中...' : '加入會員'}
         </Button>
       </Card>
