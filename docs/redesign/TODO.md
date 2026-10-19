@@ -109,6 +109,9 @@
 - [ ] **階段 4 半遷移盤點**（見下方「盤點結果」），決定 MUI 何時可移除。
 - [ ] 把打帳單的做法（欄位標籤、必填、停用原因、摘要、NT$）套用到 **帳單編輯／草稿／排隊帳單**（`OrderEdit`、`DraftOrderEdit`、`QueueOrderEdit`）——它們共用 `ServicesAutoComplete`，下拉已受益，但版面尚未對齊。
 
+- [x] **emotion css 清理盤點＋第一小批（MUI 整包移除專注，2026/10/19，v3.0-1019-2338，`claude/ui-emotion-css1-box`）**：分類統計（最新 main 實查、本批前）：`@emotion` 447 檔＝互斥分類 css prop 消費者 322＋共用 styles 模組 56＋pragma-only 66＋emotion styled 2＋只 import 1；非互斥 `css={` 331 檔/1668 處、CacheProvider 0；本批後 `@emotion` 438 檔、`css={` 322 檔；引用解析概算活 427／未引用候選 20（見 MEMORY #108，編號 CEO merge 順延）。本批換 9 檔扁平單純間距/寬高：ChangeLineMenuPage（defaultMenu/index/memberChangeLineMenu/temp）、EHS2Page（ehs/ehs2/privacy）、ProgressBar、TransferList，值逐一對照（spacing×8、275px、30px、350px），移除該 9 檔 emotion import/pragma，handler/存值/結構不動、列印不碰。
+  - [ ] 後續順序：pragma-only 查核 → 扁平 css 第二批 → 共用 styles 模組 56（先定共用轉換方式）→ 巢狀 `&`/`.Mui`/動態 css 專項 → styled 2＋列印專項 → 清 theme/scss `.Mui` 後才刪 package。
+
 ### P3 — 需要你決定
 1. `Services`（服務項目設定）的篩選按鈕：舊版因 prop 名稱錯誤從未顯示，要顯示嗎？
 2. ~~直接列印的報表是否要改版~~ **已拍版（Jason 2026/10/19）**：所有報表樣式一致、以 compact 緊湊呈現；只改 presentation／print CSS，不改內容欄位與數字計算。**下一組優先：報表 compact 專項**（先盤點共用層，再逐目錄）。2026/10/19 實測：`window.print` 出現在 28 個檔案，其中 22 個是報表目錄的 `index`（約 15 頁是舊口徑，實際更多），另 6 個是 `OrderManagementList/ResultsV2`、`DraftOrderManagementList/ResultsV2`、`DraftOrderEdit/Footer`、`OrderCreate/OrderDetailModal`、`InventoryWorkReview/General`、`ProductInventoryList/Results`。

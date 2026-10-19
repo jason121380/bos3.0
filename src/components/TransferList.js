@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import {
   List, ListItemButton,
   Checkbox, ListItemText, ListItemIcon,
@@ -8,16 +7,9 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { KeyboardArrowRightRounded as KeyboardArrowRightRoundedIcon, RemoveRounded as RemoveRoundedIcon } from 'ui/icons'
 import { useState } from 'react';
 import { cloneDeep } from 'lodash';
-import { css } from '@emotion/react'
 import getLabel from 'utils/getTransferListLabel';
 
 import SearchField from './SearchField';
-
-const styles = {
-  paper: css({
-    height: 350, overflow: 'auto'
-  }),
-}
 
 const TransferList = ({
   optionData, optionIds, handleSetValue, keyword, idsKey,
@@ -67,7 +59,7 @@ const TransferList = ({
           sx={{ mt: '0px !important' }}
         >
           <Grid sm={12} md sx={{ pt: '0px !important' }} >
-            <div css={styles.paper} className="rounded-md bg-background">
+            <div className="h-[350px] overflow-auto rounded-md bg-background">
               <List dense component="div" role="list">
                 {optionData.map(value => {
                   return value.display && (
@@ -129,7 +121,7 @@ const TransferList = ({
 
           </Grid>
           <Grid sm={12} md width='100%' sx={{ pt: '0px !important' }} >
-            <div css={styles.paper} className="rounded-md bg-background">
+            <div className="h-[350px] overflow-auto rounded-md bg-background">
               <List dense component="div" role="list" sx={{ height: !optionIds.length ? '100%' : 'unset' }}>
                 {optionIds.length ? optionIds.map((id, i) => {
                   const findData = optionData.find(d => d.id === id)

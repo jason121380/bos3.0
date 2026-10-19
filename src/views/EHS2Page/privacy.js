@@ -1,30 +1,10 @@
-/** @jsxImportSource @emotion/react */
 import React from 'react'
 import Page from 'components/Page'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-    marginTop: theme.spacing(3),
-  }),
-  card: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-    marginTop: theme.spacing(3),
-  }),
-  field: css({
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  }),
-}
 
 function Reservation({ match, location }) {
 
   return (
-    <Page css={styles.root} title="立即登入查看我的東森幣">
+    <Page className="min-w-[275px] p-8 mt-6" title="立即登入查看我的東森幣">
       <div>
         <p>
           <strong>名留集團隱私權保護政策</strong>
