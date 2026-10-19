@@ -50,7 +50,7 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
   return (
     <div className="flex flex-col gap-2.5 pb-4">
       <div className="flex flex-wrap items-center gap-2.5">
-        <div>
+        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
           <DateSelector
             date={inputData.dateRange}
             dateChange={value => dataChange(value, 'dateRange')}
@@ -59,7 +59,7 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
             rangelimit={rangeLimit}
           />
         </div>
-        <div>
+        <div className="shrink-0">
           <FormControl
             disabled={loading || userOrderableList.loading}
             fullWidth variant='outlined'
@@ -78,7 +78,7 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit, exce
             </Select>
           </FormControl>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto shrink-0">
           <Button
             variant='secondary'
             disabled={excelLoading}
