@@ -261,3 +261,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ### 帳單三頁對齊第一切片 Draft/Queue Head（AGY 線，`agy/ui-bill-align-draft-queue-box`，v3.0-1019-1601）
 
 - 範圍：`DraftOrderEdit/Head.js`、`QueueOrderEdit/Head.js` 表頭排版對齊 OrderCreate，只改畫面。待實機：並排/換行、搜尋、日期彈層。
+
+### MerchantDailyPerformanceReport 手機擠壓修正（B1 切片，Codex Luna 線，`codex/ui-mobile-merchant-daily-box`，v3.0-1019-1616）
+
+- 範圍：`MerchantDailyPerformanceReport/index.js` Toolbar 改 flex-wrap，DateSelector 手機滿列、業績依據控制組另起一列可換行，只改排版。待實機：390px 不溢出、桌機不變。

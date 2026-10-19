@@ -136,8 +136,8 @@ function DesignerPerformOverview() {
         }
       />
 
-      <Toolbar className="gap-5">
-        <div>
+      <Toolbar className="min-w-0 flex-wrap gap-5">
+        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
           <DateSelector
             date={inputData.dateRange}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
@@ -146,7 +146,7 @@ function DesignerPerformOverview() {
           />
         </div>
         <ToolbarSpacer />
-        {!isDisplayTogglePerformanceButton && <div className="flex items-center gap-2">
+        {!isDisplayTogglePerformanceButton && <div className="flex w-full min-w-0 flex-wrap items-center gap-x-5 gap-y-2.5 sm:w-auto sm:shrink-0">
           <div className="divText text-label text-text-secondary">業績依據：</div>
           <ReferToggleButton
             value={inputData.displayReference}
