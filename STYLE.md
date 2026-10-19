@@ -197,6 +197,7 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
   - `/helper-point-setting-create` 與 `/helper-point-setting-edit/:id`：兩頁皆單一表單、無真分頁，不造假選單；原單卡依既有三區塊（設定名稱／點數使用成本／點數獲得）切成三張分段卡片直疊，容器維持 `max-w-3xl`；欄位、`ToggleGroup` 切換、增刪列與建立／儲存 handler 全原樣，Create／Edit 孿生差異保留不互相照抄。
   - `/authority` **本批跳過**：角色權限管理為單一清單卡＋`min-w-[700px]` 寬表，無表單分區；套左選單只剩單一項目屬假選單且會擠壓寬表，故維持原清單版面（compact），日後如改版走清單／表格規範另案，不在本樣板批硬套。
 - 2026/10/19 Jason 新指示例外（`claude/report-catalog-nav-box`，v3.0-1020-0019）：報表目錄 `/dashboard-list-detail` 原六分類卡片 grid 改比照 Parameter：`ui/tabs`＋`ui/settings-nav` 左選單（桌機 240px、選中 `bg-accent/8`＋主題藍字）＋右側分類標題與單張連結卡，手機回到頂部橫向捲動分頁；六分類順序與圖示（日報表 CalendarDays／營業 ChartColumn／設計師 Users／互助 HeartHandshake／商品 Package／管理分析 LayoutDashboard）、各連結列樣式與權限判斷全保留，左選單只列有權限分類並預設第一個有權限者；桌機左欄整欄 `bg-surface`、右側 `bg-background` 白、兩欄 `gap-0` 相接無分隔線（Jason 追加 Billing 截圖指示，不新色票、不動共用 `settings-nav`、手機不套）。此例外僅限目錄頁本身，各報表頁與帳單頁不套本樣板。
+- 2026/10/20 顧客詳細資料推廣（`claude/customer-detail-nav-box`，v3.0-1020-0108）：Jason 新指示「顧客詳細資料這邊也要跟系統參數設定一樣排好」——`CustomerManagementDetails/index.js` 頂部橫向 Tabs 改比照 Parameter 的 `ui/tabs`＋`ui/settings-nav` 左選單（桌機 240px、左 `surface`／右 `background`、無分隔線由共用層承擔，見 #115／MEMORY #125）＋右側 `SettingsSectionHeading` 目前分頁名，手機頂部橫向捲動分頁，容器 `max-w-6xl`；九分頁圖示 基本資料 User／消費記錄 Receipt／卡券紀錄 Ticket／入金紀錄 Wallet／紅利點數紀錄 Star／顧客追蹤 UserCheck／簡訊發送紀錄 MessageSquare／抽獎券紀錄 Gift／會員卡列表 CreditCard。分頁 value、條件分頁（bonus 插於 topup 後、membership 尾加）出現條件與順序、`handleTabsChange` 的 `history.push`＋`backto=customer-filter`、`activationMode="manual"`、各分頁內容元件與參數、返回按鈕（移至右內容下方原相對位置）一字未動；各分頁內容（General／Invoices 等）不動，底色僅 `md` 生效。
 
 
 
