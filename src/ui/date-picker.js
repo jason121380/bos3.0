@@ -9,6 +9,7 @@ import { MuiScope } from 'ui/mui-theme'
 // 月曆 facade（第一階段，設計見 docs/redesign/DATE_PICKER.md §六）
 //
 // 彈層外觀由 ui/mui-theme 的 MuiPickers* 覆寫統一處理（深淺色隨 MuiScope 切換），不在此逐頁寫樣式。
+// 頂欄（MuiPickersToolbar）跟隨主題：background 底＋text 字色＋底部 border，不要大面主題藍；主題色只用在選取日等小面積。
 //
 // 白話說明：
 // 1. 這一層只換「外觀」，裡面仍然是 @mui/x-date-pickers 6.19.4 的同名元件。

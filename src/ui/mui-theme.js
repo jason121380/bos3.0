@@ -62,17 +62,29 @@ export function createBridgeTheme(mode = 'light') {
       button: { textTransform: 'none', fontWeight: 500, letterSpacing: 0 },
     },
     components: {
-      // 日期選擇器：頂部用主題藍底白字（主題色點綴），選取日與確認按鈕用主題色（取代舊版灰色頂欄）
+      // 日期選擇器：頂欄跟隨主題（background 底、text 字色、底部 1px border 分隔，不要大面主題藍），
+      // 主題色只保留在選取日／今天邊框／確認按鈕等小面積點綴（Jason 2026/10/19 拍版：整體跟主題符合）
       MuiPickersToolbar: {
         styleOverrides: {
           root: {
-            backgroundColor: `${t.primary} !important`,
-            '& *': { color: '#FFFFFF !important' },
-            '& span:not(.Mui-selected)': { opacity: 0.75 },
+            backgroundColor: t.background,
+            color: t.text,
+            borderBottom: `1px solid ${t.border}`,
             '& .MuiDateTimePickerToolbar-dateContainer button, & .MuiDateTimePickerToolbar-timeContainer button': { display: 'flex' },
             '& .MuiDateTimePickerToolbar-timeDigitsContainer': { display: 'flex', alignItems: 'center', '& span': { fontSize: 30 } },
             '& .MuiPickersToolbar-content': { marginTop: 8 },
           },
+        },
+      },
+      // 頂欄文字：未選取用 textSecondary、選取用 text（不用白字）；編輯（鉛筆）鈕比照一般圖示鈕 hover
+      MuiPickersToolbarText: {
+        styleOverrides: {
+          root: { color: t.textSecondary, '&.MuiPickersToolbarText-selected': { color: t.text } },
+        },
+      },
+      MuiPickersToolbarButton: {
+        styleOverrides: {
+          root: { color: 'inherit', '&:hover': { backgroundColor: t.surfaceHover } },
         },
       },
       MuiPickersLayout: {
