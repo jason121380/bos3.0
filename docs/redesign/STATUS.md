@@ -214,5 +214,9 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 - 範圍：`EventRuleCreate/General.js`、`EventRuleEdit/General.js` 共 4 個 `MobileDatePicker` 改 `ui/date-picker`，其餘欄位與 handler／存值原樣。
 - 待實機：欄位寬度、並排對齊、彈層開啟與選日後存值。
 
+### Parameter OuterLinkModal 角色權限標籤改上方（Codex 線，`codex/ui-outerlink-label-box`，v3.0-1019-1414，待 PR）
+
+- `OuterLinkModal.js` 只將「套用的角色權限」移至 `Field` 上方標籤，Autocomplete 與業務邏輯保留；ESLint、diff check 通過，`verify-logic` 因沙箱內 Node 無法啟動 Git 而 SKIP；待指揮者重跑驗證，待實機確認 Dialog 高度與 Autocomplete 彈層。STYLE.md 規範已涵蓋，MEMORY.md 無新增通則，均不修改。
+
 - **消費分析儀表板日期區改 facade（月曆專項，2026/10/19，`claude/ui-datepicker-consumption-box`，v3.0-1019-1320）**：消費頁沒有獨立 picker，上方日期區用共用 `components/DateSelector`；該檔 `MobileDatePicker` import 改 `ui/date-picker`（不再傳 `label`，避免 facade 的 `Field` 上方標籤破壞區間欄位；`slots.field`、`localeText`、`slotProps.toolbar`、`value`／`onChange`／`format` 與快速區間邏輯原樣）。`Filter.js` 設計師 `Autocomplete` 本體不動，外層改 `Field label='設計師篩選'`（加 `id`／`htmlFor` 關聯），`renderInput` 移除浮動 `label` 保留 placeholder，搜尋列改 `items-end` 對齊。**影響範圍：所有引用 DateSelector 的頁面，其 picker 外殼（彈層外觀）皆會改變。待實機**：手機月曆彈層、各引用頁區間欄位寬度與對齊、設計師欄標籤上移後的列高。
 - **CustomerSelfCreate 生日欄改 facade（月曆專項，2026/10/19，`claude/ui-datepicker-customerself-box`，v3.0-1019-1333，未 merge）**：`CustomerSelfCreate/General.js` 生日 `MobileDatePicker` import 改 `ui/date-picker`；外層已有 `Field label="生日"`，不傳 `label` 給 facade（避免雙標籤）；`closeOnSelect`／`format`／`openTo='year'`／`value`／`localeText`／`slotProps`／`onChange(new Date(value).getTime())` 原樣，同檔其他元件不動，無焦點鏈。**待實機**：生日欄寬度（`fullWidth`）、彈層開啟與選年、選日後存值。
