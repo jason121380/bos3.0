@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import {
   Card, CardHeader, CardContent, Grid, Typography
 } from '@mui/material'

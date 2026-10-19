@@ -47,7 +47,7 @@ const Field = ({ label, htmlFor, required, hint, error, className, children }) =
     )}
     {children}
     {error ? (
-      <p className="text-caption text-danger">{error}</p>
+      <p id={htmlFor ? `${htmlFor}-helper-text` : undefined} className="text-caption text-danger">{error}</p>
     ) : (
       hint && <p className="text-caption text-text-tertiary">{hint}</p>
     )}

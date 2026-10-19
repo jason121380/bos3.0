@@ -1,28 +1,12 @@
-/** @jsxImportSource @emotion/react */
 // 金額輸入框使用 inputRef / onFocus / onKeyDown 做連續輸入的焦點管理，沿用 MUI TextField
 import { TextField } from '@mui/material'
 import { Fragment, useRef, useEffect } from 'react'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
 import idx from 'idx'
-import { css } from '@emotion/react'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
-const styles = {
-  content: css({}),
-  secondContent: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  }),
-  secondInput: css({
-    width: '150px',
-  }),
-  icons: css({
-    cursor: 'pointer',
-  }),
-}
 
 export default function SalaryIncrease({
   increaseSecondContent,
@@ -246,7 +230,7 @@ export default function SalaryIncrease({
                   <TextField
                     type="text"
                     variant="outlined"
-                    css={styles.secondInput}
+                    className="w-[150px]"
                     label="薪資加項科目"
                     name="itemName"
                     value={data.itemName}
@@ -267,7 +251,7 @@ export default function SalaryIncrease({
                   <TextField
                     type="number"
                     variant="outlined"
-                    css={styles.secondInput}
+                    className="w-[150px]"
                     label="加項金額"
                     name="price"
                     value={data.price || 0}

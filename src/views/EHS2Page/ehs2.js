@@ -1,28 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import React from 'react'
 import getQueryString from 'helper/getQueryString'
 import Page from 'components/Page'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-    marginTop: theme.spacing(3),
-  }),
-  card: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-    marginTop: theme.spacing(3),
-  }),
-  field: css({
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  }),
-}
 
 function Reservation({ match, location }) {
   const queryString = getQueryString({ key: 'isMember', location })
@@ -42,8 +22,8 @@ ${reg === '0000'
     }`
 
   return (
-    <Page css={styles.root} title="立即登入查看我的東森幣">
-      <Card css={styles.card}>
+    <Page className="min-w-[275px] p-8 mt-6" title="立即登入查看我的東森幣">
+      <Card className="min-w-[275px] p-8 mt-6">
         <div className="mb-[0.35em] text-body font-medium text-text">
           <div
             dangerouslySetInnerHTML={{

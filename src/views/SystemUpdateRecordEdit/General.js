@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { useState, useEffect, Fragment } from 'react'
 import { Button } from 'ui/button'
 import { Field, Input } from 'ui/input'

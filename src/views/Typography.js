@@ -1,31 +1,17 @@
-/** @jsxImportSource @emotion/react */
-import { Card, CardContent, Container, Divider, Grid, Typography, colors } from '@mui/material'
-import { css } from '@emotion/react'
-import { theme } from './../../v5theme'
+import { Card, CardContent, Container, Divider, Grid, Typography } from '@mui/material'
 
 import Page from 'components/Page'
 
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  divider: css({
-    backgroundColor: colors.grey[300],
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(3),
-  }),
-}
 
 function TypographyView() {
   return (
-    <Page css={styles.root} title="Typography">
+    <Page className="py-6" title="Typography">
       <Container maxWidth="lg">
         <Typography variant="overline">Components</Typography>
         <Typography gutterBottom variant="h3">
           Typography
         </Typography>
-        <Divider css={styles.divider} />
+        <Divider className="my-6 bg-[#e0e0e0]" />
         <Card>
           <CardContent>
             <Grid container spacing={3}>

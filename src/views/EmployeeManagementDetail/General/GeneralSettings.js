@@ -1,23 +1,12 @@
-/** @jsxImportSource @emotion/react */
-// 大型頁策略：DatePicker 改用 ui/date-picker facade；單行純文字欄改 Field 上方標籤＋ui Input（TextField 試點，name／value／onChange 原樣）；多行備註 TextField、RadioGroup 保留 MUI
-import {
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  TextField,
-} from '@mui/material'
+// 大型頁策略：DatePicker 改用 ui/date-picker facade；單行純文字欄改 Field 上方標籤＋ui Input（TextField 試點，name／value／onChange 原樣）；多行備註 TextField 保留 MUI；性別改 ui/radio（RadioField 原生圓點，name/value/onChange 原樣）
+import { TextField } from '@mui/material'
 import { DatePicker } from 'ui/date-picker'
+import { RadioField } from 'ui/radio'
 import { Field, Input } from 'ui/input'
 import idx from 'idx'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
 import { Card, CardContent } from 'ui/card'
 
-const styles = {
-  datePicker: css({
-    width: '100%',
-  }),
-}
 
 const SectionTitle = ({ children }) => <h3 className="mb-4 text-heading text-text">{children}</h3>
 
@@ -63,7 +52,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
             </div>
             <div>
               <DatePicker
-                css={styles.datePicker}
+                className="w-full"
                 label="出生日期"
                 value={profile.birthday || null}
                 format='yyyy/MM/dd'
@@ -75,15 +64,10 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
               <div className="relative">
                 <span className="absolute -top-2 left-2.5 z-[1] bg-background px-1 text-caption text-text-secondary">性別</span>
                 <div className="box-border flex h-[42px] items-center gap-6 rounded-md border border-solid border-border-strong px-3.5 hover:border-accent">
-                  <RadioGroup
-                    row
-                    name="gender"
-                    value={profile.gender || ""}
-                    onChange={event => onChange({ value: event.target.value, key: 'gender' })}
-                  >
-                    <FormControlLabel value="MALE" control={<Radio size="small" />} label="男" />
-                    <FormControlLabel value="FEMALE" control={<Radio size="small" />} label="女" />
-                  </RadioGroup>
+                  <div role="radiogroup" aria-label="性別" className="flex items-center gap-4">
+                    <RadioField name="gender" value="MALE" checked={(profile.gender || "") === 'MALE'} onChange={event => onChange({ value: event.target.value, key: 'gender' })} label="男" />
+                    <RadioField name="gender" value="FEMALE" checked={(profile.gender || "") === 'FEMALE'} onChange={event => onChange({ value: event.target.value, key: 'gender' })} label="女" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -116,7 +100,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
             </div>
             <div>
               <DatePicker
-                css={styles.datePicker}
+                className="w-full"
                 label="到職日期"
                 value={profile.employmentStartDate || null}
                 format='yyyy/MM/dd'

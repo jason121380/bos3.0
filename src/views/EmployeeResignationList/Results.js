@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Avatar } from 'ui/avatar'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
@@ -6,28 +5,11 @@ import TableEditBar from 'components/TableEditBar'
 import _ from 'lodash'
 import { openSnackbar } from 'elements/snackbars'
 import { format } from 'date-fns'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
 import { EmptyState } from 'ui/empty-state'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
-const styles = {
-  root: css({}),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  compactCell: css({
-    padding: '4px 8px !important',
-    fontSize: '13px !important',
-    whiteSpace: 'nowrap',
-  }),
-}
 
 export default function Results({ className, employees, resignationList, setCreateResignedUser, ...rest }) {
   const [selectedDesigners, setSelectedDesigners] = useState([])
@@ -69,7 +51,7 @@ export default function Results({ className, employees, resignationList, setCrea
     })
   }
   return (
-    <div {...rest} css={css([styles.root, className])}>
+    <div {...rest} className={className}>
       {/* 原 components/ManagementTable（MUI）改為 ui/card + ui/table；無分頁（原 hidePagination） */}
       <Card>
         <CardHeader className="items-center pb-4">
@@ -143,7 +125,7 @@ export default function Results({ className, employees, resignationList, setCrea
 }
 
 Results.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   orders: PropTypes.array,
 }
 

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import { formatNumber } from 'ui/format'

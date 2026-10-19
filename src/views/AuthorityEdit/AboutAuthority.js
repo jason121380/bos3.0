@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { FormControlLabel, Checkbox } from '@mui/material'
 import { Field, Input } from 'ui/input'
 import { Button } from 'ui/button'

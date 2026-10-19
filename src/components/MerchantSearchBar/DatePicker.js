@@ -1,33 +1,11 @@
-/** @jsxImportSource @emotion/react */
 import { Button, ButtonGroup, Grid } from '@mui/material'
 import { MobileDatePicker } from 'ui/date-picker'
 import { endOfDay, startOfDay, startOfMonth, endOfMonth, format } from 'date-fns'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { CalendarDays } from 'lucide-react'
 import { inputClass } from 'ui/input'
 import { cn } from 'ui/utils'
 import { Button as UiButton } from 'ui/button'
 
-const styles = {
-  container: css({
-    display: 'flex',
-    alignItems: 'center',
-    margin: theme.spacing(3, 0, 3, 0),
-  }),
-  field: css({
-    width: '150px',
-    marginLeft: theme.spacing(2),
-  }),
-  designer: css({
-    minWidth: '120px',
-  }),
-  calendar: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  }),
-}
 
 // uiDateField 開啟時的日期欄：外觀比照 ui Input 的原生 button；onClick 與顯示文字與舊版 Button 相同
 function UiDateField({ onClick, value, format: valueFormat }) {
@@ -144,7 +122,7 @@ export default function DatePicker({
     jumpAfterToTomorrow()
   }
   return (
-    <Grid container css={styles.container} className='DatePicker'>
+    <Grid container className='DatePicker my-6 flex items-center'>
       {/* 快捷鈕：uiDateField 開啟時（DecreaseDetail、ProductConsumeReport）改 ui Button；關閉時維持原 MUI ButtonGroup，其餘引用不變 */}
       {displayMonth ? (
         <Grid item>
