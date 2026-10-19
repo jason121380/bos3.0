@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 // 載入遮罩（Backdrop，#Backdrop 有全域樣式）保留 MUI
 import {
-  CircularProgress, Backdrop
+  Backdrop
 } from '@mui/material'
+import { LoaderCircle } from 'lucide-react'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Field } from 'ui/input'
 import useFetchMerchant from 'hooks/useFetchMerchant'
@@ -513,7 +514,7 @@ function Calendar({ designerId, checkinSettings, bookingCusCheck, checkinMode, b
   return (
     <Fragment>
       <Backdrop id='Backdrop' css={styles.opacity} open={merchant.loading || DesignerCalendar.loading}>
-        <CircularProgress />
+        <LoaderCircle className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
       </Backdrop>
       <Card className="mt-6 px-5 pb-5">
         <div css={styles.headerWrap}>
