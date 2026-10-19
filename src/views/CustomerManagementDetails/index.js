@@ -17,10 +17,11 @@ import { Redirect } from 'react-router-dom'
 import ProgressBar from 'components/ProgressBar'
 import _ from 'lodash'
 import pagenationLabel from './../../helper/pagenationLabel'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, CreditCard, Gift, MessageSquare, Receipt, Star, Ticket, User, UserCheck, Wallet } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
-import { Tabs, TabsList, TabsTrigger } from 'ui/tabs'
+import { Tabs } from 'ui/tabs'
+import { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
 
 import { Provider } from '../../hooks/useStore'
 
@@ -59,6 +60,18 @@ function CustomerManagementDetails({ match, history }) {
     { value: 'SMS', label: '簡訊發送紀錄' },
     { value: 'EventTicketsRecord', label: '抽獎券紀錄' }
   ])
+  // 設定頁樣板（STYLE §12）：圖示只供 SettingsTabsTrigger 呈現，不改分頁 value／條件分頁順序／路由。
+  const tabIcons = {
+    general: User,
+    invoices: Receipt,
+    coupon: Ticket,
+    topup: Wallet,
+    bonus: Star,
+    customerTracking: UserCheck,
+    SMS: MessageSquare,
+    EventTicketsRecord: Gift,
+    membership: CreditCard,
+  }
   const hairCondition = {
     hairProperties: [],
     scalpProperties: [],
@@ -228,20 +241,24 @@ function CustomerManagementDetails({ match, history }) {
   return (
     <Page className="ui-root" title={`${customer.data.customer.name} - ${currentTabName}`}>
       <Provider value={value}>
+        <div className="mx-auto w-full max-w-6xl">
         {idx(customer, _ => (_.data.customer ? <PageHeader title={_.data.customer.name} description='顧客詳細資料' /> : ''))}
         {/* 分頁值皆為字串、handler 只用到 value；activationMode="manual" 與舊版 MUI Tabs 相同：方向鍵只移動焦點，按 Enter／點擊才切換（切換會 history.push） */}
+        {/* 設定頁樣板（STYLE §12）：桌機左選單＋右內容（左 surface／右 background、無分隔線由共用 settings-nav 承擔），手機頂部橫向捲動分頁；僅改版面殼，分頁內容元件不動 */}
         <Tabs
+          className="md:flex md:items-stretch"
           onValueChange={value => handleTabsChange(null, value)}
           value={currentTab}
           activationMode="manual"
         >
-          <TabsList>
+          <SettingsTabsList aria-label="顧客詳細資料分類">
             {tabs.map(tab => (
-              <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
+              <SettingsTabsTrigger key={tab.value} value={tab.value} icon={tabIcons[tab.value]}>{tab.label}</SettingsTabsTrigger>
             ))}
-          </TabsList>
-        </Tabs>
-        <div className="mt-6">
+          </SettingsTabsList>
+          <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">
+            <SettingsSectionHeading title={currentTabName} />
+        <div>
           {currentTab === 'general' && (
             <General
               bookingCusCheck={bookingCusCheck}
@@ -288,6 +305,9 @@ function CustomerManagementDetails({ match, history }) {
             <ArrowLeft strokeWidth={1.75} />
             返回
           </Button>
+        </div>
+          </div>
+        </Tabs>
         </div>
       </Provider>
     </Page>
