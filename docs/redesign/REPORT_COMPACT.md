@@ -42,6 +42,6 @@ DecreaseDetail（PR #50）與 SalaryDetail（3 檔）、SalaryOverview、Custome
 - **日期欄**：屬共用 `components/MerchantSearchBar/DatePicker.js`（月曆專項 `DATE_PICKER.md` 排在第 4 批共用元件批）。本批以**逐頁 opt-in** 提前處理這一頁：`DatePicker` 與 `MerchantSearchBar` 新增 `uiDateField` prop（預設 `false`），僅 `DecreaseDetail/index.js` 傳入。共用層預設不變，其餘約 23 個引用檔仍是 MUI contained Button。
 - **新樣式**：日期顯示為原生 `<button type="button">`（`inputClass` 外觀＋右側 `CalendarDays` 圖示），`onClick` 與顯示文字 `format(value, format)` 與舊版相同；兩個 `MobileDatePicker` 本體、`format`、`closeOnSelect`、`onChange=handleCalendarAccept` 不動。
 - **ButtonGroup**：舊版兩顆日期鈕在 MUI `ButtonGroup variant="contained"` 內。`uiDateField` 時改以 `div.flex.gap-2` 容器取代 `ButtonGroup`（`uiDateField=false` 仍是原 `ButtonGroup`），避免群組的 contained／邊框相連樣式與 `cloneElement` 套用到自訂 button。
-- **快捷鈕**（上個月／本月／前天／昨天／今天…）仍是 MUI 藍色 contained `ButtonGroup`，**不改色、不改結構**。
+- **快捷鈕**（上個月／本月／前天／昨天／今天…）：原為 MUI 藍色 contained `ButtonGroup`；**v3.0-1019-1022 起，僅在 `uiDateField` 開啟時（目前只有本頁）改為 `ui/button` 的 `secondary`＋`sm`（flex `gap-2` 容器）**，顯示條件、文字、handler 不變；其他頁（`uiDateField` 預設 `false`）未動。
 - **表格**：原無 `dense`，本批補上（見第二節）。
 - 待實機：日期欄新樣式（寬度 140px、圖示、focus ring、與快捷鈕的高度對齊與間距）、快捷鈕不變、表格列高、列印。
