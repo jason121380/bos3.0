@@ -43,6 +43,7 @@ export default function DecreaseDetail() {
               initFirst={!pageSetting.employeeId ? ['employee'] : []}
               useInDecreaseDetailReport={true}
               lastInLeaderBoard={true}
+              uiDateField
             />
           </div>
           <DesignerBeenAssistedAutoComplete
