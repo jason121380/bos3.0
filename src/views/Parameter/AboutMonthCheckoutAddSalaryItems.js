@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { CheckboxField } from 'ui/checkbox'
+import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
@@ -47,18 +48,19 @@ function AboutMonthCheckoutAddSalaryItems({
           </div>
         ))}
         <div css={styles.serviceInputGroup}>
-          <NativeSelect
-            disabled={!inputEnable}
-            fullWidth={false}
-            css={styles.field}
-            label='薪資條列印間距'
-            value={checkoutAndSalaryItem.employeePayslipPrintStyle}
-            onChange={e => setCheckoutAndSalaryItem({...checkoutAndSalaryItem, employeePayslipPrintStyle: e.target.value})}
-          >
-            <NativeSelectOption value='SMALL'>小</NativeSelectOption>
-            <NativeSelectOption value='MEDIUM'>中</NativeSelectOption>
-            <NativeSelectOption value='LARGE'>大</NativeSelectOption>
-          </NativeSelect>
+          <Field label='薪資條列印間距'>
+            <NativeSelect
+              disabled={!inputEnable}
+              fullWidth={false}
+              css={styles.field}
+              value={checkoutAndSalaryItem.employeePayslipPrintStyle}
+              onChange={e => setCheckoutAndSalaryItem({...checkoutAndSalaryItem, employeePayslipPrintStyle: e.target.value})}
+            >
+              <NativeSelectOption value='SMALL'>小</NativeSelectOption>
+              <NativeSelectOption value='MEDIUM'>中</NativeSelectOption>
+              <NativeSelectOption value='LARGE'>大</NativeSelectOption>
+            </NativeSelect>
+          </Field>
         </div>
       </CardContent>
     </Card>

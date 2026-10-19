@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
@@ -30,20 +31,21 @@ function AboutMerchantFakePerformanceReference({
       <CardContent>
         <div css={styles.serviceInputGroup}>
           <div className="flex flex-wrap items-center gap-2 p-2">
-            <NativeSelect
-              disabled={!inputEnable}
-              fullWidth={false}
-              css={styles.field}
-              label='虛業績依據'
-              value={merchantFakePerformanceRefer}
-              onChange={e => setMerchantFakePerformanceRefer(e.target.value)}
-            >
-              {fakePerformanceRefer.map((data, idx) => (
-                <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
-                  {data.label}
-                </NativeSelectOption>
-              ))}
-            </NativeSelect>
+            <Field label='虛業績依據'>
+              <NativeSelect
+                disabled={!inputEnable}
+                fullWidth={false}
+                css={styles.field}
+                value={merchantFakePerformanceRefer}
+                onChange={e => setMerchantFakePerformanceRefer(e.target.value)}
+              >
+                {fakePerformanceRefer.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+            </Field>
           </div>
         </div>
       </CardContent>

@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { CheckboxField } from 'ui/checkbox'
+import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
@@ -52,20 +53,21 @@ function AboutPriceDisplayOnDailyReport({
           </div>
         ))}
         <div css={styles.serviceInputGroup}>
-          <NativeSelect
-            disabled={!inputEnable}
-            fullWidth={false}
-            css={styles.field}
-            label='日報表設計師名稱顯示'
-            value={aboutReport.designerNameForReportType}
-            onChange={e => setAboutReport({...aboutReport, designerNameForReportType: e.target.value})}
-          >
-            {designerNameForReportTypeArr.map((data, idx) => (
-              <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
-                {data.label}
-              </NativeSelectOption>
-            ))}
-          </NativeSelect>
+          <Field label='日報表設計師名稱顯示'>
+            <NativeSelect
+              disabled={!inputEnable}
+              fullWidth={false}
+              css={styles.field}
+              value={aboutReport.designerNameForReportType}
+              onChange={e => setAboutReport({...aboutReport, designerNameForReportType: e.target.value})}
+            >
+              {designerNameForReportTypeArr.map((data, idx) => (
+                <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                  {data.label}
+                </NativeSelectOption>
+              ))}
+            </NativeSelect>
+          </Field>
         </div>
       </CardContent>
     </Card>

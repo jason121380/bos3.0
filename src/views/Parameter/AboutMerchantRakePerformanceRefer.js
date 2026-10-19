@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
@@ -38,34 +39,36 @@ function AboutMerchantRakePerformanceRefer({
       <CardContent>
         <div css={styles.serviceInputGroup}>
           <div className="flex flex-wrap items-center gap-2 p-2">
-            <NativeSelect
-              disabled={!inputEnable}
-              fullWidth={false}
-              css={styles.field}
-              label='指定'
-              value={merchantRakeReferemce.designate}
-              onChange={e => handleValueChange(e, 'designate')}
-            >
-              {options.des.map((data, idx) => (
-                <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
-                  {data.label}
-                </NativeSelectOption>
-              ))}
-            </NativeSelect>
-            <NativeSelect
-              disabled={!inputEnable}
-              fullWidth={false}
-              css={styles.field}
-              label='不指定'
-              value={merchantRakeReferemce.nonDesignate}
-              onChange={e => handleValueChange(e, 'nonDesignate')}
-            >
-              {options.nonDes.map((data, idx) => (
-                <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
-                  {data.label}
-                </NativeSelectOption>
-              ))}
-            </NativeSelect>
+            <Field label='指定'>
+              <NativeSelect
+                disabled={!inputEnable}
+                fullWidth={false}
+                css={styles.field}
+                value={merchantRakeReferemce.designate}
+                onChange={e => handleValueChange(e, 'designate')}
+              >
+                {options.des.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+            </Field>
+            <Field label='不指定'>
+              <NativeSelect
+                disabled={!inputEnable}
+                fullWidth={false}
+                css={styles.field}
+                value={merchantRakeReferemce.nonDesignate}
+                onChange={e => handleValueChange(e, 'nonDesignate')}
+              >
+                {options.nonDes.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+            </Field>
           </div>
         </div>
       </CardContent>
