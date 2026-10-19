@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
-// 排版 Grid（多欄 RWD）、時間與數字欄位保留 MUI
+// 排版 Grid（多欄 RWD）、時間與數字欄位保留 MUI；人員班別單行文字欄改 Field 上方標籤＋ui Input
 import {
   TextField, Grid
 } from '@mui/material'
 import { Button } from 'ui/button'
 import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
+import { Field, Input } from 'ui/input'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment, useState, useEffect } from 'react'
 import _ from 'lodash'
@@ -181,16 +182,15 @@ const AboutEmployeeSchedule = ({
                   <Grid container direction="row" style={{ marginBottom: '50px' }}>
                     <Grid sm={3} xs={12} item >
                       <Grid>
-                        <TextField
-                          disabled={!inputEnable}
-                          label="人員班別"
-                          variant="outlined"
-                          value={data.name}
-                          css={styles.gap}
-                          onChange={event => {
-                            handleChangesScheduleName(index, event.target.value)
-                          }}
-                        />
+                        <Field label="人員班別" className="mb-5">
+                          <Input
+                            disabled={!inputEnable}
+                            value={data.name}
+                            onChange={event => {
+                              handleChangesScheduleName(index, event.target.value)
+                            }}
+                          />
+                        </Field>
                       </Grid>
                       <Grid>
                         選取顏色

@@ -1,78 +1,11 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Modal,
-} from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import { red, blue } from '@mui/material/colors'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Button } from 'ui/button'
-import { Card, CardContent, CardFooter, CardTitle } from 'ui/card'
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Checkbox } from 'ui/checkbox'
 import { Input } from 'ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
-
-const styles = {
-  root: css({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    outline: 'none',
-    boxShadow: theme.shadows[20],
-    width: 700,
-    maxHeight: '100%',
-    overflowY: 'auto',
-    maxWidth: '100%',
-    backgroundColor: 'rgb(var(--background))',
-  }),
-  birthday: css({
-    width: '100%',
-  }),
-  actions: css({
-    justifyContent: 'flex-end',
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  categorieDiv: css({
-    marginBottom: '5px',
-  }),
-  categorieBtn: css({
-    margin: '3px',
-  }),
-  categorieClear: css({
-    backgroundColor: red[500],
-    color: 'white',
-    '&:hover': {
-      backgroundColor: red[700],
-    },
-  }),
-  addBtn: css({
-    backgroundColor: blue[500],
-    color: 'white',
-    '&:hover': {
-      backgroundColor: blue[700],
-    },
-  }),
-  confirmBtn: css({
-    margin: '7px 0',
-    float: 'right',
-  }),
-  header: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-  closeAtTop: css({
-    margin: '16px 24px',
-  }),
-  confirmAtTop: css({
-    margin: '16px 0px',
-  }),
-}
 
 function ProductsModal({
   productsModalOpen,
@@ -263,12 +196,13 @@ function ProductsModal({
     closeModal()
   }
   return (
-    <Modal open={productsModalOpen}>
-      <Card css={styles.root} className='EmployeePickingCreateProductsModal'>
-        <div className="flex items-center justify-between gap-4 px-5 py-4">
-          <CardTitle>
+    // 舊版 Modal 未設 onClose（點背景／Esc 不關閉），故不傳 onOpenChange；hideClose 保留原關閉鈕，寬度保留原 700px；className 保留 scss 掛點
+    <Dialog open={productsModalOpen}>
+      <DialogContent size="md" className="EmployeePickingCreateProductsModal max-w-[700px]" hideClose aria-describedby={undefined}>
+        <DialogHeader className="flex-row items-center justify-between pr-6">
+          <DialogTitle>
             {selectedCategorieName.length === 0 ? '所有商品' : `${categoryNameForDisplay}類商品`}
-          </CardTitle>
+          </DialogTitle>
           <div className="flex items-center gap-2">
             <Button
               variant="primary"
@@ -283,9 +217,9 @@ function ProductsModal({
               關閉
             </Button>
           </div>
-        </div>
+        </DialogHeader>
 
-        <CardContent className="border-0 border-t border-solid border-border">
+        <DialogBody className="border-0 border-t border-solid border-border">
           <div className="mb-3 flex flex-wrap gap-2">
             {productCategories.map(productCategory => (
               <Button
@@ -368,8 +302,8 @@ function ProductsModal({
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-        <CardFooter>
+        </DialogBody>
+        <DialogFooter>
           <Button
             variant="ghost"
             onClick={closeModal}
@@ -382,9 +316,9 @@ function ProductsModal({
           >
             確定
           </Button>
-        </CardFooter>
-      </Card>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
