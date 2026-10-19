@@ -213,7 +213,7 @@
 
 ## 四、剩餘工作分類與批次建議（2026/10/19）
 
-- **MUI 移除批次1・最低風險（線4，2026/10/19，`claude/ui-mui-remove-batch1-box`，v3.0-1019-1701）**：依線4盤點批次1，13 檔只做 Divider（無 props 者）→`h-px bg-border` 與 `colors` 純常數→tokens（清單見 STATUS 首列）；同檔 Typography/Grid/Paper 跳過並註明原因（MEMORY #76），Autocomplete/DatePicker 本體待 Jason 拍版不碰，帳單四兄弟與列印報表避開。驗證：eslint 0 新增 error（9 個既有 error 與改版前相同）、verify-logic 僅 label.js 1 FAIL（純色常數，見 PR）、portal 0/0、unit 52/52、build 含版號。**待實機確認**：各卡片分隔線、Label 預設色、VISA 標籤 success/danger 色。
+- **MUI 移除批次1・最低風險（線4，2026/10/19，`claude/ui-mui-remove-batch1-box`，v3.0-1019-1704）**：依線4盤點批次1，13 檔只做 Divider（無 props 者）→`h-px bg-border` 與 `colors` 純常數→tokens（清單見 STATUS 首列）；同檔 Typography/Grid/Paper 跳過並註明原因（MEMORY #76），Autocomplete/DatePicker 本體待 Jason 拍版不碰，帳單四兄弟與列印報表避開。驗證：eslint 0 新增 error（9 個既有 error 與改版前相同）、verify-logic 僅 label.js 1 FAIL（純色常數，見 PR）、portal 0/0、unit 52/52、build 含版號。**待實機確認**：各卡片分隔線、Label 預設色、VISA 標籤 success/danger 色。
 - **CustomerFilterExport 日期欄改 `ui/date-picker` facade（月曆專項，2026/10/19，`codex/ui-datepicker-customer-filter-box`，v3.0-1019-1428）**：`CustomerFilterExport/index.js` 的 3 個 `DatePicker`（最後消費開始日期、最後消費結束日期、基準日期）只換 import；`disabled={disable[0|1]}`、`label`、`format="yyyy/MM/dd"`、`value`、`onChange` 原樣，MUI Dialog、Select／TextField 與篩選匯出邏輯不動。STYLE.md §6 已涵蓋月曆 facade，無需修改。**待實機確認**：Dialog 內 3 欄寬度與並排、disabled 狀態、彈層開啟選日後存值。
 
 - **月曆頂欄真正未套用追修（Claude 線，2026/10/19，`claude/ui-datepicker-toolbar-fix-box`，v3.0-1019-1410）**：實機 1358 仍藍的根因是 `NavBar` 後載入的 `initialize(.dark).scss` 舊藍底白字同權重蓋過橋接主題。共用層修：`mui-theme.js` 頂欄色值 `!important`＋補 `MuiDatePickerToolbar`／`MuiDateTimePickerToolbar`／`MuiTimePickerToolbar`／`ToolbarText.selected`，兩份舊全域 CSS 移除藍底白字。不逐頁改、不改選取行為／format／存值。待 Jason 部署後強刷實機確認。

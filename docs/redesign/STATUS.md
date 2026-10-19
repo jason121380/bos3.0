@@ -6,7 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
-| MUI 移除批次1・最低風險（線4，v3.0-1019-1701） | 13 檔：11 檔無 props 的 MUI `<Divider />` → `<div className="h-px bg-border" />`（FastCheckOrdersModal、MembershipCardList、CustomerManagementDetails/Invoices+OtherActions、DesignerPerformDetail 兩檔、EmployeeManagementDetail/Group、Profile/Group+DesignerSelfRecord、Parameter/AboutDesignerSalary、SalaryDetail/Results）；3 檔 MUI `colors` 純常數 → tokens（Markdown `grey[300]`→`border`、elements/label 預設 `grey[600]`→`text-secondary`、Invoices `green/red[600]`→`success/danger`）。同檔 Typography/Grid/Paper 未換（Grid 斷點不同、MembershipCardList 的 styled 依賴 `.MuiPaper/.MuiGrid` 選擇器，換了會改版面，見 MEMORY #76）；未碰 TextField/Autocomplete/DatePicker 本體、帳單四兄弟與列印報表。待實機看分隔線與標籤色。 |
+| MUI 移除批次1・最低風險（線4，v3.0-1019-1704） | 13 檔：11 檔無 props 的 MUI `<Divider />` → `<div className="h-px bg-border" />`（FastCheckOrdersModal、MembershipCardList、CustomerManagementDetails/Invoices+OtherActions、DesignerPerformDetail 兩檔、EmployeeManagementDetail/Group、Profile/Group+DesignerSelfRecord、Parameter/AboutDesignerSalary、SalaryDetail/Results）；3 檔 MUI `colors` 純常數 → tokens（Markdown `grey[300]`→`border`、elements/label 預設 `grey[600]`→`text-secondary`、Invoices `green/red[600]`→`success/danger`）。同檔 Typography/Grid/Paper 未換（Grid 斷點不同、MembershipCardList 的 styled 依賴 `.MuiPaper/.MuiGrid` 選擇器，換了會改版面，見 MEMORY #76）；未碰 TextField/Autocomplete/DatePicker 本體、帳單四兄弟與列印報表。待實機看分隔線與標籤色。 |
 | A3 Draft AddCustomerModal（收尾批2，v3.0-1019-1649） | `DraftOrderEdit/AddCustomerModal.js` 7 欄改 Field+Input 上方標籤，編號重複檢查/生日三格/存值保留。待實機 Enter/Tab/重複提示。 |
 | 消費排行手機擠壓（收尾批1，v3.0-1019-1647） | `CustomerConsumptionLeaderboard/Filter.js` 篩選列手機滿列/可收合，只改 className，查詢/存值/匯出原樣。待實機 390px。 |
 | 錢包排行手機擠壓（線3第一批，v3.0-1019-1653） | `CustomerWalletLeaderboard/Filter.js` 篩選列手機滿列/shrink-0，只改 className，查詢/存值/匯出原樣。待實機 390px。 |
