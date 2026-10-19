@@ -8,7 +8,7 @@ import {
   InputLabel,
   Autocomplete
 } from '@mui/material'
-import { DatePicker } from '@mui/x-date-pickers'
+import { DatePicker } from 'ui/date-picker'
 import { useFetchProductsInEmployeePicking } from 'hooks/useFetchProducts'
 import { useFetchProductCategoriesInCreatePicking } from 'hooks/useFetchProductCategories'
 import { useFetchUsersForCreatePicking } from 'hooks/useFetchUsers'
