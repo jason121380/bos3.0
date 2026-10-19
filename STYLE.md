@@ -92,7 +92,7 @@
 | 元件 | 規則 |
 |---|---|
 | **Button** | 變體只有 `primary`（主題藍底白字、圓角 full）、`secondary`（淺灰實心 `surface-hover`、無框，與輸入框區分）、`ghost`（無框）、`danger`；尺寸 `sm 32px / md 36px / lg 40px`。圖示 16px，與文字間距 6px。 |
-| **Input / Select / DatePicker** | 高 36px、`rounded-md`、1px `border-strong`（hover 加深）；focus 為 2px `accent` 外框。錯誤時 border 變 `danger`，下方 caption 顯示訊息。日期區間一律用 `DateSelector`：「快速選擇」下拉 ＋ 一個日期區間欄位，不平鋪多顆按鈕。月曆 date-picker 專項方向：標籤放欄位上方；`format`／存值（`onChange` 原樣回傳 `Date`／`null`）／鍵盤輸入逐檔保留；內部第一階段沿用 `@mui/x-date-pickers` 做外觀門面，詳見 `docs/redesign/DATE_PICKER.md`。月曆彈層（日格、表頭、年／月／時間選擇）的視覺統一歸 `src/ui/mui-theme.js` 的 `MuiPickers*` 覆寫，不逐頁寫樣式。彈層頂欄（手機 Dialog 實際為 `MuiPickersToolbar`＋`MuiDatePickerToolbar`／`MuiDateTimePickerToolbar`／`MuiTimePickerToolbar`，DateTime 才出現時間欄）跟隨主題：`background` 底、`text` 字色、底部 1px `border`，**不要大面主題藍底白字**，且覆寫須用 `!important` 壓過後載入的舊全域 CSS（`initialize.scss` 不得再寫死藍底白字）；主題色 `accent` 只保留在選取日、今天邊框、年／月／時間選取與確認按鈕等小面積。 |
+| **Input / Select / DatePicker** | 高 36px、`rounded-md`、1px `border-strong`（hover 加深）；focus 為 2px `accent` 外框。錯誤時 border 變 `danger`，下方 caption 顯示訊息。日期區間一律用 `DateSelector`：「快速選擇」下拉 ＋ 一個日期區間欄位，不平鋪多顆按鈕。月曆 date-picker 專項方向：標籤放欄位上方；`format`／存值（`onChange` 原樣回傳 `Date`／`null`）／鍵盤輸入逐檔保留；內部第一階段沿用 `@mui/x-date-pickers` 做外觀門面，詳見 `docs/redesign/DATE_PICKER.md`。月曆彈層（日格、表頭、年／月／時間選擇）的視覺統一歸 `src/ui/mui-theme.js` 的 `MuiPickers*` 覆寫，不逐頁寫樣式。彈層頂欄（手機 Dialog 實際為 `MuiPickersToolbar`＋`MuiDatePickerToolbar`／`MuiDateTimePickerToolbar`／`MuiTimePickerToolbar`，DateTime 才出現時間欄）跟隨主題：`background` 底、`text` 字色、底部 1px `border`，**不要大面主題藍底白字**，且覆寫須用 `!important` 壓過後載入的舊全域 CSS（`initialize.scss` 不得再寫死藍底白字）；主題色 `accent` 只保留在選取日、今天邊框、年／月／時間選取與確認按鈕等小面積。**篩選列例外（MerchantSearchBar/DatePicker）**：自訂 field 本身是日期按鈕且置於 ButtonGroup／flex 單排，不得傳 `label` 給 facade（facade 有 label 會以 `Field` 在欄位上方渲染標籤，會把按鈕群組擠成兩層重疊，見 MEMORY #112）；彈層標題以 `localeText.toolbarTitle` 保留。此類頁面改版以 `uiDateField` 逐頁 opt-in（快捷鈕 ui Button＋UiDateField 單排），其餘引用維持舊版。 |
 | **Form** | 標籤在上；必填以「*」標在標籤後；一列最多 2 欄（桌機）。底部固定動作列：右側「取消 / 儲存」。<br>**標籤只有一種寫法：標籤在欄位上方＋佔位字**，不使用浮動（卡在框線上）的小標籤；備註欄也一樣。<br>**必填 `*` 要有依據**：依該頁既有的驗證規則（例如 `valid`、`billVerify`），並在原始碼註解寫明；空列會被丟掉的欄位，只在該列有填任一欄時才標必填。<br>**按鈕停用要說明原因**：在按鈕旁以文字（`role="status"`）與 `title` 寫出「尚缺：…」。 |
 | **Table** | 表頭 `surface` 底、`label` 字級；列高 44px；hover `surface-hover`；數字欄右對齊；空狀態置中顯示說明＋主要動作。分頁固定在表格下方右側。 |
 | **Badge** | 狀態專用；文字＋8% 底色；不加邊框陰影。 |
@@ -164,7 +164,7 @@ Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現*
 
 ## 12. 設定頁樣板（OpenAI 設定頁式，Jason 2026/10/19 拍版）
 
-Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比照其設計語言統一。本節只適用設定類（系統參數、個人檔案內的設定分頁、業績／抽成參數等），**報表、帳單四兄弟、列印頁不適用**——那些維持 §11 compact 與既有合計／列印規範，不得因本節改成寬鬆留白。
+Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比照其設計語言統一。本節只適用設定類（系統參數、個人檔案內的設定分頁、業績／抽成參數等），**報表、帳單四兄弟、列印頁不適用**——那些維持 §11 compact 與既有合計／列印規範，不得因本節改成寬鬆留白。**唯一例外（Jason 2026/10/19 新指示，覆蓋先前「報表不套設定樣板」僅限本頁）：報表目錄頁（`/dashboard-list-detail`）套左選單＋右側內容**，僅目錄頁本身比照本節版面，各報表頁、帳單頁仍不套、維持原規範。此頁桌機再依 Jason 同日追加指示採 Billing 式左右底色：左選單欄整欄 `bg-surface` 淺灰、右內容 `bg-background` 白，兩欄相接不加 border／shadow 分隔（手機維持頂部橫向分頁、不套底色）。
 
 ### 版面（共用元件 `src/ui/settings-nav.js`）
 
@@ -193,7 +193,11 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
   - `/accountingSetting`：本頁原無頁級分頁、三區直疊（收入科目／支出科目／收付方式），比照第一批 Parameter 新增純呈現分類選單＋右分段標題＋`max-w-6xl`；三區以 `hidden` 保留掛載不卸載，全域「儲存」鈕仍一次存三區，`handleSave` 與各欄位 handler／存值一字未動。原收入／支出桌機並排改為選單切換分區呈現。
   - `/helper-point-setting-create` 與 `/helper-point-setting-edit/:id`：兩頁皆單一表單、無真分頁，不造假選單；原單卡依既有三區塊（設定名稱／點數使用成本／點數獲得）切成三張分段卡片直疊，容器維持 `max-w-3xl`；欄位、`ToggleGroup` 切換、增刪列與建立／儲存 handler 全原樣，Create／Edit 孿生差異保留不互相照抄。
   - `/authority` **本批跳過**：角色權限管理為單一清單卡＋`min-w-[700px]` 寬表，無表單分區；套左選單只剩單一項目屬假選單且會擠壓寬表，故維持原清單版面（compact），日後如改版走清單／表格規範另案，不在本樣板批硬套。
+- 2026/10/19 Jason 新指示例外（`claude/report-catalog-nav-box`，v3.0-1020-0019）：報表目錄 `/dashboard-list-detail` 原六分類卡片 grid 改比照 Parameter：`ui/tabs`＋`ui/settings-nav` 左選單（桌機 240px、選中 `bg-accent/8`＋主題藍字）＋右側分類標題與單張連結卡，手機回到頂部橫向捲動分頁；六分類順序與圖示（日報表 CalendarDays／營業 ChartColumn／設計師 Users／互助 HeartHandshake／商品 Package／管理分析 LayoutDashboard）、各連結列樣式與權限判斷全保留，左選單只列有權限分類並預設第一個有權限者；桌機左欄整欄 `bg-surface`、右側 `bg-background` 白、兩欄 `gap-0` 相接無分隔線（Jason 追加 Billing 截圖指示，不新色票、不動共用 `settings-nav`、手機不套）。此例外僅限目錄頁本身，各報表頁與帳單頁不套本樣板。
 
+
+
+- 2026/10/20 顧客追蹤補改（`claude/fix-customer-tracking-box`，v3.0-1020-0016）：`/parameter`「顧客追蹤」六卡的動態清單列依 §6 既有規範落地——序號用內文字級＋次要色固定寬、輸入欄 flex-1 可換行、增刪用 `ghost size=icon` 真按鈕（lucide 16px＋aria-label/title，disabled 須套真 Button 不得用裸圖示假 disabled）；無新樣式規則，本節僅記錄套用結果。
 
 ## 13. 【已作廢】PrimeStay 版式語言
 
