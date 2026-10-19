@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| Reservation 希望服務日期欄（Codex 線第二批，v3.0-1019-1404） | `Reservation/Basic.js` 唯一 `DatePicker` 改由 `ui/date-picker` 匯入；label、value、onChange 防呆、format、localeText、slotProps 原樣，ToggleButtonGroup 與三個 MUI Select／FormControl 不動。待實機確認欄寬、鍵盤輸入與彈層。 |
 | EmployeeManagementDetail 一般設定日期欄（Codex 線，v3.0-1019-1358） | `General/GeneralSettings.js` 出生、到職 2 個 `DatePicker` 只換 import 至 `ui/date-picker`；label 由 facade 的 Field 顯示，value／onChange／format／slotProps／css 原樣。待實機確認兩欄寬度與彈層。 |
 | IsReservationNeedReview 時間欄標籤（Codex 線，v3.0-1019-1323） | 開始／結束兩處時間複合列改用 `Field` 上方標籤，時分選單置於 flex 列；值、事件、停用條件與選項不變，其他欄位不動。待實機確認列高與對齊。 |
 | BookingNotificationSetting 下拉標籤（Codex 線，v3.0-1019-1305） | map 內 1 處 `NativeSelect` 改用 `Field` 上方標籤，涵蓋 15 個實例；事件、存值與布林選項不變，手機／帳號 MUI TextField 保留。STYLE.md §6 已規範標籤在上，無需修改；待實機確認列高與對齊。 |
