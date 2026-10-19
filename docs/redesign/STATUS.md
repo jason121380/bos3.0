@@ -254,3 +254,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ### SalaryDetail 手機擠壓修正（B1 薪資切片，Claude 線，`claude/ui-mobile-salary-box`，v3.0-1019-1557）
 
 - 範圍：`SalaryDetail/IncreaseResult.js`、`DecreaseResult.js` 標題列 flex-wrap＋筆數文字不折行，只改 className。待實機：390px 標題列、桌機不變。
+
+### 帳單三頁對齊第一切片 Draft/Queue Head（AGY 線，`agy/ui-bill-align-draft-queue-box`，v3.0-1019-1601）
+
+- 範圍：`DraftOrderEdit/Head.js`、`QueueOrderEdit/Head.js` 表頭排版對齊 OrderCreate，只改畫面。待實機：並排/換行、搜尋、日期彈層。
