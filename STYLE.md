@@ -19,12 +19,12 @@
 
 | Token | 淺色 | 深色 | 用途 |
 |---|---|---|---|
-| `--canvas` | `#F7F7F8` | `#0A0A0A` | 頁面底色（卡片靠底色差浮出） |
+| `--canvas` | `#F3F4F6` | `#0A0A0A` | 頁面底色（PrimeStay 式淺灰，§13；內容白卡靠底色差浮出） |
 | `--background` | `#FFFFFF` | `#171717` | 卡片、輸入框、浮層底色 |
 | `--surface` | `#F2F2F3` | `#1C1C1C` | 側欄、次要區塊、表頭 |
 | `--surface-hover` | `#E9E9EB` | `#262626` | 列 hover、選單 hover、次要按鈕底色 |
 | `--surface-active` | `#DEDEE1` | `#323232` | 次要按鈕 hover |
-| `--border` | `#E5E5E5` | `#2E2E2E` | 裝飾性邊框：卡片框、分隔線、表格線 |
+| `--border` | `#E5E7EB` | `#2E2E2E` | 裝飾性邊框：卡片框、分隔線、表格線（細淺邊框，§13） |
 | `--border-strong` | `#C2C2C2` | `#484848` | 可操作元件邊框：輸入框、下拉、日期欄位（hover `#949494`） |
 | `--text` | `#0D0D0D` | `#ECECEC` | 主要文字 |
 | `--text-secondary` | `#5D5D5D` | `#B4B4B4` | 說明、標籤、欄位名 |
@@ -96,15 +96,15 @@
 | **Form** | 標籤在上；必填以「*」標在標籤後；一列最多 2 欄（桌機）。底部固定動作列：右側「取消 / 儲存」。<br>**標籤只有一種寫法：標籤在欄位上方＋佔位字**，不使用浮動（卡在框線上）的小標籤；備註欄也一樣。<br>**必填 `*` 要有依據**：依該頁既有的驗證規則（例如 `valid`、`billVerify`），並在原始碼註解寫明；空列會被丟掉的欄位，只在該列有填任一欄時才標必填。<br>**按鈕停用要說明原因**：在按鈕旁以文字（`role="status"`）與 `title` 寫出「尚缺：…」。 |
 | **Table** | 表頭 `surface` 底、`label` 字級；列高 44px；hover `surface-hover`；數字欄右對齊；空狀態置中顯示說明＋主要動作。分頁固定在表格下方右側。 |
 | **Badge** | 狀態專用；文字＋8% 底色；不加邊框陰影。 |
-| **Card** | `rounded-lg`、1px border、內距 20px；標題用 `heading`。 |
+| **Card** | `rounded-2xl`（16px，§13）、1px `border`、`shadow-card` 柔和陰影、內距 20px；標題用 `heading`。 |
 | **Accordion（可展開卡片）** | 用 `ui/accordion`（與 MUI 介面相容）。收合時標題右側以 `summaryMeta` 顯示摘要（「已填 N 筆 · NT$ 小計」，沒填就不顯示），一眼看得到內容概況。 |
 | **圖示按鈕** | 一律是真的 `<button>`，帶 `title` 與 `aria-label`；「新增」類動作要有文字（例如「新增項目」），不能只放「+」。 |
 | **總計列** | 長表單的「業績合計／現金應收」另放底部固定列（`fixed`，lg 以上讓出 240px 側欄、手機讓出 56px 底部導覽、列印隱藏），不靠 `sticky` 側欄卡。 |
 | **Dialog** | 寬 480 / 640 / 800；標題、內容、底部動作三段；危險操作需二次確認並寫出後果。 |
 | **樹狀選擇（TreeView）** | 共用選店等樹狀窗保留 `@mui/x-tree-view` 行為時只做視覺覆寫：列高 38px compact、整列 hover `surface-hover`、層級縮排 24px、展開箭頭 16px 置中對齊、勾選框 `ui` Checkbox 16px、群組／店家圖示 16px＋間距 6px；搜尋用 `ui` Input、頂部動作 ghost 描邊 `sm` 同高、底部關閉 `secondary`／確認 `primary`。不為換而換自寫樹，避免勾選／展開／搜尋行為回歸。 |
 | **Toast** | 右下角；成功 3 秒自動消失，錯誤需手動關閉。 |
-| **Sidebar** | 240px；群組標題 `caption` + `text-tertiary`；項目高 36px、`rounded-md`；選取為主題色 8% 底（`bg-accent/8`）+ 主題色文字 + 字重 500。 |
-| **Tabs** | 底線式；選取為 `text` + 2px 主題色底線，未選 `text-secondary`。 |
+| **Sidebar** | 240px；群組標題 `caption` + `text-tertiary`；項目高 36px、`rounded-lg`；選取為白 pill（`bg-background`＋細邊＋`shadow-card`）+ 品牌藍文字 + 字重 500（§13）。 |
+| **Tabs** | 底線式；選取為品牌藍文字 + 2px 品牌藍底線，未選 `text-secondary`（§13）。 |
 | **Radio** | 用 `ui/radio` 的 `Radio`／`RadioField`（原生 `<input type="radio">`，16px 圓點、`accent` 主色 `primary`、focus 2px `accent` 外框、disabled 40% 透明）：保留圓點外觀，不改成分段按鈕；`RadioField` 以 `<label>` 包覆使點文字可選，`onChange(event, value)` 對齊 MUI `RadioGroup` 簽名（只讀 `event.target.value` 的 handler 亦相容）。同組必須給相同 `name`，互斥、方向鍵移動＋選取、Tab 只停已選／第一顆、空白鍵選取皆由原生行為保留；未選狀態以 `checked` 皆 false 表示，不以空字串另設狀態。 |
 | **Empty / Loading** | 一律用 `EmptyState`、`Skeleton` 元件，不得各頁自寫。不定值載入轉圈用 lucide `LoaderCircle`＋`animate-spin`＋`strokeWidth={1.75}`：置中大圈 `h-10 w-10 text-accent`（對原 MUI `CircularProgress` 預設 40px 與主題色）、欄位小圈依原尺寸（如 20px），原置中容器與間距不動；定值進度（線／圓＋%）另案，不以轉圈冒充。 |
 
@@ -180,3 +180,56 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
 1. 只改版面結構／呈現：分頁欄位 `value`、切換 handler、表單欄位存值、儲存 handler、權限判斷、開關 `checked`／`onChange` 一字不動；分頁沿用 `ui/tabs`（含 `activationMode="manual"` 等既有轉接），`settings-nav` 只提供選單 className，不自帶狀態。
 2. 截圖的右側箭頭／數值／粉紅開關只是版式參考：bos3.0 不新增假連結列；既有可點列才可點，開關沿用 `ui/switch` 品牌色，不換色。
 3. 推廣方式：先做 1–2 頁樣板給 Jason 看，確認後才逐頁（一頁一 PR）推廣到其他設定頁；未確認前不得宣稱設定類已全數統一。
+
+### 推廣紀錄
+
+- 2026/10/19 Jason 確認 Parameter 樣板（回覆「可以」）後，推廣第一批（`claude/ui-settings-promo1-box`）：
+  - `/performanceDeductionParameter`：本頁原無頁級分頁、四區直疊（盤點文件寫 Tabs 與現況不符，已更正）。新增純呈現的分類選單（服務扣項方式命名／人員身分類別／抽成方式設定／互助點數設定），各區以 `hidden` 保留掛載、不卸載，避免切換時編輯中欄位的 local state 被重置；子元件 props 與儲存 handler 全原樣。
+  - `/profile/:tab`：僅設定性分頁（基本資料 `general`／密碼設定 `security`／功能釘選 `pinnedTable`）套左選單＋`max-w-6xl`＋分段標題，選單仍列全部有權限分頁、不刪導覽；其餘個人報表分頁維持原 `max-w-[1200px]`＋頂部分頁＋compact，本批不套。
+  - `/deduction-setting` 與 `/update-deduction-setting/:id` **本批跳過**：兩頁皆為單一卡片表單、卡內已有動態屬性分頁，且含 `min-w-[995px]` 的抽成門檻寬表；套左選單只剩單一項目（等於假選單）且會擠壓寬表，故維持原版面，日後如要處理只依 §4 表單頁容器另批評估，不在本樣板批硬套。
+
+## 13. PrimeStay 版式語言（全站地基，Jason 2026/10/19 拍版）
+
+Jason 提供 PrimeStay「People」截圖拍版：**只借版式語言，不借主色**。截圖的綠色（`#22c55e` 系）**不得**作為 bos 主色；所有重點色一律沿用 bos 現行品牌深藍 `--primary`／`--accent` `#1A73E8`（§2）。後續逐頁批次不得自行換綠，也不得把品牌藍一頁一頁偷換成其他色。
+
+### 色票（沿用 §2，只列本節相關）
+
+| 角色 | Token／值 | 用途 |
+|---|---|---|
+| 頁面底 | `--canvas` `#F3F4F6` | 外框淺灰底（截圖上下灰帶） |
+| 內容／卡片底 | `--background` `#FFFFFF` | 白卡、輸入框、浮層 |
+| 側欄底 | `--surface` `#F2F2F3` | 左選單淺底、表頭 |
+| 細邊框 | `--border` `#E5E7EB` | 卡片框、分隔線、表格線（1px 細淺邊） |
+| 控制項邊框 | `--border-strong` `#C2C2C2` | 輸入框／下拉外框（可操作才用） |
+| 主色（唯一重點色） | `--primary`／`--accent` `#1A73E8` | 主要按鈕、頁籤選中（藍字＋2px 藍底線）、選中態、連結、focus 框 |
+| 狀態色 | `--success`／`--warning`／`--danger`（§2） | 只表狀態（成功仍可用既有 success 綠，但**不是主色**，不做主要按鈕／選中態） |
+
+### 形狀與層次
+
+| 部位 | 規格 |
+|---|---|
+| 內容外框 | `#printContainer`（外距／內距沿用 `initialize.scss` 既有值）升級為白卡：`rounded-2xl`（16px）＋1px `border`＋`shadow-card`，浮在 `canvas` 淺灰上；`print:` 時還原透明、無圓角、無框、無陰影，報表／帳單列印版面不變 |
+| 卡片／彈窗 | `rounded-2xl`（16px；截圖約 16–20px）、1px `border`、`shadow-card`（`0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.05)`，定義於 `tailwind.config.js`）；Card 內距仍 20px |
+| 按鈕 | `primary` 品牌藍實心 pill（`rounded-full`）；`secondary` 白底＋1px `border` pill、hover `surface-hover`；尺寸仍 sm 32／md 36／lg 40、圖示 16px |
+| 輸入／搜尋 | 高 36px 不變、白底、`rounded-[10px]`、1px `border-strong`；focus 2px 品牌藍。搜尋欄同此語彙，不另做一套 |
+| 表格 | **密度不變**：一般列高、`dense` 列高（§11）一律不放寬；只借圓角／邊框／底色對齊，`ui/table` 外框與列印規則本批不動 |
+
+### 左側主選單（Dashboard）
+
+- 淺底（`surface`）、桌機不加硬右框，靠內容白卡的邊框分界；手機抽屜保留右框與 `shadow-float`。
+- 項目：高 36px、`rounded-lg`、圖示 16px＋文字間距 10px（`gap-2.5`）、左右內距 10px。
+- 選中態：**白 pill**（`bg-background`＋1px `border`＋`shadow-card`）＋品牌藍文字＋字重 500；hover 仍 `surface-hover`。群組標題列（可收合）維持文字色，不做 pill。
+- 與 §12 設定頁頁內選單協調：同為淺底＋圓角項目＋藍色選中，只是頁內選單選中可用 `bg-accent/8` 淺藍底；兩者不得在同一畫面互相搶色，推廣時以本節白 pill 為優先對齊方向（§12 頁內選單是否跟進由推廣批決定，本批不動 §12 元件行為）。
+
+### 逐頁推廣規則（後續批次）
+
+1. 地基只收在 `src/styles/tokens.css`、`tailwind.config.js`、`src/ui/`、`src/layouts/Dashboard/`；逐頁批次只換 class／元件，不在頁面寫死 hex、不自創圓角／陰影值。
+2. 逐頁換色留後續批次：本批不把各頁既有的藍／黑／灰按鈕逐頁翻色，避免全站一半新一半舊；PR 須白話說明此取捨。
+3. 報表／帳單維持 compact（§11）：可對齊底色、邊框、圓角，**行高、內距、列印規則不放寬**。
+4. 不改 handler／存值／路由／資料／權限；設定頁 §12 推廣中頁面不得被本批外框打架（外框只包一層白卡，頁內左選單＋分段卡片結構不變）。
+
+### 第一批落地與示範頁（本 PR）
+
+- 外框：Dashboard `#printContainer` 白卡化＋`canvas` 改 `#F3F4F6`；側欄選中白 pill；TopBar 商家切換鈕改 `rounded-lg`＋`shadow-card`（白底細邊不變）。
+- 共用：`ui/card`、`ui/dialog` 大圓角＋柔和陰影；`ui/button` secondary 白 pill；`ui/tabs` 選中藍字藍線；`ui/input` 10px 圓角。
+- 示範頁：顧客列表（`/management/customers`）——外框白卡＋篩選 Card＋列表 Card（`ManagementTable`）＋primary／secondary 按鈕同框驗收方向；該頁 handler、篩選存值、表格欄位與分頁一字未動（僅載入 Skeleton 圓角對齊）。
