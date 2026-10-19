@@ -1,14 +1,12 @@
-// MUI Dialog 保留：舊版無 onClose（點背景、Esc 不會關閉），且內含 MUI TextField（ToggleButton 已改 ui/toggle-group）
-import {
-  TextField,
-   Dialog
-} from '@mui/material'
+// 外框已換 ui/dialog：舊版無 onClose（點背景、Esc 不會關閉），故不傳 onOpenChange；內含 MUI TextField 本體與價格/數量 handler 原樣（無彈出層），ToggleButton 已改 ui/toggle-group
+import { TextField } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { openSnackbar } from 'elements/snackbars'
 import _ from 'lodash'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Button } from 'ui/button'
+import { Dialog, DialogContent } from 'ui/dialog'
 import { Checkbox } from 'ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import { cn } from 'ui/utils'
@@ -231,8 +229,9 @@ function ProductsModal({
   const chipClass = active => cn('h-7 px-3', active && 'bg-accent/8 text-accent hover:bg-accent/8')
 
   return (
-    <Dialog maxWidth='md' open={productsModalOpen}>
-      <div className="ui-root flex flex-col bg-background">
+    // 舊版 Dialog 無 onClose，故不傳 onOpenChange；hideClose 保留原關閉鈕，寬度以 className 保留 MUI md（960px）
+    <Dialog open={productsModalOpen}>
+      <DialogContent size="lg" className="max-w-[960px]" hideClose aria-describedby={undefined}>
         <div className="flex items-center justify-between gap-4 px-6 py-4">
           <Header/>
           <div className="flex shrink-0 items-center gap-2">
@@ -353,7 +352,7 @@ function ProductsModal({
             關閉
           </Button>
         </div>
-      </div>
+      </DialogContent>
     </Dialog>
   )
 }
