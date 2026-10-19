@@ -69,7 +69,7 @@ function Results({ className, customers, ...rest }) {
         <CardContent css={styles.content}>
           <PerfectScrollbar>
             <div css={styles.inner}>
-              <Table>
+              <Table dense>
                 <TableHead>
                   <TableRow>
                     <TableCell padding="checkbox">
