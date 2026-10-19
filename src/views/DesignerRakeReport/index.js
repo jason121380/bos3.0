@@ -58,12 +58,14 @@ const DesignerRakeReport = () => {
     <Page className="ui-root" title="設計師抽成報表">
       <PageHeader title="設計師抽成報表" />
       <Toolbar>
-        <DateSelector
-          date={date}
-          attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-          dateChange={value => setDate(value)}
-          margin
-        />
+        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+          <DateSelector
+            date={date}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            dateChange={value => setDate(value)}
+            margin
+          />
+        </div>
       </Toolbar>
       {!designerRakeReportData.loading ? (
         idx(designerRakeReportData, _ =>
