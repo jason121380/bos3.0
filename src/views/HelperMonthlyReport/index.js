@@ -98,12 +98,14 @@ const HelperMontlyReport = () => {
         }
       />
       <Toolbar>
-        <DateSelector
-          date={date}
-          attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-          dateChange={value => setDate(value)}
-          margin
-        />
+        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+          <DateSelector
+            date={date}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            dateChange={value => setDate(value)}
+            margin
+          />
+        </div>
       </Toolbar>
 
       {!helperMonthlyData.loading ? (
