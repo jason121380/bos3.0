@@ -1,14 +1,12 @@
 import React, { Fragment } from 'react'
-import {
-  FormControl, Radio, RadioGroup, FormControlLabel,
-  Snackbar, Alert
-} from '@mui/material'
+import { Snackbar, Alert } from '@mui/material'
 import { MobileDatePicker } from 'ui/date-picker'
 // import ReCAPTCHA from "react-google-recaptcha-enterprise"
 import { LoaderCircle } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardContent } from 'ui/card'
 import { Field, Input } from 'ui/input'
+import { RadioField } from 'ui/radio'
 
 const General = ({
   data, handleSetInputValue, isClick, closeSnackBar,
@@ -54,12 +52,10 @@ const General = ({
               />
             </Field>
             <Field label="性別" required>
-              <FormControl component="fieldset">
-                <RadioGroup value={data.gender} onChange={(e, v) => handleSetInputValue(v, 'gender')} row>
-                  <FormControlLabel value="MALE" control={<Radio />} label="男" />
-                  <FormControlLabel value="FEMALE" control={<Radio />} label="女" />
-                </RadioGroup>
-              </FormControl>
+              <div className="flex flex-row gap-4" role="radiogroup" aria-label="性別">
+                <RadioField name="gender" value="MALE" checked={data.gender === 'MALE'} onChange={(e, v) => handleSetInputValue(v, 'gender')} label="男" />
+                <RadioField name="gender" value="FEMALE" checked={data.gender === 'FEMALE'} onChange={(e, v) => handleSetInputValue(v, 'gender')} label="女" />
+              </div>
             </Field>
             <Field label="Email" htmlFor="self-create-email">
               <Input
