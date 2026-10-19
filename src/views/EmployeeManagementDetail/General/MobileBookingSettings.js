@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 // 數字輸入（onWheel 失焦）保留 MUI TextField
 import { TextField } from '@mui/material'
 import { CheckboxField } from 'ui/checkbox'
+import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import idx from 'idx'
 
@@ -37,20 +38,21 @@ function MobileBookingSettings({
                     />
                 </div>
                 <div>
-                    <NativeSelect
-                        label='預約審核模式'
-                        value={profile.isBookingAutoAccept}
-                        onChange={event =>
-                            onChange({
-                                value: idx(event, _ => _.target.value),
-                                key: 'isBookingAutoAccept',
-                            })
-                        }
-                    >
-                        <NativeSelectOption value="TRUE">自動開啟</NativeSelectOption>
-                        <NativeSelectOption value="FALSE">手動關閉</NativeSelectOption>
-                        <NativeSelectOption value="BYSTORE">依店家系統設定</NativeSelectOption>
-                    </NativeSelect>
+                    <Field label='預約審核模式'>
+                        <NativeSelect
+                            value={profile.isBookingAutoAccept}
+                            onChange={event =>
+                                onChange({
+                                    value: idx(event, _ => _.target.value),
+                                    key: 'isBookingAutoAccept',
+                                })
+                            }
+                        >
+                            <NativeSelectOption value="TRUE">自動開啟</NativeSelectOption>
+                            <NativeSelectOption value="FALSE">手動關閉</NativeSelectOption>
+                            <NativeSelectOption value="BYSTORE">依店家系統設定</NativeSelectOption>
+                        </NativeSelect>
+                    </Field>
                 </div>
                 <div>
                     <CheckboxField
