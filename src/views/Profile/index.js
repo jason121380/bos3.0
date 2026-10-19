@@ -1,4 +1,4 @@
-import { Tab, Tabs } from '@mui/material'
+import { Tabs, TabsList, TabsTrigger } from 'ui/tabs'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import { Switch } from 'ui/switch'
@@ -542,7 +542,7 @@ function Settings({ match, history }) {
     return findData.label
   }
 
-  // 頁面外距由 #printContainer 提供；分頁籤沿用 MUI Tabs（handler 使用 (event, value) 簽名）
+  // 頁面外距由 #printContainer 提供；分頁籤改 ui/tabs（onValueChange 以 (null, value) 轉接原 handleTabsChange，activationMode="manual" 保留鍵盤以 Enter/Space 選取；下方既有分隔線保留，故 TabsList 不另加底線）
   return (
     <Page className="ui-root" title={`${profile.data.me.name} - ${findTabName()}`}>
       <div className="mx-auto w-full max-w-[1200px]">
@@ -555,15 +555,16 @@ function Settings({ match, history }) {
         </AdminPageHeader>
         {itemValue.length > 0 ? (
           <Tabs
-            onChange={handleTabsChange}
-            scrollButtons="auto"
+            onValueChange={value => handleTabsChange(null, value)}
             value={currentTab}
-            variant="scrollable"
+            activationMode="manual"
           >
-            {itemValue.map(tab => (
-              <Tab key={tab.value} label={tab.label} value={tab.value} />
-            ))}
-            <Tab label='功能釘選' value='pinnedTable' />
+            <TabsList className="border-b-0">
+              {itemValue.map(tab => (
+                <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
+              ))}
+              <TabsTrigger value='pinnedTable'>功能釘選</TabsTrigger>
+            </TabsList>
           </Tabs>
         ) : null}
         <div className="h-px bg-border" />
