@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-// 表單欄位（TextField / Select / 來源下拉）保留 MUI；性別 ToggleButton 改 ui/toggle-group（合成 event.target.value 傳遞不變）；卡片外框與按鈕為 src/ui
+// 純文字欄（姓名／暱稱／Email／地址／LINE ID／備註）改 Field 上方標籤＋ui Input（TextField 試點）；代號（重複檢查 error／endAdornment）、手機 tel、民國年生日、Select／來源下拉保留 MUI；性別 ToggleButton 為 ui/toggle-group（合成 event.target.value 傳遞不變）
 import {
   FormControl,
   InputLabel,
@@ -10,6 +10,7 @@ import {
 } from '@mui/material'
 import CircularProgress from '@mui/material/CircularProgress'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
+import { Field, Input } from 'ui/input'
 import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
 import useFetchMerchantDesigners from 'hooks/useFetchMerchantDesigners'
 import idx from 'idx'
@@ -134,22 +135,18 @@ function AboutProject({
             ),
           }}
         />
-        <TextField
-          label="姓名"
-          value={customer.name}
-          variant="outlined"
-          fullWidth
-          onChange={event => onChange({ event, key: 'name' })}
-          css={styles.formGroup}
-        />
-        <TextField
-          label="暱稱"
-          value={customer.nickName}
-          variant="outlined"
-          onChange={event => onChange({ event, key: 'nickName' })}
-          fullWidth
-          css={styles.formGroup}
-        />
+        <Field label="姓名" className="mb-6">
+          <Input
+            value={customer.name}
+            onChange={event => onChange({ event, key: 'name' })}
+          />
+        </Field>
+        <Field label="暱稱" className="mb-6">
+          <Input
+            value={customer.nickName}
+            onChange={event => onChange({ event, key: 'nickName' })}
+          />
+        </Field>
         <TextField
           label="手機"
           type="tel"
@@ -185,22 +182,18 @@ function AboutProject({
             css={styles.birthdayMonthDay}
           />
         </div>
-        <TextField
-          label="Email"
-          value={customer.email}
-          onChange={event => onChange({ event, key: 'email' })}
-          variant="outlined"
-          fullWidth
-          css={styles.formGroup}
-        />
-        <TextField
-          label="聯絡地址"
-          value={customer.address}
-          onChange={event => onChange({ event, key: 'address' })}
-          variant="outlined"
-          fullWidth
-          css={styles.formGroup}
-        />
+        <Field label="Email" className="mb-6">
+          <Input
+            value={customer.email}
+            onChange={event => onChange({ event, key: 'email' })}
+          />
+        </Field>
+        <Field label="聯絡地址" className="mb-6">
+          <Input
+            value={customer.address}
+            onChange={event => onChange({ event, key: 'address' })}
+          />
+        </Field>
         <ToggleGroup
           size="medium"
           value={customer.gender}
@@ -224,14 +217,12 @@ function AboutProject({
             女
           </ToggleGroupItem>
         </ToggleGroup>
-        <TextField
-          label="LINE ID"
-          value={customer.lineId}
-          onChange={event => onChange({ event, key: 'lineId' })}
-          variant="outlined"
-          fullWidth
-          css={styles.formGroup}
-        />
+        <Field label="LINE ID" className="mb-6">
+          <Input
+            value={customer.lineId}
+            onChange={event => onChange({ event, key: 'lineId' })}
+          />
+        </Field>
         <FormControl variant="outlined" css={styles.formGroup}>
           <InputLabel>設計師</InputLabel>
           <Select
@@ -257,14 +248,12 @@ function AboutProject({
           value={customer.source}
           onChange={event => onChange({ event, key: 'source' })}
         />
-        <TextField
-          label="備註"
-          value={customer.remark}
-          onChange={event => onChange({ event, key: 'remark' })}
-          variant="outlined"
-          fullWidth
-          css={styles.formGroup}
-        />
+        <Field label="備註" className="mb-6">
+          <Input
+            value={customer.remark}
+            onChange={event => onChange({ event, key: 'remark' })}
+          />
+        </Field>
       </CardContent>
     </Card>
   )

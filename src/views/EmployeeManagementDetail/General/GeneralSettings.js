@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-// 大型頁策略：DatePicker 改用 ui/date-picker facade；TextField、RadioGroup 保留 MUI，只換外框與區塊標題
+// 大型頁策略：DatePicker 改用 ui/date-picker facade；單行純文字欄改 Field 上方標籤＋ui Input（TextField 試點，name／value／onChange 原樣）；多行備註 TextField、RadioGroup 保留 MUI
 import {
   FormControlLabel,
   Radio,
@@ -7,6 +7,7 @@ import {
   TextField,
 } from '@mui/material'
 import { DatePicker } from 'ui/date-picker'
+import { Field, Input } from 'ui/input'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
@@ -33,35 +34,32 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
           <SectionTitle>基本資料</SectionTitle>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <TextField
-                fullWidth
-                label="姓氏"
-                name="lastName"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.lastName || ""}
-                variant="outlined"
-              />
+              <Field label="姓氏">
+                <Input
+                  name="lastName"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.lastName || ""}
+                />
+              </Field>
             </div>
             <div>
-              <TextField
-                fullWidth
-                label="名字"
-                name="firstName"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.firstName || ""}
-                variant="outlined"
-              />
+              <Field label="名字">
+                <Input
+                  name="firstName"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.firstName || ""}
+                />
+              </Field>
             </div>
             <div>
-              <TextField
-                fullWidth
-                label="暱稱"
-                name="nickName"
-                placeholder="例如: 小王"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.nickName || ""}
-                variant="outlined"
-              />
+              <Field label="暱稱">
+                <Input
+                  name="nickName"
+                  placeholder="例如: 小王"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.nickName || ""}
+                />
+              </Field>
             </div>
             <div>
               <DatePicker
@@ -90,34 +88,31 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
               </div>
             </div>
             <div>
-              <TextField
-                fullWidth
-                label="員工編號 / 代碼"
-                name="designerNo"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.designerNo || ""}
-                variant="outlined"
-              />
+              <Field label="員工編號 / 代碼">
+                <Input
+                  name="designerNo"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.designerNo || ""}
+                />
+              </Field>
             </div>
             <div>
-              <TextField
-                fullWidth
-                label="手機號碼"
-                name="cellphone"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.cellphone || ""}
-                variant="outlined"
-              />
+              <Field label="手機號碼">
+                <Input
+                  name="cellphone"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.cellphone || ""}
+                />
+              </Field>
             </div>
             <div>
-              <TextField
-                fullWidth
-                label="電子信箱"
-                name="email"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.email || ""}
-                variant="outlined"
-              />
+              <Field label="電子信箱">
+                <Input
+                  name="email"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.email || ""}
+                />
+              </Field>
             </div>
             <div>
               <DatePicker
@@ -130,24 +125,22 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
               />
             </div>
             <div>
-              <TextField
-                fullWidth
-                label="通訊住址"
-                name="contactAddress"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.contactAddress || ""}
-                variant="outlined"
-              />
+              <Field label="通訊住址">
+                <Input
+                  name="contactAddress"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.contactAddress || ""}
+                />
+              </Field>
             </div>
             <div>
-              <TextField
-                fullWidth
-                label="戶籍住址"
-                name="address"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.address || ""}
-                variant="outlined"
-              />
+              <Field label="戶籍住址">
+                <Input
+                  name="address"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.address || ""}
+                />
+              </Field>
             </div>
           </div>
         </section>
@@ -157,46 +150,42 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
           <SectionTitle>匯款帳戶資料</SectionTitle>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <TextField
-                fullWidth
-                label="銀行代號"
-                name="bankCode"
-                placeholder="例如: 822"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.bankCode || ""}
-                variant="outlined"
-              />
+              <Field label="銀行代號">
+                <Input
+                  name="bankCode"
+                  placeholder="例如: 822"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.bankCode || ""}
+                />
+              </Field>
             </div>
             <div>
-              <TextField
-                fullWidth
-                label="匯款銀行名稱"
-                name="bankName"
-                placeholder="例如: 中國信託"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.bankName || ""}
-                variant="outlined"
-              />
+              <Field label="匯款銀行名稱">
+                <Input
+                  name="bankName"
+                  placeholder="例如: 中國信託"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.bankName || ""}
+                />
+              </Field>
             </div>
             <div>
-              <TextField
-                fullWidth
-                label="分行名稱"
-                name="bankBranchName"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.bankBranchName || ""}
-                variant="outlined"
-              />
+              <Field label="分行名稱">
+                <Input
+                  name="bankBranchName"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.bankBranchName || ""}
+                />
+              </Field>
             </div>
             <div>
-              <TextField
-                fullWidth
-                label="銀行匯款帳號"
-                name="bankAccount"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.bankAccount || ""}
-                variant="outlined"
-              />
+              <Field label="銀行匯款帳號">
+                <Input
+                  name="bankAccount"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.bankAccount || ""}
+                />
+              </Field>
             </div>
           </div>
         </section>
@@ -206,44 +195,40 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
           <SectionTitle>其他與緊急聯繫人</SectionTitle>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <TextField
-                fullWidth
-                label="聯絡人姓名"
-                name="familyMemberName"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.familyMemberName || ""}
-                variant="outlined"
-              />
+              <Field label="聯絡人姓名">
+                <Input
+                  name="familyMemberName"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.familyMemberName || ""}
+                />
+              </Field>
             </div>
             <div>
-              <TextField
-                fullWidth
-                label="關係"
-                name="familyMemberRelation"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.familyMemberRelation || ""}
-                variant="outlined"
-              />
+              <Field label="關係">
+                <Input
+                  name="familyMemberRelation"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.familyMemberRelation || ""}
+                />
+              </Field>
             </div>
             <div>
-              <TextField
-                fullWidth
-                label="聯絡電話"
-                name="familyMemberPhone"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.familyMemberPhone || ""}
-                variant="outlined"
-              />
+              <Field label="聯絡電話">
+                <Input
+                  name="familyMemberPhone"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.familyMemberPhone || ""}
+                />
+              </Field>
             </div>
             <div>
-              <TextField
-                fullWidth
-                label="聯絡地址"
-                name="familyMemberAddress"
-                onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
-                value={profile.familyMemberAddress || ""}
-                variant="outlined"
-              />
+              <Field label="聯絡地址">
+                <Input
+                  name="familyMemberAddress"
+                  onChange={event => onChange(idx(event, _ => ({ value: _.target.value, key: _.target.name })))}
+                  value={profile.familyMemberAddress || ""}
+                />
+              </Field>
             </div>
             <div className="md:col-span-2">
               <TextField
