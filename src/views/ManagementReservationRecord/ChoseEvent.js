@@ -19,6 +19,7 @@ import {
 } from '@mui/material'
 import { Avatar } from 'ui/avatar'
 import { CheckboxField } from 'ui/checkbox'
+import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Cancel as CancelIcon, Check as CheckIcon, Lock as LockIcon, LockOpen as LockOpenIcon, Edit as EditIcon, ShoppingCart as ShoppingCartIcon, Person as PersonIcon, AssignmentTurnedIn as AssignmentTurnedInIcon, Message as MessageIcon, EventBusy as EventBusyIcon } from 'ui/icons'
@@ -564,17 +565,18 @@ export default function ChoseEvent({
           }}
           required
         />
-        <NativeSelect
-          css={styles.field}
-          className="ui-root"
-          label='服務時長'
-          value={values.timeCost}
-          onChange={event => setValues({ ...values, timeCost: event.target.value })}
-        >
-          {timeCostArray.map(d => (
-            <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
-          ))}
-        </NativeSelect>
+        <Field label='服務時長'>
+          <NativeSelect
+            css={styles.field}
+            className="ui-root"
+            value={values.timeCost}
+            onChange={event => setValues({ ...values, timeCost: event.target.value })}
+          >
+            {timeCostArray.map(d => (
+              <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
+            ))}
+          </NativeSelect>
+        </Field>
         <TextField
           label="備註"
           value={values.remark}
@@ -889,17 +891,18 @@ export default function ChoseEvent({
             }}
           />
         </div>
-        <NativeSelect
-          css={styles.field}
-          className="ui-root"
-          label='服務時長'
-          value={editOrder.timeCost}
-          onChange={event => setEditOrder({ ...editOrder, timeCost: event.target.value })}
-        >
-          {timeCostArray.map(d => (
-            <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
-          ))}
-        </NativeSelect>
+        <Field label='服務時長'>
+          <NativeSelect
+            css={styles.field}
+            className="ui-root"
+            value={editOrder.timeCost}
+            onChange={event => setEditOrder({ ...editOrder, timeCost: event.target.value })}
+          >
+            {timeCostArray.map(d => (
+              <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
+            ))}
+          </NativeSelect>
+        </Field>
         <TextField
           css={styles.field}
           value={editOrder.remark}
@@ -1031,17 +1034,18 @@ export default function ChoseEvent({
             }}
             required
           />
-          <NativeSelect
-            css={styles.field}
-            className="ui-root"
-            label='服務時長'
-            value={values.timeCost}
-            onChange={event => setValues({ ...values, timeCost: event.target.value })}
-          >
-            {timeCostArray.map(d => (
-              <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
-            ))}
-          </NativeSelect>
+          <Field label='服務時長'>
+            <NativeSelect
+              css={styles.field}
+              className="ui-root"
+              value={values.timeCost}
+              onChange={event => setValues({ ...values, timeCost: event.target.value })}
+            >
+              {timeCostArray.map(d => (
+                <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
+              ))}
+            </NativeSelect>
+          </Field>
           <TextField
             label="備註"
             value={values.remark}

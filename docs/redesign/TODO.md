@@ -213,6 +213,8 @@
 
 ## 四、剩餘工作分類與批次建議（2026/10/19）
 
+- **ChoseEvent 服務時長標籤上移（Codex 線，2026/10/19，`codex/ui-ns-choseevent-box`，v3.0-1019-1315）**：`ManagementReservationRecord/ChoseEvent.js` 三處 `NativeSelect` 改由 `Field label='服務時長'` 包住；原 `css`、`className`、`value`、`onChange`、`timeCostArray` 選項與邏輯不變，MUI `TextField`／`DatePicker`／`Autocomplete` 不動。STYLE.md §6 已涵蓋上方標籤，無需修改。待實機確認標籤上移後的列高與對齊。
+
 「頁數」以 views 目錄計；「檔案數」＝該範圍內仍引用 `@mui/*` 的檔案。估計為量級，不是承諾；每批仍依鐵則「只改畫面」，一批一個 PR、驗證通過再 merge（本輪不 merge）。
 
 | 批次 | 範圍 | 規模 | 風險 | 備註 |
