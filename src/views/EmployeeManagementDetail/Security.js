@@ -177,60 +177,63 @@ function Security({ designerId, refetch, ...rest }) {
       <CardContent className="pt-0">
         <form>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            <NativeSelect
-              label='帳號狀態'
-              value={designerSetting.status === 'pending' ? 'ok' : designerSetting.status}
-              onChange={event =>
-                handleDesignerSettingChange(
-                  idx(event, _ => ({ value: _.target.value, key: 'status' }))
-                )
-              }
-            >
-              {accountStatus.map((data, idx) => (
-                <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
-                  {data.label}
-                </NativeSelectOption>
-              ))}
-            </NativeSelect>
-            <NativeSelect
-              label='權限設定'
-              value={designerSetting.merchantIdentity}
-              onChange={event =>
-                handleDesignerSettingChange(
-                  idx(event, _ => ({ value: _.target.value, key: 'merchantIdentity' }))
-                )
-              }
-            >
-              {!authoritiesNameAndIdData.loading &&
-                idx(authoritiesNameAndIdData, _ =>
-                  _.data.getMerchantAuthorities.map((data, idx) => (
-                    <NativeSelectOption value={data.id} key={`${data.authorityName}-${idx}`}>
-                      {data.authorityName}
-                    </NativeSelectOption>
-                  ))
-                )}
-            </NativeSelect>
+            <Field label='帳號狀態'>
+              <NativeSelect
+                value={designerSetting.status === 'pending' ? 'ok' : designerSetting.status}
+                onChange={event =>
+                  handleDesignerSettingChange(
+                    idx(event, _ => ({ value: _.target.value, key: 'status' }))
+                  )
+                }
+              >
+                {accountStatus.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+            </Field>
+            <Field label='權限設定'>
+              <NativeSelect
+                value={designerSetting.merchantIdentity}
+                onChange={event =>
+                  handleDesignerSettingChange(
+                    idx(event, _ => ({ value: _.target.value, key: 'merchantIdentity' }))
+                  )
+                }
+              >
+                {!authoritiesNameAndIdData.loading &&
+                  idx(authoritiesNameAndIdData, _ =>
+                    _.data.getMerchantAuthorities.map((data, idx) => (
+                      <NativeSelectOption value={data.id} key={`${data.authorityName}-${idx}`}>
+                        {data.authorityName}
+                      </NativeSelectOption>
+                    ))
+                  )}
+              </NativeSelect>
+            </Field>
           </div>
         </form>
       </CardContent>
       <CardContent className="pt-0">
         <form>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-            <NativeSelect
-              label='允許登入設計師手機端'
-              value={designerSetting.isCellphoneLogin}
-              onChange={event =>
-                handleDesignerSettingChange(
-                  idx(event, _ => ({ value: _.target.value, key: 'isCellphoneLogin' }))
-                )
-              }
-            >
-              {cellphoneLogin.map((data, idx) => (
-                <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
-                  {data.label}
-                </NativeSelectOption>
-              ))}
-            </NativeSelect>
+            <Field label='允許登入設計師手機端'>
+              <NativeSelect
+                value={designerSetting.isCellphoneLogin}
+                onChange={event =>
+                  handleDesignerSettingChange(
+                    idx(event, _ => ({ value: _.target.value, key: 'isCellphoneLogin' }))
+                  )
+                }
+              >
+                {cellphoneLogin.map((data, idx) => (
+                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                    {data.label}
+                  </NativeSelectOption>
+                ))}
+              </NativeSelect>
+            </Field>
           </div>
         </form>
       </CardContent>
