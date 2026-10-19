@@ -195,3 +195,8 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ### MainEvent 日期欄改 facade（月曆專項，分支 `claude/ui-datepicker-mainevent-box`，v3.0-1019-1306，未 merge）
 
 - 範圍：`MainEventCreate/General.js`、`MainEventEdit/General.js` 共 4 個 `MobileDatePicker` 改 `ui/date-picker`，其餘欄位不動；存值（`getTime()`）與 handler 原樣。待實機：欄寬 150px、並排對齊、Edit `readOnly` 外觀。
+
+### EventRule 日期欄改 facade（月曆專項，分支 `claude/ui-datepicker-eventrule-box`，v3.0-1019-1314，未 merge）
+
+- 範圍：`EventRuleCreate/General.js`、`EventRuleEdit/General.js` 共 4 個 `MobileDatePicker` 改 `ui/date-picker`，其餘欄位與 handler／存值原樣。
+- 待實機：欄位寬度、並排對齊、彈層開啟與選日後存值。
