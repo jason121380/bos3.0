@@ -4,7 +4,7 @@ import {
   TextField, FormControl, MenuItem,
   InputLabel, Select, Autocomplete, ToggleButton, ToggleButtonGroup
 } from '@mui/material'
-import { DatePicker } from '@mui/x-date-pickers'
+import { DatePicker } from 'ui/date-picker'
 import AccountingSubjectsAutocomplete from 'components/AccountingSubjectsAutocomplete'
 import idx from 'idx'
 import React, { useState, Fragment, useEffect, useRef } from 'react'
