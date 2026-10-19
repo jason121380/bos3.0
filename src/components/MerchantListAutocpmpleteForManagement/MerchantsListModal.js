@@ -344,7 +344,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
   return (
     // 舊 MUI Dialog 有 onClose（點背景／Esc 走 handleOnClose 清暫存），以 onOpenChange 轉接；hideClose 保留原有關閉路徑（底部「關閉」），不另加 X
     <Dialog open={open} onOpenChange={o => { if (!o) handleOnClose() }}>
-      <DialogContent size="lg" hideClose aria-describedby={undefined} className='MerchantsListModal max-w-[900px]'>
+      <DialogContent size="lg" hideClose aria-describedby={undefined} className='MerchantsListModal max-w-[960px]'>
         <DialogHeader className="flex-row flex-wrap items-center gap-x-3 gap-y-2 pb-0 pr-6 max-sm:pr-4">
           <DialogTitle className="mr-auto">店家列表</DialogTitle>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
