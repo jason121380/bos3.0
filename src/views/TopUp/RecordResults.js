@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
-// 表格列保留 MUI TableBody / TableRow / TableCell：外框為共用元件 components/ManagementTable（MUI Table）
-import {
-  TableBody, TableCell, TableRow
-} from '@mui/material'
+// 表格列使用 ui/table（外框 components/ManagementTable 亦為 ui/table）
+
 import { Button } from 'ui/button'
 import ManagementTable from 'components/ManagementTable'
+import { TableBody, TableCell, TableHead, TableRow } from 'ui/table'
 import idx from 'idx'
 import format from 'date-fns/format'
 import { useEffect, useState } from 'react'
@@ -113,23 +112,23 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
         excelFilename="入金紀錄.csv"
         tableHead={(
           <>
-            <TableCell css={styles.compactCell}>操作</TableCell>
-            <TableCell css={styles.compactCell}>日期</TableCell>
-            <TableCell css={styles.compactCell}>客戶</TableCell>
-            <TableCell css={styles.compactCell}>實際付款金額</TableCell>
-            <TableCell css={styles.compactCell}>入金金額</TableCell>
-            <TableCell css={styles.compactCell}>設計師</TableCell>
-            <TableCell css={styles.compactCell}>付款方式</TableCell>
-            <TableCell css={styles.compactCell}>手續費負擔方</TableCell>
-            <TableCell css={styles.compactCell}>手續費</TableCell>
-            <TableCell css={styles.compactCell}>備註</TableCell>
+            <TableHead css={styles.compactCell}>操作</TableHead>
+            <TableHead css={styles.compactCell}>日期</TableHead>
+            <TableHead css={styles.compactCell}>客戶</TableHead>
+            <TableHead css={styles.compactCell}>實際付款金額</TableHead>
+            <TableHead css={styles.compactCell}>入金金額</TableHead>
+            <TableHead css={styles.compactCell}>設計師</TableHead>
+            <TableHead css={styles.compactCell}>付款方式</TableHead>
+            <TableHead css={styles.compactCell}>手續費負擔方</TableHead>
+            <TableHead css={styles.compactCell}>手續費</TableHead>
+            <TableHead css={styles.compactCell}>備註</TableHead>
           </>
         )}
       >
         <TableBody>
           {idx(walletDepositRecord.data, _ =>
             _.walletDepositRecord.record.map(record => (
-              <TableRow hover key={record.id}>
+              <TableRow key={record.id}>
                 <TableCell css={styles.compactCell}>
                   <Button
                     size="sm"

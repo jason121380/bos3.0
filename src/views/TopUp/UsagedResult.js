@@ -1,10 +1,9 @@
 /** @jsxImportSource @emotion/react */
-// 表格列保留 MUI TableBody / TableRow / TableCell：外框為共用元件 components/ManagementTable（MUI Table）
-import {
-  TableBody, TableCell, TableRow,
-} from '@mui/material'
+// 表格列使用 ui/table（外框 components/ManagementTable 亦為 ui/table）
+
 import { Button } from 'ui/button'
 import ManagementTable from 'components/ManagementTable'
+import { TableBody, TableCell, TableHead, TableRow } from 'ui/table'
 import idx from 'idx'
 import format from 'date-fns/format'
 import PropTypes from 'prop-types'
@@ -64,18 +63,18 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
         excelFilename="入金使用.csv"
         tableHead={(
           <>
-            <TableCell css={styles.compactCell}>操作</TableCell>
-            <TableCell css={styles.compactCell}>帳單編號/時間</TableCell>
-            <TableCell css={styles.compactCell}>客戶</TableCell>
-            <TableCell css={styles.compactCell}>設計師</TableCell>
-            <TableCell css={styles.compactCell}>使用金額</TableCell>
+            <TableHead css={styles.compactCell}>操作</TableHead>
+            <TableHead css={styles.compactCell}>帳單編號/時間</TableHead>
+            <TableHead css={styles.compactCell}>客戶</TableHead>
+            <TableHead css={styles.compactCell}>設計師</TableHead>
+            <TableHead css={styles.compactCell}>使用金額</TableHead>
           </>
         )}
       >
         <TableBody>
           {idx(walletUseRecord.data, _ =>
             _.walletUseRecord.record.map(data => (
-              <TableRow hover key={`${data.id}-${data.index}`}>
+              <TableRow key={`${data.id}-${data.index}`}>
                 <TableCell css={styles.compactCell}>
                   <Button asChild size="sm" variant="secondary">
                     <RouterLink to={`/order/${data.order.id}`}>
