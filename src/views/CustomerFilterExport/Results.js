@@ -1,13 +1,7 @@
 /** @jsxImportSource @emotion/react */
 // 表格列使用 ui/table（外框 components/ManagementTable 亦為 ui/table）
-// 刪除確認保留 MUI Dialog：舊版刻意不設 onClose（點背景、Esc 不關閉）
-import {
-  Link,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-} from '@mui/material'
+// 刪除確認已換 ui/dialog：舊版刻意不設 onClose（點背景、Esc 不關閉），故不傳 onOpenChange
+import { Link } from '@mui/material'
 import { Pencil } from 'lucide-react'
 import ManagementTable from 'components/ManagementTable'
 import { TableBody, TableCell, TableHead, TableRow } from 'ui/table'
@@ -25,6 +19,7 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { Checkbox } from 'ui/checkbox'
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Field, Input } from 'ui/input'
 
 const styles = {
@@ -245,16 +240,13 @@ function Results({
         selected={selectedCustomers}
         onDeleteCustomer={deleteCustomerIsUsing ? handleOpenDialog : handeleteCustomer}
       />
-      <Dialog
-        open={openDialog}
-        // onClose={handleCloseDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{'刪除客人'}</DialogTitle>
-        <DialogContent className="ui-root" style={{ overflow: 'visible' }}>
-          <div id="alert-dialog-description" className="flex flex-col gap-4">
-            <p className="m-0 text-body text-text-secondary">刪除後客戶資料將無法復原，請輸入刪除密碼確認。</p>
+      <Dialog open={openDialog}>
+        <DialogContent size="sm" hideClose aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogHeader>
+            <DialogTitle id="alert-dialog-title">{'刪除客人'}</DialogTitle>
+            <DialogDescription id="alert-dialog-description">刪除後客戶資料將無法復原，請輸入刪除密碼確認。</DialogDescription>
+          </DialogHeader>
+          <DialogBody>
             <Field label="刪除密碼" htmlFor="delete-customer-password">
               <Input
                 id="delete-customer-password"
@@ -264,16 +256,16 @@ function Results({
                 data-testid="delete-password"
               />
             </Field>
-          </div>
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="secondary" onClick={handleCloseDialog}>
+              取消
+            </Button>
+            <Button variant="danger" autoFocus data-testid="confirm" onClick={handeleteCustomer}>
+              確認
+            </Button>
+          </DialogFooter>
         </DialogContent>
-        <DialogActions className="ui-root">
-          <Button variant="secondary" onClick={handleCloseDialog}>
-            取消
-          </Button>
-          <Button variant="danger" autoFocus data-testid="confirm" onClick={handeleteCustomer}>
-            確認
-          </Button>
-        </DialogActions>
       </Dialog>
     </div>
   )
