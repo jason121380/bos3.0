@@ -13,6 +13,7 @@ import { useHistory } from 'react-router'
 import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
 import AboutPerformance from './AboutPerformance'
@@ -181,50 +182,52 @@ function ProfitSharing({ refetch, itemAuthority }) {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col gap-4">
-                  <NativeSelect
-                    label='服務扣項方式'
-                    value={profitSharing.deductionWay}
-                    onChange={event =>
-                      handleSalesWayChange({
-                        value: idx(event, _ => _.target.value),
-                        key: 'deductionWay',
-                      })
-                    }
-                  >
-                    <NativeSelectOption value="無扣項">
-                      <em>無扣項</em>
-                    </NativeSelectOption>
-                    {idx(commissionWay, _ =>
-                      _.data.merchantCommissionWay.map(data => (
-                        <NativeSelectOption key={data.name} value={data.name}>
-                          {data.name}
-                        </NativeSelectOption>
-                      ))
-                    )}
-                  </NativeSelect>
-                  <NativeSelect
-                    label='互助點數設定依據'
-                    value={
-                      profitSharing.MerchantJobTitlePointId
-                        ? profitSharing.MerchantJobTitlePointId
-                        : ''
-                    }
-                    onChange={event =>
-                      handleSalesWayChange({
-                        value: idx(event, _ => _.target.value),
-                        key: 'MerchantJobTitlePointId',
-                      })
-                    }
-                  >
-                    <NativeSelectOption value="">
-                      <em>None</em>
-                    </NativeSelectOption>
-                    {merchantJobTitlePoints?.map((data, index) => (
-                      <NativeSelectOption key={`${data.jobTitle}-${index}`} value={data.id}>
-                        {data.jobTitle}
+                  <Field label='服務扣項方式'>
+                    <NativeSelect
+                      value={profitSharing.deductionWay}
+                      onChange={event =>
+                        handleSalesWayChange({
+                          value: idx(event, _ => _.target.value),
+                          key: 'deductionWay',
+                        })
+                      }
+                    >
+                      <NativeSelectOption value="無扣項">
+                        <em>無扣項</em>
                       </NativeSelectOption>
-                    ))}
-                  </NativeSelect>
+                      {idx(commissionWay, _ =>
+                        _.data.merchantCommissionWay.map(data => (
+                          <NativeSelectOption key={data.name} value={data.name}>
+                            {data.name}
+                          </NativeSelectOption>
+                        ))
+                      )}
+                    </NativeSelect>
+                  </Field>
+                  <Field label='互助點數設定依據'>
+                    <NativeSelect
+                      value={
+                        profitSharing.MerchantJobTitlePointId
+                          ? profitSharing.MerchantJobTitlePointId
+                          : ''
+                      }
+                      onChange={event =>
+                        handleSalesWayChange({
+                          value: idx(event, _ => _.target.value),
+                          key: 'MerchantJobTitlePointId',
+                        })
+                      }
+                    >
+                      <NativeSelectOption value="">
+                        <em>None</em>
+                      </NativeSelectOption>
+                      {merchantJobTitlePoints?.map((data, index) => (
+                        <NativeSelectOption key={`${data.jobTitle}-${index}`} value={data.id}>
+                          {data.jobTitle}
+                        </NativeSelectOption>
+                      ))}
+                    </NativeSelect>
+                  </Field>
                 </div>
               </CardContent>
             </Card>
