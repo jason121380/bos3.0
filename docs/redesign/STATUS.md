@@ -250,3 +250,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ### DesignerPerformanceReport 手機擠壓修正（B1 切片，Codex Luna 線，`codex/ui-mobile-designer-perf-box`，v3.0-1019-1550）
 
 - 範圍：`DesignerPerformanceReport/index.js` 篩選列手機滿列/換行、桌機自動寬，只改排版。待實機：390px 不溢出、桌機不變。
+
+### SalaryDetail 手機擠壓修正（B1 薪資切片，Claude 線，`claude/ui-mobile-salary-box`，v3.0-1019-1557）
+
+- 範圍：`SalaryDetail/IncreaseResult.js`、`DecreaseResult.js` 標題列 flex-wrap＋筆數文字不折行，只改 className。待實機：390px 標題列、桌機不變。

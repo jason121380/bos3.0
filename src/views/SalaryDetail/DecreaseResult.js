@@ -71,9 +71,9 @@ function Results({
     <div {...rest} css={css([localStyles.root, className])}>
       <Card>
         <CardHeader className="items-center pb-4" action={<GenericMoreButton />}>
-          <div className="flex items-baseline gap-3">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <CardTitle>扣項總覽</CardTitle>
-            <span className="text-label tabular-nums text-text-secondary">
+            <span className="whitespace-nowrap text-label tabular-nums text-text-secondary">
               共 {pageSetting.totalCount} 筆資料, {pageSetting.pageOffset + 1}/{Math.ceil(pageSetting.totalCount / pageSetting.pageLimit)} 頁
             </span>
           </div>
