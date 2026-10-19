@@ -5,6 +5,7 @@ import {
 } from '@mui/material'
 import { Avatar } from 'ui/avatar'
 import { CheckboxField } from 'ui/checkbox'
+import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
@@ -261,24 +262,25 @@ function AboutSettingFunction({
                   )
                 }}
               />
-              <NativeSelect
-                disabled={!inputEnable}
-                fullWidth={false}
-                style={{ width: 120 }}
-                label='換算規則'
-                value={aboutSettingFunction.bonusRewardRule.rule.mode}
-                onChange={e => {
-                  setAboutSettingFunction(
-                    produce(draft => { draft.bonusRewardRule.rule.mode = e.target.value })
-                  )
-                }}
-              >
-                {mode.map((data, idx) => (
-                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
-                    {data.label}
-                  </NativeSelectOption>
-                ))}
-              </NativeSelect>
+              <Field label='換算規則'>
+                <NativeSelect
+                  disabled={!inputEnable}
+                  fullWidth={false}
+                  style={{ width: 120 }}
+                  value={aboutSettingFunction.bonusRewardRule.rule.mode}
+                  onChange={e => {
+                    setAboutSettingFunction(
+                      produce(draft => { draft.bonusRewardRule.rule.mode = e.target.value })
+                    )
+                  }}
+                >
+                  {mode.map((data, idx) => (
+                    <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                      {data.label}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
+              </Field>
             </div>
           )}
         </div>
@@ -352,24 +354,25 @@ function AboutSettingFunction({
             </label>
           </div>
         </div>
-        <NativeSelect
-          disabled={!inputEnable}
-          fullWidth={false}
-          css={styles.field}
-          label='顧客端顯示設計師名稱'
-          value={aboutSettingFunction.designerNameForCustomerSide}
-          onChange={e => {
-            setAboutSettingFunction(
-              produce(draft => { draft.designerNameForCustomerSide = e.target.value })
-            )
-          }}
-        >
-          {nameDisplaySetting.map((data, idx) => (
-            <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
-              {data.label}
-            </NativeSelectOption>
-          ))}
-        </NativeSelect>
+        <Field label='顧客端顯示設計師名稱'>
+          <NativeSelect
+            disabled={!inputEnable}
+            fullWidth={false}
+            css={styles.field}
+            value={aboutSettingFunction.designerNameForCustomerSide}
+            onChange={e => {
+              setAboutSettingFunction(
+                produce(draft => { draft.designerNameForCustomerSide = e.target.value })
+              )
+            }}
+          >
+            {nameDisplaySetting.map((data, idx) => (
+              <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                {data.label}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
+        </Field>
         <div style={{ width: '100%', padding: '0px 20px 24px 20px' }}>
           <Autocomplete
             multiple
