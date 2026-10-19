@@ -105,7 +105,7 @@
 | **Toast** | 右下角；成功 3 秒自動消失，錯誤需手動關閉。 |
 | **Sidebar** | 240px；群組標題 `caption` + `text-tertiary`；項目高 36px、`rounded-lg`；選取為白 pill（`bg-background`＋細邊＋`shadow-card`）+ 品牌藍文字 + 字重 500（§13）。 |
 | **Tabs** | 底線式；選取為品牌藍文字 + 2px 品牌藍底線，未選 `text-secondary`（§13）。 |
-| **Empty / Loading** | 一律用 `EmptyState`、`Skeleton` 元件，不得各頁自寫。不定值載入轉圈用 lucide `LoaderCircle`＋`animate-spin`＋`strokeWidth={1.75}`：置中大圈 `h-10 w-10 text-accent`（對原 MUI `CircularProgress` 預設 40px 與主題色）、欄位小圈依原尺寸（如 20px），原置中容器與間距不動；定值進度（線／圓＋%）另案，不以轉圈冒充。 |
+| **Empty / Loading** | 一律用 `EmptyState`、`Skeleton` 元件，不得各頁自寫。不定值載入轉圈用 lucide `LoaderCircle`＋`animate-spin`＋`strokeWidth={1.75}`：置中大圈 `h-10 w-10 text-accent`（對原 MUI `CircularProgress` 預設 40px 與主題色）、欄位小圈依原尺寸（如 20px→`h-5 w-5`），原置中容器與間距不動；Backdrop 內轉圈只換圈本體（`h-10 w-10`）、Backdrop 的 open／z-index／透明度不動，MUI Select `renderValue` 的載入小圈同以 20px `LoaderCircle` 回傳、不改 Select 本體與顯示寬度邏輯；定值進度（線／圓＋%）另案，不以轉圈冒充。 |
 
 ## 7. 文案
 

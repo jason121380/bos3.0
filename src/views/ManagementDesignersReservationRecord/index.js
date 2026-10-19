@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 // 大型頁：Backdrop、Popper、Slider 保留 MUI；Page 根元素不加 ui-root（box-sizing 會改變行事曆格子寬度）
 import {
-  CircularProgress, Backdrop,
+  Backdrop,
   Popper,
   Slider,
 } from '@mui/material'
-import { SlidersHorizontal } from 'lucide-react'
+import { LoaderCircle, SlidersHorizontal } from 'lucide-react'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchMerchant from 'hooks/useFetchMerchant'
@@ -560,7 +560,7 @@ function Calendar() {
     // 不在 Page 加 ui-root：其 box-sizing 基礎樣式會改變下方自訂格線（OrderTable）的實際寬高；改為只包住新元件區塊
     <Page title="單週預約紀錄">
       <Backdrop id='Backdrop' css={styles.opacity} open={merchant.loading || DesignerCalendar.loading}>
-        <CircularProgress />
+        <LoaderCircle className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
       </Backdrop>
       <AdminPageHeader
         title="單週預約紀錄"

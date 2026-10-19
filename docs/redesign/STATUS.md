@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| MUI 移除・Progress 第二小批（AGY 線，v3.0-1019-2315） | 8 檔不定值轉圈換 lucide `LoaderCircle animate-spin`：Backdrop 四檔（EmployeeManagementDetail/Reservation、ManagementDesignersReservationRecord、ManagementReservationRecord、Profile/Reservation，40px，只換圈不動 Backdrop）＋欄位小圈四檔（CustomerCreate/AboutCustomer、OrderCreate/AddCustomerModal 各 1 處 20px；CustomerEditModal、DraftOrderEdit/AddCustomerModal 各 2 處含 MUI Select renderValue）；載入邏輯／顯示條件／handler 不動。不碰 Autocomplete 內圈、定值線／圓、結帳 snackbar 與切頁頂線。待實機八處載入轉圈。 |
 | PrimeStay 全站地基第一批（v3.0-1019-2249，未合併待截圖驗收） | 外框＋共用樣式地基（STYLE §13／MEMORY #103）：canvas `#F3F4F6`、內容 `#printContainer` 白卡大圓角＋細邊＋柔和陰影（print 還原）、側欄選中白 pill＋品牌藍字、Card/Dialog 16px 圓角、Button secondary 白 pill、Tabs 藍字藍線、Input 10px 圓角；主色維持 bos 深藍不換截圖綠。示範頁顧客列表。逐頁換色留後續批次；報表/帳單密度與列印不動。 |
 | 設定頁樣板推廣第一批（Jason 已確認樣板，v3.0-1019-2248） | `/performanceDeductionParameter` 四區改左選單＋右分段卡片（hidden 保留掛載、儲存 handler 原樣）；`/profile/:tab` 僅基本資料／密碼／功能釘選套左選單＋max-w-6xl，報表型分頁維持 compact 不套；`/deduction-setting` 與 `/update-deduction-setting/:id` 單卡寬表本批跳過（理由見 STYLE §12／MEMORY #102）。待實機逐頁截圖確認選單與卡片。 |
 | MUI 批次6・Dialog/Modal 第三小批盤點結案（線4，v3.0-1019-2238） | 真 MUI Dialog/Modal 剩 60 檔全分類：帳單四兄弟＋Shortcut 25／MUI Select 彈層 5／Autocomplete・DatePicker 彈層 8／Slider 裁切 3／拖曳 1／巢狀・片段・Drawer 16／金額・列印 2，低風險可只換殼者 0 窗，本批零程式改動不湊數，Dialog/Modal 低風險清單結案；MerchantsListModal 已 #144 換殼且並行店家線重改中、本批避讓。後續各專項逐檔另案。無待實機（畫面不變），見 TODO/MEMORY #101。 |
