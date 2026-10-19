@@ -43,10 +43,12 @@
 
 ## 二、接下來要做（依建議優先順序）
 
-### 設定頁樣板（Jason 2026/10/19 拍版「do it」，待看樣板）
+### 設定頁樣板（Jason 2026/10/19 拍版「do it」，已確認樣板、推廣中）
 - [x] 盤點設定類路由：`/parameter`（Parameter，11 分頁）、`/profile/:tab`（Profile，含基本資料／密碼設定／功能釘選等，但多數分頁是個人報表，非純設定）、`/performanceDeductionParameter`（業績抽成參數，Tabs）、`/deduction-setting`、`/update-deduction-setting/:id`、`/helper-point-setting-create`、`/helper-point-setting-edit/:id`、EmployeeManagementDetail 權限／一般設定、`/accountingSetting`（會計設定）、`/authority`（權限設定）亦屬設定類待推廣；`/system-update-record*` 是系統更新紀錄列表／編輯、非使用者設定頁，不列入本樣板推廣（日後若改版走表單頁規範）。
 - [x] 第一批樣板（本 PR，`claude/ui-settings-style-sample-box`，v3.0-1019-2220）：只做 Parameter 主頁——頂部橫向分頁改桌機左側窄選單＋右側分段標題與既有卡片直疊（`src/ui/settings-nav.js`）；手機維持頂部橫向捲動分頁。欄位存值／儲存／開關／權限未動。STYLE.md 新增 §12。
-- [ ] Jason 看 Parameter 樣板截圖／實機確認後，才逐頁推廣：建議順序 Profile 的設定性分頁（密碼設定／功能釘選／基本資料）→ PerformanceDeductionParameter → 其餘設定頁；報表／帳單／列印不套本樣板。
+- [x] Jason 已確認 Parameter 樣板（2026/10/19 回覆「可以」），開始逐頁推廣；報表／帳單／列印不套本樣板。
+- [x] 推廣第一批（本 PR，`claude/ui-settings-promo1-box`）：`/performanceDeductionParameter` 四區改左選單＋右分段卡片（各區 `hidden` 保留掛載不卸載、子元件 props/儲存 handler 原樣；本頁原無分頁，盤點寫「Tabs」與現況不符已更正）；`/profile/:tab` 僅基本資料／密碼設定／功能釘選三個設定性分頁套左選單＋`max-w-6xl`（選單仍列全部有權限分頁），訂單／日報／抽成／薪資條等報表型分頁維持原頂部分頁＋`max-w-[1200px]` compact 不套。**跳過**：`/deduction-setting`、`/update-deduction-setting/:id`（單卡表單＋卡內動態屬性分頁＋`min-w-[995px]` 抽成門檻寬表，左選單只剩單項且會擠壓寬表，維持原版面，理由見 STYLE §12 推廣紀錄）。待實機逐頁截圖確認選單與卡片（見 PR 待實機清單）。
+- [ ] 推廣後續：其餘設定頁（`/helper-point-setting-create`、`/helper-point-setting-edit/:id`、EmployeeManagementDetail 權限／一般設定、`/accountingSetting`、`/authority`）逐頁評估；單卡表單頁先依 §4 容器判準，不要硬湊左選單。
 
 
 ### P1 — 影響使用者的問題

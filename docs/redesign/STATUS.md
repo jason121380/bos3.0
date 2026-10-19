@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 設定頁樣板推廣第一批（Jason 已確認樣板，v3.0-1019-2248） | `/performanceDeductionParameter` 四區改左選單＋右分段卡片（hidden 保留掛載、儲存 handler 原樣）；`/profile/:tab` 僅基本資料／密碼／功能釘選套左選單＋max-w-6xl，報表型分頁維持 compact 不套；`/deduction-setting` 與 `/update-deduction-setting/:id` 單卡寬表本批跳過（理由見 STYLE §12／MEMORY #102）。待實機逐頁截圖確認選單與卡片。 |
 | MUI 批次6・Dialog/Modal 第三小批盤點結案（線4，v3.0-1019-2238） | 真 MUI Dialog/Modal 剩 60 檔全分類：帳單四兄弟＋Shortcut 25／MUI Select 彈層 5／Autocomplete・DatePicker 彈層 8／Slider 裁切 3／拖曳 1／巢狀・片段・Drawer 16／金額・列印 2，低風險可只換殼者 0 窗，本批零程式改動不湊數，Dialog/Modal 低風險清單結案；MerchantsListModal 已 #144 換殼且並行店家線重改中、本批避讓。後續各專項逐檔另案。無待實機（畫面不變），見 TODO/MEMORY #101。 |
 | MUI 移除・Progress 第一小批（Codex 線，v3.0-1019-2251） | 3 檔不定值轉圈換 lucide `LoaderCircle animate-spin`：FastCheckOrdersModal（置中）、ShortcutDialog（m-auto）、DesignerPerforamnceAnalyzeReport/Compare（mt-12）；40px/主題色/置中不變，載入邏輯與顯示條件不動。不碰 Autocomplete 內圈與定值進度。待實機三處載入轉圈。 |
 | 店家列表樹狀彈窗視覺優化（截圖回報，v3.0-1019-2236） | 三份 `MerchantsListModal` 換 `ui/dialog` 殼＋`ui` Input/Button/Checkbox，保留 MUI TreeView 只覆寫 38px 列高/hover/24px 縮排；共用頁：主版 5 頁（設計師排行榜等）、ForManagement 4 頁、PinnedTable 功能釘選。邏輯/回傳格式不動，待實機開窗/勾選/搜尋/展開/確認。 |
