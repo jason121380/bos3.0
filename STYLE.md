@@ -105,6 +105,7 @@
 | **Toast** | 右下角；成功 3 秒自動消失，錯誤需手動關閉。 |
 | **Sidebar** | 240px；群組標題 `caption` + `text-tertiary`；項目高 36px、`rounded-md`；選取為主題色 8% 底（`bg-accent/8`）+ 主題色文字 + 字重 500。 |
 | **Tabs** | 底線式；選取為 `text` + 2px 主題色底線，未選 `text-secondary`。 |
+| **Slider** | 用 `ui/slider`（原生 `<input type="range">`）：主色深藍 `accent-[rgb(var(--primary))]`（對齊 Checkbox／Radio）；對外維持 MUI 簽名 `onChange(event, Number(value))`，`min`／`max`／`step` 原生傳遞，浮點 `step` 依其小數位數四捨五入修正（避免 0.1 步進產生 1.200000047）；`disabled` 與 `aria-label` 原生透傳；鍵盤用原生方向鍵／PageUp／Down／Home／End。**不做數值泡泡**：`valueLabelDisplay` 不支援（行事曆格子尺寸的泡泡去留待 Jason 拍板後另案，不得默默以本元件替換該兩檔）。 |
 | **Radio** | 用 `ui/radio` 的 `Radio`／`RadioField`（原生 `<input type="radio">`，16px 圓點、`accent` 主色 `primary`、focus 2px `accent` 外框、disabled 40% 透明）：保留圓點外觀，不改成分段按鈕；`RadioField` 以 `<label>` 包覆使點文字可選，`onChange(event, value)` 對齊 MUI `RadioGroup` 簽名（只讀 `event.target.value` 的 handler 亦相容）。同組必須給相同 `name`，互斥、方向鍵移動＋選取、Tab 只停已選／第一顆、空白鍵選取皆由原生行為保留；未選狀態以 `checked` 皆 false 表示，不以空字串另設狀態。 |
 | **Empty / Loading** | 一律用 `EmptyState`、`Skeleton` 元件，不得各頁自寫。不定值載入轉圈用 lucide `LoaderCircle`＋`animate-spin`＋`strokeWidth={1.75}`：置中大圈 `h-10 w-10 text-accent`（對原 MUI `CircularProgress` 預設 40px 與主題色）、欄位小圈依原尺寸（如 20px），原置中容器與間距不動；定值進度（線／圓＋%）另案，不以轉圈冒充。 |
 
