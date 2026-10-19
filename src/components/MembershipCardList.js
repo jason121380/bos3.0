@@ -79,8 +79,8 @@ const MembershipCardList = ({ data }) => {
                       <Typography variant="h4">{d.membershipName}</Typography>
                     </div>
                     <div className='last'>
-                      <Typography component="h2" variant="overline">效期: {d.expiryDay === null ? '無效期' : format(d.expiryDay, 'yyyy/M/d')}</Typography>
-                      <Typography component="h2" variant="overline">備註: {d.remark}</Typography>
+                      <h2 className="m-0 text-caption font-medium text-text-secondary">效期: {d.expiryDay === null ? '無效期' : format(d.expiryDay, 'yyyy/M/d')}</h2>
+                      <h2 className="m-0 text-caption font-medium text-text-secondary">備註: {d.remark}</h2>
                     </div>
                   </Grid>
                   <div className="h-px bg-border" />

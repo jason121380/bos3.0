@@ -9,7 +9,6 @@ import {
   ListItemButton,
   ListItemAvatar,
   ListItemText,
-  Typography,
   TextField,
   Button,
   Grid,
@@ -1103,13 +1102,13 @@ export default function ChoseEvent({
 
         </Fragment> :
           <Fragment>
-            <Typography variant="subtitle1" gutterBottom>
+            <div className="mb-[0.35em] text-body font-medium text-text">
               可預約人數設定
-            </Typography>
-            <Typography variant="subtitle1" gutterBottom>
+            </div>
+            <div className="mb-[0.35em] text-body font-medium text-text">
               時段:
               {format(new Date(clickData.dateTime), 'yyyy/MM/dd  HH:mm')}
-            </Typography>
+            </div>
             <TextField
               label="人數"
               value={limitCount.limit}

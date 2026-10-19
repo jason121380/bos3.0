@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { amber, green } from '@mui/material/colors'
 import {
-  Button, colors, CircularProgress, Box, Typography,
+  Button, colors, CircularProgress,
   SnackbarContent, Snackbar
 } from '@mui/material'
 import { Button as UiButton } from 'ui/button'
@@ -325,23 +325,14 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
             <Icon css={css([styles.icon, styles.iconVariant])} />
             {message}
             {checkoutProcessing && (
-              <Box position="relative" display="inline-flex">
+              <div className="relative inline-flex">
                 <CircularProgress variant="determinate" value={progress <= 100 ? progress : 99} />
-                <Box
-                  top={0}
-                  left={0}
-                  bottom={0}
-                  right={0}
-                  position="absolute"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <Typography variant="caption" component="div">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-caption text-text-secondary">
                     {progress <= 100 ? progress : 99}%
-                  </Typography>
-                </Box>
-              </Box>
+                  </div>
+                </div>
+              </div>
             )}
           </span>
         )

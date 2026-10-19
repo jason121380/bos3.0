@@ -24,6 +24,7 @@
 | MUI批次2a Card換殼（AGY線，v3.0-1019-1712） | 6 檔活獨立頁 MUI Card→`ui/card` 只換 import/殼（ChangeLineMenuPage×4、EHS2Page×2），內層表單/GraphQL原樣。實查 65 Card 檔：活40（獨立6/報表15/帳單19）、死碼25不換殼。待實機卡片外觀。 |
 | MUI批次2b Avatar/Chip/List（AGY線，v3.0-1019-1718） | 活低風險 5 檔：員工/離職清單 Avatar→ui/avatar、GenericMoreButton 與 PerformanceDetail 的 ListItem*→原生 span、CalendarColorClip 靜態 Chip→原生 span（原色保留）。預約 List 4 孿生＋可刪 Chip 跳過註明、死碼不做。待實機。 |
 | 死碼刪除18檔（線C，v3.0-1019-1819） | 依核實報告＋Jason 拍版刪 18 個零引用檔（清單見 TODO），並清 General/index.js 的 OtherActions 註解殘留；刪前重跑 import/re-export/dynamic/routes/元件名解析皆 0、刪後路徑與獨有名 0 殘留。保留 Jason 指定 3 檔與活檔 TransferList.js。STYLE.md 檢查無新增規則不改。待 PR 驗證後合併，無實機畫面變更。 |
+| MUI批次1剩餘Typography/Box/Paper小批1（線2，v3.0-1019-1831） | 12 檔：ehs2、snackbars、AdminPageHeader、TableCheckoutBar、TransferList、三搜尋列 Paper 全檔轉原生＋自家字級；MembershipCardList/ChoseEvent/NewChoseEvent/FastCheckOrdersModal 僅轉對得上字級的 Typography（h4/body2 無級距留原）。列印報表/帳單/表格 Paper 與示範頁跳過註明。待實機文字與搜尋列外觀。 |
 | MUI批次3表格1（AGY線，v3.0-1019-1730） | 12 檔非列印：ManagementTable 本體＋6 消費者列→ui/table、客戶明細 5 檔分頁→ui TablePagination。handler/存值不變，列印/報表/帳單不碰。待實機列表與分頁。 |
 | MUI批次3表格2（AGY線，v3.0-1019-1815） | 5 檔：Products 分頁→ui TablePagination、預約日曆 4 孿生 OrderTable 的 TableContainer/Paper→原生 div 殼。handler/存值不變。待實機分頁與日曆捲動。 |
 | MUI批次3表格3盤點結案（AGY線，v3.0-1019-1824） | 真 MUI Table 剩 29 檔全分類：帳單16＋Report 5＋列印4＋複雜3＋保留死碼1，低風險活檔 0，本批零程式改動不湊數；後續列印/帳單/sticky 巢狀須專項。 |

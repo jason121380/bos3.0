@@ -392,9 +392,9 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
               </TableBody>
             </Table>
           </TableContainer> :
-          <Typography css={styles.noData} component="h3" variant="h3">
+          <h3 css={styles.noData} className="m-0 text-title text-text">
             無資料
-          </Typography>
+          </h3>
         }
       </DialogContent>
     </Dialog>

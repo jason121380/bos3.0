@@ -134,6 +134,7 @@
 7. **版面不可靠擠壓或超出**：欄位列用 `flex-wrap` 換行，不要讓操作鈕被推出可視範圍；flex 子層加 `min-width:0`／`max-width:100%`，並扣掉 `margin`；`overflow-x:auto` 會裁掉上方溢出的內容（浮動標籤），所以標籤才統一放上方。
 8. **層級（z-index）**：手機頂／底列 1100；側欄 1190/1200；MUI modal／popper 與 Radix Dialog 1300；Radix select／popover／dropdown 與 MUI snackbar 1400；toast 與 MUI tooltip 1500；底部固定合計列 1050。
 9. **驗證**：每次改動跑 `scripts/redesign/verify-logic.js`（FAIL 必須逐項說明是純畫面差異）、`eslint-check.json`（0 新增 error）、`CI=true npm run build`，測試不得有新增失敗（基準 13 個既有失敗）。
+10. **MUI Typography 字級映射**（以 `src/ui/mui-theme.js` 橋接字級為準，對照 §3）：`h1`→`text-display`、`h3`→`text-title`、`h5`→`text-heading`、`subtitle1`→`text-body font-medium`、`subtitle2`→`text-label`（色 `text-text-secondary`）、`body1`→`text-body`、`caption`→`text-caption`（色 `text-text-secondary`）、`overline`→`text-caption font-medium`（色 `text-text-secondary`、不全大寫）；主色用 `text-text`、`color="textSecondary"` 改 `text-text-secondary`。`h2`（24px）、`h4`（18px）、`h6`（15px）、`body2`（13px/20px/400）在 §3 無對應級距，**不硬套**，留原 Typography 或另案拍版；`gutterBottom` 以 `mb-[0.35em]` 保留。`Box` 純排版改原生 div（系統 props 逐鍵轉 className/style）；`Paper` 改 `rounded-md bg-background` 原生 div（橋接主題 elevation 預設 0、paper 底色即 background token，陰影不保留），原 emotion `css` 掛點保留。
 
 ## 11. 報表 compact 規格
 
