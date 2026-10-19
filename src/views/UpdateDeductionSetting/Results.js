@@ -1,8 +1,9 @@
 import {
   Checkbox,
-  FormControlLabel, ToggleButton,
-  ToggleButtonGroup
+  FormControlLabel,
+
 } from '@mui/material'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
@@ -594,7 +595,7 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
               <h3 className="my-4 text-heading text-text">
                 抽成模式
               </h3>
-              <ToggleButtonGroup
+              <ToggleGroup
                 size="small"
                 className="!ml-5"
                 value={profitSharing.isSegmented}
@@ -602,15 +603,15 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                 exclusive
               >
                 {isSegmented.map((data, idx) => (
-                  <ToggleButton
+                  <ToggleGroupItem
                     key={`${data.label}-${idx}`}
                     value={data.value}
                     data-testid={`assign-designer-${data.value}`}
                   >
                     {data.label}
-                  </ToggleButton>
+                  </ToggleGroupItem>
                 ))}
-              </ToggleButtonGroup>
+              </ToggleGroup>
               <FormControlLabel
                 className="!ml-1"
                 control={<Checkbox color="primary" />}

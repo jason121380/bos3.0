@@ -1,14 +1,15 @@
-// 門檻／抽成欄位為 Field＋Input（min=0），抽成模式為 ToggleButton 保留 MUI；類別 Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）；外框、標題、圖示按鈕改為 src/ui
+// 門檻／抽成欄位為 Field＋Input（min=0），抽成模式 ToggleButton 改 ui/toggle-group（布林值原樣、handler 不讀參數）；類別 Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）；外框、標題、圖示按鈕改為 src/ui
 import {
   Checkbox,
   FormControlLabel,
-  ToggleButton, ToggleButtonGroup
+
 } from '@mui/material'
 import { Plus, Trash2 } from 'lucide-react'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'
 import { openSnackbar } from 'elements/snackbars'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Button } from 'ui/button'
 import { Tabs, TabsList, TabsTrigger } from 'ui/tabs'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
@@ -589,22 +590,22 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                 <h3 className="text-heading text-text">
                   抽成模式
                 </h3>
-                <ToggleButtonGroup
+                <ToggleGroup
                   size="small"
                   value={profitSharing.isSegmented}
                   onChange={handleToggleButtonChange}
                   exclusive
                 >
                   {isSegmented.map((data, idx) => (
-                    <ToggleButton
+                    <ToggleGroupItem
                       key={`${data.label}-${idx}`}
                       value={data.value}
                       data-testid={`assign-designer-${data.value}`}
                     >
                       {data.label}
-                    </ToggleButton>
+                    </ToggleGroupItem>
                   ))}
-                </ToggleButtonGroup>
+                </ToggleGroup>
                 <FormControlLabel
                   control={<Checkbox color="primary" />}
                   label="分指定/不指定"

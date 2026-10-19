@@ -1,6 +1,7 @@
 import {
-  FormControl, InputLabel, Select, ToggleButtonGroup, ToggleButton
+  FormControl, InputLabel, Select,
 } from '@mui/material'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { DatePicker } from 'ui/date-picker'
 import useReservationContext from 'context/useReservationContext'
 import { format } from 'date-fns'
@@ -88,20 +89,20 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
           }}
         />
 
-        <ToggleButtonGroup
+        <ToggleGroup
           fullWidth
           value={asignDesigner}
           exclusive
           onChange={onAssignChange}
           aria-label="指定不指定設計師"
         >
-          <ToggleButton className="h-10" color='primary' value={true} aria-label="assign" data-testid="designer-assigned">
+          <ToggleGroupItem className="h-10" value={true} aria-label="assign" data-testid="designer-assigned">
             指定
-          </ToggleButton>
-          <ToggleButton className="h-10" color='primary' value={false} aria-label="notAssign" data-testid="designer-not-assigned">
+          </ToggleGroupItem>
+          <ToggleGroupItem className="h-10" value={false} aria-label="notAssign" data-testid="designer-not-assigned">
             不指定
-          </ToggleButton>
-        </ToggleButtonGroup>
+          </ToggleGroupItem>
+        </ToggleGroup>
         {idx(
           designers,
           _ =>
