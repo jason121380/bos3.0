@@ -1,11 +1,8 @@
 /** @jsxImportSource @emotion/react */
-// 表格列保留 MUI TableBody / TableRow / TableCell：外框為共用元件 components/ManagementTable（MUI Table）
-import {
-  TableBody,
-  TableCell,
-  TableRow,
-} from '@mui/material'
+// 表格列使用 ui/table（外框 components/ManagementTable 亦為 ui/table）
+
 import ManagementTable from 'components/ManagementTable'
+import { TableBody, TableCell, TableHead, TableRow } from 'ui/table'
 import { format } from 'date-fns'
 import { useState, useEffect, useRef } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -126,21 +123,21 @@ export default function BoughtResults({
         excelFilename="卡券販賣紀錄.csv"
         tableHead={(
           <>
-            <TableCell css={styles.compactCell}>操作</TableCell>
-            <TableCell css={styles.compactCell}>帳單編號/時間</TableCell>
-            <TableCell css={styles.compactCell}>客戶</TableCell>
-            <TableCell css={styles.compactCell}>設計師</TableCell>
-            <TableCell css={styles.compactCell}>卡券代號</TableCell>
-            <TableCell css={styles.compactCell}>卡券販賣</TableCell>
-            <TableCell css={styles.compactCell}>金額</TableCell>
-            <TableCell css={styles.compactCell}>總張數</TableCell>
-            <TableCell css={styles.compactCell}>現餘</TableCell>
+            <TableHead css={styles.compactCell}>操作</TableHead>
+            <TableHead css={styles.compactCell}>帳單編號/時間</TableHead>
+            <TableHead css={styles.compactCell}>客戶</TableHead>
+            <TableHead css={styles.compactCell}>設計師</TableHead>
+            <TableHead css={styles.compactCell}>卡券代號</TableHead>
+            <TableHead css={styles.compactCell}>卡券販賣</TableHead>
+            <TableHead css={styles.compactCell}>金額</TableHead>
+            <TableHead css={styles.compactCell}>總張數</TableHead>
+            <TableHead css={styles.compactCell}>現餘</TableHead>
           </>
         )}
       >
         <TableBody>
           {reportData.map((data, index) => (
-            <TableRow hover key={`${data.id}-${index}`}>
+            <TableRow key={`${data.id}-${index}`}>
               <TableCell css={styles.compactCell}>
                 <Button asChild size="sm" variant="secondary">
                   <RouterLink to={`/order/${data.orderId}`}>
