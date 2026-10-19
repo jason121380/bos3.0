@@ -1,4 +1,4 @@
-import { MobileDatePicker } from '@mui/x-date-pickers'
+import { MobileDatePicker } from 'ui/date-picker'
 import { CalendarDays } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'ui/select'
 import { cn, focusRing } from 'ui/utils'
@@ -100,7 +100,6 @@ const index = ({
     return (
       <MobileDatePicker
         {...pickerOption}
-        label={onlyStart ? '選擇日期' : type}
         value={date[key ? 'startDate' : 'endDate']}
         onChange={value => handleDateChange(new Date(value).getTime(), key ? 'startDate' : 'endDate')}
         localeText={{

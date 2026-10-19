@@ -11,6 +11,7 @@ import DateSelector from 'components/DateSelector'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import { Button } from 'ui/button'
+import { Field } from 'ui/input'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 
 const styles = {
@@ -83,9 +84,10 @@ const Filter = ({ date, setDate, handleSearch, loading, inputData, setInputData,
           <ToggleGroupItem disabled={loading} value='AVERAGE'>平均業績</ToggleGroupItem>
         </ToggleGroup>
       </div>
-      <div className="flex flex-nowrap items-center gap-2.5">
-        <div className="min-w-0 flex-1">
+      <div className="flex flex-nowrap items-end gap-2.5">
+        <Field label="設計師篩選" htmlFor="designerFilter" className="min-w-0 flex-1">
           <Autocomplete
+            id="designerFilter"
             multiple
             autoHighlight
             fullWidth
@@ -116,12 +118,11 @@ const Filter = ({ date, setDate, handleSearch, loading, inputData, setInputData,
               <TextField
                 {...params}
                 variant="outlined"
-                label="設計師篩選"
                 placeholder="選擇設計師"
               />
             )}
           />
-        </div>
+        </Field>
         <Button
           variant="primary"
           onClick={handleSearch}
