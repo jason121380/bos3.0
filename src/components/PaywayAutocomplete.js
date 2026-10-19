@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
-import { TextField, Checkbox, Autocomplete } from '@mui/material'
+import { TextField, Checkbox } from '@mui/material'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import { useEffect, useState } from 'react'
 import useFetchGetPayWays from 'hooks/useFetchGetPayWays'
 import idx from 'idx'
 import { css } from '@emotion/react'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   checkbox: css({

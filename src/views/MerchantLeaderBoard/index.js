@@ -349,7 +349,7 @@ const MerchantLeaderBoard = () => {
             </div>
           </div>
         </Toolbar>
-        <Toolbar className="flex-nowrap items-start">
+        <Toolbar className="flex-nowrap items-end">
           <div className="min-w-0 flex-1">
             <MerchantListAutocpmplete
               onValueChange={value => {

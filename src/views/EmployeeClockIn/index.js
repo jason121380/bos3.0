@@ -9,13 +9,13 @@ import idx from 'idx'
 import useFetchSetUserClockIn from 'hooks/useFetchSettingUserClockIn'
 import { useFetchGetEmployeeClockInDisplay } from 'hooks/useFetchGetParameterReportSetting'
 import { openSnackbar } from 'elements/snackbars'
-import { Autocomplete } from '@mui/material'
 import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 
 import Results from './Results'
+import { Autocomplete } from 'ui/combobox'
 
 const clockInFilter = [
   { label: '未知', value: 'NULL' },

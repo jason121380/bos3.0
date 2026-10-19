@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Grid, TextField, CircularProgress, Autocomplete } from '@mui/material'
+import { Grid, TextField, CircularProgress } from '@mui/material'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import PaymentAutoComplete from 'components/PaymentAutoComplete'
@@ -16,6 +16,7 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
 import Subject from './Subject'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   container: css({

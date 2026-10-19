@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
-import { Autocomplete, TextField, InputAdornment } from '@mui/material'
+import { TextField, InputAdornment } from '@mui/material'
 import { Button } from 'ui/button'
 import useFetchGetUserMerchant from 'hooks/useFetchGetUserMerchant'
 import MerchantsListModal from './MerchantsListModal'
@@ -8,6 +8,7 @@ import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
 import { ThemeProvider } from '@mui/material/styles'
 import { theme } from '../../theme'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   root: css({
@@ -39,8 +40,9 @@ const index = ({ onValueChange = () => { } }) => {
 
   return (
     <ThemeProvider theme={theme}>
-      <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+      <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'flex-end' }}>
         <Autocomplete
+          className="min-w-0 flex-1"
           css={styles.root}
           multiple
           fullWidth
@@ -48,9 +50,9 @@ const index = ({ onValueChange = () => { } }) => {
           open={false}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           popupIcon={
-            // 全選：與同列「選擇店家」／頁面「搜尋」同用 ui Button primary lg（h-10／text-body／rounded-full）；
+            // 全選：ui Button primary sm（h-8，放在 36px 輸入框內不撐高）；
             // Autocomplete popupIndicator 本身是 <button>，故以 asChild 落在 div 上避免巢狀 button（原 MuiButton component='div' 的等效作法），onClick 原樣
-            <Button asChild variant="primary" size="lg" onClick={handleSelectAll}><div>全選</div></Button>
+            <Button asChild variant="primary" size="sm" onClick={handleSelectAll}><div>全選</div></Button>
           }
           value={values}
           onChange={(e, v) => {
@@ -79,7 +81,7 @@ const index = ({ onValueChange = () => { } }) => {
             />
           )}
         />
-        <Button onClick={() => setOpen(true)} variant="primary" size="lg" className="shrink-0">選擇店家</Button>
+        <Button onClick={() => setOpen(true)} variant="primary" className="shrink-0">選擇店家</Button>
       </div>
       {!userMerchants.loading &&
         <MerchantsListModal

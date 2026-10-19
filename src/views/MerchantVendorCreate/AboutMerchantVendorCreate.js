@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 // 廠商選擇 Autocomplete 保留 MUI
-import { TextField, Autocomplete } from '@mui/material'
+import { TextField } from '@mui/material'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import React from 'react'
 import _ from 'lodash'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   root: css({}),

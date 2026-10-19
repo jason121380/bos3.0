@@ -1,7 +1,8 @@
-import { TextField, Autocomplete } from '@mui/material'
+import { TextField } from '@mui/material'
 import idx from 'idx'
 import React, { useState, useEffect, forwardRef } from 'react'
 import useFetchAccountingSubjects from 'hooks/useFetchAccountingSubjects'
+import { Autocomplete } from 'ui/combobox'
 
 function AccountingSubjectsAutocomplete({
   onChange,

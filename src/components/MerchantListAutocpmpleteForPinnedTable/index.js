@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, Fragment } from 'react'
-import { Button as MuiButton, Autocomplete, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import { Button } from 'ui/button'
 import { useFetchGetUserGroupsWOCS } from 'hooks/useFetchGetUserMerchant'
 import MerchantsListModal from './MerchantsListModal'
@@ -8,6 +8,7 @@ import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
 import { ThemeProvider } from '@mui/material/styles'
 import { theme } from '../../theme'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   root: css({
@@ -58,8 +59,9 @@ const index = ({
 
   return (
     <ThemeProvider theme={theme}>
-      <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'center' }}>
+      <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'flex-end' }}>
         <Autocomplete
+          className="min-w-0 flex-1"
           css={styles.root}
           multiple
           fullWidth
@@ -67,7 +69,8 @@ const index = ({
           open={false}
           style={{ cursor: 'pointer' }}
           isOptionEqualToValue={(option, value) => option.id === value.id}
-          popupIcon={<MuiButton disabled={getUserGroupsWOCS.loading || isClick} component='div' onClick={handleSelectAll} variant="contained" color="primary" size="small">全選</MuiButton>}
+          // 全選：ui Button 以 asChild 落在 div（避免巢狀 button）；div 沒有 disabled，比照 MUI 以 aria-disabled＋pointer-events-none 擋點擊
+          popupIcon={<Button asChild variant="primary" size="sm" onClick={handleSelectAll} aria-disabled={getUserGroupsWOCS.loading || isClick} className={getUserGroupsWOCS.loading || isClick ? 'pointer-events-none opacity-40' : undefined}><div>全選</div></Button>}
           value={merchantList.allMerchants.filter(d => selectIds.includes(d.id))}
           onChange={(e, v) => {
             onValueChange(v.map(d => d.id))
@@ -96,7 +99,7 @@ const index = ({
             />
           )}
         />
-        <Button disabled={getUserGroupsWOCS.loading || isClick} onClick={() => setOpen(true)} style={{ whiteSpace: 'nowrap', height: 'fit-content' }} variant="primary">選擇店家</Button>
+        <Button disabled={getUserGroupsWOCS.loading || isClick} onClick={() => setOpen(true)} variant="primary" className="shrink-0">選擇店家</Button>
       </div>
       <MerchantsListModal
         open={open}

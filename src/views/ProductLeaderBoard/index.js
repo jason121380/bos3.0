@@ -98,7 +98,7 @@ const ProductLeaderBoard = () => {
             </div>
           )}
         </Toolbar>
-        <Toolbar className="items-start">
+        <Toolbar className="items-end">
           <div className="w-full min-w-0 sm:w-auto sm:flex-1">
             <ProductListTreeView
               onValueChange={v => setInputData({...inputData, productIds: v})}

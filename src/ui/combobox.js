@@ -164,18 +164,19 @@ const Autocomplete = React.forwardRef(function Autocomplete(
   const isOpen = openProp !== undefined ? !!openProp : innerOpen
   const showPopup = isOpen && !readOnly && !disabled && (filtered.length > 0 || loading || !freeSolo)
 
-  const commit = (event, next, reason) => {
+  // onChange 簽名比照 MUI：(event, value, reason, details)，details 為 { option }
+  const commit = (event, next, reason, details) => {
     if (valueProp === undefined) setInnerValue(next)
-    if (onChange) onChange(event, next, reason)
+    if (onChange) onChange(event, next, reason, details)
   }
   const selectOption = (event, option) => {
     if (multiple) {
       const exists = selectedList.some(v => isOptionEqualToValue(option, v))
-      commit(event, exists ? selectedList.filter(v => !isOptionEqualToValue(option, v)) : [...selectedList, option], exists ? 'removeOption' : 'selectOption')
+      commit(event, exists ? selectedList.filter(v => !isOptionEqualToValue(option, v)) : [...selectedList, option], exists ? 'removeOption' : 'selectOption', { option })
       setDirty(false)
       setInputText('', event, 'reset')
     } else {
-      commit(event, option, 'selectOption')
+      commit(event, option, 'selectOption', { option })
       setDirty(false)
       setInputText(labelOf(getOptionLabel, option), event, 'reset')
     }
@@ -245,14 +246,14 @@ const Autocomplete = React.forwardRef(function Autocomplete(
     }
     if (event.key === 'Enter' && freeSolo && highlightedIndex < 0 && dirty && inputText !== '') {
       event.nativeEvent.preventDownshiftDefault = true
-      commit(event, multiple ? [...selectedList, inputText] : inputText, 'createOption')
+      commit(event, multiple ? [...selectedList, inputText] : inputText, 'createOption', { option: inputText })
       setDirty(false)
       if (multiple) setInputText('', event, 'reset')
       setOpen(false, event)
       return
     }
     if (event.key === 'Backspace' && multiple && inputText === '' && selectedList.length > 0 && !readOnly) {
-      commit(event, selectedList.slice(0, -1), 'removeOption')
+      commit(event, selectedList.slice(0, -1), 'removeOption', { option: selectedList[selectedList.length - 1] })
     }
     if (event.key === 'Escape' && !isOpen && !disableClearable && !readOnly && dirty) {
       setInputText('', event, 'clear')
@@ -336,7 +337,7 @@ const Autocomplete = React.forwardRef(function Autocomplete(
               className="flex h-4 w-4 items-center justify-center rounded-full text-text-tertiary hover:text-text"
               onMouseDown={event => {
                 event.preventDefault()
-                commit(event, selectedList.filter((_, i) => i !== index), 'removeOption')
+                commit(event, selectedList.filter((_, i) => i !== index), 'removeOption', { option: item })
               }}
             >
               <X className="h-3 w-3" strokeWidth={2} />

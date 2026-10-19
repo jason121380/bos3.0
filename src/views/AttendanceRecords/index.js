@@ -12,7 +12,6 @@ import {
 } from '@mui/material'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
-import { Autocomplete } from '@mui/material'
 import { DateTimePicker } from 'ui/date-picker';
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
@@ -34,6 +33,7 @@ import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   root: css({}),

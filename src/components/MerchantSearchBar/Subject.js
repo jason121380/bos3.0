@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
-import { Autocomplete, MenuItem, Select, TextField, CircularProgress } from '@mui/material'
+import { MenuItem, Select, TextField, CircularProgress } from '@mui/material'
 import useFetchGetAccountingSubjects from 'hooks/useFetchGetAccountingSubjects'
 import idx from 'idx'
 import { useState, useEffect, Fragment } from 'react'
 import { findIndex } from 'lodash'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   root: css({

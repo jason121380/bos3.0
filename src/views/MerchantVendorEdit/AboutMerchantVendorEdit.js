@@ -1,8 +1,9 @@
 // 廠商選擇保留 MUI Autocomplete（橋接主題已套新外觀）
-import { TextField, Autocomplete } from '@mui/material'
+import { TextField } from '@mui/material'
 import _ from 'lodash'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
+import { Autocomplete } from 'ui/combobox'
 
 function AboutMerchantVendorEdit({ className, vendorOption, isLodaing, submitData, setSubmitData }) {
   const handleInputChange = (key, value) => {

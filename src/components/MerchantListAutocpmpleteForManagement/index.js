@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { useState, useEffect, Fragment } from 'react'
-import { Button as MuiButton, Autocomplete, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import { Button } from 'ui/button'
 import { useFetchGetUserMerchantForManagementLazy, useFetchGetEventJoinMerchants } from 'hooks/useFetchGetUserMerchant'
 import MerchantsListModal from './MerchantsListModal'
@@ -8,6 +8,7 @@ import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
 import { ThemeProvider } from '@mui/material/styles'
 import { theme } from '../../theme'
+import { Autocomplete } from 'ui/combobox'
 
 const styles = {
   root: css({
@@ -89,8 +90,9 @@ const index = ({ onValueChange = () => { }, selectIds = [], isReadOnly = false, 
 
   return (
     <ThemeProvider theme={theme}>
-      <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'center' }}>
+      <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'flex-end' }}>
         <Autocomplete
+          className="min-w-0 flex-1"
           readOnly={isReadOnly}
           css={styles.root}
           multiple
@@ -100,7 +102,7 @@ const index = ({ onValueChange = () => { }, selectIds = [], isReadOnly = false, 
           style={{ cursor: 'pointer' }}
           isOptionEqualToValue={(option, value) => option.id === value.id}
           popupIcon={
-            isReadOnly ? '' : <MuiButton component='div' onClick={handleSelectAll} variant="contained" color="primary" size="small">全選</MuiButton>
+            isReadOnly ? '' : <Button asChild variant="primary" size="sm" onClick={handleSelectAll}><div>全選</div></Button>
           }
           value={values}
           onChange={(e, v) => {
@@ -130,7 +132,7 @@ const index = ({ onValueChange = () => { }, selectIds = [], isReadOnly = false, 
           )}
         />
         {isReadOnly ? '' : (
-          <Button onClick={() => setOpen(true)} style={{ whiteSpace: 'nowrap', height: 'fit-content' }} variant="primary">選擇店家</Button>
+          <Button onClick={() => setOpen(true)} variant="primary" className="shrink-0">選擇店家</Button>
         )}
       </div>
       <MerchantsListModal
