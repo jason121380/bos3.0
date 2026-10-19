@@ -11,6 +11,7 @@
 | IsReservationNeedReview 時間欄標籤（Codex 線，v3.0-1019-1323） | 開始／結束兩處時間複合列改用 `Field` 上方標籤，時分選單置於 flex 列；值、事件、停用條件與選項不變，其他欄位不動。待實機確認列高與對齊。 |
 | BookingNotificationSetting 下拉標籤（Codex 線，v3.0-1019-1305） | map 內 1 處 `NativeSelect` 改用 `Field` 上方標籤，涵蓋 15 個實例；事件、存值與布林選項不變，手機／帳號 MUI TextField 保留。STYLE.md §6 已規範標籤在上，無需修改；待實機確認列高與對齊。 |
 | MobileBookingSettings 人數上限輸入（Codex 線第二批，v3.0-1019-1340） | 唯一 MUI TextField 改 Field＋Input 上方標籤；type/name/value/parseInt/onWheel 不變，待實機確認寬度 |
+| 月曆頂欄追修（Claude 線，v3.0-1019-1410） | 根因是後載入的舊全域 CSS 藍底白字蓋過橋接主題；共用層改 `!important`＋補手機專屬頂欄元件覆寫，並移除兩份舊全域 CSS 的藍底白字。待 Jason 實機強刷確認店家區間累計表、每日業績手機月曆、深色與 DateTime |
 | 月曆彈層頂欄主題化（Claude 線，v3.0-1019-1350） | `MuiPickersToolbar` 主題藍底白字改 background 底／text 字色／底部 border，新增 ToolbarText／ToolbarButton 覆寫；桌面 Popper 與手機 Dialog 共用，不改選取行為／format／存值。待實機抽查消費分析、每日業績、互助點數明細 |
 | 基礎 | Tailwind（preflight 關閉）、tokens、`src/ui/` 元件：Button、Input／Field、Select、NativeSelect（任意值）、Table（dense、列印格線）／TablePagination、Dialog（手機為底部面板）、Badge、Card、Tabs、ToggleGroup、Switch、Checkbox／CheckboxField、Avatar、Stat／StatGrid／StatCard、Toast、EmptyState、Skeleton、Popover、DropdownMenu、Sidebar、PageHeader、Toolbar |
 | 骨架 | 側欄、頁首、登入／錯誤頁外框；全站 MUI 橋接主題（`src/ui/mui-theme.js`） |

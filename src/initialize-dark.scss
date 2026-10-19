@@ -1995,10 +1995,8 @@ input[type=number] {
 }
 
 .MuiPickersToolbar-root {
-  background-color: #1976d2;
-  & * {
-    color: #fff;
-  }
+  /* 頂欄底色／字色改由 src/ui/mui-theme.js 的 MuiPickers* 覆寫（跟隨主題），此處不再寫死藍底白字，
+     否則動態載入的本檔會以載入順序蓋過橋接主題（2026/10/19 實機仍藍的主因） */
   h4 {
     font-size: 28px;
   }

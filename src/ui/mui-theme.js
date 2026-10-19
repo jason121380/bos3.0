@@ -27,6 +27,14 @@ const SHEET = '@media (max-width: 639.95px)'
 
 export function createBridgeTheme(mode = 'light') {
   const t = TOKENS[mode]
+  // 頂欄共用覆寫：舊全域 initialize(.dark).scss 以動態 import 後載入，其 .MuiPickersToolbar-root
+  // 單 class 規則（#1976d2 藍底＋* 白字）會以載入順序蓋過同權重的 emotion 規則（實機 1358 仍藍的主因），
+  // 故頂欄底色／字色必須用 !important 才能保證不被後載入的全域 CSS 蓋掉（選取日等既有覆寫同採此法）。
+  const pickersToolbarRoot = {
+    backgroundColor: `${t.background} !important`,
+    color: `${t.text} !important`,
+    borderBottom: `1px solid ${t.border}`,
+  }
   return createTheme({
     palette: {
       mode,
@@ -67,24 +75,45 @@ export function createBridgeTheme(mode = 'light') {
       MuiPickersToolbar: {
         styleOverrides: {
           root: {
-            backgroundColor: t.background,
-            color: t.text,
-            borderBottom: `1px solid ${t.border}`,
+            ...pickersToolbarRoot,
+            // 頂欄小標（toolbarTitle，如「結束時間」）是 root 的直接子層 Typography；
+            // 用較高權重選擇器給 textSecondary，避免被舊全域 * 白字規則蓋掉
+            '& > .MuiTypography-root': { color: t.textSecondary },
             '& .MuiDateTimePickerToolbar-dateContainer button, & .MuiDateTimePickerToolbar-timeContainer button': { display: 'flex' },
             '& .MuiDateTimePickerToolbar-timeDigitsContainer': { display: 'flex', alignItems: 'center', '& span': { fontSize: 30 } },
             '& .MuiPickersToolbar-content': { marginTop: 8 },
           },
         },
       },
+      // 手機 Dialog 實際顯示的頂欄元件另有專屬名稱（Date／DateTime／Time），DOM 與 MuiPickersToolbar 同一元素，
+      // 一併給相同覆寫，確保 MobileDatePicker／MobileDateTimePicker 都套到（先前只覆寫 MuiPickersToolbar 不夠穩）
+      MuiDatePickerToolbar: {
+        styleOverrides: {
+          root: pickersToolbarRoot,
+          title: { color: `${t.text} !important` },
+        },
+      },
+      MuiDateTimePickerToolbar: {
+        styleOverrides: {
+          root: pickersToolbarRoot,
+        },
+      },
+      MuiTimePickerToolbar: {
+        styleOverrides: {
+          root: pickersToolbarRoot,
+        },
+      },
       // 頂欄文字：未選取用 textSecondary、選取用 text（不用白字）；編輯（鉛筆）鈕比照一般圖示鈕 hover
+      // 色值加 !important：同頂欄理由，避免舊全域 .MuiPickersToolbar-root *{color:#fff} 後載入蓋掉
       MuiPickersToolbarText: {
         styleOverrides: {
-          root: { color: t.textSecondary, '&.MuiPickersToolbarText-selected': { color: t.text } },
+          root: { color: `${t.textSecondary} !important`, '&.MuiPickersToolbarText-selected': { color: `${t.text} !important` } },
+          selected: { color: `${t.text} !important` },
         },
       },
       MuiPickersToolbarButton: {
         styleOverrides: {
-          root: { color: 'inherit', '&:hover': { backgroundColor: t.surfaceHover } },
+          root: { color: 'inherit !important', '&:hover': { backgroundColor: t.surfaceHover } },
         },
       },
       MuiPickersLayout: {
