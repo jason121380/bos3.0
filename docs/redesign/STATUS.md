@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| MUI 移除・Radio 第一小批（Codex 線，v3.0-1019-2257） | 新建 `src/ui/radio`（原生圓點 Radio/RadioField），換 CustomerSelfCreate 與 Profile 個人資料的性別二選一 2 檔；保留圓點/互斥/鍵盤、value/onChange/存值不動。AboutDesignerSalary 預設列與 Employee 小尺寸留後批/專項。待實機兩頁性別選取與儲存。 |
 | MUI 移除・Progress 第一小批（Codex 線，v3.0-1019-2251） | 3 檔不定值轉圈換 lucide `LoaderCircle animate-spin`：FastCheckOrdersModal（置中）、ShortcutDialog（m-auto）、DesignerPerforamnceAnalyzeReport/Compare（mt-12）；40px/主題色/置中不變，載入邏輯與顯示條件不動。不碰 Autocomplete 內圈與定值進度。待實機三處載入轉圈。 |
 | 店家列表樹狀彈窗視覺優化（截圖回報，v3.0-1019-2236） | 三份 `MerchantsListModal` 換 `ui/dialog` 殼＋`ui` Input/Button/Checkbox，保留 MUI TreeView 只覆寫 38px 列高/hover/24px 縮排；共用頁：主版 5 頁（設計師排行榜等）、ForManagement 4 頁、PinnedTable 功能釘選。邏輯/回傳格式不動，待實機開窗/勾選/搜尋/展開/確認。 |
 | MUI 批次6・Dialog/Modal 第二小批（線4，v3.0-1019-2233） | 9 窗換 ui/dialog（只換外殼）：CouponList 扣項/互助設定 2 窗（保留 912px）、進貨 Create/Edit 與領料商品選擇 3 窗（保留 960/700px，MUI TextField 價格數量本體不動）、店家/商品樹狀選擇 4 窗（onOpenChange 轉接、保留 .MerchantsListModal 掛點）；handler/存值不動。跳過 PasswordDialog 巢狀、MUI Select 彈層、拖曳、帳單四兄弟、Autocomplete/DatePicker 彈層、Slider、預約巢狀與複雜金額窗，見 TODO/MEMORY #96。待實機逐窗點驗開關/背景/儲存/樹狀選取。 |
