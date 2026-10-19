@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import PropTypes from 'prop-types'
 import { useContext, useState } from 'react'
 import billContext from 'context/keyInContext'

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles';
 import format from 'date-fns/format'

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Menu, MenuItem } from '@mui/material'
 import { Button } from 'ui/button'
 import { MoreVert as MoreIcon, Print as PrintIcon } from 'ui/icons'

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import PropTypes from 'prop-types'

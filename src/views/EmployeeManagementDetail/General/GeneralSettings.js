@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 大型頁策略：DatePicker 改用 ui/date-picker facade；單行純文字欄改 Field 上方標籤＋ui Input（TextField 試點，name／value／onChange 原樣）；多行備註 TextField 保留 MUI；性別改 ui/radio（RadioField 原生圓點，name/value/onChange 原樣）
 import { TextField } from '@mui/material'
 import { DatePicker } from 'ui/date-picker'
@@ -6,14 +5,8 @@ import { RadioField } from 'ui/radio'
 import { Field, Input } from 'ui/input'
 import idx from 'idx'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
 import { Card, CardContent } from 'ui/card'
 
-const styles = {
-  datePicker: css({
-    width: '100%',
-  }),
-}
 
 const SectionTitle = ({ children }) => <h3 className="mb-4 text-heading text-text">{children}</h3>
 
@@ -59,7 +52,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
             </div>
             <div>
               <DatePicker
-                css={styles.datePicker}
+                className="w-full"
                 label="出生日期"
                 value={profile.birthday || null}
                 format='yyyy/MM/dd'
@@ -107,7 +100,7 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
             </div>
             <div>
               <DatePicker
-                css={styles.datePicker}
+                className="w-full"
                 label="到職日期"
                 value={profile.employmentStartDate || null}
                 format='yyyy/MM/dd'

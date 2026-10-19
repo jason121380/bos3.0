@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| MUI 整包移除・emotion css 第二小批（v3.0-1019-2350） | pragma-only 查核：66 檔中真零 css使用者 25 檔僅刪 pragma；扁平 css 10 檔換 Tailwind 等效（會計科目列、薪資加扣項欄寬、打卡遲到紅字、顧客列表篩選欄、員工生日/到職日寬、Typography 示範、商家搜尋日期列、離職員工孿生）；`@emotion` 447→412 檔。共用 styles 56 與列印檔不碰，見 TODO／MEMORY #124。待實機：會計科目列圖示間距、薪資加扣項欄寬、打卡紅字、顧客列表篩選、離職列表上距。 |
 | MUI 移除・Progress 定值線第一小批（AGY 線，v3.0-1019-2340，未合併待 CEO 排序） | 新建 `src/ui/progress` 定值線元件，`components/ProgressBar.js` 換掉 MUI LinearProgress＋emotion；假進度 timer／顯示條件／百分比計算不動。結帳定值圓＋%、Suspense 頂線、Autocomplete 內圈不碰（待拍板／擱置）。待實機顧客詳情頁載入進度線。 |
 | MUI批次5 TextField RHF專項第一批（Codex線，v3.0-1019-2341） | 4 檔 8 欄 RHF＋error 純文字欄→Field＋ui Input（ProductCategory Create/Edit、ServiceCategory Create/Edit 的代號／名稱）；register 以 ref 直掛、錯誤原文／驗證時機／送出不變，Field error 補 helper id 連 aria。金額／密碼／日期／Autocomplete／multiline 不碰，RHF 剩 6 檔 10 實例待專項。待實機故意輸入錯誤看訊息、修正後送出。 |
 | MUI 整包移除・emotion css 第一小批（v3.0-1019-2338） | 盤點分類（447 檔，見 TODO／MEMORY #120）：css prop 331 檔／1668 處、共用 styles 模組 56、pragma-only 66、emotion styled 2、CacheProvider 0；本批 9 檔單純間距/寬高 emotion→Tailwind 等效（ChangeLineMenuPage×4、EHS2Page×3、ProgressBar、TransferList），移除該 9 檔 @emotion import 與 jsx pragma；handler/存值/版面結構不動，列印檔不碰。待實機：LIFF 切換選單/EHS 加入會員欄距、顧客明細載入條、捷徑 TransferList 雙欄高度。 |
