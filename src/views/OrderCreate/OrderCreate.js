@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
 import { MuiScope } from 'ui/mui-theme'
 import { Provider } from 'context/keyInContext'

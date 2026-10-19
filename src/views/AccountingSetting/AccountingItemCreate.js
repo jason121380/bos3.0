@@ -1,22 +1,9 @@
-/** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Fragment } from 'react'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
-import { css } from '@emotion/react'
 
-const styles = {
-  content: css({
-    display: 'flex',
-    alignItems: 'flex-end',
-    margin: '20px 0px',
-  }),
-  icons: css({
-    cursor: 'pointer',
-    margin: '0 10px 8px',
-  }),
-}
 
 export default function AccountingItemCreate({
   activeSection,
@@ -151,7 +138,7 @@ export default function AccountingItemCreate({
             </CardHeader>
             <CardContent>
               {accountingRevenueSubjects.map((data, index) => (
-                <div css={styles.content} key={index}>
+                <div className="my-[20px] flex items-end" key={index}>
                   <Field label="代號" htmlFor={`revenueNumber-${index}`} className="mx-2.5 w-[100px]">
                     <Input
                       id={`revenueNumber-${index}`}
@@ -171,10 +158,10 @@ export default function AccountingItemCreate({
                     />
                   </Field>
                   <DeleteForeverIcon
-                    css={styles.icons}
+                    className="mx-[10px] mb-[8px] cursor-pointer"
                     onClick={() => handleDeleteItem('revenue', index)}
                   />
-                  <AddIcon css={styles.icons} onClick={() => handleAddItem('revenue')} />
+                  <AddIcon className="mx-[10px] mb-[8px] cursor-pointer" onClick={() => handleAddItem('revenue')} />
                 </div>
               ))}
             </CardContent>
@@ -187,7 +174,7 @@ export default function AccountingItemCreate({
             </CardHeader>
             <CardContent>
               {accountingExpenditureSubjects.map((data, index) => (
-                <div css={styles.content} key={index}>
+                <div className="my-[20px] flex items-end" key={index}>
                   <Field label="代號" htmlFor={`expenditureNumber-${index}`} className="mx-2.5 w-[100px]">
                     <Input
                       id={`expenditureNumber-${index}`}
@@ -207,10 +194,10 @@ export default function AccountingItemCreate({
                     />
                   </Field>
                   <DeleteForeverIcon
-                    css={styles.icons}
+                    className="mx-[10px] mb-[8px] cursor-pointer"
                     onClick={() => handleDeleteItem('expenditure', index)}
                   />
-                  <AddIcon css={styles.icons} onClick={() => handleAddItem('expenditure')} />
+                  <AddIcon className="mx-[10px] mb-[8px] cursor-pointer" onClick={() => handleAddItem('expenditure')} />
                 </div>
               ))}
             </CardContent>
@@ -223,7 +210,7 @@ export default function AccountingItemCreate({
             </CardHeader>
             <CardContent>
               {accountingType.map((data, index) => (
-                <div css={styles.content} key={index}>
+                <div className="my-[20px] flex items-end" key={index}>
                   <Field
                     label="收付方式"
                     htmlFor={`accountingTypeName-${index}`}
@@ -238,11 +225,11 @@ export default function AccountingItemCreate({
                     />
                   </Field>
                   <DeleteForeverIcon
-                    css={styles.icons}
+                    className="mx-[10px] mb-[8px] cursor-pointer"
                     onClick={() => handleDeleteItem('accountingType', index)}
                   />
                   <AddIcon
-                    css={styles.icons}
+                    className="mx-[10px] mb-[8px] cursor-pointer"
                     onClick={() => handleAddItem('accountingType')}
                   />
                 </div>

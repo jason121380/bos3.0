@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import billContext from 'context/keyInContext'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'

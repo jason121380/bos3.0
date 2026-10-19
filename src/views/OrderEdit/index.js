@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
 import { Provider } from 'context/keyInContext'
 import useFetchCreateOrder from 'hooks/useFetchCreateOrder'

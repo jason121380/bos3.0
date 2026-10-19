@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 篩選區的排序／會員／黑名單下拉保留 MUI Select（值可能非字串或含 null）
 import { InputLabel, Select, FormControl, MenuItem } from '@mui/material'
 import { FilterList as FilterListIcon } from 'ui/icons'
@@ -12,24 +11,11 @@ import produce from 'immer'
 import React, { Fragment, useEffect, useState } from 'react'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import { Link as RouterLink } from 'react-router-dom'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  formGroup: css({
-    width: '150px',
-    margin: '10px',
-    marginTop: '20px',
-  }),
-}
 // 排序
 const sortByA = [
   {
@@ -218,7 +204,7 @@ function CustomerManagementList() {
               }
             />
             <div className="mt-3 flex flex-wrap">
-              <FormControl variant="outlined" css={styles.formGroup}>
+              <FormControl variant="outlined" className="mx-[10px] mb-[10px] mt-[20px] w-[150px]">
                 <InputLabel>顧客排序方式</InputLabel>
                 <Select label='顧客排序方式' value={pageSetting.searchingOrder} onChange={event => handleOnChange({ key: "searchingOrder", event: event })}>
                   {sortByA.map((data, index) => (
@@ -226,7 +212,7 @@ function CustomerManagementList() {
                   ))}
                 </Select>
               </FormControl>
-              <FormControl variant="outlined" css={styles.formGroup}>
+              <FormControl variant="outlined" className="mx-[10px] mb-[10px] mt-[20px] w-[150px]">
                 <InputLabel>呈現順序</InputLabel>
                 <Select label='呈現順序' value={pageSetting.orderWay} onChange={event => handleOnChange({ key: "orderWay", event: event })}>
                   {sortByB.map((data, index) => (
@@ -236,7 +222,7 @@ function CustomerManagementList() {
               </FormControl>
               {isMemberShipCardActive && (
                 <Fragment>
-                  <FormControl variant="outlined" css={styles.formGroup}>
+                  <FormControl variant="outlined" className="mx-[10px] mb-[10px] mt-[20px] w-[150px]">
                     <InputLabel>會員</InputLabel>
                     <Select label='會員'
                       value={membershipFilter.membership}
@@ -253,7 +239,7 @@ function CustomerManagementList() {
                     </Select>
                   </FormControl>
                   {pageSetting.membershipPreference !== null && pageSetting.membershipPreference.membership === 'ALL' &&
-                    <FormControl variant="outlined" css={styles.formGroup}>
+                    <FormControl variant="outlined" className="mx-[10px] mb-[10px] mt-[20px] w-[150px]">
                       <InputLabel>效期</InputLabel>
                       <Select
                         label='效期'
@@ -271,7 +257,7 @@ function CustomerManagementList() {
                       </Select>
                     </FormControl>
                   }
-                  <FormControl variant="outlined" css={styles.formGroup}>
+                  <FormControl variant="outlined" className="mx-[10px] mb-[10px] mt-[20px] w-[150px]">
                     <InputLabel>黑名單篩選</InputLabel>
                     <Select
                       value={pageSetting.isUnwelcome}

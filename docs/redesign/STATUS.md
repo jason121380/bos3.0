@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| MUI 整包移除・emotion css 第二小批（v3.0-1019-2350） | pragma-only 查核：66 檔中真零 css使用者 25 檔僅刪 pragma；扁平 css 10 檔換 Tailwind 等效（會計科目列、薪資加扣項欄寬、打卡遲到紅字、顧客列表篩選欄、員工生日/到職日寬、Typography 示範、商家搜尋日期列、離職員工孿生）；`@emotion` 447→412 檔。共用 styles 56 與列印檔不碰，見 TODO／MEMORY #109（CEO merge 時順延）。待實機：會計科目列圖示間距、薪資加扣項欄寬、打卡紅字、顧客列表篩選、離職列表上距。 |
 | #157 緊急退回（v3.0-1019-2333） | #157 已退回，回到 #151 外框樣式（淺灰底、白卡、細邊、shadow-card）；#152–#154 保留不動。 |
 | 設定頁樣板推廣第二批（v3.0-1019-2305） | `/accountingSetting` 三區改左選單＋右分段卡片（hidden 保留掛載、全域儲存原樣）；`/helper-point-setting-create`／`-edit/:id` 單表單切三張分段卡（不造假選單）；`/authority` 單一清單寬表本批跳過（理由見 STYLE §12／MEMORY #106）。待實機逐頁截圖確認。 |
 | MUI 移除・Tooltip 第一小批（AGY 線，v3.0-1019-2303） | `GenericMoreButton` 移除重複 MUI Tooltip、保留原生 title/aria-label（影響 7 頁：AccountingSubject、DesignerPerformDetail×4、SalaryDetail×2，選單/handler 不動）；`ScheduleCard` 刪未使用 LightTooltip 死定義與專用 import。`MerchantParticipatingList/Results` 富內容 Tooltip（arrow＋JSX 日期）跳過留 ui/tooltip 專項，mui-theme MuiTooltip 覆寫保留。STYLE 無新規則不改。待實機抽查 2 頁更多選單 hover/開合與排班頁，見 TODO/MEMORY #105。 |

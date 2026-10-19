@@ -138,6 +138,8 @@
 9. **驗證**：每次改動跑 `scripts/redesign/verify-logic.js`（FAIL 必須逐項說明是純畫面差異）、`eslint-check.json`（0 新增 error）、`CI=true npm run build`，測試不得有新增失敗（基準 13 個既有失敗）。
 10. **MUI Typography 字級映射**（以 `src/ui/mui-theme.js` 橋接字級為準，對照 §3）：`h1`→`text-display`、`h3`→`text-title`、`h5`→`text-heading`、`subtitle1`→`text-body font-medium`、`subtitle2`→`text-label`（色 `text-text-secondary`）、`body1`→`text-body`、`caption`→`text-caption`（色 `text-text-secondary`）、`overline`→`text-caption font-medium`（色 `text-text-secondary`、不全大寫）；主色用 `text-text`、`color="textSecondary"` 改 `text-text-secondary`。`h2`（24px）、`h4`（18px）、`h6`（15px）、`body2`（13px/20px/400）在 §3 無對應級距，**不硬套**，留原 Typography 或另案拍版；`gutterBottom` 以 `mb-[0.35em]` 保留。`Box` 純排版改原生 div（系統 props 逐鍵轉 className/style）；`Paper` 改 `rounded-md bg-background` 原生 div（橋接主題 elevation 預設 0、paper 底色即 background token，陰影不保留），原 emotion `css` 掛點保留。
 
+11. **emotion `css` 清理（MUI 整包移除）**：順序不可反——先清頁面/元件的 emotion 引用，再清 `mui-theme` 與 scss 的 `.Mui` 規則，最後才刪 `@emotion`／`@mui` package。換置只做視覺等效：扁平 margin/padding/顏色/寬高逐值換 Tailwind（`theme.spacing(n)`＝`n×8px`；任意 px 用任意值如 `w-[150px]`／`my-[20px]`；原 `!important` 值以 `!` 前綴如 `!text-danger` 保留），不自創間距或改版面結構。pragma-only 判定須逐檔 grep 證明無 `css={}`／`css()` 使用才刪 pragma；仍以 `css()` 定義 styles 物件者（即使無 css prop）不算 pragma-only。含巢狀 `&`、`.Mui*`、動態 css、共用 `styles/` 模組（56 檔）不機械直換；`className` 契約為 emotion 物件的共用元件（下游以 `css={className}` 套用）不可逕換字串，屬跨元件契約專項。列印檔不碰（列印專項）。
+
 ## 11. 報表 compact 規格
 
 Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現**。範圍只限 presentation／print CSS；欄位、數字、計算、查詢、列印觸發（`window.print`、`#printMain` 等）一律不動。本節只寫「已有的能力」與「待盤點」，沒落地的不當成已實作。22 張會直接列印的報表同樣適用 compact（Jason 2026-10-19 拍版併入專項），只改樣式、不改欄位與數字，列印預覽僅唯讀確認。

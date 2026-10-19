@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import billContext from 'context/keyInContext'
 import React, { Fragment, useContext } from 'react'
 import styles from 'views/OrderCreate/styles/PannelService'

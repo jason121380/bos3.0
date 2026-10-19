@@ -1,20 +1,11 @@
-/** @jsxImportSource @emotion/react */
 import { Fragment } from 'react'
 import _ from 'lodash'
 import { format } from 'date-fns'
-import { css } from '@emotion/react'
 import { Badge } from 'ui/badge'
 import { Button } from 'ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
-// 遲到／早退標紅（lateOrEarly 回傳），與舊版相同
-const styles = {
-  colorRed: css({
-    color: 'rgb(var(--danger)) !important',
-    fontWeight: 'bold',
-  }),
-}
-
+// 遲到／早退標紅（lateOrEarly 回傳 class 字串），與舊版相同
 // 打卡操作按鈕：上班 / 下班 / 外出（歸來）以狀態色文字區分
 const clockBtn = 'h-7 px-3 text-caption font-medium'
 
@@ -149,9 +140,9 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
 
   const lateOrEarly = (lastIndex, index, lateOrEarly) => {
     if (lateOrEarly === true && lastIndex === index) {
-      return styles.colorRed
+      return ' !text-danger font-bold'
     } else {
-      return null
+      return ''
     }
   }
   const clockInOutRender = (value, designer) => {
@@ -163,25 +154,15 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
               {checkBr(time, index) && <hr className='hrBorderStyleInEmployeeClockin' />}
               <b style={{ color: 'rgb(var(--success))' }}>上班時間：</b>
               {(time.in !== null && time.in.time !== null) &&
-                <span css={lateOrEarly(
-                  value.length - 1,
+                <span style={{ color: color(time.in.distanceValue) }} className={`time${lateOrEarly(value.length - 1,
                   index,
-                  designer.isLate
-                )}
-                  style={{ color: color(time.in.distanceValue) }}
-                  className='time'
-                >
+                  designer.isLate)}`}>
                   {format(time.in.time, 'HH:mm')}</span>
               }
               {' - '}
-              <span css={lateOrEarly(
-                value.length - 1,
+              <span style={{ color: color(time.out.distanceValue) }} className={`time${lateOrEarly(value.length - 1,
                 index,
-                designer.isLeaveEarly
-              )}
-                style={{ color: color(time.out.distanceValue) }}
-                className='time'
-              >
+                designer.isLeaveEarly)}`}>
                 {format(time.out.time, 'HH:mm')}
               </span>
               <br />
@@ -195,14 +176,9 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
               {time.in.time !== null &&
                 <Fragment>
                   <b style={{ color: 'rgb(var(--success))' }}>上班時間：</b>
-                  <span css={lateOrEarly(
-                    value.length - 1,
+                  <span style={{ color: color(time.in.distanceValue) }} className={`time${lateOrEarly(value.length - 1,
                     index,
-                    designer.isLate
-                  )}
-                    style={{ color: color(time.in.distanceValue) }}
-                    className='time'
-                  >{format(time.in.time, 'HH:mm')}
+                    designer.isLate)}`}>{format(time.in.time, 'HH:mm')}
                   </span>
                   <br />
                 </Fragment>

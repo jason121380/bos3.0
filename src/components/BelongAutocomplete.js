@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField, Checkbox, Autocomplete } from '@mui/material'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import { useFetchGetAttributionLazy } from 'hooks/useFetchGetAttribution'

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Fragment, useContext, useEffect, useState, useCallback, useRef } from 'react'
 import billContext from 'context/keyInContext'
 import useFetchCreateOrder from 'hooks/useFetchCreateOrder'
