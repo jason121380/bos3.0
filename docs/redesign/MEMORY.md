@@ -214,3 +214,5 @@
 
 133. **「整類結案」一律用 AST 覆核，不用逐行 grep（`ui/combobox` 第四批，2026/10/20，v3.0-1020-0342）**：#180 以 `grep "import[^;]*Autocomplete[^;]*from '@mui/material'"` 判定為 0，實際還有 21 檔是跨行 `import {\n  TextField,\n  Autocomplete,\n} from '@mui/material'`，逐行 grep 抓不到，導致 PR #180 與 STATUS 誤寫「整類結案」。之後宣稱某類 MUI 歸零前，必須以 `@babel/parser` 解析每個檔案的 ImportDeclaration（scratchpad `tools/mui-scan2.js` 同法）覆核，並在 PR 寫明覆核方式。
 
+134. **TextField 相容元件：事件落點、inline-flex 與列印範本例外（TextField 整類，2026/10/20，v3.0-1020-0351）**：①MUI TextField 把 `onChange／onFocus／onBlur／onClick` 交給輸入元素，其餘 props（`onKeyDown`、`onWheel`、`tabIndex`、`style`）落在 FormControl 根節點；相容元件照做，鍵盤事件由輸入框冒泡、`event.target` 不變；②根節點必須 `inline-flex`＋`align-top`，否則「總業績從 [欄位] 抽成」這類行內排版會換行；③`InputProps.inputProps`（47 處）與 `inputProps` 都要落在 input；`InputLabelProps.shrink` 只影響浮動標籤，忽略；④受控欄位測試要在 handler 當下讀 `event.target.value`（事後 React 會還原 DOM 值）；⑤轉帳單 `TransferDetail` 的列印樣式綁 `.MuiInput-input`，屬列印範本，整檔保留 MUI，待列印範本專案再處理；⑥轉換腳本改用 AST（`swap-mui.js`），新 import 插在第一個 import 前（pragma 仍在第一行），整行移除時連同換行刪除、不碰其他格式。
+

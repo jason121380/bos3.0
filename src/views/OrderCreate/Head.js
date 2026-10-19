@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { TextField, CircularProgress, InputAdornment } from '@mui/material'
+import { TextField, InputAdornment } from 'ui/text-field'
+import { CircularProgress } from '@mui/material'
 import PropTypes from 'prop-types'
 import Autocomplete, { createFilterOptions } from 'ui/combobox'
 import { useFetchCustomersInAutoComplete } from 'hooks/useFetchCustomers'

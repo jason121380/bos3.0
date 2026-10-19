@@ -1,5 +1,5 @@
 // 廠商選擇保留 MUI Autocomplete（橋接主題已套新外觀）
-import { TextField } from '@mui/material'
+import { TextField } from 'ui/text-field'
 import _ from 'lodash'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'

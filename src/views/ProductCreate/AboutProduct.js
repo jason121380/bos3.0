@@ -1,4 +1,5 @@
-import { FormControl, InputLabel, MenuItem, Select, TextField, Switch, FormHelperText } from '@mui/material'
+import { TextField } from 'ui/text-field'
+import { FormControl, InputLabel, MenuItem, Select, Switch, FormHelperText } from '@mui/material'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import idx from 'idx'
 import PropTypes from 'prop-types'

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from '@mui/material'
+import { TextField } from 'ui/text-field'
 import { Field, Input } from 'ui/input'
 import { CheckboxField } from 'ui/checkbox'
 import { Eraser, Copy, Trash2 } from 'lucide-react'

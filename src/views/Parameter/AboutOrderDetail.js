@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
 // 裁切對話框 Slider 已換 ui/slider，保留 MUI Dialog；多行與 InputLabelProps 的文字欄位保留 MUI TextField
-import {
-  Dialog, DialogContent, DialogTitle, TextField
-} from '@mui/material'
+import { TextField } from 'ui/text-field'
+import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { Avatar } from 'ui/avatar'
 import { Slider } from 'ui/slider'
 import { CheckboxField } from 'ui/checkbox'

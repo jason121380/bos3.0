@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { CircularProgress, TextField } from '@mui/material'
+import { TextField } from 'ui/text-field'
+import { CircularProgress } from '@mui/material'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'

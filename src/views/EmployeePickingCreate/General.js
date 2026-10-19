@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 // 欄位使用 Autocomplete / Select / DatePicker 與 inputRef 焦點串接，沿用 MUI
-import { TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
+import { TextField } from 'ui/text-field'
+import { Select, MenuItem, FormControl, InputLabel } from '@mui/material'
 import { DatePicker } from 'ui/date-picker'
 import { useFetchProductsInEmployeePicking } from 'hooks/useFetchProducts'
 import { useFetchProductCategoriesInCreatePicking } from 'hooks/useFetchProductCategories'
