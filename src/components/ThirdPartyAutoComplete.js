@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { Autocomplete, TextField } from '@mui/material'
+import { TextField } from '@mui/material'
 import { useFetchTHirdPartys } from 'hooks/useFetchMerchant'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
 import React, { useEffect, Fragment, useState } from 'react'
+import { Autocomplete } from 'ui/combobox'
 
 function ThirdPartyAutoComplete(
   {

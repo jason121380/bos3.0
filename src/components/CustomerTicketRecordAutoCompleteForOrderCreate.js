@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import { CircularProgress, TextField, Autocomplete } from '@mui/material'
+import { CircularProgress, TextField } from '@mui/material'
 import idx from 'idx'
 import _ from 'lodash'
 import React, { useEffect, useState, forwardRef } from 'react'
+import { Autocomplete } from 'ui/combobox'
 
 function CustomerTicketRecordAutoCompleteForOrderCreate({
   className,

@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { TextField, Autocomplete } from '@mui/material'
+import { TextField } from '@mui/material'
 import { useFetchGetMembershipsForAutocomplete } from "hooks/useFetchGetMembership";
 import useToggle from "hooks/useToggle";
 import idx from "idx";
 import React, { useState, useEffect } from "react";
+import { Autocomplete } from 'ui/combobox'
 
 const MemberShipCardAutoComplete = (
   {
