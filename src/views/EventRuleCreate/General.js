@@ -5,7 +5,7 @@ import {
 } from '@mui/material'
 import { Fragment } from 'react'
 import { cloneDeep } from 'lodash'
-import { MobileDatePicker } from '@mui/x-date-pickers'
+import { MobileDatePicker } from 'ui/date-picker'
 import { isBefore, format } from 'date-fns'
 import MerchantListAutocpmpleteForManagement from 'components/MerchantListAutocpmpleteForManagement'
 import BelongAutocomplete from 'components/BelongAutocomplete'
