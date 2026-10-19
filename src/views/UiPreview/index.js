@@ -191,13 +191,17 @@ export default function UiPreview() {
 
         <Section title="第二輪：NativeSelect / ToggleGroup / Switch / Checkbox">
           <div className="grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2">
-            <NativeSelect label="帳號狀態" value={status} onChange={e => setStatus(e.target.value)}>
-              <NativeSelectOption value={true}>啟用</NativeSelectOption>
-              <NativeSelectOption value={false}>停用</NativeSelectOption>
-            </NativeSelect>
-            <NativeSelect label="服務類別" value="" placeholder="請選擇" onChange={() => {}}>
-              <NativeSelectOption value="1">剪髮</NativeSelectOption>
-            </NativeSelect>
+            <Field label="帳號狀態">
+              <NativeSelect value={status} onChange={e => setStatus(e.target.value)}>
+                <NativeSelectOption value={true}>啟用</NativeSelectOption>
+                <NativeSelectOption value={false}>停用</NativeSelectOption>
+              </NativeSelect>
+            </Field>
+            <Field label="服務類別">
+              <NativeSelect value="" placeholder="請選擇" onChange={() => {}}>
+                <NativeSelectOption value="1">剪髮</NativeSelectOption>
+              </NativeSelect>
+            </Field>
           </div>
           <div className="flex flex-wrap items-center gap-4">
             <ToggleGroup exclusive value={range} onChange={(e, v) => v && setRange(v)}>
