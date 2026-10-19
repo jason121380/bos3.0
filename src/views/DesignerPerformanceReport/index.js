@@ -1,9 +1,6 @@
 /** @jsxImportSource @emotion/react */
-// 排序切換鈕 handler 使用 (event, value)，保留 MUI ToggleButtonGroup
-import {
-	ToggleButton,
-	ToggleButtonGroup
-} from '@mui/material'
+// 排序切換鈕改 ui/toggle-group（handler (event, value) 原樣、`value !== null` 守衛不變）
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import Page from 'components/Page'
 import { useState, useEffect } from 'react'
 import ReferToggleButton from 'components/ReferToggleButton'
@@ -205,15 +202,15 @@ const DesignerPerformanceReport = () => {
 					}
 					<div className="flex items-center gap-2">
 						<div className="divText text-label text-text-secondary">排序依據：</div>
-						<ToggleButtonGroup
+						<ToggleGroup
 							size="small"
 							value={sort}
 							onChange={(event, value) => value !== null && setSort(value)}
 							exclusive
 						>
-							<ToggleButton value='DESIGNERNO'>代號</ToggleButton>
-							<ToggleButton value="PERFORMANCE">業績</ToggleButton>
-						</ToggleButtonGroup>
+							<ToggleGroupItem value='DESIGNERNO'>代號</ToggleGroupItem>
+							<ToggleGroupItem value="PERFORMANCE">業績</ToggleGroupItem>
+						</ToggleGroup>
 					</div>
 				</div>
 			</Toolbar>

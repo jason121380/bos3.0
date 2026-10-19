@@ -8,10 +8,9 @@ import {
   DialogTitle,
   TextField,
   Checkbox,
-  ToggleButton,
-  ToggleButtonGroup,
   Collapse,
 } from '@mui/material'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import { Autocomplete } from '@mui/material'
 import { DateTimePicker } from 'ui/date-picker';
@@ -417,7 +416,7 @@ export default function Employees() {
         <DialogTitle>補打卡</DialogTitle>
         <DialogContent style={{ overflow: 'visible', display: 'flex' }} >
           <div style={{ width: '350px' }}>
-            <ToggleButtonGroup
+            <ToggleGroup
               size="small"
               exclusive
               value={reClockInData.status}
@@ -425,11 +424,11 @@ export default function Employees() {
               style={{ marginBottom: '20px' }}
             >
               {clockInType.map((data, idx) => (
-                <ToggleButton key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
                   {data.label}
-                </ToggleButton>
+                </ToggleGroupItem>
               ))}
-            </ToggleButtonGroup>
+            </ToggleGroup>
             <DateTimePicker
               label="選取時間"
               sx={{ width: '100%' }}
