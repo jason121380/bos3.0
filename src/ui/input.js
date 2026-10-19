@@ -1,7 +1,7 @@
 import React from 'react'
 import { cn } from './utils'
 
-// STYLE.md §13（扁平修正）：高 36px 不變、rounded-[10px]、白底 bg-background（在灰卡上以白欄位分層）；控制項邊框 border-strong 保留——此為可操作元件框、非卡片框線，扁平修正只去卡片框/影；focus 2px 品牌藍 accent；錯誤時 border 變 danger
+// STYLE.md §13：高 36px 不變、rounded-[10px]、白底＋1px 控制項邊框（border-strong）；搜尋欄同此白底圓角細邊語彙；focus 2px 品牌藍 accent；錯誤時 border 變 danger
 export const inputClass = cn(
   'h-9 max-sm:h-10 w-full rounded-[10px] border border-solid border-border-strong bg-background px-3 text-body text-text',
   'placeholder:text-text-tertiary transition-colors hover:border-border-strong-hover',

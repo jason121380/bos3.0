@@ -3,7 +3,7 @@ import { ChevronDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { cn, focusRing } from './utils'
 
-// STYLE.md §13 Sidebar（扁平修正 2026/10/19）：240px、surface 淺灰(#F3F4F6)區塊底（白底上的灰區塊）、桌機無右框；項目高 36px、rounded-lg、圖示/文字 gap 10px；選取靠色塊——白 pill(bg-background，無框無影)＋品牌藍文字＋字重 500，不靠邊框/陰影，不用截圖綠
+// STYLE.md §13 Sidebar（PrimeStay 版式、bos 藍）：240px、surface 淺底不加硬右框（靠內容白卡分界）；項目高 36px、rounded-lg、圖示/文字 gap 10px；選取為白 pill（bg-background＋細邊＋shadow-card）＋品牌藍文字＋字重 500，不用截圖綠、不用藍底
 // 桌機（lg 以上）固定在左側，可收合；平板與手機為由左滑出的抽屜。整個側欄只渲染一份。
 function Sidebar({ mobileOpen, onMobileClose, desktopOpen = true, className, children }) {
   return (
@@ -66,7 +66,7 @@ const SidebarLink = ({ to, active, icon: Icon, indent, className, children, ...p
   <Link
     to={to}
     aria-current={active ? 'page' : undefined}
-    className={cn(rowClass, indent && 'pl-8', active && 'bg-background font-medium text-accent hover:bg-background hover:text-accent', className)}
+    className={cn(rowClass, indent && 'pl-8', active && 'border border-solid border-border bg-background font-medium text-accent shadow-card hover:bg-background hover:text-accent', className)}
     {...props}
   >
     {Icon && <Icon className="h-4 w-4" strokeWidth={1.75} />}
