@@ -8,6 +8,7 @@
 
 ## 一、今天完成了什麼
 
+- **完整 debug 修復**（2026/10/20，`claude/upbeat-carson-pdc7rf`，v3.0-1020-0156）：全 `src` 以 ESLint（no-undef／rules-of-hooks／import）掃描＋import 可達性分析，修 P4 七項既有 bug 與顧客詳細資料 404；死碼與非真 bug 不修（見 MEMORY #127）。
 - **交接收尾＋移除 `@mui/icons-material` 套件**（2026/10/20，`claude/upbeat-carson-pdc7rf`，v3.0-1020-0145）：交接文件 11 件待合併 PR 已全部合併（另含 #170、#173）；`package.json` 移除已無引用的 `@mui/icons-material`；測試基準更正為 17 檔／54 測試；P3-4 實查更新。見 MEMORY #126。
 - **商品消耗明細日期區緊急修正**（2026/10/20，`claude/fix-product-consume-date-box`，v3.0-1020-0012）：Jason 截圖「這頁怎麼了」——快捷鈕一排、日期鈕掉第二排且各壓「選擇日期」標籤重疊。根因：共用 `MerchantSearchBar/DatePicker` 傳 `label` 給 `ui/date-picker` facade，facade 以 Field 上方標籤渲染，塞進 MUI ButtonGroup 被擠成兩層。修：兩處不傳 `label`（`toolbarTitle='選擇日期'` 保留），所有舊版日期欄頁面一併恢復；僅 `/product-consume-report` 開 `uiDateField`（比照 DecreaseDetail：快捷鈕 ui Button、日期欄 UiDateField 單排），快捷鈕逐項對照 `lastInLeaderBoard` 原順序（本月、上個月、前天、昨天、今天）不增減，日期存值/onChange/查詢/匯出/用途下拉與報表內容不動。見 MEMORY #112。**待實機**：商品消耗明細與 DecreaseDetail 各點開一次月曆、選日後日期與查詢結果不變。
 - **#151 已退回，回到 PrimeStay 之前外觀**（2026/10/19，v3.0-1019-2344）：連 PrimeStay 全站地基（淺灰底、外框白卡、側欄白 pill、卡片 16px 圓角等）一起退掉，回到 #150 合併後（v3.0-1019-2301 當時）樣子；STYLE §13 整章作廢。#152 Radio／#153 Tooltip／#154 設定推廣保留不動。待 Jason 實機看版號 v3.0-1019-2344 確認外觀。
@@ -142,7 +143,8 @@
 4. `ui/native-select` 的 `label`（外框上緣標籤）要不要整批改成「`Field` 上方標籤」？**2026/10/20 實查（v3.0-1020-0145，排除 `aria-label`）**：其他頁已全數改完，只剩帳單四兄弟 `AddCustomerModal` 9 處（OrderCreate 最近設計師；OrderEdit 性別／最近設計師；DraftOrderEdit、QueueOrderEdit 性別／最近設計師／偏好設計師）。同列鄰欄仍是 MUI 外框欄位（客戶編號、SourceSelect、MUI Select、Autocomplete），單改這 9 處會讓同列標籤高低不齊，須與 A3 其餘欄位整列一起做並真實瀏覽器鍵盤實測，待 Jason 決定是否開工。
 
 ### P4 — 既有問題（修了會動邏輯，需你同意才改）
-- 功能釘選分頁 `_` 未 import；`SalaryEdit` 日期只在模組載入時計算一次；`UpdateDeductionSetting` 刪除級距把 event 當 index；`CustomerBonusRecordEdit` 對字串呼叫 `splice`；`OrderEdit` 的 `_.cloneDeep` 未 import；三個帳單編輯頁的 `handlePannelClick` 未定義；`AdminPageHeader` 的 `primaryAction.disabled` 無作用。
+- **2026/10/20 已修（v3.0-1020-0156，Jason 指示「完整 debug 修復」）**：下一行除 `ServicesAutoComplete` 外全部修正，另修顧客詳細資料重新整理 404／紅利分頁不出現；詳見 STATUS 已完成表與 MEMORY #127。待實機：OrderEdit 套快捷組合、功能釘選選頁、抽成級距刪中間列、紅利輸入 1.5、薪資總覽換月後進設計師薪資、顧客詳細資料在紅利分頁按重新整理。
+- ~~功能釘選分頁 `_` 未 import；`SalaryEdit` 日期只在模組載入時計算一次；`UpdateDeductionSetting` 刪除級距把 event 當 index；`CustomerBonusRecordEdit` 對字串呼叫 `splice`；`OrderEdit` 的 `_.cloneDeep` 未 import；三個帳單編輯頁的 `handlePannelClick` 未定義；`AdminPageHeader` 的 `primaryAction.disabled` 無作用。~~
 - `ServicesAutoComplete`：排序直接改動原陣列、`a.no - b.no` 遇非數字代號為 NaN、代號只支援完全比對。
 - [x] 測試：原 13 個既有失敗（ProductCreate、ServiceCategoryEdit／Create、AccountingSubjectsAutocomplete、LoginForm、Products/Results、AccountingRecordCreate/Header）已清零（PR #5 與 2026/10/19 決策改寫），全域 52/52 通過。
 

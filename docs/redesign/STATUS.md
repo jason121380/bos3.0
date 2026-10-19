@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 完整 debug 修復（P4 既有 bug，v3.0-1020-0156） | Jason 指示「完整 debug 修復」授權改邏輯：①`OrderEdit` 套快捷組合、功能釘選選頁的 `_.cloneDeep` 未 import（build 實測 `window._` 為 undefined，會 ReferenceError）；②建立／編輯抽成設定「刪除此級距」永遠刪第一列；③紅利點數輸入小數：編輯頁崩潰、建立頁整欄清空，改為捨去小數；④`SalaryEdit` 月份只在模組載入時讀一次，從薪資總覽換月再進來沿用舊月份（存檔寫錯月）；⑤`AdminPageHeader` 主按鈕 `disabled` 無作用（匯出／班表儲存／盤點可重複點）；⑥顧客詳細資料重新整理紅利／會員卡分頁被導 404、未開會員卡店家看不到紅利分頁；⑦三個帳單編輯頁移除引用未定義函式的無效 prop。新增 AdminPageHeader disabled 測試。 |
 | 交接收尾・文件同步＋移除 `@mui/icons-material` 套件（v3.0-1020-0145） | 交接文件 11 件待合併 PR（#156／#158／#159／#160／#162／#163／#164／#166／#167／#171／#172）與 #170、#173 皆已合併；`package.json` 移除已無引用的 `@mui/icons-material`（`npm ls` 確認無其他套件依賴，lockfile 只少該套件）；測試基準更正為 17 檔／54 測試；P3-4 NativeSelect 外框標籤實查剩 9 處（皆在帳單四兄弟 AddCustomerModal）。 |
 | 顧客詳細資料改左選單（Jason 新指示，v3.0-1020-0108） | `/management/customers/:id/:tab` 比照系統參數設定：左選單＋右目前分頁標題（共用 settings-nav 左灰右白無分隔線、手機橫向分頁），九分頁配 lucide 圖示；分頁 value／條件分頁順序／history.push＋backto／各分頁內容／返回鈕保留。待實機桌機切換各分頁、手機分頁、條件分頁位置，見 TODO／MEMORY #125。 |
 | MUI 整包移除・emotion css 第二小批（v3.0-1019-2350） | pragma-only 查核：66 檔中真零 css使用者 25 檔僅刪 pragma；扁平 css 10 檔換 Tailwind 等效（會計科目列、薪資加扣項欄寬、打卡遲到紅字、顧客列表篩選欄、員工生日/到職日寬、Typography 示範、商家搜尋日期列、離職員工孿生）；`@emotion` 447→412 檔。共用 styles 56 與列印檔不碰，見 TODO／MEMORY #124。待實機：會計科目列圖示間距、薪資加扣項欄寬、打卡紅字、顧客列表篩選、離職列表上距。 |
@@ -262,12 +263,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 
 ## 發現但未修的既有問題（修了會動到邏輯）
 
-- 功能釘選分頁 `_` 未 import（已開建議任務）。
-- `SalaryEdit` 日期只在模組載入時計算一次。
-- `UpdateDeductionSetting` 刪除級距時把 event 當 index。
-- `CustomerBonusRecordEdit` 對字串呼叫 `splice`。
-- `AdminPageHeader` 的 `primaryAction.disabled` 沒有作用（舊版即如此）。
-- `OrderEdit` 的 `_.cloneDeep` 未 import；三個帳單編輯頁的 `handlePannelClick` 未定義。
+- ~~功能釘選 `_` 未 import、`SalaryEdit` 月份只算一次、刪除級距把 event 當 index、紅利對字串 `splice`、`AdminPageHeader` `disabled` 無作用、`OrderEdit` `_.cloneDeep` 未 import、`handlePannelClick` 未定義~~ → **已修（v3.0-1020-0156，Jason 指示「完整 debug 修復」，見 MEMORY #127）**。
 - `AboutProduct.js` 的 `min.value=watchList.cost` 為過時死代碼（RHF v6 不重新註冊，實際只擋負數；售價可低於成本已決策），本批不改元件。
 - 多頁直接使用全域 `location`、hooks 呼叫順序違規（eslint 舊錯誤）。
 

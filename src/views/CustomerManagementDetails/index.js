@@ -50,7 +50,10 @@ function CustomerManagementDetails({ match, history }) {
   const [orderIds, setOrtderIds] = useState([])
   const [orderList, setOrderList] = useState([])
   const [eventTickets, setEventTickets] = useState([])
-  const [membershipDisplay, setMembershipDisplay] = useState(false)
+  // null＝尚未算出；原本預設 false 會讓下方分頁計算永遠等不到條件（未開會員卡的店家看不到紅利分頁）
+  const [membershipDisplay, setMembershipDisplay] = useState(null)
+  // 分頁清單是否已依資料算好；算好之前不判斷 404，否則直接開啟／重新整理紅利、會員卡分頁會被導到 404
+  const [tabsReady, setTabsReady] = useState(false)
   const [tabs, setTabs] = useState([
     { value: 'general', label: '基本資料' },
     { value: 'invoices', label: '消費記錄' },
@@ -167,7 +170,7 @@ function CustomerManagementDetails({ match, history }) {
     }
   }
   useEffect(() => {
-    if (!customerBonusRecords.loading && !getIsCustomerBonusActive.loading && membershipDisplay && !loading) {
+    if (!customerBonusRecords.loading && !getIsCustomerBonusActive.loading && membershipDisplay !== null && !loading) {
       const bonusActive = customerBonusRecords.data.customerBonusRecord.length > 0 || getIsCustomerBonusActive.data.getIsCustomerBonusActive
       const newTabs = [
         { value: 'general', label: '基本資料' },
@@ -185,8 +188,17 @@ function CustomerManagementDetails({ match, history }) {
         newTabs.push({ value: 'membership', label: '會員卡列表' })
       }
       setTabs(newTabs)
+      setTabsReady(true)
     }
   }, [customerBonusRecords.loading, getIsCustomerBonusActive.loading, membershipDisplay, loading])
+
+  useEffect(() => {
+    if (!customerBonusActive.loading && !getCustomerOrders.loading) {
+      const orders = idx(getCustomerOrders,_ => _.data.getCustomerOrders.orderList)
+      const bonusDecount = orders.reduce((a, b) => a + b.bonusDecountForReport , 0)
+      setBonusDisplay(customerBonusActive.data.getIsCustomerBonusActive || bonusDecount !== 0)
+    }
+  }, [customerBonusActive.loading, getCustomerOrders.loading])
 
   const currentTabName = idx(tabs, _ => _.find(tab => tab.value === currentTab).label)
 
@@ -195,7 +207,7 @@ function CustomerManagementDetails({ match, history }) {
   }
 
   if (!tabs.find(tab => tab.value === currentTab)) {
-    return <Redirect to="/errors/error-404" />
+    return tabsReady ? <Redirect to="/errors/error-404" /> : null
   }
   const handlePageChange = (value, key) => {
     setPageSetting(
@@ -212,14 +224,6 @@ function CustomerManagementDetails({ match, history }) {
       })
     )
   }
-
-  useEffect(() => {
-    if (!customerBonusActive.loading && !getCustomerOrders.loading) {
-      const orders = idx(getCustomerOrders,_ => _.data.getCustomerOrders.orderList)
-      const bonusDecount = orders.reduce((a, b) => a + b.bonusDecountForReport , 0)
-      setBonusDisplay(customerBonusActive.data.getIsCustomerBonusActive || bonusDecount !== 0)
-    }
-  }, [customerBonusActive.loading, getCustomerOrders.loading])
 
   // 返回function
   const handleBack = () => {

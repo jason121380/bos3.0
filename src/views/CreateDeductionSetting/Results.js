@@ -651,7 +651,7 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                               size="icon"
                               className="text-text-secondary hover:text-danger"
                               aria-label="刪除此級距"
-                              onClick={handleDeleteSetDeductionNum}
+                              onClick={() => handleDeleteSetDeductionNum(index)}
                             >
                               <Trash2 strokeWidth={1.75} />
                             </Button>

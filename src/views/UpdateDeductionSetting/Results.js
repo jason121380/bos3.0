@@ -658,7 +658,7 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
                             size="icon"
                             className="h-8 w-8 text-text-tertiary hover:text-danger"
                             aria-label="刪除此級距"
-                            onClick={handleDeleteSetDeductionNum}
+                            onClick={() => handleDeleteSetDeductionNum(index)}
                           >
                             <DeleteForeverIcon fontSize="small" />
                           </Button>

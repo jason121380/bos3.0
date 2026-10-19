@@ -21,10 +21,10 @@ import SalaryDecrease from './SalaryDecrease'
 import SalaryIncrease from './SalaryIncrease'
 import DesignerSalaryReportV2 from './DesignerSalaryReportV2'
 
-const date = Number(location.search.split('=')[1])
-
 export default React.memo(function SalaryEdit(props) {
   const { match, location } = props
+  // 每次 render 由 router 的 location 取月份；原本在模組層讀 window.location 只算一次，從薪資總覽換月再進來會沿用舊月份
+  const date = Number(location.search.split('=')[1])
   const MerchantId = JSON.parse(localStorage.getItem('userMerchant')).id
   const userInput = { usagelimit: 'EMPLOYEE_LIST', MerchantId }
   const [userIndex, setUserIndex] = React.useState(0)
