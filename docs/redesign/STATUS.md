@@ -234,3 +234,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 
 - **消費分析儀表板日期區改 facade（月曆專項，2026/10/19，`claude/ui-datepicker-consumption-box`，v3.0-1019-1320）**：消費頁沒有獨立 picker，上方日期區用共用 `components/DateSelector`；該檔 `MobileDatePicker` import 改 `ui/date-picker`（不再傳 `label`，避免 facade 的 `Field` 上方標籤破壞區間欄位；`slots.field`、`localeText`、`slotProps.toolbar`、`value`／`onChange`／`format` 與快速區間邏輯原樣）。`Filter.js` 設計師 `Autocomplete` 本體不動，外層改 `Field label='設計師篩選'`（加 `id`／`htmlFor` 關聯），`renderInput` 移除浮動 `label` 保留 placeholder，搜尋列改 `items-end` 對齊。**影響範圍：所有引用 DateSelector 的頁面，其 picker 外殼（彈層外觀）皆會改變。待實機**：手機月曆彈層、各引用頁區間欄位寬度與對齊、設計師欄標籤上移後的列高。
 - **CustomerSelfCreate 生日欄改 facade（月曆專項，2026/10/19，`claude/ui-datepicker-customerself-box`，v3.0-1019-1333，未 merge）**：`CustomerSelfCreate/General.js` 生日 `MobileDatePicker` import 改 `ui/date-picker`；外層已有 `Field label="生日"`，不傳 `label` 給 facade（避免雙標籤）；`closeOnSelect`／`format`／`openTo='year'`／`value`／`localeText`／`slotProps`／`onChange(new Date(value).getTime())` 原樣，同檔其他元件不動，無焦點鏈。**待實機**：生日欄寬度（`fullWidth`）、彈層開啟與選年、選日後存值。
+
+### 最後 3 處日期欄改 facade（月曆專項，`codex/ui-datepicker-final3-box`，v3.0-1019-1515）
+
+- `MerchantSearchBar/DatePicker.js` 兩個 picker 只換 import；`SystemUpdateRecordCreate/General.js`、`SystemUpdateRecordEdit/General.js` 的更新日期改 `MobileDatePicker`，顯示 `yyyy-MM-dd`。選日先以 `format(date, 'yyyy-MM-dd')` 轉回字串，再用 `new Date(...).getTime()` 存 timestamp，保留原生 `type=date` 的 UTC 零點解析語意，同日存值與改版前一致。原生日期欄由鍵盤輸入改為點選月曆。STYLE.md 與 MEMORY.md 既有規範已涵蓋，無需修改。待實機：MerchantSearchBar 自訂 field 在 ButtonGroup 內新增上方標籤的版面、兩頁日期欄寬與點選存值。
