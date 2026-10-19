@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Button, Input, Paper } from '@mui/material'
+import { Button, Input } from '@mui/material'
 import { Search as SearchIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
@@ -41,7 +41,7 @@ function Search({ onSearch, className, ...rest }) {
   }
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Paper css={styles.search} elevation={1}>
+      <div css={styles.search} className="rounded-md bg-background">
         <SearchIcon css={styles.searchIcon} />
         <Input
           css={styles.searchInput}
@@ -51,7 +51,7 @@ function Search({ onSearch, className, ...rest }) {
           onChange={handleOnChange}
           onKeyUp={handleOnKeyPress}
         />
-      </Paper>
+      </div>
       <Button
         css={styles.searchButton}
         onClick={() => onSearch(keyword)}

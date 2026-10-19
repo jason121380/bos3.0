@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Button, Input, Paper, TextField, Grid, Select,
+  Button, Input, TextField, Grid, Select,
   MenuItem, FormControl, InputLabel,
 } from '@mui/material'
 import { Search as SearchIcon, Delete as DeleteIcon } from 'ui/icons'
@@ -162,7 +162,7 @@ function SearchV2({
   return (
     <Grid {...rest} css={className} container style={{ gap: '10px' }}>
       <Grid item css={styles.birthdayGrid}>
-        <Paper css={styles.search} elevation={1}>
+        <div css={styles.search} className="rounded-md bg-background">
           <SearchIcon css={styles.searchIcon} />
           <Input
             css={styles.searchInput}
@@ -172,7 +172,7 @@ function SearchV2({
             onChange={handleOnChange}
             onKeyDown={handleOnKeyPress}
           />
-        </Paper>
+        </div>
       </Grid>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
         {inCustomerFilterExport ?
