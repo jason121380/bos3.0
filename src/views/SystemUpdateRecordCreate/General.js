@@ -7,6 +7,7 @@ import { useHistory } from 'react-router'
 import { useFetchCreateSystemUpdateCreate } from 'hooks/useFetchSystemUpdateRecord'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { MobileDatePicker } from 'ui/date-picker'
 import { Field, Input } from 'ui/input'
 
 const General = () => {
@@ -87,19 +88,19 @@ const General = () => {
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
             <div className="flex flex-wrap gap-5">
-              <Field label="更新日期" htmlFor="system-update-time" className="w-[300px] max-w-full">
-                <Input
-                  id="system-update-time"
-                  type="date"
-                  value={format(updateRecord.updateTime, 'yyyy-MM-dd')}
-                  onChange={event => {
-                    setUpdateRecord({
-                      ...updateRecord,
-                      updateTime: new Date(event.target.value).getTime(),
-                    })
-                  }}
-                />
-              </Field>
+              <MobileDatePicker
+                label="更新日期"
+                fieldClassName="w-[300px] max-w-full"
+                format="yyyy-MM-dd"
+                value={updateRecord.updateTime}
+                onChange={date => {
+                  date && setUpdateRecord({
+                    ...updateRecord,
+                    // 保留原生 type=date 的存值語意：yyyy-MM-dd 字串以 UTC 零點解析，避免換 picker 後差 8 小時
+                    updateTime: new Date(format(date, 'yyyy-MM-dd')).getTime(),
+                  })
+                }}
+              />
               <Field label="版本" htmlFor="system-update-version" className="w-[300px] max-w-full">
                 <Input
                   id="system-update-version"
