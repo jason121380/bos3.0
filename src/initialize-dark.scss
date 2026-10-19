@@ -1955,7 +1955,18 @@ input[type=number] {
 }
 .MerchantsListModal {
   li.onSelect {
-    background-color: #638088;
+    background-color: rgb(var(--accent) / 0.12);
+    color: rgb(var(--accent));
+    font-weight: 500;
+  }
+  li.onSelect span {
+    color: rgb(var(--accent));
+  }
+  .MuiTreeItem-content:hover {
+    background-color: rgb(var(--surface-hover)) !important;
+  }
+  li.onSelect > .MuiTreeItem-content:hover {
+    background-color: rgb(var(--accent) / 0.12) !important;
   }
   span {
     color: #fff;

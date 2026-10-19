@@ -92,7 +92,7 @@
 | 元件 | 規則 |
 |---|---|
 | **Button** | 變體只有 `primary`（主題藍底白字、圓角 full）、`secondary`（淺灰實心 `surface-hover`、無框，與輸入框區分）、`ghost`（無框）、`danger`；尺寸 `sm 32px / md 36px / lg 40px`。圖示 16px，與文字間距 6px。 |
-| **Input / Select / DatePicker** | 高 36px、`rounded-md`、1px `border-strong`（hover 加深）；focus 為 2px `accent` 外框。錯誤時 border 變 `danger`，下方 caption 顯示訊息。日期區間一律用 `DateSelector`：「快速選擇」下拉 ＋ 一個日期區間欄位，不平鋪多顆按鈕。月曆 date-picker 專項方向：標籤放欄位上方；`format`／存值（`onChange` 原樣回傳 `Date`／`null`）／鍵盤輸入逐檔保留；內部第一階段沿用 `@mui/x-date-pickers` 做外觀門面，詳見 `docs/redesign/DATE_PICKER.md`。月曆彈層（日格、表頭、年／月／時間選擇）的視覺統一歸 `src/ui/mui-theme.js` 的 `MuiPickers*` 覆寫，不逐頁寫樣式。彈層頂欄（手機 Dialog 實際為 `MuiPickersToolbar`＋`MuiDatePickerToolbar`／`MuiDateTimePickerToolbar`／`MuiTimePickerToolbar`，DateTime 才出現時間欄）跟隨主題：`background` 底、`text` 字色、底部 1px `border`，**不要大面主題藍底白字**，且覆寫須用 `!important` 壓過後載入的舊全域 CSS（`initialize.scss` 不得再寫死藍底白字）；主題色 `accent` 只保留在選取日、今天邊框、年／月／時間選取與確認按鈕等小面積。 |
+| **Input / Select / DatePicker** | 高 36px、`rounded-md`、1px `border-strong`（hover 加深）；focus 為 2px `accent` 外框。錯誤時 border 變 `danger`，下方 caption 顯示訊息。日期區間一律用 `DateSelector`：「快速選擇」下拉 ＋ 一個日期區間欄位，不平鋪多顆按鈕。月曆 date-picker 專項方向：標籤放欄位上方；`format`／存值（`onChange` 原樣回傳 `Date`／`null`）／鍵盤輸入逐檔保留；內部第一階段沿用 `@mui/x-date-pickers` 做外觀門面，詳見 `docs/redesign/DATE_PICKER.md`。月曆彈層（日格、表頭、年／月／時間選擇）的視覺統一歸 `src/ui/mui-theme.js` 的 `MuiPickers*` 覆寫，不逐頁寫樣式。彈層頂欄（手機 Dialog 實際為 `MuiPickersToolbar`＋`MuiDatePickerToolbar`／`MuiDateTimePickerToolbar`／`MuiTimePickerToolbar`，DateTime 才出現時間欄）跟隨主題：`background` 底、`text` 字色、底部 1px `border`，**不要大面主題藍底白字**，且覆寫須用 `!important` 壓過後載入的舊全域 CSS（`initialize.scss` 不得再寫死藍底白字）；主題色 `accent` 只保留在選取日、今天邊框、年／月／時間選取與確認按鈕等小面積。**篩選列例外（MerchantSearchBar/DatePicker）**：自訂 field 本身是日期按鈕且置於 ButtonGroup／flex 單排，不得傳 `label` 給 facade（facade 有 label 會以 `Field` 在欄位上方渲染標籤，會把按鈕群組擠成兩層重疊，見 MEMORY #112）；彈層標題以 `localeText.toolbarTitle` 保留。此類頁面改版以 `uiDateField` 逐頁 opt-in（快捷鈕 ui Button＋UiDateField 單排），其餘引用維持舊版。 |
 | **Form** | 標籤在上；必填以「*」標在標籤後；一列最多 2 欄（桌機）。底部固定動作列：右側「取消 / 儲存」。<br>**標籤只有一種寫法：標籤在欄位上方＋佔位字**，不使用浮動（卡在框線上）的小標籤；備註欄也一樣。<br>**必填 `*` 要有依據**：依該頁既有的驗證規則（例如 `valid`、`billVerify`），並在原始碼註解寫明；空列會被丟掉的欄位，只在該列有填任一欄時才標必填。<br>**按鈕停用要說明原因**：在按鈕旁以文字（`role="status"`）與 `title` 寫出「尚缺：…」。 |
 | **Table** | 表頭 `surface` 底、`label` 字級；列高 44px；hover `surface-hover`；數字欄右對齊；空狀態置中顯示說明＋主要動作。分頁固定在表格下方右側。 |
 | **Badge** | 狀態專用；文字＋8% 底色；不加邊框陰影。 |
@@ -101,7 +101,7 @@
 | **圖示按鈕** | 一律是真的 `<button>`，帶 `title` 與 `aria-label`；「新增」類動作要有文字（例如「新增項目」），不能只放「+」。 |
 | **總計列** | 長表單的「業績合計／現金應收」另放底部固定列（`fixed`，lg 以上讓出 240px 側欄、手機讓出 56px 底部導覽、列印隱藏），不靠 `sticky` 側欄卡。 |
 | **Dialog** | 寬 480 / 640 / 800；標題、內容、底部動作三段；危險操作需二次確認並寫出後果。 |
-| **樹狀選擇（TreeView）** | 共用選店等樹狀窗保留 `@mui/x-tree-view` 行為時只做視覺覆寫：列高 38px compact、整列 hover `surface-hover`、層級縮排 24px、展開箭頭 16px 置中對齊、勾選框 `ui` Checkbox 16px、群組／店家圖示 16px＋間距 6px；搜尋用 `ui` Input、頂部動作 ghost 描邊 `sm` 同高、底部關閉 `secondary`／確認 `primary`。不為換而換自寫樹，避免勾選／展開／搜尋行為回歸。 |
+| **樹狀選擇（TreeView）** | 共用選店等樹狀窗保留 `@mui/x-tree-view` 行為時只做視覺覆寫：列高 38px compact、整列 hover `surface-hover`、層級縮排 24px、展開箭頭 16px 置中對齊、勾選框 `ui` Checkbox 16px、群組／店家圖示 16px＋間距 6px；已選店家（`.onSelect`）一律主題色選中態：`accent` 12% 底＋`accent` 文字／店家圖示＋字重 500（淺色 `#1A73E8`、深色 `#4C8DF6`，皆走 `--accent` token，不得寫死水藍／灰藍），未選中維持原文字色與 `surface-hover` hover；搜尋用 `ui` Input、頂部動作 ghost 描邊 `sm` 同高、底部關閉 `secondary`／確認 `primary`。不為換而換自寫樹，避免勾選／展開／搜尋行為回歸。 |
 | **Toast** | 右下角；成功 3 秒自動消失，錯誤需手動關閉。 |
 | **Sidebar** | 240px；群組標題 `caption` + `text-tertiary`；項目高 36px、`rounded-md`；選取為主題色 8% 底（`bg-accent/8`）+ 主題色文字 + 字重 500。 |
 | **Tabs** | 底線式；選取為 `text` + 2px 主題色底線，未選 `text-secondary`。 |
@@ -195,7 +195,7 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
 
 
 
-- 2026/10/20 顧客追蹤補改（`claude/fix-customer-tracking-box`，v3.0-1020-0005）：`/parameter`「顧客追蹤」六卡的動態清單列依 §6 既有規範落地——序號用內文字級＋次要色固定寬、輸入欄 flex-1 可換行、增刪用 `ghost size=icon` 真按鈕（lucide 16px＋aria-label/title，disabled 須套真 Button 不得用裸圖示假 disabled）；無新樣式規則，本節僅記錄套用結果。
+- 2026/10/20 顧客追蹤補改（`claude/fix-customer-tracking-box`，v3.0-1020-0016）：`/parameter`「顧客追蹤」六卡的動態清單列依 §6 既有規範落地——序號用內文字級＋次要色固定寬、輸入欄 flex-1 可換行、增刪用 `ghost size=icon` 真按鈕（lucide 16px＋aria-label/title，disabled 須套真 Button 不得用裸圖示假 disabled）；無新樣式規則，本節僅記錄套用結果。
 
 ## 13. 【已作廢】PrimeStay 版式語言
 

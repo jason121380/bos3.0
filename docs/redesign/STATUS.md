@@ -6,7 +6,10 @@
 
 | 範圍 | 內容 |
 |---|---|
-| 顧客追蹤六卡補改（截圖回報，v3.0-1020-0005） | `/parameter` 顧客追蹤六卡移除 MUI Grid 改 flex 列、序號改內文字級次要色、刪／增改 ghost icon 真按鈕（disabled 真生效）；資料邏輯與儲存不動，死碼 styles 檔已刪。待實機桌機＋手機各看六卡，正式站唯讀不儲存。見 TODO／MEMORY #111。 |
+| 商品消耗明細日期區緊急修正（v3.0-1020-0012） | 根因：共用 `MerchantSearchBar/DatePicker` 傳 `label='選擇日期'` 給 facade，facade 以 Field 在欄位上方渲染標籤，塞進 MUI ButtonGroup 擠成兩排重疊。修：共用層兩處不傳 label（toolbarTitle 保留），舊版頁面一併恢復；僅商品消耗明細開 `uiDateField`（快捷鈕 ui Button＋UiDateField 單排，比照 DecreaseDetail），快捷鈕順序本月/上個月/前天/昨天/今天不變，日期存值/查詢/匯出/用途下拉不動。待實機：本頁與 DecreaseDetail 各開一次月曆，見 MEMORY #112。 |
+| 店家列表已選店家主題色修正（緊急截圖，v3.0-1020-0005） | 三份 `MerchantsListModal` 已選店家由水藍 `rgb(179,224,238)`／深色 `#638088`（舊全域後載入蓋過元件）改主題色選中態：`accent/0.12` 底＋accent 文字／圖示＋500（深色 `#4C8DF6`）；深色 hover 在視窗範圍內收斂、全域 TreeItem hover 不動其他頁。選取／展開／搜尋／確認邏輯未動，待實機三版開窗確認，見 TODO／MEMORY #111。 |
+| 顧客追蹤六卡補改（截圖回報，v3.0-1020-0016） | `/parameter` 顧客追蹤六卡移除 MUI Grid 改 flex 列、序號改內文字級次要色、刪／增改 ghost icon 真按鈕（disabled 真生效）；資料邏輯與儲存不動，死碼 styles 檔已刪。待實機桌機＋手機各看六卡，正式站唯讀不儲存。見 TODO／MEMORY #113。 |
+
 | #151 緊急退回第二段（v3.0-1019-2344） | #151 PrimeStay 全站地基已退回，回到 Jason 發參考圖之前（#150 後、v3.0-1019-2301 當時）外觀；STYLE §13 整章標明作廢。#152 Radio／#153 Tooltip／#154 設定推廣保留不動。待 Jason 實機看版號 v3.0-1019-2344 確認。 |
 | #157 緊急退回（v3.0-1019-2333） | #157 已退回，回到 #151 外框樣式（淺灰底、白卡、細邊、shadow-card）；#152–#154 保留不動。 |
 | 設定頁樣板推廣第二批（v3.0-1019-2305） | `/accountingSetting` 三區改左選單＋右分段卡片（hidden 保留掛載、全域儲存原樣）；`/helper-point-setting-create`／`-edit/:id` 單表單切三張分段卡（不造假選單）；`/authority` 單一清單寬表本批跳過（理由見 STYLE §12／MEMORY #106）。待實機逐頁截圖確認。 |
