@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { CheckboxField } from 'ui/checkbox'
+import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo, Fragment } from 'react'
@@ -142,24 +143,25 @@ function AboutOrderCreate({
         {optionArr.map(({label, key, options}) => (
           <div key={label} css={styles.serviceInputGroup}>
             <div className="flex flex-wrap items-center gap-2 p-2">
-              <NativeSelect
-                disabled={!inputEnable}
-                fullWidth={false}
-                css={styles.orderCreateField}
-                label={label}
-                value={orderCreateSetting[key]}
-                onChange={e => {
-                  setOrderCreateSetting(
-                    produce(draft => { draft[key] = e.target.value })
-                  )
-                }}
-              >
-                {options.map((data, idx) => (
-                  <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
-                    {data.label}
-                  </NativeSelectOption>
-                ))}
-              </NativeSelect>
+              <Field label={label}>
+                <NativeSelect
+                  disabled={!inputEnable}
+                  fullWidth={false}
+                  css={styles.orderCreateField}
+                  value={orderCreateSetting[key]}
+                  onChange={e => {
+                    setOrderCreateSetting(
+                      produce(draft => { draft[key] = e.target.value })
+                    )
+                  }}
+                >
+                  {options.map((data, idx) => (
+                    <NativeSelectOption value={data.value} key={`${data.label}-${idx}`}>
+                      {data.label}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
+              </Field>
             </div>
           </div>
         ))}
