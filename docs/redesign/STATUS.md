@@ -6,7 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
-| MUI 批次6・Dialog/Modal 第一小批（線4，v3.0-1019-2223） | 6 窗換 ui/dialog：ChangePassword（無 onClose 強制窗）、SaleStatusEditModal（onOpenChange 轉接原 onClose）、EditMemberCardRecordModal、EditProductsCategoryModal（保留 912px）、顧客清單/篩選匯出刪除確認孿生窗；窗內欄位/handler/存值不動。跳過 PasswordDialog（巢狀預約）、MUI Select 彈層窗、拖曳排序、帳單/預約與複雜欄位窗，見 TODO/MEMORY #93。待實機逐窗點驗開關/背景/focus。 |
+| MUI 批次6・Dialog/Modal 第一小批（線4，v3.0-1019-2224） | 6 窗換 ui/dialog：ChangePassword（無 onClose 強制窗）、SaleStatusEditModal（onOpenChange 轉接原 onClose）、EditMemberCardRecordModal、EditProductsCategoryModal（保留 912px）、顧客清單/篩選匯出刪除確認孿生窗；窗內欄位/handler/存值不動。跳過 PasswordDialog（巢狀預約）、MUI Select 彈層窗、拖曳排序、帳單/預約與複雜欄位窗，見 TODO/MEMORY #95。待實機逐窗點驗開關/背景/focus。 |
 | 設定頁樣板第一批（OpenAI 設定頁式，v3.0-1019-2220，未合併待 Jason 看樣板） | 新增 `src/ui/settings-nav.js`（桌機左窄選單＋手機頂部分頁＋右側分段標題，只提供呈現）；Parameter 主頁頂部分頁改左選單、容器 `max-w-4xl`→`max-w-6xl`、右側加目前分類標題，11 個分頁的 value／`handleTabsChange` 轉接／各卡片欄位與 `handleSubmit` 儲存全原樣。STYLE.md §12 定版「設定頁樣板」與紅線（報表／帳單／列印不套、開關不換粉紅色）。其餘設定頁未翻，待 Jason 確認樣板。 |
 | 設計師排行榜版面整理（截圖回報，v3.0-1019-2217） | `DesignerPerformBasic/index.js` 篩選區移除 `marginTop:-23`／置中 inline style 硬湊，改分列分組：日期列＋三組切換鈕各以 label 在上（`text-label text-text-secondary`＋`flex flex-col gap-1.5`）、同列 `items-end` 對齊、排不下 `flex-wrap` 換行，匯出/列印 `sm:ml-auto` 同高 `ui/button`；店家列 Autocomplete 包 `min-w-0 flex-1`、搜尋鈕同高（手機滿寬）。`Results.js` 主表維持 `dense` compact，`min-w-[650px]`→`min-w-[1240px] print:min-w-0` 使寬表走 `ui/table` 既有 `overflow-x-auto`＋`ui-scroll-x` 常駐捲軸不被切，表頭 sticky top、合計列 sticky bottom（`bg-surface`，列印 `print:static`）且欄位／數字 `numeric` 對齊不變。共用 `MerchantListAutocpmplete`（含 MUI Autocomplete 本體／全選鈕，另 4 頁共用）與欄名、數值、查詢/匯出/列印 handler、日期存值一字未動。待實機：桌機寬表橫捲＋合計固定、390px、列印。 |
 | MUI 批次4・Button/IconButton 第三小批盤點結案（線4，v3.0-1019-2212） | 零程式改動：最新 main 實掃真 MUI Button/IconButton 44 檔全屬帳單29/金額2/預約submit2/popupIcon6/日期群組1/主題色3/snackbar金額確認1，低風險 0 檔，不湊數結案（見 TODO/MEMORY #91）。後續各類專項逐檔處理。無待實機。 |
@@ -29,6 +29,7 @@
 | MUI批次2b Avatar/Chip/List（AGY線，v3.0-1019-1718） | 活低風險 5 檔：員工/離職清單 Avatar→ui/avatar、GenericMoreButton 與 PerformanceDetail 的 ListItem*→原生 span、CalendarColorClip 靜態 Chip→原生 span（原色保留）。預約 List 4 孿生＋可刪 Chip 跳過註明、死碼不做。待實機。 |
 | 死碼刪除18檔（線C，v3.0-1019-1819） | 依核實報告＋Jason 拍版刪 18 個零引用檔（清單見 TODO），並清 General/index.js 的 OtherActions 註解殘留；刪前重跑 import/re-export/dynamic/routes/元件名解析皆 0、刪後路徑與獨有名 0 殘留。保留 Jason 指定 3 檔與活檔 TransferList.js。STYLE.md 檢查無新增規則不改。待 PR 驗證後合併，無實機畫面變更。 |
 | MUI批次1剩餘Typography/Box/Paper小批1（線2，v3.0-1019-1831） | 12 檔：ehs2、snackbars、AdminPageHeader、TableCheckoutBar、TransferList、三搜尋列 Paper 全檔轉原生＋自家字級；MembershipCardList/ChoseEvent/NewChoseEvent/FastCheckOrdersModal 僅轉對得上字級的 Typography（h4/body2 無級距留原）。列印報表/帳單/表格 Paper 與示範頁跳過註明。待實機文字與搜尋列外觀。 |
+| MUI批次1剩餘Typography/Box/Paper小批2盤點結案（線B，v3.0-1019-2223） | 真 Typography 11 檔（無級距3／列印4／死碼保留4）、Box 僅 ui/icons 核心1、Paper 26 檔（帳單16／列印表格9／styled Popper1），低風險活檔 0，本批零程式改動不湊數；後續列印/帳單/無級距字級須專項拍版。 |
 | MUI批次3表格1（AGY線，v3.0-1019-1730） | 12 檔非列印：ManagementTable 本體＋6 消費者列→ui/table、客戶明細 5 檔分頁→ui TablePagination。handler/存值不變，列印/報表/帳單不碰。待實機列表與分頁。 |
 | MUI批次3表格2（AGY線，v3.0-1019-1815） | 5 檔：Products 分頁→ui TablePagination、預約日曆 4 孿生 OrderTable 的 TableContainer/Paper→原生 div 殼。handler/存值不變。待實機分頁與日曆捲動。 |
 | MUI批次3表格3盤點結案（AGY線，v3.0-1019-1824） | 真 MUI Table 剩 29 檔全分類：帳單16＋Report 5＋列印4＋複雜3＋保留死碼1，低風險活檔 0，本批零程式改動不湊數；後續列印/帳單/sticky 巢狀須專項。 |
