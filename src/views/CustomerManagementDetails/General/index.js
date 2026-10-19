@@ -11,7 +11,6 @@ export default function General({ customer, className = {}, isLoading, bookingCu
         <CustomerInfo bookingCusCheck={bookingCusCheck} customer={customer} isLoading={isLoading}/>
       </div>
       <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
-        {/* <OtherActions /> */}
       </div>
     </div>
   )
