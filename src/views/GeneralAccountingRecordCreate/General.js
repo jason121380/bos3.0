@@ -2,8 +2,9 @@
 // 保留 MUI：皆以 ref 串接 Enter 鍵焦點流程（橋接主題已套新外觀）
 import {
   TextField, FormControl, MenuItem,
-  InputLabel, Select, Autocomplete, ToggleButton, ToggleButtonGroup
+  InputLabel, Select, Autocomplete,
 } from '@mui/material'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { DatePicker } from 'ui/date-picker'
 import AccountingSubjectsAutocomplete from 'components/AccountingSubjectsAutocomplete'
 import idx from 'idx'
@@ -275,7 +276,7 @@ function Summary({ stayInCreateAccount, ...rest }) {
             />
           </div>
           <div>
-            <ToggleButtonGroup
+            <ToggleGroup
               value={inoutType}
               exclusive
               aria-label="text alignment"
@@ -294,23 +295,21 @@ function Summary({ stayInCreateAccount, ...rest }) {
                 }
               }}
             >
-              <ToggleButton
+              <ToggleGroupItem
                 ref={type1Ref}
                 value="REVENUE"
                 aria-label="left aligned"
-                focused={focus === 'type1' ? 1 : 0}
               >
                 收入
-              </ToggleButton>
-              <ToggleButton
+              </ToggleGroupItem>
+              <ToggleGroupItem
                 ref={type2Ref}
                 value="EXPENDITURE"
                 aria-label="centered"
-                focused={focus === 'type2' ? 1 : 0}
               >
                 支出
-              </ToggleButton>
-            </ToggleButtonGroup>
+              </ToggleGroupItem>
+            </ToggleGroup>
           </div>
           {inoutType !== null && (
             <Fragment>

@@ -1,10 +1,11 @@
 import {
   Checkbox, Select, MenuItem,
-  FormControl, InputLabel, FormControlLabel, ToggleButton,
-  ToggleButtonGroup
+  FormControl, InputLabel, FormControlLabel,
+
 } from '@mui/material'
 import { Fragment } from 'react'
 import { cloneDeep } from 'lodash'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { MobileDatePicker } from 'ui/date-picker'
 import { isBefore, format } from 'date-fns'
 import MerchantListAutocpmpleteForManagement from 'components/MerchantListAutocpmpleteForManagement'
@@ -128,15 +129,15 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
           <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center gap-2.5">
               <p className="text-label text-text">適用消費類型：</p>
-              <ToggleButtonGroup
+              <ToggleGroup
                 size="small"
                 exclusive
                 value={inputValue.consumptionTypeUsing}
                 onChange={(e, v) => v && handleValueChange('consumptionTypeUsing', v)}
               >
-                <ToggleButton disabled={isReadOnly} value='ALL'>全部套用</ToggleButton>
-                <ToggleButton disabled={isReadOnly} value='CUSTOMIZE'>自訂</ToggleButton>
-              </ToggleButtonGroup>
+                <ToggleGroupItem disabled={isReadOnly} value='ALL'>全部套用</ToggleGroupItem>
+                <ToggleGroupItem disabled={isReadOnly} value='CUSTOMIZE'>自訂</ToggleGroupItem>
+              </ToggleGroup>
             </div>
             {inputValue.consumptionTypeUsing === 'CUSTOMIZE' && (
               <>
