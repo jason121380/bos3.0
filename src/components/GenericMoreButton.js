@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Menu, MenuItem, Tooltip } from '@mui/material'
+import { Menu, MenuItem } from '@mui/material'
 import { Button } from 'ui/button'
 import { MoreVert as MoreIcon, Print as PrintIcon } from 'ui/icons'
 import { memo, useRef, useState } from 'react'
@@ -18,11 +18,9 @@ function GenericMoreButton({ handleMenuItem }) {
 
   return (
     <>
-      <Tooltip title="More options">
-        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="更多選項" title="更多選項" onClick={handleMenuOpen} ref={moreRef}>
-          <MoreIcon />
-        </Button>
-      </Tooltip>
+      <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="更多選項" title="更多選項" onClick={handleMenuOpen} ref={moreRef}>
+        <MoreIcon />
+      </Button>
       <Menu
         anchorEl={moreRef.current}
         anchorOrigin={{
