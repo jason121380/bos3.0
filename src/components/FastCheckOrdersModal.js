@@ -4,7 +4,7 @@ import {
   Dialog, DialogTitle, DialogContent, TableContainer,
   Table, TableHead, TableBody, TableCell, TableRow,
   Button,
-  IconButton, CircularProgress, Typography
+  IconButton, Typography
 } from '@mui/material'
 import { startOfDay, endOfDay } from 'date-fns'
 import { useFetchOrdersFastCheckLazy } from 'hooks/useFetchOrders'
@@ -17,6 +17,7 @@ import { EditOutlined as EditOutlinedIcon, Close as CloseIcon } from 'ui/icons'
 import idx from 'idx'
 import DateSelector from 'components/DateSelector'
 import { css } from '@emotion/react'
+import { LoaderCircle } from 'lucide-react'
 
 const styles  = {
   sticky: css({
@@ -282,7 +283,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
           >重設</Button>
         </div>
         {(ordersFastCheckLazyData.data === undefined || ordersFastCheckLazyData.loading) ?
-          <div css={styles.circular}><CircularProgress/></div> :
+          <div css={styles.circular}><LoaderCircle className="mx-auto h-10 w-10 animate-spin text-accent" strokeWidth={1.75} /></div> :
           orderData.length > 0 ?
           <TableContainer style={{height: 'calc(100% - 100px)'}}>
             <Table>

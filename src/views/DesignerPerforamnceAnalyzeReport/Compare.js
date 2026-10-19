@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Grid, CircularProgress, Card,
+  Grid, Card,
   CardHeader, CardContent, Typography
 } from "@mui/material"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table'
@@ -8,6 +8,7 @@ import { Fragment } from 'react'
 import { format } from 'date-fns'
 import roundDecimal from './../../helper/roundDecimal.js'
 import { css } from '@emotion/react'
+import { LoaderCircle } from 'lucide-react'
 
 const styles = {
   'root': {
@@ -27,7 +28,7 @@ const Compare = ({ compareData, loading, isMemberShipCardActive, compareInputDat
     <Grid css={styles.root} container style={{ marginTop: 24 }}>
       <Grid container justifyContent='center' item>
         {loading ? (
-          <CircularProgress sx={{ mt: 6 }} />
+          <LoaderCircle className="mt-12 h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
         ) : (
           compareData.length ? (
             <Grid spacing={2} container item>
