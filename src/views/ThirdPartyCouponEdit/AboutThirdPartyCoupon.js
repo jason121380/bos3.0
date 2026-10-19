@@ -1,11 +1,11 @@
-// 扣項方式 Select 的值可能為空字串，保留 MUI Select；同卡片的 TextField（名稱以 inputProps 帶 data-testid）一併保留（橋接主題已套新外觀）
-import {
-  FormControl, InputLabel, MenuItem,
-  Select, TextField, FormControlLabel, Checkbox,
-} from '@mui/material'
+// 欄位標籤放在上方（Field＋Input／NativeSelect）；扣項方式的值可為空字串，NativeSelect 以 disabled 空值選項顯示提示、onChange 回原始值。
+// 原「保留 MUI Select／TextField」註記已由 Jason 同意推翻，比照 ThirdPartyCouponCreate 改版；Checkbox 保留 MUI
+import { FormControlLabel, Checkbox } from '@mui/material'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { Field, Input } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
 const thirdPartyCouponDeductionType = [
   {
@@ -25,38 +25,32 @@ function AboutThirdPartyCoupon({ className, thirdPartyCoupon, onChange, ...rest 
         <CardTitle>一般資訊</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col items-start gap-6">
-        <TextField
-          value={thirdPartyCoupon.name}
-          label="名稱"
-          variant="outlined"
-          fullWidth
-          onChange={event => onChange({ event, key: 'name' })}
-          inputProps={{
-            'data-testid': 'name',
-          }}
-        />
-        <TextField
-          type="number"
-          value={thirdPartyCoupon.handlingFee}
-          label="手續費"
-          variant="outlined"
-          onChange={event =>
-            onChange({
-              event: {
-                target: {
-                  value: idx(event, _ => parseFloat(_.target.value)),
+        <Field label="名稱" className="w-full">
+          <Input
+            value={thirdPartyCoupon.name}
+            onChange={event => onChange({ event, key: 'name' })}
+            data-testid="name"
+          />
+        </Field>
+        <Field label="手續費" className="w-full">
+          <Input
+            type="number"
+            value={thirdPartyCoupon.handlingFee}
+            onChange={event =>
+              onChange({
+                event: {
+                  target: {
+                    value: idx(event, _ => parseFloat(_.target.value)),
+                  },
                 },
-              },
-              key: 'handlingFee',
-            })
-          }
-          fullWidth
-          onWheel={() => document.activeElement.blur()}
-        />
-        <FormControl variant="outlined" fullWidth>
-          <InputLabel>手續費扣項方式</InputLabel>
-          <Select
-            label='手續費扣項方式'
+                key: 'handlingFee',
+              })
+            }
+            onWheel={() => document.activeElement.blur()}
+          />
+        </Field>
+        <Field label="手續費扣項方式" className="w-full">
+          <NativeSelect
             value={thirdPartyCoupon.type}
             onChange={event =>
               onChange({
@@ -65,16 +59,16 @@ function AboutThirdPartyCoupon({ className, thirdPartyCoupon, onChange, ...rest 
               })
             }
           >
-            <MenuItem value="" disabled>
-              <em>選擇手續費扣項方式</em>
-            </MenuItem>
+            <NativeSelectOption value="" disabled>
+              選擇手續費扣項方式
+            </NativeSelectOption>
             {thirdPartyCouponDeductionType.map(key => (
-              <MenuItem value={key.value} key={`thirdPartyCoupon-${key.value}`}>
+              <NativeSelectOption value={key.value} key={`thirdPartyCoupon-${key.value}`}>
                 {key.label}
-              </MenuItem>
+              </NativeSelectOption>
             ))}
-          </Select>
-        </FormControl>
+          </NativeSelect>
+        </Field>
         <FormControlLabel
           control={<Checkbox color="primary" />}
           label="金額呈現為0"

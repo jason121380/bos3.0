@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { CheckboxField } from 'ui/checkbox'
+import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
@@ -64,18 +65,19 @@ function AboutCustomerBooking({
             />
           </div>
         ))}
-        <NativeSelect
-          css={styles.isUsing}
-          className="!mt-4 w-40"
-          fullWidth={false}
-          label='預約最短時長'
-          value={aboutCustomer.bookingMinumnTimeCost}
-          onChange={e => handleSetValue('bookingMinumnTimeCost', e.target.value)}
-        >
-          {timeCostArray.map(d => (
-            <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
-          ))}
-        </NativeSelect>
+        <Field label='預約最短時長' className="mt-4">
+          <NativeSelect
+            css={styles.isUsing}
+            className="w-40"
+            fullWidth={false}
+            value={aboutCustomer.bookingMinumnTimeCost}
+            onChange={e => handleSetValue('bookingMinumnTimeCost', e.target.value)}
+          >
+            {timeCostArray.map(d => (
+              <NativeSelectOption key={`${d.value}-${d.label}`} value={d.value}>{d.label}</NativeSelectOption>
+            ))}
+          </NativeSelect>
+        </Field>
       </CardContent>
     </Card>
   )
