@@ -3,7 +3,7 @@ import { Slot } from '@radix-ui/react-slot'
 import { cva } from 'class-variance-authority'
 import { cn, focusRing } from './utils'
 
-// STYLE.md §13（PrimeStay 地基）：primary 維持 bos 品牌藍 #1A73E8 實心 pill（不換截圖綠）；secondary 改白底＋1px 細邊 pill（截圖的白鈕語彙）；ghost / danger 不變；尺寸 sm 32 / md 36 / lg 40 不變（報表/帳單密度不放寬）
+// STYLE.md §13（扁平修正 2026/10/19）：primary 維持 bos 品牌藍 #1A73E8 實心 pill（不換截圖綠）；secondary 改淺灰實心 pill 無框無影（bg-surface-hover，白底上以灰塊、灰卡上以深一階灰區分）；ghost / danger 不變；尺寸 sm 32 / md 36 / lg 40 不變（報表/帳單密度不放寬）
 const buttonVariants = cva(
   cn(
     'inline-flex items-center justify-center gap-1.5 whitespace-nowrap font-medium transition-colors select-none',
@@ -14,7 +14,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary: 'rounded-full bg-primary text-primary-foreground hover:bg-primary/85',
-        secondary: 'rounded-full border border-solid border-border bg-background text-text hover:border-border-strong hover:bg-surface-hover',
+        secondary: 'rounded-full bg-surface-hover text-text hover:bg-surface-active',
         ghost: 'rounded-md text-text hover:bg-surface-hover',
         danger: 'rounded-full bg-danger text-white hover:bg-danger/90',
       },
