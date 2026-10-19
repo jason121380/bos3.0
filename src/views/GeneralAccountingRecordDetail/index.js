@@ -1,7 +1,7 @@
 // 表單控制項（日期、收支切換、科目／人員 Autocomplete、備註快捷 Select、金額與備註 TextField）
 // 保留 MUI：皆以 ref 串接 Enter 鍵焦點流程（橋接主題已套新外觀）
+import { FormControl, MenuItem, InputLabel, Select } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
-import { FormControl, MenuItem, InputLabel, Select } from '@mui/material'
 import { Copy, Trash2 } from 'lucide-react'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { DatePicker } from 'ui/date-picker'

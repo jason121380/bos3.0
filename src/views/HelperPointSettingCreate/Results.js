@@ -1,11 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 勾選（FormControlLabel，handler 使用 (e, v)）與獲得方式切換鈕保留 MUI
-import {
-  FormControlLabel,
-  Checkbox,
-
-
-} from '@mui/material'
+import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { Plus, Trash2 } from 'lucide-react'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Button } from 'ui/button'

@@ -31,13 +31,13 @@ jest.mock('hooks/useFetchGetParameterAboutSettingFunction', () => ({
   }),
 }))
 
-// 商品類別、庫存單位、抽成方式都是 MUI Select（沒有可用的 data-testid），
-// 依畫面順序：0 商品類別、1 庫存單位、2 打帳單是否能更改預設價格、3 抽成方式
-const SELECT_INDEX = { category: 0, stockUnit: 1, commissionWay: 3 }
+// 商品類別、庫存單位、抽成方式改為 ui/form-control 的原生 select（2026/10/20 MUI 移除），
+// 依欄位上方標籤找到下拉、以選項文字選取（只改「怎麼選」，斷言不變）
+const SELECT_LABEL = { category: '商品類別', stockUnit: '庫存單位', commissionWay: '抽成方式' }
 const chooseOption = (container, which, optionText) => {
-  const selects = container.querySelectorAll('[aria-haspopup="listbox"]')
-  fireEvent.mouseDown(selects[SELECT_INDEX[which]])
-  fireEvent.click(within(document.body).getByRole('option', { name: optionText }))
+  const select = within(container).getByLabelText(SELECT_LABEL[which])
+  const option = Array.from(select.options).find(o => o.textContent === optionText)
+  fireEvent.change(select, { target: { value: option.value } })
 }
 
 const baseMocks = () => {

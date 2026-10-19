@@ -1,11 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 人員身分下拉的值可能為空字串（尚未載入預設值），保留 MUI Select
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from '@mui/material'
+import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'

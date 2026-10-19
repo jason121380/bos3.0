@@ -1,4 +1,4 @@
-import { FormControlLabel, Checkbox } from '@mui/material'
+import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { Field, Input } from 'ui/input'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'

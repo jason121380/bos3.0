@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 // 抽成級距表單以 MUI Table 排版、含 TextField 保留 MUI，ToggleButton 改 ui/toggle-group（布林值原樣、handler 不讀參數）；Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）；卡片外框、標題、按鈕與載入狀態為 src/ui
+import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
-import { Modal, FormControlLabel, Checkbox, Table, TableBody, TableCell, TableRow } from '@mui/material'
+import { Modal, Table, TableBody, TableCell, TableRow } from '@mui/material'
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'
 import _ from 'lodash'

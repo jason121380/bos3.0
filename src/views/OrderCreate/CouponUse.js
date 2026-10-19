@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Checkbox, FormControlLabel } from '@mui/material'
+import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { Field, Input } from 'ui/input'
 import { Eraser, Trash2 } from 'lucide-react'
 import { RowIconButton, AddRowButton } from './RowAction'

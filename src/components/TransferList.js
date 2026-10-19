@@ -1,7 +1,5 @@
-import {
-  List, ListItemButton,
-  Checkbox, ListItemText, ListItemIcon,
-} from '@mui/material'
+import { Checkbox } from 'ui/checkbox'
+import { List, ListItemButton, ListItemText, ListItemIcon } from '@mui/material'
 import { Button } from 'ui/button'
 import Grid from '@mui/material/Unstable_Grid2';
 import { KeyboardArrowRightRounded as KeyboardArrowRightRoundedIcon, RemoveRounded as RemoveRoundedIcon } from 'ui/icons'

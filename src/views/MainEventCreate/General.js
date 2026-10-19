@@ -1,7 +1,4 @@
-import {
-  Checkbox, FormControlLabel,
-
-} from '@mui/material'
+import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { Fragment } from 'react'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { MobileDatePicker } from 'ui/date-picker'

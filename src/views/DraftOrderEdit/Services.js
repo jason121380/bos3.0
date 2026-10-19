@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
+import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
-import { Checkbox, FormControlLabel } from '@mui/material'
 import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import ServicesAutoComplete from 'components/ServicesAutoComplete'

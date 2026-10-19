@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 // 欄位標籤放在上方（Field＋Input／NativeSelect）。扣項基準點的選項值是數字，NativeSelect 的 event.target.value 回傳原始數字，
 // 所以 handleDeductionReference 的 parseInt 等既有處理原樣保留；分指定／不指定的 Checkbox 仍用 MUI
-import { Checkbox, FormControlLabel } from '@mui/material'
+import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'

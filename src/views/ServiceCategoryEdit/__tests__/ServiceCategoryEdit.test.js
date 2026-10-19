@@ -16,10 +16,11 @@ jest.mock('hooks/useFetchGetAttribution', () => ({
   }),
 }))
 
-// 服務歸屬是 MUI Select（沒有 data-testid="attribution"），要開啟選單再點選項
+// 服務歸屬改為 ui/form-control 的原生 select（2026/10/20 MUI 移除），依標籤找到下拉、以選項文字選取（斷言不變）
 const chooseAttribution = (container, optionText) => {
-  fireEvent.mouseDown(container.querySelector('[aria-haspopup="listbox"]'))
-  fireEvent.click(within(document.body).getByRole('option', { name: optionText }))
+  const select = within(container).getByLabelText('服務歸屬')
+  const option = Array.from(select.options).find(o => o.textContent === optionText)
+  fireEvent.change(select, { target: { value: option.value } })
 }
 
 const historyMock = { push: jest.fn(), location: {}, listen: jest.fn() }

@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
+import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
-import { Card, CardContent, CardHeader, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableRow, Grid } from '@mui/material'
+import { Card, CardContent, CardHeader, Table, TableBody, TableCell, TableRow, Grid } from '@mui/material'
 import useFetchMerchantCommissionWay from 'hooks/useFetchMerchantCommissionWay'
 import idx from 'idx'
 import PropTypes from 'prop-types'

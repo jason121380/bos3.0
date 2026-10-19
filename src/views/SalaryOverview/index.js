@@ -1,5 +1,5 @@
 // 狀態下拉的 onChange 依賴 event.target.value，保留 MUI Select
-import { FormControl, Select, InputLabel, MenuItem } from '@mui/material'
+import { FormControl, Select, InputLabel, MenuItem } from 'ui/form-control'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import { openSnackbar } from 'elements/snackbars'
