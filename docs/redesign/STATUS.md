@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| MUI 移除・Progress 第三小批（AGY 線，v3.0-1019-2318） | 2 檔不定值小圈換 lucide `LoaderCircle animate-spin`：OrderEdit/AddCustomerModal、QueueOrderEdit/AddCustomerModal 各 2 處（編號驗證 20px＋MUI Select renderValue 載入小圈）；Select 本體／value='loading'／handler／載入邏輯不動。連同第二小批（#156）後，不定值可獨立轉圈清完；定值線／圓、Autocomplete 內圈、結帳 snackbar、Suspense 頂線仍專項不碰。待實機兩窗載入小圈與欄寬不跳動。 |
 | MUI 移除・Radio 第一小批（Codex 線，v3.0-1019-2257） | 新建 `src/ui/radio`（原生圓點 Radio/RadioField），換 CustomerSelfCreate 與 Profile 個人資料的性別二選一 2 檔；保留圓點/互斥/鍵盤、value/onChange/存值不動。AboutDesignerSalary 預設列與 Employee 小尺寸留後批/專項。待實機兩頁性別選取與儲存。 |
 | PrimeStay 全站地基第一批（v3.0-1019-2249，未合併待截圖驗收） | 外框＋共用樣式地基（STYLE §13／MEMORY #103）：canvas `#F3F4F6`、內容 `#printContainer` 白卡大圓角＋細邊＋柔和陰影（print 還原）、側欄選中白 pill＋品牌藍字、Card/Dialog 16px 圓角、Button secondary 白 pill、Tabs 藍字藍線、Input 10px 圓角；主色維持 bos 深藍不換截圖綠。示範頁顧客列表。逐頁換色留後續批次；報表/帳單密度與列印不動。 |
 | 設定頁樣板推廣第一批（Jason 已確認樣板，v3.0-1019-2248） | `/performanceDeductionParameter` 四區改左選單＋右分段卡片（hidden 保留掛載、儲存 handler 原樣）；`/profile/:tab` 僅基本資料／密碼／功能釘選套左選單＋max-w-6xl，報表型分頁維持 compact 不套；`/deduction-setting` 與 `/update-deduction-setting/:id` 單卡寬表本批跳過（理由見 STYLE §12／MEMORY #102）。待實機逐頁截圖確認選單與卡片。 |
