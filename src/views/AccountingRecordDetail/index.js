@@ -7,7 +7,7 @@ import {
 } from '@mui/material'
 import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
 import { Copy, Trash2 } from 'lucide-react'
-import { MobileDatePicker } from '@mui/x-date-pickers'
+import { MobileDatePicker } from 'ui/date-picker'
 import AccountingSubjectsAutocomplete from 'components/AccountingSubjectsAutocomplete'
 import useFetchAccountingType from 'hooks/useFetchAccountingType'
 import Page from 'components/Page'
