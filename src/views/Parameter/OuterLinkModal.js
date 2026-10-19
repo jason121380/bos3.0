@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-// 對話框內有 MUI Autocomplete，保留 MUI Dialog
+// 對話框內有 MUI Autocomplete，保留 MUI Dialog；名稱／網址已換 Field＋Input
 import {
   Dialog, DialogContent, DialogTitle, DialogActions,
   TextField, Checkbox,
@@ -7,6 +7,7 @@ import {
 } from '@mui/material'
 import { CheckboxField } from 'ui/checkbox'
 import { Button } from 'ui/button'
+import { Field, Input } from 'ui/input'
 import { useState, memo } from 'react'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import { useFetchMerchantAuthoritiesNameAndId } from 'hooks/useFetchGetMerchantAuthorities'
@@ -158,20 +159,20 @@ const OuterLinkModal = ({
       </DialogTitle>
       <div className="h-px bg-border" />
       <DialogContent css={styles.Content}>
-        <TextField
-          variant='outlined'
-          label='名稱'
-          placeholder='請輸入名稱'
-          value={handleGetValue('name')}
-          onChange={e => handleInputOnChange('name', e.target.value)}
-        />
-        <TextField
-          variant='outlined'
-          label='網址'
-          placeholder='請輸入網址 ex:https://www.mlgroup.io'
-          value={handleGetValue('url')}
-          onChange={e => handleInputOnChange('url', e.target.value)}
-        />
+        <Field label="名稱">
+          <Input
+            placeholder='請輸入名稱'
+            value={handleGetValue('name')}
+            onChange={e => handleInputOnChange('name', e.target.value)}
+          />
+        </Field>
+        <Field label="網址">
+          <Input
+            placeholder='請輸入網址 ex:https://www.mlgroup.io'
+            value={handleGetValue('url')}
+            onChange={e => handleInputOnChange('url', e.target.value)}
+          />
+        </Field>
         {!isCus && (
           <Autocomplete
             multiple
