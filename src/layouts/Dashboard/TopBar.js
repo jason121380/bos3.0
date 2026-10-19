@@ -462,7 +462,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
         type="button"
         onClick={toggle}
         className={cn(
-          'flex h-10 w-full items-center gap-2 rounded-md border border-solid border-border bg-background px-3 text-left text-body font-medium text-text hover:border-border-strong',
+          'flex h-10 w-full items-center gap-2 rounded-lg border border-solid border-border bg-background px-3 text-left text-body font-medium text-text shadow-card hover:border-border-strong',
           focusRing
         )}
       >
