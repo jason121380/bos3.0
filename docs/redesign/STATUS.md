@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| BookingNotificationSetting 下拉標籤（Codex 線，v3.0-1019-1305） | map 內 1 處 `NativeSelect` 改用 `Field` 上方標籤，涵蓋 15 個實例；事件、存值與布林選項不變，手機／帳號 MUI TextField 保留。STYLE.md §6 已規範標籤在上，無需修改；待實機確認列高與對齊。 |
 | 基礎 | Tailwind（preflight 關閉）、tokens、`src/ui/` 元件：Button、Input／Field、Select、NativeSelect（任意值）、Table（dense、列印格線）／TablePagination、Dialog（手機為底部面板）、Badge、Card、Tabs、ToggleGroup、Switch、Checkbox／CheckboxField、Avatar、Stat／StatGrid／StatCard、Toast、EmptyState、Skeleton、Popover、DropdownMenu、Sidebar、PageHeader、Toolbar |
 | 骨架 | 側欄、頁首、登入／錯誤頁外框；全站 MUI 橋接主題（`src/ui/mui-theme.js`） |
 | 手機版 App 化 | 底部分頁列（釘選頁優先）、App 式頂部列（返回／捲動後顯示頁名）、底部面板對話框、40px 觸控尺寸、iOS 16px 輸入框、安全區、PWA（可加到主畫面） |
@@ -190,3 +191,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 - 範圍：`MerchantBankTransferReport/Results.js`（1 張）、`ProductInvoicingRecordReport/Results.js`（1 張）改 `ui/table`＋`dense`；兩檔 `index.js` 只查不動。
 - 報表累計：先前 17＋本批 2＝**19 頁已用 `ui/table`**（逐目錄實查 `*Report*/*.js`）；**剩 9 個目錄（10 個檔）仍為 MUI Table**：`BusinessAnalysisReport`、`CostAnalysisReport`、`DesignerMonthlyReport`、`DesignerPerforamnceAnalyzeReport`（Results＋Compare）、`DesignerRakeReport`、`DesignersSalaryDetailReport`、`EmployeeDailyReport`、`MerchantBusinessIntervalReport`、`ServiceDeductionDetailReport`。
 - 驗證（指揮者回報；版號校正 0441→0443 時 Claude 未重跑）：eslint 0 error；`verify-logic` 兩檔通過；`portal-root-scan` 0/0；單元測試 52/52 通過；`CI=true npm run build` 成功，且 bundle 內含校正前版號 `v3.0-1019-0441`（build 在校正前產出，校正後需重新 build 才會出現 `v3.0-1019-0443`）。
+
+### MainEvent 日期欄改 facade（月曆專項，分支 `claude/ui-datepicker-mainevent-box`，v3.0-1019-1306，未 merge）
+
+- 範圍：`MainEventCreate/General.js`、`MainEventEdit/General.js` 共 4 個 `MobileDatePicker` 改 `ui/date-picker`，其餘欄位不動；存值（`getTime()`）與 handler 原樣。待實機：欄寬 150px、並排對齊、Edit `readOnly` 外觀。

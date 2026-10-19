@@ -4,6 +4,7 @@ import {
   TextField, Grid
 } from '@mui/material'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
+import { Field } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo } from 'react'
@@ -75,18 +76,19 @@ function BookingNotificationSetting({
           <div className="flex flex-wrap gap-6">
             {settingOptions.map(option => (
               <div key={key + option.label}>
-                <NativeSelect
-                  fullWidth={false}
-                  css={styles.selectWidth}
-                  name={option.key}
-                  label={option.label}
-                  value={merchantBookingNotification[key][option.key]}
-                  disabled={!inputEnable}
-                  onChange={event => handleChangeNotification(key, event)}
-                >
-                  <NativeSelectOption value={true}>開啟通知</NativeSelectOption>
-                  <NativeSelectOption value={false}>關閉通知</NativeSelectOption>
-                </NativeSelect>
+                <Field label={option.label}>
+                  <NativeSelect
+                    fullWidth={false}
+                    css={styles.selectWidth}
+                    name={option.key}
+                    value={merchantBookingNotification[key][option.key]}
+                    disabled={!inputEnable}
+                    onChange={event => handleChangeNotification(key, event)}
+                  >
+                    <NativeSelectOption value={true}>開啟通知</NativeSelectOption>
+                    <NativeSelectOption value={false}>關閉通知</NativeSelectOption>
+                  </NativeSelect>
+                </Field>
               </div>
             ))}
           </div>
