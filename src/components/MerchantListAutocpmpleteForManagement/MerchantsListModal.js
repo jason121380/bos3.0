@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
+// 店家樹狀選擇窗：保留 @mui/x-tree-view（展開/勾選/搜尋/確認回傳邏輯不動，避免選店行為風險），僅換 ui/dialog 殼、ui Input/Button/Checkbox 視覺與 TreeView 列高/hover/縮排覆寫
 import { useState, useEffect } from 'react'
-import {
-  Dialog, DialogTitle, DialogContent,
-  DialogActions, Checkbox, TextField, InputAdornment
-} from '@mui/material'
 import { Button } from 'ui/button'
+import { Checkbox } from 'ui/checkbox'
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
+import { Input } from 'ui/input'
 import { TreeView, TreeItem } from '@mui/x-tree-view';
 import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, GroupsRounded as GroupsRoundedIcon, Storefront as StorefrontIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
@@ -12,36 +12,67 @@ import _ from 'lodash';
 import { css } from '@emotion/react'
 
 const styles = {
+  // 保留 @mui/x-tree-view 本體（展開/勾選行為不動），只以覆寫統一 compact 列高、hover、縮排與箭頭對齊
   root: css({
     display: 'flex',
-    gap: 20,
+    gap: 2,
     flexDirection: 'column',
+    '& .MuiTreeItem-content': {
+      display: 'flex',
+      alignItems: 'center',
+      minHeight: 38,
+      padding: '4px 8px',
+      borderRadius: 6,
+      width: 'auto',
+      transition: 'background-color .15s',
+      '&:hover': {
+        backgroundColor: 'rgb(var(--surface-hover))'
+      },
+      '&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused': {
+        backgroundColor: 'unset'
+      }
+    },
     '& .Mui-expanded, .Mui-selected': {
       backgroundColor: 'unset !important'
     },
-    '& .MuiTreeItem-content': {
-      transition: '.2s',
-      width: 'fit-content',
-      '&:hover': {
-        background: 'rgb(var(--accent) / 0.08)'
+    '& .MuiTreeItem-content .MuiTreeItem-iconContainer': {
+      width: 20,
+      height: 20,
+      marginRight: 2,
+      padding: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+      '& svg': {
+        width: 16,
+        height: 16,
+        color: 'rgb(var(--text-tertiary))'
       }
     },
+    '& .MuiTreeItem-label': {
+      fontSize: 14,
+      lineHeight: '20px',
+      paddingLeft: '2px !important'
+    },
     '& li': {
-      borderRadius: 5,
-      // overflow: 'hidden',
-      width: 'fit-content'
+      borderRadius: 6,
+      width: 'auto'
     },
     '& .onSelect': {
-      background: '#b3e0ee',
+      backgroundColor: 'rgb(var(--accent) / 0.10)',
+      '& > .MuiTreeItem-content': {
+        backgroundColor: 'rgb(var(--accent) / 0.10)'
+      }
     }
   }),
   ulGroup: css({
     '& ul': {
-      marginLeft: '30px !important'
+      marginLeft: '24px !important'
     },
     '& ul .MuiCollapse-wrapper .MuiCollapse-wrapperInner': {
       display: 'flex',
-      gap: '5px !important',
+      gap: '4px !important',
       flexDirection: 'row !important',
       flexWrap: 'wrap',
       marginTop: 2
@@ -49,26 +80,26 @@ const styles = {
   }),
   ulGroupAll: css({
     '& ul': {
-      marginLeft: 20
+      marginLeft: 24
     },
     '& ul .MuiCollapse-wrapper .MuiCollapse-wrapperInner': {
-      display: 'flex !important',
-      gap: 10,
+      display: 'flex',
+      gap: 4,
       flexDirection: 'column',
     },
   }),
   ulGroupAllMerchant: css({
     '& ul': {
-      marginLeft: 20
+      marginLeft: 24
     },
     '& ul .MuiCollapse-wrapper .MuiCollapse-wrapperInner': {
       display: 'flex',
       flexWrap: 'wrap',
-      gap: 10,
+      gap: 4,
     },
   }),
   item: css({
-    borderRadius: 5,
+    borderRadius: 6,
     overflow: 'hidden',
     '& .MuiTreeItem-label': {
       paddingLeft: '0px !important'
@@ -79,29 +110,27 @@ const styles = {
   }),
   margin: css({
     '& > ul': {
-      marginLeft: 40
+      marginLeft: 24
     }
   }),
   span: css({
     display: 'flex',
     alignItems: 'center',
-    gap: 5,
+    gap: 6,
     wordBreak: 'keep-all',
     whiteSpace: 'nowrap',
-    fontSize: '1rem'
-  }),
-  title: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap'
-  }),
-  button: css({
-    flexShrink: 0,
-    height: 'fit-content'
+    fontSize: 14,
+    lineHeight: '20px',
+    '& svg': {
+      width: 16,
+      height: 16,
+      flexShrink: 0,
+      color: 'rgb(var(--text-secondary))'
+    }
   }),
   outline: css({
-    outline: '2px solid rgb(var(--danger)) !important'
+    outline: '2px solid rgb(var(--danger)) !important',
+    borderRadius: 6
   })
 }
 
@@ -146,8 +175,8 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
           <Checkbox
             checked={isCheckedOrIndeterminat(data, 'checked?')}
             indeterminate={isCheckedOrIndeterminat(data, 'indeterminate?')}
-            onChange={(e, v) => handleSelectGroup(v, data)}
-            style={{ marginTop: -9 }}
+            onChange={e => handleSelectGroup(e.target.checked, data)}
+            style={{ flexShrink: 0, margin: '11px 4px 0 8px' }}
           />
           <TreeItem
             css={!(data.groups && data.groups.length) ? styles.ulGroup : styles.ulGroupAll}
@@ -313,41 +342,30 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
   }
 
   return (
-    <Dialog className='MerchantsListModal' maxWidth='md' fullWidth open={open} onClose={handleOnClose}>
-      <DialogTitle variant='h4' css={styles.title}>
-        店家列表
-        <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
-          <TextField
-            placeholder="搜尋店家"
-            type="text"
-            variant="standard"
-            fullWidth
-            size="small"
-            onChange={(e) => setValue(e.target.value)}
-            value={value}
-            css={css({
-              width: 150,
-              '& input': {
-                fontSize: 16,
-                padding: '1px 0px 5px !important'
-              }
-            })}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment style={{ padding: 4 }} position="start">
-                  <SearchRoundedIcon style={{ marginLeft: -8 }} />
-                </InputAdornment>
-              ),
-              endAdornment: value && (
-                <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="清除搜尋文字" title="清除搜尋文字" onClick={() => setValue("")}><ClearRoundedIcon /></Button>
-              )
-            }}
-          />
-          <Button css={styles.button} onClick={() => setModalValues([])} variant="secondary">清除選取</Button>
-          <Button css={styles.button} onClick={handleExpanedAll} variant="secondary">展開全部</Button>
-        </div>
-      </DialogTitle>
-      <DialogContent>
+    // 舊 MUI Dialog 有 onClose（點背景／Esc 走 handleOnClose 清暫存），以 onOpenChange 轉接；hideClose 保留原有關閉路徑（底部「關閉」），不另加 X
+    <Dialog open={open} onOpenChange={o => { if (!o) handleOnClose() }}>
+      <DialogContent size="lg" hideClose aria-describedby={undefined} className='MerchantsListModal max-w-[900px]'>
+        <DialogHeader className="flex-row flex-wrap items-center gap-x-3 gap-y-2 pb-0 pr-6 max-sm:pr-4">
+          <DialogTitle className="mr-auto">店家列表</DialogTitle>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative', width: 200, maxWidth: '60vw' }}>
+              <SearchRoundedIcon style={{ position: 'absolute', left: 10, top: 10, width: 16, height: 16, pointerEvents: 'none', color: 'rgb(var(--text-tertiary))', zIndex: 1 }} />
+              <Input
+                placeholder="搜尋店家"
+                type="text"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                style={{ paddingLeft: 32, paddingRight: value ? 36 : 12 }}
+              />
+              {value && (
+                <Button variant="ghost" size="icon" className="absolute right-1 top-1 h-7 w-7" aria-label="清除搜尋文字" title="清除搜尋文字" onClick={() => setValue("")}><ClearRoundedIcon style={{ width: 16, height: 16 }} /></Button>
+              )}
+            </div>
+            <Button size="sm" variant="ghost" className="border border-solid border-border-strong" onClick={() => setModalValues([])}>清除選取</Button>
+            <Button size="sm" variant="ghost" className="border border-solid border-border-strong" onClick={handleExpanedAll}>展開全部</Button>
+          </div>
+        </DialogHeader>
+        <DialogBody className="py-3">
         <TreeView
           css={styles.root}
           defaultCollapseIcon={<ExpandMoreIcon />}
@@ -359,8 +377,8 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
             <Checkbox
               checked={modalValues.length > 0 && modalValues.length === merchantList.allMerchants.length}
               indeterminate={modalValues.length > 0 && modalValues.length < merchantList.allMerchants.length}
-              onChange={(e, v) => v ? setModalValues(merchantList.allMerchants) : setModalValues([])}
-              style={{ marginTop: -9 }}
+              onChange={e => e.target.checked ? setModalValues(merchantList.allMerchants) : setModalValues([])}
+              style={{ flexShrink: 0, margin: '11px 4px 0 8px' }}
             />
             <TreeItem
               css={styles.ulGroupAllMerchant}
@@ -378,11 +396,12 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
           {merchantList.groups.length ? renderGroup(merchantList.groups) : ''}
           {merchantList.merchants.length ? renderItem(merchantList.merchants) : ''}
         </TreeView>
+        </DialogBody>
+        <DialogFooter>
+          <Button variant="secondary" onClick={handleOnClose}>關閉</Button>
+          <Button variant="primary" onClick={handleComfirm}>確認</Button>
+        </DialogFooter>
       </DialogContent>
-      <DialogActions>
-        <Button variant="secondary" onClick={handleOnClose}>關閉</Button>
-        <Button variant="primary" onClick={handleComfirm}>確認</Button>
-      </DialogActions>
     </Dialog>
   )
 }
