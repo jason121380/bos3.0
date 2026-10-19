@@ -1,12 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Typography,
-  Grid,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider
-} from '@mui/material'
+import { Card, CardContent, CardHeader } from 'ui/card-compat'
+import { Typography, Grid, Divider } from '@mui/material'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
@@ -372,7 +366,7 @@ function Results({
             <Card>
               <CardHeader title="入金儲值明細" css={styles.cardHeader} />
               <Divider />
-              <CardContent sx={{ p: 0 }}>
+              <CardContent style={{ padding: 0 }}>
                 <div css={styles.inner}>
                   <Table dense aria-label="a dense table">
                     <TableBody>

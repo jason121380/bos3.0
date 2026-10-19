@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent } from '@mui/material'
+import { Card, CardContent } from 'ui/card-compat'
 import PropTypes from 'prop-types'
 import { cloneDeep } from 'lodash'
 import { useState, useEffect } from 'react'

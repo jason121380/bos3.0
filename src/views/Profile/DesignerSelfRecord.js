@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card, CardContent, CardHeader, Table, TableBody,
-  TableCell, TableHead, TableRow, TableContainer, Paper,
-} from '@mui/material'
+import { Card, CardContent, CardHeader } from 'ui/card-compat'
+import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper } from '@mui/material'
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import PerfectScrollbar from 'react-perfect-scrollbar'
