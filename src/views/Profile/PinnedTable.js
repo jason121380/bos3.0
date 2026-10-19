@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { IconButton, Checkbox, TextField, InputAdornment } from '@mui/material'
+import { Checkbox, TextField, InputAdornment } from '@mui/material'
 import MerchantListAutocpmpleteForPinnedTable from 'components/MerchantListAutocpmpleteForPinnedTable'
 import useFetchSetPinnedTable from 'hooks/useFetchSetPinnedTable'
 import { TreeView, TreeItem } from '@mui/x-tree-view';
@@ -420,10 +420,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
                         </InputAdornment>
                       ),
                       endAdornment: searchText && (
-                        <IconButton
-                          style={{ padding: 4 }}
-                          onClick={() => setSearchText("")}
-                        ><ClearRoundedIcon /></IconButton>
+                        <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="清除搜尋文字" title="清除搜尋文字" onClick={() => setSearchText("")}><ClearRoundedIcon /></Button>
                       )
                     }}
                   />

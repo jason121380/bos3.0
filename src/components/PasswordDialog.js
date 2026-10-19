@@ -1,7 +1,8 @@
 import {
-  Button, TextField, Dialog, DialogTitle, DialogActions,
+  TextField, Dialog, DialogTitle, DialogActions,
   DialogContent
 } from '@mui/material'
+import { Button } from 'ui/button'
 import PropTypes from 'prop-types'
 
 const PasswordDialog = ({
@@ -21,10 +22,10 @@ const PasswordDialog = ({
         />
       </DialogContent>
       <DialogActions>
-        <Button disabled={isLoading} color="primary" variant='contained' onClick={handleOnCancel}>
+        <Button disabled={isLoading} variant="secondary" onClick={handleOnCancel}>
           取消
         </Button>
-        <Button disabled={isLoading} color="primary" variant='contained' onClick={handleOnConfirm}>
+        <Button disabled={isLoading} variant="primary" onClick={handleOnConfirm}>
           確認
         </Button>
       </DialogActions>

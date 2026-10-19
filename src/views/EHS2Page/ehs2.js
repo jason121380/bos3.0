@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Button, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
+import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import React from 'react'
 import getQueryString from 'helper/getQueryString'
@@ -52,7 +53,7 @@ ${reg === '0000'
           ></div>
         </Typography>
         <a href="https://etu.tw/ABfNWQ" target="_blank" rel="noopener noreferrer">
-          <Button variant="contained" fullWidth color="primary">
+          <Button variant="primary" className="w-full">
             立即登入查看我的東森幣
           </Button>
         </a>
