@@ -6,8 +6,9 @@
 
 | 範圍 | 內容 |
 |---|---|
+| MUI 移除批次1・最低風險（線4，v3.0-1019-1706） | 13 檔：11 檔無 props 的 MUI `<Divider />` → `<div className="h-px bg-border" />`（FastCheckOrdersModal、MembershipCardList、CustomerManagementDetails/Invoices+OtherActions、DesignerPerformDetail 兩檔、EmployeeManagementDetail/Group、Profile/Group+DesignerSelfRecord、Parameter/AboutDesignerSalary、SalaryDetail/Results）；3 檔 MUI `colors` 純常數 → tokens（Markdown `grey[300]`→`border`、elements/label 預設 `grey[600]`→`text-secondary`、Invoices `green/red[600]`→`success/danger`）。同檔 Typography/Grid/Paper 未換（Grid 斷點不同、MembershipCardList 的 styled 依賴 `.MuiPaper/.MuiGrid` 選擇器，換了會改版面，見 MEMORY #76）；未碰 TextField/Autocomplete/DatePicker 本體、帳單四兄弟與列印報表。待實機看分隔線與標籤色。 |
 | A3 Draft AddCustomerModal（收尾批2，v3.0-1019-1649） | `DraftOrderEdit/AddCustomerModal.js` 7 欄改 Field+Input 上方標籤，編號重複檢查/生日三格/存值保留。待實機 Enter/Tab/重複提示。 |
-| 帳單草稿／排隊金額彙總版面對齊（線2，v3.0-1019-1708） | `DraftOrderEdit/Footer.js`、`QueueOrderEdit/Footer.js` 金額彙總比照打帳單 `PannelPerformance`／OrderEdit(#114) 分「消費明細／付款與折抵」兩欄分組、合計區兩欄並排與 NT$ 呈現；兩頁各自業績合計／現金應收公式、標籤（Draft「會員卡銷售」）、按鈕 handler/disabled/顯示條件、Draft 列印範本原樣，Queue 未新增紅利列，未新增底部固定列。驗證：eslint 0 error（15 warnings 既有，與改版前一致）、verify-logic 2 檔 FAIL 僅 Row `formatNumber→formatMoney` 純呈現（同 #114 作法）、portal 0/0、unit 52/52、build 含 v3.0-1019-1708。待實機確認彙總欄寬與按鈕列。 |
+| 帳單草稿／排隊金額彙總版面對齊（線2，v3.0-1019-1711） | `DraftOrderEdit/Footer.js`、`QueueOrderEdit/Footer.js` 金額彙總比照打帳單 `PannelPerformance`／OrderEdit(#114) 分「消費明細／付款與折抵」兩欄分組、合計區兩欄並排與 NT$ 呈現；兩頁各自業績合計／現金應收公式、標籤（Draft「會員卡銷售」）、按鈕 handler/disabled/顯示條件、Draft 列印範本原樣，Queue 未新增紅利列，未新增底部固定列。驗證：eslint 0 error（15 warnings 既有，與改版前一致）、verify-logic 2 檔 FAIL 僅 Row `formatNumber→formatMoney` 純呈現（同 #114 作法）、portal 0/0、unit 52/52、build 含 v3.0-1019-1711。待實機確認彙總欄寬與按鈕列。 |
 | 消費排行手機擠壓（收尾批1，v3.0-1019-1647） | `CustomerConsumptionLeaderboard/Filter.js` 篩選列手機滿列/可收合，只改 className，查詢/存值/匯出原樣。待實機 390px。 |
 | 錢包排行手機擠壓（線3第一批，v3.0-1019-1653） | `CustomerWalletLeaderboard/Filter.js` 篩選列手機滿列/shrink-0，只改 className，查詢/存值/匯出原樣。待實機 390px。 |
 | 每日收支手機擠壓（線3第二批，v3.0-1019-1657） | `MoneyFlowDailyReport/index.js` 首列 flex-wrap＋日期手機滿列＋匯出 shrink-0，只改 className，查詢/存值/匯出原樣。待實機 390px。 |

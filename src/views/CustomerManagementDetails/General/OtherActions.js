@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Button, Card, CardContent, CardHeader, Divider, Typography } from '@mui/material'
+import { Button, Card, CardContent, CardHeader, Typography } from '@mui/material'
 import { DeleteOutline as DeleteIcon, GetApp as GetAppIcon, NotInterested as NotInterestedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
@@ -32,7 +32,7 @@ function OtherActions({ className = {}, ...rest }) {
   return (
     <Card {...rest} css={css([styles.root, className])}>
       <CardHeader title="其他操作" />
-      <Divider />
+      <div className="h-px bg-border" />
       <CardContent>
         <div css={styles.mainActions}>
           <Button>
