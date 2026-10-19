@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| MUI 移除・Progress 第三小批（AGY 線，v3.0-1019-2318） | 2 檔不定值小圈換 lucide `LoaderCircle animate-spin`：OrderEdit/AddCustomerModal、QueueOrderEdit/AddCustomerModal 各 2 處（編號驗證 20px＋MUI Select renderValue 載入小圈）；Select 本體／value='loading'／handler／載入邏輯不動。連同第二小批（#156）後，不定值可獨立轉圈清完；定值線／圓、Autocomplete 內圈、結帳 snackbar、Suspense 頂線仍專項不碰。待實機兩窗載入小圈與欄寬不跳動。 |
 | MUI 移除・Progress 第二小批（AGY 線，v3.0-1019-2315） | 8 檔不定值轉圈換 lucide `LoaderCircle animate-spin`：Backdrop 四檔（EmployeeManagementDetail/Reservation、ManagementDesignersReservationRecord、ManagementReservationRecord、Profile/Reservation，40px，只換圈不動 Backdrop）＋欄位小圈四檔（CustomerCreate/AboutCustomer、OrderCreate/AddCustomerModal 各 1 處 20px；CustomerEditModal、DraftOrderEdit/AddCustomerModal 各 2 處含 MUI Select renderValue）；載入邏輯／顯示條件／handler 不動。不碰 Autocomplete 內圈、定值線／圓、結帳 snackbar 與切頁頂線。待實機八處載入轉圈。 |
 | 設定頁左選單左右底色（Jason Cursor Billing 截圖指定，v3.0-1020-0023） | `ui/settings-nav` 左欄桌機 `bg-surface` 淺灰整欄，四頁 Tabs 去 gap 改等高相鄰、右欄 `bg-background` 白底，中間無分隔線；選中主題藍與卡片邊框保留，手機頂部分頁不變。待實機四頁桌機／手機確認，見 TODO／MEMORY #115。 |
 | 報表目錄改設定樣板版面（v3.0-1020-0019） | `/dashboard-list-detail` 依 Jason 新指示改左選單＋右側分類標題／單卡（六分類圖示與順序保留、權限六次固定呼叫與 42 連結逐字保留、選單只列有權限分類）；桌機左欄淺灰（surface）／右側白（background）／無分隔線，手機橫向分頁不套底色；僅目錄頁例外，各報表／帳單頁不套。待實機桌機左選單切換＋手機橫向分頁、左右底色與無分隔線。 |
