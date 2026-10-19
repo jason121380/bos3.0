@@ -213,6 +213,8 @@
 
 ## 四、剩餘工作分類與批次建議（2026/10/19）
 
+- **ChoseEvent 服務時長標籤上移（Codex 線，2026/10/19，`codex/ui-ns-choseevent-box`，v3.0-1019-1315）**：`ManagementReservationRecord/ChoseEvent.js` 三處 `NativeSelect` 改由 `Field label='服務時長'` 包住；原 `css`、`className`、`value`、`onChange`、`timeCostArray` 選項與邏輯不變，MUI `TextField`／`DatePicker`／`Autocomplete` 不動。STYLE.md §6 已涵蓋上方標籤，無需修改。待實機確認標籤上移後的列高與對齊。
+
 「頁數」以 views 目錄計；「檔案數」＝該範圍內仍引用 `@mui/*` 的檔案。估計為量級，不是承諾；每批仍依鐵則「只改畫面」，一批一個 PR、驗證通過再 merge（本輪不 merge）。
 
 | 批次 | 範圍 | 規模 | 風險 | 備註 |
@@ -261,3 +263,4 @@
 - **BookingNotificationSetting 通知下拉標籤（Codex 線本批，2026/10/19，`codex/ui-ns-booking-notify-box`，v3.0-1019-1305）**：`Parameter/BookingNotificationSetting.js` 的 1 處 map 內 `NativeSelect`（5 組 × 3 個＝15 個實例）改由 `Field label={option.label}` 顯示上方標籤；`name`／`value`／`disabled`／`onChange`／`handleChangeNotification` 與布林選項原樣，檔首註明保留的手機／帳號 MUI TextField 不動。STYLE.md §6 已規範標籤在上，無需修改。待實機確認標籤高度與每列對齊。
 - **MainEvent 日期欄改 `ui/date-picker` facade（月曆專項，2026/10/19，`claude/ui-datepicker-mainevent-box`，v3.0-1019-1306）**：`MainEventCreate/General.js`、`MainEventEdit/General.js` 各 2 個 `MobileDatePicker`（預設起始時間、預設結束時間，共 4 個）import 改 `ui/date-picker`；`label` 原樣傳入，由 facade 以 `Field` 放欄位上方（不傳給 MUI）。`value`／`onChange`（`new Date(value).getTime()`）／`format`／`closeOnSelect`／`localeText`／`slotProps`／`readOnly`（Edit）原樣，兩檔原本皆無 `slots.field`。STYLE.md 不需改（Input／DatePicker 列已涵蓋）。**待實機**：欄位寬度（外層 `[&_.MuiTextField-root]:w-[150px]` 是否仍命中 facade 內的 TextField）、並排 `flex-wrap` 對齊、Edit 已結束活動（`readOnly`）的外觀、彈層開啟與選日後存值。
 - **MerchantReservationTimes 時間複合列標籤改上方（AGY 線，2026/10/19，`agy/ui-merchant-res-times-box`，v3.0-1019-1315）**：`Parameter/MerchantReservationTimes.js` 每列「開始」「結束」時＋分共 4 個 `NativeSelect`，改為把「時 : 分」整組包進 `Field label='開始'`／`Field label='結束'`，內放 `flex items-center gap-2` 的 `div` 依序容納時 `NativeSelect`（拿掉外框 `label`、保留 `fullWidth={false}` `className="w-24"` `value`/`disabled`/`onChange`）、`<span>:</span>`、分 `NativeSelect`（保留 `aria-label` 與其餘 props 原樣），避免只包時下拉造成分下拉對不齊；外層 `styles.timeWrap`、名稱 `TextField`、週期 `ToggleGroupItem`、增刪按鈕、handler 與存值不動。STYLE.md §6 已涵蓋「標籤在欄位上方」規範，註明不改。**待實機確認**：「開始」「結束」兩組 `Field` 與中間 `<span>至</span>` 在 `styles.timeWrap` 內的垂直對齊與窄螢幕換行。
+- **EventRule 日期欄改 `ui/date-picker` facade（月曆專項，2026/10/19，`claude/ui-datepicker-eventrule-box`，v3.0-1019-1314）**：`EventRuleCreate/General.js`、`EventRuleEdit/General.js` 各 2 個 `MobileDatePicker`（起始時間、結束時間，共 4 個）import 改 `ui/date-picker`；`label` 由 facade 以 `Field` 放欄位上方，`value`／`onChange`／`format`／`closeOnSelect`／`localeText`／`slotProps` 原樣，兩檔原本皆無 `slots.field`／`inputRef`。STYLE.md 不需改（Input／DatePicker 列已涵蓋）。**待實機**：欄位寬度、並排對齊、彈層開啟與選日後存值。

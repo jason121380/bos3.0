@@ -93,6 +93,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 
 | 版本 | 時間（Asia/Taipei） | 內容 | PR | commit | checks |
 |---|---|---|---|---|---|
+| v3.0-1019-1315 | 2026-10-19 13:15 | Codex 線：`ManagementReservationRecord/ChoseEvent.js` 三處服務時長 `NativeSelect` 改用 `Field` 上方標籤；選項、值、事件與其他 MUI 欄位不動。STYLE.md §6 已涵蓋，無需修改 | 未開（依指示） | 未提交（worktree 的 .git 唯讀） | ESLint 0 error、1 個既有 hooks warning；全域測試 52/52；build 關閉內建 ESLint 外掛後成功（原樣因唯讀 `.eslintcache` 失敗）；待實機確認列高／對齊 |
 | v3.0-1019-0109 | 2026-10-19 01:09 | 規則前已 push（對照） | #6 | 已 push，不 amend | GitHub Build/Unit pass；第一組已於 2026-10-19 merge（c9a8c8c） |
 | v3.0-1019-0124 | 2026-10-19 01:24 | 規則前已 push（對照） | #7 | 已 push，不 amend | GitHub Build/Unit pass；第一組已於 2026-10-19 merge（503f4fa） |
 | v3.0-1019-0131 | 2026-10-19 01:31 | 規則前已 push（對照） | #8 | 已 push，不 amend | GitHub Build/Unit pass；第一組已於 2026-10-19 merge（f32bf0e） |
@@ -196,3 +197,8 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ### MainEvent 日期欄改 facade（月曆專項，分支 `claude/ui-datepicker-mainevent-box`，v3.0-1019-1306，未 merge）
 
 - 範圍：`MainEventCreate/General.js`、`MainEventEdit/General.js` 共 4 個 `MobileDatePicker` 改 `ui/date-picker`，其餘欄位不動；存值（`getTime()`）與 handler 原樣。待實機：欄寬 150px、並排對齊、Edit `readOnly` 外觀。
+
+### EventRule 日期欄改 facade（月曆專項，分支 `claude/ui-datepicker-eventrule-box`，v3.0-1019-1314，未 merge）
+
+- 範圍：`EventRuleCreate/General.js`、`EventRuleEdit/General.js` 共 4 個 `MobileDatePicker` 改 `ui/date-picker`，其餘欄位與 handler／存值原樣。
+- 待實機：欄位寬度、並排對齊、彈層開啟與選日後存值。
