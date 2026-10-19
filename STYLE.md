@@ -152,7 +152,7 @@ Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現*
 |---|---|
 | 字級 | 只用 §3 既有級距：表格內容 `body`（14）、表頭 `label`（13）、輔助／備註 `caption`（12）；不為了塞更多資料放大或新增級距，也不使用 12px 以下。 |
 | 列高與內距 | `<Table dense>`：`td`／`th` 高 32px、`td` 上下內距 4px、`td`／`th` 左右內距 8px（`px-2`）（一般表格為 44px／左右 16px）。報表一律用 `dense`；`aria-label="a dense table"` 只是字串，不等於 `dense` prop。 |
-| 表頭 | `TableHeader`（`surface` 底）＋ `TableHead`（`label` 字級、`text-secondary`、不換行、底線 1px `border`）；各報表不自訂表頭顏色與字級。 |
+| 表頭 | `TableHeader`（透明底，2026/10/20 Grok 化）＋ `TableHead`（`label` 14px medium、`text-tertiary`、高 36px、不換行、底線 1px `border`）；各報表不自訂表頭顏色與字級。表格字級固定 `table`（14px），不隨介面內文 16px 放大。 |
 | 數字欄 | 數字欄用 `numeric`（`TableHead`／`TableCell`）：右對齊＋`tabular-nums`。 |
 | 金額 | 一律 `formatMoney`（`NT$ 1,234`，千分位）；數量用 `formatNumber`；同一畫面格式一致（§7）。 |
 | 列印 | `Table` 內建 `print:`：黑色細格線、白底黑字、表頭／表尾底色透明、外框不裁切（`print:overflow-visible`）；頁面自己的 `@media print` 權重較高，仍以頁面為準。 |
@@ -228,6 +228,26 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
 | 對象挑選 | 店家、商品、設計師、人員類別等寬欄位放第 2 列並撐滿，「搜尋」按鈕緊接在右、底部對齊。 |
 | 間距 | 頁首與 Toolbar、Toolbar 與內容之間沿用 `PageHeader`（`pb-6`）與 `Toolbar`（`pb-4`），頁面不再自行加 `my-*`／`margin-top`。 |
 | 表格 | 依 §11：`ui/table` 的 `dense`。 |
+
+## 15. Grok 式視覺（Jason 2026/10/20 拍版「全站跟 Grok 後台一樣」，覆蓋 §2／§3／§5／§6 舊數值）
+
+依據：`grok-billing-frontend-design-guideline.md`（Grok Billing 後台實測）。全部集中在共用層（`tokens.css`、`tailwind.config.js`、`src/ui/*`、`ui/mui-theme.js`），頁面不各自寫色碼。
+
+| 項目 | 規則 |
+|---|---|
+| 主題色 | **保留品牌藍 `#1A73E8`**（Jason 決定，不照 Grok 改黑）：主按鈕、選中態（側欄、分頁、設定左選單）、焦點框。 |
+| 底色 | 頁面 `canvas` 白；側欄、卡片、設定左欄 `surface` `#FAFAFA`；次要按鈕／hover／進度軌道 `surface-hover` `#F5F5F5`；次要按鈕 hover `surface-active` `#EDEDED`；中性選中 `surface-selected` `#E4E4E4`。 |
+| 文字 | `text` `#111`、`text-secondary` `#5A5A5A`、`text-tertiary` `#777`。 |
+| 邊框 | 只用在輸入框（`border-strong` `#D9D9D9`）、表格列線與浮層（`border`）；卡片不用邊框與陰影。 |
+| 字級 | 頁面標題 `title` 24px／400／字距 -0.01em；區塊標題 `heading` 18px／500；介面內文 `body` 16px；標籤 `label` 14px／500；表格 `table` 14px（含報表 compact）；`caption` 12px。 |
+| 圓角 | 卡片、對話框 16px（`rounded-2xl`）；側欄項目、輸入框、表格動作鈕 8px（`rounded-md`）；按鈕、分頁、切換鈕、徽章狀態膠囊 `rounded-full`。 |
+| 按鈕 | 全膠囊、字級 14 medium；sm 32／md 36／lg 40（md 維持 36 以與輸入框同高）；圖示鈕 32px 圓形；150ms 過渡、按下 `scale(0.97)`。 |
+| 卡片 | `Card`＝`surface` 底、16px 圓角、內距 16px、無框無影；`CardFooter` 不再有上框線。MUI `Card`／`Accordion` 經橋接主題同樣套用。 |
+| 分頁 | `ui/tabs` 改膠囊：高 32px、`px-4`、間距 4px；選中為品牌藍 10% 淡底＋品牌藍字。 |
+| 表格 | 無外框；表頭透明底、14px tertiary medium、高 36px、底線；資料列高 40px、內距 `8px 12px`。 |
+| 側欄 | 寬 264px、`surface` 底、無右框線與底部框線；項目 `px-2.5`、圖示與文字間距 10px；分組標籤 14px tertiary。 |
+| 深色模式 | 依同規則推導：`canvas` `#0B0B0B`、`background` `#111`、`surface` `#161616`、`surface-hover` `#1F1F1F`、文字 `#EDEDED`／`#A8A8A8`／`#8A8A8A`。 |
+| 未採用 | 主內容 `max-width 1136px`（ERP 報表與列表需要寬度，維持滿版；設定頁已是 `max-w-6xl`）；Inter 字型（全站沿用 Roboto＋Noto Sans TC）；內容區外距沿用舊全域 `#printContainer`（約 40px，與 Grok 32px 接近，避免動到列印相關樣式）。 |
 
 ## 13. 【已作廢】PrimeStay 版式語言
 

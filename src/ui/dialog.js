@@ -17,7 +17,7 @@ const DialogContent = React.forwardRef(({ className, size = 'sm', children, hide
       ref={ref}
       className={cn(
         'ui-root fixed left-1/2 top-1/2 z-[1300] flex max-h-[calc(100vh-48px)] w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 flex-col',
-        'rounded-lg border border-solid border-border bg-background shadow-float outline-none',
+        'rounded-2xl border border-solid border-border bg-background shadow-float outline-none',
         'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
         'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
         sizes[size],

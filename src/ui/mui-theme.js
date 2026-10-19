@@ -7,16 +7,16 @@ import legacyTypography from 'theme/typography'
 // MUI 需要實際色碼計算透明度，因此色碼集中在這裡，數值與 src/styles/tokens.css 一一對應；其他檔案仍禁止寫死色碼。
 const TOKENS = {
   light: {
-    canvas: '#F7F7F8', background: '#FFFFFF', surface: '#F2F2F3', surfaceHover: '#E9E9EB', surfaceActive: '#DEDEE1',
-    border: '#E5E5E5', borderStrong: '#C2C2C2', borderStrongHover: '#949494',
-    text: '#0D0D0D', textSecondary: '#5D5D5D', textTertiary: '#8F8F8F',
+    canvas: '#FFFFFF', background: '#FFFFFF', surface: '#FAFAFA', surfaceHover: '#F5F5F5', surfaceActive: '#EDEDED',
+    border: '#EBEBEB', borderStrong: '#D9D9D9', borderStrongHover: '#B7B7B7',
+    text: '#111111', textSecondary: '#5A5A5A', textTertiary: '#777777',
     primary: '#1A73E8', primaryForeground: '#FFFFFF', accent: '#1A73E8',
     success: '#10A37F', warning: '#B7791F', danger: '#D92D20',
   },
   dark: {
-    canvas: '#0A0A0A', background: '#171717', surface: '#1C1C1C', surfaceHover: '#262626', surfaceActive: '#323232',
-    border: '#2E2E2E', borderStrong: '#484848', borderStrongHover: '#6E6E6E',
-    text: '#ECECEC', textSecondary: '#B4B4B4', textTertiary: '#8F8F8F',
+    canvas: '#0B0B0B', background: '#111111', surface: '#161616', surfaceHover: '#1F1F1F', surfaceActive: '#2A2A2A',
+    border: '#262626', borderStrong: '#3A3A3A', borderStrongHover: '#5A5A5A',
+    text: '#EDEDED', textSecondary: '#A8A8A8', textTertiary: '#8A8A8A',
     primary: '#1A73E8', primaryForeground: '#FFFFFF', accent: '#4C8DF6',
     success: '#19C37D', warning: '#F0B429', danger: '#F97066',
   },
@@ -63,8 +63,8 @@ export function createBridgeTheme(mode = 'light') {
       h6: { fontSize: 15, lineHeight: '22px', fontWeight: 700, letterSpacing: 0, color: t.text },
       subtitle1: { fontSize: 14, lineHeight: '20px', fontWeight: 500, letterSpacing: 0, color: t.text },
       subtitle2: { fontSize: 13, lineHeight: '18px', fontWeight: 500, letterSpacing: 0, color: t.textSecondary },
-      body1: { fontSize: 14, lineHeight: '20px', letterSpacing: 0, color: t.text },
-      body2: { fontSize: 13, lineHeight: '20px', letterSpacing: 0, color: t.textSecondary },
+      body1: { fontSize: 16, lineHeight: '24px', letterSpacing: 0, color: t.text },
+      body2: { fontSize: 14, lineHeight: '20px', letterSpacing: 0, color: t.textSecondary },
       caption: { fontSize: 12, lineHeight: '16px', letterSpacing: 0, color: t.textSecondary },
       overline: { fontSize: 12, lineHeight: '16px', fontWeight: 500, letterSpacing: 0, textTransform: 'none', color: t.textSecondary },
       button: { textTransform: 'none', fontWeight: 500, letterSpacing: 0 },
@@ -237,26 +237,26 @@ export function createBridgeTheme(mode = 'light') {
             '&.Mui-error .MuiOutlinedInput-notchedOutline': { borderColor: t.danger },
             '&.Mui-disabled': { backgroundColor: t.surface },
           },
-          // STYLE.md：輸入框一律 36px（含 MUI 預設 medium 尺寸）；多行輸入只調內距
-          input: { fontSize: 14, padding: '8px 12px', height: 20, lineHeight: '20px' },
-          inputSizeSmall: { padding: '8px 12px' },
-          multiline: { padding: '8px 12px' },
+          // STYLE.md：輸入框一律 36px（含 MUI 預設 medium 尺寸）；內文 16px（Grok 式字級）；多行輸入只調內距
+          input: { fontSize: 16, padding: '6px 12px', height: 24, lineHeight: '24px' },
+          inputSizeSmall: { padding: '6px 12px' },
+          multiline: { padding: '6px 12px' },
           inputMultiline: { padding: 0, height: 'auto' },
         },
       },
       MuiInputLabel: {
         styleOverrides: {
           root: {
-            fontSize: 14,
+            fontSize: 16,
             color: t.textSecondary,
             '&.Mui-focused': { color: t.accent },
             // 配合 36px 輸入框，未浮起的標籤垂直置中
-            '&.MuiInputLabel-outlined:not(.MuiInputLabel-shrink)': { transform: 'translate(12px, 8px) scale(1)' },
+            '&.MuiInputLabel-outlined:not(.MuiInputLabel-shrink)': { transform: 'translate(12px, 6px) scale(1)' },
           },
         },
       },
       MuiFormHelperText: { styleOverrides: { root: { fontSize: 12, marginLeft: 0 } } },
-      MuiFormControlLabel: { styleOverrides: { label: { fontSize: 14, color: t.text } } },
+      MuiFormControlLabel: { styleOverrides: { label: { fontSize: 16, color: t.text } } },
       MuiCheckbox: { styleOverrides: { root: { color: t.borderStrongHover, '&.Mui-checked': { color: t.primary } } } },
       MuiRadio: { styleOverrides: { root: { color: t.textTertiary, '&.Mui-checked': { color: t.primary } } } },
       MuiSwitch: {
@@ -286,8 +286,10 @@ export function createBridgeTheme(mode = 'light') {
         defaultProps: { disableGutters: true, square: true },
         styleOverrides: {
           root: {
-            border: `1px solid ${t.border}`,
-            borderRadius: '12px !important',
+            // Grok 式無框卡片：#FAFAFA 表面、圓角 16px、無框無影
+            border: 'none',
+            backgroundColor: t.surface,
+            borderRadius: '16px !important',
             boxShadow: 'none',
             overflow: 'hidden',
             '&:before': { display: 'none' },
@@ -296,24 +298,24 @@ export function createBridgeTheme(mode = 'light') {
       },
       MuiAccordionSummary: {
         styleOverrides: {
-          root: { minHeight: 52, padding: '0 20px', '&:hover': { backgroundColor: t.surface } },
+          root: { minHeight: 52, padding: '0 16px', '&:hover': { backgroundColor: t.surfaceHover } },
           content: { margin: '14px 0', alignItems: 'center' },
           expandIconWrapper: { color: t.textTertiary },
         },
       },
-      MuiAccordionDetails: { styleOverrides: { root: { padding: '4px 20px 20px' } } },
-      MuiCard: { styleOverrides: { root: { border: `1px solid ${t.border}`, borderRadius: 12, boxShadow: 'none' } } },
+      MuiAccordionDetails: { styleOverrides: { root: { padding: '4px 16px 16px' } } },
+      MuiCard: { styleOverrides: { root: { border: 'none', backgroundColor: t.surface, borderRadius: 16, boxShadow: 'none' } } },
       MuiCardHeader: {
         styleOverrides: {
-          root: { padding: '16px 20px' },
-          title: { fontSize: 16, lineHeight: '24px', fontWeight: 700, color: t.text },
-          subheader: { fontSize: 13, color: t.textSecondary },
+          root: { padding: '16px 16px 8px' },
+          title: { fontSize: 18, lineHeight: '26px', fontWeight: 500, color: t.text },
+          subheader: { fontSize: 14, color: t.textSecondary },
         },
       },
-      MuiCardContent: { styleOverrides: { root: { padding: '16px 20px', '&:last-child': { paddingBottom: 20 } } } },
+      MuiCardContent: { styleOverrides: { root: { padding: 16, '&:last-child': { paddingBottom: 16 } } } },
       MuiDialog: {
         styleOverrides: {
-          paper: { borderRadius: 12, border: `1px solid ${t.border}`, boxShadow: FLOAT_SHADOW },
+          paper: { borderRadius: 16, border: `1px solid ${t.border}`, boxShadow: FLOAT_SHADOW },
           // 手機（< 640px，與 Tailwind sm 一致）：非全螢幕的對話框改為底部面板
           container: { [SHEET]: { alignItems: 'flex-end' } },
           root: {
@@ -332,13 +334,13 @@ export function createBridgeTheme(mode = 'light') {
           },
         },
       },
-      MuiDialogTitle: { styleOverrides: { root: { fontSize: 16, fontWeight: 700, padding: '20px 24px 8px' } } },
+      MuiDialogTitle: { styleOverrides: { root: { fontSize: 18, fontWeight: 500, padding: '20px 24px 8px' } } },
       MuiDialogActions: { styleOverrides: { root: { padding: '12px 24px 20px', gap: 8 } } },
       MuiPopover: {
         styleOverrides: { paper: { borderRadius: 12, border: `1px solid ${t.border}`, boxShadow: FLOAT_SHADOW } },
       },
       MuiMenu: { styleOverrides: { paper: { borderRadius: 12, border: `1px solid ${t.border}`, boxShadow: FLOAT_SHADOW } } },
-      MuiMenuItem: { styleOverrides: { root: { fontSize: 14, minHeight: 36, borderRadius: 8, margin: '0 4px' } } },
+      MuiMenuItem: { styleOverrides: { root: { fontSize: 16, minHeight: 36, borderRadius: 8, margin: '0 4px' } } },
       MuiAutocomplete: {
         styleOverrides: {
           paper: { borderRadius: 12, border: `1px solid ${t.border}`, boxShadow: FLOAT_SHADOW, marginTop: 4 },
@@ -346,7 +348,7 @@ export function createBridgeTheme(mode = 'light') {
             '&.MuiOutlinedInput-root': { paddingTop: 0, paddingBottom: 0, paddingLeft: 8 },
             '& .MuiAutocomplete-input': { padding: '8px 4px !important' },
           },
-          option: { fontSize: 14, minHeight: '36px !important' },
+          option: { fontSize: 16, minHeight: '36px !important' },
         },
       },
       MuiChip: { styleOverrides: { root: { borderRadius: 8, fontSize: 13 } } },
@@ -366,7 +368,8 @@ export function createBridgeTheme(mode = 'light') {
         styleOverrides: {
           // 手機螢幕：儲存格不換行、表格改橫向捲動（與 ui/table 一致）；只限螢幕，不影響列印
           root: { borderColor: t.border, fontSize: 14, '@media screen and (max-width: 639.95px)': { whiteSpace: 'nowrap' } },
-          head: { backgroundColor: t.surface, color: t.textSecondary, fontSize: 13, fontWeight: 500 },
+          // Grok 式表頭：透明底、14px tertiary medium、底線；表格內文維持 14px
+          head: { backgroundColor: 'transparent', color: t.textTertiary, fontSize: 14, fontWeight: 500 },
         },
       },
       MuiTab: { styleOverrides: { root: { textTransform: 'none', fontSize: 14, minHeight: 40, color: t.textSecondary, '&.Mui-selected': { color: t.accent, fontWeight: 500 } } } },

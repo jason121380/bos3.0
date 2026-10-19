@@ -11,7 +11,7 @@ const PageTitle = ({ title, subTitle, className, style }) => {
   return (
     <div css={className} className="ui-root noprint flex min-w-0 flex-col gap-1" style={restStyle}>
       {hasCJK(subTitle) && <span className="text-caption text-text-tertiary">{subTitle}</span>}
-      <h1 className="m-0 text-title !font-bold text-text">{title}</h1>
+      <h1 className="m-0 text-title !font-normal text-text">{title}</h1>
     </div>
   )
 }
