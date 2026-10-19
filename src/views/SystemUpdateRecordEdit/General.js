@@ -4,6 +4,7 @@ import { TextField } from '@mui/material'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { format } from 'date-fns'
+import { MobileDatePicker } from 'ui/date-picker'
 import MdEditor from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
 import { openSnackbar } from 'elements/snackbars'
@@ -86,18 +87,17 @@ const General = ({ editData, setEditData, mdValue, setMdValue }) => {
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-5">
-            <TextField
-              css={styles.textFieldWidth}
+            <MobileDatePicker
               label="更新日期"
-              variant="outlined"
-              type="date"
-              value={format(editData.updateTime, 'yyyy-MM-dd')}
-              onChange={event => {
-                event.target.value &&
-                  setEditData({
-                    ...editData,
-                    updateTime: new Date(event.target.value).getTime(),
-                  })
+              fieldClassName="w-[300px] max-w-full"
+              format="yyyy-MM-dd"
+              value={editData.updateTime}
+              onChange={date => {
+                date && setEditData({
+                  ...editData,
+                  // 保留原生 type=date 的存值語意：yyyy-MM-dd 字串以 UTC 零點解析，避免換 picker 後差 8 小時
+                  updateTime: new Date(format(date, 'yyyy-MM-dd')).getTime(),
+                })
               }}
             />
             <TextField
