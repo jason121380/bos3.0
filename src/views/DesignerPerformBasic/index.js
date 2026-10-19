@@ -419,6 +419,7 @@ const DesignerPerformBasic = () => {
             </div>
             <Button
               variant="primary"
+              size="lg"
               onClick={handleSearchReport}
               className="shrink-0 max-sm:w-full"
             >
