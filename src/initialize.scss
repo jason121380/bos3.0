@@ -1868,7 +1868,9 @@ input[type=number] {
 
 .MerchantsListModal {
   li.onSelect {
-    background-color: rgb(179, 224, 238);
+    background-color: rgb(var(--accent) / 0.12);
+    color: rgb(var(--accent));
+    font-weight: 500;
   }
 }
 
