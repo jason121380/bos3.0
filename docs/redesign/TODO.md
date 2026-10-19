@@ -312,3 +312,5 @@
 - **DesignerPerformanceReport 手機擠壓修正（B1 切片，Codex Luna 線，2026/10/19，`codex/ui-mobile-designer-perf-box`，v3.0-1019-1550）**：`DesignerPerformanceReport/index.js` 篩選列排版修正：DateSelector 外層手機滿列、桌機自動寬且不收縮；業績類型/排序控制組手機另起一列可換行。只改排版，state/handler/日期/列印原樣；該頁實查無獨立搜尋按鈕（Luna 回報）。待實機：390px 日期欄寬、搜尋/篩選不溢出、桌機版面不變。
 
 - **SalaryDetail 手機擠壓修正（B1 薪資切片，Claude 線，2026/10/19，`claude/ui-mobile-salary-box`，v3.0-1019-1557）**：`SalaryDetail/IncreaseResult.js`、`DecreaseResult.js` 卡片標題列改 flex-wrap、筆數文字 whitespace-nowrap，窄寬時整段移到下一行不中途折斷。只改 className，金額/計算/列印原樣。此為預防性修正，待實機 390px 確認標題列原折行情形。
+
+- **HelperPerformanceReport 手機擠壓修正（B1 切片，Codex Luna 線，2026/10/19，`codex/ui-mobile-helper-perf-box`，v3.0-1019-1602）**：`HelperPerformanceReport/index.js` Toolbar 只有 DateSelector，比照 #104 將其外層包 `w-full min-w-0 sm:w-auto sm:shrink-0`，手機滿列、桌機自動寬且不收縮。只改排版，state/handler/日期/CSV 匯出/Autocomplete/列印原樣。待實機：390px 日期欄寬不溢出、桌機版面不變。

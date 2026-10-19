@@ -131,12 +131,14 @@ export default function HelperPerformance() {
         }
       />
       <Toolbar>
-        <DateSelector
-          date={pageSetting}
-          attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-          dateChange={value => setPageSetting(value)}
-          margin
-        />
+        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+          <DateSelector
+            date={pageSetting}
+            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            dateChange={value => setPageSetting(value)}
+            margin
+          />
+        </div>
       </Toolbar>
       <div className="noprint pb-6">
         <Autocomplete

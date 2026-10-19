@@ -254,3 +254,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 ### SalaryDetail 手機擠壓修正（B1 薪資切片，Claude 線，`claude/ui-mobile-salary-box`，v3.0-1019-1557）
 
 - 範圍：`SalaryDetail/IncreaseResult.js`、`DecreaseResult.js` 標題列 flex-wrap＋筆數文字不折行，只改 className。待實機：390px 標題列、桌機不變。
+
+### HelperPerformanceReport 手機擠壓修正（B1 切片，Codex Luna 線，`codex/ui-mobile-helper-perf-box`，v3.0-1019-1602）
+
+- 範圍：`HelperPerformanceReport/index.js` Toolbar 的 DateSelector 外層包 `w-full min-w-0 sm:w-auto sm:shrink-0` 容器，比照 DesignerPerformanceReport 已合併做法，只改排版。待實機：390px 日期區不溢出、桌機不變。
