@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 店家列表樹狀彈窗視覺優化（截圖回報，v3.0-1019-2236） | 三份 `MerchantsListModal` 換 `ui/dialog` 殼＋`ui` Input/Button/Checkbox，保留 MUI TreeView 只覆寫 38px 列高/hover/24px 縮排；共用頁：主版 5 頁（設計師排行榜等）、ForManagement 4 頁、PinnedTable 功能釘選。邏輯/回傳格式不動，待實機開窗/勾選/搜尋/展開/確認。 |
 | MUI 批次6・Dialog/Modal 第二小批（線4，v3.0-1019-2233） | 9 窗換 ui/dialog（只換外殼）：CouponList 扣項/互助設定 2 窗（保留 912px）、進貨 Create/Edit 與領料商品選擇 3 窗（保留 960/700px，MUI TextField 價格數量本體不動）、店家/商品樹狀選擇 4 窗（onOpenChange 轉接、保留 .MerchantsListModal 掛點）；handler/存值不動。跳過 PasswordDialog 巢狀、MUI Select 彈層、拖曳、帳單四兄弟、Autocomplete/DatePicker 彈層、Slider、預約巢狀與複雜金額窗，見 TODO/MEMORY #96。待實機逐窗點驗開關/背景/儲存/樹狀選取。 |
 | MUI批次5 TextField第二小批（AGY線，v3.0-1019-2238） | 僅 2 檔 3 欄→ui Input：SalaryItems 科目名稱×2（aria-label＋name 原樣）、AboutEmployeeSchedule 人員班別（Field 上方標籤）；實查剩餘全屬 Autocomplete/RHF/金額/密碼日期/搜尋/焦點鏈/帳單/列印/保留類，不足額不湊數（見 TODO/MEMORY #97）。待實機輸入存值與並排間距。 |
 | 設計師排行榜三鈕同高（截圖回報，v3.0-1019-2243） | 共用 `MerchantListAutocpmplete` 的「全選」（舊 MuiButton 巢 Autocomplete popupIcon、約 55px）改 ui Button `asChild`＋div、「選擇店家」去 `height:fit-content`，與 `DesignerPerformBasic`「搜尋」三鈕統一 `primary size=lg`（40px／text-body／rounded-full）；容器可換行、手機不擠壓。Autocomplete 本體／日期／handler／存值未動，同元件其他頁同列一併同規格。待實機截圖確認三鈕同高與全選／選擇店家／搜尋行為（見 TODO／MEMORY #98）。 |
