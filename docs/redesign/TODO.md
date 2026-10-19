@@ -92,6 +92,7 @@
   - 剩餘批次：盤點總表已併入（PR #7，見 §三、§四），這裡不重寫。
 - [ ] **合併第二輪未完成批次**：`r2-04`（表單頁，清單 15 頁，13 個 commit，worktree `agent-a7e481ba90389d29b`）與 `r2-06`（其他 63 頁，中途中止，worktree `agent-af60fcc4359cfd91c`）——需先 rebase 到最新 main、重新驗證再合併。
   **2026/10/19 現況**：本機 `git branch -a` 與 `git worktree list` 都找不到這兩個 worktree／分支（只有 `main`、`claude/*-box`、`origin/claude/upbeat-carson-pdc7rf`），**成果不在這個 repo**。r2-04 清單 15 個目錄**全部**在 `main` 上仍引用 `@mui/*`（合計 54 個檔案，例如 CustomerManagementDetails 12、ServiceCreate／ServiceEdit／SalaryEdit 各 5、Products 4）；r2-06 清單 63 個目錄抽查前 15 個也全部仍有 MUI。判定為「未合併」。若找不回 worktree，這 78 頁要重做（見 §四 批次 B）。
+- [x] **MerchantLeaderBoard 轉 `ui/table` dense**（`ui-report-merchant-lb-box`，v3.0-1019-1038 暫定）：`Results.js` 整組換 `ui/table`，外層 `.MerchantLeaderBoardTable` 以 `wrapperClassName` 保留。**待實機**：欄寬（`min-w-[650px]`、12 欄）、合計列、列印（`initialize.scss` `.MerchantLeaderBoardTable table` 列印規則與 `ui/table` `print:` 格線是否疊成雙線）。
 - [ ] **階段 4 半遷移盤點**（見下方「盤點結果」），決定 MUI 何時可移除。
 - [ ] 把打帳單的做法（欄位標籤、必填、停用原因、摘要、NT$）套用到 **帳單編輯／草稿／排隊帳單**（`OrderEdit`、`DraftOrderEdit`、`QueueOrderEdit`）——它們共用 `ServicesAutoComplete`，下拉已受益，但版面尚未對齊。
 

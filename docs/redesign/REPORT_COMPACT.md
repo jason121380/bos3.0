@@ -2,11 +2,11 @@
 
 > 掃描日期：2026/10/19　版號：v3.0-1019-1005（暫定）　性質：**盤點文件，只記事實與待辦，不代表任何一頁已通過實機驗收**。
 > 口徑：以 `src/views/<目錄>` 為單位；「ui/table」＝該目錄有檔案 `from 'ui/table'`；「有 dense」＝該目錄有 `Table` 實際傳 `dense`（`rg -lw dense` 命中）；「MUI 表格」＝仍有 `@mui/material` 的 Table 系列。
-> **數量註記**：下列分類加總為 **42** 個目錄（已 compact 35＋仍用 MUI 7）；原指令口徑為 41，差 1 尚未對出是哪一個目錄，待核對，不影響各目錄分類。
+> **數量註記**：下列分類加總為 **42** 個目錄（已 compact 36＋仍用 MUI 6）；原指令口徑為 41，差 1 尚未對出是哪一個目錄，待核對，不影響各目錄分類。
 
-## 一、已 compact（ui/table 且有 dense）— 35 個
+## 一、已 compact（ui/table 且有 dense）— 36 個
 
-BusinessAnalysisReport、BusinessItemsMonthlyAnalyzeReport、CostAnalysisReport、DecreaseDailyReport、DesignerMonthlyReport、DesignerPerforamnceAnalyzeReport、DesignerPerformanceReport、DesignerRakeReport、DesignersSalaryDetailReport、EmployeeDailyReport、HelperMonthlyReport、HelperPerformanceReport、IncomeStatementReport、MembershipSellReport、MerchantBankTransferReport、MerchantBusinessIntervalReport、MerchantDailyPerformanceReport、MerchantDailyReport、MoneyFlowCategoryReport、MoneyFlowDailyReport、MoneyFlowTransferReport、NonCashDetailStatementReport、OverallPerformanceAnalysisReport、PaymentReport、ProductConsumeReport、ProductInvoicingRecordReport、ProductLeaderBoard、SingleServiceSearchingReport、DecreaseDetail（互助點數明細，PR #50 補）、SalaryDetail、SalaryOverview、CustomerConsumptionLeaderboard、CustomerWalletLeaderboard、MerchantCategorySellsRecords、ConsumptionAnalyticsDashboard（儀表板排行表，PR #51 補）。
+BusinessAnalysisReport、BusinessItemsMonthlyAnalyzeReport、CostAnalysisReport、DecreaseDailyReport、DesignerMonthlyReport、DesignerPerforamnceAnalyzeReport、DesignerPerformanceReport、DesignerRakeReport、DesignersSalaryDetailReport、EmployeeDailyReport、HelperMonthlyReport、HelperPerformanceReport、IncomeStatementReport、MembershipSellReport、MerchantBankTransferReport、MerchantBusinessIntervalReport、MerchantDailyPerformanceReport、MerchantDailyReport、MoneyFlowCategoryReport、MoneyFlowDailyReport、MoneyFlowTransferReport、NonCashDetailStatementReport、OverallPerformanceAnalysisReport、PaymentReport、ProductConsumeReport、ProductInvoicingRecordReport、ProductLeaderBoard、SingleServiceSearchingReport、DecreaseDetail（互助點數明細，PR #50 補）、SalaryDetail、SalaryOverview、CustomerConsumptionLeaderboard、CustomerWalletLeaderboard、MerchantCategorySellsRecords、ConsumptionAnalyticsDashboard（儀表板排行表，PR #51 補）、MerchantLeaderBoard（MUI `size=small` 轉 `ui/table` dense，v3.0-1019-1038 暫定；列印規則 `.MerchantLeaderBoardTable table` 的掛點以 `wrapperClassName` 保留在 `ui/table` 外框 div）。
 
 備註：`DecreaseDailyReport`、`MerchantDailyReport` 同檔仍有 MUI `TableContainer`（下方明細卡片，列印 CSS 依 `.MuiTableContainer-root` 排版），主報表已 compact、MUI 殘留部分未動。
 
@@ -14,14 +14,13 @@ BusinessAnalysisReport、BusinessItemsMonthlyAnalyzeReport、CostAnalysisReport�
 
 DecreaseDetail（PR #50）與 SalaryDetail（3 檔）、SalaryOverview、CustomerConsumptionLeaderboard、CustomerWalletLeaderboard、MerchantCategorySellsRecords、ConsumptionAnalyticsDashboard 五個 Ranking 排行表（PR #51）：主表格只加 `dense`，欄位、數字、合計列、CSV 匯出皆未動。此類漏改已清零。
 
-## 四、仍用 MUI 表格 — 7 個
+## 四、仍用 MUI 表格 — 6 個
 
 | 目錄 | 原因／備註 |
 |---|---|
 | AttendanceEmployeeSchedule | 排班格線、特殊 dateCell |
 | EmployeePayslip | 薪資條列印、MUI `size=small` |
 | HelperLeaderBoard | MUI＋可展開列 |
-| MerchantLeaderBoard | MUI `size=small`，待轉 `ui/table` |
 | MultiMerchantsLeaderBoard | MUI＋展開列＋sticky |
 | **DesignerPerformBasic**（風險頁） | 巢狀表；方案：以分段表格或 facade 逐列群組呈現 compact，需專批，**不得硬套 dense 到巢狀結構** |
 | **ServiceDeductionDetailReport**（風險頁） | 同上（巢狀表） |
