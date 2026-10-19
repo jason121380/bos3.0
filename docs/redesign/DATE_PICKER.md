@@ -183,6 +183,8 @@
 | 另議 | 原生 `type="date"` 3 檔 | 見第五節 |
 | 另議（待 Jason） | 民國年顯示 | 見第四節 1 |
 
+批 3 進度：`EmployeeManagementDetail/General/GeneralSettings.js` 的出生日期、到職日期共 2 個 `DatePicker` 已換用 `ui/date-picker` facade（`codex/ui-datepicker-employee-general-box`，v3.0-1019-1358）；只換 import，其餘 picker props 原樣，待實機確認欄寬與彈層。
+
 每批照 CLAUDE.md 流程：`verify-logic` FAIL 逐項說明為純畫面差異、eslint 0 新增 error、build 成功、測試全數通過。
 
 ## 八、待實機清單

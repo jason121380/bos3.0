@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
-// 大型頁策略：表單欄位（TextField、DatePicker、RadioGroup）保留 MUI，只換外框與區塊標題
+// 大型頁策略：DatePicker 改用 ui/date-picker facade；TextField、RadioGroup 保留 MUI，只換外框與區塊標題
 import {
   FormControlLabel,
   Radio,
   RadioGroup,
   TextField,
 } from '@mui/material'
-import { DatePicker } from '@mui/x-date-pickers'
+import { DatePicker } from 'ui/date-picker'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
