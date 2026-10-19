@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip } from '@mui/material'
+import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material'
 import { MoreVert as MoreIcon, Print as PrintIcon } from 'ui/icons'
 import { memo, useRef, useState } from 'react'
 
@@ -37,10 +37,10 @@ function GenericMoreButton({ handleMenuItem }) {
         }}
       >
         <MenuItem onClick={handleMenuItem}>
-          <ListItemIcon>
+          <span className="inline-flex w-9 shrink-0 items-center">
             <PrintIcon />
-          </ListItemIcon>
-          <ListItemText primary="報表匯出" />
+          </span>
+          <span className="flex-1 text-body">報表匯出</span>
         </MenuItem>
       </Menu>
     </>

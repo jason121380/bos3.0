@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Avatar } from '@mui/material'
+import { Avatar } from 'ui/avatar'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
 import TableEditBar from 'components/TableEditBar'
@@ -15,11 +15,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 
 const styles = {
   root: css({}),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
   nameCell: css({
     display: 'flex',
     alignItems: 'center',
@@ -119,7 +114,7 @@ export default function Results({ className, employees, resignationList, setCrea
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <Avatar css={styles.avatar} src={data.avatar} />
+                      <Avatar className="mr-2 h-[42px] w-[42px]" src={data.avatar} />
                       <div>
                         <div className="font-medium">
                           {data.lastName}
