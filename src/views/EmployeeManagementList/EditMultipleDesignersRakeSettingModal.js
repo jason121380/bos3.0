@@ -1,14 +1,15 @@
 /** @jsxImportSource @emotion/react */
-// 抽成級距表單以 MUI Table 排版、含 ToggleButton / TextField，保留 MUI；Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）；卡片外框、標題、按鈕與載入狀態為 src/ui
+// 抽成級距表單以 MUI Table 排版、含 TextField 保留 MUI，ToggleButton 改 ui/toggle-group（布林值原樣、handler 不讀參數）；Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）；卡片外框、標題、按鈕與載入狀態為 src/ui
 import {
   Modal, TextField,
   FormControlLabel, Checkbox,
   Table, TableBody, TableCell, TableRow,
-  ToggleButton, ToggleButtonGroup
+
 } from '@mui/material'
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'
 import _ from 'lodash'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'
@@ -696,7 +697,7 @@ function EditMultipleDesignersRakeSettingModal({
                       <h4 className="my-4 text-heading text-text">
                         抽成模式
                       </h4>
-                      <ToggleButtonGroup
+                      <ToggleGroup
                         size="small"
                         css={styles.deductionWayMarginL}
                         value={profitSharing.isSegmented}
@@ -704,15 +705,15 @@ function EditMultipleDesignersRakeSettingModal({
                         exclusive
                       >
                         {isSegmented.map((data, idx) => (
-                          <ToggleButton
+                          <ToggleGroupItem
                             key={`${data.label}-${idx}`}
                             value={data.value}
                             data-testid={`assign-designer-${data.value}`}
                           >
                             {data.label}
-                          </ToggleButton>
+                          </ToggleGroupItem>
                         ))}
-                      </ToggleButtonGroup>
+                      </ToggleGroup>
                       <FormControlLabel
                         css={styles.marginL}
                         control={<Checkbox color="primary" />}

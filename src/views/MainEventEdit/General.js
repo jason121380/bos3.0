@@ -1,8 +1,9 @@
 import {
   Checkbox, FormControlLabel,
-  ToggleButton, ToggleButtonGroup
+
 } from '@mui/material'
 import { Fragment } from 'react'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { MobileDatePicker } from 'ui/date-picker'
 import MLAutocpmplete from 'components/MerchantListAutocpmpleteForManagement'
 import { Button } from 'ui/button'
@@ -13,10 +14,10 @@ function General({ dateChange, inputValue, valueChange, isClick, submit }) {
   const isReadOnly = Boolean(inputValue.endDateActual)
 
   const PrivateToggle = () => (
-    <ToggleButtonGroup onChange={(e, v) => v !== null && valueChange('isPublic', v)} value={inputValue.isPublic} exclusive>
-      <ToggleButton disabled={isReadOnly} value={true}>公開</ToggleButton>
-      <ToggleButton disabled={isReadOnly} value={false}>私人</ToggleButton>
-    </ToggleButtonGroup>
+    <ToggleGroup onChange={(e, v) => v !== null && valueChange('isPublic', v)} value={inputValue.isPublic} exclusive>
+      <ToggleGroupItem disabled={isReadOnly} value={true}>公開</ToggleGroupItem>
+      <ToggleGroupItem disabled={isReadOnly} value={false}>私人</ToggleGroupItem>
+    </ToggleGroup>
   )
 
   return (
