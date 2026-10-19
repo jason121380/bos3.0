@@ -1,5 +1,5 @@
-// 打卡類型切換保留 MUI ToggleButtonGroup（onChange(event, value) 簽名；橋接主題已套新外觀）
-import { ToggleButton, ToggleButtonGroup } from '@mui/material'
+// 打卡類型切換改 ui/toggle-group（onChange(event, value) 原樣、`value &&` 守衛不變；原 sx 選取外觀由 ui 預設樣式取代）
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Timer } from 'lucide-react'
 import format from 'date-fns/format'
 import { Card } from 'ui/card'
@@ -31,50 +31,24 @@ function Results({ clockInType, setClockInType, isLoading, url, countDownTime })
         ) : (
           <img src={url} alt="" className="mb-6 h-[250px] w-[250px]" />
         )}
-        <ToggleButtonGroup
+        <ToggleGroup
           size="small"
           exclusive
           disabled={isLoading}
           value={clockInType}
           onChange={(event, value) => value && setClockInType(value)}
-          sx={{
-            backgroundColor: 'rgb(var(--surface))',
-            borderRadius: '24px',
-            padding: '4px',
-            border: 'none',
-            '& .MuiToggleButtonGroup-grouped': {
-              border: 'none',
-              borderRadius: '20px !important',
-              margin: '0 2px',
-            },
-          }}
         >
           {clockInOptions.map((data, idx) => (
-            <ToggleButton
+            <ToggleGroupItem
+              className="px-5"
               key={`${data.label}-${idx}`}
               value={data.value}
               name={data.label}
-              sx={{
-                padding: '6px 20px',
-                color: 'rgb(var(--text-secondary))',
-                fontSize: '14px',
-                fontWeight: 500,
-                textTransform: 'none',
-                border: 'none !important',
-                '&.Mui-selected': {
-                  backgroundColor: 'rgb(var(--background)) !important',
-                  color: 'rgb(var(--text)) !important',
-                  boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
-                },
-                '&:hover': {
-                  backgroundColor: 'rgb(var(--surface-hover))',
-                },
-              }}
             >
               {data.label}
-            </ToggleButton>
+            </ToggleGroupItem>
           ))}
-        </ToggleButtonGroup>
+        </ToggleGroup>
       </Card>
     </div>
   )

@@ -3,8 +3,8 @@
 import {
   InputLabel, Select, FormControl, MenuItem, TextField,
   DialogActions, Dialog, DialogContent, DialogTitle,
-  ToggleButton, ToggleButtonGroup
 } from '@mui/material'
+import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
 import AdminPageHeader from 'components/AdminPageHeader'
@@ -329,7 +329,7 @@ function CustomerFilterExport() {
               </Button>
               <div className="flex w-fit flex-col gap-1 text-label text-text-secondary">
                 來店消費：
-                <ToggleButtonGroup
+                <ToggleGroup
                   size='small'
                   exclusive
                   value={customerIsCome === null ? '' : customerIsCome}
@@ -340,10 +340,10 @@ function CustomerFilterExport() {
                     }
                   }}
                 >
-                  <ToggleButton value=''>全部</ToggleButton>
-                  <ToggleButton value={true}>有</ToggleButton>
-                  <ToggleButton value={false}>無</ToggleButton>
-                </ToggleButtonGroup>
+                  <ToggleGroupItem value=''>全部</ToggleGroupItem>
+                  <ToggleGroupItem value={true}>有</ToggleGroupItem>
+                  <ToggleGroupItem value={false}>無</ToggleGroupItem>
+                </ToggleGroup>
               </div>
               {customerIsCome !== null && (
                 <div className="flex-[1_1_250px]">
