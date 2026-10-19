@@ -52,6 +52,7 @@
 - [x] Jason 已確認 Parameter 樣板（2026/10/19 回覆「可以」），開始逐頁推廣；報表／帳單／列印不套本樣板。
 - [x] 推廣第一批（本 PR，`claude/ui-settings-promo1-box`）：`/performanceDeductionParameter` 四區改左選單＋右分段卡片（各區 `hidden` 保留掛載不卸載、子元件 props/儲存 handler 原樣；本頁原無分頁，盤點寫「Tabs」與現況不符已更正）；`/profile/:tab` 僅基本資料／密碼設定／功能釘選三個設定性分頁套左選單＋`max-w-6xl`（選單仍列全部有權限分頁），訂單／日報／抽成／薪資條等報表型分頁維持原頂部分頁＋`max-w-[1200px]` compact 不套。**跳過**：`/deduction-setting`、`/update-deduction-setting/:id`（單卡表單＋卡內動態屬性分頁＋`min-w-[995px]` 抽成門檻寬表，左選單只剩單項且會擠壓寬表，維持原版面，理由見 STYLE §12 推廣紀錄）。待實機逐頁截圖確認選單與卡片（見 PR 待實機清單）。
 - [x] 推廣第二批（本 PR，`claude/ui-settings-promo2-box`，v3.0-1019-2305）：`/accountingSetting` 三區改左選單＋右分段標題＋`max-w-6xl`（各區 `hidden` 保留掛載、全域儲存 handler 原樣）；`/helper-point-setting-create`、`/helper-point-setting-edit/:id` 單一表單不造假選單，原單卡依名稱／使用成本／獲得三區塊切三張分段卡片（維持 `max-w-3xl`，建立／儲存 handler 原樣）。**跳過**：`/authority`（單一清單卡＋`min-w-[700px]` 寬表，無表單分區，套左選單屬假選單且擠壓寬表，維持原清單版面，理由見 STYLE §12／MEMORY #106）。待實機逐頁截圖確認（見 PR 待截圖清單）。
+- [x] 報表目錄例外（Jason 2026/10/19 新指示，本 PR，`claude/report-catalog-nav-box`，v3.0-1020-0009）：`/dashboard-list-detail` 六分類卡片 grid 改左選單＋右側分類標題／單卡連結列（比照 Parameter 的 `settings-nav`，桌機 240px、手機頂部橫向分頁）；分類圖示 日報表 CalendarDays／營業 ChartColumn／設計師 Users／互助 HeartHandshake／商品 Package／管理分析 LayoutDashboard；`LinkItem`／`SubMenuItem` 權限判斷、六次固定順序呼叫與 42 個連結對照逐字保留，選單只顯示有權限分類、預設第一個有權限者。桌機左欄整欄 `bg-surface` 淺灰／右側 `bg-background` 白／中間無分隔線（追加 Billing 指示、手機不套）。僅目錄頁套樣板，各報表頁／帳單頁不套。待實機：桌機左選單切換六分類、手機橫向分頁、不同權限帳號選單只列有權限分類。
 - [ ] 推廣後續：EmployeeManagementDetail 權限／一般設定逐頁評估；單卡表單頁先依 §4 容器判準，不要硬湊左選單。
 
 

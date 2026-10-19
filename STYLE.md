@@ -164,7 +164,7 @@ Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現*
 
 ## 12. 設定頁樣板（OpenAI 設定頁式，Jason 2026/10/19 拍版）
 
-Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比照其設計語言統一。本節只適用設定類（系統參數、個人檔案內的設定分頁、業績／抽成參數等），**報表、帳單四兄弟、列印頁不適用**——那些維持 §11 compact 與既有合計／列印規範，不得因本節改成寬鬆留白。
+Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比照其設計語言統一。本節只適用設定類（系統參數、個人檔案內的設定分頁、業績／抽成參數等），**報表、帳單四兄弟、列印頁不適用**——那些維持 §11 compact 與既有合計／列印規範，不得因本節改成寬鬆留白。**唯一例外（Jason 2026/10/19 新指示，覆蓋先前「報表不套設定樣板」僅限本頁）：報表目錄頁（`/dashboard-list-detail`）套左選單＋右側內容**，僅目錄頁本身比照本節版面，各報表頁、帳單頁仍不套、維持原規範。此頁桌機再依 Jason 同日追加指示採 Billing 式左右底色：左選單欄整欄 `bg-surface` 淺灰、右內容 `bg-background` 白，兩欄相接不加 border／shadow 分隔（手機維持頂部橫向分頁、不套底色）。
 
 ### 版面（共用元件 `src/ui/settings-nav.js`）
 
@@ -192,6 +192,7 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
   - `/accountingSetting`：本頁原無頁級分頁、三區直疊（收入科目／支出科目／收付方式），比照第一批 Parameter 新增純呈現分類選單＋右分段標題＋`max-w-6xl`；三區以 `hidden` 保留掛載不卸載，全域「儲存」鈕仍一次存三區，`handleSave` 與各欄位 handler／存值一字未動。原收入／支出桌機並排改為選單切換分區呈現。
   - `/helper-point-setting-create` 與 `/helper-point-setting-edit/:id`：兩頁皆單一表單、無真分頁，不造假選單；原單卡依既有三區塊（設定名稱／點數使用成本／點數獲得）切成三張分段卡片直疊，容器維持 `max-w-3xl`；欄位、`ToggleGroup` 切換、增刪列與建立／儲存 handler 全原樣，Create／Edit 孿生差異保留不互相照抄。
   - `/authority` **本批跳過**：角色權限管理為單一清單卡＋`min-w-[700px]` 寬表，無表單分區；套左選單只剩單一項目屬假選單且會擠壓寬表，故維持原清單版面（compact），日後如改版走清單／表格規範另案，不在本樣板批硬套。
+- 2026/10/19 Jason 新指示例外（`claude/report-catalog-nav-box`，v3.0-1020-0009）：報表目錄 `/dashboard-list-detail` 原六分類卡片 grid 改比照 Parameter：`ui/tabs`＋`ui/settings-nav` 左選單（桌機 240px、選中 `bg-accent/8`＋主題藍字）＋右側分類標題與單張連結卡，手機回到頂部橫向捲動分頁；六分類順序與圖示（日報表 CalendarDays／營業 ChartColumn／設計師 Users／互助 HeartHandshake／商品 Package／管理分析 LayoutDashboard）、各連結列樣式與權限判斷全保留，左選單只列有權限分類並預設第一個有權限者；桌機左欄整欄 `bg-surface`、右側 `bg-background` 白、兩欄 `gap-0` 相接無分隔線（Jason 追加 Billing 截圖指示，不新色票、不動共用 `settings-nav`、手機不套）。此例外僅限目錄頁本身，各報表頁與帳單頁不套本樣板。
 
 
 ## 13. 【已作廢】PrimeStay 版式語言
