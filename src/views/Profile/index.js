@@ -580,7 +580,7 @@ function Settings({ match, history }) {
           onValueChange={value => handleTabsChange(null, value)}
           value={currentTab}
           activationMode="manual"
-          className={isSettingTab ? 'md:flex md:items-start md:gap-8' : undefined}
+          className={isSettingTab ? 'md:flex md:items-stretch' : undefined}
         >
           {itemValue.length > 0 ? (
             isSettingTab ? (
@@ -599,7 +599,7 @@ function Settings({ match, history }) {
               </TabsList>
             )
           ) : null}
-          <div className={isSettingTab ? 'min-w-0 flex-1' : undefined}>
+          <div className={isSettingTab ? 'min-w-0 flex-1 md:bg-background md:px-6 md:py-6' : undefined}>
             {isSettingTab ? (
               <SettingsSectionHeading title={findTabName()} />
             ) : (

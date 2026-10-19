@@ -52,6 +52,7 @@
 - [x] Jason 已確認 Parameter 樣板（2026/10/19 回覆「可以」），開始逐頁推廣；報表／帳單／列印不套本樣板。
 - [x] 推廣第一批（本 PR，`claude/ui-settings-promo1-box`）：`/performanceDeductionParameter` 四區改左選單＋右分段卡片（各區 `hidden` 保留掛載不卸載、子元件 props/儲存 handler 原樣；本頁原無分頁，盤點寫「Tabs」與現況不符已更正）；`/profile/:tab` 僅基本資料／密碼設定／功能釘選三個設定性分頁套左選單＋`max-w-6xl`（選單仍列全部有權限分頁），訂單／日報／抽成／薪資條等報表型分頁維持原頂部分頁＋`max-w-[1200px]` compact 不套。**跳過**：`/deduction-setting`、`/update-deduction-setting/:id`（單卡表單＋卡內動態屬性分頁＋`min-w-[995px]` 抽成門檻寬表，左選單只剩單項且會擠壓寬表，維持原版面，理由見 STYLE §12 推廣紀錄）。待實機逐頁截圖確認選單與卡片（見 PR 待實機清單）。
 - [x] 推廣第二批（本 PR，`claude/ui-settings-promo2-box`，v3.0-1019-2305）：`/accountingSetting` 三區改左選單＋右分段標題＋`max-w-6xl`（各區 `hidden` 保留掛載、全域儲存 handler 原樣）；`/helper-point-setting-create`、`/helper-point-setting-edit/:id` 單一表單不造假選單，原單卡依名稱／使用成本／獲得三區塊切三張分段卡片（維持 `max-w-3xl`，建立／儲存 handler 原樣）。**跳過**：`/authority`（單一清單卡＋`min-w-[700px]` 寬表，無表單分區，套左選單屬假選單且擠壓寬表，維持原清單版面，理由見 STYLE §12／MEMORY #106）。待實機逐頁截圖確認（見 PR 待截圖清單）。
+- [x] 左右底色修正（本 PR，`claude/settings-nav-colors-box`，v3.0-1020-0010）：Jason 以 Cursor Billing 截圖指定左選單版面左右底色——共用 `ui/settings-nav` 左欄桌機改 `bg-surface` 淺灰整欄＋`p-3`、四頁（Parameter／PerformanceDeductionParameter／Profile 設定性分頁／AccountingSetting）Tabs 去 `gap-8` 改 `md:items-stretch` 等高相鄰、右欄 `md:bg-background md:px-6 md:py-6` 白底，中間無 border／陰影／分隔線；選中維持 `bg-accent/8`＋主題藍字、卡片邊框保留、手機維持頂部橫向捲動分頁、深色以 token 對應。欄位／儲存／切換邏輯未動，未碰報表目錄 DashBoardListDetail。待實機四頁桌機左右底色與無線、手機分頁確認。
 - [ ] 推廣後續：EmployeeManagementDetail 權限／一般設定逐頁評估；單卡表單頁先依 §4 容器判準，不要硬湊左選單。
 
 
