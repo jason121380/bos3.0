@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {
-  Card, CardContent, CardHeader, Divider, Table, TableBody,
+  Card, CardContent, CardHeader, Table, TableBody,
   TableCell, TableHead, TableRow, TableContainer, Paper,
 } from '@mui/material'
 import { format } from 'date-fns'
@@ -82,7 +82,7 @@ function OrderRecord({
               }`}
               css={styles.cardHeader}
             />
-            <Divider />
+            <div className="h-px bg-border" />
             <CardContent css={styles.content}>
               <PerfectScrollbar>
                 <div css={styles.inner}>

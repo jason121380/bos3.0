@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { colors } from '@mui/material'
 import Prism from 'prismjs'
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'
@@ -52,7 +51,7 @@ const styles = {
     '& hr': {
       marginTop: theme.spacing(3),
       marginBottom: theme.spacing(3),
-      backgroundColor: colors.grey[300],
+      backgroundColor: 'rgb(var(--border))',
       border: 0,
       height: 1,
     },

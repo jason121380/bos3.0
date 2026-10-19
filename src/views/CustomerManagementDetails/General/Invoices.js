@@ -5,12 +5,10 @@ import {
   CardActions,
   CardContent,
   CardHeader,
-  Divider,
   Table,
   TableBody,
   TableCell,
   TableRow,
-  colors,
 } from '@mui/material'
 import { Edit as EditIcon } from 'ui/icons'
 import Label from 'elements/label'
@@ -41,7 +39,7 @@ function Invoices({ customer, className = {}, ...rest }) {
   return (
     <Card {...rest} css={css([styles.root, className])}>
       <CardHeader title="信用卡資訊" />
-      <Divider />
+      <div className="h-px bg-border" />
       <CardContent css={styles.content}>
         <Table>
           <TableBody>
@@ -50,7 +48,7 @@ function Invoices({ customer, className = {}, ...rest }) {
               <TableCell>
                 {customer.iban}
                 <div>
-                  <Label color={customer.autoCC ? colors.green[600] : colors.red[600]}>VISA</Label>
+                  <Label color={customer.autoCC ? 'rgb(var(--success))' : 'rgb(var(--danger))'}>VISA</Label>
                 </div>
               </TableCell>
             </TableRow>

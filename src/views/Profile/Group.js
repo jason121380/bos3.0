@@ -5,7 +5,6 @@ import {
   CardActions,
   CardContent,
   CardHeader,
-  Divider,
   FormControl,
   Grid,
   InputLabel,
@@ -139,7 +138,7 @@ export default function Merchant({ rest, className }) {
   return (
     <Card {...rest} css={css([styles.root, className])}>
       <CardHeader title="店家/總部資訊" />
-      <Divider />
+      <div className="h-px bg-border" />
       <CardContent>
         <Grid container spacing={3}>
           <Grid item md={4} sm={6} xs={12}>
@@ -271,7 +270,7 @@ export default function Merchant({ rest, className }) {
           )}
         </Grid>
       </CardContent>
-      <Divider />
+      <div className="h-px bg-border" />
       <CardActions>
         <Button
           css={styles.saveButton}
