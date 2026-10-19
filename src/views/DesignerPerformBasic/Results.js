@@ -1,23 +1,9 @@
-/** @jsxImportSource @emotion/react */
-import {
-  Table, TableBody, TableCell, TableHead, TableRow,
-  Paper, TableContainer, Typography, Collapse, Box, IconButton
-} from '@mui/material'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { Button } from 'ui/button'
 import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon } from 'ui/icons'
 import { useState, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { isSameDay } from 'date-fns'
-import { css } from '@emotion/react'
-
-const styles = {
-  table: css({
-    minWidth: 650,
-  }),
-  designerName: css({
-    fontWeight: 'bold',
-    whiteSpace: 'nowrap !important'
-  }),
-}
 
 function Results({
   report,
@@ -33,23 +19,24 @@ function Results({
   const referenceLabel = performReference === 'TRUTH' ? '實' : '虛'
   const hasMergedDetailsRows = report.some(data => data.mergedDetails.length > 1)
 
+  // numeric：該欄表頭與本體數字靠右（對應 TableHead／TableCell 的 numeric）；className 取代舊的 emotion css／style
   const tableHeadCells = [
     hasMergedDetailsRows && { label: '展開', className: 'noprint' },
     { label: '名次' },
-    { label: '設計師', css: styles.designerName },
-    { label: '所屬店家', style: { whiteSpace: 'nowrap' } },
-    { label: '總業績' },
-    monthlyAverageDisplayForDesignerLeaderBoard && { label: '服務業績月平均' },
-    dataDisplay.isDRRPEVDisplay && { label: '業績年預估值' },
-    { label: `服務總業績(${referenceLabel})` },
-    performanceDisplay === 'VISIBLE' && { label: `服務業績(指)(${referenceLabel})` },
-    performanceDisplay === 'VISIBLE' && { label: `服務業績(不指)(${referenceLabel})` },
-    { label: `卡券使用業績(${referenceLabel})` },
-    { label: `卡券販賣(入業績)(${referenceLabel})` },
-    { label: `店販業績(${referenceLabel})` },
-    membershipDisplay && { label: `會員卡業績(${referenceLabel})` },
-    { label: '互助使用(點數/金額)' },
-    dataDisplay.isDRROCDisplay && { label: '客次數' },
+    { label: '設計師', className: 'font-bold' },
+    { label: '所屬店家' },
+    { label: '總業績', numeric: true },
+    monthlyAverageDisplayForDesignerLeaderBoard && { label: '服務業績月平均', numeric: true },
+    dataDisplay.isDRRPEVDisplay && { label: '業績年預估值', numeric: true },
+    { label: `服務總業績(${referenceLabel})`, numeric: true },
+    performanceDisplay === 'VISIBLE' && { label: `服務業績(指)(${referenceLabel})`, numeric: true },
+    performanceDisplay === 'VISIBLE' && { label: `服務業績(不指)(${referenceLabel})`, numeric: true },
+    { label: `卡券使用業績(${referenceLabel})`, numeric: true },
+    { label: `卡券販賣(入業績)(${referenceLabel})`, numeric: true },
+    { label: `店販業績(${referenceLabel})`, numeric: true },
+    membershipDisplay && { label: `會員卡業績(${referenceLabel})`, numeric: true },
+    { label: '互助使用(點數/金額)', numeric: true },
+    dataDisplay.isDRROCDisplay && { label: '客次數', numeric: true },
   ].filter(Boolean)
 
   const handleClick = (index) => () => {
@@ -71,142 +58,136 @@ function Results({
 
   const getHasMergedDetails = data => data.mergedDetails.length > 1
 
-  const renderCell = (value, idx) => <TableCell key={`cell-${idx}`}>{Math.round(value)}</TableCell>
+  const renderCell = (value, idx) => <TableCell numeric key={`cell-${idx}`}>{Math.round(value)}</TableCell>
 
   return (
-    isSubmit && 
-    <TableContainer className='DesignerPerformBasicTable' component={Paper}>
-      <Table css={styles.table} size="small" aria-label="a dense table">
-        <TableHead>
-          <TableRow>
-            {tableHeadCells.map(({label, ...cell}, index) => (
-              <TableCell key={index} {...cell}>
-                {label}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {report.map((data, index) => {
-            const hasMergedDetails = getHasMergedDetails(data)
+    isSubmit &&
+    <Table dense wrapperClassName='DesignerPerformBasicTable' className="min-w-[650px]" aria-label="a dense table">
+      <TableHeader>
+        <TableRow>
+          {tableHeadCells.map(({label, ...cell}, index) => (
+            <TableHead key={index} {...cell}>
+              {label}
+            </TableHead>
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {report.map((data, index) => {
+          const hasMergedDetails = getHasMergedDetails(data)
 
-            return (
-              <Fragment key={index}>
-                <TableRow>
-                {hasMergedDetailsRows && 
-                  <TableCell className='noprint'>
-                    {hasMergedDetails ? (
-                      <IconButton
-                        onClick={handleClick(index)}
-                        style={{ width: 3, height: 3 }}
-                      >
-                        {isOpen(index) ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
-                      </IconButton>
-                    ) : null}
-                  </TableCell>
-                }
-                  <TableCell>
-                    <Typography variant="button">{index + 1}</Typography>
-                  </TableCell>
-                  <TableCell css={styles.designerName}>{data.userName}</TableCell>
-                  <TableCell style={{ whiteSpace: 'nowrap' }}>{data.storeName}</TableCell>
-                  {[
-                    data.businessPerformanceTotal,
-                    monthlyAverageDisplayForDesignerLeaderBoard ? data.monthlyAveragePerformance : null,
-                    dataDisplay.isDRRPEVDisplay ? data.performanceEV : null,
-                    data.serviceTotal,
-                    performanceDisplay === 'VISIBLE' ? data.designateServiceTotal : null,
-                    performanceDisplay === 'VISIBLE' ? data.nonDesignateServiceTotal : null,
-                    data.usedTicketTotal,
-                    data.ticketSellIntoPerformanceDesignate + data.ticketSellIntoPerformanceNonDesignate,
-                    data.productTotal,
-                    membershipDisplay ? data.membershipTotal : null,
-                  ].map((value, idx) => value !== null ? renderCell(value, idx) : null)}
-                  <TableCell>
-                    {Math.round(data.helperPaidPoint)}/{Math.round(data.helperPaidPrice)}
-                  </TableCell>
-                  {dataDisplay.isDRROCDisplay && <TableCell>{data.orderCount}</TableCell>}
-                </TableRow>
-                {hasMergedDetails &&
-                  <TableRow className='noprint'>
-                    <TableCell 
-                      style={{ 
-                        padding: 0, 
-                        borderBottom: isOpen(index) ? undefined : 'none'
-                      }} 
-                      colSpan={tableHeadCells.length}
+          return (
+            <Fragment key={index}>
+              <TableRow>
+              {hasMergedDetailsRows &&
+                <TableCell className='noprint'>
+                  {hasMergedDetails ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      aria-label={isOpen(index) ? '收合明細' : '展開明細'}
+                      onClick={handleClick(index)}
                     >
-                      <Collapse timeout='auto' unmountOnExit in={isOpen(index)}>
-                        <Box margin={2}>
-                          <Table className='multiMerchantsLeaderBoardCollapse'>
-                            <TableHead>
-                              <TableRow>
-                                {tableHeadCells.slice(3).map(({label, ...cell}, index) => (
-                                  <TableCell key={index} {...cell}>
-                                    {label}
-                                  </TableCell>
-                                ))}
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {data.mergedDetails.map((detail, detailIndex) => (
-                                <TableRow key={detailIndex}>
-                                  <TableCell style={{ whiteSpace: 'nowrap' }}>{detail.storeName}</TableCell>
-                                  {[
-                                    detail.businessPerformanceTotal,
-                                    monthlyAverageDisplayForDesignerLeaderBoard ? detail.monthlyAveragePerformance : null,
-                                    dataDisplay.isDRRPEVDisplay ? detail.performanceEV : null,
-                                    detail.serviceTotal,
-                                    performanceDisplay === 'VISIBLE' ? detail.designateServiceTotal : null,
-                                    performanceDisplay === 'VISIBLE' ? detail.nonDesignateServiceTotal : null,
-                                    detail.usedTicketTotal,
-                                    detail.ticketSellIntoPerformanceDesignate + detail.ticketSellIntoPerformanceNonDesignate,
-                                    detail.productTotal,
-                                    membershipDisplay ? detail.membershipTotal : null,
-                                  ].map((value, idx) => value !== null ? renderCell(value, idx) : null)}
-                                  <TableCell>
-                                    {Math.round(detail.helperPaidPoint)}/{Math.round(detail.helperPaidPrice)}
-                                  </TableCell>
-                                  {dataDisplay.isDRROCDisplay && <TableCell>{detail.orderCount}</TableCell>}
-                                </TableRow>
+                      {isOpen(index) ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
+                    </Button>
+                  ) : null}
+                </TableCell>
+              }
+                <TableCell>
+                  <span>{index + 1}</span>
+                </TableCell>
+                <TableCell className="font-bold whitespace-nowrap">{data.userName}</TableCell>
+                <TableCell className="whitespace-nowrap">{data.storeName}</TableCell>
+                {[
+                  data.businessPerformanceTotal,
+                  monthlyAverageDisplayForDesignerLeaderBoard ? data.monthlyAveragePerformance : null,
+                  dataDisplay.isDRRPEVDisplay ? data.performanceEV : null,
+                  data.serviceTotal,
+                  performanceDisplay === 'VISIBLE' ? data.designateServiceTotal : null,
+                  performanceDisplay === 'VISIBLE' ? data.nonDesignateServiceTotal : null,
+                  data.usedTicketTotal,
+                  data.ticketSellIntoPerformanceDesignate + data.ticketSellIntoPerformanceNonDesignate,
+                  data.productTotal,
+                  membershipDisplay ? data.membershipTotal : null,
+                ].map((value, idx) => value !== null ? renderCell(value, idx) : null)}
+                <TableCell numeric>
+                  {Math.round(data.helperPaidPoint)}/{Math.round(data.helperPaidPrice)}
+                </TableCell>
+                {dataDisplay.isDRROCDisplay && <TableCell numeric>{data.orderCount}</TableCell>}
+              </TableRow>
+              {hasMergedDetails &&
+                <TableRow className={isOpen(index) ? 'noprint' : 'noprint border-b-0'}>
+                  <TableCell className="!p-0" colSpan={tableHeadCells.length}>
+                    {isOpen(index) && (
+                      <div className="m-4">
+                        <Table dense className='multiMerchantsLeaderBoardCollapse'>
+                          <TableHeader>
+                            <TableRow>
+                              {tableHeadCells.slice(3).map(({label, ...cell}, index) => (
+                                <TableHead key={index} {...cell}>
+                                  {label}
+                                </TableHead>
                               ))}
-                            </TableBody>
-                          </Table>
-                        </Box>
-                      </Collapse>
-                    </TableCell>
-                  </TableRow>
-                }
-              </Fragment>
-            )
-          })}
-          <TableRow>
-            {hasMergedDetailsRows && 
-              <TableCell className='noprint'/>
-            }
-            <TableCell css={styles.designerName}>合計</TableCell>
-            <TableCell />
-            <TableCell />
-            {[
-              handleCountSummary('businessPerformanceTotal'),
-              monthlyAverageDisplayForDesignerLeaderBoard ? monthlyAveragePerformanceTotal : null,
-              dataDisplay.isDRRPEVDisplay ? handleCountSummary('performanceEV') : null,
-              handleCountSummary('serviceTotal'),
-              performanceDisplay === 'VISIBLE' ? handleCountSummary('designateServiceTotal') : null,
-              performanceDisplay === 'VISIBLE' ? handleCountSummary('nonDesignateServiceTotal') : null,
-              handleCountSummary('usedTicketTotal'),
-              handleCountSummary('ticketSellIntoPerformanceDesignate') + handleCountSummary('ticketSellIntoPerformanceNonDesignate'),
-              handleCountSummary('productTotal'),
-              membershipDisplay ? handleCountSummary('membershipTotal') : null,
-            ].map((value, idx) => value !== null ? <TableCell key={idx}>{Math.round(value)}</TableCell> : null)}
-            <TableCell>
-              {handleCountSummary('helperPaidPoint')}/{handleCountSummary('helperPaidPrice')}
-            </TableCell>
-            {dataDisplay.isDRROCDisplay && <TableCell>{handleCountSummary('orderCount')}</TableCell>}
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {data.mergedDetails.map((detail, detailIndex) => (
+                              <TableRow key={detailIndex}>
+                                <TableCell className="whitespace-nowrap">{detail.storeName}</TableCell>
+                                {[
+                                  detail.businessPerformanceTotal,
+                                  monthlyAverageDisplayForDesignerLeaderBoard ? detail.monthlyAveragePerformance : null,
+                                  dataDisplay.isDRRPEVDisplay ? detail.performanceEV : null,
+                                  detail.serviceTotal,
+                                  performanceDisplay === 'VISIBLE' ? detail.designateServiceTotal : null,
+                                  performanceDisplay === 'VISIBLE' ? detail.nonDesignateServiceTotal : null,
+                                  detail.usedTicketTotal,
+                                  detail.ticketSellIntoPerformanceDesignate + detail.ticketSellIntoPerformanceNonDesignate,
+                                  detail.productTotal,
+                                  membershipDisplay ? detail.membershipTotal : null,
+                                ].map((value, idx) => value !== null ? renderCell(value, idx) : null)}
+                                <TableCell numeric>
+                                  {Math.round(detail.helperPaidPoint)}/{Math.round(detail.helperPaidPrice)}
+                                </TableCell>
+                                {dataDisplay.isDRROCDisplay && <TableCell numeric>{detail.orderCount}</TableCell>}
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
+                  </TableCell>
+                </TableRow>
+              }
+            </Fragment>
+          )
+        })}
+        <TableRow>
+          {hasMergedDetailsRows &&
+            <TableCell className='noprint'/>
+          }
+          <TableCell className="font-bold whitespace-nowrap">合計</TableCell>
+          <TableCell />
+          <TableCell />
+          {[
+            handleCountSummary('businessPerformanceTotal'),
+            monthlyAverageDisplayForDesignerLeaderBoard ? monthlyAveragePerformanceTotal : null,
+            dataDisplay.isDRRPEVDisplay ? handleCountSummary('performanceEV') : null,
+            handleCountSummary('serviceTotal'),
+            performanceDisplay === 'VISIBLE' ? handleCountSummary('designateServiceTotal') : null,
+            performanceDisplay === 'VISIBLE' ? handleCountSummary('nonDesignateServiceTotal') : null,
+            handleCountSummary('usedTicketTotal'),
+            handleCountSummary('ticketSellIntoPerformanceDesignate') + handleCountSummary('ticketSellIntoPerformanceNonDesignate'),
+            handleCountSummary('productTotal'),
+            membershipDisplay ? handleCountSummary('membershipTotal') : null,
+          ].map((value, idx) => value !== null ? <TableCell numeric key={idx}>{Math.round(value)}</TableCell> : null)}
+          <TableCell numeric>
+            {handleCountSummary('helperPaidPoint')}/{handleCountSummary('helperPaidPrice')}
+          </TableCell>
+          {dataDisplay.isDRROCDisplay && <TableCell numeric>{handleCountSummary('orderCount')}</TableCell>}
+        </TableRow>
+      </TableBody>
+    </Table>
   )
 }
 
