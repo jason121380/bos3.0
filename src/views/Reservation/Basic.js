@@ -1,7 +1,7 @@
 import {
   FormControl, InputLabel, Select, ToggleButtonGroup, ToggleButton
 } from '@mui/material'
-import { DatePicker } from '@mui/x-date-pickers'
+import { DatePicker } from 'ui/date-picker'
 import useReservationContext from 'context/useReservationContext'
 import { format } from 'date-fns'
 import { useLazyFetchDesignerBookingTimes } from 'hooks/useFetchDesignerBookingTimes'
