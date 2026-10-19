@@ -1,9 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-// 數字輸入（onWheel 失焦）保留 MUI TextField
-import { TextField } from '@mui/material'
+// 數字輸入改用 Field＋Input，保留 onWheel 失焦與原有數值處理
 import { CheckboxField } from 'ui/checkbox'
-import { Field } from 'ui/input'
+import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import idx from 'idx'
 
@@ -21,21 +20,21 @@ function MobileBookingSettings({
             </h3>
             <div className="flex flex-col gap-4">
                 <div>
-                    <TextField
-                        fullWidth
-                        label="同時段預約人數上限"
-                        type="number"
-                        name="bookingLimit"
-                        placeholder="例如: 3"
-                        onChange={event =>
-                            handleBookingLimit(
-                                idx(event, _ => ({ value: parseInt(_.target.value), key: _.target.name }))
-                            )
-                        }
-                        value={bookingLimitInput.bookingLimit !== null ? bookingLimitInput.bookingLimit : 3}
-                        variant="outlined"
-                        onWheel={() => document.activeElement.blur()}
-                    />
+                    <Field label="同時段預約人數上限">
+                        <Input
+                            className="w-full"
+                            type="number"
+                            name="bookingLimit"
+                            placeholder="例如: 3"
+                            onChange={event =>
+                                handleBookingLimit(
+                                    idx(event, _ => ({ value: parseInt(_.target.value), key: _.target.name }))
+                                )
+                            }
+                            value={bookingLimitInput.bookingLimit !== null ? bookingLimitInput.bookingLimit : 3}
+                            onWheel={() => document.activeElement.blur()}
+                        />
+                    </Field>
                 </div>
                 <div>
                     <Field label='預約審核模式'>
