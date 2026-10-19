@@ -186,3 +186,7 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
   - `/performanceDeductionParameter`：本頁原無頁級分頁、四區直疊（盤點文件寫 Tabs 與現況不符，已更正）。新增純呈現的分類選單（服務扣項方式命名／人員身分類別／抽成方式設定／互助點數設定），各區以 `hidden` 保留掛載、不卸載，避免切換時編輯中欄位的 local state 被重置；子元件 props 與儲存 handler 全原樣。
   - `/profile/:tab`：僅設定性分頁（基本資料 `general`／密碼設定 `security`／功能釘選 `pinnedTable`）套左選單＋`max-w-6xl`＋分段標題，選單仍列全部有權限分頁、不刪導覽；其餘個人報表分頁維持原 `max-w-[1200px]`＋頂部分頁＋compact，本批不套。
   - `/deduction-setting` 與 `/update-deduction-setting/:id` **本批跳過**：兩頁皆為單一卡片表單、卡內已有動態屬性分頁，且含 `min-w-[995px]` 的抽成門檻寬表；套左選單只剩單一項目（等於假選單）且會擠壓寬表，故維持原版面，日後如要處理只依 §4 表單頁容器另批評估，不在本樣板批硬套。
+- 2026/10/19 推廣第二批（`claude/ui-settings-promo2-box`，v3.0-1019-2305）：
+  - `/accountingSetting`：本頁原無頁級分頁、三區直疊（收入科目／支出科目／收付方式），比照第一批 Parameter 新增純呈現分類選單＋右分段標題＋`max-w-6xl`；三區以 `hidden` 保留掛載不卸載，全域「儲存」鈕仍一次存三區，`handleSave` 與各欄位 handler／存值一字未動。原收入／支出桌機並排改為選單切換分區呈現。
+  - `/helper-point-setting-create` 與 `/helper-point-setting-edit/:id`：兩頁皆單一表單、無真分頁，不造假選單；原單卡依既有三區塊（設定名稱／點數使用成本／點數獲得）切成三張分段卡片直疊，容器維持 `max-w-3xl`；欄位、`ToggleGroup` 切換、增刪列與建立／儲存 handler 全原樣，Create／Edit 孿生差異保留不互相照抄。
+  - `/authority` **本批跳過**：角色權限管理為單一清單卡＋`min-w-[700px]` 寬表，無表單分區；套左選單只剩單一項目屬假選單且會擠壓寬表，故維持原清單版面（compact），日後如改版走清單／表格規範另案，不在本樣板批硬套。
