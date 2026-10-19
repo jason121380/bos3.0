@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Typography, colors } from '@mui/material'
+import { Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
 import { theme } from '../theme'
@@ -56,7 +56,7 @@ Label.propTypes = {
 
 Label.defaultProps = {
   style: {},
-  color: colors.grey[600],
+  color: 'rgb(var(--text-secondary))',
   variant: 'contained',
   shape: 'square',
   className: {}

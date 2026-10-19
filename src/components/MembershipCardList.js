@@ -2,7 +2,7 @@
 import { useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles';
 import format from 'date-fns/format'
-import { Popper, Fade, Paper, IconButton, Grid, Divider, Typography } from '@mui/material'
+import { Popper, Fade, Paper, IconButton, Grid, Typography } from '@mui/material'
 import { CreditCardTwoTone as CreditCardTwoToneIcon } from 'ui/icons'
 
 const C_Popper = styled(Popper)(() => ({
@@ -78,7 +78,7 @@ const MembershipCardList = ({ data }) => {
                       <Typography component="h2" variant="overline">備註: {d.remark}</Typography>
                     </div>
                   </Grid>
-                  <Divider />
+                  <div className="h-px bg-border" />
                 </Fragment>
               ))}
             </Paper>

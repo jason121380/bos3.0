@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent, CardHeader, Divider } from '@mui/material'
+import { Card, CardContent, CardHeader } from '@mui/material'
 import { Input } from 'ui/input'
 import { Fragment } from 'react'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
@@ -66,7 +66,7 @@ export default function AboutDesignerSalary({ className, onChange, service, inpu
     <Fragment>
       <Card css={className}>
         <CardHeader title="互助點數設定" />
-        <Divider />
+        <div className="h-px bg-border" />
         <CardContent>
           {service.point.map((data, index) => (
             <div css={styles.service} key={index}>
@@ -108,7 +108,7 @@ export default function AboutDesignerSalary({ className, onChange, service, inpu
       </Card>
       <Card css={className}>
         <CardHeader title="互助類別名稱設定" />
-        <Divider />
+        <div className="h-px bg-border" />
         <CardContent>
           {service.helperTypeName.map((data, index) => (
             <div css={styles.service} key={index}>
