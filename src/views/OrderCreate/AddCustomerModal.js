@@ -12,10 +12,10 @@ import {
   Modal,
   Select,
   TextField,
-  InputAdornment,
   Autocomplete,
   CircularProgress
 } from '@mui/material'
+import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
@@ -55,13 +55,6 @@ const styles = {
   }),
   actions: css({
     justifyContent: 'space-between',
-  }),
-  birthdayInput: css({
-    width: '80px',
-  }),
-  birthdayMonthDay: css({
-    width: '80px',
-    marginLeft: '10px !important',
   }),
 }
 
@@ -394,46 +387,47 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
         <CardContent>
           <Grid container spacing={3}>
             <Grid item md={6} xs={12}>
-              <TextField
-                error={noVerify && !isSetTime}
-                helperText={noVerify && !isSetTime ? '客戶編號重複' : ''}
-                fullWidth
+              <Field
                 label="客戶編號"
-                name="no"
-                onChange={handleFieldChange}
-                value={values.no}
-                variant="outlined"
-                inputRef={noRef}
-                onKeyDown={e => e.key === 'Enter' && setFocus('name')}
-                InputProps={{
-                  endAdornment: (
-                    (values.no === '') ? '' :
-                      isSetTime ?
-                        <InputAdornment position="start">
-                          <CircularProgress size={20} />
-                        </InputAdornment> :
-                        !noVerify ?
-                          <InputAdornment position="start">
-                            <CheckRoundedIcon color='success' />
-                          </InputAdornment> :
-                          <InputAdornment position="start">
-                            <WarningAmberRoundedIcon color='error' />
-                          </InputAdornment>
-                  ),
-                }}
-              />
+                htmlFor="addCustomerModal-no"
+                error={noVerify && !isSetTime ? '客戶編號重複' : ''}
+              >
+                <div className="relative">
+                  <Input
+                    id="addCustomerModal-no"
+                    invalid={noVerify && !isSetTime}
+                    className="pr-10"
+                    name="no"
+                    onChange={handleFieldChange}
+                    value={values.no}
+                    ref={noRef}
+                    onKeyDown={e => e.key === 'Enter' && setFocus('name')}
+                  />
+                  {values.no !== '' && (
+                    <span className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center">
+                      {isSetTime ? (
+                        <CircularProgress size={20} />
+                      ) : !noVerify ? (
+                        <CheckRoundedIcon color='success' />
+                      ) : (
+                        <WarningAmberRoundedIcon color='error' />
+                      )}
+                    </span>
+                  )}
+                </div>
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="客戶姓名"
-                name="name"
-                onChange={handleFieldChange}
-                value={values.name}
-                variant="outlined"
-                inputRef={nameRef}
-                onKeyDown={e => e.key === 'Enter' && setFocus('gender')}
-              />
+              <Field label="客戶姓名" htmlFor="addCustomerModal-name">
+                <Input
+                  id="addCustomerModal-name"
+                  name="name"
+                  value={values.name}
+                  onChange={handleFieldChange}
+                  ref={nameRef}
+                  onKeyDown={e => e.key === 'Enter' && setFocus('gender')}
+                />
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
               <FormControl
@@ -462,96 +456,98 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
               </FormControl>
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Email"
-                name="email"
-                value={values.email}
-                onChange={handleFieldChange}
-                variant="outlined"
-                inputRef={emailRef}
-                onKeyDown={e => e.key === 'Enter' && setFocus('lineId')}
-              />
+              <Field label="Email" htmlFor="addCustomerModal-email">
+                <Input
+                  id="addCustomerModal-email"
+                  name="email"
+                  value={values.email}
+                  onChange={handleFieldChange}
+                  ref={emailRef}
+                  onKeyDown={e => e.key === 'Enter' && setFocus('lineId')}
+                />
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="lineId"
-                name="lineId"
-                value={values.lineId}
-                onChange={handleFieldChange}
-                variant="outlined"
-                inputRef={lineIdRef}
-                onKeyDown={e => e.key === 'Enter' && setFocus('address')}
-              />
+              <Field label="lineId" htmlFor="addCustomerModal-lineId">
+                <Input
+                  id="addCustomerModal-lineId"
+                  name="lineId"
+                  value={values.lineId}
+                  onChange={handleFieldChange}
+                  ref={lineIdRef}
+                  onKeyDown={e => e.key === 'Enter' && setFocus('address')}
+                />
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="地址"
-                name="address"
-                value={values.address}
-                onChange={handleFieldChange}
-                variant="outlined"
-                inputRef={addressRef}
-                onKeyDown={e => e.key === 'Enter' && setFocus('nickName')}
-              />
+              <Field label="地址" htmlFor="addCustomerModal-address">
+                <Input
+                  id="addCustomerModal-address"
+                  name="address"
+                  value={values.address}
+                  onChange={handleFieldChange}
+                  ref={addressRef}
+                  onKeyDown={e => e.key === 'Enter' && setFocus('nickName')}
+                />
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="客戶暱稱"
-                name="nickName"
-                value={values.nickName}
-                onChange={handleFieldChange}
-                variant="outlined"
-                inputRef={nickNameRef}
-                onKeyDown={e => e.key === 'Enter' && setFocus('year')}
-              />
+              <Field label="客戶暱稱" htmlFor="addCustomerModal-nickName">
+                <Input
+                  id="addCustomerModal-nickName"
+                  name="nickName"
+                  value={values.nickName}
+                  onChange={handleFieldChange}
+                  ref={nickNameRef}
+                  onKeyDown={e => e.key === 'Enter' && setFocus('year')}
+                />
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                label="民國年"
-                name="year"
-                value={birthdayObj.year}
-                onChange={e => handleBirthdayChange(e)}
-                variant="outlined"
-                css={styles.birthdayInput}
-                inputRef={yearRef}
-                onKeyDown={e => e.key === 'Enter' && setFocus('month')}
-              />
-              <TextField
-                label="月"
-                name="month"
-                value={birthdayObj.month}
-                onChange={e => handleBirthdayChange(e)}
-                variant="outlined"
-                css={styles.birthdayMonthDay}
-                inputRef={monthRef}
-                onKeyDown={e => e.key === 'Enter' && setFocus('day')}
-              />
-              <TextField
-                label="日"
-                name="day"
-                value={birthdayObj.day}
-                onChange={e => handleBirthdayChange(e)}
-                variant="outlined"
-                css={styles.birthdayMonthDay}
-                inputRef={dayRef}
-                onKeyDown={e => e.key === 'Enter' && setFocus('cellphone')}
-              />
+              <div className="flex flex-wrap gap-2.5">
+                <Field label="民國年" htmlFor="addCustomerModal-year" className="w-20">
+                  <Input
+                    id="addCustomerModal-year"
+                    name="year"
+                    value={birthdayObj.year}
+                    onChange={e => handleBirthdayChange(e)}
+                    ref={yearRef}
+                    onKeyDown={e => e.key === 'Enter' && setFocus('month')}
+                  />
+                </Field>
+                <Field label="月" htmlFor="addCustomerModal-month" className="w-20">
+                  <Input
+                    id="addCustomerModal-month"
+                    name="month"
+                    value={birthdayObj.month}
+                    onChange={e => handleBirthdayChange(e)}
+                    ref={monthRef}
+                    onKeyDown={e => e.key === 'Enter' && setFocus('day')}
+                  />
+                </Field>
+                <Field label="日" htmlFor="addCustomerModal-day" className="w-20">
+                  <Input
+                    id="addCustomerModal-day"
+                    name="day"
+                    value={birthdayObj.day}
+                    onChange={e => handleBirthdayChange(e)}
+                    ref={dayRef}
+                    onKeyDown={e => e.key === 'Enter' && setFocus('cellphone')}
+                  />
+                </Field>
+              </div>
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="電話"
-                onChange={handleFieldChange}
-                name="cellphone"
-                value={values.cellphone || customer.cellphone}
-                variant="outlined"
-                inputRef={cellphoneRef}
-                onKeyDown={e => e.key === 'Enter' && setFocus('source')}
-              />
+              <Field label="電話" htmlFor="addCustomerModal-cellphone">
+                <Input
+                  id="addCustomerModal-cellphone"
+                  name="cellphone"
+                  value={values.cellphone || customer.cellphone}
+                  onChange={handleFieldChange}
+                  ref={cellphoneRef}
+                  onKeyDown={e => e.key === 'Enter' && setFocus('source')}
+                />
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
               <SourceSelect
@@ -620,16 +616,16 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="備註"
-                onChange={handleFieldChange}
-                name="remark"
-                value={values.remark}
-                variant="outlined"
-                inputRef={remarkRef}
-                onKeyDown={e => e.key === 'Enter' && setFocus('submit')}
-              />
+              <Field label="備註" htmlFor="addCustomerModal-remark">
+                <Input
+                  id="addCustomerModal-remark"
+                  name="remark"
+                  value={values.remark}
+                  onChange={handleFieldChange}
+                  ref={remarkRef}
+                  onKeyDown={e => e.key === 'Enter' && setFocus('submit')}
+                />
+              </Field>
             </Grid>
           </Grid>
         </CardContent>
