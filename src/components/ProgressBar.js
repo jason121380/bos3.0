@@ -1,14 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import { LinearProgress } from '@mui/material'
 import { useEffect } from 'react'
-import { css } from '@emotion/react'
-const styles = {
-  root: css({
-    width: '100%',
-    margin: '30px 0',
-  }),
-}
-
 const ProgressBar = ({ dataLoading, setProgress, progress }) => {
   useEffect(() => {
     const timer = setInterval(() => {
@@ -24,7 +15,7 @@ const ProgressBar = ({ dataLoading, setProgress, progress }) => {
   }, [dataLoading])
 
   return (
-    <div css={styles.root}>
+    <div className="w-full my-[30px]">
       <LinearProgress variant="determinate" value={progress} />
     </div>
   )

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import React, { useState } from 'react'
 import { gql, useLazyQuery, useMutation } from '@apollo/client'
 import {
@@ -8,25 +7,6 @@ import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import Page from 'components/Page'
 import { useHistory } from 'react-router'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-    marginTop: theme.spacing(3),
-  }),
-  card: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-    marginTop: theme.spacing(3),
-  }),
-  field: css({
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  }),
-}
 
 const CheckLineId = gql`
   query MlgMember($lineId: String!) {
@@ -152,13 +132,13 @@ function Reservation({ match, location }) {
   }
 
   return (
-    <Page css={styles.root} title="加入會員">
-      <Card css={styles.card}>
-        {/* <img css={styles.field} src="https://i.imgur.com/chpDbjI.png" alt="" /> */}
+    <Page className="min-w-[275px] p-8 mt-6" title="加入會員">
+      <Card className="min-w-[275px] p-8 mt-6">
+        {/* <img className="w-full mb-4" src="https://i.imgur.com/chpDbjI.png" alt="" /> */}
         <TextField
           vlaue={name}
           onChange={e => setName(e.target.value.trim())}
-          css={styles.field}
+          className="w-full mb-4"
           fullWidth
           required
           id="standard-required"
@@ -172,7 +152,7 @@ function Reservation({ match, location }) {
           type="tel"
           vlaue={cellphone}
           onChange={e => setCellphone(e.target.value.trim())}
-          css={styles.field}
+          className="w-full mb-4"
           fullWidth
           required
           id="standard-required"
@@ -180,7 +160,7 @@ function Reservation({ match, location }) {
           variant="outlined"
         />
         <FormControlLabel
-          css={styles.field}
+          className="w-full mb-4"
           control={
             <Checkbox
               checked={box}
