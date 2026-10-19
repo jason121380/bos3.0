@@ -109,17 +109,19 @@ const EmployeeDailyReport = () => {
         </div>
       </div>
       <AdminPageHeader title='設計師日報表' />
-      <Toolbar>
-        <DateSelector
-          date={date}
-          attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
-          onlyStart
-          dateChange={value => setDate(value)}
-          margin
-        />
+      <Toolbar className="min-w-0 flex-wrap">
+        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+          <DateSelector
+            date={date}
+            attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
+            onlyStart
+            dateChange={value => setDate(value)}
+            margin
+          />
+        </div>
         <ToolbarSpacer />
         <Button
-          className="noprint"
+          className="noprint shrink-0"
           variant="secondary"
           onClick={() => window.print()}
         >
