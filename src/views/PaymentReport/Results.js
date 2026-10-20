@@ -9,6 +9,7 @@ import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { HeaderActionsPortal } from 'ui/page-header'
 
 const styles = {
   table: css({
@@ -58,20 +59,19 @@ function Results({ report, paymentsName }) {
   }, [report])
   return (
     <Card>
-      <CardHeader
-        className="items-center pb-4"
-        action={
-          <Button asChild size="sm" variant="secondary">
-            <CSVLink
-              data={excelData}
-              filename="每日非現金明細.csv"
-            >
-              <Download strokeWidth={1.75} />
-              報表匯出
-            </CSVLink>
-          </Button>
-        }
-      >
+      {/* 報表匯出：畫到頁首（STYLE §14），匯出資料不變 */}
+      <HeaderActionsPortal>
+        <Button asChild variant="secondary">
+          <CSVLink
+            data={excelData}
+            filename="每日非現金明細.csv"
+          >
+            <Download strokeWidth={1.75} />
+            報表匯出
+          </CSVLink>
+        </Button>
+      </HeaderActionsPortal>
+      <CardHeader className="items-center pb-4">
         <CardTitle>每日非現金明細</CardTitle>
       </CardHeader>
       <div className="px-5 pb-5">

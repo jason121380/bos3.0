@@ -16,7 +16,7 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { HeaderActionsSlot, PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
@@ -117,6 +117,8 @@ export default function MerchantIncomeStatementMonthly() {
       <PageHeader
         title="費用分析表"
         actions={
+          <>
+          <HeaderActionsSlot />
           <Grid item className="printGrid">
             <Button
               className="noprint"
@@ -127,6 +129,7 @@ export default function MerchantIncomeStatementMonthly() {
               列印
             </Button>
           </Grid>
+          </>
         }
       />
       <Toolbar>

@@ -7,7 +7,7 @@ import useFetchMerchantOtherPayWayDetailReport from 'hooks/useFetchMerchantOther
 import DateSelector from 'components/DateSelector'
 import { theme } from '../../theme'
 import { css } from '@emotion/react'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { HeaderActionsSlot, PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
@@ -72,7 +72,7 @@ const PaymentReport = () => {
 
   return (
     <Page className="ui-root" title="每日非現金明細">
-      <PageHeader title="每日非現金明細" />
+      <PageHeader title="每日非現金明細" actions={<HeaderActionsSlot />} />
       <Toolbar>
         <DateSelector
           date={date}

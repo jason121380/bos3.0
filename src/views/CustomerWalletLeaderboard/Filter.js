@@ -47,7 +47,7 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit }) =>
   }
 
   return (
-    <div className="flex flex-col gap-2.5 pb-4">
+    <div className="noprint flex flex-col gap-2.5 pb-4">
       <div className="flex flex-wrap items-center gap-2.5">
         <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
           <DateSelector

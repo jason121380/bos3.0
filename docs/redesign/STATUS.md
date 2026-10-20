@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 報表統一第二批收尾（v3.0-1020-1158） | ①費用分析、損益表、每日非現金明細的「報表匯出」由報表卡片內移到頁首列印鈕左側（STYLE §14），改為預設尺寸次要鈕：`ui/page-header` 新增 `HeaderActionsSlot`／`HeaderActionsPortal`，按鈕以 React Portal 畫到頁首，匯出資料、handler、loading 與顯示條件留在 Results 原地不動；頁面沒放插槽時照原位置渲染。②顧客消費排行、顧客入金排行的篩選列與整體業績分析第二列（店家挑選＋搜尋）加 `noprint`，列印不再印出篩選列；顧客消費排行拿掉多餘的 `mt-6`（間距改由頁首 pb-6／篩選列 pb-4 決定，與入金排行一致）。③順帶盤點全站 14 處 `sx`：圖示與 AdminPageHeader 有轉換、Checkbox／Select 刻意忽略（只影響 MUI 外框），預約紀錄的 BookingRecordListAutoComplete 從未接收 sx（原本即無作用）——沒有因移除 MUI 而失效的樣式。新增 2 個測試。測試 36 檔／154 全過、build 成功、verify-logic 全部 OK；6 頁螢幕／列印截圖僅預期差異（3 頁列印少了篩選列、顧客消費排行篩選列上移 24px）。 |
 | 手機日期選擇器改置中彈窗（v3.0-1020-1151） | 依 Jason 截圖指示：手機（< 640px）的日期／日期時間選擇器由底部面板改為置中彈窗（左右各留 16px、四角圓角），月曆不再在滿版面板中靠左。做法：`ui/modal-compat` 新增 `ui-dialog-centered` 標記（權重高於底部面板規則），日期選擇器使用；其他對話框維持底部面板。390px 截圖確認日期、日期時間兩種與一般對話框。測試 35 檔／152 全過、build 成功。 |
 | 手機頂部列標題粗體（v3.0-1020-1147） | 補齊「每頁標題比照打帳單粗體」：手機／平板頂部列（MobileAppBar）捲動後顯示的頁名也改粗體，與頁首標題一致。測試 35 檔／152 全過、build 成功。 |
 | 頁面標題粗體＋PWA 打帳單合計列修正（v3.0-1020-1145） | ①依 Jason「每頁標題比照打帳單粗體」：共用頁首 `ui/page-header`（106 頁）與 `components/PageTitle`（AdminPageHeader，60 頁）的標題由 `!font-normal` 改 `!font-bold`（24px），與打帳單、編輯帳單等已是粗體的頁面一致；STYLE.md 字級表同步。②Jason 回報「PWA 打帳單下方總結出不來」：底部固定合計列（業績合計／現金應收）在手機只讓出 56px，但底部導覽列在 PWA（viewport-fit=cover）會加上 iPhone 安全區（約 34px）且層級較高（1100 > 1050），合計列被蓋住；瀏覽器中安全區為 0 所以正常。改為讓出 `56px＋env(safe-area-inset-bottom)`，與導覽列、批次操作列同寫法。測試 35 檔／152 全過、build 成功、verify-logic OK。 |
