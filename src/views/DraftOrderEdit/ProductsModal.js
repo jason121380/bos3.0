@@ -1,26 +1,11 @@
-import { TablePagination } from 'ui/pagination-compat'
 import { Modal } from 'ui/modal-compat'
-import { Paper } from 'ui/display-compat'
-import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
-import { Button } from 'ui/button-compat'
-import { Card, CardHeader, CardContent, CardActions } from 'ui/card-compat'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from 'ui/card'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
 import idx from 'idx'
 import pagenationLabel from './../../helper/pagenationLabel'
-
-// 原 emotion styles 逐值轉 Tailwind（theme.shadows[20] 原值照抄；red／blue 取自 ui/colors：red[500] #f44336、red[700] #d32f2f、
-// blue[500] #2196f3、blue[700] #1976d2；原 `!important` 以 `!` 前綴保留）。未使用的 birthday／inner／categorieClear／confirmBtn 不轉
-const styles = {
-  root: 'absolute top-[50%] left-[50%] [transform:translate(-50%,-50%)] [outline:none] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)] w-[700px] max-h-full overflow-y-auto max-w-full',
-  actions: 'justify-end',
-  categorieDiv: 'mb-[5px]',
-  header: 'flex justify-between items-center',
-  categorieBtn: 'm-[3px]',
-  clickedCategorieBtn: 'm-[3px] text-[white]',
-  addBtn: 'bg-[#2196f3] text-[white] hover:bg-[#1976d2]',
-  closeAtTop: 'm-[16px_24px]',
-}
 
 function ProductsModal({
   productsModalOpen,
@@ -135,101 +120,78 @@ function ProductsModal({
 
   return (
     <Modal open={productsModalOpen}>
-      <Card className={styles.root}>
-        <div className={styles.header}>
-          <CardHeader
-            title={
-              selectedCategorieName.length === 0 ? '所有商品' : `${categoryNameForDisplay}類商品`
-            }
-          />
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={closeModal}
-            className={styles.closeAtTop}
-          >
-            關閉
-          </Button>
-        </div>
+      <Card className="absolute left-1/2 top-1/2 max-h-[calc(100%-32px)] w-[700px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl bg-background shadow-float outline-none">
+        <CardHeader
+          className="items-center pb-4"
+          action={
+            <Button variant="secondary" size="sm" onClick={closeModal}>
+              關閉
+            </Button>
+          }
+        >
+          <CardTitle>
+            {selectedCategorieName.length === 0 ? '所有商品' : `${categoryNameForDisplay}類商品`}
+          </CardTitle>
+        </CardHeader>
 
         <div className="h-px bg-border" />
         <CardContent>
-          <div className={styles.categorieDiv}>
+          <div className="mb-3 flex flex-wrap gap-2">
             {productCategories.map(productCategory => (
               <Button
                 variant={
-                  selectedCategorie.indexOf(productCategory.id) !== -1 ? 'contained' : 'outlined'
+                  selectedCategorie.indexOf(productCategory.id) !== -1 ? 'primary' : 'secondary'
                 }
-                color="primary"
-                size="small"
-                className={
-                  selectedCategorie.indexOf(productCategory.id) !== -1
-                    ? styles.clickedCategorieBtn
-                    : styles.categorieBtn
-                }
+                size="sm"
                 onClick={() => handleClickCategorie(productCategory.id, productCategory.name)}
                 key={productCategory.id}
-                style={
-                  selectedCategorie.indexOf(productCategory.id) === -1 ? {} : { color: 'white' }
-                }
               >
                 {productCategory.name}
               </Button>
             ))}
-            <Button
-              variant="contained"
-              size="small"
-              color="error"
-              onClick={handleClearCategorie}
-            >
+            <Button variant="ghost" size="sm" onClick={handleClearCategorie}>
               清除
             </Button>
           </div>
-          <p className="m-0 mb-1.5 text-body text-text-secondary">
+          <p className="mb-2 mt-0 text-caption text-text-secondary">
             {productList.totalCount} 項商品
           </p>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell padding="checkbox">
-                    <Button />
+          <Table dense>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-px">
+                  <Button variant="ghost" size="sm" />
+                </TableHead>
+                <TableHead>代號</TableHead>
+                <TableHead>類別</TableHead>
+                <TableHead>名稱</TableHead>
+                <TableHead numeric>參考價格</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {productList.data.map((product, index) => (
+                <TableRow key={index}>
+                  <TableCell className="w-px">
+                    <Button variant="primary" size="sm" onClick={() => handleSelectProduct(product)}>
+                      加入
+                    </Button>
                   </TableCell>
-                  <TableCell>代號</TableCell>
-                  <TableCell>類別</TableCell>
-                  <TableCell>名稱</TableCell>
-                  <TableCell>參考價格</TableCell>
+                  <TableCell>{product.no}</TableCell>
+                  <TableCell>
+                    {product.productCategory !== null ? product.productCategory.name : ''}
+                  </TableCell>
+                  <TableCell>{product.name}</TableCell>
+                  <TableCell numeric>{product.sellPrice}</TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {productList.data.map((product, index) => (
-                  <TableRow key={index}>
-                    <TableCell padding="checkbox">
-                      <Button
-                        size="small"
-                        onClick={() => handleSelectProduct(product)}
-                        className={styles.addBtn}
-                      >
-                        加入
-                      </Button>
-                    </TableCell>
-                    <TableCell>{product.no}</TableCell>
-                    <TableCell>
-                      {product.productCategory !== null ? product.productCategory.name : ''}
-                    </TableCell>
-                    <TableCell>{product.name}</TableCell>
-                    <TableCell>{product.sellPrice}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
-        <CardActions className={styles.actions}>
+        <CardFooter className="flex-wrap">
           <TablePagination
             ref={pageRef}
+            className="pt-0"
             labelRowsPerPage='每頁顯示數量'
-            component="div"
             count={productList.totalCount}
             onPageChange={handleOnChangePage}
             onRowsPerPageChange={handleOnChangeRowsPerPage}
@@ -237,10 +199,10 @@ function ProductsModal({
             rowsPerPage={productList.pageLimit}
             rowsPerPageOptions={[5, 10, 25, 50, 1000]}
           />
-          <Button onClick={closeModal} color="primary" variant="contained">
+          <Button variant="secondary" onClick={closeModal}>
             關閉
           </Button>
-        </CardActions>
+        </CardFooter>
       </Card>
     </Modal>
   )

@@ -1,23 +1,12 @@
-import { TablePagination } from 'ui/pagination-compat'
 import { Modal } from 'ui/modal-compat'
-import { Paper } from 'ui/display-compat'
-import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
-import { Button } from 'ui/button-compat'
-import { Card, CardHeader, CardContent, CardActions } from 'ui/card-compat'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
+import { Button } from 'ui/button'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from 'ui/card'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
 import idx from 'idx'
 import { addDays } from 'date-fns'
 import pagenationLabel from './../../helper/pagenationLabel'
-
-const styles = {
-  root: 'absolute top-[50%] left-[50%] [transform:translate(-50%,-50%)] [outline:none] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)] w-[700px] max-h-[100%] overflow-y-auto max-w-[100%]',
-  actions: 'justify-end',
-  categorieDiv: 'mb-[5px]',
-  addBtn: 'bg-[#2196f3] !text-white hover:bg-[#1976d2]',
-  header: 'flex justify-between items-center',
-  closeAtTop: 'm-[16px_24px]',
-}
 
 const MemberShipCardSellsModal = ({
   productsModalOpen,
@@ -133,98 +122,82 @@ const MemberShipCardSellsModal = ({
 
   return (
     <Modal open={productsModalOpen}>
-      <Card className={styles.root}>
-        <div className={styles.header}>
-          <CardHeader
-            title={
-              selectedCategorieName.length === 0
-                ? '所有會員卡'
-                : `${categoryNameForDisplay}類會員卡`
-            }
-          />
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={closeModal}
-            className={styles.closeAtTop}
-          >
-            關閉
-          </Button>
-        </div>
+      <Card className="absolute left-1/2 top-1/2 max-h-[calc(100%-32px)] w-[700px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl bg-background shadow-float outline-none">
+        <CardHeader
+          className="items-center pb-4"
+          action={
+            <Button variant="secondary" size="sm" onClick={closeModal}>
+              關閉
+            </Button>
+          }
+        >
+          <CardTitle>
+            {selectedCategorieName.length === 0
+            ? '所有會員卡'
+            : `${categoryNameForDisplay}類會員卡`}
+          </CardTitle>
+        </CardHeader>
 
         <div className="h-px bg-border" />
         <CardContent>
-          <div className={styles.categorieDiv}>
+          <div className="mb-3 flex flex-wrap gap-2">
             {productCategories.map(productCategory => (
               <Button
                 variant={
-                  selectedCategorie.indexOf(productCategory.uuid) !== -1 ? 'contained' : 'outlined'
+                  selectedCategorie.indexOf(productCategory.uuid) !== -1 ? 'primary' : 'secondary'
                 }
-                color="primary"
-                size="small"
+                size="sm"
                 onClick={() => handleClickCategorie(productCategory.uuid, productCategory.name)}
                 key={productCategory.uuid}
-                style={{ margin: 3 }}
               >
                 {productCategory.name}
               </Button>
             ))}
-            <Button
-              variant="contained"
-              size="small"
-              color="error"
-              onClick={handleClearCategorie}
-            >
+            <Button variant="ghost" size="sm" onClick={handleClearCategorie}>
               清除
             </Button>
           </div>
           <p className="mb-2 mt-0 text-caption text-text-secondary">
             {/* {productList.totalCount} 項商品 */}
           </p>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell padding="checkbox">
-                    <Button />
+          <Table dense>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-px">
+                  <Button variant="ghost" size="sm" />
+                </TableHead>
+                <TableHead>代號</TableHead>
+                <TableHead>類別</TableHead>
+                <TableHead>名稱</TableHead>
+                <TableHead numeric>天數</TableHead>
+                <TableHead numeric>參考價格</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {productList.data.map((product, index) => (
+                <TableRow key={index}>
+                  <TableCell className="w-px">
+                    <Button variant="primary" size="sm" onClick={() => handleSelectProduct(product)}>
+                      加入
+                    </Button>
                   </TableCell>
-                  <TableCell>代號</TableCell>
-                  <TableCell>類別</TableCell>
-                  <TableCell>名稱</TableCell>
-                  <TableCell>天數</TableCell>
-                  <TableCell>參考價格</TableCell>
+                  <TableCell>{product.no}</TableCell>
+                  <TableCell>
+                    {product.membershipCategory !== null ? product.membershipCategory.name : ''}
+                  </TableCell>
+                  <TableCell>{product.name}</TableCell>
+                  <TableCell numeric>{product.effecitveDay}天</TableCell>
+                  <TableCell numeric>{product.sellPrice}</TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {productList.data.map((product, index) => (
-                  <TableRow key={index}>
-                    <TableCell padding="checkbox">
-                      <Button
-                        size="small"
-                        onClick={() => handleSelectProduct(product)}
-                        className={styles.addBtn}
-                      >
-                        加入
-                      </Button>
-                    </TableCell>
-                    <TableCell>{product.no}</TableCell>
-                    <TableCell>
-                      {product.membershipCategory !== null ? product.membershipCategory.name : ''}
-                    </TableCell>
-                    <TableCell>{product.name}</TableCell>
-                    <TableCell>{product.effecitveDay}天</TableCell>
-                    <TableCell>{product.sellPrice}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
-        <CardActions className={styles.actions}>
+        <CardFooter className="flex-wrap">
           <TablePagination
             ref={pageRef}
+            className="pt-0"
             labelRowsPerPage='每頁顯示數量'
-            component="div"
             count={productList.data.length}
             onPageChange={handleOnChangePage}
             onRowsPerPageChange={handleOnChangeRowsPerPage}
@@ -232,10 +205,10 @@ const MemberShipCardSellsModal = ({
             rowsPerPage={productList.pageLimit}
             rowsPerPageOptions={[5, 10, 25, 50, 1000]}
           />
-          <Button onClick={closeModal} color="primary" variant="contained">
+          <Button variant="secondary" onClick={closeModal}>
             關閉
           </Button>
-        </CardActions>
+        </CardFooter>
       </Card>
     </Modal>
   )

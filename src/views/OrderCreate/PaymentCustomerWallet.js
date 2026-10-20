@@ -1,4 +1,4 @@
-import { Button } from 'ui/button-compat'
+import { Button } from 'ui/button'
 import { CheckboxField } from 'ui/checkbox'
 import { Input } from 'ui/input'
 import billContext from 'context/keyInContext'
@@ -241,8 +241,7 @@ function PaymentCustomerWallet(props, ref) {
                 <strong style={{ color: 'red' }}>{`${usableCustomerWallet - bill.walletPay}元`}</strong>
                 {(identity.allowDepositAddition || identity.allowDepositDeduction) &&
                   <Button
-                    color="primary"
-                    variant="contained"
+                    variant="primary"
                     onClick={handleOpenWalletDepositModal}
                   >
                     異動入金
@@ -254,8 +253,7 @@ function PaymentCustomerWallet(props, ref) {
                 <p>入金剩餘：<strong style={{ color: 'red' }}>{`${usableCustomerWallet}元`}</strong></p>
                 {(identity.allowDepositAddition || identity.allowDepositDeduction) &&
                   <Button
-                    color="primary"
-                    variant="contained"
+                    variant="primary"
                     onClick={handleOpenWalletDepositModal}
                   >
                     異動入金
