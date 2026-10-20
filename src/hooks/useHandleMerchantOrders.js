@@ -1,4 +1,5 @@
-import { useTheme, useMediaQuery} from '@mui/material'
+import { useMediaQuery } from 'ui/misc-compat'
+import { theme } from 'theme'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchAdminBookingTime from 'hooks/useFetchAdminBookingTime'
@@ -19,7 +20,6 @@ export default function useHandleMerchantOrders({
   mobileView = 'listWeek',
   defaultView = 'resourceTimelineDay',
 }) {
-  const theme = useTheme()
   const mobileDevice = useMediaQuery(theme.breakpoints.down('sm'))
   const [view, setView] = React.useState(mobileDevice ? mobileView : defaultView)
   const [seletedDesignerId, setSeletedDesignerId] = React.useState('')

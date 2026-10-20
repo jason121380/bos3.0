@@ -1,12 +1,5 @@
-import { createTheme } from '@mui/material'
 import { css } from '@emotion/react'
-import { red } from 'ui/colors';
-
-const theme = createTheme({
-  palette: {
-    primary: red
-  },
-});
+import { theme } from 'theme'
 
 const styles = {
   root: css({

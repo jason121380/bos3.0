@@ -5,7 +5,6 @@ import { useState, useEffect, Fragment } from 'react'
 import { ToggleGroupItem } from 'ui/toggle-group'
 import { cloneDeep } from 'lodash'
 import { format } from 'date-fns'
-import { createTheme } from '@mui/material/styles'
 import { Button as UiButton } from 'ui/button'
 import { green, grey } from 'ui/colors'
 import { openSnackbar } from 'elements/snackbars'
@@ -24,17 +23,6 @@ const styles = {
     color: 'white'
   })
 }
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: green[400]
-    },
-    secondary: {
-      main: grey[400]
-    },
-  }
-})
 
 export default function HolidayEdit({ holidayData, setHolidayData, setHolidayModel, refetchData }) {
   const { setTimes } = useFetchSetAdminBookingTimes()

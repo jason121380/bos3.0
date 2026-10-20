@@ -1,5 +1,5 @@
 import React from 'react'
-import Box from '@mui/material/Box'
+import styled from '@emotion/styled'
 import {
   Armchair as LucideArmchair,
   ArrowDown as LucideArrowDown,
@@ -87,16 +87,16 @@ const COLOR = {
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1)
 
 function adapt(Lucide, name) {
+  // 以 emotion styled 產生 class（取代 MUI Box 的 sx）：元件自身樣式在前、頁面 className（css prop）在後，頁面樣式可覆蓋預設尺寸，與 MUI SvgIcon 相同
+  const Svg = styled(Lucide, { shouldForwardProp: prop => prop !== 'iconStyles' })(({ iconStyles }) => iconStyles)
   const Icon = React.forwardRef(({ fontSize = 'medium', color, htmlColor, className, style, sx, titleAccess, ...rest }, ref) => (
-    <Box
-      component={Lucide}
+    <Svg
       ref={ref}
       strokeWidth={1.75}
       aria-hidden={titleAccess ? undefined : true}
       aria-label={titleAccess}
       className={cn('MuiSvgIcon-root', `MuiSvgIcon-fontSize${capitalize(String(fontSize))}`, className)}
-      // 預設尺寸放在 sx（class），頁面原本的 css / sx 仍可覆蓋，與 MUI SvgIcon 的優先順序一致
-      sx={[
+      iconStyles={[
         { width: '1em', height: '1em', display: 'inline-block', flexShrink: 0, fontSize: FONT_SIZE[fontSize] || fontSize },
         (htmlColor || COLOR[color]) && { color: htmlColor || COLOR[color] },
         ...(Array.isArray(sx) ? sx : [sx]),

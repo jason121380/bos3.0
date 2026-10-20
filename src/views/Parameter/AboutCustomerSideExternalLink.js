@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { Button as MuiButton } from 'ui/button-compat'
-import { createTheme, ThemeProvider } from '@mui/material'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon, Add as AddIcon, Edit as EditIcon } from 'ui/icons'
@@ -9,14 +8,6 @@ import styles from './styles/AboutDesignerSideExternalLink'
 import { teal } from 'ui/colors';
 import OuterLinkModal from './OuterLinkModal'
 import OuterLinkSortModal from './OuterLinkSortModal'
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: teal[400]
-    },
-  },
-});
 
 function AboutCustomerSideExternalLink({
   className, cusExternalLink, inputEnable, refetchLink,
@@ -64,24 +55,22 @@ function AboutCustomerSideExternalLink({
             const {id, name, isTop} = data
             return (
               <Fragment key={id}>
-                <ThemeProvider theme={theme}>
-                  <MuiButton
-                    disabled={!inputEnable}
-                    onClick={() => handleOpenModal(false, data)}
-                    css={styles.Button}
-                    variant='contained'
-                    color="primary"
-                    size='large'
-                  >
-                    {name}
-                    <EditIcon className='editIcon' fontSize='small'/>
-                    {isTop && (
-                      <div className="svgWrap">
-                        <KeyboardDoubleArrowUpIcon/>
-                      </div>
-                    )}
-                  </MuiButton>
-                </ThemeProvider>
+                <MuiButton
+                  disabled={!inputEnable}
+                  onClick={() => handleOpenModal(false, data)}
+                  css={styles.Button}
+                  variant='contained'
+                  color="primary"
+                  size='large'
+                >
+                  {name}
+                  <EditIcon className='editIcon' fontSize='small'/>
+                  {isTop && (
+                    <div className="svgWrap">
+                      <KeyboardDoubleArrowUpIcon/>
+                    </div>
+                  )}
+                </MuiButton>
                 {index === (cusExternalLink.length - 1) ?
                 <AddIcon
                   disabled={!inputEnable}

@@ -21,11 +21,6 @@ import ScrollReset from './components/ScrollReset'
 import routes from './routes'
 import TeachingModeState from './context/TeachingModeState'
 
-// MUIv5 theme and locale setting
-// 樣式設定
-import { ThemeProvider } from '@mui/material'
-import { theme } from './theme'
-
 // import ReactGA from 'react-ga'
 
 const history = createBrowserHistory()
@@ -46,16 +41,14 @@ Sentry.init({
 function App() {
   return (
     <ApolloProvider client={client()}>
-      <ThemeProvider theme={theme}>
-        <TeachingModeState>
-          <Router history={history}>
-            <ScrollReset />
-            <GoogleAnalytics />
-            {renderRoutes(routes)}
-            <div id="modal" />
-          </Router>
-        </TeachingModeState>
-      </ThemeProvider>
+      <TeachingModeState>
+        <Router history={history}>
+          <ScrollReset />
+          <GoogleAnalytics />
+          {renderRoutes(routes)}
+          <div id="modal" />
+        </Router>
+      </TeachingModeState>
     </ApolloProvider>
   )
 }

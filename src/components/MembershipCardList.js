@@ -2,7 +2,7 @@ import { Popper, Fade } from 'ui/overlay-compat'
 import { Paper, Typography } from 'ui/display-compat'
 import { Grid } from 'ui/grid-compat'
 import { useState, Fragment } from 'react'
-import { styled } from '@mui/material/styles';
+import styled from '@emotion/styled'
 import format from 'date-fns/format'
 import { Button } from 'ui/button'
 import { CreditCardTwoTone as CreditCardTwoToneIcon } from 'ui/icons'

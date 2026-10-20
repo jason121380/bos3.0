@@ -36,22 +36,10 @@ import PasswordDialog from 'components/PasswordDialog'
 import { MobileDatePicker } from 'ui/date-picker'
 import idx from 'idx'
 import _ from 'lodash'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { green, grey, blue } from 'ui/colors'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import produce from 'immer'
-
-const themes = createTheme({
-  palette: {
-    primary: {
-      main: green[400]
-    },
-    secondary: {
-      main: grey[400]
-    },
-  }
-})
 
 const styles = {
   root: css({
@@ -1176,17 +1164,15 @@ export default function ChoseEvent({
         <>
           <p>尚須多久時間完成服務(將會通知下位顧客新的到店時間)</p>
           <div style={{ padding: '12px 0px', display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <ThemeProvider theme={themes}>
-              {timeArr.map(({ label, value }) => (
-                <Button
-                  style={{ color: 'white' }}
-                  key={label}
-                  variant='contained'
-                  color={delayTime === value ? 'primary' : 'secondary'}
-                  onClick={() => setDelayTime(value)}
-                >{label}</Button>
-              ))}
-            </ThemeProvider>
+            {timeArr.map(({ label, value }) => (
+              <Button
+                style={{ color: 'white' }}
+                key={label}
+                variant='contained'
+                color={delayTime === value ? 'primary' : 'secondary'}
+                onClick={() => setDelayTime(value)}
+              >{label}</Button>
+            ))}
           </div>
           <Grid container justifyContent='flex-end'>
             <Button

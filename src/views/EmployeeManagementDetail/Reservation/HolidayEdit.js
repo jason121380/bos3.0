@@ -8,7 +8,6 @@ import { format } from 'date-fns'
 import { green, grey } from 'ui/colors'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchSetAdminBookingTimes from 'hooks/useFetchSetAdminBookingTimes'
-import { createTheme } from '@mui/material/styles'
 import { css } from '@emotion/react'
 import { Button } from 'ui/button'
 
@@ -24,17 +23,6 @@ const styles = {
     color: 'white'
   })
 }
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: green[400] + '!important'
-    },
-    secondary: {
-      main: grey[400] + '!important'
-    },
-  }
-})
 
 export default function HolidayEdit({ holidayData, setHolidayData, setHolidayModel, refetchData }) {
   const { setTimes } = useFetchSetAdminBookingTimes()
