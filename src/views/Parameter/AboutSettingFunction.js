@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-// 裁切對話框 Slider 已換 ui/slider；多選 Autocomplete、數字欄位保留 MUI
-import { Dialog, DialogContent, DialogTitle } from 'ui/modal-compat'
+// 裁切對話框 Slider 已換 ui/slider、Dialog 已換 ui/dialog；多選 Autocomplete、數字欄位保留 MUI
+import { Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { Avatar } from 'ui/avatar'
@@ -438,9 +438,14 @@ function AboutSettingFunction({
           </div>
         </div>
       </CardContent>
-      <Dialog className='ProfileDetails' open={open} onClose={handleClose}>
-        <DialogTitle style={{ paddingBottom: 0 }}>選取頭像範圍</DialogTitle>
-        <DialogContent>
+      {/* 裁切窗：只有裁切區與原生滑桿（無下拉／日期彈層），改用 ui Dialog；舊版沒有關閉鈕（Esc／點背景關閉），故 hideClose。
+          裁切區高 300px、相對定位（原 initialize.scss .ProfileDetails .MuiDialog-paperWidthSm 規則）改在 DialogBody 上以 Tailwind 指定（選 react-easy-crop 容器的 data-testid="container"，即 .reactEasyCrop_Container） */}
+      <Dialog open={open} onOpenChange={o => !o && handleClose()}>
+        <DialogContent size="md" hideClose aria-describedby={undefined} className='ProfileDetails'>
+        <DialogHeader className="pb-0">
+          <DialogTitle>選取頭像範圍</DialogTitle>
+        </DialogHeader>
+        <DialogBody className="[&_[data-testid=container]]:!relative [&_[data-testid=container]]:h-[300px] [&_[data-testid=container]]:w-full">
           <Cropper
             rotation={rotation}
             image={imageSrc}
@@ -470,6 +475,7 @@ function AboutSettingFunction({
             <Button disabled={btnDisable} variant="secondary" onClick={handleClose}>取消</Button>
             <Button disabled={btnDisable} onClick={showCroppedImage} variant="primary">確認上傳</Button>
           </div>
+        </DialogBody>
         </DialogContent>
       </Dialog>
     </Card>

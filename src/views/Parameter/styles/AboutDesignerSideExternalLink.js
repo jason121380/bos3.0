@@ -20,7 +20,6 @@ export default {
     cursor: 'pointer'
   }),
   Button: css({
-    color: '#fff',
     width: 200,
     padding: '8px 16px',
     position: 'relative',

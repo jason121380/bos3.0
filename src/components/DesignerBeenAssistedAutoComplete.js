@@ -1,4 +1,3 @@
-import { CircularProgress } from 'ui/display-compat'
 import { TextField } from 'ui/text-field'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import useToggle from 'hooks/useToggle'

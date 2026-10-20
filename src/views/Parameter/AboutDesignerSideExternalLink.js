@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Button as MuiButton } from 'ui/button-compat'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo, Fragment, useState } from 'react'
@@ -63,17 +62,16 @@ function AboutDesignerSideExternalLink({
             const {id, name} = data
             return (
               <Fragment key={id}>
-                <MuiButton
+                <Button
                   disabled={!inputEnable}
                   onClick={() => handleOpenModal(false, data)}
                   css={styles.Button}
-                  variant='contained'
-                  color="primary"
-                  size='large'
+                  variant="secondary"
+                  className="h-auto min-h-10 whitespace-normal"
                 >
                   {name}
                   <EditIcon className='editIcon' fontSize='small'/>
-                </MuiButton>
+                </Button>
                 {index === (externalLink.length - 1) ?
                 <AddIcon
                   disabled={!inputEnable}

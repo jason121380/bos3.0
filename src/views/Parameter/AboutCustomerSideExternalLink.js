@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Button as MuiButton } from 'ui/button-compat'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon, Add as AddIcon, Edit as EditIcon } from 'ui/icons'
@@ -55,13 +54,12 @@ function AboutCustomerSideExternalLink({
             const {id, name, isTop} = data
             return (
               <Fragment key={id}>
-                <MuiButton
+                <Button
                   disabled={!inputEnable}
                   onClick={() => handleOpenModal(false, data)}
                   css={styles.Button}
-                  variant='contained'
-                  color="primary"
-                  size='large'
+                  variant="secondary"
+                  className="h-auto min-h-10 whitespace-normal"
                 >
                   {name}
                   <EditIcon className='editIcon' fontSize='small'/>
@@ -70,7 +68,7 @@ function AboutCustomerSideExternalLink({
                       <KeyboardDoubleArrowUpIcon/>
                     </div>
                   )}
-                </MuiButton>
+                </Button>
                 {index === (cusExternalLink.length - 1) ?
                 <AddIcon
                   disabled={!inputEnable}

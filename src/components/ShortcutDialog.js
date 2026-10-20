@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { Dialog, DialogTitle, DialogContent } from 'ui/modal-compat'
-import { Divider, Typography } from 'ui/display-compat'
-import { Grid } from 'ui/grid-compat'
-import { Button } from 'ui/button-compat'
+import { Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Button as UiButton } from 'ui/button'
+import { EmptyState } from 'ui/empty-state'
 import { LoaderCircle } from 'lucide-react'
 import { Close as CloseIcon } from 'ui/icons'
 import { useEffect } from 'react';
@@ -35,38 +33,38 @@ const ShortcutDialog = ({ open, handleOnClose, handleShortcutChange }) => {
   }, [open])
 
   return (
-    <Dialog fullWidth maxWidth='sm' open={open} onClose={handleOnClose} >
-      <DialogTitle css={styles.title}>
-        快捷組合
-        <UiButton variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label="關閉" title="關閉" onClick={handleOnClose}>
-          <CloseIcon />
-        </UiButton>
-      </DialogTitle>
-      <Divider />
-      <DialogContent>
-        {isLoading ? (
-          <Grid container item ><LoaderCircle className="m-auto h-10 w-10 animate-spin text-accent" strokeWidth={1.75} /></Grid>
-        ) : (
-          <Grid container item spacing={2}>
-            {shortcutData.length ? shortcutData.map(d => (
-              <Grid item key={d.id} >
-                <Button
-                  color='primary'
-                  variant='contained'
-                  onClick={() => {
-                    handleShortcutChange(d)
-                    handleOnClose()
-                  }}
-                >
-                  {d.name}
-                </Button>
-              </Grid>
-            )) : (
-              <Typography style={{ margin: '14px auto 0' }} variant="h4" component="div">無資料</Typography>
-            )}
-          </Grid>
-        )}
+    <Dialog open={open} onOpenChange={o => !o && handleOnClose()}>
+      <DialogContent size="md" hideClose aria-describedby={undefined}>
+        <DialogHeader css={styles.title} className="flex-row border-0 border-b border-solid border-border">
+          <DialogTitle>快捷組合</DialogTitle>
+          <UiButton variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label="關閉" title="關閉" onClick={handleOnClose}>
+            <CloseIcon />
+          </UiButton>
+        </DialogHeader>
+        <DialogBody>
+          {isLoading ? (
+            <div className="flex w-full"><LoaderCircle className="m-auto h-10 w-10 animate-spin text-accent" strokeWidth={1.75} /></div>
+          ) : (
+            <div className="flex w-full flex-wrap gap-4">
+              {shortcutData.length ? shortcutData.map(d => (
+                <div key={d.id} >
+                  <UiButton
+                    variant="secondary"
+                    onClick={() => {
+                      handleShortcutChange(d)
+                      handleOnClose()
+                    }}
+                  >
+                    {d.name}
+                  </UiButton>
+                </div>
+              )) : (
+                <EmptyState title="無資料" className="w-full py-6" />
+              )}
+            </div>
+          )}
 
+        </DialogBody>
       </DialogContent>
     </Dialog>
   )
