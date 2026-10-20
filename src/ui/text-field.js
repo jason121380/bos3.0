@@ -19,6 +19,18 @@ const assignRef = (ref, node) => {
   else ref.current = node
 }
 
+// 欄位外框（TextField／Input／OutlinedInput 共用，全站輸入框一套樣式）
+const fieldBoxClass = ({ multiline = false, small = false, error = false, disabled = false, className } = {}) =>
+  cn(
+    'flex w-full min-w-0 items-center gap-2 rounded-md border border-solid bg-background px-3 text-body text-text transition-colors',
+    multiline ? 'py-1.5' : small ? 'h-8' : 'h-9 max-sm:h-10',
+    error ? 'border-danger' : 'border-border-strong hover:border-border-strong-hover',
+    'focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/25',
+    disabled && 'pointer-events-none bg-surface opacity-60',
+    className
+  )
+const FIELD_INPUT_CLASS = 'min-w-0 flex-1 border-0 bg-transparent p-0 text-body text-text outline-none placeholder:text-text-tertiary'
+
 const TextField = React.forwardRef(function TextField(
   {
     label,
@@ -97,19 +109,8 @@ const TextField = React.forwardRef(function TextField(
     if (inputProps && inputProps.ref) assignRef(inputProps.ref, node)
   }
   const hasAdornment = !!(startAdornment || endAdornment)
-  const boxClass = cn(
-    'flex w-full min-w-0 items-center gap-2 rounded-md border border-solid bg-background px-3 text-body text-text transition-colors',
-    multiline ? 'py-1.5' : small ? 'h-8' : 'h-9 max-sm:h-10',
-    error ? 'border-danger' : 'border-border-strong hover:border-border-strong-hover',
-    'focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/25',
-    disabled && 'pointer-events-none bg-surface opacity-60',
-    inputRootClassName
-  )
-  const fieldClass = cn(
-    'min-w-0 flex-1 border-0 bg-transparent p-0 text-body text-text outline-none placeholder:text-text-tertiary',
-    multiline && 'resize-y',
-    elementProps.className
-  )
+  const boxClass = fieldBoxClass({ multiline, small, error, disabled, className: inputRootClassName })
+  const fieldClass = cn(FIELD_INPUT_CLASS, multiline && 'resize-y', elementProps.className)
   const field = multiline ? (
     <textarea
       {...elementProps}
@@ -158,5 +159,99 @@ const InputAdornment = ({ position, className, children, ...props }) => (
   </span>
 )
 
-export { TextField, InputAdornment }
+// 與 MUI Input／OutlinedInput 相容（不含標籤的輸入框）：外框同 TextField；disableUnderline 時為無框的裸輸入（外層自己畫框，如搜尋列）。
+// 事件落點比照 MUI InputBase：onClick 在外框（點外框任何位置都會聚焦輸入），id／value／onChange／onKeyDown／onKeyUp／onFocus／onBlur 等在輸入元素。
+const InputBase = React.forwardRef(function InputBase(
+  {
+    id,
+    name,
+    type,
+    value,
+    defaultValue,
+    placeholder,
+    autoFocus,
+    autoComplete,
+    readOnly,
+    disabled = false,
+    error = false,
+    fullWidth = false,
+    size,
+    onChange,
+    onKeyDown,
+    onKeyUp,
+    onFocus,
+    onBlur,
+    onClick,
+    startAdornment,
+    endAdornment,
+    inputProps,
+    inputRef,
+    disableUnderline = false,
+    className,
+    style,
+    // MUI 外觀專用／非 DOM 屬性，忽略
+    label,
+    color,
+    variant,
+    notched,
+    margin,
+    css: _css,
+    ...rest
+  },
+  ref
+) {
+  const localRef = React.useRef(null)
+  const setInputRef = node => {
+    localRef.current = node
+    assignRef(inputRef, node)
+    if (inputProps && inputProps.ref) assignRef(inputProps.ref, node)
+  }
+  const { ref: _inputPropsRef, className: inputClassName, ...restInputProps } = inputProps || {}
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        'ui-root',
+        disableUnderline ? 'inline-flex min-w-0 items-center gap-2 text-body text-text' : fieldBoxClass({ small: size === 'small', error, disabled }),
+        fullWidth && 'w-full',
+        className
+      )}
+      style={style}
+      onClick={event => {
+        if (localRef.current && event.target === event.currentTarget) localRef.current.focus()
+        if (onClick) onClick(event)
+      }}
+      {...rest}
+    >
+      {startAdornment}
+      <input
+        ref={setInputRef}
+        id={id}
+        name={name}
+        type={type}
+        value={value}
+        defaultValue={defaultValue}
+        placeholder={placeholder}
+        autoFocus={autoFocus}
+        autoComplete={autoComplete}
+        readOnly={readOnly}
+        disabled={disabled}
+        aria-invalid={error || undefined}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        onKeyUp={onKeyUp}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        className={cn(FIELD_INPUT_CLASS, inputClassName)}
+        {...restInputProps}
+      />
+      {endAdornment}
+    </div>
+  )
+})
+
+const Input = InputBase
+const OutlinedInput = InputBase
+
+export { TextField, InputAdornment, InputBase, Input, OutlinedInput }
 export default TextField

@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import React from 'react'
 
-import { TextField, InputAdornment } from '../text-field'
+import { TextField, InputAdornment, Input, OutlinedInput } from '../text-field'
 
 afterEach(cleanup)
 
@@ -86,5 +86,42 @@ describe('ui/text-field TextField（與 MUI TextField 相容的介面）', () =>
     const area = screen.getByRole('textbox')
     expect(area.tagName).toBe('TEXTAREA')
     expect(area).toHaveAttribute('rows', '3')
+  })
+})
+
+describe('ui/text-field Input／OutlinedInput（與 MUI Input／OutlinedInput 相容）', () => {
+  // 收支／進貨／儲值頁的日期欄：Input 當日期選擇器的顯示欄，點欄位任何位置（含外框）都要打開日曆
+  it('onClick 在外框，id 讓 InputLabel 可關聯、value 顯示在輸入元素', () => {
+    const onClick = jest.fn()
+    const { container } = render(
+      <>
+        <label htmlFor="date-picker">日期</label>
+        <Input id="date-picker" type="text" value="2026/10/20" onClick={onClick} label="日期" readOnly endAdornment={<InputAdornment position="end">曆</InputAdornment>} />
+      </>
+    )
+    const input = screen.getByLabelText('日期')
+    expect(input).toHaveValue('2026/10/20')
+    fireEvent.click(input.parentElement)
+    fireEvent.click(screen.getByText('曆'))
+    expect(onClick).toHaveBeenCalledTimes(2)
+    // label 不是 MUI Input 的屬性，不能落到 DOM
+    expect(container.querySelector('[label]')).toBeNull()
+  })
+
+  // 搜尋列的輸入框：外框由外層畫，disableUnderline 時不能再多一層框；Enter 搜尋靠 onKeyUp／onKeyDown 掛在輸入元素
+  it('disableUnderline 為無框輸入，鍵盤事件在輸入元素', () => {
+    const onKeyUp = jest.fn()
+    render(<Input disableUnderline placeholder="搜尋關鍵字" value="" onChange={() => {}} onKeyUp={onKeyUp} />)
+    const input = screen.getByPlaceholderText('搜尋關鍵字')
+    expect(input.parentElement.className).not.toMatch(/border-border-strong/)
+    fireEvent.keyUp(input, { key: 'Enter' })
+    expect(onKeyUp.mock.calls[0][0].target).toBe(input)
+  })
+
+  it('OutlinedInput 的 error 以 aria-invalid 與紅框呈現', () => {
+    render(<OutlinedInput id="password" type="password" value="x" onChange={() => {}} error fullWidth />)
+    const input = document.getElementById('password')
+    expect(input).toHaveAttribute('aria-invalid', 'true')
+    expect(input.parentElement).toHaveClass('border-danger', 'w-full')
   })
 })

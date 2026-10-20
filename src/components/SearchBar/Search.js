@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Input } from '@mui/material'
+import { Input } from 'ui/text-field'
 import { Button } from 'ui/button'
 import { Search as SearchIcon } from 'ui/icons'
 import PropTypes from 'prop-types'

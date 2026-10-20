@@ -238,3 +238,5 @@
 
 145. **改寫 DOM 文字的舊 helper 綁住了 MUI 的輸出格式（TablePagination，2026/10/20，v3.0-1020-0951）**：`helper/pagenationLabel.js` 直接改 `.MuiTablePagination-displayedRows` 的 innerHTML，把 MUI 預設「6–10 of 23」換成「第 6–10 筆 共 23 筆」——相容元件必須輸出同一個 class 與一字不差的原始文字（含 en dash 與 of），否則中文改寫失效；已寫成測試。另兩點：①MUI 的 `component="div"` 是以 emotion 的 `as` 換掉整個 TableCell，根節點沒有 TableCell 的 class 與框線，照做才一致；②原生 select 的寬度取決於最長選項（1000），MUI 的寬度隨目前值，所以採「顯示區＋透明原生 select 疊在上面」，與 MUI 的 DOM 也同為三個子節點。
 
+146. **Input 不追 MUI 底線外觀，直接併入全站輸入框樣式；swap 腳本要併入既有 import（Input／OutlinedInput，2026/10/20，v3.0-1020-0956）**：MUI Input 只剩日期欄與搜尋列在用，日期欄的 FormControl／InputLabel 早已是自家元件、同頁 TextField 也已是方框，只有日期欄還是底線——此時照抄 MUI 反而不一致，所以 Input 改用 TextField 同一個 `fieldBoxClass`（disableUnderline 保留無框，搜尋列外框由外層畫）。事件落點照 MUI InputBase：onClick 在外框（點外框也會聚焦輸入）、id／鍵盤事件在 input。另：`swap-mui.js` 原本總是新增一行 import，目標模組已被前一批引入時會出現兩行同模組 import，已改為併入既有具名 import。
+
