@@ -86,7 +86,7 @@ export function MobileAppBar({ tabs, showTabBar, onOpenMenu }) {
         )}
         <div className="pointer-events-none absolute inset-x-14 flex h-full items-center justify-center">
           {scrolled && title ? (
-            <span className="truncate text-heading text-text animate-in fade-in-0 slide-in-from-bottom-1">{title}</span>
+            <span className="truncate text-heading font-bold text-text animate-in fade-in-0 slide-in-from-bottom-1">{title}</span>
           ) : (
             <img alt="BeautyOS" className="h-5 w-auto invert dark:invert-0" src={require('assets/images/bosLogoNew.png')} />
           )}
