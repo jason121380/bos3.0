@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { LinearProgress } from '@mui/material'
 import Snackbar from 'elements/snackbars'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -27,7 +26,7 @@ function Pad({ route }) {
       <Snackbar />
       <div css={styles.container}>
         <div css={styles.content}>
-          <React.Suspense fallback={<LinearProgress />}>
+          <React.Suspense fallback={<div className="ui-root h-0.5 w-full animate-pulse bg-accent" />}>
             {renderRoutes(route.routes)}
           </React.Suspense>
         </div>

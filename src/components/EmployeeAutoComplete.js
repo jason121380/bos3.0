@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
+import { CircularProgress } from 'ui/display-compat'
 import { TextField } from 'ui/text-field'
-import { CircularProgress } from '@mui/material'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'

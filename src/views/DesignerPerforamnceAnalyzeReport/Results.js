@@ -1,6 +1,6 @@
+import { Typography } from 'ui/display-compat'
 import { Grid } from 'ui/grid-compat'
 import { Card, CardHeader, CardContent } from 'ui/card-compat'
-import { Typography } from '@mui/material'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'

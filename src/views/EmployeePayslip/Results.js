@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
+import { Divider, Paper } from 'ui/display-compat'
 import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
 import { Grid } from 'ui/grid-compat'
 import { Card, CardHeader } from 'ui/card-compat'
-import { Divider, Paper } from '@mui/material'
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'
 import { format } from 'date-fns'

@@ -30,7 +30,8 @@ const server = http.createServer((req, res) => {
   const diffs = await page.evaluate(() => {
     const PROPS = ['display', 'position', 'box-sizing', 'width', 'height', 'min-width', 'max-width', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
       'border-top-width', 'border-top-style', 'border-top-color', 'border-right-width', 'border-bottom-width', 'border-bottom-style', 'border-bottom-color', 'border-left-width', 'border-radius', 'border-collapse',
-      'color', 'background-color', 'font-size', 'font-weight', 'line-height', 'letter-spacing', 'text-align', 'vertical-align', 'white-space', 'overflow-x', 'overflow-y', 'box-shadow', 'flex-direction', 'z-index', 'opacity', 'cursor']
+      'color', 'background-color', 'font-size', 'font-weight', 'line-height', 'letter-spacing', 'text-align', 'vertical-align', 'white-space', 'overflow-x', 'overflow-y', 'box-shadow', 'flex-direction', 'z-index', 'opacity', 'cursor',
+      'stroke', 'stroke-width', 'stroke-dasharray', 'stroke-dashoffset', 'transform', 'animation-name', 'animation-duration', 'text-transform', 'transition-property', 'text-overflow', 'flex-shrink']
     const a = document.querySelector('#mui'), c = document.querySelector('#compat')
     const out = []
     const walk = (x, y, p) => {

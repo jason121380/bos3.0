@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
+import { Paper } from 'ui/display-compat'
 import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
 import { Button } from 'ui/button-compat'
 import { Card, CardHeader, CardContent, CardActions } from 'ui/card-compat'
-import { Modal, Paper, TablePagination } from '@mui/material'
+import { Modal, TablePagination } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
 import { red, blue } from 'ui/colors'

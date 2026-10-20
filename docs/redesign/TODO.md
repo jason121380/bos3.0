@@ -8,6 +8,7 @@
 
 ## 一、今天完成了什麼
 
+- **MUI 移除・Paper／Divider／CircularProgress／Typography／Container**（2026/10/20，v3.0-1020-0920）：58 檔換用 `ui/display-compat`（MEMORY #141）。**待實機**：搜尋下拉載入中的小轉圈、上傳進度圓環、設計師業績比較「無資料」、會員卡清單浮起卡片、AR 頁容器寬度、Line／座位／EHS 版型載入細線。
 - **MUI 移除・色票 colors**（2026/10/20，v3.0-1020-0904）：43 檔改引用 `ui/colors`（數值不變，無需實機）。後續：這些寫死色碼應逐步改成 tokens（STYLE.md），列入 Grok 化收尾。
 - **MUI 移除・Table 系列整類**（2026/10/20，v3.0-1020-0902）：27 檔換用 `ui/table-compat`，computed style 比對 0 差異（MEMORY #140）。**待實機**：有資料時的報表表格（含列印）、打帳單商品／服務彈窗表格、排班表（點儲存格排班）、盤點覆核列印。**列印專項待辦**：MerchantDailyReport、DecreaseDailyReport、TransferDetail 三檔仍為 MUI，需以有資料的 mock 比對列印後再換。
 - **MUI 移除・Grid 整類**（2026/10/20，v3.0-1020-0847）：36 檔換用 `ui/grid-compat`（MUI 同名 class＋靜態 CSS），TransferList 改 Tailwind flex（MEMORY #139）。**待實機**：權限／活動等用到「左右選取清單」（TransferList）的頁面——900px 以上三欄、以下堆疊，加入／移除鈕可用；系統參數排班與預約通知設定的欄位排列；設計師業績比較（多組並排）；打帳單快速結帳彈窗。
