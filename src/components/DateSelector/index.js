@@ -282,7 +282,7 @@ const index = ({
         </Select>
       )}
       {hasStart && (
-        <div className="flex h-9 items-center gap-0.5 rounded-md border border-solid border-border-strong bg-background pl-2.5 pr-1 hover:border-border-strong-hover">
+        <div className="flex h-9 max-sm:h-10 items-center gap-0.5 rounded-md border border-solid border-border-strong bg-background pl-2.5 pr-1 hover:border-border-strong-hover">
           <CalendarDays className="mr-1 h-4 w-4 text-text-tertiary" strokeWidth={1.75} />
           {buttonObj.startDate()}
           {hasEnd && (
