@@ -1,6 +1,6 @@
-/** @jsxImportSource @emotion/react */
 // 大型表單彈窗：外框（卡片、標題、底部動作）換成 ui/card、ui/button，欄位排版改 Tailwind grid（MUI md 900px 起兩欄）；
 // 內有 Select（彈出選單），保留相容層 Modal（Radix Dialog 會與其彈出層焦點鎖互搶）與內部表單欄位
+import clsx from 'clsx'
 import { Modal } from 'ui/modal-compat'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { TextField, InputAdornment } from 'ui/text-field'
@@ -18,41 +18,8 @@ import React from 'react'
 import useStore from 'hooks/useStore'
 import useFetchGetCheckIsCustomerNoUsed from 'hooks/useFetchGetCheckIsCustomerNoUsed'
 import SourceSelect from 'components/SourceSelect'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
-
-const styles = {
-  root: css({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    outline: 'none',
-    boxShadow: theme.shadows[20],
-    width: 700,
-    maxHeight: '100%',
-    overflowY: 'auto',
-    maxWidth: '100%',
-  }),
-  birthday: css({
-    width: '100%',
-  }),
-  actions: css({
-    justifyContent: 'flex-end',
-  }),
-  birthdayGrid: css({
-    display: 'flex',
-  }),
-  birthdayInput: css({
-    width: '80px',
-  }),
-  birthdayMonthDay: css({
-    width: '80px',
-    marginLeft: '10px',
-  }),
-}
 
 const gender = [
   {
@@ -65,7 +32,7 @@ const gender = [
   },
 ]
 
-function CustomerEditModal({ open, onClose, customer, className = {}, ...rest }) {
+function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
   const inputLabel = React.useRef()
   const noRef = React.useRef()
   const nameRef = React.useRef()
@@ -235,7 +202,7 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
 
   return (
     <Modal onClose={onClose} open={open}>
-      <Card {...rest} css={css([styles.root, className])} className="ui-root shadow-float">
+      <Card {...rest} className={clsx('ui-root absolute left-1/2 top-1/2 max-h-full w-[700px] max-w-full overflow-y-auto [outline:none] [transform:translate(-50%,-50%)] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)]', className)}>
         <CardHeader className="pb-4">
           <CardTitle>編輯客戶資料</CardTitle>
         </CardHeader>
@@ -341,7 +308,7 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                 onKeyDown={e => handleKeyDownFocus(e)}
               />
             </div>
-            <div css={styles.birthdayGrid}>
+            <div className="flex">
               <TextField
                 label="民國年"
                 name="year"
@@ -349,7 +316,7 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                 value={birthdayObj.year}
                 onChange={e => handleBirthdayChange(e)}
                 variant="outlined"
-                css={styles.birthdayInput}
+                className="w-[80px]"
                 onKeyDown={e => handleKeyDownFocus(e)}
                 onFocus={e => {
                   e.target.select()
@@ -362,7 +329,7 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                 value={birthdayObj.month}
                 onChange={e => handleBirthdayChange(e)}
                 variant="outlined"
-                css={styles.birthdayMonthDay}
+                className="ml-[10px] w-[80px]"
                 onKeyDown={e => handleKeyDownFocus(e)}
                 onFocus={e => {
                   e.target.select()
@@ -375,7 +342,7 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                 value={birthdayObj.day}
                 onChange={e => handleBirthdayChange(e)}
                 variant="outlined"
-                css={styles.birthdayMonthDay}
+                className="ml-[10px] w-[80px]"
                 onKeyDown={e => handleKeyDownFocus(e)}
                 onFocus={e => {
                   e.target.select()
@@ -497,7 +464,7 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
 }
 
 CustomerEditModal.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   customer: PropTypes.any,
   onClose: PropTypes.func,
   open: PropTypes.bool,

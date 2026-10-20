@@ -1,42 +1,14 @@
-/** @jsxImportSource @emotion/react */
 import { endOfDay, startOfDay, addDays, startOfMonth, endOfMonth } from 'date-fns'
 import useQueryString from 'hooks/useQueryString'
 import produce from 'immer'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { useHistory, useLocation } from 'react-router'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import DatePicker from './DatePicker'
 import Requirement from './Requirement'
 import Search from './Search'
 
-const styles = {
-  container: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px'
-  }),
-  search: css({
-    flexGrow: 1,
-    maxWidth: 480,
-    flexBasis: 480,
-  }),
-  field: css({
-    width: '150px',
-    marginLeft: theme.spacing(2),
-  }),
-  filterButton: css({
-    marginLeft: 'auto',
-  }),
-  filterIcon: css({
-    marginRight: theme.spacing(1),
-  }),
-  birth: css({
-    marginRight: theme.spacing(2),
-  }),
-}
 function MerchantSearchBar({
   onFilter,
   onSearch,
@@ -372,11 +344,11 @@ function MerchantSearchBar({
   const initial = initFirst.reduce((total, item) => ({ ...total, [item]: true }), {})
   multiple = multiple.reduce((total, item) => ({ ...total, [item]: true }), {})
   return (
-    <div css={styles.container} className='MerchantSearchBar box-border flex-wrap'>
-      {searchByBirth && <div css={styles.birth}>生日/偏好設計師搜尋</div>}
+    <div className='MerchantSearchBar box-border flex flex-wrap items-center gap-[10px]'>
+      {searchByBirth && <div className="mr-4">生日/偏好設計師搜尋</div>}
       {onSearch && (
         <div>
-          <Search className={styles.search} onSearch={onSearch} />
+          <Search onSearch={onSearch} />
         </div>
       )}
       {visible.indexOf('datePicker') !== -1 && (

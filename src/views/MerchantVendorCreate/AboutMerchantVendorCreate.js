@@ -1,44 +1,10 @@
-/** @jsxImportSource @emotion/react */
 // 廠商選擇 Autocomplete 保留 MUI
 import { TextField } from 'ui/text-field'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import React from 'react'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Autocomplete } from 'ui/combobox'
-
-const styles = {
-  root: css({}),
-  alert: css({
-    marginBottom: theme.spacing(3),
-  }),
-  formGroup: css({
-    marginBottom: theme.spacing(3),
-  }),
-  fieldGroup: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  fieldHint: css({
-    margin: theme.spacing(1, 0),
-  }),
-  tags: css({
-    marginTop: theme.spacing(1),
-    '& > * + *': {
-      marginLeft: theme.spacing(1),
-    },
-  }),
-  flexGrow: css({
-    flexGrow: 1,
-  }),
-  dateField: css({
-    '& + &': {
-      marginLeft: theme.spacing(2),
-    },
-  }),
-}
 
 function AboutMerchantVendorCreate({ className, vendorOption, isLodaing, submitData, setSubmitData }) {
   const handleInputChange = (key, value) => {
@@ -47,7 +13,7 @@ function AboutMerchantVendorCreate({ className, vendorOption, isLodaing, submitD
     setSubmitData(newData)
   }
   return (
-    <Card css={className}>
+    <Card className={className}>
       <CardHeader>
         <CardTitle>廠商資訊</CardTitle>
       </CardHeader>

@@ -1,4 +1,4 @@
-/** @jsxImportSource @emotion/react */
+import clsx from 'clsx'
 // 分頁使用 ui/table TablePagination（pagenationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
 import { Plus } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
@@ -36,7 +36,7 @@ function Results({
   }
 
   return (
-    <div {...rest} css={className} className="flex flex-col gap-4">
+    <div {...rest} className={clsx('flex flex-col gap-4', className)}>
       <Card className="flex flex-col items-center gap-1 px-5 py-6 text-center">
         <span className="text-label text-text-secondary">
           入金餘額

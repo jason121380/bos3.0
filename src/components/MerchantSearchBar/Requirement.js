@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { LoaderCircle } from 'lucide-react'
 import { TextField } from 'ui/text-field'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
@@ -13,43 +12,13 @@ import { useFetchGetCustomerReferenceLazy } from 'hooks/useFetchGetCustomerRefer
 import useFetchAccountingType from 'hooks/useFetchAccountingType'
 import idx from 'idx'
 import React, { useState, useEffect, Fragment } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import Subject from './Subject'
 import { Autocomplete } from 'ui/combobox'
 
-const styles = {
-  container: css({
-    display: 'flex',
-    alignItems: 'center',
-    margin: theme.spacing(1, 0, 0, 0),
-  }),
-  search: css({
-    flexGrow: 1,
-    maxWidth: 480,
-    flexBasis: 480,
-  }),
-  field: css({
-    minWidth: '180px',
-    maxWidth: 180 * 1.5 + 'px',
-    // marginLeft: theme.spacing(2),
-  }),
-  filterButton: css({
-    marginLeft: 'auto',
-  }),
-  filterIcon: css({
-    marginRight: theme.spacing(1),
-  }),
-  fieldCustomer: css({
-    minWidth: '180px',
-    maxWidth: 180 * 1.5 + 'px',
-    // marginLeft: theme.spacing(2),
-  }),
-  fieldSources: {
-    minWidth: '180px'
-  },
-}
+// 欄寬（原 emotion styles.field／fieldCustomer：min 180、max 180×1.5；fieldSources：min 180）。各 AutoComplete 以 className 套在根節點
+const FIELD = 'min-w-[180px] max-w-[270px]'
+const FIELD_SOURCES = 'min-w-[180px]'
 
 export default function ({
   outside,
@@ -109,7 +78,7 @@ export default function ({
               value: multiple.employee ? value : idx(value, _ => _.userId) || '',
             })
           }
-          className={styles.field}
+          className={FIELD}
           initFirst={initial.employee}
           multiple={multiple.employee}
         />
@@ -121,14 +90,14 @@ export default function ({
           label="顧客編號/姓名"
           value={values.customerId}
           onChange={value => onChange({ target: 'customerId', value: idx(value, _ => _.id) })}
-          className={styles.fieldCustomer}
+          className={FIELD}
         />
       )
     },
     subject: function () {
       return (
         <Subject
-          className={styles.field}
+          className={FIELD}
           onChange={(event, option) => {
             onChange({
               target: 'accountingSubjectName',
@@ -146,7 +115,7 @@ export default function ({
           type="date"
           // defaultValue={format(new Date(values.date), 'yyyy-MM-dd')}
           // value={format(new Date(values.date), 'yyyy-MM-dd')}
-          css={styles.field}
+          className={FIELD}
           fullWidth
           onChange={event =>
             onChange({
@@ -165,7 +134,7 @@ export default function ({
       return (
         <PaymentAutoComplete
           label="其他付款方式"
-          className={styles.field}
+          className={FIELD}
           value={values.payWay}
           name="payWay"
           onChange={value => {
@@ -181,7 +150,7 @@ export default function ({
       return (
         <Autocomplete
           freeSolo
-          css={styles.field}
+          className={FIELD}
           onChange={(event, values) => {
             onChange({
               target: 'payTypeKeyWord',
@@ -222,7 +191,7 @@ export default function ({
       return (
         <ThirdPartyAutoComplete
           label="第三方卡券"
-          className={styles.field}
+          className={FIELD}
           value={values.thirdPartTicketId}
           name="thirdPartyCoupon"
           onChange={value => {
@@ -242,7 +211,7 @@ export default function ({
       return (
         <ServicesAutoComplete
           label="服務名稱/代號"
-          className={styles.field}
+          className={FIELD}
           value={values.serviceIds}
           name="services"
           onFieldChange={() => {
@@ -264,7 +233,7 @@ export default function ({
       return (
         <ServicesAutoComplete
           label="服務名稱/代號"
-          className={styles.fieldCustomer}
+          className={FIELD}
           value={values.serviceId}
           name="service"
           onFieldChange={() => {
@@ -286,7 +255,7 @@ export default function ({
       return (
         <ProductAutoComplete
           label="商品名稱"
-          className={styles.fieldCustomer}
+          className={FIELD}
           value={values.productId}
           onChange={value => {
             onChange({
@@ -301,7 +270,7 @@ export default function ({
       return (
         <Autocomplete
           freeSolo
-          css={styles.field}
+          className={FIELD}
           value={values.source || ''}
           disabled={referenceLazyData.loading}
           onChange={(event, values) => {
@@ -336,7 +305,7 @@ export default function ({
     sources: function () {
       return (
         <SourcesAutocomplete
-          className={styles.fieldSources}
+          className={FIELD_SOURCES}
           value={values.source}
           onChange={value => {
             onChange({
@@ -350,7 +319,7 @@ export default function ({
     membershipcard: function () {
       return (
         <MemberShipCardAutoComplete
-          className={styles.fieldSources}
+          className={FIELD_SOURCES}
           label="會員卡名稱/代號"
           value={values.membershipId}
           onChange={value => {

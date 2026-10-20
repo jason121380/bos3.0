@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from "context/keyInContext";
@@ -6,27 +5,9 @@ import { useFetchUseMembershipOrder } from "hooks/useFetchOrder";
 import _ from "lodash";
 import React from "react";
 import idx from "idx";
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import MemberShipCardSells from "./MemberShipCardSells";
 
-const styles = {
-  details: css({
-    overflowX: "auto",
-  }),
-  heading: css({
-    fontSize: '16px !important',
-    fontWeight: 'bold',
-    color: 'rgb(var(--text))',
-  }),
-  fieldOutter: css({
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    flexDirection: "column",
-  }),
-}
 
 const PannelMemberShipCardSells = ({ thirdPartTicket, expanded, setExpanded }) => {
   const {
@@ -205,10 +186,10 @@ const PannelMemberShipCardSells = ({ thirdPartTicket, expanded, setExpanded }) =
           memberCardSells.filter(d => d.membershipUUID).reduce((total, d) => total + d.price, 0)
         )}
       >
-        <p className="m-0" css={styles.heading}>會員卡銷售</p>
+        <p className="m-0 !text-[16px] font-bold text-text">會員卡銷售</p>
       </AccordionSummary>
-      <AccordionDetails css={styles.details}>
-        <div css={styles.fieldOutter}>
+      <AccordionDetails className="overflow-x-auto">
+        <div className="flex flex-col items-start justify-start">
           {memberCardSells.map((data, index) => (
             <MemberShipCardSells
               key={`memberShipCard-sells-pannel-${data.id}-${index}`}

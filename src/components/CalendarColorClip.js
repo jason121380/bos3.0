@@ -1,20 +1,6 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react'
-import { theme } from '../theme'
 import { useEffect, useState } from 'react'
 import produce from 'immer'
 import _ from 'lodash'
-
-const styles = {
-  root: css({
-    display: 'flex',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-    '& > *': {
-      margin: theme.spacing(0.5),
-    },
-  }),
-}
 
 const checkin = [
   { label: '報到成功', color: '#1A73E8', display: true },
@@ -63,7 +49,7 @@ export default function ({
   }, [eventDisplay, bookingCusCheck, bookingHistoryDisplay])
 
   return (
-    <div css={styles.root}>
+    <div className="flex flex-wrap justify-start [&>*]:m-1">
       {(checkinMode ? checkin : statusArray).map(({ label, color, display }) => display ? (
         <span
           key={label + color}

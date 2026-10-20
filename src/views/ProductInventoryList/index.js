@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { useState, useEffect } from 'react'
 import useFetchGetProductInventoryList from 'hooks/useFetchGetProductInventoryList'

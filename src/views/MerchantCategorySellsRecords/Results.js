@@ -1,40 +1,14 @@
-/** @jsxImportSource @emotion/react */
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
 import { CSVLink } from "react-csv";
 import { startOfDay } from 'date-fns'
 import pagenationLabel from './../../helper/pagenationLabel'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TablePagination, TableRow } from 'ui/table'
-
-const styles = {
-  root: css({}),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 900,
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-}
 
 function Results({
   className,
@@ -270,7 +244,7 @@ function Results({
     }
   }
   return (
-    <div {...rest} css={css([styles.root, className])}>
+    <div {...rest} className={className}>
       <p className="pb-2 text-caption tabular-nums text-text-secondary">
         {results.totalCount} 筆資料, {results.pageOffset + 1}/
         {Math.ceil(results.totalCount / results.pageLimit)}
@@ -417,7 +391,7 @@ function Results({
 }
 
 Results.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   customers: PropTypes.array,
 }
 

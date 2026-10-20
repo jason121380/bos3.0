@@ -1,4 +1,4 @@
-/** @jsxImportSource @emotion/react */
+import clsx from 'clsx'
 import { Plus } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
 import useFetchDeleteBonusDeposit from 'hooks/useFetchDeleteBonusDeposit'
@@ -64,7 +64,7 @@ function Results({
   }
 
   return (
-    <div {...rest} css={className} className="flex flex-col gap-4">
+    <div {...rest} className={clsx('flex flex-col gap-4', className)}>
       <Card className="flex flex-col items-center gap-1 px-5 py-6 text-center">
         <span className="text-label text-text-secondary">
           紅利點數餘額

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TablePagination } from 'ui/pagination-compat'
 import { Modal } from 'ui/modal-compat'
 import { Paper } from 'ui/display-compat'
@@ -7,67 +6,9 @@ import { Button } from 'ui/button-compat'
 import { Card, CardHeader, CardContent, CardActions } from 'ui/card-compat'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
-import { blue } from 'ui/colors'
 import idx from 'idx'
 import pagenationLabel from './../../helper/pagenationLabel'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
-const styles = {
-  root: css({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    outline: 'none',
-    boxShadow: theme.shadows[20],
-    width: 700,
-    maxHeight: '100%',
-    overflowY: 'auto',
-    maxWidth: '100%',
-  }),
-  birthday: css({
-    width: '100%',
-  }),
-  actions: css({
-    justifyContent: 'flex-end',
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  categorieDiv: css({
-    marginBottom: '5px',
-  }),
-  categorieBtn: css({
-    margin: '3px',
-  }),
-  clickedCategorieBtn: css({
-    margin: '3px',
-    color: 'white',
-  }),
-  categorieClear: css({
-    color: 'white !important',
-  }),
-  addBtn: css({
-    backgroundColor: blue[500],
-    color: 'white !important',
-    '&:hover': {
-      backgroundColor: blue[700],
-    },
-  }),
-  confirmBtn: css({
-    margin: '7px 0',
-    float: 'right',
-  }),
-  header: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-  closeAtTop: css({
-    margin: '16px 24px !important',
-  }),
-}
 
 function ProductsModal({
   productsModalOpen,
@@ -182,8 +123,8 @@ function ProductsModal({
 
   return (
     <Modal open={productsModalOpen}>
-      <Card css={styles.root}>
-        <div css={styles.header}>
+      <Card className="absolute left-1/2 top-1/2 max-h-full w-[700px] max-w-full overflow-y-auto [outline:none] [transform:translate(-50%,-50%)] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)]">
+        <div className="flex items-center justify-between">
           <CardHeader
             title={
               selectedCategorieName.length === 0 ? '所有商品' : `${categoryNameForDisplay}類商品`
@@ -193,7 +134,7 @@ function ProductsModal({
             color="primary"
             variant="contained"
             onClick={closeModal}
-            css={styles.closeAtTop}
+            className="!mx-[24px] !my-[16px]"
           >
             關閉
           </Button>
@@ -201,7 +142,7 @@ function ProductsModal({
 
         <div className="h-px bg-border" />
         <CardContent>
-          <div css={styles.categorieDiv}>
+          <div className="mb-[5px]">
             {productCategories.map(productCategory => (
               <Button
                 variant={
@@ -220,7 +161,7 @@ function ProductsModal({
               variant="contained"
               size="small"
               color="error"
-              css={styles.categorieClear}
+              className="!text-white"
               onClick={handleClearCategorie}
             >
               清除
@@ -249,7 +190,7 @@ function ProductsModal({
                       <Button
                         size="small"
                         onClick={() => handleSelectProduct(product)}
-                        css={styles.addBtn}
+                        className="bg-[#2196f3] !text-white hover:bg-[#1976d2]"
                       >
                         加入
                       </Button>
@@ -266,7 +207,7 @@ function ProductsModal({
             </Table>
           </TableContainer>
         </CardContent>
-        <CardActions css={styles.actions}>
+        <CardActions className="justify-end">
           <TablePagination
             ref={pageRef}
             labelRowsPerPage='每頁顯示數量'

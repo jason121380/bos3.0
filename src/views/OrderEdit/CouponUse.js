@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { CheckboxField } from 'ui/checkbox'
 import { Field } from 'ui/input'
@@ -9,54 +8,7 @@ import { useFetchLazyTicketRecords } from 'hooks/useFetchTicketRecords'
 import idx from 'idx'
 import _ from 'lodash'
 import React, { Fragment } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
-const styles = {
-  // 項目列：欄位靠底對齊（標籤在上），窄螢幕換行不擠壓（比照打帳單）
-  couponUse: css({
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-    rowGap: '12px',
-    marginBottom: theme.spacing(3),
-  }),
-  couponField: css({
-    width: '250px',
-    maxWidth: '100%',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  field: css({
-    minWidth: '150px !important',
-    width: '150px !important',
-    display: 'flex',
-    marginRight: '12px !important',
-  }),
-  priceField: css({
-    width: '65px',
-    display: 'flex',
-    marginRight: '12px !important',
-  }),
-  checkbox: css({
-    width: '100px',
-    display: 'flex',
-    marginRight: '12px',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-  action: css({
-    width: '50px',
-    display: 'flex',
-    marginRight: '12px',
-    cursor: 'pointer',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-}
 
 export default function CouponUse({
   index,
@@ -171,11 +123,11 @@ export default function CouponUse({
 
   return (
     <Fragment>
-      <div css={styles.couponUse}>
+      <div className="mb-6 flex flex-wrap items-end justify-start gap-y-[12px]">
         {bill.customerId && (
           <Field label="預收卡">
           <CustomerTicketRecordAutoComplete
-            className={styles.couponField}
+            className="mr-[12px] flex w-[250px] max-w-full"
             customerId={bill.customerId}
             inputProps={{ 'data-testid': '', placeholder: '卡券名稱/代號' }}
             value={couponUsage.customerTicketId}
@@ -189,7 +141,7 @@ export default function CouponUse({
         )}
         {couponUsage.customerTicketId && (
           <React.Fragment>
-            <Field label="金額" css={styles.priceField}>
+            <Field label="金額" className="!mr-[12px] flex w-[65px]">
             <TextField
               fullWidth
               variant="outlined"
@@ -217,13 +169,13 @@ export default function CouponUse({
                       key: 'helperId',
                     })
                   }
-                  className={styles.field}
+                  className="!mr-[12px] flex !w-[150px] !min-w-[150px]"
                 />
                 </Field>
                 <CheckboxField
                   label="指定"
                   checked={data.isDesignate}
-                  css={styles.checkbox}
+                  className="mr-[12px] flex w-[100px] last:mr-0"
                   onChange={(_event, state) =>
                     handleAssistantChange({
                       value: state,
