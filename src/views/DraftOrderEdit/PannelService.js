@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
@@ -11,35 +10,9 @@ import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import useFetchGetIsHelperDesignationSetting from 'hooks/useFetchGetIsHelperDesignationSetting'
 import idx from 'idx'
 import produce from 'immer'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import ServicesModal from './ServicesModal'
 import Services from './Services'
-
-const styles = {
-  root: css({
-    width: '100%',
-    marginTop: theme.spacing(3),
-  }),
-  heading: css({
-    fontSize: '16px !important',
-    fontWeight: 'bold',
-    color: 'rgb(var(--text))',
-  }),
-  details: css({
-    overflowX: 'auto',
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  }),
-  fieldOutter: css({
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-  }),
-}
 
 export default function PannelService({ thirdPartTicket }) {
   const { handleBillChange, orderId, bindedThirdPart } = useContext(billContext)
@@ -301,10 +274,10 @@ export default function PannelService({ thirdPartTicket }) {
           services.filter(d => d.serviceId).reduce((total, d) => total + d.price, 0)
         )}
       >
-        <p className="m-0" css={styles.heading}>項目消費</p>
+        <p className="m-0 !text-[16px] font-bold text-[rgb(var(--text))]">項目消費</p>
       </AccordionSummary>
-      <AccordionDetails css={styles.details}>
-        <div css={styles.fieldOutter}>
+      <AccordionDetails className="flex items-center justify-start overflow-x-auto">
+        <div className="flex flex-col items-start justify-start">
           {servicesModalOpen && (
             <ServicesModal
               servicesModalOpen={servicesModalOpen}

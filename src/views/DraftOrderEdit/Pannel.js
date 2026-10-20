@@ -1,9 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import billContext from 'context/keyInContext'
 import { useState, useContext, useEffect } from 'react'
 import idx from "idx";
 import useFetchGetThirdPartTicketSetting from 'hooks/useFetchGetThirdPartTicketSetting'
-import { css } from '@emotion/react'
 
 import PannelCouponSells from './PannelCouponSells'
 import PannelCouponUse from './PannelCouponUse'
@@ -15,21 +13,6 @@ import PannelMemberShipCardSells from './PannelMemberShipCardSells'
 import PannelBonus from "./PannelBonus";
 
 // import PannelOtherPayment from './PannelOtherPayment'
-
-const styles = {
-  // 各區塊（Accordion）之間 12px，與打帳單一致
-  root: css({
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px',
-  }),
-  heading: css({
-    fontSize: '16px !important',
-    fontWeight: 'bold',
-    color: 'rgb(var(--text))',
-  }),
-}
 
 export default function SimpleAccordion() {
 
@@ -51,7 +34,7 @@ export default function SimpleAccordion() {
   }, [thirdPartTicketData.loading])
 
   return (
-    <div css={styles.root}>
+    <div className="flex w-full flex-col gap-[12px]">
       <PannelService
         thirdPartTicket={thirdPartTicket}
       />

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
 import { CheckboxField } from 'ui/checkbox'
 import { Eraser, Copy, Trash2 } from 'lucide-react'
@@ -15,45 +14,19 @@ import { addDays, addYears, format, startOfDay } from "date-fns";
 import { useFetchGetMembershipsForModal } from "hooks/useFetchGetMembership";
 import { useFetchGetMembershipCategories } from "hooks/useFetchGetMembershipCategory";
 import { MobileDatePicker } from 'ui/date-picker'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import MemberShipCardSellsModal from "./MemberShipCardSellsModal";
 
 // 版面比照打帳單（views/OrderCreate/styles/MemberShipCardSells）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
+// 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px；pxToRem 以 16px 換算；原 `!important` 以 `!` 前綴保留）。
+// 自動完成元件與 MobileDatePicker 的 className 原以 css 套在根節點
 const styles = {
-  merchantSells: css({
-    display: "flex",
-    alignItems: "flex-end",
-    justifyContent: "flex-start",
-    flexWrap: "wrap",
-    rowGap: "12px",
-    marginBottom: theme.spacing(3),
-  }),
-  field: css({
-    width: "200px",
-    display: "flex",
-    marginRight: "12px !important",
-  }),
-  priceField: css({
-    width: "65px",
-    display: "flex",
-    marginRight: "12px !important",
-  }),
-  heading2: css({
-    fontSize: theme.typography.pxToRem(13),
-    fontWeight: "bold",
-  }),
-  productField: css({
-    width: "250px",
-    display: "flex",
-    marginRight: "12px",
-  }),
-  dateField: css({
-    width: "200px",
-    display: "flex",
-    marginRight: "12px !important",
-  }),
+  merchantSells: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  field: 'w-[200px] flex !mr-[12px]',
+  priceField: 'w-[65px] flex !mr-[12px]',
+  heading2: 'text-[0.8125rem] font-bold',
+  productField: 'w-[250px] flex mr-[12px]',
+  dateField: 'w-[200px] flex !mr-[12px]',
 }
 
 const MemberShipCardSells = ({
@@ -232,7 +205,7 @@ const MemberShipCardSells = ({
   }
   return (
     <Fragment>
-      <div css={styles.merchantSells}>
+      <div className={styles.merchantSells}>
         {/* 必填 *：helper/billVerify.js checkMembershipOrders 要求 sellerId、membershipUUID、有效到期日；
             handleTidyBill 會丟掉兩者皆空的列，所以該列有填任一欄才標必填 */}
         <Field label="服務人員" required={!!sells.sellerId || !!sells.membershipUUID}>
@@ -320,7 +293,7 @@ const MemberShipCardSells = ({
         </Field>
         {sells.membershipUUID ? (
           <React.Fragment>
-            <Field label="價格" css={styles.priceField}>
+            <Field label="價格" className={styles.priceField}>
               <Input
                 value={sells.price}
                 ref={priceRef}
@@ -346,7 +319,7 @@ const MemberShipCardSells = ({
               {/* 必填 *：非永久會籍時 checkMembershipOrders 要求有效到期日 */}
               <Field label="到期日" required={sells.expiryDate !== null}>
                 <MobileDatePicker
-                  css={styles.dateField}
+                  className={styles.dateField}
                   value={sells.expiryDate}
                   disabled={sells.expiryDate === null}
                   format="yyyy/MM/dd"
@@ -431,12 +404,12 @@ const MemberShipCardSells = ({
                   />
                 </Field>
               )}
-              {teachingMode && <p className="m-0" css={styles.heading2}>勾選將入業績但不收費用**</p>}
+              {teachingMode && <p className={`m-0 ${styles.heading2}`}>勾選將入業績但不收費用**</p>}
               {sells.thirdPartyCouponMerchantId &&
                 thirdPartyCoupons.map((data) => {
                   if (data.id === sells.thirdPartyCouponMerchantId) {
                     return (
-                      <p key={data.id} className="m-0" css={styles.heading2} style={{ marginTop: '4px' }}>
+                      <p key={data.id} className={`m-0 ${styles.heading2}`} style={{ marginTop: '4px' }}>
                         扣完後業績:
                         {Math.round((sells.price * (100 - data.fee)) / 100)}
                       </p>
@@ -444,7 +417,7 @@ const MemberShipCardSells = ({
                   }
                 })}
             </div>
-            <Field label="備註" css={styles.field}>
+            <Field label="備註" className={styles.field}>
               <Input
                 value={sells.remark}
                 name="remark"

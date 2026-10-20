@@ -1,21 +1,9 @@
-/** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
 import billContext from 'context/keyInContext'
 import { useLazyFetchCustomerWallet } from 'hooks/useFetchCustomerWallet'
 import idx from 'idx'
 import React from 'react'
 import produce from 'immer'
-import { css } from '@emotion/react'
-
-const styles = {
-  field: css({
-    width: '150px',
-    maxWidth: 'calc(100% - 12px)', // 扣掉 marginRight，窄螢幕才不會超出卡片
-    display: 'flex',
-    marginRight: '12px !important',
-    justifyContent: 'flex-start',
-  })
-}
 
 export default function PaymentCustomerWallet() {
   const { bill, handleBillChange, orderDetail, setBill } = React.useContext(billContext)
@@ -77,7 +65,7 @@ export default function PaymentCustomerWallet() {
   return (
     <React.Fragment>
       {usableCustomerWallet > 0 && bill.customerId && (
-        <Field label={`扣入金(${usableCustomerWallet}可用)`} css={styles.field}>
+        <Field label={`扣入金(${usableCustomerWallet}可用)`} className="!mr-[12px] flex w-[150px] max-w-[calc(100%-12px)] justify-start">
           <Input
             value={bill.walletPay}
             type="number"

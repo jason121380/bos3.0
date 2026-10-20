@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 大型頁：格子尺寸浮層保留相容層 Popper（anchorEl 開關、不因點外側關閉；換 Radix Popover 會改變焦點與關閉行為），Slider 為 ui/slider；
 // 載入遮罩改原生 div（#Backdrop 有全域樣式，關閉時同原 Backdrop 以 visibility hidden 保留在畫面上）；Page 根元素不加 ui-root（box-sizing 會改變行事曆格子寬度）
 import { Slider } from 'ui/slider'
@@ -26,7 +25,6 @@ import BookingRecordListAutoComplete from 'components/BookingRecordListAutoCompl
 import { useFetchGetBookinHistoryDisplay } from 'hooks/useFetchGetParameterAboutBookingSetting'
 import { useFetchGetCancelBookingUsing } from 'hooks/useFetchMerchantPassword'
 import { cloneDeep } from 'lodash'
-import { css } from '@emotion/react'
 import produce from 'immer';
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
@@ -35,15 +33,6 @@ import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Switch } from 'ui/switch'
 
 import OrderTable from './OrderTable'
-
-const styles = {
-  // 載入中遮罩：透明底、置頂（與舊版相同）
-  opacity: css({
-    opacity: '1 !important',
-    zIndex: 999,
-    background: 'rgba(0,0,0,0) !important',
-  }),
-}
 
 function Calendar() {
   const merchantId = JSON.parse(localStorage.getItem('userMerchant')).id
@@ -560,8 +549,7 @@ function Calendar() {
       <div
         id='Backdrop'
         aria-hidden="true"
-        css={styles.opacity}
-        className="fixed inset-0 flex items-center justify-center"
+        className="fixed inset-0 flex items-center justify-center !opacity-100 z-[999] ![background:rgba(0,0,0,0)]"
         style={{ visibility: (merchant.loading || DesignerCalendar.loading) ? undefined : 'hidden' }}
       >
         <LoaderCircle className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />

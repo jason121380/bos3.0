@@ -1,31 +1,15 @@
-/** @jsxImportSource @emotion/react */
 import { Button } from 'ui/button-compat'
 import billContext from 'context/keyInContext'
 import React from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-payment: css({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-start',
-  marginBottom: theme.spacing(3),
-}),
-  linePay: css({
-    color: 'white',
-    '&:hover': {
-      backgroundColor: '#00c300',
-      color: 'white',
-      opacity: 0.8,
-    },
-  }),
-}
 
+// 本檔未被引用（PannelOtherPayment 已在 Pannel.js 註解掉）；原 emotion styles 物件缺少 `const styles = {` 開頭、語法無效，
+// 這裡依原數值轉 Tailwind（payment：flex 置左、下外距 24px；linePay：白字、hover 綠底 80% 透明）
 export default function Payment() {
   const { bill, handleBillChange } = React.useContext(billContext)
   return (
-    <div css={styles.payment}>
+    <div className="mb-[24px] flex items-center justify-start">
       <Button
-        css={styles.linePay}
+        className="text-[white] hover:bg-[#00c300] hover:text-[white] hover:opacity-80"
         style={{
           backgroundColor: bill.linePay ? '#00c300' : 'rgba(0, 0, 0, 0.26)',
         }}

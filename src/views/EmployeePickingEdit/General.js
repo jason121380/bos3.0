@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 表單欄位以 inputRef 串接 Enter 跳下一欄（含 Autocomplete、DatePicker、Select），保留 MUI；只換卡片外框
 import { Select, MenuItem, FormControl, InputLabel } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
@@ -7,25 +6,14 @@ import { useFetchUsersForCreatePicking } from 'hooks/useFetchUsers'
 import { DatePicker } from 'ui/date-picker'
 import idx from 'idx'
 import { useRef, useState, useEffect, useMemo } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
 import { Autocomplete } from 'ui/combobox'
 
+// 原 emotion styles：formControl 的 marginBottom 24px !important；原 ':last:child' 是無效選擇器（整條規則被瀏覽器丟棄），
+// datePicker 的 '& input.MuiInput-input' 在 ui/date-picker（不輸出 MuiInput-input）不命中，兩者皆為死碼不轉
 const styles = {
-  cardContent: css({}),
-  formControl: css({
-    marginBottom: theme.spacing(3) + '!important',
-    ':last:child': {
-      marginBottom: 0,
-    },
-  }),
-  datePicker: css({
-    '& input.MuiInput-input': {
-      padding: '6px 0 7px'
-    }
-  }),
+  formControl: '!mb-[24px]',
 }
 
 export default function General({
@@ -81,15 +69,15 @@ export default function General({
     }
   }, [focus])
   return (
-    <Card css={className}>
+    <Card className={className}>
       <CardHeader>
         <CardTitle>領料資訊</CardTitle>
       </CardHeader>
-      <CardContent css={styles.cardContent}>
+      <CardContent>
         <DatePicker
           format='yyyy/MM/dd'
           label='日期'
-          css={css(styles.formControl, styles.datePicker)}
+          className={styles.formControl}
           value={idx(formState, _ => _.date)}
           localeText={{
             toolbarTitle: '選擇日期'
@@ -112,7 +100,7 @@ export default function General({
         />
         <Autocomplete
           id="prodcut-select"
-          css={styles.formControl}
+          className={styles.formControl}
           options={options}
           autoHighlight
           getOptionLabel={() => (formState ? formState.productName : '')}
@@ -162,7 +150,7 @@ export default function General({
           variant="outlined"
           fullWidth
           type="number"
-          css={styles.formControl}
+          className={styles.formControl}
           onChange={e => changeHandler('price', parseInt(e.target.value))}
           value={idx(formState, _ => _.price ? _.price : '')}
           onWheel={() => document.activeElement.blur()}
@@ -179,7 +167,7 @@ export default function General({
           variant="outlined"
           fullWidth
           type="number"
-          css={styles.formControl}
+          className={styles.formControl}
           onChange={e => changeHandler('count', parseInt(+e.target.value))}
           value={idx(formState, _ => _.count)}
           onWheel={() => document.activeElement.blur()}
@@ -193,7 +181,7 @@ export default function General({
         />
         <Autocomplete
           id="picker-select"
-          css={styles.formControl}
+          className={styles.formControl}
           options={idx(users, _ => _.data.users.users) || []}
           autoHighlight
           getOptionLabel={option => (formState ? formState.PickerName : '')}
@@ -236,7 +224,7 @@ export default function General({
               setFocus('remark')
             }
           }}
-          css={styles.formControl}
+          className={styles.formControl}
           variant="outlined"
         >
           <InputLabel>用途</InputLabel>
@@ -266,7 +254,7 @@ export default function General({
           label="備註"
           variant="outlined"
           fullWidth
-          css={styles.formControl}
+          className={styles.formControl}
           inputRef={remarkRef}
           onChange={event => changeHandler('remark', event.target.value)}
           value={idx(formState, _ => _.remark ? _.remark : '')}

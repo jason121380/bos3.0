@@ -1,15 +1,14 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import useFetchGetUserBookingRecordList from 'hooks/useFetchGetUserBookingRecordList'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
 import React, {useEffect} from 'react'
-import { css } from '@emotion/react'
 import { Autocomplete } from 'ui/combobox'
 
 function BookingRecordListAutoComplete(
   {
-    className = {},
+    // 跨組契約：className 為 Tailwind 字串，直通到 ui/combobox 根節點（其內以 cn 合併預設 class）
+    className = '',
     onChange = () => {},
     inputOnChange = () => {},
     getCustomerData = () => {},
@@ -147,7 +146,7 @@ function BookingRecordListAutoComplete(
         open={designerToggle.open}
         onOpen={designerToggle.toggle}
         onClose={designerToggle.toggle}
-        css={className}
+        className={className}
         value={selectedValue}
         options={options}
         filterOptions={filterOptions}

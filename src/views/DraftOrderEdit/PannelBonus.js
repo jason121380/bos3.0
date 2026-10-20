@@ -1,9 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { formatMoney } from 'ui/format'
 import { useContext, useEffect, useState } from 'react'
 import Bonus from './Bonus'
-import styles from 'views/OrderCreate/styles/PannelPayment'
 import billContext from 'context/keyInContext'
 import { useFetchGetCustomerBonusRecordLazy } from 'hooks/useFetchGetCustomerBonusRecord'
 import _ from 'lodash'
@@ -52,7 +50,7 @@ export default function PannelBonus({ bonusActive }) {
         summaryMeta={!expanded && bill.bonusDecount > 0 ? `折抵 ${formatMoney(bill.bonusDecount)}` : ''}
         data-testid="panelRemark"
       >
-        <p className="m-0" css={styles.heading}>紅利點數
+        <p className="m-0 !text-[16px] font-bold text-[rgb(var(--text))] flex items-center">紅利點數
           <span style={{ marginLeft: '10px', fontSize: '10px' }}>
             {bill.customerId ? `剩餘點數: ${customerBonus}` : ''}
           </span>
@@ -63,8 +61,8 @@ export default function PannelBonus({ bonusActive }) {
           )}
         </p>
       </AccordionSummary>
-      <AccordionDetails css={styles.details}>
-        <div css={styles.fieldOutter}>
+      <AccordionDetails className="overflow-x-auto">
+        <div className="flex flex-col items-start justify-start">
           <Bonus expanded={expanded} customerBonus={customerBonus}/>
         </div>
       </AccordionDetails>

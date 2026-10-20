@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Modal } from 'ui/modal-compat'
 import { Grid } from 'ui/grid-compat'
 import { Button } from 'ui/button-compat'
@@ -21,31 +20,10 @@ import useFetchGetLastCustomerNo from 'hooks/useFetchGetLastCustomerNo'
 import _ from 'lodash'
 import SourceSelect from 'components/SourceSelect'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
+// 原 emotion styles.root 逐值轉 Tailwind（theme.shadows[20] 原值照抄）；'& .MuiCardHeader-action' 以任意變體保留（雙 class 權重蓋過 -my-1 的上外距）
 const styles = {
-  root: css({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    outline: 'none',
-    boxShadow: theme.shadows[20],
-    width: 700,
-    maxHeight: '100%',
-    overflowY: 'auto',
-    maxWidth: '100%',
-    '& .MuiCardHeader-action': {
-      marginTop: 0,
-    }
-  }),
-  birthday: css({
-    width: '100%',
-  }),
-  actions: css({
-    justifyContent: 'flex-end',
-  }),
+  root: 'absolute top-[50%] left-[50%] [transform:translate(-50%,-50%)] [outline:none] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)] w-[700px] max-h-full overflow-y-auto max-w-full [&_.MuiCardHeader-action]:mt-0',
 }
 
 const gender = [
@@ -235,7 +213,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
 
   return (
     <Modal open={open}>
-      <Card css={styles.root}>
+      <Card className={styles.root}>
         <CardHeader
           title={values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}
           action={!lastCustomerNo.loading && <span className="text-body text-text">{`最新顧客編號: ${lastNo}`}</span>}
@@ -499,7 +477,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
           </Grid>
         </CardContent>
         <div className="h-px bg-border" />
-        <CardActions css={styles.actions}>
+        <CardActions className="justify-end">
           <Button style={{ color: 'black' }} onClick={onClose}>取消</Button>
           <Button
             color="primary"

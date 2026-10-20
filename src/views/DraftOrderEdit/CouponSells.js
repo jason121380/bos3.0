@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
 import { Eraser, Copy, Trash2 } from 'lucide-react'
 import { RowIconButton, AddRowButton } from 'views/OrderCreate/RowAction'
@@ -7,39 +6,15 @@ import idx from 'idx'
 import _ from 'lodash'
 import React, { Fragment, useState, useEffect, useRef } from 'react'
 import billContext from 'context/keyInContext'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 // 版面比照打帳單（views/OrderCreate/styles/CouponSells）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
+// 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px）。fieldWidth 傳給 TicketAutoComplete（原以 css={className} 套在根節點）
 const styles = {
-  couponSells: css({
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-    rowGap: '12px',
-    marginBottom: theme.spacing(3),
-  }),
-  field: css({
-    width: '150px',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  fieldWidth: css({
-    width: '250px',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  countField: css({
-    width: '80px',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  priceField: css({
-    width: '65px',
-    display: 'flex',
-    marginRight: '12px',
-  }),
+  couponSells: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  field: 'w-[150px] flex mr-[12px]',
+  fieldWidth: 'w-[250px] flex mr-[12px]',
+  countField: 'w-[80px] flex mr-[12px]',
+  priceField: 'w-[65px] flex mr-[12px]',
 }
 
 export default function CouponSells({
@@ -119,7 +94,7 @@ export default function CouponSells({
 
   return (
     <Fragment>
-      <div css={styles.couponSells}>
+      <div className={styles.couponSells}>
         {index === 0 ? (
           <RowIconButton label="從清單選擇預收卡" className="mx-1.5" onClick={handleOpenCouponModal}>
             <Copy aria-hidden="true" strokeWidth={1.75} />
@@ -177,7 +152,7 @@ export default function CouponSells({
         </Field>
         {couponSell.serviceId ? (
           <React.Fragment>
-            <Field label="可使用次數" css={styles.countField}>
+            <Field label="可使用次數" className={styles.countField}>
               <Input
                 value={couponSell.availableCount}
                 ref={availableCountRef}
@@ -200,7 +175,7 @@ export default function CouponSells({
                 }
               />
             </Field>
-            <Field label="價格" css={styles.field}>
+            <Field label="價格" className={styles.field}>
               <Input
                 value={couponSell.price}
                 tabIndex={focusRow + '2'}
@@ -223,7 +198,7 @@ export default function CouponSells({
                 }
               />
             </Field>
-            <Field label="張數" css={styles.priceField}>
+            <Field label="張數" className={styles.priceField}>
               <Input
                 value={couponSell.count}
                 tabIndex={focusRow + '3'}
@@ -246,7 +221,7 @@ export default function CouponSells({
                 }
               />
             </Field>
-            <Field label="備註" css={styles.field}>
+            <Field label="備註" className={styles.field}>
               <Input
                 value={couponSell.remark}
                 name="remark"

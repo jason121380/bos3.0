@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
@@ -6,34 +5,11 @@ import { startOfMonth } from 'date-fns'
 import idx from 'idx'
 import useFetchDesignerRakeReport from 'hooks/useFetchDesignersRakeReport'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { EmptyState } from 'ui/empty-state'
 import { PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  searchBtnDiv: css({
-    marginBottom: '24px',
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '284px',
-  }),
-}
 
 const DesignerRakeReport = () => {
   const [date, setDate] = useState({

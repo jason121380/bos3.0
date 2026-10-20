@@ -1,9 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import { Button } from 'ui/button'
 import { useState, Fragment } from 'react'
 // 外層為相容層 Dialog（OrderTable；窗內有相容層 PasswordDialog）；內容區、動作列與按鈕改原生元素＋ui/button
 import { Avatar } from 'ui/avatar'
-import { blue } from 'ui/colors'
 import { Cancel as CancelIcon, Check as CheckIcon, Lock as LockIcon, LockOpen as LockOpenIcon, Edit as EditIcon, ShoppingCart as ShoppingCartIcon, EventSeat as EventSeatIcon, EventBusy as EventBusyIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import { format } from 'date-fns'
@@ -13,34 +11,12 @@ import useFetchAdminBookingTime, { useFetchAdminBookingTimeAllStore } from 'hook
 import useFetchVerifyBooking from 'hooks/useFetchVerifyBooking'
 import PasswordDialog from 'components/PasswordDialog'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 // 動作列（原 ListItemButton）：整列可點、左側頭像＋文字；hover surface-hover、停用 40% 透明
 const actionRow = 'ui-root flex min-h-12 w-full items-center gap-4 rounded-md border-0 bg-transparent px-4 py-2 text-left text-body text-text no-underline transition-colors hover:bg-surface-hover disabled:pointer-events-none disabled:opacity-40 aria-disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent'
 
-const styles = {
-  root: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-  }),
-  avatar: css({
-    backgroundColor: blue[100],
-    color: blue[600],
-  }),
-  field: css({
-    width: '100%',
-    marginBottom: theme.spacing(2),
-  }),
-  dialog: css({
-    maxWidth: '400px',
-  }),
-  breakWord: css({
-    '& div': {
-      wordBreak: 'break-all'
-    }
-  })
-}
+// 原 emotion styles.field（width 100%、marginBottom 16px）：寬度 actionRow 已有 w-full，只補下外距
+const fieldRow = `${actionRow} mb-[16px]`
 
 export default function NewChoseEvent({
   merchantId, setModalOpen, clickData, modaltype, checkinMode,
@@ -155,7 +131,7 @@ export default function NewChoseEvent({
           className="block text-text no-underline"
           to={`/customer/reservation/${merchantId}?usingLineLogin=0&date=${clickData.dateTime}&designerId=${!!clickData.designerId ? clickData.designerId : ''}`}
         >
-          <div className={actionRow} css={styles.field}>
+          <div className={fieldRow}>
             <Avatar className="bg-accent/8 text-accent">
               <EventSeatIcon />
             </Avatar>
@@ -163,14 +139,14 @@ export default function NewChoseEvent({
           </div>
         </RouterLink>
         {!checkinMode && (modaltype === 'openAllOrder' ? 
-          <button type="button" className={actionRow} css={styles.field} onClick={closeAllOrderTime} disabled={btnDisabled}>
+          <button type="button" className={fieldRow} onClick={closeAllOrderTime} disabled={btnDisabled}>
             <Avatar className="bg-accent/8 text-accent">
               <LockOpenIcon />
             </Avatar>
             <span className="min-w-0 flex-1">開啟全店預約</span>
           </button>
           :
-          <button type="button" className={actionRow} css={styles.field} onClick={closeAllOrderTime} disabled={btnDisabled}>
+          <button type="button" className={fieldRow} onClick={closeAllOrderTime} disabled={btnDisabled}>
             <Avatar className="bg-accent/8 text-accent">
               <LockIcon />
             </Avatar>
@@ -196,7 +172,7 @@ export default function NewChoseEvent({
           className="block text-text no-underline"
           to={`/customer/reservation/${merchantId}?usingLineLogin=0&date=${clickData.dateTime}&designerId=${!!clickData.designerId ? clickData.designerId : ''}`}
         >
-          <div className={actionRow} css={styles.field}>
+          <div className={fieldRow}>
             <Avatar className="bg-accent/8 text-accent">
               <EventSeatIcon />
             </Avatar>
@@ -204,14 +180,14 @@ export default function NewChoseEvent({
           </div>
         </RouterLink>
         {!checkinMode && (modaltype === 'openOrder' ? 
-          <button type="button" className={actionRow} css={styles.field} onClick={closeOrderTime} disabled={btnDisabled}>
+          <button type="button" className={fieldRow} onClick={closeOrderTime} disabled={btnDisabled}>
             <Avatar className="bg-accent/8 text-accent">
               <LockOpenIcon />
             </Avatar>
             <span className="min-w-0 flex-1">開啟預約</span>
           </button>
           :
-          <button type="button" className={actionRow} css={styles.field} onClick={closeOrderTime} disabled={btnDisabled}>
+          <button type="button" className={fieldRow} onClick={closeOrderTime} disabled={btnDisabled}>
             <Avatar className="bg-accent/8 text-accent">
               <LockIcon />
             </Avatar>
@@ -233,7 +209,7 @@ export default function NewChoseEvent({
         </div>
       </Fragment>}
       {(modaltype === 'orderCheck' || modaltype === 'orderSuccess') && <Fragment>
-        <div css={styles.breakWord} className="mb-[0.35em] text-body text-text">
+        <div className="mb-[0.35em] text-body text-text [&_div]:break-all">
           <div>
             <p>{`姓名: `}
               <RouterLink
@@ -269,7 +245,7 @@ export default function NewChoseEvent({
               to={`/order/${editOrder.id}?status=edit`}
               target="_blank"
             >
-              <div className={actionRow} css={styles.field}>
+              <div className={fieldRow}>
                 <Avatar className="bg-accent/8 text-accent">
                   <EditIcon />
                 </Avatar>
@@ -282,7 +258,7 @@ export default function NewChoseEvent({
             to={`/order/${editOrder.id}?status=checkout`}
             target="_blank"
           >
-            <div className={actionRow} css={styles.field}>
+            <div className={fieldRow}>
               <Avatar className="bg-accent/8 text-accent">
                 <ShoppingCartIcon />
               </Avatar>
@@ -291,7 +267,7 @@ export default function NewChoseEvent({
           </RouterLink>
 
           {editOrder.status !== '預約成功' && editOrder.status !== '已完成' && (
-            <button type="button" className={actionRow} css={styles.field} onClick={() => handleAcceptBooking(true)}>
+            <button type="button" className={fieldRow} onClick={() => handleAcceptBooking(true)}>
               <Avatar className="bg-accent/8 text-accent">
                 <CheckIcon />
               </Avatar>
@@ -299,7 +275,7 @@ export default function NewChoseEvent({
             </button>
           )}
           {editOrder.status !== '設計師已取消' && (
-            <button type="button" className={actionRow} css={styles.field} onClick={() => cancelPasswordUsing ? openPassworDialog('cancel') : handleAcceptBooking(false)}>
+            <button type="button" className={fieldRow} onClick={() => cancelPasswordUsing ? openPassworDialog('cancel') : handleAcceptBooking(false)}>
               <Avatar className="bg-accent/8 text-accent">
                 <CancelIcon />
               </Avatar>
