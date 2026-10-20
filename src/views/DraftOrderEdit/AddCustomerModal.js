@@ -1,7 +1,6 @@
 import { Modal } from 'ui/modal-compat'
-import { Grid } from 'ui/grid-compat'
-import { Button } from 'ui/button-compat'
-import { Card, CardActions, CardContent, CardHeader } from 'ui/card-compat'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { LoaderCircle } from 'lucide-react'
 import { Field, Input } from 'ui/input'
@@ -20,11 +19,6 @@ import useFetchGetLastCustomerNo from 'hooks/useFetchGetLastCustomerNo'
 import _ from 'lodash'
 import SourceSelect from 'components/SourceSelect'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
-
-// 原 emotion styles.root 逐值轉 Tailwind（theme.shadows[20] 原值照抄）；'& .MuiCardHeader-action' 以任意變體保留（雙 class 權重蓋過 -my-1 的上外距）
-const styles = {
-  root: 'absolute top-[50%] left-[50%] [transform:translate(-50%,-50%)] [outline:none] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)] w-[700px] max-h-full overflow-y-auto max-w-full [&_.MuiCardHeader-action]:mt-0',
-}
 
 const gender = [
   {
@@ -213,15 +207,17 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
 
   return (
     <Modal open={open}>
-      <Card className={styles.root}>
+      <Card className="absolute left-1/2 top-1/2 max-h-[calc(100%-32px)] w-[700px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl bg-background shadow-float outline-none">
         <CardHeader
-          title={values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}
+          className="items-center pb-4"
           action={!lastCustomerNo.loading && <span className="text-body text-text">{`最新顧客編號: ${lastNo}`}</span>}
-        />
+        >
+          <CardTitle>{values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}</CardTitle>
+        </CardHeader>
         <div className="h-px bg-border" />
         <CardContent>
-          <Grid container spacing={3}>
-            <Grid item md={6} xs={12}>
+          <div className="grid grid-cols-1 gap-x-6 gap-y-4 min-[900px]:grid-cols-2">
+            <div className="min-w-0">
               {/* 欄位上方標籤，與同彈窗其他欄位及打帳單的新增顧客彈窗一致；檢查圖示改放輸入框右側 */}
               <Field
                 label="客戶編號"
@@ -250,8 +246,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   )}
                 </div>
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="客戶姓名">
                 <Input
                   name="name"
@@ -259,8 +255,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   value={values.name}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="性別" htmlFor="addCustomerModal-gender">
                 <NativeSelect
                   className="ui-root"
@@ -279,8 +275,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   ))}
                 </NativeSelect>
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="Email">
                 <Input
                   name="email"
@@ -288,8 +284,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   onChange={handleFieldChange}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="lineId">
                 <Input
                   name="lineId"
@@ -297,8 +293,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   onChange={handleFieldChange}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="地址">
                 <Input
                   name="address"
@@ -306,8 +302,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   onChange={handleFieldChange}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="客戶暱稱">
                 <Input
                   name="nickName"
@@ -315,8 +311,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   onChange={handleFieldChange}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <div className="flex flex-wrap gap-2.5">
                 <Field label="民國年" htmlFor="addCustomerModal-year" className="w-20">
                   <Input
@@ -343,8 +339,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   />
                 </Field>
               </div>
-            </Grid>
-            {/* <Grid item md={6} xs={12}>
+            </div>
+            {/* <div className="min-w-0">
               <KeyboardDatePicker
                 format="YYYY/MM/DD"
                 label="生日"
@@ -363,8 +359,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   'aria-label': 'change date',
                 }}
               />
-            </Grid> */}
-            {/* <Grid item md={6} xs={12}>
+            </div> */}
+            {/* <div className="min-w-0">
                   <FormControl variant="outlined" fullWidth>
                     <InputLabel ref={inputLabel}>客戶類別</InputLabel>
                     <Select
@@ -385,8 +381,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                       )}
                     </Select>
                   </FormControl>
-                </Grid> */}
-            <Grid item md={6} xs={12}>
+                </div> */}
+            <div className="min-w-0">
               <Field label="電話">
                 <Input
                   onChange={handleFieldChange}
@@ -394,15 +390,15 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   value={values.cellphone || customer.cellphone}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <SourceSelect
                 emptyOption
                 value={values.source}
                 onChange={handleFieldChange}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="最近設計師" htmlFor="addCustomerModal-latestDesigner">
                 <NativeSelect
                   className="ui-root"
@@ -424,8 +420,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   )}
                 </NativeSelect>
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               {designers.data ? (
                 <Field label="偏好設計師" htmlFor="addCustomerModal-preferDesigner">
                   <NativeSelect
@@ -464,8 +460,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   </Select>
                 </FormControl>
               )}
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="備註">
                 <Input
                   onChange={handleFieldChange}
@@ -473,21 +469,20 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   value={values.remark}
                 />
               </Field>
-            </Grid>
-          </Grid>
+            </div>
+          </div>
         </CardContent>
         <div className="h-px bg-border" />
-        <CardActions className="justify-end">
-          <Button style={{ color: 'black' }} onClick={onClose}>取消</Button>
+        <CardFooter>
+          <Button variant="secondary" onClick={onClose}>取消</Button>
           <Button
-            color="primary"
+            variant="primary"
             onClick={handleSubmit}
-            variant="contained"
             disabled={quickAddCustomer}
           >
             {values.customerId.length > 0 ? '儲存' : '新增'}
           </Button>
-        </CardActions>
+        </CardFooter>
       </Card>
     </Modal>
   )

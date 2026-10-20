@@ -1,4 +1,4 @@
-import { Button } from 'ui/button-compat'
+import { Button } from 'ui/button'
 import billContext from 'context/keyInContext'
 import React from 'react'
 
@@ -8,7 +8,8 @@ export default function Payment() {
   return (
     <div className="mb-6 flex items-center justify-start">
       <Button
-        className="text-white hover:bg-[#00c300] hover:text-white hover:opacity-80"
+        variant="primary"
+        className="text-white hover:opacity-80"
         style={{
           backgroundColor: bill.linePay ? '#00c300' : 'rgba(0, 0, 0, 0.26)',
         }}

@@ -1,4 +1,3 @@
-import { CircularProgress } from 'ui/display-compat'
 import { InputAdornment, TextField } from 'ui/text-field'
 import PropTypes from 'prop-types'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
@@ -10,7 +9,7 @@ import produce from 'immer'
 import _ from 'lodash'
 import { useContext, useState, useRef, useEffect, Fragment } from 'react'
 import { DateTimePicker } from 'ui/date-picker'
-import { UserCog, UserPlus } from 'lucide-react'
+import { LoaderCircle, UserCog, UserPlus } from 'lucide-react'
 import { Card } from 'ui/card'
 import { Field } from 'ui/input'
 import { CheckboxField } from 'ui/checkbox'
@@ -517,7 +516,7 @@ export default function Head() {
                         endAdornment: (
                           <Fragment>
                             {customers.loading ? (
-                              <CircularProgress color="inherit" size={20} />
+                              <LoaderCircle className="h-5 w-5 animate-spin" strokeWidth={1.75} />
                             ) : null}
                             {params.InputProps.endAdornment}
                           </Fragment>

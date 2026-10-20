@@ -1,7 +1,6 @@
 import { Modal } from 'ui/modal-compat'
-import { Grid } from 'ui/grid-compat'
-import { Button } from 'ui/button-compat'
-import { Card, CardActions, CardContent, CardHeader } from 'ui/card-compat'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { TextField, InputAdornment } from 'ui/text-field'
 import { LoaderCircle } from 'lucide-react'
@@ -218,15 +217,17 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
 
   return (
     <Modal open={open}>
-      <Card className="absolute left-1/2 top-1/2 max-h-full w-[700px] max-w-full overflow-y-auto [outline:none] [transform:translate(-50%,-50%)] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)] [&_.MuiCardHeader-action]:mt-0">
+      <Card className="absolute left-1/2 top-1/2 max-h-[calc(100%-32px)] w-[700px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl bg-background shadow-float outline-none">
         <CardHeader
-          title={values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}
+          className="items-center pb-4"
           action={!lastCustomerNo.loading && <span className="text-body text-text">{`最新顧客編號: ${lastNo}`}</span>}
-        />
+        >
+          <CardTitle>{values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}</CardTitle>
+        </CardHeader>
         <div className="h-px bg-border" />
         <CardContent>
-          <Grid container spacing={3}>
-            <Grid item md={6} xs={12}>
+          <div className="grid grid-cols-1 gap-x-6 gap-y-4 min-[900px]:grid-cols-2">
+            <div className="min-w-0">
               <TextField
                 error={noVerify && !isSetTime}
                 helperText={noVerify && !isSetTime ? '客戶編號重複' : ''}
@@ -253,8 +254,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   ),
                 }}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="客戶姓名">
                 <Input
                   name="name"
@@ -262,8 +263,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   value={values.name}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               {/* 標籤改放欄位上方（與同彈窗其他欄位一致），不再卡在外框上緣 */}
               <Field label="性別" htmlFor="queueAddCustomerModal-gender">
                 <NativeSelect
@@ -283,8 +284,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   ))}
                 </NativeSelect>
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="Email">
                 <Input
                   name="email"
@@ -292,8 +293,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   onChange={handleFieldChange}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="lineId">
                 <Input
                   name="lineId"
@@ -301,8 +302,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   onChange={handleFieldChange}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="地址">
                 <Input
                   name="address"
@@ -310,8 +311,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   onChange={handleFieldChange}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="客戶暱稱">
                 <Input
                   name="nickName"
@@ -319,8 +320,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   onChange={handleFieldChange}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <TextField
                 label="民國年"
                 name="year"
@@ -345,8 +346,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                 variant="outlined"
                 className="!ml-[10px] w-[80px]"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="電話">
                 <Input
                   onChange={handleFieldChange}
@@ -354,15 +355,15 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   value={values.cellphone}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <SourceSelect
                 emptyOption
                 value={values.source}
                 onChange={handleFieldChange}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="最近設計師" htmlFor="queueAddCustomerModal-latestDesigner">
                 <NativeSelect
                   className="ui-root"
@@ -384,8 +385,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   )}
                 </NativeSelect>
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               {designers.data ? (
                 <Field label="偏好設計師" htmlFor="queueAddCustomerModal-preferDesigner">
                   <NativeSelect
@@ -424,8 +425,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   </Select>
                 </FormControl>
               )}
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="備註">
                 <Input
                   onChange={handleFieldChange}
@@ -433,21 +434,20 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   value={values.remark}
                 />
               </Field>
-            </Grid>
-          </Grid>
+            </div>
+          </div>
         </CardContent>
         <div className="h-px bg-border" />
-        <CardActions className="justify-end">
-          <Button onClick={onClose}>取消</Button>
+        <CardFooter>
+          <Button variant="secondary" onClick={onClose}>取消</Button>
           <Button
-            color="primary"
+            variant="primary"
             onClick={handleSubmit}
-            variant="contained"
             disabled={quickAddCustomer}
           >
             {values.customerId.length > 0 ? '儲存' : '新增'}
           </Button>
-        </CardActions>
+        </CardFooter>
       </Card>
     </Modal>
   )
