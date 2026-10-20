@@ -1,5 +1,5 @@
 import { Link as RouterLink } from 'react-router-dom'
-import { Bell, BellRing, ChevronsUpDown, CircleAlert, CircleCheck, EllipsisVertical, LoaderCircle, Moon, PanelLeftClose, Pencil, RotateCcw, Store, Trash2 } from 'lucide-react'
+import { Bell, BellRing, CircleAlert, CircleCheck, EllipsisVertical, LoaderCircle, Moon, PanelLeftClose, Pencil, RotateCcw, Store, Trash2 } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Popover, PopoverAnchor, PopoverContent } from 'ui/popover'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from 'ui/dropdown-menu'
@@ -9,6 +9,7 @@ import useFetchSystemUpdateRecord from 'hooks/useFetchSystemUpdateRecord'
 import useToggle from 'hooks/useToggle'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, useRef, Fragment } from 'react'
+import ReactDOM from 'react-dom'
 import { useHistory } from 'react-router'
 import useFetchProfile, { useFetchProfileIdentity } from 'hooks/useFetchProfile'
 import useFetchMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'
@@ -29,6 +30,23 @@ import { reservationActions } from './../../store/reservation'
 import { QRcodeClockInActions } from './../../store/QRcodeClockIn'
 import { deductionDisplayActions } from './../../store/deductionDisplay'
 import bosLogo from 'assets/images/bosLogoNew.png'
+
+// 側欄底部（NavBar 的 SidebarFooter，profile 載入後才出現）的插槽；插槽出現前先不渲染，出現後以 Portal 畫進去
+const SIDEBAR_FOOTER_SLOT_ID = 'sidebar-merchant-switch-slot'
+function SidebarFooterPortal({ children }) {
+  const [slot, setSlot] = useState(() => document.getElementById(SIDEBAR_FOOTER_SLOT_ID))
+  useEffect(() => {
+    const find = () => {
+      const el = document.getElementById(SIDEBAR_FOOTER_SLOT_ID)
+      setSlot(prev => (prev === el ? prev : el))
+    }
+    find()
+    const observer = new MutationObserver(find)
+    observer.observe(document.body, { childList: true, subtree: true })
+    return () => observer.disconnect()
+  }, [])
+  return slot ? ReactDOM.createPortal(children, slot) : null
+}
 
 function TopBar({ onOpenNavBarMobile, userMerchants }) {
   const dispatch = useDispatch()
@@ -459,18 +477,19 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
           <PanelLeftClose strokeWidth={1.75} />
         </Button>
       </div>
-      <button
-        type="button"
-        onClick={toggle}
-        className={cn(
-          'flex h-10 w-full items-center gap-2 rounded-md border border-solid border-border bg-background px-3 text-left text-body font-medium text-text hover:border-border-strong',
-          focusRing
-        )}
-      >
-        <Store className="h-4 w-4 text-text-secondary" strokeWidth={1.75} />
-        <span className="flex-1 truncate">{JSON.parse(localStorage.getItem('userMerchant')).name}</span>
-        <ChevronsUpDown className="h-4 w-4 text-text-tertiary" strokeWidth={1.75} />
-      </button>
+      {/* 切換店家：圖示鈕放在側欄底部登出鈕旁（Jason 2026/10/20）；以 Portal 畫到 NavBar 的插槽，toggle／MerchantBar 仍在本元件 */}
+      <SidebarFooterPortal>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 shrink-0"
+          aria-label={`切換店家（目前：${JSON.parse(localStorage.getItem('userMerchant')).name}）`}
+          title={`切換店家（目前：${JSON.parse(localStorage.getItem('userMerchant')).name}）`}
+          onClick={toggle}
+        >
+          <Store strokeWidth={1.75} />
+        </Button>
+      </SidebarFooterPortal>
       <MerchantBar userMerchants={userMerchants} open={open} onClose={toggle} />
     </Fragment>
   )

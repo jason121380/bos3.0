@@ -255,7 +255,7 @@ function CustomerManagementDetails({ match, history }) {
           value={currentTab}
           activationMode="manual"
         >
-          <SettingsTabsList aria-label="顧客詳細資料分類">
+          <SettingsTabsList aria-label="顧客詳細資料分類" className="noprint">
             {tabs.map(tab => (
               <SettingsTabsTrigger key={tab.value} value={tab.value} icon={tabIcons[tab.value]}>{tab.label}</SettingsTabsTrigger>
             ))}

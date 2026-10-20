@@ -1,4 +1,4 @@
-import { Tabs, TabsList, TabsTrigger } from 'ui/tabs'
+import { Tabs } from 'ui/tabs'
 import { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
 import { CalendarDays, ChartColumn, CircleDollarSign, Lock, Pin, Receipt, Star, Timer, User, Users } from 'lucide-react'
 import Page from 'components/Page'
@@ -119,8 +119,7 @@ function Settings({ match, history }) {
     { value: 'AttendanceRecord', label: '打卡紀錄' },
     { value: 'pinnedTable', label: '功能釘選' },
   ]
-  // 設定頁樣板（STYLE §12）：僅設定性分頁套左選單，報表型分頁維持原頂部分頁＋compact（見 return 說明）。
-  // tabIcons 只供 SettingsTabsTrigger 呈現；設定性分頁清單只決定版面，不改 tabValue／權限過濾／路由。
+  // 設定頁樣板（STYLE §12）：全部分頁用左選單；tabIcons 只供 SettingsTabsTrigger 呈現，不改 tabValue／權限過濾／路由。
   const tabIcons = {
     general: User,
     orderRecord: Receipt,
@@ -133,7 +132,6 @@ function Settings({ match, history }) {
     AttendanceRecord: Timer,
     pinnedTable: Pin,
   }
-  const settingTabValues = ['general', 'security', 'pinnedTable']
   const [getIsEPWDDisplayLazy, getIsEPWDDisplayLazyData] = useFetchGetIsEPWDDisplayLazy()
   const getBookinHistoryDisplay = useFetchGetBookinHistoryDisplay()
   const [bookingHistoryDisplay, setBookingHistoryDisplay] = useState(false)
@@ -552,8 +550,6 @@ function Settings({ match, history }) {
     history.push(value)
   }
 
-  const isSettingTab = settingTabValues.includes(currentTab)
-
   if (profile.loading) return 'Loading...'
 
   const findTabName = () => {
@@ -561,14 +557,13 @@ function Settings({ match, history }) {
     return findData.label
   }
 
-  // 頁面外距由 #printContainer 提供；分頁籤改 ui/tabs（onValueChange 以 (null, value) 轉接原 handleTabsChange，activationMode="manual" 保留鍵盤以 Enter/Space 選取；下方既有分隔線保留，故 TabsList 不另加底線）
-  // 設定頁樣板推廣（STYLE §12）：currentTab 為設定性分頁（general/security/pinnedTable）時，容器改 max-w-6xl、
-  // 分頁改桌機左選單（選單仍列全部有權限分頁＋功能釘選，不刪任何導覽）＋右分段標題，手機退回頂部橫向捲動分頁；
-  // 報表型分頁（訂單/預約/日報/抽成/薪資條/打卡）不套樣板，維持原 max-w-[1200px]＋頂部分頁＋分隔線＋compact 內容。
+  // 頁面外距由 #printContainer 提供；分頁籤用 ui/tabs（onValueChange 以 (null, value) 轉接原 handleTabsChange，activationMode="manual" 保留鍵盤以 Enter/Space 選取）。
+  // 設定頁樣板（STYLE §12）：所有分頁（含訂單／預約／日報／抽成／薪資條／打卡等報表型分頁）一律桌機左選單＋右分段標題、手機頂部橫向捲動分頁
+  // （Jason 2026/10/20「要放在左側」；比照員工資料、顧客詳細資料）。左選單加 noprint，列印時只印右側內容。
   // handleTabsChange（history.push 路由）、value、權限過濾 itemValue 與各分頁內容/存值一字未動。
   return (
     <Page className="ui-root" title={`${profile.data.me.name} - ${findTabName()}`}>
-      <div className={isSettingTab ? 'mx-auto w-full max-w-6xl' : 'mx-auto w-full max-w-[1200px]'}>
+      <div className="w-full">
         <AdminPageHeader title='變更帳戶資訊' subTitle='設定'>
           {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
             <div className='CheckinMode flex items-center gap-1 text-body text-text'>
@@ -580,32 +575,19 @@ function Settings({ match, history }) {
           onValueChange={value => handleTabsChange(null, value)}
           value={currentTab}
           activationMode="manual"
-          className={isSettingTab ? 'md:flex md:items-stretch' : undefined}
+          className="md:flex md:items-stretch"
         >
           {itemValue.length > 0 ? (
-            isSettingTab ? (
-              <SettingsTabsList>
-                {itemValue.map(tab => (
-                  <SettingsTabsTrigger key={tab.value} value={tab.value} icon={tabIcons[tab.value]}>{tab.label}</SettingsTabsTrigger>
-                ))}
-                <SettingsTabsTrigger value='pinnedTable' icon={tabIcons.pinnedTable}>功能釘選</SettingsTabsTrigger>
-              </SettingsTabsList>
-            ) : (
-              <TabsList className="border-b-0">
-                {itemValue.map(tab => (
-                  <TabsTrigger key={tab.value} value={tab.value}>{tab.label}</TabsTrigger>
-                ))}
-                <TabsTrigger value='pinnedTable'>功能釘選</TabsTrigger>
-              </TabsList>
-            )
+            <SettingsTabsList className="noprint">
+              {itemValue.map(tab => (
+                <SettingsTabsTrigger key={tab.value} value={tab.value} icon={tabIcons[tab.value]}>{tab.label}</SettingsTabsTrigger>
+              ))}
+              <SettingsTabsTrigger value='pinnedTable' icon={tabIcons.pinnedTable}>功能釘選</SettingsTabsTrigger>
+            </SettingsTabsList>
           ) : null}
-          <div className={isSettingTab ? 'min-w-0 flex-1 md:bg-background md:px-6 md:py-6' : undefined}>
-            {isSettingTab ? (
-              <SettingsSectionHeading title={findTabName()} />
-            ) : (
-              <div className="h-px bg-border" />
-            )}
-            <div className={isSettingTab ? undefined : 'mt-6'}>
+          <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">
+            <SettingsSectionHeading title={findTabName()} />
+            <div>
           {currentTab === 'general' && <General />}
           {currentTab === 'orderRecord' && (
             getOrderListLazyData.loading || getOrderListLazyData.data === undefined ?
