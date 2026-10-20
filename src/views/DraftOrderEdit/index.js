@@ -273,8 +273,10 @@ export default function KeyIn({ match }) {
       >
         <Header />
         <Head />
-        <Pannel />
-        <Footer />
+        {/* 版面比照打帳單：金額彙總卡與動作按鈕（Footer）放在 Pannel 下方的右欄；Footer 仍在這裡建立、props 不變 */}
+        <Pannel>
+          <Footer />
+        </Pannel>
       </Provider>
       </>
     </Page>
