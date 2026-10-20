@@ -22,6 +22,12 @@ export function getGraphqlUrl(envUrl = process.env.REACT_APP_API_URL, href = cur
   return `${detectApiEnv(href) === 'test' ? TEST_ORIGIN : PROD_ORIGIN}/graphql`
 }
 
+// 實際連線的後端環境（Sentry 的 environment 等標記用）：以「最後解析出的 GraphQL 端點」判斷，
+// 而不是看前端網址——部署時用 REACT_APP_API_URL 指向測試站，前端網址看不出來
+export function getApiEnvironment(envUrl = process.env.REACT_APP_API_URL, href = currentHref()) {
+  return getGraphqlUrl(envUrl, href).startsWith(PROD_ORIGIN) ? 'production' : 'staging'
+}
+
 // 後端 origin（WebSocket 與 REST 用），由 GraphQL 端點推得，確保與 GraphQL 同一個環境
 export function getApiOrigin(envUrl = process.env.REACT_APP_API_URL, href = currentHref()) {
   return new URL(getGraphqlUrl(envUrl, href), href || undefined).origin

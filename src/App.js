@@ -19,7 +19,7 @@ import GoogleAnalytics from './components/GoogleAnalytics'
 import ScrollReset from './components/ScrollReset'
 import routes from './routes'
 import TeachingModeState from './context/TeachingModeState'
-import { detectApiEnv } from './lib/api-base'
+import { getApiEnvironment } from './lib/api-base'
 import { APP_VERSION } from './version'
 
 const history = createBrowserHistory()
@@ -30,7 +30,7 @@ const isProductionBuild = process.env.NODE_ENV === 'production'
 Sentry.init({
   dsn: 'https://7bc089052abd4624910f289209840fd9@o251287.ingest.sentry.io/5542421',
   enabled: isProductionBuild,
-  environment: isProductionBuild ? (detectApiEnv() === 'test' ? 'staging' : 'production') : 'development',
+  environment: isProductionBuild ? getApiEnvironment() : 'development',
   release: `bos@${APP_VERSION}`,
   integrations: [new Integrations.BrowserTracing()],
   tracesSampleRate: 0.1,
