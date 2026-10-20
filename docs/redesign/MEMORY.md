@@ -224,3 +224,5 @@
 
 138. **日期快捷列：與其換掉 ButtonGroup 的子按鈕，不如整個改走已核可的新樣式（報表統一第二批，2026/10/20，v3.0-1020-0823）**：MerchantSearchBar/DatePicker 原有兩套畫面——`uiDateField` 開啟時的新樣式（ui 次要小按鈕＋ui 日期欄，DecreaseDetail／ProductConsumeReport 已上線）與舊的藍色 ButtonGroup。Button 相容層換不掉 ButtonGroup（context 傳 variant），而 Jason 已拍版報表篩選列統一（決策④），所以直接刪除舊分支、所有呼叫端改走新樣式；`uiDateField` 參數保留為無作用，免動 17 個呼叫端。教訓：遇到「兩套畫面並存＋新樣式已核可」時，移除 MUI 的同時順手收斂成一套，比做相容層更省也更一致。
 
+139. **Grid 相容層＝MUI 同名 class＋靜態 CSS，斷點照 MUI 不照 Tailwind（Grid 整類，2026/10/20，v3.0-1020-0847）**：①Tailwind 斷點（640／768／1024）與 MUI（600／900／1200）不同，用 Tailwind 的 `md:` 會讓 600～900px 的版面整個改變；所以不用 Tailwind 寬度 class，而是輸出 MUI 原本的 class 名稱（`MuiGrid-grid-md-6`、`MuiGrid-spacing-xs-3`…），再用產生器輸出等價的靜態 CSS（含 7 位有效數字的百分比與 spacing 負邊距）；②好處：initialize.scss 的 `div.MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-md-6.MuiGrid-grid-lg-4` 等列印／深色選擇器不用動；③system props（justifyContent、alignItems）轉成 class 而不是 inline style：MUI 會把頁面的 emotion css 合併在自己的樣式之後（css 覆蓋 system props），inline style 會反過來壓過 css；④Grid v2（Unstable_Grid2）語意不同（以 CSS 變數與子層 padding 實作），全站僅 TransferList 一檔，直接改寫成 flex 並以 `min-[900px]:` 保留 MUI 的 md 斷點；⑤平行截圖要分 port，且避開 Chromium 的不安全 port（如 5061）；截圖工具 `shoot-err.js` 改讀 `PORT`。
+

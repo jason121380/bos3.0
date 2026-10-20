@@ -1,18 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableContainer,
-  Paper,
-  Grid,
-} from '@mui/material'
+import { Grid } from 'ui/grid-compat'
+import { Card, CardContent, CardHeader, Divider, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper } from '@mui/material'
 // 螢幕卡片改用 ui 元件（以 Ui 前綴命名，避免與列印區塊仍使用的 MUI 同名元件衝突）
 // 列印區塊（printData／DecreaseDailyReportCardPrint）的 @media print 樣式依 MUI class 排版，維持 MUI 不動
 import { Card as UiCard, CardHeader as UiCardHeader, CardTitle as UiCardTitle } from 'ui/card'

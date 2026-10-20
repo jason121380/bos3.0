@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material'
+import { Grid } from 'ui/grid-compat'
 import { MobileDatePicker } from 'ui/date-picker'
 import { endOfDay, startOfDay, startOfMonth, endOfMonth, format } from 'date-fns'
 import { CalendarDays } from 'lucide-react'

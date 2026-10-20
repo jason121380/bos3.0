@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // Grid.EmployeePayslipTableContainer 為列印容器（@media print 樣式），依列印範本規則保留
-import { Grid } from '@mui/material'
+import { Grid } from 'ui/grid-compat'
 import AdminPageHeader from 'components/AdminPageHeader'
 import Page from 'components/Page'
 import idx from 'idx'

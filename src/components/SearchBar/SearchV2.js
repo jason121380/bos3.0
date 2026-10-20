@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
+import { Grid } from 'ui/grid-compat'
 import { Select, MenuItem, FormControl, InputLabel } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
-import { Input, Grid } from '@mui/material'
+import { Input } from '@mui/material'
 import { Button } from 'ui/button'
 import { Search as SearchIcon, Delete as DeleteIcon } from 'ui/icons'
 import PropTypes from 'prop-types'

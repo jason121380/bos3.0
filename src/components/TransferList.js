@@ -1,7 +1,6 @@
 import { Checkbox } from 'ui/checkbox'
 import { List, ListItemButton, ListItemText, ListItemIcon } from '@mui/material'
 import { Button } from 'ui/button'
-import Grid from '@mui/material/Unstable_Grid2';
 import { KeyboardArrowRightRounded as KeyboardArrowRightRoundedIcon, RemoveRounded as RemoveRoundedIcon } from 'ui/icons'
 import { useState } from 'react';
 import { cloneDeep } from 'lodash';
@@ -46,17 +45,13 @@ const TransferList = ({
   return (
     <>
       <h5 className="m-0 text-heading text-text">{title}</h5>
-      <Grid container direction='column' spacing={1} >
-        <Grid sx={{ pt: '0px !important', mb: 1 }} >
+      {/* 版面：搜尋列在上；900px（MUI md）以上為「左清單｜按鈕直排｜右清單」，以下改為上下堆疊、按鈕橫排 */}
+      <div className="flex flex-col gap-2">
+        <div>
           <SearchField value={keyword} onChange={value => keyWordsOnChange(value, keywordKey)} />
-        </Grid>
-        <Grid
-          container
-          spacing={2}
-          rowGap
-          sx={{ mt: '0px !important' }}
-        >
-          <Grid sm={12} md sx={{ pt: '0px !important' }} >
+        </div>
+        <div className="flex flex-col gap-4 min-[900px]:flex-row">
+          <div className="min-w-0 min-[900px]:flex-1">
             <div className="h-[350px] overflow-auto rounded-md bg-background">
               <List dense component="div" role="list">
                 {optionData.map(value => {
@@ -90,22 +85,8 @@ const TransferList = ({
                 })}
               </List>
             </div>
-          </Grid>
-          <Grid
-            sm={12}
-            md={1}
-            container
-            justifyContent='center'
-            alignItems='center'
-            sx={{
-              gap: 2,
-              pt: '0px !important',
-              flexDirection: {
-                md: 'column',
-                sm: 'row',
-              },
-            }}
-          >
+          </div>
+          <div className="flex items-center justify-center gap-4 min-[900px]:w-[8.333333%] min-[900px]:flex-col">
             <Button
               variant="secondary" size="icon" aria-label="加入選取項目" title="加入選取項目"
               onClick={addIds}
@@ -117,8 +98,8 @@ const TransferList = ({
               disabled={selectRightIdx.length === 0}
             ><RemoveRoundedIcon /></Button>
 
-          </Grid>
-          <Grid sm={12} md width='100%' sx={{ pt: '0px !important' }} >
+          </div>
+          <div className="w-full min-w-0 min-[900px]:flex-1">
             <div className="h-[350px] overflow-auto rounded-md bg-background">
               <List dense component="div" role="list" sx={{ height: !optionIds.length ? '100%' : 'unset' }}>
                 {optionIds.length ? optionIds.map((id, i) => {
@@ -156,9 +137,9 @@ const TransferList = ({
                 }) : <div className="h-full text-center text-heading text-text [align-content:center]">選取左方選項加入組合</div>}
               </List>
             </div>
-          </Grid>
-        </Grid>
-      </Grid>
+          </div>
+        </div>
+      </div>
     </>
   )
 }

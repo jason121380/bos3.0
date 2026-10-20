@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
+import { Grid } from 'ui/grid-compat'
 import React, { useState, useEffect } from 'react'
 // printGrid 外框（列印時隱藏）依規則保留 MUI Grid
-import { Grid } from '@mui/material'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
 import { format } from 'date-fns'
