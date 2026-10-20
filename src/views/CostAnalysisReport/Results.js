@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Divider } from 'ui/display-compat'
-import { Grid } from 'ui/grid-compat'
+// 卡片保留相容層：列印樣式以 .CostAnalysisReportTableContainer .MuiCard-root／.MuiCardContent-root 排版表格（initialize.scss）
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -102,13 +101,12 @@ function Results({
   }, [merchantIncomeStatement]);
 
   return (
-    <Grid
+    <div
       {...rest}
-      className="CostAnalysisReportTableContainer"
+      className="CostAnalysisReportTableContainer flex w-full flex-wrap"
       css={css([styles.root, className])}
-      container
     >
-      <Grid item md={10} sm={12} xs={12}>
+      <div className="w-full min-[900px]:w-5/6">
         {merchantIncomeStatement !== undefined && (
           <>
           {/* 報表匯出：畫到頁首列印鈕左側（STYLE §14），資料與 handler 不變 */}
@@ -123,7 +121,8 @@ function Results({
               className="CostAnalysisReportCardHeader noprint"
               title="費用分析表"
             />
-            <Divider />
+            {/* 原生 hr：列印規則以 hr 選擇器隱藏分隔線 */}
+            <hr className="m-0 shrink-0 border-0 border-b border-solid border-border" />
             <CardContent css={styles.content}>
               <PerfectScrollbar>
                 <div css={styles.inner}>
@@ -214,8 +213,8 @@ function Results({
           </Card>
           </>
         )}
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   );
 }
 
