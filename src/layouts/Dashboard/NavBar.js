@@ -104,7 +104,10 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   const getIsCustomerBonusActive = useFetchGetIsCustomerBonusActive()
   const [customerBonusActive, setCustomerBonusActive] = useState(false)
   const getDisablePendingOrder = useFetchGetDisablePendingOrder()
-  const disablePendingOrder = getDisablePendingOrder.loading ? true : getDisablePendingOrder.data.getParameterAboutSettingFunction.disablePendingOrder
+  // 查詢失敗（無資料）時比照載入中視為停用，避免讀 null 讓整個版面拋錯
+  const disablePendingOrder = getDisablePendingOrder.loading
+    ? true
+    : idx(getDisablePendingOrder, _ => _.data.getParameterAboutSettingFunction.disablePendingOrder) ?? true
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading) {
@@ -126,6 +129,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   useEffect(() => {
     if (!getUserPinnedTable.loading) {
       const data = idx(getUserPinnedTable, _ => _.data.getUserPinnedTable)
+      if (!Array.isArray(data)) return // 釘選頁查詢失敗時略過，不讓版面拋錯
       const pages = []
       data.forEach(name => {
         const findData = pageData.find(({ title }) => title === name)

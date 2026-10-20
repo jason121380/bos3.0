@@ -1,5 +1,5 @@
 import { Link as RouterLink } from 'react-router-dom'
-import { Bell, BellRing, CircleAlert, CircleCheck, EllipsisVertical, LoaderCircle, Moon, PanelLeftClose, Pencil, RotateCcw, Store, Trash2 } from 'lucide-react'
+import { Bell, BellRing, CircleAlert, CircleCheck, EllipsisVertical, LoaderCircle, Moon, PanelLeftClose, Pencil, RotateCcw, Store, Sun, Trash2 } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Popover, PopoverAnchor, PopoverContent } from 'ui/popover'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from 'ui/dropdown-menu'
@@ -275,6 +275,8 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
   useEffect(() => {
     if (!usingOrderQueue.loading) {
       const tmpData = idx(usingOrderQueue, _ => _.data.getUsingOrderQueue)
+      // 佇列查詢失敗（無資料）時略過；原本 undefined.filter 會讓整個後台白畫面
+      if (!Array.isArray(tmpData)) return
       handlesetOrderDetail(tmpData)
       setOrderDetail(tmpData)
     }
@@ -285,6 +287,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     if (!systemUpdateRecord.loading) {
       let tmp = {}
       const data = idx(systemUpdateRecord, _ => _.data.systemUpdateRecord)
+      if (!Array.isArray(data)) return // 版本記錄查詢失敗時略過，不讓版面拋錯
       data.map((d, index) => {
         if (index === 0) {
           tmp = {
@@ -324,17 +327,27 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     setOpenButton(prev => placement !== newPlacement || !prev)
     setPlacement(newPlacement)
   }
-  // lightdark mode function
-  const handleMoodChange = e => {
-    setMoodChange(e.target.checked)
+  // 深淺色切換（Jason 2026/10/21「加回深色」）：沿用既有的 setTheme mutation 存到使用者設定，成功後重新整理套用；
+  // 失敗時還原開關狀態（錯誤訊息由 Apollo errorLink 顯示），儲存中不重複送出
+  const [themeSaving, setThemeSaving] = useState(false)
+  const handleThemeToggle = () => {
+    if (themeSaving || !storedUser) return
+    const nextDark = !moodChange
+    setThemeSaving(true)
+    setMoodChange(nextDark)
     setThemeChangeData({
       input: {
-        userId: JSON.parse(localStorage.getItem('user')).id,
-        theme: e.target.checked ? 'DARK' : 'DEFAULT',
+        userId: storedUser.id,
+        theme: nextDark ? 'DARK' : 'DEFAULT',
       },
-    }).then(() => {
-      window.location.reload()
     })
+      .then(() => {
+        window.location.reload()
+      })
+      .catch(() => {
+        setMoodChange(!nextDark)
+        setThemeSaving(false)
+      })
   }
   // log out button handle
   const handleLogout = () => {
@@ -499,6 +512,24 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
       </div>
       {/* 切換店家：圖示鈕放在側欄底部登出鈕旁（Jason 2026/10/20）；以 Portal 畫到 NavBar 的插槽，toggle／MerchantBar 仍在本元件 */}
       <SidebarFooterPortal>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="shrink-0"
+          aria-label={moodChange ? '切換為淺色模式' : '切換為深色模式'}
+          aria-pressed={moodChange}
+          disabled={themeSaving}
+          onClick={handleThemeToggle}
+          data-testid="theme-toggle"
+        >
+          {themeSaving ? (
+            <LoaderCircle className="animate-spin" strokeWidth={1.75} aria-hidden="true" />
+          ) : moodChange ? (
+            <Sun strokeWidth={1.75} aria-hidden="true" />
+          ) : (
+            <Moon strokeWidth={1.75} aria-hidden="true" />
+          )}
+        </Button>
         <Button
           variant="ghost"
           size="icon"

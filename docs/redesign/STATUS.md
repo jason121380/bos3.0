@@ -4,7 +4,7 @@
 
 ## 已完成
 
-> 2026/10/21 v3.0-1021-0116（repo 健康報告修正批次）在分支 `claude/pensive-fermi-v6ufcq`，尚未合併 main；內容與待辦見 `TODO.md` §一首項、`MEMORY.md` #166。
+> 2026/10/21 v3.0-1021-0116＋v3.0-1021-0129（repo 健康報告修正批次、套件瘦身、深色模式開關、頁面錯誤邊界），分支 `claude/pensive-fermi-v6ufcq`；內容與待辦見 `TODO.md` §一前兩項、`MEMORY.md` #166。
 
 | 範圍 | 內容 |
 |---|---|

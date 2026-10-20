@@ -1,4 +1,5 @@
 import ChangePassword from 'components/ChangePassword'
+import PageErrorBoundary from 'components/PageErrorBoundary'
 import Snackbar, { openSnackbar } from 'elements/snackbars'
 import useToggle from 'hooks/useToggle'
 import PropTypes from 'prop-types'
@@ -137,7 +138,9 @@ function Dashboard({ route, location }) {
         )}
       >
         <div id="printContainer" className="max-w-full overflow-x-hidden">
-          <Suspense fallback={<div className="ui-root h-0.5 w-full animate-pulse bg-accent" />}>{renderRoutes(route.routes)}</Suspense>
+          <PageErrorBoundary resetKey={location.pathname}>
+            <Suspense fallback={<div className="ui-root h-0.5 w-full animate-pulse bg-accent" />}>{renderRoutes(route.routes)}</Suspense>
+          </PageErrorBoundary>
         </div>
       </main>
       <ChangePassword open={open} handleClose={toggle} />
