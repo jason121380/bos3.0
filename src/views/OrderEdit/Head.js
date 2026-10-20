@@ -414,7 +414,8 @@ export default function Head() {
           {/* 第 1 欄：日期 */}
           <div css={[styles.column, styles.column1]}>
             <div css={styles.row}>
-              <Field label="帳單日期" className="w-full">
+              {/* 必填 *：依據 Footer.js 的 updateVaild／vaild（缺 bill.date 時「儲存」停用，「掛單／結帳」除總金額為 0 外也停用） */}
+              <Field label="訂單日期" required className="w-full">
                 <DateTimePicker
                   value={bill.date}
                   format='yyyy/MM/dd HH:mm'
@@ -433,7 +434,8 @@ export default function Head() {
           {/* 第 2 欄：顧客與不留客資 */}
           <div css={[styles.column, styles.column2]}>
             <div css={styles.row}>
-              <Field label="顧客姓名/手機號碼/編號" className="w-full">
+              {/* 必填 *：Footer.js 的 vaild 要求有顧客（customerId／手機）或勾選「不留客資」；勾了不留客資就不必填 */}
+              <Field label="顧客" required={!bill.withoutCustomerData} className="w-full">
                 <Autocomplete
                   disabled={bill.withoutCustomerData}
                   name="customer"
@@ -563,6 +565,7 @@ export default function Head() {
                       variant="outlined"
                       // autoFocus={focus === 'customer'}
                       size="small"
+                      placeholder="顧客姓名/手機號碼/編號"
                       onChange={event => setTmpCustomerKeyword(event.target.value)}
                       InputProps={{
                         ...params.InputProps,
@@ -604,6 +607,7 @@ export default function Head() {
             <div css={styles.row}>
               <CheckboxField
                 css={styles.checkboxLabel}
+                labelClassName="font-bold"
                 label="不留客資"
                 checked={bill.withoutCustomerData}
                 onChange={handleCheckoutWithoutCustomer}
@@ -618,9 +622,11 @@ export default function Head() {
           {/* 第 3 欄：服務人員與指定方式 */}
           <div css={[styles.column, styles.column3]}>
             <div css={styles.row}>
-              <Field label="服務人員姓名/編號" className="min-w-[180px] flex-1">
+              {/* 必填 *：Footer.js 的 updateVaild／vaild 要求 bill.designerId */}
+              <Field label="服務人員" required className="min-w-[180px] flex-1">
                 <EmployeeAutoComplete
                   css={styles.employeeInput}
+                  placeholder="服務人員姓名/編號"
                   setEmployeeAlready={setEmployeeAlready}
                   value={bill.designerId}
                   ref={designerRef}
