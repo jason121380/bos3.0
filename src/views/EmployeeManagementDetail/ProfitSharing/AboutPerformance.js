@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 大型頁策略：抽成級距表單（TextField）保留 MUI、排版改 Tailwind flex；Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）
 // 「分指定/不指定」的 handler 掛在 FormControlLabel 的 onClick（label 上），換成 CheckboxField 會改變點擊文字時的觸發次數，保留 MUI
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
@@ -11,8 +10,6 @@ import PropTypes from 'prop-types'
 import React, { Fragment, useEffect, useState } from 'react'
 import { openSnackbar } from 'elements/snackbars'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 const isSegmented = [
@@ -20,82 +17,7 @@ const isSegmented = [
   { label: '分段', value: true },
 ]
 
-const styles = {
-  alert: css({
-    marginBottom: theme.spacing(3),
-  }),
-  formGroup: css({
-    marginBottom: theme.spacing(3),
-  }),
-  subtitle: css({
-    margin: '1rem 0',
-  }),
-  sharing: css({
-    margin: '0 3rem',
-  }),
-  width: css({
-    width: '100%',
-  }),
-  marginL: css({
-    marginLeft: '5px',
-  }),
-  deductionWayMarginL: css({
-    marginLeft: '20px',
-  }),
-  icons: css({
-    marginLeft: '20px',
-    cursor: 'pointer',
-  }),
-  verticleCenter: css({
-    display: 'flex',
-    alignItems: 'center',
-    borderBottom: '0px',
-    marginLeft: 16
-  }),
-  flex: css({
-    display: 'flex',
-    marginBottom: 10
-  }),
-  removeBottomLine: css({
-    borderBottom: '0px',
-  }),
-  separateInputBottom: css({
-    marginLeft: '16px',
-    display: 'flex',
-    alignItems: 'center',
-    borderBottom: '0px',
-    whiteSpace: 'nowrap',
-    padding: 0,
-  }),
-  separateInput: css({
-    marginLeft: '16px',
-    display: 'flex',
-    alignItems: 'center',
-    borderBottom: '0px',
-    whiteSpace: 'nowrap',
-  }),
-  separateInputRake: css({
-    marginLeft: '16px',
-    display: 'flex',
-    alignItems: 'center',
-    borderBottom: '0px',
-    whiteSpace: 'nowrap',
-    padding: 0,
-  }),
-  isDesignateInput: css({
-    marginLeft: '5px',
-  }),
-  isDesignate: css({
-    display: 'flex',
-    justifyContent: 'space-evenly',
-  }),
-  inner: css({
-    minWidth: 995,
-    paddingBottom: 20
-  }),
-}
-
-function AboutPerformance({ className, profitSharing, onChange, attributions, ...rest }) {
+function AboutPerformance({ className = '', profitSharing, onChange, attributions, ...rest }) {
   const [tabValue, setTabValue] = useState('預設')
   const [deductionIndex, setDeductionIndex] = useState(0)
 
@@ -629,7 +551,7 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
   }, [tabValue, profitSharing])
   return (
     <Fragment>
-      <Card {...rest} css={css([styles.root, className])}>
+      <Card {...rest} className={className}>
         <CardHeader className="pb-4">
           <CardTitle>抽成方式設定</CardTitle>
         </CardHeader>
@@ -648,14 +570,14 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
         )}
         <CardContent>
           <PerfectScrollbar>
-            <div css={styles.inner}>
+            <div className="min-w-[995px] pb-[20px]">
               <div>
                 <h4 className="my-4 text-heading text-text">
                   抽成模式
                 </h4>
                 <ToggleGroup
                   size="small"
-                  css={styles.deductionWayMarginL}
+                  className="ml-[20px]"
                   value={profitSharing.isSegmented}
                   onChange={handleToggleButtonChange}
                   exclusive
@@ -671,7 +593,7 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                   ))}
                 </ToggleGroup>
                 <FormControlLabel
-                  css={styles.marginL}
+                  className="ml-[5px]"
                   control={<Checkbox color="primary" />}
                   label="分指定/不指定"
                   checked={profitSharing.designationUsage}
@@ -682,14 +604,14 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                 !profitSharing.isSegmented ? (
                   profitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.map(
                     (data, index) => (
-                      <div css={styles.flex} key={index}>
-                        <span css={styles.deductionWayMarginL}>
+                      <div className="flex mb-[10px]" key={index}>
+                        <span className="ml-[20px]">
                           總業績從(含)
                         </span>
                         <TextField
                           InputProps={{ inputProps: { min: 0 } }}
                           type="number"
-                          css={styles.verticleCenter}
+                          className="flex items-center [border-bottom:0px] ml-[16px]"
                           variant="outlined"
                           label="輸入業績"
                           value={data.threshold ? data.threshold : 0}
@@ -698,23 +620,23 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                           }
                           onWheel={() => document.activeElement.blur()}
                         />
-                        <span css={styles.deductionWayMarginL}>
+                        <span className="ml-[20px]">
                           抽成調整為
                         </span>
                         <TextField
                           InputProps={{ inputProps: { min: 0 } }}
                           type="number"
-                          css={styles.verticleCenter}
+                          className="flex items-center [border-bottom:0px] ml-[16px]"
                           variant="outlined"
                           label="輸入抽成(%)"
                           value={data.rake ? data.rake : 0}
                           onChange={event => handleNonSegmentedRakeInput(event, index, 'rake')}
                           onWheel={() => document.activeElement.blur()}
                         />
-                        <div css={styles.verticleCenter}>
+                        <div className="flex items-center [border-bottom:0px] ml-[16px]">
                           {index !== 0 && (
                             <DeleteForeverIcon
-                              css={styles.icons}
+                              className="ml-[20px] cursor-pointer"
                               onClick={handleDeleteSetDeductionNum}
                             />
                           )}
@@ -723,7 +645,7 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                               .length -
                             1 && (
                               <AddIcon
-                                css={styles.icons}
+                                className="ml-[20px] cursor-pointer"
                                 onClick={() => handleAddSetDeductionNum('nonDistinguish')}
                               />
                             )}
@@ -734,12 +656,12 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                 ) : (
                   profitSharing.segmented[0].nonDistinguish.map((data, index) => (
                     <div key={index} className="flex w-full flex-wrap">
-                      <div css={styles.flex}>
-                        <span css={styles.deductionWayMarginL}>
+                      <div className="flex mb-[10px]">
+                        <span className="ml-[20px]">
                           總業績從(含)
                         </span>
                         <TextField
-                          css={styles.separateInputBottom}
+                          className="ml-[16px] flex items-center [border-bottom:0px] whitespace-nowrap p-0"
                           InputProps={{ inputProps: { min: 0 } }}
                           type="number"
                           variant="outlined"
@@ -751,12 +673,12 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                           onWheel={() => document.activeElement.blur()}
                         />
                       </div>
-                      <div css={styles.flex}>
-                        <span css={styles.deductionWayMarginL}>
+                      <div className="flex mb-[10px]">
+                        <span className="ml-[20px]">
                           至
                         </span>
                         <TextField
-                          css={styles.separateInput}
+                          className="ml-[16px] flex items-center [border-bottom:0px] whitespace-nowrap"
                           InputProps={{ inputProps: { min: 0 } }}
                           type="number"
                           variant="outlined"
@@ -768,12 +690,12 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                           onWheel={() => document.activeElement.blur()}
                         />
                       </div>
-                      <div css={styles.flex}>
-                        <span css={styles.deductionWayMarginL}>
+                      <div className="flex mb-[10px]">
+                        <span className="ml-[20px]">
                           抽成為
                         </span>
                         <TextField
-                          css={styles.separateInputRake}
+                          className="ml-[16px] flex items-center [border-bottom:0px] whitespace-nowrap p-0"
                           InputProps={{ inputProps: { min: 0 } }}
                           type="number"
                           variant="outlined"
@@ -783,17 +705,17 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                           onWheel={() => document.activeElement.blur()}
                         />
                       </div>
-                      <div css={styles.flex}>
-                        <div css={styles.verticleCenter}>
+                      <div className="flex mb-[10px]">
+                        <div className="flex items-center [border-bottom:0px] ml-[16px]">
                           {index !== 0 && (
                             <DeleteForeverIcon
-                              css={styles.icons}
+                              className="ml-[20px] cursor-pointer"
                               onClick={() => handleDeleteSegmented(index)}
                             />
                           )}
                           {index === profitSharing.segmented[0].nonDistinguish.length - 1 && (
                             <AddIcon
-                              css={styles.icons}
+                              className="ml-[20px] cursor-pointer"
                               onClick={() => handleAddSegmented('nonDistinguish')}
                             />
                           )}
@@ -813,14 +735,14 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                     (data, index) => {
                       return (
                         <div key={index} className="flex w-full flex-wrap">
-                          <div css={styles.flex}>
-                            <span css={styles.deductionWayMarginL}>
+                          <div className="flex mb-[10px]">
+                            <span className="ml-[20px]">
                               總業績從(含)
                             </span>
                             <TextField
                               InputProps={{ inputProps: { min: 0 } }}
                               type="number"
-                              css={styles.verticleCenter}
+                              className="flex items-center [border-bottom:0px] ml-[16px]"
                               variant="outlined"
                               label="輸入業績"
                               value={data.threshold ? data.threshold : 0}
@@ -834,14 +756,14 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                               onWheel={() => document.activeElement.blur()}
                             />
                           </div>
-                          <div css={styles.flex}>
-                            <span css={styles.deductionWayMarginL}>
+                          <div className="flex mb-[10px]">
+                            <span className="ml-[20px]">
                               抽成調整為
                             </span>
                             <TextField
                               InputProps={{ inputProps: { min: 0 } }}
                               type="number"
-                              css={styles.verticleCenter}
+                              className="flex items-center [border-bottom:0px] ml-[16px]"
                               variant="outlined"
                               label="輸入抽成(%)"
                               value={data.rake ? data.rake : 0}
@@ -851,11 +773,11 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                               onWheel={() => document.activeElement.blur()}
                             />
                           </div>
-                          <div css={styles.flex}>
-                            <div css={styles.verticleCenter}>
+                          <div className="flex mb-[10px]">
+                            <div className="flex items-center [border-bottom:0px] ml-[16px]">
                               {index !== 0 && (
                                 <DeleteForeverIcon
-                                  css={styles.icons}
+                                  className="ml-[20px] cursor-pointer"
                                   onClick={() => handleDeleteNonSegmentedDesignate(index)}
                                 />
                               )}
@@ -864,7 +786,7 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                                   .length -
                                 1 && (
                                   <AddIcon
-                                    css={styles.icons}
+                                    className="ml-[20px] cursor-pointer"
                                     onClick={() => handleAddSetDeductionNum('designate')}
                                   />
                                 )}
@@ -883,14 +805,14 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                     (data, index) => {
                       return (
                         <div key={index} className="flex w-full flex-wrap">
-                          <div css={styles.flex}>
-                            <span css={styles.deductionWayMarginL}>
+                          <div className="flex mb-[10px]">
+                            <span className="ml-[20px]">
                               總業績從(含)
                             </span>
                             <TextField
                               InputProps={{ inputProps: { min: 0 } }}
                               type="number"
-                              css={styles.verticleCenter}
+                              className="flex items-center [border-bottom:0px] ml-[16px]"
                               variant="outlined"
                               label="輸入業績"
                               value={data.threshold ? data.threshold : 0}
@@ -904,14 +826,14 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                               onWheel={() => document.activeElement.blur()}
                             />
                           </div>
-                          <div css={styles.flex}>
-                            <span css={styles.deductionWayMarginL}>
+                          <div className="flex mb-[10px]">
+                            <span className="ml-[20px]">
                               抽成調整為
                             </span>
                             <TextField
                               InputProps={{ inputProps: { min: 0 } }}
                               type="number"
-                              css={styles.verticleCenter}
+                              className="flex items-center [border-bottom:0px] ml-[16px]"
                               variant="outlined"
                               label="輸入抽成(%)"
                               value={data.rake ? data.rake : 0}
@@ -921,11 +843,11 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                               onWheel={() => document.activeElement.blur()}
                             />
                           </div>
-                          <div css={styles.flex}>
-                            <div css={styles.verticleCenter}>
+                          <div className="flex mb-[10px]">
+                            <div className="flex items-center [border-bottom:0px] ml-[16px]">
                               {index !== 0 && (
                                 <DeleteForeverIcon
-                                  css={styles.icons}
+                                  className="ml-[20px] cursor-pointer"
                                   onClick={() => handleDeleteNonSegmentedNonDesignate(index)}
                                 />
                               )}
@@ -934,7 +856,7 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                                   .length -
                                 1 && (
                                   <AddIcon
-                                    css={styles.icons}
+                                    className="ml-[20px] cursor-pointer"
                                     onClick={() => handleAddSetDeductionNum('nonDesignate')}
                                   />
                                 )}
@@ -955,14 +877,14 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                   {profitSharing.segmented[0].designate.map((data, index) => {
                     return (
                       <div key={index} className="flex w-full flex-wrap">
-                        <div css={styles.flex}>
-                          <span css={styles.deductionWayMarginL}>
+                        <div className="flex mb-[10px]">
+                          <span className="ml-[20px]">
                             指定業績從(含)
                           </span>
                           <TextField
                             InputProps={{ inputProps: { min: 0 } }}
                             type="number"
-                            css={styles.separateInputBottom}
+                            className="ml-[16px] flex items-center [border-bottom:0px] whitespace-nowrap p-0"
                             variant="outlined"
                             label="輸入業績"
                             value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
@@ -972,14 +894,14 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                             onWheel={() => document.activeElement.blur()}
                           />
                         </div>
-                        <div css={styles.flex}>
-                          <span css={styles.deductionWayMarginL} >
+                        <div className="flex mb-[10px]">
+                          <span className="ml-[20px]" >
                             至
                           </span>
                           <TextField
                             InputProps={{ inputProps: { min: 0 } }}
                             type="number"
-                            css={styles.separateInput}
+                            className="ml-[16px] flex items-center [border-bottom:0px] whitespace-nowrap"
                             variant="outlined"
                             label="輸入業績"
                             value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
@@ -989,15 +911,15 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                             onWheel={() => document.activeElement.blur()}
                           />
                         </div>
-                        <div css={styles.flex}>
-                          <span css={styles.deductionWayMarginL}>
+                        <div className="flex mb-[10px]">
+                          <span className="ml-[20px]">
                             抽成為
                           </span>
                           <TextField
                             InputProps={{ inputProps: { min: 0 } }}
                             type="number"
 
-                            css={styles.separateInputRake}
+                            className="ml-[16px] flex items-center [border-bottom:0px] whitespace-nowrap p-0"
                             variant="outlined"
                             label="輸入抽成(%)"
                             value={data.rake ? data.rake : 0}
@@ -1007,17 +929,17 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                             onWheel={() => document.activeElement.blur()}
                           />
                         </div>
-                        <div css={styles.flex}>
-                          <div css={styles.verticleCenter}>
+                        <div className="flex mb-[10px]">
+                          <div className="flex items-center [border-bottom:0px] ml-[16px]">
                             {index !== 0 && (
                               <DeleteForeverIcon
-                                css={styles.icons}
+                                className="ml-[20px] cursor-pointer"
                                 onClick={() => handleDeleteSegmentedDesignate(index)}
                               />
                             )}
                             {index === profitSharing.segmented[0].designate.length - 1 && (
                               <AddIcon
-                                css={styles.icons}
+                                className="ml-[20px] cursor-pointer"
                                 onClick={() => handleAddSegmented('designate')}
                               />
                             )}
@@ -1034,14 +956,14 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                   {profitSharing.segmented[0].nonDesignate.map((data, index) => {
                     return (
                       <div key={index} className="flex w-full flex-wrap">
-                        <div css={styles.flex}>
-                          <span css={styles.deductionWayMarginL}>
+                        <div className="flex mb-[10px]">
+                          <span className="ml-[20px]">
                             不指定業績從(含)
                           </span>
                           <TextField
                             InputProps={{ inputProps: { min: 0 } }}
                             type="number"
-                            css={styles.separateInputBottom}
+                            className="ml-[16px] flex items-center [border-bottom:0px] whitespace-nowrap p-0"
                             variant="outlined"
                             label="輸入業績"
                             value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
@@ -1055,14 +977,14 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                             onWheel={() => document.activeElement.blur()}
                           />
                         </div>
-                        <div css={styles.flex}>
-                          <span css={styles.deductionWayMarginL}>
+                        <div className="flex mb-[10px]">
+                          <span className="ml-[20px]">
                             至
                           </span>
                           <TextField
                             InputProps={{ inputProps: { min: 0 } }}
                             type="number"
-                            css={styles.separateInput}
+                            className="ml-[16px] flex items-center [border-bottom:0px] whitespace-nowrap"
                             variant="outlined"
                             label="輸入業績"
                             value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
@@ -1076,14 +998,14 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                             onWheel={() => document.activeElement.blur()}
                           />
                         </div>
-                        <div css={styles.flex}>
-                          <span css={styles.deductionWayMarginL}>
+                        <div className="flex mb-[10px]">
+                          <span className="ml-[20px]">
                             抽成為
                           </span>
                           <TextField
                             InputProps={{ inputProps: { min: 0 } }}
                             type="number"
-                            css={styles.separateInputRake}
+                            className="ml-[16px] flex items-center [border-bottom:0px] whitespace-nowrap p-0"
                             variant="outlined"
                             label="輸入抽成(%)"
                             value={data.rake ? data.rake : 0}
@@ -1093,17 +1015,17 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                             onWheel={() => document.activeElement.blur()}
                           />
                         </div>
-                        <div css={styles.flex}>
-                          <div css={styles.verticleCenter}>
+                        <div className="flex mb-[10px]">
+                          <div className="flex items-center [border-bottom:0px] ml-[16px]">
                             {index !== 0 && (
                               <DeleteForeverIcon
-                                css={styles.icons}
+                                className="ml-[20px] cursor-pointer"
                                 onClick={() => handleDeleteSegmentedNonDesignate(index)}
                               />
                             )}
                             {index === profitSharing.segmented[0].nonDesignate.length - 1 && (
                               <AddIcon
-                                css={styles.icons}
+                                className="ml-[20px] cursor-pointer"
                                 onClick={() => handleAddSegmented('nonDesignate')}
                               />
                             )}
@@ -1123,7 +1045,7 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
 }
 
 AboutPerformance.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
 }
 
 export default AboutPerformance

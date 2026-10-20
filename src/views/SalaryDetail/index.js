@@ -1,12 +1,9 @@
-/** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
 import { startOfDay } from 'date-fns'
 import { useFetchUserDecrease, useFetchUserIncrease } from 'hooks/useFetchUsers'
 import idx from 'idx'
 import produce from 'immer'
 import React from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import { startOfMonth } from 'date-fns'
 import DateSelector from 'components/DateSelector'
@@ -14,17 +11,6 @@ import AdminPageHeader from 'components/AdminPageHeader'
 
 import DecreaseResult from './DecreaseResult'
 import IncreaseResult from './IncreaseResult'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function CustomerManagementList() {
   const [setting, setSetting] = React.useState({
@@ -91,7 +77,7 @@ function CustomerManagementList() {
           _ =>
             _.data.users.users && (
               <IncreaseResult
-                className={styles.results}
+                className="mt-[24px]"
                 pageSetting={_.data.users}
                 users={_.data.users.users}
                 handleOnChangePage={(_event, page) =>
@@ -111,7 +97,7 @@ function CustomerManagementList() {
           _ =>
             _.data.users.users && (
               <DecreaseResult
-                className={styles.results}
+                className="mt-[24px]"
                 users={_.data.users.users}
                 pageSetting={_.data.users}
                 handleOnChangePage={(_event, page) =>

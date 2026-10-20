@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { useState, useEffect } from 'react'
@@ -14,8 +13,6 @@ import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCard
 import useFetchGetIsOptimizationPrintModeOn from 'hooks/useFetchGetIsOptimizationPrintModeOn'
 import useFetchGetDesignerNameForReportType from 'hooks/useFetchGetDesignerNameForReportType'
 import useFetchGetHelperDailyReport from 'hooks/useFetchGetHelperDailyReport'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { EmptyState } from 'ui/empty-state'
@@ -24,27 +21,6 @@ import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import { Autocomplete } from 'ui/combobox'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  searchBtnDiv: css({
-    marginBottom: '24px',
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '284px',
-  }),
-}
 
 const DecreaseDailyReport = () => {
   const [sortJobTitle, setSortJobtitle] = useState([])

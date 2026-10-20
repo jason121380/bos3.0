@@ -1,35 +1,11 @@
-/** @jsxImportSource @emotion/react */
 import { Input } from 'ui/text-field'
 import { Button } from 'ui/button'
 import { Search as SearchIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
+import { cn } from 'ui/utils'
 
-const styles = {
-  root: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(2)
-  }),
-  search: css({
-    flexGrow: 1,
-    height: 42,
-    padding: theme.spacing(0, 2),
-    display: 'flex',
-    alignItems: 'center'
-  }),
-  searchIcon: css({
-    marginRight: theme.spacing(2),
-    color: theme.palette.icon,
-  }),
-  searchInput: css({
-    flexGrow: 1,
-  }),
-}
-
-function Search({ onSearch, className, ...rest }) {
+function Search({ onSearch, className = '', ...rest }) {
   const [keyword, setKeyword] = useState('')
   const handleOnChange = e => setKeyword(e.target.value)
   const handleOnKeyPress = e => {
@@ -38,11 +14,11 @@ function Search({ onSearch, className, ...rest }) {
     }
   }
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <div css={styles.search} className="rounded-md bg-background">
-        <SearchIcon css={styles.searchIcon} />
+    <div {...rest} className={cn('flex items-center gap-[16px]', className)}>
+      <div className="grow h-[42px] py-0 px-[16px] flex items-center rounded-md bg-background">
+        <SearchIcon className="mr-[16px] text-[#007AFF]" />
         <Input
-          css={styles.searchInput}
+          className="grow"
           disableUnderline
           placeholder="搜尋關鍵字"
           value={keyword}
@@ -63,7 +39,7 @@ function Search({ onSearch, className, ...rest }) {
 }
 
 Search.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   onSearch: PropTypes.func,
 }
 

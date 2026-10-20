@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Table, TableBody, TableCell, TableRow } from 'ui/table'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
@@ -7,22 +6,7 @@ import useFetchMerchantCommissionWay from 'hooks/useFetchMerchantCommissionWay'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import React, { useEffect, useRef, useState } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
 // import { useFetchMerchantAuthoritiesNameAndId } from 'hooks/useFetchGetMerchantAuthorities'
-
-const styles = {
-  root: css({}),
-  alert: css({
-    marginBottom: theme.spacing(3),
-  }),
-  formGroup: css({
-    marginBottom: theme.spacing(3),
-  }),
-  action: css({
-    width: '100%',
-  }),
-}
 
 // const accountStatus = [
 //   {
@@ -51,7 +35,7 @@ const styles = {
 // ]
 
 function AboutProfitSharing({
-  className,
+  className = '',
   designer,
   profitSharing,
   merchantJobTitlePoints,
@@ -66,7 +50,7 @@ function AboutProfitSharing({
   const commissionWay = useFetchMerchantCommissionWay()
 
   return (
-    <Card {...rest} css={css([styles.root, className])}>
+    <Card {...rest} className={className}>
       <CardHeader>
         <CardTitle>一般設定</CardTitle>
       </CardHeader>
@@ -268,7 +252,7 @@ function AboutProfitSharing({
 }
 
 AboutProfitSharing.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
 }
 
 export default AboutProfitSharing

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 多選篩選（值為陣列）保留 MUI
 import { InputLabel, MenuItem, FormControl, Select } from 'ui/form-control'
 import { Checkbox } from 'ui/checkbox'
@@ -7,69 +6,9 @@ import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { EmptyState } from 'ui/empty-state'
 import React from 'react'
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from "recharts";
 import { performanceColor } from '../Colors';
-import { css } from '@emotion/react'
-
-const styles = {
-  noDataDiv: css({
-    width: '100%',
-    height: '350px',
-    justifyContent: 'center',
-    display: 'flex',
-    alignItems: 'center'
-  }),
-  noData: css({
-    fontSize: '24px',
-  }),
-  trendToolTips: css({
-    minWidth: 150,
-    padding: '12px',
-    fontSize: '16px',
-    background: 'rgb(var(--background))',
-    color: 'black',
-    borderRadius: '5px',
-    boxShadow: '0 0 0 1px rgb(63 63 68 / 5%), 0 1px 3px 0 rgb(63 63 68 / 15%)',
-    display: 'flex',
-    flexDirection: 'column',
-    '& .header': {
-      display: 'flex',
-      gap: 30,
-      width: '100%',
-      justifyContent: 'space-between',
-      marginBottom: 10
-    },
-    '& .content': {
-      maxHeight: 350,
-      overflowY: 'auto',
-    },
-    '& .row': {
-      display: 'flex',
-      gap: 10,
-      fontSize: 14,
-      alignItems: 'center'
-    }
-  }),
-  trendLegend: css({
-    border: '1px soid black',
-    '& .recharts-legend-item-text': {
-      fontSize: 14
-    }
-  }),
-  select: css({
-    '& .MuiSelect-outlined': {
-      padding: '6px 8px !important',
-      fontSize: 12
-    },
-    '& label.MuiFormLabel-root': {
-      top: -9
-    },
-    '& .MuiInputLabel-outlined.MuiInputLabel-shrink': {
-      transform: 'translate(14px, 2px) scale(0.65)'
-    },
-  })
-}
 
 const selectOptions = [
   { label: '項目消費', value: 'service'},
@@ -91,7 +30,7 @@ const PerformanceDetail = ({
         return (value / sum) ? `${Math.round(value / sum * 10000) / 100}%` : ''
       }
       return (
-        <div css={styles.trendToolTips}>
+        <div className="min-w-[150px] p-[12px] text-[16px] [background:rgb(var(--background))] text-[color:black] rounded-[5px] [box-shadow:0_0_0_1px_rgb(63_63_68_/_5%),0_1px_3px_0_rgb(63_63_68_/_15%)] flex flex-col [&_.header]:flex [&_.header]:gap-[30px] [&_.header]:w-full [&_.header]:justify-between [&_.header]:mb-[10px] [&_.content]:max-h-[350px] [&_.content]:overflow-y-auto [&_.row]:flex [&_.row]:gap-[10px] [&_.row]:text-[14px] [&_.row]:items-center">
           <div className='header'>
             <div>{label}</div>
             <div>總和:{sum}</div>
@@ -148,7 +87,7 @@ const PerformanceDetail = ({
             </div>
           </div>
           <div className="flex w-full max-w-[350px] items-center">
-            <FormControl fullWidth css={styles.select}>
+            <FormControl fullWidth>
               <InputLabel>篩選</InputLabel>
               <Select
                 multiple
@@ -185,10 +124,7 @@ const PerformanceDetail = ({
                   <XAxis interval='equidistantPreserveStart' dataKey='name' />
                   <YAxis />
                   <Tooltip offset={-20} wrapperStyle={{ zIndex: 99, pointerEvents: '' }} content={<PerformanceTrendBarTooltip />}/>
-                  <Legend
-                    wrapperStyle={{ maxHeight: 200, overflowY: 'auto' }}
-                    css={styles.trendLegend}
-                  />
+                  {/* 圖例：原本 <Legend css={…}> 經 emotion jsx 包裝後元素型別不再是 recharts Legend，圖表找不到而從未顯示；移除 emotion 後為維持畫面等價一併移除（要顯示圖例屬產品變更） */}
                   {performanceTrendBar()}
                 </LineChart>
               </ResponsiveContainer>

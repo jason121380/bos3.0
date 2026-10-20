@@ -1,23 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import React from 'react'
-import { css } from '@emotion/react'
-
-const styles = {
-  noDataDiv: css({
-    width: '100%',
-    height: '350px',
-    justifyContent: 'center',
-    display: 'flex',
-    alignItems: 'center'
-  }),
-  noData: css({
-    fontSize: '24px',
-  }),
-}
 
 const CustomerConsumptionPriceRanking = ({ data }) => {
   return (

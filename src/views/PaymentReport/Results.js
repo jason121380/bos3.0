@@ -1,27 +1,13 @@
-/** @jsxImportSource @emotion/react */
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import { CSVLink } from "react-csv";
-import { css } from '@emotion/react'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import { HeaderActionsPortal } from 'ui/page-header'
-
-const styles = {
-  table: css({
-    minWidth: 650,
-  }),
-  designerName: css({
-    fontWeight: 'bold',
-  }),
-  medals: css({
-    fontSize: '19px',
-  }),
-}
 
 function Results({ report, paymentsName }) {
   const [totalArr, setTotalArr] = useState([])

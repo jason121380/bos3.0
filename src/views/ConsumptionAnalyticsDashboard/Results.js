@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { useEffect, useState } from 'react'
 
 import OrderGender from './Charts/OrderGender';
@@ -14,18 +13,6 @@ import PerformanceDetail from './Charts/PerformanceDetail';
 import ReturnedRatio from './Charts/ReturnedRatio';
 import SourceRatio from './Charts/SourceRatio';
 import NewCusStatistics from './Charts/NewCusStatistics';
-import { css } from '@emotion/react'
-
-const styles = {
-  root: css({
-    '& tspan': {
-      fontSize: '14px',
-    },
-    '& .recharts-legend-item-text': {
-      fontSize: 14
-    },
-  }),
-}
 
 function Results({
   dashboardData, chartDisplay, dataType, setDataType,
@@ -44,7 +31,7 @@ function Results({
     setWidth(window.innerWidth)
   }
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2" css={styles.root}>
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 [&_tspan]:text-[14px] [&_.recharts-legend-item-text]:text-[14px]">
 
       <PerformanceDetail // 設計師業績趨勢
         data={dashboardData.performanceTrendV2}
