@@ -1,4 +1,4 @@
-import { Button } from 'ui/button-compat'
+import { Button } from 'ui/button'
 import { TextField } from 'ui/text-field'
 import { Field } from 'ui/input'
 import billContext from 'context/keyInContext'
@@ -127,8 +127,7 @@ export default function PaymentCustomerWallet() {
           </Field>
         )}
         <Button
-          color="primary"
-          variant="contained"
+          variant="primary"
           onClick={() => setOpenWalletDeposit(true)}
         >
           異動入金

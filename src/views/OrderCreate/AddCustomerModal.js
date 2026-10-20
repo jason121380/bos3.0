@@ -1,7 +1,6 @@
 import { Modal } from 'ui/modal-compat'
-import { Grid } from 'ui/grid-compat'
-import { Button } from 'ui/button-compat'
-import { Card, CardActions, CardContent, CardHeader } from 'ui/card-compat'
+import { Button } from 'ui/button'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
 import { LoaderCircle } from 'lucide-react'
@@ -22,11 +21,6 @@ import _ from 'lodash'
 import { useHistory } from 'react-router'
 import SourceSelect from 'components/SourceSelect'
 import { Autocomplete } from 'ui/combobox'
-
-const styles = {
-  root: 'absolute top-[50%] left-[50%] [transform:translate(-50%,-50%)] [outline:none] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)] w-[700px] max-h-[100%] overflow-y-auto max-w-[100%] [&_.MuiCardHeader-action]:mt-0',
-  actions: 'justify-between',
-}
 
 const gender = [
   {
@@ -348,15 +342,17 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
 
   return (
     <Modal open={open}>
-      <Card className={styles.root}>
+      <Card className="absolute left-1/2 top-1/2 max-h-[calc(100%-32px)] w-[700px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl bg-background shadow-float outline-none">
         <CardHeader
-          title={values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}
+          className="items-center pb-4"
           action={!lastCustomerNo.loading && <span className="text-body text-text">{`最新顧客編號: ${lastNo}`}</span>}
-        />
+        >
+          <CardTitle>{values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}</CardTitle>
+        </CardHeader>
         <div className="h-px bg-border" />
         <CardContent>
-          <Grid container spacing={3}>
-            <Grid item md={6} xs={12}>
+          <div className="grid grid-cols-1 gap-x-6 gap-y-4 min-[900px]:grid-cols-2">
+            <div className="min-w-0">
               <Field
                 label="客戶編號"
                 htmlFor="addCustomerModal-no"
@@ -386,8 +382,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                   )}
                 </div>
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="客戶姓名" htmlFor="addCustomerModal-name">
                 <Input
                   id="addCustomerModal-name"
@@ -398,8 +394,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                   onKeyDown={e => e.key === 'Enter' && setFocus('gender')}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <FormControl
                 focused={focus === 'gender'}
                 onKeyDown={e => e.key === 'Enter' && setFocus('email')}
@@ -424,8 +420,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                   ))}
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="Email" htmlFor="addCustomerModal-email">
                 <Input
                   id="addCustomerModal-email"
@@ -436,8 +432,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                   onKeyDown={e => e.key === 'Enter' && setFocus('lineId')}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="lineId" htmlFor="addCustomerModal-lineId">
                 <Input
                   id="addCustomerModal-lineId"
@@ -448,8 +444,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                   onKeyDown={e => e.key === 'Enter' && setFocus('address')}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="地址" htmlFor="addCustomerModal-address">
                 <Input
                   id="addCustomerModal-address"
@@ -460,8 +456,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                   onKeyDown={e => e.key === 'Enter' && setFocus('nickName')}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="客戶暱稱" htmlFor="addCustomerModal-nickName">
                 <Input
                   id="addCustomerModal-nickName"
@@ -472,8 +468,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                   onKeyDown={e => e.key === 'Enter' && setFocus('year')}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <div className="flex flex-wrap gap-2.5">
                 <Field label="民國年" htmlFor="addCustomerModal-year" className="w-20">
                   <Input
@@ -506,8 +502,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                   />
                 </Field>
               </div>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="電話" htmlFor="addCustomerModal-cellphone">
                 <Input
                   id="addCustomerModal-cellphone"
@@ -518,8 +514,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                   onKeyDown={e => e.key === 'Enter' && setFocus('source')}
                 />
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <SourceSelect
                 focused={focus === 'source'}
                 onKeyDown={e => e.key === 'Enter' && setFocus('preferDesigner')}
@@ -528,8 +524,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                 onChange={event => handleFieldChange(event)}
                 ref={sourceRef}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="最近設計師" htmlFor="addCustomerModal-latestDesigner">
                 <NativeSelect
                   id="addCustomerModal-latestDesigner"
@@ -549,8 +545,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                   }
                 </NativeSelect>
               </Field>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Autocomplete
                 value={values.PreferDesignerId || null}
                 autoHighlight
@@ -586,8 +582,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                   }
                 }}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div className="min-w-0">
               <Field label="備註" htmlFor="addCustomerModal-remark">
                 <Input
                   id="addCustomerModal-remark"
@@ -598,32 +594,30 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
                   onKeyDown={e => e.key === 'Enter' && setFocus('submit')}
                 />
               </Field>
-            </Grid>
-          </Grid>
+            </div>
+          </div>
         </CardContent>
         <div className="h-px bg-border" />
-        <CardActions className={styles.actions}>
+        <CardFooter className="flex-wrap justify-between">
           <div>
             {values.customerId.length > 0 && (
-              <Button color="primary" variant="contained" onClick={handleGoToCustomerEdit}>
+              <Button variant="secondary" onClick={handleGoToCustomerEdit}>
                 查看訂單記錄
               </Button>
             )}
           </div>
-          <div>
-            <Button onClick={onClose}>取消</Button>
+          <div className="flex gap-2">
+            <Button variant="secondary" onClick={onClose}>取消</Button>
             <Button
-              color="primary"
+              variant="primary"
               onClick={handleSubmit}
-              variant="contained"
               disabled={quickAddCustomer}
               ref={submitRef}
-              focusRipple={focus === 'submit'}
             >
               {values.customerId.length > 0 ? '儲存' : '新增'}
             </Button>
           </div>
-        </CardActions>
+        </CardFooter>
       </Card>
     </Modal>
   )
