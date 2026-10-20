@@ -19,7 +19,7 @@ h1 {
 }
 
 body {
-  // 頁面底色（淺色為白）：iOS 主畫面 App 的狀態列顯示 body 底色，#F5F5F5 會讓頂端灰、與白色頁面不平衡（Jason 2026/10/20）
+  /* 頁面底色（淺色為白）：iOS 主畫面 App 的狀態列顯示 body 底色，#F5F5F5 會讓頂端灰、與白色頁面不平衡（Jason 2026/10/20）*/
   background-color: rgb(var(--canvas));
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -38,22 +38,6 @@ body {
   }
 }
 
-.MuiListSubheader-root {
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.MuiAutocomplete-option[aria-selected='true'] {
-  background-color: #E8F0FE !important;
-  color: #1A73E8;
-}
-
-.MuiAutocomplete-option[data-focus='true'],
-.MuiAutocomplete-option.Mui-focused {
-  background-color: #F1F3F4 !important;
-  color: #202124;
-}
-
 .cellHighlight {
   color: #007AFF !important;
   font-weight: bold !important;
@@ -63,25 +47,9 @@ body {
   font-weight: 1000 !important;
 }
 
-.makeStyles-active {
-  background-color: rgba(0, 122, 255, 0.1);
-  color: #007AFF;
-  border-radius: 8px;
-}
-
-// button.MuiButtonBase-root.MuiButton-containedPrimary {
-//   background-color: #3865ac;
-// }
-
-button.MuiToggleButton-root.Mui-selected {
-  color: #1A73E8;
-  background-color: #E8F0FE;
-}
-
-button.MuiToggleButton-root.Mui-selected:hover {
-  color: #1A73E8;
-  background-color: #D2E3FC;
-}
+/* button.MuiButtonBase-root.MuiButton-containedPrimary {*/
+/*   background-color: #3865ac;*/
+/* }*/
 
 .teachingMode span {
   color: white;
@@ -97,19 +65,6 @@ td.MuiTableCell-sizeSmall,
 th.MuiTableCell-sizeSmall {
   padding: 2px 5px;
   white-space: pre;
-}
-
-span.PrivateSwitchBase-root-19 {
-  padding: 1px;
-}
-
-@media (min-width: 1280px) {
-
-  div.makeStyles-content-2,
-  div.makeStyles-content-66,
-  div.jss2 {
-    padding-left: 206px;
-  }
 }
 
 @media (max-width: 576px) {
@@ -137,21 +92,16 @@ td.MuiTableCell-root.MuiTableCell-body {
   border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-// tr.MuiTableRow-root:nth-of-type(even) {
-//   background-color: #F9F9FB;
-// }
+/* tr.MuiTableRow-root:nth-of-type(even) {*/
+/*   background-color: #F9F9FB;*/
+/* }*/
 
-// tr.MuiTableRow-root:hover {
-//   background-color: rgba(0, 122, 255, 0.03) !important;
-// }
+/* tr.MuiTableRow-root:hover {*/
+/*   background-color: rgba(0, 122, 255, 0.03) !important;*/
+/* }*/
 
 .merchantNamePrint {
   display: none !important;
-}
-
-.MuiOutlinedInput-input:-webkit-autofill {
-  -webkit-text-fill-color: unset;
-  -webkit-box-shadow: none;
 }
 
 @media print {
@@ -233,20 +183,6 @@ td.MuiTableCell-root.MuiTableCell-body {
     grid-template-columns: 235px 235px 235px;
   }
 
-  div.makeStyles-header-139,
-  div.makeStyles-header-156,
-  div.makeStyles-header-171,
-  div.makeStyles-btnDiv-141,
-  div.makeStyles-header-172,
-  div.makeStyles-btnDiv-158,
-  div.makeStyles-btnDiv-174 {
-    display: none;
-  }
-
-  div.MuiDrawer-paperAnchorDockedLeft {
-    display: none;
-  }
-
   tr.salaryTransferNoDsiplay {
     display: none;
   }
@@ -303,11 +239,6 @@ td.MuiTableCell-root.MuiTableCell-body {
   html * {
     font-size: 9px !important;
     line-height: 1.3em !important;
-  }
-
-  div.gridcard {
-    display: grid;
-    grid-template-columns: 260px 260px 260px;
   }
 
   td.MuiTableCell-root.MuiTableCell-body {
@@ -369,16 +300,7 @@ td.MuiTableCell-root.MuiTableCell-body {
     border-bottom: 2px solid;
   }
 
-  .DesignersSalaryDetailReportInfo,
-  .MerchantBankTransferReportMerchantName {
-    display: block !important;
-    visibility: visible !important;
-  }
-
   .DesignersSalaryDetailReport {
-    .searchBtnDiv {
-      display: none;
-    }
 
     .DesignersSalaryDetailReportTable {
       display: block !important;
@@ -474,10 +396,6 @@ td.MuiTableCell-root.MuiTableCell-body {
     }
   }
 
-  .MerchantSearchBarDisplayNone {
-    display: none;
-  }
-
   .TransferDetailpPrint .MuiTypography-subtitle1 {
     line-height: unset;
     margin-bottom: 10px;
@@ -538,9 +456,9 @@ td.MuiTableCell-root.MuiTableCell-body {
       margin: 0 auto;
 
       table {
-        // display: block;
-        // flex-direction: column;
-        // border-collapse: collapse !important;
+        /* display: block;*/
+        /* flex-direction: column;*/
+        /* border-collapse: collapse !important;*/
         border: 1px solid black;
         border-top: none;
 
@@ -558,7 +476,7 @@ td.MuiTableCell-root.MuiTableCell-body {
           border-top: 1px solid black;
 
           tr {
-            // display: flex;
+            /* display: flex;*/
             outline: none;
             position: relative;
 
@@ -569,7 +487,7 @@ td.MuiTableCell-root.MuiTableCell-body {
               border-left: 1px solid black;
 
               &:first-child {
-                // min-width: 80px !important;
+                /* min-width: 80px !important;*/
                 width: 60px !important;
                 border-left: none;
               }
@@ -579,7 +497,7 @@ td.MuiTableCell-root.MuiTableCell-body {
 
         tbody {
           tr {
-            // display: block;
+            /* display: block;*/
             border-top: 1px solid black;
 
             td {
@@ -588,7 +506,7 @@ td.MuiTableCell-root.MuiTableCell-body {
               border-left: 1px solid black;
 
               &:first-child {
-                // min-width: 80px;
+                /* min-width: 80px;*/
                 border-left: none;
               }
             }
@@ -1389,39 +1307,6 @@ td.MuiTableCell-root.MuiTableCell-body {
   line-height: 0.1em;
 }
 
-.boxTop {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-}
-
-.boxBottom {
-  display: flex;
-  font-size: 12px;
-  justify-content: space-between;
-}
-
-.clickEvent:hover {
-  cursor: pointer;
-}
-
-.ScheduleCard-body {
-  background-color: #ffffff;
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-.ScheduleCard-header {
-  padding-bottom: 8px;
-  background-color: #ffffff;
-}
-
-.DesignersSalaryDetailReportInfo,
-.MerchantBankTransferReportMerchantName {
-  display: none;
-  visibility: hidden;
-}
-
 .DesignersSalaryDetailReportTable,
 .DesignersSalaryDetailReportTable-2 {
   background-color: #ffffff;
@@ -1464,10 +1349,6 @@ td.MuiTableCell-root.MuiTableCell-body {
       }
     }
   }
-}
-
-.EmployeeScheduleAddDesignersModal .MuiAutocomplete-hasClearIcon .MuiFormControl-root .MuiInputBase-root .MuiAutocomplete-endAdornment {
-  display: none;
 }
 
 .ScheduleTags {
@@ -1610,61 +1491,6 @@ td.MuiTableCell-root.MuiTableCell-body {
   }
 }
 
-.ManagementReservationRecordNew {
-  table tbody tr {
-    display: flex;
-  }
-
-  table tbody tr td {
-    width: 100px;
-    display: inline-block;
-    padding: 0 !important;
-  }
-
-  table tbody tr td:hover #divHover {
-    background-color: rgb(228, 252, 237);
-    transition: .2s;
-    cursor: pointer;
-  }
-}
-
-.ManagementDesignersReservationRecordNew {
-  table tbody tr {
-    display: flex;
-  }
-
-  table tbody tr td:hover #divHover {
-    background-color: rgb(228, 252, 237);
-    transition: .2s;
-    cursor: pointer;
-  }
-}
-
-div#listSubheaderInQueue.MuiListSubheader-root {
-  font-size: 13px !important;
-  color: #3d7782 !important;
-  border-top-left-radius: 10px !important;
-  border-top-right-radius: 10px !important;
-}
-
-.MuiPickersToolbar-toolbar {
-  background-color: #3f51b5;
-}
-
-.MuiPickersToolbarText-toolbarBtnSelected {
-  color: #ffffff;
-}
-
-.MuiPickersToolbarText-toolbarTxt {
-  color: #ffffff;
-}
-
-.SalaryOverviewRemark {
-  .MuiInput-underline:before {
-    border-bottom: 1px solid #adadad;
-  }
-}
-
 .MerchantBankTransferReportTransferDetail {
   .MuiFormControl-root {
     margin-top: -5px;
@@ -1694,9 +1520,9 @@ div#listSubheaderInQueue.MuiListSubheader-root {
   border: 0.1px dashed #e7e7e7;
 }
 
-// .MuiBackdrop-root {
-//   opacity: 0 !important;
-// }
+/* .MuiBackdrop-root {*/
+/*   opacity: 0 !important;*/
+/* }*/
 /* Chrome, Safari, Edge, Opera hide input type number arrow */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -1745,21 +1571,6 @@ input[type=number] {
 }
 
 .EmployeePickingCreateProductsModal {
-  .displayArrow {
-
-    /* Chrome, Safari, Edge, Opera hide input type number arrow */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-      -webkit-appearance: button;
-      margin: 0;
-    }
-
-    /* Firefox hide input type number arrow*/
-    input[type=number] {
-      -moz-appearance: button;
-      appearance: button;
-    }
-  }
 }
 
 .ProfileDetails {
@@ -1777,52 +1588,6 @@ input[type=number] {
 .FastCheckOrdersModal {
   .MuiPaper-root {
     height: 80vh;
-  }
-}
-
-.AccountingRecordListTable,
-.GeneralAccountingRecordListTable {
-
-  thead tr th:nth-child(3),
-  tbody tr td:nth-child(3) {
-    width: 0;
-    padding-right: 40px;
-    white-space: nowrap;
-  }
-
-  thead tr th:nth-child(4),
-  tbody tr td:nth-child(4) {
-    width: 0;
-    padding-right: 40px;
-    white-space: nowrap;
-  }
-
-  thead tr th:nth-child(5),
-  tbody tr td:nth-child(5) {
-    width: 0;
-    padding-right: 40px;
-    white-space: nowrap;
-  }
-
-  thead tr th:nth-child(6),
-  tbody tr td:nth-child(6) {
-    width: 0;
-    padding-right: 40px;
-    white-space: nowrap;
-  }
-
-  thead tr th:nth-child(7),
-  tbody tr td:nth-child(7) {
-    width: 0;
-    padding-right: 40px;
-    white-space: nowrap;
-  }
-
-  thead tr th:nth-child(8),
-  tbody tr td:nth-child(8) {
-    width: 0;
-    padding-right: 40px;
-    white-space: nowrap;
   }
 }
 
@@ -1906,17 +1671,5 @@ input[type=number] {
     100% {
       transform: translateX(0px);
     }
-  }
-}
-
-.MuiPickersToolbar-root {
-  /* 頂欄底色／字色改由 src/ui/mui-theme.js 的 MuiPickers* 覆寫（跟隨主題），此處不再寫死藍底白字，
-     否則動態載入的本檔會以載入順序蓋過橋接主題（2026/10/19 實機仍藍的主因） */
-  h4 {
-    font-size: 28px;
-  }
-
-  button {
-    display: none;
   }
 }
