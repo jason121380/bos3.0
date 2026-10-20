@@ -1,5 +1,7 @@
 // 只載入 stable polyfill：Vite 產出的是 ES module（需 Safari 14／Chrome 87 以上），IE11 本來就無法執行，ie11 polyfill 只是多餘的首屏負擔
 import 'react-app-polyfill/stable'
+// 日期一律以台灣時間計算與顯示（裝置不在 UTC+8 時才會替換 Date）；須在 App 與各頁面之前載入
+import './lib/install-business-timezone'
 
 import React from 'react'
 import ReactDOM from 'react-dom'

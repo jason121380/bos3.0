@@ -1,5 +1,6 @@
 import ChangePassword from 'components/ChangePassword'
 import PageErrorBoundary from 'components/PageErrorBoundary'
+import { getDeviceTimeZone, isBusinessTimeZoneInstalled } from 'lib/business-timezone'
 import Snackbar, { openSnackbar } from 'elements/snackbars'
 import useToggle from 'hooks/useToggle'
 import PropTypes from 'prop-types'
@@ -33,6 +34,22 @@ function Dashboard({ route, location }) {
   useEffect(() => history.listen((location) => {
     setUrl(location.pathname)
   }), [history])
+
+  // 裝置不在台灣時區時，每次開啟提示一次：畫面上的日期時間與報表區間都以台灣時間為準（避免出國時誤以為是當地時間）
+  useEffect(() => {
+    if (!isBusinessTimeZoneInstalled()) return
+    try {
+      if (sessionStorage.getItem('businessTimeZoneNotice')) return
+      sessionStorage.setItem('businessTimeZoneNotice', '1')
+    } catch (e) {
+      // 無法使用 sessionStorage 時仍提示
+    }
+    openSnackbar({
+      message: `此裝置時區為 ${getDeviceTimeZone() || '非台灣時區'}。系統的日期時間與報表區間一律以台灣時間顯示與計算。`,
+      variant: 'info',
+      disableHide: true,
+    })
+  }, [])
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'))
