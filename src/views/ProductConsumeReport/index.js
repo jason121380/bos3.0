@@ -6,7 +6,7 @@ import idx from 'idx'
 import { useEffect, useState } from 'react'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import AdminPageHeader from 'components/AdminPageHeader'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar } from 'ui/page-header'
 import { startOfMonth, format } from 'date-fns'
 import useFetchProductConsumeList from 'hooks/useFetchProductConsumeList'
 import useFetchGetProductPurpose from 'hooks/useFetchGetProductPurpose'
@@ -147,15 +147,27 @@ export default function Employees() {
             </CSVLink>
           </Button>
         </AdminPageHeader>
-        <Toolbar className="items-end">
-          <div>
+        {/* 日期留在篩選列；其餘條件收進「篩選」（STYLE §14）。MerchantSearchBar 拆兩個實例共用同一份 values（同帳單列表），收合區的那個不讀網址日期 */}
+        <ReportToolbar
+          date={
+            <MerchantSearchBar
+              values={date}
+              onFilter={values => setDate(values)}
+              outside
+              visible={['datePicker']}
+              lastInLeaderBoard={true}
+              uiDateField
+            />
+          }
+          filters={
             <div className="flex flex-wrap items-center gap-2.5">
               <div>
                 <MerchantSearchBar
                   values={date}
                   onFilter={values => setDate(values)}
                   outside
-                  visible={['datePicker', 'employee']}
+                  stopGetQueryString={true}
+                  visible={['employee']}
                   lastInLeaderBoard={true}
                   uiDateField
                 />
@@ -172,8 +184,8 @@ export default function Employees() {
                 </FormControl>
               </div>
             </div>
-          </div>
-        </Toolbar>
+          }
+        />
         {!productConsumeListData.loading ? (
           <Results
             value={value != null ? value : ''}

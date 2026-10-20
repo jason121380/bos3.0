@@ -17,7 +17,7 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 const styles = {
@@ -181,37 +181,39 @@ const DesignerPerformanceReport = () => {
 					</>
 				}
 			/>
-			<Toolbar className="items-end">
-				<div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+			<ReportToolbar
+				date={
 					<DateSelector
 						date={date}
 						attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
 						dateChange={value => setDate(value)}
 					/>
-				</div>
-				<div className="flex w-full min-w-0 flex-wrap items-end gap-3 sm:w-auto sm:shrink-0">
-					{!isDisplayTogglePerformanceButton && <div className="flex flex-col gap-1.5">
-						<div className="divText text-label text-text-secondary">業績類型</div>
-						<ReferToggleButton
-							value={type}
-							onChange={value => value !== null && setType(value)}
-						/>
+				}
+				filters={
+					<div className="flex w-full min-w-0 flex-wrap items-end gap-3 sm:w-auto sm:shrink-0">
+						{!isDisplayTogglePerformanceButton && <div className="flex flex-col gap-1.5">
+							<div className="divText text-label text-text-secondary">業績類型</div>
+							<ReferToggleButton
+								value={type}
+								onChange={value => value !== null && setType(value)}
+							/>
+						</div>
+						}
+						<div className="flex flex-col gap-1.5">
+							<div className="divText text-label text-text-secondary">排序依據</div>
+							<ToggleGroup
+								size="small"
+								value={sort}
+								onChange={(event, value) => value !== null && setSort(value)}
+								exclusive
+							>
+								<ToggleGroupItem value='DESIGNERNO'>代號</ToggleGroupItem>
+								<ToggleGroupItem value="PERFORMANCE">業績</ToggleGroupItem>
+							</ToggleGroup>
+						</div>
 					</div>
-					}
-					<div className="flex flex-col gap-1.5">
-						<div className="divText text-label text-text-secondary">排序依據</div>
-						<ToggleGroup
-							size="small"
-							value={sort}
-							onChange={(event, value) => value !== null && setSort(value)}
-							exclusive
-						>
-							<ToggleGroupItem value='DESIGNERNO'>代號</ToggleGroupItem>
-							<ToggleGroupItem value="PERFORMANCE">業績</ToggleGroupItem>
-						</ToggleGroup>
-					</div>
-				</div>
-			</Toolbar>
+				}
+			/>
 			{getDesignerPerformance.loading ?
 				<Skeleton className="h-96" aria-busy="true" />
 				:

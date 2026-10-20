@@ -16,7 +16,7 @@ import Results from './Results'
 import produce from 'immer'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 import { Switch } from 'ui/switch'
 import CompareFilter from './CompareFilter'
@@ -279,75 +279,80 @@ const DesignerPerforamnceAnalyzeReport = () => {
         }
       />
 
-      <div className="flex flex-col gap-3" style={{ display: compareDisplay ? 'none' : '' }}>
-        <Toolbar className="items-end pb-0">
-          <DateSelector
-            date={inputData.dateRange}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={date => {
-              setInputData(
-                produce(draft => {
-                  draft.dateRange = date
-                })
-              )
-            }}
-          />
-          <div className="printGrid flex flex-wrap items-end gap-3">
-            {!isDisplayTogglePerformanceButton && (
-              <div className="flex flex-col gap-1.5">
-                <span className="divText text-label text-text-secondary">業績依據</span>
-                <ReferToggleButton
-                  value={inputData.displayReference}
-                  onChange={value => value && setInputData({ ...inputData, displayReference: value })}
-                />
-              </div>
-            )}
-          </div>
-        </Toolbar>
-        <div className="flex flex-nowrap items-end gap-3">
-          <div className="min-w-0 flex-grow">
-            <Autocomplete
-              multiple
-              autoHighlight
-              fullWidth
-              options={userList}
-              disableCloseOnSelect
-              disabled={getUserList.loading}
-              onChange={(e, value) => {
-                const ids = value.map(d => d.userId)
+      {/* 比較模式時整列隱藏（原樣）；日期在外、其餘條件收進「篩選」，搜尋留在外面（STYLE §14） */}
+      <div style={{ display: compareDisplay ? 'none' : '' }}>
+        <ReportToolbar
+          date={
+            <DateSelector
+              date={inputData.dateRange}
+              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              dateChange={date => {
                 setInputData(
                   produce(draft => {
-                    draft.designerIds = ids
+                    draft.dateRange = date
                   })
                 )
               }}
-              getOptionLabel={option =>
-                option.userNickName !== null && option.userNickName.trim() ? option.userNickName : option.userName
-              }
-              filterOptions={filterOptions}
-              renderOption={({ key, ...props }, option, { selected }) => (
-                <li key={option.userId} {...props}>
-                  <Checkbox
-                    style={{ color: '#202D50', marginRight: 8 }}
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    checked={selected}
-                  />
-                  {option.userNickName !== null && option.userNickName.trim() ? option.userNickName : option.userName}
-                  {option.userNo !== null && option.userNo.trim() ? ` - ${option.userNo}` : ''}
-                </li>
-              )}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  label="設計師篩選"
-                  placeholder="選擇設計師"
-                />
-              )}
             />
-          </div>
-          <div>
+          }
+          filters={
+            <>
+              <div className="printGrid flex flex-wrap items-end gap-3">
+                {!isDisplayTogglePerformanceButton && (
+                  <div className="flex flex-col gap-1.5">
+                    <span className="divText text-label text-text-secondary">業績依據</span>
+                    <ReferToggleButton
+                      value={inputData.displayReference}
+                      onChange={value => value && setInputData({ ...inputData, displayReference: value })}
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="min-w-0">
+                <Autocomplete
+                  multiple
+                  autoHighlight
+                  fullWidth
+                  options={userList}
+                  disableCloseOnSelect
+                  disabled={getUserList.loading}
+                  onChange={(e, value) => {
+                    const ids = value.map(d => d.userId)
+                    setInputData(
+                      produce(draft => {
+                        draft.designerIds = ids
+                      })
+                    )
+                  }}
+                  getOptionLabel={option =>
+                    option.userNickName !== null && option.userNickName.trim() ? option.userNickName : option.userName
+                  }
+                  filterOptions={filterOptions}
+                  renderOption={({ key, ...props }, option, { selected }) => (
+                    <li key={option.userId} {...props}>
+                      <Checkbox
+                        style={{ color: '#202D50', marginRight: 8 }}
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        checked={selected}
+                      />
+                      {option.userNickName !== null && option.userNickName.trim() ? option.userNickName : option.userName}
+                      {option.userNo !== null && option.userNo.trim() ? ` - ${option.userNo}` : ''}
+                    </li>
+                  )}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label="設計師篩選"
+                      placeholder="選擇設計師"
+                    />
+                  )}
+                />
+              </div>
+            </>
+          }
+          actions={
             <Button
               variant="primary"
               disabled={analyzeReport.loading || !analyzeReport.data}
@@ -355,8 +360,8 @@ const DesignerPerforamnceAnalyzeReport = () => {
             >
               搜尋
             </Button>
-          </div>
-        </div>
+          }
+        />
       </div>
       {compareDisplay ? (
         <Compare

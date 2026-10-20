@@ -17,7 +17,7 @@ import { Printer } from 'lucide-react'
 import { Button as UIButton } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar } from 'ui/page-header'
 
 const performanceEnum = [
   { label: '店販', value: 'SALE' },
@@ -123,98 +123,104 @@ const ProductInvoicingRecordReport = () => {
             列印
           </UIButton>
         </AdminPageHeader>
-        <Toolbar className="items-end">
-          <DateSelector
-            date={date}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-          />
-          <div className='noprint flex flex-wrap items-end gap-3'>
-            <div className="flex flex-col gap-1.5">
-              <span className="text-label text-text-secondary">類型</span>
-              <ToggleGroup
-                size="small"
-                value={submitValue.recordType}
-                onChange={(e, value) => setSubmitValue({ ...submitValue, recordType: value })}
-                disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
-                exclusive={false}
-              >
-                {performanceEnum.map((data, idx) => (
-                  <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                    {data.label}
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
-            </div>
-          </div>
-        </Toolbar>
-        <Toolbar className="flex-nowrap items-end">
-          <Autocomplete
-            multiple
-            fullWidth
-            popupIcon={
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
-                onClick={selectAll}>全選</Button>
-            }
-            onOpen={() => setOpen(true)}
-            onClose={() => setOpen(false)}
-            value={submitValue.selectProduct}
-            options={productsOptions}
-            disableCloseOnSelect
-            getOptionLabel={option => option.name}
-            onChange={(event, value) => setSubmitValue({ ...submitValue, selectProduct: value })}
-            renderOption={(props, option, { selected }) => {
-              props.key = props.id
-              return (
-                <li {...props}>
-                  <Checkbox
-                    style={{ color: '#202D50', marginRight: 8 }}
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    checked={selected}
-                  />
-                  {`${option.no === null ? '無代號' : option.no} - ${option.name}`}
-                </li>
-              )
-            }
-            }
-            filterOptions={(options, { inputValue }) => {
-              const keyWord = inputValue.toLocaleLowerCase()
-              const newOptions = options.filter(d => {
-                if (d.no) {
-                  const no = d.no.toLocaleLowerCase()
-                  const name = d.name.toLocaleLowerCase()
-                  return no.includes(keyWord) || name.includes(keyWord)
+        <ReportToolbar
+          date={
+            <DateSelector
+              date={date}
+              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              dateChange={value => setDate(value)}
+            />
+          }
+          filters={
+            <>
+              <div className='noprint flex flex-wrap items-end gap-3'>
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-label text-text-secondary">類型</span>
+                  <ToggleGroup
+                    size="small"
+                    value={submitValue.recordType}
+                    onChange={(e, value) => setSubmitValue({ ...submitValue, recordType: value })}
+                    disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
+                    exclusive={false}
+                  >
+                    {performanceEnum.map((data, idx) => (
+                      <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                        {data.label}
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                </div>
+              </div>
+              <Autocomplete
+                multiple
+                fullWidth
+                popupIcon={
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                    disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
+                    onClick={selectAll}>全選</Button>
                 }
-              })
-              return newOptions
-            }}
-            renderInput={params => (
-              <TextField
-                {...params}
-                variant="outlined"
-                label="加入商品"
-                placeholder="商品名稱"
-                InputProps={{
-                  ...params.InputProps,
+                onOpen={() => setOpen(true)}
+                onClose={() => setOpen(false)}
+                value={submitValue.selectProduct}
+                options={productsOptions}
+                disableCloseOnSelect
+                getOptionLabel={option => option.name}
+                onChange={(event, value) => setSubmitValue({ ...submitValue, selectProduct: value })}
+                renderOption={(props, option, { selected }) => {
+                  props.key = props.id
+                  return (
+                    <li {...props}>
+                      <Checkbox
+                        style={{ color: '#202D50', marginRight: 8 }}
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        checked={selected}
+                      />
+                      {`${option.no === null ? '無代號' : option.no} - ${option.name}`}
+                    </li>
+                  )
+                }
+                }
+                filterOptions={(options, { inputValue }) => {
+                  const keyWord = inputValue.toLocaleLowerCase()
+                  const newOptions = options.filter(d => {
+                    if (d.no) {
+                      const no = d.no.toLocaleLowerCase()
+                      const name = d.name.toLocaleLowerCase()
+                      return no.includes(keyWord) || name.includes(keyWord)
+                    }
+                  })
+                  return newOptions
                 }}
+                renderInput={params => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label="加入商品"
+                    placeholder="商品名稱"
+                    InputProps={{
+                      ...params.InputProps,
+                    }}
+                  />
+                )}
               />
-            )}
-          />
-          <UIButton
-            variant="primary"
-            onClick={() => handleSearch()}
-            className="w-[100px] shrink-0"
-            disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
-          >
-            搜尋
-          </UIButton>
-        </Toolbar>
+            </>
+          }
+          actions={
+            <UIButton
+              variant="primary"
+              onClick={() => handleSearch()}
+              className="w-[100px] shrink-0"
+              disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
+            >
+              搜尋
+            </UIButton>
+          }
+        />
         {(!getAllProducts.loading && !invoicingRecordReportLazyData.loading && invoicingRecordReportLazyData.data !== undefined) ?
           <Results reportData={reportData} /> : (
             // 載入中：與舊版 CircularProgress 相同時機顯示

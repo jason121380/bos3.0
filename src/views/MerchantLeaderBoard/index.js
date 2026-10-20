@@ -16,7 +16,7 @@ import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar } from 'ui/page-header'
 
 const isIncludeProductPerformanceValue = [
   { label: '含店販', value: true },
@@ -302,69 +302,75 @@ const MerchantLeaderBoard = () => {
             列印
           </Button>
         </AdminPageHeader>
-        <Toolbar className="items-end">
-          <DateSelector
-            date={date}
-            attributes={[
-              'thismonth', 'lastmonth', 'dbyesterday',
-              'yesterday', 'today', 'startDate', 'endDate'
-            ]}
-            dateChange={value => setDate(value)}
-          />
-          {!isDisplayTogglePerformanceButton && <div className="flex flex-col gap-1.5">
-            <span className="text-label text-text-secondary">業績依據</span>
-            <ReferToggleButton
-              value={performReference}
-              onChange={handleToggleButtonChange}
+        <ReportToolbar
+          date={
+            <DateSelector
+              date={date}
+              attributes={[
+                'thismonth', 'lastmonth', 'dbyesterday',
+                'yesterday', 'today', 'startDate', 'endDate'
+              ]}
+              dateChange={value => setDate(value)}
             />
-          </div>}
-          <div className="flex flex-col gap-1.5">
-            <span className="text-label text-text-secondary">總業績依據</span>
-            <div className="flex flex-wrap gap-2.5">
-              <ToggleGroup
-                size="small"
-                value={isIncludeProductPerformance}
-                onChange={handleProductPerformanceToggleButtonChange}
-                exclusive
-              >
-                {isIncludeProductPerformanceValue.map((data, idx) => (
-                  <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                    {data.label}
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
-              {displayReportWithMembership &&
-                <ToggleGroup
-                  size="small"
-                  value={isIncludeMembershipPerformance}
-                  onChange={handleMembershipPerformanceToggleButtonChange}
-                  exclusive
-                >
-                  {isIncludeMembershipPerformanceValue.map((data, idx) => (
-                    <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                      {data.label}
-                    </ToggleGroupItem>
-                  ))}
-                </ToggleGroup>}
-            </div>
-          </div>
-        </Toolbar>
-        <Toolbar className="flex-nowrap items-end">
-          <div className="min-w-0 flex-1">
-            <MerchantListAutocpmplete
-              onValueChange={value => {
-                handleChecked(value)
-              }}
-            />
-          </div>
-          <Button
-            variant="primary"
-            onClick={handleSearchReport}
-            className="w-[100px] shrink-0"
-          >
-            搜尋
-          </Button>
-        </Toolbar>
+          }
+          filters={
+            <>
+              {!isDisplayTogglePerformanceButton && <div className="flex flex-col gap-1.5">
+                <span className="text-label text-text-secondary">業績依據</span>
+                <ReferToggleButton
+                  value={performReference}
+                  onChange={handleToggleButtonChange}
+                />
+              </div>}
+              <div className="flex flex-col gap-1.5">
+                <span className="text-label text-text-secondary">總業績依據</span>
+                <div className="flex flex-wrap gap-2.5">
+                  <ToggleGroup
+                    size="small"
+                    value={isIncludeProductPerformance}
+                    onChange={handleProductPerformanceToggleButtonChange}
+                    exclusive
+                  >
+                    {isIncludeProductPerformanceValue.map((data, idx) => (
+                      <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                        {data.label}
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                  {displayReportWithMembership &&
+                    <ToggleGroup
+                      size="small"
+                      value={isIncludeMembershipPerformance}
+                      onChange={handleMembershipPerformanceToggleButtonChange}
+                      exclusive
+                    >
+                      {isIncludeMembershipPerformanceValue.map((data, idx) => (
+                        <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                          {data.label}
+                        </ToggleGroupItem>
+                      ))}
+                    </ToggleGroup>}
+                </div>
+              </div>
+              <div className="min-w-0 flex-1">
+                <MerchantListAutocpmplete
+                  onValueChange={value => {
+                    handleChecked(value)
+                  }}
+                />
+              </div>
+            </>
+          }
+          actions={
+            <Button
+              variant="primary"
+              onClick={handleSearchReport}
+              className="w-[100px] shrink-0"
+            >
+              搜尋
+            </Button>
+          }
+        />
         {!merchantLeaderBoard.loading && !isMonthlyAverageDisplayForMerchantLeaderBoard.loading && !isMemberShipCardActiveData.loading ? (
           <Results
             performReference={performReference}

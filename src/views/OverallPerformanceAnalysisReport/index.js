@@ -13,7 +13,7 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
@@ -219,40 +219,40 @@ const OverallPerformanceAnalysisReport = () => {
           </CSVLink>
         }
       />
-      <Toolbar className="items-end">
-        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+      <ReportToolbar
+        date={
           <DateSelector
             date={date}
             attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
           />
-        </div>
-        <div className="flex w-full min-w-0 flex-wrap items-end gap-3 sm:w-auto sm:shrink-0">
-          <div className="flex min-w-0 flex-col gap-1.5">
-            <div className="text-label text-text-secondary">業績包含</div>
-            <ToggleGroup
-              size="small"
-              value={performanceInclude}
-              onChange={handleToggleButtonChange}
-            >
-              {include.map((data, idx) => (
-                <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                  {data.label}
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
-          </div>
-        </div>
-      </Toolbar>
-      <div className="noprint flex w-full min-w-0 flex-wrap items-end gap-3 pb-4">
-        <div className="w-full min-w-0 sm:w-auto sm:flex-1">
-          <MerchantListAutocpmplete
-            onValueChange={value => {
-              handleChecked(value)
-            }}
-          />
-        </div>
-        <div className="flex w-full items-center sm:w-auto">
+        }
+        filters={
+          <>
+            <div className="flex min-w-0 flex-col gap-1.5">
+              <div className="text-label text-text-secondary">業績包含</div>
+              <ToggleGroup
+                size="small"
+                value={performanceInclude}
+                onChange={handleToggleButtonChange}
+              >
+                {include.map((data, idx) => (
+                  <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                    {data.label}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            </div>
+            <div className="min-w-0">
+              <MerchantListAutocpmplete
+                onValueChange={value => {
+                  handleChecked(value)
+                }}
+              />
+            </div>
+          </>
+        }
+        actions={
           <Button
             variant="primary"
             onClick={handleSearchReport}
@@ -260,8 +260,8 @@ const OverallPerformanceAnalysisReport = () => {
           >
             搜尋
           </Button>
-        </div>
-      </div>
+        }
+      />
       {!overallPerformanceAnalysisReportLazyData.loading && overallPerformanceAnalysisReportLazyData.data !== undefined ? (
         <Results
           weekDisplay={weekDisplay}

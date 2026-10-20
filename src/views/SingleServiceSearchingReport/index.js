@@ -13,7 +13,7 @@ import produce from 'immer'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar } from 'ui/page-header'
 
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
@@ -139,69 +139,75 @@ const DesignerPerformBasic = () => {
             })}
           ><Download strokeWidth={1.75} />報表匯出</Button>
         </AdminPageHeader>
-        <Toolbar className="items-end">
-          <DateSelector
-            date={inputData.dateRange}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={value => handleSetInputData('dateRange', value)}
-          />
-          <div className="flex flex-wrap items-end gap-3">
-            <div className="flex flex-col gap-1.5">
-              <span className="text-label text-text-secondary">排序依據</span>
-              <ToggleGroup
-                value={sort}
-                size="small"
-                exclusive
-                onChange={(event, value) => {
-                  value && setSort(value)
-                }}
-              >
-                {performanceEnum.map((data, idx) => (
-                  <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                    {data.label}
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
-            </div>
-          </div>
-        </Toolbar>
-        <Toolbar className="flex-nowrap items-end">
-          <div className="min-w-0 flex-grow">
-            <Autocomplete
-              freeSolo
-              multiple
-              options={tmpService}
-              autoHighlight
-              value={inputData.serviceIds}
-              disableCloseOnSelect
-              // disableClearable={true}
-              getOptionLabel={option => option.label}
-              onChange={(event, value) => handleSetInputData('serviceIds', value)}
-              fullWidth
-              renderOption={(props, option, { selected }) => (
-                <li {...props}>
-                  <Checkbox
-                    style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    checked={selected}
-                  />
-                  {option.label}
-                </li>
-              )}
-              renderInput={params => (
-                <TextField {...params} variant="outlined" label="服務項目" placeholder="服務" />
-              )}
+        <ReportToolbar
+          date={
+            <DateSelector
+              date={inputData.dateRange}
+              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              dateChange={value => handleSetInputData('dateRange', value)}
             />
-          </div>
-          <Button
-            variant="primary"
-            onClick={handleDoSearch}
-            className="w-[100px] shrink-0"
-          >
-            搜尋
-          </Button>
-        </Toolbar>
+          }
+          filters={
+            <>
+              <div className="flex flex-wrap items-end gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-label text-text-secondary">排序依據</span>
+                  <ToggleGroup
+                    value={sort}
+                    size="small"
+                    exclusive
+                    onChange={(event, value) => {
+                      value && setSort(value)
+                    }}
+                  >
+                    {performanceEnum.map((data, idx) => (
+                      <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                        {data.label}
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                </div>
+              </div>
+              <div className="min-w-0 flex-grow">
+                <Autocomplete
+                  freeSolo
+                  multiple
+                  options={tmpService}
+                  autoHighlight
+                  value={inputData.serviceIds}
+                  disableCloseOnSelect
+                  // disableClearable={true}
+                  getOptionLabel={option => option.label}
+                  onChange={(event, value) => handleSetInputData('serviceIds', value)}
+                  fullWidth
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox
+                        style={{ color: 'rgb(var(--text))', marginRight: 8 }}
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        checked={selected}
+                      />
+                      {option.label}
+                    </li>
+                  )}
+                  renderInput={params => (
+                    <TextField {...params} variant="outlined" label="服務項目" placeholder="服務" />
+                  )}
+                />
+              </div>
+            </>
+          }
+          actions={
+            <Button
+              variant="primary"
+              onClick={handleDoSearch}
+              className="w-[100px] shrink-0"
+            >
+              搜尋
+            </Button>
+          }
+        />
         {!serviceItemData.loading ? (
           <Results
             reportData={reportData}

@@ -13,7 +13,7 @@ import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar } from 'ui/page-header'
 
 import Results from './Results'
 
@@ -111,39 +111,45 @@ export default function Employees() {
             列印
           </Button>
         </AdminPageHeader>
-        <Toolbar className="items-end">
-          <DateSelector
-            date={date}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-          />
-          <div className="flex flex-wrap items-end gap-3">
-            <div className="flex flex-col gap-1.5">
-              <span className="text-label text-text-secondary">排序依序</span>
-              <ToggleGroup
-                size="small"
-                value={sort}
-                onChange={handleToggleButtonChangeSort}
-                exclusive
-              >
-                {sortEnum.map((data, idx) => (
-                  <ToggleGroupItem style={{ wordBreak: 'keep-all' }} key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                    {data.label}
-                  </ToggleGroupItem>
-                ))}
-              </ToggleGroup>
-            </div>
-            {
-              !isDisplayTogglePerformanceButton && <div className="flex flex-col gap-1.5">
-                <span className="text-label text-text-secondary">業績依據</span>
-                <ReferToggleButton
-                  value={performReference}
-                  onChange={handleToggleButtonChange}
-                />
+        <ReportToolbar
+          date={
+            <DateSelector
+              date={date}
+              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              dateChange={value => setDate(value)}
+            />
+          }
+          filters={
+            <>
+              <div className="flex flex-wrap items-end gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-label text-text-secondary">排序依序</span>
+                  <ToggleGroup
+                    size="small"
+                    value={sort}
+                    onChange={handleToggleButtonChangeSort}
+                    exclusive
+                  >
+                    {sortEnum.map((data, idx) => (
+                      <ToggleGroupItem style={{ wordBreak: 'keep-all' }} key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                        {data.label}
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                </div>
+                {
+                  !isDisplayTogglePerformanceButton && <div className="flex flex-col gap-1.5">
+                    <span className="text-label text-text-secondary">業績依據</span>
+                    <ReferToggleButton
+                      value={performReference}
+                      onChange={handleToggleButtonChange}
+                    />
+                  </div>
+                }
               </div>
-            }
-          </div>
-        </Toolbar>
+            </>
+          }
+        />
         {(!designerMontlyListData.loading && !isMemberShipCardActiveData.loading) ?
           idx(designerMontlyListData, _ => (
             <Results

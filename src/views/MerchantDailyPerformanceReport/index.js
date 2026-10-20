@@ -14,7 +14,7 @@ import { theme } from '../../theme'
 import produce from 'immer'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
@@ -136,22 +136,24 @@ function DesignerPerformOverview() {
         }
       />
 
-      <Toolbar className="min-w-0 items-end">
-        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+      <ReportToolbar
+        date={
           <DateSelector
             date={inputData.dateRange}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => handleSetInputData('dateRange', value)}
           />
-        </div>
-        {!isDisplayTogglePerformanceButton && <div className="flex w-full min-w-0 flex-col gap-1.5 sm:w-auto sm:shrink-0">
-          <div className="divText text-label text-text-secondary">業績依據</div>
-          <ReferToggleButton
-            value={inputData.displayReference}
-            onChange={value => handleSetInputData('displayReference', value)}
-          />
-        </div>}
-      </Toolbar>
+        }
+        filters={!isDisplayTogglePerformanceButton && (
+          <div className="flex w-full min-w-0 flex-col gap-1.5 sm:w-auto sm:shrink-0">
+            <div className="divText text-label text-text-secondary">業績依據</div>
+            <ReferToggleButton
+              value={inputData.displayReference}
+              onChange={value => handleSetInputData('displayReference', value)}
+            />
+          </div>
+        )}
+      />
       {(!merchantDailyPerformanceReportData.loading && dailyPerformanceData !== null) ? (
         <Results
           className={styles.results}

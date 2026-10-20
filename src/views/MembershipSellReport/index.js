@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import useFetchGetMembershipSellReport from 'hooks/useFetchGetMembershipSellReport'
 import AdminPageHeader from 'components/AdminPageHeader'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar } from 'ui/page-header'
 import { startOfDay, endOfDay, format } from 'date-fns'
 import { CSVLink } from "react-csv";
 import roundDecimal from './../../helper/roundDecimal.js'
@@ -96,15 +96,28 @@ export default function MembershipSellReport() {
             </CSVLink>
           </Button>
         </AdminPageHeader>
-        <Toolbar className="items-end">
-          <MerchantSearchBar
-            values={inputData}
-            onFilter={values => setInputData(values)}
-            outside
-            visible={['datePicker', 'employee', 'customer', 'membershipcard']}
-            lastInLeaderBoard={true}
-          />
-        </Toolbar>
+        {/* 日期留在篩選列；其餘條件收進「篩選」（STYLE §14）。MerchantSearchBar 拆兩個實例共用同一份 values（同帳單列表），收合區的那個不讀網址日期 */}
+        <ReportToolbar
+          date={
+            <MerchantSearchBar
+              values={inputData}
+              onFilter={values => setInputData(values)}
+              outside
+              visible={['datePicker']}
+              lastInLeaderBoard={true}
+            />
+          }
+          filters={
+            <MerchantSearchBar
+              values={inputData}
+              onFilter={values => setInputData(values)}
+              outside
+              stopGetQueryString={true}
+              visible={['employee', 'customer', 'membershipcard']}
+              lastInLeaderBoard={true}
+            />
+          }
+        />
         {!getMembershipSellReport.loading ? (
           <Results
             reportData={reportData}
