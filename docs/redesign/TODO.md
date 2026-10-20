@@ -8,6 +8,7 @@
 
 ## 一、今天完成了什麼
 
+- **手機擠壓掃描＋材料自購**（2026/10/20，v3.0-1020-1207）：**待實機**：手機開「新增材料自購」，商品列為兩列、可選商品與輸入價格數量、Enter 跳欄順序不變。
 - **報表統一第二批收尾**（2026/10/20，v3.0-1020-1158）：MEMORY #155。**待實機**：費用分析、損益表、每日非現金明細的頁首「報表匯出」可下載（有資料時才出現，與原本相同）；顧客消費／入金排行、整體業績分析列印時不印篩選列。
 - **手機日期選擇器置中彈窗**（2026/10/20，v3.0-1020-1151）：**待實機**：手機點任一日期欄（如帳單列表日期），彈窗置中、選日／取消／確認正常。
 - **頁面標題粗體＋PWA 打帳單合計列**（2026/10/20，v3.0-1020-1145）：MEMORY #154。**待實機**：iPhone 加到主畫面（PWA）開打帳單，底部導覽列上方應看得到「業績合計／現金應收」列；任一報表／列表頁標題為粗體。
@@ -97,7 +98,7 @@
   掃描（`node scripts/redesign/portal-root-scan.js`）：修前 25 個畫面檔缺 `ui-root`，修後 **0**；8 個 ui 元件檔全數自帶。
   舊清單「約 16 個」是手動整理，與掃描不一致：其中 9 個在掃描內（`GeneralAccountingRecordDetail/AccountingSubjectModal`、`MainEventList/ComfirmDialog`、`Parameter` 4 檔、`Products/PublishedDialog`、`Products/VendorDialog`、`Profile/General/ProfileDetails`）；另 7 個（兩個 `Management*ReservationRecord/index`、`MemberCardRecord/EditMemberCardRecordModal`、`OrderEdit/Header`、`Products/EditProductsCategoryModal`、`Services/AboutDeductionEditModal`、`Services/AssistantSettingEditModal`）檔內本來就有 `ui-root`，掃描不列入；掃描另外多找出 16 個舊清單沒有的檔案。
   待辦：實機／截圖各 Modal 確認外觀（尚未做）。
-- [ ] **非打帳單頁面的手機擠壓**：設計師績效頁「搜尋」按鈕被推出畫面、日期輸入框只剩 24px、薪資單儲存格換行等（全站審計結果在 `scratchpad/audit-*.json`）。
+- [~] **非打帳單頁面的手機擠壓**（v3.0-1020-1207：`mobile-overflow-scan.js` 掃 143 頁無資料版面，只剩材料自購商品列一處，已修；**有資料才出現的內容（如薪資單儲存格、報表長表格）掃描不到，仍需實機回報**）：設計師績效頁「搜尋」按鈕被推出畫面、日期輸入框只剩 24px、薪資單儲存格換行等（全站審計結果在 `scratchpad/audit-*.json`）。
 - [~] **打帳單其餘彈窗仍是浮動標籤的 MUI**：2026/10/19 掃描（`label=`）後，`OrderCreate` 只剩 2 個檔案有浮動／外框標籤：
   - [x] `WalletDepositModal`（異動入金，OrderCreate 版）：6 個欄位標籤全部移到上方，必填 `*` 依 `handleSubWalletDeposit` 檢查（PR #7）。
   - [x] `OrderEdit/WalletDepositModal.js`（孿生檔，UI 第二批 PR #8）：7 欄（日期／金額／設計師／顧客／付款方式／手續費負擔方／備註）改上方標籤，用 `Field`／`Input`；必填 `*` 依本檔 `handleSubWalletDeposit`。DateTimePicker／Autocomplete／NativeSelect 本體與所有 handler、state、GraphQL、金額邏輯不變。（註：本檔原本就有傳 `identity` 給 `WalletDepositToggleButton`，與先前假設不同，未動。）
