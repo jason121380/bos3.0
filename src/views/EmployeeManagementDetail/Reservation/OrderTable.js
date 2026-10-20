@@ -1,5 +1,7 @@
 /** @jsxImportSource @emotion/react */
+// 預約動作彈窗內容依 modaltype 切換、沒有標題（Radix Dialog 需 DialogTitle，補標題屬文案變更），保留相容層 Dialog；公休彈窗只有切換鈕與按鈕，改 ui/dialog
 import { Dialog } from 'ui/modal-compat'
+import { Dialog as UiDialog, DialogContent as UiDialogContent } from 'ui/dialog'
 import React, { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { AssignmentTurnedInRounded as AssignmentTurnedInRoundedIcon, DisabledByDefaultRounded as DisabledByDefaultRoundedIcon } from 'ui/icons'
@@ -279,14 +281,16 @@ const OrderTable = ({
           checkinMode={checkinMode}
         />
       </Dialog>
-      <Dialog className='ManagementReservationRecordDialog' fullWidth maxWidth="sm" open={holidayModel} onClose={() => setHolidayModel(false)}>
-        <HolidayEdit
-          holidayData={holidayData} 
-          setHolidayData={setHolidayData} 
-          setHolidayModel={setHolidayModel}
-          refetchData={refetchData}
-        />
-      </Dialog>
+      <UiDialog open={holidayModel} onOpenChange={o => !o && setHolidayModel(false)}>
+        <UiDialogContent size="md" aria-describedby={undefined} className='ManagementReservationRecordDialog'>
+          <HolidayEdit
+            holidayData={holidayData} 
+            setHolidayData={setHolidayData} 
+            setHolidayModel={setHolidayModel}
+            refetchData={refetchData}
+          />
+        </UiDialogContent>
+      </UiDialog>
     </div>
   )
 }

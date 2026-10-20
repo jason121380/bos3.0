@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 表格列使用 ui/table（外框 components/ManagementTable 亦為 ui/table）
 // 刪除確認已換 ui/dialog：舊版不設 onClose（點背景、Esc 不關閉），故不傳 onOpenChange
-import { Link } from 'ui/link-compat'
 import { Pencil } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
@@ -204,15 +203,12 @@ function Results({
                   <span aria-hidden="true" className="mr-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-hover text-label text-text-secondary">
                     {data.name.charAt(0).toUpperCase()}
                   </span>
-                  <Link
-                    color="inherit"
-                    underline='none'
-                    component={RouterLink}
+                  <RouterLink
+                    className="font-medium text-text no-underline"
                     to={`/management/customers/${data.id}`}
-                    variant="h6"
                   >
                     {data.name}
-                  </Link>
+                  </RouterLink>
                 </div>
               </TableCell>
               <TableCell css={styles.compactCell}>{data.cellphone}</TableCell>

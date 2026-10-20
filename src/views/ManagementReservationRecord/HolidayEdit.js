@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { DialogContent, DialogTitle, DialogActions } from 'ui/modal-compat'
+import { DialogBody, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import React, { useState, useEffect, Fragment } from 'react'
-// 外層為 MUI Dialog（OrderTable），保留 DialogTitle / DialogContent / DialogActions
+// 外層為 ui/dialog（OrderTable 的公休彈窗，窗內只有時段切換鈕與按鈕）
 import { Button } from 'ui/button'
 import { ToggleGroupItem } from 'ui/toggle-group'
 import { cloneDeep } from 'lodash'
@@ -96,9 +96,10 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
 
   return (
     <Fragment>
-      <DialogTitle>編輯公休</DialogTitle>
-      <div className="h-px bg-border" />
-      <DialogContent className="ui-root" css={styles.content} dividers style={{ border: 'none' }}>
+      <DialogHeader>
+        <DialogTitle>編輯公休</DialogTitle>
+      </DialogHeader>
+      <DialogBody css={styles.content}>
         {timeOption.map(({ time, select }, i) => (
           <ToggleGroupItem
             key={time}
@@ -106,11 +107,11 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
             onClick={() => handleSelectTime(!select, i)}
           >{format(time, 'HH:mm')}</ToggleGroupItem>
         ))}
-      </DialogContent>
-      <DialogActions className="ui-root">
+      </DialogBody>
+      <DialogFooter>
         <Button variant='secondary' disabled={isClick} onClick={handleOnClose}>取消</Button>
         <Button variant='primary' disabled={isClick} onClick={handleSetHoliday}>確定</Button>
-      </DialogActions>
+      </DialogFooter>
     </Fragment>
   )
 }

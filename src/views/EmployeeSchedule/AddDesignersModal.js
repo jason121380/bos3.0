@@ -1,4 +1,4 @@
-// 保留 MUI Modal：內含 EmployeeAutoComplete（MUI Autocomplete），Radix Dialog 會擋住其彈出層點擊
+// 保留相容層 Modal：內含 EmployeeAutoComplete（Autocomplete 彈出選單），Radix Dialog 會與其焦點鎖互搶、擋住彈出層點擊
 import { Modal } from 'ui/modal-compat'
 import PropTypes from 'prop-types'
 import { memo } from 'react'
@@ -138,6 +138,7 @@ function AddDesignersModal({
                   size="icon"
                   className="hover:text-danger"
                   aria-label="移除此人員"
+                  title="移除此人員"
                   onClick={() => handleDeleteDesigner(index)}
                 >
                   <Trash2 strokeWidth={1.75} />

@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 表格列使用 ui/table（外框 components/ManagementTable 亦為 ui/table）
 // 刪除確認已換 ui/dialog：舊版刻意不設 onClose（點背景、Esc 不關閉），故不傳 onOpenChange
-import { Link } from 'ui/link-compat'
 import { Pencil } from 'lucide-react'
 import ManagementTable from 'components/ManagementTable'
 import { TableBody, TableCell, TableHead, TableRow } from 'ui/table'
@@ -206,15 +205,12 @@ function Results({
                     {data.name.charAt(0).toUpperCase()}
                   </span>
                   <div>
-                    <Link
-                      color="inherit"
-                      component={RouterLink}
-                      underline='none'
+                    <RouterLink
+                      className="font-medium text-text no-underline"
                       to={`/management/customers/${data.id}/general?backto=customer-filter`}
-                      variant="h6"
                     >
                       {data.name}
-                    </Link>
+                    </RouterLink>
                     <div className="text-caption tabular-nums text-text-secondary">
                       {data.no ? data.no : ''}
                     </div>

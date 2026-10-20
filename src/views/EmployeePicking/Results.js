@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-// 勾選後出現的底部操作列沿用 MUI Drawer（persistent）
-import { Drawer } from 'ui/overlay-compat'
+// 勾選後出現的底部操作列：比照 components/TableEditBar 的浮動批次操作列（原 persistent Drawer：未勾選時仍在 DOM、隱藏）
 import { Download, Pencil, Trash2 } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState, useEffect, Fragment, useRef } from 'react'
@@ -231,21 +230,27 @@ function Results({
           </div>
         </Card>
       </div>
-      <Drawer anchor="bottom" open={open} PaperProps={{ elevation: 1 }} variant="persistent">
-        <div {...rest} css={className} className="ui-root">
-          <div className="flex items-center gap-4 p-4">
-            <span className="hidden text-body text-text-secondary tabular-nums md:block md:w-1/3">
-              {selectedOrders.length} selected
-            </span>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button variant="danger" onClick={() => handleDelete()}>
-                <Trash2 strokeWidth={1.75} />
-                刪除
-              </Button>
-            </div>
-          </div>
+      <div
+        hidden={!open}
+        className={`ui-root noprint pointer-events-none fixed inset-x-0 bottom-[calc(72px+env(safe-area-inset-bottom))] z-[1200] justify-center px-4 lg:bottom-6 ${open ? 'flex' : 'hidden'}`}
+      >
+        <div
+          {...rest}
+          css={className}
+          role="toolbar"
+          aria-label="批次操作"
+          className="pointer-events-auto flex max-w-full flex-wrap items-center gap-1 rounded-lg border border-solid border-border bg-background py-1.5 pl-4 pr-1.5 shadow-float"
+        >
+          <span className="mr-2 text-label tabular-nums text-text">
+            {selectedOrders.length} selected
+          </span>
+          <span aria-hidden="true" className="mr-1 h-5 w-px bg-border" />
+          <Button size="sm" variant="ghost" className="text-danger hover:bg-danger/8" onClick={() => handleDelete()}>
+            <Trash2 strokeWidth={1.75} />
+            刪除
+          </Button>
         </div>
-      </Drawer>
+      </div>
     </Fragment>
   )
 }
