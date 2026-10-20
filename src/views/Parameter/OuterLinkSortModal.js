@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 拖曳排序（react-beautiful-dnd）放在有 transform 的 Radix Dialog 內會定位錯誤，保留 MUI Dialog
-import {
-  Dialog, DialogContent, DialogTitle, DialogActions
-} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, DialogActions } from 'ui/modal-compat'
 import { Button } from 'ui/button'
 import { useState, memo, useEffect } from 'react'
 import styles from './styles/OuterLinkSortModal'

@@ -1,6 +1,6 @@
 // MUI Dialog 保留：內含 MUI Autocomplete（Radix Dialog 會擋住其彈出層）
+import { Dialog, DialogTitle, DialogContent, DialogActions } from 'ui/modal-compat'
 import { TextField } from 'ui/text-field'
-import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
 import { Button } from 'ui/button'
 import { Field } from 'ui/input'
 import { Autocomplete } from 'ui/combobox'

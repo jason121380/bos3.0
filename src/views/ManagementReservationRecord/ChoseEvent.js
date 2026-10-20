@@ -1,4 +1,5 @@
 /** @jsxImportSource @emotion/react */
+import { DialogContent } from 'ui/modal-compat'
 import { Grid } from 'ui/grid-compat'
 import { Button } from 'ui/button-compat'
 import { FormControl, MenuItem, Select } from 'ui/form-control'
@@ -6,7 +7,7 @@ import { TextField } from 'ui/text-field'
 import React, { useState, useEffect, Fragment } from 'react'
 // 對話框內含 MobileDatePicker 與 Autocomplete，依指南保留 MUI DialogContent / List / TextField；
 // 預約時間的時段下拉與 standard 變體的 MobileDatePicker 並排、樣式依 .MuiSelect-select 撰寫，保留 MUI Select
-import { DialogContent, Link, List, ListItemButton, ListItemAvatar, ListItemText } from '@mui/material'
+import { Link, List, ListItemButton, ListItemAvatar, ListItemText } from '@mui/material'
 import { Avatar } from 'ui/avatar'
 import { CheckboxField } from 'ui/checkbox'
 import { Field } from 'ui/input'

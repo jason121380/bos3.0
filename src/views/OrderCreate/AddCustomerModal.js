@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
+import { Modal } from 'ui/modal-compat'
 import { Grid } from 'ui/grid-compat'
 import { Button } from 'ui/button-compat'
 import { Card, CardActions, CardContent, CardHeader } from 'ui/card-compat'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
-import { Modal } from '@mui/material'
 import { LoaderCircle } from 'lucide-react'
 import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'

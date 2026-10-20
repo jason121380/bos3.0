@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
+import { DialogContent } from 'ui/modal-compat'
 import { Grid } from 'ui/grid-compat'
 import { Button } from 'ui/button-compat'
 import { useState, Fragment } from 'react'
-import { DialogContent, Link, List, ListItemButton, ListItemAvatar, ListItemText } from '@mui/material'
+import { Link, List, ListItemButton, ListItemAvatar, ListItemText } from '@mui/material'
 import { Avatar } from 'ui/avatar'
 import { blue } from 'ui/colors'
 import { Cancel as CancelIcon, Check as CheckIcon, Lock as LockIcon, LockOpen as LockOpenIcon, Edit as EditIcon, ShoppingCart as ShoppingCartIcon, EventSeat as EventSeatIcon, EventBusy as EventBusyIcon } from 'ui/icons'

@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
+import { Modal } from 'ui/modal-compat'
 import { Divider } from 'ui/display-compat'
 import { Grid } from 'ui/grid-compat'
 import { Button } from 'ui/button-compat'
 import { Card, CardHeader, CardContent } from 'ui/card-compat'
-import { Modal } from '@mui/material'
 import PropTypes from 'prop-types'
 import React, {
   useState,

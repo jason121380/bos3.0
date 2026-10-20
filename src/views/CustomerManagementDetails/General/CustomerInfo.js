@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Dialog } from '@mui/material'
+import { Dialog } from 'ui/modal-compat'
 import { Pencil } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState } from 'react'

@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 載入遮罩（Backdrop，#Backdrop 有全域樣式）保留 MUI
-import {
-  Backdrop
-} from '@mui/material'
+import { Backdrop } from 'ui/modal-compat'
 import { LoaderCircle } from 'lucide-react'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Field } from 'ui/input'

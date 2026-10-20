@@ -1,5 +1,5 @@
 // 保留 MUI Modal：內含 EmployeeAutoComplete（MUI Autocomplete），Radix Dialog 會擋住其彈出層點擊
-import { Modal } from '@mui/material'
+import { Modal } from 'ui/modal-compat'
 import PropTypes from 'prop-types'
 import { memo } from 'react'
 import _ from 'lodash'

@@ -1,8 +1,8 @@
 // Divider 只用於下方列印範本（#printMain / #printThermal），維持列印輸出不變；
 // 重新結帳密碼欄位有游標位置與貼上處理，保留 MUI Dialog / TextField
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from 'ui/modal-compat'
 import { Divider } from 'ui/display-compat'
 import { TextField } from 'ui/text-field'
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material'
 import billContext from 'context/keyInContext'
 import { openSnackbar } from 'elements/snackbars'
 import getQueryString from 'helper/getQueryString'

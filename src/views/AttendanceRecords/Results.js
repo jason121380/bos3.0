@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 // 保留 MUI：Drawer（底部操作面板）、編輯彈窗（由 Drawer 內開啟，避免兩層焦點鎖互搶）、FormControlLabel + Checkbox；
 // 打卡時間格內的圖示列與 Divider 屬深層細節，維持原樣
+import { Dialog, DialogTitle, DialogContent, DialogActions } from 'ui/modal-compat'
 import { Divider } from 'ui/display-compat'
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
-import { Dialog, DialogTitle, DialogContent, DialogActions, Drawer } from '@mui/material'
+import { Drawer } from '@mui/material'
 import { LocationOn as LocationOnIcon, ManageAccountsRounded as ManageAccountsRoundedIcon, DesktopWindowsRounded as DesktopWindows, PhoneIphone as PhoneIphoneIcon, QrCode as QrCodeIcon } from 'ui/icons'
 import { format, setHours, setMinutes } from 'date-fns'
 import PropTypes from 'prop-types'

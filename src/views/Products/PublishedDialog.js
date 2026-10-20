@@ -1,6 +1,6 @@
 // MUI Dialog 保留：內含 MUI Select（值為布林，Radix Select 不支援）
+import { Dialog, DialogTitle, DialogContent, DialogActions } from 'ui/modal-compat'
 import { Select, FormControl, MenuItem } from 'ui/form-control'
-import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
 import { Button } from 'ui/button'
 
 const PublishedDialog = ({
