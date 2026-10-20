@@ -19,7 +19,8 @@ h1 {
 }
 
 body {
-  background-color: #F5F5F5;
+  // 頁面底色（淺色為白）：iOS 主畫面 App 的狀態列顯示 body 底色，#F5F5F5 會讓頂端灰、與白色頁面不平衡（Jason 2026/10/20）
+  background-color: rgb(var(--canvas));
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
