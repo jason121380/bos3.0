@@ -1,6 +1,6 @@
 /*
  * 重現 MUI v5.15 Modal／Backdrop／Dialog（Container、Paper）／DialogTitle／DialogContent／DialogContentText／DialogActions
- * ＋橋接主題（ui/mui-theme）的樣式，class 名稱與 MUI 相同。維持與 MUI 相同的選擇器權重；顏色走 tokens。
+ * ＋橋接主題（原 ui/mui-theme，現存於 scripts/redesign/compat-harness/mui-theme.js）的樣式，class 名稱與 MUI 相同。維持與 MUI 相同的選擇器權重；顏色走 tokens。
  * 驗證：scripts/redesign/compat-harness/dialog-entry.js
  */
 @keyframes mui-fade-in { from { opacity: 0; } to { opacity: 1; } }

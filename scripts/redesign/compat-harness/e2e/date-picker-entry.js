@@ -10,7 +10,7 @@ import { MobileDatePicker as MMobile } from '@mui/x-date-pickers/MobileDatePicke
 import { DatePicker as MDesktop } from '@mui/x-date-pickers/DatePicker'
 import { DateTimePicker as MDT } from '@mui/x-date-pickers/DateTimePicker'
 import { MobileDateTimePicker as MMDT } from '@mui/x-date-pickers/MobileDateTimePicker'
-import { MuiScope } from 'ui/mui-theme'
+import { MuiScope } from '../mui-theme'
 import * as C from 'ui/date-picker'
 
 const M = { MobileDatePicker: MMobile, DatePicker: MDesktop, DateTimePicker: MDT, MobileDateTimePicker: MMDT }

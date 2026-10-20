@@ -5,7 +5,7 @@
 //      SIDE='#m'／'#c' node print-px.js <out> <mock build>（兩側各自單獨截圖，螢幕與列印模式逐像素比對）
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { MuiScope } from 'ui/mui-theme'
+import { MuiScope } from '../mui-theme'
 // eslint-disable-next-line import/no-unresolved -- 比對前才建立的原檔副本
 import MDRm from 'views/MerchantDailyReport/Results.orig'
 import MDRc from 'views/MerchantDailyReport/Results'

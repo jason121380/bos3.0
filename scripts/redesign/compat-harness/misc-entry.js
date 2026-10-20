@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { MuiScope } from 'ui/mui-theme'
+import { MuiScope } from './mui-theme'
 import * as M from '@mui/material'
 import * as C from 'ui/misc-compat' // 受測的相容層
 

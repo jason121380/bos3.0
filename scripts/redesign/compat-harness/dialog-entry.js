@@ -2,7 +2,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { css } from '@emotion/react'
-import { MuiScope } from 'ui/mui-theme'
+import { MuiScope } from './mui-theme'
 import * as M from '@mui/material'
 import * as C from 'ui/modal-compat' // 受測的相容層
 import { Button } from 'ui/button'

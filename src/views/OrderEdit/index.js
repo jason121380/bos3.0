@@ -14,7 +14,6 @@ import { useFetchGetIsBonusRewardWithLine, useFetchGetIsComboSetting } from 'hoo
 import idx from 'idx'
 import { cloneDeep } from 'lodash'
 import addDays from 'date-fns/addDays'
-import { MuiScope } from 'ui/mui-theme'
 
 import Footer from './Footer'
 import Head from './Head'
@@ -445,7 +444,7 @@ export default function KeyIn({ match }) {
 
   return (
     <Page title={`帳單詳細 ${orderNo ? `(${orderNo})` : ''}`} className="ui-root">
-      <MuiScope>
+      <>
       <Provider
         value={{
           handleBillChange,
@@ -509,7 +508,7 @@ export default function KeyIn({ match }) {
         <Pannel />
         <Footer enable={enable} />
       </Provider>
-      </MuiScope>
+      </>
     </Page>
   )
 }
