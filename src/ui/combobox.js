@@ -181,13 +181,25 @@ const Autocomplete = React.forwardRef(function Autocomplete(
       setInputText(labelOf(getOptionLabel, option), event, 'reset')
     }
   }
+  // 同 MUI：只在狀態真的改變時呼叫 onOpen／onClose。同一次點擊會同時觸發自家 onClick 與 downshift 的 InputClick，
+  // 只比對渲染時的 isOpen 會放行兩次——呼叫端以 toggle 接 onOpen／onClose 時（服務項目下拉）開了又關、選項點不到。
+  // 以 ref 記下最近一次要求的狀態，每次渲染再與實際狀態同步
+  const requestedOpen = React.useRef(isOpen)
+  requestedOpen.current = isOpen
   const setOpen = (next, event) => {
-    if (next === isOpen) return
+    if (next === requestedOpen.current) return
+    requestedOpen.current = next
     if (openProp === undefined) setInnerOpen(next)
     if (next && onOpen) onOpen(event || { type: 'open' })
     if (!next && onClose) onClose(event || { type: 'close' }, 'blur')
   }
 
+  // 觸控（iPhone／平板）點選項時（Jason 2026/10/20 回報 iPhone 打帳單點選項沒反應）：
+  // ①downshift 在掛載時記下「元件內部元素」，選單是開啟後才以 Portal 掛上，它不認得選單；觸控的 touchend 被判為「點在外面」而送出 InputBlur 關選單
+  //   （滑鼠不受影響：它另外檢查焦點仍在輸入框）；②瀏覽器在觸控時先讓輸入框失焦、才觸發選項 click，mousedown.preventDefault 擋不住。
+  // 手指剛按在選單上（1 秒內）的失焦一律視為「正在點選項」：不關選單、不重設文字，讓 click 照常完成選取
+  const menuPointerAt = React.useRef(0)
+  const inMenuInteraction = () => Date.now() - menuPointerAt.current < 1000
   const lastEvent = React.useRef(null)
   const { getMenuProps, getInputProps, getItemProps, highlightedIndex, setHighlightedIndex } = useCombobox({
     id,
@@ -201,6 +213,7 @@ const Autocomplete = React.forwardRef(function Autocomplete(
       switch (type) {
         // 失焦：除非 autoSelect，否則不因 highlight 自動選取（比照 MUI）
         case useCombobox.stateChangeTypes.InputBlur:
+          if (inMenuInteraction()) return state
           return { ...changes, selectedItem: state.selectedItem, inputValue: state.inputValue }
         case useCombobox.stateChangeTypes.InputKeyDownEnter:
         case useCombobox.stateChangeTypes.ItemClick:
@@ -213,6 +226,7 @@ const Autocomplete = React.forwardRef(function Autocomplete(
       const event = lastEvent.current
       const T = useCombobox.stateChangeTypes
       if ((type === T.ItemClick || type === T.InputKeyDownEnter) && selectedItem !== undefined && selectedItem !== null) {
+        menuPointerAt.current = 0
         selectOption(event, selectedItem)
         if (!disableCloseOnSelect && !multiple) setOpen(false, event)
         if (multiple && !disableCloseOnSelect) setOpen(false, event)
@@ -222,6 +236,12 @@ const Autocomplete = React.forwardRef(function Autocomplete(
   })
 
   const handleBlur = event => {
+    if (inMenuInteraction()) {
+      setFocused(false)
+      // downshift 自己也會在失焦時關選單（它以「滑鼠按住中」判斷是否在點選單，觸控時失焦早於模擬的 mousedown，判斷不到），一併略過
+      event.nativeEvent.preventDownshiftDefault = true
+      return
+    }
     setFocused(false)
     if (autoSelect && highlightedIndex >= 0 && filtered[highlightedIndex] !== undefined) {
       selectOption(event, filtered[highlightedIndex])
@@ -380,6 +400,9 @@ const Autocomplete = React.forwardRef(function Autocomplete(
       {...getMenuProps({}, { suppressRefError: true })}
       // 不讓點選單時輸入框失焦（避免 MUI 焦點鎖搶回焦點、選單先關閉）
       onMouseDown={event => event.preventDefault()}
+      onPointerDown={() => {
+        menuPointerAt.current = Date.now()
+      }}
       className={cn(
         'ui-root z-[1500] m-0 max-h-80 list-none overflow-y-auto rounded-lg border border-solid border-border bg-background p-1 shadow-float',
         !showPopup && 'hidden'

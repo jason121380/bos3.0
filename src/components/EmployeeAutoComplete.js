@@ -202,7 +202,8 @@ function EmployeeAutoComplete(
             onKeyDown={onKeyDown}
             onChange={handleInputChange}
             variant="outlined"
-            size="small"
+            // 帳單服務列的協助人員（isAssist）與同列的價格、服務項目同高（一般尺寸，手機 40px）；其餘用法維持小尺寸
+            size={isAssist ? undefined : 'small'}
             InputProps={{
               ...params.InputProps,
               ...inputProps,
