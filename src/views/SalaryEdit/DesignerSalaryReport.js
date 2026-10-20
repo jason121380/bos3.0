@@ -1,20 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import { Table, TableBody, TableCell, TableRow } from 'ui/table'
 import idx from 'idx'
 // import { useFetchMerchantStaticUserPerformReport } from 'hooks/useFetchMerchantStaticPerformanceReport'
 import format from 'date-fns/format'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  font: css({
-    fontWeight: 'bold',
-    color: 'rgb(var(--accent))',
-  }),
-  spaces: css({
-    padding: theme.spacing(2),
-  }),
-}
 
 const DesignerSalaryReport = ({
   userSalary,
@@ -150,7 +137,7 @@ const DesignerSalaryReport = ({
   // }, [designerSalesAnalyticsData.loading, designerSalesAnalyticsData.data])
 
   return designer !== undefined ? (
-    <Table dense css={styles.designerSalaryReport}>
+    <Table dense>
       <TableBody>
         <TableRow>
           <TableCell>服務虛業績</TableCell>

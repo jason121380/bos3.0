@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Button } from 'ui/button-compat'
 import { CheckboxField } from 'ui/checkbox'
 import { Input } from 'ui/input'
@@ -18,8 +17,12 @@ import React, {
   useState,
 } from 'react'
 
-import styles from './styles/PannelCustomerWallet'
 import WalletDepositModal from './WalletDepositModal'
+
+const styles = {
+  field: 'w-[120px] flex justify-start',
+  walletDiv: 'flex flex-col',
+}
 
 function PaymentCustomerWallet(props, ref) {
   const [walletPayBalance, setWalletPayBalance] = useState(0)
@@ -207,9 +210,9 @@ function PaymentCustomerWallet(props, ref) {
               <>
                 <p>入金剩餘：<strong style={{ color: 'red' }}>{`${usableCustomerWallet}元`}</strong></p>
                 <RemoveRoundedIcon />
-                <div style={{ position: 'relative' }} css={styles.walletDiv}>
+                <div style={{ position: 'relative' }} className={styles.walletDiv}>
                   <Input
-                    css={styles.field}
+                    className={styles.field}
                     value={bill.walletPay}
                     ref={ref}
                     onFocus={handleFocus}

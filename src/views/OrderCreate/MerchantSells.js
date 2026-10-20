@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
 import { Eraser, Copy, Trash2 } from 'lucide-react'
 import { RowIconButton, AddRowButton } from './RowAction'
@@ -14,8 +13,15 @@ import TeachingModeContext from 'context/teachingModeContext'
 import { useFetchThirdPartysForCreateOrder } from 'hooks/useFetchMerchant'
 import billContext from 'context/keyInContext'
 
-import styles from './styles/MerchantSells'
 import ProductsModal from './ProductsModal'
+
+const styles = {
+  merchantSells: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  field: '!min-w-[150px] flex mr-[12px]',
+  productField: 'w-[250px] flex mr-[12px]',
+  priceField: 'w-[65px] flex !mr-[12px]',
+  heading2: 'text-[0.8125rem] font-bold',
+}
 
 function MerchantSells({
   sellsItem,
@@ -147,7 +153,7 @@ function MerchantSells({
   }
   return (
     <Fragment>
-      <div css={styles.merchantSells}>
+      <div className={styles.merchantSells}>
         {/* 必填 *：helper/billVerify.js checkProductOrders 要求 sellerId 與 productId；兩者都空的列會被 handleTidyBill 丟掉，所以該列有填任一欄才標必填 */}
         <Field label="服務人員" required={!!sellsItem.sellerId || !!sellsItem.productId}>
           <EmployeeAutoComplete
@@ -204,7 +210,7 @@ function MerchantSells({
         </Field>
         {sellsItem.productId && (
           <React.Fragment>
-            <Field label="價格" css={styles.priceField}>
+            <Field label="價格" className={styles.priceField}>
               <Input
                 value={sellsItem.price}
                 ref={priceRef}
@@ -224,7 +230,7 @@ function MerchantSells({
                 disabled={!!(sellsItem.isLocked === 'TRUE' || sellsItem.isLocked === 'UNSET')}
               />
             </Field>
-            <Field label="數量" css={styles.priceField}>
+            <Field label="數量" className={styles.priceField}>
               <Input
                 value={sellsItem.count}
                 ref={countRef}
@@ -285,7 +291,7 @@ function MerchantSells({
                   _.merchant.thirdpartyCoupons.map(data => {
                     if (data.id === sellsItem.thirdPartyCouponMerchantId) {
                       return (
-                        <p className="m-0" css={styles.heading2} style={{ marginTop: '4px' }}>
+                        <p className={`m-0 ${styles.heading2}`} style={{ marginTop: '4px' }}>
                           {`扣完後業績:${Math.round((sellsItem.price * (100 - data.fee)) / 100)}`}
                         </p>
                       )
@@ -293,7 +299,7 @@ function MerchantSells({
                   })
                 )}
               {teachingMode && (
-                <p className="m-0" css={styles.heading2}>勾選將入業績但不收費用**</p>
+                <p className={`m-0 ${styles.heading2}`}>勾選將入業績但不收費用**</p>
               )}
             </div>
           </React.Fragment>

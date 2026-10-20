@@ -1,8 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Card } from 'ui/card'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
@@ -11,55 +8,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 const STICKY_COL = 'sticky left-0 top-0 z-[99] w-[200px] break-all bg-background'
 const GROUP_END = 'border-r'
 
-const styles = {
-  root: css({}),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 900,
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-  border: css({
-    borderRight: '1px solid rgb(var(--border))',
-  }),
-  sticky: css({
-    position: 'sticky',
-    top: 0,
-    left: 0,
-    background: 'white',
-    zIndex: '99',
-    wordBreak: 'break-all',
-    width: '200px',
-  }),
-  stickyRow: css({
-    position: 'sticky',
-    top: 0,
-    background: 'white',
-    zIndex: '100',
-    outline: '1px solid rgb(var(--border))',
-  }),
-}
-
 function Results({
   helperPerformanceData,
   membershipDisplay,
   ...rest
 }) {
   return (
-    <div {...rest} css={styles.root}>
+    <div {...rest}>
       <Card className="p-5">
         {/* HelperPerformanceReportTable：initialize.scss 的斑馬欄樣式掛鉤，保留 */}
         <Table dense className='HelperPerformanceReportTable min-w-[900px]'>

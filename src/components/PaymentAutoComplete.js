@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import useFetchMerchantPayWays from 'hooks/useFetchMerchantPayWays'
 import useToggle from 'hooks/useToggle'
@@ -9,7 +8,7 @@ import { Autocomplete } from 'ui/combobox'
 
 function PaymentAutoComplete(
   {
-    className,
+    className = '',
     onChange = () => {},
     label = '',
     value,
@@ -51,7 +50,7 @@ function PaymentAutoComplete(
       open={paymentToggle.open}
       onOpen={paymentToggle.toggle}
       onClose={paymentToggle.toggle}
-      css={className}
+      className={className}
       onChange={handleChange}
       value={selectedValue}
       options={options}

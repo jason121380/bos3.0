@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 「更多篩選」保留 MUI Dialog：內含 MUI DatePicker / Select（Radix Dialog 會擋住其彈出層）
 import { DialogActions, Dialog, DialogContent, DialogTitle } from 'ui/modal-compat'
 import { InputLabel, Select, FormControl, MenuItem } from 'ui/form-control'
@@ -18,7 +17,6 @@ import { DatePicker } from 'ui/date-picker'
 import { ChevronDown, Trash2 } from 'lucide-react'
 import { useMediaQuery } from 'ui/misc-compat'
 import { useFetchCustomersWithoutSortingExcelLazy } from 'hooks/useFetchCustomersWithoutSortingExcel'
-import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
@@ -29,42 +27,7 @@ import Results from './Results'
 let once = false
 
 const styles = {
-  root: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5),
-  }),
-  results: css({
-    marginTop: theme.spacing(0.5),
-  }),
-  formGroup: css({
-    width: '170px',
-    margin: '10px',
-  }),
-  cancelBtn: css({
-    backgroundColor: '#d40202',
-    marginLeft: theme.spacing(2),
-    color: 'white',
-    '&:hover': {
-      backgroundColor: '#bd0101',
-      color: 'white',
-    }
-  }),
-  submitButton: css({
-    marginLeft: theme.spacing(2),
-    backgroundColor: '#9ad6f3',
-    '&:hover': {
-      backgroundColor: '#01a2ef',
-    }
-  }),
-  filterButon: css({
-    color: "white",
-    backgroundColor: '#08424c !important',
-    flexShrink: 0,
-    '&:hover': {
-      color: "white",
-      backgroundColor: '#02181b !important',
-    }
-  })
+  formGroup: 'w-[170px] m-[10px]',
 }
 
 const selecter = [
@@ -357,7 +320,7 @@ function CustomerFilterExport() {
                 <DialogTitle>更多篩選</DialogTitle>
                 <DialogContent>
                   <div
-                    css={styles.formGroup}
+                    className={styles.formGroup}
                     style={{
                       margin: '20px auto',
                     }}
@@ -387,7 +350,7 @@ function CustomerFilterExport() {
                       margin: '20px 0px',
                     }}
                   >
-                    <div css={styles.formGroup}>
+                    <div className={styles.formGroup}>
                       <DatePicker
                         disabled={disable[0]}
                         label="最後消費開始日期"
@@ -397,7 +360,7 @@ function CustomerFilterExport() {
                       />
                     </div>
                     <span className="text-caption text-text-secondary">至</span>
-                    <div css={styles.formGroup}>
+                    <div className={styles.formGroup}>
                       <DatePicker
                         disabled={disable[0]}
                         label="最後消費結束日期"
@@ -416,7 +379,7 @@ function CustomerFilterExport() {
                       margin: '20px 0px',
                     }}
                   >
-                    <div css={styles.formGroup}>
+                    <div className={styles.formGroup}>
                       <DatePicker
                         disabled={disable[1]}
                         label="基準日期"
@@ -425,7 +388,7 @@ function CustomerFilterExport() {
                         onChange={handleFromDateChange}
                       />
                     </div>
-                    <div css={styles.formGroup}>
+                    <div className={styles.formGroup}>
                       <FormControl fullWidth variant="outlined">
                         <InputLabel>之前/之後</InputLabel>
                         <Select
@@ -445,7 +408,7 @@ function CustomerFilterExport() {
                         </Select>
                       </FormControl>
                     </div>
-                    <div css={styles.formGroup}>
+                    <div className={styles.formGroup}>
                       <TextField
                         disabled={disable[1] || !valid}
                         type="number"

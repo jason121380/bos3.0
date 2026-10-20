@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 欄位標籤放在上方（Field＋Input／NativeSelect）。扣項基準點的選項值是數字，NativeSelect 的 event.target.value 回傳原始數字，
 // 所以 handleDeductionReference 的 parseInt 等既有處理原樣保留；分指定／不指定的 Checkbox 仍用 MUI
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
@@ -11,40 +10,9 @@ import idx from 'idx'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 const styles = {
-  alert: css({
-    marginBottom: theme.spacing(3),
-  }),
-  tableBody: css({
-    padding: theme.spacing(2),
-  }),
-  formGroup: css({
-    width: '8rem',
-    marginLeft: theme.spacing(3),
-  }),
-  RefFormGroup: css({
-    width: '6rem',
-    marginLeft: theme.spacing(3),
-  }),
-  icons: css({
-    marginLeft: theme.spacing(3),
-    marginTop: '30px',
-    cursor: 'pointer',
-  }),
-  gap: css({
-    marginLeft: theme.spacing(3),
-  }),
-  deductionTypeFormGroup: css({
-    width: '6rem',
-  }),
-  headerTitle: css({
-    '& span': {
-      color: 'red',
-    }
-  }),
+  icons: 'ml-[24px] mt-[30px] cursor-pointer',
 }
 
 const deductionWay2 = [
@@ -404,19 +372,19 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
                   </Field>
                   {content.name !== '' && (
                     <BackspaceOutlinedIcon
-                      css={styles.icons}
+                      className={styles.icons}
                       onClick={() => handleClear(data.type, index)}
                       data-testid={`service-${index}-clear`}
                     />
                   )}
                   {index !== 0 && (
                     <DeleteForeverIcon
-                      css={styles.icons}
+                      className={styles.icons}
                       onClick={() => handleDeleteDeductionContent(data.type, index)}
                     />
                   )}
                   <AddIcon
-                    css={styles.icons}
+                    className={styles.icons}
                     onClick={() => handleAddDeductionContent(data.type, content.deductionOrder)}
                   />
                 </div>
