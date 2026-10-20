@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 // 篩選區的員工 Autocomplete 未受控（選取值存在元件內），保留 MUI Collapse 以免收合時遺失；
 // 補打卡彈窗內有 Autocomplete / DateTimePicker，保留 MUI Dialog
+import { Collapse } from 'ui/misc-compat'
 import { DialogActions, Dialog, DialogContent, DialogTitle } from 'ui/modal-compat'
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
-import { Collapse } from '@mui/material'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import { DateTimePicker } from 'ui/date-picker';

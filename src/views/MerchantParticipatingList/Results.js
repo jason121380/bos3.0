@@ -1,4 +1,4 @@
-import { Tooltip } from '@mui/material'
+import { Tooltip } from 'ui/misc-compat'
 import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon } from 'ui/icons'
 import { Fragment } from 'react'
 import format from 'date-fns/format';

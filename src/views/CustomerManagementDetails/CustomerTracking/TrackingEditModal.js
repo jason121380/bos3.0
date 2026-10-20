@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
+import { Chip } from 'ui/misc-compat'
 import { Dialog, DialogTitle, DialogContent, DialogActions } from 'ui/modal-compat'
 import { Grid } from 'ui/grid-compat'
 import { TextField } from 'ui/text-field'
 import { useState, useEffect, useRef, Fragment } from 'react'
-import { Chip, ThemeProvider } from '@mui/material'
+import { ThemeProvider } from '@mui/material'
 import { openSnackbar } from 'elements/snackbars'
 import { Edit as EditIcon } from 'ui/icons'
 import idx from 'idx';

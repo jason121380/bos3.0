@@ -8,6 +8,7 @@
 
 ## 一、今天完成了什麼
 
+- **MUI 移除・零星元件**（2026/10/20，v3.0-1020-1017）：Slider 泡泡、Switch、Chip、Rating、Tooltip、Collapse、IconButton、Hidden、Menu 共 10 檔換完；決策③的「行事曆拉桿數值泡泡」「活動日期富提示」已自做（MEMORY #148）。**待實機**：預約行事曆尺寸拉桿泡泡、參與店家日期提示、顧客評分、商品新增的上架／可販售開關存檔、顧客追蹤選項膠囊刪除、打卡篩選收合、報表「更多」選單、快速結帳關閉鈕。**剩餘 MUI**：日期選擇器本體、TreeView、三個列印檔（MerchantDailyReport／DecreaseDailyReport／TransferDetail）、主題層（src/theme、createTheme／ThemeProvider／styled／useMediaQuery、icons.js 的 Box）。
 - **MUI 移除・List 家族／Link／Snackbar／Alert**（2026/10/20，v3.0-1020-1003）：12 檔換用 `ui/list-compat`／`ui/link-compat`／`ui/feedback-compat`（MEMORY #147）。**待實機**：全站提示訊息（儲存成功／失敗、日結提醒）出現位置、自動消失與滑鼠停留暫停；預約行事曆點預約後的操作選單；顧客／票券／報表頁的連結另開分頁。
 - **MUI 移除・Input／OutlinedInput**（2026/10/20，v3.0-1020-0956）：13 檔換用 `ui/text-field` 的 Input／OutlinedInput（MEMORY #146）。**待實機**：收支／進貨／儲值／紅利的日期欄點擊開日曆、搜尋列輸入與 Enter、改密碼顯示／隱藏、排班卡標題。**既有問題（另案）**：這些日期欄上方有兩層相同標籤（外層 Field＋內層 InputLabel，如「開單日期／開單日期」），應保留一層。
 - **MUI 移除・TablePagination**（2026/10/20，v3.0-1020-0951）：12 檔換用 `ui/pagination-compat`（MEMORY #145）。**待實機（帳單）**：商品／服務／票券彈窗的換頁、每頁筆數（含 1000）、「第 x–y 筆 共 n 筆」文字。

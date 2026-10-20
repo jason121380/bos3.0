@@ -1,5 +1,5 @@
+import { Rating } from 'ui/misc-compat'
 import { useState, useEffect } from 'react'
-import { Rating } from '@mui/material'
 import Page from 'components/Page'
 import Status from './Status'
 import { useParams } from 'react-router'

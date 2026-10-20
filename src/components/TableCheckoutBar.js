@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
+import { Hidden } from 'ui/misc-compat'
 import { Drawer } from 'ui/overlay-compat'
 import { Grid } from 'ui/grid-compat'
 import { Button } from 'ui/button-compat'
-import { Hidden } from '@mui/material'
 import { Check as CheckIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'

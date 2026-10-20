@@ -1,4 +1,4 @@
-import { Menu, MenuItem } from '@mui/material'
+import { Menu, MenuItem } from 'ui/misc-compat'
 import { Button } from 'ui/button'
 import { MoreVert as MoreIcon, Print as PrintIcon } from 'ui/icons'
 import { memo, useRef, useState } from 'react'
