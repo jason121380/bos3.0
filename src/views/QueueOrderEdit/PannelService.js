@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion-compat'
-import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
+import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
 import { useContext, useEffect, useState, useRef } from 'react'
@@ -293,13 +293,17 @@ export default function PannelService({ thirdPartTicket }) {
   }
 
   return (
-    <Accordion defaultExpanded={expanded} expanded={expanded}>
+    <Accordion expanded={expanded}>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
         aria-controls="panel-content"
         id="panel-header"
         data-testid="panelService"
         onClick={handleAccordionClick}
+        // 收合時顯示「已填 N 筆 · NT$ 小計」（只讀畫面上的項目列，不參與計算或送出；比照打帳單）
+        summaryMeta={!expanded && panelSummary(
+          services.filter(d => d.serviceId).length,
+          services.filter(d => d.serviceId).reduce((total, d) => total + d.price, 0)
+        )}
         style={{ width: '100%' }}
       >
         <p className="m-0" css={styles.heading}>項目消費</p>

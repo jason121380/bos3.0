@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
+import { Field } from 'ui/input'
 import billContext from 'context/keyInContext'
 import { useLazyFetchCustomerWallet } from 'hooks/useFetchCustomerWallet'
 import idx from 'idx'
@@ -91,25 +92,26 @@ export default function PaymentCustomerWallet() {
   return (
     <Fragment>
       {usableCustomerWallet > 0 && bill.customerId && (
-        <TextField
-          variant="outlined"
-          label={`扣入金(${usableCustomerWallet}可用)`}
-          css={styles.field}
-          value={bill.walletPay}
-          type="number"
-          onFocus={handleFocus}
-          onChange={event => {
-            const walletPay =
-              +event.target.value <= usableCustomerWallet && +event.target.value <= walletPayLimit
-                ? +event.target.value
-                : bill.walletPay
-            handleBillChange({
-              key: 'walletPay',
-              value: walletPay,
-            })
-          }}
-          onWheel={() => document.activeElement.blur()}
-        />
+        <Field label={`扣入金(${usableCustomerWallet}可用)`} css={styles.field}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            value={bill.walletPay}
+            type="number"
+            onFocus={handleFocus}
+            onChange={event => {
+              const walletPay =
+                +event.target.value <= usableCustomerWallet && +event.target.value <= walletPayLimit
+                  ? +event.target.value
+                  : bill.walletPay
+              handleBillChange({
+                key: 'walletPay',
+                value: walletPay,
+              })
+            }}
+            onWheel={() => document.activeElement.blur()}
+          />
+        </Field>
       )}
     </Fragment>
   )
