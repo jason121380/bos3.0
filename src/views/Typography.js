@@ -1,6 +1,6 @@
+import { Container, Divider, Typography } from 'ui/display-compat'
 import { Grid } from 'ui/grid-compat'
 import { Card, CardContent } from 'ui/card-compat'
-import { Container, Divider, Typography } from '@mui/material'
 
 import Page from 'components/Page'
 

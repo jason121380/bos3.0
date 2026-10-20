@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
+import { Divider } from 'ui/display-compat'
 import { Grid } from 'ui/grid-compat'
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
-import { Divider } from '@mui/material'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'

@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // Container 與 PageTitle 保留：整頁會被 window.print() 列印，列印樣式依賴 .MuiContainer-root
-import { Container } from '@mui/material'
+import { Container } from 'ui/display-compat'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import { useFetchGetInventory } from 'hooks/useFetchGetInventorys'

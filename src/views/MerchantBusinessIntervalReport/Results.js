@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
+import { Typography, Divider } from 'ui/display-compat'
 import { Grid } from 'ui/grid-compat'
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
-import { Typography, Divider } from '@mui/material'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'

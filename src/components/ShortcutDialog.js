@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
+import { Divider, Typography } from 'ui/display-compat'
 import { Grid } from 'ui/grid-compat'
 import { Button } from 'ui/button-compat'
-import { Dialog, DialogTitle, DialogContent, ThemeProvider, Divider, Typography } from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, ThemeProvider } from '@mui/material'
 import { Button as UiButton } from 'ui/button'
 import { LoaderCircle } from 'lucide-react'
 import { Close as CloseIcon } from 'ui/icons'
@@ -71,7 +72,7 @@ const ShortcutDialog = ({ open, handleOnClose, handleShortcutChange }) => {
                   </Button>
                 </Grid>
               )) : (
-                <Typography sx={{ m: '14px auto 0' }} variant="h4" component="div">無資料</Typography>
+                <Typography style={{ margin: '14px auto 0' }} variant="h4" component="div">無資料</Typography>
               )}
             </Grid>
           </ThemeProvider>

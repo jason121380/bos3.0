@@ -228,3 +228,5 @@
 
 140. **相容層要用「computed style 比對頁」驗證，不靠截圖（Table 系列整類，2026/10/20，v3.0-1020-0902）**：①mock 後端下報表在資料回來前不渲染表格，截圖驗證不到；改用 `scripts/redesign/compat-harness/`：以 esbuild 打包一頁，同一份 JSX 分別用 MUI 與相容層渲染在 MuiScope 內，依實際 App 順序載入 main.css → 相容 CSS → initialize(.dark).scss，逐元素比對約 40 個 computed style 屬性、尺寸、Mui class 與 scope／aria-sort 等屬性；淺色、深色、390、列印各跑一次；②第一次比對只差 `border-top-color`——橋接主題以 `borderColor` 設四邊顏色，補上後 0 差異（肉眼看不出的差異也要對齊，列印的 `border` 規則可能讓它現形）；③靜態 CSS 必須維持「單一 class」權重：initialize.scss 的 `th.MuiTableCell-root.MuiTableCell-head` 等規則權重較高，不論載入順序都會勝出，結果與 MUI 時相同；④MUI 會把橋接主題 root 的 fontSize 14 合併在 footer 的 12px 之後，所以 footer 實際是 14px——重現時要照 MUI 的合併順序，不是照直覺；⑤新類別沿用此法：複製 `table-entry.js` 改受測元件與範例 JSX。
 
+141. **以 class 名稱當選擇器的相容 CSS 會互相波及：Paper 規則差點蓋掉卡片底色（顯示類整類，2026/10/20，v3.0-1020-0920）**：card-compat 為了列印選擇器輸出 `MuiPaper-root`，但當時沒有任何 CSS 以這個 class 定樣式；display-compat.css 一加上 `.MuiPaper-root { background-color: … }`，同權重下就與卡片的 `bg-surface` 搶，卡片可能從 #FAFAFA 變白。比對頁把卡片一起放進來才抓到。修法：`.MuiPaper-root:where(:not(.MuiCard-root))`——`:where` 讓排除條件不增加權重，頁面的 emotion css 仍可覆蓋。教訓：新增以 Mui class 為選擇器的相容 CSS 時，先 grep 哪些相容元件也輸出同一個 class，並把它們一起放進比對頁。另：worker 重啟會中斷長時間的截圖比對，長任務改用背景執行。
+

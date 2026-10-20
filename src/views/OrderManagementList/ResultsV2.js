@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // Divider 只用於下方列印範本（#printMain / #printThermal），維持列印輸出不變
-import { Divider } from '@mui/material'
+import { Divider } from 'ui/display-compat'
 import TableEditBar from 'components/TableEditBar'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'

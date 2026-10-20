@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
+import { Paper, Typography } from 'ui/display-compat'
 import { Table, TableBody, TableCell, TableRow, TableContainer } from 'ui/table-compat'
-import { Paper, Typography } from '@mui/material'
 import idx from 'idx'
 // import { useFetchMerchantStaticUserPerformReport } from 'hooks/useFetchMerchantStaticPerformanceReport'
 import format from 'date-fns/format'

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
+import { Typography } from 'ui/display-compat'
 import { Grid } from 'ui/grid-compat'
 import { Card, CardHeader, CardContent } from 'ui/card-compat'
-import { Typography } from '@mui/material'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table'
 import { Fragment } from 'react'
 import { format } from 'date-fns'
@@ -170,7 +170,7 @@ const Compare = ({ compareData, loading, isMemberShipCardActive, compareInputDat
                         </Card>
                       </Grid>
                     )) : (
-                      <Typography sx={{ mt: 6 }} align='center' variant="h3" component="div">
+                      <Typography style={{ marginTop: 48 }} align='center' variant="h3" component="div">
                         無資料
                       </Typography>
                     )}
@@ -179,7 +179,7 @@ const Compare = ({ compareData, loading, isMemberShipCardActive, compareInputDat
               ))}
             </Grid>
           ) : (
-            <Typography sx={{ mt: 6 }} align='center' variant="h3" gutterBottom component="div">
+            <Typography style={{ marginTop: 48 }} align='center' variant="h3" gutterBottom component="div">
               無資料
             </Typography>
           )

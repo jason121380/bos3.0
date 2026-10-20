@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Container } from '@mui/material'
+import { Container } from 'ui/display-compat'
 import Page from 'components/Page'
 import { Helmet } from 'react-helmet'
 import { css } from '@emotion/react'

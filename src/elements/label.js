@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Typography } from '@mui/material'
+import { Typography } from 'ui/display-compat'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
 import { theme } from '../theme'

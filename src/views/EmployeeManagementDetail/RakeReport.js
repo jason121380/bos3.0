@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
+import { Divider, Paper } from 'ui/display-compat'
 import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
-import { Divider, Paper } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect, Fragment } from 'react'
 import DateSelector from 'components/DateSelector'

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 // 表格（className="ProductInventoryListTable"）即為 window.print() 的列印輸出，列印樣式依 MUI 結構撰寫，保留 MUI Table
+import { Paper } from 'ui/display-compat'
 import { TableRow, TableContainer, Table, TableHead, TableBody, TableCell } from 'ui/table-compat'
-import { Paper } from '@mui/material'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
 import { Card, CardHeader, CardTitle } from 'ui/card'

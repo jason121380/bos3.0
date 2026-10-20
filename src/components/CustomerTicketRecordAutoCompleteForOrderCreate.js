@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
+import { CircularProgress } from 'ui/display-compat'
 import { TextField } from 'ui/text-field'
-import { CircularProgress } from '@mui/material'
 import idx from 'idx'
 import _ from 'lodash'
 import React, { useEffect, useState, forwardRef } from 'react'
