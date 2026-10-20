@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
+import { Dialog } from 'ui/modal-compat'
 import { useState, useEffect } from 'react'
-import { Dialog } from '@mui/material'
 import { AssignmentTurnedInRounded as AssignmentTurnedInRoundedIcon, DisabledByDefaultRounded as DisabledByDefaultRoundedIcon, EventBusy as EventBusyIcon } from 'ui/icons'
 import { format } from 'date-fns'
 import styles from './styles/OrderTable'

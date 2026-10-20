@@ -1,10 +1,8 @@
 /** @jsxImportSource @emotion/react */
+import { DialogContent } from 'ui/modal-compat'
 import React, { useState, Fragment } from 'react'
 // 動作清單（List / ListItemButton / Link component）沒有對應元件，保留 MUI
-import {
-  DialogContent, Link, List, ListItemButton,
-  ListItemAvatar, ListItemText
-} from '@mui/material'
+import { Link, List, ListItemButton, ListItemAvatar, ListItemText } from '@mui/material'
 import { Avatar } from 'ui/avatar'
 import { Button } from 'ui/button'
 import { blue } from 'ui/colors'

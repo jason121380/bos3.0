@@ -1,10 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 裁切頭像的彈窗內含 react-easy-crop，Slider 已換 ui/slider，彈窗沿用 MUI Dialog
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle } from 'ui/modal-compat'
 import { Slider } from 'ui/slider'
 import idx from 'idx'
 import PropTypes from 'prop-types'

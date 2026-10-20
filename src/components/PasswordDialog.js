@@ -1,5 +1,5 @@
+import { Dialog, DialogTitle, DialogActions, DialogContent } from 'ui/modal-compat'
 import { TextField } from 'ui/text-field'
-import { Dialog, DialogTitle, DialogActions, DialogContent } from '@mui/material'
 import { Button } from 'ui/button'
 import PropTypes from 'prop-types'
 

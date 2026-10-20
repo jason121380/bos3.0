@@ -1,7 +1,7 @@
 // Dialog 內含 MUI Autocomplete，依指南保留 MUI Dialog；內容區加 ui-root 以套用 ui 元件的基礎樣式
+import { Dialog, DialogTitle, DialogContent, DialogActions } from 'ui/modal-compat'
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
-import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'
 import { Plus, Trash2 } from 'lucide-react'
 import { Button } from 'ui/button'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'

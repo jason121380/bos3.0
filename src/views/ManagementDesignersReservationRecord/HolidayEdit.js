@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
+import { DialogContent, DialogTitle, DialogActions } from 'ui/modal-compat'
 import { useState, useEffect, Fragment } from 'react'
 // 外層為 MUI Dialog（OrderTable），保留 DialogTitle / DialogContent / DialogActions
-import { DialogContent, DialogTitle, DialogActions } from '@mui/material'
 import { Button } from 'ui/button'
 import { ToggleGroupItem } from 'ui/toggle-group'
 import { cloneDeep } from 'lodash'

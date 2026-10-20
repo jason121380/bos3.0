@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
+import { Modal } from 'ui/modal-compat'
 import { Button } from 'ui/button-compat'
 import { Card, CardHeader, CardContent } from 'ui/card-compat'
-import { Modal } from '@mui/material'
 import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import PropTypes from 'prop-types'

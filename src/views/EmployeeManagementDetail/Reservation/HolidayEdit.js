@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
+import { DialogContent, DialogTitle, DialogActions } from 'ui/modal-compat'
 import { useState, useEffect, Fragment } from 'react'
 // 外層為 MUI Dialog（由行事曆開啟），DialogContent / DialogTitle / DialogActions 保留
-import { DialogContent, DialogTitle, DialogActions } from '@mui/material'
 import { ToggleGroupItem } from 'ui/toggle-group'
 import { cloneDeep } from 'lodash'
 import { format } from 'date-fns'
