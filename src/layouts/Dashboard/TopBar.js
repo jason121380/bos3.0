@@ -9,7 +9,8 @@ import useFetchSystemUpdateRecord from 'hooks/useFetchSystemUpdateRecord'
 import useToggle from 'hooks/useToggle'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, useRef, Fragment } from 'react'
-import ReactDOM from 'react-dom'
+import SlotPortal from 'components/SlotPortal'
+import useMediaQuery from 'hooks/useMediaQuery'
 import { useHistory } from 'react-router'
 import useFetchProfile, { useFetchProfileIdentity } from 'hooks/useFetchProfile'
 import useFetchMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'
@@ -34,25 +35,25 @@ import bosLogo from 'assets/images/bosLogoNew.png'
 
 // 側欄底部（NavBar 的 SidebarFooter，profile 載入後才出現）的插槽；插槽出現前先不渲染，出現後以 Portal 畫進去
 const SIDEBAR_FOOTER_SLOT_ID = 'sidebar-merchant-switch-slot'
+// 側欄頂列的搜尋鈕插槽（NavBar 以 Portal 畫進來）
+export const SIDEBAR_SEARCH_SLOT_ID = 'sidebar-search-slot'
 function SidebarFooterPortal({ children }) {
-  const [slot, setSlot] = useState(() => document.getElementById(SIDEBAR_FOOTER_SLOT_ID))
-  useEffect(() => {
-    const find = () => {
-      const el = document.getElementById(SIDEBAR_FOOTER_SLOT_ID)
-      setSlot(prev => (prev === el ? prev : el))
-    }
-    find()
-    const observer = new MutationObserver(find)
-    observer.observe(document.body, { childList: true, subtree: true })
-    return () => observer.disconnect()
-  }, [])
-  return slot ? ReactDOM.createPortal(children, slot) : null
+  return <SlotPortal slotId={SIDEBAR_FOOTER_SLOT_ID}>{children}</SlotPortal>
 }
 
 function TopBar({ onOpenNavBarMobile, userMerchants }) {
   const dispatch = useDispatch()
   const history = useHistory()
   const ref = useRef()
+  const isDesktop = useMediaQuery('(min-width: 1024px)') // Tailwind lg：側欄常駐的斷點
+  // 手機通知面板的虛擬錨點：畫面水平正中、鈴鐺下緣（Radix Popper 以 getBoundingClientRect 定位）
+  const centeredAnchorRef = useRef({
+    getBoundingClientRect: () => {
+      const bottom = ref.current ? ref.current.getBoundingClientRect().bottom : 56
+      const x = window.innerWidth / 2
+      return { x, y: bottom, top: bottom, bottom, left: x, right: x, width: 0, height: 0, toJSON: () => ({}) }
+    },
+  })
   const { open, toggle } = useToggle()
   const profileIdentity = useFetchProfileIdentity()
   const profile = useFetchProfile()
@@ -421,33 +422,52 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
   ) : (
     <Bell strokeWidth={1.75} />
   )
+  const bellButton = (
+    <Button
+      ref={ref}
+      variant="ghost"
+      size="icon"
+      className="relative"
+      aria-label={error ? `訂單佇列：${errorCount} 筆失敗` : '訂單佇列'}
+      onClick={handleClickOpenNotification('bottom-end')}
+    >
+      {queueIcon}
+      {error && (
+        <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[11px] font-medium leading-none text-white tabular-nums">
+          {errorCount}
+        </span>
+      )}
+    </Button>
+  )
   return (
     <Fragment>
       <div className="flex h-10 items-center gap-1">
-        <RouterLink to={loginUserAuth ? '/' : '/profile/general'} className={cn('flex items-center gap-2 rounded-md px-1', focusRing)}>
+        {/* 桌機側欄 264px 放不下「Logo＋版號＋搜尋／鈴鐺／收合三顆鈕」一列，版號改疊在 Logo 下方（仍在 40px 列高內）；手機抽屜沒有收合鈕，維持同一列 */}
+        <RouterLink to={loginUserAuth ? '/' : '/profile/general'} className={cn('flex min-w-0 items-center gap-2 rounded-md px-1 lg:flex-col lg:items-start lg:gap-0', focusRing)}>
           <img alt="BeautyOS" className="h-6 w-auto invert dark:invert-0" src={bosLogo} />
-          <span className="text-caption text-text-tertiary">{APP_VERSION}</span>
+          <span className="whitespace-nowrap text-caption text-text-tertiary">{APP_VERSION}</span>
         </RouterLink>
         <div className="flex-1" />
+        {/* 搜尋選單鈕由 NavBar 畫進這個插槽（搜尋狀態在 NavBar），位置在通知鈴鐺左側（Jason 2026/10/21） */}
+        <span id={SIDEBAR_SEARCH_SLOT_ID} className="contents" />
         <Popover open={openButton} onOpenChange={o => !o && setOpenButton(false)}>
-          <PopoverAnchor asChild>
-            <Button
-              ref={ref}
-              variant="ghost"
-              size="icon"
-              className="relative"
-              aria-label={error ? `訂單佇列：${errorCount} 筆失敗` : '訂單佇列'}
-              onClick={handleClickOpenNotification('bottom-end')}
-            >
-              {queueIcon}
-              {error && (
-                <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[11px] font-medium leading-none text-white tabular-nums">
-                  {errorCount}
-                </span>
-              )}
-            </Button>
-          </PopoverAnchor>
-          <PopoverContent align="start" side="right" className="w-[360px] p-0">
+          {/* 桌機：面板貼著鈴鐺往右開（打開在內容區）；手機：側欄抽屜很窄，改以虛擬錨點讓面板在畫面水平置中、
+              緊接在頂列下方（原本往右開放不下，被推出畫面左側） */}
+          {isDesktop ? (
+            <PopoverAnchor asChild>{bellButton}</PopoverAnchor>
+          ) : (
+            <Fragment>
+              <PopoverAnchor virtualRef={centeredAnchorRef} />
+              {bellButton}
+            </Fragment>
+          )}
+          <PopoverContent
+            align={isDesktop ? 'start' : 'center'}
+            side={isDesktop ? 'right' : 'bottom'}
+            sideOffset={isDesktop ? 6 : 8}
+            collisionPadding={16}
+            className="w-[min(360px,calc(100vw-32px))] p-0"
+          >
             <div className="border-0 border-b border-solid border-border px-4 py-3 text-heading text-text">訂單佇列</div>
             <div className="max-h-[350px] overflow-y-auto">
               {orderDetail.length > 0 ? (

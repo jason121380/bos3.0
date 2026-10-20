@@ -1,4 +1,6 @@
-import { CalendarDays, ChartColumn, Contact, CreditCard, Gift, LogOut, Megaphone, Package, Pin, Receipt, Search, Settings, Users } from 'lucide-react'
+import { CalendarDays, ChartColumn, Contact, CreditCard, Gift, LogOut, Megaphone, Package, Pin, Receipt, Search, Settings, Users, X } from 'lucide-react'
+import SlotPortal from 'components/SlotPortal'
+import { SIDEBAR_SEARCH_SLOT_ID } from './TopBar'
 import NavItem, { isWithinHref } from 'components/NavItem'
 import useFetchProfile from 'hooks/useFetchProfile'
 import idx from 'idx'
@@ -80,6 +82,13 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   const [status, setStatus] = useState('online')
   const [userPageAuth, setUserPageAuth] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
+  // 搜尋選單：頂列的放大鏡鈕開關搜尋框；關閉時清空關鍵字、恢復完整選單
+  const [searchOpen, setSearchOpen] = useState(false)
+  const openSearch = () => setSearchOpen(true)
+  const closeSearch = () => {
+    setSearchTerm('')
+    setSearchOpen(false)
+  }
 
   // 拿個人全部的資料
   const profile = useFetchProfile()
@@ -495,18 +504,46 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   // 側欄內容與底部使用者選單；外框（Sidebar）與頂部（TopBar）由 layouts/Dashboard 組合
   return (
     <Fragment>
-      <div className="px-3 pb-2">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.75} />
-          <Input
-            aria-label="搜尋選單"
-            placeholder="搜尋選單"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="h-8 border-border bg-background pl-8 text-label hover:border-border-strong"
-          />
+      {/* 搜尋鈕畫在頂列通知鈴鐺左側（Jason 2026/10/21「搜尋放到右上角 icon」）；按下才展開搜尋框 */}
+      <SlotPortal slotId={SIDEBAR_SEARCH_SLOT_ID}>
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="搜尋選單"
+          aria-expanded={searchOpen}
+          aria-controls="sidebar-menu-search"
+          className={cn(searchOpen && 'bg-surface-hover')}
+          onClick={() => (searchOpen ? closeSearch() : openSearch())}
+        >
+          <Search strokeWidth={1.75} />
+        </Button>
+      </SlotPortal>
+      {searchOpen && (
+        <div className="px-3 pb-2">
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.75} />
+            <Input
+              id="sidebar-menu-search"
+              autoFocus
+              aria-label="搜尋選單"
+              placeholder="搜尋選單"
+              value={searchTerm}
+              onChange={e => setSearchTerm(e.target.value)}
+              onKeyDown={e => e.key === 'Escape' && closeSearch()}
+              className="h-8 border-border bg-background pl-8 pr-8 text-label hover:border-border-strong"
+            />
+            <button
+              type="button"
+              aria-label="關閉搜尋"
+              title="關閉搜尋"
+              onClick={closeSearch}
+              className={cn('absolute right-1 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border-0 bg-transparent p-0 text-text-tertiary hover:bg-surface-hover hover:text-text', focusRing)}
+            >
+              <X className="h-4 w-4" strokeWidth={1.75} />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
       <SidebarContent>
         {!profile.loading && (
           <Fragment>
@@ -522,7 +559,8 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
                 </NavItem>
               </Fragment>
             )}
-            <SidebarLabel className={filteredPinnedTable.length > 0 ? undefined : 'pt-1'}>選單</SidebarLabel>
+            {/* 「選單」標題已移除（Jason 2026/10/21）；有釘選群組時以間距與選單分開 */}
+            {filteredPinnedTable.length > 0 && <div className="h-2" aria-hidden="true" />}
             {config.map(list =>
               renderNavItems({
                 items: list.items,
