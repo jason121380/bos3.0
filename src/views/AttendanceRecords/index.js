@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
-// 篩選區的員工 Autocomplete 未受控（選取值存在元件內），保留 MUI Collapse 以免收合時遺失；
-// 補打卡彈窗內有 Autocomplete / DateTimePicker，保留 MUI Dialog
-import { Collapse } from 'ui/misc-compat'
+// 篩選區的員工 Autocomplete 未受控（選取值存在元件內）：收合時以 hidden 隱藏、不卸載（同原 Collapse），以免遺失；
+// 補打卡彈窗內有 Autocomplete / DateTimePicker，保留相容層 Dialog（Radix Dialog 會與其彈出層焦點鎖互搶）
 import { DialogActions, Dialog, DialogContent, DialogTitle } from 'ui/modal-compat'
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
@@ -311,7 +310,7 @@ export default function Employees() {
           />
         </AdminPageHeader>
 
-        <Collapse in={showFilter}>
+        <div hidden={!showFilter}>
           <Card className="mb-6 p-4">
             <div className="flex flex-wrap items-center gap-4">
               <div className="w-1/4 min-w-[200px]">
@@ -385,7 +384,7 @@ export default function Employees() {
               </div>
             </div>
           </Card>
-        </Collapse>
+        </div>
         {attendanceRecordsLazyData.data !== undefined && !attendanceRecordsLazyData.loading ? idx(attendanceRecordsLazyData, _ => (
           <Results
             identity={identity}
