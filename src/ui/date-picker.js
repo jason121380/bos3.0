@@ -22,6 +22,7 @@ import { DayView, MonthView, YearView, TimeView, formatValue, isDayDisabled, isV
 // 5. 驗證同 MUI：onError(reason, value)，reason 為 invalidDate／minDate／maxDate／disableFuture／disablePast／maxTime，錯誤改變時才呼叫；
 //    欄位在有錯誤時顯示紅框（slotProps.textField.error 可覆寫）。
 // 6. 自訂欄位 slots.field 收到 value（Date）、format、onClick（開啟）、onKeyDown、readOnly、disabled、inputRef、inputProps 等（同 MUI）。
+// 手機對話框置中顯示（ui-dialog-centered），不使用底部面板（Jason 2026/10/20）。
 // 7. label 放在欄位上方（ui/input 的 Field）；slotProps.textField 的 variant 一律忽略（全站同一種外框）。
 // 8. className（含 emotion css prop）落在最外層 .ui-date-picker（同 MUI 落在 TextField 根節點），欄位撐滿它；有 className 時不套預設寬 220px，
 //    以免與頁面的 width 同權重而先後不定（打帳單四兄弟靠 width:100% 撐滿欄位）。sx 不支援，頁面改用 className。
@@ -364,7 +365,7 @@ function createPicker({ displayName, withTime, mobileOnly }) {
       )
     } else if (open) {
       overlay = (
-        <Dialog open onClose={dismiss} PaperProps={{ className: 'ui-root min-w-[320px]', 'aria-label': title, 'aria-labelledby': undefined }}>
+        <Dialog open onClose={dismiss} className="ui-dialog-centered" PaperProps={{ className: 'ui-root min-w-[320px]', 'aria-label': title, 'aria-labelledby': undefined }}>
           {!toolbar.hidden && (
             <div className="flex flex-col gap-1 border-0 border-b border-solid border-border px-6 pb-4 pt-4">
               <span className="text-caption font-medium text-text-secondary">{title}</span>
