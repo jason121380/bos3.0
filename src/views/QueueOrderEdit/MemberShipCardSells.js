@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { CheckboxField } from 'ui/checkbox'
-import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
+import { Field } from 'ui/input'
+import { Eraser, Copy, Trash2 } from 'lucide-react'
+import { RowIconButton, AddRowButton } from 'views/OrderCreate/RowAction'
 import EmployeeAutoComplete from "components/EmployeeAutoComplete";
 import MemberShipCardAutoComplete from "components/MemberShipCardAutoComplete";
 import ThirdPartyAutoComplete from "components/ThirdPartyAutoComplete";
@@ -21,10 +23,13 @@ import { theme } from '../../theme'
 import MemberShipCardSellsModal from "./MemberShipCardSellsModal";
 
 const styles = {
+  // 項目列（比照打帳單 views/OrderCreate/styles/MemberShipCardSells）：上方標籤、控制項靠底對齊、窄螢幕換行不擠壓
   merchantSells: css({
     display: "flex",
-    // alignItems: 'center',
+    alignItems: "flex-end",
     justifyContent: "flex-start",
+    flexWrap: "wrap",
+    rowGap: "12px",
     marginBottom: theme.spacing(3),
   }),
   field: css({
@@ -44,21 +49,6 @@ const styles = {
     "&:last-child": {
       marginRight: "0px",
     },
-  }),
-  action: css({
-    width: "50px",
-    display: "flex",
-    marginRight: "12px",
-    marginTop: "13px",
-    alignItems: "center",
-    cursor: "pointer",
-    "&:last-child": {
-      marginRight: "0px",
-    },
-  }),
-  createIcon: css({
-    cursor: "pointer",
-    margin: "10px",
   }),
   heading2: css({
     fontSize: theme.typography.pxToRem(13),
@@ -246,116 +236,123 @@ const MemberShipCardSells = ({
   return (
     <Fragment>
       <div css={styles.merchantSells}>
-        <EmployeeAutoComplete
-          className={styles.field}
-          label="服務人員姓名/編號"
-          value={sells.sellerId}
-          tabIndex={focusRow + "0"}
-          autoFocus={focus === "employee"}
-          onFocus={(event) => handleFocus({ event, field: "employee" })}
-          onKeyDown={(event) => handleKeyDown({ event, nextField: "product" })}
-          onChange={function (value) {
-            onChange({
-              index,
-              key: "sellerId",
-              value: idx(value, (_) => _.userId),
-            });
-          }}
-          inputProps={{
-            "data-testid": `merchantSsell-${index}-employee`,
-          }}
-        />
-        {index === 0 ? (
-          <FilterNoneIcon css={styles.createIcon} onClick={handleOpenProductsModal} />
-        ) : (
-          <span style={{ margin: "22px" }} />
-        )}
-        <MemberShipCardAutoComplete
-          setMembershipAlready={setMembershipAlready}
-          className={styles.productField}
-          label="會員卡名稱/代號"
-          value={sells.membershipUUID}
-          ref={productRef}
-          autoFocus={focus === "product"}
-          onFocus={(event) => handleFocus({ event, field: "product" })}
-          onKeyDown={(event) => handleKeyDown({ event, nextField: "price" })}
-          tabIndex={focusRow + "1"}
-          inputProps={{
-            "data-testid": `memberShipCardSells-${index}-product`,
-          }}
-          onChange={(value) => {
-            idx(value, (_) => {
-              onCardChange({
+        {/* 必填 *：Footer.js 重試時 helper/billVerify.js checkMembershipOrders 要求 sellerId、membershipUUID、有效到期日；兩者都空的列會被 handleTidyBill 丟掉，所以該列有填任一欄才標必填（同打帳單） */}
+        <Field label="服務人員" required={!!sells.sellerId || !!sells.membershipUUID}>
+          <EmployeeAutoComplete
+            placeholder="服務人員姓名/編號"
+            className={styles.field}
+            value={sells.sellerId}
+            tabIndex={focusRow + "0"}
+            autoFocus={focus === "employee"}
+            onFocus={(event) => handleFocus({ event, field: "employee" })}
+            onKeyDown={(event) => handleKeyDown({ event, nextField: "product" })}
+            onChange={function (value) {
+              onChange({
                 index,
-                value: {
-                  ...sells,
-                  membershipUUID: _.uuid,
-                  price: _.sellPrice,
-                  expiryDate: _.effecitveDay === 0 ? null : addDays(new Date(), _.effecitveDay).getTime(),
-                  isLocked: _.isLocked,
-                  effecitveDay: _.effecitveDay,
-                },
+                key: "sellerId",
+                value: idx(value, (_) => _.userId),
               });
-            });
-          }}
-        />
+            }}
+            inputProps={{
+              "data-testid": `merchantSsell-${index}-employee`,
+            }}
+          />
+        </Field>
+        {index === 0 ? (
+          <RowIconButton label="從清單選擇會員卡" className="mx-1.5" onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+        ) : (
+          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
+        )}
+        <Field label="會員卡" required={!!sells.sellerId || !!sells.membershipUUID}>
+          <MemberShipCardAutoComplete
+            setMembershipAlready={setMembershipAlready}
+            className={styles.productField}
+            value={sells.membershipUUID}
+            ref={productRef}
+            autoFocus={focus === "product"}
+            onFocus={(event) => handleFocus({ event, field: "product" })}
+            onKeyDown={(event) => handleKeyDown({ event, nextField: "price" })}
+            tabIndex={focusRow + "1"}
+            inputProps={{
+              "data-testid": `memberShipCardSells-${index}-product`,
+            }}
+            onChange={(value) => {
+              idx(value, (_) => {
+                onCardChange({
+                  index,
+                  value: {
+                    ...sells,
+                    membershipUUID: _.uuid,
+                    price: _.sellPrice,
+                    expiryDate: _.effecitveDay === 0 ? null : addDays(new Date(), _.effecitveDay).getTime(),
+                    isLocked: _.isLocked,
+                    effecitveDay: _.effecitveDay,
+                  },
+                });
+              });
+            }}
+          />
+        </Field>
         {sells.membershipUUID ? (
           <React.Fragment>
-            <TextField
-              variant="outlined"
-              label="價格"
-              css={styles.priceField}
-              value={sells.price}
-              inputRef={priceRef}
-              tabIndex={focusRow + "2"}
-              inputProps={{
-                "data-testid": `memberShipCardSells-${index}-price`,
-              }}
-              onChange={(value) => {
-                setFocus("price");
-                onChange({
-                  index,
-                  key: "price",
-                  value: idx(value, (_) => +_.target.value || 0),
-                });
-              }}
-              autoFocus={focus === "price"}
-              onFocus={(event) => handleFocus({ event, field: "price" })}
-              onKeyDown={(event) => handleKeyDown({ event, nextField: "date" })}
-              disabled={!!(sells.isLocked === 'TRUE' || sells.isLocked === 'UNSET')}
-            />
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <MobileDatePicker
-                css={styles.dateField}
-                label="到期日"
-                inputRef={dateRef}
-                value={sells.expiryDate}
-                format="yyyy/MM/dd"
-                minDate={addDays(new Date(bill.date), 1)}
-                maxDate={addYears(new Date(bill.date), 50)}
-                disabled={sells.expiryDate === null}
-                autoFocus={focus === "date"}
-                onFocus={(event) => handleFocus({ event, field: "date" })}
-                onError={(error) => setDateError(error)}
-                localeText={{
-                  toolbarTitle: '選擇日期'
-                }}
-                slotProps={{
-                  textField: {
-                    onFocus: event => handleFocus({ event, field: "date" }),
-                    onKeyDown: event => handleKeyDown({ event, nextField: "thirdParty" }),
-                    helperText: checkMessage(dateError)
-                  },
+            <Field label="價格" css={styles.priceField}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                value={sells.price}
+                inputRef={priceRef}
+                tabIndex={focusRow + "2"}
+                inputProps={{
+                  "data-testid": `memberShipCardSells-${index}-price`,
                 }}
                 onChange={(value) => {
-                  setFocus("date");
+                  setFocus("price");
                   onChange({
                     index,
-                    key: "expiryDate",
-                    value: new Date(value).getTime()
+                    key: "price",
+                    value: idx(value, (_) => +_.target.value || 0),
                   });
                 }}
+                autoFocus={focus === "price"}
+                onFocus={(event) => handleFocus({ event, field: "price" })}
+                onKeyDown={(event) => handleKeyDown({ event, nextField: "date" })}
+                disabled={!!(sells.isLocked === 'TRUE' || sells.isLocked === 'UNSET')}
               />
+            </Field>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {/* 必填 *：checkMembershipOrders 要求有效到期日；勾「永久會籍」（expiryDate 為 null）時欄位停用、不必填（同打帳單） */}
+              <Field label="到期日" required={sells.expiryDate !== null}>
+                <MobileDatePicker
+                  css={styles.dateField}
+                  inputRef={dateRef}
+                  value={sells.expiryDate}
+                  format="yyyy/MM/dd"
+                  minDate={addDays(new Date(bill.date), 1)}
+                  maxDate={addYears(new Date(bill.date), 50)}
+                  disabled={sells.expiryDate === null}
+                  autoFocus={focus === "date"}
+                  onFocus={(event) => handleFocus({ event, field: "date" })}
+                  onError={(error) => setDateError(error)}
+                  localeText={{
+                    toolbarTitle: '選擇日期'
+                  }}
+                  slotProps={{
+                    textField: {
+                      onFocus: event => handleFocus({ event, field: "date" }),
+                      onKeyDown: event => handleKeyDown({ event, nextField: "thirdParty" }),
+                      helperText: checkMessage(dateError)
+                    },
+                  }}
+                  onChange={(value) => {
+                    setFocus("date");
+                    onChange({
+                      index,
+                      key: "expiryDate",
+                      value: new Date(value).getTime()
+                    });
+                  }}
+                />
+              </Field>
               <CheckboxField
                 label="永久會籍"
                 checked={sells.expiryDate === null}
@@ -375,30 +372,32 @@ const MemberShipCardSells = ({
               />
             </div>
 
-            <div style={{ display: "block" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
               {thirdPartTicket && (
-                <ThirdPartyAutoComplete
-                  className={styles.field}
-                  label="第三方卡券"
-                  autoFocus={focus === "thirdParty"}
-                  value={sells.thirdPartyCouponMerchantId}
-                  ref={thirdPartyRef}
-                  onKeyDown={(event) => handleKeyDown({ event, nextField: "remark" })}
-                  name="thirdParty"
-                  onChange={(e) => {
-                    onCardChange({
-                      index,
-                      value: {
-                        ...sells,
-                        thirdPartyCouponMerchantId: e ? e.id : null,
-                      },
-                    });
-                  }}
-                  onFocus={(event) => handleFocus({ event, field: "thirdParty" })}
-                  inputProps={{
-                    "data-testid": `service-${index}-thirdParty`,
-                  }}
-                />
+                <Field label="第三方卡券">
+                  <ThirdPartyAutoComplete
+                    fieldProps={{ placeholder: '第三方卡券' }}
+                    className={styles.field}
+                    autoFocus={focus === "thirdParty"}
+                    value={sells.thirdPartyCouponMerchantId}
+                    ref={thirdPartyRef}
+                    onKeyDown={(event) => handleKeyDown({ event, nextField: "remark" })}
+                    name="thirdParty"
+                    onChange={(e) => {
+                      onCardChange({
+                        index,
+                        value: {
+                          ...sells,
+                          thirdPartyCouponMerchantId: e ? e.id : null,
+                        },
+                      });
+                    }}
+                    onFocus={(event) => handleFocus({ event, field: "thirdParty" })}
+                    inputProps={{
+                      "data-testid": `service-${index}-thirdParty`,
+                    }}
+                  />
+                </Field>
               )}
               {teachingMode && <p className="m-0" css={styles.heading2}>勾選將入業績但不收費用**</p>}
               {sells.thirdPartyCouponMerchantId &&
@@ -413,57 +412,61 @@ const MemberShipCardSells = ({
                   }
                 })}
             </div>
-            <TextField
-              value={sells.remark}
-              variant="outlined"
-              label="備註"
-              name="remark"
-              inputRef={remarkRef}
-              css={styles.field}
-              autoFocus={focus === "remark"}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  changeRowFocus(index + 1);
-                }
-              }}
-              onChange={(value) => {
-                onChange({
-                  index,
-                  key: "remark",
-                  value: idx(value, (_) => _.target.value),
-                });
-              }}
-            />
+            <Field label="備註" css={styles.field}>
+              <TextField
+                fullWidth
+                value={sells.remark}
+                variant="outlined"
+                name="remark"
+                inputRef={remarkRef}
+                autoFocus={focus === "remark"}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    changeRowFocus(index + 1);
+                  }
+                }}
+                onChange={(value) => {
+                  onChange({
+                    index,
+                    key: "remark",
+                    value: idx(value, (_) => _.target.value),
+                  });
+                }}
+              />
+            </Field>
           </React.Fragment>
         ) : (
           ""
         )}
 
-        <BackspaceOutlinedIcon
-          css={styles.action}
+        <RowIconButton
+          label="清除此列" className="mr-1.5"
           onClick={function () {
             onClear({ index });
           }}
           data-testid={`merchantSsell-${index}-clear`}
-        />
+        >
+          <Eraser aria-hidden="true" strokeWidth={1.75} />
+        </RowIconButton>
         {!first ? (
-          <DeleteForeverIcon
-            css={styles.action}
+          <RowIconButton
+            label="刪除此列" className="mr-1.5"
             onClick={function () {
               removeSells({ index });
             }}
             data-testid={`merchantSsell-${index}-delete`}
-          />
+          >
+            <Trash2 aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           ""
         )}
       </div>
       {last ? (
-        <AddIcon
-          css={styles.action}
+        <AddRowButton
           onClick={function () {
             addSells();
           }}
