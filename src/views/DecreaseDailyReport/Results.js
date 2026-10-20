@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { Grid } from 'ui/grid-compat'
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
-import { Divider, Paper } from 'ui/display-compat'
+import { Paper } from 'ui/display-compat'
 import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
 // 螢幕卡片改用 ui 元件（以 Ui 前綴命名，避免與列印區塊仍使用的 MUI 同名元件衝突）
 // 列印區塊（printData／DecreaseDailyReportCardPrint）的 @media print 樣式依 MUI class 排版：改用輸出相同 DOM／class 的相容層（ui/*-compat）

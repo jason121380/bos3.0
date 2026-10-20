@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { Typography } from 'ui/display-compat'
-import { Grid } from 'ui/grid-compat'
+// 內層 printLongCard 卡片（className 含 print）依列印範本規則保留相容層 Card；其餘排版改為 div＋Tailwind、外層卡片改 ui/card
 import { Card, CardHeader, CardContent } from 'ui/card-compat'
+import { Card as UiCard } from 'ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table'
 import { Fragment } from 'react'
 import { format } from 'date-fns'
@@ -24,18 +24,19 @@ const styles = {
 }
 const Compare = ({ compareData, loading, isMemberShipCardActive, compareInputData }) => {
   return (
-    <Grid css={styles.root} container style={{ marginTop: 24 }}>
-      <Grid container justifyContent='center' item>
+    <div css={styles.root} className="flex w-full flex-wrap" style={{ marginTop: 24 }}>
+      <div className="flex w-full flex-wrap justify-center">
         {loading ? (
           <LoaderCircle className="mt-12 h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
         ) : (
           compareData.length ? (
-            <Grid spacing={2} container item>
+            // 比較組數等分欄寬（原 Grid xs={12 / 組數}，所有寬度皆同欄數）、欄距 16px（原 spacing 2）
+            <div className="grid w-full gap-4" style={{ gridTemplateColumns: `repeat(${compareData.length}, minmax(0, 1fr))` }}>
               {compareData.map((rowData, i) => (
-                <Grid key={i} className="MuiCard-root" xs={12 / compareData.length} item>
-                  <Card className="flex flex-col gap-4 p-4">
+                <div key={i} className="min-w-0">
+                  <UiCard className="flex flex-col gap-4 p-4">
                     {rowData.length ? rowData.map((data, index) => (
-                      <Grid item key={index} >
+                      <div key={index}>
                         {index === 0 && <h3 style={{ textAlign: 'center', marginBottom: 6 }}>{i + 1}</h3>}
                         <Card className="printLongCard">
                           <CardHeader
@@ -168,24 +169,24 @@ const Compare = ({ compareData, loading, isMemberShipCardActive, compareInputDat
                             </Table>
                           </CardContent>
                         </Card>
-                      </Grid>
+                      </div>
                     )) : (
-                      <Typography style={{ marginTop: 48 }} align='center' variant="h3" component="div">
+                      <div style={{ marginTop: 48 }} className="text-center text-title font-bold text-text">
                         無資料
-                      </Typography>
+                      </div>
                     )}
-                  </Card>
-                </Grid>
+                  </UiCard>
+                </div>
               ))}
-            </Grid>
+            </div>
           ) : (
-            <Typography style={{ marginTop: 48 }} align='center' variant="h3" gutterBottom component="div">
+            <div style={{ marginTop: 48 }} className="mb-[0.35em] text-center text-title font-bold text-text">
               無資料
-            </Typography>
+            </div>
           )
         )}
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   )
 }
 

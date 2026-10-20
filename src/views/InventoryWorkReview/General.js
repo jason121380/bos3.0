@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
-// 本頁以 window.print() 列印整頁，initialize.scss 的 .InventoryWorkReview 列印樣式依賴 MUI Card / CardContent / Paper / Table 的 class，
-// 因此列印內容（卡片與表格）原封保留，只替換不列印（noprint）的動作按鈕
-import { Paper } from 'ui/display-compat'
-import { TableContainer, Table, TableBody, TableRow, TableCell, TableHead } from 'ui/table-compat'
-import { Card, CardContent, CardHeader } from 'ui/card-compat'
+// 本頁以 window.print() 列印整頁。initialize.scss 的 .InventoryWorkReview 列印規則原以 .MuiPaper-root／.MuiCardContent-root 去掉卡片外距、內距、圓角，
+// 改用 ui/card 後以 print: 變體重現同樣的列印重置；表格外框（.InventoryWorkReviewTable）以 ui/table 的 wrapperClassName 保留，列印規則照常命中
+import { Card, CardContent } from 'ui/card'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Fragment } from 'react'
@@ -99,69 +98,65 @@ function General({ info, inventoryData, CSVData }) {
   }
   return (
     <Fragment>
-      <Card css={styles.root}>
-        <CardHeader
-          title={
-            <div css={styles.hearderWrap}>
-              {info !== null && (
-                <div css={styles.infoWrap}>
-                  <span>{`建立時間:${format(info.date, 'yyyy/M/d HH:mm')}`}</span>
-                  <span>{`建立者:${info.creatorName}`}</span>
-                </div>
-              )}
-              <div css={styles.btnWrap}>
-                <Button asChild size="sm" variant="secondary" className="noprint">
-                  <CSVLink
-                    data={CSVData}
-                    filename="盤點紀錄.csv"
-                    className="no-underline"
-                  >
-                    <Download strokeWidth={1.75} />
-                    報表匯出
-                  </CSVLink>
-                </Button>
-                <Button
-                  size="sm"
-                  className="noprint"
-                  variant="secondary"
-                  onClick={() => window.print()}
-                >
-                  <Printer strokeWidth={1.75} />
-                  列印
-                </Button>
+      <Card css={styles.root} className="print:!m-0 print:overflow-visible print:rounded-none print:p-0">
+        {/* 標題列（noprint）：className 原樣保留，版面以 inline style 重現原卡片標題的內距（上、左右 16px，下 0） */}
+        <div className='noprint' style={{ padding: '16px 16px 0' }}>
+          <div css={styles.hearderWrap} className="text-heading text-text">
+            {info !== null && (
+              <div css={styles.infoWrap}>
+                <span>{`建立時間:${format(info.date, 'yyyy/M/d HH:mm')}`}</span>
+                <span>{`建立者:${info.creatorName}`}</span>
               </div>
+            )}
+            <div css={styles.btnWrap}>
+              <Button asChild size="sm" variant="secondary" className="noprint">
+                <CSVLink
+                  data={CSVData}
+                  filename="盤點紀錄.csv"
+                  className="no-underline"
+                >
+                  <Download strokeWidth={1.75} />
+                  報表匯出
+                </CSVLink>
+              </Button>
+              <Button
+                size="sm"
+                className="noprint"
+                variant="secondary"
+                onClick={() => window.print()}
+              >
+                <Printer strokeWidth={1.75} />
+                列印
+              </Button>
             </div>
-          }
-          className='noprint'
-          style={{ paddingBottom: '0' }}
-        />
-        <CardContent>
-          <TableContainer className='InventoryWorkReviewTable' component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>商品名稱</TableCell>
-                  <TableCell>代號</TableCell>
-                  <TableCell>當前庫存</TableCell>
-                  <TableCell>盤點數量</TableCell>
-                  <TableCell>差異</TableCell>
+          </div>
+        </div>
+        <CardContent className="print:p-0">
+          {/* 列印：儲存格不套螢幕的固定列高（h-10），避免長清單列印頁數變多 */}
+          <Table wrapperClassName='InventoryWorkReviewTable' className="print:[&_td]:h-auto print:[&_th]:h-auto">
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead>商品名稱</TableHead>
+                <TableHead>代號</TableHead>
+                <TableHead numeric>當前庫存</TableHead>
+                <TableHead numeric>盤點數量</TableHead>
+                <TableHead numeric>差異</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {inventoryData.map(({ productId, productName, productNo, currentCount, inventoryCount }) => (
+                <TableRow key={productId}>
+                  <TableCell>{productName}</TableCell>
+                  <TableCell>{productNo}</TableCell>
+                  <TableCell numeric>{currentCount}</TableCell>
+                  <TableCell numeric>
+                    {inventoryCount === null ? '' : inventoryCount}
+                  </TableCell>
+                  <TableCell numeric>{inventoryCount === null ? '' : handleCheckCount(inventoryCount - currentCount)}</TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {inventoryData.map(({ productId, productName, productNo, currentCount, inventoryCount }) => (
-                  <TableRow key={productId} hover>
-                    <TableCell>{productName}</TableCell>
-                    <TableCell>{productNo}</TableCell>
-                    <TableCell>{currentCount}</TableCell>
-                    <TableCell>
-                      {inventoryCount === null ? '' : inventoryCount}
-                    </TableCell>
-                    <TableCell>{inventoryCount === null ? '' : handleCheckCount(inventoryCount - currentCount)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </Fragment>

@@ -1,4 +1,5 @@
-import { Typography } from 'ui/display-compat'
+// 報表外框（DesignerPerforamnceAnalyzeReportPrint）與 printLongCard 卡片的 className 含 print，列印規則以 .MuiCardHeader-root／.MuiPaper-root 排版：
+// 依列印範本規則保留相容層 Grid／Card，只把「無資料」的 Typography 換成原生標籤
 import { Grid } from 'ui/grid-compat'
 import { Card, CardHeader, CardContent } from 'ui/card-compat'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table'
@@ -147,9 +148,9 @@ function Results({ report, date, isMemberShipCardActive }) {
         </Grid>
       )) : (
         <Grid item>
-          <Typography align='center' variant="h3" gutterBottom component="div">
+          <div className="mb-[0.35em] text-center text-title font-bold text-text">
             無資料
-          </Typography>
+          </div>
         </Grid>
 
       )}

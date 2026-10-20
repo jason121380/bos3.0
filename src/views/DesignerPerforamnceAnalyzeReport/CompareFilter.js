@@ -82,7 +82,7 @@ const CompareFilter = ({
                   )}
                 />
               </div>
-              <Button variant="ghost" size="icon" aria-label="刪除條件" className="text-text-secondary hover:text-danger" onClick={handleRemoveRow}>
+              <Button variant="ghost" size="icon" aria-label="刪除條件" title="刪除條件" className="text-text-secondary hover:text-danger" onClick={handleRemoveRow}>
                 <Trash2 strokeWidth={1.75} />
               </Button>
             </div>

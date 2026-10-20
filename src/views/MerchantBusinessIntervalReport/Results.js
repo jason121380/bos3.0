@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Typography, Divider } from 'ui/display-compat'
+// 底部明細卡片（MerchantDailyReportCardContainer／MergeResultCard／MerchantDailyReportCard）保留相容層 Grid／Card：
+// 列印規則以 .MuiCard-root 與 div.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-md-6.MuiGrid-grid-lg-4 排版（initialize.scss）
 import { Grid } from 'ui/grid-compat'
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
@@ -137,9 +138,9 @@ function Results({
           data.orderTypeAveragePerformance > 0 ||
           data.averagePerformance > 0
       ).length === 0 ? (
-        <Typography variant="h5" gutterBottom component="div" style={{ margin: '10px 0' }}>
+        <div className="mb-[0.35em] text-heading text-text" style={{ margin: '10px 0' }}>
           無資料
-        </Typography>
+        </div>
       ) : (
         <Table dense wrapperClassName="my-[30px]" className="min-w-[650px]" aria-label="a dense table">
           <TableHeader>
@@ -366,7 +367,8 @@ function Results({
           <Grid item xs={12} md={6} lg={4} className="MerchantDailyReportCard">
             <Card>
               <CardHeader title="入金儲值明細" css={styles.cardHeader} />
-              <Divider />
+              {/* 原生 hr：列印規則以 hr 選擇器隱藏分隔線 */}
+              <hr className="m-0 shrink-0 border-0 border-b border-solid border-border" />
               <CardContent style={{ padding: 0 }}>
                 <div css={styles.inner}>
                   <Table dense aria-label="a dense table">

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-// 表格（className="ProductInventoryListTable"）即為 window.print() 的列印輸出，列印樣式依 MUI 結構撰寫，保留 MUI Table
-import { Paper } from 'ui/display-compat'
-import { TableRow, TableContainer, Table, TableHead, TableBody, TableCell } from 'ui/table-compat'
+// 表格外框（className="ProductInventoryListTable"）即為 window.print() 的列印輸出：列印規則只以此 class 與 table／th／td 元素命中（不依賴 MUI class），
+// 改用 ui/table 並以 wrapperClassName 保留；螢幕上的最大高度改為 Tailwind，列印時由 .ProductInventoryListTable { max-height: unset !important } 解除
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
 import { Card, CardHeader, CardTitle } from 'ui/card'
@@ -62,30 +62,34 @@ function Results({ reportData }) {
             </div>
           </CardHeader>
           <div>
-            <TableContainer style={{ maxHeight: 'calc(100vh - 360px)' }} className='ProductInventoryListTable' component={Paper} elevation={0}>
-              <Table css={styles.table} size="small" aria-label="a dense table">
-                <TableHead>
-                  <TableRow css={styles.stickyRow}>
-                    <TableCell>代號</TableCell>
-                    <TableCell>名稱</TableCell>
-                    <TableCell>數量</TableCell>
-                    <TableCell>類別</TableCell>
-                    <TableCell>廠商</TableCell>
+            <Table
+              dense
+              wrapperClassName='ProductInventoryListTable max-h-[calc(100vh-360px)] overflow-y-auto'
+              className="min-w-[650px]"
+              aria-label="a dense table"
+            >
+              <TableHeader>
+                {/* 表頭 sticky：捲動容器是 ui/table 外框，底色用 surface（與卡片同色）避免捲動時透出內容；列印回到 static */}
+                <TableRow className="sticky top-0 z-[100] bg-surface hover:bg-surface print:static">
+                  <TableHead>代號</TableHead>
+                  <TableHead>名稱</TableHead>
+                  <TableHead numeric>數量</TableHead>
+                  <TableHead>類別</TableHead>
+                  <TableHead>廠商</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {reportData.map((d, index) => (
+                  <TableRow key={`${d.productNo}-${d.name}-${index}`}>
+                    <TableCell>{d.productNo || <small className="text-caption text-text-tertiary">{`(無代號)`}</small>}</TableCell>
+                    <TableCell>{d.productName}</TableCell>
+                    <TableCell numeric>{d.count}</TableCell>
+                    <TableCell>{d.productCategory}</TableCell>
+                    <TableCell>{d.vendorName || <small className="text-caption text-text-tertiary">{`(無廠商)`}</small>}</TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {reportData.map((d, index) => (
-                    <TableRow key={`${d.productNo}-${d.name}-${index}`} css={styles.tableRow}>
-                      <TableCell>{d.productNo || <small>{`(無代號)`}</small>}</TableCell>
-                      <TableCell>{d.productName}</TableCell>
-                      <TableCell>{d.count}</TableCell>
-                      <TableCell>{d.productCategory}</TableCell>
-                      <TableCell>{d.vendorName || <small>{`(無廠商)`}</small>}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         </Card>
       )}

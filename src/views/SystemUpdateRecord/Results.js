@@ -1,5 +1,7 @@
-// 每筆紀錄的展開區保留 MUI Accordion（橋接主題已套新外觀）；內含 Markdown 預覽，不套 ui-root（其基礎樣式會清掉 ol 編號）
-import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion-compat'
+// 每筆紀錄的展開區改用 ui/accordion（受控 expanded＋標題 onClick，與原用法相同；收合時內容保持掛載）。
+// ui-root 的基礎重置以 :where() 零權重撰寫，Markdown 預覽（md-editor-rt .default-theme）的清單編號、邊距規則權重較高，照常生效。
+// 外觀比照 Grok 式卡片（surface 底、16px 圓角、無框），與相容層原外觀一致
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import React, { useState, Fragment } from 'react'
 import { ChevronDown, Pencil, Trash2 } from 'lucide-react'
 import { Link as RouterLink } from 'react-router-dom'
@@ -45,8 +47,9 @@ const Results = ({ data, systemUpdateRecord, isWhiteList }) => {
       {data.length > 0 &&
         data.map((d, index) => {
           return (
-            <Accordion key={index} expanded={index === open}>
+            <Accordion key={index} expanded={index === open} className="overflow-hidden rounded-2xl border-0 bg-surface">
               <AccordionSummary
+                className="rounded-none px-4 hover:bg-surface-hover"
                 expandIcon={<ChevronDown className="h-4 w-4" strokeWidth={1.75} />}
                 onClick={() => {
                   index === open ? setOpen(-1) : setOpen(index)
