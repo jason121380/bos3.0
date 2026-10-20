@@ -426,7 +426,7 @@ export default function Employees() {
             </ToggleGroup>
             <DateTimePicker
               label="選取時間"
-              sx={{ width: '100%' }}
+              className="w-full"
               maxDateTime={new Date().getTime()}
               value={reClockInData.date}
               format="yyyy/MM/dd HH:mm"

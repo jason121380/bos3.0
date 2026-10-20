@@ -22,7 +22,7 @@ function General({ dateChange, inputValue, valueChange, isClick, submit }) {
           <CardTitle>活動設定</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
-          <div className="flex flex-wrap gap-5 [&_.MuiTextField-root]:w-[150px] [&_input]:cursor-pointer">
+          <div className="flex flex-wrap gap-5 [&_.ui-date-picker]:w-[150px] [&_input]:cursor-pointer">
             <MobileDatePicker
               closeOnSelect
               label="預設起始時間"

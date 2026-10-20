@@ -8,6 +8,7 @@
 
 ## 一、今天完成了什麼
 
+- **MUI 移除・日期選擇器本體**（2026/10/20，v3.0-1020-1053）：自家 calendar／date-field／date-picker 取代 @mui/x-date-pickers，39 檔免改（MEMORY #150）。**待實機**：①桌機（滑鼠）打帳單／編輯／草稿／排隊的帳單日期時間：直接打字、月曆鈕選日、欄寬撐滿；②手機（觸控）會員新增生日、活動起訖、預約日期：點欄位開對話框、選日、取消還原、確認；③打卡補登選時間（maxDateTime 之後的時／分停用）、④報表月份選擇（DateSelector：選月後跳年）；⑤深色模式的對話框與浮層。**已知差異**：時間由 MUI 時鐘盤改為時／分清單（24 小時制）；手機寬度日期欄高 40px（同其他輸入框）。**剩餘 MUI**：三個列印檔、主題層（src/theme、createTheme／ThemeProvider／styled／useMediaQuery、icons.js 的 Box；ui/mui-theme 與 initialize*.scss 的 MuiPickers 樣式已成死碼，主題層批次一併刪）。
 - **MUI 移除・TreeView**（2026/10/20，v3.0-1020-1025）：5 檔換用 `ui/tree-compat`，@mui/x-tree-view 無引用（MEMORY #149）。**待實機**：選店（全部／群組展開、勾選、確認回傳）、商品樹狀選擇、個人釘選表。**剩餘 MUI**：日期選擇器本體（@mui/x-date-pickers，經 ui/date-picker 門面）、三個列印檔、主題層（src/theme、createTheme／ThemeProvider／styled／useMediaQuery、icons.js 的 Box）。
 - **MUI 移除・零星元件**（2026/10/20，v3.0-1020-1017）：Slider 泡泡、Switch、Chip、Rating、Tooltip、Collapse、IconButton、Hidden、Menu 共 10 檔換完；決策③的「行事曆拉桿數值泡泡」「活動日期富提示」已自做（MEMORY #148）。**待實機**：預約行事曆尺寸拉桿泡泡、參與店家日期提示、顧客評分、商品新增的上架／可販售開關存檔、顧客追蹤選項膠囊刪除、打卡篩選收合、報表「更多」選單、快速結帳關閉鈕。**剩餘 MUI**：日期選擇器本體、TreeView、三個列印檔（MerchantDailyReport／DecreaseDailyReport／TransferDetail）、主題層（src/theme、createTheme／ThemeProvider／styled／useMediaQuery、icons.js 的 Box）。
 - **MUI 移除・List 家族／Link／Snackbar／Alert**（2026/10/20，v3.0-1020-1003）：12 檔換用 `ui/list-compat`／`ui/link-compat`／`ui/feedback-compat`（MEMORY #147）。**待實機**：全站提示訊息（儲存成功／失敗、日結提醒）出現位置、自動消失與滑鼠停留暫停；預約行事曆點預約後的操作選單；顧客／票券／報表頁的連結另開分頁。
