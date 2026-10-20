@@ -244,3 +244,5 @@
 
 148. **互動元件要用「並排截圖」驗，computed style 比對看不到 hover 與 SVG 路徑（零星元件，2026/10/20，v3.0-1020-1017）**：Rating 的 computed style 與 MUI 一致，但並排截圖才發現 MUI 的空星是外框星（StarBorder 路徑）、我們畫成灰色實心星——路徑不在比對屬性內。Slider 泡泡第一次截圖位置錯，是因為比對頁用的是修改前 build 的 Tailwind CSS（新 class 尚未產生），重 build 後即正確：凡是新增 Tailwind 任意值 class 的修改，比對前一定要重 build mock。另：`ui/switch` 原本不收 inputRef，MUI 寫法 `inputRef={register}` 會被當成 DOM 屬性丟掉、react-hook-form 收不到開關值——自家元件補 MUI 相容 props 時要先查呼叫端用法；CI build 會把未使用變數警告當錯誤，相容檔不能留未使用的 context。
 
+149. **樹狀選單：頁面邏輯依賴 event.currentTarget 的 DOM，焦點標示規則要照 MUI 版本細節（TreeView，2026/10/20，v3.0-1020-1025）**：①店家／商品選擇窗的 handleNodeFocus 不用 onNodeToggle 給的 nodeIds，而是 `event.currentTarget.querySelector('span').id`——currentTarget 必須是被點的 .MuiTreeItem-content、且第一個 span 是 label 的 span（圖示是 svg，不是 span），相容層在 content 的 onClick 裡同步呼叫 onNodeToggle 才成立；②x-tree-view 6.17 只在 tree 根節點本身是 activeElement 時才把節點標成 Mui-focused，滑鼠點擊時焦點停在 li 上所以不標示——互動比對抓到我們一開始把焦點搬到根節點而多標了 Mui-focused；③收合時子層 unmountOnExit（不像 Accordion 保持掛載）；④互動狀態以「動作序列後的 aria-expanded／Mui-selected／Mui-focused 字串」比對兩邊，最快抓出差異。
+

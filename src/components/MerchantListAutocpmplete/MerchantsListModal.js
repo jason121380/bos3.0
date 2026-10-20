@@ -1,18 +1,18 @@
 /** @jsxImportSource @emotion/react */
-// 店家樹狀選擇窗：保留 @mui/x-tree-view（展開/勾選/搜尋/確認回傳邏輯不動，避免選店行為風險），僅換 ui/dialog 殼、ui Input/Button/Checkbox 視覺與 TreeView 列高/hover/縮排覆寫
+// 店家樹狀選擇窗：樹狀本體改用 ui/tree-compat（與 MUI 同 DOM／class／行為；展開/勾選/搜尋/確認回傳邏輯不動），僅換 ui/dialog 殼、ui Input/Button/Checkbox 視覺與 TreeView 列高/hover/縮排覆寫
 import { useState, useEffect } from 'react'
 import { Button } from 'ui/button'
 import { Checkbox } from 'ui/checkbox'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Input } from 'ui/input'
-import { TreeView, TreeItem } from '@mui/x-tree-view';
+import { TreeView, TreeItem } from 'ui/tree-compat'
 import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, GroupsRounded as GroupsRoundedIcon, Storefront as StorefrontIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import _ from 'lodash';
 import { css } from '@emotion/react'
 
 const styles = {
-  // 保留 @mui/x-tree-view 本體（展開/勾選行為不動），只以覆寫統一 compact 列高、hover、縮排與箭頭對齊
+  // 樹狀本體為 ui/tree-compat（輸出 MUI 同名 class），以下覆寫統一 compact 列高、hover、縮排與箭頭對齊
   root: css({
     display: 'flex',
     gap: 2,
