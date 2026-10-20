@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 內層 printLongCard 卡片（className 含 print）依列印範本規則保留相容層 Card；其餘排版改為 div＋Tailwind、外層卡片改 ui/card
 import { Card, CardHeader, CardContent } from 'ui/card-compat'
 import { Card as UiCard } from 'ui/card'
@@ -6,25 +5,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Fragment } from 'react'
 import { format } from 'date-fns'
 import roundDecimal from './../../helper/roundDecimal.js'
-import { css } from '@emotion/react'
 import { LoaderCircle } from 'lucide-react'
 
-const styles = {
-  'root': {
-    '& ::-webkit-scrollbar': {
-      height: '8px'
-    }
-  },
-  designerName: css({
-    fontWeight: 'bold',
-  }),
-  medals: css({
-    fontSize: '19px',
-  }),
-}
 const Compare = ({ compareData, loading, isMemberShipCardActive, compareInputData }) => {
   return (
-    <div css={styles.root} className="flex w-full flex-wrap" style={{ marginTop: 24 }}>
+    <div className="flex w-full flex-wrap [&_::-webkit-scrollbar]:h-[8px]" style={{ marginTop: 24 }}>
       <div className="flex w-full flex-wrap justify-center">
         {loading ? (
           <LoaderCircle className="mt-12 h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />

@@ -1,44 +1,6 @@
-/** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
 import QRCode from 'qrcode'
-import styled from '@emotion/styled'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
-const StyledQrcode = styled.div`
-  width: 300px;
-  height: 300px;
-  text-align: center;
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-`
-
-const StyledTips = styled.div`
-  position: absolute;
-  left: 50%;
-  top: 25%;
-  transform: translate(-50%, -50%);
-`
-
-const styles = {
-  root: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-  }),
-  bullet: css({
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  }),
-  title: css({
-    fontSize: 14,
-  }),
-  pos: css({
-    marginBottom: 12,
-  }),
-}
 export default function Reservation({ match }) {
   // const history = useHistory()
   let code = null
@@ -75,9 +37,10 @@ export default function Reservation({ match }) {
     (_err, url) => (code = url)
   )
   return (
-    <Page css={styles.root} title="Reservation">
-      <StyledTips>掃碼支付 Line Pay</StyledTips>
-      <StyledQrcode
+    <Page className="min-w-[275px] p-8" title="Reservation">
+      <div className="absolute left-[50%] top-[25%] [transform:translate(-50%,-50%)]">掃碼支付 Line Pay</div>
+      <div
+        className="fixed left-[50%] top-[50%] h-[300px] w-[300px] text-center [transform:translate(-50%,-50%)]"
         dangerouslySetInnerHTML={{
           __html: code,
         }}

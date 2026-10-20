@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { Field, Input } from 'ui/input'
 import { Eraser, Copy, Trash2 } from 'lucide-react'
@@ -11,53 +10,17 @@ import { useLazyFetchServiceNew } from 'hooks/useFetchService'
 import idx from 'idx'
 import _ from 'lodash'
 import React, { Fragment, useRef, useEffect } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 // 版面比照打帳單（views/OrderCreate/styles/Services）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
+// 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px；pxToRem 以 16px 換算）。自動完成元件的 className／assistField 原以 css 套在根節點
 const styles = {
-  service: css({
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-    rowGap: '12px',
-    marginBottom: theme.spacing(3),
-  }),
-  field: css({
-    width: '150px',
-    minWidth: 150,
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  servicesField: css({
-    width: '250px',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  assistField: css({
-    width: '120px',
-    minWidth: 120,
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  priceField: css({
-    width: '65px',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  checkbox: css({
-    width: '100px',
-    display: 'flex',
-    marginRight: '12px',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-  heading2: css({
-    fontSize: theme.typography.pxToRem(13),
-    fontWeight: 'bold',
-  }),
+  service: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  field: 'w-[150px] min-w-[150px] flex mr-[12px]',
+  servicesField: 'w-[250px] flex mr-[12px]',
+  assistField: 'w-[120px] min-w-[120px] flex mr-[12px]',
+  priceField: 'w-[65px] flex mr-[12px]',
+  checkbox: 'w-[100px] flex mr-[12px] last:mr-0',
+  heading2: 'text-[0.8125rem] font-bold',
 }
 
 export default function Services({
@@ -293,7 +256,7 @@ export default function Services({
   }, [service])
   return (
     <Fragment>
-      <div css={styles.service}>
+      <div className={styles.service}>
         {index === 0 ? (
           <RowIconButton label="從清單選擇服務" className="mx-1.5" onClick={handleOpenServicesModal}>
             <Copy aria-hidden="true" strokeWidth={1.75} />
@@ -341,7 +304,7 @@ export default function Services({
         </Field>
         {service.serviceId ? (
           <React.Fragment>
-            <Field label="價格" css={styles.priceField}>
+            <Field label="價格" className={styles.priceField}>
               <Input
                 ref={priceRef}
                 name="price"
@@ -455,7 +418,7 @@ export default function Services({
                         onFocus={handleFocus}
                         checked={data.isDesignate}
                         label="指定"
-                        css={styles.checkbox}
+                        className={styles.checkbox}
                         onChange={(_event, state) =>
                           handleIsDesignateChange({
                             dataType: data.type,
@@ -524,13 +487,13 @@ export default function Services({
               if (data.id === service.thirdPartyCouponMerchantId) {
                 if (data.type === 'PERCENT') {
                   return (
-                    <p key={index} className="m-0" css={styles.heading2} style={{ marginTop: '4px' }}>
+                    <p key={index} className={`m-0 ${styles.heading2}`} style={{ marginTop: '4px' }}>
                       扣完後業績:{Math.round((service.price * (100 - data.fee)) / 100)}
                     </p>
                   )
                 } else {
                   return (
-                    <p key={index} className="m-0" css={styles.heading2} style={{ marginTop: '4px' }}>
+                    <p key={index} className={`m-0 ${styles.heading2}`} style={{ marginTop: '4px' }}>
                       扣完後業績:{Math.round(service.price - data.fee)}
                     </p>
                   )

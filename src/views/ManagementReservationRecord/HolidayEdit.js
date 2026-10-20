@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { DialogBody, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import React, { useState, useEffect, Fragment } from 'react'
 // 外層為 ui/dialog（OrderTable 的公休彈窗，窗內只有時段切換鈕與按鈕）
@@ -8,20 +7,6 @@ import { cloneDeep } from 'lodash'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchSetAdminBookingTimes from 'hooks/useFetchSetAdminBookingTimes'
-import { css } from '@emotion/react'
-
-const styles = {
-  root: css({}),
-  content: css({
-    display: 'flex',
-    gap: '5px 10px',
-    flexWrap: 'wrap',
-  }),
-  cancel: css({
-    background: 'red',
-    color: 'white'
-  })
-}
 
 export default function HolidayEdit({ holidayData, setHolidayData, setHolidayModel, refetchData }) {
   const { setTimes } = useFetchSetAdminBookingTimes()
@@ -99,7 +84,7 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
       <DialogHeader>
         <DialogTitle>編輯公休</DialogTitle>
       </DialogHeader>
-      <DialogBody css={styles.content}>
+      <DialogBody className="flex gap-[5px_10px] flex-wrap">
         {timeOption.map(({ time, select }, i) => (
           <ToggleGroupItem
             key={time}

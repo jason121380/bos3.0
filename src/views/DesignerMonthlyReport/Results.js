@@ -3,34 +3,6 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import _ from 'lodash';
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  filterButton: css({
-    marginRight: theme.spacing(2),
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 1150,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
-  total: css({
-    '& td': {
-      fontWeight: 'bold',
-    }
-  }),
-}
 
 export default function Results({ designerMontlyListData, performReference, sort, isMemberShipCardActive, setExcelData }) {
   const [membershipDisplay, setMembershipDisplay] = useState(false)
@@ -232,7 +204,7 @@ export default function Results({ designerMontlyListData, performReference, sort
               )
             }
           })}
-          <TableRow css={styles.total}>
+          <TableRow>
             <TableCell>合計</TableCell>
             <TableCell />
             <TableCell>

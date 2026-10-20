@@ -1,39 +1,16 @@
-/** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion-compat'
 import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import OtherPayment from './OtherPayment'
-
-const styles = {
-  root: css({
-    width: '100%',
-    marginTop: theme.spacing(3),
-  }),
-  details: css({
-    overflowX: 'scroll',
-  }),
-  heading: css({
-    fontSize: '15px !important',
-    fontWeight: theme.typography.fontWeightRegular,
-  }),
-  fieldOutter: css({
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-  }),
-}
 
 export default function PannelOtherPayment() {
   return (
     <Accordion>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <p className="m-0" css={styles.heading}>其他付款方式(線上版)</p>
+        <p className="m-0 !text-[15px] font-normal">其他付款方式(線上版)</p>
       </AccordionSummary>
-      <AccordionDetails css={styles.details}>
-        <div css={styles.fieldOutter}>
+      <AccordionDetails className="overflow-x-scroll">
+        <div className="flex flex-col items-start justify-start">
           <OtherPayment />
         </div>
       </AccordionDetails>

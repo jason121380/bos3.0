@@ -1,8 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import PropTypes from 'prop-types'
 import { getMonth, getYear } from 'date-fns'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
@@ -10,42 +7,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 const STICKY_COL = 'sticky left-0 z-[99] bg-background outline outline-1 outline-border'
 const printHeader = 'print:bg-transparent print:[&_th]:text-text'
 
-const styles = {
-  root: css({}),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
-  total: css({
-    fontWeight: 'bold',
-  }),
-  sticky: css({
-    position: 'sticky',
-    left: 0,
-    background: 'white',
-    zIndex: '99',
-    outline: '1px solid rgb(var(--border))',
-  }),
-  stickyRow: css({
-    position: 'sticky',
-    top: 0,
-    background: 'white',
-    zIndex: '100',
-    outline: '1px solid rgb(var(--border))',
-  }),
-}
-
 export default function Results({ reportData, className }) {
   return (
     // BusinessItemsMonthlyAnalyzeReportTable：@media print 與螢幕樣式的掛鉤（以 table／th／td 標籤選取），保留在表格外框
     <Table
       dense
       wrapperClassName='BusinessItemsMonthlyAnalyzeReportTable max-h-[calc(100vh-260px)] overflow-auto'
-      css={className}
+      className={className}
       aria-label="a dense table"
     >
       <TableHeader className={`sticky top-0 z-[100] ${printHeader}`}>
@@ -129,5 +97,5 @@ export default function Results({ reportData, className }) {
 }
 
 Results.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
 }

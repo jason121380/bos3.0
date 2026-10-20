@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import { useFetchGetInventory } from 'hooks/useFetchGetInventorys'
@@ -6,23 +5,8 @@ import { useState, useEffect, Fragment } from 'react'
 import format from 'date-fns/format'
 import idx from 'idx'
 import { Skeleton } from 'ui/skeleton'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import General from './General'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  headerWrap: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    gap: 10
-  })
-}
 
 function InventoryWorkEdit({ match }) {
   const getInventory = useFetchGetInventory({ inventoryId: match.params.id })
@@ -61,7 +45,7 @@ function InventoryWorkEdit({ match }) {
   }, [getInventory.loading])
 
   return (
-    <Page css={styles.root} className='InventoryWorkReview' title="盤點紀錄">
+    <Page className='InventoryWorkReview pb-[24px] pt-[24px]' title="盤點紀錄">
       {info !== null && (
         <Fragment>
           <div className="merchantNamePrint" style={{ marginBottom: '4px', display: "none", justifyContent: "space-between" }}>

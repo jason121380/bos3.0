@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { CircularProgress } from 'ui/display-compat'
 import { TextField, InputAdornment } from 'ui/text-field'
 import PropTypes from 'prop-types'
@@ -19,82 +18,24 @@ import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import useFetchCustomer from 'hooks/useFetchCustomer'
 import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import MembershipCardList from 'components/MembershipCardList'
-import { css } from '@emotion/react'
 import lineIcon from 'assets/images/LINE_APP.png'
 import AddCustomerModal from './AddCustomerModal'
 
+// 原 emotion styles 逐值轉 Tailwind。dateInput／customerInput／employeeInput 的 '& .MuiOutlinedInput-root'（底色、fieldset 框線、圖示）
+// 與 checkboxLabel 的 '& .MuiFormControlLabel-label'／'& .MuiCheckbox-root' 在 ui/date-picker、ui/combobox、ui/checkbox（不輸出這些 class）
+// 內不命中，屬死碼不轉，只保留寬度、外距與換行設定
 const styles = {
-  box: css({
-    display: 'flex',
-    flexWrap: 'wrap', // 窄螢幕時三欄自動換行，不再把欄位擠成一條細縫
-    gap: '16px 12px',
-    alignItems: 'flex-start',
-  }),
-  column: css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-  }),
-  column1: css({
-    flex: '1.2 1 220px',
-  }),
-  column2: css({
-    flex: '1.8 1 280px',
-  }),
-  column3: css({
-    flex: '2 1 340px',
-  }),
-  row: css({
-    display: 'flex',
-    alignItems: 'flex-end', // 上方有標籤，控制項靠底部對齊
-    gap: '12px',
-    flexWrap: 'wrap',
-  }),
-  dateInput: css({
-    width: '100%',
-    '& .MuiOutlinedInput-root': {
-      backgroundColor: 'rgb(var(--background))',
-      '& fieldset': { borderColor: 'rgb(var(--border-strong))' }, // 與 ui/input 的框線同色
-      '& .MuiSvgIcon-root': {
-        color: 'rgb(var(--text-tertiary))',
-        fontSize: '22px',
-      },
-    },
-  }),
-  customerInput: css({
-    width: '100%',
-    '& .MuiOutlinedInput-root': {
-      backgroundColor: 'rgb(var(--background))',
-      '& fieldset': { borderColor: 'rgb(var(--border-strong))' }, // 與 ui/input 的框線同色
-    },
-  }),
-  employeeInput: css({
-    width: '100%',
-    flex: 1,
-    minWidth: 180,
-    '& .MuiOutlinedInput-root': {
-      backgroundColor: 'rgb(var(--background))',
-      '& fieldset': { borderColor: 'rgb(var(--border-strong))' }, // 與 ui/input 的框線同色
-    },
-  }),
-  addPersonIcon: css({
-    cursor: 'pointer',
-    color: 'rgb(var(--text-tertiary))',
-    fontSize: '22px',
-    marginLeft: '14px',
-  }),
-  checkboxLabel: css({
-    margin: 0,
-    whiteSpace: 'nowrap', // 「不留客資」不可被擠成兩行
-    '& .MuiFormControlLabel-label': {
-      fontSize: '14px',
-      fontWeight: 'bold',
-      color: 'rgb(var(--text))',
-    },
-    '& .MuiCheckbox-root': {
-      padding: '4px',
-    },
-  }),
+  box: 'flex flex-wrap gap-[16px_12px] items-start',
+  column: 'flex flex-col gap-[4px]',
+  column1: '[flex:1.2_1_220px]',
+  column2: '[flex:1.8_1_280px]',
+  column3: '[flex:2_1_340px]',
+  row: 'flex items-end gap-[12px] flex-wrap',
+  dateInput: 'w-full',
+  customerInput: 'w-full',
+  employeeInput: 'w-full flex-1 min-w-[180px]',
+  addPersonIcon: 'cursor-pointer text-[rgb(var(--text-tertiary))] text-[22px] ml-[14px]',
+  checkboxLabel: 'm-0 whitespace-nowrap',
 }
 
 const designate = [
@@ -401,17 +342,17 @@ export default function Head() {
   return (
     <Card className="ui-root mb-6">
       <div className="px-4 py-4">
-        <div css={styles.box}>
+        <div className={styles.box}>
           {/* 第 1 欄：日期 */}
-          <div css={[styles.column, styles.column1]}>
-            <div css={styles.row}>
+          <div className={`${styles.column} ${styles.column1}`}>
+            <div className={styles.row}>
               {/* 必填 *：依據 Footer.js 的 vaild（缺 bill.date 時「儲存／結帳」停用） */}
               <Field label="帳單日期" required className="w-full">
                 <DateTimePicker
                   value={bill.date}
                   format='yyyy/MM/dd HH:mm'
                   onChange={handleDateChange}
-                  css={styles.dateInput}
+                  className={styles.dateInput}
                 />
               </Field>
             </div>
@@ -431,15 +372,14 @@ export default function Head() {
           </div>
 
           {/* 第 2 欄：客戶與不留客資 */}
-          <div css={[styles.column, styles.column2]}>
-            <div css={styles.row}>
+          <div className={`${styles.column} ${styles.column2}`}>
+            <div className={styles.row}>
               {/* 必填 *：Footer.js 的 vaild 要求有顧客（customerId／手機）或勾選「不留客資」 */}
               <Field label="顧客" required={!bill.withoutCustomerData} className="w-full">
                 <Autocomplete
                   disabled={bill.withoutCustomerData}
                   name="customer"
-                  className="customer"
-                  css={styles.customerInput}
+                  className={`customer ${styles.customerInput}`}
                   value={value}
                   clearOnBlur={true}
                   onFocus={handleFocus}
@@ -574,7 +514,7 @@ export default function Head() {
                                 role="button"
                                 aria-label="編輯顧客資料"
                                 strokeWidth={1.75}
-                                css={styles.addPersonIcon}
+                                className={styles.addPersonIcon}
                                 onClick={handleOpenEditCustomerModal}
                               />
                             ) : (
@@ -582,7 +522,7 @@ export default function Head() {
                                 role="button"
                                 aria-label="新增顧客"
                                 strokeWidth={1.75}
-                                css={styles.addPersonIcon}
+                                className={styles.addPersonIcon}
                                 onClick={handleOpenAddCustomerModal}
                               />
                             )}
@@ -603,7 +543,7 @@ export default function Head() {
               </Field>
             </div>
             <CheckboxField
-              css={styles.checkboxLabel}
+              className={styles.checkboxLabel}
               labelClassName="font-bold"
               label="不留客資"
               checked={bill.withoutCustomerData}
@@ -616,12 +556,12 @@ export default function Head() {
           </div>
 
           {/* 第 3 欄：服務人員 */}
-          <div css={[styles.column, styles.column3]}>
-            <div css={styles.row}>
+          <div className={`${styles.column} ${styles.column3}`}>
+            <div className={styles.row}>
               {/* 必填 *：Footer.js 的 vaild 要求 bill.designerId */}
               <Field label="服務人員" required className="min-w-[180px] flex-1">
                 <EmployeeAutoComplete
-                  css={styles.employeeInput}
+                  className={styles.employeeInput}
                   placeholder="服務人員姓名/編號"
                   value={bill.designerId}
                   ref={designerRef}
