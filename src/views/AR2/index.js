@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Container } from 'ui/display-compat'
 import Page from 'components/Page'
 import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
@@ -715,7 +714,8 @@ export default function Employees() {
         `}
         </script>
       </Helmet>
-      <Container maxWidth={false} css={styles.container}>
+      {/* 原 Container maxWidth={false}：滿版、左右內距 16／24px（600px 起） */}
+      <div className="mx-auto box-border block w-full px-4 min-[600px]:px-6" css={styles.container}>
         <div css={styles.ar} id="YMK-module" />
         {/* <button onClick={()=>{
           window.YMK.open ();
@@ -778,7 +778,7 @@ export default function Employees() {
         <div>
           <a href="https://inforcharge.page.link">Back</a>
         </div> */}
-      </Container>
+      </div>
     </Page>
   )
 }

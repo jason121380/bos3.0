@@ -1,6 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Typography } from 'ui/display-compat'
-import { Grid } from 'ui/grid-compat'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
@@ -13,16 +11,16 @@ const styles = {
 function Header({ className, ...rest }) {
   return (
     <div {...rest} css={css([styles.root, className])}>
-      <Grid alignItems="flex-end" container justifyContent="space-between" spacing={3}>
-        <Grid item>
-          <Typography component="h2" gutterBottom variant="overline">
+      <div className="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <h2 className="m-0 mb-[0.35em] text-caption font-medium text-text-secondary">
             Reservations
-          </Typography>
-          <Typography component="h1" variant="h3">
+          </h2>
+          <h1 className="m-0 text-title !font-bold text-text">
             預約記錄
-          </Typography>
-        </Grid>
-      </Grid>
+          </h1>
+        </div>
+      </div>
     </div>
   )
 }

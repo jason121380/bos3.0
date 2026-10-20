@@ -1,6 +1,4 @@
 /** @jsxImportSource @emotion/react */
-// 底部操作列沿用 MUI Drawer（persistent），內容改為新元件
-import { Drawer } from 'ui/overlay-compat'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, Fragment } from 'react'
@@ -277,7 +275,15 @@ function Results({
           </Table>
         </div>
       </Card>
-      <Drawer anchor="bottom" open={open} PaperProps={{ elevation: 1 }} variant="persistent">
+      {/* 底部操作列（取代相容層 persistent Drawer）：固定於視窗底部，open 時滑入、收合時滑出並隱藏，內容保持掛載；z-index 1200 與原 Drawer 相同 */}
+      <div
+        className="fixed inset-x-0 bottom-0 z-[1200] flex max-h-full flex-col overflow-y-auto shadow-float"
+        style={
+          open
+            ? { transform: 'none', transition: 'transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms' }
+            : { transform: 'translateY(100%)', visibility: 'hidden', transition: 'transform 195ms cubic-bezier(0.4, 0, 0.6, 1) 0ms, visibility 0ms 195ms' }
+        }
+      >
         <div className="ui-root flex flex-wrap items-center gap-x-5 border-0 border-t border-solid border-border bg-background px-6 py-3">
           <div className="hidden md:block md:w-1/3">
             <span className="text-body tabular-nums text-text-secondary">
@@ -319,7 +325,7 @@ function Results({
             </Fragment>
           )}
         </div>
-      </Drawer>
+      </div>
     </div>
   )
 }
