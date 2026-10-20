@@ -4,7 +4,6 @@ import { Grid } from 'ui/grid-compat'
 import { Button } from 'ui/button-compat'
 import { Card, CardActions, CardContent, CardHeader } from 'ui/card-compat'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
-import { TextField, InputAdornment } from 'ui/text-field'
 import { LoaderCircle } from 'lucide-react'
 import { Field, Input } from 'ui/input'
 import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
@@ -46,13 +45,6 @@ const styles = {
   }),
   actions: css({
     justifyContent: 'flex-end',
-  }),
-  birthdayInput: css({
-    width: '80px',
-  }),
-  birthdayMonthDay: css({
-    width: '80px',
-    marginLeft: '10px !important',
   }),
 }
 
@@ -252,32 +244,34 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
         <CardContent>
           <Grid container spacing={3}>
             <Grid item md={6} xs={12}>
-              <TextField
-                error={noVerify && !isSetTime}
-                helperText={noVerify && !isSetTime ? '客戶編號重複' : ''}
-                fullWidth
+              {/* 欄位上方標籤，與同彈窗其他欄位及打帳單的新增顧客彈窗一致；檢查圖示改放輸入框右側 */}
+              <Field
                 label="客戶編號"
-                name="no"
-                onChange={handleFieldChange}
-                value={values.no}
-                variant="outlined"
-                InputProps={{
-                  endAdornment: (
-                    (values.no === '') ? '' :
-                      isSetTime ?
-                        <InputAdornment position="start">
-                          <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
-                        </InputAdornment> :
-                        !noVerify ?
-                          <InputAdornment position="start">
-                            <CheckRoundedIcon color='success' />
-                          </InputAdornment> :
-                          <InputAdornment position="start">
-                            <WarningAmberRoundedIcon color='error' />
-                          </InputAdornment>
-                  ),
-                }}
-              />
+                htmlFor="addCustomerModal-no"
+                error={noVerify && !isSetTime ? '客戶編號重複' : ''}
+              >
+                <div className="relative">
+                  <Input
+                    id="addCustomerModal-no"
+                    invalid={noVerify && !isSetTime}
+                    className="pr-10"
+                    name="no"
+                    onChange={handleFieldChange}
+                    value={values.no}
+                  />
+                  {values.no !== '' && (
+                    <span className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center">
+                      {isSetTime ? (
+                        <LoaderCircle className="h-5 w-5 animate-spin text-accent" strokeWidth={1.75} />
+                      ) : !noVerify ? (
+                        <CheckRoundedIcon color='success' />
+                      ) : (
+                        <WarningAmberRoundedIcon color='error' />
+                      )}
+                    </span>
+                  )}
+                </div>
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
               <Field label="客戶姓名">
@@ -289,22 +283,24 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               </Field>
             </Grid>
             <Grid item md={6} xs={12}>
-              <NativeSelect
-                className="ui-root"
-                label='性別'
-                value={values.gender}
-                name="gender"
-                onChange={handleFieldChange}
-              >
-                <NativeSelectOption value="UNKNOWN">
-                  <em>未知</em>
-                </NativeSelectOption>
-                {gender.map((data, index) => (
-                  <NativeSelectOption value={data.value} key={`${data.value}-${index}`}>
-                    {data.label}
+              <Field label="性別" htmlFor="addCustomerModal-gender">
+                <NativeSelect
+                  className="ui-root"
+                  id="addCustomerModal-gender"
+                  value={values.gender}
+                  name="gender"
+                  onChange={handleFieldChange}
+                >
+                  <NativeSelectOption value="UNKNOWN">
+                    <em>未知</em>
                   </NativeSelectOption>
-                ))}
-              </NativeSelect>
+                  {gender.map((data, index) => (
+                    <NativeSelectOption value={data.value} key={`${data.value}-${index}`}>
+                      {data.label}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
               <Field label="Email">
@@ -343,30 +339,32 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               </Field>
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                label="民國年"
-                name="year"
-                value={birthdayObj.year}
-                onChange={e => handleBirthdayChange(e)}
-                variant="outlined"
-                css={styles.birthdayInput}
-              />
-              <TextField
-                label="月"
-                name="month"
-                value={birthdayObj.month}
-                onChange={e => handleBirthdayChange(e)}
-                variant="outlined"
-                css={styles.birthdayMonthDay}
-              />
-              <TextField
-                label="日"
-                name="day"
-                value={birthdayObj.day}
-                onChange={e => handleBirthdayChange(e)}
-                variant="outlined"
-                css={styles.birthdayMonthDay}
-              />
+              <div className="flex flex-wrap gap-2.5">
+                <Field label="民國年" htmlFor="addCustomerModal-year" className="w-20">
+                  <Input
+                    id="addCustomerModal-year"
+                    name="year"
+                    value={birthdayObj.year}
+                    onChange={e => handleBirthdayChange(e)}
+                  />
+                </Field>
+                <Field label="月" htmlFor="addCustomerModal-month" className="w-20">
+                  <Input
+                    id="addCustomerModal-month"
+                    name="month"
+                    value={birthdayObj.month}
+                    onChange={e => handleBirthdayChange(e)}
+                  />
+                </Field>
+                <Field label="日" htmlFor="addCustomerModal-day" className="w-20">
+                  <Input
+                    id="addCustomerModal-day"
+                    name="day"
+                    value={birthdayObj.day}
+                    onChange={e => handleBirthdayChange(e)}
+                  />
+                </Field>
+              </div>
             </Grid>
             {/* <Grid item md={6} xs={12}>
               <KeyboardDatePicker
@@ -427,34 +425,14 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <NativeSelect
-                className="ui-root"
-                label='最近設計師'
-                value={customer.latestDesigner || ''}
-                onChange={handleFieldChange}
-                name="DesignerId"
-                disabled
-              >
-                <NativeSelectOption value="">
-                  <em>None</em>
-                </NativeSelectOption>
-                {idx(designers, _ =>
-                  _.data.users.users.map((data, index) => (
-                    <NativeSelectOption value={data.id} key={`${data.id}-${index}`}>
-                      {data.name}
-                    </NativeSelectOption>
-                  ))
-                )}
-              </NativeSelect>
-            </Grid>
-            <Grid item md={6} xs={12}>
-              {designers.data ? (
+              <Field label="最近設計師" htmlFor="addCustomerModal-latestDesigner">
                 <NativeSelect
                   className="ui-root"
-                  label='偏好設計師'
-                  value={values.PreferDesignerId}
+                  id="addCustomerModal-latestDesigner"
+                  value={customer.latestDesigner || ''}
                   onChange={handleFieldChange}
-                  name="PreferDesignerId"
+                  name="DesignerId"
+                  disabled
                 >
                   <NativeSelectOption value="">
                     <em>None</em>
@@ -467,6 +445,30 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                     ))
                   )}
                 </NativeSelect>
+              </Field>
+            </Grid>
+            <Grid item md={6} xs={12}>
+              {designers.data ? (
+                <Field label="偏好設計師" htmlFor="addCustomerModal-preferDesigner">
+                  <NativeSelect
+                    className="ui-root"
+                    id="addCustomerModal-preferDesigner"
+                    value={values.PreferDesignerId}
+                    onChange={handleFieldChange}
+                    name="PreferDesignerId"
+                  >
+                    <NativeSelectOption value="">
+                      <em>None</em>
+                    </NativeSelectOption>
+                    {idx(designers, _ =>
+                      _.data.users.users.map((data, index) => (
+                        <NativeSelectOption value={data.id} key={`${data.id}-${index}`}>
+                          {data.name}
+                        </NativeSelectOption>
+                      ))
+                    )}
+                  </NativeSelect>
+                </Field>
               ) : (
                 // 載入中用 renderValue 顯示轉圈，保留 MUI Select
                 <FormControl variant="outlined" fullWidth>

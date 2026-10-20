@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion-compat'
-import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import React from 'react'
 import billContext from 'context/keyInContext'
 import { css } from '@emotion/react'
@@ -14,7 +13,7 @@ const styles = {
     marginTop: theme.spacing(3),
   }),
   details: css({
-    overflowX: 'scroll',
+    overflowX: 'auto',
   }),
   heading: css({
     fontSize: '16px !important',
@@ -42,9 +41,8 @@ export default function PannelCouponUse() {
     setExpanded(val => !val)
   }
   return (
-    <Accordion defaultExpanded={expanded} expanded={expanded}>
+    <Accordion expanded={expanded}>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
         data-testid="panelPayment"
         onClick={handleAccordionClick}
       >

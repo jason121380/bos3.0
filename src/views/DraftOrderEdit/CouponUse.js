@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from 'ui/text-field'
+import { Field, Input } from 'ui/input'
 import { CheckboxField } from 'ui/checkbox'
 import CustomerTicketRecordAutoComplete from 'components/CustomerTicketRecordAutoComplete'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
@@ -11,22 +11,31 @@ import React, { Fragment } from 'react'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
+// 版面比照打帳單（views/OrderCreate/styles/CouponUse）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
 const styles = {
   couponUse: css({
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    rowGap: '12px',
     marginBottom: theme.spacing(3),
   }),
   field: css({
     width: '150px',
+    minWidth: 150,
     display: 'flex',
-    marginRight: '12px !important',
+    marginRight: '12px',
+  }),
+  couponField: css({
+    width: '250px',
+    display: 'flex',
+    marginRight: '12px',
   }),
   priceField: css({
     width: '65px',
     display: 'flex',
-    marginRight: '12px !important',
+    marginRight: '12px',
   }),
   checkbox: css({
     width: '100px',
@@ -162,48 +171,51 @@ export default function CouponUse({
     <Fragment>
       <div css={styles.couponUse}>
         {bill.customerId && (
-          <CustomerTicketRecordAutoComplete
-            className={styles.field}
-            customerId={bill.customerId}
-            label="卡券名稱/代號"
-            value={couponUsage.customerTicketId}
-            onChange={handleCustomerTicketChange}
-            orderId={orderId}
-            isUseTicket={true}
-            couponUsages={couponUsages}
-            editOrderUseTicketDisabled={true}
-          />
+          <Field label="預收卡">
+            <CustomerTicketRecordAutoComplete
+              className={styles.couponField}
+              customerId={bill.customerId}
+              value={couponUsage.customerTicketId}
+              onChange={handleCustomerTicketChange}
+              orderId={orderId}
+              isUseTicket={true}
+              couponUsages={couponUsages}
+              editOrderUseTicketDisabled={true}
+              inputProps={{ 'data-testid': '', placeholder: '卡券名稱/代號' }}
+            />
+          </Field>
         )}
         {couponUsage.customerTicketId && (
           <React.Fragment>
-            <TextField
-              label="金額"
-              variant="outlined"
-              disabled
-              value={displayFloat(price)}
-              css={styles.priceField}
-              onChange={event =>
-                onChange({
-                  value: idx(event, _ => _.target.value),
-                  key: 'customerTicketId',
-                  index,
-                })
-              }
-            />
+            <Field label="金額" css={styles.priceField}>
+              <Input
+                disabled
+                value={displayFloat(price)}
+                onChange={event =>
+                  onChange({
+                    value: idx(event, _ => _.target.value),
+                    key: 'customerTicketId',
+                    index,
+                  })
+                }
+              />
+            </Field>
             {ticketOrderHelpers.map((data, helperIndex) => (
               <React.Fragment key={`${data.id}-ticketOrder-${helperIndex}-${data.helperId}`}>
-                <EmployeeAutoComplete
-                  label={data.type}
-                  value={data.helperId}
-                  onChange={value =>
-                    handleAssistantChange({
-                      value: idx(value, _ => _.userId),
-                      assistantIndex: helperIndex,
-                      key: 'helperId',
-                    })
-                  }
-                  className={styles.field}
-                />
+                <Field label={data.type}>
+                  <EmployeeAutoComplete
+                    placeholder={data.type}
+                    value={data.helperId}
+                    onChange={value =>
+                      handleAssistantChange({
+                        value: idx(value, _ => _.userId),
+                        assistantIndex: helperIndex,
+                        key: 'helperId',
+                      })
+                    }
+                    className={styles.field}
+                  />
+                </Field>
                 <CheckboxField
                   label="指定"
                   checked={data.isDesignate}
