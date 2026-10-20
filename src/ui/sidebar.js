@@ -12,6 +12,11 @@ function Sidebar({ mobileOpen, onMobileClose, desktopOpen = true, className, chi
       {mobileOpen && (
         <div aria-hidden="true" className="noprint fixed inset-0 z-[1190] bg-black/40 lg:hidden" onClick={onMobileClose} />
       )}
+      {/* iPhone PWA（viewport-fit=cover）狀態列畫在網頁最上方的安全區上：抽屜打開時遮罩（黑 40%）與抽屜淺灰底會把狀態列染灰。
+          這條白色（canvas）細條只蓋住頂部安全區，讓狀態列維持純白、文字維持深色；一般瀏覽器安全區為 0，不顯示。純畫面，不攔點擊。 */}
+      {mobileOpen && (
+        <div aria-hidden="true" className="noprint pointer-events-none fixed inset-x-0 top-0 z-[1201] h-[env(safe-area-inset-top)] bg-canvas lg:hidden" />
+      )}
       <aside
         className={cn(
           'ui-root noprint fixed inset-y-0 left-0 z-[1200] flex w-[264px] flex-col bg-surface',

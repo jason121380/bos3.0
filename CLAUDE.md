@@ -30,7 +30,7 @@ npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
 npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base，0 warning），CI 必跑
-CI=true npm run test:nowatch         # 全部單元測試（基準：49 檔／246 測試全數通過）
+CI=true npm run test:nowatch         # 全部單元測試（基準：51 檔／255 測試全數通過）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
 node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面驗證
 ```

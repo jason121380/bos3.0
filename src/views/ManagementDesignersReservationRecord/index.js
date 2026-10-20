@@ -260,7 +260,8 @@ function Calendar() {
         title,
         date,
         orders: [],
-        bookingLimit: tidyData[0].bookingLimit
+        // 該設計師本週沒有任何行事曆資料（API 回空陣列）時 tidyData[0] 為 undefined，原寫法會在 render 階段拋錯→整頁白屏；改為無資料時可預約人數 0
+        bookingLimit: tidyData[0] ? tidyData[0].bookingLimit : 0
       })
     }
 
@@ -430,7 +431,10 @@ function Calendar() {
 
   useEffect(() => {
     if (!merchant.loading && !DesignerCalendar.loading) {
-      const { merchantDesignerCalendar, merchantUnappointCalendar } = idx(DesignerCalendar, _ => _.data.getMerchantDesignerWeekCalendar)
+      // 查詢失敗（data 為 undefined）時解構會拋錯→整頁白屏；改以空陣列帶過，畫面顯示空的週曆
+      const weekCalendar = idx(DesignerCalendar, _ => _.data.getMerchantDesignerWeekCalendar) || {}
+      const merchantDesignerCalendar = weekCalendar.merchantDesignerCalendar || []
+      const merchantUnappointCalendar = weekCalendar.merchantUnappointCalendar || []
       merchantDesignerCalendar.forEach(({ calendar }, index1) => {
         calendar.forEach(({ type, startTime, endTime, timeCost, ...rest }, index2) => {
           if (type === 'RESERVATION' && !isSameDay(startTime, endTime)) {
