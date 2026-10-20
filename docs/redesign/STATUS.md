@@ -6,6 +6,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 手機日期選擇器改置中彈窗（v3.0-1020-1151） | 依 Jason 截圖指示：手機（< 640px）的日期／日期時間選擇器由底部面板改為置中彈窗（左右各留 16px、四角圓角），月曆不再在滿版面板中靠左。做法：`ui/modal-compat` 新增 `ui-dialog-centered` 標記（權重高於底部面板規則），日期選擇器使用；其他對話框維持底部面板。390px 截圖確認日期、日期時間兩種與一般對話框。測試 35 檔／152 全過、build 成功。 |
 | 手機頂部列標題粗體（v3.0-1020-1147） | 補齊「每頁標題比照打帳單粗體」：手機／平板頂部列（MobileAppBar）捲動後顯示的頁名也改粗體，與頁首標題一致。測試 35 檔／152 全過、build 成功。 |
 | 頁面標題粗體＋PWA 打帳單合計列修正（v3.0-1020-1145） | ①依 Jason「每頁標題比照打帳單粗體」：共用頁首 `ui/page-header`（106 頁）與 `components/PageTitle`（AdminPageHeader，60 頁）的標題由 `!font-normal` 改 `!font-bold`（24px），與打帳單、編輯帳單等已是粗體的頁面一致；STYLE.md 字級表同步。②Jason 回報「PWA 打帳單下方總結出不來」：底部固定合計列（業績合計／現金應收）在手機只讓出 56px，但底部導覽列在 PWA（viewport-fit=cover）會加上 iPhone 安全區（約 34px）且層級較高（1100 > 1050），合計列被蓋住；瀏覽器中安全區為 0 所以正常。改為讓出 `56px＋env(safe-area-inset-bottom)`，與導覽列、批次操作列同寫法。測試 35 檔／152 全過、build 成功、verify-logic OK。 |
 | **MUI 整包移除完成**（v3.0-1020-1139） | 拆除 9 處 MuiScope／withMuiScope（Dashboard／Auth／Customer 三個版型、打帳單四兄弟、DateSelector、MerchantSearchBar），它們底下已無 MUI 元件；`src/ui/mui-theme.js` 移到 `scripts/redesign/compat-harness/`（只剩比對頁使用）。package.json 移除 `@mui/material`、`@mui/x-date-pickers`、`@mui/x-tree-view` 與 MUI v4 時代的 `jss`／`jss-rtl`（src 無引用），連同 21 個間接套件；`@floating-ui/react-dom`（Popper／Tooltip 用，原本只靠 Radix 間接安裝）改為直接依賴，沿用既有鎖定版本 2.1.7。刪除無人使用的 `src/__mocks__/@material-ui/styles.js`。src 內 `@mui` 引用 0；JS 總量 7.74→7.60 MB（main 1.48→1.44 MB）。STYLE.md／CLAUDE.md 同步更新。測試 35 檔／152 全過、build 成功；43 頁 114 張截圖 0 差異。**未做**：`@emotion`（css prop 仍廣泛使用，移除是另一個大工程）、initialize*.scss 中已無元素可套用的 MuiPickers 樣式（無害，保留）。 |
