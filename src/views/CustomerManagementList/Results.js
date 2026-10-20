@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 // 表格列使用 ui/table（外框 components/ManagementTable 亦為 ui/table）
 // 刪除確認已換 ui/dialog：舊版不設 onClose（點背景、Esc 不關閉），故不傳 onOpenChange
-import { Link } from '@mui/material'
+import { Link } from 'ui/link-compat'
 import { Pencil } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'

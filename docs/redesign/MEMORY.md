@@ -240,3 +240,5 @@
 
 146. **Input 不追 MUI 底線外觀，直接併入全站輸入框樣式；swap 腳本要併入既有 import（Input／OutlinedInput，2026/10/20，v3.0-1020-0956）**：MUI Input 只剩日期欄與搜尋列在用，日期欄的 FormControl／InputLabel 早已是自家元件、同頁 TextField 也已是方框，只有日期欄還是底線——此時照抄 MUI 反而不一致，所以 Input 改用 TextField 同一個 `fieldBoxClass`（disableUnderline 保留無框，搜尋列外框由外層畫）。事件落點照 MUI InputBase：onClick 在外框（點外框也會聚焦輸入）、id／鍵盤事件在 input。另：`swap-mui.js` 原本總是新增一行 import，目標模組已被前一批引入時會出現兩行同模組 import，已改為併入既有具名 import。
 
+147. **inline style 會讓相容元件比 MUI「更不容易被蓋」，深色模式因此不一致（List／Link／Snackbar／Alert，2026/10/20，v3.0-1020-1003）**：Link 的自訂色（如 #263238）最初用 inline style，比對頁在深色模式抓到差異——initialize-dark.scss 有 `.MuiTypography-root { color: #ffffffde }`，與 MUI emotion 的顏色同權重但較晚載入，所以 MUI 版其實是白字；inline style 權重更高反而沒被蓋。改用 CSS 變數＋單一 class（`.MuiLink-colorCustom { color: var(--mui-link-color) }`）後一致。通則：相容層要重現的是「MUI 的樣式權重」，不是只重現數值；需要動態值時用 CSS 變數＋class，不要 inline。其他：Alert filled 的顏色是 MUI 由調色盤推算（深色用 dark、文字用 getContrastText），直接以 MUI 函式算出寫死；Snackbar 不掛 Portal（就地 fixed），clickaway 要跳過開啟它的那次點擊。
+

@@ -1,5 +1,5 @@
+import { Snackbar, Alert } from 'ui/feedback-compat'
 import React, { Fragment } from 'react'
-import { Snackbar, Alert } from '@mui/material'
 import { MobileDatePicker } from 'ui/date-picker'
 // import ReCAPTCHA from "react-google-recaptcha-enterprise"
 import { LoaderCircle } from 'lucide-react'
