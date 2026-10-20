@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
-import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
+import { Field } from 'ui/input'
+import { Eraser, Copy, Trash2 } from 'lucide-react'
+import { RowIconButton, AddRowButton } from 'views/OrderCreate/RowAction'
 import TicketAutoComplete from 'components/TicketAutoComplete'
 import idx from 'idx'
 import _ from 'lodash'
@@ -10,11 +12,20 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
 const styles = {
+  // 項目列：欄位靠底對齊（標籤在上），窄螢幕換行不擠壓（比照打帳單）
   couponSells: css({
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    rowGap: '12px',
     marginBottom: theme.spacing(3),
+  }),
+  fieldWidth: css({
+    width: '250px',
+    maxWidth: '100%',
+    display: 'flex',
+    marginRight: '12px',
   }),
   field: css({
     minWidth: '150px',
@@ -34,19 +45,6 @@ const styles = {
     '&:last-child': {
       marginRight: '0px',
     },
-  }),
-  action: css({
-    width: '50px !important',
-    display: 'flex',
-    marginRight: '12px',
-    cursor: 'pointer',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-  createIcon: css({
-    cursor: 'pointer',
-    margin: '10px',
   }),
 }
 
@@ -131,14 +129,15 @@ export default function CouponSells({
     <Fragment>
       <div css={styles.couponSells}>
         {index === 0 ? (
-          <FilterNoneIcon css={styles.createIcon} onClick={handleOpenCouponModal} />
+          <RowIconButton label="從清單選擇預收卡" className="mx-1.5" onClick={handleOpenCouponModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span style={{ margin: '22px' }} />
+          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
         )}
+        <Field label="卡券">
         <TicketAutoComplete
           setCouponAlready={setCouponAlready}
-          className={styles.field}
-          label="卡券名稱/代號"
+          className={styles.fieldWidth}
+          inputProps={{ placeholder: '卡券名稱/代號' }}
           value={couponSell.serviceId}
           ref={couponRef}
           name="coupon"
@@ -175,13 +174,14 @@ export default function CouponSells({
           }}
           isTicketSellingEditable={isTicketSellingEditable}
         />
+        </Field>
         {couponSell.serviceId ? (
           <React.Fragment>
+            <Field label="可使用次數" css={styles.priceField}>
             <TextField
+              fullWidth
               variant="outlined"
-              label="可使用次數"
               value={couponSell.availableCount}
-              css={styles.priceField}
               inputRef={availableCountRef}
               name="availableCount"
               onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
@@ -203,10 +203,11 @@ export default function CouponSells({
                 )
               }
             />
+            </Field>
+            <Field label="價格" css={styles.priceField}>
             <TextField
+              fullWidth
               variant="outlined"
-              label="價格"
-              css={styles.field}
               value={couponSell.price}
               name="price"
               tabIndex={focusRow + '2'}
@@ -230,10 +231,11 @@ export default function CouponSells({
                 )
               }
             />
+            </Field>
+            <Field label="張數" css={styles.priceField}>
             <TextField
+              fullWidth
               variant="outlined"
-              label="張數"
-              css={styles.priceField}
               value={couponSell.count}
               name="count"
               tabIndex={focusRow + '2'}
@@ -257,14 +259,16 @@ export default function CouponSells({
                 )
               }
             />
+            </Field>
+            <Field label="備註" css={styles.field}>
             <TextField
+              fullWidth
               value={couponSell.remark}
               variant="outlined"
-              label="備註"
+              placeholder="備註"
               name="remark"
               onFocus={handleFocus}
               inputRef={remarkRef}
-              css={styles.field}
               onKeyDown={event => {
                 if (event.key === 'Enter') {
                   setTimeout(() => {
@@ -278,36 +282,40 @@ export default function CouponSells({
                 onChange({ index, value: newCouponSell })
               }}
             />
+            </Field>
           </React.Fragment>
         ) : (
           ''
         )}
         {isTicketSellingEditable && (
-          <BackspaceOutlinedIcon
-            css={styles.action}
+          <RowIconButton
+            label="清除此列" className="mr-1.5"
             onClick={function () {
               onClear({ index })
             }}
             data-testid={`couponSells-${index}-clear`}
-          />
+          >
+            <Eraser aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         )}
         {!first && isTicketSellingEditable ? (
-          <DeleteForeverIcon
-            css={styles.action}
+          <RowIconButton
+            label="刪除此列" className="mr-1.5"
             onClick={function () {
               removeCouponSell({
                 index,
               })
             }}
             data-testid={`couponSells-${index}-delete`}
-          />
+          >
+            <Trash2 aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           ''
         )}
       </div>
       {last && isTicketSellingEditable ? (
-        <AddIcon
-          css={styles.action}
+        <AddRowButton
           onClick={function () {
             addCouponSell({
               index,

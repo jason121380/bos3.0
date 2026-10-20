@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { CheckboxField } from 'ui/checkbox'
-import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
+import { Field } from 'ui/input'
+import { Eraser, Copy, Trash2 } from 'lucide-react'
+import { RowIconButton, AddRowButton } from 'views/OrderCreate/RowAction'
 import EmployeeAutoComplete from "components/EmployeeAutoComplete";
 import MemberShipCardAutoComplete from "components/MemberShipCardAutoComplete";
 import ThirdPartyAutoComplete from "components/ThirdPartyAutoComplete";
@@ -20,10 +22,13 @@ import { theme } from '../../theme'
 import MemberShipCardSellsModal from "./MemberShipCardSellsModal";
 
 const styles = {
+  // 項目列：欄位靠底對齊（標籤在上），窄螢幕換行不擠壓（比照打帳單）
   merchantSells: css({
     display: "flex",
-    // alignItems: 'center',
+    alignItems: "flex-end",
     justifyContent: "flex-start",
+    flexWrap: "wrap",
+    rowGap: "12px",
     marginBottom: theme.spacing(3),
   }),
   field: css({
@@ -44,27 +49,13 @@ const styles = {
       marginRight: "0px",
     },
   }),
-  action: css({
-    width: "50px",
-    display: "flex",
-    marginRight: "12px",
-    marginTop: "13px",
-    alignItems: "center",
-    cursor: "pointer",
-    "&:last-child": {
-      marginRight: "0px",
-    },
-  }),
-  createIcon: css({
-    cursor: "pointer",
-    margin: "10px",
-  }),
   heading2: css({
     fontSize: theme.typography.pxToRem(13),
     fontWeight: "bold",
   }),
   productField: css({
     width: "250px",
+    maxWidth: "100%",
     display: "flex",
     marginRight: "12px",
   }),
@@ -227,9 +218,11 @@ const MemberShipCardSells = ({
   return (
     <Fragment>
       <div css={styles.merchantSells}>
+        {/* 必填 *：Footer 送出前 helper/billVerify.js checkMembershipOrders 要求 sellerId、membershipUUID 與有效到期日；sellerId 與 membershipUUID 皆空的列會被 handleTidyBill 丟掉，所以該列有填任一欄才標必填 */}
+        <Field label="服務人員" required={!!sells.sellerId || !!sells.membershipUUID}>
         <EmployeeAutoComplete
           className={styles.field}
-          label="服務人員姓名/編號"
+          placeholder="服務人員姓名/編號"
           value={sells.sellerId}
           ref={employeeRef}
           tabIndex={focusRow + "0"}
@@ -250,15 +243,17 @@ const MemberShipCardSells = ({
             });
           }}
         />
+        </Field>
         {index === 0 ? (
-          <FilterNoneIcon css={styles.createIcon} onClick={handleOpenProductsModal} />
+          <RowIconButton label="從清單選擇會員卡" className="mx-1.5" onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span style={{ margin: "22px" }} />
+          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
         )}
+        <Field label="會員卡" required={!!sells.sellerId || !!sells.membershipUUID}>
         <MemberShipCardAutoComplete
           setMembershipAlready={setMembershipAlready}
           className={styles.productField}
-          label="會員卡名稱/代號"
+          inputProps={{ placeholder: '會員卡名稱/代號' }}
           value={sells.membershipUUID}
           ref={productRef}
           autoFocus={focus === "product"}
@@ -299,12 +294,13 @@ const MemberShipCardSells = ({
             }
           }}
         />
+        </Field>
         {sells.membershipUUID ? (
           <React.Fragment>
+            <Field label="價格" css={styles.priceField}>
             <TextField
+              fullWidth
               variant="outlined"
-              label="價格"
-              css={styles.priceField}
               value={sells.price}
               inputRef={priceRef}
               tabIndex={focusRow + "2"}
@@ -324,10 +320,11 @@ const MemberShipCardSells = ({
               onKeyDown={(event) => handleKeyDown({ event, nextField: "date" })}
               disabled={!!(sells.isLocked === 'TRUE' || sells.isLocked === 'UNSET')}
             />
+            </Field>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <Field label="到期日" required={sells.expiryDate !== null}>
               <MobileDatePicker
                 css={styles.dateField}
-                label="到期日"
                 inputRef={dateRef}
                 value={sells.expiryDate}
                 format="yyyy/MM/dd"
@@ -356,6 +353,7 @@ const MemberShipCardSells = ({
                   });
                 }}
               />
+              </Field>
               <CheckboxField
                 label="永久會籍"
                 ref={checkbox}
@@ -380,11 +378,12 @@ const MemberShipCardSells = ({
               />
             </div>
 
-            <div style={{ display: "block" }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               {thirdPartTicket && (
+                <Field label="第三方卡券">
                 <ThirdPartyAutoComplete
                   css={styles.field}
-                  label="第三方卡券"
+                  fieldProps={{ placeholder: '第三方卡券' }}
                   autoFocus={focus === "thirdParty"}
                   value={sells.thirdPartyCouponMerchantId}
                   ref={thirdPartyRef}
@@ -404,13 +403,14 @@ const MemberShipCardSells = ({
                     "data-testid": `service-${index}-thirdParty`,
                   }}
                 />
+                </Field>
               )}
               {teachingMode && <p className="m-0" css={styles.heading2}>勾選將入業績但不收費用**</p>}
               {sells.thirdPartyCouponMerchantId &&
                 thirdPartyCoupons.map((data) => {
                   if (data.id === sells.thirdPartyCouponMerchantId) {
                     return (
-                      <p className="m-0" key={data.id} css={styles.heading2}>
+                      <p className="m-0" key={data.id} css={styles.heading2} style={{ marginTop: '4px' }}>
                         扣完後業績:
                         {Math.round((sells.price * (100 - data.fee)) / 100)}
                       </p>
@@ -418,13 +418,14 @@ const MemberShipCardSells = ({
                   }
                 })}
             </div>
+            <Field label="備註" css={styles.field}>
             <TextField
+              fullWidth
               value={sells.remark}
               variant="outlined"
-              label="備註"
+              placeholder="備註"
               name="remark"
               inputRef={remarkRef}
-              css={styles.field}
               autoFocus={focus === "remark"}
               InputLabelProps={{
                 shrink: true,
@@ -444,33 +445,37 @@ const MemberShipCardSells = ({
                 });
               }}
             />
+            </Field>
           </React.Fragment>
         ) : (
           ""
         )}
 
-        <BackspaceOutlinedIcon
-          css={styles.action}
+        <RowIconButton
+          label="清除此列" className="mr-1.5"
           onClick={function () {
             onClear({ index });
           }}
           data-testid={`merchantSsell-${index}-clear`}
-        />
+        >
+          <Eraser aria-hidden="true" strokeWidth={1.75} />
+        </RowIconButton>
         {!first ? (
-          <DeleteForeverIcon
-            css={styles.action}
+          <RowIconButton
+            label="刪除此列" className="mr-1.5"
             onClick={function () {
               removeSells({ index });
             }}
             data-testid={`merchantSsell-${index}-delete`}
-          />
+          >
+            <Trash2 aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           ""
         )}
       </div>
       {last ? (
-        <AddIcon
-          css={styles.action}
+        <AddRowButton
           onClick={function () {
             addSells();
           }}

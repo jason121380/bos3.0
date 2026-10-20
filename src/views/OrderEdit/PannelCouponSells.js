@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion-compat'
-import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
+import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
 import useFetchOrder from 'hooks/useFetchOrder'
 import _ from 'lodash'
@@ -229,12 +229,15 @@ export default function PannelCouponSells({ expanded, setExpanded }) {
   }
 
   return (
-    <Accordion defaultExpanded={expanded} expanded={expanded}>
+    <Accordion expanded={expanded}>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
         data-testid="couponSells"
         onClick={handleAccordionClick}
         style={{ width: '100%' }}
+        summaryMeta={!expanded && panelSummary(
+          couponSells.filter(d => d.serviceId).length,
+          couponSells.filter(d => d.serviceId).reduce((total, d) => total + d.price * d.count, 0)
+        )}
       >
         <p className="m-0" css={styles.heading}>預收卡販賣</p>
       </AccordionSummary>

@@ -18,6 +18,8 @@ import giveBonus from 'helper/giveBonus'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber, formatMoney } from 'ui/format'
+import { ChevronUp } from 'lucide-react'
+import { getMissingForCheckout, getMissingForSave, getDisabledReason } from './orderRequirements'
 
 export default function Footer({ enable }) {
   const {
@@ -29,6 +31,8 @@ export default function Footer({ enable }) {
   const [selection, setSelection] = useState({ start: 0, end: 0 });
   const [openDialog, setOpenDialog] = useState(false)
   const [disableRecheckoutOrders, setDisableRecheckoutOrders] = useState(false)
+  // 手機版：金額彙總明細收在底部固定列，點展開鈕往上展開（純畫面開合，比照打帳單）
+  const [summaryOpen, setSummaryOpen] = useState(false)
   const passwordData = useFetchMerchantPassword()
 
   useEffect(() => {
@@ -443,6 +447,43 @@ export default function Footer({ enable }) {
     isLineBinded
   ])
 
+  // 業績合計、現金應收：運算式與舊版相同，只是算一次，下方彙總卡與底部固定列共用同一個值
+  const performanceTotal = Math.round(
+    serviceTotalPrice +
+    merchantSellTotalPrice +
+    couponUsageTotalPrice +
+    merberShipCardTotalPriceWithoutThirdPartyCoupon
+  )
+  const cashDue = serviceTotalPriceWithoutThirdPartyCoupon +
+    productTotalPriceWithoutThirdPartyCoupon +
+    couponSellPrice +
+    merberShipCardTotalPriceWithoutThirdPartyCoupon -
+    bill.walletPay -
+    bill.amountByOtherPay -
+    bill.bonusDecount
+
+  // 按鈕停用時說明原因（只用於顯示）：開關就是下方按鈕的 disabled 條件本身，見 orderRequirements.js
+  const checkoutDisabledReason = getDisabledReason({
+    busy: open,
+    invalid: vaild,
+    isCloseAccount: orderSetting.isCloseAccount,
+    missing: getMissingForCheckout(bill),
+    loading: !enable,
+  })
+  const saveDisabledReason = getDisabledReason({
+    busy: open,
+    invalid: updateVaild,
+    isCloseAccount: orderSetting.isCloseAccount,
+    missing: getMissingForSave(bill),
+  })
+  // 狀態列：有顯示「掛單／結帳」時說明它們的原因，只有「儲存」時說明儲存的原因（顯示條件與下方按鈕相同）
+  const disabledReason =
+    (!disablePendingOrder && bill.isReserved) || (renderActionText() && status !== 'edit')
+      ? checkoutDisabledReason
+      : orderStatus === '預約成功' && status !== 'checkout'
+        ? saveDisabledReason
+        : ''
+
   // 金額彙總：各數值的運算式與舊版相同，只加千分位與新版樣式
   const Row = ({ label, value }) => (
     <div className="flex items-center justify-between gap-3 py-1.5 text-body">
@@ -450,86 +491,97 @@ export default function Footer({ enable }) {
       <span className="whitespace-nowrap tabular-nums text-text">{formatMoney(value)}</span>
     </div>
   )
+  // 消費明細／付款與折抵：彙總卡與手機底部展開共用同一份畫面（比照打帳單）
+  const details = (
+    <>
+      <div className="flex flex-col">
+        <p className="m-0 pb-1 text-label font-medium text-text-tertiary">消費明細</p>
+        <Row label="服務消費" value={serviceTotalPrice} />
+        <Row label="店販消費" value={merchantSellTotalPrice} />
+        <Row label="預收卡販賣" value={couponSellPrice} />
+        <Row label="使用預收卡" value={Math.round(couponUsageTotalPrice)} />
+        <Row label="會員卡販賣" value={merberShipCardTotalPrice} />
+      </div>
+      <div className="flex flex-col">
+        <p className="m-0 pb-1 text-label font-medium text-text-tertiary">付款與折抵</p>
+        <Row label="扣入金" value={bill.walletPay} />
+        <Row label="其他付款方式" value={bill.amountByOtherPay} />
+        <Row label="紅利點數折抵" value={bill.bonusDecount} />
+      </div>
+    </>
+  )
   return (
+    <React.Fragment>
+    {/* 金額彙總卡：桌機顯示明細與合計；手機（< 640px）只留操作按鈕，明細與合計收進底部固定列（比照打帳單） */}
     <Card className="ui-root mt-6">
-      <CardHeader>
+      <CardHeader className="max-sm:hidden">
         <CardTitle>金額彙總</CardTitle>
       </CardHeader>
-      <div className="grid grid-cols-2 gap-x-6 gap-y-3 px-5 pt-2 max-sm:grid-cols-1">
-        <div className="flex flex-col">
-          <p className="m-0 pb-1 text-label font-medium text-text-tertiary">消費明細</p>
-          <Row label="服務消費" value={serviceTotalPrice} />
-          <Row label="店販消費" value={merchantSellTotalPrice} />
-          <Row label="預收卡販賣" value={couponSellPrice} />
-          <Row label="使用預收卡" value={Math.round(couponUsageTotalPrice)} />
-          <Row label="會員卡販賣" value={merberShipCardTotalPrice} />
-        </div>
-        <div className="flex flex-col">
-          <p className="m-0 pb-1 text-label font-medium text-text-tertiary">付款與折抵</p>
-          <Row label="扣入金" value={bill.walletPay} />
-          <Row label="其他付款方式" value={bill.amountByOtherPay} />
-          <Row label="紅利點數折抵" value={bill.bonusDecount} />
-        </div>
+      <div className="grid grid-cols-2 gap-x-6 gap-y-3 px-5 pt-2 max-sm:hidden">
+        {details}
       </div>
-      <div className="mt-3 flex flex-wrap items-end justify-between gap-6 border-0 border-t border-solid border-border px-5 py-4">
-        <div className="grid grid-cols-2 gap-x-10 gap-y-4">
+      <div className="mt-3 flex flex-wrap items-end justify-between gap-6 border-0 border-t border-solid border-border px-5 py-4 max-sm:mt-0 max-sm:border-t-0">
+        <div className="grid grid-cols-2 gap-x-10 gap-y-4 max-sm:hidden">
           <div className="flex flex-col gap-1">
             <span className="text-label text-text-secondary">業績合計</span>
             <span className="text-heading tabular-nums text-text">
               <span className="mr-1 text-body text-text-secondary">NT$</span>
-              {formatNumber(Math.round(
-                serviceTotalPrice +
-                merchantSellTotalPrice +
-                couponUsageTotalPrice +
-                merberShipCardTotalPriceWithoutThirdPartyCoupon
-              ))}
+              {formatNumber(performanceTotal)}
             </span>
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-label text-text-secondary">現金應收</span>
             <span className="text-display tabular-nums text-text">
               <span className="mr-1 text-body text-text-secondary">NT$</span>
-              {formatNumber(serviceTotalPriceWithoutThirdPartyCoupon +
-                productTotalPriceWithoutThirdPartyCoupon +
-                couponSellPrice +
-                merberShipCardTotalPriceWithoutThirdPartyCoupon -
-                bill.walletPay -
-                bill.amountByOtherPay -
-                bill.bonusDecount)}
+              {formatNumber(cashDue)}
             </span>
           </div>
         </div>
         {orderStatus && (
-          <div className="orderButtonGroup flex flex-wrap items-center gap-2">
-            {orderStatus === '預約成功' && status !== 'checkout' && (
-              <Button
-                variant="secondary"
-                size="lg"
-                onClick={handleSaveOrder}
-                disabled={open || updateVaild}
-              >
-                儲存
-              </Button>
-            )}
-            {!disablePendingOrder && bill.isReserved && (
-              <Button
-                variant="secondary"
-                size="lg"
-                onClick={() => handleReCheckoutOrder(true)}
-                disabled={open || vaild || !enable}
-              >掛單</Button>
-            )}
-            {renderActionText() && status !== 'edit' && (
-              <Button
-                variant="primary"
-                size="lg"
-                className="px-6"
-                onClick={() => disableRecheckoutOrders ? handleOpenReCheckout() : handleReCheckoutOrder()}
-                disabled={open || vaild || !enable}
-                data-testid="checkout"
-              >
-                {renderActionText()}
-              </Button>
+          <div className="flex flex-col items-end gap-1.5 max-sm:w-full">
+            <div className="orderButtonGroup flex flex-wrap items-center justify-end gap-2">
+              {orderStatus === '預約成功' && status !== 'checkout' && (
+                <span title={saveDisabledReason || undefined} className="inline-flex">
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    onClick={handleSaveOrder}
+                    disabled={open || updateVaild}
+                  >
+                    儲存
+                  </Button>
+                </span>
+              )}
+              {!disablePendingOrder && bill.isReserved && (
+                <span title={checkoutDisabledReason || undefined} className="inline-flex">
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    onClick={() => handleReCheckoutOrder(true)}
+                    disabled={open || vaild || !enable}
+                  >掛單</Button>
+                </span>
+              )}
+              {renderActionText() && status !== 'edit' && (
+                <span title={checkoutDisabledReason || undefined} className="inline-flex">
+                  {/* 停用時改成深字灰底（比照打帳單；原本淡藍底白字對比不足） */}
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    className="px-6 disabled:bg-surface-active disabled:text-text-secondary disabled:opacity-100"
+                    onClick={() => disableRecheckoutOrders ? handleOpenReCheckout() : handleReCheckoutOrder()}
+                    disabled={open || vaild || !enable}
+                    data-testid="checkout"
+                  >
+                    {renderActionText()}
+                  </Button>
+                </span>
+              )}
+            </div>
+            {disabledReason && (
+              <p role="status" className="m-0 text-caption text-warning max-sm:text-right">
+                {disabledReason}
+              </p>
             )}
           </div>
         )}
@@ -567,5 +619,39 @@ export default function Footer({ enable }) {
         </DialogActions>
       </Dialog>
     </Card>
+    {/* 讓出底部固定合計列的高度，最後一張卡不會被蓋住 */}
+    <div aria-hidden="true" className="h-12" />
+    {/* 底部固定列：長帳單捲動時，業績合計與現金應收隨時看得到（比照打帳單）。
+        左側讓出側欄（lg 以上 240px）；手機讓出底部導覽列（56px＋iPhone 安全區）；列印時不顯示。
+        手機版（< 640px）不顯示上方明細與合計，改由左側展開鈕往上展開完整明細 */}
+    <div className="ui-root fixed inset-x-0 bottom-[calc(56px+env(safe-area-inset-bottom))] z-[1050] border-0 border-t border-solid border-border bg-background px-4 py-2 shadow-[0_-2px_8px_rgba(0,0,0,0.06)] print:hidden lg:bottom-0 lg:left-60">
+      {summaryOpen && (
+        <div id="order-summary-details" className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto border-0 border-b border-solid border-border pb-2 sm:hidden">
+          <p className="m-0 pb-1 pt-1 text-heading font-bold text-text">金額彙總</p>
+          {details}
+        </div>
+      )}
+      <div className="mx-auto flex max-w-[1200px] items-center justify-end gap-3 whitespace-nowrap sm:gap-8">
+        <button
+          type="button"
+          aria-label="金額彙總明細"
+          aria-expanded={summaryOpen}
+          aria-controls="order-summary-details"
+          onClick={() => setSummaryOpen(!summaryOpen)}
+          className="mr-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-text-secondary hover:bg-surface-hover sm:hidden"
+        >
+          <ChevronUp className={summaryOpen ? 'h-5 w-5 rotate-180 transition-transform' : 'h-5 w-5 transition-transform'} strokeWidth={1.75} />
+        </button>
+        <div className="flex items-baseline gap-1.5 sm:gap-2">
+          <span className="text-label text-text-secondary max-sm:text-caption">業績合計</span>
+          <span className="text-heading tabular-nums text-text">{formatMoney(performanceTotal)}</span>
+        </div>
+        <div className="flex items-baseline gap-1.5 sm:gap-2">
+          <span className="text-label text-text-secondary max-sm:text-caption">現金應收</span>
+          <span className="text-heading font-semibold tabular-nums text-text">{formatMoney(cashDue)}</span>
+        </div>
+      </div>
+    </div>
+    </React.Fragment>
   )
 }

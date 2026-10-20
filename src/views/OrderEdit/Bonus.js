@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
+import { Field } from 'ui/input'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import billContext from 'context/keyInContext'
@@ -9,7 +10,7 @@ import produce from 'immer'
 const styles = {
   bonus: css({
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
     marginBottom: theme.spacing(3),
     flexWrap: 'wrap',
@@ -139,29 +140,32 @@ function Bonus({ customerBonus }) {
   }
   return (
     <div css={styles.bonus}>
-      <TextField
-        value={bill.bonusDeposit}
-        variant="outlined"
-        label="點數給點"
-        css={styles.field}
-        disabled={bonusDepositDisabled()}
-        onChange={event => bonusOnChange(event, 'bonusDeposit')}
-      />
-      <TextField
-        value={bill.bonusUsed}
-        variant="outlined"
-        label="點數扣點"
-        css={styles.field}
-        onChange={event => bonusOnChange(event, 'bonusUsed')}
-      />
-      <TextField
-        value={bill.bonusDecount}
-        variant="outlined"
-        label="點數折抵金額"
-        css={styles.field}
-        disabled={bonusConversion.isBonusConversion}
-        onChange={event => bonusOnChange(event, 'bonusDecount')}
-      />
+      <Field label="點數給點" css={styles.field}>
+        <TextField
+          fullWidth
+          value={bill.bonusDeposit}
+          variant="outlined"
+          disabled={bonusDepositDisabled()}
+          onChange={event => bonusOnChange(event, 'bonusDeposit')}
+        />
+      </Field>
+      <Field label="點數扣點" css={styles.field}>
+        <TextField
+          fullWidth
+          value={bill.bonusUsed}
+          variant="outlined"
+          onChange={event => bonusOnChange(event, 'bonusUsed')}
+        />
+      </Field>
+      <Field label="點數折抵金額" css={styles.field}>
+        <TextField
+          fullWidth
+          value={bill.bonusDecount}
+          variant="outlined"
+          disabled={bonusConversion.isBonusConversion}
+          onChange={event => bonusOnChange(event, 'bonusDecount')}
+        />
+      </Field>
     </div>
   )
 }

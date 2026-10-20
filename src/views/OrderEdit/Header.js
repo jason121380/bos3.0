@@ -5,7 +5,7 @@ import FastCheckOrdersModal from 'components/FastCheckOrdersModal'
 import { ReceiptText, Ticket } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
-import { Input } from 'ui/input'
+import { Field, Input } from 'ui/input'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from 'ui/table'
 import produce from 'immer'
 import ShortcutDialog from '../../components/ShortcutDialog'
@@ -28,7 +28,7 @@ function Header({ ...rest }) {
   const shortCutClose = () => {
     setShortcutModal(false)
   }
-  // 頁首（STYLE.md §4）：左側標題、抽獎流水號與帳單流水號，右側次要動作；主要按鈕在下方結帳列
+  // 頁首（STYLE.md §4，比照打帳單）：左側標題（含抽獎流水號）與次要動作「帳單速查／組合商品」，右側帳單流水號（標籤在上）；主要按鈕在下方結帳列
   return (
     <Fragment>
       <div {...rest} className="ui-root noprint flex flex-wrap items-center justify-between gap-4 pb-6">
@@ -71,12 +71,21 @@ function Header({ ...rest }) {
               )}
             </Popper>
           </h1>
-          {serialNumberUsing && (
-            <label className="flex items-center gap-2 text-label text-text-secondary">
-              流水號
+          <Button size="sm" variant="secondary" onClick={() => setOpenModal(true)}>
+            <ReceiptText strokeWidth={1.75} />
+            帳單速查
+          </Button>
+          {comboActive && (
+            <Button size="sm" variant="secondary" disabled={shortBtnDisable} onClick={() => setShortcutModal(true)}>組合商品</Button>
+          )}
+        </div>
+        {serialNumberUsing && (
+          <div className="flex flex-wrap items-end gap-2">
+            <Field label="流水號" className="w-[120px]">
               <Input
                 disabled={!enable}
-                className="w-[100px] tabular-nums"
+                placeholder="流水號"
+                className="tabular-nums"
                 value={bill.serialNumber == null ? '' : bill.serialNumber}
                 onChange={e => {
                   const value = e.target.value === '' ? null : e.target.value
@@ -87,18 +96,9 @@ function Header({ ...rest }) {
                   )
                 }}
               />
-            </label>
-          )}
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {comboActive && (
-            <Button variant="secondary" disabled={shortBtnDisable} onClick={() => setShortcutModal(true)}>組合商品</Button>
-          )}
-          <Button variant="secondary" onClick={() => setOpenModal(true)}>
-            <ReceiptText strokeWidth={1.75} />
-            帳單速查
-          </Button>
-        </div>
+            </Field>
+          </div>
+        )}
       </div>
       <ShortcutDialog open={shortcutModal} handleOnClose={shortCutClose} handleShortcutChange={handleShortcutChange} />
     </Fragment>

@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
-import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
+import { Field } from 'ui/input'
+import { Eraser, Copy, Trash2 } from 'lucide-react'
+import { RowIconButton, AddRowButton } from 'views/OrderCreate/RowAction'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import ProductAutoComplete from 'components/ProductAutoComplete'
 import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
@@ -17,10 +19,13 @@ import { theme } from '../../theme'
 import ProductsModal from './ProductsModal'
 
 const styles = {
+  // 項目列：欄位靠底對齊（標籤在上），窄螢幕換行不擠壓（比照打帳單）
   merchantSells: css({
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    rowGap: '12px',
     marginBottom: theme.spacing(3),
   }),
   field: css({
@@ -28,6 +33,12 @@ const styles = {
     minWidth: '150px !important',
     display: 'flex',
     marginRight: '12px !important',
+  }),
+  productField: css({
+    width: '250px',
+    maxWidth: '100%',
+    display: 'flex',
+    marginRight: '12px',
   }),
   priceField: css({
     width: '65px',
@@ -41,19 +52,6 @@ const styles = {
     '&:last-child': {
       marginRight: '0px',
     },
-  }),
-  action: css({
-    width: '50px !important',
-    display: 'flex',
-    marginRight: '12px',
-    cursor: 'pointer',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-  createIcon: css({
-    cursor: 'pointer',
-    margin: '10px',
   }),
   heading2: css({
     fontSize: theme.typography.pxToRem(13),
@@ -210,9 +208,11 @@ export default function MerchantSells({
   return (
     <Fragment>
       <div css={styles.merchantSells}>
+        {/* 必填 *：Footer 送出前 helper/billVerify.js checkProductOrders 要求 sellerId 與 productId；兩者都空的列會被 handleTidyBill 丟掉，所以該列有填任一欄才標必填 */}
+        <Field label="服務人員" required={!!sells.sellerId || !!sells.productId}>
         <EmployeeAutoComplete
           className={styles.field}
-          label="服務人員姓名/編號"
+          placeholder="服務人員姓名/編號"
           value={sells.sellerId}
           ref={employeeRef}
           autoFocus={focus === 'employee'}
@@ -227,15 +227,17 @@ export default function MerchantSells({
             })
           }}
         />
+        </Field>
         {index === 0 ? (
-          <FilterNoneIcon css={styles.createIcon} onClick={handleOpenProductsModal} />
+          <RowIconButton label="從清單選擇商品" className="mx-1.5" onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span style={{ margin: '22px' }} />
+          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
         )}
+        <Field label="商品" required={!!sells.sellerId || !!sells.productId}>
         <ProductAutoComplete
           setProductAlready={setProductAlready}
-          className={styles.field}
-          label="商品代號/名稱"
+          className={styles.productField}
+          inputProps={{ placeholder: '商品代號/名稱' }}
           value={sells.productId}
           ref={productRef}
           autoFocus={focus === 'product'}
@@ -258,12 +260,13 @@ export default function MerchantSells({
             })
           }}
         />
+        </Field>
         {sells.productId ? (
           <React.Fragment>
+            <Field label="價格" css={styles.priceField}>
             <TextField
+              fullWidth
               variant="outlined"
-              label="價格"
-              css={styles.priceField}
               value={sells.price}
               inputRef={priceRef}
               tabIndex={focusRow + '2'}
@@ -282,10 +285,11 @@ export default function MerchantSells({
               }}
               disabled={!!(sells.isLocked === 'TRUE' || sells.isLocked === 'UNSET')}
             />
+            </Field>
+            <Field label="數量" css={styles.priceField}>
             <TextField
+              fullWidth
               variant="outlined"
-              label="數量"
-              css={styles.priceField}
               value={sells.count}
               inputRef={countRef}
               autoFocus={focus === 'count'}
@@ -303,11 +307,13 @@ export default function MerchantSells({
                 'data-testid': `merchantSsell-${index}-count`,
               }}
             />
-            <div style={{ display: 'block' }}>
+            </Field>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               {thirdPartTicket && (
+                <Field label="第三方卡券">
                 <ThirdPartyAutoComplete
                   className={styles.field}
-                  label="第三方卡券"
+                  fieldProps={{ placeholder: '第三方卡券' }}
                   value={sells.thirdPartyCouponMerchantId}
                   ref={thirdPartyRef}
                   autoFocus={focus === 'thirdParty'}
@@ -319,6 +325,7 @@ export default function MerchantSells({
                   name="thirdParty"
                   onChange={e => selectThirdParty(e)}
                 />
+                </Field>
               )}
               {teachingMode && (
                 <p className="m-0" css={styles.heading2}>勾選將入業績但不收費用**</p>
@@ -327,7 +334,7 @@ export default function MerchantSells({
                 thirdPartyCoupons.map(data => {
                   if (data.id === sells.thirdPartyCouponMerchantId) {
                     return (
-                      <p className="m-0" css={styles.heading2}>
+                      <p className="m-0" css={styles.heading2} style={{ marginTop: '4px' }}>
                         扣完後業績:{Math.round((sells.price * (100 - data.fee)) / 100)}
                       </p>
                     )
@@ -339,28 +346,31 @@ export default function MerchantSells({
           ''
         )}
 
-        <BackspaceOutlinedIcon
-          css={styles.action}
+        <RowIconButton
+          label="清除此列" className="mr-1.5"
           onClick={function () {
             onClear({ index })
           }}
           data-testid={`merchantSsell-${index}-clear`}
-        />
+        >
+          <Eraser aria-hidden="true" strokeWidth={1.75} />
+        </RowIconButton>
         {!first ? (
-          <DeleteForeverIcon
-            css={styles.action}
+          <RowIconButton
+            label="刪除此列" className="mr-1.5"
             onClick={function () {
               removeSells({ index })
             }}
             data-testid={`merchantSsell-${index}-delete`}
-          />
+          >
+            <Trash2 aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           ''
         )}
       </div>
       {last ? (
-        <AddIcon
-          css={styles.action}
+        <AddRowButton
           onClick={function () {
             addSells()
           }}
