@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Table, TableBody, TableCell, TableRow } from 'ui/table-compat'
-import { Grid } from 'ui/grid-compat'
-import { Card, CardContent, CardHeader } from 'ui/card-compat'
+import { Table, TableBody, TableCell, TableRow } from 'ui/table'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
 import useFetchMerchantCommissionWay from 'hooks/useFetchMerchantCommissionWay'
@@ -68,8 +67,10 @@ function AboutProfitSharing({
 
   return (
     <Card {...rest} css={css([styles.root, className])}>
-      <CardHeader title="一般設定" />
-      <Grid container>
+      <CardHeader>
+        <CardTitle>一般設定</CardTitle>
+      </CardHeader>
+      <div className="flex w-full flex-wrap">
         {/* <Grid item xs={12} sm={6}>
           <CardContent>
             <Table>
@@ -171,7 +172,7 @@ function AboutProfitSharing({
             </Table>
           </CardContent>
         </Grid> */}
-        <Grid item xs={12} sm={6}>
+        <div className="w-full min-[600px]:w-1/2">
           <CardContent>
             <Table>
               <TableBody>
@@ -260,8 +261,8 @@ function AboutProfitSharing({
               </TableBody>
             </Table>
           </CardContent>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </Card>
   )
 }

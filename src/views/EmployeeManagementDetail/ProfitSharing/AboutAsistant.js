@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent, CardHeader } from 'ui/card-compat'
+import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import idx from 'idx'
 import PropTypes from 'prop-types'
@@ -48,7 +48,9 @@ function AboutAsistant({ className, helperDeductionWay, onChange, ...rest }) {
   }
   return (
     <Card {...rest} css={css([styles.root, className])}>
-      <CardHeader title="助理" />
+      <CardHeader>
+        <CardTitle>助理</CardTitle>
+      </CardHeader>
       <CardContent>
         <FormControl variant="outlined" css={styles.formGroup} fullWidth>
           <InputLabel ref={inputLabel}>扣項方式</InputLabel>

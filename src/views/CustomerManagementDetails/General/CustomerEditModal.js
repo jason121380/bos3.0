@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-// 大型表單彈窗：外框（卡片、標題、底部動作）換成 ui/card、ui/button；Modal 與內部表單欄位保留 MUI
+// 大型表單彈窗：外框（卡片、標題、底部動作）換成 ui/card、ui/button，欄位排版改 Tailwind grid（MUI md 900px 起兩欄）；
+// 內有 Select（彈出選單），保留相容層 Modal（Radix Dialog 會與其彈出層焦點鎖互搶）與內部表單欄位
 import { Modal } from 'ui/modal-compat'
-import { Grid } from 'ui/grid-compat'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { TextField, InputAdornment } from 'ui/text-field'
 import { LoaderCircle } from 'lucide-react'
@@ -240,8 +240,8 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
           <CardTitle>編輯客戶資料</CardTitle>
         </CardHeader>
         <CardContent>
-          <Grid container spacing={3}>
-            <Grid item md={6} xs={12}>
+          <div className="grid grid-cols-1 gap-6 min-[900px]:grid-cols-2">
+            <div>
               <TextField
                 error={noVerify && !isSetTime}
                 helperText={noVerify && !isSetTime ? '客戶編號重複' : ''}
@@ -270,8 +270,8 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                   ),
                 }}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 inputRef={nameRef}
@@ -282,8 +282,8 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                 variant="outlined"
                 onKeyDown={e => handleKeyDownFocus(e)}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <FormControl variant="outlined" fullWidth>
                 <InputLabel ref={inputLabel}>性別</InputLabel>
                 <Select
@@ -304,8 +304,8 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                   ))}
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="Email"
@@ -316,8 +316,8 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                 variant="outlined"
                 onKeyDown={e => handleKeyDownFocus(e)}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="lineId"
@@ -328,8 +328,8 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                 variant="outlined"
                 onKeyDown={e => handleKeyDownFocus(e)}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="客戶暱稱"
@@ -340,8 +340,8 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                 variant="outlined"
                 onKeyDown={e => handleKeyDownFocus(e)}
               />
-            </Grid>
-            <Grid item md={6} xs={12} css={styles.birthdayGrid}>
+            </div>
+            <div css={styles.birthdayGrid}>
               <TextField
                 label="民國年"
                 name="year"
@@ -381,8 +381,8 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                   e.target.select()
                 }}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="電話"
@@ -393,8 +393,8 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                 variant="outlined"
                 onKeyDown={e => handleKeyDownFocus(e)}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="地址"
@@ -405,16 +405,16 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                 variant="outlined"
                 onKeyDown={e => handleKeyDownFocus(e)}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <SourceSelect
                 emptyOption
                 value={values.source}
                 onChange={handleFieldChange}
                 ref={sourceRef}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <FormControl variant="outlined" fullWidth>
                 <InputLabel ref={inputLabel}>最近設計師</InputLabel>
                 <Select
@@ -436,8 +436,8 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                   )}
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <FormControl variant="outlined" fullWidth>
                 <InputLabel ref={inputLabel}>偏好設計師</InputLabel>
                 {designers.data ? (
@@ -472,8 +472,8 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                   </Select>
                 )}
               </FormControl>
-            </Grid>
-            <Grid item md={6} xs={12}>
+            </div>
+            <div>
               <TextField
                 fullWidth
                 label="備註"
@@ -482,8 +482,8 @@ function CustomerEditModal({ open, onClose, customer, className = {}, ...rest })
                 value={values.remark}
                 variant="outlined"
               />
-            </Grid>
-          </Grid>
+            </div>
+          </div>
         </CardContent>
         <CardFooter>
           <Button variant="secondary" onClick={onClose}>取消</Button>
