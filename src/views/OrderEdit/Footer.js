@@ -512,16 +512,17 @@ export default function Footer({ enable }) {
   )
   return (
     <React.Fragment>
-    {/* 金額彙總卡：桌機顯示明細與合計；手機（< 640px）只留操作按鈕，明細與合計收進底部固定列（比照打帳單） */}
-    <Card className="ui-root mt-6">
+    {/* 金額彙總卡（放在 Pannel 下方右欄，比照打帳單 PannelPerformance）：桌機顯示明細、合計，按鈕列在合計下方；
+        手機（< 640px）只留操作按鈕，明細與合計收進底部固定列 */}
+    <Card className="ui-root w-full self-start">
       <CardHeader className="max-sm:hidden">
         <CardTitle>金額彙總</CardTitle>
       </CardHeader>
       <div className="grid grid-cols-2 gap-x-6 gap-y-3 px-5 pt-2 max-sm:hidden">
         {details}
       </div>
-      <div className="mt-3 flex flex-wrap items-end justify-between gap-6 border-0 border-t border-solid border-border px-5 py-4 max-sm:mt-0 max-sm:border-t-0">
-        <div className="grid grid-cols-2 gap-x-10 gap-y-4 max-sm:hidden">
+      <div className="mt-3 flex flex-col gap-4 border-0 border-t border-solid border-border px-5 py-4 max-sm:mt-0 max-sm:border-t-0">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-4 max-sm:hidden">
           <div className="flex flex-col gap-1">
             <span className="text-label text-text-secondary">業績合計</span>
             <span className="text-heading tabular-nums text-text">
@@ -619,8 +620,6 @@ export default function Footer({ enable }) {
         </DialogActions>
       </Dialog>
     </Card>
-    {/* 讓出底部固定合計列的高度，最後一張卡不會被蓋住 */}
-    <div aria-hidden="true" className="h-12" />
     {/* 底部固定列：長帳單捲動時，業績合計與現金應收隨時看得到（比照打帳單）。
         左側讓出側欄（lg 以上 240px）；手機讓出底部導覽列（56px＋iPhone 安全區）；列印時不顯示。
         手機版（< 640px）不顯示上方明細與合計，改由左側展開鈕往上展開完整明細 */}
