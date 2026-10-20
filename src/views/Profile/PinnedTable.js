@@ -3,7 +3,7 @@ import { Checkbox } from 'ui/checkbox'
 import { TextField, InputAdornment } from 'ui/text-field'
 import MerchantListAutocpmpleteForPinnedTable from 'components/MerchantListAutocpmpleteForPinnedTable'
 import useFetchSetPinnedTable from 'hooks/useFetchSetPinnedTable'
-import { TreeView, TreeItem } from '@mui/x-tree-view';
+import { TreeView, TreeItem } from 'ui/tree-compat'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { ArticleOutlined as ArticleOutlinedIcon, DescriptionOutlined as DescriptionOutlinedIcon, ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import { useDispatch } from 'react-redux'

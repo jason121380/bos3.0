@@ -4,7 +4,7 @@ import { TextField, InputAdornment } from 'ui/text-field'
 import { useState, useEffect } from 'react'
 import { Button } from 'ui/button'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
-import { TreeView, TreeItem } from '@mui/x-tree-view';
+import { TreeView, TreeItem } from 'ui/tree-compat'
 import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, Inventory2Outlined as Inventory2OutlinedIcon, DashboardOutlined as DashboardOutlinedIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import _ from 'lodash';

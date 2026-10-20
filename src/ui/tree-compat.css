@@ -1,0 +1,25 @@
+/*
+ * 重現 @mui/x-tree-view 6.17 TreeView／TreeItem＋橋接主題的樣式，DOM 與 class 名稱與 MUI 相同（各頁以 .MuiTreeItem-content、
+ * ul .MuiCollapse-wrapper .MuiCollapse-wrapperInner 等選擇器排版）。Collapse 規則沿用 accordion-compat.css。
+ * 驗證：scripts/redesign/compat-harness/tree-entry.js
+ */
+.MuiTreeView-root { padding: 0; margin: 0; list-style: none; outline: 0; }
+.MuiTreeItem-root { list-style: none; margin: 0; padding: 0; outline: 0; }
+.MuiTreeItem-content {
+  padding: 0 8px; width: 100%; box-sizing: border-box; display: flex; align-items: center; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.MuiTreeItem-content:hover { background-color: rgb(var(--surface-hover)); }
+@media (hover: none) { .MuiTreeItem-content:hover { background-color: transparent; } }
+.MuiTreeItem-content.Mui-disabled { opacity: 0.38; background-color: transparent; }
+.MuiTreeItem-content.Mui-focused { background-color: rgba(0, 0, 0, 0.12); }
+.dark .MuiTreeItem-content.Mui-focused { background-color: rgba(255, 255, 255, 0.12); }
+.MuiTreeItem-content.Mui-selected { background-color: rgb(var(--primary) / 0.08); }
+.MuiTreeItem-content.Mui-selected:hover { background-color: rgb(var(--primary) / 0.12); }
+.MuiTreeItem-content.Mui-selected.Mui-focused { background-color: rgb(var(--primary) / 0.2); }
+.MuiTreeItem-content .MuiTreeItem-iconContainer { margin-right: 4px; width: 15px; display: flex; flex-shrink: 0; justify-content: center; }
+.MuiTreeItem-content .MuiTreeItem-iconContainer svg { font-size: 18px; }
+.MuiTreeItem-content .MuiTreeItem-label {
+  padding-left: 4px; width: 100%; box-sizing: border-box; min-width: 0; position: relative;
+  font-size: 16px; line-height: 24px; letter-spacing: 0; color: rgb(var(--text)); font-weight: 400;
+}
+.MuiTreeItem-group { margin: 0; padding: 0; margin-left: 17px; }
