@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-// 抽成級距表單以 MUI Table 排版、含 TextField 保留 MUI，ToggleButton 改 ui/toggle-group（布林值原樣、handler 不讀參數）；Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）；卡片外框、標題、按鈕與載入狀態為 src/ui
-import { Modal } from 'ui/modal-compat'
-import { Table, TableBody, TableCell, TableRow } from 'ui/table-compat'
+// 彈窗改 ui/dialog（窗內只有 TextField、Checkbox、ToggleGroup、Tabs，沒有彈出式選單；原 Modal 無 onClose，故不傳 onOpenChange）；
+// 抽成級距表單原以 MUI Table 當排版容器（列內直接放標題、儲存格改 flex），改原生 div（儲存格保留 16px 內距，emotion css 原樣）；
+// ToggleButton 為 ui/toggle-group（布林值原樣、handler 不讀參數）；Tabs 為 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import PropTypes from 'prop-types'
@@ -15,7 +15,8 @@ import idx from 'idx'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import { Button } from 'ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
+import { CardContent } from 'ui/card'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Skeleton } from 'ui/skeleton'
 import { Tabs, TabsList, TabsTrigger } from 'ui/tabs'
 
@@ -657,14 +658,16 @@ function EditMultipleDesignersRakeSettingModal({
   }, [getAttributionForRake.loading])
 
   return (
-    <Modal open={openEditRakeSettingModal}>
-      <Card className="ui-root" css={styles.root}>
+    <Dialog open={openEditRakeSettingModal}>
+      <DialogContent size="lg" hideClose aria-describedby={undefined} className="max-w-[912px]">
+        {/* 內層為一般區塊（非 flex）：標題列「關閉」與底部「儲存」沿用原本的 float 排版 */}
+        <div className="min-h-0 overflow-y-auto">
         {!getAttributionForRake.loading ? (
           <>
             <div css={styles.header}>
-              <CardHeader className="pb-4">
-                <CardTitle>編輯設計師抽成</CardTitle>
-              </CardHeader>
+              <DialogHeader className="pb-4">
+                <DialogTitle>編輯設計師抽成</DialogTitle>
+              </DialogHeader>
               {!profitSharing.isSegmented && (
                 <Tabs
                   value={tabValue}
@@ -688,10 +691,10 @@ function EditMultipleDesignersRakeSettingModal({
             </div>
 
             <CardContent>
-              <Table>
-                <TableBody>
+              <div>
+                <div>
                   <Fragment>
-                    <TableRow>
+                    <div>
                       <h4 className="my-4 text-heading text-text">
                         抽成模式
                       </h4>
@@ -719,13 +722,13 @@ function EditMultipleDesignersRakeSettingModal({
                         checked={profitSharing.designationUsage}
                         onClick={handleDesignateChange}
                       />
-                    </TableRow>
+                    </div>
                     {!profitSharing.designationUsage ? (
                       !profitSharing.isSegmented ? (
                         profitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.map(
                           (data, index) => (
-                            <TableRow key={`nonSegmented-${index}`} css={styles.flex}>
-                              <TableCell css={styles.verticleCenter}>
+                            <div key={`nonSegmented-${index}`} css={styles.flex}>
+                              <div className="p-4" css={styles.verticleCenter}>
                                 總業績從(含)
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
@@ -739,8 +742,8 @@ function EditMultipleDesignersRakeSettingModal({
                                   }
                                   onWheel={() => document.activeElement.blur()}
                                 />
-                              </TableCell>
-                              <TableCell css={styles.verticleCenter}>
+                              </div>
+                              <div className="p-4" css={styles.verticleCenter}>
                                 抽成調整為
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
@@ -752,8 +755,8 @@ function EditMultipleDesignersRakeSettingModal({
                                   onChange={event => handleNonSegmentedRakeInput(event, index, 'rake')}
                                   onWheel={() => document.activeElement.blur()}
                                 />
-                              </TableCell>
-                              <TableCell css={styles.verticleCenter}>
+                              </div>
+                              <div className="p-4" css={styles.verticleCenter}>
                                 {index !== 0 && (
                                   <DeleteForeverIcon
                                     css={styles.icons}
@@ -769,14 +772,14 @@ function EditMultipleDesignersRakeSettingModal({
                                       onClick={() => handleAddSetDeductionNum('nonDistinguish')}
                                     />
                                   )}
-                              </TableCell>
-                            </TableRow>
+                              </div>
+                            </div>
                           )
                         )
                       ) : (
                         profitSharing.segmented[0].nonDistinguish.map((data, index) => (
-                          <TableRow key={`nonDistinguish-${index}`} css={styles.flex}>
-                            <TableCell css={styles.separateInputBottom}>
+                          <div key={`nonDistinguish-${index}`} css={styles.flex}>
+                            <div className="p-4" css={styles.separateInputBottom}>
                               總業績從(含)
                               <TextField
                                 InputProps={{ inputProps: { min: 0 } }}
@@ -790,8 +793,8 @@ function EditMultipleDesignersRakeSettingModal({
                                 }
                                 onWheel={() => document.activeElement.blur()}
                               />
-                            </TableCell>
-                            <TableCell css={styles.separateInput}>
+                            </div>
+                            <div className="p-4" css={styles.separateInput}>
                               至
                               <TextField
                                 InputProps={{ inputProps: { min: 0 } }}
@@ -805,8 +808,8 @@ function EditMultipleDesignersRakeSettingModal({
                                 }
                                 onWheel={() => document.activeElement.blur()}
                               />
-                            </TableCell>
-                            <TableCell css={styles.separateInputRake}>
+                            </div>
+                            <div className="p-4" css={styles.separateInputRake}>
                               抽成為
                               <TextField
                                 InputProps={{ inputProps: { min: 0 } }}
@@ -818,8 +821,8 @@ function EditMultipleDesignersRakeSettingModal({
                                 onChange={event => handleSegmentedInput(event, index, 'rake')}
                                 onWheel={() => document.activeElement.blur()}
                               />
-                            </TableCell>
-                            <TableCell css={styles.verticleCenter}>
+                            </div>
+                            <div className="p-4" css={styles.verticleCenter}>
                               {index !== 0 && (
                                 <DeleteForeverIcon
                                   css={styles.icons}
@@ -832,22 +835,22 @@ function EditMultipleDesignersRakeSettingModal({
                                   onClick={() => handleAddSegmented('nonDistinguish')}
                                 />
                               )}
-                            </TableCell>
-                          </TableRow>
+                            </div>
+                          </div>
                         ))
                       )
                     ) : !profitSharing.isSegmented ? (
                       <Fragment>
-                        <TableRow>
+                        <div>
                           <h4 className="my-4 text-heading text-text">
                             指定業績
                           </h4>
-                        </TableRow>
+                        </div>
                         {profitSharing.nonSegmented[deductionIndex].rakeData.designate.map(
                           (data, index) => {
                             return (
-                              <TableRow key={`designate-${index}`} css={styles.flex}>
-                                <TableCell css={styles.verticleCenter}>
+                              <div key={`designate-${index}`} css={styles.flex}>
+                                <div className="p-4" css={styles.verticleCenter}>
                                   總業績從(含)
                                   <TextField
                                     InputProps={{ inputProps: { min: 0 } }}
@@ -865,8 +868,8 @@ function EditMultipleDesignersRakeSettingModal({
                                     }
                                     onWheel={() => document.activeElement.blur()}
                                   />
-                                </TableCell>
-                                <TableCell css={styles.verticleCenter}>
+                                </div>
+                                <div className="p-4" css={styles.verticleCenter}>
                                   抽成調整為
                                   <TextField
                                     InputProps={{ inputProps: { min: 0 } }}
@@ -880,8 +883,8 @@ function EditMultipleDesignersRakeSettingModal({
                                     }
                                     onWheel={() => document.activeElement.blur()}
                                   />
-                                </TableCell>
-                                <TableCell css={styles.verticleCenter}>
+                                </div>
+                                <div className="p-4" css={styles.verticleCenter}>
                                   {index !== 0 && (
                                     <DeleteForeverIcon
                                       css={styles.icons}
@@ -897,21 +900,21 @@ function EditMultipleDesignersRakeSettingModal({
                                         onClick={() => handleAddSetDeductionNum('designate')}
                                       />
                                     )}
-                                </TableCell>
-                              </TableRow>
+                                </div>
+                              </div>
                             )
                           }
                         )}
-                        <TableRow>
+                        <div>
                           <h4 className="my-4 text-heading text-text">
                             不指定業績
                           </h4>
-                        </TableRow>
+                        </div>
                         {profitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.map(
                           (data, index) => {
                             return (
-                              <TableRow key={`nonDesignate-${index}`} css={styles.flex}>
-                                <TableCell css={styles.verticleCenter}>
+                              <div key={`nonDesignate-${index}`} css={styles.flex}>
+                                <div className="p-4" css={styles.verticleCenter}>
                                   總業績從(含)
                                   <TextField
                                     InputProps={{ inputProps: { min: 0 } }}
@@ -929,8 +932,8 @@ function EditMultipleDesignersRakeSettingModal({
                                     }
                                     onWheel={() => document.activeElement.blur()}
                                   />
-                                </TableCell>
-                                <TableCell css={styles.verticleCenter}>
+                                </div>
+                                <div className="p-4" css={styles.verticleCenter}>
                                   抽成調整為
                                   <TextField
                                     InputProps={{ inputProps: { min: 0 } }}
@@ -944,8 +947,8 @@ function EditMultipleDesignersRakeSettingModal({
                                     }
                                     onWheel={() => document.activeElement.blur()}
                                   />
-                                </TableCell>
-                                <TableCell css={styles.verticleCenter}>
+                                </div>
+                                <div className="p-4" css={styles.verticleCenter}>
                                   {index !== 0 && (
                                     <DeleteForeverIcon
                                       css={styles.icons}
@@ -961,23 +964,23 @@ function EditMultipleDesignersRakeSettingModal({
                                         onClick={() => handleAddSetDeductionNum('nonDesignate')}
                                       />
                                     )}
-                                </TableCell>
-                              </TableRow>
+                                </div>
+                              </div>
                             )
                           }
                         )}
                       </Fragment>
                     ) : (
                       <Fragment>
-                        <TableRow>
+                        <div>
                           <h4 className="my-4 text-heading text-text">
                             指定業績
                           </h4>
-                        </TableRow>
+                        </div>
                         {profitSharing.segmented[0].designate.map((data, index) => {
                           return (
-                            <TableRow key={`designate-${index}`} css={styles.flex}>
-                              <TableCell css={styles.separateInputBottom}>
+                            <div key={`designate-${index}`} css={styles.flex}>
+                              <div className="p-4" css={styles.separateInputBottom}>
                                 指定業績從(含)
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
@@ -991,8 +994,8 @@ function EditMultipleDesignersRakeSettingModal({
                                   }
                                   onWheel={() => document.activeElement.blur()}
                                 />
-                              </TableCell>
-                              <TableCell css={styles.separateInput}>
+                              </div>
+                              <div className="p-4" css={styles.separateInput}>
                                 至
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
@@ -1006,8 +1009,8 @@ function EditMultipleDesignersRakeSettingModal({
                                   }
                                   onWheel={() => document.activeElement.blur()}
                                 />
-                              </TableCell>
-                              <TableCell css={styles.separateInputRake}>
+                              </div>
+                              <div className="p-4" css={styles.separateInputRake}>
                                 抽成為
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
@@ -1021,8 +1024,8 @@ function EditMultipleDesignersRakeSettingModal({
                                   }
                                   onWheel={() => document.activeElement.blur()}
                                 />
-                              </TableCell>
-                              <TableCell css={styles.verticleCenter}>
+                              </div>
+                              <div className="p-4" css={styles.verticleCenter}>
                                 {index !== 0 && (
                                   <DeleteForeverIcon
                                     css={styles.icons}
@@ -1035,19 +1038,19 @@ function EditMultipleDesignersRakeSettingModal({
                                     onClick={() => handleAddSegmented('designate')}
                                   />
                                 )}
-                              </TableCell>
-                            </TableRow>
+                              </div>
+                            </div>
                           )
                         })}
-                        <TableRow>
+                        <div>
                           <h4 className="my-4 text-heading text-text">
                             不指定業績
                           </h4>
-                        </TableRow>
+                        </div>
                         {profitSharing.segmented[0].nonDesignate.map((data, index) => {
                           return (
-                            <TableRow key={`nonDesignate-${index}`} css={styles.flex}>
-                              <TableCell css={styles.separateInputBottom}>
+                            <div key={`nonDesignate-${index}`} css={styles.flex}>
+                              <div className="p-4" css={styles.separateInputBottom}>
                                 不指定業績從(含)
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
@@ -1065,8 +1068,8 @@ function EditMultipleDesignersRakeSettingModal({
                                   }
                                   onWheel={() => document.activeElement.blur()}
                                 />
-                              </TableCell>
-                              <TableCell css={styles.separateInput}>
+                              </div>
+                              <div className="p-4" css={styles.separateInput}>
                                 至
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
@@ -1084,8 +1087,8 @@ function EditMultipleDesignersRakeSettingModal({
                                   }
                                   onWheel={() => document.activeElement.blur()}
                                 />
-                              </TableCell>
-                              <TableCell css={styles.separateInputRake}>
+                              </div>
+                              <div className="p-4" css={styles.separateInputRake}>
                                 抽成為
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
@@ -1099,8 +1102,8 @@ function EditMultipleDesignersRakeSettingModal({
                                   }
                                   onWheel={() => document.activeElement.blur()}
                                 />
-                              </TableCell>
-                              <TableCell css={styles.verticleCenter}>
+                              </div>
+                              <div className="p-4" css={styles.verticleCenter}>
                                 {index !== 0 && (
                                   <DeleteForeverIcon
                                     css={styles.icons}
@@ -1113,15 +1116,15 @@ function EditMultipleDesignersRakeSettingModal({
                                     onClick={() => handleAddSegmented('nonDesignate')}
                                   />
                                 )}
-                              </TableCell>
-                            </TableRow>
+                              </div>
+                            </div>
                           )
                         })}
                       </Fragment>
                     )}
                   </Fragment>
-                </TableBody>
-              </Table>
+                </div>
+              </div>
             </CardContent>
             <Button
               variant="primary"
@@ -1133,12 +1136,14 @@ function EditMultipleDesignersRakeSettingModal({
           </>
         ) : (
           <div className="flex flex-col gap-4 p-6" aria-busy="true" aria-label="載入中">
+            <DialogTitle className="sr-only">編輯設計師抽成</DialogTitle>
             <Skeleton className="h-8 w-1/3" />
             <Skeleton className="h-[320px] w-full rounded-lg" />
           </div>
         )}
-      </Card>
-    </Modal>
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 
