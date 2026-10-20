@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
+import { Field } from 'ui/input'
 import billContext from 'context/keyInContext'
 import { useContext, memo } from 'react'
 import SourceSelect from 'components/SourceSelect'
@@ -7,20 +8,27 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
 const styles = {
+  // 比照打帳單：標籤在上、靠底對齊；窄螢幕「訂單來源」換到下一列，欄位扣掉 marginRight 不超出卡片
   payment: css({
     display: 'flex',
-    alignItems: 'center',
+    minWidth: 0,
+    maxWidth: '100%',
+    flexWrap: 'wrap',
+    gap: '12px 0',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
     marginBottom: theme.spacing(3),
   }),
   field: css({
-    width: '350px',
+    width: '350px !important',
+    maxWidth: 'calc(100% - 12px)',
     display: 'flex',
     marginRight: '12px !important',
     justifyContent: 'flex-start',
   }),
   field2: css({
     width: '200px !important',
+    maxWidth: 'calc(100% - 12px)',
     display: 'flex',
     marginRight: '12px',
     justifyContent: 'flex-start',
@@ -49,14 +57,15 @@ function Remark() {
 
   return (
     <div css={styles.payment}>
+      <Field label="備註" css={styles.field}>
       <TextField
+        fullWidth
         value={bill.remark ? bill.remark : ''}
         variant="outlined"
-        label="備註"
+        placeholder="備註"
         inputProps={{
           'data-testid': 'remark',
         }}
-        css={styles.field}
         onChange={event => {
           handleBillChange({
             key: 'remark',
@@ -64,10 +73,11 @@ function Remark() {
           })
         }}
       />
+      </Field>
+      <Field label="訂單來源" css={styles.field2}>
       <SourceSelect
         emptyOption
-        className={styles.field2}
-        label='訂單來源'
+        label=''
         value={bill.source || ''}
         onChange={e => {
           handleBillChange({
@@ -76,6 +86,7 @@ function Remark() {
           })
         }}
       />
+      </Field>
     </div>
   )
 }

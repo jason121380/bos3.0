@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion-compat'
-import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
+import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
 import { useFetchServiceOrders } from 'hooks/useFetchOrder'
 import _ from 'lodash'
@@ -294,18 +294,22 @@ export default function PannelService({ thirdPartTicket, expanded, setExpanded }
   }
 
   return (
-    <Accordion defaultExpanded={expanded} expanded={expanded}>
+    <Accordion expanded={expanded}>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
         aria-controls="panel-content"
         id="panel-header"
         data-testid="panelService"
         onClick={handleAccordionClick}
         style={{ width: '100%' }}
+        summaryMeta={!expanded && panelSummary(
+          services.filter(d => d.serviceId).length,
+          services.filter(d => d.serviceId).reduce((total, d) => total + d.price, 0)
+        )}
       >
         <p className="m-0" css={styles.heading}>項目消費</p>
       </AccordionSummary>
-      <AccordionDetails css={styles.details}>
+      {/* 原相容層把 aria-controls 對應的 id 放在內容區；新 Accordion 沒有自動產生，這裡補上讓 aria-controls 仍指得到 */}
+      <AccordionDetails id="panel-content" css={styles.details}>
         <div css={styles.fieldOutter}>
           {servicesModalOpen && (
             <ServicesModal

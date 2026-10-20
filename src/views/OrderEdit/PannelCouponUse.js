@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion-compat'
-import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
+import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
 import useFetchOrder from 'hooks/useFetchOrder'
 import _ from 'lodash'
@@ -149,11 +149,11 @@ export default function PannelCouponUse() {
     setExpanded(val => !val)
   }
   return (
-    <Accordion defaultExpanded={expanded} expanded={expanded}>
+    <Accordion expanded={expanded}>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
         onClick={handleAccordionClick}
         style={{ width: '100%' }}
+        summaryMeta={!expanded && panelSummary(bill.useTicketOrders.length)}
       >
         <p className="m-0" css={styles.heading}>使用預收卡</p>
         <p className="m-0" css={styles.subHeading}>編輯訂單不得編輯預收卡使用</p>

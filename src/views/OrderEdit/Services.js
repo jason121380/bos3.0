@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
-import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
+import { Field } from 'ui/input'
+import { Eraser, Copy, Trash2 } from 'lucide-react'
+import { RowIconButton, AddRowButton } from 'views/OrderCreate/RowAction'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import ServicesAutoComplete from 'components/ServicesAutoComplete'
 import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
@@ -14,9 +16,13 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
 const styles = {
+  // 項目列：欄位靠底對齊（標籤在上），窄螢幕換行不擠壓（比照打帳單）
   service: css({
     display: 'flex',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    rowGap: '12px',
     marginBottom: theme.spacing(3),
   }),
   field: css({
@@ -48,20 +54,6 @@ const styles = {
     '&:last-child': {
       marginRight: '0px',
     },
-  }),
-  action: css({
-    width: '50px',
-    display: 'flex',
-    marginRight: '12px',
-    marginTop: '13px !important',
-    cursor: 'pointer',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-  createIcon: css({
-    cursor: 'pointer',
-    margin: '10px',
   }),
   heading2: css({
     fontSize: theme.typography.pxToRem(13),
@@ -320,13 +312,15 @@ export default function Services({
     <Fragment>
       <div css={styles.service}>
         {index === 0 ? (
-          <FilterNoneIcon css={styles.createIcon} onClick={handleOpenServicesModal} />
+          <RowIconButton label="從清單選擇服務" className="mx-1.5" onClick={handleOpenServicesModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span style={{ margin: '22px' }} />
+          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
         )}
+        {/* 必填 *：Footer 送出前 helper/billVerify.js checkServicesOrders 要求每一列都有 serviceId（空列不會被丟掉） */}
+        <Field label="服務項目" required>
         <ServicesAutoComplete
           setServiceAlready={setServiceAlready}
-          label="服務名稱/代號"
+          inputProps={{ placeholder: '服務名稱/代號' }}
           onChange={handleServiceChange}
           className={styles.servicesField}
           value={service.serviceId}
@@ -357,10 +351,12 @@ export default function Services({
             }
           }}
         />
+        </Field>
         {service.serviceId ? (
           <Fragment>
+            <Field label="價格" css={styles.priceField}>
             <TextField
-              label="價格"
+              fullWidth
               variant="outlined"
               inputRef={priceRef}
               name="price"
@@ -400,20 +396,21 @@ export default function Services({
                   }
                 }
               }}
-              css={styles.priceField}
               value={service.price}
               onChange={handlePriceChange}
               disabled={!!(service.isLocked === 'TRUE' || service.isLocked === 'UNSET')}
             />
+            </Field>
 
             {!serviceDetail.loading &&
               helper.map((data, idx) => (
                 <div key={`${data.type}-${idx}`}>
+                  <Field label={`${data.type}`}>
                   <EmployeeAutoComplete
                     className={styles.field}
                     assistField={styles.assistField}
                     isAssist={true}
-                    label={`${data.type}`}
+                    placeholder={`${data.type}`}
                     value={data.helperId}
                     name={data.type}
                     ref={helperRefs[idx]}
@@ -460,6 +457,7 @@ export default function Services({
                     }}
                     onFocus={handleFocus}
                   />
+                  </Field>
                   {isHelperDesignation && (
                     <FormControlLabel
                       control={<Checkbox color="primary" inputRef={helperDesignateRefs[idx]} />}
@@ -507,12 +505,13 @@ export default function Services({
         ) : (
           ''
         )}
-        <div style={{ display: 'block' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           {(thirdPartTicket || (ticketDisabled && service.thirdPartyCouponMerchantId)) && (
+            <Field label="第三方卡券">
             <ThirdPartyAutoComplete
               setThirdPartyAlready={setThirdPartyAlready}
               className={styles.field}
-              label="第三方卡券"
+              fieldProps={{ placeholder: '第三方卡券' }}
               value={service.thirdPartyCouponMerchantId}
               ref={thirdPartyRef}
               name="thirdParty"
@@ -529,19 +528,20 @@ export default function Services({
                 }
               }}
             />
+            </Field>
           )}
           {(thirdPartTicket || (ticketDisabled && service.thirdPartyCouponMerchantId)) &&
             thirdPartyCoupons.map((data, index) => {
               if (data.id === service.thirdPartyCouponMerchantId) {
                 if (data.type === 'PERCENT') {
                   return (
-                    <p className="m-0" key={index} css={styles.heading2}>
+                    <p className="m-0" key={index} css={styles.heading2} style={{ marginTop: '4px' }}>
                       扣完後業績:{Math.round((service.price * (100 - data.fee)) / 100)}
                     </p>
                   )
                 } else {
                   return (
-                    <p className="m-0" key={index} css={styles.heading2}>
+                    <p className="m-0" key={index} css={styles.heading2} style={{ marginTop: '4px' }}>
                       扣完後業績:{Math.round(service.price - data.fee)}
                     </p>
                   )
@@ -549,27 +549,30 @@ export default function Services({
               }
             })}
         </div>
-        <BackspaceOutlinedIcon
-          css={styles.action}
+        <RowIconButton
+          label="清除此列" className="mr-1.5"
           onClick={handleClear}
           data-testid={`service-${index}-clear`}
-        />
+        >
+          <Eraser aria-hidden="true" strokeWidth={1.75} />
+        </RowIconButton>
 
         {!first ? (
-          <DeleteForeverIcon
-            css={styles.action}
+          <RowIconButton
+            label="刪除此列" className="mr-1.5"
             onClick={function () {
               removeService(index)
             }}
             data-testid={`service-${index}-delete`}
-          />
+          >
+            <Trash2 aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           ''
         )}
       </div>
       {last ? (
-        <AddIcon
-          css={styles.action}
+        <AddRowButton
           onClick={addService}
           data-testid={`service-${index}-add`}
         />
