@@ -15,7 +15,7 @@ import Results from './Results'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar } from 'ui/page-header'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 
 const HelperLeaderBoard = () => {
@@ -161,49 +161,55 @@ const HelperLeaderBoard = () => {
             列印
           </Button>
         </AdminPageHeader>
-        <Toolbar className="items-end">
-          <DateSelector
-            date={{ startDate: inputValue.startDay, endDate: inputValue.endDay }}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={value => handleValueChange(undefined, value, true)}
-          />
-          <div className="flex flex-col gap-1.5">
-            <span className="text-label text-text-secondary">排序依據</span>
-            <ToggleGroup
-              size="small"
-              exclusive
-              value={inputValue.orderBy}
-              onChange={(e, v) => handleValueChange('orderBy', v)}
-            >
-              <ToggleGroupItem value='POINT'>依點數</ToggleGroupItem>
-              <ToggleGroupItem value='PRICE'>依金額</ToggleGroupItem>
-            </ToggleGroup>
-          </div>
-          {!isDisplayTogglePerformanceButton &&
-            <div className="flex flex-col gap-1.5">
-              <span className="text-label text-text-secondary">業績依據</span>
-              <ReferToggleButton
-                value={inputValue.reference}
-                onChange={value => value && handleValueChange('reference', value)}
-              />
-            </div>}
-        </Toolbar>
-        <Toolbar className="flex-nowrap items-end">
-          <div className="min-w-0 flex-1">
-            <MerchantListAutocpmplete
-              onValueChange={value => {
-                getSubmitValue(value)
-              }}
+        <ReportToolbar
+          date={
+            <DateSelector
+              date={{ startDate: inputValue.startDay, endDate: inputValue.endDay }}
+              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              dateChange={value => handleValueChange(undefined, value, true)}
             />
-          </div>
-          <Button
-            variant="primary"
-            onClick={handleSearchReport}
-            className="w-[100px] shrink-0"
-          >
-            搜尋
-          </Button>
-        </Toolbar>
+          }
+          filters={
+            <>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-label text-text-secondary">排序依據</span>
+                <ToggleGroup
+                  size="small"
+                  exclusive
+                  value={inputValue.orderBy}
+                  onChange={(e, v) => handleValueChange('orderBy', v)}
+                >
+                  <ToggleGroupItem value='POINT'>依點數</ToggleGroupItem>
+                  <ToggleGroupItem value='PRICE'>依金額</ToggleGroupItem>
+                </ToggleGroup>
+              </div>
+              {!isDisplayTogglePerformanceButton &&
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-label text-text-secondary">業績依據</span>
+                  <ReferToggleButton
+                    value={inputValue.reference}
+                    onChange={value => value && handleValueChange('reference', value)}
+                  />
+                </div>}
+              <div className="min-w-0 flex-1">
+                <MerchantListAutocpmplete
+                  onValueChange={value => {
+                    getSubmitValue(value)
+                  }}
+                />
+              </div>
+            </>
+          }
+          actions={
+            <Button
+              variant="primary"
+              onClick={handleSearchReport}
+              className="w-[100px] shrink-0"
+            >
+              搜尋
+            </Button>
+          }
+        />
 
         {helperLeaboardData.loading ? (
           // 載入中：與舊版 CircularProgress 相同時機顯示

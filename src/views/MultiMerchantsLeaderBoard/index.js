@@ -14,7 +14,7 @@ import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar } from 'ui/page-header'
 import { Autocomplete } from 'ui/combobox'
 
 const MultiMerchantsLeaderBoard = () => {
@@ -126,85 +126,91 @@ const MultiMerchantsLeaderBoard = () => {
 						列印
 					</Button>
 				</AdminPageHeader>
-				<Toolbar className="items-end">
-					<DateSelector
-						date={date}
-						attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-						dateChange={value => setDate(value)}
-					/>
-					<div className="flex flex-col gap-1.5">
-						<span className="text-label text-text-secondary">選擇廠商</span>
-						<Autocomplete
-							style={{ width: 200 }}
-							autoHighlight
-							disabled={getVendor.loading}
-							options={vendorOptions}
-							variant='contained'
-							value={submitValue.selectVendor}
-							onChange={(event, value) => {
-								setSubmitValue({ ...submitValue, selectVendor: value })
-								value === null && handleSearch(date, null)
-							}}
-							getOptionLabel={option => option.name}
-							filterOptions={(options, { inputValue }) => {
-								const newOptions = options.filter(d =>
-									d.name.toLocaleUpperCase().includes(inputValue.toLocaleUpperCase())
-								)
-								return newOptions
-							}}
-							renderOption={(props, option) => {
-								props.key = props.id
-								return (
-									<li {...props}>
-										{option.name}
-									</li>
-								)
-							}}
-							renderInput={params => (
-								<TextField
-									{...params}
-									variant="outlined"
+				<ReportToolbar
+					date={
+						<DateSelector
+							date={date}
+							attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+							dateChange={value => setDate(value)}
+						/>
+					}
+					filters={
+						<>
+							<div className="flex flex-col gap-1.5">
+								<span className="text-label text-text-secondary">選擇廠商</span>
+								<Autocomplete
+									style={{ width: 200 }}
+									autoHighlight
+									disabled={getVendor.loading}
+									options={vendorOptions}
+									variant='contained'
+									value={submitValue.selectVendor}
+									onChange={(event, value) => {
+										setSubmitValue({ ...submitValue, selectVendor: value })
+										value === null && handleSearch(date, null)
+									}}
+									getOptionLabel={option => option.name}
+									filterOptions={(options, { inputValue }) => {
+										const newOptions = options.filter(d =>
+											d.name.toLocaleUpperCase().includes(inputValue.toLocaleUpperCase())
+										)
+										return newOptions
+									}}
+									renderOption={(props, option) => {
+										props.key = props.id
+										return (
+											<li {...props}>
+												{option.name}
+											</li>
+										)
+									}}
+									renderInput={params => (
+										<TextField
+											{...params}
+											variant="outlined"
+											size="small"
+											placeholder="廠商名稱"
+											inputProps={{ ...params.inputProps, 'aria-label': '選擇廠商' }}
+											InputProps={{
+												...params.InputProps,
+											}}
+										/>
+									)}
+								/>
+							</div>
+							<div className="flex flex-col gap-1.5">
+								<span className="text-label text-text-secondary">排序依據</span>
+								<ToggleGroup
 									size="small"
-									placeholder="廠商名稱"
-									inputProps={{ ...params.inputProps, 'aria-label': '選擇廠商' }}
-									InputProps={{
-										...params.InputProps,
+									value={sort}
+									onChange={(e, value) => setSort(value)}
+									exclusive
+								>
+									<ToggleGroupItem value='PERFORMANCE'>業績</ToggleGroupItem>
+									<ToggleGroupItem value='TOTALCOUNT'>數量</ToggleGroupItem>
+								</ToggleGroup>
+							</div>
+							<div className="min-w-0 flex-1">
+								<MerchantListAutocpmplete
+									onValueChange={value => {
+										setSubmitValue({ ...submitValue, merchantId: value })
+										value.length === 0 && handleSearch(date, undefined, [])
 									}}
 								/>
-							)}
-						/>
-					</div>
-					<div className="flex flex-col gap-1.5">
-						<span className="text-label text-text-secondary">排序依據</span>
-						<ToggleGroup
-							size="small"
-							value={sort}
-							onChange={(e, value) => setSort(value)}
-							exclusive
+							</div>
+						</>
+					}
+					actions={
+						<Button
+							variant="primary"
+							onClick={() => handleSearch()}
+							disabled={getMultiMerchantsLeaderBoardLazyData.loading || getMultiMerchantsLeaderBoardLazyData.data === undefined}
+							className="w-[100px] shrink-0"
 						>
-							<ToggleGroupItem value='PERFORMANCE'>業績</ToggleGroupItem>
-							<ToggleGroupItem value='TOTALCOUNT'>數量</ToggleGroupItem>
-						</ToggleGroup>
-					</div>
-				</Toolbar>
-				<Toolbar className="flex-nowrap items-end">
-					<div className="min-w-0 flex-1">
-						<MerchantListAutocpmplete
-							onValueChange={value => {
-								setSubmitValue({ ...submitValue, merchantId: value })
-								value.length === 0 && handleSearch(date, undefined, [])
-							}}
-						/>
-					</div>
-					<Button
-						variant="primary"
-						onClick={() => handleSearch()}
-						disabled={getMultiMerchantsLeaderBoardLazyData.loading || getMultiMerchantsLeaderBoardLazyData.data === undefined}
-						className="w-[100px] shrink-0"
-					>
-						搜尋
-					</Button>
-				</Toolbar>
+							搜尋
+						</Button>
+					}
+				/>
 				{getMultiMerchantsLeaderBoardLazyData.loading && getMultiMerchantsLeaderBoardLazyData.data === undefined ?
 					// 載入中：與舊版 CircularProgress 相同時機顯示
 					<div className="noprint" aria-busy="true" aria-label="載入中">

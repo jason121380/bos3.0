@@ -18,7 +18,7 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 import { Autocomplete } from 'ui/combobox'
 
@@ -207,72 +207,78 @@ export default function Employees() {
           </Button>
         }
       />
-      <Toolbar className="items-end">
-        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+      <ReportToolbar
+        date={
           <DateSelector
             date={date}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
           />
-        </div>
-        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
-          <div className="flex flex-col items-start gap-1.5">
-            <div className="divText text-label text-text-secondary">排序依序</div>
-            <ToggleGroup
-              size="small"
-              value={orderSubmit}
-              onChange={handleToggleButtonChange}
-              exclusive
-            >
-              {orderBy.map((data, idx) => (
-                <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                  {data.label}
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
-          </div>
-        </div>
-      </Toolbar>
+        }
+        filters={
+          <>
+            <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+              <div className="flex flex-col items-start gap-1.5">
+                <div className="divText text-label text-text-secondary">排序依序</div>
+                <ToggleGroup
+                  size="small"
+                  value={orderSubmit}
+                  onChange={handleToggleButtonChange}
+                  exclusive
+                >
+                  {orderBy.map((data, idx) => (
+                    <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                      {data.label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              </div>
+            </div>
+            {/* 設計師挑選與搜尋：資料載入完成才出現（原樣） */}
+            {!userOrderableList.loading && (
+              <div className="min-w-0">
+                <Autocomplete
+                  multiple
+                  fullWidth
+                  options={selectDesignerDisplay}
+                  disableCloseOnSelect
+                  getOptionLabel={option => option.label}
+                  onChange={(event, value) => handleChecked(value)}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox
+                        style={{ color: 'rgb(var(--text))', marginRight: 8 }}
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        checked={selected}
+                      />
+                      {option.label}
+                    </li>
+                  )}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      label="設計師名稱"
+                      placeholder="設計師"
+                    />
+                  )}
+                />
+              </div>
+            )}
+          </>
+        }
+        actions={
+          !userOrderableList.loading && (
+            <Button variant="primary" className="shrink-0" onClick={handleSearchReport}>
+              搜尋
+            </Button>
+          )
+        }
+      />
 
       {!userOrderableList.loading ? (
         <Fragment>
-          <div className="flex w-full min-w-0 flex-wrap items-end gap-3 pb-4">
-            <div className="w-full min-w-0 sm:w-auto sm:flex-1">
-            <Autocomplete
-              multiple
-              fullWidth
-              options={selectDesignerDisplay}
-              disableCloseOnSelect
-              getOptionLabel={option => option.label}
-              onChange={(event, value) => handleChecked(value)}
-              renderOption={(props, option, { selected }) => (
-                <li {...props}>
-                  <Checkbox
-                    style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    checked={selected}
-                  />
-                  {option.label}
-                </li>
-              )}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  variant="outlined"
-                  label="設計師名稱"
-                  placeholder="設計師"
-                />
-              )}
-            />
-            </div>
-            <div className="flex w-full items-center sm:w-auto">
-              <Button variant="primary" className="shrink-0" onClick={handleSearchReport}>
-                搜尋
-              </Button>
-            </div>
-          </div>
-
           {!nonCashDetailStatement.loading ? (
             nonCashDetailStatement !== undefined && (
               <Results

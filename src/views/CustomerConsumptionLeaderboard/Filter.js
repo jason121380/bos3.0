@@ -4,6 +4,7 @@ import { Checkbox } from 'ui/checkbox'
 import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
 import { Button } from 'ui/button'
+import { ReportToolbar } from 'ui/page-header'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import DateSelector from 'components/DateSelector'
@@ -56,115 +57,114 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit }) =>
   }
 
   return (
-    <div className="noprint flex flex-col gap-2.5 pb-4">
-      <div className="flex flex-wrap items-center gap-2.5">
-        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
-          <DateSelector
-            date={inputData.dateRange}
-            dateChange={value => dataChange(value, 'dateRange')}
-            attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
-            disabled={loading || userOrderableList.loading}
-            rangelimit={rangeLimit}
-          />
-        </div>
-        <div className="shrink-0">
-          <FormControl
-            disabled={loading || userOrderableList.loading}
-            fullWidth variant='outlined'
-            style={{ width: 100 }}
-          >
-            <InputLabel>排序依據</InputLabel>
-            <Select
-              value={inputData.orderType}
-              label='排序依據'
-              onChange={e => dataChange(e.target.value, 'orderType')}
-
+    <ReportToolbar
+      date={
+        <DateSelector
+          date={inputData.dateRange}
+          dateChange={value => dataChange(value, 'dateRange')}
+          attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
+          disabled={loading || userOrderableList.loading}
+          rangelimit={rangeLimit}
+        />
+      }
+      filters={
+        <>
+          <div className="shrink-0">
+            <FormControl
+              disabled={loading || userOrderableList.loading}
+              fullWidth variant='outlined'
+              style={{ width: 100 }}
             >
-              {accordance.map(({ label, value }) => (
-                <MenuItem key={value} value={value}>{label}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-        <div className="min-w-0 flex-1 sm:w-auto sm:min-w-[200px] sm:max-w-[480px] sm:flex-initial">
-          <Autocomplete
-            multiple
-            autoHighlight
-            fullWidth
-            options={type}
-            disableCloseOnSelect
-            css={styles.autocomplete}
-            onChange={(e, value) => dataChange(value.map(({ value }) => value), 'consumptionTypes')}
-            getOptionLabel={option => option.label}
-            disabled={loading || userOrderableList.loading}
-            renderOption={(props, option, { selected }) => (
-              <li {...props}>
-                <Checkbox
-                  style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                  icon={icon}
-                  checkedIcon={checkedIcon}
-                  checked={selected}
-                />
-                {option.label}
-              </li>
-            )}
-            renderInput={params => (
-              <TextField
-                {...params}
-                style={{ marginRight: 18 }}
-                variant="outlined"
-                label="消費類型"
-              />
-            )}
-          />
-        </div>
-      </div>
-      <div className="flex items-end gap-2.5">
-        <div className="min-w-0 flex-grow">
-          <Autocomplete
-            multiple
-            autoHighlight
-            fullWidth
-            options={!userOrderableList.loading ? idx(userOrderableList, _ => _.data.getUserOrderableList) : []}
-            disableCloseOnSelect
-            disabled={loading || userOrderableList.loading}
-            getOptionLabel={option =>
-              option.userNickName !== null && option.userNickName.trim() ? option.userNickName : option.userName
-            }
-            onChange={(e, value) => dataChange(value.map(({ userId }) => userId), 'designerIds')}
-            filterOptions={filterOptions}
-            renderOption={({ key, ...props }, option, { selected }) => (
-              <li key={option.userId} {...props}>
-                <Checkbox
-                  style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                  icon={icon}
-                  checkedIcon={checkedIcon}
-                  checked={selected}
-                />
-                {option.userNickName !== null && option.userNickName.trim() ? option.userNickName : option.userName}
-                {option.userNo !== null && option.userNo.trim() ? ` - ${option.userNo}` : ''}
-              </li>
-            )}
-            renderInput={params => (
-              <TextField
-                {...params}
-                variant="outlined"
-                label="設計師篩選"
-                placeholder="選擇設計師"
-              />
-            )}
-          />
-        </div>
-        <div className="w-fit">
-          <Button
-            variant='primary'
-            onClick={handleSearch}
-            disabled={loading || userOrderableList.loading}
-          >搜尋</Button>
-        </div>
+              <InputLabel>排序依據</InputLabel>
+              <Select
+                value={inputData.orderType}
+                label='排序依據'
+                onChange={e => dataChange(e.target.value, 'orderType')}
 
-      </div>
-    </div>
+              >
+                {accordance.map(({ label, value }) => (
+                  <MenuItem key={value} value={value}>{label}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+          <div className="min-w-0 flex-1 sm:w-auto sm:min-w-[200px] sm:max-w-[480px] sm:flex-initial">
+            <Autocomplete
+              multiple
+              autoHighlight
+              fullWidth
+              options={type}
+              disableCloseOnSelect
+              css={styles.autocomplete}
+              onChange={(e, value) => dataChange(value.map(({ value }) => value), 'consumptionTypes')}
+              getOptionLabel={option => option.label}
+              disabled={loading || userOrderableList.loading}
+              renderOption={(props, option, { selected }) => (
+                <li {...props}>
+                  <Checkbox
+                    style={{ color: 'rgb(var(--text))', marginRight: 8 }}
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    checked={selected}
+                  />
+                  {option.label}
+                </li>
+              )}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  style={{ marginRight: 18 }}
+                  variant="outlined"
+                  label="消費類型"
+                />
+              )}
+            />
+          </div>
+          <div className="min-w-0">
+            <Autocomplete
+              multiple
+              autoHighlight
+              fullWidth
+              options={!userOrderableList.loading ? idx(userOrderableList, _ => _.data.getUserOrderableList) : []}
+              disableCloseOnSelect
+              disabled={loading || userOrderableList.loading}
+              getOptionLabel={option =>
+                option.userNickName !== null && option.userNickName.trim() ? option.userNickName : option.userName
+              }
+              onChange={(e, value) => dataChange(value.map(({ userId }) => userId), 'designerIds')}
+              filterOptions={filterOptions}
+              renderOption={({ key, ...props }, option, { selected }) => (
+                <li key={option.userId} {...props}>
+                  <Checkbox
+                    style={{ color: 'rgb(var(--text))', marginRight: 8 }}
+                    icon={icon}
+                    checkedIcon={checkedIcon}
+                    checked={selected}
+                  />
+                  {option.userNickName !== null && option.userNickName.trim() ? option.userNickName : option.userName}
+                  {option.userNo !== null && option.userNo.trim() ? ` - ${option.userNo}` : ''}
+                </li>
+              )}
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label="設計師篩選"
+                  placeholder="選擇設計師"
+                />
+              )}
+            />
+          </div>
+        </>
+      }
+      actions={
+        <Button
+          variant='primary'
+          onClick={handleSearch}
+          disabled={loading || userOrderableList.loading}
+        >搜尋</Button>
+      }
+    />
   )
 }
 

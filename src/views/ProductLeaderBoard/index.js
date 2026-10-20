@@ -9,7 +9,7 @@ import DateSelector from 'components/DateSelector'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar } from 'ui/page-header'
 import ProductListTreeView from 'components/ProductListTreeView'
 
 import Results from './Results'
@@ -75,44 +75,50 @@ const ProductLeaderBoard = () => {
             </Button>
           )}
         </AdminPageHeader>
-        <Toolbar className="items-end">
-          <DateSelector
-            date={{
-              startDate: inputData.startDay,
-              endDate: inputData.endDay
-            }}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={({ startDate, endDate }) => setInputData({...inputData, startDay: startDate, endDay: endDate})}
-          />
-          {excelData.length !== 0 && (
-            <div className="flex flex-col gap-1.5">
-              <span className="text-label text-text-secondary">類型</span>
-              <ToggleGroup
-                size="small"
-                value={inputData.types}
-                onChange={(e, v) => setInputData({...inputData, types: v})}
-              >
-                <ToggleGroupItem value='SELLING'>店販</ToggleGroupItem>
-                <ToggleGroupItem value='PICKING'>自購</ToggleGroupItem>
-              </ToggleGroup>
-            </div>
-          )}
-        </Toolbar>
-        <Toolbar className="items-end">
-          <div className="w-full min-w-0 sm:w-auto sm:flex-1">
-            <ProductListTreeView
-              onValueChange={v => setInputData({...inputData, productIds: v})}
+        <ReportToolbar
+          date={
+            <DateSelector
+              date={{
+                startDate: inputData.startDay,
+                endDate: inputData.endDay
+              }}
+              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              dateChange={({ startDate, endDate }) => setInputData({...inputData, startDay: startDate, endDay: endDate})}
             />
-          </div>
-          <Button
-            variant='primary'
-            className="w-[100px] shrink-0"
-            onClick={handleSearch}
-            disabled={productLeaderBoardV2Data.loading || !productLeaderBoardV2Data.data}
-          >
-            搜尋
-          </Button>
-        </Toolbar>
+          }
+          filters={
+            <>
+              {excelData.length !== 0 && (
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-label text-text-secondary">類型</span>
+                  <ToggleGroup
+                    size="small"
+                    value={inputData.types}
+                    onChange={(e, v) => setInputData({...inputData, types: v})}
+                  >
+                    <ToggleGroupItem value='SELLING'>店販</ToggleGroupItem>
+                    <ToggleGroupItem value='PICKING'>自購</ToggleGroupItem>
+                  </ToggleGroup>
+                </div>
+              )}
+              <div className="w-full min-w-0 sm:w-auto sm:flex-1">
+                <ProductListTreeView
+                  onValueChange={v => setInputData({...inputData, productIds: v})}
+                />
+              </div>
+            </>
+          }
+          actions={
+            <Button
+              variant='primary'
+              className="w-[100px] shrink-0"
+              onClick={handleSearch}
+              disabled={productLeaderBoardV2Data.loading || !productLeaderBoardV2Data.data}
+            >
+              搜尋
+            </Button>
+          }
+        />
         {!productLeaderBoardV2Data.loading && productLeaderBoardV2Data.data ? (
           <Results report={reportForDisplay} />
         ) : (

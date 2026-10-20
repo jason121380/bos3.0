@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import React from 'react'
 
-import { HeaderActionsPortal, HeaderActionsSlot, PageHeader } from '../page-header'
+import { HeaderActionsPortal, HeaderActionsSlot, PageHeader, ReportToolbar } from '../page-header'
 
 afterEach(cleanup)
 
@@ -45,5 +45,32 @@ describe('ui/page-header 頁首動作插槽', () => {
       </HeaderActionsPortal>
     )
     expect(screen.getByRole('button', { name: '報表匯出' })).toBeInTheDocument()
+  })
+
+  // 報表篩選（STYLE §14）：日期與搜尋一直看得到；其餘條件收在「篩選」卡片，預設收合但不卸載（店家挑選等元件自己保存已選值）
+  it('ReportToolbar：篩選預設收合、點擊展開，收合時條件仍掛載；搜尋在外面', () => {
+    render(
+      <ReportToolbar
+        date={<input aria-label="日期" />}
+        filters={<input aria-label="店家" defaultValue="A 店" />}
+        actions={<button type="button">搜尋</button>}
+      />
+    )
+    const toggle = screen.getByRole('button', { name: '篩選' })
+    const store = screen.getByLabelText('店家')
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    expect(store).not.toBeVisible()
+    expect(screen.getByRole('button', { name: '搜尋' })).toBeVisible()
+    fireEvent.click(toggle)
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByLabelText('店家')).toBe(store)
+    expect(store).toHaveValue('A 店')
+    expect(store).toBeVisible()
+  })
+
+  // 只有日期的報表不需要篩選鈕
+  it('沒有 filters 時不顯示篩選鈕', () => {
+    render(<ReportToolbar date={<input aria-label="日期" />} />)
+    expect(screen.queryByRole('button', { name: '篩選' })).toBeNull()
   })
 })

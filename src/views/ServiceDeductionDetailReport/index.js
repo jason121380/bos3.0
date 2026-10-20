@@ -7,7 +7,7 @@ import ServicesIncludesTicketsAutoComplete from 'components/ServicesIncludesTick
 import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar } from 'ui/page-header'
 import { endOfMonth } from 'date-fns'
 import idx from 'idx'
 import { CSVLink } from "react-csv";
@@ -82,16 +82,29 @@ const ServiceDeductionDetailReport = () => {
             </CSVLink>
           </Button>
         </AdminPageHeader>
-        <Toolbar className="items-end">
-          <div className={topDiv}>
-            <MerchantSearchBar
-              values={inputData}
-              onFilter={values => setInputData(values)}
-              outside
-              visible={['datePicker', 'employee']}
-              lastInLeaderBoard={true}
-            />
+        {/* 日期留在篩選列；其餘條件收進「篩選」（STYLE §14）。MerchantSearchBar 拆兩個實例共用同一份 values（同帳單列表），收合區的那個不讀網址日期 */}
+        <ReportToolbar
+          date={
             <div className={topDiv}>
+              <MerchantSearchBar
+                values={inputData}
+                onFilter={values => setInputData(values)}
+                outside
+                visible={['datePicker']}
+                lastInLeaderBoard={true}
+              />
+            </div>
+          }
+          filters={
+            <div className={topDiv}>
+              <MerchantSearchBar
+                values={inputData}
+                onFilter={values => setInputData(values)}
+                outside
+                stopGetQueryString={true}
+                visible={['employee']}
+                lastInLeaderBoard={true}
+              />
               <ServicesIncludesTicketsAutoComplete
                 className={styles.field}
                 label="服務名稱/代號"
@@ -111,8 +124,8 @@ const ServiceDeductionDetailReport = () => {
                 </Select>
               </FormControl>
             </div>
-          </div>
-        </Toolbar>
+          }
+        />
         {!serviceDedcutionDetailData.loading ? (
           idx(serviceDedcutionDetailData, _ =>
             _.data.getUserServiceDeductionDetialMultiple !== null ? (
