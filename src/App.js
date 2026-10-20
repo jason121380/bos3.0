@@ -26,11 +26,6 @@ import TeachingModeState from './context/TeachingModeState'
 import { ThemeProvider } from '@mui/material'
 import { theme } from './theme'
 
-// 時區設定
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import deLocale from 'date-fns/locale/zh-TW'
-
 // import ReactGA from 'react-ga'
 
 const history = createBrowserHistory()
@@ -52,20 +47,14 @@ function App() {
   return (
     <ApolloProvider client={client()}>
       <ThemeProvider theme={theme}>
-        <LocalizationProvider
-          adapterLocale={deLocale}
-          dateAdapter={AdapterDateFns}
-          localeText={{ cancelButtonLabel: '取消', okButtonLabel: '確認' }}
-        >
-          <TeachingModeState>
-            <Router history={history}>
-              <ScrollReset />
-              <GoogleAnalytics />
-              {renderRoutes(routes)}
-              <div id="modal" />
-            </Router>
-          </TeachingModeState>
-        </LocalizationProvider>
+        <TeachingModeState>
+          <Router history={history}>
+            <ScrollReset />
+            <GoogleAnalytics />
+            {renderRoutes(routes)}
+            <div id="modal" />
+          </Router>
+        </TeachingModeState>
       </ThemeProvider>
     </ApolloProvider>
   )

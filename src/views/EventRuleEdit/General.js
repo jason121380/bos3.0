@@ -74,7 +74,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
               readOnly={isReadOnly}
             />
           </Field>
-          <div className="flex flex-wrap gap-5 [&_.MuiTextField-root]:w-[150px] [&_input]:cursor-pointer">
+          <div className="flex flex-wrap gap-5 [&_.ui-date-picker]:w-[150px] [&_input]:cursor-pointer">
             <MobileDatePicker
               readOnly={isReadOnly}
               maxDate={mainEvent.end}

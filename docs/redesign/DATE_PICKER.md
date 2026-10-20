@@ -1,5 +1,7 @@
 # 月曆 date-picker 專項（盤點＋設計）
 
+> **最新（2026/10/20，v3.0-1020-1053）**：依 Jason 決策①，`src/ui/date-picker.js` 已改為自家實作（`ui/calendar`、`ui/date-field`），不再使用 `@mui/x-date-pickers`；對外介面不變，行為規則見 `date-picker.js` 檔頭與 MEMORY #150。下方為 10/19 的盤點與設計歷史紀錄。
+
 > 專項第 1 批（2026/10/19，分支 `claude/ui-datepicker-spec-box`，v3.0-1019-0908 暫定）：**只有文件，沒有換任何元件、沒有改任何程式**。
 > 專項第 2 批（試行，2026/10/19，分支 `claude/ui-datepicker-pilot-box`，v3.0-1019-0958 暫定）：已建立 `src/ui/date-picker.js` facade，並換 2 檔（`MemberCreate/index.js`、`Profile/General/GeneralSettings.js`）。**目前已換 facade 的檔數：2／37**（下方盤點數字仍是第 1 批當時口徑，其餘 35 檔仍直接用 `@mui/x-date-pickers`）。
 > 依據：Jason 2026/10/19 拍版「月曆排入 `ui/date-picker` 專項，先盤點、分批進行」（見 `TODO.md` P3 第 3 點）。
