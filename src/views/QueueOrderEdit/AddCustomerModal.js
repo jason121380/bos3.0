@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Modal } from 'ui/modal-compat'
 import { Grid } from 'ui/grid-compat'
 import { Button } from 'ui/button-compat'
@@ -22,39 +21,6 @@ import useFetchGetLastCustomerNo from 'hooks/useFetchGetLastCustomerNo'
 import _ from 'lodash'
 import SourceSelect from 'components/SourceSelect'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    outline: 'none',
-    boxShadow: theme.shadows[20],
-    width: 700,
-    maxHeight: '100%',
-    overflowY: 'auto',
-    maxWidth: '100%',
-    '& .MuiCardHeader-action': {
-      marginTop: 0,
-    }
-  }),
-  birthday: css({
-    width: '100%',
-  }),
-  actions: css({
-    justifyContent: 'flex-end',
-  }),
-  birthdayInput: css({
-    width: '80px',
-  }),
-  birthdayMonthDay: css({
-    width: '80px',
-    marginLeft: '10px !important',
-  }),
-}
 
 const gender = [
   {
@@ -252,7 +218,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
 
   return (
     <Modal open={open}>
-      <Card css={styles.root}>
+      <Card className="absolute left-1/2 top-1/2 max-h-full w-[700px] max-w-full overflow-y-auto [outline:none] [transform:translate(-50%,-50%)] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)] [&_.MuiCardHeader-action]:mt-0">
         <CardHeader
           title={values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}
           action={!lastCustomerNo.loading && <span className="text-body text-text">{`最新顧客編號: ${lastNo}`}</span>}
@@ -361,7 +327,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                 value={birthdayObj.year}
                 onChange={e => handleBirthdayChange(e)}
                 variant="outlined"
-                css={styles.birthdayInput}
+                className="w-[80px]"
               />
               <TextField
                 label="月"
@@ -369,7 +335,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                 value={birthdayObj.month}
                 onChange={e => handleBirthdayChange(e)}
                 variant="outlined"
-                css={styles.birthdayMonthDay}
+                className="!ml-[10px] w-[80px]"
               />
               <TextField
                 label="日"
@@ -377,7 +343,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                 value={birthdayObj.day}
                 onChange={e => handleBirthdayChange(e)}
                 variant="outlined"
-                css={styles.birthdayMonthDay}
+                className="!ml-[10px] w-[80px]"
               />
             </Grid>
             <Grid item md={6} xs={12}>
@@ -471,7 +437,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
           </Grid>
         </CardContent>
         <div className="h-px bg-border" />
-        <CardActions css={styles.actions}>
+        <CardActions className="justify-end">
           <Button onClick={onClose}>取消</Button>
           <Button
             color="primary"

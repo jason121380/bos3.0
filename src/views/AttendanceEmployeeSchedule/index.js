@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Switch } from 'ui/switch'
 import Page from 'components/Page'
 import idx from 'idx'
@@ -14,30 +13,10 @@ import useFetchGetUESUsingSetting from 'hooks/useFetchGetUESUsingSetting'
 import useFetchGetEmployeeClockInScheduleExcel from 'hooks/useFetchGetEmployeeClockInScheduleExcel'
 import _ from 'lodash'
 import { openSnackbar } from 'elements/snackbars'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import { Skeleton } from 'ui/skeleton'
 import ScheduleTags from './ScheduleTags'
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    padding: '0px !important',
-    paddingTop: theme.spacing(1) + ' !important',
-    paddingBottom: theme.spacing(1.5),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  dateWrap: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0px 24px',
-    flexWrap: 'wrap'
-  })
-}
 
 export default function Employees() {
   const [date, setDate] = useState({
@@ -238,13 +217,6 @@ export default function Employees() {
               pickerOption={{
                 views: ['month', 'year']
               }}
-              css={css({
-                '& .MuiOutlinedInput-root': {
-                  height: '32px',
-                  width: '120px',
-                  fontSize: '14px',
-                }
-              })}
             />
           </div>
         </AdminPageHeader>

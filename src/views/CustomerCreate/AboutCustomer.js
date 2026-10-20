@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 純文字欄（姓名／暱稱／Email／地址／LINE ID／備註）改 Field 上方標籤＋ui Input（TextField 試點）；代號（重複檢查 error／endAdornment）、手機 tel、民國年生日、Select／來源下拉保留 MUI；性別 ToggleButton 為 ui/toggle-group（合成 event.target.value 傳遞不變）
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { TextField, InputAdornment } from 'ui/text-field'
@@ -12,31 +11,8 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import useFetchGetCheckIsCustomerNoUsed from 'hooks/useFetchGetCheckIsCustomerNoUsed'
 import SourceSelect from 'components/SourceSelect'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
-
-const styles = {
-  formGroup: css({
-    width: '100%',
-    marginBottom: theme.spacing(3) + '!important',
-  }),
-  birthdayMonthDay: css({
-    width: '80px',
-    marginLeft: '10px !important',
-  }),
-  birthdayInput: css({
-    width: '80px',
-  }),
-  actions: css({
-    display: 'flex',
-    gap: 10,
-    flexWRap: 'wrap',
-    alignItems: 'center',
-    margin: theme.spacing(3),
-  }),
-}
 
 function AboutProject({
   className,
@@ -88,7 +64,7 @@ function AboutProject({
   }, [customer.no])
 
   return (
-    <Card {...rest} css={className}>
+    <Card {...rest} className={className}>
       <CardHeader
         className="flex-wrap items-center"
         action={
@@ -111,7 +87,7 @@ function AboutProject({
           variant="outlined"
           fullWidth
           onChange={event => onChange({ event, key: 'no' })}
-          css={styles.formGroup}
+          className="w-full !mb-[24px]"
           InputProps={{
             endAdornment: (
               (customer.no === '') ? '' :
@@ -148,16 +124,16 @@ function AboutProject({
           fullWidth
           value={customer.cellphone}
           onChange={event => onChange({ event, key: 'cellphone' })}
-          css={styles.formGroup}
+          className="w-full !mb-[24px]"
         />
-        <div css={styles.formGroup}>
+        <div className="w-full !mb-[24px]">
           <TextField
             label="民國年"
             name="year"
             value={birthdayObj.year}
             onChange={e => handleBirthdayChange(e)}
             variant="outlined"
-            css={styles.birthdayInput}
+            className="w-[80px]"
           />
           <TextField
             label="月"
@@ -165,7 +141,7 @@ function AboutProject({
             value={birthdayObj.month}
             onChange={e => handleBirthdayChange(e)}
             variant="outlined"
-            css={styles.birthdayMonthDay}
+            className="!ml-[10px] w-[80px]"
           />
           <TextField
             label="日"
@@ -173,7 +149,7 @@ function AboutProject({
             value={birthdayObj.day}
             onChange={e => handleBirthdayChange(e)}
             variant="outlined"
-            css={styles.birthdayMonthDay}
+            className="!ml-[10px] w-[80px]"
           />
         </div>
         <Field label="Email" className="mb-6">
@@ -202,7 +178,7 @@ function AboutProject({
             })
           }
           exclusive
-          css={styles.formGroup}
+          className="w-full !mb-[24px]"
         >
           <ToggleGroupItem key="MALE" value="MALE">
             男
@@ -217,7 +193,7 @@ function AboutProject({
             onChange={event => onChange({ event, key: 'lineId' })}
           />
         </Field>
-        <FormControl variant="outlined" css={styles.formGroup}>
+        <FormControl variant="outlined" className="w-full !mb-[24px]">
           <InputLabel>設計師</InputLabel>
           <Select
             label='設計師'
@@ -238,7 +214,7 @@ function AboutProject({
         </FormControl>
         <SourceSelect
           emptyOption
-          className={styles.formGroup}
+          className="w-full !mb-[24px]"
           value={customer.source}
           onChange={event => onChange({ event, key: 'source' })}
         />
@@ -254,7 +230,7 @@ function AboutProject({
 }
 
 AboutProject.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
 }
 
 export default AboutProject

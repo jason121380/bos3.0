@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 排序依據 Select（handler 讀 e.target.value）與設計師多選 Autocomplete 保留 MUI
 import { Checkbox } from 'ui/checkbox'
 import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
@@ -9,18 +8,10 @@ import DateSelector from 'components/DateSelector'
 import idx from 'idx'
 import { Button } from 'ui/button'
 import { ReportToolbar } from 'ui/page-header'
-import { css } from '@emotion/react'
 import { Autocomplete } from 'ui/combobox'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
-
-const styles = {
-  container: css({
-    margin: '24px 0 16px',
-    gap: 10
-  })
-}
 
 const accordance = [
   { label: '入金儲值', value: 'DEPOSIT' },

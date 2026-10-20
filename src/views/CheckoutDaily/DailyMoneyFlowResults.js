@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Download, LockOpen } from 'lucide-react'
 import { openSnackbar } from 'elements/snackbars'
 import { format } from 'date-fns'
@@ -149,7 +148,7 @@ function Results({
   }
 
   return (
-    <div {...rest} css={className}>
+    <div {...rest} className={className}>
       <Card>
         <CardHeader
           className="items-center pb-4"
@@ -331,7 +330,7 @@ function Results({
 }
 
 Results.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   orders: PropTypes.array,
 }
 

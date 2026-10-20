@@ -1,37 +1,13 @@
-/** @jsxImportSource @emotion/react */
-import { colors } from 'ui/colors'
 import { DatePicker } from 'ui/date-picker'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchUserGeneral from 'hooks/useFetchUserGeneral'
 import produce from 'immer'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input, Label } from 'ui/input'
 import { RadioField } from 'ui/radio'
-
-const styles = {
-  root: css({}),
-  saveButton: css({
-    color: theme.palette.common.white,
-    backgroundColor: colors.green[600] + '!important',
-    '&:hover': {
-      backgroundColor: colors.green[900] + '!important',
-    },
-  }),
-  datePicker: css({
-    '& input.MuiInput-input': {
-      padding: '6px 0 7px'
-    }
-  }),
-  gender: css({
-    display: 'flex',
-    flexDirection: 'row',
-  })
-}
 
 function GeneralSettings({
   profile,
@@ -142,9 +118,8 @@ function GeneralSettings({
             </div>
             <div>
               <DatePicker
-                css={styles.datePicker}
                 // 月曆 facade：label 改由 ui/date-picker 放在欄位上方；textField 的 variant 由 facade 統一成 outlined
-                // （原 standard，屬本批預期的視覺改變；styles.datePicker 的 MuiInput 規則在 outlined 下不命中，無害）
+                // （原 standard，屬本批預期的視覺改變）
                 label="生日"
                 value={profile.birthday !== null ? profile.birthday : ""}
                 format='yyyy/MM/dd'
@@ -167,7 +142,7 @@ function GeneralSettings({
             </div>
             <div>
               <Label>性別</Label>
-              <div css={styles.gender} className="gap-4" role="radiogroup" aria-label="gender">
+              <div className="flex flex-row gap-4" role="radiogroup" aria-label="gender">
                 <RadioField name="gender" value="MALE" checked={(values.gender !== null ? values.gender : "") === 'MALE'} onChange={handleGenderChange} label="男" />
                 <RadioField name="gender" value="FEMALE" checked={(values.gender !== null ? values.gender : "") === 'FEMALE'} onChange={handleGenderChange} label="女" />
               </div>

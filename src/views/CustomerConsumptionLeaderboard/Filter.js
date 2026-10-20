@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 排序依據保留 MUI Select（與同列 MUI Autocomplete 的浮動標籤外框一致）
 import { Checkbox } from 'ui/checkbox'
 import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
@@ -9,18 +8,9 @@ import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxI
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import DateSelector from 'components/DateSelector'
 import idx from 'idx'
-import { css } from '@emotion/react'
 import { Autocomplete } from 'ui/combobox'
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
-
-const styles = {
-  autocomplete: css({
-    '& .MuiOutlinedInput-root': {
-      paddingRight: '18px !important'
-    }
-  })
-}
 
 const accordance = [
   { label: '全部', value: 'ALL' },
@@ -95,7 +85,6 @@ const Filter = ({ dataChange, inputData, loading, handleSearch, rangeLimit }) =>
               fullWidth
               options={type}
               disableCloseOnSelect
-              css={styles.autocomplete}
               onChange={(e, value) => dataChange(value.map(({ value }) => value), 'consumptionTypes')}
               getOptionLabel={option => option.label}
               disabled={loading || userOrderableList.loading}

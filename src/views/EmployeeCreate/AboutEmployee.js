@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 人員身分下拉的值可能為空字串（尚未載入預設值），保留 MUI Select
 import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
 import PropTypes from 'prop-types'
@@ -8,7 +7,7 @@ import { Field, Input } from 'ui/input'
 
 function AboutEmployee({ className, employee, onChange, service, setEmployee, ...rest }) {
   return (
-    <Card {...rest} css={className}>
+    <Card {...rest} className={className}>
       <CardHeader>
         <CardTitle>一般資訊</CardTitle>
       </CardHeader>
@@ -64,7 +63,7 @@ function AboutEmployee({ className, employee, onChange, service, setEmployee, ..
 }
 
 AboutEmployee.propTypes = {
-  css: PropTypes.object,
+  className: PropTypes.string,
 }
 
 export default AboutEmployee

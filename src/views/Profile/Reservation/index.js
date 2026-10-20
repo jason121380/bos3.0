@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { LoaderCircle } from 'lucide-react'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Field } from 'ui/input'
@@ -17,52 +16,9 @@ import useFetchGetMerchantDesignerWeekCalendar from 'hooks/useFetchGetMerchantDe
 import useFetchGetIsBookingRemarkDisplay from 'hooks/useFetchGetIsBookingRemarkDisplay'
 import useFetchGetIsCusBookingRemarkDisplay from 'hooks/useFetchGetIsCusBookingRemarkDisplay'
 import { cloneDeep } from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
 
 import { Card } from 'ui/card'
 import OrderTable from './OrderTable'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: 0,
-  }),
-  card: css({
-    marginTop: theme.spacing(3),
-    padding: '0px 20px 20px',
-    // width: 'fit-content',
-    // marginRight: 'auto',
-    // marginLeft: 'auto'
-  }),
-  cardHeader: css({
-    textAlign: 'center',
-    fontSize: '36px',
-  }),
-  sticky: css({
-    position: 'sticky',
-    left: 0,
-    background: 'white',
-    boxShadow: '5px 2px 5px grey',
-    borderRight: '2px solid black',
-  }),
-  opacity: css({
-    opacity: '1 !important',
-    zIndex: 999,
-    background: 'rgba(0,0,0,0) !important',
-  }),
-  headerWrap: css({
-    display: 'flex',
-    gap: 10,
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  }),
-  autoComplete: css({
-    width: '200px' + '!important'
-  }),
-}
 
 function Calendar({ designerId, checkinSettings, bookingCusCheck, checkinMode, bookingHistoryDisplay }) {
   const urlParams = new URLSearchParams(window.location.search)
@@ -509,19 +465,18 @@ function Calendar({ designerId, checkinSettings, bookingCusCheck, checkinMode, b
 
   return (
     <Fragment>
-      {/* 載入遮罩（原 Backdrop）：固定全版、置中轉圈、透明底（styles.opacity）、z-index 999；載入中才顯示並擋住點擊，否則 visibility hidden（同原元件）。#Backdrop 全域樣式保留 */}
+      {/* 載入遮罩（原 Backdrop）：固定全版、置中轉圈、透明底、z-index 999；載入中才顯示並擋住點擊，否則 visibility hidden（同原元件）。#Backdrop 全域樣式保留 */}
       <div
         id='Backdrop'
         aria-hidden="true"
-        css={styles.opacity}
-        className="fixed inset-0 flex items-center justify-center"
+        className="fixed inset-0 z-[999] flex items-center justify-center ![background:rgba(0,0,0,0)] !opacity-100"
         style={{ visibility: (merchant.loading || DesignerCalendar.loading) ? undefined : 'hidden' }}
       >
         <LoaderCircle className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
       </div>
       <Card className="mt-6 px-5 pb-5">
-        <div css={styles.headerWrap}>
-          <div css={styles.headerWrap}>
+        <div className="flex flex-wrap items-center justify-between gap-[10px]">
+          <div className="flex flex-wrap items-center justify-between gap-[10px]">
             <DateSelector
               date={{ startDate: date, endDate: date }}
               attributes={['lastweek', 'thisweek', 'nextweek', 'startDate']}

@@ -1,27 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { Field } from 'ui/input'
 import billContext from 'context/keyInContext'
 import { useContext, memo, useEffect } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import produce from 'immer'
-
-const styles = {
-  bonus: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginBottom: theme.spacing(3),
-    flexWrap: 'wrap',
-    gap: 20
-  }),
-  field: css({
-    width: '200px',
-    display: 'flex',
-    justifyContent: 'flex-start',
-  })
-}
 
 function Bonus({ customerBonus }) {
   const {
@@ -139,8 +120,8 @@ function Bonus({ customerBonus }) {
     }
   }, [bill.bonusUsed])
   return (
-    <div css={styles.bonus}>
-      <Field label="點數給點" css={styles.field}>
+    <div className="mb-6 flex flex-wrap items-center justify-start gap-[20px]">
+      <Field label="點數給點" className="flex w-[200px] justify-start">
         <TextField
           fullWidth
           value={bill.bonusDeposit}
@@ -152,7 +133,7 @@ function Bonus({ customerBonus }) {
           }}
         />
       </Field>
-      <Field label="點數扣點" css={styles.field}>
+      <Field label="點數扣點" className="flex w-[200px] justify-start">
         <TextField
           fullWidth
           value={bill.bonusUsed}
@@ -163,7 +144,7 @@ function Bonus({ customerBonus }) {
           }}
         />
       </Field>
-      <Field label="點數折抵金額" css={styles.field}>
+      <Field label="點數折抵金額" className="flex w-[200px] justify-start">
         <TextField
           fullWidth
           value={bill.bonusDecount}

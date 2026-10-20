@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
@@ -8,32 +7,10 @@ import uuid from 'uuid'
 import useFetchTickets from 'hooks/useFetchTickets'
 import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import idx from 'idx'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import CouponSells from './CouponSells'
 import CouponSellModal from './CouponSellModal'
 
-const styles = {
-  root: css({
-    width: '100%',
-    marginTop: theme.spacing(3),
-  }),
-  details: css({
-    overflowX: 'auto',
-  }),
-  heading: css({
-    fontSize: '16px !important',
-    fontWeight: 'bold',
-    color: 'rgb(var(--text))',
-  }),
-  fieldOutter: css({
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-  }),
-}
 
 export default function PannelCouponSells() {
   const { handleBillChange, order } = useContext(billContext)
@@ -216,10 +193,10 @@ export default function PannelCouponSells() {
         )}
         style={{ width: '100%' }}
       >
-        <p className="m-0" css={styles.heading}>預收卡販賣</p>
+        <p className="m-0 !text-[16px] font-bold text-text">預收卡販賣</p>
       </AccordionSummary>
-      <AccordionDetails css={styles.details}>
-        <div css={styles.fieldOutter}>
+      <AccordionDetails className="overflow-x-auto">
+        <div className="flex flex-col items-start justify-start">
           {couponModalOpen && (
             <CouponSellModal
               couponModalOpen={couponModalOpen}

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { Field } from 'ui/input'
@@ -12,53 +11,6 @@ import { useLazyFetchServiceNew } from 'hooks/useFetchService'
 import idx from 'idx'
 import _ from 'lodash'
 import { Fragment, useRef, useEffect, useContext, useState, createRef } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  // 項目列（比照打帳單 views/OrderCreate/styles/Services）：上方標籤、控制項靠底對齊、窄螢幕換行不擠壓
-  service: css({
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-    rowGap: '12px',
-    marginBottom: theme.spacing(3),
-  }),
-  field: css({
-    width: '150px',
-    minWidth: '150px',
-    marginRight: '12px',
-  }),
-  servicesField: css({
-    width: '250px',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  assistField: css({
-    width: '120px',
-    minWidth: '120px',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  priceField: css({
-    width: '65px',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  checkbox: css({
-    width: '100px',
-    display: 'flex',
-    marginRight: '12px',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-  heading2: css({
-    fontSize: theme.typography.pxToRem(13),
-    fontWeight: 'bold',
-  }),
-}
 
 export default function Services({
   index,
@@ -301,7 +253,7 @@ export default function Services({
   }, [service])
   return (
     <Fragment>
-      <div css={styles.service}>
+      <div className="mb-6 flex flex-wrap items-end justify-start gap-y-[12px]">
         {index === 0 ? (
           <RowIconButton label="從清單選擇服務" className="mx-1.5" onClick={handleOpenServicesModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
@@ -311,7 +263,7 @@ export default function Services({
         <Field label="服務項目" required>
           <ServicesAutoComplete
             onChange={handleServiceChange}
-            className={styles.servicesField}
+            className="mr-[12px] flex w-[250px]"
             value={service.serviceId}
             ref={serviceRef}
             name="service"
@@ -344,7 +296,7 @@ export default function Services({
         </Field>
         {service.serviceId ? (
           <Fragment>
-            <Field label="價格" css={styles.priceField}>
+            <Field label="價格" className="mr-[12px] flex w-[65px]">
               <TextField
                 fullWidth
                 variant="outlined"
@@ -400,8 +352,8 @@ export default function Services({
                   <Field label={`${data.type}`}>
                     <EmployeeAutoComplete
                       placeholder={data.type}
-                      className={styles.field}
-                      assistField={styles.assistField}
+                      className="mr-[12px] w-[150px] min-w-[150px]"
+                      assistField="mr-[12px] flex w-[120px] min-w-[120px]"
                       isAssist={true}
                       value={data.helperId}
                       name={data.type}
@@ -460,7 +412,7 @@ export default function Services({
                       onFocus={handleFocus}
                       checked={data.isDesignate}
                       label="指定"
-                      css={styles.checkbox}
+                      className="mr-[12px] flex w-[100px] last:mr-0"
                       onChange={(_event, state) =>
                         handleIsDesignateChange({
                           dataType: data.type,
@@ -502,7 +454,7 @@ export default function Services({
             <Field label="第三方卡券">
               <ThirdPartyAutoCompleteforQueueOrder
                 setThirdPartyAlready={setThirdPartyAlready}
-                className={styles.field}
+                className="mr-[12px] w-[150px] min-w-[150px]"
                 value={service.thirdPartyCouponMerchantId}
                 ref={thirdPartyRef}
                 name="thirdParty"
@@ -528,13 +480,13 @@ export default function Services({
               if (data.id === service.thirdPartyCouponMerchantId) {
                 if (data.type === 'PERCENT') {
                   return (
-                    <p key={index} className="m-0" css={styles.heading2}>
+                    <p key={index} className="m-0 text-[0.8125rem] font-bold">
                       扣完後業績:{Math.round((service.price * (100 - data.fee)) / 100)}
                     </p>
                   )
                 } else {
                   return (
-                    <p key={index} className="m-0" css={styles.heading2}>
+                    <p key={index} className="m-0 text-[0.8125rem] font-bold">
                       扣完後業績:{Math.round(service.price - data.fee)}
                     </p>
                   )

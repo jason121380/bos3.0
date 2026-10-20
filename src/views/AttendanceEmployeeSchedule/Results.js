@@ -1,117 +1,11 @@
-/** @jsxImportSource @emotion/react */
-// 班表格線使用 sticky 欄列、動態班別色與 .AttendanceEmployeeScheduleTable / .beforeToday 全域樣式，表格沿用 MUI；班別按鈕改 ui/button（動態色以 css 原樣保留）
+// 班表格線使用 sticky 欄列、動態班別色與 .AttendanceEmployeeScheduleTable / .beforeToday 全域樣式，表格沿用 MUI；班別按鈕改 ui/button（動態班別色以 CSS 變數＋!important 保留原權重）
 import { Paper } from 'ui/display-compat'
 import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
 import { format, isBefore, isAfter, isToday } from 'date-fns'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Button as UiButton } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
-
-const styles = {
-  root: css({
-    marginTop: theme.spacing(2),
-  }),
-  sticky: css({
-    position: 'sticky',
-    left: 0,
-    background: 'white',
-    zIndex: '99',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap !important',
-    minWidth: '150px !important',
-    width: '150px !important',
-    overflow: 'hidden !important',
-    outline: '1px solid rgb(var(--border))',
-  }),
-  stickyRow: css({
-    position: 'sticky',
-    top: 0,
-    background: 'white',
-    zIndex: '100',
-    outline: '1px solid rgb(var(--border))',
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  filterButton: css({
-    marginRight: theme.spacing(2),
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 1150,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
-  colorRed: css({
-    color: 'red',
-    fontWeight: 'bold',
-  }),
-  black: css({
-    color: 'black',
-  }),
-  white: css({
-    color: 'white',
-  }),
-  button: css({
-    padding: '4px',
-    height: '36px',
-    lineHeight: '16px',
-    overflow: 'hidden !important',
-  }),
-  buttonLabel: css({
-    overflow: 'hidden !important',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap !important',
-    width: '100px !important',
-    display: 'inline-block !important',
-  }),
-  cardHeader: css({
-    padding: '16px 16px !important',
-    '& .MuiCardHeader-title': {
-      fontSize: '15px',
-      fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-    },
-  }),
-  compactCell: css({
-    padding: '4px 8px !important',
-    fontSize: '13px !important',
-    whiteSpace: 'nowrap',
-  }),
-  compactHeaderCell: css({
-    padding: '8px 8px !important',
-    fontSize: '13px !important',
-    fontWeight: '600 !important',
-    whiteSpace: 'nowrap',
-    backgroundColor: 'rgb(var(--surface)) !important',
-  }),
-  dateHeaderCell: css({
-    minWidth: '120px !important',
-    width: '120px !important',
-    padding: '8px 8px !important',
-    fontSize: '13px !important',
-    fontWeight: '600 !important',
-    whiteSpace: 'nowrap',
-    backgroundColor: 'rgb(var(--surface)) !important',
-    textAlign: 'center',
-  }),
-  dateCell: css({
-    minWidth: '120px !important',
-    width: '120px !important',
-    padding: '4px 8px !important',
-    fontSize: '13px !important',
-    textAlign: 'center',
-  }),
-}
 
 export default function Results({
   displayDate, rawTime, fontColor, tagId, employeeSchedule,
@@ -235,7 +129,7 @@ export default function Results({
             return (
               <TableCell
                 key={time}
-                css={styles.dateCell}
+                className="!w-[120px] !min-w-[120px] !px-[8px] !py-[4px] !text-[13px] [&&]:text-center"
                 onClick={() => {
                   editSchedule(filterData[0].clockInSetting.id, dataIndex, time)
                 }}
@@ -243,16 +137,18 @@ export default function Results({
             )
           } else {
             return (
-              <TableCell key={time} css={styles.dateCell}>
+              <TableCell key={time} className="!w-[120px] !min-w-[120px] !px-[8px] !py-[4px] !text-[13px] [&&]:text-center">
                 <UiButton
                   variant="ghost"
-                  css={css([styles.button, css({ background: `${filterData[0].clockInSetting.color} !important`, borderRadius: '18px' })])}
+                  className="h-[36px] !overflow-hidden rounded-[18px] p-[4px] leading-[16px] max-sm:h-[36px] ![background:var(--schedule-tag-bg)]"
+                  style={{ '--schedule-tag-bg': filterData[0].clockInSetting.color }}
                   onClick={() => {
                     editSchedule(filterData[0].clockInSetting.id, dataIndex, time)
                   }}
                 >
                   <span
-                    css={css([styles.buttonLabel, css({ color: `${fontColor(filterData[0].clockInSetting.color)} !important`, fontSize: '12px' })])}
+                    className="!inline-block !w-[100px] !overflow-hidden text-ellipsis !whitespace-nowrap text-[12px] ![color:var(--schedule-tag-fg)]"
+                    style={{ '--schedule-tag-fg': fontColor(filterData[0].clockInSetting.color) }}
                   >{filterData[0].clockInSetting.name}</span>
                 </UiButton>
               </TableCell>
@@ -262,7 +158,7 @@ export default function Results({
           return (
             <TableCell
               key={time}
-              css={styles.dateCell}
+              className="!w-[120px] !min-w-[120px] !px-[8px] !py-[4px] !text-[13px] [&&]:text-center"
               onClick={() => {
                 setSchedule(dataIndex, time)
               }}
@@ -273,7 +169,7 @@ export default function Results({
         return (
           <TableCell
             key={time}
-            css={styles.dateCell}
+            className="!w-[120px] !min-w-[120px] !px-[8px] !py-[4px] !text-[13px] [&&]:text-center"
             onClick={() => {
               setSchedule(dataIndex, time)
             }}
@@ -291,24 +187,24 @@ export default function Results({
         if (filterData.length > 0) {
           if (filterData[0].clockInSetting.id === null) {
             return (
-              <TableCell key={time} className="beforeToday" css={styles.dateCell} />
+              <TableCell key={time} className="beforeToday !w-[120px] !min-w-[120px] !px-[8px] !py-[4px] !text-[13px] [&&]:text-center" />
             )
           } else {
             return (
-              <TableCell key={time} className="beforeToday" css={styles.dateCell}>
+              <TableCell key={time} className="beforeToday !w-[120px] !min-w-[120px] !px-[8px] !py-[4px] !text-[13px] [&&]:text-center">
                 <UiButton
                   variant="ghost"
-                  css={css([styles.button, css({ borderRadius: '18px' })])}>
-                  <span css={css([styles.buttonLabel, css({ fontSize: '12px' })])}>{filterData[0].clockInSetting.name}</span>
+                  className="h-[36px] !overflow-hidden rounded-[18px] p-[4px] leading-[16px] max-sm:h-[36px]">
+                  <span className="!inline-block !w-[100px] !overflow-hidden text-ellipsis !whitespace-nowrap text-[12px]">{filterData[0].clockInSetting.name}</span>
                 </UiButton>
               </TableCell>
             )
           }
         } else {
-          return <TableCell key={time} className="beforeToday" css={styles.dateCell} />
+          return <TableCell key={time} className="beforeToday !w-[120px] !min-w-[120px] !px-[8px] !py-[4px] !text-[13px] [&&]:text-center" />
         }
       } else {
-        return <TableCell key={time} className="beforeToday" css={styles.dateCell} />
+        return <TableCell key={time} className="beforeToday !w-[120px] !min-w-[120px] !px-[8px] !py-[4px] !text-[13px] [&&]:text-center" />
       }
     }
   }
@@ -337,16 +233,16 @@ export default function Results({
       </CardHeader>
       <div className="mt-0">
         <TableContainer style={{ maxHeight: 'calc(100vh - 380px)' }} component={Paper} className="AttendanceEmployeeScheduleTable">
-          <Table css={styles.table} size="small" aria-label="a dense table">
-            <TableHead css={styles.stickyRow}>
+          <Table size="small" aria-label="a dense table">
+            <TableHead className="sticky top-0 z-[100] bg-white [outline:1px_solid_rgb(var(--border))]">
               <TableRow>
-                <TableCell css={css([styles.sticky, styles.compactHeaderCell])}>設計師</TableCell>
+                <TableCell className="sticky left-0 z-[99] !w-[150px] !min-w-[150px] !overflow-hidden text-ellipsis !whitespace-nowrap ![background-color:rgb(var(--surface))] bg-white !p-[8px] !text-[13px] !font-semibold [outline:1px_solid_rgb(var(--border))]">設計師</TableCell>
                 {displayDate.map((date, index) => (
                   <TableCell
                     key={index}
                     style={{ cursor: isEditing ? 'pointer' : 'default' }}
                     onClick={() => addMultiColumnSchedule(Number(rawTime[index]))}
-                    css={styles.dateHeaderCell}
+                    className="!w-[120px] !min-w-[120px] ![background-color:rgb(var(--surface))] !p-[8px] [&&]:text-center !text-[13px] !font-semibold whitespace-nowrap"
                   >
                     {date}
                   </TableCell>
@@ -361,7 +257,7 @@ export default function Results({
                       <TableCell
                         style={{ cursor: isEditing ? 'pointer' : 'default' }}
                         onClick={() => addMultiRowSchedule(dataIndex)}
-                        css={css([styles.sticky, styles.compactCell])}
+                        className="sticky left-0 z-[99] !w-[150px] !min-w-[150px] !overflow-hidden text-ellipsis !whitespace-nowrap bg-white !px-[8px] !py-[4px] !text-[13px] [outline:1px_solid_rgb(var(--border))]"
                         key={data.user.name}
                       >
                         {data.user.name}
