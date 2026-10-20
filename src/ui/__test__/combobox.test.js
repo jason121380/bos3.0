@@ -158,4 +158,48 @@ describe('ui/combobox Autocomplete（與 MUI Autocomplete 相容的介面）', (
     const filter = createFilterOptions({ matchFrom: 'start', stringify: o => o.id + o.name })
     expect(filter(options, { inputValue: 'b', getOptionLabel })).toEqual([options[1]])
   })
+
+  // 打帳單的服務項目下拉以同一個 toggle 接 onOpen／onClose（受控 open）：點一次輸入框只能呼叫一次 onOpen，
+  // 否則開了又關、選單出不來（同 MUI：只在狀態改變時呼叫）
+  it('受控 open：點輸入框只呼叫一次 onOpen', () => {
+    const onOpen = jest.fn()
+    const Harness = () => {
+      const [open, setOpen] = React.useState(false)
+      const toggle = () => {
+        onOpen()
+        setOpen(o => !o)
+      }
+      return (
+        <Autocomplete
+          open={open}
+          onOpen={toggle}
+          onClose={toggle}
+          options={options}
+          value={null}
+          getOptionLabel={getOptionLabel}
+          onChange={() => {}}
+          renderInput={params => <TextField {...params} placeholder="請選擇" />}
+        />
+      )
+    }
+    render(<Harness />)
+    fireEvent.click(screen.getByPlaceholderText('請選擇'))
+    expect(onOpen).toHaveBeenCalledTimes(1)
+    expect(screen.getByText('剪髮')).toBeInTheDocument()
+  })
+
+  // iPhone 觸控點選項（Jason 回報打帳單點選項沒反應）：touchend 先於 click，downshift 不認得 Portal 掛上的選單而送出失焦關選單；
+  // 手指按在選單上時要忽略這次失焦，讓 click 完成選取
+  it('觸控點選項：touchend 與輸入框失焦都不會在 click 之前關掉選單', () => {
+    const { onChange, input } = setup()
+    fireEvent.click(input)
+    const option = screen.getByText('剪髮')
+    fireEvent.pointerDown(option)
+    fireEvent.touchStart(option)
+    fireEvent.touchEnd(option)
+    fireEvent.blur(input)
+    fireEvent.click(screen.getByText('剪髮'))
+    expect(onChange).toHaveBeenCalledTimes(1)
+    expect(onChange.mock.calls[0][1]).toEqual(options[1])
+  })
 })
