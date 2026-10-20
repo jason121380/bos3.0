@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from 'ui/card-compat'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { HeaderActionsPortal } from 'ui/page-header'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -143,20 +144,21 @@ function Results({ className, incomeStatement }) {
     >
       <Grid item md={7} xs={12}>
         <Card>
+          {/* 報表匯出：畫到頁首列印鈕左側（STYLE §14），匯出資料不變 */}
+          <HeaderActionsPortal>
+            <CSVLink
+              data={excelData}
+              className="noprint"
+              filename="損益表.csv"
+            >
+              <Button variant="secondary">
+                <Download strokeWidth={1.75} />
+                報表匯出
+              </Button>
+            </CSVLink>
+          </HeaderActionsPortal>
           <CardHeader
             className="IncomeStatementReportHeader"
-            action={
-              <CSVLink
-                data={excelData}
-                className="noprint"
-                filename="損益表.csv"
-              >
-                <Button variant="secondary" size="sm">
-                  <Download strokeWidth={1.75} />
-                  報表匯出
-                </Button>
-              </CSVLink>
-            }
             title="損益表"
           />
           <Divider />

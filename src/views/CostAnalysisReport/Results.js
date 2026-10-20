@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from 'ui/card-compat'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { HeaderActionsPortal } from 'ui/page-header'
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -109,15 +110,17 @@ function Results({
     >
       <Grid item md={10} sm={12} xs={12}>
         {merchantIncomeStatement !== undefined && (
+          <>
+          {/* 報表匯出：畫到頁首列印鈕左側（STYLE §14），資料與 handler 不變 */}
+          <HeaderActionsPortal>
+            <Button disabled={excelLoading} onClick={handleExcel} variant="secondary">
+              <Download strokeWidth={1.75} />
+              報表匯出
+            </Button>
+          </HeaderActionsPortal>
           <Card>
             <CardHeader
               className="CostAnalysisReportCardHeader noprint"
-              action={
-                <Button disabled={excelLoading} onClick={handleExcel} variant="secondary" size="sm">
-                  <Download strokeWidth={1.75} />
-                  報表匯出
-                </Button>
-              }
               title="費用分析表"
             />
             <Divider />
@@ -209,6 +212,7 @@ function Results({
               </PerfectScrollbar>
             </CardContent>
           </Card>
+          </>
         )}
       </Grid>
     </Grid>

@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import { cn } from './utils'
 
 // STYLE.md §4 頁面骨架：PageHeader（標題 + 說明 + 右側主要動作）→ Toolbar（搜尋 / 篩選 / 日期 / 次要動作）→ Content
@@ -22,4 +23,18 @@ function Toolbar({ className, children }) {
 // 推到右側的區塊（放次要動作）
 const ToolbarSpacer = () => <div className="flex-1" />
 
-export { PageHeader, Toolbar, ToolbarSpacer }
+// 頁首動作插槽（STYLE §14：「報表匯出」在頁首、列印左側）：匯出按鈕的資料與 handler 留在 Results 原地，
+// 以 HeaderActionsPortal 畫到 PageHeader 的 HeaderActionsSlot；頁面沒有插槽時照原位置渲染（不會消失）
+const SLOT_ID = 'page-header-actions-slot'
+const HeaderActionsSlot = () => <span id={SLOT_ID} className="contents" />
+
+function HeaderActionsPortal({ children }) {
+  const [slot, setSlot] = React.useState(null)
+  React.useEffect(() => {
+    setSlot(document.getElementById(SLOT_ID))
+  }, [])
+  if (slot) return ReactDOM.createPortal(children, slot)
+  return children
+}
+
+export { PageHeader, Toolbar, ToolbarSpacer, HeaderActionsSlot, HeaderActionsPortal }

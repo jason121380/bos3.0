@@ -244,7 +244,7 @@ const OverallPerformanceAnalysisReport = () => {
           </div>
         </div>
       </Toolbar>
-      <div className="flex w-full min-w-0 flex-wrap items-end gap-3 pb-4">
+      <div className="noprint flex w-full min-w-0 flex-wrap items-end gap-3 pb-4">
         <div className="w-full min-w-0 sm:w-auto sm:flex-1">
           <MerchantListAutocpmplete
             onValueChange={value => {

@@ -9,7 +9,7 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { HeaderActionsSlot, PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
@@ -51,13 +51,16 @@ export default function IncomeStatementReport() {
       <PageHeader
         title="損益表"
         actions={
-          <Button
-            variant="secondary"
-            onClick={() => window.print()}
-          >
-            <Printer strokeWidth={1.75} />
-            列印
-          </Button>
+          <>
+            <HeaderActionsSlot />
+            <Button
+              variant="secondary"
+              onClick={() => window.print()}
+            >
+              <Printer strokeWidth={1.75} />
+              列印
+            </Button>
+          </>
         }
       />
       <Toolbar>
