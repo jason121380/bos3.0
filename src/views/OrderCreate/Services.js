@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { Field, Input } from 'ui/input'
 import { CheckboxField } from 'ui/checkbox'
@@ -15,7 +14,15 @@ import { Fragment, createRef, memo, useEffect, useRef, useState, useContext } fr
 import TeachingModeContext from 'context/teachingModeContext'
 import { useFetchThirdPartysForCreateOrder } from 'hooks/useFetchMerchant'
 
-import styles from './styles/Services'
+const styles = {
+  service: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  field: 'w-[150px] min-w-[150px] flex mr-[12px]',
+  servicesField: 'w-[250px] flex mr-[12px]',
+  assistField: 'w-[120px] min-w-[120px] flex mr-[12px]',
+  priceField: 'w-[65px] flex mr-[12px]',
+  checkbox: 'w-[100px] flex mr-[12px] last:mr-0',
+  heading2: 'text-[0.8125rem] font-bold',
+}
 
 function Services({
   index,
@@ -289,7 +296,7 @@ function Services({
   }, [service])
   return (
     <Fragment>
-      <div css={styles.service}>
+      <div className={styles.service}>
         {index === 0 ? (
           <RowIconButton label="從清單選擇服務" className="mx-1.5" onClick={handleOpenServicesModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
@@ -332,7 +339,7 @@ function Services({
         </Field>
         {service.serviceId && (
           <Fragment>
-            <Field label="價格" css={styles.priceField}>
+            <Field label="價格" className={styles.priceField}>
               <Input
                 ref={priceRef}
                 value={service.price}
@@ -452,7 +459,7 @@ function Services({
                         }}
                         checked={data.isDesignate}
                         label="指定"
-                        css={styles.checkbox}
+                        className={styles.checkbox}
                         onChange={(_event, state) =>
                           handleIsDesignateChange({
                             dataType: data.type,
@@ -496,13 +503,13 @@ function Services({
                       if (data.id === service.thirdPartyCouponMerchantId) {
                         if (data.type === 'PERCENT') {
                           return (
-                            <p className="m-0" key={index} css={styles.heading2} style={{ marginTop: '4px' }}>
+                            <p className={`m-0 ${styles.heading2}`} key={index} style={{ marginTop: '4px' }}>
                               {`扣完後業績:${Math.round((service.price * (100 - data.fee)) / 100)}`}
                             </p>
                           )
                         } else {
                           return (
-                            <p className="m-0" key={index} css={styles.heading2} style={{ marginTop: '4px' }}>
+                            <p className={`m-0 ${styles.heading2}`} key={index} style={{ marginTop: '4px' }}>
                               {`扣完後業績:${Math.round(service.price - data.fee)}`}
                             </p>
                           )
@@ -513,7 +520,7 @@ function Services({
               </div>
             )}
             {teachingMode && (
-              <p className="m-0" css={styles.heading2}>勾選將入業績但不收費用**</p>
+              <p className={`m-0 ${styles.heading2}`}>勾選將入業績但不收費用**</p>
             )}
           </Fragment>
         )}

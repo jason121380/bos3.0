@@ -1,7 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import { TextField, InputAdornment } from 'ui/text-field'
 import { SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
-import { css } from '@emotion/react'
 
 const SearchField = ({ value, onChange }) => {
   return (
@@ -15,13 +13,7 @@ const SearchField = ({ value, onChange }) => {
       onChange={e => {
         onChange(e.target.value)
       }}
-      css={css({
-        width: 200,
-        '& input': {
-          fontSize: 16,
-          padding: '1px 0px 5px !important'
-        }
-      })}
+      className="w-[200px] [&_input]:text-[16px] [&_input]:![padding:1px_0px_5px]"
       InputProps={{
         startAdornment: (
           <InputAdornment style={{ padding: 4 }} position="start">

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { Style as StyleIcon } from 'ui/icons'
 import billContext from 'context/keyInContext'
@@ -7,9 +6,15 @@ import React, { Fragment, useContext } from 'react'
 import uuid from 'uuid'
 import CouponUse from 'views/OrderCreate/CouponUse'
 import { panelSummary } from './summary'
-import styles from 'views/OrderCreate/styles/PannelCouponUse'
 import useFetchGetTicketRecordsForOrderV2 from 'hooks/useFetchGetTicketRecordsForOrderV2'
 import TeachingModeContext from 'context/teachingModeContext'
+
+const styles = {
+  details: 'overflow-x-auto',
+  heading: '!text-[16px] font-bold text-[rgb(var(--text))] flex items-center',
+  fieldOutter: 'flex justify-start items-start flex-col',
+  couponTeachTitle: 'text-[0.8125rem] ml-[34px] font-bold',
+}
 
 export default function PannelCouponUse({ expanded, onPanelClick, display, reset }) {
   const { handleBillChange, bill } = useContext(billContext)
@@ -148,23 +153,23 @@ export default function PannelCouponUse({ expanded, onPanelClick, display, reset
         data-testid="panelCouponUse"
         style={{ width: '100%' }}
       >
-        <p className="m-0" css={styles.heading}>使用預收卡</p>
+        <p className={`m-0 ${styles.heading}`}>使用預收卡</p>
         {teachingMode && (
-          <p className="m-0" css={styles.couponTeachTitle}>
+          <p className={`m-0 ${styles.couponTeachTitle}`}>
             使用卡券必須設定好助理才能輸入助理**
           </p>
         )}
         {totalCoupons !== 0 && (
           <Fragment>
-            <p className="m-0" css={styles.heading}>
+            <p className={`m-0 ${styles.heading}`}>
               <StyleIcon />
             </p>
             <span>{`x${totalCoupons}`}</span>
           </Fragment>
         )}
       </AccordionSummary>
-      <AccordionDetails css={styles.details}>
-        <div css={styles.fieldOutter}>
+      <AccordionDetails className={styles.details}>
+        <div className={styles.fieldOutter}>
           {display &&
             couponUsage.map((data, index) => (
               <CouponUse

@@ -1,7 +1,5 @@
-/** @jsxImportSource @emotion/react */
 import billContext from 'context/keyInContext'
 import React, { useState, useEffect } from 'react'
-import styles from 'views/OrderCreate/styles/Pannel'
 import idx from 'idx'
 import { cloneDeep } from 'lodash'
 import useFetchGetThirdPartTicketSetting from 'hooks/useFetchGetThirdPartTicketSetting'
@@ -15,6 +13,13 @@ import PannelRemark from './PannelRemark'
 import PannelMemberShipCardSells from './PannelMemberShipCardSells'
 import PannelBonus from './PannelBonus'
 import PannelPerformance from './PannelPerformance'
+
+const styles = {
+  root: 'w-full flex flex-col gap-[12px] mt-0',
+  container: 'grid grid-cols-[1fr_420px] gap-[12px] max-[899.95px]:grid-cols-[1fr]',
+  leftColumn: 'flex flex-col gap-[12px] min-w-0',
+  rightColumn: 'flex flex-col gap-[12px] min-w-0',
+}
 
 const pannelByCode = {
   F1: 'service',
@@ -190,7 +195,7 @@ function Pannel() {
   }, [shortcut])
 
   return (
-    <div css={styles.root} id="panel">
+    <div className={styles.root} id="panel">
       <PannelService
         expanded={pannel.service.expaned}
         onPanelClick={() => handlePannelClick('service')}
@@ -222,8 +227,8 @@ function Pannel() {
         thirdPartTicket={thirdPartTicket}
         reset={reset}
       />}
-      <div css={styles.container}>
-        <div css={styles.leftColumn}>
+      <div className={styles.container}>
+        <div className={styles.leftColumn}>
           {(bonusActive && !bill.withoutCustomerData) &&
             <PannelBonus
               expanded={pannel.bonus.expaned}
@@ -235,7 +240,7 @@ function Pannel() {
           <PannelPayment />
           <PannelRemark />
         </div>
-        <div css={styles.rightColumn}>
+        <div className={styles.rightColumn}>
           <PannelPerformance />
         </div>
       </div>

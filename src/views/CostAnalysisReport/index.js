@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // printGrid 外框（列印時隱藏）依規則保留 MUI Grid
 import { Grid } from 'ui/grid-compat'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
@@ -12,8 +11,6 @@ import { useFetchGetCARPTDISPLAY } from 'hooks/useFetchGetParameterReportSetting
 import idx from 'idx'
 import React, { useEffect, useState } from 'react'
 import { openSnackbar } from 'elements/snackbars'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { HeaderActionsSlot, PageHeader, Toolbar } from 'ui/page-header'
@@ -22,13 +19,7 @@ import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
 
 const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  result: css({
-    marginTop: theme.spacing(1),
-  }),
+  result: 'mt-[8px]',
 }
 
 export default function MerchantIncomeStatementMonthly() {

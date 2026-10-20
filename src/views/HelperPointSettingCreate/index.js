@@ -1,10 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import useFetchCreateMerchantPointValueSetting from 'hooks/useFetchCreateMerchantPointValueSetting'
 import { openSnackbar } from 'elements/snackbars'
 import Page from 'components/Page'
 import { useHistory } from 'react-router'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
@@ -14,16 +11,7 @@ import _ from 'lodash'
 import Results from './Results'
 
 const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  about: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
+  about: 'mt-[24px]',
 }
 
 function HelperPointSettingCreate() {

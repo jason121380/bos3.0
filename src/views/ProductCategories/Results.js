@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Pencil } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
 import { openSnackbar } from 'elements/snackbars'
@@ -44,7 +43,7 @@ function Results({ className, categories, refetchCategories, ...rest }) {
     }
   }
   return (
-    <div {...rest} css={className}>
+    <div {...rest} className={className}>
       <Card>
         <CardHeader className="pb-4">
           <div className="flex items-baseline gap-3">

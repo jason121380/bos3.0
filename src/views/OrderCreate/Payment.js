@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
 import PaymentAutoComplete from 'components/PaymentAutoComplete'
 import billContext from 'context/keyInContext'
@@ -16,7 +15,13 @@ import React, {
 import { useLazyFetchCustomerWallet } from 'hooks/useFetchCustomerWallet'
 
 import PaymentCustomerWallet from './PaymentCustomerWallet'
-import styles from './styles/Payment'
+
+const styles = {
+  payment: 'items-center justify-start',
+  field: 'w-[150px] flex mr-[12px] justify-start',
+  fieldWidth: 'w-[250px] flex mr-[12px] justify-start',
+  otherPaymentDiv: 'flex',
+}
 
 function Payment(props) {
   const { expanded } = props
@@ -149,8 +154,8 @@ function Payment(props) {
   }
   return (
     <Fragment>
-      <div css={styles.payment}>
-        <div css={styles.otherPaymentDiv}>
+      <div className={styles.payment}>
+        <div className={styles.otherPaymentDiv}>
           <Field label="付款方式">
             <PaymentAutoComplete
               className={styles.fieldWidth}
@@ -178,7 +183,7 @@ function Payment(props) {
             />
           </Field>
           {bill.payType.map((payment, index) => (
-            <Field key={`${payment}-${index}`} label={`${payment}金額`} css={styles.field}>
+            <Field key={`${payment}-${index}`} label={`${payment}金額`} className={styles.field}>
               <Input
                 value={bill.amountByOtherPay}
                 ref={priceRefs[index]}

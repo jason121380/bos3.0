@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
@@ -6,7 +5,12 @@ import React from 'react'
 import { addDays } from "date-fns";
 import MemberShipCardSells from 'views/OrderCreate/MemberShipCardSells'
 import { panelSummary } from './summary'
-import styles from 'views/OrderCreate/styles/PannelMemberShipCardSells'
+
+const styles = {
+  details: 'overflow-x-auto',
+  heading: '!text-[16px] font-bold text-[rgb(var(--text))] flex items-center',
+  fieldOutter: 'flex justify-start items-start flex-col',
+}
 
 const PannelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, reset }) => {
   const {
@@ -175,10 +179,10 @@ const PannelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, re
         data-testid="memberShipCardSells"
         style={{ width: '100%' }}
       >
-        <p className="m-0" css={styles.heading}>會員卡銷售</p>
+        <p className={`m-0 ${styles.heading}`}>會員卡銷售</p>
       </AccordionSummary>
-      <AccordionDetails css={styles.details}>
-        <div css={styles.fieldOutter}>
+      <AccordionDetails className={styles.details}>
+        <div className={styles.fieldOutter}>
           {memberCardSells.map((data, index) => (
             <MemberShipCardSells
               key={`memberShipCard-sells-pannel-${data.id}-${index}`}

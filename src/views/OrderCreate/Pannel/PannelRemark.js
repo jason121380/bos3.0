@@ -1,15 +1,18 @@
-/** @jsxImportSource @emotion/react */
 import { Card, CardContent } from 'ui/card'
 import Remark from 'views/OrderCreate/Remark'
-import styles from 'views/OrderCreate/styles/PannelPayment'
+
+const styles = {
+  heading: '!text-[16px] font-bold text-[rgb(var(--text))] flex items-center',
+  fieldOutter: 'flex justify-start items-start flex-col',
+}
 
 export default function PannelRemark({ expanded }) {
 
   return (
     <Card>
       <CardContent>
-        <p className="m-0" css={styles.heading} style={{ marginBottom: '12px', fontWeight: 'bold' }}>備註及來源</p>
-        <div css={styles.fieldOutter}>
+        <p className={`m-0 ${styles.heading}`} style={{ marginBottom: '12px', fontWeight: 'bold' }}>備註及來源</p>
+        <div className={styles.fieldOutter}>
           <Remark expanded={expanded} />
         </div>
       </CardContent>

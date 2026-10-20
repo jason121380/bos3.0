@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 表格列使用 ui/table（外框 components/ManagementTable 亦為 ui/table）
 // 刪除確認已換 ui/dialog：舊版刻意不設 onClose（點背景、Esc 不關閉），故不傳 onOpenChange
 import { Pencil } from 'lucide-react'
@@ -14,43 +13,15 @@ import { useState, useEffect, useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { gender } from 'types'
 import useFetchMerchantPassword from 'hooks/useFetchMerchantPassword'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { Checkbox } from 'ui/checkbox'
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Field, Input } from 'ui/input'
 
 const styles = {
-  root: css({}),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 32,
-    width: 32,
-    marginRight: theme.spacing(1),
-    background: '#757575',
-    fontSize: '14px'
-  }),
-  compactCell: css({
-    padding: '4px 8px !important',
-    fontSize: '13px !important',
-    whiteSpace: 'nowrap',
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-  unWelcome: css({
-    '& td': {
-      color: 'red !important',
-      '& a.MuiTypography-root': {
-        color: 'red !important'
-      }
-    }
-  })
+  nameCell: 'flex items-center',
+  compactCell: '![padding:4px_8px] !text-[13px] whitespace-nowrap',
+  unWelcome: '[&_td]:!text-[red]',
 }
 
 function Results({
@@ -135,7 +106,7 @@ function Results({
     setDeletePwd('')
   }
   return (
-    <div {...rest} css={css([styles.root, className])}>
+    <div {...rest} className={className}>
       <ManagementTable
         title="所有客戶列表"
         totalCount={totalCount}
@@ -148,7 +119,7 @@ function Results({
         size="small"
         tableHead={
           <>
-            <TableHead css={styles.compactCell} className="w-12">
+            <TableHead className={`w-12 ${styles.compactCell}`}>
               <Checkbox
                 aria-label="全選"
                 checked={
@@ -162,34 +133,34 @@ function Results({
                 disabled={customers.length === 0}
               />
             </TableHead>
-            <TableHead css={styles.compactCell}>編輯</TableHead>
-            <TableHead css={styles.compactCell}>姓名</TableHead>
-            <TableHead css={styles.compactCell}>最近設計師</TableHead>
-            <TableHead css={styles.compactCell}>偏好設計師</TableHead>
-            <TableHead css={styles.compactCell}>上次消費日期</TableHead>
-            <TableHead css={styles.compactCell}>性別</TableHead>
-            <TableHead css={styles.compactCell}>生日</TableHead>
-            <TableHead css={styles.compactCell}>電話</TableHead>
-            <TableHead css={styles.compactCell}>客戶來源</TableHead>
+            <TableHead className={styles.compactCell}>編輯</TableHead>
+            <TableHead className={styles.compactCell}>姓名</TableHead>
+            <TableHead className={styles.compactCell}>最近設計師</TableHead>
+            <TableHead className={styles.compactCell}>偏好設計師</TableHead>
+            <TableHead className={styles.compactCell}>上次消費日期</TableHead>
+            <TableHead className={styles.compactCell}>性別</TableHead>
+            <TableHead className={styles.compactCell}>生日</TableHead>
+            <TableHead className={styles.compactCell}>電話</TableHead>
+            <TableHead className={styles.compactCell}>客戶來源</TableHead>
           </>
         }
       >
         <TableBody>
           {customers.map(data => (
             <TableRow
-              css={css([data.isUnwelcome ? styles.unWelcome : {}])}
+              className={data.isUnwelcome ? styles.unWelcome : undefined}
               hover
               key={`customer-${data.id}`}
               data-state={(selectedCustomers.indexOf(data.id) > -1) ? 'selected' : undefined}
             >
-              <TableCell css={styles.compactCell} className="w-12">
+              <TableCell className={`w-12 ${styles.compactCell}`}>
                 <Checkbox
                   aria-label={`選取 ${data.name}`}
                   checked={selectedCustomers.indexOf(data.id) > -1}
                   onChange={() => handleSelectOne(data.id)}
                 />
               </TableCell>
-              <TableCell css={styles.compactCell}>
+              <TableCell className={styles.compactCell}>
                 <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
                   <RouterLink
                     aria-label="編輯客戶"
@@ -199,8 +170,8 @@ function Results({
                   </RouterLink>
                 </Button>
               </TableCell>
-              <TableCell css={styles.compactCell}>
-                <div css={styles.nameCell}>
+              <TableCell className={styles.compactCell}>
+                <div className={styles.nameCell}>
                   <span aria-hidden="true" className="mr-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-hover text-label text-text-secondary">
                     {data.name.charAt(0).toUpperCase()}
                   </span>
@@ -217,17 +188,17 @@ function Results({
                   </div>
                 </div>
               </TableCell>
-              <TableCell css={styles.compactCell}>{idx(data, _ => _.latestDesigner.name)}</TableCell>
-              <TableCell css={styles.compactCell}>{idx(data, _ => _.preferDesigner.name)}</TableCell>
-              <TableCell css={styles.compactCell}>
+              <TableCell className={styles.compactCell}>{idx(data, _ => _.latestDesigner.name)}</TableCell>
+              <TableCell className={styles.compactCell}>{idx(data, _ => _.preferDesigner.name)}</TableCell>
+              <TableCell className={styles.compactCell}>
                 {data.lastTime ? format(data.lastTime, 'yyyy/MM/dd') : ''}
               </TableCell>
-              <TableCell css={styles.compactCell}>{gender[data.gender]}</TableCell>
-              <TableCell css={styles.compactCell}>
+              <TableCell className={styles.compactCell}>{gender[data.gender]}</TableCell>
+              <TableCell className={styles.compactCell}>
                 {data.birthday ? `${data.birthday.year}/${data.birthday.month}/${data.birthday.day}` : ''}
               </TableCell>
-              <TableCell css={styles.compactCell}>{data.cellphone}</TableCell>
-              <TableCell css={styles.compactCell}>{data.source}</TableCell>
+              <TableCell className={styles.compactCell}>{data.cellphone}</TableCell>
+              <TableCell className={styles.compactCell}>{data.source}</TableCell>
             </TableRow>
           ))}
         </TableBody>

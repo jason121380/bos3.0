@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 店家樹狀選擇窗：樹狀本體改用 ui/tree-compat（與 MUI 同 DOM／class／行為；展開/勾選/搜尋/確認回傳邏輯不動），僅換 ui/dialog 殼、ui Input/Button/Checkbox 視覺與 TreeView 列高/hover/縮排覆寫
 import { useState, useEffect } from 'react'
 import { Button } from 'ui/button'
@@ -9,143 +8,35 @@ import { TreeView, TreeItem } from 'ui/tree-compat'
 import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, GroupsRounded as GroupsRoundedIcon, Storefront as StorefrontIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import _ from 'lodash';
-import { css } from '@emotion/react'
 
+// 樹狀本體為 ui/tree-compat（輸出 MUI 同名 class），以下覆寫統一 compact 列高、hover、縮排與箭頭對齊
 const styles = {
-  // 樹狀本體為 ui/tree-compat（輸出 MUI 同名 class），以下覆寫統一 compact 列高、hover、縮排與箭頭對齊
-  root: css({
-    display: 'flex',
-    gap: 2,
-    flexDirection: 'column',
-    '& .MuiTreeItem-content': {
-      display: 'flex',
-      alignItems: 'center',
-      minHeight: 38,
-      padding: '4px 8px',
-      borderRadius: 6,
-      width: 'auto',
-      transition: 'background-color .15s',
-      '&:hover': {
-        backgroundColor: 'rgb(var(--surface-hover))'
-      },
-      '&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused': {
-        backgroundColor: 'unset'
-      }
-    },
-    '& .Mui-expanded, .Mui-selected': {
-      backgroundColor: 'unset !important'
-    },
-    '& .MuiTreeItem-content .MuiTreeItem-iconContainer': {
-      width: 20,
-      height: 20,
-      marginRight: 2,
-      padding: 0,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexShrink: 0,
-      '& svg': {
-        width: 16,
-        height: 16,
-        color: 'rgb(var(--text-tertiary))'
-      }
-    },
-    '& .MuiTreeItem-label': {
-      fontSize: 14,
-      lineHeight: '20px',
-      paddingLeft: '2px !important'
-    },
-    '& li': {
-      borderRadius: 6,
-      width: 'auto'
-    },
-    '& .onSelect': {
-      backgroundColor: 'rgb(var(--accent) / 0.12)',
-      color: 'rgb(var(--accent))',
-      fontWeight: 500,
-      '& > .MuiTreeItem-content': {
-        backgroundColor: 'rgb(var(--accent) / 0.12)',
-        color: 'rgb(var(--accent))',
-        fontWeight: 500,
-        '&:hover': {
-          backgroundColor: 'rgb(var(--accent) / 0.12)'
-        }
-      },
-      '& .MuiTreeItem-label': {
-        color: 'rgb(var(--accent))',
-        fontWeight: 500
-      },
-      '& .MuiTreeItem-label svg': {
-        color: 'rgb(var(--accent))'
-      }
-    }
-  }),
-  ulGroup: css({
-    '& ul': {
-      marginLeft: '24px !important'
-    },
-    '& ul .MuiCollapse-wrapper .MuiCollapse-wrapperInner': {
-      display: 'flex',
-      gap: '4px !important',
-      flexDirection: 'row !important',
-      flexWrap: 'wrap',
-      marginTop: 2
-    },
-  }),
-  ulGroupAll: css({
-    '& ul': {
-      marginLeft: 24
-    },
-    '& ul .MuiCollapse-wrapper .MuiCollapse-wrapperInner': {
-      display: 'flex',
-      gap: 4,
-      flexDirection: 'column',
-    },
-  }),
-  ulGroupAllMerchant: css({
-    '& ul': {
-      marginLeft: 24
-    },
-    '& ul .MuiCollapse-wrapper .MuiCollapse-wrapperInner': {
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: 4,
-    },
-  }),
-  item: css({
-    borderRadius: 6,
-    overflow: 'hidden',
-    '& .MuiTreeItem-label': {
-      paddingLeft: '0px !important'
-    },
-    '& .MuiTreeItem-iconContainer': {
-      display: 'none !important'
-    }
-  }),
-  margin: css({
-    '& > ul': {
-      marginLeft: 24
-    }
-  }),
-  span: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: 6,
-    wordBreak: 'keep-all',
-    whiteSpace: 'nowrap',
-    fontSize: 14,
-    lineHeight: '20px',
-    '& svg': {
-      width: 16,
-      height: 16,
-      flexShrink: 0,
-      color: 'rgb(var(--text-secondary))'
-    }
-  }),
-  outline: css({
-    outline: '2px solid rgb(var(--danger)) !important',
-    borderRadius: 6
-  })
+  root: [
+    'flex flex-col gap-[2px]',
+    '[&_.MuiTreeItem-content]:flex [&_.MuiTreeItem-content]:items-center [&_.MuiTreeItem-content]:min-h-[38px] [&_.MuiTreeItem-content]:p-[4px_8px] [&_.MuiTreeItem-content]:rounded-[6px] [&_.MuiTreeItem-content]:w-auto [&_.MuiTreeItem-content]:[transition:background-color_.15s]',
+    '[&_.MuiTreeItem-content:hover]:[background-color:rgb(var(--surface-hover))]',
+    '[&_.MuiTreeItem-content.Mui-focused]:[background-color:unset] [&_.MuiTreeItem-content.Mui-selected]:[background-color:unset] [&_.MuiTreeItem-content.Mui-selected.Mui-focused]:[background-color:unset]',
+    '[&_.Mui-expanded]:![background-color:unset] [&_.Mui-selected]:![background-color:unset]',
+    '[&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:w-[20px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:h-[20px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:mr-[2px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:p-0 [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:flex [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:items-center [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:justify-center [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:shrink-0',
+    '[&_.MuiTreeItem-content_.MuiTreeItem-iconContainer_svg]:w-[16px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer_svg]:h-[16px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer_svg]:[color:rgb(var(--text-tertiary))]',
+    '[&_.MuiTreeItem-label]:text-[14px] [&_.MuiTreeItem-label]:leading-[20px] [&_.MuiTreeItem-label]:!pl-[2px]',
+    '[&_li]:rounded-[6px] [&_li]:w-auto',
+    '[&_.onSelect]:[background-color:rgb(var(--accent)/0.12)] [&_.onSelect]:[color:rgb(var(--accent))] [&_.onSelect]:font-medium',
+    '[&_.onSelect>.MuiTreeItem-content]:[background-color:rgb(var(--accent)/0.12)] [&_.onSelect>.MuiTreeItem-content]:[color:rgb(var(--accent))] [&_.onSelect>.MuiTreeItem-content]:font-medium',
+    '[&_.onSelect>.MuiTreeItem-content:hover]:[background-color:rgb(var(--accent)/0.12)]',
+    '[&_.onSelect_.MuiTreeItem-label]:[color:rgb(var(--accent))] [&_.onSelect_.MuiTreeItem-label]:font-medium',
+    '[&_.onSelect_.MuiTreeItem-label_svg]:[color:rgb(var(--accent))]',
+  ].join(' '),
+  ulGroup:
+    '[&_ul]:!ml-[24px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:!gap-[4px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:!flex-row [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-wrap [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:mt-[2px]',
+  ulGroupAll:
+    '[&_ul]:ml-[24px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:gap-[4px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-col',
+  ulGroupAllMerchant:
+    '[&_ul]:ml-[24px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-wrap [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:gap-[4px]',
+  // 店家項目的 label 內距需壓過樹根的 !pl-[2px]（原 emotion 以插入順序取勝），以 [&&_…] 提高一級權重
+  item: 'rounded-[6px] overflow-hidden [&&_.MuiTreeItem-label]:!pl-0 [&_.MuiTreeItem-iconContainer]:!hidden',
+  span: 'flex items-center gap-[6px] break-keep whitespace-nowrap text-[14px] leading-[20px] [&_svg]:w-[16px] [&_svg]:h-[16px] [&_svg]:shrink-0 [&_svg]:[color:rgb(var(--text-secondary))]',
+  outline: '![outline:2px_solid_rgb(var(--danger))] rounded-[6px]',
 }
 
 const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) => {
@@ -193,7 +84,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
             style={{ flexShrink: 0, margin: '11px 4px 0 8px' }}
           />
           <TreeItem
-            css={!(data.groups && data.groups.length) ? styles.ulGroup : styles.ulGroupAll}
+            className={!(data.groups && data.groups.length) ? styles.ulGroup : styles.ulGroupAll}
             nodeId={`${data.no ? data.no : ''} - ${data.name}(${data.groups.length ? data.groups.length : data.merchants.length})`}
             label={<RenderLabel isGroup={true} data={data} />}
           >
@@ -210,8 +101,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
       <TreeItem
         key={data.id}
         onClick={() => handleItemClick(data)}
-        className={isSelect(data.id)}
-        css={css([styles.item, filtIds.includes(data.id) ? styles.outline : {}])}
+        className={`${isSelect(data.id)} ${styles.item}${filtIds.includes(data.id) ? ` ${styles.outline}` : ''}`}
         nodeId={data.id}
         label={<RenderLabel isGroup={false} data={data} />}
       />
@@ -243,7 +133,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
         id={isGroup ?
           `${data.no ? data.no : ''} - ${data.name}(${data.groups.length ? data.groups.length : data.merchants.length})` : data.name
         }
-        css={styles.span}
+        className={styles.span}
       >
         {isGroup ? <GroupsRoundedIcon /> : <StorefrontIcon />}
         {isGroup ?
@@ -381,7 +271,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
         </DialogHeader>
         <DialogBody className="py-3">
         <TreeView
-          css={styles.root}
+          className={styles.root}
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
           expanded={expandedArr}
@@ -395,11 +285,11 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
               style={{ flexShrink: 0, margin: '11px 4px 0 8px' }}
             />
             <TreeItem
-              css={styles.ulGroupAllMerchant}
+              className={styles.ulGroupAllMerchant}
               style={{ overflow: 'visible' }}
               nodeId='ALL'
               label={
-                <span id='ALL' css={styles.span}>
+                <span id='ALL' className={styles.span}>
                   <GroupsRoundedIcon />{`全部(${merchantList.allMerchants.length})`}
                 </span>
               }
