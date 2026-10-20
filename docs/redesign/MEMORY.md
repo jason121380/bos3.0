@@ -1,6 +1,6 @@
 # 改版決策與教訓（MEMORY）
 
-> 目的：記下「為什麼這樣做」，避免日後重複討論或重踩坑。規範本身見 `STYLE.md`，守則見根目錄 `CLAUDE.md`。更新：2026/10/19
+> 目的：記下「為什麼這樣做」，避免日後重複討論或重踩坑。規範本身見 `STYLE.md`，守則見根目錄 `CLAUDE.md`。更新：2026/10/21
 
 ## 已定案的決策
 
@@ -27,10 +27,11 @@
 | 浮動標籤的 MUI 欄位換成上方標籤時，**不改共用元件**：用 `Field`＋`label=''`／`placeholder`（`SourceSelect`、`EmployeeAutoComplete`、`CustomerAutoComplete` 都支援） | 這些元件全站共用；`Head`、`Remark` 已是這個做法，風險最低 |
 | **Jason 2026/10/19 四點拍版**：①`PaymentCreate` 授權改 Cypress 下拉選取為 `.select()` 寫法並恢復排批；②Autocomplete 不新造 combobox、不動打字／選取，其他頁只改外層標籤；③月曆排 `ui/date-picker` 專項（先盤點 39–43 檔，保留民國年／格式／locale／存值，分批）；④22 張列印報表併入 compact 專項（只改樣式、列印預覽唯讀確認） | 取代先前「等拍版／維持 MUI」的待決策；見 `TODO.md` §二 P3、`STATUS.md`、`STYLE.md` §11 |
 | 報表 compact 以 `ui/table` 的 `dense` 為單一定義（列高 32px、td 上下 4px、td／th 左右 `px-2`），共用層修改、頁面只傳 `dense` | 實查發現全專案原本沒有任何頁面傳 `dense`（`aria-label="a dense table"` 只是字串），改共用層不會波及既有頁面，比每頁寫 className 一致；非 dense 預設與 `PRINT` 規則不動。數字欄對齊不由本批處理（四頁原本就有 `numeric`）。三個「28」（`*Report` 目錄、`window.print` 檔案、舊文件的報表數）口徑不同，見 `TODO.md` §三之二 |
-| 畫面版號以 `src/version.js` 的 `APP_VERSION` 為單一來源（格式 `v3.0-MMDD-HHmm`），兩個 TopBar 都讀它 | 原本寫死 `v3.0`，Jason 無法從手機畫面判斷跑的是哪個 build。不用 `package.json` 的 version（0.1.0，與產品版號無關），也不另做 build 注入，避免兩套來源；代價是每個完整 commit 要手動更新此檔 |
+| 畫面版號以 `src/version.js` 的 `APP_VERSION` 為單一來源（格式 `v3.MMDDHHmm`，例 `v3.10210047`，2026/10/21 Jason 指定；之前為 `v3.0-MMDD-HHmm`），兩個 TopBar 與 Sentry release 都讀它 | 原本寫死 `v3.0`，Jason 無法從手機畫面判斷跑的是哪個 build。不用 `package.json` 的 version（0.1.0，與產品版號無關），也不另做 build 注入，避免兩套來源；代價是每個完整 commit 要手動更新此檔 |
 | **Jason 2026/10/20 四點新拍版（取代 10/19 ②③）**：①目標改為**徹底移除 MUI**，Autocomplete 與日期選擇器本體**改為自己做**（`ui/combobox`、`ui/date-picker` 本體；保留打字搜尋、選取行為、民國年、顯示格式與存值）；②高風險批（帳單、列印）**先合併後驗收**，每批附「待實機」清單；③行事曆拉桿泡泡、結帳百分比圓圈、切頁頂線、樹狀鍵盤、活動日期富提示**全部自己做、保留原樣**；④報表**頁首＋篩選列＋表格一起統一**，列印區塊不動 | 使用者要求「全站樣式統一、都不要 MUI、報表每頁樣式一致」；10/19 的「不新造 combobox／只改外層標籤」與「月曆維持包裝層」已作廢 |
 | **Jason 2026/10/20 全站 Grok 化**（依 `grok-billing-frontend-design-guideline.md`）：白底、`#FAFAFA` 無框卡片 16px 圓角、264px 側欄、膠囊分頁與按鈕；**保留品牌藍**（不照 Grok 改黑）；介面內文 16px、表格（含報表 compact）維持 14px；深色依同規則推導；驗證通過直接合併（v3.0-1020-0305，STYLE §15） | 使用者要求「全站做得跟 Grok 後台一樣」；四項取捨由 Jason 當場拍板 |
 | 錯誤提示改為**需手動關閉**、點畫面其他地方不關閉；成功／一般提示 3 秒自動消失；確認型（離職、月結、日結、掛單、刪除紀錄…）改 modal 對話框 | STYLE §6；避免櫃台錯過錯誤訊息、確認框被誤關（2026/10/20 健康報告批次） |
+| 日期時間一律以**台灣時間**（Asia/Taipei，固定 UTC+8）計算與顯示：裝置不在 UTC+8 時，於 `src/index.js` 最早載入點替換全域 `Date`／`Intl.DateTimeFormat`；台灣裝置不替換（2026/10/21 Jason 選方案 2「根本修正」） | 店家都在台灣營業，報表區間與帳單日期必須以台灣為準；原本依裝置時區，出國或時區設錯就查錯、記錯。逐頁改寫日期運算牽涉全站上百處且容易漏，集中在入口替換一處，頁面程式不必改（教訓 #169） |
 | **不做**：Apollo v2 client 換 v3、`cache-first` 預設、`addTypename`、列表 `pageLimit` 改 50、帳單四兄弟合併 | 見教訓 #168 ③④；需後端契約或實機回歸才能安全進行 |
 
 ## 驗證基準
@@ -41,6 +42,7 @@
 
 - 2026/10/19：兩項產品決策落地後，全域測試 17 檔／52 測試全數通過（0 失敗、0 skip），原 13 個既有失敗已清零（PR #5 與本批）。
 - 2026/10/20（v3.0-1020-0145）：本機實跑 main 為 17 檔／**54** 測試全數通過，`CI=true npm run build` 成功；之後以 54 為基準。
+- 2026/10/21（v3.10210742）：健康報告批次（PR #224）與時區修正後為 **52 檔／277 測試** 全數通過；時區相關修改另以 `TZ=America/Los_Angeles` 跑一次全套，結果相同。
 
 ## 已知死代碼註記
 
@@ -67,7 +69,7 @@
 17. **單選 MUI Select 換 `NativeSelect`、不換 Radix `ui/select`**：`NativeSelect` 的 `onChange(event)` 與 MUI 相容，`event.target.value` 回傳選項的原始型別值（空字串、數字、布林都行），所以既有的 `idx(event, _ => _.target.value)`、`parseInt(event.target.value)` 等包裝一字不改；Radix `onValueChange` 只給字串，換了就得動 handler（違反鐵則 1）。比對規則與 MUI 一致（非物件值以字串比較），例如 state 存數字 `0`、選項值是 `'0'` 仍會選中（CouponCreate 協助人員人數）。`CouponCreate` 批次（`claude/ui-batch4-box`，PR #10，2026/10/19）採用。
 18. **MUI Select 的 `labelId`／`id="select-item"` 在重複列裡是重複 id**：換成 `Field`＋`NativeSelect` 時不要照搬，否則每列 `<label htmlFor>` 都指向第一個 select；`NativeSelect` 會自動產生唯一 id。全 repo 沒有其他程式或測試用 `select-item` 當選擇器（`rg` 確認過，只出現在各 About 檔本身）。
 19. **孿生目錄（Create／Edit）不可照抄**（PR #11，v3.0-1019-0202）：`CouponEdit` 與 `CouponCreate` 的 About 檔看似相同，實際差在 `onChange` key 大小寫（`serviceDeductionItems` vs `ServiceDeductionItems`）、載入中防護（`loading ? '' : value`）、新增列初始值與圖示做法。改版時逐檔對照、只動 JSX，handler 一字不改。
-20. **版號慣例**（批次 6，2026/10/19）：`src/version.js` 的 `APP_VERSION` 格式 `v3.0-MMDD-HHmm`，每個完整 commit 更新，不自行升大版號；commit 前由指揮者校正分鐘。STATUS 的「版本清單」逐批加一列。PR #11–#15 皆已 merge（#15 為 c168506）；批次 9 為 PR #16。
+20. **版號慣例**（批次 6，2026/10/19）：`src/version.js` 的 `APP_VERSION` 格式 `v3.0-MMDD-HHmm`，每個完整 commit 更新，不自行升大版號；commit 前由指揮者校正分鐘。STATUS 的「版本清單」逐批加一列。PR #11–#15 皆已 merge（#15 為 c168506）；批次 9 為 PR #16。（2026/10/21 起格式改為 `v3.MMDDHHmm`，見決策表。）
 21. **重複列的欄位 id 要含 index**（批次 6）：`AccountingItemCreate` 每列都有「代號／名稱」，換 `Field`＋`Input` 時 `id`／`htmlFor` 用 `` `revenueNumber-${index}` `` 這類唯一值，`name` 不變（`onChange` 靠 `e.target.name` 分流）。
 22. **`InputProps={{ inputProps: { min: 0 } }}` 直接對應 `Input` 的 `min={0}`**（批次 7，PR #14，v3.0-1019-0245）：`ui/input` 的 `Input` 是原生 `<input>`，`min`、`type="number"`、`onWheel`、`value`、`onChange` 都原樣傳入；`CreateDeductionSetting/Results.js` 的 `checkInput` 靠 `event.target.value` 做夾限，原生 input 的 event 與 MUI 相同，handler 不用動。重複列的門檻欄位沒有 `id`，所以標籤不綁 `htmlFor`（不新造會重複的 id）。
 23. **下拉選項的 `data-testid` 被 Cypress 點選時，不能換 `NativeSelect`**（批次8，2026/10/19）：MUI Select 的選項是 Portal 內的 `MenuItem`，e2e 以 `data-testid` 逐項點擊；原生 `<select>` 的 option 不能這樣點（要用 `.select()`），換了 e2e 會壞。`PaymentCreate` 因此整批放棄，改做 `UpdateDeductionSetting/Results.js`（純 TextField，無 Select）；是否授權改 Cypress spec 待決策（見 TODO P2）。
@@ -285,3 +287,5 @@
 167. **iPhone PWA 狀態列的顏色＝「網頁最上方安全區當下畫了什麼」，不只看 theme-color／body（PWA 狀態列白，2026/10/21，v3.0-1021-0142）**：Jason 回報 PWA 打開左側抽屜時狀態列是灰的、與下方白色畫面分裂。設定面已是白：`theme-color` #FFFFFF、`apple-mobile-web-app-status-bar-style` default（文字深色）、manifest `theme_color` #FFFFFF、body `rgb(var(--canvas))`（MEMORY #156）。灰色來源是抽屜狀態：`viewport-fit=cover` 下網頁畫進頂部安全區，抽屜打開時全螢幕遮罩（`fixed inset-0 bg-black/40`）蓋過右側、抽屜本身是 surface #FAFAFA 淺灰（含 `pt-[env(safe-area-inset-top)]` 延伸到頂端），狀態列就跟著變灰。修法：`ui/sidebar` 抽屜打開時多畫一條 `fixed top-0 h-[env(safe-area-inset-top)] bg-canvas`（z 1201，高於遮罩 1190 與抽屜 1200，`pointer-events-none`、`lg:hidden`），只蓋安全區；一般瀏覽器安全區為 0、不可見。遮罩與抽屜本身、點擊關閉行為不變。另 manifest `background_color` #F7F7F8→#FFFFFF（啟動畫面底色一致）。不改 status-bar-style（改 black-translucent 需重裝且文字變白，與「文字維持深色」相反）。教訓：狀態列問題要分「設定（meta／manifest）」與「當下畫面（遮罩、抽屜、sticky 頁首）」兩層查；meta 只在加入主畫面時讀取，畫面層改動則重新開啟 App 即生效。
 
 168. **健康報告的發現要先證明「真的會壞」再修，估算要用實際架構校正（repo 健康報告修正批次，2026/10/20）**：①TransferList 在 hooks 前 `return null` 看似違規，但 React 17 只在「return 前已呼叫過至少一個 hook」時才偵測得到 hooks 數量變化，原寫法實際不會拋錯——寫回歸測試時在舊程式上也通過，因此刪掉測試、改正註解，只保留順序調整；寫測試一定要在舊程式上跑一次確認會失敗。②「Dashboard 每頁固定打 16 支查詢」不成立：版面在站內換頁不重新掛載，實際是「每次整頁載入」一次，影響比報告小。③列表 `pageLimit: 1000` 同時是查詢參數與前端切片（`pageLimit * pageOffset`），改小會讓第二頁變空、合計與全選 id 也跟著變，需後端分頁契約才能改，未動。④Apollo v2 client 換 v3 未做：全站約 430 個 effect 只依 `loading` 變化取資料，v3 的 refetch 預設不會把 loading 設回 true（需 `notifyOnNetworkStatusChange`），換了會靜默失效；只修單例與錯誤處理。⑤serve 的設定檔驗證要用乾淨安裝：環境預裝的 serve 依賴錯版 minimatch，帶 `serve.json` 時整個程序崩潰；`npm install serve@14`（14.2.6）正常，因此 Dockerfile 固定大版本。⑥`.then(fn, openSnackbar(...))`／`.catch(fn, ref.current.focus)` 這類寫法第二參數會立即執行或被忽略（個人資料「儲存成功」在送出當下就顯示），grep 多參數 `.then(` 可一次找出。⑦刪檔（`git rm`）、改 `package.json` 相依與 lockfile、推送都會被自動權限檢查擋下，需 Jason 明確回覆後才做（本批於 v3.0-1021-0129 經「do it／merge」後完成）。⑧mock 後端（GraphQL 一律回錯誤）下整個後台白畫面，不是 mock 的問題：TopBar／NavBar 有 5 處直接對查詢結果 `.filter`／`.map`／`.forEach`，任一支 API 失敗就讓版面拋錯，又沒有錯誤邊界，React 會卸載整棵樹。修法是版面層級的資料防呆＋內容區的錯誤邊界（以路徑為 key 換頁重置）；之後 mock 截圖能看到側欄與錯誤畫面，回歸比對也更有意義。找出拋錯位置用 Vite dev server 跑 Playwright，堆疊是原始檔行號。⑨用 `pgrep -f`／`pkill` 找背景伺服器會連自己的 shell 一起砍（命令列本身含相同字串）；改用 `ps -eo pid,args | awk '/pattern/ && !/awk/'` 取 PID。
+
+169. **時區要在入口集中處理，不要逐頁改日期運算；替換全域 `Date` 時要守住與原生相同的行為（日期固定台灣時間，2026/10/21，v3.10210742）**：Jason 回報出國時撈報表、打資料的時間錯誤，選方案 2（根本修正）。①**原因**：全站的「今天／本月」區間（date-fns `startOfDay`／`startOfMonth`）、日期選擇器組出的時間點、畫面上的時間，全部依裝置時區；裝置在洛杉磯時，台灣 10/21 01:30 的「今天」會變成 10/20。送給後端的值是時間戳記，錯的是起訖的「哪一天」。②**作法**：`lib/business-timezone.js` 在 `src/index.js` 最早載入（polyfill 之後），裝置不在 UTC+8 時把全域 `Date` 換成「本地欄位一律以 UTC+8 計算」的版本（台灣無夏令時間，固定位移即可，不需時區資料庫），`Intl.DateTimeFormat` 未指定 `timeZone` 時預設 Asia/Taipei。date-fns、日期選擇器、`toLocale*` 都透過這兩者取本地欄位，所以頁面一行不用改，也不碰鐵則的日期運算。③**相容細節**：`Symbol.hasInstance` 讓替換前建立的原生 Date 仍算 `instanceof Date`；`Date()` 不加 `new` 回傳字串；`Date.now`／`Date.UTC`、JSON、`getTime` 與原生相同；無效日期的 NaN 行為照原生。字串解析分三種：有 `Z`／`+08:00` 的照原生；只有日期的 ISO 字串（`2026-10-21`）規格上就是 UTC 午夜，也照原生，避免改變既有存值的解讀；沒有時區的日期時間字串（`2026/10/21 10:00`、`2026-10-21T10:00`）才以台灣時間解讀，而且要**直接取字面的年月日時分**，不能先用裝置時間解析再讀欄位：裝置有日光節約時，跳過的那一小時會被平移（洛杉磯 3/8 02:30、聖地牙哥 9/6 00:00 都會變成晚一小時，Codex review 於 PR #227 指出，已補測試）。④**台灣裝置不替換**：Intl 時區是 Asia/Taipei，或 1 月與 7 月的 offset 都是 -480，就完全不動原生 `Date`，現有使用者零風險。替換時版面每次開啟提示一次（sessionStorage），讓使用者知道畫面是台灣時間。⑤**載入順序**：Vite 的 vendor chunk 會在入口本體之前執行，模組頂層先算好的日期是原生 Date。目前頁面都在 render 或事件中取時間，不受影響；新程式不要在模組頂層算「今天」。⑥**驗證方法**：Jest 以 `TZ=` 環境變數在多個時區跑同一組測試（UTC、洛杉磯、聖地牙哥、東京、台北、奧克蘭），斷言一律用 `NativeDate.prototype.toISOString.call(d)` 取絕對時間；畫面以 Playwright `browser.newContext({ timezoneId })`＋`page.clock.install({ time })` 固定時刻，攔截 GraphQL 比對各時區送出的區間變數是否相同。

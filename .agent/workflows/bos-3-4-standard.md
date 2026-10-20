@@ -4,6 +4,8 @@ description: BOS 3.4 Compact Administrative Template Standards
 
 # BOS 3.4 緊湊型管理介面標準 (Standard)
 
+> **已被取代（2026/10/21 註記）**：本文件是 MUI 時代的舊規格（`#E8F0FE` 標頭、`theme.spacing`、MUI `Collapse` 等），與現行規範衝突時一律以根目錄 `STYLE.md` 為準（報表見 §11／§14、Grok 式視覺見 §15）。保留本檔僅供對照，不要依本檔做新畫面。
+
 本文件定義了 BOS 3.4 版本中行政管理頁面的視覺與行為準則，請在開發或重構所有後台頁面時嚴格遵守。
 
 ## 1. 頁面標頭 (AdminPageHeader)

@@ -1,7 +1,7 @@
 # 💄 BeautyOS (BOS v3.0) — 美業智慧管理系統
 
 > **專案代號**：`beautyos_website`
-> **版本**：v3.0 | **最後更新**：2026-10-18（UI 改版進行中，見 [改版進度](docs/redesign/STATUS.md)）
+> **版本**：v3（畫面版號見 `src/version.js`，格式 `v3.MMDDHHmm`）| **最後更新**：2026-10-21（UI 改版進行中，見 [改版進度](docs/redesign/STATUS.md)）
 > **技術責任人**：名留集團技術團隊
 
 BeautyOS 是一套專為**美髮 / 美容 / 美甲 / SPA 產業**設計的全方位管理系統（ERP / CRM），
@@ -18,6 +18,7 @@ BeautyOS 是一套專為**美髮 / 美容 / 美甲 / SPA 產業**設計的全方
 - [目錄結構](#-目錄結構)
 - [環境變數](#-環境變數)
 - [API 與資料層](#-api-與資料層)
+- [時區（一律台灣時間）](#-時區一律台灣時間)
 - [主題系統與設計規範](#-主題系統與設計規範-bos-34)
 - [共用元件規格](#-共用元件規格)
 - [業務模組總覽](#-業務模組總覽)
@@ -67,7 +68,8 @@ npm run build
 | `npm run lint:build` | 建置用 ESLint 檢查（與原 CRA build 相同規則，CI 執行） |
 | `npm test` | 執行測試 (watch mode) |
 | `npm run test:nowatch` | 執行測試 (單次) |
-| `npm run test:coverage` | 執行覆蓋率測試 |
+| `npm run test:coverage` | 覆蓋率測試（門檻：現況下限＋金額／API 模組逐檔門檻） |
+| `TZ=America/Los_Angeles CI=true npm run test:nowatch` | 在海外時區跑全部測試（時區相關修改必跑） |
 | `npm run cy:open` | 啟動 Cypress E2E 測試 |
 
 ---
@@ -80,7 +82,7 @@ npm run build
 |---|---|---|
 | **UI 框架** | React | `17.0.2` |
 | **UI 元件庫（新）** | Tailwind CSS 3.4 + `src/ui/`（shadcn/Radix 風格元件） | 規範見 `STYLE.md` |
-| **UI 元件庫（舊，遷移中）** | Material-UI (MUI) | `5.15.7` |
+| **舊頁面相容層** | `src/ui/*-compat`（輸出 MUI 同名 class；MUI 套件已於 2026/10/20 移除） | — |
 | **路由** | React Router | `5.1.2` |
 | **路由配置** | react-router-config | `5.0.1` |
 | **建置工具** | Vite（單元測試仍用 react-scripts 的 Jest） | `5.4.21` |
@@ -99,15 +101,14 @@ npm run build
 | 類別 | 技術 | 說明 |
 |---|---|---|
 | **Tailwind** | `tailwind.config.js`、`src/styles/tokens.css` | 新畫面的樣式方案；preflight 關閉，基礎樣式只作用在 `.ui-root` 之內 |
-| **CSS-in-JS（舊）** | Emotion (`@emotion/react`) | 尚未改版的頁面仍用 `css()`；遷移完成後移除 |
-| **MUI Theme** | `createTheme()` overrides | 33 個元件全局覆寫 |
+| **舊主題資料** | `src/theme/`（palette、typography） | 僅供相容層比對與測試；MUI 與 emotion 已於 2026/10/20 全數移除 |
 | **SCSS** | Sass (`1.75.0`) | 全局初始化樣式 |
 
 ### 工具庫
 
 | 套件 | 用途 |
 |---|---|
-| `date-fns` + `zh-TW` locale | 日期處理與中文化 |
+| `date-fns` + `zh-TW` locale | 日期處理與中文化（全域已固定以台灣時間運算，見〈時區〉） |
 | `idx` | 安全深層取值 (避免 `Cannot read property of undefined`) |
 | `lodash` | 通用工具函數 |
 | `immer` | 不可變狀態操作 |
@@ -124,36 +125,25 @@ npm run build
 ## 📐 專案架構
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         Browser (SPA)                           │
-├─────────────────────────────────────────────────────────────────┤
-│  index.js                                                       │
-│  └─ BrowserRouter + Redux Provider                              │
-│     └─ App.js                                                   │
-│        ├─ ApolloProvider (GraphQL Client)                        │
-│        ├─ ThemeProvider (MUI Theme)                              │
-│        ├─ LocalizationProvider (zh-TW)                           │
-│        ├─ TeachingModeState (Context)                            │
-│        └─ Router                                                │
-│           ├─ AuthLayout (/auth/*)                                │
-│           ├─ DashboardLayout (/*) ← 主要後台                     │
-│           │   ├─ TopBar (通知、店家切換、WebSocket)                │
-│           │   ├─ NavBar (側邊選單)                                │
-│           │   └─ Content (lazy-loaded views)                     │
-│           ├─ CustomerLayout (/customer/*)                        │
-│           ├─ EHSLayout (/ehs2/*, /changelinemenu/*)              │
-│           └─ ErrorLayout (/errors/*)                             │
-├─────────────────────────────────────────────────────────────────┤
-│                    GraphQL API (Apollo Client)                   │
-│  ┌────────────┐  ┌──────────────┐  ┌──────────────────────────┐ │
-│  │ authLink    │→│ errorLink     │→│ httpLink (uploadLink)     │ │
-│  │ (Token +    │  │ (Token 驗證、 │  │ (GraphQL Endpoint)       │ │
-│  │  MerchantID)│  │  錯誤處理)    │  │                          │ │
-│  └────────────┘  └──────────────┘  └──────────────────────────┘ │
-│                                                                  │
-│                    WebSocket (Socket.io)                         │
-│  連線於 TopBar.js → 即時訂單/預約通知推播                         │
-└─────────────────────────────────────────────────────────────────┘
+Browser (SPA)
+└─ index.js
+   ├─ lib/install-business-timezone   ← 最先載入：日期一律以台灣時間計算與顯示
+   └─ Redux Provider
+      └─ App.js（Sentry 初始化：只在正式 build、environment 依實際連線的 API）
+         ├─ ApolloProvider（lib/init-apollo 單例 client）
+         ├─ TeachingModeState (Context)
+         └─ Router
+            ├─ AuthLayout (/auth/*)
+            ├─ DashboardLayout (/*) ← 主要後台
+            │   ├─ TopBar：Logo、版號、搜尋鈕、訂單佇列鈴鐺、WebSocket
+            │   ├─ NavBar：側邊選單、底部（深淺色切換、切換店家、登出）
+            │   └─ PageErrorBoundary → 內容區（lazy-loaded views）
+            ├─ Customer／Line Layout（顧客端 LINE 頁面，lazy）
+            ├─ EHSLayout (/ehs2/*, /changelinemenu/*)
+            └─ ErrorLayout (/errors/*)
+
+GraphQL：authLink（token、店家）→ errorLink（統一提示、TKN_ERROR 導回登入）→ uploadLink
+WebSocket：TopBar 以 socket.io 連線（內建自動重連），位址與 GraphQL 同樣來自 lib/api-base
 ```
 
 ---
@@ -174,15 +164,15 @@ bos3.0/
 └── src/
     ├── App.js                  # 根組件 (Provider 組裝)
     ├── index.js                # 入口點 (ReactDOM.render)
-    ├── routes.js               # 路由定義 (170+ 條路由, 1028 行)
+    ├── routes.js               # 路由定義（186 個 lazy 路由，1051 行）
     ├── initialize.scss         # 全局 SCSS 初始化 (亮色)
     ├── initialize-dark.scss    # 全局 SCSS 初始化 (深色)
     │
     ├── layouts/                # 版面配置 (9 個子目錄)
     │   ├── Dashboard/          # 主要後台版面
     │   │   ├── index.js        # Dashboard 佈局容器
-    │   │   ├── TopBar.js       # 頂部工具列 (1003 行)
-    │   │   ├── NavBar.js       # 側邊導航選單 (854 行)
+    │   │   ├── TopBar.js       # 側欄頂列：Logo、版號、搜尋鈕插槽、訂單佇列、WebSocket
+    │   │   ├── NavBar.js       # 側邊選單、搜尋框、底部使用者列（深淺色、切換店家、登出）
     │   │   ├── MerchantBar.js  # 店家切換 Dialog (搜尋+過濾)
     │   │   └── MerchantList.js # 店家/事業部樹狀結構
     │   ├── Auth/               # 登入/註冊版面
@@ -192,34 +182,39 @@ bos3.0/
     │   ├── Seat/               # 座位管理版面
     │   └── Error.js            # 錯誤版面
     │
-    ├── views/                  # 頁面模組 (171 個子目錄)
+    ├── views/                  # 頁面模組（170 個子目錄）
     │   ├── OrderCreate/        # 打帳單 (56 個檔案)
     │   ├── OrderEdit/          # 編輯帳單 (30 個檔案)
     │   ├── SalaryOverview/     # 薪資總覽
     │   ├── EmployeeSchedule/   # 排班表
     │   └── ...                 # (詳見「業務模組總覽」)
     │
-    ├── components/             # 共用元件 (54 個)
+    ├── components/             # 共用元件（55 個）
     │   ├── AdminPageHeader.js  # 頁面頂部控制列
     │   ├── ManagementTable.js  # 通用管理表格
     │   ├── PageTitle.js        # 頁面標題 (含藍色垂直條)
     │   ├── TableEditBar.js     # 底部批量操作列
     │   ├── DateSelector/       # 日期選擇器 (本月/上月快捷)
     │   ├── SearchBar/          # 搜尋列元件
-    │   ├── NavItem.js          # 側邊欄導航項目
+    │   ├── NavItem.js          # 側邊欄導航項目（依路由展開與高亮）
+    │   ├── PageErrorBoundary.js # 內容區錯誤邊界（單頁出錯不白畫面）
+    │   ├── SlotPortal.js       # 把按鈕畫進另一元件的插槽（TopBar／NavBar）
     │   └── ...各種 AutoComplete # 客戶、商品、服務自動完成
     │
-    ├── hooks/                  # 自定義 Hooks (595 個)
+    ├── hooks/                  # 自定義 Hooks（596 個）
     │   ├── useFetchGet*.js     # GraphQL Query Hooks
     │   ├── useFetchSet*.js     # GraphQL Mutation Hooks
     │   ├── useFetchCreate*.js  # 新增操作 Hooks
     │   ├── useFetchUpdate*.js  # 更新操作 Hooks
     │   ├── useFetchDelete*.js  # 刪除操作 Hooks
+    │   ├── useMediaQuery.js    # 依 media query 判斷（例如桌機 / 手機）
     │   └── useToggle.js        # 通用開關 Hook
     │
     ├── lib/                    # 核心函式庫
-    │   ├── init-apollo.js      # Apollo Client 初始化 (多環境)
-    │   └── with-apollo-client.js # Apollo HOC wrapper
+    │   ├── api-base.js         # 後端位址單一來源（GraphQL／WebSocket／REST／Sentry 環境）
+    │   ├── init-apollo.js      # Apollo Client 單例、錯誤處理
+    │   ├── business-timezone.js # 日期一律台灣時間（install-business-timezone.js 由 index.js 最早載入）
+    │   └── with-apollo-client.js # 取得共用 client（相容用）
     │
     ├── store/                  # Redux Store (RTK)
     │   ├── index.js            # Store 配置 (5 個 Slices)
@@ -229,11 +224,7 @@ bos3.0/
     │   ├── pinnedTable.js      # 釘選表格狀態
     │   └── deductionDisplay.js # 扣項顯示狀態
     │
-    ├── theme/                  # MUI 主題系統
-    │   ├── index.js            # createTheme 入口
-    │   ├── palette.js          # 調色盤定義
-    │   ├── typography.js       # 字型層級定義
-    │   └── overrides/          # 33 個 MUI 元件覆寫
+    ├── theme/                  # 舊主題資料（palette、typography；僅供相容層比對與測試）
     │
     ├── context/                # React Context
     │   ├── TeachingModeState.js # 教學模式狀態
@@ -244,10 +235,12 @@ bos3.0/
     │   ├── pageData.js         # 全站頁面資料定義 (導航用)
     │   ├── formatMoney.js      # 金額格式化
     │   ├── pagenationLabel.js  # 分頁標籤中文化
-    │   └── billVerify.js       # 帳單驗證
+    │   ├── billVerify.js       # 帳單驗證（有測試）
+    │   ├── truncateDecimal.js  # 卡券金額無條件捨去（修正浮點誤差）
+    │   └── dailyUnlock.js      # 打帳單鎖定日期每日 23:59 解除
     │
     ├── elements/               # 全局 UI 元素
-    │   ├── snackbars.js        # Snackbar 通知元件 (全局呼叫)
+    │   ├── snackbars.js        # openSnackbar 全站提示（右下角 toast；確認型為對話框）
     │   └── label.js            # 標籤元件
     │
     ├── utils/                  # 通用工具
@@ -336,9 +329,19 @@ localStorage 儲存：
 
 ---
 
+## 🕐 時區（一律台灣時間）
+
+- 店家在台灣營業：「今天／本月」等查詢區間、畫面上的日期時間、打資料時選的日期，一律以**台灣時間（Asia/Taipei，UTC+8）**計算與顯示，與裝置設定的時區無關。
+- 作法：`src/lib/business-timezone.js` 由 `src/index.js` 最早載入。裝置不在 UTC+8 時，把全域 `Date` 的本地欄位與 `Intl.DateTimeFormat` 的預設時區換成台灣時間，date-fns、日期選擇器與所有顯示自動生效；裝置本來就是 UTC+8（台灣、香港、新加坡等）時完全不替換。
+- 送給後端的時間戳記（毫秒、ISO 字串）是同一個絕對時間，不受影響。
+- 裝置不在台灣時區時，進入後台會提示一次「系統一律以台灣時間顯示與計算」。
+- 開發：新程式照常使用 date-fns；不要以 `toLocaleString`／`Intl` 假設裝置時區。時區相關修改要另以 `TZ=America/Los_Angeles` 跑測試。
+
+---
+
 ## 🎨 主題系統與設計規範
 
-> 2026-10 起全站改版為 **Tailwind + `src/ui/` 元件**。舊的 MUI 主題（`src/theme/`）只留給尚未改版的頁面，會隨遷移完成移除。
+> 2026-10 起全站改版為 **Tailwind + `src/ui/` 元件**；MUI 與 emotion 已於 2026/10/20 移除，尚未重新設計的舊頁面以 `src/ui/*-compat` 相容元件維持原樣。
 
 ### 文件地圖
 
@@ -359,13 +362,9 @@ localStorage 儲存：
 - 欄位：標籤在上＋佔位字；必填加 `required`（`*`）並在註解寫明依據；圖示按鈕一律要有 `title`／`aria-label`；金額一律 `NT$ 1,234`（`ui/format`）。
 - `ui` 元件放在 MUI 彈出層（Dialog、Popper）內時，外層要有 `.ui-root`（見 `CLAUDE.md` 踩雷清單）。
 
-### 舊 MUI 主題（遷移期間仍有效）
+### 舊頁面（相容層）
 
-調色盤與字型設定在 `src/theme/`；全域覆寫在 `src/theme/overrides/`。修改尚未改版的頁面前，先檢查對應的 override 檔案，避免重複定義造成衝突。
-
-```
-MuiAutocomplete, MuiButton, MuiCard, MuiCheckbox, MuiDialog, MuiTable*, MuiTabs, MuiToggleButton …（共 33 個）
-```
+尚未重新設計的頁面使用 `src/ui/*-compat`（Dialog、Table、Grid、Snackbar…），輸出與 MUI 相同的 class 名稱，讓 `initialize(-dark).scss` 與列印樣式照常生效。改版這些頁面時依 `docs/redesign/MIGRATION_GUIDE.md` 換成 `src/ui/` 元件；相容層的 computed style 比對工具在 `scripts/redesign/compat-harness/`。
 
 ---
 
@@ -672,21 +671,14 @@ docker run -p 3000:3000 beautyos-frontend
 ### 1. 樣式撰寫規範
 
 ```jsx
-// ✅ 正確：使用 Emotion css() 函數
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react'
+// ✅ 正確：Tailwind className＋tokens（規範見 STYLE.md）
+<div className="rounded-lg bg-surface p-4 text-body text-text" />
 
-const styles = {
-  container: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-  })
-}
+// ✅ 共用元件合併外部 className 用 cn()
+import { cn } from 'ui/utils'
+<Button className={cn('w-full', disabled && 'opacity-60')} />
 
-// ✅ 必須在檔案第一行加入 JSX pragma
-/** @jsxImportSource @emotion/react */
-
-// ❌ 錯誤：不要使用 inline style 或 makeStyles
+// ❌ 錯誤：寫死 hex、inline style、新增 MUI／emotion import
 ```
 
 ### 2. 安全取值
@@ -728,10 +720,12 @@ const handleSubmit = () => createOrder({ variables: { input } })
 |---|---|
 | **依賴安裝** | 必須使用 `npm install --legacy-peer-deps`，否則會遇到 ERESOLVE 錯誤 |
 | **Node 版本** | 建議使用 `v20.12.1`，高版本可能有相容性問題 |
-| **Theme Override** | 修改 UI 前先確認 `src/theme/overrides/` 是否已有定義 |
-| **WebSocket** | 全站即時更新依賴 TopBar.js 的 Socket 連線，勿隨意修改 |
+| **時區** | 日期時間一律以台灣時間（全域已處理，見〈時區〉），不要自行以裝置時區換算 |
+| **API 位址** | 一律從 `lib/api-base` 取，不要在頁面寫死網址 |
+| **查詢結果防呆** | API 失敗時 `data` 為 undefined，讀陣列前先判斷，避免整頁拋錯 |
+| **WebSocket** | 全站即時更新依賴 TopBar.js 的 Socket 連線（內建自動重連），勿隨意修改 |
 | **薪資系統** | 薪資結算具備鎖定機制，鎖定後前端不可直接修改 |
-| **Snackbar** | 使用 `openSnackbar({ message, variant })` 全局呼叫，支援 `success`/`error`/`warning`/`info` |
+| **Snackbar** | 使用 `openSnackbar({ message, variant })` 全局呼叫，支援 `success`/`error`/`warning`/`info`；畫在右下角，錯誤需手動關閉，確認型（離職、月結、掛單…）畫成對話框 |
 | **分頁標籤** | 使用 `pagenationLabel()` 工具函數進行中文化 |
 | **CSV 匯出** | 使用 `react-csv` 的 `CSVLink` 元件，包裝在 ManagementTable 內 |
 
@@ -743,12 +737,15 @@ const handleSubmit = () => createOrder({ variables: { input } })
 
 | 分支 | 用途 |
 |---|---|
-| `main` | 主要開發分支；功能分支驗證通過（build 成功、測試無新增失敗）後以 PR 合併 |
+| `main` | 主要分支；合併後由 Cloud Build 部署 |
+| `claude/*` 等功能分支 | 驗證通過（lint、測試全過、build 成功）後以 PR 合併（merge commit）；合併前先把最新 `main` 合進來重跑驗證（可能有多個 session 同時開發） |
 
 ### Commit Message 格式
 
+第一行以畫面版號開頭（`src/version.js`，格式 `v3.MMDDHHmm`），其後為 Angular 格式：
+
 ```
-feat: 新增功能
+[v3.10210047] feat: 新增功能
 fix: 修正錯誤
 style: 樣式調整
 refactor: 重構
@@ -787,7 +784,10 @@ Dockerfile 已內建 npm 網路重試配置（5 次重試、20s~120s 超時）�
 4. 在 `src/helper/pageData.js` 加入頁面資料
 5. 在 `src/layouts/Dashboard/NavBar.js` 的報表選單中加入項目
 
-### Q6: 為什麼 `PageTitle` 有藍色垂直條，但 `ManagementTable` 的 `CardHeader` 沒有？
+### Q6: 人在國外（或裝置時區設錯）時，報表與帳單時間對嗎？
+對。系統一律以台灣時間計算「今天／本月」與顯示時間，與裝置時區無關；裝置不在台灣時區時進入後台會提示一次。詳見〈時區〉。
+
+### Q7: 為什麼 `PageTitle` 有藍色垂直條，但 `ManagementTable` 的 `CardHeader` 沒有？
 `PageTitle` 元件內建 `4×18px #1A73E8` 藍色垂直指示線；`ManagementTable` 的 `CardHeader` 在 BOS 3.4 標準中已移除此裝飾，保持簡潔。
 
 ---
@@ -796,11 +796,11 @@ Dockerfile 已內建 npm 網路重試配置（5 次重試、20s~120s 超時）�
 
 | 項目 | 數量 |
 |---|---|
-| 路由數量 | **170+** |
-| 頁面模組 | **171** 個目錄 |
-| 自定義 Hooks | **595** 個 |
-| 共用元件 | **54** 個 |
-| MUI Override | **33** 個 |
+| 路由數量 | **186**（全部 lazy） |
+| 頁面模組 | **170** 個目錄 |
+| 自定義 Hooks | **596** 個 |
+| 共用元件 | **55** 個 |
+| 單元測試 | **52** 檔／**277** 項 |
 | Redux Slices | **5** 個 |
 | 總原始碼行數 | **~150,000+** 行 |
 

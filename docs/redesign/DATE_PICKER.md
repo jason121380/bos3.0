@@ -7,6 +7,8 @@
 > 依據：Jason 2026/10/19 拍版「月曆排入 `ui/date-picker` 專項，先盤點、分批進行」（見 `TODO.md` P3 第 3 點）。
 > 盤點口徑：`rg` 實查 `src/`，套件 `@mui/x-date-pickers` **6.19.4**（`package.json`）。
 
+> **時區（2026/10/21，v3.10210742）**：日期選擇器選出的日期時間一律是**台灣時間**。`src/lib/business-timezone.js` 在裝置不在 UTC+8 時替換全域 `Date`，`ui/calendar`／`ui/date-field` 與 date-fns 因此自動以台灣時間組出時間點，`date-picker.js` 不需處理時區；新 picker 照常用 `new Date(y, m, d, h, mm)` 與 date-fns 即可（MEMORY #169）。
+
 ## 一、盤點數字（實查）
 
 | 項目 | 數量 | 說明 |

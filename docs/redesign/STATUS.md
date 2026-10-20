@@ -1,13 +1,16 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/20（v3.0-1020-0145，main 已含 PR #1～#173，無 open PR）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10210750，main 已含 PR #1～#226）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
-> 2026/10/21 v3.0-1021-0116＋v3.0-1021-0129（repo 健康報告修正批次、套件瘦身、深色模式開關、頁面錯誤邊界），分支 `claude/pensive-fermi-v6ufcq`；內容與待辦見 `TODO.md` §一前兩項、`MEMORY.md` #168。
+> 2026/10/21 v3.0-1021-0116＋v3.0-1021-0129（repo 健康報告修正批次、套件瘦身、深色模式開關、頁面錯誤邊界，PR #224），分支 `claude/pensive-fermi-v6ufcq`；內容與待辦見 `TODO.md` §一、`MEMORY.md` #168。之後的時區與版號格式見下表首兩列。
 
 | 範圍 | 內容 |
 |---|---|
+| 日期時間固定台灣時間（v3.10210742） | Jason 回報出國時撈報表／打資料時間錯誤，選方案 2（根本修正）。新增 `src/lib/business-timezone.js`＋`install-business-timezone.js`，於 `src/index.js` 最早載入：裝置不在 UTC+8 時把全域 `Date`、`Intl.DateTimeFormat` 換成固定台灣時間（本地 getter／setter、建構子、無時區字串解析、`toString`／`toLocale*`、`getTimezoneOffset` 皆以 UTC+8 計算；`instanceof`、JSON、時間戳記與原生相同；只有日期的 ISO 字串與有明確時區的字串維持原生解析）；台灣裝置不替換。`layouts/Dashboard` 在替換時每次開啟提示一次。屬畫面以外的修正，經 Jason 當次同意。不動 GraphQL、Redux、金額運算；送給後端的值本來就是時間戳記，改的是「今天／本月」的起訖與選擇器組出的時間點。新增 22 測試（6 個時區各跑一次，含裝置日光節約切換時段）；全套 52 檔／277 測試在 UTC、洛杉磯各跑一次全過；lint:build 0、build 成功；Playwright 四時區送出的查詢區間一致（MEMORY #169）。 |
+| 版號格式改 `v3.MMDDHHmm`（v3.10210742） | Jason 指定「v3.10210047 這樣的格式」：`src/version.js` 改新格式、CLAUDE.md／README／本檔「版本號規則」同步；舊版號紀錄不改。 |
+| 側欄頂列：搜尋圖示、移除「選單」、鈴鐺面板置中（v3.0-1021-0148，PR #224） | Jason 手機截圖指示：搜尋框改為鈴鐺左側放大鏡鈕（按下展開、自動聚焦、Esc／✕ 關閉清空）；移除選單區「選單」標題；手機上鈴鐺面板以 Radix 虛擬錨點水平置中於頂列下方（左右 16px），桌機往右開並限制在視窗內；桌機版號疊在 Logo 下方。新增 `components/SlotPortal`、`hooks/useMediaQuery`。390／768／1440 截圖量測。 |
 | iPhone PWA 狀態列在抽屜打開時改白（v3.0-1021-0142） | Jason：PWA 狀態列灰、跟下面白色有分裂感（截圖為左側抽屜打開）。meta／manifest／body 皆已是白，灰色來自抽屜打開時的全螢幕遮罩（黑 40%）與抽屜淺灰底畫進頂部安全區。`ui/sidebar` 抽屜打開時加一條只蓋頂部安全區的白色（canvas）細條（高於遮罩與抽屜、不攔點擊、桌機不渲染）；manifest `background_color` 改 #FFFFFF。status-bar-style 維持 default（文字深色）。新增 `src/ui/__test__/sidebar.test.js` 2 測試（MEMORY #167）。 |
 | 個人頁預約表白屏修正（v3.0-1021-0138） | Jason 回報個人頁按「預約表」白屏。原因：週曆查詢回空陣列（登入者本週無設計師行事曆資料）時 `tidyData[0].bookingLimit` 拋錯、查詢失敗時解構 undefined 拋錯，app 無 ErrorBoundary→整頁白。屬 Initial commit 既有寫法，非近期改版造成。修正：兩處加防呆（bookingLimit 無資料以 0、查詢缺值以空陣列），Profile／員工資料／設計師預約表三處同寫法一併修；不改業務邏輯。新增 `src/views/Profile/__tests__/Reservation.test.js`（4 測試，含空資料與查詢失敗；修正前 2 個失敗）。以正式 build＋假後端在 Chrome 確認修正前白屏、有資料時正常（MEMORY #166）。 |
 | 帳單詳細／掛單／排隊帳單佈局比照打帳單（v3.0-1020-2352） | Jason「編輯訂單也要跟打帳單一樣的佈局」：三頁項目面板在上，下方改 `grid grid-cols-[1fr_420px]`（900px 以下單欄）——左欄紅利／付款／備註（付款與備註由可收合 Accordion 改常駐卡片，標題比照打帳單），右欄金額彙總卡＋該頁動作按鈕（帳單詳細：儲存／掛單／結帳；掛單：列印／儲存／結帳；排隊：重試）。Footer 仍由 index.js 建立（`enable` 與 context 不變），改以 `<Pannel>{footer}</Pannel>` 放進右欄；Footer 只改排版 class。付款／備註原本的展開 state、自動展開 effect、`handleAccordionClick` 全部保留（原 Accordion 收合時內容本就以 display:none 掛載，改常駐不改變查詢時機）。掛單頁 #printMain／#printThermal innerHTML 改前改後逐字相同。verify-logic 唯一 FAIL＝排隊頁付款收合摘要（唯讀顯示）因常駐而移除。測試 39 檔／168 全過、lint:build 0、build 成功；四頁並排截圖 1440／390 版面一致、無錯誤無橫向溢出。 |
@@ -207,8 +210,8 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 
 ## 版本號規則
 
-- 格式 `v3.0-MMDD-HHmm`（時區 Asia/Taipei）。commit 訊息第一行開頭與 PR 標題都要帶版本號。
-- 正式格式 v3.0-MMDD-HHmm（Asia/Taipei，不寫年份，年份只在日期欄；不自行升大版號）。
+- 格式 `v3.MMDDHHmm`（時區 Asia/Taipei，月日時分連寫、不加分隔，例 `v3.10210047`；Jason 2026/10/21 指定）。commit 訊息第一行開頭與 PR 標題都要帶版本號。
+- 2026/10/21 以前的格式為 `v3.0-MMDD-HHmm`，下表與各文件中的舊版號維持原樣，不回頭改。不寫年份（年份只在日期欄）；不自行升大版號。
 - #6–#10 為規則建立前已 push 的 commit，**不 amend**；下表依 commit 時間對照版本。
 - merge 組別：#6–#10 為第一組（五個完整 commit），已於 2026-10-19 merge（merge commits：#6 c9a8c8c、#7 503f4fa、#8 f32bf0e、#9 3f7b35f、#10 29630fa）；批次 5（#11）已 merge（cfc79cd），版本顯示批 v3.0-1019-0232（#12）已 merge，批次 6（#13）已 merge（8ec6b00），批次 7（#14）已 merge（20ded5b）；批次 8（#15）已 merge（c168506）；批次 9（#16）已 merge（d15b367）；批次 10（#17，v3.0-1019-0312）本組 merge 中。
 
@@ -302,7 +305,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 |---|---|
 | 會直接 `window.print()` 的報表表格（10/18 估約 15 頁，10/19 實測 22 個報表 index，例如店家區間累計表、費用分析表、損益表、日報表明細卡片、設計師抽成報表、商品庫存表等） | `src/initialize.scss` 約 70 條列印規則直接寫在 MUI class 上；要換就得改寫列印規則，與鐵則「列印範本不動」衝突 |
 | 列印範本（`#printMain`、`#printThermal`、`printCard`、`forPrint*`、`merchantNamePrint`） | 鐵則 |
-| LINE（`layouts/Line`、`ChangeLineMenuPage`）、EHS（`EHS2Page`）、`/ar`、`LinepayQRcode`、`Typography` | 決策：不改版或疑似死碼 |
+| LINE（`layouts/Line`、`ChangeLineMenuPage`）、EHS（`EHS2Page`）、`/ar`（`AR2`）、`Typography` | 決策：不改版或疑似死碼（未被路由使用的 `views/AR`、`views/LinepayQRcode` 已於 2026/10/21 刪除） |
 | 沒被任何地方引用的檔案（如 `Profile/Group.js`、`SalaryEdit/General.js`、`ServiceEdit/AboutAssistant.js` 等） | 死碼 |
 | `TextField`（helperText 邏輯／adornment／inputRef）、`Autocomplete`、日期選擇器、`Radio`、`Slider`、`Tooltip`、`Drawer`、`Accordion` | 無對應新元件或替換會動到邏輯；橋接主題已套新外觀 |
 
