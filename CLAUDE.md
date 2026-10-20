@@ -57,7 +57,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 
 - **`ui` 元件放在 MUI Dialog／Popper（Portal）內要有 `.ui-root`**，否則沒有 box-sizing／邊框重置（8 個 `ui` 元件已自帶 `ui-root`，`portal-root-scan` 為 0；新增 `ui` 元件要記得自帶）。
 - Radix Dialog 會把 body 設 `pointer-events:none`，與相容層 Dialog（`ui/modal-compat`）的焦點鎖互搶；Dialog 內有 Autocomplete／Select／日期選擇器時用 `ui/modal-compat` 的 Dialog。
-- emotion `css` prop 與 Tailwind class 同權重，先後順序不可靠：要隱藏用 inline style；`css={…}` 傳給元件時要扣掉 margin 以免超出。
+- emotion 已於 2026/10/20 全面移除（MEMORY #163）：樣式一律用 Tailwind className；共用元件的 `className` 是字串直通（`cn` 合併）。`ui/icons` 預設尺寸在 `src/ui/icons.css`（同權重、排在 Tailwind 之後），頁面要覆蓋圖示尺寸需加 `!`。
 - flex 子層沒有 `min-width:0`／`max-width:100%` 會被內容撐寬；欄位列要 `flex-wrap`。
 - `overflow-x:auto` 會裁掉上方溢出內容（浮動標籤），因此標籤統一放欄位上方。
 - MUI Autocomplete：沒有選項／載入中時 `aria-expanded=false` 但彈出層可見（MUI 行為）；選項標籤相同會造成重複 key，要自己給 `key`。

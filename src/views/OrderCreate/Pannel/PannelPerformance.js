@@ -1,7 +1,6 @@
 import billContext from 'context/keyInContext'
 import React, { Fragment, useContext, useState } from 'react'
 import { ChevronUp } from 'lucide-react'
-import styles from 'views/OrderCreate/styles/PannelService'
 import idx from 'idx'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
 import { Card, CardHeader, CardTitle } from 'ui/card'

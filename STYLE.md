@@ -133,7 +133,7 @@
 2. 新元件一律放 `src/ui/`；頁面不得直接 import `@mui/*`（已遷移的頁面）。
 3. **一頁一個 PR**：只改 JSX 與樣式，資料取得（Apollo query / mutation）、Redux、hooks、驗證邏輯原封不動；PR 說明需列出「未變更的邏輯」。
 4. 每頁遷移後在預覽環境（接測試後端）驗收：功能逐項點過、與舊版比對欄位與數字一致。
-5. 全部頁面完成後：移除 MUI、emotion、jss 相依套件與 `src/theme/`。
+5. 全部頁面完成後：移除 MUI、emotion、jss 相依套件與 `src/theme/`。（MUI 已於 2026/10/20 移除；emotion 已於 2026/10/20 移除；`src/theme/` 仍供 `useMediaQuery(theme.breakpoints…)` 等邏輯使用。）
 6. **`.ui-root`**：preflight 關閉，基礎樣式（box-sizing、邊框重置、字型）只作用在 `.ui-root` 之內。`ui` 元件放在 **MUI Dialog／Popper 等 Portal 內**時不在頁面的 `.ui-root` 底下，外層要自己加 `ui-root`（`ui/accordion`、`ui/native-select`、`ui/toggle-group` 已自帶）。
 7. **版面不可靠擠壓或超出**：欄位列用 `flex-wrap` 換行，不要讓操作鈕被推出可視範圍；flex 子層加 `min-width:0`／`max-width:100%`，並扣掉 `margin`；`overflow-x:auto` 會裁掉上方溢出的內容（浮動標籤），所以標籤才統一放上方。
 8. **層級（z-index）**：手機頂／底列 1100；側欄 1190/1200；MUI modal／popper 與 Radix Dialog 1300；Radix select／popover／dropdown 與 MUI snackbar 1400；toast 與 MUI tooltip 1500；底部固定合計列 1050。
