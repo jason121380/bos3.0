@@ -16,8 +16,10 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+// 頁面底色（淺色為白）：iOS 主畫面 App（狀態列 default 模式）的狀態列顯示的是 body 底色，原本的 #EFF2F5 淺灰藍讓頂端與白色頁面不平衡（Jason 2026/10/20）；
+// 各版型主體本來就是 bg-canvas，body 只在狀態列與下拉回彈時露出
 body {
-  background-color: #EFF2F5;
+  background-color: rgb(var(--canvas));
 }
 
 a {
