@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion-compat'
-import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
+import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from "context/keyInContext";
 import { useFetchUseMembershipOrder } from "hooks/useFetchOrder";
 import _ from "lodash";
@@ -13,7 +13,7 @@ import MemberShipCardSells from "./MemberShipCardSells";
 
 const styles = {
   details: css({
-    overflowX: "scroll",
+    overflowX: "auto",
   }),
   heading: css({
     fontSize: '16px !important',
@@ -191,11 +191,14 @@ const PannelMemberShipCardSells = ({ thirdPartTicket }) => {
   }
 
   return (
-    <Accordion defaultExpanded={expanded} expanded={expanded}>
+    <Accordion expanded={expanded}>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
         data-testid="merchantSell"
         onClick={handleAccordionClick}
+        summaryMeta={!expanded && panelSummary(
+          sells.filter(d => d.membershipUUID).length,
+          sells.filter(d => d.membershipUUID).reduce((total, d) => total + d.price, 0)
+        )}
       >
         <p className="m-0" css={styles.heading}>會員卡銷售</p>
       </AccordionSummary>

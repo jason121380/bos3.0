@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { CheckboxField } from 'ui/checkbox'
+import { Field } from 'ui/input'
 import CustomerTicketRecordAutoComplete from 'components/CustomerTicketRecordAutoComplete'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import billContext from 'context/keyInContext'
@@ -12,11 +13,20 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
 const styles = {
+  // 項目列：欄位靠底對齊（標籤在上），窄螢幕換行不擠壓（比照打帳單）
   couponUse: css({
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    rowGap: '12px',
     marginBottom: theme.spacing(3),
+  }),
+  couponField: css({
+    width: '250px',
+    maxWidth: '100%',
+    display: 'flex',
+    marginRight: '12px',
   }),
   field: css({
     minWidth: '150px !important',
@@ -163,10 +173,11 @@ export default function CouponUse({
     <Fragment>
       <div css={styles.couponUse}>
         {bill.customerId && (
+          <Field label="預收卡">
           <CustomerTicketRecordAutoComplete
-            className={styles.field}
+            className={styles.couponField}
             customerId={bill.customerId}
-            label="卡券名稱/代號"
+            inputProps={{ 'data-testid': '', placeholder: '卡券名稱/代號' }}
             value={couponUsage.customerTicketId}
             onChange={handleCustomerTicketChange}
             orderId={orderId}
@@ -174,15 +185,16 @@ export default function CouponUse({
             couponUsages={couponUsages}
             editOrderUseTicketDisabled={true}
           />
+          </Field>
         )}
         {couponUsage.customerTicketId && (
           <React.Fragment>
+            <Field label="金額" css={styles.priceField}>
             <TextField
-              label="金額"
+              fullWidth
               variant="outlined"
               disabled
               value={displayFloat(price)}
-              css={styles.priceField}
               onChange={event =>
                 onChange({
                   value: idx(event, _ => _.target.value),
@@ -191,10 +203,12 @@ export default function CouponUse({
                 })
               }
             />
+            </Field>
             {ticketOrderHelpers.map((data, helperIndex) => (
               <React.Fragment key={`${data.id}-ticketOrder-${helperIndex}-${data.helperId}`}>
+                <Field label={data.type}>
                 <EmployeeAutoComplete
-                  label={data.type}
+                  placeholder={data.type}
                   value={data.helperId}
                   onChange={value =>
                     handleAssistantChange({
@@ -205,6 +219,7 @@ export default function CouponUse({
                   }
                   className={styles.field}
                 />
+                </Field>
                 <CheckboxField
                   label="指定"
                   checked={data.isDesignate}

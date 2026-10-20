@@ -87,6 +87,12 @@ describe('ui/text-field TextField（與 MUI TextField 相容的介面）', () =>
     expect(area.tagName).toBe('TEXTAREA')
     expect(area).toHaveAttribute('rows', '3')
   })
+
+  // MUI 的 InputProps.placeholder 會傳到輸入框；比照，避免提示文字落在外框 div 上看不到
+  it('InputProps.placeholder 顯示在輸入框上', () => {
+    render(<TextField value="" onChange={() => {}} InputProps={{ placeholder: '服務名稱/代號' }} />)
+    expect(screen.getByPlaceholderText('服務名稱/代號')).toBe(screen.getByRole('textbox'))
+  })
 })
 
 describe('ui/text-field Input／OutlinedInput（與 MUI Input／OutlinedInput 相容）', () => {

@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { Button } from 'ui/button-compat'
 import { TextField } from 'ui/text-field'
+import { Field } from 'ui/input'
 import billContext from 'context/keyInContext'
 import { useLazyFetchCustomerWallet } from 'hooks/useFetchCustomerWallet'
 import { useFetchProfileIdentity } from 'hooks/useFetchProfile'
@@ -135,12 +136,13 @@ export default function PaymentCustomerWallet() {
   }
   return (
     <>
-      <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+      {/* 欄位標籤在上；按鈕與輸入框靠底對齊，窄螢幕換行 */}
+      <div style={{ display: 'flex', alignItems: 'flex-end', flexWrap: 'wrap', gap: 12 }}>
         {usableCustomerWallet > 0 && bill.customerId && (
+          <Field label={`扣入金(${usableCustomerWallet}可用)`} css={styles.field}>
           <TextField
+            fullWidth
             variant="outlined"
-            label={`扣入金(${usableCustomerWallet}可用)`}
-            css={styles.field}
             value={bill.walletPay}
             type="number"
             onFocus={handleFocus}
@@ -156,6 +158,7 @@ export default function PaymentCustomerWallet() {
             }}
             onWheel={() => document.activeElement.blur()}
           />
+          </Field>
         )}
         <Button
           color="primary"

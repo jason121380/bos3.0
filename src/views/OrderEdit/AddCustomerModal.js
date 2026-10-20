@@ -299,8 +299,10 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               </Field>
             </Grid>
             <Grid item md={6} xs={12}>
+              {/* 標籤在欄位上方（與同彈窗其他欄位一致），不用外框上緣標籤 */}
+              <Field label="性別" htmlFor="orderEditAddCustomer-gender">
               <NativeSelect
-                label='性別'
+                id="orderEditAddCustomer-gender"
                 value={values.gender}
                 name="gender"
                 onChange={handleFieldChange}
@@ -314,6 +316,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   </NativeSelectOption>
                 ))}
               </NativeSelect>
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
               <Field label="Email">
@@ -352,30 +355,36 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               </Field>
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                label="民國年"
-                name="year"
-                value={birthdayObj.year}
-                onChange={e => handleBirthdayChange(e)}
-                variant="outlined"
-                css={styles.birthdayInput}
-              />
-              <TextField
-                label="月"
-                name="month"
-                value={birthdayObj.month}
-                onChange={e => handleBirthdayChange(e)}
-                variant="outlined"
-                css={styles.birthdayMonthDay}
-              />
-              <TextField
-                label="日"
-                name="day"
-                value={birthdayObj.day}
-                onChange={e => handleBirthdayChange(e)}
-                variant="outlined"
-                css={styles.birthdayMonthDay}
-              />
+              {/* 生日三格：標籤在上（比照打帳單的新增顧客彈窗） */}
+              <div className="flex flex-wrap gap-2.5">
+                <Field label="民國年" className="w-20">
+                  <TextField
+                    fullWidth
+                    name="year"
+                    value={birthdayObj.year}
+                    onChange={e => handleBirthdayChange(e)}
+                    variant="outlined"
+                  />
+                </Field>
+                <Field label="月" className="w-20">
+                  <TextField
+                    fullWidth
+                    name="month"
+                    value={birthdayObj.month}
+                    onChange={e => handleBirthdayChange(e)}
+                    variant="outlined"
+                  />
+                </Field>
+                <Field label="日" className="w-20">
+                  <TextField
+                    fullWidth
+                    name="day"
+                    value={birthdayObj.day}
+                    onChange={e => handleBirthdayChange(e)}
+                    variant="outlined"
+                  />
+                </Field>
+              </div>
             </Grid>
             {/* <Grid item md={6} xs={12}>
               <KeyboardDatePicker
@@ -436,8 +445,9 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               />
             </Grid>
             <Grid item md={6} xs={12}>
+              <Field label="最近設計師" htmlFor="orderEditAddCustomer-latestDesigner">
               <NativeSelect
-                label='最近設計師'
+                id="orderEditAddCustomer-latestDesigner"
                 value={customer.latestDesigner || ''}
                 onChange={handleFieldChange}
                 name="DesignerId"
@@ -454,6 +464,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   ))
                 )}
               </NativeSelect>
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
               <FormControl variant="outlined" fullWidth>

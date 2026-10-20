@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
+import { Field } from 'ui/input'
 import PaymentAutoComplete from 'components/PaymentAutoComplete'
 import billContext from 'context/keyInContext'
 import React, { useEffect } from 'react'
@@ -9,11 +10,21 @@ import { theme } from '../../theme'
 import PaymentCustomerWallet from './PaymentCustomerWallet'
 
 const styles = {
+  // 欄位靠底對齊（標籤在上），窄螢幕換行不擠壓（比照打帳單）
   payment: css({
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    rowGap: '12px',
     marginBottom: theme.spacing(3),
+  }),
+  fieldWidth: css({
+    width: '250px',
+    maxWidth: '100%',
+    display: 'flex',
+    marginRight: '12px',
+    justifyContent: 'flex-start',
   }),
   field: css({
     width: '150px',
@@ -165,21 +176,23 @@ export default function Payment() {
   return (
     <div>
       <div css={styles.payment}>
+        <Field label="付款方式">
         <PaymentAutoComplete
           setPaymentAlready={setPaymentAlready}
-          label="其他付款方式"
-          className={styles.field}
+          inputProps={{ placeholder: '選擇付款方式' }}
+          className={styles.fieldWidth}
           value={bill.payType[0]}
           totalShouldPay={totalShouldPay}
           onChange={value => selectPayment(value)}
         />
+        </Field>
         {bill.payType.map((payment, index) => (
+          <Field key={`${payment}-${index}`} label={`${payment}金額`} css={styles.field}>
           <TextField
             value={bill.amountByOtherPay}
             key={`${payment}-${index}`}
+            fullWidth
             variant="outlined"
-            label={`${payment}金額`}
-            css={styles.field}
             onFocus={handleFocus}
             onChange={event => {
               amountByOtherPay(+event.target.value)
@@ -198,6 +211,7 @@ export default function Payment() {
               'data-testid': `${payment}金額`,
             }}
           />
+          </Field>
         ))}
       </div>
       {bill.customerId ? <PaymentCustomerWallet /> : ''}

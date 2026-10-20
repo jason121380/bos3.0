@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion-compat'
-import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
+import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
 import { useState, useEffect, useContext } from 'react'
@@ -12,7 +12,7 @@ import MerchantSells from './MerchantSells'
 
 const styles = {
   details: css({
-    overflowX: 'scroll',
+    overflowX: 'auto',
   }),
   heading: css({
     fontSize: '16px !important',
@@ -162,11 +162,15 @@ export default function PannelMerchantSells({ thirdPartTicket }) {
     setExpanded(val => !val)
   }
   return (
-    <Accordion defaultExpanded={expanded} expanded={expanded}>
+    <Accordion expanded={expanded}>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
         data-testid="merchantSell"
         onClick={handleAccordionClick}
+        // 收合時顯示「已填 N 筆 · NT$ 小計」（只讀畫面上的項目列，不參與計算或送出；比照打帳單）
+        summaryMeta={!expanded && panelSummary(
+          sells.filter(d => d.productId).length,
+          sells.filter(d => d.productId).reduce((total, d) => total + d.price * d.count, 0)
+        )}
         style={{ width: '100%' }}
       >
         <p className="m-0" css={styles.heading}>店販銷售</p>

@@ -298,22 +298,25 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               </Field>
             </Grid>
             <Grid item md={6} xs={12}>
-              <NativeSelect
-                className="ui-root"
-                label='性別'
-                value={values.gender}
-                name="gender"
-                onChange={handleFieldChange}
-              >
-                <NativeSelectOption value="UNKNOWN">
-                  <em>未知</em>
-                </NativeSelectOption>
-                {gender.map((data, index) => (
-                  <NativeSelectOption value={data.value} key={`${data.value}-${index}`}>
-                    {data.label}
+              {/* 標籤改放欄位上方（與同彈窗其他欄位一致），不再卡在外框上緣 */}
+              <Field label="性別" htmlFor="queueAddCustomerModal-gender">
+                <NativeSelect
+                  className="ui-root"
+                  id="queueAddCustomerModal-gender"
+                  value={values.gender}
+                  name="gender"
+                  onChange={handleFieldChange}
+                >
+                  <NativeSelectOption value="UNKNOWN">
+                    <em>未知</em>
                   </NativeSelectOption>
-                ))}
-              </NativeSelect>
+                  {gender.map((data, index) => (
+                    <NativeSelectOption value={data.value} key={`${data.value}-${index}`}>
+                      {data.label}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
               <Field label="Email">
@@ -394,34 +397,14 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <NativeSelect
-                className="ui-root"
-                label='最近設計師'
-                value={customer.latestDesigner || ''}
-                onChange={handleFieldChange}
-                name="DesignerId"
-                disabled
-              >
-                <NativeSelectOption value="">
-                  <em>None</em>
-                </NativeSelectOption>
-                {idx(designers, _ =>
-                  _.data.users.users.map((data, index) => (
-                    <NativeSelectOption value={data.id} key={`${data.id}-${index}`}>
-                      {data.name}
-                    </NativeSelectOption>
-                  ))
-                )}
-              </NativeSelect>
-            </Grid>
-            <Grid item md={6} xs={12}>
-              {designers.data ? (
+              <Field label="最近設計師" htmlFor="queueAddCustomerModal-latestDesigner">
                 <NativeSelect
                   className="ui-root"
-                  label='偏好設計師'
-                  value={values.PreferDesignerId}
+                  id="queueAddCustomerModal-latestDesigner"
+                  value={customer.latestDesigner || ''}
                   onChange={handleFieldChange}
-                  name="PreferDesignerId"
+                  name="DesignerId"
+                  disabled
                 >
                   <NativeSelectOption value="">
                     <em>None</em>
@@ -434,6 +417,30 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                     ))
                   )}
                 </NativeSelect>
+              </Field>
+            </Grid>
+            <Grid item md={6} xs={12}>
+              {designers.data ? (
+                <Field label="偏好設計師" htmlFor="queueAddCustomerModal-preferDesigner">
+                  <NativeSelect
+                    className="ui-root"
+                    id="queueAddCustomerModal-preferDesigner"
+                    value={values.PreferDesignerId}
+                    onChange={handleFieldChange}
+                    name="PreferDesignerId"
+                  >
+                    <NativeSelectOption value="">
+                      <em>None</em>
+                    </NativeSelectOption>
+                    {idx(designers, _ =>
+                      _.data.users.users.map((data, index) => (
+                        <NativeSelectOption value={data.id} key={`${data.id}-${index}`}>
+                          {data.name}
+                        </NativeSelectOption>
+                      ))
+                    )}
+                  </NativeSelect>
+                </Field>
               ) : (
                 // 載入中用 renderValue 顯示轉圈，保留 MUI Select
                 <FormControl variant="outlined" fullWidth>

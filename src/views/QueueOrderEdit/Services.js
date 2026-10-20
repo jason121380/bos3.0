@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
-import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
+import { Field } from 'ui/input'
+import { Eraser, Copy, Trash2 } from 'lucide-react'
+import { RowIconButton, AddRowButton } from 'views/OrderCreate/RowAction'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import ServicesAutoComplete from 'components/ServicesAutoComplete'
 import ThirdPartyAutoCompleteforQueueOrder from 'components/ThirdPartyAutoCompleteforQueueOrder'
@@ -14,9 +16,13 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
 const styles = {
+  // 項目列（比照打帳單 views/OrderCreate/styles/Services）：上方標籤、控制項靠底對齊、窄螢幕換行不擠壓
   service: css({
     display: 'flex',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    rowGap: '12px',
     marginBottom: theme.spacing(3),
   }),
   field: css({
@@ -47,20 +53,6 @@ const styles = {
     '&:last-child': {
       marginRight: '0px',
     },
-  }),
-  action: css({
-    width: '50px',
-    display: 'flex',
-    marginRight: '12px',
-    marginTop: '13px !important',
-    cursor: 'pointer',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-  createIcon: css({
-    cursor: 'pointer',
-    margin: '10px',
   }),
   heading2: css({
     fontSize: theme.typography.pxToRem(13),
@@ -311,77 +303,30 @@ export default function Services({
     <Fragment>
       <div css={styles.service}>
         {index === 0 ? (
-          <FilterNoneIcon css={styles.createIcon} onClick={handleOpenServicesModal} />
+          <RowIconButton label="從清單選擇服務" className="mx-1.5" onClick={handleOpenServicesModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span style={{ margin: '22px' }} />
+          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
         )}
-        <ServicesAutoComplete
-          label="服務名稱/代號"
-          onChange={handleServiceChange}
-          className={styles.servicesField}
-          value={service.serviceId}
-          ref={serviceRef}
-          name="service"
-          tabIndex={focusRow + '0'}
-          autoFocus={focus === 'service'}
-          onFocus={handleFocus}
-          onFieldChange={handleServiceFieldChange}
-          onKeyDown={event => {
-            if (event.key === 'Enter' && bill.serviceOrders[index] !== undefined) {
-              if (!(service.isLocked === 'TRUE' || service.isLocked === 'UNSET')) {
-                setFocus('price')
-              } else if (helper.length > 0) {
-                setFocus(helper[0].type)
-                idx(helperRefs, _ => _[0].current.focus())
-              } else {
-                if (ticketDisabled || !thirdPartTicket) {
-                  changeRowFocus(index + 1)
-                  setFocus('service')
-                } else {
-                  setFocus('thirdParty')
-                  thirdPartyRef.current.focus()
-                }
-              }
-            }
-          }}
-          inputProps={{
-            'data-testid': `service-${index}`,
-          }}
-        />
-        {service.serviceId ? (
-          <Fragment>
-            <TextField
-              label="價格"
-              variant="outlined"
-              inputRef={priceRef}
-              name="price"
-              tabIndex={focusRow + '1'}
-              onFocus={handleFocus}
-              autoFocus={focus === 'price'}
-              onKeyDown={event => {
-                if (event.key === 'Enter' && helper.length > 0 && !serviceDetail.loading) {
+        {/* 必填 *：Footer.js 重試時 helper/billVerify.js checkServicesOrders 要求每一列都有 serviceId（同打帳單） */}
+        <Field label="服務項目" required>
+          <ServicesAutoComplete
+            onChange={handleServiceChange}
+            className={styles.servicesField}
+            value={service.serviceId}
+            ref={serviceRef}
+            name="service"
+            tabIndex={focusRow + '0'}
+            autoFocus={focus === 'service'}
+            onFocus={handleFocus}
+            onFieldChange={handleServiceFieldChange}
+            onKeyDown={event => {
+              if (event.key === 'Enter' && bill.serviceOrders[index] !== undefined) {
+                if (!(service.isLocked === 'TRUE' || service.isLocked === 'UNSET')) {
+                  setFocus('price')
+                } else if (helper.length > 0) {
                   setFocus(helper[0].type)
                   idx(helperRefs, _ => _[0].current.focus())
-                }
-                if (
-                  event.key === 'Enter' &&
-                  helper.length === 0 &&
-                  !serviceDetail.loading &&
-                  isHelperDesignation
-                ) {
-                  if (ticketDisabled || !thirdPartTicket) {
-                    changeRowFocus(index + 1)
-                    setFocus('service')
-                  } else {
-                    setFocus('thirdParty')
-                    thirdPartyRef.current.focus()
-                  }
-                } else if (
-                  event.key === 'Enter' &&
-                  helper.length === 0 &&
-                  !serviceDetail.loading &&
-                  !isHelperDesignation
-                ) {
+                } else {
                   if (ticketDisabled || !thirdPartTicket) {
                     changeRowFocus(index + 1)
                     setFocus('service')
@@ -390,69 +335,121 @@ export default function Services({
                     thirdPartyRef.current.focus()
                   }
                 }
-              }}
-              css={styles.priceField}
-              value={service.price}
-              onChange={handlePriceChange}
-              inputProps={{
-                'data-testid': `service-${index}-price`,
-              }}
-              disabled={!!(service.isLocked === 'TRUE' || service.isLocked === 'UNSET')}
-            />
+              }
+            }}
+            inputProps={{
+              'data-testid': `service-${index}`,
+            }}
+          />
+        </Field>
+        {service.serviceId ? (
+          <Fragment>
+            <Field label="價格" css={styles.priceField}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                inputRef={priceRef}
+                name="price"
+                tabIndex={focusRow + '1'}
+                onFocus={handleFocus}
+                autoFocus={focus === 'price'}
+                onKeyDown={event => {
+                  if (event.key === 'Enter' && helper.length > 0 && !serviceDetail.loading) {
+                    setFocus(helper[0].type)
+                    idx(helperRefs, _ => _[0].current.focus())
+                  }
+                  if (
+                    event.key === 'Enter' &&
+                    helper.length === 0 &&
+                    !serviceDetail.loading &&
+                    isHelperDesignation
+                  ) {
+                    if (ticketDisabled || !thirdPartTicket) {
+                      changeRowFocus(index + 1)
+                      setFocus('service')
+                    } else {
+                      setFocus('thirdParty')
+                      thirdPartyRef.current.focus()
+                    }
+                  } else if (
+                    event.key === 'Enter' &&
+                    helper.length === 0 &&
+                    !serviceDetail.loading &&
+                    !isHelperDesignation
+                  ) {
+                    if (ticketDisabled || !thirdPartTicket) {
+                      changeRowFocus(index + 1)
+                      setFocus('service')
+                    } else {
+                      setFocus('thirdParty')
+                      thirdPartyRef.current.focus()
+                    }
+                  }
+                }}
+                value={service.price}
+                onChange={handlePriceChange}
+                inputProps={{
+                  'data-testid': `service-${index}-price`,
+                }}
+                disabled={!!(service.isLocked === 'TRUE' || service.isLocked === 'UNSET')}
+              />
+            </Field>
             {!serviceDetail.loading &&
               helper.map((data, idx) => (
                 <div key={`${data.type}-${idx}`}>
-                  <EmployeeAutoComplete
-                    className={styles.field}
-                    assistField={styles.assistField}
-                    isAssist={true}
-                    label={`${data.type}`}
-                    value={data.helperId}
-                    name={data.type}
-                    ref={helperRefs[idx]}
-                    autoFocus={focus === data.type}
-                    tabIndex={focusRow + '2' + idx}
-                    onChange={value =>
-                      handleAssistantChange({
-                        value,
-                        dataType: data.type,
-                        helperIndex: idx,
-                      })
-                    }
-                    onKeyDown={event => {
-                      if (event.key === 'Enter' && isHelperDesignation) {
-                        setFocus(data.type + 'designate')
-                        helperDesignateRefs[idx].current.focus()
-                      } else if (event.key === 'Enter' && idx + 1 < helper.length) {
-                        setFocus(helper[idx + 1].type)
-                        helperRefs[idx + 1].current.focus()
-                      } else if (
-                        event.key === 'Enter' &&
-                        idx + 1 === helper.length &&
-                        isHelperDesignation &&
-                        thirdPartTicket
-                      ) {
-                        setFocus('thirdParty')
-                        thirdPartyRef.current.focus()
-                      } else if (
-                        event.key === 'Enter' &&
-                        idx + 1 === helper.length &&
-                        thirdPartTicket
-                      ) {
-                        if (ticketDisabled) {
-                          changeRowFocus(index + 1)
-                          setFocus('service')
-                        } else {
+                  <Field label={`${data.type}`}>
+                    <EmployeeAutoComplete
+                      placeholder={data.type}
+                      className={styles.field}
+                      assistField={styles.assistField}
+                      isAssist={true}
+                      value={data.helperId}
+                      name={data.type}
+                      ref={helperRefs[idx]}
+                      autoFocus={focus === data.type}
+                      tabIndex={focusRow + '2' + idx}
+                      onChange={value =>
+                        handleAssistantChange({
+                          value,
+                          dataType: data.type,
+                          helperIndex: idx,
+                        })
+                      }
+                      onKeyDown={event => {
+                        if (event.key === 'Enter' && isHelperDesignation) {
+                          setFocus(data.type + 'designate')
+                          helperDesignateRefs[idx].current.focus()
+                        } else if (event.key === 'Enter' && idx + 1 < helper.length) {
+                          setFocus(helper[idx + 1].type)
+                          helperRefs[idx + 1].current.focus()
+                        } else if (
+                          event.key === 'Enter' &&
+                          idx + 1 === helper.length &&
+                          isHelperDesignation &&
+                          thirdPartTicket
+                        ) {
                           setFocus('thirdParty')
                           thirdPartyRef.current.focus()
+                        } else if (
+                          event.key === 'Enter' &&
+                          idx + 1 === helper.length &&
+                          thirdPartTicket
+                        ) {
+                          if (ticketDisabled) {
+                            changeRowFocus(index + 1)
+                            setFocus('service')
+                          } else {
+                            setFocus('thirdParty')
+                            thirdPartyRef.current.focus()
+                          }
+                        } else if (event.key === 'Enter') {
+                          changeRowFocus(index + 1)
+                          setFocus('service')
                         }
-                      } else if (event.key === 'Enter') {
-                        changeRowFocus(index + 1)
-                        setFocus('service')
-                      }
-                    }}
-                    onFocus={handleFocus}
-                  />
+                      }}
+                      onFocus={handleFocus}
+                    />
+                  </Field>
                   {isHelperDesignation && (
                     <FormControlLabel
                       control={<Checkbox color="primary" inputRef={helperDesignateRefs[idx]} />}
@@ -500,30 +497,31 @@ export default function Services({
         ) : (
           ''
         )}
-        <div style={{ display: 'block' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           {(thirdPartTicket || (ticketDisabled && service.thirdPartyCouponMerchantId)) && (
-            <ThirdPartyAutoCompleteforQueueOrder
-              setThirdPartyAlready={setThirdPartyAlready}
-              className={styles.field}
-              label="第三方卡券"
-              value={service.thirdPartyCouponMerchantId}
-              ref={thirdPartyRef}
-              name="thirdParty"
-              disabled={ticketDisabled}
-              onChange={e => handleThirdPartyChange(e ? e.id : null)}
-              onFocus={handleFocus}
-              inputProps={{
-                'data-testid': `service-${index}-thirdParty`,
-              }}
-              onKeyDown={event => {
-                if (event.key === 'Enter') {
-                  if (servicesLength - 1 !== index) {
-                    setFocus('service')
+            <Field label="第三方卡券">
+              <ThirdPartyAutoCompleteforQueueOrder
+                setThirdPartyAlready={setThirdPartyAlready}
+                className={styles.field}
+                value={service.thirdPartyCouponMerchantId}
+                ref={thirdPartyRef}
+                name="thirdParty"
+                disabled={ticketDisabled}
+                onChange={e => handleThirdPartyChange(e ? e.id : null)}
+                onFocus={handleFocus}
+                inputProps={{
+                  'data-testid': `service-${index}-thirdParty`,
+                }}
+                onKeyDown={event => {
+                  if (event.key === 'Enter') {
+                    if (servicesLength - 1 !== index) {
+                      setFocus('service')
+                    }
+                    changeRowFocus(index + 1)
                   }
-                  changeRowFocus(index + 1)
-                }
-              }}
-            />
+                }}
+              />
+            </Field>
           )}
           {(thirdPartTicket || (ticketDisabled && service.thirdPartyCouponMerchantId)) &&
             thirdPartyCoupons.map((data, index) => {
@@ -544,27 +542,30 @@ export default function Services({
               }
             })}
         </div>
-        <BackspaceOutlinedIcon
-          css={styles.action}
+        <RowIconButton
+          label="清除此列" className="mr-1.5"
           onClick={handleClear}
           data-testid={`service-${index}-clear`}
-        />
+        >
+          <Eraser aria-hidden="true" strokeWidth={1.75} />
+        </RowIconButton>
 
         {!first ? (
-          <DeleteForeverIcon
-            css={styles.action}
+          <RowIconButton
+            label="刪除此列" className="mr-1.5"
             onClick={function () {
               removeService(index)
             }}
             data-testid={`service-${index}-delete`}
-          />
+          >
+            <Trash2 aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           ''
         )}
       </div>
       {last ? (
-        <AddIcon
-          css={styles.action}
+        <AddRowButton
           onClick={addService}
           data-testid={`service-${index}-add`}
         />

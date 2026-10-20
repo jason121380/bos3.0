@@ -380,7 +380,8 @@ const Autocomplete = React.forwardRef(function Autocomplete(
   const fp = (rendered && rendered.props) || {}
   fieldPropsRef.current = fp
   const InputProps = fp.InputProps || params.InputProps
-  const { ref: _anchorIgnored, className: inputPropsClassName, startAdornment, endAdornment: endNode, ...inputRootRest } = InputProps
+  // placeholder 放在 InputProps 或 inputProps 時，MUI 都會傳到輸入框（InputBase）；這裡比照，避免掉到外框 div 上而看不到
+  const { ref: _anchorIgnored, className: inputPropsClassName, startAdornment, endAdornment: endNode, placeholder: rootPlaceholder, ...inputRootRest } = InputProps
   const finalInputProps = { ...(fp.inputProps || params.inputProps) }
   // 呼叫端常以 {...params.inputProps, ...額外} 覆寫；確保 downshift 的事件與 ref 不被蓋掉
   ;['ref', 'onKeyDown', 'onBlur', 'onFocus', 'onClick', 'onChange', 'value', 'id', 'aria-autocomplete', 'aria-controls', 'aria-activedescendant', 'aria-expanded', 'role', 'aria-labelledby'].forEach(key => {
@@ -475,7 +476,7 @@ const Autocomplete = React.forwardRef(function Autocomplete(
         <input
           {...finalInputProps}
           name={fp.name || name}
-          placeholder={fp.placeholder}
+          placeholder={fp.placeholder ?? finalInputProps.placeholder ?? rootPlaceholder}
           autoFocus={fp.autoFocus}
           className={cn('min-w-[60px] flex-1 border-0 bg-transparent p-0 text-body text-text outline-none placeholder:text-text-tertiary', finalInputProps.className)}
         />

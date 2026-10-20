@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from 'ui/text-field'
+import { Field, Input } from 'ui/input'
 import PaymentAutoComplete from 'components/PaymentAutoComplete'
 import billContext from 'context/keyInContext'
 import React, { useEffect } from 'react'
@@ -8,12 +8,24 @@ import { theme } from '../../theme'
 
 import PaymentCustomerWallet from './PaymentCustomerWallet'
 
+// 版面比照打帳單（views/OrderCreate/styles/Payment）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
 const styles = {
   payment: css({
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    gap: '12px 0',
+    minWidth: 0,
+    maxWidth: '100%',
     marginBottom: theme.spacing(3),
+  }),
+  fieldWidth: css({
+    width: '250px',
+    maxWidth: 'calc(100% - 12px)', // 扣掉 marginRight，窄螢幕才不會超出卡片
+    display: 'flex',
+    marginRight: '12px',
+    justifyContent: 'flex-start',
   }),
   field: css({
     width: '150px',
@@ -136,46 +148,44 @@ export default function Payment() {
   return (
     <div css={styles.payment}>
       {bill.customerId ? <PaymentCustomerWallet /> : ''}
-      <PaymentAutoComplete
-        label="其他付款方式"
-        className={styles.field}
-        value={bill.payType[0]}
-        totalShouldPay={totalShouldPay}
-        onChange={value =>
-          handleBillChange({
-            key: 'payType',
-            value: value === null ? [] : [value.name],
-          })
-        }
-        inputProps={{
-          'data-testid': 'payment',
-        }}
-      />
-      {bill.payType.map((payment, index) => (
-        <TextField
-          value={bill.amountByOtherPay}
-          key={`${payment}-${index}`}
-          variant="outlined"
-          label={`${payment}金額`}
-          css={styles.field}
-          onFocus={handleFocus}
-          onChange={event => {
-            amountByOtherPay(+event.target.value)
-            // const amountByOtherPay =
-            //   +event.target.value <= otherPayLimit &&
-            //   totalShouldPay > 0 &&
-            //   +event.target.value <= totalShouldPay
-            //     ? +event.target.value
-            //     : bill.amountByOtherPay
-            // handleBillChange({
-            //   key: 'amountByOtherPay',
-            //   value: amountByOtherPay,
-            // })
-          }}
+      <Field label="付款方式">
+        <PaymentAutoComplete
+          className={styles.fieldWidth}
+          value={bill.payType[0]}
+          totalShouldPay={totalShouldPay}
+          onChange={value =>
+            handleBillChange({
+              key: 'payType',
+              value: value === null ? [] : [value.name],
+            })
+          }
           inputProps={{
-            'data-testid': `${payment}金額`,
+            'data-testid': 'payment',
+            placeholder: '選擇付款方式',
           }}
         />
+      </Field>
+      {bill.payType.map((payment, index) => (
+        <Field key={`${payment}-${index}`} label={`${payment}金額`} css={styles.field}>
+          <Input
+            value={bill.amountByOtherPay}
+            onFocus={handleFocus}
+            onChange={event => {
+              amountByOtherPay(+event.target.value)
+              // const amountByOtherPay =
+              //   +event.target.value <= otherPayLimit &&
+              //   totalShouldPay > 0 &&
+              //   +event.target.value <= totalShouldPay
+              //     ? +event.target.value
+              //     : bill.amountByOtherPay
+              // handleBillChange({
+              //   key: 'amountByOtherPay',
+              //   value: amountByOtherPay,
+              // })
+            }}
+            data-testid={`${payment}金額`}
+          />
+        </Field>
       ))}
     </div>
   )

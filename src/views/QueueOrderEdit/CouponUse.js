@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { CheckboxField } from 'ui/checkbox'
+import { Field } from 'ui/input'
 import CustomerTicketRecordAutoCompleteForQueueOrder from 'components/CustomerTicketRecordAutoCompleteForQueueOrder'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import billContext from 'context/keyInContext'
@@ -12,11 +13,20 @@ import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
 const styles = {
+  // 項目列（比照打帳單 views/OrderCreate/styles/CouponUse）：上方標籤、控制項靠底對齊、窄螢幕換行不擠壓
   couponUse: css({
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    rowGap: '12px',
     marginBottom: theme.spacing(3),
+  }),
+  couponField: css({
+    width: '250px',
+    maxWidth: '100%',
+    display: 'flex',
+    marginRight: '12px',
   }),
   field: css({
     minWidth: '150px !important',
@@ -164,45 +174,49 @@ export default function CouponUse({
     <Fragment>
       <div css={styles.couponUse}>
         {bill.customerId && (
-          <CustomerTicketRecordAutoCompleteForQueueOrder
-            className={styles.field}
-            label="卡券名稱/代號"
-            value={couponUsage.customerTicketId}
-            onChange={handleCustomerTicketChange}
-            couponUsages={couponUsages}
-            customerId={bill.customerId}
-          />
+          <Field label="預收卡">
+            <CustomerTicketRecordAutoCompleteForQueueOrder
+              className={styles.couponField}
+              value={couponUsage.customerTicketId}
+              onChange={handleCustomerTicketChange}
+              couponUsages={couponUsages}
+              customerId={bill.customerId}
+            />
+          </Field>
         )}
         {couponUsage.customerTicketId && (
           <Fragment>
-            <TextField
-              label="金額"
-              variant="outlined"
-              customerId={bill.customerId}
-              value={displayFloat(price)}
-              css={styles.priceField}
-              onChange={event =>
-                onChange({
-                  value: idx(event, _ => _.target.value),
-                  key: 'customerTicketId',
-                  index,
-                })
-              }
-            />
+            <Field label="金額" css={styles.priceField}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                customerId={bill.customerId}
+                value={displayFloat(price)}
+                onChange={event =>
+                  onChange({
+                    value: idx(event, _ => _.target.value),
+                    key: 'customerTicketId',
+                    index,
+                  })
+                }
+              />
+            </Field>
             {ticketOrderHelpers.map((data, helperIndex) => (
               <Fragment key={`${data.id}-ticketOrder-${helperIndex}-${data.helperId}`}>
-                <EmployeeAutoComplete
-                  label={data.type}
-                  value={data.helperId}
-                  onChange={value =>
-                    handleAssistantChange({
-                      value: idx(value, _ => _.userId),
-                      assistantIndex: helperIndex,
-                      key: 'helperId',
-                    })
-                  }
-                  className={styles.field}
-                />
+                <Field label={data.type}>
+                  <EmployeeAutoComplete
+                    placeholder={data.type}
+                    value={data.helperId}
+                    onChange={value =>
+                      handleAssistantChange({
+                        value: idx(value, _ => _.userId),
+                        assistantIndex: helperIndex,
+                        key: 'helperId',
+                      })
+                    }
+                    className={styles.field}
+                  />
+                </Field>
                 <CheckboxField
                   label="指定"
                   checked={data.isDesignate}

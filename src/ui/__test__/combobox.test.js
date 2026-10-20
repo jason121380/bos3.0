@@ -202,4 +202,20 @@ describe('ui/combobox Autocomplete（與 MUI Autocomplete 相容的介面）', (
     expect(onChange).toHaveBeenCalledTimes(1)
     expect(onChange.mock.calls[0][1]).toEqual(options[1])
   })
+
+  // 打帳單等頁把佔位字放在 InputProps（ServicesAutoComplete 等元件的 inputProps 會併入 InputProps）；
+  // MUI 會把它傳到輸入框，若落在外框 div，使用者看不到「服務名稱/代號」之類的提示
+  it('InputProps.placeholder 顯示在輸入框上，不落在外框', () => {
+    render(
+      <Autocomplete
+        options={options}
+        value={null}
+        getOptionLabel={getOptionLabel}
+        onChange={jest.fn()}
+        renderInput={params => <TextField {...params} InputProps={{ ...params.InputProps, placeholder: '服務名稱/代號' }} />}
+      />
+    )
+    const input = screen.getByPlaceholderText('服務名稱/代號')
+    expect(input.tagName).toBe('INPUT')
+  })
 })
