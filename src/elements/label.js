@@ -1,33 +1,13 @@
-/** @jsxImportSource @emotion/react */
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
-import { theme } from '../theme'
+import { cn } from 'ui/utils'
 
+// 原 emotion styles（spacing 單位 8px）逐值轉 Tailwind；順序同原 css([className, root, rounded])，後者覆蓋前者
 const styles = {
-  root: css({
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexGrow: 0,
-    flexShrink: 0,
-    borderRadius: 2,
-    lineHeight: '10px',
-    fontSize: '10px',
-    height: 20,
-    minWidth: 20,
-    whiteSpace: 'nowrap',
-    padding: theme.spacing(0.5, 1),
-  }),
-  rounded: css({
-    borderRadius: 10,
-    padding: theme.spacing(0.5),
-  }),
+  root: 'inline-flex items-center justify-center grow-0 shrink-0 rounded-[2px] leading-[10px] text-[10px] h-[20px] min-w-[20px] whitespace-nowrap py-[4px] px-[8px]',
+  rounded: 'rounded-[10px] p-[4px]',
 }
 
 function Label({ className, variant, color, shape, children, style, ...rest }) {
-  const rootCss = css([
-    className, styles.root, shape === 'rounded' ? styles.rounded : {}
-  ])
   const finalStyle = { ...style }
 
   if (variant === 'contained') {
@@ -39,7 +19,7 @@ function Label({ className, variant, color, shape, children, style, ...rest }) {
   }
   return (
     // 原 Typography overline（span、字重 500）；字級／行高由 styles.root（10px）決定，顏色由 style 決定
-    <span {...rest} css={rootCss} style={finalStyle} className="m-0 font-medium">
+    <span {...rest} style={finalStyle} className={cn('m-0 font-medium', className, styles.root, shape === 'rounded' && styles.rounded)}>
       {children}
     </span>
   )
@@ -59,7 +39,7 @@ Label.defaultProps = {
   color: 'rgb(var(--text-secondary))',
   variant: 'contained',
   shape: 'square',
-  className: {}
+  className: ''
 }
 
 export default Label

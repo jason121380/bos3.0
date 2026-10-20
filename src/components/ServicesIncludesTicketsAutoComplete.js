@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import useFetchServiecAndTicketList from 'hooks/useFetchServiecAndTicketList'
 import useToggle from 'hooks/useToggle'
@@ -8,7 +7,8 @@ import { Autocomplete } from 'ui/combobox'
 
 function ServicesIncludesTicketsAutoComplete(
   {
-    className = {},
+    // 跨組契約：className 為 Tailwind 字串，直通到 ui/combobox 根節點（其內以 cn 合併預設 class）
+    className = '',
     onChange = () => {},
     label = '',
     value,
@@ -91,7 +91,7 @@ function ServicesIncludesTicketsAutoComplete(
       open={servicesToggle.open}
       onOpen={servicesToggle.toggle}
       onClose={servicesToggle.toggle}
-      css={className}
+      className={className}
       value={selectedValue}
       options={options}
       autoHighlight

@@ -1,9 +1,7 @@
-/** @jsxImportSource @emotion/react */
 // 保留相容層 Snackbar／SnackbarContent：全域通知的自動隱藏、clickaway、滑鼠移入暫停、上方置中等行為由它提供（openSnackbar 呼叫介面不變）；
 // 保留定值 CircularProgress：結帳進度「定值圓＋%」依 STYLE §6 Empty/Loading 另案，不以轉圈冒充
 import { SnackbarContent, Snackbar } from 'ui/feedback-compat'
 import { CircularProgress } from 'ui/display-compat'
-import { amber, colors, green } from 'ui/colors'
 import { Button as UiButton, Button } from 'ui/button'
 import { CheckCircle as CheckCircleIcon, Close as CloseIcon, Error as ErrorIcon, Info as InfoIcon, Warning as WarningIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
@@ -15,8 +13,6 @@ import useFetchSettingUserSalaryItemLock from 'hooks/useFetchSetLockUserSalaryIt
 import useFetchCloseDailyAccountV3 from 'hooks/useFetchCloseDailyAccountV3'
 import { useFetchCreateSystemUpdateDelete } from 'hooks/useFetchSystemUpdateRecord'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../theme'
 
 const variantIcon = {
   success: props => <CheckCircleIcon  {...props} />,
@@ -25,43 +21,18 @@ const variantIcon = {
   info: props => <InfoIcon  {...props} />,
 }
 
+// 原 emotion styles（green[600]／amber[700]／orange[500]、[700] 取自 ui/colors）逐值轉 Tailwind（spacing 單位 8px；原 `!important` 以 `!` 前綴保留）。
+// info 原為 theme.palette.primary.main（本身已含 `!important`）再接 '!important'，宣告無效、瀏覽器忽略，故不輸出背景色。
 const styles = {
-  success: css({
-    backgroundColor: green[600] + '!important',
-  }),
-  error: css({
-    backgroundColor: theme.palette.error.dark + '!important',
-  }),
-  info: css({
-    backgroundColor: theme.palette.primary.main + '!important',
-  }),
-  warning: css({
-    backgroundColor: amber[700] + '!important',
-  }),
-  icon: css({
-    fontSize: '20px !important',
-    color: '#fff',
-    opacity: 0.9,
-  }),
-  iconVariant: css({
-    marginRight: theme.spacing(1),
-  }),
-  message: css({
-    display: 'flex',
-    alignItems: 'center',
-    color: '#fff'
-  }),
-  resignBtnDiv: css({
-    margin: '7px 0px',
-    textAlign: 'center',
-  }),
-  confirmResignBtn: css({
-    backgroundColor: colors.orange[500] + '!important',
-    color: theme.palette.common.white,
-    '&:hover': {
-      backgroundColor: colors.orange[700],
-    },
-  }),
+  success: '!bg-[#43a047]',
+  error: '!bg-[#8E0000]',
+  info: '',
+  warning: '!bg-[#ffa000]',
+  icon: '!text-[20px] text-[#fff] opacity-90',
+  iconVariant: 'mr-[8px]',
+  message: 'flex items-center text-[#fff]',
+  resignBtnDiv: 'mx-0 my-[7px] text-center',
+  confirmResignBtn: '!bg-[#ff9800] text-[#fff] hover:bg-[#f57c00]',
 }
 
 const SnackbarContentWrapper = forwardRef((props, ref) => {
@@ -248,21 +219,21 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
   return (
     <SnackbarContent
       ref={ref}
-      css={styles[variant]}
+      className={styles[variant]}
       aria-describedby="client-snackbar"
       message={
         resign ? (
           isDailyCheckout ? (
             <Fragment>
-              <span id="client-snackbar" css={styles.message}>
-                <Icon css={css([styles.icon, styles.iconVariant])} />
+              <span id="client-snackbar" className={styles.message}>
+                <Icon className={`${styles.icon} ${styles.iconVariant}`} />
                 {message}
               </span>
-              <div css={styles.resignBtnDiv}>
+              <div className={styles.resignBtnDiv}>
                 <Button
                   variant="primary"
                   size="sm"
-                  css={styles.confirmResignBtn}
+                  className={styles.confirmResignBtn}
                   onClick={() => dailyCheckout()}
                   disabled={isDailyCheckoutLoading}
                 >
@@ -272,15 +243,15 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
             </Fragment>
           ) : (
             <Fragment>
-              <span id="client-snackbar" css={styles.message}>
-                <Icon css={css([styles.icon, styles.iconVariant])} />
+              <span id="client-snackbar" className={styles.message}>
+                <Icon className={`${styles.icon} ${styles.iconVariant}`} />
                 {message}
               </span>
-              <div css={styles.resignBtnDiv}>
+              <div className={styles.resignBtnDiv}>
                 <Button
                   variant="primary"
                   size="sm"
-                  css={styles.confirmResignBtn}
+                  className={styles.confirmResignBtn}
                   onClick={() =>
                     salaryCheckout
                       ? handleSalaryCheckout()
@@ -303,15 +274,15 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
           )
         ) : groupEdit ? (
           <Fragment>
-            <span id="client-snackbar" css={styles.message}>
-              <Icon css={css([styles.icon, styles.iconVariant])} />
+            <span id="client-snackbar" className={styles.message}>
+              <Icon className={`${styles.icon} ${styles.iconVariant}`} />
               {message}
             </span>
-            <div css={styles.resignBtnDiv}>
+            <div className={styles.resignBtnDiv}>
               <Button
                 variant="primary"
                 size="sm"
-                css={styles.confirmResignBtn}
+                className={styles.confirmResignBtn}
                 onClick={() =>
                   serviceHelperGroupEdit ? handleSubmitHelperDeduction() : handleSubmitDeduction()
                 }
@@ -321,8 +292,8 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
             </div>
           </Fragment>
         ) : (
-          <span id="client-snackbar" css={styles.message}>
-            <Icon css={css([styles.icon, styles.iconVariant])} />
+          <span id="client-snackbar" className={styles.message}>
+            <Icon className={`${styles.icon} ${styles.iconVariant}`} />
             {message}
             {checkoutProcessing && (
               <div className="relative inline-flex">
@@ -339,7 +310,7 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
       }
       action={[
         <UiButton key="close" variant="ghost" size="icon" className="h-8 w-8" aria-label="close" title="關閉" onClick={onClose}>
-          {!checkoutProcessing && <CloseIcon css={styles.icon} />}
+          {!checkoutProcessing && <CloseIcon className={styles.icon} />}
         </UiButton>,
       ]}
       {...other}

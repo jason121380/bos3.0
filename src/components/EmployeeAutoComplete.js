@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import useToggle from 'hooks/useToggle'
@@ -8,8 +7,9 @@ import { Autocomplete } from 'ui/combobox'
 
 function EmployeeAutoComplete(
   {
-    className,
-    assistField,
+    // 跨組契約：className／assistField 為 Tailwind 字串，直通到 ui/combobox 根節點（其內以 cn 合併預設 class）
+    className = '',
+    assistField = '',
     isAssist = false,
     onChange = () => { },
     inputOnChange = () => { },
@@ -150,7 +150,7 @@ function EmployeeAutoComplete(
         open={designerToggle.open}
         onOpen={designerToggle.toggle}
         onClose={designerToggle.toggle}
-        css={isAssist ? assistField : className}
+        className={isAssist ? assistField : className}
         value={selectedValue}
         options={options}
         filterOptions={filterOptions}
