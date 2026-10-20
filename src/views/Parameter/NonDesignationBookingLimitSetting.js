@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 數字欄位（onWheel 失焦、onFocus 全選）保留 MUI TextField
 import { TextField } from 'ui/text-field'
 import { CheckboxField } from 'ui/checkbox'
@@ -7,7 +6,6 @@ import { memo } from 'react'
 import produce from 'immer'
 import _ from 'lodash'
 
-import styles from './styles/Services'
 
 function NonDesignationBookingLimitSetting({
   className, inputEnable, aboutBooking, setAboutBooking
@@ -25,7 +23,7 @@ function NonDesignationBookingLimitSetting({
         <CardTitle>同時段預約人數上限</CardTitle>
       </CardHeader>
       <CardContent>
-        <div style={{ gap: 12, flexWrap: 'wrap' }} css={styles.serviceInputGroup}>
+        <div style={{ gap: 12, flexWrap: 'wrap' }} className="flex items-center mb-[24px]">
           <TextField
             disabled={!inputEnable || aboutBooking.isDynamicBookingLimitUsing}
             variant="outlined"
@@ -47,7 +45,7 @@ function NonDesignationBookingLimitSetting({
             }}
           />
         </div>
-        <div css={styles.serviceInputGroup}>
+        <div className="flex items-center mb-[24px]">
           <TextField
             disabled={!inputEnable}
             variant="outlined"

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 手機號碼欄位（helperText 驗證）與帳號欄位（InputLabelProps）保留 MUI TextField
 import { TextField } from 'ui/text-field'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
@@ -9,7 +8,6 @@ import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
 
-import styles from './styles/OrderWithoutCustomerDefaultSetting'
 
 const bookingNotificationArr = [
   {label: '顧客新增預約', key: 'customerCreateBooking'},
@@ -77,7 +75,7 @@ function BookingNotificationSetting({
                 <Field label={option.label}>
                   <NativeSelect
                     fullWidth={false}
-                    css={styles.selectWidth}
+                    className="w-[150px]"
                     name={option.key}
                     value={merchantBookingNotification[key][option.key]}
                     disabled={!inputEnable}
@@ -144,7 +142,7 @@ function BookingNotificationSetting({
         <div className="box-border flex w-full flex-wrap">
           {aboutBooking.bookingNotificationPhone.map((d, index, arr) => {
             return (
-              <div css={styles.phoneTextfieldGroup} key={`NotificationPhoneData-${index}`} className="box-border max-w-[25%] basis-1/4 flex-wrap">
+              <div key={`NotificationPhoneData-${index}`} className="box-border max-w-[25%] basis-1/4 flex-wrap w-[200px] min-w-[200px] my-[15px] mx-0 flex items-center">
                 <div className="box-border" style={{ marginRight: '10px' }}>{index + 1}</div>
                 <TextField
                   label='手機號碼'
@@ -153,7 +151,7 @@ function BookingNotificationSetting({
                   value={d}
                   variant='outlined'
                   error={handleCheckError(d)}
-                  css={styles.phoneTextfield}
+                  className="w-[120px]"
                   helperText={handleCheckError(d) ? '手機格式有誤' : ''}
                   onChange={e => {
                     setAboutBooking(

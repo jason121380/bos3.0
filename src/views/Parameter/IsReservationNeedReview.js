@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 數字欄位（onWheel 失焦、onFocus 全選）與多行文字保留 MUI TextField
 import { TextField } from 'ui/text-field'
 import { CheckboxField } from 'ui/checkbox'
@@ -8,7 +7,6 @@ import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
-import styles from './styles/OrderWithoutCustomerDefaultSetting'
 
 const hours = [
   '00', '01', '02', '03', '04', '05', '06', '07',
@@ -59,28 +57,28 @@ function IsReservationNeedReview({
       </CardHeader>
       <CardContent>
         {settingArr.map(({ label, key }) => (
-          <div css={styles.serviceInputGroup} key={label}>
+          <div className="flex items-center mb-[24px]" key={label}>
             <CheckboxField
               disabled={!inputEnable}
-              css={styles.isUsing}
+              className="mx-[20px] my-0"
               label={label}
               checked={aboutBooking[key]}
               onChange={e => handleSetValue(key, e.target.checked)}
             />
           </div>
         ))}
-        <div css={styles.serviceInputGroup}>
+        <div className="flex items-center mb-[24px]">
           <CheckboxField
             disabled={!inputEnable}
-            css={styles.isUsing}
+            className="mx-[20px] my-0"
             label="啟用「未來預訂(待確認)」的預約狀態"
             checked={bookingCusCheck}
             onChange={() => setBookingCusCheck(!bookingCusCheck)}
           />
         </div>
-        <div css={styles.bookingInputGroup}>
+        <div className="flex flex-col mb-[24px]">
           <div style={{ marginBottom: '15px' }}>同一支電話當日可預約的次數</div>
-          <div css={styles.bookingInput}>
+          <div className="flex flex-wrap items-center gap-y-[10px]">
             <TextField
               disabled={!inputEnable || aboutBooking.bookingLimitPerCellphoneInSameDay === null}
               variant="outlined"
@@ -93,16 +91,16 @@ function IsReservationNeedReview({
             />
             <CheckboxField
               disabled={!inputEnable}
-              css={styles.isUsing}
+              className="mx-[20px] my-0"
               label="不限制次數"
               checked={aboutBooking.bookingLimitPerCellphoneInSameDay === null}
               onChange={e => handleSetValue('bookingLimitPerCellphoneInSameDay', e.target.checked ? null : 0)}
             />
           </div>
         </div>
-        <div css={styles.bookingInputGroup}>
+        <div className="flex flex-col mb-[24px]">
           <div style={{ marginBottom: '15px' }}>單一顧客預約筆數上限</div>
-          <div css={styles.bookingInput}>
+          <div className="flex flex-wrap items-center gap-y-[10px]">
             <TextField
               disabled={!inputEnable || aboutBooking.cusMaxBookingCount === null}
               variant="outlined"
@@ -115,14 +113,14 @@ function IsReservationNeedReview({
             />
             <CheckboxField
               disabled={!inputEnable}
-              css={styles.isUsing}
+              className="mx-[20px] my-0"
               label="不限制次數"
               checked={aboutBooking.cusMaxBookingCount === null}
               onChange={e => handleSetValue('cusMaxBookingCount', e.target.checked ? null : 0)}
             />
           </div>
         </div>
-        <div css={styles.orderLimitGroup}>
+        <div className="flex flex-row mb-[24px] mt-[36px] items-start">
           <span>指定預約僅開放未來</span>
           <div style={{  
             display: 'flex', flexDirection: 'column',
@@ -164,7 +162,7 @@ function IsReservationNeedReview({
             <CheckboxField
               style={{ margin: 0 }}
               disabled={!inputEnable}
-              css={styles.isUsing}
+              className="mx-[20px] my-0"
               label="不限制"
               checked={aboutBooking.createBookingDayLimit === null}
               onChange={e => handleSetValue('createBookingDayLimit', e.target.checked ? null : 0)}
@@ -172,9 +170,9 @@ function IsReservationNeedReview({
           </div>
           <span>天的預約</span>
         </div>
-        <div css={styles.bookingInputGroup}>
+        <div className="flex flex-col mb-[24px]">
           <div style={{ marginBottom: '15px' }}>指定預約顧客可取消預約的時間</div>
-          <div css={styles.bookingInput}>
+          <div className="flex flex-wrap items-center gap-y-[10px]">
             <TextField
               disabled={!inputEnable || aboutBooking.cancelBookingDayLimitByActionDate === null}
               variant="outlined"
@@ -187,7 +185,7 @@ function IsReservationNeedReview({
             />
             <CheckboxField
               disabled={!inputEnable}
-              css={styles.isUsing}
+              className="mx-[20px] my-0"
               label="不限制天數"
               checked={aboutBooking.cancelBookingDayLimitByActionDate === null}
               onChange={e => handleSetValue('cancelBookingDayLimitByActionDate', e.target.checked ? null : 0)}
@@ -204,16 +202,16 @@ function IsReservationNeedReview({
             />
             <CheckboxField
               disabled={!inputEnable}
-              css={styles.isUsing}
+              className="mx-[20px] my-0"
               label="不限制天數"
               checked={aboutBooking.cancelBookingDayLimitByServiceDate === null}
               onChange={e => handleSetValue('cancelBookingDayLimitByServiceDate', e.target.checked ? null : 0)}
             />
           </div>
         </div>
-        <div css={styles.bookingInputGroup}>
+        <div className="flex flex-col mb-[24px]">
           <div style={{ marginBottom: '15px' }}>設定店家可預約的時間範圍</div>
-          <div style={{ flexWrap: 'wrap', gap: '10px 0' }} css={styles.timeWrap}>
+          <div style={{ flexWrap: 'wrap', gap: '10px 0' }} className="flex items-center">
             <Field label='開始'>
               <div className="flex items-center gap-2">
                 <NativeSelect
@@ -271,7 +269,7 @@ function IsReservationNeedReview({
             </Field>
           </div>
         </div>
-        <div style={{ marginTop: '40px' }} css={styles.serviceInputGroup}>
+        <div style={{ marginTop: '40px' }} className="flex items-center mb-[24px]">
           <TextField
             disabled={!inputEnable}
             variant="outlined"

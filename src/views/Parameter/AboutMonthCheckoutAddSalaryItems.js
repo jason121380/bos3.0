@@ -1,12 +1,9 @@
-/** @jsxImportSource @emotion/react */
 import { CheckboxField } from 'ui/checkbox'
 import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import { cloneDeep } from 'lodash'
-
-import styles from './styles/OrderWithoutCustomerDefaultSetting'
 
 const settingArr = [
   {label: '月結時自動結算加扣項設定', key: 'isSalaryItemAutoSetWhileMonthlyCheckout'},
@@ -33,10 +30,10 @@ function AboutMonthCheckoutAddSalaryItems({
       </CardHeader>
       <CardContent>
         {settingArr.map(d => (
-          <div css={styles.serviceInputGroup} key={d.label}>
+          <div className="flex items-center mb-[24px]" key={d.label}>
             <CheckboxField
               disabled={!inputEnable}
-              css={styles.isUsing}
+              className="mx-[20px] my-0"
               label={d.label}
               checked={checkoutAndSalaryItem[d.key]}
               onChange={() => {
@@ -47,12 +44,12 @@ function AboutMonthCheckoutAddSalaryItems({
             />
           </div>
         ))}
-        <div css={styles.serviceInputGroup}>
+        <div className="flex items-center mb-[24px]">
           <Field label='薪資條列印間距'>
             <NativeSelect
               disabled={!inputEnable}
               fullWidth={false}
-              css={styles.field}
+              className="w-[150px] flex m-0"
               value={checkoutAndSalaryItem.employeePayslipPrintStyle}
               onChange={e => setCheckoutAndSalaryItem({...checkoutAndSalaryItem, employeePayslipPrintStyle: e.target.value})}
             >

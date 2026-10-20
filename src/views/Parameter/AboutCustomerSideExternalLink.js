@@ -1,12 +1,13 @@
-/** @jsxImportSource @emotion/react */
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon, Add as AddIcon, Edit as EditIcon } from 'ui/icons'
 import { memo, Fragment, useState } from 'react'
-import styles from './styles/AboutDesignerSideExternalLink'
 import { teal } from 'ui/colors';
 import OuterLinkModal from './OuterLinkModal'
 import OuterLinkSortModal from './OuterLinkSortModal'
+
+const linkButtonClass =
+  'w-[200px] px-[16px] py-[8px] relative normal-case break-all [&_svg.editIcon]:absolute [&_svg.editIcon]:top-0 [&_svg.editIcon]:right-0 [&_svg.editIcon]:[transform:translate(-10%,10%)] [&_svg.editIcon]:hidden [&:hover>svg.editIcon]:block [&_.svgWrap]:w-[25px] [&_.svgWrap]:h-[25px] [&_.svgWrap]:[transform:translate(-50%,-50%)] [&_.svgWrap]:rounded-[50%] [&_.svgWrap]:bg-[#bf3939] [&_.svgWrap]:flex [&_.svgWrap]:justify-center [&_.svgWrap]:items-center [&_.svgWrap]:absolute [&_.svgWrap]:top-0 [&_.svgWrap]:left-0 [&_.svgWrap_svg]:w-[20px] [&_.svgWrap_svg]:h-[20px]'
 
 function AboutCustomerSideExternalLink({
   className, cusExternalLink, inputEnable, refetchLink,
@@ -49,7 +50,7 @@ function AboutCustomerSideExternalLink({
         <CardTitle>外部連結設定</CardTitle>
       </CardHeader>
       <CardContent>
-        <div css={styles.serviceInputGroup}>
+        <div className="flex flex-wrap items-center gap-x-[20px] gap-y-[15px]">
           {cusExternalLink.length ? cusExternalLink.map((data, index) => {
             const {id, name, isTop} = data
             return (
@@ -57,9 +58,8 @@ function AboutCustomerSideExternalLink({
                 <Button
                   disabled={!inputEnable}
                   onClick={() => handleOpenModal(false, data)}
-                  css={styles.Button}
                   variant="secondary"
-                  className="h-auto min-h-10 whitespace-normal"
+                  className={`h-auto min-h-10 whitespace-normal ${linkButtonClass}`}
                 >
                   {name}
                   <EditIcon className='editIcon' fontSize='small'/>
@@ -72,7 +72,7 @@ function AboutCustomerSideExternalLink({
                 {index === (cusExternalLink.length - 1) ?
                 <AddIcon
                   disabled={!inputEnable}
-                  css={styles.pointer}
+                  className="cursor-pointer"
                   onClick={() => handleOpenModal()}
                 /> : ''}
               </Fragment>
@@ -84,7 +84,7 @@ function AboutCustomerSideExternalLink({
               </span>
               <AddIcon
                 onClick={() => handleOpenModal()}
-                css={styles.icon}
+                className="ml-[50px] cursor-pointer"
               />
             </div>}
         </div>

@@ -1,11 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import { CheckboxField } from 'ui/checkbox'
 import { Field, Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
-
-import styles from './styles/AboutMerchantBankSettings'
 
 function AboutMerchantBankSettings({ 
   className, 
@@ -21,10 +18,9 @@ function AboutMerchantBankSettings({
         <CardTitle>薪資轉帳設定</CardTitle>
       </CardHeader>
       <CardContent>
-        <div css={styles.serviceInputGroup}>
+        <div className="flex items-center mb-[24px]">
           <CheckboxField
             disabled={!inputEnable}
-            css={styles.isUsing}
             label="薪資轉帳明細顯示未設定銀行帳號的員工"
             checked={displayNonBankAccountInBankTransferReport}
             onChange={() =>
@@ -32,7 +28,7 @@ function AboutMerchantBankSettings({
             }
           />
         </div>
-        <Field css={styles.input} className="max-w-xs" label="匯款人姓名" htmlFor="merchantBank-remitterName">
+        <Field className="max-w-xs mb-[24px]" label="匯款人姓名" htmlFor="merchantBank-remitterName">
           <Input
             id="merchantBank-remitterName"
             disabled={!inputEnable}
@@ -41,7 +37,7 @@ function AboutMerchantBankSettings({
             onChange={e => onChange({ changedData: e.target.value, key: 'remitterName' })}
           />
         </Field>
-        <Field css={styles.input} className="max-w-xs" label="匯款人銀行名稱" htmlFor="merchantBank-remitterBankName">
+        <Field className="max-w-xs mb-[24px]" label="匯款人銀行名稱" htmlFor="merchantBank-remitterBankName">
           <Input
             id="merchantBank-remitterBankName"
             disabled={!inputEnable}
@@ -50,7 +46,7 @@ function AboutMerchantBankSettings({
             onChange={e => onChange({ changedData: e.target.value, key: 'remitterBankName' })}
           />
         </Field>
-        <Field css={styles.input} className="max-w-xs" label="匯款人帳號" htmlFor="merchantBank-remitterBankAccount">
+        <Field className="max-w-xs mb-[24px]" label="匯款人帳號" htmlFor="merchantBank-remitterBankAccount">
           <Input
             id="merchantBank-remitterBankAccount"
             disabled={!inputEnable}
@@ -59,7 +55,7 @@ function AboutMerchantBankSettings({
             onChange={e => onChange({ changedData: e.target.value, key: 'remitterBankAccount' })}
           />
         </Field>
-        <Field css={styles.input} className="max-w-xs" label="匯款人銀行分行名稱" htmlFor="merchantBank-remitterBankBranchName">
+        <Field className="max-w-xs mb-[24px]" label="匯款人銀行分行名稱" htmlFor="merchantBank-remitterBankBranchName">
           <Input
             id="merchantBank-remitterBankBranchName"
             disabled={!inputEnable}
@@ -68,7 +64,7 @@ function AboutMerchantBankSettings({
             onChange={e => onChange({ changedData: e.target.value, key: 'remitterBankBranchName' })}
           />
         </Field>
-        <Field css={styles.input} className="max-w-xs" label="匯款人銀行分行代號" htmlFor="merchantBank-remitterBankBranchCode">
+        <Field className="max-w-xs mb-[24px]" label="匯款人銀行分行代號" htmlFor="merchantBank-remitterBankBranchCode">
           <Input
             id="merchantBank-remitterBankBranchCode"
             disabled={!inputEnable}
@@ -77,7 +73,7 @@ function AboutMerchantBankSettings({
             onChange={e => onChange({ changedData: e.target.value, key: 'remitterBankBranchCode' })}
           />
         </Field>
-        <Field css={styles.input} className="max-w-xs" label="委託人名稱" htmlFor="merchantBank-trustorName">
+        <Field className="max-w-xs mb-[24px]" label="委託人名稱" htmlFor="merchantBank-trustorName">
           <Input
             id="merchantBank-trustorName"
             disabled={!inputEnable}
@@ -86,7 +82,7 @@ function AboutMerchantBankSettings({
             onChange={e => onChange({ changedData: e.target.value, key: 'trustorName' })}
           />
         </Field>
-        <Field css={styles.input} className="max-w-xs" label="委託人電話" htmlFor="merchantBank-trustorPhone">
+        <Field className="max-w-xs mb-[24px]" label="委託人電話" htmlFor="merchantBank-trustorPhone">
           <Input
             id="merchantBank-trustorPhone"
             disabled={!inputEnable}

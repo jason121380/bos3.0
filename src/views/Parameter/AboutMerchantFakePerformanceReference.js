@@ -1,10 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
-
-import styles from './styles/AboutMerchantLockedDefault'
 
 const fakePerformanceRefer = [
   {
@@ -29,13 +26,13 @@ function AboutMerchantFakePerformanceReference({
         <CardTitle>虛業績依據設定</CardTitle>
       </CardHeader>
       <CardContent>
-        <div css={styles.serviceInputGroup}>
+        <div className="flex items-center">
           <div className="flex flex-wrap items-center gap-2 p-2">
             <Field label='虛業績依據'>
               <NativeSelect
                 disabled={!inputEnable}
                 fullWidth={false}
-                css={styles.field}
+                className="w-[150px] flex mr-[12px]"
                 value={merchantFakePerformanceRefer}
                 onChange={e => setMerchantFakePerformanceRefer(e.target.value)}
               >

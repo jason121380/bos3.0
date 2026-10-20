@@ -1,9 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import produce from 'immer'
-import styles from './styles/AboutCustomerSideSetting'
 
 const pages = [
   {
@@ -44,7 +42,7 @@ function AboutCustomerSideSetting({
         <CardTitle>頁面顯示設定</CardTitle>
       </CardHeader>
       <CardContent>
-        <div css={styles.serviceInputGroup}>
+        <div className="flex items-center">
           <div className="flex items-center p-2" style={{ flexWrap: 'wrap', gap: '0px 20px' }}>
             {pages.map(d => (
               <CheckboxField

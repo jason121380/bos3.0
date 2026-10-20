@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 裁切對話框 Slider 已換 ui/slider、Dialog 已換 ui/dialog；多行與 InputLabelProps 的文字欄位保留 MUI TextField
 import { Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from 'ui/dialog'
 import { TextField } from 'ui/text-field'
@@ -15,40 +14,6 @@ import CropImage from './CropImage'
 import { openSnackbar } from 'elements/snackbars';
 import _ from 'lodash'
 import produce from 'immer';
-import { css } from '@emotion/react'
-
-const styles = {
-  root: css({}),
-  serviceInputGroup: css({
-    display: 'flex',
-    flexDirection: 'column',
-    marginBottom: '24px',
-    marginLeft: '20px'
-  }),
-  serviceInputTitle: css({
-    display: 'flex',
-    alignItems: 'center',
-    marginBottom: '14px',
-  }),
-  avatar: css({
-    height: 100,
-    width: 100,
-  }),
-  sliderContainer: css({
-    display: 'flex',
-    gap: '10px 20px',
-    flexWrap: 'wrap',
-    marginTop: '10px',
-  }),
-  slider: css({
-    display: 'flex',
-    flexGrow: 1,
-    minWidth: '180px',
-    justifyContent: 'flex-end',
-    alignItems: 'center'
-  })
-}
-
 function AboutOrderCreate({
   className, orderCreateSetting, setOrderCreateSetting, uploadMerchantLogo, inputEnable,
 }) {
@@ -161,8 +126,8 @@ function AboutOrderCreate({
         <CardTitle>帳單明細顯示設定</CardTitle>
       </CardHeader>
       <CardContent>
-        <div css={styles.serviceInputGroup}>
-          <div css={styles.serviceInputTitle}>店家Logo設定</div>
+        <div className="flex flex-col mb-[24px] ml-[20px]">
+          <div className="flex items-center mb-[14px]">店家Logo設定</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 30 }}>
             <input
               id='upload'
@@ -203,8 +168,8 @@ function AboutOrderCreate({
             </div>
           </div>
         </div>
-        <div css={styles.serviceInputGroup}>
-          <div style={{ marginBottom: '0' }} css={styles.serviceInputTitle}>
+        <div className="flex flex-col mb-[24px] ml-[20px]">
+          <div style={{ marginBottom: '0' }} className="flex items-center mb-[14px]">
             店家Qrcode設定
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: 20 }}>
               <CheckboxField
@@ -225,8 +190,8 @@ function AboutOrderCreate({
             placeholder={`請輸入網址 ex: www.mlgroup.io`}
           />
         </div>
-        <div css={styles.serviceInputGroup}>
-          <div style={{ marginBottom: '0' }} css={styles.serviceInputTitle}>
+        <div className="flex flex-col mb-[24px] ml-[20px]">
+          <div style={{ marginBottom: '0' }} className="flex items-center mb-[14px]">
             文字內容設定
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: 20 }}>
               <CheckboxField
@@ -273,12 +238,12 @@ function AboutOrderCreate({
             onCropComplete={onCropComplete}
             onZoomChange={setZoom}
           />
-          <div css={styles.sliderContainer}>
-            <div css={styles.slider}>
+          <div className="flex gap-x-[20px] gap-y-[10px] flex-wrap mt-[10px]">
+            <div className="flex grow min-w-[180px] justify-end items-center">
               <div style={{ width: '50px' }}>旋轉</div>
               <Slider value={rotation} min={0} max={360} step={1} onChange={(e, value) => setRotation(value)} />
             </div>
-            <div css={styles.slider}>
+            <div className="flex grow min-w-[180px] justify-end items-center">
               <div style={{ width: '50px' }}>縮放</div>
               <Slider value={zoom} min={0.1} max={10} step={0.1} onChange={(e, value) => setZoom(value)} />
             </div>
