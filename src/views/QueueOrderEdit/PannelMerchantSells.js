@@ -1,31 +1,11 @@
-/** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
 import { useState, useEffect, useContext } from 'react'
 import idx from 'idx'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import MerchantSells from './MerchantSells'
-
-const styles = {
-  details: css({
-    overflowX: 'auto',
-  }),
-  heading: css({
-    fontSize: '16px !important',
-    fontWeight: 'bold',
-    color: 'rgb(var(--text))',
-  }),
-  fieldOutter: css({
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-  }),
-}
 
 export default function PannelMerchantSells({ thirdPartTicket }) {
   const { handleBillChange, order } = useContext(billContext)
@@ -173,10 +153,10 @@ export default function PannelMerchantSells({ thirdPartTicket }) {
         )}
         style={{ width: '100%' }}
       >
-        <p className="m-0" css={styles.heading}>店販銷售</p>
+        <p className="m-0 !text-[16px] font-bold text-text">店販銷售</p>
       </AccordionSummary>
-      <AccordionDetails css={styles.details}>
-        <div css={styles.fieldOutter}>
+      <AccordionDetails className="overflow-x-auto">
+        <div className="flex flex-col items-start justify-start">
           {sells.map((data, index) => (
             <MerchantSells
               key={index}

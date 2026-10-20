@@ -1,37 +1,15 @@
-/** @jsxImportSource @emotion/react */
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import { format } from 'date-fns'
 import roundDecimal from './../../helper/roundDecimal.js'
-import { css } from '@emotion/react'
-
-const styles = {
-  table: css({
-    minWidth: 650,
-  }),
-  sticky: css({
-    position: 'sticky',
-    left: 0,
-    background: 'white',
-    zIndex: '99',
-    outline: '1px solid rgb(var(--border))'
-  }),
-  stickyRow: css({
-    position: 'sticky',
-    top: 0,
-    background: 'white',
-    zIndex: '100',
-    outline: '1px solid rgb(var(--border))'
-  }),
-}
 
 function Results({ data, isServiceTicketMerged, isMemberShipCardActive, bonusDisplay }) {
   return (
-      <Table dense wrapperClassName="BusinessAnalysisReportTable" css={styles.table} aria-label="a dense table">
+      <Table dense wrapperClassName="BusinessAnalysisReportTable" className="min-w-[650px]" aria-label="a dense table">
         <TableHeader>
-          <TableRow css={styles.stickyRow}>
-            <TableHead css={styles.sticky}>營業日期</TableHead>
+          <TableRow className="sticky top-0 z-[100] bg-white [outline:1px_solid_rgb(var(--border))]">
+            <TableHead className="sticky left-0 z-[99] bg-white [outline:1px_solid_rgb(var(--border))]">營業日期</TableHead>
             {isServiceTicketMerged ? (
               <Fragment>
                 <TableHead>營業總業績</TableHead>
@@ -66,7 +44,7 @@ function Results({ data, isServiceTicketMerged, isMemberShipCardActive, bonusDis
         <TableBody>
           {data.data.map(row => (
             <TableRow key={row.date}>
-              <TableCell css={styles.sticky}>{format(row.date, 'yyyy/MM/dd')}</TableCell>
+              <TableCell className="sticky left-0 z-[99] bg-white [outline:1px_solid_rgb(var(--border))]">{format(row.date, 'yyyy/MM/dd')}</TableCell>
               {isServiceTicketMerged ? (
                 <Fragment>
                   <TableCell>
@@ -101,7 +79,7 @@ function Results({ data, isServiceTicketMerged, isMemberShipCardActive, bonusDis
             </TableRow>
           ))}
           <TableRow>
-            <TableCell css={styles.sticky}>
+            <TableCell className="sticky left-0 z-[99] bg-white [outline:1px_solid_rgb(var(--border))]">
               <b>合計</b>
             </TableCell>
             {isServiceTicketMerged ? (

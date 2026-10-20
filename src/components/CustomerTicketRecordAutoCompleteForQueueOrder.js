@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { LoaderCircle } from 'lucide-react'
 import { TextField } from 'ui/text-field'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
@@ -8,7 +7,7 @@ import React from 'react'
 import { Autocomplete } from 'ui/combobox'
 
 export default function CustomerTicketRecordAutoComplete({
-  className,
+  className = '',
   onChange = () => {},
   label = '',
   value,
@@ -37,7 +36,7 @@ export default function CustomerTicketRecordAutoComplete({
       open={ticketsRecordToggle.open}
       onOpen={ticketsRecordToggle.toggle}
       onClose={ticketsRecordToggle.toggle}
-      css={className}
+      className={className}
       value={selectedValue}
       options={options}
       autoHighlight

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { OutlinedInput, InputAdornment } from 'ui/text-field'
 import { FormControl, InputLabel } from 'ui/form-control'
 import { Button } from 'ui/button'
@@ -8,25 +7,6 @@ import { openSnackbar } from 'elements/snackbars'
 import useFetchChangePassword from 'hooks/useFetchChangePassword'
 import produce from 'immer'
 import { Fragment, useState } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../theme'
-
-const styles = {
-  root: css({
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: theme.spacing(1) + '!important',
-  }),
-  form: css({
-    display: 'flex',
-    flexDirection: 'column',
-    margin: 'auto',
-    width: '100%',
-    '& > *': {
-      marginBottom: theme.spacing(2) + '!important',
-    },
-  }),
-}
 
 export default function ChangePassword({ open, handleClose }) {
   const { changePassword } = useFetchChangePassword()
@@ -108,8 +88,8 @@ export default function ChangePassword({ open, handleClose }) {
           </DialogHeader>
           <DialogBody>
           <p className="m-0 mb-3 text-body text-text-secondary">為了您的帳號安全, 您必須變更預設密碼才能繼續使用。</p>
-          <form css={styles.form} noValidate>
-            <FormControl css={styles.margin} variant="outlined">
+          <form className="m-auto flex w-full flex-col [&>*]:!mb-[16px]" noValidate>
+            <FormControl variant="outlined">
               <InputLabel htmlFor="password">密碼</InputLabel>
               <OutlinedInput
                 variant='outlined'
@@ -132,7 +112,7 @@ export default function ChangePassword({ open, handleClose }) {
                 }
               />
             </FormControl>
-            <FormControl css={styles.margin} variant="outlined">
+            <FormControl variant="outlined">
               <InputLabel htmlFor="secondPassword">確認密碼</InputLabel>
               <OutlinedInput
                 id="secondPassword"

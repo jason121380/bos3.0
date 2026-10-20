@@ -1,36 +1,14 @@
-/** @jsxImportSource @emotion/react */
 import { Grid } from 'ui/grid-compat'
 import { Typography } from 'ui/display-compat'
 import { Card } from 'ui/card-compat'
 import { TextField } from 'ui/standard-input-compat'
 import PropTypes from 'prop-types'
 import { format } from 'date-fns'
-import { css } from '@emotion/react'
-
-const localStyles = {
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid rgb(var(--border))',
-    backgroundColor: 'rgb(var(--background))',
-    padding: '24px',
-    marginBottom: '24px',
-  }),
-  gridContainer: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-  }),
-  sign: css({
-    marginTop: '24px',
-    display: 'flex',
-    gap: '48px',
-  }),
-}
 
 function TransferDetail({ merchantBankSettings }) {
   return (
-    <Card css={localStyles.card}>
-      <Grid container css={localStyles.gridContainer}>
+    <Card className="mb-6 rounded-[16px] border border-solid border-border bg-background p-6 [box-shadow:none]">
+      <Grid container className="flex justify-between">
         <div className='MerchantBankTransferReportTransferDetail' style={{ width: '100%' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
             <Typography variant="subtitle1" component="div">
@@ -81,7 +59,7 @@ function TransferDetail({ merchantBankSettings }) {
               分行
             </Typography>
           </div>
-          <div css={localStyles.sign}>
+          <div className="mt-6 flex gap-12">
             <div>
               <Typography variant="body1" component="div" style={{ marginBottom: '8px' }}>
                 簽章：

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchAddPicking from 'hooks/useFetchAddPicking'
@@ -8,19 +7,11 @@ import produce from 'immer'
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import { Button } from 'ui/button'
 import { Checkbox } from 'ui/checkbox'
 import { PageHeader } from 'ui/page-header'
 import General from './General'
-
-const styles = {
-  general: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 export default function EmployeePickingCreate({ location }) {
   const stayInCreatePickingInMemory = JSON.parse(localStorage.getItem('stayInCreatePicking'))
@@ -136,7 +127,7 @@ export default function EmployeePickingCreate({ location }) {
           }
         />
         <General
-          className={styles.general}
+          className="mt-6"
           picking={picking}
           setPicking={setPicking}
           onChange={handleOnChange}

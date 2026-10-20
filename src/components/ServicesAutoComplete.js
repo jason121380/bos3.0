@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { useFetchServicesForAutoComplete } from 'hooks/useFetchServices'
 import useToggle from 'hooks/useToggle'
@@ -8,7 +7,7 @@ import { Autocomplete } from 'ui/combobox'
 
 function ServicesAutoComplete(
   {
-    className = {},
+    className = '',
     orderId,
     onChange = () => {},
     onFieldChange = () => {},
@@ -101,7 +100,7 @@ function ServicesAutoComplete(
       open={servicesToggle.open}
       onOpen={servicesToggle.toggle}
       onClose={servicesToggle.toggle}
-      css={className}
+      className={className}
       value={selectedValue}
       options={options}
       autoHighlight

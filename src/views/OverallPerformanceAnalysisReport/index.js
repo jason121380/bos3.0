@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { useState, useEffect } from 'react'
 // 業績包含（多選）切換鈕改 ui/toggle-group（非 exclusive、陣列值原樣傳遞）
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
@@ -9,29 +8,12 @@ import { endOfMonth, startOfMonth, format } from 'date-fns'
 import idx from 'idx'
 import { CSVLink } from "react-csv";
 import useFetchGetOverallPerformanceAnalysisReport from 'hooks/useFetchGetOverallPerformanceAnalysisReport'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '100px',
-  })
-}
 
 const include = [
   { label: '業績', value: 'SERVICE' },

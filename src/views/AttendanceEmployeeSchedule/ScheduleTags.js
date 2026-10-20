@@ -1,6 +1,4 @@
-/** @jsxImportSource @emotion/react */
 // 班別按鈕改 ui/button（ghost）；底色為各班別自訂色（動態），以 inline style 原樣保留
-import { css } from '@emotion/react'
 import { Button } from 'ui/button'
 
 const ScheduleTags = ({
@@ -35,18 +33,10 @@ const ScheduleTags = ({
                   key={d.id}
                   name={d.name}
                   style={{ backgroundColor: `${d.color}` }}
-                  className={tagId !== '' && d.id === tagId.id ? 'btn_focus' : 'btn'}
+                  className={`${tagId !== '' && d.id === tagId.id ? 'btn_focus ![box-shadow:0_0_0_2px_rgb(var(--accent))]' : 'btn'} !min-h-[40px] !rounded-[20px] !px-[16px] !py-[4px]`}
                   onClick={() => {
                     chooseScheduleTag(d.id, d.name, d.color)
                   }}
-                  css={css({
-                    borderRadius: '20px !important',
-                    padding: '4px 16px !important',
-                    minHeight: '40px !important',
-                    '&.btn_focus': {
-                      boxShadow: '0 0 0 2px rgb(var(--accent)) !important',
-                    }
-                  })}
                 >
                   <div>
                     <div

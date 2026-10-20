@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, Fragment } from 'react'
@@ -13,6 +12,7 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { cn } from 'ui/utils'
 
 // 「詳情」：已結算為連結、未結算為停用按鈕（與舊版 Button component 切換相同），供 ui/button asChild 包覆
 const DetailLink = React.forwardRef(({ checked, ...props }, ref) => {
@@ -152,7 +152,7 @@ function Results({
     return editBtnStatus ? '檢視' : isSalaryChecked ? '編輯' : '未結算'
   }
   return (
-    <div {...rest} css={className} className='SalaryOverviewResult'>
+    <div {...rest} className={cn('SalaryOverviewResult', className)}>
       <Card>
         <CardHeader
           className="items-center pb-4"
@@ -331,7 +331,7 @@ function Results({
 }
 
 Results.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   customers: PropTypes.array,
 }
 

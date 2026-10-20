@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { Field } from 'ui/input'
 import { Eraser, Copy, Trash2 } from 'lucide-react'
@@ -13,50 +12,8 @@ import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import produce from 'immer'
 import TeachingModeContext from 'context/teachingModeContext'
 import billContext from 'context/keyInContext'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import ProductsModal from './ProductsModal'
-
-const styles = {
-  // 項目列（比照打帳單 views/OrderCreate/styles/MerchantSells）：上方標籤、控制項靠底對齊、窄螢幕換行不擠壓
-  merchantSells: css({
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-    rowGap: '12px',
-    marginBottom: theme.spacing(3),
-  }),
-  field: css({
-    minWidth: '150px !important',
-    display: 'flex',
-    marginRight: '12px !important',
-  }),
-  productField: css({
-    width: '250px',
-    maxWidth: '100%',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  priceField: css({
-    width: '65px',
-    display: 'flex',
-    marginRight: '12px !important',
-  }),
-  checkbox: css({
-    width: '100px',
-    display: 'flex',
-    marginRight: '12px',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-  heading2: css({
-    fontSize: theme.typography.pxToRem(13),
-    fontWeight: 'bold',
-  }),
-}
 
 export default function MerchantSells({
   sells,
@@ -147,12 +104,12 @@ export default function MerchantSells({
   }
   return (
     <Fragment>
-      <div css={styles.merchantSells}>
+      <div className="mb-6 flex flex-wrap items-end justify-start gap-y-[12px]">
         {/* 必填 *：Footer.js 重試時 helper/billVerify.js checkProductOrders 要求 sellerId 與 productId；兩者都空的列會被 handleTidyBill 丟掉，所以該列有填任一欄才標必填（同打帳單） */}
         <Field label="服務人員" required={!!sells.sellerId || !!sells.productId}>
           <EmployeeAutoComplete
             placeholder="服務人員姓名/編號"
-            className={styles.field}
+            className="!mr-[12px] flex !min-w-[150px]"
             value={sells.sellerId}
             onChange={function (value) {
               onChange({
@@ -174,7 +131,7 @@ export default function MerchantSells({
         <Field label="商品" required={!!sells.sellerId || !!sells.productId}>
           <ProductAutoComplete
             setProductAlready={setProductAlready}
-            className={styles.productField}
+            className="mr-[12px] flex w-[250px] max-w-full"
             value={sells.productId}
             onChange={function (value) {
               idx(value, _ => {
@@ -197,7 +154,7 @@ export default function MerchantSells({
         </Field>
         {sells.productId ? (
           <Fragment>
-            <Field label="價格" css={styles.priceField}>
+            <Field label="價格" className="!mr-[12px] flex w-[65px]">
               <TextField
                 fullWidth
                 variant="outlined"
@@ -215,7 +172,7 @@ export default function MerchantSells({
                 disabled={!!(sells.isLocked === 'TRUE' || sells.isLocked === 'UNSET')}
               />
             </Field>
-            <Field label="數量" css={styles.priceField}>
+            <Field label="數量" className="!mr-[12px] flex w-[65px]">
               <TextField
                 fullWidth
                 variant="outlined"
@@ -237,7 +194,7 @@ export default function MerchantSells({
                 <Field label="第三方卡券">
                   <ThirdPartyAutoComplete
                     fieldProps={{ placeholder: '第三方卡券' }}
-                    className={styles.field}
+                    className="!mr-[12px] flex !min-w-[150px]"
                     value={sells.thirdPartyCouponMerchantId}
                     autoFocus={focus === 'thirdParty'}
                     name="thirdParty"
@@ -249,13 +206,13 @@ export default function MerchantSells({
                 </Field>
               )}
               {teachingMode && (
-                <p className="m-0" css={styles.heading2}>勾選將入業績但不收費用**</p>
+                <p className="m-0 text-[0.8125rem] font-bold">勾選將入業績但不收費用**</p>
               )}
               {sells.thirdPartyCouponMerchantId &&
                 thirdPartyCoupons.map(data => {
                   if (data.id === sells.thirdPartyCouponMerchantId) {
                     return (
-                      <p className="m-0" css={styles.heading2}>
+                      <p className="m-0 text-[0.8125rem] font-bold">
                         扣完後業績:{Math.round((sells.price * (100 - data.fee)) / 100)}
                       </p>
                     )

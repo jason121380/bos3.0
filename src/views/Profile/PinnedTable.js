@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Checkbox } from 'ui/checkbox'
 import { TextField, InputAdornment } from 'ui/text-field'
 import MerchantListAutocpmpleteForPinnedTable from 'components/MerchantListAutocpmpleteForPinnedTable'
@@ -10,7 +9,6 @@ import { useDispatch } from 'react-redux'
 import { pinnedTableActions } from './../../store/pinnedTable'
 import { useState, useEffect } from 'react'
 import pageData from 'helper/pageData'
-import { css } from '@emotion/react'
 import { cloneDeep } from 'lodash';
 import { openSnackbar } from 'elements/snackbars';
 import produce from 'immer';
@@ -18,149 +16,20 @@ import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 
-const styles = {
-  root: css({
-    display: 'flex',
-    gap: 20,
-    flexDirection: 'column',
-    '& .Mui-expanded, .Mui-selected': {
-      backgroundColor: 'unset !important'
-    },
-    '& .MuiTreeItem-content': {
-      transition: '.2s',
-      width: 'fit-content',
-      '&:hover': {
-        background: 'rgb(var(--accent) / 0.08)'
-      }
-    },
-    '& .Mui-expanded': {
-      marginBottom: 12,
-    },
-    '& li': {
-      borderRadius: 5,
-      // overflow: 'hidden',
-      width: 'fit-content'
-    },
-    '& .onSelect': {
-      background: 'rgb(var(--accent) / 0.12)',
-    }
-  }),
-  ulGroup: css({
-    '& ul': {
-      marginLeft: '30px !important'
-    },
-    '& ul .MuiCollapse-wrapper .MuiCollapse-wrapperInner': {
-      display: 'flex',
-      gap: '5px !important',
-      flexDirection: 'row !important',
-      flexWrap: 'wrap',
-      marginTop: 2
-    },
-  }),
-  ulGroupAll: css({
-    '& ul': {
-      marginLeft: 20
-    },
-    '& ul .MuiCollapse-wrapper .MuiCollapse-wrapperInner': {
-      display: 'flex',
-      gap: 10,
-      flexDirection: 'column',
-    },
-  }),
-  ulGroupAllMerchant: css({
-    '& ul': {
-      marginLeft: 20
-    },
-    '& ul .MuiCollapse-wrapper .MuiCollapse-wrapperInner': {
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: 10,
-    },
-  }),
-  item: css({
-    borderRadius: 5,
-    overflow: 'hidden',
-    '& .MuiTreeItem-label': {
-      paddingLeft: '0px !important'
-    },
-    '& .MuiTreeItem-iconContainer': {
-      display: 'none !important'
-    }
-  }),
-  margin: css({
-    '& > ul': {
-      marginLeft: 40
-    }
-  }),
-  span: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: 5,
-    wordBreak: 'keep-all',
-    whiteSpace: 'nowrap',
-    fontSize: '1rem'
-  }),
-  title: css({
-    '& .MuiTypography-root': {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      flexWrap: 'wrap'
-    }
-  }),
-  button: css({
-    flexShrink: 0,
-    height: 'fit-content'
-  }),
-  outline: css({
-    outline: '2px solid rgb(var(--danger)) !important'
-  }),
-  textField: css({
-    '& input': {
-      paddingLeft: '0px !important',
-    }
-  }),
-  DragButton: css({
-    color: '#fff',
-    // width: 200,
-    padding: '8px 16px',
-    position: 'relative',
-    background: '#26a69a',
-    borderRadius: '4px',
-    textAlign: 'center',
-    fontWeight: 500,
-    lineHeight: '1.75',
-    fontSize: '0.93rem',
-    marginTop: 15,
-    '&:first-of-type': {
-      marginTop: 0
-    },
-    '& span': {
-      wordBreak: 'break-all',
-    },
-    '& .svgWrap': {
-      width: 25,
-      height: 25,
-      transform: 'translate(-50%, -50%)',
-      borderRadius: '50%',
-      background: '#bf3939',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      '& svg': {
-        width: 20,
-        height: 20,
-      }
-    }
-  }),
-  btnWrap: css({
-    display: 'flex',
-    flexDirection: 'column'
-  }),
-}
+// 樹狀本體為 ui/tree-compat（輸出 MUI 同名 class），以下為原 emotion styles 等值轉 Tailwind（寫法同 ProductListTreeView/ProductListModal）
+const treeClass = [
+  'flex gap-[20px] flex-col',
+  '[&_.Mui-expanded]:![background-color:unset] [&_.Mui-selected]:![background-color:unset]',
+  '[&_.MuiTreeItem-content]:[transition:.2s] [&_.MuiTreeItem-content]:w-fit',
+  '[&_.MuiTreeItem-content:hover]:[background:rgb(var(--accent)/0.08)]',
+  '[&_.Mui-expanded]:mb-[12px]',
+  '[&_li]:rounded-[5px] [&_li]:w-fit',
+  '[&_.onSelect]:[background:rgb(var(--accent)/0.12)]',
+].join(' ')
+const ulGroupAllMerchantClass = '[&_ul]:ml-[20px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-wrap [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:gap-[10px]'
+const itemClass = 'rounded-[5px] overflow-hidden [&_.MuiTreeItem-label]:!pl-0 [&_.MuiTreeItem-iconContainer]:!hidden'
+const outlineClass = '![outline:2px_solid_rgb(var(--danger))]'
+const spanClass = 'flex items-center gap-[5px] [word-break:keep-all] whitespace-nowrap text-[1rem]'
 
 function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
   const allNodeIds = []
@@ -196,10 +65,10 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
             disabled={isClick}
           />
           <TreeItem
-            css={styles.ulGroupAllMerchant}
+            className={ulGroupAllMerchantClass}
             nodeId={title}
             disabled={isClick}
-            label={<span id={title} css={styles.span}><ArticleOutlinedIcon />{data.pageTitle}</span>}
+            label={<span id={title} className={spanClass}><ArticleOutlinedIcon />{data.pageTitle}</span>}
           >
             {data.pageAuthority.length ? renderItem(data.pageAuthority) : ''}
           </TreeItem>
@@ -213,11 +82,10 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
       <TreeItem
         key={pageName}
         onClick={() => handleItemClick(pageName)}
-        className={isSelect(pageName)}
-        css={css([styles.item, filtIds.includes(pageName) ? styles.outline : {}])}
+        className={`${isSelect(pageName)} ${itemClass}${filtIds.includes(pageName) ? ` ${outlineClass}` : ''}`}
         nodeId={pageName}
         disabled={isClick}
-        label={<span css={styles.span}><DescriptionOutlinedIcon />{pageName}</span>}
+        label={<span className={spanClass}><DescriptionOutlinedIcon />{pageName}</span>}
       />
     ))
   }
@@ -404,7 +272,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
               action={
                 <div className="flex items-center gap-2">
                   <TextField
-                    css={styles.textField}
+                    className="[&_input]:!pl-0"
                     placeholder="搜尋頁面"
                     type="text"
                     variant="standard"
@@ -436,7 +304,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
               <div className="grid h-full grid-cols-3 gap-4">
                 <div className="col-span-2 h-full overflow-y-auto overflow-x-hidden border-0 border-r border-solid border-border pr-3">
                   <TreeView
-                    css={styles.root}
+                    className={treeClass}
                     defaultCollapseIcon={<ExpandMoreIcon />}
                     defaultExpandIcon={<ChevronRightIcon />}
                     expanded={expandedArr}

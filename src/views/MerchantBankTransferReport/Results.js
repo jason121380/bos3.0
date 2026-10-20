@@ -1,26 +1,12 @@
-/** @jsxImportSource @emotion/react */
 import PropTypes from 'prop-types'
 import { cloneDeep } from 'lodash'
 import { useState, useEffect } from 'react'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
 import { Card as UiCard, CardContent as UiCardContent } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Checkbox } from 'ui/checkbox'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from 'ui/table'
-
-const localStyles = {
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid rgb(var(--border))',
-    backgroundColor: 'rgb(var(--background))',
-    overflow: 'hidden',
-    marginTop: '24px',
-  }),
-}
 
 function Results({ salaryData }) {
   const [selectedUser, setSelectedUser] = useState([])
@@ -57,7 +43,7 @@ function Results({ salaryData }) {
         </UiCard>
       ) : (
         // 列印規則 .MerchantBankTransferReport .MerchantBankTransferReportTable 以本卡片 class 命中（不依賴 MUI class），className 原樣保留
-        <UiCard css={localStyles.card} className="MerchantBankTransferReportTable">
+        <UiCard className="MerchantBankTransferReportTable mt-6 overflow-hidden rounded-[16px] border border-solid border-border bg-background [box-shadow:none]">
           <UiCardContent style={{ padding: 0 }}>
             <div>
               <Table dense wrapperClassName="rounded-none border-0">

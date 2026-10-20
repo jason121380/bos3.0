@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Paper } from 'ui/display-compat'
 import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
@@ -6,23 +5,9 @@ import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
-import { css } from '@emotion/react'
 import { Card as UiCard } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
-
-const styles = {
-  root: css({
-    marginTop: -24
-  }),
-  cardHeader: css({
-    textAlign: 'center',
-  }),
-  orderNoLink: css({
-    textDecorationLine: 'underline',
-    color: 'black',
-  }),
-}
 
 function OrderRecord({
   designerDailyReport,
@@ -46,7 +31,7 @@ function OrderRecord({
   }
 
   return (
-    <div {...rest} css={styles.root}>
+    <div {...rest} className="mt-[-24px]">
       <MerchantSearchBar
         values={dateForHelper}
         onFilter={values => setDateForHelper(values)}
@@ -79,13 +64,13 @@ function OrderRecord({
                   ? `- ${designer.currentPageOrder}/${designer.totalPageCount}`
                   : ``
               }`}
-              css={styles.cardHeader}
+              className="text-center"
             />
             <div className="h-px bg-border" />
-            <CardContent css={styles.content}>
+            <CardContent>
               <PerfectScrollbar>
-                <div css={styles.inner}>
-                  <Table css={styles.table} size="small" aria-label="a dense table">
+                <div>
+                  <Table size="small" aria-label="a dense table">
                     <TableHead>
                       <TableRow>
                         <TableCell className="categoryPrint">單號</TableCell>
@@ -110,7 +95,7 @@ function OrderRecord({
                                 <a
                                   target="_blank"
                                   href={`/order/${orderRecord.orderId}`}
-                                  css={styles.orderNoLink}
+                                  className="text-black underline"
                                 >
                                   {orderRecord.orderNo}
                                   {orderRecord.designation ? `*` : ``}
@@ -155,7 +140,7 @@ function OrderRecord({
                   </Table>
                   {designer.isLastPage && (
                     <TableContainer component={Paper}>
-                      <Table css={styles.table} size="small" aria-label="a dense table">
+                      <Table size="small" aria-label="a dense table">
                         <TableHead>
                           <TableRow>
                             <TableCell className="forPrint3"></TableCell>

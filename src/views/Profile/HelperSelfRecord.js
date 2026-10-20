@@ -1,27 +1,12 @@
-/** @jsxImportSource @emotion/react */
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import roundDecimal from './../../helper/roundDecimal.js'
-import { css } from '@emotion/react'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
-
-const styles = {
-  root: css({
-    marginTop: -24
-  }),
-  cardHeader: css({
-    textAlign: 'center',
-  }),
-  orderNoLink: css({
-    textDecorationLine: 'underline',
-    color: 'black',
-  }),
-}
 
 function OrderRecord({
   helperReport,
@@ -55,7 +40,7 @@ function OrderRecord({
     setSorted(sorted)
   }, [helperReport])
   return (
-    <div {...rest} css={styles.root}>
+    <div {...rest} className="mt-[-24px]">
       <MerchantSearchBar
         values={dateForHelper}
         onFilter={values => setDateForHelper(values)}
