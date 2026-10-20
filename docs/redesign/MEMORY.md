@@ -236,3 +236,5 @@
 
 144. **Popper 要以「掛 body 的實際用法」比位置，不要用 disablePortal 比（Popper／Drawer／Fade，2026/10/20，v3.0-1020-0944）**：比對頁一開始兩邊都 disablePortal，MUI 算出 x=-1040、自家 280，看似差很多；改成實際用法（掛 body）比「面板相對按鈕」的位移後完全相同，連 1300px 窄畫面的貼邊位移（-200）都一致——disablePortal 時 popper.js 以 offsetParent 計算，本來就不是實際行為。另：MUI Popper 的 class 是 `base-Popper-root`（不是 MuiPopper-root）；persistent Drawer 的 `PaperProps.elevation` 會覆寫 docked 的 0，所以畫面上有 1 級陰影；MUI 的 `styled(Popper)` 包相容元件可用（className 會傳下來，ownerState／theme 不會）。
 
+145. **改寫 DOM 文字的舊 helper 綁住了 MUI 的輸出格式（TablePagination，2026/10/20，v3.0-1020-0951）**：`helper/pagenationLabel.js` 直接改 `.MuiTablePagination-displayedRows` 的 innerHTML，把 MUI 預設「6–10 of 23」換成「第 6–10 筆 共 23 筆」——相容元件必須輸出同一個 class 與一字不差的原始文字（含 en dash 與 of），否則中文改寫失效；已寫成測試。另兩點：①MUI 的 `component="div"` 是以 emotion 的 `as` 換掉整個 TableCell，根節點沒有 TableCell 的 class 與框線，照做才一致；②原生 select 的寬度取決於最長選項（1000），MUI 的寬度隨目前值，所以採「顯示區＋透明原生 select 疊在上面」，與 MUI 的 DOM 也同為三個子節點。
+
