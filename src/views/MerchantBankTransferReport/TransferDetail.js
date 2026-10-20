@@ -1,5 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { Grid, Typography, TextField, Button, Card } from '@mui/material'
+import { Grid } from 'ui/grid-compat'
+import { Typography } from 'ui/display-compat'
+import { Card } from 'ui/card-compat'
+import { TextField } from 'ui/standard-input-compat'
 import PropTypes from 'prop-types'
 import { format } from 'date-fns'
 import { css } from '@emotion/react'

@@ -27,6 +27,8 @@ const server = http.createServer((req, res) => {
   await page.addStyleTag({ path: css(globalCss) })
   if (print) await page.emulateMedia({ media: 'print' })
   // 滑鼠預設停在 (0,0)，會讓左上角的 #mui 元素進入 :hover；移到畫面右下角的空白處
+  // 比對頁很長時右下角仍可能壓在 #mui 的表格列上：放一個固定在右下角的小遮罩，讓滑鼠停在它上面
+  await page.evaluate(() => { const d = document.createElement('div'); d.style.cssText = 'position:fixed;right:0;bottom:0;width:8px;height:8px;z-index:2147483647'; document.body.appendChild(d) })
   await page.mouse.move(Number(widthArg || 1440) - 1, 899)
   await page.waitForTimeout(500)
   const diffs = await page.evaluate(() => {
