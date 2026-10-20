@@ -14,7 +14,7 @@ import React, {
   useCallback,
   Fragment,
 } from 'react'
-import { red, blue } from '@mui/material/colors'
+import { red, blue } from 'ui/colors'
 import _ from 'lodash'
 import { format } from 'date-fns'
 import billContext from 'context/keyInContext'

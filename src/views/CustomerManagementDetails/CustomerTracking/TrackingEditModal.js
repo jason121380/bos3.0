@@ -10,7 +10,7 @@ import { cloneDeep } from 'lodash';
 import PropTypes from 'prop-types'
 import { useFetchGetMerchantHairConditionLazy } from 'hooks/useFetchGetMerchantHairCondition'
 import useFetchSetCustomerHairInfo from 'hooks/useFetchSetCustomerHairInfo'
-import { green } from '@mui/material/colors';
+import { green } from 'ui/colors';
 import { createTheme } from '@mui/material/styles'
 import { css } from '@emotion/react'
 // 大型彈窗：表單細節（Chip / TextField）保留 MUI，動作與選項按鈕改 ui/button（選取綠色以 inline style 原樣保留）

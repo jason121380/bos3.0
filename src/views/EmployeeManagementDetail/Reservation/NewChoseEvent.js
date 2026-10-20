@@ -7,7 +7,7 @@ import {
 } from '@mui/material'
 import { Avatar } from 'ui/avatar'
 import { Button } from 'ui/button'
-import { blue } from '@mui/material/colors'
+import { blue } from 'ui/colors'
 import { Cancel as CancelIcon, Check as CheckIcon, Lock as LockIcon, LockOpen as LockOpenIcon, Edit as EditIcon, ShoppingCart as ShoppingCartIcon, EventSeat as EventSeatIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import { format } from 'date-fns'

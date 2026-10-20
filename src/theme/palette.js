@@ -1,4 +1,4 @@
-import { colors } from '@mui/material'
+import { colors } from 'ui/colors'
 
 const white = 'rgb(255, 255, 255)'
 

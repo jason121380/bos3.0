@@ -6,7 +6,7 @@ import {
   ListItemAvatar, ListItemText
 } from '@mui/material'
 import { Avatar } from 'ui/avatar'
-import { blue } from '@mui/material/colors'
+import { blue } from 'ui/colors'
 import { Cancel as CancelIcon, Check as CheckIcon, Lock as LockIcon, LockOpen as LockOpenIcon, Edit as EditIcon, ShoppingCart as ShoppingCartIcon, EventSeat as EventSeatIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import { Button } from 'ui/button'

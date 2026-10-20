@@ -5,7 +5,7 @@ import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo, Fragment, useState } from 'react'
 import { Add as AddIcon, Edit as EditIcon } from 'ui/icons'
-import { teal } from '@mui/material/colors';
+import { teal } from 'ui/colors';
 import styles from './styles/AboutDesignerSideExternalLink'
 import OuterLinkModal from './OuterLinkModal'
 import OuterLinkSortModal from './OuterLinkSortModal'
