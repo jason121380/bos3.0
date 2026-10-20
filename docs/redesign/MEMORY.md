@@ -222,3 +222,5 @@
 
 137. **Button 相容層：MUI 預設 variant 是 text、ButtonGroup 會傳 props 給子按鈕（Button 整類，2026/10/20，v3.0-1020-0818）**：①MUI Button 不寫 variant 時是 text，ui/button 預設 secondary，所以不能直接換成 ui/button，要經相容層對應（contained＋primary→primary、contained＋error→danger、contained＋secondary／inherit→secondary、outlined→secondary〔橋接主題本來就畫成淺灰實心〕、text→ghost，error 色的非實心鈕加紅字）；②MUI 按鈕是 min-height 且文字可換行、最小寬 64px，ui/button 是固定高度＋不換行——外部連結按鈕固定寬 200px 放長名稱，照 ui/button 會溢出，相容層改用最小高度；③`ButtonGroup variant="contained"` 透過 context 把 variant 傳給子 Button，換掉子按鈕而不換群組會讓整排變成文字鈕；MerchantSearchBar 的日期快捷列因此整檔留到報表統一第二批；④`swap-mui.js` 已兩次誤換列印範本 TransferDetail，改為腳本內建排除清單（印出 `exclude`），不再依賴人工清單；⑤`Button as MuiButton` 的三個檔案原本配自己的 createTheme（青綠色），換掉後 ThemeProvider 已無 MUI 子元件，留給 theme 類別一併移除。
 
+138. **日期快捷列：與其換掉 ButtonGroup 的子按鈕，不如整個改走已核可的新樣式（報表統一第二批，2026/10/20，v3.0-1020-0823）**：MerchantSearchBar/DatePicker 原有兩套畫面——`uiDateField` 開啟時的新樣式（ui 次要小按鈕＋ui 日期欄，DecreaseDetail／ProductConsumeReport 已上線）與舊的藍色 ButtonGroup。Button 相容層換不掉 ButtonGroup（context 傳 variant），而 Jason 已拍版報表篩選列統一（決策④），所以直接刪除舊分支、所有呼叫端改走新樣式；`uiDateField` 參數保留為無作用，免動 17 個呼叫端。教訓：遇到「兩套畫面並存＋新樣式已核可」時，移除 MUI 的同時順手收斂成一套，比做相容層更省也更一致。
+
