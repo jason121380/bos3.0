@@ -6,7 +6,7 @@ import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteOrder from 'hooks/useFetchDeleteOrder'
 import idx from 'idx'
 import PropTypes from 'prop-types'
-import React, { useEffect, useRef, useState, Fragment } from 'react'
+import React, { useEffect, useMemo, useRef, useState, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from "react-csv";
 import { useLocation } from 'react-router'
@@ -20,9 +20,22 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { EmptyState } from 'ui/empty-state'
-import { formatNumber } from 'ui/format'
+import { formatMoney } from 'ui/format'
 import { Field, Input } from 'ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { cn } from 'ui/utils'
+
+// 寬表（min-w 1400px）橫向捲動時固定「操作」與「帳單編號/時間」兩欄（只限螢幕，列印還原為一般欄位）：
+// - sm 以上兩欄都固定：操作欄寬固定 152px（勾選 16＋間距 4＋三顆 32px 圖示鈕與間距＋左右 12px 內距），帳單編號欄接在 left-[152px]
+// - 手機（< 640px）可視寬度約 320px，兩欄合計超過一半，只固定帳單編號欄（操作欄隨內容捲走，捲回最左即可操作）
+// 底色跟著列：一般 surface（卡片底），hover／勾選時 surface-hover；右緣 1px 分隔線
+const STICKY_BASE = 'bg-surface group-hover:bg-surface-hover group-data-[state=selected]:bg-surface-hover print:static print:bg-transparent print:shadow-none'
+const STICKY_ACTION = 'sm:sticky sm:left-0 sm:w-[152px] sm:min-w-[152px]'
+const STICKY_NO = 'sticky left-0 sm:left-[152px] shadow-[1px_0_0_rgb(var(--border))]'
+const STICKY_ACTION_HEAD = cn('w-[132px]', STICKY_ACTION, 'z-[3] bg-surface print:static print:bg-transparent')
+const STICKY_NO_HEAD = cn(STICKY_NO, 'z-[3] bg-surface print:static print:bg-transparent print:shadow-none')
+const STICKY_ACTION_CELL = cn(STICKY_ACTION, 'z-[2]', STICKY_BASE)
+const STICKY_NO_CELL = cn(STICKY_NO, 'z-[2]', STICKY_BASE)
 
 function Results({
   className,
@@ -52,6 +65,8 @@ function Results({
   const pageRef = useRef(null)
   const merchantName = JSON.parse(localStorage.getItem('userMerchant')).name
   const [selectedOrders, setSelectedOrders] = useState([])
+  // 勾選狀態查詢用 Set（每列查兩次，避免 indexOf 逐筆掃描）；只換查詢方式，selectedOrders 的結構與 handler 不變
+  const selectedOrderSet = useMemo(() => new Set(selectedOrders), [selectedOrders])
   const [excelData, setExcelData] = useState([])
   const [allExtend, setAllExtend] = useState(false)
   const [orderExtendArr, setOrderExtendArr] = useState([])
@@ -378,7 +393,7 @@ function Results({
   }
 
   const isExtended = id => orderExtendArr.find(d => d === id) !== undefined
-  // 不可點的列操作（建立中訂單）：連結無 disabled 屬性，改用 aria-disabled + 取消指標事件
+  // 不可點的列操作（建立中帳單）：連結無 disabled 屬性，改用 aria-disabled + 取消指標事件
   const linkDisabled = disabledLink => (disabledLink ? { 'aria-disabled': true, tabIndex: -1, className: 'pointer-events-none opacity-40' } : {})
   return (
     <div {...rest} className={className}>
@@ -401,7 +416,7 @@ function Results({
           }
         >
           <div className="flex items-baseline gap-3">
-            <CardTitle>訂單列表</CardTitle>
+            <CardTitle>帳單列表</CardTitle>
             <span className="text-label text-text-secondary tabular-nums" data-testid="result-counter">
               共 {totalCount} 筆
             </span>
@@ -411,7 +426,7 @@ function Results({
           <Table className="min-w-[1400px]">
             <TableHeader>
               <TableRow className="hover:bg-transparent">
-                <TableHead className="w-[132px]">
+                <TableHead className={STICKY_ACTION_HEAD}>
                   <Checkbox
                     aria-label="全選"
                     checked={selectedOrders.length === noCloseOrder.length && noCloseOrder.length > 0}
@@ -420,7 +435,7 @@ function Results({
                     disabled={orders.length === 0}
                   />
                 </TableHead>
-                <TableHead className="min-w-[150px]">帳單編號/時間</TableHead>
+                <TableHead className={cn('min-w-[150px]', STICKY_NO_HEAD)}>帳單編號/時間</TableHead>
                 <TableHead className="min-w-[150px]">客戶</TableHead>
                 <TableHead>設計師</TableHead>
                 <TableHead>指定</TableHead>
@@ -439,19 +454,19 @@ function Results({
                 <TableHead numeric>入金使用(-)</TableHead>
                 {bonusDisplay && <TableHead numeric>點數折抵金額(-)</TableHead>}
                 <TableHead>備註</TableHead>
-                <TableHead>訂單來源</TableHead>
+                <TableHead>帳單來源</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody id="whiteSpace">
               {orders.length > 0 &&
                 orders.map((order, index) => (
                   <Fragment key={order.id}>
-                    <TableRow data-testid={`order-row`} data-state={selectedOrders.indexOf(order.id) > -1 ? 'selected' : undefined}>
-                      <TableCell className="whitespace-nowrap px-3">
+                    <TableRow data-testid={`order-row`} data-state={selectedOrderSet.has(order.id) ? 'selected' : undefined} className="group">
+                      <TableCell className={cn('whitespace-nowrap px-3', STICKY_ACTION_CELL)}>
                         <div className="flex items-center gap-1">
                           <Checkbox
                             aria-label={`選取 #${order.orderNo}`}
-                            checked={selectedOrders.indexOf(order.id) > -1}
+                            checked={selectedOrderSet.has(order.id)}
                             onChange={() => handleSelectOne(order.id)}
                             data-testid={`order-checkbox-${index}`}
                             disabled={order.isCloseAccount || order.status === '建立中'}
@@ -503,19 +518,19 @@ function Results({
                           </Button>
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className={STICKY_NO_CELL}>
                         <div className="font-medium tabular-nums">
                           {`#${order.orderNo}`}{serialNumberUsing && order.serialNumber ? ` (${order.serialNumber})` : ''}
                         </div>
                         <div className="text-caption tabular-nums text-text-secondary">
-                          {format(new Date(order.date), 'MM/dd')}
+                          {format(new Date(order.date), 'yyyy/MM/dd')}
                           {weekDisplay(format(new Date(order.date), 'eeee'))}
                           {format(new Date(order.date), 'HH:mm')}
                         </div>
                       </TableCell>
                       {order.status === '建立中' ? (
                         <TableCell colSpan={19}>
-                          <Badge variant="warning">訂單建立中</Badge>
+                          <Badge variant="warning">帳單建立中</Badge>
                         </TableCell>
                       ) : (
                         <>
@@ -532,36 +547,36 @@ function Results({
                           </TableCell>
                           <TableCell>{order.isDesignate ? 'Y' : 'N'}</TableCell>
                           {raffleDisplay ? <TableCell numeric>{order.raffleCount}</TableCell> : null}
-                          <TableCell numeric className="font-medium">{formatNumber(Math.round(order.businessCash))}</TableCell>
+                          <TableCell numeric className="font-medium">{formatMoney(Math.round(order.businessCash))}</TableCell>
                           <TableCell numeric>
-                            {formatNumber(Math.round(order.service))}
+                            {formatMoney(Math.round(order.service))}
                             <div className="text-caption text-text-secondary">{order.TPTName.service.length > 0 && renderTpName(order.TPTName.service)}</div>
                           </TableCell>
                           <TableCell numeric>
-                            {formatNumber(Math.round(order.product))}
+                            {formatMoney(Math.round(order.product))}
                             <div className="text-caption text-text-secondary">{order.TPTName.product.length > 0 && renderTpName(order.TPTName.product)}</div>
                           </TableCell>
                           {membershipDisplay && (
                             <TableCell numeric>
-                              {formatNumber(Math.round(order.membership))}
+                              {formatMoney(Math.round(order.membership))}
                               <div className="text-caption text-text-secondary">{order.TPTName.membership.length > 0 && renderTpName(order.TPTName.membership)}</div>
                             </TableCell>
                           )}
-                          <TableCell numeric>{formatNumber(parseInt(order.usedTicket * 100) / 100)}</TableCell>
-                          <TableCell numeric>{formatNumber(Math.round(order.ticketSellIntoPerformance))}</TableCell>
-                          <TableCell numeric>{formatNumber(Math.round(order.performanceIncome))}</TableCell>
-                          <TableCell numeric>{formatNumber(Math.round(order.ticketSellNotIntoPerformance))}</TableCell>
-                          <TableCell numeric>{formatNumber(parseInt(order.usedTicketForDecount * 100) / 100)}</TableCell>
+                          <TableCell numeric>{formatMoney(parseInt(order.usedTicket * 100) / 100)}</TableCell>
+                          <TableCell numeric>{formatMoney(Math.round(order.ticketSellIntoPerformance))}</TableCell>
+                          <TableCell numeric>{formatMoney(Math.round(order.performanceIncome))}</TableCell>
+                          <TableCell numeric>{formatMoney(Math.round(order.ticketSellNotIntoPerformance))}</TableCell>
+                          <TableCell numeric>{formatMoney(parseInt(order.usedTicketForDecount * 100) / 100)}</TableCell>
                           <TableCell numeric>
-                            {formatNumber(Math.round(order.thirdPartTicketForDecount))}
+                            {formatMoney(Math.round(order.thirdPartTicketForDecount))}
                             <div className="text-caption text-text-secondary">{order.TPTName.overAll.length > 0 && renderTpName(order.TPTName.overAll)}</div>
                           </TableCell>
                           <TableCell numeric>
-                            {formatNumber(Math.round(order.otherPayWayForDecount))}
+                            {formatMoney(Math.round(order.otherPayWayForDecount))}
                             <div className="text-caption text-text-secondary">{order.otherPayName}</div>
                           </TableCell>
-                          <TableCell numeric>{formatNumber(order.walletUsedForDecount)}</TableCell>
-                          {bonusDisplay && <TableCell numeric>{formatNumber(order.bonusDecountForReport)}</TableCell>}
+                          <TableCell numeric>{formatMoney(order.walletUsedForDecount)}</TableCell>
+                          {bonusDisplay && <TableCell numeric>{formatMoney(order.bonusDecountForReport)}</TableCell>}
                           <TableCell className="text-text-secondary">{order.remark}</TableCell>
                           <TableCell className="text-text-secondary">{order.source}</TableCell>
                         </>
@@ -583,7 +598,7 @@ function Results({
                               <div className="w-[100px] flex-none">{data.designerName}</div>
                               <div className="w-[300px] flex-none">{`${data.itemName}(${data.serviceType})`}</div>
                               <div className="w-[80px] flex-none text-right tabular-nums">
-                                {formatNumber(data.serviceType === '卡券使用' ? parseInt(data.price * 100) / 100 : data.price)}
+                                {formatMoney(data.serviceType === '卡券使用' ? parseInt(data.price * 100) / 100 : data.price)}
                               </div>
                               <div className="w-[60px] flex-none text-right tabular-nums">{data.count}</div>
                               <div className="w-[200px] flex-none">
@@ -616,7 +631,7 @@ function Results({
       <Dialog open={openDialog} onOpenChange={o => !o && handleCloseDialog()}>
         <DialogContent size="sm">
           <DialogHeader>
-            <DialogTitle>刪除訂單?</DialogTitle>
+            <DialogTitle>刪除帳單？</DialogTitle>
             <DialogDescription>刪除後無法復原，請輸入刪除密碼確認。</DialogDescription>
           </DialogHeader>
           <DialogBody>

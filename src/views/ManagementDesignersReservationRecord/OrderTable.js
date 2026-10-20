@@ -4,6 +4,7 @@ import { Dialog as UiDialog, DialogContent as UiDialogContent } from 'ui/dialog'
 import { useState, useEffect } from 'react'
 import { AssignmentTurnedInRounded as AssignmentTurnedInRoundedIcon, DisabledByDefaultRounded as DisabledByDefaultRoundedIcon, EventBusy as EventBusyIcon } from 'ui/icons'
 import { format } from 'date-fns'
+import { readableTextOn } from 'components/CalendarColorClip'
 
 import NewChoseEvent from './NewChoseEvent'
 import HolidayEdit from './HolidayEdit'
@@ -202,7 +203,7 @@ const OrderTable = ({
                           <div
                             key={key}
                             ref={e => e && ndsRef.current.push(e)}
-                            style={{ ...style, width: `${100 / data.length}%`, position: 'relative' }}
+                            style={{ ...style, color: readableTextOn(style.backgroundColor), width: `${100 / data.length}%`, position: 'relative' }}
                             className={styles.clickItem}
                             id='darkBorder'
                             onClick={() => {
@@ -274,7 +275,7 @@ const OrderTable = ({
                         return (
                           <div
                             key={key}
-                            style={{ ...style, width: '100%' }}
+                            style={{ ...style, color: readableTextOn(style.backgroundColor), width: '100%' }}
                             className={styles.clickItem}
                             id='darkBorder'
                             onClick={() => {

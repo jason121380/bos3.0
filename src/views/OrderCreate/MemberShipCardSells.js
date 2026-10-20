@@ -207,7 +207,6 @@ const MemberShipCardSells = ({
                 }, 1)
               }
             }}
-            tabIndex={focusRow + "0"}
           />
         </Field>
         {index === 0 ? (
@@ -222,7 +221,6 @@ const MemberShipCardSells = ({
             ref={productRef}
             autoFocus={focus === "product"}
             onFocus={(event) => handleFocus({ event, field: "product" })}
-            tabIndex={focusRow + "1"}
             setMembershipAlready={setMembershipAlready}
             getData={getData}
             onKeyDown={(event) => {
@@ -267,7 +265,6 @@ const MemberShipCardSells = ({
               <Input
                 value={sellsItem.price}
                 ref={dateRef}
-                tabIndex={focusRow + "3"}
                 data-testid={`memberShipCardSells-${index}-price`}
                 onChange={(value) => {
                   setFocus("price");

@@ -223,7 +223,6 @@ const MemberShipCardSells = ({
                 }, 1)
               }
             }}
-            tabIndex={focusRow + "0"}
             onChange={function (value) {
               onChange({
                 index,
@@ -251,7 +250,6 @@ const MemberShipCardSells = ({
             ref={productRef}
             autoFocus={focus === "product"}
             onFocus={(event) => handleFocus({ event, field: "product" })}
-            tabIndex={focusRow + "1"}
             onKeyDown={(event) => {
               if (event.key === 'Enter') {
                 if (sells.isLocked !== 'FALSE' && sells.expiryDate === null) {
@@ -297,7 +295,6 @@ const MemberShipCardSells = ({
               <Input
                 value={sells.price}
                 ref={priceRef}
-                tabIndex={focusRow + "2"}
                 data-testid={`memberShipCardSells-${index}-price`}
                 onChange={(value) => {
                   setFocus("price");

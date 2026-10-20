@@ -7,7 +7,7 @@ export default function TotalPrice({ startDate, endDate, rev, exp }) {
   return (
     <Card className="mb-6">
       <CardHeader className="pb-4">
-        <CardTitle className="tabular-nums">{`${format(startDate, 'yyyy-MM-dd')} ~ ${format(endDate, 'yyyy-MM-dd')} 合計`}</CardTitle>
+        <CardTitle className="tabular-nums">{`${format(startDate, 'yyyy/MM/dd')} ~ ${format(endDate, 'yyyy/MM/dd')} 合計`}</CardTitle>
       </CardHeader>
       <div className="px-5 pb-5">
         <Table>

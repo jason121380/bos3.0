@@ -274,7 +274,6 @@ export default function Services({
             orderId={orderId}
             ref={serviceRef}
             name="service"
-            tabIndex={focusRow + '0'}
             autoFocus={focus === 'service'}
             onFocus={handleFocus}
             onFieldChange={handleServiceFieldChange}
@@ -308,7 +307,6 @@ export default function Services({
               <Input
                 ref={priceRef}
                 name="price"
-                tabIndex={focusRow + '1'}
                 onFocus={handleFocus}
                 autoFocus={focus === 'price'}
                 onKeyDown={event => {
@@ -365,7 +363,6 @@ export default function Services({
                         name={data.type}
                         ref={helperRefs[idx]}
                         autoFocus={focus === data.type}
-                        tabIndex={focusRow + '2' + idx}
                         onChange={value =>
                           handleAssistantChange({
                             value,
@@ -411,7 +408,6 @@ export default function Services({
                     {isHelperDesignation && (
                       <FormControlLabel
                         control={<Checkbox color="primary" inputRef={helperDesignateRefs[idx]} />}
-                        tabIndex={focusRow + '3' + idx}
                         autoFocus={focus === data.type + 'designate'}
                         inputRef={helperDesignateRefs[idx]}
                         name={data.type + 'designate'}

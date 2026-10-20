@@ -93,7 +93,7 @@ function Results({
                 <TableBody>
                   {results.data.map((data, index) => (
                     <TableRow key={`account-detail-${index}`}>
-                      <TableCell className="tabular-nums">{format(new Date(data.date), 'MM/dd/yyyy')}</TableCell>
+                      <TableCell className="tabular-nums">{format(new Date(data.date), 'yyyy/MM/dd')}</TableCell>
                       <TableCell numeric>
                         {formatNumber(data.materialPaymentIncome +
                           data.packageCardRevenue +

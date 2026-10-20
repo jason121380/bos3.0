@@ -105,7 +105,6 @@ export default function CouponSells({
           autoFocus={focus === 'coupon'}
           orderId={orderId}
           onFocus={handleFocus}
-          tabIndex={focusRow + '0'}
           getData={getData}
           onKeyDown={event => {
             if (!!(couponSell.isLocked !== 'FALSE' || !isTicketSellingEditable)) {
@@ -147,7 +146,6 @@ export default function CouponSells({
               name="availableCount"
               onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
               onFocus={handleFocus}
-              tabIndex={focusRow + '1'}
               onChange={function (event) {
                 const newCouponSell = _.cloneDeep(couponSell)
                 newCouponSell.availableCount = idx(event, _ => +_.target.value || 1)
@@ -171,7 +169,6 @@ export default function CouponSells({
               variant="outlined"
               value={couponSell.price}
               name="price"
-              tabIndex={focusRow + '2'}
               autoFocus={focus === 'price'}
               onKeyDown={event => handleKeyDown({ event, nextField: 'count' })}
               onFocus={handleFocus}
@@ -199,7 +196,6 @@ export default function CouponSells({
               variant="outlined"
               value={couponSell.count}
               name="count"
-              tabIndex={focusRow + '2'}
               autoFocus={focus === 'count'}
               onFocus={handleFocus}
               inputRef={countRef}

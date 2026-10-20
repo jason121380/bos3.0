@@ -193,7 +193,7 @@ function Results({
                           </RouterLink>
                         </Button>
                       </TableCell>
-                      <TableCell className={`${sticky3} tabular-nums`}>{format(new Date(record.date), 'MM/dd/yyyy')}</TableCell>
+                      <TableCell className={`${sticky3} tabular-nums`}>{format(new Date(record.date), 'yyyy/MM/dd')}</TableCell>
                       <TableCell>
                         {record.productNo === null || record.productNo === ''
                           ? record.productName

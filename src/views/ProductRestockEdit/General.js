@@ -216,7 +216,7 @@ export default function General({
       <span className="text-heading text-text">進貨資訊-{purchaseRecord.vendorName}</span>
       {purchaseRecord.stockInDate && (
         <span className="ml-auto text-caption tabular-nums text-text-secondary">
-          入庫時間：{format(purchaseRecord.stockInDate, 'yyyy-MM-dd-HH:MM')}
+          入庫時間：{format(purchaseRecord.stockInDate, 'yyyy/MM/dd HH:mm')}
         </span>
       )}
     </div>
@@ -302,7 +302,6 @@ export default function General({
                       variant="outlined"
                       fullWidth
                       name="product"
-                      tabIndex={focusRow + '0'}
                       ref={(index === focusRow && focus === 'product') ? productRef : null}
                       onChange={event => setProductKeyword(event.target.value)}
                       inputProps={{
@@ -322,7 +321,6 @@ export default function General({
                   variant="outlined"
                   fullWidth
                   name="price"
-                  tabIndex={focusRow + '1'}
                   onChange={event => handlePriceOnChange(event, index)}
                   InputLabelProps={{ shrink: true }}
                   onKeyDown={event => {
