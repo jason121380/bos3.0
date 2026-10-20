@@ -17,6 +17,8 @@ const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 const pad = (n, length = 2) => String(n).padStart(length, '0')
+// 無時區的「年[-/]月[-/]日[ 或 T 時:分[:秒[.小數]]]」
+const WALL_CLOCK_TEXT = /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})(?:(?:T|\s+)(\d{1,2}):(\d{2})(?::(\d{2})(?:\.(\d+))?)?)?$/
 const withBusinessZone = options => (options && options.timeZone ? options : { ...(options || {}), timeZone: BUSINESS_TIME_ZONE })
 
 // 裝置時區是否已等同營業時區（UTC+8 且冬夏都不變）；須在替換前呼叫
@@ -44,8 +46,17 @@ export function createBusinessDate(OrigDate) {
     if (/^[+-]?\d{4,6}(-\d{2}(-\d{2})?)?$/.test(text) || /(\d\s?(Z|[+-]\d{2}:?\d{2})$)|\b(GMT|UTC)\b/i.test(text)) {
       return OrigDate.parse(text)
     }
+    // 是否為有效日期仍以原生解析判斷（無效字串照樣回 NaN）
     const native = OrigDate.parse(text)
     if (isNaN(native)) return NaN
+    // 常見的年月日（時分秒）格式直接取字面欄位：若先以裝置時間解析，裝置日光節約跳過的那一小時會被平移
+    const wall = WALL_CLOCK_TEXT.exec(text)
+    if (wall) {
+      const [, y, mo, d, h = 0, mi = 0, sec = 0, frac] = wall
+      const ms = frac ? Number((frac + '00').slice(0, 3)) : 0
+      return OrigDate.UTC(+y, mo - 1, +d, +h, +mi, +sec, ms) - OFFSET_MS
+    }
+    // 其他格式（如 'Oct 21, 2026 10:00'）只能先經裝置解析再取欄位
     const device = new OrigDate(native)
     return (
       OrigDate.UTC(

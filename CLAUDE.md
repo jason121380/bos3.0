@@ -30,7 +30,7 @@ npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps（CI／Docke
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
 npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base，0 warning）
-CI=true npm run test:nowatch         # 全部單元測試（基準：52 檔／276 測試全數通過）
+CI=true npm run test:nowatch         # 全部單元測試（基準：52 檔／277 測試全數通過）
 TZ=America/Los_Angeles CI=true npm run test:nowatch   # 時區相關修改要另在海外時區跑一次
 CI=true npm run test:coverage        # 覆蓋率（門檻為現況下限＋金額／API 模組逐檔門檻，見 package.json）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>

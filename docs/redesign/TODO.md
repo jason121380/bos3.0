@@ -1,6 +1,6 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10210742）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／52 檔 276 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10210750）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／52 檔 277 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
@@ -8,7 +8,7 @@
 
 ## 一、今天完成了什麼
 
-- **日期時間一律以台灣時間計算與顯示**（2026/10/21，v3.10210742，Jason 選方案 2「根本修正」）：原本所有日期都依裝置時區，出國或手機時區設錯時，報表「今天／本月」查錯時段、打帳單與日期選擇器記到錯的日期、畫面時間也是當地時間。新增 `lib/business-timezone.js`，於 `src/index.js` 最早載入：裝置不在 UTC+8 時，把全域 `Date` 與 `Intl.DateTimeFormat` 換成固定台灣時間（台灣無夏令時間），date-fns、日期選擇器、`toLocale*` 因此全部跟著改，頁面程式不用動；送給後端的時間戳記（ISO／毫秒）不變；台灣時區的裝置完全不替換。裝置不在台灣時區時，版面每次開啟提示一次。驗證：新增 21 個測試，在 UTC、洛杉磯、東京、台北、奧克蘭各跑一次全數通過；Playwright 以台北／東京／洛杉磯／倫敦四個時區、固定台灣 10/21 10:00 開帳單列表與月報，四者送出的查詢區間完全相同（10/21 00:00–23:59、10/01 起）。MEMORY #169。**待實機**：iPhone「設定→一般→日期與時間」把時區改成東京或洛杉磯，開帳單列表「今天」、日報表、打帳單的帳單日期，確認都是台灣日期與時間，並只看到一次時區提示；改回台北後不再提示。
+- **日期時間一律以台灣時間計算與顯示**（2026/10/21，v3.10210742，Jason 選方案 2「根本修正」）：原本所有日期都依裝置時區，出國或手機時區設錯時，報表「今天／本月」查錯時段、打帳單與日期選擇器記到錯的日期、畫面時間也是當地時間。新增 `lib/business-timezone.js`，於 `src/index.js` 最早載入：裝置不在 UTC+8 時，把全域 `Date` 與 `Intl.DateTimeFormat` 換成固定台灣時間（台灣無夏令時間），date-fns、日期選擇器、`toLocale*` 因此全部跟著改，頁面程式不用動；送給後端的時間戳記（ISO／毫秒）不變；台灣時區的裝置完全不替換。裝置不在台灣時區時，版面每次開啟提示一次。驗證：新增 22 個測試（含裝置日光節約切換時段，Codex review 指出），在 UTC、洛杉磯、聖地牙哥、東京、台北、奧克蘭各跑一次全數通過；Playwright 以台北／東京／洛杉磯／倫敦四個時區、固定台灣 10/21 10:00 開帳單列表與月報，四者送出的查詢區間完全相同（10/21 00:00–23:59、10/01 起）。MEMORY #169。**待實機**：iPhone「設定→一般→日期與時間」把時區改成東京或洛杉磯，開帳單列表「今天」、日報表、打帳單的帳單日期，確認都是台灣日期與時間，並只看到一次時區提示；改回台北後不再提示。
 
 - **版號格式改為 `v3.MMDDHHmm`**（2026/10/21，v3.10210742，Jason 指定「v3.10210047 這樣的格式」）：`src/version.js` 與 commit 訊息第一行 `[版號]` 從本批起改用新格式（例：10/21 00:47 為 `v3.10210047`，Asia/Taipei）；畫面左上角與 Sentry release 都讀同一個值。文件裡舊的 `v3.0-MMDD-HHmm` 是當時的版號紀錄，不回頭改。
 
