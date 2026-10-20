@@ -31,6 +31,9 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
+      # 與原 CRA build 內建的 ESLint 檢查相同（react-app/base；Vite 不跑 ESLint，改為獨立步驟）
+      - name: Lint (build rules)
+        run: npm run lint:build
       - name: Build
         run: npm run build
         env:

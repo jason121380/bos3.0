@@ -1,6 +1,6 @@
 # CLAUDE.md — BOS 3.0 前端工作守則
 
-BOS 3.0 是美業 ERP 的純前端 SPA（CRA5 + React 17 + Apollo GraphQL + Redux Toolkit）。畫面已從 MUI 改版為 **Tailwind + `src/ui/`（shadcn/Radix 風格）**；MUI 套件已於 2026/10/20 全數移除，尚未重新設計的舊頁面以 `src/ui/*-compat` 相容元件（輸出 MUI 同名 class）維持原樣。回覆一律使用專業、清楚的**繁體中文**。
+BOS 3.0 是美業 ERP 的純前端 SPA（Vite 5 + React 17 + Apollo GraphQL + Redux Toolkit；2026/10/20 由 CRA 改為 Vite，單元測試仍用 react-scripts 的 Jest）。畫面已從 MUI 改版為 **Tailwind + `src/ui/`（shadcn/Radix 風格）**；MUI 套件已於 2026/10/20 全數移除，尚未重新設計的舊頁面以 `src/ui/*-compat` 相容元件（輸出 MUI 同名 class）維持原樣。回覆一律使用專業、清楚的**繁體中文**。
 
 ## 文件地圖
 
@@ -27,14 +27,15 @@ BOS 3.0 是美業 ERP 的純前端 SPA（CRA5 + React 17 + Apollo GraphQL + Redu
 
 ```bash
 npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps
-npm start                            # 開發（craco start）
-CI=true npm run build                # 正式 build（警告視為錯誤，與 CI 相同）
+npm start                            # 開發（Vite，http://localhost:3000）
+npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
+npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base，0 warning），CI 必跑
 CI=true npm run test:nowatch         # 全部單元測試（基準：39 檔／168 測試全數通過）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
 node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面驗證
 ```
 
-驗證標準：`verify-logic` 的 FAIL 必須逐項說明是純畫面差異；eslint 0 新增 error；build 成功；測試**必須全數通過**（原 13 個既有失敗已於 PR #5 與 2026/10/19 產品決策改寫後清零）。
+驗證標準：`verify-logic` 的 FAIL 必須逐項說明是純畫面差異；eslint 0 新增 error；`lint:build` 通過且 build 成功；測試**必須全數通過**（原 13 個既有失敗已於 PR #5 與 2026/10/19 產品決策改寫後清零）。
 
 ## Git 與合併
 
@@ -43,7 +44,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - PR 合併後，分支從最新 `main` 重置再繼續（`git fetch origin main && git checkout -B <branch> origin/main`），不在已合併的歷史上堆疊。
 - 每個完整 commit 都要更新 `src/version.js` 的 `APP_VERSION`（`v3.0-MMDD-HHmm`，Asia/Taipei），commit 訊息第一行以 `[版號]` 開頭；不自行升大版號。
 - Commit 訊息遵守 Angular 格式；沒有 `gh`，PR 用 GitHub MCP 工具。
-- CI：Node 20.12.1 + `npm ci --legacy-peer-deps`；Build 與 Unit tests 兩個獨立 job。
+- CI：Node 20.12.1 + `npm ci --legacy-peer-deps`；Build（`lint:build`＋`build`）與 Unit tests 兩個獨立 job。
 
 ## 架構速記
 

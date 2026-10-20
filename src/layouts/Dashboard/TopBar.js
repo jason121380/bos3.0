@@ -28,6 +28,7 @@ import { socketActions } from './../../store/socket'
 import { reservationActions } from './../../store/reservation'
 import { QRcodeClockInActions } from './../../store/QRcodeClockIn'
 import { deductionDisplayActions } from './../../store/deductionDisplay'
+import bosLogo from 'assets/images/bosLogoNew.png'
 
 function TopBar({ onOpenNavBarMobile, userMerchants }) {
   const dispatch = useDispatch()
@@ -373,7 +374,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     <Fragment>
       <div className="flex h-10 items-center gap-1">
         <RouterLink to={loginUserAuth ? '/' : '/profile/general'} className={cn('flex items-center gap-2 rounded-md px-1', focusRing)}>
-          <img alt="BeautyOS" className="h-6 w-auto invert dark:invert-0" src={require('assets/images/bosLogoNew.png')} />
+          <img alt="BeautyOS" className="h-6 w-auto invert dark:invert-0" src={bosLogo} />
           <span className="text-caption text-text-tertiary">{APP_VERSION}</span>
         </RouterLink>
         <div className="flex-1" />
