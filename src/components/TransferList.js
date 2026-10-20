@@ -1,12 +1,24 @@
-import { List, ListItemButton, ListItemText, ListItemIcon } from 'ui/list-compat'
 import { Checkbox } from 'ui/checkbox'
 import { Button } from 'ui/button'
+import { cn, focusRing } from 'ui/utils'
 import { KeyboardArrowRightRounded as KeyboardArrowRightRoundedIcon, RemoveRounded as RemoveRoundedIcon } from 'ui/icons'
 import { useState } from 'react';
 import { cloneDeep } from 'lodash';
 import getLabel from 'utils/getTransferListLabel';
 
 import SearchField from './SearchField';
+
+// 清單列（原 ListItemButton dense：上下 2px、左右 16px，hover surface-hover）；整列為原生按鈕，可 Tab 聚焦、Enter／空白鍵觸發
+const rowClass = cn(
+  'flex w-full min-w-0 cursor-pointer items-center border-0 bg-transparent px-4 py-0.5 text-left transition-colors hover:bg-surface-hover',
+  focusRing
+)
+// 原 ListItemText：primary 16px 主文字色、上下 4px
+const RowText = ({ primary, id }) => (
+  <span id={id} className="my-1 min-w-0 flex-1 text-body text-text">
+    {primary}
+  </span>
+)
 
 const TransferList = ({
   optionData, optionIds, handleSetValue, keyword, idsKey,
@@ -53,17 +65,12 @@ const TransferList = ({
         <div className="flex flex-col gap-4 min-[900px]:flex-row">
           <div className="min-w-0 min-[900px]:flex-1">
             <div className="h-[350px] overflow-auto rounded-md bg-background">
-              <List dense component="div" role="list">
+              <div role="list" className="py-2">
                 {optionData.map(value => {
                   return value.display && (
-                    <ListItemButton
-                      key={`left-${value.id}`}
-                      role="listitem"
-                      disableRipple
-                      onClick={() => handleSelectId(value.id)}
-                      style={{ padding: '2px 16px' }}
-                    >
-                      <ListItemIcon>
+                    <div key={`left-${value.id}`} role="listitem">
+                      <button type="button" onClick={() => handleSelectId(value.id)} className={rowClass}>
+                      <span className="inline-flex min-w-[56px] shrink-0">
                         <Checkbox
                           tabIndex={-1}
                           disableRipple
@@ -73,17 +80,16 @@ const TransferList = ({
                             'aria-labelledby': value.id,
                           }}
                         />
-                      </ListItemIcon>
-                      <ListItemText
+                      </span>
+                      <RowText
                         primary={getLabel(value)}
                         id={value.id}
-                        primaryTypographyProps={{
-                          style: { fontSize: '16px', color: '#263238' }
-                        }} />
-                    </ListItemButton>
+                      />
+                      </button>
+                    </div>
                   )
                 })}
-              </List>
+              </div>
             </div>
           </div>
           <div className="flex items-center justify-center gap-4 min-[900px]:w-[8.333333%] min-[900px]:flex-col">
@@ -101,21 +107,16 @@ const TransferList = ({
           </div>
           <div className="w-full min-w-0 min-[900px]:flex-1">
             <div className="h-[350px] overflow-auto rounded-md bg-background">
-              <List dense component="div" role="list" style={{ height: !optionIds.length ? '100%' : 'unset' }}>
+              <div role="list" className="py-2" style={{ height: !optionIds.length ? '100%' : 'unset' }}>
                 {optionIds.length ? optionIds.map((id, i) => {
                   const findData = optionData.find(d => d.id === id)
                   if (!findData) {
                     console.log('optionIds: ', optionIds, title);
                   }
                   return (
-                    <ListItemButton
-                      key={`right-${id}-${i}`}
-                      role="listitem"
-                      disableRipple
-                      onClick={() => handleSelectRemoveIdx(i)}
-                      style={{ padding: '2px 16px' }}
-                    >
-                      <ListItemIcon>
+                    <div key={`right-${id}-${i}`} role="listitem">
+                      <button type="button" onClick={() => handleSelectRemoveIdx(i)} className={rowClass}>
+                      <span className="inline-flex min-w-[56px] shrink-0">
                         <Checkbox
                           tabIndex={-1}
                           disableRipple
@@ -125,17 +126,16 @@ const TransferList = ({
                             'aria-labelledby': `left-${id}-${i}`,
                           }}
                         />
-                      </ListItemIcon>
-                      <ListItemText
+                      </span>
+                      <RowText
                         primary={findData ? getLabel(findData) : ''}
                         id={`left-${id}-${i}`}
-                        primaryTypographyProps={{
-                          style: { fontSize: '16px', color: '#263238' }
-                        }} />
-                    </ListItemButton>
+                      />
+                      </button>
+                    </div>
                   );
                 }) : <div className="h-full text-center text-heading text-text [align-content:center]">選取左方選項加入組合</div>}
-              </List>
+              </div>
             </div>
           </div>
         </div>

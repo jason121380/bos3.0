@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Container } from 'ui/display-compat'
 import Page from 'components/Page'
 import { Helmet } from 'react-helmet'
 import { css } from '@emotion/react'
@@ -46,9 +45,10 @@ export default function Employees() {
       <Helmet>
         <title>AR 變髮色</title>
       </Helmet>
-      <Container maxWidth={false} css={styles.container}>
+      {/* 原 Container maxWidth={false}：滿版、左右內距 16／24px（600px 起） */}
+      <div className="mx-auto box-border block w-full px-4 min-[600px]:px-6" css={styles.container}>
         系統優化中
-      </Container>
+      </div>
     </Page>
   )
 }

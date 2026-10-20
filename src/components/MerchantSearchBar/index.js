@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Grid } from 'ui/grid-compat'
 import { endOfDay, startOfDay, addDays, startOfMonth, endOfMonth } from 'date-fns'
 import useQueryString from 'hooks/useQueryString'
 import produce from 'immer'
@@ -373,15 +372,15 @@ function MerchantSearchBar({
   const initial = initFirst.reduce((total, item) => ({ ...total, [item]: true }), {})
   multiple = multiple.reduce((total, item) => ({ ...total, [item]: true }), {})
   return (
-    <Grid container css={styles.container} className='MerchantSearchBar'>
+    <div css={styles.container} className='MerchantSearchBar box-border flex-wrap'>
       {searchByBirth && <div css={styles.birth}>生日/偏好設計師搜尋</div>}
       {onSearch && (
-        <Grid item>
+        <div>
           <Search className={styles.search} onSearch={onSearch} />
-        </Grid>
+        </div>
       )}
       {visible.indexOf('datePicker') !== -1 && (
-        <Grid item>
+        <div>
           <DatePicker
             onChange={handleChange}
             jumpToToday={handleJumpToToday}
@@ -402,7 +401,7 @@ function MerchantSearchBar({
             futureDate={futureDate}
             uiDateField={uiDateField}
           />
-        </Grid>
+        </div>
       )}
 
       <Requirement
@@ -416,7 +415,7 @@ function MerchantSearchBar({
         useInDecreaseDetailReport={useInDecreaseDetailReport}
         getThirdPartyName={getThirdPartyName}
       />
-    </Grid>
+    </div>
   )
 }
 

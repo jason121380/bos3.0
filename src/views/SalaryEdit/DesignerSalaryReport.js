@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Paper, Typography } from 'ui/display-compat'
-import { Table, TableBody, TableCell, TableRow, TableContainer } from 'ui/table-compat'
+import { Table, TableBody, TableCell, TableRow } from 'ui/table'
 import idx from 'idx'
 // import { useFetchMerchantStaticUserPerformReport } from 'hooks/useFetchMerchantStaticPerformanceReport'
 import format from 'date-fns/format'
@@ -151,189 +150,187 @@ const DesignerSalaryReport = ({
   // }, [designerSalesAnalyticsData.loading, designerSalesAnalyticsData.data])
 
   return designer !== undefined ? (
-    <TableContainer component={Paper} css={styles.designerSalaryReport}>
-      <Table size="small">
-        <TableBody>
-          <TableRow>
-            <TableCell>服務虛業績</TableCell>
-            <TableCell>
-              {Math.round(
-                designer.salesAnalytics.servicePerformanceFakeTotal +
-                designer.salesAnalytics.ticketUsagePerformanceFakeTotal
-              )}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>扣業績-第三方/其他支付方式 手續費</TableCell>
-            <TableCell>
-              {Math.round(designer.salesAnalytics.serviceThirdPartHandlingFeeOnSales) +
-                Math.round(designer.salesAnalytics.ticketThirdPartHandlingFeeOnSales)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>扣業績 - 扣項</TableCell>
-            <TableCell>
-              {Math.round(designer.salesAnalytics.servicePerformanceDecountItem) +
-                Math.round(designer.salesAnalytics.ticketPerformanceDecountItem)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>服務實業績</TableCell>
-            <TableCell>
-              {Math.round(designer.salesAnalytics.truthPerformanceWithoutHelper)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>實業績 - 指定</TableCell>
-            <TableCell>
-              {Math.round(
-                designer.salesAnalytics.servicePerformanceDesignateTruthTotalBeforeHelperDecount
-              ) + Math.round(designer.salesAnalytics.ticketDesignateTruthBeforeHelperDecount)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>實業績 - 不指定</TableCell>
-            <TableCell>
-              {Math.round(
-                designer.salesAnalytics.servicePerformanceNonDesignateTruthTotalBeforeHelperDecount
-              ) + Math.round(designer.salesAnalytics.ticketNonDesignateTruthBeforeHelperDecount)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>扣業績 - 使用互助</TableCell>
-            <TableCell>
-              {Math.round(designer.salesAnalytics.servicePerformanceDecountHelperUsagePrice) +
-                Math.round(designer.salesAnalytics.ticketPerformanceDecountHelperUsage)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>服務實業績 扣使用互助後</TableCell>
-            <TableCell>
-              {Math.round(designer.salesAnalytics.servicePerformanceTruthTotal) +
-                Math.round(designer.salesAnalytics.ticketUsagePerformanceTruthTotal)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>實業績 扣使用互助後 - 指定</TableCell>
-            <TableCell>
-              {Math.round(designer.salesAnalytics.servicePerformanceDesignateTruthTotal) +
-                Math.round(designer.salesAnalytics.ticketUsagePerformanceDesignateTruthTotal)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>實業績 扣使用互助後 - 不指定</TableCell>
-            <TableCell>
-              {Math.round(designer.salesAnalytics.servicePerformanceNonDesignateTruthTotal) +
-                Math.round(designer.salesAnalytics.ticketUsagePerformanceNonDesignateTruthTotal)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>服務換算抽成</TableCell>
-            <TableCell>
-              {Math.round(designer.salesAnalytics.servicePerformanceRake) +
-                Math.round(designer.salesAnalytics.ticketPerformanceRake)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>指定抽成</TableCell>
-            <TableCell>
-              {Math.round(designer.salesAnalytics.servicePerformanceDesignateRake) +
-                Math.round(designer.salesAnalytics.ticketPerformanceDesignateRake)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>不指定抽成</TableCell>
-            <TableCell>
-              {Math.round(designer.salesAnalytics.servicePerformanceNonDesignateRake) +
-                Math.round(designer.salesAnalytics.ticketPerformanceNonDesignateRake)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>特殊抽成</TableCell>
-            <TableCell>{Math.round(designer.salesAnalytics.specialRake)}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>
-              扣薪水 - 第三方/其他支付方式 手續費
-            </TableCell>
-            <TableCell>
-              {Math.round(designer.salesAnalytics.serviceThirdPartHandlingFeeOnSalary) +
-                Math.round(designer.salesAnalytics.ticketThirdPartHandlingFeeOnSalary)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>扣薪水 - 扣項</TableCell>
-            <TableCell>
-              {Math.round(designer.salesAnalytics.serviceSalaryDecountItem) +
-                Math.round(designer.salesAnalytics.ticketSalaryDecountItem)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>扣薪水 - 使用互助 </TableCell>
-            <TableCell>
-              {Math.round(
-                designer.salesAnalytics.serviceSalaryDecountHelperUsagePrice +
-                designer.salesAnalytics.ticketSalaryDecountHelperUsagePrice
-              )}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>服務應領金額</TableCell>
-            <TableCell>
-              {Math.round(
-                designer.salesAnalytics.serviceSalaryShouldBePaid +
-                designer.salesAnalytics.ticketSalaryShouldBePaid
-              )}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>店販業績</TableCell>
-            <TableCell>{Math.round(designer.salesAnalytics.productPerformanceFakeTotal)}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>
-              扣業績 - 第三方/其他支付方式 手續費
-            </TableCell>
-            <TableCell>{Math.round(designer.salesAnalytics.productThirdPartHandlingFee)}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ paddingLeft: '40px' }}>店販業績 扣手續費後</TableCell>
-            <TableCell>
-              {Math.round(designer.salesAnalytics.productPerformanceTruthTotal)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>店販抽成</TableCell>
-            <TableCell>
-              {Math.round(
-                designer.salesAnalytics.productRakeByCost +
-                designer.salesAnalytics.productRakeByFixed +
-                designer.salesAnalytics.productRakeByPrice
-              )}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>互助獲得</TableCell>
-            <TableCell>
-              {`${Math.round(designer.salesAnalytics.helperRetrievePrice)}/${designer.salesAnalytics.helperRetrievePoint
-                }`}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>扣入金手續費</TableCell>
-            <TableCell>
-              {Math.round(designer.salesAnalytics.walletDepositHandlingFeeByDesigner)}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell style={{ color: 'red', fontWeight: '500' }}>總應領薪資</TableCell>
-            <TableCell style={{ color: 'red', fontWeight: '500' }}>
-              {Math.round(designer.salesAnalytics.totalSalaryShouldBePaid)}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Table dense css={styles.designerSalaryReport}>
+      <TableBody>
+        <TableRow>
+          <TableCell>服務虛業績</TableCell>
+          <TableCell>
+            {Math.round(
+              designer.salesAnalytics.servicePerformanceFakeTotal +
+              designer.salesAnalytics.ticketUsagePerformanceFakeTotal
+            )}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>扣業績-第三方/其他支付方式 手續費</TableCell>
+          <TableCell>
+            {Math.round(designer.salesAnalytics.serviceThirdPartHandlingFeeOnSales) +
+              Math.round(designer.salesAnalytics.ticketThirdPartHandlingFeeOnSales)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>扣業績 - 扣項</TableCell>
+          <TableCell>
+            {Math.round(designer.salesAnalytics.servicePerformanceDecountItem) +
+              Math.round(designer.salesAnalytics.ticketPerformanceDecountItem)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>服務實業績</TableCell>
+          <TableCell>
+            {Math.round(designer.salesAnalytics.truthPerformanceWithoutHelper)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>實業績 - 指定</TableCell>
+          <TableCell>
+            {Math.round(
+              designer.salesAnalytics.servicePerformanceDesignateTruthTotalBeforeHelperDecount
+            ) + Math.round(designer.salesAnalytics.ticketDesignateTruthBeforeHelperDecount)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>實業績 - 不指定</TableCell>
+          <TableCell>
+            {Math.round(
+              designer.salesAnalytics.servicePerformanceNonDesignateTruthTotalBeforeHelperDecount
+            ) + Math.round(designer.salesAnalytics.ticketNonDesignateTruthBeforeHelperDecount)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>扣業績 - 使用互助</TableCell>
+          <TableCell>
+            {Math.round(designer.salesAnalytics.servicePerformanceDecountHelperUsagePrice) +
+              Math.round(designer.salesAnalytics.ticketPerformanceDecountHelperUsage)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>服務實業績 扣使用互助後</TableCell>
+          <TableCell>
+            {Math.round(designer.salesAnalytics.servicePerformanceTruthTotal) +
+              Math.round(designer.salesAnalytics.ticketUsagePerformanceTruthTotal)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>實業績 扣使用互助後 - 指定</TableCell>
+          <TableCell>
+            {Math.round(designer.salesAnalytics.servicePerformanceDesignateTruthTotal) +
+              Math.round(designer.salesAnalytics.ticketUsagePerformanceDesignateTruthTotal)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>實業績 扣使用互助後 - 不指定</TableCell>
+          <TableCell>
+            {Math.round(designer.salesAnalytics.servicePerformanceNonDesignateTruthTotal) +
+              Math.round(designer.salesAnalytics.ticketUsagePerformanceNonDesignateTruthTotal)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>服務換算抽成</TableCell>
+          <TableCell>
+            {Math.round(designer.salesAnalytics.servicePerformanceRake) +
+              Math.round(designer.salesAnalytics.ticketPerformanceRake)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>指定抽成</TableCell>
+          <TableCell>
+            {Math.round(designer.salesAnalytics.servicePerformanceDesignateRake) +
+              Math.round(designer.salesAnalytics.ticketPerformanceDesignateRake)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>不指定抽成</TableCell>
+          <TableCell>
+            {Math.round(designer.salesAnalytics.servicePerformanceNonDesignateRake) +
+              Math.round(designer.salesAnalytics.ticketPerformanceNonDesignateRake)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>特殊抽成</TableCell>
+          <TableCell>{Math.round(designer.salesAnalytics.specialRake)}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>
+            扣薪水 - 第三方/其他支付方式 手續費
+          </TableCell>
+          <TableCell>
+            {Math.round(designer.salesAnalytics.serviceThirdPartHandlingFeeOnSalary) +
+              Math.round(designer.salesAnalytics.ticketThirdPartHandlingFeeOnSalary)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>扣薪水 - 扣項</TableCell>
+          <TableCell>
+            {Math.round(designer.salesAnalytics.serviceSalaryDecountItem) +
+              Math.round(designer.salesAnalytics.ticketSalaryDecountItem)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>扣薪水 - 使用互助 </TableCell>
+          <TableCell>
+            {Math.round(
+              designer.salesAnalytics.serviceSalaryDecountHelperUsagePrice +
+              designer.salesAnalytics.ticketSalaryDecountHelperUsagePrice
+            )}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>服務應領金額</TableCell>
+          <TableCell>
+            {Math.round(
+              designer.salesAnalytics.serviceSalaryShouldBePaid +
+              designer.salesAnalytics.ticketSalaryShouldBePaid
+            )}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>店販業績</TableCell>
+          <TableCell>{Math.round(designer.salesAnalytics.productPerformanceFakeTotal)}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>
+            扣業績 - 第三方/其他支付方式 手續費
+          </TableCell>
+          <TableCell>{Math.round(designer.salesAnalytics.productThirdPartHandlingFee)}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ paddingLeft: '40px' }}>店販業績 扣手續費後</TableCell>
+          <TableCell>
+            {Math.round(designer.salesAnalytics.productPerformanceTruthTotal)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>店販抽成</TableCell>
+          <TableCell>
+            {Math.round(
+              designer.salesAnalytics.productRakeByCost +
+              designer.salesAnalytics.productRakeByFixed +
+              designer.salesAnalytics.productRakeByPrice
+            )}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>互助獲得</TableCell>
+          <TableCell>
+            {`${Math.round(designer.salesAnalytics.helperRetrievePrice)}/${designer.salesAnalytics.helperRetrievePoint
+              }`}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>扣入金手續費</TableCell>
+          <TableCell>
+            {Math.round(designer.salesAnalytics.walletDepositHandlingFeeByDesigner)}
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell style={{ color: 'red', fontWeight: '500' }}>總應領薪資</TableCell>
+          <TableCell style={{ color: 'red', fontWeight: '500' }}>
+            {Math.round(designer.salesAnalytics.totalSalaryShouldBePaid)}
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
   ) : (
     // 先隱藏怕之後又改回來
     // !salaryLoading && (
@@ -623,9 +620,9 @@ const DesignerSalaryReport = ({
     //       </TableBody>
     //     </Table>
     //   </TableContainer>
-    <Typography variant="h3" gutterBottom component="div">
+    <div className="mb-[0.35em] text-title font-bold text-text">
       無資料
-    </Typography>
+    </div>
   )
 }
 

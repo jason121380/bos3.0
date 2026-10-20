@@ -1,9 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Link } from 'ui/link-compat'
-import { List, ListItemButton, ListItemAvatar, ListItemText } from 'ui/list-compat'
-import { DialogContent } from 'ui/modal-compat'
 import React, { useState, Fragment } from 'react'
-// 動作清單（List / ListItemButton / Link component）沒有對應元件，保留 MUI
+// 外層為相容層 Dialog（OrderTable）；內容區與動作列（原 List / ListItemButton / Link）改原生元素＋react-router Link
 import { Avatar } from 'ui/avatar'
 import { Button } from 'ui/button'
 import { blue } from 'ui/colors'
@@ -16,6 +13,9 @@ import useFetchVerifyBooking from 'hooks/useFetchVerifyBooking'
 import _ from 'lodash'
 import { css } from '@emotion/react'
 import { theme } from '../../../theme'
+
+// 動作列（原 ListItemButton）：整列可點、左側頭像＋文字；hover surface-hover、停用 40% 透明
+const actionRow = 'ui-root flex min-h-12 w-full items-center gap-4 rounded-md border-0 bg-transparent px-4 py-2 text-left text-body text-text no-underline transition-colors hover:bg-surface-hover disabled:pointer-events-none disabled:opacity-40 aria-disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent'
 
 const styles = {
   root: css({
@@ -115,40 +115,33 @@ export default function NewChoseEvent({
   }
 
   return (
-    <DialogContent dividers style={{ border: 'none' }}>
+    <div className="flex-auto overflow-y-auto px-6 py-4">
       {(modaltype === 'defaultAll' || modaltype === 'openAllOrder') && <Fragment>
-        <Link
-          underline='hover'
-          component={RouterLink}
+        <RouterLink
+          className="block text-text no-underline"
           to={`/customer/reservation/${merchantId}?usingLineLogin=0&date=${clickData.dateTime}&designerId=${!!clickData.designerId ? clickData.designerId : ''}`}
         >
-          <ListItemButton css={styles.field}>
-            <ListItemAvatar>
-              <Avatar className="bg-accent/8 text-accent">
-                <EventSeatIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="新預約" />
-          </ListItemButton>
-        </Link>
+          <div className={actionRow} css={styles.field}>
+            <Avatar className="bg-accent/8 text-accent">
+              <EventSeatIcon />
+            </Avatar>
+            <span className="min-w-0 flex-1">新預約</span>
+          </div>
+        </RouterLink>
         {!checkinMode && (modaltype === 'openAllOrder' ? 
-          <ListItemButton css={styles.field} onClick={closeAllOrderTime} disabled={btnDisabled}>
-            <ListItemAvatar>
-              <Avatar className="bg-accent/8 text-accent">
-                <LockOpenIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="開啟全店預約" />
-          </ListItemButton>
+          <button type="button" className={actionRow} css={styles.field} onClick={closeAllOrderTime} disabled={btnDisabled}>
+            <Avatar className="bg-accent/8 text-accent">
+              <LockOpenIcon />
+            </Avatar>
+            <span className="min-w-0 flex-1">開啟全店預約</span>
+          </button>
           :
-          <ListItemButton css={styles.field} onClick={closeAllOrderTime} disabled={btnDisabled}>
-            <ListItemAvatar>
-              <Avatar className="bg-accent/8 text-accent">
-                <LockIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="關閉全店預約" />
-          </ListItemButton>
+          <button type="button" className={actionRow} css={styles.field} onClick={closeAllOrderTime} disabled={btnDisabled}>
+            <Avatar className="bg-accent/8 text-accent">
+              <LockIcon />
+            </Avatar>
+            <span className="min-w-0 flex-1">關閉全店預約</span>
+          </button>
         )}
         
         <div className="flex justify-end">
@@ -165,38 +158,31 @@ export default function NewChoseEvent({
         </div>
       </Fragment>}
       {(modaltype === 'default' || modaltype === 'openOrder') && <Fragment>
-        <Link
-          underline='hover'
-          component={RouterLink}
+        <RouterLink
+          className="block text-text no-underline"
           to={`/customer/reservation/${merchantId}?usingLineLogin=0&date=${clickData.dateTime}&designerId=${!!clickData.designerId ? clickData.designerId : ''}`}
         >
-          <ListItemButton css={styles.field}>
-            <ListItemAvatar>
-              <Avatar className="bg-accent/8 text-accent">
-                <EventSeatIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="新預約" />
-          </ListItemButton>
-        </Link>
+          <div className={actionRow} css={styles.field}>
+            <Avatar className="bg-accent/8 text-accent">
+              <EventSeatIcon />
+            </Avatar>
+            <span className="min-w-0 flex-1">新預約</span>
+          </div>
+        </RouterLink>
         {!checkinMode && (modaltype === 'openOrder' ? 
-          <ListItemButton css={styles.field} onClick={closeOrderTime} disabled={btnDisabled}>
-            <ListItemAvatar>
-              <Avatar className="bg-accent/8 text-accent">
-                <LockOpenIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="開啟預約" />
-          </ListItemButton>
+          <button type="button" className={actionRow} css={styles.field} onClick={closeOrderTime} disabled={btnDisabled}>
+            <Avatar className="bg-accent/8 text-accent">
+              <LockOpenIcon />
+            </Avatar>
+            <span className="min-w-0 flex-1">開啟預約</span>
+          </button>
           :
-          <ListItemButton css={styles.field} onClick={closeOrderTime} disabled={btnDisabled}>
-            <ListItemAvatar>
-              <Avatar className="bg-accent/8 text-accent">
-                <LockIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="關閉預約" />
-          </ListItemButton>
+          <button type="button" className={actionRow} css={styles.field} onClick={closeOrderTime} disabled={btnDisabled}>
+            <Avatar className="bg-accent/8 text-accent">
+              <LockIcon />
+            </Avatar>
+            <span className="min-w-0 flex-1">關閉預約</span>
+          </button>
         )}
 
         <div className="flex justify-end">
@@ -232,64 +218,51 @@ export default function NewChoseEvent({
             }</div>
           )}
         </div>
-        <List>
+        <div className="flex flex-col py-2">
           {modaltype === 'orderSuccess' && (
-            <Link
-              underline='hover'
-              color="inherit"
-              component={RouterLink}
+            <RouterLink
+              className="block text-text no-underline"
               to={`/order/${editOrder.id}?status=edit`}
-              variant="h6"
               target="_blank"
             >
-              <ListItemButton>
-                <ListItemAvatar>
-                  <Avatar className="bg-accent/8 text-accent">
-                    <EditIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary="編輯" />
-              </ListItemButton>
-            </Link>
+              <div className={actionRow}>
+                <Avatar className="bg-accent/8 text-accent">
+                  <EditIcon />
+                </Avatar>
+                <span className="min-w-0 flex-1">編輯</span>
+              </div>
+            </RouterLink>
           )}
-          <Link
-            color="inherit"
-            component={RouterLink}
+          <RouterLink
+            className="block text-text no-underline"
             to={`/order/${editOrder.id}?status=checkout`}
-            variant="h6"
             target="_blank"
           >
-            <ListItemButton>
-              <ListItemAvatar>
-                <Avatar className="bg-accent/8 text-accent">
-                  <ShoppingCartIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="結帳" />
-            </ListItemButton>
-          </Link>
+            <div className={actionRow}>
+              <Avatar className="bg-accent/8 text-accent">
+                <ShoppingCartIcon />
+              </Avatar>
+              <span className="min-w-0 flex-1">結帳</span>
+            </div>
+          </RouterLink>
 
           {editOrder.status !== '預約成功' && editOrder.status !== '已完成' && (
-            <ListItemButton onClick={() => handleAcceptBooking(true)}>
-              <ListItemAvatar>
-                <Avatar className="bg-accent/8 text-accent">
-                  <CheckIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="接受預約" />
-            </ListItemButton>
+            <button type="button" className={actionRow} onClick={() => handleAcceptBooking(true)}>
+              <Avatar className="bg-accent/8 text-accent">
+                <CheckIcon />
+              </Avatar>
+              <span className="min-w-0 flex-1">接受預約</span>
+            </button>
           )}
           {editOrder.status !== '設計師已取消' && (
-            <ListItemButton onClick={() => handleAcceptBooking(false)}>
-              <ListItemAvatar>
-                <Avatar className="bg-accent/8 text-accent">
-                  <CancelIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary="取消預約" />
-            </ListItemButton>
+            <button type="button" className={actionRow} onClick={() => handleAcceptBooking(false)}>
+              <Avatar className="bg-accent/8 text-accent">
+                <CancelIcon />
+              </Avatar>
+              <span className="min-w-0 flex-1">取消預約</span>
+            </button>
           )}
-        </List>
+        </div>
         <div className="flex justify-end">
           <Button
             type="submit"
@@ -303,6 +276,6 @@ export default function NewChoseEvent({
           </Button>
         </div>
       </Fragment>}
-    </DialogContent>
+    </div>
   )
 }

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { CircularProgress } from 'ui/display-compat'
+import { LoaderCircle } from 'lucide-react'
 import { TextField } from 'ui/text-field'
 import { useFetchCustomersInAutoComplete } from 'hooks/useFetchCustomers'
 import useToggle from 'hooks/useToggle'
@@ -159,7 +159,7 @@ export default React.forwardRef(function CustomerAutoComplete(
             endAdornment: (
               <React.Fragment>
                 {customers.loading || orderAlready ? (
-                  <CircularProgress color="inherit" size={20} />
+                  <LoaderCircle className="h-5 w-5 animate-spin" strokeWidth={1.75} />
                 ) : null}
                 {params.InputProps.endAdornment}
               </React.Fragment>

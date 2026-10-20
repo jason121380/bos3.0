@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
-// 大型頁：Backdrop、Popper、Slider 保留 MUI；Page 根元素不加 ui-root（box-sizing 會改變行事曆格子寬度）
+// 大型頁：格子尺寸浮層保留相容層 Popper（anchorEl 開關、不因點外側關閉；換 Radix Popover 會改變焦點與關閉行為），Slider 為 ui/slider；
+// 載入遮罩改原生 div（#Backdrop 有全域樣式，關閉時同原 Backdrop 以 visibility hidden 保留在畫面上）；Page 根元素不加 ui-root（box-sizing 會改變行事曆格子寬度）
 import { Slider } from 'ui/slider'
 import { Popper } from 'ui/overlay-compat'
-import { Backdrop } from 'ui/modal-compat'
 import { LoaderCircle, SlidersHorizontal } from 'lucide-react'
 import Page from 'components/Page'
 import useFetchMerchant from 'hooks/useFetchMerchant'
@@ -529,9 +529,15 @@ function Calendar() {
   return (
     // 不在 Page 加 ui-root：其 box-sizing 基礎樣式會改變下方自訂格線（OrderTable）的實際寬高；改為只包住新元件區塊
     <Page title="單日預約紀錄">
-      <Backdrop id='Backdrop' css={styles.opacity} open={!(!merchant.loading && !DesignerCalendar.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length))}>
+      <div
+        id='Backdrop'
+        aria-hidden="true"
+        css={styles.opacity}
+        className="fixed inset-0 flex items-center justify-center"
+        style={{ visibility: (!(!merchant.loading && !DesignerCalendar.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length))) ? undefined : 'hidden' }}
+      >
         <LoaderCircle className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
-      </Backdrop>
+      </div>
       <AdminPageHeader
         title="單日預約紀錄"
         onFilterClick={handleFilterClick}

@@ -1,11 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { Card, CardContent } from 'ui/card-compat'
 import PropTypes from 'prop-types'
 import { cloneDeep } from 'lodash'
 import { useState, useEffect } from 'react'
 import { theme } from '../../theme'
 import { css } from '@emotion/react'
-import { Card as UiCard } from 'ui/card'
+import { Card as UiCard, CardContent as UiCardContent } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Checkbox } from 'ui/checkbox'
 import {
@@ -57,8 +56,9 @@ function Results({ salaryData }) {
           <EmptyState title="無資料" />
         </UiCard>
       ) : (
-        <Card css={localStyles.card} className="MerchantBankTransferReportTable">
-          <CardContent style={{ padding: 0 }}>
+        // 列印規則 .MerchantBankTransferReport .MerchantBankTransferReportTable 以本卡片 class 命中（不依賴 MUI class），className 原樣保留
+        <UiCard css={localStyles.card} className="MerchantBankTransferReportTable">
+          <UiCardContent style={{ padding: 0 }}>
             <div>
               <Table dense wrapperClassName="rounded-none border-0">
                 <TableHeader>
@@ -113,8 +113,8 @@ function Results({ salaryData }) {
                 </TableBody>
               </Table>
             </div>
-          </CardContent>
-        </Card>
+          </UiCardContent>
+        </UiCard>
       )}
     </>
   )

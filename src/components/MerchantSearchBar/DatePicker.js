@@ -1,4 +1,3 @@
-import { Grid } from 'ui/grid-compat'
 import { MobileDatePicker } from 'ui/date-picker'
 import { endOfDay, startOfDay, startOfMonth, endOfMonth, format } from 'date-fns'
 import { CalendarDays } from 'lucide-react'
@@ -120,10 +119,10 @@ export default function DatePicker({
     jumpAfterToTomorrow()
   }
   return (
-    <Grid container className='DatePicker my-6 flex items-center'>
+    <div className='DatePicker my-6 box-border flex flex-wrap items-center'>
       {/* 報表統一（STYLE §14）：快捷鈕一律 ui 次要小按鈕、日期欄一律 ui 欄位；原藍色 ButtonGroup 已全面停用 */}
       {displayMonth ? (
-        <Grid item>
+        <div>
           <div className="ui-root flex items-center gap-2">
             <UiButton variant="secondary" size="sm" onClick={handleJumpLastMonth}>
               上個月
@@ -132,9 +131,9 @@ export default function DatePicker({
               本月
             </UiButton>
           </div>
-        </Grid>
+        </div>
       ) : (
-        <Grid item>
+        <div>
           <div className="ui-root flex items-center gap-2">
             {(!inMerchantDailyReport || !onlyDayTime) && (
               <UiButton variant="secondary" size="sm" onClick={handleJumpWholeMonth}>
@@ -170,9 +169,9 @@ export default function DatePicker({
               </UiButton>
             }
           </div>
-        </Grid>
+        </div>
       )}
-      <Grid item>
+      <div>
         {/* 不傳 label 給 facade：facade 有 label 會以 Field 在欄位上方渲染標籤，塞進 flex 會擠成兩層重疊；彈層標題仍由 localeText.toolbarTitle='選擇日期' 提供 */}
         <div className="ui-root flex items-center gap-2">
           {!hideStartDate && (
@@ -214,7 +213,7 @@ export default function DatePicker({
             />
           )}
         </div>
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   )
 }

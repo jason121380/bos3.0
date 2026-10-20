@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Divider } from 'ui/display-compat'
 import { Grid } from 'ui/grid-compat'
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'

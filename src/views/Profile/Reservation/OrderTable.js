@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Dialog } from 'ui/modal-compat'
+// 兩個彈窗內只有動作清單與時段切換鈕（無下拉／日期彈層），改用 ui Dialog；舊版無關閉鈕（點背景關閉），故 hideClose
+import { Dialog, DialogContent, DialogTitle } from 'ui/dialog'
 import React, { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { AssignmentTurnedInRounded as AssignmentTurnedInRoundedIcon, DisabledByDefaultRounded as DisabledByDefaultRoundedIcon } from 'ui/icons'
@@ -265,7 +266,10 @@ const OrderTable = ({
       </div>
 
       {/* 彈窗 */}
-      <Dialog className='ManagementReservationRecordDialog' fullWidth maxWidth="xs" open={modalOpen} onClose={() => setModalOpen(false)}>
+      <Dialog open={modalOpen} onOpenChange={o => !o && setModalOpen(false)}>
+        <DialogContent size="sm" hideClose aria-describedby={undefined} className='ManagementReservationRecordDialog'>
+        {/* 原彈窗沒有標題；Radix Dialog 需有標題供輔助技術朗讀，以 sr-only 提供 */}
+        <DialogTitle className="sr-only">預約動作</DialogTitle>
         <NewChoseEvent
           openTime={openTime}
           editOrder={editOrder}
@@ -279,14 +283,17 @@ const OrderTable = ({
           checkinSettings={checkinSettings}
           checkinMode={checkinMode}
         />
+        </DialogContent>
       </Dialog>
-      <Dialog className='ManagementReservationRecordDialog' fullWidth maxWidth="sm" open={holidayModel} onClose={() => setHolidayModel(false)}>
+      <Dialog open={holidayModel} onOpenChange={o => !o && setHolidayModel(false)}>
+        <DialogContent size="md" hideClose aria-describedby={undefined} className='ManagementReservationRecordDialog'>
         <HolidayEdit
           holidayData={holidayData} 
           setHolidayData={setHolidayData} 
           setHolidayModel={setHolidayModel}
           refetchData={refetchData}
         />
+        </DialogContent>
       </Dialog>
     </div>
   )

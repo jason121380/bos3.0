@@ -27,9 +27,6 @@ const styles = {
   searchInput: css({
     flexGrow: 1,
   }),
-  searchButton: css({
-    backgroundColor: theme.palette.common.white,
-  }),
 }
 
 function Search({ onSearch, className, ...rest }) {
@@ -53,8 +50,8 @@ function Search({ onSearch, className, ...rest }) {
           onKeyUp={handleOnKeyPress}
         />
       </div>
+      {/* 原 emotion 白底會蓋過 primary 藍底（白底白字看不到），移除後即為標準主要按鈕 */}
       <Button
-        css={styles.searchButton}
         onClick={() => onSearch(keyword)}
         size="lg"
         variant="primary"

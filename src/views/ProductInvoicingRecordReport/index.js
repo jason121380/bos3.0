@@ -1,8 +1,6 @@
-import { Button } from 'ui/button-compat'
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { useState, useEffect } from 'react'
-// MUI Button 只用於 Autocomplete 的 popupIcon（全選），其餘按鈕改用 ui/button
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import Autocomplete from 'ui/combobox'
 import Page from 'components/Page'
@@ -155,13 +153,13 @@ const ProductInvoicingRecordReport = () => {
                 multiple
                 fullWidth
                 popupIcon={
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
+                  // 全選鈕：每頁只有一顆 primary（搜尋），故用 secondary（STYLE §2）
+                  <UIButton
+                    variant="secondary"
+                    size="sm"
                     style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
                     disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
-                    onClick={selectAll}>全選</Button>
+                    onClick={selectAll}>全選</UIButton>
                 }
                 onOpen={() => setOpen(true)}
                 onClose={() => setOpen(false)}

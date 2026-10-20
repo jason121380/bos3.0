@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import { Input, TextField } from 'ui/text-field'
-import { Grid } from 'ui/grid-compat'
 import { Select, MenuItem, FormControl, InputLabel } from 'ui/form-control'
 import { Button } from 'ui/button'
 import { Search as SearchIcon, Delete as DeleteIcon } from 'ui/icons'
@@ -31,14 +30,6 @@ const styles = {
   searchInput: css({
     flexGrow: 1,
   }),
-  searchButton: css({
-    height: '36px',
-    backgroundColor: '#9ad6f3 !important',
-    color: 'black !important',
-    "&:hover": {
-      backgroundColor: '#78a4ba !important',
-    }
-  }),
   field: css({
     minWidth: '180px !important',
     maxWidth: 180 * 1.5 + 'px',
@@ -59,15 +50,6 @@ const styles = {
   }),
   birthdayMonthDay: css({
     width: '80px',
-  }),
-  deleteBtn: css({
-    backgroundColor: '#f62e2e !important',
-    height: '36px',
-    color: 'white',
-    "&:hover": {
-      backgroundColor: '#891a1a !important',
-      color: 'white',
-    }
   }),
 }
 
@@ -160,8 +142,8 @@ function SearchV2({
   }, [])
 
   return (
-    <Grid {...rest} css={className} container style={{ gap: '10px' }}>
-      <Grid item css={styles.birthdayGrid}>
+    <div {...rest} css={className} className="box-border flex w-full flex-wrap gap-2.5">
+      <div css={styles.birthdayGrid}>
         <div css={styles.search} className="rounded-md bg-background">
           <SearchIcon css={styles.searchIcon} />
           <Input
@@ -173,7 +155,7 @@ function SearchV2({
             onKeyDown={handleOnKeyPress}
           />
         </div>
-      </Grid>
+      </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
         {inCustomerFilterExport ?
           <Fragment>
@@ -197,7 +179,7 @@ function SearchV2({
             />
           </Fragment>
           :
-          <Grid item >
+          <div>
             <EmployeeAutoComplete
               label={'設計師編號/姓名'}
               value={designer}
@@ -207,10 +189,10 @@ function SearchV2({
               }}
               className={styles.field}
             />
-          </Grid>
+          </div>
         }
       </div>
-      <Grid item css={styles.birthdayGrid}>
+      <div css={styles.birthdayGrid}>
         <TextField
           label="民國年"
           name="year"
@@ -250,9 +232,9 @@ function SearchV2({
             e.target.select()
           }}
         />
-      </Grid>
+      </div>
       {!disableCustomerSource && (
-        <Grid item>
+        <div>
           <SourceSelect
             className={styles.field}
             value={customerSource}
@@ -261,10 +243,10 @@ function SearchV2({
               setCustomerSource(event.target.value)
             }}
           />
-        </Grid>
+        </div>
       )}
       {onIsUnwelcome && (
-        <Grid item>
+        <div>
           <FormControl variant="outlined" css={styles.field}>
             <InputLabel>黑名單篩選</InputLabel>
             <Select
@@ -280,11 +262,10 @@ function SearchV2({
               <MenuItem value='WELCOME'>排除黑名單</MenuItem>
             </Select>
           </FormControl>
-        </Grid>
+        </div>
       )}
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
         <Button
-          css={styles.searchButton}
           onClick={() => {
             onSearchV2(keyword)
             onBirthdayStart(birthdayObj)
@@ -294,7 +275,6 @@ function SearchV2({
           搜尋
         </Button>
         <Button
-          css={styles.deleteBtn}
           onClick={() => {
             handleClearData()
             setBirthdayObj({ day: '', month: '', year: '' })
@@ -324,13 +304,13 @@ function SearchV2({
               category: []
             })
           }}
-          variant="primary"
+          variant="danger"
         >
           <DeleteIcon />
           清除
         </Button>
       </div>
-    </Grid>
+    </div>
   )
 }
 

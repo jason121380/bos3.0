@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { DialogContent, DialogTitle, DialogActions } from 'ui/modal-compat'
+import { DialogBody, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { useState, useEffect, Fragment } from 'react'
-// 外層為 MUI Dialog（由行事曆開啟），DialogContent / DialogTitle / DialogActions 保留
+// 外層為 ui Dialog（由行事曆 OrderTable 開啟），這裡只放標題、內容與底部動作三段
 import { ToggleGroupItem } from 'ui/toggle-group'
 import { cloneDeep } from 'lodash'
 import { format } from 'date-fns'
@@ -97,9 +97,10 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
 
   return (
     <Fragment>
-      <DialogTitle>編輯公休</DialogTitle>
-      <div className="h-px bg-border" />
-      <DialogContent css={styles.content} dividers style={{ border: 'none' }}>
+      <DialogHeader className="border-0 border-b border-solid border-border pb-4">
+        <DialogTitle>編輯公休</DialogTitle>
+      </DialogHeader>
+      <DialogBody css={styles.content}>
         {timeOption.map(({ time, select }, i) => (
           <ToggleGroupItem
             key={time}
@@ -108,11 +109,11 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
             onClick={() => handleSelectTime(!select, i)}
           >{format(time, 'HH:mm')}</ToggleGroupItem>
         ))}
-      </DialogContent>
-      <DialogActions>
+      </DialogBody>
+      <DialogFooter className="border-t-0">
         <UiButton variant='primary' disabled={isClick} onClick={handleSetHoliday}>確定</UiButton>
         <UiButton variant='ghost' disabled={isClick} onClick={handleOnClose}>取消</UiButton>
-      </DialogActions>
+      </DialogFooter>
     </Fragment>
   )
 }

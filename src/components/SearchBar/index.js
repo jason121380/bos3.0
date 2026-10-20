@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Grid } from 'ui/grid-compat'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
@@ -46,16 +45,16 @@ function SearchBar({
   ...rest
 }) {
   return (
-    <Grid {...rest} css={styles.root} container spacing={3}>
+    <div {...rest} css={styles.root} className="box-border gap-6">
       {onSearch ? (
-        <Grid item>
+        <div className="min-w-0 max-w-full">
           <Search className={styles.search} onSearch={onSearch} />
-        </Grid>
+        </div>
       ) : (
         ''
       )}
       {onSearchV2 ? (
-        <Grid style={{ width: '100%' }} item>
+        <div className="w-full">
           <SearchV2
             setCustomerNoSort={setCustomerNoSort}
             className={styles.search}
@@ -72,11 +71,11 @@ function SearchBar({
             setCustomerIsCome={setCustomerIsCome}
             getQuery
           />
-        </Grid>
+        </div>
       ) : (
         ''
       )}
-    </Grid>
+    </div>
   )
 }
 

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
+// 可刪除的 Chip 保留相容層（ui/badge 不可刪除）；兩層彈窗內只有 TextField、按鈕，改 ui/dialog
 import { Chip } from 'ui/misc-compat'
-import { Dialog, DialogTitle, DialogContent, DialogActions } from 'ui/modal-compat'
-import { Grid } from 'ui/grid-compat'
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { TextField } from 'ui/text-field'
 import { useState, useEffect, useRef, Fragment } from 'react'
 import { openSnackbar } from 'elements/snackbars'
@@ -13,7 +13,7 @@ import { useFetchGetMerchantHairConditionLazy } from 'hooks/useFetchGetMerchantH
 import useFetchSetCustomerHairInfo from 'hooks/useFetchSetCustomerHairInfo'
 import { green } from 'ui/colors';
 import { css } from '@emotion/react'
-// 大型彈窗：表單細節（Chip / TextField）保留 MUI，動作與選項按鈕改 ui/button（選取綠色以 inline style 原樣保留）
+// 動作與選項按鈕為 ui/button（選取綠色以 inline style 原樣保留）
 import { Button as UiButton } from 'ui/button'
 
 const styles = {
@@ -157,78 +157,86 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
 
   return (
     <Fragment>
-      <Dialog maxWidth='md' fullWidth open={open} onClose={handleOnClose} css={styles.root} className='TrackingEditModal'>
-        <DialogTitle css={styles.title}>
-          編輯顧客髮況
-        </DialogTitle>
-        <DialogContent>
-          <div css={styles.container}>
-            {optionsArray.map((data, index) => {
-              const [[key, title]] = Object.entries(data)
-              return (
-                <Grid key={`${key}-${index}`} container direction='row' alignItems='center' gap={1} flexWrap='nowrap'>
-                  <TextField
-                    style={{ flexGrow: 1 }}
-                    label={title}
-                    InputProps={{
-                      startAdornment: submitValue?.[key] && submitValue[key].map((value, i) => (
-                        <Chip key={`${value}-${i}`} label={value} onDelete={() => handleDelete(key, i)} />
-                      )),
-                      readOnly: true
-                    }}
-                  />
-                  <UiButton
-                    variant="ghost" size="icon" className="h-8 w-8" aria-label="編輯選項" title="編輯選項"
-                    disabled={merchantHairConditionData.loading || !merchantHairConditionData.data}
-                    onClick={() => handleOpenOptionModal({ key: key, title: title })}
-                  >
-                    <EditIcon />
-                  </UiButton>
-                </Grid>
-              )
-            })}
-            <Grid container>
-              <TextField
-                fullWidth
-                multiline
-                label='染髮配方'
-                value={submitValue.hairDyeFormula}
-                onChange={e => handleInputChange(e.target.value, 'hairDyeFormula')}
-                InputLabelProps={{
-                  shrink: true
-                }}
-              />
-            </Grid>
-          </div>
+      <Dialog open={open} onOpenChange={o => !o && handleOnClose()}>
+        <DialogContent size="lg" aria-describedby={undefined} css={styles.root} className='TrackingEditModal'>
+          <DialogHeader>
+            <DialogTitle css={styles.title}>
+              編輯顧客髮況
+            </DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <div css={styles.container}>
+              {optionsArray.map((data, index) => {
+                const [[key, title]] = Object.entries(data)
+                return (
+                  <div key={`${key}-${index}`} className="flex w-full flex-nowrap items-end gap-2">
+                    <TextField
+                      style={{ flexGrow: 1 }}
+                      label={title}
+                      InputProps={{
+                        startAdornment: submitValue?.[key] && submitValue[key].map((value, i) => (
+                          <Chip key={`${value}-${i}`} label={value} onDelete={() => handleDelete(key, i)} />
+                        )),
+                        readOnly: true
+                      }}
+                    />
+                    <UiButton
+                      variant="ghost" size="icon" className="h-8 w-8" aria-label="編輯選項" title="編輯選項"
+                      disabled={merchantHairConditionData.loading || !merchantHairConditionData.data}
+                      onClick={() => handleOpenOptionModal({ key: key, title: title })}
+                    >
+                      <EditIcon />
+                    </UiButton>
+                  </div>
+                )
+              })}
+              <div className="flex w-full flex-wrap">
+                <TextField
+                  fullWidth
+                  multiline
+                  label='染髮配方'
+                  value={submitValue.hairDyeFormula}
+                  onChange={e => handleInputChange(e.target.value, 'hairDyeFormula')}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </div>
+            </div>
+          </DialogBody>
+          <DialogFooter>
+            <UiButton variant="secondary" onClick={handleOnClose}>關閉</UiButton>
+            <UiButton variant="primary" ref={submitRef} disabled={isLoading} onClick={handleComfirm}>確認</UiButton>
+          </DialogFooter>
         </DialogContent>
-        <DialogActions>
-          <UiButton variant="secondary" onClick={handleOnClose}>關閉</UiButton>
-          <UiButton variant="primary" ref={submitRef} disabled={isLoading} onClick={handleComfirm}>確認</UiButton>
-        </DialogActions>
       </Dialog>
-      {openOption && <Dialog maxWidth='sm' fullWidth open={openOption} onClose={handleOptionOnClose}>
-        <DialogTitle css={styles.title}>
-          選擇{selectCondition.title}
-        </DialogTitle>
-        <DialogContent>
-          <div css={styles.optionContainer}>
-            {(selectCondition.key && conditionOptions[selectCondition.key].length > 0) ? conditionOptions[selectCondition.key].map((data, index) => {
-              const select = selectOption.includes(data)
-              return (
-                <UiButton
-                  variant={select ? 'primary' : 'secondary'}
-                  style={{ backgroundColor: select ? green[600] : '' }}
-                  css={styles.box}
-                  onClick={() => handleSelectItem(data, select)}
-                >{data}</UiButton>
-              )
-            }) : '無資料'}
-          </div>
+      {openOption && <Dialog open={openOption} onOpenChange={o => !o && handleOptionOnClose()}>
+        <DialogContent size="md" aria-describedby={undefined}>
+          <DialogHeader>
+            <DialogTitle css={styles.title}>
+              選擇{selectCondition.title}
+            </DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <div css={styles.optionContainer}>
+              {(selectCondition.key && conditionOptions[selectCondition.key].length > 0) ? conditionOptions[selectCondition.key].map((data, index) => {
+                const select = selectOption.includes(data)
+                return (
+                  <UiButton
+                    variant={select ? 'primary' : 'secondary'}
+                    style={{ backgroundColor: select ? green[600] : '' }}
+                    css={styles.box}
+                    onClick={() => handleSelectItem(data, select)}
+                  >{data}</UiButton>
+                )
+              }) : '無資料'}
+            </div>
+          </DialogBody>
+          <DialogFooter>
+            <UiButton variant="secondary" onClick={handleOptionOnClose}>關閉</UiButton>
+            <UiButton variant="primary" onClick={handleComfirmSelect}>確認</UiButton>
+          </DialogFooter>
         </DialogContent>
-        <DialogActions>
-          <UiButton variant="secondary" onClick={handleOptionOnClose}>關閉</UiButton>
-          <UiButton variant="primary" onClick={handleComfirmSelect}>確認</UiButton>
-        </DialogActions>
       </Dialog>}
     </Fragment>
   )

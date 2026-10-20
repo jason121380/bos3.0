@@ -1,6 +1,4 @@
 /** @jsxImportSource @emotion/react */
-// Container 與 PageTitle 保留：整頁會被 window.print() 列印，列印樣式依賴 .MuiContainer-root
-import { Container } from 'ui/display-compat'
 import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import { useFetchGetInventory } from 'hooks/useFetchGetInventorys'
@@ -80,7 +78,8 @@ function InventoryWorkEdit({ match }) {
           </div>
         </Fragment>
       )}
-      <Container maxWidth="md">
+      {/* 原 Container maxWidth="md"：置中、最大寬 900px、左右內距 16／24px；列印時依原 .InventoryWorkReview .MuiContainer-root 規則去掉外距、內距與寬度上限 */}
+      <div className="mx-auto box-border block w-full px-4 min-[600px]:px-6 min-[900px]:max-w-[900px] print:m-0 print:max-w-none print:p-0">
         <PageTitle title='盤點紀錄' subTitle='Inventory Work review' />
         {(getInventory.loading) ?
           <div className="ui-root noprint mt-6 flex flex-col gap-3" aria-busy="true" aria-label="載入中">
@@ -92,7 +91,7 @@ function InventoryWorkEdit({ match }) {
             inventoryData={inventoryData}
           />
         }
-      </Container>
+      </div>
     </Page>
   )
 }

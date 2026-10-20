@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-// 大型頁策略：載入遮罩（Backdrop，#Backdrop 有全域樣式）與行事曆表格保留 MUI
-import { Backdrop } from 'ui/modal-compat'
+// 大型頁策略：載入遮罩改原生 div（#Backdrop 有全域樣式，關閉時同原 Backdrop 以 visibility hidden 保留在畫面上）；行事曆表格維持原樣
 import { LoaderCircle } from 'lucide-react'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Field } from 'ui/input'
@@ -510,9 +509,15 @@ function Calendar({ designerId, checkinSettings, bookingCusCheck, checkinMode, b
 
   return (
     <Fragment>
-      <Backdrop id='Backdrop' css={styles.opacity} open={merchant.loading || DesignerCalendar.loading}>
+      <div
+        id='Backdrop'
+        aria-hidden="true"
+        css={styles.opacity}
+        className="fixed inset-0 flex items-center justify-center"
+        style={{ visibility: (merchant.loading || DesignerCalendar.loading) ? undefined : 'hidden' }}
+      >
         <LoaderCircle className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
-      </Backdrop>
+      </div>
       <Card className="px-5 pb-5 pt-4">
         <div css={styles.headerWrap}>
           <div css={styles.headerWrap}>

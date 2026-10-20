@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { CircularProgress } from 'ui/display-compat'
+import { LoaderCircle } from 'lucide-react'
 import { TextField } from 'ui/text-field'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
 import useToggle from 'hooks/useToggle'
@@ -63,7 +63,7 @@ export default function CustomerTicketRecordAutoComplete({
             ...inputProps,
             endAdornment: (
               <React.Fragment>
-                {ticketRecord.loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {ticketRecord.loading ? <LoaderCircle className="h-5 w-5 animate-spin" strokeWidth={1.75} /> : null}
                 {params.InputProps.endAdornment}
               </React.Fragment>
             ),

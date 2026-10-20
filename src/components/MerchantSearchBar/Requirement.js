@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { CircularProgress } from 'ui/display-compat'
-import { Grid } from 'ui/grid-compat'
+import { LoaderCircle } from 'lucide-react'
 import { TextField } from 'ui/text-field'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
@@ -63,7 +62,8 @@ export default function ({
   useInDecreaseDetailReport,
   getThirdPartyName
 }) {
-  const Outter = outside ? Grid : React.Fragment
+  // outside：每個條件各包一層 div（原格線 item，無欄寬、無間距）；否則直接放進 MerchantSearchBar 的 flex 列
+  const Outter = outside ? 'div' : React.Fragment
   const [payType, setPayType] = useState([])
   const [getReferenceLazy, referenceLazyData] = useFetchGetCustomerReferenceLazy()
   const [sourceOption, setSourceOption] = useState([])
@@ -207,7 +207,7 @@ export default function ({
                 endAdornment: (
                   <Fragment>
                     {accountingTypeData.loading ? (
-                      <CircularProgress color="inherit" size={20} />
+                      <LoaderCircle className="h-5 w-5 animate-spin" strokeWidth={1.75} />
                     ) : null}
                     {params.InputProps.endAdornment}
                   </Fragment>
@@ -364,16 +364,10 @@ export default function ({
     },
   }
 
-  const rest = outside
-    ? {
-      item: true,
-    }
-    : null
-
   return visible.map((item, index) => {
     if (item === 'datePicker') return null
     return (
-      <Outter {...rest} key={'component' + index}>
+      <Outter key={'component' + index}>
         {input[item]()}
       </Outter>
     )

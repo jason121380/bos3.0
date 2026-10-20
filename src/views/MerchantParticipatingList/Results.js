@@ -1,4 +1,3 @@
-import { Tooltip } from 'ui/misc-compat'
 import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon } from 'ui/icons'
 import { Fragment } from 'react'
 import format from 'date-fns/format';
@@ -73,11 +72,10 @@ function Results({ events, setCollapse, selectIds, onToggleAll, isAllExpanded })
                                                     <TableCell className="h-auto p-0" colSpan={3}>
                                                         <div className="flex flex-wrap gap-2.5 pb-4 pl-12 pr-6 pt-3">
                                                             {merchantList.map(({ id: mId, name: mName, joinTime }) => (
-                                                                <Tooltip key={mId} arrow title={<p style={{ fontSize: 13 }}>參與日期: {format(joinTime, 'yyyy/MM/dd')}</p>}>
-                                                                    <span className="inline-flex">
-                                                                        <Badge variant="accent">{mName}</Badge>
-                                                                    </span>
-                                                                </Tooltip>
+                                                                // 參與日期改用原生 title 提示（取代相容層 Tooltip）
+                                                                <span key={mId} className="inline-flex" title={`參與日期: ${format(joinTime, 'yyyy/MM/dd')}`}>
+                                                                    <Badge variant="accent">{mName}</Badge>
+                                                                </span>
                                                             ))}
                                                         </div>
                                                     </TableCell>

@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { DialogContent } from 'ui/modal-compat'
 import { FormControl, MenuItem, Select, InputLabel } from 'ui/form-control'
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
@@ -12,7 +11,7 @@ import BookingRecordListAutoComplete from 'components/BookingRecordListAutoCompl
 import { MobileDatePicker } from 'ui/date-picker'
 import _ from 'lodash'
 import { css } from '@emotion/react'
-// 大型表單：日期／下拉／Autocomplete 等細節保留 MUI，只換底部動作按鈕
+// 外層為相容層 Dialog（CustomerInfo；窗內有日期選擇器、Select、Autocomplete）；內容區改原生 div，表單細節維持原樣，底部動作按鈕為 ui/button
 import { Button as UiButton } from 'ui/button'
 import { theme } from '../../../theme'
 
@@ -162,7 +161,7 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
   }
 
   return (
-    <DialogContent dividers style={{ border: 'none' }}>
+    <div className="flex-auto overflow-y-auto px-6 py-4">
       <div css={styles.field2}>
         <MobileDatePicker
           value={values.dateTime}
@@ -290,6 +289,6 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
           取消
         </UiButton>
       </div>
-    </DialogContent>
+    </div>
   )
 }

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { CircularProgress } from 'ui/display-compat'
+import { LoaderCircle } from 'lucide-react'
 import { TextField } from 'ui/text-field'
 import idx from 'idx'
 import _ from 'lodash'
@@ -82,7 +82,7 @@ function CustomerTicketRecordAutoCompleteForOrderCreate({
             ...inputProps,
             endAdornment: (
               <React.Fragment>
-                {ticketRecordsForOrderLazyDataV2.loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {ticketRecordsForOrderLazyDataV2.loading ? <LoaderCircle className="h-5 w-5 animate-spin" strokeWidth={1.75} /> : null}
                 {params.InputProps.endAdornment}
               </React.Fragment>
             ),

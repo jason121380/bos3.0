@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
-// 大型頁策略：抽成級距表單（TextField、Grid 排版）保留 MUI；Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）
+// 大型頁策略：抽成級距表單（TextField）保留 MUI、排版改 Tailwind flex；Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）
 // 「分指定/不指定」的 handler 掛在 FormControlLabel 的 onClick（label 上），換成 CheckboxField 會改變點擊文字時的觸發次數，保留 MUI
-import { Grid } from 'ui/grid-compat'
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
@@ -650,7 +649,7 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
         <CardContent>
           <PerfectScrollbar>
             <div css={styles.inner}>
-              <Grid >
+              <div>
                 <h4 className="my-4 text-heading text-text">
                   抽成模式
                 </h4>
@@ -678,12 +677,12 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                   checked={profitSharing.designationUsage}
                   onClick={handleDesignateChange}
                 />
-              </Grid>
+              </div>
               {!profitSharing.designationUsage ? (
                 !profitSharing.isSegmented ? (
                   profitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.map(
                     (data, index) => (
-                      <Grid css={styles.flex} key={index}>
+                      <div css={styles.flex} key={index}>
                         <span css={styles.deductionWayMarginL}>
                           總業績從(含)
                         </span>
@@ -729,13 +728,13 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                               />
                             )}
                         </div>
-                      </Grid>
+                      </div>
                     )
                   )
                 ) : (
                   profitSharing.segmented[0].nonDistinguish.map((data, index) => (
-                    <Grid key={index} container>
-                      <Grid item css={styles.flex}>
+                    <div key={index} className="flex w-full flex-wrap">
+                      <div css={styles.flex}>
                         <span css={styles.deductionWayMarginL}>
                           總業績從(含)
                         </span>
@@ -751,8 +750,8 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                           }
                           onWheel={() => document.activeElement.blur()}
                         />
-                      </Grid>
-                      <Grid item css={styles.flex}>
+                      </div>
+                      <div css={styles.flex}>
                         <span css={styles.deductionWayMarginL}>
                           至
                         </span>
@@ -768,8 +767,8 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                           }
                           onWheel={() => document.activeElement.blur()}
                         />
-                      </Grid>
-                      <Grid item css={styles.flex}>
+                      </div>
+                      <div css={styles.flex}>
                         <span css={styles.deductionWayMarginL}>
                           抽成為
                         </span>
@@ -783,8 +782,8 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                           onChange={event => handleSegmentedInput(event, index, 'rake')}
                           onWheel={() => document.activeElement.blur()}
                         />
-                      </Grid>
-                      <Grid item css={styles.flex}>
+                      </div>
+                      <div css={styles.flex}>
                         <div css={styles.verticleCenter}>
                           {index !== 0 && (
                             <DeleteForeverIcon
@@ -799,22 +798,22 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                             />
                           )}
                         </div>
-                      </Grid>
-                    </Grid>
+                      </div>
+                    </div>
                   ))
                 )
               ) : !profitSharing.isSegmented ? (
                 <Fragment>
-                  <Grid>
+                  <div>
                     <h4 className="my-4 text-heading text-text">
                       指定業績
                     </h4>
-                  </Grid>
+                  </div>
                   {profitSharing.nonSegmented[deductionIndex].rakeData.designate.map(
                     (data, index) => {
                       return (
-                        <Grid key={index} container>
-                          <Grid item css={styles.flex}>
+                        <div key={index} className="flex w-full flex-wrap">
+                          <div css={styles.flex}>
                             <span css={styles.deductionWayMarginL}>
                               總業績從(含)
                             </span>
@@ -834,8 +833,8 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                               }
                               onWheel={() => document.activeElement.blur()}
                             />
-                          </Grid>
-                          <Grid item css={styles.flex}>
+                          </div>
+                          <div css={styles.flex}>
                             <span css={styles.deductionWayMarginL}>
                               抽成調整為
                             </span>
@@ -851,8 +850,8 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                               }
                               onWheel={() => document.activeElement.blur()}
                             />
-                          </Grid>
-                          <Grid item css={styles.flex}>
+                          </div>
+                          <div css={styles.flex}>
                             <div css={styles.verticleCenter}>
                               {index !== 0 && (
                                 <DeleteForeverIcon
@@ -870,21 +869,21 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                                   />
                                 )}
                             </div>
-                          </Grid>
-                        </Grid>
+                          </div>
+                        </div>
                       )
                     }
                   )}
-                  <Grid>
+                  <div>
                     <h4 className="my-4 text-heading text-text">
                       不指定業績
                     </h4>
-                  </Grid>
+                  </div>
                   {profitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.map(
                     (data, index) => {
                       return (
-                        <Grid key={index} container>
-                          <Grid item css={styles.flex}>
+                        <div key={index} className="flex w-full flex-wrap">
+                          <div css={styles.flex}>
                             <span css={styles.deductionWayMarginL}>
                               總業績從(含)
                             </span>
@@ -904,8 +903,8 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                               }
                               onWheel={() => document.activeElement.blur()}
                             />
-                          </Grid>
-                          <Grid item css={styles.flex}>
+                          </div>
+                          <div css={styles.flex}>
                             <span css={styles.deductionWayMarginL}>
                               抽成調整為
                             </span>
@@ -921,8 +920,8 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                               }
                               onWheel={() => document.activeElement.blur()}
                             />
-                          </Grid>
-                          <Grid item css={styles.flex}>
+                          </div>
+                          <div css={styles.flex}>
                             <div css={styles.verticleCenter}>
                               {index !== 0 && (
                                 <DeleteForeverIcon
@@ -940,23 +939,23 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                                   />
                                 )}
                             </div>
-                          </Grid>
-                        </Grid>
+                          </div>
+                        </div>
                       )
                     }
                   )}
                 </Fragment>
               ) : (
                 <Fragment>
-                  <Grid>
+                  <div>
                     <h4 className="my-4 text-heading text-text">
                       指定業績
                     </h4>
-                  </Grid>
+                  </div>
                   {profitSharing.segmented[0].designate.map((data, index) => {
                     return (
-                      <Grid key={index} container>
-                        <Grid item css={styles.flex}>
+                      <div key={index} className="flex w-full flex-wrap">
+                        <div css={styles.flex}>
                           <span css={styles.deductionWayMarginL}>
                             指定業績從(含)
                           </span>
@@ -972,8 +971,8 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                             }
                             onWheel={() => document.activeElement.blur()}
                           />
-                        </Grid>
-                        <Grid item css={styles.flex}>
+                        </div>
+                        <div css={styles.flex}>
                           <span css={styles.deductionWayMarginL} >
                             至
                           </span>
@@ -989,8 +988,8 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                             }
                             onWheel={() => document.activeElement.blur()}
                           />
-                        </Grid>
-                        <Grid item css={styles.flex}>
+                        </div>
+                        <div css={styles.flex}>
                           <span css={styles.deductionWayMarginL}>
                             抽成為
                           </span>
@@ -1007,8 +1006,8 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                             }
                             onWheel={() => document.activeElement.blur()}
                           />
-                        </Grid>
-                        <Grid item css={styles.flex}>
+                        </div>
+                        <div css={styles.flex}>
                           <div css={styles.verticleCenter}>
                             {index !== 0 && (
                               <DeleteForeverIcon
@@ -1023,19 +1022,19 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                               />
                             )}
                           </div>
-                        </Grid>
-                      </Grid>
+                        </div>
+                      </div>
                     )
                   })}
-                  <Grid>
+                  <div>
                     <h4 className="my-4 text-heading text-text">
                       不指定業績
                     </h4>
-                  </Grid>
+                  </div>
                   {profitSharing.segmented[0].nonDesignate.map((data, index) => {
                     return (
-                      <Grid key={index} container>
-                        <Grid item css={styles.flex} >
+                      <div key={index} className="flex w-full flex-wrap">
+                        <div css={styles.flex}>
                           <span css={styles.deductionWayMarginL}>
                             不指定業績從(含)
                           </span>
@@ -1055,8 +1054,8 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                             }
                             onWheel={() => document.activeElement.blur()}
                           />
-                        </Grid>
-                        <Grid item css={styles.flex} >
+                        </div>
+                        <div css={styles.flex}>
                           <span css={styles.deductionWayMarginL}>
                             至
                           </span>
@@ -1076,8 +1075,8 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                             }
                             onWheel={() => document.activeElement.blur()}
                           />
-                        </Grid>
-                        <Grid item css={styles.flex} >
+                        </div>
+                        <div css={styles.flex}>
                           <span css={styles.deductionWayMarginL}>
                             抽成為
                           </span>
@@ -1093,8 +1092,8 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                             }
                             onWheel={() => document.activeElement.blur()}
                           />
-                        </Grid>
-                        <Grid item css={styles.flex} >
+                        </div>
+                        <div css={styles.flex}>
                           <div css={styles.verticleCenter}>
                             {index !== 0 && (
                               <DeleteForeverIcon
@@ -1109,8 +1108,8 @@ function AboutPerformance({ className, profitSharing, onChange, attributions, ..
                               />
                             )}
                           </div>
-                        </Grid>
-                      </Grid>
+                        </div>
+                      </div>
                     )
                   })}
                 </Fragment>

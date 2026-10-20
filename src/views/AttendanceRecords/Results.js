@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
-// 保留 MUI：Drawer（底部操作面板）、編輯彈窗（由 Drawer 內開啟，避免兩層焦點鎖互搶）、FormControlLabel + Checkbox；
-// 打卡時間格內的圖示列與 Divider 屬深層細節，維持原樣
+// 保留相容層：Drawer（底部操作面板，ui 無對應元件）、編輯彈窗（由 Drawer 內開啟，換 Radix Dialog 會與 Drawer 的焦點鎖互搶）；
+// 打卡時間格內的分隔線改 Tailwind
 import { Drawer } from 'ui/overlay-compat'
 import { Dialog, DialogTitle, DialogContent, DialogActions } from 'ui/modal-compat'
-import { Divider } from 'ui/display-compat'
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { LocationOn as LocationOnIcon, ManageAccountsRounded as ManageAccountsRoundedIcon, DesktopWindowsRounded as DesktopWindows, PhoneIphone as PhoneIphoneIcon, QrCode as QrCodeIcon } from 'ui/icons'
 import { format, setHours, setMinutes } from 'date-fns'
@@ -530,7 +529,7 @@ export default function Results({
         breakTime = checkArr[0]
       }
       if (intime || outTime || breakTime) {
-        return <Divider style={{ margin: '3px 0' }} />
+        return <div role="separator" className="h-px shrink-0 bg-border" style={{ margin: '3px 0' }} />
       }
     }
   }
