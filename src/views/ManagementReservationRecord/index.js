@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 // 大型頁：Backdrop、Popper、Slider 保留 MUI；Page 根元素不加 ui-root（box-sizing 會改變行事曆格子寬度）
+import { Popper } from 'ui/overlay-compat'
 import { Backdrop } from 'ui/modal-compat'
-import { Popper, Slider } from '@mui/material'
+import { Slider } from '@mui/material'
 import { LoaderCircle, SlidersHorizontal } from 'lucide-react'
 import Page from 'components/Page'
 import useFetchMerchant from 'hooks/useFetchMerchant'

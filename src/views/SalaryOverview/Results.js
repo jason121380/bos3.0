@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 底部操作列沿用 MUI Drawer（persistent），內容改為新元件
-import { Drawer } from '@mui/material'
+import { Drawer } from 'ui/overlay-compat'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, Fragment } from 'react'

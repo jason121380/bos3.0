@@ -234,3 +234,5 @@
 
 143. **彈窗相容層：焦點只從「之前的頁面內容」拉回，之後開的圖層放行（Modal／Dialog 家族，2026/10/20，v3.0-1020-0936）**：①Radix Dialog 與 MUI 焦點鎖互搶是舊坑（踩雷清單）；自家相容層若照 MUI「焦點離開就拉回」，會把 MUI 日期選擇器（自己開一個 MUI Dialog 掛在 body 最後）的焦點搶走。規則改成：focusin 目標在自家彈窗根節點「之前」（compareDocumentPosition PRECEDING）才拉回，之後掛上的圖層一律放行，且只有自家堆疊最上層會拉；②Esc 由各彈窗根節點的 keydown 處理並 stopPropagation，所以日期面板開著時第一次 Esc 只關面板、第二次才關自家對話框（瀏覽器互動測試驗證）；③點背景要「在 container 上按下並放開」才算，避免在面板內選字拖到外面時誤關（同 MUI）；④aria-hidden 只處理 body 的直接子節點並在關閉時移除；捲動鎖以計數支援多層；⑤比對頁同時開兩組彈窗時要關焦點強制（disableEnforceFocus），否則兩個鎖會互搶；⑥行為（Esc、背景、焦點歸還、捲動鎖、aria-hidden、多層）都寫成單元測試，跨圖層焦點只能在真實瀏覽器驗證，腳本存於 compat-harness/e2e。
 
+144. **Popper 要以「掛 body 的實際用法」比位置，不要用 disablePortal 比（Popper／Drawer／Fade，2026/10/20，v3.0-1020-0944）**：比對頁一開始兩邊都 disablePortal，MUI 算出 x=-1040、自家 280，看似差很多；改成實際用法（掛 body）比「面板相對按鈕」的位移後完全相同，連 1300px 窄畫面的貼邊位移（-200）都一致——disablePortal 時 popper.js 以 offsetParent 計算，本來就不是實際行為。另：MUI Popper 的 class 是 `base-Popper-root`（不是 MuiPopper-root）；persistent Drawer 的 `PaperProps.elevation` 會覆寫 docked 的 0，所以畫面上有 1 級陰影；MUI 的 `styled(Popper)` 包相容元件可用（className 會傳下來，ownerState／theme 不會）。
+
