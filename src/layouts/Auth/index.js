@@ -4,7 +4,6 @@ import { Suspense, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import { renderRoutes } from 'react-router-config'
 
-import { MuiScope } from 'ui/mui-theme'
 import Topbar from './Topbar'
 
 function Auth({ route }) {
@@ -17,7 +16,7 @@ function Auth({ route }) {
   }, [history])
 
   return (
-    <MuiScope>
+    <>
       <Topbar />
       <Snackbar />
       <div className="flex min-h-screen bg-canvas">
@@ -25,7 +24,7 @@ function Auth({ route }) {
           <Suspense fallback={<div className="h-0.5 w-full animate-pulse bg-accent" />}>{renderRoutes(route.routes)}</Suspense>
         </div>
       </div>
-    </MuiScope>
+    </>
   )
 }
 

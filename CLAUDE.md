@@ -1,6 +1,6 @@
 # CLAUDE.md — BOS 3.0 前端工作守則
 
-BOS 3.0 是美業 ERP 的純前端 SPA（CRA5 + React 17 + Apollo GraphQL + Redux Toolkit）。目前正在把畫面從 MUI 改版為 **Tailwind + `src/ui/`（shadcn/Radix 風格）**。回覆一律使用專業、清楚的**繁體中文**。
+BOS 3.0 是美業 ERP 的純前端 SPA（CRA5 + React 17 + Apollo GraphQL + Redux Toolkit）。畫面已從 MUI 改版為 **Tailwind + `src/ui/`（shadcn/Radix 風格）**；MUI 套件已於 2026/10/20 全數移除，尚未重新設計的舊頁面以 `src/ui/*-compat` 相容元件（輸出 MUI 同名 class）維持原樣。回覆一律使用專業、清楚的**繁體中文**。
 
 ## 文件地圖
 
@@ -47,16 +47,16 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 
 ## 架構速記
 
-- `src/ui/`：新元件（Button、Input／Field、Select、NativeSelect、Table、Card、Dialog、Accordion、ToggleGroup、Switch、Checkbox、Badge、Avatar、Stat、Toast、Popover、DropdownMenu、Sidebar、PageHeader…）與 `icons`（lucide 轉接層）、`mui-theme`（MUI 橋接主題）、`format`（`formatNumber`／`formatMoney`）。
+- `src/ui/`：新元件（Button、Input／Field、Select、NativeSelect、Table、Card、Dialog、Accordion、ToggleGroup、Switch、Checkbox、Badge、Avatar、Stat、Toast、Popover、DropdownMenu、Sidebar、PageHeader…）與 `icons`（lucide 轉接層）、`*-compat`（舊頁面用、輸出 MUI 同名 class 的相容元件，MUI 套件已移除）、`format`（`formatNumber`／`formatMoney`）。
 - `src/styles/tokens.css`：CSS 變數 tokens＋`.ui-root` 基礎層（preflight 關閉）。
 - `src/views/OrderCreate/`：打帳單。`orderRequirements.js` 與 `Header.js` 的 `valid` 同步（有測試比對）；`RowAction.js` 是項目列的圖示鈕與「新增項目」。
-- `scripts/redesign/compat-harness/`：MUI 相容層的 computed style 比對頁（MUI 與相容層並排渲染、逐元素比對；用法見檔頭）。
+- `scripts/redesign/compat-harness/`：MUI 相容層的 computed style 比對頁（MUI 與相容層並排渲染、逐元素比對；原 MUI 橋接主題 `mui-theme.js` 移到這裡；MUI 需臨時 `npm i --no-save` 安裝，用法見 `build.js` 檔頭）。
 - `scripts/redesign/`：verify-logic／verify-style-only／verify-imports-only、tokenize-colors、swap-icons、page-checklist、portal-root-scan、inventory-scan（改版盤點數字，口徑見 `docs/redesign/TODO.md` §三）。
 
 ## 踩雷清單
 
 - **`ui` 元件放在 MUI Dialog／Popper（Portal）內要有 `.ui-root`**，否則沒有 box-sizing／邊框重置（8 個 `ui` 元件已自帶 `ui-root`，`portal-root-scan` 為 0；新增 `ui` 元件要記得自帶）。
-- Radix Dialog 會把 body 設 `pointer-events:none`，與 MUI Dialog 的 focus trap 互搶；Dialog 內若有 MUI Autocomplete／Select／DatePicker 就保留 MUI Dialog。
+- Radix Dialog 會把 body 設 `pointer-events:none`，與相容層 Dialog（`ui/modal-compat`）的焦點鎖互搶；Dialog 內有 Autocomplete／Select／日期選擇器時用 `ui/modal-compat` 的 Dialog。
 - emotion `css` prop 與 Tailwind class 同權重，先後順序不可靠：要隱藏用 inline style；`css={…}` 傳給元件時要扣掉 margin 以免超出。
 - flex 子層沒有 `min-width:0`／`max-width:100%` 會被內容撐寬；欄位列要 `flex-wrap`。
 - `overflow-x:auto` 會裁掉上方溢出內容（浮動標籤），因此標籤統一放欄位上方。

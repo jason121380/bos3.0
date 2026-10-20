@@ -103,7 +103,7 @@
   }
 }
 
-/* 手機底部面板（MUI Dialog，見 ui/mui-theme.js）的進場動畫 */
+/* 手機底部面板（ui/modal-compat 的 Dialog）的進場動畫 */
 @keyframes ui-sheet-in {
   from { transform: translateY(32px); opacity: 0.6; }
   to { transform: none; opacity: 1; }

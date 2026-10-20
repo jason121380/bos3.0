@@ -10,7 +10,6 @@ import useFetchGetUserMerchant from 'hooks/useFetchGetUserMerchant'
 import idx from 'idx'
 import { PanelLeftOpen } from 'lucide-react'
 import { Button } from 'ui/button'
-import { MuiScope } from 'ui/mui-theme'
 import { Sidebar, SidebarHeader } from 'ui/sidebar'
 import { cn } from 'ui/utils'
 
@@ -83,9 +82,8 @@ function Dashboard({ route, location }) {
   }
 
   // 骨架（STYLE.md §4）：左側 Sidebar（Logo / 商家切換 / 導覽 / 使用者）＋右側內容
-  // 全站套用 MUI 橋接主題：尚未改版頁面中的 MUI 元件也採用新配色與尺寸（STYLE.md §10）
   return (
-    <MuiScope>
+    <>
       <Snackbar />
       <Sidebar mobileOpen={openNavBarMobile} onMobileClose={() => setOpenNavBarMobile(false)} desktopOpen={openNavBarDesktop}>
         <SidebarHeader>
@@ -121,7 +119,7 @@ function Dashboard({ route, location }) {
         </div>
       </div>
       <ChangePassword open={open} handleClose={toggle} />
-    </MuiScope>
+    </>
   )
 }
 

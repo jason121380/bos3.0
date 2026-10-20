@@ -1,5 +1,4 @@
 import Page from 'components/Page'
-import { MuiScope } from 'ui/mui-theme'
 import { Provider } from 'context/keyInContext'
 import useFetchCreateOrder from 'hooks/useFetchCreateOrder'
 import { useState, useEffect, useRef } from 'react'
@@ -534,7 +533,7 @@ function OrderCreate() {
 
   return (
     <Page title="打帳單" className="ui-root">
-      <MuiScope>
+      <>
       {updateUserOrderableListDone && (
         <Provider
           value={{
@@ -623,7 +622,7 @@ function OrderCreate() {
           <Pannel />
         </Provider>
       )}
-      </MuiScope>
+      </>
     </Page>
   )
 }

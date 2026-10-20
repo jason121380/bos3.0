@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { MuiScope } from 'ui/mui-theme'
+import { MuiScope } from './mui-theme'
 import { TreeView as MTreeView, TreeItem as MTreeItem } from '@mui/x-tree-view'
 import { TreeView, TreeItem } from 'ui/tree-compat' // 受測的相容層
 

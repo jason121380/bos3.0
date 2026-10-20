@@ -11,7 +11,6 @@ import useFetchGetIsBonusConversion from 'hooks/useFetchGetIsBonusConversion'
 import { useFetchGetSerialNumberUsing, useFetchGetIsLBCusDisplay } from 'hooks/useFetchGetParameterOrderCreateSetting'
 import { useFetchGetIsBonusRewardWithLine } from 'hooks/useFetchGetParameterAboutSettingFunction'
 import idx from 'idx'
-import { MuiScope } from 'ui/mui-theme'
 
 import Footer from './Footer'
 import Head from './Head'
@@ -209,7 +208,7 @@ export default function KeyIn({ match }) {
 
   return (
     <Page title={`重新開單 ${orderNo && `(${orderNo})`}`} className="ui-root">
-      <MuiScope>
+      <>
       <Provider
         value={{
           handleBillChange,
@@ -249,7 +248,7 @@ export default function KeyIn({ match }) {
         <Pannel />
         <Footer enable={enable} />
       </Provider>
-      </MuiScope>
+      </>
     </Page>
   )
 }

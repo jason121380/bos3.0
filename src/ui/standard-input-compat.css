@@ -1,5 +1,5 @@
 /*
- * 重現 MUI v5.15 TextField variant="standard"＋橋接主題（ui/mui-theme）的樣式，class 名稱與 MUI 相同。
+ * 重現 MUI v5.15 TextField variant="standard"＋橋接主題（原 ui/mui-theme，現存於 scripts/redesign/compat-harness/mui-theme.js）的樣式，class 名稱與 MUI 相同。
  * 規則逐條取自 MUI 實際產生的 emotion 規則（含 ::before／::after 底線），維持單一 class 權重，
  * 讓 initialize.scss 的 .MerchantBankTransferReportTransferDetail .MuiInput-underline:before 等列印／版面規則照舊覆蓋。
  * 字型沿用 display-compat 的做法繼承頁面字型（與同一行的 Typography 一致）。

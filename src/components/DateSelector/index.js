@@ -2,7 +2,6 @@ import { MobileDatePicker } from 'ui/date-picker'
 import { CalendarDays } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'ui/select'
 import { cn, focusRing } from 'ui/utils'
-import { MuiScope } from 'ui/mui-theme'
 import { cloneDeep } from 'lodash'
 import {
   isBefore, startOfDay, endOfDay, subDays, addDays,
@@ -259,7 +258,7 @@ const index = ({
 
   // 精簡版（STYLE.md §6）：「快速選擇」下拉 ＋ 一個日期區間欄位
   return (
-    <MuiScope>
+    <>
     <div id='DateSelector' className={cn('ui-root noprint inline-flex flex-wrap items-center gap-2', margin && 'my-6')}>
       {quickOptions.length > 0 && (
         <Select
@@ -295,7 +294,7 @@ const index = ({
         </div>
       )}
     </div>
-    </MuiScope>
+    </>
   )
 }
 
