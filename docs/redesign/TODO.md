@@ -8,6 +8,7 @@
 
 ## 一、今天完成了什麼
 
+- **MUI 移除・Accordion 整類**（2026/10/20，v3.0-1020-0928）：27 檔換用 `ui/accordion-compat`（MEMORY #142）。**待實機（帳單，先合併後驗收）**：打帳單／編輯／草稿／排隊各區塊的展開收合（點標題、展開箭頭旋轉）、收合後再展開欄位值仍在；展開不再有高度動畫（直接展開）。
 - **MUI 移除・Paper／Divider／CircularProgress／Typography／Container**（2026/10/20，v3.0-1020-0920）：58 檔換用 `ui/display-compat`（MEMORY #141）。**待實機**：搜尋下拉載入中的小轉圈、上傳進度圓環、設計師業績比較「無資料」、會員卡清單浮起卡片、AR 頁容器寬度、Line／座位／EHS 版型載入細線。
 - **MUI 移除・色票 colors**（2026/10/20，v3.0-1020-0904）：43 檔改引用 `ui/colors`（數值不變，無需實機）。後續：這些寫死色碼應逐步改成 tokens（STYLE.md），列入 Grok 化收尾。
 - **MUI 移除・Table 系列整類**（2026/10/20，v3.0-1020-0902）：27 檔換用 `ui/table-compat`，computed style 比對 0 差異（MEMORY #140）。**待實機**：有資料時的報表表格（含列印）、打帳單商品／服務彈窗表格、排班表（點儲存格排班）、盤點覆核列印。**列印專項待辦**：MerchantDailyReport、DecreaseDailyReport、TransferDetail 三檔仍為 MUI，需以有資料的 mock 比對列印後再換。

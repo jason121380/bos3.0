@@ -1,0 +1,34 @@
+/*
+ * 重現 MUI v5.15 Accordion／AccordionSummary／AccordionDetails（含 Collapse、ButtonBase）＋橋接主題的樣式，class 名稱與 MUI 相同。
+ * 橋接主題：disableGutters、square、Grok 式無框卡片（surface 底、16px 圓角）、標題列 52px、hover 底色。
+ * 維持單一 class 權重；顏色走 tokens。驗證：scripts/redesign/compat-harness/accordion-entry.js
+ */
+.MuiAccordion-root {
+  position: relative; transition: margin 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; overflow-anchor: none;
+  border: none; background-color: rgb(var(--surface)); border-radius: 16px !important; box-shadow: none; overflow: hidden;
+  color: rgb(var(--text));
+}
+.MuiAccordion-root::before { display: none; }
+
+.MuiAccordionSummary-root {
+  /* ButtonBase */
+  align-items: center; justify-content: center; position: relative; box-sizing: border-box; -webkit-tap-highlight-color: transparent;
+  background-color: transparent; outline: 0; border: 0; margin: 0; border-radius: 0; cursor: pointer; user-select: none;
+  vertical-align: middle; text-decoration: none; color: inherit;
+  /* AccordionSummary＋橋接 */
+  display: flex; min-height: 52px; padding: 0 16px; transition: min-height 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+.MuiAccordionSummary-root:hover { background-color: rgb(var(--surface-hover)); }
+.MuiAccordionSummary-root.Mui-disabled { opacity: 0.38; pointer-events: none; cursor: default; }
+.MuiAccordionSummary-content { display: flex; flex-grow: 1; margin: 14px 0; align-items: center; }
+.MuiAccordionSummary-expandIconWrapper { display: flex; color: rgb(var(--text-tertiary)); transform: rotate(0deg); transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; }
+.MuiAccordionSummary-expandIconWrapper.Mui-expanded { transform: rotate(180deg); }
+
+/* Collapse：收合時高度 0 且不可見，內容保持掛載（欄位的值與 ref 不會遺失） */
+.MuiCollapse-root { height: 0; overflow: hidden; transition: height 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; }
+.MuiCollapse-entered { height: auto; overflow: visible; }
+.MuiCollapse-hidden { visibility: hidden; }
+.MuiCollapse-wrapper { display: flex; width: 100%; }
+.MuiCollapse-wrapperInner { width: 100%; }
+
+.MuiAccordionDetails-root { padding: 4px 16px 16px; }

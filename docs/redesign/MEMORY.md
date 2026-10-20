@@ -230,3 +230,5 @@
 
 141. **以 class 名稱當選擇器的相容 CSS 會互相波及：Paper 規則差點蓋掉卡片底色（顯示類整類，2026/10/20，v3.0-1020-0920）**：card-compat 為了列印選擇器輸出 `MuiPaper-root`，但當時沒有任何 CSS 以這個 class 定樣式；display-compat.css 一加上 `.MuiPaper-root { background-color: … }`，同權重下就與卡片的 `bg-surface` 搶，卡片可能從 #FAFAFA 變白。比對頁把卡片一起放進來才抓到。修法：`.MuiPaper-root:where(:not(.MuiCard-root))`——`:where` 讓排除條件不增加權重，頁面的 emotion css 仍可覆蓋。教訓：新增以 Mui class 為選擇器的相容 CSS 時，先 grep 哪些相容元件也輸出同一個 class，並把它們一起放進比對頁。另：worker 重啟會中斷長時間的截圖比對，長任務改用背景執行。
 
+142. **Accordion 另做相容層而不沿用 ui/accordion；比對工具要把滑鼠移開（Accordion 整類，2026/10/20，v3.0-1020-0928）**：①ui/accordion 早已有 MUI 相容介面，但外觀是細框白底（已改版頁面在用），與目前舊頁面的 Grok 式無框 #FAFAFA 卡片不同；改它會波及新頁面，沿用它則帳單頁外觀改變——所以另做 accordion-compat 保持現狀，兩者是否統一外觀留待設計決定；②MUI 結構：Paper 根 ＞ ButtonBase 標題（content＋expandIconWrapper）＋ Collapse（wrapper ＞ wrapperInner ＞ role=region）＞ Details；橋接主題 disableGutters＋square，所以沒有 gutters 的 margin 與 min-height 64；③收合用 `MuiCollapse-hidden`（高 0、visibility hidden）保持掛載，不做高度動畫；④比對頁第一次出現「標題列 hover 底色」差異——Playwright 滑鼠預設在 (0,0)，正好壓在左上角的 #mui 元素上；run.js 改為比對前把滑鼠移到右下角。
+

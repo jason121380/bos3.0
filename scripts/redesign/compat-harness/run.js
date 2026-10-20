@@ -26,6 +26,8 @@ const server = http.createServer((req, res) => {
   await page.goto('http://127.0.0.1:5091/')
   await page.addStyleTag({ path: css(globalCss) })
   if (print) await page.emulateMedia({ media: 'print' })
+  // 滑鼠預設停在 (0,0)，會讓左上角的 #mui 元素進入 :hover；移到畫面右下角的空白處
+  await page.mouse.move(Number(widthArg || 1440) - 1, 899)
   await page.waitForTimeout(500)
   const diffs = await page.evaluate(() => {
     const PROPS = ['display', 'position', 'box-sizing', 'width', 'height', 'min-width', 'max-width', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left',

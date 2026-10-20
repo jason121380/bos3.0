@@ -1,6 +1,6 @@
 // 每筆紀錄的展開區保留 MUI Accordion（橋接主題已套新外觀）；內含 Markdown 預覽，不套 ui-root（其基礎樣式會清掉 ol 編號）
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion-compat'
 import React, { useState, Fragment } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import { ChevronDown, Pencil, Trash2 } from 'lucide-react'
 import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
