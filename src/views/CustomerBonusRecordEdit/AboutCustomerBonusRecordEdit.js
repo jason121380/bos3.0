@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Input, InputAdornment } from 'ui/text-field'
 import { FormControl, InputLabel } from 'ui/form-control'
 import { MobileDatePicker } from 'ui/date-picker'
@@ -7,20 +6,10 @@ import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import _ from 'lodash'
 import format from 'date-fns/format'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Card, CardContent } from 'ui/card'
 import { Field, Input as UiInput } from 'ui/input'
 
-// styles 仍以 emotion 物件傳給 MUI FormControl 與 Employee／CustomerAutoComplete（其 className 以 css prop 套用）
-const styles = {
-  formGroup: css({
-    marginBottom: theme.spacing(3) + '!important',
-  }),
-  fullWidth: css({
-    width: '100% !important'
-  })
-}
+// Employee／CustomerAutoComplete 的 className 以字串直通（原 emotion 物件等值轉 Tailwind）
 
 function AboutMerchantVendorCreate({ className, submitData, setSubmitData }) {
   return (
@@ -42,7 +31,7 @@ function AboutMerchantVendorCreate({ className, submitData, setSubmitData }) {
           }}
           slots={{
             field: inputProps => (
-              <FormControl css={styles.formGroup} variant="filled">
+              <FormControl className="!mb-[24px]" variant="filled">
                 <InputLabel htmlFor="date-picker">日期</InputLabel>
                 <Input
                   id="date-picker"
@@ -60,7 +49,7 @@ function AboutMerchantVendorCreate({ className, submitData, setSubmitData }) {
         />
         <EmployeeAutoComplete
           label="選擇設計師"
-          className={styles.formGroup}
+          className="!mb-[24px]"
           value={submitData.designerId}
           onChange={e => {
             setSubmitData({ ...submitData, designerId: e.userId ? e.userId : '' })
@@ -68,7 +57,7 @@ function AboutMerchantVendorCreate({ className, submitData, setSubmitData }) {
         />
         <CustomerAutoComplete
           label="選擇顧客"
-          className={css([styles.formGroup, styles.fullWidth])}
+          className="!mb-[24px] !w-full"
           value={submitData.customerId}
           onChange={e => {
             setSubmitData({ ...submitData, customerId: e.id ? e.id : '' })

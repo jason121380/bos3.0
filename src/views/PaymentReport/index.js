@@ -1,48 +1,13 @@
-/** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react'
 import Page from 'components/Page'
 import idx from 'idx'
 import { startOfMonth } from 'date-fns'
 import useFetchMerchantOtherPayWayDetailReport from 'hooks/useFetchMerchantOtherPayWayDetailReport'
 import DateSelector from 'components/DateSelector'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
 import { HeaderActionsSlot, PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  searchBtnDiv: css({
-    marginBottom: '24px',
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '284px',
-  }),
-  exportBtn: css({
-    float: 'right',
-  }),
-  formGroup: css({
-    width: '10rem',
-    marginLeft: theme.spacing(3),
-  }),
-  topDiv: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-}
 
 const PaymentReport = () => {
   const [reportForDisplay, setReportForDisplay] = useState(null)

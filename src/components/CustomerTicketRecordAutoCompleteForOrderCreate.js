@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { LoaderCircle } from 'lucide-react'
 import { TextField } from 'ui/text-field'
 import idx from 'idx'
@@ -7,7 +6,7 @@ import React, { useEffect, useState, forwardRef } from 'react'
 import { Autocomplete } from 'ui/combobox'
 
 function CustomerTicketRecordAutoCompleteForOrderCreate({
-  className,
+  className = '',
   onChange = () => { },
   value,
   customerId,
@@ -49,7 +48,7 @@ function CustomerTicketRecordAutoCompleteForOrderCreate({
   return (
     <Autocomplete
       disabled={editOrderUseTicketDisabled}
-      css={className}
+      className={className}
       value={selectedValue || null}
       options={options}
       autoHighlight

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { RadioField } from 'ui/radio'
 import { Button } from 'ui/button'
 import { Field, Input } from 'ui/input'
@@ -16,7 +15,6 @@ import { openSnackbar } from 'elements/snackbars'
 
 import produce from 'immer'
 import idx from 'idx'
-import styles from './styles/AboutDesignerSalary'
 
 export default function AboutDesignerSalary({ className, 
   deduction, 
@@ -350,7 +348,7 @@ return (
         <CardContent>
           {(!merchantJobTitlePoint.loading && !merchantCommissionWay.loading && !deduction.loading && !merchantPointValueSettingsForSelect.loading) ? (
             service.point.map((data, index) => (
-              <div css={styles.service} key={index}>
+              <div className="flex items-center mb-[12px] flex-wrap gap-y-[10px]" key={index}>
                 <Field label="人員類別" className="w-44">
                   <Input
                     type="text"
@@ -418,7 +416,7 @@ return (
                     size="icon"
                     aria-label="刪除"
                     disabled={!isSubmitForPoint} 
-                    css={service.point.filter(d => d.usingPeopleCount === 0 ).length !== service.point.length ? styles.deleteButton : styles.deleteButtonWithCount} 
+                    className={service.point.filter(d => d.usingPeopleCount === 0 ).length !== service.point.length ? 'ml-[10px] w-[112px] max-sm:w-[112px]' : 'ml-[10px]'} 
                     onClick={() => handleDeleteSetting('point', index)}
                   >
                     <DeleteForeverIcon/>
@@ -435,7 +433,7 @@ return (
                   variant="ghost"
                   size="icon"
                   aria-label="新增"
-                  css={styles.action}
+                  className="p-0 w-[50px] max-sm:w-[50px] flex ml-[12px] cursor-pointer last:mr-0"
                   disabled={!isSubmitForPoint}
                   onClick={() => handleAddSetting('point')}
                 >
@@ -479,7 +477,7 @@ return (
         <CardContent>
           {!merchantHelperItems.loading ? (
             serviceForType.helperTypeName.map((data, index) => 
-            <div css={styles.service} key={index}>
+            <div className="flex items-center mb-[12px] flex-wrap gap-y-[10px]" key={index}>
               <Field label="互助類別" className="w-44">
                 <Input
                   type="text"
@@ -493,7 +491,7 @@ return (
                 variant="ghost"
                 size="icon"
                 aria-label="刪除"
-                css={styles.action}
+                className="p-0 w-[50px] max-sm:w-[50px] flex ml-[12px] cursor-pointer last:mr-0"
                 disabled={!isSubmitForType}
                 onClick={() => handleDeleteSetting('helperTypeName', index)}
               >
@@ -505,7 +503,7 @@ return (
                   variant="ghost"
                   size="icon"
                   aria-label="新增"
-                  css={styles.action}
+                  className="p-0 w-[50px] max-sm:w-[50px] flex ml-[12px] cursor-pointer last:mr-0"
                   disabled={!isSubmitForType}
                   onClick={() => handleAddSetting('helperTypeName')}
                 >

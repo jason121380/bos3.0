@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Grid } from 'ui/grid-compat'
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
@@ -9,36 +8,7 @@ import _ from 'lodash'
 import idx from 'idx'
 import useFetchGetIsDisplayHelperRetrieveInDailyReport from 'hooks/useFetchGetIsDisplayHelperRetrieveInDailyReport'
 import useFetchGetIsUsingMathRoundInDesignerDailyReport from 'hooks/useFetchGetIsUsingMathRoundInDesignerDailyReport'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Card as UICard, CardHeader as UICardHeader, CardTitle } from 'ui/card'
-
-const styles = {
-  root: css({}),
-  content: css({
-    padding: 0,
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-  cardHeader: css({
-    textAlign: 'center',
-  }),
-  orderNoLink: css({
-    textDecorationLine: 'underline',
-    color: 'black',
-  }),
-}
 
 function Results({
   designerDailyReport,
@@ -168,7 +138,7 @@ function Results({
                             <a
                               target="_blank"
                               href={`/order/${orderRecord.orderId}`}
-                              css={styles.orderNoLink}
+                              className="underline text-[color:black]"
                             >
                               {orderRecord.orderNo}
                               {orderRecord.designation ? `*` : null}
@@ -558,9 +528,9 @@ function Results({
                           ? `- ${designer.currentPageOrder}/${designer.totalPageCount}`
                           : ''
                         }`}
-                      css={styles.cardHeader}
+                      className="text-center"
                     />
-                    <CardContent css={styles.content}>
+                    <CardContent className="p-0">
                       <div className="printCard">
                         <Table dense aria-label="a dense table">
                           <TableHeader>
@@ -587,7 +557,7 @@ function Results({
                                     <a
                                       target="_blank"
                                       href={`/order/${orderRecord.orderId}`}
-                                      css={styles.orderNoLink}
+                                      className="underline text-[color:black]"
                                     >
                                       {orderRecord.orderNo}
                                       {orderRecord.designation ? `*` : null}

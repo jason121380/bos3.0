@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Button } from 'ui/button'
 import { Checkbox } from 'ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
@@ -8,31 +7,7 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { useFetchDeleteDeductionSetting } from 'hooks/useFetchSetDeductionSetting'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
-const styles = {
-  root: css({}),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-}
 function DeductionResults({ className, deductionData, deduction, ...rest }) {
   const [selected, setSelected] = useState([])
   const { deleteDeductionSetting } = useFetchDeleteDeductionSetting()
@@ -61,7 +36,7 @@ function DeductionResults({ className, deductionData, deduction, ...rest }) {
       })
   }
   return (
-    <div {...rest} css={styles.root}>
+    <div {...rest}>
               <Table className="min-w-[700px]">
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">

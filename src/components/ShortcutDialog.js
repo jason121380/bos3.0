@@ -1,23 +1,12 @@
-/** @jsxImportSource @emotion/react */
 import { Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Button as UiButton } from 'ui/button'
 import { EmptyState } from 'ui/empty-state'
 import { LoaderCircle } from 'lucide-react'
 import { Close as CloseIcon } from 'ui/icons'
 import { useEffect } from 'react';
-import { css } from '@emotion/react'
 import { green } from 'ui/colors';
 
 import { getShortcutsForOrderCreate } from 'hooks/useFetchShortcut'
-
-const styles = {
-  title: css({
-    padding: '8px 8px 8px 24px !important',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-}
 
 const ShortcutDialog = ({ open, handleOnClose, handleShortcutChange }) => {
   const [getShortcutFunc, shortcutLazyData] = getShortcutsForOrderCreate()
@@ -35,7 +24,7 @@ const ShortcutDialog = ({ open, handleOnClose, handleShortcutChange }) => {
   return (
     <Dialog open={open} onOpenChange={o => !o && handleOnClose()}>
       <DialogContent size="md" hideClose aria-describedby={undefined}>
-        <DialogHeader css={styles.title} className="flex-row border-0 border-b border-solid border-border">
+        <DialogHeader className="flex-row border-0 border-b border-solid border-border !py-[8px] !pr-[8px] !pl-[24px] flex justify-between items-center">
           <DialogTitle>快捷組合</DialogTitle>
           <UiButton variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label="關閉" title="關閉" onClick={handleOnClose}>
             <CloseIcon />

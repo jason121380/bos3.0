@@ -1,21 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import { useEffect, useRef, useState } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
-
-const styles = {
-  root: css({}),
-  alert: css({
-    marginBottom: theme.spacing(3),
-  }),
-  formGroup: css({
-    marginBottom: theme.spacing(3),
-  }),
-}
 
 const deductions = [
   {
@@ -36,7 +23,7 @@ const deductions = [
   },
 ]
 
-function AboutAsistant({ className, helperDeductionWay, onChange, ...rest }) {
+function AboutAsistant({ className = '', helperDeductionWay, onChange, ...rest }) {
   const inputLabel = useRef()
   const handleChange = event => {
     idx(event, _ => {
@@ -47,12 +34,12 @@ function AboutAsistant({ className, helperDeductionWay, onChange, ...rest }) {
     })
   }
   return (
-    <Card {...rest} css={css([styles.root, className])}>
+    <Card {...rest} className={className}>
       <CardHeader>
         <CardTitle>助理</CardTitle>
       </CardHeader>
       <CardContent>
-        <FormControl variant="outlined" css={styles.formGroup} fullWidth>
+        <FormControl variant="outlined" className="mb-[24px]" fullWidth>
           <InputLabel ref={inputLabel}>扣項方式</InputLabel>
           <Select label='扣項方式' value={helperDeductionWay} onChange={handleChange}>
             {deductions.map(data => (
@@ -68,7 +55,7 @@ function AboutAsistant({ className, helperDeductionWay, onChange, ...rest }) {
 }
 
 AboutAsistant.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
 }
 
 export default AboutAsistant

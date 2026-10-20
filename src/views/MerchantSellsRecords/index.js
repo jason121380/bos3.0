@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
 import ProductAutoComplete from 'components/ProductAutoComplete'
@@ -7,29 +6,10 @@ import useFetchProductOrders from 'hooks/useFetchProductOrders'
 import idx from 'idx'
 import produce from 'immer'
 import React from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  container: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: 10,
-  }),
-  field: css({
-    width: '150px',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  })
-}
 
 export default function DecreaseDetail({ history, location }) {
   const [pageSetting, setPageSetting] = React.useState({

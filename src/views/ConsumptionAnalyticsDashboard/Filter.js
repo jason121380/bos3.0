@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 設計師多選（Autocomplete）保留 MUI
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
@@ -7,36 +6,11 @@ import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import idx from 'idx'
 import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { ReportToolbar } from 'ui/page-header'
 import { Field } from 'ui/input'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Autocomplete } from 'ui/combobox'
-
-const styles = {
-  root: css({}),
-  cardHeader: css({
-    textAlign: 'center',
-  }),
-  calendarButton: css({
-    backgroundColor: theme.palette.common.white,
-  }),
-  searchBtn: css({
-    height: 'fit-content'
-  }),
-  container: css({
-    margin: '24px 0',
-    gap: '10px 20px'
-  }),
-  flex: css({
-    display: 'flex',
-    gap: 10,
-    flexWrap: 'wrap',
-    alignItems: 'center',
-  })
-}
 
 const Filter = ({ date, setDate, handleSearch, loading, inputData, setInputData, referDisplay }) => {
   const userOrderableList = useFetchUsersOrderableList()

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 分頁使用 ui/table TablePagination（pagenationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
 import { Link } from 'react-router-dom';
 import { openSnackbar } from 'elements/snackbars'
@@ -30,7 +29,7 @@ import ProdudctDrawer from './ProdudctDrawer';
 import EditProductsCategoryModal from './EditProductsCategoryModal'
 import PublishedDialog from './PublishedDialog';
 import VendorDialog from './VendorDialog'
-function Results({ className, products, refetchProducts, onPageChange, ...rest }) {
+function Results({ className = '', products, refetchProducts, onPageChange, ...rest }) {
   const pageRef = useRef(null)
   const { setProductsCategory } = useFetchSettingMultipleUpdateProductCategory()
   const { setPublished } = useFetchSetMultipleUpdateProductIsPublished()
@@ -258,7 +257,7 @@ function Results({ className, products, refetchProducts, onPageChange, ...rest }
   // 停用商品的編輯連結：連結無 disabled 屬性，比照舊版 IconButton disabled 改用 aria-disabled + 取消指標事件
   const linkDisabled = disabledLink => (disabledLink ? { 'aria-disabled': true, tabIndex: -1, className: 'pointer-events-none opacity-40' } : {})
   return (
-    <div {...rest} css={className}>
+    <div {...rest} className={className}>
       <Card>
         <CardHeader
           className="items-center pb-4"

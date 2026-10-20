@@ -1,25 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import idx from 'idx'
 import { Fragment } from 'react'
 import { format } from 'date-fns'
-import { css } from '@emotion/react'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
-
-const styles = {
-  root: css({}),
-  sepreateDiv: css({
-    display: 'flex',
-    justifyContent: 'space-around',
-  }),
-  centerTd: css({
-    display: 'flex',
-    justifyContent: 'center',
-  }),
-  centerWalletUsed: css({
-    textAlign: 'center',
-  })
-}
 
 export default function Results({ data, total, bonusDisplay }) {
   const getData = idx(data, _ => _.nonCashDetailStatement)

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Grid } from 'ui/grid-compat'
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
 import { Paper } from 'ui/display-compat'
@@ -15,38 +14,6 @@ import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'
 import { format } from 'date-fns'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    // minWidth: 900,
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-  cardHeader: css({
-    textAlign: 'center',
-  }),
-  orderNoLink: css({
-    textDecorationLine: 'underline',
-    color: 'black',
-  }),
-}
 
 function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCardActive, designerNameForReportTypeData, printMode }) {
   const [printData, setPrintData] = useState([])
@@ -208,12 +175,12 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
                       : ''
                       } ${data.user.nickName !== null && data.user.nickName !== '' ? data.user.nickName : ''
                       } ${data.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 互助報表`}
-                    css={styles.cardHeader}
+                    className="text-center"
                   />
-                  <CardContent css={styles.content}>
+                  <CardContent className="p-0">
                     <div>
                       <TableContainer component={Paper}>
-                        <Table css={styles.table} size="small" aria-label="a dense table">
+                        <Table size="small" aria-label="a dense table">
                           <TableHead className='DecreaseDailyReportCardTable'>
                             <TableRow>
                               <TableCell>#</TableCell>
@@ -230,7 +197,7 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
                                   <a
                                     target="_blank"
                                     href={`/order/${record.orderId}`}
-                                    css={styles.orderNoLink}
+                                    className="underline text-[color:black]"
                                   >
                                     #{record.orderNo}
                                   </a>
@@ -256,7 +223,7 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
                         </Table>
                       </TableContainer>
                       <TableContainer component={Paper}>
-                        <Table css={styles.table} size="small" aria-label="a dense table">
+                        <Table size="small" aria-label="a dense table">
                           <TableHead>
                             <TableRow>
                               <TableCell></TableCell>

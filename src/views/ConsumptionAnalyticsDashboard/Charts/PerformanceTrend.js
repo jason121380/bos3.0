@@ -1,54 +1,11 @@
-/** @jsxImportSource @emotion/react */
 import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import React from 'react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Legend
+  ResponsiveContainer
 } from "recharts";
 import { pieChartColor } from '../Colors';
-import { css } from '@emotion/react'
-
-const styles = {
-  noDataDiv: css({
-    width: '100%',
-    height: '350px',
-    justifyContent: 'center',
-    display: 'flex',
-    alignItems: 'center'
-  }),
-  noData: css({
-    fontSize: '24px',
-  }),
-  trendToolTips: css({
-    minWidth: 150,
-    padding: '12px',
-    fontSize: '16px',
-    background: 'rgb(var(--background))',
-    color: 'black',
-    borderRadius: '5px',
-    boxShadow: '0 0 0 1px rgb(63 63 68 / 5%), 0 1px 3px 0 rgb(63 63 68 / 15%)',
-    display: 'flex',
-    flexDirection: 'column',
-    '& .header': {
-      display: 'flex',
-      gap: 30,
-      width: '100%',
-      justifyContent: 'space-between',
-      marginBottom: 10
-    },
-    '& .row': {
-      display: 'flex', gap: 10,
-      fontSize: 14
-    }
-  }),
-  trendLegend: css({
-    border: '1px soid black',
-    '& .recharts-legend-item-text': {
-      fontSize: 14
-    }
-  })
-}
 
 const PerformanceTrend = ({ data }) => {
   const PerformanceTrendBarTooltip = ({ active, payload, label }) => {
@@ -58,7 +15,7 @@ const PerformanceTrend = ({ data }) => {
         return (value / sum) ? `${Math.round(value / sum * 10000) / 100}%` : ''
       }
       return (
-        <div css={styles.trendToolTips}>
+        <div className="min-w-[150px] p-[12px] text-[16px] [background:rgb(var(--background))] text-[color:black] rounded-[5px] [box-shadow:0_0_0_1px_rgb(63_63_68_/_5%),0_1px_3px_0_rgb(63_63_68_/_15%)] flex flex-col [&_.header]:flex [&_.header]:gap-[30px] [&_.header]:w-full [&_.header]:justify-between [&_.header]:mb-[10px] [&_.row]:flex [&_.row]:gap-[10px] [&_.row]:text-[14px]">
           <div className='header'>
             <div>{label}</div>
             <div>總和:{sum}</div>
@@ -105,9 +62,7 @@ const PerformanceTrend = ({ data }) => {
                   <XAxis dataKey="name" />
                   <YAxis />
                   <Tooltip content={<PerformanceTrendBarTooltip />} />
-                  <Legend
-                    css={styles.trendLegend}
-                  />
+                  {/* 圖例：原本 <Legend css={…}> 經 emotion jsx 包裝後元素型別不再是 recharts Legend，圖表找不到而從未顯示；移除 emotion 後為維持畫面等價一併移除（要顯示圖例屬產品變更） */}
                   {performanceTrendBar()}
                 </BarChart>
               </ResponsiveContainer>
