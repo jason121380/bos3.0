@@ -11,7 +11,7 @@ function AboutProject({ className }) {
         <CardTitle>一般資訊</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
-        <Field label="代號" htmlFor="product-category-create-no" error={errors.no && errors.no.message}>
+        <Field label="代號" htmlFor="product-category-create-no" error={errors.no && errors.no.message}>
           <Input
             id="product-category-create-no"
             name="no"
@@ -19,7 +19,7 @@ function AboutProject({ className }) {
             aria-describedby={errors.no ? 'product-category-create-no-helper-text' : undefined}
             data-testid="no"
             ref={register({
-              required: '代號 為必填',
+              required: '代號 為必填',
             })}
           />
         </Field>

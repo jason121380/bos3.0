@@ -8,6 +8,8 @@
 
 ## 一、今天完成了什麼
 
+- **repo 健康報告修正批次**（2026/10/21，v3.0-1021-0116，分支 `claude/pensive-fermi-v6ufcq`，**未合併 main，待 Jason 確認**）：MEMORY #166、STATUS 首列。部署（Cloud Build 移除必失敗的 yarn 兩步、Docker npm ci＋serve@14＋快取標頭）、執行期錯誤（API 位址單一來源、WebSocket 重連與清理、打帳單每日解鎖計時器、網路錯誤提示、權限資料失敗不白畫面、儲存成功提早顯示、卡券金額捨去誤差）、效能（10 頁 lazy、vendor chunk、字型與 LIFF defer）、UI/UX 兩組（提示單軌與確認對話框、側欄目前位置、Tab 順序、列表固定欄與 NT$、日期格式、對比 AA）、新增 66 測試。**待 Jason**：①是否合併（合併後 Cloud Build 會恢復部署）；②允許改 package.json 相依／lockfile 與刪檔（15 個零引用套件、測試工具移 devDependencies、`HiPKILocalSignServer.pkg` 24.7MB、`views/AR`、`views/LinepayQRcode`）——自動權限檢查擋下；③Cypress Cloud 撤銷舊 record key、GitHub 加 `CYPRESS_RECORD_KEY` secret；④是否重新開放深色模式切換（深色外距／捲軸／危險按鈕對比已修）；⑤品牌藍 accent 在灰底對比 4.07–4.32。**待實機**：月結／日結確認後進度、確認框從相容層彈窗內開啟的焦點、錯誤提示需手動關閉、iOS 固定欄、手機 40px 命中區、真實後端 WebSocket 重連、LINE 內建瀏覽器開顧客頁（已改 lazy）、第一次 Cloud Build。
+
 - **個人頁全分頁左選單＋切換店家圖示**（2026/10/20，v3.0-1020-2343）：STATUS 首列。**待實機**：個人頁各分頁切換與列印（抽成報表、設計師日報表不印左選單）；側欄底部切換店家圖示可開啟店家清單、切換後重新整理正確；手機側欄抽屜底部的圖示位置。
 - **建置工具改 Vite**（2026/10/20，v3.0-1020-2323）：MEMORY #165。**待部署確認**：下一次 cloudbuild／Docker 建置成功、正式站首頁與登入、各頁 lazy 載入正常、PWA manifest／icon 正常；本機 `npm start` 開發體驗。
 - **帳單四兄弟選擇彈窗／新增顧客／異動入金換新**（2026/10/20，v3.0-1020-2131）：STATUS 首列。**待實機**：服務／商品／會員卡／預收卡選擇彈窗的分頁（每頁筆數切換、1000 筆）、手機表格橫向捲動、加入後焦點回到原欄位；新增顧客在平板寬度的兩欄排版；深色模式外觀。

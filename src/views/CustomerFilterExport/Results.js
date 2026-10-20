@@ -91,7 +91,7 @@ function Results({
       setSelectedCustomers([])
       refetch()
       openSnackbar({
-        message: '成功刪除客戶',
+        message: '成功刪除客戶',
         variant: 'success',
       })
     })

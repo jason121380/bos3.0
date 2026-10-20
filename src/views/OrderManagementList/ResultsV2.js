@@ -12,6 +12,7 @@ import { CSVLink } from "react-csv";
 import { useLocation } from 'react-router'
 import { ChevronDown, ChevronUp, ChevronsDownUp, ChevronsUpDown, Download, Eye, LoaderCircle, Printer } from 'lucide-react'
 import designerNameType from 'helper/designerNameType'
+import truncateDecimal from 'helper/truncateDecimal'
 import { useFetchOrderForPrint } from 'hooks/useFetchOrder'
 import pagenationLabel from './../../helper/pagenationLabel'
 import { Badge } from 'ui/badge'
@@ -150,7 +151,7 @@ function Results({
         setSelectedOrders([])
         refetch2()
         openSnackbar({
-          message: '刪除訂單成功',
+          message: '刪除帳單成功',
           variant: 'success',
         })
       })
@@ -218,7 +219,7 @@ function Results({
         服務消費: Math.round(order.service),
         店販消費: Math.round(order.product),
         '會員卡販賣': Math.round(order.membership),
-        '卡券使用(入業績)': parseInt(order.usedTicket * 100) / 100,
+        '卡券使用(入業績)': truncateDecimal(order.usedTicket),
         '卡券販賣(入業績)': Math.round(order.ticketSellIntoPerformance),
         業績收入: Math.round(order.performanceIncome),
         '卡券販賣(不入業績)': Math.round(order.ticketSellNotIntoPerformance),
@@ -562,11 +563,11 @@ function Results({
                               <div className="text-caption text-text-secondary">{order.TPTName.membership.length > 0 && renderTpName(order.TPTName.membership)}</div>
                             </TableCell>
                           )}
-                          <TableCell numeric>{formatMoney(parseInt(order.usedTicket * 100) / 100)}</TableCell>
+                          <TableCell numeric>{formatMoney(truncateDecimal(order.usedTicket))}</TableCell>
                           <TableCell numeric>{formatMoney(Math.round(order.ticketSellIntoPerformance))}</TableCell>
                           <TableCell numeric>{formatMoney(Math.round(order.performanceIncome))}</TableCell>
                           <TableCell numeric>{formatMoney(Math.round(order.ticketSellNotIntoPerformance))}</TableCell>
-                          <TableCell numeric>{formatMoney(parseInt(order.usedTicketForDecount * 100) / 100)}</TableCell>
+                          <TableCell numeric>{formatMoney(truncateDecimal(order.usedTicketForDecount))}</TableCell>
                           <TableCell numeric>
                             {formatMoney(Math.round(order.thirdPartTicketForDecount))}
                             <div className="text-caption text-text-secondary">{order.TPTName.overAll.length > 0 && renderTpName(order.TPTName.overAll)}</div>
@@ -598,7 +599,7 @@ function Results({
                               <div className="w-[100px] flex-none">{data.designerName}</div>
                               <div className="w-[300px] flex-none">{`${data.itemName}(${data.serviceType})`}</div>
                               <div className="w-[80px] flex-none text-right tabular-nums">
-                                {formatMoney(data.serviceType === '卡券使用' ? parseInt(data.price * 100) / 100 : data.price)}
+                                {formatMoney(data.serviceType === '卡券使用' ? truncateDecimal(data.price) : data.price)}
                               </div>
                               <div className="w-[60px] flex-none text-right tabular-nums">{data.count}</div>
                               <div className="w-[200px] flex-none">

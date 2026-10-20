@@ -14,6 +14,7 @@ import { ChevronDown, ChevronUp, ChevronsDownUp, ChevronsUpDown, CircleDollarSig
 import { useLocation } from 'react-router'
 import useFetchReCheckoutOrder from 'hooks/useFetchReCheckoutOrder'
 import designerNameType from 'helper/designerNameType'
+import truncateDecimal from 'helper/truncateDecimal'
 import _ from 'lodash'
 import pagenationLabel from './../../helper/pagenationLabel'
 import { Button } from 'ui/button'
@@ -265,7 +266,7 @@ function Results({
         setSelectedOrders([])
         refetch2()
         openSnackbar({
-          message: '刪除訂單成功',
+          message: '刪除掛單成功',
           variant: 'success',
         })
       })
@@ -871,7 +872,7 @@ function Results({
                               <div className="w-[100px] flex-none">{data.designerName}</div>
                               <div className="w-[300px] flex-none">{`${data.itemName}(${data.serviceType})`}</div>
                               <div className="w-[80px] flex-none text-right tabular-nums">
-                                {formatMoney(data.serviceType === '卡券使用' ? parseInt(data.price * 100) / 100 : data.price)}
+                                {formatMoney(data.serviceType === '卡券使用' ? truncateDecimal(data.price) : data.price)}
                               </div>
                               <div className="w-[60px] flex-none text-right tabular-nums">{data.count}</div>
                               <div className="w-[200px] flex-none">

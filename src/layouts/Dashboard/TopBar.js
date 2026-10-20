@@ -207,7 +207,10 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     if (!merchantAuthData.loading && !profileIdentity.loading) {
       const merchantAuth = idx(merchantAuthData, _ => _.data.getMerchantAuthorities)
       const loginUserAuthName = idx(profileIdentity, _ => _.data.me.merchantIdentity.authorityName)
+      // 權限資料取不到（API 失敗）時略過，維持預設的最小權限；原本直接 .filter(undefined) 拋錯，整個後台白畫面
+      if (!Array.isArray(merchantAuth)) return
       const userAuth = merchantAuth.filter(data => data.authorityName === loginUserAuthName)
+      if (!userAuth[0]) return
       setLoginUserAuth(
         JSON.parse(userAuth[0].authoritySettings).filter(d => d.pageTitle === '櫃檯作業')[0]
           .pageAuthority[0].authority
@@ -225,7 +228,13 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
       const userAuth2Count = []
       const merchantAuth = idx(merchantAuthData, _ => _.data.getMerchantAuthorities)
       const loginUserAuthName = idx(profileIdentity, _ => _.data.me.merchantIdentity.authorityName)
+      if (!Array.isArray(merchantAuth)) return // API 失敗：同上，不讓版面拋錯
       const userAuth = merchantAuth.filter(data => data.authorityName === loginUserAuthName)
+      // 找不到登入者的角色＝沒有任何頁面權限，與「權限全關」同樣導向個人頁（原本在這裡拋錯）
+      if (!userAuth[0]) {
+        history.push('/profile/general')
+        return
+      }
       const allUserAuthData = JSON.parse(userAuth[0].authoritySettings)
 
       allUserAuthData.forEach(data => {

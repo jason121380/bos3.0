@@ -148,7 +148,7 @@ describe('<ProductCategory />', () => {
 
     await new Promise(resolve => setTimeout(() => resolve(), 200))
 
-    expect(getByText('代號 為必填')).toBeTruthy()
+    expect(getByText('代號 為必填')).toBeTruthy()
     expect(getByText('名稱 為必填')).toBeTruthy()
 
     fireEvent.change(no, {

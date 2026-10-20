@@ -13,6 +13,7 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { EmptyState } from 'ui/empty-state'
 import { formatNumber } from 'ui/format'
+import truncateDecimal from 'helper/truncateDecimal'
 import { Field, Input } from 'ui/input'
 import { Skeleton } from 'ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
@@ -57,7 +58,7 @@ function Invoices({
         setSelectedOrders([])
         refetch2()
         openSnackbar({
-          message: '成功刪除預約',
+          message: '成功刪除預約',
           variant: 'success',
         })
       })
@@ -258,7 +259,7 @@ function Invoices({
                                     <div className="w-5/12">
                                       {`${data.itemName}(${data.serviceType})`}
                                     </div>
-                                    <div className="w-1/12 tabular-nums">{data.serviceType === '卡券使用' ? parseInt(data.price * 100) / 100 : data.price}</div>
+                                    <div className="w-1/12 tabular-nums">{data.serviceType === '卡券使用' ? truncateDecimal(data.price) : data.price}</div>
                                     <div className="w-1/12 tabular-nums">{data.count}</div>
                                     <div className="w-3/12">
                                       {data.helperList.length > 0 &&

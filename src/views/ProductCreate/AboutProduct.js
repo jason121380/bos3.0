@@ -87,7 +87,7 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
         <TextField
-          label="代號"
+          label="代號"
           variant="outlined"
           fullWidth
           name="no"
@@ -96,7 +96,7 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
           inputProps={{
             'data-testid': 'no',
             ref: register({
-              // required: '代號 為必填',
+              // required: '代號 為必填',
             }),
           }}
         />

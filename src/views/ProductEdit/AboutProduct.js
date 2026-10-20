@@ -55,7 +55,7 @@ function AboutProduct({ className, product, onChange, setProduct, merchantVendor
       </CardHeader>
       <CardContent>
         <form className="flex flex-col gap-6">
-          <Field label="代號">
+          <Field label="代號">
             <Input
               value={product.no}
               onChange={event => onChange({ event, key: 'no' })}

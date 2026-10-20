@@ -18,7 +18,8 @@ const buttonVariants = cva(
         primary: 'rounded-full bg-primary text-primary-foreground hover:bg-primary/85',
         secondary: 'rounded-full bg-surface-hover text-text hover:bg-surface-active',
         ghost: 'rounded-md text-text hover:bg-surface-hover',
-        danger: 'rounded-full bg-danger text-white hover:bg-danger/90',
+        // 深色的 danger 是較亮的珊瑚紅（#F97066），白字只有約 2.8:1；深色改深字（約 7:1）
+        danger: 'rounded-full bg-danger text-white hover:bg-danger/90 dark:text-canvas',
       },
       size: {
         sm: 'h-8 px-3.5 text-label',
