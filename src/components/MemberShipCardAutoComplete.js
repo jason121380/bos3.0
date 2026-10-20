@@ -7,7 +7,7 @@ import { Autocomplete } from 'ui/combobox'
 
 const MemberShipCardAutoComplete = (
   {
-    className,
+    className = '',
     onChange = () => {},
     label = "",
     value,

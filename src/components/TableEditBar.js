@@ -1,6 +1,7 @@
 import { FileDown, Pencil, Trash2, UserCheck, X } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { Button } from 'ui/button'
+import { cn } from 'ui/utils'
 
 function TableEditBar({
   selected = [],
@@ -43,7 +44,7 @@ function TableEditBar({
         {...rest}
         role="toolbar"
         aria-label="批次操作"
-        className={`pointer-events-auto flex max-w-full flex-wrap items-center gap-1 rounded-lg border border-solid border-border bg-background py-1.5 pl-4 pr-1.5 shadow-float${className ? ` ${className}` : ''}`}
+        className={cn('pointer-events-auto flex max-w-full flex-wrap items-center gap-1 rounded-lg border border-solid border-border bg-background py-1.5 pl-4 pr-1.5 shadow-float', className)}
       >
         <span className="mr-2 text-label tabular-nums text-text">已選 {selected.length} 筆</span>
         <span aria-hidden="true" className="mr-1 h-5 w-px bg-border" />

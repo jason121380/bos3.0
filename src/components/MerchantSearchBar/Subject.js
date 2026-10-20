@@ -7,7 +7,7 @@ import { useState, useEffect, Fragment } from 'react'
 import { findIndex } from 'lodash'
 import { Autocomplete } from 'ui/combobox'
 
-export default function Subject({ onChange, value, className }) {
+export default function Subject({ onChange, value, className = '' }) {
   const accountingSubjects = useFetchGetAccountingSubjects()
   const [options, setOptions] = useState([])
   useEffect(() => {
