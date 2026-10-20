@@ -239,7 +239,7 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
 | 底色 | 頁面 `canvas` 白；側欄、卡片、設定左欄 `surface` `#FAFAFA`；次要按鈕／hover／進度軌道 `surface-hover` `#F5F5F5`；次要按鈕 hover `surface-active` `#EDEDED`；中性選中 `surface-selected` `#E4E4E4`。 |
 | 文字 | `text` `#111`、`text-secondary` `#5A5A5A`、`text-tertiary` `#777`。 |
 | 邊框 | 只用在輸入框（`border-strong` `#D9D9D9`）、表格列線與浮層（`border`）；卡片不用邊框與陰影。 |
-| 字級 | 頁面標題 `title` 24px／400／字距 -0.01em；區塊標題 `heading` 18px／500；介面內文 `body` 16px；標籤 `label` 14px／500；表格 `table` 14px（含報表 compact）；`caption` 12px。 |
+| 字級 | 頁面標題 `title` 24px／700（粗體，比照打帳單，Jason 2026/10/20）／字距 -0.01em；區塊標題 `heading` 18px／500；介面內文 `body` 16px；標籤 `label` 14px／500；表格 `table` 14px（含報表 compact）；`caption` 12px。 |
 | 圓角 | 卡片、對話框 16px（`rounded-2xl`）；側欄項目、輸入框、表格動作鈕 8px（`rounded-md`）；按鈕、分頁、切換鈕、徽章狀態膠囊 `rounded-full`。 |
 | 按鈕 | 全膠囊、字級 14 medium；sm 32／md 36／lg 40（md 維持 36 以與輸入框同高）；圖示鈕 32px 圓形；150ms 過渡、按下 `scale(0.97)`。 |
 | 卡片 | `Card`＝`surface` 底、16px 圓角、內距 16px、無框無影；`CardFooter` 不再有上框線。MUI `Card`／`Accordion` 經橋接主題同樣套用。 |

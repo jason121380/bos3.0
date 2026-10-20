@@ -138,8 +138,8 @@ function PannelPerformance() {
             </div>
         </Card>
         {/* 底部固定列：長帳單捲動時，業績合計與現金應收隨時看得到。
-            左側讓出側欄（lg 以上 240px）；手機讓出底部導覽列（56px）；列印時不顯示 */}
-        <div className="ui-root fixed inset-x-0 bottom-14 z-[1050] border-0 border-t border-solid border-border bg-background px-4 py-2 shadow-[0_-2px_8px_rgba(0,0,0,0.06)] print:hidden lg:bottom-0 lg:left-60">
+            左側讓出側欄（lg 以上 240px）；手機讓出底部導覽列（56px＋iPhone 安全區——PWA 全螢幕時導覽列會加高，只讓 56px 會被蓋住）；列印時不顯示 */}
+        <div className="ui-root fixed inset-x-0 bottom-[calc(56px+env(safe-area-inset-bottom))] z-[1050] border-0 border-t border-solid border-border bg-background px-4 py-2 shadow-[0_-2px_8px_rgba(0,0,0,0.06)] print:hidden lg:bottom-0 lg:left-60">
             <div className="mx-auto flex max-w-[1200px] items-center justify-end gap-8">
                 <div className="flex items-baseline gap-2">
                     <span className="text-label text-text-secondary">業績合計</span>
