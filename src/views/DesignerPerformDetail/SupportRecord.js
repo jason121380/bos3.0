@@ -30,7 +30,7 @@ function OrderRecord({ records }) {
             {records.map(data => (
               <TableRow key={`serviceOrderHelpers-${data.id}`}>
                 <TableCell className="tabular-nums">
-                  {format(new Date(data.serviceOrder.order.date), 'MM/dd/yyyy')}
+                  {format(new Date(data.serviceOrder.order.date), 'yyyy/MM/dd')}
                 </TableCell>
                 <TableCell className="tabular-nums">#{data.serviceOrder.order.no}</TableCell>
                 <TableCell>{data.serviceOrder.order.previewItem.join('、')}</TableCell>

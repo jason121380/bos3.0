@@ -104,7 +104,7 @@ function Results({
                   } ${designer.user.nickName !== null && designer.user.nickName !== ''
                     ? designer.user.nickName
                     : ''
-                  } ${designer.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 日報表 ${designer.totalPageCount != 1
+                  } ${designer.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 日報表 ${designer.totalPageCount != 1
                     ? `- ${designer.currentPageOrder}/${designer.totalPageCount}`
                     : ''
                   }`}
