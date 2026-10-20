@@ -6,6 +6,8 @@ import { Badge } from 'ui/badge'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { cn } from 'ui/utils'
+import lineAppLogo from 'assets/images/LINE_APP.png'
+import lineBlackLogo from 'assets/images/LINE_BLACK_LOGO.png'
 
 function ProfileDetails({
   profile,
@@ -39,7 +41,7 @@ function ProfileDetails({
             <img
               className={cn('h-4 w-4', !isLineBinded && 'opacity-40')}
               alt="line"
-              src={require(`assets/images/${isLineBinded ? 'LINE_APP' : 'LINE_BLACK_LOGO'}.png`)}
+              src={isLineBinded ? lineAppLogo : lineBlackLogo}
             />
             <span>
               {isLineBinded ? 'LINE 已綁定' : 'LINE 未綁定'}

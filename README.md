@@ -61,8 +61,10 @@ npm run build
 
 | 指令 | 說明 |
 |---|---|
-| `npm start` | 啟動開發伺服器 (hot reload) |
-| `npm run build` | 生產環境建置 (不含 source map) |
+| `npm start` | 啟動開發伺服器（Vite，hot reload） |
+| `npm run build` | 生產環境建置（Vite，輸出 `build/`，不含 source map） |
+| `npm run preview` | 以正式 build 啟動本機預覽 |
+| `npm run lint:build` | 建置用 ESLint 檢查（與原 CRA build 相同規則，CI 執行） |
 | `npm test` | 執行測試 (watch mode) |
 | `npm run test:nowatch` | 執行測試 (單次) |
 | `npm run test:coverage` | 執行覆蓋率測試 |
@@ -81,7 +83,7 @@ npm run build
 | **UI 元件庫（舊，遷移中）** | Material-UI (MUI) | `5.15.7` |
 | **路由** | React Router | `5.1.2` |
 | **路由配置** | react-router-config | `5.0.1` |
-| **建置工具** | Create React App (react-scripts) | `5.0.1` |
+| **建置工具** | Vite（單元測試仍用 react-scripts 的 Jest） | `5.4.21` |
 
 ### 資料層
 
