@@ -53,4 +53,10 @@ describe('ui/card-compat（與 MUI Card 系列相容）', () => {
     expect(ref.current).toHaveClass('MuiCardContent-root', 'extra')
     expect(ref.current.style.padding).toBe('0px')
   })
+
+  // 報表明細卡片以 css={{ padding: 0 }} 去掉內距：MUI 的 :last-child 規則權重較高，底部仍保留 16px（列印版面依此高度排版）
+  it('CardContent 帶有 :last-child 底部內距規則（同 MUI）', () => {
+    render(<CardContent>x</CardContent>)
+    expect(screen.getByText('x')).toHaveClass('p-4', 'last:pb-4')
+  })
 })

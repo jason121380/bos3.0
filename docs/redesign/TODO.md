@@ -8,6 +8,7 @@
 
 ## 一、今天完成了什麼
 
+- **MUI 移除・列印範本三檔**（2026/10/20，v3.0-1020-1121）：每日營業報表、互助日報、薪資轉帳單改用相容層（MEMORY #152）。**待實機（先合併後驗收）**：①每日營業報表列印（下方其他支付／第三方卡券／入金儲值明細卡片、合併顯示時的合計紅字）；②互助日報列印（4 人一頁的列印區塊）；③薪資轉帳單畫面與列印（底線輸入框可改年月日、置中、底線顏色）；④用 `padding: 0` 的明細卡片底部恢復 MUI 原本的 16px（#184 起少了這段，現補回）。**剩餘**：`ui/mui-theme`（MuiScope，已無 MUI 元件可套用）與 initialize*.scss 的 MuiPickers 死樣式；移除後即可從 package.json 拿掉 @mui 套件。
 - **MUI 移除・主題層**（2026/10/20，v3.0-1020-1102）：theme 改純物件、拆除 ThemeProvider／createTheme／useMediaQuery／Box／styled（MEMORY #151）。**待實機**：預約行事曆手機版開啟時為清單週視圖、401／404／500 頁手機版排版、顧客篩選匯出在窄畫面為全螢幕對話框、會員卡清單浮層、捷徑對話框、圖示大小與顏色。**剩餘 MUI**：三個列印檔（MerchantDailyReport／DecreaseDailyReport／TransferDetail）與 `ui/mui-theme`（MuiScope；列印檔換完後一併移除，連同 initialize*.scss 的 MuiPickers 死樣式），之後才能從 package.json 移除 @mui 套件。
 - **MUI 移除・日期選擇器本體**（2026/10/20，v3.0-1020-1053）：自家 calendar／date-field／date-picker 取代 @mui/x-date-pickers，39 檔免改（MEMORY #150）。**待實機**：①桌機（滑鼠）打帳單／編輯／草稿／排隊的帳單日期時間：直接打字、月曆鈕選日、欄寬撐滿；②手機（觸控）會員新增生日、活動起訖、預約日期：點欄位開對話框、選日、取消還原、確認；③打卡補登選時間（maxDateTime 之後的時／分停用）、④報表月份選擇（DateSelector：選月後跳年）；⑤深色模式的對話框與浮層。**已知差異**：時間由 MUI 時鐘盤改為時／分清單（24 小時制）；手機寬度日期欄高 40px（同其他輸入框）。**剩餘 MUI**：三個列印檔、主題層（src/theme、createTheme／ThemeProvider／styled／useMediaQuery、icons.js 的 Box；ui/mui-theme 與 initialize*.scss 的 MuiPickers 樣式已成死碼，主題層批次一併刪）。
 - **MUI 移除・TreeView**（2026/10/20，v3.0-1020-1025）：5 檔換用 `ui/tree-compat`，@mui/x-tree-view 無引用（MEMORY #149）。**待實機**：選店（全部／群組展開、勾選、確認回傳）、商品樹狀選擇、個人釘選表。**剩餘 MUI**：日期選擇器本體（@mui/x-date-pickers，經 ui/date-picker 門面）、三個列印檔、主題層（src/theme、createTheme／ThemeProvider／styled／useMediaQuery、icons.js 的 Box）。

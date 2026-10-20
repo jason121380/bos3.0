@@ -31,8 +31,9 @@ const CardHeader = React.forwardRef(function CardHeader({ title, subheader, acti
   )
 })
 
+// MUI（橋接主題）：內距 16，且 :last-child 底部內距 16——權重高於頁面的單一 class，頁面寫 padding: 0 時底部仍保留 16（同 MUI）
 const CardContent = React.forwardRef(function CardContent({ className, ...rest }, ref) {
-  return <div ref={ref} className={cn('MuiCardContent-root p-4', className)} {...rest} />
+  return <div ref={ref} className={cn('MuiCardContent-root p-4 last:pb-4', className)} {...rest} />
 })
 
 // MUI：flex 置中、內距 8、相鄰子元素間距 8（disableSpacing 時不加）

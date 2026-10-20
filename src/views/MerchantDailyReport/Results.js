@@ -1,7 +1,9 @@
 /** @jsxImportSource @emotion/react */
-// 下方明細卡片區（MerchantDailyReportCardContainer）的列印樣式依賴 MUI 結構，保留 MUI
+// 下方明細卡片區（MerchantDailyReportCardContainer）的列印樣式依賴 MUI 結構：改用輸出相同 DOM／class 的相容層（ui/*-compat）
 import { Grid } from 'ui/grid-compat'
-import { Table as MuiTable, TableBody as MuiTableBody, TableCell as MuiTableCell, TableHead as MuiTableHead, TableRow as MuiTableRow, Paper, TableContainer, Card, CardContent, CardHeader, Divider } from '@mui/material'
+import { Table as MuiTable, TableBody as MuiTableBody, TableCell as MuiTableCell, TableHead as MuiTableHead, TableRow as MuiTableRow, TableContainer } from 'ui/table-compat'
+import { Paper, Divider } from 'ui/display-compat'
+import { Card, CardContent, CardHeader } from 'ui/card-compat'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import { format, startOfMonth } from 'date-fns'
@@ -554,7 +556,7 @@ function Results({
           ))}
         </TableBody>
       </Table>
-      {/* 下方明細卡片：@media print 依 .MuiCard-root / .MuiTableContainer-root 排版（MerchantDailyReportCardContainer），保留 MUI 以維持列印輸出 */}
+      {/* 下方明細卡片：@media print 依 .MuiCard-root / .MuiTableContainer-root 排版（MerchantDailyReportCardContainer），以相容層維持 MUI 的 DOM 與 class，列印輸出不變 */}
       <Grid container spacing={3} className="MerchantDailyReportCardContainer">
         {nonCashDisplay ? (
           <Grid item xs={12} md={12} lg={8} className="MergeResultCard">
@@ -566,7 +568,7 @@ function Results({
                       <MuiTableCell></MuiTableCell>
                       <MuiTableCell>其他支付方式明細</MuiTableCell>
                       <MuiTableCell>第三方卡券明細</MuiTableCell>
-                      <MuiTableCell sx={{ fontWeight: 'bold' }}>小計</MuiTableCell>
+                      <MuiTableCell css={{ fontWeight: 'bold' }}>小計</MuiTableCell>
                     </MuiTableRow>
 
                   </MuiTableHead>
@@ -576,15 +578,15 @@ function Results({
                         <MuiTableCell>{name}</MuiTableCell>
                         <MuiTableCell>{`${otherPayment.usedPrice} / (${otherPayment.usedPriceWithNoCash})`}</MuiTableCell>
                         <MuiTableCell>{`${thirdParty.usedPrice} / (${thirdParty.usedPriceWithNoCash})`}</MuiTableCell>
-                        <MuiTableCell sx={{ fontWeight: 'bold' }}>{
+                        <MuiTableCell css={{ fontWeight: 'bold' }}>{
                           `${otherPayment.usedPrice + thirdParty.usedPrice} / (${otherPayment.usedPriceWithNoCash + thirdParty.usedPriceWithNoCash})`
                         }</MuiTableCell>
                       </MuiTableRow>
                     ))}
                     <MuiTableRow hover>
                       <MuiTableCell colSpan={2} />
-                      <MuiTableCell sx={{ fontWeight: 'bold', color: 'red' }}>合計</MuiTableCell>
-                      <MuiTableCell sx={{ fontWeight: 'bold', color: 'red' }}>{`${totalSummury('usedPrice')} / ${totalSummury('usedPriceWithNoCash')}`}</MuiTableCell>
+                      <MuiTableCell css={{ fontWeight: 'bold', color: 'red' }}>合計</MuiTableCell>
+                      <MuiTableCell css={{ fontWeight: 'bold', color: 'red' }}>{`${totalSummury('usedPrice')} / ${totalSummury('usedPriceWithNoCash')}`}</MuiTableCell>
                     </MuiTableRow>
                   </MuiTableBody>
                 </MuiTable>
