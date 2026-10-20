@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 勾選後出現的底部操作列沿用 MUI Drawer（persistent）
-import { Drawer } from '@mui/material'
+import { Drawer } from 'ui/overlay-compat'
 import { Download, Pencil, Trash2 } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState, useEffect, Fragment, useRef } from 'react'
