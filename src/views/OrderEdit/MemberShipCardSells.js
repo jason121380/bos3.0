@@ -178,7 +178,6 @@ const MemberShipCardSells = ({
           placeholder="服務人員姓名/編號"
           value={sells.sellerId}
           ref={employeeRef}
-          tabIndex={focusRow + "0"}
           autoFocus={focus === "employee"}
           onFocus={(event) => handleFocus({ event, field: "employee" })}
           onKeyDown={(event) => {
@@ -211,7 +210,6 @@ const MemberShipCardSells = ({
           ref={productRef}
           autoFocus={focus === "product"}
           onFocus={(event) => handleFocus({ event, field: "product" })}
-          tabIndex={focusRow + "1"}
           getData={getData}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
@@ -256,7 +254,6 @@ const MemberShipCardSells = ({
               variant="outlined"
               value={sells.price}
               inputRef={priceRef}
-              tabIndex={focusRow + "2"}
               inputProps={{
                 "data-testid": `memberShipCardSells-${index}-price`,
               }}

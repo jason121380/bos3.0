@@ -332,7 +332,6 @@ function Services({
             name="service"
             ref={serviceRef}
             autoFocus={focus === 'service'}
-            tabIndex={focusRow + '0'}
             onFocus={handleFocus}
             inputProps={{ placeholder: '服務名稱/代號' }}
           />
@@ -343,7 +342,6 @@ function Services({
               <Input
                 ref={priceRef}
                 value={service.price}
-                tabIndex={focusRow + '1'}
                 name="price"
                 onFocus={handleFocus}
                 onKeyDown={event => {
@@ -384,7 +382,6 @@ function Services({
                         name={data.type}
                         ref={helperRefs[helperIdx]}
                         autoFocus={focus === data.type}
-                        tabIndex={focusRow + '2' + helperIdx}
                         onChange={value => {
                           setFocus(data.type)
                           handleAssistantChange({
@@ -430,7 +427,6 @@ function Services({
                     </Field>
                     {isHelperDesignation && (
                       <CheckboxField
-                        tabIndex={focusRow + '3' + helperIdx}
                         autoFocus={focus === data.type + 'designate'}
                         ref={helperDesignateRefs[helperIdx]}
                         onFocus={handleFocus}

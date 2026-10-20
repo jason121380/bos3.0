@@ -171,7 +171,6 @@ function MerchantSells({
             autoFocus={focus === 'employee'}
             onFocus={event => handleFocus({ event, field: 'employee' })}
             onKeyDown={event => handleKeyDown({ event, nextField: 'product' })}
-            tabIndex={focusRow + '0'}
           />
         </Field>
         {index === 0 ? (
@@ -187,7 +186,6 @@ function MerchantSells({
             autoFocus={focus === 'product'}
             onFocus={event => handleFocus({ event, field: 'product' })}
             onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
-            tabIndex={focusRow + '1'}
             getData={getData}
             isPublished
             setProductAlready={setProductAlready}
@@ -214,7 +212,6 @@ function MerchantSells({
               <Input
                 value={sellsItem.price}
                 ref={priceRef}
-                tabIndex={focusRow + '2'}
                 autoFocus={focus === 'price'}
                 onFocus={event => handleFocus({ event, field: 'price' })}
                 onKeyDown={event => handleKeyDown({ event, nextField: 'count' })}
@@ -235,7 +232,6 @@ function MerchantSells({
                 value={sellsItem.count}
                 ref={countRef}
                 autoFocus={focus === 'count'}
-                tabIndex={focusRow + '3'}
                 onFocus={event => handleFocus({ event, field: 'count' })}
                 onKeyDown={event => {
                   if (event.key === 'Enter' && !thirdPartTicket) {

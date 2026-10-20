@@ -175,7 +175,6 @@ export default function MerchantSells({
           autoFocus={focus === 'employee'}
           onFocus={event => handleFocus({ event, field: 'employee' })}
           onKeyDown={event => handleKeyDown({ event, nextField: 'product' })}
-          tabIndex={focusRow + '0'}
           onChange={function (value) {
             onChange({
               index,
@@ -200,7 +199,6 @@ export default function MerchantSells({
           autoFocus={focus === 'product'}
           onFocus={event => handleFocus({ event, field: 'product' })}
           onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
-          tabIndex={focusRow + '1'}
           getData={getData}
           onChange={function (value) {
             idx(value, _ => {
@@ -226,7 +224,6 @@ export default function MerchantSells({
               variant="outlined"
               value={sells.price}
               inputRef={priceRef}
-              tabIndex={focusRow + '2'}
               autoFocus={focus === 'price'}
               onFocus={event => handleFocus({ event, field: 'price' })}
               onKeyDown={event => handleKeyDown({ event, nextField: 'count' })}
@@ -250,7 +247,6 @@ export default function MerchantSells({
               value={sells.count}
               inputRef={countRef}
               autoFocus={focus === 'count'}
-              tabIndex={focusRow + '3'}
               onFocus={event => handleFocus({ event, field: 'count' })}
               onKeyDown={event => handleKeyDown({ event, nextField: 'thirdParty' })}
               onChange={function (value) {

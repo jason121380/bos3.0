@@ -105,7 +105,6 @@ export default function CouponSells({
             name="coupon"
             autoFocus={focus === 'coupon'}
             onFocus={handleFocus}
-            tabIndex={focusRow + '0'}
             isLaunched
             setCouponAlready={setCouponAlready}
             getData={getData}
@@ -150,7 +149,6 @@ export default function CouponSells({
                 name="availableCount"
                 onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
                 onFocus={handleFocus}
-                tabIndex={focusRow + '1'}
                 data-testid={`couponSells-${index}-count`}
                 onChange={event => {
                   const newCouponSell = _.cloneDeep(couponSell)
@@ -165,7 +163,6 @@ export default function CouponSells({
               <Input
                 value={couponSell.price}
                 name="price"
-                tabIndex={focusRow + '2'}
                 autoFocus={focus === 'price'}
                 onKeyDown={event => handleKeyDown({ event, nextField: 'count' })}
                 data-testid={`couponSells-${index}-price`}
@@ -184,7 +181,6 @@ export default function CouponSells({
               <Input
                 value={couponSell.count}
                 name="count"
-                tabIndex={focusRow + '2'}
                 autoFocus={focus === 'count'}
                 onKeyDown={event => handleKeyDown({ event, nextField: 'remark' })}
                 data-testid={`couponSells-${index}-count`}
