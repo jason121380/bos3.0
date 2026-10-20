@@ -1,21 +1,75 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { ListFilter } from 'lucide-react'
-import { cn } from './utils'
+import { ArrowLeft, ChevronRight, ListFilter } from 'lucide-react'
+import { cn, focusRing } from './utils'
 import { Button } from './button'
 import { Card } from './card'
 
 // STYLE.md §4 頁面骨架：PageHeader（標題 + 說明 + 右側主要動作）→ Toolbar（搜尋 / 篩選 / 日期 / 次要動作）→ Content
 // 每頁只有一個 title（24px 粗體、字距略緊，比照打帳單——Jason 2026/10/20）；舊版 initialize.scss 對 h1 有 font-weight !important，故以 !font-bold 覆蓋
-function PageHeader({ title, description, actions, className, children }) {
+// 詳細頁（選填）：breadcrumb＝標題上方的麵包屑（Breadcrumb 元件）；back＝{ label, onClick }，在標題左側放返回鈕
+function PageHeader({ title, description, actions, breadcrumb, back, className, children }) {
+  const heading = (
+    <div className="flex min-w-0 flex-col gap-1">
+      {breadcrumb}
+      <h1 className="m-0 text-title !font-bold text-text">{title}</h1>
+      {description && <p className="text-body text-text-secondary">{description}</p>}
+    </div>
+  )
   return (
-    <div className={cn('ui-root noprint flex flex-wrap justify-between gap-4 pb-6', description ? 'items-start' : 'items-center', className)}>
-      <div className="flex min-w-0 flex-col gap-1">
-        <h1 className="m-0 text-title !font-bold text-text">{title}</h1>
-        {description && <p className="text-body text-text-secondary">{description}</p>}
-      </div>
+    <div className={cn('ui-root noprint flex flex-wrap justify-between gap-4 pb-6', description || breadcrumb ? 'items-start' : 'items-center', className)}>
+      {back ? (
+        <div className="flex min-w-0 items-start gap-3">
+          <Button variant="secondary" size="icon" className="mt-1 shrink-0" aria-label={back.label} title={back.label} onClick={back.onClick}>
+            <ArrowLeft strokeWidth={1.75} />
+          </Button>
+          {heading}
+        </div>
+      ) : (
+        heading
+      )}
       {(actions || children) && <div className="flex flex-wrap items-center gap-2">{actions || children}</div>}
     </div>
+  )
+}
+
+// 麵包屑：items＝[{ label, href?, onClick? }]，最後一項為目前頁（aria-current="page"、不可點）。
+// 有 onClick 的項目仍輸出 href（可在新分頁開啟），一般點擊交給 onClick（沿用頁面原本的返回行為）
+function Breadcrumb({ items, className }) {
+  return (
+    <nav aria-label="麵包屑" className={cn('min-w-0', className)}>
+      <ol className="m-0 flex min-w-0 list-none flex-wrap items-center gap-1 p-0 text-label font-normal text-text-secondary">
+        {items.map((item, index) => {
+          const last = index === items.length - 1
+          return (
+            <li key={`${index}-${item.label}`} className="flex min-w-0 items-center gap-1">
+              {last ? (
+                <span aria-current="page" className="truncate text-text">
+                  {item.label}
+                </span>
+              ) : (
+                <a
+                  href={item.href}
+                  onClick={
+                    item.onClick
+                      ? event => {
+                          if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return
+                          event.preventDefault()
+                          item.onClick(event)
+                        }
+                      : undefined
+                  }
+                  className={cn('rounded-md text-text-secondary no-underline hover:text-accent hover:underline', focusRing)}
+                >
+                  {item.label}
+                </a>
+              )}
+              {!last && <ChevronRight className="h-4 w-4 shrink-0 text-text-tertiary" strokeWidth={1.75} aria-hidden="true" />}
+            </li>
+          )
+        })}
+      </ol>
+    </nav>
   )
 }
 
@@ -74,4 +128,4 @@ function HeaderActionsPortal({ children }) {
   return children
 }
 
-export { PageHeader, Toolbar, ToolbarSpacer, ReportToolbar, HeaderActionsSlot, HeaderActionsPortal }
+export { PageHeader, Breadcrumb, Toolbar, ToolbarSpacer, ReportToolbar, HeaderActionsSlot, HeaderActionsPortal }

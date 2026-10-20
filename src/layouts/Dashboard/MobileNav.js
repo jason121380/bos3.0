@@ -103,7 +103,8 @@ export function MobileAppBar({ tabs, showTabBar, onOpenMenu }) {
 export function MobileTabBar({ tabs, onOpenMenu, menuOpen }) {
   const { pathname } = useLocation()
   const item = (active) => cn(
-    'flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-md pt-1.5 text-[11px] leading-[14px] no-underline transition-colors',
+    // 分頁文字 12px（STYLE §3：不用 12px 以下字級）
+    'flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-md pt-1.5 text-caption no-underline transition-colors',
     'active:scale-95 active:bg-surface-hover',
     active ? 'font-medium text-accent' : 'text-text-tertiary',
     focusRing

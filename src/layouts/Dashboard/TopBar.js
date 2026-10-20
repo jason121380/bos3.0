@@ -402,7 +402,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
               ref={ref}
               variant="ghost"
               size="icon"
-              className="relative h-8 w-8"
+              className="relative"
               aria-label={error ? `訂單佇列：${errorCount} 筆失敗` : '訂單佇列'}
               onClick={handleClickOpenNotification('bottom-end')}
             >
@@ -441,7 +441,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
                     {order.status === 'fail' && (
                       <DropdownMenu modal={false} open={openForMoreBtn && targetID === order.id} onOpenChange={o => !o && handleCloseForMoreBtn()}>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="更多操作" onClick={e => handleClickForMoreBtn(e, order.id)}>
+                          <Button variant="ghost" size="icon" aria-label="更多操作" onClick={e => handleClickForMoreBtn(e, order.id)}>
                             <EllipsisVertical strokeWidth={1.75} />
                           </Button>
                         </DropdownMenuTrigger>
@@ -473,7 +473,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
             </div>
           </PopoverContent>
         </Popover>
-        <Button variant="ghost" size="icon" className="hidden h-8 w-8 lg:inline-flex" aria-label="收合側欄" onClick={onOpenNavBarMobile}>
+        <Button variant="ghost" size="icon" className="hidden lg:inline-flex" aria-label="收合側欄" onClick={onOpenNavBarMobile}>
           <PanelLeftClose strokeWidth={1.75} />
         </Button>
       </div>
@@ -482,7 +482,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 shrink-0"
+          className="shrink-0"
           aria-label={`切換店家（目前：${JSON.parse(localStorage.getItem('userMerchant')).name}）`}
           title={`切換店家（目前：${JSON.parse(localStorage.getItem('userMerchant')).name}）`}
           onClick={toggle}
