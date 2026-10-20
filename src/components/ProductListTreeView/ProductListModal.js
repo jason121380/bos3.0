@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Checkbox } from 'ui/checkbox'
 import { TextField, InputAdornment } from 'ui/text-field'
 import { useState, useEffect } from 'react'
@@ -8,101 +7,21 @@ import { TreeView, TreeItem } from 'ui/tree-compat'
 import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, Inventory2Outlined as Inventory2OutlinedIcon, DashboardOutlined as DashboardOutlinedIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import _ from 'lodash';
-import { css } from '@emotion/react'
 
-const styles = {
-  root: css({
-    display: 'flex',
-    gap: 20,
-    flexDirection: 'column',
-    '& .Mui-expanded, .Mui-selected': {
-      backgroundColor: 'unset !important'
-    },
-    '& .MuiTreeItem-content': {
-      transition: '.2s',
-      width: 'fit-content',
-      '&:hover': {
-        background: 'rgb(var(--accent) / 0.08)'
-      }
-    },
-    '& li': {
-      borderRadius: 5,
-      // overflow: 'hidden'
-    }
-  }),
-  ulGroup: css({
-    '& ul': {
-      marginLeft: '30px !important'
-    },
-    '& ul .MuiCollapse-wrapper .MuiCollapse-wrapperInner': {
-      display: 'flex',
-      gap: '5px !important',
-      flexDirection: 'row !important',
-      flexWrap: 'wrap',
-      marginTop: 2,
-      padding: '0px 2px 2px'
-    },
-  }),
-  ulGroupAll: css({
-    '& ul': {
-      marginLeft: 20
-    },
-    '& ul .MuiCollapse-wrapper .MuiCollapse-wrapperInner': {
-      display: 'flex',
-      gap: 10,
-      flexDirection: 'column',
-    },
-  }),
-  ulGroupAllMerchant: css({
-    '& ul': {
-      marginLeft: 20
-    },
-    '& ul .MuiCollapse-wrapper .MuiCollapse-wrapperInner': {
-      display: 'flex',
-      flexWrap: 'wrap',
-      gap: 10,
-    },
-  }),
-  item: css({
-    borderRadius: 5,
-    overflow: 'hidden',
-    '& .MuiTreeItem-label': {
-      paddingLeft: '0px !important'
-    },
-    '& .MuiTreeItem-iconContainer': {
-      display: 'none !important'
-    }
-  }),
-  margin: css({
-    '& > ul': {
-      marginLeft: 40
-    }
-  }),
-  span: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: 5,
-    wordBreak: 'keep-all',
-    whiteSpace: 'nowrap',
-    fontSize: '1rem'
-  }),
-  title: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap'
-  }),
-  onSelect: css({
-    backgroundColor: '#75959f'
-  }),
-  button: css({
-    flexShrink: 0,
-    height: 'fit-content'
-  }),
-  outline: css({
-    outline: '2px solid rgb(var(--danger)) !important'
-  })
-}
+// 樹狀本體為 ui/tree-compat（輸出 MUI 同名 class），以下為原 emotion styles 等值轉 Tailwind；tree-compat.css 在路由 chunk（晚於 Tailwind 與 emotion），同權重勝負不變，故不加 !
+const treeClass = [
+  'flex gap-[20px] flex-col',
+  '[&_.Mui-expanded]:![background-color:unset] [&_.Mui-selected]:![background-color:unset]',
+  '[&_.MuiTreeItem-content]:[transition:.2s] [&_.MuiTreeItem-content]:w-fit',
+  '[&_.MuiTreeItem-content:hover]:[background:rgb(var(--accent)/0.08)]',
+  '[&_li]:rounded-[5px]',
+].join(' ')
+const ulGroupAllMerchantClass = '[&_ul]:ml-[20px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-wrap [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:gap-[10px]'
+const itemClass = 'rounded-[5px] overflow-hidden [&_.MuiTreeItem-label]:!pl-0 [&_.MuiTreeItem-iconContainer]:!hidden'
+const outlineClass = '![outline:2px_solid_rgb(var(--danger))]'
+const spanClass = 'flex items-center gap-[5px] [word-break:keep-all] whitespace-nowrap text-[1rem]'
+// 原 height: fit-content 為 emotion（晚於 Tailwind）會連手機的 max-sm:h-10 一起蓋掉，故同時給 max-sm:h-fit
+const buttonClass = 'shrink-0 h-fit max-sm:h-fit'
 
 const ProductListModal = ({ open, setOpen, productList, values, setValues }) => {
   const allNodeIds = ['ALL']
@@ -153,9 +72,9 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
             style={{ marginTop: -9 }}
           />
           <TreeItem
-            css={styles.ulGroupAllMerchant}
+            className={ulGroupAllMerchantClass}
             nodeId={`${data.name}(${data.products.length})`}
-            label={<span id={`${data.name}(${data.products.length})`} css={styles.span}><DashboardOutlinedIcon />{`${data.name}(${data.products.length})`}</span>}
+            label={<span id={`${data.name}(${data.products.length})`} className={spanClass}><DashboardOutlinedIcon />{`${data.name}(${data.products.length})`}</span>}
           >
             {data.products.length ? renderItem(data.products) : ''}
           </TreeItem>
@@ -169,10 +88,9 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
       <TreeItem
         key={data.id}
         onClick={() => handleItemClick(data)}
-        className={isSelect(data.id)}
-        css={css([styles.item, filtIds.includes(data.id) ? styles.outline : {}])}
+        className={`${isSelect(data.id)} ${itemClass}${filtIds.includes(data.id) ? ` ${outlineClass}` : ''}`}
         nodeId={data.id}
-        label={<span css={styles.span}><Inventory2OutlinedIcon />{`${data.no && `${data.no} - `}${data.name}`}</span>}
+        label={<span className={spanClass}><Inventory2OutlinedIcon />{`${data.no && `${data.no} - `}${data.name}`}</span>}
       />
     ))
   }
@@ -310,13 +228,13 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
               )
             }}
           />
-          <Button css={styles.button} onClick={() => setModalValues([])} variant="secondary">清除選取</Button>
-          <Button css={styles.button} onClick={handleExpanedAll} variant="secondary">展開全部</Button>
+          <Button className={buttonClass} onClick={() => setModalValues([])} variant="secondary">清除選取</Button>
+          <Button className={buttonClass} onClick={handleExpanedAll} variant="secondary">展開全部</Button>
         </div>
       </DialogHeader>
       <DialogBody>
         <TreeView
-          css={styles.root}
+          className={treeClass}
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
           expanded={expandedArr}
@@ -330,11 +248,11 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
               style={{ marginTop: -9 }}
             />
             <TreeItem
-              css={styles.ulGroupAllMerchant}
+              className={ulGroupAllMerchantClass}
               style={{ overflow: 'visible' }}
               nodeId='ALL'
               label={
-                <span id='ALL' css={styles.span}>
+                <span id='ALL' className={spanClass}>
                   <DashboardOutlinedIcon />{`全部(${productList.all.length})`}
                 </span>
               }

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import PropTypes from 'prop-types'
 
 // 頁面標題（STYLE.md §3 title）。舊版 subTitle 多為裝飾用的全大寫英文 overline，
@@ -9,7 +8,7 @@ const PageTitle = ({ title, subTitle, className, style }) => {
   // 標題一律使用 text 色；保留呼叫端其他 style（如外距），忽略舊版指定的藍色
   const { color, ...restStyle } = style || {}
   return (
-    <div css={className} className="ui-root noprint flex min-w-0 flex-col gap-1" style={restStyle}>
+    <div className={`ui-root noprint flex min-w-0 flex-col gap-1${className ? ` ${className}` : ''}`} style={restStyle}>
       {hasCJK(subTitle) && <span className="text-caption text-text-tertiary">{subTitle}</span>}
       <h1 className="m-0 text-title !font-bold text-text">{title}</h1>
     </div>
@@ -19,7 +18,7 @@ const PageTitle = ({ title, subTitle, className, style }) => {
 PageTitle.propTypes = {
   title: PropTypes.string,
   subTitle: PropTypes.string,
-  className: PropTypes.object,
+  className: PropTypes.string,
   style: PropTypes.object
 }
 

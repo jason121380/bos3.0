@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // Divider 只用於下方列印範本（#printMain / #printThermal），維持列印輸出不變
 import { Divider } from 'ui/display-compat'
 import TableEditBar from 'components/TableEditBar'
@@ -382,7 +381,7 @@ function Results({
   // 不可點的列操作（建立中訂單）：連結無 disabled 屬性，改用 aria-disabled + 取消指標事件
   const linkDisabled = disabledLink => (disabledLink ? { 'aria-disabled': true, tabIndex: -1, className: 'pointer-events-none opacity-40' } : {})
   return (
-    <div {...rest} css={className}>
+    <div {...rest} className={className}>
       <Card className="mt-6">
         <CardHeader
           className="items-center pb-4"
@@ -992,7 +991,7 @@ function Results({
 }
 
 Results.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   orders: PropTypes.array,
 }
 

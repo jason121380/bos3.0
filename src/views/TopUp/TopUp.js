@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
@@ -15,27 +14,7 @@ import pagenationLabel from './../../helper/pagenationLabel'
 
 import RecordResults from './RecordResults'
 import UsagedResult from './UsagedResult'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Card } from 'ui/card'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5),
-  }),
-  container: css({
-    padding: '0px !important',
-  }),
-  result: css({
-    marginBottom: theme.spacing(1.5),
-  }),
-  compactCell: css({
-    padding: '4px 8px !important',
-    fontSize: '13px !important',
-    whiteSpace: 'nowrap',
-  }),
-}
 
 function CustomerManagementList() {
 

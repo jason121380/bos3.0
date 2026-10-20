@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 底部明細卡片（MerchantDailyReportCardContainer／MergeResultCard／MerchantDailyReportCard）保留相容層 Grid／Card：
 // 列印規則以 .MuiCard-root 與 div.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-md-6.MuiGrid-grid-lg-4 排版（initialize.scss）
 import { Grid } from 'ui/grid-compat'
@@ -7,13 +6,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import roundDecimal from './../../helper/roundDecimal.js'
-import { css } from '@emotion/react'
-
-const styles = {
-  designerName: css({
-    fontWeight: 'bold',
-  }),
-}
 
 function Results({
   merchantDailyReport,
@@ -366,11 +358,11 @@ function Results({
           </Grid>
           <Grid item xs={12} md={6} lg={4} className="MerchantDailyReportCard">
             <Card>
-              <CardHeader title="入金儲值明細" css={styles.cardHeader} />
+              <CardHeader title="入金儲值明細" />
               {/* 原生 hr：列印規則以 hr 選擇器隱藏分隔線 */}
               <hr className="m-0 shrink-0 border-0 border-b border-solid border-border" />
               <CardContent style={{ padding: 0 }}>
-                <div css={styles.inner}>
+                <div>
                   <Table dense aria-label="a dense table">
                     <TableBody>
                       {results.walletDeposit && results.walletDeposit.map((data, index) => (

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 排序切換鈕改 ui/toggle-group（handler (event, value) 原樣、`value !== null` 守衛不變）
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import Page from 'components/Page'
@@ -13,29 +12,10 @@ import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCard
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
 import idx from 'idx'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
-
-const styles = {
-	root: css({}),
-	container: css({
-		paddingTop: theme.spacing(3),
-		paddingBottom: theme.spacing(3),
-	}),
-	results: css({
-		marginTop: theme.spacing(3),
-	}),
-	disable: css({
-		display: 'none',
-	}),
-	enable: css({
-		display: 'flex',
-	}),
-}
 
 const DesignerPerformanceReport = () => {
 	const [type, setType] = useState('FAKE')

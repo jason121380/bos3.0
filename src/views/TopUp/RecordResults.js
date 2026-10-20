@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 表格列使用 ui/table（外框 components/ManagementTable 亦為 ui/table）
 
 import { Button } from 'ui/button'
@@ -9,18 +8,6 @@ import format from 'date-fns/format'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { CSVLink } from "react-csv"
-import { css } from '@emotion/react'
-
-const styles = {
-  compactCell: css({
-    padding: '4px 8px !important',
-    fontSize: '13px !important',
-    whiteSpace: 'nowrap',
-  }),
-  fontWeight: css({
-    fontWeight: 'bold !important',
-  }),
-}
 
 function Results({ className, date, walletDepositRecord, onChange, resultSetting, pagenationLabel, ...rest }) {
   const history = useHistory()
@@ -97,7 +84,7 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
   }
 
   return (
-    <div {...rest} css={className}>
+    <div {...rest} className={className}>
       <ManagementTable
         title="入金紀錄"
         totalCount={idx(walletDepositRecord.data, _ => _.walletDepositRecord.totalCount) || 0}
@@ -112,16 +99,16 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
         excelFilename="入金紀錄.csv"
         tableHead={(
           <>
-            <TableHead css={styles.compactCell}>操作</TableHead>
-            <TableHead css={styles.compactCell}>日期</TableHead>
-            <TableHead css={styles.compactCell}>客戶</TableHead>
-            <TableHead css={styles.compactCell}>實際付款金額</TableHead>
-            <TableHead css={styles.compactCell}>入金金額</TableHead>
-            <TableHead css={styles.compactCell}>設計師</TableHead>
-            <TableHead css={styles.compactCell}>付款方式</TableHead>
-            <TableHead css={styles.compactCell}>手續費負擔方</TableHead>
-            <TableHead css={styles.compactCell}>手續費</TableHead>
-            <TableHead css={styles.compactCell}>備註</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">操作</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">日期</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">客戶</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">實際付款金額</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">入金金額</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">設計師</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">付款方式</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">手續費負擔方</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">手續費</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">備註</TableHead>
           </>
         )}
       >
@@ -129,7 +116,7 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
           {idx(walletDepositRecord.data, _ =>
             _.walletDepositRecord.record.map(record => (
               <TableRow key={record.id}>
-                <TableCell css={styles.compactCell}>
+                <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">
                   <Button
                     size="sm"
                     variant="secondary"
@@ -138,44 +125,44 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
                     編輯
                   </Button>
                 </TableCell>
-                <TableCell css={styles.compactCell}>{format(record.date, 'yyyy/MM/dd')}</TableCell>
-                <TableCell css={styles.compactCell}>
+                <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">{format(record.date, 'yyyy/MM/dd')}</TableCell>
+                <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">
                   {record.Customer.name}
                   <div className="text-caption tabular-nums text-text-secondary">
                     {record.Customer.no ? `(${record.Customer.no})` : ''}
                   </div>
                   <div className="text-caption tabular-nums text-text-secondary">{record.Customer.cellphone}</div>
                 </TableCell>
-                <TableCell css={styles.compactCell}>
+                <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">
                   {record.handlingFeeDecountWay === 'BYCUSTOMER'
                     ? record.money + Math.abs(record.handlingFeeDecountPrice)
                     : record.money}
                 </TableCell>
-                <TableCell css={styles.compactCell}>{record.money}</TableCell>
-                <TableCell css={styles.compactCell}>
+                <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">{record.money}</TableCell>
+                <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">
                   {record.Maker.name}
                   <div className="text-caption tabular-nums text-text-secondary">
                     {record.Maker.designerNo ? record.Maker.designerNo : ''}
                   </div>
                 </TableCell>
-                <TableCell css={styles.compactCell}>{record.payType}</TableCell>
-                <TableCell css={styles.compactCell}>
+                <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">{record.payType}</TableCell>
+                <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">
                   {record.handlingFeeDecountWay === 'BYDESIGNER'
                     ? '由設計師負擔'
                     : record.handlingFeeDecountWay === 'BYCUSTOMER'
                       ? '由客人負擔'
                       : '不扣項'}
                 </TableCell>
-                <TableCell css={styles.compactCell}>{record.handlingFeeDecountPrice}</TableCell>
-                <TableCell css={styles.compactCell}>{record.remark}</TableCell>
+                <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">{record.handlingFeeDecountPrice}</TableCell>
+                <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">{record.remark}</TableCell>
               </TableRow>
             ))
           )}
-          <TableRow css={styles.fontWeight}>
-            <TableCell css={styles.compactCell} colSpan={2}>合計</TableCell>
-            <TableCell css={styles.compactCell} />
-            <TableCell css={styles.compactCell}>{total}</TableCell>
-            <TableCell css={styles.compactCell}>
+          <TableRow className="!font-bold">
+            <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap" colSpan={2}>合計</TableCell>
+            <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap" />
+            <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">{total}</TableCell>
+            <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">
               {idx(walletDepositRecord, _ =>
                 _.data.walletDepositRecord.record.reduce(
                   (prev, next) => prev + next.money,
@@ -183,8 +170,8 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
                 )
               )}
             </TableCell>
-            <TableCell css={styles.compactCell} colSpan={3} />
-            <TableCell css={styles.compactCell}>
+            <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap" colSpan={3} />
+            <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">
               {idx(walletDepositRecord, _ =>
                 _.data.walletDepositRecord.record.reduce(
                   (prev, next) => prev + next.handlingFeeDecountPrice,
@@ -192,7 +179,7 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
                 )
               )}
             </TableCell>
-            <TableCell css={styles.compactCell} />
+            <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap" />
           </TableRow>
         </TableBody>
       </ManagementTable>

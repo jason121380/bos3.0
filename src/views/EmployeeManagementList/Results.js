@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Avatar } from 'ui/avatar'
 import { Edit as EditIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
@@ -226,7 +225,7 @@ export default function Results({
   }, [employees])
 
   return (
-    <div {...rest} css={className}>
+    <div {...rest} className={className}>
       <Card>
         <CardHeader className="items-center pb-4">
           <div className="flex items-baseline gap-3">

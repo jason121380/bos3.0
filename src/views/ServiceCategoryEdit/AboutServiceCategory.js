@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { FormControl, FormHelperText, MenuItem, InputLabel, Select } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
@@ -6,39 +5,6 @@ import { Field, Input } from 'ui/input'
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'
 import useStore from 'hooks/useStore'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  alert: css({
-    marginBottom: theme.spacing(3),
-  }),
-  formGroup: css({
-    marginBottom: theme.spacing(3),
-  }),
-  fieldGroup: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  fieldHint: css({
-    margin: theme.spacing(1, 0),
-  }),
-  tags: css({
-    marginTop: theme.spacing(1),
-    '& > * + *': {
-      marginLeft: theme.spacing(1),
-    },
-  }),
-  flexGrow: css({
-    flexGrow: 1,
-  }),
-  dateField: css({
-    '& + &': {
-      marginLeft: theme.spacing(2),
-    },
-  }),
-}
 
 function AboutServiceCategory({ serviceCategory, className, onChange, attributions, ...rest }) {
   const { errors, register, setValue, watch } = useStore()
@@ -81,7 +47,7 @@ function AboutServiceCategory({ serviceCategory, className, onChange, attributio
         <FormControl
           variant="outlined"
           fullWidth
-          css={styles.formGroup}
+          className="mb-[24px]"
           error={!!errors.attribution}
         >
           <InputLabel>服務歸屬</InputLabel>
@@ -106,7 +72,7 @@ function AboutServiceCategory({ serviceCategory, className, onChange, attributio
           label="備註"
           variant="outlined"
           fullWidth
-          css={styles.formGroup}
+          className="mb-[24px]"
           multiline
           minRows="4"
           inputProps={{

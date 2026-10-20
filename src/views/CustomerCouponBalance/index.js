@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import React, { useState, useEffect, useCallback } from 'react'
 import Page from 'components/Page'
 import idx from 'idx'
@@ -7,28 +6,12 @@ import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import TicketAutoComplete from 'components/TicketAutoComplete'
 import { CSVLink } from "react-csv";
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  field: css({
-    width: '200px',
-  }),
-}
 
 const CustomerWalletBalance = () => {
   const [reportForDisplay, setReportForDisplay] = useState(null)
@@ -152,7 +135,7 @@ const CustomerWalletBalance = () => {
           </div>
           <div>
             <TicketAutoComplete
-              className={styles.field}
+              className="w-[200px]"
               label="卡券名稱/代號"
               value={couponIdValue}
               onChange={value =>
@@ -165,7 +148,7 @@ const CustomerWalletBalance = () => {
           </div>
           <div>
             <EmployeeAutoComplete
-              className={styles.field}
+              className="w-[200px]"
               label='偏好設計師'
               value={pageSetting.preferDesignerId}
               onChange={value => {
@@ -178,7 +161,7 @@ const CustomerWalletBalance = () => {
           </div>
           <div>
             <EmployeeAutoComplete
-              className={styles.field}
+              className="w-[200px]"
               label='最近設計師'
               value={pageSetting.latestDesignerId}
               onChange={value => {
