@@ -65,6 +65,12 @@ export function MobileAppBar({ tabs, showTabBar, onOpenMenu }) {
   const isRoot = tabs.some(t => isActive(pathname, t.href))
   const showBack = depth > 0 && !isRoot
 
+  // 手機版不放 bos 頁首（Jason 2026/10/20）：沒有返回／選單按鈕要放時整條不顯示，只保留狀態列安全距離；
+  // 需要按鈕時才出現（PWA 沒有瀏覽器返回鍵，返回鈕不能拿掉），且不放 logo
+  if (!showBack && showTabBar) {
+    return <div aria-hidden="true" className="noprint pt-[env(safe-area-inset-top)] lg:hidden" />
+  }
+
   return (
     <header
       className={cn(
@@ -85,10 +91,8 @@ export function MobileAppBar({ tabs, showTabBar, onOpenMenu }) {
           </Button>
         )}
         <div className="pointer-events-none absolute inset-x-14 flex h-full items-center justify-center">
-          {scrolled && title ? (
+          {scrolled && title && (
             <span className="truncate text-heading font-bold text-text animate-in fade-in-0 slide-in-from-bottom-1">{title}</span>
-          ) : (
-            <img alt="BeautyOS" className="h-5 w-auto invert dark:invert-0" src={require('assets/images/bosLogoNew.png')} />
           )}
         </div>
       </div>
