@@ -765,16 +765,17 @@ export default function Footer() {
   )
   return (
     <Fragment>
-    {/* 手機版（< 640px）卡片只留動作鈕，金額改由底部固定列顯示與展開，同一份數字不重複出現（比照打帳單） */}
-    <Card className="ui-root mt-6">
+    {/* 金額彙總卡（放在 Pannel 下方右欄，比照打帳單 PannelPerformance）：按鈕列在合計下方。
+        手機版（< 640px）卡片只留動作鈕，金額改由底部固定列顯示與展開，同一份數字不重複出現 */}
+    <Card className="ui-root w-full self-start">
       <CardHeader className="max-sm:hidden">
         <CardTitle>金額彙總</CardTitle>
       </CardHeader>
       <div className="grid grid-cols-2 gap-x-6 gap-y-3 px-5 pt-2 max-sm:hidden">
         {details}
       </div>
-      <div className="mt-3 flex flex-wrap items-end justify-between gap-6 border-0 border-t border-solid border-border px-5 py-4 max-sm:mt-0 max-sm:border-t-0">
-        <div className="grid grid-cols-2 gap-x-10 gap-y-4 max-sm:hidden">
+      <div className="mt-3 flex flex-col gap-4 border-0 border-t border-solid border-border px-5 py-4 max-sm:mt-0 max-sm:border-t-0">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-4 max-sm:hidden">
           <div className="flex flex-col gap-1">
             <span className="text-label text-text-secondary">業績合計</span>
             <span className="text-heading tabular-nums text-text">
@@ -1243,8 +1244,6 @@ export default function Footer() {
         </div>
       </div>
     </div>
-    {/* 讓出底部固定合計列的高度（約 49px）再多留一點，動作鈕與「尚缺」說明不會被蓋住 */}
-    <div aria-hidden="true" className="h-16" />
     </Fragment>
   )
 }
