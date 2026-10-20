@@ -8,6 +8,7 @@
 
 ## 一、今天完成了什麼
 
+- **頁面標題粗體＋PWA 打帳單合計列**（2026/10/20，v3.0-1020-1145）：MEMORY #154。**待實機**：iPhone 加到主畫面（PWA）開打帳單，底部導覽列上方應看得到「業績合計／現金應收」列；任一報表／列表頁標題為粗體。
 - **MUI 整包移除完成**（2026/10/20，v3.0-1020-1139）：MuiScope 拆除、@mui 套件從 package.json 移除（MEMORY #153）。**待實機**：全站抽查（版型、打帳單四兄弟、日期區間 DateSelector、報表篩選列）外觀不變。**後續可選**：①emotion 移除（css prop 仍在數百檔，需另開專項並先定共用轉換方式，見 STYLE.md 第 11 點）；②initialize*.scss 的 MuiPickers 死樣式清理；③相容元件（`ui/*-compat`）逐頁改為新版 `ui/*` 元件（屬設計改版，依報表統一等專項推進）。
 - **MUI 移除・列印範本三檔**（2026/10/20，v3.0-1020-1121）：每日營業報表、互助日報、薪資轉帳單改用相容層（MEMORY #152）。**待實機（先合併後驗收）**：①每日營業報表列印（下方其他支付／第三方卡券／入金儲值明細卡片、合併顯示時的合計紅字）；②互助日報列印（4 人一頁的列印區塊）；③薪資轉帳單畫面與列印（底線輸入框可改年月日、置中、底線顏色）；④用 `padding: 0` 的明細卡片底部恢復 MUI 原本的 16px（#184 起少了這段，現補回）。**剩餘**：`ui/mui-theme`（MuiScope，已無 MUI 元件可套用）與 initialize*.scss 的 MuiPickers 死樣式；移除後即可從 package.json 拿掉 @mui 套件。
 - **MUI 移除・主題層**（2026/10/20，v3.0-1020-1102）：theme 改純物件、拆除 ThemeProvider／createTheme／useMediaQuery／Box／styled（MEMORY #151）。**待實機**：預約行事曆手機版開啟時為清單週視圖、401／404／500 頁手機版排版、顧客篩選匯出在窄畫面為全螢幕對話框、會員卡清單浮層、捷徑對話框、圖示大小與顏色。**剩餘 MUI**：三個列印檔（MerchantDailyReport／DecreaseDailyReport／TransferDetail）與 `ui/mui-theme`（MuiScope；列印檔換完後一併移除，連同 initialize*.scss 的 MuiPickers 死樣式），之後才能從 package.json 移除 @mui 套件。
