@@ -1,6 +1,9 @@
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import { Switch } from 'ui/switch'
+import { Tabs } from 'ui/tabs'
+import { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
+import { CalendarDays, ChartColumn, Clock, FileText, KeyRound, Percent, Receipt, User, Wallet } from 'lucide-react'
 import { Provider } from 'context/designerContext'
 import useFetchMerchantDesigner, {
   useFetcDesignerFixedSalaryItemsLazy,
@@ -38,7 +41,6 @@ import Security from './Security'
 import PaySlip from './PaySlip'
 import RakeReport from './RakeReport'
 import SalaryItems from './SalaryItems'
-import { cn } from 'ui/utils'
 import { Skeleton } from 'ui/skeleton'
 
 // 分頁載入中：與舊版 CircularProgress 相同時機顯示
@@ -457,6 +459,17 @@ function Settings({ match, history }) {
     { value: 'security', label: '密碼與安全' },
     { value: 'AttendanceRecord', label: '打卡紀錄' },
   ]
+  const tabIcons = {
+    general: User,
+    orderRecord: Receipt,
+    profitSharing: Percent,
+    rakeReport: ChartColumn,
+    reservation: CalendarDays,
+    paySlip: FileText,
+    salaryItems: Wallet,
+    security: KeyRound,
+    AttendanceRecord: Clock,
+  }
   // function TabItem(props) {
   const itemValue = []
 
@@ -523,35 +536,32 @@ function Settings({ match, history }) {
     <Page className="ui-root min-h-screen" title={`${designerName} - ${findTabName()}`}>
       <AdminPageHeader title={`${designerName} - 個人設定`} />
 
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-[200px_minmax(0,1fr)]">
-        <div>
-          <nav className="sticky top-4 flex flex-col gap-1">
-            {itemValue.map(item => (
-              <div
-                key={item.value}
-                className={cn(
-                  'flex h-9 cursor-pointer items-center rounded-md px-3 text-body transition-colors hover:bg-surface-hover',
-                  currentTab === item.value ? 'bg-accent/8 font-medium text-accent' : 'text-text-secondary'
-                )}
-                onClick={() => history.push(item.value)}
-              >
-                {item.label}
-              </div>
-            ))}
-            {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
-              <div className="mt-6 flex flex-col gap-2 border-0 border-t border-solid border-border px-3 pt-4">
-                <p className="text-label text-text-secondary">報到模式</p>
-                <Switch
-                  aria-label="報到模式"
-                  checked={checkinMode}
-                  onChange={(e, v) => setCheckinMode(v)}
-                />
-              </div>
-            )}
-          </nav>
-        </div>
+      {/* 設定頁樣板（STYLE §12，比照顧客詳細資料）：桌機左選單＋右內容、手機頂部橫向捲動分頁；
+          分頁切換仍是 history.push(分頁值)（同舊版點選），activationMode="manual"：方向鍵只移動焦點，Enter／點擊才切換；分頁內容元件不動 */}
+      <Tabs
+        className="md:flex md:items-stretch"
+        onValueChange={value => handleTabsChange(null, value)}
+        value={currentTab}
+        activationMode="manual"
+      >
+        <SettingsTabsList aria-label="員工設定分類">
+          {itemValue.map(item => (
+            <SettingsTabsTrigger key={item.value} value={item.value} icon={tabIcons[item.value]}>{item.label}</SettingsTabsTrigger>
+          ))}
+        </SettingsTabsList>
 
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">
+          <SettingsSectionHeading title={findTabName()} />
+          {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
+            <div className="mb-4 flex items-center gap-3">
+              <span className="text-label text-text-secondary">報到模式</span>
+              <Switch
+                aria-label="報到模式"
+                checked={checkinMode}
+                onChange={(e, v) => setCheckinMode(v)}
+              />
+            </div>
+          )}
           <div>
               {currentTab === 'general' && (
                 <General
@@ -703,7 +713,7 @@ function Settings({ match, history }) {
               )}
           </div>
         </div>
-      </div>
+      </Tabs>
     </Page>
   )
 }

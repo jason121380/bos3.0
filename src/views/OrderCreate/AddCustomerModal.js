@@ -552,23 +552,25 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <NativeSelect
-                label='最近設計師'
-                value={customer.latestDesigner || ''}
-                onChange={handleFieldChange}
-                name="DesignerId"
-                disabled
-              >
-                <NativeSelectOption value="">
-                  <em>None</em>
-                </NativeSelectOption>
-                {customerInModal.map((data, index) => (
-                  <NativeSelectOption value={data.userId} key={`${data.userId}-${index}`}>
-                    {data.userName}
+              <Field label="最近設計師" htmlFor="addCustomerModal-latestDesigner">
+                <NativeSelect
+                  id="addCustomerModal-latestDesigner"
+                  value={customer.latestDesigner || ''}
+                  onChange={handleFieldChange}
+                  name="DesignerId"
+                  disabled
+                >
+                  <NativeSelectOption value="">
+                    <em>None</em>
                   </NativeSelectOption>
-                ))
-                }
-              </NativeSelect>
+                  {customerInModal.map((data, index) => (
+                    <NativeSelectOption value={data.userId} key={`${data.userId}-${index}`}>
+                      {data.userName}
+                    </NativeSelectOption>
+                  ))
+                  }
+                </NativeSelect>
+              </Field>
             </Grid>
             <Grid item md={6} xs={12}>
               <Autocomplete
