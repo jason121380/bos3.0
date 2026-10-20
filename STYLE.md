@@ -28,17 +28,18 @@
 | `--border-strong` | `#C2C2C2` | `#484848` | 可操作元件邊框：輸入框、下拉、日期欄位（hover `#949494`） |
 | `--text` | `#0D0D0D` | `#ECECEC` | 主要文字 |
 | `--text-secondary` | `#5D5D5D` | `#B4B4B4` | 說明、標籤、欄位名 |
-| `--text-tertiary` | `#8F8F8F` | `#8F8F8F` | placeholder、停用 |
+| `--text-tertiary` | `#707070`（§15 Grok 化後；2026/10/20 為 AA 由 `#777` 調深） | `#8A8A8A` | placeholder、停用、表頭 |
 | `--primary` | `#1A73E8` | `#1A73E8` | 主題色（沿用舊版品牌藍）：主要按鈕、勾選、選取狀態 |
 | `--primary-foreground` | `#FFFFFF` | `#FFFFFF` | 主要按鈕文字 |
 | `--accent` | `#1A73E8` | `#4C8DF6` | 主題色點綴：連結、焦點框、進度、側欄目前頁、Tabs 底線 |
-| `--success` | `#10A37F` | `#19C37D` | 成功、已付款 |
-| `--warning` | `#B7791F` | `#F0B429` | 待處理、即將到期 |
-| `--danger` | `#D92D20` | `#F97066` | 錯誤、刪除、退款 |
+| `--success` | `#0C775D`（原 `#10A37F`，AA 調深） | `#19C37D` | 成功、已付款 |
+| `--warning` | `#905F18`（原 `#B7791F`，AA 調深） | `#F0B429` | 待處理、即將到期 |
+| `--danger` | `#C7291D`（原 `#D92D20`，AA 調深） | `#F97066` | 錯誤、刪除、退款 |
 
 規則：
 - 「能點、能輸入」的元件用 `border-strong` 或實心底；「純裝飾」的卡片框與分隔線用 `border`，維持淡雅但不混淆。
 - 狀態色只用在 **Badge、圖示、細邊框**，不做大面積底色；底色一律用該色 8% 透明度（`bg-success/8`）。
+- **對比（WCAG AA，2026/10/20 實算）**：文字類 token（`text`／`text-secondary`／`text-tertiary`／`success`／`warning`／`danger`）在 `background`、`surface`、`surface-hover` 上皆 ≥ 4.5:1；狀態色另滿足「文字在自身 8% 底（Badge）上」與「白字在實心底上」≥ 4.5:1。調整只降明度、色相不變；新增或調整 token 時要重算（公式：WCAG 2.x 相對亮度）。`accent`（品牌藍 `#1A73E8`）在 `surface`／`surface-hover`／自身 8% 底上為 4.32／4.13／約 4.0，未達 4.5，屬品牌色決策，待 Jason 拍板。
 - 一個畫面最多一個 `primary` 實心按鈕。
 
 ## 3. 字型
@@ -93,16 +94,16 @@
 |---|---|
 | **Button** | 變體只有 `primary`（主題藍底白字、圓角 full）、`secondary`（淺灰實心 `surface-hover`、無框，與輸入框區分）、`ghost`（無框）、`danger`；尺寸 `sm 32px / md 36px / lg 40px`。圖示 16px，與文字間距 6px。 |
 | **Input / Select / DatePicker** | 高 36px、`rounded-md`、1px `border-strong`（hover 加深）；focus 為 2px `accent` 外框。錯誤時 border 變 `danger`，下方 caption 顯示訊息。日期區間一律用 `DateSelector`：「快速選擇」下拉 ＋ 一個日期區間欄位，不平鋪多顆按鈕。日期選擇器為自家實作（`ui/date-picker`＝`ui/calendar`＋`ui/date-field`，2026/10/20 取代 `@mui/x-date-pickers`，見 `docs/redesign/DATE_PICKER.md` 與 MEMORY #150）：標籤放欄位上方；`format`／存值（`onChange` 原樣回傳 `Date`／`null`）／桌機分段輸入與值的生命週期照 MUI 行為；彈層頂欄 `background` 底、`text` 字色、底部 1px `border`，**不要大面主題藍底白字**；主題色 `accent` 只保留在選取日、今天邊框、年／月／時間選取與確認按鈕等小面積。**篩選列例外（MerchantSearchBar/DatePicker）**：自訂 field 本身是日期按鈕且置於 ButtonGroup／flex 單排，不得傳 `label` 給 facade（facade 有 label 會以 `Field` 在欄位上方渲染標籤，會把按鈕群組擠成兩層重疊，見 MEMORY #112）；彈層標題以 `localeText.toolbarTitle` 保留。此類頁面改版以 `uiDateField` 逐頁 opt-in（快捷鈕 ui Button＋UiDateField 單排），其餘引用維持舊版。 |
-| **Form** | 標籤在上；必填以「*」標在標籤後；一列最多 2 欄（桌機）。底部固定動作列：右側「取消 / 儲存」。<br>**標籤只有一種寫法：標籤在欄位上方＋佔位字**，不使用浮動（卡在框線上）的小標籤；備註欄也一樣。<br>**必填 `*` 要有依據**：依該頁既有的驗證規則（例如 `valid`、`billVerify`），並在原始碼註解寫明；空列會被丟掉的欄位，只在該列有填任一欄時才標必填。<br>**RHF 錯誤 aria**：`Field` 的 error 訊息 `<p>` 以 `${htmlFor}-helper-text` 為 id（對齊 MUI TextField helperText 慣例），欄位以 `invalid` 呈現 `aria-invalid` 並以 `aria-describedby` 指向該 id；無 error 時不產生 id。**按鈕停用要說明原因**：在按鈕旁以文字（`role="status"`）與 `title` 寫出「尚缺：…」。 |
+| **Form** | 標籤在上；必填以「*」標在標籤後；一列最多 2 欄（桌機）。底部固定動作列：右側「取消 / 儲存」。<br>**標籤只有一種寫法：標籤在欄位上方＋佔位字**，不使用浮動（卡在框線上）的小標籤；備註欄也一樣。<br>**必填 `*` 要有依據**：依該頁既有的驗證規則（例如 `valid`、`billVerify`），並在原始碼註解寫明；空列會被丟掉的欄位，只在該列有填任一欄時才標必填。<br>**RHF 錯誤 aria**：`Field` 的 error 訊息 `<p>` 以 `${htmlFor}-helper-text` 為 id（對齊 MUI TextField helperText 慣例），欄位以 `invalid` 呈現 `aria-invalid` 並以 `aria-describedby` 指向該 id；無 error 時不產生 id。**按鈕停用要說明原因**：在按鈕旁以文字（`role="status"`）寫出「尚缺：…」，同一句只出現一次——不要在每顆按鈕再掛 `title`（讀屏會重複播報）。 |
 | **Table** | 表頭 `surface` 底、`label` 字級；列高 44px；hover `surface-hover`；數字欄右對齊；空狀態置中顯示說明＋主要動作。分頁固定在表格下方右側。 |
 | **Badge** | 狀態專用；文字＋8% 底色；不加邊框陰影。 |
 | **Card** | `rounded-lg`、1px border、內距 20px；標題用 `heading`。 |
 | **Accordion（可展開卡片）** | 用 `ui/accordion`（與 MUI 介面相容）。收合時標題右側以 `summaryMeta` 顯示摘要（「已填 N 筆 · NT$ 小計」，沒填就不顯示），一眼看得到內容概況。 |
 | **圖示按鈕** | 一律是真的 `<button>`，帶 `title` 與 `aria-label`；「新增」類動作要有文字（例如「新增項目」），不能只放「+」。 |
-| **總計列** | 長表單的「業績合計／現金應收」另放底部固定列（`fixed`，lg 以上讓出 240px 側欄、手機讓出 56px 底部導覽、列印隱藏），不靠 `sticky` 側欄卡。 |
-| **Dialog** | 寬 480 / 640 / 800；標題、內容、底部動作三段；危險操作需二次確認並寫出後果。 |
+| **總計列** | 長表單的「業績合計／現金應收」另放底部固定列（`fixed`，lg 以上以 `lg:left-[var(--sidebar-w,264px)]` 讓出側欄——`--sidebar-w` 由 `layouts/Dashboard` 提供，展開 264px、收合 0；手機讓出 56px 底部導覽、列印隱藏），不靠 `sticky` 側欄卡。 |
+| **Dialog** | 寬 480 / 640 / 800；標題、內容、底部動作三段；危險操作需二次確認並寫出後果。<br>**確認框**：`openSnackbar` 的確認型（`resign`／`groupEdit`）由 `elements/snackbars` 畫成 `ui/modal-compat` 的 `alertdialog`：動詞標題＋呼叫端訊息＋後果說明，「取消」（secondary）／確認（動詞，刪除與離職用 danger）；Esc、點背景、取消只關閉，不觸發確認。 |
 | **樹狀選擇（TreeView）** | 共用選店等樹狀窗保留 `@mui/x-tree-view` 行為時只做視覺覆寫：列高 38px compact、整列 hover `surface-hover`、層級縮排 24px、展開箭頭 16px 置中對齊、勾選框 `ui` Checkbox 16px、群組／店家圖示 16px＋間距 6px；已選店家（`.onSelect`）一律主題色選中態：`accent` 12% 底＋`accent` 文字／店家圖示＋字重 500（淺色 `#1A73E8`、深色 `#4C8DF6`，皆走 `--accent` token，不得寫死水藍／灰藍），未選中維持原文字色與 `surface-hover` hover；搜尋用 `ui` Input、頂部動作 ghost 描邊 `sm` 同高、底部關閉 `secondary`／確認 `primary`。不為換而換自寫樹，避免勾選／展開／搜尋行為回歸。 |**例外（專項試點）**：無 checkbox、展開為標準受控 state 的單純樹（如側欄 `Dashboard/MerchantList`）可自寫 `ul[role=tree]`＋原生 `<button>` 列取代，但必須自補 MUI 原有鍵盤模型（roving tabindex、↑↓←→/Home/End、Enter/Space、type-ahead）並保留原節點 id 規則與列 padding/縮排/左線/hover；含群組半選或 DOM 反查展開的樹不在此例外，仍逐檔專項。 |
-| **Toast** | 右下角；成功 3 秒自動消失，錯誤需手動關閉。 |
+| **Toast** | 右下角；成功／一般提示 3 秒自動消失（滑鼠移入或聚焦時暫停），錯誤需手動關閉。全站唯一提示區：各版面經 `elements/snackbars` 掛一個 `ui/toast` 的 `<Toaster>`，`openSnackbar`（純訊息）與 `toast.*` 都畫成同一個 `ToastCard`；錯誤 `role="alert"`，其餘 `role="status"`（`aria-live=polite`）；關閉鈕 `aria-label="關閉"`。錯誤文案在入口統一處理：去掉 Apollo 的 `GraphQL error:`／`Network error:` 前綴，連線失敗改顯示「網路連線異常，請檢查網路後再試一次」，其餘後端訊息原樣。 |
 | **Sidebar** | 240px；群組標題 `caption` + `text-tertiary`；項目高 36px、`rounded-md`；選取為主題色 8% 底（`bg-accent/8`）+ 主題色文字 + 字重 500。 |
 | **Tabs** | 底線式；選取為 `text` + 2px 主題色底線，未選 `text-secondary`。 |
 | **Slider** | 用 `ui/slider`（原生 `<input type="range">`）：主色深藍 `accent-[rgb(var(--primary))]`（對齊 Checkbox／Radio）；對外維持 MUI 簽名 `onChange(event, Number(value))`，`min`／`max`／`step` 原生傳遞，浮點 `step` 依其小數位數四捨五入修正（避免 0.1 步進產生 1.200000047）；`disabled` 與 `aria-label` 原生透傳；鍵盤用原生方向鍵／PageUp／Down／Home／End。**不做數值泡泡**：`valueLabelDisplay` 不支援（行事曆格子尺寸的泡泡去留待 Jason 拍板後另案，不得默默以本元件替換該兩檔）。 |
@@ -126,6 +127,9 @@
 
 - 文字對比 ≥ 4.5:1；所有可點元素有可見 focus 樣式；觸控目標 ≥ 40px。
 - 圖示按鈕必須有 `aria-label`。
+- 觸控目標不足 40px 的小控制項以**透明偽元素**擴大命中區、不改視覺尺寸：`ui/dialog` 與 `ui/toast` 的關閉鈕、`ui/checkbox` 的 `CheckboxField`／`FormControlLabel` 標籤（手機寬度，`checkboxHitArea`）；圖示鈕用 `size="icon"`（手機 40px），不要再以 `h-8 w-8` 覆寫。
+- 版面殼層：`layouts/Dashboard` 輸出全站唯一的 `<main id="main-content">`，最前面有「跳至主要內容」skip link（平時隱藏、聚焦出現）；`Page` 元件是 `div`，頁面不得再自己輸出 `<main>`。
+- 詳細頁頁首：`PageHeader` 的 `breadcrumb`（`Breadcrumb` 元件，最後一項 `aria-current="page"`）＋`back`（標題左側返回鈕），返回沿用頁面原本的返回行為。
 
 ## 10. 遷移規則（MUI → Tailwind + shadcn）
 
@@ -239,7 +243,7 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
 |---|---|
 | 主題色 | **保留品牌藍 `#1A73E8`**（Jason 決定，不照 Grok 改黑）：主按鈕、選中態（側欄、分頁、設定左選單）、焦點框。 |
 | 底色 | 頁面 `canvas` 白；側欄、卡片、設定左欄 `surface` `#FAFAFA`；次要按鈕／hover／進度軌道 `surface-hover` `#F5F5F5`；次要按鈕 hover `surface-active` `#EDEDED`；中性選中 `surface-selected` `#E4E4E4`。 |
-| 文字 | `text` `#111`、`text-secondary` `#5A5A5A`、`text-tertiary` `#777`。 |
+| 文字 | `text` `#111`、`text-secondary` `#5A5A5A`、`text-tertiary` `#707070`（2026/10/20 為 WCAG AA 由 `#777` 調深，見 §2 對比）。狀態色 `success` `#0C775D`／`warning` `#905F18`／`danger` `#C7291D`。 |
 | 邊框 | 只用在輸入框（`border-strong` `#D9D9D9`）、表格列線與浮層（`border`）；卡片不用邊框與陰影。 |
 | 字級 | 頁面標題 `title` 24px／700（粗體，比照打帳單，Jason 2026/10/20）／字距 -0.01em；區塊標題 `heading` 18px／500；介面內文 `body` 16px；標籤 `label` 14px／500；表格 `table` 14px（含報表 compact）；`caption` 12px。 |
 | 圓角 | 卡片、對話框 16px（`rounded-2xl`）；側欄項目、輸入框、表格動作鈕 8px（`rounded-md`）；按鈕、分頁、切換鈕、徽章狀態膠囊 `rounded-full`。 |
@@ -248,7 +252,7 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
 | 分頁 | `ui/tabs` 改膠囊：高 32px、`px-4`、間距 4px；選中為品牌藍 10% 淡底＋品牌藍字。 |
 | 表格 | 無外框；表頭透明底、14px tertiary medium、高 36px、底線；資料列高 40px、內距 `8px 12px`。 |
 | 側欄 | 寬 264px、`surface` 底、無右框線與底部框線；項目 `px-2.5`、圖示與文字間距 10px；分組標籤 14px tertiary。 |
-| 深色模式 | 依同規則推導：`canvas` `#0B0B0B`、`background` `#111`、`surface` `#161616`、`surface-hover` `#1F1F1F`、文字 `#EDEDED`／`#A8A8A8`／`#8A8A8A`。 |
+| 深色模式 | 依同規則推導：`canvas` `#0B0B0B`、`background` `#111`、`surface` `#161616`、`surface-hover` `#1F1F1F`、文字 `#EDEDED`／`#A8A8A8`／`#8A8A8A`（在 canvas／background／surface／surface-hover 上皆 ≥ 4.5:1，`text-tertiary` 最低 4.77）；狀態色 `#19C37D`／`#F0B429`／`#F97066` 皆 ≥ 5.9:1，不需調整。 |
 | 搜尋下拉 | `ui/combobox`（取代 MUI Autocomplete，行為由 headless 的 downshift 處理）：介面與 MUI Autocomplete 相容，頁面只換 import；`renderInput` 的 TextField 只當 props 載體，`label` 一律成為欄位上方標籤，旁邊的搜尋鈕要底部對齊（`items-end`）；多選已選項目為膠囊、可 Backspace 移除；選單在對話框內會掛在對話框裡。 |
 | 未採用 | 主內容 `max-width 1136px`（ERP 報表與列表需要寬度，維持滿版；設定頁已是 `max-w-6xl`）；Inter 字型（全站沿用 Roboto＋Noto Sans TC）；內容區外距沿用舊全域 `#printContainer`（約 40px，與 Grok 32px 接近，避免動到列印相關樣式）。 |
 

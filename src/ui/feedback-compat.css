@@ -31,9 +31,10 @@
 
 .MuiAlert-root { font-weight: 400; font-size: 14px; line-height: 20px; letter-spacing: 0; color: rgb(var(--text-secondary)); background-color: transparent; display: flex; padding: 6px 16px; }
 .MuiAlert-filled { font-weight: 500; }
-.MuiAlert-filledSuccess { background-color: #10A37F; color: #fff; }
-.MuiAlert-filledWarning { background-color: #B7791F; color: #fff; }
-.MuiAlert-filledError { background-color: #D92D20; color: #fff; }
+/* 淺色實心底改走狀態色 token（WCAG AA：白字對比 ≥ 4.5:1；原寫死 #10A37F／#B7791F 白字僅 3.20／3.64） */
+.MuiAlert-filledSuccess { background-color: rgb(var(--success)); color: #fff; }
+.MuiAlert-filledWarning { background-color: rgb(var(--warning)); color: #fff; }
+.MuiAlert-filledError { background-color: rgb(var(--danger)); color: #fff; }
 .MuiAlert-filledInfo { background-color: #0288d1; color: #fff; }
 .dark .MuiAlert-filledSuccess { background-color: rgb(17, 136, 87); color: rgba(0, 0, 0, 0.87); }
 .dark .MuiAlert-filledWarning { background-color: rgb(168, 125, 28); color: rgba(0, 0, 0, 0.87); }
