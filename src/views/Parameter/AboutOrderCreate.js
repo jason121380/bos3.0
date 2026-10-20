@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { CheckboxField } from 'ui/checkbox'
 import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
@@ -6,7 +5,6 @@ import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo, Fragment } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
-import styles from './styles/AboutTeachingModeSetting'
 
 const printLayout = [
   {
@@ -123,10 +121,10 @@ function AboutOrderCreate({
           const isDisabled = key === 'isDateLockDisplay' && orderCreateSetting.isAbleToChangeDateTimeInOrderCreate
           return (
             <Fragment key={label}>
-              <div css={styles.serviceInputGroup}>
+              <div className="flex items-center mb-[24px]">
                 <CheckboxField
                   disabled={!inputEnable || isDisabled}
-                  css={styles.isUsing}
+                  className="mx-[20px] my-0"
                   label={label}
                   checked={orderCreateSetting[key]}
                   onChange={(e, v) => {
@@ -141,13 +139,13 @@ function AboutOrderCreate({
           )
         })}
         {optionArr.map(({label, key, options}) => (
-          <div key={label} css={styles.serviceInputGroup}>
+          <div key={label} className="flex items-center mb-[24px]">
             <div className="flex flex-wrap items-center gap-2 p-2">
               <Field label={label}>
                 <NativeSelect
                   disabled={!inputEnable}
                   fullWidth={false}
-                  css={styles.orderCreateField}
+                  className="w-[200px] flex mr-[12px]"
                   value={orderCreateSetting[key]}
                   onChange={e => {
                     setOrderCreateSetting(

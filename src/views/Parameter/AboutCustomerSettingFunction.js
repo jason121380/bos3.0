@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 「完全新客必填欄位」為多選 Autocomplete（含勾選圖示的選項），標籤改上方 Field、本體保留 MUI
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
@@ -9,7 +8,6 @@ import { memo } from 'react'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import _ from 'lodash'
 import produce from 'immer'
-import styles from './styles/AboutCustomerSettingFunction'
 import { Autocomplete } from 'ui/combobox'
 
 const optionArr = [
@@ -42,7 +40,7 @@ function AboutCustomerSettingFunction({
           <div key={label}>
             <CheckboxField
               disabled={!inputEnable}
-              css={styles.isUsing}
+              className="mx-[20px] my-0"
               label={label}
               checked={aboutCustomer[key]}
               onChange={(e, v) => handleSetValue(key, v)}

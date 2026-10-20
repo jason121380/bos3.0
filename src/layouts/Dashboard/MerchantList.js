@@ -1,70 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, GroupsRounded as GroupsRoundedIcon, Storefront as StorefrontIcon } from 'ui/icons'
 import { useHistory } from 'react-router';
-import { css } from '@emotion/react'
 
 import React, { useState, useEffect, useRef } from 'react'
-
-const styles = {
-  tree: css({
-    display: 'flex',
-    gap: 0,
-    flexDirection: 'column',
-    listStyle: 'none',
-    margin: 0,
-    padding: 0,
-    '& ul': {
-      listStyle: 'none',
-      margin: 0,
-      padding: 0
-    }
-  }),
-  row: css({
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
-    padding: '8px 16px',
-    border: 'none',
-    borderRadius: 8,
-    background: 'transparent',
-    cursor: 'pointer',
-    textAlign: 'left',
-    font: 'inherit',
-    transition: '.2s',
-    '&:hover': {
-      background: 'rgb(var(--surface-hover))'
-    },
-    '&:focus-visible': {
-      outline: '2px solid rgb(var(--accent))',
-      outlineOffset: '-2px'
-    }
-  }),
-  rowIndented: css({
-    paddingLeft: '24px'
-  }),
-  children: css({
-    marginLeft: '12px !important',
-    borderLeft: '1px solid rgb(var(--border))'
-  }),
-  span: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: 12,
-    wordBreak: 'keep-all',
-    whiteSpace: 'nowrap',
-    fontSize: '14px',
-    fontWeight: 400,
-    color: 'rgb(var(--text))'
-  }),
-  icon: css({
-    color: 'rgb(var(--text-secondary))',
-    fontSize: '16px'
-  }),
-  expandIcon: css({
-    flexShrink: 0,
-    color: 'rgb(var(--text-tertiary))'
-  })
-}
 
 const MerchantList = ({ merchants, searchQuery }) => {
   const history = useHistory()
@@ -100,10 +37,12 @@ const MerchantList = ({ merchants, searchQuery }) => {
     setExpanded(prev => prev.includes(id) ? prev.filter(nodeId => nodeId !== id) : [...prev, id])
   }
 
+  // 圖示 16px 用 inline style：ui/icons 的預設 font-size 由執行期插入的 emotion class 給定（晚於 Tailwind），原 css prop 併入同一 class 覆蓋；
+  // inline 同樣勝過它、但與原本一樣會輸給列印的 html * { font-size: 9px !important }（用 ! 會連列印一起蓋掉）
   const RenderLabel = ({ isGroup, data }) => {
     return (
-      <span css={styles.span}>
-        {isGroup ? <GroupsRoundedIcon css={styles.icon} /> : <StorefrontIcon css={styles.icon} />}
+      <span className="flex items-center gap-[12px] [word-break:keep-all] whitespace-nowrap text-[14px] font-normal text-text">
+        {isGroup ? <GroupsRoundedIcon className="text-text-secondary" style={{ fontSize: '16px' }} /> : <StorefrontIcon className="text-text-secondary" style={{ fontSize: '16px' }} />}
         {isGroup ?
           `${data.no ? data.no : ''} - ${data.name}(${data.groups.length ? data.groups.length : data.merchants.length})` : data.name
         }
@@ -235,7 +174,7 @@ const MerchantList = ({ merchants, searchQuery }) => {
           type="button"
           ref={el => { itemRefs.current[node.key] = el }}
           tabIndex={node.key === effectiveFocusedKey ? 0 : -1}
-          css={[styles.row, (node.isGroup || depth > 0) ? styles.rowIndented : null]}
+          className={`flex items-center w-full py-[8px] [border:none] rounded-[8px] bg-transparent cursor-pointer text-left [font:inherit] [transition:.2s] hover:bg-surface-hover focus-visible:[outline:2px_solid_rgb(var(--accent))] focus-visible:[outline-offset:-2px] ${(node.isGroup || depth > 0) ? 'pl-[24px] pr-[16px]' : 'px-[16px]'}`}
           onClick={() => {
             setFocusedKey(node.key)
             if (node.isGroup) {
@@ -249,19 +188,19 @@ const MerchantList = ({ merchants, searchQuery }) => {
         >
           {node.isGroup && hasChildren
             ? (isExpanded
-              ? <ExpandMoreIcon css={styles.expandIcon} sx={{ color: 'rgb(var(--text-tertiary))' }} />
-              : <ChevronRightIcon css={styles.expandIcon} sx={{ color: 'rgb(var(--text-tertiary))' }} />)
+              ? <ExpandMoreIcon className="shrink-0 text-text-tertiary" sx={{ color: 'rgb(var(--text-tertiary))' }} />
+              : <ChevronRightIcon className="shrink-0 text-text-tertiary" sx={{ color: 'rgb(var(--text-tertiary))' }} />)
             : null}
           {node.isAll ? (
-            <span css={styles.span}>
-              <GroupsRoundedIcon css={styles.icon} />{`全部(${merchants.allMerchants.length})`}
+            <span className="flex items-center gap-[12px] [word-break:keep-all] whitespace-nowrap text-[14px] font-normal text-text">
+              <GroupsRoundedIcon className="text-text-secondary" style={{ fontSize: '16px' }} />{`全部(${merchants.allMerchants.length})`}
             </span>
           ) : (
             <RenderLabel isGroup={node.isGroup} data={node.data} />
           )}
         </button>
         {node.isGroup && hasChildren && isExpanded ? (
-          <ul role="group" css={styles.children}>
+          <ul role="group" className="!ml-[12px] [border-left:1px_solid_rgb(var(--border))]">
             {node.children.map(child => renderNode(child, depth + 1))}
           </ul>
         ) : null}
@@ -270,7 +209,7 @@ const MerchantList = ({ merchants, searchQuery }) => {
   }
 
   return (
-    <ul css={styles.tree} role="tree" aria-label="店家列表">
+    <ul className="flex gap-0 flex-col list-none m-0 p-0 [&_ul]:list-none [&_ul]:m-0 [&_ul]:p-0" role="tree" aria-label="店家列表">
       {rootNodes.map(node => renderNode(node, 0))}
     </ul>
   )

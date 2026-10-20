@@ -1,25 +1,10 @@
-/** @jsxImportSource @emotion/react */
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import { useEffect, useState } from 'react'
 import useFetchGetPayWays from 'hooks/useFetchGetPayWays'
 import idx from 'idx'
-import { css } from '@emotion/react'
 import { Autocomplete } from 'ui/combobox'
-
-const styles = {
-  checkbox: css({
-    padding: '6px !important',
-    fontSize: 14,
-    '& span.Mui-checked': {
-      color: 'rgb(32, 45, 80) !important'
-    },
-    '& span.MuiCheckbox-root': {
-      padding: '3px !important'
-    }
-  })
-}
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
@@ -52,7 +37,7 @@ const PaywayAutocomplete = ({ value, onChange = () => { }, isReadOnly = false, .
       onChange={(e, v) => onChange(v ? v.map(d => d.value) : [])}
       readOnly={isReadOnly}
       renderOption={(props, option, { selected }) => (
-        <span {...props} css={styles.checkbox}>
+        <span {...props} className={`${props.className} !p-[6px] [font-size:14px]`}>
           <Checkbox
             style={{ color: 'rgb(var(--text))', padding: 2, marginRight: 4 }}
             icon={icon}

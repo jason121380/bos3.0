@@ -1,34 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import { Fragment } from 'react'
-import { css } from '@emotion/react'
 import { EmptyState } from 'ui/empty-state'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
-
-const styles = {
-  root: css({}),
-  sepreateDiv: css({
-    display: 'flex',
-    justifyContent: 'space-around',
-  }),
-  centerTd: css({
-    display: 'flex',
-    justifyContent: 'center',
-  }),
-  sticky: css({
-    width: '150px',
-    position: 'sticky',
-    left: 0,
-    background: 'white',
-    zIndex: '99',
-  }),
-  stickyRow: css({
-    position: 'sticky',
-    top: 0,
-    background: 'white',
-    zIndex: '100',
-  }),
-}
 
 // 固定首欄與表頭（原 styles.sticky／stickyRow，改用 tokens 底色）
 const STICKY_COL = 'sticky left-0 z-[99] w-[150px] bg-background'

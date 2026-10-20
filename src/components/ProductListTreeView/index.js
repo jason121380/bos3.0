@@ -1,20 +1,10 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { useState, useEffect, Fragment } from 'react'
 import { Button } from 'ui/button'
 import useFetchProductTreeview from 'hooks/useFetchProductTreeview'
 import ProductListModal from './ProductListModal'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
 import { Autocomplete } from 'ui/combobox'
-
-const styles = {
-  root: css({
-    '& input': {
-      cursor: 'pointer'
-    }
-  }),
-}
 
 const index = ({ onValueChange = () => { } }) => {
   const productTreeview = useFetchProductTreeview()
@@ -56,8 +46,7 @@ const index = ({ onValueChange = () => { } }) => {
     <Fragment>
       <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'flex-end' }}>
         <Autocomplete
-          className="min-w-0 flex-1"
-          css={styles.root}
+          className="min-w-0 flex-1 [&_input]:cursor-pointer"
           multiple
           fullWidth
           disabled={!products.all.length}

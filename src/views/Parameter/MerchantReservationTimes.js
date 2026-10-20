@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 名稱欄位（endAdornment、onBlur 檢查）保留 MUI TextField
 import { TextField, InputAdornment } from 'ui/text-field'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
@@ -9,7 +8,6 @@ import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 import { Edit as EditIcon, Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
-import styles from './styles/MerchantReservationTimes'
 import { green } from 'ui/colors';
 import { openSnackbar } from 'elements/snackbars';
 
@@ -91,17 +89,17 @@ function MerchantReservationTimes({
       <CardHeader>
         <CardTitle>開放預約時段設定</CardTitle>
       </CardHeader>
-      <CardContent css={styles.CardContent}>
+      <CardContent className="flex flex-col gap-[40px]">
         {merchantReservation.length ?
           merchantReservation.map(({ title, openingHours, closingHours, useDay }, index) => (
-            <div css={styles.container} key={`Reservation-${index}`}>
+            <div className="flex flex-col gap-[20px]" key={`Reservation-${index}`}>
               <div>
                 <TextField
                   disabled={!inputEnable}
                   placeholder={'請輸入名稱'}
                   value={title}
                   variant='standard'
-                  css={styles.textField}
+                  className="[&_input]:!pt-[6px] [&_input]:!px-0 [&_input]:!pb-[7px]"
                   onBlur={e => {
                     if (e.target.value === '') {
                       setTimeout(() => {
@@ -122,7 +120,7 @@ function MerchantReservationTimes({
                   }}
                 />
               </div>
-              <div css={styles.timeWrap}>
+              <div className="flex gap-[20px] items-center flex-wrap">
                 <Field label='開始'>
                   <div className="flex items-center gap-2">
                     <NativeSelect
@@ -179,7 +177,7 @@ function MerchantReservationTimes({
                   </div>
                 </Field>
               </div>
-              <div css={styles.timeWrap}>
+              <div className="flex gap-[20px] items-center flex-wrap">
                 {weekArray.map(({ label, value }) => {
                   const isInclude = useDay.includes(value)
                   return (
@@ -192,7 +190,7 @@ function MerchantReservationTimes({
                     >{label}</ToggleGroupItem>
                   )
                 })}
-                <div css={styles.iconWrap}>
+                <div className="flex grow gap-[30px] flex-wrap [justify-content:end] [&_svg]:cursor-pointer">
                   {index === merchantReservation.length - 1 &&
                     <Button variant="ghost" size="icon" aria-label="新增時段" disabled={!inputEnable || (merchantReservation.length >= 7)} onClick={() => merchantReservation.length < 7 && handleAddItem()}>
                       <AddIcon />

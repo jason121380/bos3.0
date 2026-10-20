@@ -1,11 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Input } from 'ui/input'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment } from 'react'
 import _ from 'lodash'
-
-import styles from './styles/AboutSalaryAddAndDeduction'
 
 function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable }) {
   const handleAddSetting = (...rest) => {
@@ -65,7 +62,7 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
         <CardContent>
           <div className="flex flex-wrap gap-4">
             {service.salaryIncreaseItem.map((data, index) => (
-              <div css={styles.serviceInputGroup} key={index}>
+              <div className="flex items-center mb-[24px] w-[190px]" key={index}>
                 <span
                   className="inline-block shrink-0 text-heading tabular-nums text-text"
                   style={{ margin: '0 5px', width: '25px' }}
@@ -110,7 +107,7 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
         <CardContent>
           <div className="flex flex-wrap gap-4">
             {service.salaryDecreaseItem.map((data, index) => (
-              <div css={styles.serviceInputGroup} key={index}>
+              <div className="flex items-center mb-[24px] w-[190px]" key={index}>
                 <span
                   className="inline-block shrink-0 text-heading tabular-nums text-text"
                   style={{ margin: '0 5px', width: '25px' }}

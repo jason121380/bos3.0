@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import {
   Table,
   TableBody,
@@ -9,42 +8,6 @@ import {
 } from 'ui/table'
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState, useRef } from 'react'
-import { css } from '@emotion/react'
-
-const localStyles = {
-  tableHead: css({
-    backgroundColor: 'rgb(var(--background))',
-    position: 'sticky',
-    top: 0,
-    zIndex: 10,
-    '& th': {
-      backgroundColor: 'rgb(var(--surface))',
-      color: 'rgb(var(--text))',
-      fontWeight: 'bold',
-    }
-  }),
-  totalRow: css({
-    backgroundColor: 'rgba(26, 115, 232, 0.05) !important',
-    '& td': {
-      fontWeight: 'bold !important',
-      color: 'rgb(var(--accent)) !important',
-    }
-  }),
-  stickyLeft: css({
-    position: 'sticky',
-    left: 0,
-    background: 'rgb(var(--background)) !important',
-    zIndex: 20,
-    borderRight: '1px solid rgb(var(--border))',
-  }),
-  stickyLeft2: css({
-    position: 'sticky',
-    left: 80,
-    background: 'rgb(var(--background)) !important',
-    zIndex: 20,
-    borderRight: '1px solid rgb(var(--border))',
-  }),
-}
 
 function Results({
   salaryDetailReport,
@@ -106,10 +69,10 @@ function Results({
   return (
     <Fragment>
       <Table dense wrapperClassName="DesignersSalaryDetailReportTable mt-6 rounded-2xl bg-background">
-          <TableHeader css={localStyles.tableHead}>
+          <TableHeader className="bg-background sticky top-0 z-10 [&_th]:bg-surface [&_th]:!text-text [&_th]:font-bold">
             <TableRow>
-              <TableHead css={localStyles.stickyLeft} style={{ wordBreak: 'break-all' }}>代號</TableHead>
-              <TableHead css={localStyles.stickyLeft2} style={{ wordBreak: 'break-all' }}>姓名</TableHead>
+              <TableHead className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-0" style={{ wordBreak: 'break-all' }}>代號</TableHead>
+              <TableHead className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-[80px]" style={{ wordBreak: 'break-all' }}>姓名</TableHead>
               <TableHead>身份</TableHead>
               {merchantSalaryIncreaseItems.map((data, index) => (
                 <TableHead key={`${data.name}-${index}`}>{data.name}</TableHead>
@@ -125,8 +88,8 @@ function Results({
             {salaryDetailReport.userSalaryDetail.map((data, index) => {
               return (
                 <TableRow key={index}>
-                  <TableCell css={localStyles.stickyLeft} style={{ wordBreak: 'break-all' }}>{data.userNo}</TableCell>
-                  <TableCell css={localStyles.stickyLeft2} style={{ wordBreak: 'break-all' }}>{data.userName}</TableCell>
+                  <TableCell className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-0" style={{ wordBreak: 'break-all' }}>{data.userNo}</TableCell>
+                  <TableCell className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-[80px]" style={{ wordBreak: 'break-all' }}>{data.userName}</TableCell>
                   <TableCell>{data.userHelperIdentity}</TableCell>
                   {merchantSalaryIncreaseItems.map((merchantIncreaseItems, merchantIncreaseItemsIndex) => {
                     if (
@@ -156,9 +119,9 @@ function Results({
               )
             }
             )}
-            <TableRow css={localStyles.totalRow}>
-              <TableCell css={localStyles.stickyLeft} style={{ fontWeight: 'bold', backgroundColor: 'rgba(26, 115, 232, 0.05) !important', color: 'rgb(var(--accent)) !important' }}>合計:</TableCell>
-              <TableCell css={localStyles.stickyLeft2} style={{ backgroundColor: 'rgba(26, 115, 232, 0.05) !important' }} />
+            <TableRow className="!bg-[rgba(26,115,232,0.05)] [&_td]:!font-bold [&_td]:!text-accent">
+              <TableCell className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-0" style={{ fontWeight: 'bold', backgroundColor: 'rgba(26, 115, 232, 0.05) !important', color: 'rgb(var(--accent)) !important' }}>合計:</TableCell>
+              <TableCell className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-[80px]" style={{ backgroundColor: 'rgba(26, 115, 232, 0.05) !important' }} />
               <TableCell />
               {increaseItemsSum.map((data, index) => (
                 <TableCell key={index}>{Math.round(data)}</TableCell>
@@ -203,10 +166,10 @@ function Results({
       </Table>
 
       <Table dense wrapperClassName="DesignersSalaryDetailReportTable-2 mt-6 rounded-2xl bg-background">
-          <TableHeader css={localStyles.tableHead}>
+          <TableHeader className="bg-background sticky top-0 z-10 [&_th]:bg-surface [&_th]:!text-text [&_th]:font-bold">
             <TableRow>
-              <TableHead css={localStyles.stickyLeft} style={{ wordBreak: 'break-all' }}>代號</TableHead>
-              <TableHead css={localStyles.stickyLeft2} style={{ wordBreak: 'break-all' }}>姓名</TableHead>
+              <TableHead className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-0" style={{ wordBreak: 'break-all' }}>代號</TableHead>
+              <TableHead className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-[80px]" style={{ wordBreak: 'break-all' }}>姓名</TableHead>
               <TableHead>實發金額</TableHead>
               {merchantSalaryDecreaseItems.map((data, index) => (
                 <TableHead key={`${data.name}-${index}`}>{data.name}</TableHead>
@@ -218,8 +181,8 @@ function Results({
             {salaryDetailReport.userSalaryDetail.map((data, index) => {
               return (
                 <TableRow key={index}>
-                  <TableCell css={localStyles.stickyLeft} style={{ wordBreak: 'break-all' }}>{data.userNo}</TableCell>
-                  <TableCell css={localStyles.stickyLeft2} style={{ wordBreak: 'break-all' }}>{data.userName}</TableCell>
+                  <TableCell className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-0" style={{ wordBreak: 'break-all' }}>{data.userNo}</TableCell>
+                  <TableCell className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-[80px]" style={{ wordBreak: 'break-all' }}>{data.userName}</TableCell>
                   <TableCell>{Math.round(data.actualPaidPrice)}</TableCell>
                   {merchantSalaryDecreaseItems.map((merchantDecreaseItems, merchantDecreaseItemsIndex) => {
                     if (data.decrease.length === 0) {
@@ -250,9 +213,9 @@ function Results({
               )
             }
             )}
-            <TableRow css={localStyles.totalRow}>
-              <TableCell css={localStyles.stickyLeft} style={{ fontWeight: 'bold', backgroundColor: 'rgb(var(--surface)) !important' }}>合計:</TableCell>
-              <TableCell css={localStyles.stickyLeft2} style={{ backgroundColor: 'rgb(var(--surface)) !important' }} />
+            <TableRow className="!bg-[rgba(26,115,232,0.05)] [&_td]:!font-bold [&_td]:!text-accent">
+              <TableCell className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-0" style={{ fontWeight: 'bold', backgroundColor: 'rgb(var(--surface)) !important' }}>合計:</TableCell>
+              <TableCell className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-[80px]" style={{ backgroundColor: 'rgb(var(--surface)) !important' }} />
               <TableCell>
                 {Math.round(
                   salaryDetailReport.userSalaryDetail

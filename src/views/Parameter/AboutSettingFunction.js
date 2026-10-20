@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 裁切對話框 Slider 已換 ui/slider、Dialog 已換 ui/dialog；多選 Autocomplete、數字欄位保留 MUI
 import { Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Checkbox } from 'ui/checkbox'
@@ -21,7 +20,6 @@ import _ from 'lodash'
 import produce from 'immer'
 import { openSnackbar } from 'elements/snackbars';
 
-import styles from './styles/AboutDeletePersonalClockInDisplay'
 import { Autocomplete } from 'ui/combobox'
 
 const AfterCheckoutBanned = [
@@ -185,11 +183,11 @@ function AboutSettingFunction({
               style={
                 label === '啟用顧客自行建立客資功能' ? { flexDirection: 'column', alignItems: 'flex-start' } : {}
               }
-              css={styles.serviceInputGroup}
+              className="flex items-center mb-[24px]"
             >
               <CheckboxField
                 disabled={!inputEnable}
-                css={(styles.isUsing)}
+                className="mx-[20px] my-0"
                 label={label}
                 checked={aboutSettingFunction[key]}
                 onChange={(e, v) => {
@@ -199,7 +197,7 @@ function AboutSettingFunction({
                 }}
               />
               {label === '啟用顧客自行建立客資功能' && aboutSettingFunction[key] && (
-                <div css={styles.qrcode}>
+                <div className="px-[24px] py-0 flex items-center gap-[10px] grow w-full flex-wrap mb-[12px] [&_button]:[word-break:keep-all] [&_button]:w-fit [&_button]:shrink-0">
                   <TextField
                     onFocus={e => e.target.select()}
                     value={getLink()}
@@ -218,12 +216,12 @@ function AboutSettingFunction({
           </Fragment>
         ))}
         <div
-          css={styles.serviceInputGroup}
+          className="flex items-center mb-[24px]"
           style={{ flexDirection: 'column', alignItems: 'flex-start' }}
         >
           <CheckboxField
             disabled={!inputEnable}
-            css={styles.isUsing}
+            className="mx-[20px] my-0"
             label='啟用紅利點數給點自動換算'
             checked={aboutSettingFunction.bonusRewardRule.isUsing}
             onChange={(e, v) => {
@@ -288,11 +286,11 @@ function AboutSettingFunction({
         </div>
         <div
           style={{ flexDirection: 'column', alignItems: 'flex-start', marginBottom: 40 }}
-          css={styles.serviceInputGroup}
+          className="flex items-center mb-[24px]"
         >
           <CheckboxField
             disabled={!inputEnable}
-            css={(styles.isUsing)}
+            className="mx-[20px] my-0"
             label='啟用紅利點數自動換算'
             checked={aboutSettingFunction.isBonusConversion}
             onChange={(e, v) => {
@@ -322,7 +320,7 @@ function AboutSettingFunction({
             />
           )}
         </div>
-        <div css={styles.logoInputGroup}>
+        <div className="flex flex-col mb-[32px] ml-[20px] gap-[10px]">
           <div>店家Logo設定</div>
           <div>
             <input
@@ -360,7 +358,7 @@ function AboutSettingFunction({
           <NativeSelect
             disabled={!inputEnable}
             fullWidth={false}
-            css={styles.field}
+            className="w-[200px] flex mt-0 mx-[20px] mb-[24px]"
             value={aboutSettingFunction.designerNameForCustomerSide}
             onChange={e => {
               setAboutSettingFunction(
@@ -406,12 +404,12 @@ function AboutSettingFunction({
             />
           </Field>
         </div>
-        <div css={styles.bookingInputGroup}>
+        <div>
           <div style={{ marginBottom: '15px', marginLeft: 20 }}>設定店家營業時間</div>
           <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
             <TextField
               variant='outlined'
-              css={styles.field2}
+              className="w-[150px] flex mx-[20px] my-0"
               disabled={!inputEnable}
               type="time"
               label="起始時間"
@@ -424,7 +422,7 @@ function AboutSettingFunction({
             />
             <TextField
               variant='outlined'
-              css={styles.field2}
+              className="w-[150px] flex mx-[20px] my-0"
               disabled={!inputEnable}
               type="time"
               label="結束時間"
@@ -460,12 +458,12 @@ function AboutSettingFunction({
             onCropComplete={onCropComplete}
             onZoomChange={setZoom}
           />
-          <div css={styles.sliderContainer}>
-            <div css={styles.slider}>
+          <div>
+            <div>
               <div style={{ width: '50px' }}>旋轉</div>
               <Slider value={rotation} min={0} max={360} step={1} onChange={(e, value) => setRotation(value)} />
             </div>
-            <div css={styles.slider}>
+            <div>
               <div style={{ width: '50px' }}>縮放</div>
               <Slider value={zoom} min={0.1} max={10} step={0.1} onChange={(e, value) => setZoom(value)} />
             </div>

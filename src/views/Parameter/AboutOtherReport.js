@@ -1,11 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import { CheckboxField } from 'ui/checkbox'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import { cloneDeep } from 'lodash'
-
-import styles from './styles/AboutTeachingModeSetting'
 
 const checkboxSettings = [
   {label: '費用分析表與損益表出現人員薪資項目', key: 'isDesignerSalaryDisplayOnBalanceReport'},
@@ -56,10 +53,10 @@ function AboutOtherReport({
       </CardHeader>
       <CardContent>
         {checkboxSettings.map(d => (
-          <div css={styles.serviceInputGroup} key={d.label}>
+          <div className="flex items-center mb-[24px]" key={d.label}>
             <CheckboxField
               disabled={!inputEnable}
-              css={styles.isUsing}
+              className="mx-[20px] my-0"
               label={d.label}
               checked={aboutReport[d.key]}
               onChange={() => handleCheckboxChange(d.key)}
@@ -67,10 +64,10 @@ function AboutOtherReport({
           </div>
         ))}
         {toggleSettings.map(d => (
-          <div css={styles.serviceInputGroup} key={d.label}>
+          <div className="flex items-center mb-[24px]" key={d.label}>
             <p>{d.label}：</p>
             <ToggleGroup
-              css={styles.isUsing}
+              className="mx-[20px] my-0"
               size="small"
               exclusive
               value={aboutReport[d.key]}

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 排版改 Tailwind flex（多欄 RWD：600px 以上 3／5／3 欄，以下堆疊，同原 Grid xs=12 sm=n）；時間與數字欄位保留 TextField；人員班別單行文字欄改 Field 上方標籤＋ui Input
 import { TextField } from 'ui/text-field'
 import { Button } from 'ui/button'
@@ -9,8 +8,6 @@ import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment, useState, useEffect } from 'react'
 import _ from 'lodash'
 import { CirclePicker } from 'react-color'
-
-import styles from './styles/AboutEmployeeSchedule'
 
 const AboutEmployeeSchedule = ({
   className,
@@ -196,8 +193,7 @@ const AboutEmployeeSchedule = ({
                           variant="secondary"
                           aria-label="選取顏色"
                           disabled={!inputEnable}
-                          css={styles.colorTag}
-                          className="w-16 rounded-md"
+                          className="w-16 rounded-md ml-[10px] h-[40px] border border-solid border-border-strong"
                           style={{ background: `${data.color}` }}
                           onClick={() => {
                             setShowColorPicker(true)
@@ -208,11 +204,11 @@ const AboutEmployeeSchedule = ({
                       </div>
                     </div>
                     <div className="box-border max-w-full basis-full min-[600px]:max-w-[41.666667%] min-[600px]:basis-5/12">
-                      <div css={styles.gap} className="box-border flex w-full flex-row flex-wrap items-center">
-                        <p css={styles.title}>可打卡時間</p>
+                      <div className="box-border flex w-full flex-row flex-wrap items-center mb-[20px]">
+                        <p className="w-[80px]">可打卡時間</p>
                         <CheckboxField
                           disabled={!inputEnable}
-                          css={styles.isUsing}
+                          className="ml-[20px]"
                           checked={data.isClockInUsing}
                           onChange={event => {
                             handleChangeEnable('startTime', index, data.isClockInUsing)
@@ -230,17 +226,17 @@ const AboutEmployeeSchedule = ({
                           type="time"
                           label="選擇時間"
                           variant='standard'
-                          css={styles.field}
+                          className="w-[100px] flex ml-[12px] [&_input]:!pt-[6px] [&_input]:!px-0 [&_input]:!pb-[7px]"
                           onChange={(event, value) => {
                             handleChangetime('startTime', index, event.target.value)
                           }}
                         />
                       </div>
-                      <div css={styles.gap} className="box-border flex w-full flex-row flex-wrap items-center">
-                        <p css={styles.title}>下班時間 </p>
+                      <div className="box-border flex w-full flex-row flex-wrap items-center mb-[20px]">
+                        <p className="w-[80px]">下班時間 </p>
                         <CheckboxField
                           disabled={!inputEnable}
-                          css={styles.isUsing}
+                          className="ml-[20px]"
                           checked={data.isClockOutUsing}
                           onChange={event => {
                             handleChangeEnable('endTime', index, data.isClockOutUsing)
@@ -251,7 +247,7 @@ const AboutEmployeeSchedule = ({
                           type="time"
                           label="選擇時間"
                           variant='standard'
-                          css={styles.field}
+                          className="w-[100px] flex ml-[12px] [&_input]:!pt-[6px] [&_input]:!px-0 [&_input]:!pb-[7px]"
                           disabled={!inputEnable || !data.isClockOutUsing}
                           value={
                             data.clockOutHour.toString().padStart(2, '0') +
@@ -263,11 +259,11 @@ const AboutEmployeeSchedule = ({
                           }}
                         />
                       </div>
-                      <div css={styles.gap} className="box-border flex w-full flex-row flex-wrap items-center">
-                        <p css={styles.title}>休息開始</p>
+                      <div className="box-border flex w-full flex-row flex-wrap items-center mb-[20px]">
+                        <p className="w-[80px]">休息開始</p>
                         <CheckboxField
                           disabled={!inputEnable}
-                          css={styles.isUsing}
+                          className="ml-[20px]"
                           checked={data.breakTimeSetting[0].isStartTimeUsing}
                           onChange={event => {
                             handleChangeEnable(
@@ -283,7 +279,7 @@ const AboutEmployeeSchedule = ({
                           type="time"
                           label="選擇時間"
                           variant='standard'
-                          css={styles.field}
+                          className="w-[100px] flex ml-[12px] [&_input]:!pt-[6px] [&_input]:!px-0 [&_input]:!pb-[7px]"
                           value={
                             data.breakTimeSetting[0].startHour.toString().padStart(2, '0') +
                             ':' +
@@ -294,11 +290,11 @@ const AboutEmployeeSchedule = ({
                           }}
                         />
                       </div>
-                      <div css={styles.gap} className="box-border flex w-full flex-row flex-wrap items-center">
-                        <p css={styles.title}>休息結束</p>
+                      <div className="box-border flex w-full flex-row flex-wrap items-center mb-[20px]">
+                        <p className="w-[80px]">休息結束</p>
                         <CheckboxField
                           disabled={!inputEnable}
-                          css={styles.isUsing}
+                          className="ml-[20px]"
                           checked={data.breakTimeSetting[0].isEndTimeHourUsing}
                           onChange={event => {
                             handleChangeEnable(
@@ -314,7 +310,7 @@ const AboutEmployeeSchedule = ({
                           type="time"
                           label="選擇時間"
                           variant='standard'
-                          css={styles.field}
+                          className="w-[100px] flex ml-[12px] [&_input]:!pt-[6px] [&_input]:!px-0 [&_input]:!pb-[7px]"
                           value={
                             data.breakTimeSetting[0].endHour.toString().padStart(2, '0') +
                             ':' +
@@ -325,11 +321,11 @@ const AboutEmployeeSchedule = ({
                           }}
                         />
                       </div>
-                      <div css={styles.gap} className="box-border flex w-full flex-row flex-wrap items-center">
+                      <div className="box-border flex w-full flex-row flex-wrap items-center mb-[20px]">
                         <p style={{ maxWidth: '150px' }}>計算加班分鐘數</p>
                         <CheckboxField
                           disabled={!inputEnable}
-                          css={styles.isUsing}
+                          className="ml-[20px]"
                           checked={data.isWorkOverMinutesCalculated}
                           onChange={event => {
                             handleChangeEnable(
@@ -341,11 +337,11 @@ const AboutEmployeeSchedule = ({
                           label="啟用"
                         />
                       </div>
-                      <div css={styles.gap} className="box-border flex w-full flex-row flex-wrap items-center">
+                      <div className="box-border flex w-full flex-row flex-wrap items-center mb-[20px]">
                         <p style={{ maxWidth: '150px' }}>不計加班時長</p>
                         <CheckboxField
                           disabled={!inputEnable}
-                          css={styles.isUsing}
+                          className="ml-[20px]"
                           checked={data.isClockOutBufferMinutesUsing}
                           onChange={event => {
                             handleChangeEnable(
@@ -369,7 +365,7 @@ const AboutEmployeeSchedule = ({
                           label="分鐘"
                           variant="outlined"
                           InputProps={{ inputProps: { min: 0 } }}
-                          css={styles.smallField}
+                          className="w-[60px] flex ml-[12px] mb-[12px]"
                           onChange={event => {
                             handleChangeLateTime('allowedDelayMinutes', index, event.target.value)
                           }}
@@ -382,7 +378,7 @@ const AboutEmployeeSchedule = ({
                           label="分鐘"
                           variant="outlined"
                           InputProps={{ inputProps: { min: 0 } }}
-                          css={styles.smallField}
+                          className="w-[60px] flex ml-[12px] mb-[12px]"
                           onChange={event => {
                             handleChangeLateTime('clockOutBufferMinutes', index, event.target.value)
                           }}
@@ -396,7 +392,7 @@ const AboutEmployeeSchedule = ({
                           inputEnable && deleteSchedule(index)
                         }}
                         sm={12}
-                        css={styles.icon}
+                        className="ml-[50px] cursor-pointer"
                       />
                       {isMerchantClockInSetting.length - 1 === index ? (
                         <AddIcon
@@ -404,7 +400,7 @@ const AboutEmployeeSchedule = ({
                             inputEnable && addSchedule()
                           }}
                           sm={12}
-                          css={styles.icon}
+                          className="ml-[50px] cursor-pointer"
                         />
                       ) : (
                         <div className="box-border" style={{ marginLeft: '50px', width: '24px', height: '24px' }} />
@@ -414,7 +410,7 @@ const AboutEmployeeSchedule = ({
                   {showColorPicker && (
                     <Fragment key={index}>
                       <CirclePicker
-                        css={styles.colorPicker}
+                        className="box-content pt-[20px] pr-[12px] pb-[12px] pl-[20px] border border-solid border-border-strong z-[999] fixed top-[50%] left-[50%] [transform:translate(-50%,-50%)] rounded-[8px] [box-shadow:0_1px_3px_0_rgb(63_63_68_/_15%)]"
                         disableAlpha
                         color={colorData}
                         onChange={event => {
@@ -426,7 +422,7 @@ const AboutEmployeeSchedule = ({
                         onClick={() => {
                           setShowColorPicker(false)
                         }}
-                        css={styles.fixedBg}
+                        className="w-[100vw] h-[100vh] top-0 left-0 fixed z-[998]"
                       />
                     </Fragment>
                   )}
@@ -443,7 +439,7 @@ const AboutEmployeeSchedule = ({
                   inputEnable && addSchedule()
                 }}
                 sm={12}
-                css={styles.icon}
+                className="ml-[50px] cursor-pointer"
               />
             </div>
           )}

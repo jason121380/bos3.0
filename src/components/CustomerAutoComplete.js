@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { LoaderCircle } from 'lucide-react'
 import { TextField } from 'ui/text-field'
 import { useFetchCustomersInAutoComplete } from 'hooks/useFetchCustomers'
@@ -111,7 +110,7 @@ export default React.forwardRef(function CustomerAutoComplete(
       open={customerToggle.open}
       onOpen={customerToggle.toggle}
       onClose={customerToggle.toggle}
-      css={className}
+      className={className}
       style={{ width: '15rem' }}
       value={selectedValue}
       options={filteredOption.length > 0 ? filteredOption : options}

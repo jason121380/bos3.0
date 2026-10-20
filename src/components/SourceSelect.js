@@ -1,17 +1,9 @@
-/** @jsxImportSource @emotion/react */
 import { Select, MenuItem, FormControl, InputLabel } from 'ui/form-control'
 import useFetchGetCustomerReference from 'hooks/useFetchGetCustomerReference'
 import { useState, useEffect, forwardRef } from 'react'
 import idx from 'idx'
-import { css } from '@emotion/react'
-const styles = {
-  FormControl: css({
-    width: '100%'
-  })
-}
-
 const SourceSelect = ({
-  onChange, className = {}, value, emptyOption = false,
+  onChange, className = '', value, emptyOption = false,
   label = '客戶來源', ...rest
 }, ref) => {
   const getReference = useFetchGetCustomerReference()
@@ -24,7 +16,7 @@ const SourceSelect = ({
     <FormControl
       {...rest}
       variant="outlined"
-      css={css([className, styles.FormControl])}
+      className={`${className} w-full`}
     >
       <InputLabel>{label}</InputLabel>
       <Select

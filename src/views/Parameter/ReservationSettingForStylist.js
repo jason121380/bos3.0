@@ -1,9 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
-import styles from './styles/ReservationSettingForStylist'
 
 function ReservationSettingForStylist({
   className, inputEnable, CBRDStylist, setCBRDStylist
@@ -17,7 +15,7 @@ function ReservationSettingForStylist({
         <div >
           <CheckboxField
             disabled={!inputEnable}
-            css={styles.isUsing}
+            className="mx-[20px] my-0"
             label='預約總覽顯示顧客備註'
             checked={CBRDStylist}
             onChange={(e, v) => setCBRDStylist(v)}
