@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 // 手機號碼欄位（helperText 驗證）與帳號欄位（InputLabelProps）保留 MUI TextField
-import { Grid } from 'ui/grid-compat'
 import { TextField } from 'ui/text-field'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Field } from 'ui/input'
@@ -142,11 +141,11 @@ function BookingNotificationSetting({
       </CardContent>
       <CardContent>
         <div>簡訊寄送號碼設定</div>
-        <Grid item container>
+        <div className="box-border flex w-full flex-wrap">
           {aboutBooking.bookingNotificationPhone.map((d, index, arr) => {
             return (
-              <Grid xs={3} css={styles.phoneTextfieldGroup} key={`NotificationPhoneData-${index}`} item container>
-                <Grid style={{ marginRight: '10px' }} item>{index + 1}</Grid>
+              <div css={styles.phoneTextfieldGroup} key={`NotificationPhoneData-${index}`} className="box-border max-w-[25%] basis-1/4 flex-wrap">
+                <div className="box-border" style={{ marginRight: '10px' }}>{index + 1}</div>
                 <TextField
                   label='手機號碼'
                   type="number"
@@ -169,11 +168,11 @@ function BookingNotificationSetting({
                 />
                 {index > 0 && <DeleteForeverIcon style={{ cursor: 'pointer' }} onClick={() => handleRemovePhoneData(index)}/>}
                 {index === arr.length - 1 && <AddIcon style={{ cursor: 'pointer' }} onClick={handleAddPhoneData}/>}
-              </Grid>
+              </div>
             )
           })}
 
-        </Grid>
+        </div>
       </CardContent>
     </Card>
   )

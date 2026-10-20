@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
-// 排版 Grid（多欄 RWD）、時間與數字欄位保留 MUI；人員班別單行文字欄改 Field 上方標籤＋ui Input
-import { Grid } from 'ui/grid-compat'
+// 排版改 Tailwind flex（多欄 RWD：600px 以上 3／5／3 欄，以下堆疊，同原 Grid xs=12 sm=n）；時間與數字欄位保留 TextField；人員班別單行文字欄改 Field 上方標籤＋ui Input
 import { TextField } from 'ui/text-field'
 import { Button } from 'ui/button'
 import { CheckboxField } from 'ui/checkbox'
@@ -178,9 +177,9 @@ const AboutEmployeeSchedule = ({
             isMerchantClockInSetting.map((data, index) => {
               return (
                 <Fragment key={index}>
-                  <Grid container direction="row" style={{ marginBottom: '50px' }}>
-                    <Grid sm={3} xs={12} item >
-                      <Grid>
+                  <div className="box-border flex w-full flex-row flex-wrap" style={{ marginBottom: '50px' }}>
+                    <div className="box-border max-w-full basis-full min-[600px]:max-w-[25%] min-[600px]:basis-1/4">
+                      <div>
                         <Field label="人員班別" className="mb-5">
                           <Input
                             disabled={!inputEnable}
@@ -190,8 +189,8 @@ const AboutEmployeeSchedule = ({
                             }}
                           />
                         </Field>
-                      </Grid>
-                      <Grid>
+                      </div>
+                      <div>
                         選取顏色
                         <Button
                           variant="secondary"
@@ -206,10 +205,10 @@ const AboutEmployeeSchedule = ({
                             setColorData(data.color !== null ? data.color : '')
                           }}
                         />
-                      </Grid>
-                    </Grid>
-                    <Grid sm={5} xs={12} item >
-                      <Grid container direction="row" alignItems="center" css={styles.gap} >
+                      </div>
+                    </div>
+                    <div className="box-border max-w-full basis-full min-[600px]:max-w-[41.666667%] min-[600px]:basis-5/12">
+                      <div css={styles.gap} className="box-border flex w-full flex-row flex-wrap items-center">
                         <p css={styles.title}>可打卡時間</p>
                         <CheckboxField
                           disabled={!inputEnable}
@@ -236,8 +235,8 @@ const AboutEmployeeSchedule = ({
                             handleChangetime('startTime', index, event.target.value)
                           }}
                         />
-                      </Grid>
-                      <Grid container direction="row" alignItems="center" css={styles.gap} >
+                      </div>
+                      <div css={styles.gap} className="box-border flex w-full flex-row flex-wrap items-center">
                         <p css={styles.title}>下班時間 </p>
                         <CheckboxField
                           disabled={!inputEnable}
@@ -263,8 +262,8 @@ const AboutEmployeeSchedule = ({
                             handleChangetime('endTime', index, event.target.value)
                           }}
                         />
-                      </Grid>
-                      <Grid container direction="row" alignItems="center" css={styles.gap}>
+                      </div>
+                      <div css={styles.gap} className="box-border flex w-full flex-row flex-wrap items-center">
                         <p css={styles.title}>休息開始</p>
                         <CheckboxField
                           disabled={!inputEnable}
@@ -294,8 +293,8 @@ const AboutEmployeeSchedule = ({
                             handleChangetime('breakStart', index, event.target.value)
                           }}
                         />
-                      </Grid>
-                      <Grid container direction="row" alignItems="center" css={styles.gap}>
+                      </div>
+                      <div css={styles.gap} className="box-border flex w-full flex-row flex-wrap items-center">
                         <p css={styles.title}>休息結束</p>
                         <CheckboxField
                           disabled={!inputEnable}
@@ -325,8 +324,8 @@ const AboutEmployeeSchedule = ({
                             handleChangetime('breakEnd', index, event.target.value)
                           }}
                         />
-                      </Grid>
-                      <Grid container direction="row" alignItems="center" css={styles.gap}>
+                      </div>
+                      <div css={styles.gap} className="box-border flex w-full flex-row flex-wrap items-center">
                         <p style={{ maxWidth: '150px' }}>計算加班分鐘數</p>
                         <CheckboxField
                           disabled={!inputEnable}
@@ -341,8 +340,8 @@ const AboutEmployeeSchedule = ({
                           }}
                           label="啟用"
                         />
-                      </Grid>
-                      <Grid container direction="row" alignItems="center" css={styles.gap}>
+                      </div>
+                      <div css={styles.gap} className="box-border flex w-full flex-row flex-wrap items-center">
                         <p style={{ maxWidth: '150px' }}>不計加班時長</p>
                         <CheckboxField
                           disabled={!inputEnable}
@@ -357,11 +356,11 @@ const AboutEmployeeSchedule = ({
                           }}
                           label="啟用"
                         />
-                      </Grid>
+                      </div>
 
-                    </Grid>
-                    <Grid sm={3} xs={12} container item direction="row" alignItems="flex-start" >
-                      <Grid container direction="row" alignItems="center" justifyContent='flex-end'>
+                    </div>
+                    <div className="box-border flex w-full max-w-full basis-full flex-row flex-wrap items-start min-[600px]:max-w-[25%] min-[600px]:basis-1/4">
+                      <div className="box-border flex w-full flex-row flex-wrap items-center justify-end">
                         不計遲到時長
                         <TextField
                           disabled={!inputEnable}
@@ -389,16 +388,9 @@ const AboutEmployeeSchedule = ({
                           }}
                           onWheel={() => document.activeElement.blur()}
                         />
-                      </Grid>
-                    </Grid>
-                    <Grid
-                      xs={12}
-                      container
-                      direction="row"
-                      alignItems="flex-end"
-                      justifyContent="flex-end"
-                      item
-                    >
+                      </div>
+                    </div>
+                    <div className="box-border flex w-full max-w-full basis-full flex-row flex-wrap items-end justify-end">
                       <DeleteForeverIcon
                         onClick={() => {
                           inputEnable && deleteSchedule(index)
@@ -415,10 +407,10 @@ const AboutEmployeeSchedule = ({
                           css={styles.icon}
                         />
                       ) : (
-                        <Grid style={{ marginLeft: '50px', width: '24px', height: '24px' }} />
+                        <div className="box-border" style={{ marginLeft: '50px', width: '24px', height: '24px' }} />
                       )}
-                    </Grid>
-                  </Grid>
+                    </div>
+                  </div>
                   {showColorPicker && (
                     <Fragment key={index}>
                       <CirclePicker
@@ -442,7 +434,7 @@ const AboutEmployeeSchedule = ({
               )
             })
           ) : (
-            <Grid container direction="row" alignItems="center" key='無資料'>
+            <div className="box-border flex w-full flex-row flex-wrap items-center" key='無資料'>
               <span className="text-heading text-text">
                 無資料
               </span>
@@ -453,7 +445,7 @@ const AboutEmployeeSchedule = ({
                 sm={12}
                 css={styles.icon}
               />
-            </Grid>
+            </div>
           )}
         </CardContent>
       </Card>
