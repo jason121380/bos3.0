@@ -82,9 +82,27 @@ function Dashboard({ route, location }) {
     }
   }
 
+  // 跳至主要內容：只移動焦點，不改網址（hash 會觸發 router 的 location 變更）；main 臨時可聚焦，失焦後還原
+  const skipToMain = event => {
+    const main = document.getElementById('main-content')
+    if (!main) return
+    event.preventDefault()
+    main.setAttribute('tabindex', '-1')
+    main.focus()
+    main.addEventListener('blur', () => main.removeAttribute('tabindex'), { once: true })
+  }
+
   // 骨架（STYLE.md §4）：左側 Sidebar（Logo / 商家切換 / 導覽 / 使用者）＋右側內容
   return (
     <>
+      {/* 鍵盤第一個可聚焦元素；平時隱藏、聚焦時出現（STYLE §9） */}
+      <a
+        href="#main-content"
+        onClick={skipToMain}
+        className="ui-root noprint fixed left-3 top-3 z-[1500] -translate-y-24 rounded-full bg-primary px-4 py-2 text-label text-primary-foreground no-underline shadow-float outline-none ring-accent ring-offset-2 transition-transform focus:translate-y-0 focus-visible:ring-2"
+      >
+        跳至主要內容
+      </a>
       <Snackbar />
       <Sidebar mobileOpen={openNavBarMobile} onMobileClose={() => setOpenNavBarMobile(false)} desktopOpen={openNavBarDesktop}>
         <SidebarHeader>
@@ -106,9 +124,12 @@ function Dashboard({ route, location }) {
           <PanelLeftOpen strokeWidth={1.75} />
         </Button>
       )}
-      <div
+      {/* 全站唯一的 main（Page 元件是 div，不會再產生第二個）；--sidebar-w 供底部固定列（如打帳單合計列）在 lg 以上讓出側欄：展開 264px、收合 0 */}
+      <main
+        id="main-content"
         className={cn(
-          'flow-root min-h-screen bg-canvas transition-[padding] duration-200 print:pl-0',
+          'flow-root min-h-screen bg-canvas outline-none transition-[padding] duration-200 print:pl-0',
+          openNavBarDesktop ? '[--sidebar-w:264px]' : '[--sidebar-w:0px]',
           // iOS：輸入框字級小於 16px 時聚焦會自動放大畫面
           'max-sm:[&_input]:!text-[16px] max-sm:[&_select]:!text-[16px] max-sm:[&_textarea]:!text-[16px]',
           showTabBar && 'max-lg:pb-[calc(56px+env(safe-area-inset-bottom))] print:pb-0',
@@ -118,7 +139,7 @@ function Dashboard({ route, location }) {
         <div id="printContainer" className="max-w-full overflow-x-hidden">
           <Suspense fallback={<div className="ui-root h-0.5 w-full animate-pulse bg-accent" />}>{renderRoutes(route.routes)}</Suspense>
         </div>
-      </div>
+      </main>
       <ChangePassword open={open} handleClose={toggle} />
     </>
   )

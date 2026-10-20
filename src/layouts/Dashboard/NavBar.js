@@ -1,5 +1,5 @@
 import { CalendarDays, ChartColumn, Contact, CreditCard, Gift, LogOut, Megaphone, Package, Pin, Receipt, Search, Settings, Users } from 'lucide-react'
-import NavItem from 'components/NavItem'
+import NavItem, { isWithinHref } from 'components/NavItem'
 import useFetchProfile from 'hooks/useFetchProfile'
 import idx from 'idx'
 import PropTypes from 'prop-types'
@@ -34,13 +34,15 @@ function reduceChildRoutes({ acc, pathname, item, reportListExtended, depth = 0 
       path: item.href,
       exact: false,
     })
+    // 群組本身沒有 href（上面恆為 null）：改看子項，目前頁面（含子頁）在群組內就展開，側欄揭露目前位置
+    const containsCurrent = item.items.some(child => isWithinHref(pathname, child.href))
     acc.push(
       <NavItem
         depth={depth}
         icon={item.icon}
         key={item.title}
         label={item.label}
-        open={Boolean(open) || item.forceOpen}
+        open={Boolean(open) || item.forceOpen || containsCurrent}
         title={item.title}
         reportListExtended={reportListExtended}
       >
@@ -338,15 +340,18 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
     items: filteredItemArr,
   })
 
-  if (theme == 'DARK' && !profile.loading) {
-    import('../../initialize-dark.scss').then(module => {
-      // Do something with the module.
-    })
-  } else if (theme == 'DEFAULT' && !profile.loading) {
-    import('../../initialize.scss').then(module => {
-      // Do something with the module.
-    })
-  }
+  // 舊版全域樣式依主題載入：原本寫在 render 本體（每次重繪都呼叫 import），移到 effect、只在主題值確定或改變時觸發；載入的檔案與條件不變
+  useEffect(() => {
+    if (theme == 'DARK' && !profile.loading) {
+      import('../../initialize-dark.scss').then(module => {
+        // Do something with the module.
+      })
+    } else if (theme == 'DEFAULT' && !profile.loading) {
+      import('../../initialize.scss').then(module => {
+        // Do something with the module.
+      })
+    }
+  }, [theme, profile.loading])
   // 新版介面的深色 tokens 掛在 <html class="dark">，與舊版深色主題設定同步
   useEffect(() => {
     if (!profile.loading) document.documentElement.classList.toggle('dark', theme == 'DARK')
@@ -530,10 +535,11 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       {!profile.loading && (
         <SidebarFooter className="flex items-center gap-2">
           <RouterLink to="/profile/general" className={cn('flex min-w-0 flex-1 items-center gap-2 rounded-md p-1 hover:bg-surface-hover', focusRing)}>
+            {/* 頭像只是呈現：原 onClick={handleStatusToggle} 只輪替一個畫面上沒用到的 status state（無可見效果），點擊仍由外層連結前往個人頁 */}
             {avatar ? (
-              <img alt="" src={avatar} onClick={handleStatusToggle} className="h-8 w-8 shrink-0 rounded-full border border-solid border-border object-cover" />
+              <img alt="" src={avatar} className="h-8 w-8 shrink-0 rounded-full border border-solid border-border object-cover" />
             ) : (
-              <span onClick={handleStatusToggle} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-hover text-label text-text-secondary">
+              <span aria-hidden="true" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-hover text-label text-text-secondary">
                 {String(userName).slice(0, 1)}
               </span>
             )}
@@ -544,7 +550,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
           </RouterLink>
           {/* 切換店家圖示鈕由 TopBar 以 Portal 畫進這個插槽（開關狀態與店家清單仍在 TopBar），位置在登出左側（Jason 2026/10/20） */}
           <span id="sidebar-merchant-switch-slot" className="contents" />
-          <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label="登出" onClick={handleLogOut}>
+          <Button variant="ghost" size="icon" className="shrink-0" aria-label="登出" title="登出" onClick={handleLogOut}>
             <LogOut strokeWidth={1.75} />
           </Button>
         </SidebarFooter>

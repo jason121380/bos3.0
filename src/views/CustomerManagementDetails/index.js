@@ -17,9 +17,8 @@ import { Redirect } from 'react-router-dom'
 import ProgressBar from 'components/ProgressBar'
 import _ from 'lodash'
 import pagenationLabel from './../../helper/pagenationLabel'
-import { ArrowLeft, CreditCard, Gift, MessageSquare, Receipt, Star, Ticket, User, UserCheck, Wallet } from 'lucide-react'
-import { Button } from 'ui/button'
-import { PageHeader } from 'ui/page-header'
+import { CreditCard, Gift, MessageSquare, Receipt, Star, Ticket, User, UserCheck, Wallet } from 'lucide-react'
+import { Breadcrumb, PageHeader } from 'ui/page-header'
 import { Tabs } from 'ui/tabs'
 import { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
 
@@ -241,12 +240,27 @@ function CustomerManagementDetails({ match, history }) {
   const value = {
     refetch,
   }
+  // 頁首導覽：麵包屑「客戶列表 › 姓名」與左側返回鈕，兩者都沿用原本的返回行為（handleBack）；
+  // 從客資篩選匯出進來（backto=customer-filter）時，上一層顯示「客資篩選匯出」。名稱比照側欄與列表頁標題「客戶列表」。
+  const fromCustomerFilter = params.get('backto') === 'customer-filter'
+  const parentCrumb = fromCustomerFilter
+    ? { label: '客資篩選匯出', href: '/management/customer-filter-export', onClick: handleBack }
+    : { label: '客戶列表', href: '/management/customers', onClick: handleBack }
 
   return (
     <Page className="ui-root" title={`${customer.data.customer.name} - ${currentTabName}`}>
       <Provider value={value}>
         <div className="mx-auto w-full max-w-6xl">
-        {idx(customer, _ => (_.data.customer ? <PageHeader title={_.data.customer.name} description='顧客詳細資料' /> : ''))}
+        {idx(customer, _ =>
+          _.data.customer ? (
+            <PageHeader
+              title={_.data.customer.name}
+              description='顧客詳細資料'
+              breadcrumb={<Breadcrumb items={[parentCrumb, { label: _.data.customer.name }]} />}
+              back={{ label: `返回${parentCrumb.label}`, onClick: handleBack }}
+            />
+          ) : ''
+        )}
         {/* 分頁值皆為字串、handler 只用到 value；activationMode="manual" 與舊版 MUI Tabs 相同：方向鍵只移動焦點，按 Enter／點擊才切換（切換會 history.push） */}
         {/* 設定頁樣板（STYLE §12）：桌機左選單＋右內容（左 surface／右 background、無分隔線由共用 settings-nav 承擔），手機頂部橫向捲動分頁；僅改版面殼，分頁內容元件不動 */}
         <Tabs
@@ -299,16 +313,6 @@ function CustomerManagementDetails({ match, history }) {
           {currentTab === 'SMS' && <SMSRecord records={!getCustomerSMSRecord.loading ? getCustomerSMSRecord.data.customerSMSRecord : []} />}
           {currentTab === 'EventTicketsRecord' && <EventTicketsRecord data={eventTickets} isLoading={getCustomerEventTicketsForMerchant.loading} />}
           {currentTab === 'membership' && <MembershipRecord records={customer.data.customer.membershipPurchaseRecord} />}
-        </div>
-
-        <div className="mt-6">
-          <Button
-            variant="secondary"
-            onClick={handleBack}
-          >
-            <ArrowLeft strokeWidth={1.75} />
-            返回
-          </Button>
         </div>
           </div>
         </Tabs>

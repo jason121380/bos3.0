@@ -40,10 +40,14 @@ const Checkbox = React.forwardRef(
 )
 Checkbox.displayName = 'Checkbox'
 
+// 觸控命中區（STYLE §9 觸控目標 ≥ 40px）：原生 checkbox 不能掛偽元素，改由包住它的 <label> 在手機寬度以透明偽元素上下各擴 8px
+// （列高 24px → 命中 40px）；-z-10＋isolate 讓偽元素墊在標籤內容下方，不擋住標籤裡的連結或按鈕；不改視覺尺寸與版面。
+export const checkboxHitArea = "max-sm:relative max-sm:isolate max-sm:before:absolute max-sm:before:inset-x-0 max-sm:before:-inset-y-2 max-sm:before:-z-10 max-sm:before:content-['']"
+
 // 帶文字的勾選框，取代 MUI FormControlLabel + Checkbox
 // onChange(event, checked) 與 MUI Checkbox 相同；label 可放任何節點
 const CheckboxField = React.forwardRef(({ label, onChange, disabled, className, labelClassName, ...props }, ref) => (
-  <label className={cn('ui-root inline-flex cursor-pointer select-none items-center gap-2 text-body text-text', disabled && 'cursor-not-allowed opacity-60', className)}>
+  <label className={cn('ui-root inline-flex cursor-pointer select-none items-center gap-2 text-body text-text', checkboxHitArea, disabled && 'cursor-not-allowed opacity-60', className)}>
     <Checkbox ref={ref} disabled={disabled} onChange={onChange} {...props} />
     <span className={labelClassName}>{label}</span>
   </label>
@@ -66,6 +70,7 @@ const FormControlLabel = React.forwardRef(
         ref={ref}
         className={cn(
           'ui-root inline-flex cursor-pointer select-none items-center gap-2 text-body text-text',
+          checkboxHitArea,
           labelPlacement === 'start' && 'flex-row-reverse',
           labelPlacement === 'top' && 'flex-col-reverse items-start',
           labelPlacement === 'bottom' && 'flex-col items-start',

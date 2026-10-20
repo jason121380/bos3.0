@@ -16,13 +16,15 @@
   --border-strong-hover: 183 183 183;
   --text: 17 17 17; /* #111 */
   --text-secondary: 90 90 90; /* #5A5A5A */
-  --text-tertiary: 119 119 119; /* #777 */
+  --text-tertiary: 112 112 112; /* #707070：原 #777 在 #F5F5F5 上僅 4.11:1；現於 background／surface／surface-hover 皆 ≥ 4.5:1（WCAG AA） */
   --primary: 26 115 232; /* 主題色 #1A73E8（沿用舊版品牌藍） */
   --primary-foreground: 255 255 255;
   --accent: 26 115 232;
-  --success: 16 163 127;
-  --warning: 183 121 31;
-  --danger: 217 45 32;
+  /* 狀態色同時當文字、圖示、8% 底色與實心底（白字）用：色相不變、只降明度，使「文字在 background／surface／surface-hover 上」
+     「文字在自身 8% 底（Badge）上」「白字在實心底上」皆 ≥ 4.5:1（原值：success #10A37F 3.20、warning #B7791F 3.64、danger #D92D20 4.43 於 surface-hover） */
+  --success: 12 119 93; /* #0C775D */
+  --warning: 144 95 24; /* #905F18 */
+  --danger: 199 41 29; /* #C7291D */
 }
 
 .dark {
