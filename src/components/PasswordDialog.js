@@ -1,4 +1,4 @@
-import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
+import { Dialog, DialogTitle, DialogActions, DialogContent } from 'ui/modal-compat'
 import { TextField } from 'ui/text-field'
 import { Button } from 'ui/button'
 import PropTypes from 'prop-types'
@@ -7,31 +7,26 @@ const PasswordDialog = ({
   title, inputLabel, open, handleOnCancel, handleOnConfirm, isLoading, inputOnChange
 }) => {
   return (
-    // 舊版 Dialog 未設 onClose（只能按取消／確認關閉），故不傳 onOpenChange 並 hideClose
     <Dialog open={open}>
-      <DialogContent size="sm" hideClose aria-describedby={undefined}>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-        </DialogHeader>
-        <DialogBody style={{ overflow: 'visible' }}>
-          <TextField
-            // value={editPwd}
-            label={inputLabel}
-            onChange={e => inputOnChange(e.target.value)}
-            inputProps={{
-              type: 'password',
-            }}
-          />
-        </DialogBody>
-        <DialogFooter>
-          <Button disabled={isLoading} variant="secondary" onClick={handleOnCancel}>
-            取消
-          </Button>
-          <Button disabled={isLoading} variant="primary" onClick={handleOnConfirm}>
-            確認
-          </Button>
-        </DialogFooter>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent style={{ overflow: 'visible' }}>
+        <TextField
+          // value={editPwd}
+          label={inputLabel}
+          onChange={e => inputOnChange(e.target.value)}
+          inputProps={{
+            type: 'password',
+          }}
+        />
       </DialogContent>
+      <DialogActions>
+        <Button disabled={isLoading} variant="secondary" onClick={handleOnCancel}>
+          取消
+        </Button>
+        <Button disabled={isLoading} variant="primary" onClick={handleOnConfirm}>
+          確認
+        </Button>
+      </DialogActions>
     </Dialog>
   )
 }
