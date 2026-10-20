@@ -1,6 +1,6 @@
+import { Grid } from 'ui/grid-compat'
 import { useState, useEffect } from 'react'
 // Grid 只保留在報表外框（className="EmployeeDailyReport"）：列印樣式以此為根排版，且內含列印用卡片
-import { Grid } from '@mui/material'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchDesignerReport from 'hooks/useFetchDesignerDailyReport'

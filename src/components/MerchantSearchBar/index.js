@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Grid } from '@mui/material'
+import { Grid } from 'ui/grid-compat'
 import { endOfDay, startOfDay, addDays, startOfMonth, endOfMonth } from 'date-fns'
 import useQueryString from 'hooks/useQueryString'
 import produce from 'immer'

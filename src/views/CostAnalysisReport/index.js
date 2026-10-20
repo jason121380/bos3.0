@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // printGrid 外框（列印時隱藏）依規則保留 MUI Grid
-import { Grid } from '@mui/material'
+import { Grid } from 'ui/grid-compat'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'

@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
+import { Grid } from 'ui/grid-compat'
 import { Card, CardHeader, CardContent } from 'ui/card-compat'
-import { Grid, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table'
 import { Fragment } from 'react'
 import { format } from 'date-fns'

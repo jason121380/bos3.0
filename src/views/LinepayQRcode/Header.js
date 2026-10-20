@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Grid, Typography } from '@mui/material'
+import { Grid } from 'ui/grid-compat'
+import { Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'

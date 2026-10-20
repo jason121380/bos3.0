@@ -1,19 +1,7 @@
 /** @jsxImportSource @emotion/react */
 // 下方明細卡片區（MerchantDailyReportCardContainer）的列印樣式依賴 MUI 結構，保留 MUI
-import {
-  Table as MuiTable,
-  TableBody as MuiTableBody,
-  TableCell as MuiTableCell,
-  TableHead as MuiTableHead,
-  TableRow as MuiTableRow,
-  Paper,
-  TableContainer,
-  Grid,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-} from '@mui/material'
+import { Grid } from 'ui/grid-compat'
+import { Table as MuiTable, TableBody as MuiTableBody, TableCell as MuiTableCell, TableHead as MuiTableHead, TableRow as MuiTableRow, Paper, TableContainer, Card, CardContent, CardHeader, Divider } from '@mui/material'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import { format, startOfMonth } from 'date-fns'

@@ -1,7 +1,8 @@
+import { Grid } from 'ui/grid-compat'
 import { useState, Fragment } from 'react'
 import { styled } from '@mui/material/styles';
 import format from 'date-fns/format'
-import { Popper, Fade, Paper, Grid, Typography } from '@mui/material'
+import { Popper, Fade, Paper, Typography } from '@mui/material'
 import { Button } from 'ui/button'
 import { CreditCardTwoTone as CreditCardTwoToneIcon } from 'ui/icons'
 
