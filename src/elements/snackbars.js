@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
+import { Button } from 'ui/button-compat'
 import { amber, green } from '@mui/material/colors'
-import {
-  Button, colors, CircularProgress,
-  SnackbarContent, Snackbar
-} from '@mui/material'
+import { colors, CircularProgress, SnackbarContent, Snackbar } from '@mui/material'
 import { Button as UiButton } from 'ui/button'
 import { CheckCircle as CheckCircleIcon, Close as CloseIcon, Error as ErrorIcon, Info as InfoIcon, Warning as WarningIcon } from 'ui/icons'
 import PropTypes from 'prop-types'

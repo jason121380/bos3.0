@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Button } from '@mui/material'
+import { Button } from 'ui/button-compat'
 import { CheckboxField } from 'ui/checkbox'
 import { Input } from 'ui/input'
 import billContext from 'context/keyInContext'

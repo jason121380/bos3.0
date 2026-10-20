@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
+import { Button } from 'ui/button-compat'
 import { Card, CardActions, CardContent, CardHeader } from 'ui/card-compat'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { TextField, InputAdornment } from 'ui/text-field'
-import { Button, Grid, Modal } from '@mui/material'
+import { Grid, Modal } from '@mui/material'
 import { LoaderCircle } from 'lucide-react'
 import { Field, Input } from 'ui/input'
 import { CheckRounded as CheckRoundedIcon, WarningAmberRounded as WarningAmberRoundedIcon } from 'ui/icons'
