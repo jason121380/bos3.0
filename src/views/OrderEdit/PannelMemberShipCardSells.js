@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion-compat'
 import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
 import billContext from "context/keyInContext";
 import { useFetchUseMembershipOrder } from "hooks/useFetchOrder";

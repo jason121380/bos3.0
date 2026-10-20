@@ -2,8 +2,8 @@
  * 重現 MUI v5.15 Paper／Divider／CircularProgress／Typography／Container＋橋接主題（ui/mui-theme）的樣式，class 名稱與 MUI 相同。
  * 維持單一 class 權重；顏色走 tokens（深色模式自動切換）。驗證：scripts/redesign/compat-harness/display-entry.js
  */
-/* ui/card-compat 的卡片也帶 MuiPaper-root（列印選擇器需要），但底色／圓角由卡片自己決定：以 :where 排除，權重仍是單一 class */
-.MuiPaper-root:where(:not(.MuiCard-root)) { background-color: rgb(var(--background)); color: rgb(var(--text)); transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; background-image: none; }
+/* card-compat 的卡片與 accordion-compat 也帶 MuiPaper-root（列印選擇器需要），但底色由它們自己決定：以 :where 排除，權重仍是單一 class */
+.MuiPaper-root:where(:not(.MuiCard-root, .MuiAccordion-root)) { background-color: rgb(var(--background)); color: rgb(var(--text)); transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; background-image: none; }
 .MuiPaper-rounded { border-radius: 8px; }
 .MuiPaper-elevation0 { box-shadow: none; }
 .MuiPaper-elevation12 { box-shadow: 0px 7px 8px -4px rgba(0,0,0,0.2), 0px 12px 17px 2px rgba(0,0,0,0.14), 0px 5px 22px 4px rgba(0,0,0,0.12); }
