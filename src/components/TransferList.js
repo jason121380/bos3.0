@@ -1,5 +1,5 @@
+import { List, ListItemButton, ListItemText, ListItemIcon } from 'ui/list-compat'
 import { Checkbox } from 'ui/checkbox'
-import { List, ListItemButton, ListItemText, ListItemIcon } from '@mui/material'
 import { Button } from 'ui/button'
 import { KeyboardArrowRightRounded as KeyboardArrowRightRoundedIcon, RemoveRounded as RemoveRoundedIcon } from 'ui/icons'
 import { useState } from 'react';
@@ -61,7 +61,7 @@ const TransferList = ({
                       role="listitem"
                       disableRipple
                       onClick={() => handleSelectId(value.id)}
-                      sx={{ padding: '2px 16px !important' }}
+                      style={{ padding: '2px 16px' }}
                     >
                       <ListItemIcon>
                         <Checkbox
@@ -101,7 +101,7 @@ const TransferList = ({
           </div>
           <div className="w-full min-w-0 min-[900px]:flex-1">
             <div className="h-[350px] overflow-auto rounded-md bg-background">
-              <List dense component="div" role="list" sx={{ height: !optionIds.length ? '100%' : 'unset' }}>
+              <List dense component="div" role="list" style={{ height: !optionIds.length ? '100%' : 'unset' }}>
                 {optionIds.length ? optionIds.map((id, i) => {
                   const findData = optionData.find(d => d.id === id)
                   if (!findData) {
@@ -113,7 +113,7 @@ const TransferList = ({
                       role="listitem"
                       disableRipple
                       onClick={() => handleSelectRemoveIdx(i)}
-                      sx={{ padding: '2px 16px !important' }}
+                      style={{ padding: '2px 16px' }}
                     >
                       <ListItemIcon>
                         <Checkbox

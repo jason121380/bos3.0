@@ -1,5 +1,5 @@
+import { Alert, Snackbar } from 'ui/feedback-compat'
 import { useState, useEffect } from 'react'
-import { Alert, Snackbar } from '@mui/material'
 import Page from 'components/Page'
 import { useParams } from 'react-router'
 import produce from 'immer'

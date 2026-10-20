@@ -1,5 +1,5 @@
+import { Snackbar, Alert } from 'ui/feedback-compat'
 import { useRef, useState, useEffect } from 'react'
-import { Snackbar, Alert } from '@mui/material'
 import Page from 'components/Page'
 import ReCAPTCHA from "react-google-recaptcha-enterprise"
 import useFetchGetCustomerCheckTicket from 'hooks/useFetchGetCustomerCheckTicket'
