@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
+import { Table, TableBody, TableCell, TableRow } from 'ui/table-compat'
 import { Grid } from 'ui/grid-compat'
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
-import { Table, TableBody, TableCell, TableRow } from '@mui/material'
 import useFetchMerchantCommissionWay from 'hooks/useFetchMerchantCommissionWay'
 import idx from 'idx'
 import PropTypes from 'prop-types'

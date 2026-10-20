@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
+import { TableContainer, Table, TableHead, TableBody, TableCell, TableRow } from 'ui/table-compat'
 import { Button } from 'ui/button-compat'
 import { useState, useEffect } from 'react'
-import { Dialog, DialogTitle, DialogContent, TableContainer, Table, TableHead, TableBody, TableCell, TableRow, IconButton, Typography } from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, IconButton, Typography } from '@mui/material'
 import { startOfDay, endOfDay } from 'date-fns'
 import { useFetchOrdersFastCheckLazy } from 'hooks/useFetchOrders'
 import { useHistory } from 'react-router';

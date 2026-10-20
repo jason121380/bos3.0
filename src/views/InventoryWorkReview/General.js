@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 // 本頁以 window.print() 列印整頁，initialize.scss 的 .InventoryWorkReview 列印樣式依賴 MUI Card / CardContent / Paper / Table 的 class，
 // 因此列印內容（卡片與表格）原封保留，只替換不列印（noprint）的動作按鈕
+import { TableContainer, Table, TableBody, TableRow, TableCell, TableHead } from 'ui/table-compat'
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
-import { TableContainer, Table, TableBody, TableRow, TableCell, TableHead, Paper } from '@mui/material'
+import { Paper } from '@mui/material'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Fragment } from 'react'

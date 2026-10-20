@@ -29,7 +29,7 @@ BOS 3.0 是美業 ERP 的純前端 SPA（CRA5 + React 17 + Apollo GraphQL + Redu
 npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps
 npm start                            # 開發（craco start）
 CI=true npm run build                # 正式 build（警告視為錯誤，與 CI 相同）
-CI=true npm run test:nowatch         # 全部單元測試（基準：23 檔／97 測試全數通過）
+CI=true npm run test:nowatch         # 全部單元測試（基準：24 檔／100 測試全數通過）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
 node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面驗證
 ```
@@ -50,6 +50,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - `src/ui/`：新元件（Button、Input／Field、Select、NativeSelect、Table、Card、Dialog、Accordion、ToggleGroup、Switch、Checkbox、Badge、Avatar、Stat、Toast、Popover、DropdownMenu、Sidebar、PageHeader…）與 `icons`（lucide 轉接層）、`mui-theme`（MUI 橋接主題）、`format`（`formatNumber`／`formatMoney`）。
 - `src/styles/tokens.css`：CSS 變數 tokens＋`.ui-root` 基礎層（preflight 關閉）。
 - `src/views/OrderCreate/`：打帳單。`orderRequirements.js` 與 `Header.js` 的 `valid` 同步（有測試比對）；`RowAction.js` 是項目列的圖示鈕與「新增項目」。
+- `scripts/redesign/compat-harness/`：MUI 相容層的 computed style 比對頁（MUI 與相容層並排渲染、逐元素比對；用法見檔頭）。
 - `scripts/redesign/`：verify-logic／verify-style-only／verify-imports-only、tokenize-colors、swap-icons、page-checklist、portal-root-scan、inventory-scan（改版盤點數字，口徑見 `docs/redesign/TODO.md` §三）。
 
 ## 踩雷清單
