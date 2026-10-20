@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion-compat'
-import { ExpandMore as ExpandMoreIcon } from 'ui/icons'
+import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
+import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
 import useFetchOrder from 'hooks/useFetchOrder'
 import _ from 'lodash'
@@ -16,7 +16,7 @@ const styles = {
     marginTop: theme.spacing(3),
   }),
   details: css({
-    overflowX: 'scroll',
+    overflowX: 'auto',
   }),
   heading: css({
     fontSize: '16px !important',
@@ -149,8 +149,11 @@ export default function PannelCouponUse() {
     setExpanded(val => !val)
   }
   return (
-    <Accordion defaultExpanded={expanded} expanded={expanded}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />} onClick={handleAccordionClick}>
+    <Accordion expanded={expanded}>
+      <AccordionSummary
+        onClick={handleAccordionClick}
+        summaryMeta={!expanded && panelSummary(couponUsage.filter(d => d.customerTicketId).length)}
+      >
         <p className="m-0" css={styles.heading}>使用預收卡</p>
         <p className="m-0" css={styles.subHeading}>編輯訂單不得編輯預收卡使用</p>
       </AccordionSummary>

@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { TextField } from 'ui/text-field'
-import { Add as AddIcon, BackspaceOutlined as BackspaceOutlinedIcon, DeleteForever as DeleteForeverIcon, FilterNone as FilterNoneIcon } from 'ui/icons'
+import { Field, Input } from 'ui/input'
+import { Eraser, Copy, Trash2 } from 'lucide-react'
+import { RowIconButton, AddRowButton } from 'views/OrderCreate/RowAction'
 import TicketAutoComplete from 'components/TicketAutoComplete'
 import idx from 'idx'
 import _ from 'lodash'
@@ -9,43 +10,35 @@ import billContext from 'context/keyInContext'
 import { css } from '@emotion/react'
 import { theme } from '../../theme'
 
+// 版面比照打帳單（views/OrderCreate/styles/CouponSells）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
 const styles = {
   couponSells: css({
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    rowGap: '12px',
     marginBottom: theme.spacing(3),
   }),
   field: css({
     width: '150px',
     display: 'flex',
-    marginRight: '12px !important',
+    marginRight: '12px',
+  }),
+  fieldWidth: css({
+    width: '250px',
+    display: 'flex',
+    marginRight: '12px',
+  }),
+  countField: css({
+    width: '80px',
+    display: 'flex',
+    marginRight: '12px',
   }),
   priceField: css({
     width: '65px',
     display: 'flex',
-    marginRight: '12px !important',
-  }),
-  checkbox: css({
-    width: '100px',
-    display: 'flex',
     marginRight: '12px',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-  action: css({
-    width: '50px',
-    display: 'flex',
-    marginRight: '12px',
-    cursor: 'pointer',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-  createIcon: css({
-    cursor: 'pointer',
-    margin: '10px',
   }),
 }
 
@@ -128,186 +121,186 @@ export default function CouponSells({
     <Fragment>
       <div css={styles.couponSells}>
         {index === 0 ? (
-          <FilterNoneIcon css={styles.createIcon} onClick={handleOpenCouponModal} />
+          <RowIconButton label="從清單選擇預收卡" className="mx-1.5" onClick={handleOpenCouponModal}>
+            <Copy aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
-          <span style={{ margin: '22px' }} />
+          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
         )}
-        <TicketAutoComplete
-          className={styles.field}
-          label="卡券名稱/代號"
-          value={couponSell.serviceId}
-          ref={couponRef}
-          name="coupon"
-          autoFocus={focus === 'coupon'}
-          orderId={orderId}
-          onFocus={handleFocus}
-          tabIndex={focusRow + '0'}
-          onKeyDown={event => {
-            if ((couponSell.isLocked !== 'FALSE' || !isTicketSellingEditable)) {
-              setFocus('remark')
-              idx(remarkRef, _ => _.current.focus())
-            } else {
-              setFocus('availableCount')
-              idx(availableCountRef, _ => _.current.focus())
-            }
-          }}
-          onChange={function (value) {
-            idx(value, _ => {
-              onChange({
-                index,
-                value: {
-                  ...couponSell,
-                  serviceId: _.id,
-                  availableCount: _.ticketAvailableCount,
-                  price: _.price,
-                  isLocked: _.isLocked,
-                },
+        {/* 不標必填：PannelCouponSells 寫入 bill.ticketOrders 前一律 filter(d => d.serviceId)，空列會被略過 */}
+        <Field label="卡券">
+          <TicketAutoComplete
+            className={styles.fieldWidth}
+            value={couponSell.serviceId}
+            ref={couponRef}
+            name="coupon"
+            autoFocus={focus === 'coupon'}
+            orderId={orderId}
+            onFocus={handleFocus}
+            tabIndex={focusRow + '0'}
+            onKeyDown={event => {
+              if ((couponSell.isLocked !== 'FALSE' || !isTicketSellingEditable)) {
+                setFocus('remark')
+                idx(remarkRef, _ => _.current.focus())
+              } else {
+                setFocus('availableCount')
+                idx(availableCountRef, _ => _.current.focus())
+              }
+            }}
+            onChange={function (value) {
+              idx(value, _ => {
+                onChange({
+                  index,
+                  value: {
+                    ...couponSell,
+                    serviceId: _.id,
+                    availableCount: _.ticketAvailableCount,
+                    price: _.price,
+                    isLocked: _.isLocked,
+                  },
+                })
               })
-            })
-            if (value.isLocked !== 'FALSE' || !isTicketSellingEditable) {
-              setFocus('remark')
-              idx(remarkRef, _ => _.current.focus())
-            } else {
-              setFocus('availableCount')
-              idx(availableCountRef, _ => _.current.focus())
-            }
-          }}
-          inputProps={{
-            'data-testid': `couponSells-${index}-coupon`,
-          }}
-          isTicketSellingEditable={isTicketSellingEditable}
-        />
+              if (value.isLocked !== 'FALSE' || !isTicketSellingEditable) {
+                setFocus('remark')
+                idx(remarkRef, _ => _.current.focus())
+              } else {
+                setFocus('availableCount')
+                idx(availableCountRef, _ => _.current.focus())
+              }
+            }}
+            inputProps={{
+              'data-testid': `couponSells-${index}-coupon`,
+              placeholder: '卡券名稱/代號',
+            }}
+            isTicketSellingEditable={isTicketSellingEditable}
+          />
+        </Field>
         {couponSell.serviceId ? (
           <React.Fragment>
-            <TextField
-              variant="outlined"
-              label="可使用次數"
-              value={couponSell.availableCount}
-              css={styles.priceField}
-              inputRef={availableCountRef}
-              name="availableCount"
-              onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
-              onFocus={handleFocus}
-              tabIndex={focusRow + '1'}
-              onChange={function (event) {
-                const newCouponSell = _.cloneDeep(couponSell)
-                newCouponSell.availableCount = idx(event, _ => +_.target.value || 1)
-                onChange({ index, value: newCouponSell })
-              }}
-              inputProps={{
-                'data-testid': `couponSells-${index}-count`,
-              }}
-              disabled={
-                !!(
-                  couponSell.isLocked === 'TRUE' ||
-                  couponSell.isLocked === 'UNSET' ||
-                  !isTicketSellingEditable
-                )
-              }
-            />
-            <TextField
-              variant="outlined"
-              label="價格"
-              css={styles.field}
-              value={couponSell.price}
-              tabIndex={focusRow + '2'}
-              autoFocus={focus === 'price'}
-              onKeyDown={event => handleKeyDown({ event, nextField: 'count' })}
-              onFocus={handleFocus}
-              inputRef={priceRef}
-              onChange={function (event) {
-                const newCouponSell = _.cloneDeep(couponSell)
-                newCouponSell.price = idx(event, _ => +_.target.value || 0)
-                onChange({ index, value: newCouponSell })
-              }}
-              inputProps={{
-                'data-testid': `couponSells-${index}-price`,
-              }}
-              disabled={
-                !!(
-                  couponSell.isLocked === 'TRUE' ||
-                  couponSell.isLocked === 'UNSET' ||
-                  !isTicketSellingEditable
-                )
-              }
-            />
-            <TextField
-              variant="outlined"
-              label="張數"
-              css={styles.priceField}
-              value={couponSell.count}
-              tabIndex={focusRow + '3'}
-              autoFocus={focus === 'count'}
-              onFocus={handleFocus}
-              inputRef={countRef}
-              onKeyDown={event => handleKeyDown({ event, nextField: 'remark' })}
-              onChange={function (event) {
-                const newCouponSell = _.cloneDeep(couponSell)
-                newCouponSell.count = idx(event, _ => +_.target.value || 1)
-                onChange({ index, value: newCouponSell })
-              }}
-              inputProps={{
-                'data-testid': `couponSells-${index}-count`,
-              }}
-              disabled={
-                !!(
-                  couponSell.isLocked === 'TRUE' ||
-                  couponSell.isLocked === 'UNSET' ||
-                  !isTicketSellingEditable
-                )
-              }
-            />
-            <TextField
-              value={couponSell.remark}
-              variant="outlined"
-              label="備註"
-              name="remark"
-              css={styles.field}
-              onFocus={handleFocus}
-              inputRef={remarkRef}
-              onKeyDown={event => {
-                if (event.key === 'Enter') {
-                  setTimeout(() => {
-                    changeRowFocus(index + 1)
-                  }, 1)
+            <Field label="可使用次數" css={styles.countField}>
+              <Input
+                value={couponSell.availableCount}
+                ref={availableCountRef}
+                name="availableCount"
+                onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
+                onFocus={handleFocus}
+                tabIndex={focusRow + '1'}
+                onChange={function (event) {
+                  const newCouponSell = _.cloneDeep(couponSell)
+                  newCouponSell.availableCount = idx(event, _ => +_.target.value || 1)
+                  onChange({ index, value: newCouponSell })
+                }}
+                data-testid={`couponSells-${index}-count`}
+                disabled={
+                  !!(
+                    couponSell.isLocked === 'TRUE' ||
+                    couponSell.isLocked === 'UNSET' ||
+                    !isTicketSellingEditable
+                  )
                 }
-              }}
-              onChange={event => {
-                const newCouponSell = _.cloneDeep(couponSell)
-                newCouponSell.remark = event.target.value
-                onChange({ index, value: newCouponSell })
-              }}
-            />
+              />
+            </Field>
+            <Field label="價格" css={styles.field}>
+              <Input
+                value={couponSell.price}
+                tabIndex={focusRow + '2'}
+                autoFocus={focus === 'price'}
+                onKeyDown={event => handleKeyDown({ event, nextField: 'count' })}
+                onFocus={handleFocus}
+                ref={priceRef}
+                onChange={function (event) {
+                  const newCouponSell = _.cloneDeep(couponSell)
+                  newCouponSell.price = idx(event, _ => +_.target.value || 0)
+                  onChange({ index, value: newCouponSell })
+                }}
+                data-testid={`couponSells-${index}-price`}
+                disabled={
+                  !!(
+                    couponSell.isLocked === 'TRUE' ||
+                    couponSell.isLocked === 'UNSET' ||
+                    !isTicketSellingEditable
+                  )
+                }
+              />
+            </Field>
+            <Field label="張數" css={styles.priceField}>
+              <Input
+                value={couponSell.count}
+                tabIndex={focusRow + '3'}
+                autoFocus={focus === 'count'}
+                onFocus={handleFocus}
+                ref={countRef}
+                onKeyDown={event => handleKeyDown({ event, nextField: 'remark' })}
+                onChange={function (event) {
+                  const newCouponSell = _.cloneDeep(couponSell)
+                  newCouponSell.count = idx(event, _ => +_.target.value || 1)
+                  onChange({ index, value: newCouponSell })
+                }}
+                data-testid={`couponSells-${index}-count`}
+                disabled={
+                  !!(
+                    couponSell.isLocked === 'TRUE' ||
+                    couponSell.isLocked === 'UNSET' ||
+                    !isTicketSellingEditable
+                  )
+                }
+              />
+            </Field>
+            <Field label="備註" css={styles.field}>
+              <Input
+                value={couponSell.remark}
+                name="remark"
+                onFocus={handleFocus}
+                ref={remarkRef}
+                onKeyDown={event => {
+                  if (event.key === 'Enter') {
+                    setTimeout(() => {
+                      changeRowFocus(index + 1)
+                    }, 1)
+                  }
+                }}
+                onChange={event => {
+                  const newCouponSell = _.cloneDeep(couponSell)
+                  newCouponSell.remark = event.target.value
+                  onChange({ index, value: newCouponSell })
+                }}
+              />
+            </Field>
           </React.Fragment>
         ) : (
           ''
         )}
         {isTicketSellingEditable && (
-          <BackspaceOutlinedIcon
-            css={styles.action}
+          <RowIconButton
+            label="清除此列"
+            className="mr-1.5"
             onClick={function () {
               onClear({ index })
             }}
             data-testid={`couponSells-${index}-clear`}
-          />
+          >
+            <Eraser aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         )}
         {!first && isTicketSellingEditable ? (
-          <DeleteForeverIcon
-            css={styles.action}
+          <RowIconButton
+            label="刪除此列"
+            className="mr-1.5"
             onClick={function () {
               removeCouponSell({
                 index,
               })
             }}
             data-testid={`couponSells-${index}-delete`}
-          />
+          >
+            <Trash2 aria-hidden="true" strokeWidth={1.75} />
+          </RowIconButton>
         ) : (
           ''
         )}
       </div>
       {last && isTicketSellingEditable ? (
-        <AddIcon
-          css={styles.action}
+        <AddRowButton
           onClick={function () {
             addCouponSell({
               index,
