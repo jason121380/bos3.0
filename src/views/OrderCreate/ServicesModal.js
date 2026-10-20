@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
+import { TablePagination } from 'ui/pagination-compat'
 import { Modal } from 'ui/modal-compat'
 import { Paper } from 'ui/display-compat'
 import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
 import { Button } from 'ui/button-compat'
 import { Card, CardHeader, CardContent, CardActions } from 'ui/card-compat'
-import { TablePagination } from '@mui/material'
 import PropTypes from 'prop-types'
 import { useState, useEffect, memo, useRef } from 'react'
 import idx from 'idx'

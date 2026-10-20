@@ -1,0 +1,33 @@
+/*
+ * 重現 MUI v5.15 TablePagination（Toolbar、選單、IconButton）＋橋接主題的樣式，class 名稱與 MUI 相同。
+ * 根節點是 TableCell（table-compat.css），這裡只補 TablePagination 自己的規則。驗證：compat-harness/pagination-entry.js
+ */
+.MuiTablePagination-root { overflow: auto; color: rgb(var(--text)); font-size: 14px; }
+.MuiTablePagination-root:last-child { padding: 0; }
+.MuiTablePagination-toolbar { position: relative; display: flex; align-items: center; padding-left: 16px; padding-right: 2px; min-height: 52px; }
+@media (min-width: 600px) { .MuiTablePagination-toolbar { padding-left: 24px; padding-right: 2px; min-height: 52px; } }
+.MuiTablePagination-spacer { flex: 1 1 100%; }
+.MuiTablePagination-selectLabel,
+.MuiTablePagination-displayedRows { margin: 0; font-weight: 400; font-size: 14px; line-height: 20px; letter-spacing: 0; color: rgb(var(--text-secondary)); flex-shrink: 0; }
+.MuiTablePagination-input { line-height: 1.4375em; position: relative; display: inline-flex; align-items: center; box-sizing: border-box; cursor: text; color: inherit; font-size: inherit; flex-shrink: 0; margin-right: 32px; margin-left: 8px; }
+.MuiTablePagination-select {
+  font: inherit; letter-spacing: inherit; color: currentColor; border: 0; box-sizing: content-box; background: none; margin: 0;
+  display: block; min-width: 16px; padding: 4px 24px 5px 8px; text-align: right; text-align-last: right;
+  height: auto; min-height: 1.4375em; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; user-select: none; border-radius: 0; cursor: pointer;
+}
+.MuiTablePagination-nativeSelect { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font: inherit; border: 0; margin: 0; padding: 0; }
+.MuiTablePagination-nativeSelect:focus-visible + .MuiTablePagination-selectIcon,
+.MuiTablePagination-input:focus-within .MuiTablePagination-select { background-color: rgba(0, 0, 0, 0.05); }
+.dark .MuiTablePagination-input:focus-within .MuiTablePagination-select { background-color: rgba(255, 255, 255, 0.05); }
+.MuiTablePagination-selectIcon { position: absolute; right: 0; top: calc(50% - .5em); pointer-events: none; color: rgba(0, 0, 0, 0.54); width: 1em; height: 1em; font-size: 24px; fill: currentColor; flex-shrink: 0; user-select: none; display: inline-block; transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; }
+.dark .MuiTablePagination-selectIcon { color: #fff; } /* MUI action.active（深色預設為白） */
+.MuiTablePagination-actions { flex-shrink: 0; margin-left: 20px; }
+/* IconButton＋橋接主題（8px 圓角、hover 底色） */
+.MuiTablePagination-actions .MuiIconButton-root {
+  display: inline-flex; align-items: center; justify-content: center; position: relative; box-sizing: border-box; background-color: transparent; outline: 0; border: 0;
+  margin: 0; cursor: pointer; user-select: none; vertical-align: middle; text-decoration: none; text-align: center; flex: 0 0 auto; font-size: 24px; padding: 8px;
+  border-radius: 8px; overflow: visible; color: inherit; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+.MuiTablePagination-actions .MuiIconButton-root:hover { background-color: rgb(var(--surface-hover)); }
+.MuiTablePagination-actions .MuiIconButton-root:disabled { background-color: transparent; color: rgb(var(--text-tertiary)); pointer-events: none; cursor: default; }
+.MuiTablePagination-actions .MuiSvgIcon-root { user-select: none; width: 1em; height: 1em; display: inline-block; fill: currentColor; flex-shrink: 0; font-size: inherit; transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; }
