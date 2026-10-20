@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
+// 保留相容層 Snackbar／SnackbarContent：全域通知的自動隱藏、clickaway、滑鼠移入暫停、上方置中等行為由它提供（openSnackbar 呼叫介面不變）；
+// 保留定值 CircularProgress：結帳進度「定值圓＋%」依 STYLE §6 Empty/Loading 另案，不以轉圈冒充
 import { SnackbarContent, Snackbar } from 'ui/feedback-compat'
 import { CircularProgress } from 'ui/display-compat'
-import { Button } from 'ui/button-compat'
 import { amber, colors, green } from 'ui/colors'
-import { Button as UiButton } from 'ui/button'
+import { Button as UiButton, Button } from 'ui/button'
 import { CheckCircle as CheckCircleIcon, Close as CloseIcon, Error as ErrorIcon, Info as InfoIcon, Warning as WarningIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useEffect, useState, Fragment, forwardRef } from 'react'
@@ -259,8 +260,8 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
               </span>
               <div css={styles.resignBtnDiv}>
                 <Button
-                  variant="contained"
-                  size="small"
+                  variant="primary"
+                  size="sm"
                   css={styles.confirmResignBtn}
                   onClick={() => dailyCheckout()}
                   disabled={isDailyCheckoutLoading}
@@ -277,8 +278,8 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
               </span>
               <div css={styles.resignBtnDiv}>
                 <Button
-                  variant="contained"
-                  size="small"
+                  variant="primary"
+                  size="sm"
                   css={styles.confirmResignBtn}
                   onClick={() =>
                     salaryCheckout
@@ -308,8 +309,8 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
             </span>
             <div css={styles.resignBtnDiv}>
               <Button
-                variant="contained"
-                size="small"
+                variant="primary"
+                size="sm"
                 css={styles.confirmResignBtn}
                 onClick={() =>
                   serviceHelperGroupEdit ? handleSubmitHelperDeduction() : handleSubmitDeduction()

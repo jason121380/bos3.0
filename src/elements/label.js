@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { Typography } from 'ui/display-compat'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
 import { theme } from '../theme'
@@ -39,9 +38,10 @@ function Label({ className, variant, color, shape, children, style, ...rest }) {
     finalStyle.color = color
   }
   return (
-    <Typography {...rest} css={rootCss} style={finalStyle} variant="overline">
+    // 原 Typography overline（span、字重 500）；字級／行高由 styles.root（10px）決定，顏色由 style 決定
+    <span {...rest} css={rootCss} style={finalStyle} className="m-0 font-medium">
       {children}
-    </Typography>
+    </span>
   )
 }
 

@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
-import { IconButton } from 'ui/misc-compat'
+// 窗內有日期選擇器（DateSelector）與設計師下拉，依踩雷清單保留相容層 Dialog（Radix Dialog 會擋住彈出層）
 import { Dialog, DialogTitle, DialogContent } from 'ui/modal-compat'
-import { Typography } from 'ui/display-compat'
-import { TableContainer, Table, TableHead, TableBody, TableCell, TableRow } from 'ui/table-compat'
-import { Button } from 'ui/button-compat'
+import { Table, TableHeader, TableHead, TableBody, TableCell, TableRow } from 'ui/table'
+import { Button } from 'ui/button'
 import { useState, useEffect } from 'react'
 import { startOfDay, endOfDay } from 'date-fns'
 import { useFetchOrdersFastCheckLazy } from 'hooks/useFetchOrders'
@@ -23,14 +22,16 @@ const styles  = {
     position: 'sticky !important',
     top: 0,
     left: 0,
-    background: 'white',
+    background: 'rgb(var(--background))',
     zIndex: '99',
     wordBreak: 'break-all',
+    // ui/table 在 .ui-root 內為 border-box；固定欄的 minWidth 沿用舊版 content-box 計算（內容區最小寬），避免編號被擠成兩行
+    boxSizing: 'content-box',
   }),
   stickyRow: css({
     position: 'sticky !important',
     top: 0,
-    background: 'white',
+    background: 'rgb(var(--background))',
     zIndex: '100',
     outline: '1px solid rgb(var(--border)) !important',
   }),
@@ -70,9 +71,6 @@ const styles  = {
   margin: css({
     margin: 0
   }),
-  IconButton: {
-    padding: '4px !important'
-  }
 }
 
 const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
@@ -244,9 +242,9 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
     <Dialog className='FastCheckOrdersModal' maxWidth='xl' fullWidth open={open} onClose={handleCloseModal}>
       <DialogTitle css={styles.title}>
         帳單速查
-        <IconButton style={{ padding: '8px' }} onClick={handleCloseModal}>
+        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label="關閉" title="關閉" onClick={handleCloseModal}>
           <CloseIcon/>
-        </IconButton>
+        </Button>
       </DialogTitle>
       <div className="h-px bg-border" />
       <DialogContent style={{ padding: '0px 24px 24px' }}>
@@ -276,46 +274,45 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
             <ToggleGroupItem value={true}>指定</ToggleGroupItem>
             <ToggleGroupItem value={false}>不指定</ToggleGroupItem>
           </ToggleGroup>
-          <Button 
-            disabled={ordersFastCheckLazyData.data === undefined || ordersFastCheckLazyData.loading} 
-            variant='contained' onClick={handleReset}
+          <Button
+            disabled={ordersFastCheckLazyData.data === undefined || ordersFastCheckLazyData.loading}
+            variant="secondary" onClick={handleReset}
           >重設</Button>
         </div>
         {(ordersFastCheckLazyData.data === undefined || ordersFastCheckLazyData.loading) ?
           <div css={styles.circular}><LoaderCircle className="mx-auto h-10 w-10 animate-spin text-accent" strokeWidth={1.75} /></div> :
           orderData.length > 0 ?
-          <TableContainer style={{height: 'calc(100% - 100px)'}}>
-            <Table>
-              <TableHead css={styles.stickyRow}>
+            <Table wrapperClassName="h-[calc(100%-100px)]">
+              <TableHeader css={styles.stickyRow}>
                 <TableRow>
-                  <TableCell css={styles.sticky} style={{minWidth: '42px'}}></TableCell>
-                  <TableCell css={styles.sticky} style={{minWidth: '50px', left: '42px'}}>編號</TableCell>
-                  <TableCell css={styles.sticky} style={{minWidth: '100px', left: '92px'}}>客戶</TableCell>
-                  <TableCell css={styles.sticky} style={{minWidth: '100px', left: '192px'}}>設計師</TableCell>
-                  <TableCell>指定</TableCell>
-                  <TableCell className="cellHighlight">營業現金應收</TableCell>
-                  <TableCell>服務消費</TableCell>
-                  <TableCell>店販消費</TableCell>
-                  {membershipDisplay && <TableCell>會員卡販賣</TableCell>}
-                  <TableCell>卡券使用 (入業績)</TableCell>
-                  <TableCell>卡券販賣 (入業績)</TableCell>
-                  <TableCell>業績收入</TableCell>
-                  <TableCell>卡券販賣 (不入業績)</TableCell>
-                  <TableCell>卡券使用(-)</TableCell>
-                  <TableCell>第三方卡券(-)</TableCell>
-                  <TableCell>其他付款方式(-)</TableCell>
-                  <TableCell>入金使用(-)</TableCell>
-                  {bonusDisplay && <TableCell>點數折抵金額(-)</TableCell>}
-                  <TableCell>備註</TableCell>
-                  <TableCell>訂單來源</TableCell>
+                  <TableHead css={styles.sticky} style={{minWidth: '42px'}}></TableHead>
+                  <TableHead css={styles.sticky} style={{minWidth: '50px', left: '42px'}}>編號</TableHead>
+                  <TableHead css={styles.sticky} style={{minWidth: '100px', left: '92px'}}>客戶</TableHead>
+                  <TableHead css={styles.sticky} style={{minWidth: '100px', left: '192px'}}>設計師</TableHead>
+                  <TableHead>指定</TableHead>
+                  <TableHead className="cellHighlight">營業現金應收</TableHead>
+                  <TableHead>服務消費</TableHead>
+                  <TableHead>店販消費</TableHead>
+                  {membershipDisplay && <TableHead>會員卡販賣</TableHead>}
+                  <TableHead>卡券使用 (入業績)</TableHead>
+                  <TableHead>卡券販賣 (入業績)</TableHead>
+                  <TableHead>業績收入</TableHead>
+                  <TableHead>卡券販賣 (不入業績)</TableHead>
+                  <TableHead>卡券使用(-)</TableHead>
+                  <TableHead>第三方卡券(-)</TableHead>
+                  <TableHead>其他付款方式(-)</TableHead>
+                  <TableHead>入金使用(-)</TableHead>
+                  {bonusDisplay && <TableHead>點數折抵金額(-)</TableHead>}
+                  <TableHead>備註</TableHead>
+                  <TableHead>訂單來源</TableHead>
                 </TableRow>
-              </TableHead>
+              </TableHeader>
               <TableBody>
               {orderData.map(d => 
                 (
                   <TableRow key={d.id}>
                     <TableCell css={styles.sticky} style={{ width: '42px', padding: '2px'}}>
-                      <IconButton size='large' onClick={() => {history.push(`/order/${d.id}`), handleCloseModal()}} css={styles.IconButton}><EditOutlinedIcon style={{ width: '30px', height: '30px'}}/></IconButton>
+                      <Button variant="ghost" size="icon" className="h-9 w-9 [&_svg]:size-6" aria-label="編輯帳單" title="編輯帳單" onClick={() => {history.push(`/order/${d.id}`), handleCloseModal()}}><EditOutlinedIcon /></Button>
                     </TableCell>
                     <TableCell css={styles.sticky} style={{minWidth: '50px', left: '42px'}}>{d.no}</TableCell>
                     <TableCell css={styles.sticky} style={{minWidth: '100px', left: '92px'}}>{d.customer.name}</TableCell>
@@ -326,22 +323,22 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                     </TableCell>
                     <TableCell style={{ whiteSpace: 'nowrap'}}>
                       {Math.round(d.serviceFakeTotal)}
-                      <Typography variant="body2">
+                      <p className="m-0 text-[14px] leading-5 text-text-secondary">
                         {d.serviceOrders.length > 0 && serviceOrders(d)}
-                      </Typography>
+                      </p>
                     </TableCell>
                     <TableCell style={{ whiteSpace: 'nowrap'}}>
                       {Math.round(d.productFakeTotal)}
-                      <Typography variant="body2">
+                      <p className="m-0 text-[14px] leading-5 text-text-secondary">
                         {d.productOrders.length > 0 && productOrders(d)}
-                      </Typography>
+                      </p>
                     </TableCell>
                     {membershipDisplay && (
                       <TableCell style={{ whiteSpace: 'nowrap'}}>
                         {Math.round(d.membershipFakeTotal)}
-                        <Typography variant="body2">
+                        <p className="m-0 text-[14px] leading-5 text-text-secondary">
                           {d.membershipOrders.length > 0 && membershipOrders(d)}
-                        </Typography>
+                        </p>
                       </TableCell>
                     )}
                     <TableCell>{parseInt(d.useTicketTotal*100)/100}</TableCell>
@@ -351,15 +348,15 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                     <TableCell>{parseInt(d.usedTicketForDecount*100)/100}</TableCell>
                     <TableCell style={{ whiteSpace: 'nowrap'}}>
                       {Math.round(d.thirdPartTicketForDecount)}
-                      <Typography variant="body2">
+                      <p className="m-0 text-[14px] leading-5 text-text-secondary">
                         {d.serviceOrders.length > 0 &&
                           d.productOrders.length > 0 &&
                           thirdParty(d)}
-                      </Typography>
+                      </p>
                     </TableCell>
                     <TableCell style={{ whiteSpace: 'nowrap'}}>
                       {Math.round(d.otherPayWayForDecount)}
-                      <Typography variant="body2">{d.payType2}</Typography>
+                      <p className="m-0 text-[14px] leading-5 text-text-secondary">{d.payType2}</p>
                     </TableCell>
                     <TableCell>{d.walletUsedForDecount}</TableCell>
                     {bonusDisplay && <TableCell>{d.bonusDecountForReport}</TableCell>}
@@ -390,8 +387,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                   <TableCell></TableCell>
                 </TableRow>
               </TableBody>
-            </Table>
-          </TableContainer> :
+            </Table> :
           <h3 css={styles.noData} className="m-0 text-title text-text">
             無資料
           </h3>

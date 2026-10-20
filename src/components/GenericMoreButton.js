@@ -1,4 +1,4 @@
-import { Menu, MenuItem } from 'ui/misc-compat'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from 'ui/dropdown-menu'
 import { Button } from 'ui/button'
 import { MoreVert as MoreIcon, Print as PrintIcon } from 'ui/icons'
 import { memo, useRef, useState } from 'react'
@@ -16,32 +16,20 @@ function GenericMoreButton({ handleMenuItem }) {
   }
 
   return (
-    <>
-      <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="更多選項" title="更多選項" onClick={handleMenuOpen} ref={moreRef}>
-        <MoreIcon />
-      </Button>
-      <Menu
-        anchorEl={moreRef.current}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        elevation={1}
-        onClose={handleMenuClose}
-        open={openMenu}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-      >
-        <MenuItem onClick={handleMenuItem}>
-          <span className="inline-flex w-9 shrink-0 items-center">
-            <PrintIcon />
-          </span>
+    // 開關由 Radix 觸發鈕處理（onOpenChange 轉呼叫原 handleMenuOpen／handleMenuClose）；不在按鈕再掛 onClick，避免點觸發鈕關閉後又被重開
+    <DropdownMenu open={openMenu} onOpenChange={o => (o ? handleMenuOpen() : handleMenuClose())}>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="更多選項" title="更多選項" ref={moreRef}>
+          <MoreIcon />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start">
+        <DropdownMenuItem onClick={handleMenuItem}>
+          <PrintIcon />
           <span className="flex-1 text-body">報表匯出</span>
-        </MenuItem>
-      </Menu>
-    </>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 

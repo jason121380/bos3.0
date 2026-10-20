@@ -1,8 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Hidden } from 'ui/misc-compat'
-import { Drawer } from 'ui/overlay-compat'
-import { Grid } from 'ui/grid-compat'
-import { Button } from 'ui/button-compat'
+import { Button } from 'ui/button'
 import { Check as CheckIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
@@ -20,9 +17,6 @@ const styles = {
       marginLeft: theme.spacing(2),
     },
   }),
-  buttonIcon: css({
-    marginRight: theme.spacing(1),
-  }),
 }
 
 function TableCheckoutBar({
@@ -36,32 +30,29 @@ function TableCheckoutBar({
 }) {
   const open = selected.length > 0
   return (
-    <Drawer anchor="bottom" open={open} PaperProps={{ elevation: 1 }} variant="persistent">
-      <div {...rest} css={css([styles.root, className])}>
-        <Grid alignItems="center" container spacing={2}>
-          <Hidden smDown>
-            <Grid item md={3}>
-              <div className="text-body font-medium text-text-secondary">
-                {selected.length} selected
-              </div>
-            </Grid>
-          </Hidden>
-          <Grid item md={6} xs={12}>
-            <div css={styles.actions}>
-              <Button
-                onClick={onMarkPaid}
-                disabled={checkoutProcessing}
-                style={{ color: 'white', backgroundColor: 'red' }}
-                variant="contained"
-              >
-                <CheckIcon css={styles.buttonIcon} />
-                {checkoutProcessing ? '結帳中...' : '結帳'}
-              </Button>
-            </div>
-          </Grid>
-        </Grid>
+    // 批次結帳列（比照 TableEditBar，STYLE §5 浮層）：勾選後浮在畫面底部中央；與舊版 persistent Drawer 相同，未勾選時仍在 DOM（隱藏）
+    <div hidden={!open} className={`ui-root noprint pointer-events-none fixed inset-x-0 bottom-[calc(72px+env(safe-area-inset-bottom))] z-[1200] lg:bottom-6 justify-center px-4 ${open ? 'flex' : 'hidden'}`}>
+      <div
+        {...rest}
+        css={css([styles.root, className])}
+        className="pointer-events-auto flex max-w-full flex-wrap items-center gap-3 rounded-lg border border-solid border-border bg-background shadow-float"
+      >
+        {/* 原 Hidden smDown：600px 以下不顯示勾選筆數 */}
+        <div className="text-body font-medium text-text-secondary max-[599.95px]:hidden">
+          {selected.length} selected
+        </div>
+        <div css={styles.actions}>
+          <Button
+            onClick={onMarkPaid}
+            disabled={checkoutProcessing}
+            variant="primary"
+          >
+            <CheckIcon />
+            {checkoutProcessing ? '結帳中...' : '結帳'}
+          </Button>
+        </div>
       </div>
-    </Drawer>
+    </div>
   )
 }
 
