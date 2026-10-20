@@ -1,17 +1,13 @@
-/** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react'
 import format from 'date-fns/format'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
-
-import styles from './styles'
 
 // 固定首欄（原 styles.sticky 寫死白底，改用 tokens）
 const STICKY_COL = 'sticky left-0 top-0 z-[99] min-w-[100px] max-w-[100px] break-all bg-background'
 
 function Results({ className, results, excelData, attributeSwitchs, membershipDisplay, ...rest }) {
   return (
-    <div {...rest} css={css([styles.root, className])}>
+    <div {...rest} className={className}>
       <Table dense aria-label="a dense table">
         <TableHeader className="sticky top-0 z-[100]">
           <TableRow className="hover:bg-transparent">

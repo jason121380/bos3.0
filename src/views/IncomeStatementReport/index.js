@@ -1,28 +1,15 @@
-/** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
 import { endOfMonth, format } from 'date-fns'
 import idx from 'idx'
 import React from 'react'
 import useFetchMerchantIncomeStatementV2OuterStore from 'hooks/useFetchMerchantIncomeStatementV2ForOuterStore'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { HeaderActionsSlot, PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  result: css({
-    marginTop: theme.spacing(1),
-  }),
-}
 
 export default function IncomeStatementReport() {
   const [date, setDate] = React.useState({
@@ -81,7 +68,7 @@ export default function IncomeStatementReport() {
         idx(merchantIncomeStatementDataV2OuterStore, _ => (
           <React.Fragment>
             <Results
-              className={styles.result}
+              className="mt-2"
               incomeStatement={_.data.merchantIncomeStatementV2ForOuterStore}
             />
           </React.Fragment>

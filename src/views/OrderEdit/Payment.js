@@ -1,56 +1,11 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { Field } from 'ui/input'
 import PaymentAutoComplete from 'components/PaymentAutoComplete'
 import billContext from 'context/keyInContext'
 import React, { useEffect } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import PaymentCustomerWallet from './PaymentCustomerWallet'
 
-const styles = {
-  // 欄位靠底對齊（標籤在上），窄螢幕換行不擠壓（比照打帳單）
-  payment: css({
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-    rowGap: '12px',
-    marginBottom: theme.spacing(3),
-  }),
-  fieldWidth: css({
-    width: '250px',
-    maxWidth: '100%',
-    display: 'flex',
-    marginRight: '12px',
-    justifyContent: 'flex-start',
-  }),
-  field: css({
-    width: '150px',
-    minWidth: '150px',
-    display: 'flex',
-    marginRight: '12px',
-    justifyContent: 'flex-start',
-  }),
-  checkbox: css({
-    width: '100px',
-    display: 'flex',
-    marginRight: '12px',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-  action: css({
-    width: '50px',
-    display: 'flex',
-    marginRight: '12px',
-    cursor: 'pointer',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-}
 
 export default function Payment() {
   const { bill, handleBillChange, setPaymentAlready } = React.useContext(billContext)
@@ -175,19 +130,19 @@ export default function Payment() {
   }
   return (
     <div>
-      <div css={styles.payment}>
+      <div className="mb-6 flex flex-wrap items-end justify-start gap-y-[12px]">
         <Field label="付款方式">
         <PaymentAutoComplete
           setPaymentAlready={setPaymentAlready}
           inputProps={{ placeholder: '選擇付款方式' }}
-          className={styles.fieldWidth}
+          className="mr-[12px] flex w-[250px] max-w-full justify-start"
           value={bill.payType[0]}
           totalShouldPay={totalShouldPay}
           onChange={value => selectPayment(value)}
         />
         </Field>
         {bill.payType.map((payment, index) => (
-          <Field key={`${payment}-${index}`} label={`${payment}金額`} css={styles.field}>
+          <Field key={`${payment}-${index}`} label={`${payment}金額`} className="mr-[12px] flex w-[150px] min-w-[150px] justify-start">
           <TextField
             value={bill.amountByOtherPay}
             key={`${payment}-${index}`}

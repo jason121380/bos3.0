@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 下方明細卡片區（MerchantDailyReportCardContainer）的列印樣式依賴 MUI 結構：改用輸出相同 DOM／class 的相容層（ui/*-compat）
 import { Grid } from 'ui/grid-compat'
 import { Table as MuiTable, TableBody as MuiTableBody, TableCell as MuiTableCell, TableHead as MuiTableHead, TableRow as MuiTableRow, TableContainer } from 'ui/table-compat'
@@ -8,21 +7,13 @@ import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import { format, startOfMonth } from 'date-fns'
 import roundDecimal from './../../helper/roundDecimal.js'
-import { css } from '@emotion/react'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
-const styles = {
-  table: css({
-    minWidth: 650,
-  }),
-  designerName: css({
-    fontWeight: 'bold',
-  }),
-  content: css({
-    padding: 0,
-  }),
-}
+// 相容層儲存格（table-compat.css 隨頁面 chunk 載入、排在 Tailwind 之後）：原 emotion css 執行期插入、同權重時勝出，
+// 改以 [&&] 疊成雙 class 權重保住「勝過相容層單一 class」；initialize(-dark).scss 較高權重的 th／深色規則仍照舊勝出（同原本）
+const BOLD_CELL = '[&&]:font-bold'
+const TOTAL_CELL = '[&&]:font-bold [&&]:text-[red]'
 
 // 列印時表頭維持白底黑字（與舊版 th.MuiTableCell-head 的列印樣式一致）
 const printHeader = 'print:bg-transparent print:[&_th]:text-text'
@@ -568,7 +559,7 @@ function Results({
                       <MuiTableCell></MuiTableCell>
                       <MuiTableCell>其他支付方式明細</MuiTableCell>
                       <MuiTableCell>第三方卡券明細</MuiTableCell>
-                      <MuiTableCell css={{ fontWeight: 'bold' }}>小計</MuiTableCell>
+                      <MuiTableCell className={BOLD_CELL}>小計</MuiTableCell>
                     </MuiTableRow>
 
                   </MuiTableHead>
@@ -578,15 +569,15 @@ function Results({
                         <MuiTableCell>{name}</MuiTableCell>
                         <MuiTableCell>{`${otherPayment.usedPrice} / (${otherPayment.usedPriceWithNoCash})`}</MuiTableCell>
                         <MuiTableCell>{`${thirdParty.usedPrice} / (${thirdParty.usedPriceWithNoCash})`}</MuiTableCell>
-                        <MuiTableCell css={{ fontWeight: 'bold' }}>{
+                        <MuiTableCell className={BOLD_CELL}>{
                           `${otherPayment.usedPrice + thirdParty.usedPrice} / (${otherPayment.usedPriceWithNoCash + thirdParty.usedPriceWithNoCash})`
                         }</MuiTableCell>
                       </MuiTableRow>
                     ))}
                     <MuiTableRow hover>
                       <MuiTableCell colSpan={2} />
-                      <MuiTableCell css={{ fontWeight: 'bold', color: 'red' }}>合計</MuiTableCell>
-                      <MuiTableCell css={{ fontWeight: 'bold', color: 'red' }}>{`${totalSummury('usedPrice')} / ${totalSummury('usedPriceWithNoCash')}`}</MuiTableCell>
+                      <MuiTableCell className={TOTAL_CELL}>合計</MuiTableCell>
+                      <MuiTableCell className={TOTAL_CELL}>{`${totalSummury('usedPrice')} / ${totalSummury('usedPriceWithNoCash')}`}</MuiTableCell>
                     </MuiTableRow>
                   </MuiTableBody>
                 </MuiTable>
@@ -597,10 +588,10 @@ function Results({
           <>
             <Grid item xs={12} md={6} lg={4} className="MerchantDailyReportCard">
               <Card>
-                <CardHeader title="其他支付方式明細" css={styles.cardHeader} />
+                <CardHeader title="其他支付方式明細" />
                 <Divider />
-                <CardContent css={styles.content}>
-                  <div css={styles.inner}>
+                <CardContent className="p-0">
+                  <div>
                     <TableContainer component={Paper}>
                       <MuiTable size="small" aria-label="a dense table">
                         <MuiTableBody>
@@ -620,10 +611,10 @@ function Results({
             </Grid>
             <Grid item xs={12} md={6} lg={4} className="MerchantDailyReportCard">
               <Card>
-                <CardHeader title="第三方卡券明細" css={styles.cardHeader} />
+                <CardHeader title="第三方卡券明細" />
                 <Divider />
-                <CardContent css={styles.content}>
-                  <div css={styles.inner}>
+                <CardContent className="p-0">
+                  <div>
                     <TableContainer component={Paper}>
                       <MuiTable size="small" aria-label="a dense table">
                         <MuiTableBody>
@@ -645,10 +636,10 @@ function Results({
         )}
         <Grid item xs={12} md={6} lg={4} className="MerchantDailyReportCard">
           <Card>
-            <CardHeader title="入金儲值明細" css={styles.cardHeader} />
+            <CardHeader title="入金儲值明細" />
             <Divider />
-            <CardContent css={styles.content}>
-              <div css={styles.inner}>
+            <CardContent className="p-0">
+              <div>
                 <TableContainer component={Paper}>
                   <MuiTable size="small" aria-label="a dense table">
                     <MuiTableBody>

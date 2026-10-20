@@ -1,41 +1,12 @@
-/** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
 import useFetchOrder from 'hooks/useFetchOrder'
 import _ from 'lodash'
 import React from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import CouponUse from './CouponUse'
 
-const styles = {
-  root: css({
-    width: '100%',
-    marginTop: theme.spacing(3),
-  }),
-  details: css({
-    overflowX: 'auto',
-  }),
-  heading: css({
-    fontSize: '16px !important',
-    fontWeight: 'bold',
-    color: 'rgb(var(--text))',
-  }),
-  subHeading: css({
-    fontSize: theme.typography.pxToRem(12) + '!important',
-    fontWeight: theme.typography.fontWeightRegular + '!important',
-    color: 'rgb(var(--text-secondary))',
-    marginLeft: '8px',
-  }),
-  fieldOutter: css({
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-  }),
-}
 
 export default function PannelCouponUse() {
   const { handleBillChange, bill, orderId } = React.useContext(billContext)
@@ -155,11 +126,11 @@ export default function PannelCouponUse() {
         style={{ width: '100%' }}
         summaryMeta={!expanded && panelSummary(bill.useTicketOrders.length)}
       >
-        <p className="m-0" css={styles.heading}>使用預收卡</p>
-        <p className="m-0" css={styles.subHeading}>編輯訂單不得編輯預收卡使用</p>
+        <p className="m-0 !text-[16px] font-bold text-text">使用預收卡</p>
+        <p className="m-0 ml-2 !text-[0.75rem] !font-normal text-text-secondary">編輯訂單不得編輯預收卡使用</p>
       </AccordionSummary>
-      <AccordionDetails css={styles.details}>
-        <div css={styles.fieldOutter}>
+      <AccordionDetails className="overflow-x-auto">
+        <div className="flex flex-col items-start justify-start">
           {bill.customerId &&
             couponUsage.map((data, index) => (
               <CouponUse

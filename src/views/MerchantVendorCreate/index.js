@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
 import { useState, useEffect } from 'react'
@@ -7,25 +6,10 @@ import useFetchGetVendor from 'hooks/useFetchGetVendor'
 import useFetchSetCreateMerchantVendor from 'hooks/useFetchSetCreateMerchantVendor'
 import idx from 'idx'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
 import AboutMerchantVendorCreate from './AboutMerchantVendorCreate'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  aboutPayment: css({
-    marginTop: theme.spacing(3),
-  }),
-  actions: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 function MerchantVendorCreate() {
   const history = useHistory()
@@ -98,7 +82,7 @@ function MerchantVendorCreate() {
       <div className="max-w-3xl">
         <PageHeader title="新增廠商" />
         <AboutMerchantVendorCreate
-          className={styles.aboutPayment}
+          className="mt-6"
           vendorOption={vendorOption}
           isLodaing={vendorList.loading}
           submitData={submitData}

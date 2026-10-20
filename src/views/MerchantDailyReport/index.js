@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { useState, useEffect, useMemo } from 'react'
 import Page from 'components/Page'
 import idx from 'idx'
@@ -9,28 +8,12 @@ import useFetchMerchantDashboard from 'hooks/useFetchMerchantDashboard'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import { useFetchGetNonCashDisplay } from 'hooks/useFetchGetParameterReportSetting'
 import DateSelector from 'components/DateSelector'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
 import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader, Toolbar, ToolbarSpacer } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  printBtn: css({
-    backgroundColor: 'rgb(var(--accent))',
-  })
-}
 
 const MerchantDailyReport = () => {
   const [date, setDate] = useState({

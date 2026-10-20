@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Button } from 'ui/button-compat'
 import { TextField } from 'ui/text-field'
 import { Field } from 'ui/input'
@@ -10,40 +9,7 @@ import idx from 'idx'
 import React from 'react'
 import produce from 'immer'
 import WalletDepositModal from './WalletDepositModal'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
-const styles = {
-  payment: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginBottom: theme.spacing(3),
-  }),
-  field: css({
-    width: '150px',
-    display: 'flex',
-    marginRight: '12px !important',
-    justifyContent: 'flex-start',
-  }),
-  checkbox: css({
-    width: '100px',
-    display: 'flex',
-    marginRight: '12px',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-  action: css({
-    width: '50px',
-    display: 'flex',
-    marginRight: '12px',
-    cursor: 'pointer',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-}
 
 export default function PaymentCustomerWallet() {
   const { bill, handleBillChange, order, setBill } = React.useContext(billContext)
@@ -139,7 +105,7 @@ export default function PaymentCustomerWallet() {
       {/* 欄位標籤在上；按鈕與輸入框靠底對齊，窄螢幕換行 */}
       <div style={{ display: 'flex', alignItems: 'flex-end', flexWrap: 'wrap', gap: 12 }}>
         {usableCustomerWallet > 0 && bill.customerId && (
-          <Field label={`扣入金(${usableCustomerWallet}可用)`} css={styles.field}>
+          <Field label={`扣入金(${usableCustomerWallet}可用)`} className="!mr-[12px] flex w-[150px] justify-start">
           <TextField
             fullWidth
             variant="outlined"

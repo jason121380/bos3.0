@@ -3,43 +3,17 @@ import { Button } from 'ui/button'
 import { Search as SearchIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
-const styles = {
-  root: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  search: css({
-    flexGrow: 1,
-    height: 42,
-    padding: theme.spacing(0, 2),
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  searchIcon: css({
-    marginRight: theme.spacing(2),
-    color: theme.palette.icon,
-  }),
-  searchInput: css({
-    flexGrow: 1,
-  }),
-  searchButton: css({
-    backgroundColor: theme.palette.common.white,
-    marginLeft: theme.spacing(2),
-  }),
-}
+// 本檔沒有 @jsxImportSource，原 emotion css prop 只會被當成 DOM 屬性（css="[object Object]"），從未生效；清理時直接移除，外觀不變
 
 function Search({ onSearch, className, ...rest }) {
   const [keyword, setKeyword] = useState('')
   const handleOnChange = e => setKeyword(e.target.value)
   return (
-    <div {...rest} css={css([styles.root, className])}>
-      <div css={styles.search} className="rounded-md bg-background">
-        <SearchIcon css={styles.searchIcon} />
+    <div {...rest}>
+      <div className="rounded-md bg-background">
+        <SearchIcon />
         <Input
-          css={styles.searchInput}
           disableUnderline
           placeholder="搜尋關鍵字"
           value={keyword}
@@ -48,7 +22,6 @@ function Search({ onSearch, className, ...rest }) {
       </div>
       {console.log('dddd')}
       <Button
-        css={styles.searchButton}
         onClick={() => onSearch(keyword)}
         size="lg"
         variant="primary"
@@ -60,7 +33,7 @@ function Search({ onSearch, className, ...rest }) {
 }
 
 Search.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   onSearch: PropTypes.func,
 }
 

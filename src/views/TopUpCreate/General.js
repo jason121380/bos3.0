@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Input, TextField, InputAdornment } from 'ui/text-field'
 import { FormControl, InputLabel, MenuItem, Select, FormHelperText } from 'ui/form-control'
 import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
@@ -12,8 +11,8 @@ import format from 'date-fns/format';
 import { Card, CardContent } from 'ui/card'
 import { Field, Input as UiInput } from 'ui/input'
 
-// styles.formControl 仍以 emotion 物件傳給 MUI 欄位與 EmployeeAutoComplete／CustomerAutoComplete（其 className 以 css prop 套用）
-import styles from './styles/General'
+// 原 styles/General 的 formControl（marginBottom spacing(3) !important）；EmployeeAutoComplete／CustomerAutoComplete 以 className 套在根節點
+const FORM_CONTROL = '!mb-6'
 
 export default function General() {
   const { register, errors, setValue, watch, clearErrors } = useFormContext()
@@ -83,13 +82,13 @@ export default function General() {
           value={date}
           onChange={val => setValue('date', new Date(val).getTime())}
           format="yyyy/MM/dd HH:mm"
-          css={styles.formControl}
+          className={FORM_CONTROL}
           localeText={{
             toolbarTitle: '選擇日期'
           }}
           slots={{
             field: inputProps => (
-              <FormControl css={styles.formControl} variant="filled">
+              <FormControl className={FORM_CONTROL} variant="filled">
                 <InputLabel htmlFor="date-picker">日期</InputLabel>
                 <Input
                   id="date-picker"
@@ -110,7 +109,7 @@ export default function General() {
           type="number"
           fullWidth
           variant="outlined"
-          css={styles.formControl}
+          className={FORM_CONTROL}
           name="money"
           inputProps={{
             max: 2147483647,
@@ -128,7 +127,7 @@ export default function General() {
           onWheel={() => document.activeElement.blur()}              
         />
         <EmployeeAutoComplete
-          className={styles.formControl}
+          className={FORM_CONTROL}
           onChange={val => {
             setValue('designerId', val.userId)
             if (errors?.designerId) {
@@ -142,9 +141,9 @@ export default function General() {
             helperText: errors?.designerId?.message,
           }}
         />
-        <div css={styles.formControl}>
+        <div className={FORM_CONTROL}>
           <CustomerAutoComplete
-            className={styles.formControl}
+            className={FORM_CONTROL}
             fieldProps={{
               label: '選擇顧客',
               error: Boolean(errors?.customerId),
@@ -162,7 +161,7 @@ export default function General() {
         </div>
         <FormControl
           variant="outlined"
-          css={styles.formControl}
+          className={FORM_CONTROL}
           fullWidth
           error={Boolean(errors?.payType)}
         >
@@ -184,7 +183,7 @@ export default function General() {
           {errors.payType && <FormHelperText>{errors.payType.message}</FormHelperText>}
         </FormControl>
         {payType !== '現金' && (
-          <FormControl variant="outlined" css={styles.formControl} fullWidth>
+          <FormControl variant="outlined" className={FORM_CONTROL} fullWidth>
             <InputLabel>選擇入金儲值手續費負擔方</InputLabel>
             <Select
               name="handlingFeeDecountWay"

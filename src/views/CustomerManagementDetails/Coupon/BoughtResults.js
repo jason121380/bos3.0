@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 分頁使用 ui/table TablePagination（pagenationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
 import TableEditBar from 'components/TableEditBar'
 import idx from 'idx'
@@ -32,7 +31,7 @@ export default function BoughtResults({
   }, [pageRef.current, results])
 
   return (
-    <div {...rest} css={className}>
+    <div {...rest} className={className}>
       <p className="mb-2 text-label tabular-nums text-text-secondary">
         共 {results.length} 筆, {page.offset + 1} /{Math.ceil(results.length / page.limit)}
       </p>

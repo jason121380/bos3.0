@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { LoaderCircle } from 'lucide-react'
 import { MenuItem, Select } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
@@ -6,33 +5,9 @@ import useFetchGetAccountingSubjects from 'hooks/useFetchGetAccountingSubjects'
 import idx from 'idx'
 import { useState, useEffect, Fragment } from 'react'
 import { findIndex } from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Autocomplete } from 'ui/combobox'
 
-const styles = {
-  root: css({
-    width: 200
-  }),
-  container: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  calendar: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-  }),
-  calendarButton: css({
-    backgroundColor: theme.palette.common.white,
-  }),
-  field: css({
-    width: '195px !important',
-    marginLeft: '34px',
-  }),
-}
-
-export default function Subject({ onChange, value, className }) {
+export default function Subject({ onChange, value, className = '' }) {
   const accountingSubjects = useFetchGetAccountingSubjects()
   const [options, setOptions] = useState([])
   useEffect(() => {
@@ -48,7 +23,7 @@ export default function Subject({ onChange, value, className }) {
   return (
     <Autocomplete
       freeSolo
-      css={className}
+      className={className}
       onChange={onChange}
       options={options}
       value={options.find(({ name }) => name === value)}

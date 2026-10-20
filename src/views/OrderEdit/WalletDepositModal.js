@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Modal } from 'ui/modal-compat'
 import { Button } from 'ui/button-compat'
 import { Card, CardHeader, CardContent } from 'ui/card-compat'
@@ -6,7 +5,6 @@ import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import PropTypes from 'prop-types'
 import { memo, useContext, useState, useRef } from 'react'
-import { red, blue } from 'ui/colors'
 import _ from 'lodash'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
@@ -17,103 +15,7 @@ import useFetchWalletDeposit from 'hooks/useFetchWalletDeposit'
 import billContext from 'context/keyInContext'
 import { cloneDeep } from 'lodash'
 import { openSnackbar } from 'elements/snackbars'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
-const styles = {
-  root: css({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    outline: 'none',
-    boxShadow: theme.shadows[20],
-    width: 500,
-    maxHeight: '100%',
-    overflowY: 'auto',
-    maxWidth: '100%',
-  }),
-  birthday: css({
-    width: '100%',
-  }),
-  actions: css({
-    justifyContent: 'flex-end',
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  categorieDiv: css({
-    marginBottom: '5px',
-  }),
-  categorieBtn: css({
-    margin: '3px',
-  }),
-  clickedCategorieBtn: css({
-    margin: '3px',
-    color: 'white',
-  }),
-  categorieClear: css({
-    backgroundColor: red[500],
-    color: 'white',
-    '&:hover': {
-      backgroundColor: red[700],
-    },
-  }),
-  addBtn: css({
-    backgroundColor: blue[500],
-    color: 'white',
-    '&:hover': {
-      backgroundColor: blue[700],
-    },
-  }),
-  confirmBtn: css({
-    margin: '7px 0',
-    float: 'right',
-  }),
-  header: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-  backBtn: css({
-    margin: '16px 24px',
-  }),
-  btnDiv: css({
-    margin: '10px 0',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }),
-  rowOfGrid: css({
-    margin: '5px 0px',
-  }),
-  dividerDiv: css({
-    margin: '8px 0px',
-  }),
-  detailBottomCash: css({
-    fontSize: '20px',
-    fontWeight: 'bold',
-  }),
-  card: css({
-    margin: theme.spacing(3, 0, 3, 0),
-    maxWidth: 500,
-  }),
-  formControl: css({
-    marginBottom: theme.spacing(3) + '!important',
-  }),
-  option: css({
-    fontSize: 14,
-    '& > span': {
-      marginRight: 10,
-      fontSize: 14,
-    },
-  }),
-  dateTimeInput: {
-    '& input.MuiInput-input': {
-      padding: '6px 0 7px'
-    }
-  }
-}
 
 const statusText = {
   ADD: '儲值',
@@ -210,10 +112,10 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
 
   return (
     <Modal open={openWalletDeposit}>
-      <Card css={styles.root}>
-        <div css={styles.header}>
+      <Card className="absolute left-1/2 top-1/2 max-h-full w-[500px] max-w-full overflow-y-auto [outline:none] [transform:translate(-50%,-50%)] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)]">
+        <div className="flex items-center justify-between">
           <CardHeader title="異動入金" />
-          <Button color="primary" variant="contained" css={styles.backBtn} onClick={onClose}>
+          <Button color="primary" variant="contained" className="mx-[24px] my-[16px]" onClick={onClose}>
             返回
           </Button>
         </div>
@@ -271,9 +173,6 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
           </Field>
           <Field label="顧客" required className="mb-6">
             <CustomerAutoComplete
-              styles={{
-                option: styles.option,
-              }}
               fieldProps={{
                 placeholder: '選擇顧客',
               }}
@@ -327,7 +226,7 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
             />
           </Field>
         </CardContent>
-        <div css={styles.btnDiv}>
+        <div className="my-[10px] flex items-center justify-center">
           <Button
             color="primary"
             variant="contained"

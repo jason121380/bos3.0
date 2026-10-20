@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 分頁使用 ui/table TablePagination（pagenationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
 import TableEditBar from 'components/TableEditBar'
 import idx from 'idx'
@@ -21,7 +20,7 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
   }, [pageRef.current, walletUseRecord])
 
   return (
-    <div {...rest} css={className}>
+    <div {...rest} className={className}>
       <p className="mb-2 text-label tabular-nums text-text-secondary">
         共 {idx(walletUseRecord.data, _ => _.walletUseRecord.totalCount)} 筆資料,{' '}
         {resultSetting.usaged.pageOffset + 1}/
@@ -107,7 +106,7 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
 }
 
 UsagedResult.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   customers: PropTypes.array,
 }
 

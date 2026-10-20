@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { useFetchGetMembershipsForAutocomplete } from "hooks/useFetchGetMembership";
 import useToggle from "hooks/useToggle";
@@ -8,7 +7,7 @@ import { Autocomplete } from 'ui/combobox'
 
 const MemberShipCardAutoComplete = (
   {
-    className,
+    className = '',
     onChange = () => {},
     label = "",
     value,
@@ -65,7 +64,7 @@ const MemberShipCardAutoComplete = (
       // inputValue={productKeyword}
       onOpen={product.toggle}
       onClose={product.toggle}
-      css={className}
+      className={className}
       value={selectedValue}
       options={options}
       autoHighlight

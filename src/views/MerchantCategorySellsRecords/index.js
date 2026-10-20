@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 分類／排序切換鈕改 ui/toggle-group（handler (event, value) 原樣、`state !== null` 守衛不變）
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
@@ -8,39 +7,10 @@ import useFetchProductOrders from 'hooks/useFetchProductOrders'
 import idx from 'idx'
 import produce from 'immer'
 import React, { useState } from 'react'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
 import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  container: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: 10
-  }),
-  field: css({
-    width: '150px',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginLeft: theme.spacing(4),
-    marginTop: theme.spacing(1),
-  }),
-  fieldToggle: css({
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    alignSelf: 'flex-start'
-  }),
-  result: css({
-    marginTop: 12
-  }),
-}
 
 export default function DecreaseDetail({ history, location }) {
   const [pageSetting, setPageSetting] = React.useState({
@@ -169,7 +139,7 @@ export default function DecreaseDetail({ history, location }) {
           _ =>
             _.data.productOrders && (
               <Results
-                className={styles.result}
+                className="mt-3"
                 results={_.data.productOrders}
                 handleOnChangePage={(_event, page) =>
                   handleOnChangePage({ page, key: 'merchantSell' })

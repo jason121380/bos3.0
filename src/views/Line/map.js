@@ -1,53 +1,14 @@
 import Page from 'components/Page'
 import GoogleMapReact from 'google-map-react'
 import React, { useEffect, useState } from 'react'
-import styled from '@emotion/styled'
 import superagent from 'superagent'
 import getQueryString from 'helper/getQueryString'
 
 import LiffHelper from '../../helper/liffHelper'
 
-const Mark = styled.img`
-  width: 20px;
-  position: relative;
-  left: -20px;
-  top: -30px;
-`
-const Button = styled.div`
-  position: relative;
-  text-align: center;
-  display: inline-block;
-  width: 40%;
-  height: 40px;
-  border: 1px solid #00114e;
-  line-height: 40px;
-  color: #00114e;
-  left: 5%;
-  cursor: pointer;
-  transition: all 0.3s;
-  &:hover {
-    opacity: 0.7;
-  }
-`
-const Button2 = styled.div`
-  text-align: center;
-  display: inline-block;
-  width: 40%;
-  height: 40px;
-  border: 1px solid #00114e;
-  line-height: 40px;
-  background-color: #00114e;
-  color: #fff;
-  position: relative;
-  left: 10%;
-  cursor: pointer;
-  transition: all 0.3s;
-  &:hover {
-    opacity: 0.7;
-  }
-`
-
-const AnyReactComponent = ({ text }) => <Mark src="/images/been-here-marker.png" />
+// 原 emotion styled 的 Mark／Button／Button2 改為一般元素＋Tailwind（數值逐一對應）
+// 原為 styled.img（無 alt），維持相同輸出
+const AnyReactComponent = ({ text }) => <img className="relative -left-[20px] -top-[30px] w-[20px]" src="/images/been-here-marker.png" />
 
 function Map({ className, match, location, ...rest }) {
   const storeId = getQueryString({ key: 'storeId', location })
@@ -110,10 +71,10 @@ function Map({ className, match, location, ...rest }) {
         } else {
           return (
             <>
-              <Button onClick={getLocation}>取得位置</Button>
-              <Button2 onClick={checkIn} className="my-4">
+              <div className="relative inline-block h-[40px] w-[40%] cursor-pointer border border-solid border-[#00114e] text-center leading-[40px] [transition:all_0.3s] hover:opacity-70 left-[5%] text-[#00114e]" onClick={getLocation}>取得位置</div>
+              <div onClick={checkIn} className="my-4 relative inline-block h-[40px] w-[40%] cursor-pointer border border-solid border-[#00114e] text-center leading-[40px] [transition:all_0.3s] hover:opacity-70 left-[10%] bg-[#00114e] text-[#fff]">
                 確認打卡
-              </Button2>
+              </div>
             </>
           )
         }

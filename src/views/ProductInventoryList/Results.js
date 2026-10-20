@@ -1,48 +1,9 @@
-/** @jsxImportSource @emotion/react */
 // 表格外框（className="ProductInventoryListTable"）即為 window.print() 的列印輸出：列印規則只以此 class 與 table／th／td 元素命中（不依賴 MUI class），
 // 改用 ui/table 並以 wrapperClassName 保留；螢幕上的最大高度改為 Tailwind，列印時由 .ProductInventoryListTable { max-height: unset !important } 解除
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
-
-const styles = {
-  table: css({
-    minWidth: 650,
-  }),
-  designerName: css({
-    fontWeight: 'bold',
-  }),
-  medals: css({
-    fontSize: '19px',
-  }),
-  stickyRow: css({
-    position: 'sticky',
-    top: 0,
-    background: 'white',
-    zIndex: '100',
-    outline: '1px solid rgb(var(--border))',
-  }),
-  noData: css({
-    fontSize: 24,
-    textAlign: 'center'
-  }),
-  cardHeader: css({
-    '& .MuiCardHeader-title': {
-      fontSize: '15px',
-      fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-    },
-  }),
-  tableRow: css({
-    backgroundColor: 'rgb(var(--background)) !important',
-    '&:hover': {
-      backgroundColor: 'rgb(var(--background)) !important',
-    },
-  }),
-}
 
 function Results({ reportData }) {
   return (

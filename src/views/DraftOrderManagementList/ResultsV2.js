@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // Divider 只用於下方列印範本（#printMain / #printThermal），維持列印輸出不變
 import { Divider } from 'ui/display-compat'
 import TableEditBar from 'components/TableEditBar'
@@ -642,7 +641,7 @@ function Results({
   }
 
   return (
-    <div {...rest} css={className}>
+    <div {...rest} className={className}>
       <Card className="mt-6">
         <CardHeader
           className="items-center pb-4"
@@ -1264,7 +1263,7 @@ function Results({
 }
 
 Results.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   orders: PropTypes.array,
 }
 
