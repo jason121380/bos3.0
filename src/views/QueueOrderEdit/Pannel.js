@@ -13,7 +13,7 @@ import PannelRemark from "./PannelRemark";
 import PannelMemberShipCardSells from "./PannelMemberShipCardSells";
 import PannelBonus from "./PannelBonus";
 
-export default function SimpleAccordion() {
+export default function SimpleAccordion({ children }) {
   const { bill, onceRef } = useContext(billContext);
   const thirdPartTicketData = useFetchGetThirdPartTicketSetting()
   const [thirdPartTicket, setthirdPartTicketData] = useState(false)
@@ -52,13 +52,23 @@ export default function SimpleAccordion() {
       <PannelMemberShipCardSells
         thirdPartTicket={thirdPartTicket}
       />
-      {(bonusActive && !bill.withoutCustomerData) &&
-        <PannelBonus
-          bonusActive={bonusActive}
-        />
-      }
-      {otherPayLimit > 0 && <PannelPayment />}
-      <PannelRemark />
+      {/* 版面比照打帳單（OrderCreate/Pannel）：項目面板在上；下方兩欄，左欄紅利／付款／備註，右欄金額彙總卡與動作按鈕（由 index.js 傳入的 Footer）；900px 以下單欄 */}
+      <div className="grid grid-cols-[1fr_420px] gap-[12px] max-[899.95px]:grid-cols-[1fr]">
+        <div className="flex min-w-0 flex-col gap-[12px]">
+          {(bonusActive && !bill.withoutCustomerData) &&
+            <PannelBonus
+              bonusActive={bonusActive}
+            />
+          }
+          {otherPayLimit > 0 && <PannelPayment />}
+          <PannelRemark />
+        </div>
+        <div className="flex min-w-0 flex-col gap-[12px]">
+          {children}
+        </div>
+      </div>
+      {/* 讓出底部固定合計列的高度，最後一張卡不會被蓋住 */}
+      <div aria-hidden="true" className="h-12" />
     </div>
   );
 }
