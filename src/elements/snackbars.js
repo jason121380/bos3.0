@@ -1,11 +1,18 @@
-// 保留相容層 Snackbar／SnackbarContent：全域通知的自動隱藏、clickaway、滑鼠移入暫停、上方置中等行為由它提供（openSnackbar 呼叫介面不變）；
+// 全域提示（openSnackbar）：呼叫介面與 569 個呼叫端不變，只換呈現（STYLE §6 Toast／Dialog、§9 無障礙）。
+// - 純訊息（success／info／warning／error）畫成 ui/toast 的 ToastCard，放在各版面唯一的 <Toaster>（右下角）；
+//   色彩全走 tokens；成功／一般提示 3 秒自動消失（滑鼠移入或聚焦時暫停），錯誤需手動關閉；error 為 role=alert，其餘 role=status（aria-live=polite）。
+// - 確認型（resign／groupEdit：離職、月結、日結、鎖定加扣項、掛單、刪除系統紀錄／盤點草稿、批次編輯）改畫成 modal 對話框：
+//   標題＋寫出後果的說明＋「取消／確認」兩鈕；Esc、點背景、取消都只關閉，不會觸發確認；確認鈕呼叫的 callback 與原本完全相同。
+//   用 ui/modal-compat 的 Dialog（不用 Radix）：確認可能從相容層彈窗內開啟（打帳單明細、批次編輯），Radix 的 body pointer-events 會與相容層焦點鎖互搶。
+// - 訊息槽元件（SnackbarContentWrapper）在開啟期間保持同一個實例：確認後的月結／日結進度（progress state）會接著畫在提示卡上。
 // 保留定值 CircularProgress：結帳進度「定值圓＋%」依 STYLE §6 Empty/Loading 另案，不以轉圈冒充
-import { SnackbarContent, Snackbar } from 'ui/feedback-compat'
 import { CircularProgress } from 'ui/display-compat'
-import { Button as UiButton, Button } from 'ui/button'
-import { CheckCircle as CheckCircleIcon, Close as CloseIcon, Error as ErrorIcon, Info as InfoIcon, Warning as WarningIcon } from 'ui/icons'
+import { Dialog, DialogTitle, DialogContent, DialogActions } from 'ui/modal-compat'
+import { Button } from 'ui/button'
+import { Toaster, ToastCard } from 'ui/toast'
+import { LoaderCircle } from 'lucide-react'
 import PropTypes from 'prop-types'
-import { useEffect, useState, Fragment, forwardRef } from 'react'
+import { useEffect, useRef, useState, forwardRef } from 'react'
 import useRemoveUserFromMerchant from 'hooks/useRemoveUserFromMerchant'
 import useFetchSetUserSalaryMonthlyCheckoutV2 from 'hooks/useFetchSetUserSalaryMonthlyCheckoutV2'
 import useFetchUpdateUserOrderableList from 'hooks/useFetchSettingUpdateUserOrderableList'
@@ -14,25 +21,34 @@ import useFetchCloseDailyAccountV3 from 'hooks/useFetchCloseDailyAccountV3'
 import { useFetchCreateSystemUpdateDelete } from 'hooks/useFetchSystemUpdateRecord'
 import _ from 'lodash'
 
-const variantIcon = {
-  success: props => <CheckCircleIcon  {...props} />,
-  warning: props => <WarningIcon  {...props} />,
-  error: props => <ErrorIcon  {...props} />,
-  info: props => <InfoIcon  {...props} />,
+const AUTO_HIDE_MS = 3000
+
+// 錯誤文案（只改顯示字串）：去掉 Apollo 加的「GraphQL error: 」「Network error: 」前綴（`${error}` 會多一個「Error: 」一併去掉）；
+// 瀏覽器的連線失敗訊息改成看得懂的中文。其餘後端訊息（密碼錯誤、庫存不足等中文業務訊息）原樣顯示。
+const APOLLO_PREFIX = /(?:Error:\s*)?(?:GraphQL error|Network error):\s*/g
+const NETWORK_FAILURE = /(?:TypeError:\s*)?(?:Failed to fetch|NetworkError[^\n]*|Network request failed|Load failed)/i
+export const NETWORK_FAILURE_MESSAGE = '網路連線異常，請檢查網路後再試一次'
+
+export function normalizeSnackbarMessage(message) {
+  if (typeof message !== 'string') return message
+  const text = message.replace(APOLLO_PREFIX, '')
+  return NETWORK_FAILURE.test(text) ? text.replace(NETWORK_FAILURE, NETWORK_FAILURE_MESSAGE) : text
 }
 
-// 原 emotion styles（green[600]／amber[700]／orange[500]、[700] 取自 ui/colors）逐值轉 Tailwind（spacing 單位 8px；原 `!important` 以 `!` 前綴保留）。
-// info 原為 theme.palette.primary.main（本身已含 `!important`）再接 '!important'，宣告無效、瀏覽器忽略，故不輸出背景色。
-const styles = {
-  success: '!bg-[#43a047]',
-  error: '!bg-[#8E0000]',
-  info: '',
-  warning: '!bg-[#ffa000]',
-  icon: '!text-[20px] text-[#fff] opacity-90',
-  iconVariant: 'mr-[8px]',
-  message: 'flex items-center text-[#fff]',
-  resignBtnDiv: 'mx-0 my-[7px] text-center',
-  confirmResignBtn: '!bg-[#ff9800] text-[#fff] hover:bg-[#f57c00]',
+// 確認型的對話框文案；判斷順序與確認鈕的 callback 分派（下方 confirmAction）一致。只決定呈現，不影響執行內容。
+function getConfirmCopy({ resign, isDailyCheckout, salaryCheckout, salaryItemsLock, orderPending, deleteSystemRecordPending, deleteInventoryWork, selectedOrders }) {
+  const reloadNote = '處理期間請勿跳頁或重新整理，完成後頁面會自動重新整理。'
+  if (!resign) return { title: '確認批次編輯', confirmLabel: '確定覆蓋' }
+  if (isDailyCheckout) {
+    const count = Array.isArray(selectedOrders) ? selectedOrders.length : 0
+    return { title: '確認日結', consequence: `將日結選取的 ${count} 天。${reloadNote}`, confirmLabel: '確定日結' }
+  }
+  if (salaryCheckout) return { title: '確認月結', consequence: `將結算所選月份的薪資。${reloadNote}`, confirmLabel: '結算' }
+  if (salaryItemsLock) return { title: '鎖定加扣項', confirmLabel: '鎖定' }
+  if (orderPending) return { title: '確認掛單', confirmLabel: '確定掛單' }
+  if (deleteSystemRecordPending) return { title: '刪除版本更新紀錄', consequence: '刪除後無法復原。', confirmLabel: '刪除', danger: true }
+  if (deleteInventoryWork) return { title: '刪除盤點草稿', consequence: '刪除後無法復原。', confirmLabel: '刪除', danger: true }
+  return { title: '設定離職', consequence: '此員工將從本店人員名單移除，並更新可打單人員列表。', confirmLabel: '確定離職', danger: true }
 }
 
 const SnackbarContentWrapper = forwardRef((props, ref) => {
@@ -74,7 +90,6 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
     ...other
   } = props
   const [progress, setProgress] = useState(0)
-  const Icon = props => variantIcon[variant](props)
   const [results, setResults] = useState(waitCloseOrderResults)
   const [orderPendingBtn, setOrderPendingBtn] = useState(false)
   const { setRemoveUserFromMerchant } = useRemoveUserFromMerchant()
@@ -216,103 +231,72 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
         })
       })
   }
+  // 確認型：對話框（取消／Esc／點背景只關閉；確認鈕的分派與停用條件與原本相同）
+  if (resign || groupEdit) {
+    const copy = getConfirmCopy({ resign, isDailyCheckout, salaryCheckout, salaryItemsLock, orderPending, deleteSystemRecordPending, deleteInventoryWork, selectedOrders })
+    const confirmAction = resign
+      ? isDailyCheckout
+        ? () => dailyCheckout()
+        : () =>
+          salaryCheckout
+            ? handleSalaryCheckout()
+            : salaryItemsLock
+              ? handleSalaryItemsLock()
+              : orderPending
+                ? usehandleCreateDraftOrderFunc()
+                : deleteSystemRecordPending
+                  ? deleteSystemRecordFunc()
+                  : deleteInventoryWork
+                    ? deleteInventoryWorkFunc()
+                    : handleResignEmployee(designerId)
+      : () => (serviceHelperGroupEdit ? handleSubmitHelperDeduction() : handleSubmitDeduction())
+    const confirmDisabled = resign ? (isDailyCheckout ? isDailyCheckoutLoading : orderPendingBtn) : undefined
+    return (
+      <Dialog
+        open
+        onClose={() => onClose()}
+        fullWidth
+        maxWidth="xs"
+        aria-describedby="client-snackbar"
+        PaperProps={{ role: 'alertdialog', className: 'ui-root !max-w-[480px]' }}
+      >
+        <DialogTitle>{copy.title}</DialogTitle>
+        <DialogContent>
+          <div id="client-snackbar" className="flex flex-col gap-2">
+            <p className="whitespace-pre-line text-body text-text">{typeof message === 'string' ? message.trim() : message}</p>
+            {copy.consequence && <p className="text-body text-text-secondary">{copy.consequence}</p>}
+          </div>
+        </DialogContent>
+        <DialogActions disableSpacing className="gap-2 max-sm:[&>button]:flex-1">
+          <Button variant="secondary" onClick={() => onClose()}>
+            取消
+          </Button>
+          <Button variant={copy.danger ? 'danger' : 'primary'} onClick={confirmAction} disabled={confirmDisabled}>
+            {confirmDisabled && <LoaderCircle className="animate-spin" strokeWidth={1.75} aria-hidden="true" />}
+            {confirmDisabled ? '處理中…' : copy.confirmLabel}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+
+  // 純訊息：右下角提示卡；月結／日結進行中以定值圓＋%取代關閉鈕（不可關閉，原本也只留空白按鈕）
   return (
-    <SnackbarContent
+    <ToastCard
       ref={ref}
-      className={styles[variant]}
-      aria-describedby="client-snackbar"
-      message={
-        resign ? (
-          isDailyCheckout ? (
-            <Fragment>
-              <span id="client-snackbar" className={styles.message}>
-                <Icon className={`${styles.icon} ${styles.iconVariant}`} />
-                {message}
-              </span>
-              <div className={styles.resignBtnDiv}>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  className={styles.confirmResignBtn}
-                  onClick={() => dailyCheckout()}
-                  disabled={isDailyCheckoutLoading}
-                >
-                  確定
-                </Button>
-              </div>
-            </Fragment>
-          ) : (
-            <Fragment>
-              <span id="client-snackbar" className={styles.message}>
-                <Icon className={`${styles.icon} ${styles.iconVariant}`} />
-                {message}
-              </span>
-              <div className={styles.resignBtnDiv}>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  className={styles.confirmResignBtn}
-                  onClick={() =>
-                    salaryCheckout
-                      ? handleSalaryCheckout()
-                      : salaryItemsLock
-                        ? handleSalaryItemsLock()
-                        : orderPending
-                          ? usehandleCreateDraftOrderFunc()
-                          : deleteSystemRecordPending
-                            ? deleteSystemRecordFunc()
-                            : deleteInventoryWork
-                              ? deleteInventoryWorkFunc()
-                              : handleResignEmployee(designerId)
-                  }
-                  disabled={orderPendingBtn}
-                >
-                  {salaryCheckout ? '結算' : '確定'}
-                </Button>
-              </div>
-            </Fragment>
-          )
-        ) : groupEdit ? (
-          <Fragment>
-            <span id="client-snackbar" className={styles.message}>
-              <Icon className={`${styles.icon} ${styles.iconVariant}`} />
-              {message}
-            </span>
-            <div className={styles.resignBtnDiv}>
-              <Button
-                variant="primary"
-                size="sm"
-                className={styles.confirmResignBtn}
-                onClick={() =>
-                  serviceHelperGroupEdit ? handleSubmitHelperDeduction() : handleSubmitDeduction()
-                }
-              >
-                確定
-              </Button>
+      variant={variant}
+      title={<span id="client-snackbar">{message}</span>}
+      onClose={checkoutProcessing ? undefined : onClose}
+      trailing={
+        checkoutProcessing && (
+          <div className="relative inline-flex shrink-0">
+            <CircularProgress variant="determinate" value={progress <= 100 ? progress : 99} />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-caption tabular-nums text-text-secondary">{progress <= 100 ? progress : 99}%</div>
             </div>
-          </Fragment>
-        ) : (
-          <span id="client-snackbar" className={styles.message}>
-            <Icon className={`${styles.icon} ${styles.iconVariant}`} />
-            {message}
-            {checkoutProcessing && (
-              <div className="relative inline-flex">
-                <CircularProgress variant="determinate" value={progress <= 100 ? progress : 99} />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-caption text-text-secondary">
-                    {progress <= 100 ? progress : 99}%
-                  </div>
-                </div>
-              </div>
-            )}
-          </span>
+          </div>
         )
       }
-      action={[
-        <UiButton key="close" variant="ghost" size="icon" className="h-8 w-8" aria-label="close" title="關閉" onClick={onClose}>
-          {!checkoutProcessing && <CloseIcon className={styles.icon} />}
-        </UiButton>,
-      ]}
       {...other}
     />
   )
@@ -364,7 +348,7 @@ export function openSnackbar({
   deleteInventoryWorkFunc
 }) {
   openSnackbarFunction({
-    message,
+    message: normalizeSnackbarMessage(message),
     variant,
     horizontal,
     vertical,
@@ -557,30 +541,28 @@ export default function CustomizedSnackbars() {
     setSnackbarState({ ...snackbarState, open: false })
   }
 
+  // 自動消失：每則新訊息重新計時；確認型、disableHide、錯誤不自動消失（STYLE §6）；滑鼠移入或聚焦時暫停，移出後以一半時間重新計時（同原 Snackbar）。
+  // 取代原本兩個計時器（Snackbar 的 autoHideDuration＋依 checkoutProcessing 觸發、閉包抓舊 state 的 setTimeout——後者會在版面掛載後 3 秒內把剛開的確認框關掉）
+  const latestClose = useRef(handleClose)
+  latestClose.current = handleClose
+  const hideTimer = useRef(null)
+  const autoHide = open && !resign && !groupEdit && !disableHide && variant !== 'error' ? AUTO_HIDE_MS : null
+  const startHideTimer = duration => {
+    clearTimeout(hideTimer.current)
+    if (duration == null) return
+    hideTimer.current = setTimeout(() => latestClose.current(), duration)
+  }
   useEffect(() => {
-    if (!checkoutProcessing && !disableHide) {
-      setTimeout(() => {
-        setSnackbarState({ ...snackbarState, open: false })
-      }, 3000)
-    }
-  }, [checkoutProcessing])
+    startHideTimer(autoHide)
+    return () => clearTimeout(hideTimer.current)
+  }, [snackbarState, autoHide])
+  const pauseHide = () => clearTimeout(hideTimer.current)
+  const resumeHide = () => startHideTimer(autoHide == null ? null : autoHide * 0.5)
 
+  // 全站唯一的提示區（右下角）；openSnackbar 的訊息槽放在佇列最前面
   return (
-    <div>
-      <Snackbar
-        anchorOrigin={{
-          vertical: vertical || 'top',
-          horizontal: horizontal || 'center',
-        }}
-        open={open}
-        autoHideDuration={disableHide ? null : 3000}
-        // onClose={handleClose}
-        onClose={(_, reason) => {
-          if (reason !== 'backdropClick') {
-            handleClose()
-          }
-        }}
-      >
+    <Toaster>
+      {open && (
         <SnackbarContentWrapper
           // onClose={handleClose}
           onClose={(_, reason) => {
@@ -588,6 +570,10 @@ export default function CustomizedSnackbars() {
               handleClose()
             }
           }}
+          onMouseEnter={pauseHide}
+          onMouseLeave={resumeHide}
+          onFocus={pauseHide}
+          onBlur={resumeHide}
           variant={variant}
           message={message}
           resign={resign}
@@ -621,7 +607,7 @@ export default function CustomizedSnackbars() {
           deleteInventoryWork={deleteInventoryWork}
           deleteInventoryWorkFunc={deleteInventoryWorkFunc}
         />
-      </Snackbar>
-    </div>
+      )}
+    </Toaster>
   )
 }
