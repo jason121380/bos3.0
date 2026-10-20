@@ -367,6 +367,7 @@ export default function General({
             })
           }}
         />
+        {/* 手機（< 640px）分兩列：清單鈕＋商品撐滿，第二列自購價／數量／小計／刪除／新增；640px 以上維持原單列 */}
         {picking.productList.map((data, index) => (
           <div className="mb-6 grid grid-cols-12 items-center gap-2" key={index}>
             {/* 先隱藏 */}
@@ -381,7 +382,7 @@ export default function General({
 
               </div>
             )}
-            <div className="col-span-4">
+            <div className="col-span-11 sm:col-span-4">
               <Autocomplete
                 style={{ width: '100%' }}
                 options={productsOption}
@@ -424,7 +425,7 @@ export default function General({
                 )}
               />
             </div>
-            <div className="col-span-2">
+            <div className="col-span-4 sm:col-span-2">
               <TextField
                 InputProps={{ inputProps: { min: 0 } }}
                 label="自購價"
@@ -448,7 +449,7 @@ export default function General({
                 onWheel={() => document.activeElement.blur()}
               />
             </div>
-            <div className="col-span-2">
+            <div className="col-span-4 sm:col-span-2">
               <TextField
                 InputProps={{ inputProps: { min: 0 } }}
                 label="數量"
@@ -473,7 +474,7 @@ export default function General({
                 onWheel={() => document.activeElement.blur()}
               />
             </div>
-            <div className="col-span-1 text-center text-body tabular-nums text-text">
+            <div className="col-span-2 sm:col-span-1 text-center text-body tabular-nums text-text">
               {data.total !== 0 && data.total}
             </div>
             {index !== 0 ? (
