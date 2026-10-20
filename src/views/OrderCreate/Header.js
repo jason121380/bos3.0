@@ -16,7 +16,8 @@ import ShortcutDialog from '../../components/ShortcutDialog'
 import { History, ReceiptText } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
-import { Checkbox } from 'ui/checkbox'
+import { cn } from 'ui/utils'
+import { Checkbox, checkboxHitArea } from 'ui/checkbox'
 import OrderDetailModal from './OrderDetailModal'
 import { getMissingForOrder } from './orderRequirements'
 import _ from 'lodash'
@@ -320,46 +321,41 @@ function Header({ forceUpdate, ...rest }) {
         {/* 操作列：選項在左、按鈕在右，兩者分開排列，不再擠在同一串 */}
         <Card className="flex flex-wrap items-center justify-between gap-x-8 gap-y-3 px-4 py-3">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            <label className="flex cursor-pointer items-center gap-2 text-body text-text">
+            <label className={cn('flex cursor-pointer items-center gap-2 text-body text-text', checkboxHitArea)}>
               <Checkbox checked={checkOrderDetail} onChange={handleCheckoutOrderDetail} />
               結帳前確認明細
             </label>
             {!disablePendingOrder && (
-              <label className="flex cursor-pointer items-center gap-2 text-body text-text">
+              <label className={cn('flex cursor-pointer items-center gap-2 text-body text-text', checkboxHitArea)}>
                 <Checkbox checked={stayInCreateOrder} onChange={handleStayInCreateOrderBtn} />
                 連續打單結帳
               </label>
             )}
           </div>
           <div className="flex flex-col items-end gap-1.5 max-sm:w-full">
+            {/* 停用原因只在下方文字（role="status"）出現一次：三顆按鈕各自再掛 title 會讓讀屏重複播報同一句 */}
             <div className="flex items-center gap-3">
               {!disablePendingOrder && (
-                <span title={disabledReason || undefined} className="inline-flex">
-                  <Button
-                    variant="secondary"
-                    onClick={handleOrderPendingConfirm}
-                    disabled={valid || isClick || checkoutBtn || checkoutBtnClick}
-                  >
-                    掛單
-                  </Button>
-                </span>
-              )}
-              <span title={disabledReason || undefined} className="inline-flex">
-                <Button variant="secondary" onClick={() => handleDisplayOrderDetail()} disabled={actionDisabled}>
-                  明細
-                </Button>
-              </span>
-              <span title={disabledReason || undefined} className="inline-flex">
-                {/* 停用時改成深字灰底（原本是淡藍底白字，對比不足） */}
                 <Button
-                  variant="primary"
-                  className="px-8 disabled:bg-surface-active disabled:text-text-secondary disabled:opacity-100"
-                  onClick={() => checkOrderDetail ? handleDisplayOrderDetail() : usehandleCreateOrder()}
-                  disabled={actionDisabled}
+                  variant="secondary"
+                  onClick={handleOrderPendingConfirm}
+                  disabled={valid || isClick || checkoutBtn || checkoutBtnClick}
                 >
-                  結帳
+                  掛單
                 </Button>
-              </span>
+              )}
+              <Button variant="secondary" onClick={() => handleDisplayOrderDetail()} disabled={actionDisabled}>
+                明細
+              </Button>
+              {/* 停用時改成深字灰底（原本是淡藍底白字，對比不足） */}
+              <Button
+                variant="primary"
+                className="px-8 disabled:bg-surface-active disabled:text-text-secondary disabled:opacity-100"
+                onClick={() => checkOrderDetail ? handleDisplayOrderDetail() : usehandleCreateOrder()}
+                disabled={actionDisabled}
+              >
+                結帳
+              </Button>
             </div>
             {disabledReason && (
               <p role="status" className="m-0 text-caption text-warning max-sm:text-right">

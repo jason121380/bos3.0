@@ -44,7 +44,7 @@ function Results({ orders, ...rest }) {
                   <TableCell>
                     <div className="font-medium tabular-nums">{order.no}</div>
                     <div className="text-caption tabular-nums text-text-secondary">
-                      {format(new Date(order.date), 'MM/dd/yyyy')}
+                      {format(new Date(order.date), 'yyyy/MM/dd')}
                     </div>
                   </TableCell>
                   <TableCell>

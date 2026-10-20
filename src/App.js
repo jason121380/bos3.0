@@ -2,7 +2,6 @@
 import 'react-perfect-scrollbar/dist/css/styles.css'
 
 import './mixins/validate'
-import './mixins/prismjs'
 import './assets/scss/main.scss'
 import './styles/tokens.css'
 // import './initialize.scss'
@@ -20,22 +19,21 @@ import GoogleAnalytics from './components/GoogleAnalytics'
 import ScrollReset from './components/ScrollReset'
 import routes from './routes'
 import TeachingModeState from './context/TeachingModeState'
-
-// import ReactGA from 'react-ga'
+import { getApiEnvironment } from './lib/api-base'
+import { APP_VERSION } from './version'
 
 const history = createBrowserHistory()
 
-// const TRACKING_ID = 'G-Y4KX6NT6NX'
-// ReactGA.initialize(TRACKING_ID)
-// ReactGA.pageview(window.location.pathname)
-
-// Tracking errors by Sentry
+// 錯誤追蹤（Sentry）：只在正式 build 送出；依連線的後端標記環境，並以畫面版號當 release，
+// 讓錯誤能對應到是哪一版。效能追蹤取樣 10%（原 100% 會為每次換頁、每支請求都上傳一筆 transaction）。
+const isProductionBuild = process.env.NODE_ENV === 'production'
 Sentry.init({
   dsn: 'https://7bc089052abd4624910f289209840fd9@o251287.ingest.sentry.io/5542421',
+  enabled: isProductionBuild,
+  environment: isProductionBuild ? getApiEnvironment() : 'development',
+  release: `bos@${APP_VERSION}`,
   integrations: [new Integrations.BrowserTracing()],
-  // We recommend adjusting this value in production, or using tracesSampler
-  // for finer control
-  tracesSampleRate: 1.0,
+  tracesSampleRate: 0.1,
 })
 
 function App() {

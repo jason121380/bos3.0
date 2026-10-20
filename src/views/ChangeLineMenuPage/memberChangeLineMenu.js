@@ -22,7 +22,8 @@ function Reservation({ match, location }) {
     if (liffId.length !== 0) {
       localStorage.setItem('liffId', liffId)
     } else {
-      localStorage.setItem('liffId', null)
+      // 原本 setItem('liffId', null) 會存成字串 "null"，登入頁以 !== null 判斷就誤走 LINE 登入、不存 token
+      localStorage.removeItem('liffId')
     }
     const LIFFLogin = () => {
       window.liff
@@ -44,7 +45,6 @@ function Reservation({ match, location }) {
                   },
                 })
                 window.liff.closeWindow()
-                console.log(a)
               })
               .catch(err => {
                 openSnackbar({ message: `內部錯誤:${err.message}`, variant: 'error' })
@@ -65,7 +65,6 @@ function Reservation({ match, location }) {
                     },
                   })
                   window.liff.closeWindow()
-                  console.log(a)
                 })
                 .catch(err => {
                   openSnackbar({ message: `內部錯誤:${err.message}`, variant: 'error' })

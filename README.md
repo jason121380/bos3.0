@@ -273,7 +273,7 @@ bos3.0/
 
 ### API 端點自動偵測邏輯
 
-API 端點在 `src/lib/init-apollo.js` 中依以下優先順序決定：
+後端位址的單一來源是 `src/lib/api-base.js`（`getGraphqlUrl`／`getApiOrigin`）。GraphQL（`init-apollo.js`）、WebSocket（`TopBar.js`）與 REST（`outer_store`）都由它推得，三者一定連到同一個後端。依以下優先順序決定：
 
 ```
 1. 環境變數 REACT_APP_API_URL（最高優先）
@@ -283,7 +283,7 @@ API 端點在 `src/lib/init-apollo.js` 中依以下優先順序決定：
 5. 其他（正式環境）       → https://beautyos-api-prod-htlfg34mhq-de.a.run.app/graphql
 ```
 
-> ⚠️ **重要**：在 Zeabur 等第三方平台部署時，**必須**設定 `REACT_APP_API_URL` 環境變數，否則會連到正式環境。
+> ⚠️ **重要**：在 Zeabur 等第三方平台部署時，**必須**設定 `REACT_APP_API_URL` 環境變數，否則會連到正式環境。WebSocket 與 REST 會跟著改用同一台主機（取該 URL 的 origin）。
 
 ---
 
@@ -324,9 +324,15 @@ localStorage 儲存：
 
 ### WebSocket 即時通訊
 
-- 連線建立於 `TopBar.js` 中的 `connectWebSocket()` 函數
-- 根據環境自動選擇 WebSocket 伺服器地址
+- 連線建立於 `TopBar.js` 的 useEffect，位址取自 `lib/api-base` 的 `getApiOrigin()`（與 GraphQL 同一個後端）
+- 使用 socket.io 內建自動重連；每次（重新）連上都會重新送出 `roomKey` 加入店家房間；離開版面時移除監聽並斷線
 - 用於訂單提醒、預約通知等即時推播
+
+### 錯誤處理
+
+- GraphQL 錯誤：`init-apollo.js` 的 errorLink 統一以 `openSnackbar` 顯示後端訊息（`TKN_ERROR` 導回登入、`TKN_IN_JAIL` 以 alert 告知）
+- 網路錯誤：顯示「網路連線異常…」或「伺服器回應錯誤（狀態碼）…」，5 秒內只提示一次
+- `openSnackbar` 會去掉 Apollo 的 `GraphQL error:` 前綴；錯誤提示需手動關閉，其餘 3 秒自動消失
 
 ---
 
@@ -615,11 +621,10 @@ Dialog 模式的店家切換器，含搜尋過濾功能。
 
 **正式環境** (`cloudbuild.yaml`)：
 ```bash
-# 觸發流程：
-# 1. yarn install (production)
-# 2. yarn build
-# 3. Docker build → push to asia-east1-docker.pkg.dev
-# 4. kubectl set image → update deployment/mlg-beautyos-deployment
+# 觸發流程（安裝與建置都在 Dockerfile 內完成）：
+# 1. Docker build（npm ci → npm run build）→ push to asia-east1-docker.pkg.dev
+# 2. kubectl set image → update deployment/mlg-beautyos-deployment
+# 註：2026/10/20 前另有 `yarn --production`＋`yarn build` 兩步，改用 Vite 後會失敗（建置工具在 devDependencies）且與 Docker 內建置重複，已移除
 ```
 
 **開發環境** (`cloudbuild_dev.yaml`)：
@@ -644,12 +649,13 @@ docker run -p 3000:3000 beautyos-frontend
 ```dockerfile
 # Stage 1: Builder (node:20.12.1-alpine)
 # - npm config (fetch-retries: 5, timeout: 20s~120s)
-# - npm install --legacy-peer-deps
+# - npm ci --legacy-peer-deps（依 package-lock.json，與 CI 相同）
 # - npm run build
 
 # Stage 2: Runtime (node:20.12.1-alpine)
 # - 只複製 build/ 資料夾
-# - serve -s build (port 3000)
+# - serve@14 -s build (port 3000)
+# - build/serve.json（來自 public/serve.json）：/assets/** 為 hash 檔名，Cache-Control 一年 immutable；*.html no-cache
 ```
 
 ### GCP 部署架構

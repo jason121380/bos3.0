@@ -241,7 +241,7 @@ function createPicker({ displayName, withTime, mobileOnly }) {
     const rawTextField = slotProps.textField
     const textField = typeof rawTextField === 'function' ? rawTextField({}) : rawTextField || {}
     const { variant: _variant, error: tfError, InputProps: tfInputProps, inputProps: tfInputProps2, ...tfRest } = textField
-    const ariaLabel = isValidDate(value) ? `Choose date, selected date is ${formatValue(value, 'MMM d, yyyy')}` : 'Choose date'
+    const ariaLabel = isValidDate(value) ? `選擇日期，目前為 ${formatValue(value, 'yyyy/MM/dd')}` : '選擇日期'
     const openOnKey = event => {
       if (onKeyDown) onKeyDown(event)
       if (!desktop && (event.key === 'Enter' || event.key === ' ')) {

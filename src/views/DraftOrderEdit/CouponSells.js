@@ -112,7 +112,6 @@ export default function CouponSells({
             autoFocus={focus === 'coupon'}
             orderId={orderId}
             onFocus={handleFocus}
-            tabIndex={focusRow + '0'}
             onKeyDown={event => {
               if ((couponSell.isLocked !== 'FALSE' || !isTicketSellingEditable)) {
                 setFocus('remark')
@@ -159,7 +158,6 @@ export default function CouponSells({
                 name="availableCount"
                 onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
                 onFocus={handleFocus}
-                tabIndex={focusRow + '1'}
                 onChange={function (event) {
                   const newCouponSell = _.cloneDeep(couponSell)
                   newCouponSell.availableCount = idx(event, _ => +_.target.value || 1)
@@ -178,7 +176,6 @@ export default function CouponSells({
             <Field label="價格" className={styles.field}>
               <Input
                 value={couponSell.price}
-                tabIndex={focusRow + '2'}
                 autoFocus={focus === 'price'}
                 onKeyDown={event => handleKeyDown({ event, nextField: 'count' })}
                 onFocus={handleFocus}
@@ -201,7 +198,6 @@ export default function CouponSells({
             <Field label="張數" className={styles.priceField}>
               <Input
                 value={couponSell.count}
-                tabIndex={focusRow + '3'}
                 autoFocus={focus === 'count'}
                 onFocus={handleFocus}
                 ref={countRef}

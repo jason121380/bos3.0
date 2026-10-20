@@ -114,7 +114,7 @@ function Results({
                         </RouterLink>
                       </Button>
                     </TableCell>
-                    <TableCell className={`${sticky2} tabular-nums`}>{format(data.date, 'yyyy-MM-dd')}</TableCell>
+                    <TableCell className={`${sticky2} tabular-nums`}>{format(data.date, 'yyyy/MM/dd')}</TableCell>
                     <TableCell>
                       {data.accountingSubject !== null ? data.accountingSubject.name : ''}
                     </TableCell>

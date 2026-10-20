@@ -34,7 +34,8 @@ const DialogContent = React.forwardRef(({ className, size = 'sm', children, hide
       {!hideClose && (
         <DialogPrimitive.Close
           aria-label="關閉"
-          className={cn('absolute right-4 top-4 rounded-md p-1 text-text-tertiary hover:bg-surface-hover hover:text-text', focusRing)}
+          // 視覺 24px；透明偽元素四周各擴 8px，命中區 40px（STYLE §9 觸控目標），標題列已留 pr-12 不會蓋到標題
+          className={cn("absolute right-4 top-4 rounded-md p-1 text-text-tertiary before:absolute before:-inset-2 before:content-[''] hover:bg-surface-hover hover:text-text", focusRing)}
         >
           <X className="h-4 w-4" strokeWidth={1.75} />
         </DialogPrimitive.Close>

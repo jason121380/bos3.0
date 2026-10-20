@@ -40,7 +40,6 @@ export default function AccountingItemCreate({
         setAccountingType(newAccountingType)
         break
       default:
-        console.log(type)
         break
     }
   }
@@ -63,7 +62,6 @@ export default function AccountingItemCreate({
         setAccountingType(newAccountingType)
         break
       default:
-        console.log(type)
         break
     }
   }
@@ -88,7 +86,6 @@ export default function AccountingItemCreate({
         setAccountingRevenueSubjects(newAccountingRevenueSubjects)
         break
       default:
-        console.log(e.target)
         break
     }
   }
@@ -113,7 +110,6 @@ export default function AccountingItemCreate({
         setAccountingExpenditureSubjects(newAccountingExpenditureSubjects)
         break
       default:
-        console.log(e.target)
         break
     }
   }

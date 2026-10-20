@@ -112,7 +112,7 @@ function OrderRecord({ results, page, onChangePage, onChangeRowsPerPage, members
                   <TableCell>
                     <div className="font-medium tabular-nums">#{data.orderNo}</div>
                     <div className="text-caption tabular-nums text-text-secondary">
-                      {format(new Date(data.date), 'MM/dd/yyyy')}/
+                      {format(new Date(data.date), 'yyyy/MM/dd')}/
                       {weekDisplay(format(new Date(data.date), 'eeee'))}
                     </div>
                   </TableCell>

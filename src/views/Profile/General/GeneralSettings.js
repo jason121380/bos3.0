@@ -52,10 +52,11 @@ function GeneralSettings({
     if (values.cellphone.trim().length < 7) {
       openSnackbar({ message: '手機長度必須大於六碼', variant: 'warning' })
     } else {
-      fetchUpdateUserGeneral(values).then(
-        () => refetchProfile(),
+      // 原本 openSnackbar 寫成 .then 的第二個參數，會在送出當下就執行：存檔還沒完成、甚至失敗也顯示「儲存成功」
+      fetchUpdateUserGeneral(values).then(() => {
+        refetchProfile()
         openSnackbar({ message: '儲存成功', variant: 'success' })
-      )
+      })
     }
     // const themeData = {
     //   userId: values.userId,

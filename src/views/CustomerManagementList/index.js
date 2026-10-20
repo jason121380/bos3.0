@@ -1,6 +1,6 @@
-// 篩選區的排序／會員／黑名單下拉保留 MUI Select（值可能非字串或含 null）
-import { InputLabel, Select, FormControl, MenuItem } from 'ui/form-control'
-import { FilterList as FilterListIcon } from 'ui/icons'
+// 篩選區的排序／會員／效期／黑名單下拉：Field（標籤在上）＋NativeSelect（值皆為字串，onChange 的 event.target.value 與原 Select 相同）
+import { Field } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
 import useFetchCustomers from 'hooks/useFetchCustomers'
@@ -203,28 +203,26 @@ function CustomerManagementList() {
                 })
               }
             />
-            <div className="mt-3 flex flex-wrap">
-              <FormControl variant="outlined" className="mx-[10px] mb-[10px] mt-[20px] w-[150px]">
-                <InputLabel>顧客排序方式</InputLabel>
-                <Select label='顧客排序方式' value={pageSetting.searchingOrder} onChange={event => handleOnChange({ key: "searchingOrder", event: event })}>
+            <div className="mt-4 flex flex-wrap items-end gap-4">
+              <Field label="顧客排序方式" htmlFor="customer-list-sort" className="w-[184px]">
+                <NativeSelect id="customer-list-sort" value={pageSetting.searchingOrder} onChange={event => handleOnChange({ key: "searchingOrder", event: event })}>
                   {sortByA.map((data, index) => (
-                    <MenuItem value={data.value} key={index}>{data.label}</MenuItem>
+                    <NativeSelectOption value={data.value} key={index}>{data.label}</NativeSelectOption>
                   ))}
-                </Select>
-              </FormControl>
-              <FormControl variant="outlined" className="mx-[10px] mb-[10px] mt-[20px] w-[150px]">
-                <InputLabel>呈現順序</InputLabel>
-                <Select label='呈現順序' value={pageSetting.orderWay} onChange={event => handleOnChange({ key: "orderWay", event: event })}>
+                </NativeSelect>
+              </Field>
+              <Field label="呈現順序" htmlFor="customer-list-order" className="w-[150px]">
+                <NativeSelect id="customer-list-order" value={pageSetting.orderWay} onChange={event => handleOnChange({ key: "orderWay", event: event })}>
                   {sortByB.map((data, index) => (
-                    <MenuItem value={data.value} key={index}>{data.label}</MenuItem>
+                    <NativeSelectOption value={data.value} key={index}>{data.label}</NativeSelectOption>
                   ))}
-                </Select>
-              </FormControl>
+                </NativeSelect>
+              </Field>
               {isMemberShipCardActive && (
                 <Fragment>
-                  <FormControl variant="outlined" className="mx-[10px] mb-[10px] mt-[20px] w-[150px]">
-                    <InputLabel>會員</InputLabel>
-                    <Select label='會員'
+                  <Field label="會員" htmlFor="customer-list-membership" className="w-[150px]">
+                    <NativeSelect
+                      id="customer-list-membership"
                       value={membershipFilter.membership}
                       onChange={event => {
                         setMemberShipFilter({
@@ -234,15 +232,14 @@ function CustomerManagementList() {
                       }}
                     >
                       {membership.map((data, index) => (
-                        <MenuItem value={data.value} key={index}>{data.label}</MenuItem>
+                        <NativeSelectOption value={data.value} key={index}>{data.label}</NativeSelectOption>
                       ))}
-                    </Select>
-                  </FormControl>
+                    </NativeSelect>
+                  </Field>
                   {pageSetting.membershipPreference !== null && pageSetting.membershipPreference.membership === 'ALL' &&
-                    <FormControl variant="outlined" className="mx-[10px] mb-[10px] mt-[20px] w-[150px]">
-                      <InputLabel>效期</InputLabel>
-                      <Select
-                        label='效期'
+                    <Field label="效期" htmlFor="customer-list-validity" className="w-[150px]">
+                      <NativeSelect
+                        id="customer-list-validity"
                         value={membershipFilter.membershipValidity}
                         onChange={event => {
                           setMemberShipFilter({
@@ -252,23 +249,22 @@ function CustomerManagementList() {
                         }}
                       >
                         {membershipValidity.map((data, index) => (
-                          <MenuItem value={data.value} key={index}>{data.label}</MenuItem>
+                          <NativeSelectOption value={data.value} key={index}>{data.label}</NativeSelectOption>
                         ))}
-                      </Select>
-                    </FormControl>
+                      </NativeSelect>
+                    </Field>
                   }
-                  <FormControl variant="outlined" className="mx-[10px] mb-[10px] mt-[20px] w-[150px]">
-                    <InputLabel>黑名單篩選</InputLabel>
-                    <Select
+                  <Field label="黑名單篩選" htmlFor="customer-list-unwelcome" className="w-[150px]">
+                    <NativeSelect
+                      id="customer-list-unwelcome"
                       value={pageSetting.isUnwelcome}
-                      label='黑名單篩選'
                       onChange={e => setPageSetting({ ...pageSetting, isUnwelcome: e.target.value })}
                     >
-                      <MenuItem value='ALL'>顯示全部</MenuItem>
-                      <MenuItem value='UNWELCOME'>顯示黑名單</MenuItem>
-                      <MenuItem value='WELCOME'>排除黑名單</MenuItem>
-                    </Select>
-                  </FormControl>
+                      <NativeSelectOption value='ALL'>顯示全部</NativeSelectOption>
+                      <NativeSelectOption value='UNWELCOME'>顯示黑名單</NativeSelectOption>
+                      <NativeSelectOption value='WELCOME'>排除黑名單</NativeSelectOption>
+                    </NativeSelect>
+                  </Field>
                 </Fragment>
               )}
             </div>

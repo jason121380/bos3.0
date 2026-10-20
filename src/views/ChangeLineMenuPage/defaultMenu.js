@@ -35,7 +35,6 @@ function Reservation({ match, location }) {
                 },
               })
               window.liff.closeWindow()
-              console.log(a)
             })
           } else {
             window.liff.login().then(() => {
@@ -52,7 +51,6 @@ function Reservation({ match, location }) {
                   })
                   // setLoading(false)
                   window.liff.closeWindow()
-                  console.log(a)
                 })
                 .catch(err => {
                   throw new Error(`${err.code}: ${err.message}`)

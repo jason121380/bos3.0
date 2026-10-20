@@ -469,15 +469,18 @@ function Calendar({ designerId, checkinSettings, bookingCusCheck, checkinMode, b
 
   return (
     <Fragment>
+      {/* 載入遮罩：比照單日預約紀錄改 role=status＋aria-live，下方行事曆卡片同步 aria-busy */}
       <div
         id='Backdrop'
-        aria-hidden="true"
+        role="status"
+        aria-live="polite"
         className="fixed inset-0 flex items-center justify-center !opacity-100 z-[999] ![background:rgba(0,0,0,0)]"
         style={{ visibility: (merchant.loading || DesignerCalendar.loading) ? undefined : 'hidden' }}
       >
-        <LoaderCircle className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
+        <LoaderCircle aria-hidden="true" className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
+        <span className="sr-only">預約紀錄載入中…</span>
       </div>
-      <Card className="px-5 pb-5 pt-4">
+      <Card className="px-5 pb-5 pt-4" aria-busy={(merchant.loading || DesignerCalendar.loading) || undefined}>
         <div className="flex gap-[10px] flex-wrap items-center justify-between">
           <div className="flex gap-[10px] flex-wrap items-center justify-between">
             <DateSelector

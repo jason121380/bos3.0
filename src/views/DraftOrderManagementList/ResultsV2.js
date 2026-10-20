@@ -7,13 +7,14 @@ import useFetchDeleteOrder from 'hooks/useFetchDeleteOrder'
 import { useFetchDownloadOrderReport } from 'hooks/useFetchOrderReport'
 import idx from 'idx'
 import PropTypes from 'prop-types'
-import React, { useEffect, useRef, useState, Fragment } from 'react'
+import React, { useEffect, useMemo, useRef, useState, Fragment } from 'react'
 import { Link as RouterLink, useHistory } from 'react-router-dom'
 import { CSVLink } from "react-csv";
 import { ChevronDown, ChevronUp, ChevronsDownUp, ChevronsUpDown, CircleDollarSign, Download, Eye, Printer } from 'lucide-react'
 import { useLocation } from 'react-router'
 import useFetchReCheckoutOrder from 'hooks/useFetchReCheckoutOrder'
 import designerNameType from 'helper/designerNameType'
+import truncateDecimal from 'helper/truncateDecimal'
 import _ from 'lodash'
 import pagenationLabel from './../../helper/pagenationLabel'
 import { Button } from 'ui/button'
@@ -21,9 +22,22 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { EmptyState } from 'ui/empty-state'
-import { formatNumber } from 'ui/format'
+import { formatMoney } from 'ui/format'
 import { Field, Input } from 'ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { cn } from 'ui/utils'
+
+// 寬表（min-w 1400px）橫向捲動時固定「操作」與「帳單編號/時間」兩欄（只限螢幕，列印還原為一般欄位；比照帳單列表）：
+// - sm 以上兩欄都固定：操作欄寬固定 188px（勾選 16＋間距 4＋四顆 32px 圖示鈕與間距＋左右 12px 內距），帳單編號欄接在 left-[188px]
+// - 手機（< 640px）可視寬度約 320px，兩欄合計超過一半，只固定帳單編號欄（操作欄隨內容捲走，捲回最左即可操作）
+// 底色跟著列：一般 surface（卡片底），hover／勾選時 surface-hover；右緣 1px 分隔線
+const STICKY_BASE = 'bg-surface group-hover:bg-surface-hover group-data-[state=selected]:bg-surface-hover print:static print:bg-transparent print:shadow-none'
+const STICKY_ACTION = 'sm:sticky sm:left-0 sm:w-[188px] sm:min-w-[188px]'
+const STICKY_NO = 'sticky left-0 sm:left-[188px] shadow-[1px_0_0_rgb(var(--border))]'
+const STICKY_ACTION_HEAD = cn('w-[160px]', STICKY_ACTION, 'z-[3] bg-surface print:static print:bg-transparent')
+const STICKY_NO_HEAD = cn(STICKY_NO, 'z-[3] bg-surface print:static print:bg-transparent print:shadow-none')
+const STICKY_ACTION_CELL = cn(STICKY_ACTION, 'z-[2]', STICKY_BASE)
+const STICKY_NO_CELL = cn(STICKY_NO, 'z-[2]', STICKY_BASE)
 
 function Results({
   className,
@@ -52,6 +66,8 @@ function Results({
   const pageRef = useRef(null)
   const merchantName = JSON.parse(localStorage.getItem('userMerchant')).name
   const [selectedOrders, setSelectedOrders] = useState([])
+  // 勾選狀態查詢用 Set（每列查兩次，避免 indexOf 逐筆掃描）；只換查詢方式，selectedOrders 的結構與 handler 不變
+  const selectedOrderSet = useMemo(() => new Set(selectedOrders), [selectedOrders])
   const [excelData, setExcelData] = useState([])
   const [allExtend, setAllExtend] = useState(false)
   const [orderExtendArr, setOrderExtendArr] = useState([])
@@ -250,7 +266,7 @@ function Results({
         setSelectedOrders([])
         refetch2()
         openSnackbar({
-          message: '刪除訂單成功',
+          message: '刪除掛單成功',
           variant: 'success',
         })
       })
@@ -671,7 +687,7 @@ function Results({
           <Table className="min-w-[1400px]">
             <TableHeader>
               <TableRow className="hover:bg-transparent">
-                <TableHead className="w-[160px]">
+                <TableHead className={STICKY_ACTION_HEAD}>
                   <Checkbox
                     aria-label="全選"
                     checked={selectedOrders.length === orders.length && orders.length > 0}
@@ -682,7 +698,7 @@ function Results({
                     disabled={orders.length === 0}
                   />
                 </TableHead>
-                <TableHead className="min-w-[150px]">帳單編號/時間</TableHead>
+                <TableHead className={cn('min-w-[150px]', STICKY_NO_HEAD)}>帳單編號/時間</TableHead>
                 <TableHead className="min-w-[150px]">客戶</TableHead>
                 <TableHead>設計師</TableHead>
                 <TableHead>指定/不指定</TableHead>
@@ -700,19 +716,19 @@ function Results({
                 <TableHead numeric>入金使用(-)</TableHead>
                 {bonusDisplay && <TableHead numeric>點數折抵金額(-)</TableHead>}
                 <TableHead>備註</TableHead>
-                <TableHead>訂單來源</TableHead>
+                <TableHead>帳單來源</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {orders.length > 0 &&
                 orders.map((order, index) => (
                   <Fragment key={index}>
-                    <TableRow data-testid={`order-row`} data-state={selectedOrders.indexOf(order.id) > -1 ? 'selected' : undefined}>
-                      <TableCell className="whitespace-nowrap px-3">
+                    <TableRow data-testid={`order-row`} data-state={selectedOrderSet.has(order.id) ? 'selected' : undefined} className="group">
+                      <TableCell className={cn('whitespace-nowrap px-3', STICKY_ACTION_CELL)}>
                         <div className="flex items-center gap-1">
                           <Checkbox
                             aria-label={`選取 #${order.no}`}
-                            checked={selectedOrders.indexOf(order.id) > -1}
+                            checked={selectedOrderSet.has(order.id)}
                             onChange={() => handleSelectOne(order.id)}
                             data-testid={`order-checkbox-${index}`}
                             disabled={order.isCloseAccount}
@@ -722,7 +738,8 @@ function Results({
                             variant="ghost"
                             size="icon"
                             className="h-8 w-8 text-text-secondary"
-                            aria-label="expand row"
+                            aria-label={orderExtendArr.find(id => id === order.id) !== undefined ? '收合明細' : '展開明細'}
+                            aria-expanded={orderExtendArr.find(id => id === order.id) !== undefined}
                             onClick={() => handleOrderExtend(order.id)}
                           >
                             {orderExtendArr.find(id => id === order.id) !== undefined ? (
@@ -771,7 +788,7 @@ function Results({
                         </div>
                       </TableCell>
 
-                      <TableCell>
+                      <TableCell className={STICKY_NO_CELL}>
                         <div className="font-medium tabular-nums">#{order.no}</div>
                         <div className="text-caption tabular-nums text-text-secondary">
                           {format(new Date(order.date), 'yyyy/MM/dd')}/
@@ -795,35 +812,35 @@ function Results({
                       </TableCell>
                       <TableCell>{order.isDesignate ? 'Y' : 'N'}</TableCell>
                       <TableCell numeric className="font-medium">
-                        {formatNumber(Math.round(order.businessCash))}
+                        {formatMoney(Math.round(order.businessCash))}
                       </TableCell>
                       <TableCell numeric>
-                        {formatNumber(Math.round(order.serviceFakeTotal))}
+                        {formatMoney(Math.round(order.serviceFakeTotal))}
                         <div className="text-caption text-text-secondary">
                           {order.serviceOrders.length > 0 && serviceOrders(order)}
                         </div>
                       </TableCell>
                       <TableCell numeric>
-                        {formatNumber(Math.round(order.productFakeTotal))}
+                        {formatMoney(Math.round(order.productFakeTotal))}
                         <div className="text-caption text-text-secondary">
                           {order.productOrders.length > 0 && productOrders(order)}
                         </div>
                       </TableCell>
                       {membershipDisplay && (
                         <TableCell numeric>
-                          {formatNumber(Math.round(order.membershipFakeTotal))}
+                          {formatMoney(Math.round(order.membershipFakeTotal))}
                           <div className="text-caption text-text-secondary">
                             {order.membershipOrders.length > 0 && membershipOrders(order)}
                           </div>
                         </TableCell>
                       )}
-                      <TableCell numeric>{formatNumber(Math.round(order.useTicketTotal))}</TableCell>
-                      <TableCell numeric>{formatNumber(Math.round(order.ticketSellIntoPerformance))}</TableCell>
-                      <TableCell numeric>{formatNumber(Math.round(order.performanceIncome))}</TableCell>
-                      <TableCell numeric>{formatNumber(Math.round(order.ticketSellNotIntoPerformance))}</TableCell>
-                      <TableCell numeric>{formatNumber(Math.round(order.usedTicketForDecount))}</TableCell>
+                      <TableCell numeric>{formatMoney(Math.round(order.useTicketTotal))}</TableCell>
+                      <TableCell numeric>{formatMoney(Math.round(order.ticketSellIntoPerformance))}</TableCell>
+                      <TableCell numeric>{formatMoney(Math.round(order.performanceIncome))}</TableCell>
+                      <TableCell numeric>{formatMoney(Math.round(order.ticketSellNotIntoPerformance))}</TableCell>
+                      <TableCell numeric>{formatMoney(Math.round(order.usedTicketForDecount))}</TableCell>
                       <TableCell numeric>
-                        {formatNumber(Math.round(order.thirdPartTicketForDecount))}
+                        {formatMoney(Math.round(order.thirdPartTicketForDecount))}
                         <div className="text-caption text-text-secondary">
                           {order.serviceOrders.length > 0 &&
                             order.productOrders.length > 0 &&
@@ -831,11 +848,11 @@ function Results({
                         </div>
                       </TableCell>
                       <TableCell numeric>
-                        {formatNumber(Math.round(order.otherPayWayForDecount))}
+                        {formatMoney(Math.round(order.otherPayWayForDecount))}
                         <div className="text-caption text-text-secondary">{order.payType2}</div>
                       </TableCell>
-                      <TableCell numeric>{formatNumber(order.walletUsedForDecount)}</TableCell>
-                      {bonusDisplay && <TableCell numeric>{formatNumber(order.bonusDecountForReport)}</TableCell>}
+                      <TableCell numeric>{formatMoney(order.walletUsedForDecount)}</TableCell>
+                      {bonusDisplay && <TableCell numeric>{formatMoney(order.bonusDecountForReport)}</TableCell>}
                       <TableCell className="text-text-secondary">{order.remark}</TableCell>
                       <TableCell className="text-text-secondary">{order.source}</TableCell>
                     </TableRow>
@@ -855,7 +872,7 @@ function Results({
                               <div className="w-[100px] flex-none">{data.designerName}</div>
                               <div className="w-[300px] flex-none">{`${data.itemName}(${data.serviceType})`}</div>
                               <div className="w-[80px] flex-none text-right tabular-nums">
-                                {formatNumber(data.serviceType === '卡券使用' ? parseInt(data.price * 100) / 100 : data.price)}
+                                {formatMoney(data.serviceType === '卡券使用' ? truncateDecimal(data.price) : data.price)}
                               </div>
                               <div className="w-[60px] flex-none text-right tabular-nums">{data.count}</div>
                               <div className="w-[200px] flex-none">
@@ -890,7 +907,7 @@ function Results({
       <Dialog open={openDialog} onOpenChange={o => !o && handleCloseDialog()}>
         <DialogContent size="sm" aria-describedby={undefined}>
           <DialogHeader>
-            <DialogTitle>{dialogType === 'delete' ? '刪除訂單？' : '訂單結帳'}</DialogTitle>
+            <DialogTitle>{dialogType === 'delete' ? '刪除掛單？' : '掛單結帳'}</DialogTitle>
           </DialogHeader>
           <DialogBody>
             <Field label={dialogType === 'delete' ? '刪除密碼' : '編輯訂單密碼'} htmlFor="draft-order-password">

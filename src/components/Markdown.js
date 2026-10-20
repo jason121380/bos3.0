@@ -1,3 +1,5 @@
+// Prism 語法高亮只有這個元件用，語言包改在這裡載入（原本在 App.js 全域載入，佔首屏 bundle）
+import 'mixins/prismjs'
 import Prism from 'prismjs'
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'

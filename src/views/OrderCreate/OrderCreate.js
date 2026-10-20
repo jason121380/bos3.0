@@ -429,10 +429,14 @@ function OrderCreate() {
     }
   }, [getBonusRewardRule.loading])
 
+  // 先請後端更新可打單人員再顯示打帳單。更新失敗（例如網路暫斷）時仍顯示頁面、沿用現有名單：
+  // 原本失敗就永遠不顯示，櫃台整頁空白無法打單；錯誤訊息由 Apollo errorLink 提示
   useEffect(() => {
-    setUpdateUserOrderableList().then(() => {
-      setUpdateUserOrderableListDone(true)
-    })
+    setUpdateUserOrderableList()
+      .catch(() => {})
+      .then(() => {
+        setUpdateUserOrderableListDone(true)
+      })
   }, [])
 
   const handleDisplayOrderDetail = () => {

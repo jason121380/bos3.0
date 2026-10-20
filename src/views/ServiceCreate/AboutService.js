@@ -150,7 +150,7 @@ function AboutService({ className, onChange, service, handleCheckboxChange, ...r
                 style={{ width: '70px' }}
                 type="number"
                 variant="outlined"
-                label="%數"
+                label="%數"
                 value={service.specialRake}
                 onChange={event =>
                   onChange({

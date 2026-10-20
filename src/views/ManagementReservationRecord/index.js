@@ -518,13 +518,16 @@ function Calendar() {
   return (
     // 不在 Page 加 ui-root：其 box-sizing 基礎樣式會改變下方自訂格線（OrderTable）的實際寬高；改為只包住新元件區塊
     <Page title="單日預約紀錄">
+      {/* 載入遮罩：原 aria-hidden 讀屏無從得知載入中；改 role=status（visibility hidden 時讀屏自然略過），下方行事曆容器同步 aria-busy */}
       <div
         id='Backdrop'
-        aria-hidden="true"
+        role="status"
+        aria-live="polite"
         className="fixed inset-0 flex items-center justify-center !opacity-100 z-[999] ![background:rgba(0,0,0,0)]"
         style={{ visibility: (!(!merchant.loading && !DesignerCalendar.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length))) ? undefined : 'hidden' }}
       >
-        <LoaderCircle className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
+        <LoaderCircle aria-hidden="true" className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />
+        <span className="sr-only">預約紀錄載入中…</span>
       </div>
       <AdminPageHeader
         title="單日預約紀錄"
@@ -579,7 +582,7 @@ function Calendar() {
           )}
         </Card>
       )}
-      <div>
+      <div aria-busy={(!(!merchant.loading && !DesignerCalendar.loading && orderRange.length && (calendarData.designate.length || calendarData.nonDesignate.length))) || undefined}>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2.5 [&>div]:w-fit">
           <CalendarColorClip
             eventDisplay={eventDisplay}

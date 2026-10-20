@@ -16,7 +16,9 @@ function LoginForm({ className, location, ...rest }) {
   const { loginV2 } = useFetchLoginV2()
   const { loginForLine } = useFetchLoginForLine()
   const history = useHistory()
-  const liffIdFromStorage = localStorage.getItem('liffId')
+  // 舊版曾把 liffId 存成字串 "null"（見 memberChangeLineMenu），視同沒有
+  const storedLiffId = localStorage.getItem('liffId')
+  const liffIdFromStorage = storedLiffId === 'null' || storedLiffId === '' ? null : storedLiffId
   const accountRef = useRef()
   const [disabledLoginBtn, setDisabledLoginBtn] = useState(false)
   const { fetchProfile, profile } = useLazyFetchProfile()
@@ -42,7 +44,10 @@ function LoginForm({ className, location, ...rest }) {
             localStorage.setItem('keepLogin', JSON.stringify(isKeepLogin))
             document.cookie = 'keepLogin=hello;expires=0;path=/'
           })
-          .catch(() => setDisabledLoginBtn(false), accountRef.current.focus)
+          .catch(() => {
+            setDisabledLoginBtn(false)
+            accountRef.current.focus()
+          })
       } else {
         // token
         await loginV2({ ...data, isKeepLogin: isKeepLogin })
@@ -61,7 +66,7 @@ function LoginForm({ className, location, ...rest }) {
           })
           .catch(() => {
             setDisabledLoginBtn(false)
-            accountRef.current.focus
+            accountRef.current.focus()
           })
       }
     }

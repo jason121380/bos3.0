@@ -378,7 +378,6 @@ export default function General({
                     variant="outlined"
                     fullWidth
                     name="product"
-                    tabIndex={focusRow + '0'}
                     inputRef={tabIndex === index ? productRef : null}
                     onChange={event => handleProductInputOnChange(event, index)}
                     inputProps={{
@@ -398,7 +397,6 @@ export default function General({
                 variant="outlined"
                 fullWidth
                 name="price"
-                tabIndex={focusRow + '1'}
                 onChange={event => handlePriceOnChange(event, index)}
                 onFocus={() => setTabIndex(index)}
                 onKeyDown={event => {
@@ -421,7 +419,6 @@ export default function General({
                 fullWidth
                 name="count"
                 inputRef={tabIndex === index ? countRef : null}
-                tabIndex={focusRow + '2'}
                 onFocus={() => setTabIndex(index)}
                 onKeyDown={event => {
                   if (event.key === 'Enter') {

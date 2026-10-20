@@ -1,7 +1,8 @@
-import { Input, TextField } from 'ui/text-field'
-import { Select, MenuItem, FormControl, InputLabel } from 'ui/form-control'
+import { TextField } from 'ui/text-field'
+import { Field, Input } from 'ui/input'
+import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Button } from 'ui/button'
-import { Search as SearchIcon, Delete as DeleteIcon } from 'ui/icons'
+import { Eraser, Search as SearchIcon } from 'lucide-react'
 import PropTypes from 'prop-types'
 import React, { useState, useRef, Fragment, useEffect } from 'react'
 import { useLocation } from 'react-router'
@@ -98,21 +99,22 @@ function SearchV2({
   }, [])
 
   return (
-    <div {...rest} className={cn('box-border flex w-full flex-wrap gap-2.5', className)}>
-      <div className="flex items-center flex-wrap gap-[10px]">
-        <div className="grow h-[42px] py-0 px-[16px] flex items-center rounded-md bg-background">
-          <SearchIcon className="mr-[16px] text-[#007AFF]" />
+    // 篩選列（STYLE §6／§14）：標籤一律在欄位上方、36px 輸入框、token 色；各組底部對齊（items-end）。搜尋框改 ui/input（原自製 42px 白框＋寫死 #007AFF 圖示）
+    <div {...rest} className={cn('box-border flex w-full flex-wrap items-end gap-2.5', className)}>
+      <Field label="關鍵字" htmlFor="customer-search-keyword" className="min-w-[200px] grow basis-[240px]">
+        <div className="relative">
+          <SearchIcon aria-hidden="true" strokeWidth={1.75} className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
           <Input
-            className="grow"
-            disableUnderline
+            id="customer-search-keyword"
+            className="pl-9"
             placeholder="搜尋關鍵字"
             value={keyword}
             onChange={handleOnChange}
             onKeyDown={handleOnKeyPress}
           />
         </div>
-      </div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', alignItems: 'center' }}>
+      </Field>
+      <div className="flex flex-wrap items-end gap-2.5">
         {inCustomerFilterExport ?
           <Fragment>
             <EmployeeAutoComplete
@@ -148,7 +150,7 @@ function SearchV2({
           </div>
         }
       </div>
-      <div className="flex items-center flex-wrap gap-[10px]">
+      <div className="flex flex-wrap items-end gap-2.5">
         <TextField
           label="民國年"
           name="year"
@@ -202,25 +204,22 @@ function SearchV2({
         </div>
       )}
       {onIsUnwelcome && (
-        <div>
-          <FormControl variant="outlined" className="!min-w-[180px] max-w-[270px]">
-            <InputLabel>黑名單篩選</InputLabel>
-            <Select
-              value={isUnwelcome}
-              label='黑名單篩選'
-              onChange={(event, value) => {
-                setIsUnwelcome(event.target.value)
-                onIsUnwelcome(event)
-              }}
-            >
-              <MenuItem value='ALL'>顯示全部</MenuItem>
-              <MenuItem value='UNWELCOME'>顯示黑名單</MenuItem>
-              <MenuItem value='WELCOME'>排除黑名單</MenuItem>
-            </Select>
-          </FormControl>
-        </div>
+        <Field label="黑名單篩選" htmlFor="customer-search-unwelcome" className="min-w-[180px] max-w-[270px]">
+          <NativeSelect
+            id="customer-search-unwelcome"
+            value={isUnwelcome}
+            onChange={(event, value) => {
+              setIsUnwelcome(event.target.value)
+              onIsUnwelcome(event)
+            }}
+          >
+            <NativeSelectOption value='ALL'>顯示全部</NativeSelectOption>
+            <NativeSelectOption value='UNWELCOME'>顯示黑名單</NativeSelectOption>
+            <NativeSelectOption value='WELCOME'>排除黑名單</NativeSelectOption>
+          </NativeSelect>
+        </Field>
       )}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+      <div className="flex flex-wrap items-center gap-2.5">
         <Button
           onClick={() => {
             onSearchV2(keyword)
@@ -260,9 +259,9 @@ function SearchV2({
               category: []
             })
           }}
-          variant="danger"
+          variant="secondary"
         >
-          <DeleteIcon />
+          <Eraser strokeWidth={1.75} />
           清除
         </Button>
       </div>

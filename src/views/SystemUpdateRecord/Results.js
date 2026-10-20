@@ -2,7 +2,7 @@
 // ui-root 的基礎重置以 :where() 零權重撰寫，Markdown 預覽（md-editor-rt .default-theme）的清單編號、邊距規則權重較高，照常生效。
 // 外觀比照 Grok 式卡片（surface 底、16px 圓角、無框），與相容層原外觀一致
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
-import React, { useState, Fragment } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import { ChevronDown, Pencil, Trash2 } from 'lucide-react'
 import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
@@ -14,12 +14,17 @@ import { Button } from 'ui/button'
 const Results = ({ data, systemUpdateRecord, isWhiteList }) => {
   const [open, setOpen] = useState(0)
   const [theme, setTheme] = useState('')
-  const getTheme = setInterval(() => {
-    if (document.documentElement.getAttribute('data-color-mode') !== null) {
-      setTheme(document.documentElement.getAttribute('data-color-mode'))
-      clearInterval(getTheme)
-    }
-  }, 500);
+  // 等 data-color-mode 出現後讀一次主題。原本 setInterval 寫在 render 本體：每次 render 多一個計時器、卸載後仍會 setState
+  useEffect(() => {
+    const getTheme = setInterval(() => {
+      const mode = document.documentElement.getAttribute('data-color-mode')
+      if (mode !== null) {
+        setTheme(mode)
+        clearInterval(getTheme)
+      }
+    }, 500)
+    return () => clearInterval(getTheme)
+  }, [])
 
   const handleDeleteRecord = id => {
     openSnackbar({

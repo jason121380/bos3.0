@@ -293,13 +293,15 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
       return newOption.userName
     }
   }
-  const handleClick = event => {
+  // 固定同一個函式參照：原本每次 render 都是新函式，每次 focus 都多掛一個 keydown 監聽且移除不掉
+  // （同一參照重複 addEventListener 不會重複註冊）
+  const handleClick = React.useCallback(event => {
     if (event.keyCode === 13) {
       setFocus('remark')
       remarkRef.current.focus()
-      return preferDesignerRef.current.removeEventListener('keydown', handleClick);
+      preferDesignerRef.current.removeEventListener('keydown', handleClick)
     }
-  };
+  }, [])
 
   const checkNo = () => {
     checkIsCustomerNoUsedLazy({

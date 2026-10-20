@@ -3,108 +3,72 @@ import { setContext } from 'apollo-link-context'
 import { onError } from 'apollo-link-error'
 import { createUploadLink } from 'apollo-upload-client'
 import { openSnackbar } from 'elements/snackbars'
-import fetch from 'isomorphic-unfetch'
+import { getGraphqlUrl } from './api-base'
+
+// 網路錯誤提示的節流間隔：斷線時多支查詢同時失敗，只提示一次
+const NETWORK_ERROR_NOTICE_INTERVAL = 5000
+let lastNetworkErrorNoticeAt = 0
+
+export function networkErrorMessage(networkError) {
+  const statusCode = networkError && networkError.statusCode
+  if (statusCode) return `伺服器回應錯誤（${statusCode}），請稍後再試`
+  return '網路連線異常，請檢查網路後再試一次'
+}
+
+export function handleApolloError({ graphQLErrors, networkError }) {
+  if (graphQLErrors) {
+    graphQLErrors.forEach(({ message, extensions }) => {
+      const code = extensions && extensions.code
+      if (code === 'TKN_ERROR') {
+        localStorage.clear()
+        window.location.href = '/auth/login'
+        return
+      }
+      if (code === 'TKN_IN_JAIL') {
+        alert(message)
+        return
+      }
+      openSnackbar({ message, variant: 'error' })
+    })
+  }
+  // 原本網路錯誤只寫 console，使用者斷線時看不到任何提示、按鈕停在處理中
+  if (networkError) {
+    const now = Date.now()
+    if (now - lastNetworkErrorNoticeAt > NETWORK_ERROR_NOTICE_INTERVAL) {
+      lastNetworkErrorNoticeAt = now
+      openSnackbar({ message: networkErrorMessage(networkError), variant: 'error' })
+    }
+  }
+}
+
+export function buildAuthHeaders(headers) {
+  const userMerchant = JSON.parse(localStorage.getItem('userMerchant') || 'null')
+  const usermerchantid = userMerchant && userMerchant.id
+  const token = localStorage.getItem('token')
+  return {
+    ...headers,
+    ...(usermerchantid ? { usermerchantid } : {}),
+    ...(token ? { accesstoken: token } : {}),
+  }
+}
+
+const errorLink = onError(handleApolloError)
+const authLink = setContext((_, { headers }) => ({ headers: buildAuthHeaders(headers) }))
+const httpLink = createUploadLink({
+  uri: getGraphqlUrl(),
+  headers: { 'Apollo-Require-Preflight': 'true' },
+})
 
 let apolloClient = null
 
-if (!process.browser) {
-  global.fetch = fetch
-}
-const error = onError(({ graphQLErrors, networkError }) => {
-  if (graphQLErrors) {
-    graphQLErrors.map(error => {
-      const { message, extensions } = error
-      if (extensions.code && extensions.code === 'TKN_ERROR') {
-        localStorage.clear()
-        window.location.href = '/auth/login'
-        return error
-      } else if (extensions.code && extensions.code === 'TKN_IN_JAIL') {
-        alert(message)
-        return message
-      }
-      openSnackbar({ message, variant: 'error' })
-      return error
+// 整個 App 共用一個 client。原本的 SSR 判斷（process.browser）在瀏覽器恆為 undefined，
+// 每次呼叫都新建 client，啟動時會建出兩個 client 與兩份 cache。
+export default function initApollo() {
+  if (!apolloClient) {
+    apolloClient = new ApolloClient({
+      link: authLink.concat(errorLink).concat(httpLink),
+      cache: new InMemoryCache({ addTypename: false }),
     })
   }
-  if (networkError) console.log(`[Network error]: ${networkError}`)
-})
-const authLink = setContext((_, { headers }) => {
-  let usermerchantid = localStorage.getItem('userMerchant')
-  const token = localStorage.getItem('token')
-  if (usermerchantid) usermerchantid = JSON.parse(usermerchantid).id
-  let result = {
-    ...headers,
-    accesstoken: token,
-  }
-  if (usermerchantid) {
-    result = {
-      headers: {
-        ...result.headers,
-        usermerchantid,
-      },
-    }
-  }
-  if (token) {
-    result = {
-      headers: {
-        ...result.headers,
-        accesstoken: token,
-      },
-    }
-  }
-  return result
-})
-// let url = 'https://apibeautyos.mlgroup.vip/graphql'
-// let url = 'https://api.beautyos.co/graphql'
-let url = process.env.REACT_APP_API_URL || 'https://beautyos-api-prod-htlfg34mhq-de.a.run.app/graphql'
-
-// 如果沒有設定環境變數，才執行自動網址判斷
-if (!process.env.REACT_APP_API_URL) {
-  if (window.location.href.indexOf('dev') !== -1) {
-    url = 'https://crt-test-htlfg34mhq-de.a.run.app/graphql'
-  } else if (window.location.href.indexOf('beautyos2') !== -1) {
-    url = 'https://crt-test-htlfg34mhq-de.a.run.app/graphql'
-  } else if (window.location.href.indexOf('localhost') !== -1) {
-    url = 'https://crt-test-htlfg34mhq-de.a.run.app/graphql'
-  }
-}
-
-// console.log('window',w)
-// console.log('NODE_ENV2', beautyos2
-const httpLink = createUploadLink({
-  uri: url,
-  headers: { 'Apollo-Require-Preflight': 'true' }
-  // uri:
-  //   NODE_ENV2 === 'production'
-  //     ? 'https://apibeautyos.mlgroup.vip/graphql'
-  //     // : 'https://apibeautyosdev.mlgroup.vip/graphql'
-  // : 'http://localhost:4849/graphql'
-  // // uri: 'http://localhost:4849/graphql'
-})
-
-function create(initialState) {
-  return new ApolloClient({
-    fetch,
-    // connectToDevTools: process.browser,
-    // ssrMode: !process.browser, // Disables forceFetch on the server (so queries are only run once)
-    link: authLink.concat(error).concat(httpLink),
-    cache: new InMemoryCache({
-      addTypename: false,
-    }).restore(initialState || {}),
-  })
-}
-
-export default function initApollo(initialState) {
-  // Make sure to create a new client for every server-side request so that data
-  // isn't shared between connections (which would be bad)
-  if (!process.browser) {
-    return create(initialState)
-  }
-
-  // Reuse client on the client-side
-  if (!apolloClient) {
-    apolloClient = create(initialState)
-  }
-
   return apolloClient
 }

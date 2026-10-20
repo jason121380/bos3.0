@@ -4,7 +4,7 @@ import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteOrder from 'hooks/useFetchDeleteOrder'
 import idx from 'idx'
 import PropTypes from 'prop-types'
-import { useRef, useState, useEffect } from 'react'
+import { useMemo, useRef, useState, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from 'react-csv'
 import { Download } from 'lucide-react'
@@ -33,6 +33,8 @@ function Results({
   const pageRef2 = useRef(null)
   const { deleteOrders } = useFetchDeleteOrder()
   const [selectedOrders, setSelectedOrders] = useState([])
+  // 勾選狀態查詢用 Set（每列查兩次，避免 indexOf 逐筆掃描）；只換查詢方式，selectedOrders 的結構與 handler 不變
+  const selectedOrderSet = useMemo(() => new Set(selectedOrders), [selectedOrders])
   const [excelData, setExcelData] = useState([])
   const [dialogOpen, setDialogOpen] = useState(false)
   const [password, setPassword] = useState('')
@@ -192,11 +194,11 @@ function Results({
             </TableHeader>
             <TableBody>
               {orders.map(order => (
-                <TableRow key={order.id} data-state={selectedOrders.indexOf(order.id) > -1 ? 'selected' : undefined}>
+                <TableRow key={order.id} data-state={selectedOrderSet.has(order.id) ? 'selected' : undefined}>
                   <TableCell>
                     <Checkbox
                       aria-label="選取此筆預約"
-                      checked={selectedOrders.indexOf(order.id) > -1}
+                      checked={selectedOrderSet.has(order.id)}
                       onChange={() => handleSelectOne(order.id)}
                       disabled={order.isDone}
                     />
@@ -206,7 +208,7 @@ function Results({
                       <RouterLink
                         to={`/order/${order.isDone ? order.createdOrderId : order.id}`}
                       >
-                        {order.isDone ? '查看訂單' : <>&emsp;修改&emsp;</>}
+                        {order.isDone ? '查看帳單' : <>&emsp;修改&emsp;</>}
                       </RouterLink>
                     </Button>
                   </TableCell>
@@ -217,7 +219,7 @@ function Results({
                       {format(new Date(order.date), 'HH:mm')}
                     </div>
                     <div className="text-caption text-text-secondary">
-                      {format(new Date(order.date), 'yyyy年MM月dd日')}
+                      {format(new Date(order.date), 'yyyy/MM/dd')}
                     </div>
                   </TableCell>
                   <TableCell>

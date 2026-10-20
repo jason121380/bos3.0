@@ -1,6 +1,10 @@
 node_modules
 build
 .git
+.claude
+coverage
+cypress/videos
+cypress/screenshots
 .env
 .env.local
 npm-debug.log*

@@ -114,7 +114,7 @@ describe('ui/date-picker（取代 @mui/x-date-pickers）', () => {
       expect(values[0]).toBe('Invalid Date')
       expect(values[values.length - 1]).toBe('2026-10-5 0:0')
       expect(input).toHaveValue('2026/10/05')
-      expect(screen.getByRole('button', { name: 'Choose date' })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: '選擇日期' })).toBeInTheDocument()
     })
   })
 

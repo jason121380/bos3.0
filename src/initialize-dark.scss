@@ -9,19 +9,32 @@
   width: 10px;
 }
 
-/* Track */
+/* Track：原為淺灰 #f1f1f1，深色頁面上出現一條亮白捲軸；改用深色 tokens */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: rgb(var(--surface));
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: rgb(var(--border-strong));
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: rgb(var(--border-strong-hover));
+}
+
+/* 頁面內容外距：與 initialize.scss 相同。深色模式只載入本檔、不載入 initialize.scss，原本缺這段，所有頁面內容貼齊左上 */
+#printContainer {
+  background-color: transparent;
+  margin: 16px;
+  min-height: calc(100vh - 96px);
+  padding: 24px !important;
+
+  @media (max-width: 600px) {
+    margin: 8px;
+    padding: 12px !important;
+  }
 }
 
 h1 {

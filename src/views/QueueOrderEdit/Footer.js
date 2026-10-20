@@ -325,7 +325,7 @@ export default function Footer({ enable }) {
     {/* 底部固定列（比照打帳單）：長帳單捲動時，業績合計與現金應收隨時看得到。
         左側讓出側欄（lg 以上 240px）；手機讓出底部導覽列（56px＋iPhone 安全區）；列印時不顯示。
         手機版（< 640px）不顯示上方彙總明細，改由左側展開鈕往上展開完整明細 */}
-    <div className="ui-root fixed inset-x-0 bottom-[calc(56px+env(safe-area-inset-bottom))] z-[1050] border-0 border-t border-solid border-border bg-background px-4 py-2 shadow-[0_-2px_8px_rgba(0,0,0,0.06)] print:hidden lg:bottom-0 lg:left-60">
+    <div className="ui-root fixed inset-x-0 bottom-[calc(56px+env(safe-area-inset-bottom))] z-[1050] border-0 border-t border-solid border-border bg-background px-4 py-2 shadow-[0_-2px_8px_rgba(0,0,0,0.06)] print:hidden lg:bottom-0 lg:left-[var(--sidebar-w,264px)]">
       {summaryOpen && (
         <div id="queue-order-summary-details" className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto border-0 border-b border-solid border-border pb-2 sm:hidden">
           <p className="m-0 pb-1 pt-1 text-heading font-bold text-text">金額彙總</p>

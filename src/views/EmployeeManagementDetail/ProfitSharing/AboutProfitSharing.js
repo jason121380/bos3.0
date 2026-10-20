@@ -104,7 +104,7 @@ function AboutProfitSharing({
                 </CardActions> 
 <CardActions>
                   <div>
-                    <div>設置</div>
+                    <div>設置</div>
                     <div>
                       <FormControlLabel
                         control={<Checkbox color="primary" />}

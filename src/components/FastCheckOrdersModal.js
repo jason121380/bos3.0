@@ -14,6 +14,7 @@ import { EditOutlined as EditOutlinedIcon, Close as CloseIcon } from 'ui/icons'
 import idx from 'idx'
 import DateSelector from 'components/DateSelector'
 import { LoaderCircle } from 'lucide-react'
+import truncateDecimal from 'helper/truncateDecimal'
 
 const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
   const history = useHistory()
@@ -283,11 +284,11 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                         </p>
                       </TableCell>
                     )}
-                    <TableCell>{parseInt(d.useTicketTotal*100)/100}</TableCell>
+                    <TableCell>{truncateDecimal(d.useTicketTotal)}</TableCell>
                     <TableCell>{Math.round(d.ticketSellIntoPerformance)}</TableCell>
                     <TableCell>{Math.round(d.performanceIncome)}</TableCell>
                     <TableCell>{Math.round(d.ticketSellNotIntoPerformance)}</TableCell>
-                    <TableCell>{parseInt(d.usedTicketForDecount*100)/100}</TableCell>
+                    <TableCell>{truncateDecimal(d.usedTicketForDecount)}</TableCell>
                     <TableCell style={{ whiteSpace: 'nowrap'}}>
                       {Math.round(d.thirdPartTicketForDecount)}
                       <p className="m-0 text-[14px] leading-5 text-text-secondary">

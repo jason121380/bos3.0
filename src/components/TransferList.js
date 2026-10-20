@@ -24,9 +24,11 @@ const TransferList = ({
   optionData, optionIds, handleSetValue, keyword, idsKey,
   keyWordsOnChange, title, keywordKey
 }) => {
-  if (optionData === null) return null
+  // hooks 放在 return 之前（rules-of-hooks）。原寫法因 return 前沒有任何 hook，React 17 恰好不會報錯，
+  // 但只要日後在 return 前加一個 hook 就會在資料切換時拋錯
   const [selectLeftIds, setSelectLeftIds] = useState([])
   const [selectRightIdx, setSelectRightIdx] = useState([])
+  if (optionData === null) return null
 
   const handleSelectId = id => {
     const cloneData = cloneDeep(selectLeftIds)
@@ -110,9 +112,6 @@ const TransferList = ({
               <div role="list" className="py-2" style={{ height: !optionIds.length ? '100%' : 'unset' }}>
                 {optionIds.length ? optionIds.map((id, i) => {
                   const findData = optionData.find(d => d.id === id)
-                  if (!findData) {
-                    console.log('optionIds: ', optionIds, title);
-                  }
                   return (
                     <div key={`right-${id}-${i}`} role="listitem">
                       <button type="button" onClick={() => handleSelectRemoveIdx(i)} className={rowClass}>

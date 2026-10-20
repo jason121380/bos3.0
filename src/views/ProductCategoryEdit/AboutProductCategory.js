@@ -12,7 +12,7 @@ function AboutProductCategory({ className, productCategory, onChange, ...rest })
         <CardTitle>一般資訊</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
-        <Field label="代號" htmlFor="product-category-edit-no" error={errors.no && errors.no.message}>
+        <Field label="代號" htmlFor="product-category-edit-no" error={errors.no && errors.no.message}>
           <Input
             id="product-category-edit-no"
             name="no"
@@ -20,7 +20,7 @@ function AboutProductCategory({ className, productCategory, onChange, ...rest })
             aria-describedby={errors.no ? 'product-category-edit-no-helper-text' : undefined}
             data-testid="no"
             ref={register({
-              required: '代號 為必填',
+              required: '代號 為必填',
             })}
           />
         </Field>

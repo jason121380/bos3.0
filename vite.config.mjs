@@ -54,11 +54,51 @@ export default defineConfig(({ mode }) => {
       outDir: process.env.BUILD_PATH || 'build',
       emptyOutDir: true,
       sourcemap: false,
-      chunkSizeWarningLimit: 4096,
+      // 原本 4096 會蓋掉所有警告；拆出 vendor 後入口應在 1MB 內，超過就提醒
+      chunkSizeWarningLimit: 1000,
+      rollupOptions: {
+        output: {
+          // 每頁都會用到的核心套件獨立成 vendor chunk：一天多次部署時，使用者只需重新下載有變動的 App 程式碼。
+          // 只列「首屏一定會載」的套件；圖表、編輯器、地圖等只在特定頁面用的維持隨頁面延遲載入。
+          manualChunks(id) {
+            const pkg = packageName(id)
+            if (!pkg) return undefined
+            for (const [chunk, packages] of Object.entries(VENDOR_CHUNKS)) {
+              if (packages.some(p => (p.endsWith('/') ? pkg.startsWith(p) : pkg === p))) return chunk
+            }
+            return undefined
+          },
+        },
+      },
     },
   }
 })
 
 function pick(obj, prefix) {
   return Object.fromEntries(Object.entries(obj).filter(([k]) => k.startsWith(prefix)))
+}
+
+// 首屏必載的核心套件分組（以 '/' 結尾者為 scope 前綴）
+const VENDOR_CHUNKS = {
+  'vendor-react': [
+    'react', 'react-dom', 'scheduler', 'object-assign', 'prop-types', 'react-is',
+    'react-router', 'react-router-dom', 'react-router-config', 'history', 'path-to-regexp', 'isarray',
+    'mini-create-react-context', 'hoist-non-react-statics', 'tiny-invariant', 'tiny-warning', 'resolve-pathname', 'value-equal',
+    'react-redux', '@reduxjs/toolkit', 'redux', 'redux-thunk', 'reselect', 'use-sync-external-store', '@babel/runtime',
+  ],
+  'vendor-apollo': [
+    '@apollo/client', 'apollo-boost', 'apollo-client', 'apollo-cache', 'apollo-cache-inmemory', 'apollo-utilities',
+    'apollo-link', 'apollo-link-context', 'apollo-link-error', 'apollo-link-http', 'apollo-link-http-common',
+    'apollo-upload-client', 'extract-files', 'is-plain-obj', 'graphql', 'graphql-tag', 'optimism', '@wry/',
+    'ts-invariant', 'zen-observable', 'zen-observable-ts', 'symbol-observable', 'fast-json-stable-stringify',
+  ],
+  'vendor-sentry': ['@sentry/'],
+}
+
+// 由模組路徑取得所屬套件名稱（取最後一個 node_modules 之後的名稱，含 @scope）
+function packageName(id) {
+  const index = id.lastIndexOf('/node_modules/')
+  if (index === -1) return null
+  const parts = id.slice(index + '/node_modules/'.length).split('/')
+  return parts[0].startsWith('@') ? `${parts[0]}/${parts[1]}` : parts[0]
 }

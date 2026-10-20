@@ -18,7 +18,8 @@ const buttonVariants = cva(
         primary: 'rounded-full bg-primary text-primary-foreground hover:bg-primary/85',
         secondary: 'rounded-full bg-surface-hover text-text hover:bg-surface-active',
         ghost: 'rounded-md text-text hover:bg-surface-hover',
-        danger: 'rounded-full bg-danger text-white hover:bg-danger/90',
+        // 深色的 danger 是較亮的珊瑚紅（#F97066），白字只有約 2.8:1；深色改深字（約 7:1）
+        danger: 'rounded-full bg-danger text-white hover:bg-danger/90 dark:text-canvas',
       },
       size: {
         sm: 'h-8 px-3.5 text-label',
@@ -31,13 +32,25 @@ const buttonVariants = cva(
   }
 )
 
+// 圖示鈕（size="icon"）沒給 title 時以 aria-label 補上（STYLE §6／§9：圖示按鈕帶 title 與 aria-label，滑鼠停留可看到用途）；
+// asChild 時名稱多半寫在子元素（RouterLink）上，一併讀取。呼叫端自己給的 title 一律優先。
+const iconTitle = (size, asChild, props) => {
+  if (size !== 'icon' || props.title !== undefined) return undefined
+  if (typeof props['aria-label'] === 'string') return props['aria-label']
+  const child = asChild && React.isValidElement(props.children) ? props.children.props : null
+  if (child && child.title === undefined && typeof child['aria-label'] === 'string') return child['aria-label']
+  return undefined
+}
+
 const Button = React.forwardRef(({ className, variant, size, asChild = false, type = 'button', ...props }, ref) => {
   const Comp = asChild ? Slot : 'button'
+  const title = iconTitle(size, asChild, props)
   return (
     <Comp
       ref={ref}
       type={asChild ? undefined : type}
       className={cn('ui-root', buttonVariants({ variant, size }), className)}
+      {...(title !== undefined ? { title } : null)}
       {...props}
     />
   )

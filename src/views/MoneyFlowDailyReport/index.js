@@ -45,7 +45,6 @@ export default function Employees() {
       case 'Sunday':
         return '(日)'
       default:
-        console.log(week)
         break
     }
   }

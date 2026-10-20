@@ -1,5 +1,5 @@
 import { Link as RouterLink } from 'react-router-dom'
-import { Bell, BellRing, CircleAlert, CircleCheck, EllipsisVertical, LoaderCircle, Moon, PanelLeftClose, Pencil, RotateCcw, Store, Trash2 } from 'lucide-react'
+import { Bell, BellRing, CircleAlert, CircleCheck, EllipsisVertical, LoaderCircle, Moon, PanelLeftClose, Pencil, RotateCcw, Store, Sun, Trash2 } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Popover, PopoverAnchor, PopoverContent } from 'ui/popover'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from 'ui/dropdown-menu'
@@ -9,7 +9,8 @@ import useFetchSystemUpdateRecord from 'hooks/useFetchSystemUpdateRecord'
 import useToggle from 'hooks/useToggle'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, useRef, Fragment } from 'react'
-import ReactDOM from 'react-dom'
+import SlotPortal from 'components/SlotPortal'
+import useMediaQuery from 'hooks/useMediaQuery'
 import { useHistory } from 'react-router'
 import useFetchProfile, { useFetchProfileIdentity } from 'hooks/useFetchProfile'
 import useFetchMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'
@@ -24,6 +25,7 @@ import _ from 'lodash'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import webSocket from "socket.io-client";
+import { getApiOrigin } from 'lib/api-base'
 import { useDispatch } from 'react-redux'
 import { socketActions } from './../../store/socket'
 import { reservationActions } from './../../store/reservation'
@@ -33,31 +35,33 @@ import bosLogo from 'assets/images/bosLogoNew.png'
 
 // 側欄底部（NavBar 的 SidebarFooter，profile 載入後才出現）的插槽；插槽出現前先不渲染，出現後以 Portal 畫進去
 const SIDEBAR_FOOTER_SLOT_ID = 'sidebar-merchant-switch-slot'
+// 側欄頂列的搜尋鈕插槽（NavBar 以 Portal 畫進來）
+export const SIDEBAR_SEARCH_SLOT_ID = 'sidebar-search-slot'
 function SidebarFooterPortal({ children }) {
-  const [slot, setSlot] = useState(() => document.getElementById(SIDEBAR_FOOTER_SLOT_ID))
-  useEffect(() => {
-    const find = () => {
-      const el = document.getElementById(SIDEBAR_FOOTER_SLOT_ID)
-      setSlot(prev => (prev === el ? prev : el))
-    }
-    find()
-    const observer = new MutationObserver(find)
-    observer.observe(document.body, { childList: true, subtree: true })
-    return () => observer.disconnect()
-  }, [])
-  return slot ? ReactDOM.createPortal(children, slot) : null
+  return <SlotPortal slotId={SIDEBAR_FOOTER_SLOT_ID}>{children}</SlotPortal>
 }
 
 function TopBar({ onOpenNavBarMobile, userMerchants }) {
   const dispatch = useDispatch()
   const history = useHistory()
   const ref = useRef()
+  const isDesktop = useMediaQuery('(min-width: 1024px)') // Tailwind lg：側欄常駐的斷點
+  // 手機通知面板的虛擬錨點：畫面水平正中、鈴鐺下緣（Radix Popper 以 getBoundingClientRect 定位）
+  const centeredAnchorRef = useRef({
+    getBoundingClientRect: () => {
+      const bottom = ref.current ? ref.current.getBoundingClientRect().bottom : 56
+      const x = window.innerWidth / 2
+      return { x, y: bottom, top: bottom, bottom, left: x, right: x, width: 0, height: 0, toJSON: () => ({}) }
+    },
+  })
   const { open, toggle } = useToggle()
   const profileIdentity = useFetchProfileIdentity()
   const profile = useFetchProfile()
   const merchantAuthData = useFetchMerchantAuthorities()
+  // 未登入（無 user）時 NavBar 會導向登入頁；這裡不可讀 null.id，否則整個版面在導頁前就拋錯
+  const storedUser = JSON.parse(localStorage.getItem('user') || 'null')
   const getTheme = idx(
-    useFetchUser({ id: JSON.parse(localStorage.getItem('user')).id }),
+    useFetchUser({ id: storedUser && storedUser.id }),
     _ => _.data.user.theme
   )
   const { setThemeChangeData } = useFetchSettingTheme()
@@ -131,8 +135,21 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     }
   }
 
+  // 建立 WebSocket 連線：位址與 GraphQL 同一個後端（api-base），斷線由 socket.io 內建機制自動重連；
+  // 離開版面時關閉連線並移除所有監聽（原本重連時舊連線與監聽都沒釋放，事件會被重複處理）
   useEffect(() => {
-    connectWebSocket()
+    const socket = webSocket(getApiOrigin(), {
+      transports: ['websocket'],
+      autoConnect: true,
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 10000,
+    })
+    setWs(socket)
+    return () => {
+      socket.off()
+      socket.disconnect()
+    }
   }, [])
 
   useEffect(() => {
@@ -150,45 +167,40 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     }
   }, [isNotification])
 
-  /**
-   * 建立 WebSocket 連線
-   * 根據當前環境 (prod, dev, localhost) 自動選擇 API 地址
-   */
-  const connectWebSocket = () => {
-    let url = 'https://beautyos-api-prod-htlfg34mhq-de.a.run.app'
-    if (window.location.href.indexOf('dev') !== -1 || window.location.href.indexOf('beautyos2') !== -1 || window.location.href.indexOf('localhost') !== -1) {
-      url = 'https://crt-test-htlfg34mhq-de.a.run.app'
+  useEffect(() => {
+    if (!ws) return undefined
+    // 每次（重新）連上都要重新加入店家房間：伺服器端的房間成員在斷線後就失效
+    const joinRoom = () => {
+      const userMerchant = JSON.parse(localStorage.getItem('userMerchant') || 'null')
+      if (userMerchant) ws.emit('roomKey', userMerchant.id)
+    }
+    const onOrderQueue = order => {
+      handlesetOrderDetail(order)
+      setOrderDetail(order)
+    }
+    const onNewSchedule = schedule => dispatch(socketActions.setSchedule(schedule))
+    const onCalendars = data => dispatch(reservationActions.setReservation(data))
+    const onQrcodeKeyExpired = key => dispatch(QRcodeClockInActions.setQRcodeKey(key))
+    // 伺服器主動斷線時 socket.io 不會自動重連，需手動再連
+    const onDisconnect = reason => {
+      if (reason === 'io server disconnect') ws.connect()
     }
 
-    setWs(webSocket(url, {
-      transports: ["websocket"],
-      autoConnect: true,
-      reconnection: false
-    }))
-  }
+    ws.on('connect', joinRoom)
+    ws.on('OrderQueue', onOrderQueue)
+    ws.on('NEWSCHEDULE', onNewSchedule)
+    ws.on('CALENDARS', onCalendars)
+    ws.on('QRCODE_KEY_EXPIRED', onQrcodeKeyExpired)
+    ws.on('disconnect', onDisconnect)
+    if (ws.connected) joinRoom()
 
-  useEffect(() => {
-    if (ws) {
-      const id = JSON.parse(localStorage.getItem('userMerchant')).id
-      ws.emit('roomKey', id)
-
-      // 註冊 WebSocket 事件監聽
-      ws.on('OrderQueue', order => {
-        handlesetOrderDetail(order)
-        setOrderDetail(order)
-      })
-      ws.on('NEWSCHEDULE', schedule => {
-        dispatch(socketActions.setSchedule(schedule))
-      })
-      ws.on('CALENDARS', data => {
-        dispatch(reservationActions.setReservation(data))
-      })
-      ws.on('QRCODE_KEY_EXPIRED', key => {
-        dispatch(QRcodeClockInActions.setQRcodeKey(key))
-      })
-      ws.on('disconnect', () => {
-        connectWebSocket()
-      })
+    return () => {
+      ws.off('connect', joinRoom)
+      ws.off('OrderQueue', onOrderQueue)
+      ws.off('NEWSCHEDULE', onNewSchedule)
+      ws.off('CALENDARS', onCalendars)
+      ws.off('QRCODE_KEY_EXPIRED', onQrcodeKeyExpired)
+      ws.off('disconnect', onDisconnect)
     }
   }, [ws])
 
@@ -196,7 +208,10 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     if (!merchantAuthData.loading && !profileIdentity.loading) {
       const merchantAuth = idx(merchantAuthData, _ => _.data.getMerchantAuthorities)
       const loginUserAuthName = idx(profileIdentity, _ => _.data.me.merchantIdentity.authorityName)
+      // 權限資料取不到（API 失敗）時略過，維持預設的最小權限；原本直接 .filter(undefined) 拋錯，整個後台白畫面
+      if (!Array.isArray(merchantAuth)) return
       const userAuth = merchantAuth.filter(data => data.authorityName === loginUserAuthName)
+      if (!userAuth[0]) return
       setLoginUserAuth(
         JSON.parse(userAuth[0].authoritySettings).filter(d => d.pageTitle === '櫃檯作業')[0]
           .pageAuthority[0].authority
@@ -214,7 +229,13 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
       const userAuth2Count = []
       const merchantAuth = idx(merchantAuthData, _ => _.data.getMerchantAuthorities)
       const loginUserAuthName = idx(profileIdentity, _ => _.data.me.merchantIdentity.authorityName)
+      if (!Array.isArray(merchantAuth)) return // API 失敗：同上，不讓版面拋錯
       const userAuth = merchantAuth.filter(data => data.authorityName === loginUserAuthName)
+      // 找不到登入者的角色＝沒有任何頁面權限，與「權限全關」同樣導向個人頁（原本在這裡拋錯）
+      if (!userAuth[0]) {
+        history.push('/profile/general')
+        return
+      }
       const allUserAuthData = JSON.parse(userAuth[0].authoritySettings)
 
       allUserAuthData.forEach(data => {
@@ -255,6 +276,8 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
   useEffect(() => {
     if (!usingOrderQueue.loading) {
       const tmpData = idx(usingOrderQueue, _ => _.data.getUsingOrderQueue)
+      // 佇列查詢失敗（無資料）時略過；原本 undefined.filter 會讓整個後台白畫面
+      if (!Array.isArray(tmpData)) return
       handlesetOrderDetail(tmpData)
       setOrderDetail(tmpData)
     }
@@ -265,6 +288,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     if (!systemUpdateRecord.loading) {
       let tmp = {}
       const data = idx(systemUpdateRecord, _ => _.data.systemUpdateRecord)
+      if (!Array.isArray(data)) return // 版本記錄查詢失敗時略過，不讓版面拋錯
       data.map((d, index) => {
         if (index === 0) {
           tmp = {
@@ -304,17 +328,27 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     setOpenButton(prev => placement !== newPlacement || !prev)
     setPlacement(newPlacement)
   }
-  // lightdark mode function
-  const handleMoodChange = e => {
-    setMoodChange(e.target.checked)
+  // 深淺色切換（Jason 2026/10/21「加回深色」）：沿用既有的 setTheme mutation 存到使用者設定，成功後重新整理套用；
+  // 失敗時還原開關狀態（錯誤訊息由 Apollo errorLink 顯示），儲存中不重複送出
+  const [themeSaving, setThemeSaving] = useState(false)
+  const handleThemeToggle = () => {
+    if (themeSaving || !storedUser) return
+    const nextDark = !moodChange
+    setThemeSaving(true)
+    setMoodChange(nextDark)
     setThemeChangeData({
       input: {
-        userId: JSON.parse(localStorage.getItem('user')).id,
-        theme: e.target.checked ? 'DARK' : 'DEFAULT',
+        userId: storedUser.id,
+        theme: nextDark ? 'DARK' : 'DEFAULT',
       },
-    }).then(() => {
-      window.location.reload()
     })
+      .then(() => {
+        window.location.reload()
+      })
+      .catch(() => {
+        setMoodChange(!nextDark)
+        setThemeSaving(false)
+      })
   }
   // log out button handle
   const handleLogout = () => {
@@ -388,33 +422,52 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
   ) : (
     <Bell strokeWidth={1.75} />
   )
+  const bellButton = (
+    <Button
+      ref={ref}
+      variant="ghost"
+      size="icon"
+      className="relative"
+      aria-label={error ? `訂單佇列：${errorCount} 筆失敗` : '訂單佇列'}
+      onClick={handleClickOpenNotification('bottom-end')}
+    >
+      {queueIcon}
+      {error && (
+        <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[11px] font-medium leading-none text-white tabular-nums">
+          {errorCount}
+        </span>
+      )}
+    </Button>
+  )
   return (
     <Fragment>
       <div className="flex h-10 items-center gap-1">
-        <RouterLink to={loginUserAuth ? '/' : '/profile/general'} className={cn('flex items-center gap-2 rounded-md px-1', focusRing)}>
+        {/* 桌機側欄 264px 放不下「Logo＋版號＋搜尋／鈴鐺／收合三顆鈕」一列，版號改疊在 Logo 下方（仍在 40px 列高內）；手機抽屜沒有收合鈕，維持同一列 */}
+        <RouterLink to={loginUserAuth ? '/' : '/profile/general'} className={cn('flex min-w-0 items-center gap-2 rounded-md px-1 lg:flex-col lg:items-start lg:gap-0', focusRing)}>
           <img alt="BeautyOS" className="h-6 w-auto invert dark:invert-0" src={bosLogo} />
-          <span className="text-caption text-text-tertiary">{APP_VERSION}</span>
+          <span className="whitespace-nowrap text-caption text-text-tertiary">{APP_VERSION}</span>
         </RouterLink>
         <div className="flex-1" />
+        {/* 搜尋選單鈕由 NavBar 畫進這個插槽（搜尋狀態在 NavBar），位置在通知鈴鐺左側（Jason 2026/10/21） */}
+        <span id={SIDEBAR_SEARCH_SLOT_ID} className="contents" />
         <Popover open={openButton} onOpenChange={o => !o && setOpenButton(false)}>
-          <PopoverAnchor asChild>
-            <Button
-              ref={ref}
-              variant="ghost"
-              size="icon"
-              className="relative h-8 w-8"
-              aria-label={error ? `訂單佇列：${errorCount} 筆失敗` : '訂單佇列'}
-              onClick={handleClickOpenNotification('bottom-end')}
-            >
-              {queueIcon}
-              {error && (
-                <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[11px] font-medium leading-none text-white tabular-nums">
-                  {errorCount}
-                </span>
-              )}
-            </Button>
-          </PopoverAnchor>
-          <PopoverContent align="start" side="right" className="w-[360px] p-0">
+          {/* 桌機：面板貼著鈴鐺往右開（打開在內容區）；手機：側欄抽屜很窄，改以虛擬錨點讓面板在畫面水平置中、
+              緊接在頂列下方（原本往右開放不下，被推出畫面左側） */}
+          {isDesktop ? (
+            <PopoverAnchor asChild>{bellButton}</PopoverAnchor>
+          ) : (
+            <Fragment>
+              <PopoverAnchor virtualRef={centeredAnchorRef} />
+              {bellButton}
+            </Fragment>
+          )}
+          <PopoverContent
+            align={isDesktop ? 'start' : 'center'}
+            side={isDesktop ? 'right' : 'bottom'}
+            sideOffset={isDesktop ? 6 : 8}
+            collisionPadding={16}
+            className="w-[min(360px,calc(100vw-32px))] p-0"
+          >
             <div className="border-0 border-b border-solid border-border px-4 py-3 text-heading text-text">訂單佇列</div>
             <div className="max-h-[350px] overflow-y-auto">
               {orderDetail.length > 0 ? (
@@ -441,7 +494,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
                     {order.status === 'fail' && (
                       <DropdownMenu modal={false} open={openForMoreBtn && targetID === order.id} onOpenChange={o => !o && handleCloseForMoreBtn()}>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="更多操作" onClick={e => handleClickForMoreBtn(e, order.id)}>
+                          <Button variant="ghost" size="icon" aria-label="更多操作" onClick={e => handleClickForMoreBtn(e, order.id)}>
                             <EllipsisVertical strokeWidth={1.75} />
                           </Button>
                         </DropdownMenuTrigger>
@@ -473,7 +526,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
             </div>
           </PopoverContent>
         </Popover>
-        <Button variant="ghost" size="icon" className="hidden h-8 w-8 lg:inline-flex" aria-label="收合側欄" onClick={onOpenNavBarMobile}>
+        <Button variant="ghost" size="icon" className="hidden lg:inline-flex" aria-label="收合側欄" onClick={onOpenNavBarMobile}>
           <PanelLeftClose strokeWidth={1.75} />
         </Button>
       </div>
@@ -482,7 +535,25 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 shrink-0"
+          className="shrink-0"
+          aria-label={moodChange ? '切換為淺色模式' : '切換為深色模式'}
+          aria-pressed={moodChange}
+          disabled={themeSaving}
+          onClick={handleThemeToggle}
+          data-testid="theme-toggle"
+        >
+          {themeSaving ? (
+            <LoaderCircle className="animate-spin" strokeWidth={1.75} aria-hidden="true" />
+          ) : moodChange ? (
+            <Sun strokeWidth={1.75} aria-hidden="true" />
+          ) : (
+            <Moon strokeWidth={1.75} aria-hidden="true" />
+          )}
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="shrink-0"
           aria-label={`切換店家（目前：${JSON.parse(localStorage.getItem('userMerchant')).name}）`}
           title={`切換店家（目前：${JSON.parse(localStorage.getItem('userMerchant')).name}）`}
           onClick={toggle}

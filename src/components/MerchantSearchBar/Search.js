@@ -20,7 +20,6 @@ function Search({ onSearch, className, ...rest }) {
           onChange={handleOnChange}
         />
       </div>
-      {console.log('dddd')}
       <Button
         onClick={() => onSearch(keyword)}
         size="lg"

@@ -10,6 +10,7 @@ import _ from 'lodash'
 import { useContext, useState, useEffect, useRef, Fragment } from 'react'
 import { DateTimePicker } from 'ui/date-picker'
 import { LoaderCircle, UserCog, UserPlus } from 'lucide-react'
+import { RowIconButton } from 'views/OrderCreate/RowAction'
 import { Card } from 'ui/card'
 import { CheckboxField } from 'ui/checkbox'
 import { Field } from 'ui/input'
@@ -33,7 +34,6 @@ const styles = {
   dateInput: 'w-full',
   customerInput: 'w-full',
   employeeInput: 'w-full flex-1 min-w-[180px]',
-  addPersonIcon: 'cursor-pointer text-[rgb(var(--text-tertiary))] text-[22px] ml-[14px]',
   checkboxLabel: 'm-0 whitespace-nowrap',
 }
 
@@ -506,24 +506,31 @@ export default function Head() {
                       onChange={event => setTmpCustomerKeyword(event.target.value)}
                       InputProps={{
                         ...params.InputProps,
+                        // 新增／編輯顧客：原為帶 role="button" 的裸 svg（鍵盤無法觸發），改真 <button>（title＋aria-label，onClick 照舊）。
+                        // onFocus 只擋冒泡：原 svg 不可聚焦、不會觸發外層 Autocomplete 的 onFocus（setFocus），維持原行為；
+                        // disabled 與欄位同條件：原欄位停用時外框 pointer-events-none 點不到圖示，改成按鈕後鍵盤也不能觸發。
                         startAdornment: (
                           <InputAdornment position="start">
                             {bill.customerId !== undefined && !bill.withoutCustomerData ? (
-                              <UserCog
-                                role="button"
-                                aria-label="編輯顧客資料"
-                                strokeWidth={1.75}
-                                className={styles.addPersonIcon}
+                              <RowIconButton
+                                label="編輯顧客資料"
+                                className="-my-1 ml-2 text-text-tertiary [&_svg]:size-5"
                                 onClick={handleOpenEditCustomerModal}
-                              />
+                                onFocus={event => event.stopPropagation()}
+                                disabled={bill.withoutCustomerData}
+                              >
+                                <UserCog aria-hidden="true" strokeWidth={1.75} />
+                              </RowIconButton>
                             ) : (
-                              <UserPlus
-                                role="button"
-                                aria-label="新增顧客"
-                                strokeWidth={1.75}
-                                className={styles.addPersonIcon}
+                              <RowIconButton
+                                label="新增顧客"
+                                className="-my-1 ml-2 text-text-tertiary [&_svg]:size-5"
                                 onClick={handleOpenAddCustomerModal}
-                              />
+                                onFocus={event => event.stopPropagation()}
+                                disabled={bill.withoutCustomerData}
+                              >
+                                <UserPlus aria-hidden="true" strokeWidth={1.75} />
+                              </RowIconButton>
                             )}
                           </InputAdornment>
                         ),

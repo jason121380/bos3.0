@@ -4,6 +4,8 @@
 
 ## 已完成
 
+> 2026/10/21 v3.0-1021-0116＋v3.0-1021-0129（repo 健康報告修正批次、套件瘦身、深色模式開關、頁面錯誤邊界），分支 `claude/pensive-fermi-v6ufcq`；內容與待辦見 `TODO.md` §一前兩項、`MEMORY.md` #168。
+
 | 範圍 | 內容 |
 |---|---|
 | iPhone PWA 狀態列在抽屜打開時改白（v3.0-1021-0142） | Jason：PWA 狀態列灰、跟下面白色有分裂感（截圖為左側抽屜打開）。meta／manifest／body 皆已是白，灰色來自抽屜打開時的全螢幕遮罩（黑 40%）與抽屜淺灰底畫進頂部安全區。`ui/sidebar` 抽屜打開時加一條只蓋頂部安全區的白色（canvas）細條（高於遮罩與抽屜、不攔點擊、桌機不渲染）；manifest `background_color` 改 #FFFFFF。status-bar-style 維持 default（文字深色）。新增 `src/ui/__test__/sidebar.test.js` 2 測試（MEMORY #167）。 |
