@@ -242,3 +242,5 @@
 
 147. **inline style 會讓相容元件比 MUI「更不容易被蓋」，深色模式因此不一致（List／Link／Snackbar／Alert，2026/10/20，v3.0-1020-1003）**：Link 的自訂色（如 #263238）最初用 inline style，比對頁在深色模式抓到差異——initialize-dark.scss 有 `.MuiTypography-root { color: #ffffffde }`，與 MUI emotion 的顏色同權重但較晚載入，所以 MUI 版其實是白字；inline style 權重更高反而沒被蓋。改用 CSS 變數＋單一 class（`.MuiLink-colorCustom { color: var(--mui-link-color) }`）後一致。通則：相容層要重現的是「MUI 的樣式權重」，不是只重現數值；需要動態值時用 CSS 變數＋class，不要 inline。其他：Alert filled 的顏色是 MUI 由調色盤推算（深色用 dark、文字用 getContrastText），直接以 MUI 函式算出寫死；Snackbar 不掛 Portal（就地 fixed），clickaway 要跳過開啟它的那次點擊。
 
+148. **互動元件要用「並排截圖」驗，computed style 比對看不到 hover 與 SVG 路徑（零星元件，2026/10/20，v3.0-1020-1017）**：Rating 的 computed style 與 MUI 一致，但並排截圖才發現 MUI 的空星是外框星（StarBorder 路徑）、我們畫成灰色實心星——路徑不在比對屬性內。Slider 泡泡第一次截圖位置錯，是因為比對頁用的是修改前 build 的 Tailwind CSS（新 class 尚未產生），重 build 後即正確：凡是新增 Tailwind 任意值 class 的修改，比對前一定要重 build mock。另：`ui/switch` 原本不收 inputRef，MUI 寫法 `inputRef={register}` 會被當成 DOM 屬性丟掉、react-hook-form 收不到開關值——自家元件補 MUI 相容 props 時要先查呼叫端用法；CI build 會把未使用變數警告當錯誤，相容檔不能留未使用的 context。
+

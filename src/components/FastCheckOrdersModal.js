@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
+import { IconButton } from 'ui/misc-compat'
 import { Dialog, DialogTitle, DialogContent } from 'ui/modal-compat'
 import { Typography } from 'ui/display-compat'
 import { TableContainer, Table, TableHead, TableBody, TableCell, TableRow } from 'ui/table-compat'
 import { Button } from 'ui/button-compat'
 import { useState, useEffect } from 'react'
-import { IconButton } from '@mui/material'
 import { startOfDay, endOfDay } from 'date-fns'
 import { useFetchOrdersFastCheckLazy } from 'hooks/useFetchOrders'
 import { useHistory } from 'react-router';
@@ -244,7 +244,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
     <Dialog className='FastCheckOrdersModal' maxWidth='xl' fullWidth open={open} onClose={handleCloseModal}>
       <DialogTitle css={styles.title}>
         帳單速查
-        <IconButton sx={{ padding: '8px !important' }} onClick={handleCloseModal}>
+        <IconButton style={{ padding: '8px' }} onClick={handleCloseModal}>
           <CloseIcon/>
         </IconButton>
       </DialogTitle>

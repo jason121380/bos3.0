@@ -1,15 +1,25 @@
 import React from 'react'
 import { cn } from './utils'
 
+const assignRef = (ref, node) => {
+  if (!ref) return
+  if (typeof ref === 'function') ref(node)
+  else ref.current = node
+}
+
 // 開關，取代 MUI Switch；onChange(event, checked) 與 MUI 相同（原生 handler 只讀 event 也相容）
 // label：取代 FormControlLabel + Switch 的組合；labelPlacement 'end'（預設）或 'start'
 // 其餘 props（data-testid、aria-*…）一律給 input；MUI 的 color / size 忽略
+// inputRef：同 MUI，取得 input 元素（react-hook-form 以 inputRef={register} 註冊非受控欄位）
 const Switch = React.forwardRef(
-  ({ checked, defaultChecked, onChange, disabled, name, id, label, labelPlacement = 'end', className, inputProps, color, size, ...props }, ref) => {
+  ({ checked, defaultChecked, onChange, disabled, name, id, label, labelPlacement = 'end', className, inputProps, inputRef, color, size, ...props }, ref) => {
     const control = (
       <span className="relative inline-flex h-5 w-9 shrink-0 items-center">
         <input
-          ref={ref}
+          ref={node => {
+            assignRef(ref, node)
+            assignRef(inputRef, node)
+          }}
           type="checkbox"
           role="switch"
           id={id}
