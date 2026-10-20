@@ -1,9 +1,8 @@
 timeout: 3600s
+# 安裝與建置都在 Dockerfile 內完成（npm ci ＋ npm run build）。
+# 原本前兩步在 Cloud Build 工作區先跑 `yarn --production`＋`yarn build`：改用 Vite 後建置工具都在 devDependencies，
+# `yarn --production` 裝不到 vite，`yarn build` 必定失敗；且這兩步的產物本來就會被 Docker 內的建置覆蓋，屬多餘步驟。
 steps:
-  - name: 'node:20.12.1-alpine'
-    args: ['yarn', '--production']
-  - name: 'node:20.12.1-alpine'
-    args: ['yarn', 'build']
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'asia-east1-docker.pkg.dev/ml-group-204107/beautyos-frontend-repo/prod:$SHORT_SHA', '.']
   - name: 'gcr.io/cloud-builders/docker'

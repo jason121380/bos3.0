@@ -17,7 +17,10 @@ const OuterLinkSortModal = ({
 }) => {
   const [isClick, setIsClick] = useState(false)
   const [sortData, setSortData] = useState([])
-  const { sortExternalLink } = isCus ? useFetchSortMerchantCusExternalLink() : useFetchSortMerchantExternalLink()
+  // 兩個 mutation hook 都固定呼叫（hooks 不可條件式呼叫），再依 isCus 取用
+  const cusExternalLink = useFetchSortMerchantCusExternalLink()
+  const merchantExternalLink = useFetchSortMerchantExternalLink()
+  const { sortExternalLink } = isCus ? cusExternalLink : merchantExternalLink
 
   useEffect(() => {
     setSortData(data)

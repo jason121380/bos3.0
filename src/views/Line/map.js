@@ -52,8 +52,13 @@ function Map({ className, match, location, ...rest }) {
       // .post('https://8c81db9b7039.ngrok.io/api/attendance/record')
       .send(data) // sends a JSON post body
       .set('accept', 'json')
-      .end((_err, res) => {
-        res = JSON.parse(res.text)
+      .end((err, res) => {
+        // 原本不處理失敗：res 為 undefined 時 JSON.parse 拋錯，畫面永遠停在「努力提交中」
+        if (err || !res) {
+          setLoading(false)
+          alert('打卡失敗，請檢查網路後再試一次')
+          return
+        }
         LiffHelper.sendMessages({
           type: 'text',
           text: `打卡${gps.lat},${gps.lng}`,

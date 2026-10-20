@@ -22,12 +22,17 @@ const General = () => {
   const [mdValue, setMdValue] = useState('')
   const [enable, setEnable] = useState(true)
   const [theme, setTheme] = useState('')
-  const getTheme = setInterval(() => {
-    if(document.documentElement.getAttribute('data-color-mode') !== null) {
-      setTheme(document.documentElement.getAttribute('data-color-mode'))
-      clearInterval(getTheme)
-    }
-  }, 500);
+  // 等 data-color-mode 出現後讀一次主題。原本 setInterval 寫在 render 本體：每次 render 多一個計時器、卸載後仍會 setState
+  useEffect(() => {
+    const getTheme = setInterval(() => {
+      const mode = document.documentElement.getAttribute('data-color-mode')
+      if (mode !== null) {
+        setTheme(mode)
+        clearInterval(getTheme)
+      }
+    }, 500)
+    return () => clearInterval(getTheme)
+  }, [])
 
   const onSubmit = () => {
     setEnable(true)

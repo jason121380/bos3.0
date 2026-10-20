@@ -16,13 +16,12 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
   const handleEdit = id => {
     history.push(`/topup/edit/${id}`)
   }
-  useEffect(() => {
-    history.listen((newLocation, action) => {
-      if (action === 'POP' && newLocation.pathname.match('/topup/edit')) {
-        history.go(1)
-      }
-    })
-  }, [])
+  // 回傳 unlisten：原本離開此頁後監聽仍在，每來一次就多一個，返回時會重複 history.go(1)
+  useEffect(() => history.listen((newLocation, action) => {
+    if (action === 'POP' && newLocation.pathname.match('/topup/edit')) {
+      history.go(1)
+    }
+  }), [])
 
   useEffect(() => {
     if (!walletDepositRecord.loading) {

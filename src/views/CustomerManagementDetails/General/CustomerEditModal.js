@@ -90,9 +90,6 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
   )
   const { refetch } = useStore()
   const { loading } = usePageLoading()
-  if (!open) {
-    return null
-  }
 
   const handleFieldChange = event => {
     if (event.persist) event.persist()
@@ -199,6 +196,11 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
       setNoVerify(false)
     }
   }, [values.no])
+
+  // 未開啟時不渲染；放在所有 hooks 之後（原本在兩個 useEffect 之前 return，違反 hooks 呼叫順序規則）
+  if (!open) {
+    return null
+  }
 
   return (
     <Modal onClose={onClose} open={open}>

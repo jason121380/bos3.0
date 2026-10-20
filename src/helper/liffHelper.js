@@ -13,7 +13,6 @@ class LiffHelper {
           },
           data => {
             isInit = true
-            console.log(data, window.liff.isLoggedIn())
             if (!window.liff.isLoggedIn()) {
               liff.login()
               // eslint-disable-next-line prefer-promise-reject-errors
@@ -47,7 +46,6 @@ class LiffHelper {
               .getProfile()
               .then(pf => {
                 profile = pf
-                console.log(profile)
                 resolve(profile)
               })
               .catch(err => {

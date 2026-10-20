@@ -414,7 +414,6 @@ const AboutEmployeeSchedule = ({
                         disableAlpha
                         color={colorData}
                         onChange={event => {
-                          console.log('event.hex: ', event.hex);
                           setColorData(event.hex)
                         }}
                       />

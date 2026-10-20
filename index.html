@@ -22,13 +22,17 @@
     <meta name="apple-mobile-web-app-title" content="BOS" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <!-- 字型：只載入實際用到的字重（Roboto Mono／Roboto Slab、100／300 全站未使用）；display=swap 讓文字先以後備字型顯示 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto+Slab|Noto+Sans+TC:100,300,400,500,700,900|Roboto:300,400,500,700"
+      href="https://fonts.googleapis.com/css?family=Noto+Sans+TC:400,500,700,900|Roboto:400,500,700&display=swap"
       rel="stylesheet"
       crossorigin="anonymous"
     />
     <title>BeautyOS+</title>
-    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <!-- LIFF SDK 改 defer：不再阻擋 HTML 解析；defer 腳本依文件順序在 App（module）之前執行，window.liff 照常可用 -->
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2.1/sdk.js" defer></script>
 
     <!-- Google Tag Manager -->
     <script>

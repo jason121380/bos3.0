@@ -54,8 +54,9 @@ jobs:
       - name: Test
         run: npm run test:nowatch
 
-  # 舊的 E2E 設定（Node 12、ubuntu-16.04 已被 GitHub 移除、yarn、Cypress 專案金鑰直接寫在檔案裡）。
+  # 舊的 E2E 設定（Node 12、ubuntu-16.04 已被 GitHub 移除、yarn）。
   # 尚未驗證能在新環境執行，所以不放進 push／PR 流程，只在手動觸發（Run workflow）時執行，等確認要不要保留再處理。
+  # Cypress record key 改由 repo secret `CYPRESS_RECORD_KEY` 提供（原本明文寫在這裡與 package.json，舊 key 應至 Cypress Cloud 撤銷）。
   cypress-run:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-16.04
@@ -77,5 +78,5 @@ jobs:
           start: yarn start
           wait-on: http://localhost:3000
         env:
-          CYPRESS_RECORD_KEY: c31e6e2f-2b58-4357-8b25-d2228915c61e
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -21,7 +21,7 @@ import TeachingModeContext from 'context/teachingModeContext'
 import useFetchOrderWithoutCustomerSetting from 'hooks/useFetchOrderWithoutCustomerDefault'
 import useFetchGetIsLockDateSetting from 'hooks/useFetchGetIsLockDateSetting'
 import useFetchGetIsLockDateDisplaySetting from 'hooks/useFetchGetIsLockDateDisplaySetting'
-import schedule from 'node-schedule'
+import { msUntilDailyUnlock } from 'helper/dailyUnlock'
 import useFetchGetIsAbleToChangeDateTimeInOrder from 'hooks/useFetchGetIsAbleToChangeDateTimeInOrder'
 import { useFetchCustomerLazy } from 'hooks/useFetchCustomer'
 import useFetchGetIsAutoSetPreferDesignerForOrderCreate from 'hooks/useFetchGetIsAutoSetPreferDesignerForOrderCreate'
@@ -499,18 +499,29 @@ export default function Head() {
     }
   }
 
-  schedule.scheduleJob('* 59 23 * * *', function () {
-    if (JSON.parse(localStorage.getItem('lockDate')) !== null) {
-      localStorage.removeItem('lockDate')
-      localStorage.removeItem('lockDateTimeStamp')
-      lockDate.toggle()
-      setBill(
-        produce(draft => {
-          draft.date = new Date().getTime()
-        })
-      )
+  // 每天 23:59 解除「鎖定日期」並把帳單日期改回現在。
+  // 原本在 render 本體呼叫 node-schedule：每次 render（每個按鍵）都多排一個永不取消的排程，
+  // 打帳單頁開一整天會累積上千個；改為只排一個計時器，離開頁面時取消。
+  useEffect(() => {
+    let timer
+    const scheduleNext = initial => {
+      timer = setTimeout(() => {
+        if (JSON.parse(localStorage.getItem('lockDate')) !== null) {
+          localStorage.removeItem('lockDate')
+          localStorage.removeItem('lockDateTimeStamp')
+          lockDate.setOpen(false)
+          setBill(
+            produce(draft => {
+              draft.date = new Date().getTime()
+            })
+          )
+        }
+        scheduleNext(false)
+      }, msUntilDailyUnlock(new Date(), initial))
     }
-  })
+    scheduleNext(true)
+    return () => clearTimeout(timer)
+  }, [])
 
   // customer autocomple press down button
   const handleBtnKeyDown = event => {

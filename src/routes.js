@@ -2,21 +2,29 @@ import Customer from 'layouts/Customer'
 import Line from 'layouts/Line'
 import React, { lazy, Suspense } from 'react'
 import { Redirect } from 'react-router-dom'
-import AR2 from 'views/AR2'
-import LineMap from 'views/Line/map'
-import MemberCard from 'views/MemberCard'
-import MemberCreate from 'views/MemberCreate'
-import ReservationPage from 'views/Reservation'
-import ReservationList from 'views/ReservationList'
-import CustomerSelfCreate from 'views/CustomerSelfCreate'
-import CustomerEventTicketSearch from 'views/CustomerEventTicketSearch'
-import CustomerSendEventTicket from 'views/CustomerSendEventTicket'
-import CustomerRating from 'views/CustomerRating'
 
 import AuthLayout from './layouts/Auth'
 import DashboardLayout from './layouts/Dashboard'
 import ErrorLayout from './layouts/Error'
 import EHSLayout from './layouts/EHS'
+
+// 顧客端（LINE）頁面改為延遲載入：原本同步 import，連後台使用者的首屏都要下載這 10 頁與 google-map-react、superagent。
+// Customer／Line 版面已用 Suspense 包住子路由；AR2 是頂層路由，自行包 Suspense。
+const AR2Lazy = lazy(() => import('views/AR2'))
+const AR2 = props => (
+  <Suspense fallback={null}>
+    <AR2Lazy {...props} />
+  </Suspense>
+)
+const LineMap = lazy(() => import('views/Line/map'))
+const MemberCard = lazy(() => import('views/MemberCard'))
+const MemberCreate = lazy(() => import('views/MemberCreate'))
+const ReservationPage = lazy(() => import('views/Reservation'))
+const ReservationList = lazy(() => import('views/ReservationList'))
+const CustomerSelfCreate = lazy(() => import('views/CustomerSelfCreate'))
+const CustomerEventTicketSearch = lazy(() => import('views/CustomerEventTicketSearch'))
+const CustomerSendEventTicket = lazy(() => import('views/CustomerSendEventTicket'))
+const CustomerRating = lazy(() => import('views/CustomerRating'))
 
 const UiPreview = lazy(() => import('views/UiPreview'))
 

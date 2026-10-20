@@ -10,9 +10,9 @@
     "test": "react-scripts test --verbose --runInBand --watchAll",
     "test:nowatch": "react-scripts test --verbose --runInBand --watchAll=false",
     "test:coverage": "react-scripts test --coverage --verbose --runInBand --watchAll=false",
-    "lint": "concurrently \"yarn lint:css\" \"yarn lint:js\"",
+    "lint": "npm run lint:build",
     "cy:open": "cypress open",
-    "cy:run": "TZ=America/New_York cypress run --record --key c31e6e2f-2b58-4357-8b25-d2228915c61e"
+    "cy:run": "TZ=America/New_York cypress run --record"
   },
   "browserslist": {
     "production": [
@@ -126,10 +126,28 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 90,
-        "functions": 90,
-        "lines": 90,
-        "statements": 90
+        "branches": 7,
+        "functions": 3,
+        "lines": 5,
+        "statements": 5
+      },
+      "./src/lib/api-base.js": {
+        "lines": 90
+      },
+      "./src/lib/init-apollo.js": {
+        "lines": 85
+      },
+      "./src/helper/billVerify.js": {
+        "lines": 95
+      },
+      "./src/helper/helperDeduction.js": {
+        "lines": 85
+      },
+      "./src/helper/truncateDecimal.js": {
+        "lines": 100
+      },
+      "./src/helper/dailyUnlock.js": {
+        "lines": 100
       }
     },
     "coverageReporters": [

@@ -11,7 +11,8 @@ RUN npm config set fetch-retries 5 && \
 
 # 安裝相依套件 (包含 devDependencies 以便 build)
 # 使用 --legacy-peer-deps 來解決舊版套件之間的相依性衝突 (ERESOLVE)
-RUN npm install --legacy-peer-deps
+# 用 npm ci 依 package-lock.json 安裝，與 CI 相同、每次建置版本一致
+RUN npm ci --legacy-peer-deps
 
 # 複製原始碼
 COPY . .
@@ -26,8 +27,8 @@ WORKDIR /usr/app
 # 從編譯階段複製 build 資料夾
 COPY --from=builder /usr/app/build ./build
 
-# 安裝 serve
-RUN npm install -g serve
+# 安裝 serve（固定大版本 14；build/serve.json 由 public/ 複製而來，設定 /assets 長效快取、HTML 不快取）
+RUN npm install -g serve@14
 
 EXPOSE 3000
 

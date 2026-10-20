@@ -24,6 +24,7 @@ import _ from 'lodash'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import webSocket from "socket.io-client";
+import { getApiOrigin } from 'lib/api-base'
 import { useDispatch } from 'react-redux'
 import { socketActions } from './../../store/socket'
 import { reservationActions } from './../../store/reservation'
@@ -56,8 +57,10 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
   const profileIdentity = useFetchProfileIdentity()
   const profile = useFetchProfile()
   const merchantAuthData = useFetchMerchantAuthorities()
+  // 未登入（無 user）時 NavBar 會導向登入頁；這裡不可讀 null.id，否則整個版面在導頁前就拋錯
+  const storedUser = JSON.parse(localStorage.getItem('user') || 'null')
   const getTheme = idx(
-    useFetchUser({ id: JSON.parse(localStorage.getItem('user')).id }),
+    useFetchUser({ id: storedUser && storedUser.id }),
     _ => _.data.user.theme
   )
   const { setThemeChangeData } = useFetchSettingTheme()
@@ -131,8 +134,21 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     }
   }
 
+  // 建立 WebSocket 連線：位址與 GraphQL 同一個後端（api-base），斷線由 socket.io 內建機制自動重連；
+  // 離開版面時關閉連線並移除所有監聽（原本重連時舊連線與監聽都沒釋放，事件會被重複處理）
   useEffect(() => {
-    connectWebSocket()
+    const socket = webSocket(getApiOrigin(), {
+      transports: ['websocket'],
+      autoConnect: true,
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 10000,
+    })
+    setWs(socket)
+    return () => {
+      socket.off()
+      socket.disconnect()
+    }
   }, [])
 
   useEffect(() => {
@@ -150,45 +166,40 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     }
   }, [isNotification])
 
-  /**
-   * 建立 WebSocket 連線
-   * 根據當前環境 (prod, dev, localhost) 自動選擇 API 地址
-   */
-  const connectWebSocket = () => {
-    let url = 'https://beautyos-api-prod-htlfg34mhq-de.a.run.app'
-    if (window.location.href.indexOf('dev') !== -1 || window.location.href.indexOf('beautyos2') !== -1 || window.location.href.indexOf('localhost') !== -1) {
-      url = 'https://crt-test-htlfg34mhq-de.a.run.app'
+  useEffect(() => {
+    if (!ws) return undefined
+    // 每次（重新）連上都要重新加入店家房間：伺服器端的房間成員在斷線後就失效
+    const joinRoom = () => {
+      const userMerchant = JSON.parse(localStorage.getItem('userMerchant') || 'null')
+      if (userMerchant) ws.emit('roomKey', userMerchant.id)
+    }
+    const onOrderQueue = order => {
+      handlesetOrderDetail(order)
+      setOrderDetail(order)
+    }
+    const onNewSchedule = schedule => dispatch(socketActions.setSchedule(schedule))
+    const onCalendars = data => dispatch(reservationActions.setReservation(data))
+    const onQrcodeKeyExpired = key => dispatch(QRcodeClockInActions.setQRcodeKey(key))
+    // 伺服器主動斷線時 socket.io 不會自動重連，需手動再連
+    const onDisconnect = reason => {
+      if (reason === 'io server disconnect') ws.connect()
     }
 
-    setWs(webSocket(url, {
-      transports: ["websocket"],
-      autoConnect: true,
-      reconnection: false
-    }))
-  }
+    ws.on('connect', joinRoom)
+    ws.on('OrderQueue', onOrderQueue)
+    ws.on('NEWSCHEDULE', onNewSchedule)
+    ws.on('CALENDARS', onCalendars)
+    ws.on('QRCODE_KEY_EXPIRED', onQrcodeKeyExpired)
+    ws.on('disconnect', onDisconnect)
+    if (ws.connected) joinRoom()
 
-  useEffect(() => {
-    if (ws) {
-      const id = JSON.parse(localStorage.getItem('userMerchant')).id
-      ws.emit('roomKey', id)
-
-      // 註冊 WebSocket 事件監聽
-      ws.on('OrderQueue', order => {
-        handlesetOrderDetail(order)
-        setOrderDetail(order)
-      })
-      ws.on('NEWSCHEDULE', schedule => {
-        dispatch(socketActions.setSchedule(schedule))
-      })
-      ws.on('CALENDARS', data => {
-        dispatch(reservationActions.setReservation(data))
-      })
-      ws.on('QRCODE_KEY_EXPIRED', key => {
-        dispatch(QRcodeClockInActions.setQRcodeKey(key))
-      })
-      ws.on('disconnect', () => {
-        connectWebSocket()
-      })
+    return () => {
+      ws.off('connect', joinRoom)
+      ws.off('OrderQueue', onOrderQueue)
+      ws.off('NEWSCHEDULE', onNewSchedule)
+      ws.off('CALENDARS', onCalendars)
+      ws.off('QRCODE_KEY_EXPIRED', onQrcodeKeyExpired)
+      ws.off('disconnect', onDisconnect)
     }
   }, [ws])
 

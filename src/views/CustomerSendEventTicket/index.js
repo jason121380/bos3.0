@@ -10,6 +10,7 @@ import { LoaderCircle } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardContent } from 'ui/card'
 import { Field, Input } from 'ui/input'
+import { getApiOrigin } from 'lib/api-base'
 
 const index = () => {
   const { id } = useParams()
@@ -71,10 +72,8 @@ const index = () => {
       if (!count) throw new Error('張數為必填欄位')
       if (count > 500) throw new Error('單次發券張數不可超過500張')
       if (!name.trim()) throw new Error('姓名欄位為必填。')
-      let url = 'https://beautyos-api-prod-htlfg34mhq-de.a.run.app/outer_store/send_event_ticket'
-      if (window.location.href.indexOf('app.beautyos.co') === -1) {
-        url = 'http://localhost:4849/outer_store/send_event_ticket'
-      }
+      // 與 GraphQL 同一個後端（原本只要不是 app.beautyos.co 就打 localhost:4849，測試站與其他網域都送不出去）
+      const url = `${getApiOrigin()}/outer_store/send_event_ticket`
       const res = await fetch(url, {
         method: 'POST',
         headers: {

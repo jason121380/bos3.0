@@ -261,7 +261,6 @@ function EditMultipleDesignersRakeSettingModal({
         onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
         break
       default:
-        console.log('handleAddSetDeductionNum default')
         break
     }
   }
@@ -310,7 +309,6 @@ function EditMultipleDesignersRakeSettingModal({
         onChange({ value: newProfitSharing.segmented, key: 'segmented' })
         break
       default:
-        console.log('handleAddSegmented default')
         break
     }
   }
@@ -416,7 +414,6 @@ function EditMultipleDesignersRakeSettingModal({
             onChange({ value: newProfitSharing.segmented, key: 'segmented' })
             break
           default:
-            console.log('handleSegmentedInput')
             break
         }
       }
@@ -442,7 +439,6 @@ function EditMultipleDesignersRakeSettingModal({
             onChange({ value: newProfitSharing.segmented, key: 'segmented' })
             break
           default:
-            console.log('handleSegmentedInput')
             break
         }
       }
@@ -467,7 +463,6 @@ function EditMultipleDesignersRakeSettingModal({
             onChange({ value: newProfitSharing.segmented, key: 'segmented' })
             break
           default:
-            console.log('handleSegmentedInput')
             break
         }
       }
@@ -529,7 +524,6 @@ function EditMultipleDesignersRakeSettingModal({
           }
         } else if (d.attribute === value && !profitSharing.designationUsag) {
           if (newProfitSharing.nonSegmented[index].rakeData.designate.length === 0) {
-            console.log('3d', d)
 
             newProfitSharing.nonSegmented[index] = {
               ...d,

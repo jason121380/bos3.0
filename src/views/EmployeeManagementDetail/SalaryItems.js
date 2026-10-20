@@ -37,7 +37,6 @@ export default function SalaryInems({
         setSalaryIncreaseItemsReformatted(newSalaryIncreaseItemsReformatted)
         break
       default:
-        console.log(e.target)
         break
     }
   }
@@ -58,7 +57,6 @@ export default function SalaryInems({
         setSalaryDecreaseItemsReformatted(newSalaryDecreaseItemsReformatted)
         break
       default:
-        console.log(e.target)
         break
     }
   }
@@ -87,7 +85,6 @@ export default function SalaryInems({
         setIncreaseSecondContent(newIncreaseSecondContent)
         break
       default:
-        console.log(e.target)
         break
     }
   }
@@ -116,7 +113,6 @@ export default function SalaryInems({
         setDecreaseSecondContent(newDecreaseSecondContent)
         break
       default:
-        console.log(e.target)
         break
     }
   }

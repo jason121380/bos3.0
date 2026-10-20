@@ -28,14 +28,15 @@ function Dashboard({ route, location }) {
   const mobileTabs = useMobileTabs()
   const showTabBar = useShowTabBar(mobileTabs)
 
-  useEffect(() => {
-    history.listen((location) => {
-      setUrl(location.pathname)
-    })
-  }, [history, url])
+  // 回傳 unlisten：原本每次換頁都多掛一個永不釋放的監聽
+  useEffect(() => history.listen((location) => {
+    setUrl(location.pathname)
+  }), [history])
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'))
+    // 未登入（無 user）時由 NavBar 導向登入頁；這裡直接略過，避免讀 null.id 拋錯
+    if (!user) return
     const input = {
       id: user.id,
       url: url,
