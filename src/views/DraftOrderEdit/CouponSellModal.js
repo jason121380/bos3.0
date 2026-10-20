@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
+import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
 import { Button } from 'ui/button-compat'
 import { Card, CardHeader, CardContent, CardActions } from 'ui/card-compat'
-import { Modal, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper } from '@mui/material'
+import { Modal, Paper } from '@mui/material'
 import PropTypes from 'prop-types'
 import { memo, useState, useEffect } from 'react'
 import idx from 'idx'

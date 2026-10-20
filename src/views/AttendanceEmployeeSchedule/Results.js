@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
 // 班表格線使用 sticky 欄列、動態班別色與 .AttendanceEmployeeScheduleTable / .beforeToday 全域樣式，表格沿用 MUI；班別按鈕改 ui/button（動態色以 css 原樣保留）
-import {
-  Table, TableBody, TableCell, TableHead, TableRow,
-  TableContainer, Paper,
-} from '@mui/material'
+import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
+import { Paper } from '@mui/material'
 import { format, isBefore, isAfter, isToday } from 'date-fns'
 import PropTypes from 'prop-types'
 import _ from 'lodash'

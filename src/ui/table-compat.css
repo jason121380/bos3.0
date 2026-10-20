@@ -1,0 +1,49 @@
+/*
+ * 重現 MUI v5.15 Table 系列＋橋接主題（ui/mui-theme）的樣式，class 名稱與 MUI 相同。
+ * 一律維持「單一 class」權重（與 MUI emotion 相同），讓 initialize.scss 的 th.MuiTableCell-root.MuiTableCell-head 等
+ * 較高權重規則、以及頁面的 emotion css 照舊覆蓋。顏色走 tokens，深色模式自動切換。
+ */
+.MuiTable-root { display: table; width: 100%; border-collapse: collapse; border-spacing: 0; }
+.MuiTable-root caption { font-size: 14px; line-height: 20px; letter-spacing: 0; padding: 16px; color: rgb(var(--text-secondary)); text-align: left; caption-side: bottom; }
+.MuiTable-stickyHeader { border-collapse: separate; }
+.MuiTableHead-root { display: table-header-group; }
+.MuiTableBody-root { display: table-row-group; }
+.MuiTableFooter-root { display: table-footer-group; }
+
+.MuiTableRow-root { color: inherit; display: table-row; vertical-align: middle; outline: 0; }
+.MuiTableRow-root.MuiTableRow-hover:hover { background-color: rgb(var(--surface-hover)); }
+.MuiTableRow-root.Mui-selected { background-color: rgb(var(--primary) / 0.08); }
+
+/* 儲存格：typography body2（14／20、字距 0）＋ display／邊線／內距；橋接主題把邊線改為 border token */
+.MuiTableCell-root {
+  font-weight: 400; font-size: 14px; line-height: 20px; letter-spacing: 0; color: rgb(var(--text-secondary));
+  display: table-cell; vertical-align: inherit; border-bottom: 1px solid rgb(var(--border)); border-color: rgb(var(--border)); text-align: left; padding: 16px;
+}
+.MuiTableCell-head { color: rgb(var(--text-tertiary)); line-height: 24px; font-weight: 500; background-color: transparent; }
+.MuiTableCell-body { color: rgb(var(--text)); }
+/* footer 的 12px 會被橋接主題 root 的 fontSize 14 蓋掉（MUI 合併順序），故只留色與行高 */
+.MuiTableCell-footer { color: rgb(var(--text-secondary)); line-height: 21px; }
+.MuiTableCell-sizeSmall { padding: 6px 16px; }
+.MuiTableCell-paddingCheckbox { width: 48px; padding: 0 0 0 4px; }
+.MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox { width: 24px; padding: 0 12px 0 16px; }
+.MuiTableCell-sizeSmall.MuiTableCell-paddingCheckbox > * { padding: 0; }
+.MuiTableCell-paddingNone { padding: 0; }
+.MuiTableCell-alignLeft { text-align: left; }
+.MuiTableCell-alignCenter { text-align: center; }
+.MuiTableCell-alignRight { text-align: right; flex-direction: row-reverse; }
+.MuiTableCell-alignJustify { text-align: justify; }
+.MuiTableCell-stickyHeader { position: sticky; top: 0; z-index: 2; background-color: rgb(var(--canvas)); }
+/* 手機螢幕：儲存格不換行、表格改橫向捲動（只限螢幕，不影響列印） */
+@media screen and (max-width: 639.95px) {
+  .MuiTableCell-root { white-space: nowrap; }
+}
+
+/* 容器：橫向捲動；捲軸常駐可見（與 ui/table、styles/tokens.css 的 .ui-scroll-x 一致） */
+.MuiTableContainer-root { width: 100%; overflow-x: auto; }
+.MuiTableContainer-root::-webkit-scrollbar { width: 10px; height: 10px; }
+.MuiTableContainer-root::-webkit-scrollbar-track { background: rgb(var(--surface)); border-radius: 9999px; }
+.MuiTableContainer-root::-webkit-scrollbar-thumb { background: rgb(var(--border-strong)); border: 2px solid rgb(var(--surface)); border-radius: 9999px; }
+.MuiTableContainer-root::-webkit-scrollbar-thumb:hover { background: rgb(var(--border-strong-hover)); }
+@supports (-moz-appearance: none) {
+  .MuiTableContainer-root { scrollbar-width: thin; scrollbar-color: rgb(var(--border-strong)) rgb(var(--surface)); }
+}
