@@ -30,6 +30,13 @@ export default defineConfig(({ mode }) => {
   for (const k of ['REACT_APP_API_URL', 'REACT_APP_GA_MEASUREMENT_ID']) {
     if (!(`process.env.${k}` in define)) define[`process.env.${k}`] = 'undefined'
   }
+  // 整個 process.env 也比照 CRA（DefinePlugin）替換成完整物件：src/components/Page.js 以解構讀取 NODE_ENV、REACT_APP_GA_MEASUREMENT_ID，
+  // 只定義個別成員時解構會拿到 undefined（正式站 GA 頁面瀏覽事件就不會送出）
+  const fullEnv = {}
+  for (const [key, value] of Object.entries(define)) {
+    if (key.startsWith('process.env.') && value !== 'undefined') fullEnv[key.slice('process.env.'.length)] = JSON.parse(value)
+  }
+  define['process.env'] = JSON.stringify(fullEnv)
 
   return {
     plugins: [react({ include: /\.(js|jsx)$/ })],
