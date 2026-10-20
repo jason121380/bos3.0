@@ -1,4 +1,4 @@
-import { useMediaQuery } from '@mui/material'
+import { useMediaQuery } from 'ui/misc-compat'
 import Page from 'components/Page'
 import { Link as RouterLink } from 'react-router-dom'
 import { Lock } from 'lucide-react'

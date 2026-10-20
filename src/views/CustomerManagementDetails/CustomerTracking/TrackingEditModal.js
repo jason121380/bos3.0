@@ -4,7 +4,6 @@ import { Dialog, DialogTitle, DialogContent, DialogActions } from 'ui/modal-comp
 import { Grid } from 'ui/grid-compat'
 import { TextField } from 'ui/text-field'
 import { useState, useEffect, useRef, Fragment } from 'react'
-import { ThemeProvider } from '@mui/material'
 import { openSnackbar } from 'elements/snackbars'
 import { Edit as EditIcon } from 'ui/icons'
 import idx from 'idx';
@@ -13,18 +12,9 @@ import PropTypes from 'prop-types'
 import { useFetchGetMerchantHairConditionLazy } from 'hooks/useFetchGetMerchantHairCondition'
 import useFetchSetCustomerHairInfo from 'hooks/useFetchSetCustomerHairInfo'
 import { green } from 'ui/colors';
-import { createTheme } from '@mui/material/styles'
 import { css } from '@emotion/react'
 // 大型彈窗：表單細節（Chip / TextField）保留 MUI，動作與選項按鈕改 ui/button（選取綠色以 inline style 原樣保留）
 import { Button as UiButton } from 'ui/button'
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: green[600]
-    }
-  }
-})
 
 const styles = {
   root: css({
@@ -225,14 +215,12 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
             {(selectCondition.key && conditionOptions[selectCondition.key].length > 0) ? conditionOptions[selectCondition.key].map((data, index) => {
               const select = selectOption.includes(data)
               return (
-                <ThemeProvider theme={theme} key={`${data}-${index}`}>
-                  <UiButton
-                    variant={select ? 'primary' : 'secondary'}
-                    style={{ backgroundColor: select ? green[600] : '' }}
-                    css={styles.box}
-                    onClick={() => handleSelectItem(data, select)}
-                  >{data}</UiButton>
-                </ThemeProvider>
+                <UiButton
+                  variant={select ? 'primary' : 'secondary'}
+                  style={{ backgroundColor: select ? green[600] : '' }}
+                  css={styles.box}
+                  onClick={() => handleSelectItem(data, select)}
+                >{data}</UiButton>
               )
             }) : '無資料'}
           </div>

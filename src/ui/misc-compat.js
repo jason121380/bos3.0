@@ -66,8 +66,11 @@ const Collapse = React.forwardRef(function Collapse({ in: inProp = false, classN
 
 // 斷點同 MUI：sm 600、md 900、lg 1200、xl 1536
 const BREAKPOINTS = { xs: 0, sm: 600, md: 900, lg: 1200, xl: 1536 }
-const useMediaQuery = query => {
-  const get = () => typeof window !== 'undefined' && window.matchMedia ? window.matchMedia(query).matches : false
+// 同 MUI：可直接傳 theme.breakpoints.down('sm') 產生的 '@media (…)' 字串；預設（noSsr false）第一次渲染回傳 defaultMatches（false），
+// 掛載後才換成實際結果——預約行事曆等 hook 依此先以桌機視圖初始化再切換，時序與 MUI 相同
+const useMediaQuery = (rawQuery, { noSsr = false, defaultMatches = false } = {}) => {
+  const query = rawQuery.replace(/^@media( ?)/m, '')
+  const get = () => (noSsr && typeof window !== 'undefined' && window.matchMedia ? window.matchMedia(query).matches : defaultMatches)
   const [matches, setMatches] = React.useState(get)
   React.useEffect(() => {
     if (!window.matchMedia) return undefined
@@ -84,8 +87,8 @@ const useMediaQuery = query => {
 function Hidden({ children, xsDown, smDown, mdDown, lgDown, xlDown, xsUp, smUp, mdUp, lgUp, xlUp, only }) {
   const downKey = (smDown && 'sm') || (mdDown && 'md') || (lgDown && 'lg') || (xlDown && 'xl') || (xsDown && 'xs')
   const upKey = (xsUp && 'xs') || (smUp && 'sm') || (mdUp && 'md') || (lgUp && 'lg') || (xlUp && 'xl')
-  const down = useMediaQuery(downKey ? `(max-width: ${BREAKPOINTS[downKey] - 0.05}px)` : '(max-width: -1px)')
-  const up = useMediaQuery(upKey ? `(min-width: ${BREAKPOINTS[upKey]}px)` : '(max-width: -1px)')
+  const down = useMediaQuery(downKey ? `(max-width: ${BREAKPOINTS[downKey] - 0.05}px)` : '(max-width: -1px)', { noSsr: true })
+  const up = useMediaQuery(upKey ? `(min-width: ${BREAKPOINTS[upKey]}px)` : '(max-width: -1px)', { noSsr: true })
   if ((downKey && down) || (upKey && up) || only) return null
   return children
 }

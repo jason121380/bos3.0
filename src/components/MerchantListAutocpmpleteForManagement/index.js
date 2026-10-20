@@ -6,7 +6,6 @@ import { useFetchGetUserMerchantForManagementLazy, useFetchGetEventJoinMerchants
 import MerchantsListModal from './MerchantsListModal'
 import PropTypes from 'prop-types'
 import { css } from '@emotion/react'
-import { ThemeProvider } from '@mui/material/styles'
 import { theme } from '../../theme'
 import { Autocomplete } from 'ui/combobox'
 
@@ -89,7 +88,7 @@ const index = ({ onValueChange = () => { }, selectIds = [], isReadOnly = false, 
   }, [inRule, eventId])
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'flex-end' }}>
         <Autocomplete
           className="min-w-0 flex-1"
@@ -142,7 +141,7 @@ const index = ({ onValueChange = () => { }, selectIds = [], isReadOnly = false, 
         values={values}
         setValues={setValues}
       />
-    </ThemeProvider>
+    </>
   )
 }
 

@@ -3,24 +3,14 @@ import { Dialog, DialogTitle, DialogContent } from 'ui/modal-compat'
 import { Divider, Typography } from 'ui/display-compat'
 import { Grid } from 'ui/grid-compat'
 import { Button } from 'ui/button-compat'
-import { ThemeProvider } from '@mui/material'
 import { Button as UiButton } from 'ui/button'
 import { LoaderCircle } from 'lucide-react'
 import { Close as CloseIcon } from 'ui/icons'
 import { useEffect } from 'react';
 import { css } from '@emotion/react'
 import { green } from 'ui/colors';
-import { createTheme } from '@mui/material/styles'
 
 import { getShortcutsForOrderCreate } from 'hooks/useFetchShortcut'
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: green[600]
-    }
-  }
-})
 
 const styles = {
   title: css({
@@ -57,26 +47,24 @@ const ShortcutDialog = ({ open, handleOnClose, handleShortcutChange }) => {
         {isLoading ? (
           <Grid container item ><LoaderCircle className="m-auto h-10 w-10 animate-spin text-accent" strokeWidth={1.75} /></Grid>
         ) : (
-          <ThemeProvider theme={theme}>
-            <Grid container item spacing={2}>
-              {shortcutData.length ? shortcutData.map(d => (
-                <Grid item key={d.id} >
-                  <Button
-                    color='primary'
-                    variant='contained'
-                    onClick={() => {
-                      handleShortcutChange(d)
-                      handleOnClose()
-                    }}
-                  >
-                    {d.name}
-                  </Button>
-                </Grid>
-              )) : (
-                <Typography style={{ margin: '14px auto 0' }} variant="h4" component="div">無資料</Typography>
-              )}
-            </Grid>
-          </ThemeProvider>
+          <Grid container item spacing={2}>
+            {shortcutData.length ? shortcutData.map(d => (
+              <Grid item key={d.id} >
+                <Button
+                  color='primary'
+                  variant='contained'
+                  onClick={() => {
+                    handleShortcutChange(d)
+                    handleOnClose()
+                  }}
+                >
+                  {d.name}
+                </Button>
+              </Grid>
+            )) : (
+              <Typography style={{ margin: '14px auto 0' }} variant="h4" component="div">無資料</Typography>
+            )}
+          </Grid>
         )}
 
       </DialogContent>

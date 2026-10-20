@@ -1,14 +1,5 @@
-import { createTheme } from '@mui/material/styles'
 import { css } from '@emotion/react'
-const theme = createTheme({
-  overrides: {
-    MuiTableCell: {
-      root: {
-        padding: '5px 10px',
-      },
-    },
-  },
-})
+import { theme } from 'theme'
 
 export default {
   root: css({}),

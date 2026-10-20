@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 // 名稱欄位（endAdornment、onBlur 檢查）保留 MUI TextField
 import { TextField, InputAdornment } from 'ui/text-field'
-import { createTheme } from '@mui/material'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Field } from 'ui/input'
 import { ToggleGroupItem } from 'ui/toggle-group'
@@ -29,14 +28,6 @@ const weekArray = [
   { label: '六', value: 'SAT' },
   { label: '日', value: 'SUN' },
 ]
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: green[400]
-    }
-  }
-})
-
 function MerchantReservationTimes({
   className,
   merchantReservation,
