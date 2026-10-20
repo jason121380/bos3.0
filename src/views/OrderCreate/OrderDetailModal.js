@@ -625,9 +625,9 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
         <Card className={styles.root}>
           <div className={styles.header}>
             <CardHeader title="消費明細" />
+            {/* 按鈕階層（STYLE §2／§6：一個畫面最多一個 primary、紅色只給破壞性操作）：返回＝ghost、掛單／結帳＝secondary、結帳並列印＝primary；handler 不變 */}
             <Button
-              color="primary"
-              variant="contained"
+              variant="text"
               onClick={closeModal}
               className={styles.backBtn}
               disabled={checkoutBtnClick}
@@ -900,7 +900,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
           <div className={styles.btnDiv}>
             {!disablePendingOrder && (
               <Button
-                color="primary"
+                color="secondary"
                 variant="contained"
                 size="small"
                 onClick={handleOrderPendingConfirm}
@@ -911,7 +911,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
               </Button>
             )}
             <Button
-              color="error"
+              color="secondary"
               variant="contained"
               size="small"
               ref={checkOrderRef}

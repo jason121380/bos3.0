@@ -4,6 +4,7 @@ import billContext from 'context/keyInContext'
 import FastCheckOrdersModal from 'components/FastCheckOrdersModal'
 import { ReceiptText, Ticket } from 'lucide-react'
 import { Button } from 'ui/button'
+import { RowIconButton } from 'views/OrderCreate/RowAction'
 import { Card } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from 'ui/table'
@@ -36,15 +37,17 @@ function Header({ ...rest }) {
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="m-0 flex items-center gap-2 text-title !font-bold text-text">
             帳單詳細 {orderNo ? `(${orderNo})` : ''}
+            {/* 抽獎流水號：原為帶 role="button" 的裸 svg（鍵盤無法觸發），改真 <button>；onClick 照舊（錨點改為按鈕本身） */}
             {bill.raffleRecord.length ?
-              <Ticket
-                role="button"
-                aria-label="抽獎流水號"
+              <RowIconButton
+                label="抽獎流水號"
                 aria-describedby={id}
-                strokeWidth={1.75}
-                className="h-5 w-5 cursor-pointer text-warning"
+                aria-expanded={open}
+                className="mb-0 text-warning hover:text-warning [&_svg]:size-5"
                 onClick={handleClick}
-              />
+              >
+                <Ticket aria-hidden="true" strokeWidth={1.75} />
+              </RowIconButton>
               : ''}
             <Popper open={open} anchorEl={anchorEl} id={id} transition style={{ zIndex: '1'}}>
               {({ TransitionProps }) => (
