@@ -544,7 +544,7 @@ function Settings({ match, history }) {
         value={currentTab}
         activationMode="manual"
       >
-        <SettingsTabsList aria-label="員工設定分類">
+        <SettingsTabsList aria-label="員工設定分類" className="noprint">
           {itemValue.map(item => (
             <SettingsTabsTrigger key={item.value} value={item.value} icon={tabIcons[item.value]}>{item.label}</SettingsTabsTrigger>
           ))}

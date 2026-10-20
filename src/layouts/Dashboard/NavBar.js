@@ -542,6 +542,8 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
               <span className="truncate text-caption text-text-secondary">{userRole}</span>
             </span>
           </RouterLink>
+          {/* 切換店家圖示鈕由 TopBar 以 Portal 畫進這個插槽（開關狀態與店家清單仍在 TopBar），位置在登出左側（Jason 2026/10/20） */}
+          <span id="sidebar-merchant-switch-slot" className="contents" />
           <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label="登出" onClick={handleLogOut}>
             <LogOut strokeWidth={1.75} />
           </Button>
