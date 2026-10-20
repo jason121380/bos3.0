@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import { Button as MuiButton, createTheme, ThemeProvider } from '@mui/material'
+import { Button as MuiButton } from 'ui/button-compat'
+import { createTheme, ThemeProvider } from '@mui/material'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon, Add as AddIcon, Edit as EditIcon } from 'ui/icons'

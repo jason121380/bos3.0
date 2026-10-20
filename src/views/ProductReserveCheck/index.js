@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
+import { Button as MuiButton } from 'ui/button-compat'
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import React, { useState, useEffect } from 'react'
 // 商品多選 Autocomplete（含 popupIcon 內的全選鈕）保留 MUI
-import { Button as MuiButton } from '@mui/material'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'

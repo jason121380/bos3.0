@@ -1,9 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import {
-  Dialog, DialogTitle, DialogContent, ThemeProvider,
-  Divider, Button,
-  Typography, Grid
-} from '@mui/material'
+import { Button } from 'ui/button-compat'
+import { Dialog, DialogTitle, DialogContent, ThemeProvider, Divider, Typography, Grid } from '@mui/material'
 import { Button as UiButton } from 'ui/button'
 import { LoaderCircle } from 'lucide-react'
 import { Close as CloseIcon } from 'ui/icons'

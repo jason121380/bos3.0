@@ -12,6 +12,9 @@ const fs = require('fs')
 const path = require('path')
 const parser = require(path.join(__dirname, '../../node_modules/@babel/parser'))
 
+// 列印範本整檔保留 MUI（版面靠 MUI class 排版，CLAUDE.md 鐵則 2）：一律跳過，避免批次清單誤含
+const EXCLUDE = ['src/views/MerchantBankTransferReport/TransferDetail.js']
+
 function parseMap(arg) {
   const map = {}
   for (const pair of arg.split(',')) {
@@ -80,6 +83,10 @@ if (require.main === module) {
   const map = parseMap(args[mi + 1])
   const files = args.filter((a, i) => i !== mi && i !== mi + 1 && a !== '--list')
   for (const file of files) {
+    if (EXCLUDE.some(e => path.resolve(file) === path.resolve(e))) {
+      console.log('exclude', file)
+      continue
+    }
     const src = fs.readFileSync(file, 'utf8')
     let out
     try {
