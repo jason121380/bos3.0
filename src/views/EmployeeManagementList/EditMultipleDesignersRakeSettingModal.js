@@ -1,6 +1,5 @@
-/** @jsxImportSource @emotion/react */
 // 彈窗改 ui/dialog（窗內只有 TextField、Checkbox、ToggleGroup、Tabs，沒有彈出式選單；原 Modal 無 onClose，故不傳 onOpenChange）；
-// 抽成級距表單原以 MUI Table 當排版容器（列內直接放標題、儲存格改 flex），改原生 div（儲存格保留 16px 內距，emotion css 原樣）；
+// 抽成級距表單原以 MUI Table 當排版容器（列內直接放標題、儲存格改 flex），改原生 div（儲存格保留 16px 內距，原 emotion 樣式已等值轉為 Tailwind）；
 // ToggleButton 為 ui/toggle-group（布林值原樣、handler 不讀參數）；Tabs 為 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
@@ -12,102 +11,11 @@ import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'
 import idx from 'idx'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { CardContent } from 'ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Skeleton } from 'ui/skeleton'
 import { Tabs, TabsList, TabsTrigger } from 'ui/tabs'
-
-const styles = {
-  root: css({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    outline: 'none',
-    boxShadow: theme.shadows[20],
-    width: 912,
-    maxHeight: '100%',
-    overflowY: 'auto',
-    maxWidth: '100%',
-  }),
-  header: css({
-    // display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-  closeAtTop: css({
-    margin: '16px 24px',
-    float: 'right',
-  }),
-  textField: css({
-    marginLeft: theme.spacing(2),
-    width: '5rem',
-  }),
-  icons: css({
-    marginLeft: theme.spacing(3),
-    cursor: 'pointer',
-  }),
-  saveAtBottom: css({
-    margin: '16px 24px',
-    float: 'right',
-  }),
-  checkboxSpan: css({
-    width: '25%',
-  }),
-  alert: css({
-    marginBottom: theme.spacing(3),
-  }),
-  formGroup: css({
-    marginBottom: theme.spacing(3),
-  }),
-  subtitle: css({
-    margin: '1rem 0',
-  }),
-  sharing: css({
-    margin: '0 3rem',
-  }),
-  width: css({
-    width: '100%',
-  }),
-  marginL: css({
-    marginLeft: '5px',
-  }),
-  deductionWayMarginL: css({
-    marginLeft: '20px',
-  }),
-  icons: css({
-    marginLeft: '20px',
-    cursor: 'pointer',
-  }),
-  verticleCenter: css({
-    display: 'flex',
-    alignItems: 'center',
-    borderBottom: '0px',
-  }),
-  flex: css({
-    display: 'flex',
-  }),
-  removeBottomLine: css({
-    borderBottom: '0px',
-  }),
-  separateInput: css({
-    width: '250px',
-    display: 'flex',
-    alignItems: 'center',
-    borderBottom: '0px',
-    whiteSpace: 'nowrap',
-  }),
-  isDesignateInput: css({
-    marginLeft: '5px',
-  }),
-  isDesignate: css({
-    display: 'flex',
-    justifyContent: 'space-evenly',
-  }),
-}
 
 const isSegmented = [
   { label: '全段', value: false },
@@ -664,7 +572,7 @@ function EditMultipleDesignersRakeSettingModal({
         <div className="min-h-0 overflow-y-auto">
         {!getAttributionForRake.loading ? (
           <>
-            <div css={styles.header}>
+            <div className="justify-between items-center">
               <DialogHeader className="pb-4">
                 <DialogTitle>編輯設計師抽成</DialogTitle>
               </DialogHeader>
@@ -683,7 +591,7 @@ function EditMultipleDesignersRakeSettingModal({
               )}
               <Button
                 variant="secondary"
-                css={styles.closeAtTop}
+                className="my-[16px] mx-[24px] float-right"
                 onClick={onClose}
               >
                 關閉
@@ -700,7 +608,7 @@ function EditMultipleDesignersRakeSettingModal({
                       </h4>
                       <ToggleGroup
                         size="small"
-                        css={styles.deductionWayMarginL}
+                        className="ml-[20px]"
                         value={profitSharing.isSegmented}
                         onChange={handleToggleButtonChange}
                         exclusive
@@ -716,7 +624,7 @@ function EditMultipleDesignersRakeSettingModal({
                         ))}
                       </ToggleGroup>
                       <FormControlLabel
-                        css={styles.marginL}
+                        className="ml-[5px]"
                         control={<Checkbox color="primary" />}
                         label="分指定/不指定"
                         checked={profitSharing.designationUsage}
@@ -727,13 +635,13 @@ function EditMultipleDesignersRakeSettingModal({
                       !profitSharing.isSegmented ? (
                         profitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.map(
                           (data, index) => (
-                            <div key={`nonSegmented-${index}`} css={styles.flex}>
-                              <div className="p-4" css={styles.verticleCenter}>
+                            <div key={`nonSegmented-${index}`} className="flex">
+                              <div className="p-4 flex items-center [border-bottom:0px]">
                                 總業績從(含)
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
                                   type="number"
-                                  css={styles.deductionWayMarginL}
+                                  className="ml-[20px]"
                                   variant="outlined"
                                   label="輸入業績"
                                   value={data.threshold ? data.threshold : 0}
@@ -743,12 +651,12 @@ function EditMultipleDesignersRakeSettingModal({
                                   onWheel={() => document.activeElement.blur()}
                                 />
                               </div>
-                              <div className="p-4" css={styles.verticleCenter}>
+                              <div className="p-4 flex items-center [border-bottom:0px]">
                                 抽成調整為
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
                                   type="number"
-                                  css={styles.deductionWayMarginL}
+                                  className="ml-[20px]"
                                   variant="outlined"
                                   label="輸入抽成(%)"
                                   value={data.rake ? data.rake : 0}
@@ -756,10 +664,10 @@ function EditMultipleDesignersRakeSettingModal({
                                   onWheel={() => document.activeElement.blur()}
                                 />
                               </div>
-                              <div className="p-4" css={styles.verticleCenter}>
+                              <div className="p-4 flex items-center [border-bottom:0px]">
                                 {index !== 0 && (
                                   <DeleteForeverIcon
-                                    css={styles.icons}
+                                    className="ml-[20px] cursor-pointer"
                                     onClick={handleDeleteSetDeductionNum}
                                   />
                                 )}
@@ -768,7 +676,7 @@ function EditMultipleDesignersRakeSettingModal({
                                     .length -
                                   1 && (
                                     <AddIcon
-                                      css={styles.icons}
+                                      className="ml-[20px] cursor-pointer"
                                       onClick={() => handleAddSetDeductionNum('nonDistinguish')}
                                     />
                                   )}
@@ -778,13 +686,13 @@ function EditMultipleDesignersRakeSettingModal({
                         )
                       ) : (
                         profitSharing.segmented[0].nonDistinguish.map((data, index) => (
-                          <div key={`nonDistinguish-${index}`} css={styles.flex}>
-                            <div className="p-4" css={styles.separateInputBottom}>
+                          <div key={`nonDistinguish-${index}`} className="flex">
+                            <div className="p-4">
                               總業績從(含)
                               <TextField
                                 InputProps={{ inputProps: { min: 0 } }}
                                 type="number"
-                                css={styles.deductionWayMarginL}
+                                className="ml-[20px]"
                                 variant="outlined"
                                 label="輸入業績"
                                 value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
@@ -794,12 +702,12 @@ function EditMultipleDesignersRakeSettingModal({
                                 onWheel={() => document.activeElement.blur()}
                               />
                             </div>
-                            <div className="p-4" css={styles.separateInput}>
+                            <div className="p-4 w-[250px] flex items-center [border-bottom:0px] whitespace-nowrap">
                               至
                               <TextField
                                 InputProps={{ inputProps: { min: 0 } }}
                                 type="number"
-                                css={styles.deductionWayMarginL}
+                                className="ml-[20px]"
                                 variant="outlined"
                                 label="輸入業績"
                                 value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
@@ -809,12 +717,12 @@ function EditMultipleDesignersRakeSettingModal({
                                 onWheel={() => document.activeElement.blur()}
                               />
                             </div>
-                            <div className="p-4" css={styles.separateInputRake}>
+                            <div className="p-4">
                               抽成為
                               <TextField
                                 InputProps={{ inputProps: { min: 0 } }}
                                 type="number"
-                                css={styles.deductionWayMarginL}
+                                className="ml-[20px]"
                                 variant="outlined"
                                 label="輸入抽成(%)"
                                 value={data.rake ? data.rake : 0}
@@ -822,16 +730,16 @@ function EditMultipleDesignersRakeSettingModal({
                                 onWheel={() => document.activeElement.blur()}
                               />
                             </div>
-                            <div className="p-4" css={styles.verticleCenter}>
+                            <div className="p-4 flex items-center [border-bottom:0px]">
                               {index !== 0 && (
                                 <DeleteForeverIcon
-                                  css={styles.icons}
+                                  className="ml-[20px] cursor-pointer"
                                   onClick={() => handleDeleteSegmented(index)}
                                 />
                               )}
                               {index === profitSharing.segmented[0].nonDistinguish.length - 1 && (
                                 <AddIcon
-                                  css={styles.icons}
+                                  className="ml-[20px] cursor-pointer"
                                   onClick={() => handleAddSegmented('nonDistinguish')}
                                 />
                               )}
@@ -849,13 +757,13 @@ function EditMultipleDesignersRakeSettingModal({
                         {profitSharing.nonSegmented[deductionIndex].rakeData.designate.map(
                           (data, index) => {
                             return (
-                              <div key={`designate-${index}`} css={styles.flex}>
-                                <div className="p-4" css={styles.verticleCenter}>
+                              <div key={`designate-${index}`} className="flex">
+                                <div className="p-4 flex items-center [border-bottom:0px]">
                                   總業績從(含)
                                   <TextField
                                     InputProps={{ inputProps: { min: 0 } }}
                                     type="number"
-                                    css={styles.deductionWayMarginL}
+                                    className="ml-[20px]"
                                     variant="outlined"
                                     label="輸入業績"
                                     value={data.threshold ? data.threshold : 0}
@@ -869,12 +777,12 @@ function EditMultipleDesignersRakeSettingModal({
                                     onWheel={() => document.activeElement.blur()}
                                   />
                                 </div>
-                                <div className="p-4" css={styles.verticleCenter}>
+                                <div className="p-4 flex items-center [border-bottom:0px]">
                                   抽成調整為
                                   <TextField
                                     InputProps={{ inputProps: { min: 0 } }}
                                     type="number"
-                                    css={styles.deductionWayMarginL}
+                                    className="ml-[20px]"
                                     variant="outlined"
                                     label="輸入抽成(%)"
                                     value={data.rake ? data.rake : 0}
@@ -884,10 +792,10 @@ function EditMultipleDesignersRakeSettingModal({
                                     onWheel={() => document.activeElement.blur()}
                                   />
                                 </div>
-                                <div className="p-4" css={styles.verticleCenter}>
+                                <div className="p-4 flex items-center [border-bottom:0px]">
                                   {index !== 0 && (
                                     <DeleteForeverIcon
-                                      css={styles.icons}
+                                      className="ml-[20px] cursor-pointer"
                                       onClick={() => handleDeleteNonSegmentedDesignate(index)}
                                     />
                                   )}
@@ -896,7 +804,7 @@ function EditMultipleDesignersRakeSettingModal({
                                       .length -
                                     1 && (
                                       <AddIcon
-                                        css={styles.icons}
+                                        className="ml-[20px] cursor-pointer"
                                         onClick={() => handleAddSetDeductionNum('designate')}
                                       />
                                     )}
@@ -913,13 +821,13 @@ function EditMultipleDesignersRakeSettingModal({
                         {profitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.map(
                           (data, index) => {
                             return (
-                              <div key={`nonDesignate-${index}`} css={styles.flex}>
-                                <div className="p-4" css={styles.verticleCenter}>
+                              <div key={`nonDesignate-${index}`} className="flex">
+                                <div className="p-4 flex items-center [border-bottom:0px]">
                                   總業績從(含)
                                   <TextField
                                     InputProps={{ inputProps: { min: 0 } }}
                                     type="number"
-                                    css={styles.deductionWayMarginL}
+                                    className="ml-[20px]"
                                     variant="outlined"
                                     label="輸入業績"
                                     value={data.threshold ? data.threshold : 0}
@@ -933,12 +841,12 @@ function EditMultipleDesignersRakeSettingModal({
                                     onWheel={() => document.activeElement.blur()}
                                   />
                                 </div>
-                                <div className="p-4" css={styles.verticleCenter}>
+                                <div className="p-4 flex items-center [border-bottom:0px]">
                                   抽成調整為
                                   <TextField
                                     InputProps={{ inputProps: { min: 0 } }}
                                     type="number"
-                                    css={styles.deductionWayMarginL}
+                                    className="ml-[20px]"
                                     variant="outlined"
                                     label="輸入抽成(%)"
                                     value={data.rake ? data.rake : 0}
@@ -948,10 +856,10 @@ function EditMultipleDesignersRakeSettingModal({
                                     onWheel={() => document.activeElement.blur()}
                                   />
                                 </div>
-                                <div className="p-4" css={styles.verticleCenter}>
+                                <div className="p-4 flex items-center [border-bottom:0px]">
                                   {index !== 0 && (
                                     <DeleteForeverIcon
-                                      css={styles.icons}
+                                      className="ml-[20px] cursor-pointer"
                                       onClick={() => handleDeleteNonSegmentedNonDesignate(index)}
                                     />
                                   )}
@@ -960,7 +868,7 @@ function EditMultipleDesignersRakeSettingModal({
                                       .length -
                                     1 && (
                                       <AddIcon
-                                        css={styles.icons}
+                                        className="ml-[20px] cursor-pointer"
                                         onClick={() => handleAddSetDeductionNum('nonDesignate')}
                                       />
                                     )}
@@ -979,13 +887,13 @@ function EditMultipleDesignersRakeSettingModal({
                         </div>
                         {profitSharing.segmented[0].designate.map((data, index) => {
                           return (
-                            <div key={`designate-${index}`} css={styles.flex}>
-                              <div className="p-4" css={styles.separateInputBottom}>
+                            <div key={`designate-${index}`} className="flex">
+                              <div className="p-4">
                                 指定業績從(含)
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
                                   type="number"
-                                  css={styles.deductionWayMarginL}
+                                  className="ml-[20px]"
                                   variant="outlined"
                                   label="輸入業績"
                                   value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
@@ -995,12 +903,12 @@ function EditMultipleDesignersRakeSettingModal({
                                   onWheel={() => document.activeElement.blur()}
                                 />
                               </div>
-                              <div className="p-4" css={styles.separateInput}>
+                              <div className="p-4 w-[250px] flex items-center [border-bottom:0px] whitespace-nowrap">
                                 至
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
                                   type="number"
-                                  css={styles.deductionWayMarginL}
+                                  className="ml-[20px]"
                                   variant="outlined"
                                   label="輸入業績"
                                   value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
@@ -1010,12 +918,12 @@ function EditMultipleDesignersRakeSettingModal({
                                   onWheel={() => document.activeElement.blur()}
                                 />
                               </div>
-                              <div className="p-4" css={styles.separateInputRake}>
+                              <div className="p-4">
                                 抽成為
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
                                   type="number"
-                                  css={styles.deductionWayMarginL}
+                                  className="ml-[20px]"
                                   variant="outlined"
                                   label="輸入抽成(%)"
                                   value={data.rake ? data.rake : 0}
@@ -1025,16 +933,16 @@ function EditMultipleDesignersRakeSettingModal({
                                   onWheel={() => document.activeElement.blur()}
                                 />
                               </div>
-                              <div className="p-4" css={styles.verticleCenter}>
+                              <div className="p-4 flex items-center [border-bottom:0px]">
                                 {index !== 0 && (
                                   <DeleteForeverIcon
-                                    css={styles.icons}
+                                    className="ml-[20px] cursor-pointer"
                                     onClick={() => handleDeleteSegmentedDesignate(index)}
                                   />
                                 )}
                                 {index === profitSharing.segmented[0].designate.length - 1 && (
                                   <AddIcon
-                                    css={styles.icons}
+                                    className="ml-[20px] cursor-pointer"
                                     onClick={() => handleAddSegmented('designate')}
                                   />
                                 )}
@@ -1049,13 +957,13 @@ function EditMultipleDesignersRakeSettingModal({
                         </div>
                         {profitSharing.segmented[0].nonDesignate.map((data, index) => {
                           return (
-                            <div key={`nonDesignate-${index}`} css={styles.flex}>
-                              <div className="p-4" css={styles.separateInputBottom}>
+                            <div key={`nonDesignate-${index}`} className="flex">
+                              <div className="p-4">
                                 不指定業績從(含)
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
                                   type="number"
-                                  // css={styles.deductionWayMarginL}
+                                  // className="ml-[20px]"
                                   variant="outlined"
                                   label="輸入業績"
                                   value={data.thresholdLowerLimit ? data.thresholdLowerLimit : 0}
@@ -1069,12 +977,12 @@ function EditMultipleDesignersRakeSettingModal({
                                   onWheel={() => document.activeElement.blur()}
                                 />
                               </div>
-                              <div className="p-4" css={styles.separateInput}>
+                              <div className="p-4 w-[250px] flex items-center [border-bottom:0px] whitespace-nowrap">
                                 至
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
                                   type="number"
-                                  css={styles.deductionWayMarginL}
+                                  className="ml-[20px]"
                                   variant="outlined"
                                   label="輸入業績"
                                   value={data.thresholdUpperLimit ? data.thresholdUpperLimit : 0}
@@ -1088,12 +996,12 @@ function EditMultipleDesignersRakeSettingModal({
                                   onWheel={() => document.activeElement.blur()}
                                 />
                               </div>
-                              <div className="p-4" css={styles.separateInputRake}>
+                              <div className="p-4">
                                 抽成為
                                 <TextField
                                   InputProps={{ inputProps: { min: 0 } }}
                                   type="number"
-                                  css={styles.deductionWayMarginL}
+                                  className="ml-[20px]"
                                   variant="outlined"
                                   label="輸入抽成(%)"
                                   value={data.rake ? data.rake : 0}
@@ -1103,16 +1011,16 @@ function EditMultipleDesignersRakeSettingModal({
                                   onWheel={() => document.activeElement.blur()}
                                 />
                               </div>
-                              <div className="p-4" css={styles.verticleCenter}>
+                              <div className="p-4 flex items-center [border-bottom:0px]">
                                 {index !== 0 && (
                                   <DeleteForeverIcon
-                                    css={styles.icons}
+                                    className="ml-[20px] cursor-pointer"
                                     onClick={() => handleDeleteSegmentedNonDesignate(index)}
                                   />
                                 )}
                                 {index === profitSharing.segmented[0].nonDesignate.length - 1 && (
                                   <AddIcon
-                                    css={styles.icons}
+                                    className="ml-[20px] cursor-pointer"
                                     onClick={() => handleAddSegmented('nonDesignate')}
                                   />
                                 )}
@@ -1128,7 +1036,7 @@ function EditMultipleDesignersRakeSettingModal({
             </CardContent>
             <Button
               variant="primary"
-              css={styles.saveAtBottom}
+              className="my-[16px] mx-[24px] float-right"
               onClick={handleMultipleRakeSetting}
             >
               儲存

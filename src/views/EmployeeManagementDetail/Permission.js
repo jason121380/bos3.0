@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { CheckboxField } from 'ui/checkbox'
 import { openSnackbar } from 'elements/snackbars'
 import { useFetchMerchantPermission } from 'hooks/useFetchMerchant'
@@ -37,7 +36,7 @@ function CheckBoxCus({ designerId, action, defaultChecked }) {
   )
 }
 
-function Permission({ designerId, className = {}, ...rest }) {
+function Permission({ designerId, className = '', ...rest }) {
   const apiResp = useFetchMerchantPermission()
   const apiUserPermissions = useFetchUserPermission({
     input: {
@@ -59,7 +58,7 @@ function Permission({ designerId, className = {}, ...rest }) {
   }, [apiUserPermissions])
 
   return (
-    <Card {...rest} css={className}>
+    <Card {...rest} className={className}>
       <CardHeader>
         <CardTitle>權限設定</CardTitle>
       </CardHeader>
@@ -94,7 +93,7 @@ function Permission({ designerId, className = {}, ...rest }) {
 }
 
 Permission.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
 }
 
 export default Permission

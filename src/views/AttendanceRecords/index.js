@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 篩選區的員工 Autocomplete 未受控（選取值存在元件內）：收合時以 hidden 隱藏、不卸載（同原 Collapse），以免遺失；
 // 補打卡彈窗內有 Autocomplete / DateTimePicker，保留相容層 Dialog（Radix Dialog 會與其彈出層焦點鎖互搶）
 import { DialogActions, Dialog, DialogContent, DialogTitle } from 'ui/modal-compat'
@@ -20,37 +19,12 @@ import idx from 'idx'
 import { useState, useEffect } from 'react'
 import { startOfMonth, addDays, format, endOfMonth } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import { Autocomplete } from 'ui/combobox'
-
-const styles = {
-  root: css({}),
-  container: css({
-    padding: '0px !important',
-    paddingTop: theme.spacing(1) + ' !important',
-    paddingBottom: theme.spacing(1.5),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  calendarButton: css({
-    backgroundColor: theme.palette.common.white,
-    minWidth: '40px',
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    marginTop: '100px',
-  }),
-  searchBtn: css({
-    width: '100px',
-  }),
-}
 
 const clockInType = [
   { label: '上班', value: 'CLOCKIN' },
@@ -433,7 +407,6 @@ export default function Employees() {
             />
             <Autocomplete
               style={{ marginTop: '20px' }}
-              css={styles.formControl}
               options={userOptions}
               onChange={(event, value) =>
                 value === null ? setReClockInData({ ...reClockInData, userId: '' }) :

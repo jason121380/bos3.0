@@ -1,4 +1,4 @@
-/** @jsxImportSource @emotion/react */
+import clsx from 'clsx'
 // 分頁使用 ui/table TablePagination（pagenationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import TableEditBar from 'components/TableEditBar'
@@ -116,7 +116,7 @@ function Invoices({
           <EmptyState title="無資料" />
         </Card>
       ) : (
-        <div {...rest} css={className} className="[&_td]:!whitespace-nowrap">
+        <div {...rest} className={clsx('[&_td]:!whitespace-nowrap', className)}>
           <p className="mb-2 text-label tabular-nums text-text-secondary" data-testid="result-counter">
             共 {pageSetting.totalCount} 筆, {pageSetting.pageOffset + 1} /{' '}
             {Math.ceil(pageSetting.totalCount / pageSetting.pageLimit)}
@@ -337,7 +337,7 @@ function Invoices({
 }
 
 Invoices.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   orders: PropTypes.array,
 }
 

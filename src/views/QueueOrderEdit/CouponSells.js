@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { Field } from 'ui/input'
 import { Eraser, Copy, Trash2 } from 'lucide-react'
@@ -8,45 +7,6 @@ import idx from 'idx'
 import _ from 'lodash'
 import { Fragment, useContext } from 'react'
 import billContext from 'context/keyInContext'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  // 項目列（比照打帳單 views/OrderCreate/styles/CouponSells）：上方標籤、控制項靠底對齊、窄螢幕換行不擠壓
-  couponSells: css({
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-    rowGap: '12px',
-    marginBottom: theme.spacing(3),
-  }),
-  field: css({
-    minWidth: '150px',
-    width: 150,
-    display: 'flex',
-    marginRight: '12px !important',
-  }),
-  fieldWidth: css({
-    width: '250px',
-    maxWidth: '100%',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  priceField: css({
-    width: '65px',
-    display: 'flex',
-    marginRight: '12px !important',
-  }),
-  checkbox: css({
-    width: '100px',
-    display: 'flex',
-    marginRight: '12px',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-}
 
 export default function CouponSells({
   couponSell,
@@ -63,7 +23,7 @@ export default function CouponSells({
   const { setCouponAlready } = useContext(billContext)
   return (
     <Fragment>
-      <div css={styles.couponSells}>
+      <div className="mb-6 flex flex-wrap items-end justify-start gap-y-[12px]">
         {index === 0 ? (
           <RowIconButton label="從清單選擇預收卡" className="mx-1.5" onClick={handleOpenCouponModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
@@ -72,7 +32,7 @@ export default function CouponSells({
         <Field label="卡券">
           <TicketAutoComplete
             setCouponAlready={setCouponAlready}
-            css={styles.fieldWidth}
+            className="mr-[12px] flex w-[250px] max-w-full"
             value={couponSell.serviceId}
             isLaunched
             onChange={function (value) {
@@ -97,7 +57,7 @@ export default function CouponSells({
         </Field>
         {couponSell.serviceId ? (
           <Fragment>
-            <Field label="可使用次數" css={styles.priceField}>
+            <Field label="可使用次數" className="!mr-[12px] flex w-[65px]">
               <TextField
                 fullWidth
                 variant="outlined"
@@ -119,7 +79,7 @@ export default function CouponSells({
                 }
               />
             </Field>
-            <Field label="價格" css={styles.priceField}>
+            <Field label="價格" className="!mr-[12px] flex w-[65px]">
               <TextField
                 fullWidth
                 variant="outlined"
@@ -141,7 +101,7 @@ export default function CouponSells({
                 }
               />
             </Field>
-            <Field label="張數" css={styles.priceField}>
+            <Field label="張數" className="!mr-[12px] flex w-[65px]">
               <TextField
                 fullWidth
                 variant="outlined"
@@ -163,7 +123,7 @@ export default function CouponSells({
                 }
               />
             </Field>
-            <Field label="備註" css={styles.field}>
+            <Field label="備註" className="!mr-[12px] flex w-[150px] min-w-[150px]">
               <TextField
                 fullWidth
                 value={couponSell.remark ? couponSell.remark : ''}

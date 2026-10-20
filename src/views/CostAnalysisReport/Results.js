@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 卡片保留相容層：列印樣式以 .CostAnalysisReportTableContainer .MuiCard-root／.MuiCardContent-root 排版表格（initialize.scss）
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
 import { Download } from 'lucide-react'
@@ -9,46 +8,12 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import roundDecimal from './../../helper/roundDecimal.js'
-import { css } from '@emotion/react'
-import { theme } from '../../theme/index.js'
 
 const styles = {
-  root: css({
-    display: "flex",
-    justifyContent: "space-between",
-  }),
-  content: css({
-    padding: 0,
-  }),
-  nameCell: css({
-    display: "flex",
-    alignItems: "center",
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: "flex-end",
-  }),
-  leftCard: css({
-    width: "55%",
-  }),
-  rightCard: css({
-    width: "40%",
-  }),
-  subtotal: css({
-    color: "red",
-    fontWeight: "bold",
-  }),
-  cardBottom: css({
-    marginBottom: "15px",
-  }),
-  width: css({
-    minWidth: '250px',
-  })
+  root: 'flex justify-between',
+  content: 'p-0',
+  subtotal: 'text-[red] font-bold',
+  width: 'min-w-[250px]',
 }
 
 const checkArray = ['營業收入', '店販收入', '會員卡收入', '卡券販賣(先入業績)']
@@ -103,8 +68,7 @@ function Results({
   return (
     <div
       {...rest}
-      className="CostAnalysisReportTableContainer flex w-full flex-wrap"
-      css={css([styles.root, className])}
+      className={`CostAnalysisReportTableContainer flex w-full flex-wrap ${styles.root}${className ? ` ${className}` : ''}`}
     >
       <div className="w-full min-[900px]:w-5/6">
         {merchantIncomeStatement !== undefined && (
@@ -123,13 +87,13 @@ function Results({
             />
             {/* 原生 hr：列印規則以 hr 選擇器隱藏分隔線 */}
             <hr className="m-0 shrink-0 border-0 border-b border-solid border-border" />
-            <CardContent css={styles.content}>
+            <CardContent className={styles.content}>
               <PerfectScrollbar>
-                <div css={styles.inner}>
+                <div>
                   <Table dense>
                     <TableHeader>
                       <TableRow>
-                        <TableHead css={styles.width}></TableHead>
+                        <TableHead className={styles.width}></TableHead>
                         <TableHead>加項</TableHead>
                         {CARPTDISPLAY && <TableHead>%</TableHead>}
                         <TableHead>扣項</TableHead>
@@ -171,7 +135,7 @@ function Results({
                         )
                       )}
                       <TableRow>
-                        <TableCell css={styles.subtotal}>小計</TableCell>
+                        <TableCell className={styles.subtotal}>小計</TableCell>
                         <TableCell>{Math.round(cashRevenue)}</TableCell>
                         {CARPTDISPLAY && <TableCell>100%</TableCell>}
                         <TableCell>{Math.round(cashRevenue + cashExpenditure) - Math.round(cashRevenue)}</TableCell>
@@ -179,7 +143,7 @@ function Results({
                         <TableCell></TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell css={styles.subtotal}>損益</TableCell>
+                        <TableCell className={styles.subtotal}>損益</TableCell>
                         <TableCell>
                           {Math.round(cashRevenue + cashExpenditure)}
                         </TableCell>
@@ -219,7 +183,7 @@ function Results({
 }
 
 Results.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   customers: PropTypes.array,
 };
 

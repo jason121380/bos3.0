@@ -1,30 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import Search from './Search'
 import SearchV2 from './SearchV2'
-
-const styles = {
-  root: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-  }),
-  search: css({
-    flexGrow: 1,
-    // maxWidth: 480,
-    flexBasis: 480,
-  }),
-  filterButton: css({
-    marginLeft: 'auto',
-  }),
-  filterIcon: css({
-    marginRight: theme.spacing(1),
-  }),
-}
 
 function SearchBar({
   setCustomerNoSort,
@@ -45,10 +22,10 @@ function SearchBar({
   ...rest
 }) {
   return (
-    <div {...rest} css={styles.root} className="box-border gap-6">
+    <div {...rest} className="box-border gap-6 flex items-center justify-between flex-wrap">
       {onSearch ? (
         <div className="min-w-0 max-w-full">
-          <Search className={styles.search} onSearch={onSearch} />
+          <Search className="grow basis-[480px]" onSearch={onSearch} />
         </div>
       ) : (
         ''
@@ -57,7 +34,7 @@ function SearchBar({
         <div className="w-full">
           <SearchV2
             setCustomerNoSort={setCustomerNoSort}
-            className={styles.search}
+            className="grow basis-[480px]"
             onSearchV2={onSearchV2}
             onDesignerV2={onDesignerV2}
             onDesignerV3={onDesignerV3}

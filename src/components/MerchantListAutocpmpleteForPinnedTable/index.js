@@ -1,29 +1,10 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { useState, useEffect, Fragment } from 'react'
 import { Button } from 'ui/button'
 import { useFetchGetUserGroupsWOCS } from 'hooks/useFetchGetUserMerchant'
 import MerchantsListModal from './MerchantsListModal'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Autocomplete } from 'ui/combobox'
-
-const styles = {
-  root: css({
-    '& input': {
-      cursor: 'pointer'
-    },
-    '& .MuiAutocomplete-endAdornment': {
-      top: 0,
-      right: 0,
-      '& button:last-child': {
-        paddingRight: 0,
-        paddingLeft: 0,
-      }
-    }
-  }),
-}
 
 const index = ({
   onValueChange = () => { }, selectIds = [], values, setValues, isClick
@@ -60,8 +41,7 @@ const index = ({
     <>
       <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'flex-end' }}>
         <Autocomplete
-          className="min-w-0 flex-1"
-          css={styles.root}
+          className="min-w-0 flex-1 [&_input]:cursor-pointer"
           multiple
           fullWidth
           disabled={getUserGroupsWOCS.loading || isClick}

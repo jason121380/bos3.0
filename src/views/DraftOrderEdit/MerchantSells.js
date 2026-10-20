@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
 import { Eraser, Copy, Trash2 } from 'lucide-react'
 import { RowIconButton, AddRowButton } from 'views/OrderCreate/RowAction'
@@ -12,47 +11,18 @@ import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import produce from 'immer'
 import TeachingModeContext from 'context/teachingModeContext'
 import billContext from 'context/keyInContext'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import ProductsModal from './ProductsModal'
 
 // 版面比照打帳單（views/OrderCreate/styles/MerchantSells）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
+// 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px；pxToRem 以 16px 換算）。自動完成元件的 className 原以 css={className} 套在根節點
 const styles = {
-  merchantSells: css({
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-    rowGap: '12px',
-    marginBottom: theme.spacing(3),
-  }),
-  field: css({
-    width: '250px',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  employeeField: css({
-    width: '200px',
-    minWidth: 150,
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  thirdPartyField: css({
-    width: '150px',
-    minWidth: 150,
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  priceField: css({
-    width: '65px',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  heading2: css({
-    fontSize: theme.typography.pxToRem(13),
-    fontWeight: 'bold',
-  }),
+  merchantSells: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  field: 'w-[250px] flex mr-[12px]',
+  employeeField: 'w-[200px] min-w-[150px] flex mr-[12px]',
+  thirdPartyField: 'w-[150px] min-w-[150px] flex mr-[12px]',
+  priceField: 'w-[65px] flex mr-[12px]',
+  heading2: 'text-[0.8125rem] font-bold',
 }
 
 export default function MerchantSells({
@@ -184,7 +154,7 @@ export default function MerchantSells({
   }
   return (
     <Fragment>
-      <div css={styles.merchantSells}>
+      <div className={styles.merchantSells}>
         {/* 必填 *：helper/billVerify.js checkProductOrders 要求每列有 sellerId 與 productId。
             本頁 PannelMerchantSells 只把 count > 0 的列寫入 bill.productOrders（選了商品才會變成 1），
             handleTidyBill 再丟掉兩欄皆空的列，所以：選了商品、或填了服務人員且數量 > 0 的列才標必填 */}
@@ -248,7 +218,7 @@ export default function MerchantSells({
         </Field>
         {sells.productId ? (
           <React.Fragment>
-            <Field label="價格" css={styles.priceField}>
+            <Field label="價格" className={styles.priceField}>
               <Input
                 value={sells.price}
                 ref={priceRef}
@@ -267,7 +237,7 @@ export default function MerchantSells({
                 disabled={!!(sells.isLocked === 'TRUE' || sells.isLocked === 'UNSET')}
               />
             </Field>
-            <Field label="數量" css={styles.priceField}>
+            <Field label="數量" className={styles.priceField}>
               <Input
                 value={sells.count}
                 ref={countRef}
@@ -319,13 +289,13 @@ export default function MerchantSells({
                 </Field>
               )}
               {teachingMode && (
-                <p className="m-0" css={styles.heading2}>勾選將入業績但不收費用**</p>
+                <p className={`m-0 ${styles.heading2}`}>勾選將入業績但不收費用**</p>
               )}
               {sells.thirdPartyCouponMerchantId &&
                 thirdPartyCoupons.map(data => {
                   if (data.id === sells.thirdPartyCouponMerchantId) {
                     return (
-                      <p className="m-0" css={styles.heading2} style={{ marginTop: '4px' }}>
+                      <p className={`m-0 ${styles.heading2}`} style={{ marginTop: '4px' }}>
                         扣完後業績:{Math.round((sells.price * (100 - data.fee)) / 100)}
                       </p>
                     )

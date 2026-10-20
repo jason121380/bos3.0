@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Modal } from 'ui/modal-compat'
 import { Divider } from 'ui/display-compat'
 import { Grid } from 'ui/grid-compat'
@@ -15,7 +14,6 @@ import React, {
   useCallback,
   Fragment,
 } from 'react'
-import { red, blue } from 'ui/colors'
 import _ from 'lodash'
 import { format } from 'date-fns'
 import billContext from 'context/keyInContext'
@@ -40,83 +38,15 @@ import useFetchGetQrcodeDisplayOnInvoice from 'hooks/useFetchGetQrcodeDisplayOnI
 import useFetchGetMessageDisplayOnInvoice from 'hooks/useFetchGetMessageDisplayOnInvoice'
 import QRCode from 'qrcode'
 import { handleTidyBill, checkServicesOrders, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 const styles = {
-  root: css({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    outline: 'none',
-    boxShadow: theme.shadows[20],
-    width: 500,
-    maxHeight: '100%',
-    overflowY: 'auto',
-    maxWidth: '100%',
-  }),
-  birthday: css({
-    width: '100%',
-  }),
-  actions: css({
-    justifyContent: 'flex-end',
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  categorieDiv: css({
-    marginBottom: '5px',
-  }),
-  categorieBtn: css({
-    margin: '3px',
-  }),
-  clickedCategorieBtn: css({
-    margin: '3px',
-    color: 'white',
-  }),
-  categorieClear: css({
-    backgroundColor: red[500],
-    color: 'white',
-    '&:hover': {
-      backgroundColor: red[700],
-    },
-  }),
-  addBtn: css({
-    backgroundColor: blue[500],
-    color: 'white',
-    '&:hover': {
-      backgroundColor: blue[700],
-    },
-  }),
-  confirmBtn: css({
-    margin: '7px 0',
-    float: 'right',
-  }),
-  header: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-  backBtn: css({
-    margin: '16px 24px',
-  }),
-  btnDiv: css({
-    margin: '10px 0',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }),
-  rowOfGrid: css({
-    margin: '5px 0px',
-  }),
-  dividerDiv: css({
-    margin: '8px 0px',
-  }),
-  detailBottomCash: css({
-    fontSize: '20px',
-    fontWeight: 'bold',
-  }),
+  root: 'absolute top-[50%] left-[50%] [transform:translate(-50%,-50%)] [outline:none] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)] w-[500px] max-h-[100%] overflow-y-auto max-w-[100%]',
+  header: 'flex justify-between items-center',
+  backBtn: 'm-[16px_24px]',
+  btnDiv: 'm-[10px_0] flex items-center justify-center',
+  rowOfGrid: 'm-[5px_0px]',
+  dividerDiv: 'm-[8px_0px]',
+  detailBottomCash: 'text-[20px] font-bold',
 }
 
 function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, getHelperForPrint }) {
@@ -692,14 +622,14 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
     !getQrcodeDisplayOnInvoice.loading &&
     !getMessageDisplayOnInvoice.loading && (
       <Modal open={openOrderDetail}>
-        <Card css={styles.root}>
-          <div css={styles.header}>
+        <Card className={styles.root}>
+          <div className={styles.header}>
             <CardHeader title="消費明細" />
             <Button
               color="primary"
               variant="contained"
               onClick={closeModal}
-              css={styles.backBtn}
+              className={styles.backBtn}
               disabled={checkoutBtnClick}
             >
               返回
@@ -707,7 +637,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
           </div>
           <CardContent id="DivIdToPrint">
             <Grid container>
-              <Grid container css={styles.rowOfGrid}>
+              <Grid container className={styles.rowOfGrid}>
                 <Grid item xs={8}>
                   {merchantName}
                 </Grid>
@@ -715,7 +645,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                   {format(new Date(bill.date), 'yyyy/MM/dd HH:mm')}
                 </Grid>
               </Grid>
-              <Grid container css={styles.rowOfGrid}>
+              <Grid container className={styles.rowOfGrid}>
                 <Grid item xs={2}>
                   {bill.isDesignate ? '指定' : '不指定'}
                 </Grid>
@@ -726,12 +656,12 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                   設計師:{designerNameType(designer.data.merchantDesigner, nameDisplayOnInvoice)}
                 </Grid>
               </Grid>
-              <Grid container css={styles.dividerDiv}>
+              <Grid container className={styles.dividerDiv}>
                 <Divider style={{ width: '100%' }} />
               </Grid>
-              <Grid container css={styles.rowOfGrid}>
+              <Grid container className={styles.rowOfGrid}>
                 {orderDetail.servicesDetail.length === 0 ? (
-                  <Grid container css={styles.rowOfGrid}>
+                  <Grid container className={styles.rowOfGrid}>
                     <Grid item xs={2}>
                       項目消費
                     </Grid>
@@ -765,7 +695,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                   ))
                 )}
                 {orderDetail.productsDetail.length === 0 ? (
-                  <Grid container css={styles.rowOfGrid}>
+                  <Grid container className={styles.rowOfGrid}>
                     <Grid item xs={2}>
                       店販銷售
                     </Grid>
@@ -799,7 +729,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                   ))
                 )}
                 {orderDetail.sellTicketsDetail.length === 0 ? (
-                  <Grid container css={styles.rowOfGrid}>
+                  <Grid container className={styles.rowOfGrid}>
                     <Grid item xs={2}>
                       卡券銷售
                     </Grid>
@@ -827,7 +757,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                   ))
                 )}
                 {orderDetail.useTicketsDetail.length === 0 ? (
-                  <Grid container css={styles.rowOfGrid}>
+                  <Grid container className={styles.rowOfGrid}>
                     <Grid item xs={2}>
                       卡券使用
                     </Grid>
@@ -856,7 +786,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                 )}
               </Grid>
               {orderDetail.membershipOrders.length === 0 ? (
-                <Grid container css={styles.rowOfGrid}>
+                <Grid container className={styles.rowOfGrid}>
                   <Grid item xs={3}>
                     會員卡銷售
                   </Grid>
@@ -883,10 +813,10 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                   </Fragment>
                 ))
               )}
-              <Grid container css={styles.dividerDiv}>
+              <Grid container className={styles.dividerDiv}>
                 <Divider style={{ width: '100%' }} />
               </Grid>
-              <Grid container css={styles.rowOfGrid}>
+              <Grid container className={styles.rowOfGrid}>
                 <Grid item xs={2}>
                   應付帳款
                 </Grid>
@@ -896,8 +826,8 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                 </Grid>
                 <Grid item xs={3}></Grid>
               </Grid>
-              <Grid container css={styles.rowOfGrid}>
-                <Grid container css={styles.rowOfGrid}>
+              <Grid container className={styles.rowOfGrid}>
+                <Grid container className={styles.rowOfGrid}>
                   <Grid item xs={4}>
                     其他支付方式
                   </Grid>
@@ -906,7 +836,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                   <Grid item xs={3}></Grid>
                 </Grid>
                 {bill.payType.length === 0 && bill.walletPay === 0 && (
-                  <Grid container css={styles.rowOfGrid}>
+                  <Grid container className={styles.rowOfGrid}>
                     <Grid item xs={2}></Grid>
                     <Grid item xs={5}>
                       無
@@ -916,7 +846,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                   </Grid>
                 )}
                 {bill.payType.length > 0 && (
-                  <Grid container css={styles.rowOfGrid}>
+                  <Grid container className={styles.rowOfGrid}>
                     <Grid item xs={2}></Grid>
                     <Grid item xs={5}>
                       {bill.payType[0]}
@@ -928,7 +858,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                   </Grid>
                 )}
                 {bill.walletPay > 0 && (
-                  <Grid container css={styles.rowOfGrid}>
+                  <Grid container className={styles.rowOfGrid}>
                     <Grid item xs={2}></Grid>
                     <Grid item xs={5}>
                       扣入金
@@ -940,7 +870,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                   </Grid>
                 )}
                 {bill.walletPay > 0 && (
-                  <Grid container css={styles.rowOfGrid}>
+                  <Grid container className={styles.rowOfGrid}>
                     <Grid item xs={2}></Grid>
                     <Grid item xs={5}>
                       入金剩餘
@@ -952,22 +882,22 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                   </Grid>
                 )}
               </Grid>
-              <Grid container css={styles.dividerDiv}>
+              <Grid container className={styles.dividerDiv}>
                 <Divider style={{ width: '100%' }} />
               </Grid>
-              <Grid container css={styles.rowOfGrid}>
-                <Grid item xs={3} css={styles.detailBottomCash}>
+              <Grid container className={styles.rowOfGrid}>
+                <Grid item xs={3} className={styles.detailBottomCash}>
                   現金應收
                 </Grid>
                 <Grid item xs={4}></Grid>
-                <Grid item xs={2} css={styles.detailBottomCash}>
+                <Grid item xs={2} className={styles.detailBottomCash}>
                   {cashPayment}
                 </Grid>
                 <Grid item xs={3}></Grid>
               </Grid>
             </Grid>
           </CardContent>
-          <div css={styles.btnDiv}>
+          <div className={styles.btnDiv}>
             {!disablePendingOrder && (
               <Button
                 color="primary"

@@ -1,10 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import { DialogBody } from 'ui/dialog'
 import React, { useState, Fragment } from 'react'
 // 動作清單改原生元素：有 onClick 的列為原生 <button>；連往帳單／新預約的列由 react-router Link 本身當可點元素（列內不再巢狀按鈕）
 import { cn, focusRing } from 'ui/utils'
 import { Avatar } from 'ui/avatar'
-import { blue } from 'ui/colors'
 import { Cancel as CancelIcon, Check as CheckIcon, Lock as LockIcon, LockOpen as LockOpenIcon, Edit as EditIcon, ShoppingCart as ShoppingCartIcon, EventSeat as EventSeatIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
 import { Button } from 'ui/button'
@@ -13,30 +11,6 @@ import { Link as RouterLink } from 'react-router-dom'
 import useFetchAdminBookingTime, { useFetchAdminBookingTimeAllStore } from 'hooks/useFetchAdminBookingTime'
 import useFetchVerifyBooking from 'hooks/useFetchVerifyBooking'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
-
-const styles = {
-  root: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-  }),
-  avatar: css({
-    backgroundColor: blue[100],
-    color: blue[600],
-  }),
-  field: css({
-    marginBottom: theme.spacing(2),
-  }),
-  dialog: css({
-    maxWidth: '400px',
-  }),
-  breakWord: css({
-    '& div': {
-      wordBreak: 'break-all'
-    }
-  })
-}
 
 // 動作列（原清單按鈕列：上下 8px、左右 16px，hover surface-hover，停用 38% 透明）
 const rowClass = cn(
@@ -128,7 +102,7 @@ export default function NewChoseEvent({
     <DialogBody className="py-4">
       {(modaltype === 'defaultAll' || modaltype === 'openAllOrder') && <Fragment>
         <RouterLink to={`/customer/reservation/${merchantId}?usingLineLogin=0&date=${clickData.dateTime}&designerId=${!!clickData.designerId ? clickData.designerId : ''}`} className={linkClass}>
-          <span css={styles.field} className={rowClass}>
+          <span className={cn(rowClass, 'mb-4')}>
             <AvatarSlot>
               <Avatar className="bg-accent/8 text-accent">
                 <EventSeatIcon />
@@ -138,7 +112,7 @@ export default function NewChoseEvent({
           </span>
         </RouterLink>
         {!checkinMode && (modaltype === 'openAllOrder' ? 
-          <button type="button" css={styles.field} onClick={closeAllOrderTime} disabled={btnDisabled} className={rowClass}>
+          <button type="button" onClick={closeAllOrderTime} disabled={btnDisabled} className={cn(rowClass, 'mb-4')}>
             <AvatarSlot>
               <Avatar className="bg-accent/8 text-accent">
                 <LockOpenIcon />
@@ -147,7 +121,7 @@ export default function NewChoseEvent({
             <RowText primary="開啟全店預約" />
           </button>
           :
-          <button type="button" css={styles.field} onClick={closeAllOrderTime} disabled={btnDisabled} className={rowClass}>
+          <button type="button" onClick={closeAllOrderTime} disabled={btnDisabled} className={cn(rowClass, 'mb-4')}>
             <AvatarSlot>
               <Avatar className="bg-accent/8 text-accent">
                 <LockIcon />
@@ -171,7 +145,7 @@ export default function NewChoseEvent({
       </Fragment>}
       {(modaltype === 'default' || modaltype === 'openOrder') && <Fragment>
         <RouterLink to={`/customer/reservation/${merchantId}?usingLineLogin=0&date=${clickData.dateTime}&designerId=${!!clickData.designerId ? clickData.designerId : ''}`} className={linkClass}>
-          <span css={styles.field} className={rowClass}>
+          <span className={cn(rowClass, 'mb-4')}>
             <AvatarSlot>
               <Avatar className="bg-accent/8 text-accent">
                 <EventSeatIcon />
@@ -181,7 +155,7 @@ export default function NewChoseEvent({
           </span>
         </RouterLink>
         {!checkinMode && (modaltype === 'openOrder' ? 
-          <button type="button" css={styles.field} onClick={closeOrderTime} disabled={btnDisabled} className={rowClass}>
+          <button type="button" onClick={closeOrderTime} disabled={btnDisabled} className={cn(rowClass, 'mb-4')}>
             <AvatarSlot>
               <Avatar className="bg-accent/8 text-accent">
                 <LockOpenIcon />
@@ -190,7 +164,7 @@ export default function NewChoseEvent({
             <RowText primary="開啟預約" />
           </button>
           :
-          <button type="button" css={styles.field} onClick={closeOrderTime} disabled={btnDisabled} className={rowClass}>
+          <button type="button" onClick={closeOrderTime} disabled={btnDisabled} className={cn(rowClass, 'mb-4')}>
             <AvatarSlot>
               <Avatar className="bg-accent/8 text-accent">
                 <LockIcon />
@@ -213,7 +187,7 @@ export default function NewChoseEvent({
         </div>
       </Fragment>}
       {(modaltype === 'orderCheck' || modaltype === 'orderSuccess') && <Fragment>
-        <div className="mb-2 text-body text-text" css={styles.breakWord}>
+        <div className="mb-2 text-body text-text [&_div]:break-all">
           <div>{`姓名: ${editOrder.customer.name}`}</div>
           <div>{`電話: ${editOrder.customer.cellphone}`}</div>
           <div>{`日期: ${format(new Date(editOrder.date), 'yyyy/MM/dd')}`}</div>

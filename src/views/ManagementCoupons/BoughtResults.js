@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 表格列使用 ui/table（外框 components/ManagementTable 亦為 ui/table）
 
 import ManagementTable from 'components/ManagementTable'
@@ -8,48 +7,7 @@ import { useState, useEffect, useRef } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from "react-csv";
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Button } from 'ui/button'
-
-const styles = {
-  root: css({}),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  filterButton: css({
-    marginRight: theme.spacing(2),
-  }),
-  content: css({
-    padding: '0px !important',
-  }),
-  inner: css({
-    minWidth: 1150,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1) + '!important',
-    justifyContent: 'flex-end',
-  }),
-  cardHeader: css({
-    '& .MuiCardHeader-action': {
-      marginTop: 0
-    }
-  }),
-  fontWeight: css({
-    '& td': {
-      fontWeight: 'bold'
-    }
-  }),
-  compactCell: css({
-    padding: '4px 8px !important',
-  }),
-}
 
 export default function BoughtResults({
   className,
@@ -110,7 +68,7 @@ export default function BoughtResults({
 
 
   return (
-    <div {...rest} css={css([styles.root, className])}>
+    <div {...rest} className={className}>
       <ManagementTable
         title="卡券販賣紀錄"
         totalCount={results.length}
@@ -123,59 +81,59 @@ export default function BoughtResults({
         excelFilename="卡券販賣紀錄.csv"
         tableHead={(
           <>
-            <TableHead css={styles.compactCell}>操作</TableHead>
-            <TableHead css={styles.compactCell}>帳單編號/時間</TableHead>
-            <TableHead css={styles.compactCell}>客戶</TableHead>
-            <TableHead css={styles.compactCell}>設計師</TableHead>
-            <TableHead css={styles.compactCell}>卡券代號</TableHead>
-            <TableHead css={styles.compactCell}>卡券販賣</TableHead>
-            <TableHead css={styles.compactCell}>金額</TableHead>
-            <TableHead css={styles.compactCell}>總張數</TableHead>
-            <TableHead css={styles.compactCell}>現餘</TableHead>
+            <TableHead className="!px-2 !py-1">操作</TableHead>
+            <TableHead className="!px-2 !py-1">帳單編號/時間</TableHead>
+            <TableHead className="!px-2 !py-1">客戶</TableHead>
+            <TableHead className="!px-2 !py-1">設計師</TableHead>
+            <TableHead className="!px-2 !py-1">卡券代號</TableHead>
+            <TableHead className="!px-2 !py-1">卡券販賣</TableHead>
+            <TableHead className="!px-2 !py-1">金額</TableHead>
+            <TableHead className="!px-2 !py-1">總張數</TableHead>
+            <TableHead className="!px-2 !py-1">現餘</TableHead>
           </>
         )}
       >
         <TableBody>
           {reportData.map((data, index) => (
             <TableRow key={`${data.id}-${index}`}>
-              <TableCell css={styles.compactCell}>
+              <TableCell className="!px-2 !py-1">
                 <Button asChild size="sm" variant="secondary">
                   <RouterLink to={`/order/${data.orderId}`}>
                     詳情
                   </RouterLink>
                 </Button>
               </TableCell>
-              <TableCell css={styles.compactCell}>
+              <TableCell className="!px-2 !py-1">
                 {data.orderNo}
                 <div className="text-caption tabular-nums text-text-secondary">
                   {format(data.orderDate, 'yyyy/MM/dd')}
                 </div>
               </TableCell>
-              <TableCell css={styles.compactCell}>
+              <TableCell className="!px-2 !py-1">
                 {data.customerName}
                 <div className="text-caption tabular-nums text-text-secondary">
                   {data.customerPhone}
                 </div>
               </TableCell>
-              <TableCell css={styles.compactCell}>
+              <TableCell className="!px-2 !py-1">
                 {data.designerName}
                 <div className="text-caption tabular-nums text-text-secondary">
                   {data.designerNo}
                 </div>
               </TableCell>
-              <TableCell css={styles.compactCell}>{data.ticketNo}</TableCell>
-              <TableCell css={styles.compactCell}>{data.ticketName}</TableCell>
-              <TableCell css={styles.compactCell}>{roundDecimal(data.price)}</TableCell>
-              <TableCell css={styles.compactCell}>{data.totalCount}</TableCell>
-              <TableCell css={styles.compactCell}>{data.leftCount}</TableCell>
+              <TableCell className="!px-2 !py-1">{data.ticketNo}</TableCell>
+              <TableCell className="!px-2 !py-1">{data.ticketName}</TableCell>
+              <TableCell className="!px-2 !py-1">{roundDecimal(data.price)}</TableCell>
+              <TableCell className="!px-2 !py-1">{data.totalCount}</TableCell>
+              <TableCell className="!px-2 !py-1">{data.leftCount}</TableCell>
             </TableRow>
           ))}
-          <TableRow css={styles.fontWeight}>
-            <TableCell css={styles.compactCell} colSpan={5} />
-            <TableCell css={styles.compactCell}>合計</TableCell>
-            <TableCell css={styles.compactCell}>{handleCountTotal('price')}</TableCell>
-            <TableCell css={styles.compactCell}>{handleCountTotal('totalCount')}</TableCell>
-            <TableCell css={styles.compactCell}>{handleCountTotal('leftCount')}</TableCell>
+          <TableRow className="[&_td]:font-bold">
+            <TableCell className="!px-2 !py-1" colSpan={5} />
+            <TableCell className="!px-2 !py-1">合計</TableCell>
+            <TableCell className="!px-2 !py-1">{handleCountTotal('price')}</TableCell>
+            <TableCell className="!px-2 !py-1">{handleCountTotal('totalCount')}</TableCell>
+            <TableCell className="!px-2 !py-1">{handleCountTotal('leftCount')}</TableCell>
           </TableRow>
         </TableBody>
       </ManagementTable>

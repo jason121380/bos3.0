@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
 import { CheckboxField } from 'ui/checkbox'
 import CustomerTicketRecordAutoComplete from 'components/CustomerTicketRecordAutoComplete'
@@ -8,52 +7,15 @@ import { useFetchLazyTicketRecords } from 'hooks/useFetchTicketRecords'
 import idx from 'idx'
 import _ from 'lodash'
 import React, { Fragment } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 // 版面比照打帳單（views/OrderCreate/styles/CouponUse）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
+// 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px）。className 傳給自動完成元件（原以 css={className} 套在根節點）
 const styles = {
-  couponUse: css({
-    display: 'flex',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-    rowGap: '12px',
-    marginBottom: theme.spacing(3),
-  }),
-  field: css({
-    width: '150px',
-    minWidth: 150,
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  couponField: css({
-    width: '250px',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  priceField: css({
-    width: '65px',
-    display: 'flex',
-    marginRight: '12px',
-  }),
-  checkbox: css({
-    width: '100px',
-    display: 'flex',
-    marginRight: '12px',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
-  action: css({
-    width: '50px',
-    display: 'flex',
-    marginRight: '12px',
-    cursor: 'pointer',
-    '&:last-child': {
-      marginRight: '0px',
-    },
-  }),
+  couponUse: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  field: 'w-[150px] min-w-[150px] flex mr-[12px]',
+  couponField: 'w-[250px] flex mr-[12px]',
+  priceField: 'w-[65px] flex mr-[12px]',
+  checkbox: 'w-[100px] flex mr-[12px] last:mr-0',
 }
 
 export default function CouponUse({
@@ -169,7 +131,7 @@ export default function CouponUse({
 
   return (
     <Fragment>
-      <div css={styles.couponUse}>
+      <div className={styles.couponUse}>
         {bill.customerId && (
           <Field label="預收卡">
             <CustomerTicketRecordAutoComplete
@@ -187,7 +149,7 @@ export default function CouponUse({
         )}
         {couponUsage.customerTicketId && (
           <React.Fragment>
-            <Field label="金額" css={styles.priceField}>
+            <Field label="金額" className={styles.priceField}>
               <Input
                 disabled
                 value={displayFloat(price)}
@@ -219,7 +181,7 @@ export default function CouponUse({
                 <CheckboxField
                   label="指定"
                   checked={data.isDesignate}
-                  css={styles.checkbox}
+                  className={styles.checkbox}
                   onChange={(_event, state) =>
                     handleAssistantChange({
                       value: state,

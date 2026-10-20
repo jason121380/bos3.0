@@ -1,9 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
-import styles from './styles/AboutMerchantRakePerformanceRefer'
 import produce from 'immer'
 
 const options = {
@@ -37,13 +35,13 @@ function AboutMerchantRakePerformanceRefer({
         <CardTitle>抽成門檻依據設定</CardTitle>
       </CardHeader>
       <CardContent>
-        <div css={styles.serviceInputGroup}>
+        <div className="flex items-center">
           <div className="flex flex-wrap items-center gap-2 p-2">
             <Field label='指定'>
               <NativeSelect
                 disabled={!inputEnable}
                 fullWidth={false}
-                css={styles.field}
+                className="w-[150px] flex !ml-0"
                 value={merchantRakeReferemce.designate}
                 onChange={e => handleValueChange(e, 'designate')}
               >
@@ -58,7 +56,7 @@ function AboutMerchantRakePerformanceRefer({
               <NativeSelect
                 disabled={!inputEnable}
                 fullWidth={false}
-                css={styles.field}
+                className="w-[150px] flex !ml-0"
                 value={merchantRakeReferemce.nonDesignate}
                 onChange={e => handleValueChange(e, 'nonDesignate')}
               >

@@ -1,10 +1,12 @@
-/** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
 import billContext from 'context/keyInContext'
 import { useContext, memo, useEffect } from 'react'
 import produce from 'immer'
 
-import styles from './styles/Bonus'
+const styles = {
+  bonus: 'flex items-center justify-start mb-[24px] flex-wrap gap-[20px]',
+  field: 'w-[200px] flex justify-start',
+}
 
 function Bonus({ customerBonus }) {
   const {
@@ -123,21 +125,21 @@ function Bonus({ customerBonus }) {
     }
   }, [bill.bonusUsed])
   return (
-    <div css={styles.bonus}>
-      <Field label="點數給點" css={styles.field}>
+    <div className={styles.bonus}>
+      <Field label="點數給點" className={styles.field}>
         <Input
           value={bill.bonusDeposit}
           disabled={bonusDepositDisabled()}
           onChange={event => bonusOnChange(event, 'bonusDeposit')}
         />
       </Field>
-      <Field label="點數扣點" css={styles.field}>
+      <Field label="點數扣點" className={styles.field}>
         <Input
           value={bill.bonusUsed}
           onChange={event => bonusOnChange(event, 'bonusUsed')}
         />
       </Field>
-      <Field label="點數折抵金額" css={styles.field}>
+      <Field label="點數折抵金額" className={styles.field}>
         <Input
           value={bill.bonusDecount}
           disabled={bonusConversion.isBonusConversion}

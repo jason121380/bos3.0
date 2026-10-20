@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { CheckboxField } from 'ui/checkbox'
 import { Field } from 'ui/input'
@@ -16,55 +15,9 @@ import { addDays, addYears, format, startOfDay } from "date-fns";
 import { useFetchGetMembershipsForModal } from "hooks/useFetchGetMembership";
 import { useFetchGetMembershipCategories } from "hooks/useFetchGetMembershipCategory";
 import { MobileDatePicker } from 'ui/date-picker'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import MemberShipCardSellsModal from "./MemberShipCardSellsModal";
 
-const styles = {
-  // 項目列：欄位靠底對齊（標籤在上），窄螢幕換行不擠壓（比照打帳單）
-  merchantSells: css({
-    display: "flex",
-    alignItems: "flex-end",
-    justifyContent: "flex-start",
-    flexWrap: "wrap",
-    rowGap: "12px",
-    marginBottom: theme.spacing(3),
-  }),
-  field: css({
-    width: "200px",
-    display: "flex",
-    marginRight: "12px !important",
-  }),
-  priceField: css({
-    width: "65px",
-    display: "flex",
-    marginRight: "12px !important",
-  }),
-  checkbox: css({
-    width: "100px",
-    display: "flex",
-    marginRight: "12px",
-    "&:last-child": {
-      marginRight: "0px",
-    },
-  }),
-  heading2: css({
-    fontSize: theme.typography.pxToRem(13),
-    fontWeight: "bold",
-  }),
-  productField: css({
-    width: "250px",
-    maxWidth: "100%",
-    display: "flex",
-    marginRight: "12px",
-  }),
-  dateField: css({
-    width: "200px",
-    display: "flex",
-    marginRight: "12px !important",
-  }),
-}
 
 const MemberShipCardSells = ({
   sellsItem,
@@ -217,11 +170,11 @@ const MemberShipCardSells = ({
   };
   return (
     <Fragment>
-      <div css={styles.merchantSells}>
+      <div className="mb-6 flex flex-wrap items-end justify-start gap-y-[12px]">
         {/* 必填 *：Footer 送出前 helper/billVerify.js checkMembershipOrders 要求 sellerId、membershipUUID 與有效到期日；sellerId 與 membershipUUID 皆空的列會被 handleTidyBill 丟掉，所以該列有填任一欄才標必填 */}
         <Field label="服務人員" required={!!sells.sellerId || !!sells.membershipUUID}>
         <EmployeeAutoComplete
-          className={styles.field}
+          className="!mr-[12px] flex w-[200px]"
           placeholder="服務人員姓名/編號"
           value={sells.sellerId}
           ref={employeeRef}
@@ -252,7 +205,7 @@ const MemberShipCardSells = ({
         <Field label="會員卡" required={!!sells.sellerId || !!sells.membershipUUID}>
         <MemberShipCardAutoComplete
           setMembershipAlready={setMembershipAlready}
-          className={styles.productField}
+          className="mr-[12px] flex w-[250px] max-w-full"
           inputProps={{ placeholder: '會員卡名稱/代號' }}
           value={sells.membershipUUID}
           ref={productRef}
@@ -297,7 +250,7 @@ const MemberShipCardSells = ({
         </Field>
         {sells.membershipUUID ? (
           <React.Fragment>
-            <Field label="價格" css={styles.priceField}>
+            <Field label="價格" className="!mr-[12px] flex w-[65px]">
             <TextField
               fullWidth
               variant="outlined"
@@ -324,7 +277,7 @@ const MemberShipCardSells = ({
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <Field label="到期日" required={sells.expiryDate !== null}>
               <MobileDatePicker
-                css={styles.dateField}
+                className="!mr-[12px] flex w-[200px]"
                 inputRef={dateRef}
                 value={sells.expiryDate}
                 format="yyyy/MM/dd"
@@ -382,7 +335,7 @@ const MemberShipCardSells = ({
               {thirdPartTicket && (
                 <Field label="第三方卡券">
                 <ThirdPartyAutoComplete
-                  css={styles.field}
+                  className="!mr-[12px] flex w-[200px]"
                   fieldProps={{ placeholder: '第三方卡券' }}
                   autoFocus={focus === "thirdParty"}
                   value={sells.thirdPartyCouponMerchantId}
@@ -405,12 +358,12 @@ const MemberShipCardSells = ({
                 />
                 </Field>
               )}
-              {teachingMode && <p className="m-0" css={styles.heading2}>勾選將入業績但不收費用**</p>}
+              {teachingMode && <p className="m-0 text-[0.8125rem] font-bold">勾選將入業績但不收費用**</p>}
               {sells.thirdPartyCouponMerchantId &&
                 thirdPartyCoupons.map((data) => {
                   if (data.id === sells.thirdPartyCouponMerchantId) {
                     return (
-                      <p className="m-0" key={data.id} css={styles.heading2} style={{ marginTop: '4px' }}>
+                      <p className="m-0 text-[0.8125rem] font-bold" key={data.id} style={{ marginTop: '4px' }}>
                         扣完後業績:
                         {Math.round((sells.price * (100 - data.fee)) / 100)}
                       </p>
@@ -418,7 +371,7 @@ const MemberShipCardSells = ({
                   }
                 })}
             </div>
-            <Field label="備註" css={styles.field}>
+            <Field label="備註" className="!mr-[12px] flex w-[200px]">
             <TextField
               fullWidth
               value={sells.remark}

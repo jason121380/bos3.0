@@ -1,15 +1,18 @@
-/** @jsxImportSource @emotion/react */
 // 預約動作彈窗內容依 modaltype 切換、沒有標題（Radix Dialog 需 DialogTitle，補標題屬文案變更），保留相容層 Dialog；公休彈窗只有切換鈕與按鈕，改 ui/dialog
 import { Dialog } from 'ui/modal-compat'
 import { Dialog as UiDialog, DialogContent as UiDialogContent } from 'ui/dialog'
 import React, { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { AssignmentTurnedInRounded as AssignmentTurnedInRoundedIcon, DisabledByDefaultRounded as DisabledByDefaultRoundedIcon } from 'ui/icons'
-import styles from './styles/OrderTable'
 
 import NewChoseEvent from './NewChoseEvent'
 import HolidayEdit from './HolidayEdit'
-import { css } from '@emotion/react'
+
+// 預約表格樣式（原 styles/OrderTable.js 的 emotion 物件等值轉 Tailwind；單邊框線用任意屬性，避免 border-style 套到四邊）
+const titleClass = 'py-[2px] px-[5px] font-semibold bg-[#08424c] text-[#fff] flex items-center justify-center [border-right:1px_solid_lightgray] text-[14px] h-[40px]'
+const limitItemClass = 'w-[100px] text-[#8a8a8a] flex items-center justify-center text-[14px] overflow-hidden flex-col cursor-pointer [border-left:1px_solid_lightgray]'
+const calendarWrapClass = 'absolute h-full top-0 left-0 overflow-hidden [border-right:1px_solid_lightgray]'
+const clickItemClass = 'rounded-[15px] cursor-pointer flex items-center justify-center flex-col text-[14px] text-[#fff] [border:3px_solid_white] overflow-hidden hover:z-[3] [&_span]:py-0 [&_span]:px-[4px] [&_span]:[word-break:break-all]'
 
 const OrderTable = ({
   orderRange, calendarData, designerNameType, merchantId,
@@ -118,29 +121,29 @@ const OrderTable = ({
   }
 
   return (
-    <div css={styles.TableContainer} className="ManagementReservationRecord bg-background">
+    <div className="ManagementReservationRecord bg-background min-h-[60vh] h-[calc(100vh-260px)] overflow-scroll relative [&>div]:flex">
 
       {/* table head */}
-      <div css={styles.tableHead}>
-        <div style={{ position: 'sticky', left: 0, zIndex: 1 }} css={css([styles.timeTitle, styles.title])}>時間</div>
+      <div className="sticky top-0 z-[7] w-fit">
+        <div style={{ position: 'sticky', left: 0, zIndex: 1 }} className={`w-[50px] ${titleClass}`}>時間</div>
         {calendarData.map(data => (
-          <div style={{ width: findTitleWidth(data.length, data.breakLength)}} key={`name-${data.title}`} css={(styles.title)}>
+          <div style={{ width: findTitleWidth(data.length, data.breakLength)}} key={`name-${data.title}`} className={titleClass}>
             {data.title}
           </div>
         ))}
       </div>
 
       {/* table body */}
-      <div css={styles.tableBody}>
+      <div className="relative w-fit [border-bottom:1px_solid_lightgray]">
 
         {/* 時間 */}
         <div
           style={{ position: 'sticky', left: 0, zIndex: 5, background: 'rgb(var(--background))' }}
-          css={styles.timeWrap}
+          className="w-[50px] shrink-0"
           id='darkBg'
         >
           {orderRange[0].map(d => (
-            <div key={d} css={styles.timeItem}>{format(d, 'HH:mm')}</div>
+            <div key={d} className="h-[70px] [border-top:1px_solid_lightgray] [border-right:1px_solid_lightgray] text-center leading-[80px] text-[14px]">{format(d, 'HH:mm')}</div>
           ))}
         </div>
 
@@ -150,11 +153,11 @@ const OrderTable = ({
         }, index) => {
           const width = findTitleWidth(length, breakLength)
           return (
-            <div key={`${title}-${index}`} style={{ width: width }} css={styles.desWrap}>
+            <div key={`${title}-${index}`} style={{ width: width }} className="min-w-[100px] relative shrink-0">
               {orderRange[index].map(d => (
                 <div
                   key={d}
-                  css={styles.orderItem}
+                  className="h-[70px] [border-top:1px_solid_lightgray] [border-right:1px_solid_lightgray] flex justify-end"
                   style={{ width: width}}
                   onClick={() => {
                     setModalType(countHoliday[d] ? 'openOrder' : 'default')
@@ -165,22 +168,22 @@ const OrderTable = ({
                     })
                   }}
                 >
-                <div style={{ width: length > 1 ? ndWidth : basicWidth }} className='hoverItem' css={css([styles.limitItem, (length > 1 && countHoliday[d]) ? styles.holiday : {}])}>
+                <div style={{ width: length > 1 ? ndWidth : basicWidth }} className={`hoverItem ${limitItemClass}${(length > 1 && countHoliday[d]) ? ' [background:#ffa9a9]' : ''}`}>
                   {length > 1 || breakLength > 0  ? handleCountLimit(countOrder[d], bookingLimit) : `可預約人數:${handleCountLimit(countOrder[d], bookingLimit)}`}
                 </div>
                 </div>
               ))}
               {length > 1 && (
-                <div style={{ width: (length - 1) * basicWidth }} css={styles.calendarWrap}>
+                <div style={{ width: (length - 1) * basicWidth }} className={calendarWrapClass}>
                   {orderGroup.map(({ data, parentStyle }, i) => (
-                    <div key={`currentData-${i}`} css={styles.clickWrap} style={parentStyle}>
+                    <div key={`currentData-${i}`} className="flex gap-0 absolute w-full" style={parentStyle}>
                       {data.map(({ key, start, end, style, type, designerId, ...rest }) => {
                         return (
                           <div
                             key={key}
                             ref={e => e && ndsRef.current.push(e)}
                             style={{ ...style, width: `${(length - 1) * basicWidth / data.length}px`, position: 'relative' }}
-                            css={styles.clickItem}
+                            className={clickItemClass}
                             id='darkBorder'
                             onClick={() => {
                               if(rest.isDone) {
@@ -233,15 +236,15 @@ const OrderTable = ({
                 </div>
               )}
               {breakLength > 0 && (
-                <div style={{ width: length > 1 ? breakWidth : basicWidth , left: findOrderWidth(length) }} css={styles.calendarWrap}>
+                <div style={{ width: length > 1 ? breakWidth : basicWidth , left: findOrderWidth(length) }} className={calendarWrapClass}>
                   {breakGroup.map(({ data, parentStyle }, i) => (
-                    <div key={`isBreakGroups-${i}`} css={styles.clickWrap} style={parentStyle}>
+                    <div key={`isBreakGroups-${i}`} className="flex gap-0 absolute w-full" style={parentStyle}>
                       {data.map(({ key, nameToDisplay, start, end, style }, i) => {
                         return (
                           <div
                             key={key}
                             style={{ ...style, width: '100%' }}
-                            css={styles.clickItem}
+                            className={clickItemClass}
                             id='darkBorder'
                             onClick={() => {
                               setHolidayModel(true)

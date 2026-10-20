@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 勾選後出現的底部操作列：比照 components/TableEditBar 的浮動批次操作列（原 persistent Drawer：未勾選時仍在 DOM、隱藏）
 import { Download, Pencil, Trash2 } from 'lucide-react'
 import PropTypes from 'prop-types'
@@ -123,7 +122,7 @@ function Results({
   }
   return (
     <Fragment>
-      <div {...rest} css={className}>
+      <div {...rest} className={className}>
         <Card>
           <CardHeader
             className="items-center pb-4"
@@ -236,10 +235,9 @@ function Results({
       >
         <div
           {...rest}
-          css={className}
           role="toolbar"
           aria-label="批次操作"
-          className="pointer-events-auto flex max-w-full flex-wrap items-center gap-1 rounded-lg border border-solid border-border bg-background py-1.5 pl-4 pr-1.5 shadow-float"
+          className={`pointer-events-auto flex max-w-full flex-wrap items-center gap-1 rounded-lg border border-solid border-border bg-background py-1.5 pl-4 pr-1.5 shadow-float${className ? ` ${className}` : ''}`}
         >
           <span className="mr-2 text-label tabular-nums text-text">
             {selectedOrders.length} selected

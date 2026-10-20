@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Button } from 'ui/button'
 import { Download } from 'lucide-react'
 import Page from 'components/Page'
@@ -8,24 +7,11 @@ import { useEffect, useState } from 'react'
 import produce from 'immer'
 import useFetchGetCustomerWalletLeaderboard from 'hooks/useFetchGetCustomerWalletLeaderboard'
 import useFetchGetCustomerWalletLeaderboardExcel from 'hooks/useFetchGetCustomerWalletLeaderboardExcel'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Filter from './Filter'
 import Results from './Results'
-
-const styles = {
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  circular: css({
-    textAlign: 'center',
-    marginTop: '100px',
-  })
-}
 
 function CustomerWalletLeaderboard() {
   const [getCustomerWallet, customerWalletData] = useFetchGetCustomerWalletLeaderboard()

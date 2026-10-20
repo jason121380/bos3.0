@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from '@emotion/styled'
+import './icons.css'
 import {
   Armchair as LucideArmchair,
   ArrowDown as LucideArrowDown,
@@ -73,38 +73,41 @@ import { cn } from './utils'
 // 沿用 @mui/icons-material 的元件名稱與 props（fontSize、color、htmlColor、sx、className、style、onClick…），
 // 讓尚未改版的頁面只改 import 就換成 lucide 線條圖示，JSX 不必改動。
 // 保留 MuiSvgIcon-root 等 class，讓舊頁面針對 .MuiSvgIcon-root 的樣式仍然有效。
-const FONT_SIZE = { small: '1.25rem', medium: '1.5rem', large: '2.1875rem', inherit: 'inherit' }
-const COLOR = {
-  primary: 'rgb(var(--accent))',
-  secondary: 'rgb(var(--text-secondary))',
-  action: 'rgb(var(--text-secondary))',
-  disabled: 'rgb(var(--text-tertiary))',
-  error: 'rgb(var(--danger))',
-  warning: 'rgb(var(--warning))',
-  success: 'rgb(var(--success))',
-  info: 'rgb(var(--accent))',
-}
+const FONT_SIZES = ['small', 'medium', 'large', 'inherit']
+const COLORS = ['primary', 'secondary', 'action', 'disabled', 'error', 'warning', 'success', 'info']
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1)
+const sxToStyle = sx => Object.assign({}, ...(Array.isArray(sx) ? sx : [sx]).filter(Boolean))
 
 function adapt(Lucide, name) {
-  // 以 emotion styled 產生 class（取代 MUI Box 的 sx）：元件自身樣式在前、頁面 className（css prop）在後，頁面樣式可覆蓋預設尺寸，與 MUI SvgIcon 相同
-  const Svg = styled(Lucide, { shouldForwardProp: prop => prop !== 'iconStyles' })(({ iconStyles }) => iconStyles)
-  const Icon = React.forwardRef(({ fontSize = 'medium', color, htmlColor, className, style, sx, titleAccess, ...rest }, ref) => (
-    <Svg
-      ref={ref}
-      strokeWidth={1.75}
-      aria-hidden={titleAccess ? undefined : true}
-      aria-label={titleAccess}
-      className={cn('MuiSvgIcon-root', `MuiSvgIcon-fontSize${capitalize(String(fontSize))}`, className)}
-      iconStyles={[
-        { width: '1em', height: '1em', display: 'inline-block', flexShrink: 0, fontSize: FONT_SIZE[fontSize] || fontSize },
-        (htmlColor || COLOR[color]) && { color: htmlColor || COLOR[color] },
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
-      style={style}
-      {...rest}
-    />
-  ))
+  // 預設尺寸／顏色放在 icons.css 的 ui-icon-* class（打包在 Tailwind 之後、同權重，頁面 class 加 ! 才蓋得過——與原 emotion styled 的先後相同）；
+  // 非預設的 fontSize、htmlColor 與 sx 改走 inline style。保留 MuiSvgIcon-root 等 class，讓舊頁面針對 .MuiSvgIcon-root 的樣式仍然有效。
+  const Icon = React.forwardRef(({ fontSize = 'medium', color, htmlColor, className, style, sx, titleAccess, ...rest }, ref) => {
+    const presetSize = FONT_SIZES.includes(fontSize)
+    const presetColor = !htmlColor && COLORS.includes(color)
+    return (
+      <Lucide
+        ref={ref}
+        strokeWidth={1.75}
+        aria-hidden={titleAccess ? undefined : true}
+        aria-label={titleAccess}
+        className={cn(
+          'MuiSvgIcon-root',
+          `MuiSvgIcon-fontSize${capitalize(String(fontSize))}`,
+          'ui-icon',
+          presetSize && `ui-icon-fs-${fontSize}`,
+          presetColor && `ui-icon-c-${color}`,
+          className
+        )}
+        style={{
+          ...(presetSize ? null : { fontSize }),
+          ...(htmlColor ? { color: htmlColor } : null),
+          ...(sx ? sxToStyle(sx) : null),
+          ...style,
+        }}
+        {...rest}
+      />
+    )
+  })
   Icon.displayName = name
   Icon.muiName = 'SvgIcon'
   return Icon

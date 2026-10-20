@@ -1,78 +1,15 @@
-/** @jsxImportSource @emotion/react */
 import { FormControl, MenuItem, Select, InputLabel } from 'ui/form-control'
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { useState, useEffect } from 'react'
-import { blue } from 'ui/colors'
 import { openSnackbar } from 'elements/snackbars'
 import { format, startOfDay, addMinutes, setHours } from 'date-fns'
 import useFetchBooking from 'hooks/useFetchBooking'
 import BookingRecordListAutoComplete from 'components/BookingRecordListAutoComplete'
 import { MobileDatePicker } from 'ui/date-picker'
 import _ from 'lodash'
-import { css } from '@emotion/react'
 // 外層為相容層 Dialog（CustomerInfo；窗內有日期選擇器、Select、Autocomplete）；內容區改原生 div，表單細節維持原樣，底部動作按鈕為 ui/button
 import { Button as UiButton } from 'ui/button'
-import { theme } from '../../../theme'
-
-const styles = {
-  root: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-  }),
-  avatar: css({
-    backgroundColor: blue[100],
-    color: blue[600],
-  }),
-  field: css({
-    marginBottom: theme.spacing(2) + '!important',
-  }),
-  field2: css({
-    display: 'flex',
-    alignItems: 'flex-end',
-    marginBottom: theme.spacing(2),
-  }),
-  dialog: css({
-    maxWidth: '400px',
-  }),
-  breakWord: css({
-    fontSize: 14,
-    '& div': {
-      wordBreak: 'break-all'
-    }
-  }),
-  eventWrap: css({
-    gap: 4,
-    display: 'flex',
-    flexDirection: 'column',
-    '& .MuiInputBase-multiline': {
-      padding: '8px 12px'
-    },
-    '& div': {
-      wordBreak: 'break-all'
-    },
-    '& div.info': {
-      display: 'flex',
-      gap: 8,
-      '& div:first-child': {
-        flexShrink: 0
-      },
-      '& div:last-child': {
-        flexGrow: 1,
-        marginBottom: 12,
-        '& div': {
-          '& textarea': {
-          }
-        }
-      }
-    }
-  }),
-  datepicker: {
-    '& input, .MuiSelect-select': {
-      padding: '6px 0 7px !important'
-    }
-  }
-}
 
 const timeCostArray = [
   { label: '30分鐘', value: 1 },
@@ -162,10 +99,10 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
 
   return (
     <div className="flex-auto overflow-y-auto px-6 py-4">
-      <div css={styles.field2}>
+      <div className="mb-4 flex items-end">
         <MobileDatePicker
           value={values.dateTime}
-          css={styles.datepicker}
+          className="[&_input]:!px-0 [&_input]:!pb-[7px] [&_input]:!pt-[6px]"
           label='預約時間'
           onChange={(value) => {
             const data = _.cloneDeep(values)
@@ -186,7 +123,7 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
           }}
         />
         {bookTimeOption.length && (
-          <FormControl variant='standard' css={styles.datepicker}>
+          <FormControl variant='standard' className="[&_input]:!px-0 [&_input]:!pb-[7px] [&_input]:!pt-[6px]">
             <Select
               value={values.dateTime}
               sx={{ paddingRight: '24px' }}
@@ -202,7 +139,7 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
         )}
       </div>
       <BookingRecordListAutoComplete
-        className={styles.field}
+        className="!mb-4"
         label="服務人員姓名/編號"
         value={values.designerId}
         onChange={value => {
@@ -213,7 +150,7 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
       />
       <FormControl
         fullWidth
-        css={styles.field}
+        className="!mb-4"
         variant='outlined'
       >
         <InputLabel>服務時長</InputLabel>
@@ -231,7 +168,7 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
       <TextField
         label="備註"
         value={values.remark}
-        css={styles.field}
+        className="!mb-4"
         fullWidth
         variant="outlined"
         onChange={e => {
@@ -241,7 +178,7 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
       <TextField
         label="顧客備註"
         value={values.remarkForCustomer}
-        css={styles.field}
+        className="!mb-4"
         fullWidth
         variant="outlined"
         onChange={e => {

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 欄位使用 Autocomplete / Select / DatePicker 與 inputRef 焦點串接，沿用 MUI
 import { Select, MenuItem, FormControl, InputLabel } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
@@ -11,46 +10,11 @@ import { useState, useEffect, useRef } from 'react'
 import { FilterNone as FilterNoneIcon, Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import _ from 'lodash'
 import { openSnackbar } from 'elements/snackbars'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
 
 import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import ProductsModalV3 from './ProductsModalV3'
 import { Autocomplete } from 'ui/combobox'
-
-const styles = {
-  cardContent: css({}),
-  formControl: css({
-    marginBottom: theme.spacing(3) + '!important',
-    ':last:child': {
-      marginBottom: 0,
-    },
-    width: '100%',
-  }),
-  createIcon: css({
-    cursor: 'pointer',
-    marginRight: '7px',
-  }),
-  productArrayInput: css({
-    // width: '100%',
-  }),
-  productArrayDiv: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '24px',
-    flexWrap: 'nowrap',
-  }),
-  productArrayIcons: css({
-    cursor: 'pointer',
-  }),
-  datePicker: css({
-    '& input.MuiInput-input': {
-      padding: '6px 0 7px'
-    }
-  }),
-}
 
 export default function General({
   className,
@@ -335,7 +299,7 @@ export default function General({
   const [errorText, setErrorText] = useState('')
   const inputEnabled = !products.loading && !users.loading
   return (
-    <Card css={className}>
+    <Card className={className}>
       <CardHeader className="pb-4">
         <CardTitle>領料資訊</CardTitle>
       </CardHeader>
@@ -344,7 +308,7 @@ export default function General({
           disableFuture
           format='yyyy/MM/dd'
           label='日期'
-          css={css(styles.formControl, styles.datePicker)}
+          className="w-full !mb-[24px]"
           value={picking.date}
           onError={(e) => e ? setErrorText('時間有誤') : setErrorText('')}
           localeText={{
@@ -435,7 +399,6 @@ export default function General({
                 fullWidth
                 name="price"
                 tabIndex={focusRow + '1'}
-                css={styles.productArrayInput}
                 onChange={event => handlePriceOnChange(event, index)}
                 onFocus={() => setTabIndex(index)}
                 onKeyDown={event => {
@@ -458,7 +421,6 @@ export default function General({
                 fullWidth
                 name="count"
                 inputRef={tabIndex === index ? countRef : null}
-                css={styles.productArrayInput}
                 tabIndex={focusRow + '2'}
                 onFocus={() => setTabIndex(index)}
                 onKeyDown={event => {
@@ -502,7 +464,7 @@ export default function General({
           </div>
         ))}
         <Autocomplete
-          css={styles.formControl}
+          className="w-full !mb-[24px]"
           options={pickerOption}
           disabled={!inputEnabled}
           autoHighlight
@@ -547,7 +509,7 @@ export default function General({
               setFocus('remark')
             }
           }}
-          css={styles.formControl}
+          className="w-full !mb-[24px]"
           variant="outlined"
         >
           <InputLabel>用途</InputLabel>
@@ -580,7 +542,7 @@ export default function General({
           onFocus={() => setFocus('remark')}
           variant="outlined"
           fullWidth
-          css={styles.formControl}
+          className="w-full !mb-[24px]"
           onChange={event => onChange({ event, key: 'remark' })}
         />
       </CardContent>

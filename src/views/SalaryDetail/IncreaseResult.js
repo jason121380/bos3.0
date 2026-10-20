@@ -1,67 +1,13 @@
-/** @jsxImportSource @emotion/react */
 import clsx from 'clsx'
 import GenericMoreButton from 'components/GenericMoreButton'
 import TableEditBar from 'components/TableEditBar'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
-const localStyles = {
-  card: css({
-    borderRadius: '16px',
-    boxShadow: 'none',
-    border: '1px solid rgb(var(--border))',
-    backgroundColor: 'rgb(var(--background))',
-    overflow: 'hidden',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 2400,
-  }),
-  tableHead: css({
-    backgroundColor: 'rgb(var(--background))',
-    '& .MuiTableCell-head': {
-      color: 'rgb(var(--text))',
-      fontWeight: 'bold',
-      borderBottom: '1px solid rgb(var(--border))',
-      height: '40px !important',
-      padding: '2px 16px !important',
-      fontSize: '14px',
-    }
-  }),
-  tableRow: css({
-    height: '40px !important',
-    minHeight: '40px !important',
-    '& .MuiTableCell-body': {
-      padding: '2px 16px !important',
-      borderBottom: '1px solid rgb(var(--border))',
-      fontSize: '14px !important',
-      color: 'rgb(var(--text))',
-    },
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    },
-    '&.Mui-selected': {
-      backgroundColor: 'rgb(var(--surface)) !important',
-    },
-    '&.Mui-selected:hover': {
-      backgroundColor: 'rgb(var(--surface)) !important',
-    },
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-    borderTop: '1px solid rgb(var(--border))',
-  }),
-}
-
 function Results({
-  className,
+  className = '',
   pageSetting,
   users,
   handleOnChangePage,
@@ -69,7 +15,7 @@ function Results({
   ...rest
 }) {
   return (
-    <div {...rest} css={css([localStyles.root, className])}>
+    <div {...rest} className={className}>
       <Card>
         <CardHeader className="items-center pb-4" action={<GenericMoreButton />}>
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -348,7 +294,7 @@ function Results({
 }
 
 Results.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   customers: PropTypes.array,
 }
 

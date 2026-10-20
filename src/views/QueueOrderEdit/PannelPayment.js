@@ -1,33 +1,9 @@
-/** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { formatMoney } from 'ui/format'
 import { useContext, useEffect, useState } from 'react'
 import billContext from 'context/keyInContext'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import Payment from './Payment'
-
-const styles = {
-  root: css({
-    width: '100%',
-    marginTop: theme.spacing(3),
-  }),
-  details: css({
-    overflowX: 'auto',
-  }),
-  heading: css({
-    fontSize: '16px',
-    fontWeight: 'bold',
-    color: 'rgb(var(--text))',
-  }),
-  fieldOutter: css({
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-  }),
-}
 
 export default function PannelCouponUse() {
   const { bill } = useContext(billContext)
@@ -53,10 +29,10 @@ export default function PannelCouponUse() {
         ].filter(Boolean).join(' · ')}
         style={{ width: '100%' }}
       >
-        <p className="m-0" css={styles.heading}>其他付款方式</p>
+        <p className="m-0 text-[16px] font-bold text-text">其他付款方式</p>
       </AccordionSummary>
-      <AccordionDetails css={styles.details}>
-        <div css={styles.fieldOutter}>
+      <AccordionDetails className="overflow-x-auto">
+        <div className="flex flex-col items-start justify-start">
           <Payment />
         </div>
       </AccordionDetails>

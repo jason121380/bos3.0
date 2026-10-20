@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import React from 'react'
@@ -6,79 +5,6 @@ import {
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts";
 import { gendercolor, performanceColor } from '../Colors';
-import { theme } from '../../../theme'
-import { css } from '@emotion/react'
-
-const styles = {
-  noDataDiv: css({
-    width: '100%',
-    height: '350px',
-    justifyContent: 'center',
-    display: 'flex',
-    alignItems: 'center'
-  }),
-  noData: css({
-    fontSize: '24px',
-  }),
-  gerderWrap: css({
-    maxHeight: '300px',
-    overflow: 'auto',
-    flexDirection: 'column',
-    marginLeft: '-30px',
-    display: 'flex',
-    flexWrap: 'nowrap',
-    columnGap: '5px',
-    '& div': {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 10
-    },
-    '& div span': {
-      width: 10,
-      height: 10,
-    },
-    [theme.breakpoints.down('sm')]: {
-      height: 'fit-content',
-      marginLeft: '20px',
-    }
-  }),
-  pieWrap2: css({
-    display: 'flex',
-    height: '100%',
-    alignItems: 'center',
-    marginLeft: '-20px',
-    '@media (max-width: 700px)': {
-      flexDirection: 'column',
-    }
-  }),
-  pie: css({
-    width: '75%',
-    height: '300px',
-    [theme.breakpoints.down('sm')]: {
-      width: '100%',
-      minHeight: '200px',
-      height: 'fit-contnet',
-    }
-  }),
-  fontSize: css({
-    fontSize: '14px',
-    whiteSpace: 'nowrap',
-    display: 'flex',
-    '& span': {
-      flexShrink: 0
-    }
-  }),
-  toolTips: css({
-    padding: '12px',
-    fontSize: '16px',
-    background: 'rgb(var(--background))',
-    color: 'black',
-    borderRadius: '5px',
-    boxShadow: '0 0 0 1px rgb(63 63 68 / 5%), 0 1px 3px 0 rgb(63 63 68 / 15%)',
-    display: 'flex',
-    flexDirection: 'column',
-  }),
-}
 
 const NewCusStatistics = ({ data, width }) => {
   const renderOrderGenderRatioLabel = ({
@@ -108,7 +34,7 @@ const NewCusStatistics = ({ data, width }) => {
     if (active && payload && payload.length) {
       const { male, female, unknown } = payload[0].payload.newCusGenderRatio
       return (
-        <div css={styles.toolTips}>
+        <div className="p-[12px] text-[16px] [background:rgb(var(--background))] text-[color:black] rounded-[5px] [box-shadow:0_0_0_1px_rgb(63_63_68_/_5%),0_1px_3px_0_rgb(63_63_68_/_15%)] flex flex-col">
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <span style={{ background: payload[0].payload.fill, marginRight: '10px', width: 10, height: 10 }}></span>
             <p>{`${payload[0].payload.designer ? payload[0].payload.designer.name : '未設定'} - 共${payload[0].payload.newCusTotalCount}人`}</p>
@@ -132,8 +58,8 @@ const NewCusStatistics = ({ data, width }) => {
             <CardDescription className="whitespace-nowrap text-caption">期間新客來數比例</CardDescription>
           </div>
           {data.length ?
-            <div css={styles.pieWrap2}>
-              <div css={styles.pie}>
+            <div className="flex h-full items-center ml-[-20px] max-[700px]:flex-col">
+              <div className="w-[75%] h-[300px] max-[599.95px]:w-full max-[599.95px]:min-h-[200px]">
                 <ResponsiveContainer>
                   <PieChart>
                     <Pie
@@ -151,11 +77,11 @@ const NewCusStatistics = ({ data, width }) => {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div css={styles.gerderWrap}>
+              <div className="max-h-[300px] overflow-auto flex-col ml-[-30px] flex flex-nowrap gap-x-[5px] [&_div]:flex [&_div]:items-center [&_div]:gap-[10px] [&_div_span]:w-[10px] [&_div_span]:h-[10px] max-[599.95px]:h-fit max-[599.95px]:ml-[20px]">
                 {data.map(({ designer, newCusTotalCount, newCusPercentage }, index) => (
                   <div key={`${designer ? designer.id : '未設定'}`}
                     // style={(width < 975 && width >= 900) || (width < 1470 && width >= 1200) ? { fontSize: 14, marginLeft: '20px' } : null}
-                    css={styles.fontSize}
+                    className="text-[14px] whitespace-nowrap flex [&_span]:shrink-0"
                   >
                     <span style={{ background: performanceColor[index % 30] }} />
                     {`${designer ? designer.name : '未設定'}  ${newCusTotalCount}人  ${newCusPercentage}%`}

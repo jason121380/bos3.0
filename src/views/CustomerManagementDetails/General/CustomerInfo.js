@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Dialog } from 'ui/modal-compat'
 import { Pencil } from 'lucide-react'
 import PropTypes from 'prop-types'
@@ -13,7 +12,7 @@ import { Card, CardFooter, CardHeader, CardTitle } from 'ui/card'
 
 import CustomerEditModal from './CustomerEditModal'
 
-function CustomerInfo({ customer, className = {}, isLoading, bookingCusCheck, ...rest }) {
+function CustomerInfo({ customer, className, isLoading, bookingCusCheck, ...rest }) {
   const { setCustomerIsUnwelcome } = useFetchSetCustomerIsUnwelcome()
   const { refetch } = useStore()
   const [openEdit, setOpenEdit] = useState(false)
@@ -63,7 +62,7 @@ function CustomerInfo({ customer, className = {}, isLoading, bookingCusCheck, ..
     </div>
   )
   return (
-    <Card {...rest} css={className}>
+    <Card {...rest} className={className}>
       <CardHeader className="pb-4">
         <CardTitle>基本資料</CardTitle>
       </CardHeader>
@@ -121,7 +120,7 @@ function CustomerInfo({ customer, className = {}, isLoading, bookingCusCheck, ..
 }
 
 CustomerInfo.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   customer: PropTypes.object.isRequired,
 }
 

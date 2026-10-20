@@ -1,8 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import useFetchProfile from 'hooks/useFetchProfile'
 import idx from 'idx'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { cn } from 'ui/utils'
 
 import GeneralSettings from './GeneralSettings'
 import ProfileDetails from './ProfileDetails'
@@ -23,7 +23,7 @@ function General({ className, ...rest }) {
   //   )
   // }
   return (
-    <div {...rest} css={className} className="grid grid-cols-12 gap-6">
+    <div {...rest} className={cn('grid grid-cols-12 gap-6', className)}>
       {idx(profile.data, _ => (
         <React.Fragment>
           <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
@@ -50,7 +50,7 @@ function General({ className, ...rest }) {
 }
 
 General.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
 }
 
 export default General

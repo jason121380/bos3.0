@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 表格列使用 ui/table（外框 components/ManagementTable 亦為 ui/table）
 // 刪除確認已換 ui/dialog：舊版不設 onClose（點背景、Esc 不關閉），故不傳 onOpenChange
 import { Pencil } from 'lucide-react'
@@ -12,8 +11,6 @@ import { Link as RouterLink } from 'react-router-dom'
 import { gender } from 'types'
 import useFetchMerchantPassword from 'hooks/useFetchMerchantPassword'
 import { format } from 'date-fns'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import ManagementTable from 'components/ManagementTable'
 import { TableBody, TableCell, TableHead, TableRow } from 'ui/table'
 import { Button } from 'ui/button'
@@ -21,48 +18,8 @@ import { Checkbox } from 'ui/checkbox'
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Field, Input } from 'ui/input'
 
-const styles = {
-  root: css({}),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 32,
-    width: 32,
-    marginRight: theme.spacing(1),
-    background: '#757575',
-    fontSize: '14px'
-  }),
-  compactCell: css({
-    padding: '4px 8px !important',
-    fontSize: '13px !important',
-    whiteSpace: 'nowrap',
-  }),
-  membershipCell: css({
-    padding: '4px 8px !important',
-    fontSize: '12px !important',
-    lineHeight: '1.4',
-    minWidth: '180px',
-  }),
-  unWelcome: css({
-    '& td': {
-      color: 'red !important',
-      '& a.MuiTypography-root': {
-        color: 'red !important'
-      }
-    }
-  }),
-  tableRow: css({
-    backgroundColor: 'rgb(var(--background)) !important',
-    '&:hover': {
-      backgroundColor: 'rgb(var(--background)) !important',
-    },
-  }),
-}
-
 function Results({
-  className = {},
+  className = '',
   customers,
   pageLimit,
   pageOffset,
@@ -138,7 +95,7 @@ function Results({
   }
 
   return (
-    <div {...rest} css={css([styles.root, className])}>
+    <div {...rest} className={className}>
       <ManagementTable
         title="所有客戶列表"
         totalCount={totalCount}
@@ -151,7 +108,7 @@ function Results({
         size="small"
         tableHead={
           <>
-            <TableHead css={styles.compactCell} className="w-12">
+            <TableHead className="w-12 !px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">
               <Checkbox
                 aria-label="全選"
                 checked={selectedCustomers.length === customers.length && customers.length > 0}
@@ -160,35 +117,35 @@ function Results({
                 disabled={customers.length === 0}
               />
             </TableHead>
-            <TableHead css={styles.compactCell}>編輯</TableHead>
-            <TableHead css={styles.compactCell}>姓名</TableHead>
-            <TableHead css={styles.compactCell}>電話</TableHead>
-            <TableHead css={styles.compactCell}>客戶編號</TableHead>
-            <TableHead css={styles.compactCell}>最近設計師</TableHead>
-            <TableHead css={styles.compactCell}>偏好設計師</TableHead>
-            <TableHead css={styles.compactCell}>上次消費日期</TableHead>
-            {isMemberShipCardActive && <TableHead css={styles.compactCell}>會員卡</TableHead>}
-            <TableHead css={styles.compactCell}>性別</TableHead>
-            <TableHead css={styles.compactCell}>生日</TableHead>
-            <TableHead css={styles.compactCell}>客戶來源</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">編輯</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">姓名</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">電話</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">客戶編號</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">最近設計師</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">偏好設計師</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">上次消費日期</TableHead>
+            {isMemberShipCardActive && <TableHead className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">會員卡</TableHead>}
+            <TableHead className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">性別</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">生日</TableHead>
+            <TableHead className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">客戶來源</TableHead>
           </>
         }
       >
         <TableBody>
           {customers.map(data => (
             <TableRow
-              css={css([styles.tableRow, data.isUnwelcome ? styles.unWelcome : {}])}
+              className={`!bg-background hover:!bg-background${data.isUnwelcome ? ' [&_td]:![color:red]' : ''}`}
               key={`customer-${data.id}`}
               data-state={(selectedCustomers.indexOf(data.id) > -1) ? 'selected' : undefined}
             >
-              <TableCell css={styles.compactCell} className="w-12">
+              <TableCell className="w-12 !px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">
                 <Checkbox
                   aria-label={`選取 ${data.name}`}
                   checked={selectedCustomers.indexOf(data.id) > -1}
                   onChange={() => handleSelectOne(data.id)}
                 />
               </TableCell>
-              <TableCell css={styles.compactCell}>
+              <TableCell className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">
                 <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
                   <RouterLink
                     aria-label="編輯客戶"
@@ -198,8 +155,8 @@ function Results({
                   </RouterLink>
                 </Button>
               </TableCell>
-              <TableCell css={styles.compactCell}>
-                <div css={styles.nameCell}>
+              <TableCell className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">
+                <div className="flex items-center">
                   <span aria-hidden="true" className="mr-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-hover text-label text-text-secondary">
                     {data.name.charAt(0).toUpperCase()}
                   </span>
@@ -211,15 +168,15 @@ function Results({
                   </RouterLink>
                 </div>
               </TableCell>
-              <TableCell css={styles.compactCell}>{data.cellphone}</TableCell>
-              <TableCell css={styles.compactCell}>{data.no ? data.no : ''}</TableCell>
-              <TableCell css={styles.compactCell}>{idx(data, _ => _.latestDesigner.name)}</TableCell>
-              <TableCell css={styles.compactCell}>{idx(data, _ => _.preferDesigner.name)}</TableCell>
-              <TableCell css={styles.compactCell}>
+              <TableCell className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">{data.cellphone}</TableCell>
+              <TableCell className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">{data.no ? data.no : ''}</TableCell>
+              <TableCell className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">{idx(data, _ => _.latestDesigner.name)}</TableCell>
+              <TableCell className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">{idx(data, _ => _.preferDesigner.name)}</TableCell>
+              <TableCell className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">
                 {data.lastTime ? format(data.lastTime, 'yyyy/MM/dd') : ''}
               </TableCell>
               {isMemberShipCardActive && (
-                <TableCell css={styles.membershipCell}>
+                <TableCell className="min-w-[180px] !px-[8px] !py-[4px] !text-[12px] leading-[1.4]">
                   {data.membershipPurchaseRecord && data.membershipPurchaseRecord.length > 0 && (
                     <div key={data.membershipPurchaseRecord.length - 1}>
                       <div>{data.membershipPurchaseRecord[data.membershipPurchaseRecord.length - 1].membershipName}</div>
@@ -229,11 +186,11 @@ function Results({
                   )}
                 </TableCell>
               )}
-              <TableCell css={styles.compactCell}>{gender[data.gender]}</TableCell>
-              <TableCell css={styles.compactCell}>
+              <TableCell className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">{gender[data.gender]}</TableCell>
+              <TableCell className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">
                 {data.birthday ? `${data.birthday.year}/${data.birthday.month}/${data.birthday.day}` : ''}
               </TableCell>
-              <TableCell css={styles.compactCell}>{data.source}</TableCell>
+              <TableCell className="!px-[8px] !py-[4px] !text-[13px] whitespace-nowrap">{data.source}</TableCell>
             </TableRow>
           ))}
         </TableBody>

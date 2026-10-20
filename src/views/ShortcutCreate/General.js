@@ -1,24 +1,10 @@
-/** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
 import { Button } from 'ui/button'
 import { Card, CardContent } from 'ui/card'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import TransferList from '../../components/TransferList.js';
 
 const styles = {
-  root: css({
-    marginTop: theme.spacing(3),
-    '& .MuiCardHeader-action': {
-      alignItems: ''
-    }
-  }),
-  content: css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 20,
-    paddingTop: 16
-  })
+  content: 'flex flex-col gap-[20px] pt-[16px]',
 }
 
 function General({
@@ -30,7 +16,7 @@ function General({
   return (
     <>
       <Card className="mt-6">
-        <CardContent css={styles.content}>
+        <CardContent className={styles.content}>
           <Field label="代號">
             <Input
               placeholder="請輸入代號"

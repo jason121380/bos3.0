@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
 import { CheckboxField } from 'ui/checkbox'
 import { Eraser, Copy, Trash2 } from 'lucide-react'
@@ -17,8 +16,16 @@ import { useFetchGetMembershipCategories } from "hooks/useFetchGetMembershipCate
 import { MobileDatePicker } from 'ui/date-picker'
 import billContext from 'context/keyInContext'
 
-import styles from "./styles/MemberShipCardSells";
 import MemberShipCardSellsModal from "./MemberShipCardSellsModal";
+
+const styles = {
+  merchantSells: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  field: 'w-[200px] flex !mr-[12px]',
+  productField: 'w-[250px] flex !mr-[12px]',
+  dateField: 'w-[200px] flex !mr-[12px]',
+  priceField: 'w-[65px] flex !mr-[12px]',
+  heading2: 'text-[0.8125rem] font-bold',
+}
 
 const MemberShipCardSells = ({
   sellsItem,
@@ -176,7 +183,7 @@ const MemberShipCardSells = ({
   };
   return (
     <Fragment>
-      <div css={styles.merchantSells}>
+      <div className={styles.merchantSells}>
         {/* 必填 *：helper/billVerify.js checkMembershipOrders 要求 sellerId、membershipUUID、有效到期日；兩者都空的列會被 handleTidyBill 丟掉，所以該列有填任一欄才標必填 */}
         <Field label="服務人員" required={!!sellsItem.sellerId || !!sellsItem.membershipUUID}>
           <EmployeeAutoComplete
@@ -256,7 +263,7 @@ const MemberShipCardSells = ({
         </Field>
         {sellsItem.membershipUUID && (
           <React.Fragment>
-            <Field label="價格" css={styles.priceField}>
+            <Field label="價格" className={styles.priceField}>
               <Input
                 value={sellsItem.price}
                 ref={dateRef}
@@ -281,7 +288,7 @@ const MemberShipCardSells = ({
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <Field label="到期日" required={sellsItem.expiryDate !== null}>
                 <MobileDatePicker
-                  css={styles.dateField}
+                  className={styles.dateField}
                   inputRef={dateRef}
                   value={sellsItem.expiryDate}
                   format="yyyy/MM/dd"
@@ -359,7 +366,7 @@ const MemberShipCardSells = ({
                 </Field>
               )}
               {teachingMode && (
-                <p className="m-0" css={styles.heading2}>
+                <p className={`m-0 ${styles.heading2}`}>
                   勾選將入業績但不收費用**
                 </p>
               )}
@@ -369,7 +376,7 @@ const MemberShipCardSells = ({
                   _.data.merchant.thirdpartyCoupons.map((data) => {
                     if (data.id === sellsItem.thirdPartyCouponMerchantId) {
                       return (
-                        <p className="m-0" key={data.id} css={styles.heading2} style={{ marginTop: '4px' }}>
+                        <p className={`m-0 ${styles.heading2}`} key={data.id} style={{ marginTop: '4px' }}>
                           {`扣完後業績:${Math.round((sellsItem.price * (100 - data.fee)) / 100)}`}
                         </p>
                       );
@@ -377,7 +384,7 @@ const MemberShipCardSells = ({
                   })
                 )}
             </div>
-            <Field label="備註" css={styles.field}>
+            <Field label="備註" className={styles.field}>
               <Input
                 value={sellsItem.remark}
                 name="remark"

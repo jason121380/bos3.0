@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { useFetchTHirdPartys } from 'hooks/useFetchMerchant'
 import useToggle from 'hooks/useToggle'
@@ -8,7 +7,7 @@ import { Autocomplete } from 'ui/combobox'
 
 function ThirdPartyAutoCompleteforQueueOrder(
   {
-    className = {},
+    className = '',
     onChange = () => {},
     label = '',
     value = [],
@@ -58,7 +57,7 @@ function ThirdPartyAutoCompleteforQueueOrder(
       open={designerToggle.open}
       onOpen={designerToggle.toggle}
       onClose={designerToggle.toggle}
-      css={className}
+      className={className}
       value={selectedValue || null}
       options={options}
       autoHighlight

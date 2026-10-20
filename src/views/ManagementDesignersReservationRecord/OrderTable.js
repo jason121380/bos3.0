@@ -1,15 +1,33 @@
-/** @jsxImportSource @emotion/react */
 // 預約動作彈窗內有相容層 PasswordDialog（Radix Dialog 與其焦點鎖互搶），保留相容層 Dialog；公休彈窗只有切換鈕與按鈕，改 ui/dialog
 import { Dialog } from 'ui/modal-compat'
 import { Dialog as UiDialog, DialogContent as UiDialogContent } from 'ui/dialog'
 import { useState, useEffect } from 'react'
 import { AssignmentTurnedInRounded as AssignmentTurnedInRoundedIcon, DisabledByDefaultRounded as DisabledByDefaultRoundedIcon, EventBusy as EventBusyIcon } from 'ui/icons'
 import { format } from 'date-fns'
-import styles from './styles/OrderTable'
-import { css } from '@emotion/react'
 
 import NewChoseEvent from './NewChoseEvent'
 import HolidayEdit from './HolidayEdit'
+
+// 原 ./styles/OrderTable.js（emotion css 物件，只有本檔使用，已刪除）逐值轉 Tailwind；原 `!important` 以 `!` 前綴保留。
+// title 與 ndsTitle／timeTitle 合併時 title 的 borderRight 在後、覆蓋 ndsTitle，故 ndsTitle 不另輸出。
+const styles = {
+  TableContainer: 'min-h-[60vh] h-[calc(100vh-260px)] overflow-scroll relative !rounded-[16px] ![box-shadow:none] ![border:1px_solid_rgb(var(--border))] [&>div]:flex',
+  title: 'p-[12px_16px] break-all font-[800] bg-[rgb(var(--surface))] text-[rgb(var(--text))] min-h-[56px] flex items-center justify-center shrink-0 [border-right:1px_solid_#d0d7de] text-[14px] tracking-[0.5px] uppercase',
+  timeTitle: 'w-[60px] shrink-0',
+  ndsItem: '[border-top:1px_solid_rgb(var(--border))] [border-right:1px_solid_rgb(var(--border))] [border-left:1px_solid_rgb(var(--border))] flex justify-end bg-[rgb(var(--surface))]',
+  ndsWrap: 'w-[100px] shrink-0 flex flex-col items-end',
+  timeItem: '[border-top:1px_solid_rgb(var(--border))] [border-right:1px_solid_rgb(var(--border))] text-center [align-content:center] text-[14px] font-bold text-[rgb(var(--text))] bg-[rgb(var(--surface))]',
+  timeWrap: 'w-[60px] shrink-0',
+  desWrap: 'relative [flex:1_1_auto]',
+  orderItem: '[border-top:1px_solid_rgb(var(--border))] [border-right:1px_solid_rgb(var(--border))] flex justify-end',
+  limitItem: 'w-full text-[rgb(var(--text-tertiary))] flex items-center justify-center text-[12px] overflow-hidden flex-col cursor-pointer [transition:background-color_0.2s] hover:!bg-[rgba(26,115,232,0.1)] [&_.capacity-label]:text-[10px] [&_.capacity-label]:text-[#bbb] [&_.capacity-label]:mb-[2px] [&_.capacity-value]:text-[14px] [&_.capacity-value]:font-bold [&_.capacity-value]:text-[rgb(var(--accent))]',
+  calendarWrap: 'absolute h-full top-0 left-0 overflow-hidden [border-right:1px_solid_rgb(var(--border))]',
+  clickWrap: 'flex gap-0 absolute w-full',
+  clickItem: 'rounded-[12px] cursor-pointer flex items-center justify-center flex-col text-[13px] font-bold text-[#fff] [border:2px_solid_white] [box-shadow:0px_4px_10px_rgba(0,0,0,0.1)] overflow-hidden [transition:transform_0.1s_ease] hover:z-10 hover:[transform:scale(1.02)] [&_span]:p-[0px_8px] [&_span]:break-all [&_span]:text-center',
+  holiday: '![background:#ffebee] [&_.capacity-value]:!text-[rgb(var(--danger))]',
+  tableBody: 'relative w-full [border-bottom:1px_solid_rgb(var(--border))]',
+  tableHead: 'sticky top-0 z-10 w-full [border-bottom:1px_solid_rgb(var(--border))]',
+}
 
 const OrderTable = ({
   orderRange, calendarData, designerNameType, merchantId,
@@ -119,29 +137,29 @@ const OrderTable = ({
   }
 
   return (
-    <div css={styles.TableContainer} className='ManagementReservationRecord bg-background'>
+    <div className={`ManagementReservationRecord bg-background ${styles.TableContainer}`}>
 
       {/* table head */}
-      <div css={styles.tableHead}>
-        <div style={{ position: 'sticky', left: 0, zIndex: 1 }} css={css([styles.timeTitle, styles.title])}>時間</div>
+      <div className={styles.tableHead}>
+        <div style={{ position: 'sticky', left: 0, zIndex: 1 }} className={`${styles.timeTitle} ${styles.title}`}>時間</div>
         {calendarData.map(data => (
-          <div style={{ flex: 1 }} key={`name-${data.title}`} css={(styles.title)}>
+          <div style={{ flex: 1 }} key={`name-${data.title}`} className={styles.title}>
             {data.title}
           </div>
         ))}
       </div>
 
       {/* table body */}
-      <div css={styles.tableBody}>
+      <div className={styles.tableBody}>
 
         {/* 時間 */}
         <div
           style={{ position: 'sticky', left: 0, zIndex: 5, background: 'rgb(var(--background))' }}
-          css={styles.timeWrap}
+          className={styles.timeWrap}
           id='darkBg'
         >
           {orderRange[0].map(d => (
-            <div key={d} css={styles.timeItem} style={{ height: calendarSize.height, lineHeight: calendarSize.height + 'px' }}>{format(d, 'HH:mm')}</div>
+            <div key={d} className={styles.timeItem} style={{ height: calendarSize.height, lineHeight: calendarSize.height + 'px' }}>{format(d, 'HH:mm')}</div>
           ))}
         </div>
 
@@ -150,11 +168,11 @@ const OrderTable = ({
           title, length, breakLength, countHoliday, orders, orderGroup, breakGroup, bookingLimit, countOrder
         }, index) => {
           return (
-            <div key={`${title}-${index}`} style={{ flex: 1 }} css={styles.desWrap}>
+            <div key={`${title}-${index}`} style={{ flex: 1 }} className={styles.desWrap}>
               {orderRange[index].map(d => (
                 <div
                   key={d}
-                  css={styles.orderItem}
+                  className={styles.orderItem}
                   style={{ width: '100%', height: calendarSize.height }}
                   onClick={() => {
                     if (countHoliday[d]) return
@@ -170,22 +188,22 @@ const OrderTable = ({
                     })
                   }}
                 >
-                  <div style={{ width: '100%', zIndex: 2 }} className='hoverItem' css={css([styles.limitItem, length > 1 && countHoliday[d] ? styles.holiday : {}])}>
+                  <div style={{ width: '100%', zIndex: 2 }} className={`hoverItem ${styles.limitItem}${length > 1 && countHoliday[d] ? ` ${styles.holiday}` : ''}`}>
                     {isOne ? length > 1 || breakLength > 0 ? handleCountLimit(countOrder[d], bookingLimit) : `可預約人數:${handleCountLimit(countOrder[d], bookingLimit)}` : ''}
                   </div>
                 </div>
               ))}
               {length > 1 && (
-                <div style={{ width: '100%' }} css={styles.calendarWrap}>
+                <div style={{ width: '100%' }} className={styles.calendarWrap}>
                   {orderGroup.map(({ data, parentStyle }, i) => (
-                    <div key={`currentData-${i}`} css={styles.clickWrap} style={parentStyle}>
+                    <div key={`currentData-${i}`} className={styles.clickWrap} style={parentStyle}>
                       {data.map(({ key, start, end, style, type, designerId, ...rest }) => {
                         return (
                           <div
                             key={key}
                             ref={e => e && ndsRef.current.push(e)}
                             style={{ ...style, width: `${100 / data.length}%`, position: 'relative' }}
-                            css={styles.clickItem}
+                            className={styles.clickItem}
                             id='darkBorder'
                             onClick={() => {
                               if (rest.isDone) {
@@ -249,15 +267,15 @@ const OrderTable = ({
                 </div>
               )}
               {breakLength > 0 && (
-                <div style={{ width: '100%', left: 0 }} css={styles.calendarWrap}>
+                <div style={{ width: '100%', left: 0 }} className={styles.calendarWrap}>
                   {breakGroup.map(({ data, parentStyle }, i) => (
-                    <div key={`isBreakGroups-${i}`} css={styles.clickWrap} style={parentStyle}>
+                    <div key={`isBreakGroups-${i}`} className={styles.clickWrap} style={parentStyle}>
                       {data.map(({ key, nameToDisplay, start, end, style }, i) => {
                         return (
                           <div
                             key={key}
                             style={{ ...style, width: '100%' }}
-                            css={styles.clickItem}
+                            className={styles.clickItem}
                             id='darkBorder'
                             onClick={() => {
                               if (!isOne) {

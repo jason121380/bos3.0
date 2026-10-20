@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 可刪除的 Chip 保留相容層（ui/badge 不可刪除）；兩層彈窗內只有 TextField、按鈕，改 ui/dialog
 import { Chip } from 'ui/misc-compat'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
@@ -12,56 +11,8 @@ import PropTypes from 'prop-types'
 import { useFetchGetMerchantHairConditionLazy } from 'hooks/useFetchGetMerchantHairCondition'
 import useFetchSetCustomerHairInfo from 'hooks/useFetchSetCustomerHairInfo'
 import { green } from 'ui/colors';
-import { css } from '@emotion/react'
 // 動作與選項按鈕為 ui/button（選取綠色以 inline style 原樣保留）
 import { Button as UiButton } from 'ui/button'
-
-const styles = {
-  root: css({
-    '& .MuiDialogContent-root': {
-      overflowY: 'visible'
-    },
-    '& .MuiInputLabel-root': {
-      fontSize: 18
-    },
-    '& .MuiOutlinedInput-root': {
-      gap: 10,
-      minHeight: 50,
-      padding: '10px 5px 10px 10px',
-      flexWrap: 'wrap',
-      '& input': {
-        display: 'none'
-      }
-    },
-    '& textarea': {
-      padding: '0px !important'
-    }
-  }),
-  title: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexWrap: 'wrap'
-  }),
-  container: css({
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
-    gap: 20
-  }),
-  optionContainer: css({
-    display: 'flex',
-    gap: 10,
-    flexWrap: 'wrap'
-  }),
-  box: css({
-    minWidth: 'unset',
-    maxWidth: 'unset',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }),
-}
 
 const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArray, customerId, refetchHairInfo }) => {
   const submitRef = useRef(null)
@@ -158,14 +109,14 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
   return (
     <Fragment>
       <Dialog open={open} onOpenChange={o => !o && handleOnClose()}>
-        <DialogContent size="lg" aria-describedby={undefined} css={styles.root} className='TrackingEditModal'>
+        <DialogContent size="lg" aria-describedby={undefined} className='TrackingEditModal [&_textarea]:!p-0'>
           <DialogHeader>
-            <DialogTitle css={styles.title}>
+            <DialogTitle className="flex flex-wrap items-center justify-between">
               編輯顧客髮況
             </DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <div css={styles.container}>
+            <div className="flex flex-col items-center gap-[20px]">
               {optionsArray.map((data, index) => {
                 const [[key, title]] = Object.entries(data)
                 return (
@@ -213,19 +164,19 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
       {openOption && <Dialog open={openOption} onOpenChange={o => !o && handleOptionOnClose()}>
         <DialogContent size="md" aria-describedby={undefined}>
           <DialogHeader>
-            <DialogTitle css={styles.title}>
+            <DialogTitle className="flex flex-wrap items-center justify-between">
               選擇{selectCondition.title}
             </DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <div css={styles.optionContainer}>
+            <div className="flex flex-wrap gap-[10px]">
               {(selectCondition.key && conditionOptions[selectCondition.key].length > 0) ? conditionOptions[selectCondition.key].map((data, index) => {
                 const select = selectOption.includes(data)
                 return (
                   <UiButton
                     variant={select ? 'primary' : 'secondary'}
                     style={{ backgroundColor: select ? green[600] : '' }}
-                    css={styles.box}
+                    className="flex min-w-[unset] max-w-[unset] items-center justify-center"
                     onClick={() => handleSelectItem(data, select)}
                   >{data}</UiButton>
                 )

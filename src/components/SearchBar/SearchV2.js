@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Input, TextField } from 'ui/text-field'
 import { Select, MenuItem, FormControl, InputLabel } from 'ui/form-control'
 import { Button } from 'ui/button'
@@ -8,50 +7,7 @@ import React, { useState, useRef, Fragment, useEffect } from 'react'
 import { useLocation } from 'react-router'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import SourceSelect from 'components/SourceSelect'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  search: css({
-    flexGrow: 1,
-    height: 42,
-    padding: theme.spacing(0, 2),
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  searchIcon: css({
-    marginRight: theme.spacing(2),
-    color: theme.palette.icon,
-  }),
-  searchInput: css({
-    flexGrow: 1,
-  }),
-  field: css({
-    minWidth: '180px !important',
-    maxWidth: 180 * 1.5 + 'px',
-  }),
-  field2: css({
-    flexGrow: 1,
-    width: '180px !important',
-    minWidth: '150px',
-  }),
-  birthdayGrid: css({
-    display: 'flex',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    gap: '10px',
-  }),
-  birthdayInput: css({
-    width: '80px',
-  }),
-  birthdayMonthDay: css({
-    width: '80px',
-  }),
-}
+import { cn } from 'ui/utils'
 
 function SearchV2({
   setCustomerNoSort,
@@ -60,7 +16,7 @@ function SearchV2({
   onDesignerV3,
   onBirthdayStart,
   onIsUnwelcome,
-  className,
+  className = '',
   css,
   onCustomerSource,
   disableCustomerSource,
@@ -142,12 +98,12 @@ function SearchV2({
   }, [])
 
   return (
-    <div {...rest} css={className} className="box-border flex w-full flex-wrap gap-2.5">
-      <div css={styles.birthdayGrid}>
-        <div css={styles.search} className="rounded-md bg-background">
-          <SearchIcon css={styles.searchIcon} />
+    <div {...rest} className={cn('box-border flex w-full flex-wrap gap-2.5', className)}>
+      <div className="flex items-center flex-wrap gap-[10px]">
+        <div className="grow h-[42px] py-0 px-[16px] flex items-center rounded-md bg-background">
+          <SearchIcon className="mr-[16px] text-[#007AFF]" />
           <Input
-            css={styles.searchInput}
+            className="grow"
             disableUnderline
             placeholder="搜尋關鍵字"
             value={keyword}
@@ -166,7 +122,7 @@ function SearchV2({
                 onDesignerV3(value)
                 setLatestDesigner(value.userId)
               }}
-              className={styles.field2}
+              className="grow !w-[180px] min-w-[150px]"
             />
             <EmployeeAutoComplete
               label={'偏好設計師編號/姓名'}
@@ -175,7 +131,7 @@ function SearchV2({
                 onDesignerV2(value)
                 setDesigner(value.userId)
               }}
-              className={styles.field2}
+              className="grow !w-[180px] min-w-[150px]"
             />
           </Fragment>
           :
@@ -187,12 +143,12 @@ function SearchV2({
                 onDesignerV2(value)
                 setDesigner(value.userId)
               }}
-              className={styles.field}
+              className="!min-w-[180px] max-w-[270px]"
             />
           </div>
         }
       </div>
-      <div css={styles.birthdayGrid}>
+      <div className="flex items-center flex-wrap gap-[10px]">
         <TextField
           label="民國年"
           name="year"
@@ -200,7 +156,7 @@ function SearchV2({
           value={birthdayObj.year}
           onChange={e => handleBirthdayChange(e)}
           variant="outlined"
-          css={styles.birthdayMonthDay}
+          className="w-[80px]"
           onKeyDown={handleBirthFocus}
           onFocus={e => {
             e.target.select()
@@ -213,7 +169,7 @@ function SearchV2({
           value={birthdayObj.month}
           onChange={e => handleBirthdayChange(e)}
           variant="outlined"
-          css={styles.birthdayMonthDay}
+          className="w-[80px]"
           onKeyDown={handleBirthFocus}
           onFocus={e => {
             e.target.select()
@@ -226,7 +182,7 @@ function SearchV2({
           value={birthdayObj.day}
           onChange={e => handleBirthdayChange(e)}
           variant="outlined"
-          css={styles.birthdayMonthDay}
+          className="w-[80px]"
           onKeyDown={handleBirthFocus}
           onFocus={e => {
             e.target.select()
@@ -236,7 +192,7 @@ function SearchV2({
       {!disableCustomerSource && (
         <div>
           <SourceSelect
-            className={styles.field}
+            className="!min-w-[180px] max-w-[270px]"
             value={customerSource}
             onChange={(event, value) => {
               onCustomerSource(value)
@@ -247,7 +203,7 @@ function SearchV2({
       )}
       {onIsUnwelcome && (
         <div>
-          <FormControl variant="outlined" css={styles.field}>
+          <FormControl variant="outlined" className="!min-w-[180px] max-w-[270px]">
             <InputLabel>黑名單篩選</InputLabel>
             <Select
               value={isUnwelcome}
@@ -315,7 +271,7 @@ function SearchV2({
 }
 
 SearchV2.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   onSearchV2: PropTypes.func,
 }
 

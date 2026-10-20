@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // Grid.EmployeePayslipTableContainer 為列印容器（@media print 樣式），依列印範本規則保留
 import { Grid } from 'ui/grid-compat'
 import AdminPageHeader from 'components/AdminPageHeader'
@@ -20,38 +19,11 @@ import useFetchGetIsPrintDetailDisplayOnSalaryReport from 'hooks/useFetchGetIsPr
 import {
   useFetchGetPayslipOptimization, useFetchGetIsPrintDateHiddenForPayslip
 } from 'hooks/useFetchGetParameterCheckoutAndSalaryItemsSetting'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3),
-  }),
-  filterWrap: css({
-    display: 'flex',
-    gap: '12px',
-    alignItems: 'center',
-    marginBottom: '12px',
-    backgroundColor: 'rgb(var(--background))',
-    borderRadius: '12px',
-    padding: '16px',
-    border: '1px solid rgb(var(--border))',
-  }),
-  pillButton: css({
-    borderRadius: '20px !important',
-    padding: '4px 20px !important',
-    fontSize: '14px !important',
-    boxShadow: 'none !important',
-    fontWeight: 'bold !important',
-  }),
-}
 
 export default function Payroll() {
   const [date, setDate] = useState({
@@ -148,7 +120,7 @@ export default function Payroll() {
     })
   }
   return (
-    <Page title="薪資條" css={styles.root} className='EmployeePayslip'>
+    <Page title="薪資條" className='EmployeePayslip'>
       <div>
         <AdminPageHeader
           title="薪資條"

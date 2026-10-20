@@ -1,20 +1,6 @@
-/** @jsxImportSource @emotion/react */
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
-
-const styles = {
-  table: css({
-    minWidth: 650,
-  }),
-  dark: css({
-    background: 'rgb(var(--surface))',
-  }),
-  light: css({
-    background: 'white',
-  }),
-}
 
 function Results({ report, total, countTotalPrice }) {
   return (

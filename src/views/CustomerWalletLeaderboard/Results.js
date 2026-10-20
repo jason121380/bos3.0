@@ -1,16 +1,6 @@
-import { css } from '@emotion/react'
 import { EmptyState } from 'ui/empty-state'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
-
-const styles = {
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-}
 
 function Results({ reportData }) {
   return (

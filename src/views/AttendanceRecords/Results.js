@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 保留相容層：Drawer（底部操作面板，ui 無對應元件）、編輯彈窗（由 Drawer 內開啟，換 Radix Dialog 會與 Drawer 的焦點鎖互搶）；
 // 打卡時間格內的分隔線改 Tailwind
 import { Drawer } from 'ui/overlay-compat'
@@ -11,170 +10,15 @@ import { Fragment, useState } from 'react'
 import useFetchDeleteAttendantRecord from 'hooks/useFetchDeleteAttendantRecord'
 import useFetchUpdateAttendantRecord from 'hooks/useFetchUpdateAttendantRecord'
 import { openSnackbar } from 'elements/snackbars'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
-const styles = {
-  root: css({}),
-  sticky: css({
-    position: 'sticky',
-    left: 0,
-    background: 'white',
-    zIndex: '99',
-    outline: '1px solid rgb(var(--border))',
-  }),
-  stickyRow: css({
-    position: 'sticky',
-    top: 0,
-    background: 'white',
-    zIndex: '100',
-    outline: '1px solid rgb(var(--border))',
-  }),
-  filterButton: css({
-    marginRight: theme.spacing(2),
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 1150,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
-  colorRed: css({
-    color: 'red !important',
-    fontWeight: 'bold',
-    display: 'flex',
-    alignItems: 'center',
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    }
-  }),
-  colorRedSticky: css({
-    color: 'red',
-    fontWeight: 'bold',
-    position: 'sticky',
-    left: 0,
-    background: 'white',
-    zIndex: '99',
-    outline: '1px solid rgb(var(--border))',
-  }),
-  colorRedLinkLate: css({
-    color: 'red !important',
-    fontWeight: 'bold',
-    textDecoration: 'none',
-  }),
-  colorRedLink: css({
-    textDecoration: 'none',
-  }),
-  span: css({
-    marginRight: '10px',
-    display: 'flex',
-    alignItems: 'center',
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    }
-  }),
-  content: css({
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    overflow: "auto"
-  }),
-  cardHeader: css({
-    '& .MuiCardHeader-title': {
-      fontSize: '15px',
-      fontWeight: 'bold',
-      display: 'flex',
-      alignItems: 'center',
-    },
-  }),
-  tableRow: css({
-    backgroundColor: 'rgb(var(--background)) !important',
-    '&:hover': {
-      backgroundColor: 'rgb(var(--background)) !important',
-    },
-  }),
-  compactCell: css({
-    padding: '4px 8px !important',
-    fontSize: '13px !important',
-    whiteSpace: 'nowrap',
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    }
-  }),
-  compactHeaderCell: css({
-    padding: '8px 8px !important',
-    fontSize: '13px !important',
-    fontWeight: '600 !important',
-    whiteSpace: 'nowrap',
-    backgroundColor: 'rgb(var(--surface)) !important',
-  }),
-  clockInCell: css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-    padding: '4px 8px !important',
-    fontSize: '13px !important',
-  }),
-  clockInItem: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: '4px',
-    padding: '2px 4px',
-    borderRadius: '4px',
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    }
-  }),
-  iconStyle: css({
-    fontSize: '14px !important',
-    flexShrink: 0,
-  }),
-  dateCell: css({
-    minWidth: '180px !important',
-    width: '180px !important',
-    padding: '4px 8px !important',
-    fontSize: '13px !important',
-    '&:hover': {
-      backgroundColor: 'transparent !important',
-    }
-  }),
-  dateHeaderCell: css({
-    minWidth: '180px !important',
-    width: '180px !important',
-    padding: '8px 8px !important',
-    fontSize: '13px !important',
-    fontWeight: '600 !important',
-    whiteSpace: 'nowrap',
-    backgroundColor: 'rgb(var(--surface)) !important',
-  }),
-  highlightHeaderCell: css({
-    padding: '8px 8px !important',
-    fontSize: '13px !important',
-    fontWeight: 'bold !important',
-    whiteSpace: 'nowrap',
-    backgroundColor: '#eef4ff !important',
-    color: 'rgb(var(--accent)) !important',
-  }),
-  highlightCell: css({
-    padding: '4px 8px !important',
-    fontSize: '13px !important',
-    fontWeight: 'bold !important',
-    whiteSpace: 'nowrap',
-    backgroundColor: '#eef4ff !important',
-    color: 'rgb(var(--accent)) !important',
-    '&:hover': {
-      backgroundColor: '#eef4ff !important',
-      color: 'rgb(var(--accent)) !important',
-    }
-  }),
-}
+// 打卡項目樣式（原 emotion styles 等值轉 Tailwind）
+const clockInItemClass = 'flex items-center gap-[4px] py-[2px] px-[4px] rounded-[4px] hover:!bg-transparent'
+const colorRedClass = '!text-[color:red] font-bold flex items-center hover:!bg-transparent'
+const colorRedLinkLateClass = '!text-[color:red] font-bold no-underline'
 
 export default function Results({
   attendanceRecords,
@@ -303,21 +147,21 @@ export default function Results({
     if (time === null || time.uuid === null) return
     if (time.isLine) {
       return (
-        <div key={`clickin-${time.uuid}`} css={(late && firstItem) ? styles.colorRed : styles.clockInItem}>
-          <span css="lineicon"></span>
+        <div key={`clickin-${time.uuid}`} className={(late && firstItem) ? colorRedClass : clockInItemClass}>
+          <span></span>
           <span>上</span>
-          <a style={{ color: color(time.distanceValue) }} css={(late && firstItem) ? styles.colorRedLinkLate : styles.colorRedLink}>
+          <a style={{ color: color(time.distanceValue) }} className={(late && firstItem) ? colorRedLinkLateClass : 'no-underline'}>
             {format(time.time, 'HH:mm')}
           </a>
         </div>
       )
     } else if (time.checkinType === 'CELLPHONE' || (time.checkinType === null && time.latitude !== null && time.longitude !== null)) {
       return (
-        <div key={`clickin-${time.uuid}`} css={(late && firstItem) ? styles.colorRed : styles.clockInItem}>
-          <PhoneIphoneIcon css={styles.iconStyle} />
+        <div key={`clickin-${time.uuid}`} className={(late && firstItem) ? colorRedClass : clockInItemClass}>
+          <PhoneIphoneIcon className="!text-[14px] shrink-0" />
           <span>上</span>
           {time.latitude !== null && time.longitude !== null ? (
-            <a style={{ color: color(time.distanceValue) }} css={(late && firstItem) ? styles.colorRedLinkLate : styles.colorRedLink}>
+            <a style={{ color: color(time.distanceValue) }} className={(late && firstItem) ? colorRedLinkLateClass : 'no-underline'}>
               {format(time.time, 'HH:mm')}
             </a>
           ) : (
@@ -327,22 +171,22 @@ export default function Results({
       )
     } else if (time.checkinType === 'COMPUTER' || time.checkinType === null) {
       return (
-        <div key={`clickin-${time.uuid}`} css={(late && firstItem) ? styles.colorRed : styles.clockInItem}>
-          <DesktopWindows css={styles.iconStyle} />
+        <div key={`clickin-${time.uuid}`} className={(late && firstItem) ? colorRedClass : clockInItemClass}>
+          <DesktopWindows className="!text-[14px] shrink-0" />
           <span>上{format(time.time, 'HH:mm')}</span>
         </div>
       )
     } else if (time.checkinType === 'QRCODE' || time.checkinType === null) {
       return (
-        <div key={`clickin-${time.uuid}`} css={(late && firstItem) ? styles.colorRed : styles.clockInItem}>
-          <QrCodeIcon css={styles.iconStyle} />
+        <div key={`clickin-${time.uuid}`} className={(late && firstItem) ? colorRedClass : clockInItemClass}>
+          <QrCodeIcon className="!text-[14px] shrink-0" />
           <span>上{format(time.time, 'HH:mm')}</span>
         </div>
       )
     } else if (time.checkinType === 'ADMIN') {
       return (
-        <div key={`clickin-${time.uuid}`} css={(late && firstItem) ? styles.colorRed : styles.clockInItem}>
-          <ManageAccountsRoundedIcon css={styles.iconStyle} />
+        <div key={`clickin-${time.uuid}`} className={(late && firstItem) ? colorRedClass : clockInItemClass}>
+          <ManageAccountsRoundedIcon className="!text-[14px] shrink-0" />
           <span>上{format(time.time, 'HH:mm')}</span>
         </div>
       )
@@ -354,21 +198,21 @@ export default function Results({
     if (time !== null) {
       if (time.isLine) {
         return (
-          <div key={`clickout-${time.uuid}`} css={(late && lastItem) ? styles.colorRed : styles.clockInItem}>
+          <div key={`clickout-${time.uuid}`} className={(late && lastItem) ? colorRedClass : clockInItemClass}>
             <span className="lineicon"></span>
             <span>下</span>
-            <a style={{ color: color(time.distanceValue) }} css={(late && lastItem) ? styles.colorRedLinkLate : styles.colorRedLink}>
+            <a style={{ color: color(time.distanceValue) }} className={(late && lastItem) ? colorRedLinkLateClass : 'no-underline'}>
               {format(time.time, 'HH:mm')}
             </a>
           </div>
         )
       } else if (time.checkinType === 'CELLPHONE' || (time.checkinType === null && time.latitude !== null && time.longitude !== null)) {
         return (
-          <div key={`clickout-${time.uuid}`} css={(late && lastItem) ? styles.colorRed : styles.clockInItem}>
-            <PhoneIphoneIcon css={styles.iconStyle} />
+          <div key={`clickout-${time.uuid}`} className={(late && lastItem) ? colorRedClass : clockInItemClass}>
+            <PhoneIphoneIcon className="!text-[14px] shrink-0" />
             <span>下</span>
             {time.latitude !== null && time.longitude !== null ? (
-              <a style={{ color: color(time.distanceValue) }} css={(late && lastItem) ? styles.colorRedLinkLate : styles.colorRedLink}>
+              <a style={{ color: color(time.distanceValue) }} className={(late && lastItem) ? colorRedLinkLateClass : 'no-underline'}>
                 {format(time.time, 'HH:mm')}
               </a>
             ) : (
@@ -378,22 +222,22 @@ export default function Results({
         )
       } else if (time.checkinType === 'COMPUTER' || time.checkinType === null) {
         return (
-          <div key={`clickout-${time.uuid}`} css={(late && lastItem) ? styles.colorRed : styles.clockInItem}>
-            <DesktopWindows css={styles.iconStyle} />
+          <div key={`clickout-${time.uuid}`} className={(late && lastItem) ? colorRedClass : clockInItemClass}>
+            <DesktopWindows className="!text-[14px] shrink-0" />
             <span>下{format(time.time, 'HH:mm')}</span>
           </div>
         )
       } else if (time.checkinType === 'QRCODE' || time.checkinType === null) {
         return (
-          <div key={`clickout-${time.uuid}`} css={(late && lastItem) ? styles.colorRed : styles.clockInItem}>
-            <QrCodeIcon css={styles.iconStyle} />
+          <div key={`clickout-${time.uuid}`} className={(late && lastItem) ? colorRedClass : clockInItemClass}>
+            <QrCodeIcon className="!text-[14px] shrink-0" />
             <span>下{format(time.time, 'HH:mm')}</span>
           </div>
         )
       } else if (time.checkinType === 'ADMIN') {
         return (
-          <div key={`clickout-${time.uuid}`} css={(late && lastItem) ? styles.colorRed : styles.clockInItem}>
-            <ManageAccountsRoundedIcon css={styles.iconStyle} />
+          <div key={`clickout-${time.uuid}`} className={(late && lastItem) ? colorRedClass : clockInItemClass}>
+            <ManageAccountsRoundedIcon className="!text-[14px] shrink-0" />
             <span>下{format(time.time, 'HH:mm')}</span>
           </div>
         )
@@ -406,21 +250,21 @@ export default function Results({
       if (start === null || start.uuid === null) return
       if (start.isLine) {
         return (
-          <span key={`breakOut-${start.uuid}`} css={styles.clockInItem}>
+          <span key={`breakOut-${start.uuid}`} className={clockInItemClass}>
             <span className="lineicon"></span>
             <span>外</span>
-            <a style={{ color: color(start.distanceValue) }} css={styles.colorRedLink}>
+            <a style={{ color: color(start.distanceValue) }} className="no-underline">
               {format(start.time, 'HH:mm')}
             </a>
           </span>
         )
       } else if (start.checkinType === 'CELLPHONE' || (start.checkinType === null && start.latitude !== null && start.longitude !== null)) {
         return (
-          <span key={`breakOut-${start.uuid}`} css={styles.clockInItem}>
-            <PhoneIphoneIcon css={styles.iconStyle} />
+          <span key={`breakOut-${start.uuid}`} className={clockInItemClass}>
+            <PhoneIphoneIcon className="!text-[14px] shrink-0" />
             <span>外</span>
             {start.latitude !== null && start.longitude !== null ? (
-              <a style={{ color: color(start.distanceValue) }} css={styles.colorRedLink}>
+              <a style={{ color: color(start.distanceValue) }} className="no-underline">
                 {format(start.time, 'HH:mm')}
               </a>
             ) : (
@@ -430,22 +274,22 @@ export default function Results({
         )
       } else if (start.checkinType === 'COMPUTER' || start.checkinType === null) {
         return (
-          <span key={`breakOut-${start.uuid}`} css={styles.clockInItem}>
-            <DesktopWindows css={styles.iconStyle} />
+          <span key={`breakOut-${start.uuid}`} className={clockInItemClass}>
+            <DesktopWindows className="!text-[14px] shrink-0" />
             <span>外{format(start.time, 'HH:mm')}</span>
           </span>
         )
       } else if (start.checkinType === 'QRCODE' || start.checkinType === null) {
         return (
-          <span key={`breakOut-${start.uuid}`} css={styles.clockInItem}>
-            <QrCodeIcon css={styles.iconStyle} />
+          <span key={`breakOut-${start.uuid}`} className={clockInItemClass}>
+            <QrCodeIcon className="!text-[14px] shrink-0" />
             <span>外{format(start.time, 'HH:mm')}</span>
           </span>
         )
       } else if (start.checkinType === 'ADMIN') {
         return (
-          <span key={`breakOut-${start.uuid}`} css={styles.clockInItem}>
-            <ManageAccountsRoundedIcon css={styles.iconStyle} />
+          <span key={`breakOut-${start.uuid}`} className={clockInItemClass}>
+            <ManageAccountsRoundedIcon className="!text-[14px] shrink-0" />
             <span>外{format(start.time, 'HH:mm')}</span>
           </span>
         )
@@ -457,21 +301,21 @@ export default function Results({
       if (end !== null) {
         if (end.isLine) {
           return (
-            <span css={styles.clockInItem} key={`breakBack-${end.uuid}`}>
+            <span className={clockInItemClass} key={`breakBack-${end.uuid}`}>
               <span className="lineicon"></span>
               <span>回</span>
-              <a style={{ color: color(end.distanceValue) }} css={styles.colorRedLink}>
+              <a style={{ color: color(end.distanceValue) }} className="no-underline">
                 {format(end.time, 'HH:mm')}
               </a>
             </span>
           )
         } else if (end.checkinType === 'CELLPHONE' || (end.checkinType === null && end.latitude !== null && end.longitude !== null)) {
           return (
-            <span css={styles.clockInItem} key={`breakBack-${end.uuid}`}>
-              <PhoneIphoneIcon css={styles.iconStyle} />
+            <span className={clockInItemClass} key={`breakBack-${end.uuid}`}>
+              <PhoneIphoneIcon className="!text-[14px] shrink-0" />
               <span>回</span>
               {end.latitude !== null && end.longitude !== null ? (
-                <a style={{ color: color(end.distanceValue) }} css={styles.colorRedLink}>
+                <a style={{ color: color(end.distanceValue) }} className="no-underline">
                   {format(end.time, 'HH:mm')}
                 </a>
               ) : (
@@ -481,22 +325,22 @@ export default function Results({
           )
         } else if (end.checkinType === 'COMPUTER' || end.checkinType === null) {
           return (
-            <span css={styles.clockInItem} key={`breakBack-${end.uuid}`}>
-              <DesktopWindows css={styles.iconStyle} />
+            <span className={clockInItemClass} key={`breakBack-${end.uuid}`}>
+              <DesktopWindows className="!text-[14px] shrink-0" />
               <span>回{format(end.time, 'HH:mm')}</span>
             </span>
           )
         } else if (end.checkinType === 'QRCODE' || end.checkinType === null) {
           return (
-            <span css={styles.clockInItem} key={`breakBack-${end.uuid}`}>
-              <QrCodeIcon css={styles.iconStyle} />
+            <span className={clockInItemClass} key={`breakBack-${end.uuid}`}>
+              <QrCodeIcon className="!text-[14px] shrink-0" />
               <span>回{format(end.time, 'HH:mm')}</span>
             </span>
           )
         } else if (end.checkinType === 'ADMIN') {
           return (
-            <span css={styles.clockInItem} key={`breakBack-${end.uuid}`}>
-              <ManageAccountsRoundedIcon css={styles.iconStyle} />
+            <span className={clockInItemClass} key={`breakBack-${end.uuid}`}>
+              <ManageAccountsRoundedIcon className="!text-[14px] shrink-0" />
               <span>回{format(end.time, 'HH:mm')}</span>
             </span>
           )

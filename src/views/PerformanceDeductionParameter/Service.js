@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Button } from 'ui/button'
 import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
@@ -8,7 +7,6 @@ import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment, useState, useEffect } from 'react'
 import _ from 'lodash'
 import useFetchSettingCommissionWay from 'hooks/useFetchSettingCommissionWay'
-import styles from './styles/Services'
 import produce from 'immer'
 import idx from 'idx'
 import { openSnackbar } from 'elements/snackbars'
@@ -190,7 +188,7 @@ function Service({ className,
         <CardContent>
           {!merchantCommissionWay.loading ? (
             service.commission.map((data, index) => (
-              <div css={styles.serviceInputGroup} key={index}>
+              <div className="flex items-center mb-[24px] flex-wrap gap-y-[10px]" key={index}>
                 <Field label="服務扣項命名" className="w-44">
                   <Input
                     type="text"
@@ -217,7 +215,7 @@ function Service({ className,
                     variant="ghost"
                     size="icon"
                     aria-label="刪除"
-                    css={styles.action}
+                    className="w-[50px] max-sm:w-[50px] flex mr-[12px] cursor-pointer last:mr-0"
                     disabled={!isSubmitForCommission}
                     onClick={() => handleDeleteSetting('commission', index)}
                   >
@@ -229,7 +227,7 @@ function Service({ className,
                     variant="ghost"
                     size="icon"
                     aria-label="新增"
-                    css={styles.action}
+                    className="w-[50px] max-sm:w-[50px] flex mr-[12px] cursor-pointer last:mr-0"
                     disabled={!isSubmitForCommission}
                     onClick={() =>  handleAddSetting('commission')}
                   >

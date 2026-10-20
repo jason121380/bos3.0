@@ -1,37 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import { Divider } from 'ui/display-compat'
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
 import { Table, TableBody, TableCell, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'
 import { Fragment, useState, useEffect } from 'react'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    // minWidth: 900,
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-  cardHeader: css({
-    textAlign: 'center',
-  }),
-}
 
 function Results({ designerRakeReport, isMemberShipCardActive }) {
   const [showMembership, setShowMembership] = useState([])
@@ -67,11 +38,11 @@ function Results({ designerRakeReport, isMemberShipCardActive }) {
                   ? designer.user.nickName
                   : ''
                 } ${designer.user.name}`}
-              css={styles.cardHeader}
+              className="text-center"
             />
             <Divider />
-            <CardContent css={styles.content}>
-              <div css={styles.inner}>
+            <CardContent className="p-0">
+              <div>
                 <Table dense aria-label="a dense table">
                     <TableBody>
                       <TableRow>

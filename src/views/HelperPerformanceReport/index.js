@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 人員類別多選（Autocomplete）保留 MUI
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
@@ -11,8 +10,6 @@ import idx from 'idx'
 import React, { useEffect, useState } from 'react'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import useFetchMerchantJobTitlePoint from 'hooks/useFetchMerchantJobTitlePoint'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { EmptyState } from 'ui/empty-state'
@@ -22,16 +19,6 @@ import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
 import { CSVLink } from "react-csv";
 import { Autocomplete } from 'ui/combobox'
-
-const styles = {
-  root: css({
-    padding: theme.spacing(3),
-  }),
-  exportBtn: css({
-    display: 'flex',
-    alignItems: 'center'
-  }),
-}
 
 export default function HelperPerformance() {
   const [excelData, setExcelData] = useState([])

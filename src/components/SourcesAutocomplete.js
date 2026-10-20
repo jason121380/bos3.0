@@ -1,14 +1,12 @@
-/** @jsxImportSource @emotion/react */
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import useFetchGetCustomerReference from 'hooks/useFetchGetCustomerReference'
 import idx from 'idx'
-import { css } from '@emotion/react'
 import { Autocomplete } from 'ui/combobox'
 
 export default function SourcesAutocomplete({
-  className = {},
+  className = '',
   onChange = () => { },
   value,
 }) {
@@ -17,7 +15,7 @@ export default function SourcesAutocomplete({
   const getReference = useFetchGetCustomerReference()
   return (
     <Autocomplete
-      css={className}
+      className={className}
       options={
         !getReference.loading ?
           idx(getReference, _ => _.data.getCustomerReference) : []
@@ -31,7 +29,7 @@ export default function SourcesAutocomplete({
       renderOption={(props, option, { selected }) => (
         <span style={{ fontSize: 14, padding: 6 }} {...props}>
           <Checkbox
-            css={css({ padding: '2px !important' })}
+            className="!p-[2px]"
             style={{ color: 'rgb(var(--text))', marginRight: 4}}
             icon={icon}
             checkedIcon={checkedIcon}

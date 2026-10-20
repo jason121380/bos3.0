@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import React from 'react'
@@ -6,81 +5,6 @@ import {
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts";
 import { gendercolor, pieChartColor } from '../Colors';
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
-
-const styles = {
-  noDataDiv: css({
-    width: '100%',
-    height: '350px',
-    justifyContent: 'center',
-    display: 'flex',
-    alignItems: 'center'
-  }),
-  noData: css({
-    fontSize: '24px',
-  }),
-  gerderWrap: css({
-    height: '300px',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    marginLeft: '-40px',
-    flexWrap: 'no-wrap',
-    columnGap: '5px',
-    '& div': {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 10
-    },
-    '& div span': {
-      width: 10,
-      height: 10,
-    },
-    [theme.breakpoints.down('sm')]: {
-      height: 'fit-content',
-      marginLeft: '0px',
-    }
-  }),
-  pieWrap: css({
-    display: 'flex',
-    height: '100%',
-    alignItems: 'center',
-    marginLeft: '-20px',
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column',
-      marginLeft: '0px',
-    }
-  }),
-  pie: css({
-    width: '75%',
-    height: '300px',
-    [theme.breakpoints.down('sm')]: {
-      width: '100%',
-      minHeight: '200px',
-      height: 'fit-contnet',
-    }
-  }),
-  fontSize: css({
-    fontSize: '16px',
-    whiteSpace: 'nowrap',
-  }),
-  toolTips: css({
-    padding: '12px',
-    fontSize: '16px',
-    background: 'rgb(var(--background))',
-    color: 'black',
-    borderRadius: '5px',
-    boxShadow: '0 0 0 1px rgb(63 63 68 / 5%), 0 1px 3px 0 rgb(63 63 68 / 15%)',
-    display: 'flex',
-    alignItems: 'center',
-    '& span': {
-      marginRight: '10px',
-      width: 10,
-      height: 10,
-    },
-  }),
-}
 
 const ReturnedRatio = ({ data, width }) => {
   const renderOrderGenderRatioLabel = ({
@@ -108,7 +32,7 @@ const ReturnedRatio = ({ data, width }) => {
   const CustomOrderGenderRatioTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
-        <div css={styles.toolTips}>
+        <div className="p-[12px] text-[16px] [background:rgb(var(--background))] text-[color:black] rounded-[5px] [box-shadow:0_0_0_1px_rgb(63_63_68_/_5%),0_1px_3px_0_rgb(63_63_68_/_15%)] flex items-center [&_span]:mr-[10px] [&_span]:w-[10px] [&_span]:h-[10px]">
           <span style={{ background: payload[0].payload.fill }}></span><p>{`${payload[0].payload.name} ${payload[0].payload.count}單 ${payload[0].payload.percentage}%`}</p>
         </div>
       );
@@ -127,8 +51,8 @@ const ReturnedRatio = ({ data, width }) => {
             <CardDescription className="whitespace-nowrap text-caption">期間內顧客回流率</CardDescription>
           </div>
           {checkSourceRatio(data) ?
-            <div css={styles.pieWrap}>
-              <div css={styles.pie}>
+            <div className="flex h-full items-center ml-[-20px] max-[599.95px]:flex-col max-[599.95px]:ml-0">
+              <div className="w-[75%] h-[300px] max-[599.95px]:w-full max-[599.95px]:min-h-[200px]">
                 <ResponsiveContainer>
                   <PieChart>
                     <Pie
@@ -146,11 +70,11 @@ const ReturnedRatio = ({ data, width }) => {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div css={styles.gerderWrap}>
+              <div className="h-[300px] flex flex-col justify-center ml-[-40px] gap-x-[5px] [&_div]:flex [&_div]:items-center [&_div]:gap-[10px] [&_div_span]:w-[10px] [&_div_span]:h-[10px] max-[599.95px]:h-fit max-[599.95px]:ml-0">
                 {data.map((d, index) => (
                   <div key={d.name}
                     style={(width < 975 && width >= 900) || (width < 1470 && width >= 1200) ? { fontSize: 14, marginLeft: '20px' } : null}
-                    css={styles.fontSize}
+                    className="text-[16px] whitespace-nowrap"
                   >
                     <span style={{ background: gendercolor[index] }} />
                     {`${d.name}  ${d.count}單  ${d.percentage}%`}

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 設計師多選（Autocomplete）保留 MUI；排序切換鈕改 ui/toggle-group（handler (event, value) 原樣、`state !== null` 守衛不變）
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
@@ -14,30 +13,11 @@ import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusActive'
 import { CSVLink } from "react-csv";
 import Results from './Results'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 import { Autocomplete } from 'ui/combobox'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  disable: css({
-    display: 'none',
-  }),
-  enable: css({
-    display: 'flex',
-  }),
-}
 
 const orderBy = [
   {

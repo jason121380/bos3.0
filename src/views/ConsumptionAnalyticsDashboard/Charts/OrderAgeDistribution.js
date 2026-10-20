@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import React from 'react'
@@ -6,154 +5,6 @@ import {
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
 } from "recharts";
 import { pieChartColor } from '../Colors';
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
-
-const styles = {
-  root: css({
-    '& tspan': {
-      fontSize: '14px',
-    },
-    '& div.MuiGrid-root > .MuiPaper-root': {
-      minHeight: 390,
-      '& .MuiCardContent-root': {
-        padding: '8px 12px 12px !important',
-        '& .MuiTableContainer-root': {
-          marginTop: 16
-        }
-      }
-    },
-    '& .recharts-legend-item-text': {
-      fontSize: 14
-    }
-  }),
-  cardHead: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  }),
-  tableCell: css({
-    "& td": {
-      fontSize: '16px',
-      padding: '4px !important'
-    }
-  }),
-  noDataDiv: css({
-    width: '100%',
-    height: '350px',
-    justifyContent: 'center',
-    display: 'flex',
-    alignItems: 'center'
-  }),
-  noData: css({
-    fontSize: '24px',
-  }),
-  gerderWrap: css({
-    height: '300px',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    marginLeft: '-40px',
-    flexWrap: 'no-wrap',
-    columnGap: '5px',
-    '& div': {
-      display: 'flex',
-      alignItems: 'center',
-      gap: 10
-    },
-    '& div span': {
-      width: 10,
-      height: 10,
-    },
-    [theme.breakpoints.down('sm')]: {
-      height: 'fit-content',
-      marginLeft: '0px',
-    }
-  }),
-  pieWrap: css({
-    display: 'flex',
-    height: '100%',
-    alignItems: 'center',
-    marginLeft: '-20px',
-    [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column',
-      marginLeft: '0px',
-    }
-  }),
-  pieWrap2: css({
-    display: 'flex',
-    height: '100%',
-    alignItems: 'center',
-    marginLeft: '-20px',
-    '@media (max-width: 700px)': {
-      flexDirection: 'column',
-    }
-  }),
-  pie: css({
-    width: '75%',
-    height: '300px',
-    [theme.breakpoints.down('sm')]: {
-      width: '100%',
-      minHeight: '200px',
-      height: 'fit-contnet',
-    }
-  }),
-  fontSize: css({
-    fontSize: '16px',
-    whiteSpace: 'nowrap',
-  }),
-  toolTips: css({
-    padding: '12px',
-    fontSize: '16px',
-    background: 'rgb(var(--background))',
-    color: 'black',
-    borderRadius: '5px',
-    boxShadow: '0 0 0 1px rgb(63 63 68 / 5%), 0 1px 3px 0 rgb(63 63 68 / 15%)',
-    display: 'flex',
-    alignItems: 'center',
-    '& span': {
-      marginRight: '10px',
-      width: 10,
-      height: 10,
-    },
-  }),
-  trendToolTips: css({
-    minWidth: 150,
-    padding: '12px',
-    fontSize: '16px',
-    background: 'rgb(var(--background))',
-    color: 'black',
-    borderRadius: '5px',
-    boxShadow: '0 0 0 1px rgb(63 63 68 / 5%), 0 1px 3px 0 rgb(63 63 68 / 15%)',
-    display: 'flex',
-    flexDirection: 'column',
-    '& .header': {
-      display: 'flex',
-      gap: 30,
-      width: '100%',
-      justifyContent: 'space-between',
-      marginBottom: 10
-    },
-    '& .row': {
-      display: 'flex', gap: 10,
-      fontSize: 14
-    }
-  }),
-  OrderCountTooltip: css({
-    padding: '12px',
-    fontSize: '16px',
-    background: 'rgb(var(--background))',
-    color: 'black',
-    borderRadius: '5px',
-    boxShadow: '0 0 0 1px rgb(63 63 68 / 5%), 0 1px 3px 0 rgb(63 63 68 / 15%)',
-  }),
-  trendLegend: css({
-    border: '1px soid black',
-    '& .recharts-legend-item-text': {
-      fontSize: 14
-    }
-  })
-}
 
 const OrderAgeDistribution = ({ display, data, width }) => {
   const renderorderAgeDistributionLabel = ({
@@ -181,7 +32,7 @@ const OrderAgeDistribution = ({ display, data, width }) => {
   const CustomOrderAgeDistributionTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
-        <div css={styles.toolTips}>
+        <div className="p-[12px] text-[16px] [background:rgb(var(--background))] text-[color:black] rounded-[5px] [box-shadow:0_0_0_1px_rgb(63_63_68_/_5%),0_1px_3px_0_rgb(63_63_68_/_15%)] flex items-center [&_span]:mr-[10px] [&_span]:w-[10px] [&_span]:h-[10px]">
           <span style={{ background: payload[0].payload.fill }}></span><p>{`${payload[0].payload.ageRange} (${payload[0].payload.count}人 ${payload[0].payload.percentage}%)`}</p>
         </div>
       );
@@ -197,8 +48,8 @@ const OrderAgeDistribution = ({ display, data, width }) => {
             <CardDescription className="whitespace-nowrap text-caption">期間內(訂單)來客的年齡分佈</CardDescription>
           </div>
           {display ?
-            <div css={styles.pieWrap}>
-              <div css={styles.pie}>
+            <div className="flex h-full items-center ml-[-20px] max-[599.95px]:flex-col max-[599.95px]:ml-0">
+              <div className="w-[75%] h-[300px] max-[599.95px]:w-full max-[599.95px]:min-h-[200px]">
                 <ResponsiveContainer>
                   <PieChart>
                     <Pie
@@ -214,9 +65,9 @@ const OrderAgeDistribution = ({ display, data, width }) => {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div css={styles.gerderWrap}>
+              <div className="h-[300px] flex flex-col justify-center ml-[-40px] gap-x-[5px] [&_div]:flex [&_div]:items-center [&_div]:gap-[10px] [&_div_span]:w-[10px] [&_div_span]:h-[10px] max-[599.95px]:h-fit max-[599.95px]:ml-0">
                 {data.map((d, index) => (
-                  <div key={`orderAgeDistribution-${index}`} style={width < 975 && width >= 900 ? { fontSize: 14, marginLeft: '20px' } : null} css={styles.fontSize}><span style={{ background: pieChartColor[index] }} />{`${d.ageRange} (${d.count}人 ${d.percentage}%)`}</div>
+                  <div key={`orderAgeDistribution-${index}`} style={width < 975 && width >= 900 ? { fontSize: 14, marginLeft: '20px' } : null} className="text-[16px] whitespace-nowrap"><span style={{ background: pieChartColor[index] }} />{`${d.ageRange} (${d.count}人 ${d.percentage}%)`}</div>
                 ))}
               </div>
             </div> :

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 對話框內有 MUI Autocomplete，保留 MUI Dialog；名稱／網址已換 Field＋Input
 import { Dialog, DialogContent, DialogTitle, DialogActions } from 'ui/modal-compat'
 import { Checkbox } from 'ui/checkbox'
@@ -15,7 +14,6 @@ import useFetchDeleteMerchantExternalLink from 'hooks/useFetchDeleteMerchantExte
 import useFetchCreateMerchantCusExternalLink from 'hooks/useFetchCreateMerchantCusExternalLink'
 import useFetchUpdateMerchantCusExternalLink from 'hooks/useFetchUpdateMerchantCusExternalLink'
 import useFetchDeleteMerchantCusExternalLink from 'hooks/useFetchDeleteMerchantCusExternalLink'
-import { styles } from './styles/OuterLinkModal'
 import { openSnackbar } from 'elements/snackbars'
 import { cloneDeep } from 'lodash'
 import idx from 'idx'
@@ -144,7 +142,11 @@ const OuterLinkModal = ({
   }
   
   return (
-    <Dialog css={styles.root} open={open} fullWidth>
+    <Dialog
+      className="[&_.MuiDialog-paper]:overflow-y-visible [&_.MuiDialogContent-root]:overflow-y-visible [&_.MuiTypography-root]:text-[16px] [&_div.MuiDialogContent-root]:px-[24px] [&_div.MuiDialogContent-root]:py-[16px] [&_.MuiDialogActions-root]:flex [&_.MuiDialogActions-root]:justify-between [&_.MuiDialogActions-root]:px-[24px] [&_.MuiDialogActions-root]:pt-0 [&_.MuiDialogActions-root]:pb-[16px] [&_.MuiDialogActions-root]:flex-wrap [&_.MuiDialogActions-root]:gap-[10px] [&_.MuiDialogActions-spacing>:not(:first-child)]:ml-0 [&_.MuiDialogTitle-root]:pt-[8px] [&_.MuiDialogTitle-root]:pb-0"
+      open={open}
+      fullWidth
+    >
       <DialogTitle>
         {`${isCreate ? '新增' : '編輯'}外部連結`}
         {isCus && (
@@ -157,7 +159,7 @@ const OuterLinkModal = ({
         )}
       </DialogTitle>
       <div className="h-px bg-border" />
-      <DialogContent css={styles.Content}>
+      <DialogContent className="flex flex-col gap-[10px]">
         <Field label="名稱">
           <Input
             placeholder='請輸入名稱'
@@ -212,7 +214,7 @@ const OuterLinkModal = ({
               variant="danger">刪除</Button>
           }
         </div>
-        <div css={styles.ButtonGroup}>
+        <div className="flex gap-[10px] flex-wrap">
           <Button disabled={isClick} variant="secondary" onClick={onModalClose}>取消</Button>
           <Button
             disabled={isClick}

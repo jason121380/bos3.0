@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
 import { Eraser, Copy, Trash2 } from 'lucide-react'
 import { RowIconButton, AddRowButton } from './RowAction'
@@ -8,7 +7,12 @@ import _ from 'lodash'
 import { Fragment, useEffect, useRef, useState, useContext } from 'react'
 import billContext from 'context/keyInContext'
 
-import styles from './styles/CouponSells'
+const styles = {
+  couponSells: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  field: 'w-[150px] flex mr-[12px]',
+  fieldWidth: 'w-[250px] flex mr-[12px]',
+  priceField: 'w-[65px] flex mr-[12px]',
+}
 
 export default function CouponSells({
   couponSell,
@@ -87,7 +91,7 @@ export default function CouponSells({
   }
   return (
     <Fragment>
-      <div css={styles.couponSells}>
+      <div className={styles.couponSells}>
         {index === 0 ? (
           <RowIconButton label="從清單選擇預收卡" className="mx-1.5" onClick={handleOpenCouponModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
@@ -138,7 +142,7 @@ export default function CouponSells({
         </Field>
         {couponSell.serviceId && (
           <Fragment>
-            <Field label="可使用次數" css={styles.priceField}>
+            <Field label="可使用次數" className={styles.priceField}>
               <Input
                 value={couponSell.availableCount}
                 autoFocus={focus === 'availableCount'}
@@ -157,7 +161,7 @@ export default function CouponSells({
                 disabled={!!(couponSell.isLocked === 'TRUE' || couponSell.isLocked === 'UNSET')}
               />
             </Field>
-            <Field label="價格" css={styles.priceField}>
+            <Field label="價格" className={styles.priceField}>
               <Input
                 value={couponSell.price}
                 name="price"
@@ -176,7 +180,7 @@ export default function CouponSells({
                 disabled={!!(couponSell.isLocked === 'TRUE' || couponSell.isLocked === 'UNSET')}
               />
             </Field>
-            <Field label="張數" css={styles.priceField}>
+            <Field label="張數" className={styles.priceField}>
               <Input
                 value={couponSell.count}
                 name="count"
@@ -194,7 +198,7 @@ export default function CouponSells({
                 }}
               />
             </Field>
-            <Field label="備註" css={styles.field}>
+            <Field label="備註" className={styles.field}>
               <Input
                 value={couponSell.remark}
                 name="remark"

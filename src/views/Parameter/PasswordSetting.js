@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Field, Input } from 'ui/input'
 import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
@@ -6,7 +5,6 @@ import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
 
-import styles from './styles/PasswordSetting'
 
 const passwordArr = [
   { label: '編輯訂單密碼', key: 'reCheckoutOrder' },
@@ -44,7 +42,7 @@ function PasswordSetting({ className, setPasswordSetting, passwordSetting, input
         <CardTitle>密碼設定</CardTitle>
       </CardHeader>
       <CardContent>
-        <div css={styles.serviceInputGroup}>
+        <div className="flex items-center mb-[24px]">
           <Field label="萬能密碼" className="w-56">
             <Input
               type="password"
@@ -61,7 +59,7 @@ function PasswordSetting({ className, setPasswordSetting, passwordSetting, input
           </Field>
         </div>
         {passwordArr.map(({ label, key }) => (
-          <div key={label} css={styles.serviceInputGroup}>
+          <div key={label} className="flex items-center mb-[24px]">
             <Field label={label} className="w-56">
               <Input
                 type="password"
@@ -72,7 +70,7 @@ function PasswordSetting({ className, setPasswordSetting, passwordSetting, input
             </Field>
             <CheckboxField
               disabled={!inputEnable}
-              css={styles.isUsing}
+              className="mx-[20px] my-0"
               label="啟用"
               checked={passwordSetting[key].isUsing}
               onChange={(e, v) => handleIsUsingOnchange(key, v)}

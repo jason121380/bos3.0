@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 表格列使用 ui/table（外框 components/ManagementTable 亦為 ui/table）
 
 import ManagementTable from 'components/ManagementTable'
@@ -9,43 +8,7 @@ import { useState, useEffect, useRef } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from "react-csv";
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Button } from 'ui/button'
-
-const styles = {
-  root: css({}),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  filterButton: css({
-    marginRight: theme.spacing(2),
-  }),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    minWidth: 1150,
-  }),
-  actions: css({
-    padding: theme.spacing(0, 1),
-    justifyContent: 'flex-end',
-  }),
-  cardHeader: css({
-    '& .MuiCardHeader-action': {
-      marginTop: 0
-    }
-  }),
-  compactCell: css({
-    padding: '4px 8px !important',
-  }),
-}
 
 export default function UsagedResults({
   orders,
@@ -94,7 +57,7 @@ export default function UsagedResults({
   }, [results, pageRef.current])
 
   return (
-    <div {...rest} css={styles.root}>
+    <div {...rest}>
       <ManagementTable
         title="卡券使用紀錄"
         totalCount={page.count}
@@ -107,20 +70,20 @@ export default function UsagedResults({
         excelFilename="卡券使用紀錄.csv"
         tableHead={(
           <>
-            <TableHead css={styles.compactCell}>使用詳情</TableHead>
-            <TableHead css={styles.compactCell}>購買詳情</TableHead>
-            <TableHead css={styles.compactCell}>客戶</TableHead>
-            <TableHead css={styles.compactCell}>設計師</TableHead>
-            <TableHead css={styles.compactCell}>卡券代號</TableHead>
-            <TableHead css={styles.compactCell}>卡券使用</TableHead>
-            <TableHead css={styles.compactCell}>金額</TableHead>
+            <TableHead className="!px-2 !py-1">使用詳情</TableHead>
+            <TableHead className="!px-2 !py-1">購買詳情</TableHead>
+            <TableHead className="!px-2 !py-1">客戶</TableHead>
+            <TableHead className="!px-2 !py-1">設計師</TableHead>
+            <TableHead className="!px-2 !py-1">卡券代號</TableHead>
+            <TableHead className="!px-2 !py-1">卡券使用</TableHead>
+            <TableHead className="!px-2 !py-1">金額</TableHead>
           </>
         )}
       >
         <TableBody>
           {results.map((result, index) => (
             <TableRow key={`${result.id}-${index}`}>
-              <TableCell css={styles.compactCell}>
+              <TableCell className="!px-2 !py-1">
                 {idx(result, _ => _.usageOrder.no)}
                 <div className="text-caption tabular-nums text-text-secondary">
                   {idx(result, _ => format(_.usageOrder.date, 'yyyy/MM/dd'))}
@@ -131,7 +94,7 @@ export default function UsagedResults({
                   </RouterLink>
                 </Button>
               </TableCell>
-              <TableCell css={styles.compactCell}>
+              <TableCell className="!px-2 !py-1">
                 {idx(result, _ => _.order.no)}
                 <div className="text-caption tabular-nums text-text-secondary">
                   {idx(result, _ => format(_.order.date, 'yyyy/MM/dd'))}
@@ -142,27 +105,27 @@ export default function UsagedResults({
                   </RouterLink>
                 </Button>
               </TableCell>
-              <TableCell css={styles.compactCell}>
+              <TableCell className="!px-2 !py-1">
                 {idx(result, _ => _.order.customer.name)}
                 <div className="text-caption tabular-nums text-text-secondary">
                   {idx(result, _ => _.order.customer.cellphone)}
                 </div>
               </TableCell>
-              <TableCell css={styles.compactCell}>
+              <TableCell className="!px-2 !py-1">
                 {idx(result, _ => _.usageOrder.designer.name)}
                 <div className="text-caption tabular-nums text-text-secondary">
                   {idx(result, _ => _.usageOrder.designer.designerNo)}
                 </div>
               </TableCell>
-              <TableCell css={styles.compactCell}>{idx(result, _ => _.no)}</TableCell>
-              <TableCell css={styles.compactCell}>{idx(result, _ => _.service.name)}</TableCell>
-              <TableCell css={styles.compactCell}>{roundDecimal(idx(result, _ => _.price))}</TableCell>
+              <TableCell className="!px-2 !py-1">{idx(result, _ => _.no)}</TableCell>
+              <TableCell className="!px-2 !py-1">{idx(result, _ => _.service.name)}</TableCell>
+              <TableCell className="!px-2 !py-1">{roundDecimal(idx(result, _ => _.price))}</TableCell>
             </TableRow>
           ))}
           <TableRow>
-            <TableCell css={styles.compactCell} colSpan={5} />
-            <TableCell css={styles.compactCell} style={{ fontWeight: 'bold' }}>合計</TableCell>
-            <TableCell css={styles.compactCell} style={{ fontWeight: 'bold' }}>{totalPrice()}</TableCell>
+            <TableCell className="!px-2 !py-1" colSpan={5} />
+            <TableCell className="!px-2 !py-1" style={{ fontWeight: 'bold' }}>合計</TableCell>
+            <TableCell className="!px-2 !py-1" style={{ fontWeight: 'bold' }}>{totalPrice()}</TableCell>
           </TableRow>
         </TableBody>
       </ManagementTable>

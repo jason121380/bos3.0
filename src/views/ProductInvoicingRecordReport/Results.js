@@ -1,37 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from 'ui/table'
 import PropTypes from 'prop-types'
 import { format } from 'date-fns'
-import { css } from '@emotion/react'
-
-const styles = {
-  table: css({
-    minWidth: 650,
-  }),
-  designerName: css({
-    fontWeight: 'bold',
-  }),
-  medals: css({
-    fontSize: '19px',
-  }),
-  sticky: css({
-    position: 'sticky',
-    left: 0,
-    background: 'white',
-    zIndex: '99',
-    outline: '1px solid rgb(var(--border))',
-    width: '100px'
-  }),
-  stickyRow: css({
-    position: 'sticky',
-    top: 0,
-    background: 'white',
-    zIndex: '100',
-    outline: '1px solid rgb(var(--border))'
-  }),
-}
 
 function Results({ reportData }) {
   const recordType = type => {
@@ -48,13 +19,13 @@ function Results({ reportData }) {
   return (
     <Table
       dense
-      css={styles.table}
+      className="min-w-[650px]"
       wrapperClassName="ProductInvoicingRecordReportTable mt-3 max-h-[calc(100vh-340px)] overflow-y-auto"
       aria-label="a dense table"
     >
         <TableHeader>
-          <TableRow css={styles.stickyRow}>
-            <TableHead css={styles.sticky}>時間</TableHead>
+          <TableRow className="sticky top-0 z-[100] [background:white] [outline:1px_solid_rgb(var(--border))]">
+            <TableHead className="sticky left-0 z-[99] w-[100px] [background:white] [outline:1px_solid_rgb(var(--border))]">時間</TableHead>
             <TableHead>編號</TableHead>
             <TableHead>商品名稱</TableHead>
             <TableHead>商品代號</TableHead>
@@ -66,7 +37,7 @@ function Results({ reportData }) {
         <TableBody>
           {reportData.map((d, index) => (
             <TableRow key={`reportDataRow-${index}`}>
-              <TableCell css={styles.sticky}>{format(d.date, 'yyyy/MM/dd')}</TableCell>
+              <TableCell className="sticky left-0 z-[99] w-[100px] [background:white] [outline:1px_solid_rgb(var(--border))]">{format(d.date, 'yyyy/MM/dd')}</TableCell>
               <TableCell style={{ wordBreak: 'break-all' }}>{d.no}</TableCell>
               <TableCell>{d.productName}</TableCell>
               <TableCell>{d.productNo}</TableCell>

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Divider, Paper } from 'ui/display-compat'
 import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
@@ -10,37 +9,6 @@ import idx from 'idx'
 import { Card as UiCard } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
-
-const styles = {
-  root: css({}),
-  content: css({
-    padding: 0,
-  }),
-  inner: css({
-    // minWidth: 900,
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-  cardHeader: css({
-    textAlign: 'center',
-  }),
-  calendarButton: css({
-    backgroundColor: theme.palette.common.white,
-  }),
-}
 
 function RakeReport({ setRakeReportDate, designerRakeReport, rakeReportDate, loading }) {
   const [membershipDisplay, setMembershipDisplay] = useState(false)
@@ -98,13 +66,13 @@ function RakeReport({ setRakeReportDate, designerRakeReport, rakeReportDate, loa
                       ? designer.user.nickName
                       : ''
                     } ${designer.user.name}`}
-                  css={styles.cardHeader}
+                  className="text-center"
                 />
                 <Divider />
-                <CardContent css={styles.content}>
-                  <div css={styles.inner}>
+                <CardContent className="p-0">
+                  <div>
                     <TableContainer component={Paper}>
-                      <Table css={styles.table} size="small" aria-label="a dense table">
+                      <Table size="small" aria-label="a dense table">
                         <TableHead></TableHead>
                         <TableBody>
                           <TableRow>

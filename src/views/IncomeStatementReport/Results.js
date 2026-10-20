@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 卡片保留相容層：列印樣式以 .IncomeStatementReportTableContainer .MuiCard-root／.MuiCardContent-root 排版表格（initialize.scss）
 import { Card, CardContent, CardHeader } from 'ui/card-compat'
 import { Download } from 'lucide-react'
@@ -6,49 +5,12 @@ import { Button } from 'ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import { HeaderActionsPortal } from 'ui/page-header'
 import PropTypes from 'prop-types'
+import clsx from 'clsx'
 import { useEffect, useState } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { CSVLink } from "react-csv";
 import roundDecimal from './../../helper/roundDecimal.js'
-import { css } from '@emotion/react'
-import { theme } from '../../theme/index.js'
 
-
-const styles = {
-  root: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-  }),
-  content: css({
-    padding: 0,
-  }),
-  nameCell: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  avatar: css({
-    height: 42,
-    width: 42,
-    marginRight: theme.spacing(1),
-  }),
-  actions: css({
-    padding: theme.spacing(1),
-    justifyContent: 'flex-end',
-  }),
-  leftCard: css({
-    width: '55%',
-  }),
-  rightCard: css({
-    width: '40%',
-  }),
-  subtotal: css({
-    color: 'red',
-    fontWeight: 'bold',
-  }),
-  cardBottom: css({
-    marginBottom: '15px',
-  }),
-}
 
 function Results({ className, incomeStatement }) {
   const [cashRevenue, setCashRevenue] = useState(0)
@@ -137,8 +99,7 @@ function Results({ className, incomeStatement }) {
 
   return (
     <div
-      css={css([styles.root, className])}
-      className='IncomeStatementReportTableContainer flex w-full flex-wrap'
+      className={clsx('IncomeStatementReportTableContainer flex w-full flex-wrap justify-between', className)}
     >
       <div className="w-full min-[900px]:w-7/12">
         <Card>
@@ -161,9 +122,9 @@ function Results({ className, incomeStatement }) {
           />
           {/* 原生 hr：列印規則以 hr 選擇器隱藏分隔線 */}
           <hr className="m-0 shrink-0 border-0 border-b border-solid border-border" />
-          <CardContent css={styles.content}>
+          <CardContent className="p-0">
             <PerfectScrollbar>
-              <div css={styles.inner}>
+              <div>
                 <Table dense>
                   <TableHeader>
                     <TableRow>
@@ -206,14 +167,14 @@ function Results({ className, incomeStatement }) {
                       }
                     })}
                     <TableRow>
-                      <TableCell css={styles.subtotal}>小計</TableCell>
+                      <TableCell className="font-bold text-[red]">小計</TableCell>
                       <TableCell>{Math.round(cashRevenue)}</TableCell>
                       <TableCell>100%</TableCell>
                       <TableCell>{Math.round(cashExpenditure)}</TableCell>
                       <TableCell>100%</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell css={styles.subtotal}>損益</TableCell>
+                      <TableCell className="font-bold text-[red]">損益</TableCell>
                       <TableCell>{Math.round(cashRevenue + cashExpenditure)}</TableCell>
                       <TableCell>
                         {cashRevenue > 0
@@ -260,7 +221,7 @@ function Results({ className, incomeStatement }) {
 }
 
 Results.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   customers: PropTypes.array,
 }
 

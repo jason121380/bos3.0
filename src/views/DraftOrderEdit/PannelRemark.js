@@ -1,32 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import React from 'react'
 import billContext from 'context/keyInContext'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import Remark from './Remark'
-
-const styles = {
-  root: css({
-    width: '100%',
-    marginTop: theme.spacing(3),
-  }),
-  details: css({
-    overflowX: 'auto',
-  }),
-  heading: css({
-    fontSize: '16px !important',
-    fontWeight: 'bold',
-    color: 'rgb(var(--text))',
-  }),
-  fieldOutter: css({
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-  }),
-}
 
 export default function PannelRemark() {
   const { bill } = React.useContext(billContext)
@@ -46,10 +22,10 @@ export default function PannelRemark() {
         data-testid="panelPayment"
         onClick={handleAccordionClick}
       >
-        <p className="m-0" css={styles.heading}>備註及來源</p>
+        <p className="m-0 !text-[16px] font-bold text-[rgb(var(--text))]">備註及來源</p>
       </AccordionSummary>
-      <AccordionDetails css={styles.details}>
-        <div css={styles.fieldOutter}>
+      <AccordionDetails className="overflow-x-auto">
+        <div className="flex flex-col items-start justify-start">
           <Remark />
         </div>
       </AccordionDetails>

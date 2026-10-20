@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
 import ReferToggleButton from 'components/ReferToggleButton'
 import { endOfDay, startOfMonth, format } from 'date-fns'
@@ -9,8 +8,6 @@ import idx from 'idx'
 import { useEffect, useState } from 'react'
 import { CSVLink } from "react-csv";
 import DateSelector from 'components/DateSelector'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import produce from 'immer'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -18,16 +15,6 @@ import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  container: css({
-    paddingTop: theme.spacing(1.5),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(1),
-  }),
-}
 
 function DesignerPerformOverview() {
   const [dailyPerformanceData, setDailyPerformanceData] = useState(null)
@@ -156,7 +143,7 @@ function DesignerPerformOverview() {
       />
       {(!merchantDailyPerformanceReportData.loading && dailyPerformanceData !== null) ? (
         <Results
-          className={styles.results}
+          className="mt-2"
           results={dailyPerformanceData}
           membershipDisplay={membershipDisplay}
           attributeSwitchs={attributeSwitchs}

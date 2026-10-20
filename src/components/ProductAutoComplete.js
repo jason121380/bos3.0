@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import { useFetchProductsInAutoComplete } from 'hooks/useFetchProducts'
 import useToggle from 'hooks/useToggle'
@@ -8,7 +7,7 @@ import { Autocomplete } from 'ui/combobox'
 
 function ProductAutoComplete(
   {
-    className,
+    className = '',
     onChange = () => {},
     label = '',
     value,
@@ -73,7 +72,7 @@ function ProductAutoComplete(
       clearOnBlur={true}
       onOpen={product.toggle}
       onClose={product.toggle}
-      css={className}
+      className={className}
       value={selectedValue}
       options={options}
       autoHighlight

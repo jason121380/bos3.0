@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TextField } from 'ui/text-field'
 import useFetchTickets from 'hooks/useFetchTickets'
 import useToggle from 'hooks/useToggle'
@@ -9,7 +8,7 @@ import { Autocomplete } from 'ui/combobox'
 
 function TicketAutoComplete(
   {
-    className = {},
+    className = '',
     onChange = () => {},
     label = '',
     orderId,
@@ -115,7 +114,7 @@ function TicketAutoComplete(
       open={ticketsToggle.open}
       onOpen={ticketsToggle.toggle}
       onClose={ticketsToggle.toggle}
-      css={className}
+      className={className}
       value={selectedValue}
       autoHighlight
       filterOptions={filterOptions}

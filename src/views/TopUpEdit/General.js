@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Input, TextField, InputAdornment } from 'ui/text-field'
 import { FormControl, InputLabel, MenuItem, Select, FormHelperText } from 'ui/form-control'
 import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
@@ -12,8 +11,10 @@ import format from 'date-fns/format';
 import { Card, CardContent } from 'ui/card'
 import { Field, Input as UiInput } from 'ui/input'
 
-// styles.formControl 仍以 emotion 物件傳給 MUI 欄位與 EmployeeAutoComplete／CustomerAutoComplete（其 className 以 css prop 套用）
-import styles from './styles/General'
+// styles.formControl 以 className 字串傳給欄位與 EmployeeAutoComplete／CustomerAutoComplete
+const styles = {
+  formControl: '!mb-[24px]',
+}
 
 const handlingFeeDecountWayArray = [
   {
@@ -89,13 +90,13 @@ export default function General() {
             value={date}
             onChange={val => setValue('date', new Date(val).getTime())}
             format="yyyy/MM/dd HH:mm"
-            css={styles.formControl}
+            className={styles.formControl}
             localeText={{
               toolbarTitle: '選擇日期'
             }}
             slots={{
               field: inputProps => (
-                <FormControl css={styles.formControl} variant="filled">
+                <FormControl className={styles.formControl} variant="filled">
                   <InputLabel htmlFor="date-picker">日期</InputLabel>
                   <Input
                     id="date-picker"
@@ -117,7 +118,7 @@ export default function General() {
           type="number"
           fullWidth
           variant="outlined"
-          css={styles.formControl}
+          className={styles.formControl}
           name="money"
           inputProps={{
             // min: 1,
@@ -175,7 +176,7 @@ export default function General() {
 
         <FormControl
           variant="outlined"
-          css={styles.formControl}
+          className={styles.formControl}
           fullWidth
           error={Boolean(errors?.payType)}
         >
@@ -197,7 +198,7 @@ export default function General() {
           {errors.payType && <FormHelperText>{errors.payType.message}</FormHelperText>}
         </FormControl>
         {payType !== '現金' && (
-          <FormControl variant="outlined" css={styles.formControl} fullWidth>
+          <FormControl variant="outlined" className={styles.formControl} fullWidth>
             <InputLabel>選擇入金儲值手續費負擔方</InputLabel>
             <Select
               name="handlingFeeDecountWay"

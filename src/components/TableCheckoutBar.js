@@ -1,27 +1,11 @@
-/** @jsxImportSource @emotion/react */
 import { Button } from 'ui/button'
 import { Check as CheckIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
-import { theme } from '../theme'
-
-const styles = {
-  root: css({
-    padding: theme.spacing(2),
-  }),
-  actions: css({
-    display: 'flex',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    '& > * + *': {
-      marginLeft: theme.spacing(2),
-    },
-  }),
-}
+import { cn } from 'ui/utils'
 
 function TableCheckoutBar({
   selected = [],
-  className,
+  className = '',
   onMarkPaid,
   onMarkUnpaid,
   onDelete,
@@ -34,14 +18,13 @@ function TableCheckoutBar({
     <div hidden={!open} className={`ui-root noprint pointer-events-none fixed inset-x-0 bottom-[calc(72px+env(safe-area-inset-bottom))] z-[1200] lg:bottom-6 justify-center px-4 ${open ? 'flex' : 'hidden'}`}>
       <div
         {...rest}
-        css={css([styles.root, className])}
-        className="pointer-events-auto flex max-w-full flex-wrap items-center gap-3 rounded-lg border border-solid border-border bg-background shadow-float"
+        className={cn('pointer-events-auto flex max-w-full flex-wrap items-center gap-3 rounded-lg border border-solid border-border bg-background p-4 shadow-float', className)}
       >
         {/* 原 Hidden smDown：600px 以下不顯示勾選筆數 */}
         <div className="text-body font-medium text-text-secondary max-[599.95px]:hidden">
           {selected.length} selected
         </div>
-        <div css={styles.actions}>
+        <div className="flex flex-wrap justify-center [&>*+*]:ml-4">
           <Button
             onClick={onMarkPaid}
             disabled={checkoutProcessing}
@@ -57,7 +40,7 @@ function TableCheckoutBar({
 }
 
 TableCheckoutBar.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   onDelete: PropTypes.func,
   onMarkPaid: PropTypes.func,
   onMarkUnpaid: PropTypes.func,

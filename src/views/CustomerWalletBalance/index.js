@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from 'react'
 import Page from 'components/Page'
 import idx from 'idx'
@@ -6,32 +5,12 @@ import useFetchCustomerWalletBalance from 'hooks/useFetchCustomerWalletReport'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import { CSVLink } from "react-csv";
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  field: css({
-    width: '240px',
-  }),
-}
 
 const CustomerWalletBalance = () => {
   const [reportForDisplay, setReportForDisplay] = useState(null)
@@ -106,10 +85,9 @@ const CustomerWalletBalance = () => {
             label={'設計師編號/姓名'}
             value={designerValue}
             onChange={value => handleDesignerChange(value)}
-            className={styles.field}
+            className="w-[240px]"
           />
           <CustomerAutoComplete
-            className={styles.option}
             label={'顧客編號/姓名'}
             value={customerIdValue}
             onChange={value =>

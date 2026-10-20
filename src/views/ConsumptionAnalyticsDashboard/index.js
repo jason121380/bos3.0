@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
 import { endOfMonth, startOfMonth, getMonth } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
@@ -6,28 +5,11 @@ import idx from 'idx'
 import { useEffect, useState } from 'react'
 import useFetchGetConsumptionAnalyticsDashboard from 'hooks/useFetchGetConsumptionAnalyticsDashboard'
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Filter from './Filter'
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  circular: css({
-    textAlign: 'center',
-    marginTop: '100px',
-  })
-}
 
 const monthArr = [
   '1月', '2月', '3月', '4月', '5月', '6月',

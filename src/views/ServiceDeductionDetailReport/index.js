@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Select, InputLabel, FormControl, MenuItem } from 'ui/form-control'
 import { useState, useEffect } from 'react'
 // 抽成類別的選項含 value={null}（全部），Radix Select 不支援空值，保留 MUI Select
@@ -12,7 +11,6 @@ import { endOfMonth } from 'date-fns'
 import idx from 'idx'
 import { CSVLink } from "react-csv";
 import useFetchServiceDedcutionDetailMultiple from 'hooks/useFetchGetUserServiceDeductionDetialMultiple'
-import { css } from '@emotion/react'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
@@ -20,13 +18,6 @@ import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-// ServicesIncludesTicketsAutoComplete 以 css={className} 套用，需傳 emotion 樣式物件
-const styles = {
-  field: css({
-    minWidth: '180px !important'
-  }),
-}
 
 // MerchantSearchBar 內部為 MUI Grid container，沿用舊版取消其寬度
 const topDiv = 'flex flex-row flex-wrap items-center gap-2.5 [&_.MuiGrid-container]:!w-[unset]'
@@ -106,7 +97,7 @@ const ServiceDeductionDetailReport = () => {
                 lastInLeaderBoard={true}
               />
               <ServicesIncludesTicketsAutoComplete
-                className={styles.field}
+                className="!min-w-[180px]"
                 label="服務名稱/代號"
                 value={inputData.serviceId}
                 name="service"
@@ -114,7 +105,7 @@ const ServiceDeductionDetailReport = () => {
                   setInputData({ ...inputData, serviceId: value ? value.id : [] })
                 }}
               />
-              <FormControl css={styles.field} variant="outlined">
+              <FormControl className="!min-w-[180px]" variant="outlined">
                 <InputLabel>抽成類別</InputLabel>
                 <Select label='抽成類別' onChange={event => hanldeOnChange(event)}>
                   <MenuItem value={null}>全部</MenuItem>

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
@@ -8,8 +7,6 @@ import useFetchMerchantBankSettings from 'hooks/useFetchMerchantBankSettings'
 import DateSelector from 'components/DateSelector'
 import subMonths from 'date-fns/subMonths'
 import useFetchGetUserSalaryTransferReport from 'hooks/useFetchGetUserSalaryTransferReport'
-import { theme } from '../../theme'
-import { css } from '@emotion/react'
 
 import { Skeleton } from 'ui/skeleton'
 import { Printer } from 'lucide-react'
@@ -18,18 +15,6 @@ import { Toolbar } from 'ui/page-header'
 // 本頁以 window.print() 列印整頁：TransferDetail（.TransferDetailpPrint）與 Results（.MerchantBankTransferReportTable）為列印內容，依列印範本規則保留
 import TransferDetail from './TransferDetail'
 import Results from './Results'
-
-const styles = {
-  root: css({
-    minHeight: '100%',
-  }),
-  container: css({
-    padding: theme.spacing(1.5),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-}
 
 export default function MerchantBankTransferReport() {
   const [date, setDate] = useState({
@@ -70,7 +55,7 @@ export default function MerchantBankTransferReport() {
   }, [merchantBankSettingsData.loading])
 
   return (
-    <Page css={styles.root} className='MerchantBankTransferReport' title="薪資轉帳明細">
+    <Page className='MerchantBankTransferReport min-h-full' title="薪資轉帳明細">
       <div>
         <AdminPageHeader title='薪資轉帳明細'>
           <Button

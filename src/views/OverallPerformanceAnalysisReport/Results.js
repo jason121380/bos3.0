@@ -1,35 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import PropTypes from 'prop-types'
 import { format } from 'date-fns'
-import { css } from '@emotion/react'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
-
-const styles = {
-  table: css({
-    minWidth: 650,
-  }),
-  designerName: css({
-    fontWeight: 'bold',
-  }),
-  medals: css({
-    fontSize: '19px',
-  }),
-  sticky: css({
-    position: 'sticky',
-    left: 0,
-    background: 'white',
-    zIndex: '99',
-    outline: '1px solid rgb(var(--border))'
-  }),
-  stickyRow: css({
-    position: 'sticky',
-    top: 0,
-    background: 'white',
-    zIndex: '100',
-    outline: '1px solid rgb(var(--border))'
-  }),
-}
 
 // 固定首欄與表頭（原 styles.sticky／stickyRow，改用 tokens 底色）
 const STICKY_COL = 'sticky left-0 z-[99] bg-background outline outline-1 outline-border'

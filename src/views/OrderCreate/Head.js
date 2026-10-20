@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { CircularProgress } from 'ui/display-compat'
 import { TextField, InputAdornment } from 'ui/text-field'
 import PropTypes from 'prop-types'
@@ -29,10 +28,22 @@ import { useFetchCustomerLazy } from 'hooks/useFetchCustomer'
 import useFetchGetIsAutoSetPreferDesignerForOrderCreate from 'hooks/useFetchGetIsAutoSetPreferDesignerForOrderCreate'
 import MembershipCardList from 'components/MembershipCardList'
 import lineIcon from 'assets/images/LINE_APP.png'
-import { css } from '@emotion/react'
 
 import AddCustomerModal from './AddCustomerModal'
-import styles from './styles/Head'
+
+const styles = {
+  box: 'flex flex-wrap gap-[16px_12px] items-start',
+  column: 'flex flex-col gap-[4px]',
+  column1: 'flex-[1.2_1_220px]',
+  column2: 'flex-[1.8_1_280px]',
+  column3: 'flex-[2_1_340px]',
+  row: 'flex items-end gap-[12px] flex-wrap',
+  dateInput: 'w-full',
+  customerInput: 'w-full',
+  employeeInput: 'w-full flex-1 min-w-[180px]',
+  addPersonIcon: 'cursor-pointer text-[rgb(var(--text-tertiary))] text-[22px] ml-[14px]',
+  checkboxLabel: 'm-0 whitespace-nowrap',
+}
 
 const designate = [
   { label: '指定', value: true },
@@ -513,17 +524,17 @@ export default function Head() {
   return (
     <Card className="ui-root mb-6">
       <div className="px-4 py-4">
-        <div css={styles.box}>
+        <div className={styles.box}>
           {/* 第 1 欄：日期與鎖定 */}
-          <div css={[styles.column, styles.column1]}>
-            <div css={styles.row}>
+          <div className={`${styles.column} ${styles.column1}`}>
+            <div className={styles.row}>
               {/* 必填 *：依據 Header.js 的 valid（缺 bill.date 時「掛單／明細／結帳」停用） */}
               <Field label="訂單日期" required className="w-full">
                 <DateTimePicker
                   value={bill.date}
                   format='yyyy/MM/dd HH:mm'
                   onChange={handleDateChange}
-                  css={styles.dateInput}
+                  className={styles.dateInput}
                   slotProps={{
                     textField: {
                       variant: 'outlined',
@@ -537,7 +548,7 @@ export default function Head() {
             </div>
             {isLockDateDisplay && !isChangeDateTime && (
               <CheckboxField
-                css={styles.checkboxLabel}
+                className={styles.checkboxLabel}
                 labelClassName="font-bold"
                 label="鎖定日期"
                 onChange={handleLockDate}
@@ -547,15 +558,15 @@ export default function Head() {
           </div>
 
           {/* 第 2 欄：客戶與不留客資 */}
-          <div css={[styles.column, styles.column2]}>
-            <div css={styles.row}>
+          <div className={`${styles.column} ${styles.column2}`}>
+            <div className={styles.row}>
               {/* 必填 *：Header.js 的 valid 要求有顧客（customerId／手機）或勾選「不留客資」；勾了不留客資就不必填 */}
               <Field label="顧客" required={!checkoutWithoutCustomer} className="w-full">
                 <Autocomplete
                   disabled={checkoutWithoutCustomer}
                   autoComplete={false}
                   autoHighlight
-                  css={styles.customerInput}
+                  className={styles.customerInput}
                   value={value}
                   clearOnBlur={true}
                   onFocus={handleFocus}
@@ -611,7 +622,7 @@ export default function Head() {
                                 role="button"
                                 aria-label="編輯顧客資料"
                                 strokeWidth={1.75}
-                                css={styles.addPersonIcon}
+                                className={styles.addPersonIcon}
                                 onClick={handleOpenEditCustomerModal}
                               />
                             ) : (
@@ -619,7 +630,7 @@ export default function Head() {
                                 role="button"
                                 aria-label="新增顧客"
                                 strokeWidth={1.75}
-                                css={styles.addPersonIcon}
+                                className={styles.addPersonIcon}
                                 onClick={handleOpenAddCustomerModal}
                               />
                             )}
@@ -640,7 +651,7 @@ export default function Head() {
 
             {orderWithoutCustomer && (
               <CheckboxField
-                css={styles.checkboxLabel}
+                className={styles.checkboxLabel}
                 labelClassName="font-bold"
                 label="不留客資"
                 checked={checkoutWithoutCustomer}
@@ -655,12 +666,12 @@ export default function Head() {
           </div>
 
           {/* 第 3 欄：服務人員 */}
-          <div css={[styles.column, styles.column3]}>
-            <div css={styles.row}>
+          <div className={`${styles.column} ${styles.column3}`}>
+            <div className={styles.row}>
               {/* 必填 *：Header.js 的 valid 要求 bill.designerId */}
               <Field label="服務人員" required className="min-w-[180px] flex-1">
                 <EmployeeAutoComplete
-                  css={styles.employeeInput}
+                  className={styles.employeeInput}
                   getCustomerData={values => setCustomerInModal(values)}
                   placeholder="服務人員姓名/編號"
                   value={bill.designerId}

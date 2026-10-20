@@ -1,11 +1,9 @@
-/** @jsxImportSource @emotion/react */
 import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
 
-import styles from './styles/BookingNotificationLineAtSetting'
 const settings = [
   {
     label: '已取消預約自動提醒，檢查未來15分鐘內是否包含下一組預約區間',
@@ -31,10 +29,10 @@ function BookingCheckInNotificationSetting({
         <CardTitle>報到通知設定</CardTitle>
       </CardHeader>
       <CardContent>
-        <div css={styles.serviceInputGroup}>
+        <div className="flex items-center mb-[24px]">
           <CheckboxField
             disabled={!inputEnable}
-            css={styles.isUsing}
+            className="mx-[20px] my-0"
             label="開啟報到通知功能"
             checked={checkinSettings.isBookingCheckinEnabled}
             onChange={(e, v) => setCheckinSettings(
@@ -44,10 +42,10 @@ function BookingCheckInNotificationSetting({
         </div>
         {checkinSettings.isBookingCheckinEnabled && (
           settings.map(({ label, key }) => (
-            <div key={key} css={styles.serviceInputGroup}>
+            <div key={key} className="flex items-center mb-[24px]">
               <CheckboxField
                 disabled={!inputEnable}
-                css={styles.isUsing}
+                className="mx-[20px] my-0"
                 label={label}
                 checked={checkinSettings[key]}
                 onChange={(e, v) => setCheckinSettings(
@@ -57,10 +55,10 @@ function BookingCheckInNotificationSetting({
             </div>
           ))
         )}
-        <div css={styles.serviceInputGroup}>
+        <div className="flex items-center mb-[24px]">
           <CheckboxField
             disabled={!inputEnable}
-            css={styles.isUsing}
+            className="mx-[20px] my-0"
             label="單日預約紀錄顯示待審核狀態的預約"
             checked={bookingTypeForSocket.includes('UNCHECK')}
             onChange={(e, v) => setBookingTypeForSocket(v ? ['UNCHECK', 'RESERVATION'] : ['RESERVATION'])}

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Button } from 'ui/button'
 import { FormControl, MenuItem, Select } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
@@ -33,70 +32,21 @@ import { MobileDatePicker } from 'ui/date-picker'
 import idx from 'idx'
 import _ from 'lodash'
 import { green, grey, blue } from 'ui/colors'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import produce from 'immer'
 
 // 動作列（原 ListItemButton）：整列可點、左側頭像＋文字；hover surface-hover、停用 40% 透明
 const actionRow = 'ui-root flex min-h-12 w-full items-center gap-4 rounded-md border-0 bg-transparent px-4 py-2 text-left text-body text-text no-underline transition-colors hover:bg-surface-hover disabled:pointer-events-none disabled:opacity-40 aria-disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent'
 
+// 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px；原 `!important` 以 `!` 前綴保留）。
+// breakWord／eventWrap 掛在 .MuiTypography-body1 上：display-compat 的 .MuiTypography-body1（單一 class、排在 Tailwind 之後）原本被
+// 後插入的 emotion 蓋過，字級改用 [&&]（雙 class 權重）維持 14px。eventWrap 的 '& .MuiInputBase-multiline' 在 ui/text-field
+// （不輸出該 class）不命中、textarea 為空規則，皆為死碼不轉；datepicker 的 '.MuiSelect-select' 一併保留原選擇器
 const styles = {
-  root: css({
-    minWidth: 275,
-    padding: theme.spacing(4),
-  }),
-  avatar: css({
-    backgroundColor: blue[100],
-    color: blue[600],
-  }),
-  field: css({
-    marginBottom: theme.spacing(2) + '!important',
-  }),
-  field2: css({
-    display: 'flex',
-    alignItems: 'flex-end',
-    marginBottom: theme.spacing(2),
-  }),
-  dialog: css({
-    maxWidth: '400px',
-  }),
-  breakWord: css({
-    fontSize: 14,
-    '& div': {
-      wordBreak: 'break-all'
-    }
-  }),
-  eventWrap: css({
-    gap: 4,
-    display: 'flex',
-    flexDirection: 'column',
-    '& .MuiInputBase-multiline': {
-      padding: '8px 12px'
-    },
-    '& div': {
-      wordBreak: 'break-all'
-    },
-    '& div.info': {
-      display: 'flex',
-      gap: 8,
-      '& div:first-child': {
-        flexShrink: 0
-      },
-      '& div:last-child': {
-        flexGrow: 1,
-        marginBottom: 12,
-        '& div': {
-          '& textarea': {
-          }
-        }
-      }
-    }
-  }),
-  datepicker: {
-    '& input, .MuiSelect-select': {
-      padding: '6px 0 7px !important'
-    }
-  }
+  field: '!mb-[16px]',
+  field2: 'flex items-end mb-[16px]',
+  breakWord: '[&&]:text-[14px] [&_div]:break-all',
+  eventWrap: 'gap-[4px] flex flex-col [&_div]:break-all [&_div.info]:flex [&_div.info]:gap-[8px] [&_div.info_div:first-child]:shrink-0 [&_div.info_div:last-child]:grow [&_div.info_div:last-child]:mb-[12px]',
+  datepicker: '[&_input]:!p-[6px_0_7px] [&_.MuiSelect-select]:!p-[6px_0_7px]',
 }
 
 const designate = [
@@ -525,7 +475,7 @@ export default function ChoseEvent({
           label="顧客電話"
           type="tel"
           value={values.cellphone}
-          css={styles.field}
+          className={styles.field}
           fullWidth
           variant="outlined"
           onChange={e => {
@@ -536,7 +486,7 @@ export default function ChoseEvent({
         <TextField
           label="顧客姓名"
           value={values.name}
-          css={styles.field}
+          className={styles.field}
           fullWidth
           variant="outlined"
           onChange={e => {
@@ -546,8 +496,7 @@ export default function ChoseEvent({
         />
         <Field label='服務時長'>
           <NativeSelect
-            css={styles.field}
-            className="ui-root"
+            className={`ui-root ${styles.field}`}
             value={values.timeCost}
             onChange={event => setValues({ ...values, timeCost: event.target.value })}
           >
@@ -559,7 +508,7 @@ export default function ChoseEvent({
         <TextField
           label="備註"
           value={values.remark}
-          css={styles.field}
+          className={styles.field}
           fullWidth
           variant="outlined"
           onChange={e => {
@@ -569,7 +518,7 @@ export default function ChoseEvent({
         <TextField
           label="顧客備註"
           value={values.remarkForCustomer}
-          css={styles.field}
+          className={styles.field}
           fullWidth
           variant="outlined"
           onChange={e => {
@@ -595,14 +544,14 @@ export default function ChoseEvent({
           </div>
         )}
         {!checkinMode && (modaltype === 'openOrder' ?
-          <button type="button" className={actionRow} css={styles.field} onClick={closeOrderTime} disabled={btnDisabled}>
+          <button type="button" className={`${actionRow} ${styles.field}`} onClick={closeOrderTime} disabled={btnDisabled}>
             <Avatar className="bg-accent/8 text-accent">
               <LockOpenIcon />
             </Avatar>
             <span className="min-w-0 flex-1">開啟預約</span>
           </button>
           :
-          <button type="button" className={actionRow} css={styles.field} onClick={closeOrderTime} disabled={btnDisabled}>
+          <button type="button" className={`${actionRow} ${styles.field}`} onClick={closeOrderTime} disabled={btnDisabled}>
             <Avatar className="bg-accent/8 text-accent">
               <LockIcon />
             </Avatar>
@@ -635,7 +584,7 @@ export default function ChoseEvent({
       </Fragment>}
 
       {modaltype === 'editOrder' && <Fragment>
-        <div css={styles.breakWord} className='MuiTypography-body1'>
+        <div className={`MuiTypography-body1 ${styles.breakWord}`}>
           <div>
             <p>{`姓名: `}
               <RouterLink
@@ -758,7 +707,7 @@ export default function ChoseEvent({
         </div>
       </Fragment>}
       {(modaltype === 'editOrderDetail' || modaltype === "editNdsOrder") && <Fragment>
-        <div css={styles.field} style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className={styles.field} style={{ display: 'flex', justifyContent: 'space-between' }}>
           <ToggleGroup
             size="small"
             value={editOrder.isDesignate}
@@ -783,10 +732,10 @@ export default function ChoseEvent({
             <p style={{ alignSelf: 'center' }}>{`報到狀態: ${editOrder.isCheckin ? '報到成功' : '未報到'}`}</p> 
           )}
         </div>
-        <div css={styles.field2}>
+        <div className={styles.field2}>
           <MobileDatePicker
             value={editOrder.date}
-            css={styles.datepicker}
+            className={styles.datepicker}
             label='預約時間'
             onChange={(value) => {
               const data = _.cloneDeep(editOrder)
@@ -806,7 +755,7 @@ export default function ChoseEvent({
               }
             }}
           />
-          <FormControl variant='standard' css={styles.datepicker}>
+          <FormControl variant='standard' className={styles.datepicker}>
             <Select
               value={editOrder.date}
               sx={{ paddingRight: '24px' }}
@@ -820,7 +769,7 @@ export default function ChoseEvent({
             </Select>
           </FormControl>
         </div>
-        <div css={styles.field}>
+        <div className={styles.field}>
           <CustomerAutoComplete
             label="顧客姓名/手機號碼/編號"
             value={editOrder.customer.id}
@@ -831,7 +780,7 @@ export default function ChoseEvent({
             }}
           />
         </div>
-        <div css={styles.field}>
+        <div className={styles.field}>
           <BookingRecordListAutoComplete
             label="服務人員姓名/編號"
             value={!!editOrder.designer ? editOrder.designer.id : ''}
@@ -844,8 +793,7 @@ export default function ChoseEvent({
         </div>
         <Field label='服務時長'>
           <NativeSelect
-            css={styles.field}
-            className="ui-root"
+            className={`ui-root ${styles.field}`}
             value={editOrder.timeCost}
             onChange={event => setEditOrder({ ...editOrder, timeCost: event.target.value })}
           >
@@ -855,7 +803,7 @@ export default function ChoseEvent({
           </NativeSelect>
         </Field>
         <TextField
-          css={styles.field}
+          className={styles.field}
           value={editOrder.remark}
           label="備註"
           fullWidth
@@ -867,7 +815,7 @@ export default function ChoseEvent({
           }}
         />
         <TextField
-          css={styles.field}
+          className={styles.field}
           value={editOrder.remarkForCustomer}
           label="顧客備註"
           fullWidth
@@ -881,7 +829,7 @@ export default function ChoseEvent({
           variant='outlined'
           fullWidth
           label='提前通知天數'
-          css={styles.field}
+          className={styles.field}
           value={editOrder.notificationDayCount || ''}
           InputProps={{ inputProps: { min: 1 } }}
           onFocus={e => e.target.select()}
@@ -945,8 +893,7 @@ export default function ChoseEvent({
       {modaltype === 'ndsDefault' && <Fragment>
         <button
           type="button"
-          className={actionRow}
-          css={styles.field}
+          className={`${actionRow} ${styles.field}`}
           onClick={() => { setOrderLimit(!orderLimit) }}
         >
           <Avatar className="bg-accent/8 text-accent">
@@ -959,7 +906,7 @@ export default function ChoseEvent({
             label="顧客電話"
             type="tel"
             value={values.cellphone}
-            css={styles.field}
+            className={styles.field}
             fullWidth
             variant="outlined"
             onChange={e => {
@@ -970,7 +917,7 @@ export default function ChoseEvent({
           <TextField
             label="顧客姓名"
             value={values.name}
-            css={styles.field}
+            className={styles.field}
             fullWidth
             variant="outlined"
             onChange={e => {
@@ -980,8 +927,7 @@ export default function ChoseEvent({
           />
           <Field label='服務時長'>
             <NativeSelect
-              css={styles.field}
-              className="ui-root"
+              className={`ui-root ${styles.field}`}
               value={values.timeCost}
               onChange={event => setValues({ ...values, timeCost: event.target.value })}
             >
@@ -993,7 +939,7 @@ export default function ChoseEvent({
           <TextField
             label="備註"
             value={values.remark}
-            css={styles.field}
+            className={styles.field}
             fullWidth
             variant="outlined"
             onChange={e => {
@@ -1003,7 +949,7 @@ export default function ChoseEvent({
           <TextField
             label="顧客備註"
             value={values.remarkForCustomer}
-            css={styles.field}
+            className={styles.field}
             fullWidth
             variant="outlined"
             onChange={e => {
@@ -1053,7 +999,7 @@ export default function ChoseEvent({
             <TextField
               label="人數"
               value={limitCount.limit}
-              css={styles.field}
+              className={styles.field}
               fullWidth
               variant="outlined"
               type="number"
@@ -1088,7 +1034,7 @@ export default function ChoseEvent({
       </Fragment>}
 
       {(modaltype === 'event') && <Fragment>
-        <div css={styles.eventWrap} className='MuiTypography-body1'>
+        <div className={`MuiTypography-body1 ${styles.eventWrap}`}>
           <div>{`時間: ${format(new Date(editOrder.date), 'yyyy/MM/dd  HH:mm')}`}</div>
           <div>{`事件時長: ${findTimeCost(editOrder.timeCost)}`}</div>
           <div className='info'>

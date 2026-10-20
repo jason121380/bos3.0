@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { CheckboxField } from 'ui/checkbox'
 import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
@@ -6,7 +5,6 @@ import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
-import styles from './styles/AboutDeletePersonalClockInDisplay'
 
 const timeCostArray = [
   { label: '無限制', value: 0 },
@@ -58,7 +56,7 @@ function AboutCustomerBooking({
           <div key={label}>
             <CheckboxField
               disabled={!inputEnable}
-              css={styles.isUsing}
+              className="mx-[20px] my-0"
               label={label}
               checked={aboutCustomer[key]}
               onChange={e => handleSetValue(key, e.target.checked)}
@@ -67,8 +65,7 @@ function AboutCustomerBooking({
         ))}
         <Field label='預約最短時長' className="mt-4">
           <NativeSelect
-            css={styles.isUsing}
-            className="w-40"
+            className="w-40 mx-[20px] my-0"
             fullWidth={false}
             value={aboutCustomer.bookingMinumnTimeCost}
             onChange={e => handleSetValue('bookingMinumnTimeCost', e.target.value)}

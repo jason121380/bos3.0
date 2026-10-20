@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { DialogBody, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { useState, useEffect, Fragment } from 'react'
 // 外層為 ui Dialog（由行事曆 OrderTable 開啟），這裡只放標題、內容與底部動作三段
@@ -9,20 +8,6 @@ import { Button as UiButton } from 'ui/button'
 import { green, grey } from 'ui/colors'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchSetAdminBookingTimes from 'hooks/useFetchSetAdminBookingTimes'
-import { css } from '@emotion/react'
-
-const styles = {
-  root: css({}),
-  content: css({
-    display: 'flex',
-    gap: '5px 10px',
-    flexWrap: 'wrap',
-  }),
-  cancel: css({
-    background: 'red',
-    color: 'white'
-  })
-}
 
 export default function HolidayEdit({ holidayData, setHolidayData, setHolidayModel, refetchData }) {
   const { setTimes } = useFetchSetAdminBookingTimes()
@@ -100,7 +85,7 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
       <DialogHeader className="border-0 border-b border-solid border-border pb-4">
         <DialogTitle>編輯公休</DialogTitle>
       </DialogHeader>
-      <DialogBody css={styles.content}>
+      <DialogBody className="flex flex-wrap gap-x-[10px] gap-y-[5px]">
         {timeOption.map(({ time, select }, i) => (
           <ToggleGroupItem
             key={time}

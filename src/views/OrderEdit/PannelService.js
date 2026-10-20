@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
@@ -11,35 +10,10 @@ import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import useFetchGetIsHelperDesignationSetting from 'hooks/useFetchGetIsHelperDesignationSetting'
 import idx from 'idx'
 import produce from 'immer'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 import ServicesModal from './ServicesModal'
 import Services from './Services'
 
-const styles = {
-  root: css({
-    width: '100%',
-    marginTop: theme.spacing(3),
-  }),
-  heading: css({
-    fontSize: '16px !important',
-    fontWeight: 'bold',
-    color: 'rgb(var(--text))',
-  }),
-  details: css({
-    overflowX: 'auto',
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  }),
-  fieldOutter: css({
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    flexDirection: 'column',
-  }),
-}
 
 export default function PannelService({ thirdPartTicket, expanded, setExpanded }) {
   const {
@@ -306,11 +280,11 @@ export default function PannelService({ thirdPartTicket, expanded, setExpanded }
           services.filter(d => d.serviceId).reduce((total, d) => total + d.price, 0)
         )}
       >
-        <p className="m-0" css={styles.heading}>項目消費</p>
+        <p className="m-0 !text-[16px] font-bold text-text">項目消費</p>
       </AccordionSummary>
       {/* 原相容層把 aria-controls 對應的 id 放在內容區；新 Accordion 沒有自動產生，這裡補上讓 aria-controls 仍指得到 */}
-      <AccordionDetails id="panel-content" css={styles.details}>
-        <div css={styles.fieldOutter}>
+      <AccordionDetails id="panel-content" className="flex items-center justify-start overflow-x-auto">
+        <div className="flex flex-col items-start justify-start">
           {servicesModalOpen && (
             <ServicesModal
               servicesModalOpen={servicesModalOpen}

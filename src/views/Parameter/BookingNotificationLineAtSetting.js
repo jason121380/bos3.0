@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 多選 Autocomplete（含勾選圖示的選項）與數字欄位（onWheel）保留 MUI
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
@@ -10,7 +9,6 @@ import { memo } from 'react'
 import _ from 'lodash'
 import produce from 'immer'
 
-import styles from './styles/BookingNotificationLineAtSetting'
 import { Autocomplete } from 'ui/combobox'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
@@ -103,9 +101,9 @@ function NonDesignationBookingLimitSetting({
         </CardContent>
       ))}
       <CardContent>
-        <div css={styles.bookingInputGroup}>
+        <div className="flex flex-col mb-[24px]">
           <div style={{ marginBottom: '15px' }}>預約提前通知天數</div>
-          <div css={styles.bookingInput}>
+          <div>
             <TextField
               disabled={!inputEnable}
               variant="outlined"
@@ -121,10 +119,10 @@ function NonDesignationBookingLimitSetting({
             />
           </div>
         </div>
-        <div style={{ flexWrap: 'wrap' }} css={styles.serviceInputGroup}>
+        <div style={{ flexWrap: 'wrap' }} className="flex items-center mb-[24px]">
           <CheckboxField
             disabled={!inputEnable}
-            css={styles.isUsing}
+            className="mx-[20px] my-0"
             label="啟用預約通知"
             checked={aboutBooking.bookingNotificationLine.isUsing}
             onChange={(e, v) => handleNotificationLineSetting('isUsing', v)}
@@ -143,10 +141,10 @@ function NonDesignationBookingLimitSetting({
             />
           )}
         </div>
-        <div style={{ flexWrap: 'wrap' }} css={styles.serviceInputGroup}>
+        <div style={{ flexWrap: 'wrap' }} className="flex items-center mb-[24px]">
           <CheckboxField
             disabled={!inputEnable}
-            css={styles.isUsing}
+            className="mx-[20px] my-0"
             label="開啟評分邀請"
             checked={aboutBooking.inviteRatingDayCount !== null}
             onChange={(e, v) => handleSetValue('inviteRatingDayCount', v ? 0 : null)}

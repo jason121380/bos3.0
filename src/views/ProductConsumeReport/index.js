@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 用途下拉含空字串選項（全部），Radix Select 不支援空值，保留 MUI Select
 import { MenuItem, InputLabel, FormControl, Select } from 'ui/form-control'
 import Page from 'components/Page'
@@ -11,18 +10,11 @@ import { startOfMonth, format } from 'date-fns'
 import useFetchProductConsumeList from 'hooks/useFetchProductConsumeList'
 import useFetchGetProductPurpose from 'hooks/useFetchGetProductPurpose'
 import { CSVLink } from "react-csv";
-import { css } from '@emotion/react'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  formControl: css({
-    width: '100px',
-  }),
-}
 
 export default function Employees() {
   const [excelData, setExcelData] = useState([])
@@ -173,7 +165,7 @@ export default function Employees() {
                 />
               </div>
               <div>
-                <FormControl variant="outlined" css={styles.formControl}>
+                <FormControl variant="outlined" className="w-[100px]">
                   <InputLabel>用途</InputLabel>
                   <Select label='用途' disabled={purpose.length === 0} onChange={event => onChange({ event, key: 'purpose' })}>
                     <MenuItem value=''>全部</MenuItem>

@@ -1,15 +1,7 @@
-/** @jsxImportSource @emotion/react */
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
-import { css } from '@emotion/react'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
-
-const styles = {
-  table: css({
-    minWidth: 650,
-  }),
-}
 
 function Results({ report }) {
   const [walletLeftSum, setWalletLeftSum] = useState(0)

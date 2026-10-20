@@ -1,12 +1,9 @@
-/** @jsxImportSource @emotion/react */
 import { CheckboxField } from 'ui/checkbox'
 import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import { cloneDeep } from 'lodash'
-
-import styles from './styles/OrderWithoutCustomerDefaultSetting'
 
 const designerNameForReportTypeArr = [
   {label: '名字', value: 'NAME'},
@@ -38,10 +35,10 @@ function AboutPriceDisplayOnDailyReport({
       </CardHeader>
       <CardContent>
         {settingArr.map(d => (
-          <div css={styles.serviceInputGroup} key={d.label}>
+          <div className="flex items-center mb-[24px]" key={d.label}>
             <CheckboxField
               disabled={!inputEnable}
-              css={styles.isUsing}
+              className="mx-[20px] my-0"
               label={d.label}
               checked={aboutReport[d.key]}
               onChange={() => {
@@ -52,12 +49,12 @@ function AboutPriceDisplayOnDailyReport({
             />
           </div>
         ))}
-        <div css={styles.serviceInputGroup}>
+        <div className="flex items-center mb-[24px]">
           <Field label='日報表設計師名稱顯示'>
             <NativeSelect
               disabled={!inputEnable}
               fullWidth={false}
-              css={styles.field}
+              className="w-[150px] flex m-0"
               value={aboutReport.designerNameForReportType}
               onChange={e => setAboutReport({...aboutReport, designerNameForReportType: e.target.value})}
             >

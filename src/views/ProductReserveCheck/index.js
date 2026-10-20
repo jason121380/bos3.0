@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import React, { useState, useEffect } from 'react'
@@ -10,50 +9,11 @@ import { endOfDay, startOfMonth } from 'date-fns'
 import useFetchGetProductReserveCheck from 'hooks/useFetchGetProductReserveCheck'
 import idx from 'idx'
 import Results from './Results'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 import { Autocomplete } from 'ui/combobox'
 
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  searchBtnDiv: css({
-    marginBottom: '24px',
-  }),
-  noReportDiv: css({
-    textAlign: 'center',
-    margin: '30px 0',
-  }),
-  searchBtn: css({
-    width: '100px',
-  }),
-  exportBtn: css({
-    float: 'right',
-  }),
-  formGroup: css({
-    width: '10rem',
-    marginLeft: theme.spacing(3),
-  }),
-  topDiv: css({
-    display: 'flex',
-    alignItems: 'center',
-  }),
-  grid: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px 30px'
-  })
-}
 
 const ProductReserveCheck = () => {
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />

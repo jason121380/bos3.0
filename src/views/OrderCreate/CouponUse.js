@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { Field, Input } from 'ui/input'
 import { Eraser, Trash2 } from 'lucide-react'
@@ -10,7 +9,13 @@ import idx from 'idx'
 import _ from 'lodash'
 import { Fragment, useState, useEffect, useContext, createRef, useRef } from 'react'
 
-import styles from './styles/CouponUse'
+const styles = {
+  couponUse: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  field: 'w-[150px] min-w-[150px] flex mr-[12px]',
+  priceField: 'w-[65px] flex mr-[12px]',
+  couponField: 'w-[250px] flex mr-[12px]',
+  checkbox: 'w-[100px] flex mr-[12px] last:mr-0',
+}
 
 export default function CouponUse({
   index,
@@ -124,7 +129,7 @@ export default function CouponUse({
   }
   return (
     <Fragment>
-      <div css={styles.couponUse}>
+      <div className={styles.couponUse}>
         {bill.customerId && (
           <Field label="預收卡">
             <CustomerTicketRecordAutoCompleteForOrderCreate
@@ -160,7 +165,7 @@ export default function CouponUse({
           </Field>
         )}
         {couponUsage.customerTicketId ? (
-          <Field label="金額" css={styles.priceField}>
+          <Field label="金額" className={styles.priceField}>
             <Input
               disabled
               value={Math.round(price)}
@@ -208,7 +213,7 @@ export default function CouponUse({
               label="指定"
               inputRef={helperDesignateRefs[helperIndex]}
               checked={data.isDesignate}
-              css={styles.checkbox}
+              className={styles.checkbox}
               name={data.type + 'designate'}
               onFocus={handleFocus}
               autoFocus={focus === data.type + 'designate'}

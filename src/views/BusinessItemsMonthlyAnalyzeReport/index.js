@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
@@ -6,28 +5,12 @@ import DateSelector from 'components/DateSelector'
 import { startOfMonth, endOfMonth, format } from 'date-fns'
 import useFetchGetBusinessItemsMonthlyReport from 'hooks/useFetchGetBusinessItemsMonthlyReport'
 import useFetchGetBusinessItemsMonthlyReportExcel from 'hooks/useFetchGetBusinessItemsMonthlyReportExcel'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
-
-const styles = {
-  root: css({}),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(1),
-  }),
-  printBtn: css({
-    backgroundColor: 'rgb(var(--accent))',
-  }),
-}
 
 export default function Employees() {
   const [reportData, setReportData] = useState({
@@ -125,7 +108,7 @@ export default function Employees() {
       {!businessItemsMonthlyReport.loading ?
         <Results
           reportData={reportData}
-          className={styles.results}
+          className="mt-2"
         /> : <Skeleton className="h-96" aria-busy="true" />
       }
     </Page>

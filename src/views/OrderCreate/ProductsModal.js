@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { TablePagination } from 'ui/pagination-compat'
 import { Modal } from 'ui/modal-compat'
 import { Paper } from 'ui/display-compat'
@@ -7,66 +6,17 @@ import { Button } from 'ui/button-compat'
 import { Card, CardHeader, CardContent, CardActions } from 'ui/card-compat'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
-import { blue } from 'ui/colors'
 import idx from 'idx'
 import pagenationLabel from './../../helper/pagenationLabel'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 const styles = {
-  root: css({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    outline: 'none',
-    boxShadow: theme.shadows[20],
-    width: 700,
-    maxHeight: '100%',
-    overflowY: 'auto',
-    maxWidth: '100%',
-  }),
-  birthday: css({
-    width: '100%',
-  }),
-  actions: css({
-    justifyContent: 'flex-end',
-  }),
-  inner: css({
-    minWidth: 700,
-  }),
-  categorieDiv: css({
-    marginBottom: '5px',
-  }),
-  categorieBtn: css({
-    margin: '3px',
-  }),
-  clickedCategorieBtn: css({
-    margin: '3px',
-    color: 'white',
-  }),
-  categorieClear: css({
-    color: 'white',
-  }),
-  addBtn: css({
-    backgroundColor: blue[500],
-    color: 'white !important',
-    '&:hover': {
-      backgroundColor: blue[700],
-    },
-  }),
-  confirmBtn: css({
-    margin: '7px 0',
-    float: 'right',
-  }),
-  header: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }),
-  closeAtTop: css({
-    margin: '16px 24px',
-  }),
+  root: 'absolute top-[50%] left-[50%] [transform:translate(-50%,-50%)] [outline:none] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)] w-[700px] max-h-[100%] overflow-y-auto max-w-[100%]',
+  actions: 'justify-end',
+  categorieDiv: 'mb-[5px]',
+  categorieClear: 'text-white',
+  addBtn: 'bg-[#2196f3] !text-white hover:bg-[#1976d2]',
+  header: 'flex justify-between items-center',
+  closeAtTop: 'm-[16px_24px]',
 }
 
 function ProductsModal({
@@ -182,8 +132,8 @@ function ProductsModal({
 
   return (
     <Modal open={productsModalOpen}>
-      <Card css={styles.root}>
-        <div css={styles.header}>
+      <Card className={styles.root}>
+        <div className={styles.header}>
           <CardHeader
             title={
               selectedCategorieName.length === 0 ? '所有商品' : `${categoryNameForDisplay}類商品`
@@ -193,7 +143,7 @@ function ProductsModal({
             color="primary"
             variant="contained"
             onClick={closeModal}
-            css={styles.closeAtTop}
+            className={styles.closeAtTop}
           >
             關閉
           </Button>
@@ -201,7 +151,7 @@ function ProductsModal({
 
         <div className="h-px bg-border" />
         <CardContent>
-          <div css={styles.categorieDiv}>
+          <div className={styles.categorieDiv}>
             {productCategories.map(productCategory => (
               <Button
                 variant={
@@ -220,7 +170,7 @@ function ProductsModal({
               variant="contained"
               size="small"
               color="error"
-              css={styles.categorieClear}
+              className={styles.categorieClear}
               onClick={handleClearCategorie}
             >
               清除
@@ -249,7 +199,7 @@ function ProductsModal({
                       <Button
                         size="small"
                         onClick={() => handleSelectProduct(product)}
-                        css={styles.addBtn}
+                        className={styles.addBtn}
                       >
                         加入
                       </Button>
@@ -266,7 +216,7 @@ function ProductsModal({
             </Table>
           </TableContainer>
         </CardContent>
-        <CardActions css={styles.actions}>
+        <CardActions className={styles.actions}>
           <TablePagination
             ref={pageRef}
             labelRowsPerPage='每頁顯示數量'

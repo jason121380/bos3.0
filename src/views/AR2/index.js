@@ -1,9 +1,6 @@
-/** @jsxImportSource @emotion/react */
 import Page from 'components/Page'
 import { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 const a = {
   'hair-color': [
@@ -641,38 +638,11 @@ const b = {
 }
 
 const styles = {
-  root: css({
-    textAlign: 'center',
-  }),
-  ar: css({
-    width: '540px',
-    height: '810px',
-    left: 0,
-    right: 0,
-    margin: 'auto',
-  }),
-  container: css({
-    paddingTop: theme.spacing(3),
-    paddingBottom: theme.spacing(3),
-  }),
-  results: css({
-    marginTop: theme.spacing(3),
-  }),
-  ul: css({
-    marginTop: 20,
-    position: 'absolute',
-    left: '1280px',
-    top: 0,
-  }),
-  li: css({
-    listStyle: 'none',
-    width: 50,
-    height: 50,
-    borderRadius: '50%',
-    // display: 'inline-block',
-    marginTop: 10,
-    marginRight: 10,
-  }),
+  root: 'text-center',
+  ar: 'w-[540px] h-[810px] left-0 right-0 m-auto',
+  container: 'pt-[24px] pb-[24px]',
+  ul: 'mt-[20px] absolute left-[1280px] top-0',
+  li: 'list-none w-[50px] h-[50px] rounded-[50%] mt-[10px] mr-[10px]',
 }
 
 export default function Employees() {
@@ -697,7 +667,7 @@ export default function Employees() {
   }, [])
 
   return (
-    <Page css={styles.root} title="打卡記錄">
+    <Page className={styles.root} title="打卡記錄">
       <Helmet>
         <title>AR 變髮色</title>
         <script>
@@ -715,20 +685,20 @@ export default function Employees() {
         </script>
       </Helmet>
       {/* 原 Container maxWidth={false}：滿版、左右內距 16／24px（600px 起） */}
-      <div className="mx-auto box-border block w-full px-4 min-[600px]:px-6" css={styles.container}>
-        <div css={styles.ar} id="YMK-module" />
+      <div className={`mx-auto box-border block w-full px-4 min-[600px]:px-6 ${styles.container}`}>
+        <div className={styles.ar} id="YMK-module" />
         {/* <button onClick={()=>{
           window.YMK.open ();
           window.ymkAsyncInit = function () {
           };
 
         }}>test</button> */}
-        <ul css={styles.ul}>
+        <ul className={styles.ul}>
           {a['hair-color'].map(data => {
             return (
               <li
                 key={data.itemGuid}
-                css={styles.li}
+                className={styles.li}
                 style={{ backgroundColor: data.color }}
                 onClick={() => {
                   window.YMK.applyMakeupBySkuItem(b.HAIR_DYE_01, data.itemGuid)

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { CircularProgress } from 'ui/display-compat'
 import { TextField, InputAdornment } from 'ui/text-field'
 import PropTypes from 'prop-types'
@@ -20,83 +19,8 @@ import useFetchCustomer from 'hooks/useFetchCustomer'
 import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import MembershipCardList from 'components/MembershipCardList'
 import lineIcon from 'assets/images/LINE_APP.png'
-import { css } from '@emotion/react'
 
 import AddCustomerModal from './AddCustomerModal'
-
-const styles = {
-  box: css({
-    display: 'flex',
-    flexWrap: 'wrap', // 窄螢幕時三欄自動換行，不再把欄位擠成一條細縫
-    gap: '16px 12px',
-    alignItems: 'flex-start',
-  }),
-  column: css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-  }),
-  column1: css({
-    flex: '1.2 1 220px',
-  }),
-  column2: css({
-    flex: '1.8 1 280px',
-  }),
-  column3: css({
-    flex: '2 1 340px',
-  }),
-  row: css({
-    display: 'flex',
-    alignItems: 'flex-end', // 上方有標籤，控制項靠底部對齊
-    gap: '12px',
-    flexWrap: 'wrap',
-  }),
-  dateInput: css({
-    width: '100%',
-    '& .MuiOutlinedInput-root': {
-      backgroundColor: 'rgb(var(--background))',
-      '& fieldset': { borderColor: 'rgb(var(--border-strong))' }, // 與 ui/input 的框線同色
-      '& .MuiSvgIcon-root': {
-        color: 'rgb(var(--text-tertiary))',
-        fontSize: '22px',
-      },
-    },
-  }),
-  customerInput: css({
-    width: '100%',
-    '& .MuiOutlinedInput-root': {
-      backgroundColor: 'rgb(var(--background))',
-      '& fieldset': { borderColor: 'rgb(var(--border-strong))' }, // 與 ui/input 的框線同色
-    },
-  }),
-  employeeInput: css({
-    width: '100%',
-    flex: 1,
-    minWidth: 180,
-    '& .MuiOutlinedInput-root': {
-      backgroundColor: 'rgb(var(--background))',
-      '& fieldset': { borderColor: 'rgb(var(--border-strong))' }, // 與 ui/input 的框線同色
-    },
-  }),
-  addPersonIcon: css({
-    cursor: 'pointer',
-    color: 'rgb(var(--text-tertiary))',
-    fontSize: '22px',
-    marginLeft: '14px',
-  }),
-  checkboxLabel: css({
-    margin: 0,
-    whiteSpace: 'nowrap', // 「不留客資」不可被擠成兩行
-    '& .MuiFormControlLabel-label': {
-      fontSize: '14px',
-      fontWeight: 'bold',
-      color: 'rgb(var(--text))',
-    },
-    '& .MuiCheckbox-root': {
-      padding: '4px',
-    },
-  }),
-}
 
 const designate = [
   { label: '指定', value: true },
@@ -402,17 +326,17 @@ export default function Head() {
   return (
     <Card className="ui-root mb-6">
       <div className="px-4 py-4">
-        <div css={styles.box}>
+        <div className="flex flex-wrap items-start gap-x-[12px] gap-y-[16px]">
           {/* 第 1 欄：日期 */}
-          <div css={[styles.column, styles.column1]}>
-            <div css={styles.row}>
+          <div className="flex flex-col gap-[4px] [flex:1.2_1_220px]">
+            <div className="flex flex-wrap items-end gap-[12px]">
               {/* 必填 *：依據 Footer.js 的 vaild（缺 bill.date 時「重試」停用） */}
               <Field label="帳單日期" required className="w-full">
                 <DateTimePicker
                   value={bill.date}
                   format='yyyy/MM/dd HH:mm'
                   onChange={handleDateChange}
-                  css={styles.dateInput}
+                  className="w-full"
                   ocaleText={{
                     toolbarTitle: '選擇日期'
                   }}
@@ -430,15 +354,14 @@ export default function Head() {
           </div>
 
           {/* 第 2 欄：客戶與不留客資 */}
-          <div css={[styles.column, styles.column2]}>
-            <div css={styles.row}>
+          <div className="flex flex-col gap-[4px] [flex:1.8_1_280px]">
+            <div className="flex flex-wrap items-end gap-[12px]">
               {/* 必填 *：Footer.js 的 vaild 要求有顧客（customerId／手機）或勾選「不留客資」 */}
               <Field label="顧客" required={!bill.withoutCustomerData} className="w-full">
                 <Autocomplete
                   disabled={bill.withoutCustomerData}
                   name="customer"
-                  className="customer"
-                  css={styles.customerInput}
+                  className="customer w-full"
                   value={value}
                   clearOnBlur={true}
                   onFocus={handleFocus}
@@ -573,7 +496,7 @@ export default function Head() {
                                 role="button"
                                 aria-label="編輯顧客資料"
                                 strokeWidth={1.75}
-                                css={styles.addPersonIcon}
+                                className="ml-[14px] cursor-pointer text-[22px] text-text-tertiary"
                                 onClick={handleOpenEditCustomerModal}
                               />
                             ) : (
@@ -581,7 +504,7 @@ export default function Head() {
                                 role="button"
                                 aria-label="新增顧客"
                                 strokeWidth={1.75}
-                                css={styles.addPersonIcon}
+                                className="ml-[14px] cursor-pointer text-[22px] text-text-tertiary"
                                 onClick={handleOpenAddCustomerModal}
                               />
                             )}
@@ -602,7 +525,7 @@ export default function Head() {
               </Field>
             </div>
             <CheckboxField
-              css={styles.checkboxLabel}
+              className="m-0 whitespace-nowrap"
               labelClassName="font-bold"
               label="不留客資"
               checked={bill.withoutCustomerData}
@@ -615,12 +538,12 @@ export default function Head() {
           </div>
 
           {/* 第 3 欄：服務人員 */}
-          <div css={[styles.column, styles.column3]}>
-            <div css={styles.row}>
+          <div className="flex flex-col gap-[4px] [flex:2_1_340px]">
+            <div className="flex flex-wrap items-end gap-[12px]">
               {/* 必填 *：Footer.js 的 vaild 要求 bill.designerId */}
               <Field label="服務人員" required className="min-w-[180px] flex-1">
                 <EmployeeAutoComplete
-                  css={styles.employeeInput}
+                  className="w-full min-w-[180px] flex-1"
                   setEmployeeAlready={setEmployeeAlready}
                   placeholder="服務人員姓名/編號"
                   value={bill.designerId}

@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 欄位標籤放在上方（Field＋Input／NativeSelect）。協助人員人數的選項值是字串 '0'～'3'、state 存的是數字，
 // NativeSelect 以字串比對（與 MUI Select 一致）且 event.target.value 回傳選項原值（字串），handleAssistantName 的 parseInt 原樣保留；
 // 分指定／互助均分的 Checkbox 仍用 MUI
@@ -9,52 +8,11 @@ import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon, BackspaceOutlined as BackspaceOutlinedIcon } from 'ui/icons'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 
 const styles = {
-  alert: css({
-    marginBottom: theme.spacing(3),
-  }),
-  tableBody: css({
-    padding: theme.spacing(2),
-  }),
-  deductionTypeFormGroup: css({
-    width: '6rem',
-  }),
-  formGroup: css({
-    width: '7rem',
-    marginLeft: theme.spacing(3),
-  }),
-  service: css({
-    display: 'flex',
-    justifyContent: 'flex-start',
-    marginBottom: theme.spacing(3),
-  }),
-  icons: css({
-    marginLeft: theme.spacing(3),
-    cursor: 'pointer',
-    marginTop: '30px',
-  }),
-  icons2: css({
-    cursor: 'pointer',
-    marginTop: '30px',
-  }),
-  textFieldDiv: css({
-    marginLeft: theme.spacing(2),
-  }),
-  autocomplete: css({
-    marginLeft: theme.spacing(2),
-    width: '10rem',
-  }),
-  checkboxSpan: css({
-    width: '25%',
-  }),
-  gap: css({
-    '& span': {
-      whiteSpace: 'nowrap'
-    }
-  })
+  icons: 'ml-[24px] cursor-pointer mt-[30px]',
+  icons2: 'cursor-pointer mt-[30px]',
+  gap: '[&_span]:whitespace-nowrap',
 }
 
 const deductions = [
@@ -411,7 +369,7 @@ function AboutAssistantSetting({
                   <span>
                     <div>
                       <FormControlLabel
-                        css={styles.gap}
+                        className={styles.gap}
                         control={<Checkbox color="primary" />}
                         label="分指定/不指定"
                         checked={content.isDesignate}
@@ -421,7 +379,7 @@ function AboutAssistantSetting({
                     </div>
                     <div>
                       <FormControlLabel
-                        css={styles.gap}
+                        className={styles.gap}
                         control={<Checkbox color="primary" />}
                         label="互助均分"
                         checked={content.isSplitted}
@@ -451,7 +409,7 @@ function AboutAssistantSetting({
                     <span>
                       <div>
                         <FormControlLabel
-                          css={styles.gap}
+                          className={styles.gap}
                           control={<Checkbox color="primary" />}
                           label="分指定/不指定"
                           checked={content.isDesignate}
@@ -461,7 +419,7 @@ function AboutAssistantSetting({
                       </div>
                       <div>
                         <FormControlLabel
-                          css={styles.gap}
+                          className={styles.gap}
                           control={<Checkbox color="primary" />}
                           label="互助均分"
                           checked={content.isSplitted}
@@ -476,7 +434,7 @@ function AboutAssistantSetting({
             )}
             {content.deductionWay !== '' && (
               <BackspaceOutlinedIcon
-                css={styles.icons}
+                className={styles.icons}
                 style={content.isDesignate ? { marginLeft: 'auto' } : {}}
                 onClick={() => handleClear(index)}
                 data-testid={`service-${index}-clear`}
@@ -484,12 +442,12 @@ function AboutAssistantSetting({
             )}
             {index !== 0 && index === support.length - 1 && (
               <DeleteForeverIcon
-                css={styles.icons2}
+                className={styles.icons2}
                 onClick={handleDeleteAssistantContent}
               />
             )}
             {index === support.length - 1 && (
-              <AddIcon css={styles.icons2} onClick={handleAddAssistantContent} />
+              <AddIcon className={styles.icons2} onClick={handleAddAssistantContent} />
             )}
           </div>
         ))}

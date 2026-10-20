@@ -1,46 +1,9 @@
-/** @jsxImportSource @emotion/react */
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import clsx from 'clsx'
-import { css } from '@emotion/react'
 import { EmptyState } from 'ui/empty-state'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
-
-const styles = {
-  root: css({}),
-  br: css({
-    borderRight: '1px solid rgb(var(--border))'
-  }),
-  brBold: css({
-    borderRight: '1.5px solid grey'
-  }),
-  bbBold: css({
-    borderBottom: '1.5px solid grey'
-  }),
-  cell: css({
-    padding: '4px 12px',
-    minWidth: 100
-  }),
-  sticky: css({
-    position: 'sticky',
-    top: 0,
-    left: 0,
-    background: 'white',
-    zIndex: '99',
-    wordBreak: 'break-all',
-    minWidth: 120,
-    border: 'none'
-  }),
-  stickyRow: css({
-    position: 'sticky',
-    background: 'white',
-    zIndex: '100',
-    outline: '1px solid grey',
-    height: 30,
-    border: 'none'
-  }),
-}
 
 // 欄線：一般分隔（border）、商品群組分隔（border-strong）；固定首欄改用 tokens 底色（原為寫死白底）
 const SEP = 'border-0 border-r border-solid border-border'

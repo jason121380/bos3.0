@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 // 裁切頭像的彈窗內含 react-easy-crop，Slider 已換 ui/slider，彈窗改用 ui/dialog
 import { Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Slider } from 'ui/slider'
@@ -13,46 +12,8 @@ import useFetchSetUserAvatar from 'hooks/useFetchSetUserAvatar'
 import { EditRounded as EditRoundedIcon } from 'ui/icons'
 import { Avatar } from 'ui/avatar'
 import _ from 'lodash'
-import { css } from '@emotion/react'
-import { theme } from '../../../theme'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
-
-const styles = {
-  root: css({}),
-  content: css({
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
-    textAlgin: 'center',
-  }),
-  name: css({
-    marginTop: theme.spacing(1) + '!important',
-  }),
-  avatar: css({
-    height: 100,
-    width: 100,
-  }),
-  removeBotton: css({
-    width: '100%',
-  }),
-  newAddCard: css({
-    marginTop: '30px',
-  }),
-  sliderContainer: css({
-    display: 'flex',
-    gap: '10px 20px',
-    flexWrap: 'wrap',
-    marginTop: '10px',
-  }),
-  slider: css({
-    display: 'flex',
-    flexGrow: 1,
-    minWidth: '180px',
-    justifyContent: 'flex-end',
-    alignItems: 'center'
-  })
-}
 
 function ProfileDetails({
   profile,
@@ -175,12 +136,12 @@ function ProfileDetails({
             onCropComplete={onCropComplete}
             onZoomChange={setZoom}
           />
-          <div css={styles.sliderContainer}>
-            <div css={styles.slider}>
+          <div className="mt-[10px] flex flex-wrap gap-x-[20px] gap-y-[10px]">
+            <div className="flex min-w-[180px] grow items-center justify-end">
               <div style={{ width: '50px' }}>旋轉</div>
               <Slider value={rotation} min={0} max={360} step={1} onChange={(e, value) => setRotation(value)} />
             </div>
-            <div css={styles.slider}>
+            <div className="flex min-w-[180px] grow items-center justify-end">
               <div style={{ width: '50px' }}>縮放</div>
               <Slider value={zoom} min={1} max={10} step={0.1} onChange={(e, value) => setZoom(value)} />
             </div>
@@ -193,7 +154,7 @@ function ProfileDetails({
         </DialogBody>
         </DialogContent>
       </Dialog>
-      <Card {...rest} css={className}>
+      <Card {...rest} className={className}>
         <div className="flex flex-col items-center p-5 text-center">
           <div style={{ position: 'relative' }}>
             <Avatar
@@ -232,7 +193,7 @@ function ProfileDetails({
 }
 
 ProfileDetails.propTypes = {
-  className: PropTypes.object,
+  className: PropTypes.string,
   profile: PropTypes.object.isRequired,
 }
 

@@ -1,10 +1,8 @@
-/** @jsxImportSource @emotion/react */
 import { Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo } from 'react'
 import { cloneDeep } from 'lodash'
-import styles from './styles/AboutOrderSource'
 
 function AboutOrderSource({ className, reference, setReference, inputEnable }) {
   const handleAddOption = () => {
@@ -34,7 +32,7 @@ function AboutOrderSource({ className, reference, setReference, inputEnable }) {
       <CardContent>
         <div className="flex flex-wrap gap-4">
           {reference.map((label, index) => (
-            <div css={styles.serviceInputGroup} key={index}>
+            <div className="flex items-center" key={index}>
               <span
                 className="inline-block shrink-0 text-heading tabular-nums text-text"
                 style={{ margin: '0 5px', width: '25px' }}

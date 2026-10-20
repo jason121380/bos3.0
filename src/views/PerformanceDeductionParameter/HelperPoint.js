@@ -6,7 +6,6 @@ import _ from 'lodash'
 import { Link as RouterLink } from 'react-router-dom'
 import HelperPointResults from './HelperPointResults'
 import idx from 'idx'
-import styles from './styles/HelperPoint'
 
 function HelperPoint({ className, merchantPointValueSettings }) {
   const [merchantPointValueData, setMerchantPointValueData] = useState([])
@@ -36,7 +35,6 @@ function HelperPoint({ className, merchantPointValueSettings }) {
         <CardContent>
           {!merchantPointValueSettings.loading ? (
             <HelperPointResults
-              className={styles.results}
               merchantPointValueSettings={merchantPointValueSettings}
               merchantPointValueData={merchantPointValueData}
             />

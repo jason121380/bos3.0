@@ -1,21 +1,10 @@
-/** @jsxImportSource @emotion/react */
 import { TextField, InputAdornment } from 'ui/text-field'
 import { useState, useEffect } from 'react'
 import { Button } from 'ui/button'
 import useFetchGetUserMerchant from 'hooks/useFetchGetUserMerchant'
 import MerchantsListModal from './MerchantsListModal'
 import PropTypes from 'prop-types'
-import { css } from '@emotion/react'
-import { theme } from '../../theme'
 import { Autocomplete } from 'ui/combobox'
-
-const styles = {
-  root: css({
-    '& input': {
-      cursor: 'pointer'
-    }
-  })
-}
 
 const index = ({ onValueChange = () => { } }) => {
   const userMerchants = useFetchGetUserMerchant()
@@ -41,8 +30,7 @@ const index = ({ onValueChange = () => { } }) => {
     <>
       <div id='openModal' style={{ width: '100%', display: 'flex', gap: 10, alignItems: 'flex-end' }}>
         <Autocomplete
-          className="min-w-0 flex-1"
-          css={styles.root}
+          className="min-w-0 flex-1 [&_input]:cursor-pointer"
           multiple
           fullWidth
           disabled={!merchantList}

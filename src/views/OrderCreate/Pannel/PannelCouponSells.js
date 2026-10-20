@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import billContext from 'context/keyInContext'
 import _ from 'lodash'
@@ -6,13 +5,19 @@ import React, { useContext } from 'react'
 import uuid from 'uuid'
 import CouponSells from 'views/OrderCreate/CouponSells'
 import { panelSummary } from './summary'
-import styles from 'views/OrderCreate/styles/PannelCouponSells'
 import useFetchTickets from 'hooks/useFetchTickets'
 import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import idx from 'idx'
 import TeachingModeContext from 'context/teachingModeContext'
 
 import CouponSellModal from '../CouponSellModal'
+
+const styles = {
+  details: 'overflow-x-auto',
+  heading: '!text-[16px] font-bold text-[rgb(var(--text))] flex items-center',
+  fieldOutter: 'flex justify-start items-start flex-col',
+  couponTeachTitle: 'text-[0.8125rem] ml-[34px] font-bold',
+}
 
 export default function PannelCouponSells({ expanded, onPanelClick, reset }) {
   const techingModeContext = useContext(TeachingModeContext)
@@ -197,15 +202,15 @@ export default function PannelCouponSells({ expanded, onPanelClick, reset }) {
         data-testid="couponSells"
         style={{ width: '100%' }}
       >
-        <p className="m-0" css={styles.heading}>預收卡販賣</p>
+        <p className={`m-0 ${styles.heading}`}>預收卡販賣</p>
         {teachingMode && (
-          <p className="m-0" css={styles.couponTeachTitle}>
+          <p className={`m-0 ${styles.couponTeachTitle}`}>
             這邊賣的卡將『不入業績』，但會先跟客人『收費』**
           </p>
         )}
       </AccordionSummary>
-      <AccordionDetails css={styles.details}>
-        <div css={styles.fieldOutter}>
+      <AccordionDetails className={styles.details}>
+        <div className={styles.fieldOutter}>
           {couponModalOpen && (
             <CouponSellModal
               couponModalOpen={couponModalOpen}
