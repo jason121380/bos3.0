@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material'
 import { css } from '@emotion/react'
-import { red } from '@mui/material/colors';
+import { red } from 'ui/colors';
 
 const theme = createTheme({
   palette: {

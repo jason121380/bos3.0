@@ -1,4 +1,4 @@
-import { colors } from '@mui/material'
+import { colors } from 'ui/colors'
 import palette from '../palette'
 
 export default {

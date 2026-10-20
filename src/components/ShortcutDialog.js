@@ -7,7 +7,7 @@ import { LoaderCircle } from 'lucide-react'
 import { Close as CloseIcon } from 'ui/icons'
 import { useEffect } from 'react';
 import { css } from '@emotion/react'
-import { green } from '@mui/material/colors';
+import { green } from 'ui/colors';
 import { createTheme } from '@mui/material/styles'
 
 import { getShortcutsForOrderCreate } from 'hooks/useFetchShortcut'

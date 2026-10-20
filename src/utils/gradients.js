@@ -1,4 +1,4 @@
-import { colors } from '@mui/material'
+import { colors } from 'ui/colors'
 
 const buildGradient = (start, end) => `linear-gradient(180deg, ${start} 0%, ${end} 100%)`
 

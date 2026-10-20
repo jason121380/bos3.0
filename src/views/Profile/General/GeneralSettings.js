@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { colors } from '@mui/material'
+import { colors } from 'ui/colors'
 import { DatePicker } from 'ui/date-picker'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchUserGeneral from 'hooks/useFetchUserGeneral'

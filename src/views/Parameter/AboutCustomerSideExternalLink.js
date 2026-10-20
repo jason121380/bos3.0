@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon, Add as AddIcon, Edit as EditIcon } from 'ui/icons'
 import { memo, Fragment, useState } from 'react'
 import styles from './styles/AboutDesignerSideExternalLink'
-import { teal } from '@mui/material/colors';
+import { teal } from 'ui/colors';
 import OuterLinkModal from './OuterLinkModal'
 import OuterLinkSortModal from './OuterLinkSortModal'
 

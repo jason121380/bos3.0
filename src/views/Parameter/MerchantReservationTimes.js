@@ -11,7 +11,7 @@ import { memo } from 'react'
 import _ from 'lodash'
 import { Edit as EditIcon, Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import styles from './styles/MerchantReservationTimes'
-import { green } from '@mui/material/colors';
+import { green } from 'ui/colors';
 import { openSnackbar } from 'elements/snackbars';
 
 const hours = [

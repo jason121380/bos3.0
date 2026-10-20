@@ -1,6 +1,6 @@
 import { css } from '@emotion/react'
 import { theme } from '../../../theme'
-import { red } from '@mui/material/colors'
+import { red } from 'ui/colors'
 
 export default {
   card: css({
