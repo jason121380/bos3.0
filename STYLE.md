@@ -231,7 +231,7 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
 | 項目 | 規則 |
 |---|---|
 | 頁首動作 | 只放「報表匯出」「列印」，一律 `variant="secondary"`＋`Download`／`Printer` 圖示，匯出在左、列印在右；不放進 Toolbar，不用藍色實心。其他動作（如比較模式開關）放在 Toolbar。 |
-| 篩選（Jason 2026/10/20「所有報表跟帳單列表一樣，放在篩選才會乾淨簡約」） | 一律用 `ui/page-header` 的 `ReportToolbar`：`date` 放日期、`filters` 放其餘條件（收進「篩選」卡片，預設收合，收合只隱藏不卸載）、`actions` 放搜尋。日期改了要按搜尋的頁面，搜尋必須在 `actions`，不可藏進收合區。只有日期的報表不放篩選鈕。 |
+| 篩選（Jason 2026/10/20「所有報表跟帳單列表一樣，放在篩選才會乾淨簡約」） | 一律用 `ui/page-header` 的 `ReportToolbar`：`date` 放日期、`filters` 放其餘條件（收進「篩選」卡片，預設收合，收合只隱藏不卸載）、`actions` 放搜尋。日期改了要按搜尋的頁面，搜尋必須在 `actions`，不可藏進收合區。只有日期的報表不放篩選鈕。<br>**沒有可用的篩選條件時不顯示篩選鈕**（例：條件全部取決於店家設定、當前店家都沒開；Jason 2026/10/21）。 |
 | 日期 | 一律 `DateSelector`（快速選擇下拉＋日期區間），放 `ReportToolbar` 的 `date`；報表頁不傳 `margin`（間距由 Toolbar 決定）。用 MerchantSearchBar 的頁面拆兩個實例共用同一份 values：`visible={['datePicker']}` 放 `date`，其餘欄位放 `filters` 並加 `stopGetQueryString`。 |
 | 其他條件 | 選項切換（`ToggleGroup`）、下拉、文字搜尋一律「標籤在上」：`flex flex-col gap-1.5`＋`text-label text-text-secondary` 的標籤，在篩選卡片內直排（切換鈕依內容寬度）。不用「標籤在左」、不用浮動外框標籤。 |
 | 對象挑選 | 店家、商品、設計師、人員類別等寬欄位放在篩選卡片內並撐滿；「搜尋」在 `ReportToolbar` 的 `actions`（篩選鈕右側）。 |

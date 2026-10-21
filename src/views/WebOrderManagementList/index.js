@@ -99,7 +99,8 @@ function WebOrderMangagementList() {
       <AdminPageHeader
         title='預約管理'
         showFilter={showFilter}
-        onFilterClick={() => setShowFilter(!showFilter)}
+        // 篩選面板只有「報到狀態」一項，且只在店家開啟報到功能時出現；未開啟時不顯示篩選鈕（Jason 2026/10/21：按了只有空白卡片）
+        onFilterClick={checkInDisplay ? () => setShowFilter(!showFilter) : undefined}
         primaryAction={{
           label: '新預約',
           to: `/customer/reservation/${merchantid}?usingLineLogin=0`
@@ -119,7 +120,7 @@ function WebOrderMangagementList() {
         />
       </AdminPageHeader>
 
-      {showFilter && (
+      {showFilter && checkInDisplay && (
         <Card className="mb-6 flex flex-wrap items-center gap-4 p-4">
           {checkInDisplay && (
             <div>

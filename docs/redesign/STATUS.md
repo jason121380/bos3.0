@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10210841，main 已含 PR #1～#232）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10210845，main 已含 PR #1～#233）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,6 +8,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 篩選沒有內容時不顯示篩選鈕（v3.10210845） | 預約管理、單日預約紀錄：店家未開啟報到功能時，`AdminPageHeader` 不傳 `onFilterClick`（篩選鈕不出現）、篩選卡片不渲染。條件沿用頁面既有的報到設定值，不改查詢與篩選邏輯。新增 2 測試。 |
 | 側欄顯示目前店家（v3.10210841） | `NavBar` 的 `SidebarContent` 最上方加「目前店家」顯示列（Store 圖示＋小字標題＋店名，只顯示）。純畫面；verify-logic 通過。 |
 | 切換店家不自動聚焦搜尋框（v3.10210835） | `MerchantBar` 的 `DialogContent` 以 `onOpenAutoFocus` 取消預設聚焦、改 focus 彈窗本身；手機開啟不再彈出鍵盤。新增 1 測試。 |
 | 分頁焦點框不被捲動容器裁切（v3.10210829） | `ui/tabs` 的 `TabsTrigger` 焦點框改畫在內側（`focus-visible:ring-inset ring-offset-0`）；手機橫向捲動的分頁列（報表目錄、個人頁、員工資料、顧客詳細、系統參數等）選中分頁的藍框不再被切掉上下緣。版面不變；ui 測試 18 項全過（新增 1 項）。 |

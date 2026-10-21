@@ -531,7 +531,8 @@ function Calendar() {
       </div>
       <AdminPageHeader
         title="單日預約紀錄"
-        onFilterClick={handleFilterClick}
+        // 篩選面板的項目（報到模式、報到狀態）都只在店家開啟報到功能時出現；未開啟時不顯示篩選鈕，避免按了只有空白卡片
+        onFilterClick={checkinSettings.isBookingCheckinEnabled ? handleFilterClick : undefined}
         showFilter={showFilter}
       >
         <div className="flex items-center gap-4">
@@ -544,7 +545,7 @@ function Calendar() {
         </div>
       </AdminPageHeader>
 
-      {showFilter && (
+      {showFilter && checkinSettings.isBookingCheckinEnabled && (
         <Card className="ui-root mb-4 flex flex-row flex-wrap items-center gap-6 p-5">
           {checkinSettings.isBookingCheckinEnabled && (
             <div
