@@ -30,7 +30,7 @@ npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps（CI／Docke
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
 npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base，0 warning）
-CI=true npm run test:nowatch         # 全部單元測試（基準：58 檔／316 測試全數通過）
+CI=true npm run test:nowatch         # 全部單元測試（基準：59 檔／325 測試全數通過）
 TZ=America/Los_Angeles CI=true npm run test:nowatch   # 時區相關修改要另在海外時區跑一次
 CI=true npm run test:coverage        # 覆蓋率（門檻為現況下限＋金額／API 模組逐檔門檻，見 package.json）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
@@ -61,6 +61,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - `src/lib/polyfills.js`：只補 Safari 14／Chrome 87 缺少、而程式實際用到的功能（目前只有 `structuredClone`）；不再載入整包 core-js。
 - `src/lib/after-first-load.js`：`useAfterFirstLoad()` 在首屏完成（load 後、沒有查詢在等回應、頁面程式不在下載中〔Dashboard 的 Suspense 佔位用 `useHoldFirstLoad()` 計入〕、瀏覽器空閒）才回傳 true；版面的系統公告、訂單佇列、釘選頁、切換店家清單以 `skip: !afterFirstLoad` 延後。版面要新增查詢時，先判斷是不是首屏必要（選單權限、選單設定是必要）。
 - `src/elements/snackbars.js`：`openSnackbar` 全站提示（右下角 toast；錯誤需手動關閉；確認型 variant 畫成對話框）。
+- `src/components/ReservationCalendar/`：預約週曆共用。`weekCalendar.js`（`tidyWeekCalendar`／`buildWeekCalendar`：色塊、可預約人數、重疊並排、公休、跨日拆段，單週預約紀錄／個人頁／員工資料共用，有單元測試）、`DesignerWeekReservation/`（個人頁與員工資料的整頁週曆，同一份）、`HolidayEdit.js`（四個預約頁的公休彈窗）。單日預約紀錄的版面不同，只共用 `HolidayEdit`。
 - `src/components/PageErrorBoundary.js`：Dashboard 內容區的錯誤邊界（單頁出錯只顯示錯誤畫面，側欄可用）；`SlotPortal.js`：TopBar／NavBar 互相把按鈕畫進對方插槽（切換店家、搜尋選單）。
 - `src/layouts/Dashboard/`：側欄頂列（Logo、版號、搜尋鈕、訂單佇列鈴鐺、收合）、選單、底部（深淺色切換、切換店家、登出）。
 - `src/views/OrderCreate/`：打帳單。`orderRequirements.js` 與 `Header.js` 的 `valid` 同步（有測試比對）；`RowAction.js` 是項目列的圖示鈕與「新增項目」。

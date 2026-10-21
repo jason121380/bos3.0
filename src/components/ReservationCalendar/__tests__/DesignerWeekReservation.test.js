@@ -1,9 +1,9 @@
-// 個人頁「預約表」分頁渲染測試（fix/profile-reservation-white）：API 回空資料或查詢失敗時不可在 render 階段拋錯（整頁白屏）
+// 設計師單週預約表（個人頁「預約表」分頁與員工資料預約表共用）渲染測試（fix/profile-reservation-white）：API 回空資料或查詢失敗時不可在 render 階段拋錯（整頁白屏）
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { startOfWeek, setHours, addDays } from 'date-fns'
-import Reservation from '../Reservation'
+import Reservation from '../DesignerWeekReservation'
 import { RESERVATION_COLORS } from 'components/CalendarColorClip'
 
 // #RRGGBB → 瀏覽器正規化後的 rgb(r, g, b)

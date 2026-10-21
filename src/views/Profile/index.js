@@ -34,7 +34,7 @@ import { Skeleton } from 'ui/skeleton'
 import General from './General'
 import OrderRecord from './OrderRecord'
 import Permission from './Permission'
-import Reservation from './Reservation'
+import DesignerWeekReservation from 'components/ReservationCalendar/DesignerWeekReservation'
 import HelperSelfRecord from './HelperSelfRecord'
 import Security from './Security'
 import PinnedTable from './PinnedTable'
@@ -609,7 +609,8 @@ function Settings({ match, history }) {
               />
           )}
           {currentTab === 'reservation' && (
-            <Reservation
+            <DesignerWeekReservation
+              className="mt-6"
               designerId={employeeId}
               checkinSettings={checkinSettings}
               bookingCusCheck={bookingCusCheck} 
