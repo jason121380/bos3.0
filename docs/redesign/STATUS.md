@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10211741，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10211744，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 

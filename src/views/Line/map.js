@@ -21,7 +21,9 @@ function Map({ className, match, location, ...rest }) {
   useEffect(() => {
     LiffHelper.getProfile(match.params.id).then(profile => {
       setProfile({ profile })
-    }).catch(() => {
+    }).catch(err => {
+      // 尚未登入 LINE 時 LiffHelper.init 會先 liff.login() 導向登入、再以 'NOT_LOGIN' reject，屬正常流程，不提示
+      if (err === 'NOT_LOGIN') return
       // LIFF 個人資料取不到時原本會在打卡時讀 null 而拋錯；這裡直接提示（errorLink 管不到 LIFF SDK）
       alert('無法取得 LINE 個人資料，請重新開啟此頁')
     })
