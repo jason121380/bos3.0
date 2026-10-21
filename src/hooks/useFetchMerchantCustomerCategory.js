@@ -1,12 +1,13 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-export const GET_CUSTOMER_CATEGORY = gql`
+export const GET_CUSTOMER_CATEGORY = settingsQuery(gql`
   query CUSTOMER_CATEGORY($merchantId: ID!) {
     merchantCustomerCategory(merchantId: $merchantId) {
       name
     }
   }
-`
+`)
 
 export const mockedMerchantCustomerCategory = {
   data: {
@@ -28,6 +29,6 @@ export default function useFetchMerchantCustomerCategory() {
         ? JSON.parse(localStorage.getItem('userMerchant')).id
         : null,
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

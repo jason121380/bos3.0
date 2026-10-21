@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 // 讀取全部會員卡類別
-const FETCH_MEMBERSHIPS_CATEGORY = gql`
+const FETCH_MEMBERSHIPS_CATEGORY = settingsQuery(gql`
   query FETCH_MEMBERSHIPS_CATEGORY($input: MembershipCategoriesInput!) {
     membershipCategories(input: $input) {
       uuid
@@ -13,13 +14,13 @@ const FETCH_MEMBERSHIPS_CATEGORY = gql`
       }
     }
   }
-`
+`)
 export function useFetchGetMembershipCategories(input) {
   return useQuery(FETCH_MEMBERSHIPS_CATEGORY, {
     variables: {
       input,
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 

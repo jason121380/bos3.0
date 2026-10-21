@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-const GET_PARAMETER_ABOUT_SETTING_FUNCTION = gql`
+const GET_PARAMETER_ABOUT_SETTING_FUNCTION = settingsQuery(gql`
   query GET_PARAMETER_ABOUT_SETTING_FUNCTION {
     getParameterAboutSettingFunction {
       isMemberShipCardActive
@@ -38,66 +39,66 @@ const GET_PARAMETER_ABOUT_SETTING_FUNCTION = gql`
       }
     }
   }
-`
+`)
 
 export default function useFetchGetParameterAboutSettingFunction() {
   return useQuery(GET_PARAMETER_ABOUT_SETTING_FUNCTION, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_IS_BONUS_REWARD_WITH_LINE = gql`
+const GET_IS_BONUS_REWARD_WITH_LINE = settingsQuery(gql`
   query GET_IS_BONUS_REWARD_WITH_LINE {
     getParameterAboutSettingFunction {
       isBonusRewardWithLine
     }
   }
-`
+`)
 
 export function useFetchGetIsBonusRewardWithLine() {
   return useQuery(GET_IS_BONUS_REWARD_WITH_LINE, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_IS_UN_LIM_PROD_EMP_PRICE = gql`
+const GET_IS_UN_LIM_PROD_EMP_PRICE = settingsQuery(gql`
   query GET_IS_UN_LIM_PROD_EMP_PRICE {
     getParameterAboutSettingFunction {
       isUnlimProdEmpPrice
     }
   }
-`
+`)
 
 export function useFetchGetisUnlimProdEmpPrice() {
   return useQuery(GET_IS_UN_LIM_PROD_EMP_PRICE, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_IS_COMBO_SETTING = gql`
+const GET_IS_COMBO_SETTING = settingsQuery(gql`
   query GET_IS_COMBO_SETTING {
     getParameterAboutSettingFunction {
       isComboUsing
     }
   }
-`
+`)
 
 export function useFetchGetIsComboSetting() {
   return useQuery(GET_IS_COMBO_SETTING, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_DISBLE_PENDING_ORDER = gql`
+const GET_DISBLE_PENDING_ORDER = settingsQuery(gql`
   query GET_DISBLE_PENDING_ORDER {
     getParameterAboutSettingFunction {
       disablePendingOrder
     }
   }
-`
+`)
 
 export function useFetchGetDisablePendingOrder() {
   return useQuery(GET_DISBLE_PENDING_ORDER, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

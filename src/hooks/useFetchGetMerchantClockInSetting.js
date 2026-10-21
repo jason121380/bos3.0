@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-export const GET_MERCHANT_CLOCK_IN_SETTING = gql`
+export const GET_MERCHANT_CLOCK_IN_SETTING = settingsQuery(gql`
   query GET_MERCHANT_CLOCK_IN_SETTING {
     getMerchantClockInSetting {
       name
@@ -25,15 +26,15 @@ export const GET_MERCHANT_CLOCK_IN_SETTING = gql`
       clockOutBufferMinutes
     }
   }
-`
+`)
 
 export default function useFetchGetMerchantClockInSetting() {
   return useQuery(GET_MERCHANT_CLOCK_IN_SETTING, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-export const GET_MERCHANT_CLOCK_IN_SCHEDULE = gql`
+export const GET_MERCHANT_CLOCK_IN_SCHEDULE = settingsQuery(gql`
   query GET_MERCHANT_CLOCK_IN_SCHEDULE {
     getMerchantClockInSetting {
       id
@@ -45,10 +46,10 @@ export const GET_MERCHANT_CLOCK_IN_SCHEDULE = gql`
       color
     }
   }
-`
+`)
 
 export function useFetchGetMerchantClockInSchedule() {
   return useQuery(GET_MERCHANT_CLOCK_IN_SCHEDULE, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

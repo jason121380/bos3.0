@@ -30,7 +30,7 @@ npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps（CI／Docke
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
 npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base＋react-hooks/rules-of-hooks 為 error，0 warning）
-CI=true npm run test:nowatch         # 全部單元測試（基準：64 檔／345 測試全數通過）
+CI=true npm run test:nowatch         # 全部單元測試（基準：65 檔／352 測試全數通過）
 TZ=America/Los_Angeles CI=true npm run test:nowatch   # 時區相關修改要另在海外時區跑一次
 CI=true npm run test:coverage        # 覆蓋率（門檻為現況下限＋金額／API 模組逐檔門檻，見 package.json）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
@@ -62,6 +62,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - `src/lib/uuid.js`：列表 key／暫存 id 用的 v4 UUID（`import uuid from 'lib/uuid'`，用 `crypto.getRandomValues`；2026/10/21 取代 `uuid` 套件，有測試）。不要再安裝 `uuid` 套件；單元測試的 `crypto` 由 `setupTests.js` 補 Node webcrypto。
 - `src/lib/stored-user.js`：登入者資料存進 localStorage 前只留 `id`、`name`、`isAdmin`、`isNeedChangePassword`（`saveStoredUser`；手機號碼、uid、userCode、各店 solmateKey 不落地，2026/10/21）；`src/index.js` 啟動時 `sanitizeStoredUser()` 把舊版存的完整資料就地瘦身。新程式寫 `user` 一律用 `saveStoredUser`，需要其他欄位向 API（profile）查。
 - `src/lib/immer-config.js`（`src/index.js` 最早載入）：immer 2026/10/21 自 7 升到 9（關掉 critical 漏洞、與 Redux Toolkit 共用同一份），但維持 immer 7 的凍結行為——開發／測試凍結 `produce` 結果、正式環境不凍結，升版不新增拋錯路徑（有測試）。
+- `src/lib/settings-cache.js`：設定類查詢的快取（2026/10/21，Jason 同意）。103 個「很少變的設定」查詢以 `settingsQuery(gql`…`)` 登記、`fetchPolicy: SETTINGS_FETCH_POLICY`（cache-first）；任何 mutation 成功（`NON_SETTINGS_MUTATIONS` 白名單除外）或每 10 分鐘，`evictSettings()` 把它們移出快取（同時進行的多個 mutation 合併成全部結束後清一次），畫面上正在用的會自動重抓。**新增設定類查詢照這個寫法**；含日期／分析參數、權限、帳單與列印、依 id 讀單筆（編輯頁）、會輪替或即時變動的資料（QR 打卡碼、帳單佇列狀態）、操作密碼都不要用（仍是 cache-and-network）；根欄位是 `merchant`／`me`／`user` 這類底下還掛著權限與報表的共用欄位也不能用（清除以根欄位為單位，會連帶清掉它們；`settingsQuery` 遇到會直接拋錯，有測試）；根欄位若也被**帶參數的查詢**（依日期的分析報表等，例如 `productCategories`／`serviceCategories`）使用同樣不能用——`settings-cache.test.js` 會掃全站 gql 擋下（也擋依 `ID` 變數讀單筆的設定查詢）。換頁時會自動送出、不改設定的 mutation 要加進白名單，否則每次換頁都清快取（有測試）。
 - `src/lib/after-first-load.js`：`useAfterFirstLoad()` 在首屏完成（load 後、沒有查詢在等回應、頁面程式不在下載中〔Dashboard 的 Suspense 佔位用 `useHoldFirstLoad()` 計入〕、瀏覽器空閒）才回傳 true；版面的系統公告、訂單佇列、釘選頁、切換店家清單以 `skip: !afterFirstLoad` 延後。版面要新增查詢時，先判斷是不是首屏必要（選單權限、選單設定是必要）。
 - `src/elements/snackbars.js`：`openSnackbar` 全站提示（右下角 toast；錯誤需手動關閉；確認型 variant 畫成對話框）。錯誤／警告提示自動經 `src/lib/friendly-error.js` 把英文技術訊息（500、資料格式錯誤、程式例外）換成「原因＋下一步」的中文，中文業務訊息原樣；errorLink 的狀態碼文案也用同一份（`httpStatusMessage`）。頁面 catch 照常傳 `error.message` 即可。
 - `src/components/ReservationCalendar/`：預約週曆共用。`weekCalendar.js`（`tidyWeekCalendar`／`buildWeekCalendar`：色塊、可預約人數、重疊並排、公休、跨日拆段，單週預約紀錄／個人頁／員工資料共用，有單元測試）、`DesignerWeekReservation/`（個人頁與員工資料的整頁週曆，同一份）、`HolidayEdit.js`（四個預約頁的公休彈窗）。單日預約紀錄的版面不同，只共用 `HolidayEdit`。

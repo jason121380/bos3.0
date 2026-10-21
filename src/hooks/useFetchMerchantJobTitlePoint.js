@@ -1,6 +1,7 @@
 import { gql, useQuery, useLazyQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-const GET_MERCHANT_JOBTITLE_POINT = gql`
+const GET_MERCHANT_JOBTITLE_POINT = settingsQuery(gql`
   query MERCHANT_JOBTITLE_POINT($merchantId: ID!) {
     merchantJobTitlePoint(merchantId: $merchantId) {
       id
@@ -13,7 +14,7 @@ const GET_MERCHANT_JOBTITLE_POINT = gql`
       usingPeopleCount
     }
   }
-`
+`)
 
 export default function useFetchMerchantJobTitlePoint() {
   const merchantId = localStorage.getItem('userMerchant')
@@ -23,18 +24,18 @@ export default function useFetchMerchantJobTitlePoint() {
     variables: {
       merchantId,
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_MERCHANT_JOBTITLE = gql`
+const GET_MERCHANT_JOBTITLE = settingsQuery(gql`
   query GET_MERCHANT_JOBTITLE($merchantId: ID!) {
     merchantJobTitlePoint(merchantId: $merchantId) {
       id
       jobTitle
     }
   }
-`
+`)
 
 export function useFetchMerchantJobTitleForEmployeeList() {
   const merchantId = localStorage.getItem('userMerchant')
@@ -44,7 +45,7 @@ export function useFetchMerchantJobTitleForEmployeeList() {
     variables: {
       merchantId,
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
   return [getJobTitle, jobTitleData]
 }

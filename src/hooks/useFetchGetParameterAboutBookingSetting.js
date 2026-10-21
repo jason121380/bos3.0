@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-const GET_PARAMETER_ABOUT_BOOKING_SETTING = gql`
+const GET_PARAMETER_ABOUT_BOOKING_SETTING = settingsQuery(gql`
   query GET_PARAMETER_ABOUT_BOOKING_SETTING {
     getParameterAboutBookingSetting {
       nonDesignationOrderLimit
@@ -39,24 +40,24 @@ const GET_PARAMETER_ABOUT_BOOKING_SETTING = gql`
       isNDBInLimitCount
     }
   }
-`
+`)
 
 export default function useFetchGetParameterAboutBookingSetting() {
   return useQuery(GET_PARAMETER_ABOUT_BOOKING_SETTING, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_BOOKING_HISTORY_DISPLAY = gql`
+const GET_BOOKING_HISTORY_DISPLAY = settingsQuery(gql`
   query GET_BOOKING_HISTORY_DISPLAY {
     getParameterAboutBookingSetting {
       isBookingHistoryDisplay
     }
   }
-`
+`)
 
 export function useFetchGetBookinHistoryDisplay() {
   return useQuery(GET_BOOKING_HISTORY_DISPLAY, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

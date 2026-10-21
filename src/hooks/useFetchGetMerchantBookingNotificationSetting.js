@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-const GET_MERCHANT_BOOKINNG_NOTIFICATION_SETTING = gql`
+const GET_MERCHANT_BOOKINNG_NOTIFICATION_SETTING = settingsQuery(gql`
   query GET_MERCHANT_BOOKINNG_NOTIFICATION_SETTING {
     getMerchantBookingNotificationSetting {
       customerCreateBooking {
@@ -30,10 +31,10 @@ const GET_MERCHANT_BOOKINNG_NOTIFICATION_SETTING = gql`
       }
     }
   }
-`
+`)
 
 export default function useFetchGetMerchantBookingNotificationSetting() {
   return useQuery(GET_MERCHANT_BOOKINNG_NOTIFICATION_SETTING, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

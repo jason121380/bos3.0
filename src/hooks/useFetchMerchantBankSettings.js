@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-const GET_MERCHANT_BANK_SETTINGS = gql`
+const GET_MERCHANT_BANK_SETTINGS = settingsQuery(gql`
   query GET_MERCHANT_BANK_SETTINGS {
     getMerchantBankSettings {
       remitterName
@@ -12,10 +13,10 @@ const GET_MERCHANT_BANK_SETTINGS = gql`
       trustorPhone
     }
   }
-`
+`)
 
 export default function useFetchMerchantBankSettings() {
   return useQuery(GET_MERCHANT_BANK_SETTINGS, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

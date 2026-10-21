@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-const GET_PARAMETER_ABOUT_CUSTOMER_SETTING = gql`
+const GET_PARAMETER_ABOUT_CUSTOMER_SETTING = settingsQuery(gql`
   query GET_PARAMETER_ABOUT_CUSTOMER_SETTING {
     getParameterAboutCustomerSetting {
       customerSidePageDisplay {
@@ -24,10 +25,10 @@ const GET_PARAMETER_ABOUT_CUSTOMER_SETTING = gql`
       bookingMinumnTimeCost
     }
   }
-`
+`)
 
 export default function useFetchGetParameterAboutCustomerSetting() {
   return useQuery(GET_PARAMETER_ABOUT_CUSTOMER_SETTING, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

@@ -1,13 +1,14 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-export const GET_MERCHANT_DEDUCTION_ITEMS = gql`
+export const GET_MERCHANT_DEDUCTION_ITEMS = settingsQuery(gql`
   query MERCHANT_DEDUCTION_ITEMS($merchantId: ID!) {
     merchantDeductionItems(merchantId: $merchantId) {
       type
       name
     }
   }
-`
+`)
 
 export default function useFetchMerchantDeductionItems() {
   const merchantId = localStorage.getItem('userMerchant')
@@ -17,6 +18,6 @@ export default function useFetchMerchantDeductionItems() {
     variables: {
       merchantId,
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

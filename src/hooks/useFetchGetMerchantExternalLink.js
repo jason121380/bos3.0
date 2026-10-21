@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-export const GET_MERCHANT_EXTERNAL_LINK = gql`
+export const GET_MERCHANT_EXTERNAL_LINK = settingsQuery(gql`
   query GET_MERCHANT_EXTERNAL_LINK {
     merchantExternalLink {
       id
@@ -12,10 +13,10 @@ export const GET_MERCHANT_EXTERNAL_LINK = gql`
       }
     }
   }
-`
+`)
 
 export default function useFetchGetMerchantExternalLink() {
   return useQuery(GET_MERCHANT_EXTERNAL_LINK, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
