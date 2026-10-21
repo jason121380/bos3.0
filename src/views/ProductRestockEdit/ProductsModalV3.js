@@ -10,6 +10,7 @@ import { Dialog, DialogContent } from 'ui/dialog'
 import { Checkbox } from 'ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import { cn } from 'ui/utils'
+import { formatNumber } from 'ui/format'
 
 function ProductsModal({
   productsModalOpen,
@@ -331,8 +332,8 @@ function ProductsModal({
                       style={{ width: '90px' }}
                     />
                   </TableCell>
-                  <TableCell numeric>{product.remainingCount}</TableCell>
-                  <TableCell numeric>{product.total}</TableCell>
+                  <TableCell numeric>{formatNumber(product.remainingCount)}</TableCell>
+                  <TableCell numeric>{formatNumber(product.total)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

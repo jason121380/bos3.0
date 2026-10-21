@@ -9,6 +9,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from "recharts";
 import { performanceColor } from '../Colors';
+import { formatNumber } from 'ui/format'
 
 const selectOptions = [
   { label: '項目消費', value: 'service'},
@@ -33,13 +34,13 @@ const PerformanceDetail = ({
         <div className="min-w-[150px] p-[12px] text-[16px] [background:rgb(var(--background))] text-[color:black] rounded-[5px] [box-shadow:0_0_0_1px_rgb(63_63_68_/_5%),0_1px_3px_0_rgb(63_63_68_/_15%)] flex flex-col [&_.header]:flex [&_.header]:gap-[30px] [&_.header]:w-full [&_.header]:justify-between [&_.header]:mb-[10px] [&_.content]:max-h-[350px] [&_.content]:overflow-y-auto [&_.row]:flex [&_.row]:gap-[10px] [&_.row]:text-[14px] [&_.row]:items-center">
           <div className='header'>
             <div>{label}</div>
-            <div>總和:{sum}</div>
+            <div>總和:{formatNumber(sum)}</div>
           </div>
           <div className='content'>
             {payload.map(({ name, value, color }) => (
               <div className='row' style={{ color: color }} key={`${name}-${value}`}>
                 <span style={{ maxWidth: 100, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{name}:</span>
-                <span>{value}</span>
+                <span>{formatNumber(value)}</span>
                 <span>{proportion(value)}</span>
               </div>
             ))}

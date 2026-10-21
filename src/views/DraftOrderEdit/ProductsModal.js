@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
 import idx from 'idx'
 import pagenationLabel from './../../helper/pagenationLabel'
+import { formatNumber } from 'ui/format'
 
 function ProductsModal({
   productsModalOpen,
@@ -181,7 +182,7 @@ function ProductsModal({
                     {product.productCategory !== null ? product.productCategory.name : ''}
                   </TableCell>
                   <TableCell>{product.name}</TableCell>
-                  <TableCell numeric>{product.sellPrice}</TableCell>
+                  <TableCell numeric>{formatNumber(product.sellPrice)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

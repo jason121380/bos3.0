@@ -13,6 +13,7 @@ import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { formatNumber } from 'ui/format'
 
 // 權限狀態文字 → Badge 樣式（僅外觀）
 const authStatusVariant = status => (status === '完整權限' ? 'success' : status === '部分權限' ? 'warning' : 'neutral')
@@ -161,7 +162,7 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
                       )}
                     </TableCell>
                     <TableCell>{data.authorityName}</TableCell>
-                    <TableCell numeric>{data.usingDesignerCount}</TableCell>
+                    <TableCell numeric>{formatNumber(data.usingDesignerCount)}</TableCell>
                     <TableCell>
                       <Switch
                         size="small"

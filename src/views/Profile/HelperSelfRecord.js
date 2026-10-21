@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { formatNumber } from 'ui/format'
 
 function OrderRecord({
   helperReport,
@@ -99,13 +100,13 @@ function OrderRecord({
                                 {record.designer.name}
                               </TableCell>
                               {priceDisplayOnReport ? (
-                                <TableCell numeric>{Math.abs(Math.round(record.helperFee))}</TableCell>
+                                <TableCell numeric>{formatNumber(Math.abs(Math.round(record.helperFee)))}</TableCell>
                               ) : record.helperMoneyGivenWay === '點數換算金額' ? (
                                 <TableCell />
                               ) : (
-                                <TableCell numeric>{Math.abs(Math.round(record.helperFee))}</TableCell>
+                                <TableCell numeric>{formatNumber(Math.abs(Math.round(record.helperFee)))}</TableCell>
                               )}
-                              <TableCell numeric>{roundDecimal(record.helperPoint)}</TableCell>
+                              <TableCell numeric>{formatNumber(roundDecimal(record.helperPoint))}</TableCell>
                             </TableRow>
                           ))}
                           {data.productRecord.map((record, index) => (
@@ -119,9 +120,9 @@ function OrderRecord({
                                   #{record.orderNo}
                                 </a>
                               </TableCell>
-                              <TableCell>{`${record.productName} ${record.productUnitPrice}x${record.productCount}`}</TableCell>
+                              <TableCell>{`${record.productName} ${formatNumber(record.productUnitPrice)}x${record.productCount}`}</TableCell>
                               <TableCell></TableCell>
-                              <TableCell numeric>{Math.round(record.productRake)}</TableCell>
+                              <TableCell numeric>{formatNumber(Math.round(record.productRake))}</TableCell>
                               <TableCell></TableCell>
                             </TableRow>
                           ))}
@@ -131,7 +132,7 @@ function OrderRecord({
                             <TableCell></TableCell>
                             {priceDisplayOnReport ? (
                               <TableCell numeric>
-                                {Math.abs(
+                                {formatNumber(Math.abs(
                                   Math.round(
                                     data.helperRecord.reduce((accu, curVal) => accu + curVal.helperFee, 0)
                                   )
@@ -140,11 +141,11 @@ function OrderRecord({
                                     Math.round(
                                       data.productRecord.reduce((accu, curVal) => accu + curVal.productRake, 0)
                                     )
-                                  )}
+                                  ))}
                               </TableCell>
                             ) : (
                               <TableCell numeric>
-                                {Math.abs(
+                                {formatNumber(Math.abs(
                                   Math.round(
                                     data.helperRecord
                                       .map(record =>
@@ -159,13 +160,13 @@ function OrderRecord({
                                     Math.round(
                                       data.productRecord.reduce((accu, curVal) => accu + curVal.productRake, 0)
                                     )
-                                  )}
+                                  ))}
                               </TableCell>
                             )}
                             <TableCell numeric>
-                              {roundDecimal(
+                              {formatNumber(roundDecimal(
                                 data.helperRecord.reduce((accu, curVal) => accu + curVal.helperPoint, 0)
-                              )}
+                              ))}
                             </TableCell>
                           </TableRow>
                         </TableBody>
@@ -186,7 +187,7 @@ function OrderRecord({
                               (不含點)
                             </TableCell>
                             <TableCell numeric>
-                              {priceDisplayOnReport
+                              {formatNumber(priceDisplayOnReport
                                 ? Math.abs(
                                     Math.round(
                                       data.helperRecord.reduce((accu, curVal) => accu + curVal.helperFeeNoPoint, 0)
@@ -202,9 +203,9 @@ function OrderRecord({
                                         )
                                         .reduce((accu, curVal) => (accu += curVal), 0)
                                     )
-                                  )}
+                                  ))}
                             </TableCell>
-                            <TableCell numeric>{Math.abs(Math.round(data.summaryNoPoint))}</TableCell>
+                            <TableCell numeric>{formatNumber(Math.abs(Math.round(data.summaryNoPoint)))}</TableCell>
                           </TableRow>
                           {priceDisplayOnReport ? (
                             <TableRow>
@@ -214,56 +215,56 @@ function OrderRecord({
                                 點數/換算金額
                               </TableCell>
                               <TableCell numeric>
-                                {roundDecimal(
+                                {formatNumber(roundDecimal(
                                   data.helperRecord.reduce((accu, curVal) => accu + curVal.helperPoint, 0)
-                                )}
+                                ))}
                                 /
-                                {Math.abs(
+                                {formatNumber(Math.abs(
                                   Math.round(
                                     data.helperRecord.reduce((accu, curVal) => accu + curVal.helperFeeOnlyPoint, 0)
                                   )
-                                )}
+                                ))}
                               </TableCell>
                               <TableCell numeric>
-                                {roundDecimal(data.helperPointTillNow)} /
-                                {Math.abs(Math.round(data.summaryOnlyPoint))}
+                                {formatNumber(roundDecimal(data.helperPointTillNow))} /
+                                {formatNumber(Math.abs(Math.round(data.summaryOnlyPoint)))}
                               </TableCell>
                             </TableRow>
                           ) : (
                             <TableRow>
                               <TableCell>互助獲得 - 點數</TableCell>
                               <TableCell numeric>
-                                {roundDecimal(
+                                {formatNumber(roundDecimal(
                                   data.helperRecord.reduce((accu, curVal) => accu + curVal.helperPoint, 0)
-                                )}
+                                ))}
                               </TableCell>
-                              <TableCell numeric>{roundDecimal(data.helperPointTillNow)}</TableCell>
+                              <TableCell numeric>{formatNumber(roundDecimal(data.helperPointTillNow))}</TableCell>
                             </TableRow>
                           )}
                           <TableRow>
                             <TableCell>店販業績</TableCell>
                             <TableCell numeric>
-                              {Math.abs(
+                              {formatNumber(Math.abs(
                                 Math.round(
                                   data.productRecord.reduce((accu, curVal) => accu + curVal.productUnitPrice, 0)
                                 )
                               ) *
                                 Math.round(
                                   data.productRecord.reduce((accu, curVal) => accu + curVal.productCount, 0)
-                                )}
+                                ))}
                             </TableCell>
-                            <TableCell numeric>{Math.round(data.productPerformanceTillNow)}</TableCell>
+                            <TableCell numeric>{formatNumber(Math.round(data.productPerformanceTillNow))}</TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>店販抽成</TableCell>
                             <TableCell numeric>
-                              {Math.abs(
+                              {formatNumber(Math.abs(
                                 Math.round(
                                   data.productRecord.reduce((accu, curVal) => accu + curVal.productRake, 0)
                                 )
-                              )}
+                              ))}
                             </TableCell>
-                            <TableCell numeric>{roundDecimal(data.productRakeTillNow)}</TableCell>
+                            <TableCell numeric>{formatNumber(roundDecimal(data.productRakeTillNow))}</TableCell>
                           </TableRow>
                         </TableBody>
                       </Table>

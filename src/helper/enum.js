@@ -13,9 +13,9 @@ const PaymentEnum = {
   PERCENT: '百分比(%)',
   AMOUNT: '固定金額',
 }
+// 手續費顯示用的單位符號：百分比加 %；固定金額只顯示千分位數字、不加幣別（Jason 2026/10/21「全部不加 NT$」）
 const PaymentSymbol = {
   PERCENT: '%',
-  AMOUNT: '$',
 }
 
 export { AccountingInOutType, PaymentEnum, PaymentSymbol, WalletType }

@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from 'ui/card'
 import PropTypes from 'prop-types'
 import { memo, useEffect, useState } from 'react'
 import idx from 'idx'
+import { formatNumber } from 'ui/format'
 
 function CouponSellModal({
   couponModalOpen,
@@ -147,8 +148,8 @@ function CouponSellModal({
                   <TableCell>{coupon.no}</TableCell>
                   <TableCell>{idx(coupon, _ => _.ServiceCategory.name)}</TableCell>
                   <TableCell>{coupon.name}</TableCell>
-                  <TableCell numeric>{coupon.price}</TableCell>
-                  <TableCell numeric>{coupon.ticketAvailableCount}</TableCell>
+                  <TableCell numeric>{formatNumber(coupon.price)}</TableCell>
+                  <TableCell numeric>{formatNumber(coupon.ticketAvailableCount)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -6,6 +6,7 @@ import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { formatNumber } from 'ui/format'
 
 const arrowUp = <KeyboardArrowUpIcon style={{ cursor: 'pointer' }} />
 const arrowDown = <KeyboardArrowDownIcon style={{ cursor: 'pointer' }} />
@@ -65,7 +66,7 @@ function Results({ events, setCollapse, selectIds, onToggleAll, isAllExpanded })
                                                     )}
                                                 </TableCell>
                                                 <TableCell className="font-medium">{name}</TableCell>
-                                                <TableCell numeric>{merchantList.length} 家</TableCell>
+                                                <TableCell numeric>{formatNumber(merchantList.length)} 家</TableCell>
                                             </TableRow>
                                             {merchantList.length > 0 && isSelect && (
                                                 <TableRow className="bg-surface hover:bg-surface">

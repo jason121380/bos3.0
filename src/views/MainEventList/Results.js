@@ -6,6 +6,7 @@ import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { formatNumber } from 'ui/format'
 
 const arrowUp = <KeyboardArrowUpIcon style={{ cursor: 'pointer' }} />
 const arrowDown = <KeyboardArrowDownIcon style={{ cursor: 'pointer' }} />
@@ -87,7 +88,7 @@ function Results({
                         <TableCell className="font-medium">{event.nameDefault}</TableCell>
                         <TableCell className="tabular-nums">{`${format(event.startDateDefault, 'yyyy/MM/dd')} ~ ${format(event.endDateDefault, 'yyyy/MM/dd')}`}</TableCell>
                         <TableCell>{event.endDateActual ? '活動結束' : renderIsUsing(event.isUsingDefault)}</TableCell>
-                        <TableCell numeric>{`${event.releasedCount} / ${event.maxCountDefault}`}</TableCell>
+                        <TableCell numeric>{`${formatNumber(event.releasedCount)} / ${formatNumber(event.maxCountDefault)}`}</TableCell>
                         <TableCell>{`${event.isJoined ? '已加入' : '未加入'} / ${event.isPublic ? '公開' : '私人'}`}</TableCell>
                         <TableCell>{event.isSMSNotifyDefault ? '開啟' : '關閉'}</TableCell>
                         <TableCell className="tabular-nums">{event.endDateActual ? format(event.endDateActual, 'yyyy/MM/dd') : '-'}</TableCell>
@@ -161,7 +162,7 @@ function Results({
                                     <TableRow key={rule.id}>
                                       <TableCell className="font-medium">{rule.nameForGroup}</TableCell>
                                       <TableCell className="tabular-nums">{`${format(rule.startDateForGroup, 'MM/dd')} ~ ${format(rule.endDateForGroup, 'MM/dd')}`}</TableCell>
-                                      <TableCell numeric>{`${rule.releasedCount} / ${rule.maxCountForGroup}`}</TableCell>
+                                      <TableCell numeric>{`${formatNumber(rule.releasedCount)} / ${formatNumber(rule.maxCountForGroup)}`}</TableCell>
                                       <TableCell>{(rule.endDateActual && event.endDateActual) ? '主活動關閉' : renderRuleStatus(rule.isUsingForGroup, rule.endDateActual)}</TableCell>
                                       <TableCell>{rule.isSMSNotifyForGroup ? '是' : '否'}</TableCell>
                                       <TableCell>

@@ -11,6 +11,7 @@ import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { formatNumber } from 'ui/format'
 
 const deductions = {
   onSales: '業績',
@@ -102,9 +103,7 @@ function Results({ className, paymentList = [], ...rest }) {
                   <TableCell numeric>{idx + 1}</TableCell>
                   <TableCell>{data.name}</TableCell>
                   <TableCell numeric>
-                    {(data.amountType === 'AMOUNT' ? PaymentSymbol[data.amountType] : '') +
-                      data.fee +
-                      (data.amountType === 'PERCENT' ? PaymentSymbol[data.amountType] : '')}
+                    {formatNumber(data.fee) + (data.amountType === 'PERCENT' ? PaymentSymbol[data.amountType] : '')}
                   </TableCell>
                   <TableCell>{deductions[data.type]}</TableCell>
                   <TableCell>{data.isNoCash ? '是' : '否'}</TableCell>

@@ -14,6 +14,7 @@ import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { formatNumber } from 'ui/format'
 
 // 打卡項目樣式（原 emotion styles 等值轉 Tailwind）
 const clockInItemClass = 'flex items-center gap-[4px] py-[2px] px-[4px] rounded-[4px] hover:!bg-transparent'
@@ -436,8 +437,8 @@ export default function Results({
                   <TableCell className={`${stickyCell} whitespace-nowrap px-2 py-1 text-label`}>{data.userName}</TableCell>
                   {/* 計算總打卡天數 */}
                   <TableCell className="whitespace-nowrap bg-accent/8 px-2 py-1 text-label font-bold tabular-nums text-accent">{data.totalClockInDays + ` 天`}</TableCell>
-                  <TableCell numeric className="whitespace-nowrap px-2 py-1 text-label">{data.absenteeismDays}</TableCell>
-                  <TableCell numeric className="whitespace-nowrap px-2 py-1 text-label">{data.totalLateMinutes}</TableCell>
+                  <TableCell numeric className="whitespace-nowrap px-2 py-1 text-label">{formatNumber(data.absenteeismDays)}</TableCell>
+                  <TableCell numeric className="whitespace-nowrap px-2 py-1 text-label">{formatNumber(data.totalLateMinutes)}</TableCell>
                   {displayDate.map(d => {
                     return data.attendanceRecord.map((record, index) => {
                       if (format(record.date, 'MM/dd') === d.substring(0, 5)) {

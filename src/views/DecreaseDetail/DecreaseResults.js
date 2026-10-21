@@ -138,7 +138,7 @@ function Results({
                         <TableCell numeric>
                           {formatNumber(order.helperFee)}({order.helperMoneyGivenWay})
                         </TableCell>
-                        <TableCell numeric>{pointFloatDisplay(order.helperPoint)}</TableCell>
+                        <TableCell numeric>{formatNumber(pointFloatDisplay(order.helperPoint))}</TableCell>
                         <TableCell>
                           {order.helperDeductionType === 'onSales'
                             ? '依業績'
@@ -162,7 +162,7 @@ function Results({
                           <TableCell numeric>
                             {formatNumber(order.helperFee)}({order.helperMoneyGivenWay})
                           </TableCell>
-                          <TableCell numeric>{pointFloatDisplay(order.helperPoint)}</TableCell>
+                          <TableCell numeric>{formatNumber(pointFloatDisplay(order.helperPoint))}</TableCell>
                           <TableCell>
                             {order.helperDeductionType === 'onSales'
                               ? '依業績'
@@ -181,12 +181,12 @@ function Results({
                     {beenAssistedDesigner !== undefined ? (
                       <Fragment>
                         <TableCell numeric>{formatNumber(summary2)}</TableCell>
-                        <TableCell numeric>{pointFloatDisplay(pointSummary2)}</TableCell>
+                        <TableCell numeric>{formatNumber(pointFloatDisplay(pointSummary2))}</TableCell>
                       </Fragment>
                     ) : (
                       <Fragment>
                         <TableCell numeric>{formatNumber(summary)}</TableCell>
-                        <TableCell numeric>{pointFloatDisplay(pointSummary)}</TableCell>
+                        <TableCell numeric>{formatNumber(pointFloatDisplay(pointSummary))}</TableCell>
                       </Fragment>
                     )}
                     <TableCell></TableCell>

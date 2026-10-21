@@ -7,6 +7,7 @@ import { Button } from 'ui/button'
 import { Fragment } from 'react'
 import format from 'date-fns/format'
 import { CSVLink } from 'react-csv'
+import { formatNumber } from 'ui/format'
 
 // 原 emotion styles 逐值轉 Tailwind；root 的 '& .MuiCardHeader-content > span' 在 ui/card（不輸出 Mui class）內不命中，死碼不轉
 const styles = {
@@ -22,9 +23,9 @@ function General({ info, inventoryData, CSVData }) {
     if (count === 0) {
       return 0
     } else if (count > 0) {
-      return <span className={styles.plus}>{`+${count}`}</span>
+      return <span className={styles.plus}>{`+${formatNumber(count)}`}</span>
     } else {
-      return <span className={styles.minus}>{count}</span>
+      return <span className={styles.minus}>{formatNumber(count)}</span>
     }
   }
   return (
@@ -79,9 +80,9 @@ function General({ info, inventoryData, CSVData }) {
                 <TableRow key={productId}>
                   <TableCell>{productName}</TableCell>
                   <TableCell>{productNo}</TableCell>
-                  <TableCell numeric>{currentCount}</TableCell>
+                  <TableCell numeric>{formatNumber(currentCount)}</TableCell>
                   <TableCell numeric>
-                    {inventoryCount === null ? '' : inventoryCount}
+                    {inventoryCount === null ? '' : formatNumber(inventoryCount)}
                   </TableCell>
                   <TableCell numeric>{inventoryCount === null ? '' : handleCheckCount(inventoryCount - currentCount)}</TableCell>
                 </TableRow>

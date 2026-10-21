@@ -9,6 +9,7 @@ import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { formatNumber } from 'ui/format'
 
 function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetch, ...rest }) {
   const [selectedPayment, setSelectedPayment] = useState([])
@@ -101,7 +102,7 @@ function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetc
                   <TableCell className="tabular-nums text-text-secondary">{idx + 1}</TableCell>
                   <TableCell>{data.name}</TableCell>
                   <TableCell numeric>
-                    {data.type === 'PERCENT' ? `${data.handlingFee}%` : `$${data.handlingFee}`}
+                    {data.type === 'PERCENT' ? `${data.handlingFee}%` : formatNumber(data.handlingFee)}
                   </TableCell>
                   <TableCell>{data.isNoCash ? '是' : '否'}</TableCell>
                 </TableRow>

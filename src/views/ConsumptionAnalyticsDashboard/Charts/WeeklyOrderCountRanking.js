@@ -5,6 +5,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, LabelList
 } from "recharts";
+import { formatNumber } from 'ui/format'
 
 const WeeklyOrderCountRanking = ({ display, data }) => {
   const renderOrderCountLabel = ({ x, y, index, ...d }) => {
@@ -17,7 +18,7 @@ const WeeklyOrderCountRanking = ({ display, data }) => {
         position='insideRight'
         fill='#eee'
         style={{ textShadow: '0.5px 0.5px 1px #000', fontWeight: '500' }}
-      >{`${orderCount}單/$${pricePerCount}`}</text>
+      >{`${formatNumber(orderCount)}單/${formatNumber(pricePerCount)}`}</text>
     )
   }
   const CustomWeeklyOrderCountTooltip = ({ active, payload }) => {
@@ -25,8 +26,8 @@ const WeeklyOrderCountRanking = ({ display, data }) => {
       return (
         <div className="p-[12px] text-[16px] [background:rgb(var(--background))] text-[color:black] rounded-[5px] [box-shadow:0_0_0_1px_rgb(63_63_68_/_5%),0_1px_3px_0_rgb(63_63_68_/_15%)]">
           <p>{payload[0].payload.name}</p>
-          <p>{`帳單數:${payload[0].payload.orderCount}`}</p>
-          <p>{`單均價:${payload[0].payload.pricePerCount}`}</p>
+          <p>{`帳單數:${formatNumber(payload[0].payload.orderCount)}`}</p>
+          <p>{`單均價:${formatNumber(payload[0].payload.pricePerCount)}`}</p>
         </div>
       );
     }

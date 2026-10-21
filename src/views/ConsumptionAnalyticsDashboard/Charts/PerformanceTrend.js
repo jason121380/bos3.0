@@ -6,6 +6,7 @@ import {
   ResponsiveContainer
 } from "recharts";
 import { pieChartColor } from '../Colors';
+import { formatNumber } from 'ui/format'
 
 const PerformanceTrend = ({ data }) => {
   const PerformanceTrendBarTooltip = ({ active, payload, label }) => {
@@ -18,12 +19,12 @@ const PerformanceTrend = ({ data }) => {
         <div className="min-w-[150px] p-[12px] text-[16px] [background:rgb(var(--background))] text-[color:black] rounded-[5px] [box-shadow:0_0_0_1px_rgb(63_63_68_/_5%),0_1px_3px_0_rgb(63_63_68_/_15%)] flex flex-col [&_.header]:flex [&_.header]:gap-[30px] [&_.header]:w-full [&_.header]:justify-between [&_.header]:mb-[10px] [&_.row]:flex [&_.row]:gap-[10px] [&_.row]:text-[14px]">
           <div className='header'>
             <div>{label}</div>
-            <div>總和:{sum}</div>
+            <div>總和:{formatNumber(sum)}</div>
           </div>
           {payload.map(({ name, value }, i) => (
             <div className='row' style={{ color: pieChartColor[i % 13] }} key={`${name}-${value}`}>
               <span style={{ maxWidth: 100, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{name}:</span>
-              <span>{value}</span>
+              <span>{formatNumber(value)}</span>
               <span>{proportion(value)}</span>
             </div>
           ))}

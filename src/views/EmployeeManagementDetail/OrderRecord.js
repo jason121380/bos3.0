@@ -127,7 +127,7 @@ function OrderRecord({ results, page, onChangePage, onChangeRowsPerPage, members
                     {data.designerNo ? `/${data.designerNo}` : ''}
                   </TableCell>
                   <TableCell>{data.isDesignate ? 'Y' : 'N'}</TableCell>
-                  {raffleDisplay ? <TableCell numeric>{data.raffleCount}</TableCell> : null}
+                  {raffleDisplay ? <TableCell numeric>{formatNumber(data.raffleCount)}</TableCell> : null}
                   <TableCell numeric>
                     {formatNumber(Math.round(data.service))}
                     <div className="text-caption text-text-secondary">

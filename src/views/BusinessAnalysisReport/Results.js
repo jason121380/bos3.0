@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import { format } from 'date-fns'
 import roundDecimal from './../../helper/roundDecimal.js'
+import { formatNumber } from 'ui/format'
 
 function Results({ data, isServiceTicketMerged, isMemberShipCardActive, bonusDisplay }) {
   return (
@@ -48,34 +49,34 @@ function Results({ data, isServiceTicketMerged, isMemberShipCardActive, bonusDis
               {isServiceTicketMerged ? (
                 <Fragment>
                   <TableCell>
-                    {Math.round(row.service + row.usedTicket + row.ticketSellIntoPerformance)}
+                    {formatNumber(Math.round(row.service + row.usedTicket + row.ticketSellIntoPerformance))}
                   </TableCell>
-                  <TableCell>{Math.round(row.product)}</TableCell>
-                  {isMemberShipCardActive && <TableCell>{Math.round(row.membership)}</TableCell>}
+                  <TableCell>{formatNumber(Math.round(row.product))}</TableCell>
+                  {isMemberShipCardActive && <TableCell>{formatNumber(Math.round(row.membership))}</TableCell>}
                 </Fragment>
               ) : (
                 <Fragment>
-                  <TableCell>{Math.round(row.service)}</TableCell>
-                  <TableCell>{Math.round(row.product)}</TableCell>
-                  {isMemberShipCardActive && <TableCell>{Math.round(row.membership)}</TableCell>}
-                  <TableCell>{roundDecimal(row.usedTicket)}</TableCell>
-                  <TableCell>{Math.round(row.ticketSellIntoPerformance)}</TableCell>
+                  <TableCell>{formatNumber(Math.round(row.service))}</TableCell>
+                  <TableCell>{formatNumber(Math.round(row.product))}</TableCell>
+                  {isMemberShipCardActive && <TableCell>{formatNumber(Math.round(row.membership))}</TableCell>}
+                  <TableCell>{formatNumber(roundDecimal(row.usedTicket))}</TableCell>
+                  <TableCell>{formatNumber(Math.round(row.ticketSellIntoPerformance))}</TableCell>
                 </Fragment>
               )}
 
-              <TableCell>{Math.round(row.performanceIncome)}</TableCell>
-              <TableCell>{Math.round(row.ticketSellNotIntoPerformance)}</TableCell>
-              <TableCell>{Math.round(row.walletDeposit)}</TableCell>
-              <TableCell>{roundDecimal(row.usedTicketForDecount)}</TableCell>
-              <TableCell>{Math.round(row.thirdPartTicketForDecount)}</TableCell>
-              <TableCell>{Math.round(row.otherPayWayForDecount)}</TableCell>
-              <TableCell>{Math.round(row.walletUsedForDecount)}</TableCell>
-              {bonusDisplay && <TableCell>{row.bonusDecountForReport}</TableCell>}
-              <TableCell>{Math.round(row.businessCash)}</TableCell>
-              <TableCell>{Math.round(row.cashRevenue)}</TableCell>
-              <TableCell>{Math.round(row.cashExpenditure)}</TableCell>
-              <TableCell>{Math.round(row.expenditure)}</TableCell>
-              <TableCell>{Math.round(row.cashBalance)}</TableCell>
+              <TableCell>{formatNumber(Math.round(row.performanceIncome))}</TableCell>
+              <TableCell>{formatNumber(Math.round(row.ticketSellNotIntoPerformance))}</TableCell>
+              <TableCell>{formatNumber(Math.round(row.walletDeposit))}</TableCell>
+              <TableCell>{formatNumber(roundDecimal(row.usedTicketForDecount))}</TableCell>
+              <TableCell>{formatNumber(Math.round(row.thirdPartTicketForDecount))}</TableCell>
+              <TableCell>{formatNumber(Math.round(row.otherPayWayForDecount))}</TableCell>
+              <TableCell>{formatNumber(Math.round(row.walletUsedForDecount))}</TableCell>
+              {bonusDisplay && <TableCell>{formatNumber(row.bonusDecountForReport)}</TableCell>}
+              <TableCell>{formatNumber(Math.round(row.businessCash))}</TableCell>
+              <TableCell>{formatNumber(Math.round(row.cashRevenue))}</TableCell>
+              <TableCell>{formatNumber(Math.round(row.cashExpenditure))}</TableCell>
+              <TableCell>{formatNumber(Math.round(row.expenditure))}</TableCell>
+              <TableCell>{formatNumber(Math.round(row.cashBalance))}</TableCell>
             </TableRow>
           ))}
           <TableRow>
@@ -85,37 +86,37 @@ function Results({ data, isServiceTicketMerged, isMemberShipCardActive, bonusDis
             {isServiceTicketMerged ? (
               <Fragment>
                 <TableCell>
-                  {Math.round(
+                  {formatNumber(Math.round(
                     data.summary.service +
                       data.summary.usedTicket +
                       data.summary.ticketSellIntoPerformance
-                  )}
+                  ))}
                 </TableCell>
-                <TableCell>{Math.round(data.summary.product)}</TableCell>
-                {isMemberShipCardActive && <TableCell>{Math.round(data.summary.membership)}</TableCell>}
+                <TableCell>{formatNumber(Math.round(data.summary.product))}</TableCell>
+                {isMemberShipCardActive && <TableCell>{formatNumber(Math.round(data.summary.membership))}</TableCell>}
               </Fragment>
             ) : (
               <Fragment>
-                <TableCell>{Math.round(data.summary.service)}</TableCell>
-                <TableCell>{Math.round(data.summary.product)}</TableCell>
-                {isMemberShipCardActive && <TableCell>{Math.round(data.summary.membership)}</TableCell>}
-                <TableCell>{Math.round(data.summary.usedTicket)}</TableCell>
-                <TableCell>{Math.round(data.summary.ticketSellIntoPerformance)}</TableCell>
+                <TableCell>{formatNumber(Math.round(data.summary.service))}</TableCell>
+                <TableCell>{formatNumber(Math.round(data.summary.product))}</TableCell>
+                {isMemberShipCardActive && <TableCell>{formatNumber(Math.round(data.summary.membership))}</TableCell>}
+                <TableCell>{formatNumber(Math.round(data.summary.usedTicket))}</TableCell>
+                <TableCell>{formatNumber(Math.round(data.summary.ticketSellIntoPerformance))}</TableCell>
               </Fragment>
             )}
-            <TableCell>{Math.round(data.summary.performanceIncome)}</TableCell>
-            <TableCell>{Math.round(data.summary.ticketSellNotIntoPerformance)}</TableCell>
-            <TableCell>{Math.round(data.summary.walletDeposit)}</TableCell>
-            <TableCell>{Math.round(data.summary.usedTicketForDecount)}</TableCell>
-            <TableCell>{Math.round(data.summary.thirdPartTicketForDecount)}</TableCell>
-            <TableCell>{Math.round(data.summary.otherPayWayForDecount)}</TableCell>
-            <TableCell>{Math.round(data.summary.walletUsedForDecount)}</TableCell>
-            {bonusDisplay && <TableCell>{data.summary.bonusDecountForReport === null ? 0 : data.summary.bonusDecountForReport}</TableCell>}
-            <TableCell>{Math.round(data.summary.businessCash)}</TableCell>
-            <TableCell>{Math.round(data.summary.cashRevenue)}</TableCell>
-            <TableCell>{Math.round(data.summary.cashExpenditure)}</TableCell>
-            <TableCell>{Math.round(data.summary.expenditure)}</TableCell>
-            <TableCell>{Math.round(data.summary.cashBalance)}</TableCell>
+            <TableCell>{formatNumber(Math.round(data.summary.performanceIncome))}</TableCell>
+            <TableCell>{formatNumber(Math.round(data.summary.ticketSellNotIntoPerformance))}</TableCell>
+            <TableCell>{formatNumber(Math.round(data.summary.walletDeposit))}</TableCell>
+            <TableCell>{formatNumber(Math.round(data.summary.usedTicketForDecount))}</TableCell>
+            <TableCell>{formatNumber(Math.round(data.summary.thirdPartTicketForDecount))}</TableCell>
+            <TableCell>{formatNumber(Math.round(data.summary.otherPayWayForDecount))}</TableCell>
+            <TableCell>{formatNumber(Math.round(data.summary.walletUsedForDecount))}</TableCell>
+            {bonusDisplay && <TableCell>{formatNumber(data.summary.bonusDecountForReport === null ? 0 : data.summary.bonusDecountForReport)}</TableCell>}
+            <TableCell>{formatNumber(Math.round(data.summary.businessCash))}</TableCell>
+            <TableCell>{formatNumber(Math.round(data.summary.cashRevenue))}</TableCell>
+            <TableCell>{formatNumber(Math.round(data.summary.cashExpenditure))}</TableCell>
+            <TableCell>{formatNumber(Math.round(data.summary.expenditure))}</TableCell>
+            <TableCell>{formatNumber(Math.round(data.summary.cashBalance))}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

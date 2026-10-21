@@ -15,6 +15,7 @@ import idx from 'idx'
 import DateSelector from 'components/DateSelector'
 import { LoaderCircle } from 'lucide-react'
 import truncateDecimal from 'helper/truncateDecimal'
+import { formatNumber } from 'ui/format'
 
 const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
   const history = useHistory()
@@ -262,35 +263,35 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                     <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '100px', left: '192px'}}>{d.designer.name}</TableCell>
                     <TableCell>{d.isDesignate ? 'Y' : 'N'}</TableCell>
                     <TableCell className="cellHighlight">
-                      {Math.round(d.businessCash)}
+                      {formatNumber(Math.round(d.businessCash))}
                     </TableCell>
                     <TableCell style={{ whiteSpace: 'nowrap'}}>
-                      {Math.round(d.serviceFakeTotal)}
+                      {formatNumber(Math.round(d.serviceFakeTotal))}
                       <p className="m-0 text-[14px] leading-5 text-text-secondary">
                         {d.serviceOrders.length > 0 && serviceOrders(d)}
                       </p>
                     </TableCell>
                     <TableCell style={{ whiteSpace: 'nowrap'}}>
-                      {Math.round(d.productFakeTotal)}
+                      {formatNumber(Math.round(d.productFakeTotal))}
                       <p className="m-0 text-[14px] leading-5 text-text-secondary">
                         {d.productOrders.length > 0 && productOrders(d)}
                       </p>
                     </TableCell>
                     {membershipDisplay && (
                       <TableCell style={{ whiteSpace: 'nowrap'}}>
-                        {Math.round(d.membershipFakeTotal)}
+                        {formatNumber(Math.round(d.membershipFakeTotal))}
                         <p className="m-0 text-[14px] leading-5 text-text-secondary">
                           {d.membershipOrders.length > 0 && membershipOrders(d)}
                         </p>
                       </TableCell>
                     )}
-                    <TableCell>{truncateDecimal(d.useTicketTotal)}</TableCell>
-                    <TableCell>{Math.round(d.ticketSellIntoPerformance)}</TableCell>
-                    <TableCell>{Math.round(d.performanceIncome)}</TableCell>
-                    <TableCell>{Math.round(d.ticketSellNotIntoPerformance)}</TableCell>
-                    <TableCell>{truncateDecimal(d.usedTicketForDecount)}</TableCell>
+                    <TableCell>{formatNumber(truncateDecimal(d.useTicketTotal))}</TableCell>
+                    <TableCell>{formatNumber(Math.round(d.ticketSellIntoPerformance))}</TableCell>
+                    <TableCell>{formatNumber(Math.round(d.performanceIncome))}</TableCell>
+                    <TableCell>{formatNumber(Math.round(d.ticketSellNotIntoPerformance))}</TableCell>
+                    <TableCell>{formatNumber(truncateDecimal(d.usedTicketForDecount))}</TableCell>
                     <TableCell style={{ whiteSpace: 'nowrap'}}>
-                      {Math.round(d.thirdPartTicketForDecount)}
+                      {formatNumber(Math.round(d.thirdPartTicketForDecount))}
                       <p className="m-0 text-[14px] leading-5 text-text-secondary">
                         {d.serviceOrders.length > 0 &&
                           d.productOrders.length > 0 &&
@@ -298,11 +299,11 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                       </p>
                     </TableCell>
                     <TableCell style={{ whiteSpace: 'nowrap'}}>
-                      {Math.round(d.otherPayWayForDecount)}
+                      {formatNumber(Math.round(d.otherPayWayForDecount))}
                       <p className="m-0 text-[14px] leading-5 text-text-secondary">{d.payType2}</p>
                     </TableCell>
-                    <TableCell>{d.walletUsedForDecount}</TableCell>
-                    {bonusDisplay && <TableCell>{d.bonusDecountForReport}</TableCell>}
+                    <TableCell>{formatNumber(d.walletUsedForDecount)}</TableCell>
+                    {bonusDisplay && <TableCell>{formatNumber(d.bonusDecountForReport)}</TableCell>}
                     <TableCell>{d.remark}</TableCell>
                     <TableCell style={{ whiteSpace: 'nowrap' }}>{d.source}</TableCell>
                   </TableRow>
@@ -314,19 +315,19 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                   <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '100px', left: '92px'}}></TableCell>
                   <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '100px', left: '192px'}}></TableCell>
                   <TableCell style={{fontWeight: 'bold'}}>合計</TableCell>
-                  <TableCell className="cellHighlight">{summery.businessCash || 0}</TableCell>
-                  <TableCell>{summery.service || 0}</TableCell>
-                  <TableCell>{summery.product || 0}</TableCell>
-                  {membershipDisplay && <TableCell>{summery.membership || 0}</TableCell>}
-                  <TableCell>{summery.usedTicket || 0}</TableCell>
-                  <TableCell>{summery.ticketSellIntoPerformance || 0}</TableCell>
-                  <TableCell>{summery.performanceIncome || 0}</TableCell>
-                  <TableCell>{summery.ticketSellNotIntoPerformance || 0}</TableCell>
-                  <TableCell>{summery.usedTicketForDecount || 0}</TableCell>
-                  <TableCell>{summery.thirdPartTicketForDecount || 0}</TableCell>
-                  <TableCell>{summery.otherPayWayForDecount || 0}</TableCell>
-                  <TableCell>{summery.walletUsedForDecount || 0}</TableCell>
-                  {bonusDisplay && <TableCell>{summery.bonusDecountForReport}</TableCell>}
+                  <TableCell className="cellHighlight">{formatNumber(summery.businessCash || 0)}</TableCell>
+                  <TableCell>{formatNumber(summery.service || 0)}</TableCell>
+                  <TableCell>{formatNumber(summery.product || 0)}</TableCell>
+                  {membershipDisplay && <TableCell>{formatNumber(summery.membership || 0)}</TableCell>}
+                  <TableCell>{formatNumber(summery.usedTicket || 0)}</TableCell>
+                  <TableCell>{formatNumber(summery.ticketSellIntoPerformance || 0)}</TableCell>
+                  <TableCell>{formatNumber(summery.performanceIncome || 0)}</TableCell>
+                  <TableCell>{formatNumber(summery.ticketSellNotIntoPerformance || 0)}</TableCell>
+                  <TableCell>{formatNumber(summery.usedTicketForDecount || 0)}</TableCell>
+                  <TableCell>{formatNumber(summery.thirdPartTicketForDecount || 0)}</TableCell>
+                  <TableCell>{formatNumber(summery.otherPayWayForDecount || 0)}</TableCell>
+                  <TableCell>{formatNumber(summery.walletUsedForDecount || 0)}</TableCell>
+                  {bonusDisplay && <TableCell>{formatNumber(summery.bonusDecountForReport)}</TableCell>}
                   <TableCell></TableCell>
                 </TableRow>
               </TableBody>

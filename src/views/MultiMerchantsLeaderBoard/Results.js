@@ -3,6 +3,7 @@ import { Button } from 'ui/button'
 import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon } from 'ui/icons'
 import { useState, Fragment } from 'react'
 import roundDecimal from './../../helper/roundDecimal.js'
+import { formatNumber } from 'ui/format'
 
 // 表頭 sticky：捲動容器是 ui/table 外框 div（wrapperClassName 給 max-h＋overflow-y），故 sticky 掛在 th；列印改回 static
 const STICKY_TH = 'sticky top-0 z-10 bg-surface print:static'
@@ -53,8 +54,8 @@ export default function Results({ reportData }) {
               <TableCell>{d.merchantName}</TableCell>
               <TableCell>{d.sellerName}</TableCell>
               <TableCell>{d.sellerNo ? d.sellerNo : ''}</TableCell>
-              <TableCell numeric>{roundDecimal(d.totalPerformance)}</TableCell>
-              <TableCell numeric>{d.totalCount}</TableCell>
+              <TableCell numeric>{formatNumber(roundDecimal(d.totalPerformance))}</TableCell>
+              <TableCell numeric>{formatNumber(d.totalCount)}</TableCell>
             </TableRow>
             <TableRow className={open.indexOf(index) > -1 ? 'noprint' : 'noprint border-b-0'}>
               <TableCell className="!p-0" colSpan={7}>
@@ -75,8 +76,8 @@ export default function Results({ reportData }) {
                           <TableRow key={`${detail.productName}-${d.sellerName}-${index}`}>
                             <TableCell>{detail.productName}</TableCell>
                             <TableCell>{detail.productNo}</TableCell>
-                            <TableCell numeric>{detail.performance}</TableCell>
-                            <TableCell numeric>{detail.count}</TableCell>
+                            <TableCell numeric>{formatNumber(detail.performance)}</TableCell>
+                            <TableCell numeric>{formatNumber(detail.count)}</TableCell>
                             <TableCell>{detail.unit}</TableCell>
                           </TableRow>
                         ))}
@@ -91,8 +92,8 @@ export default function Results({ reportData }) {
         <TableRow>
           <TableCell colSpan={4} />
           <TableCell className="font-bold">合計</TableCell>
-          <TableCell numeric className="font-bold">{parseFloat(reportData.reduce((a, b) => a + roundDecimal(b.totalPerformance), 0).toFixed(2))}</TableCell>
-          <TableCell numeric className="font-bold">{reportData.reduce((a, b) => a + b.totalCount, 0)}</TableCell>
+          <TableCell numeric className="font-bold">{formatNumber(parseFloat(reportData.reduce((a, b) => a + roundDecimal(b.totalPerformance), 0).toFixed(2)))}</TableCell>
+          <TableCell numeric className="font-bold">{formatNumber(reportData.reduce((a, b) => a + b.totalCount, 0))}</TableCell>
         </TableRow>
       </TableBody>
     </Table>

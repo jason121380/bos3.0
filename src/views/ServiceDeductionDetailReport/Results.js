@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import { Fragment, useEffect } from 'react'
 import { format } from 'date-fns'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { formatNumber } from 'ui/format'
 
 function Results({ userServiceDeductionDetial, setExcelData }) {
   const countTotal = key => {
@@ -133,28 +134,28 @@ function Results({ userServiceDeductionDetial, setExcelData }) {
                 <TableCell>{data.type}</TableCell>
                 <TableCell>{data.item}</TableCell>
                 <TableCell>{data.designerName}</TableCell>
-                <TableCell numeric>{floatDisplay(data.cash)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.handlingFeeOnSales)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.deductionOnSales)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.helperPriceOnSales)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.truthPerformance)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.specialRake_truthPerformance)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.specialRake_specialRake)}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.cash))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.handlingFeeOnSales))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.deductionOnSales))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.helperPriceOnSales))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.truthPerformance))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.specialRake_truthPerformance))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.specialRake_specialRake))}</TableCell>
                 <TableCell>
                   {data.category_categoryName !== '' ? data.category_categoryName : '預設'}
                 </TableCell>
-                <TableCell numeric>{floatDisplay(data.category_normalTruthPerformance)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.category_normalRake)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.category_designateTruthPerformance)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.category_designateRake)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.category_nonDesignateTruthPerformance)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.category_nonDesignateRake)}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.category_normalTruthPerformance))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.category_normalRake))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.category_designateTruthPerformance))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.category_designateRake))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.category_nonDesignateTruthPerformance))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.category_nonDesignateRake))}</TableCell>
                 <TableCell numeric>{data.percentage}</TableCell>
-                <TableCell numeric>{floatDisplay(data.serviceRake)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.handlingFeeOnSalary)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.deductionOnSalary)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.helperPriceOnSalary)}</TableCell>
-                <TableCell numeric>{floatDisplay(data.summary)}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.serviceRake))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.handlingFeeOnSalary))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.deductionOnSalary))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.helperPriceOnSalary))}</TableCell>
+                <TableCell numeric>{formatNumber(floatDisplay(data.summary))}</TableCell>
               </TableRow>
             ))}
             <TableRow>
@@ -163,26 +164,26 @@ function Results({ userServiceDeductionDetial, setExcelData }) {
               <TableCell />
               <TableCell />
               <TableCell />
-              <TableCell numeric>{countTotal('cash')}</TableCell>
-              <TableCell numeric>{countTotal('handlingFeeOnSales')}</TableCell>
-              <TableCell numeric>{countTotal('deductionOnSales')}</TableCell>
-              <TableCell numeric>{countTotal('helperPriceOnSales')}</TableCell>
-              <TableCell numeric>{countTotal('truthPerformance')}</TableCell>
-              <TableCell numeric>{countTotal('specialRake_truthPerformance')}</TableCell>
-              <TableCell numeric>{countTotal('specialRake_specialRake')}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('cash'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('handlingFeeOnSales'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('deductionOnSales'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('helperPriceOnSales'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('truthPerformance'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('specialRake_truthPerformance'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('specialRake_specialRake'))}</TableCell>
               <TableCell />
-              <TableCell numeric>{countTotal('category_normalTruthPerformance')}</TableCell>
-              <TableCell numeric>{countTotal('category_normalRake')}</TableCell>
-              <TableCell numeric>{countTotal('category_designateTruthPerformance')}</TableCell>
-              <TableCell numeric>{countTotal('category_designateRake')}</TableCell>
-              <TableCell numeric>{countTotal('category_nonDesignateTruthPerformance')}</TableCell>
-              <TableCell numeric>{countTotal('category_nonDesignateRake')}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('category_normalTruthPerformance'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('category_normalRake'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('category_designateTruthPerformance'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('category_designateRake'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('category_nonDesignateTruthPerformance'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('category_nonDesignateRake'))}</TableCell>
               <TableCell numeric />
-              <TableCell numeric>{countTotal('serviceRake')}</TableCell>
-              <TableCell numeric>{countTotal('handlingFeeOnSalary')}</TableCell>
-              <TableCell numeric>{countTotal('deductionOnSalary')}</TableCell>
-              <TableCell numeric>{countTotal('helperPriceOnSalary')}</TableCell>
-              <TableCell numeric>{countTotal('summary')}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('serviceRake'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('handlingFeeOnSalary'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('deductionOnSalary'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('helperPriceOnSalary'))}</TableCell>
+              <TableCell numeric>{formatNumber(countTotal('summary'))}</TableCell>
             </TableRow>
           </TableBody>
         </Table>

@@ -9,6 +9,7 @@ import idx from 'idx'
 import useFetchGetIsDisplayHelperRetrieveInDailyReport from 'hooks/useFetchGetIsDisplayHelperRetrieveInDailyReport'
 import useFetchGetIsUsingMathRoundInDesignerDailyReport from 'hooks/useFetchGetIsUsingMathRoundInDesignerDailyReport'
 import { Card as UICard, CardHeader as UICardHeader, CardTitle } from 'ui/card'
+import { formatNumber } from 'ui/format'
 
 function Results({
   designerDailyReport,
@@ -153,10 +154,10 @@ function Results({
                             {orderRecord.itemName}
                           </TableCell>
                           <TableCell className="categoryPrint2">
-                            {displayFloat(orderRecord.fakePerformance)}
+                            {formatNumber(displayFloat(orderRecord.fakePerformance))}
                           </TableCell>
                           <TableCell className="categoryPrint2">
-                            {displayFloat(orderRecord.truthPerformance)}
+                            {formatNumber(displayFloat(orderRecord.truthPerformance))}
                           </TableCell>
                         </TableRow>
                       ))
@@ -168,11 +169,11 @@ function Results({
                         <TableCell className="categoryPrintService2"></TableCell>
                         <TableCell></TableCell>
                         {priceDisplayOnReport ? (
-                          <TableCell>{displayFloat(designer.currentFakeSummary)}</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.currentFakeSummary))}</TableCell>
                         ) : (
                           <TableCell />
                         )}
-                        <TableCell>{displayFloat(designer.currentTruthSummary)}</TableCell>
+                        <TableCell>{formatNumber(displayFloat(designer.currentTruthSummary))}</TableCell>
                       </TableRow>
                     ) : (
                       <TableRow>
@@ -198,10 +199,10 @@ function Results({
                           <TableRow>
                             <TableCell className="forPrint4">金額(虛)</TableCell>
                             <TableCell>
-                              {displayFloat(designer.currentDay.performanceFakeTotal)}
+                              {formatNumber(displayFloat(designer.currentDay.performanceFakeTotal))}
                             </TableCell>
                             <TableCell>
-                              {displayFloat(designer.tillNow.performanceFakeTotal)}
+                              {formatNumber(displayFloat(designer.tillNow.performanceFakeTotal))}
                             </TableCell>
                           </TableRow>
                         )}
@@ -212,10 +213,10 @@ function Results({
                             <TableRow>
                               <TableCell className="forPrint4">實業績</TableCell>
                               <TableCell>
-                                {displayFloat(designer.currentDay.performanceTruthTotal)}
+                                {formatNumber(displayFloat(designer.currentDay.performanceTruthTotal))}
                               </TableCell>
                               <TableCell>
-                                {displayFloat(designer.tillNow.performanceTruthTotal)}
+                                {formatNumber(displayFloat(designer.tillNow.performanceTruthTotal))}
                               </TableCell>
                             </TableRow>
                           )}
@@ -226,10 +227,10 @@ function Results({
                             <TableRow>
                               <TableCell className="forPrint4">指定實業績</TableCell>
                               <TableCell>
-                                {displayFloat(designer.currentDay.performanceDesignateTruthTotal)}
+                                {formatNumber(displayFloat(designer.currentDay.performanceDesignateTruthTotal))}
                               </TableCell>
                               <TableCell>
-                                {displayFloat(designer.tillNow.performanceDesignateTruthTotal)}
+                                {formatNumber(displayFloat(designer.tillNow.performanceDesignateTruthTotal))}
                               </TableCell>
                             </TableRow>
                           )}
@@ -240,10 +241,10 @@ function Results({
                             <TableRow>
                               <TableCell className="forPrint4">不指定實業績</TableCell>
                               <TableCell>
-                                {displayFloat(designer.currentDay.performanceNonDesignateTruthTotal)}
+                                {formatNumber(displayFloat(designer.currentDay.performanceNonDesignateTruthTotal))}
                               </TableCell>
                               <TableCell>
-                                {displayFloat(designer.tillNow.performanceNonDesignateTruthTotal)}
+                                {formatNumber(displayFloat(designer.tillNow.performanceNonDesignateTruthTotal))}
                               </TableCell>
                             </TableRow>
                           )}
@@ -254,35 +255,35 @@ function Results({
                             <TableRow>
                               <TableCell className="forPrint4">手續費</TableCell>
                               <TableCell>
-                                {displayFloat(designer.currentDay.thirdPartHandlingFee)}
+                                {formatNumber(displayFloat(designer.currentDay.thirdPartHandlingFee))}
                               </TableCell>
                               <TableCell>
-                                {displayFloat(designer.tillNow.thirdPartHandlingFee)}
+                                {formatNumber(displayFloat(designer.tillNow.thirdPartHandlingFee))}
                               </TableCell>
                             </TableRow>
                           )}
                         <TableRow>
                           <TableCell className="forPrint4">特殊抽成業績</TableCell>
                           <TableCell>
-                            {displayFloat(designer.currentDay.performanceWithSpecialRake)}
+                            {formatNumber(displayFloat(designer.currentDay.performanceWithSpecialRake))}
                           </TableCell>
                           <TableCell>
-                            {displayFloat(designer.tillNow.performanceWithSpecialRake)}
+                            {formatNumber(displayFloat(designer.tillNow.performanceWithSpecialRake))}
                           </TableCell>
                         </TableRow>
 
                         <TableRow>
                           <TableCell className="forPrint4">店販金額</TableCell>
                           <TableCell>
-                            {displayFloat(designer.currentDay.productFakeTotal)}
+                            {formatNumber(displayFloat(designer.currentDay.productFakeTotal))}
                           </TableCell>
-                          <TableCell>{displayFloat(designer.tillNow.productFakeTotal)}</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.tillNow.productFakeTotal))}</TableCell>
                         </TableRow>
 
                         <TableRow>
                           <TableCell className="forPrint4">店販抽成</TableCell>
-                          <TableCell>{displayFloat(designer.currentDay.productRake)}</TableCell>
-                          <TableCell>{displayFloat(designer.tillNow.productRake)}</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.currentDay.productRake))}</TableCell>
+                          <TableCell>{formatNumber(displayFloat(designer.tillNow.productRake))}</TableCell>
                         </TableRow>
 
                         {(isMemberShipCardActive || (designer.tillNow.membershipFakeTotal !== 0 || designer.tillNow.membershipRake !== 0)) &&
@@ -290,39 +291,39 @@ function Results({
                             <Fragment>
                               <TableRow>
                                 <TableCell className="forPrint4">會員卡業績</TableCell>
-                                <TableCell>{displayFloat(designer.currentDay.membershipFakeTotal)}</TableCell>
-                                <TableCell>{displayFloat(designer.tillNow.membershipFakeTotal)}</TableCell>
+                                <TableCell>{formatNumber(displayFloat(designer.currentDay.membershipFakeTotal))}</TableCell>
+                                <TableCell>{formatNumber(displayFloat(designer.tillNow.membershipFakeTotal))}</TableCell>
                               </TableRow>
                               <TableRow>
                                 <TableCell className="forPrint4">會員卡抽成</TableCell>
-                                <TableCell>{displayFloat(designer.currentDay.membershipRake)}</TableCell>
-                                <TableCell>{displayFloat(designer.tillNow.membershipRake)}</TableCell>
+                                <TableCell>{formatNumber(displayFloat(designer.currentDay.membershipRake))}</TableCell>
+                                <TableCell>{formatNumber(displayFloat(designer.tillNow.membershipRake))}</TableCell>
                               </TableRow>
                             </Fragment>
                           )
                         }
                         <TableRow>
                           <TableCell className="forPrint4">互助使用(不含點)</TableCell>
-                          <TableCell>{`${displayFloat(
+                          <TableCell>{`${formatNumber(displayFloat(
                             designer.currentDay.helperPaidPrice
-                          )}`}</TableCell>
-                          <TableCell>{`${displayFloat(
+                          ))}`}</TableCell>
+                          <TableCell>{`${formatNumber(displayFloat(
                             designer.tillNow.helperPaidPrice
-                          )}`}</TableCell>
+                          ))}`}</TableCell>
                         </TableRow>
                         {
                           <TableRow>
                             <TableCell className="forPrint4">互助使用(點)</TableCell>
-                            <TableCell>{`${displayFloat(designer.currentDay.helperPaidPoint)}${isHelperPointPriceDisplay
-                              ? `/${Math.abs(
+                            <TableCell>{`${formatNumber(displayFloat(designer.currentDay.helperPaidPoint))}${isHelperPointPriceDisplay
+                              ? `/${formatNumber(Math.abs(
                                 displayFloat(designer.currentDay.helperPaidPriceFromPoint)
-                              )}`
+                              ))}`
                               : ''
                               }`}</TableCell>
-                            <TableCell>{`${displayFloat(designer.tillNow.helperPaidPoint)}${isHelperPointPriceDisplay
-                              ? `/${Math.abs(
+                            <TableCell>{`${formatNumber(displayFloat(designer.tillNow.helperPaidPoint))}${isHelperPointPriceDisplay
+                              ? `/${formatNumber(Math.abs(
                                 displayFloat(designer.tillNow.helperPaidPriceFromPoint)
-                              )}`
+                              ))}`
                               : ''
                               }`}</TableCell>
                           </TableRow>
@@ -342,8 +343,8 @@ function Results({
                                   互助獲得金額 <br />
                                   (不含點)
                                 </TableCell>
-                                <TableCell>{designer.currentDay.helpGetNoPoint}</TableCell>
-                                <TableCell>{designer.tillNow.helpGetNoPoint}</TableCell>
+                                <TableCell>{formatNumber(designer.currentDay.helpGetNoPoint)}</TableCell>
+                                <TableCell>{formatNumber(designer.tillNow.helpGetNoPoint)}</TableCell>
                               </TableRow>
                               <TableRow>
                                 <TableCell className="forPrint4">
@@ -352,12 +353,12 @@ function Results({
                                   點數/換算金額
                                 </TableCell>
                                 <TableCell>
-                                  {`${displayFloat(designer.currentDay.helperRetrievePoint)}` +
+                                  {`${formatNumber(displayFloat(designer.currentDay.helperRetrievePoint))}` +
                                     '/' +
                                     designer.currentDay.helperRetrievePrice}
                                 </TableCell>
                                 <TableCell>
-                                  {`${displayFloat(designer.tillNow.helperRetrievePoint)}` +
+                                  {`${formatNumber(displayFloat(designer.tillNow.helperRetrievePoint))}` +
                                     '/' +
                                     designer.tillNow.helperRetrievePrice}
                                 </TableCell>
@@ -370,12 +371,12 @@ function Results({
                               isHiddenZero)) && (
                             <TableRow>
                               <TableCell className="forPrint4">互助獲得</TableCell>
-                              <TableCell>{`${displayFloat(
+                              <TableCell>{`${formatNumber(displayFloat(
                                 designer.currentDay.helperRetrievePoint
-                              )}`}</TableCell>
-                              <TableCell>{`${displayFloat(
+                              ))}`}</TableCell>
+                              <TableCell>{`${formatNumber(displayFloat(
                                 designer.tillNow.helperRetrievePoint
-                              )}`}</TableCell>
+                              ))}`}</TableCell>
                             </TableRow>
                           )}
                         {(!isHiddenZero ||
@@ -384,8 +385,8 @@ function Results({
                             isHiddenZero)) && (
                             <TableRow>
                               <TableCell className="forPrint4">總客數</TableCell>
-                              <TableCell>{designer.currentDay.orderTotalCount}</TableCell>
-                              <TableCell>{designer.tillNow.orderTotalCount}</TableCell>
+                              <TableCell>{formatNumber(designer.currentDay.orderTotalCount)}</TableCell>
+                              <TableCell>{formatNumber(designer.tillNow.orderTotalCount)}</TableCell>
                             </TableRow>
                           )}
                         {(!isHiddenZero ||
@@ -394,8 +395,8 @@ function Results({
                             isHiddenZero)) && (
                             <TableRow>
                               <TableCell className="forPrint4">指定客</TableCell>
-                              <TableCell>{designer.currentDay.designateOrderCount}</TableCell>
-                              <TableCell>{designer.tillNow.designateOrderCount}</TableCell>
+                              <TableCell>{formatNumber(designer.currentDay.designateOrderCount)}</TableCell>
+                              <TableCell>{formatNumber(designer.tillNow.designateOrderCount)}</TableCell>
                             </TableRow>
                           )}
                         {(!isHiddenZero ||
@@ -404,8 +405,8 @@ function Results({
                             isHiddenZero)) && (
                             <TableRow>
                               <TableCell className="forPrint4">不指定客</TableCell>
-                              <TableCell>{designer.currentDay.nonDesignateOrderCount}</TableCell>
-                              <TableCell>{designer.tillNow.nonDesignateOrderCount}</TableCell>
+                              <TableCell>{formatNumber(designer.currentDay.nonDesignateOrderCount)}</TableCell>
+                              <TableCell>{formatNumber(designer.tillNow.nonDesignateOrderCount)}</TableCell>
                             </TableRow>
                           )}
                         {(!isHiddenZero ||
@@ -416,32 +417,32 @@ function Results({
                             <TableRow>
                               <TableCell className="forPrint4">客單價</TableCell>
                               <TableCell>
-                                {Math.round(
+                                {formatNumber(Math.round(
                                   designer.currentDay.performanceFakeTotal /
                                   designer.currentDay.orderTotalCount
-                                )}
+                                ))}
                               </TableCell>
                               <TableCell>
-                                {Math.round(
+                                {formatNumber(Math.round(
                                   designer.tillNow.performanceFakeTotal /
                                   designer.tillNow.orderTotalCount
-                                )}
+                                ))}
                               </TableCell>
                             </TableRow>
                           ) : (
                             <TableRow>
                               <TableCell className="forPrint4">客單價</TableCell>
                               <TableCell>
-                                {displayFloat(
+                                {formatNumber(displayFloat(
                                   designer.currentDay.performanceFakeTotal /
                                   designer.currentDay.orderTotalCount
-                                )}
+                                ))}
                               </TableCell>
                               <TableCell>
-                                {displayFloat(
+                                {formatNumber(displayFloat(
                                   designer.tillNow.performanceFakeTotal /
                                   designer.tillNow.orderTotalCount
-                                )}
+                                ))}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -451,8 +452,8 @@ function Results({
                             isHiddenZero)) && (
                             <TableRow>
                               <TableCell className="forPrint4">客項次(服務)</TableCell>
-                              <TableCell>{designer.currentDay.orderTypeCount}</TableCell>
-                              <TableCell>{designer.tillNow.orderTypeCount}</TableCell>
+                              <TableCell>{formatNumber(designer.currentDay.orderTypeCount)}</TableCell>
+                              <TableCell>{formatNumber(designer.tillNow.orderTypeCount)}</TableCell>
                             </TableRow>
                           )}
                         {(!isHiddenZero ||
@@ -463,32 +464,32 @@ function Results({
                             <TableRow>
                               <TableCell className="forPrint4">平均項次單價</TableCell>
                               <TableCell>
-                                {Math.round(
+                                {formatNumber(Math.round(
                                   designer.currentDay.performanceFakeTotal /
                                   designer.currentDay.orderTypeCount
-                                )}
+                                ))}
                               </TableCell>
                               <TableCell>
-                                {Math.round(
+                                {formatNumber(Math.round(
                                   designer.tillNow.performanceFakeTotal /
                                   designer.tillNow.orderTypeCount
-                                )}
+                                ))}
                               </TableCell>
                             </TableRow>
                           ) : (
                             <TableRow>
                               <TableCell className="forPrint4">平均項次單價</TableCell>
                               <TableCell>
-                                {displayFloat(
+                                {formatNumber(displayFloat(
                                   designer.currentDay.performanceFakeTotal /
                                   designer.currentDay.orderTypeCount
-                                )}
+                                ))}
                               </TableCell>
                               <TableCell>
-                                {displayFloat(
+                                {formatNumber(displayFloat(
                                   designer.tillNow.performanceFakeTotal /
                                   designer.tillNow.orderTypeCount
-                                )}
+                                ))}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -498,8 +499,8 @@ function Results({
                             isHiddenZero)) && (
                             <TableRow>
                               <TableCell className="forPrint4">入金儲值</TableCell>
-                              <TableCell>{displayFloat(designer.currentDay.walletDeposit)}</TableCell>
-                              <TableCell>{displayFloat(designer.tillNow.walletDeposit)}</TableCell>
+                              <TableCell>{formatNumber(displayFloat(designer.currentDay.walletDeposit))}</TableCell>
+                              <TableCell>{formatNumber(displayFloat(designer.tillNow.walletDeposit))}</TableCell>
                             </TableRow>
                           )}
                       </TableBody>
