@@ -1,4 +1,4 @@
-import { ApolloLink } from '@apollo/client'
+import { ApolloLink, Observable } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 
 // 設定類查詢的快取策略（2026/10/21，Jason 同意）：
@@ -49,13 +49,56 @@ export function bindSettingsCache(cache, { expire = true } = {}) {
   expiryTimer = expire ? setInterval(() => evictSettings(), SETTINGS_MAX_AGE_MS) : null
 }
 
-// 放在 link 鏈最前面：mutation 成功（沒有 GraphQL 錯誤）後清除設定快取
+// 放在 link 鏈最前面：mutation 成功（沒有 GraphQL 錯誤）後清除設定快取。
+// 同時送出的多個 mutation（例如參數設定頁存檔一次送 29 個）合併成一次：等全部結束、再過一個事件迴圈才清，
+// 否則每個回應都清一次會重抓很多次，較早的重抓也可能讀到尚未寫完的值、再被去重後留在快取（Codex review，PR #251）
+let pendingMutations = 0
+let changedSinceEviction = false
+let evictTimer = null
+
+function settleMutation() {
+  pendingMutations -= 1
+  if (pendingMutations > 0 || !changedSinceEviction) return
+  evictTimer = setTimeout(() => {
+    evictTimer = null
+    changedSinceEviction = false
+    evictSettings()
+  }, 0)
+}
+
 export const settingsCacheLink = new ApolloLink((operation, forward) => {
   const definition = getMainDefinition(operation.query)
   const isMutation = definition.kind === 'OperationDefinition' && definition.operation === 'mutation'
   if (!isMutation || NON_SETTINGS_MUTATIONS.has(operation.operationName)) return forward(operation)
-  return forward(operation).map(result => {
-    if (!result.errors || result.errors.length === 0) evictSettings()
-    return result
+  return new Observable(observer => {
+    let settled = false
+    const settle = () => {
+      if (settled) return
+      settled = true
+      settleMutation()
+    }
+    pendingMutations += 1
+    if (evictTimer) {
+      clearTimeout(evictTimer)
+      evictTimer = null
+    }
+    const subscription = forward(operation).subscribe({
+      next: result => {
+        if (!result.errors || result.errors.length === 0) changedSinceEviction = true
+        observer.next(result)
+      },
+      error: error => {
+        settle()
+        observer.error(error)
+      },
+      complete: () => {
+        settle()
+        observer.complete()
+      },
+    })
+    return () => {
+      settle()
+      subscription.unsubscribe()
+    }
   })
 })

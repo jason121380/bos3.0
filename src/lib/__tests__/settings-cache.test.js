@@ -15,15 +15,21 @@ const SAVE = gql`
   }
 `
 
-function setup() {
+function setup({ staggerSaves = false } = {}) {
   const calls = []
   let value = true
+  let saveCount = 0
   const terminal = new ApolloLink(operation => {
     calls.push(operation.operationName)
     return new Observable(observer => {
-      const data = operation.operationName === 'TEST_SAVE' ? { saveSomething: true } : { getIsMemberShipCardActive: value }
-      observer.next({ data })
-      observer.complete()
+      const isSave = operation.operationName === 'TEST_SAVE'
+      const respond = () => {
+        observer.next({ data: isSave ? { saveSomething: true } : { getIsMemberShipCardActive: value } })
+        observer.complete()
+      }
+      // 真實後端的多個存檔回應會在不同時間點回來
+      if (isSave && staggerSaves) setTimeout(respond, (saveCount += 1))
+      else respond()
     })
   })
   const cache = new InMemoryCache({ addTypename: false })
@@ -52,6 +58,18 @@ test('任何 mutation 成功後，畫面上正在看的設定會自動重抓到�
   await flush()
   expect(calls.filter(c => c === 'TEST_SETTING')).toHaveLength(2)
   expect(seen[seen.length - 1]).toBe(false)
+  sub.unsubscribe()
+})
+
+test('同時送出的多個 mutation（參數設定頁一次存 29 項）只在全部完成後重抓一次', async () => {
+  const { client, calls } = setup({ staggerSaves: true })
+  const sub = client.watchQuery({ query: SETTING, fetchPolicy: 'cache-first' }).subscribe(() => {})
+  await flush()
+  await Promise.all(Array.from({ length: 29 }, () => client.mutate({ mutation: SAVE })))
+  await flush()
+  await flush()
+  expect(calls.filter(c => c === 'TEST_SAVE')).toHaveLength(29)
+  expect(calls.filter(c => c === 'TEST_SETTING')).toHaveLength(2)
   sub.unsubscribe()
 })
 
@@ -121,12 +139,13 @@ test('設定查詢的根欄位不能和帶參數的查詢共用，也不能是�
       } catch (e) {
         continue
       }
+      const isSettings = Boolean(match[1])
       doc.definitions
         .filter(def => def.kind === 'OperationDefinition' && def.operation === 'query')
         .forEach(def => {
           const roots = def.selectionSet.selections.filter(sel => sel.kind === 'Field').map(sel => sel.name.value)
           const name = `${path.relative(process.cwd(), file)} ${def.name ? def.name.value : '(anonymous)'}`
-          if (match[1]) {
+          if (isSettings) {
             roots.forEach(root => settingsRoots.set(root, name))
             // 依 id 讀單筆（編輯頁）的不是設定：內容會在別處被改，不能快取 10 分鐘
             def.variableDefinitions
