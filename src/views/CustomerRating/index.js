@@ -11,7 +11,7 @@ import { Card, CardContent } from 'ui/card'
 import { Textarea } from 'ui/input'
 import { Skeleton } from 'ui/skeleton'
 
-const index = () => {
+const CustomerRating = () => {
   const [isLoading, setIsLoading] = useState(true)
   const { orderId, rank } = useParams()
   const { setOrderRanking } = useFetchSetOrderRanking()
@@ -139,4 +139,4 @@ const index = () => {
   )
 }
 
-export default index
+export default CustomerRating

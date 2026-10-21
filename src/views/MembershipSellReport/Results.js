@@ -17,8 +17,8 @@ export default function Results({ reportData, format, roundDecimal, handleCountT
         <Table dense className="[&_tbody_tr:last-child_td]:font-bold" aria-label="a dense table">
           <TableHeader className="sticky top-0 z-[100]">
             <TableRow className="hover:bg-transparent">
-              <TableHead className={cn(sticky, 'bg-surface')}>訂單日期</TableHead>
-              <TableHead>訂單編號</TableHead>
+              <TableHead className={cn(sticky, 'bg-surface')}>帳單日期</TableHead>
+              <TableHead>帳單編號</TableHead>
               <TableHead>設計師姓名</TableHead>
               <TableHead>顧客姓名</TableHead>
               <TableHead>會員卡名稱</TableHead>
@@ -35,7 +35,7 @@ export default function Results({ reportData, format, roundDecimal, handleCountT
           <TableBody>
             {reportData.map((d, i) => (
               <TableRow key={`MembershipSellReport-${i}`} className="group">
-                <TableCell className={cn(sticky, 'bg-background tabular-nums group-hover:bg-surface-hover')}>{format(d.orderDate, 'yyyy/M/d')}</TableCell>
+                <TableCell className={cn(sticky, 'bg-background tabular-nums group-hover:bg-surface-hover')}>{format(d.orderDate, 'yyyy/MM/dd')}</TableCell>
                 <TableCell className="tabular-nums">
                   <Link className="text-text underline" target='_blank' to={`/order/${d.orderId}`}>{`#${d.orderNo}`}</Link>
                 </TableCell>
@@ -49,7 +49,7 @@ export default function Results({ reportData, format, roundDecimal, handleCountT
                 <TableCell numeric>{formatNumber(roundDecimal(d.truth))}</TableCell>
                 <TableCell numeric>{formatNumber(roundDecimal(d.rake))}</TableCell>
                 <TableCell>{d.remark}</TableCell>
-                <TableCell className="tabular-nums">{d.expiryDate ? format(d.expiryDate, 'yyyy/M/d') : '永久會籍'}</TableCell>
+                <TableCell className="tabular-nums">{d.expiryDate ? format(d.expiryDate, 'yyyy/MM/dd') : '永久會籍'}</TableCell>
               </TableRow>
             ))}
             <TableRow className="group">

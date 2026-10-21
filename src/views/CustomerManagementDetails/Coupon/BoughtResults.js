@@ -57,14 +57,14 @@ export default function BoughtResults({
                   <TableCell>
                     <Button asChild size="sm" variant="secondary">
                       <RouterLink to={`/order/${result.order.id}`}>
-                        訂單詳情
+                        帳單詳情
                       </RouterLink>
                     </Button>
                   </TableCell>
                   <TableCell>
                     <div className="font-medium tabular-nums">{idx(result, _ => _.order.no)}</div>
                     <div className="text-caption tabular-nums text-text-secondary">
-                      {idx(result, _ => format(_.order.date, 'MM/dd/yyyy'))}
+                      {idx(result, _ => format(_.order.date, 'yyyy/MM/dd'))}
                     </div>
                   </TableCell>
                   <TableCell>

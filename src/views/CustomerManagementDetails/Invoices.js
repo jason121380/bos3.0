@@ -195,7 +195,7 @@ function Invoices({
                           <TableCell>
                             <div className="font-medium tabular-nums">{order.orderNo}</div>
                             <div className="text-caption tabular-nums text-text-secondary">
-                              {format(new Date(order.date), 'MM/dd/yyyy')}
+                              {format(new Date(order.date), 'yyyy/MM/dd')}
                             </div>
                           </TableCell>
                           <TableCell>
@@ -307,8 +307,8 @@ function Invoices({
           >
             <DialogContent size="sm" aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
               <DialogHeader>
-                <DialogTitle id="alert-dialog-title">{'刪除訂單?'}</DialogTitle>
-                <DialogDescription id="alert-dialog-description">刪除後訂單將無法復原，請輸入刪除密碼確認。</DialogDescription>
+                <DialogTitle id="alert-dialog-title">{'刪除帳單?'}</DialogTitle>
+                <DialogDescription id="alert-dialog-description">刪除後帳單將無法復原，請輸入刪除密碼確認。</DialogDescription>
               </DialogHeader>
               <DialogBody>
                 <Field label="刪除密碼" htmlFor="delete-order-password">

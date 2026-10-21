@@ -21,7 +21,7 @@ const hasAnyItem = bill =>
 // 對應 vaild 的 A 條件（不含「帳單未結算」，已結算另外說明）
 export const getMissingForCheckout = bill => {
   const missing = []
-  if (!bill.date) missing.push('訂單日期')
+  if (!bill.date) missing.push('帳單日期')
   if (!(bill.customerId || bill.withoutCustomerData || bill.customerCellphone)) missing.push('顧客（或勾選「不留客資」）')
   if (!bill.designerId) missing.push('服務人員')
   if (!hasAnyItem(bill)) missing.push('至少一項消費（服務、店販、預收卡、使用預收卡或會員卡）')
@@ -31,7 +31,7 @@ export const getMissingForCheckout = bill => {
 // 對應 updateVaild（不含「帳單未結算」，已結算另外說明）
 export const getMissingForSave = bill => {
   const missing = []
-  if (!bill.date) missing.push('訂單日期')
+  if (!bill.date) missing.push('帳單日期')
   if (!bill.customerId) missing.push('顧客')
   if (!bill.designerId) missing.push('服務人員')
   return missing

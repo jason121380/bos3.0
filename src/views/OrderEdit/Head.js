@@ -340,7 +340,7 @@ export default function Head() {
           <div className="flex flex-col gap-[4px] [flex:1.2_1_220px]">
             <div className="flex flex-wrap items-end gap-[12px]">
               {/* 必填 *：依據 Footer.js 的 updateVaild／vaild（缺 bill.date 時「儲存」停用，「掛單／結帳」除總金額為 0 外也停用） */}
-              <Field label="訂單日期" required className="w-full">
+              <Field label="帳單日期" required className="w-full">
                 <DateTimePicker
                   value={bill.date}
                   format='yyyy/MM/dd HH:mm'

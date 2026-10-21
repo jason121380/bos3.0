@@ -85,7 +85,7 @@ function OrderRecord({
       </p>
       <Card>
         <CardHeader className="pb-4">
-          <CardTitle>訂單列表</CardTitle>
+          <CardTitle>帳單列表</CardTitle>
         </CardHeader>
         <div className="px-5">
           <Table className="min-w-[1150px] [&_td]:whitespace-nowrap">
@@ -123,7 +123,7 @@ function OrderRecord({
                   <TableCell>
                     <div className="font-medium tabular-nums">#{order.orderNo}</div>
                     <div className="text-caption tabular-nums text-text-secondary">
-                      {format(new Date(order.date), 'MM/dd/yyyy')}/
+                      {format(new Date(order.date), 'yyyy/MM/dd')}/
                       {weekDisplay(format(new Date(order.date), 'eeee'))}
                     </div>
                   </TableCell>

@@ -25,7 +25,7 @@ const WeeklyOrderCountRanking = ({ display, data }) => {
       return (
         <div className="p-[12px] text-[16px] [background:rgb(var(--background))] text-[color:black] rounded-[5px] [box-shadow:0_0_0_1px_rgb(63_63_68_/_5%),0_1px_3px_0_rgb(63_63_68_/_15%)]">
           <p>{payload[0].payload.name}</p>
-          <p>{`訂單數:${payload[0].payload.orderCount}`}</p>
+          <p>{`帳單數:${payload[0].payload.orderCount}`}</p>
           <p>{`單均價:${payload[0].payload.pricePerCount}`}</p>
         </div>
       );
@@ -38,7 +38,7 @@ const WeeklyOrderCountRanking = ({ display, data }) => {
         <CardContent className="flex flex-col gap-4 p-4">
           <div>
             <CardTitle className="whitespace-nowrap">週間來客數排行</CardTitle>
-            <CardDescription className="whitespace-nowrap text-caption">期間內星期一到日，訂單數比較</CardDescription>
+            <CardDescription className="whitespace-nowrap text-caption">期間內星期一到日，帳單數比較</CardDescription>
           </div>
           {display ?
             <div style={{ width: '100%', height: '320px', marginLeft: '-20px' }}>

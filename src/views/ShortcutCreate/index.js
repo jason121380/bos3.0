@@ -4,7 +4,7 @@ import { useFetchServicesForTransferList } from 'hooks/useFetchServices'
 import { useFetchProductsInTransferList } from 'hooks/useFetchProducts'
 import { useFetchTicketsForTransferList } from 'hooks/useFetchTickets'
 import { useFetchGetMembershipsForTransferList } from 'hooks/useFetchGetMembership'
-import { createShortcutFunc } from 'hooks/useFetchShortcut'
+import { useCreateShortcut } from 'hooks/useFetchShortcut'
 import { openSnackbar } from 'elements/snackbars'
 import { useMemo, useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
@@ -19,7 +19,7 @@ function ShortcutCreate() {
   const products = useFetchProductsInTransferList()
   const tickets = useFetchTicketsForTransferList({ isLaunched: true })
   const memberCards = useFetchGetMembershipsForTransferList({ isAvailableForSale: true, })
-  const { createShort } = createShortcutFunc()
+  const { createShort } = useCreateShortcut()
   const [isClick, setIsClick] = useState(false)
   const [servicesData, setServicesData] = useState([])
   const [productData, setProductData] = useState([])

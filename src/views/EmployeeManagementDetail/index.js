@@ -450,7 +450,7 @@ function Settings({ match, history }) {
   }, [merchantAuthData.loading, profile.loading])
   const tabValue = [
     { value: 'general', label: '基本資料' },
-    { value: 'orderRecord', label: '訂單紀錄' },
+    { value: 'orderRecord', label: '帳單紀錄' },
     { value: 'profitSharing', label: '抽成設定' },
     { value: 'rakeReport', label: '抽成報表' },
     { value: 'reservation', label: '預約表' },

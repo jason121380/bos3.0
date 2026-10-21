@@ -6,8 +6,8 @@ import { useFetchServicesForTransferList } from 'hooks/useFetchServices'
 import { useFetchProductsInTransferList } from 'hooks/useFetchProducts'
 import { useFetchTicketsForTransferList } from 'hooks/useFetchTickets'
 import { useFetchGetMembershipsForTransferList } from 'hooks/useFetchGetMembership'
-import { updateShortcutFunc, deleteShortcutFunc } from 'hooks/useFetchShortcut'
-import { getShortcut } from 'hooks/useFetchShortcut'
+import { useUpdateShortcut, useDeleteShortcut } from 'hooks/useFetchShortcut'
+import { useShortcut } from 'hooks/useFetchShortcut'
 import { openSnackbar } from 'elements/snackbars'
 import { useMemo, useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
@@ -18,13 +18,13 @@ import General from './General'
 
 function ShortcutEdit({ match }) {
   const history = useHistory()
-  const shortcut = getShortcut(match.params.id)
+  const shortcut = useShortcut(match.params.id)
   const services = useFetchServicesForTransferList()
   const products = useFetchProductsInTransferList()
   const tickets = useFetchTicketsForTransferList({ isLaunched: true })
   const memberCards = useFetchGetMembershipsForTransferList({ isAvailableForSale: true, })
-  const { updateShortcut } = updateShortcutFunc()
-  const { deleteShortcut } = deleteShortcutFunc()
+  const { updateShortcut } = useUpdateShortcut()
+  const { deleteShortcut } = useDeleteShortcut()
   const [isClick, setIsClick] = useState(false)
   const [servicesData, setServicesData] = useState(null)
   const [productData, setProductData] = useState(null)

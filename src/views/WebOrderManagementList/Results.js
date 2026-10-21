@@ -115,7 +115,7 @@ function Results({
     const excelData = []
     orders.forEach(order => {
       const data = {
-        預約日期及時間: `#${order.no}(${format(new Date(order.date), 'MM/dd/yyyy HH:mm:ss')})`,
+        預約日期及時間: `#${order.no}(${format(new Date(order.date), 'yyyy/MM/dd HH:mm:ss')})`,
         客戶資訊: idx(order, _ => _.customer.isAlive) ? `${idx(order, _ => _.customer.name)}(${idx(order, _ => _.customer.cellphone)})` : '客資已刪除',
         '指定/不指定': order.isDesignate ? '指定' : '不指定',
         設計師: order.designer ? order.designer.name ? idx(

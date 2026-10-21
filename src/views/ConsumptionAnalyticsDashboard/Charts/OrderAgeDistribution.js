@@ -45,7 +45,7 @@ const OrderAgeDistribution = ({ display, data, width }) => {
         <CardContent className="flex flex-col gap-4 p-4">
           <div>
             <CardTitle className="whitespace-nowrap">消費者年齡分佈</CardTitle>
-            <CardDescription className="whitespace-nowrap text-caption">期間內(訂單)來客的年齡分佈</CardDescription>
+            <CardDescription className="whitespace-nowrap text-caption">期間內(帳單)來客的年齡分佈</CardDescription>
           </div>
           {display ?
             <div className="flex h-full items-center ml-[-20px] max-[599.95px]:flex-col max-[599.95px]:ml-0">

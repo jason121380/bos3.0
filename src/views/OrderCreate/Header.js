@@ -279,7 +279,7 @@ function Header({ forceUpdate, ...rest }) {
   // 掛單跳彈窗
   const handleOrderPendingConfirm = () => {
     openSnackbar({
-      message: `確認要掛單嗎，掛單只會紀錄此筆訂單的紀錄，不會正式成立訂單唷`,
+      message: `確認要掛單嗎，掛單只會紀錄此筆帳單的紀錄，不會正式成立帳單唷`,
       variant: "error",
       disableHide: true,
       resign: true,
@@ -312,7 +312,7 @@ function Header({ forceUpdate, ...rest }) {
           {lastOrderStatus !== undefined && lastOrderStatus.orderNo !== 0 && (
             <span className="flex items-center gap-1 text-label tabular-nums text-text-secondary">
               <History className="h-4 w-4" strokeWidth={1.75} />
-              上一筆訂單 #{lastOrderStatus.orderNo}
+              上一筆帳單 #{lastOrderStatus.orderNo}
             </span>
           )}
         </div>

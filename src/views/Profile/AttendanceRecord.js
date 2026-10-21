@@ -50,7 +50,7 @@ const AttendanceRecord = ({
                       <TableCell>
                         <div className="tabular-nums">{format(new Date(data.checkinDateTime), 'HH:mm:ss')}</div>
                         <div className="text-caption tabular-nums text-text-secondary">
-                          {format(new Date(data.checkinDateTime), 'MM/dd/yyyy')}
+                          {format(new Date(data.checkinDateTime), 'yyyy/MM/dd')}
                         </div>
                       </TableCell>
                       <TableCell className="text-right">

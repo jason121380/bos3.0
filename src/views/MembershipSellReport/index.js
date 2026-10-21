@@ -52,8 +52,8 @@ export default function MembershipSellReport() {
     const data = []
     reportData.forEach(d => {
       data.push({
-        訂單日期: format(d.orderDate, 'yyyy/M/d'),
-        訂單編號: `#${d.orderNo}`,
+        帳單日期: format(d.orderDate, 'yyyy/MM/dd'),
+        帳單編號: `#${d.orderNo}`,
         設計師姓名: d.designerName,
         顧客姓名: d.customerName,
         會員卡名稱: d.membershipName,
@@ -64,12 +64,12 @@ export default function MembershipSellReport() {
         '販賣業績(實)': roundDecimal(d.truth),
         抽成: roundDecimal(d.rake),
         備註: d.remark,
-        到期日: d.expiryDate ? format(d.expiryDate, 'yyyy/M/d') : '永久會籍'
+        到期日: d.expiryDate ? format(d.expiryDate, 'yyyy/MM/dd') : '永久會籍'
       })
     })
     data.push({
-      訂單日期: '',
-      訂單編號: '',
+      帳單日期: '',
+      帳單編號: '',
       設計師姓名: ' ',
       顧客姓名: '',
       會員卡名稱: '合計',

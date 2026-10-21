@@ -12,7 +12,7 @@ import { Card, CardContent } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import EventTicketsRecord from './EventTicketsRecord'
 
-const index = () => {
+const CustomerEventTicketSearch = () => {
   const [getCustomerTicket, customerTicketData] = useFetchGetCustomerCheckTicket()
   const reCaptchaRef = useRef(null)
   const [openSnack, setOpenSnack] = useState({
@@ -151,4 +151,4 @@ const index = () => {
   )
 }
 
-export default index
+export default CustomerEventTicketSearch

@@ -38,7 +38,7 @@ const GET_SHORTCUTS = gql`
   }
 `
 
-const getShortcuts = () => {
+const useShortcuts = () => {
   return useQuery(GET_SHORTCUTS, {
     fetchPolicy: 'cache-and-network',
   })
@@ -65,7 +65,7 @@ const GET_SHORTCUTS_FOR_ORDERCREATE = gql`
   }
 `
 
-const getShortcutsForOrderCreate = () => {
+const useShortcutsForOrderCreate = () => {
   const [getShortcutFunc, shortcutData] = useLazyQuery(GET_SHORTCUTS_FOR_ORDERCREATE, {
     fetchPolicy: 'cache-and-network',
   })
@@ -93,7 +93,7 @@ const GET_SHORTCUT = gql`
   }
 `
 
-const getShortcut = (shortcutId) => {
+const useShortcut = (shortcutId) => {
   return useQuery(GET_SHORTCUT, {
     variables: {
       shortcutId,
@@ -108,7 +108,7 @@ const CREATE_SHORTCUT = gql`
   }
 `
 
-const createShortcutFunc = () => {
+const useCreateShortcut = () => {
   const [createShort] = useMutation(CREATE_SHORTCUT)
   return {
     createShort: ({ input }) =>
@@ -126,7 +126,7 @@ const UPDATE_SHORTCUT = gql`
   }
 `
 
-const updateShortcutFunc = () => {
+const useUpdateShortcut = () => {
   const [updateShortcut] = useMutation(UPDATE_SHORTCUT)
   return {
     updateShortcut: ({ input }) =>
@@ -144,7 +144,7 @@ const DELETE_SHORTCUT = gql`
   }
 `
 
-const deleteShortcutFunc = () => {
+const useDeleteShortcut = () => {
   const [deleteShortcut] = useMutation(DELETE_SHORTCUT)
   return {
     deleteShortcut: (deleteShortcutId) =>
@@ -158,6 +158,6 @@ const deleteShortcutFunc = () => {
 
 
 export {
-  getShortcuts, getShortcut, createShortcutFunc, updateShortcutFunc, deleteShortcutFunc,
-  getShortcutsForOrderCreate
+  useShortcuts, useShortcut, useCreateShortcut, useUpdateShortcut, useDeleteShortcut,
+  useShortcutsForOrderCreate
 }

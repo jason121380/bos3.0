@@ -51,13 +51,13 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
                     <TableCell>
                       <Button asChild size="sm" variant="secondary">
                         <RouterLink to={`/order/${data.order.id}`}>
-                          訂單詳情
+                          帳單詳情
                         </RouterLink>
                       </Button>
                     </TableCell>
                     <TableCell>
                       <div className="font-medium tabular-nums">{data.orderNo}</div>
-                      <div className="text-caption tabular-nums text-text-secondary">{format(data.date, 'MM/dd/yyyy')}</div>
+                      <div className="text-caption tabular-nums text-text-secondary">{format(data.date, 'yyyy/MM/dd')}</div>
                     </TableCell>
                     <TableCell>
                       {idx(data.Customer, _ => _.name)}

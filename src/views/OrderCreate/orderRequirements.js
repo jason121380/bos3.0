@@ -19,7 +19,7 @@ export const hasCustomer = bill =>
 
 export const getMissingForOrder = bill => {
   const missing = []
-  if (!bill.date) missing.push('訂單日期')
+  if (!bill.date) missing.push('帳單日期')
   if (!bill.designerId) missing.push('服務人員')
   if (!hasCustomer(bill)) missing.push('顧客（或勾選「不留客資」）')
   if (!hasAnyItem(bill)) missing.push('至少一項消費（服務、店販、預收卡、使用預收卡或會員卡）')

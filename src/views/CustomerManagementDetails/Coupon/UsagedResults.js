@@ -58,22 +58,22 @@ export default function UsagedResults({
                   <TableCell>
                     <div className="font-medium tabular-nums">{idx(result, _ => _.usageOrder.no)}</div>
                     <div className="text-caption tabular-nums text-text-secondary">
-                      {idx(result, _ => format(_.usageOrder.date, 'MM/dd/yyyy'))}
+                      {idx(result, _ => format(_.usageOrder.date, 'yyyy/MM/dd'))}
                     </div>
                     <Button asChild size="sm" variant="secondary" className="mt-1">
                       <RouterLink to={`/order/${result.usageOrder.id}`}>
-                        訂單詳細
+                        帳單詳細
                       </RouterLink>
                     </Button>
                   </TableCell>
                   <TableCell>
                     <div className="font-medium tabular-nums">{idx(result, _ => _.order.no)}</div>
                     <div className="text-caption tabular-nums text-text-secondary">
-                      {idx(result, _ => format(_.order.date, 'MM/dd/yyyy'))}
+                      {idx(result, _ => format(_.order.date, 'yyyy/MM/dd'))}
                     </div>
                     <Button asChild size="sm" variant="secondary" className="mt-1">
                       <RouterLink to={`/order/${result.order.id}`}>
-                        訂單詳細
+                        帳單詳細
                       </RouterLink>
                     </Button>
                   </TableCell>

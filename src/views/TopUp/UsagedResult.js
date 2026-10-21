@@ -65,7 +65,7 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
                 <TableCell className="!px-[8px] !py-[4px] ![font-size:13px] whitespace-nowrap">
                   <Button asChild size="sm" variant="secondary">
                     <RouterLink to={`/order/${data.order.id}`}>
-                      訂單詳情
+                      帳單詳情
                     </RouterLink>
                   </Button>
                 </TableCell>

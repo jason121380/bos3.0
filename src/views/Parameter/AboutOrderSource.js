@@ -27,7 +27,7 @@ function AboutOrderSource({ className, reference, setReference, inputEnable }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>訂單來源</CardTitle>
+        <CardTitle>帳單來源</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-wrap gap-4">

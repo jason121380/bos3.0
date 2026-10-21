@@ -54,7 +54,7 @@ const isDesignate = [
   },
   {
     value: 'LASTORDER',
-    label: '依前筆訂單',
+    label: '依前筆帳單',
   },
 ]
 const nameDisplay = [
@@ -81,7 +81,7 @@ function AboutOrderCreate({
   const settingArr = [
     { label: '指定互助人功能', key: 'isHelperDesignationDisplay' },
     { label: '顯示第三方卡券欄位', key: 'isThirdPartTicketDisplay' },
-    { label: '訂單時間使用伺服器時間（只允許開出現在的時間的訂單）', key: 'isAbleToChangeDateTimeInOrderCreate' },
+    { label: '帳單時間使用伺服器時間（只允許開出現在的時間的帳單）', key: 'isAbleToChangeDateTimeInOrderCreate' },
     {
       label: '顯示鎖定時間選項',
       key: 'isDateLockDisplay',
@@ -92,17 +92,17 @@ function AboutOrderCreate({
       ) : ''
     },
     { label: '固定業績明細於視窗下方', key: 'isDetailBottomed' },
-    { label: '訂單可不留顧客客資', key: 'orderWithoutCustomerDefault' },
-    { label: '快速開單模式（於背景建立訂單）', key: 'isQuickOrderModeOn' },
+    { label: '帳單可不留顧客客資', key: 'orderWithoutCustomerDefault' },
+    { label: '快速開單模式（於背景建立帳單）', key: 'isQuickOrderModeOn' },
     { label: '客戶資料選取後自動帶入偏好設計師', key: 'isAutoSetPreferDesigner' },
     { label: '販賣多張預收卡券時自動依每張卡分項', key: 'isTicketSellSubItem' },
-    { label: '訂單明細列印視窗延遲10秒關閉', key: 'isPrintWindowClosureDelayed' },
+    { label: '帳單明細列印視窗延遲10秒關閉', key: 'isPrintWindowClosureDelayed' },
     { label: '啟用流水號功能', key: 'isOrderSerialNumberUsing' },
     { label: '開單頁面顯示顧客LINE綁定狀態', key: 'isLBCusDisplay' },
     { label: '啟用顧客入金折抵消費', key: 'isCusWalletUsageForOrder' },
   ]
   const optionArr = [
-    { label: '訂單明細列印格式', key: 'printFormat', options: printLayout },
+    { label: '帳單明細列印格式', key: 'printFormat', options: printLayout },
     { label: '列印明細設計師顯示格式', key: 'designerNameDisplayOnInvoice', options: nameDisplay },
     { label: '服務是否能更改預設價格', key: 'isServiceLocked', options: lockStatus },
     { label: '商品是否能更改預設價格', key: 'isProductLocked', options: lockStatus },

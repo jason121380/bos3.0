@@ -46,7 +46,7 @@ function Results({
     const excelData = []
     moneyFlows.moneyFlows.forEach(data => {
       excelData.push({
-        日期: format(data.date, 'yyyy-MM-dd'),
+        日期: format(data.date, 'yyyy/MM/dd'),
         科目名稱: data.accountingSubject !== null ? data.accountingSubject.name : '',
         收入: data.inoutType === 'REVENUE' ? data.amount : '',
         支出: data.inoutType === 'EXPENDITURE' ? data.amount : '',

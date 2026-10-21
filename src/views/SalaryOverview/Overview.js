@@ -53,7 +53,7 @@ function Overview({ usersSalary, date }) {
       {/* 職務備註 */}
       <Card className="flex h-full min-w-[300px] flex-1 flex-col gap-3 px-6 py-4">
         <h2 className="m-0 text-heading text-text">
-          {format(new Date(date), 'yyyy/M')} 月結備註
+          {format(new Date(date), 'yyyy/MM')} 月結備註
         </h2>
         <Textarea
           aria-label="月結備註"

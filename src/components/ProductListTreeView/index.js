@@ -6,7 +6,7 @@ import ProductListModal from './ProductListModal'
 import PropTypes from 'prop-types'
 import { Autocomplete } from 'ui/combobox'
 
-const index = ({ onValueChange = () => { } }) => {
+const ProductListTreeView = ({ onValueChange = () => { } }) => {
   const productTreeview = useFetchProductTreeview()
   const [products, setProducts] = useState({
     all: [],
@@ -99,8 +99,8 @@ const index = ({ onValueChange = () => { } }) => {
   )
 }
 
-index.propTypes = {
+ProductListTreeView.propTypes = {
   onValueChange: PropTypes.func
 }
 
-export default index
+export default ProductListTreeView

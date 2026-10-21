@@ -16,7 +16,7 @@ function Results({ orders, ...rest }) {
       </p>
       <Card>
         <CardHeader action={<GenericMoreButton />} className="items-center pb-4">
-          <CardTitle>訂單紀錄</CardTitle>
+          <CardTitle>帳單紀錄</CardTitle>
         </CardHeader>
         <div className="px-5 pb-5">
           <Table className="min-w-[1400px]">
@@ -26,7 +26,7 @@ function Results({ orders, ...rest }) {
                 <TableHead>客戶</TableHead>
                 <TableHead>設計師</TableHead>
                 <TableHead>指定/不指定</TableHead>
-                <TableHead>訂單狀態</TableHead>
+                <TableHead>帳單狀態</TableHead>
                 <TableHead numeric>服務消費(虛虛)</TableHead>
                 <TableHead numeric>店販消費(虛虛)</TableHead>
                 <TableHead numeric>卡券銷售</TableHead>

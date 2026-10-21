@@ -27,7 +27,7 @@ function Remark() {
         }}
       />
       </Field>
-      <Field label="訂單來源" className="mr-[12px] flex !w-[200px] max-w-[calc(100%-12px)] justify-start">
+      <Field label="帳單來源" className="mr-[12px] flex !w-[200px] max-w-[calc(100%-12px)] justify-start">
       <SourceSelect
         emptyOption
         label=''

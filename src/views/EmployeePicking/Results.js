@@ -44,7 +44,7 @@ function Results({
     const excelData = []
     pickingRecords.PickingRecord.forEach(record => {
       excelData.push({
-        日期: format(new Date(record.date), 'MM/dd/yyyy'),
+        日期: format(new Date(record.date), 'yyyy/MM/dd'),
         '商品代號/名稱':
           record.productNo === null || record.productNo === ''
             ? record.productName

@@ -85,7 +85,7 @@ function General({
             {info !== null && (
               <div className="flex flex-wrap items-center gap-2.5 self-end">
                 <span className="whitespace-break-spaces text-caption tabular-nums text-text-secondary">
-                  {`建立時間:${format(info.date, 'yyyy/M/d HH:mm')}`}
+                  {`建立時間:${format(info.date, 'yyyy/MM/dd HH:mm')}`}
                 </span>
                 <span className="whitespace-break-spaces text-caption text-text-secondary">
                   {`建立者:${info.creatorName}`}

@@ -127,7 +127,7 @@ export default function PannelCouponUse() {
         summaryMeta={!expanded && panelSummary(bill.useTicketOrders.length)}
       >
         <p className="m-0 !text-[16px] font-bold text-text">使用預收卡</p>
-        <p className="m-0 ml-2 !text-[0.75rem] !font-normal text-text-secondary">編輯訂單不得編輯預收卡使用</p>
+        <p className="m-0 ml-2 !text-[0.75rem] !font-normal text-text-secondary">編輯帳單不得編輯預收卡使用</p>
       </AccordionSummary>
       <AccordionDetails className="overflow-x-auto">
         <div className="flex flex-col items-start justify-start">

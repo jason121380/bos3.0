@@ -6,10 +6,10 @@ import { Close as CloseIcon } from 'ui/icons'
 import { useEffect } from 'react';
 import { green } from 'ui/colors';
 
-import { getShortcutsForOrderCreate } from 'hooks/useFetchShortcut'
+import { useShortcutsForOrderCreate } from 'hooks/useFetchShortcut'
 
 const ShortcutDialog = ({ open, handleOnClose, handleShortcutChange }) => {
-  const [getShortcutFunc, shortcutLazyData] = getShortcutsForOrderCreate()
+  const [getShortcutFunc, shortcutLazyData] = useShortcutsForOrderCreate()
 
   const isLoading = !shortcutLazyData.loading && shortcutLazyData.data ? false : true
 

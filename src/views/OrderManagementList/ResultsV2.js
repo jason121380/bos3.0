@@ -141,7 +141,7 @@ function Results({
     setEditBarOnClick(true)
     setIcClick(true)
     openSnackbar({
-      message: '訂單刪除中',
+      message: '帳單刪除中',
       variant: 'warning',
     })
     deleteOrders({ orderIds: selectedOrders, password: deleteOrderPwd })
@@ -408,7 +408,7 @@ function Results({
                 {allExtend ? '全部收合' : '全部展開'}
               </Button>
               <Button asChild size="sm" variant="secondary">
-                <CSVLink data={excelData} filename="訂單列表.csv">
+                <CSVLink data={excelData} filename="帳單列表.csv">
                   <Download strokeWidth={1.75} />
                   報表匯出
                 </CSVLink>

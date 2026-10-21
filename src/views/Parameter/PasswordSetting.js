@@ -6,8 +6,8 @@ import produce from 'immer'
 
 
 const passwordArr = [
-  { label: '編輯訂單密碼', key: 'reCheckoutOrder' },
-  { label: '刪除訂單密碼', key: 'deleteOrder' },
+  { label: '編輯帳單密碼', key: 'reCheckoutOrder' },
+  { label: '刪除帳單密碼', key: 'deleteOrder' },
   { label: '解除日結密碼', key: 'restoreCheckout' },
   { label: '刪除服務/卡券密碼', key: 'deleteService' },
   { label: '刪除商品密碼', key: 'deleteProduct' },

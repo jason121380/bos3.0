@@ -6,7 +6,7 @@ import MerchantsListModal from './MerchantsListModal'
 import PropTypes from 'prop-types'
 import { Autocomplete } from 'ui/combobox'
 
-const index = ({ onValueChange = () => { } }) => {
+const MerchantListAutocpmplete = ({ onValueChange = () => { } }) => {
   const userMerchants = useFetchGetUserMerchant()
   const merchantList = !userMerchants.loading ? JSON.parse(userMerchants.data.getUserMerchant) : {}
   const [values, setValues] = useState([])
@@ -83,8 +83,8 @@ const index = ({ onValueChange = () => { } }) => {
   )
 }
 
-index.propTypes = {
+MerchantListAutocpmplete.propTypes = {
   onValueChange: PropTypes.func
 }
 
-export default index
+export default MerchantListAutocpmplete

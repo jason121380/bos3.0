@@ -71,7 +71,7 @@ function OrderRecord({ results, page, onChangePage, onChangeRowsPerPage, members
       </p>
       <Card>
         <CardHeader>
-          <CardTitle>訂單列表</CardTitle>
+          <CardTitle>帳單列表</CardTitle>
         </CardHeader>
         <div className="px-5 pb-5 pt-4">
           <Table className="min-w-[1150px] [&_td]:whitespace-nowrap">

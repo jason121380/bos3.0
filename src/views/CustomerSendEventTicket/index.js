@@ -12,7 +12,7 @@ import { Card, CardContent } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { getApiOrigin } from 'lib/api-base'
 
-const index = () => {
+const CustomerSendEventTicket = () => {
   const { id } = useParams()
   const [checkExist, checkExistData] = useFetchCheckIsCustomerExistForOuterStore()
   const getMerchantName = useFetchGetMerchantName({ input: id })
@@ -205,4 +205,4 @@ const index = () => {
   )
 }
 
-export default index
+export default CustomerSendEventTicket

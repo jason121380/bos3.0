@@ -140,7 +140,7 @@ function Results({
         '入金使用(-)': order.walletUsedForDecount,
         '點數折抵金額(-)': order.bonusDecountForReport,
         備註: order.remark,
-        訂單來源: order.source
+        帳單來源: order.source
       })
     })
     if (!membershipDisplay) {
@@ -256,7 +256,7 @@ function Results({
   const handleConfirmCancel = () => {
     setEditBarOnClick(true)
     openSnackbar({
-      message: '訂單刪除中',
+      message: '帳單刪除中',
       variant: 'warning',
     })
     deleteOrders({ orderIds: selectedOrders, password: password })
@@ -910,7 +910,7 @@ function Results({
             <DialogTitle>{dialogType === 'delete' ? '刪除掛單？' : '掛單結帳'}</DialogTitle>
           </DialogHeader>
           <DialogBody>
-            <Field label={dialogType === 'delete' ? '刪除密碼' : '編輯訂單密碼'} htmlFor="draft-order-password">
+            <Field label={dialogType === 'delete' ? '刪除密碼' : '編輯帳單密碼'} htmlFor="draft-order-password">
               <Input
                 id="draft-order-password"
                 type="password"
