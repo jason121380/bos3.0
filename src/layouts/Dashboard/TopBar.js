@@ -184,10 +184,11 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
   useEffect(() => {
     if (!merchantAuthData.loading && !profileIdentity.loading) {
       const merchantAuth = idx(merchantAuthData, _ => _.data.getMerchantAuthorities)
-      const loginUserAuthName = idx(profileIdentity, _ => _.data.me.merchantIdentity.authorityName)
+      // 以角色 id 比對（名稱可重複，同名角色會讀到別人的權限；2026/10/21 Jason 同意改 id）
+      const loginUserAuthId = idx(profileIdentity, _ => _.data.me.merchantIdentity.authorityId)
       // 權限資料取不到（API 失敗）時略過，維持預設的最小權限；原本直接 .filter(undefined) 拋錯，整個後台白畫面
       if (!Array.isArray(merchantAuth)) return
-      const userAuth = merchantAuth.filter(data => data.authorityName === loginUserAuthName)
+      const userAuth = merchantAuth.filter(data => data.id === loginUserAuthId)
       if (!userAuth[0]) return
       // 角色設定可能缺「櫃檯作業」或「資料設定」區塊（舊角色、後台新增前建立的角色）：缺了就視為沒有該權限。
       // 原本直接取 [0].pageAuthority 拋錯，TopBar 不在頁面錯誤邊界內，整個後台白畫面（A5 補測試時發現）
@@ -206,9 +207,9 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
       const userAuth1Count = []
       const userAuth2Count = []
       const merchantAuth = idx(merchantAuthData, _ => _.data.getMerchantAuthorities)
-      const loginUserAuthName = idx(profileIdentity, _ => _.data.me.merchantIdentity.authorityName)
+      const loginUserAuthId = idx(profileIdentity, _ => _.data.me.merchantIdentity.authorityId)
       if (!Array.isArray(merchantAuth)) return // API 失敗：同上，不讓版面拋錯
-      const userAuth = merchantAuth.filter(data => data.authorityName === loginUserAuthName)
+      const userAuth = merchantAuth.filter(data => data.id === loginUserAuthId)
       // 找不到登入者的角色＝沒有任何頁面權限，與「權限全關」同樣導向個人頁（原本在這裡拋錯）
       if (!userAuth[0]) {
         history.push('/profile/general')

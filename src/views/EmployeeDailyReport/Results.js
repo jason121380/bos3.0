@@ -139,7 +139,7 @@ function Results({
                             <a
                               target="_blank"
                               href={`/order/${orderRecord.orderId}`}
-                              className="underline text-[color:black]"
+                              className="underline text-text"
                             >
                               {orderRecord.orderNo}
                               {orderRecord.designation ? `*` : null}
