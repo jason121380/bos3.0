@@ -1,6 +1,5 @@
-// 預約動作彈窗內容依 modaltype 切換、沒有標題（Radix Dialog 需 DialogTitle，補標題屬文案變更），保留相容層 Dialog；公休彈窗只有切換鈕與按鈕，改 ui/dialog
-import { Dialog } from 'ui/modal-compat'
-import { Dialog as UiDialog, DialogContent as UiDialogContent } from 'ui/dialog'
+// 兩個彈窗內只有動作清單與時段切換鈕（無下拉／日期彈層），改用 ui Dialog；舊版無關閉鈕（點背景關閉），故 hideClose
+import { Dialog, DialogContent, DialogTitle } from 'ui/dialog'
 import React, { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { readableTextOn } from 'components/CalendarColorClip'
@@ -8,19 +7,20 @@ import { CalendarOff } from 'lucide-react'
 import { AssignmentTurnedInRounded as AssignmentTurnedInRoundedIcon, DisabledByDefaultRounded as DisabledByDefaultRoundedIcon } from 'ui/icons'
 
 import NewChoseEvent from './NewChoseEvent'
-import HolidayEdit from './HolidayEdit'
+import HolidayEdit from '../HolidayEdit'
+import clsx from 'clsx'
 
-// 預約表格樣式（原 styles/OrderTable.js 的 emotion 物件轉 Tailwind；單邊框線用任意屬性，避免 border-style 套到四邊）
+// 原 styles/OrderTable（emotion）轉 Tailwind；框線只設單邊，用任意屬性避免 border-style 影響其他邊（preflight 關閉，`border` 類別沒有線型）
 // 表格外觀比照主預約頁（ManagementReservationRecord/OrderTable.js）：表頭淺灰底、tokens 框線、時間欄粗體、可預約人數小標＋主題色數字、預約色塊 12px 圓角；尺寸與寬度計算不變
 const titleClass = 'flex min-h-[56px] shrink-0 items-center justify-center break-all bg-surface px-4 py-3 text-[14px] font-[800] tracking-[0.5px] text-text [border-right:1px_solid_rgb(var(--border))]'
-const limitItemClass = 'flex w-[100px] cursor-pointer flex-col items-center justify-center overflow-hidden text-[12px] text-text-tertiary [border-left:1px_solid_rgb(var(--border))] [transition:background-color_0.2s] hover:!bg-accent/10'
-const calendarWrapClass = 'absolute left-0 top-0 h-full overflow-hidden [border-right:1px_solid_rgb(var(--border))]'
+const clickWrapClass = 'absolute flex w-full gap-0'
 const clickItemClass = 'flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-[12px] [border:2px_solid_white] text-[13px] font-bold text-white shadow-[0px_4px_10px_rgba(0,0,0,0.1)] [transition:transform_0.1s_ease] hover:z-[3] hover:[transform:scale(1.02)] [&_span]:break-all [&_span]:px-2 [&_span]:py-0 [&_span]:text-center'
+const calendarWrapClass = 'absolute left-0 top-0 h-full overflow-hidden [border-right:1px_solid_rgb(var(--border))]'
 
 const OrderTable = ({
-  orderRange, calendarData, designerNameType, merchantId,
-  openTime, refetchData, remarkDisplay, designerId,
-  cusRemarkDisplay, ndsRef, checkinSettings, checkinMode
+  orderRange, calendarData, designerNameType, merchantId, checkinMode,
+  openTime, refetchData, remarkDisplay, designerId, cusRemarkDisplay,
+  ndsRef, checkinSettings
 }) => {
   const isCheckinIcon = <AssignmentTurnedInRoundedIcon style={{ top: 5, right: 5, position: 'absolute' }}/>
   const noCheckinIcon = <DisabledByDefaultRoundedIcon style={{ top: 5, right: 5, position: 'absolute' }}/>
@@ -124,7 +124,7 @@ const OrderTable = ({
   }
 
   return (
-    <div className="ManagementReservationRecord relative h-[calc(100vh-260px)] min-h-[60vh] overflow-scroll rounded-2xl bg-background [border:1px_solid_rgb(var(--border))] [&>div]:flex">
+    <div className='ManagementReservationRecord relative h-[calc(100vh-260px)] min-h-[60vh] overflow-scroll rounded-2xl bg-background [border:1px_solid_rgb(var(--border))] [&>div]:flex'>
 
       {/* table head */}
       <div className="sticky top-0 z-[7] w-fit">
@@ -156,7 +156,7 @@ const OrderTable = ({
         }, index) => {
           const width = findTitleWidth(length, breakLength)
           return (
-            <div key={`${title}-${index}`} style={{ width: width }} className="min-w-[100px] relative shrink-0">
+            <div key={`${title}-${index}`} style={{ width: width }} className="relative min-w-[100px] shrink-0">
               {orderRange[index].map(d => (
                 <div
                   key={d}
@@ -171,7 +171,7 @@ const OrderTable = ({
                     })
                   }}
                 >
-                <div style={{ width: length > 1 ? ndWidth : basicWidth }} className={`hoverItem ${limitItemClass}${(length > 1 && countHoliday[d]) ? ' !bg-danger/10' : ''}`} title={(length > 1 && countHoliday[d]) ? '不可預約時段' : undefined}>
+                <div style={{ width: length > 1 ? ndWidth : basicWidth }} className={`hoverItem flex w-[100px] cursor-pointer flex-col items-center justify-center overflow-hidden text-[12px] text-text-tertiary [border-left:1px_solid_rgb(var(--border))] [transition:background-color_0.2s] hover:!bg-accent/10${(length > 1 && countHoliday[d]) ? ' !bg-danger/10' : ''}`} title={(length > 1 && countHoliday[d]) ? '不可預約時段' : undefined}>
                   {/* 版面比照主預約頁：上方小標＋主題色數字；不可預約時段（countHoliday）除淡紅底外加圖示與讀屏文字，不只靠顏色 */}
                   {!(length > 1 || breakLength > 0) && <span className="mb-0.5 text-[12px] leading-4 text-text-secondary">可預約人數</span>}
                   <span className={`inline-flex items-center gap-0.5 text-[14px] font-bold ${(length > 1 && countHoliday[d]) ? 'text-danger' : 'text-accent'}`}>
@@ -185,13 +185,13 @@ const OrderTable = ({
               {length > 1 && (
                 <div style={{ width: (length - 1) * basicWidth }} className={calendarWrapClass}>
                   {orderGroup.map(({ data, parentStyle }, i) => (
-                    <div key={`currentData-${i}`} className="flex gap-0 absolute w-full" style={parentStyle}>
+                    <div key={`currentData-${i}`} className={clickWrapClass} style={parentStyle}>
                       {data.map(({ key, start, end, style, type, designerId, ...rest }) => {
                         return (
                           <div
                             key={key}
                             ref={e => e && ndsRef.current.push(e)}
-                            style={{ ...style, color: readableTextOn(style.backgroundColor), width: `${(length - 1) * basicWidth / data.length}px`, position: 'relative' }}
+                            style={{ ...style, color: readableTextOn(style.backgroundColor), width: `${(length - 1) * basicWidth / data.length}px`, position: 'relative'  }}
                             className={clickItemClass}
                             id='darkBorder'
                             onClick={() => {
@@ -247,7 +247,7 @@ const OrderTable = ({
               {breakLength > 0 && (
                 <div style={{ width: length > 1 ? breakWidth : basicWidth , left: findOrderWidth(length) }} className={calendarWrapClass}>
                   {breakGroup.map(({ data, parentStyle }, i) => (
-                    <div key={`isBreakGroups-${i}`} className="flex gap-0 absolute w-full" style={parentStyle}>
+                    <div key={`isBreakGroups-${i}`} className={clickWrapClass} style={parentStyle}>
                       {data.map(({ key, nameToDisplay, start, end, style }, i) => {
                         return (
                           <div
@@ -278,7 +278,10 @@ const OrderTable = ({
       </div>
 
       {/* 彈窗 */}
-      <Dialog className='ManagementReservationRecordDialog' fullWidth maxWidth="xs" open={modalOpen} onClose={() => setModalOpen(false)}>
+      <Dialog open={modalOpen} onOpenChange={o => !o && setModalOpen(false)}>
+        <DialogContent size="sm" hideClose aria-describedby={undefined} className='ManagementReservationRecordDialog'>
+        {/* 原彈窗沒有標題；Radix Dialog 需有標題供輔助技術朗讀，以 sr-only 提供 */}
+        <DialogTitle className="sr-only">預約動作</DialogTitle>
         <NewChoseEvent
           openTime={openTime}
           editOrder={editOrder}
@@ -292,17 +295,18 @@ const OrderTable = ({
           checkinSettings={checkinSettings}
           checkinMode={checkinMode}
         />
+        </DialogContent>
       </Dialog>
-      <UiDialog open={holidayModel} onOpenChange={o => !o && setHolidayModel(false)}>
-        <UiDialogContent size="md" aria-describedby={undefined} className='ManagementReservationRecordDialog'>
-          <HolidayEdit
-            holidayData={holidayData} 
-            setHolidayData={setHolidayData} 
-            setHolidayModel={setHolidayModel}
-            refetchData={refetchData}
-          />
-        </UiDialogContent>
-      </UiDialog>
+      <Dialog open={holidayModel} onOpenChange={o => !o && setHolidayModel(false)}>
+        <DialogContent size="md" hideClose aria-describedby={undefined} className='ManagementReservationRecordDialog'>
+        <HolidayEdit
+          holidayData={holidayData} 
+          setHolidayData={setHolidayData} 
+          setHolidayModel={setHolidayModel}
+          refetchData={refetchData}
+        />
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

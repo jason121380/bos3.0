@@ -7,7 +7,7 @@ import { format } from 'date-fns'
 import { readableTextOn } from 'components/CalendarColorClip'
 
 import NewChoseEvent from './NewChoseEvent'
-import HolidayEdit from './HolidayEdit'
+import HolidayEdit from 'components/ReservationCalendar/HolidayEdit'
 
 // 原 ./styles/OrderTable.js（emotion css 物件，只有本檔使用，已刪除）逐值轉 Tailwind；原 `!important` 以 `!` 前綴保留。
 // title 與 ndsTitle／timeTitle 合併時 title 的 borderRight 在後、覆蓋 ndsTitle，故 ndsTitle 不另輸出。

@@ -1,12 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10211027）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10211046）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
+
+- **預約週曆合併**（2026/10/21，v3.10211046，Jason「四份預約週曆合併成一個元件」）：新增 `components/ReservationCalendar/`——`weekCalendar.js`（單週預約紀錄、個人頁、員工資料共用的資料整理，自單週預約紀錄原樣搬移）、`DesignerWeekReservation/`（個人頁與員工資料的整頁週曆，原兩份合一）、`HolidayEdit.js`（四頁共用的公休彈窗）；刪除 `views/Profile/Reservation`、`views/EmployeeManagementDetail/Reservation` 與兩份 `HolidayEdit`，程式碼淨減約 1,700 行。單日預約紀錄版面不同，只共用公休彈窗。前後以同一份假資料比對四頁表格與彈窗 DOM：單週、單日完全相同；個人頁與員工資料合併後一致。**可見變化**：①個人頁的可預約人數不再把已完成的預約算進去（與其他三頁一致，MEMORY #174②）；②個人頁、員工資料的色塊與格線間隔多 1px（統一為 −2px）；③個人頁、員工資料的公休彈窗按鈕改為「取消／確定」，員工資料的預約動作彈窗改用新版對話框（與個人頁相同）。新增 `weekCalendar` 9 項測試（拿掉已完成不佔名額時會失敗）。**待實機**：個人頁與員工資料的預約表——色塊位置、點預約開動作選單（編輯、結帳、接受／取消預約）、點公休開公休彈窗並儲存、可預約人數；單週預約紀錄選一位與多位設計師。
 
 - **效能第二輪：lodash 逐方法引入、首屏非必要查詢延後**（2026/10/21，v3.10211016，Jason「都做下一步」，屬畫面以外修正、當次同意）：①216 個引入 lodash 的檔案改為 `lodash/cloneDeep` 等逐方法引入（155 檔），61 檔移除沒用到的 import；入口 chunk 513→455 KB（gz 162→141 KB），整包 lodash 不再出現在任何 chunk。②新增 `lib/after-first-load`（`useAfterFirstLoad`）與 `init-apollo` 的 `inflightLink`（只計數）：系統公告、訂單佇列、釘選頁、切換店家清單延到「load 後、沒有查詢在等回應、瀏覽器空閒」才查（Safari 網路安靜後 0.5 秒、最晚 10 秒）；4 個 hook 加可選的 `skip`（預設不變，其他頁面不受影響）；Dashboard 的 Suspense 佔位以 `useHoldFirstLoad` 計入，登入後站內換頁、頁面程式還在下載時也不放行（Codex 指出，已重現並修正）。③量測（4G＋CPU 降速 4 倍、假後端 250 ms，A／B 交替各 7 次取中位數）：預約表格 3.53→3.30 秒（7 次全部較快）、側欄 1.67→1.54 秒、首屏 JS 429→406 KB。④報告原推估的「首屏查詢分批是最大瓶頸」經量測修正：瓶頸是查詢回來後的重新渲染與舊版 Apollo 快取（MEMORY #173），另列 P3 第 5 項。新增 `after-first-load`（9）、`inflightLink`（3）測試。**待實機**：開頁後訂單佇列鈴鐺、側欄釘選頁約 0.5～1 秒後出現（原本與側欄同時）；剛開頁就點「切換店家」會先轉圈再出現清單；系統公告照常顯示。
 

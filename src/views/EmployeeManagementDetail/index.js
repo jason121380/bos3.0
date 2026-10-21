@@ -36,7 +36,7 @@ import General from './General'
 import OrderRecord from './OrderRecord'
 import Permission from './Permission'
 import ProfitSharing from './ProfitSharing'
-import Reservation from './Reservation'
+import DesignerWeekReservation from 'components/ReservationCalendar/DesignerWeekReservation'
 import Security from './Security'
 import PaySlip from './PaySlip'
 import RakeReport from './RakeReport'
@@ -646,7 +646,8 @@ function Settings({ match, history }) {
                   _.data.merchantDesigner && (
                     <Provider value={{ designer: _.data.merchantDesigner }}>
                       {currentTab === 'reservation' && (
-                        <Reservation
+                        <DesignerWeekReservation
+                          className="pt-4"
                           designerId={id}
                           checkinSettings={checkinSettings}
                           bookingCusCheck={bookingCusCheck}

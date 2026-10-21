@@ -1,6 +1,7 @@
 import { DialogBody, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
-import React, { useState, useEffect, Fragment } from 'react'
-// 外層為 ui/dialog（OrderTable 的公休彈窗，窗內只有時段切換鈕與按鈕）
+import { useState, useEffect, Fragment } from 'react'
+// 外層為 ui/dialog（各預約表 OrderTable 的公休彈窗，窗內只有時段切換鈕與按鈕）。
+// 四個預約頁共用（2026/10/21 合併；原本四份邏輯相同、按鈕順序不一，統一為 STYLE「取消（secondary）／確定」）
 import { Button } from 'ui/button'
 import { ToggleGroupItem } from 'ui/toggle-group'
 import cloneDeep from 'lodash/cloneDeep'
@@ -89,6 +90,7 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
           <ToggleGroupItem
             key={time}
             selected={select}
+            className="tabular-nums"
             onClick={() => handleSelectTime(!select, i)}
           >{format(time, 'HH:mm')}</ToggleGroupItem>
         ))}
