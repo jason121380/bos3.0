@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10210829，main 已含 PR #1～#230）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10210835，main 已含 PR #1～#231）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,6 +8,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 切換店家不自動聚焦搜尋框（v3.10210835） | `MerchantBar` 的 `DialogContent` 以 `onOpenAutoFocus` 取消預設聚焦、改 focus 彈窗本身；手機開啟不再彈出鍵盤。新增 1 測試。 |
 | 分頁焦點框不被捲動容器裁切（v3.10210829） | `ui/tabs` 的 `TabsTrigger` 焦點框改畫在內側（`focus-visible:ring-inset ring-offset-0`）；手機橫向捲動的分頁列（報表目錄、個人頁、員工資料、顧客詳細、系統參數等）選中分頁的藍框不再被切掉上下緣。版面不變；ui 測試 18 項全過（新增 1 項）。 |
 | 預約表主題配色與統一色票（v3.10210823） | `components/CalendarColorClip` 匯出 `RESERVATION_COLORS`（10 種狀態），圖例與四個預約週曆的 `index.js` 改用色票常數（原本四頁色號各異、圖例與色塊不同色）；配色改品牌藍同家族、保留原色相；主預約頁／設計師預約紀錄表格的寫死色改 tokens。verify-logic FAIL＝色值字串換成常數（條件不變）。新增 13 測試＋1 斷言；正式 build＋假後端截圖淺色／深色。 |
 | 個人頁／員工資料預約表週曆比照主預約頁（v3.10210809） | Jason 截圖指出個人頁預約表仍是舊樣式。兩頁 `OrderTable` 的表頭、格線、時間欄、可預約人數格、不可預約時段、預約色塊改為與 `ManagementReservationRecord/OrderTable.js` 相同的寫法（tokens、16px 外框、12px 色塊）；四個預約週曆的「時間」表頭加 `!px-1` 不再斷行。verify-logic FAIL＝class 常數換值、「可預約人數:N」拆成小標＋數字（條件與 `handleCountLimit` 不變）。測試 52 檔／277 全過；正式 build＋假後端截圖 390／1440（個人頁、員工資料、主預約頁）。 |

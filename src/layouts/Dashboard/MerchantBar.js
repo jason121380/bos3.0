@@ -1,12 +1,13 @@
 import { LoaderCircle, Search } from 'lucide-react'
 import PropTypes from 'prop-types'
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import MerchantList from './MerchantList'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody } from 'ui/dialog'
 import { Input } from 'ui/input'
 
 function MerchantBar({ open, onClose, userMerchants }) {
   const [searchQuery, setSearchQuery] = useState('')
+  const contentRef = useRef(null)
 
   const merchantsData = useMemo(() => {
     if (!userMerchants.data || !userMerchants.data.getUserMerchant) return null
@@ -54,7 +55,15 @@ function MerchantBar({ open, onClose, userMerchants }) {
 
   return (
     <Dialog open={open} onOpenChange={o => !o && onClose()}>
-      <DialogContent size="sm">
+      {/* 開啟時不自動聚焦搜尋框（Jason 2026/10/21：手機一開就彈出鍵盤、擋住店家清單）；焦點改放在彈窗本身，鍵盤使用者按 Tab 即進入搜尋框 */}
+      <DialogContent
+        size="sm"
+        ref={contentRef}
+        onOpenAutoFocus={event => {
+          event.preventDefault()
+          if (contentRef.current) contentRef.current.focus()
+        }}
+      >
         <DialogHeader>
           <DialogTitle>切換店家</DialogTitle>
         </DialogHeader>
