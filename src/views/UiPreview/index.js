@@ -25,7 +25,7 @@ const rows = [
   { no: 'A20261018003', customer: '林志豪', designer: 'Darren', amount: 650, status: 'refund' },
 ]
 const STATUS = { paid: ['success', '已付款'], pending: ['warning', '待處理'], refund: ['danger', '已退款'] }
-const money = n => `NT$ ${n.toLocaleString('en-US')}`
+const money = n => n.toLocaleString('en-US')
 
 const Section = ({ title, children }) => (
   <section className="flex flex-col gap-3">
@@ -133,7 +133,7 @@ export default function UiPreview() {
 
         <Section title="Card / Tabs">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {[['今日營收', 'NT$ 48,320'], ['今日客數', '37'], ['平均客單', 'NT$ 1,306']].map(([k, v]) => (
+            {[['今日營收', '48,320'], ['今日客數', '37'], ['平均客單', '1,306']].map(([k, v]) => (
               <Card key={k}>
                 <CardContent className="flex flex-col gap-1">
                   <span className="text-label text-text-secondary">{k}</span>
@@ -177,7 +177,7 @@ export default function UiPreview() {
                   <DialogTitle>確定要刪除這張帳單？</DialogTitle>
                   <DialogDescription>刪除後此帳單的業績、抽成與庫存扣減都會一併取消，且無法復原。</DialogDescription>
                 </DialogHeader>
-                <DialogBody><p className="text-body text-text">帳單編號 A20261018001・NT$ 1,880</p></DialogBody>
+                <DialogBody><p className="text-body text-text">帳單編號 A20261018001・1,880</p></DialogBody>
                 <DialogFooter>
                   <DialogClose asChild><Button variant="ghost">取消</Button></DialogClose>
                   <DialogClose asChild><Button variant="danger">刪除</Button></DialogClose>
@@ -228,7 +228,7 @@ export default function UiPreview() {
             <Stat label="營業現金應收">9,500</Stat>
           </StatGrid>
           <div className="grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2">
-            <StatCard label="入金餘額" hint="最後異動 2026/10/18">NT$ 12,000</StatCard>
+            <StatCard label="入金餘額" hint="最後異動 2026/10/18">12,000</StatCard>
             <StatCard label="紅利點數">1,880</StatCard>
           </div>
         </Section>

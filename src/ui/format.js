@@ -7,4 +7,5 @@ export const formatNumber = value => {
   return dec === undefined ? grouped : `${grouped}.${dec}`
 }
 
-export const formatMoney = value => `NT$ ${formatNumber(value) ?? 0}`
+// 金額顯示：只加千分位、不加幣別符號（Jason 2026/10/21「全都改 1,234」）；空值顯示 0，與原本相同
+export const formatMoney = value => formatNumber(value) ?? 0
