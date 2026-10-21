@@ -32,6 +32,7 @@ import { Skeleton } from 'ui/skeleton'
 
 import ResultsV2 from './ResultsV2'
 import Overview from './Overview'
+import isExportCustomerMasked from 'helper/exportCustomerMask'
 
 function OrderManagementList() {
   const [getQueryString] = useQueryString()
@@ -157,13 +158,9 @@ function OrderManagementList() {
 
   useEffect(() => {
     if (!customerDataMarkedData.loading) {
-      const customerDataMarked = idx(
-        customerDataMarkedData,
-        _ => _.data.getCustomerDataMarkedDefault
-      )
-      setIsCustomerDataMarked(customerDataMarked !== false)
+      setIsCustomerDataMarked(isExportCustomerMasked(customerDataMarkedData))
     }
-  }, [customerDataMarkedData.loading])
+  }, [customerDataMarkedData.loading, customerDataMarkedData.error])
 
   useEffect(() => {
     if (!getIsOpenDateRangeInOrderMangement.loading && !getOrderListDateAuth.loading) {

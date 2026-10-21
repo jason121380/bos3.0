@@ -27,6 +27,7 @@ import { PageHeader, Toolbar, ToolbarSpacer } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import ResultsV2 from './ResultsV2'
+import isExportCustomerMasked from 'helper/exportCustomerMask'
 
 function DraftOrderManagementList() {
   const customerDataMarkedData = useFetchCustomerDataMarked()
@@ -145,13 +146,9 @@ function DraftOrderManagementList() {
   }, [customerBonusActive.loading, orders.loading])
   React.useEffect(() => {
     if (!customerDataMarkedData.loading) {
-      const customerDataMarked = idx(
-        customerDataMarkedData,
-        _ => _.data.getCustomerDataMarkedDefault
-      )
-      setIsCustomerDataMarked(customerDataMarked !== false)
+      setIsCustomerDataMarked(isExportCustomerMasked(customerDataMarkedData))
     }
-  }, [customerDataMarkedData.loading])
+  }, [customerDataMarkedData.loading, customerDataMarkedData.error])
 
   React.useEffect(() => {
     if (
