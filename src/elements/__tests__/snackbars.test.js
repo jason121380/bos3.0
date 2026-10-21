@@ -33,6 +33,21 @@ describe('openSnackbar 錯誤文案', () => {
     expect(normalizeSnackbarMessage('Load failed')).toBe(NETWORK_FAILURE_MESSAGE)
     expect(normalizeSnackbarMessage('重結失敗: Error: Network error: Network request failed')).toBe(`重結失敗: ${NETWORK_FAILURE_MESSAGE}`)
   })
+
+  // 為什麼重要：頁面 catch 以 error.message 顯示錯誤，會蓋掉 errorLink 先跳的中文提示；伺服器 500、資料格式錯誤原本以英文原文出現，
+  // 櫃台看不懂、不知道下一步。錯誤提示一律翻成中文說明；成功等其他提示不受影響（避免把正常訊息當錯誤改寫）
+  it('錯誤提示：伺服器錯誤等英文技術訊息改成中文說明，頁面開頭保留；成功提示不改寫', () => {
+    expect(normalizeSnackbarMessage('Network error: Response not successful: Received status code 500', 'error')).toBe('伺服器暫時無法處理，請稍後再試；若持續發生，請截圖並聯絡客服（500）')
+    expect(normalizeSnackbarMessage('刪除訂單失敗: Error: Network error: Response not successful: Received status code 502', 'error')).toBe('刪除訂單失敗：伺服器暫時無法處理，請稍後再試；若持續發生，請截圖並聯絡客服（502）')
+    expect(normalizeSnackbarMessage('GraphQL error: 密碼錯誤', 'error')).toBe('密碼錯誤')
+    expect(normalizeSnackbarMessage('Done', 'success')).toBe('Done')
+  })
+
+  it('openSnackbar 顯示錯誤時套用中文說明', () => {
+    render(<CustomizedSnackbars />)
+    act(() => openSnackbar({ message: 'GraphQL error: Internal server error', variant: 'error' }))
+    expect(screen.getByRole('alert')).toHaveTextContent('伺服器暫時無法處理')
+  })
 })
 
 describe('openSnackbar 純訊息（右下角提示卡）', () => {

@@ -1,12 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10211046）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10211056）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
+
+- **錯誤訊息友善化**（2026/10/21，v3.10211056，Jason「錯誤訊息友善化」）：新增 `lib/friendly-error`，`openSnackbar` 的錯誤／警告提示自動把英文技術訊息換成「原因＋下一步」的中文——伺服器錯誤（含 500 錯誤頁的 JSON 解析錯誤）→「伺服器暫時無法處理，請稍後再試；若持續發生，請截圖並聯絡客服」、401／403→「請重新登入」、413→「檔案太大」、429→「操作太頻繁」、逾時→「檢查網路」、GraphQL 資料格式錯誤→「請檢查輸入內容或重新整理頁面」（附原文）、其他英文→通用說明＋原文；頁面開頭（「刪除訂單失敗：」）保留，中文業務訊息原樣，多行相同說明只留一次。errorLink 的狀態碼文案改用同一份。約 170 處 catch 不用改。實測（個人頁公休彈窗儲存失敗）：500 原本顯示 `Unexpected token 'I', "Internal S"... is not valid JSON`，改為伺服器說明；中文業務錯誤不變。新增 `friendly-error` 6 項、`snackbars` 2 項測試。**待實機**：遇到錯誤時提示文字是否清楚（伺服器維護、登入逾時、斷線）。
 
 - **預約週曆合併**（2026/10/21，v3.10211046，Jason「四份預約週曆合併成一個元件」）：新增 `components/ReservationCalendar/`——`weekCalendar.js`（單週預約紀錄、個人頁、員工資料共用的資料整理，自單週預約紀錄原樣搬移）、`DesignerWeekReservation/`（個人頁與員工資料的整頁週曆，原兩份合一）、`HolidayEdit.js`（四頁共用的公休彈窗）；刪除 `views/Profile/Reservation`、`views/EmployeeManagementDetail/Reservation` 與兩份 `HolidayEdit`，程式碼淨減約 1,700 行。單日預約紀錄版面不同，只共用公休彈窗。前後以同一份假資料比對四頁表格與彈窗 DOM：單週、單日完全相同；個人頁與員工資料合併後一致。**可見變化**：①個人頁的可預約人數不再把已完成的預約算進去（與其他三頁一致，MEMORY #174②）；②個人頁、員工資料的色塊與格線間隔多 1px（統一為 −2px）；③個人頁、員工資料的公休彈窗按鈕改為「取消／確定」，員工資料的預約動作彈窗改用新版對話框（與個人頁相同）。新增 `weekCalendar` 9 項測試（拿掉已完成不佔名額時會失敗）。**待實機**：個人頁與員工資料的預約表——色塊位置、點預約開動作選單（編輯、結帳、接受／取消預約）、點公休開公休彈窗並儲存、可預約人數；單週預約紀錄選一位與多位設計師。
 
