@@ -1,7 +1,6 @@
 import { gql, useLazyQuery, useQuery } from '@apollo/client'
-import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-export const GET_PRODUCT_CATEGORIES_TREEVIEW = settingsQuery(gql`
+export const GET_PRODUCT_CATEGORIES_TREEVIEW = gql`
   query GET_PRODUCT_CATEGORIES_TREEVIEW($input: ProductCategoriesInput!) {
     productCategories(input: $input) {
       id
@@ -13,7 +12,7 @@ export const GET_PRODUCT_CATEGORIES_TREEVIEW = settingsQuery(gql`
       }
     }
   }
-`)
+`
 
 
 export default function useFetchProductTreeview(
@@ -25,6 +24,6 @@ export default function useFetchProductTreeview(
     variables: {
       input,
     },
-    fetchPolicy: SETTINGS_FETCH_POLICY,
+    fetchPolicy: 'cache-and-network',
   })
 }

@@ -77,3 +77,58 @@ test('沒有綁定 cache 時清除不拋錯', () => {
 test('共用根欄位（merchant 底下還有權限與報表）不能登記為設定，否則清設定會連帶清掉它們', () => {
   expect(() => settingsQuery(gql`query SHARED_ROOT { merchant { thirdpartyCoupons { id } } }`)).toThrow('merchant')
 })
+
+// 清除以根欄位為單位：設定查詢的根欄位若也被「帶參數的查詢」（依日期的分析報表、權限等）使用，
+// 每次存檔或 10 分鐘到期都會把那些報表一起清掉重抓（Codex review，PR #251：productCategories／serviceCategories 的分析報表）。
+// 掃全站 gql 文件，擋下這種組合；共用根欄位的其他查詢若同樣不帶任何參數（純設定旗標），連帶重抓無妨。
+test('設定查詢的根欄位不能和帶參數的查詢共用', () => {
+  const fs = require('fs')
+  const path = require('path')
+  const { parse, visit } = require('graphql')
+  const walk = dir =>
+    fs.readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
+      const full = path.join(dir, entry.name)
+      if (entry.isDirectory()) return entry.name === '__tests__' ? [] : walk(full)
+      return entry.name.endsWith('.js') ? [full] : []
+    })
+  const hasArguments = doc => {
+    let found = false
+    visit(doc, {
+      Field: node => {
+        if (node.arguments.length) found = true
+      },
+      VariableDefinition: () => {
+        found = true
+      },
+    })
+    return found
+  }
+  const settingsRoots = new Map()
+  const otherQueries = []
+  walk(path.join(__dirname, '..', '..')).forEach(file => {
+    const source = fs.readFileSync(file, 'utf8')
+    const pattern = /(settingsQuery\(\s*)?gql`([^`]*)`/g
+    let match
+    while ((match = pattern.exec(source))) {
+      let doc
+      try {
+        doc = parse(match[2].replace(/\$\{[^}]*\}/g, ''))
+      } catch (e) {
+        continue
+      }
+      doc.definitions
+        .filter(def => def.kind === 'OperationDefinition' && def.operation === 'query')
+        .forEach(def => {
+          const roots = def.selectionSet.selections.filter(sel => sel.kind === 'Field').map(sel => sel.name.value)
+          const name = `${path.relative(process.cwd(), file)} ${def.name ? def.name.value : '(anonymous)'}`
+          if (match[1]) roots.forEach(root => settingsRoots.set(root, name))
+          else otherQueries.push({ name, roots, withArguments: hasArguments(def) })
+        })
+    }
+  })
+  expect(settingsRoots.size).toBeGreaterThan(50)
+  const conflicts = otherQueries
+    .filter(query => query.withArguments)
+    .flatMap(query => query.roots.filter(root => settingsRoots.has(root)).map(root => `${root}: ${settingsRoots.get(root)} ↔ ${query.name}`))
+  expect(conflicts).toEqual([])
+})

@@ -1,7 +1,6 @@
 import { gql, useLazyQuery, useQuery } from '@apollo/client'
-import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-export const FETCH_SERVICE_CATEGORY = settingsQuery(gql`
+export const FETCH_SERVICE_CATEGORY = gql`
   query ServiceCategories {
     serviceCategories {
       id
@@ -17,7 +16,7 @@ export const FETCH_SERVICE_CATEGORY = settingsQuery(gql`
       }
     }
   }
-`)
+`
 
 export const mockedServiceCateResp = {
   data: {
@@ -80,7 +79,7 @@ export const mockedServiceCateResp = {
 
 export default function useFetchServiceCategories() {
   return useQuery(FETCH_SERVICE_CATEGORY, {
-    fetchPolicy: SETTINGS_FETCH_POLICY,
+    fetchPolicy: 'cache-and-network',
   })
 }
 
