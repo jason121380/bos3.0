@@ -15,6 +15,7 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import { formatNumber } from 'ui/format'
+import { focusRing } from 'ui/utils'
 
 // 打卡項目樣式（原 emotion styles 等值轉 Tailwind）
 const clockInItemClass = 'flex items-center gap-[4px] py-[2px] px-[4px] rounded-[4px] hover:!bg-transparent'
@@ -131,6 +132,24 @@ export default function Results({
     }
   }
 
+  // 打卡格點開操作面板（看定位、編輯、刪除）：有編輯／刪除權限，或這筆打卡有定位時才可點，條件同 handleSetEditData。
+  // 2026/02 改版（deee739）時點擊被拿掉、面板無從開啟，2026/10/21 Jason 同意恢復；改用 role=button 讓鍵盤也能開
+  const recordProps = (time, type, className) => {
+    if (!(identity.edit || identity.delete || (time.latitude !== null && time.longitude !== null))) return { className }
+    return {
+      className: `${className} cursor-pointer hover:underline ${focusRing}`,
+      role: 'button',
+      tabIndex: 0,
+      onClick: () => handleSetEditData(time, type),
+      onKeyDown: e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          handleSetEditData(time, type)
+        }
+      },
+    }
+  }
+
   const handleDeleteRecord = () => {
     setDelBtn(true)
     deleteAttendantRecord(editData.uuid).then(res => {
@@ -148,7 +167,7 @@ export default function Results({
     if (time === null || time.uuid === null) return
     if (time.isLine) {
       return (
-        <div key={`clickin-${time.uuid}`} className={(late && firstItem) ? colorRedClass : clockInItemClass}>
+        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', (late && firstItem) ? colorRedClass : clockInItemClass)}>
           <span></span>
           <span>上</span>
           <a style={{ color: color(time.distanceValue) }} className={(late && firstItem) ? colorRedLinkLateClass : 'no-underline'}>
@@ -158,7 +177,7 @@ export default function Results({
       )
     } else if (time.checkinType === 'CELLPHONE' || (time.checkinType === null && time.latitude !== null && time.longitude !== null)) {
       return (
-        <div key={`clickin-${time.uuid}`} className={(late && firstItem) ? colorRedClass : clockInItemClass}>
+        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', (late && firstItem) ? colorRedClass : clockInItemClass)}>
           <PhoneIphoneIcon className="!text-[14px] shrink-0" />
           <span>上</span>
           {time.latitude !== null && time.longitude !== null ? (
@@ -172,21 +191,21 @@ export default function Results({
       )
     } else if (time.checkinType === 'COMPUTER' || time.checkinType === null) {
       return (
-        <div key={`clickin-${time.uuid}`} className={(late && firstItem) ? colorRedClass : clockInItemClass}>
+        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', (late && firstItem) ? colorRedClass : clockInItemClass)}>
           <DesktopWindows className="!text-[14px] shrink-0" />
           <span>上{format(time.time, 'HH:mm')}</span>
         </div>
       )
     } else if (time.checkinType === 'QRCODE' || time.checkinType === null) {
       return (
-        <div key={`clickin-${time.uuid}`} className={(late && firstItem) ? colorRedClass : clockInItemClass}>
+        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', (late && firstItem) ? colorRedClass : clockInItemClass)}>
           <QrCodeIcon className="!text-[14px] shrink-0" />
           <span>上{format(time.time, 'HH:mm')}</span>
         </div>
       )
     } else if (time.checkinType === 'ADMIN') {
       return (
-        <div key={`clickin-${time.uuid}`} className={(late && firstItem) ? colorRedClass : clockInItemClass}>
+        <div key={`clickin-${time.uuid}`} {...recordProps(time, 'start', (late && firstItem) ? colorRedClass : clockInItemClass)}>
           <ManageAccountsRoundedIcon className="!text-[14px] shrink-0" />
           <span>上{format(time.time, 'HH:mm')}</span>
         </div>
@@ -199,7 +218,7 @@ export default function Results({
     if (time !== null) {
       if (time.isLine) {
         return (
-          <div key={`clickout-${time.uuid}`} className={(late && lastItem) ? colorRedClass : clockInItemClass}>
+          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', (late && lastItem) ? colorRedClass : clockInItemClass)}>
             <span className="lineicon"></span>
             <span>下</span>
             <a style={{ color: color(time.distanceValue) }} className={(late && lastItem) ? colorRedLinkLateClass : 'no-underline'}>
@@ -209,7 +228,7 @@ export default function Results({
         )
       } else if (time.checkinType === 'CELLPHONE' || (time.checkinType === null && time.latitude !== null && time.longitude !== null)) {
         return (
-          <div key={`clickout-${time.uuid}`} className={(late && lastItem) ? colorRedClass : clockInItemClass}>
+          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', (late && lastItem) ? colorRedClass : clockInItemClass)}>
             <PhoneIphoneIcon className="!text-[14px] shrink-0" />
             <span>下</span>
             {time.latitude !== null && time.longitude !== null ? (
@@ -223,21 +242,21 @@ export default function Results({
         )
       } else if (time.checkinType === 'COMPUTER' || time.checkinType === null) {
         return (
-          <div key={`clickout-${time.uuid}`} className={(late && lastItem) ? colorRedClass : clockInItemClass}>
+          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', (late && lastItem) ? colorRedClass : clockInItemClass)}>
             <DesktopWindows className="!text-[14px] shrink-0" />
             <span>下{format(time.time, 'HH:mm')}</span>
           </div>
         )
       } else if (time.checkinType === 'QRCODE' || time.checkinType === null) {
         return (
-          <div key={`clickout-${time.uuid}`} className={(late && lastItem) ? colorRedClass : clockInItemClass}>
+          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', (late && lastItem) ? colorRedClass : clockInItemClass)}>
             <QrCodeIcon className="!text-[14px] shrink-0" />
             <span>下{format(time.time, 'HH:mm')}</span>
           </div>
         )
       } else if (time.checkinType === 'ADMIN') {
         return (
-          <div key={`clickout-${time.uuid}`} className={(late && lastItem) ? colorRedClass : clockInItemClass}>
+          <div key={`clickout-${time.uuid}`} {...recordProps(time, 'end', (late && lastItem) ? colorRedClass : clockInItemClass)}>
             <ManageAccountsRoundedIcon className="!text-[14px] shrink-0" />
             <span>下{format(time.time, 'HH:mm')}</span>
           </div>
@@ -251,7 +270,7 @@ export default function Results({
       if (start === null || start.uuid === null) return
       if (start.isLine) {
         return (
-          <span key={`breakOut-${start.uuid}`} className={clockInItemClass}>
+          <span key={`breakOut-${start.uuid}`} {...recordProps(start, 'breakStart', clockInItemClass)}>
             <span className="lineicon"></span>
             <span>外</span>
             <a style={{ color: color(start.distanceValue) }} className="no-underline">
@@ -261,7 +280,7 @@ export default function Results({
         )
       } else if (start.checkinType === 'CELLPHONE' || (start.checkinType === null && start.latitude !== null && start.longitude !== null)) {
         return (
-          <span key={`breakOut-${start.uuid}`} className={clockInItemClass}>
+          <span key={`breakOut-${start.uuid}`} {...recordProps(start, 'breakStart', clockInItemClass)}>
             <PhoneIphoneIcon className="!text-[14px] shrink-0" />
             <span>外</span>
             {start.latitude !== null && start.longitude !== null ? (
@@ -275,21 +294,21 @@ export default function Results({
         )
       } else if (start.checkinType === 'COMPUTER' || start.checkinType === null) {
         return (
-          <span key={`breakOut-${start.uuid}`} className={clockInItemClass}>
+          <span key={`breakOut-${start.uuid}`} {...recordProps(start, 'breakStart', clockInItemClass)}>
             <DesktopWindows className="!text-[14px] shrink-0" />
             <span>外{format(start.time, 'HH:mm')}</span>
           </span>
         )
       } else if (start.checkinType === 'QRCODE' || start.checkinType === null) {
         return (
-          <span key={`breakOut-${start.uuid}`} className={clockInItemClass}>
+          <span key={`breakOut-${start.uuid}`} {...recordProps(start, 'breakStart', clockInItemClass)}>
             <QrCodeIcon className="!text-[14px] shrink-0" />
             <span>外{format(start.time, 'HH:mm')}</span>
           </span>
         )
       } else if (start.checkinType === 'ADMIN') {
         return (
-          <span key={`breakOut-${start.uuid}`} className={clockInItemClass}>
+          <span key={`breakOut-${start.uuid}`} {...recordProps(start, 'breakStart', clockInItemClass)}>
             <ManageAccountsRoundedIcon className="!text-[14px] shrink-0" />
             <span>外{format(start.time, 'HH:mm')}</span>
           </span>
@@ -302,7 +321,7 @@ export default function Results({
       if (end !== null) {
         if (end.isLine) {
           return (
-            <span className={clockInItemClass} key={`breakBack-${end.uuid}`}>
+            <span {...recordProps(end, 'breakEnd', clockInItemClass)} key={`breakBack-${end.uuid}`}>
               <span className="lineicon"></span>
               <span>回</span>
               <a style={{ color: color(end.distanceValue) }} className="no-underline">
@@ -312,7 +331,7 @@ export default function Results({
           )
         } else if (end.checkinType === 'CELLPHONE' || (end.checkinType === null && end.latitude !== null && end.longitude !== null)) {
           return (
-            <span className={clockInItemClass} key={`breakBack-${end.uuid}`}>
+            <span {...recordProps(end, 'breakEnd', clockInItemClass)} key={`breakBack-${end.uuid}`}>
               <PhoneIphoneIcon className="!text-[14px] shrink-0" />
               <span>回</span>
               {end.latitude !== null && end.longitude !== null ? (
@@ -326,21 +345,21 @@ export default function Results({
           )
         } else if (end.checkinType === 'COMPUTER' || end.checkinType === null) {
           return (
-            <span className={clockInItemClass} key={`breakBack-${end.uuid}`}>
+            <span {...recordProps(end, 'breakEnd', clockInItemClass)} key={`breakBack-${end.uuid}`}>
               <DesktopWindows className="!text-[14px] shrink-0" />
               <span>回{format(end.time, 'HH:mm')}</span>
             </span>
           )
         } else if (end.checkinType === 'QRCODE' || end.checkinType === null) {
           return (
-            <span className={clockInItemClass} key={`breakBack-${end.uuid}`}>
+            <span {...recordProps(end, 'breakEnd', clockInItemClass)} key={`breakBack-${end.uuid}`}>
               <QrCodeIcon className="!text-[14px] shrink-0" />
               <span>回{format(end.time, 'HH:mm')}</span>
             </span>
           )
         } else if (end.checkinType === 'ADMIN') {
           return (
-            <span className={clockInItemClass} key={`breakBack-${end.uuid}`}>
+            <span {...recordProps(end, 'breakEnd', clockInItemClass)} key={`breakBack-${end.uuid}`}>
               <ManageAccountsRoundedIcon className="!text-[14px] shrink-0" />
               <span>回{format(end.time, 'HH:mm')}</span>
             </span>

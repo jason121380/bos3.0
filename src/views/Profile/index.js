@@ -42,6 +42,7 @@ import PaySlip from './PaySlip'
 import RakeReport from './RakeReport'
 import AttendanceRecord from './AttendanceRecord'
 import DesignerSelfRecord from './DesignerSelfRecord'
+import { roleSectionAuthority } from 'helper/rolePageAuthority'
 
 function Settings({ match, history }) {
   const employeeId = JSON.parse(localStorage.getItem('user')).id
@@ -174,12 +175,8 @@ function Settings({ match, history }) {
   useEffect(() => {
     if (!merchantAuthData.loading && !profile.loading) {
       const merchantAuth = idx(merchantAuthData, _ => _.data.getMerchantAuthorities)
-      const loginUserAuthName = idx(profile, _ => _.data.me.merchantIdentity.authorityName)
-      const userAuth = merchantAuth.filter(data => data.authorityName === loginUserAuthName)
-
-      const tmpArr = JSON.parse(userAuth[0].authoritySettings).filter(
-        d => d.pageTitle === '個人檔案'
-      )[0].pageAuthority
+      const loginUserAuthId = idx(profile, _ => _.data.me.merchantIdentity.authorityId)
+      const tmpArr = roleSectionAuthority(merchantAuth, loginUserAuthId, '個人檔案')
       setItemAuthority(tmpArr)
     }
   }, [merchantAuthData.loading, profile.loading])

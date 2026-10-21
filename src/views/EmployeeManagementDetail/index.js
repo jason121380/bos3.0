@@ -42,6 +42,7 @@ import PaySlip from './PaySlip'
 import RakeReport from './RakeReport'
 import SalaryItems from './SalaryItems'
 import { Skeleton } from 'ui/skeleton'
+import { roleSectionAuthority } from 'helper/rolePageAuthority'
 
 // 分頁載入中：與舊版 CircularProgress 相同時機顯示
 const TabLoading = () => (
@@ -442,12 +443,8 @@ function Settings({ match, history }) {
   useEffect(() => {
     if (!merchantAuthData.loading && !profile.loading) {
       const merchantAuth = idx(merchantAuthData, _ => _.data.getMerchantAuthorities)
-      const loginUserAuthName = idx(profile, _ => _.data.me.merchantIdentity.authorityName)
-      const userAuth = merchantAuth.filter(data => data.authorityName === loginUserAuthName)
-
-      const tmpArr = JSON.parse(userAuth[0].authoritySettings).filter(
-        d => d.pageTitle === '編輯員工'
-      )[0].pageAuthority
+      const loginUserAuthId = idx(profile, _ => _.data.me.merchantIdentity.authorityId)
+      const tmpArr = roleSectionAuthority(merchantAuth, loginUserAuthId, '編輯員工')
       setItemAuthority(tmpArr)
     }
   }, [merchantAuthData.loading, profile.loading])
