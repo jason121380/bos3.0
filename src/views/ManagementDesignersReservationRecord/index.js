@@ -8,7 +8,7 @@ import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchMerchant from 'hooks/useFetchMerchant'
 import idx from 'idx'
 import { useState, useEffect, useRef } from 'react'
-import CalendarColorClip from 'components/CalendarColorClip'
+import CalendarColorClip, { RESERVATION_COLORS } from 'components/CalendarColorClip'
 import DateSelector from 'components/DateSelector'
 import {
   getYear, getMonth, getDate, addMinutes, differenceInMinutes, startOfWeek,
@@ -146,21 +146,21 @@ function Calendar() {
         if (checkinMode) {
           if (order.type === 'RESERVATION' && !isDone) {
             style.height = `${timeCost * calendarSize.height - 2}px`
-            style.backgroundColor = isCheckin ? 'green' : '#78909c'
+            style.backgroundColor = isCheckin ? RESERVATION_COLORS.checkedIn : RESERVATION_COLORS.notCheckedIn
           } else if (isDone) return
         } else {
           switch (order.type) {
             case 'RH':
-              style.backgroundColor = '#202D50'
+              style.backgroundColor = RESERVATION_COLORS.unavailable
               style.height = `${timeCost * calendarSize.height - 2}px`
               calendar[index].type = 'HOLIDAY'
               break;
             case 'HOLIDAY':
-              style.backgroundColor = '#202D50'
+              style.backgroundColor = RESERVATION_COLORS.unavailable
               style.height = `${timeCost * calendarSize.height - 2}px`
               break;
             case 'SH':
-              style.backgroundColor = '#202D50'
+              style.backgroundColor = RESERVATION_COLORS.unavailable
               style.height = `${timeCost * calendarSize.height - 2}px`
               calendar[index].type = 'HOLIDAY'
               break;
@@ -168,13 +168,13 @@ function Calendar() {
               style.height = `${timeCost * calendarSize.height - 2}px`
               switch (bookingStatus) {
                 case '預約成功':
-                  style.backgroundColor = isDesignate ? '#1A73E8' : '#F06292'
+                  style.backgroundColor = isDesignate ? RESERVATION_COLORS.designate : RESERVATION_COLORS.nonDesignate
                   break;
                 case '待審核':
-                  style.backgroundColor = '#4FC3F7'
+                  style.backgroundColor = RESERVATION_COLORS.pending
                   break;
                 case '已完成':
-                  style.backgroundColor = '#AB47BC'
+                  style.backgroundColor = RESERVATION_COLORS.completed
                   break;
                 default:
                   break;
@@ -183,11 +183,11 @@ function Calendar() {
           }
 
           if (isCusCheckRequired && bookingCusCheck) {
-            style.backgroundColor = '#FF9800'
+            style.backgroundColor = RESERVATION_COLORS.cusCheck
           }
 
           if (isDone) {
-            style.backgroundColor = '#AB47BC'
+            style.backgroundColor = RESERVATION_COLORS.done
           }
         }
 
@@ -244,7 +244,7 @@ function Calendar() {
           timeCost: 1,
           nameToDisplay: '全店不可預約',
           style: {
-            backgroundColor: '#202D50',
+            backgroundColor: RESERVATION_COLORS.unavailable,
             height: `${calendarSize.height - 2}px`
           }
         })

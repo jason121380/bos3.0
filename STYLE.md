@@ -97,6 +97,7 @@
 | **Form** | 標籤在上；必填以「*」標在標籤後；一列最多 2 欄（桌機）。底部固定動作列：右側「取消 / 儲存」。<br>**標籤只有一種寫法：標籤在欄位上方＋佔位字**，不使用浮動（卡在框線上）的小標籤；備註欄也一樣。<br>**必填 `*` 要有依據**：依該頁既有的驗證規則（例如 `valid`、`billVerify`），並在原始碼註解寫明；空列會被丟掉的欄位，只在該列有填任一欄時才標必填。<br>**RHF 錯誤 aria**：`Field` 的 error 訊息 `<p>` 以 `${htmlFor}-helper-text` 為 id（對齊 MUI TextField helperText 慣例），欄位以 `invalid` 呈現 `aria-invalid` 並以 `aria-describedby` 指向該 id；無 error 時不產生 id。**按鈕停用要說明原因**：在按鈕旁以文字（`role="status"`）寫出「尚缺：…」，同一句只出現一次——不要在每顆按鈕再掛 `title`（讀屏會重複播報）。 |
 | **Table** | 表頭 `surface` 底、`label` 字級；列高 44px；hover `surface-hover`；數字欄右對齊；空狀態置中顯示說明＋主要動作。分頁固定在表格下方右側。 |
 | **Badge** | 狀態專用；文字＋8% 底色；不加邊框陰影。 |
+| **預約狀態色** | 四個預約週曆（主預約頁、設計師預約紀錄、個人頁、員工資料）與圖例一律取 `components/CalendarColorClip` 的 `RESERVATION_COLORS`，不得在頁面寫色號。色票與品牌藍同家族（Google 色系）、保留原色相：不可預約 `#5F6368` 中灰（深色背景上仍可見）、待審核 `#78D9EC` 青、事件 `#34A853` 綠、未來預訂（待確認）`#F9AB00` 橘黃、預約成功（不指定）`#F07EB0` 粉、預約成功（指定）`#1A73E8` 品牌藍、已完成預約 `#DADCE0` 淺灰、狀態「已完成」`#9334E6` 紫、報到成功 `#188038` 綠、未報到 `#9AA0A6` 灰。字色由 `readableTextOn` 自動選白／深，皆 ≥ 4.5:1（有測試）。不可預約時段的格子用 `bg-danger/10`。 |
 | **Card** | `rounded-lg`、1px border、內距 20px；標題用 `heading`。 |
 | **Accordion（可展開卡片）** | 用 `ui/accordion`（與 MUI 介面相容）。收合時標題右側以 `summaryMeta` 顯示摘要（「已填 N 筆 · NT$ 小計」，沒填就不顯示），一眼看得到內容概況。 |
 | **圖示按鈕** | 一律是真的 `<button>`，帶 `title` 與 `aria-label`；「新增」類動作要有文字（例如「新增項目」），不能只放「+」。 |

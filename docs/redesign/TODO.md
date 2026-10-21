@@ -1,12 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10210809）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／52 檔 277 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10210823）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／53 檔 290 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
+
+- **所有預約表改用主題配色、統一色票**（2026/10/21，v3.10210823，Jason「所有的預約表可以更改配色嗎，更符合主題的配色」）：原本四個預約週曆各自寫色號，個人頁／員工資料的色塊與圖例不同色（指定 `#005fff` vs 圖例 `#1A73E8`、待審核 `#69b8dd` vs `#4FC3F7`、不可預約 `#414141` vs `#202D50`），報到模式圖例「報到成功」是藍色但色塊是綠色，設計師預約紀錄的「已完成預約」是紫色但圖例是灰色。改為 `CalendarColorClip` 匯出唯一色票 `RESERVATION_COLORS`，圖例與四頁共用；配色改成與品牌藍同家族的 Google 色系、保留各狀態原色相（櫃台辨識習慣不變），不可預約由深藍改中灰（深色模式背景上原本幾乎看不見）。主預約頁、設計師預約紀錄表格的 `#d0d7de`／`#ffebee`／rgba 藍改 tokens。只換顏色值，判斷條件一字不動。新增 `CalendarColorClip.test.js`（色塊字色對比 ≥ 4.5:1、各狀態不同色、圖例與色票一致）與個人頁色塊顏色斷言（舊色號下會失敗）。STYLE §6「預約狀態色」。**待實機**：櫃台看一天實際預約，確認新配色一眼分得出指定／不指定／待審核；深色模式下各色塊。
 
 - **個人頁、員工資料的預約表週曆比照主預約頁**（2026/10/21，v3.10210809，Jason 手機截圖「這邊樣式沒改到」）：`Profile/Reservation`、`EmployeeManagementDetail/Reservation` 的 `OrderTable` 仍是舊樣式（深青 `#08424c` 表頭、淺灰格線、「可預約人數:0」純文字），改成與 `ManagementReservationRecord` 相同：表頭 `surface` 淺灰底＋深色粗體字、tokens 框線（深色模式正確）、外框 16px 圓角、時間欄 `surface` 底粗體置中、可預約人數改「小標＋主題藍數字」、不可預約時段改淡紅底＋圖示與讀屏文字、預約色塊 12px 圓角；並修正四個預約週曆（含主預約頁、設計師預約紀錄）「時間」表頭在 60px 欄寬被擠成兩行。只改 className 與顯示排版，handler、state、寬度計算、`id`／`key` 不變；全域 scss 的 `.hoverItem:hover` 淺綠底由 `hover:!bg-accent/10` 覆蓋（手機點過的格子不再停留綠色）。`Profile/__tests__/Reservation.test.js`（另一個 session 的 PR #225）斷言改為「小標下方數字為 0」，意圖不變。MEMORY #170。**待實機**：iPhone 個人頁與員工資料的預約表捲動、點格子開彈窗、不可預約時段（有預約的日子才顯示淡紅底）。
 

@@ -2,8 +2,23 @@ import { useEffect, useState } from 'react'
 import produce from 'immer'
 import _ from 'lodash'
 
+// 預約狀態色（四個預約週曆與本圖例的唯一來源，Jason 2026/10/21「所有預約表改成更符合主題的配色」）：
+// 與品牌藍 #1A73E8 同家族的 Google 色系，保留各狀態原本的色相（不指定＝粉、待審核＝青、待確認＝橘黃），讓櫃台的辨識習慣不變；
+// 不可預約改中灰（原深藍在深色模式背景上幾乎看不見）。字色由 readableTextOn 依 WCAG 對比自動選白或深色，皆 ≥ 4.5:1（有測試）。
+export const RESERVATION_COLORS = {
+  unavailable: '#5F6368', // 不可預約（公休、休息、全店不可預約）
+  pending: '#78D9EC', // 待審核
+  event: '#34A853', // 事件
+  cusCheck: '#F9AB00', // 未來預訂（待確認）
+  nonDesignate: '#F07EB0', // 預約成功（不指定）
+  designate: '#1A73E8', // 預約成功（指定）＝品牌藍
+  done: '#DADCE0', // 已完成預約（已開單）
+  completed: '#9334E6', // 預約狀態為「已完成」
+  checkedIn: '#188038', // 報到成功
+  notCheckedIn: '#9AA0A6', // 未報到
+}
+
 // 依底色相對亮度選字色（WCAG 2.x）：白字與深字取對比較高者。底色是固定的狀態色（不隨深淺色主題變），字色因此也用固定值。
-// 例：#4FC3F7／#BDBDBD／#FF9800／#66BB6A／#F06292／#78909C 改深字（約 5.6–10:1），#202D50／#1A73E8 維持白字（13.5:1／4.51:1）
 const DARK_TEXT = '#111111'
 const luminance = hex => {
   const m = /^#?([0-9a-f]{6})$/i.exec(hex || '')
@@ -24,8 +39,8 @@ export const readableTextOn = hex => {
 }
 
 const checkin = [
-  { label: '報到成功', color: '#1A73E8', display: true },
-  { label: '未報到', color: '#78909C', display: true },
+  { label: '報到成功', color: RESERVATION_COLORS.checkedIn, display: true },
+  { label: '未報到', color: RESERVATION_COLORS.notCheckedIn, display: true },
 ]
 
 export default function ({
@@ -33,13 +48,13 @@ export default function ({
   bookingHistoryDisplay = false
 }) {
   const [statusArray, setStatusArray] = useState([
-    { label: '不可預約', color: '#202D50', display: true },
-    { label: '待審核', color: '#4FC3F7', display: true },
-    { label: '事件', color: '#66BB6A', display: false },
-    { label: '未來預訂 (待確認)', color: '#FF9800', display: false },
-    { label: '預約成功 (不指定)', color: '#F06292', display: true },
-    { label: '預約成功 (指定)', color: '#1A73E8', display: true },
-    { label: '已完成預約', color: '#BDBDBD', display: false },
+    { label: '不可預約', color: RESERVATION_COLORS.unavailable, display: true },
+    { label: '待審核', color: RESERVATION_COLORS.pending, display: true },
+    { label: '事件', color: RESERVATION_COLORS.event, display: false },
+    { label: '未來預訂 (待確認)', color: RESERVATION_COLORS.cusCheck, display: false },
+    { label: '預約成功 (不指定)', color: RESERVATION_COLORS.nonDesignate, display: true },
+    { label: '預約成功 (指定)', color: RESERVATION_COLORS.designate, display: true },
+    { label: '已完成預約', color: RESERVATION_COLORS.done, display: false },
   ])
   document.querySelectorAll('.MuiChip-root').forEach(el => {
     el.classList.remove('MuiChip-root')
