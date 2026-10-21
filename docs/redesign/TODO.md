@@ -1,12 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10211447）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10211457）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
+
+- **手機底部分頁「選單」改漢堡圖示**（2026/10/21，v3.10211457，Jason 截圖指示）：`layouts/Dashboard/MobileNav.js` 的 `MobileTabBar` 選單分頁圖示由格狀 `LayoutGrid` 改為三條線 `Menu`（與頂部列的「開啟選單」鈕同一個圖示），尺寸、粗細、開啟時加粗、aria 皆不變。**待實機**：手機底部「選單」顯示三條線，點擊照常開側欄抽屜。
 
 - **F1 前端正確性收尾**（2026/10/21，v3.10211439，Jason「前端可以先改的先處理」，純前端）：①`eslint-check` 全站 error 21→**0**：15 處 `produce` 內以逗號串接的指定（`draft.a = 1, draft.b = 2`）改成逐行敘述（52 行）、`FastCheckOrdersModal` onClick 的逗號運算式改分號、3 處裸 `location` 改 `window.location`、`QueueOrderEdit/MerchantSells` 一個永遠為 false 的 `autoFocus={focus === 'thirdParty'}`（`focus` 不是 state，是 `window.focus`）移除。②`parseInt` 補 radix 10：56 檔 182 處（平衡括號掃描，頂層無逗號者；唯一的 16 進位在 `CalendarColorClip` 本來就有 radix）。③非 GraphQL 的 Promise 補 catch 3 處（列印用商家 logo `fetch`×2、GettingStarted 文件 `fetch`），行為不變只消除未處理的 Promise 錯誤；**GraphQL mutation 的 `.then` 無 catch（46 處）不補**——errorLink 已統一跳錯誤提示，再 catch 會重複提示，健康報告把它列為缺口是誤判（MEMORY #179）。④`lint:build` 加入 `react-hooks/rules-of-hooks: error`（全站 0，之後新程式違反會擋 build）。AddCustomerModal 的 keydown 監聽疊加在健康報告批次已用 `useCallback` 固定參照修好，不再動。驗證：差異正規化後刪除／新增行完全對稱、62 檔／341 測試、lint:build、build 通過。**無待實機**。
 
