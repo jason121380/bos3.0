@@ -130,7 +130,8 @@ function Results({
             {helperPerformanceData.map((data, index) =>
               <TableRow key={index}>
                 <TableCell className={STICKY_COL}>{data.userName}</TableCell>
-                {data.helperPerformance.map((item, itemIndex) => {
+                {/* 會員卡沒有啟用時不顯示該欄（原本由 index 直接刪除查詢結果裡的會員卡；查詢結果唯讀，改在這裡篩） */}
+                {data.helperPerformance.filter(item => membershipDisplay || item.typeName !== '會員卡').map((item, itemIndex) => {
                   return (
                     <Fragment key={itemIndex}>
                       <TableCell numeric>{formatNumber(Math.round(item.count))}</TableCell>

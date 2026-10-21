@@ -217,10 +217,11 @@ function OrderManagementList() {
     if (!orderStaticDetail.loading && !getOrderList.loading && getOrderList.data) {
       const staticDetail = idx(orderStaticDetail, _ => _.data.getOrderStaticDetail)
       if (staticDetail.length) {
+        // 每筆先複製再補上明細（查詢結果唯讀）
         const orders = idx(getOrderList, _ => _.data.getOrderList.orderList).slice(
           pageSetting.pageLimit * pageSetting.pageOffset,
           (pageSetting.pageLimit * pageSetting.pageOffset) + pageSetting.pageLimit
-        )
+        ).map(order => ({ ...order }))
         orders.forEach(({ id }, index) => {
           const findData = staticDetail.find(({ orderId }) => orderId === id)
           if (findData) {
@@ -230,7 +231,8 @@ function OrderManagementList() {
         setOrderList(orders)
       }
     }
-  }, [orderStaticDetail.loading, getOrderList.data, pageSetting.pageLimit, pageSetting.pageOffset])
+    // 含 getOrderList.loading：重新查詢結果沒變時 data 不會換，但上面的 effect 會以不含明細的資料重設列表，這裡要再補一次明細
+  }, [orderStaticDetail.loading, getOrderList.loading, getOrderList.data, pageSetting.pageLimit, pageSetting.pageOffset])
 
   useEffect(() => {
     if (

@@ -7,6 +7,7 @@ import DateSelector from 'components/DateSelector'
 import { endOfDay, startOfMonth } from 'date-fns'
 import { useFetchGetHelperPerformance } from 'hooks/useFetchGetHelperPerformance'
 import idx from 'idx'
+import cloneDeep from 'lodash/cloneDeep'
 import React, { useEffect, useState } from 'react'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import useFetchMerchantJobTitlePoint from 'hooks/useFetchMerchantJobTitlePoint'
@@ -61,7 +62,8 @@ export default function HelperPerformance() {
       !isMemberShipCardActiveData.loading &&
       useFetchGetHelperPerformanceData.data.helperPerformanceReport.length > 1
     ) {
-      const data = idx(useFetchGetHelperPerformanceData, _ => _.data.helperPerformanceReport)
+      // 複製：下面會移除會員卡欄（查詢結果唯讀；表格另在 Results 依 membershipDisplay 篩掉）
+      const data = cloneDeep(idx(useFetchGetHelperPerformanceData, _ => _.data.helperPerformanceReport))
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const membershipTotal = data[data.length - 1].helperPerformance.find(d => d.typeName === '會員卡')
       const showMembership = membershipTotal ? (

@@ -87,5 +87,5 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - 刪檔前用「從 `src/index.js` 走訪 import 圖」找出到不了的檔案，並以完整檔名搜尋字串引用；scss／css 的 `@import`／`@use`／`url()` 也是引用（本地檔不見時 Vite 可能改抓同名 npm 套件，build 照樣成功，MEMORY #172⑦）；`public/` 的檔案可能被外部網址引用，刪前確認用途。
 - lodash 一律逐方法引入（`import cloneDeep from 'lodash/cloneDeep'`），不要 `import _ from 'lodash'`／`import { x } from 'lodash'`：整包 71 KB 會進入口 chunk（2026/10/21 已全面改掉，目前只用 `cloneDeep`、`clone`、`findIndex`）。`idx(x, _ => _.data)` 的 `_` 是箭頭參數，不是 lodash。
 - 效能要先量再改：首屏的瓶頸是 CPU（重新渲染、舊版 Apollo 快取），不是網路（後端在 Cloud Run，HTTP/2 並行）；量測工具與方法見 MEMORY #173。
-- Apollo v3 在開發模式與單元測試會凍結查詢結果：**不要直接修改 `data`**（排序、push、改欄位），先複製（`cloneDeep(data)`、`[...list].sort()`）；正式環境不凍結，所以只在 `npm start` 時才會看到「Cannot assign to read only property」。
+- Apollo v3 在開發模式與單元測試會凍結查詢結果：**不要直接修改 `data`**（排序、push、改欄位），先複製（`cloneDeep(data)`、`[...list].sort()`）；`.slice()`／`.filter()`／`[...]` 只複製陣列，要改元素欄位得用 `cloneDeep` 或 `list.map(x => ({ ...x }))`；正式環境不凍結，所以只在 `npm start` 時才會看到「Cannot assign to read only property」。
 - 截圖測試需 `NODE_PATH=/opt/node-tools/node_modules`，GraphQL 以 `page.route('**/graphql', …)` 回假資料、外部網域一律 abort。
