@@ -97,6 +97,19 @@ describe('formatNumber', () => {
   })
 })
 
+describe('formatMoney', () => {
+  // 金額一律「1,234」：只加千分位、不加 NT$ 等幣別符號（Jason 2026/10/21 決定），空值顯示 0；
+  // 帳單頁彙總、帳單列表統計與薪資總覽都靠這個函式維持同一種格式，改格式要先改這裡
+  it('只加千分位、不加幣別符號，空值顯示 0', () => {
+    const { formatMoney } = require('../format')
+    expect(formatMoney(1234567)).toBe('1,234,567')
+    expect(formatMoney(1880.5)).toBe('1,880.5')
+    expect(formatMoney(undefined)).toBe(0)
+    expect(formatMoney(null)).toBe(0)
+    expect(String(formatMoney(48320))).not.toMatch(/NT\$|\$/)
+  })
+})
+
 // ---- 第二輪元件：替換 MUI 時 handler 一字不改，所以「回傳給 handler 的值與簽名」必須和 MUI 相同 ----
 
 describe('NativeSelect', () => {

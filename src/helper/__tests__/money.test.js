@@ -1,4 +1,3 @@
-import formatMoney from '../formatMoney'
 import roundDecimal from '../roundDecimal'
 import truncateDecimal from '../truncateDecimal'
 import giveBonus from '../giveBonus'
@@ -35,21 +34,6 @@ describe('roundDecimal：報表金額四捨五入', () => {
 
   it('可指定位數', () => {
     expect(roundDecimal(12.5, 0)).toBe(13)
-  })
-})
-
-describe('formatMoney：千分位格式', () => {
-  it('整數加千分位（逗號後帶空格為既有格式）', () => {
-    expect(formatMoney(1234567, 0)).toBe('1, 234, 567')
-  })
-
-  it('負數保留負號', () => {
-    expect(formatMoney(-1500, 0)).toBe('-1, 500')
-  })
-
-  it('非數字視為 0，不讓畫面出現 NaN', () => {
-    expect(formatMoney('abc', 0)).toBe('0')
-    expect(formatMoney(undefined, 0)).toBe('0')
   })
 })
 

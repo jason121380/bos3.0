@@ -287,14 +287,12 @@ export default function Footer({ enable }) {
           <div className="flex flex-col gap-1">
             <span className="text-label text-text-secondary">業績合計</span>
             <span className="text-heading tabular-nums text-text">
-              <span className="mr-1 text-body text-text-secondary">NT$</span>
               {formatNumber(performanceTotal)}
             </span>
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-label text-text-secondary">現金應收</span>
             <span className="text-display tabular-nums text-text">
-              <span className="mr-1 text-body text-text-secondary">NT$</span>
               {formatNumber(cashDue)}
             </span>
           </div>

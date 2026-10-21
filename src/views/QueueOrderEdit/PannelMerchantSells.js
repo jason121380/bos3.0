@@ -146,7 +146,7 @@ export default function PannelMerchantSells({ thirdPartTicket }) {
       <AccordionSummary
         data-testid="merchantSell"
         onClick={handleAccordionClick}
-        // 收合時顯示「已填 N 筆 · NT$ 小計」（只讀畫面上的項目列，不參與計算或送出；比照打帳單）
+        // 收合時顯示「已填 N 筆 · 小計」（只讀畫面上的項目列，不參與計算或送出；比照打帳單）
         summaryMeta={!expanded && panelSummary(
           sells.filter(d => d.productId).length,
           sells.filter(d => d.productId).reduce((total, d) => total + d.price * d.count, 0)

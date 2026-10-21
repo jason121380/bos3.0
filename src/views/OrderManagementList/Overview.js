@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import roundDecimal from './../../helper/roundDecimal.js'
 import { formatMoney } from 'ui/format'
 
-// 區間統計：每格的數值運算與舊版相同，只加千分位與新版樣式；金額一律 NT$＋千分位（與下方帳單表格一致，STYLE §7）
+// 區間統計：每格的數值運算與舊版相同，只加千分位與新版樣式；金額一律千分位、不加幣別（與下方帳單表格一致，STYLE §7）
 const Stat = ({ label, children }) => (
   <div className="flex flex-col gap-1 bg-background px-4 py-4">
     <span className="text-label text-text-secondary">{label}</span>

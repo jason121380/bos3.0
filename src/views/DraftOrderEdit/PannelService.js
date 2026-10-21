@@ -262,7 +262,7 @@ export default function PannelService({ thirdPartTicket }) {
   }
 
   return (
-    // 可展開卡片比照打帳單（ui/accordion）：收合時標題右側顯示「已填 N 筆 · NT$ 小計」（只讀取畫面上的列，不參與計算）
+    // 可展開卡片比照打帳單（ui/accordion）：收合時標題右側顯示「已填 N 筆 · 小計」（只讀取畫面上的列，不參與計算）
     <Accordion expanded={expanded}>
       <AccordionSummary
         aria-controls="panel-content"

@@ -1,12 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10211457）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10211519）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
+
+- **金額顯示統一為 `1,234`・第一批**（2026/10/21，v3.10211519，Jason「全都改 1,234」，純畫面）：①`ui/format` 的 `formatMoney` 不再加 `NT$` 前綴（帳單列表區間統計與表格、三個帳單頁彙總、卡片收合小計、薪資總覽等 65 處跟著變；空值仍顯示 0）；②三個帳單編輯頁 Footer 與打帳單 `PannelPerformance` 的「NT$」裝飾字 8 處移除；③薪資總覽「實際匯款金額合計」原用 `helper/formatMoney`（舊版，輸出「1, 234, 567」逗號後帶空格），改用 `ui/format`，死掉的 helper 與其 3 個測試移除，`ui.test.js` 補 `formatMoney` 測試（千分位、無幣別、空值 0）；④`UiPreview` 範例、STYLE.md §7 與報表表格規則同步。驗證：lint:build、62 檔／339 測試、build。**待實機**：打帳單底部「業績合計／現金應收」只剩數字、帳單列表區間統計無 NT$、薪資總覽合計顯示 `1,234,567`。**第二批（補千分位，下一個 PR）**：報表表格、選項彈窗、快速對帳、帳單明細彈窗螢幕區、個人頁、消費分析圖表約 50 檔的原始數字補 `formatNumber`；列印範本、CSV、輸入欄、編號／排名、百分比、天數不動。
 
 - **手機底部分頁「選單」改漢堡圖示**（2026/10/21，v3.10211457，Jason 截圖指示）：`layouts/Dashboard/MobileNav.js` 的 `MobileTabBar` 選單分頁圖示由格狀 `LayoutGrid` 改為三條線 `Menu`（與頂部列的「開啟選單」鈕同一個圖示），尺寸、粗細、開啟時加粗、aria 皆不變。**待實機**：手機底部「選單」顯示三條線，點擊照常開側欄抽屜。
 

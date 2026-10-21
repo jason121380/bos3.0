@@ -1,4 +1,4 @@
-import formatMoney from 'helper/formatMoney'
+import { formatMoney } from 'ui/format'
 import { format } from 'date-fns'
 import { useState, useEffect } from 'react'
 import idx from 'idx'

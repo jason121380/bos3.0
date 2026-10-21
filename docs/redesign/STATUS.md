@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10211457，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10211519，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,6 +8,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 金額顯示統一 第一批（v3.10211519） | `formatMoney` 去 `NT$`（65 處跟著變）、帳單頁 NT$ 裝飾字 8 處移除、薪資總覽改用 `ui/format`（原 `helper/formatMoney` 輸出「1, 234」帶空格，已移除）、UiPreview／STYLE.md 同步；第二批補千分位另開 PR |
 | 手機底部分頁「選單」改漢堡圖示（v3.10211457） | `MobileTabBar` 選單分頁 `LayoutGrid`→`Menu`（三條線），其餘不變 |
 | F1 前端正確性收尾（v3.10211439） | eslint 全站 error 21→0（produce 逗號序列、裸 location、永遠 false 的 autoFocus）；`parseInt` 182 處補 radix 10；非 GraphQL Promise 補 catch 3 處；`lint:build` 加入 rules-of-hooks 門檻 |
 | 用詞與日期格式統一（v3.10211413） | 結帳單據一律「帳單」（73 處；保留「訂單佇列」、網路訂單、EHS）；顯示與匯出日期一律 `yyyy/MM/dd`（12 處；列印範本內不動）；規則寫進 STYLE.md 文案節 |
