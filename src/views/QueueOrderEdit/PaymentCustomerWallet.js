@@ -3,20 +3,21 @@ import { Field } from 'ui/input'
 import billContext from 'context/keyInContext'
 import { useLazyFetchCustomerWallet } from 'hooks/useFetchCustomerWallet'
 import idx from 'idx'
-import { useContext, useEffect, useRef, useState, Fragment } from 'react'
+import { useContext, useEffect, useRef, Fragment } from 'react'
 import produce from 'immer'
 
 export default function PaymentCustomerWallet() {
-  const { bill, handleBillChange, order, setBill } = useContext(billContext)
-  const [walletPayByOrder, setWalletPayByOrder] = useState(0)
+  const { bill, handleBillChange, setBill } = useContext(billContext)
   const { fetchCustomerWallet, response } = useLazyFetchCustomerWallet({
     customerId: bill.customerId,
   })
 
   const useFetchCustomerWalletRef = useRef(fetchCustomerWallet)
 
-  // 可用餘額 = 訂單的walletPay + 顧客剩下的餘額
-  const usableCustomerWallet = idx(response, _ => _.data.customerWallet + walletPayByOrder)
+  // 可用餘額＝顧客目前的入金餘額：佇列帳單是建立失敗的帳單，失敗時沒有扣入金（2026/10/22 Jason 確認），
+  // 重試時才扣，所以不像帳單詳細／掛單詳細要加回原帳單的扣入金
+  const usableCustomerWallet = idx(response, _ => _.data.customerWallet)
+  const previousCustomerId = useRef(bill.customerId)
 
   useEffect(() => {
     // 找顧客本身的入金餘額
@@ -32,18 +33,18 @@ export default function PaymentCustomerWallet() {
           draft.walletPay = 0
         })
       )
-      setWalletPayByOrder(0)
     }
+    // 換成另一位顧客時清空扣入金，原顧客的扣入金不帶到新顧客（2026/10/22 Jason 同意，比照帳單詳細／掛單詳細）；
+    // 載入佇列帳單時由「尚未帶入」變成原顧客不算換顧客
+    if (previousCustomerId.current !== undefined && previousCustomerId.current !== bill.customerId) {
+      setBill(
+        produce(draft => {
+          draft.walletPay = 0
+        })
+      )
+    }
+    previousCustomerId.current = bill.customerId
   }, [bill.customerId, setBill])
-
-  useEffect(() => {
-    if (!order.loading) {
-      // 如果訂單的顧客跟現在的顧客是一樣就把原本他被扣的入金餘額放上去
-      if (order.customerId === bill.customerId) {
-        setWalletPayByOrder(order.data.order.walletPay === null ? 0 : order.data.order.walletPay)
-      }
-    }
-  }, [order.loading, bill.customerId])
 
   const walletPayLimit =
     bill.serviceOrders.reduce((total, item) => total + item.price, 0) +

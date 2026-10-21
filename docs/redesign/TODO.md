@@ -8,6 +8,8 @@
 
 ## 一、今天完成了什麼
 
+- **重新開單扣入金（2026/10/22，v3.10220715，Jason「失敗沒有扣入金、重新要清空」）**：①確認佇列帳單建立失敗時沒有扣入金，可用額度維持＝顧客目前餘額，移除抄自帳單詳細、從不成立的 `order.customerId` 比對與 `walletPayByOrder`；②換成另一位顧客時扣入金歸 0（比照帳單詳細／掛單詳細；載入時由未帶入變成原顧客不算換顧客，帶入的扣入金保留）。新增 `QueueOrderEdit/__tests__/PaymentCustomerWallet.test.js` 2 個（換顧客清空：修正前失敗；載入保留）。驗證：`lint:build`、91 檔／649 測試（UTC 與洛杉磯）、build。
+
 - **拆大檔（B，2026/10/22，v3.10220209，Jason「接著做」）**：帳單以外 8 個超過 1,000 行的檔案拆成子元件／模組（程式原樣搬移，列印範本留原檔）：新增／編輯抽成設定 1104／1111→218／217、員工批量抽成彈窗 1062→256、員工抽成設定 1051→201（四處逐字相同的 19 個 handler 抽成 `DeductionSettingShared/createRakeHandlers`）、預約事件彈窗 ChoseEvent 1056→502、系統參數 1132→730（`useState` 初始值改工廠函式，仍每次 render 新物件）、帳單列表 ResultsV2 1031→759、掛單列表 ResultsV2 1303→942（剩餘多為列印範本）。等價證明：37 個暫時測試比對新舊 DOM、API variables、callback、列印 HTML 全同（含重新掛載偵測與反向對照）；逐行搬移檢查只剩預期包裝改動。驗證：`lint:build`、eslint warning 與基準相同、90 檔／647 測試（UTC 與洛杉磯）、build；82 組截圖 65 組 0 差，17 組 7～10px 雜訊皆在未修改區域且重跑為 0。**未做**：掛單列表兩個結帳 handler 的重複組裝（要改 handler 本體）、抽成兩頁 JSX 共用（樣式逐行不同）。
 
 - **帳單既有問題 1–3 查證與修正（2026/10/22，v3.10220205，Jason「修1-3」）**：③**真的、已修**：帳單詳細 `PaymentCustomerWallet` 讀入金權限直接取 `.pageAuthority`，角色缺「客戶管理」或權限查詢失敗時整頁錯誤；改用 `helper/rolePageAuthority`（缺設定＝沒有入金權限，與打帳單一致）；沒有任何入金權限時不顯示「異動入金」（原本仍可開窗送出、金額被當儲值，Codex review PR #259 P1），共用彈窗送出時再擋一次；新增 4 個測試（3 個修正前失敗、1 個確認權限沒變多）。掛單詳細、重新開單不讀入金權限，無此問題。①**不是產品 bug**：「編輯顧客改姓名送出舊姓名」是 RTL `fireEvent.change`＋updater 內讀 `event.target` 的測試假象（真實 Chromium 打字存到新值）；testkit 新增 `typeLikeBrowser`（含自我測試），三頁各加「改姓名與生日後儲存送出新值」測試。②**刻意不修，待 Jason 確認**：重新開單比對 `order.customerId`（佇列查詢沒有此欄位）是死碼，可扣入金＝顧客目前餘額；照字面修會把佇列原扣入金加回、可扣金額超過實際餘額（佇列帳單是建立失敗、重試時才扣入金）。已加測試鎖定現況並註明原因。驗證：`lint:build`、90 檔／647 測試（UTC 與洛杉磯）、build。
@@ -249,8 +251,6 @@
 
 ### P3 — 需要你決定
 
-- **（2026/10/22 新增）重新開單：建立失敗的佇列帳單是否確定沒有扣到入金？** 若後端其實已扣，重新開單的「扣入金(N可用)」要加回佇列原扣入金，並同步改 `QueueOrderEdit.page.test.js` 的現況測試。
-- **（2026/10/22 新增，未實測）重新開單換顧客時扣入金沒有清空**：帳單詳細／掛單詳細換顧客會把扣入金歸 0，重新開單沒有這段，佇列原扣入金可能帶到新顧客。
 1. `Services`（服務項目設定）的篩選按鈕：舊版因 prop 名稱錯誤從未顯示，要顯示嗎？
 2. ~~直接列印的報表是否要改版~~ **已拍版（Jason 2026/10/19）**：所有報表樣式一致、以 compact 緊湊呈現；只改 presentation／print CSS，不改內容欄位與數字計算。**下一組優先：報表 compact 專項**（先盤點共用層，再逐目錄）。2026/10/19 實測：`window.print` 出現在 28 個檔案，其中 22 個是報表目錄的 `index`（約 15 頁是舊口徑，實際更多），另 6 個是 `OrderManagementList/ResultsV2`、`DraftOrderManagementList/ResultsV2`、`DraftOrderEdit/Footer`、`OrderCreate/OrderDetailModal`、`InventoryWorkReview/General`、`ProductInventoryList/Results`。
 3. ~~是否要新增 `ui/combobox` 與 `ui/date-picker`~~ **2026/10/20 Jason 新拍版取代下方 10/19 內容：兩者都改為自己做，目標徹底移除 MUI（見 MEMORY 決策表）**。以下為 10/19 歷史紀錄：**已拍版（Jason 2026/10/19，四點新拍版）**：
