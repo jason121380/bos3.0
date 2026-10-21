@@ -4,7 +4,7 @@ import billContext from 'context/keyInContext'
 import { useFetchProductOrder } from 'hooks/useFetchOrder'
 import cloneDeep from 'lodash/cloneDeep'
 import React from 'react'
-import uuid from 'uuid'
+import uuid from 'lib/uuid'
 
 import MerchantSells from './MerchantSells'
 
