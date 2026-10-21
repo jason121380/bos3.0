@@ -5,6 +5,7 @@ import idx from 'idx'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatMoney, formatNumber } from 'ui/format'
+import billPaymentSummary from 'helper/billPaymentSummary'
 
 function PannelPerformance() {
     const { bill } = useContext(billContext)
@@ -15,42 +16,12 @@ function PannelPerformance() {
         ids: bill.useTicketOrders.map(d => d.customerTicketId),
     })
 
-    // 沒選第三方卡券的服務的price array
-    const serviceTotalPriceArray = idx(bill, _ =>
-        _.serviceOrders.map(d => (typeof d.thirdPartyCouponMerchantId !== 'string' ? d.price : 0))
-    )
-    // 沒選第三方卡券的商品的price array
-    const productTotalPriceArray = idx(bill, _ =>
-        _.productOrders.map(d =>
-            typeof d.thirdPartyCouponMerchantId !== 'string' ? d.price * d.count : 0
-        )
-    )
     // 賣卡券先入業績的price array
     const ticketOrdersWithIntoPerformPriceArray = idx(bill, _ =>
         _.ticketOrders.map(d => (d.intoPerformanceWhileBuying ? d.price * d.count : 0))
     )
-    // 沒第三方卡券會員卡price array
-    const memberShipCardWithIntoPerformPriceArray = idx(bill, _ =>
-        _.membershipOrders.map(d => (typeof d.thirdPartyCouponMerchantId !== 'string' ? d.price : 0))
-    )
-
-    // 沒有第三方卡券服務的價格合計
-    const serviceTotalPriceWithoutThirdPartyCoupon = serviceTotalPriceArray.reduce(
-        (total, item) => (total = total + item),
-        0
-    )
-    // 沒有第三方卡券商品的價格合計
-    const productTotalPriceWithoutThirdPartyCoupon = productTotalPriceArray.reduce(
-        (total, item) => (total = total + item),
-        0
-    )
     // 賣卡先入業績的價格合計
     const ticketOrdersWithIntoPerformPrice = ticketOrdersWithIntoPerformPriceArray.reduce(
-        (total, item) => (total = total + item),
-        0
-    )
-    // 沒有第三方卡券會員卡的價格合計
-    const merberShipCardTotalPriceWithoutThirdPartyCoupon = memberShipCardWithIntoPerformPriceArray.reduce(
         (total, item) => (total = total + item),
         0
     )
@@ -84,14 +55,8 @@ function PannelPerformance() {
         ticketOrdersWithIntoPerformPrice +
         merberShipCardTotalPrice
     )
-    const cashDue =
-        serviceTotalPriceWithoutThirdPartyCoupon +
-        productTotalPriceWithoutThirdPartyCoupon +
-        merberShipCardTotalPriceWithoutThirdPartyCoupon +
-        couponSellPrice -
-        bill.walletPay -
-        bill.amountByOtherPay -
-        bill.bonusDecount
+    // 現金應收：與明細彈窗、收據共用 billPaymentSummary（同一公式）
+    const { cashDue } = billPaymentSummary(bill)
 
     // 金額彙總：各數值的運算式與舊版相同，只加千分位與新版樣式
     const Row = ({ label, value }) => (

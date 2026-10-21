@@ -36,9 +36,12 @@ export default function Employees() {
         designerDetail,
         _ => _.data.merchantDesigner.merchantIdentity.authorityId
       )
-      const authoritySettings = JSON.parse(idx(authorities, _ => _.data.getMerchantAuthorities).find(d => d.id === authorityId).authoritySettings)
-      const editEmployee = authoritySettings.find(d => d.pageTitle === "員工及薪資").pageAuthority
-      const editAble = editEmployee.find(d => d.pageName === "批量抽成設定").authority
+      // 找不到角色、或角色缺「員工及薪資」區塊／「批量抽成設定」項目時，視為沒有批量抽成權限（原本直接拋錯，整頁錯誤）
+      const merchantAuthorities = idx(authorities, _ => _.data.getMerchantAuthorities)
+      const identity = Array.isArray(merchantAuthorities) ? merchantAuthorities.find(d => d.id === authorityId) : undefined
+      const authoritySettings = identity ? JSON.parse(identity.authoritySettings) : []
+      const editEmployee = authoritySettings.find(d => d.pageTitle === "員工及薪資")?.pageAuthority ?? []
+      const editAble = editEmployee.find(d => d.pageName === "批量抽成設定")?.authority ?? false
       setRakeSetAble(editAble)
       setLoginUserAuthName(loginUserAuthName)
     }

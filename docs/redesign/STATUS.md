@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10212000，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10212046，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,6 +8,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 修正 4 個既有問題（v3.10212046） | 打帳單明細／收據的應付帳款與現金應收改為實際計算（`helper/billPaymentSummary`，與金額彙總同一公式）；角色缺區塊時後台不再白畫面（TopBar＋入金權限＋批量抽成權限）；帳單／掛單列表匯出在遮罩設定晚到時仍遮罩；帳單列表匯出活動券欄不再落後 |
 | A5 補測試（v3.10212000） | 14 檔 242 個測試：四個帳單頁整頁流程、後台版面權限、85 頁煙霧測試、列表與 hooks；覆蓋率 statements 9%→31%，門檻提高到 30／26／21／30；發現 5 個既有問題待決定 |
 | B2 effect 依賴（v3.10211955） | 110 個穩定值（setter／ref／history／dispatch）補進 91 個依賴陣列，行為不變；警告 771→728；R 類 1,090 個不改，疑似 bug 20 處待決定（`B2_EXHAUSTIVE_DEPS.md`） |
 | A6 架構整理（v3.10211955） | 兩份相同的店家樹狀選擇窗合成 `components/MerchantsListModal`（樣式以 `classes` 保留兩份）；`routes.js` 1051→253（後台路由搬 `dashboardRoutes.js`）、`ChoseEvent.js` 常數外移；釘選版選擇窗、三個外層下拉、其餘 7 個大檔刻意不動 |

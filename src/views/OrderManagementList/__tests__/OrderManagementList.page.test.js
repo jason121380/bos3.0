@@ -122,3 +122,48 @@ describe('帳單列表', () => {
     expect(within(row).queryByText('999')).toBeNull()
   })
 })
+
+describe('帳單列表：報表匯出', () => {
+  // 匯出檔內容（react-csv 在 jsdom 以 data URI 放在連結上）
+  const exportedCsv = () => decodeURIComponent(screen.getByText('報表匯出').closest('a').getAttribute('href'))
+
+  it('店家設定遮罩客資時，即使遮罩設定比帳單晚回來，匯出檔的姓名電話也要遮罩', async () => {
+    // 為什麼重要：匯出檔會被下載、轉寄；設定晚到時原本匯出的是完整姓名與手機（個資外洩）
+    const { settle } = renderPage(<OrderManagementList />, {
+      fixtures: { ...fixtures([order()]), GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: true } },
+      delays: { GET_CUSTOMER_DATA_MARKED: 50 },
+      route: '/management/orders',
+    })
+    await screen.findByText('#A001')
+    await settle()
+    await wait(() => expect(exportedCsv()).toContain('陳*姐 0912***678'))
+    expect(exportedCsv()).not.toContain('0912345678')
+  })
+
+  it('遮罩設定查詢失敗時，匯出檔仍遮罩（設定不明一律當作要遮罩）', async () => {
+    const { settle } = renderPage(<OrderManagementList />, {
+      fixtures: { ...fixtures([order()]), GET_CUSTOMER_DATA_MARKED: new Error('設定查詢失敗') },
+      route: '/management/orders',
+    })
+    await screen.findByText('#A001')
+    await settle()
+    expect(exportedCsv()).toContain('陳*姐 0912***678')
+    expect(exportedCsv()).not.toContain('0912345678')
+  })
+
+  it('店家設定不遮罩時，匯出檔才是完整姓名電話', async () => {
+    const { settle } = setup([order()])
+    await screen.findByText('#A001')
+    await settle()
+    await wait(() => expect(exportedCsv()).toContain('陳小姐 0912345678'))
+  })
+
+  it('第一次載入就有活動券的帳單時，匯出檔就要有「活動券」欄（與表格一致）', async () => {
+    // 為什麼重要：原本匯出檔永遠落後一批，第一次匯出少了活動券欄
+    const { settle } = setup([order({ raffleCount: 2 })])
+    await screen.findByText('#A001')
+    await settle()
+    expect(screen.getAllByText('活動券')[0]).toBeInTheDocument()
+    await wait(() => expect(exportedCsv()).toContain('活動券'))
+  })
+})

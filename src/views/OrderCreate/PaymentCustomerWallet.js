@@ -67,19 +67,13 @@ function PaymentCustomerWallet(props, ref) {
       const identityId = idx(profileIdentity, _ => _.data.me.merchantIdentity.authorityId)
       const authorities = idx(merchantAuthorities, _ => _.data.getMerchantAuthorities)
 
-      const CustomerManagementIdentity = JSON.parse(
-        authorities.find(d => {
-          return d.id === identityId
-        }).authoritySettings
-      ).find(d => {
-        return d.pageTitle === '客戶管理'
-      }).pageAuthority
-      const allowDepositAddition = CustomerManagementIdentity.find(d => {
-        return d.pageName === '入金(儲值)'
-      }).authority
-      const allowDepositDeduction = CustomerManagementIdentity.find(d => {
-        return d.pageName === '入金(扣除)'
-      }).authority
+      // 找不到登入者角色、角色缺「客戶管理」區塊或缺該項目時，視為沒有入金權限（原本直接拋錯，選顧客就整頁錯誤）
+      const identitySettings = Array.isArray(authorities) ? authorities.find(d => d.id === identityId) : undefined
+      const CustomerManagementIdentity = identitySettings
+        ? JSON.parse(identitySettings.authoritySettings).find(d => d.pageTitle === '客戶管理')?.pageAuthority ?? []
+        : []
+      const allowDepositAddition = CustomerManagementIdentity.find(d => d.pageName === '入金(儲值)')?.authority ?? false
+      const allowDepositDeduction = CustomerManagementIdentity.find(d => d.pageName === '入金(扣除)')?.authority ?? false
 
       setIdentity({
         allowDepositAddition: allowDepositAddition,

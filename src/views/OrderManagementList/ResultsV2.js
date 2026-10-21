@@ -242,7 +242,8 @@ function Results({
     if (pageRef.current) {
       pagenationLabel(pageRef.current)
     }
-  }, [orders, membershipDisplay, bonusDisplay, pageRef.current, serialNumberUsing])
+    // 遮罩設定、活動券欄是否顯示比帳單晚到時要重算：否則匯出檔用到未遮罩的姓名電話、或「活動券」欄落後一批（B2 疑似 bug #1、#10）
+  }, [orders, membershipDisplay, bonusDisplay, pageRef.current, serialNumberUsing, isCustomerDataMarked, raffleDisplay])
 
   function printDiv() {
     var printMain = document.getElementById('printMain')

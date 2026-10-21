@@ -32,6 +32,7 @@ import { Skeleton } from 'ui/skeleton'
 
 import ResultsV2 from './ResultsV2'
 import Overview from './Overview'
+import isExportCustomerMasked from 'helper/exportCustomerMask'
 
 function OrderManagementList() {
   const [getQueryString] = useQueryString()
@@ -69,7 +70,8 @@ function OrderManagementList() {
   const [showFilter, setShowFilter] = useState(false)
 
   const [progress, setProgress] = useState(0)
-  const [isCustomerDataMarked, setIsCustomerDataMarked] = useState(false)
+  // 匯出客資遮罩：設定確定是「不遮罩」(false) 才匯出完整姓名電話；載入中或查詢失敗一律遮罩（個資寧可多遮，Codex review PR #254）
+  const [isCustomerDataMarked, setIsCustomerDataMarked] = useState(true)
   const [orderIds, setOrtderIds] = useState([])
   const [orderList, setOrderList] = useState([])
   const getOrderList = useFetchGetOrderList({
@@ -156,13 +158,9 @@ function OrderManagementList() {
 
   useEffect(() => {
     if (!customerDataMarkedData.loading) {
-      const customerDataMarked = idx(
-        customerDataMarkedData,
-        _ => _.data.getCustomerDataMarkedDefault
-      )
-      setIsCustomerDataMarked(customerDataMarked)
+      setIsCustomerDataMarked(isExportCustomerMasked(customerDataMarkedData))
     }
-  }, [customerDataMarkedData.loading])
+  }, [customerDataMarkedData.loading, customerDataMarkedData.error])
 
   useEffect(() => {
     if (!getIsOpenDateRangeInOrderMangement.loading && !getOrderListDateAuth.loading) {

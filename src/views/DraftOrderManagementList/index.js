@@ -27,6 +27,7 @@ import { PageHeader, Toolbar, ToolbarSpacer } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import ResultsV2 from './ResultsV2'
+import isExportCustomerMasked from 'helper/exportCustomerMask'
 
 function DraftOrderManagementList() {
   const customerDataMarkedData = useFetchCustomerDataMarked()
@@ -55,7 +56,8 @@ function DraftOrderManagementList() {
     source: null
   })
   const [progress, setProgress] = React.useState(0)
-  const [isCustomerDataMarked, setIsCustomerDataMarked] = React.useState(false)
+  // 匯出客資遮罩：設定確定是「不遮罩」(false) 才匯出完整姓名電話；載入中或查詢失敗一律遮罩（個資寧可多遮，Codex review PR #254）
+  const [isCustomerDataMarked, setIsCustomerDataMarked] = React.useState(true)
   const [membershipDisplay, setMembershipDisplay] = React.useState(false)
   const [bonusDisplay, setBonusDisplay] = React.useState(false)
   const [showFilter, setShowFilter] = React.useState(false)
@@ -144,13 +146,9 @@ function DraftOrderManagementList() {
   }, [customerBonusActive.loading, orders.loading])
   React.useEffect(() => {
     if (!customerDataMarkedData.loading) {
-      const customerDataMarked = idx(
-        customerDataMarkedData,
-        _ => _.data.getCustomerDataMarkedDefault
-      )
-      setIsCustomerDataMarked(customerDataMarked)
+      setIsCustomerDataMarked(isExportCustomerMasked(customerDataMarkedData))
     }
-  }, [customerDataMarkedData.loading])
+  }, [customerDataMarkedData.loading, customerDataMarkedData.error])
 
   React.useEffect(() => {
     if (
