@@ -75,7 +75,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - MUI Autocomplete：沒有選項／載入中時 `aria-expanded=false` 但彈出層可見（MUI 行為）；選項標籤相同會造成重複 key，要自己給 `key`。
 - 讀查詢結果前先防呆：API 失敗時 `data` 為 undefined，直接 `.filter`／`.map` 會讓整頁拋錯（版面層已加防呆與錯誤邊界，頁面層仍要注意）。
 - `.then(fn, openSnackbar(...))` 的第二參數會在送出當下就執行；成功後才做的事一律寫在第一個 callback 內。
-- 時區：沒有時區的日期時間字串一律照字面當台灣時間解讀，只有日期的 ISO 字串（`2026-10-21`）依規格是 UTC 午夜；要表示台灣某一天的開始用 `new Date(年, 月-1, 日)` 或 date-fns，不要自己加減時差。改 `business-timezone.js` 要在有日光節約的時區（`TZ=America/Los_Angeles`、`America/Santiago`）跑測試（MEMORY #169）。
+- 時區：沒有時區的數字格式字串（`2026/10/21 10:00`、`2026-10-21T10:00`）照字面當台灣時間解讀；英文月份等其他格式仍先經裝置時區（日光節約切換時可能差一小時），不要用；只有日期的 ISO 字串（`2026-10-21`）依規格是 UTC 午夜；要表示台灣某一天的開始用 `new Date(年, 月-1, 日)` 或 date-fns，不要自己加減時差。改 `business-timezone.js` 要在有日光節約的時區（`TZ=America/Los_Angeles`、`America/Santiago`）跑測試（MEMORY #169）。
 - Playwright 的 headless Chromium 畫不出捲軸，捲軸類修正只能看 CSS 規則，需在真實瀏覽器確認。驗證時區可用 `browser.newContext({ timezoneId })` 與 `page.clock.install({ time })`。
 - 背景伺服器用 PID 關閉：命令列本身含相同字串時 `pgrep -f`／`pkill -f` 也會抓到自己的 shell；用 `ps -eo pid,args | awk '/pattern/ && !/awk/'` 取 PID。dev server 啟動前清 log，啟動後用 `curl` 確認。
 - 截圖測試需 `NODE_PATH=/opt/node-tools/node_modules`，GraphQL 以 `page.route('**/graphql', …)` 回假資料、外部網域一律 abort。
