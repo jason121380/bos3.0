@@ -316,7 +316,10 @@ describe('打帳單：結帳前確認明細', () => {
     // 畫面明細（列印範本另有同樣內容，取第一份）
     expect(modal.getAllByText(/顧客:未選擇/)[0]).toBeInTheDocument()
     expect(modal.getAllByText(/設計師:/)[0]).toHaveTextContent('設計師:王小美(Amy)')
-    // 註：明細的「現金應收」取自 context 的 cashPayment，但打帳單頁從未更新它（已回報），這裡不斷言其金額
+    // 櫃檯看「現金應收」收錢、收據印「付現金額」給顧客：曾經永遠是 0（2026/10/21 修正），必須等於帳單金額
+    expect(modal.getAllByText('應付帳款')[0].parentElement).toHaveTextContent('800')
+    expect(modal.getAllByText('現金應收')[0].parentElement).toHaveTextContent('800')
+    expect(screen.getAllByText(/付現金額：/)[0]).toHaveTextContent('付現金額：800')
 
     fireEvent.click(modal.getByRole('button', { name: '結帳' }))
     await wait(() => expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(1))

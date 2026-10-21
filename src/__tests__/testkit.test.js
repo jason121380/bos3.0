@@ -93,7 +93,8 @@ export function buildResponse(query, fixture, missing = 'empty') {
 
 // fixtures：{ [operationName]: data 物件 | (variables, operation) => data | Error（GraphQL 錯誤）}
 // options.fallback：沒有 fixture 的查詢怎麼回應——'empty'（補 null 的空資料，預設）或 'error'（模擬 API 失敗）
-export function createAutoMockLink(fixtures = {}, { fallback = 'empty', missing = 'empty', calls = [] } = {}) {
+// delays：{ 查詢名稱: 毫秒 }，讓指定查詢較晚回應（模擬設定比資料晚到的情況）
+export function createAutoMockLink(fixtures = {}, { fallback = 'empty', missing = 'empty', calls = [], delays = {} } = {}) {
   const link = new ApolloLink(
     operation =>
       new Observable(observer => {
@@ -119,7 +120,7 @@ export function createAutoMockLink(fixtures = {}, { fallback = 'empty', missing 
           } finally {
             link.pending -= 1
           }
-        }, 0)
+        }, delays[operationName] || 0)
         return () => {
           if (!done) link.pending -= 1
           clearTimeout(timer)
@@ -170,10 +171,10 @@ export function blockNetwork() {
 }
 
 // 以正式環境相同的外層（Redux、路由、教學模式、頁面錯誤邊界）渲染頁面
-export function renderPage(ui, { fixtures = {}, fallback = 'empty', missing = 'empty', route = '/page', path, store } = {}) {
+export function renderPage(ui, { fixtures = {}, fallback = 'empty', missing = 'empty', route = '/page', path, store, delays } = {}) {
   const calls = []
   blockNetwork()
-  const link = createAutoMockLink(fixtures, { fallback, missing, calls })
+  const link = createAutoMockLink(fixtures, { fallback, missing, calls, delays })
   const testStore = store || createTestStore()
   const content = path ? <Route path={path} render={() => ui} /> : ui
   const utils = render(

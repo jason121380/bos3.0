@@ -236,6 +236,19 @@ describe('抽成設定的顯示權限', () => {
   })
 })
 
+describe('角色設定缺少區塊', () => {
+  // 為什麼重要：舊角色或後台新增區塊前建立的角色，可能沒有「櫃檯作業」「資料設定」。
+  // 原本 TopBar 直接取 [0].pageAuthority 拋錯，而 TopBar 不在頁面錯誤邊界內，整個後台白畫面、該角色完全無法使用。
+  it('沒有「櫃檯作業」「資料設定」時後台照常顯示，缺的權限一律視為沒有', async () => {
+    const { store } = setup({
+      roleSettings: [{ pageTitle: '客戶管理', authority: true, pageAuthority: [{ pageName: '客戶列表', authority: true }] }],
+    })
+    expect(await screen.findByText('店長小林')).toBeInTheDocument()
+    expect(screen.getByText('內容頁')).toBeInTheDocument()
+    await wait(() => expect(store.getState().deductionDisplay).toEqual({ service: false, coupon: false }))
+  })
+})
+
 describe('登出', () => {
   it('清除 localStorage 的登入資料並導到登入頁', async () => {
     setup()

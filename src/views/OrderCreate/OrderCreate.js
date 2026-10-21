@@ -22,6 +22,7 @@ import uuid from 'lib/uuid'
 import addDays from 'date-fns/addDays'
 import cloneDeep from 'lodash/cloneDeep'
 import produce from 'immer'
+import billPaymentSummary from 'helper/billPaymentSummary'
 
 import Head from './Head'
 import Header from './Header'
@@ -73,9 +74,9 @@ function OrderCreate() {
   const lastOrderStatusData = useFetchGetLatestOrderStatus({ date: bill.date })
   const stayInCheckOrderDetailMemory = JSON.parse(localStorage.getItem('stayInCheckOrderDetail'))
   const getSerialNumberUsing = useFetchGetSerialNumberUsing()
-  const [orderDetailPaymentShouldPay, setOrderDetailPaymentShouldPay] = useState(0)
   const [checkoutBtn, setCheckoutBtn] = useState(false)
-  const [cashPayment, setCashPayment] = useState(0)
+  // 明細彈窗與收據的應付帳款／現金應收，與頁面右側金額彙總同一公式（原本從未計算、永遠是 0）
+  const { shouldPay: orderDetailPaymentShouldPay, cashDue: cashPayment } = billPaymentSummary(bill)
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
   const { checkOrder } = useFetchCreateOrder()
   const useCheckOrderRef = useRef(checkOrder)
@@ -545,9 +546,7 @@ function OrderCreate() {
             bill,
             setBill,
             orderDetailPaymentShouldPay,
-            setOrderDetailPaymentShouldPay,
             cashPayment,
-            setCashPayment,
             openOrderDetail,
             setOpenOrderDetail,
             focus,

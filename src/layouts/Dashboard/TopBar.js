@@ -189,11 +189,12 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
       if (!Array.isArray(merchantAuth)) return
       const userAuth = merchantAuth.filter(data => data.authorityName === loginUserAuthName)
       if (!userAuth[0]) return
-      setLoginUserAuth(
-        JSON.parse(userAuth[0].authoritySettings).filter(d => d.pageTitle === '櫃檯作業')[0]
-          .pageAuthority[0].authority
-      )
-      const filtData = JSON.parse(userAuth[0].authoritySettings).filter(d => d.pageTitle === '資料設定')[0].pageAuthority
+      // 角色設定可能缺「櫃檯作業」或「資料設定」區塊（舊角色、後台新增前建立的角色）：缺了就視為沒有該權限。
+      // 原本直接取 [0].pageAuthority 拋錯，TopBar 不在頁面錯誤邊界內，整個後台白畫面（A5 補測試時發現）
+      const authoritySettings = JSON.parse(userAuth[0].authoritySettings)
+      const counterSection = authoritySettings.find(d => d.pageTitle === '櫃檯作業')
+      setLoginUserAuth(counterSection?.pageAuthority?.[0]?.authority ?? false)
+      const filtData = authoritySettings.find(d => d.pageTitle === '資料設定')?.pageAuthority ?? []
       const service = filtData.find(d => d.pageName === '服務項目扣項設定')?.authority ?? false
       const coupon = filtData.find(d => d.pageName === '預收卡項目扣項設定')?.authority ?? false
       dispatch(deductionDisplayActions.setDisplay({ service, coupon }))

@@ -157,7 +157,8 @@ function Results({
     if (pageRef.current) {
       pagenationLabel(pageRef.current)
     }
-  }, [orders, membershipDisplay, bonusDisplay])
+    // 遮罩設定比帳單晚到時要重算，否則匯出檔用到未遮罩的姓名電話（B2 疑似 bug #11）
+  }, [orders, membershipDisplay, bonusDisplay, isCustomerDataMarked])
   useEffect(() => {
     if (printOrderDetail.length > 0) {
       printDiv()
