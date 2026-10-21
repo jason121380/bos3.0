@@ -1,10 +1,11 @@
 import ChangePassword from 'components/ChangePassword'
 import PageErrorBoundary from 'components/PageErrorBoundary'
 import { getDeviceTimeZone, isBusinessTimeZoneInstalled } from 'lib/business-timezone'
+import { applyStoredTheme } from 'lib/theme-mode'
 import Snackbar, { openSnackbar } from 'elements/snackbars'
 import useToggle from 'hooks/useToggle'
 import PropTypes from 'prop-types'
-import React, { Suspense, useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useLayoutEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { renderRoutes } from 'react-router-config'
 import useFetchCheckPageAuthority from 'hooks/useFetchCheckPageAuthority'
@@ -29,6 +30,11 @@ function Dashboard({ route, location }) {
   const userMerchants = useFetchGetUserMerchant()
   const mobileTabs = useMobileTabs()
   const showTabBar = useShowTabBar(mobileTabs)
+
+  // 深淺色：繪製前先套用此使用者上次的主題，不必等個人資料查詢回來（避免深色使用者先看到淺色）
+  useLayoutEffect(() => {
+    applyStoredTheme()
+  }, [])
 
   // 回傳 unlisten：原本每次換頁都多掛一個永不釋放的監聽
   useEffect(() => history.listen((location) => {

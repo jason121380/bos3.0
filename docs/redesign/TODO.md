@@ -1,12 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10210851）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／55 檔 294 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10210920）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
+
+- **效能：深色不閃、切換免重整、移除整包 core-js、清除死碼**（2026/10/21，v3.10210912，Jason「要做 both」「清除不必要的碼」，屬畫面以外修正、當次同意）：①新增 `lib/theme-mode`：依使用者記住主題（`bosTheme:<userId>`），版面繪製前套用；舊版全域樣式改以 `?inline` 字串放進同一個 `<style>`，切換時替換內容、不 reload；按下立即生效、存檔在背景、失敗還原、存檔中忽略後端舊值。②移除 `react-app-polyfill/stable`（入口 194 KB core-js）；掃描正式 build 後只有 `structuredClone` 被直接使用，`lib/polyfills` 補簡易版。③以 import 圖從 `src/index.js` 走訪，刪除到不了的 188 個檔案（505 KB；`_prismjs.scss` 被 `main.scss` 的 Sass `@import` 引用，誤刪後已還原，見 MEMORY #172⑦，含 `views/Typography`、`layouts/Empty`／`Seat`、約 150 個未用 hooks、範本圖）與 `public/images` 39 張 Devias 範本圖（4.7 MB，保留地圖用的 `been-here-marker.png`）；移除 `react-app-polyfill` 套件（lockfile 只少此項、乾淨 `npm ci` 通過）；`ajv` 為 peer 版本需求保留。量測（4G＋CPU 降速 4 倍、假後端 250 ms）：深色與側欄同時出現（原晚 0.6 秒）、預約表格 4.09→3.57 秒、切換深色 約 2.9 秒→0.2 秒且不重新整理、入口 707→506 KB（gz 236→156）、建置產物 12→6.3 MB。新增 `theme-mode`（7）、`polyfills`（3）測試。**待實機**：iPhone Safari 開頁不閃淺色、切換深色立即生效；系統參數「預約時段」新增／刪除時段（`structuredClone`）；舊版頁面（列印、報表）在兩種主題下樣式正常。
 
 - **預約色塊文字一律白色、側欄店名去掉標題**（2026/10/21，v3.10210851，Jason「預約的新配色文字白」「不用目前店家的標籤」）：`RESERVATION_COLORS` 中原本配深字的淺色（待審核、未來預訂、不指定、已完成預約、未報到）改為同色相的深一階，白字對比皆 ≥ 4.5:1，圖例與四個預約週曆一律白字；已完成預約改灰褐 `#8B6F5A`，與不可預約的中灰區分。側欄目前店家只留圖示＋店名（「目前店家：」僅讀屏）。測試改為斷言每色都選白字。**待實機**：預約週曆各色塊白字是否清楚、指定／不指定／待審核是否好分。
 

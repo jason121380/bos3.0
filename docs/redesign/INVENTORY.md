@@ -16,7 +16,7 @@
 | 引用 `@mui/*` 的檔案 | 706 |
 | 引用 `@mui/icons-material` 的檔案 | 232 |
 | 使用 `sx={...}` 的檔案 | 69 |
-| 未被路由引用的 view | `Typography`（疑似死碼，不改版）；`AR`、`LinepayQRcode` 已於 2026/10/21 刪除（PR #224） |
+| 未被路由引用的 view | 無：`AR`、`LinepayQRcode` 已於 2026/10/21 刪除（PR #224），`Typography` 與其他 188 個從入口到不了的檔案同日刪除（死碼清理） |
 
 技術前提：`react-scripts 5.0.1`（PostCSS 8，可直接裝 Tailwind v3）、React 17、MUI 5.15、react-router v5。
 

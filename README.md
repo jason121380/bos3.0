@@ -168,7 +168,7 @@ bos3.0/
     ├── initialize.scss         # 全局 SCSS 初始化 (亮色)
     ├── initialize-dark.scss    # 全局 SCSS 初始化 (深色)
     │
-    ├── layouts/                # 版面配置 (9 個子目錄)
+    ├── layouts/                # 版面配置 (6 個子目錄)
     │   ├── Dashboard/          # 主要後台版面
     │   │   ├── index.js        # Dashboard 佈局容器
     │   │   ├── TopBar.js       # 側欄頂列：Logo、版號、搜尋鈕插槽、訂單佇列、WebSocket
@@ -178,8 +178,6 @@ bos3.0/
     │   ├── Auth/               # 登入/註冊版面
     │   ├── Customer/           # 客戶端版面
     │   ├── EHS/                # 外部嵌入版面
-    │   ├── Empty/              # 空白版面
-    │   ├── Seat/               # 座位管理版面
     │   └── Error.js            # 錯誤版面
     │
     ├── views/                  # 頁面模組（170 個子目錄）
@@ -240,12 +238,11 @@ bos3.0/
     │   └── dailyUnlock.js      # 打帳單鎖定日期每日 23:59 解除
     │
     ├── elements/               # 全局 UI 元素
-    │   ├── snackbars.js        # openSnackbar 全站提示（右下角 toast；確認型為對話框）
-    │   └── label.js            # 標籤元件
+    │   └── snackbars.js        # openSnackbar 全站提示（右下角 toast；確認型為對話框）
     │
     ├── utils/                  # 通用工具
-    │   ├── gradients.js        # 漸層色定義
-    │   └── useRouter.js        # 路由工具 Hook
+    │   ├── compose.js          # 函式組合
+    │   └── getTransferListLabel.js # 穿梭清單標籤
     │
     ├── assets/                 # 靜態資源 (SCSS、圖片)
     ├── static/                 # 靜態檔案
@@ -337,6 +334,16 @@ localStorage 儲存：
 - 字串解讀：有 `Z`／`+08:00` 的字串與只有日期的 ISO 字串（`2026-10-21`，規格上為 UTC）照原生解析；沒有時區、且為數字「年[-/]月[-/]日（T 或空白 時:分[:秒]）」格式的字串（`2026/10/21 10:00`、`2026-10-21T10:00`）直接照字面當台灣時間，不受裝置日光節約影響；其他格式（如 `Oct 21, 2026 10:00`）仍先經裝置時區解析，在裝置日光節約切換的那一小時可能差一小時，新程式請用數字格式或時間戳記。
 - 裝置不在台灣時區時，進入後台會提示一次「系統一律以台灣時間顯示與計算」。
 - 開發：新程式照常使用 date-fns；不要以 `toLocaleString`／`Intl` 假設裝置時區。時區相關修改要另以 `TZ=America/Los_Angeles` 跑測試。
+
+## 🌗 深淺色模式
+
+- 主題存在後端使用者設定，另依使用者記在瀏覽器（`bosTheme:<userId>`），進入後台時在畫面繪製前就套用，深色使用者不會先看到淺色。
+- 側欄底部的切換鈕按下立即生效、存檔在背景進行，不重新整理；存檔失敗自動還原。
+- 實作：`src/lib/theme-mode.js`。新版介面靠 `<html class="dark">` 的 tokens；舊版全域樣式 `initialize(-dark).scss` 以字串載入同一個 `<style id="legacy-theme-style">`，切換時替換內容。
+
+## 🧩 瀏覽器支援
+
+- Vite 產出 ES module，最低需求 Safari 14／Chrome 87。不載入整包 core-js；程式用到、但 Safari 14 缺少的功能在 `src/lib/polyfills.js` 補（目前只有 `structuredClone`）。
 
 ---
 
@@ -801,7 +808,7 @@ Dockerfile 已內建 npm 網路重試配置（5 次重試、20s~120s 超時）�
 | 頁面模組 | **170** 個目錄 |
 | 自定義 Hooks | **596** 個 |
 | 共用元件 | **55** 個 |
-| 單元測試 | **55** 檔／**294** 項 |
+| 單元測試 | **57** 檔／**304** 項 |
 | Redux Slices | **5** 個 |
 | 總原始碼行數 | **~150,000+** 行 |
 
