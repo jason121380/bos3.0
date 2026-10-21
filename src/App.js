@@ -13,7 +13,6 @@ import React from 'react'
 import { renderRoutes } from 'react-router-config'
 import { Router } from 'react-router-dom'
 import * as Sentry from '@sentry/react'
-import { Integrations } from '@sentry/tracing'
 
 import GoogleAnalytics from './components/GoogleAnalytics'
 import ScrollReset from './components/ScrollReset'
@@ -32,7 +31,9 @@ Sentry.init({
   enabled: isProductionBuild,
   environment: isProductionBuild ? getApiEnvironment() : 'development',
   release: `bos@${APP_VERSION}`,
-  integrations: [new Integrations.BrowserTracing()],
+  // Sentry 8 起 BrowserTracing 改為函式形式並併入 @sentry/react（2026/10/21 自 6 升到 11，不再需要 @sentry/tracing）；
+  // 預設只對同網域請求加追蹤標頭，與 6 版相同，不會對後端 API 多送 sentry-trace 標頭
+  integrations: [Sentry.browserTracingIntegration()],
   tracesSampleRate: 0.1,
 })
 
