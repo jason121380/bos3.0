@@ -17,7 +17,7 @@ import React, {
   useState,
 } from 'react'
 
-import WalletDepositModal from './WalletDepositModal'
+import WalletDepositModal from 'views/OrderShared/WalletDepositModal'
 
 const styles = {
   field: 'w-[120px] flex justify-start',

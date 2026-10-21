@@ -9,7 +9,7 @@ import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import idx from 'idx'
 
 import CouponSells from './CouponSells'
-import CouponSellModal from './CouponSellModal'
+import CouponSellModal from 'views/OrderShared/EditCouponSellModal'
 
 
 export default function PannelCouponSells() {

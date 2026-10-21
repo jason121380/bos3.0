@@ -6,9 +6,11 @@ import useFetchGetThirdPartTicketSetting from 'hooks/useFetchGetThirdPartTicketS
 import PannelCouponSells from './PannelCouponSells'
 import PannelCouponUse from './PannelCouponUse'
 import PannelMerchantSells from './PannelMerchantSells'
-import PannelPayment from './PannelPayment'
+import PannelPayment from 'views/OrderShared/PannelPayment'
+import Payment from './Payment'
 import PannelService from './PannelService'
-import PannelRemark from './PannelRemark'
+import PannelRemark from 'views/OrderShared/PannelRemark'
+import Remark from './Remark'
 import PannelMemberShipCardSells from './PannelMemberShipCardSells'
 import PannelBonus from "./PannelBonus";
 
@@ -54,8 +56,8 @@ export default function SimpleAccordion({ children }) {
               bonusActive={bonusActive}
             />
           }
-          {otherPayLimit > 0 && <PannelPayment />}
-          <PannelRemark />
+          {otherPayLimit > 0 && <PannelPayment Payment={Payment} />}
+          <PannelRemark Remark={Remark} />
         </div>
         <div className="flex min-w-0 flex-col gap-[12px]">
           {children}

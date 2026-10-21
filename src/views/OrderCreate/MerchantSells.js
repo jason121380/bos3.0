@@ -13,7 +13,7 @@ import TeachingModeContext from 'context/teachingModeContext'
 import { useFetchThirdPartysForCreateOrder } from 'hooks/useFetchMerchant'
 import billContext from 'context/keyInContext'
 
-import ProductsModal from './ProductsModal'
+import ProductsModal from 'views/OrderShared/ProductsModal'
 
 const styles = {
   merchantSells: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',

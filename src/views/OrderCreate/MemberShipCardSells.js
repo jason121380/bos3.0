@@ -16,7 +16,7 @@ import { useFetchGetMembershipCategories } from "hooks/useFetchGetMembershipCate
 import { MobileDatePicker } from 'ui/date-picker'
 import billContext from 'context/keyInContext'
 
-import MemberShipCardSellsModal from "./MemberShipCardSellsModal";
+import MemberShipCardSellsModal from "views/OrderShared/MemberShipCardSellsModal";
 
 const styles = {
   merchantSells: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',

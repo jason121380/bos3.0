@@ -11,7 +11,7 @@ import useFetchGetIsHelperDesignationSetting from 'hooks/useFetchGetIsHelperDesi
 import idx from 'idx'
 import produce from 'immer'
 
-import ServicesModal from './ServicesModal'
+import ServicesModal from 'views/OrderShared/EditServicesModal'
 import Services from './Services'
 
 export default function PannelService({ thirdPartTicket }) {

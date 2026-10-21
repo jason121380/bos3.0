@@ -12,7 +12,7 @@ import produce from 'immer'
 import TeachingModeContext from 'context/teachingModeContext'
 import billContext from 'context/keyInContext'
 
-import ProductsModal from './ProductsModal'
+import ProductsModal from 'views/OrderShared/ProductsModal'
 
 // 版面比照打帳單（views/OrderCreate/styles/MerchantSells）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
 // 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px；pxToRem 以 16px 換算）。自動完成元件的 className 原以 css={className} 套在根節點
