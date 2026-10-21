@@ -66,7 +66,7 @@ function Results({ className, status, submitData, setSubmitData, ...rest }) {
               type='number'
               className="tabular-nums"
               onFocus={e => e.target.select()}
-              onChange={e => setSubmitData({ ...submitData, paidFixed: parseInt(Math.abs(e.target.value)) })}
+              onChange={e => setSubmitData({ ...submitData, paidFixed: parseInt(Math.abs(e.target.value), 10) })}
               min={0}
               onWheel={() => document.activeElement.blur()}
             />
@@ -99,7 +99,7 @@ function Results({ className, status, submitData, setSubmitData, ...rest }) {
                   className="tabular-nums"
                   value={submitData.retrieveFixed}
                   onFocus={e => e.target.select()}
-                  onChange={e => setSubmitData({ ...submitData, retrieveFixed: parseInt(Math.abs(e.target.value)) })}
+                  onChange={e => setSubmitData({ ...submitData, retrieveFixed: parseInt(Math.abs(e.target.value), 10) })}
                   onWheel={() => document.activeElement.blur()}
                 />
               </Field>) :
@@ -111,7 +111,7 @@ function Results({ className, status, submitData, setSubmitData, ...rest }) {
                       type='number'
                       className="tabular-nums"
                       value={d.threshold}
-                      onChange={e => handleEditRow(index, parseInt(Math.abs(e.target.value)), 'threshold')}
+                      onChange={e => handleEditRow(index, parseInt(Math.abs(e.target.value), 10), 'threshold')}
                       onFocus={e => e.target.select()}
                       onWheel={() => document.activeElement.blur()}
                     />
@@ -122,7 +122,7 @@ function Results({ className, status, submitData, setSubmitData, ...rest }) {
                       type='number'
                       className="tabular-nums"
                       value={d.price}
-                      onChange={e => handleEditRow(index, parseInt(Math.abs(e.target.value)), 'price')}
+                      onChange={e => handleEditRow(index, parseInt(Math.abs(e.target.value), 10), 'price')}
                       onFocus={e => e.target.select()}
                       onWheel={() => document.activeElement.blur()}
                     />

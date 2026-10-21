@@ -86,7 +86,7 @@ function AboutService({ className, onChange, coupon, ...rest }) {
               onChange({
                 event: {
                   target: {
-                    value: idx(event, _ => parseInt(_.target.value)),
+                    value: idx(event, _ => parseInt(_.target.value, 10)),
                   },
                 },
                 key: 'price',

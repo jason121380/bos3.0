@@ -263,7 +263,7 @@ export default function Results({
                         {data.user.name}
                       </TableCell>
                       {rawTime.map(time => {
-                        return showTagData(parseInt(time), data, dataIndex)
+                        return showTagData(parseInt(time, 10), data, dataIndex)
                       })}
                     </TableRow>
                   )

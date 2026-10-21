@@ -1,12 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10211430）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10211447）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
+
+- **F1 前端正確性收尾**（2026/10/21，v3.10211439，Jason「前端可以先改的先處理」，純前端）：①`eslint-check` 全站 error 21→**0**：15 處 `produce` 內以逗號串接的指定（`draft.a = 1, draft.b = 2`）改成逐行敘述（52 行）、`FastCheckOrdersModal` onClick 的逗號運算式改分號、3 處裸 `location` 改 `window.location`、`QueueOrderEdit/MerchantSells` 一個永遠為 false 的 `autoFocus={focus === 'thirdParty'}`（`focus` 不是 state，是 `window.focus`）移除。②`parseInt` 補 radix 10：56 檔 182 處（平衡括號掃描，頂層無逗號者；唯一的 16 進位在 `CalendarColorClip` 本來就有 radix）。③非 GraphQL 的 Promise 補 catch 3 處（列印用商家 logo `fetch`×2、GettingStarted 文件 `fetch`），行為不變只消除未處理的 Promise 錯誤；**GraphQL mutation 的 `.then` 無 catch（46 處）不補**——errorLink 已統一跳錯誤提示，再 catch 會重複提示，健康報告把它列為缺口是誤判（MEMORY #179）。④`lint:build` 加入 `react-hooks/rules-of-hooks: error`（全站 0，之後新程式違反會擋 build）。AddCustomerModal 的 keydown 監聽疊加在健康報告批次已用 `useCallback` 固定參照修好，不再動。驗證：差異正規化後刪除／新增行完全對稱、62 檔／341 測試、lint:build、build 通過。**無待實機**。
 
 - **用詞與日期格式統一**（2026/10/21，v3.10211413，Jason「do all」第 3 項，純畫面）：①結帳單據一律「帳單」：73 處「訂單」改「帳單」（帳單日期、帳單編號、帳單來源、帳單紀錄／列表、帳單明細、月結帳單、刪除／編輯帳單密碼、消費分析的帳單數…，含 CSV 欄名與「帳單列表.csv」檔名）；保留功能名「訂單佇列」（含彈窗內文）、網路訂單、「取消訂單(預約)」、EHS 電商頁；GraphQL 欄位、變數、`data-testid` 不動。②顯示與匯出日期一律 `yyyy/MM/dd`：12 處 `MM/dd/yyyy`／`yyyy-MM-dd`＋Codex 兩輪指出後補改 13 處單位數 `yyyy/M/d`（會員卡販賣報表、活動券、消費紀錄、客資建立時間、盤點單建立時間、活動規則期間、盤點檢視頁螢幕標題；雙引號寫法要另外搜；同檔有列印區塊時要看該行所在區塊是 noprint 還是列印）與 1 處 `yyyy/M` 月結備註月份（顧客詳細的消費／卡券／入金表格、個人頁帳單與打卡、會計紀錄與員工領料 CSV、網路訂單 CSV）改掉；**列印範本內約 40 處 `yyyy-MM-dd-HH:mm`（`merchantNamePrint` 表頭、日報表卡片、薪資條、盤點表）依鐵則不動**，日期選擇器的值解析（`SystemUpdateRecord*`）與 `ui/calendar` 內部屬性不動。規則寫進 STYLE.md「文案」。驗證：82 行改動經機械比對每行只差用詞或格式字串；`verify-logic` 的 FAIL 全為這些字串字面值；62 檔／341 測試（`orderRequirements` 測試的「訂單日期」同步改「帳單日期」）、lint:build 通過。**待實機（唯讀）**：打帳單「帳單日期」「帳單來源」標籤、顧客詳細消費紀錄日期顯示 `yyyy/MM/dd`、系統參數「開單設定」各標籤文字、報表匯出 CSV 欄名。
 

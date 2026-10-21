@@ -196,7 +196,6 @@ export default function MerchantSells({
                     fieldProps={{ placeholder: '第三方卡券' }}
                     className="!mr-[12px] flex !min-w-[150px]"
                     value={sells.thirdPartyCouponMerchantId}
-                    autoFocus={focus === 'thirdParty'}
                     name="thirdParty"
                     onChange={e => selectThirdParty(e)}
                     inputProps={{

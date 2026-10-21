@@ -140,10 +140,10 @@ function ProductsModal({
             product.total = priceValue * product.count
             const existedIndex = selectedProducts.map(d => d.productId).indexOf(id)
             if (existedIndex != -1) {
-              selectedProducts[existedIndex].cost = parseInt(e.target.value) || 1
+              selectedProducts[existedIndex].cost = parseInt(e.target.value, 10) || 1
 
               selectedProducts[existedIndex].total =
-                parseInt(e.target.value) * selectedProducts[existedIndex].count
+                parseInt(e.target.value, 10) * selectedProducts[existedIndex].count
             }
 
             break
@@ -153,9 +153,9 @@ function ProductsModal({
             product.total = countValue * product.cost
             const existedIndex1 = selectedProducts.map(d => d.productId).indexOf(id)
             if (existedIndex1 != -1) {
-              selectedProducts[existedIndex1].count = parseInt(e.target.value) || 1
+              selectedProducts[existedIndex1].count = parseInt(e.target.value, 10) || 1
               selectedProducts[existedIndex1].total =
-                parseInt(e.target.value) * selectedProducts[existedIndex1].cost
+                parseInt(e.target.value, 10) * selectedProducts[existedIndex1].cost
             }
 
             break

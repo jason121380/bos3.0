@@ -63,9 +63,9 @@ const CustomerSendEventTicket = () => {
     try {
       setOpenSnack(
         produce(draft => {
-          draft.open = true,
-            draft.severity = 'warning',
-            draft.message = '資料建立中請稍候'
+          draft.open = true
+          draft.severity = 'warning'
+          draft.message = '資料建立中請稍候'
         })
       )
       if (!cellphone.match(/^[0-9]{5,20}$/)) throw new Error('電話格式有誤: 請輸入5-20碼的數字。')
@@ -92,9 +92,9 @@ const CustomerSendEventTicket = () => {
         restPage()
         setOpenSnack(
           produce(draft => {
-            draft.open = true,
-              draft.severity = 'success',
-              draft.message = '發券成功'
+            draft.open = true
+            draft.severity = 'success'
+            draft.message = '發券成功'
           })
         )
       }
@@ -102,9 +102,9 @@ const CustomerSendEventTicket = () => {
       setIsClick(false)
       setOpenSnack(
         produce(draft => {
-          draft.open = true,
-            draft.severity = 'error',
-            draft.message = error.message
+          draft.open = true
+          draft.severity = 'error'
+          draft.message = error.message
         })
       )
     } finally {
@@ -169,7 +169,7 @@ const CustomerSendEventTicket = () => {
               type="tel"
               onChange={e => {
                 if (e.target.value.match(/^[0-9]+$/) || e.target.value === '') {
-                  handleSetInputValue(parseInt(e.target.value) ? parseInt(e.target.value) : '', 'count')
+                  handleSetInputValue(parseInt(e.target.value, 10) ? parseInt(e.target.value, 10) : '', 'count')
                 }
               }}
             />

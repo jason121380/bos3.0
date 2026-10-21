@@ -156,7 +156,7 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
                 value={walletDepositData.money}
                 onFocus={e => e.target.select()}
                 onChange={e => {
-                  const value = parseInt(Math.abs(e.target.value))
+                  const value = parseInt(Math.abs(e.target.value), 10)
                   handleWalletDepositDataChange({ key: 'money', value })
                 }}
                 onWheel={() => document.activeElement.blur()}

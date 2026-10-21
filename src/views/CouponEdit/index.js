@@ -21,7 +21,7 @@ import AboutCoupon from './AboutCoupon'
 import AboutDeduction from './AboutDeduction'
 
 function ServiceCategoryEdit({ match }) {
-  const isDuplicate = location.href.includes('duplicate')
+  const isDuplicate = window.location.href.includes('duplicate')
   const deductionDisplay = useSelector(state => state.deductionDisplay.coupon)
   const merchantId = localStorage.getItem('userMerchant')
     ? JSON.parse(localStorage.getItem('userMerchant')).id

@@ -147,7 +147,7 @@ function AboutSettingFunction({
 
   const getLink = () => {
     const merchantId = JSON.parse(localStorage.getItem('userMerchant')).id
-    const url = `${location.origin}/customer/self-create/${merchantId}`
+    const url = `${window.location.origin}/customer/self-create/${merchantId}`
     return url
   }
 

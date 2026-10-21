@@ -5,7 +5,7 @@ const formatMoney = (amount, decimalCount = 2) => {
       (amount = Math.abs(Number(amount) || 0).toFixed(
         isNaN(Math.abs(decimalCount)) ? 2 : decimalCount
       ))
-    ).toString()
+    , 10).toString()
     const j = i.length > 3 ? i.length % 3 : 0
     return (
       negativeSign +

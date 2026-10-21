@@ -21,10 +21,10 @@ function OrderRecord({
 
   useEffect(() => {
     const sortByNumber = helperReport
-      .filter(data => !isNaN(parseInt(data.user.designerNo)) && data.user.designerNo.length > 0)
+      .filter(data => !isNaN(parseInt(data.user.designerNo, 10)) && data.user.designerNo.length > 0)
       .sort((a, b) => a.user.designerNo - b.user.designerNo)
     const sortByCharacter = helperReport
-      .filter(data => isNaN(parseInt(data.user.designerNo)) && data.user.designerNo.length > 0)
+      .filter(data => isNaN(parseInt(data.user.designerNo, 10)) && data.user.designerNo.length > 0)
       .sort((a, b) =>
         a.user.designerNo.localeCompare(b.user.designerNo, 'en', { sensitivity: 'base' })
       )

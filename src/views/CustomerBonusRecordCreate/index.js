@@ -48,7 +48,7 @@ function CustomerBonusRecordCreate() {
       setIsClick(false)
     } else {
       AddCustomerBonus({
-        input: { ...submitData, bonus: parseInt(submitData.bonus) }
+        input: { ...submitData, bonus: parseInt(submitData.bonus, 10) }
       }).then(res => {
         if (res.data.addCustomerBonus) {
           openSnackbar({

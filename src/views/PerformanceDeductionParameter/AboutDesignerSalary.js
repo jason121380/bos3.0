@@ -271,7 +271,7 @@ export default function AboutDesignerSalary({ className,
         handleServiceChange({ changedData: newService.point, key: 'point' })
         break
       case 'pointValue':
-        newService.point[index].pointValue = parseInt(event.target.value)
+        newService.point[index].pointValue = parseInt(event.target.value, 10)
         handleServiceChange({ changedData: newService.point, key: 'point' })
         break
       case 'deductionId':

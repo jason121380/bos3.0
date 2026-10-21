@@ -26,7 +26,7 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
     }
     switch (rakeType) {
       case 'thresholdLowerLimit':
-        if (parseInt(event.target.value) < 0) {
+        if (parseInt(event.target.value, 10) < 0) {
           event.target.value = 0
           openSnackbar({
             message: '請輸入0以上的數字',
@@ -35,7 +35,7 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
         }
         break
       case 'thresholdUpperLimit':
-        if (parseInt(event.target.value) < 0) {
+        if (parseInt(event.target.value, 10) < 0) {
           event.target.value = 0
           openSnackbar({
             message: '請輸入0以上的數字',
@@ -44,7 +44,7 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
         }
         break
       case 'threshold':
-        if (parseInt(event.target.value) < 0) {
+        if (parseInt(event.target.value, 10) < 0) {
           event.target.value = 0
           openSnackbar({
             message: '請輸入0以上的數字',
@@ -53,7 +53,7 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
         }
         break
       case 'rake':
-        if (parseInt(event.target.value) > 100 || parseInt(event.target.value) < 0) {
+        if (parseInt(event.target.value, 10) > 100 || parseInt(event.target.value, 10) < 0) {
           event.target.value = 0
           openSnackbar({
             message: '請輸入0~100之間的數字',
@@ -322,7 +322,7 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
     newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.forEach(
       (data, index2) => {
         if (index === index2) {
-          data.threshold = parseInt(event.target.value)
+          data.threshold = parseInt(event.target.value, 10)
         }
       }
     )
@@ -333,7 +333,7 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
     const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.nonSegmented[deductionIndex].rakeData.designate.forEach((data, index2) => {
       if (index === index2) {
-        data.threshold = parseInt(event.target.value)
+        data.threshold = parseInt(event.target.value, 10)
       }
     })
     onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
@@ -343,7 +343,7 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
     const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.forEach((data, index2) => {
       if (index === index2) {
-        data.threshold = parseInt(event.target.value)
+        data.threshold = parseInt(event.target.value, 10)
       }
     })
     onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
@@ -387,11 +387,11 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
       if (index === index2) {
         switch (rakeType) {
           case 'thresholdLowerLimit':
-            data.thresholdLowerLimit = parseInt(event.target.value)
+            data.thresholdLowerLimit = parseInt(event.target.value, 10)
             onChange({ value: newProfitSharing.segmented, key: 'segmented' })
             break
           case 'thresholdUpperLimit':
-            data.thresholdUpperLimit = parseInt(event.target.value)
+            data.thresholdUpperLimit = parseInt(event.target.value, 10)
             onChange({ value: newProfitSharing.segmented, key: 'segmented' })
             break
           case 'rake':
@@ -411,11 +411,11 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
       if (index === index2) {
         switch (rakeType) {
           case 'thresholdLowerLimit':
-            data.thresholdLowerLimit = parseInt(event.target.value)
+            data.thresholdLowerLimit = parseInt(event.target.value, 10)
             onChange({ value: newProfitSharing.segmented, key: 'segmented' })
             break
           case 'thresholdUpperLimit':
-            data.thresholdUpperLimit = parseInt(event.target.value)
+            data.thresholdUpperLimit = parseInt(event.target.value, 10)
             onChange({ value: newProfitSharing.segmented, key: 'segmented' })
             break
           case 'rake':
@@ -435,11 +435,11 @@ function Results({ className, profitSharing, onChange, attributions, ...rest }) 
       if (index === index2) {
         switch (rakeType) {
           case 'thresholdLowerLimit':
-            data.thresholdLowerLimit = parseInt(event.target.value)
+            data.thresholdLowerLimit = parseInt(event.target.value, 10)
             onChange({ value: newProfitSharing.segmented, key: 'segmented' })
             break
           case 'thresholdUpperLimit':
-            data.thresholdUpperLimit = parseInt(event.target.value)
+            data.thresholdUpperLimit = parseInt(event.target.value, 10)
             onChange({ value: newProfitSharing.segmented, key: 'segmented' })
             break
           case 'rake':

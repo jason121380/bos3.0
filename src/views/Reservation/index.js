@@ -16,10 +16,10 @@ function Reservation({ match, location }) {
   const [values, setValues] = React.useState({
     merchantId,
     date: getQueryString({ key: 'date', location })
-    ? new Date(parseInt(getQueryString({ key: 'date', location }))).getTime()
+    ? new Date(parseInt(getQueryString({ key: 'date', location }), 10)).getTime()
     : new Date().getTime(),
     dateTime: getQueryString({ key: 'date', location })
-    ? new Date(parseInt(getQueryString({ key: 'date', location }))).getTime()
+    ? new Date(parseInt(getQueryString({ key: 'date', location }), 10)).getTime()
     : '',
     reference: '',
     designerId: getQueryString({ key: 'designerId', location })
@@ -81,10 +81,10 @@ function Reservation({ match, location }) {
       setValues({
         merchantId,
         date: getQueryString({ key: 'date', location })
-        ? new Date(parseInt(getQueryString({ key: 'date', location }))).getTime()
+        ? new Date(parseInt(getQueryString({ key: 'date', location }), 10)).getTime()
         : new Date().getTime(),
         dateTime: getQueryString({ key: 'date', location })
-        ? new Date(parseInt(getQueryString({ key: 'date', location }))).getTime()
+        ? new Date(parseInt(getQueryString({ key: 'date', location }), 10)).getTime()
         : '',
         reference: '',
         designerId: getQueryString({ key: 'designerId', location })

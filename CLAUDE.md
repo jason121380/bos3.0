@@ -29,7 +29,7 @@ BOS 3.0 是美業 ERP 的純前端 SPA（Vite 5 + React 17 + Apollo GraphQL + Re
 npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps（CI／Docker 用 npm ci --legacy-peer-deps）
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
-npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base，0 warning）
+npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base＋react-hooks/rules-of-hooks 為 error，0 warning）
 CI=true npm run test:nowatch         # 全部單元測試（基準：62 檔／341 測試全數通過）
 TZ=America/Los_Angeles CI=true npm run test:nowatch   # 時區相關修改要另在海外時區跑一次
 CI=true npm run test:coverage        # 覆蓋率（門檻為現況下限＋金額／API 模組逐檔門檻，見 package.json）
@@ -79,12 +79,13 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - `overflow-x:auto` 會連帶裁掉上下溢出內容（浮動標籤、外側焦點框），因此標籤統一放欄位上方；捲動容器內的元件焦點框用 `focus-visible:ring-inset`（`ui/tabs` 已內建，MEMORY #171）。
 - MUI Autocomplete：沒有選項／載入中時 `aria-expanded=false` 但彈出層可見（MUI 行為）；選項標籤相同會造成重複 key，要自己給 `key`。
 - 讀查詢結果前先防呆：API 失敗時 `data` 為 undefined，直接 `.filter`／`.map` 會讓整頁拋錯（版面層已加防呆與錯誤邊界，頁面層仍要注意）。
-- `.then(fn, openSnackbar(...))` 的第二參數會在送出當下就執行；成功後才做的事一律寫在第一個 callback 內。
+- `.then(fn, openSnackbar(...))` 的第二參數會在送出當下就執行；成功後才做的事一律寫在第一個 callback 內。GraphQL mutation 的 `.then` 沒接 `.catch` 不必補：`init-apollo` 的 errorLink 已對每個 GraphQL／網路錯誤跳提示，頁面再 catch 會重複提示；只有非 GraphQL 的 Promise（`fetch`、LIFF SDK）要自己接 catch。
+- `parseInt` 一律帶 radix 10（2026/10/21 已全站補齊 182 處，`lint:build` 的 `radix` 規則未開，靠 review）。
 - 時區：沒有時區的數字格式字串（`2026/10/21 10:00`、`2026-10-21T10:00`）照字面當台灣時間解讀；英文月份等其他格式仍先經裝置時區（日光節約切換時可能差一小時），不要用；只有日期的 ISO 字串（`2026-10-21`）依規格是 UTC 午夜；要表示台灣某一天的開始用 `new Date(年, 月-1, 日)` 或 date-fns，不要自己加減時差。改 `business-timezone.js` 要在有日光節約的時區（`TZ=America/Los_Angeles`、`America/Santiago`）跑測試（MEMORY #169）。
 - Playwright 的 headless Chromium 畫不出捲軸，捲軸類修正只能看 CSS 規則，需在真實瀏覽器確認。驗證時區可用 `browser.newContext({ timezoneId })` 與 `page.clock.install({ time })`。
 - 背景伺服器用 PID 關閉：命令列本身含相同字串時 `pgrep -f`／`pkill -f` 也會抓到自己的 shell；用 `ps -eo pid,args | awk '/pattern/ && !/awk/'` 取 PID。dev server 啟動前清 log，啟動後用 `curl` 確認。
 - 新程式用到較新的瀏覽器功能（如 `structuredClone`、`Array.prototype.findLast`、`Object.hasOwn`、`crypto.randomUUID`）時，先確認 Safari 14 是否支援；不支援就在 `lib/polyfills.js` 補，或改寫法（2026/10/21 起不再載入整包 core-js）。
-- 元件一律大寫開頭（不要 `const index = () =>`），自訂 hook 一律 `use` 開頭、不是 hook 的函式不要用 `use` 開頭：`react-hooks/rules-of-hooks` 靠名稱判斷，命名錯會誤報（10 個 `index` 元件曾被報成 67 個「條件式呼叫」）或漏報。`eslint-check` 全站 rules-of-hooks 現為 0，新程式不要再加；`lint:build` 不含這條規則，要自己跑 `eslint-check`。
+- 元件一律大寫開頭（不要 `const index = () =>`），自訂 hook 一律 `use` 開頭、不是 hook 的函式不要用 `use` 開頭：`react-hooks/rules-of-hooks` 靠名稱判斷，命名錯會誤報（10 個 `index` 元件曾被報成 67 個「條件式呼叫」）或漏報。2026/10/21 起 `lint:build` 已把 `react-hooks/rules-of-hooks` 設為 error（全站 0），新程式違反會擋 build；`exhaustive-deps` 仍只在 `eslint-check` 以 warning 顯示。
 - `setupTests.js` 的 localStorage 假物件 `setItem` 會再 `JSON.stringify` 一次（與瀏覽器不同）；需要真實行為的測試在 `beforeEach` 以 `jest.spyOn` 改寫（CRA 的 `resetMocks` 會在每個測試前清掉 mock 實作，寫在 `beforeAll` 無效）。
 - 刪檔前用「從 `src/index.js` 走訪 import 圖」找出到不了的檔案，並以完整檔名搜尋字串引用；scss／css 的 `@import`／`@use`／`url()` 也是引用（本地檔不見時 Vite 可能改抓同名 npm 套件，build 照樣成功，MEMORY #172⑦）；`public/` 的檔案可能被外部網址引用，刪前確認用途。
 - lodash 一律逐方法引入（`import cloneDeep from 'lodash/cloneDeep'`），不要 `import _ from 'lodash'`／`import { x } from 'lodash'`：整包 71 KB 會進入口 chunk（2026/10/21 已全面改掉，目前只用 `cloneDeep`、`clone`、`findIndex`）。`idx(x, _ => _.data)` 的 `_` 是箭頭參數，不是 lodash。

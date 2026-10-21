@@ -18,7 +18,7 @@ import AboutProduct from './AboutProduct'
 import AboutSalesProduct from './AboutSalesProduct'
 
 export default function ProductCreate({ match }) {
-  const isDuplicate = location.href.includes('duplicate')
+  const isDuplicate = window.location.href.includes('duplicate')
   const itemId = match.params.id
   const products = useFetchProducts()
   const productDetail = useFetchProduct({ productId: itemId })

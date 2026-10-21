@@ -93,24 +93,24 @@ function ProductsModal({
     const productForModified = cloneDeep(selectedCategorieId)
     switch (e.target.name) {
       case 'price':
-        productForModified[index].price = parseInt(e.target.value) || 0
+        productForModified[index].price = parseInt(e.target.value, 10) || 0
         productForModified[index].total = productForModified[index].price * productForModified[index].count
         const existedIndex = selectedProducts.map(d => d.productId).indexOf(id)
         if (existedIndex != -1) {
-          selectedProducts[existedIndex].price = parseInt(e.target.value) || 1
+          selectedProducts[existedIndex].price = parseInt(e.target.value, 10) || 1
 
           selectedProducts[existedIndex].total =
-            parseInt(e.target.value) * selectedProducts[existedIndex].count
+            parseInt(e.target.value, 10) * selectedProducts[existedIndex].count
         }
         break
       case 'count':
-        productForModified[index].count = parseInt(e.target.value) || 1
+        productForModified[index].count = parseInt(e.target.value, 10) || 1
         productForModified[index].total = productForModified[index].count * productForModified[index].price
         const existedIndex1 = selectedProducts.map(d => d.productId).indexOf(id)
         if (existedIndex1 != -1) {
-          selectedProducts[existedIndex1].count = parseInt(e.target.value) || 1
+          selectedProducts[existedIndex1].count = parseInt(e.target.value, 10) || 1
           selectedProducts[existedIndex1].total =
-            parseInt(e.target.value) * selectedProducts[existedIndex1].price
+            parseInt(e.target.value, 10) * selectedProducts[existedIndex1].price
         }
         break
       case 'selected':

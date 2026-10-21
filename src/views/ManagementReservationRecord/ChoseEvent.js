@@ -1006,7 +1006,7 @@ export default function ChoseEvent({
               onChange={e =>
                 setLimitCount({
                   ...limitCount,
-                  limit: parseInt(e.target.value),
+                  limit: parseInt(e.target.value, 10),
                 })
               }
             />

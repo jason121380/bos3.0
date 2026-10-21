@@ -12,7 +12,7 @@ function NonDesignationBookingLimitSetting({
   const handleInputChange = (event, key) => {
     setAboutBooking(
       produce( draft => {
-        draft[key] = parseInt(event.target.value === "" ? 0 : Math.abs(event.target.value))
+        draft[key] = parseInt(event.target.value === "" ? 0 : Math.abs(event.target.value), 10)
       })
     )
   }

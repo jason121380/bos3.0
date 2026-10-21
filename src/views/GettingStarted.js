@@ -10,6 +10,7 @@ function GettingStarted() {
     fetch('/docs/GettingStarted.md')
       .then(response => response.text())
       .then(text => setSource(text))
+      .catch(() => {}) // 文件抓不到就維持空白（開發用頁面），不留下未處理的 Promise 錯誤
   }, [])
 
   return (
