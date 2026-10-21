@@ -133,7 +133,8 @@ function CustomerManagementDetails({ match, history }) {
         setOrderList(orders)
       }
     }
-  }, [orderStaticDetail.loading, getCustomerOrders.data])
+    // 含 getCustomerOrders.loading：重新查詢結果沒變時 data 不會換，但上面的 effect 會以不含明細的資料重設列表，這裡要再補一次明細
+  }, [orderStaticDetail.loading, getCustomerOrders.loading, getCustomerOrders.data])
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading && !getCustomerOrders.loading) {

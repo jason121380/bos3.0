@@ -30,14 +30,14 @@ const MoneyFlowCategoryReport = () => {
 
   useEffect(() => {
     if (!moneyFlowCategoryReportData.loading) {
-      // 複製再加「小結」列（查詢結果唯讀）
-      const report = cloneDeep(idx(
+      // 複製再加「小結」列（查詢結果唯讀）；下面的匯出也用這份，才有各分類的小結
+      const reportList = cloneDeep(idx(
         moneyFlowCategoryReportData,
         _ => _.data.moneyFlowCategoryReport.moneyFlowCategoryReport
       ))
 
-      report.forEach((data, index) => {
-        report[index].moneyFlow.push({
+      reportList.forEach((data, index) => {
+        reportList[index].moneyFlow.push({
           date: 0,
           expenditure: 0,
           remark: '',
@@ -45,21 +45,18 @@ const MoneyFlowCategoryReport = () => {
           subjectName: '小結',
           subjectNo: '',
           amount:
-            report[index].revenueSummary > 0
-              ? report[index].revenueSummary
-              : -Math.abs(report[index].expenditureSummary),
+            reportList[index].revenueSummary > 0
+              ? reportList[index].revenueSummary
+              : -Math.abs(reportList[index].expenditureSummary),
         })
       })
-      setReportWithAmount(report)
-    }
-  }, [moneyFlowCategoryReportData.loading])
-  useEffect(() => {
-    if (!moneyFlowCategoryReportData.loading) {
+      setReportWithAmount(reportList)
+
       const excelData = []
       const report = idx(moneyFlowCategoryReportData, _ => _.data.moneyFlowCategoryReport)
 
       setReportForDisplay(report)
-      report.moneyFlowCategoryReport.forEach(data => {
+      reportList.forEach(data => {
         data.moneyFlow.forEach(d => {
           if (d.subjectName !== '小結') {
             excelData.push({
