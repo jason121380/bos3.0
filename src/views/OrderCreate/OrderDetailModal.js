@@ -37,6 +37,7 @@ import useFetchGetQrcodeDisplayOnInvoice from 'hooks/useFetchGetQrcodeDisplayOnI
 import useFetchGetMessageDisplayOnInvoice from 'hooks/useFetchGetMessageDisplayOnInvoice'
 import QRCode from 'qrcode'
 import { handleTidyBill, checkServicesOrders, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
+import { formatNumber } from 'ui/format'
 
 const styles = {
   root: 'absolute top-[50%] left-[50%] [transform:translate(-50%,-50%)] [outline:none] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)] w-[500px] max-h-[100%] overflow-y-auto max-w-[100%]',
@@ -681,7 +682,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                         {service.name}
                       </Grid>
                       <Grid item xs={2}>
-                        {service.price}
+                        {formatNumber(service.price)}
                       </Grid>
                       {service.thirdPartyCoupon === null ? (
                         <Grid item xs={3}></Grid>
@@ -715,7 +716,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                         {`${product.name}*${product.count}`}
                       </Grid>
                       <Grid item xs={2}>
-                        {product.price * product.count}
+                        {formatNumber(product.price * product.count)}
                       </Grid>
                       {product.thirdPartyCoupon === null ? (
                         <Grid item xs={3}></Grid>
@@ -749,7 +750,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                         {`${sellTicket.name}含(${sellTicket.availableCount})次*${sellTicket.count}`}
                       </Grid>
                       <Grid item xs={2}>
-                        {sellTicket.price * sellTicket.count}
+                        {formatNumber(sellTicket.price * sellTicket.count)}
                       </Grid>
                       <Grid item xs={3}></Grid>
                     </Fragment>
@@ -777,7 +778,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                         {useTicket.name}
                       </Grid>
                       <Grid item xs={2}>
-                        {useTicket.price}
+                        {formatNumber(useTicket.price)}
                       </Grid>
                       <Grid item xs={3}></Grid>
                     </Fragment>
@@ -806,7 +807,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                       {memberShipCard.name}
                     </Grid>
                     <Grid item xs={2}>
-                      {memberShipCard.price}
+                      {formatNumber(memberShipCard.price)}
                     </Grid>
                     <Grid item xs={2}></Grid>
                   </Fragment>
@@ -863,7 +864,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                       扣入金
                     </Grid>
                     <Grid item xs={2}>
-                      {bill.walletPay}
+                      {formatNumber(bill.walletPay)}
                     </Grid>
                     <Grid item xs={3}></Grid>
                   </Grid>
@@ -875,7 +876,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                       入金剩餘
                     </Grid>
                     <Grid item xs={2}>
-                      {walletPayBalanceForDetail}
+                      {formatNumber(walletPayBalanceForDetail)}
                     </Grid>
                     <Grid item xs={3}></Grid>
                   </Grid>
@@ -890,7 +891,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                 </Grid>
                 <Grid item xs={4}></Grid>
                 <Grid item xs={2} className={styles.detailBottomCash}>
-                  {cashPayment}
+                  {formatNumber(cashPayment)}
                 </Grid>
                 <Grid item xs={3}></Grid>
               </Grid>

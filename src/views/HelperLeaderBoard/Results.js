@@ -4,6 +4,7 @@ import { useState, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import roundDecimal from './../../helper/roundDecimal.js'
 import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as KeyboardArrowUpIcon } from 'ui/icons'
+import { formatNumber } from 'ui/format'
 
 const TABLE_COLUMNS = {
   EXPAND: '展開',
@@ -33,7 +34,7 @@ function Results({ report, performReference, displayReportWithMembership }) {
   const isOpen = (index) => open.includes(index)
   const getHasMergedDetails = data => data.mergedDetails?.length > 1
 
-  const renderRoundedCell = (value) => <TableCell numeric>{roundDecimal(value)}</TableCell>;
+  const renderRoundedCell = (value) => <TableCell numeric>{formatNumber(roundDecimal(value))}</TableCell>;
 
   const renderDetailsTable = (data) => (
     <Table dense>
@@ -64,7 +65,7 @@ function Results({ report, performReference, displayReportWithMembership }) {
 
   const renderTotalCell = (key) => (
     <TableCell numeric>
-      {Math.round(report.reduce((accu, curVal) => accu + (curVal[key] || 0), 0))}
+      {formatNumber(Math.round(report.reduce((accu, curVal) => accu + (curVal[key] || 0), 0)))}
     </TableCell>
   );
 

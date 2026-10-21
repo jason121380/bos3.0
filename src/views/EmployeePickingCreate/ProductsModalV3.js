@@ -6,6 +6,7 @@ import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTi
 import { Checkbox } from 'ui/checkbox'
 import { Input } from 'ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { formatNumber } from 'ui/format'
 
 function ProductsModal({
   productsModalOpen,
@@ -297,7 +298,7 @@ function ProductsModal({
                     {product.productCategory !== null ? product.productCategory.name : ''}
                   </TableCell>
                   <TableCell>{product.productName}</TableCell>
-                  <TableCell numeric>{product.total}</TableCell>
+                  <TableCell numeric>{formatNumber(product.total)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

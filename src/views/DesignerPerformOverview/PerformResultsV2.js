@@ -55,21 +55,21 @@ function Results({ className, results, excelData, attributeSwitchs, membershipDi
                   </TableCell> : null
                 }
                 <TableCell numeric>
-                  {Math.round(user.orderMaleCount)}/{user.orderFemaleCount}/
-                  {Math.round(user.orderUnknownCount)}
+                  {formatNumber(Math.round(user.orderMaleCount))}/{formatNumber(user.orderFemaleCount)}/
+                  {formatNumber(Math.round(user.orderUnknownCount))}
                 </TableCell>
                 <TableCell numeric>
-                  {Math.round(user.orderDesignateCount)}/{user.orderNonDesignatecount}
+                  {formatNumber(Math.round(user.orderDesignateCount))}/{formatNumber(user.orderNonDesignatecount)}
                 </TableCell>
                 <TableCell numeric>
-                  {Math.round(user.customerMaleCount)}/{user.customerFemaleCount}/
-                  {Math.round(user.customerUnknownCount)}
+                  {formatNumber(Math.round(user.customerMaleCount))}/{formatNumber(user.customerFemaleCount)}/
+                  {formatNumber(Math.round(user.customerUnknownCount))}
                 </TableCell>
                 {user.categoryData.map(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
                   if (attributeSwitchs[index]) {
                     return (
                       <TableCell numeric key={`${categoryName}-${index}`}>
-                        {`${Math.round(fakePerformance)}/${orderCount}/${Math.round(averagePerformance)}`}
+                        {`${formatNumber(Math.round(fakePerformance))}/${formatNumber(orderCount)}/${formatNumber(Math.round(averagePerformance))}`}
                       </TableCell>
                     )
                   }
@@ -97,24 +97,24 @@ function Results({ className, results, excelData, attributeSwitchs, membershipDi
               </TableCell> : null
             }
             <TableCell numeric>
-              {Math.round(results.wholeStore.orderMaleCount)}/
-              {results.wholeStore.orderFemaleCount}/
-              {Math.round(results.wholeStore.orderUnknownCount)}
+              {formatNumber(Math.round(results.wholeStore.orderMaleCount))}/
+              {formatNumber(results.wholeStore.orderFemaleCount)}/
+              {formatNumber(Math.round(results.wholeStore.orderUnknownCount))}
             </TableCell>
             <TableCell numeric>
-              {Math.round(results.wholeStore.orderDesignateCount)}/
-              {results.wholeStore.orderNonDesignatecount}
+              {formatNumber(Math.round(results.wholeStore.orderDesignateCount))}/
+              {formatNumber(results.wholeStore.orderNonDesignatecount)}
             </TableCell>
             <TableCell numeric>
-              {Math.round(results.wholeStore.customerMaleCount)}/
-              {results.wholeStore.customerFemaleCount}/
-              {Math.round(results.wholeStore.customerUnknownCount)}
+              {formatNumber(Math.round(results.wholeStore.customerMaleCount))}/
+              {formatNumber(results.wholeStore.customerFemaleCount)}/
+              {formatNumber(Math.round(results.wholeStore.customerUnknownCount))}
             </TableCell>
             {results.wholeStore.categoryData.map(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
               if (attributeSwitchs[index]) {
                 return (
                   <TableCell numeric key={`${categoryName}-${index}`}>
-                    {`${Math.round(fakePerformance)}/${orderCount}/${Math.round(averagePerformance)}`}
+                    {`${formatNumber(Math.round(fakePerformance))}/${formatNumber(orderCount)}/${formatNumber(Math.round(averagePerformance))}`}
                   </TableCell>
                 )
               }

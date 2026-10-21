@@ -7,6 +7,7 @@ import { openSnackbar } from 'elements/snackbars'
 import { useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import useFetchDeleteMerchantPointValueSetting from 'hooks/useFetchDeleteMerchantPointValueSetting'
+import { formatNumber } from 'ui/format'
 
 function HelperPointResults({ className, merchantPointValueSettings, merchantPointValueData, ...rest }) {
   const [selected, setSelected] = useState([])
@@ -96,7 +97,7 @@ function HelperPointResults({ className, merchantPointValueSettings, merchantPoi
                         </Button>
                       </TableCell>
                       <TableCell>{data.name}</TableCell>
-                      <TableCell numeric>{data.paidFixed}</TableCell>
+                      <TableCell numeric>{formatNumber(data.paidFixed)}</TableCell>
                       <TableCell>{retrievePointWay(data.retrievePointWay)}</TableCell>
                     </TableRow>
                   ))}

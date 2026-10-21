@@ -65,7 +65,7 @@ function Results({ className, results, excelData, attributeSwitchs, membershipDi
                   if (attributeSwitchs[index]) {
                     return (
                       <TableCell numeric key={`${categoryName}-${index}`}>
-                        {`${Math.round(fakePerformance)}/${orderCount}/${Math.round(averagePerformance)}`}
+                        {`${formatNumber(Math.round(fakePerformance))}/${formatNumber(orderCount)}/${formatNumber(Math.round(averagePerformance))}`}
                       </TableCell>
                     )
                   }

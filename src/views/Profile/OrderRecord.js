@@ -136,7 +136,7 @@ function OrderRecord({
                     {order.designerNo ? `/${order.designerNo}` : ''}
                   </TableCell>
                   <TableCell>{order.isDesignate ? 'Y' : 'N'}</TableCell>
-                  {raffleDisplay ? <TableCell numeric>{order.raffleCount}</TableCell> : null}
+                  {raffleDisplay ? <TableCell numeric>{formatNumber(order.raffleCount)}</TableCell> : null}
                   <TableCell numeric>
                     {formatNumber(Math.round(order.service))}
                     <div className="text-caption text-text-secondary">

@@ -33,7 +33,7 @@ export default function Results({ reportData, className }) {
           <TableRow key={`tableRow-${index}`}>
             <TableCell className={`${STICKY_COL} tabular-nums`}>{`${getYear(data.date)}/${getMonth(data.date) + 1}`}</TableCell>
             {data.serviceCategoriesPerformance.map((service, index) => (
-              <TableCell numeric key={`service-${index}`}>{`${service.performance} / ${service.count}`}</TableCell>
+              <TableCell numeric key={`service-${index}`}>{`${formatNumber(service.performance)} / ${formatNumber(service.count)}`}</TableCell>
             ))}
             <TableCell numeric>{formatNumber(data.cutomerCount)}</TableCell>
             <TableCell numeric>{formatNumber(data.productPerformance)}</TableCell>
@@ -44,7 +44,7 @@ export default function Results({ reportData, className }) {
         <TableRow>
           <TableCell className={`${STICKY_COL} font-bold`}>合計</TableCell>
           {reportData.businessItemsReportDataTotal.serviceCategoriesPerformance.map((service, index) => (
-            <TableCell numeric key={`Total-${index}`}>{`${service.performance} / ${service.count}`}</TableCell>
+            <TableCell numeric key={`Total-${index}`}>{`${formatNumber(service.performance)} / ${formatNumber(service.count)}`}</TableCell>
           ))}
           <TableCell numeric>{formatNumber(reportData.businessItemsReportDataTotal.cutomerCount)}</TableCell>
           <TableCell numeric>{formatNumber(reportData.businessItemsReportDataTotal.productPerformance)}</TableCell>
@@ -54,7 +54,7 @@ export default function Results({ reportData, className }) {
         <TableRow>
           <TableCell className={`${STICKY_COL} font-bold`}>指定</TableCell>
           {reportData.businessItemsReportDataDesignation.serviceCategoriesPerformance.map((service, index) => (
-            <TableCell numeric key={`designation-${index}`}>{`${service.performance} / ${service.count}`}</TableCell>
+            <TableCell numeric key={`designation-${index}`}>{`${formatNumber(service.performance)} / ${formatNumber(service.count)}`}</TableCell>
           ))}
           <TableCell numeric>{formatNumber(reportData.businessItemsReportDataDesignation.cutomerCount)}</TableCell>
           <TableCell numeric>{formatNumber(reportData.businessItemsReportDataDesignation.productPerformance)}</TableCell>
@@ -64,7 +64,7 @@ export default function Results({ reportData, className }) {
         <TableRow>
           <TableCell className={`${STICKY_COL} font-bold`}>不指定</TableCell>
           {reportData.businessItemsReportDataNonDesignation.serviceCategoriesPerformance.map((service, index) => (
-            <TableCell numeric key={`nonDesignation-${index}`}>{`${service.performance} / ${service.count}`}</TableCell>
+            <TableCell numeric key={`nonDesignation-${index}`}>{`${formatNumber(service.performance)} / ${formatNumber(service.count)}`}</TableCell>
           ))}
           <TableCell numeric>{formatNumber(reportData.businessItemsReportDataNonDesignation.cutomerCount)}</TableCell>
           <TableCell numeric>{formatNumber(reportData.businessItemsReportDataNonDesignation.productPerformance)}</TableCell>

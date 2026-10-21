@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from 'react'
 import idx from 'idx'
 import { addDays } from 'date-fns'
 import pagenationLabel from './../../helper/pagenationLabel'
+import { formatNumber } from 'ui/format'
 
 
 const MemberShipCardSellsModal = ({
@@ -189,7 +190,7 @@ const MemberShipCardSellsModal = ({
                   </TableCell>
                   <TableCell>{product.name}</TableCell>
                   <TableCell numeric>{product.effecitveDay}天</TableCell>
-                  <TableCell numeric>{product.sellPrice}</TableCell>
+                  <TableCell numeric>{formatNumber(product.sellPrice)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

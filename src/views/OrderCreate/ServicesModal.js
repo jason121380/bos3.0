@@ -7,6 +7,7 @@ import { useState, useEffect, memo, useRef } from 'react'
 import idx from 'idx'
 import { useLazyFetchService } from 'hooks/useFetchService'
 import pagenationLabel from './../../helper/pagenationLabel'
+import { formatNumber } from 'ui/format'
 
 function ServicesModal({
   servicesModalOpen,
@@ -212,7 +213,7 @@ function ServicesModal({
                   <TableCell>{data.no}</TableCell>
                   <TableCell>{idx(data, _ => _.serviceCategory.name)}</TableCell>
                   <TableCell>{data.name}</TableCell>
-                  <TableCell numeric>{data.price}</TableCell>
+                  <TableCell numeric>{formatNumber(data.price)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

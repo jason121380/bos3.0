@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { formatNumber } from 'ui/format'
 
 function Results({
   performReference,
@@ -41,24 +42,24 @@ function Results({
                     <span>{index + 1}</span>
                   </TableCell>
                   <TableCell>{data.storeName}</TableCell>
-                  <TableCell numeric>{Math.round(data.businessPerformanceTotal)}</TableCell>
+                  <TableCell numeric>{formatNumber(Math.round(data.businessPerformanceTotal))}</TableCell>
                   {monthlyAverageDisplayForMerchantLeaderBoard && (
-                    <TableCell numeric>{Math.round(data.monthlyAveragePerformance)}</TableCell>
+                    <TableCell numeric>{formatNumber(Math.round(data.monthlyAveragePerformance))}</TableCell>
                   )}
-                  <TableCell numeric>{Math.round(data.serviceTotal)}</TableCell>
-                  <TableCell numeric>{Math.round(data.designateServiceTotal)}</TableCell>
-                  <TableCell numeric>{Math.round(data.nonDesignateServiceTotal)}</TableCell>
-                  <TableCell numeric>{Math.round(data.usedTicketTotal)}</TableCell>
+                  <TableCell numeric>{formatNumber(Math.round(data.serviceTotal))}</TableCell>
+                  <TableCell numeric>{formatNumber(Math.round(data.designateServiceTotal))}</TableCell>
+                  <TableCell numeric>{formatNumber(Math.round(data.nonDesignateServiceTotal))}</TableCell>
+                  <TableCell numeric>{formatNumber(Math.round(data.usedTicketTotal))}</TableCell>
                   <TableCell numeric>
-                    {Math.round(
+                    {formatNumber(Math.round(
                       data.ticketSellIntoPerformanceDesignate +
                         data.ticketSellIntoPerformanceNonDesignate
-                    )}
+                    ))}
                   </TableCell>
-                  <TableCell numeric>{Math.round(data.productTotal)}</TableCell>
-                  {displayReportWithMembership && <TableCell numeric>{Math.round(data.membershipTotal)}</TableCell>}
+                  <TableCell numeric>{formatNumber(Math.round(data.productTotal))}</TableCell>
+                  {displayReportWithMembership && <TableCell numeric>{formatNumber(Math.round(data.membershipTotal))}</TableCell>}
                   <TableCell numeric>
-                    {Math.round(data.helperPaidPoint)}/{Math.round(data.helperPaidPrice)}
+                    {formatNumber(Math.round(data.helperPaidPoint))}/{formatNumber(Math.round(data.helperPaidPrice))}
                   </TableCell>
                 </TableRow>
               )
@@ -67,51 +68,51 @@ function Results({
             <TableCell className="font-bold">合計</TableCell>
             <TableCell />
             <TableCell numeric>
-              { Math.round(
+              { formatNumber(Math.round(
                 merchantLeaderBoard.merchantLeaderBoard
                   .map(data => data.businessPerformanceTotal)
                   .reduce((acc, curVal) => acc + curVal, 0)
-              )}
+              ))}
             </TableCell>
             {monthlyAverageDisplayForMerchantLeaderBoard && (
               <TableCell numeric>
-                {Math.round(
+                {formatNumber(Math.round(
                   merchantLeaderBoard.merchantLeaderBoard
                     .map(data => data.monthlyAveragePerformance)
                     .reduce((acc, curVal) => acc + curVal, 0)
-                )}
+                ))}
               </TableCell>
             )}
             <TableCell numeric>
-              {Math.round(
+              {formatNumber(Math.round(
                 merchantLeaderBoard.merchantLeaderBoard
                   .map(data => data.serviceTotal)
                   .reduce((acc, curVal) => acc + curVal, 0)
-              )}
+              ))}
             </TableCell>
             <TableCell numeric>
-              {Math.round(
+              {formatNumber(Math.round(
                 merchantLeaderBoard.merchantLeaderBoard
                   .map(data => data.designateServiceTotal)
                   .reduce((acc, curVal) => acc + curVal, 0)
-              )}
+              ))}
             </TableCell>
             <TableCell numeric>
-              {Math.round(
+              {formatNumber(Math.round(
                 merchantLeaderBoard.merchantLeaderBoard
                   .map(data => data.nonDesignateServiceTotal)
                   .reduce((acc, curVal) => acc + curVal, 0)
-              )}
+              ))}
             </TableCell>
             <TableCell numeric>
-              {Math.round(
+              {formatNumber(Math.round(
                 merchantLeaderBoard.merchantLeaderBoard
                   .map(data => data.usedTicketTotal)
                   .reduce((acc, curVal) => acc + curVal, 0)
-              )}
+              ))}
             </TableCell>
             <TableCell numeric>
-              {Math.round(
+              {formatNumber(Math.round(
                 merchantLeaderBoard.merchantLeaderBoard
                   .map(
                     data =>
@@ -119,32 +120,32 @@ function Results({
                       data.ticketSellIntoPerformanceNonDesignate
                   )
                   .reduce((acc, curVal) => acc + curVal, 0)
-              )}
+              ))}
             </TableCell>
             <TableCell numeric>
-              {Math.round(
+              {formatNumber(Math.round(
                 merchantLeaderBoard.merchantLeaderBoard
                   .map(data => data.productTotal)
                   .reduce((acc, curVal) => acc + curVal, 0)
-              )}
+              ))}
             </TableCell>
-            {displayReportWithMembership && <TableCell numeric>{Math.round(
+            {displayReportWithMembership && <TableCell numeric>{formatNumber(Math.round(
                 merchantLeaderBoard.merchantLeaderBoard
                   .map(data => data.membershipTotal)
                   .reduce((acc, curVal) => acc + curVal, 0)
-              )}</TableCell>}
+              ))}</TableCell>}
             <TableCell numeric>
-              {Math.round(
+              {formatNumber(Math.round(
                 merchantLeaderBoard.merchantLeaderBoard
                   .map(data => data.helperPaidPoint)
                   .reduce((acc, curVal) => acc + curVal, 0)
-              )}
+              ))}
               /
-              {Math.round(
+              {formatNumber(Math.round(
                 merchantLeaderBoard.merchantLeaderBoard
                   .map(data => data.helperPaidPrice)
                   .reduce((acc, curVal) => acc + curVal, 0)
-              )}
+              ))}
             </TableCell>
           </TableRow>
         </TableBody>

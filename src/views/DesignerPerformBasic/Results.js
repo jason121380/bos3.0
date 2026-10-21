@@ -4,6 +4,7 @@ import { KeyboardArrowDown as KeyboardArrowDownIcon, KeyboardArrowUp as Keyboard
 import { useState, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { isSameDay } from 'date-fns'
+import { formatNumber } from 'ui/format'
 
 function Results({
   report,
@@ -58,7 +59,7 @@ function Results({
 
   const getHasMergedDetails = data => data.mergedDetails.length > 1
 
-  const renderCell = (value, idx) => <TableCell numeric key={`cell-${idx}`}>{Math.round(value)}</TableCell>
+  const renderCell = (value, idx) => <TableCell numeric key={`cell-${idx}`}>{formatNumber(Math.round(value))}</TableCell>
 
   return (
     isSubmit &&
@@ -111,9 +112,9 @@ function Results({
                   membershipDisplay ? data.membershipTotal : null,
                 ].map((value, idx) => value !== null ? renderCell(value, idx) : null)}
                 <TableCell numeric>
-                  {Math.round(data.helperPaidPoint)}/{Math.round(data.helperPaidPrice)}
+                  {formatNumber(Math.round(data.helperPaidPoint))}/{formatNumber(Math.round(data.helperPaidPrice))}
                 </TableCell>
-                {dataDisplay.isDRROCDisplay && <TableCell numeric>{data.orderCount}</TableCell>}
+                {dataDisplay.isDRROCDisplay && <TableCell numeric>{formatNumber(data.orderCount)}</TableCell>}
               </TableRow>
               {hasMergedDetails &&
                 <TableRow className={isOpen(index) ? 'noprint' : 'noprint border-b-0'}>
@@ -147,9 +148,9 @@ function Results({
                                   membershipDisplay ? detail.membershipTotal : null,
                                 ].map((value, idx) => value !== null ? renderCell(value, idx) : null)}
                                 <TableCell numeric>
-                                  {Math.round(detail.helperPaidPoint)}/{Math.round(detail.helperPaidPrice)}
+                                  {formatNumber(Math.round(detail.helperPaidPoint))}/{formatNumber(Math.round(detail.helperPaidPrice))}
                                 </TableCell>
-                                {dataDisplay.isDRROCDisplay && <TableCell numeric>{detail.orderCount}</TableCell>}
+                                {dataDisplay.isDRROCDisplay && <TableCell numeric>{formatNumber(detail.orderCount)}</TableCell>}
                               </TableRow>
                             ))}
                           </TableBody>
@@ -180,11 +181,11 @@ function Results({
             handleCountSummary('ticketSellIntoPerformanceDesignate') + handleCountSummary('ticketSellIntoPerformanceNonDesignate'),
             handleCountSummary('productTotal'),
             membershipDisplay ? handleCountSummary('membershipTotal') : null,
-          ].map((value, idx) => value !== null ? <TableCell numeric key={idx}>{Math.round(value)}</TableCell> : null)}
+          ].map((value, idx) => value !== null ? <TableCell numeric key={idx}>{formatNumber(Math.round(value))}</TableCell> : null)}
           <TableCell numeric>
-            {handleCountSummary('helperPaidPoint')}/{handleCountSummary('helperPaidPrice')}
+            {formatNumber(handleCountSummary('helperPaidPoint'))}/{formatNumber(handleCountSummary('helperPaidPrice'))}
           </TableCell>
-          {dataDisplay.isDRROCDisplay && <TableCell numeric>{handleCountSummary('orderCount')}</TableCell>}
+          {dataDisplay.isDRROCDisplay && <TableCell numeric>{formatNumber(handleCountSummary('orderCount'))}</TableCell>}
         </TableRow>
       </TableBody>
     </Table>

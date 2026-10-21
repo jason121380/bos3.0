@@ -316,7 +316,7 @@ function Results({
 
               {/* 指定/不指定 */}
               <TableCell numeric>
-                {`${curentDayData.currentDay.orderDesignateCount}/${curentDayData.currentDay.orderNonDesignateCount}`}
+                {`${formatNumber(curentDayData.currentDay.orderDesignateCount)}/${formatNumber(curentDayData.currentDay.orderNonDesignateCount)}`}
               </TableCell>
 
               {/* 客項次 */}
@@ -351,7 +351,7 @@ function Results({
 
               {/* 指定/不指定(累積) */}
               <TableCell numeric>
-                {`${merchantDailyReport.currentDay.orderDesignateCount}/${merchantDailyReport.currentDay.orderNonDesignateCount}`}
+                {`${formatNumber(merchantDailyReport.currentDay.orderDesignateCount)}/${formatNumber(merchantDailyReport.currentDay.orderNonDesignateCount)}`}
               </TableCell>
 
               {/* 客項次(累積) */}
@@ -409,12 +409,12 @@ function Results({
           <TableRow>
             <TableCell className="whitespace-nowrap tabular-nums">{format(displayDate.endDate, 'MM/dd')}</TableCell>
             <TableCell numeric>{formatNumber(Math.round(curentDayData.orderTotalCount))}</TableCell>
-            <TableCell numeric>{`${Math.round(curentDayData.orderDesignateCount)}/${Math.round(
+            <TableCell numeric>{`${formatNumber(Math.round(curentDayData.orderDesignateCount))}/${formatNumber(Math.round(
               curentDayData.orderNonDesignateCount
-            )}`}</TableCell>
-            <TableCell numeric>{`${Math.round(curentDayData.orderMaleCount)}/${Math.round(
+            ))}`}</TableCell>
+            <TableCell numeric>{`${formatNumber(Math.round(curentDayData.orderMaleCount))}/${formatNumber(Math.round(
               curentDayData.orderFemaleCount
-            )}/${Math.round(curentDayData.orderUnknownCount)}`}</TableCell>
+            ))}/${formatNumber(Math.round(curentDayData.orderUnknownCount))}`}</TableCell>
             <TableCell numeric>{formatNumber(Math.round(curentDayData.currentDay.walletDepositTotal))}</TableCell>
             <TableCell numeric>{formatNumber(Math.round(curentDayData.currentDay.walletUsedTotal))}</TableCell>
             <TableCell numeric>{formatNumber(Math.round(curentDayData.currentDay.ticketSellTotal))}</TableCell>
@@ -426,12 +426,12 @@ function Results({
               'MM/dd'
             )}`}</TableCell>
             <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.orderTotalCount))}</TableCell>
-            <TableCell numeric>{`${Math.round(merchantDailyReport.orderDesignateCount)}/${Math.round(
+            <TableCell numeric>{`${formatNumber(Math.round(merchantDailyReport.orderDesignateCount))}/${formatNumber(Math.round(
               merchantDailyReport.orderNonDesignateCount
-            )}`}</TableCell>
-            <TableCell numeric>{`${Math.round(merchantDailyReport.orderMaleCount)}/${Math.round(
+            ))}`}</TableCell>
+            <TableCell numeric>{`${formatNumber(Math.round(merchantDailyReport.orderMaleCount))}/${formatNumber(Math.round(
               merchantDailyReport.orderFemaleCount
-            )}/${Math.round(merchantDailyReport.orderUnknownCount)}`}</TableCell>
+            ))}/${formatNumber(Math.round(merchantDailyReport.orderUnknownCount))}`}</TableCell>
             <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.currentDay.walletDepositTotal))}</TableCell>
             <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.currentDay.walletUsedTotal))}</TableCell>
             <TableCell numeric>{formatNumber(Math.round(merchantDailyReport.currentDay.ticketSellTotal))}</TableCell>
@@ -466,7 +466,7 @@ function Results({
           ))}
           <TableRow>
             <TableCell></TableCell>
-            <TableCell className="font-medium">{`營業現金結存:${Math.round(curentDayData.businessCash)}`}</TableCell>
+            <TableCell className="font-medium">{`營業現金結存:${formatNumber(Math.round(curentDayData.businessCash))}`}</TableCell>
             <TableCell></TableCell>
             <TableCell></TableCell>
             <TableCell></TableCell>
@@ -489,9 +489,9 @@ function Results({
           </TableRow>
           <TableRow>
             <TableCell></TableCell>
-            <TableCell className="font-bold text-danger">{`當日現金結存:${Math.round(
+            <TableCell className="font-bold text-danger">{`當日現金結存:${formatNumber(Math.round(
               curentDayData.cashBalance
-            )}`}</TableCell>
+            ))}`}</TableCell>
             <TableCell></TableCell>
             <TableCell></TableCell>
             <TableCell></TableCell>
@@ -519,9 +519,9 @@ function Results({
             <TableCell></TableCell>
             <TableCell
               className="font-bold text-danger"
-            >{`當日現金結存（含自購）:${Math.round(
+            >{`當日現金結存（含自購）:${formatNumber(Math.round(
               curentDayData.cashBalance + totalCashRevenue
-            )}`}</TableCell>
+            ))}`}</TableCell>
             <TableCell></TableCell>
             <TableCell></TableCell>
             <TableCell></TableCell>

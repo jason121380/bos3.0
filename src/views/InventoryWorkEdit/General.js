@@ -6,6 +6,7 @@ import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Input } from 'ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { formatNumber } from 'ui/format'
 
 function General({
   info, isClick, inventoryData, setInventoryData, categoriesData,
@@ -32,9 +33,9 @@ function General({
     if (count === 0) {
       return 0
     } else if (count > 0) {
-      return <span className="font-bold text-accent">{`+${count}`}</span>
+      return <span className="font-bold text-accent">{`+${formatNumber(count)}`}</span>
     } else {
-      return <span className="font-bold text-danger">{count}</span>
+      return <span className="font-bold text-danger">{formatNumber(count)}</span>
     }
   }
 
@@ -133,7 +134,7 @@ function General({
                     <TableRow key={productId}>
                       <TableCell>{productName}</TableCell>
                       <TableCell className="tabular-nums">{productNo}</TableCell>
-                      <TableCell numeric>{currentCount}</TableCell>
+                      <TableCell numeric>{formatNumber(currentCount)}</TableCell>
                       <TableCell>
                         <Input
                           className="w-[100px]"

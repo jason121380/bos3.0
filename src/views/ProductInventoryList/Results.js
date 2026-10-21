@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 import PropTypes from 'prop-types'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
+import { formatNumber } from 'ui/format'
 
 function Results({ reportData }) {
   return (
@@ -44,7 +45,7 @@ function Results({ reportData }) {
                   <TableRow key={`${d.productNo}-${d.name}-${index}`}>
                     <TableCell>{d.productNo || <small className="text-caption text-text-tertiary">{`(無代號)`}</small>}</TableCell>
                     <TableCell>{d.productName}</TableCell>
-                    <TableCell numeric>{d.count}</TableCell>
+                    <TableCell numeric>{formatNumber(d.count)}</TableCell>
                     <TableCell>{d.productCategory}</TableCell>
                     <TableCell>{d.vendorName || <small className="text-caption text-text-tertiary">{`(無廠商)`}</small>}</TableCell>
                   </TableRow>

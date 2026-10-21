@@ -21,7 +21,7 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { EmptyState } from 'ui/empty-state'
-import { formatMoney } from 'ui/format'
+import { formatMoney, formatNumber } from 'ui/format'
 import { Field, Input } from 'ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import { cn } from 'ui/utils'
@@ -547,7 +547,7 @@ function Results({
                             {order.designerNo ? `/${order.designerNo}` : ''}
                           </TableCell>
                           <TableCell>{order.isDesignate ? 'Y' : 'N'}</TableCell>
-                          {raffleDisplay ? <TableCell numeric>{order.raffleCount}</TableCell> : null}
+                          {raffleDisplay ? <TableCell numeric>{formatNumber(order.raffleCount)}</TableCell> : null}
                           <TableCell numeric className="font-medium">{formatMoney(Math.round(order.businessCash))}</TableCell>
                           <TableCell numeric>
                             {formatMoney(Math.round(order.service))}

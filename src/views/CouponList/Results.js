@@ -425,7 +425,7 @@ function Results({ className, coupons, refetch, ...rest }) {
                   </TableCell>
                   <TableCell>{data.name}</TableCell>
                   <TableCell numeric>{formatNumber(data.price)}</TableCell>
-                  <TableCell numeric>{data.ticketAvailableCount}</TableCell>
+                  <TableCell numeric>{formatNumber(data.ticketAvailableCount)}</TableCell>
                   <TableCell>{calcModeText(data.performanceCalculationMode)}</TableCell>
                   <TableCell>{data.creator === null ? '' : data.creator.name}</TableCell>
                   <TableCell className={cn('tabular-nums', data.ticketDeductionCount === 0 && 'font-medium text-danger')}>

@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import roundDecimal from './../../helper/roundDecimal.js'
+import { formatNumber } from 'ui/format'
 
 function Results({
   merchantDailyReport,
@@ -79,44 +80,44 @@ function Results({
             {isServiceTicketMerged ? (
               <Fragment>
                 <TableCell className="text-center">
-                  {Math.round(
+                  {formatNumber(Math.round(
                     merchantDailyReport.currentDay.service +
                     merchantDailyReport.currentDay.usedTicket +
                     merchantDailyReport.currentDay.ticketSellIntoPerformance
-                  )}
+                  ))}
                 </TableCell>
-                <TableCell>{Math.round(merchantDailyReport.currentDay.product)}</TableCell>
-                {membershipDisplay || isMemberShipCardActive ? <TableCell>{Math.round(merchantDailyReport.currentDay.membership)}</TableCell> : null}
+                <TableCell>{formatNumber(Math.round(merchantDailyReport.currentDay.product))}</TableCell>
+                {membershipDisplay || isMemberShipCardActive ? <TableCell>{formatNumber(Math.round(merchantDailyReport.currentDay.membership))}</TableCell> : null}
               </Fragment>
             ) : (
               <Fragment>
-                <TableCell>{Math.round(merchantDailyReport.currentDay.service)}</TableCell>
-                <TableCell>{Math.round(merchantDailyReport.currentDay.product)}</TableCell>
-                {membershipDisplay || isMemberShipCardActive ? <TableCell>{Math.round(merchantDailyReport.currentDay.membership)}</TableCell> : null}
-                <TableCell>{Math.round(merchantDailyReport.currentDay.usedTicket)}</TableCell>
+                <TableCell>{formatNumber(Math.round(merchantDailyReport.currentDay.service))}</TableCell>
+                <TableCell>{formatNumber(Math.round(merchantDailyReport.currentDay.product))}</TableCell>
+                {membershipDisplay || isMemberShipCardActive ? <TableCell>{formatNumber(Math.round(merchantDailyReport.currentDay.membership))}</TableCell> : null}
+                <TableCell>{formatNumber(Math.round(merchantDailyReport.currentDay.usedTicket))}</TableCell>
                 <TableCell>
-                  {Math.round(merchantDailyReport.currentDay.ticketSellIntoPerformance)}
+                  {formatNumber(Math.round(merchantDailyReport.currentDay.ticketSellIntoPerformance))}
                 </TableCell>
               </Fragment>
             )}
 
-            <TableCell>{Math.round(merchantDailyReport.currentDay.performanceIncome)}</TableCell>
+            <TableCell>{formatNumber(Math.round(merchantDailyReport.currentDay.performanceIncome))}</TableCell>
             <TableCell>
-              {Math.round(merchantDailyReport.currentDay.ticketSellNotIntoPerformance)}
+              {formatNumber(Math.round(merchantDailyReport.currentDay.ticketSellNotIntoPerformance))}
             </TableCell>
             <TableCell>
-              {Math.round(merchantDailyReport.currentDay.usedTicketForDecount)}
+              {formatNumber(Math.round(merchantDailyReport.currentDay.usedTicketForDecount))}
             </TableCell>
             <TableCell>
-              {Math.round(merchantDailyReport.currentDay.thirdPartTicketForDecount)}
+              {formatNumber(Math.round(merchantDailyReport.currentDay.thirdPartTicketForDecount))}
             </TableCell>
             <TableCell>
-              {Math.round(merchantDailyReport.currentDay.otherPayWayForDecount)}
+              {formatNumber(Math.round(merchantDailyReport.currentDay.otherPayWayForDecount))}
             </TableCell>
             <TableCell>
-              {Math.round(merchantDailyReport.currentDay.walletUsedForDecount)}
+              {formatNumber(Math.round(merchantDailyReport.currentDay.walletUsedForDecount))}
             </TableCell>
-            <TableCell>{Math.round(merchantDailyReport.currentDay.businessCash)}</TableCell>
+            <TableCell>{formatNumber(Math.round(merchantDailyReport.currentDay.businessCash))}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
@@ -163,14 +164,14 @@ function Results({
                   !data.isTillNow && (
                     <TableRow key={index}>
                       <TableCell>{data.name}</TableCell>
-                      <TableCell>{Math.round(data.performance)}</TableCell>
-                      <TableCell>{Math.round(data.totalCount)}</TableCell>
+                      <TableCell>{formatNumber(Math.round(data.performance))}</TableCell>
+                      <TableCell>{formatNumber(Math.round(data.totalCount))}</TableCell>
                       <TableCell>
-                        {Math.round(data.designationCount)}/{Math.round(data.nonDesignationCount)}
+                        {formatNumber(Math.round(data.designationCount))}/{formatNumber(Math.round(data.nonDesignationCount))}
                       </TableCell>
-                      <TableCell>{Math.round(data.orderTypeCount)}</TableCell>
-                      <TableCell>{Math.round(data.orderTypeAveragePerformance)}</TableCell>
-                      <TableCell>{Math.round(data.averagePerformance)}</TableCell>
+                      <TableCell>{formatNumber(Math.round(data.orderTypeCount))}</TableCell>
+                      <TableCell>{formatNumber(Math.round(data.orderTypeAveragePerformance))}</TableCell>
+                      <TableCell>{formatNumber(Math.round(data.averagePerformance))}</TableCell>
                     </TableRow>
                   )
               )}
@@ -178,40 +179,40 @@ function Results({
               <TableCell className="font-bold">合計</TableCell>
 
               {/* 類別總業績 */}
-              <TableCell>{merchantDailyReport.currentDay.performanceIncome}</TableCell>
+              <TableCell>{formatNumber(merchantDailyReport.currentDay.performanceIncome)}</TableCell>
 
               {/* 客次(人次) */}
-              <TableCell>{merchantDailyReport.currentDay.orderCount}</TableCell>
+              <TableCell>{formatNumber(merchantDailyReport.currentDay.orderCount)}</TableCell>
 
               {/* 指定/不指定 */}
               <TableCell>
-                {`${merchantDailyReport.currentDay.orderDesignateCount}/${merchantDailyReport.currentDay.orderNonDesignateCount}`}
+                {`${formatNumber(merchantDailyReport.currentDay.orderDesignateCount)}/${formatNumber(merchantDailyReport.currentDay.orderNonDesignateCount)}`}
               </TableCell>
 
               {/* 客項次 */}
               <TableCell>
-                {Math.round(
+                {formatNumber(Math.round(
                   merchantDailyReport.currentDay.categoryPerformance
                     .map(data => data.orderTypeCount)
                     .reduce((accu, curVal) => (accu += curVal), 0)
-                )}
+                ))}
               </TableCell>
 
               {/* 平均項次單價 */}
               <TableCell>
-                {Math.round(
+                {formatNumber(Math.round(
                   merchantDailyReport.currentDay.performanceIncome /
                   merchantDailyReport.currentDay.categoryPerformance
                     .map(data => data.orderTypeCount)
                     .reduce((accu, curVal) => (accu += curVal), 0)
-                )}
+                ))}
               </TableCell>
 
               {/* 單均價(客次價) */}
               <TableCell>
-                {Math.round(
+                {formatNumber(Math.round(
                   merchantDailyReport.currentDay.performanceIncome / merchantDailyReport.currentDay.orderCount
-                )}
+                ))}
               </TableCell>
             </TableRow>
           </TableBody>
@@ -234,17 +235,17 @@ function Results({
         <TableBody>
           <TableRow>
             <TableCell>區間累積</TableCell>
-            <TableCell>{Math.round(merchantDailyReport.orderTotalCount)}</TableCell>
-            <TableCell>{`${Math.round(merchantDailyReport.orderDesignateCount)}/${Math.round(
+            <TableCell>{formatNumber(Math.round(merchantDailyReport.orderTotalCount))}</TableCell>
+            <TableCell>{`${formatNumber(Math.round(merchantDailyReport.orderDesignateCount))}/${formatNumber(Math.round(
               merchantDailyReport.orderNonDesignateCount
-            )}`}</TableCell>
-            <TableCell>{`${Math.round(merchantDailyReport.orderMaleCount)}/${Math.round(
+            ))}`}</TableCell>
+            <TableCell>{`${formatNumber(Math.round(merchantDailyReport.orderMaleCount))}/${formatNumber(Math.round(
               merchantDailyReport.orderFemaleCount
-            )}/${Math.round(merchantDailyReport.orderUnknownCount)}`}</TableCell>
-            <TableCell>{Math.round(merchantDailyReport.currentDay.walletDepositTotal)}</TableCell>
-            <TableCell>{Math.round(merchantDailyReport.currentDay.walletUsedTotal)}</TableCell>
-            <TableCell>{Math.round(merchantDailyReport.currentDay.ticketSellTotal)}</TableCell>
-            <TableCell>{Math.round(merchantDailyReport.currentDay.ticketUsedTital)}</TableCell>
+            ))}/${formatNumber(Math.round(merchantDailyReport.orderUnknownCount))}`}</TableCell>
+            <TableCell>{formatNumber(Math.round(merchantDailyReport.currentDay.walletDepositTotal))}</TableCell>
+            <TableCell>{formatNumber(Math.round(merchantDailyReport.currentDay.walletUsedTotal))}</TableCell>
+            <TableCell>{formatNumber(Math.round(merchantDailyReport.currentDay.ticketSellTotal))}</TableCell>
+            <TableCell>{formatNumber(Math.round(merchantDailyReport.currentDay.ticketUsedTital))}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
@@ -263,16 +264,16 @@ function Results({
             <TableRow key={index}>
               <TableCell>{data.subjectNumber}</TableCell>
               <TableCell>{data.subjectName}</TableCell>
-              <TableCell>{roundDecimal(data.cashRevenue)}</TableCell>
-              <TableCell>{roundDecimal(data.cashExpenditure)}</TableCell>
+              <TableCell>{formatNumber(roundDecimal(data.cashRevenue))}</TableCell>
+              <TableCell>{formatNumber(roundDecimal(data.cashExpenditure))}</TableCell>
               <TableCell>{data.remark}</TableCell>
             </TableRow>
           ))}
           <TableRow>
             <TableCell></TableCell>
-            <TableCell>{`營業現金結存:${Math.round(
+            <TableCell>{`營業現金結存:${formatNumber(Math.round(
               merchantDailyReport.businessCash
-            )}`}</TableCell>
+            ))}`}</TableCell>
             <TableCell></TableCell>
             <TableCell></TableCell>
             <TableCell></TableCell>
@@ -281,23 +282,23 @@ function Results({
             <TableRow key={index}>
               <TableCell>{data.subjectNumber}</TableCell>
               <TableCell>{data.subjectName}</TableCell>
-              <TableCell>{roundDecimal(data.cashRevenue)}</TableCell>
-              <TableCell>{roundDecimal(data.cashExpenditure)}</TableCell>
+              <TableCell>{formatNumber(roundDecimal(data.cashRevenue))}</TableCell>
+              <TableCell>{formatNumber(roundDecimal(data.cashExpenditure))}</TableCell>
               <TableCell>{data.remark}</TableCell>
             </TableRow>
           ))}
           <TableRow>
             <TableCell></TableCell>
             <TableCell className="font-black">合計</TableCell>
-            <TableCell>{Math.round(merchantDailyReport.summaryRevenue)}</TableCell>
-            <TableCell>{Math.round(merchantDailyReport.summaryExpenditure)}</TableCell>
+            <TableCell>{formatNumber(Math.round(merchantDailyReport.summaryRevenue))}</TableCell>
+            <TableCell>{formatNumber(Math.round(merchantDailyReport.summaryExpenditure))}</TableCell>
             <TableCell></TableCell>
           </TableRow>
           <TableRow>
             <TableCell></TableCell>
-            <TableCell className="font-bold text-red-600">{`區間累計現金結存:${Math.round(
+            <TableCell className="font-bold text-red-600">{`區間累計現金結存:${formatNumber(Math.round(
               merchantDailyReport.cashBalance
-            )}`}</TableCell>
+            ))}`}</TableCell>
             <TableCell></TableCell>
             <TableCell></TableCell>
             <TableCell></TableCell>
@@ -315,8 +316,8 @@ function Results({
             <TableRow key={index}>
               <TableCell>{data.subjectNumber}</TableCell>
               <TableCell>{data.subjectName}</TableCell>
-              <TableCell>{roundDecimal(data.cashRevenue)}</TableCell>
-              <TableCell>{roundDecimal(data.cashExpenditure)}</TableCell>
+              <TableCell>{formatNumber(roundDecimal(data.cashRevenue))}</TableCell>
+              <TableCell>{formatNumber(roundDecimal(data.cashExpenditure))}</TableCell>
               <TableCell>{data.remark}</TableCell>
             </TableRow>
           ))}
@@ -368,8 +369,8 @@ function Results({
                       {results.walletDeposit && results.walletDeposit.map((data, index) => (
                         <TableRow key={index}>
                           <TableCell>{data.paywayName}</TableCell>
-                          <TableCell>{data.usedPrice}</TableCell>
-                          <TableCell>({data.usedPriceWithNoCash})</TableCell>
+                          <TableCell>{formatNumber(data.usedPrice)}</TableCell>
+                          <TableCell>({formatNumber(data.usedPriceWithNoCash)})</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

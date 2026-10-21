@@ -117,10 +117,10 @@ function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCa
                         點數/換算金額
                       </UiTableCell>
                       <UiTableCell numeric>
-                        {`${data.summaryCurrentDay.point}/${data.summaryCurrentDay.priceRetrieveFromPoint}`}
+                        {`${formatNumber(data.summaryCurrentDay.point)}/${formatNumber(data.summaryCurrentDay.priceRetrieveFromPoint)}`}
                       </UiTableCell>
                       <UiTableCell numeric>
-                        {`${data.summaryTillNow.point}/${data.summaryTillNow.priceRetrieveFromPoint}`}
+                        {`${formatNumber(data.summaryTillNow.point)}/${formatNumber(data.summaryTillNow.priceRetrieveFromPoint)}`}
                       </UiTableCell>
                     </UiTableRow>
                   ) : (
