@@ -69,7 +69,8 @@ function OrderManagementList() {
   const [showFilter, setShowFilter] = useState(false)
 
   const [progress, setProgress] = useState(0)
-  const [isCustomerDataMarked, setIsCustomerDataMarked] = useState(false)
+  // 匯出客資遮罩：設定確定是「不遮罩」(false) 才匯出完整姓名電話；載入中或查詢失敗一律遮罩（個資寧可多遮，Codex review PR #254）
+  const [isCustomerDataMarked, setIsCustomerDataMarked] = useState(true)
   const [orderIds, setOrtderIds] = useState([])
   const [orderList, setOrderList] = useState([])
   const getOrderList = useFetchGetOrderList({
@@ -160,7 +161,7 @@ function OrderManagementList() {
         customerDataMarkedData,
         _ => _.data.getCustomerDataMarkedDefault
       )
-      setIsCustomerDataMarked(customerDataMarked)
+      setIsCustomerDataMarked(customerDataMarked !== false)
     }
   }, [customerDataMarkedData.loading])
 

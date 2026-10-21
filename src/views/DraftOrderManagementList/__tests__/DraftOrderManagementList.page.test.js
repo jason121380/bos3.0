@@ -20,6 +20,21 @@ const pendingOrder = {
 beforeEach(() => loginAs())
 afterEach(cleanup)
 
+const exportedCsv = () => decodeURIComponent(screen.getByText('報表匯出').closest('a').getAttribute('href'))
+
+it('遮罩設定查詢失敗時，匯出檔仍遮罩（設定不明一律當作要遮罩）', async () => {
+  const { settle } = renderPage(<DraftOrderManagementList />, {
+    fixtures: {
+      FETCH_PENDING_ORDERS: { pendingOrders: { pageLimit: 50, pageOffset: 0, totalCount: 1, orders: [pendingOrder] } },
+      GET_CUSTOMER_DATA_MARKED: new Error('設定查詢失敗'),
+    },
+    route: '/management/draft-orders',
+  })
+  await settle()
+  expect(exportedCsv()).toContain('陳*姐 0912***678')
+  expect(exportedCsv()).not.toContain('0912345678')
+})
+
 it('遮罩設定比掛單資料晚回來時，匯出檔的姓名電話仍要遮罩', async () => {
   const { settle } = renderPage(<DraftOrderManagementList />, {
     fixtures: {
@@ -30,7 +45,6 @@ it('遮罩設定比掛單資料晚回來時，匯出檔的姓名電話仍要遮�
     route: '/management/draft-orders',
   })
   await settle()
-  const exportedCsv = () => decodeURIComponent(screen.getByText('報表匯出').closest('a').getAttribute('href'))
   await wait(() => expect(exportedCsv()).toContain('陳*姐 0912***678'))
   expect(exportedCsv()).not.toContain('0912345678')
 })

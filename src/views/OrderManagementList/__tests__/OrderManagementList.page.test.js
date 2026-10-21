@@ -140,6 +140,24 @@ describe('帳單列表：報表匯出', () => {
     expect(exportedCsv()).not.toContain('0912345678')
   })
 
+  it('遮罩設定查詢失敗時，匯出檔仍遮罩（設定不明一律當作要遮罩）', async () => {
+    const { settle } = renderPage(<OrderManagementList />, {
+      fixtures: { ...fixtures([order()]), GET_CUSTOMER_DATA_MARKED: new Error('設定查詢失敗') },
+      route: '/management/orders',
+    })
+    await screen.findByText('#A001')
+    await settle()
+    expect(exportedCsv()).toContain('陳*姐 0912***678')
+    expect(exportedCsv()).not.toContain('0912345678')
+  })
+
+  it('店家設定不遮罩時，匯出檔才是完整姓名電話', async () => {
+    const { settle } = setup([order()])
+    await screen.findByText('#A001')
+    await settle()
+    await wait(() => expect(exportedCsv()).toContain('陳小姐 0912345678'))
+  })
+
   it('第一次載入就有活動券的帳單時，匯出檔就要有「活動券」欄（與表格一致）', async () => {
     // 為什麼重要：原本匯出檔永遠落後一批，第一次匯出少了活動券欄
     const { settle } = setup([order({ raffleCount: 2 })])

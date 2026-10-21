@@ -47,7 +47,7 @@
 
 所有建議修法都會改變 effect 的執行時機，依鐵則需 Jason 同意後才做；涉及金額的（#6–#9）還要逐項確認。
 
-### 1. ~~帳單列表匯出 Excel 的「活動券」欄落後一次（確定）~~ 已修（v3.10212026，補 `raffleDisplay` 依賴，有測試）
+### 1. ~~帳單列表匯出 Excel 的「活動券」欄落後一次（確定）~~ 已修（v3.10212031，補 `raffleDisplay` 依賴，有測試）
 - `src/views/OrderManagementList/ResultsV2.js:196`（依賴 `[orders, membershipDisplay, bonusDisplay, pageRef.current, serialNumberUsing]`，缺 `raffleDisplay`）
 - ```js
   !raffleDisplay && delete currentOrder['活動券']   // 196 的 Excel effect
@@ -101,12 +101,12 @@
 - 情境：先加項目 → 勾選使用入金（walletPay＝應付金額）→ 再刪項目、改價或加其他付款方式，`walletPayLimit` 變小但 `walletPay` 不變 → 入金扣款大於應付金額，「營業現金應收」可能變負數。需確認後端是否擋、或結帳前驗證（`billVerify`）是否攔。
 - 建議：另寫一個 effect，在 `walletPayLimit` 小於 `bill.walletPay` 時夾回上限（不要直接把兩個值加進這個 effect 的依賴，否則會覆蓋使用者手動輸入的金額）。需 Jason 決定。
 
-### 10. ~~帳單列表匯出可能未遮罩客戶姓名／電話（待確認，個資）~~ 已修（v3.10212026，補 `isCustomerDataMarked` 依賴，有測試：遮罩設定晚到時重現）
+### 10. ~~帳單列表匯出可能未遮罩客戶姓名／電話（待確認，個資）~~ 已修（v3.10212031，補 `isCustomerDataMarked` 依賴，有測試：遮罩設定晚到時重現）
 - `src/views/OrderManagementList/ResultsV2.js:196`（缺 `isCustomerDataMarked`）
 - 父層 `isCustomerDataMarked` 初值 false，等設定查詢回來才更新。情境：若訂單列表比遮罩設定先出來，CSV 會是完整姓名與手機號碼，直到訂單重新載入；畫面上的表格則會正確遮罩。實際上訂單列表要等兩個查詢（列表＋明細），多半比設定慢，所以機率不高，但後果是個資外流。
 - 建議：依賴加 `isCustomerDataMarked`。風險低。
 
-### 11. ~~同上：草稿單列表（待確認，個資）~~ 已修（v3.10212026，同上，有測試）
+### 11. ~~同上：草稿單列表（待確認，個資）~~ 已修（v3.10212031，同上，有測試）
 - `src/views/DraftOrderManagementList/ResultsV2.js:107`，相同修法。
 
 ### 12. 每日收支明細：會員卡列可能被隱藏（待確認）

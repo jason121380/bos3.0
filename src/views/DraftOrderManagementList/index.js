@@ -55,7 +55,8 @@ function DraftOrderManagementList() {
     source: null
   })
   const [progress, setProgress] = React.useState(0)
-  const [isCustomerDataMarked, setIsCustomerDataMarked] = React.useState(false)
+  // 匯出客資遮罩：設定確定是「不遮罩」(false) 才匯出完整姓名電話；載入中或查詢失敗一律遮罩（個資寧可多遮，Codex review PR #254）
+  const [isCustomerDataMarked, setIsCustomerDataMarked] = React.useState(true)
   const [membershipDisplay, setMembershipDisplay] = React.useState(false)
   const [bonusDisplay, setBonusDisplay] = React.useState(false)
   const [showFilter, setShowFilter] = React.useState(false)
@@ -148,7 +149,7 @@ function DraftOrderManagementList() {
         customerDataMarkedData,
         _ => _.data.getCustomerDataMarkedDefault
       )
-      setIsCustomerDataMarked(customerDataMarked)
+      setIsCustomerDataMarked(customerDataMarked !== false)
     }
   }, [customerDataMarkedData.loading])
 
