@@ -1,7 +1,11 @@
 import { openSnackbar } from 'elements/snackbars'
-import { buildAuthHeaders, handleApolloError, networkErrorMessage } from '../init-apollo'
+import { ApolloLink, Observable, execute } from 'apollo-link'
+import { gql } from '@apollo/client'
+import { beginRequest } from '../after-first-load'
+import { buildAuthHeaders, handleApolloError, inflightLink, networkErrorMessage } from '../init-apollo'
 
 jest.mock('elements/snackbars', () => ({ openSnackbar: jest.fn() }))
+jest.mock('../after-first-load', () => ({ beginRequest: jest.fn() }))
 
 describe('handleApolloError：API 錯誤一定要讓使用者知道', () => {
   let now = 1_000_000
@@ -101,5 +105,53 @@ describe('buildAuthHeaders：每個請求都要帶登入憑證與目前店家', 
     store.token = 'tok-123'
     store.userMerchant = 'null'
     expect(buildAuthHeaders()).toEqual({ accesstoken: 'tok-123' })
+  })
+})
+
+// 為什麼重要：inflightLink 包在所有查詢外面，只能計數、不能改動結果或吞掉錯誤；
+// 而且完成、失敗、取消（換頁時元件卸載）都要結束計數，否則首屏延後的查詢（訂單佇列、店家清單）要等到 10 秒保底才發出。
+describe('inflightLink：統計進行中的查詢，不影響查詢本身', () => {
+  const query = gql`
+    query PING {
+      ping
+    }
+  `
+  let end
+  beforeEach(() => {
+    end = jest.fn()
+    beginRequest.mockImplementation(() => end)
+  })
+  const run = terminating => execute(inflightLink.concat(new ApolloLink(terminating)), { query })
+
+  test('結果原樣傳回，完成時結束計數一次', done => {
+    const result = { data: { ping: 'pong' } }
+    const values = []
+    run(() => Observable.of(result)).subscribe({
+      next: value => values.push(value),
+      complete: () => {
+        expect(values).toEqual([result])
+        expect(beginRequest).toHaveBeenCalledTimes(1)
+        expect(end).toHaveBeenCalled()
+        done()
+      },
+    })
+  })
+
+  test('錯誤照樣往上傳（errorLink 才能提示使用者），並結束計數', done => {
+    const failure = new Error('network down')
+    run(() => new Observable(observer => observer.error(failure))).subscribe({
+      error: error => {
+        expect(error).toBe(failure)
+        expect(end).toHaveBeenCalled()
+        done()
+      },
+    })
+  })
+
+  test('查詢還沒回來就取消（換頁卸載）也結束計數', () => {
+    const subscription = run(() => new Observable(() => {})).subscribe({})
+    expect(end).not.toHaveBeenCalled()
+    subscription.unsubscribe()
+    expect(end).toHaveBeenCalled()
   })
 })

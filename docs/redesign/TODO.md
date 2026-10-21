@@ -1,12 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10210920）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10211016）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
+
+- **效能第二輪：lodash 逐方法引入、首屏非必要查詢延後**（2026/10/21，v3.10211016，Jason「都做下一步」，屬畫面以外修正、當次同意）：①216 個引入 lodash 的檔案改為 `lodash/cloneDeep` 等逐方法引入（155 檔），61 檔移除沒用到的 import；入口 chunk 513→455 KB（gz 162→141 KB），整包 lodash 不再出現在任何 chunk。②新增 `lib/after-first-load`（`useAfterFirstLoad`）與 `init-apollo` 的 `inflightLink`（只計數）：系統公告、訂單佇列、釘選頁、切換店家清單延到「load 後、沒有查詢在等回應、瀏覽器空閒」才查（Safari 網路安靜後 0.5 秒、最晚 10 秒）；4 個 hook 加可選的 `skip`（預設不變，其他頁面不受影響）。③量測（4G＋CPU 降速 4 倍、假後端 250 ms，A／B 交替各 7 次取中位數）：預約表格 3.53→3.30 秒（7 次全部較快）、側欄 1.67→1.54 秒、首屏 JS 429→406 KB。④報告原推估的「首屏查詢分批是最大瓶頸」經量測修正：瓶頸是查詢回來後的重新渲染與舊版 Apollo 快取（MEMORY #173），另列 P3 第 5 項。新增 `after-first-load`（7）、`inflightLink`（3）測試。**待實機**：開頁後訂單佇列鈴鐺、側欄釘選頁約 0.5～1 秒後出現（原本與側欄同時）；剛開頁就點「切換店家」會先轉圈再出現清單；系統公告照常顯示。
 
 - **效能：深色不閃、切換免重整、移除整包 core-js、清除死碼**（2026/10/21，v3.10210912，Jason「要做 both」「清除不必要的碼」，屬畫面以外修正、當次同意）：①新增 `lib/theme-mode`：依使用者記住主題（`bosTheme:<userId>`），版面繪製前套用；舊版全域樣式改以 `?inline` 字串放進同一個 `<style>`，切換時替換內容、不 reload；按下立即生效、存檔在背景、失敗還原、存檔中忽略後端舊值。②移除 `react-app-polyfill/stable`（入口 194 KB core-js）；掃描正式 build 後只有 `structuredClone` 被直接使用，`lib/polyfills` 補簡易版。③以 import 圖從 `src/index.js` 走訪，刪除到不了的 188 個檔案（505 KB；`_prismjs.scss` 被 `main.scss` 的 Sass `@import` 引用，誤刪後已還原，見 MEMORY #172⑦，含 `views/Typography`、`layouts/Empty`／`Seat`、約 150 個未用 hooks、範本圖）與 `public/images` 39 張 Devias 範本圖（4.7 MB，保留地圖用的 `been-here-marker.png`）；移除 `react-app-polyfill` 套件（lockfile 只少此項、乾淨 `npm ci` 通過）；`ajv` 為 peer 版本需求保留。量測（4G＋CPU 降速 4 倍、假後端 250 ms）：深色與側欄同時出現（原晚 0.6 秒）、預約表格 4.09→3.57 秒、切換深色 約 2.9 秒→0.2 秒且不重新整理、入口 707→506 KB（gz 236→156）、建置產物 12→6.3 MB。新增 `theme-mode`（7）、`polyfills`（3）測試。**待實機**：iPhone Safari 開頁不閃淺色、切換深色立即生效；系統參數「預約時段」新增／刪除時段（`structuredClone`）；舊版頁面（列印、報表）在兩種主題下樣式正常。
 
@@ -214,6 +216,7 @@
    - **報表 compact 進度**（2026/10/19）：承 PR #20 第一批 4 頁，**第二批（v3.0-1019-0406）+12 頁，累計 16 頁，剩 12 頁 MUI Table 報表＋列印共用層後續**。本批 12 個 Results 的主報表 `ui/table` 補 `dense`（共 19 張：MerchantDaily 4、SingleService 3、DecreaseDaily 2、ProductConsume 2、其餘 8 頁各 1）；`src/ui/table.js` 的 dense 補 `px-2`（以 PR #20 合併後最終版為準）。盤點總表（INVENTORY／口徑數字）在 PR #20 分支，待整組對齊後更新，本分支未寫入。
 4. `ui/native-select` 的 `label`（外框上緣標籤）要不要整批改成「`Field` 上方標籤」？**2026/10/20 實查（v3.0-1020-0145，排除 `aria-label`）**：其他頁已全數改完，只剩帳單四兄弟 `AddCustomerModal` 9 處（OrderCreate 最近設計師；OrderEdit 性別／最近設計師；DraftOrderEdit、QueueOrderEdit 性別／最近設計師／偏好設計師）。同列鄰欄仍是 MUI 外框欄位（客戶編號、SourceSelect、MUI Select、Autocomplete），單改這 9 處會讓同列標籤高低不齊，須與 A3 其餘欄位整列一起做並真實瀏覽器鍵盤實測，待 Jason 決定是否開工。
 
+5. **Apollo client 從 v2（apollo-boost）統一到 v3？**（2026/10/21 新增）目前 client 本體是 apollo-boost，頁面 hook 是 `@apollo/client` 3。量測：首屏舊版快取約占 0.3 秒 CPU（中階手機），入口另有約 80～100 KB 是兩套 Apollo 並存。風險（MEMORY #168④）：全站約 430 個 effect 依 `loading` 變化取資料，v3 的 refetch 預設不會把 loading 設回 true，需全域 `notifyOnNetworkStatusChange` 並逐頁回歸；快取合併規則也不同。建議：先在測試站做一個 v3 分支，量首屏與主要流程（打帳單、預約、報表）後再決定。
 ### P4 — 既有問題（修了會動邏輯，需你同意才改）
 - **2026/10/20 已修（v3.0-1020-0156，Jason 指示「完整 debug 修復」）**：下一行除 `ServicesAutoComplete` 外全部修正，另修顧客詳細資料重新整理 404／紅利分頁不出現；詳見 STATUS 已完成表與 MEMORY #127。待實機：OrderEdit 套快捷組合、功能釘選選頁、抽成級距刪中間列、紅利輸入 1.5、薪資總覽換月後進設計師薪資、顧客詳細資料在紅利分頁按重新整理。
 - ~~功能釘選分頁 `_` 未 import；`SalaryEdit` 日期只在模組載入時計算一次；`UpdateDeductionSetting` 刪除級距把 event 當 index；`CustomerBonusRecordEdit` 對字串呼叫 `splice`；`OrderEdit` 的 `_.cloneDeep` 未 import；三個帳單編輯頁的 `handlePannelClick` 未定義；`AdminPageHeader` 的 `primaryAction.disabled` 無作用。~~

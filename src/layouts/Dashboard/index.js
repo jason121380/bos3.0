@@ -10,6 +10,7 @@ import { useHistory } from 'react-router'
 import { renderRoutes } from 'react-router-config'
 import useFetchCheckPageAuthority from 'hooks/useFetchCheckPageAuthority'
 import useFetchGetUserMerchant from 'hooks/useFetchGetUserMerchant'
+import useAfterFirstLoad from 'lib/after-first-load'
 import idx from 'idx'
 import { PanelLeftOpen } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -27,7 +28,8 @@ function Dashboard({ route, location }) {
   const { open, toggle } = useToggle()
   const history = useHistory()
   const [checkPageAuthorityLazy, checkPageAuthorityData] = useFetchCheckPageAuthority()
-  const userMerchants = useFetchGetUserMerchant()
+  // 切換店家清單只在開啟對話框時用到，延後到首屏完成後再查（lib/after-first-load）
+  const userMerchants = useFetchGetUserMerchant({ skip: !useAfterFirstLoad() })
   const mobileTabs = useMobileTabs()
   const showTabBar = useShowTabBar(mobileTabs)
 

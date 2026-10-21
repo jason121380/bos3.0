@@ -18,6 +18,7 @@ import idx from 'idx'
 import useFetchUser from 'hooks/useFetchUser'
 import useFetchSettingTheme from 'hooks/useFetchSettingTheme'
 import useFetchGetUsingOrderQueue from 'hooks/useFetchGetUsingOrderQueue'
+import useAfterFirstLoad from 'lib/after-first-load'
 import useFetchReCheckoutOrderFromQueue from 'hooks/useFetchReCheckoutOrderFromQueue'
 import useFetchDestroyQueueById from 'hooks/useFetchDestroyQueueById'
 import MerchantBar from './MerchantBar'
@@ -86,11 +87,13 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
   })
   const [orderDetail, setOrderDetail] = useState([])
   const [ws, setWs] = useState(null)
-  const usingOrderQueue = useFetchGetUsingOrderQueue()
+  // 系統公告與訂單佇列不影響畫面主體，延後到首屏完成後再查（lib/after-first-load）
+  const afterFirstLoad = useAfterFirstLoad()
+  const usingOrderQueue = useFetchGetUsingOrderQueue({ skip: !afterFirstLoad })
   const [isClick, setIsClick] = useState(false)
   const { destroyQueueById } = useFetchDestroyQueueById()
   const { reCheckoutOrderFromQueue } = useFetchReCheckoutOrderFromQueue()
-  const systemUpdateRecord = useFetchSystemUpdateRecord()
+  const systemUpdateRecord = useFetchSystemUpdateRecord({ skip: !afterFirstLoad })
 
   const buttonSx = {
     boxShadow: 'none !important',
