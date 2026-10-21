@@ -249,6 +249,37 @@ describe('角色設定缺少區塊', () => {
   })
 })
 
+describe('同名角色', () => {
+  // 為什麼重要：角色名稱可以重複；以名稱比對時會讀到排在前面的同名角色，抽成欄位與選單權限跟著錯（2026/10/21 改以 id 比對）
+  it('依登入者的角色 id 讀權限，不會讀到另一個同名角色', async () => {
+    const otherRole = {
+      id: 'auth-2',
+      authorityName: '高階主管',
+      authoritySettings: JSON.stringify([
+        { pageTitle: '櫃檯作業', authority: true, pageAuthority: [{ pageName: '打帳單', authority: true }] },
+        { pageTitle: '資料設定', authority: true, pageAuthority: [{ pageName: '服務項目扣項設定', authority: false }] },
+      ]),
+    }
+    const { store } = setup({
+      GET_MERCHANT_AUTHORITIES: {
+        getMerchantAuthorities: [
+          otherRole,
+          {
+            id: 'auth-1',
+            authorityName: '高階主管',
+            authoritySettings: JSON.stringify([
+              { pageTitle: '櫃檯作業', authority: true, pageAuthority: [{ pageName: '打帳單', authority: true }] },
+              { pageTitle: '資料設定', authority: true, pageAuthority: [{ pageName: '服務項目扣項設定', authority: true }] },
+            ]),
+          },
+        ],
+      },
+    })
+    await screen.findByText('店長小林')
+    await wait(() => expect(store.getState().deductionDisplay).toEqual({ service: true, coupon: false }))
+  })
+})
+
 describe('登出', () => {
   it('清除 localStorage 的登入資料並導到登入頁', async () => {
     setup()

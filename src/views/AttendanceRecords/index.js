@@ -25,6 +25,7 @@ import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import { Autocomplete } from 'ui/combobox'
+import { roleSectionAuthority, hasPageAuthority } from 'helper/rolePageAuthority'
 
 const clockInType = [
   { label: '上班', value: 'CLOCKIN' },
@@ -120,23 +121,10 @@ export default function Employees() {
       const identityId = idx(profileIdentity, _ => _.data.me.merchantIdentity.authorityId)
       const authorities = idx(merchantAuthorities, _ => _.data.getMerchantAuthorities)
 
-      const clockinIdentity = JSON.parse(
-        authorities.find(d => {
-          return d.id === identityId
-        }).authoritySettings
-      ).find(d => {
-        return d.pageTitle === '打卡權限設定'
-      }).pageAuthority
-
-      const add = clockinIdentity.find(d => {
-        return d.pageName === '新增打卡紀錄'
-      }).authority
-      const edit = clockinIdentity.find(d => {
-        return d.pageName === '編輯打卡紀錄'
-      }).authority
-      const del = clockinIdentity.find(d => {
-        return d.pageName === '刪除打卡紀錄'
-      }).authority
+      const clockinIdentity = roleSectionAuthority(authorities, identityId, '打卡權限設定')
+      const add = hasPageAuthority(clockinIdentity, '新增打卡紀錄')
+      const edit = hasPageAuthority(clockinIdentity, '編輯打卡紀錄')
+      const del = hasPageAuthority(clockinIdentity, '刪除打卡紀錄')
 
       setIdentity({
         add: add,

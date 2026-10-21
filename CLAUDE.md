@@ -31,7 +31,7 @@ npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps（CI／Docke
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
 npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base＋react-hooks/rules-of-hooks 為 error，0 warning）
-CI=true npm run test:nowatch         # 全部單元測試（基準：82 檔／610 測試全數通過）
+CI=true npm run test:nowatch         # 全部單元測試（基準：85 檔／621 測試全數通過）
 TZ=America/Los_Angeles CI=true npm run test:nowatch   # 時區相關修改要另在海外時區跑一次
 CI=true npm run test:coverage        # 覆蓋率（門檻為現況下限＋金額／API 模組逐檔門檻，見 package.json）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
@@ -70,7 +70,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - `src/components/PageErrorBoundary.js`：Dashboard 內容區的錯誤邊界（單頁出錯只顯示錯誤畫面，側欄可用）；`SlotPortal.js`：TopBar／NavBar 互相把按鈕畫進對方插槽（切換店家、搜尋選單）。
 - `src/layouts/Dashboard/`：側欄頂列（Logo、版號、搜尋鈕、訂單佇列鈴鐺、收合）、選單、底部（深淺色切換、切換店家、登出）。
 - `src/views/OrderCreate/`：打帳單。`orderRequirements.js` 與 `Header.js` 的 `valid` 同步（有測試比對）；`RowAction.js` 是項目列的圖示鈕與「新增項目」。
-- `src/helper/`：`billPaymentSummary`（打帳單應付帳款／現金應收，明細彈窗、收據、金額彙總共用）、`exportCustomerMask`（列表匯出是否遮罩客資：只有查詢成功且設定為 false 才不遮罩）、`billVerify`、`helperDeduction`、`giveBonus`、`truncateDecimal`（卡券金額無條件捨去）、`dailyUnlock`（鎖定日期 23:59 解除）等，皆有單元測試。
+- `src/helper/`：`billPaymentSummary`（打帳單應付帳款／現金應收，明細彈窗、收據、金額彙總共用）、`exportCustomerMask`（列表匯出是否遮罩客資：只有查詢成功且設定為 false 才不遮罩）、`rolePageAuthority`（讀登入者角色某區塊的頁面權限：以角色 id 比對，缺區塊／找不到角色／格式壞掉一律視為沒有權限；新頁面讀角色權限一律用它）、`billVerify`、`helperDeduction`、`giveBonus`、`truncateDecimal`（卡券金額無條件捨去）、`dailyUnlock`（鎖定日期 23:59 解除）等，皆有單元測試。
 - `src/__tests__/testkit.test.js`：頁面測試共用工具（依查詢名稱回應的模擬 link、沒寫到的欄位自動補齊、記錄送出的 variables、擋住 `fetch`、`settle()` 等所有查詢回來；`renderPage(…, { delays: { 查詢名稱: 毫秒 } })` 讓指定查詢晚回，測「設定比資料晚到」）。檔名帶 `.test` 是因為 CRA 把 `__tests__` 下每個檔都當測試；被 import 時只提供函式。新的整頁測試照四個帳單頁與 `views` 煙霧測試的寫法。
 - `scripts/redesign/compat-harness/`：MUI 相容層的 computed style 比對頁（MUI 需臨時 `npm i --no-save` 安裝，用法見 `build.js` 檔頭）。
 - `scripts/redesign/`：verify-logic／verify-style-only／verify-imports-only、tokenize-colors、swap-icons、page-checklist、portal-root-scan、inventory-scan（改版盤點數字，口徑見 `docs/redesign/TODO.md` §三）。
