@@ -70,46 +70,29 @@ import useFetchSetUESUsingSetting from 'hooks/useFetchSetUESUsingSetting'
 import useFetchGetIsCBRDStylist from 'hooks/useFetchGetIsCBRDStylist'
 import useFetchSetIsCBRDStylist from 'hooks/useFetchSetIsCBRDStylist'
 
-import AboutSalaryAddAndDeduction from './AboutSalaryAddAndDeduction'
-import NonDesignationBookingLimitSetting from './NonDesignationBookingLimitSetting'
-import PasswordSetting from './PasswordSetting'
-import AboutMerchantFakePerformanceReference from './AboutMerchantFakePerformanceReference'
-import AboutMerchantRakePerformanceRefer from './AboutMerchantRakePerformanceRefer'
-import AboutPriceDisplayOnDailyReport from './AboutPriceDisplayOnDailyReport'
-import AboutMonthCheckoutAddSalaryItems from './AboutMonthCheckoutAddSalaryItems'
-import AboutMerchantBankSettings from './AboutMerchantBankSettings'
-import IsReservationNeedReview from './IsReservationNeedReview'
-import AboutOrderCreate from './AboutOrderCreate'
-import AboutOrderDetail from './AboutOrderDetail'
-import AboutOtherReport from './AboutOtherReport'
-import AboutSettingFunction from './AboutSettingFunction'
-import AboutEmployeeSchedule from './AboutEmployeeSchedule'
-import BookingNotificationSetting from './BookingNotificationSetting'
-import AboutCustomerSideSetting from './AboutCustomerSideSetting'
-import AboutCustomerBooking from './AboutCustomerBooking'
-import AboutDesignerSideExternalLink from './AboutDesignerSideExternalLink'
-import MerchantReservationTimes from './MerchantReservationTimes'
-import AboutCustomerTracking from './AboutCustomerTracking'
-import AboutCustomerSideExternalLink from './AboutCustomerSideExternalLink.js'
-import AboutCustomerSettingFunction from './AboutCustomerSettingFunction.js'
-import AboutOrderSource from './AboutOrderSource.js'
-import BookingNotificationLineAtSetting from './BookingNotificationLineAtSetting.js'
-import BookingCheckInNotificationSetting from './BookingCheckInNotificationSetting.js'
-import AttendanceEmployeeScheduleSetting from './AttendanceEmployeeScheduleSetting.js'
-import ReservationSettingForStylist from './ReservationSettingForStylist.js'
+import ParameterTabContent from './ParameterTabContent'
+import {
+  requiredColumnOptions,
+  createDefaultPasswordSetting,
+  createDefaultMerchantBankSettings,
+  createDefaultMerchantBookingNotification,
+  createDefaultBookingLineNotify,
+  createDefaultAboutReport,
+  createDefaultCheckoutAndSalaryItem,
+  createDefaultHairCondition,
+  createDefaultOrderCreateSetting,
+  createDefaultAboutSettingFunction,
+  createDefaultAboutBooking,
+  createDefaultAboutCustomer,
+  createDefaultCheckinSettings,
+} from './parameterDefaults'
 
 import produce from 'immer'
 import idx from 'idx'
 import { memo, useState, useEffect, Fragment } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 
-const requiredColumnOptions = [
-  { label: '暱稱', value: 'NICKNAME' },
-  { label: 'Email', value: 'EMAIL' },
-  { label: 'Line ID', value: 'LINEID' },
-  { label: '生日', value: 'BIRTHDAY' },
-  { label: '地址', value: 'ADDRESS' },
-]
+// 初始值（parameterDefaults）與各分頁區塊（ParameterTabContent）已拆到同資料夾；查詢、effect、儲存仍在此檔，內容不變
 
 function Parameter() {
   const merchantId = JSON.parse(localStorage.getItem('userMerchant')).id
@@ -120,286 +103,37 @@ function Parameter() {
     salaryIncreaseItem: [{ itemSetting: '', sorting: 1 }],
     salaryDecreaseItem: [{ itemSetting: '', sorting: 1 }]
   })
-  const [passwordSetting, setPasswordSetting] = useState({
-    superPassword: '',
-    reCheckoutOrder: { password: '', isUsing: false },
-    deleteOrder: { password: '', isUsing: false },
-    deleteService: { password: '', isUsing: false },
-    deleteProduct: { password: '', isUsing: false },
-    restoreCheckout: { password: '', isUsing: false },
-    deleteCustomer: { password: '', isUsing: false },
-    editMoneyFlow: { password: '', isUsing: false },
-    purchaseStockIn: { password: '', isUsing: false },
-    purchaseStockInUndo: { password: '', isUsing: false },
-    cancelReservation: { password: '', isUsing: false },
-  })
-  const [merchantBankSettings, setMerchantBankSettings] = useState({
-    remitterBankName: '',
-    remitterBankAccount: '',
-    remitterBankBranchCode: '',
-    remitterBankBranchName: '',
-    remitterName: '',
-    trustorName: '',
-    trustorPhone: '',
-  })
+  const [passwordSetting, setPasswordSetting] = useState(createDefaultPasswordSetting())
+  const [merchantBankSettings, setMerchantBankSettings] = useState(createDefaultMerchantBankSettings())
 
   // value
   const [merchantFakePerformanceRefer, setMerchantFakePerformanceRefer] = useState('PERFORMANCE')
   const [isLockDate, setIsLockDate] = useState(false)
   const [isMerchantClockInSetting, setIsMerchantClockInSetting] = useState([])
   const [displayNonBankAccountInBankTransferReport, setDisplayNonBankAccountInBankTransferReport] = useState(false)
-  const [merchantBookingNotification, setMerchantBookingNotification] = useState(
-    {
-      "customerCreateBooking": {
-        "customer": false,
-        "designer": false,
-        "merchant": false
-      },
-      "customerCancelBooking": {
-        "customer": false,
-        "designer": false,
-        "merchant": false
-      },
-      "designerCreateBooking": {
-        "customer": false,
-        "designer": false,
-        "merchant": false
-      },
-      "designerCancelBooking": {
-        "customer": false,
-        "designer": false,
-        "merchant": false
-      },
-      "bookingUpdated": {
-        "customer": false,
-        "designer": false,
-        "merchant": false
-      }
-    }
-  )
+  const [merchantBookingNotification, setMerchantBookingNotification] = useState(createDefaultMerchantBookingNotification())
 
-  const [BookingLineNotify, setBookingLineNotify] = useState(
-    {
-      "cusCreateBooking": {
-        "customer": [],
-        "designer": [],
-        "merchant": []
-      },
-      "cusCancelBooking": {
-        "customer": [],
-        "designer": [],
-        "merchant": []
-      },
-      "designerCreateBooking": {
-        "customer": [],
-        "designer": [],
-        "merchant": []
-      },
-      "designerCancelBooking": {
-        "customer": [],
-        "designer": [],
-        "merchant": []
-      },
-      "bookingUpdated": {
-        "customer": [],
-        "designer": [],
-        "merchant": []
-      }
-    }
-  )
-  const [aboutReport, setAboutReport] = useState({
-    isPriceDisplayOnDailyReport: false,
-    isOptimizationPrintModeOn: false,
-    isServiceNameDisplayByCategory: false,
-    isDisplayHelperRetrieveInDailyReport: false,
-    isZeroValueHiddenOnDailyReport: false,
-    isHelperPointPriceDisplay: false,
-    isUsingMathRoundInDesignerDailyReport: false,
-    isNoCashWalletGroupedInMDR: false,
-    designerNameForReportType: 'NAME',
-    isDesignerSalaryDisplayOnBalanceReport: false,
-    isCustomerDataMarked: false,
-    isMonthlyAverageDisplayForDesignerLeaderBoard: false,
-    isMonthlyAverageDisplayForMerchantLeaderBoard: false,
-    isProductCostDisplay: false,
-    isServiceTicketMerged: false,
-    isOpenDateRangeInOrderMangement: false,
-    isDisplayTogglePerformanceButton: false,
-    CARPTDisplay: false,
-    isDRROCDisplay: false,
-    isDRRPEVDisplay: false,
-    isEDCIFilterDisplay: false,
-    isMultiStoreStaffPerfMergedHL: false,
-    isMultiStoreStaffPerfMergedDL: false,
-    multiStorePerfRef: 'EACH',
-    isTSNoOT: false,
-    nonCashDisplay: false
-  })
-  const [checkoutAndSalaryItem, setCheckoutAndSalaryItem] = useState({
-    isSalaryItemAutoSetWhileMonthlyCheckout: false,
-    isHelperRetrieveAutoSetForMonthlyCheckout: false,
-    isDisplayFakePerformanceInSalaryReport: false,
-    isBorrowDisplayInSalaryOverview: false,
-    isPrintDetailDisplayOnSalaryReport: true,
-    isEPWDDisplay: true,
-    isPayslipOptimizationPrintModeOn: false,
-    employeePayslipPrintStyle: 'SMALL',
-    isAttendanceStatisticsDisplayOnUserSalary: false,
-    isPrintDateHiddenForPayslip: false,
-  })
+  const [BookingLineNotify, setBookingLineNotify] = useState(createDefaultBookingLineNotify())
+  const [aboutReport, setAboutReport] = useState(createDefaultAboutReport())
+  const [checkoutAndSalaryItem, setCheckoutAndSalaryItem] = useState(createDefaultCheckoutAndSalaryItem())
   const [externalLink, setExternalLink] = useState([])
   const [merchantReservation, setMerchantReservation] = useState(true)
-  const [hairCondition, setHairCondition] = useState({
-    "hairProperties": [],
-    "scalpProperties": [],
-    "permAppliance": [],
-    "permPotion": [],
-    "hairColorCategory": [],
-    "hairColor": []
-  })
+  const [hairCondition, setHairCondition] = useState(createDefaultHairCondition())
   const [NDBRecipients, setNDBRecipients] = useState([])
-  const [orderCreateSetting, setOrderCreateSetting] = useState({
-    isHelperDesignationDisplay: false,
-    isThirdPartTicketDisplay: false,
-    isDateLockDisplay: false,
-    isDetailBottomed: false,
-    orderWithoutCustomerDefault: false,
-    isQuickOrderModeOn: false,
-    isAbleToChangeDateTimeInOrderCreate: false,
-    isAutoSetPreferDesigner: false,
-    isTicketSellSubItem: false,
-    printFormat: 'A4',
-    designerNameDisplayOnInvoice: 'NAME',
-    isServiceLocked: 'FALSE',
-    isProductLocked: 'FALSE',
-    isTicketLocked: 'FALSE',
-    designationSettingForOrderCreate: '',
-    isServiceBindedThirdPartTicketLocked: false,
-    isPrintWindowClosureDelayed: false,
-    isOrderSerialNumberUsing: false,
-    isLBCusDisplay: true,
-    isCusWalletUsageForOrder: true,
-    logoDisplayOnInvoice: {
-      isDisplay: false,
-      imageUrl: null
-    },
-    messageDisplayOnInvoice: {
-      isDisplay: false,
-      message: null
-    },
-    qrcodeDisplayOnInvoice: {
-      isDisplay: false,
-      url: null,
-      imageUrl: null
-    },
-  })
+  const [orderCreateSetting, setOrderCreateSetting] = useState(createDefaultOrderCreateSetting())
   const [cusExternalLink, setCusExternalLink] = useState([])
-  const [aboutSettingFunction, setAboutSettingFunction] = useState({
-    isMemberShipCardActive: false,
-    isCustomerBonusActive: false,
-    isComboUsing: false,
-    isAutoClearAddedTimeInScheduleTable: false,
-    isMerchantScheduleDisplay: false,
-    isPriceDisplayOnCustomerSide: false,
-    isDailyCheckoutBlockedByDraftOrder: false,
-    isEmployeeScheduleWorkingHourDisplay: true,
-    isReportListExtended: true,
-    isEmployeeScheduleUndoActive: true,
-    isCustomerSelfCreateActive: false,
-    isBookingTimeNoLimit: false,
-    designerNameForCustomerSide: "BOTH",
-    actionsBannedAfterDailyCheckout: [],
-    isBookingTimeNoLimit: false,
-    isBonusConversion: false,
-    bonusConversionRate: 0,
-    isWalletFinNonNeg: false,
-    isBonusRewardWithLine: false,
-    isUnlimProdEmpPrice: false,
-    disablePendingOrder: false,
-    openingTimeForDisplay: {
-      openingHoursForDisplay: "00:00:00",
-      closingHoursForDisplay: "00:00:00",
-    },
-    bonusRewardRule: {
-      isUsing: false,
-      rule: {
-        price: 0,
-        bonus: 0,
-        mode: 'ROUNDING',
-      }
-    }
-  })
+  const [aboutSettingFunction, setAboutSettingFunction] = useState(createDefaultAboutSettingFunction())
   const [reference, setReference] = useState([])
   const [merchantLogo, setMerchantLogo] = useState(null)
   const [merchantRakeReferemce, setMerchantRakeReferemce] = useState({
     designate: 'FAKE',
     nonDesignate: 'FAKE',
   })
-  const [aboutBooking, setAboutBooking] = useState({
-    "nonDesignationOrderLimit": 0,
-    "designationOrderLimit": 0,
-    "isBookingAutoAccept": false,
-    "isNDBNeedVerify": false,
-    "isCustomerBookedableInSameDay": false,
-    "isRTCUsing": false,
-    "isBookingRemarkDisplay": false,
-    "isCusBookingRemarkDisplay": true,
-    "isBirthdayIconDisplay": false,
-    "bookingLimitPerCellphoneInSameDay": null,
-    "disableBookingDayLimit": null,
-    "createBookingDayLimit": null,
-    "cancelBookingDayLimitByActionDate": null,
-    "cancelBookingDayLimitByServiceDate": null,
-    "bookingTimeSetting": {
-      openingHours: "10:00:00",
-      closingHours: "22:00:00"
-    },
-    "troubleShooting": '',
-    "SMSAccount": {
-        "account": '',
-        "password": ''
-    },
-    "bookingNotificationPhone": [''],
-    "bookingNotificationLine": {
-        "isUsing": false,
-        "notifyDayCount": 0
-    },
-    "inviteRatingDayCount": null,
-    "cusRatingDayLimit": null,
-    isBookingHistoryDisplay: false,
-    isDynamicBookingLimitUsing: false,
-    cusMaxBookingCount: null,
-    isNDBInLimitCount: false
-  })
-  const [aboutCustomer, setAboutCustomer] = useState({
-    "customerSidePageDisplay": {
-      "ServiceRecord": false,
-      "TicketRecord": true,
-      "WalletRecord": false,
-      "BonusRecord": true,
-      "CustomerMall": false
-    },
-    "isCustomerProfileSync": false,
-    "isArrowDisplayForLine": false,
-    "isNRCDisplayForNewCus": false,
-    "requiredColumnForNewCustomer": [],
-    "isRemarkRequired": true,
-    "isCusBookingPreferDesOnly": false,
-    "isCusNonDesBookingUsing": true,
-    "isBookingItemRequired": false,
-    "closeCustomerBooking": false,
-    "isBookingPeerDisplay": true,
-    "isBookingItemPriceDisplay": true,
-    bookingMinumnTimeCost: 0
-  })
+  const [aboutBooking, setAboutBooking] = useState(createDefaultAboutBooking())
+  const [aboutCustomer, setAboutCustomer] = useState(createDefaultAboutCustomer())
   const [notificationDayCount, setNotificationDayCount] = useState(false)
   const [disableDayLimit, setDisableDayLimit] = useState(null)
-  const [checkinSettings, setCheckinSettings] = useState({
-    isBookingCheckinEnabled: false,
-    isDoneBookingAutoNotify: false,
-    isUnDoneBookingAutoNotify: false,
-    isUnDoneBookingManualNotify: false,
-  })
+  const [checkinSettings, setCheckinSettings] = useState(createDefaultCheckinSettings())
   const [bookingCusCheck, setBookingCusCheck] = useState(false)
   const [bookingTypeForSocket, setBookingTypeForSocket] = useState([])
   const [UESUsing, setUESUsing] = useState(false)
@@ -913,206 +647,70 @@ function Parameter() {
           </SettingsTabsList>
           <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">
             <SettingsSectionHeading title={tabs.find(tab => tab.value === selectTab)?.label} />
-        {selectTab === 'orderCreate' && (
-          <div className="flex flex-col gap-6">
-            <AboutOrderCreate
+            <ParameterTabContent
+              selectTab={selectTab}
               orderCreateSetting={orderCreateSetting}
               setOrderCreateSetting={setOrderCreateSetting}
               inputEnable={inputEnable}
-            />
-            <AboutOrderDetail
-              orderCreateSetting={orderCreateSetting}
-              setOrderCreateSetting={setOrderCreateSetting}
               uploadMerchantLogo={uploadMerchantLogo}
-              inputEnable={inputEnable}
-            />
-            <AboutOrderSource
               reference={reference}
               setReference={setReference}
-              inputEnable={inputEnable}
-            />
-          </div>
-        )}
-        {selectTab === 'employeeSchedule' && (
-          <div className="flex flex-col gap-6">
-            <AboutEmployeeSchedule
               isMerchantClockInSetting={isMerchantClockInSetting}
               setIsMerchantClockInSetting={setIsMerchantClockInSetting}
-              loading={merchantClockInSettingData.loading}
-              inputEnable={inputEnable}
-            />
-            <AttendanceEmployeeScheduleSetting
+              merchantClockInSettingData={merchantClockInSettingData}
               UESUsing={UESUsing}
               setUESUsing={setUESUsing}
-              inputEnable={inputEnable}
-            />
-          </div>
-        )}
-        {selectTab === 'salary' && (
-          <div className="flex flex-col gap-6">
-            <AboutSalaryAddAndDeduction
               service={service}
-              onChange={handleServiceChange}
-              inputEnable={inputEnable}
-            />
-            <AboutMerchantBankSettings
+              handleServiceChange={handleServiceChange}
               merchantBankSettings={merchantBankSettings}
               setDisplayNonBankAccountInBankTransferReport={setDisplayNonBankAccountInBankTransferReport}
               displayNonBankAccountInBankTransferReport={displayNonBankAccountInBankTransferReport}
-              onChange={handleMerchantBankSettings}
-              inputEnable={inputEnable}
-            />
-            <AboutMonthCheckoutAddSalaryItems
-              inputEnable={inputEnable}
+              handleMerchantBankSettings={handleMerchantBankSettings}
               checkoutAndSalaryItem={checkoutAndSalaryItem}
               setCheckoutAndSalaryItem={setCheckoutAndSalaryItem}
-            />
-          </div>
-        )}
-        {selectTab === 'report' && (
-          <div className="flex flex-col gap-6">
-            <AboutPriceDisplayOnDailyReport
               aboutReport={aboutReport}
               setAboutReport={setAboutReport}
-              inputEnable={inputEnable}
-            />
-            <AboutOtherReport
-              inputEnable={inputEnable}
-              aboutReport={aboutReport}
-              setAboutReport={setAboutReport}
-            />
-          </div>
-        )}
-        {selectTab === 'booking' && (
-          <div className="flex flex-col gap-6">
-            <NonDesignationBookingLimitSetting
-              aboutBooking={aboutBooking}
-              setAboutBooking={setAboutBooking}
-              inputEnable={inputEnable}
-            />
-            <IsReservationNeedReview
               aboutBooking={aboutBooking}
               setAboutBooking={setAboutBooking}
               bookingCusCheck={bookingCusCheck}
               setBookingCusCheck={setBookingCusCheck}
-              inputEnable={inputEnable}
-            />
-            <BookingNotificationSetting
-              aboutBooking={aboutBooking}
-              setAboutBooking={setAboutBooking}
               merchantBookingNotification={merchantBookingNotification}
               setMerchantBookingNotification={setMerchantBookingNotification}
-              inputEnable={inputEnable}
-            />
-            <BookingNotificationLineAtSetting
-              aboutBooking={aboutBooking}
-              setAboutBooking={setAboutBooking}
-              lineConnectedUser={!lineConnectedUser.loading ? idx(lineConnectedUser, _ => _.data.getLineConnectedUser) : []}
+              lineConnectedUser={lineConnectedUser}
               NDBRecipients={NDBRecipients}
               setNDBRecipients={setNDBRecipients}
               notificationDayCount={notificationDayCount}
               setNotificationDayCount={setNotificationDayCount}
               BookingLineNotify={BookingLineNotify}
               setBookingLineNotify={setBookingLineNotify}
-              inputEnable={inputEnable}
-            />
-            <BookingCheckInNotificationSetting
               checkinSettings={checkinSettings}
               setCheckinSettings={setCheckinSettings}
               bookingTypeForSocket={bookingTypeForSocket}
               setBookingTypeForSocket={setBookingTypeForSocket}
-              inputEnable={inputEnable}
-            />
-            <MerchantReservationTimes
-              inputEnable={inputEnable}
               merchantReservation={merchantReservation}
               setMerchantReservation={setMerchantReservation}
-            />
-          </div>
-        )}
-        {selectTab === 'performanceRake' && (
-          <div className="flex flex-col gap-6">
-            <AboutMerchantFakePerformanceReference
               merchantFakePerformanceRefer={merchantFakePerformanceRefer}
               setMerchantFakePerformanceRefer={setMerchantFakePerformanceRefer}
-              inputEnable={inputEnable}
-            />
-            <AboutMerchantRakePerformanceRefer
               merchantRakeReferemce={merchantRakeReferemce}
               setMerchantRakeReferemce={setMerchantRakeReferemce}
-              inputEnable={inputEnable}
-            />
-          </div>
-        )}
-        {selectTab === 'password' && (
-          <div className="flex flex-col gap-6">
-            <PasswordSetting
               setPasswordSetting={setPasswordSetting}
               passwordSetting={passwordSetting}
-              inputEnable={inputEnable}
-            />
-          </div>
-        )}
-        {selectTab === 'function' && (
-          <div className="flex flex-col gap-6">
-            <AboutSettingFunction
               aboutSettingFunction={aboutSettingFunction}
               setAboutSettingFunction={setAboutSettingFunction}
               setMerchantAvatar={setMerchantAvatar}
               merchantLogo={merchantLogo}
               setMerchantLogo={setMerchantLogo}
-              inputEnable={inputEnable}
-            />
-          </div>
-        )}
-        {selectTab === 'customer' && (
-          <div className="flex flex-col gap-6">
-            <AboutCustomerSideSetting
               aboutCustomer={aboutCustomer}
               setAboutCustomer={setAboutCustomer}
-              inputEnable={inputEnable}
-            />
-            <AboutCustomerSettingFunction
-              aboutCustomer={aboutCustomer}
-              setAboutCustomer={setAboutCustomer}
-              requiredColumnOptions={requiredColumnOptions}
-              inputEnable={inputEnable}
-            />
-            <AboutCustomerBooking
-              aboutCustomer={aboutCustomer}
-              setAboutCustomer={setAboutCustomer}
-              inputEnable={inputEnable}
-            />
-            <AboutCustomerSideExternalLink
               cusExternalLink={cusExternalLink}
-              refetchLink={getMerchantCusExternalLink.refetch}
-              inputEnable={inputEnable}
-            />
-          </div>
-        )}
-        {selectTab === 'designer' && (
-          <div className="flex flex-col gap-6">
-            <AboutDesignerSideExternalLink
+              getMerchantCusExternalLink={getMerchantCusExternalLink}
               externalLink={externalLink}
-              refetchLink={getMerchantExternalLink.refetch}
-              inputEnable={inputEnable}
-            />
-            <ReservationSettingForStylist
+              getMerchantExternalLink={getMerchantExternalLink}
               CBRDStylist={CBRDStylist}
               setCBRDStylist={setCBRDStylist}
-              inputEnable={inputEnable}
-            />
-          </div>
-        )}
-        {selectTab === 'customerTracking' && (
-          <div className="flex flex-col gap-6">
-            <AboutCustomerTracking
               hairCondition={hairCondition}
               setHairCondition={setHairCondition}
-              inputEnable={inputEnable}
             />
-          </div>
-        )}
             <div className="mt-6 flex justify-end">
               <Button
                 variant="primary"
