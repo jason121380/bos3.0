@@ -20,8 +20,10 @@ const contrast = (a, b) => {
 const toHex = rgb => '#' + rgb.match(/\d+/g).slice(0, 3).map(n => Number(n).toString(16).padStart(2, '0')).join('').toUpperCase()
 
 describe('預約狀態色', () => {
-  it.each(Object.entries(RESERVATION_COLORS))('%s（%s）上的字色對比達 4.5:1', (name, color) => {
-    expect(contrast(color, readableTextOn(color))).toBeGreaterThanOrEqual(4.5)
+  // Jason 2026/10/21：預約色塊文字一律白色，所以每個狀態色都要深到白字仍達 4.5:1
+  it.each(Object.entries(RESERVATION_COLORS))('%s（%s）用白字，且白字對比達 4.5:1', (name, color) => {
+    expect(readableTextOn(color)).toBe('#FFFFFF')
+    expect(contrast(color, '#FFFFFF')).toBeGreaterThanOrEqual(4.5)
   })
 
   it('各狀態顏色互不相同（不同狀態不能同色）', () => {
