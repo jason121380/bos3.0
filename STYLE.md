@@ -128,6 +128,7 @@
 ## 9. 無障礙
 
 - 文字對比 ≥ 4.5:1；所有可點元素有可見 focus 樣式；觸控目標 ≥ 40px。
+- 放在橫向捲動容器裡的元件（分頁列、橫向 chip 列），焦點框畫在內側（`focus-visible:ring-inset ring-offset-0`），否則上下緣會被容器裁掉；`ui/tabs` 已內建。
 - 圖示按鈕必須有 `aria-label`。
 - 觸控目標不足 40px 的小控制項以**透明偽元素**擴大命中區、不改視覺尺寸：`ui/dialog` 與 `ui/toast` 的關閉鈕、`ui/checkbox` 的 `CheckboxField`／`FormControlLabel` 標籤（手機寬度，`checkboxHitArea`）；圖示鈕用 `size="icon"`（手機 40px），不要再以 `h-8 w-8` 覆寫。
 - 版面殼層：`layouts/Dashboard` 輸出全站唯一的 `<main id="main-content">`，最前面有「跳至主要內容」skip link（平時隱藏、聚焦出現）；`Page` 元件是 `div`，頁面不得再自己輸出 `<main>`。

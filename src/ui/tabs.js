@@ -22,6 +22,8 @@ const TabsTrigger = React.forwardRef(({ className, ...props }, ref) => (
       'hover:text-text data-[state=active]:bg-accent/10 data-[state=active]:font-medium data-[state=active]:text-accent',
       'disabled:pointer-events-none disabled:text-text-tertiary',
       focusRing,
+      // 焦點框畫在膠囊內側：分頁列是橫向捲動容器（overflow-x:auto 會連帶裁掉上下溢出），外側 3px 的框在手機上會被切掉上下緣
+      'focus-visible:ring-inset focus-visible:ring-offset-0',
       className
     )}
     {...props}
