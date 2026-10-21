@@ -1,4 +1,4 @@
-import { CalendarDays, ChartColumn, Contact, CreditCard, Gift, LogOut, Megaphone, Package, Pin, Receipt, Search, Settings, Users, X } from 'lucide-react'
+import { CalendarDays, ChartColumn, Contact, CreditCard, Gift, LogOut, Megaphone, Package, Pin, Receipt, Search, Settings, Store, Users, X } from 'lucide-react'
 import SlotPortal from 'components/SlotPortal'
 import { SIDEBAR_SEARCH_SLOT_ID } from './TopBar'
 import NavItem, { isWithinHref } from 'components/NavItem'
@@ -545,6 +545,16 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
         </div>
       )}
       <SidebarContent>
+        {/* 目前店家（Jason 2026/10/21「要呈現現在在哪家店」）：只顯示、不可點；切換仍用底部的店家圖示。店名取自 userMerchant，切換店家後整頁重新載入即更新 */}
+        {merchantName && (
+          <div className="mb-1 flex items-center gap-2.5 px-2.5 pb-2 pt-1" title={`目前店家：${merchantName}`}>
+            <Store className="h-4 w-4 shrink-0 text-text-secondary" strokeWidth={1.75} aria-hidden="true" />
+            <span className="flex min-w-0 flex-col">
+              <span className="text-caption text-text-tertiary">目前店家</span>
+              <span className="truncate text-body font-medium text-text">{merchantName}</span>
+            </span>
+          </div>
+        )}
         {!profile.loading && (
           <Fragment>
             {filteredPinnedTable.length > 0 && (
