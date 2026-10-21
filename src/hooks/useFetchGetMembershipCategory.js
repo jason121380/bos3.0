@@ -25,7 +25,7 @@ export function useFetchGetMembershipCategories(input) {
 }
 
 // 篩選會員卡類別
-const FETCH_MEMBERSHIP_CATEGORY = settingsQuery(gql`
+const FETCH_MEMBERSHIP_CATEGORY = gql`
   query FETCH_MEMBERSHIP_CATEGORY($categoryUUID: ID!) {
     membershipCategory(categoryUUID: $categoryUUID) {
       id
@@ -39,12 +39,12 @@ const FETCH_MEMBERSHIP_CATEGORY = settingsQuery(gql`
       }
     }
   }
-`)
+`
 export function useFetchGetMembershipCategory(categoryUUID) {
   return useQuery(FETCH_MEMBERSHIP_CATEGORY, {
     variables: {
       categoryUUID,
     },
-    fetchPolicy: SETTINGS_FETCH_POLICY,
+    fetchPolicy: 'cache-and-network',
   })
 }

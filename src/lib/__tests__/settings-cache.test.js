@@ -81,10 +81,10 @@ test('共用根欄位（merchant 底下還有權限與報表）不能登記為�
 // 清除以根欄位為單位：設定查詢的根欄位若也被「帶參數的查詢」（依日期的分析報表、權限等）使用，
 // 每次存檔或 10 分鐘到期都會把那些報表一起清掉重抓（Codex review，PR #251：productCategories／serviceCategories 的分析報表）。
 // 掃全站 gql 文件，擋下這種組合；共用根欄位的其他查詢若同樣不帶任何參數（純設定旗標），連帶重抓無妨。
-test('設定查詢的根欄位不能和帶參數的查詢共用', () => {
+test('設定查詢的根欄位不能和帶參數的查詢共用，也不能是依 id 讀單筆的查詢', () => {
   const fs = require('fs')
   const path = require('path')
-  const { parse, visit } = require('graphql')
+  const { parse, print, visit } = require('graphql')
   const walk = dir =>
     fs.readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
       const full = path.join(dir, entry.name)
@@ -104,6 +104,11 @@ test('設定查詢的根欄位不能和帶參數的查詢共用', () => {
     return found
   }
   const settingsRoots = new Map()
+  const singleRecordSettings = []
+  // 變數型別是 ID 但值其實是店家 id 的（店家層級設定），逐一列出原因
+  const storeIdVariables = new Set([
+    'src/hooks/useFetchGetMerchantAvatar.js GET_MERCHANT_AVATAR $input', // Parameter.js 傳 { input: merchantId }
+  ])
   const otherQueries = []
   walk(path.join(__dirname, '..', '..')).forEach(file => {
     const source = fs.readFileSync(file, 'utf8')
@@ -121,7 +126,13 @@ test('設定查詢的根欄位不能和帶參數的查詢共用', () => {
         .forEach(def => {
           const roots = def.selectionSet.selections.filter(sel => sel.kind === 'Field').map(sel => sel.name.value)
           const name = `${path.relative(process.cwd(), file)} ${def.name ? def.name.value : '(anonymous)'}`
-          if (match[1]) roots.forEach(root => settingsRoots.set(root, name))
+          if (match[1]) {
+            roots.forEach(root => settingsRoots.set(root, name))
+            // 依 id 讀單筆（編輯頁）的不是設定：內容會在別處被改，不能快取 10 分鐘
+            def.variableDefinitions
+              .filter(variable => print(variable.type).replace(/!$/, '') === 'ID' && variable.variable.name.value !== 'merchantId')
+              .forEach(variable => singleRecordSettings.push(`${name} $${variable.variable.name.value}`))
+          }
           else otherQueries.push({ name, roots, withArguments: hasArguments(def) })
         })
     }
@@ -131,4 +142,5 @@ test('設定查詢的根欄位不能和帶參數的查詢共用', () => {
     .filter(query => query.withArguments)
     .flatMap(query => query.roots.filter(root => settingsRoots.has(root)).map(root => `${root}: ${settingsRoots.get(root)} ↔ ${query.name}`))
   expect(conflicts).toEqual([])
+  expect(singleRecordSettings.filter(item => !storeIdVariables.has(item))).toEqual([])
 })

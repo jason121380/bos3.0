@@ -38,7 +38,7 @@ export function useFetchGetMerchantVendorList() {
   })
 }
 
-const GET_MERCHANT_VENDOR = settingsQuery(gql`
+const GET_MERCHANT_VENDOR = gql`
   query getMerchantVendor($input: ID!) {
     getMerchantVendor(input: $input) {
       uuid
@@ -52,13 +52,13 @@ const GET_MERCHANT_VENDOR = settingsQuery(gql`
       }
     }
   }
-`)
+`
 
 export function useFetchGetMerchantVendor({ input }) {
   return useQuery(GET_MERCHANT_VENDOR, {
     variables: {
       input,
     },
-    fetchPolicy: SETTINGS_FETCH_POLICY,
+    fetchPolicy: 'cache-and-network',
   })
 }
