@@ -3,7 +3,7 @@ import { Field } from 'ui/input'
 import billContext from 'context/keyInContext'
 import { useContext, memo, useEffect } from 'react'
 import produce from 'immer'
-
+import { getBonusWalletPayLimit, isBonusDepositDisabled } from 'views/OrderShared/bonusRules'
 
 function Bonus({ customerBonus }) {
   const {
@@ -23,45 +23,9 @@ function Bonus({ customerBonus }) {
       }
     }
   };
-
-  const servicesWithThirdPartyCount = []
-  const productsWithThirdPartyCount = []
-  const membershipsWithThirdPartyCount = []
-  const servicesWithoutThirdPartyCount = []
-  const productsWithoutThirdPartyCount = []
-  const membershipsWithoutThirdPartyCount = []
-
-  bill.serviceOrders.forEach(data => {
-    if (typeof data.thirdPartyCouponMerchantId === 'string') {
-      servicesWithThirdPartyCount.push(data)
-    }
-  })
-  bill.productOrders.forEach(data => {
-    if (typeof data.thirdPartyCouponMerchantId === 'string') {
-      productsWithThirdPartyCount.push(data)
-    }
-  })
-  bill.membershipOrders.forEach(data => {
-    if (typeof data.thirdPartyCouponMerchantId === 'string') {
-      membershipsWithThirdPartyCount.push(data)
-    }
-  })
-
-  bill.serviceOrders.forEach(data => {
-    if (typeof data.thirdPartyCouponMerchantId !== 'string') {
-      servicesWithoutThirdPartyCount.push(data)
-    }
-  })
-  bill.productOrders.forEach(data => {
-    if (typeof data.thirdPartyCouponMerchantId !== 'string') {
-      productsWithoutThirdPartyCount.push(data)
-    }
-  })
-  bill.membershipOrders.forEach(data => {
-    if (typeof data.thirdPartyCouponMerchantId !== 'string') {
-      membershipsWithoutThirdPartyCount.push(data)
-    }
-  })
+  // 「點數折抵金額」上限與「點數給點」是否停用：四頁同一套規則（OrderShared/bonusRules）
+  const walletPayLimit = () => getBonusWalletPayLimit(bill)
+  const bonusDepositDisabled = () => isBonusDepositDisabled({ bonusRewardWithLINE, isLineBinded, bonusSetting })
 
   useEffect(() => {
     if (bonusConversion.isBonusConversion) {
@@ -73,53 +37,6 @@ function Bonus({ customerBonus }) {
     }
   }, [bill.bonusUsed, setBill])
 
-  const bonusDepositDisabled = () => {
-    if (bonusRewardWithLINE) {
-      return isLineBinded ? bonusSetting.isUsing : true;
-    }
-    return bonusSetting.isUsing;
-  };
-
-  const walletPayLimit = () => {
-    const totalOrdersCount =
-      bill.serviceOrders.length +
-      bill.productOrders.length +
-      bill.ticketOrders.length +
-      bill.membershipOrders.length;
-
-    const thirdPartyOrdersCount =
-      servicesWithThirdPartyCount.length +
-      productsWithThirdPartyCount.length +
-      membershipsWithThirdPartyCount.length;
-
-    const hasWalletPayLimit = totalOrdersCount - thirdPartyOrdersCount >= 1;
-
-    if (hasWalletPayLimit) {
-      const servicesTotal = servicesWithoutThirdPartyCount.reduce((total, item) => total + item.price, 0);
-
-      const productsTotal = productsWithoutThirdPartyCount.reduce(
-        (total, item) => total + item.price * item.count,
-        0
-      );
-
-      const membershipsTotal = membershipsWithoutThirdPartyCount.reduce(
-        (total, item) => total + item.price,
-        0
-      );
-
-      const ticketsTotal = bill.ticketOrders.reduce(
-        (total, item) => total + item.price * item.count,
-        0
-      );
-
-      const otherPayments = bill.amountByOtherPay + bill.walletPay;
-
-      const walletPayLimit = servicesTotal + productsTotal + membershipsTotal + ticketsTotal - otherPayments;
-
-      return walletPayLimit;
-    }
-    return 0;
-  }
   return (
     <div className="mb-6 flex flex-wrap items-end justify-start gap-[20px]">
       <Field label="點數給點" className="flex w-[200px] justify-start">

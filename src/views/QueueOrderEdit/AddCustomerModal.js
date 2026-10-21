@@ -19,18 +19,9 @@ import useFetchGetCheckIsCustomerNoUsed from 'hooks/useFetchGetCheckIsCustomerNo
 import useFetchGetLastCustomerNo from 'hooks/useFetchGetLastCustomerNo'
 import cloneDeep from 'lodash/cloneDeep'
 import SourceSelect from 'components/SourceSelect'
+import { GENDER_OPTIONS, makeFieldChange, makeBirthdayChange } from 'views/OrderShared/customerFormInput'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
-const gender = [
-  {
-    value: 'MALE',
-    label: '男',
-  },
-  {
-    value: 'FEMALE',
-    label: '女',
-  },
-]
 
 function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
   const inputLabel = useRef()
@@ -91,36 +82,12 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
 
   const { loading } = usePageLoading()
 
-  const handleFieldChange = event => {
-    if (event.persist) event.persist()
-    setValues(
-      produce(draft => {
-        draft[event.target.name] = event.target.value
-      })
-    )
-  }
+  // 欄位輸入（OrderShared/customerFormInput，四頁共用）
+  const handleFieldChange = makeFieldChange(setValues)
+  const handleBirthdayChange = makeBirthdayChange(birthdayObj, setBirthdayObj)
 
-  const handleBirthdayChange = e => {
-    switch (e.target.name) {
-      case 'year':
-        if (e.target.value.length <= 3) {
-          setBirthdayObj({ ...birthdayObj, year: e.target.value })
-        }
-        break
-      case 'month':
-        if (parseInt(e.target.value, 10) <= 12 || e.target.value === '') {
-          setBirthdayObj({ ...birthdayObj, month: e.target.value })
-        }
-        break
-      case 'day':
-        if (parseInt(e.target.value, 10) <= 31 || e.target.value === '') {
-          setBirthdayObj({ ...birthdayObj, day: e.target.value })
-        }
-        break
-      default:
-        break
-    }
-  }
+
+
 
   const handleSubmit = () => {
     if (values.customerId.length > 0) {
@@ -277,7 +244,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   <NativeSelectOption value="UNKNOWN">
                     <em>未知</em>
                   </NativeSelectOption>
-                  {gender.map((data, index) => (
+                  {GENDER_OPTIONS.map((data, index) => (
                     <NativeSelectOption value={data.value} key={`${data.value}-${index}`}>
                       {data.label}
                     </NativeSelectOption>

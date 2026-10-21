@@ -31,7 +31,7 @@ npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps（CI／Docke
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
 npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base＋react-hooks/rules-of-hooks 為 error，0 warning）
-CI=true npm run test:nowatch         # 全部單元測試（基準：85 檔／621 測試全數通過）
+CI=true npm run test:nowatch         # 全部單元測試（基準：90 檔／638 測試全數通過）
 TZ=America/Los_Angeles CI=true npm run test:nowatch   # 時區相關修改要另在海外時區跑一次
 CI=true npm run test:coverage        # 覆蓋率（門檻為現況下限＋金額／API 模組逐檔門檻，見 package.json）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
@@ -69,7 +69,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - `src/components/ReservationCalendar/`：預約週曆共用。`weekCalendar.js`（`tidyWeekCalendar`／`buildWeekCalendar`：色塊、可預約人數、重疊並排、公休、跨日拆段，單週預約紀錄／個人頁／員工資料共用，有單元測試）、`DesignerWeekReservation/`（個人頁與員工資料的整頁週曆，同一份）、`HolidayEdit.js`（四個預約頁的公休彈窗）。單日預約紀錄的版面不同，只共用 `HolidayEdit`。
 - `src/components/PageErrorBoundary.js`：Dashboard 內容區的錯誤邊界（單頁出錯只顯示錯誤畫面，側欄可用）；`SlotPortal.js`：TopBar／NavBar 互相把按鈕畫進對方插槽（切換店家、搜尋選單）。
 - `src/layouts/Dashboard/`：側欄頂列（Logo、版號、搜尋鈕、訂單佇列鈴鐺、收合）、選單、底部（深淺色切換、切換店家、登出）。
-- `src/views/OrderShared/`：帳單四兄弟（打帳單、帳單詳細、掛單詳細、重新開單）共用元件（2026/10/21 項目 4）：`ItemPickerModal`（選服務／商品／卡券／會員卡彈窗的畫面，`ui/dialog`、按 Esc／點背景不關）＋`pickerColumns.js`、`ProductsModal`、`MemberShipCardSellsModal`、`EditServicesModal`／`EditCouponSellModal`（三個編輯頁共用；打帳單的選取邏輯不同，留在 `OrderCreate`，只共用畫面）、`WalletDepositModal`、`PannelRemark`／`PannelPayment`。各頁差異以明確 props 傳入（例如 `showEffectiveDays`、`titleByCategory`、`getRowKey`）；改帳單共用畫面先看這裡，不要再複製到四個目錄。
+- `src/views/OrderShared/`：帳單四兄弟（打帳單、帳單詳細、掛單詳細、重新開單）共用元件（2026/10/21 項目 4）：`ItemPickerModal`（選服務／商品／卡券／會員卡彈窗的畫面，`ui/dialog`、按 Esc／點背景不關）＋`pickerColumns.js`、`ProductsModal`、`MemberShipCardSellsModal`、`EditServicesModal`／`EditCouponSellModal`（三個編輯頁共用；打帳單的選取邏輯不同，留在 `OrderCreate`，只共用畫面）、`WalletDepositModal`、`PannelRemark`／`PannelPayment`；第二輪（2026/10/22）加入 `BillSummary`（金額彙總／底部固定列畫面，數值運算留在各頁）、`ReCheckoutPasswordDialog`、`useInvoiceDecorations`、`useItemPicker`、`bonusRules`、`useCouponUseRow`、`customerField`／`customerFormInput`、`BillSourceField`；`OrderCreate/OrderDetailModal` 拆出 `useOrderDetailItems`／`useOrderDetailCheckout`／`OrderDetailScreen`，`DraftOrderEdit/Footer` 拆出 `useDraftPrint`／`useDraftCheckout`（列印範本留在原檔）。各頁差異以明確 props 傳入（例如 `showEffectiveDays`、`titleByCategory`、`getRowKey`）；改帳單共用畫面先看這裡，不要再複製到四個目錄。
 - `src/views/OrderCreate/`：打帳單。`orderRequirements.js` 與 `Header.js` 的 `valid` 同步（有測試比對）；`RowAction.js` 是項目列的圖示鈕與「新增項目」。
 - `src/helper/`：`billPaymentSummary`（打帳單應付帳款／現金應收，明細彈窗、收據、金額彙總共用）、`exportCustomerMask`（列表匯出是否遮罩客資：只有查詢成功且設定為 false 才不遮罩）、`rolePageAuthority`（讀登入者角色某區塊的頁面權限：以角色 id 比對，缺區塊／找不到角色／格式壞掉一律視為沒有權限；新頁面讀角色權限一律用它）、`billVerify`、`helperDeduction`、`giveBonus`、`truncateDecimal`（卡券金額無條件捨去）、`dailyUnlock`（鎖定日期 23:59 解除）等，皆有單元測試。
 - `src/__tests__/testkit.test.js`：頁面測試共用工具（依查詢名稱回應的模擬 link、沒寫到的欄位自動補齊、記錄送出的 variables、擋住 `fetch`、`settle()` 等所有查詢回來；`renderPage(…, { delays: { 查詢名稱: 毫秒 } })` 讓指定查詢晚回，測「設定比資料晚到」）。檔名帶 `.test` 是因為 CRA 把 `__tests__` 下每個檔都當測試；被 import 時只提供函式。新的整頁測試照四個帳單頁與 `views` 煙霧測試的寫法。

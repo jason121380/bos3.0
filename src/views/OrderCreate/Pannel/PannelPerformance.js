@@ -1,16 +1,13 @@
 import billContext from 'context/keyInContext'
-import React, { Fragment, useContext, useState } from 'react'
-import { ChevronUp } from 'lucide-react'
+import React, { Fragment, useContext } from 'react'
 import idx from 'idx'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
 import { Card, CardHeader, CardTitle } from 'ui/card'
-import { formatMoney, formatNumber } from 'ui/format'
+import { SummaryDetails, SummaryTotals, StickySummaryBar } from 'views/OrderShared/BillSummary'
 import billPaymentSummary from 'helper/billPaymentSummary'
 
 function PannelPerformance() {
     const { bill } = useContext(billContext)
-    // 手機版：金額彙總明細收在底部固定列，點展開鈕往上展開（Jason 2026/10/20）
-    const [summaryOpen, setSummaryOpen] = useState(false)
 
     const customerTicketRecords = useFetchTicketRecords({
         ids: bill.useTicketOrders.map(d => d.customerTicketId),
@@ -58,31 +55,22 @@ function PannelPerformance() {
     // 現金應收：與明細彈窗、收據共用 billPaymentSummary（同一公式）
     const { cashDue } = billPaymentSummary(bill)
 
-    // 金額彙總：各數值的運算式與舊版相同，只加千分位與新版樣式
-    const Row = ({ label, value }) => (
-        <div className="flex items-center justify-between gap-3 py-1.5 text-body">
-            <span className="whitespace-nowrap text-text-secondary">{label}</span>
-            <span className="whitespace-nowrap tabular-nums text-text">{formatMoney(value)}</span>
-        </div>
-    )
-    // 消費明細／付款與折抵：彙總卡與手機底部展開共用同一份畫面
+    // 金額彙總：各數值的運算式與舊版相同；畫面（千分位、排版、底部固定列）與其他三頁共用 OrderShared/BillSummary
     const details = (
-        <>
-            <div className="flex flex-col">
-                <p className="m-0 pb-1 text-label font-medium text-text-tertiary">消費明細</p>
-                <Row label="服務消費" value={serviceTotalPrice} />
-                <Row label="店販消費" value={merchantSellTotalPrice} />
-                <Row label="預收卡販賣" value={couponSellPrice} />
-                <Row label="使用預收卡" value={Math.round(couponUsageTotalPrice)} />
-                <Row label="會員卡販賣" value={merberShipCardTotalPrice} />
-            </div>
-            <div className="flex flex-col">
-                <p className="m-0 pb-1 text-label font-medium text-text-tertiary">付款與折抵</p>
-                <Row label="扣入金" value={bill.walletPay} />
-                <Row label="其他付款方式" value={bill.amountByOtherPay} />
-                <Row label="紅利點數折抵" value={bill.bonusDecount} />
-            </div>
-        </>
+        <SummaryDetails
+            spending={[
+                { label: '服務消費', value: serviceTotalPrice },
+                { label: '店販消費', value: merchantSellTotalPrice },
+                { label: '預收卡販賣', value: couponSellPrice },
+                { label: '使用預收卡', value: Math.round(couponUsageTotalPrice) },
+                { label: '會員卡販賣', value: merberShipCardTotalPrice },
+            ]}
+            payments={[
+                { label: '扣入金', value: bill.walletPay },
+                { label: '其他付款方式', value: bill.amountByOtherPay },
+                { label: '紅利點數折抵', value: bill.bonusDecount },
+            ]}
+        />
     )
     return (
         <Fragment>
@@ -94,51 +82,16 @@ function PannelPerformance() {
                 {details}
             </div>
             <div className="mt-3 grid grid-cols-2 gap-x-6 border-0 border-t border-solid border-border px-5 py-4">
-                <div className="flex flex-col gap-1">
-                    <span className="text-label text-text-secondary">業績合計</span>
-                    <span className="text-heading tabular-nums text-text">
-                        {formatNumber(performanceTotal)}
-                    </span>
-                </div>
-                <div className="flex flex-col gap-1">
-                    <span className="text-label text-text-secondary">現金應收</span>
-                    <span className="text-display tabular-nums text-text">
-                        {formatNumber(cashDue)}
-                    </span>
-                </div>
+                <SummaryTotals performanceTotal={performanceTotal} cashDue={cashDue} />
             </div>
         </Card>
-        {/* 底部固定列：長帳單捲動時，業績合計與現金應收隨時看得到。
-            左側讓出側欄（lg 以上依 layouts/Dashboard 提供的 --sidebar-w：展開 264px、收合 0）；手機讓出底部導覽列（56px＋iPhone 安全區——PWA 全螢幕時導覽列會加高，只讓 56px 會被蓋住）；列印時不顯示。
-            手機版（< 640px）不顯示上方彙總卡，改由左側展開鈕往上展開完整明細 */}
-        <div className="ui-root fixed inset-x-0 bottom-[calc(56px+env(safe-area-inset-bottom))] z-[1050] border-0 border-t border-solid border-border bg-background px-4 py-2 shadow-[0_-2px_8px_rgba(0,0,0,0.06)] print:hidden lg:bottom-0 lg:left-[var(--sidebar-w,264px)]">
-            {summaryOpen && (
-                <div id="order-summary-details" className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto border-0 border-b border-solid border-border pb-2 sm:hidden">
-                    <p className="m-0 pb-1 pt-1 text-heading font-bold text-text">金額彙總</p>
-                    {details}
-                </div>
-            )}
-            <div className="mx-auto flex max-w-[1200px] items-center justify-end gap-3 whitespace-nowrap sm:gap-8">
-                <button
-                    type="button"
-                    aria-label="金額彙總明細"
-                    aria-expanded={summaryOpen}
-                    aria-controls="order-summary-details"
-                    onClick={() => setSummaryOpen(!summaryOpen)}
-                    className="mr-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-text-secondary hover:bg-surface-hover sm:hidden"
-                >
-                    <ChevronUp className={summaryOpen ? 'h-5 w-5 rotate-180 transition-transform' : 'h-5 w-5 transition-transform'} strokeWidth={1.75} />
-                </button>
-                <div className="flex items-baseline gap-1.5 sm:gap-2">
-                    <span className="text-label text-text-secondary max-sm:text-caption">業績合計</span>
-                    <span className="text-heading tabular-nums text-text">{formatMoney(performanceTotal)}</span>
-                </div>
-                <div className="flex items-baseline gap-1.5 sm:gap-2">
-                    <span className="text-label text-text-secondary max-sm:text-caption">現金應收</span>
-                    <span className="text-heading font-semibold tabular-nums text-text">{formatMoney(cashDue)}</span>
-                </div>
-            </div>
-        </div>
+        {/* 底部固定列：手機版（< 640px）不顯示上方彙總卡，改由固定列左側展開鈕往上展開完整明細 */}
+        <StickySummaryBar
+            detailsId="order-summary-details"
+            details={details}
+            performanceTotal={performanceTotal}
+            cashDue={cashDue}
+        />
         </Fragment>
     )
 }

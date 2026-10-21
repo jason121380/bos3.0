@@ -1,5 +1,3 @@
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from 'ui/modal-compat'
-import { TextField } from 'ui/text-field'
 import billContext from 'context/keyInContext'
 import { openSnackbar } from 'elements/snackbars'
 import getQueryString from 'helper/getQueryString'
@@ -8,17 +6,15 @@ import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
 import useFetchUpdateOrder from 'hooks/useFetchUpdateOrder'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import useFetchMerchantPassword from 'hooks/useFetchMerchantPassword'
 import { handleTidyBill, checkServicesOrders, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
 import produce from 'immer'
-import cloneDeep from 'lodash/cloneDeep'
 import giveBonus from 'helper/giveBonus'
 import { Button } from 'ui/button'
-import { Card, CardHeader, CardTitle } from 'ui/card'
-import { formatNumber, formatMoney } from 'ui/format'
-import { ChevronUp } from 'lucide-react'
+import { SummaryDetails, EditSummaryCard, BillActions, StickySummaryBar } from 'views/OrderShared/BillSummary'
+import ReCheckoutPasswordDialog from 'views/OrderShared/ReCheckoutPasswordDialog'
 import { getMissingForCheckout, getMissingForSave, getDisabledReason } from './orderRequirements'
 
 export default function Footer({ enable }) {
@@ -26,13 +22,9 @@ export default function Footer({ enable }) {
     bill, orderSetting, orderStatus, setBill, bonusSetting,
     isLineBinded, bonusRewardWithLINE, disablePendingOrder
   } = React.useContext(billContext)
-  const inputRef = useRef(null)
   const [reCheckoutPwd, setReCheckoutPwd] = useState('')
-  const [selection, setSelection] = useState({ start: 0, end: 0 });
   const [openDialog, setOpenDialog] = useState(false)
   const [disableRecheckoutOrders, setDisableRecheckoutOrders] = useState(false)
-  // 手機版：金額彙總明細收在底部固定列，點展開鈕往上展開（純畫面開合，比照打帳單）
-  const [summaryOpen, setSummaryOpen] = useState(false)
   const passwordData = useFetchMerchantPassword()
 
   useEffect(() => {
@@ -301,81 +293,6 @@ export default function Footer({ enable }) {
     setOpenDialog(false)
   }
 
-  const handlePasswordChange = e => {
-    const value = e.target.value
-    const { start, end } = selection;
-    const clonePassword = cloneDeep(reCheckoutPwd)
-    const delta = value.length - reCheckoutPwd.length
-    let combineValue = ''
-    
-    if (delta > 0) {
-      combineValue = clonePassword.slice(0, start) + value.slice(start, start + delta) + clonePassword.slice(end, clonePassword.length)
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.selectionStart = start + delta;
-          inputRef.current.selectionEnd = start + delta;
-        }
-      }, 0);
-    } else {
-      if (end - start === Math.abs(delta)) {
-        combineValue = clonePassword.slice(0, start) + clonePassword.slice(end, clonePassword.length)
-      } else if (start === end) {
-        combineValue = clonePassword.slice(0, start - 1) + clonePassword.slice(end, clonePassword.length)
-        setTimeout(() => {
-          if (inputRef.current) {
-            inputRef.current.selectionStart = start - 1;
-            inputRef.current.selectionEnd = start - 1;
-          }
-        }, 0);
-      } else {
-        const sliceValue = value.slice(start, start + 1)
-        combineValue = clonePassword.slice(0, start) + sliceValue + clonePassword.slice(end, clonePassword.length)
-        setTimeout(() => {
-          if (inputRef.current) {
-            inputRef.current.selectionStart = start + 1;
-            inputRef.current.selectionEnd = start + 1;
-          }
-        }, 0);
-      }
-    }
-    setReCheckoutPwd(combineValue)
-  }
-
-  const handleSelect = (event) => {
-    setSelection({
-      start: event.target.selectionStart,
-      end: event.target.selectionEnd,
-    });
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Delete') {
-      event.preventDefault();
-    }
-    if (event.ctrlKey && (event.key === "c" || event.key === "C")) {
-      event.preventDefault();
-    }
-  };
-
-  const handlePaste = (event) => {
-    event.preventDefault();
-    const pasteData = event.clipboardData.getData("text");
-    const { start, end } = selection;
-
-    const newActualValue =
-      reCheckoutPwd.slice(0, start) + pasteData + reCheckoutPwd.slice(end);
-
-    setReCheckoutPwd(newActualValue);
-
-    // 更新光标位置
-    setTimeout(() => {
-      if (inputRef.current) {
-        inputRef.current.selectionStart = inputRef.current.selectionEnd =
-          start + pasteData.length;
-      }
-    }, 0);
-  };
-
   useEffect(() => {
     if (
       serviceTotalPriceWithoutThirdPartyCoupon +
@@ -484,60 +401,34 @@ export default function Footer({ enable }) {
         ? saveDisabledReason
         : ''
 
-  // 金額彙總：各數值的運算式與舊版相同，只加千分位與新版樣式
-  const Row = ({ label, value }) => (
-    <div className="flex items-center justify-between gap-3 py-1.5 text-body">
-      <span className="whitespace-nowrap text-text-secondary">{label}</span>
-      <span className="whitespace-nowrap tabular-nums text-text">{formatMoney(value)}</span>
-    </div>
-  )
+  // 金額彙總：各數值的運算式與舊版相同；排版與千分位在 OrderShared/BillSummary（四頁共用）
   // 消費明細／付款與折抵：彙總卡與手機底部展開共用同一份畫面（比照打帳單）
   const details = (
-    <>
-      <div className="flex flex-col">
-        <p className="m-0 pb-1 text-label font-medium text-text-tertiary">消費明細</p>
-        <Row label="服務消費" value={serviceTotalPrice} />
-        <Row label="店販消費" value={merchantSellTotalPrice} />
-        <Row label="預收卡販賣" value={couponSellPrice} />
-        <Row label="使用預收卡" value={Math.round(couponUsageTotalPrice)} />
-        <Row label="會員卡販賣" value={merberShipCardTotalPrice} />
-      </div>
-      <div className="flex flex-col">
-        <p className="m-0 pb-1 text-label font-medium text-text-tertiary">付款與折抵</p>
-        <Row label="扣入金" value={bill.walletPay} />
-        <Row label="其他付款方式" value={bill.amountByOtherPay} />
-        <Row label="紅利點數折抵" value={bill.bonusDecount} />
-      </div>
-    </>
+    <SummaryDetails
+      spending={[
+        { label: '服務消費', value: serviceTotalPrice },
+        { label: '店販消費', value: merchantSellTotalPrice },
+        { label: '預收卡販賣', value: couponSellPrice },
+        { label: '使用預收卡', value: Math.round(couponUsageTotalPrice) },
+        { label: '會員卡販賣', value: merberShipCardTotalPrice },
+      ]}
+      payments={[
+        { label: '扣入金', value: bill.walletPay },
+        { label: '其他付款方式', value: bill.amountByOtherPay },
+        { label: '紅利點數折抵', value: bill.bonusDecount },
+      ]}
+    />
   )
   return (
     <React.Fragment>
-    {/* 金額彙總卡（放在 Pannel 下方右欄，比照打帳單 PannelPerformance）：桌機顯示明細、合計，按鈕列在合計下方；
-        手機（< 640px）只留操作按鈕，明細與合計收進底部固定列 */}
-    <Card className="ui-root w-full self-start">
-      <CardHeader className="max-sm:hidden">
-        <CardTitle>金額彙總</CardTitle>
-      </CardHeader>
-      <div className="grid grid-cols-2 gap-x-6 gap-y-3 px-5 pt-2 max-sm:hidden">
-        {details}
-      </div>
-      <div className="mt-3 flex flex-col gap-4 border-0 border-t border-solid border-border px-5 py-4 max-sm:mt-0 max-sm:border-t-0">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4 max-sm:hidden">
-          <div className="flex flex-col gap-1">
-            <span className="text-label text-text-secondary">業績合計</span>
-            <span className="text-heading tabular-nums text-text">
-              {formatNumber(performanceTotal)}
-            </span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-label text-text-secondary">現金應收</span>
-            <span className="text-display tabular-nums text-text">
-              {formatNumber(cashDue)}
-            </span>
-          </div>
-        </div>
-        {orderStatus && (
-          <div className="flex flex-col items-end gap-1.5 max-sm:w-full">
+      {/* 金額彙總卡（放在 Pannel 下方右欄，比照打帳單 PannelPerformance）：桌機顯示明細、合計，按鈕列在合計下方；
+          手機（< 640px）只留操作按鈕，明細與合計收進底部固定列 */}
+      <EditSummaryCard
+        details={details}
+        performanceTotal={performanceTotal}
+        cashDue={cashDue}
+        actions={orderStatus && (
+          <BillActions reason={disabledReason}>
             <div className="orderButtonGroup flex flex-wrap items-center justify-end gap-2">
               {orderStatus === '預約成功' && status !== 'checkout' && (
                 <span title={saveDisabledReason || undefined} className="inline-flex">
@@ -577,78 +468,26 @@ export default function Footer({ enable }) {
                 </span>
               )}
             </div>
-            {disabledReason && (
-              <p role="status" className="m-0 text-caption text-warning max-sm:text-right">
-                {disabledReason}
-              </p>
-            )}
-          </div>
+          </BillActions>
         )}
-      </div>
-      {/* 密碼欄位有游標位置與貼上處理，保留 MUI Dialog / TextField；只把按鈕換成新元件 */}
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">重新結帳</DialogTitle>
-        <DialogContent style={{ overflow: 'visible' }}>
-          <DialogContentText id="alert-dialog-description">
-            <TextField
-              label="密碼"
-              inputRef={inputRef}
-              value={new Array(reCheckoutPwd.length).fill('*').join('')}
-              onChange={handlePasswordChange}
-              onSelect={handleSelect}
-              onCopy={e => e.preventDefault()}
-              onKeyDown={handleKeyDown}
-              onPaste={handlePaste}
-              type='text'
-            />
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions className="ui-root">
-          <Button variant="ghost" onClick={handleCloseDialog}>
-            取消
-          </Button>
-          <Button variant="primary" disabled={open} onClick={() => handleReCheckoutOrder()} autoFocus data-testid="confirm">
-            確認
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Card>
-    {/* 底部固定列：長帳單捲動時，業績合計與現金應收隨時看得到（比照打帳單）。
-        左側讓出側欄（lg 以上 240px）；手機讓出底部導覽列（56px＋iPhone 安全區）；列印時不顯示。
-        手機版（< 640px）不顯示上方明細與合計，改由左側展開鈕往上展開完整明細 */}
-    <div className="ui-root fixed inset-x-0 bottom-[calc(56px+env(safe-area-inset-bottom))] z-[1050] border-0 border-t border-solid border-border bg-background px-4 py-2 shadow-[0_-2px_8px_rgba(0,0,0,0.06)] print:hidden lg:bottom-0 lg:left-[var(--sidebar-w,264px)]">
-      {summaryOpen && (
-        <div id="order-summary-details" className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto border-0 border-b border-solid border-border pb-2 sm:hidden">
-          <p className="m-0 pb-1 pt-1 text-heading font-bold text-text">金額彙總</p>
-          {details}
-        </div>
-      )}
-      <div className="mx-auto flex max-w-[1200px] items-center justify-end gap-3 whitespace-nowrap sm:gap-8">
-        <button
-          type="button"
-          aria-label="金額彙總明細"
-          aria-expanded={summaryOpen}
-          aria-controls="order-summary-details"
-          onClick={() => setSummaryOpen(!summaryOpen)}
-          className="mr-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-text-secondary hover:bg-surface-hover sm:hidden"
-        >
-          <ChevronUp className={summaryOpen ? 'h-5 w-5 rotate-180 transition-transform' : 'h-5 w-5 transition-transform'} strokeWidth={1.75} />
-        </button>
-        <div className="flex items-baseline gap-1.5 sm:gap-2">
-          <span className="text-label text-text-secondary max-sm:text-caption">業績合計</span>
-          <span className="text-heading tabular-nums text-text">{formatMoney(performanceTotal)}</span>
-        </div>
-        <div className="flex items-baseline gap-1.5 sm:gap-2">
-          <span className="text-label text-text-secondary max-sm:text-caption">現金應收</span>
-          <span className="text-heading font-semibold tabular-nums text-text">{formatMoney(cashDue)}</span>
-        </div>
-      </div>
-    </div>
+        <ReCheckoutPasswordDialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          title="重新結帳"
+          reCheckoutPwd={reCheckoutPwd}
+          setReCheckoutPwd={setReCheckoutPwd}
+          confirmDisabled={open}
+          onConfirm={() => handleReCheckoutOrder()}
+        />
+      </EditSummaryCard>
+      {/* 底部固定列：長帳單捲動時，業績合計與現金應收隨時看得到（比照打帳單） */}
+      <StickySummaryBar
+        detailsId="order-summary-details"
+        details={details}
+        performanceTotal={performanceTotal}
+        cashDue={cashDue}
+      />
     </React.Fragment>
   )
 }

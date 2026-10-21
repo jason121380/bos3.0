@@ -10,7 +10,7 @@ import PannelPayment from 'views/OrderShared/PannelPayment'
 import Payment from './Payment'
 import PannelService from './PannelService'
 import PannelRemark from 'views/OrderShared/PannelRemark'
-import Remark from './Remark'
+import Remark from 'views/OrderShared/Remark'
 import PannelMemberShipCardSells from './PannelMemberShipCardSells'
 import PannelBonus from "./PannelBonus";
 

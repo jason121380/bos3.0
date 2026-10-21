@@ -1,5 +1,5 @@
 import { Card, CardContent } from 'ui/card'
-import Remark from 'views/OrderCreate/Remark'
+import Remark from 'views/OrderShared/Remark'
 
 const styles = {
   heading: '!text-[16px] font-bold text-[rgb(var(--text))] flex items-center',

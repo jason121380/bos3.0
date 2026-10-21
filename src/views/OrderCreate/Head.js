@@ -28,6 +28,7 @@ import useFetchGetIsAutoSetPreferDesignerForOrderCreate from 'hooks/useFetchGetI
 import MembershipCardList from 'components/MembershipCardList'
 import lineIcon from 'assets/images/LINE_APP.png'
 
+import { emptyCustomerForm, quickAddCustomerInput } from 'views/OrderShared/customerField'
 import AddCustomerModal from './AddCustomerModal'
 
 const styles = {
@@ -126,28 +127,7 @@ export default function Head() {
   const [isChangeDateTime, setIsChangeDateTime] = useState(false)
   const isAbleToChangeDateTimeInOrder = useFetchGetIsAbleToChangeDateTimeInOrder()
   const [getPreferDesigner, setGetPreferDesigner] = useState(false)
-  const [customer, setCustomer] = useState({
-    customerId: '',
-    category: '',
-    name: '',
-    cellphone: '',
-    birthday: {
-      year: '',
-      month: '',
-      day: '',
-    },
-    OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-      ? JSON.parse(localStorage.getItem('userMerchant')).id
-      : null,
-    gender: 'MALE',
-    no: '',
-    nickName: '',
-    PreferDesignerId: '',
-    email: '',
-    address: '',
-    lineId: '',
-    remark: '',
-  })
+  const [customer, setCustomer] = useState(emptyCustomerForm())
   const [designateStatus, setDesignateStatus] = useState(true)
 
   useEffect(() => {
@@ -157,28 +137,7 @@ export default function Head() {
       setIsLineBinded(false)
       setFocus('customer')
       customerRef.current.focus()
-      setCustomer({
-        customerId: '',
-        category: '',
-        name: '',
-        cellphone: '',
-        birthday: {
-          year: '',
-          month: '',
-          day: '',
-        },
-        OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-          ? JSON.parse(localStorage.getItem('userMerchant')).id
-          : null,
-        gender: 'MALE',
-        no: '',
-        nickName: '',
-        PreferDesignerId: '',
-        email: '',
-        address: '',
-        lineId: '',
-        remark: '',
-      })
+      setCustomer(emptyCustomerForm())
     }
   }, [reset, setFocus, setIsLineBinded])
   useEffect(() => {
@@ -328,28 +287,7 @@ export default function Head() {
       setTmpCustomerKeyword('')
       setMembershipPurchase([])
       setIsLineBinded(false)
-      setCustomer({
-        customerId: '',
-        category: '',
-        name: '',
-        cellphone: '',
-        birthday: {
-          year: '',
-          month: '',
-          day: '',
-        },
-        OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-          ? JSON.parse(localStorage.getItem('userMerchant')).id
-          : null,
-        gender: 'MALE',
-        no: '',
-        nickName: '',
-        PreferDesignerId: '',
-        email: '',
-        address: '',
-        lineId: '',
-        remark: '',
-      })
+      setCustomer(emptyCustomerForm())
     }
   }
 
@@ -384,20 +322,7 @@ export default function Head() {
     // 如果沒有打電話 會是新增客人
     if (bill.customerCellphone !== '') {
       addCustomer({
-        input: {
-          OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-            ? JSON.parse(localStorage.getItem('userMerchant')).id
-            : null,
-          gender: 'MALE',
-          cellphone: bill.customerCellphone,
-          birthday: {
-            year: '',
-            month: '',
-            day: '',
-          },
-          name: '',
-          category: '',
-        },
+        input: quickAddCustomerInput(bill.customerCellphone),
       }).then(res => {
         setCustomer({
           ...customer,
@@ -447,28 +372,7 @@ export default function Head() {
 
   const handleEditClose = () => {
     setOpenModal(false)
-    setCustomer({
-      customerId: '',
-      category: '',
-      name: '',
-      cellphone: '',
-      birthday: {
-        year: '',
-        month: '',
-        day: '',
-      },
-      OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-        ? JSON.parse(localStorage.getItem('userMerchant')).id
-        : null,
-      gender: 'MALE',
-      no: '',
-      nickName: '',
-      PreferDesignerId: '',
-      email: '',
-      address: '',
-      lineId: '',
-      remark: '',
-    })
+    setCustomer(emptyCustomerForm())
   }
 
   const handleFocus = event => {

@@ -2,7 +2,7 @@ import { TextField } from 'ui/text-field'
 import { Field } from 'ui/input'
 import billContext from 'context/keyInContext'
 import { useContext, memo } from 'react'
-import SourceSelect from 'components/SourceSelect'
+import { BillSourceField } from 'views/OrderShared/Remark'
 
 
 function Remark() {
@@ -27,19 +27,7 @@ function Remark() {
         }}
       />
       </Field>
-      <Field label="帳單來源" className="mr-[12px] flex !w-[200px] max-w-[calc(100%-12px)] justify-start">
-      <SourceSelect
-        emptyOption
-        label=''
-        value={bill.source || ''}
-        onChange={e => {
-          handleBillChange({
-            key: 'source',
-            value: e.target.value || null,
-          })
-        }}
-      />
-      </Field>
+      <BillSourceField />
     </div>
   )
 }

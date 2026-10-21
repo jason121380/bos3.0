@@ -7,13 +7,11 @@ import ProductAutoComplete from 'components/ProductAutoComplete'
 import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
 import idx from 'idx'
 import { Fragment, useState, useEffect, useContext } from 'react'
-import useFetchProducts from 'hooks/useFetchProducts'
-import useFetchProductCategories from 'hooks/useFetchProductCategories'
-import produce from 'immer'
 import TeachingModeContext from 'context/teachingModeContext'
 import billContext from 'context/keyInContext'
 
 import ProductsModal from 'views/OrderShared/ProductsModal'
+import { useProductPicker } from 'views/OrderShared/useItemPicker'
 
 export default function MerchantSells({
   sells,
@@ -33,56 +31,9 @@ export default function MerchantSells({
   const { teachingMode } = techingModeContext
   const { thirdPartyCoupons, setProductAlready } = useContext(billContext)
 
-  const [productsModalOpen, setProductsModalOpen] = useState(false)
-  const [selectedCategorie, setSelectedCategorie] = useState([])
-  const [selectedCategorieName, setSelectedCategorieName] = useState([])
-  const [productList, setProductList] = useState([])
-  const [productCategories, setProductCategories] = useState([])
-  const [setting, setSetting] = useState({
-    pageLimit: 50,
-    pageOffset: 0,
-    keyword: '',
-    categoryIds: [],
-  })
-  const products = useFetchProducts(setting)
-  const productCategoriesData = useFetchProductCategories()
-  useEffect(() => {
-    if (!products.loading && !productCategoriesData.loading) {
-      const productList = idx(products, _ => _.data.products)
-      const productForSell = productList.data.filter(product => product.isAvailableForSale)
-      const productCategories = idx(productCategoriesData, _ => _.data.productCategories)
+  // 「從清單選擇」彈窗的狀態與清單查詢（OrderShared/useItemPicker，四頁共用）
+  const { productsModalOpen, handleOpenProductsModal, modalProps: pickerModalProps } = useProductPicker()
 
-      setProductList({
-        ...productList,
-        data: productForSell,
-      })
-      setProductCategories(productCategories)
-    }
-  }, [products.loading, products.data, productCategoriesData.loading])
-
-  const handleOpenProductsModal = () => {
-    if (!products.loading) {
-      setProductsModalOpen(!productsModalOpen)
-    }
-  }
-
-  const handleCloseProductsModal = () => {
-    setProductsModalOpen(false)
-    setSelectedCategorie([])
-    setSelectedCategorieName([])
-    setSetting({
-      keyword: '',
-      categoryIds: [],
-    })
-  }
-
-  const handlePageChange = ({ value, key }) => {
-    setSetting(
-      produce(draft => {
-        draft[key] = value
-      })
-    )
-  }
   const selectThirdParty = e => {
     if (e !== null) {
       onProductChange({
@@ -259,21 +210,11 @@ export default function MerchantSells({
       )}
       {productsModalOpen && (
         <ProductsModal
-          productsModalOpen={productsModalOpen}
-          productList={productList}
-          productCategories={productCategories}
-          closeModal={handleCloseProductsModal}
-          selectedCategorie={selectedCategorie}
-          setSelectedCategorie={setSelectedCategorie}
-          selectedCategorieName={selectedCategorieName}
-          setSelectedCategorieName={setSelectedCategorieName}
-          setSetting={setSetting}
+          {...pickerModalProps}
           onProductChange={onProductChange}
           sells={sellsItem}
           productLength={productLength}
           sellsItem={sells}
-          onPageChange={handlePageChange}
-          setProductsModalOpen={setProductsModalOpen}
         />
       )}
     </Fragment>
