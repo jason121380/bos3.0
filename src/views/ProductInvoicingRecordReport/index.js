@@ -173,7 +173,7 @@ const ProductInvoicingRecordReport = () => {
                   return (
                     <li {...props}>
                       <Checkbox
-                        style={{ color: '#202D50', marginRight: 8 }}
+                        style={{ color: 'rgb(var(--text))', marginRight: 8 }}
                         icon={icon}
                         checkedIcon={checkedIcon}
                         checked={selected}
@@ -191,6 +191,7 @@ const ProductInvoicingRecordReport = () => {
                       const name = d.name.toLocaleLowerCase()
                       return no.includes(keyWord) || name.includes(keyWord)
                     }
+                    return false
                   })
                   return newOptions
                 }}

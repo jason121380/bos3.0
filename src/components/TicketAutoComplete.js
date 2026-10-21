@@ -86,6 +86,7 @@ function TicketAutoComplete(
         if (data.no !== '' && data.no !== null && data.no.toLowerCase() === keyWord.toLowerCase()) {
           return data.no.toLowerCase() === keyWord.toLowerCase()
         }
+        return false
       })
       filterByName = newOptions.filter((data, index) => {
         if (
@@ -95,6 +96,7 @@ function TicketAutoComplete(
         ) {
           return data.name.toLowerCase().includes(keyWord.toLowerCase())
         }
+        return false
       })
 
       const filterOptions = [...filterByNo, ...filterByName]

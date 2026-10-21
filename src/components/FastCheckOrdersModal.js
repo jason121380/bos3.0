@@ -77,7 +77,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
     const arr = []
     let returnString = ''
 
-    order.serviceOrders.map(d => {
+    order.serviceOrders.forEach(d => {
       if (d.thirdPartyPayName) {
         arr.push(d.thirdPartyPayName)
       }
@@ -95,7 +95,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
     const arr = []
     let returnString = ''
 
-    order.productOrders.map(d => {
+    order.productOrders.forEach(d => {
       if (d.thirdPartyPayName) {
         arr.push(d.thirdPartyPayName)
       }
@@ -113,7 +113,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
     const arr = []
     let returnString = ''
 
-    order.membershipOrders.map(d => {
+    order.membershipOrders.forEach(d => {
       if (d.thirdPartyPayName) {
         arr.push(d.thirdPartyPayName)
       }
@@ -131,13 +131,13 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
     const arr = []
     let returnString = ''
 
-    order.serviceOrders.map(d => {
+    order.serviceOrders.forEach(d => {
       if (d.thirdPartyPayName) {
         arr.push(d.thirdPartyPayName)
       }
     })
 
-    order.productOrders.map(d => {
+    order.productOrders.forEach(d => {
       if (d.thirdPartyPayName) {
         if (!arr.find(elm => elm === d.thirdPartyPayName)) {
           arr.push(d.thirdPartyPayName)

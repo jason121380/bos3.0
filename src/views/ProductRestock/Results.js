@@ -45,7 +45,7 @@ function Results({
 
   const open = selectId.length > 0
   const recordArr = []
-  purchaseRecords.map(record => {
+  purchaseRecords.forEach(record => {
     recordArr.push(record.id)
   })
 

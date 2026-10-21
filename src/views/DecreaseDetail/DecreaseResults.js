@@ -52,10 +52,10 @@ function Results({
           '互助換算金額(方式)': summary,
           點數: pointSummary,
         })
-      } else if (beenAssistedDesigner != undefined) {
+      } else if (beenAssistedDesigner != null) {
         results
           .filter(data => data.designer.id === beenAssistedDesigner)
-          .map(order => {
+          .forEach(order => {
             excelData.push({
               日期: format(new Date(order.date), 'yyyy/MM/dd'),
               帳單編號: `#${order.orderNo}`,

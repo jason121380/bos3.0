@@ -550,7 +550,7 @@ function Results({
     const arr = []
     let returnString = ''
 
-    order.serviceOrders.map(d => {
+    order.serviceOrders.forEach(d => {
       if (d.thirdPartyPayName) {
         arr.push(d.thirdPartyPayName)
       }
@@ -568,7 +568,7 @@ function Results({
     const arr = []
     let returnString = ''
 
-    order.productOrders.map(d => {
+    order.productOrders.forEach(d => {
       if (d.thirdPartyPayName) {
         arr.push(d.thirdPartyPayName)
       }
@@ -586,7 +586,7 @@ function Results({
     const arr = []
     let returnString = ''
 
-    order.membershipOrders.map(d => {
+    order.membershipOrders.forEach(d => {
       if (d.thirdPartyPayName) {
         arr.push(d.thirdPartyPayName)
       }
@@ -604,13 +604,13 @@ function Results({
     const arr = []
     let returnString = ''
 
-    order.serviceOrders.map(d => {
+    order.serviceOrders.forEach(d => {
       if (d.thirdPartyPayName) {
         arr.push(d.thirdPartyPayName)
       }
     })
 
-    order.productOrders.map(d => {
+    order.productOrders.forEach(d => {
       if (d.thirdPartyPayName) {
         if (!arr.find(elm => elm === d.thirdPartyPayName)) {
           arr.push(d.thirdPartyPayName)
@@ -1018,6 +1018,7 @@ function Results({
                     </div>
                   )
                 }
+                return undefined
               })}
           </div>
           <div>
@@ -1034,6 +1035,7 @@ function Results({
                     </div>
                   )
                 }
+                return undefined
               })}
           </div>
           <div>
@@ -1050,6 +1052,7 @@ function Results({
                     </div>
                   )
                 }
+                return undefined
               })}
           </div>
           <div>
@@ -1066,6 +1069,7 @@ function Results({
                     </div>
                   )
                 }
+                return undefined
               })}
           </div>
           <div>
@@ -1082,6 +1086,7 @@ function Results({
                     </div>
                   )
                 }
+                return undefined
               })}
           </div>
           <div>
@@ -1098,6 +1103,7 @@ function Results({
                     </div>
                   )
                 }
+                return undefined
               })}
           </div>
           <Divider style={{ width: '100%' }} />
@@ -1199,6 +1205,7 @@ function Results({
                   </Fragment>
                 )
               }
+              return undefined
             })}
           {printOrderDetail.length !== 0 &&
             printOrderDetail[0].staticDetail.map((d, index) => {
@@ -1214,6 +1221,7 @@ function Results({
                   </div>
                 )
               }
+              return undefined
             })}
           {printOrderDetail.length !== 0 &&
             printOrderDetail[0].staticDetail.map((d, index) => {
@@ -1229,6 +1237,7 @@ function Results({
                   </div>
                 )
               }
+              return undefined
             })}
           {printOrderDetail.length !== 0 &&
             printOrderDetail[0].staticDetail.map((d, index) => {
@@ -1244,6 +1253,7 @@ function Results({
                   </div>
                 )
               }
+              return undefined
             })}
           {printOrderDetail.length !== 0 &&
             printOrderDetail[0].staticDetail.map((d, index) => {
@@ -1259,6 +1269,7 @@ function Results({
                   </div>
                 )
               }
+              return undefined
             })}
           <Divider style={{ width: '100%' }} />
           <div>合計：{orderDetailPaymentShouldPay}</div>

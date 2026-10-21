@@ -95,33 +95,6 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
   const { reCheckoutOrderFromQueue } = useFetchReCheckoutOrderFromQueue()
   const systemUpdateRecord = useFetchSystemUpdateRecord({ skip: !afterFirstLoad })
 
-  const buttonSx = {
-    boxShadow: 'none !important',
-    height: '40px !important',
-    width: '40px !important',
-    minHeight: '40px !important',
-    ...(!isNotification && {
-      bgcolor: '#007AFF !important', // Apple Blue for processing
-      color: 'white',
-      '&:hover': {
-        bgcolor: '#005AC1 !important',
-      },
-    }),
-    ...(isNotification && {
-      bgcolor: 'rgba(255, 255, 255, 0.1) !important',
-      color: 'white',
-      '&:hover': {
-        bgcolor: 'rgba(255, 255, 255, 0.2) !important',
-      },
-    }),
-    ...(error && {
-      bgcolor: '#FF3B30 !important', // Apple Red for error
-      color: 'white',
-      '&:hover': {
-        bgcolor: '#D7261B !important',
-      },
-    }),
-  }
   const handlesetOrderDetail = tmpData => {
     const errorDataCount = tmpData.filter(d => d.status === 'fail')
     const isCreating = tmpData.filter(d => d.status === 'creating')
@@ -266,7 +239,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
 
   // getTheme
   useEffect(() => {
-    if (getTheme != undefined) {
+    if (getTheme != null) {
       if (getTheme === 'DARK') {
         setMoodChange(true)
         document.documentElement.setAttribute('data-color-mode', 'dark') // 切換markdown editor的顏色模式
@@ -293,7 +266,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
       let tmp = {}
       const data = idx(systemUpdateRecord, _ => _.data.systemUpdateRecord)
       if (!Array.isArray(data)) return // 版本記錄查詢失敗時略過，不讓版面拋錯
-      data.map((d, index) => {
+      data.forEach((d, index) => {
         if (index === 0) {
           tmp = {
             content: d.content,

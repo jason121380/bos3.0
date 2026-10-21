@@ -8,7 +8,7 @@ export default function Results({ data, total, bonusDisplay }) {
   const getData = idx(data, _ => _.nonCashDetailStatement)
   return (
     <Fragment>
-      {getData != undefined && (
+      {getData != null && (
         <Table dense aria-label="a dense table">
           <TableHeader>
             <TableRow className="hover:bg-transparent">
@@ -49,7 +49,7 @@ export default function Results({ data, total, bonusDisplay }) {
           </TableHeader>
 
           <TableBody>
-            {getData != undefined &&
+            {getData != null &&
               getData.nonCashDetailStatement.map((item, index) => {
                 return (
                   <TableRow key={index}>
@@ -86,7 +86,7 @@ export default function Results({ data, total, bonusDisplay }) {
               })}
           </TableBody>
           <TableBody className="bg-surface font-medium">
-            {total != undefined && (
+            {total != null && (
               <TableRow>
                 <TableCell colSpan={6}>
                   <b>合計</b>

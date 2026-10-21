@@ -101,6 +101,9 @@ function ConsumptionAnalyticsDashboard() {
             return '(五)'
           case 'SATURDAY':
             return '(六)'
+          default:
+            // 其他值不處理（與原本沒有 default 時相同）
+            break
         }
       }
       const orderGenderRatio = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.orderGenderRatio)

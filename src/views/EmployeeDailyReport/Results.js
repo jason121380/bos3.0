@@ -52,7 +52,7 @@ function Results({
     ) {
       setIsMathRound(idx(mathRoundSetting, _ => _.data.getIsUsingMathRoundInDesignerDailyReport))
       const cloneData = cloneDeep(designerDailyReport)
-      cloneData.map(data => {
+      cloneData.forEach(data => {
         data.currentFakeSummary = Math.round(data.currentFakeSummary)
         data.currentTruthSummary = Math.round(data.currentTruthSummary)
         for (const i in data.tillNow) {
@@ -61,7 +61,7 @@ function Results({
         for (const i in data.currentDay) {
           data.currentDay[i] = Math.round(data.currentDay[i])
         }
-        data.orderRecord.map(order => {
+        data.orderRecord.forEach(order => {
           order.fakePerformance = Math.round(order.fakePerformance)
           order.truthPerformance = Math.round(order.truthPerformance)
           order.truthPerformanceWithHelperUsage = Math.round(order.truthPerformanceWithHelperUsage)
@@ -70,8 +70,8 @@ function Results({
       setMathRoundData(cloneData)
 
       const clonePrintData = cloneDeep(printData)
-      clonePrintData.map(datas => {
-        datas.map(data => {
+      clonePrintData.forEach(datas => {
+        datas.forEach(data => {
           data.currentFakeSummary = Math.round(data.currentFakeSummary)
           data.currentTruthSummary = Math.round(data.currentTruthSummary)
           for (const i in data.tillNow) {
@@ -80,7 +80,7 @@ function Results({
           for (const i in data.currentDay) {
             data.currentDay[i] = Math.round(data.currentDay[i])
           }
-          data.orderRecord.map(order => {
+          data.orderRecord.forEach(order => {
             order.fakePerformance = Math.round(order.fakePerformance)
             order.truthPerformance = Math.round(order.truthPerformance)
             order.truthPerformanceWithHelperUsage = Math.round(order.truthPerformanceWithHelperUsage)
@@ -105,7 +105,7 @@ function Results({
                   } ${designer.user.nickName !== null && designer.user.nickName !== ''
                     ? designer.user.nickName
                     : ''
-                  } ${designer.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 日報表 ${designer.totalPageCount != 1
+                  } ${designer.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 日報表 ${Number(designer.totalPageCount) !== 1
                     ? `- ${designer.currentPageOrder}/${designer.totalPageCount}`
                     : ''
                   }`}
@@ -125,7 +125,7 @@ function Results({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {designer.currentPageOrder != 1 && (
+                    {Number(designer.currentPageOrder) !== 1 && (
                       <TableRow>
                         <TableCell colSpan="5" className="text-center">
                           承上張
@@ -525,7 +525,7 @@ function Results({
                         } ${designer.user.nickName !== null && designer.user.nickName !== ''
                           ? designer.user.nickName
                           : ''
-                        } ${designer.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 日報表 ${designer.totalPageCount != 1
+                        } ${designer.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 日報表 ${Number(designer.totalPageCount) !== 1
                           ? `- ${designer.currentPageOrder}/${designer.totalPageCount}`
                           : ''
                         }`}
@@ -544,7 +544,7 @@ function Results({
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {designer.currentPageOrder != 1 && (
+                            {Number(designer.currentPageOrder) !== 1 && (
                               <TableRow>
                                 <TableCell colSpan="5" className="text-center">
                                   承上張

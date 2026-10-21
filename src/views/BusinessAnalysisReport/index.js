@@ -54,7 +54,7 @@ const PaymentReport = () => {
   useEffect(() => {
     if (!businessAnalysisReportData.loading) {
       const report = idx(businessAnalysisReportData, _ => _.data.businessAnalysisReport)
-      if (report != undefined) {
+      if (report != null) {
         const data = report.data.map(d => ({
           營業日期: format(d.date, 'yyyy/MM/dd'),
           現金結存: Math.round(d.cashBalance),

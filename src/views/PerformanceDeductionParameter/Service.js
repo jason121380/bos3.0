@@ -61,7 +61,7 @@ function Service({ className,
   }
   const handleSubmit = async () => {
     let checkArray = []
-    service.commission.map(d => {
+    service.commission.forEach(d => {
       if (checkArray.indexOf(d.name) === -1) {
         checkArray.push(d.name)
       }

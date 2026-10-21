@@ -14,7 +14,7 @@ function Results({ userServiceDeductionDetial, setExcelData }) {
     if (String(num).length > 7) {
       num = Math.round(num)
       let display = Number(num).toFixed(2)
-      if (display == 0.0) {
+      if (Number(display) === 0) {
         display = 0
       }
       return display

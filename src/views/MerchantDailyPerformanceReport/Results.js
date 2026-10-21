@@ -22,6 +22,7 @@ function Results({ className, results, excelData, attributeSwitchs, membershipDi
               if (attributeSwitchs[index]) {
                 return <TableHead numeric key={index}>{`${data.categoryName}/人次/單均價`}</TableHead>
               }
+              return undefined
             })}
           </TableRow>
         </TableHeader>
@@ -69,6 +70,7 @@ function Results({ className, results, excelData, attributeSwitchs, membershipDi
                       </TableCell>
                     )
                   }
+                  return undefined
                 })}
               </TableRow>
             )

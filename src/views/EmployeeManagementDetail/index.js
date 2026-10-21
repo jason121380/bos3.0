@@ -177,6 +177,9 @@ function Settings({ match, history }) {
       case 'AttendanceRecord':
         attendance.length === 0 && getAttendanceRecord()
         break
+      default:
+        // 其他值不處理（與原本沒有 default 時相同）
+        break
     }
   }, [currentTab])
 

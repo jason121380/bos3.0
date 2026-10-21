@@ -112,7 +112,7 @@ export default function CouponUse({
   const displayFloat = num => {
     if (String(num).length > 7) {
       let display = Number(num).toFixed(1)
-      if (display == 0.0) {
+      if (Number(display) === 0) {
         display = 0
       }
       return display

@@ -94,7 +94,7 @@ function DesignerPerformOverview() {
         obj['指定/不指定 (人次)'] = `${orderDesignateCount} / ${orderNonDesignatecount}`
         obj['男/女/未知 (不重複)'] = ` ${customerMaleCount} / ${customerFemaleCount} / ${customerUnknownCount}`
 
-        categoryData.map(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
+        categoryData.forEach(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
           if (attributeSwitch[index]) {
             obj[`${categoryName}` + '/人次/單均價'] = `${Math.round(fakePerformance)} / ${orderCount} / ${Math.round(averagePerformance)}`
           }

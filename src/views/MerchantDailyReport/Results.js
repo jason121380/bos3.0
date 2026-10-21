@@ -31,12 +31,12 @@ function Results({
 }) {
   let totalCashRevenue = 0
   let totalCashExpenditure = 0
-  curentDayData.pickingRecord.map(d => {
+  curentDayData.pickingRecord.forEach(d => {
     totalCashRevenue += d.cashRevenue
     totalCashExpenditure += d.cashExpenditure
   })
   const stillNowData = []
-  merchantDailyReport.currentDay.categoryPerformance.map(data => {
+  merchantDailyReport.currentDay.categoryPerformance.forEach(data => {
     if (
       data.performance > 0 ||
       data.totalCount > 0 ||
@@ -71,7 +71,7 @@ function Results({
       obj2.nowOrderTypeCount = data.orderTypeCount
       obj2.nowOrderTypeAveragePerformance = data.orderTypeAveragePerformance
       obj2.nowAveragePerformance = data.averagePerformance
-      curentDayData.currentDay.categoryPerformance.map(curData => {
+      curentDayData.currentDay.categoryPerformance.forEach(curData => {
         if (obj2.name.indexOf(curData.name) > -1) {
           obj2.curPerformance = curData.performance
           obj2.curTotalCount = curData.totalCount

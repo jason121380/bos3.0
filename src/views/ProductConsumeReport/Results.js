@@ -73,7 +73,7 @@ export default function Results({ productConsumeListReport, value }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {value != ''
+            {value !== ''
               ? productConsumeListReport.productConsumeSummary
                   .filter(d => d.purpose === value)
                   .map((data, index) => (

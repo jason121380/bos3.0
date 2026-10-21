@@ -12,7 +12,7 @@ export default function Payment() {
         variant="primary"
         className="text-white hover:opacity-80"
         style={{
-          backgroundColor: bill.linePay ? '#00c300' : 'rgba(0, 0, 0, 0.26)',
+          backgroundColor: bill.linePay ? '#00c300' : 'rgb(var(--text) / 0.26)',
         }}
         onClick={() =>
           handleBillChange({

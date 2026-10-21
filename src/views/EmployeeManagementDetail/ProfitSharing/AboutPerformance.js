@@ -465,7 +465,7 @@ function AboutPerformance({ className = '', profitSharing, onChange, attribution
     const newProfitSharing = cloneDeep(profitSharing)
 
     // 如果attribute是空字串的話改成'預設'
-    newProfitSharing.nonSegmented.map((data, index) => {
+    newProfitSharing.nonSegmented.forEach((data, index) => {
       if (data.attribute === '') {
         newProfitSharing.nonSegmented[index].attribute = '預設'
       }

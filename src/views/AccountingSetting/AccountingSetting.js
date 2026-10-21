@@ -80,6 +80,7 @@ function AccountingSetting() {
                 })
               }
             }
+            return undefined
           })
           : [{ number: '', name: '' }]
       )

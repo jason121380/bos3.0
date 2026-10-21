@@ -12,17 +12,17 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
   const color = value => {
     switch (value) {
       case 'BETWEEN25AND50':
-        return '#ff6d00'
+        return 'rgb(var(--warning))'
       case 'MORETHAN50':
-        return '#d50000'
+        return 'rgb(var(--danger))'
       default:
-        return 'black'
+        return 'rgb(var(--text))'
     }
   }
 
   const checkBreakTime = time => {
     const arr = []
-    time.map(d => {
+    time.forEach(d => {
       if (d.end === null) {
         if (d.start.time !== null) {
           arr.push('a')
@@ -101,6 +101,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
               )
             }
           }
+          return undefined
         })}
       </Fragment>
     )
@@ -244,6 +245,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
                         }
                       }
                     }
+                    return undefined
                   })
                 ) : (
                   <Badge variant="neutral">未打卡</Badge>

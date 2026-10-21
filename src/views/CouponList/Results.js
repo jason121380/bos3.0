@@ -335,6 +335,9 @@ function Results({ className, coupons, refetch, ...rest }) {
 
       case 'USINGSAVEDEDUCT':
         return '使用時入業績（扣項依販賣時設定）'
+      default:
+        // 其他值不處理（與原本沒有 default 時相同）
+        break
     }
   }
 

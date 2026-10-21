@@ -58,7 +58,7 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
 
   const renderGroup = group => {
     return group.map((data, index) => {
-      if (!data.products.length) return
+      if (!data.products.length) return null
       allNodeIds.push(`${data.name}(${data.products.length})`)
       return (
         <div

@@ -16,7 +16,7 @@ function Search({ onSearch, className = '', ...rest }) {
   return (
     <div {...rest} className={cn('flex items-center gap-[16px]', className)}>
       <div className="grow h-[42px] py-0 px-[16px] flex items-center rounded-md bg-background">
-        <SearchIcon className="mr-[16px] text-[#007AFF]" />
+        <SearchIcon className="mr-[16px] text-accent" />
         <Input
           className="grow"
           disableUnderline

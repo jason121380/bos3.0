@@ -341,7 +341,7 @@ function AboutSettingFunction({
                     src={merchantLogo}
                     className="h-20 w-20 rounded-md"
                   />
-                  <EditRoundedIcon style={{ position: 'absolute', right: 0, bottom: 0, background: '#cccccc', borderRadius: "50%", padding: 5 }} />
+                  <EditRoundedIcon style={{ position: 'absolute', right: 0, bottom: 0, background: 'rgb(var(--border-strong))', borderRadius: "50%", padding: 5 }} />
                 </div>
               ) :
                 <Button
@@ -389,7 +389,7 @@ function AboutSettingFunction({
               renderOption={(props, option, { selected }) => (
                 <li {...props}>
                   <Checkbox
-                    style={{ color: '#202D50', marginRight: 8 }}
+                    style={{ color: 'rgb(var(--text))', marginRight: 8 }}
                     icon={icon}
                     checkedIcon={checkedIcon}
                     checked={selected}

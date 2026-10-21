@@ -51,11 +51,11 @@ export default function Results({
   const color = value => {
     switch (value) {
       case 'BETWEEN25AND50':
-        return '#ff6d00'
+        return 'rgb(var(--warning))'
       case 'MORETHAN50':
-        return '#d50000'
+        return 'rgb(var(--danger))'
       default:
-        return 'black'
+        return 'rgb(var(--text))'
     }
   }
 
@@ -166,7 +166,7 @@ export default function Results({
               {format(time.time, 'HH:mm')}
             </a>
           ) : (
-            <span style={{ color: '#959595' }}>{format(time.time, 'HH:mm')}</span>
+            <span style={{ color: 'rgb(var(--text-tertiary))' }}>{format(time.time, 'HH:mm')}</span>
           )}
         </div>
       )
@@ -217,7 +217,7 @@ export default function Results({
                 {format(time.time, 'HH:mm')}
               </a>
             ) : (
-              <span style={{ color: '#959595' }}>{format(time.time, 'HH:mm')}</span>
+              <span style={{ color: 'rgb(var(--text-tertiary))' }}>{format(time.time, 'HH:mm')}</span>
             )}
           </div>
         )
@@ -269,7 +269,7 @@ export default function Results({
                 {format(start.time, 'HH:mm')}
               </a>
             ) : (
-              <span style={{ color: '#959595' }}>{format(start.time, 'HH:mm')}</span>
+              <span style={{ color: 'rgb(var(--text-tertiary))' }}>{format(start.time, 'HH:mm')}</span>
             )}
           </span>
         )
@@ -320,7 +320,7 @@ export default function Results({
                   {format(end.time, 'HH:mm')}
                 </a>
               ) : (
-                <span style={{ color: '#959595' }}>{format(end.time, 'HH:mm')}</span>
+                <span style={{ color: 'rgb(var(--text-tertiary))' }}>{format(end.time, 'HH:mm')}</span>
               )}
             </span>
           )
@@ -469,6 +469,7 @@ export default function Results({
                           return <TableCell key={index} className="w-[180px] min-w-[180px] px-2 py-1 text-label"></TableCell>
                         }
                       }
+                      return undefined
                     })
                   })}
                 </TableRow>

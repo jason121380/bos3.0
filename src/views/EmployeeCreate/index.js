@@ -46,7 +46,7 @@ function ServiceCategoryCreate() {
           }]
       ))
       const point = idx(merchantJobTitlePoint.data, _ => _.merchantJobTitlePoint)
-      point.map(d => {
+      point.forEach(d => {
         if (d.isDefaultValue === true) {
           setEmployee({
             ...employee,

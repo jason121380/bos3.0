@@ -49,6 +49,7 @@ function AccountingSubjectsAutocomplete({
               })
             }
           }
+          return undefined
         })
       )
       setRevenueSubjects(revenueInit)

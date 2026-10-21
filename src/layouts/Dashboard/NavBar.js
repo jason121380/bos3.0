@@ -455,8 +455,8 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   }
   // 判斷角色權限管理
   const userAuth = idx(profile, _ => _.data.me.merchantIdentity.authorityName)
-  if (userAuth != undefined) {
-    if (userAuth != '高階主管') {
+  if (userAuth != null) {
+    if (userAuth !== '高階主管') {
       config[0].items.forEach(list => {
         list.items.forEach((list2, index) => {
           if (list2.title === '角色權限管理') {
@@ -471,7 +471,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
     var cookieArr = document.cookie.split(';')
     for (var i = 0; i < cookieArr.length; i++) {
       var cookiePair = cookieArr[i].split('=')
-      if (user == cookiePair[0].trim()) {
+      if (user === cookiePair[0].trim()) {
         return decodeURIComponent(cookiePair[1])
       }
     }

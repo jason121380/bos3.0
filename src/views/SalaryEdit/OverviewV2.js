@@ -188,10 +188,10 @@ function OverviewV2({ designer, actualTransferFun, memberActive }) {
             </span>
             <div className="mt-1 flex items-center justify-center">
               <span className="text-heading tabular-nums text-text">
-                {`${salaryCheckoutRecord != undefined
+                {`${salaryCheckoutRecord != null
                     ? Math.round(salaryCheckoutRecord.helperPaidPriceOnSalary * 10) / 10
                     : 0
-                  }(${salaryCheckoutRecord != undefined
+                  }(${salaryCheckoutRecord != null
                     ? Math.round(salaryCheckoutRecord.helperPaidPointOnSalary * 10) / 10
                     : 0
                   })` || 0}

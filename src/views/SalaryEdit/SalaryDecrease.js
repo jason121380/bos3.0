@@ -45,7 +45,7 @@ export default function SalaryIncrease({
       const newDecreaseCombined = cloneDeep(decreaseCombined)
       switch (e.target.name) {
         case 'price':
-          newDecreaseCombined.map((data, index2) => {
+          newDecreaseCombined.forEach((data, index2) => {
             if (index === index2) {
               if (e.target.value === '' || e.target.value === null || isNaN(e.target.value)) {
                 data.price = 0
@@ -57,7 +57,7 @@ export default function SalaryIncrease({
           setDecreaseCombined(newDecreaseCombined)
           break
         case 'itemName':
-          newDecreaseCombined.map((data, index2) => {
+          newDecreaseCombined.forEach((data, index2) => {
             if (index === index2) {
               data.itemName = e.target.value
             }
@@ -71,7 +71,7 @@ export default function SalaryIncrease({
       const newSalaryDecreaseItemsReformatted = cloneDeep(salaryDecreaseItemsReformatted)
       switch (e.target.name) {
         case 'price':
-          newSalaryDecreaseItemsReformatted.map((data, index2) => {
+          newSalaryDecreaseItemsReformatted.forEach((data, index2) => {
             if (index === index2) {
               if (e.target.value === '' || e.target.value === null || isNaN(e.target.value)) {
                 data.price = 0
@@ -92,7 +92,7 @@ export default function SalaryIncrease({
     const newDecreaseSecondContent = cloneDeep(decreaseSecondContent)
     switch (e.target.name) {
       case 'price':
-        newDecreaseSecondContent.decreaseItems.map((data, index2) => {
+        newDecreaseSecondContent.decreaseItems.forEach((data, index2) => {
           if (index === index2) {
             if (e.target.value === '' || e.target.value === null || isNaN(e.target.value)) {
               data.price = 0
@@ -104,7 +104,7 @@ export default function SalaryIncrease({
         setDecreaseSecondContent(newDecreaseSecondContent)
         break
       case 'itemName':
-        newDecreaseSecondContent.decreaseItems.map((data, index2) => {
+        newDecreaseSecondContent.decreaseItems.forEach((data, index2) => {
           if (index === index2) {
             data.itemName = e.target.value
           }
@@ -220,6 +220,7 @@ export default function SalaryIncrease({
                           )
                         })
                   }
+                  return undefined
                 })}
           </div>
         </CardContent>

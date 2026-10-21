@@ -91,8 +91,8 @@ function Results({
     }
   }, [results, sortWay, pageRef.current])
   const temp = []
-  if (results.data != undefined && sortWay === 'DESIGNER') {
-    results.data.map(data => {
+  if (results.data != null && sortWay === 'DESIGNER') {
+    results.data.forEach(data => {
       if (!temp.includes(data.seller.id)) {
         temp.push(data.seller.id)
       }
@@ -140,8 +140,8 @@ function Results({
       })
     }
   }
-  if (results.data != undefined && sortWay === 'PRODUCTNO') {
-    results.data.map(data => {
+  if (results.data != null && sortWay === 'PRODUCTNO') {
+    results.data.forEach(data => {
       if (!temp.includes(data.product.id)) {
         temp.push(data.product.id)
       }
@@ -189,8 +189,8 @@ function Results({
       })
     }
   }
-  if (results.data != undefined && sortWay === 'DATE') {
-    results.data.map(data => {
+  if (results.data != null && sortWay === 'DATE') {
+    results.data.forEach(data => {
       const orderDate = startOfDay(data.order.date).getTime()
       if (!temp.includes(orderDate)) {
         temp.push(orderDate)

@@ -33,11 +33,12 @@ export default function DashBoardListDetail() {
     let item = ''
     userPageAuth
       .filter(a => a.pageTitle === '報表及分析')
-      .map(a => {
+      .forEach(a => {
         a.pageAuthority.filter(a => {
           if (a.pageName === props.itemName && a.authority === true) {
             item = props.itemName
           }
+          return false
         })
       })
 
@@ -76,13 +77,14 @@ export default function DashBoardListDetail() {
     const subItem = []
     userPageAuth
       .filter(a => a.pageTitle === '報表及分析')
-      .map(a => {
+      .forEach(a => {
         a.pageAuthority.filter(a => {
-          Arr.map(i => {
+          Arr.forEach(i => {
             if (a.pageName === i && a.authority === true) {
               subItem.push(i)
             }
           })
+          return false
         })
       })
     if (subItem.length > 0) {
