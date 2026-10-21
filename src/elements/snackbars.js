@@ -20,19 +20,22 @@ import useFetchSettingUserSalaryItemLock from 'hooks/useFetchSetLockUserSalaryIt
 import useFetchCloseDailyAccountV3 from 'hooks/useFetchCloseDailyAccountV3'
 import { useFetchCreateSystemUpdateDelete } from 'hooks/useFetchSystemUpdateRecord'
 import cloneDeep from 'lodash/cloneDeep'
+import { friendlyErrorMessage } from 'lib/friendly-error'
 
 const AUTO_HIDE_MS = 3000
 
 // 錯誤文案（只改顯示字串）：去掉 Apollo 加的「GraphQL error: 」「Network error: 」前綴（`${error}` 會多一個「Error: 」一併去掉）；
-// 瀏覽器的連線失敗訊息改成看得懂的中文。其餘後端訊息（密碼錯誤、庫存不足等中文業務訊息）原樣顯示。
+// 瀏覽器的連線失敗訊息改成看得懂的中文。錯誤／警告提示再經 lib/friendly-error：伺服器錯誤、資料格式錯誤等英文技術訊息
+// 換成「發生什麼＋下一步」的中文；後端的中文業務訊息（密碼錯誤、庫存不足等）原樣顯示。
 const APOLLO_PREFIX = /(?:Error:\s*)?(?:GraphQL error|Network error):\s*/g
 const NETWORK_FAILURE = /(?:TypeError:\s*)?(?:Failed to fetch|NetworkError[^\n]*|Network request failed|Load failed)/i
 export const NETWORK_FAILURE_MESSAGE = '網路連線異常，請檢查網路後再試一次'
 
-export function normalizeSnackbarMessage(message) {
+export function normalizeSnackbarMessage(message, variant) {
   if (typeof message !== 'string') return message
-  const text = message.replace(APOLLO_PREFIX, '')
-  return NETWORK_FAILURE.test(text) ? text.replace(NETWORK_FAILURE, NETWORK_FAILURE_MESSAGE) : text
+  const stripped = message.replace(APOLLO_PREFIX, '')
+  const text = NETWORK_FAILURE.test(stripped) ? stripped.replace(NETWORK_FAILURE, NETWORK_FAILURE_MESSAGE) : stripped
+  return variant === 'error' || variant === 'warning' ? friendlyErrorMessage(text) : text
 }
 
 // 確認型的對話框文案；判斷順序與確認鈕的 callback 分派（下方 confirmAction）一致。只決定呈現，不影響執行內容。
@@ -348,7 +351,7 @@ export function openSnackbar({
   deleteInventoryWorkFunc
 }) {
   openSnackbarFunction({
-    message: normalizeSnackbarMessage(message),
+    message: normalizeSnackbarMessage(message, variant),
     variant,
     horizontal,
     vertical,

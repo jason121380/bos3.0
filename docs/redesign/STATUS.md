@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10211046，main 已含 PR #1～#237）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10211111，main 已含 PR #1～#238）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,6 +8,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 錯誤訊息友善化（v3.10211056） | `lib/friendly-error`：`openSnackbar` 錯誤／警告提示自動把英文技術訊息換成「原因＋下一步」中文（中文業務訊息原樣、頁面開頭保留）；errorLink 狀態碼文案共用。呼叫端不改。 |
 | 預約週曆合併（v3.10211046） | `components/ReservationCalendar/`：`weekCalendar`（三頁共用資料整理）、`DesignerWeekReservation`（個人頁＋員工資料）、`HolidayEdit`（四頁）；刪除兩份個人週曆與兩份公休彈窗。單週／單日 DOM 前後相同；個人頁可預約人數改為不算已完成預約（與其他三頁一致）。 |
 | 效能第二輪（v3.10211016） | lodash 逐方法引入（155 檔換 import、61 檔移除未用 import，入口 513→455 KB）；`lib/after-first-load`＋`init-apollo` 的 `inflightLink`：系統公告、訂單佇列、釘選頁、切換店家清單延到首屏完成後才查（4 個 hook 加可選 `skip`）。預約表格 3.53→3.30 秒（中階手機條件）。 |
 | 效能 A＋B 與死碼清理（v3.10210912） | `lib/theme-mode`（主題記憶、繪製前套用、`?inline` 舊版樣式可替換、切換免 reload）；`NavBar` 改呼叫 `syncThemeFromServer`、`TopBar` 切換改 `switchThemeByUser`、`Dashboard` 以 `useLayoutEffect` 套用記憶；`index.js` 改載 `lib/polyfills`（只補 `structuredClone`）；刪除 228 個到不了／未引用的檔案、移除 `react-app-polyfill`。屬畫面以外修正（Jason 當次同意）。57 檔／304 測試、lint:build 0、build、乾淨 `npm ci` 皆通過。 |

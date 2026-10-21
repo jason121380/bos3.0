@@ -213,6 +213,7 @@ bos3.0/
     │   ├── api-base.js         # 後端位址單一來源（GraphQL／WebSocket／REST／Sentry 環境）
     │   ├── init-apollo.js      # Apollo Client 單例、錯誤處理、進行中查詢計數
     │   ├── after-first-load.js # 首屏完成判斷（非必要查詢延後）
+    │   ├── friendly-error.js   # 錯誤提示翻成「原因＋下一步」的中文
     │   ├── theme-mode.js       # 深淺色模式（記憶主題、切換免重整）
     │   ├── polyfills.js        # 只補 Safari 14 缺少且用到的功能
     │   ├── business-timezone.js # 日期一律台灣時間（install-business-timezone.js 由 index.js 最早載入）
@@ -326,8 +327,8 @@ localStorage 儲存：
 ### 錯誤處理
 
 - GraphQL 錯誤：`init-apollo.js` 的 errorLink 統一以 `openSnackbar` 顯示後端訊息（`TKN_ERROR` 導回登入、`TKN_IN_JAIL` 以 alert 告知）
-- 網路錯誤：顯示「網路連線異常…」或「伺服器回應錯誤（狀態碼）…」，5 秒內只提示一次
-- `openSnackbar` 會去掉 Apollo 的 `GraphQL error:` 前綴；錯誤提示需手動關閉，其餘 3 秒自動消失
+- 網路錯誤：顯示「網路連線異常…」或依狀態碼說明下一步（401 重新登入、413 檔案太大、5xx 伺服器暫時無法處理…），5 秒內只提示一次
+- `openSnackbar` 會去掉 Apollo 的 `GraphQL error:` 前綴；錯誤／警告提示再經 `src/lib/friendly-error.js`：英文技術訊息換成「原因＋下一步」的中文（無法分類的附原文給客服），後端中文業務訊息原樣；錯誤提示需手動關閉，其餘 3 秒自動消失
 
 ---
 
@@ -819,7 +820,7 @@ Dockerfile 已內建 npm 網路重試配置（5 次重試、20s~120s 超時）�
 | 頁面模組 | **170** 個目錄 |
 | 自定義 Hooks | **596** 個 |
 | 共用元件 | **55** 個 |
-| 單元測試 | **59** 檔／**325** 項 |
+| 單元測試 | **60** 檔／**333** 項 |
 | Redux Slices | **5** 個 |
 | 總原始碼行數 | **~150,000+** 行 |
 

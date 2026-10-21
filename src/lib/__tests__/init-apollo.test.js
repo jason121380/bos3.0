@@ -68,7 +68,9 @@ describe('handleApolloError：API 錯誤一定要讓使用者知道', () => {
 
 describe('networkErrorMessage', () => {
   it('伺服器有回應但狀態碼錯誤時，說明是伺服器問題而不是使用者網路', () => {
-    expect(networkErrorMessage({ statusCode: 502 })).toBe('伺服器回應錯誤（502），請稍後再試')
+    // 與頁面 catch 經 openSnackbar 顯示的文字一致（lib/friendly-error），並依狀態碼給下一步
+    expect(networkErrorMessage({ statusCode: 502 })).toBe('伺服器暫時無法處理，請稍後再試；若持續發生，請截圖並聯絡客服（502）')
+    expect(networkErrorMessage({ statusCode: 401 })).toBe('登入狀態已失效，請重新登入後再試一次')
   })
 
   it('連不上伺服器時提示檢查網路', () => {

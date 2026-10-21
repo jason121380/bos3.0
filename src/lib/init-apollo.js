@@ -6,6 +6,7 @@ import { createUploadLink } from 'apollo-upload-client'
 import { openSnackbar } from 'elements/snackbars'
 import { getGraphqlUrl } from './api-base'
 import { beginRequest } from './after-first-load'
+import { httpStatusMessage } from './friendly-error'
 
 // 網路錯誤提示的節流間隔：斷線時多支查詢同時失敗，只提示一次
 const NETWORK_ERROR_NOTICE_INTERVAL = 5000
@@ -13,7 +14,7 @@ let lastNetworkErrorNoticeAt = 0
 
 export function networkErrorMessage(networkError) {
   const statusCode = networkError && networkError.statusCode
-  if (statusCode) return `伺服器回應錯誤（${statusCode}），請稍後再試`
+  if (statusCode) return httpStatusMessage(statusCode)
   return '網路連線異常，請檢查網路後再試一次'
 }
 
