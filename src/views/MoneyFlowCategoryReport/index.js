@@ -13,6 +13,7 @@ import { Skeleton } from 'ui/skeleton'
 import { Toolbar } from 'ui/page-header'
 
 import Results from './Results'
+import cloneDeep from 'lodash/cloneDeep'
 
 const MoneyFlowCategoryReport = () => {
   const [reportForDisplay, setReportForDisplay] = useState([])
@@ -29,10 +30,11 @@ const MoneyFlowCategoryReport = () => {
 
   useEffect(() => {
     if (!moneyFlowCategoryReportData.loading) {
-      const report = idx(
+      // 複製再加「小結」列（查詢結果唯讀）
+      const report = cloneDeep(idx(
         moneyFlowCategoryReportData,
         _ => _.data.moneyFlowCategoryReport.moneyFlowCategoryReport
-      )
+      ))
 
       report.forEach((data, index) => {
         report[index].moneyFlow.push({

@@ -647,7 +647,8 @@ function Parameter() {
   }, [getMerchantRakeReference.loading])
   useEffect(() => {
     if (!getParameterAboutBookingSetting.loading) {
-      const data = idx(getParameterAboutBookingSetting,_=>_.data.getParameterAboutBookingSetting)
+      // 複製再補預設值（查詢結果唯讀）
+      const data = cloneDeep(idx(getParameterAboutBookingSetting,_=>_.data.getParameterAboutBookingSetting))
       const { bookingNotificationPhone } = data
       if (bookingNotificationPhone.length === 0) {
         data.bookingNotificationPhone = ['']
@@ -657,7 +658,7 @@ function Parameter() {
   }, [getParameterAboutBookingSetting.loading])
   useEffect(() => {
     if (!getParameterAboutCustomerSetting.loading) {
-      const data = idx(getParameterAboutCustomerSetting,_=>_.data.getParameterAboutCustomerSetting)
+      const data = cloneDeep(idx(getParameterAboutCustomerSetting,_=>_.data.getParameterAboutCustomerSetting))
       data.requiredColumnForNewCustomer = requiredColumnOptions.filter(d => data.requiredColumnForNewCustomer.includes(d.value))
       setAboutCustomer(data)
     }

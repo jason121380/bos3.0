@@ -32,6 +32,7 @@ import CustomerTracking from './CustomerTracking'
 import SMSRecord from './SMSRecord'
 import EventTicketsRecord from './EventTicketsRecord'
 import MembershipRecord from './MembershipRecord'
+import cloneDeep from 'lodash/cloneDeep'
 
 function CustomerManagementDetails({ match, history }) {
   const { id, tab: currentTab } = match.params
@@ -121,7 +122,8 @@ function CustomerManagementDetails({ match, history }) {
     if (!orderStaticDetail.loading && getCustomerOrders.data) {
       const staticDetail = idx(orderStaticDetail, _ => _.data.getOrderStaticDetail)
       if (staticDetail.length) {
-        const orders = idx(getCustomerOrders, _ => _.data.getCustomerOrders.orderList)
+        // 複製再補上統計明細（查詢結果唯讀）
+        const orders = cloneDeep(idx(getCustomerOrders, _ => _.data.getCustomerOrders.orderList))
         orders.forEach(({ id }, index) => {
           const findData = staticDetail.find(({ orderId }) => orderId === id)
           if (findData) {
