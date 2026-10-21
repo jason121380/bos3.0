@@ -1,7 +1,7 @@
 // 保護「帳單詳細／重新結帳」：既有帳單的內容要原樣帶回畫面（服務人員、服務、金額），重新結帳／儲存送出的內容要與原帳單一致，
 // 店家開啟重新結帳密碼時必須輸入密碼才送出。GraphQL 全由 MockedProvider（testkit 的模擬 link）回應，不連後端、不改真實帳單。
 // 「編輯顧客資料」改姓名／生日後儲存，送出的要是新姓名與新生日（以 typeLikeBrowser 照瀏覽器方式輸入；fireEvent.change 會誤判成送出舊姓名）。
-// 入金異動權限：登入者角色缺「客戶管理」區塊或權限查詢失敗時，有顧客的帳單照常顯示、且「異動入金」沒有儲值／扣除可選（缺設定＝沒有權限）。
+// 入金異動權限：登入者角色缺「客戶管理」區塊或權限查詢失敗時，有顧客的帳單照常顯示、且不顯示「異動入金」（缺設定＝沒有權限，與打帳單一致）。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
@@ -281,33 +281,48 @@ describe('帳單詳細：編輯顧客資料', () => {
 
 // 角色設定缺「客戶管理」區塊（舊角色、後台新增區塊前建立的角色）或權限查詢失敗時，原本直接取 .pageAuthority 拋錯，
 // 有顧客的帳單整頁變成錯誤畫面。現在：頁面照常顯示，缺設定一律視為沒有入金權限（最小權限），不會因此多出權限。
+// 沒有任何入金權限時不顯示「異動入金」：否則彈窗沒有方向可選、送出時金額不轉負數，等於儲值（Codex review PR #259）。
 describe('帳單詳細：入金異動權限', () => {
   const roleWith = sections => ({
     getMerchantAuthorities: [{ id: 'auth-1', authoritySettings: JSON.stringify(sections) }],
   })
-  const openWalletDeposit = async ({ settle }) => {
+  const pageReady = async ({ settle }) => {
     await screen.findByText(/帳單詳細 \(A123\)/)
     await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+  }
+  const openWalletDeposit = async page => {
+    await pageReady(page)
     fireEvent.click(await screen.findByRole('button', { name: '異動入金' }))
     // 彈窗標題（h3）；頁面上的「異動入金」按鈕不算
     return (await screen.findByText('異動入金', { selector: 'h3' })).closest('.MuiModal-root')
   }
   const walletActions = modal => ['儲值', '扣除'].filter(label => within(modal).queryByText(label, { selector: 'button' }))
 
-  it('角色缺「客戶管理」區塊：頁面照常顯示，異動入金沒有儲值／扣除可選', async () => {
+  it('角色缺「客戶管理」區塊：頁面照常顯示，不顯示異動入金', async () => {
     const page = setup({
       order: makeOrder({ customer: CUSTOMER }),
       GET_MERCHANT_AUTHORITIES: roleWith([{ pageTitle: '櫃檯作業', pageAuthority: [{ pageName: '打帳單', authority: true }] }]),
     })
-    const modal = await openWalletDeposit(page)
-    expect(walletActions(modal)).toEqual([])
+    await pageReady(page)
+    expect(screen.queryByRole('button', { name: '異動入金' })).toBeNull()
   })
 
-  it('權限查詢失敗：頁面照常顯示，異動入金沒有儲值／扣除可選', async () => {
+  it('權限查詢失敗：頁面照常顯示，不顯示異動入金', async () => {
     const page = setup({ order: makeOrder({ customer: CUSTOMER }), GET_MERCHANT_AUTHORITIES: new Error('權限讀取失敗') })
-    const modal = await openWalletDeposit(page)
-    expect(walletActions(modal)).toEqual([])
+    await pageReady(page)
+    expect(screen.queryByRole('button', { name: '異動入金' })).toBeNull()
+  })
+
+  it('角色的入金(儲值)、入金(扣除)都關閉：不顯示異動入金', async () => {
+    const page = setup({
+      order: makeOrder({ customer: CUSTOMER }),
+      GET_MERCHANT_AUTHORITIES: roleWith([
+        { pageTitle: '客戶管理', pageAuthority: [{ pageName: '入金(儲值)', authority: false }, { pageName: '入金(扣除)', authority: false }] },
+      ]),
+    })
+    await pageReady(page)
+    expect(screen.queryByRole('button', { name: '異動入金' })).toBeNull()
   })
 
   it('角色只有「入金(儲值)」權限：只能選儲值', async () => {

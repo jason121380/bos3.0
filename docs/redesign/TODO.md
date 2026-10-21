@@ -8,7 +8,7 @@
 
 ## 一、今天完成了什麼
 
-- **帳單既有問題 1–3 查證與修正（2026/10/22，v3.10220155，Jason「修1-3」）**：③**真的、已修**：帳單詳細 `PaymentCustomerWallet` 讀入金權限直接取 `.pageAuthority`，角色缺「客戶管理」或權限查詢失敗時整頁錯誤；改用 `helper/rolePageAuthority`（缺設定＝沒有入金權限，與打帳單一致），新增 3 個測試（2 個修正前失敗、1 個確認權限沒變多）。掛單詳細、重新開單不讀入金權限，無此問題。①**不是產品 bug**：「編輯顧客改姓名送出舊姓名」是 RTL `fireEvent.change`＋updater 內讀 `event.target` 的測試假象（真實 Chromium 打字存到新值）；testkit 新增 `typeLikeBrowser`（含自我測試），三頁各加「改姓名與生日後儲存送出新值」測試。②**刻意不修，待 Jason 確認**：重新開單比對 `order.customerId`（佇列查詢沒有此欄位）是死碼，可扣入金＝顧客目前餘額；照字面修會把佇列原扣入金加回、可扣金額超過實際餘額（佇列帳單是建立失敗、重試時才扣入金）。已加測試鎖定現況並註明原因。驗證：`lint:build`、90 檔／646 測試（UTC 與洛杉磯）、build。
+- **帳單既有問題 1–3 查證與修正（2026/10/22，v3.10220205，Jason「修1-3」）**：③**真的、已修**：帳單詳細 `PaymentCustomerWallet` 讀入金權限直接取 `.pageAuthority`，角色缺「客戶管理」或權限查詢失敗時整頁錯誤；改用 `helper/rolePageAuthority`（缺設定＝沒有入金權限，與打帳單一致）；沒有任何入金權限時不顯示「異動入金」（原本仍可開窗送出、金額被當儲值，Codex review PR #259 P1），共用彈窗送出時再擋一次；新增 4 個測試（3 個修正前失敗、1 個確認權限沒變多）。掛單詳細、重新開單不讀入金權限，無此問題。①**不是產品 bug**：「編輯顧客改姓名送出舊姓名」是 RTL `fireEvent.change`＋updater 內讀 `event.target` 的測試假象（真實 Chromium 打字存到新值）；testkit 新增 `typeLikeBrowser`（含自我測試），三頁各加「改姓名與生日後儲存送出新值」測試。②**刻意不修，待 Jason 確認**：重新開單比對 `order.customerId`（佇列查詢沒有此欄位）是死碼，可扣入金＝顧客目前餘額；照字面修會把佇列原扣入金加回、可扣金額超過實際餘額（佇列帳單是建立失敗、重試時才扣入金）。已加測試鎖定現況並註明原因。驗證：`lint:build`、90 檔／647 測試（UTC 與洛杉磯）、build。
 
 - **帳單合併第二輪＋帳單大檔拆分（A，2026/10/22，v3.10220106，Jason「接著做」）**：低相似度檔案逐組判斷——共用畫面：金額彙總／底部固定列（`BillSummary`，四頁）、重新結帳密碼視窗（帳單詳細／掛單詳細）；共用邏輯：收據 Logo／QR／訊息（`useInvoiceDecorations`）、從清單選擇（`useItemPicker`，四頁 md5 相同）、紅利折抵上限與給點停用（`bonusRules`）、使用預收卡列（帳單詳細＋掛單詳細）、顧客欄位片段與輸入；備註合併（打帳單＋掛單詳細）＋帳單來源欄（四頁）；刪除第一輪留下無引用的 6 檔。保留：Header（外層 noprint）、Payment／PaymentCustomerWallet／Services／CouponSells／6 種 Pannel*（金額上限算法、資料來源、state 歸屬不同，合併需約 10 個各頁參數）。大檔：`OrderDetailModal` 1253→427、`DraftOrderEdit/Footer` 1246→468（列印範本留原檔，列印視窗程式原樣搬到 hook）。不含測試淨減 1,328 行。等價證明：四頁整頁 27 情境／208 步、明細彈窗 11 情境，比對 DOM、GraphQL 名稱與 variables（含順序）、提示、列印視窗 HTML、網址全同；5 種反向對照皆抓到。新增永久測試 17 個。驗證：`lint:build`、90 檔／638 測試（UTC 與洛杉磯）、build、四頁×2 寬度截圖 0 像素差。**發現的既有問題（未修，待 Jason 決定）**：①帳單詳細等三頁「編輯顧客」改姓名後儲存，送出的仍是舊姓名（jsdom 觀察，待實機確認）；②重新開單入金比對 `order.customerId`，查詢結果無此欄位；③帳單詳細 `PaymentCustomerWallet` 找不到登入者權限設定時整頁錯誤；④打帳單「結帳並列印」的收據編號依賴 React 17 setState 行為，升 React 18 前要改。
 
@@ -248,7 +248,6 @@
 ### P3 — 需要你決定
 
 - **（2026/10/22 新增）重新開單：建立失敗的佇列帳單是否確定沒有扣到入金？** 若後端其實已扣，重新開單的「扣入金(N可用)」要加回佇列原扣入金，並同步改 `QueueOrderEdit.page.test.js` 的現況測試。
-- **（2026/10/22 新增）帳單詳細「異動入金」權限缺口**：沒有任何入金權限的角色仍可打開視窗並送出（方向未選時以正數送出＝儲值）；打帳單是直接隱藏按鈕。後端是否另有檢查待確認；前端可比照打帳單隱藏。
 - **（2026/10/22 新增，未實測）重新開單換顧客時扣入金沒有清空**：帳單詳細／掛單詳細換顧客會把扣入金歸 0，重新開單沒有這段，佇列原扣入金可能帶到新顧客。
 1. `Services`（服務項目設定）的篩選按鈕：舊版因 prop 名稱錯誤從未顯示，要顯示嗎？
 2. ~~直接列印的報表是否要改版~~ **已拍版（Jason 2026/10/19）**：所有報表樣式一致、以 compact 緊湊呈現；只改 presentation／print CSS，不改內容欄位與數字計算。**下一組優先：報表 compact 專項**（先盤點共用層，再逐目錄）。2026/10/19 實測：`window.print` 出現在 28 個檔案，其中 22 個是報表目錄的 `index`（約 15 頁是舊口徑，實際更多），另 6 個是 `OrderManagementList/ResultsV2`、`DraftOrderManagementList/ResultsV2`、`DraftOrderEdit/Footer`、`OrderCreate/OrderDetailModal`、`InventoryWorkReview/General`、`ProductInventoryList/Results`。

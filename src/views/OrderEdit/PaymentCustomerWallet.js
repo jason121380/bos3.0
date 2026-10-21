@@ -119,12 +119,15 @@ export default function PaymentCustomerWallet() {
           />
           </Field>
         )}
-        <Button
-          variant="primary"
-          onClick={() => setOpenWalletDeposit(true)}
-        >
-          異動入金
-        </Button>
+        {/* 沒有任何入金權限（含角色缺設定、權限查詢失敗）時不顯示，與打帳單一致（Codex review PR #259） */}
+        {(identity.allowDepositAddition || identity.allowDepositDeduction) && (
+          <Button
+            variant="primary"
+            onClick={() => setOpenWalletDeposit(true)}
+          >
+            異動入金
+          </Button>
+        )}
       </div>
       {openWalletDeposit && (
         <WalletDepositModal

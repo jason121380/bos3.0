@@ -95,6 +95,8 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
     setIsClick(true)
     const cloneWalletDeposit = cloneDeep(walletDepositData)
     try {
+      // 沒有儲值也沒有扣除權限時 moneyStatus 為 undefined，金額不會轉負數、會被當成儲值送出：直接擋下
+      if (!moneyStatus) throw new Error('沒有異動入金的權限')
       if (isNaN(cloneWalletDeposit.date)) throw new Error('日期有誤')
       if (isNaN(cloneWalletDeposit.money)) throw new Error('金額有誤')
       if (!cloneWalletDeposit.designerId) throw new Error('請選擇設計師')
