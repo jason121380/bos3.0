@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom'
-import { CalendarDays, ChartColumn, ChevronLeft, LayoutGrid, Menu, PenLine, Receipt, Star } from 'lucide-react'
+import { CalendarDays, ChartColumn, ChevronLeft, Menu, PenLine, Receipt, Star } from 'lucide-react'
 import { Button } from 'ui/button'
 import { cn, focusRing } from 'ui/utils'
 
@@ -125,7 +125,8 @@ export function MobileTabBar({ tabs, onOpenMenu, menuOpen }) {
           )
         })}
         <button type="button" aria-label="開啟選單" aria-expanded={menuOpen} onClick={onOpenMenu} className={item(menuOpen)}>
-          <LayoutGrid className="h-6 w-6" strokeWidth={menuOpen ? 2 : 1.75} />
+          {/* 選單分頁用三條線漢堡圖示（Jason 2026/10/21 截圖指示，原為格狀 LayoutGrid） */}
+          <Menu className="h-6 w-6" strokeWidth={menuOpen ? 2 : 1.75} />
           <span>選單</span>
         </button>
       </div>
