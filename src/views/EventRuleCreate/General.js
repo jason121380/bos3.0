@@ -64,7 +64,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
     <Fragment>
       <Card>
         <CardHeader>
-          <CardTitle>{`${mainEvent.name} ${format(mainEvent.start, "yyyy/M/d")} ~ ${format(mainEvent.end, "yyyy/M/d")}`}</CardTitle>
+          <CardTitle>{`${mainEvent.name} ${format(mainEvent.start, "yyyy/MM/dd")} ~ ${format(mainEvent.end, "yyyy/MM/dd")}`}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
           <Field label='規則名稱'>
