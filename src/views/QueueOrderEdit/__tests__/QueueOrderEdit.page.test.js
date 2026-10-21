@@ -1,9 +1,11 @@
 // 保護「重新開單」（打帳單佇列送出失敗的帳單）：佇列裡的帳單內容要原樣帶回，「重試」要先成立帳單、成功後才刪除佇列；
 // 成立失敗時保留佇列並提示，避免帳單遺失。GraphQL 全由 MockedProvider（testkit 的模擬 link）回應，不連後端、不建立真實帳單。
+// 「編輯顧客資料」改姓名／生日後儲存，送出的要是新姓名與新生日（以 typeLikeBrowser 照瀏覽器方式輸入；fireEvent.change 會誤判成送出舊姓名）。
+// 扣入金可用額度＝顧客目前的入金餘額，不再加上佇列帳單的扣入金（佇列帳單建立失敗、尚未扣款；加上去會讓可扣金額超過實際餘額）。
 import React from 'react'
-import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
+import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
-import { renderPage, loginAs, callsOf, currentLocation } from '../../../__tests__/testkit.test'
+import { renderPage, loginAs, callsOf, currentLocation, typeLikeBrowser } from '../../../__tests__/testkit.test'
 import QueueOrderEdit from '..'
 
 jest.setTimeout(20000)
@@ -185,5 +187,70 @@ describe('重新開單：重試', () => {
     await wait(() => expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(1))
     await new Promise(resolve => setTimeout(resolve, 50))
     expect(callsOf(calls, 'DELETE_QUEUE')).toHaveLength(0)
+  })
+})
+
+const CUSTOMER = { id: 'customer-1', no: 'C01', name: '陳小姐', cellphone: '0912345678' }
+
+// 編輯顧客資料：改姓名、生日後按「儲存」，送出的 SET_CUSTOMER 要帶新姓名與新生日。
+// 曾以 fireEvent.change 觀察到「送出舊姓名」，查證為測試工具的假象（見 testkit 的 typeLikeBrowser），真實瀏覽器正常；
+// 這個測試以與瀏覽器相同的方式輸入，保護姓名確實會送出。
+const CUSTOMER_DETAIL = {
+  ...CUSTOMER,
+  gender: 'FEMALE',
+  birthday: { year: '80', month: '1', day: '2' },
+  remark: '',
+  source: '',
+  preferDesigner: null,
+  membershipPurchaseRecord: [],
+  isLineBinded: false,
+}
+const editCustomerAndSave = async calls => {
+  // 顧客資料載入後（顧客欄顯示姓名）才開彈窗，彈窗才會帶入這位顧客
+  await wait(() => expect(screen.getByPlaceholderText('顧客姓名/手機號碼/編號').value).toContain('陳小姐'))
+  fireEvent.click(await screen.findByRole('button', { name: '編輯顧客資料' }))
+  const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+  const nameInput = within(modal).getByText('客戶姓名').parentElement.querySelector('input[name="name"]')
+  await wait(() => expect(nameInput).toHaveValue('陳小姐'))
+  typeLikeBrowser(nameInput, '陳美美')
+  expect(nameInput).toHaveValue('陳美美')
+  typeLikeBrowser(modal.querySelector('input[name="year"]'), '81')
+  fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
+  await wait(() => expect(callsOf(calls, 'SET_CUSTOMER')).toHaveLength(1))
+  return callsOf(calls, 'SET_CUSTOMER')[0].variables.input
+}
+
+describe('重新開單：編輯顧客資料', () => {
+  it('改姓名與生日後儲存，送出新姓名與新生日', async () => {
+    const { calls } = setup({
+      queue: queuedInput({ customerId: CUSTOMER.id, withoutCustomerData: false }),
+      FETCH_CUSTOMER_DETAIL: { customer: CUSTOMER_DETAIL },
+      SET_CUSTOMER: { updateCustomer: true },
+    })
+    await screen.findByText(/重新開單 \(A777\)/)
+    const input = await editCustomerAndSave(calls)
+    expect(input).toEqual(
+      expect.objectContaining({ customerId: CUSTOMER.id, name: '陳美美', birthday: { year: '81', month: '1', day: '2' } })
+    )
+  })
+})
+
+// 佇列裡的帳單是「建立失敗」的帳單，重試時以 createOrder 重新成立（與打帳單相同），扣入金在成立時才扣。
+// 因此可用額度只能是顧客目前的入金餘額，不能像帳單詳細那樣加回「這張帳單原本扣的入金」。
+// PaymentCustomerWallet 裡比對 order.customerId 的那段（抄自帳單詳細）因查詢結果沒有這個欄位而從不成立；
+// 若把它「修好」，可用額度會變成 餘額＋佇列扣入金（實測 1000→1300），所以刻意不修，這個測試防止誤修。
+// 若確認失敗的佇列帳單其實已扣款，要先改這個測試與上述說明。
+describe('重新開單：扣入金可用額度', () => {
+  it('可用額度是顧客目前的入金餘額，不加上佇列帳單的扣入金；佇列的扣入金照原值帶入', async () => {
+    const page = setup({
+      queue: queuedInput({ customerId: CUSTOMER.id, withoutCustomerData: false, walletPay: 300 }),
+      FETCH_CUSTOMER_DETAIL: { customer: CUSTOMER_DETAIL },
+      customerWallet: { customerWallet: 1000 },
+    })
+    await screen.findByText(/重新開單 \(A777\)/)
+    await page.settle()
+    const label = await screen.findByText(/^扣入金\(/)
+    expect(label).toHaveTextContent('扣入金(1000可用)')
+    expect(label.parentElement.querySelector('input')).toHaveValue(300)
   })
 })

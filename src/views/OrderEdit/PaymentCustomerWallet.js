@@ -5,6 +5,7 @@ import billContext from 'context/keyInContext'
 import { useLazyFetchCustomerWallet } from 'hooks/useFetchCustomerWallet'
 import { useFetchProfileIdentity } from 'hooks/useFetchProfile'
 import useFetchGetMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'
+import { roleSectionAuthority, hasPageAuthority } from 'helper/rolePageAuthority'
 import idx from 'idx'
 import React from 'react'
 import produce from 'immer'
@@ -69,19 +70,11 @@ export default function PaymentCustomerWallet() {
       const identityId = idx(profileIdentity, _ => _.data.me.merchantIdentity.authorityId)
       const authorities = idx(merchantAuthorities, _ => _.data.getMerchantAuthorities)
 
-      const CustomerManagementIdentity = JSON.parse(
-        authorities.find(d => {
-          return d.id === identityId
-        }).authoritySettings
-      ).find(d => {
-        return d.pageTitle === '客戶管理'
-      }).pageAuthority
-      const allowDepositAddition = CustomerManagementIdentity.find(d => {
-        return d.pageName === '入金(儲值)'
-      }).authority
-      const allowDepositDeduction = CustomerManagementIdentity.find(d => {
-        return d.pageName === '入金(扣除)'
-      }).authority
+      // 查詢失敗、找不到登入者角色、角色缺「客戶管理」區塊或缺該項目時，視為沒有入金權限
+      // （原本直接取 .pageAuthority／.authority 拋錯，有顧客的帳單整頁變錯誤畫面；與打帳單一致）
+      const CustomerManagementIdentity = roleSectionAuthority(authorities, identityId, '客戶管理')
+      const allowDepositAddition = hasPageAuthority(CustomerManagementIdentity, '入金(儲值)')
+      const allowDepositDeduction = hasPageAuthority(CustomerManagementIdentity, '入金(扣除)')
 
       setIdentity({
         allowDepositAddition: allowDepositAddition,
@@ -126,12 +119,15 @@ export default function PaymentCustomerWallet() {
           />
           </Field>
         )}
-        <Button
-          variant="primary"
-          onClick={() => setOpenWalletDeposit(true)}
-        >
-          異動入金
-        </Button>
+        {/* 沒有任何入金權限（含角色缺設定、權限查詢失敗）時不顯示，與打帳單一致（Codex review PR #259） */}
+        {(identity.allowDepositAddition || identity.allowDepositDeduction) && (
+          <Button
+            variant="primary"
+            onClick={() => setOpenWalletDeposit(true)}
+          >
+            異動入金
+          </Button>
+        )}
       </div>
       {openWalletDeposit && (
         <WalletDepositModal

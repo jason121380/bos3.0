@@ -18,6 +18,7 @@ import reservationReducer from 'store/reservation'
 import deductionDisplayReducer from 'store/deductionDisplay'
 import QRcodeClockInReducer from 'store/QRcodeClockIn'
 import pinnedTableReducer from 'store/pinnedTable'
+import { makeFieldChange } from 'views/OrderShared/customerFormInput'
 
 const isMain = expect.getState().testPath === __filename
 
@@ -214,6 +215,17 @@ export const PAGE_CRASH_TEXT = '這個頁面發生錯誤'
 // 目前網址（renderPage 之後）
 export const currentLocation = () => document.querySelector('[data-testid="testkit-location"]').textContent
 
+// 與使用者在瀏覽器打字相同的輸入：以原生 setter 改值再派送 input 事件，不包 act。
+// 為什麼需要：@testing-library/react 的 fireEvent.change 包在 act（React 的批次更新）裡，React 會先把受控欄位的值
+// 還原成舊值、離開 act 才執行 setState 的 updater；欄位處理若在 updater 內才讀 event.target.value
+// （例如 OrderShared/customerFormInput 的 makeFieldChange），測試會讀到舊值而誤判「輸入沒存進去」。
+// 真實瀏覽器（已用 Chromium 實測）是先執行 updater 再還原，讀到的是新值。測這類欄位請用這個函式。
+export function typeLikeBrowser(input, value) {
+  const proto = input instanceof window.HTMLTextAreaElement ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype
+  Object.getOwnPropertyDescriptor(proto, 'value').set.call(input, value)
+  input.dispatchEvent(new window.Event('input', { bubbles: true }))
+}
+
 if (isMain) {
   const QUERY = gql`
     query DEMO($id: ID) {
@@ -305,6 +317,25 @@ if (isMain) {
       const res = await fetch('https://example.com/logo.png')
       expect(res.ok).toBe(true)
       expect(networkRequests).toContain('https://example.com/logo.png')
+    })
+
+    it('typeLikeBrowser：updater 內才讀 event.target 的受控欄位，也拿得到新輸入的值', () => {
+      const Form = () => {
+        const [values, setValues] = React.useState({ name: '舊名' })
+        const [, setTick] = React.useState(0)
+        const handleFieldChange = makeFieldChange(setValues)
+        // 先排一個更新，讓 makeFieldChange 的 updater 在 render 時才執行（帳單頁的編輯顧客彈窗就是這樣）；
+        // 這時改用 fireEvent.change 會讀到被還原的舊值而失敗
+        const onChange = event => {
+          setTick(t => t + 1)
+          handleFieldChange(event)
+        }
+        return <input name="name" aria-label="姓名" value={values.name} onChange={onChange} />
+      }
+      const { getByLabelText, unmount } = render(<Form />)
+      typeLikeBrowser(getByLabelText('姓名'), '新名')
+      expect(getByLabelText('姓名')).toHaveValue('新名')
+      unmount()
     })
 
     it('loginAs 寫入目前店家與登入者', () => {
