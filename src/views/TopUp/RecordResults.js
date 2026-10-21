@@ -46,7 +46,7 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
       })
 
       let total = 0
-      recordData.map(record => {
+      recordData.forEach(record => {
         if (record.handlingFeeDecountWay === 'BYCUSTOMER') {
           total += record.money + Math.abs(record.handlingFeeDecountPrice)
         } else {
@@ -70,7 +70,7 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
     }
   }, [walletDepositRecord.loading])
   let total = 0
-  if (walletDepositRecord != undefined) {
+  if (walletDepositRecord != null) {
     idx(walletDepositRecord.data, _ =>
       _.walletDepositRecord.record.map(record => {
         if (record.handlingFeeDecountWay === 'BYCUSTOMER') {
@@ -78,6 +78,7 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
         } else {
           total += record.money
         }
+        return undefined
       })
     )
   }

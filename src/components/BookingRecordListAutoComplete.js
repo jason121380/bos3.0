@@ -72,6 +72,7 @@ function BookingRecordListAutoComplete(
         ) {
           return data.userNo.toLowerCase() === keyWord.toLowerCase()
         }
+        return false
       })
       userNickName = newOptions.filter((data, index) => {
         if (
@@ -81,6 +82,7 @@ function BookingRecordListAutoComplete(
         ) {
           return data.userNickName.toLowerCase().includes(keyWord.toLowerCase())
         }
+        return false
       })
       userName = newOptions.filter((data, index) => {
         if (
@@ -90,6 +92,7 @@ function BookingRecordListAutoComplete(
         ) {
           return data.userName.toLowerCase().includes(keyWord.toLowerCase())
         }
+        return false
       })
 
       const filterOptions = [...userNo, ...userNickName, ...userName]

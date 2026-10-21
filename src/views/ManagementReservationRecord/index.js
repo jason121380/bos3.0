@@ -110,7 +110,7 @@ function Calendar() {
     const arr = []
     const finalData = []
 
-    tidyData.map(des => {
+    tidyData.forEach(des => {
       const countOrder = {}
       const countHoliday = {}
       const { calendar, ...rest } = des
@@ -191,6 +191,9 @@ function Calendar() {
                   break;
               }
               break;
+            default:
+              // 其他值不處理（與原本沒有 default 時相同）
+              break
           }
 
           if (isCusCheckRequired && bookingCusCheck) {

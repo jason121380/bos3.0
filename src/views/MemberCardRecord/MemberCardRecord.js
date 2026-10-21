@@ -93,7 +93,7 @@ function MemberCardRecord() {
               }
             />
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              {categories != undefined &&
+              {categories != null &&
                 categories.map(category => (
                   <Button
                     variant="secondary"

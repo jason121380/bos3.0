@@ -41,7 +41,7 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
     setSelected(newSelect)
   }
   const handleSeletedDelete = () => {
-    selected.map(d => {
+    selected.forEach(d => {
       deleteAuthority({ authorityId: d })
         .then(() => {
           setSelected([])

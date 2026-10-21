@@ -137,7 +137,7 @@ export default function MemberCardEdit({ match }) {
     if (membershipList !== undefined &&  !membership.loading) {
       const currentMembershipID = idx(membership, _ => _.data.membership.uuid)
       setMembershipIndexArray(membershipList.data)
-      membershipList.data.map((d, index) => {
+      membershipList.data.forEach((d, index) => {
         if (d.uuid === currentMembershipID) {
           setMembershipIndex(index)
         }
@@ -264,7 +264,7 @@ export default function MemberCardEdit({ match }) {
                 value={submitValue.MembershipCategoryUUID}
                 onChange={event => handleOnChange({ event, key: 'MembershipCategoryUUID' })}
               >
-                {categories != undefined &&
+                {categories != null &&
                   categories.map((data, idx) => (
                     <NativeSelectOption key={`${data.uuid}-${idx}`} value={data.uuid}>
                       {data.no} / {data.name}

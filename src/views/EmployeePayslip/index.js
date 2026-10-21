@@ -69,10 +69,10 @@ export default function Payroll() {
     }
   }, [merchantSalaryDecreaseItemsData.loading])
   useEffect(() => {
-    if (!merchantSalaryIncreaseItems.loading && userSalary != undefined) {
-      userSalary.map(data => {
+    if (!merchantSalaryIncreaseItems.loading && userSalary != null) {
+      userSalary.forEach(data => {
         const increase = idx(data, _ => _.increaseItem)
-        increase.map(data2 => {
+        increase.forEach(data2 => {
           if (
             data2.itemName !== '' &&
             merchantSalaryIncreaseItems.find(data3 => data3.itemSetting === data2.itemName) ===
@@ -87,10 +87,10 @@ export default function Payroll() {
     }
   }, [merchantSalaryIncreaseItems.loading, userSalary])
   useEffect(() => {
-    if (!merchantSalaryDecreaseItems.loading && userSalary != undefined) {
-      userSalary.map(data => {
+    if (!merchantSalaryDecreaseItems.loading && userSalary != null) {
+      userSalary.forEach(data => {
         const decrease = idx(data, _ => _.decreaseItem)
-        decrease.map(data2 => {
+        decrease.forEach(data2 => {
           if (
             data2.itemName !== '' &&
             merchantSalaryDecreaseItems.find(data3 => data3.itemSetting === data2.itemName) ===

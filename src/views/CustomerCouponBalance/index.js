@@ -41,17 +41,17 @@ const CustomerWalletBalance = () => {
         customerCouponBalanceData,
         _ => _.data.customerCouponBalanceReport
       )
-      customerCouponBalance.map(d => {
+      customerCouponBalance.forEach(d => {
         tempArray.push(d)
       })
-      customerCouponBalance.map(data => {
-        data.data.map(d => {
+      customerCouponBalance.forEach(data => {
+        data.data.forEach(d => {
           tempArrayTotal.push(d)
         })
       })
       setReportForDisplay(tempArray)
       setReportTotal(tempArrayTotal)
-      tempArrayTotal.map(d => {
+      tempArrayTotal.forEach(d => {
         excelData.push({
           顧客編號: d.customerNo,
           顧客姓名: d.customerName,

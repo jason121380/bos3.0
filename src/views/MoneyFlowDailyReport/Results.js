@@ -18,7 +18,7 @@ export default function Results({ moneyFlowDailyReport, displayDate, isMemberShi
     let isMembershipShow
     if (moneyFlowDailyReport !== undefined) {
       const membershipValue = moneyFlowDailyReport.filter(result => result.itemName === "會員卡消費")
-      membershipValue.map(d => {
+      membershipValue.forEach(d => {
         const isMembershipIsZero = d.moneyFlowRecord.filter(result => result.price === 0)
         if (isMembershipIsZero.length !== d.moneyFlowRecord.length) {
           isMembershipShow = true
@@ -30,32 +30,32 @@ export default function Results({ moneyFlowDailyReport, displayDate, isMemberShi
       })
       if (isMembershipShow === false) {
         const tmp = moneyFlowDailyReport.filter(result => result.itemName !== "會員卡消費")
-        tmp.map(d => {
+        tmp.forEach(d => {
           reportDisplay.push(d)
         })
       } else {
-        moneyFlowDailyReport.map(d => {
+        moneyFlowDailyReport.forEach(d => {
           reportDisplay.push(d)
         })
       }
       if (reportDisplay.length > 0) {
-        reportDisplay[0].moneyFlowRecord.map(data => {
+        reportDisplay[0].moneyFlowRecord.forEach(data => {
           initRevenueTotals.push(0)
           initExpenditureTotals.push(0)
         })
-        reportDisplay.map((data) => {
+        reportDisplay.forEach((data) => {
           if (data.type === 'REVENUE') {
-            data.moneyFlowRecord.map((data2, index2) => {
+            data.moneyFlowRecord.forEach((data2, index2) => {
               initRevenueTotals[index2] += data2.price
             })
           }
           if (data.type === 'EXPENDITURE') {
-            data.moneyFlowRecord.map((data2, index2) => {
+            data.moneyFlowRecord.forEach((data2, index2) => {
               initExpenditureTotals[index2] += data2.price
             })
           }
         })
-        reportDisplay[0].moneyFlowRecord.map((data, index) => {
+        reportDisplay[0].moneyFlowRecord.forEach((data, index) => {
           initBalanceTotals.push(initRevenueTotals[index] - Math.abs(initExpenditureTotals[index]))
         })
         setRevenueTotals(initRevenueTotals)

@@ -180,6 +180,7 @@ export default function AccountingRecordDetail(props) {
               })
             }
           }
+          return undefined
         })
       )
       setRevenueSubjects(revenueInit)

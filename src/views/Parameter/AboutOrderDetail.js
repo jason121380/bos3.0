@@ -147,7 +147,7 @@ function AboutOrderCreate({
                     src={orderCreateSetting.logoDisplayOnInvoice.imageUrl}
                     className="h-20 w-20 rounded-md"
                   />
-                  <EditRoundedIcon style={{ position: 'absolute', right: 0, bottom: 0, background: '#cccccc', borderRadius: "50%", padding: 5 }} />
+                  <EditRoundedIcon style={{ position: 'absolute', right: 0, bottom: 0, background: 'rgb(var(--border-strong))', borderRadius: "50%", padding: 5 }} />
                 </div>
               ) :
                 <Button

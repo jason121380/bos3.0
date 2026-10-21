@@ -16,7 +16,7 @@ export default function PannelMerchantSells({ thirdPartTicket }) {
       let newSells = []
       const orderDetail = JSON.parse(idx(order, _ => _.data.getOrderInputByQueueId))
       if (orderDetail.productOrders.length > 0) {
-        orderDetail.productOrders.map(data => {
+        orderDetail.productOrders.forEach(data => {
           newSells.push({
             sellerId: data.sellerId,
             productId: data.productId,

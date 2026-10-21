@@ -31,6 +31,7 @@ const TicketsAutocpmplete = ({ value, onChange = () => { }, isReadOnly = false, 
         const name = d.name.toLowerCase()
         return no.includes(keyWord) || name.includes(keyWord)
       }
+      return false
     })
     return filterOptions
   }

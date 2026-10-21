@@ -270,6 +270,7 @@ function Results({
                         </TableRow>
                   )
                 }
+                return undefined
               })}
             </TableBody>
           </Table>

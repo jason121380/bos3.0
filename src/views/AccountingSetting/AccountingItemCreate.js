@@ -70,7 +70,7 @@ export default function AccountingItemCreate({
     const newAccountingRevenueSubjects = cloneDeep(accountingRevenueSubjects)
     switch (e.target.name) {
       case 'revenueNumber':
-        newAccountingRevenueSubjects.map((data, index2) => {
+        newAccountingRevenueSubjects.forEach((data, index2) => {
           if (index === index2) {
             data.number = e.target.value
           }
@@ -78,7 +78,7 @@ export default function AccountingItemCreate({
         setAccountingRevenueSubjects(newAccountingRevenueSubjects)
         break
       case 'revenueName':
-        newAccountingRevenueSubjects.map((data, index2) => {
+        newAccountingRevenueSubjects.forEach((data, index2) => {
           if (index === index2) {
             data.name = e.target.value
           }
@@ -94,7 +94,7 @@ export default function AccountingItemCreate({
     const newAccountingExpenditureSubjects = cloneDeep(accountingExpenditureSubjects)
     switch (e.target.name) {
       case 'expenditureNumber':
-        newAccountingExpenditureSubjects.map((data, index2) => {
+        newAccountingExpenditureSubjects.forEach((data, index2) => {
           if (index === index2) {
             data.number = e.target.value
           }
@@ -102,7 +102,7 @@ export default function AccountingItemCreate({
         setAccountingExpenditureSubjects(newAccountingExpenditureSubjects)
         break
       case 'expenditureName':
-        newAccountingExpenditureSubjects.map((data, index2) => {
+        newAccountingExpenditureSubjects.forEach((data, index2) => {
           if (index === index2) {
             data.name = e.target.value
           }
@@ -116,7 +116,7 @@ export default function AccountingItemCreate({
 
   const handleAccountingTypeInput = (e, index) => {
     const newAccountingType = cloneDeep(accountingType)
-    newAccountingType.map((data, index2) => {
+    newAccountingType.forEach((data, index2) => {
       if (index === index2) {
         data.accountingTypeName = e.target.value
       }

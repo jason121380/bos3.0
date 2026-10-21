@@ -29,7 +29,7 @@ function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetc
   }
   const handleSeletedDelete = () => {
     if (selectedPayment.length > 0) {
-      selectedPayment.map(d => {
+      selectedPayment.forEach(d => {
         deleteThirdPartyCoupon({ id: d })
           .then(() => {
             setSelectedPayment([])

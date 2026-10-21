@@ -165,6 +165,7 @@ function Results({ className, incomeStatement }) {
                           </TableRow>
                         )
                       }
+                      return undefined
                     })}
                     <TableRow>
                       <TableCell className="font-bold text-[red]">小計</TableCell>
@@ -208,6 +209,7 @@ function Results({ className, incomeStatement }) {
                           </TableRow>
                         )
                       }
+                      return undefined
                     })}
                   </TableBody>
                 </Table>

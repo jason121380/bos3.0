@@ -77,7 +77,7 @@ export default function Employees() {
       const report = idx(nonCashDetailStatement, _ => _.data.nonCashDetailStatement)
       const bonusActive = summaryBonus !== 0 || customerBonusActive.data.getIsCustomerBonusActive
       setBonusDisplay(bonusActive)
-      report.nonCashDetailStatement.map(d => {
+      report.nonCashDetailStatement.forEach(d => {
         const obj = {}
         obj['帳單日期'] = format(d.date, 'yyyy/MM/dd')
         obj['序號'] = d.serialNumber
@@ -85,7 +85,7 @@ export default function Employees() {
         obj['客戶姓名'] = d.customerName
         obj['設計師代號'] = d.designerNo
         obj['設計師姓名'] = d.designerName
-        d.otherPay.map(item => {
+        d.otherPay.forEach(item => {
           obj[`${item.name}金額/手續費`] = item.price + '/' + Math.round(item.handlingFee)
           otherPaySummary.push({
             name: item.name,
@@ -93,7 +93,7 @@ export default function Employees() {
             handlingFee: item.handlingFee,
           })
         })
-        d.thirdPartTicket.map(item => {
+        d.thirdPartTicket.forEach(item => {
           obj[`第三方卡券${item.name}金額/手續費`] = item.price + '/' + Math.round(item.handlingFee)
           thirdPartySummary.push({
             name: item.name,
@@ -136,10 +136,10 @@ export default function Employees() {
       setTotal(total)
       const obj3 = {}
       obj3['帳單日期'] = '合計'
-      total.otherPay.map(item => {
+      total.otherPay.forEach(item => {
         obj3[`${item.name}金額/手續費`] = item.price + '/' + Math.round(item.handlingFee)
       })
-      total.thirdParty.map(item => {
+      total.thirdParty.forEach(item => {
         obj3[`第三方卡券${item.name}金額/手續費`] = item.price + '/' + Math.round(item.handlingFee)
       })
       obj3['入金使用金額'] = report.summary.walletUsed

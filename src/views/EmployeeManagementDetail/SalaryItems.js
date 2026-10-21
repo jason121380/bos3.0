@@ -25,7 +25,7 @@ export default function SalaryInems({
     const newSalaryIncreaseItemsReformatted = cloneDeep(salaryIncreaseItemsReformatted)
     switch (e.target.name) {
       case 'price':
-        newSalaryIncreaseItemsReformatted.map((data, index2) => {
+        newSalaryIncreaseItemsReformatted.forEach((data, index2) => {
           if (index === index2) {
             if (e.target.value === '') {
               data.price = 0
@@ -45,7 +45,7 @@ export default function SalaryInems({
     const newSalaryDecreaseItemsReformatted = cloneDeep(salaryDecreaseItemsReformatted)
     switch (e.target.name) {
       case 'price':
-        newSalaryDecreaseItemsReformatted.map((data, index2) => {
+        newSalaryDecreaseItemsReformatted.forEach((data, index2) => {
           if (index === index2) {
             if (e.target.value === '') {
               data.price = 0
@@ -65,7 +65,7 @@ export default function SalaryInems({
     const newIncreaseSecondContent = cloneDeep(increaseSecondContent)
     switch (e.target.name) {
       case 'price':
-        newIncreaseSecondContent.increaseItems.map((data, index2) => {
+        newIncreaseSecondContent.increaseItems.forEach((data, index2) => {
           if (index === index2) {
             if (e.target.value === '') {
               data.price = 0
@@ -77,7 +77,7 @@ export default function SalaryInems({
         setIncreaseSecondContent(newIncreaseSecondContent)
         break
       case 'itemName':
-        newIncreaseSecondContent.increaseItems.map((data, index2) => {
+        newIncreaseSecondContent.increaseItems.forEach((data, index2) => {
           if (index === index2) {
             data.itemName = e.target.value
           }
@@ -93,7 +93,7 @@ export default function SalaryInems({
     const newDecreaseSecondContent = cloneDeep(decreaseSecondContent)
     switch (e.target.name) {
       case 'price':
-        newDecreaseSecondContent.decreaseItems.map((data, index2) => {
+        newDecreaseSecondContent.decreaseItems.forEach((data, index2) => {
           if (index === index2) {
             if (e.target.value === '') {
               data.price = 0
@@ -105,7 +105,7 @@ export default function SalaryInems({
         setDecreaseSecondContent(newDecreaseSecondContent)
         break
       case 'itemName':
-        newDecreaseSecondContent.decreaseItems.map((data, index2) => {
+        newDecreaseSecondContent.decreaseItems.forEach((data, index2) => {
           if (index === index2) {
             data.itemName = e.target.value
           }

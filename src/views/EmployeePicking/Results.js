@@ -36,7 +36,7 @@ function Results({
   const recordArr = []
   const { deletePicking } = useFetchDeletePicking()
 
-  pickingRecords.PickingRecord.map(record => {
+  pickingRecords.PickingRecord.forEach(record => {
     recordArr.push(record.id)
   })
 

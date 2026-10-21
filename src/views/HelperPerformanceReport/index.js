@@ -85,10 +85,10 @@ export default function HelperPerformance() {
         })
       }
       const attributeSwitch = []
-      data.map(item => {
+      data.forEach(item => {
         const obj = {}
         obj['設計名稱'] = item.userName
-        item.helperPerformance.map((item2, index) => {
+        item.helperPerformance.forEach((item2, index) => {
           attributeSwitch[index] = true
           if (attributeSwitch[index]) {
             obj[`${item2.typeName}` + '人數'] = Math.round(item2.count)

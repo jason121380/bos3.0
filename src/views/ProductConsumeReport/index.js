@@ -53,10 +53,10 @@ export default function Employees() {
       const excelData = []
       const reportDisplay = idx(productConsumeListData, _ => _.data.productConsumeList)
       if (reportDisplay !== undefined) {
-        if (value != '') {
+        if (value !== '') {
           reportDisplay.productConsumeRecord
             .filter(d => d.purpose === value)
-            .map(data => {
+            .forEach(data => {
               excelData.push({
                 領料日期: format(data.date, 'yyyy/MM/dd'),
                 員工編號: data.designerNo,
@@ -82,7 +82,7 @@ export default function Employees() {
           })
           reportDisplay.productConsumeSummary
             .filter(d => d.purpose === value)
-            .map(data => {
+            .forEach(data => {
               excelData.push({
                 領料日期: data.purpose,
                 員工編號: data.cost,
@@ -91,7 +91,7 @@ export default function Employees() {
               })
             })
         } else {
-          reportDisplay.productConsumeRecord.map(data => {
+          reportDisplay.productConsumeRecord.forEach(data => {
             excelData.push({
               領料日期: format(data.date, 'yyyy/MM/dd'),
               員工編號: data.designerNo,
@@ -115,7 +115,7 @@ export default function Employees() {
             員工姓名: '金額',
             商品編號: '數量',
           })
-          reportDisplay.productConsumeSummary.map(data => {
+          reportDisplay.productConsumeSummary.forEach(data => {
             excelData.push({
               領料日期: data.purpose,
               員工編號: data.cost,

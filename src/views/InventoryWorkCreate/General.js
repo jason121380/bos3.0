@@ -148,6 +148,7 @@ function General({
                     </TableRow>
                   )
                 }
+                return undefined
               })}
             </TableBody>
           </Table>

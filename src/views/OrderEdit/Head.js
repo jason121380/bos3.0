@@ -129,7 +129,7 @@ export default function Head() {
       const tmp = []
       setIsLineBinded(isLineBindedData)
       if (membershipPurchase) {
-        membershipPurchase.map(d => {
+        membershipPurchase.forEach(d => {
           tmp.push(d)
         })
         setMembershipPurchase(tmp)
@@ -149,7 +149,7 @@ export default function Head() {
   // if the customer data return value is [] , we will not fill to bill
   useEffect(() => {
     if (options && options.length > 0 && !customers.loading && keyCode === 13) {
-      options.map(d => {
+      options.forEach(d => {
         if (tmpCustomerKeyword === d.cellphone || tmpCustomerKeyword === d.no) {
           setBill(
             produce(draft => {

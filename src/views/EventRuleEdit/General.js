@@ -178,7 +178,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                         <MenuItem value={true}>套用</MenuItem>
                       </Select>
                     </FormControl>
-                    {inputValue.service.type != '' && (
+                    {inputValue.service.type !== '' && (
                       <FormControl variant="outlined" className="w-[150px]">
                         <InputLabel>歸屬</InputLabel>
                         <Select

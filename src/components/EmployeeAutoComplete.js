@@ -75,6 +75,7 @@ function EmployeeAutoComplete(
         ) {
           return data.userNo.toLowerCase() === keyWord.toLowerCase()
         }
+        return false
       })
       userNickName = newOptions.filter((data, index) => {
         if (
@@ -84,6 +85,7 @@ function EmployeeAutoComplete(
         ) {
           return data.userNickName.toLowerCase().includes(keyWord.toLowerCase())
         }
+        return false
       })
       userName = newOptions.filter((data, index) => {
         if (
@@ -93,6 +95,7 @@ function EmployeeAutoComplete(
         ) {
           return data.userName.toLowerCase().includes(keyWord.toLowerCase())
         }
+        return false
       })
 
       const filterOptions = [...userNo, ...userNickName, ...userName]

@@ -53,7 +53,7 @@ function PaySlip({
                       <TableBody className='renderItem'>
                         {user.increaseItem.length > 0 ? (
                           user.increaseItem.map((item, i) => {
-                            if (i % 6 === 0 && i != 0) {
+                            if (i % 6 === 0 && i !== 0) {
                               return (
                                 <Fragment key={`increaseItem-${i}`}>
                                   <TableRow></TableRow>
@@ -87,7 +87,7 @@ function PaySlip({
                       <TableBody className='renderItem'>
                         {user.decreaseItem.length > 0 ? (
                           user.decreaseItem.map((item, i) => {
-                            if (i % 6 === 0 && i != 0) {
+                            if (i % 6 === 0 && i !== 0) {
                               return (
                                 <Fragment key={`decreaseItem-${i}`}>
                                   <TableRow></TableRow>

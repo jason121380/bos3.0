@@ -34,7 +34,7 @@ function Results({
           </TableRow>
         </TableHeader>
         <TableBody id="whiteSpace">
-          {merchantLeaderBoard != undefined &&
+          {merchantLeaderBoard != null &&
             merchantLeaderBoard.merchantLeaderBoard.map((data, index) => {
               return (
                 <TableRow key={index}>

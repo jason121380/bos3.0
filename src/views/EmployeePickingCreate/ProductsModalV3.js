@@ -38,12 +38,12 @@ function ProductsModal({
     }
     setSelectedCategorieId(tmpArr)
 
-    tmpArr.map((product, index) => {
+    tmpArr.forEach((product, index) => {
       product.selected = false
     })
 
-    tmpArr.map((product, index) => {
-      selectedProducts.map((selectedProduct, selectedProductindex) => {
+    tmpArr.forEach((product, index) => {
+      selectedProducts.forEach((selectedProduct, selectedProductindex) => {
         if (selectedProduct.productId === product.id) {
           product.selected = true
           product.price = selectedProduct.price
@@ -97,7 +97,7 @@ function ProductsModal({
         productForModified[index].price = parseInt(e.target.value, 10) || 0
         productForModified[index].total = productForModified[index].price * productForModified[index].count
         const existedIndex = selectedProducts.map(d => d.productId).indexOf(id)
-        if (existedIndex != -1) {
+        if (existedIndex !== -1) {
           selectedProducts[existedIndex].price = parseInt(e.target.value, 10) || 1
 
           selectedProducts[existedIndex].total =
@@ -108,7 +108,7 @@ function ProductsModal({
         productForModified[index].count = parseInt(e.target.value, 10) || 1
         productForModified[index].total = productForModified[index].count * productForModified[index].price
         const existedIndex1 = selectedProducts.map(d => d.productId).indexOf(id)
-        if (existedIndex1 != -1) {
+        if (existedIndex1 !== -1) {
           selectedProducts[existedIndex1].count = parseInt(e.target.value, 10) || 1
           selectedProducts[existedIndex1].total =
             parseInt(e.target.value, 10) * selectedProducts[existedIndex1].price
@@ -117,7 +117,7 @@ function ProductsModal({
       case 'selected':
         productForModified[index].selected = e.target.checked
         const existedIndex2 = selectedProducts.map(d => d.productId).indexOf(id)
-        if (existedIndex2 != -1) {
+        if (existedIndex2 !== -1) {
           selectedProducts[existedIndex2].selected = e.target.checked
         } else {
           selectedProducts.push({
@@ -150,7 +150,7 @@ function ProductsModal({
       data => data.count > 0 && data.price > 0 && data.total > 0 && data.productName.length > 0
     )
     if (productOutsideOfModal.length > 0) {
-      productOutsideOfModal.map(data => {
+      productOutsideOfModal.forEach(data => {
         input.push({
           count: data.count,
           price: data.price,
@@ -164,7 +164,7 @@ function ProductsModal({
     }
 
     if (selectedProducts.length > 0) {
-      selectedProducts.map(data => {
+      selectedProducts.forEach(data => {
         input.push({
           count: data.count,
           price: data.price,

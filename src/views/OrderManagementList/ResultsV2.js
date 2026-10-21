@@ -91,6 +91,7 @@ function Results({
     if (!d.isCloseAccount && d.status === '已完成') {
       return d.id
     }
+    return false
   }).map(d => d.id)
 
   const { deleteOrders } = useFetchDeleteOrder()
@@ -738,6 +739,7 @@ function Results({
                     </div>
                   )
                 }
+                return undefined
               })}
           </div>
           <div>
@@ -754,6 +756,7 @@ function Results({
                     </div>
                   )
                 }
+                return undefined
               })}
           </div>
           <div>
@@ -770,6 +773,7 @@ function Results({
                     </div>
                   )
                 }
+                return undefined
               })}
           </div>
           <div>
@@ -786,6 +790,7 @@ function Results({
                     </div>
                   )
                 }
+                return undefined
               })}
           </div>
           <div>
@@ -802,6 +807,7 @@ function Results({
                     </div>
                   )
                 }
+                return undefined
               })}
           </div>
           <div>
@@ -818,6 +824,7 @@ function Results({
                     </div>
                   )
                 }
+                return undefined
               })}
           </div>
           <Divider style={{ width: '100%' }} />
@@ -924,6 +931,7 @@ function Results({
                   </Fragment>
                 )
               }
+              return undefined
             })}
           {printOrderDetail.length !== 0 &&
             printOrderDetail.staticDetail.map((d, index) => {
@@ -939,6 +947,7 @@ function Results({
                   </div>
                 )
               }
+              return undefined
             })}
           {printOrderDetail.length !== 0 &&
             printOrderDetail.staticDetail.map((d, index) => {
@@ -954,6 +963,7 @@ function Results({
                   </div>
                 )
               }
+              return undefined
             })}
           {printOrderDetail.length !== 0 &&
             printOrderDetail.staticDetail.map((d, index) => {
@@ -969,6 +979,7 @@ function Results({
                   </div>
                 )
               }
+              return undefined
             })}
           {printOrderDetail.length !== 0 &&
             printOrderDetail.staticDetail.map((d, index) => {
@@ -984,6 +995,7 @@ function Results({
                   </div>
                 )
               }
+              return undefined
             })}
           <Divider style={{ width: '100%' }} />
           <div>合計：{orderDetailPaymentShouldPay}</div>

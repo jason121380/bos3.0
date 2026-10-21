@@ -13,6 +13,9 @@ function Results({ reportData }) {
         return '進貨'
       case 'PICKING':
         return '自購'
+      default:
+        // 其他值不處理（與原本沒有 default 時相同）
+        break
     }
   }
 

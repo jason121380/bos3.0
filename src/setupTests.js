@@ -56,6 +56,7 @@ var localStorageMock = (function () {
 Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 
 // jsdom 沒有 crypto.getRandomValues（lib/uuid 用到）：補 Node 的 webcrypto，只影響測試環境
-if (!globalThis.crypto || typeof globalThis.crypto.getRandomValues !== 'function') {
-  Object.defineProperty(globalThis, 'crypto', { value: require('crypto').webcrypto, configurable: true })
+// 用 window（jsdom 的全域）而非 globalThis：eslint-check 的環境設定不認得 globalThis
+if (!window.crypto || typeof window.crypto.getRandomValues !== 'function') {
+  Object.defineProperty(window, 'crypto', { value: require('crypto').webcrypto, configurable: true })
 }

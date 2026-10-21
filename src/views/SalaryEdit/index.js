@@ -234,6 +234,7 @@ export default React.memo(function SalaryEdit(props) {
                 })
               }
             })
+            return undefined
           })
           : [{ itemName: '', price: 0, type: 'DECREASE', source: 'optional' }]
       )
@@ -298,16 +299,16 @@ export default React.memo(function SalaryEdit(props) {
     )
 
     // delete if optional increase item repeat
-    increaseCombined.map(data => {
-      increaseSecondContent.increaseItems.map((data2, index) => {
+    increaseCombined.forEach(data => {
+      increaseSecondContent.increaseItems.forEach((data2, index) => {
         if (data2.itemName === data.itemName) {
           increaseSecondContent.increaseItems.splice(index, 1)
         }
       })
     })
     // delete if optional decrease item repeat
-    decreaseCombined.map(data => {
-      decreaseSecondContent.decreaseItems.map((data2, index) => {
+    decreaseCombined.forEach(data => {
+      decreaseSecondContent.decreaseItems.forEach((data2, index) => {
         if (data2.itemName === data.itemName) {
           decreaseSecondContent.decreaseItems.splice(index, 1)
         }
@@ -350,16 +351,16 @@ export default React.memo(function SalaryEdit(props) {
     )
 
     // delete if optional increase item repeat
-    increaseCombined.map(data => {
-      increaseSecondContent.increaseItems.map((data2, index) => {
+    increaseCombined.forEach(data => {
+      increaseSecondContent.increaseItems.forEach((data2, index) => {
         if (data2.itemName === data.itemName) {
           increaseSecondContent.increaseItems.splice(index, 1)
         }
       })
     })
     // delete if optional decrease item repeat
-    decreaseCombined.map(data => {
-      decreaseSecondContent.decreaseItems.map((data2, index) => {
+    decreaseCombined.forEach(data => {
+      decreaseSecondContent.decreaseItems.forEach((data2, index) => {
         if (data2.itemName === data.itemName) {
           decreaseSecondContent.decreaseItems.splice(index, 1)
         }
@@ -413,16 +414,16 @@ export default React.memo(function SalaryEdit(props) {
     )
 
     // delete if optional increase item repeat
-    increaseCombined.map(data => {
-      increaseSecondContent.increaseItems.map((data2, index) => {
+    increaseCombined.forEach(data => {
+      increaseSecondContent.increaseItems.forEach((data2, index) => {
         if (data2.itemName === data.itemName) {
           increaseSecondContent.increaseItems.splice(index, 1)
         }
       })
     })
     // delete if optional decrease item repeat
-    decreaseCombined.map(data => {
-      decreaseSecondContent.decreaseItems.map((data2, index) => {
+    decreaseCombined.forEach(data => {
+      decreaseSecondContent.decreaseItems.forEach((data2, index) => {
         if (data2.itemName === data.itemName) {
           decreaseSecondContent.decreaseItems.splice(index, 1)
         }

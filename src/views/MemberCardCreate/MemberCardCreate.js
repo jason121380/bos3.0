@@ -164,7 +164,7 @@ export default function MemberCardCreate() {
                   setSubmitValue({ ...submitValue, MembershipCategoryUUID: event.target.value })
                 }}
               >
-                {categories != undefined &&
+                {categories != null &&
                   categories.map((data, idx) => (
                     <NativeSelectOption key={`${data.uuid}-${idx}`} value={data.uuid}>
                       {data.no} / {data.name}

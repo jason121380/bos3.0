@@ -91,7 +91,7 @@ const DesignerPerformBasic = () => {
       const serviceData = idx(services, _ => _.data.services.data)
       const ticketData = idx(ticket, _ => _.data.tickets)
       const tmpServiceData = []
-      serviceData.map(service => {
+      serviceData.forEach(service => {
         if (service.no.trim().length > 0) {
           tmpServiceData.push({
             label: service.no + ' - ' + service.name,
@@ -104,7 +104,7 @@ const DesignerPerformBasic = () => {
           })
         }
       })
-      ticketData.map(ticket => {
+      ticketData.forEach(ticket => {
         if (ticket.no.trim().length > 0) {
           tmpServiceData.push({
             label: ticket.no + ' - ' + ticket.name,

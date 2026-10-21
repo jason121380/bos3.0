@@ -119,7 +119,7 @@ function Results({
               )
             }
             )}
-            <TableRow className="!bg-[rgba(26,115,232,0.05)] [&_td]:!font-bold [&_td]:!text-accent">
+            <TableRow className="!bg-accent/5 [&_td]:!font-bold [&_td]:!text-accent">
               <TableCell className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-0" style={{ fontWeight: 'bold', backgroundColor: 'rgba(26, 115, 232, 0.05) !important', color: 'rgb(var(--accent)) !important' }}>合計:</TableCell>
               <TableCell className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-[80px]" style={{ backgroundColor: 'rgba(26, 115, 232, 0.05) !important' }} />
               <TableCell />
@@ -213,7 +213,7 @@ function Results({
               )
             }
             )}
-            <TableRow className="!bg-[rgba(26,115,232,0.05)] [&_td]:!font-bold [&_td]:!text-accent">
+            <TableRow className="!bg-accent/5 [&_td]:!font-bold [&_td]:!text-accent">
               <TableCell className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-0" style={{ fontWeight: 'bold', backgroundColor: 'rgb(var(--surface)) !important' }}>合計:</TableCell>
               <TableCell className="sticky z-20 !bg-background [border-right:1px_solid_rgb(var(--border))] left-[80px]" style={{ backgroundColor: 'rgb(var(--surface)) !important' }} />
               <TableCell>

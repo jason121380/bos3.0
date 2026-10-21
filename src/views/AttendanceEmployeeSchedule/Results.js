@@ -87,7 +87,7 @@ export default function Results({
     if (!isEditing) return
     const newData = cloneDeep(employeeSchedule)
     const verifyDate = rawTime.filter(d => checkTime(+d))
-    verifyDate.map(date => {
+    verifyDate.forEach(date => {
       const dataInRecord = newData[designerIndex].clockInSchedule.find(d => d.date === +date)
       if (dataInRecord === undefined) {
         if (tagId !== '') {

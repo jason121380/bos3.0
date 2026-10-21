@@ -216,6 +216,7 @@ export default function MerchantSells({
                       </p>
                     )
                   }
+                  return undefined
                 })}
             </div>
           </Fragment>

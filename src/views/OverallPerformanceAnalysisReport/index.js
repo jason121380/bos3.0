@@ -73,10 +73,10 @@ const OverallPerformanceAnalysisReport = () => {
       setOverAllReport(reportData)
       if (!!reportData.merchantNameList) {
         const excelData = []
-        reportData.performanceAnalysis.map(data => {
+        reportData.performanceAnalysis.forEach(data => {
           const obj = {}
           obj['日期'] = `${format(new Date(data.date), 'yyyy/MM/dd')}  ${weekDisplay(format(new Date(data.date), 'eeee'))}`
-          data.merchantPerformance.map((d, index) => {
+          data.merchantPerformance.forEach((d, index) => {
             if (d.merchantName === reportData.merchantNameList[index]) {
               obj[d.merchantName] = d.performance
             } else {
@@ -91,7 +91,7 @@ const OverallPerformanceAnalysisReport = () => {
         })
 
         const summeryObj = { '日期': '區間合計', }
-        reportData.performanceSummary.map((d, index) => {
+        reportData.performanceSummary.forEach((d, index) => {
           if (d.merchantName === reportData.merchantNameList[index]) {
             summeryObj[d.merchantName] = Math.round(d.performance)
           } else {
@@ -104,7 +104,7 @@ const OverallPerformanceAnalysisReport = () => {
         excelData.push(summeryObj)
 
         const workingDayObj = { '日期': '實際工作天數', }
-        reportData.workingDay.map((d, index) => {
+        reportData.workingDay.forEach((d, index) => {
           if (d.merchantName === reportData.merchantNameList[index]) {
             workingDayObj[d.merchantName] = d.dayCount
           } else {
@@ -117,7 +117,7 @@ const OverallPerformanceAnalysisReport = () => {
         excelData.push(workingDayObj)
 
         const averagePerformanceObj = { '日期': '單日平均', }
-        reportData.averagePerformance.map((d, index) => {
+        reportData.averagePerformance.forEach((d, index) => {
           if (d.merchantName === reportData.merchantNameList[index]) {
             averagePerformanceObj[d.merchantName] = d.performance
           } else {
@@ -130,7 +130,7 @@ const OverallPerformanceAnalysisReport = () => {
         excelData.push(averagePerformanceObj)
 
         const expectedPerformanceAllMonthObj = { '日期': '當月預估', }
-        reportData.expectedPerformanceAllMonth.map((d, index) => {
+        reportData.expectedPerformanceAllMonth.forEach((d, index) => {
           if (d.merchantName === reportData.merchantNameList[index]) {
             expectedPerformanceAllMonthObj[d.merchantName] = d.performance
           } else {

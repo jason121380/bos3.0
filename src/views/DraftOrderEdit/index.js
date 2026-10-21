@@ -256,7 +256,7 @@ export default function KeyIn({ match }) {
           focus,
           setFocus,
           bindedThirdPart,
-          order: order.data != undefined && order.data.order,
+          order: order.data != null && order.data.order,
           orderDetail: order,
           bonusActive,
           customerBonus,

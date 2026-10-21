@@ -60,6 +60,9 @@ function ShortcutCreate() {
       case 'MEMBERCARD':
         setMemberCardsKeyword(value)
         break;
+      default:
+        // 其他值不處理（與原本沒有 default 時相同）
+        break
     }
   }
 

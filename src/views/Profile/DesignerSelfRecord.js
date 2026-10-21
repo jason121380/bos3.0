@@ -61,7 +61,7 @@ function OrderRecord({
                   ? designer.user.nickName
                   : ''
               } ${designer.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 日報表 ${
-                designer.totalPageCount != 1
+                Number(designer.totalPageCount) !== 1
                   ? `- ${designer.currentPageOrder}/${designer.totalPageCount}`
                   : ``
               }`}
@@ -82,7 +82,7 @@ function OrderRecord({
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {designer.currentPageOrder != 1 && (
+                      {Number(designer.currentPageOrder) !== 1 && (
                         <TableRow>
                           <TableCell colSpan="5" style={{ textAlign: 'center' }}>
                             承上張

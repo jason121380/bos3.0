@@ -378,6 +378,7 @@ const MemberShipCardSells = ({
                         </p>
                       );
                     }
+                    return undefined
                   })
                 )}
             </div>

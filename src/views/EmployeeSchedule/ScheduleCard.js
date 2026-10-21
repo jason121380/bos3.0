@@ -448,6 +448,7 @@ export default function ScheduleCard({
                                 </Button>
                               </div>
                             )}
+                          {/* eslint-disable-next-line eqeqeq -- 刻意保留寬鬆比較：值可能是輸入框字串或 null，改成 !== 會改變結果 */}
                           {eachRow.time != 0 ? (
                             <div className="ml-1 min-w-[60px] text-right tabular-nums">
                               <span className="block text-caption text-text-tertiary">
@@ -476,6 +477,7 @@ export default function ScheduleCard({
                     </Fragment>
                   )
                 }
+                return undefined
               })}
             </Fragment>
           ) : (

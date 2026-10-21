@@ -61,8 +61,8 @@ function EmployeePicking() {
   const productCategories = useFetchProductCategories()
   const categories = idx(productCategories, _ => _.data.productCategories)
   const categoriesArr = [{ value: null, label: '全部' }]
-  categories != undefined &&
-    categories.map(category => {
+  categories != null &&
+    categories.forEach(category => {
       categoriesArr.push({
         label: category.name + (category.no === '' ? '' : '/' + category.no),
         value: category.id,

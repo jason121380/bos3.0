@@ -119,6 +119,7 @@ export default function General({
                 const name = d.name.toUpperCase()
                 return no.includes(keyword) || name.includes(keyword)
               }
+              return false
             })
             return filterOptions
           }}

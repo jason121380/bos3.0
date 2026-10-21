@@ -107,6 +107,7 @@ function Summary({ stayInCreateAccount, ...rest }) {
               })
             }
           }
+          return undefined
         })
       )
       setRevenueSubjects(revenueInit)

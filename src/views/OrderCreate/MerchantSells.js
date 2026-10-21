@@ -292,6 +292,7 @@ function MerchantSells({
                         </p>
                       )
                     }
+                    return undefined
                   })
                 )}
               {teachingMode && (

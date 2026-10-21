@@ -128,7 +128,7 @@ export default function AboutDesignerSalary({ className,
     let variable = []
     const inputValue = service.point.filter(d => d.jobTitle === null).length
     const isDefaultValueCount = service.point.filter(d => d.isDefaultValue === true).length
-    service.point.map(d => {
+    service.point.forEach(d => {
       if (checkArray.indexOf(d.jobTitle) === -1) {
         checkArray.push(d.jobTitle)
       }
@@ -288,7 +288,7 @@ export default function AboutDesignerSalary({ className,
         break
       case 'isDefaultValue':
         newService.point.forEach((d, i) => {
-          if (i == index) {
+          if (i === index) {
             newService.point[i].isDefaultValue = true
           } else {
             newService.point[i].isDefaultValue = false
