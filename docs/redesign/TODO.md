@@ -1,12 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10210823）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／53 檔 290 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10210829）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／53 檔 291 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
+
+- **分頁焦點框在手機被切掉上下緣**（2026/10/21，v3.10210829，Jason 報表目錄深色截圖「是不是卡到藍色部分」）：分頁列在手機是橫向捲動容器，`overflow-x:auto` 連帶裁掉上下溢出，選中分頁外側 3px 的焦點框（2px 框＋1px 間距）上下被切。`ui/tabs` 的 `TabsTrigger` 改為 `focus-visible:ring-inset ring-offset-0`（框畫在膠囊內側），全站 36 處分頁、21 處設定頁左選單一起生效，版面高度不變。新增測試（拿掉修正會失敗）。Chromium 以程式化 focus 重現與驗證 390 深色／1440 淺色。**待實機**：iPhone 點分頁後的藍框是否完整（截圖顯示 iPhone 點擊分頁後會出現焦點框，原因未在 Safari 實機確認；現在框在內側、不會被切。若希望點擊時完全不顯示，需另議）。
 
 - **所有預約表改用主題配色、統一色票**（2026/10/21，v3.10210823，Jason「所有的預約表可以更改配色嗎，更符合主題的配色」）：原本四個預約週曆各自寫色號，個人頁／員工資料的色塊與圖例不同色（指定 `#005fff` vs 圖例 `#1A73E8`、待審核 `#69b8dd` vs `#4FC3F7`、不可預約 `#414141` vs `#202D50`），報到模式圖例「報到成功」是藍色但色塊是綠色，設計師預約紀錄的「已完成預約」是紫色但圖例是灰色。改為 `CalendarColorClip` 匯出唯一色票 `RESERVATION_COLORS`，圖例與四頁共用；配色改成與品牌藍同家族的 Google 色系、保留各狀態原色相（櫃台辨識習慣不變），不可預約由深藍改中灰（深色模式背景上原本幾乎看不見）。主預約頁、設計師預約紀錄表格的 `#d0d7de`／`#ffebee`／rgba 藍改 tokens。只換顏色值，判斷條件一字不動。新增 `CalendarColorClip.test.js`（色塊字色對比 ≥ 4.5:1、各狀態不同色、圖例與色票一致）與個人頁色塊顏色斷言（舊色號下會失敗）。STYLE §6「預約狀態色」。**待實機**：櫃台看一天實際預約，確認新配色一眼分得出指定／不指定／待審核；深色模式下各色塊。
 

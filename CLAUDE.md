@@ -30,7 +30,7 @@ npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps（CI／Docke
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
 npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base，0 warning）
-CI=true npm run test:nowatch         # 全部單元測試（基準：53 檔／290 測試全數通過）
+CI=true npm run test:nowatch         # 全部單元測試（基準：53 檔／291 測試全數通過）
 TZ=America/Los_Angeles CI=true npm run test:nowatch   # 時區相關修改要另在海外時區跑一次
 CI=true npm run test:coverage        # 覆蓋率（門檻為現況下限＋金額／API 模組逐檔門檻，見 package.json）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
@@ -71,7 +71,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - Radix Dialog 會把 body 設 `pointer-events:none`，與相容層 Dialog（`ui/modal-compat`）的焦點鎖互搶；Dialog 內有 Autocomplete／Select／日期選擇器時用 `ui/modal-compat` 的 Dialog。
 - emotion 已於 2026/10/20 全面移除（MEMORY #163）：樣式一律用 Tailwind className；共用元件的 `className` 是字串直通（`cn` 合併）。`ui/icons` 預設尺寸在 `src/ui/icons.css`（同權重、排在 Tailwind 之後），頁面要覆蓋圖示尺寸需加 `!`。
 - flex 子層沒有 `min-width:0`／`max-width:100%` 會被內容撐寬；欄位列要 `flex-wrap`。
-- `overflow-x:auto` 會裁掉上方溢出內容（浮動標籤），因此標籤統一放欄位上方。
+- `overflow-x:auto` 會連帶裁掉上下溢出內容（浮動標籤、外側焦點框），因此標籤統一放欄位上方；捲動容器內的元件焦點框用 `focus-visible:ring-inset`（`ui/tabs` 已內建，MEMORY #171）。
 - MUI Autocomplete：沒有選項／載入中時 `aria-expanded=false` 但彈出層可見（MUI 行為）；選項標籤相同會造成重複 key，要自己給 `key`。
 - 讀查詢結果前先防呆：API 失敗時 `data` 為 undefined，直接 `.filter`／`.map` 會讓整頁拋錯（版面層已加防呆與錯誤邊界，頁面層仍要注意）。
 - `.then(fn, openSnackbar(...))` 的第二參數會在送出當下就執行；成功後才做的事一律寫在第一個 callback 內。

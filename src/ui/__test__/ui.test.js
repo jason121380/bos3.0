@@ -11,6 +11,7 @@ import { Accordion, AccordionSummary, AccordionDetails } from '../accordion'
 import { toast, Toaster } from '../toast'
 import { cn } from '../utils'
 import { Field, Input } from '../input'
+import { Tabs, TabsList, TabsTrigger } from '../tabs'
 
 afterEach(cleanup)
 
@@ -252,5 +253,23 @@ describe('Accordion', () => {
     fireEvent.keyDown(sum, { key: 'Enter' })
     fireEvent.keyDown(sum, { key: ' ' })
     expect(onClick).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe('Tabs 焦點框', () => {
+  // 為什麼：分頁列在手機是橫向捲動容器（overflow-x:auto 會連帶裁掉上下溢出），
+  // 焦點框若畫在外側（ring-offset）會被切掉上下緣（Jason 2026/10/21 報表目錄截圖）；必須畫在膠囊內側。
+  it('焦點框畫在分頁內側、無外側間距', () => {
+    render(
+      <Tabs defaultValue="a">
+        <TabsList>
+          <TabsTrigger value="a">甲</TabsTrigger>
+        </TabsList>
+      </Tabs>
+    )
+    const cls = screen.getByRole('tab', { name: '甲' }).className
+    expect(cls).toContain('focus-visible:ring-inset')
+    expect(cls).toContain('focus-visible:ring-offset-0')
+    expect(cls).not.toContain('focus-visible:ring-offset-1')
   })
 })
