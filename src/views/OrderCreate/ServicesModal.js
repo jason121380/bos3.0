@@ -1,14 +1,12 @@
-import { Modal } from 'ui/modal-compat'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
-import { Button } from 'ui/button'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from 'ui/card'
 import PropTypes from 'prop-types'
-import { useState, useEffect, memo, useRef } from 'react'
+import { useEffect, memo } from 'react'
 import idx from 'idx'
 import { useLazyFetchService } from 'hooks/useFetchService'
-import pagenationLabel from './../../helper/pagenationLabel'
-import { formatNumber } from 'ui/format'
+import ItemPickerModal from 'views/OrderShared/ItemPickerModal'
+import { SERVICE_COLUMNS } from 'views/OrderShared/pickerColumns'
 
+// 打帳單「選服務」彈窗。畫面與帳單詳細／掛單詳細／重新開單共用（OrderShared/ItemPickerModal）；
+// 選服務後組助理欄位的方式（含 helperDeductiontype、略過空 type）與其他三頁不同，所以邏輯留在本檔（2026/10/21）
 function ServicesModal({
   servicesModalOpen,
   services,
@@ -26,9 +24,7 @@ function ServicesModal({
   onPageChange,
   setServicesModalOpen,
 }) {
-  const pageRef = useRef(null)
   const serviceDetail = useLazyFetchService()
-  const [categoryNameForDisplay, setCategoryNameForDisplay] = useState('')
   const handleClickCategorie = (categorieId, categorieName) => {
     setSelectedCategorieName([categorieName])
     setSelectedCategorie([categorieId])
@@ -96,148 +92,28 @@ function ServicesModal({
     }
   }, [serviceDetail.data, serviceDetail.loading, setHelperFromModal, setServicesModalOpen])
 
-  useEffect(() => {
-    if (selectedCategorieName.length === 0) return
-    setCategoryNameForDisplay('')
-    if (selectedCategorieName.length === 1) {
-      selectedCategorieName.forEach(categoryName => {
-        setCategoryNameForDisplay(pre => {
-          return `${pre}${categoryName}`
-        })
-      })
-    } else {
-      selectedCategorieName.forEach((categoryName, index) => {
-        if (index === 0) {
-          setCategoryNameForDisplay(pre => {
-            return `${pre}${categoryName}`
-          })
-        } else {
-          setCategoryNameForDisplay(pre => {
-            return `${pre},${categoryName}`
-          })
-        }
-      })
-    }
-  }, [selectedCategorieName])
-
-  const handleOnChangePage = (_event, nextPage) => {
-    onPageChange({
-      value: nextPage,
-      key: 'pageOffset',
-    })
-  }
-
-  const handleOnChangeRowsPerPage = event => {
-    onPageChange({
-      value: event.target.value,
-      key: 'pageLimit',
-    })
-  }
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (pageRef.current) {
-        pagenationLabel(pageRef.current)
-        clearInterval(timer)
-      }
-    }, 100);
-
-    const clearTimer = setTimeout(() => {
-      clearInterval(timer)
-    }, 1000);
-
-    return () => {
-      clearInterval(timer)
-      clearTimeout(clearTimer)
-    }
-  }, [services, servicesModalOpen])
   return (
-    <Modal open={servicesModalOpen}>
-      <Card className="absolute left-1/2 top-1/2 max-h-[calc(100%-32px)] w-[700px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl bg-background shadow-float outline-none">
-        <CardHeader
-          className="items-center pb-4"
-          action={
-            <Button variant="secondary" size="sm" onClick={closeModal}>
-              關閉
-            </Button>
-          }
-        >
-          <CardTitle>
-            {selectedCategorieName.length === 0 ? '所有服務' : `${categoryNameForDisplay}類服務`}
-          </CardTitle>
-        </CardHeader>
-
-        <div className="h-px bg-border" />
-        <CardContent>
-          <div className="mb-3 flex flex-wrap gap-2">
-            {serviceCategories.map(serviceCategorie => (
-              <Button
-                variant={
-                  selectedCategorie.indexOf(serviceCategorie.id) !== -1 ? 'primary' : 'secondary'
-                }
-                size="sm"
-                onClick={() => handleClickCategorie(serviceCategorie.id, serviceCategorie.name)}
-                // disabled={selectedCategorie.indexOf(serviceCategorie.id) !== -1}
-                key={serviceCategorie.id}
-              >
-                {serviceCategorie.name}
-              </Button>
-            ))}
-            <Button variant="ghost" size="sm" onClick={handleClearCategorie}>
-              清除
-            </Button>
-          </div>
-          <p className="mb-2 mt-0 text-caption text-text-secondary">
-            {services.totalCount} 筆服務
-          </p>
-          <Table dense>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-px">
-                  <Button variant="ghost" size="sm" />
-                </TableHead>
-                <TableHead>代號</TableHead>
-                <TableHead>類別</TableHead>
-                <TableHead>名稱</TableHead>
-                <TableHead numeric>參考價格</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {services.data.map((data, index) => (
-                <TableRow key={index}>
-                  <TableCell className="w-px">
-                    <Button variant="primary" size="sm" onClick={() => handleSelectService(data)}>
-                      加入
-                    </Button>
-                  </TableCell>
-                  <TableCell>{data.no}</TableCell>
-                  <TableCell>{idx(data, _ => _.serviceCategory.name)}</TableCell>
-                  <TableCell>{data.name}</TableCell>
-                  <TableCell numeric>{formatNumber(data.price)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-        <CardFooter className="flex-wrap">
-          <TablePagination
-            ref={pageRef}
-            className="pt-0"
-            labelRowsPerPage='每頁顯示數量'
-            count={services.totalCount}
-            onPageChange={handleOnChangePage}
-            onRowsPerPageChange={handleOnChangeRowsPerPage}
-            page={services.pageOffset}
-            rowsPerPage={services.pageLimit}
-            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
-          />
-
-          <Button variant="secondary" onClick={closeModal}>
-            關閉
-          </Button>
-        </CardFooter>
-      </Card>
-    </Modal>
+    <ItemPickerModal
+      open={servicesModalOpen}
+      closeModal={closeModal}
+      noun="服務"
+      categories={serviceCategories}
+      selectedCategorie={selectedCategorie}
+      selectedCategorieName={selectedCategorieName}
+      onClickCategorie={handleClickCategorie}
+      onClearCategorie={handleClearCategorie}
+      caption={<>{services.totalCount} 筆服務</>}
+      columns={SERVICE_COLUMNS}
+      rows={services.data}
+      onSelect={handleSelectService}
+      paging={{
+        source: services,
+        count: services.totalCount,
+        page: services.pageOffset,
+        rowsPerPage: services.pageLimit,
+      }}
+      onPageChange={onPageChange}
+    />
   )
 }
 

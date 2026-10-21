@@ -9,8 +9,11 @@ import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import useFetchGetIsHelperDesignationSetting from 'hooks/useFetchGetIsHelperDesignationSetting'
 import idx from 'idx'
 import produce from 'immer'
-import ServicesModal from './ServicesModal'
+import ServicesModal from 'views/OrderShared/EditServicesModal'
 import Services from './Services'
+
+// 選服務彈窗的列 key：本頁原本用服務 id（其他兩頁用 index）
+const serviceRowKey = data => data.id
 
 export default function PannelService({ thirdPartTicket }) {
   const { handleBillChange, order, bindedThirdPart, orderId } = useContext(billContext)
@@ -302,6 +305,7 @@ export default function PannelService({ thirdPartTicket }) {
               helperFromModal={helperFromModal}
               onPageChange={handlePageChange}
               setServicesModalOpen={setServicesModalOpen}
+              getRowKey={serviceRowKey}
             />
           )}
           {services.map((service, index) => (

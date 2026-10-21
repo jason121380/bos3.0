@@ -17,7 +17,7 @@ import { useFetchGetMembershipsForModal } from "hooks/useFetchGetMembership";
 import { useFetchGetMembershipCategories } from "hooks/useFetchGetMembershipCategory";
 import { MobileDatePicker } from 'ui/date-picker'
 
-import MemberShipCardSellsModal from "./MemberShipCardSellsModal";
+import MemberShipCardSellsModal from "views/OrderShared/MemberShipCardSellsModal";
 
 const MemberShipCardSells = ({
   sellsItem,
@@ -439,6 +439,7 @@ const MemberShipCardSells = ({
           sellsItem={sells}
           onPageChange={handlePageChange}
           setProductsModalOpen={setProductsModalOpen}
+          titleByCategory={false}
         />
       )}
     </Fragment>

@@ -13,7 +13,7 @@ import produce from 'immer'
 import TeachingModeContext from 'context/teachingModeContext'
 import billContext from 'context/keyInContext'
 
-import ProductsModal from './ProductsModal'
+import ProductsModal from 'views/OrderShared/ProductsModal'
 
 export default function MerchantSells({
   sells,

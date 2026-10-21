@@ -8,7 +8,7 @@ import useFetchGetMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities
 import idx from 'idx'
 import React from 'react'
 import produce from 'immer'
-import WalletDepositModal from './WalletDepositModal'
+import WalletDepositModal from 'views/OrderShared/WalletDepositModal'
 
 
 export default function PaymentCustomerWallet() {

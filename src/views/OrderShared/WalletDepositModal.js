@@ -15,6 +15,9 @@ import billContext from 'context/keyInContext'
 import cloneDeep from 'lodash/cloneDeep'
 import { openSnackbar } from 'elements/snackbars'
 
+// 打帳單／帳單詳細的「異動入金」彈窗（兩頁原本各一份，2026/10/21 合併）。
+// 兩份唯一的差異是打帳單多傳 CustomerAutoComplete 的 styles.option；CustomerAutoComplete 並不讀 styles 這個 prop
+// （見 components/CustomerAutoComplete.js 的參數），兩頁輸出相同，保留原寫法
 const styles = {
   option: 'text-[14px] [&>span]:mr-[10px] [&>span]:text-[14px]',
 }

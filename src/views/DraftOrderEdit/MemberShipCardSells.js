@@ -15,7 +15,7 @@ import { useFetchGetMembershipsForModal } from "hooks/useFetchGetMembership";
 import { useFetchGetMembershipCategories } from "hooks/useFetchGetMembershipCategory";
 import { MobileDatePicker } from 'ui/date-picker'
 
-import MemberShipCardSellsModal from "./MemberShipCardSellsModal";
+import MemberShipCardSellsModal from "views/OrderShared/MemberShipCardSellsModal";
 
 // 版面比照打帳單（views/OrderCreate/styles/MemberShipCardSells）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
 // 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px；pxToRem 以 16px 換算；原 `!important` 以 `!` 前綴保留）。
@@ -494,6 +494,7 @@ const MemberShipCardSells = ({
           sellsItem={sells}
           onPageChange={handlePageChange}
           setProductsModalOpen={setProductsModalOpen}
+          showEffectiveDays={false}
         />
       )}
     </Fragment>
