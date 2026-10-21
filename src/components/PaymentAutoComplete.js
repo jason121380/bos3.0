@@ -28,7 +28,7 @@ function PaymentAutoComplete(
     if (setPaymentAlready !== undefined && !payment.loading) {
       setPaymentAlready(!payment.loading)
     }
-  }, [payment.loading]);
+  }, [payment.loading, setPaymentAlready]);
   const selectedValue =
     idx(payment, _ => _.data.merchantPayWays.find(d => d.name === value)) || null
 

@@ -34,7 +34,7 @@ export default function PaymentCustomerWallet() {
       )
       setWalletPayByOrder(0)
     }
-  }, [bill.customerId])
+  }, [bill.customerId, setBill])
 
   useEffect(() => {
     if (!order.loading) {

@@ -66,7 +66,7 @@ function PannelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
         }
       ])
     }
-  }, [reset])
+  }, [reset, setServices])
   
   useEffect(() => {
     if (!serviceCategoriesData.loading && !servicesData.loading) {
@@ -119,7 +119,7 @@ function PannelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
           serviceOrderHelpers: [],
         }))
     )
-  }, [])
+  }, [setServices])
   function handleHelperChange({ index, value }) {
     const newServices = cloneDeep(services)
     newServices[index].serviceOrderHelpers = value

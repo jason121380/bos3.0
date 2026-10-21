@@ -94,7 +94,7 @@ function ServicesModal({
       setServicesModalOpen(false)
     } else {
     }
-  }, [serviceDetail.data, serviceDetail.loading])
+  }, [serviceDetail.data, serviceDetail.loading, setHelperFromModal, setServicesModalOpen])
 
   useEffect(() => {
     if (selectedCategorieName.length === 0) return

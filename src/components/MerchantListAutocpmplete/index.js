@@ -2,7 +2,7 @@ import { TextField, InputAdornment } from 'ui/text-field'
 import { useState, useEffect } from 'react'
 import { Button } from 'ui/button'
 import useFetchGetUserMerchant from 'hooks/useFetchGetUserMerchant'
-import MerchantsListModal from './MerchantsListModal'
+import MerchantsListModal from 'components/MerchantsListModal'
 import PropTypes from 'prop-types'
 import { Autocomplete } from 'ui/combobox'
 

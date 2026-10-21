@@ -2,7 +2,7 @@ import { TextField } from 'ui/text-field'
 import { useState, useEffect, Fragment } from 'react'
 import { Button } from 'ui/button'
 import { useFetchGetUserMerchantForManagementLazy, useFetchGetEventJoinMerchants } from 'hooks/useFetchGetUserMerchant'
-import MerchantsListModal from './MerchantsListModal'
+import MerchantsListModal, { managementTreeClasses } from 'components/MerchantsListModal'
 import PropTypes from 'prop-types'
 import { Autocomplete } from 'ui/combobox'
 
@@ -120,6 +120,7 @@ const MerchantListAutocpmpleteForManagement = ({ onValueChange = () => { }, sele
         merchantList={merchantList}
         values={values}
         setValues={setValues}
+        classes={managementTreeClasses}
       />
     </>
   )

@@ -12,6 +12,7 @@ BOS 3.0 是美業 ERP 的純前端 SPA（Vite 5 + React 17 + Apollo GraphQL + Re
 | `docs/redesign/MEMORY.md` | 決策與教訓（為什麼這樣做、踩過的坑） |
 | `docs/redesign/MIGRATION_GUIDE.md` | 把頁面的 MUI 換成 `src/ui/` 的步驟與鐵則 |
 | `docs/redesign/VERIFY_REPORT.md` | 驗證方式與測試基準 |
+| `docs/redesign/B2_EXHAUSTIVE_DEPS.md` | effect 依賴警告分類與疑似 bug 清單（改 effect 前先看） |
 | `README.md` | 專案總覽、環境變數、API、時區、路由、部署 |
 
 ## 鐵則（違反就不要 commit）

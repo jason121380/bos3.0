@@ -55,7 +55,7 @@ const PannelMemberShipCardSells = ({ thirdPartTicket, expanded, setExpanded }) =
       }
       setMemberCardSells(newSells);
     }
-  }, [membershipOrder.loading, membershipOrder.data]);
+  }, [membershipOrder.loading, membershipOrder.data, setExpanded, setMemberCardSells]);
 
 
   function handleClear({ index }) {

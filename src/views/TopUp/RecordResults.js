@@ -21,7 +21,7 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
     if (action === 'POP' && newLocation.pathname.match('/topup/edit')) {
       history.go(1)
     }
-  }), [])
+  }), [history])
 
   useEffect(() => {
     if (!walletDepositRecord.loading) {

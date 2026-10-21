@@ -179,7 +179,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
       ws.off('QRCODE_KEY_EXPIRED', onQrcodeKeyExpired)
       ws.off('disconnect', onDisconnect)
     }
-  }, [ws])
+  }, [ws, dispatch])
 
   useEffect(() => {
     if (!merchantAuthData.loading && !profileIdentity.loading) {
@@ -198,7 +198,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
       const coupon = filtData.find(d => d.pageName === '預收卡項目扣項設定')?.authority ?? false
       dispatch(deductionDisplayActions.setDisplay({ service, coupon }))
     }
-  }, [merchantAuthData.loading, profileIdentity.loading])
+  }, [merchantAuthData.loading, profileIdentity.loading, dispatch])
 
   useEffect(() => {
     if (!merchantAuthData.loading && !profileIdentity.loading) {
@@ -235,7 +235,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
         history.push('/profile/general')
       }
     }
-  }, [merchantAuthData.loading, profileIdentity.loading])
+  }, [merchantAuthData.loading, profileIdentity.loading, history])
 
   // getTheme
   useEffect(() => {

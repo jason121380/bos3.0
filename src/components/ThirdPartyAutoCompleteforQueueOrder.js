@@ -30,7 +30,7 @@ function ThirdPartyAutoCompleteforQueueOrder(
     if (setThirdPartyAlready !== undefined && !designers.loading) {
       setThirdPartyAlready(!designers.loading)
     }
-  }, [designers.loading])
+  }, [designers.loading, setThirdPartyAlready])
   
   useEffect(() => {
     if (initFirst && designers.data && !designers.loading) {

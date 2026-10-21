@@ -38,7 +38,7 @@ function PannelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset })
         thirdPartyCouponMerchantId: null,
       },
     ])
-  }, [])
+  }, [setSells])
 
   React.useEffect(() => {
     if(reset === 'reset'){
@@ -51,7 +51,7 @@ function PannelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset })
       },])
       setFocusRow(0)
     }
-  }, [reset])
+  }, [reset, setSells])
 
   function handleClear({ index }) {
     let newSells = cloneDeep(sells)

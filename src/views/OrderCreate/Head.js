@@ -180,7 +180,7 @@ export default function Head() {
         remark: '',
       })
     }
-  }, [reset])
+  }, [reset, setFocus, setIsLineBinded])
   useEffect(() => {
     if (!designationSettingForOrderCreateData.loading && !lastOrderStatusData.loading) {
       setDesignateStatus(false)
@@ -246,7 +246,7 @@ export default function Head() {
         setMembershipPurchase(tmp)
       }
     }
-  }, [getCustomerLazyData.loading])
+  }, [getCustomerLazyData.loading, setBill, setIsLineBinded])
 
   useEffect(() => {
     if (!orderWithoutCustomerSetting.loading) {
@@ -281,7 +281,7 @@ export default function Head() {
         }
       })
     }
-  }, [options, customers.loading, tmpCustomerKeyword])
+  }, [options, customers.loading, tmpCustomerKeyword, setBill])
 
   // delay send query customers
   useEffect(() => {
@@ -296,7 +296,7 @@ export default function Head() {
       setFocus('designer')
       designerRef.current.focus()
     }
-  }, [bill])
+  }, [bill, setFocus])
 
   // 不留客資
   const handleCheckoutWithoutCustomer = () => {
@@ -520,7 +520,7 @@ export default function Head() {
     }
     scheduleNext(true)
     return () => clearTimeout(timer)
-  }, [])
+  }, [setBill])
 
   // customer autocomple press down button
   const handleBtnKeyDown = event => {

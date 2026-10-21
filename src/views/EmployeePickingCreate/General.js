@@ -108,7 +108,7 @@ export default function General({
       setPageLoading(users.loading)
       setPickerOption(idx(users, _ => _.data.users.users))
     }
-  }, [users.loading])
+  }, [users.loading, setPageLoading])
 
   const handleInputChange = event => {
     idx(event, _ => {
@@ -295,7 +295,7 @@ export default function General({
     } else {
       setIsClick(true)
     }
-  }, [picking])
+  }, [picking, setIsClick])
   const [errorText, setErrorText] = useState('')
   const inputEnabled = !products.loading && !users.loading
   return (

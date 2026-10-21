@@ -33,7 +33,7 @@ function BookingRecordListAutoComplete(
     if (setEmployeeAlready !== undefined && !userBookingRecordList.loading) {
       setEmployeeAlready(!userBookingRecordList.loading)
     }
-  }, [userBookingRecordList.loading]);
+  }, [userBookingRecordList.loading, setEmployeeAlready]);
   const [designerKeyword, setDesignerKeyword] = React.useState('')
   // const [inputDisplay, setInputDisplay] = React.useState('')
   // const [keyCode, setKeyCode] = React.useState(null)

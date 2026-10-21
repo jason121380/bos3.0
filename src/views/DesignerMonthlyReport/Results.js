@@ -153,7 +153,7 @@ export default function Results({ designerMontlyListData, performReference, sort
     },...mamberShipSum})
 
     setExcelData(excelData)
-  }, [designerMontlyListData, performReference, sort, isMemberShipCardActive])
+  }, [designerMontlyListData, performReference, sort, isMemberShipCardActive, setExcelData])
   return (
       <Table dense wrapperClassName='DesignerMonthlyReportTableContainer mt-[10px]' className='DesignerMonthlyReportTable' aria-label="a dense table">
         <TableHeader>

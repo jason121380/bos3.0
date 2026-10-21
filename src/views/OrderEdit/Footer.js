@@ -398,7 +398,7 @@ export default function Footer({ enable }) {
   }, [
     serviceTotalPriceWithoutThirdPartyCoupon, productTotalPriceWithoutThirdPartyCoupon,
     couponSellPrice, merberShipCardTotalPriceWithoutThirdPartyCoupon, bill.walletPay,
-    bill.amountByOtherPay, bill.bonusDecount
+    bill.amountByOtherPay, bill.bonusDecount, setBill
   ])
   
   useEffect(() => {
@@ -444,7 +444,7 @@ export default function Footer({ enable }) {
     serviceTotalPriceWithoutThirdPartyCoupon, productTotalPriceWithoutThirdPartyCoupon,
     couponSellPrice, merberShipCardTotalPriceWithoutThirdPartyCoupon, bill.walletPay,
     bill.amountByOtherPay, bill.bonusDecount, bill.customerId, bonusRewardWithLINE,
-    isLineBinded
+    isLineBinded, setBill
   ])
 
   // 業績合計、現金應收：運算式與舊版相同，只是算一次，下方彙總卡與底部固定列共用同一個值

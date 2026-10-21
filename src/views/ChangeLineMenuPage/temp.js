@@ -12,7 +12,7 @@ function Reservation({ match, location }) {
 
       history.push(a)
     }
-  }, [])
+  }, [history])
 
   return (
     <Page className="min-w-[275px] p-8 mt-6" title="">

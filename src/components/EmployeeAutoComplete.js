@@ -36,7 +36,7 @@ function EmployeeAutoComplete(
     if (setEmployeeAlready !== undefined && !userOrderableList.loading) {
       setEmployeeAlready(!userOrderableList.loading)
     }
-  }, [userOrderableList.loading]);
+  }, [userOrderableList.loading, setEmployeeAlready]);
   const [designerKeyword, setDesignerKeyword] = React.useState('')
   // const [inputDisplay, setInputDisplay] = React.useState('')
   // const [keyCode, setKeyCode] = React.useState(null)

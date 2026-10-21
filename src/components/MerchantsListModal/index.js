@@ -41,8 +41,50 @@ const ulGroupAllMerchantClass = '[&_ul]:ml-[24px] [&_ul_.MuiCollapse-wrapper_.Mu
 const itemClass = 'rounded-[6px] overflow-hidden [&&_.MuiTreeItem-label]:!pl-0 [&_.MuiTreeItem-iconContainer]:!hidden'
 const outlineClass = '![outline:2px_solid_rgb(var(--danger))] rounded-[6px]'
 const spanClass = 'flex items-center gap-[6px] [word-break:keep-all] whitespace-nowrap text-[14px] leading-[20px] [&_svg]:w-[16px] [&_svg]:h-[16px] [&_svg]:shrink-0 [&_svg]:text-text-secondary'
+// 以上為 MerchantListAutocpmplete 的樣式（預設）
+export const defaultTreeClasses = {
+  root: treeClass,
+  ulGroup: ulGroupClass,
+  ulGroupAll: ulGroupAllClass,
+  ulGroupAllMerchant: ulGroupAllMerchantClass,
+  item: itemClass,
+  outline: outlineClass,
+  span: spanClass,
+}
 
-const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) => {
+// MerchantListAutocpmpleteForManagement 的樣式：自原 MerchantListAutocpmpleteForManagement/MerchantsListModal.js 原樣搬來（原名 styles）。
+// 與上方預設等值但寫法不同（class 字串不同、hover／focused 的權重排法不同），為維持兩處 DOM 與 class 完全不變，合併時不統一。
+// 樹狀本體為 ui/tree-compat（輸出 MUI 同名 class），以下覆寫統一 compact 列高、hover、縮排與箭頭對齊
+export const managementTreeClasses = {
+  root: [
+    'flex flex-col gap-[2px]',
+    '[&_.MuiTreeItem-content]:flex [&_.MuiTreeItem-content]:items-center [&_.MuiTreeItem-content]:min-h-[38px] [&_.MuiTreeItem-content]:p-[4px_8px] [&_.MuiTreeItem-content]:rounded-[6px] [&_.MuiTreeItem-content]:w-auto [&_.MuiTreeItem-content]:[transition:background-color_.15s]',
+    '[&_.MuiTreeItem-content:hover]:[background-color:rgb(var(--surface-hover))]',
+    '[&_.MuiTreeItem-content.Mui-focused]:[background-color:unset] [&_.MuiTreeItem-content.Mui-selected]:[background-color:unset] [&_.MuiTreeItem-content.Mui-selected.Mui-focused]:[background-color:unset]',
+    '[&_.Mui-expanded]:![background-color:unset] [&_.Mui-selected]:![background-color:unset]',
+    '[&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:w-[20px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:h-[20px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:mr-[2px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:p-0 [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:flex [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:items-center [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:justify-center [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:shrink-0',
+    '[&_.MuiTreeItem-content_.MuiTreeItem-iconContainer_svg]:w-[16px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer_svg]:h-[16px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer_svg]:[color:rgb(var(--text-tertiary))]',
+    '[&_.MuiTreeItem-label]:text-[14px] [&_.MuiTreeItem-label]:leading-[20px] [&_.MuiTreeItem-label]:!pl-[2px]',
+    '[&_li]:rounded-[6px] [&_li]:w-auto',
+    '[&_.onSelect]:[background-color:rgb(var(--accent)/0.12)] [&_.onSelect]:[color:rgb(var(--accent))] [&_.onSelect]:font-medium',
+    '[&_.onSelect>.MuiTreeItem-content]:[background-color:rgb(var(--accent)/0.12)] [&_.onSelect>.MuiTreeItem-content]:[color:rgb(var(--accent))] [&_.onSelect>.MuiTreeItem-content]:font-medium',
+    '[&_.onSelect>.MuiTreeItem-content:hover]:[background-color:rgb(var(--accent)/0.12)]',
+    '[&_.onSelect_.MuiTreeItem-label]:[color:rgb(var(--accent))] [&_.onSelect_.MuiTreeItem-label]:font-medium',
+    '[&_.onSelect_.MuiTreeItem-label_svg]:[color:rgb(var(--accent))]',
+  ].join(' '),
+  ulGroup:
+    '[&_ul]:!ml-[24px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:!gap-[4px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:!flex-row [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-wrap [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:mt-[2px]',
+  ulGroupAll:
+    '[&_ul]:ml-[24px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:gap-[4px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-col',
+  ulGroupAllMerchant:
+    '[&_ul]:ml-[24px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-wrap [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:gap-[4px]',
+  // 店家項目的 label 內距需壓過樹根的 !pl-[2px]（原 emotion 以插入順序取勝），以 [&&_…] 提高一級權重
+  item: 'rounded-[6px] overflow-hidden [&&_.MuiTreeItem-label]:!pl-0 [&_.MuiTreeItem-iconContainer]:!hidden',
+  span: 'flex items-center gap-[6px] break-keep whitespace-nowrap text-[14px] leading-[20px] [&_svg]:w-[16px] [&_svg]:h-[16px] [&_svg]:shrink-0 [&_svg]:[color:rgb(var(--text-secondary))]',
+  outline: '![outline:2px_solid_rgb(var(--danger))] rounded-[6px]',
+}
+
+const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, classes = defaultTreeClasses }) => {
   const allNodeIds = ['ALL']
   const [modalValues, setModalValues] = useState(values)
   const [expandedArr, setExpandedArr] = useState([])
@@ -87,7 +129,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
             style={{ flexShrink: 0, margin: '11px 4px 0 8px' }}
           />
           <TreeItem
-            className={!(data.groups && data.groups.length) ? ulGroupClass : ulGroupAllClass}
+            className={!(data.groups && data.groups.length) ? classes.ulGroup : classes.ulGroupAll}
             nodeId={`${data.no ? data.no : ''} - ${data.name}(${data.groups.length ? data.groups.length : data.merchants.length})`}
             label={<RenderLabel isGroup={true} data={data} />}
           >
@@ -104,7 +146,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
       <TreeItem
         key={data.id}
         onClick={() => handleItemClick(data)}
-        className={`${isSelect(data.id)} ${itemClass}${filtIds.includes(data.id) ? ` ${outlineClass}` : ''}`}
+        className={`${isSelect(data.id)} ${classes.item}${filtIds.includes(data.id) ? ` ${classes.outline}` : ''}`}
         nodeId={data.id}
         label={<RenderLabel isGroup={false} data={data} />}
       />
@@ -136,7 +178,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
         id={isGroup ?
           `${data.no ? data.no : ''} - ${data.name}(${data.groups.length ? data.groups.length : data.merchants.length})` : data.name
         }
-        className={spanClass}
+        className={classes.span}
       >
         {isGroup ? <GroupsRoundedIcon /> : <StorefrontIcon />}
         {isGroup ?
@@ -274,7 +316,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
         </DialogHeader>
         <DialogBody className="py-3">
         <TreeView
-          className={treeClass}
+          className={classes.root}
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
           expanded={expandedArr}
@@ -288,11 +330,11 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
               style={{ flexShrink: 0, margin: '11px 4px 0 8px' }}
             />
             <TreeItem
-              className={ulGroupAllMerchantClass}
+              className={classes.ulGroupAllMerchant}
               style={{ overflow: 'visible' }}
               nodeId='ALL'
               label={
-                <span id='ALL' className={spanClass}>
+                <span id='ALL' className={classes.span}>
                   <GroupsRoundedIcon />{`全部(${merchantList.allMerchants.length})`}
                 </span>
               }
@@ -318,7 +360,9 @@ MerchantsListModal.propTypes = {
   setOpen: PropTypes.func,
   merchantList: PropTypes.object,
   values: PropTypes.array,
-  setValues: PropTypes.func
+  setValues: PropTypes.func,
+  // 樹狀樣式（class 字串組）：預設 defaultTreeClasses；MerchantListAutocpmpleteForManagement 傳 managementTreeClasses
+  classes: PropTypes.object
 }
 
 export default MerchantsListModal

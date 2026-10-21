@@ -101,7 +101,7 @@ export default function PannelService({ thirdPartTicket, expanded, setExpanded }
       }
       setServices(newServices)
     }
-  }, [servicesOrder.loading])
+  }, [servicesOrder.loading, setExpanded, setServices])
   function handleAddService() {
     const newServices = cloneDeep(services)
     newServices.push({

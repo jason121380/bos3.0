@@ -52,7 +52,7 @@ function PaymentCustomerWallet(props, ref) {
     if (bill.walletPay === 0) return
     setWalletPayBalance(usableCustomerWallet - bill.walletPay)
     setWalletPayBalanceForDetail(usableCustomerWallet - bill.walletPay)
-  }, [bill.walletPay])
+  }, [bill.walletPay, setWalletPayBalanceForDetail])
 
   useEffect(() => {
     if (customerId) {
@@ -164,7 +164,7 @@ function PaymentCustomerWallet(props, ref) {
   const usableCustomerWallet = idx(response, _ => _.data.customerWallet)
   useEffect(() => {
     setCustomerWallet(usableCustomerWallet)
-  }, [usableCustomerWallet])
+  }, [usableCustomerWallet, setCustomerWallet])
   const handleFocus = event => {
     let called = false
     if (!called) {

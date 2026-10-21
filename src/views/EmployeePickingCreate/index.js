@@ -55,7 +55,7 @@ export default function EmployeePickingCreate({ location }) {
         })
       )
     }
-  }, [])
+  }, [history])
   const [isClick, setIsClick] = useState(true)
   const handleOnChange = ({ event, key }) => {
     if (event && event.persist) event.persist()

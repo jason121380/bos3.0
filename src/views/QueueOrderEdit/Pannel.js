@@ -38,7 +38,7 @@ export default function SimpleAccordion({ children }) {
       const active = customerBonusActive.data.getIsCustomerBonusActive || bill.bonusDecount > 0 || bill.bonusDeposit > 0 || bill.bonusUsed > 0
       setBonusActive(active)
     }
-  }, [customerBonusActive.loading, bill])
+  }, [customerBonusActive.loading, bill, onceRef])
   return (
     <div className="flex w-full flex-col gap-[12px]">
       <PannelService

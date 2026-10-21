@@ -29,7 +29,7 @@ export default function HolidayEdit({ holidayData, setHolidayData, setHolidayMod
       setTimeOption([])
       setIsClick(false)
     }
-  }, [])
+  }, [setHolidayData])
 
   const handleSelectTime = (value, index) => {
     const newOption = cloneDeep(timeOption)

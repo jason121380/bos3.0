@@ -487,7 +487,7 @@ export default function Footer() {
           setOpen(false)
         })
     }
-  }, [bill, history])
+  }, [bill, history, setOpen])
 
   const customerTicketRecords = useFetchTicketRecords({
     ids: bill.useTicketOrders.map(d => d.customerTicketId),
@@ -686,7 +686,7 @@ export default function Footer() {
   }, [
     serviceTotalPriceWithoutThirdPartyCoupon, productTotalPriceWithoutThirdPartyCoupon,
     couponSellPrice, membershipTotalPriceWithoutThirdPartyCoupon, bill.walletPay,
-    bill.amountByOtherPay, bill.bonusDecount
+    bill.amountByOtherPay, bill.bonusDecount, setBill
   ])
 
   useEffect(() => {
@@ -716,7 +716,7 @@ export default function Footer() {
     serviceTotalPriceWithoutThirdPartyCoupon, productTotalPriceWithoutThirdPartyCoupon,
     couponSellPrice, membershipTotalPriceWithoutThirdPartyCoupon, bill.walletPay,
     bill.amountByOtherPay, bill.bonusDecount, bill.customerId, bonusRewardWithLINE,
-    isLineBinded
+    isLineBinded, setBill
   ])
 
   // 金額彙總：各數值的運算式與舊版相同，只加千分位與新版樣式。

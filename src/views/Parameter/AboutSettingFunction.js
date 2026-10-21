@@ -102,7 +102,7 @@ function AboutSettingFunction({
         variant: 'error'
       })
     }
-  }, [croppedAreaPixels])
+  }, [croppedAreaPixels, setMerchantLogo])
 
   const onSelectFile = event => {
     const file = event.target.files[0];

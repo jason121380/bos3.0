@@ -162,7 +162,7 @@ const AboutEmployeeSchedule = ({
       newIsMerchantClockInSetting[dataIndex].color = colorData
       setIsMerchantClockInSetting(newIsMerchantClockInSetting)
     }
-  }, [colorData])
+  }, [colorData, setIsMerchantClockInSetting])
   return (
     <Fragment>
       <Card className='AboutEmployeeSchedule'>

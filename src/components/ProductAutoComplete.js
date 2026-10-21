@@ -33,7 +33,7 @@ function ProductAutoComplete(
     if (setProductAlready !== undefined && !products.loading) {
       setProductAlready(!products.loading)
     }
-  }, [products.loading]);
+  }, [products.loading, setProductAlready]);
   const options = idx(products, _ => _.data.products.data) || []
 
   const selectedValue = idx(products, _ => _.data.products.data.find(d => d.id === value)) || null

@@ -225,7 +225,7 @@ function CustomerFilterExport() {
     if (!customerList.loading) {
       once = true
     }
-  }, [customerList.loading])
+  }, [customerList.loading, history])
 
   return (
     <Page className="ui-root" title="客資篩選匯出">

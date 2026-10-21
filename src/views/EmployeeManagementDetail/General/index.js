@@ -166,7 +166,7 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
           designerDetail.data.merchantDesigner.isDisplayOnClockInReportList,
       })
     }
-  }, [designerDetail.data, designerDetail.loading])
+  }, [designerDetail.data, designerDetail.loading, setNameInHeader])
   const handleFieldChange = ({ value, key }) => {
     setDesigner(
       produce(draft => {

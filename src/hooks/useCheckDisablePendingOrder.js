@@ -18,7 +18,7 @@ const useCheckDisablePendingOrder = () => {
         history.push('/order/create')
       }
     }
-  }, [getDisablePendingOrder.loading])
+  }, [getDisablePendingOrder.loading, history])
 }
 
 export default useCheckDisablePendingOrder 

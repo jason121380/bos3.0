@@ -39,7 +39,7 @@ const PannelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, re
         remark: '',
       },
     ])
-  }, [])
+  }, [setMemberCardSells])
 
   React.useEffect(() => {
     if(reset === 'reset'){
@@ -54,7 +54,7 @@ const PannelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, re
       ])
       setFocusRow(0)
     }
-  }, [reset])
+  }, [reset, setMemberCardSells])
 
   function handleClear({ index }) {
     let newSells = cloneDeep(memberCardSells)

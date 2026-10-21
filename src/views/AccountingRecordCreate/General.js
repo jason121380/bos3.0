@@ -226,7 +226,7 @@ function Summary({ stayInCreateAccount, ...rest }) {
       history.push(`/accounting/create?date=${location.search.split('=')[1]}`)
       setDate(Number(location.search.split('=')[1]))
     }
-  }, [])
+  }, [history])
   // 備註快捷
 
   const remarkItem = [
