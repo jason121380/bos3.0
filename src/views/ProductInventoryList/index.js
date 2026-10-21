@@ -39,7 +39,8 @@ const ProductInventoryList = () => {
 
   useEffect(() => {
     if (!productInventoryList.loading) {
-      let sortData = idx(productInventoryList, _ => _.data.productInventoryList)
+      // 先複製再排序（查詢結果唯讀；原地排序也會改到快取）
+      let sortData = [...idx(productInventoryList, _ => _.data.productInventoryList)]
       switch (sortType) {
         case 'COUNT':
           sortData = sortData.sort((a, b) => {

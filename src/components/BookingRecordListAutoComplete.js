@@ -57,7 +57,7 @@ function BookingRecordListAutoComplete(
 
   const filterOptions = (options, state) => {
     const keyWord = state.inputValue
-    const newOptions = options.sort((a, b) => {
+    const newOptions = [...options].sort((a, b) => {
       return a.userNo - b.userNo
     })
     let userNo = []
@@ -99,7 +99,7 @@ function BookingRecordListAutoComplete(
       })
       return filteredArray
     } else {
-      return options
+      return newOptions
     }
   }
   /*   const filteredOption = options

@@ -76,7 +76,7 @@ function TicketAutoComplete(
   }, [value])
   const filterOptions = (options, state) => {
     const keyWord = state.inputValue
-    const newOptions = options.sort((a, b) => {
+    const newOptions = [...options].sort((a, b) => {
       return a.no - b.no
     })
     let filterByNo = []
@@ -104,7 +104,7 @@ function TicketAutoComplete(
       })
       return filteredArray
     } else {
-      return options
+      return newOptions
     }
   }
   return (

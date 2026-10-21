@@ -113,7 +113,8 @@ function ConsumptionAnalyticsDashboard() {
       const customerConsumptionCount = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.customerConsumptionRanking.customerConsumptionCountRanking).slice(0, 10)
       const customerConsumptionPrice = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.customerConsumptionRanking.customerConsumptionPriceRanking).slice(0, 10)
       const customerConsumptionPricePerCount = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.customerConsumptionRanking.customerConsumptionPricePerCountRanking).slice(0, 10)
-      const weeklyOrderCount = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.weeklyOrderCountRanking).slice(0, 10)
+      // 每筆先複製，下面會補上 name（查詢結果唯讀）
+      const weeklyOrderCount = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.weeklyOrderCountRanking).slice(0, 10).map(d => ({ ...d }))
       const productSalesVolume = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.productSalesRanking.productSalesVolumeRanking).slice(0, 10)
       const productSalesPrice = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.productSalesRanking.productSalesPriceRanking).slice(0, 10)
       const sourceRatioData = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.sourceRatio)

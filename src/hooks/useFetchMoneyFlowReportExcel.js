@@ -1,5 +1,5 @@
 import { useLazyQuery } from '@apollo/client'
-import { gql } from 'apollo-boost'
+import { gql } from '@apollo/client'
 
 const FETCH_MONEY_FLOW_REPORT_EXCEL = gql`
   query moneyFlowReportExcel($input: ReportInput!) {

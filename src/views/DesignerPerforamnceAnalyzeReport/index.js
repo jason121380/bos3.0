@@ -68,7 +68,7 @@ const DesignerPerforamnceAnalyzeReport = () => {
 
   const filterOptions = (options, state) => {
     const keyWord = state.inputValue
-    const newOptions = options.sort((a, b) => {
+    const newOptions = [...options].sort((a, b) => {
       return a.userNo - b.userNo
     })
     if (keyWord !== '' && keyWord.trim() !== '') {
@@ -79,7 +79,7 @@ const DesignerPerforamnceAnalyzeReport = () => {
       )
       return filterData
     } else {
-      return options
+      return newOptions
     }
   }
 

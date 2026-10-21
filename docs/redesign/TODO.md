@@ -1,12 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10211111）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10211323）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
+
+- **Apollo client 換 v3、不直接修改查詢結果**（2026/10/21，v3.10211323，PR #240，Jason「do 1 2 3」第 3 項→選 A 先修再換→選 2 直接上正式站，屬畫面以外修正、當次同意）：client 由 apollo-boost 換為 `@apollo/client`（不開 `notifyOnNetworkStatusChange`，refetch 的 loading 與 v2 相同、有測試）；18 個直接修改查詢結果的位置改為先複製，其中 4 處另處理「別處靠原地修改才拿到資料」（收支分類 CSV 小結、互助業績會員卡欄、訂單與顧客消費紀錄重新查詢後補明細）。報告 `APOLLO_V3_EXPERIMENT.md`、MEMORY #176。**待實機（正式站唯讀，不送出、不儲存）**：①訂單管理列表、顧客詳細・消費紀錄：展開明細、重新整理或切頁後明細仍在，列印內容有明細；②收支分類明細表：匯出 CSV 每個分類有「小結」；③互助業績報表：會員卡未啟用的店家每列欄數與表頭對齊；④消費分析儀表板：週間來客數顯示星期名稱；⑤員工、服務、商品、票券等下拉選單打字搜尋後排序正常；⑥商品庫存列表三種排序；⑦預約週曆（單週、個人頁、員工資料）跨日預約顯示正常。有異常回報即可，我再修。
 
 - **錯誤訊息友善化**（2026/10/21，v3.10211056，Jason「錯誤訊息友善化」）：新增 `lib/friendly-error`，`openSnackbar` 的錯誤／警告提示自動把英文技術訊息換成「原因＋下一步」的中文——伺服器錯誤（含 500 錯誤頁的 JSON 解析錯誤）→「伺服器暫時無法處理，請稍後再試；若持續發生，請截圖並聯絡客服」、401／403→「請重新登入」、413→「檔案太大」、429→「操作太頻繁」、逾時→「檢查網路」、輸入值格式錯誤→「請檢查輸入內容或重新整理頁面」（附原文）、前後端版本不一致→「系統可能剛更新，請重新整理頁面」（附原文）、其他英文→通用說明＋原文；頁面開頭（「刪除訂單失敗：」）保留，中文業務訊息原樣，多行相同說明只留一次。errorLink 的狀態碼文案改用同一份。約 170 處 catch 不用改。實測（個人頁公休彈窗儲存失敗）：500 原本顯示 `Unexpected token 'I', "Internal S"... is not valid JSON`，改為伺服器說明；中文業務錯誤不變。新增 `friendly-error` 6 項（含版本不一致分類，Codex 指出）、`snackbars` 2 項測試。**待實機**：遇到錯誤時提示文字是否清楚（伺服器維護、登入逾時、斷線）。
 
@@ -220,7 +222,7 @@
    - **報表 compact 進度**（2026/10/19）：承 PR #20 第一批 4 頁，**第二批（v3.0-1019-0406）+12 頁，累計 16 頁，剩 12 頁 MUI Table 報表＋列印共用層後續**。本批 12 個 Results 的主報表 `ui/table` 補 `dense`（共 19 張：MerchantDaily 4、SingleService 3、DecreaseDaily 2、ProductConsume 2、其餘 8 頁各 1）；`src/ui/table.js` 的 dense 補 `px-2`（以 PR #20 合併後最終版為準）。盤點總表（INVENTORY／口徑數字）在 PR #20 分支，待整組對齊後更新，本分支未寫入。
 4. `ui/native-select` 的 `label`（外框上緣標籤）要不要整批改成「`Field` 上方標籤」？**2026/10/20 實查（v3.0-1020-0145，排除 `aria-label`）**：其他頁已全數改完，只剩帳單四兄弟 `AddCustomerModal` 9 處（OrderCreate 最近設計師；OrderEdit 性別／最近設計師；DraftOrderEdit、QueueOrderEdit 性別／最近設計師／偏好設計師）。同列鄰欄仍是 MUI 外框欄位（客戶編號、SourceSelect、MUI Select、Autocomplete），單改這 9 處會讓同列標籤高低不齊，須與 A3 其餘欄位整列一起做並真實瀏覽器鍵盤實測，待 Jason 決定是否開工。
 
-5. **Apollo client 從 v2（apollo-boost）統一到 v3？**（2026/10/21 新增）目前 client 本體是 apollo-boost，頁面 hook 是 `@apollo/client` 3。量測：首屏舊版快取約占 0.3 秒 CPU（中階手機），入口另有約 80～100 KB 是兩套 Apollo 並存。風險（MEMORY #168④）：全站約 430 個 effect 依 `loading` 變化取資料，v3 的 refetch 預設不會把 loading 設回 true，需全域 `notifyOnNetworkStatusChange` 並逐頁回歸；快取合併規則也不同。建議：先在測試站做一個 v3 分支，量首屏與主要流程（打帳單、預約、報表）後再決定。
+5. **Apollo client 從 v2（apollo-boost）統一到 v3？**（2026/10/21 新增）目前 client 本體是 apollo-boost，頁面 hook 是 `@apollo/client` 3。量測：首屏舊版快取約占 0.3 秒 CPU（中階手機），入口另有約 80～100 KB 是兩套 Apollo 並存。風險（MEMORY #168④）：全站約 430 個 effect 依 `loading` 變化取資料，v3 的 refetch 預設不會把 loading 設回 true，需全域 `notifyOnNetworkStatusChange` 並逐頁回歸；快取合併規則也不同。建議：先在測試站做一個 v3 分支，量首屏與主要流程（打帳單、預約、報表）後再決定。**2026/10/21 實驗完成（草稿 PR，報告 `docs/redesign/APOLLO_V3_EXPERIMENT.md`）**：loading 疑慮不成立（行為與 v2 相同、有測試）；收益為程式 −92 KB、首屏 gzip −24 KB、約快 0.1 秒（CPU 只省約 20 ms）；正式環境 186 條路由無新增錯誤；風險是開發模式 29 頁因直接修改查詢結果而崩潰，換版前要先修（改成先複製）。建議：先修那 29 頁，再於測試站試用一週後合併；也可以不換。**Jason 選 A；開發模式崩潰已全數修好**（10 個位置＋Codex 三輪指出後靜態搜尋與逐處複查補找的 8 檔，開發模式 186 條路由＋29 個分頁 0 錯誤，正式 build 無新增錯誤），Codex 三輪指出的問題已修正，最後一輪無重大問題；**Jason 選 2（不經開發站試用），PR #240 直接合併上正式站**，實機注意事項見 §一 首項。
 ### P4 — 既有問題（修了會動邏輯，需你同意才改）
 - **2026/10/20 已修（v3.0-1020-0156，Jason 指示「完整 debug 修復」）**：下一行除 `ServicesAutoComplete` 外全部修正，另修顧客詳細資料重新整理 404／紅利分頁不出現；詳見 STATUS 已完成表與 MEMORY #127。待實機：OrderEdit 套快捷組合、功能釘選選頁、抽成級距刪中間列、紅利輸入 1.5、薪資總覽換月後進設計師薪資、顧客詳細資料在紅利分頁按重新整理。
 - ~~功能釘選分頁 `_` 未 import；`SalaryEdit` 日期只在模組載入時計算一次；`UpdateDeductionSetting` 刪除級距把 event 當 index；`CustomerBonusRecordEdit` 對字串呼叫 `splice`；`OrderEdit` 的 `_.cloneDeep` 未 import；三個帳單編輯頁的 `handlePannelClick` 未定義；`AdminPageHeader` 的 `primaryAction.disabled` 無作用。~~

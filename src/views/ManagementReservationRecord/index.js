@@ -33,6 +33,7 @@ import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Switch } from 'ui/switch'
 
 import OrderTable from './OrderTable'
+import cloneDeep from 'lodash/cloneDeep'
 
 function Calendar() {
   const reservationData = useSelector(state => state.reservation.reservationData)
@@ -401,9 +402,10 @@ function Calendar() {
   useEffect(() => {
     if (!DesignerCalendar.loading) {
       const data = DesignerCalendar.data.getMerchantDesignerCalendar
+      // 深拷貝：handleTidyOrder 會排序、改型別，不直接改查詢結果（Apollo v3 開發模式為唯讀，也避免改到快取）
       setCalendarRowData({
-        designate: data.merchantDesignerCalendar,
-        nonDesignate: data.nonDesignateCalendar,
+        designate: cloneDeep(data.merchantDesignerCalendar),
+        nonDesignate: cloneDeep(data.nonDesignateCalendar),
         changeData: null
       })
     }

@@ -24,6 +24,7 @@ import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
+import cloneDeep from 'lodash/cloneDeep'
 
 export default function Payroll() {
   const [date, setDate] = useState({
@@ -50,19 +51,20 @@ export default function Payroll() {
 
   useEffect(() => {
     if (!merchantSalaryIncreaseItemsData.loading) {
-      const merchantSalaryIncreaseItems = idx(
+      // 複製：下面會加入員工自訂項目（查詢結果唯讀）
+      const merchantSalaryIncreaseItems = cloneDeep(idx(
         merchantSalaryIncreaseItemsData,
         _ => _.data.getMerchantSalaryIncreaseItems
-      )
+      ))
       setMerchantSalaryIncreaseItems(merchantSalaryIncreaseItems)
     }
   }, [merchantSalaryIncreaseItemsData.loading])
   useEffect(() => {
     if (!merchantSalaryDecreaseItemsData.loading) {
-      const merchantSalaryDecreaseItems = idx(
+      const merchantSalaryDecreaseItems = cloneDeep(idx(
         merchantSalaryDecreaseItemsData,
         _ => _.data.getMerchantSalaryDecreaseItems
-      )
+      ))
       setMerchantSalaryDecreaseItems(merchantSalaryDecreaseItems)
     }
   }, [merchantSalaryDecreaseItemsData.loading])

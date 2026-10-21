@@ -1,5 +1,5 @@
 import { useLazyQuery } from '@apollo/client'
-import { gql } from 'apollo-boost'
+import { gql } from '@apollo/client'
 
 export const FetchDownloadOrderReport = gql`
   query OrderReport($input: ReportInput!) {
