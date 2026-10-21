@@ -1,5 +1,5 @@
-// Grid.EmployeePayslipTableContainer 為列印容器（@media print 樣式），依列印範本規則保留
-import { Grid } from 'ui/grid-compat'
+// 薪資條外框（.EmployeePayslipTableContainer，列印時以 initialize.scss 改為 display:block）改原生 div：
+// 保留同一個 className，螢幕上維持原 Grid container 的 flex-wrap 滿寬排版，內層 Results 的 Grid item 不動
 import AdminPageHeader from 'components/AdminPageHeader'
 import Page from 'components/Page'
 import idx from 'idx'
@@ -170,7 +170,7 @@ export default function Payroll() {
             usersDalaryData,
             _ =>
               _.data.userSalaryReport.length > 0 ? (
-                <Grid container className={'EmployeePayslipTableContainer'}>
+                <div className={'EmployeePayslipTableContainer flex w-full flex-wrap'}>
                   <Results
                     userSalaryReport={_.data.userSalaryReport}
                     date={date.startDate}
@@ -187,7 +187,7 @@ export default function Payroll() {
                     detailDisplay={!isPrintdetailHidden && !detailDisplay}
                     payslipOptimization={payslipOptimization}
                   />
-                </Grid>
+                </div>
               ) : <Card><EmptyState title="無資料" /></Card>
           ) :
           <Skeleton className="h-96 w-full" />

@@ -1,4 +1,7 @@
-import { Snackbar, Alert } from 'ui/feedback-compat'
+// 提示：自動關閉（autoHideDuration）與點外面關閉（clickaway）的計時行為仍由相容層 Snackbar 負責（ui/toast 是命令式 API，改用要動 state／effect）；
+// 訊息卡改 ui/toast 的 ToastCard（與全站提示同外觀）
+import { Snackbar } from 'ui/feedback-compat'
+import { ToastCard } from 'ui/toast'
 import React, { Fragment } from 'react'
 import { MobileDatePicker } from 'ui/date-picker'
 // import ReCAPTCHA from "react-google-recaptcha-enterprise"
@@ -127,7 +130,7 @@ const General = ({
         autoHideDuration={5000}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert elevation={6} severity={openSnack.severity} variant="filled">{openSnack.message}</Alert>
+        <ToastCard className="ui-root sm:w-auto sm:min-w-[288px] sm:max-w-[400px]" variant={openSnack.severity} title={openSnack.message} />
       </Snackbar>
     </Fragment>
   )

@@ -1,6 +1,6 @@
-// 班表格線使用 sticky 欄列、動態班別色與 .AttendanceEmployeeScheduleTable / .beforeToday 全域樣式，表格沿用 MUI；班別按鈕改 ui/button（動態班別色以 CSS 變數＋!important 保留原權重）
-import { Paper } from 'ui/display-compat'
-import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
+// 班表格線使用 sticky 欄列、動態班別色與 .AttendanceEmployeeScheduleTable / .beforeToday 全域樣式（選擇器只認 table／thead／tr／td，不依賴 MUI class），
+// 表格改 ui/table（外框 div 掛原 class 與最大高度，原 Paper 外觀以 rounded-md bg-background 保留）；班別按鈕為 ui/button（動態班別色以 CSS 變數＋!important 保留原權重）
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import { format, isBefore, isAfter, isToday } from 'date-fns'
 import PropTypes from 'prop-types'
 import cloneDeep from 'lodash/cloneDeep'
@@ -232,23 +232,25 @@ export default function Results({
         </div>
       </CardHeader>
       <div className="mt-0">
-        <TableContainer style={{ maxHeight: 'calc(100vh - 380px)' }} component={Paper} className="AttendanceEmployeeScheduleTable">
-          <Table size="small" aria-label="a dense table">
-            <TableHead className="sticky top-0 z-[100] bg-white [outline:1px_solid_rgb(var(--border))]">
-              <TableRow>
-                <TableCell className="sticky left-0 z-[99] !w-[150px] !min-w-[150px] !overflow-hidden text-ellipsis !whitespace-nowrap ![background-color:rgb(var(--surface))] bg-white !p-[8px] !text-[13px] !font-semibold [outline:1px_solid_rgb(var(--border))]">設計師</TableCell>
+        <Table
+          aria-label="a dense table"
+          wrapperClassName="AttendanceEmployeeScheduleTable max-h-[calc(100vh-380px)] rounded-md bg-background"
+        >
+            <TableHeader className="sticky top-0 z-[100] bg-background [outline:1px_solid_rgb(var(--border))]">
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="sticky left-0 z-[99] !w-[150px] !min-w-[150px] !overflow-hidden text-ellipsis !whitespace-nowrap ![background-color:rgb(var(--surface))] !p-[8px] !text-[13px] !font-semibold text-text [outline:1px_solid_rgb(var(--border))]">設計師</TableHead>
                 {displayDate.map((date, index) => (
-                  <TableCell
+                  <TableHead
                     key={index}
                     style={{ cursor: isEditing ? 'pointer' : 'default' }}
                     onClick={() => addMultiColumnSchedule(Number(rawTime[index]))}
-                    className="!w-[120px] !min-w-[120px] ![background-color:rgb(var(--surface))] !p-[8px] [&&]:text-center !text-[13px] !font-semibold whitespace-nowrap"
+                    className="!w-[120px] !min-w-[120px] ![background-color:rgb(var(--surface))] !p-[8px] [&&]:text-center !text-[13px] !font-semibold whitespace-nowrap text-text"
                   >
                     {date}
-                  </TableCell>
+                  </TableHead>
                 ))}
               </TableRow>
-            </TableHead>
+            </TableHeader>
             <TableBody>
               {employeeSchedule.length > 0 &&
                 employeeSchedule.map((data, dataIndex) => {
@@ -257,7 +259,7 @@ export default function Results({
                       <TableCell
                         style={{ cursor: isEditing ? 'pointer' : 'default' }}
                         onClick={() => addMultiRowSchedule(dataIndex)}
-                        className="sticky left-0 z-[99] !w-[150px] !min-w-[150px] !overflow-hidden text-ellipsis !whitespace-nowrap bg-white !px-[8px] !py-[4px] !text-[13px] [outline:1px_solid_rgb(var(--border))]"
+                        className="sticky left-0 z-[99] !w-[150px] !min-w-[150px] !overflow-hidden text-ellipsis !whitespace-nowrap bg-background !px-[8px] !py-[4px] !text-[13px] [outline:1px_solid_rgb(var(--border))]"
                         key={data.user.name}
                       >
                         {data.user.name}
@@ -269,8 +271,7 @@ export default function Results({
                   )
                 })}
             </TableBody>
-          </Table>
-        </TableContainer>
+        </Table>
       </div>
     </Card>
   )
