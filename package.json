@@ -102,10 +102,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 7,
-        "functions": 3,
-        "lines": 5,
-        "statements": 5
+        "branches": 26,
+        "functions": 21,
+        "lines": 30,
+        "statements": 30
       },
       "./src/lib/api-base.js": {
         "lines": 90
