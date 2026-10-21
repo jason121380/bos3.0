@@ -87,10 +87,8 @@ const VENDOR_CHUNKS = {
     'react-redux', '@reduxjs/toolkit', 'redux', 'redux-thunk', 'reselect', 'use-sync-external-store', '@babel/runtime',
   ],
   'vendor-apollo': [
-    '@apollo/client', 'apollo-boost', 'apollo-client', 'apollo-cache', 'apollo-cache-inmemory', 'apollo-utilities',
-    'apollo-link', 'apollo-link-context', 'apollo-link-error', 'apollo-link-http', 'apollo-link-http-common',
-    'apollo-upload-client', 'extract-files', 'is-plain-obj', 'graphql', 'graphql-tag', 'optimism', '@wry/',
-    'ts-invariant', 'zen-observable', 'zen-observable-ts', 'symbol-observable', 'fast-json-stable-stringify',
+    '@apollo/client', 'apollo-upload-client', 'extract-files', 'is-plain-obj', 'graphql', 'graphql-tag', 'optimism', '@wry/',
+    'ts-invariant', 'zen-observable', 'zen-observable-ts', 'symbol-observable',
   ],
   'vendor-sentry': ['@sentry/'],
 }
