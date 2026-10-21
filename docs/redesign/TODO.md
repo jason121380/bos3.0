@@ -1,12 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10210845）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／55 檔 294 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10210851）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／55 檔 294 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
+
+- **預約色塊文字一律白色、側欄店名去掉標題**（2026/10/21，v3.10210851，Jason「預約的新配色文字白」「不用目前店家的標籤」）：`RESERVATION_COLORS` 中原本配深字的淺色（待審核、未來預訂、不指定、已完成預約、未報到）改為同色相的深一階，白字對比皆 ≥ 4.5:1，圖例與四個預約週曆一律白字；已完成預約改灰褐 `#8B6F5A`，與不可預約的中灰區分。側欄目前店家只留圖示＋店名（「目前店家：」僅讀屏）。測試改為斷言每色都選白字。**待實機**：預約週曆各色塊白字是否清楚、指定／不指定／待審核是否好分。
 
 - **篩選沒有內容時不顯示篩選鈕**（2026/10/21，v3.10210845，Jason 手機截圖預約管理「篩選沒有東西，是不是不用出現篩選」）：預約管理（`WebOrderManagementList`）的篩選面板只有「報到狀態」一項、單日預約紀錄（`ManagementReservationRecord`）的「報到模式／報到狀態」也都只在店家開啟報到功能時出現；未開啟的店家按「篩選」只展開一張空白卡片。兩頁改為未開啟報到時不顯示篩選鈕與面板，有開啟的店家照舊。單週預約紀錄有固定的「指定設計師」，不受影響。新增 `WebOrderManagementList/__tests__/FilterVisibility.test.js`（拿掉修正會失敗）。**待實機**：未開報到的店家，預約管理與單日預約紀錄不再出現篩選鈕；開啟報到的店家仍可篩選。
 

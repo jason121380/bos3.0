@@ -545,14 +545,13 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
         </div>
       )}
       <SidebarContent>
-        {/* 目前店家（Jason 2026/10/21「要呈現現在在哪家店」）：只顯示、不可點；切換仍用底部的店家圖示。店名取自 userMerchant，切換店家後整頁重新載入即更新 */}
+        {/* 目前店家（Jason 2026/10/21「要呈現現在在哪家店」；同日「不用目前店家的標籤」→ 只留圖示＋店名，標題文字僅供讀屏）：
+            只顯示、不可點；切換仍用底部的店家圖示。店名取自 userMerchant，切換店家後整頁重新載入即更新 */}
         {merchantName && (
           <div className="mb-1 flex items-center gap-2.5 px-2.5 pb-2 pt-1" title={`目前店家：${merchantName}`}>
             <Store className="h-4 w-4 shrink-0 text-text-secondary" strokeWidth={1.75} aria-hidden="true" />
-            <span className="flex min-w-0 flex-col">
-              <span className="text-caption text-text-tertiary">目前店家</span>
-              <span className="truncate text-body font-medium text-text">{merchantName}</span>
-            </span>
+            <span className="sr-only">目前店家：</span>
+            <span className="min-w-0 truncate text-body font-medium text-text">{merchantName}</span>
           </div>
         )}
         {!profile.loading && (
