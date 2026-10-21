@@ -55,7 +55,10 @@ test('本週沒有任何行事曆資料（merchantDesignerCalendar 為空陣列�
   mockCalendar = () => weekResult([])
   renderTab()
   expect(screen.getByText('時間')).toBeTruthy()
-  expect(screen.getAllByText('可預約人數:0').length).toBeGreaterThan(0)
+  // 每格「可預約人數」小標下方的數字為 0（版面比照主預約頁，小標與數字分兩行）
+  const labels = screen.getAllByText('可預約人數')
+  expect(labels.length).toBeGreaterThan(0)
+  labels.forEach(label => expect(label.nextSibling.textContent).toBe('0'))
 })
 
 test('查詢失敗（data 為 undefined）時不白屏', () => {

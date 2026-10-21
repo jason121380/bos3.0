@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10210750，main 已含 PR #1～#226）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10210809，main 已含 PR #1～#228）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,6 +8,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 個人頁／員工資料預約表週曆比照主預約頁（v3.10210809） | Jason 截圖指出個人頁預約表仍是舊樣式。兩頁 `OrderTable` 的表頭、格線、時間欄、可預約人數格、不可預約時段、預約色塊改為與 `ManagementReservationRecord/OrderTable.js` 相同的寫法（tokens、16px 外框、12px 色塊）；四個預約週曆的「時間」表頭加 `!px-1` 不再斷行。verify-logic FAIL＝class 常數換值、「可預約人數:N」拆成小標＋數字（條件與 `handleCountLimit` 不變）。測試 52 檔／277 全過；正式 build＋假後端截圖 390／1440（個人頁、員工資料、主預約頁）。 |
 | 日期時間固定台灣時間（v3.10210742） | Jason 回報出國時撈報表／打資料時間錯誤，選方案 2（根本修正）。新增 `src/lib/business-timezone.js`＋`install-business-timezone.js`，於 `src/index.js` 最早載入：裝置不在 UTC+8 時把全域 `Date`、`Intl.DateTimeFormat` 換成固定台灣時間（本地 getter／setter、建構子、無時區字串解析、`toString`／`toLocale*`、`getTimezoneOffset` 皆以 UTC+8 計算；`instanceof`、JSON、時間戳記與原生相同；只有日期的 ISO 字串與有明確時區的字串維持原生解析）；台灣裝置不替換。`layouts/Dashboard` 在替換時每次開啟提示一次。屬畫面以外的修正，經 Jason 當次同意。不動 GraphQL、Redux、金額運算；送給後端的值本來就是時間戳記，改的是「今天／本月」的起訖與選擇器組出的時間點。新增 22 測試（6 個時區各跑一次，含裝置日光節約切換時段）；全套 52 檔／277 測試在 UTC、洛杉磯各跑一次全過；lint:build 0、build 成功；Playwright 四時區送出的查詢區間一致（MEMORY #169）。 |
 | 版號格式改 `v3.MMDDHHmm`（v3.10210742） | Jason 指定「v3.10210047 這樣的格式」：`src/version.js` 改新格式、CLAUDE.md／README／本檔「版本號規則」同步；舊版號紀錄不改。 |
 | 側欄頂列：搜尋圖示、移除「選單」、鈴鐺面板置中（v3.0-1021-0148，PR #224） | Jason 手機截圖指示：搜尋框改為鈴鐺左側放大鏡鈕（按下展開、自動聚焦、Esc／✕ 關閉清空）；移除選單區「選單」標題；手機上鈴鐺面板以 Radix 虛擬錨點水平置中於頂列下方（左右 16px），桌機往右開並限制在視窗內；桌機版號疊在 Logo 下方。新增 `components/SlotPortal`、`hooks/useMediaQuery`。390／768／1440 截圖量測。 |

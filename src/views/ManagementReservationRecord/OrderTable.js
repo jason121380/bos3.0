@@ -15,7 +15,7 @@ import HolidayEdit from './HolidayEdit'
 const styles = {
   TableContainer: 'min-h-[60vh] h-[calc(100vh-260px)] overflow-scroll relative !rounded-[16px] ![box-shadow:none] ![border:1px_solid_rgb(var(--border))] [&>div]:flex',
   title: 'p-[12px_16px] break-all font-[800] bg-[rgb(var(--surface))] text-[rgb(var(--text))] min-h-[56px] flex items-center justify-center shrink-0 [border-right:1px_solid_#d0d7de] text-[14px] tracking-[0.5px] uppercase',
-  timeTitle: 'w-[60px]',
+  timeTitle: 'w-[60px] !px-1', // 60px 欄寬扣掉左右 16px 內距放不下「時間」兩字會斷行
   ndsItem: '[border-top:1px_solid_rgb(var(--border))] [border-right:1px_solid_rgb(var(--border))] [border-left:1px_solid_rgb(var(--border))] flex justify-end bg-[rgb(var(--surface))]',
   ndsWrap: 'w-[100px] shrink-0 flex flex-col items-end',
   timeItem: '[border-top:1px_solid_rgb(var(--border))] [border-right:1px_solid_rgb(var(--border))] text-center [align-content:center] text-[14px] font-bold text-[rgb(var(--text))] bg-[rgb(var(--surface))]',
