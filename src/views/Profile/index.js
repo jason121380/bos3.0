@@ -109,7 +109,7 @@ function Settings({ match, history }) {
   const { getOrderListLazy, getOrderListLazyData } = useFetchGetOrderListLazy()
   const tabValue = [
     { value: 'general', label: '基本資料' },
-    { value: 'orderRecord', label: '訂單紀錄' },
+    { value: 'orderRecord', label: '帳單紀錄' },
     { value: 'reservation', label: '預約表' },
     { value: 'designerSelfRecord', label: '設計師日報表' },
     { value: 'helperSelfRecord', label: '互助日報表' },

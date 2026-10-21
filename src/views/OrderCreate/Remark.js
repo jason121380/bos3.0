@@ -25,7 +25,7 @@ function Remark() {
           }}
         />
       </Field>
-      <Field label="訂單來源" className={styles.field2}>
+      <Field label="帳單來源" className={styles.field2}>
         <SourceSelect
           emptyOption
           label=''

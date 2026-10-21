@@ -11,7 +11,7 @@ const CustomerConsumptionCountRanking = ({ data }) => {
         <CardContent className="flex flex-col gap-4 p-4">
           <div>
             <CardTitle className="whitespace-nowrap">消費總次數排行</CardTitle>
-            <CardDescription className="whitespace-nowrap text-caption">期間內來最多次的客人(訂單)</CardDescription>
+            <CardDescription className="whitespace-nowrap text-caption">期間內來最多次的客人(帳單)</CardDescription>
           </div>
           {data.length > 0 ?
             <Table dense wrapperClassName="mt-0">
@@ -20,7 +20,7 @@ const CustomerConsumptionCountRanking = ({ data }) => {
                   <TableHead className="w-10"></TableHead>
                   <TableHead>姓名</TableHead>
                   <TableHead>手機</TableHead>
-                  <TableHead numeric>總訂單數</TableHead>
+                  <TableHead numeric>總帳單數</TableHead>
                   <TableHead numeric>總金額</TableHead>
                   <TableHead numeric>客單價</TableHead>
                 </TableRow>

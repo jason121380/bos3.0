@@ -593,7 +593,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
 
   const handleOrderPendingConfirm = () => {
     openSnackbar({
-      message: `確認要掛單嗎，掛單只會紀錄此筆訂單的紀錄，不會正式成立訂單唷`,
+      message: `確認要掛單嗎，掛單只會紀錄此筆帳單的紀錄，不會正式成立帳單唷`,
       variant: 'error',
       disableHide: true,
       resign: true,

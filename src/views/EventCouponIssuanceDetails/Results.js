@@ -38,8 +38,8 @@ function Results({ recordData, pageSetting, onPageChange, onRowsPerPageChange })
                     <TableHead>流水號</TableHead>
                     <TableHead>活動名稱</TableHead>
                     <TableHead>規則名稱</TableHead>
-                    <TableHead>訂單日期</TableHead>
-                    <TableHead>訂單編號</TableHead>
+                    <TableHead>帳單日期</TableHead>
+                    <TableHead>帳單編號</TableHead>
                     <TableHead>顧客姓名</TableHead>
                     <TableHead>顧客手機</TableHead>
                     <TableHead>使用手機端</TableHead>

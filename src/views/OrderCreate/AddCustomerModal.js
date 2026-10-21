@@ -604,7 +604,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
           <div>
             {values.customerId.length > 0 && (
               <Button variant="secondary" onClick={handleGoToCustomerEdit}>
-                查看訂單記錄
+                查看帳單記錄
               </Button>
             )}
           </div>

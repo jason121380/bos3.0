@@ -247,7 +247,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                   <TableHead>入金使用(-)</TableHead>
                   {bonusDisplay && <TableHead>點數折抵金額(-)</TableHead>}
                   <TableHead>備註</TableHead>
-                  <TableHead>訂單來源</TableHead>
+                  <TableHead>帳單來源</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

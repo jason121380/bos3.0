@@ -538,7 +538,7 @@ export default function Head() {
           <div className={`${styles.column} ${styles.column1}`}>
             <div className={styles.row}>
               {/* 必填 *：依據 Header.js 的 valid（缺 bill.date 時「掛單／明細／結帳」停用） */}
-              <Field label="訂單日期" required className="w-full">
+              <Field label="帳單日期" required className="w-full">
                 <DateTimePicker
                   value={bill.date}
                   format='yyyy/MM/dd HH:mm'

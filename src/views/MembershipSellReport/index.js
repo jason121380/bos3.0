@@ -52,8 +52,8 @@ export default function MembershipSellReport() {
     const data = []
     reportData.forEach(d => {
       data.push({
-        訂單日期: format(d.orderDate, 'yyyy/M/d'),
-        訂單編號: `#${d.orderNo}`,
+        帳單日期: format(d.orderDate, 'yyyy/M/d'),
+        帳單編號: `#${d.orderNo}`,
         設計師姓名: d.designerName,
         顧客姓名: d.customerName,
         會員卡名稱: d.membershipName,
@@ -68,8 +68,8 @@ export default function MembershipSellReport() {
       })
     })
     data.push({
-      訂單日期: '',
-      訂單編號: '',
+      帳單日期: '',
+      帳單編號: '',
       設計師姓名: ' ',
       顧客姓名: '',
       會員卡名稱: '合計',

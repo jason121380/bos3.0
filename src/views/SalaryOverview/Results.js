@@ -309,7 +309,7 @@ function Results({
                   disabled={disabledBtn}
                 >
                   <FactCheckIcon />
-                  {isThisMonthSalaryChacked ? '重新月結' : '月結訂單'}
+                  {isThisMonthSalaryChacked ? '重新月結' : '月結帳單'}
                 </Button>
               </div>
               <div className="flex flex-wrap justify-center gap-3 py-2">
@@ -319,7 +319,7 @@ function Results({
                   disabled={disabledBtn}
                 >
                   <FactCheckIcon />
-                  {isThisMonthSalaryChacked ? '重新月結不帶入加扣項' : '月結訂單不帶入加扣項'}
+                  {isThisMonthSalaryChacked ? '重新月結不帶入加扣項' : '月結帳單不帶入加扣項'}
                 </Button>
               </div>
             </Fragment>

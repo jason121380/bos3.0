@@ -95,7 +95,7 @@ function Results({
                         </RouterLink>
                       </Button>
                     </TableCell>
-                    <TableCell className="tabular-nums">{format(record.date, 'MM/dd/yyyy')}</TableCell>
+                    <TableCell className="tabular-nums">{format(record.date, 'yyyy/MM/dd')}</TableCell>
                     <TableCell>
                       {record.Customer.name}
                       <div className="text-caption tabular-nums text-text-secondary">{record.Customer.cellphone}</div>

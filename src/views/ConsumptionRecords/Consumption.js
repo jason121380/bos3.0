@@ -42,7 +42,7 @@ function Consumption({
           <CardContent className="flex flex-col gap-3">
             <div className="flex items-start justify-between gap-3">
               <div className="flex min-w-0 flex-col gap-1">
-                <span className="text-caption text-text-secondary">訂單編號</span>
+                <span className="text-caption text-text-secondary">帳單編號</span>
                 <span className="break-all text-body tabular-nums text-text">{data.no}</span>
               </div>
               <div className="flex shrink-0 flex-col items-end gap-1">

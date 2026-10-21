@@ -108,10 +108,10 @@ describe('帳單詳細 停用原因', () => {
   it('vaild 停用時列出的缺項都是真的不成立的條件', () => {
     const bill = { ...base(), date: 0, customerId: undefined, serviceOrders: [{ price: 500 }] }
     expect(footerVaild(bill, { isCloseAccount: false })).toBe(true)
-    expect(getMissingForCheckout(bill)).toEqual(['訂單日期', '顧客（或勾選「不留客資」）'])
+    expect(getMissingForCheckout(bill)).toEqual(['帳單日期', '顧客（或勾選「不留客資」）'])
     expect(
       getDisabledReason({ busy: false, invalid: true, isCloseAccount: false, missing: getMissingForCheckout(bill) })
-    ).toBe('尚缺：訂單日期、顧客（或勾選「不留客資」）')
+    ).toBe('尚缺：帳單日期、顧客（或勾選「不留客資」）')
   })
 
   it('總金額為 0 但有消費時可直接結帳（vaild 的 B 條件），不顯示缺項', () => {
