@@ -1,5 +1,7 @@
-// 拖曳排序（react-beautiful-dnd）放在有 transform 的 Radix Dialog 內會定位錯誤，保留 MUI Dialog
-import { Dialog, DialogContent, DialogTitle, DialogActions } from 'ui/modal-compat'
+// 改 ui/dialog：窗內沒有 Autocomplete／Select／日期選擇器。拖曳排序（react-beautiful-dnd）拖動中的項目是 position: fixed，
+// 祖先有 transform 會以祖先為定位基準而偏移，故彈窗本體以 !transform-none＋inset-0 m-auto 置中（不用 -translate-1/2；開關動畫的 transform 只在動畫期間）。
+// 原彈窗無 onClose（點背景／Esc 不關閉）：不傳 onOpenChange＋hideClose，只能按「取消」關閉
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Button } from 'ui/button'
 import { useState, memo, useEffect } from 'react'
 import { KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon } from 'ui/icons'
@@ -62,44 +64,43 @@ const OuterLinkSortModal = ({
   }
 
   return (
-    <Dialog className="[&_.MuiDialog-paper]:overflow-y-visible [&_.MuiDialogContent-root]:overflow-y-visible [&_.MuiTypography-root]:text-[16px] [&_div.MuiDialogContent-root]:px-[24px] [&_div.MuiDialogContent-root]:py-[16px] [&_.MuiDialogActions-root]:flex [&_.MuiDialogActions-root]:justify-between [&_.MuiDialogActions-root]:px-[24px] [&_.MuiDialogActions-root]:pt-0 [&_.MuiDialogActions-root]:pb-[16px] [&_.MuiDialogActions-root]:flex-wrap [&_.MuiDialogActions-root]:gap-[10px] [&_.MuiDialogTitle-root]:pb-[8px]" open={open}>
-      <DialogTitle>
-        編輯排序
-        <p className="text-[8px] [color:gray]">拖動按鈕調整排序</p>
-      </DialogTitle>
-      <div className="h-px bg-border" />
-      <DialogContent className="flex flex-col max-h-[50vh] overflow-hidden overflow-y-scroll mt-0 mx-0 mb-[15px]">
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="drop-id">
-            {(provided) => (
-              <div className="flex flex-col" ref={provided.innerRef} {...provided.droppableProps}>
-                {sortData.map(({ id, name, isTop }, i) => (
-                  <Draggable draggableId={id} index={i} key={id}>
-                    {(provided) => (
-                      <div
-                        className={sortButtonClass}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        ref={provided.innerRef}
-                      >
-                        {name}
-                        {isCus && isTop && (
-                          <div className="svgWrap">
-                            <KeyboardDoubleArrowUpIcon />
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-      </DialogContent>
-      <DialogActions>
-        <div className="flex ml-auto gap-[10px] flex-wrap">
+    <Dialog open={open}>
+      <DialogContent size="sm" hideClose className="!transform-none sm:inset-0 sm:m-auto sm:h-fit">
+        <DialogHeader>
+          <DialogTitle>編輯排序</DialogTitle>
+          <DialogDescription>拖動按鈕調整排序</DialogDescription>
+        </DialogHeader>
+        <DialogBody className="flex max-h-[50vh] flex-col items-center border-0 border-t border-solid border-border">
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="drop-id">
+              {(provided) => (
+                <div className="flex flex-col" ref={provided.innerRef} {...provided.droppableProps}>
+                  {sortData.map(({ id, name, isTop }, i) => (
+                    <Draggable draggableId={id} index={i} key={id}>
+                      {(provided) => (
+                        <div
+                          className={sortButtonClass}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          ref={provided.innerRef}
+                        >
+                          {name}
+                          {isCus && isTop && (
+                            <div className="svgWrap">
+                              <KeyboardDoubleArrowUpIcon />
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </DialogBody>
+        <DialogFooter className="flex-wrap">
           <Button disabled={isClick} variant="secondary" onClick={onModalClose}>取消</Button>
           <Button
             disabled={isClick}
@@ -108,8 +109,8 @@ const OuterLinkSortModal = ({
           >
             儲存
           </Button>
-        </div>
-      </DialogActions>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   )
 }

@@ -1,4 +1,6 @@
-import { Snackbar, Alert } from 'ui/feedback-compat'
+// Snackbar 保留相容層（開關與 3 秒自動關閉由它處理）；提示外觀改 ui/toast 的 ToastCard
+import { Snackbar } from 'ui/feedback-compat'
+import { ToastCard } from 'ui/toast'
 import { TextField } from 'ui/text-field'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
@@ -76,7 +78,7 @@ function InventoryWork() {
           horizontal: 'center'
         }}
       >
-        <Alert variant='filled' severity="warning">尚有未完成的盤點草稿，請按右上角按鈕完成盤點。</Alert>
+        <ToastCard className="w-full sm:w-[400px]" variant="warning" title="尚有未完成的盤點草稿，請按右上角按鈕完成盤點。" />
       </Snackbar>
       <AdminPageHeader
         title="盤點作業"

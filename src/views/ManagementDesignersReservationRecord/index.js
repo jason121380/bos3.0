@@ -1,7 +1,8 @@
-// 大型頁：格子尺寸浮層保留相容層 Popper（anchorEl 開關、不因點外側關閉；換 Radix Popover 會改變焦點與關閉行為），Slider 為 ui/slider；
+// 大型頁：格子尺寸浮層改 ui/popover（受控 open＝Boolean(anchorEl)、不接 onOpenChange，點外側／Esc 不關閉，同原 Popper；錨點以 virtualRef 指向 anchorEl，
+// 開啟時不搶焦點、z-index 維持原 20），Slider 為 ui/slider；
 // 載入遮罩改原生 div（#Backdrop 有全域樣式，關閉時同原 Backdrop 以 visibility hidden 保留在畫面上）；Page 根元素不加 ui-root（box-sizing 會改變行事曆格子寬度）
 import { Slider } from 'ui/slider'
-import { Popper } from 'ui/overlay-compat'
+import { Popover, PopoverAnchor, PopoverContent } from 'ui/popover'
 import { LoaderCircle, SlidersHorizontal } from 'lucide-react'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
@@ -266,8 +267,16 @@ function Calendar() {
               <SlidersHorizontal strokeWidth={1.75} />
             </Button>
           </span>
-          <Popper placement='left-start' open={open} anchorEl={anchorEl} style={{ zIndex: 20 }}>
-            <Card className="ui-root flex flex-col gap-4 overflow-visible py-3.5 pl-3.5 pr-5 shadow-float">
+          <Popover open={open}>
+            <PopoverAnchor virtualRef={{ current: anchorEl }} />
+            <PopoverContent
+              side="left"
+              align="start"
+              sideOffset={0}
+              className="z-[20] flex flex-col gap-4 py-3.5 pl-3.5 pr-5"
+              onOpenAutoFocus={e => e.preventDefault()}
+              aria-label="調整格子尺寸"
+            >
               <div className="flex justify-between gap-2">
                 <span className="text-label text-text-secondary [word-break:keep-all]">高度</span>
                 <Slider
@@ -284,8 +293,8 @@ function Calendar() {
                   }}
                 />
               </div>
-            </Card>
-          </Popper>
+            </PopoverContent>
+          </Popover>
         </div>
         {!merchant.loading && orderRange.length ?
           <OrderTable

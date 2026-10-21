@@ -1,7 +1,7 @@
-// 保留相容層：Drawer（底部操作面板，ui 無對應元件）、編輯彈窗（由 Drawer 內開啟，換 Radix Dialog 會與 Drawer 的焦點鎖互搶）；
+// 打卡記錄操作面板（原底部 Drawer）與編輯彈窗皆改 ui/dialog（手機為底部面板）：兩者內容只有按鈕與原生 time 欄位，
+// 沒有 Autocomplete／Select／日期選擇器，兩個 Radix Dialog 疊開由 Radix 管理焦點與圖層（Esc／點背景只關最上層）；
 // 打卡時間格內的分隔線改 Tailwind
-import { Drawer } from 'ui/overlay-compat'
-import { Dialog, DialogTitle, DialogContent, DialogActions } from 'ui/modal-compat'
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { LocationOn as LocationOnIcon, ManageAccountsRounded as ManageAccountsRoundedIcon, DesktopWindowsRounded as DesktopWindows, PhoneIphone as PhoneIphoneIcon, QrCode as QrCodeIcon } from 'ui/icons'
 import { format, setHours, setMinutes } from 'date-fns'
@@ -500,10 +500,12 @@ export default function Results({
           </TableBody>
         </Table>
       </div>
-      <Drawer anchor='bottom' open={open} onClose={handleCloseDrawer}>
-        <div className="ui-root flex flex-col items-center justify-center gap-10 p-4">
-          <div className="flex flex-wrap items-center justify-center gap-6">
-            <h4 className="m-0 text-heading text-text">已選取打卡記錄:  {showSelectDate && `${format(showSelectDate, 'yyyy/MM/dd  HH:mm')} - ${findClockInType(editData.clockInType)}`}</h4>
+      <Dialog open={open} onOpenChange={o => !o && handleCloseDrawer()}>
+        <DialogContent size="sm">
+          <DialogHeader>
+            <DialogTitle>已選取打卡記錄:  {showSelectDate && `${format(showSelectDate, 'yyyy/MM/dd  HH:mm')} - ${findClockInType(editData.clockInType)}`}</DialogTitle>
+          </DialogHeader>
+          <DialogBody className="empty:hidden">
             {googleMapUrl !== '' && (
               <Button asChild variant="secondary" size="sm">
                 <a href={googleMapUrl} target="_blank">
@@ -511,18 +513,20 @@ export default function Results({
                 </a>
               </Button>
             )}
-          </div>
-          <div className="flex justify-center gap-20">
+          </DialogBody>
+          <DialogFooter className="empty:hidden">
             {identity.edit && <Button onClick={() => setOpenModal(true)} variant='primary'>編輯</Button>}
             {identity.delete && <Button variant='danger' disabled={delBtn} onClick={handleDeleteRecord}>刪除</Button>}
-          </div>
-        </div>
-      </Drawer>
-      <Dialog open={openModal} onClose={handleCloseModal}>
-        <DialogTitle style={{ paddingBottom: 0 }}>編輯打卡記錄</DialogTitle>
-        <DialogContent style={{ overflow: 'visible', display: 'flex' }} >
-          <div className="ui-root flex w-[350px] flex-col gap-4">
-            <p className="text-label text-text-secondary">
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={openModal} onOpenChange={o => !o && handleCloseModal()}>
+        <DialogContent size="sm">
+          <DialogHeader>
+            <DialogTitle>編輯打卡記錄</DialogTitle>
+          </DialogHeader>
+          <DialogBody className="flex flex-col gap-4">
+            <p className="m-0 text-label text-text-secondary">
               已選取打卡記錄:  {showSelectDate && `${format(showSelectDate, 'yyyy/MM/dd  HH:mm')} - ${findClockInType(editData.clockInType)}`}
             </p>
             <Field label="選取時間" htmlFor="attendance-edit-time">
@@ -533,21 +537,20 @@ export default function Results({
                 onChange={event => handleChangeTime(event.target.value)}
               />
             </Field>
-          </div>
+          </DialogBody>
+          <DialogFooter>
+            <Button onClick={handleCloseModal} variant="secondary">
+              取消
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleSubmit}
+              disabled={editBtn}
+            >
+              確認
+            </Button>
+          </DialogFooter>
         </DialogContent>
-        <DialogActions className="ui-root" style={{ margin: '10px' }}>
-          <Button onClick={handleCloseModal} variant="secondary">
-            取消
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handleSubmit}
-            disabled={editBtn}
-          >
-            確認
-          </Button>
-
-        </DialogActions>
       </Dialog>
     </Card>
   )

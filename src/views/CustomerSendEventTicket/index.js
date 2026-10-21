@@ -1,4 +1,6 @@
-import { Alert, Snackbar } from 'ui/feedback-compat'
+// Snackbar 保留相容層（開關、5 秒自動關閉、點外面關閉的行為由它處理）；提示外觀改 ui/toast 的 ToastCard
+import { Snackbar } from 'ui/feedback-compat'
+import { ToastCard } from 'ui/toast'
 import { useState, useEffect } from 'react'
 import Page from 'components/Page'
 import { useParams } from 'react-router'
@@ -199,7 +201,7 @@ const CustomerSendEventTicket = () => {
         autoHideDuration={5000}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
-        <Alert elevation={6} severity={openSnack.severity} variant="filled">{openSnack.message}</Alert>
+        <ToastCard className="w-full sm:w-[400px]" variant={openSnack.severity} title={openSnack.message} />
       </Snackbar>
     </Page>
   )
