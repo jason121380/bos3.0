@@ -1,9 +1,11 @@
 // 保護「帳單詳細／重新結帳」：既有帳單的內容要原樣帶回畫面（服務人員、服務、金額），重新結帳／儲存送出的內容要與原帳單一致，
 // 店家開啟重新結帳密碼時必須輸入密碼才送出。GraphQL 全由 MockedProvider（testkit 的模擬 link）回應，不連後端、不改真實帳單。
+// 「編輯顧客資料」改姓名／生日後儲存，送出的要是新姓名與新生日（以 typeLikeBrowser 照瀏覽器方式輸入；fireEvent.change 會誤判成送出舊姓名）。
+// 入金異動權限：登入者角色缺「客戶管理」區塊或權限查詢失敗時，有顧客的帳單照常顯示、且「異動入金」沒有儲值／扣除可選（缺設定＝沒有權限）。
 import React from 'react'
-import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
+import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
-import { renderPage, loginAs, callsOf } from '../../../__tests__/testkit.test'
+import { renderPage, loginAs, callsOf, typeLikeBrowser, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import OrderEdit from '..'
 
 jest.setTimeout(20000)
@@ -235,5 +237,87 @@ describe('帳單詳細：預約成功的帳單', () => {
     await wait(() => expect(callsOf(calls, 'reCheckoutOrder')).toHaveLength(1))
     expect(callsOf(calls, 'reCheckoutOrder')[0].variables.input.orderInput.isPending).toBe(true)
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '掛單成功' })))
+  })
+})
+
+// 編輯顧客資料：改姓名、生日後按「儲存」，送出的 SET_CUSTOMER 要帶新姓名與新生日。
+// 曾以 fireEvent.change 觀察到「送出舊姓名」，查證為測試工具的假象（見 testkit 的 typeLikeBrowser），真實瀏覽器正常；
+// 這個測試以與瀏覽器相同的方式輸入，保護姓名確實會送出。
+const CUSTOMER_DETAIL = {
+  ...CUSTOMER,
+  gender: 'FEMALE',
+  birthday: { year: '80', month: '1', day: '2' },
+  remark: '',
+  source: '',
+  preferDesigner: null,
+  membershipPurchaseRecord: [],
+  isLineBinded: false,
+}
+const editCustomerAndSave = async calls => {
+  // 顧客資料載入後（顧客欄顯示姓名）才開彈窗，彈窗才會帶入這位顧客
+  await wait(() => expect(screen.getByPlaceholderText('顧客姓名/手機號碼/編號').value).toContain('陳小姐'))
+  fireEvent.click(await screen.findByRole('button', { name: '編輯顧客資料' }))
+  const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+  const nameInput = within(modal).getByText('客戶姓名').parentElement.querySelector('input[name="name"]')
+  await wait(() => expect(nameInput).toHaveValue('陳小姐'))
+  typeLikeBrowser(nameInput, '陳美美')
+  expect(nameInput).toHaveValue('陳美美')
+  typeLikeBrowser(modal.querySelector('input[name="year"]'), '81')
+  fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
+  await wait(() => expect(callsOf(calls, 'SET_CUSTOMER')).toHaveLength(1))
+  return callsOf(calls, 'SET_CUSTOMER')[0].variables.input
+}
+
+describe('帳單詳細：編輯顧客資料', () => {
+  it('改姓名與生日後儲存，送出新姓名與新生日', async () => {
+    const { calls } = setup({ order: makeOrder({ customer: CUSTOMER }), FETCH_CUSTOMER_DETAIL: { customer: CUSTOMER_DETAIL }, SET_CUSTOMER: { updateCustomer: true } })
+    await screen.findByText(/帳單詳細 \(A123\)/)
+    const input = await editCustomerAndSave(calls)
+    expect(input).toEqual(
+      expect.objectContaining({ customerId: CUSTOMER.id, name: '陳美美', birthday: { year: '81', month: '1', day: '2' } })
+    )
+  })
+})
+
+// 角色設定缺「客戶管理」區塊（舊角色、後台新增區塊前建立的角色）或權限查詢失敗時，原本直接取 .pageAuthority 拋錯，
+// 有顧客的帳單整頁變成錯誤畫面。現在：頁面照常顯示，缺設定一律視為沒有入金權限（最小權限），不會因此多出權限。
+describe('帳單詳細：入金異動權限', () => {
+  const roleWith = sections => ({
+    getMerchantAuthorities: [{ id: 'auth-1', authoritySettings: JSON.stringify(sections) }],
+  })
+  const openWalletDeposit = async ({ settle }) => {
+    await screen.findByText(/帳單詳細 \(A123\)/)
+    await settle()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    fireEvent.click(await screen.findByRole('button', { name: '異動入金' }))
+    // 彈窗標題（h3）；頁面上的「異動入金」按鈕不算
+    return (await screen.findByText('異動入金', { selector: 'h3' })).closest('.MuiModal-root')
+  }
+  const walletActions = modal => ['儲值', '扣除'].filter(label => within(modal).queryByText(label, { selector: 'button' }))
+
+  it('角色缺「客戶管理」區塊：頁面照常顯示，異動入金沒有儲值／扣除可選', async () => {
+    const page = setup({
+      order: makeOrder({ customer: CUSTOMER }),
+      GET_MERCHANT_AUTHORITIES: roleWith([{ pageTitle: '櫃檯作業', pageAuthority: [{ pageName: '打帳單', authority: true }] }]),
+    })
+    const modal = await openWalletDeposit(page)
+    expect(walletActions(modal)).toEqual([])
+  })
+
+  it('權限查詢失敗：頁面照常顯示，異動入金沒有儲值／扣除可選', async () => {
+    const page = setup({ order: makeOrder({ customer: CUSTOMER }), GET_MERCHANT_AUTHORITIES: new Error('權限讀取失敗') })
+    const modal = await openWalletDeposit(page)
+    expect(walletActions(modal)).toEqual([])
+  })
+
+  it('角色只有「入金(儲值)」權限：只能選儲值', async () => {
+    const page = setup({
+      order: makeOrder({ customer: CUSTOMER }),
+      GET_MERCHANT_AUTHORITIES: roleWith([
+        { pageTitle: '客戶管理', pageAuthority: [{ pageName: '入金(儲值)', authority: true }, { pageName: '入金(扣除)', authority: false }] },
+      ]),
+    })
+    const modal = await openWalletDeposit(page)
+    expect(walletActions(modal)).toEqual(['儲值'])
   })
 })

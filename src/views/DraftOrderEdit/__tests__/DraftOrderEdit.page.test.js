@@ -1,9 +1,10 @@
 // 保護「掛單詳細」：掛單（暫存帳單）帶回原內容、「儲存」仍是掛單（isPending: true）、「結帳」才正式成立（isPending: false），
 // 店家關閉掛單功能時要導回打帳單。GraphQL 全由 MockedProvider（testkit 的模擬 link）回應，不連後端、不改真實帳單。
+// 「編輯顧客資料」改姓名／生日後儲存，送出的要是新姓名與新生日（以 typeLikeBrowser 照瀏覽器方式輸入；fireEvent.change 會誤判成送出舊姓名）。
 import React from 'react'
-import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
+import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
-import { renderPage, loginAs, callsOf, currentLocation } from '../../../__tests__/testkit.test'
+import { renderPage, loginAs, callsOf, currentLocation, typeLikeBrowser } from '../../../__tests__/testkit.test'
 import DraftOrderEdit from '..'
 
 jest.setTimeout(20000)
@@ -122,12 +123,12 @@ const fixtures = ({ order = makeOrder(), password = false, ...overrides } = {}) 
 
 const CUSTOMER = { id: 'customer-1', no: 'C01', name: '陳小姐', cellphone: '0912345678' }
 
-const draftFixtures = ({ disablePendingOrder = false, ...options } = {}) => ({
+const draftFixtures = ({ disablePendingOrder = false, FETCH_CUSTOMER_DETAIL_IN_ORDER_DETAIL = { customer: null }, ...options } = {}) => ({
   ...fixtures(options),
   GET_DISBLE_PENDING_ORDER: { getParameterAboutSettingFunction: { disablePendingOrder } },
   GET_PRINT_WINDOW_CLOSURE_DELAYED: { getParameterOrderCreateSetting: { isPrintWindowClosureDelayed: false } },
   // 列印用明細
-  FETCH_CUSTOMER_DETAIL_IN_ORDER_DETAIL: { customer: null },
+  FETCH_CUSTOMER_DETAIL_IN_ORDER_DETAIL,
   FETCH_DESIGNER_IN_ORDER_DETAIL: { merchantDesigner: { name: DESIGNER.userName, nickName: DESIGNER.userNickName } },
   GET_SERVICES_IN_ORDER_DETAIL: { services: { data: [SERVICE] } },
   GET_DESIGNER_NAME_DISPLAY_ON_INVOICE: { getDesignerNameDisplayOnInvoice: 'NAME' },
@@ -212,5 +213,50 @@ describe('掛單詳細：儲存與結帳', () => {
     expect(currentLocation()).toBe('/draft-order/order-1')
     await wait(() => expect(checkout).not.toBeDisabled())
     expect(callsOf(calls, 'reCheckoutOrder')).toHaveLength(1)
+  })
+})
+
+// 編輯顧客資料：改姓名、生日後按「儲存」，送出的 SET_CUSTOMER 要帶新姓名與新生日。
+// 曾以 fireEvent.change 觀察到「送出舊姓名」，查證為測試工具的假象（見 testkit 的 typeLikeBrowser），真實瀏覽器正常；
+// 這個測試以與瀏覽器相同的方式輸入，保護姓名確實會送出。
+const CUSTOMER_DETAIL = {
+  ...CUSTOMER,
+  gender: 'FEMALE',
+  birthday: { year: '80', month: '1', day: '2' },
+  remark: '',
+  source: '',
+  preferDesigner: null,
+  membershipPurchaseRecord: [],
+  isLineBinded: false,
+}
+const editCustomerAndSave = async calls => {
+  // 顧客資料載入後（顧客欄顯示姓名）才開彈窗，彈窗才會帶入這位顧客
+  await wait(() => expect(screen.getByPlaceholderText('顧客姓名/手機號碼/編號').value).toContain('陳小姐'))
+  fireEvent.click(await screen.findByRole('button', { name: '編輯顧客資料' }))
+  const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+  const nameInput = within(modal).getByText('客戶姓名').parentElement.querySelector('input[name="name"]')
+  await wait(() => expect(nameInput).toHaveValue('陳小姐'))
+  typeLikeBrowser(nameInput, '陳美美')
+  expect(nameInput).toHaveValue('陳美美')
+  typeLikeBrowser(modal.querySelector('input[name="year"]'), '81')
+  fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
+  await wait(() => expect(callsOf(calls, 'SET_CUSTOMER')).toHaveLength(1))
+  return callsOf(calls, 'SET_CUSTOMER')[0].variables.input
+}
+
+describe('掛單詳細：編輯顧客資料', () => {
+  it('改姓名與生日後儲存，送出新姓名與新生日', async () => {
+    const { calls } = setup({
+      order: makeOrder({ customer: CUSTOMER }),
+      FETCH_CUSTOMER_DETAIL: { customer: CUSTOMER_DETAIL },
+      // 列印明細也查同一位顧客（同一個快取欄位），要回同一位，不能回 null
+      FETCH_CUSTOMER_DETAIL_IN_ORDER_DETAIL: { customer: CUSTOMER_DETAIL },
+      SET_CUSTOMER: { updateCustomer: true },
+    })
+    await screen.findByText(/掛單詳細 \(A123\)/)
+    const input = await editCustomerAndSave(calls)
+    expect(input).toEqual(
+      expect.objectContaining({ customerId: CUSTOMER.id, name: '陳美美', birthday: { year: '81', month: '1', day: '2' } })
+    )
   })
 })
