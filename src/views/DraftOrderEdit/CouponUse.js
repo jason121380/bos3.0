@@ -3,10 +3,9 @@ import { CheckboxField } from 'ui/checkbox'
 import CustomerTicketRecordAutoComplete from 'components/CustomerTicketRecordAutoComplete'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import billContext from 'context/keyInContext'
-import { useFetchLazyTicketRecords } from 'hooks/useFetchTicketRecords'
 import idx from 'idx'
-import cloneDeep from 'lodash/cloneDeep'
 import React, { Fragment } from 'react'
+import useCouponUseRow from 'views/OrderShared/useCouponUseRow'
 
 // 版面比照打帳單（views/OrderCreate/styles/CouponUse）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
 // 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px）。className 傳給自動完成元件（原以 css={className} 套在根節點）
@@ -30,104 +29,11 @@ export default function CouponUse({
   onChange,
 }) {
   const { bill, orderId } = React.useContext(billContext)
-  const [price, setPrice] = React.useState(0)
-  const [ticketOrderHelpers, setTicketOrderHelpers] = React.useState(
-    couponUsage.useTicketOrderHelpers
-  )
-  const ticketRecord = useFetchLazyTicketRecords()
-  React.useEffect(() => {
-    if (!ticketRecord.response.loading && ticketRecord.response.data) {
-      setTicketOrderHelpers(prev => {
-        const next = prev.concat(
-          ticketRecord.response.data.ticketRecords.data
-            .map(data => data.service.helperDeductionSetting)
-            .reduce((a, b) => a.concat(b), [])
-            .map(data =>
-              data.nameList.map(name => {
-                return {
-                  type: `${data.type}-${name}`,
-                  helperDeductiontype: data.helperDeductionType,
-                }
-              })
-            )
-            .reduce((a, b) => a.concat(b), [])
-            .filter(data => !prev.find(i => i.type === data.type))
-            .map(data => ({
-              type: data.type,
-              isDesignate: false,
-              helperId: '',
-              helperDeductiontype: data.helperDeductiontype,
-            }))
-        )
-        return next
-      })
-    }
-  }, [ticketRecord.response.loading, ticketRecord.response.data])
-  const useFetchTicketRecodRef = React.useRef(ticketRecord.fetchTicketRecod)
+  // 金額、助理欄位與選卡券／改助理／清除的處理（OrderShared/useCouponUseRow，與帳單詳細／掛單詳細共用）
+  const {
+    price, ticketOrderHelpers, handleCustomerTicketChange, handleAssistantChange, handleClear, displayFloat,
+  } = useCouponUseRow({ index, couponUsage, onChange, onClear })
 
-  React.useEffect(() => {
-    setPrice(couponUsage.price)
-    if (couponUsage.customerTicketId)
-      useFetchTicketRecodRef.current({
-        ids: [couponUsage.customerTicketId],
-      })
-    // setTicketOrderHelpers(couponUsage.useTicketOrderHelpers)
-  }, [couponUsage])
-
-  function handleCustomerTicketChange(value) {
-    setPrice(idx(value, _ => _.price))
-    setTicketOrderHelpers(
-      idx(value, _ => {
-        return _.service.helperDeductionSetting.length > 0
-          ? _.service.helperDeductionSetting
-            .map(data =>
-              data.nameList.map(name => ({
-                type: `${data.type} - ${name}`,
-                helperId: '',
-                isDesignate: false,
-                helperDeductiontype: data.helperDeductionType,
-              }))
-            )
-            .reduce((a, b) => a.concat(b))
-          : []
-      })
-    )
-    onChange({ key: 'customerTicketId', value: idx(value, _ => _.id), index })
-  }
-  function handleAssistantChange({ value, assistantIndex, key }) {
-    const newTicketOrderHelpers = cloneDeep(ticketOrderHelpers)
-    newTicketOrderHelpers[assistantIndex][key] = value
-    setTicketOrderHelpers(newTicketOrderHelpers)
-    onChange({
-      index,
-      value: newTicketOrderHelpers.filter(d => d.helperId),
-      key: 'useTicketOrderHelpers',
-    })
-  }
-  function handleClear() {
-    let newTicketOrderHelpers = cloneDeep(ticketOrderHelpers)
-    newTicketOrderHelpers = newTicketOrderHelpers.map(data => ({
-      ...data,
-      helperId: '',
-      isDesignate: false,
-    }))
-    setTicketOrderHelpers(newTicketOrderHelpers)
-    onClear({
-      index,
-    })
-  }
-
-  const displayFloat = num => {
-    if (String(num).length > 7) {
-      let display = Number(num).toFixed(1)
-      if (Number(display) === 0) {
-        display = 0
-      }
-      return display
-    } else {
-      return num
-    }
-  }
 
   return (
     <Fragment>

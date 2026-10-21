@@ -2,25 +2,21 @@ import billContext from 'context/keyInContext'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
 import idx from 'idx'
-import { Fragment, useEffect, useContext, useState } from 'react'
+import { Fragment, useEffect, useContext } from 'react'
 import { useHistory } from 'react-router'
 import useFetchCreateOrder from 'hooks/useFetchCreateOrder'
 import useFetchDestroyQueueById from 'hooks/useFetchDestroyQueueById'
 import { handleTidyBill, checkServicesOrders, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
 import produce from 'immer'
 import giveBonus from 'helper/giveBonus'
-import { ChevronUp } from 'lucide-react'
 import { Button } from 'ui/button'
-import { Card, CardHeader, CardTitle } from 'ui/card'
-import { formatNumber, formatMoney } from 'ui/format'
+import { SummaryDetails, EditSummaryCard, BillActions, StickySummaryBar } from 'views/OrderShared/BillSummary'
 
 export default function Footer({ enable }) {
   const { bill, orderId, setBill, bonusSetting, isLineBinded, bonusRewardWithLINE } = useContext(billContext)
   const history = useHistory()
   const { createOrder } = useFetchCreateOrder()
   const { destroyQueueById } = useFetchDestroyQueueById()
-  // 手機版：金額彙總明細收在底部固定列，點展開鈕往上展開（純畫面開合，比照打帳單）
-  const [summaryOpen, setSummaryOpen] = useState(false)
 
   const handleReCheckoutOrder = () => {
     const tmp = handleTidyBill(bill)
@@ -212,13 +208,6 @@ export default function Footer({ enable }) {
     isLineBinded, setBill
   ])
 
-  // 金額彙總：各數值的運算式與舊版相同，只加千分位與新版樣式
-  const Row = ({ label, value }) => (
-    <div className="flex items-center justify-between gap-3 py-1.5 text-body">
-      <span className="whitespace-nowrap text-text-secondary">{label}</span>
-      <span className="whitespace-nowrap tabular-nums text-text">{formatMoney(value)}</span>
-    </div>
-  )
   // 業績合計、現金應收：運算式與舊版逐字相同，只是算一次，下方彙總卡與底部固定列共用同一個值（比照打帳單 PannelPerformance）
   const performanceTotal = Math.round(
     serviceTotalPrice +
@@ -253,103 +242,54 @@ export default function Footer({ enable }) {
     ? `尚缺：${missingForRetry.join('、')}`
     : !enable ? '資料載入中，請稍候' : ''
 
-  // 消費明細／付款與折抵：彙總卡與手機底部展開共用同一份畫面
+  // 消費明細／付款與折抵：彙總卡與手機底部展開共用同一份畫面（排版在 OrderShared/BillSummary，數值運算式在本檔）
   const details = (
-    <>
-      <div className="flex flex-col">
-        <p className="m-0 pb-1 text-label font-medium text-text-tertiary">消費明細</p>
-        <Row label="服務消費" value={serviceTotalPrice} />
-        <Row label="店販消費" value={merchantSellTotalPrice} />
-        <Row label="預收卡販賣" value={couponSellPrice} />
-        <Row label="使用預收卡" value={Math.round(couponUsageTotalPrice)} />
-        <Row label="會員卡販賣" value={merberShipCardTotalPrice} />
-      </div>
-      <div className="flex flex-col">
-        <p className="m-0 pb-1 text-label font-medium text-text-tertiary">付款與折抵</p>
-        <Row label="扣入金" value={bill.walletPay} />
-        <Row label="其他付款方式" value={bill.amountByOtherPay} />
-      </div>
-    </>
+    <SummaryDetails
+      spending={[
+        { label: '服務消費', value: serviceTotalPrice },
+        { label: '店販消費', value: merchantSellTotalPrice },
+        { label: '預收卡販賣', value: couponSellPrice },
+        { label: '使用預收卡', value: Math.round(couponUsageTotalPrice) },
+        { label: '會員卡販賣', value: merberShipCardTotalPrice },
+      ]}
+      payments={[
+        { label: '扣入金', value: bill.walletPay },
+        { label: '其他付款方式', value: bill.amountByOtherPay },
+      ]}
+    />
   )
   return (
     <Fragment>
-    {/* 金額彙總卡（放在 Pannel 下方右欄，比照打帳單 PannelPerformance）：「重試」在合計下方 */}
-    <Card className="ui-root w-full self-start">
-      {/* 手機版（< 640px）不顯示彙總明細與合計，改由底部固定列展開；卡片只留「重試」 */}
-      <CardHeader className="max-sm:hidden">
-        <CardTitle>金額彙總</CardTitle>
-      </CardHeader>
-      <div className="grid grid-cols-2 gap-x-6 gap-y-3 px-5 pt-2 max-sm:hidden">
-        {details}
-      </div>
-      <div className="mt-3 flex flex-col gap-4 border-0 border-t border-solid border-border px-5 py-4 max-sm:mt-0 max-sm:border-t-0">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4 max-sm:hidden">
-          <div className="flex flex-col gap-1">
-            <span className="text-label text-text-secondary">業績合計</span>
-            <span className="text-heading tabular-nums text-text">
-              {formatNumber(performanceTotal)}
+      {/* 金額彙總卡（放在 Pannel 下方右欄，比照打帳單 PannelPerformance）：「重試」在合計下方；
+          手機版（< 640px）不顯示彙總明細與合計，改由底部固定列展開；卡片只留「重試」 */}
+      <EditSummaryCard
+        details={details}
+        performanceTotal={performanceTotal}
+        cashDue={cashDue}
+        actions={
+          <BillActions reason={retryDisabledReason}>
+            <span title={retryDisabledReason || undefined} className="inline-flex">
+              {/* 停用時改成深字灰底（比照打帳單「結帳」，原本淡藍底白字對比不足） */}
+              <Button
+                variant="primary"
+                size="lg"
+                className="px-6 disabled:bg-surface-active disabled:text-text-secondary disabled:opacity-100"
+                onClick={handleReCheckoutOrder}
+                disabled={vaild || !enable}
+                data-testid="checkout"
+              >
+                重試
+              </Button>
             </span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-label text-text-secondary">現金應收</span>
-            <span className="text-display tabular-nums text-text">
-              {formatNumber(cashDue)}
-            </span>
-          </div>
-        </div>
-        <div className="flex flex-col items-end gap-1.5 max-sm:w-full">
-          <span title={retryDisabledReason || undefined} className="inline-flex">
-            {/* 停用時改成深字灰底（比照打帳單「結帳」，原本淡藍底白字對比不足） */}
-            <Button
-              variant="primary"
-              size="lg"
-              className="px-6 disabled:bg-surface-active disabled:text-text-secondary disabled:opacity-100"
-              onClick={handleReCheckoutOrder}
-              disabled={vaild || !enable}
-              data-testid="checkout"
-            >
-              重試
-            </Button>
-          </span>
-          {retryDisabledReason && (
-            <p role="status" className="m-0 text-caption text-warning max-sm:text-right">
-              {retryDisabledReason}
-            </p>
-          )}
-        </div>
-      </div>
-    </Card>
-    {/* 底部固定列（比照打帳單）：長帳單捲動時，業績合計與現金應收隨時看得到。
-        左側讓出側欄（lg 以上 240px）；手機讓出底部導覽列（56px＋iPhone 安全區）；列印時不顯示。
-        手機版（< 640px）不顯示上方彙總明細，改由左側展開鈕往上展開完整明細 */}
-    <div className="ui-root fixed inset-x-0 bottom-[calc(56px+env(safe-area-inset-bottom))] z-[1050] border-0 border-t border-solid border-border bg-background px-4 py-2 shadow-[0_-2px_8px_rgba(0,0,0,0.06)] print:hidden lg:bottom-0 lg:left-[var(--sidebar-w,264px)]">
-      {summaryOpen && (
-        <div id="queue-order-summary-details" className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto border-0 border-b border-solid border-border pb-2 sm:hidden">
-          <p className="m-0 pb-1 pt-1 text-heading font-bold text-text">金額彙總</p>
-          {details}
-        </div>
-      )}
-      <div className="mx-auto flex max-w-[1200px] items-center justify-end gap-3 whitespace-nowrap sm:gap-8">
-        <button
-          type="button"
-          aria-label="金額彙總明細"
-          aria-expanded={summaryOpen}
-          aria-controls="queue-order-summary-details"
-          onClick={() => setSummaryOpen(!summaryOpen)}
-          className="mr-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-text-secondary hover:bg-surface-hover sm:hidden"
-        >
-          <ChevronUp className={summaryOpen ? 'h-5 w-5 rotate-180 transition-transform' : 'h-5 w-5 transition-transform'} strokeWidth={1.75} />
-        </button>
-        <div className="flex items-baseline gap-1.5 sm:gap-2">
-          <span className="text-label text-text-secondary max-sm:text-caption">業績合計</span>
-          <span className="text-heading tabular-nums text-text">{formatMoney(performanceTotal)}</span>
-        </div>
-        <div className="flex items-baseline gap-1.5 sm:gap-2">
-          <span className="text-label text-text-secondary max-sm:text-caption">現金應收</span>
-          <span className="text-heading font-semibold tabular-nums text-text">{formatMoney(cashDue)}</span>
-        </div>
-      </div>
-    </div>
+          </BillActions>
+        }
+      />
+      <StickySummaryBar
+        detailsId="queue-order-summary-details"
+        details={details}
+        performanceTotal={performanceTotal}
+        cashDue={cashDue}
+      />
     </Fragment>
   )
 }

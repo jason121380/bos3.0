@@ -18,6 +18,7 @@ import useFetchCustomer from 'hooks/useFetchCustomer'
 import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import MembershipCardList from 'components/MembershipCardList'
 import lineIcon from 'assets/images/LINE_APP.png'
+import { emptyCustomerForm, quickAddCustomerInput, customerFilterOptions, getCustomerOptionLabel, renderCustomerOption } from 'views/OrderShared/customerField'
 import AddCustomerModal from './AddCustomerModal'
 
 // 原 emotion styles 逐值轉 Tailwind。dateInput／customerInput／employeeInput 的 '& .MuiOutlinedInput-root'（底色、fieldset 框線、圖示）
@@ -78,28 +79,7 @@ export default function Head() {
     stayInCheckoutWithoutCustomer !== null ? stayInCheckoutWithoutCustomer : false
   )
   // set customer for edit or add customer modal
-  const [customer, setCustomer] = useState({
-    customerId: '',
-    category: '',
-    name: '',
-    cellphone: '',
-    birthday: {
-      year: '',
-      month: '',
-      day: '',
-    },
-    OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-      ? JSON.parse(localStorage.getItem('userMerchant')).id
-      : null,
-    gender: 'MALE',
-    no: '',
-    nickName: '',
-    PreferDesignerId: '',
-    email: '',
-    address: '',
-    lineId: '',
-    remark: '',
-  })
+  const [customer, setCustomer] = useState(emptyCustomerForm())
 
   // customer autocomplete filter component
   const filter = createFilterOptions()
@@ -155,28 +135,7 @@ export default function Head() {
         })
       )
       setValue('')
-      setCustomer({
-        customerId: '',
-        category: '',
-        name: '',
-        cellphone: '',
-        birthday: {
-          year: '',
-          month: '',
-          day: '',
-        },
-        OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-          ? JSON.parse(localStorage.getItem('userMerchant')).id
-          : null,
-        gender: 'MALE',
-        no: '',
-        nickName: '',
-        PreferDesignerId: '',
-        email: '',
-        address: '',
-        lineId: '',
-        remark: '',
-      })
+      setCustomer(emptyCustomerForm())
 
       setTmpCustomerKeyword('')
     }
@@ -195,20 +154,7 @@ export default function Head() {
     setOpenModal(true)
     if (bill.customerCellphone !== '') {
       addCustomer({
-        input: {
-          OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-            ? JSON.parse(localStorage.getItem('userMerchant')).id
-            : null,
-          gender: 'MALE',
-          cellphone: bill.customerCellphone,
-          birthday: {
-            year: '',
-            month: '',
-            day: '',
-          },
-          name: '',
-          category: '',
-        },
+        input: quickAddCustomerInput(bill.customerCellphone),
       }).then(res => {
         setCustomer({
           ...customer,
@@ -427,70 +373,15 @@ export default function Head() {
                       setTmpCustomerKeyword('')
                       setMembershipPurchase([])
                       setIsLineBinded(false)
-                      setCustomer({
-                        customerId: '',
-                        category: '',
-                        name: '',
-                        cellphone: '',
-                        birthday: {
-                          year: '',
-                          month: '',
-                          day: '',
-                        },
-                        OfficialBrandMerchantId: localStorage.getItem('userMerchant')
-                          ? JSON.parse(localStorage.getItem('userMerchant')).id
-                          : null,
-                        gender: 'MALE',
-                        no: '',
-                        nickName: '',
-                        PreferDesignerId: '',
-                        email: '',
-                        address: '',
-                        lineId: '',
-                        remark: '',
-                      })
+                      setCustomer(emptyCustomerForm())
                     }
                   }}
-                  // determines the filtered options to be rendered on search
-                  filterOptions={(options, params) => {
-                    const filtered = filter(options, params)
-                    const { inputValue } = params
-                    const isExisting = options.some(option => inputValue === option.cellphone)
-                    if (inputValue !== '' && !isExisting) {
-                      filtered.push({
-                        inputValue,
-                        cellphone: `新增 "${inputValue}"`,
-                      })
-                    }
-                    return filtered
-                  }}
+                  // 選項的過濾、文字與列表項目：OrderShared/customerField（與其他兩頁共用）
+                  filterOptions={customerFilterOptions(filter)}
                   handleHomeEndKeys
                   options={options}
-                  // It's used to fill the input
-                  getOptionLabel={option => {
-                    // Value selected with enter, right from the input
-                    if (typeof option === 'string') {
-                      return option
-                    }
-                    // Add "xxx" option created dynamically
-                    if (option.inputValue) {
-                      return option.inputValue
-                    }
-                    // Regular option
-                    return option.name === undefined || option.no === undefined
-                      ? option.cellphone
-                      : option.name + '/' + option.cellphone + '/' + option.no
-                  }}
-                  // Render the option, use getOptionLabel by default
-                  renderOption={({ key, ...props }, option) => {
-                    return (
-                      <li key={option.id || option.cellphone} {...props}>
-                        {option.name === undefined || option.no === undefined
-                          ? option.cellphone
-                          : option.name + '/' + option.cellphone + '/' + option.no}
-                      </li>
-                    )
-                  }}
+                  getOptionLabel={getCustomerOptionLabel}
+                  renderOption={renderCustomerOption}
                   freeSolo
                   renderInput={params => (
                     <TextField

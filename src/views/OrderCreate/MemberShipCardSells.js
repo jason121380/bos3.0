@@ -7,16 +7,14 @@ import MemberShipCardAutoComplete from "components/MemberShipCardAutoComplete";
 import ThirdPartyAutoComplete from "components/ThirdPartyAutoComplete";
 import idx from "idx";
 import React, { Fragment, useState, useEffect, useContext } from "react";
-import produce from "immer";
 import TeachingModeContext from "context/teachingModeContext";
 import { useFetchThirdPartysForCreateOrder } from "hooks/useFetchMerchant";
 import { addDays, addYears, format, startOfDay } from "date-fns";
-import { useFetchGetMembershipsForModal } from "hooks/useFetchGetMembership";
-import { useFetchGetMembershipCategories } from "hooks/useFetchGetMembershipCategory";
 import { MobileDatePicker } from 'ui/date-picker'
 import billContext from 'context/keyInContext'
 
 import MemberShipCardSellsModal from "views/OrderShared/MemberShipCardSellsModal";
+import { useMembershipPicker } from "views/OrderShared/useItemPicker";
 
 const styles = {
   merchantSells: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
@@ -60,35 +58,9 @@ const MemberShipCardSells = ({
   const thirdPartyRef = React.useRef();
   const remarkRef = React.useRef();
   const [focus, setFocus] = React.useState("");
-  const [productsModalOpen, setProductsModalOpen] = useState(false);
-  const [selectedCategorie, setSelectedCategorie] = useState([]);
-  const [selectedCategorieName, setSelectedCategorieName] = useState([]);
-  const [productList, setProductList] = useState([]);
-  const [productCategories, setProductCategories] = useState([]);
-  const [setting, setSetting] = useState({
-    isAvailableForSale: true,
-    pageLimit: 50,
-    pageOffset: 0,
-    keyword: "",
-    categoryUUIds: [],
-  });
+  // 「從清單選擇」彈窗的狀態與清單查詢（OrderShared/useItemPicker，四頁共用）
+  const { productsModalOpen, handleOpenProductsModal, modalProps: pickerModalProps } = useMembershipPicker();
   const [dateError, setDateError] = useState('')
-  const products = useFetchGetMembershipsForModal(setting);
-
-  const productCategoriesData = useFetchGetMembershipCategories({});
-  useEffect(() => {
-    if (!products.loading && !productCategoriesData.loading) {
-      const productList = idx(products, (_) => _.data.memberships);
-      const productCategories = idx(
-        productCategoriesData,
-        (_) => _.data.membershipCategories
-      );
-      setProductList({
-        ...productList,
-      });
-      setProductCategories(productCategories);
-    }
-  }, [products.loading, products.data, productCategoriesData.loading]);
 
   React.useEffect(() => {
     if (expanded && focusFirstField) {
@@ -142,30 +114,6 @@ const MemberShipCardSells = ({
         break;
     }
   }, [focus]);
-
-  const handleOpenProductsModal = () => {
-    if (!products.loading) {
-      setProductsModalOpen(!productsModalOpen);
-    }
-  };
-
-  const handleCloseProductsModal = () => {
-    setProductsModalOpen(false);
-    setSelectedCategorie([]);
-    setSelectedCategorieName([]);
-    setSetting({
-      keyword: "",
-      categoryUUIds: [],
-    });
-  };
-
-  const handlePageChange = ({ value, key }) => {
-    setSetting(
-      produce((draft) => {
-        draft[key] = value;
-      })
-    );
-  };
 
   const checkMessage = (msg) => {
     switch (msg) {
@@ -444,21 +392,11 @@ const MemberShipCardSells = ({
       )}
       {productsModalOpen && (
         <MemberShipCardSellsModal
-          productsModalOpen={productsModalOpen}
-          productList={productList}
-          productCategories={productCategories}
-          closeModal={handleCloseProductsModal}
-          selectedCategorie={selectedCategorie}
-          setSelectedCategorie={setSelectedCategorie}
-          selectedCategorieName={selectedCategorieName}
-          setSelectedCategorieName={setSelectedCategorieName}
-          setSetting={setSetting}
+          {...pickerModalProps}
           onCardChange={onCardChange}
           sells={sells}
           productLength={productLength}
           sellsItem={sellsItem}
-          onPageChange={handlePageChange}
-          setProductsModalOpen={setProductsModalOpen}
         />
       )}
     </Fragment>
