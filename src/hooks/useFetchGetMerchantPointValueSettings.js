@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-const GET_MERCHANT_POINT_VALUE_SETTING = gql`
+const GET_MERCHANT_POINT_VALUE_SETTING = settingsQuery(gql`
   query GET_MERCHANT_POINT_VALUE_SETTING {
     getMerchantPointValueSettings {
       id
@@ -14,15 +15,15 @@ const GET_MERCHANT_POINT_VALUE_SETTING = gql`
       }
     }
   }
-`
+`)
 
 export default function useFetchGetMerchantPointValueSettings() {
   return useQuery(GET_MERCHANT_POINT_VALUE_SETTING, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_MERCHANT_POINT_VALUE_SETTING_FOR_SELECT = gql`
+const GET_MERCHANT_POINT_VALUE_SETTING_FOR_SELECT = settingsQuery(gql`
   query GET_MERCHANT_POINT_VALUE_SETTING_FOR_SELECT {
     getMerchantPointValueSettings {
       id
@@ -31,11 +32,11 @@ const GET_MERCHANT_POINT_VALUE_SETTING_FOR_SELECT = gql`
       retrievePointWay
     }
   }
-`
+`)
 
 export function useFetchGetMerchantPointValueSettingsForSelect() {
   return useQuery(GET_MERCHANT_POINT_VALUE_SETTING_FOR_SELECT, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 

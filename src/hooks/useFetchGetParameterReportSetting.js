@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-const GET_PARAMETER_REPORT_SETTING = gql`
+const GET_PARAMETER_REPORT_SETTING = settingsQuery(gql`
   query GET_PARAMETER_REPORT_SETTING {
     getParameterReportSetting {
       isPriceDisplayOnDailyReport
@@ -31,68 +32,68 @@ const GET_PARAMETER_REPORT_SETTING = gql`
       nonCashDisplay
     }
   }
-`
+`)
 
 export default function useFetchGetParameterReportSetting() {
   return useQuery(GET_PARAMETER_REPORT_SETTING, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_CARPTDISPLAY = gql`
+const GET_CARPTDISPLAY = settingsQuery(gql`
   query GET_CARPTDISPLAY {
     getParameterReportSetting {
       CARPTDisplay
     }
   }
-`
+`)
 
 
 export function useFetchGetCARPTDISPLAY() {
   return useQuery(GET_CARPTDISPLAY, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_DRR_DATA_DISPLAY = gql`
+const GET_DRR_DATA_DISPLAY = settingsQuery(gql`
   query GET_DRR_DATA_DISPLAY {
     getParameterReportSetting {
       isDRROCDisplay
       isDRRPEVDisplay
     }
   }
-`
+`)
 
 export function useFetchGetDRRDataDisplay() {
   return useQuery(GET_DRR_DATA_DISPLAY, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_EMPLOYEECLOCKIN_DISPLAY = gql`
+const GET_EMPLOYEECLOCKIN_DISPLAY = settingsQuery(gql`
   query GET_EMPLOYEECLOCKIN_DISPLAY {
     getParameterReportSetting {
       isEDCIFilterDisplay
     }
   }
-`
+`)
 
 export function useFetchGetEmployeeClockInDisplay() {
   return useQuery(GET_EMPLOYEECLOCKIN_DISPLAY, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_NONCASH_DISPLAY = gql`
+const GET_NONCASH_DISPLAY = settingsQuery(gql`
   query GET_NONCASH_DISPLAY {
     getParameterReportSetting {
       nonCashDisplay
     }
   }
-`
+`)
 
 export function useFetchGetNonCashDisplay() {
   return useQuery(GET_NONCASH_DISPLAY, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

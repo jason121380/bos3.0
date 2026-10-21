@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-const GET_MERCHANT_PASSWORD = gql`
+const GET_MERCHANT_PASSWORD = settingsQuery(gql`
   query GET_MERCHANT_PASSWORD {
     merchantPassword {
       superPassword
@@ -46,15 +47,15 @@ const GET_MERCHANT_PASSWORD = gql`
       }
     }
   }
-`
+`)
 
 export default function useFetchMerchantPassword() {
   return useQuery(GET_MERCHANT_PASSWORD, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_MERCHANT_PASSWORD_IS_USING = gql`
+const GET_MERCHANT_PASSWORD_IS_USING = settingsQuery(gql`
   query GET_MERCHANT_PASSWORD_IS_USING {
     merchantPassword {
       reCheckoutOrder {
@@ -80,15 +81,15 @@ const GET_MERCHANT_PASSWORD_IS_USING = gql`
       }
     }
   }
-`
+`)
 
 export function useFetchMerchantPasswordIsUsing() {
   return useQuery(GET_MERCHANT_PASSWORD_IS_USING, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_STOCK_IN_USING = gql`
+const GET_STOCK_IN_USING = settingsQuery(gql`
   query GET_STOCK_IN_USING {
     merchantPassword {
       purchaseStockIn {
@@ -99,15 +100,15 @@ const GET_STOCK_IN_USING = gql`
       }
     }
   }
-`
+`)
 
 export function useFetchGetStockInIsUsing() {
   return useQuery(GET_STOCK_IN_USING, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_DELETE_ORDER_USING= gql`
+const GET_DELETE_ORDER_USING= settingsQuery(gql`
   query GET_DELETE_ORDER_USING {
     merchantPassword {
       deleteOrder {
@@ -115,15 +116,15 @@ const GET_DELETE_ORDER_USING= gql`
       }
     }
   }
-`
+`)
 
 export function useFetchGetDeleteOrderUsing() {
   return useQuery(GET_DELETE_ORDER_USING, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_CANCEL_BOOKING_USING = gql`
+const GET_CANCEL_BOOKING_USING = settingsQuery(gql`
   query GET_CANCEL_BOOKING_USING {
     merchantPassword {
       cancelReservation {
@@ -131,10 +132,10 @@ const GET_CANCEL_BOOKING_USING = gql`
       }
     }
   }
-`
+`)
 
 export function useFetchGetCancelBookingUsing() {
   return useQuery(GET_CANCEL_BOOKING_USING, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

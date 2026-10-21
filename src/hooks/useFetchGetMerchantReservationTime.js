@@ -1,5 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
-const GET_MERCHANT_REVERVATION_TIME = gql`
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
+const GET_MERCHANT_REVERVATION_TIME = settingsQuery(gql`
   query GET_MERCHANT_REVERVATION_TIME {
     getMerchantReservationTime {
       title
@@ -8,10 +9,10 @@ const GET_MERCHANT_REVERVATION_TIME = gql`
       closingHours
     }
   }
-`
+`)
 
 export default function useFetchGetMerchantReservationTime() {
   return useQuery(GET_MERCHANT_REVERVATION_TIME, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

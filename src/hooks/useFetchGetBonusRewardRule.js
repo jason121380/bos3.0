@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-const GET_BONUS_REWARD_RULE = gql`
+const GET_BONUS_REWARD_RULE = settingsQuery(gql`
   query GET_BONUS_REWARD_RULE {
     getParameterAboutSettingFunction {
       bonusRewardRule {
@@ -13,10 +14,10 @@ const GET_BONUS_REWARD_RULE = gql`
       }
     }
   }
-`
+`)
 
 export default function useFetchGetBonusRewardRule() {
   return useQuery(GET_BONUS_REWARD_RULE, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

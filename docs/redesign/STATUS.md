@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10211854，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10211858，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,6 +8,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| B1 設定類查詢 cache-first（v3.10211858） | `lib/settings-cache`：119 個設定查詢 cache-first，mutation 成功或每 10 分鐘清除重抓；站內 8 次換頁 GraphQL 請求 209→123（−41%）；報表／權限／帳單／列印查詢不變 |
 | A1 色碼＋A4 程式品質（v3.10211854） | 13 檔寫死色碼→tokens、刪未用 `buttonSx`；`setupTests` eslint error 3→0；117 檔 `array-callback-return` 219／`default-case` 16／`eqeqeq` 56 → 0（行為不變，5 處寬鬆比較刻意保留並註解）；eslint 警告 1,181→887 |
 | Sentry 6→10（v3.10211844） | `@sentry/react` 10.76.2（仍支援 Safari 14 的最後大版本）、移除 `@sentry/tracing`、`browserTracingIntegration()`；prod audit 3→1；追蹤標頭仍只加同網域；預設不送 cookie／請求內容；vendor-sentry gzip +13.7 KB |
 | 登入資料減量（v3.10211806） | localStorage `user` 只存 id／name／isAdmin／isNeedChangePassword（`lib/stored-user`），手機號碼與 solmateKey 不落地；舊資料開頁時就地瘦身；未改 sessionStorage（多分頁會被登出） |

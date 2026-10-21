@@ -1,21 +1,22 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-const GET_VENDOR = gql`
+const GET_VENDOR = settingsQuery(gql`
   query GET_VENDOR {
     getVendor {
       uuid
       name
     }
   }
-`
+`)
 
 export default function useFetchGetVendor() {
   return useQuery(GET_VENDOR, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_MERCHANT_VENDOR_LIST = gql`
+const GET_MERCHANT_VENDOR_LIST = settingsQuery(gql`
   query GET_MERCHANT_VENDOR_LIST {
     getMerchantVendorList {
       uuid
@@ -29,15 +30,15 @@ const GET_MERCHANT_VENDOR_LIST = gql`
       }
     }
   }
-`
+`)
 
 export function useFetchGetMerchantVendorList() {
   return useQuery(GET_MERCHANT_VENDOR_LIST, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-const GET_MERCHANT_VENDOR = gql`
+const GET_MERCHANT_VENDOR = settingsQuery(gql`
   query getMerchantVendor($input: ID!) {
     getMerchantVendor(input: $input) {
       uuid
@@ -51,13 +52,13 @@ const GET_MERCHANT_VENDOR = gql`
       }
     }
   }
-`
+`)
 
 export function useFetchGetMerchantVendor({ input }) {
   return useQuery(GET_MERCHANT_VENDOR, {
     variables: {
       input,
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

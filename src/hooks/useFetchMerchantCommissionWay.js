@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-const GET_MERCHANT_COMMISSION_ITEMS = gql`
+const GET_MERCHANT_COMMISSION_ITEMS = settingsQuery(gql`
   query MERCHANT_COMMISSION_WAY($merchantId: ID!) {
     merchantCommissionWay(merchantId: $merchantId) {
       id
@@ -8,7 +9,7 @@ const GET_MERCHANT_COMMISSION_ITEMS = gql`
       basisForDeduction
     }
   }
-`
+`)
 
 export default function useFetchMerchantCommissionWay() {
   const merchantId = localStorage.getItem('userMerchant')
@@ -19,6 +20,6 @@ export default function useFetchMerchantCommissionWay() {
     variables: {
       merchantId,
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }

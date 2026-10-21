@@ -6,6 +6,7 @@ import { openSnackbar } from 'elements/snackbars'
 import { getGraphqlUrl } from './api-base'
 import { beginRequest } from './after-first-load'
 import { httpStatusMessage } from './friendly-error'
+import { settingsCacheLink, bindSettingsCache } from './settings-cache'
 
 // 網路錯誤提示的節流間隔：斷線時多支查詢同時失敗，只提示一次
 const NETWORK_ERROR_NOTICE_INTERVAL = 5000
@@ -94,7 +95,11 @@ let apolloClient = null
 // 每次呼叫都新建 client，啟動時會建出兩個 client 與兩份 cache。
 export default function initApollo() {
   if (!apolloClient) {
-    apolloClient = createApolloClient(inflightLink.concat(authLink).concat(errorLink).concat(httpLink))
+    // settingsCacheLink：設定類查詢改 cache-first 後，mutation 成功就清除設定快取（見 lib/settings-cache）
+    apolloClient = createApolloClient(
+      settingsCacheLink.concat(inflightLink).concat(authLink).concat(errorLink).concat(httpLink)
+    )
+    bindSettingsCache(apolloClient.cache)
   }
   return apolloClient
 }

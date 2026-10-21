@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-const GET_MULTIPLE_DEDUCTION_SETTINGS = gql`
+const GET_MULTIPLE_DEDUCTION_SETTINGS = settingsQuery(gql`
   query GET_MULTIPLE_DEDUCTION_SETTINGS {
     getDeductionSettings {
       id
@@ -43,7 +44,7 @@ const GET_MULTIPLE_DEDUCTION_SETTINGS = gql`
       isSegmented
     }
   }
-`
+`)
 const GET_DEDUCTION_SETTING = gql`
   query GET_DEDUCTION_SETTING($DeductionSettingId: ID!){
     getDeductionSetting(DeductionSettingId:$DeductionSettingId){
@@ -91,7 +92,7 @@ const GET_DEDUCTION_SETTING = gql`
 
 export function useFetchDeductionSettings() {
   return useQuery(GET_MULTIPLE_DEDUCTION_SETTINGS, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 

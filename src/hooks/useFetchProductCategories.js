@@ -1,6 +1,7 @@
 import { gql, useLazyQuery, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-export const GET_PRODUCT_CATEGORIES = gql`
+export const GET_PRODUCT_CATEGORIES = settingsQuery(gql`
   query PRODUCT_CATEGORIES($input: ProductCategoriesInput!) {
     productCategories(input: $input) {
       id
@@ -14,7 +15,7 @@ export const GET_PRODUCT_CATEGORIES = gql`
       }
     }
   }
-`
+`)
 
 export const mockedProductCateResp = {
   data: {
@@ -142,18 +143,18 @@ export default function useFetchProductCategories(
     variables: {
       input,
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 
-export const GET_PRODUCT_CATEGORIES_IN_CREATE_PICKING = gql`
+export const GET_PRODUCT_CATEGORIES_IN_CREATE_PICKING = settingsQuery(gql`
   query GET_PRODUCT_CATEGORIES_IN_CREATE_PICKING($input: ProductCategoriesInput!) {
     productCategories(input: $input) {
       id
       name
     }
   }
-`
+`)
 
 export function useFetchProductCategoriesInCreatePicking(
   input = {
@@ -164,7 +165,7 @@ export function useFetchProductCategoriesInCreatePicking(
     variables: {
       input,
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
 

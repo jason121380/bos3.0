@@ -1,13 +1,14 @@
 import { gql, useQuery } from '@apollo/client'
+import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-export const GET_IS_USING_MATH_ROUND_IN_DESIGNER_DAILY_REPORT = gql`
+export const GET_IS_USING_MATH_ROUND_IN_DESIGNER_DAILY_REPORT = settingsQuery(gql`
   query GET_IS_USING_MATH_ROUND_IN_DESIGNER_DAILY_REPORT {
     getIsUsingMathRoundInDesignerDailyReport
   }
-`
+`)
 
 export default function useFetchGetIsUsingMathRoundInDesignerDailyReport() {
   return useQuery(GET_IS_USING_MATH_ROUND_IN_DESIGNER_DAILY_REPORT, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: SETTINGS_FETCH_POLICY,
   })
 }
