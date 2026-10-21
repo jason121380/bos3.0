@@ -31,7 +31,7 @@ Sentry.init({
   enabled: isProductionBuild,
   environment: isProductionBuild ? getApiEnvironment() : 'development',
   release: `bos@${APP_VERSION}`,
-  // Sentry 8 起 BrowserTracing 改為函式形式並併入 @sentry/react（2026/10/21 自 6 升到 11，不再需要 @sentry/tracing）；
+  // Sentry 8 起 BrowserTracing 改為函式形式並併入 @sentry/react（2026/10/21 自 6 升到 10——11 版不支援 Safari 14；不再需要 @sentry/tracing）；
   // 預設只對同網域請求加追蹤標頭，與 6 版相同，不會對後端 API 多送 sentry-trace 標頭
   integrations: [Sentry.browserTracingIntegration()],
   tracesSampleRate: 0.1,

@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10211811，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10211844，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,7 +8,7 @@
 
 | 範圍 | 內容 |
 |---|---|
-| Sentry 6→11（v3.10211811） | `@sentry/react` 11.8.0、移除 `@sentry/tracing`、`browserTracingIntegration()`；prod audit 3→1；追蹤標頭仍只加同網域；vendor-sentry gzip +19 KB |
+| Sentry 6→10（v3.10211844） | `@sentry/react` 10.76.2（仍支援 Safari 14 的最後大版本）、移除 `@sentry/tracing`、`browserTracingIntegration()`；prod audit 3→1；追蹤標頭仍只加同網域；預設不送 cookie／請求內容；vendor-sentry gzip +13.7 KB |
 | 登入資料減量（v3.10211806） | localStorage `user` 只存 id／name／isAdmin／isNeedChangePassword（`lib/stored-user`），手機號碼與 solmateKey 不落地；舊資料開頁時就地瘦身；未改 sessionStorage（多分頁會被登出） |
 | F2 前端安全收尾（v3.10211741） | prod audit 13→3（high 6→0）：lodash／socket.io-client 與其 ws、socket.io-parser、engine.io-client、lodash-es、ajv 遞移版本升級；移除 ajv／superagent／uuid 直接相依（LINE 打卡改 fetch、`lib/uuid` 自家 v4）；剩 Sentry major 與 validate.js 無修正版 |
 | 金額顯示統一 第二批（v3.10211526） | 57 檔 440 處螢幕原始數字包 `formatNumber`（報表表格、個人頁、日報螢幕卡片、快速對帳、帳單明細彈窗螢幕區、選項彈窗、盤點、圖表 tooltip）；列印範本／CSV／輸入欄／編號／百分比不動；補充（v3.10211529）殘留 3 處純 `$` 前綴（手續費固定金額、圖表標籤）也移除 |
