@@ -7,6 +7,7 @@ import { openSnackbar } from 'elements/snackbars'
 import useFetchChangePassword from 'hooks/useFetchChangePassword'
 import produce from 'immer'
 import { Fragment, useState } from 'react'
+import { saveStoredUser } from 'lib/stored-user'
 
 export default function ChangePassword({ open, handleClose }) {
   const { changePassword } = useFetchChangePassword()
@@ -70,7 +71,7 @@ export default function ChangePassword({ open, handleClose }) {
         secondPassword: formData.secondPassword.value,
       }).then(() => {
         user.isNeedChangePassword = !user.isNeedChangePassword
-        localStorage.setItem('user', JSON.stringify(user))
+        saveStoredUser(user)
         handleClose()
         openSnackbar({ message: '成功變更密碼', variant: 'success' })
       })

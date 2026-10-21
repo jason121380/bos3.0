@@ -5,6 +5,8 @@ import './lib/polyfills'
 import './lib/immer-config'
 // 日期一律以台灣時間計算與顯示（裝置不在 UTC+8 時才會替換 Date）；須在 App 與各頁面之前載入
 import './lib/install-business-timezone'
+// 登入者資料只留畫面用得到的欄位：改版前已登入的使用者在開啟頁面時就地瘦身（不影響登入狀態）
+import { sanitizeStoredUser } from './lib/stored-user'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -13,6 +15,8 @@ import store from './store/index'
 
 import App from './App'
 import * as serviceWorker from './serviceWorker'
+
+sanitizeStoredUser()
 
 // 不使用 service worker（離線快取），確保已安裝的舊版會被移除
 serviceWorker.unregister()
