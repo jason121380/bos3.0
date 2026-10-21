@@ -6,7 +6,7 @@ import { useState, useEffect, useRef, Fragment } from 'react'
 import { openSnackbar } from 'elements/snackbars'
 import { Edit as EditIcon } from 'ui/icons'
 import idx from 'idx';
-import { cloneDeep } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 import PropTypes from 'prop-types'
 import { useFetchGetMerchantHairConditionLazy } from 'hooks/useFetchGetMerchantHairCondition'
 import useFetchSetCustomerHairInfo from 'hooks/useFetchSetCustomerHairInfo'

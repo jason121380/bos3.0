@@ -1,5 +1,5 @@
 import { Fragment, useState } from 'react'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import format from 'date-fns/format'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Button } from 'ui/button'

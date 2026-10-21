@@ -1,5 +1,4 @@
 import { Fragment } from 'react'
-import _ from 'lodash'
 import { format } from 'date-fns'
 import { Badge } from 'ui/badge'
 import { Button } from 'ui/button'

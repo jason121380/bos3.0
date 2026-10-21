@@ -1,7 +1,7 @@
 // FormControlLabel＋Checkbox、ToggleButtonGroup 保留 MUI（橋接主題已套新外觀）
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { Plus, Trash2 } from 'lucide-react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import PropTypes from 'prop-types'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Button } from 'ui/button'
@@ -17,17 +17,17 @@ const statusEnum = [
 
 function Results({ className, status, submitData, setSubmitData, isLoading, ...rest }) {
   const handleAddRow = () => {
-    const newSubmitData = _.cloneDeep(submitData)
+    const newSubmitData = cloneDeep(submitData)
     newSubmitData[status].push({ threshold: 0, price: 0 })
     setSubmitData(newSubmitData)
   }
   const handleDeleteRow = index => {
-    const newSubmitData = _.cloneDeep(submitData)
+    const newSubmitData = cloneDeep(submitData)
     newSubmitData[status].splice(index, 1)
     setSubmitData(newSubmitData)
   }
   const handleEditRow = (index, value, key) => {
-    const newSubmitData = _.cloneDeep(submitData)
+    const newSubmitData = cloneDeep(submitData)
     newSubmitData[status][index][key] = value
     setSubmitData(newSubmitData)
   }

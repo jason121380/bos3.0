@@ -2,7 +2,7 @@ import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
 import { useFetchProductOrder } from 'hooks/useFetchOrder'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import React from 'react'
 import uuid from 'uuid'
 
@@ -53,7 +53,7 @@ export default function PannelMerchantSells({ thirdPartTicket }) {
   }, [productOrder.loading, productOrder.data])
 
   function handleClear({ index }) {
-    let newSells = _.cloneDeep(sells)
+    let newSells = cloneDeep(sells)
     if (newSells.length === 1) {
       newSells = [
         {
@@ -92,7 +92,7 @@ export default function PannelMerchantSells({ thirdPartTicket }) {
   }
 
   function handleMerchantSellsChange({ key, value, index }) {
-    const newSells = _.cloneDeep(sells)
+    const newSells = cloneDeep(sells)
     newSells[index][key] = value
     setSells(newSells)
     if (key === 'price' || key === 'count' || key === 'sellerId') {
@@ -112,7 +112,7 @@ export default function PannelMerchantSells({ thirdPartTicket }) {
     }
   }
   function handleAddSells() {
-    const newSells = _.cloneDeep(sells)
+    const newSells = cloneDeep(sells)
     newSells.push({
       id: uuid(),
       sellerId: '',
@@ -126,7 +126,7 @@ export default function PannelMerchantSells({ thirdPartTicket }) {
   }
 
   function handleRemoveSells({ index }) {
-    let newSells = _.cloneDeep(sells)
+    let newSells = cloneDeep(sells)
     newSells = newSells.filter((_d, idx) => idx !== index)
     setSells(newSells)
     const newSellsNoId = newSells.map(({ id, ...keep }) => keep)
@@ -137,7 +137,7 @@ export default function PannelMerchantSells({ thirdPartTicket }) {
   }
 
   function handleProductChange({ index, value }) {
-    const newSells = _.cloneDeep(sells)
+    const newSells = cloneDeep(sells)
     newSells[index] = value
     setSells(newSells)
     handleBillChange({

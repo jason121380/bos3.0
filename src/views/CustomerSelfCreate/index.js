@@ -5,7 +5,7 @@ import produce from 'immer'
 import useFetchCustomerSelfCreate from 'hooks/useFetchCustomerSelfCreate'
 import useFetchGetIsCustomerSelfCreateActive from 'hooks/useFetchGetIsCustomerSelfCreateActive'
 import useFetchGetMerchantName from 'hooks/useFetchGetMerchantName'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 import General from './General'
 import Status from './Status'

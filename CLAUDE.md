@@ -30,7 +30,7 @@ npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps（CI／Docke
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
 npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base，0 warning）
-CI=true npm run test:nowatch         # 全部單元測試（基準：57 檔／304 測試全數通過）
+CI=true npm run test:nowatch         # 全部單元測試（基準：58 檔／316 測試全數通過）
 TZ=America/Los_Angeles CI=true npm run test:nowatch   # 時區相關修改要另在海外時區跑一次
 CI=true npm run test:coverage        # 覆蓋率（門檻為現況下限＋金額／API 模組逐檔門檻，見 package.json）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
@@ -55,10 +55,11 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - `src/ui/`：新元件（Button、Input／Field、Select、NativeSelect、Table、Card、Dialog、Accordion、ToggleGroup、Switch、Checkbox、Badge、Avatar、Stat、Toast、Popover、DropdownMenu、Sidebar、PageHeader、EmptyState…）與 `icons`（lucide 轉接層）、`*-compat`（舊頁面用、輸出 MUI 同名 class 的相容元件，MUI 套件已移除）、`format`（`formatNumber`／`formatMoney`）。
 - `src/styles/tokens.css`：CSS 變數 tokens＋`.ui-root` 基礎層（preflight 關閉）；淺色文字與狀態色已調到 WCAG AA。
 - `src/lib/api-base.js`：後端位址單一來源（GraphQL、WebSocket、REST outer_store、Sentry environment 都從這裡取）；不要在頁面寫死網址。
-- `src/lib/init-apollo.js`：Apollo client 單例；errorLink 統一提示 GraphQL／網路錯誤（`TKN_ERROR` 導回登入）。
+- `src/lib/init-apollo.js`：Apollo client 單例；errorLink 統一提示 GraphQL／網路錯誤（`TKN_ERROR` 導回登入）；`inflightLink` 只計數進行中的查詢（給 `after-first-load` 用）。client 本體仍是 **apollo-boost（Apollo Client 2＋apollo-cache-inmemory）**，頁面 hook 用 `@apollo/client` 3 的 `useQuery`（介面相容）；統一到 v3 待 Jason 決定（MEMORY #168④、#173）。
 - `src/lib/business-timezone.js`＋`install-business-timezone.js`（在 `src/index.js` 最早載入）：裝置不在 UTC+8 時把全域 `Date` 與 `Intl.DateTimeFormat` 換成台灣時間；date-fns、日期選擇器與所有顯示因此自動以台灣時間運作，新程式照常用 date-fns 即可。
 - `src/lib/theme-mode.js`：深淺色模式。依使用者記住主題、版面掛載時（繪製前）套用；舊版全域樣式 `initialize(-dark).scss` 以 `?inline` 字串放進同一個 `<style>`，切換時替換內容，不必重新整理。不要再用 `import('…scss')` 直接載入這兩檔。
 - `src/lib/polyfills.js`：只補 Safari 14／Chrome 87 缺少、而程式實際用到的功能（目前只有 `structuredClone`）；不再載入整包 core-js。
+- `src/lib/after-first-load.js`：`useAfterFirstLoad()` 在首屏完成（load 後、沒有查詢在等回應、頁面程式不在下載中〔Dashboard 的 Suspense 佔位用 `useHoldFirstLoad()` 計入〕、瀏覽器空閒）才回傳 true；版面的系統公告、訂單佇列、釘選頁、切換店家清單以 `skip: !afterFirstLoad` 延後。版面要新增查詢時，先判斷是不是首屏必要（選單權限、選單設定是必要）。
 - `src/elements/snackbars.js`：`openSnackbar` 全站提示（右下角 toast；錯誤需手動關閉；確認型 variant 畫成對話框）。
 - `src/components/PageErrorBoundary.js`：Dashboard 內容區的錯誤邊界（單頁出錯只顯示錯誤畫面，側欄可用）；`SlotPortal.js`：TopBar／NavBar 互相把按鈕畫進對方插槽（切換店家、搜尋選單）。
 - `src/layouts/Dashboard/`：側欄頂列（Logo、版號、搜尋鈕、訂單佇列鈴鐺、收合）、選單、底部（深淺色切換、切換店家、登出）。
@@ -83,4 +84,6 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - 新程式用到較新的瀏覽器功能（如 `structuredClone`、`Array.prototype.findLast`、`Object.hasOwn`、`crypto.randomUUID`）時，先確認 Safari 14 是否支援；不支援就在 `lib/polyfills.js` 補，或改寫法（2026/10/21 起不再載入整包 core-js）。
 - `setupTests.js` 的 localStorage 假物件 `setItem` 會再 `JSON.stringify` 一次（與瀏覽器不同）；需要真實行為的測試在 `beforeEach` 以 `jest.spyOn` 改寫（CRA 的 `resetMocks` 會在每個測試前清掉 mock 實作，寫在 `beforeAll` 無效）。
 - 刪檔前用「從 `src/index.js` 走訪 import 圖」找出到不了的檔案，並以完整檔名搜尋字串引用；scss／css 的 `@import`／`@use`／`url()` 也是引用（本地檔不見時 Vite 可能改抓同名 npm 套件，build 照樣成功，MEMORY #172⑦）；`public/` 的檔案可能被外部網址引用，刪前確認用途。
+- lodash 一律逐方法引入（`import cloneDeep from 'lodash/cloneDeep'`），不要 `import _ from 'lodash'`／`import { x } from 'lodash'`：整包 71 KB 會進入口 chunk（2026/10/21 已全面改掉，目前只用 `cloneDeep`、`clone`、`findIndex`）。`idx(x, _ => _.data)` 的 `_` 是箭頭參數，不是 lodash。
+- 效能要先量再改：首屏的瓶頸是 CPU（重新渲染、舊版 Apollo 快取），不是網路（後端在 Cloud Run，HTTP/2 並行）；量測工具與方法見 MEMORY #173。
 - 截圖測試需 `NODE_PATH=/opt/node-tools/node_modules`，GraphQL 以 `page.route('**/graphql', …)` 回假資料、外部網域一律 abort。

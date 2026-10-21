@@ -4,7 +4,7 @@ import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 function AboutAuthority({
   className,
@@ -16,7 +16,7 @@ function AboutAuthority({
   ...rest
 }) {
   const handleChangeAuthority = (authority, index1, index2) => {
-    const newAuthoritySettings = _.cloneDeep(authoritySettings)
+    const newAuthoritySettings = cloneDeep(authoritySettings)
     const insideAuthFalseCounter = []
     newAuthoritySettings[index1].pageAuthority.forEach((data, dataIndex) => {
       if (index2 === dataIndex) {
@@ -35,7 +35,7 @@ function AboutAuthority({
   }
 
   const handleClickAll = (authority, index1) => {
-    const newAuthoritySettings = _.cloneDeep(authoritySettings)
+    const newAuthoritySettings = cloneDeep(authoritySettings)
     if (!authority) {
       newAuthoritySettings.forEach((data, dataIndex) => {
         if (index1 === dataIndex) {

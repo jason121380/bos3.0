@@ -6,9 +6,11 @@ const GET_USER_MERCHANTS = gql`
   }
 `
 
-export default function useFetchGetUserMerchant() {
+// skip：版面以 useAfterFirstLoad 延後到首屏完成後再查（lib/after-first-load）；其他元件不帶參數，行為不變
+export default function useFetchGetUserMerchant({ skip = false } = {}) {
   return useQuery(GET_USER_MERCHANTS, {
     fetchPolicy: 'cache-and-network',
+    skip,
   })
 }
 

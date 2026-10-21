@@ -10,7 +10,6 @@ import { format } from 'date-fns'
 import { Link as RouterLink } from 'react-router-dom'
 import useFetchAdminBookingTime, { useFetchAdminBookingTimeAllStore } from 'hooks/useFetchAdminBookingTime'
 import useFetchVerifyBooking from 'hooks/useFetchVerifyBooking'
-import _ from 'lodash'
 
 // 動作列（原清單按鈕列：上下 8px、左右 16px，hover surface-hover，停用 38% 透明）
 const rowClass = cn(

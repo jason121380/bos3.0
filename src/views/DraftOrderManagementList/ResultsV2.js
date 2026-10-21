@@ -15,7 +15,7 @@ import { useLocation } from 'react-router'
 import useFetchReCheckoutOrder from 'hooks/useFetchReCheckoutOrder'
 import designerNameType from 'helper/designerNameType'
 import truncateDecimal from 'helper/truncateDecimal'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import pagenationLabel from './../../helper/pagenationLabel'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
@@ -439,7 +439,7 @@ function Results({
   }
   const handleComfirmCheckoutOrder = () => {
     setIsClick(true)
-    const Order = _.cloneDeep(orders[orderIndex])
+    const Order = cloneDeep(orders[orderIndex])
     const orderForInput = {
       date: Order.date,
       amountByOtherPay: Order.amountByOtherPay,

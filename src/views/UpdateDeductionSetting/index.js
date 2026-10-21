@@ -6,7 +6,6 @@ import Page from 'components/Page'
 import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'
 
 import React, { useState, useEffect } from 'react'
-import _ from 'lodash'
 import idx from 'idx'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'

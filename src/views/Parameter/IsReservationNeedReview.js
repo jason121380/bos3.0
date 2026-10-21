@@ -5,7 +5,7 @@ import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Field } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import produce from 'immer'
 
 const hours = [
@@ -31,8 +31,8 @@ function IsReservationNeedReview({
   setBookingCusCheck, inputEnable, 
 }) {
   const handleChangeBookingTime = (type, index, value) => {
-    const time = _.cloneDeep(aboutBooking.bookingTimeSetting[type].split(':'))
-    const newData = _.cloneDeep(aboutBooking.bookingTimeSetting)
+    const time = cloneDeep(aboutBooking.bookingTimeSetting[type].split(':'))
+    const newData = cloneDeep(aboutBooking.bookingTimeSetting)
     time[index] = value
     newData[type] = time.join(':')
     setAboutBooking(

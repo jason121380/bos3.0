@@ -101,7 +101,7 @@ import ReservationSettingForStylist from './ReservationSettingForStylist.js'
 import produce from 'immer'
 import idx from 'idx'
 import { memo, useState, useEffect, Fragment } from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 const requiredColumnOptions = [
   { label: '暱稱', value: 'NICKNAME' },
@@ -826,7 +826,7 @@ function Parameter() {
           sorting: data.sorting,
         }
       })
-    const newPasswordSetting = _.cloneDeep(passwordSetting)
+    const newPasswordSetting = cloneDeep(passwordSetting)
     delete newPasswordSetting.reCheckoutOrder.__typename
     delete newPasswordSetting.deleteOrder.__typename
     delete newPasswordSetting.restoreCheckout.__typename

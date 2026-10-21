@@ -5,7 +5,7 @@ import { Field } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo } from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import produce from 'immer'
 
 
@@ -34,7 +34,7 @@ function BookingNotificationSetting({
   const handleChangeNotification = (key, event) => {
     const value = event.target.value
     const name = event.target.name
-    const newData = _.cloneDeep(merchantBookingNotification)
+    const newData = cloneDeep(merchantBookingNotification)
     newData[key][name] = value
     setMerchantBookingNotification(newData)
   }

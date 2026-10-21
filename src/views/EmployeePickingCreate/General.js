@@ -8,7 +8,7 @@ import { useFetchUsersForCreatePicking } from 'hooks/useFetchUsers'
 import idx from 'idx'
 import { useState, useEffect, useRef } from 'react'
 import { FilterNone as FilterNoneIcon, Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { openSnackbar } from 'elements/snackbars'
 
 import { Button } from 'ui/button'
@@ -118,7 +118,7 @@ export default function General({
 
   const handleAddProduct = () => {
     if (inputEnabled) {
-      const newPicking = _.cloneDeep(picking)
+      const newPicking = cloneDeep(picking)
       newPicking.productList.push({
         productName: '',
         productNo: '',
@@ -134,7 +134,7 @@ export default function General({
   }
 
   const hadnleSelectProduct = (product, index, source) => {
-    const newPicking = _.cloneDeep(picking)
+    const newPicking = cloneDeep(picking)
     if (product === null) {
       newPicking.productList.forEach((data, index1) => {
         if (index1 === index) {
@@ -202,7 +202,7 @@ export default function General({
       event.target.value = 0
       openSnackbar({ message: '請輸入0以上的數字', variant: 'warning' })
     }
-    const newPicking = _.cloneDeep(picking)
+    const newPicking = cloneDeep(picking)
     newPicking.productList.forEach((data, index1) => {
       if (index1 === index) {
         newPicking.productList[index].price = Number(event.target.value)
@@ -216,7 +216,7 @@ export default function General({
       event.target.value = 0
       openSnackbar({ message: '請輸入0以上的數字', variant: 'warning' })
     }
-    const newPicking = _.cloneDeep(picking)
+    const newPicking = cloneDeep(picking)
     newPicking.productList.forEach((data, index1) => {
       if (index1 === index) {
         newPicking.productList[index].count = Number(event.target.value)
@@ -226,7 +226,7 @@ export default function General({
     setPicking(newPicking)
   }
   const handleProductInputOnChange = (event, index) => {
-    const newPicking = _.cloneDeep(picking)
+    const newPicking = cloneDeep(picking)
     newPicking.productList.forEach((data, index1) => {
       if (index1 === index) {
         newPicking.productList[index].productName = event.target.value
@@ -236,7 +236,7 @@ export default function General({
   }
 
   const handleDeleteProduct = index => {
-    const newPicking = _.cloneDeep(picking)
+    const newPicking = cloneDeep(picking)
     newPicking.productList.splice(index, 1)
     setPicking(newPicking)
   }

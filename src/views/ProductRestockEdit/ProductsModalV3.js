@@ -3,7 +3,7 @@ import { TextField } from 'ui/text-field'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
 import { openSnackbar } from 'elements/snackbars'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Button } from 'ui/button'
 import { Dialog, DialogContent } from 'ui/dialog'
@@ -56,7 +56,7 @@ function ProductsModal({
   }, [categorie])
 
   useEffect(() => {
-    const cloneData = _.cloneDeep(selectedCategorieId)
+    const cloneData = cloneDeep(selectedCategorieId)
     if (sortType === 'STOCK_DESC') {
       cloneData.sort((a, b) => b.remainingCount - a.remainingCount)
     } else if (sortType === 'STOCK_ASC') {
@@ -119,7 +119,7 @@ function ProductsModal({
       e.target.value = 0
       openSnackbar({ message: '請輸入0以上的數字', variant: 'warning' })
     }
-    const productForModified = _.cloneDeep(selectedCategorieId)
+    const productForModified = cloneDeep(selectedCategorieId)
     productForModified.forEach((product, index2) => {
       if (index === index2) {
         switch (e.target.name) {

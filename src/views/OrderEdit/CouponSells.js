@@ -4,7 +4,7 @@ import { Eraser, Copy, Trash2 } from 'lucide-react'
 import { RowIconButton, AddRowButton } from 'views/OrderCreate/RowAction'
 import TicketAutoComplete from 'components/TicketAutoComplete'
 import idx from 'idx'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import React, { Fragment, useState, useEffect, useRef } from 'react'
 import billContext from 'context/keyInContext'
 
@@ -147,7 +147,7 @@ export default function CouponSells({
               onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
               onFocus={handleFocus}
               onChange={function (event) {
-                const newCouponSell = _.cloneDeep(couponSell)
+                const newCouponSell = cloneDeep(couponSell)
                 newCouponSell.availableCount = idx(event, _ => +_.target.value || 1)
                 onChange({ index, value: newCouponSell })
               }}
@@ -174,7 +174,7 @@ export default function CouponSells({
               onFocus={handleFocus}
               inputRef={priceRef}
               onChange={function (event) {
-                const newCouponSell = _.cloneDeep(couponSell)
+                const newCouponSell = cloneDeep(couponSell)
                 newCouponSell.price = idx(event, _ => +_.target.value || 0)
                 onChange({ index, value: newCouponSell })
               }}
@@ -201,7 +201,7 @@ export default function CouponSells({
               inputRef={countRef}
               onKeyDown={event => handleKeyDown({ event, nextField: 'remark' })}
               onChange={function (event) {
-                const newCouponSell = _.cloneDeep(couponSell)
+                const newCouponSell = cloneDeep(couponSell)
                 newCouponSell.count = idx(event, _ => +_.target.value || 1)
                 onChange({ index, value: newCouponSell })
               }}
@@ -234,7 +234,7 @@ export default function CouponSells({
                 }
               }}
               onChange={event => {
-                const newCouponSell = _.cloneDeep(couponSell)
+                const newCouponSell = cloneDeep(couponSell)
                 newCouponSell.remark = event.target.value
                 onChange({ index, value: newCouponSell })
               }}

@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import _ from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 
 export default function Results({ designerMontlyListData, performReference, sort, isMemberShipCardActive, setExcelData }) {
   const [membershipDisplay, setMembershipDisplay] = useState(false)
@@ -116,7 +116,7 @@ export default function Results({ designerMontlyListData, performReference, sort
       })
       setReportData(designerSort)
     }
-    const renderExcelData = _.cloneDeep(sortBool ? performanceSort : designerSort)
+    const renderExcelData = cloneDeep(sortBool ? performanceSort : designerSort)
     const excelData = []
     const performanceKey = perforBool ? '服務卡券業績(實)' : '服務卡券業績(虛)'
     renderExcelData.forEach(d => {

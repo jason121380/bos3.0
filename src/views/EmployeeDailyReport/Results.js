@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import idx from 'idx'
 import useFetchGetIsDisplayHelperRetrieveInDailyReport from 'hooks/useFetchGetIsDisplayHelperRetrieveInDailyReport'
 import useFetchGetIsUsingMathRoundInDesignerDailyReport from 'hooks/useFetchGetIsUsingMathRoundInDesignerDailyReport'
@@ -50,7 +50,7 @@ function Results({
       mathRoundSetting.data.getIsUsingMathRoundInDesignerDailyReport === true
     ) {
       setIsMathRound(idx(mathRoundSetting, _ => _.data.getIsUsingMathRoundInDesignerDailyReport))
-      const cloneData = _.cloneDeep(designerDailyReport)
+      const cloneData = cloneDeep(designerDailyReport)
       cloneData.map(data => {
         data.currentFakeSummary = Math.round(data.currentFakeSummary)
         data.currentTruthSummary = Math.round(data.currentTruthSummary)
@@ -68,7 +68,7 @@ function Results({
       })
       setMathRoundData(cloneData)
 
-      const clonePrintData = _.cloneDeep(printData)
+      const clonePrintData = cloneDeep(printData)
       clonePrintData.map(datas => {
         datas.map(data => {
           data.currentFakeSummary = Math.round(data.currentFakeSummary)

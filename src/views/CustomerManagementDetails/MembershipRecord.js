@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import { useEffect } from 'react';
 import { Fragment, useState } from 'react'
-import { cloneDeep } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'

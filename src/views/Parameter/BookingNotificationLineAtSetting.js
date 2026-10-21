@@ -6,7 +6,6 @@ import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Field } from 'ui/input'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import { memo } from 'react'
-import _ from 'lodash'
 import produce from 'immer'
 
 import { Autocomplete } from 'ui/combobox'

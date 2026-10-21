@@ -11,7 +11,7 @@ import useFetchGetDesignerPerformanceExcel from 'hooks/useFetchGetDesignerPerfor
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
 import idx from 'idx'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader, ReportToolbar } from 'ui/page-header'
@@ -57,7 +57,7 @@ const DesignerPerformanceReport = () => {
 
 	useEffect(() => {
 		if (!getDesignerPerformance.loading && !isMemberShipCardActiveData.loading) {
-			let performanceData = _.cloneDeep(getDesignerPerformance.data.designerPerformance)
+			let performanceData = cloneDeep(getDesignerPerformance.data.designerPerformance)
 			const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
 			if (performanceData.length > 0) {
 				const category = performanceData[0].designerPerformancePercented[0].serviceCategory.map(d => d.categoryName)

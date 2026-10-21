@@ -11,7 +11,7 @@ import useFetchSetEmployeeClockInSchedule from 'hooks/useFetchSetEmployeeClockIn
 import useFetchGetIsEmployeeScheduleWorkingHourDisplay from 'hooks/useFetchGetIsEmployeeScheduleWorkingHourDisplay'
 import useFetchGetUESUsingSetting from 'hooks/useFetchGetUESUsingSetting'
 import useFetchGetEmployeeClockInScheduleExcel from 'hooks/useFetchGetEmployeeClockInScheduleExcel'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { openSnackbar } from 'elements/snackbars'
 
 import { Skeleton } from 'ui/skeleton'
@@ -69,7 +69,7 @@ export default function Employees() {
 
   // 儲存資料
   const saveData = async () => {
-    const newData = _.cloneDeep(employeeSchedule)
+    const newData = cloneDeep(employeeSchedule)
     const inputData = []
     setIsClick(true)
 

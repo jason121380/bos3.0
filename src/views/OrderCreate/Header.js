@@ -20,7 +20,6 @@ import { cn } from 'ui/utils'
 import { Checkbox, checkboxHitArea } from 'ui/checkbox'
 import OrderDetailModal from './OrderDetailModal'
 import { getMissingForOrder } from './orderRequirements'
-import _ from 'lodash'
 
 function Header({ forceUpdate, ...rest }) {
   const location = useLocation()

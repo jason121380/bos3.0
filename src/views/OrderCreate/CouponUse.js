@@ -6,7 +6,7 @@ import CustomerTicketRecordAutoCompleteForOrderCreate from 'components/CustomerT
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import billContext from 'context/keyInContext'
 import idx from 'idx'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Fragment, useState, useEffect, useContext, createRef, useRef } from 'react'
 
 const styles = {
@@ -63,14 +63,14 @@ export default function CouponUse({
               .reduce((a, b) => a.concat(b))
           : []
       )
-      const newHelp = _.cloneDeep(helper)
+      const newHelp = cloneDeep(helper)
       newHelp[index] = newHelper
       setHelper(newHelp)
       onChange({ key: 'customerTicketId', value: idx(value, _ => _.id), index, price: idx(value, _ => _.price) })
     }
   }
   function handleAssistantChange({ value, assistantIndex, key }) {
-    const newTicketOrderHelpers = _.cloneDeep(helper)
+    const newTicketOrderHelpers = cloneDeep(helper)
     newTicketOrderHelpers[index][assistantIndex][key] = value
     setHelper(newTicketOrderHelpers)
     onChange({
@@ -81,7 +81,7 @@ export default function CouponUse({
     })
   }
   function handleClear() {
-    let newHelp = _.cloneDeep(helper)
+    let newHelp = cloneDeep(helper)
     newHelp[index] = []
     setHelper(newHelp)
     onClear({

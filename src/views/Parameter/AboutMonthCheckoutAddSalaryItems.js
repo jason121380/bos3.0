@@ -3,7 +3,7 @@ import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 const settingArr = [
   {label: '月結時自動結算加扣項設定', key: 'isSalaryItemAutoSetWhileMonthlyCheckout'},

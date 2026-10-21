@@ -5,7 +5,7 @@ import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import billContext from 'context/keyInContext'
 import { useFetchLazyTicketRecords } from 'hooks/useFetchTicketRecords'
 import idx from 'idx'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import React, { Fragment } from 'react'
 
 // 版面比照打帳單（views/OrderCreate/styles/CouponUse）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
@@ -95,7 +95,7 @@ export default function CouponUse({
     onChange({ key: 'customerTicketId', value: idx(value, _ => _.id), index })
   }
   function handleAssistantChange({ value, assistantIndex, key }) {
-    const newTicketOrderHelpers = _.cloneDeep(ticketOrderHelpers)
+    const newTicketOrderHelpers = cloneDeep(ticketOrderHelpers)
     newTicketOrderHelpers[assistantIndex][key] = value
     setTicketOrderHelpers(newTicketOrderHelpers)
     onChange({
@@ -105,7 +105,7 @@ export default function CouponUse({
     })
   }
   function handleClear() {
-    let newTicketOrderHelpers = _.cloneDeep(ticketOrderHelpers)
+    let newTicketOrderHelpers = cloneDeep(ticketOrderHelpers)
     newTicketOrderHelpers = newTicketOrderHelpers.map(data => ({
       ...data,
       helperId: '',

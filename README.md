@@ -91,7 +91,7 @@ npm run build
 
 | 類別 | 技術 | 版本 |
 |---|---|---|
-| **API 通訊** | Apollo Client (GraphQL) | `3.4.17` |
+| **API 通訊** | Apollo Client (GraphQL)：client 本體為 apollo-boost（Apollo Client 2＋apollo-cache-inmemory），頁面 hook 用 `@apollo/client` 的 `useQuery` | `0.4`／`3.4.17` |
 | **即時通訊** | Socket.io Client | `4.6.0` |
 | **狀態管理** | Redux Toolkit | `1.9.5` |
 | **檔案上傳** | apollo-upload-client | `17.0.0` |
@@ -110,7 +110,7 @@ npm run build
 |---|---|
 | `date-fns` + `zh-TW` locale | 日期處理與中文化（全域已固定以台灣時間運算，見〈時區〉） |
 | `idx` | 安全深層取值 (避免 `Cannot read property of undefined`) |
-| `lodash` | 通用工具函數 |
+| `lodash` | 深拷貝等工具（只用 `cloneDeep`、`clone`、`findIndex`；一律逐方法引入 `lodash/<方法>`） |
 | `immer` | 不可變狀態操作 |
 | `react-csv` | CSV 報表匯出 |
 | `recharts` | 圖表視覺化 |
@@ -210,7 +210,10 @@ bos3.0/
     │
     ├── lib/                    # 核心函式庫
     │   ├── api-base.js         # 後端位址單一來源（GraphQL／WebSocket／REST／Sentry 環境）
-    │   ├── init-apollo.js      # Apollo Client 單例、錯誤處理
+    │   ├── init-apollo.js      # Apollo Client 單例、錯誤處理、進行中查詢計數
+    │   ├── after-first-load.js # 首屏完成判斷（非必要查詢延後）
+    │   ├── theme-mode.js       # 深淺色模式（記憶主題、切換免重整）
+    │   ├── polyfills.js        # 只補 Safari 14 缺少且用到的功能
     │   ├── business-timezone.js # 日期一律台灣時間（install-business-timezone.js 由 index.js 最早載入）
     │   └── with-apollo-client.js # 取得共用 client（相容用）
     │
@@ -282,11 +285,12 @@ bos3.0/
 ### GraphQL Client 架構
 
 ```
-authLink → errorLink → httpLink (uploadLink)
+inflightLink → authLink → errorLink → httpLink (uploadLink)
 ```
 
 | Link | 功能 |
 |---|---|
+| **inflightLink** | 只計數進行中的查詢，不改內容；首屏延後的查詢等計數歸零才發出（見〈首屏載入〉） |
 | **authLink** | 從 `localStorage` 讀取 `token` 和 `userMerchant`，注入 `accesstoken` 和 `usermerchantid` Headers |
 | **errorLink** | Token 過期 (`TKN_ERROR`) → 自動清除 localStorage 並導向登入頁；帳號凍結 (`TKN_IN_JAIL`) → 彈出 alert |
 | **httpLink** | 使用 `apollo-upload-client` 建立 GraphQL 連線，支援檔案上傳 |
@@ -344,6 +348,12 @@ localStorage 儲存：
 ## 🧩 瀏覽器支援
 
 - Vite 產出 ES module，最低需求 Safari 14／Chrome 87。不載入整包 core-js；程式用到、但 Safari 14 缺少的功能在 `src/lib/polyfills.js` 補（目前只有 `structuredClone`）。
+
+## ⚡ 首屏載入
+
+- 版面一開始只查畫面必要的資料（個人資料、選單權限、選單設定、頁面權限）；系統公告、訂單佇列鈴鐺、釘選頁、切換店家清單延到首屏完成後才查（`src/lib/after-first-load.js`）：load 事件後、沒有查詢在等回應、頁面程式不在下載中（登入後站內換頁時 load 早已完成）、瀏覽器空閒；Safari 改為網路安靜後 0.5 秒；最晚 10 秒一定發出。
+- lodash 逐方法引入，入口 chunk 不含整包 lodash。
+- 首屏的主要成本是 CPU（每支查詢回來都會讓版面重新渲染、舊版 Apollo 快取比對），不是網路：後端在 Cloud Run（HTTP/2），查詢本來就並行。
 
 ---
 
@@ -808,7 +818,7 @@ Dockerfile 已內建 npm 網路重試配置（5 次重試、20s~120s 超時）�
 | 頁面模組 | **170** 個目錄 |
 | 自定義 Hooks | **596** 個 |
 | 共用元件 | **55** 個 |
-| 單元測試 | **57** 檔／**304** 項 |
+| 單元測試 | **58** 檔／**316** 項 |
 | Redux Slices | **5** 個 |
 | 總原始碼行數 | **~150,000+** 行 |
 

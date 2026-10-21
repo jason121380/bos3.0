@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 import { Fragment, useState, useEffect } from 'react'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import useFetchMerchantJobTitlePoint from 'hooks/useFetchMerchantJobTitlePoint'
 import useFetchSettingJobTitlePoint from 'hooks/useFetchSettingJobTitlePoint'
 import useFetchMerchantHelperItems from 'hooks/useFetchMerchantHelperItems'
@@ -221,8 +221,8 @@ export default function AboutDesignerSalary({ className,
     })
   }
   const handleAddSetting = (...rest) => {
-    const newService = _.cloneDeep(service)
-    const newServiceForType = _.cloneDeep(serviceForType)
+    const newService = cloneDeep(service)
+    const newServiceForType = cloneDeep(serviceForType)
     switch (rest[0]) {
       case 'point':
         newService.point.push({ 
@@ -247,8 +247,8 @@ export default function AboutDesignerSalary({ className,
   }
 
   const handleDeleteSetting = (...rest) => {
-    const newService = _.cloneDeep(service)
-    const newServiceForType = _.cloneDeep(serviceForType)
+    const newService = cloneDeep(service)
+    const newServiceForType = cloneDeep(serviceForType)
     switch (rest[0]) {
       case 'point':
         newService.point.splice(rest[1], 1)
@@ -264,7 +264,7 @@ export default function AboutDesignerSalary({ className,
   }
 
   const handlePointSetting = (event, index) => {
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     switch (event.target.name) {
       case 'jobTitle':
         newService.point[index].jobTitle = event.target.value
@@ -302,7 +302,7 @@ export default function AboutDesignerSalary({ className,
   }
 
   const handleHelperTypeName = (event, index) => {
-    const newService = _.cloneDeep(serviceForType)
+    const newService = cloneDeep(serviceForType)
     newService.helperTypeName[index].type = event.target.value
     handleServiceForTypeChange({ changedData: newService.helperTypeName, key: 'helperTypeName' })
   }

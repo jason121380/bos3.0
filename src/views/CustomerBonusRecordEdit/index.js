@@ -5,7 +5,6 @@ import { useHistory, useParams } from 'react-router'
 import { useFetchGetCustomerBonusDepositRecord } from 'hooks/useFetchGetCustomerBonusDepositRecords'
 import useFetchUpdateBonusDeposit from 'hooks/useFetchUpdateBonusDeposit'
 import idx from 'idx'
-import _ from 'lodash'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 

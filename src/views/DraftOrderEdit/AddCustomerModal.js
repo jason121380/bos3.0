@@ -16,7 +16,7 @@ import React from 'react'
 import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import useFetchGetCheckIsCustomerNoUsed from 'hooks/useFetchGetCheckIsCustomerNoUsed'
 import useFetchGetLastCustomerNo from 'hooks/useFetchGetLastCustomerNo'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import SourceSelect from 'components/SourceSelect'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
@@ -123,7 +123,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
   }
 
   const handleSubmit = () => {
-    const newValues = _.cloneDeep(values)
+    const newValues = cloneDeep(values)
     if (values.customerId.length > 0) {
       delete newValues.id
       delete newValues.latestDesigner

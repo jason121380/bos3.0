@@ -16,7 +16,7 @@ import useFetchGetDesignerNameForCustomerSide from 'hooks/useFetchGetDesignerNam
 import useFetchGetMerchantDesignerWeekCalendar from 'hooks/useFetchGetMerchantDesignerWeekCalendar'
 import useFetchGetIsBookingRemarkDisplay from 'hooks/useFetchGetIsBookingRemarkDisplay'
 import useFetchGetIsCusBookingRemarkDisplay from 'hooks/useFetchGetIsCusBookingRemarkDisplay'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Card } from 'ui/card'
 
 import OrderTable from './OrderTable'

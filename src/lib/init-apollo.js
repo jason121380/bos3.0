@@ -1,9 +1,11 @@
 import { ApolloClient, InMemoryCache } from 'apollo-boost'
+import { ApolloLink, Observable } from 'apollo-link'
 import { setContext } from 'apollo-link-context'
 import { onError } from 'apollo-link-error'
 import { createUploadLink } from 'apollo-upload-client'
 import { openSnackbar } from 'elements/snackbars'
 import { getGraphqlUrl } from './api-base'
+import { beginRequest } from './after-first-load'
 
 // 網路錯誤提示的節流間隔：斷線時多支查詢同時失敗，只提示一次
 const NETWORK_ERROR_NOTICE_INTERVAL = 5000
@@ -53,6 +55,27 @@ export function buildAuthHeaders(headers) {
 }
 
 const errorLink = onError(handleApolloError)
+// 只計數、不改內容：統計還在等回應的查詢，首屏延後的查詢要等「沒有查詢在等回應」才發出（lib/after-first-load）
+export const inflightLink = new ApolloLink((operation, forward) => {
+  const end = beginRequest()
+  return new Observable(observer => {
+    const subscription = forward(operation).subscribe({
+      next: value => observer.next(value),
+      error: error => {
+        end()
+        observer.error(error)
+      },
+      complete: () => {
+        end()
+        observer.complete()
+      },
+    })
+    return () => {
+      end()
+      subscription.unsubscribe()
+    }
+  })
+})
 const authLink = setContext((_, { headers }) => ({ headers: buildAuthHeaders(headers) }))
 const httpLink = createUploadLink({
   uri: getGraphqlUrl(),
@@ -66,7 +89,7 @@ let apolloClient = null
 export default function initApollo() {
   if (!apolloClient) {
     apolloClient = new ApolloClient({
-      link: authLink.concat(errorLink).concat(httpLink),
+      link: inflightLink.concat(authLink).concat(errorLink).concat(httpLink),
       cache: new InMemoryCache({ addTypename: false }),
     })
   }

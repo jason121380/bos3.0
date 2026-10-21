@@ -5,7 +5,6 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from 'ui/card'
 import PropTypes from 'prop-types'
 import { useState, useEffect, memo, useRef } from 'react'
 import idx from 'idx'
-import _ from 'lodash'
 import { useLazyFetchService } from 'hooks/useFetchService'
 import pagenationLabel from './../../helper/pagenationLabel'
 

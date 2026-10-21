@@ -2,7 +2,7 @@ import { Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo } from 'react'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 function AboutOrderSource({ className, reference, setReference, inputEnable }) {
   const handleAddOption = () => {

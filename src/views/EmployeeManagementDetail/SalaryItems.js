@@ -1,7 +1,7 @@
 // 金額輸入框（浮動標籤為科目名稱、onWheel 失焦）保留 MUI TextField；科目名稱單行文字欄改 ui Input（列內不加可見標籤，原 label 改 aria-label）
 import { TextField } from 'ui/text-field'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { openSnackbar } from 'elements/snackbars'
 import { useHistory } from 'react-router'
 import { Button } from 'ui/button'
@@ -22,7 +22,7 @@ export default function SalaryInems({
 }) {
   const history = useHistory()
   const handleIncreaseInput = (e, index) => {
-    const newSalaryIncreaseItemsReformatted = _.cloneDeep(salaryIncreaseItemsReformatted)
+    const newSalaryIncreaseItemsReformatted = cloneDeep(salaryIncreaseItemsReformatted)
     switch (e.target.name) {
       case 'price':
         newSalaryIncreaseItemsReformatted.map((data, index2) => {
@@ -42,7 +42,7 @@ export default function SalaryInems({
   }
 
   const handleDecreaseInput = (e, index) => {
-    const newSalaryDecreaseItemsReformatted = _.cloneDeep(salaryDecreaseItemsReformatted)
+    const newSalaryDecreaseItemsReformatted = cloneDeep(salaryDecreaseItemsReformatted)
     switch (e.target.name) {
       case 'price':
         newSalaryDecreaseItemsReformatted.map((data, index2) => {
@@ -62,7 +62,7 @@ export default function SalaryInems({
   }
 
   const handleIncreaseSecondInput = (e, index) => {
-    const newIncreaseSecondContent = _.cloneDeep(increaseSecondContent)
+    const newIncreaseSecondContent = cloneDeep(increaseSecondContent)
     switch (e.target.name) {
       case 'price':
         newIncreaseSecondContent.increaseItems.map((data, index2) => {
@@ -90,7 +90,7 @@ export default function SalaryInems({
   }
 
   const handleDecreaseSecondInput = (e, index) => {
-    const newDecreaseSecondContent = _.cloneDeep(decreaseSecondContent)
+    const newDecreaseSecondContent = cloneDeep(decreaseSecondContent)
     switch (e.target.name) {
       case 'price':
         newDecreaseSecondContent.decreaseItems.map((data, index2) => {
@@ -118,7 +118,7 @@ export default function SalaryInems({
   }
 
   const handleAddItem = () => {
-    const newIncreaseSecondContent = _.cloneDeep(increaseSecondContent)
+    const newIncreaseSecondContent = cloneDeep(increaseSecondContent)
     newIncreaseSecondContent.increaseItems.push({
       itemName: '',
       price: 0,
@@ -128,13 +128,13 @@ export default function SalaryInems({
   }
 
   const handleDeductIncreaseItem = index => {
-    const newIncreaseSecondContent = _.cloneDeep(increaseSecondContent)
+    const newIncreaseSecondContent = cloneDeep(increaseSecondContent)
     newIncreaseSecondContent.increaseItems.splice(index, 1)
     setIncreaseSecondContent(newIncreaseSecondContent)
   }
 
   const handleAddDecreaseItem = () => {
-    const newDecreaseSecondContent = _.cloneDeep(decreaseSecondContent)
+    const newDecreaseSecondContent = cloneDeep(decreaseSecondContent)
     newDecreaseSecondContent.decreaseItems.push({
       itemName: '',
       price: 0,
@@ -144,7 +144,7 @@ export default function SalaryInems({
   }
 
   const handleDeductDecreaseItem = index => {
-    const newDecreaseSecondContent = _.cloneDeep(decreaseSecondContent)
+    const newDecreaseSecondContent = cloneDeep(decreaseSecondContent)
     newDecreaseSecondContent.decreaseItems.splice(index, 1)
     setDecreaseSecondContent(newDecreaseSecondContent)
   }

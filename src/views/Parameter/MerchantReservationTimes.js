@@ -6,7 +6,6 @@ import { ToggleGroupItem } from 'ui/toggle-group'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
-import _ from 'lodash'
 import { Edit as EditIcon, Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { green } from 'ui/colors';
 import { openSnackbar } from 'elements/snackbars';

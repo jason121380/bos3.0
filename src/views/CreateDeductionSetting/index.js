@@ -9,7 +9,6 @@ import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import React from 'react'
-import _ from 'lodash'
 
 import Results from './Results'
 

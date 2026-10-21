@@ -3,12 +3,12 @@ import { TextField } from 'ui/text-field'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import React from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Autocomplete } from 'ui/combobox'
 
 function AboutMerchantVendorCreate({ className, vendorOption, isLodaing, submitData, setSubmitData }) {
   const handleInputChange = (key, value) => {
-    const newData = _.cloneDeep(submitData)
+    const newData = cloneDeep(submitData)
     newData[key] = value
     setSubmitData(newData)
   }

@@ -2,7 +2,7 @@ import { Field, Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Fragment } from 'react'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 
 export default function AccountingItemCreate({
@@ -17,7 +17,7 @@ export default function AccountingItemCreate({
   const handleAddItem = type => {
     switch (type) {
       case 'revenue':
-        const newAccountingRevenueSubjects = _.cloneDeep(accountingRevenueSubjects)
+        const newAccountingRevenueSubjects = cloneDeep(accountingRevenueSubjects)
         newAccountingRevenueSubjects.push({
           number: '',
           name: '',
@@ -25,7 +25,7 @@ export default function AccountingItemCreate({
         setAccountingRevenueSubjects(newAccountingRevenueSubjects)
         break
       case 'expenditure':
-        const newAccountingExpenditureSubjects = _.cloneDeep(accountingExpenditureSubjects)
+        const newAccountingExpenditureSubjects = cloneDeep(accountingExpenditureSubjects)
         newAccountingExpenditureSubjects.push({
           number: '',
           name: '',
@@ -33,7 +33,7 @@ export default function AccountingItemCreate({
         setAccountingExpenditureSubjects(newAccountingExpenditureSubjects)
         break
       case 'accountingType':
-        const newAccountingType = _.cloneDeep(accountingType)
+        const newAccountingType = cloneDeep(accountingType)
         newAccountingType.push({
           accountingTypeName: '',
         })
@@ -47,17 +47,17 @@ export default function AccountingItemCreate({
   const handleDeleteItem = (type, index) => {
     switch (type) {
       case 'revenue':
-        const newAccountingRevenueSubjects = _.cloneDeep(accountingRevenueSubjects)
+        const newAccountingRevenueSubjects = cloneDeep(accountingRevenueSubjects)
         newAccountingRevenueSubjects.splice(index, 1)
         setAccountingRevenueSubjects(newAccountingRevenueSubjects)
         break
       case 'expenditure':
-        const newAccountingExpenditureSubjects = _.cloneDeep(accountingExpenditureSubjects)
+        const newAccountingExpenditureSubjects = cloneDeep(accountingExpenditureSubjects)
         newAccountingExpenditureSubjects.splice(index, 1)
         setAccountingExpenditureSubjects(newAccountingExpenditureSubjects)
         break
       case 'accountingType':
-        const newAccountingType = _.cloneDeep(accountingType)
+        const newAccountingType = cloneDeep(accountingType)
         newAccountingType.splice(index, 1)
         setAccountingType(newAccountingType)
         break
@@ -67,7 +67,7 @@ export default function AccountingItemCreate({
   }
 
   const handleRevenueInput = (e, index) => {
-    const newAccountingRevenueSubjects = _.cloneDeep(accountingRevenueSubjects)
+    const newAccountingRevenueSubjects = cloneDeep(accountingRevenueSubjects)
     switch (e.target.name) {
       case 'revenueNumber':
         newAccountingRevenueSubjects.map((data, index2) => {
@@ -91,7 +91,7 @@ export default function AccountingItemCreate({
   }
 
   const handleExpenditureInput = (e, index) => {
-    const newAccountingExpenditureSubjects = _.cloneDeep(accountingExpenditureSubjects)
+    const newAccountingExpenditureSubjects = cloneDeep(accountingExpenditureSubjects)
     switch (e.target.name) {
       case 'expenditureNumber':
         newAccountingExpenditureSubjects.map((data, index2) => {
@@ -115,7 +115,7 @@ export default function AccountingItemCreate({
   }
 
   const handleAccountingTypeInput = (e, index) => {
-    const newAccountingType = _.cloneDeep(accountingType)
+    const newAccountingType = cloneDeep(accountingType)
     newAccountingType.map((data, index2) => {
       if (index === index2) {
         data.accountingTypeName = e.target.value

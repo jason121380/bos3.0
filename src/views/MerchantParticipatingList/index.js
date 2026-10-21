@@ -2,7 +2,7 @@ import Page from 'components/Page'
 import idx from 'idx'
 import { useState, useEffect, Fragment } from 'react'
 import useFetchGetMerchantParticipatingList from 'hooks/useFetchGetMerchantParticipatingList'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import AdminPageHeader from 'components/AdminPageHeader'
 import { Skeleton } from 'ui/skeleton'
 

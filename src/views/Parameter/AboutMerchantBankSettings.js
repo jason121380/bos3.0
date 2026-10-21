@@ -2,7 +2,6 @@ import { CheckboxField } from 'ui/checkbox'
 import { Field, Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
-import _ from 'lodash'
 
 function AboutMerchantBankSettings({ 
   className, 

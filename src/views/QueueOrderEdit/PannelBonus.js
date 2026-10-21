@@ -4,7 +4,6 @@ import { useContext, useEffect, useState } from 'react'
 import Bonus from './Bonus'
 import billContext from 'context/keyInContext'
 import { useFetchGetCustomerBonusRecordLazy } from 'hooks/useFetchGetCustomerBonusRecord'
-import _ from 'lodash'
 
 export default function PannelBonus({ bonusActive }) {
   const { bill, order, bonusConversion } = useContext(billContext)

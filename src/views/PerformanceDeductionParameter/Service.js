@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment, useState, useEffect } from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import useFetchSettingCommissionWay from 'hooks/useFetchSettingCommissionWay'
 import produce from 'immer'
 import idx from 'idx'
@@ -112,7 +112,7 @@ function Service({ className,
   }
 
   const handleAddSetting = (...rest) => {
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     switch (rest[0]) {
       case 'commission':
         newService.commission.push({ name: '', basisForDeduction: '' })
@@ -127,7 +127,7 @@ function Service({ className,
     }
   }
   const handleDeleteSetting = (...rest) => {
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     switch (rest[0]) {
       case 'commission':
         newService.commission.splice(rest[1], 1)
@@ -143,12 +143,12 @@ function Service({ className,
   }
 
   const handleCommissionName = (index, event) => {
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     newService.commission[index].name = event.target.value
     handleServiceChange({ changedData: newService.commission, key: 'commission' })
   }
   const handleCommissionBasisForDeduction = (index, event) => {
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     newService.commission[index].basisForDeduction = event.target.value
     handleServiceChange({ changedData: newService.commission, key: 'commission' })
   }

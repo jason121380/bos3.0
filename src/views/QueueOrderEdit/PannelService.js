@@ -1,7 +1,7 @@
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { useContext, useEffect, useState, useRef } from 'react'
 import uuid from 'uuid'
 import useFetchServices from 'hooks/useFetchServices'
@@ -99,7 +99,7 @@ export default function PannelService({ thirdPartTicket }) {
   }, [order.loading, servicesForTicketLocked.loading])
 
   function handleAddService() {
-    const newServices = _.cloneDeep(services)
+    const newServices = cloneDeep(services)
     newServices.push({
       id: uuid(),
       serviceId: '',
@@ -115,7 +115,7 @@ export default function PannelService({ thirdPartTicket }) {
     useHandleAddServiceRef.current()
   }, [])
   function handleHelperChange({ index, value }) {
-    const newServices = _.cloneDeep(services)
+    const newServices = cloneDeep(services)
     newServices[index].serviceOrderHelpers = value
     setServices(newServices)
     handleBillChange({
@@ -133,7 +133,7 @@ export default function PannelService({ thirdPartTicket }) {
   }
 
   function handleServiceChange({ index, key, value }) {
-    const newServices = _.cloneDeep(services)
+    const newServices = cloneDeep(services)
     newServices[index][key] = value
     handleBillChange({
       key: 'serviceOrders',
@@ -152,7 +152,7 @@ export default function PannelService({ thirdPartTicket }) {
   }
 
   function handleRemoveService(index) {
-    let newServices = _.cloneDeep(services)
+    let newServices = cloneDeep(services)
     newServices = newServices.filter((_d, idx) => idx !== index)
     handleBillChange({
       key: 'serviceOrders',
@@ -168,7 +168,7 @@ export default function PannelService({ thirdPartTicket }) {
   }
 
   function handleClear(index) {
-    const newServices = _.cloneDeep(services)
+    const newServices = cloneDeep(services)
     newServices[index] = {
       ...newServices[index],
       serviceId: '',
@@ -192,7 +192,7 @@ export default function PannelService({ thirdPartTicket }) {
   }
 
   const handleChange = ({ index, value }) => {
-    const newServices = _.cloneDeep(services)
+    const newServices = cloneDeep(services)
     newServices[index] = value
     setServices(newServices)
     handleBillChange({
@@ -209,7 +209,7 @@ export default function PannelService({ thirdPartTicket }) {
     })
   }
   function handleServiceOnChange({ index, value }) {
-    const newServices = _.cloneDeep(services)
+    const newServices = cloneDeep(services)
     newServices[index] = value
     handleBillChange({
       key: 'serviceOrders',

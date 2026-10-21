@@ -10,7 +10,6 @@ import { useFetchGetStockInIsUsing } from 'hooks/useFetchMerchantPassword'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router'
-import _ from 'lodash'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 

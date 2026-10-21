@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Button } from 'ui/button'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Checkbox } from 'ui/checkbox'
@@ -90,7 +90,7 @@ function ProductsModal({
     }
   }, [selectedCategorieName, productList.loading])
   const handleProductInputOnChange = (e, index, id) => {
-    const productForModified = _.cloneDeep(selectedCategorieId)
+    const productForModified = cloneDeep(selectedCategorieId)
     switch (e.target.name) {
       case 'price':
         productForModified[index].price = parseInt(e.target.value) || 0

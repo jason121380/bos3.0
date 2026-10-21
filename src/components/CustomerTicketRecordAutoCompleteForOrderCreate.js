@@ -1,7 +1,7 @@
 import { LoaderCircle } from 'lucide-react'
 import { TextField } from 'ui/text-field'
 import idx from 'idx'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import React, { useEffect, useState, forwardRef } from 'react'
 import { Autocomplete } from 'ui/combobox'
 
@@ -27,7 +27,7 @@ function CustomerTicketRecordAutoCompleteForOrderCreate({
 
   useEffect(() => {
     if (!ticketRecordsForOrderLazyDataV2.loading && ticketRecordsForOrderLazyDataV2.data) {
-      let data = _.cloneDeep(idx(ticketRecordsForOrderLazyDataV2, _ => _.data.ticketRecordsForOrderV2))
+      let data = cloneDeep(idx(ticketRecordsForOrderLazyDataV2, _ => _.data.ticketRecordsForOrderV2))
       const valueArr = []
       couponUsages.forEach(d => d.customerTicketId && valueArr.push(d.customerTicketId))
       data = data.filter(d => {

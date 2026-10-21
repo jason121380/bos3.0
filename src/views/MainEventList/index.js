@@ -9,7 +9,7 @@ import useFetchSetEventRuleGroupUsing from 'hooks/useFetchSetEventRuleGroupUsing
 import useFetchSetEndMainEvent from 'hooks/useFetchSetEndMainEvent'
 import useFetchEndEventRuleGroup from 'hooks/useFetchEndEventRuleGroup'
 import { openSnackbar } from 'elements/snackbars'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import AdminPageHeader from 'components/AdminPageHeader'
 import { Skeleton } from 'ui/skeleton'
 

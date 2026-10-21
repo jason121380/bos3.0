@@ -6,8 +6,10 @@ const GET_USERS_PINNED_TABLE = gql`
   }
 `
 
-export default function useFetchGetUserPinnedTable() {
+// skip：版面以 useAfterFirstLoad 延後到首屏完成後再查（lib/after-first-load）
+export default function useFetchGetUserPinnedTable({ skip = false } = {}) {
   return useQuery(GET_USERS_PINNED_TABLE, {
     fetchPolicy: 'cache-and-network',
+    skip,
   })
 }

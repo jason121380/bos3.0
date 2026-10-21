@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment, useState, useEffect } from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { CirclePicker } from 'react-color'
 
 const AboutEmployeeSchedule = ({
@@ -60,7 +60,7 @@ const AboutEmployeeSchedule = ({
     '#667d89',
   ] */
   const handleChangeEnable = (name, index, using) => {
-    const newSchedule = _.cloneDeep(isMerchantClockInSetting)
+    const newSchedule = cloneDeep(isMerchantClockInSetting)
     switch (name) {
       case 'startTime':
         newSchedule[index].isClockInUsing = !using
@@ -87,7 +87,7 @@ const AboutEmployeeSchedule = ({
   }
 
   const handleChangetime = (name, index, value) => {
-    const newIsMerchantClockInSetting = _.cloneDeep(isMerchantClockInSetting)
+    const newIsMerchantClockInSetting = cloneDeep(isMerchantClockInSetting)
     const hour = parseInt(value.substr(0, 2))
     const minute = parseInt(value.substr(3, 5))
 
@@ -115,18 +115,18 @@ const AboutEmployeeSchedule = ({
   }
 
   const handleChangesScheduleName = (index, value) => {
-    const newIsMerchantClockInSetting = _.cloneDeep(isMerchantClockInSetting)
+    const newIsMerchantClockInSetting = cloneDeep(isMerchantClockInSetting)
     newIsMerchantClockInSetting[index].name = value
     setIsMerchantClockInSetting(newIsMerchantClockInSetting)
   }
   const handleChangeLateTime = (name, index, value) => {
-    const newSchedule = _.cloneDeep(isMerchantClockInSetting)
+    const newSchedule = cloneDeep(isMerchantClockInSetting)
     if (name === 'allowedDelayMinutes') newSchedule[index].allowedDelayMinutes = +value
     if (name === 'clockOutBufferMinutes') newSchedule[index].clockOutBufferMinutes = +value
     setIsMerchantClockInSetting(newSchedule)
   }
   const addSchedule = () => {
-    const newIsMerchantClockInSetting = _.cloneDeep(isMerchantClockInSetting)
+    const newIsMerchantClockInSetting = cloneDeep(isMerchantClockInSetting)
     const randNum = Math.floor(Math.random() * randomColor.length)
     newIsMerchantClockInSetting.push({
       name: '',
@@ -152,13 +152,13 @@ const AboutEmployeeSchedule = ({
     setIsMerchantClockInSetting(newIsMerchantClockInSetting)
   }
   const deleteSchedule = index => {
-    const newIsMerchantClockInSetting = _.cloneDeep(isMerchantClockInSetting)
+    const newIsMerchantClockInSetting = cloneDeep(isMerchantClockInSetting)
     newIsMerchantClockInSetting.splice(index, 1)
     setIsMerchantClockInSetting(newIsMerchantClockInSetting)
   }
   useEffect(() => {
     if (dataIndex !== '' && colorData !== '') {
-      const newIsMerchantClockInSetting = _.cloneDeep(isMerchantClockInSetting)
+      const newIsMerchantClockInSetting = cloneDeep(isMerchantClockInSetting)
       newIsMerchantClockInSetting[dataIndex].color = colorData
       setIsMerchantClockInSetting(newIsMerchantClockInSetting)
     }

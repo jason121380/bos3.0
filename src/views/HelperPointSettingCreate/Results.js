@@ -5,7 +5,7 @@ import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import PropTypes from 'prop-types'
 
 const statusEnum = [
@@ -16,17 +16,17 @@ const statusEnum = [
 
 function Results({ className, status, submitData, setSubmitData, ...rest }) {
   const handleAddRow = () => {
-    const newSubmitData = _.cloneDeep(submitData)
+    const newSubmitData = cloneDeep(submitData)
     newSubmitData[status].push({ threshold: 0, price: 0 })
     setSubmitData(newSubmitData)
   }
   const handleDeleteRow = index => {
-    const newSubmitData = _.cloneDeep(submitData)
+    const newSubmitData = cloneDeep(submitData)
     newSubmitData[status].splice(index, 1)
     setSubmitData(newSubmitData)
   }
   const handleEditRow = (index, value, key) => {
-    const newSubmitData = _.cloneDeep(submitData)
+    const newSubmitData = cloneDeep(submitData)
     newSubmitData[status][index][key] = value
     setSubmitData(newSubmitData)
   }

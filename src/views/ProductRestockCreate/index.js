@@ -6,7 +6,6 @@ import useFetchSetPurchaseStockIn from 'hooks/useFetchSetPurchaseStockIn'
 import { useFetchGetStockInIsUsing } from 'hooks/useFetchMerchantPassword'
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
-import _ from 'lodash'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 

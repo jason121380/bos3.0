@@ -4,7 +4,6 @@ import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
 import { startOfMonth, format } from 'date-fns'
 import useFetchMoneyFlowTransferReport from 'hooks/useFetchMoneyFlowTransferReport'
-import _ from 'lodash'
 import { CSVLink } from "react-csv";
 import DateSelector from 'components/DateSelector'
 import { Download } from 'lucide-react'

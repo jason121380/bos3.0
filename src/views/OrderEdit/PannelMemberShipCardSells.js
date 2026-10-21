@@ -2,7 +2,7 @@ import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from "context/keyInContext";
 import { useFetchUseMembershipOrder } from "hooks/useFetchOrder";
-import _ from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 import React from "react";
 import idx from "idx";
 
@@ -59,7 +59,7 @@ const PannelMemberShipCardSells = ({ thirdPartTicket, expanded, setExpanded }) =
 
 
   function handleClear({ index }) {
-    let newSells = _.cloneDeep(memberCardSells);
+    let newSells = cloneDeep(memberCardSells);
     if (newSells.length === 1) {
       newSells = [
         {
@@ -97,7 +97,7 @@ const PannelMemberShipCardSells = ({ thirdPartTicket, expanded, setExpanded }) =
   }
 
   function handleAddSells() {
-    const newSells = _.cloneDeep(memberCardSells)
+    const newSells = cloneDeep(memberCardSells)
     newSells.push({
       sellerId: '',
       membershipUUID: '',
@@ -110,7 +110,7 @@ const PannelMemberShipCardSells = ({ thirdPartTicket, expanded, setExpanded }) =
   }
 
   function handleRemoveSells({ index }) {
-    let newSells = _.cloneDeep(memberCardSells)
+    let newSells = cloneDeep(memberCardSells)
     newSells = newSells.filter((_d, idx) => idx !== index)
     setMemberCardSells(newSells)
     handleBillChange({
@@ -130,7 +130,7 @@ const PannelMemberShipCardSells = ({ thirdPartTicket, expanded, setExpanded }) =
   }
 
   function handleMemberShipCardChange({ value, index }) {
-    const newSells = _.cloneDeep(memberCardSells)
+    const newSells = cloneDeep(memberCardSells)
     newSells[index] = value
     setMemberCardSells(newSells)
     handleBillChange({
@@ -146,7 +146,7 @@ const PannelMemberShipCardSells = ({ thirdPartTicket, expanded, setExpanded }) =
     })
   }
   function handleMerchantSellsChange({ key, value, index }) {
-    const newSells = _.cloneDeep(memberCardSells)
+    const newSells = cloneDeep(memberCardSells)
     newSells[index][key] = value === NaN ? "Invalid Date" : value
     setMemberCardSells(newSells)
     if (key === 'price' || key === 'date' || key === 'sellerId' || key === 'expiryDate' || key === 'remark') {

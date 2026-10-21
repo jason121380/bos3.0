@@ -1,6 +1,5 @@
 // 外框已換 ui/dialog；內部 Select 已換 NativeSelect（原生 select 無彈層，不受 Radix／MUI 影響）
 import PropTypes from 'prop-types'
-import _ from 'lodash'
 import { Button } from 'ui/button'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Field } from 'ui/input'

@@ -2,7 +2,7 @@
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Delete, Plus, Trash2 } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
@@ -45,7 +45,7 @@ function AssistantSettingEditModal({
   handleSubmitHelperDeductionSettingWarning,
 }) {
   const handleAddAssistantContent = () => {
-    const newHelperDeductionSetting = _.cloneDeep(helperDeductionSetting)
+    const newHelperDeductionSetting = cloneDeep(helperDeductionSetting)
     newHelperDeductionSetting.push({
       type: '',
       helperDeductionType: 'onSales',
@@ -68,13 +68,13 @@ function AssistantSettingEditModal({
   }
 
   const handleDeleteAssistantContent = index => {
-    const newHelperDeductionSetting = _.cloneDeep(helperDeductionSetting)
+    const newHelperDeductionSetting = cloneDeep(helperDeductionSetting)
     newHelperDeductionSetting.splice(index, 1)
     setHelperDeductionSetting([...newHelperDeductionSetting])
   }
 
   const handleClear = index => {
-    const newHelperDeductionSetting = _.cloneDeep(helperDeductionSetting)
+    const newHelperDeductionSetting = cloneDeep(helperDeductionSetting)
     newHelperDeductionSetting[index] = {
       helperDeductionType: 'onSales',
       type: '',
@@ -96,7 +96,7 @@ function AssistantSettingEditModal({
   }
 
   const handleDeductionTypeChange = (event, index) => {
-    const newHelperDeductionSetting = _.cloneDeep(helperDeductionSetting)
+    const newHelperDeductionSetting = cloneDeep(helperDeductionSetting)
     newHelperDeductionSetting.forEach((data, index2) => {
       if (index === index2) {
         data.helperDeductionType = event.target.value
@@ -106,7 +106,7 @@ function AssistantSettingEditModal({
   }
 
   const handleHelperType = (event, index) => {
-    const newHelperDeductionSetting = _.cloneDeep(helperDeductionSetting)
+    const newHelperDeductionSetting = cloneDeep(helperDeductionSetting)
 
     newHelperDeductionSetting.forEach((data, index2) => {
       if (index === index2) {
@@ -117,7 +117,7 @@ function AssistantSettingEditModal({
   }
 
   const handleAssistantName = (event, index) => {
-    const newHelperDeductionSetting = _.cloneDeep(helperDeductionSetting)
+    const newHelperDeductionSetting = cloneDeep(helperDeductionSetting)
     newHelperDeductionSetting.forEach((data, index2) => {
       if (index === index2) {
         data.nameList = []
@@ -131,7 +131,7 @@ function AssistantSettingEditModal({
   }
 
   const handleDeductionWayChange = (event, index) => {
-    const newHelperDeductionSetting = _.cloneDeep(helperDeductionSetting)
+    const newHelperDeductionSetting = cloneDeep(helperDeductionSetting)
 
     newHelperDeductionSetting.forEach((data, index2) => {
       if (index === index2) {
@@ -151,7 +151,7 @@ function AssistantSettingEditModal({
   }
 
   const handleCheckboxChange = index => {
-    const newHelperDeductionSetting = _.cloneDeep(helperDeductionSetting)
+    const newHelperDeductionSetting = cloneDeep(helperDeductionSetting)
     newHelperDeductionSetting.forEach((data, index2) => {
       if (index === index2) {
         data.isDesignate = !data.isDesignate
@@ -170,7 +170,7 @@ function AssistantSettingEditModal({
   }
 
   const handleIsSplittedChange = index => {
-    const newHelperDeductionSetting = _.cloneDeep(helperDeductionSetting)
+    const newHelperDeductionSetting = cloneDeep(helperDeductionSetting)
     newHelperDeductionSetting.forEach((data, index2) => {
       if (index === index2) {
         data.isSplitted = !data.isSplitted
@@ -180,7 +180,7 @@ function AssistantSettingEditModal({
   }
 
   const handleDesignateDeductionWayInput = (event, index, deductionWay) => {
-    const newHelperDeductionSetting = _.cloneDeep(helperDeductionSetting)
+    const newHelperDeductionSetting = cloneDeep(helperDeductionSetting)
     newHelperDeductionSetting.forEach((data, index2) => {
       if (index === index2) {
         switch (deductionWay) {
@@ -202,7 +202,7 @@ function AssistantSettingEditModal({
   }
 
   const handleDeductionWayInput = (event, index, deductionWay) => {
-    const newHelperDeductionSetting = _.cloneDeep(helperDeductionSetting)
+    const newHelperDeductionSetting = cloneDeep(helperDeductionSetting)
     newHelperDeductionSetting.forEach((data, index2) => {
       if (index === index2) {
         switch (deductionWay) {
@@ -224,7 +224,7 @@ function AssistantSettingEditModal({
   }
 
   const handleNonDesignateDeductionWayInput = (event, index, deductionWay) => {
-    const newHelperDeductionSetting = _.cloneDeep(helperDeductionSetting)
+    const newHelperDeductionSetting = cloneDeep(helperDeductionSetting)
     newHelperDeductionSetting.forEach((data, index2) => {
       if (index === index2) {
         switch (deductionWay) {

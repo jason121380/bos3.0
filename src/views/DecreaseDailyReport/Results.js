@@ -13,13 +13,13 @@ import {
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 function Results({ helperReport, titleDate, priceDisplayOnReport, isMemberShipCardActive, designerNameForReportTypeData, printMode }) {
   const [printData, setPrintData] = useState([])
 
   useEffect(() => {
-    const data = _.cloneDeep(helperReport)
+    const data = cloneDeep(helperReport)
     let group = []
     const report = []
     data.forEach((d, index) => {

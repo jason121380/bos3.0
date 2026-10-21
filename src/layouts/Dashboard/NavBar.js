@@ -13,6 +13,7 @@ import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCard
 import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusActive'
 import useFetchGetIsReportListExtended from 'hooks/useFetchGetIsReportListExtended'
 import useFetchGetUserPinnedTable from 'hooks/useFetchGetUserPinnedTable'
+import useAfterFirstLoad from 'lib/after-first-load'
 import { useFetchGetDisablePendingOrder } from 'hooks/useFetchGetParameterAboutSettingFunction'
 import { useDispatch, useSelector } from 'react-redux'
 import { pinnedTableActions } from './../../store/pinnedTable'
@@ -77,7 +78,8 @@ function reduceChildRoutes({ acc, pathname, item, reportListExtended, depth = 0 
 function NavBar({ openMobile, onMobileClose, openDesktop }) {
   const dispatch = useDispatch()
   let merchantName = localStorage.getItem('userMerchant')
-  const getUserPinnedTable = useFetchGetUserPinnedTable()
+  // 釘選頁清單延後到首屏完成後再查（lib/after-first-load）
+  const getUserPinnedTable = useFetchGetUserPinnedTable({ skip: !useAfterFirstLoad() })
   if (merchantName) merchantName = JSON.parse(merchantName).name
   // 宣告usestate變數
   const [status, setStatus] = useState('online')

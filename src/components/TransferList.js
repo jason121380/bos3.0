@@ -3,7 +3,7 @@ import { Button } from 'ui/button'
 import { cn, focusRing } from 'ui/utils'
 import { KeyboardArrowRightRounded as KeyboardArrowRightRoundedIcon, RemoveRounded as RemoveRoundedIcon } from 'ui/icons'
 import { useState } from 'react';
-import { cloneDeep } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 import getLabel from 'utils/getTransferListLabel';
 
 import SearchField from './SearchField';

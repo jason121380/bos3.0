@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10210920，main 已含 PR #1～#235）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10211027，main 已含 PR #1～#236）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,6 +8,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 效能第二輪（v3.10211016） | lodash 逐方法引入（155 檔換 import、61 檔移除未用 import，入口 513→455 KB）；`lib/after-first-load`＋`init-apollo` 的 `inflightLink`：系統公告、訂單佇列、釘選頁、切換店家清單延到首屏完成後才查（4 個 hook 加可選 `skip`）。預約表格 3.53→3.30 秒（中階手機條件）。 |
 | 效能 A＋B 與死碼清理（v3.10210912） | `lib/theme-mode`（主題記憶、繪製前套用、`?inline` 舊版樣式可替換、切換免 reload）；`NavBar` 改呼叫 `syncThemeFromServer`、`TopBar` 切換改 `switchThemeByUser`、`Dashboard` 以 `useLayoutEffect` 套用記憶；`index.js` 改載 `lib/polyfills`（只補 `structuredClone`）；刪除 228 個到不了／未引用的檔案、移除 `react-app-polyfill`。屬畫面以外修正（Jason 當次同意）。57 檔／304 測試、lint:build 0、build、乾淨 `npm ci` 皆通過。 |
 | 預約色塊白字、側欄店名去標題（v3.10210851） | 色票淺色改深一階（白字 ≥ 4.5:1），`readableTextOn` 因此一律白字；`NavBar` 目前店家列移除可見的「目前店家」小字。色值字串變更與 JSX 文字移除，判斷條件不變。 |
 | 篩選沒有內容時不顯示篩選鈕（v3.10210845） | 預約管理、單日預約紀錄：店家未開啟報到功能時，`AdminPageHeader` 不傳 `onFilterClick`（篩選鈕不出現）、篩選卡片不渲染。條件沿用頁面既有的報到設定值，不改查詢與篩選邏輯。新增 2 測試。 |

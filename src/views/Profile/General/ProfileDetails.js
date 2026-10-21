@@ -11,7 +11,6 @@ import { openSnackbar } from 'elements/snackbars'
 import useFetchSetUserAvatar from 'hooks/useFetchSetUserAvatar'
 import { EditRounded as EditRoundedIcon } from 'ui/icons'
 import { Avatar } from 'ui/avatar'
-import _ from 'lodash'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 

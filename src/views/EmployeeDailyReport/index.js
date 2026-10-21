@@ -11,7 +11,6 @@ import useFetchGetIsZeroValueHiddenOnDailyReport from 'hooks/useFetchGetIsZeroVa
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import useFetchGetIsOptimizationPrintModeOn from 'hooks/useFetchGetIsOptimizationPrintModeOn'
 import DateSelector from 'components/DateSelector'
-import _ from 'lodash'
 import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'

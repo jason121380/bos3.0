@@ -3,7 +3,7 @@ import { Input } from 'ui/input'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Plus, Trash2 } from 'lucide-react'
 import { memo, Fragment } from 'react'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 const optionsArray = [
   { "hairProperties": '髮質屬性' },

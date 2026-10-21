@@ -8,7 +8,8 @@ import { useFetchUsersForCreatePicking } from 'hooks/useFetchUsers'
 import idx from 'idx'
 import { useState, useEffect, useRef } from 'react'
 import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
+import clone from 'lodash/clone'
 import { openSnackbar } from 'elements/snackbars'
 import format from 'date-fns/format'
 import { Copy, Plus, Trash2 } from 'lucide-react'
@@ -60,7 +61,7 @@ export default function General({
 
   const handleAddProduct = () => {
     if (inputEnabled) {
-      const newData = _.cloneDeep(purchaseRecords)
+      const newData = cloneDeep(purchaseRecords)
       newData.productList.push({
         productId: '',
         count: 0,
@@ -72,13 +73,13 @@ export default function General({
   }
 
   const handleDeleteProduct = index => {
-    const newData = _.cloneDeep(purchaseRecords)
+    const newData = cloneDeep(purchaseRecords)
     newData.productList.splice(index, 1)
     setPurchaseRecords(newData)
   }
 
   const handleChangePurchaseRecords = (key, value) => {
-    const newData = _.clone(purchaseRecords)
+    const newData = clone(purchaseRecords)
     if (value === null) {
       newData[key] = ''
       setPurchaseRecords(newData)
@@ -172,7 +173,7 @@ export default function General({
   }, [products.loading, picking, setting])
 
   const hadnleSelectProduct = (product, index, source) => {
-    const newData = _.cloneDeep(purchaseRecords)
+    const newData = cloneDeep(purchaseRecords)
     if (product === null) {
       newData.productList[index] = {
         productId: '',
@@ -211,7 +212,7 @@ export default function General({
       event.target.value = 0
       openSnackbar({ message: '請輸入0以上的數字', variant: 'warning' })
     }
-    const newData = _.cloneDeep(purchaseRecords)
+    const newData = cloneDeep(purchaseRecords)
     newData.productList[index].unitPrice = Number(event.target.value)
     setPurchaseRecords(newData)
   }
@@ -220,7 +221,7 @@ export default function General({
       event.target.value = 0
       openSnackbar({ message: '請輸入0以上的數字', variant: 'warning' })
     }
-    const newData = _.cloneDeep(purchaseRecords)
+    const newData = cloneDeep(purchaseRecords)
     newData.productList[index].count = Number(event.target.value)
     setPurchaseRecords(newData)
   }

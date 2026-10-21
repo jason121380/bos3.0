@@ -1,6 +1,6 @@
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import billContext from 'context/keyInContext'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import React from 'react'
 import { addDays } from "date-fns";
 import MemberShipCardSells from 'views/OrderCreate/MemberShipCardSells'
@@ -57,7 +57,7 @@ const PannelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, re
   }, [reset])
 
   function handleClear({ index }) {
-    let newSells = _.cloneDeep(memberCardSells)
+    let newSells = cloneDeep(memberCardSells)
     if (newSells.length === 1) {
       newSells = [
         {
@@ -95,7 +95,7 @@ const PannelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, re
   }
 
   function handleMerchantSellsChange({ key, value, index }) {
-    const newSells = _.cloneDeep(memberCardSells)
+    const newSells = cloneDeep(memberCardSells)
     newSells[index][key] = value === NaN ? "Invalid Date" :value
     setMemberCardSells(newSells)
     if (key === 'price' || key === 'date' || key === 'sellerId' || key === 'expiryDate' || key === 'remark') {
@@ -113,7 +113,7 @@ const PannelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, re
     }
   }
   function handleAddSells() {
-    const newSells = _.cloneDeep(memberCardSells)
+    const newSells = cloneDeep(memberCardSells)
     newSells.push({
       sellerId: '',
       membershipUUID: '',
@@ -126,7 +126,7 @@ const PannelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, re
   }
 
   function handleRemoveSells({ index }) {
-    let newSells = _.cloneDeep(memberCardSells)
+    let newSells = cloneDeep(memberCardSells)
     newSells = newSells.filter((_d, idx) => idx !== index)
     setMemberCardSells(newSells)
     handleBillChange({
@@ -145,7 +145,7 @@ const PannelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, re
     setFocusRow(newSells.length - 1)
   }
   function handleMemberShipCardChange({ value, index }) {
-    const newSells = _.cloneDeep(memberCardSells)
+    const newSells = cloneDeep(memberCardSells)
     newSells[index] = value
     setMemberCardSells(newSells)
     handleBillChange({

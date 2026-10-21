@@ -10,6 +10,7 @@ import { useHistory } from 'react-router'
 import { renderRoutes } from 'react-router-config'
 import useFetchCheckPageAuthority from 'hooks/useFetchCheckPageAuthority'
 import useFetchGetUserMerchant from 'hooks/useFetchGetUserMerchant'
+import useAfterFirstLoad, { useHoldFirstLoad } from 'lib/after-first-load'
 import idx from 'idx'
 import { PanelLeftOpen } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -20,6 +21,12 @@ import { MobileAppBar, MobileTabBar, useMobileTabs, useShowTabBar } from './Mobi
 import NavBar from './NavBar'
 import TopBar from './TopBar'
 
+// 頁面程式（lazy chunk）下載中的佔位：存在期間不放行首屏延後的查詢（lib/after-first-load）
+function PageLoading() {
+  useHoldFirstLoad()
+  return <div className="ui-root h-0.5 w-full animate-pulse bg-accent" />
+}
+
 function Dashboard({ route, location }) {
   const [openNavBarMobile, setOpenNavBarMobile] = useState(false)
   const [openNavBarDesktop, setOpenNavBarDesktop] = useState(true)
@@ -27,7 +34,8 @@ function Dashboard({ route, location }) {
   const { open, toggle } = useToggle()
   const history = useHistory()
   const [checkPageAuthorityLazy, checkPageAuthorityData] = useFetchCheckPageAuthority()
-  const userMerchants = useFetchGetUserMerchant()
+  // 切換店家清單只在開啟對話框時用到，延後到首屏完成後再查（lib/after-first-load）
+  const userMerchants = useFetchGetUserMerchant({ skip: !useAfterFirstLoad() })
   const mobileTabs = useMobileTabs()
   const showTabBar = useShowTabBar(mobileTabs)
 
@@ -162,7 +170,7 @@ function Dashboard({ route, location }) {
       >
         <div id="printContainer" className="max-w-full overflow-x-hidden">
           <PageErrorBoundary resetKey={location.pathname}>
-            <Suspense fallback={<div className="ui-root h-0.5 w-full animate-pulse bg-accent" />}>{renderRoutes(route.routes)}</Suspense>
+            <Suspense fallback={<PageLoading />}>{renderRoutes(route.routes)}</Suspense>
           </PageErrorBoundary>
         </div>
       </main>

@@ -12,7 +12,6 @@ import Resizer from "react-image-file-resizer";
 import Cropper from 'react-easy-crop'
 import CropImage from './CropImage'
 import { openSnackbar } from 'elements/snackbars';
-import _ from 'lodash'
 import produce from 'immer';
 function AboutOrderCreate({
   className, orderCreateSetting, setOrderCreateSetting, uploadMerchantLogo, inputEnable,

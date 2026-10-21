@@ -3,7 +3,7 @@ import { OutlinedInput } from 'ui/text-field'
 import { FormHelperText, FormControl, useFormControl } from 'ui/form-control'
 import { ArrowDown, ArrowUp, ChevronsDown, Pencil, Trash2, UserPlus, X } from 'lucide-react'
 import { useState, Fragment, useMemo } from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import { Button } from 'ui/button'
@@ -40,7 +40,7 @@ export default function ScheduleCard({
   const [progress, setProgress] = useState(0)
   const handleAddTime = (cardIndex, rowIndex) => {
     setDisableButton(true)
-    const newScheduleCard = _.cloneDeep(scheduleCard)
+    const newScheduleCard = cloneDeep(scheduleCard)
     newScheduleCard.forEach((data, index) => {
       if (index === cardIndex) {
         data.scheduleRow.forEach((data2, index2) => {
@@ -59,7 +59,7 @@ export default function ScheduleCard({
   }
 
   const handleCardTitleChange = (cardIndex, e) => {
-    const newScheduleCard = _.cloneDeep(scheduleCard)
+    const newScheduleCard = cloneDeep(scheduleCard)
     newScheduleCard.forEach((data, index) => {
       if (index === cardIndex) {
         data.cardName = e.target.value
@@ -71,7 +71,7 @@ export default function ScheduleCard({
   const handleOnKeyDown = (e, cardIndex) => {
     if (e.keyCode === 13) {
       setDisableButton(true)
-      const newScheduleCard = _.cloneDeep(scheduleCard)
+      const newScheduleCard = cloneDeep(scheduleCard)
       newScheduleCard.forEach((data, index) => {
         if (index === cardIndex) {
           data.setName = !data.setName
@@ -83,7 +83,7 @@ export default function ScheduleCard({
   }
 
   const handleClickTitle = cardIndex => {
-    const newScheduleCard = _.cloneDeep(scheduleCard)
+    const newScheduleCard = cloneDeep(scheduleCard)
     newScheduleCard.forEach((data, index) => {
       if (index === cardIndex && data.setName) {
         data.setName = false
@@ -94,7 +94,7 @@ export default function ScheduleCard({
 
   const handlePersonGoUp = (cardIndex, rowIndex, rowData) => {
     setDisableButton(true)
-    const newScheduleCard = _.cloneDeep(scheduleCard)
+    const newScheduleCard = cloneDeep(scheduleCard)
     const clickedRowData = rowData
     if (rowIndex === 0) {
       newScheduleCard.forEach((data, index) => {
@@ -153,7 +153,7 @@ export default function ScheduleCard({
 
   const handlePersonGoDown = (cardIndex, rowIndex, rowData) => {
     setDisableButton(true)
-    const newScheduleCard = _.cloneDeep(scheduleCard)
+    const newScheduleCard = cloneDeep(scheduleCard)
     const clickedRowData = rowData
     if (rowIndex === 0) {
       newScheduleCard.forEach((data, index) => {
@@ -249,7 +249,7 @@ export default function ScheduleCard({
 
   const handleDeleteDesigner = (cardIndex, rowIndex) => {
     setDisableButton(true)
-    const newScheduleCard = _.cloneDeep(scheduleCard)
+    const newScheduleCard = cloneDeep(scheduleCard)
     newScheduleCard.forEach((data, index) => {
       if (index === cardIndex) {
         data.scheduleRow.forEach((data2, index2) => {
@@ -273,7 +273,7 @@ export default function ScheduleCard({
 
   const handlePersonGoBottom = (cardIndex, rowIndex, rowData) => {
     setDisableButton(true)
-    const newScheduleCard = _.cloneDeep(scheduleCard)
+    const newScheduleCard = cloneDeep(scheduleCard)
     const clickedRowData = rowData
     newScheduleCard.forEach((data, index) => {
       if (index === cardIndex) {

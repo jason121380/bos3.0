@@ -2,7 +2,7 @@
 import { Modal } from 'ui/modal-compat'
 import PropTypes from 'prop-types'
 import { memo } from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import { Trash2 } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -21,13 +21,13 @@ function AddDesignersModal({
   setDisableButton
 }) {
   const handleDeleteDesigner = index => {
-    const newDesigners = _.cloneDeep(designers)
+    const newDesigners = cloneDeep(designers)
     newDesigners.splice(index, 1)
     setDesigners(newDesigners)
   }
 
   const handleDesignerOnChange = (id, index) => {
-    const newDesigners = _.cloneDeep(designers)
+    const newDesigners = cloneDeep(designers)
     if (id !== undefined) {
       newDesigners[index].designerId = id
       if (index === newDesigners.length - 1) {
@@ -51,7 +51,7 @@ function AddDesignersModal({
   }
   const handleAddDesignersToSchedule = () => {
     setDisableButton(true)
-    const newScheduleCard = _.cloneDeep(scheduleCard)
+    const newScheduleCard = cloneDeep(scheduleCard)
     const newDesigners = designers.filter(
       designer => designer.designerId !== '' || designer === null
     )
@@ -76,7 +76,7 @@ function AddDesignersModal({
   }
 
   const keyDownDeleteData = (event, index) => {
-    const newDesigners = _.cloneDeep(designers)
+    const newDesigners = cloneDeep(designers)
     event.preventDefault()
     if (event.keyCode === 8 || event.keyCode === 46) {
       if (newDesigners.length === 1) {
