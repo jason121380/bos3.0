@@ -5,7 +5,7 @@ import getQueryString from 'helper/getQueryString'
 import useFetchBooking from 'hooks/useFetchBooking'
 import useFetchNonDesignationBooking from 'hooks/useFetchNonDesignationBooking'
 import produce from 'immer'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { Button } from 'ui/button'
@@ -32,7 +32,7 @@ export default function () {
   const handleAssignChange = (_event, newAlignment) => {
     if (newAlignment !== null) {
       setIsAssign(newAlignment)
-      const _dateTime = _.cloneDeep(values.dateTime)
+      const _dateTime = cloneDeep(values.dateTime)
       setValues({
         ...values,
         dateTime: new Date(_dateTime).getTime(),
@@ -62,7 +62,7 @@ export default function () {
   const { booking } = useFetchBooking()
   const { nonDesignationBooking } = useFetchNonDesignationBooking()
   const handleChange = ({ key, value }) => {
-    const _values = _.cloneDeep(values)
+    const _values = cloneDeep(values)
     setValues(
       produce(draft => {
         if (key === 'designerId') {
@@ -293,7 +293,7 @@ export default function () {
           friendsNumber={`${index}`}
           onDelete={e => {
             e.preventDefault()
-            const newCustomers = _.cloneDeep(values.customers)
+            const newCustomers = cloneDeep(values.customers)
             delete newCustomers[customer]
             handleChange({
               key: 'customers',
@@ -302,7 +302,7 @@ export default function () {
           }}
           cellphoneRegex={cellphoneRegex}
           onCustomerChange={({ value, customerKey }) => {
-            const newCustomers = _.cloneDeep(values.customers)
+            const newCustomers = cloneDeep(values.customers)
             newCustomers[customer][customerKey] = value
             if (customerKey === 'cellphone' && value && !cellphoneRegex.test(value)) {
               newCustomers[customer].cellphoneErr = true

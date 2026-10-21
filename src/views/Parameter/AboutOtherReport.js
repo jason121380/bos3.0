@@ -2,7 +2,7 @@ import { CheckboxField } from 'ui/checkbox'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 const checkboxSettings = [
   {label: '費用分析表與損益表出現人員薪資項目', key: 'isDesignerSalaryDisplayOnBalanceReport'},

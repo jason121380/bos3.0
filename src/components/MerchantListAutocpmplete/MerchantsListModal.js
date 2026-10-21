@@ -7,7 +7,7 @@ import { Input } from 'ui/input'
 import { TreeView, TreeItem } from 'ui/tree-compat'
 import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, GroupsRounded as GroupsRoundedIcon, Storefront as StorefrontIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
-import _ from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 
 // 樹狀本體為 ui/tree-compat（輸出 MUI 同名 class），以下覆寫統一 compact 列高、hover、縮排與箭頭對齊（原 emotion styles 等值轉 Tailwind）。
 // 權重說明：tree-compat.css 在路由 chunk（晚於 emotion 與 Tailwind 載入），同權重時兩者皆輸給它，故不加 !；
@@ -113,7 +113,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
 
   const handleItemClick = data => {
     let index
-    const arr = _.cloneDeep(modalValues)
+    const arr = cloneDeep(modalValues)
     const findData = arr.find((d, i) => {
       if (d.id === data.id) {
         index = i
@@ -152,7 +152,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues }) 
   }
 
   const handleComfirm = () => {
-    const values = _.cloneDeep(modalValues)
+    const values = cloneDeep(modalValues)
     setValues(values)
     setModalValues([])
     setExpandedArr([])

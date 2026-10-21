@@ -19,7 +19,7 @@ import useFetchUpdateUserOrderableList from 'hooks/useFetchSettingUpdateUserOrde
 import useFetchSettingUserSalaryItemLock from 'hooks/useFetchSetLockUserSalaryItem'
 import useFetchCloseDailyAccountV3 from 'hooks/useFetchCloseDailyAccountV3'
 import { useFetchCreateSystemUpdateDelete } from 'hooks/useFetchSystemUpdateRecord'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 const AUTO_HIDE_MS = 3000
 
@@ -117,7 +117,7 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
   const handleSalaryCheckout = () => {
     localStorage.removeItem('currentTime')
 
-    const newMonthlyCheckoutInput = _.cloneDeep(monthlyCheckoutInput)
+    const newMonthlyCheckoutInput = cloneDeep(monthlyCheckoutInput)
     const progressCount = Math.round(100 / newMonthlyCheckoutInput.length)
     setOrderPendingBtn(true)
 
@@ -151,8 +151,8 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
   // 每日結帳
   const dailyCheckout = () => {
     setIsDailyCheckoutLoading(true)
-    const newSelectedOrders = _.cloneDeep(selectedOrders)
-    let newResults = _.cloneDeep(results)
+    const newSelectedOrders = cloneDeep(selectedOrders)
+    let newResults = cloneDeep(results)
     const progressCount = Math.round(100 / selectedOrders.length)
     const closeDailyAccountV3Func = async dateArr => {
       for (let i = 0; i < dateArr.length; i++) {

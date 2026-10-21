@@ -3,7 +3,6 @@ import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo, Fragment } from 'react'
-import _ from 'lodash'
 import produce from 'immer'
 
 const printLayout = [

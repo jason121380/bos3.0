@@ -2,11 +2,11 @@ import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Input } from 'ui/input'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { memo, Fragment } from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable }) {
   const handleAddSetting = (...rest) => {
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     switch (rest[0]) {
       case 'salaryIncreaseItem':
         newService.salaryIncreaseItem.push({ itemSetting: '', sorting: rest[1] + 1 })
@@ -21,7 +21,7 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
     }
   }
   const handleDeleteSetting = (...rest) => {
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     switch (rest[0]) {
       case 'salaryIncreaseItem':
         newService.salaryIncreaseItem.splice(rest[1], 1)
@@ -37,7 +37,7 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
   }
 
   const handleSalaryIncreaseName = (index, event) => {
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     newService.salaryIncreaseItem[index] = {
       ...newService.salaryIncreaseItem[index],
       itemSetting: event.target.value,
@@ -46,7 +46,7 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
   }
 
   const handleSalaryDecreaseItemName = (index, event) => {
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     newService.salaryDecreaseItem[index] = {
       ...newService.salaryDecreaseItem[index],
       itemSetting: event.target.value,

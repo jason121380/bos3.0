@@ -5,7 +5,7 @@ import { useHistory } from 'react-router'
 import useFetchGetVendor from 'hooks/useFetchGetVendor'
 import useFetchSetCreateMerchantVendor from 'hooks/useFetchSetCreateMerchantVendor'
 import idx from 'idx'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
@@ -49,7 +49,7 @@ function MerchantVendorCreate() {
       setIsClick(false)
       return
     } else {
-      const inputValue = _.cloneDeep(submitData)
+      const inputValue = cloneDeep(submitData)
       inputValue.vendorUUId = submitData.vendorUUId.uuid
       createMerchantVendor({
         input: inputValue

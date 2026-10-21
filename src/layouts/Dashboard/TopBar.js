@@ -21,7 +21,6 @@ import useFetchGetUsingOrderQueue from 'hooks/useFetchGetUsingOrderQueue'
 import useFetchReCheckoutOrderFromQueue from 'hooks/useFetchReCheckoutOrderFromQueue'
 import useFetchDestroyQueueById from 'hooks/useFetchDestroyQueueById'
 import MerchantBar from './MerchantBar'
-import _ from 'lodash'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import webSocket from "socket.io-client";

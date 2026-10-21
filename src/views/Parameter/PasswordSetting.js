@@ -2,7 +2,6 @@ import { Field, Input } from 'ui/input'
 import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
-import _ from 'lodash'
 import produce from 'immer'
 
 

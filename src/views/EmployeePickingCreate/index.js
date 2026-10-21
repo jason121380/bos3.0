@@ -6,7 +6,7 @@ import idx from 'idx'
 import produce from 'immer'
 import { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 import { Button } from 'ui/button'
 import { Checkbox } from 'ui/checkbox'
@@ -72,7 +72,7 @@ export default function EmployeePickingCreate({ location }) {
   const handleSubmit = () => {
     setIsClick(true)
 
-    const newPicking = _.cloneDeep(picking)
+    const newPicking = cloneDeep(picking)
     let newProductList = newPicking.productList.filter(
       data => data.productName !== '' || data.productNo !== ''
     )

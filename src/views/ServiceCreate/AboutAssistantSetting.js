@@ -3,7 +3,7 @@ import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { Delete, Plus, Trash2 } from 'lucide-react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import PropTypes from 'prop-types'
 import { useRef } from 'react'
 import { Button } from 'ui/button'
@@ -46,7 +46,7 @@ function AboutAssistantSetting({
   const inputLabel = useRef()
 
   const handleAddAssistantContent = () => {
-    const newSupport = _.cloneDeep(support)
+    const newSupport = cloneDeep(support)
     newSupport.push({
       helperDeductionType: 'onSales',
       type: '',
@@ -67,12 +67,12 @@ function AboutAssistantSetting({
     onChange({ key: 'helperDeductionSetting', event: { target: { value: newSupport } } })
   }
   const handleDeleteAssistantContent = index => {
-    const newSupport = _.cloneDeep(support)
+    const newSupport = cloneDeep(support)
     newSupport.splice(index, 1)
     onChange({ key: 'helperDeductionSetting', event: { target: { value: newSupport } } })
   }
   const handleDeductionTypeChange = (event, index) => {
-    const newSupport = _.cloneDeep(support)
+    const newSupport = cloneDeep(support)
     newSupport.forEach((data, index2) => {
       if (index === index2) {
         data.helperDeductionType = event.target.value
@@ -81,7 +81,7 @@ function AboutAssistantSetting({
     onChange({ key: 'helperDeductionSetting', event: { target: { value: newSupport } } })
   }
   const handleCheckboxChange = index => {
-    const newSupport = _.cloneDeep(support)
+    const newSupport = cloneDeep(support)
     newSupport.forEach((data, index2) => {
       if (index === index2) {
         data.isDesignate = !data.isDesignate
@@ -99,7 +99,7 @@ function AboutAssistantSetting({
     onChange({ key: 'helperDeductionSetting', event: { target: { value: newSupport } } })
   }
   const handleIsSplittedChange = index => {
-    const newSupport = _.cloneDeep(support)
+    const newSupport = cloneDeep(support)
     newSupport.forEach((data, index2) => {
       if (index === index2) {
         data.isSplitted = !data.isSplitted
@@ -109,7 +109,7 @@ function AboutAssistantSetting({
   }
 
   const handleAssistantName = (event, index) => {
-    const newSupport = _.cloneDeep(support)
+    const newSupport = cloneDeep(support)
     newSupport.forEach((data, index2) => {
       if (index === index2) {
         data.nameList = []
@@ -123,7 +123,7 @@ function AboutAssistantSetting({
   }
 
   const handleDeductionWayChange = (event, index) => {
-    const newSupport = _.cloneDeep(support)
+    const newSupport = cloneDeep(support)
     newSupport.forEach((data, index2) => {
       if (index === index2) {
         data.deductionWay = event.target.value
@@ -142,7 +142,7 @@ function AboutAssistantSetting({
   }
 
   const handleDeductionWayInput = (event, index, deductionWay) => {
-    const newSupport = _.cloneDeep(support)
+    const newSupport = cloneDeep(support)
     switch (deductionWay) {
       case '業績%數':
         newSupport[index].percent = event.target.value
@@ -160,7 +160,7 @@ function AboutAssistantSetting({
   }
 
   const handleDesignateDeductionWayInput = (event, index, deductionWay) => {
-    const newSupport = _.cloneDeep(support)
+    const newSupport = cloneDeep(support)
     switch (deductionWay) {
       case '業績%數':
         newSupport[index].designatePercent = event.target.value
@@ -177,7 +177,7 @@ function AboutAssistantSetting({
     onChange({ key: 'helperDeductionSetting', event: { target: { value: newSupport } } })
   }
   const handleNonDesignateDeductionWayInput = (event, index, deductionWay) => {
-    const newSupport = _.cloneDeep(support)
+    const newSupport = cloneDeep(support)
     switch (deductionWay) {
       case '業績%數':
         newSupport[index].nonDesignatePercent = event.target.value
@@ -221,7 +221,7 @@ function AboutAssistantSetting({
   }
 
   const handleHelperType = (event, index) => {
-    const newSupport = _.cloneDeep(support)
+    const newSupport = cloneDeep(support)
     newSupport.forEach((data, index2) => {
       if (index === index2) {
         data.type = event.target.value
@@ -231,7 +231,7 @@ function AboutAssistantSetting({
   }
 
   const handleClear = index => {
-    const newSupport = _.cloneDeep(support)
+    const newSupport = cloneDeep(support)
     newSupport[index] = {
       helperDeductionType: 'onSales',
       type: '',

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import produce from 'immer'
-import _ from 'lodash'
 
 // 預約狀態色（四個預約週曆與本圖例的唯一來源，Jason 2026/10/21「所有預約表改成更符合主題的配色」）：
 // 與品牌藍 #1A73E8 同家族的 Google 色系，保留各狀態原本的色相（不指定＝粉、待審核＝青、待確認＝橘黃），讓櫃台的辨識習慣不變；

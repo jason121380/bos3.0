@@ -2,7 +2,7 @@ import { MobileDatePicker } from 'ui/date-picker'
 import { CalendarDays } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'ui/select'
 import { cn, focusRing } from 'ui/utils'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import {
   isBefore, startOfDay, endOfDay, subDays, addDays,
   startOfMonth, endOfMonth, addMonths, subMonths,

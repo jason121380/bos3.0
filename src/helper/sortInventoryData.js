@@ -1,4 +1,4 @@
-import { cloneDeep } from "lodash"
+import cloneDeep from "lodash/cloneDeep"
 
 const sortData = (inventoryData, type) => {
   let data = cloneDeep(inventoryData)

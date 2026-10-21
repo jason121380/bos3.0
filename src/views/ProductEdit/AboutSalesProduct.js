@@ -1,5 +1,5 @@
 // 抽成方式改 NativeSelect、抽成數字改 Field＋Input（標籤放欄位上方）
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import PropTypes from 'prop-types'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
@@ -67,7 +67,7 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
               onChange({
                 event: {
                   target: {
-                    value: _.cloneDeep(product.customerSellSetting).map(item => {
+                    value: cloneDeep(product.customerSellSetting).map(item => {
                       item.price =
                         item.category === data.category
                           ? idx(event, _ => Number(_.target.value))

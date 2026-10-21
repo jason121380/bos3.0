@@ -1,6 +1,6 @@
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import billContext from 'context/keyInContext'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import React from 'react'
 import MerchantSells from 'views/OrderCreate/MerchantSells'
 import { panelSummary } from './summary'
@@ -54,7 +54,7 @@ function PannelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset })
   }, [reset])
 
   function handleClear({ index }) {
-    let newSells = _.cloneDeep(sells)
+    let newSells = cloneDeep(sells)
     if (newSells.length === 1) {
       newSells = [
         {
@@ -91,7 +91,7 @@ function PannelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset })
   }
 
   function handleMerchantSellsChange({ key, value, index }) {
-    const newSells = _.cloneDeep(sells)
+    const newSells = cloneDeep(sells)
     newSells[index][key] = value
     setSells(newSells)
     if (key === 'price' || key === 'count' || key === 'sellerId') {
@@ -111,7 +111,7 @@ function PannelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset })
     }
   }
   function handleAddSells() {
-    const newSells = _.cloneDeep(sells)
+    const newSells = cloneDeep(sells)
     newSells.push({
       sellerId: '',
       productId: '',
@@ -124,7 +124,7 @@ function PannelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset })
   }
 
   function handleRemoveSells({ index }) {
-    let newSells = _.cloneDeep(sells)
+    let newSells = cloneDeep(sells)
     newSells = newSells.filter((_d, idx) => idx !== index)
     setSells(newSells)
     handleBillChange({
@@ -134,7 +134,7 @@ function PannelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset })
     setFocusRow(newSells.length - 1)
   }
   function handleProductChange({ value, index }) {
-    const newSells = _.cloneDeep(sells)
+    const newSells = cloneDeep(sells)
     newSells[index] = value
     setSells(newSells)
     handleBillChange({

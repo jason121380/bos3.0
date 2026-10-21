@@ -3,7 +3,6 @@ import { openSnackbar } from 'elements/snackbars'
 import { useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import useFetchAddCustomerBonus from 'hooks/useFetchAddCustomerBonus'
-import _ from 'lodash'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 

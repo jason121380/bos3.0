@@ -14,7 +14,6 @@ import React, {
   useCallback,
   Fragment,
 } from 'react'
-import _ from 'lodash'
 import { format } from 'date-fns'
 import billContext from 'context/keyInContext'
 import { useFetchCustomerInOrderDetail } from 'hooks/useFetchCustomer'

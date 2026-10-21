@@ -1,7 +1,7 @@
 import Page from 'components/Page'
 import { useState } from 'react'
 import useFetchCreateMainEvent from 'hooks/useFetchCreateMainEvent'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { useHistory } from 'react-router'
 import produce from 'immer'
 import General from './General'

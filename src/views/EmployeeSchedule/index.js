@@ -1,6 +1,6 @@
 import Page from 'components/Page'
 import React, { useState, useEffect } from 'react'
-import _, { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import useFetchSettingEmployeeSchedule from 'hooks/useFetchSettingEmployeeSchedule'
 import useFetchEmployeeSchedule from 'hooks/useFetchEmployeeSchedule'
 import useFetchUndoEmployeeSchedule from 'hooks/useFetchUndoEmployeeSchedule'
@@ -89,7 +89,7 @@ const EmployeeSchedule = () => {
 
   const handleAddScheduleCard = () => {
     setDisableButton(true)
-    const newScheduleCard = _.cloneDeep(scheduleCard)
+    const newScheduleCard = cloneDeep(scheduleCard)
     newScheduleCard.push({
       cardName: '',
       setName: false,

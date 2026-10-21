@@ -1,7 +1,7 @@
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { Style as StyleIcon } from 'ui/icons'
 import billContext from 'context/keyInContext'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import React, { Fragment, useContext } from 'react'
 import uuid from 'uuid'
 import CouponUse from 'views/OrderCreate/CouponUse'
@@ -80,8 +80,8 @@ export default function PannelCouponUse({ expanded, onPanelClick, display, reset
   }, [reset])
 
   function handleAddCouponUse() {
-    const newCouponUsage = _.cloneDeep(couponUsage)
-    const newHelper = _.cloneDeep(helper)
+    const newCouponUsage = cloneDeep(couponUsage)
+    const newHelper = cloneDeep(helper)
     newCouponUsage.push({
       id: uuid(),
       customerTicketId: '',
@@ -92,15 +92,15 @@ export default function PannelCouponUse({ expanded, onPanelClick, display, reset
     setHelper(newHelper)
   }
   function handleRemoveCouponUse({ index }) {
-    const newCouponUsage = _.cloneDeep(couponUsage)
-    const newHelper = _.cloneDeep(helper)
+    const newCouponUsage = cloneDeep(couponUsage)
+    const newHelper = cloneDeep(helper)
     newCouponUsage.splice(index, 1)
     newHelper.splice(index, 1)
     setCouponUsage(newCouponUsage)
     setHelper(newHelper)
   }
   function handleFildChange({ index, value, key, price }) {
-    const newCouponUsage = _.cloneDeep(couponUsage)
+    const newCouponUsage = cloneDeep(couponUsage)
     newCouponUsage[index][key] = value
     newCouponUsage[index]['price'] = price
     setCouponUsage(newCouponUsage)
@@ -116,7 +116,7 @@ export default function PannelCouponUse({ expanded, onPanelClick, display, reset
   }
 
   function handleClear({ index }) {
-    let newCouponUsage = _.cloneDeep(couponUsage)
+    let newCouponUsage = cloneDeep(couponUsage)
     if (newCouponUsage.length === 1) {
       newCouponUsage = [
         {
@@ -132,7 +132,7 @@ export default function PannelCouponUse({ expanded, onPanelClick, display, reset
       useTicketOrderHelpers: [],
     }
     setCouponUsage(newCouponUsage)
-    const newHelper = _.cloneDeep(helper)
+    const newHelper = cloneDeep(helper)
     newHelper[index] = []
     setHelper(newHelper)
     handleBillChange({

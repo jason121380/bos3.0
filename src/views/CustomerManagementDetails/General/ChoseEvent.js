@@ -7,7 +7,7 @@ import { format, startOfDay, addMinutes, setHours } from 'date-fns'
 import useFetchBooking from 'hooks/useFetchBooking'
 import BookingRecordListAutoComplete from 'components/BookingRecordListAutoComplete'
 import { MobileDatePicker } from 'ui/date-picker'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 // 外層為相容層 Dialog（CustomerInfo；窗內有日期選擇器、Select、Autocomplete）；內容區改原生 div，表單細節維持原樣，底部動作按鈕為 ui/button
 import { Button as UiButton } from 'ui/button'
 
@@ -105,7 +105,7 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
           className="[&_input]:!px-0 [&_input]:!pb-[7px] [&_input]:!pt-[6px]"
           label='預約時間'
           onChange={(value) => {
-            const data = _.cloneDeep(values)
+            const data = cloneDeep(values)
             data.dateTime = new Date(value).getTime()
             setValues(data)
           }}
@@ -143,7 +143,7 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
         label="服務人員姓名/編號"
         value={values.designerId}
         onChange={value => {
-          const data = _.cloneDeep(values)
+          const data = cloneDeep(values)
           data.designerId = { id: value.id === '' ? '' : value.userId }
           setValues(data)
         }}

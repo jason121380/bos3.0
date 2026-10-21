@@ -11,7 +11,7 @@ import useFetchUpdateService from 'hooks/useFetchUpdateService'
 import useFetchCreateCoupon from 'hooks/useFetchCreateCoupon'
 import idx from 'idx'
 import produce from 'immer'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { useSelector } from 'react-redux'
@@ -304,7 +304,7 @@ function ServiceCategoryEdit({ match }) {
   }
 
   const handleTidyData = forCreate => {
-    const newCoupon = _.cloneDeep(coupon)
+    const newCoupon = cloneDeep(coupon)
     const newHelperDeductionSetting = newCoupon.helperDeductionSetting.map(
       ({ deductionWay, isDesignate, __typename, ...keepProteries }) => {
         return {
@@ -391,7 +391,7 @@ function ServiceCategoryEdit({ match }) {
 
   useEffect(() => {
     let defaultSetting = {}
-    const newCoupon = _.cloneDeep(coupon)
+    const newCoupon = cloneDeep(coupon)
     newCoupon.serviceDeductionItems.forEach((data, index) => {
       if (data.type === '系統預設') {
         defaultSetting = data

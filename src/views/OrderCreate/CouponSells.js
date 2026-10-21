@@ -3,7 +3,7 @@ import { Eraser, Copy, Trash2 } from 'lucide-react'
 import { RowIconButton, AddRowButton } from './RowAction'
 import TicketAutoComplete from 'components/TicketAutoComplete'
 import idx from 'idx'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Fragment, useEffect, useRef, useState, useContext } from 'react'
 import billContext from 'context/keyInContext'
 
@@ -116,7 +116,7 @@ export default function CouponSells({
               }
             }}
             onChange={function (value) {
-              const newCouponSell = _.cloneDeep(couponSell)
+              const newCouponSell = cloneDeep(couponSell)
               idx(value, _ => {
                 onChange({
                   index,
@@ -151,7 +151,7 @@ export default function CouponSells({
                 onFocus={handleFocus}
                 data-testid={`couponSells-${index}-count`}
                 onChange={event => {
-                  const newCouponSell = _.cloneDeep(couponSell)
+                  const newCouponSell = cloneDeep(couponSell)
                   newCouponSell.availableCount = idx(event, _ => +_.target.value || 1)
                   onChange({ index, value: newCouponSell })
                   if (event.keyCode === 13) setFocus('availableCount')
@@ -169,7 +169,7 @@ export default function CouponSells({
                 onFocus={handleFocus}
                 ref={priceRef}
                 onChange={event => {
-                  const newCouponSell = _.cloneDeep(couponSell)
+                  const newCouponSell = cloneDeep(couponSell)
                   newCouponSell.price = idx(event, _ => +_.target.value || 0)
                   onChange({ index, value: newCouponSell })
                   if (event.keyCode === 13) setFocus('count')
@@ -187,7 +187,7 @@ export default function CouponSells({
                 onFocus={handleFocus}
                 ref={countRef}
                 onChange={event => {
-                  const newCouponSell = _.cloneDeep(couponSell)
+                  const newCouponSell = cloneDeep(couponSell)
                   newCouponSell.count = idx(event, _ => +_.target.value || 1)
                   onChange({ index, value: newCouponSell })
                   if (event.keyCode === 13) setFocus('remark')
@@ -208,7 +208,7 @@ export default function CouponSells({
                   }
                 }}
                 onChange={event => {
-                  const newCouponSell = _.cloneDeep(couponSell)
+                  const newCouponSell = cloneDeep(couponSell)
                   newCouponSell.remark = event.target.value
                   onChange({ index, value: newCouponSell })
                 }}

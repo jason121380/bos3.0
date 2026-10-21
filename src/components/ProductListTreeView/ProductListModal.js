@@ -6,7 +6,7 @@ import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTi
 import { TreeView, TreeItem } from 'ui/tree-compat'
 import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, Inventory2Outlined as Inventory2OutlinedIcon, DashboardOutlined as DashboardOutlinedIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
-import _ from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 
 // 樹狀本體為 ui/tree-compat（輸出 MUI 同名 class），以下為原 emotion styles 等值轉 Tailwind；tree-compat.css 在路由 chunk（晚於 Tailwind 與 emotion），同權重勝負不變，故不加 !
 const treeClass = [
@@ -97,7 +97,7 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
 
   const handleItemClick = data => {
     let index
-    const arr = _.cloneDeep(modalValues)
+    const arr = cloneDeep(modalValues)
     const findData = arr.find((d, i) => {
       if (d.id === data.id) {
         index = i
@@ -120,7 +120,7 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
   }
 
   const handleComfirm = () => {
-    const values = _.cloneDeep(modalValues)
+    const values = cloneDeep(modalValues)
     setValues(values)
     setModalValues([])
     setExpandedArr([])

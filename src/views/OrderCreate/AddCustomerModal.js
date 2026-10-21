@@ -17,7 +17,7 @@ import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import useFetchGetCheckIsCustomerNoUsed from 'hooks/useFetchGetCheckIsCustomerNoUsed'
 import useFetchGetLastCustomerNo from 'hooks/useFetchGetLastCustomerNo'
 import idx from 'idx'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { useHistory } from 'react-router'
 import SourceSelect from 'components/SourceSelect'
 import { Autocomplete } from 'ui/combobox'
@@ -154,7 +154,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
   const handleSubmit = () => {
     setQuickAddCustomer(true)
     if (values.customerId.length > 0) {
-      const newValues = _.cloneDeep(values)
+      const newValues = cloneDeep(values)
       delete newValues.id
       delete newValues.latestDesigner
       updateCustomer({ input: { ...newValues, birthday: birthdayObj } }).then(() => {
@@ -177,7 +177,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
         })
       )
     } else {
-      const newValues = _.cloneDeep(values)
+      const newValues = cloneDeep(values)
       delete newValues.customerId
       if (newValues.name.length === 0 || newValues.cellphone.length === 0) {
         openSnackbar({ variant: 'warning', message: '姓名與電話為必填' })

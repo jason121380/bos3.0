@@ -11,7 +11,7 @@ import idx from 'idx'
 import produce from 'immer'
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { useSelector } from 'react-redux'
 import useFetchMerchantJobTitlePoint from 'hooks/useFetchMerchantJobTitlePoint'
 import helperDeduction from './../../helper/helperDeduction.js'
@@ -303,7 +303,7 @@ function ServiceCategoryEdit({ match }) {
   }
 
   const handleTidyData = forCreate => {
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     const newHelperDeductionSetting = newService.helperDeductionSetting.map(
       ({ deductionWay, isDesignate, __typename, ...keepProteries }) => {
         return {
@@ -396,7 +396,7 @@ function ServiceCategoryEdit({ match }) {
   
   useEffect(() => {
     let defaultSetting = {}
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     newService.serviceDeductionItems.forEach((data, index) => {
       if (data.type === '系統預設') {
         defaultSetting = data
@@ -411,7 +411,7 @@ function ServiceCategoryEdit({ match }) {
 
   useEffect(() => {
     // 計算預估實業績 完整邏輯要問後端
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     let defaultSetting = {}
     if (newService.serviceDeductionItems.length > 0) {
       newService.serviceDeductionItems.forEach((data, index) => {
@@ -521,7 +521,7 @@ function ServiceCategoryEdit({ match }) {
 
   useEffect(() => {
     // 計算預估實業績要扣的互助金額
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     const helperDeductionOnSales = newService.helperDeductionSetting.filter(
       data => data.helperDeductionType === 'onSales'
     )

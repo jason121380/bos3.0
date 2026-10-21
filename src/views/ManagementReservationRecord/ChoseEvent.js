@@ -30,7 +30,7 @@ import BookingRecordListAutoComplete from 'components/BookingRecordListAutoCompl
 import PasswordDialog from 'components/PasswordDialog'
 import { MobileDatePicker } from 'ui/date-picker'
 import idx from 'idx'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { green, grey, blue } from 'ui/colors'
 import produce from 'immer'
 
@@ -712,7 +712,7 @@ export default function ChoseEvent({
             size="small"
             value={editOrder.isDesignate}
             onChange={() => {
-              const data = _.cloneDeep(editOrder)
+              const data = cloneDeep(editOrder)
               data.isDesignate = !data.isDesignate
               setEditOrder(data)
             }}
@@ -738,7 +738,7 @@ export default function ChoseEvent({
             className={styles.datepicker}
             label='預約時間'
             onChange={(value) => {
-              const data = _.cloneDeep(editOrder)
+              const data = cloneDeep(editOrder)
               data.date = new Date(value).getTime()
               setEditOrder(data)
             }}
@@ -774,7 +774,7 @@ export default function ChoseEvent({
             label="顧客姓名/手機號碼/編號"
             value={editOrder.customer.id}
             onChange={value => {
-              const data = _.cloneDeep(editOrder)
+              const data = cloneDeep(editOrder)
               data.customer.id = value.id === '' ? '' : value.id
               setEditOrder(data)
             }}
@@ -785,7 +785,7 @@ export default function ChoseEvent({
             label="服務人員姓名/編號"
             value={!!editOrder.designer ? editOrder.designer.id : ''}
             onChange={value => {
-              const data = _.cloneDeep(editOrder)
+              const data = cloneDeep(editOrder)
               data.designer = { id: value.id === '' ? '' : value.userId }
               setEditOrder(data)
             }}
@@ -809,7 +809,7 @@ export default function ChoseEvent({
           fullWidth
           variant="outlined"
           onChange={e => {
-            const data = _.cloneDeep(editOrder)
+            const data = cloneDeep(editOrder)
             data.remark = e.target.value
             setEditOrder(data)
           }}
@@ -835,7 +835,7 @@ export default function ChoseEvent({
           onFocus={e => e.target.select()}
           onChange={e => {
             const value = Number(e.target.value) < 1 ? null : Number(e.target.value) 
-            const data = _.cloneDeep(editOrder)
+            const data = cloneDeep(editOrder)
             data.notificationDayCount = value
             setEditOrder(data)
           }}

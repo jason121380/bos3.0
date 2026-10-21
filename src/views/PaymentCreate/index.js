@@ -6,7 +6,7 @@ import idx from 'idx'
 import produce from 'immer'
 import React from 'react'
 import { useHistory } from 'react-router'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 

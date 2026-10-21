@@ -2,7 +2,7 @@
 import { TextField } from 'ui/text-field'
 import { Fragment, useRef, useEffect } from 'react'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import idx from 'idx'
 import { Button } from 'ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
@@ -23,7 +23,7 @@ export default function SalaryIncrease({
   setTabIndex,
 }) {
   const handleAddItem = () => {
-    const newIncreaseSecondContent = _.cloneDeep(increaseSecondContent)
+    const newIncreaseSecondContent = cloneDeep(increaseSecondContent)
     newIncreaseSecondContent.increaseItems.push({
       itemName: '',
       price: 0,
@@ -35,14 +35,14 @@ export default function SalaryIncrease({
   }
 
   const handleDeductItem = index => {
-    const newIncreaseSecondContent = _.cloneDeep(increaseSecondContent)
+    const newIncreaseSecondContent = cloneDeep(increaseSecondContent)
     newIncreaseSecondContent.increaseItems.splice(index, 1)
     setIncreaseSecondContent(newIncreaseSecondContent)
   }
 
   const handleIncreaseInput = (e, index) => {
     if (increaseCombined.length > 0) {
-      const newIncreaseCombined = _.cloneDeep(increaseCombined)
+      const newIncreaseCombined = cloneDeep(increaseCombined)
       switch (e.target.name) {
         case 'price':
           newIncreaseCombined.map((data, index2) => {
@@ -68,7 +68,7 @@ export default function SalaryIncrease({
           break
       }
     } else {
-      const newSalaryIncreaseItemsReformatted = _.cloneDeep(salaryIncreaseItemsReformatted)
+      const newSalaryIncreaseItemsReformatted = cloneDeep(salaryIncreaseItemsReformatted)
       switch (e.target.name) {
         case 'price':
           newSalaryIncreaseItemsReformatted.map((data, index2) => {
@@ -89,7 +89,7 @@ export default function SalaryIncrease({
   }
 
   const handleIncreaseSecondInput = (e, index) => {
-    const newIncreaseSecondContent = _.cloneDeep(increaseSecondContent)
+    const newIncreaseSecondContent = cloneDeep(increaseSecondContent)
     switch (e.target.name) {
       case 'price':
         newIncreaseSecondContent.increaseItems.map((data, index2) => {

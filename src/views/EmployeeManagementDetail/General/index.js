@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import { Redirect } from 'react-router-dom'
 import useFetchSetUserBookingLimit from 'hooks/useFetchSettingUserBookingLimit'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Card, CardContent } from 'ui/card'
 
 import ProfileDetails from './ProfileDetails'
@@ -185,7 +185,7 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
   }
   const handleSubmit = () => {
     const userId = JSON.parse(localStorage.getItem('user')).id
-    const newDesigner = _.cloneDeep(designer)
+    const newDesigner = cloneDeep(designer)
     delete newDesigner.avatar
     delete newDesigner.jobTitle // jobTitle 只用於顯示，不傳送給後端
     if (newDesigner.cellphone.trim().length < 7) {

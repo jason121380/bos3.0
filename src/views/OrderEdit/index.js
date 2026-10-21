@@ -12,7 +12,7 @@ import { useFetchGetSerialNumberUsing, useFetchGetIsLBCusDisplay } from 'hooks/u
 import { useFetchGetDisablePendingOrder } from 'hooks/useFetchGetParameterAboutSettingFunction'
 import { useFetchGetIsBonusRewardWithLine, useFetchGetIsComboSetting } from 'hooks/useFetchGetParameterAboutSettingFunction'
 import idx from 'idx'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import addDays from 'date-fns/addDays'
 
 import Footer from './Footer'

@@ -4,7 +4,7 @@ import Page from 'components/Page'
 import ReCAPTCHA from "react-google-recaptcha-enterprise"
 import useFetchGetCustomerCheckTicket from 'hooks/useFetchGetCustomerCheckTicket'
 import produce from 'immer'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import idx from 'idx'
 import { LoaderCircle } from 'lucide-react'
 import { Button } from 'ui/button'

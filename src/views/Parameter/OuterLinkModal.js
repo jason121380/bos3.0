@@ -15,7 +15,7 @@ import useFetchCreateMerchantCusExternalLink from 'hooks/useFetchCreateMerchantC
 import useFetchUpdateMerchantCusExternalLink from 'hooks/useFetchUpdateMerchantCusExternalLink'
 import useFetchDeleteMerchantCusExternalLink from 'hooks/useFetchDeleteMerchantCusExternalLink'
 import { openSnackbar } from 'elements/snackbars'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import idx from 'idx'
 import { Autocomplete } from 'ui/combobox'
 

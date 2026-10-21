@@ -1,6 +1,5 @@
 // 外框已換 ui/dialog（舊版 Modal 無 onClose，點背景不關閉）；內部 Select 已換 NativeSelect（原生 select 無彈層）
 import PropTypes from 'prop-types'
-import _ from 'lodash'
 import { Button } from 'ui/button'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Field } from 'ui/input'

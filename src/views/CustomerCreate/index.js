@@ -3,7 +3,7 @@ import { openSnackbar } from 'elements/snackbars'
 import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import idx from 'idx'
 import produce from 'immer'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import useFetchGetLastCustomerNo from 'hooks/useFetchGetLastCustomerNo'
@@ -88,7 +88,7 @@ export default function Customer() {
 
   const handleOnClick = () => {
     setDisableAfterSubmit(true)
-    const _customer = _.cloneDeep(customer)
+    const _customer = cloneDeep(customer)
     const newCustomer = { ..._customer, birthday: birthdayObj }
     addCustomer({
       input: newCustomer.DesignerId

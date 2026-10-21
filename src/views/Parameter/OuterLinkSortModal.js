@@ -5,7 +5,7 @@ import { useState, memo, useEffect } from 'react'
 import { KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon } from 'ui/icons'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { openSnackbar } from 'elements/snackbars'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import useFetchSortMerchantCusExternalLink from 'hooks/useFetchSortMerchantCusExternalLink'
 import useFetchSortMerchantExternalLink from 'hooks/useFetchSortMerchantExternalLink'
 

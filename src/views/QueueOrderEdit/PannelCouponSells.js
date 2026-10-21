@@ -1,7 +1,7 @@
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { useContext, useState, useRef, useEffect } from 'react'
 import uuid from 'uuid'
 import useFetchTickets from 'hooks/useFetchTickets'
@@ -94,7 +94,7 @@ export default function PannelCouponSells() {
   }, [order.loading])
 
   function handleAddCouponSell() {
-    const newCouponSells = _.cloneDeep(couponSells)
+    const newCouponSells = cloneDeep(couponSells)
     newCouponSells.push({
       id: uuid(),
       serviceId: '',
@@ -106,13 +106,13 @@ export default function PannelCouponSells() {
     setCouponSells(newCouponSells)
   }
   function handleRemoveCouponSell({ index }) {
-    let newCouponSells = _.cloneDeep(couponSells)
+    let newCouponSells = cloneDeep(couponSells)
     newCouponSells = newCouponSells.filter((_d, idx) => idx !== index)
     setCouponSells(newCouponSells)
   }
 
   function handleFildChange({ index, value }) {
-    const newCouponSells = _.cloneDeep(couponSells)
+    const newCouponSells = cloneDeep(couponSells)
     newCouponSells[index] = value
     handleBillChange({
       key: 'ticketOrders',
@@ -131,7 +131,7 @@ export default function PannelCouponSells() {
     setCouponSells(newCouponSells)
   }
   function handleClear({ index }) {
-    let newCouponSells = _.cloneDeep(couponSells)
+    let newCouponSells = cloneDeep(couponSells)
     if (newCouponSells.length === 1) {
       newCouponSells = [
         {

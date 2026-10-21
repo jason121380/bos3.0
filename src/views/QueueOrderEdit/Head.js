@@ -6,7 +6,7 @@ import { useFetchCustomersInAutoComplete } from 'hooks/useFetchCustomers'
 import billContext from 'context/keyInContext'
 import idx from 'idx'
 import produce from 'immer'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { useContext, useState, useRef, useEffect, Fragment } from 'react'
 import { DateTimePicker } from 'ui/date-picker'
 import { LoaderCircle, UserCog, UserPlus } from 'lucide-react'
@@ -178,7 +178,7 @@ export default function Head() {
       localStorage.setItem('stayInCheckoutWithoutCustomer', true)
       setCheckoutWithoutCustomer(!checkoutWithoutCustomer)
       if (bill.customerId !== undefined) {
-        const newBill = _.cloneDeep(bill)
+        const newBill = cloneDeep(bill)
         delete newBill.customerId
         setBill(newBill)
       }

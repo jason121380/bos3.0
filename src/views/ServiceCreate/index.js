@@ -9,7 +9,7 @@ import idx from 'idx'
 import produce from 'immer'
 import React from 'react'
 import { useHistory } from 'react-router'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import useFetchMerchantJobTitlePoint from 'hooks/useFetchMerchantJobTitlePoint'
 import helperDeduction from './../../helper/helperDeduction.js'
 import { Button } from 'ui/button'
@@ -132,7 +132,7 @@ function ServiceCategoryCreate() {
 
   const handleSubmit = () => {
     setSaveBtn(true)
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     const newHelperDeductionSetting = newService.helperDeductionSetting.map(
       ({ deductionWay, isDesignate, __typename, ...keepProteries }) => {
         return {
@@ -168,7 +168,7 @@ function ServiceCategoryCreate() {
   React.useEffect(() => {
     // 計算預估實業績 完整邏輯要問後端
     if (service.ServiceDeductionItems.length > 0) {
-      const newService = _.cloneDeep(service)
+      const newService = cloneDeep(service)
       const servicePrice = newService.price
       const truthPerformPredict = []
       let totalNumDecution = 0
@@ -267,7 +267,7 @@ function ServiceCategoryCreate() {
 
   React.useEffect(() => {
     // 計算預估實業績要扣的互助金額
-    const newService = _.cloneDeep(service)
+    const newService = cloneDeep(service)
     const helperDeductionOnSales = newService.helperDeductionSetting.filter(
       data => data.helperDeductionType === 'onSales'
     )

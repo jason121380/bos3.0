@@ -3,7 +3,7 @@ import { Paper } from 'ui/display-compat'
 import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
 import { format, isBefore, isAfter, isToday } from 'date-fns'
 import PropTypes from 'prop-types'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Button as UiButton } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 
@@ -15,7 +15,7 @@ export default function Results({
   const setSchedule = (dataIndex, time) => {
     if (!isEditing) return
     if (tagId !== '') {
-      const newData = _.cloneDeep(employeeSchedule)
+      const newData = cloneDeep(employeeSchedule)
       newData[dataIndex].clockInSchedule.push({
         date: time,
         clockInSetting: {
@@ -36,7 +36,7 @@ export default function Results({
 
   const editSchedule = (scheduleId, dataIndex, time) => {
     if (!isEditing) return
-    const newData = _.cloneDeep(employeeSchedule)
+    const newData = cloneDeep(employeeSchedule)
     const index = newData[dataIndex].clockInSchedule.map(d => {
       return d.date
     }).indexOf(time)
@@ -54,7 +54,7 @@ export default function Results({
   const addMultiColumnSchedule = date => {
     if (!isEditing) return
     if (checkTime(date)) {
-      const newData = _.cloneDeep(employeeSchedule)
+      const newData = cloneDeep(employeeSchedule)
       newData.forEach((record, recordIndex) => {
         const dataInRecord = record.clockInSchedule.find(d => d.date === date)
         if (dataInRecord === undefined) {
@@ -85,7 +85,7 @@ export default function Results({
 
   const addMultiRowSchedule = designerIndex => {
     if (!isEditing) return
-    const newData = _.cloneDeep(employeeSchedule)
+    const newData = cloneDeep(employeeSchedule)
     const verifyDate = rawTime.filter(d => checkTime(+d))
     verifyDate.map(date => {
       const dataInRecord = newData[designerIndex].clockInSchedule.find(d => d.date === +date)

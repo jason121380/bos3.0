@@ -4,7 +4,7 @@ import { useState, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import useFetchDeletePurchase from 'hooks/useFetchDeletePurchase'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
@@ -34,7 +34,7 @@ function Results({
 
   const selectOne = id => {
     const selectedIndex = selectId.indexOf(id)
-    const newSelected = _.cloneDeep(selectId)
+    const newSelected = cloneDeep(selectId)
     if (selectedIndex === -1) {
       newSelected.push(id)
     } else {

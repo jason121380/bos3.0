@@ -5,7 +5,6 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from 'ui/card'
 import PropTypes from 'prop-types'
 import { memo, useState, useEffect } from 'react'
 import idx from 'idx'
-import _ from 'lodash'
 
 function CouponSellModal({
   couponModalOpen,

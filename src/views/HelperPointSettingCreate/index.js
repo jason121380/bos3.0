@@ -6,7 +6,6 @@ import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
 import { useState } from 'react'
-import _ from 'lodash'
 
 import Results from './Results'
 

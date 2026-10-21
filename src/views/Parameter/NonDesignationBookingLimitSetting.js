@@ -4,7 +4,6 @@ import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
 import produce from 'immer'
-import _ from 'lodash'
 
 
 function NonDesignationBookingLimitSetting({

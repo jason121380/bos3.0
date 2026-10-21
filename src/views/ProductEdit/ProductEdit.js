@@ -7,7 +7,7 @@ import { useFetchGetMerchantVendorList } from 'hooks/useFetchGetVendor'
 import { useFetchGetisUnlimProdEmpPrice } from 'hooks/useFetchGetParameterAboutSettingFunction'
 import idx from 'idx'
 import produce from 'immer'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { useEffect, useState, useMemo } from 'react'
 import { useHistory } from 'react-router'
 import useFetchProducts from 'hooks/useFetchProducts'
@@ -57,7 +57,7 @@ export default function ProductCreate({ match }) {
       produce(draft => {
         draft[key] = idx(event, _ => _.target.value)
         if (key === 'sellPrice')
-          draft.customerSellSetting = _.cloneDeep(product.customerSellSetting).map(data => {
+          draft.customerSellSetting = cloneDeep(product.customerSellSetting).map(data => {
             data.price = idx(event, _ => _.target.value)
             return data
           })
@@ -86,7 +86,7 @@ export default function ProductCreate({ match }) {
 
   const handleCreate = async () => {
     setSaveBtn(true)
-    const { itemId, ...rest } = _.cloneDeep(product)
+    const { itemId, ...rest } = cloneDeep(product)
     try {
       if (!isUnlimProdEmpPrice && (product.employeePrice < product.cost)) throw new Error('自購價不可低於成本價')
       await createProduct({ input: {

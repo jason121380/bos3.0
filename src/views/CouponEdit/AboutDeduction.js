@@ -7,7 +7,7 @@ import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon, BackspaceOutlined as BackspaceOutlinedIcon } from 'ui/icons'
 import useFetchMerchantDeductionItems from 'hooks/useFetchMerchantDeductionItems'
 import idx from 'idx'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 
@@ -40,7 +40,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
   const deductionItems = idx(merchantDeductionItems, _ => _.data.merchantDeductionItems)
 
   const handleAddDeductionContent = (type, deductionOrder) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.push({
@@ -63,7 +63,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
   }
 
   const handleDeleteDeductionContent = (type, index, deductionType) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.splice(index, 1)
@@ -76,7 +76,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
   }
 
   const handleCheckboxChange = (type, index, deductionType) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {
@@ -98,7 +98,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
   }
 
   const handleDeductionName = (type, event, index) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {
@@ -115,7 +115,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
   }
 
   const handleDeductionNum = (type, event, index, moneyType) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {
@@ -144,7 +144,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
   }
 
   const handleDeductionReference = (type, event, index) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {
@@ -161,7 +161,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
   }
 
   const handleDeductionWay = (type, event, index, deductionType) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {
@@ -178,7 +178,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
   }
 
   const handleClear = (type, index) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings[index] = {
@@ -200,7 +200,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
   }
 
   const handleDeductionTypeChange = (type, event, index) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {

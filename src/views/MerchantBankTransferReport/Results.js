@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { useState, useEffect } from 'react'
 import { Card as UiCard, CardContent as UiCardContent } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'

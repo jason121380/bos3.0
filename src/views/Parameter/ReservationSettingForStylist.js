@@ -1,7 +1,6 @@
 import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { memo } from 'react'
-import _ from 'lodash'
 
 function ReservationSettingForStylist({
   className, inputEnable, CBRDStylist, setCBRDStylist

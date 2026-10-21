@@ -8,7 +8,7 @@ import idx from 'idx'
 import produce from 'immer'
 import React from 'react'
 import { useHistory } from 'react-router'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
@@ -113,7 +113,7 @@ function ServiceCategoryCreate() {
   const vaild = !(coupon.name && coupon.ServiceCategoryId && coupon.ticketAvailableCount)
   const handleSubmit = () => {
     setSaveBtn(true)
-    const newCoupon = _.cloneDeep(coupon)
+    const newCoupon = cloneDeep(coupon)
     const newHelperDeductionSetting = newCoupon.helperDeductionSetting.map(
       ({ deductionWay, isDesignate, __typename, ...keepProteries }) => {
         return {

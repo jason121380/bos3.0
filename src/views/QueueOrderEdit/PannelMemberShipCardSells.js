@@ -1,7 +1,7 @@
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from "context/keyInContext";
-import _ from "lodash";
+import cloneDeep from "lodash/cloneDeep";
 import { useEffect, useContext, useState } from "react";
 import idx from "idx";
 import MemberShipCardSells from "./MemberShipCardSells";
@@ -50,7 +50,7 @@ const PannelMemberShipCardSells = ({ thirdPartTicket }) => {
 
 
   function handleClear({ index }) {
-    let newSells = _.cloneDeep(sells);
+    let newSells = cloneDeep(sells);
     if (newSells.length === 1) {
       newSells = [
         {
@@ -88,7 +88,7 @@ const PannelMemberShipCardSells = ({ thirdPartTicket }) => {
   }
 
   function handleAddSells() {
-    const newSells = _.cloneDeep(sells)
+    const newSells = cloneDeep(sells)
     newSells.push({
       sellerId: '',
       membershipUUID: '',
@@ -101,7 +101,7 @@ const PannelMemberShipCardSells = ({ thirdPartTicket }) => {
   }
 
   function handleRemoveSells({ index }) {
-    let newSells = _.cloneDeep(sells)
+    let newSells = cloneDeep(sells)
     newSells = newSells.filter((_d, idx) => idx !== index)
     setSells(newSells)
     handleBillChange({
@@ -121,7 +121,7 @@ const PannelMemberShipCardSells = ({ thirdPartTicket }) => {
   }
 
   function handleMemberShipCardChange({ value, index }) {
-    const newSells = _.cloneDeep(sells)
+    const newSells = cloneDeep(sells)
     newSells[index] = value
     setSells(newSells)
     handleBillChange({
@@ -137,7 +137,7 @@ const PannelMemberShipCardSells = ({ thirdPartTicket }) => {
     })
   }
   function handleMerchantSellsChange({ key, value, index }) {
-    const newSells = _.cloneDeep(sells)
+    const newSells = cloneDeep(sells)
     newSells[index][key] = value === NaN ? "Invalid Date" : value
     setSells(newSells)
     if (key === 'price' || key === 'date' || key === 'sellerId' || key === 'expiryDate' || key === 'remark') {

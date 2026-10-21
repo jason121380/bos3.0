@@ -24,7 +24,7 @@ import useFetchGetIsBookingCusCheckUsing from 'hooks/useFetchGetIsBookingCusChec
 import BookingRecordListAutoComplete from 'components/BookingRecordListAutoComplete'
 import { useFetchGetBookinHistoryDisplay } from 'hooks/useFetchGetParameterAboutBookingSetting'
 import { useFetchGetCancelBookingUsing } from 'hooks/useFetchMerchantPassword'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import produce from 'immer';
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'

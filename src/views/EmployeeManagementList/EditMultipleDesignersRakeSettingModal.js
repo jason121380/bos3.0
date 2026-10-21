@@ -5,7 +5,7 @@ import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'
@@ -77,7 +77,7 @@ function EditMultipleDesignersRakeSettingModal({
   const [tabValue, setTabValue] = useState('預設')
   const [deductionIndex, setDeductionIndex] = useState(0)
   const handleDesignateChange = () => {
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     onChange({ value: !newProfitSharing.designationUsage, key: 'designationUsage' })
     if (newProfitSharing.isSegmented) {
       if (newProfitSharing.designationUsage) {
@@ -140,7 +140,7 @@ function EditMultipleDesignersRakeSettingModal({
   }
 
   const handleToggleButtonChange = () => {
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     if (profitSharing.isSegmented) {
       if (newProfitSharing.designationUsage) {
         newProfitSharing.segmented = []
@@ -237,7 +237,7 @@ function EditMultipleDesignersRakeSettingModal({
   }
 
   const handleAddSetDeductionNum = nonSegmentedType => {
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     switch (nonSegmentedType) {
       case 'nonDistinguish':
         newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.push({
@@ -266,23 +266,23 @@ function EditMultipleDesignersRakeSettingModal({
   }
 
   const handleDeleteSetDeductionNum = index => {
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.splice(index, 1)
     onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
   }
   const handleDeleteNonSegmentedDesignate = index => {
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.nonSegmented[deductionIndex].rakeData.designate.splice(index, 1)
     onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
   }
   const handleDeleteNonSegmentedNonDesignate = index => {
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.splice(index, 1)
     onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
   }
 
   const handleAddSegmented = segmentedType => {
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     switch (segmentedType) {
       case 'nonDistinguish':
         newProfitSharing.segmented[0].nonDistinguish.push({
@@ -314,24 +314,24 @@ function EditMultipleDesignersRakeSettingModal({
   }
 
   const handleDeleteSegmented = index => {
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.segmented[0].nonDistinguish.splice(index, 1)
     onChange({ value: newProfitSharing.segmented, key: 'segmented' })
   }
   const handleDeleteSegmentedDesignate = index => {
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.segmented[0].designate.splice(index, 1)
     onChange({ value: newProfitSharing.segmented, key: 'segmented' })
   }
   const handleDeleteSegmentedNonDesignate = index => {
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.segmented[0].nonDesignate.splice(index, 1)
     onChange({ value: newProfitSharing.segmented, key: 'segmented' })
   }
 
   const handleNonSegmentedThresholdInput = (event, index, rakeType) => {
     checkInput(event, rakeType)
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.forEach(
       (data, index2) => {
         if (index === index2) {
@@ -343,7 +343,7 @@ function EditMultipleDesignersRakeSettingModal({
   }
   const handleNonSegmentedDesignateThresholdInput = (event, index, rakeType) => {
     checkInput(event, rakeType)
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.nonSegmented[deductionIndex].rakeData.designate.forEach((data, index2) => {
       if (index === index2) {
         data.threshold = parseInt(event.target.value)
@@ -353,7 +353,7 @@ function EditMultipleDesignersRakeSettingModal({
   }
   const handleNonSegmentedNonDesignateThresholdInput = (event, index, rakeType) => {
     checkInput(event, rakeType)
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.forEach((data, index2) => {
       if (index === index2) {
         data.threshold = parseInt(event.target.value)
@@ -364,7 +364,7 @@ function EditMultipleDesignersRakeSettingModal({
 
   const handleNonSegmentedRakeInput = (event, index, rakeType) => {
     checkInput(event, rakeType)
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.forEach(
       (data, index2) => {
         if (index === index2) {
@@ -376,7 +376,7 @@ function EditMultipleDesignersRakeSettingModal({
   }
   const handleNonSegmentedDesignateRakeInput = (event, index, rakeType) => {
     checkInput(event, rakeType)
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.nonSegmented[deductionIndex].rakeData.designate.forEach((data, index2) => {
       if (index === index2) {
         data.rake = parseFloat(event.target.value)
@@ -386,7 +386,7 @@ function EditMultipleDesignersRakeSettingModal({
   }
   const handleNonSegmentedNonDesignateRakeInput = (event, index, rakeType) => {
     checkInput(event, rakeType)
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.nonSegmented[deductionIndex].rakeData.nonDesignate.forEach((data, index2) => {
       if (index === index2) {
         data.rake = parseFloat(event.target.value)
@@ -397,7 +397,7 @@ function EditMultipleDesignersRakeSettingModal({
 
   const handleSegmentedInput = (event, index, rakeType) => {
     checkInput(event, rakeType)
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.segmented[0].nonDistinguish.forEach((data, index2) => {
       if (index === index2) {
         switch (rakeType) {
@@ -422,7 +422,7 @@ function EditMultipleDesignersRakeSettingModal({
 
   const handleDesignateSegmentedInput = (event, index, rakeType) => {
     checkInput(event, rakeType)
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.segmented[0].designate.forEach((data, index2) => {
       if (index === index2) {
         switch (rakeType) {
@@ -446,7 +446,7 @@ function EditMultipleDesignersRakeSettingModal({
   }
   const handleNonDesignateSegmentedInput = (event, index, rakeType) => {
     checkInput(event, rakeType)
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     newProfitSharing.segmented[0].nonDesignate.forEach((data, index2) => {
       if (index === index2) {
         switch (rakeType) {
@@ -469,7 +469,7 @@ function EditMultipleDesignersRakeSettingModal({
     })
   }
   const handleTabsChange = (e, value) => {
-    const newProfitSharing = _.cloneDeep(profitSharing)
+    const newProfitSharing = cloneDeep(profitSharing)
     if (newProfitSharing.nonSegmented.filter(d => d.attribute === value).length === 0) {
       if (profitSharing.designationUsage && !profitSharing.isSegmented) {
         newProfitSharing.nonSegmented.push({

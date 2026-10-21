@@ -4,7 +4,7 @@ import Bonus from 'views/OrderCreate/Bonus'
 import { formatMoney } from 'ui/format'
 import billContext from 'context/keyInContext'
 import { useFetchGetCustomerBonusRecordLazy } from 'hooks/useFetchGetCustomerBonusRecord'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 
 const styles = {
   heading: '!text-[16px] font-bold text-[rgb(var(--text))] flex items-center',
@@ -24,7 +24,7 @@ export default function PannelBonus({ expanded, onPanelClick, bonusActive }) {
         }
       })
     }
-    const newBill = _.cloneDeep({
+    const newBill = cloneDeep({
       ...bill,
       bonusDeposit: bonusSetting.isUsing ? bill.bonusDeposit : 0,
       bonusUsed: 0,
@@ -38,7 +38,7 @@ export default function PannelBonus({ expanded, onPanelClick, bonusActive }) {
       const total = customerBonusRecordData.data.customerBonusRecord.reduce((a, b) => a + b.bonus, 0)
       setCustomerBonus(total)
     }
-    const newBill = _.cloneDeep({
+    const newBill = cloneDeep({
       ...bill, 
     bonusDeposit: bonusSetting.isUsing ? bill.bonusDeposit : 0,
     bonusUsed: 0,

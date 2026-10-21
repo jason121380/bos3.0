@@ -1,7 +1,7 @@
 // 金額輸入框使用 inputRef / onFocus / onKeyDown 做連續輸入的焦點管理，沿用 MUI TextField
 import { TextField } from 'ui/text-field'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Fragment, useRef, useEffect  } from 'react'
 import idx from 'idx'
 import { Button } from 'ui/button'
@@ -23,7 +23,7 @@ export default function SalaryIncrease({
   setTabIndex,
 }) {
   const handleAddItem = () => {
-    const newDecreaseSecondContent = _.cloneDeep(decreaseSecondContent)
+    const newDecreaseSecondContent = cloneDeep(decreaseSecondContent)
     newDecreaseSecondContent.decreaseItems.push({
       itemName: '',
       price: 0,
@@ -35,14 +35,14 @@ export default function SalaryIncrease({
   }
 
   const handleDeductItem = index => {
-    const newDecreaseSecondContent = _.cloneDeep(decreaseSecondContent)
+    const newDecreaseSecondContent = cloneDeep(decreaseSecondContent)
     newDecreaseSecondContent.decreaseItems.splice(index, 1)
     setDecreaseSecondContent(newDecreaseSecondContent)
   }
 
   const handleDecreaseInput = (e, index) => {
     if (decreaseCombined.length > 0) {
-      const newDecreaseCombined = _.cloneDeep(decreaseCombined)
+      const newDecreaseCombined = cloneDeep(decreaseCombined)
       switch (e.target.name) {
         case 'price':
           newDecreaseCombined.map((data, index2) => {
@@ -68,7 +68,7 @@ export default function SalaryIncrease({
           break
       }
     } else {
-      const newSalaryDecreaseItemsReformatted = _.cloneDeep(salaryDecreaseItemsReformatted)
+      const newSalaryDecreaseItemsReformatted = cloneDeep(salaryDecreaseItemsReformatted)
       switch (e.target.name) {
         case 'price':
           newSalaryDecreaseItemsReformatted.map((data, index2) => {
@@ -89,7 +89,7 @@ export default function SalaryIncrease({
   }
 
   const handleDecreaseSecondInput = (e, index) => {
-    const newDecreaseSecondContent = _.cloneDeep(decreaseSecondContent)
+    const newDecreaseSecondContent = cloneDeep(decreaseSecondContent)
     switch (e.target.name) {
       case 'price':
         newDecreaseSecondContent.decreaseItems.map((data, index2) => {

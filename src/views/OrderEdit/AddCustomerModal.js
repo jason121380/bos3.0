@@ -18,7 +18,7 @@ import React from 'react'
 import useFetchAddCustomer from 'hooks/useFetchAddCustomer'
 import useFetchGetCheckIsCustomerNoUsed from 'hooks/useFetchGetCheckIsCustomerNoUsed'
 import useFetchGetLastCustomerNo from 'hooks/useFetchGetLastCustomerNo'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import SourceSelect from 'components/SourceSelect'
 
 
@@ -125,7 +125,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
 
   const handleSubmit = () => {
     if (values.customerId.length > 0) {
-      const newValues = _.cloneDeep(values)
+      const newValues = cloneDeep(values)
       delete newValues.id
       delete newValues.latestDesigner
       updateCustomer({ input: { ...newValues, birthday: birthdayObj } })
@@ -149,7 +149,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
         })
       )
     } else {
-      const newValues = _.cloneDeep(values)
+      const newValues = cloneDeep(values)
       delete newValues.customerId
       delete newValues.source
       if (newValues.name.length === 0 || newValues.cellphone.length === 0) {

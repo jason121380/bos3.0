@@ -1,13 +1,13 @@
 // 廠商選擇保留 MUI Autocomplete（橋接主題已套新外觀）
 import { TextField } from 'ui/text-field'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { Autocomplete } from 'ui/combobox'
 
 function AboutMerchantVendorEdit({ className, vendorOption, isLodaing, submitData, setSubmitData }) {
   const handleInputChange = (key, value) => {
-    const newData = _.cloneDeep(submitData)
+    const newData = cloneDeep(submitData)
     newData[key] = value
     setSubmitData(newData)
   }

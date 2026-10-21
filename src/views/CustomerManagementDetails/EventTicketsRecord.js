@@ -1,6 +1,6 @@
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { Fragment, useState } from 'react'
-import { cloneDeep } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 import { format } from 'date-fns';
 import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'

@@ -8,7 +8,7 @@ import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import { useState, useEffect } from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import idx from 'idx'
 
 import Results from './Results'
@@ -32,7 +32,7 @@ function HelperPointSettingEdit({ match }) {
   useEffect(() => {
     if (!getMerchantPointValueSettingsForEdit.loading) {
       const data = idx(getMerchantPointValueSettingsForEdit, _ => _.data.getMerchantPointValueSetting)
-      const newSubmitData = _.cloneDeep(submitData)
+      const newSubmitData = cloneDeep(submitData)
       newSubmitData.name = data.name
       newSubmitData.paidFixed = data.paidFixed
       newSubmitData.retrieveFixed = data.retrieveFixed

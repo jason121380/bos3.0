@@ -4,7 +4,7 @@ import { TextField } from 'ui/text-field'
 import useFetchGetAccountingSubjects from 'hooks/useFetchGetAccountingSubjects'
 import idx from 'idx'
 import { useState, useEffect, Fragment } from 'react'
-import { findIndex } from 'lodash'
+import findIndex from 'lodash/findIndex'
 import { Autocomplete } from 'ui/combobox'
 
 export default function Subject({ onChange, value, className = '' }) {

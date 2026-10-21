@@ -2,7 +2,7 @@ import { DialogBody, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { useState, useEffect, Fragment } from 'react'
 // 外層為 ui Dialog（由行事曆 OrderTable 開啟），這裡只放標題、內容與底部動作三段
 import { ToggleGroupItem } from 'ui/toggle-group'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { format } from 'date-fns'
 import { Button as UiButton } from 'ui/button'
 import { green, grey } from 'ui/colors'

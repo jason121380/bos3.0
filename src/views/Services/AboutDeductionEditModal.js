@@ -5,7 +5,7 @@ import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import PropTypes from 'prop-types'
 import { useRef, Fragment } from 'react'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Delete, Plus, Trash2 } from 'lucide-react'
 import useFetchMerchantDeductionItems from 'hooks/useFetchMerchantDeductionItems'
 import { Button } from 'ui/button'
@@ -42,7 +42,7 @@ function AboutDeductionEditModal({
   const merchantDeductionItems = useFetchMerchantDeductionItems()
 
   const handleAddDeductionContent = (type, deductionOrder) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.push({
@@ -62,7 +62,7 @@ function AboutDeductionEditModal({
   }
 
   const handleDeleteDeductionContent = (type, index, deductionType) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.splice(index, 1)
@@ -72,7 +72,7 @@ function AboutDeductionEditModal({
   }
 
   const handleCheckboxChange = (type, index, deductionType) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {
@@ -91,7 +91,7 @@ function AboutDeductionEditModal({
   }
 
   const handleDeductionNum = (type, event, index, moneyType) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {
@@ -117,7 +117,7 @@ function AboutDeductionEditModal({
   }
 
   const handleDeductionReference = (type, event, index) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {
@@ -131,7 +131,7 @@ function AboutDeductionEditModal({
   }
 
   const handleDeductionWay = (type, event, index) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {
@@ -145,7 +145,7 @@ function AboutDeductionEditModal({
   }
 
   const handleClear = (type, index) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings[index] = {
@@ -164,7 +164,7 @@ function AboutDeductionEditModal({
   }
 
   const handleDeductionTypeChange = (type, event, index) => {
-    const newServiceDeductionItems = _.cloneDeep(ServiceDeductionItems)
+    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {

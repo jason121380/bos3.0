@@ -16,7 +16,6 @@ import CropImage from './CropImage'
 import { memo, Fragment, useState, useEffect, useRef, useCallback } from 'react'
 import QRCode from 'qrcode'
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import _ from 'lodash'
 import produce from 'immer'
 import { openSnackbar } from 'elements/snackbars';
 

@@ -6,7 +6,7 @@ import { useFetchProductCategoriesInCreatePicking } from 'hooks/useFetchProductC
 import idx from 'idx'
 import { useState, useEffect, useRef } from 'react'
 import { InsertInvitation as InsertInvitationIcon } from 'ui/icons'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { openSnackbar } from 'elements/snackbars'
 import format from 'date-fns/format'
 import { Copy, Plus, Trash2 } from 'lucide-react'
@@ -47,7 +47,7 @@ export default function General({
   const countRef = useRef()
 
   const handleAddProduct = () => {
-    const newData = _.cloneDeep(purchaseRecord)
+    const newData = cloneDeep(purchaseRecord)
     newData.purchaseProduct.push({
       productID: '',
       productName: '',
@@ -58,7 +58,7 @@ export default function General({
     setFocusRow(newData.purchaseProduct.length - 1)
   }
   const handleDeleteProduct = index => {
-    const newData = _.cloneDeep(purchaseRecord)
+    const newData = cloneDeep(purchaseRecord)
     newData.purchaseProduct.splice(index, 1)
     setPurchaseRecord(newData)
   }
@@ -132,7 +132,7 @@ export default function General({
   }, [products.loading])
 
   const hadnleSelectProduct = (product, index, source) => {
-    const newData = _.cloneDeep(purchaseRecord)
+    const newData = cloneDeep(purchaseRecord)
     if (product === null) {
       newData.purchaseProduct[index] = {
         productID: '',
@@ -174,7 +174,7 @@ export default function General({
       event.target.value = 0
       openSnackbar({ message: '請輸入0以上的數字', variant: 'warning' })
     }
-    const newData = _.cloneDeep(purchaseRecord)
+    const newData = cloneDeep(purchaseRecord)
     newData.purchaseProduct[index].unitPrice = Number(event.target.value)
     setPurchaseRecord(newData)
   }
@@ -183,7 +183,7 @@ export default function General({
       event.target.value = 0
       openSnackbar({ message: '請輸入0以上的數字', variant: 'warning' })
     }
-    const newData = _.cloneDeep(purchaseRecord)
+    const newData = cloneDeep(purchaseRecord)
     newData.purchaseProduct[index].count = Number(event.target.value)
     setPurchaseRecord(newData)
   }

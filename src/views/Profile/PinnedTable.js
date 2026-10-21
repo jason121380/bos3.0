@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux'
 import { pinnedTableActions } from './../../store/pinnedTable'
 import { useState, useEffect } from 'react'
 import pageData from 'helper/pageData'
-import { cloneDeep } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 import { openSnackbar } from 'elements/snackbars';
 import produce from 'immer';
 import { Button } from 'ui/button'

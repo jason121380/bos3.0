@@ -1,7 +1,7 @@
 import billContext from 'context/keyInContext'
 import React, { useState, useEffect } from 'react'
 import idx from 'idx'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import useFetchGetThirdPartTicketSetting from 'hooks/useFetchGetThirdPartTicketSetting'
 
 import PannelCouponSells from './PannelCouponSells'

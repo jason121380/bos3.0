@@ -9,7 +9,7 @@ import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
 import billContext from 'context/keyInContext'
 import { useLazyFetchServiceNew } from 'hooks/useFetchService'
 import idx from 'idx'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { Fragment, useRef, useEffect, useState, useContext, createRef } from 'react'
 
 
@@ -132,7 +132,7 @@ export default function Services({
   }, [helper])
 
   const handleClear = () => {
-    let newHelper = _.cloneDeep(helper)
+    let newHelper = cloneDeep(helper)
     newHelper = newHelper.map(data => ({
       type: data.type,
       helperId: '',
@@ -169,7 +169,7 @@ export default function Services({
     })
   }
   const handleAssistantChange = ({ value, helperIndex }) => {
-    const Helper = _.cloneDeep(helper)
+    const Helper = cloneDeep(helper)
     Helper[helperIndex] = {
       ...Helper[helperIndex],
       helperId: value.userId,
@@ -181,7 +181,7 @@ export default function Services({
     })
   }
   const handleIsDesignateChange = ({ value, helperIndex }) => {
-    const Helper = _.cloneDeep(helper)
+    const Helper = cloneDeep(helper)
     Helper[helperIndex].isDesignate = value
     setHelper(Helper)
     helperOnChange({

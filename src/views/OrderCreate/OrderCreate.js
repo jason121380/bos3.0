@@ -20,7 +20,7 @@ import { useFetchGetDisablePendingOrder } from 'hooks/useFetchGetParameterAboutS
 import idx from 'idx'
 import uuid from 'uuid'
 import addDays from 'date-fns/addDays'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import produce from 'immer'
 
 import Head from './Head'
@@ -237,10 +237,10 @@ function OrderCreate() {
       })
     }
 
-    let newServices = _.cloneDeep(services)
-    let newSells = _.cloneDeep(sells)
-    let newCouponSells = _.cloneDeep(couponSells)
-    let newMemberCardSells = _.cloneDeep(memberCardSells)
+    let newServices = cloneDeep(services)
+    let newSells = cloneDeep(sells)
+    let newCouponSells = cloneDeep(couponSells)
+    let newMemberCardSells = cloneDeep(memberCardSells)
 
     if (newServices.length === 1 && newServices[0].serviceId === '' && serviceArr.length > 0) {
       newServices = serviceArr

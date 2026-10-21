@@ -3,7 +3,7 @@ import React, { useState, useEffect, Fragment } from 'react'
 // 外層為 ui/dialog（OrderTable 的公休彈窗，窗內只有時段切換鈕與按鈕）
 import { Button } from 'ui/button'
 import { ToggleGroupItem } from 'ui/toggle-group'
-import { cloneDeep } from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchSetAdminBookingTimes from 'hooks/useFetchSetAdminBookingTimes'
