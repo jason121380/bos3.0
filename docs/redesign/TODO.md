@@ -1,12 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10211806）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10211844）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
+
+- **Sentry 6 → 10**（2026/10/21，v3.10211844，Jason「升版」，動到套件）：`@sentry/react` ^6.0.2 → ^10.76.2（**10 版是仍支援 Safari 14 的最後一個大版本**；11 版要求 Safari 15＋、Node 20.19＋，且預設改為蒐集 cookie／標頭／請求內容，Codex review 指出後改用 10），移除 `@sentry/tracing`（8 版起併入）；`App.js` 的 `new Integrations.BrowserTracing()` 改 `Sentry.browserTracingIntegration()`，其餘設定（dsn、只在正式 build 送出、environment、release＝版號、取樣 10%）不變；`PageErrorBoundary` 的 `Sentry.ErrorBoundary` API 相同。`npm audit --omit=dev` **3 → 1**（只剩 `validate.js`，無修正版、低風險）。確認事項：①追蹤標頭預設只加在同網域請求（`@sentry/browser` 的 `shouldAttachHeaders`：未設 `tracePropagationTargets` 時比對 origin），對後端 API 不會多送 `sentry-trace`／`baggage`，不會觸發 CORS；②瀏覽器支援：10 版官方最低 Safari 14（與本專案相同）；③個資：10 版未設 `sendDefaultPii` 時預設不送使用者資訊、cookie 與請求／回應內容（與 6 版相同），不必另設 `dataCollection`；④Docker／CI 的 Node 20.12.1 符合 10 版 `>=18`，部署設定不用改；⑤代價：首屏 `vendor-sentry` chunk gzip 38.7 KB → 52.4 KB（+13.7 KB；11 版為 +19 KB）。驗證：lint:build、64 檔／345 測試、build、乾淨資料夾 `npm ci --legacy-peer-deps`。**待實機**：合併部署後到 Sentry 後台確認新版號 `bos@v3.10211844` 有收到事件（可在正式站開 DevTools 執行 `throw new Error('sentry test')` 之類的測試，或等自然錯誤）。
 
 - **登入資料減量**（2026/10/21，v3.10211806，Jason 選「不動後端的方式」）：`localStorage` 的 `user` 原本整包存登入 API 回傳的資料（手機號碼、uid、userCode、各店 `solmateKey`…），改為只存 `id`、`name`、`isAdmin`、`isNeedChangePassword`——全站 20 多處讀取只用到 `id`（另有改密碼時寫回 `isNeedChangePassword`）。新增 `lib/stored-user`（`saveStoredUser`／`sanitizeStoredUser`，4 個測試），登入（一般／LINE）、忘記密碼、改密碼 4 個寫入點改用它；已登入的人開頁時就地瘦身，不會被登出。`LoginForm` 測試原本斷言「存完整資料」，改為斷言「有 id、無手機號碼與 solmateKey」。**未做「不保持登入改存 sessionStorage」**：sessionStorage 每個分頁各自獨立，店員開新分頁看報表／列印會變成未登入；現有 `keepLogin` cookie 機制已會在下次開啟瀏覽器時清掉未保持登入者的資料。`token` 仍在 localStorage（API 需要；根治要後端改 HttpOnly cookie）。驗證：lint:build、64 檔／345 測試、build。**待實機**：登入後 DevTools → Application → Local Storage 的 `user` 只剩 4 個欄位；已登入的舊使用者重新整理後不會被登出。
 
