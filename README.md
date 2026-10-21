@@ -91,7 +91,7 @@ npm run build
 
 | 類別 | 技術 | 版本 |
 |---|---|---|
-| **API 通訊** | Apollo Client (GraphQL)：`@apollo/client`（2026/10/21 自 apollo-boost 換版） | `3.4.17` |
+| **API 通訊** | Apollo Client (GraphQL)：`@apollo/client`（2026/10/21 自 apollo-boost 換版，舊套件已移除） | `3.4.17` |
 | **即時通訊** | Socket.io Client | `4.6.0` |
 | **狀態管理** | Redux Toolkit | `1.9.5` |
 | **檔案上傳** | apollo-upload-client | `17.0.0` |
