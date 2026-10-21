@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client'
-import { gql } from 'apollo-boost'
+import { gql } from '@apollo/client'
 
 const GET_USING_ORDER_QUEUE = gql`
   query GET_USING_ORDER_QUEUE {

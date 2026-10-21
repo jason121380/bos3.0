@@ -1,5 +1,5 @@
 import { openSnackbar } from 'elements/snackbars'
-import { ApolloLink, Observable, execute } from 'apollo-link'
+import { ApolloLink, Observable, execute } from '@apollo/client'
 import { gql } from '@apollo/client'
 import { beginRequest } from '../after-first-load'
 import { buildAuthHeaders, handleApolloError, inflightLink, networkErrorMessage } from '../init-apollo'

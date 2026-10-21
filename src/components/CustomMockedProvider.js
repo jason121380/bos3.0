@@ -1,6 +1,6 @@
 import { MockLink, MockedProvider } from '@apollo/client/testing'
-import { ApolloLink } from 'apollo-link'
-import { onError } from 'apollo-link-error'
+import { ApolloLink } from '@apollo/client'
+import { onError } from '@apollo/client/link/error'
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 

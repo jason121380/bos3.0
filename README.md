@@ -91,7 +91,7 @@ npm run build
 
 | 類別 | 技術 | 版本 |
 |---|---|---|
-| **API 通訊** | Apollo Client (GraphQL)：client 本體為 apollo-boost（Apollo Client 2＋apollo-cache-inmemory），頁面 hook 用 `@apollo/client` 的 `useQuery` | `0.4`／`3.4.17` |
+| **API 通訊** | Apollo Client (GraphQL)：`@apollo/client`（2026/10/21 自 apollo-boost 換版） | `3.4.17` |
 | **即時通訊** | Socket.io Client | `4.6.0` |
 | **狀態管理** | Redux Toolkit | `1.9.5` |
 | **檔案上傳** | apollo-upload-client | `17.0.0` |
@@ -820,7 +820,7 @@ Dockerfile 已內建 npm 網路重試配置（5 次重試、20s~120s 超時）�
 | 頁面模組 | **170** 個目錄 |
 | 自定義 Hooks | **596** 個 |
 | 共用元件 | **55** 個 |
-| 單元測試 | **60** 檔／**333** 項 |
+| 單元測試 | **61** 檔／**338** 項 |
 | Redux Slices | **5** 個 |
 | 總原始碼行數 | **~150,000+** 行 |
 

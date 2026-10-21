@@ -1,7 +1,6 @@
-import { ApolloClient, InMemoryCache } from 'apollo-boost'
-import { ApolloLink, Observable } from 'apollo-link'
-import { setContext } from 'apollo-link-context'
-import { onError } from 'apollo-link-error'
+import { ApolloClient, InMemoryCache, ApolloLink, Observable } from '@apollo/client'
+import { setContext } from '@apollo/client/link/context'
+import { onError } from '@apollo/client/link/error'
 import { createUploadLink } from 'apollo-upload-client'
 import { openSnackbar } from 'elements/snackbars'
 import { getGraphqlUrl } from './api-base'
@@ -83,16 +82,19 @@ const httpLink = createUploadLink({
   headers: { 'Apollo-Require-Preflight': 'true' },
 })
 
+// client 設定（測試以假 link 驗證 loading 行為與 v2 相同，見 __tests__/apollo-loading.test.js）。
+// 不要加 defaultOptions.watchQuery.notifyOnNetworkStatusChange：會讓 cache-first／network-only 的 refetch 多出 loading 變化，與原本不同
+export function createApolloClient(link) {
+  return new ApolloClient({ link, cache: new InMemoryCache({ addTypename: false }) })
+}
+
 let apolloClient = null
 
 // 整個 App 共用一個 client。原本的 SSR 判斷（process.browser）在瀏覽器恆為 undefined，
 // 每次呼叫都新建 client，啟動時會建出兩個 client 與兩份 cache。
 export default function initApollo() {
   if (!apolloClient) {
-    apolloClient = new ApolloClient({
-      link: inflightLink.concat(authLink).concat(errorLink).concat(httpLink),
-      cache: new InMemoryCache({ addTypename: false }),
-    })
+    apolloClient = createApolloClient(inflightLink.concat(authLink).concat(errorLink).concat(httpLink))
   }
   return apolloClient
 }
