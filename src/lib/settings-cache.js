@@ -11,6 +11,10 @@ export const SETTINGS_MAX_AGE_MS = 10 * 60 * 1000
 
 const settingsFields = new Set()
 
+// 清除是以根欄位為單位（cache.evict 的 fieldName）：根欄位若底下還掛著權限、月結、營業分析等非設定資料，
+// 清設定時會連帶把它們清掉並重抓。這類共用根欄位的查詢不要包 settingsQuery（Codex review，PR #251）
+const SHARED_ROOT_FIELDS = new Set(['merchant', 'me', 'user'])
+
 // 換頁時自動送出、不會改到任何設定的 mutation：不觸發清除（否則每次進打帳單都會把設定快取清掉）
 const NON_SETTINGS_MUTATIONS = new Set(['SET_UPDATE_USER_ORDERABLE_LIST'])
 
@@ -18,7 +22,9 @@ const NON_SETTINGS_MUTATIONS = new Set(['SET_UPDATE_USER_ORDERABLE_LIST'])
 export function settingsQuery(doc) {
   const def = getMainDefinition(doc)
   def.selectionSet.selections.forEach(selection => {
-    if (selection.kind === 'Field') settingsFields.add(selection.name.value)
+    if (selection.kind !== 'Field') return
+    if (SHARED_ROOT_FIELDS.has(selection.name.value)) throw new Error(`settingsQuery 不可用於共用根欄位 ${selection.name.value}`)
+    settingsFields.add(selection.name.value)
   })
   return doc
 }

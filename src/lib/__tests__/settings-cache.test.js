@@ -73,3 +73,7 @@ test('每 10 分鐘自動清除設定快取，畫面上的設定會重抓', asyn
 test('沒有綁定 cache 時清除不拋錯', () => {
   expect(() => evictSettings(null)).not.toThrow()
 })
+
+test('共用根欄位（merchant 底下還有權限與報表）不能登記為設定，否則清設定會連帶清掉它們', () => {
+  expect(() => settingsQuery(gql`query SHARED_ROOT { merchant { thirdpartyCoupons { id } } }`)).toThrow('merchant')
+})

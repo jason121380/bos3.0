@@ -1,5 +1,4 @@
 import { gql, useQuery } from '@apollo/client'
-import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
 const MERCHANT = gql`
   {
@@ -37,7 +36,7 @@ export const useFetchMerchantPermission = date =>
     fetchPolicy: 'cache-and-network',
   })
 
-const FETCH_THIRDPARTYS = settingsQuery(gql`
+const FETCH_THIRDPARTYS = gql`
   query FETCH_THIRDPARTYS {
     merchant {
       id
@@ -49,13 +48,13 @@ const FETCH_THIRDPARTYS = settingsQuery(gql`
       }
     }
   }
-`)
+`
 export const useFetchTHirdPartys = date =>
   useQuery(FETCH_THIRDPARTYS, {
-    fetchPolicy: SETTINGS_FETCH_POLICY,
+    fetchPolicy: 'cache-and-network',
   })
 
-const FETCH_THIRDPARTYS_IN_ORDER_DETAIL = settingsQuery(gql`
+const FETCH_THIRDPARTYS_IN_ORDER_DETAIL = gql`
   query FETCH_THIRDPARTYS_IN_ORDER_DETAIL {
     merchant {
       thirdpartyCoupons {
@@ -64,13 +63,13 @@ const FETCH_THIRDPARTYS_IN_ORDER_DETAIL = settingsQuery(gql`
       }
     }
   }
-`)
+`
 export const useFetchThirdPartysInOrderDetail = date =>
   useQuery(FETCH_THIRDPARTYS_IN_ORDER_DETAIL, {
-    fetchPolicy: SETTINGS_FETCH_POLICY,
+    fetchPolicy: 'cache-and-network',
   })
 
-const FETCH_THIRDPARTYS_FOR_CREATE_ORDER = settingsQuery(gql`
+const FETCH_THIRDPARTYS_FOR_CREATE_ORDER = gql`
   query FETCH_THIRDPARTYS_FOR_CREATE_ORDER {
     merchant {
       thirdpartyCoupons {
@@ -80,10 +79,10 @@ const FETCH_THIRDPARTYS_FOR_CREATE_ORDER = settingsQuery(gql`
       }
     }
   }
-`)
+`
 export const useFetchThirdPartysForCreateOrder = date =>
   useQuery(FETCH_THIRDPARTYS_FOR_CREATE_ORDER, {
-    fetchPolicy: SETTINGS_FETCH_POLICY,
+    fetchPolicy: 'cache-and-network',
   })
 
 const FETCH_MONTHLY_CLOSE_STATUS = gql`
