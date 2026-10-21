@@ -97,6 +97,9 @@ export default function Results({
       clockInType: ''
     })
     setGoogleMapUrl('')
+    // 編輯／刪除成功後按鈕維持 disabled；關閉面板時一併重置，下一筆打卡的操作才不會被鎖住（Codex review PR #255）
+    setEditBtn(false)
+    setDelBtn(false)
     setOpen(false)
   }
 
