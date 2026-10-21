@@ -19,7 +19,7 @@ const Filter = ({ date, setDate, handleSearch, loading, inputData, setInputData,
 
   const filterOptions = (options, state) => {
     const keyWord = state.inputValue
-    const newOptions = options.sort((a, b) => {
+    const newOptions = [...options].sort((a, b) => {
       return a.userNo - b.userNo
     })
     if (keyWord !== '' && keyWord.trim() !== '') {
@@ -30,7 +30,7 @@ const Filter = ({ date, setDate, handleSearch, loading, inputData, setInputData,
       )
       return filterData
     } else {
-      return options
+      return newOptions
     }
   }
   return (

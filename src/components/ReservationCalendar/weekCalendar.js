@@ -1,6 +1,6 @@
 // 預約週曆（單週預約紀錄、個人檔案與員工資料的預約表）共用的資料整理：原本三頁各有一份相同的程式（約 300 行），
 // 2026/10/21 Jason「四份預約週曆合併成一個元件」後集中在這裡。程式本體照單週預約紀錄（ManagementDesignersReservationRecord）原樣搬移，
-// 只把元件內的變數改成參數；注意它會直接修改傳入的查詢結果（跨日預約拆段、RH／SH 改成 HOLIDAY），與原本行為相同。
+// 只把元件內的變數改成參數。buildWeekCalendar 先深拷貝查詢結果再拆跨日預約、改 RH／SH（原本直接改查詢結果）。
 // 統一後的差異（原個人檔案頁與其他三頁不同）：已完成的預約不佔用可預約人數；非預約色塊高度與其他頁一致（-2px）。
 import idx from 'idx'
 import {
@@ -334,7 +334,8 @@ export function tidyWeekCalendar(tidyData, unpointData, startTime, { date, heigh
 export function buildWeekCalendar({ DesignerCalendar, merchant, date, ...tidyOptions }) {
   // 查詢失敗（data 為 undefined）時解構會拋錯→整頁白屏；改以空陣列帶過，畫面顯示空的週曆
   const weekCalendar = idx(DesignerCalendar, _ => _.data.getMerchantDesignerWeekCalendar) || {}
-  const merchantDesignerCalendar = weekCalendar.merchantDesignerCalendar || []
+  // 深拷貝：下面會拆跨日預約、tidyWeekCalendar 會把 RH／SH 改成 HOLIDAY，不直接改查詢結果（Apollo v3 開發模式為唯讀，也避免改到快取）
+  const merchantDesignerCalendar = cloneDeep(weekCalendar.merchantDesignerCalendar || [])
   const merchantUnappointCalendar = weekCalendar.merchantUnappointCalendar || []
   merchantDesignerCalendar.forEach(({ calendar }, index1) => {
     calendar.forEach(({ type, startTime, endTime, timeCost, ...rest }, index2) => {

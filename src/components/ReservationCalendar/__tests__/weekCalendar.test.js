@@ -124,3 +124,26 @@ test('查詢失敗（data 為 undefined）或本週沒有資料：回傳空週�
   expect(failed.calendarData).toHaveLength(7)
   expect(failed.calendarData[0]).toMatchObject({ bookingLimit: 0, orderGroup: [], breakGroup: [] })
 })
+
+// Apollo v3 在開發模式與單元測試會凍結查詢結果；直接修改會拋錯、整頁顯示錯誤（2026/10/21 換版時發現）
+const deepFreeze = value => {
+  if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+    Object.freeze(value)
+    Object.values(value).forEach(deepFreeze)
+  }
+  return value
+}
+
+test('查詢結果是唯讀的（Apollo v3）：拆跨日預約、改公休型別都在複本上做，不改原資料', () => {
+  const calendar = [
+    ev({ ids: ['x'], startTime: at(2, 22), endTime: at(3, 2), timeCost: 8, nameToDisplay: '跨日' }),
+    ev({ type: 'RH', startTime: at(4, 12), endTime: at(4, 13) }),
+  ]
+  const DesignerCalendar = deepFreeze({ loading: false, data: { getMerchantDesignerWeekCalendar: { merchantUnappointCalendar: [], merchantDesignerCalendar: [designer(calendar)] } } })
+  const merchant = { data: { merchant: { openingHours: '10:00:00', closingHours: '20:00:00' } } }
+  const { calendarData } = buildWeekCalendar({ DesignerCalendar, merchant, date: weekStart, ...base })
+  expect(calendarData[3].orderGroup.flatMap(g => g.data).map(d => d.nameToDisplay)).toEqual(['跨日'])
+  expect(calendarData[4].breakGroup[0].data[0].type).toBe('HOLIDAY')
+  expect(DesignerCalendar.data.getMerchantDesignerWeekCalendar.merchantDesignerCalendar[0].calendar).toHaveLength(2)
+  expect(DesignerCalendar.data.getMerchantDesignerWeekCalendar.merchantDesignerCalendar[0].calendar[1].type).toBe('RH')
+})

@@ -16,6 +16,7 @@ import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
 import AboutPerformance from './AboutPerformance'
+import cloneDeep from 'lodash/cloneDeep'
 
 // 沒用到的code 大部分是之前用在AboutProfitSharing 留著怕之後改回來
 function ProfitSharing({ refetch, itemAuthority }) {
@@ -72,7 +73,8 @@ function ProfitSharing({ refetch, itemAuthority }) {
               )
           )
           // 判斷設計師是否有設全段抽成資料
-          const nonSegmentedData = idx(designer, _ => _.userRake.nonSegmented)
+          // 先複製再補預設名稱（designer 來自查詢結果，唯讀）
+          const nonSegmentedData = cloneDeep(idx(designer, _ => _.userRake.nonSegmented))
           if (nonSegmentedData.length === 1 && nonSegmentedData[0].attribute === '') {
             nonSegmentedData[0].attribute = '預設'
             draft.nonSegmented = nonSegmentedData

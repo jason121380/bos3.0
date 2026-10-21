@@ -21,9 +21,10 @@ function Results({
   const [sortedData, setSortedData] = useState([])
   useEffect(() => {
     const excelData = []
-    const sortedData = results.data.sort((a, b) => a.order.date - b.order.date)
+    // 先複製再排序（查詢結果唯讀）；匯出資料沿用排序後的順序（原本靠原地排序讓 results.data 也變成排序後的順序）
+    const sortedData = [...results.data].sort((a, b) => a.order.date - b.order.date)
     setSortedData(sortedData)
-    results.data.forEach(data => {
+    sortedData.forEach(data => {
       excelData.push({
         日期: format(new Date(data.order.date), 'yyyy/MM/dd'),
         帳單編號: `#${data.order.no}`,

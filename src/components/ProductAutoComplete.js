@@ -55,7 +55,7 @@ function ProductAutoComplete(
 
   const filterOptions = (options, state) => {
     const keyWord = state.inputValue.toLowerCase()
-    const filterOptions = options.sort((a, b) => a.no - b.no).filter(d => {
+    const filterOptions = [...options].sort((a, b) => a.no - b.no).filter(d => {
       if (d.no && d.name) {
         const no = d.no.toLowerCase()
         const name = d.name.toLowerCase()

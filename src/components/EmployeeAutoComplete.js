@@ -60,7 +60,7 @@ function EmployeeAutoComplete(
 
   const filterOptions = (options, state) => {
     const keyWord = state.inputValue
-    const newOptions = options.sort((a, b) => {
+    const newOptions = [...options].sort((a, b) => {
       return a.userNo - b.userNo
     })
     let userNo = []
@@ -102,7 +102,7 @@ function EmployeeAutoComplete(
       })
       return filteredArray
     } else {
-      return options
+      return newOptions
     }
   }
   /*   const filteredOption = options

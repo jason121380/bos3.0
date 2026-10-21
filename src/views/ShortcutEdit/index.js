@@ -80,7 +80,9 @@ function ShortcutEdit({ match }) {
   }
 
   const doFilter = (data, keyword) => {
-    return data.map(d => {
+    // 複製每一筆再標記（查詢結果唯讀，不直接改）
+    return data.map(item => {
+      const d = { ...item }
       if (!keyword) {
         d.display = true
         return d

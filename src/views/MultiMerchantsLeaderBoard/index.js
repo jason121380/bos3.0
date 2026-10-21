@@ -42,9 +42,9 @@ const MultiMerchantsLeaderBoard = () => {
 			const data = idx(getMultiMerchantsLeaderBoardLazyData, _ => _.data.multiMerchantsLeaderBoard)
 			let sortData
 			if (sort === 'PERFORMANCE') {
-				sortData = data.sort((a, b) => a.sorting - b.sorting)
+				sortData = [...data].sort((a, b) => a.sorting - b.sorting) // 先複製再排序（查詢結果唯讀）
 			} else {
-				sortData = data.sort((a, b) => b.totalCount - a.totalCount)
+				sortData = [...data].sort((a, b) => b.totalCount - a.totalCount)
 			}
 			setReportData([...sortData]);
 		}
