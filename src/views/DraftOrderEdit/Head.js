@@ -310,7 +310,7 @@ export default function Head() {
         setMembershipPurchase(tmp)
       }
     }
-  }, [customerData.loading])
+  }, [customerData.loading, setIsLineBinded])
 
   // delay send query customers
   useEffect(() => {
@@ -336,7 +336,7 @@ export default function Head() {
         }
       })
     }
-  }, [options, customers.loading, tmpCustomerKeyword])
+  }, [options, customers.loading, tmpCustomerKeyword, setBill])
   return (
     <Card className="ui-root mb-6">
       <div className="px-4 py-4">

@@ -70,7 +70,7 @@ const General = ({ editData, setEditData, mdValue, setMdValue }) => {
       ...editData,
       content: mdValue,
     })
-  }, [mdValue])
+  }, [mdValue, setEditData])
   return (
     <Fragment>
       <Card>

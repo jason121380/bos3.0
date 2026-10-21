@@ -107,7 +107,7 @@ export default function Head() {
     if (!customers.loading) {
       setCustomerAlready(!customers.loading)
     }
-  }, [customers.loading])
+  }, [customers.loading, setCustomerAlready])
 
   // 儲存會員卡
   useEffect(() => {
@@ -135,7 +135,7 @@ export default function Head() {
         setMembershipPurchase(tmp)
       }
     }
-  }, [customerData.loading, bill.customerId])
+  }, [customerData.loading, bill.customerId, setIsLineBinded])
 
   // delay send query customers
   useEffect(() => {
@@ -161,7 +161,7 @@ export default function Head() {
         }
       })
     }
-  }, [options, customers.loading, tmpCustomerKeyword])
+  }, [options, customers.loading, tmpCustomerKeyword, setBill])
 
   const handleDateChange = date => {
     const currentDate = new Date(date).getTime()

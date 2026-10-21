@@ -37,6 +37,13 @@ const lazyImport = node => {
 }
 function t(node) { return { type: 'File', program: { type: 'Program', sourceType: 'module', body: [{ type: 'ExpressionStatement', expression: node }] } } }
 const keyOf = p => (p.key.name || p.key.value)
+function importedArray(rel) {
+  const file = path.join('src', rel.replace(/^\.\//, '') + (rel.endsWith('.js') ? '' : '.js'))
+  const sub = parser.parse(fs.readFileSync(file, 'utf8'), PARSE)
+  const decl = sub.program.body.find(n => n.type === 'ExportDefaultDeclaration')
+  if (!decl || decl.declaration.type !== 'ArrayExpression') throw new Error(`${file} 的 export default 不是陣列`)
+  return decl.declaration
+}
 const routes = []
 function walk(arr, layout) {
   arr.elements.forEach(el => {
@@ -57,6 +64,9 @@ function walk(arr, layout) {
     }
     if (o.routes && o.routes.type === 'ArrayExpression') {
       walk(o.routes, o.component && o.component.type === 'Identifier' ? o.component.name : layout)
+    } else if (o.routes && o.routes.type === 'Identifier' && /^\.\//.test(importOf[o.routes.name] || '')) {
+      // 子路由陣列拆在同目錄另一檔（例如 routes: dashboardRoutes ← ./dashboardRoutes）：讀該檔 export default 的陣列
+      walk(importedArray(importOf[o.routes.name]), o.component && o.component.type === 'Identifier' ? o.component.name : layout)
     } else if (route) {
       routes.push({ path: route, comp, layout })
     }

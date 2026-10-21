@@ -104,7 +104,7 @@ function Dashboard({ route, location }) {
         history.push('/profile/general')
       }
     }
-  }, [checkPageAuthorityData.loading])
+  }, [checkPageAuthorityData.loading, history])
 
   const handleToggleNavBar = () => {
     if (window.innerWidth >= 1024) { // Tailwind lg 斷點，與側欄常駐的斷點一致

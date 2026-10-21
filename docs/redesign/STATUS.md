@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10211949，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10211955，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,6 +8,8 @@
 
 | 範圍 | 內容 |
 |---|---|
+| B2 effect 依賴（v3.10211955） | 110 個穩定值（setter／ref／history／dispatch）補進 91 個依賴陣列，行為不變；警告 771→728；R 類 1,090 個不改，疑似 bug 20 處待決定（`B2_EXHAUSTIVE_DEPS.md`） |
+| A6 架構整理（v3.10211955） | 兩份相同的店家樹狀選擇窗合成 `components/MerchantsListModal`（樣式以 `classes` 保留兩份）；`routes.js` 1051→253（後台路由搬 `dashboardRoutes.js`）、`ChoseEvent.js` 常數外移；釘選版選擇窗、三個外層下拉、其餘 7 個大檔刻意不動 |
 | B1 設定類查詢 cache-first（v3.10211949） | `lib/settings-cache`：103 個設定查詢 cache-first，mutation 成功或每 10 分鐘清除重抓；共用根欄位（merchant／me／user）與被帶參數查詢共用的根欄位不納入、輪替碼／佇列狀態／操作密碼／依 id 單筆不納入（有全站掃描測試）；站內 8 次換頁 GraphQL 請求 209→135（−35%）；報表／權限／帳單／列印查詢不變 |
 | A1 色碼＋A4 程式品質（v3.10211854） | 13 檔寫死色碼→tokens、刪未用 `buttonSx`；`setupTests` eslint error 3→0；117 檔 `array-callback-return` 219／`default-case` 16／`eqeqeq` 56 → 0（行為不變，5 處寬鬆比較刻意保留並註解）；eslint 警告 1,181→887 |
 | Sentry 6→10（v3.10211844） | `@sentry/react` 10.76.2（仍支援 Safari 14 的最後大版本）、移除 `@sentry/tracing`、`browserTracingIntegration()`；prod audit 3→1；追蹤標頭仍只加同網域；預設不送 cookie／請求內容；vendor-sentry gzip +13.7 KB |

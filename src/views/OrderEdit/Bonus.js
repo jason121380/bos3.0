@@ -71,7 +71,7 @@ function Bonus({ customerBonus }) {
         })
       )
     }
-  }, [bill.bonusUsed])
+  }, [bill.bonusUsed, setBill])
 
   const bonusDepositDisabled = () => {
     if (bonusRewardWithLINE) {

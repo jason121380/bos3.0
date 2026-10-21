@@ -103,7 +103,7 @@ export default function PannelCouponSells({ expanded, setExpanded }) {
       }
       setCouponSells(newCouponSells)
     }
-  }, [order.loading, order.data])
+  }, [order.loading, order.data, setCouponSells, setExpanded])
 
   function handleAddCouponSell() {
     const newCouponSells = cloneDeep(couponSells)

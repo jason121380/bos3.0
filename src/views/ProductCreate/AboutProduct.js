@@ -60,7 +60,7 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
 
   useEffect(() => {
     setForSale(forSale)
-  }, [forSale])
+  }, [forSale, setForSale])
 
   useEffect(() => {
     register(

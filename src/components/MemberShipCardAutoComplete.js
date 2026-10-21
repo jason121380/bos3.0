@@ -32,7 +32,7 @@ const MemberShipCardAutoComplete = (
     if (setMembershipAlready !== undefined && !products.loading) {
       setMembershipAlready(!products.loading);
     }
-  }, [products.loading]);
+  }, [products.loading, setMembershipAlready]);
   const options = idx(products, (_) => _.data.memberships.data) || [];
 
   useEffect(() => {

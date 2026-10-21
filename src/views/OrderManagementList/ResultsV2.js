@@ -358,7 +358,7 @@ function Results({
 
   useEffect(() => {
     setPageSetting({ ...pageSetting, pageOffset: 0 })
-  }, [])
+  }, [setPageSetting])
 
   useEffect(() => {
     if (orders.length === 0) return

@@ -109,7 +109,7 @@ export default function General({
       const operator = idx(users, _ => _.data.users.users)
       setOperator(operator)
     }
-  }, [users.loading])
+  }, [users.loading, setPageLoading])
 
   useEffect(() => {
     if (!products.loading) {

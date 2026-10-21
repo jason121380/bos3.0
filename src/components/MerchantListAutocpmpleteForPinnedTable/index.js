@@ -35,7 +35,7 @@ const MerchantListAutocpmpleteForPinnedTable = ({
 
   useEffect(() => {
     open ? setValues(selectIds) : setValues([])
-  }, [open])
+  }, [open, setValues])
 
   return (
     <>

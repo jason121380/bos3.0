@@ -118,7 +118,7 @@ function Bonus({ customerBonus }) {
         })
       )
     }
-  }, [bill.bonusUsed])
+  }, [bill.bonusUsed, setBill])
   return (
     <div className="mb-6 flex flex-wrap items-center justify-start gap-[20px]">
       <Field label="點數給點" className="flex w-[200px] justify-start">

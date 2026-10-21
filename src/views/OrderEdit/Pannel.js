@@ -35,7 +35,7 @@ export default function SimpleAccordion({ children }) {
     if (otherPayLimit === 0) {
       setPaymentAlready(true)
     }
-  }, [otherPayLimit])
+  }, [otherPayLimit, setPaymentAlready])
 
   useEffect(() => {
     if (!thirdPartTicketData.loading) {
@@ -49,7 +49,7 @@ export default function SimpleAccordion({ children }) {
       const active = customerBonusActive.data.getIsCustomerBonusActive || bill.bonusDecount > 0 || bill.bonusDeposit > 0 || bill.bonusUsed > 0
       setBonusActive(active)
     }
-  }, [customerBonusActive.loading, bill])
+  }, [customerBonusActive.loading, bill, onceRef])
 
   React.useEffect(() => {
     const { services, products, tickets, memberships } = shortcut

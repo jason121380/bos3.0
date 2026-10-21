@@ -123,7 +123,7 @@ function Bonus({ customerBonus }) {
         })
       )
     }
-  }, [bill.bonusUsed])
+  }, [bill.bonusUsed, setBill])
   return (
     <div className={styles.bonus}>
       <Field label="點數給點" className={styles.field}>

@@ -273,7 +273,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
           setOpen(false)
         })
     }
-  }, [bill, history])
+  }, [bill, history, setCheckoutBtnClick, setOpen, setReset])
 
   const usehandleCreateOrderAndPrint = useCallback(() => {
     if (!printMainRef.current || !printThermalRef.current) return
@@ -345,7 +345,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
           setOpen(false)
         })
     }
-  }, [bill, history])
+  }, [bill, history, setCheckoutBtnClick, setOpen, setReset])
 
   const usehandleCreateDraftOrder = useCallback(() => {
     handleBtnDisabled(true)
@@ -402,7 +402,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
           setOpen(false)
         })
     }
-  }, [bill, history])
+  }, [bill, history, setCheckoutBtnClick, setOpen])
 
   useEffect(() => {
     if (!getDesignerNameDisplayOnInvoice.loading) {

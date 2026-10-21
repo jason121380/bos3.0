@@ -57,7 +57,7 @@ export default function Services({
     if (setServiceDetailAlready !== undefined) {
       setServiceDetailAlready(!serviceDetail.loading)
     }
-  }, []);
+  }, [setServiceDetailAlready]);
   useEffect(() => {
     if (expanded && focusFirstField && bill.serviceOrders.length === index && bill.designerId) {
       idx(serviceRef, _ => _.current.focus())

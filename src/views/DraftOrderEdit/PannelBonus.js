@@ -29,7 +29,7 @@ export default function PannelBonus({ bonusActive }) {
       const total = customerBonusRecordData.data.customerBonusRecord.reduce((a, b) => a + b.bonus, 0)
       setCustomerBonus(total)
     }
-  }, [customerBonusRecordData.loading])
+  }, [customerBonusRecordData.loading, setCustomerBonus])
 
   useEffect(() => {
     if (!orderDetail.loading && orderDetail.data) {

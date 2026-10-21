@@ -116,7 +116,7 @@ function Bonus({ customerBonus }) {
         })
       )
     }
-  }, [bill.bonusUsed])
+  }, [bill.bonusUsed, setBill])
 
   return (
     <div className="mb-[24px] flex flex-wrap items-center justify-start gap-[20px]">

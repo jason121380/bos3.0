@@ -40,7 +40,7 @@ function TicketAutoComplete(
     if (setCouponAlready !== undefined && !tickets.loading) {
       setCouponAlready(!tickets.loading)
     }
-  }, [tickets.loading]);
+  }, [tickets.loading, setCouponAlready]);
   const handleFieldChange = event => {
     idx(event, _ => {
       setTicketsKeyword(_.target.value)

@@ -72,7 +72,7 @@ export default function PannelCouponSells({ expanded, onPanelClick, reset }) {
         intoPerformanceWhileBuying: false,
       },
     ])
-  }, [])
+  }, [setCouponSells])
 
   React.useEffect(() => {
     if(reset === 'reset'){
@@ -88,7 +88,7 @@ export default function PannelCouponSells({ expanded, onPanelClick, reset }) {
         },
       ])
     }
-  }, [reset])
+  }, [reset, setCouponSells])
 
   const handleAddCouponSell = () => {
     const newCouponSells = cloneDeep(couponSells)

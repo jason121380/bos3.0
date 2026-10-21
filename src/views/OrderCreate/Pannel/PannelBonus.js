@@ -31,7 +31,7 @@ export default function PannelBonus({ expanded, onPanelClick, bonusActive }) {
       bonusDecount: 0
     })
     setBill(newBill)
-  }, [bill.customerId])
+  }, [bill.customerId, setBill])
 
   useEffect(() => {
     if (!customerBonusRecordData.loading && customerBonusRecordData.data) {
@@ -45,7 +45,7 @@ export default function PannelBonus({ expanded, onPanelClick, bonusActive }) {
     bonusDecount: 0
   })
     setBill(newBill)
-  }, [customerBonusRecordData.loading])
+  }, [customerBonusRecordData.loading, setBill, setCustomerBonus])
 
   return (
     <Accordion key="panelRemark" expanded={expanded}>

@@ -30,7 +30,7 @@ function ThirdPartyAutoComplete(
     if (setThirdPartyAlready !== undefined && !designers.loading) {
       setThirdPartyAlready(!designers.loading)
     }
-  }, [designers.loading]);
+  }, [designers.loading, setThirdPartyAlready]);
   useEffect(() => {
     if (initFirst && designers.data && !designers.loading) {
       onChange(designers.data.merchant.thirdpartyCoupons[0])

@@ -41,7 +41,7 @@ function ServicesAutoComplete(
     if (setServiceAlready !== undefined && !services.loading) {
       setServiceAlready(!services.loading)
     }
-  }, [services.loading])
+  }, [services.loading, setServiceAlready])
 
   const options = idx(services, _ => _.data.services.data) || []
   const selectedValue = idx(services, _ => _.data.services.data.find(d => d.id === value)) || null

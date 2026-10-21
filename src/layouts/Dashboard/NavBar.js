@@ -151,7 +151,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       })
       dispatch(pinnedTableActions.setPinnedTable(pages))
     }
-  }, [getUserPinnedTable.loading])
+  }, [getUserPinnedTable.loading, dispatch])
 
 
   // Navbar Tab

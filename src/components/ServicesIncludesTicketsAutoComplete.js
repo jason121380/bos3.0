@@ -36,7 +36,7 @@ function ServicesIncludesTicketsAutoComplete(
     if (setServiceAlready !== undefined && !services.loading) {
       setServiceAlready(!services.loading)
     }
-  }, [services.loading])
+  }, [services.loading, setServiceAlready])
 
   const options = idx(services, _ => _.data.getServiecAndTicketList) || []
   const selectedValue = idx(services, _ => _.data.getServiecAndTicketList.find(d => d.id === value)) || null

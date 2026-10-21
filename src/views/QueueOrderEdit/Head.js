@@ -126,7 +126,7 @@ export default function Head() {
         setMembershipPurchase(tmp)
       }
     }
-  }, [customerData.loading])
+  }, [customerData.loading, setIsLineBinded])
 
   // delay send query customers
   useEffect(() => {
@@ -152,7 +152,7 @@ export default function Head() {
         }
       })
     }
-  }, [options, customers.loading, tmpCustomerKeyword])
+  }, [options, customers.loading, tmpCustomerKeyword, setBill])
 
   const handleDateChange = date => {
     const currentDate = new Date(date).getTime()

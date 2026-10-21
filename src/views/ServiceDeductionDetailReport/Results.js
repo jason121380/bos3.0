@@ -85,7 +85,7 @@ function Results({ userServiceDeductionDetial, setExcelData }) {
       })
       setExcelData(excelData)
     }
-  }, [userServiceDeductionDetial])
+  }, [userServiceDeductionDetial, setExcelData])
 
   return (
     <Fragment>

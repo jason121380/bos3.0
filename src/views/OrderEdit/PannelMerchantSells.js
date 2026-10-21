@@ -54,7 +54,7 @@ export default function PannelMerchantSells({ thirdPartTicket, expanded, setExpa
       }
       setSells(newSells)
     }
-  }, [productOrder.loading, productOrder.data])
+  }, [productOrder.loading, productOrder.data, setExpanded, setSells])
 
   function handleClear({ index }) {
     let newSells = cloneDeep(sells)

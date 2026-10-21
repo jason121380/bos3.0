@@ -13,7 +13,7 @@ const ProgressBar = ({ dataLoading, setProgress, progress }) => {
     return () => {
       clearInterval(timer)
     }
-  }, [dataLoading])
+  }, [dataLoading, setProgress])
 
   return (
     <div className="w-full my-[30px]">

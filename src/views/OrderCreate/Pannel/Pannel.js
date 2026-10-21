@@ -90,7 +90,7 @@ function Pannel() {
     if (!memberShipCardActive) {
       setMembershipAlready(true)
     }
-  }, [memberShipCardActive])
+  }, [memberShipCardActive, setMembershipAlready])
 
   useEffect(() => {
     if (reset === 'reset') {

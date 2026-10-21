@@ -190,7 +190,7 @@ function Header({ forceUpdate, ...rest }) {
           setOpen(false)
         });
     }
-  }, [bill, history, stayInCreateOrderInMemory]);
+  }, [bill, history, stayInCreateOrderInMemory, setCheckoutBtn, setCheckoutBtnClick, setIsClick, setOpen, setReset]);
 
   // 掛單mutation
   const usehandleCreateDraftOrder = useCallback(() => {
@@ -246,7 +246,7 @@ function Header({ forceUpdate, ...rest }) {
           setOpen(false)
         });
     }
-  }, [bill, history]);
+  }, [bill, history, setCheckoutBtn, setIsClick, setOpen]);
 
   // 連續打單結帳
   const handleStayInCreateOrderBtn = () => {
