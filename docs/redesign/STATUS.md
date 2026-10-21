@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10211955，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10212000，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,6 +8,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| A5 補測試（v3.10212000） | 14 檔 242 個測試：四個帳單頁整頁流程、後台版面權限、85 頁煙霧測試、列表與 hooks；覆蓋率 statements 9%→31%，門檻提高到 30／26／21／30；發現 5 個既有問題待決定 |
 | B2 effect 依賴（v3.10211955） | 110 個穩定值（setter／ref／history／dispatch）補進 91 個依賴陣列，行為不變；警告 771→728；R 類 1,090 個不改，疑似 bug 20 處待決定（`B2_EXHAUSTIVE_DEPS.md`） |
 | A6 架構整理（v3.10211955） | 兩份相同的店家樹狀選擇窗合成 `components/MerchantsListModal`（樣式以 `classes` 保留兩份）；`routes.js` 1051→253（後台路由搬 `dashboardRoutes.js`）、`ChoseEvent.js` 常數外移；釘選版選擇窗、三個外層下拉、其餘 7 個大檔刻意不動 |
 | B1 設定類查詢 cache-first（v3.10211949） | `lib/settings-cache`：103 個設定查詢 cache-first，mutation 成功或每 10 分鐘清除重抓；共用根欄位（merchant／me／user）與被帶參數查詢共用的根欄位不納入、輪替碼／佇列狀態／操作密碼／依 id 單筆不納入（有全站掃描測試）；站內 8 次換頁 GraphQL 請求 209→135（−35%）；報表／權限／帳單／列印查詢不變 |
