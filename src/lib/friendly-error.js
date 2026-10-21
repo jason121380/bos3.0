@@ -16,6 +16,7 @@ export const FRIENDLY_MESSAGES = {
   tooMany: '操作太頻繁，請稍候幾秒再試',
   timeout: '連線逾時，請檢查網路後再試一次',
   badRequest: `資料格式有誤，請檢查輸入內容或重新整理頁面後再試；${SUPPORT_HINT}`,
+  outdated: `系統可能剛更新，請重新整理頁面後再試；${SUPPORT_HINT}`,
   unknown: `操作沒有完成，請稍後再試；${SUPPORT_HINT}`,
 }
 
@@ -23,10 +24,12 @@ const HTTP_STATUS = /Response not successful: Received status code (\d{3})/i
 // 伺服器回了錯誤頁（HTML／純文字）而不是 JSON：多半是 5xx，原文對使用者與客服都沒有幫助，不附
 const PARSE_ERROR = /Unexpected token|is not valid JSON|Unexpected end of JSON|JSON\.parse/i
 const TIMEOUT = /\b(?:timeout|timed out|ETIMEDOUT|ECONNRESET|ECONNABORTED|socket hang up)\b/i
-// GraphQL 驗證／型別錯誤（前後端欄位不一致、輸入格式不對）
-const BAD_REQUEST = /Variable "\$\w+"|got invalid value|Expected (?:type|value of type)|Cannot query field|Cannot return null for non-nullable|Unknown argument|Syntax Error|must not be null|was not provided|(?:Int|Float|String|ID|Boolean) cannot represent/i
+// 前後端版本不一致（查了後端沒有的欄位／參數）：使用者改輸入沒用，重新整理載入新版前端多半就好
+const SCHEMA_MISMATCH = /Cannot query field|Unknown argument|Unknown type|is not defined by type|Unknown fragment|Unknown directive|Syntax Error/i
+// 輸入值的型別／必填驗證失敗（例如數字欄位填了文字）：請使用者檢查輸入
+const BAD_REQUEST = /Variable "\$\w+"|got invalid value|Expected (?:type|value of type)|must not be null|was not provided|(?:Int|Float|String|ID|Boolean) cannot represent/i
 // 伺服器或程式例外（不該給使用者看的內部訊息）
-const SERVER_ERROR = /Internal server error|INTERNAL_SERVER_ERROR|Unexpected error|Cannot read propert(?:y|ies)|is not a function|is not defined|Maximum call stack|out of memory|ECONNREFUSED|ER_\w+|SequelizeDatabaseError|Prisma/i
+const SERVER_ERROR = /Internal server error|Cannot return null for non-nullable|INTERNAL_SERVER_ERROR|Unexpected error|Cannot read propert(?:y|ies)|is not a function|is not defined|Maximum call stack|out of memory|ECONNREFUSED|ER_\w+|SequelizeDatabaseError|Prisma/i
 const CJK = /[㐀-鿿豈-﫿]/
 const LETTERS = /[A-Za-z]{3,}/
 
@@ -61,6 +64,8 @@ function friendlyLine(line) {
   if (parse) return compose(text, parse.index, FRIENDLY_MESSAGES.server, false)
   const timeout = text.match(TIMEOUT)
   if (timeout) return compose(text, timeout.index, FRIENDLY_MESSAGES.timeout, false)
+  const schema = text.match(SCHEMA_MISMATCH)
+  if (schema) return compose(text, schema.index, FRIENDLY_MESSAGES.outdated, true)
   const badRequest = text.match(BAD_REQUEST)
   if (badRequest) return compose(text, badRequest.index, FRIENDLY_MESSAGES.badRequest, true)
   const server = text.match(SERVER_ERROR)

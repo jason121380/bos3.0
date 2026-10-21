@@ -31,6 +31,10 @@ test('資料格式錯誤與程式例外：中文說明＋原文（給客服）',
   expect(friendlyErrorMessage(invalid).startsWith(`${FRIENDLY_MESSAGES.badRequest}（Variable "$input"`)).toBe(true)
   expect(friendlyErrorMessage('Internal server error')).toBe(`${FRIENDLY_MESSAGES.server}（Internal server error）`)
   expect(friendlyErrorMessage('timeout of 30000ms exceeded')).toBe(FRIENDLY_MESSAGES.timeout)
+  // 前後端版本不一致（Codex PR #239）：改輸入沒用，請重新整理；後端回空值屬伺服器錯誤
+  expect(friendlyErrorMessage('Cannot query field "foo" on type "Query".').startsWith(`${FRIENDLY_MESSAGES.outdated}（Cannot query field`)).toBe(true)
+  expect(friendlyErrorMessage('Unknown argument "bar" on field "Query.orders".').startsWith(FRIENDLY_MESSAGES.outdated)).toBe(true)
+  expect(friendlyErrorMessage('Cannot return null for non-nullable field Order.id.').startsWith(FRIENDLY_MESSAGES.server)).toBe(true)
   // 伺服器回 500 錯誤頁（不是 JSON）時 Apollo 給的是解析錯誤：只說是伺服器問題，不附看不懂的原文（實測情境）
   expect(friendlyErrorMessage('Unexpected token \'I\', "Internal S"... is not valid JSON')).toBe(FRIENDLY_MESSAGES.server)
 })
