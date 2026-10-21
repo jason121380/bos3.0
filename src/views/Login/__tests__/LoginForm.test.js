@@ -124,9 +124,10 @@ describe('<Login />', () => {
     // 等 mutation 回應寫入 localStorage（固定 2ms 太短且不穩）
     await wait(() => expect(localStorage.getItem('user')).not.toBeNull())
 
+    // setupTests 的 localStorage 假物件會再 JSON.stringify 一次，所以 parse 出來仍是字串
     const user = JSON.parse(localStorage.getItem('user'))
-    const userLoginResp = JSON.stringify(mockedSuccessResp.data.userLoginV2)
-
-    expect(user).toMatch(userLoginResp)
+    // 登入成功後要留下 id（全站用它判斷登入、查個人資料），但手機號碼、uid、各店 solmateKey 不可存進 localStorage
+    expect(JSON.parse(user)).toEqual({ id: 'id', name: 'name', isAdmin: false, isNeedChangePassword: false })
+    expect(user).not.toMatch(/0912345678|solmateKey|userCode/)
   })
 })

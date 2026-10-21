@@ -7,6 +7,7 @@ import { useHistory } from 'react-router'
 import validate from 'validate.js'
 import { Button } from 'ui/button'
 import { Field, Input } from 'ui/input'
+import { saveStoredUser } from 'lib/stored-user'
 
 function ResetPasswordForm({ className, ...rest }) {
   const [schema, setSchema] = useState({
@@ -66,7 +67,7 @@ function ResetPasswordForm({ className, ...rest }) {
         cellphone: formState.values.phone,
         verifyCode: formState.values.verificationCode,
       }).then(({ data }) => {
-        localStorage.setItem('user', JSON.stringify(data.forgetPasswordVerify))
+        saveStoredUser(data.forgetPasswordVerify)
         localStorage.setItem('userMerchant', JSON.stringify(data.forgetPasswordVerify.merchants[0]))
         localStorage.removeItem('countdownForVerify')
         history.push('/')

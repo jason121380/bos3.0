@@ -30,7 +30,7 @@ npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps（CI／Docke
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
 npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base＋react-hooks/rules-of-hooks 為 error，0 warning）
-CI=true npm run test:nowatch         # 全部單元測試（基準：63 檔／341 測試全數通過）
+CI=true npm run test:nowatch         # 全部單元測試（基準：64 檔／345 測試全數通過）
 TZ=America/Los_Angeles CI=true npm run test:nowatch   # 時區相關修改要另在海外時區跑一次
 CI=true npm run test:coverage        # 覆蓋率（門檻為現況下限＋金額／API 模組逐檔門檻，見 package.json）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
@@ -60,6 +60,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - `src/lib/theme-mode.js`：深淺色模式。依使用者記住主題、版面掛載時（繪製前）套用；舊版全域樣式 `initialize(-dark).scss` 以 `?inline` 字串放進同一個 `<style>`，切換時替換內容，不必重新整理。不要再用 `import('…scss')` 直接載入這兩檔。
 - `src/lib/polyfills.js`：只補 Safari 14／Chrome 87 缺少、而程式實際用到的功能（目前只有 `structuredClone`）；不再載入整包 core-js。
 - `src/lib/uuid.js`：列表 key／暫存 id 用的 v4 UUID（`import uuid from 'lib/uuid'`，用 `crypto.getRandomValues`；2026/10/21 取代 `uuid` 套件，有測試）。不要再安裝 `uuid` 套件；單元測試的 `crypto` 由 `setupTests.js` 補 Node webcrypto。
+- `src/lib/stored-user.js`：登入者資料存進 localStorage 前只留 `id`、`name`、`isAdmin`、`isNeedChangePassword`（`saveStoredUser`；手機號碼、uid、userCode、各店 solmateKey 不落地，2026/10/21）；`src/index.js` 啟動時 `sanitizeStoredUser()` 把舊版存的完整資料就地瘦身。新程式寫 `user` 一律用 `saveStoredUser`，需要其他欄位向 API（profile）查。
 - `src/lib/immer-config.js`（`src/index.js` 最早載入）：immer 2026/10/21 自 7 升到 9（關掉 critical 漏洞、與 Redux Toolkit 共用同一份），但維持 immer 7 的凍結行為——開發／測試凍結 `produce` 結果、正式環境不凍結，升版不新增拋錯路徑（有測試）。
 - `src/lib/after-first-load.js`：`useAfterFirstLoad()` 在首屏完成（load 後、沒有查詢在等回應、頁面程式不在下載中〔Dashboard 的 Suspense 佔位用 `useHoldFirstLoad()` 計入〕、瀏覽器空閒）才回傳 true；版面的系統公告、訂單佇列、釘選頁、切換店家清單以 `skip: !afterFirstLoad` 延後。版面要新增查詢時，先判斷是不是首屏必要（選單權限、選單設定是必要）。
 - `src/elements/snackbars.js`：`openSnackbar` 全站提示（右下角 toast；錯誤需手動關閉；確認型 variant 畫成對話框）。錯誤／警告提示自動經 `src/lib/friendly-error.js` 把英文技術訊息（500、資料格式錯誤、程式例外）換成「原因＋下一步」的中文，中文業務訊息原樣；errorLink 的狀態碼文案也用同一份（`httpStatusMessage`）。頁面 catch 照常傳 `error.message` 即可。

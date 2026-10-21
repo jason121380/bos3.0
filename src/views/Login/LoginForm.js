@@ -10,6 +10,7 @@ import getQueryString from 'helper/getQueryString'
 import { Button } from 'ui/button'
 import { Checkbox } from 'ui/checkbox'
 import { Field, Input } from 'ui/input'
+import { saveStoredUser } from 'lib/stored-user'
 
 function LoginForm({ className, location, ...rest }) {
   const liffId = getQueryString({ key: 'liffId', location })
@@ -40,7 +41,7 @@ function LoginForm({ className, location, ...rest }) {
           .then(({ data }) => {
             const user = data.userLoginForLine
             fetchProfile()
-            localStorage.setItem('user', JSON.stringify(user))
+            saveStoredUser(user)
             localStorage.setItem('keepLogin', JSON.stringify(isKeepLogin))
             document.cookie = 'keepLogin=hello;expires=0;path=/'
           })
@@ -54,7 +55,7 @@ function LoginForm({ className, location, ...rest }) {
           .then(({ data }) => {
             const user = data.userLoginV2.user
             const token = data.userLoginV2.token
-            localStorage.setItem('user', JSON.stringify(user))
+            saveStoredUser(user)
             localStorage.setItem('keepLogin', JSON.stringify(isKeepLogin))
             localStorage.setItem('token', token)
             setMerchantData({
