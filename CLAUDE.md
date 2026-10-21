@@ -30,7 +30,7 @@ npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps（CI／Docke
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
 npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base，0 warning）
-CI=true npm run test:nowatch         # 全部單元測試（基準：55 檔／294 測試全數通過）
+CI=true npm run test:nowatch         # 全部單元測試（基準：57 檔／304 測試全數通過）
 TZ=America/Los_Angeles CI=true npm run test:nowatch   # 時區相關修改要另在海外時區跑一次
 CI=true npm run test:coverage        # 覆蓋率（門檻為現況下限＋金額／API 模組逐檔門檻，見 package.json）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
@@ -57,6 +57,8 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - `src/lib/api-base.js`：後端位址單一來源（GraphQL、WebSocket、REST outer_store、Sentry environment 都從這裡取）；不要在頁面寫死網址。
 - `src/lib/init-apollo.js`：Apollo client 單例；errorLink 統一提示 GraphQL／網路錯誤（`TKN_ERROR` 導回登入）。
 - `src/lib/business-timezone.js`＋`install-business-timezone.js`（在 `src/index.js` 最早載入）：裝置不在 UTC+8 時把全域 `Date` 與 `Intl.DateTimeFormat` 換成台灣時間；date-fns、日期選擇器與所有顯示因此自動以台灣時間運作，新程式照常用 date-fns 即可。
+- `src/lib/theme-mode.js`：深淺色模式。依使用者記住主題、版面掛載時（繪製前）套用；舊版全域樣式 `initialize(-dark).scss` 以 `?inline` 字串放進同一個 `<style>`，切換時替換內容，不必重新整理。不要再用 `import('…scss')` 直接載入這兩檔。
+- `src/lib/polyfills.js`：只補 Safari 14／Chrome 87 缺少、而程式實際用到的功能（目前只有 `structuredClone`）；不再載入整包 core-js。
 - `src/elements/snackbars.js`：`openSnackbar` 全站提示（右下角 toast；錯誤需手動關閉；確認型 variant 畫成對話框）。
 - `src/components/PageErrorBoundary.js`：Dashboard 內容區的錯誤邊界（單頁出錯只顯示錯誤畫面，側欄可用）；`SlotPortal.js`：TopBar／NavBar 互相把按鈕畫進對方插槽（切換店家、搜尋選單）。
 - `src/layouts/Dashboard/`：側欄頂列（Logo、版號、搜尋鈕、訂單佇列鈴鐺、收合）、選單、底部（深淺色切換、切換店家、登出）。
@@ -78,4 +80,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - 時區：沒有時區的數字格式字串（`2026/10/21 10:00`、`2026-10-21T10:00`）照字面當台灣時間解讀；英文月份等其他格式仍先經裝置時區（日光節約切換時可能差一小時），不要用；只有日期的 ISO 字串（`2026-10-21`）依規格是 UTC 午夜；要表示台灣某一天的開始用 `new Date(年, 月-1, 日)` 或 date-fns，不要自己加減時差。改 `business-timezone.js` 要在有日光節約的時區（`TZ=America/Los_Angeles`、`America/Santiago`）跑測試（MEMORY #169）。
 - Playwright 的 headless Chromium 畫不出捲軸，捲軸類修正只能看 CSS 規則，需在真實瀏覽器確認。驗證時區可用 `browser.newContext({ timezoneId })` 與 `page.clock.install({ time })`。
 - 背景伺服器用 PID 關閉：命令列本身含相同字串時 `pgrep -f`／`pkill -f` 也會抓到自己的 shell；用 `ps -eo pid,args | awk '/pattern/ && !/awk/'` 取 PID。dev server 啟動前清 log，啟動後用 `curl` 確認。
+- 新程式用到較新的瀏覽器功能（如 `structuredClone`、`Array.prototype.findLast`、`Object.hasOwn`、`crypto.randomUUID`）時，先確認 Safari 14 是否支援；不支援就在 `lib/polyfills.js` 補，或改寫法（2026/10/21 起不再載入整包 core-js）。
+- `setupTests.js` 的 localStorage 假物件 `setItem` 會再 `JSON.stringify` 一次（與瀏覽器不同）；需要真實行為的測試在 `beforeEach` 以 `jest.spyOn` 改寫（CRA 的 `resetMocks` 會在每個測試前清掉 mock 實作，寫在 `beforeAll` 無效）。
+- 刪檔前用「從 `src/index.js` 走訪 import 圖」找出到不了的檔案，並以完整檔名搜尋字串引用；`public/` 的檔案可能被外部網址引用，刪前確認用途。
 - 截圖測試需 `NODE_PATH=/opt/node-tools/node_modules`，GraphQL 以 `page.route('**/graphql', …)` 回假資料、外部網域一律 abort。

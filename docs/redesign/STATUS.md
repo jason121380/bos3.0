@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10210851，main 已含 PR #1～#234）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10210912，main 已含 PR #1～#235）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,6 +8,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| 效能 A＋B 與死碼清理（v3.10210912） | `lib/theme-mode`（主題記憶、繪製前套用、`?inline` 舊版樣式可替換、切換免 reload）；`NavBar` 改呼叫 `syncThemeFromServer`、`TopBar` 切換改 `switchThemeByUser`、`Dashboard` 以 `useLayoutEffect` 套用記憶；`index.js` 改載 `lib/polyfills`（只補 `structuredClone`）；刪除 228 個到不了／未引用的檔案、移除 `react-app-polyfill`。屬畫面以外修正（Jason 當次同意）。57 檔／304 測試、lint:build 0、build、乾淨 `npm ci` 皆通過。 |
 | 預約色塊白字、側欄店名去標題（v3.10210851） | 色票淺色改深一階（白字 ≥ 4.5:1），`readableTextOn` 因此一律白字；`NavBar` 目前店家列移除可見的「目前店家」小字。色值字串變更與 JSX 文字移除，判斷條件不變。 |
 | 篩選沒有內容時不顯示篩選鈕（v3.10210845） | 預約管理、單日預約紀錄：店家未開啟報到功能時，`AdminPageHeader` 不傳 `onFilterClick`（篩選鈕不出現）、篩選卡片不渲染。條件沿用頁面既有的報到設定值，不改查詢與篩選邏輯。新增 2 測試。 |
 | 側欄顯示目前店家（v3.10210841） | `NavBar` 的 `SidebarContent` 最上方加「目前店家」顯示列（Store 圖示＋小字標題＋店名，只顯示）。純畫面；verify-logic 通過。 |
@@ -312,7 +313,7 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 |---|---|
 | 會直接 `window.print()` 的報表表格（10/18 估約 15 頁，10/19 實測 22 個報表 index，例如店家區間累計表、費用分析表、損益表、日報表明細卡片、設計師抽成報表、商品庫存表等） | `src/initialize.scss` 約 70 條列印規則直接寫在 MUI class 上；要換就得改寫列印規則，與鐵則「列印範本不動」衝突 |
 | 列印範本（`#printMain`、`#printThermal`、`printCard`、`forPrint*`、`merchantNamePrint`） | 鐵則 |
-| LINE（`layouts/Line`、`ChangeLineMenuPage`）、EHS（`EHS2Page`）、`/ar`（`AR2`）、`Typography` | 決策：不改版或疑似死碼（未被路由使用的 `views/AR`、`views/LinepayQRcode` 已於 2026/10/21 刪除） |
+| LINE（`layouts/Line`、`ChangeLineMenuPage`）、EHS（`EHS2Page`）、`/ar`（`AR2`） | 決策：不改版或疑似死碼（未被路由使用的 `views/AR`、`views/LinepayQRcode` 已於 2026/10/21 刪除） |
 | 沒被任何地方引用的檔案（如 `Profile/Group.js`、`SalaryEdit/General.js`、`ServiceEdit/AboutAssistant.js` 等） | 死碼 |
 | `TextField`（helperText 邏輯／adornment／inputRef）、`Autocomplete`、日期選擇器、`Radio`、`Slider`、`Tooltip`、`Drawer`、`Accordion` | 無對應新元件或替換會動到邏輯；橋接主題已套新外觀 |
 

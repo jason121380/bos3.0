@@ -183,7 +183,7 @@ export function createBusinessDateTimeFormat(OrigDateTimeFormat) {
   return BusinessDateTimeFormat
 }
 
-/* global globalThis */ // ES2020 全域（Vite 目標 Safari 14／Chrome 87 以上皆支援，react-app-polyfill 亦有提供）
+/* global globalThis */ // ES2020 全域（Vite 目標 Safari 14／Chrome 87 以上皆支援）
 let installed = false
 let deviceTimeZone = null
 

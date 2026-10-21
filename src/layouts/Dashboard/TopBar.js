@@ -32,6 +32,7 @@ import { reservationActions } from './../../store/reservation'
 import { QRcodeClockInActions } from './../../store/QRcodeClockIn'
 import { deductionDisplayActions } from './../../store/deductionDisplay'
 import bosLogo from 'assets/images/bosLogoNew.png'
+import { readStoredTheme, switchThemeByUser } from 'lib/theme-mode'
 
 // 側欄底部（NavBar 的 SidebarFooter，profile 載入後才出現）的插槽；插槽出現前先不渲染，出現後以 Portal 畫進去
 const SIDEBAR_FOOTER_SLOT_ID = 'sidebar-merchant-switch-slot'
@@ -66,7 +67,8 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
   )
   const { setThemeChangeData } = useFetchSettingTheme()
   const [loginUserAuth, setLoginUserAuth] = useState(false)
-  const [moodChange, setMoodChange] = useState(false)
+  // 開關圖示先依記住的主題顯示（後端使用者資料回來後再同步），避免深色使用者看到錯的圖示
+  const [moodChange, setMoodChange] = useState(() => readStoredTheme() === 'DARK')
   const [anchorEl, setAnchorEl] = useState(null)
   const [openButton, setOpenButton] = useState(false)
   const [placement, setPlacement] = useState()
@@ -328,24 +330,29 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     setOpenButton(prev => placement !== newPlacement || !prev)
     setPlacement(newPlacement)
   }
-  // 深淺色切換（Jason 2026/10/21「加回深色」）：沿用既有的 setTheme mutation 存到使用者設定，成功後重新整理套用；
-  // 失敗時還原開關狀態（錯誤訊息由 Apollo errorLink 顯示），儲存中不重複送出
+  // 深淺色切換（Jason 2026/10/21「加回深色」）：沿用既有的 setTheme mutation 存到使用者設定。
+  // 同日 Jason 同意「切換免重整」：按下立即套用（lib/theme-mode 替換舊版全域樣式與 html.dark），存檔在背景進行；
+  // 失敗時還原畫面與開關狀態（錯誤訊息由 Apollo errorLink 顯示），儲存中不重複送出
   const [themeSaving, setThemeSaving] = useState(false)
   const handleThemeToggle = () => {
     if (themeSaving || !storedUser) return
     const nextDark = !moodChange
+    const nextTheme = nextDark ? 'DARK' : 'DEFAULT'
     setThemeSaving(true)
     setMoodChange(nextDark)
+    const settle = switchThemeByUser(nextTheme)
     setThemeChangeData({
       input: {
         userId: storedUser.id,
-        theme: nextDark ? 'DARK' : 'DEFAULT',
+        theme: nextTheme,
       },
     })
       .then(() => {
-        window.location.reload()
+        settle(true)
+        setThemeSaving(false)
       })
       .catch(() => {
+        settle(false)
         setMoodChange(!nextDark)
         setThemeSaving(false)
       })

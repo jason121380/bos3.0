@@ -21,6 +21,7 @@ import { Button } from 'ui/button'
 import { Input } from 'ui/input'
 import { SidebarContent, SidebarFooter, SidebarLabel } from 'ui/sidebar'
 import { cn, focusRing } from 'ui/utils'
+import { syncThemeFromServer } from 'lib/theme-mode'
 
 function renderNavItems({ items, subheader, key, reportListExtended, isPinned = false, ...rest }) {
   return (
@@ -353,21 +354,10 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
     items: filteredItemArr,
   })
 
-  // 舊版全域樣式依主題載入：原本寫在 render 本體（每次重繪都呼叫 import），移到 effect、只在主題值確定或改變時觸發；載入的檔案與條件不變
+  // 主題以後端個人資料為準：版面掛載時已先套用記住的主題（lib/theme-mode），這裡在後端回來後同步並記住；
+  // 舊版全域樣式（initialize／initialize-dark.scss）與 html.dark 由 theme-mode 統一處理，切換不必重新整理
   useEffect(() => {
-    if (theme == 'DARK' && !profile.loading) {
-      import('../../initialize-dark.scss').then(module => {
-        // Do something with the module.
-      })
-    } else if (theme == 'DEFAULT' && !profile.loading) {
-      import('../../initialize.scss').then(module => {
-        // Do something with the module.
-      })
-    }
-  }, [theme, profile.loading])
-  // 新版介面的深色 tokens 掛在 <html class="dark">，與舊版深色主題設定同步
-  useEffect(() => {
-    if (!profile.loading) document.documentElement.classList.toggle('dark', theme == 'DARK')
+    if (!profile.loading && theme) syncThemeFromServer(theme)
   }, [theme, profile.loading])
   const location = useLocation()
   const history = useHistory()

@@ -1,5 +1,6 @@
-// 只載入 stable polyfill：Vite 產出的是 ES module（需 Safari 14／Chrome 87 以上），IE11 本來就無法執行，ie11 polyfill 只是多餘的首屏負擔
-import 'react-app-polyfill/stable'
+// 不載入整包 core-js（原 react-app-polyfill/stable，入口 chunk 約 194 KB）：Vite 產出的是 ES module，只能在 Safari 14／Chrome 87 以上執行，
+// 這些瀏覽器已內建絕大多數功能；程式與套件實際用到、但 Safari 14 缺少的少數功能另在 lib/polyfills 補上（Jason 2026/10/21 同意）
+import './lib/polyfills'
 // 日期一律以台灣時間計算與顯示（裝置不在 UTC+8 時才會替換 Date）；須在 App 與各頁面之前載入
 import './lib/install-business-timezone'
 
