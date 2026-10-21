@@ -4,16 +4,18 @@ import { Dialog as UiDialog, DialogContent as UiDialogContent } from 'ui/dialog'
 import React, { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { readableTextOn } from 'components/CalendarColorClip'
+import { CalendarOff } from 'lucide-react'
 import { AssignmentTurnedInRounded as AssignmentTurnedInRoundedIcon, DisabledByDefaultRounded as DisabledByDefaultRoundedIcon } from 'ui/icons'
 
 import NewChoseEvent from './NewChoseEvent'
 import HolidayEdit from './HolidayEdit'
 
-// 預約表格樣式（原 styles/OrderTable.js 的 emotion 物件等值轉 Tailwind；單邊框線用任意屬性，避免 border-style 套到四邊）
-const titleClass = 'py-[2px] px-[5px] font-semibold bg-[#08424c] text-[#fff] flex items-center justify-center [border-right:1px_solid_lightgray] text-[14px] h-[40px]'
-const limitItemClass = 'w-[100px] text-[#8a8a8a] flex items-center justify-center text-[14px] overflow-hidden flex-col cursor-pointer [border-left:1px_solid_lightgray]'
-const calendarWrapClass = 'absolute h-full top-0 left-0 overflow-hidden [border-right:1px_solid_lightgray]'
-const clickItemClass = 'rounded-[15px] cursor-pointer flex items-center justify-center flex-col text-[14px] text-[#fff] [border:3px_solid_white] overflow-hidden hover:z-[3] [&_span]:py-0 [&_span]:px-[4px] [&_span]:[word-break:break-all]'
+// 預約表格樣式（原 styles/OrderTable.js 的 emotion 物件轉 Tailwind；單邊框線用任意屬性，避免 border-style 套到四邊）
+// 表格外觀比照主預約頁（ManagementReservationRecord/OrderTable.js）：表頭淺灰底、tokens 框線、時間欄粗體、可預約人數小標＋主題色數字、預約色塊 12px 圓角；尺寸與寬度計算不變
+const titleClass = 'flex min-h-[56px] shrink-0 items-center justify-center break-all bg-surface px-4 py-3 text-[14px] font-[800] tracking-[0.5px] text-text [border-right:1px_solid_rgb(var(--border))]'
+const limitItemClass = 'flex w-[100px] cursor-pointer flex-col items-center justify-center overflow-hidden text-[12px] text-text-tertiary [border-left:1px_solid_rgb(var(--border))] [transition:background-color_0.2s] hover:!bg-accent/10'
+const calendarWrapClass = 'absolute left-0 top-0 h-full overflow-hidden [border-right:1px_solid_rgb(var(--border))]'
+const clickItemClass = 'flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-[12px] [border:2px_solid_white] text-[13px] font-bold text-white shadow-[0px_4px_10px_rgba(0,0,0,0.1)] [transition:transform_0.1s_ease] hover:z-[3] hover:[transform:scale(1.02)] [&_span]:break-all [&_span]:px-2 [&_span]:py-0 [&_span]:text-center'
 
 const OrderTable = ({
   orderRange, calendarData, designerNameType, merchantId,
@@ -122,11 +124,11 @@ const OrderTable = ({
   }
 
   return (
-    <div className="ManagementReservationRecord bg-background min-h-[60vh] h-[calc(100vh-260px)] overflow-scroll relative [&>div]:flex">
+    <div className="ManagementReservationRecord relative h-[calc(100vh-260px)] min-h-[60vh] overflow-scroll rounded-2xl bg-background [border:1px_solid_rgb(var(--border))] [&>div]:flex">
 
       {/* table head */}
       <div className="sticky top-0 z-[7] w-fit">
-        <div style={{ position: 'sticky', left: 0, zIndex: 1 }} className={`w-[50px] ${titleClass}`}>時間</div>
+        <div style={{ position: 'sticky', left: 0, zIndex: 1 }} className={`w-[60px] ${titleClass} !px-1`}>時間</div>
         {calendarData.map(data => (
           <div style={{ width: findTitleWidth(data.length, data.breakLength)}} key={`name-${data.title}`} className={titleClass}>
             {data.title}
@@ -135,16 +137,16 @@ const OrderTable = ({
       </div>
 
       {/* table body */}
-      <div className="relative w-fit [border-bottom:1px_solid_lightgray]">
+      <div className="relative w-fit [border-bottom:1px_solid_rgb(var(--border))]">
 
         {/* 時間 */}
         <div
           style={{ position: 'sticky', left: 0, zIndex: 5, background: 'rgb(var(--background))' }}
-          className="w-[50px] shrink-0"
+          className="w-[60px] shrink-0"
           id='darkBg'
         >
           {orderRange[0].map(d => (
-            <div key={d} className="h-[70px] [border-top:1px_solid_lightgray] [border-right:1px_solid_lightgray] text-center leading-[80px] text-[14px]">{format(d, 'HH:mm')}</div>
+            <div key={d} className="flex h-[70px] items-center justify-center bg-surface text-[14px] font-bold text-text [border-top:1px_solid_rgb(var(--border))] [border-right:1px_solid_rgb(var(--border))]">{format(d, 'HH:mm')}</div>
           ))}
         </div>
 
@@ -158,7 +160,7 @@ const OrderTable = ({
               {orderRange[index].map(d => (
                 <div
                   key={d}
-                  className="h-[70px] [border-top:1px_solid_lightgray] [border-right:1px_solid_lightgray] flex justify-end"
+                  className="flex h-[70px] justify-end [border-top:1px_solid_rgb(var(--border))] [border-right:1px_solid_rgb(var(--border))]"
                   style={{ width: width}}
                   onClick={() => {
                     setModalType(countHoliday[d] ? 'openOrder' : 'default')
@@ -169,8 +171,14 @@ const OrderTable = ({
                     })
                   }}
                 >
-                <div style={{ width: length > 1 ? ndWidth : basicWidth }} className={`hoverItem ${limitItemClass}${(length > 1 && countHoliday[d]) ? ' [background:#ffa9a9]' : ''}`}>
-                  {length > 1 || breakLength > 0  ? handleCountLimit(countOrder[d], bookingLimit) : `可預約人數:${handleCountLimit(countOrder[d], bookingLimit)}`}
+                <div style={{ width: length > 1 ? ndWidth : basicWidth }} className={`hoverItem ${limitItemClass}${(length > 1 && countHoliday[d]) ? ' !bg-danger/10' : ''}`} title={(length > 1 && countHoliday[d]) ? '不可預約時段' : undefined}>
+                  {/* 版面比照主預約頁：上方小標＋主題色數字；不可預約時段（countHoliday）除淡紅底外加圖示與讀屏文字，不只靠顏色 */}
+                  {!(length > 1 || breakLength > 0) && <span className="mb-0.5 text-[12px] leading-4 text-text-secondary">可預約人數</span>}
+                  <span className={`inline-flex items-center gap-0.5 text-[14px] font-bold ${(length > 1 && countHoliday[d]) ? 'text-danger' : 'text-accent'}`}>
+                    {(length > 1 && countHoliday[d]) ? <CalendarOff aria-hidden="true" strokeWidth={2} className="h-3 w-3 shrink-0" /> : null}
+                    {(length > 1 && countHoliday[d]) ? <span className="sr-only">不可預約時段，</span> : null}
+                    {handleCountLimit(countOrder[d], bookingLimit)}
+                  </span>
                 </div>
                 </div>
               ))}
