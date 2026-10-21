@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { act, render } from '@testing-library/react'
-import useAfterFirstLoad, { __resetAfterFirstLoadForTest, beginRequest } from '../after-first-load'
+import useAfterFirstLoad, { __resetAfterFirstLoadForTest, beginRequest, useHoldFirstLoad } from '../after-first-load'
 
 // 為什麼重要：版面把系統公告、訂單佇列、釘選頁、切換店家清單延到首屏完成後才查（避免與頁面渲染搶主執行緒）。
 // 這些測試守住：①load 前、還有查詢在等回應時不放行（只看空閒會在頁面資料回來前就放行，等於沒延後）；
 // ②之後一定會放行（Safari 無 requestIdleCallback、load 卡住都有保底），否則訂單佇列鈴鐺與切換店家清單永遠不出現；
-// ③同一次開啟只等一次，換版面重新掛載不必再等。
+// ③同一次開啟只等一次，換版面重新掛載不必再等；④頁面程式（lazy chunk）下載中也不放行——登入後是站內換頁，
+// load 早已完成，若只看查詢，版面查詢一回來就會在頁面查詢開始前放行（Codex PR #237 指出，已重現）。
 
 function Probe({ onValue }) {
   onValue(useAfterFirstLoad())
@@ -112,4 +113,41 @@ test('同一次開啟只等一次：之後重新掛載的版面一開始就放�
   const values = []
   render(<Probe onValue={value => values.push(value)} />)
   expect(values[0]).toBe(true)
+})
+
+function Hold() {
+  useHoldFirstLoad()
+  return null
+}
+
+test('頁面載入佔位（Suspense fallback）存在期間不放行，卸載後才放行', () => {
+  readyState = 'complete'
+  const latest = renderProbe()
+  const { unmount } = render(<Hold />)
+  act(() => runIdle())
+  expect(latest()).toBe(false)
+  act(() => unmount())
+  act(() => runIdle())
+  expect(latest()).toBe(true)
+})
+
+test('登入後站內換頁：lazy 頁面還在下載時不放行，頁面掛載並發出查詢後，等查詢回來才放行', async () => {
+  readyState = 'complete' // 站內換頁時 load 早已完成
+  let resolveChunk
+  let endPageQuery
+  function Page() {
+    React.useState(() => { endPageQuery = beginRequest() }) // 頁面掛載即發出查詢（同 useQuery）
+    return null
+  }
+  const LazyPage = React.lazy(() => new Promise(resolve => { resolveChunk = () => resolve({ default: Page }) }))
+  const latest = renderProbe()
+  render(<Suspense fallback={<Hold />}><LazyPage /></Suspense>)
+  act(() => runIdle()) // 等頁面程式下載時主執行緒是閒的
+  expect(latest()).toBe(false)
+  await act(async () => { resolveChunk() })
+  act(() => runIdle())
+  expect(latest()).toBe(false) // 頁面查詢還在等回應
+  act(() => endPageQuery())
+  act(() => runIdle())
+  expect(latest()).toBe(true)
 })

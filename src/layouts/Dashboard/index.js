@@ -10,7 +10,7 @@ import { useHistory } from 'react-router'
 import { renderRoutes } from 'react-router-config'
 import useFetchCheckPageAuthority from 'hooks/useFetchCheckPageAuthority'
 import useFetchGetUserMerchant from 'hooks/useFetchGetUserMerchant'
-import useAfterFirstLoad from 'lib/after-first-load'
+import useAfterFirstLoad, { useHoldFirstLoad } from 'lib/after-first-load'
 import idx from 'idx'
 import { PanelLeftOpen } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -20,6 +20,12 @@ import { cn } from 'ui/utils'
 import { MobileAppBar, MobileTabBar, useMobileTabs, useShowTabBar } from './MobileNav'
 import NavBar from './NavBar'
 import TopBar from './TopBar'
+
+// 頁面程式（lazy chunk）下載中的佔位：存在期間不放行首屏延後的查詢（lib/after-first-load）
+function PageLoading() {
+  useHoldFirstLoad()
+  return <div className="ui-root h-0.5 w-full animate-pulse bg-accent" />
+}
 
 function Dashboard({ route, location }) {
   const [openNavBarMobile, setOpenNavBarMobile] = useState(false)
@@ -164,7 +170,7 @@ function Dashboard({ route, location }) {
       >
         <div id="printContainer" className="max-w-full overflow-x-hidden">
           <PageErrorBoundary resetKey={location.pathname}>
-            <Suspense fallback={<div className="ui-root h-0.5 w-full animate-pulse bg-accent" />}>{renderRoutes(route.routes)}</Suspense>
+            <Suspense fallback={<PageLoading />}>{renderRoutes(route.routes)}</Suspense>
           </PageErrorBoundary>
         </div>
       </main>
