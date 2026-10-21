@@ -190,9 +190,9 @@ function CustomerFilterExport() {
   const handleSearch = value => {
     setPageSetting(
       produce(draft => {
-        draft.keyword = value,
-          draft.customerIsCome = customerIsCome,
-          draft.category = belong
+        draft.keyword = value
+        draft.customerIsCome = customerIsCome
+        draft.category = belong
       })
     )
   }
@@ -419,7 +419,7 @@ function CustomerFilterExport() {
                         onChange={event => {
                           setFromDateValue({
                             ...fromDateValue,
-                            dayNumber: parseInt(event.target.value),
+                            dayNumber: parseInt(event.target.value, 10),
                           })
                         }}
                         onWheel={() => document.activeElement.blur()}

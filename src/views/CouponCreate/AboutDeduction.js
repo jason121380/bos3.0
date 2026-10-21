@@ -133,13 +133,13 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
           if (index === index2) {
             switch (moneyType) {
               case 'price':
-                data2.price = parseInt(event.target.value)
+                data2.price = parseInt(event.target.value, 10)
                 break
               case 'designatePrice':
-                data2.designatePrice = parseInt(event.target.value)
+                data2.designatePrice = parseInt(event.target.value, 10)
                 break
               case 'nonDesignatePrice':
-                data2.nonDesignatePrice = parseInt(event.target.value)
+                data2.nonDesignatePrice = parseInt(event.target.value, 10)
                 break
               default:
                 break
@@ -160,7 +160,7 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
       if (data.type === type) {
         data.itemSettings.forEach((data2, index2) => {
           if (index === index2) {
-            data2.deductionReference = parseInt(event.target.value)
+            data2.deductionReference = parseInt(event.target.value, 10)
           }
         })
       }

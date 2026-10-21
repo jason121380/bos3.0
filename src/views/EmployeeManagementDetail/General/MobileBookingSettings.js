@@ -28,7 +28,7 @@ function MobileBookingSettings({
                             placeholder="例如: 3"
                             onChange={event =>
                                 handleBookingLimit(
-                                    idx(event, _ => ({ value: parseInt(_.target.value), key: _.target.name }))
+                                    idx(event, _ => ({ value: parseInt(_.target.value, 10), key: _.target.name }))
                                 )
                             }
                             value={bookingLimitInput.bookingLimit !== null ? bookingLimitInput.bookingLimit : 3}

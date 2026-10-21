@@ -317,11 +317,11 @@ export default function Head() {
         produce(draft => {
           draft.customerId = undefined
           draft.customerCellphone = ''
-          draft.walletPay = 0,
-            draft.bonusDecount = 0,
-            draft.bonusDeposit = 0,
-            draft.bonusUsed = 0,
-            draft.useTicketOrders = []
+          draft.walletPay = 0
+          draft.bonusDecount = 0
+          draft.bonusDeposit = 0
+          draft.bonusUsed = 0
+          draft.useTicketOrders = []
         })
       )
       setValue('')

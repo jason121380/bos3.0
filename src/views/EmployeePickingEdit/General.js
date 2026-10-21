@@ -151,7 +151,7 @@ export default function General({
           fullWidth
           type="number"
           className={styles.formControl}
-          onChange={e => changeHandler('price', parseInt(e.target.value))}
+          onChange={e => changeHandler('price', parseInt(e.target.value, 10))}
           value={idx(formState, _ => _.price ? _.price : '')}
           onWheel={() => document.activeElement.blur()}
           inputRef={priceRef}
@@ -168,7 +168,7 @@ export default function General({
           fullWidth
           type="number"
           className={styles.formControl}
-          onChange={e => changeHandler('count', parseInt(+e.target.value))}
+          onChange={e => changeHandler('count', parseInt(+e.target.value, 10))}
           value={idx(formState, _ => _.count)}
           onWheel={() => document.activeElement.blur()}
           onFocus={() => setFocus('count')}

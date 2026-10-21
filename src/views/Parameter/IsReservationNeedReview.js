@@ -85,7 +85,7 @@ function IsReservationNeedReview({
               label="次數"
               type="number"
               value={aboutBooking.bookingLimitPerCellphoneInSameDay === null ? '' : aboutBooking.bookingLimitPerCellphoneInSameDay}
-              onChange={e => handleSetValue('bookingLimitPerCellphoneInSameDay', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value)))}
+              onChange={e => handleSetValue('bookingLimitPerCellphoneInSameDay', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value), 10))}
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
@@ -107,7 +107,7 @@ function IsReservationNeedReview({
               label="次數"
               type="number"
               value={aboutBooking.cusMaxBookingCount === null ? '' : aboutBooking.cusMaxBookingCount}
-              onChange={e => handleSetValue('cusMaxBookingCount', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value)))}
+              onChange={e => handleSetValue('cusMaxBookingCount', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value), 10))}
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
@@ -132,7 +132,7 @@ function IsReservationNeedReview({
               label="天數"
               type="number"
               value={aboutBooking.disableBookingDayLimit === null ? '' : aboutBooking.disableBookingDayLimit}
-              onChange={e => handleSetValue('disableBookingDayLimit', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value)))}
+              onChange={e => handleSetValue('disableBookingDayLimit', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value), 10))}
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
@@ -155,7 +155,7 @@ function IsReservationNeedReview({
               label="天數"
               type="number"
               value={aboutBooking.createBookingDayLimit === null ? '' : aboutBooking.createBookingDayLimit}
-              onChange={e => handleSetValue('createBookingDayLimit', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value)))}
+              onChange={e => handleSetValue('createBookingDayLimit', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value), 10))}
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
@@ -179,7 +179,7 @@ function IsReservationNeedReview({
               label="提出申請幾天內"
               type="number"
               value={aboutBooking.cancelBookingDayLimitByActionDate === null ? '' : aboutBooking.cancelBookingDayLimitByActionDate}
-              onChange={e => handleSetValue('cancelBookingDayLimitByActionDate', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value)))}
+              onChange={e => handleSetValue('cancelBookingDayLimitByActionDate', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value), 10))}
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />
@@ -196,7 +196,7 @@ function IsReservationNeedReview({
               label="預約日期幾天前"
               type="number"
               value={aboutBooking.cancelBookingDayLimitByServiceDate === null ? '' : aboutBooking.cancelBookingDayLimitByServiceDate}
-              onChange={e => handleSetValue('cancelBookingDayLimitByServiceDate', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value)))}
+              onChange={e => handleSetValue('cancelBookingDayLimitByServiceDate', parseInt(e.target.value === "" ? 0 : Math.abs(e.target.value), 10))}
               onFocus={e => e.target.select()}
               onWheel={() => document.activeElement.blur()}
             />

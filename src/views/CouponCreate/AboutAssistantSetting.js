@@ -120,7 +120,7 @@ function AboutAssistantSetting({
     newSupport.forEach((data, index2) => {
       if (index === index2) {
         data.nameList = []
-        for (let i = 1; i <= parseInt(event.target.value); i++) {
+        for (let i = 1; i <= parseInt(event.target.value, 10); i++) {
           data.nameList.push(String(i))
         }
         data.peopleCount = data.nameList.length

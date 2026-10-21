@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10211430，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10211439，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,6 +8,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| F1 前端正確性收尾（v3.10211439） | eslint 全站 error 21→0（produce 逗號序列、裸 location、永遠 false 的 autoFocus）；`parseInt` 182 處補 radix 10；非 GraphQL Promise 補 catch 3 處；`lint:build` 加入 rules-of-hooks 門檻 |
 | 用詞與日期格式統一（v3.10211413） | 結帳單據一律「帳單」（73 處；保留「訂單佇列」、網路訂單、EHS）；顯示與匯出日期一律 `yyyy/MM/dd`（12 處；列印範本內不動）；規則寫進 STYLE.md 文案節 |
 | immer 升級＋rules-of-hooks 清零（v3.10211407） | `immer` 7→9.0.21（critical 1→0、與 RTK 共用一份）；`lib/immer-config` 維持 immer 7 的「正式不凍結」；10 個 `index` 元件改 PascalCase、`useFetchShortcut` 6 個 hook 加 `use` 前綴、`useInitWalletPay`→`initWalletPay`；rules-of-hooks 70→0，行為零變動 |
 | 移除舊版 Apollo 套件（v3.10211337） | `apollo-boost`、`apollo-link`、`apollo-link-context`、`apollo-link-error`（連帶 10 個套件不再安裝）；`vite.config.mjs` vendor-apollo 清單同步；正式 build 產出與移除前逐位元相同 |

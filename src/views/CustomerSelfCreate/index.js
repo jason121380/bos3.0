@@ -71,9 +71,9 @@ const CustomerSelfCreate = () => {
     if (!submitData.name.trim() || !submitData.cellphone.trim()) {
       setOpenSnack(
         produce(draft => {
-          draft.open = true,
-            draft.severity = 'warning',
-            draft.message = '姓名、電話不得為空'
+          draft.open = true
+          draft.severity = 'warning'
+          draft.message = '姓名、電話不得為空'
         })
       )
       // resetRecaptcha()
@@ -88,18 +88,18 @@ const CustomerSelfCreate = () => {
     try {
       setOpenSnack(
         produce(draft => {
-          draft.open = true,
-            draft.severity = 'warning',
-            draft.message = '資料建立中請稍候'
+          draft.open = true
+          draft.severity = 'warning'
+          draft.message = '資料建立中請稍候'
         })
       )
       const res = await setCustomerCreate(submitData)
       if (res.data.customerSelfCreateV2) {
         setOpenSnack(
           produce(draft => {
-            draft.open = true,
-              draft.severity = 'success',
-              draft.message = '建立成功'
+            draft.open = true
+            draft.severity = 'success'
+            draft.message = '建立成功'
           })
         )
         setIsSuccess(true)
@@ -109,9 +109,9 @@ const CustomerSelfCreate = () => {
     } catch (error) {
       setOpenSnack(
         produce(draft => {
-          draft.open = true,
-            draft.severity = 'error',
-            draft.message = error.message
+          draft.open = true
+          draft.severity = 'error'
+          draft.message = error.message
         })
       )
       // resetRecaptcha()

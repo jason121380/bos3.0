@@ -172,12 +172,12 @@ export default function MemberCardEdit({ match }) {
 
   // 儲存
   const handleSubmit = () => {
-    if ( parseInt(submitValue.effecitveDay)< 0) {
+    if ( parseInt(submitValue.effecitveDay, 10)< 0) {
       openSnackbar({ message: '請輸入有效期限大於或等於0', variant: 'error' })
     } else {
       updateMembership({
         ...submitValue,
-        effecitveDay: parseInt(submitValue.effecitveDay),
+        effecitveDay: parseInt(submitValue.effecitveDay, 10),
         employeePrice: parseFloat(submitValue.employeePrice),
         cost: parseFloat(submitValue.cost),
         sellPrice: parseFloat(submitValue.sellPrice),
@@ -195,12 +195,12 @@ export default function MemberCardEdit({ match }) {
 
   // 儲存並上一筆
   const handleToLastItem = () => {
-    if ( parseInt(submitValue.effecitveDay)< 0) {
+    if ( parseInt(submitValue.effecitveDay, 10)< 0) {
       openSnackbar({ message: '請輸入有效期限大於或等於0', variant: 'error' })
     } else {
       updateMembership({
         ...submitValue,
-        effecitveDay: parseInt(submitValue.effecitveDay),
+        effecitveDay: parseInt(submitValue.effecitveDay, 10),
         employeePrice: parseFloat(submitValue.employeePrice),
         cost: parseFloat(submitValue.cost),
         sellPrice: parseFloat(submitValue.sellPrice),
@@ -217,12 +217,12 @@ export default function MemberCardEdit({ match }) {
   }
   //儲存並下一筆
   const handleToNextItem = () => {
-    if ( parseInt(submitValue.effecitveDay)< 0) {
+    if ( parseInt(submitValue.effecitveDay, 10)< 0) {
       openSnackbar({ message: '請輸入有效期限大於或等於0', variant: 'error' })
     } else {
       updateMembership({
         ...submitValue,
-        effecitveDay: parseInt(submitValue.effecitveDay),
+        effecitveDay: parseInt(submitValue.effecitveDay, 10),
         employeePrice: parseFloat(submitValue.employeePrice),
         cost: parseFloat(submitValue.cost),
         sellPrice: parseFloat(submitValue.sellPrice),

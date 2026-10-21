@@ -255,7 +255,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                 (
                   <TableRow key={d.id}>
                     <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{ width: '42px', padding: '2px'}}>
-                      <Button variant="ghost" size="icon" className="h-9 w-9 [&_svg]:size-6" aria-label="編輯帳單" title="編輯帳單" onClick={() => {history.push(`/order/${d.id}`), handleCloseModal()}}><EditOutlinedIcon /></Button>
+                      <Button variant="ghost" size="icon" className="h-9 w-9 [&_svg]:size-6" aria-label="編輯帳單" title="編輯帳單" onClick={() => { history.push(`/order/${d.id}`); handleCloseModal() }}><EditOutlinedIcon /></Button>
                     </TableCell>
                     <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '50px', left: '42px'}}>{d.no}</TableCell>
                     <TableCell className="!sticky left-0 top-0 z-[99] box-content break-all bg-background" style={{minWidth: '100px', left: '92px'}}>{d.customer.name}</TableCell>

@@ -67,7 +67,7 @@ function Bonus({ customerBonus }) {
     if (bonusConversion.isBonusConversion) {
       setBill(
         produce(draft => {
-          draft.bonusDecount = parseInt(bill.bonusUsed / bonusConversion.bonusConversionRate)
+          draft.bonusDecount = parseInt(bill.bonusUsed / bonusConversion.bonusConversionRate, 10)
         })
       )
     }

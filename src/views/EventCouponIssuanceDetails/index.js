@@ -85,9 +85,9 @@ function EventCouponIssuanceDetails() {
       } = idx(voucherIssuanceRecordData, _ => _.data.voucherIssuanceRecord)
       setPageSetting(
         produce(draft => {
-          draft.pageLimit = pageLimit,
-            draft.pageOffset = pageOffset,
-            draft.totalCount = totalCount
+          draft.pageLimit = pageLimit
+          draft.pageOffset = pageOffset
+          draft.totalCount = totalCount
         })
       )
       setRecordData(data)

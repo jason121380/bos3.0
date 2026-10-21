@@ -44,9 +44,9 @@ const CustomerEventTicketSearch = () => {
       if (/* !name.trim() ||  */!cellphone.trim()) {
         setOpenSnack(
           produce(draft => {
-            draft.open = true,
-              draft.severity = 'warning',
-              draft.message = '電話不得為空'
+            draft.open = true
+            draft.severity = 'warning'
+            draft.message = '電話不得為空'
           })
         )
       } else {
@@ -63,9 +63,9 @@ const CustomerEventTicketSearch = () => {
     } catch (error) {
       setOpenSnack(
         produce(draft => {
-          draft.open = true,
-            draft.severity = 'error',
-            draft.message = error.message
+          draft.open = true
+          draft.severity = 'error'
+          draft.message = error.message
         })
       )
       reCaptchaRef.current && reCaptchaRef.current.reset()

@@ -57,12 +57,12 @@ function SearchV2({
         }
         break
       case 'month':
-        if (parseInt(e.target.value) <= 12 || e.target.value === '') {
+        if (parseInt(e.target.value, 10) <= 12 || e.target.value === '') {
           setBirthdayObj({ ...birthdayObj, month: e.target.value })
         }
         break
       case 'day':
-        if (parseInt(e.target.value) <= 31 || e.target.value === '') {
+        if (parseInt(e.target.value, 10) <= 31 || e.target.value === '') {
           setBirthdayObj({ ...birthdayObj, day: e.target.value })
         }
         break

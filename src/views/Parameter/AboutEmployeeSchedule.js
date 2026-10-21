@@ -88,8 +88,8 @@ const AboutEmployeeSchedule = ({
 
   const handleChangetime = (name, index, value) => {
     const newIsMerchantClockInSetting = cloneDeep(isMerchantClockInSetting)
-    const hour = parseInt(value.substr(0, 2))
-    const minute = parseInt(value.substr(3, 5))
+    const hour = parseInt(value.substr(0, 2), 10)
+    const minute = parseInt(value.substr(3, 5), 10)
 
     switch (name) {
       case 'startTime':

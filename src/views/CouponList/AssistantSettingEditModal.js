@@ -121,7 +121,7 @@ function AssistantSettingEditModal({
     newHelperDeductionSetting.forEach((data, index2) => {
       if (index === index2) {
         data.nameList = []
-        for (let i = 1; i <= parseInt(event.target.value); i++) {
+        for (let i = 1; i <= parseInt(event.target.value, 10); i++) {
           data.nameList.push(String(i))
         }
         data.peopleCount = data.nameList.length
@@ -185,10 +185,10 @@ function AssistantSettingEditModal({
       if (index === index2) {
         switch (deductionWay) {
           case '業績%數':
-            data.designatePercent = parseInt(event.target.value)
+            data.designatePercent = parseInt(event.target.value, 10)
             break
           case '固定金額':
-            data.designateCash = parseInt(event.target.value)
+            data.designateCash = parseInt(event.target.value, 10)
             break
           case '點數':
             data.designatePoint = parseFloat(event.target.value)
@@ -207,10 +207,10 @@ function AssistantSettingEditModal({
       if (index === index2) {
         switch (deductionWay) {
           case '業績%數':
-            data.percent = parseInt(event.target.value)
+            data.percent = parseInt(event.target.value, 10)
             break
           case '固定金額':
-            data.cash = parseInt(event.target.value)
+            data.cash = parseInt(event.target.value, 10)
             break
           case '點數':
             data.point = parseFloat(event.target.value)
@@ -229,10 +229,10 @@ function AssistantSettingEditModal({
       if (index === index2) {
         switch (deductionWay) {
           case '業績%數':
-            data.nonDesignatePercent = parseInt(event.target.value)
+            data.nonDesignatePercent = parseInt(event.target.value, 10)
             break
           case '固定金額':
-            data.nonDesignateCash = parseInt(event.target.value)
+            data.nonDesignateCash = parseInt(event.target.value, 10)
             break
           case '點數':
             data.nonDesignatePoint = parseFloat(event.target.value)

@@ -106,7 +106,7 @@ export default function MemberCardCreate() {
           isAvailableForSale: false,
         })
       }
-      if ( parseInt(submitValue.effecitveDay) < 0) {
+      if ( parseInt(submitValue.effecitveDay, 10) < 0) {
         openSnackbar({ message: '請輸入有效期限大於或等於0', variant: 'error' })
       } else {
         createMembership({
@@ -177,7 +177,7 @@ export default function MemberCardCreate() {
                 type="number"
                 name="effecitveDay"
                 onChange={event => {
-                  setSubmitValue({ ...submitValue, effecitveDay: parseInt(event.target.value) })
+                  setSubmitValue({ ...submitValue, effecitveDay: parseInt(event.target.value, 10) })
                 }}
                 onWheel={() => document.activeElement.blur()}
               />

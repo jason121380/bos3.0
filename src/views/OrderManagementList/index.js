@@ -260,7 +260,8 @@ function OrderManagementList() {
         })
         setImgUrl(dataUrl)
       }
-      getDataUrl()
+      // 商家 logo 抓不到時列印不印 logo（原本就是如此）；補 catch 只為不留下未處理的 Promise 錯誤
+      getDataUrl().catch(() => {})
     }
   }, [
     getLogoDisplayOnInvoice.loading,
