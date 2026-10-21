@@ -35,7 +35,7 @@ function General({ info, inventoryData, CSVData }) {
           <div className={`${styles.hearderWrap} text-heading text-text`}>
             {info !== null && (
               <div className={styles.infoWrap}>
-                <span>{`建立時間:${format(info.date, 'yyyy/M/d HH:mm')}`}</span>
+                <span>{`建立時間:${format(info.date, 'yyyy/MM/dd HH:mm')}`}</span>
                 <span>{`建立者:${info.creatorName}`}</span>
               </div>
             )}
