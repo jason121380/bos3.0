@@ -6,7 +6,7 @@ import MerchantsListModal from './MerchantsListModal'
 import PropTypes from 'prop-types'
 import { Autocomplete } from 'ui/combobox'
 
-const index = ({
+const MerchantListAutocpmpleteForPinnedTable = ({
   onValueChange = () => { }, selectIds = [], values, setValues, isClick
 }) => {
   const getUserGroupsWOCS = useFetchGetUserGroupsWOCS()
@@ -92,9 +92,9 @@ const index = ({
   )
 }
 
-index.propTypes = {
+MerchantListAutocpmpleteForPinnedTable.propTypes = {
   onValueChange: PropTypes.func,
   selectIds: PropTypes.array
 }
 
-export default index
+export default MerchantListAutocpmpleteForPinnedTable

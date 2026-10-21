@@ -10,7 +10,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import General from './General'
 import Status from './Status'
 
-const index = () => {
+const CustomerSelfCreate = () => {
   const { id } = useParams()
   const { search } = useLocation()
   const designerId = new URLSearchParams(search).get('designerId')
@@ -155,4 +155,4 @@ const index = () => {
   )
 }
 
-export default index
+export default CustomerSelfCreate

@@ -14,7 +14,7 @@ import useQueryString from 'hooks/useQueryString'
 import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
-const index = ({
+const DateSelector = ({
   date, dateChange, disabled, attributes, margin, getQueryData = true,
   onlyStart, pickerOption, inputFormat, rangelimit, ...rest
 }) => {
@@ -298,7 +298,7 @@ const index = ({
   )
 }
 
-index.propTypes = {
+DateSelector.propTypes = {
   date: PropTypes.shape({
     startDate: PropTypes.number,
     endDate: PropTypes.number
@@ -318,7 +318,7 @@ index.propTypes = {
   rangelimit: PropTypes.func,
 }
 
-index.defaultProps = {
+DateSelector.defaultProps = {
   dateChange: () => { },
   disabled: false,
   attributes: [],
@@ -330,4 +330,4 @@ index.defaultProps = {
   rangelimit: () => false
 }
 
-export default index
+export default DateSelector

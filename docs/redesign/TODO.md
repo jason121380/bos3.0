@@ -1,12 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10211337）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10211407）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／57 檔 304 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
+
+- **immer 升級＋rules-of-hooks 清零**（2026/10/21，v3.10211407，Jason「do all」第 1、2 項，動到套件與元件命名、當次同意）：①`immer` ^7.0.9→^9.0.21：`npm audit` 正式相依 critical 1→0（總數 14→13）、與 Redux Toolkit 共用同一份 immer（原本雙版本）；新增 `lib/immer-config`（`src/index.js` 最早載入）維持 immer 7 行為——正式環境不凍結 `produce` 結果、開發／測試凍結，有測試（2 項）。②`eslint-check` 的 `react-hooks/rules-of-hooks` 70→**0**：其中 67 處是 10 個元件取名 `index` 造成的命名誤報（改為 PascalCase：CustomerSelfCreate、CustomerRating、CustomerSendEventTicket、CustomerEventTicketSearch、CustomerTracking、DateSelector、ProductListTreeView、MerchantListAutocpmplete×3），3 處是自訂 hook 沒有 `use` 前綴（`useFetchShortcut` 的 6 個函式改名 `useShortcuts`／`useShortcut`／`useShortcutsForOrderCreate`／`useCreateShortcut`／`useUpdateShortcut`／`useDeleteShortcut`，3 個呼叫端同步）與 `PaymentCustomerWallet` 一個不是 hook 的 `useInitWalletPay` 改名 `initWalletPay`；全部只是改名，行為零變動。**健康報告 v3 寫的「顧客端白屏風險」不成立，已更正**（MEMORY #177）。全站 eslint 錯誤 91→21（剩 `no-unused-expressions` 17、`no-restricted-globals` 4，皆既有）。驗證：62 檔／341 測試、lint:build、build、乾淨資料夾 `npm ci`＋build 皆通過。**無待實機**（正式 build 行為不變；immer 正式環境行為刻意維持原樣）。
 
 - **移除舊版 Apollo 套件**（2026/10/21，v3.10211337，Jason「2 do it」，動到 package.json 相依、當次同意）：PR #240 換版後已無程式引用，移除 `apollo-boost`、`apollo-link`、`apollo-link-context`、`apollo-link-error` 4 個套件（連帶 `apollo-client`、`apollo-cache(-inmemory)`、`apollo-utilities`、`apollo-link-http(-common)` 共 10 個不再安裝，node_modules 約 −6 MB）；`vite.config.mjs` 的 vendor-apollo 清單同步拿掉這些名稱。正式 build 產出與移除前**逐位元相同**（364 檔 md5 一致），使用者端行為不變；乾淨資料夾 `npm ci --legacy-peer-deps` 與 build 成功。**無待實機**。
 

@@ -1,14 +1,14 @@
 import Page from 'components/Page'
 import { useState, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { getShortcuts } from 'hooks/useFetchShortcut'
+import { useShortcuts } from 'hooks/useFetchShortcut'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import AdminPageHeader from 'components/AdminPageHeader'
 
 const Shortcut = () => {
-	const shortcuts = getShortcuts()
+	const shortcuts = useShortcuts()
 	const [reportData, setReportData] = useState([])
 	const [open, setOpen] = useState([])
 

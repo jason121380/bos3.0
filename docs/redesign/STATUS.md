@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10211337，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10211407，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,6 +8,7 @@
 
 | 範圍 | 內容 |
 |---|---|
+| immer 升級＋rules-of-hooks 清零（v3.10211407） | `immer` 7→9.0.21（critical 1→0、與 RTK 共用一份）；`lib/immer-config` 維持 immer 7 的「正式不凍結」；10 個 `index` 元件改 PascalCase、`useFetchShortcut` 6 個 hook 加 `use` 前綴、`useInitWalletPay`→`initWalletPay`；rules-of-hooks 70→0，行為零變動 |
 | 移除舊版 Apollo 套件（v3.10211337） | `apollo-boost`、`apollo-link`、`apollo-link-context`、`apollo-link-error`（連帶 10 個套件不再安裝）；`vite.config.mjs` vendor-apollo 清單同步；正式 build 產出與移除前逐位元相同 |
 | Apollo client 換 v3（v3.10211323，PR #240） | client 由 apollo-boost 換為 `@apollo/client`（不開 `notifyOnNetworkStatusChange`）；18 個直接修改查詢結果的位置改為先複製（v3 開發模式凍結查詢結果），含收支分類 CSV 小結、互助業績會員卡欄、訂單／顧客消費紀錄明細的連帶處理。Jason 選 2 直接上正式站，實機注意事項見 TODO §一 首項 |
 | 錯誤訊息友善化（v3.10211056） | `lib/friendly-error`：`openSnackbar` 錯誤／警告提示自動把英文技術訊息換成「原因＋下一步」中文（中文業務訊息原樣、頁面開頭保留）；errorLink 狀態碼文案共用。呼叫端不改。 |

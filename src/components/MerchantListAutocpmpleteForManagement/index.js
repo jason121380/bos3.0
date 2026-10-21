@@ -8,7 +8,7 @@ import { Autocomplete } from 'ui/combobox'
 
 let first = true
 
-const index = ({ onValueChange = () => { }, selectIds = [], isReadOnly = false, inRule = false, eventId = null }) => {
+const MerchantListAutocpmpleteForManagement = ({ onValueChange = () => { }, selectIds = [], isReadOnly = false, inRule = false, eventId = null }) => {
   const [merchantForManagement, merchantForManagementData] = useFetchGetUserMerchantForManagementLazy()
   const [eventJoinMerchants, eventJoinMerchantsData] = useFetchGetEventJoinMerchants()
   const [merchantList, setMerchantList] = useState({
@@ -125,9 +125,9 @@ const index = ({ onValueChange = () => { }, selectIds = [], isReadOnly = false, 
   )
 }
 
-index.propTypes = {
+MerchantListAutocpmpleteForManagement.propTypes = {
   onValueChange: PropTypes.func,
   selectIds: PropTypes.array
 }
 
-export default index
+export default MerchantListAutocpmpleteForManagement

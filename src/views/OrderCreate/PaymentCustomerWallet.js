@@ -88,7 +88,7 @@ function PaymentCustomerWallet(props, ref) {
     }
   }, [profileIdentity.loading, merchantAuthorities.loading])
 
-  const useInitWalletPay = () => {
+  const initWalletPay = () => {
     handleBillChange({
       key: 'walletPay',
       value: 0,
@@ -96,7 +96,7 @@ function PaymentCustomerWallet(props, ref) {
   }
   useEffect(() => {
     if (customerId) {
-      useInitWalletPay()
+      initWalletPay()
     }
   }, [customerId])
 

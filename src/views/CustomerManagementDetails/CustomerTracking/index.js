@@ -13,7 +13,7 @@ const optionsArray = [
   { "hairColor": '染髮色系' }
 ]
 
-export default function index({ customerId, className, hairCondition, refetchHairInfo, isLoading, ...rest }) {
+export default function CustomerTracking({ customerId, className, hairCondition, refetchHairInfo, isLoading, ...rest }) {
   const [open, setOpen] = useState(false)
 
   const handleOpenModel = () => {
