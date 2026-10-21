@@ -84,7 +84,7 @@ function CustomerInfo({ customer, className, isLoading, bookingCusCheck, ...rest
         <Row label="最近設計師">{customer.latestDesigner ? customer.latestDesigner.name : ''}</Row>
         <Row label="偏好設計師">{customer.preferDesigner ? customer.preferDesigner.name : ''}</Row>
         <Row label="備註">{customer.remark}</Row>
-        <Row label="客資建立時間">{format(customer.createdAt, 'yyyy/M/d')}</Row>
+        <Row label="客資建立時間">{format(customer.createdAt, 'yyyy/MM/dd')}</Row>
       </dl>
       <CardFooter className="flex-wrap justify-between">
         <Button variant="ghost" onClick={handleEditOpen}>

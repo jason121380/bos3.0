@@ -65,7 +65,7 @@ function EventTicketsRecord({ data, isLoading }) {
                                     {tickets.map(({ serialNumber, consumptionDate, consumptionStoreName }) => (
                                       <TableRow key={serialNumber}>
                                         <TableCell className="tabular-nums">{serialNumber}</TableCell>
-                                        <TableCell className="tabular-nums">{format(consumptionDate, 'yyyy/M/d')}</TableCell>
+                                        <TableCell className="tabular-nums">{format(consumptionDate, 'yyyy/MM/dd')}</TableCell>
                                         <TableCell>{consumptionStoreName}</TableCell>
                                       </TableRow>
                                     ))}

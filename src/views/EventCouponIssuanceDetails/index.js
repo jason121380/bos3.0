@@ -67,7 +67,7 @@ function EventCouponIssuanceDetails() {
         流水號: d.number,
         活動名稱: d.eventName,
         規則名稱: d.ruleName,
-        帳單日期: format(d.orderDate, 'yyyy/M/d'),
+        帳單日期: format(d.orderDate, 'yyyy/MM/dd'),
         帳單編號: `#${d.orderNo}`,
         顧客姓名: d.customerName,
         顧客手機: d.customerCellphone,

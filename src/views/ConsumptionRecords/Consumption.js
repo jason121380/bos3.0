@@ -47,7 +47,7 @@ function Consumption({
               </div>
               <div className="flex shrink-0 flex-col items-end gap-1">
                 <span className="text-caption text-text-secondary">消費時間</span>
-                <span className="text-body tabular-nums text-text">{format(data.date, 'yyyy/M/d')}</span>
+                <span className="text-body tabular-nums text-text">{format(data.date, 'yyyy/MM/dd')}</span>
               </div>
             </div>
             <div className="flex flex-col gap-1">

@@ -35,7 +35,7 @@ export default function Results({ reportData, format, roundDecimal, handleCountT
           <TableBody>
             {reportData.map((d, i) => (
               <TableRow key={`MembershipSellReport-${i}`} className="group">
-                <TableCell className={cn(sticky, 'bg-background tabular-nums group-hover:bg-surface-hover')}>{format(d.orderDate, 'yyyy/M/d')}</TableCell>
+                <TableCell className={cn(sticky, 'bg-background tabular-nums group-hover:bg-surface-hover')}>{format(d.orderDate, 'yyyy/MM/dd')}</TableCell>
                 <TableCell className="tabular-nums">
                   <Link className="text-text underline" target='_blank' to={`/order/${d.orderId}`}>{`#${d.orderNo}`}</Link>
                 </TableCell>
@@ -49,7 +49,7 @@ export default function Results({ reportData, format, roundDecimal, handleCountT
                 <TableCell numeric>{formatNumber(roundDecimal(d.truth))}</TableCell>
                 <TableCell numeric>{formatNumber(roundDecimal(d.rake))}</TableCell>
                 <TableCell>{d.remark}</TableCell>
-                <TableCell className="tabular-nums">{d.expiryDate ? format(d.expiryDate, 'yyyy/M/d') : '永久會籍'}</TableCell>
+                <TableCell className="tabular-nums">{d.expiryDate ? format(d.expiryDate, 'yyyy/MM/dd') : '永久會籍'}</TableCell>
               </TableRow>
             ))}
             <TableRow className="group">

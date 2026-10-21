@@ -55,7 +55,7 @@ function EventTicketsRecord({ data }) {
                               <dt className="text-label text-text-secondary">流水號</dt>
                               <dd className="m-0 break-all text-right tabular-nums text-text">{serialNumber}</dd>
                               <dt className="text-label text-text-secondary">發券日期</dt>
-                              <dd className="m-0 text-right tabular-nums text-text">{format(consumptionDate, 'yyyy/M/d')}</dd>
+                              <dd className="m-0 text-right tabular-nums text-text">{format(consumptionDate, 'yyyy/MM/dd')}</dd>
                               <dt className="text-label text-text-secondary">發券店家</dt>
                               <dd className="m-0 text-right text-text">{consumptionStoreName}</dd>
                             </dl>
