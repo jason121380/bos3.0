@@ -1,7 +1,6 @@
 import Page from 'components/Page'
 import GoogleMapReact from 'google-map-react'
 import React, { useEffect, useState } from 'react'
-import superagent from 'superagent'
 import getQueryString from 'helper/getQueryString'
 
 import LiffHelper from '../../helper/liffHelper'
@@ -22,6 +21,9 @@ function Map({ className, match, location, ...rest }) {
   useEffect(() => {
     LiffHelper.getProfile(match.params.id).then(profile => {
       setProfile({ profile })
+    }).catch(() => {
+      // LIFF 個人資料取不到時原本會在打卡時讀 null 而拋錯；這裡直接提示（errorLink 管不到 LIFF SDK）
+      alert('無法取得 LINE 個人資料，請重新開啟此頁')
     })
     getLocation()
   }, [match.params.id])
@@ -46,24 +48,26 @@ function Map({ className, match, location, ...rest }) {
         lng: gps.lng,
       },
     }
-    superagent
-      // .post('http://localhost:4849/api/attendance/record')
-      .post('https://apibeautyos.mlgroup.vip/api/attendance/record')
-      // .post('https://8c81db9b7039.ngrok.io/api/attendance/record')
-      .send(data) // sends a JSON post body
-      .set('accept', 'json')
-      .end((err, res) => {
-        // 原本不處理失敗：res 為 undefined 時 JSON.parse 拋錯，畫面永遠停在「努力提交中」
-        if (err || !res) {
-          setLoading(false)
-          alert('打卡失敗，請檢查網路後再試一次')
-          return
-        }
+    // 以 fetch 取代 superagent（唯一用到它的地方；移除套件順便去掉其 form-data／qs 的弱點）。
+    // 網址維持原樣：打卡 REST 端點是否已搬到 api-base 的新網域需後端確認，前端不自行更換。
+    // 非 2xx 視為失敗，與 superagent 的 err 行為相同。
+    fetch('https://apibeautyos.mlgroup.vip/api/attendance/record', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', accept: 'json' },
+      body: JSON.stringify(data),
+    })
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
         LiffHelper.sendMessages({
           type: 'text',
           text: `打卡${gps.lat},${gps.lng}`,
         })
         LiffHelper.closeWindow()
+      })
+      .catch(() => {
+        // 原本不處理失敗時畫面會永遠停在「努力提交中」
+        setLoading(false)
+        alert('打卡失敗，請檢查網路後再試一次')
       })
   }
 
