@@ -1,12 +1,14 @@
 # 待辦清單（TODO）
 
-> 更新：2026/10/21（v3.10210835）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／54 檔 292 測試／`npm run build`）。
+> 更新：2026/10/21（v3.10210841）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；驗證通過就合併進 `main`（always merge）。GitHub Actions 不會執行，驗證以本機為準（`lint:build`／54 檔 292 測試／`npm run build`）。
 > **現況（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
 ## 一、今天完成了什麼
+
+- **側欄顯示目前店家**（2026/10/21，v3.10210841，Jason 手機截圖「要呈現現在在哪家店」）：原本只有底部切換店家圖示的 `aria-label` 帶店名，畫面上看不到。`NavBar` 選單最上方加一行：店家圖示＋小字「目前店家」＋店名（過長截斷、`title` 顯示全名），只顯示不可點，切換仍用底部圖示（維持 2026/10/20 把頂部大按鈕移到底部的決定）。店名取自 `userMerchant`，切換店家會整頁重新載入，因此即時正確。截圖：390 淺色、390 深色長店名截斷、1440 桌機。**待實機**：iPhone 抽屜與桌機側欄。
 
 - **切換店家開啟時不自動聚焦搜尋框**（2026/10/21，v3.10210835，Jason 手機截圖「換店家不用直接到輸入框」）：Radix Dialog 預設把焦點放到第一個可輸入元素，手機一開就彈出鍵盤、擋住半個店家清單。`layouts/Dashboard/MerchantBar` 改為開啟時焦點放在彈窗本身（鍵盤使用者按 Tab 即進入搜尋框），搜尋與選店行為不變。新增 `layouts/Dashboard/__tests__/MerchantBar.test.js`（拿掉修正會失敗）；正式 build 在 390 寬開啟確認焦點在彈窗、無外框。STYLE §6 Dialog 補「開啟時的焦點」規則。**待實機**：iPhone 點切換店家不再彈出鍵盤，點搜尋框才出現。
 
