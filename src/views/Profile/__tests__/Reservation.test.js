@@ -4,6 +4,10 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { startOfWeek, setHours, addDays } from 'date-fns'
 import Reservation from '../Reservation'
+import { RESERVATION_COLORS } from 'components/CalendarColorClip'
+
+// #RRGGBB → 瀏覽器正規化後的 rgb(r, g, b)
+const cssColor = hex => `rgb(${[1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16)).join(', ')})`
 
 const weekStart = startOfWeek(new Date())
 const at = (day, hour) => setHours(addDays(weekStart, day), hour).getTime()
@@ -44,6 +48,10 @@ test('有預約、公休、跨日預約時正常渲染週曆', () => {
   renderTab()
   expect(screen.getByText('時間')).toBeTruthy()
   expect(screen.getByText('王小明')).toBeTruthy()
+  // 色塊顏色與圖例同一份色票（原本個人頁用 #005fff／#69b8dd，與圖例的指定藍、待審核青不同色）
+  const chipColor = name => screen.getByText(name).parentElement.style.backgroundColor
+  expect(chipColor('王小明')).toBe(cssColor(RESERVATION_COLORS.designate))
+  expect(chipColor('李')).toBe(cssColor(RESERVATION_COLORS.pending))
 })
 
 test('報到模式也可渲染', () => {

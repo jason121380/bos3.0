@@ -6,7 +6,7 @@ import { LoaderCircle, SlidersHorizontal } from 'lucide-react'
 import Page from 'components/Page'
 import useFetchMerchant from 'hooks/useFetchMerchant'
 import { useState, useEffect, useRef } from 'react'
-import CalendarColorClip from 'components/CalendarColorClip'
+import CalendarColorClip, { RESERVATION_COLORS } from 'components/CalendarColorClip'
 import DateSelector from 'components/DateSelector'
 import AdminPageHeader from 'components/AdminPageHeader'
 import {
@@ -152,23 +152,23 @@ function Calendar() {
           if (item.type === 'RESERVATION' && !isDone) {
             style.height = `${timeCost * calendarSize.height - 2}px`
             item.isBookingCostUsing && checkHorR(timeCost, startTime, true)
-            style.backgroundColor = isCheckin ? 'green' : '#78909c'
+            style.backgroundColor = isCheckin ? RESERVATION_COLORS.checkedIn : RESERVATION_COLORS.notCheckedIn
           } else if (isDone) return
         } else {
           switch (item.type) {
             case 'RH':
-              style.backgroundColor = '#202D50'
+              style.backgroundColor = RESERVATION_COLORS.unavailable
               style.height = `${timeCost * calendarSize.height - 2}px`
               calendar[index].type = 'HOLIDAY'
               checkHorR(timeCost, startTime, false)
               break;
             case 'HOLIDAY':
-              style.backgroundColor = '#202D50'
+              style.backgroundColor = RESERVATION_COLORS.unavailable
               style.height = `${timeCost * calendarSize.height - 2}px`
               checkHorR(timeCost, startTime, false)
               break;
             case 'EVENT':
-              style.backgroundColor = '#66BB6A'
+              style.backgroundColor = RESERVATION_COLORS.event
               style.height = `${timeCost * calendarSize.height - 2}px`
               break;
             case 'RESERVATION':
@@ -176,15 +176,15 @@ function Calendar() {
               item.isBookingCostUsing && checkHorR(timeCost, startTime, true, isDone)
               switch (bookingStatus) {
                 case '預約成功':
-                  style.backgroundColor = isDesignate ? '#1A73E8' : '#F06292'
+                  style.backgroundColor = isDesignate ? RESERVATION_COLORS.designate : RESERVATION_COLORS.nonDesignate
                   // item.nameToDisplay = item.nameToDisplay + ` - ${isDesignate ? '預約成功(指定)' : '預約成功(不指定)'}`
                   break;
                 case '待審核':
-                  style.backgroundColor = '#4FC3F7'
+                  style.backgroundColor = RESERVATION_COLORS.pending
                   // item.nameToDisplay = item.nameToDisplay + ' - 待審核'
                   break;
                 case '已完成':
-                  style.backgroundColor = '#AB47BC'
+                  style.backgroundColor = RESERVATION_COLORS.completed
                   break;
                 default:
                   break;
@@ -193,11 +193,11 @@ function Calendar() {
           }
 
           if (isCusCheckRequired && bookingCusCheck) {
-            style.backgroundColor = '#FF9800'
+            style.backgroundColor = RESERVATION_COLORS.cusCheck
           }
 
           if (isDone) {
-            style.backgroundColor = '#BDBDBD'
+            style.backgroundColor = RESERVATION_COLORS.done
           }
 
         }

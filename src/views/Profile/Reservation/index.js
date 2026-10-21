@@ -4,7 +4,7 @@ import { Field } from 'ui/input'
 import useFetchMerchant from 'hooks/useFetchMerchant'
 import idx from 'idx'
 import { useState, useEffect, useRef, Fragment } from 'react'
-import CalendarColorClip from 'components/CalendarColorClip'
+import CalendarColorClip, { RESERVATION_COLORS } from 'components/CalendarColorClip'
 import DateSelector from 'components/DateSelector'
 import {
   getYear, getMonth, getDate, addMinutes, differenceInMinutes, startOfWeek,
@@ -107,23 +107,23 @@ function Calendar({ designerId, checkinSettings, bookingCusCheck, checkinMode, b
         if (checkinMode) {
           if (order.type === 'RESERVATION' && !isDone) {
             style.height = `${timeCost * height - 2}px`
-            style.backgroundColor = isCheckin ? 'green' : '#78909c'
+            style.backgroundColor = isCheckin ? RESERVATION_COLORS.checkedIn : RESERVATION_COLORS.notCheckedIn
           } else if (isDone) return
         } else {
           switch (order.type) {
             case 'RH':
-              style.backgroundColor = '#414141'
+              style.backgroundColor = RESERVATION_COLORS.unavailable
               style.height = `${timeCost * height - 1}px`
               calendar[index].type = 'HOLIDAY'
               // checkHorR(timeCost, startTime, false)
               break;
             case 'HOLIDAY':
-              style.backgroundColor = '#414141'
+              style.backgroundColor = RESERVATION_COLORS.unavailable
               style.height = `${timeCost * height - 1}px`
               // checkHorR(timeCost, startTime, false)
               break;
             case 'SH':
-              style.backgroundColor = '#414141'
+              style.backgroundColor = RESERVATION_COLORS.unavailable
               style.height = `${timeCost * height - 1}px`
               calendar[index].type = 'HOLIDAY'
               // checkHorR(timeCost, startTime, false)
@@ -133,15 +133,15 @@ function Calendar({ designerId, checkinSettings, bookingCusCheck, checkinMode, b
               // order.isBookingCostUsing && checkHorR(timeCost, startTime, true)
               switch (bookingStatus) {
                 case '預約成功':
-                  style.backgroundColor = isDesignate ? '#005fff' : '#e56969'
+                  style.backgroundColor = isDesignate ? RESERVATION_COLORS.designate : RESERVATION_COLORS.nonDesignate
                   // item.nameToDisplay = item.nameToDisplay + ` - ${isDesignate ? '預約成功(指定)' : '預約成功(不指定)'}`
                   break;
                 case '待審核':
-                  style.backgroundColor = '#69b8dd'
+                  style.backgroundColor = RESERVATION_COLORS.pending
                   // item.nameToDisplay = item.nameToDisplay + ' - 待審核'
                   break;
                 case '已完成':
-                  style.backgroundColor = 'purple'
+                  style.backgroundColor = RESERVATION_COLORS.completed
                   break;
                 default:
                   break;
@@ -150,11 +150,11 @@ function Calendar({ designerId, checkinSettings, bookingCusCheck, checkinMode, b
           }
   
           if (isCusCheckRequired && bookingCusCheck) {
-            style.backgroundColor = '#ff9800'
+            style.backgroundColor = RESERVATION_COLORS.cusCheck
           }
 
           if (isDone) {
-            style.backgroundColor ='#9a9a9a'
+            style.backgroundColor = RESERVATION_COLORS.done
           }
 
         }
