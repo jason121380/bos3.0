@@ -1,6 +1,6 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10211526，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/21（v3.10211529，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 已完成
 
@@ -8,7 +8,7 @@
 
 | 範圍 | 內容 |
 |---|---|
-| 金額顯示統一 第二批（v3.10211526） | 57 檔 440 處螢幕原始數字包 `formatNumber`（報表表格、個人頁、日報螢幕卡片、快速對帳、帳單明細彈窗螢幕區、選項彈窗、盤點、圖表 tooltip）；列印範本／CSV／輸入欄／編號／百分比不動 |
+| 金額顯示統一 第二批（v3.10211526） | 57 檔 440 處螢幕原始數字包 `formatNumber`（報表表格、個人頁、日報螢幕卡片、快速對帳、帳單明細彈窗螢幕區、選項彈窗、盤點、圖表 tooltip）；列印範本／CSV／輸入欄／編號／百分比不動；補充（v3.10211529）殘留 3 處純 `$` 前綴（手續費固定金額、圖表標籤）也移除 |
 | 金額顯示統一 第一批（v3.10211519） | `formatMoney` 去 `NT$`（65 處跟著變）、帳單頁 NT$ 裝飾字 8 處移除、薪資總覽改用 `ui/format`（原 `helper/formatMoney` 輸出「1, 234」帶空格，已移除）、UiPreview／STYLE.md 同步；第二批補千分位另開 PR |
 | 手機底部分頁「選單」改漢堡圖示（v3.10211457） | `MobileTabBar` 選單分頁 `LayoutGrid`→`Menu`（三條線），其餘不變 |
 | F1 前端正確性收尾（v3.10211439） | eslint 全站 error 21→0（produce 逗號序列、裸 location、永遠 false 的 autoFocus）；`parseInt` 182 處補 radix 10；非 GraphQL Promise 補 catch 3 處；`lint:build` 加入 rules-of-hooks 門檻 |

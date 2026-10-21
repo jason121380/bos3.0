@@ -102,7 +102,7 @@ function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetc
                   <TableCell className="tabular-nums text-text-secondary">{idx + 1}</TableCell>
                   <TableCell>{data.name}</TableCell>
                   <TableCell numeric>
-                    {data.type === 'PERCENT' ? `${data.handlingFee}%` : `$${formatNumber(data.handlingFee)}`}
+                    {data.type === 'PERCENT' ? `${data.handlingFee}%` : formatNumber(data.handlingFee)}
                   </TableCell>
                   <TableCell>{data.isNoCash ? '是' : '否'}</TableCell>
                 </TableRow>

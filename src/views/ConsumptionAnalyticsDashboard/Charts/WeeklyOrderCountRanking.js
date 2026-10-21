@@ -18,7 +18,7 @@ const WeeklyOrderCountRanking = ({ display, data }) => {
         position='insideRight'
         fill='#eee'
         style={{ textShadow: '0.5px 0.5px 1px #000', fontWeight: '500' }}
-      >{`${formatNumber(orderCount)}單/$${formatNumber(pricePerCount)}`}</text>
+      >{`${formatNumber(orderCount)}單/${formatNumber(pricePerCount)}`}</text>
     )
   }
   const CustomWeeklyOrderCountTooltip = ({ active, payload }) => {

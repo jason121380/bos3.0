@@ -103,9 +103,7 @@ function Results({ className, paymentList = [], ...rest }) {
                   <TableCell numeric>{idx + 1}</TableCell>
                   <TableCell>{data.name}</TableCell>
                   <TableCell numeric>
-                    {(data.amountType === 'AMOUNT' ? PaymentSymbol[data.amountType] : '') +
-                      formatNumber(data.fee) +
-                      (data.amountType === 'PERCENT' ? PaymentSymbol[data.amountType] : '')}
+                    {formatNumber(data.fee) + (data.amountType === 'PERCENT' ? PaymentSymbol[data.amountType] : '')}
                   </TableCell>
                   <TableCell>{deductions[data.type]}</TableCell>
                   <TableCell>{data.isNoCash ? '是' : '否'}</TableCell>
