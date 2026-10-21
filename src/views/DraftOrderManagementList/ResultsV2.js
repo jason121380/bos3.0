@@ -5,39 +5,20 @@ import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteOrder from 'hooks/useFetchDeleteOrder'
 import { useFetchDownloadOrderReport } from 'hooks/useFetchOrderReport'
-import idx from 'idx'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useRef, useState, Fragment } from 'react'
-import { Link as RouterLink, useHistory } from 'react-router-dom'
-import { CSVLink } from "react-csv";
-import { ChevronDown, ChevronUp, ChevronsDownUp, ChevronsUpDown, CircleDollarSign, Download, Eye, Printer } from 'lucide-react'
+import { useHistory } from 'react-router-dom'
 import { useLocation } from 'react-router'
 import useFetchReCheckoutOrder from 'hooks/useFetchReCheckoutOrder'
 import designerNameType from 'helper/designerNameType'
-import truncateDecimal from 'helper/truncateDecimal'
 import cloneDeep from 'lodash/cloneDeep'
 import pagenationLabel from './../../helper/pagenationLabel'
-import { Button } from 'ui/button'
-import { Card, CardHeader, CardTitle } from 'ui/card'
-import { Checkbox } from 'ui/checkbox'
-import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
-import { EmptyState } from 'ui/empty-state'
-import { formatMoney } from 'ui/format'
-import { Field, Input } from 'ui/input'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
-import { cn } from 'ui/utils'
+import DraftOrderTable from './DraftOrderTable'
+import DraftOrderPasswordDialog from './DraftOrderPasswordDialog'
+import { weekDisplay } from './draftOrderListHelpers'
 
-// 寬表（min-w 1400px）橫向捲動時固定「操作」與「帳單編號/時間」兩欄（只限螢幕，列印還原為一般欄位；比照帳單列表）：
-// - sm 以上兩欄都固定：操作欄寬固定 188px（勾選 16＋間距 4＋四顆 32px 圖示鈕與間距＋左右 12px 內距），帳單編號欄接在 left-[188px]
-// - 手機（< 640px）可視寬度約 320px，兩欄合計超過一半，只固定帳單編號欄（操作欄隨內容捲走，捲回最左即可操作）
-// 底色跟著列：一般 surface（卡片底），hover／勾選時 surface-hover；右緣 1px 分隔線
-const STICKY_BASE = 'bg-surface group-hover:bg-surface-hover group-data-[state=selected]:bg-surface-hover print:static print:bg-transparent print:shadow-none'
-const STICKY_ACTION = 'sm:sticky sm:left-0 sm:w-[188px] sm:min-w-[188px]'
-const STICKY_NO = 'sticky left-0 sm:left-[188px] shadow-[1px_0_0_rgb(var(--border))]'
-const STICKY_ACTION_HEAD = cn('w-[160px]', STICKY_ACTION, 'z-[3] bg-surface print:static print:bg-transparent')
-const STICKY_NO_HEAD = cn(STICKY_NO, 'z-[3] bg-surface print:static print:bg-transparent print:shadow-none')
-const STICKY_ACTION_CELL = cn(STICKY_ACTION, 'z-[2]', STICKY_BASE)
-const STICKY_NO_CELL = cn(STICKY_NO, 'z-[2]', STICKY_BASE)
+// 列表卡片（DraftOrderTable／DraftOrderRow）、密碼彈窗、純函式與固定欄樣式（draftOrderListHelpers）已拆到同資料夾；
+// state、effect、handler 與列印範本（#printMain／#printThermal）仍在此檔，內容不變
 
 function Results({
   className,
@@ -285,26 +266,6 @@ function Results({
   const handleCloseDialog = () => {
     setOpenDialog(false)
   }
-  const weekDisplay = week => {
-    switch (week) {
-      case 'Monday':
-        return '(一)'
-      case 'Tuesday':
-        return '(二)'
-      case 'Wednesday':
-        return '(三)'
-      case 'Thursday':
-        return '(四)'
-      case 'Friday':
-        return '(五)'
-      case 'Saturday':
-        return '(六)'
-      case 'Sunday':
-        return '(日)'
-      default:
-        break
-    }
-  }
   const handlePrintOrderDetail = orderId => {
     const filterOrder = orders.filter(d => d.id === orderId)
     const servicePriceWithoutThirdPartyCoupon = filterOrder[0].serviceOrders
@@ -547,87 +508,6 @@ function Results({
         // useToggleRef.current()
       })
   }
-  const serviceOrders = (order) => {
-    const arr = []
-    let returnString = ''
-
-    order.serviceOrders.forEach(d => {
-      if (d.thirdPartyPayName) {
-        arr.push(d.thirdPartyPayName)
-      }
-    })
-    arr.forEach((element, index) => {
-      if (index !== 0) {
-        returnString = returnString + ', 含 ' + element
-      } else {
-        returnString = '含 ' + element
-      }
-    })
-    return returnString
-  }
-  const productOrders = (order) => {
-    const arr = []
-    let returnString = ''
-
-    order.productOrders.forEach(d => {
-      if (d.thirdPartyPayName) {
-        arr.push(d.thirdPartyPayName)
-      }
-    })
-    arr.forEach((element, index) => {
-      if (index !== 0) {
-        returnString = returnString + ', 含 ' + element
-      } else {
-        returnString = '含 ' + element
-      }
-    })
-    return returnString
-  }
-  const membershipOrders = (order) => {
-    const arr = []
-    let returnString = ''
-
-    order.membershipOrders.forEach(d => {
-      if (d.thirdPartyPayName) {
-        arr.push(d.thirdPartyPayName)
-      }
-    })
-    arr.forEach((element, index) => {
-      if (index !== 0) {
-        returnString = returnString + ', 含 ' + element
-      } else {
-        returnString = '含 ' + element
-      }
-    })
-    return returnString
-  }
-  const thirdParty = (order) => {
-    const arr = []
-    let returnString = ''
-
-    order.serviceOrders.forEach(d => {
-      if (d.thirdPartyPayName) {
-        arr.push(d.thirdPartyPayName)
-      }
-    })
-
-    order.productOrders.forEach(d => {
-      if (d.thirdPartyPayName) {
-        if (!arr.find(elm => elm === d.thirdPartyPayName)) {
-          arr.push(d.thirdPartyPayName)
-        }
-      }
-    })
-
-    arr.forEach((element, index) => {
-      if (index !== 0) {
-        returnString = returnString + ', 含 ' + element
-      } else {
-        returnString = '含 ' + element
-      }
-    })
-    return returnString
-  }
 
   const renderPrintDetail = isPrintMain => {
     if (printOrderDetail.length !== 0 && printOrderDetail[0].customer.name !== '不留客資') {
@@ -659,286 +539,45 @@ function Results({
 
   return (
     <div {...rest} className={className}>
-      <Card className="mt-6">
-        <CardHeader
-          className="items-center pb-4"
-          action={
-            <Fragment>
-              <Button size="sm" variant="secondary" onClick={() => setAllExtend(!allExtend)}>
-                {allExtend ? <ChevronsDownUp strokeWidth={1.75} /> : <ChevronsUpDown strokeWidth={1.75} />}
-                {allExtend ? '全部收合' : '全部展開'}
-              </Button>
-              <Button asChild size="sm" variant="secondary">
-                <CSVLink data={excelData} filename="掛單列表.csv" >
-                  <Download strokeWidth={1.75} />
-                  報表匯出
-                </CSVLink>
-              </Button>
-            </Fragment>
-          }
-        >
-          <div className="flex items-baseline gap-3">
-            <CardTitle>掛單列表</CardTitle>
-            <span className="text-label text-text-secondary tabular-nums" data-testid="result-counter">
-              共 {totalCount} 筆
-            </span>
-          </div>
-        </CardHeader>
-        <div className="px-5 pb-5">
-          <Table className="min-w-[1400px]">
-            <TableHeader>
-              <TableRow className="hover:bg-transparent">
-                <TableHead className={STICKY_ACTION_HEAD}>
-                  <Checkbox
-                    aria-label="全選"
-                    checked={selectedOrders.length === orders.length && orders.length > 0}
-                    indeterminate={
-                      selectedOrders.length > 0 && selectedOrders.length < orders.length
-                    }
-                    onChange={handleSelectAll}
-                    disabled={orders.length === 0}
-                  />
-                </TableHead>
-                <TableHead className={cn('min-w-[150px]', STICKY_NO_HEAD)}>帳單編號/時間</TableHead>
-                <TableHead className="min-w-[150px]">客戶</TableHead>
-                <TableHead>設計師</TableHead>
-                <TableHead>指定/不指定</TableHead>
-                <TableHead numeric className="text-text">營業現金應收</TableHead>
-                <TableHead numeric>服務消費</TableHead>
-                <TableHead numeric>店販消費</TableHead>
-                {membershipDisplay && <TableHead numeric>會員卡販賣</TableHead>}
-                <TableHead numeric>卡券使用 (入業績)</TableHead>
-                <TableHead numeric>卡券販賣 (入業績)</TableHead>
-                <TableHead numeric>業績收入</TableHead>
-                <TableHead numeric>卡券販賣 (不入業績)</TableHead>
-                <TableHead numeric>卡券使用(-)</TableHead>
-                <TableHead numeric>第三方卡券(-)</TableHead>
-                <TableHead numeric>其他付款方式(-)</TableHead>
-                <TableHead numeric>入金使用(-)</TableHead>
-                {bonusDisplay && <TableHead numeric>點數折抵金額(-)</TableHead>}
-                <TableHead>備註</TableHead>
-                <TableHead>帳單來源</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {orders.length > 0 &&
-                orders.map((order, index) => (
-                  <Fragment key={index}>
-                    <TableRow data-testid={`order-row`} data-state={selectedOrderSet.has(order.id) ? 'selected' : undefined} className="group">
-                      <TableCell className={cn('whitespace-nowrap px-3', STICKY_ACTION_CELL)}>
-                        <div className="flex items-center gap-1">
-                          <Checkbox
-                            aria-label={`選取 #${order.no}`}
-                            checked={selectedOrderSet.has(order.id)}
-                            onChange={() => handleSelectOne(order.id)}
-                            data-testid={`order-checkbox-${index}`}
-                            disabled={order.isCloseAccount}
-                            className="mr-1"
-                          />
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-text-secondary"
-                            aria-label={orderExtendArr.find(id => id === order.id) !== undefined ? '收合明細' : '展開明細'}
-                            aria-expanded={orderExtendArr.find(id => id === order.id) !== undefined}
-                            onClick={() => handleOrderExtend(order.id)}
-                          >
-                            {orderExtendArr.find(id => id === order.id) !== undefined ? (
-                              <ChevronUp strokeWidth={1.75} />
-                            ) : (
-                              <ChevronDown strokeWidth={1.75} />
-                            )}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-text-secondary"
-                            aria-label="列印帳單"
-                            disabled={disabled}
-                            onClick={() => handlePrintOrderDetail(order.id)}
-                          >
-                            <Printer strokeWidth={1.75} />
-                          </Button>
-                          <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
-                            <RouterLink
-                              aria-label="查看掛單"
-                              to={`/draft-order/${location.search.length > 0
-                                ? `${order.id}?startDate=${location.search
-                                  .split('=')[1]
-                                  .substring(0, 13)}&endDate=${location.search.split('=')[2]}`
-                                : `${order.id}`
-                                }`}
-                              data-testid={`order-${index}`}
-                            >
-                              <Eye strokeWidth={1.75} />
-                            </RouterLink>
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 text-text-secondary"
-                            aria-label="結帳"
-                            disabled={isClick}
-                            onClick={() => {
-                              passwordEnabled.checkout ? handleCheckout(index) : handleCheckoutOrder(order)
-                            }}
-                            data-testid={`order-checkout-${index}`}
-                          >
-                            <CircleDollarSign strokeWidth={1.75} />
-                          </Button>
-                        </div>
-                      </TableCell>
-
-                      <TableCell className={STICKY_NO_CELL}>
-                        <div className="font-medium tabular-nums">#{order.no}</div>
-                        <div className="text-caption tabular-nums text-text-secondary">
-                          {format(new Date(order.date), 'yyyy/MM/dd')}/
-                          {weekDisplay(format(new Date(order.date), 'eeee'))}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {idx(order, _ => _.customer.name)}
-                        <div className="text-caption tabular-nums text-text-secondary">
-                          {idx(order, _ => _.customer.cellphone)}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {`${idx(order, _ => _.designer.lastName)}${idx(
-                          order,
-                          _ => _.designer.firstName
-                        )}`}
-                        {idx(order, _ => _.designer.designerNo)
-                          ? `/${idx(order, _ => _.designer.designerNo)}`
-                          : ''}
-                      </TableCell>
-                      <TableCell>{order.isDesignate ? 'Y' : 'N'}</TableCell>
-                      <TableCell numeric className="font-medium">
-                        {formatMoney(Math.round(order.businessCash))}
-                      </TableCell>
-                      <TableCell numeric>
-                        {formatMoney(Math.round(order.serviceFakeTotal))}
-                        <div className="text-caption text-text-secondary">
-                          {order.serviceOrders.length > 0 && serviceOrders(order)}
-                        </div>
-                      </TableCell>
-                      <TableCell numeric>
-                        {formatMoney(Math.round(order.productFakeTotal))}
-                        <div className="text-caption text-text-secondary">
-                          {order.productOrders.length > 0 && productOrders(order)}
-                        </div>
-                      </TableCell>
-                      {membershipDisplay && (
-                        <TableCell numeric>
-                          {formatMoney(Math.round(order.membershipFakeTotal))}
-                          <div className="text-caption text-text-secondary">
-                            {order.membershipOrders.length > 0 && membershipOrders(order)}
-                          </div>
-                        </TableCell>
-                      )}
-                      <TableCell numeric>{formatMoney(Math.round(order.useTicketTotal))}</TableCell>
-                      <TableCell numeric>{formatMoney(Math.round(order.ticketSellIntoPerformance))}</TableCell>
-                      <TableCell numeric>{formatMoney(Math.round(order.performanceIncome))}</TableCell>
-                      <TableCell numeric>{formatMoney(Math.round(order.ticketSellNotIntoPerformance))}</TableCell>
-                      <TableCell numeric>{formatMoney(Math.round(order.usedTicketForDecount))}</TableCell>
-                      <TableCell numeric>
-                        {formatMoney(Math.round(order.thirdPartTicketForDecount))}
-                        <div className="text-caption text-text-secondary">
-                          {order.serviceOrders.length > 0 &&
-                            order.productOrders.length > 0 &&
-                            thirdParty(order)}
-                        </div>
-                      </TableCell>
-                      <TableCell numeric>
-                        {formatMoney(Math.round(order.otherPayWayForDecount))}
-                        <div className="text-caption text-text-secondary">{order.payType2}</div>
-                      </TableCell>
-                      <TableCell numeric>{formatMoney(order.walletUsedForDecount)}</TableCell>
-                      {bonusDisplay && <TableCell numeric>{formatMoney(order.bonusDecountForReport)}</TableCell>}
-                      <TableCell className="text-text-secondary">{order.remark}</TableCell>
-                      <TableCell className="text-text-secondary">{order.source}</TableCell>
-                    </TableRow>
-                    {orderExtendArr.find(id => id === order.id) !== undefined && (
-                      <TableRow className="hover:bg-transparent">
-                        <TableCell colSpan={23} className="bg-surface px-4 py-3">
-                          {/* 明細：設計師 / 項目 / 價格 / 數量 / 互助人 */}
-                          <div className="flex gap-3 border-0 border-b border-solid border-border pb-2 text-label text-text-secondary">
-                            <div className="w-[100px] flex-none">設計師</div>
-                            <div className="w-[300px] flex-none">項目</div>
-                            <div className="w-[80px] flex-none text-right">價格</div>
-                            <div className="w-[60px] flex-none text-right">數量</div>
-                            <div className="w-[200px] flex-none">互助人</div>
-                          </div>
-                          {order.staticDetail.map((data, index) => (
-                            <div key={index} className="flex items-start gap-3 py-1.5 text-body text-text">
-                              <div className="w-[100px] flex-none">{data.designerName}</div>
-                              <div className="w-[300px] flex-none">{`${data.itemName}(${data.serviceType})`}</div>
-                              <div className="w-[80px] flex-none text-right tabular-nums">
-                                {formatMoney(data.serviceType === '卡券使用' ? truncateDecimal(data.price) : data.price)}
-                              </div>
-                              <div className="w-[60px] flex-none text-right tabular-nums">{data.count}</div>
-                              <div className="w-[200px] flex-none">
-                                {data.helperList.length > 0 ? (
-                                  data.helperList.map((helper, idx) => (
-                                    <div key={idx}>
-                                      {`${helper.helperType}[${helper.helperName}]`}
-                                    </div>
-                                  ))
-                                ) : (
-                                  '-'
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </Fragment>
-                ))}
-            </TableBody>
-          </Table>
-          {orders.length === 0 && <EmptyState title="此區間沒有掛單" description="調整日期或篩選條件後再試一次。" />}
-        </div>
-      </Card>
+      <DraftOrderTable
+        allExtend={allExtend}
+        setAllExtend={setAllExtend}
+        excelData={excelData}
+        totalCount={totalCount}
+        selectedOrders={selectedOrders}
+        selectedOrderSet={selectedOrderSet}
+        orders={orders}
+        handleSelectAll={handleSelectAll}
+        handleSelectOne={handleSelectOne}
+        orderExtendArr={orderExtendArr}
+        handleOrderExtend={handleOrderExtend}
+        disabled={disabled}
+        handlePrintOrderDetail={handlePrintOrderDetail}
+        location={location}
+        isClick={isClick}
+        passwordEnabled={passwordEnabled}
+        handleCheckout={handleCheckout}
+        handleCheckoutOrder={handleCheckoutOrder}
+        membershipDisplay={membershipDisplay}
+        bonusDisplay={bonusDisplay}
+      />
       <TableEditBar
         editBarOnClick={editBarOnClick}
         selected={selectedOrders}
         onCancel={passwordEnabled.delete ? handleCancel : handleConfirmCancel}
       />
 
-      <Dialog open={openDialog} onOpenChange={o => !o && handleCloseDialog()}>
-        <DialogContent size="sm" aria-describedby={undefined}>
-          <DialogHeader>
-            <DialogTitle>{dialogType === 'delete' ? '刪除掛單？' : '掛單結帳'}</DialogTitle>
-          </DialogHeader>
-          <DialogBody>
-            <Field label={dialogType === 'delete' ? '刪除密碼' : '編輯帳單密碼'} htmlFor="draft-order-password">
-              <Input
-                id="draft-order-password"
-                type="password"
-                value={password}
-                onChange={event => setPassword(event.target.value)}
-                data-testid="delete-password"
-              />
-            </Field>
-          </DialogBody>
-          <DialogFooter>
-            <Button variant="ghost" onClick={handleCloseDialog}>
-              取消
-            </Button>
-            <Button
-              variant={dialogType === 'delete' ? 'danger' : 'primary'}
-              onClick={() => {
-                dialogType === 'delete' ? handleConfirmCancel() : handleComfirmCheckoutOrder()
-              }}
-              autoFocus
-              data-testid="confirm"
-              disabled={editBarOnClick || isClick}
-            >
-              確認
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DraftOrderPasswordDialog
+        openDialog={openDialog}
+        handleCloseDialog={handleCloseDialog}
+        dialogType={dialogType}
+        password={password}
+        setPassword={setPassword}
+        handleConfirmCancel={handleConfirmCancel}
+        handleComfirmCheckoutOrder={handleComfirmCheckoutOrder}
+        editBarOnClick={editBarOnClick}
+        isClick={isClick}
+      />
       <div style={{ display: 'none' }} id="printMain">
         {
           (!detailInfo.logo.isDisplay || !detailInfo.logo.imageUrl) &&
