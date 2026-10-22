@@ -254,10 +254,10 @@ describe('員工資料：基本資料儲存', () => {
     expect(document.activeElement).not.toBe(limit)
   })
 
-  // 已知缺口（待 Jason 決定）：查無此員工（merchantDesigner 為 null）時 General/index.js:240 想導回員工列表，
-  // 但 :98 的 effect 先讀 merchantDesigner.id 拋錯，整頁變錯誤畫面；建議 effect 先判斷 merchantDesigner 是否存在。
-  it('查無此員工時目前整頁進入錯誤畫面（鎖住現況）', async () => {
+  // 查無此員工（merchantDesigner 為 null）時導回員工列表（Jason 2026/10/22；修正前 effect 先讀 merchantDesigner.id 整頁錯誤）。
+  it('查無此員工時導回員工列表', async () => {
     setup({ designer: null })
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    await wait(() => expect(currentLocation()).toBe('/management/employee'))
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 })

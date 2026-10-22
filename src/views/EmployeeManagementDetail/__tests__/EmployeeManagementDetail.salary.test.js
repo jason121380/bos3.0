@@ -102,11 +102,15 @@ describe('薪資條', () => {
     expect(await screen.findByText('無資料')).toBeInTheDocument()
   })
 
-  // 已知缺口（待 Jason 決定）：EmployeeManagementDetail/PaySlip.js:217 這位員工當月沒有任何加扣項時，
-  // 以 format(date, …) 格式化（date 是 { startDate } 物件，不是日期）拋錯，整頁變錯誤畫面；建議改用 date.startDate（同上方有加扣項的版本）。
-  it('當月沒有任何加扣項時目前整頁進入錯誤畫面（鎖住現況）', async () => {
+  // 當月沒有任何加扣項時顯示「無加項／無扣項」、實領薪資 0（Jason 2026/10/22：PaySlip.js 標題改用 date.startDate 格式化，
+  // 修正前把 { startDate } 物件丟給 format 而整頁錯誤）。
+  it('當月沒有任何加扣項時顯示無加項、無扣項與實領薪資 0', async () => {
     renderDetail('paySlip', { fixtures: slipFixtures({ report: [{ ...SLIP, increaseItem: [], decreaseItem: [] }] }) })
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(await screen.findByText(`測試店 - ${format(lastMonthStart(), 'yyyy/MM')} - 王小美`)).toBeInTheDocument()
+    expect(screen.getByText('無加項')).toBeInTheDocument()
+    expect(screen.getByText('無扣項')).toBeInTheDocument()
+    expect(screen.getByText('實領薪資')).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 })
 

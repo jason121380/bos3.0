@@ -96,11 +96,28 @@ describe('編輯角色', () => {
     expect(sent[1]).toEqual({ pageTitle: '報表', authority: true, pageAuthority: [{ pageName: '營業報表', authority: true }] })
   })
 
-  // 已知缺口（待 Jason 決定）：網址的角色 id 不在角色清單（角色已被刪除、或網址打錯）時，
-  // AuthorityEdit/index.js:25 直接讀 userAuth[0].authorityName 拋錯，整頁變錯誤畫面；建議找不到時顯示「找不到角色」並提供返回列表。
-  it('角色 id 不存在時目前整頁進入錯誤畫面（鎖住現況）', async () => {
-    const { settle } = setup('r-missing')
+  // 網址的角色 id 不在角色清單（角色已被刪除、或網址打錯）時顯示「找不到這個角色」並可返回列表，不顯示儲存
+  // （Jason 2026/10/22；修正前讀 userAuth[0].authorityName 整頁錯誤）。
+  it('角色 id 不存在時顯示找不到角色，可返回角色列表、不能儲存', async () => {
+    const { settle, calls } = setup('r-missing')
     await settle()
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(await screen.findByText('找不到這個角色')).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.queryByRole('button', { name: '儲存' })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: '返回角色列表' }))
+    expect(currentLocation()).toBe('/authority')
+    expect(callsOf(calls, 'UPDATE_AUTHORITY')).toHaveLength(0)
+  })
+
+  // 角色清單查詢失敗時（errorLink 已提示）不顯示「找不到」，也不整頁錯誤
+  it('角色清單查詢失敗時不整頁錯誤、不顯示找不到角色', async () => {
+    const { settle } = renderPage(<AuthorityEdit match={{ params: { id: 'r-mgr' } }} />, {
+      route: '/role/edit/r-mgr',
+      fixtures: { GET_MERCHANT_AUTHORITIES: new Error('網路錯誤') },
+    })
+    await settle()
+    expect(screen.getByText('編輯角色')).toBeInTheDocument()
+    expect(screen.queryByText('找不到這個角色')).toBeNull()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 })

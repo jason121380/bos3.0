@@ -23,6 +23,7 @@ import idx from 'idx'
 import produce from 'immer'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
+import { Redirect } from 'react-router-dom'
 import useFetchProfile from 'hooks/useFetchProfile'
 import useFetchMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'
 import { startOfDay, endOfDay } from 'date-fns'
@@ -512,10 +513,9 @@ function Settings({ match, history }) {
     )
   }
 
-  const findTabName = () => {
-    const findData = tabValue.find(itemValue => itemValue.value === currentTab)
-    return findData.label
-  }
+  // 網址分頁不在分頁清單（例如沒帶分頁、手打錯；permission 分頁自初版起不在清單、角色也沒有對應頁面權限）時導回基本資料
+  const currentTabItem = tabValue.find(itemValue => itemValue.value === currentTab)
+  const findTabName = () => (currentTabItem ? currentTabItem.label : '')
 
   useEffect(() => {
     if (!getMerchantCheckinSettings.loading) {
@@ -527,10 +527,13 @@ function Settings({ match, history }) {
 
   useEffect(() => {
     if (!getBookinHistoryDisplay.loading) {
-      const data = getBookinHistoryDisplay.data.getParameterAboutBookingSetting.isBookingHistoryDisplay
+      // 查詢失敗時以 false（不顯示）為預設（Jason 2026/10/22；原本整頁錯誤）
+      const data = Boolean(idx(getBookinHistoryDisplay, _ => _.data.getParameterAboutBookingSetting.isBookingHistoryDisplay))
       setBookingHistoryDisplay(data)
     }
   }, [getBookinHistoryDisplay.loading])
+
+  if (!currentTabItem) return <Redirect to={`/management/employee/${id}/general`} />
 
   return (
     <Page className="ui-root min-h-screen" title={`${designerName} - ${findTabName()}`}>

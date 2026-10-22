@@ -6,6 +6,29 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
+// 員工沒有當月薪資資料（salary 為 null）時各欄以 0 顯示（Jason 2026/10/22；原本讀 null.xxx 整頁錯誤）
+const EMPTY_SALARY = {
+  wage: 0,
+  mealAllowance: 0,
+  additionOfDuties: 0,
+  laborhealthInsurance: 0,
+  attendanceBonus: 0,
+  salesBonus: 0,
+  salesCommission: 0,
+  specialCommission: 0,
+  shampooCommission: 0,
+  hairCareCommission: 0,
+  hotDyeingCommission: 0,
+  otherCommission: 0,
+  otherAllowance: 0,
+  reward: 0,
+  customerReturn: 0,
+  performanceCommission: 0,
+  designateSales: 0,
+  notDesignateSales: 0,
+  points: 0,
+}
+
 function Results({
   className = '',
   pageSetting,
@@ -14,6 +37,9 @@ function Results({
   handleOnChangeRowsPerPage,
   ...rest
 }) {
+  const rows = users.map(user => (user.salary ? user : { ...user, salary: EMPTY_SALARY }))
+  // 筆數與頁數用後端 totalCount（Jason 2026/10/22）；沒有回傳時以本頁人數代替
+  const totalCount = typeof pageSetting.totalCount === 'number' ? pageSetting.totalCount : users.length
   return (
     <div {...rest} className={className}>
       <Card>
@@ -21,7 +47,7 @@ function Results({
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <CardTitle>加項總覽</CardTitle>
             <span className="whitespace-nowrap text-label tabular-nums text-text-secondary">
-              共 {users.length} 筆資料, {pageSetting.pageOffset + 1}/{Math.ceil(users.length / pageSetting.pageLimit)} 頁
+              共 {totalCount} 筆資料, {pageSetting.pageOffset + 1}/{Math.ceil(totalCount / pageSetting.pageLimit)} 頁
             </span>
           </div>
         </CardHeader>
@@ -56,11 +82,12 @@ function Results({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map(data => (
+                  {rows.map(data => (
                     <TableRow key={data.id}>
                       <TableCell>{data.designerNo}</TableCell>
                       <TableCell>{data.name}</TableCell>
                       <TableCell>{data.jobTitle}</TableCell>
+                      {/* 實發金額只算加項（本表沒有扣項資料），不含指定／不指定業績（營業額）（Jason 2026/10/22 視為 bug） */}
                       <TableCell numeric>
                         {formatNumber(data.salary.wage +
                           data.salary.mealAllowance +
@@ -77,9 +104,7 @@ function Results({
                           data.salary.otherAllowance +
                           data.salary.reward +
                           data.salary.customerReturn +
-                          data.salary.performanceCommission +
-                          data.salary.designateSales +
-                          data.salary.notDesignateSales)}
+                          data.salary.performanceCommission)}
                       </TableCell>
                       <TableCell numeric>{formatNumber(data.salary.wage)}</TableCell>
                       <TableCell numeric>{formatNumber(data.salary.mealAllowance)}</TableCell>
@@ -124,120 +149,7 @@ function Results({
                     <TableCell>合 計:</TableCell>
                     <TableCell colSpan={2}></TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
-                        (total, item) =>
-                        (total =
-                          total +
-                          item.salary.wage +
-                          item.salary.mealAllowance +
-                          item.salary.additionOfDuties +
-                          item.salary.laborhealthInsurance +
-                          item.salary.attendanceBonus +
-                          item.salary.salesBonus +
-                          item.salary.salesCommission +
-                          item.salary.specialCommission +
-                          item.salary.shampooCommission +
-                          item.salary.hairCareCommission +
-                          item.salary.hotDyeingCommission +
-                          item.salary.otherCommission +
-                          item.salary.otherAllowance +
-                          item.salary.reward +
-                          item.salary.customerReturn +
-                          item.salary.performanceCommission +
-                          item.salary.designateSales +
-                          item.salary.notDesignateSales),
-                        0
-                      ))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce((total, item) => (total = total + item.salary.wage), 0))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce(
-                        (total, item) => (total = total + item.salary.mealAllowance),
-                        0
-                      ))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce(
-                        (total, item) => (total = total + item.salary.additionOfDuties),
-                        0
-                      ))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce(
-                        (total, item) => (total = total + item.salary.laborhealthInsurance),
-                        0
-                      ))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce(
-                        (total, item) => (total = total + item.salary.attendanceBonus),
-                        0
-                      ))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce((total, item) => (total = total + item.salary.salesBonus), 0))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce(
-                        (total, item) => (total = total + item.salary.salesCommission),
-                        0
-                      ))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce(
-                        (total, item) => (total = total + item.salary.specialCommission),
-                        0
-                      ))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce(
-                        (total, item) => (total = total + item.salary.shampooCommission),
-                        0
-                      ))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce(
-                        (total, item) => (total = total + item.salary.hairCareCommission),
-                        0
-                      ))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce(
-                        (total, item) => (total = total + item.salary.hotDyeingCommission),
-                        0
-                      ))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce(
-                        (total, item) => (total = total + item.salary.otherCommission),
-                        0
-                      ))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce(
-                        (total, item) => (total = total + item.salary.otherAllowance),
-                        0
-                      ))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce((total, item) => (total = total + item.salary.reward), 0))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce(
-                        (total, item) => (total = total + item.salary.customerReturn),
-                        0
-                      ))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce(
-                        (total, item) => (total = total + item.salary.performanceCommission),
-                        0
-                      ))}
-                    </TableCell>
-                    <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, item) =>
                         (total =
                           total +
@@ -261,19 +173,130 @@ function Results({
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce((total, item) => (total = total + item.salary.wage), 0))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
+                        (total, item) => (total = total + item.salary.mealAllowance),
+                        0
+                      ))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
+                        (total, item) => (total = total + item.salary.additionOfDuties),
+                        0
+                      ))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
+                        (total, item) => (total = total + item.salary.laborhealthInsurance),
+                        0
+                      ))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
+                        (total, item) => (total = total + item.salary.attendanceBonus),
+                        0
+                      ))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce((total, item) => (total = total + item.salary.salesBonus), 0))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
+                        (total, item) => (total = total + item.salary.salesCommission),
+                        0
+                      ))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
+                        (total, item) => (total = total + item.salary.specialCommission),
+                        0
+                      ))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
+                        (total, item) => (total = total + item.salary.shampooCommission),
+                        0
+                      ))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
+                        (total, item) => (total = total + item.salary.hairCareCommission),
+                        0
+                      ))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
+                        (total, item) => (total = total + item.salary.hotDyeingCommission),
+                        0
+                      ))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
+                        (total, item) => (total = total + item.salary.otherCommission),
+                        0
+                      ))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
+                        (total, item) => (total = total + item.salary.otherAllowance),
+                        0
+                      ))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce((total, item) => (total = total + item.salary.reward), 0))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
+                        (total, item) => (total = total + item.salary.customerReturn),
+                        0
+                      ))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
+                        (total, item) => (total = total + item.salary.performanceCommission),
+                        0
+                      ))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
+                        (total, item) =>
+                        (total =
+                          total +
+                          item.salary.wage +
+                          item.salary.mealAllowance +
+                          item.salary.additionOfDuties +
+                          item.salary.laborhealthInsurance +
+                          item.salary.attendanceBonus +
+                          item.salary.salesBonus +
+                          item.salary.salesCommission +
+                          item.salary.specialCommission +
+                          item.salary.shampooCommission +
+                          item.salary.hairCareCommission +
+                          item.salary.hotDyeingCommission +
+                          item.salary.otherCommission +
+                          item.salary.otherAllowance +
+                          item.salary.reward +
+                          item.salary.customerReturn +
+                          item.salary.performanceCommission),
+                        0
+                      ))}
+                    </TableCell>
+                    <TableCell numeric>
+                      {formatNumber(rows.reduce(
                         (total, item) => (total = total + item.salary.designateSales),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, item) => (total = total + item.salary.notDesignateSales),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce((total, item) => (total = total + item.salary.points), 0))}
+                      {formatNumber(rows.reduce((total, item) => (total = total + item.salary.points), 0))}
                     </TableCell>
                   </TableRow>
                 </TableBody>

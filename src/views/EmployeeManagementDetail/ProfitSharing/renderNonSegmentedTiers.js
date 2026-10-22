@@ -43,7 +43,7 @@ export function renderNonSegmentedNonDistinguish({ profitSharing, deductionIndex
             {index !== 0 && (
               <DeleteForeverIcon
                 className="ml-[20px] cursor-pointer"
-                onClick={handleDeleteSetDeductionNum}
+                onClick={() => handleDeleteSetDeductionNum(index)}
               />
             )}
             {index ===

@@ -1,4 +1,4 @@
-// 保護「薪資明細表」的金額：加項總覽每位員工的「加項合計」＝16 個加項之和、「實發金額」目前另含指定／不指定業績（見已知缺口），
+// 保護「薪資明細表」的金額：加項總覽每位員工的「加項合計」＝16 個加項之和、「實發金額」只算加項、不含指定／不指定業績（Jason 2026/10/22），
 // 合計列為各欄全部員工加總；扣項總覽的「減項合計」＝21 個扣項之和、合計列為各欄加總。
 // 分頁（換頁、每頁筆數）只影響該表的查詢參數；網址帶的日期換算成該月 1 日（台灣時間）再查詢。
 // GraphQL 全由模擬 link 回應，不連後端。
@@ -65,9 +65,8 @@ describe('薪資明細表：加項總覽', () => {
     const itemsTotal = sum(items)
     expect(rowIn('加項總覽', '小美')).toEqual([
       'N1', '小美', '設計師',
-      // 已知缺口（待 Jason 決定）：IncreaseResult.js:65-82 的「實發金額」把指定業績、不指定業績（營業額，不是薪資）也加進去，
-      // 與「加項合計」不同、金額明顯偏高；建議改為與加項合計相同（或依真正的實發公式），這裡鎖住目前行為。
-      formatNumber(itemsTotal + s.designateSales + s.notDesignateSales),
+      // 實發金額只算加項（加項總覽沒有扣項資料），不再加入指定／不指定業績（營業額）（Jason 2026/10/22 視為 bug）
+      formatNumber(itemsTotal),
       ...items.map(formatNumber),
       formatNumber(itemsTotal),
       formatNumber(s.designateSales), formatNumber(s.notDesignateSales), formatNumber(s.points),
@@ -81,19 +80,18 @@ describe('薪資明細表：加項總覽', () => {
     const itemsTotal = sum(INCREASE.map(col))
     expect(totalIn('加項總覽')).toEqual([
       '合 計:', '',
-      formatNumber(itemsTotal + col('designateSales') + col('notDesignateSales')),
+      formatNumber(itemsTotal),
       ...INCREASE.map(f => formatNumber(col(f))),
       formatNumber(itemsTotal),
       formatNumber(col('designateSales')), formatNumber(col('notDesignateSales')), formatNumber(col('points')),
     ])
   })
 
-  // 已知缺口（待 Jason 決定）：IncreaseResult.js:24 的筆數與頁數用「這一頁的人數」而非 totalCount（扣項總覽用 totalCount），
-  // 總共 45 人、每頁 20 人時顯示「共 2 筆資料, 1/1 頁」；建議改用 pageSetting.totalCount。
-  it('標題的筆數與頁數目前以本頁人數計算（鎖住現況）', async () => {
+  // 標題的筆數與頁數用後端 totalCount（Jason 2026/10/22，與扣項總覽相同；修正前用本頁人數）。
+  it('標題的筆數與頁數以 totalCount 計算', async () => {
     setup()
     await screen.findByText('加項總覽')
-    expect(within(card('加項總覽')).getByText('共 2 筆資料, 1/1 頁')).toBeInTheDocument()
+    expect(within(card('加項總覽')).getByText('共 45 筆資料, 1/3 頁')).toBeInTheDocument()
     expect(within(card('扣項總覽')).getByText('共 45 筆資料, 1/3 頁')).toBeInTheDocument()
   })
 
@@ -151,11 +149,18 @@ describe('薪資明細表：月份', () => {
     expect(callsOf(calls, 'FETCH_USER_SALARY_DECREASE').map(c => c.variables.date)).toContain(new Date(2026, 8, 1).getTime())
   })
 
-  // 已知缺口（待 Jason 決定）：員工沒有當月薪資資料（salary 為 null）時，IncreaseResult.js:65／DecreaseResult.js:63 直接讀 data.salary.xxx 拋錯，
-  // 整頁變錯誤畫面；建議以 0 顯示或略過該員工。
-  it('員工薪資資料為 null 時目前整頁進入錯誤畫面（鎖住現況）', async () => {
-    setup({ inc: [{ id: '9', name: '新人', designerNo: 'N9', jobTitle: '助理', salary: null }] })
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+  // 員工沒有當月薪資資料（salary 為 null）時各欄以 0 顯示（Jason 2026/10/22；修正前整頁錯誤）。
+  it('員工薪資資料為 null 時各欄以 0 顯示', async () => {
+    setup({
+      inc: [{ id: '9', name: '新人', designerNo: 'N9', jobTitle: '助理', salary: null }, ...INC_USERS],
+      dec: [{ id: '9', name: '新人', designerNo: 'N9', jobTitle: '助理', salary: null }, ...DEC_USERS],
+    })
+    await screen.findByText('加項總覽')
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(rowIn('加項總覽', '新人').slice(3).every(v => v === '0')).toBe(true)
+    expect(rowIn('扣項總覽', '新人').slice(3).every(v => v === '0')).toBe(true)
+    // 合計列不受影響
+    expect(totalIn('加項總覽')[2]).toBe(formatNumber(sum(INCREASE.map(f => sum(INC_USERS.map(u => u.salary[f]))))))
   })
 })
 

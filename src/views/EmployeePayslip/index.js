@@ -9,8 +9,6 @@ import { subMonths } from 'date-fns'
 import useFetchUserSalaryReport from 'hooks/useFetchUserSalaryReport'
 import DesignerSearch from 'components/DesignerBeenAssistedAutoComplete'
 import DateSelector from 'components/DateSelector'
-import useFetchMerchantSalaryIncreaseItems from 'hooks/useFetchMerchantSalaryIncreaseItems'
-import useFetchMerchantSalaryDecreaseItems from 'hooks/useFetchMerchantSalaryDecreaseItems'
 import { useFetchGetUserSalaryExcelLazy } from 'hooks/useFetchGetUserSalaryExcel'
 import useFetchGetIsDisplayFakePerformanceInSalaryReport from 'hooks/useFetchGetIsDisplayFakePerformanceInSalaryReport'
 import useFetchGetEmployeePayslipPrintStyle from 'hooks/useFetchGetEmployeePayslipPrintStyle'
@@ -24,7 +22,6 @@ import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
-import cloneDeep from 'lodash/cloneDeep'
 
 export default function Payroll() {
   const [date, setDate] = useState({
@@ -33,12 +30,7 @@ export default function Payroll() {
   const [showFilter, setShowFilter] = useState(false)
   const usersDalaryData = useFetchUserSalaryReport({ date: date.startDate })
   const [searchId, setSearchId] = useState()
-  const userSalary = idx(usersDalaryData, _ => _.data.userSalaryReport)
-  const merchantSalaryIncreaseItemsData = useFetchMerchantSalaryIncreaseItems()
-  const merchantSalaryDecreaseItemsData = useFetchMerchantSalaryDecreaseItems()
   const employeePayslipPrintStyle = useFetchGetEmployeePayslipPrintStyle()
-  const [merchantSalaryIncreaseItems, setMerchantSalaryIncreaseItems] = useState([])
-  const [merchantSalaryDecreaseItems, setMerchantSalaryDecreaseItems] = useState([])
   const [getUserSalaryExcelLazy, getUserSalaryExcelLazyData] = useFetchGetUserSalaryExcelLazy()
   const isDisplayFakePerformance = useFetchGetIsDisplayFakePerformanceInSalaryReport()
   const EPWDDisplay = useFetchGetIsEPWDDisplay()
@@ -49,61 +41,6 @@ export default function Payroll() {
   const payslipOptimization = getPayslipOptimization.loading ? false : idx(getPayslipOptimization, _ => _.data.getParameterCheckoutAndSalaryItemsSetting.isPayslipOptimizationPrintModeOn)
   const isPrintdetailHidden = getIsPrintdetailHidden.loading ? false : idx(getIsPrintdetailHidden, _ => _.data.getParameterCheckoutAndSalaryItemsSetting.isPrintDateHiddenForPayslip)
 
-  useEffect(() => {
-    if (!merchantSalaryIncreaseItemsData.loading) {
-      // 複製：下面會加入員工自訂項目（查詢結果唯讀）
-      const merchantSalaryIncreaseItems = cloneDeep(idx(
-        merchantSalaryIncreaseItemsData,
-        _ => _.data.getMerchantSalaryIncreaseItems
-      ))
-      setMerchantSalaryIncreaseItems(merchantSalaryIncreaseItems)
-    }
-  }, [merchantSalaryIncreaseItemsData.loading])
-  useEffect(() => {
-    if (!merchantSalaryDecreaseItemsData.loading) {
-      const merchantSalaryDecreaseItems = cloneDeep(idx(
-        merchantSalaryDecreaseItemsData,
-        _ => _.data.getMerchantSalaryDecreaseItems
-      ))
-      setMerchantSalaryDecreaseItems(merchantSalaryDecreaseItems)
-    }
-  }, [merchantSalaryDecreaseItemsData.loading])
-  useEffect(() => {
-    if (!merchantSalaryIncreaseItems.loading && userSalary != null) {
-      userSalary.forEach(data => {
-        const increase = idx(data, _ => _.increaseItem)
-        increase.forEach(data2 => {
-          if (
-            data2.itemName !== '' &&
-            merchantSalaryIncreaseItems.find(data3 => data3.itemSetting === data2.itemName) ===
-            undefined
-          ) {
-            merchantSalaryIncreaseItems.push({
-              itemSetting: data2.itemName,
-            })
-          }
-        })
-      })
-    }
-  }, [merchantSalaryIncreaseItems.loading, userSalary])
-  useEffect(() => {
-    if (!merchantSalaryDecreaseItems.loading && userSalary != null) {
-      userSalary.forEach(data => {
-        const decrease = idx(data, _ => _.decreaseItem)
-        decrease.forEach(data2 => {
-          if (
-            data2.itemName !== '' &&
-            merchantSalaryDecreaseItems.find(data3 => data3.itemSetting === data2.itemName) ===
-            undefined
-          ) {
-            merchantSalaryDecreaseItems.push({
-              itemSetting: data2.itemName,
-            })
-          }
-        })
-      })
-    }
-  }, [merchantSalaryDecreaseItems.loading, userSalary])
   useEffect(() => {
     if (!getUserSalaryExcelLazyData.loading && getUserSalaryExcelLazyData.data !== undefined) {
       const url = idx(getUserSalaryExcelLazyData, _ => _.data.userSalaryReportExcel)

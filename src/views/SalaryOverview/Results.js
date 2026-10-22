@@ -147,10 +147,6 @@ function Results({
     const borrowPrice = decreaseItemDetail.find(d => d.itemName === "員工借支")
     return borrowPrice ? borrowPrice.price : 0
   }
-  const getButtonLabel = ({ isSalaryChecked, isOnDuty }) => {
-    if (!isOnDuty) return '檢視'
-    return editBtnStatus ? '檢視' : isSalaryChecked ? '編輯' : '未結算'
-  }
   return (
     <div {...rest} className={cn('SalaryOverviewResult', className)}>
       <Card>

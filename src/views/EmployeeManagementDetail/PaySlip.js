@@ -215,7 +215,7 @@ function PaySlip({
                 <CardHeader>
                   <CardTitle>
                     {`${JSON.parse(localStorage.getItem('userMerchant')).name} - ${format(
-                      date,
+                      date.startDate,
                       'yyyy/MM'
                     )} - ${user.name}`}
                   </CardTitle>

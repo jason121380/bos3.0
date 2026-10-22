@@ -1,10 +1,10 @@
 // 保護「員工資料」頁的外框：
 // - 分頁依登入者角色「編輯員工」區塊逐頁開放（以角色 id 比對，helper/rolePageAuthority）；沒開放的分頁不出現；點分頁以 history.push 切換。
 // - 標題顯示員工姓名與目前分頁；預約表在店家開啟報到功能時有「報到模式」開關。
-// - 已知缺口：網址分頁不在清單內（如 permission）或預約歷史設定查詢失敗時整頁錯誤（鎖住現況）。
+// - 網址分頁不在清單內（如 permission、沒帶分頁）時導回「基本資料」；預約歷史設定查詢失敗時照常顯示（Jason 2026/10/22）。
 // GraphQL 全由模擬 link 回應，不連後端。
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
-import { loginAs, callsOf, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
+import { loginAs, callsOf, PAGE_CRASH_TEXT, currentLocation } from '../../../__tests__/testkit.test'
 import { renderDetail, editEmployeeSection, TAB_LABELS, EMP_ID } from './employeeDetailKit.test'
 
 jest.setTimeout(20000)
@@ -70,18 +70,24 @@ describe('員工資料：分頁與權限', () => {
     expect(screen.queryByRole('switch', { name: '報到模式' })).toBeNull()
   })
 
-  // 已知缺口（待 Jason 決定）：EmployeeManagementDetail/index.js:517 findTabName 對不在分頁清單的網址（例如程式裡仍保留的 permission 分頁、
-  // 或手打錯的網址）直接讀 undefined.label 拋錯，整頁變錯誤畫面；Permission.js 因此實際上無法從這頁開啟。
-  // 建議找不到分頁時導回「基本資料」，並決定 Permission 分頁要恢復或刪除。
-  it('網址分頁不在清單內（permission）時目前整頁進入錯誤畫面（鎖住現況）', async () => {
+  // 網址分頁不在分頁清單時導回「基本資料」（Jason 2026/10/22；修正前 findTabName 讀 undefined.label 整頁錯誤）。
+  // permission 分頁（Permission.js）自初版起就不在分頁清單、角色「編輯員工」區塊也沒有對應的頁面權限，
+  // 依既有權限判斷不開放，同樣導回基本資料。
+  it('網址分頁不在清單內（permission、沒帶分頁）時導回基本資料', async () => {
     renderDetail('permission')
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    await wait(() => expect(currentLocation()).toBe(`/management/employee/${EMP_ID}/general`))
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    cleanup()
+    renderDetail(undefined)
+    await wait(() => expect(currentLocation()).toBe(`/management/employee/${EMP_ID}/general`))
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 
-  // 已知缺口（待 Jason 決定）：EmployeeManagementDetail/index.js:530（Profile/index.js 相同位置）讀預約歷史設定時沒有防呆，
-  // 這支設定查詢失敗時整頁變錯誤畫面；建議改用 idx 並以 false 為預設。
-  it('預約歷史設定查詢失敗時目前整頁進入錯誤畫面（鎖住現況）', async () => {
-    renderDetail('security', { fixtures: { GET_BOOKING_HISTORY_DISPLAY: new Error('網路錯誤') } })
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+  // 預約歷史設定查詢失敗時以 false（不顯示）為預設，頁面照常顯示（Jason 2026/10/22；修正前整頁錯誤）。
+  it('預約歷史設定查詢失敗時頁面照常顯示', async () => {
+    const { settle } = renderDetail('security', { fixtures: { GET_BOOKING_HISTORY_DISPLAY: new Error('網路錯誤') } })
+    await settle()
+    await wait(() => expect(tabNames()).toEqual(TAB_LABELS))
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 })

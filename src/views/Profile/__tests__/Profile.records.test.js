@@ -4,7 +4,8 @@
 // - 抽成報表：以今天 00:00～23:59:59.999 查詢，金額為服務＋卡券四捨五入；沒有資料顯示無資料。
 // - 薪資條：上個月 1 日；只顯示自己；合計與業績；沒有加扣項時顯示 0 的空白薪資條；換月份重新查詢。
 // - 設計師日報表：單號（指定加 *）、類別、項目、金額、業績；超過六位數不顯示小數；日合計／累計；「隱藏 0 值」時兩欄皆 0 的列不顯示。
-// - 互助日報表：依互助者分組、依編號排序；顯示金額設定與「點數換算金額」不顯示金額；店販品項。
+// - 互助日報表：依互助者分組、依編號排序；顯示金額設定與「點數換算金額」不顯示金額；店販品項；店販業績＝各品項單價×數量加總；
+//   累計欄＝當月 1 日到所選日期（另以同一支查詢查整月）的加總。
 // GraphQL 全由模擬 link 回應，不連後端。
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { endOfDay, format, startOfDay, startOfMonth } from 'date-fns'
@@ -95,11 +96,11 @@ describe('個人頁：帳單紀錄', () => {
     expect(screen.queryByText('#A1')).toBeNull()
   })
 
-  // 已知缺口（待 Jason 決定）：Profile/index.js:272 讀紅利設定時沒有等它回來（effect 只看帳單與會員卡兩支查詢），
-  // 紅利設定比帳單晚回時 customerBonusActiveData.data 為 undefined 拋錯，整頁變錯誤畫面；建議把紅利查詢一併列入條件或用 idx 防呆。
-  it('紅利設定比帳單晚回時目前整頁進入錯誤畫面（鎖住現況）', async () => {
+  // 紅利設定比帳單晚回時等它回來再顯示（Jason 2026/10/22；修正前讀 undefined 整頁錯誤）。
+  it('紅利設定比帳單晚回時等它回來再顯示帳單', async () => {
     renderProfile('orderRecord', { fixtures: fixtures({ orders: [order('1')] }), delays: { GET_CUSTOMER_BONUS: 500 } })
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(await screen.findByText('#A1')).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 })
 
@@ -364,13 +365,13 @@ describe('個人頁：設計師日報表', () => {
     expect(summary('入金儲值')).toEqual(['0', '300'])
   })
 
-  // 已知缺口（待 Jason 決定）：Profile/DesignerSelfRecord.js:325、355 客單價與平均項次單價直接相除，當天沒有客人（筆數 0）且未隱藏 0 值時顯示「NaN」；
-  // 建議分母為 0 時顯示 0。
-  it('當天沒有客人時客單價目前顯示 NaN（鎖住現況）', async () => {
+  // 當天沒有客人（筆數 0）時客單價與平均項次單價顯示 0（Jason 2026/10/22；修正前直接相除顯示 NaN）。
+  it('當天沒有客人時客單價與平均項次單價顯示 0', async () => {
     const zero = day({ performanceFakeTotal: 0, orderTotalCount: 0, orderTypeCount: 0 })
     renderProfile('designerSelfRecord', { fixtures: fixtures({ reports: [report({ currentDay: zero, tillNow: zero })] }) })
     await screen.findByText('A001*')
-    expect(summary('客單價')).toEqual(['NaN', 'NaN'])
+    expect(summary('客單價')).toEqual(['0', '0'])
+    expect(summary('平均項次單價')).toEqual(['0', '0'])
   })
 
   it('沒有資料顯示無資料；按「今天」以今天結束時間重新查詢', async () => {
@@ -451,9 +452,10 @@ describe('個人頁：互助日報表', () => {
     expect(cellsOfRow(two.getByText('#A003').closest('tr'))).toEqual(['#A003', '洗髮', '林設計', '30', '3'])
     expect(cellsOfRow(two.getByText('#A002').closest('tr'))).toEqual(['#A002', '洗髮精 100x2', '', '20', ''])
     expect(cellsOfRow(two.getByText('合計').closest('tr'))).toEqual(['合計', '', '', '100', '3.5'])
-    expect(cellsOfRow(two.getByText(/互助獲得\(點\)/).closest('tr'))).toEqual(['互助獲得(點)點數/換算金額', '3.5/25', '0 /0'])
-    expect(cellsOfRow(two.getByText(/互助獲得金額/).closest('tr'))).toEqual(['互助獲得金額(不含點)', '200', '0'])
-    expect(cellsOfRow(two.getByText('店販抽成').closest('tr'))).toEqual(['店販抽成', '20', '0'])
+    // 累計欄：整月查詢（此處模擬回應與當日相同）的加總
+    expect(cellsOfRow(two.getByText(/互助獲得\(點\)/).closest('tr'))).toEqual(['互助獲得(點)點數/換算金額', '3.5/25', '3.5 /25'])
+    expect(cellsOfRow(two.getByText(/互助獲得金額/).closest('tr'))).toEqual(['互助獲得金額(不含點)', '200', '200'])
+    expect(cellsOfRow(two.getByText('店販抽成').closest('tr'))).toEqual(['店販抽成', '20', '20.4'])
     expect(two.getByText('#A003').closest('a')).toHaveAttribute('href', '/order/o1')
   })
 
@@ -471,27 +473,65 @@ describe('個人頁：互助日報表', () => {
     expect(cellsOfRow(screen.getByText('#A001').closest('tr'))[3]).toBe('50')
     // 合計＝互助金額（不含點數換算）＋店販抽成
     expect(cellsOfRow(screen.getByText('合計').closest('tr'))[3]).toBe('60')
-    expect(cellsOfRow(screen.getByText('互助獲得 - 點數').closest('tr'))).toEqual(['互助獲得 - 點數', '2.5', '0'])
+    expect(cellsOfRow(screen.getByText('互助獲得 - 點數').closest('tr'))).toEqual(['互助獲得 - 點數', '2.5', '2.5'])
     expect(cellsOfRow(screen.getByText(/互助獲得金額/).closest('tr'))[1]).toBe('50')
   })
 
-  // 已知缺口（待 Jason 決定）：Profile/HelperSelfRecord.js:249「店販業績」以（所有品項單價合計）×（所有品項數量合計）計算，
-  // 兩種以上品項時算錯（100 元×2 加 50 元×1 應為 250，畫面顯示 450）；建議改為各品項單價×數量後加總。
-  // 另 Profile/index.js:364 起各互助者的「累計」欄（helperFeeTillNow 等）只初始化為 0、從未填入，累計欄永遠顯示 0。
-  it('店販業績目前以單價合計×數量合計計算、累計欄永遠為 0（鎖住現況）', async () => {
+  // 店販業績＝各品項單價×數量加總（Jason 2026/10/22；修正前以單價合計×數量合計，100×2＋50×1 顯示 450）。
+  // 累計欄＝當月 1 日到所選日期的加總（Jason 2026/10/22；修正前 Profile/index.js 只把累計初始化為 0、從未填入）：
+  // 以同一支查詢另查整月，依互助者加總點數、不含點金額、點數換算金額、店販業績與店販抽成。
+  it('店販業績逐品項單價×數量加總；累計欄為當月 1 日到所選日期的加總', async () => {
     const p2 = person('h2', '二號', '2')
-    renderProfile('helperSelfRecord', {
-      fixtures: fixtures({ helperRecord: [], productRecord: [product(p2), product(p2, { orderNo: 'A004', productUnitPrice: 50, productCount: 1 })] }),
+    const today = { helperRecord: [helper(p2, { helperPoint: 1, helperFeeNoPoint: 100, helperFeeOnlyPoint: 10 })], productRecord: [product(p2), product(p2, { orderNo: 'A004', productUnitPrice: 50, productCount: 1, productRake: 5 })] }
+    const month = {
+      helperRecord: [
+        ...today.helperRecord,
+        helper(p2, { orderNo: 'A000', helperPoint: 2.5, helperFeeNoPoint: 300, helperFeeOnlyPoint: 25 }),
+        // 欄位為 0 的紀錄照常加總
+        helper(p2, { orderNo: 'A00Z', helperPoint: 0, helperFeeNoPoint: 0, helperFeeOnlyPoint: 0, helperFee: 0 }),
+      ],
+      productRecord: [...today.productRecord, product(p2, { orderNo: 'A005', productUnitPrice: 300, productCount: 3, productRake: 90 })],
+    }
+    const { calls } = renderProfile('helperSelfRecord', {
+      fixtures: {
+        ...fixtures({ helperRecord: [] }),
+        GET_USER_HELPER_RETRIEVE: v => ({
+          getUserHelperRetrieve: { ...(v.input.startDate === v.input.endDate ? today : month), membershipRecord: [] },
+        }),
+      },
     })
     await screen.findAllByText(/互助報表/)
-    expect(cellsOfRow(screen.getByText('店販業績').closest('tr'))).toEqual(['店販業績', '450', '0'])
+    await wait(() => expect(cellsOfRow(screen.getByText('店販業績').closest('tr'))).toEqual(['店販業績', '250', '1,150']))
+    expect(cellsOfRow(screen.getByText('店販抽成').closest('tr'))).toEqual(['店販抽成', '25', '115.4'])
+    expect(cellsOfRow(screen.getByText(/互助獲得\(點\)/).closest('tr'))).toEqual(['互助獲得(點)點數/換算金額', '1/10', '3.5 /35'])
+    expect(cellsOfRow(screen.getByText(/互助獲得金額/).closest('tr'))).toEqual(['互助獲得金額(不含點)', '100', '400'])
+    // 整月查詢：當月 1 日 00:00 到所選日期，同一位登入者
+    const inputs = callsOf(calls, 'GET_USER_HELPER_RETRIEVE').map(c => c.variables.input)
+    const day = inputs.find(i => i.startDate === i.endDate)
+    expect(inputs).toContainEqual({ startDate: startOfMonth(day.endDate).getTime(), endDate: day.endDate, designerId: USER_ID })
   })
 
-  // 已知缺口（待 Jason 決定）：Profile/HelperSelfRecord.js:28 互助者沒有設計師編號（null）時讀 null.length 拋錯，整頁變錯誤畫面；
-  // 建議以空字串處理 null。
-  it('互助者沒有編號（null）時目前整頁進入錯誤畫面（鎖住現況）', async () => {
+  it('整月查詢失敗時累計欄為 0，當日資料照常顯示', async () => {
+    const p2 = person('h2', '二號', '2')
+    renderProfile('helperSelfRecord', {
+      fixtures: {
+        ...fixtures({ helperRecord: [] }),
+        GET_USER_HELPER_RETRIEVE: v =>
+          v.input.startDate === v.input.endDate
+            ? { getUserHelperRetrieve: { helperRecord: [], productRecord: [product(p2)], membershipRecord: [] } }
+            : new Error('網路錯誤'),
+      },
+    })
+    await screen.findAllByText(/互助報表/)
+    await wait(() => expect(cellsOfRow(screen.getByText('店販業績').closest('tr'))).toEqual(['店販業績', '200', '0']))
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+  })
+
+  // 互助者沒有設計師編號（null）時視為空字串，依姓名排序（Jason 2026/10/22；修正前讀 null.length 整頁錯誤）。
+  it('互助者沒有編號（null）時照常顯示', async () => {
     renderProfile('helperSelfRecord', { fixtures: fixtures({ helperRecord: [helper(person('h1', '無號', null))] }) })
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(await screen.findByText(/無號 .*互助報表$/)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 
   it('沒有資料顯示無資料；查詢中顯示骨架', async () => {

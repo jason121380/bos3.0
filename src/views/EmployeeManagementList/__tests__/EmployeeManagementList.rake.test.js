@@ -121,10 +121,8 @@ describe('編輯設計師抽成：全段', () => {
     expect(fields('輸入抽成(%)')[0]).toHaveValue(0)
   })
 
-  // 已知缺口（待 Jason 決定）：rakeSettingNonSegmentedTiers.js:46（員工資料 ProfitSharing/renderNonSegmentedTiers.js:46 相同）
-  // 刪除鈕直接把 click 事件當成索引傳給 handleDeleteSetDeductionNum，splice(事件, 1) 的索引變成 0，
-  // 按第 3 列的刪除卻刪掉第 1 列（不分指定的全段級距）；建議改為 onClick={() => handleDeleteSetDeductionNum(index)}。
-  it('不分指定：按第 3 列的刪除目前刪掉的是第 1 列（鎖住現況）', async () => {
+  // 不分指定：按第 3 列的刪除就刪第 3 列（Jason 2026/10/22：刪除鈕改傳該列 index；修正前把 click 事件當索引，一律刪第 1 列）。
+  it('不分指定：按第 3 列的刪除就刪掉第 3 列', async () => {
     const { calls } = setup()
     await openRakeModal()
     type(fields('輸入業績')[0], '1')
@@ -135,7 +133,7 @@ describe('編輯設計師抽成：全段', () => {
     remove(tierRows('總業績從(含)')[2])
     save()
     await wait(() => expect(callsOf(calls, 'FETCH_SET_USER_RAKE')).toHaveLength(1))
-    expect(sent(calls).nonSegmented[0].rakeData.nonDistinguish.map(t => t.threshold)).toEqual([2, 3])
+    expect(sent(calls).nonSegmented[0].rakeData.nonDistinguish.map(t => t.threshold)).toEqual([1, 2])
   })
 
   it('抽成 % 超出 0～100 或業績為負時提示並歸 0', async () => {

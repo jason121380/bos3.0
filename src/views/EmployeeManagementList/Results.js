@@ -329,7 +329,7 @@ export default function Results({
             </TableBody>
           </Table>
           <TablePagination
-            count={employees.length}
+            count={typeof pageCount === 'number' ? pageCount : employees.length}
             onPageChange={handleOnChangePage}
             onRowsPerPageChange={handleOnChangeRowsPerPage}
             page={page.offset}

@@ -140,12 +140,11 @@ describe('薪資維護：帶入與金額', () => {
     await ready()
     expect(screen.getByText('小美 2026/09 薪資表')).toBeInTheDocument()
     expect(screen.getByLabelText('備註')).toHaveValue('九月補登')
-    // 已知缺口（待 Jason 決定）：SalaryEdit/index.js:186 帶入已存金額的加項時取 findData.sorting，但已存紀錄（GET_USER_SALARY_ITEM）沒有 sorting 欄位，
-    // 有已存金額的加項失去排序、改依店家設定查詢回來的順序顯示（扣項取 data2.sorting 正常），儲存時 sorting 也送出 undefined；
-    // 建議改用店家設定的 data.sorting。這裡鎖住目前行為：設定依序回傳「業績抽成(2)、工資(1)」時畫面也是這個順序。
+    // 已存金額的加項也依店家設定的 sorting 排列（Jason 2026/10/22：SalaryEdit/index.js 改用店家設定 data.sorting，
+    // 已存紀錄 GET_USER_SALARY_ITEM 沒有 sorting 欄位）：設定依序回傳「業績抽成(2)、工資(1)」時畫面為「工資、業績抽成」。
     // 會員卡未啟用、獎金為 0 → 不顯示會員卡獎金
     const incLabels = within(increaseCard()).getAllByText(/^(工資|業績抽成|會員卡獎金)$/).map(n => n.textContent)
-    expect(incLabels).toEqual(['業績抽成', '工資'])
+    expect(incLabels).toEqual(['工資', '業績抽成'])
     expect(screen.getByLabelText('工資')).toHaveValue('30000')
     expect(screen.getByLabelText('業績抽成')).toHaveValue('12000')
     expect(within(increaseCard()).getByLabelText('薪資加項科目')).toHaveValue('交通津貼')
@@ -264,16 +263,16 @@ describe('薪資維護：儲存', () => {
       userId: 'u2',
       date: SEPT,
       remark: '九月補登獎金',
-      // 加項的 sorting 目前為 undefined（見上方已知缺口）
+      // 加項的 sorting 取店家設定（Jason 2026/10/22）
       userSalaryItem: [
-        { itemName: '業績抽成', price: 12000, type: 'INCREASE', sorting: undefined },
-        { itemName: '工資', price: 30000, type: 'INCREASE', sorting: undefined },
+        { itemName: '工資', price: 30000, type: 'INCREASE', sorting: 1 },
+        { itemName: '業績抽成', price: 12000, type: 'INCREASE', sorting: 2 },
         { itemName: '勞健保費', price: 1200, type: 'DECREASE', sorting: 1 },
         { itemName: '交通津貼', price: 1500, type: 'INCREASE' },
         { itemName: '罰款', price: 300, type: 'DECREASE' },
       ],
     })
-    expect(sentInput(calls).userSalaryItem.map(i => i.itemName)).toEqual(['業績抽成', '工資', '勞健保費', '交通津貼', '罰款'])
+    expect(sentInput(calls).userSalaryItem.map(i => i.itemName)).toEqual(['工資', '業績抽成', '勞健保費', '交通津貼', '罰款'])
     expect(window.location.href).toBe(`/salary/overview?date=${SEPT}`)
   })
 
@@ -302,8 +301,8 @@ describe('薪資維護：儲存', () => {
     fireEvent.click(screen.getByRole('button', { name: '儲存' }))
     await wait(() => expect(callsOf(calls, 'SET_USER_SALARY_ITEM')).toHaveLength(1))
     expect(sentInput(calls).userSalaryItem).toEqual([
-      { itemName: '業績抽成', price: 12000, type: 'INCREASE' },
-      { itemName: '工資', price: 30000, type: 'INCREASE' },
+      { itemName: '工資', price: 30000, type: 'INCREASE', sorting: 1 },
+      { itemName: '業績抽成', price: 12000, type: 'INCREASE', sorting: 2 },
       { itemName: '勞健保費', price: 1200, type: 'DECREASE', sorting: 1 },
       { itemName: '全勤獎金', price: 2000, type: 'INCREASE' },
     ])
@@ -322,16 +321,16 @@ describe('薪資維護：儲存', () => {
     fireEvent.change(within(increaseCard()).getByLabelText('薪資加項科目'), { target: { name: 'itemName', value: '工資' } })
     fireEvent.change(within(decreaseCard()).getByLabelText('薪資扣項科目'), { target: { name: 'itemName', value: '勞健保費' } })
   }
-  // 自訂加項改成同名；扣項新增一列同名（保留原本的罰款）
+  // 自訂加項改成與第二個店家加項同名（先比對到不同名的「工資」再比對到同名）；扣項新增一列同名（保留原本的罰款）
   const addDuplicateRows = () => {
-    fireEvent.change(within(increaseCard()).getByLabelText('薪資加項科目'), { target: { name: 'itemName', value: '工資' } })
+    fireEvent.change(within(increaseCard()).getByLabelText('薪資加項科目'), { target: { name: 'itemName', value: '業績抽成' } })
     fireEvent.click(within(decreaseCard()).getByLabelText('新增一項'))
     fireEvent.change(within(decreaseCard()).getAllByLabelText('薪資扣項科目')[1], { target: { name: 'itemName', value: '勞健保費' } })
     fireEvent.change(within(decreaseCard()).getAllByLabelText('扣項金額')[1], { target: { name: 'price', value: '1' } })
   }
   const PARAMETER_ITEMS = [
-    { itemName: '業績抽成', price: 12000, type: 'INCREASE' },
-    { itemName: '工資', price: 30000, type: 'INCREASE' },
+    { itemName: '工資', price: 30000, type: 'INCREASE', sorting: 1 },
+    { itemName: '業績抽成', price: 12000, type: 'INCREASE', sorting: 2 },
     { itemName: '勞健保費', price: 1200, type: 'DECREASE', sorting: 1 },
   ]
   const WITH_FINE = [...PARAMETER_ITEMS, { itemName: '罰款', price: 300, type: 'DECREASE' }]
@@ -425,17 +424,16 @@ describe('薪資維護：鍵盤連續輸入', () => {
     await wait(() => expect(document.activeElement).toBe(screen.getByLabelText('勞健保費')))
   })
 
-  // 已知缺口（待 Jason 決定）：SalaryIncrease.js:167 判斷「是否最後一項」用店家設定的項目數（含被隱藏的會員卡獎金），
-  // 會員卡未啟用而隱藏會員卡獎金時，在最後一個加項按 Enter 會把游標指到不存在的第 N+1 項：輸入框的 ref 先被 React 清成 null，
-  // SalaryIncrease.js:122-123 的 effect 只排除 undefined、對 null 呼叫 focus() 拋錯，整頁變錯誤畫面（輸入到一半的加扣項全部消失）。
-  // 建議改用 increaseCombined.length（扣項已是如此），並在 effect 改判斷 textFieldRef.current 是否存在。
-  it('會員卡獎金被隱藏時，在最後一個加項按 Enter 目前整頁進入錯誤畫面（鎖住現況）', async () => {
+  // 會員卡未啟用而隱藏會員卡獎金時，最後一個加項按 Enter 跳到自訂科目（Jason 2026/10/22：SalaryIncrease.js 改以畫面上的
+  // increaseCombined.length 判斷最後一項，effect 先確認輸入框 ref 存在才 focus；修正前會指到不存在的第 N+1 項而整頁錯誤）。
+  it('會員卡獎金被隱藏時，在最後一個加項按 Enter 跳到自訂科目', async () => {
     setup({ increase: [] })
     await ready()
     const last = screen.getByLabelText('業績抽成')
     last.focus()
     fireEvent.keyDown(last, { key: 'Enter' })
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    await wait(() => expect(document.activeElement).toBe(within(increaseCard()).getByLabelText('薪資加項科目')))
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 
   it('加項自訂項目有多列時，金額 Enter 跳到下一列科目', async () => {

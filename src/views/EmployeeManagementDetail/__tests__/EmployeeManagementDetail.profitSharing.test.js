@@ -146,9 +146,8 @@ describe('抽成設定：全段級距', () => {
     ])
   })
 
-  // 已知缺口（待 Jason 決定）：ProfitSharing/renderNonSegmentedTiers.js:46 刪除鈕把 click 事件當成索引，splice 一律刪掉第 1 級
-  // （員工列表批量彈窗 rakeSettingNonSegmentedTiers.js:46 相同）；建議改為 onClick={() => handleDeleteSetDeductionNum(index)}。
-  it('不分指定：按第 2 級的刪除目前刪掉的是第 1 級（鎖住現況）', async () => {
+  // 不分指定：按第 2 級的刪除就刪第 2 級（Jason 2026/10/22：刪除鈕改傳該列 index；修正前一律刪第 1 級）。
+  it('不分指定：按第 2 級的刪除就刪掉第 2 級', async () => {
     const { calls } = setup()
     await ready()
     add(tierRows('總業績從(含)')[0])
@@ -156,7 +155,7 @@ describe('抽成設定：全段級距', () => {
     remove(tierRows('總業績從(含)')[1])
     save()
     await wait(() => expect(callsOf(calls, 'FETCH_SET_USER_RAKE')).toHaveLength(1))
-    expect(sentRake(calls).nonSegmented[0].rakeData.nonDistinguish).toEqual([{ threshold: 50000, rake: 0 }])
+    expect(sentRake(calls).nonSegmented[0].rakeData.nonDistinguish).toEqual([{ threshold: 0, rake: 30 }])
   })
 
   it('帶入分指定的全段級距；指定、不指定各自新增、刪除與輸入', async () => {

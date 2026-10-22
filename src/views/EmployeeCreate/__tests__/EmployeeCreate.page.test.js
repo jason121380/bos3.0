@@ -121,10 +121,16 @@ describe('新增員工', () => {
     expect(screen.getByRole('button', { name: '新增' })).toBeEnabled()
   })
 
-  // 已知缺口（待 Jason 決定）：人員身分查詢失敗時 EmployeeCreate/index.js:49 對 undefined 呼叫 forEach（:37 也會把 service 設成 undefined），
-  // 整頁變錯誤畫面、無法新增員工；建議查詢失敗時以空陣列處理（只顯示「未設定」）。
-  it('人員身分查詢失敗時目前整頁進入錯誤畫面（鎖住現況）', async () => {
-    setup({ MERCHANT_JOBTITLE_POINT: new Error('網路錯誤') })
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+  // 人員身分查詢失敗時以空清單處理（只有「未設定」），仍可新增員工、不送 jobPointId（Jason 2026/10/22；修正前整頁錯誤）。
+  it('人員身分查詢失敗時只有「未設定」，仍可新增', async () => {
+    const { calls, settle } = setup({ MERCHANT_JOBTITLE_POINT: new Error('網路錯誤') })
+    await settle()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    // 與「店家沒有任何身分設定」相同：除了「未設定」只有一個空白選項
+    expect(Array.from(screen.getByLabelText('人員身分類別設定').options).map(o => o.textContent).filter(Boolean)).toEqual(['未設定'])
+    fillAll()
+    submit()
+    await wait(() => expect(callsOf(calls, 'CREATE_USER')).toHaveLength(1))
+    expect(callsOf(calls, 'CREATE_USER')[0].variables.input).not.toHaveProperty('jobPointId')
   })
 })

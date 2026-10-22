@@ -69,8 +69,8 @@ describe('員工列表：排序與狀態', () => {
   it('數字編號由小到大，其次非數字編號，沒有編號的最後', async () => {
     setup()
     await screen.findByText('共 6 筆')
-    // 非數字編號維持原本順序（B1 在 A9 之前）
-    expect(names()).toEqual(['張二號', '王十號', '林字母', '周英文', '陳無號', '李空號'])
+    // 非數字編號依自然排序（utils/compareNo，Jason 2026/10/22 fix all：A9 在 B1 之前）
+    expect(names()).toEqual(['張二號', '王十號', '周英文', '林字母', '陳無號', '李空號'])
     expect(within(row('張二號')).getByText('2')).toBeInTheDocument()
   })
 
@@ -169,19 +169,19 @@ describe('員工列表：查詢參數', () => {
     await wait(() => expect(callsOf(calls, 'GET_USERS_IN_EMPLOYEE_LIST').map(c => c.variables.input.pageLimit)).toContain(5))
   })
 
-  // 已知缺口（待 Jason 決定）：EmployeeManagementList/Results.js:330 分頁的總筆數用「本頁人數」（employees.length）而非後端 totalCount，
-  // 員工超過每頁筆數（預設 50）時「下一頁」永遠停用，第 51 位以後的員工看不到（只能改每頁 1000 筆）；
-  // 建議改用 pageCount（totalCount）。這裡鎖住目前行為，並驗證換頁的 handler 會送出頁碼。
-  it('總人數超過一頁時「下一頁」目前仍停用（鎖住現況）；換頁送出頁碼', async () => {
+  // 分頁總筆數用後端 totalCount（Jason 2026/10/22；修正前用本頁人數，超過一頁時「下一頁」永遠停用）。
+  it('總人數超過一頁時顯示總筆數、可按下一頁並送出頁碼', async () => {
     const { calls } = setup({ totalCount: 120 })
-    await screen.findByText('共 6 筆')
+    await screen.findByText(/共 120 筆/)
+    expect(screen.getByLabelText('下一頁')).toBeEnabled()
+    fireEvent.click(screen.getByLabelText('下一頁'))
+    await wait(() => expect(callsOf(calls, 'GET_USERS_IN_EMPLOYEE_LIST').map(c => c.variables.input.pageOffset)).toContain(1))
+  })
+
+  it('後端沒回總筆數時以本頁人數顯示', async () => {
+    setup({ totalCount: null })
+    expect(await screen.findByText('共 6 筆')).toBeInTheDocument()
     expect(screen.getByLabelText('下一頁')).toBeDisabled()
-    // 改成每頁 5 筆後（本頁 5 人）才有機會換頁：仍以本頁人數計算，下一頁依舊停用
-    const select = screen.getByLabelText('每頁筆數')
-    fireEvent.change(select, { target: { value: Array.from(select.options).find(o => o.textContent === '5').value } })
-    await screen.findByText('共 5 筆')
-    expect(screen.getByLabelText('下一頁')).toBeDisabled()
-    expect(callsOf(calls, 'GET_USERS_IN_EMPLOYEE_LIST').every(c => c.variables.input.pageOffset === 0)).toBe(true)
   })
 
   it('查詢中顯示載入骨架', async () => {

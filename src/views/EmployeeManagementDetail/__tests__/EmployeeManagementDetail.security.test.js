@@ -1,12 +1,13 @@
 // 保護「員工資料 › 密碼與安全」：帳號狀態（pending 視為可登入）、角色、是否可登入設計師手機端的帶入與送出；
 // 有輸入兩次密碼才送 CHANGE_PASSWORD（以員工 id），之後更新帳號資料與角色；沒輸入密碼時只更新帳號資料與角色並重抓員工；完成後回員工列表。
 // 角色送出的是角色 id（MerchantUserAuthorityId），權限以角色 id 判斷，送錯會讓員工拿到別的角色權限。
-// 另以元件單獨測試 Permission.js（舊版權限勾選；頁面目前無法開啟此分頁，見 page 測試的已知缺口）。
+// 把自己的帳號設為不可登入時提示停用並登出（比照基本資料分頁）。
+// 另以元件單獨測試 Permission.js（舊版權限勾選；依既有權限判斷頁面不開放此分頁，網址打 permission 會導回基本資料）。
 // GraphQL 全由模擬 link 回應，不連後端、不改真實帳號。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
-import { renderPage, loginAs, callsOf, USER_ID } from '../../../__tests__/testkit.test'
+import { renderPage, loginAs, callsOf, currentLocation, USER_ID } from '../../../__tests__/testkit.test'
 import Permission from '../Permission'
 import { renderDetail, DESIGNER, EMP_ID } from './employeeDetailKit.test'
 
@@ -92,16 +93,40 @@ describe('密碼與安全', () => {
     await wait(() => expect(window.location.href).toBe('/management/employee'))
   })
 
-  // 已知缺口（待 Jason 決定）：Security.js:106、125 用 mutation 的回傳（{ data }）判斷 designer.status === 'banned'，
-  // 回傳物件沒有 status，所以「把自己的帳號設為不可登入」時永遠不會提示停用並登出（基本資料分頁的同一功能用畫面上的狀態判斷，正常）；
-  // 建議改用 designerSetting.status 與 designer.id 判斷。這裡鎖住目前行為：停用自己仍照一般流程回員工列表。
-  it('把自己的帳號設為不可登入時目前不會登出（鎖住現況）', async () => {
+  // 把自己的帳號設為不可登入時提示停用並登出（Jason 2026/10/22：比照基本資料分頁，以畫面上的狀態與登入者 id 判斷；
+  // 修正前用 mutation 回傳判斷，永遠不會登出）。角色照常送出，但不再導回員工列表。
+  it('把自己的帳號設為不可登入時提示停用並登出', async () => {
     const { calls } = renderDetail('security', { id: USER_ID, designer: { ...DESIGNER, id: USER_ID }, fixtures: FIXTURES })
     await ready()
     choose('帳號狀態', '不可登入')
     save()
-    await wait(() => expect(window.location.href).toBe('/management/employee'))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '已將此帳號設為停用', variant: 'error' }))
+    await wait(() => expect(currentLocation()).toBe('/auth/login'))
+    expect(localStorage.getItem('user')).toBeNull()
     expect(callsOf(calls, 'UPDATE_USER_INFO')[0].variables.input.status).toBe('banned')
+    expect(callsOf(calls, 'FETCH_UPDATE_USER_MERCHANT_IDENTITY')).toHaveLength(1)
+    expect(window.location.href).toBe('http://localhost/')
+  })
+
+  it('有改密碼時把自己設為不可登入同樣提示停用並登出', async () => {
+    const { calls } = renderDetail('security', { id: USER_ID, designer: { ...DESIGNER, id: USER_ID }, fixtures: FIXTURES })
+    await ready()
+    fireEvent.change(screen.getByLabelText('密碼'), { target: { name: 'password', value: 'abc12345' } })
+    fireEvent.change(screen.getByLabelText('確認密碼'), { target: { name: 'confirm', value: 'abc12345' } })
+    choose('帳號狀態', '不可登入')
+    save()
+    await wait(() => expect(currentLocation()).toBe('/auth/login'))
+    expect(openSnackbar).toHaveBeenCalledWith({ message: '已將此帳號設為停用', variant: 'error' })
+    expect(callsOf(calls, 'CHANGE_PASSWORD')).toHaveLength(1)
+    expect(window.location.href).toBe('http://localhost/')
+  })
+
+  it('停用別人的帳號時照一般流程回員工列表、不登出', async () => {
+    renderDetail('security', { fixtures: FIXTURES })
+    await ready()
+    choose('帳號狀態', '不可登入')
+    save()
+    await wait(() => expect(window.location.href).toBe('/management/employee'))
     expect(openSnackbar).not.toHaveBeenCalledWith({ message: '已將此帳號設為停用', variant: 'error' })
     expect(localStorage.getItem('user')).not.toBeNull()
   })

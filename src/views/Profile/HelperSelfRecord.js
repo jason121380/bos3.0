@@ -248,14 +248,15 @@ function OrderRecord({
                           <TableRow>
                             <TableCell>店販業績</TableCell>
                             <TableCell numeric>
+                              {/* 各品項單價×數量加總（Jason 2026/10/22；原本為單價合計×數量合計） */}
                               {formatNumber(Math.abs(
                                 Math.round(
-                                  data.productRecord.reduce((accu, curVal) => accu + curVal.productUnitPrice, 0)
+                                  data.productRecord.reduce(
+                                    (accu, curVal) => accu + curVal.productUnitPrice * curVal.productCount,
+                                    0
+                                  )
                                 )
-                              ) *
-                                Math.round(
-                                  data.productRecord.reduce((accu, curVal) => accu + curVal.productCount, 0)
-                                ))}
+                              ))}
                             </TableCell>
                             <TableCell numeric>{formatNumber(Math.round(data.productPerformanceTillNow))}</TableCell>
                           </TableRow>

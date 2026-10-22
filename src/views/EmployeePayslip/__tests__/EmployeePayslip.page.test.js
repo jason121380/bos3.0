@@ -51,8 +51,6 @@ const setup = ({ report = REPORT, fixtures = {}, ...options } = {}) =>
     route: '/salary/payslip',
     fixtures: {
       FETCH_USER_SALARY_REPORT: { userSalaryReport: report },
-      GET_MERCHANT_SALARY_INCREASE_ITEMS: { getMerchantSalaryIncreaseItems: [{ id: 'i1', itemSetting: '加1', type: 'INCREASE', sorting: 1 }] },
-      GET_MERCHANT_SALARY_DECREASE_ITEMS: { getMerchantSalaryDecreaseItems: [{ id: 'd1', itemSetting: '扣1', type: 'DECREASE', sorting: 1 }] },
       GET_USERS_ORDERABLE_LIST: {
         getUserOrderableList: [
           { userId: 'u1', userName: '小美', userNickName: '', userNo: 'A01' },
@@ -180,10 +178,13 @@ describe('薪資條', () => {
     expect(await screen.findByText('無資料')).toBeInTheDocument()
   })
 
-  // 已知缺口（待 Jason 決定）：店家加項／扣項設定查詢失敗時，EmployeePayslip/index.js:72、90 對 undefined 讀 .loading 拋錯，
-  // 整頁變錯誤畫面（薪資條本身其實用不到這兩份設定）；建議查詢失敗時以空陣列處理，或移除這兩段未被使用的整理邏輯。
-  it('加扣項設定查詢失敗時目前整頁進入錯誤畫面（鎖住現況）', async () => {
-    setup({ fixtures: { GET_MERCHANT_SALARY_INCREASE_ITEMS: new Error('網路錯誤') } })
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+  // 薪資條用不到店家加項／扣項設定：原本查詢後整理卻從未使用、查詢失敗時整頁錯誤，已移除（Jason 2026/10/22）。
+  it('不查詢店家加扣項設定；薪資條照常顯示', async () => {
+    const { calls, settle } = setup()
+    await screen.findByText(`測試店 - ${lastMonth()} - 小美`)
+    await settle()
+    expect(callsOf(calls, 'GET_MERCHANT_SALARY_INCREASE_ITEMS')).toHaveLength(0)
+    expect(callsOf(calls, 'GET_MERCHANT_SALARY_DECREASE_ITEMS')).toHaveLength(0)
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 })

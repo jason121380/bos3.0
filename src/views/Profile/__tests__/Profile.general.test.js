@@ -100,7 +100,8 @@ describe('個人頁：基本資料', () => {
   })
 
   it('欄位為 null 時顯示空白；送出時保留 null', async () => {
-    const me = { ...ME, nickName: null, designerNo: null, serialNumber: null, email: null, contactAddress: null, address: null, selfIntroduction: null, selfIntroductionLink: null, gender: null, firstName: null, lastName: null, birthday: null }
+    // 姓氏、名字、手機號碼為必填（見下方），這裡只把選填欄位設為 null
+    const me = { ...ME, nickName: null, designerNo: null, serialNumber: null, email: null, contactAddress: null, address: null, selfIntroduction: null, selfIntroductionLink: null, gender: null, birthday: null }
     const { calls } = renderProfile('general', { me, fixtures: { UPDATE_USER_INFO: { setUserInfo: true } } })
     await ready()
     expect(screen.getByLabelText('暱稱')).toHaveValue('')
@@ -111,18 +112,34 @@ describe('個人頁：基本資料', () => {
     expect(callsOf(calls, 'UPDATE_USER_INFO')[0].variables.input).toEqual(expect.objectContaining({ nickName: null, gender: null, birthday: null }))
   })
 
-  // 已知缺口（待 Jason 決定）：Profile/General/GeneralSettings.js:88-91 想在有欄位為空時停用「儲存變更」，但 .filter(...).indexOf(true)
-  // 永遠是 -1，按鈕永遠可按（空欄位照樣送出）；建議改為檢查 filter 結果長度，或明確列出必填欄位。手機號碼為 null 時欄位顯示空白。
-  it('有空白欄位時「儲存變更」目前仍可按（鎖住現況）', async () => {
+  // 必填（姓氏、名字、手機號碼，比照新增員工）未填時「儲存變更」停用並說明缺哪些欄位（Jason 2026/10/22；
+  // 修正前 .filter(...).indexOf(true) 永遠是 -1，按鈕永遠可按）。選填欄位空白或 null 照常可存。手機號碼為 null 時欄位顯示空白。
+  it('必填欄位未填時「儲存變更」停用並說明原因；補齊後可按', async () => {
     renderProfile('general', { me: { ...ME, email: '', birthday: 0, cellphone: null } })
     await screen.findByLabelText('姓氏')
     expect(screen.getByLabelText('手機號碼')).toHaveValue('')
-    expect(screen.getByRole('button', { name: '儲存變更' })).toBeEnabled()
+    const button = screen.getByRole('button', { name: '儲存變更' })
+    expect(button).toBeDisabled()
+    expect(screen.getByText('請填寫手機號碼後再儲存')).toBeInTheDocument()
+    type('姓氏', '  ')
+    expect(screen.getByText('請填寫姓氏、手機號碼後再儲存')).toBeInTheDocument()
+    type('姓氏', '王')
+    type('手機號碼', '0911222333')
+    expect(button).toBeEnabled()
+    expect(screen.queryByText(/後再儲存/)).toBeNull()
   })
 
-  // 已知缺口（待 Jason 決定）：Profile/General/GeneralSettings.js:125 生日欄位顯示的是 profile.birthday（原本的值）而不是編輯中的 values.birthday，
-  // 選了新生日後欄位仍顯示舊日期（實際送出的是新日期），使用者會以為沒選到；建議改用 values.birthday。
-  it('改生日：送出新日期（台灣時間 00:00），欄位目前仍顯示原本的日期（鎖住現況）', async () => {
+  it('姓名為 null 時欄位顯示空白、「儲存變更」停用並列出姓氏與名字', async () => {
+    renderProfile('general', { me: { ...ME, firstName: null, lastName: null } })
+    await ready()
+    expect(screen.getByLabelText('姓氏')).toHaveValue('')
+    expect(screen.getByLabelText('名字')).toHaveValue('')
+    expect(screen.getByRole('button', { name: '儲存變更' })).toBeDisabled()
+    expect(screen.getByText('請填寫姓氏、名字後再儲存')).toBeInTheDocument()
+  })
+
+  // 選新生日後欄位顯示新日期（Jason 2026/10/22；修正前顯示的是 profile.birthday 原本的值）。
+  it('改生日：欄位顯示新日期，送出新日期（台灣時間 00:00）', async () => {
     const { calls } = renderProfile('general', { fixtures: { UPDATE_USER_INFO: { setUserInfo: true } } })
     await ready()
     fireEvent.click(screen.getByLabelText('選擇日期，目前為 1995/05/20'))
@@ -132,7 +149,7 @@ describe('個人頁：基本資料', () => {
     fireEvent.click(within(dialog).getByRole('gridcell', { name: '1995年5月10日' }))
     const confirm = within(dialog).queryByText('確認')
     if (confirm) fireEvent.click(confirm)
-    expect(screen.getByLabelText('選擇日期，目前為 1995/05/20')).toBeInTheDocument()
+    await wait(() => expect(screen.getByLabelText('選擇日期，目前為 1995/05/10')).toBeInTheDocument())
     save()
     await wait(() => expect(callsOf(calls, 'UPDATE_USER_INFO')).toHaveLength(1))
     expect(callsOf(calls, 'UPDATE_USER_INFO')[0].variables.input.birthday).toBe(new Date(1995, 4, 10).getTime())
