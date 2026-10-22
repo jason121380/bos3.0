@@ -1,3 +1,4 @@
+import { maskCustomerForExport } from 'helper/exportCustomerMask'
 // Divider 只用於下方列印範本（#printMain / #printThermal），維持列印輸出不變
 import { Divider } from 'ui/display-compat'
 import TableEditBar from 'components/TableEditBar'
@@ -77,15 +78,7 @@ function Results({
           format(new Date(order.date), 'eeee')
         )}`,
         客戶: isCustomerDataMarked
-          ? `${order.customer.name.length < 3
-            ? `${order.customer.name.substring(0, 1)}*`
-            : order.customer.name.length < 4
-              ? `${order.customer.name.substring(0, 1)}*${order.customer.name.substring(2, 3)}`
-              : `${order.customer.name.substring(0, 2)}*${order.customer.name.substring(2, 5)}`
-          } ${`${order.customer.cellphone.substring(0, 4)}***${order.customer.cellphone.substring(
-            7,
-            10
-          )}`}`
+          ? maskCustomerForExport(order.customer.name, order.customer.cellphone)
           : `${order.customer.name} ${order.customer.cellphone}`,
         // 設計師沒有編號（空字串或 null）時只有姓名，不帶「/null」（Jason 2026/10/22）
         設計師: `${order.designer.name}${order.designer.designerNo ? `/${order.designer.designerNo}` : ''}`,

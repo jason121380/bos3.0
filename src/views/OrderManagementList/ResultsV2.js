@@ -1,3 +1,4 @@
+import { maskCustomerForExport } from 'helper/exportCustomerMask'
 // Divider 只用於下方列印範本（#printMain / #printThermal），維持列印輸出不變
 import { Divider } from 'ui/display-compat'
 import TableEditBar from 'components/TableEditBar'
@@ -160,15 +161,7 @@ function Results({
           format(new Date(order.date), 'eeee')
         )}`,
         客戶: isCustomerDataMarked
-          ? `${order.customerName.length < 3
-            ? `${order.customerName.substring(0, 1)}*`
-            : order.customerName.length < 4
-              ? `${order.customerName.substring(0, 1)}*${order.customerName.substring(2, 3)}`
-              : `${order.customerName.substring(0, 2)}*${order.customerName.substring(2, 5)}`
-          } ${`${order.customerCellphone.substring(0, 4)}***${order.customerCellphone.substring(
-            7,
-            10
-          )}`}`
+          ? maskCustomerForExport(order.customerName, order.customerCellphone)
           : `${order.customerName} ${order.customerCellphone}`,
         設計師: `${order.designerName}${order.designerNo ? `/${order.designerNo}` : ''}`,
         指定: order.isDesignate ? 'Y' : 'N',

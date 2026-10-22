@@ -305,7 +305,7 @@ describe('帳單列表：列表與匯出', () => {
     await wait(() => expect(exportedCsv()).toContain('陳*姐 0912***678'))
     const csv = exportedCsv()
     expect(csv).toContain('"#A002 (S-9)","2026/10/20/(二)","王* 0922***222","王小美","N"')
-    expect(csv).toContain('歐陽*小明 0933***555')
+    expect(csv).toContain('歐陽*明 0933***555')
     expect(csv).toContain('"#A001","2026/10/19/(一)"')
     expect(csv).toContain('"王小美/01"')
     expect(csv).not.toContain('會員卡販賣')

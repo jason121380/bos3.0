@@ -6,7 +6,7 @@ import MainEventAutocomplete from 'components/MainEventAutocomplete'
 import DateSelector from 'components/DateSelector'
 import { useFetchGetVoucherIssuanceRecordLazy } from 'hooks/useFetchGetVoucherIssuanceRecord'
 import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
-import isExportCustomerMasked from 'helper/exportCustomerMask'
+import isExportCustomerMasked, { maskCustomerName, maskCellphone } from 'helper/exportCustomerMask'
 import produce from 'immer'
 import format from 'date-fns/format'
 import { CSVLink } from "react-csv";
@@ -17,14 +17,6 @@ import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
-// 匯出遮罩格式與帳單列表匯出相同（姓名保留前段、中間以 * 取代；手機保留前 4 碼與末 3 碼）
-const maskName = name =>
-  name.length < 3
-    ? `${name.substring(0, 1)}*`
-    : name.length < 4
-      ? `${name.substring(0, 1)}*${name.substring(2, 3)}`
-      : `${name.substring(0, 2)}*${name.substring(2, 5)}`
-const maskCellphone = cellphone => `${cellphone.substring(0, 4)}***${cellphone.substring(7, 10)}`
 
 function EventCouponIssuanceDetails() {
   const [getVoucherIssuanceRecord, voucherIssuanceRecordData] = useFetchGetVoucherIssuanceRecordLazy()
@@ -48,7 +40,7 @@ function EventCouponIssuanceDetails() {
     規則名稱: d.ruleName,
     帳單日期: format(d.orderDate, 'yyyy/MM/dd'),
     帳單編號: `#${d.orderNo}`,
-    顧客姓名: isCustomerDataMasked ? maskName(d.customerName || '') : d.customerName,
+    顧客姓名: isCustomerDataMasked ? maskCustomerName(d.customerName || '') : d.customerName,
     顧客手機: isCustomerDataMasked ? maskCellphone(d.customerCellphone || '') : d.customerCellphone,
     使用手機端: d.isCustomerSideUsing ? '是' : '否',
     寄送簡訊: d.isSMSSended ? '是' : '否',

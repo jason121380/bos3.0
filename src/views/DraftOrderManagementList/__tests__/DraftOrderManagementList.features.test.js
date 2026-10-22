@@ -287,7 +287,7 @@ describe('掛單列表：列表與匯出', () => {
     await wait(() => expect(exportedCsv()).toContain('陳*姐 0912***678'))
     const csv = exportedCsv()
     expect(csv).toContain('"#D002","2026/10/20/(二)","王* 0922***222"')
-    expect(csv).toContain('歐陽*小明 0933***555')
+    expect(csv).toContain('歐陽*明 0933***555')
     expect(csv).toContain('"王小美/01","Y","1500","1300","450"')
   })
 

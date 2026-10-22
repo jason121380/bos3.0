@@ -244,8 +244,8 @@ describe('預約管理', () => {
     })
     await settle()
     await wait(() => expect(exportedCsv()).toContain('#N1('))
-    expect(exportedCsv()).toContain('"*(***)"')
-    expect(exportedCsv()).toContain('"歐陽*小明(0911***333)"')
+    expect(exportedCsv()).toContain('"()"')
+    expect(exportedCsv()).toContain('"歐陽*明(0911***333)"')
   })
 
   it('載入中顯示骨架', async () => {

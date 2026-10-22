@@ -13,15 +13,8 @@ import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { maskCustomerName, maskCellphone } from 'helper/exportCustomerMask'
 
-// 匯出遮罩格式與帳單列表、掛單列表相同（姓名 2 字「王*」、3 字「陳*姐」、4 字以上留前 2 字；手機留前 4 後 3）
-const maskName = name =>
-  name.length < 3
-    ? `${name.substring(0, 1)}*`
-    : name.length < 4
-      ? `${name.substring(0, 1)}*${name.substring(2, 3)}`
-      : `${name.substring(0, 2)}*${name.substring(2, 5)}`
-const maskCellphone = cellphone => `${cellphone.substring(0, 4)}***${cellphone.substring(7, 10)}`
 
 function Results({
   orders,
@@ -120,7 +113,7 @@ function Results({
         預約日期及時間: `#${order.no}(${format(new Date(order.date), 'yyyy/MM/dd HH:mm:ss')})`,
         客戶資訊: idx(order, _ => _.customer.isAlive)
           ? isCustomerDataMarked
-            ? `${maskName(order.customer.name || '')}(${maskCellphone(order.customer.cellphone || '')})`
+            ? `${maskCustomerName(order.customer.name || '')}(${maskCellphone(order.customer.cellphone || '')})`
             : `${idx(order, _ => _.customer.name)}(${idx(order, _ => _.customer.cellphone)})`
           : '客資已刪除',
         '指定/不指定': order.isDesignate ? '指定' : '不指定',
