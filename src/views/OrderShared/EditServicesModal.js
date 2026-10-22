@@ -22,7 +22,6 @@ function ServicesModal({
   setSelectedCategorieName,
   servicesOnPannel,
   setHelperFromModal,
-  helperFromModal,
   onPageChange,
   setServicesModalOpen,
   getRowKey,
@@ -69,10 +68,9 @@ function ServicesModal({
     })
   }
 
+  // 原本開頭的 `if (helperFromModal !== []) helperFromModal = []` 永遠成立、只改區域變數（之後沒有讀取），沒有作用，
+  // 2026/10/22 經 Jason 同意刪除；呼叫端仍傳入的 helperFromModal 本來就沒有被使用
   useEffect(() => {
-    if (helperFromModal !== []) {
-      helperFromModal = []
-    }
     if (!serviceDetail.loading && serviceDetail.data) {
       const newHelper = serviceDetail.data.service.helperDeductionSetting
         .map(data => data.nameList.map(name => `${data.type}-${name}`))
@@ -121,7 +119,6 @@ ServicesModal.propTypes = {
 
 ServicesModal.defaultProps = {
   open: false,
-  onClose: () => { },
 }
 
 export default memo(ServicesModal)

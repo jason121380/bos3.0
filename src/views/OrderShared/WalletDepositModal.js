@@ -98,7 +98,8 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
       // 沒有儲值也沒有扣除權限時 moneyStatus 為 undefined，金額不會轉負數、會被當成儲值送出：直接擋下
       if (!moneyStatus) throw new Error('沒有異動入金的權限')
       if (isNaN(cloneWalletDeposit.date)) throw new Error('日期有誤')
-      if (isNaN(cloneWalletDeposit.money)) throw new Error('金額有誤')
+      // 金額一定是數字：type=number 的輸入框在瀏覽器把無效或超出範圍的值（如 1e400）清成 ''，parseInt(Math.abs('')) 為 0；
+      // 原本的 isNaN(money) 檢查跑不到，2026/10/22 經 Jason 同意刪除
       if (!cloneWalletDeposit.designerId) throw new Error('請選擇設計師')
       if (!cloneWalletDeposit.customerId) throw new Error('請選擇顧客')
       if (!cloneWalletDeposit.payType) throw new Error('請選擇付款方式')
@@ -261,7 +262,6 @@ WalletDepositModal.propTypes = {
 
 WalletDepositModal.defaultProps = {
   open: false,
-  onClose: () => { },
 }
 
 export default memo(WalletDepositModal)

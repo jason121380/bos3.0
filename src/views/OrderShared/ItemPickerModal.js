@@ -38,28 +38,10 @@ function ItemPickerModal({
   const contentRef = useRef(null)
   const [categoryNameForDisplay, setCategoryNameForDisplay] = useState('')
 
+  // 呼叫端一律只選一個分類（[分類名稱]；清除時為 '' 或 []），多分類以逗號串接的分支跑不到，2026/10/22 經 Jason 同意刪除
   useEffect(() => {
     if (selectedCategorieName.length === 0) return
-    setCategoryNameForDisplay('')
-    if (selectedCategorieName.length === 1) {
-      selectedCategorieName.forEach(categoryName => {
-        setCategoryNameForDisplay(pre => {
-          return `${pre}${categoryName}`
-        })
-      })
-    } else {
-      selectedCategorieName.forEach((categoryName, index) => {
-        if (index === 0) {
-          setCategoryNameForDisplay(pre => {
-            return `${pre}${categoryName}`
-          })
-        } else {
-          setCategoryNameForDisplay(pre => {
-            return `${pre},${categoryName}`
-          })
-        }
-      })
-    }
+    setCategoryNameForDisplay(`${selectedCategorieName[0]}`)
   }, [selectedCategorieName])
 
   const handleOnChangePage = (_event, nextPage) => {
@@ -100,7 +82,8 @@ function ItemPickerModal({
   // 以點選為主的選擇窗：開啟時焦點放在彈窗本身，不自動聚焦第一顆分類鈕（STYLE §6 Dialog「開啟時的焦點」）
   const handleOpenAutoFocus = event => {
     event.preventDefault()
-    if (contentRef.current) contentRef.current.focus()
+    // Radix 在內容掛載後才觸發 onOpenAutoFocus，此時 ref 一定已設定
+    contentRef.current.focus()
   }
 
   // 新外觀（STYLE §6 Dialog）：ui/dialog 標題／內容／底部動作三段；彈窗內沒有 Autocomplete／Select／日期選擇器，可用 Radix Dialog。

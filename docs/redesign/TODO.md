@@ -8,6 +8,8 @@
 
 ## 一、今天完成了什麼
 
+- **覆蓋率 A 級發現的疑似 bug ①～⑤＋刪除跑不到的程式（2026/10/22，v3.10220914，Jason「do all 你的建議都做」）**：①預收卡選卡券後助理欄位重複（帳單詳細／掛單詳細／重新開單）：選卡券路徑寫成「類型 - 名稱」、載入路徑「類型-名稱」；統一為打帳單與服務助理使用的「類型-名稱」（`OrderShared/ticketHelperType`），去重忽略「-」前後空白，舊資料原樣保留不重複補欄位。②店販／會員卡選擇清單查詢失敗時帳單四頁整頁錯誤 → 視為空清單。③選擇窗關閉／「清除」後重設條件保留「只查可販售」與分頁預設（`PRODUCT_PICKER_SETTING`／`MEMBERSHIP_PICKER_SETTING`；改過每頁筆數者關閉後回到 50）。④抽成 % 檢查改用與存檔相同的 `parseFloat`，`100.5`、`-0.5` 不再繞過 0～100（四個抽成畫面）。⑤抽成「分段→全段（不指定）」漏了分頁與組別歸零，**實測切回全段即整頁錯誤**，已補上。刪除 7 處跑不到的程式（ItemPickerModal 多分類串接與 contentRef 空分支、EditServicesModal 無作用判斷、PannelPayment／PannelRemark 未用函式、4 個彈窗未讀的 `defaultProps.onClose`、WalletDepositModal `isNaN(money)`、business-timezone `getYear` 判斷），OrderShared 全部 100%、門檻設為 100。新增 16 個測試（修正前失敗的皆已確認）。驗證：`lint:build`、106 檔／872 測試（UTC 與洛杉磯）、`test:coverage`、build。**待確認**：以前在帳單詳細等三頁選過預收卡的帳單，後端可能存成「洗髮 - 助理A」，後端若依類型字串比對抽成需確認兩種寫法都認得。
+
 - **覆蓋率 A 級核心（2026/10/22，v3.10220828，Jason「覆蓋率要100」→ 選全站 100%，先做 A 級）**：helper、lib、store、OrderShared、DeductionSettingShared、三個 *Requirements 從 68.4→99.3%（敘述）；58 檔中 49 檔四項 100%，其餘 9 檔剩下的皆為跑不到的程式或下方的疑似 bug。新增 206 個測試（12 個新測試檔，各檔開頭寫明保護的業務規則），未改產品程式、未加 istanbul ignore。`package.json` 門檻：達標群組 100，其餘以達成值為門檻；全域下限 30/26/21/30→34/29/24/34。全站覆蓋率 35.7→37.0%。驗證：`lint:build`、103 檔／856 測試（UTC 與洛杉磯）、`test:coverage` 門檻通過、build。
 
 - **重新開單扣入金（2026/10/22，v3.10220723，Jason「失敗沒有扣入金、重新要清空」）**：①確認佇列帳單建立失敗時沒有扣入金，可用額度維持＝顧客目前餘額，移除抄自帳單詳細、從不成立的 `order.customerId` 比對與 `walletPayByOrder`；②換成佇列帳單原本以外的顧客時扣入金歸 0（比照掛單詳細，以佇列帳單本身的顧客比對；在重新開單頁改選另一筆佇列帳單時元件沿用，新帳單帶入的扣入金不會被誤清——Codex review PR #261）。新增 `QueueOrderEdit/__tests__/PaymentCustomerWallet.test.js` 3 個（載入保留、換顧客清空、改選另一筆佇列帳單保留）。驗證：`lint:build`、91 檔／650 測試（UTC 與洛杉磯）、build。
@@ -253,8 +255,7 @@
 
 ### P3 — 需要你決定
 
-- **（2026/10/22 覆蓋率 A 級發現的疑似 bug，未修，待 Jason 決定）**：①【中】帳單詳細／掛單詳細（重新開單同寫法）選預收卡後助理欄位重複出現（選取時類型 `'洗髮 - 助理A'`、載入時 `'洗髮-助理A'`，jsdom 已重現）；②【中】店販選擇清單查詢失敗時帳單四頁整頁錯誤（`useProductPicker` 讀 undefined.data，已重現）；③【疑似】會員卡選擇窗「清除」分類或關閉後，查詢條件少了「只查可販售」與分頁參數（可能列出停售會員卡，需看後端預設）；④【中，影響薪資】抽成 % 檢查用 `parseInt`、存檔用 `parseFloat`，`100.5`、`-0.5` 可繞過 0～100 檢查被存入；⑤【疑似】抽成全段／分段切換特定順序後組別索引沒歸零，下一次輸入可能拋錯（程式推論，未實機）；⑥【低】`business-timezone` 西元前年份字串、無 Intl 環境的預設參數（支援的瀏覽器不會發生）；⑦【低】異動入金金額輸入科學記號（`1e21`、`0.0000001`）會變成 1；⑧【低】庫存預設排序只有一邊有商品編號時結果依瀏覽器而定。
-- **（2026/10/22）跑不到的程式，建議刪除（需同意，刪除後可再提高門檻）**：`ItemPickerModal` 多分類串接顯示與 `contentRef` 為空分支、`EditServicesModal` 的 `helperFromModal !== []`（永遠成立、無作用）、`PannelPayment`／`PannelRemark` 未使用的 `handleAccordionClick`、5 個彈窗沒被讀的 `defaultProps.onClose`、`WalletDepositModal` 的 `isNaN(money)`、`business-timezone` 的 `getYear` 不存在分支。
+- **（2026/10/22 覆蓋率 A 級發現的低影響項目，未修）**：`business-timezone` 西元前年份字串、無 Intl 環境的預設參數（支援的瀏覽器不會發生）；異動入金金額輸入科學記號（`1e21`、`0.0000001`）會變成 1；庫存預設排序只有一邊有商品編號時結果依瀏覽器而定。①～⑤已修（見 §一）。
 
 1. `Services`（服務項目設定）的篩選按鈕：舊版因 prop 名稱錯誤從未顯示，要顯示嗎？
 2. ~~直接列印的報表是否要改版~~ **已拍版（Jason 2026/10/19）**：所有報表樣式一致、以 compact 緊湊呈現；只改 presentation／print CSS，不改內容欄位與數字計算。**下一組優先：報表 compact 專項**（先盤點共用層，再逐目錄）。2026/10/19 實測：`window.print` 出現在 28 個檔案，其中 22 個是報表目錄的 `index`（約 15 頁是舊口徑，實際更多），另 6 個是 `OrderManagementList/ResultsV2`、`DraftOrderManagementList/ResultsV2`、`DraftOrderEdit/Footer`、`OrderCreate/OrderDetailModal`、`InventoryWorkReview/General`、`ProductInventoryList/Results`。

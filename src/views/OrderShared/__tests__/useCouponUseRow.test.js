@@ -10,9 +10,9 @@ import { createAutoMockLink, callsOf } from '../../../__tests__/testkit.test'
 // - 選卡券時金額帶卡券價格、助理欄位依該服務的助理設定展開（沒有設定就沒有欄位），並通知帳單換卡券
 // - 改助理時只把「有選人」的助理送進帳單；清除時所有助理清空並通知帳單
 // - 金額顯示：過長的小數取一位，四捨五入後為 0 時顯示 0（不顯示 0.0）
-// 已知缺口（TODO P3 覆蓋率 A 級疑似 bug ①，待 Jason 決定）：選卡券時產生的助理類型是「洗髮 - 助理A」，之後重新查詢卡券紀錄時
-// 產生「洗髮-助理A」，以字串完全相等去重，畫面會出現重複的助理欄位。兩種格式哪個才對尚未決定，這裡只比對類型與人員，
-// 也沒有模擬「選完後重新查詢」那一步——本檔不保護「選卡券後不重複」；修正後補上單一格式與重新查詢的斷言。
+// - 助理類型名稱只有一種格式「服務助理類型-名稱」（如「洗髮-助理A」，與打帳單、服務項目助理同一格式）：
+//   選卡券後帳單更新、重新查詢卡券紀錄時不會再補出同一個助理欄位；舊資料存成「洗髮 - 助理A」的也視為同一個、不重複補
+//   （2026/10/22 修正：原本選卡券時產生「洗髮 - 助理A」、查詢時產生「洗髮-助理A」，以字串完全相等去重，畫面出現重複欄位）
 // GraphQL 由模擬 link 回應，不連後端。
 
 afterEach(cleanup)
@@ -44,12 +44,15 @@ function setup(couponUsage, { index = 0 } = {}) {
     Object.assign(latest, useCouponUseRow({ index, couponUsage: usage, onChange, onClear }))
     return null
   }
-  const utils = render(
+  const tree = usage => (
     <MockedProvider link={link} addTypename={false}>
-      <Row usage={couponUsage} />
+      <Row usage={usage} />
     </MockedProvider>
   )
-  return { ...utils, calls, onChange, onClear, latest }
+  const utils = render(tree(couponUsage))
+  // 模擬帳單收到 onChange 後把新的這一列傳回來（頁面的 PannelCouponUse 會換一個新物件）
+  const setUsage = usage => utils.rerender(tree(usage))
+  return { ...utils, calls, onChange, onClear, latest, setUsage }
 }
 
 describe('載入既有帳單的預收卡', () => {
@@ -64,6 +67,15 @@ describe('載入既有帳單的預收卡', () => {
       { type: '洗髮-助理B', isDesignate: false, helperId: '', helperDeductiontype: 'POINT' },
       { type: '吹整-助理C', isDesignate: false, helperId: '', helperDeductiontype: 'CASH' },
     ])
+  })
+
+  it('舊資料存成「洗髮 - 助理A」：視為同一個助理，不再補一個「洗髮-助理A」，已存的類型原樣保留', async () => {
+    const saved = { type: '洗髮 - 助理A', isDesignate: false, helperId: 'helper-1', helperDeductiontype: 'POINT' }
+    const { latest } = setup({ customerTicketId: 'ticket-1', price: 600, useTicketOrderHelpers: [saved] })
+    await wait(() => expect(latest.ticketOrderHelpers).toHaveLength(3))
+    await new Promise(resolve => setTimeout(resolve, 10))
+    expect(latest.ticketOrderHelpers.map(h => h.type)).toEqual(['洗髮 - 助理A', '洗髮-助理B', '吹整-助理C'])
+    expect(latest.ticketOrderHelpers[0]).toEqual(saved)
   })
 
   it('還沒選卡券的空白列：不查詢卡券', async () => {
@@ -86,19 +98,25 @@ describe('選卡券、改助理、清除', () => {
     },
   }
 
-  it('選卡券：金額帶卡券價格、依服務的助理設定展開助理欄位，並通知帳單換卡券', () => {
+  it('選卡券：金額帶卡券價格、依服務的助理設定展開助理欄位（類型「服務助理類型-名稱」），並通知帳單換卡券', () => {
     const { latest, onChange } = setup({ customerTicketId: '', useTicketOrderHelpers: [] }, { index: 2 })
     act(() => latest.handleCustomerTicketChange(ticket))
     expect(latest.price).toBe(450)
-    // 類型名稱的分隔格式與載入既有帳單時不同（見檔頭已知缺口），這裡只比對類型與人員
-    const expected = [['洗髮', '助理A', 'POINT'], ['洗髮', '助理B', 'POINT'], ['吹整', '助理C', 'CASH']]
-    expect(latest.ticketOrderHelpers).toHaveLength(3)
-    latest.ticketOrderHelpers.forEach((helper, i) => {
-      const [type, name, deductionType] = expected[i]
-      expect(helper.type).toMatch(new RegExp(`^${type}\\s?-\\s?${name}$`))
-      expect(helper).toEqual(expect.objectContaining({ helperId: '', isDesignate: false, helperDeductiontype: deductionType }))
-    })
+    expect(latest.ticketOrderHelpers).toEqual([
+      { type: '洗髮-助理A', helperId: '', isDesignate: false, helperDeductiontype: 'POINT' },
+      { type: '洗髮-助理B', helperId: '', isDesignate: false, helperDeductiontype: 'POINT' },
+      { type: '吹整-助理C', helperId: '', isDesignate: false, helperDeductiontype: 'CASH' },
+    ])
     expect(onChange).toHaveBeenCalledWith({ key: 'customerTicketId', value: 'ticket-2', index: 2 })
+  })
+
+  it('選卡券後帳單更新、重新查詢卡券紀錄：助理欄位不重複，只有一種格式', async () => {
+    const { latest, calls, setUsage } = setup({ customerTicketId: '', useTicketOrderHelpers: [] })
+    act(() => latest.handleCustomerTicketChange({ ...ticket, id: 'ticket-1' }))
+    setUsage({ customerTicketId: 'ticket-1', price: 450, useTicketOrderHelpers: [] })
+    await wait(() => expect(callsOf(calls, 'GetTicket')).toHaveLength(1))
+    await new Promise(resolve => setTimeout(resolve, 20))
+    expect(latest.ticketOrderHelpers.map(h => h.type)).toEqual(['洗髮-助理A', '洗髮-助理B', '吹整-助理C'])
   })
 
   it('卡券的服務沒有助理設定：沒有助理欄位', () => {

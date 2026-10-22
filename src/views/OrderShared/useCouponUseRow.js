@@ -1,5 +1,6 @@
 import React from 'react'
 import { useFetchLazyTicketRecords } from 'hooks/useFetchTicketRecords'
+import { ticketHelperType, isSameHelperType } from './ticketHelperType'
 import idx from 'idx'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -22,13 +23,13 @@ export default function useCouponUseRow({ index, couponUsage, onChange, onClear 
             .map(data =>
               data.nameList.map(name => {
                 return {
-                  type: `${data.type}-${name}`,
+                  type: ticketHelperType(data.type, name),
                   helperDeductiontype: data.helperDeductionType,
                 }
               })
             )
             .reduce((a, b) => a.concat(b), [])
-            .filter(data => !prev.find(i => i.type === data.type))
+            .filter(data => !prev.find(i => isSameHelperType(i.type, data.type)))
             .map(data => ({
               type: data.type,
               isDesignate: false,
@@ -59,7 +60,7 @@ export default function useCouponUseRow({ index, couponUsage, onChange, onClear 
           ? _.service.helperDeductionSetting
             .map(data =>
               data.nameList.map(name => ({
-                type: `${data.type} - ${name}`,
+                type: ticketHelperType(data.type, name),
                 helperId: '',
                 isDesignate: false,
                 helperDeductiontype: data.helperDeductionType,

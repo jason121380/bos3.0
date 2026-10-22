@@ -4,6 +4,7 @@ import { openSnackbar } from 'elements/snackbars'
 // 抽成級距的欄位檢查與 handler：新增抽成設定、編輯抽成設定、員工列表「編輯設計師抽成」彈窗、員工資料「抽成方式設定」四處共用。
 // 原本四處各有一份 handler，內容逐字相同（只差空白與註解）；原樣搬到這裡，函式本體不變。
 // checkInput 兩種版本不同（設定頁與員工資料先把空字串改成 0，彈窗沒有），各自原樣保留，由呼叫端傳入。
+// 2026/10/22（Jason 同意）：抽成 % 的 0～100 檢查改用 parseFloat，與存檔的數值相同。
 
 // 新增／編輯抽成設定頁的 checkInput（原樣）
 export const checkInputEmptyAsZero = (event, rakeType) => {
@@ -39,7 +40,8 @@ export const checkInputEmptyAsZero = (event, rakeType) => {
       }
       break
     case 'rake':
-      if (parseInt(event.target.value, 10) > 100 || parseInt(event.target.value, 10) < 0) {
+      // 與存檔相同以 parseFloat 檢查（2026/10/22：原本用 parseInt，100.5、-0.5 會通過檢查並被存入）
+      if (parseFloat(event.target.value) > 100 || parseFloat(event.target.value) < 0) {
         event.target.value = 0
         openSnackbar({
           message: '請輸入0~100之間的數字',
@@ -83,7 +85,8 @@ export const checkInputRangeOnly = (event, rakeType) => {
       }
       break
     case 'rake':
-      if (parseInt(event.target.value, 10) > 100 || parseInt(event.target.value, 10) < 0) {
+      // 與存檔相同以 parseFloat 檢查（2026/10/22：原本用 parseInt，100.5、-0.5 會通過檢查並被存入）
+      if (parseFloat(event.target.value) > 100 || parseFloat(event.target.value) < 0) {
         event.target.value = 0
         openSnackbar({
           message: '請輸入0~100之間的數字',
@@ -211,6 +214,9 @@ export default function createRakeHandlers({ profitSharing, onChange, deductionI
         ]
         onChange({ value: newProfitSharing.nonSegmented, key: 'nonSegmented' })
         onChange({ value: newProfitSharing.segmented, key: 'segmented' })
+        // 全段只剩「預設」一組：與其他分支相同把分頁與組別索引歸零（2026/10/22：原本漏了，先前停在第 3 組時回全段整頁錯誤）
+        setTabValue('預設')
+        setDeductionIndex(0)
       }
     } else {
       if (newProfitSharing.designationUsage) {
