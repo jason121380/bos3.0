@@ -296,8 +296,6 @@ function OrderCreate() {
     }
   }, [reset])
 
-  const [addKeydown, setAddKeyDown] = useState(0)
-
   return (
     <Page title="打帳單" className="ui-root">
       <>
@@ -325,8 +323,6 @@ function OrderCreate() {
             walletPayBalanceForDetail,
             isClick,
             setIsClick,
-            addKeydown,
-            setAddKeyDown,
             designationSettingForOrderCreate,
             setDesignationSettingForOrderCreate,
             lastOrderStatusData,

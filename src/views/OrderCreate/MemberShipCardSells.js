@@ -268,12 +268,14 @@ const MemberShipCardSells = ({
                   handleKeyDown({ event, nextField: "thirdParty" })
                 }
                 onChange={(value) => {
+                  // 有效天數為 0（終身卡）時沒有可帶的到期日：帳單日當天已早於可選的最早日期（帳單日＋1），
+                  // 留空（無效日期）待櫃檯選，結帳時提示「會員卡到期日有誤」（同重新開單，Codex review PR #265）
                   onChange({
                     index,
                     key: "expiryDate",
                     value:
                       sellsItem.expiryDate === null
-                        ? addDays(new Date(bill.date), sellsItem.effecitveDay).getTime()
+                        ? sellsItem.effecitveDay > 0 ? addDays(new Date(bill.date), sellsItem.effecitveDay).getTime() : NaN
                         : null,
                   });
                 }}
@@ -317,7 +319,10 @@ const MemberShipCardSells = ({
                     if (data.id === sellsItem.thirdPartyCouponMerchantId) {
                       return (
                         <p className={`m-0 ${styles.heading2}`} key={data.id} style={{ marginTop: '4px' }}>
-                          {`扣完後業績:${Math.round((sellsItem.price * (100 - data.fee)) / 100)}`}
+                          {/* 比照 Services.js：PERCENT 按比例，其他類型（固定金額）減去手續費 */}
+                          {data.type === 'PERCENT'
+                            ? `扣完後業績:${Math.round((sellsItem.price * (100 - data.fee)) / 100)}`
+                            : `扣完後業績:${Math.round(sellsItem.price - data.fee)}`}
                         </p>
                       );
                     }

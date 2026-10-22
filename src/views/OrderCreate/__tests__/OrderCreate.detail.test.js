@@ -393,6 +393,55 @@ describe('消費明細：送出', () => {
     expect(window.open).not.toHaveBeenCalled()
   })
 
+  // 為什麼重要：櫃檯習慣用 F9／F8 結帳。原本按下快捷鍵就先移除鍵盤監聽，被逐列檢查擋下時監聽不會掛回，
+  // 之後在同一個明細再按 F9／F8 完全沒反應（也沒有提示），只能返回重開明細
+  it('快捷鍵被逐列檢查擋下後：同一個明細內再按 F9、F8 仍會檢查並提示（不送出）', async () => {
+    const { calls } = setupPage()
+    await waitPageReady()
+    await pickEmployee()
+    fireEvent.click(screen.getByLabelText('不留客資'))
+    fireEvent.click(screen.getByTestId('merchantSell'))
+    await pickEmployee(designerInputs()[1], HELPER)
+    await wait(() => expect(checkoutButton()).not.toBeDisabled())
+    await openDetail()
+    const blocked = () => openSnackbar.mock.calls.filter(([a]) => a.message === '請選擇店販商品').length
+    fireEvent.keyDown(document, { code: 'F9' })
+    await wait(() => expect(blocked()).toBe(1))
+    fireEvent.keyDown(document, { code: 'F9' })
+    await wait(() => expect(blocked()).toBe(2))
+    fireEvent.keyDown(document, { code: 'F8' })
+    await wait(() => expect(blocked()).toBe(3))
+    fireEvent.keyDown(document, { code: 'F8' })
+    await wait(() => expect(blocked()).toBe(4))
+    fireEvent.keyDown(document, { code: 'F9' })
+    await wait(() => expect(blocked()).toBe(5))
+    expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(0)
+    expect(window.open).not.toHaveBeenCalled()
+  })
+
+  // 為什麼重要：送出失敗（例如庫存不足）後按鈕會恢復可按，快捷鍵也要能再送；原本 F9 送出時移除的監聽失敗後不會掛回
+  it('F9 送出失敗後：再按 F9 可重送；送出中連按只送一次', async () => {
+    const { calls } = setupPage({ FETCH_CREATE_ORDER: new Error('庫存不足') })
+    await waitPageReady()
+    await pickEmployee()
+    fireEvent.click(screen.getByLabelText('不留客資'))
+    await pickService()
+    await wait(() => expect(checkoutButton()).not.toBeDisabled())
+    await openDetail()
+    const failed = () => openSnackbar.mock.calls.filter(([a]) => a.variant === 'error' && /庫存不足/.test(a.message)).length
+    fireEvent.keyDown(document, { code: 'F9' })
+    fireEvent.keyDown(document, { code: 'F9' })
+    await wait(() => expect(failed()).toBe(1))
+    expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(1)
+    await wait(() => expect(button('結帳並列印')).not.toBeDisabled())
+    fireEvent.keyDown(document, { code: 'F9' })
+    await wait(() => expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(2))
+    await wait(() => expect(failed()).toBe(2))
+    fireEvent.keyDown(document, { code: 'F8' })
+    await wait(() => expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(3))
+    expect(window.open).not.toHaveBeenCalled()
+  })
+
   it('店販缺服務人員、會員卡缺卡或缺服務人員：明細內三種送出都擋下並提示', async () => {
     const cases = [
       {

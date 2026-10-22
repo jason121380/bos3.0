@@ -13,7 +13,7 @@ import { openSnackbar } from 'elements/snackbars'
 import { loginAs, callsOf, currentLocation } from '../../../__tests__/testkit.test'
 import {
   setupPage, waitPageReady, pickEmployee, pickService, pickCustomer, checkoutButton, sentOrder,
-  DESIGNER, PRODUCT, MEMBERSHIP, button, queryButton, findButton,
+  DESIGNER, PRODUCT, MEMBERSHIP, MEMBERSHIP_FOREVER, button, queryButton, findButton,
 } from './orderCreateKit.test'
 
 jest.setTimeout(20000)
@@ -212,6 +212,33 @@ describe('打帳單：送出前逐列檢查', () => {
     fireEvent.click(button('掛單'))
     pendingConfirm().usehandleCreateDraftOrder()
     await wait(() => expect(shownTimes('請選擇會員卡的服務人員')).toBe(2))
+    expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(0)
+  })
+
+  // 為什麼重要：終身卡（有效天數 0）沒有可帶的到期日。原本取消「永久會籍」時到期日＝帳單日＋0＝帳單日當天，
+  // 已過期又早於日期欄可選的最早日期（帳單隔天），結帳與掛單照樣送出一張「當天就到期」的會員卡。
+  // 改為到期日留空待櫃檯選，送出前以 checkMembershipOrders 擋下「會員卡到期日有誤」（同重新開單，Codex review PR #265）
+  it('終身卡取消「永久會籍」：到期日留空，結帳與掛單提示「會員卡到期日有誤」不送出', async () => {
+    const { calls } = setupPage()
+    await waitPageReady()
+    await pickEmployee()
+    withoutCustomer()
+    openPanel('會員卡銷售')
+    await pickEmployee(designerInputs()[2])
+    fireEvent.change(screen.getByPlaceholderText('會員卡名稱/代號'), { target: { value: '永' } })
+    fireEvent.click(await screen.findByTestId(`undefined-${MEMBERSHIP_FOREVER.name}`))
+    const forever = () => screen.getByLabelText('永久會籍')
+    await wait(() => expect(forever()).toBeChecked())
+    fireEvent.click(forever())
+    await wait(() => expect(forever()).not.toBeChecked())
+    expect(screen.getAllByLabelText(/^選擇日期/)[1]).toHaveValue('')
+    await wait(() => expect(checkoutButton()).not.toBeDisabled())
+    fireEvent.click(checkoutButton())
+    await wait(() => expect(shownTimes('會員卡到期日有誤')).toBe(1))
+    await wait(() => expect(button('掛單')).not.toBeDisabled())
+    fireEvent.click(button('掛單'))
+    pendingConfirm().usehandleCreateDraftOrder()
+    await wait(() => expect(shownTimes('會員卡到期日有誤')).toBe(2))
     expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(0)
   })
 })

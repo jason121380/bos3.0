@@ -217,6 +217,30 @@ describe('新增顧客', () => {
   })
 })
 
+// 為什麼重要：偏好設計師欄（ui/combobox）以選項物件呼叫 getOptionLabel 取顯示文字；原本物件一律回空字串，
+// 選了設計師或編輯有偏好設計師的顧客時欄位都是空白，櫃台看不出設定了誰，容易重選或誤以為沒設定。
+describe('偏好設計師欄顯示姓名', () => {
+  it('新增顧客：選了偏好設計師後欄位顯示設計師姓名', async () => {
+    await openNew()
+    fireEvent.change(preferDesigner(), { target: { value: '02' } })
+    fireEvent.click(await screen.findByText(`${HELPER.userName}-${HELPER.userNo}`))
+    await wait(() => expect(preferDesigner()).toHaveValue(HELPER.userName))
+  })
+
+  it('編輯顧客：帶入顧客原本的偏好設計師姓名', async () => {
+    const page = setupPage({
+      GET_LAST_CUSTOMER_NO: { getLastCustomerNo: 'C099' },
+      GET_CHECK_IS_CUSTOMER_NO_USED: { checkIsCustomerNoUsed: false },
+    })
+    await waitPageReady()
+    await pickCustomer(page.calls)
+    fireEvent.click(button('編輯顧客資料'))
+    await screen.findByText('編輯客戶資料')
+    // CUSTOMER_DETAIL 的偏好設計師是 DESIGNER
+    await wait(() => expect(preferDesigner()).toHaveValue(DESIGNER.userName))
+  })
+})
+
 describe('編輯顧客', () => {
   const openEdit = async overrides => {
     const page = setupPage({

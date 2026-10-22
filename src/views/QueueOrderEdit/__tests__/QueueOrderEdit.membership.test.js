@@ -228,6 +228,21 @@ describe('重新開單：會員卡銷售', () => {
     await wait(() => expect(summaryValue('現金應收')).toHaveTextContent('12,800'))
   })
 
+  // 為什麼重要：「扣完後業績」是櫃台判斷這張會員卡實際入多少業績的依據。原本會員卡一律按比例算，
+  // 固定金額（手續費 100 元）的卡券會顯示 12000 ×（100−100）% = 0，與服務、店販（PERCENT 按比例、其他類型減去金額）不一致。
+  // 金額彙總的規則不變：會員卡用第三方卡券時不計入業績合計與現金應收。
+  it('固定金額的第三方卡券：扣完後業績＝售價－手續費；業績合計仍不含這張會員卡', async () => {
+    const page = setupQueue({
+      queue: baseQueue({ membershipOrders: [membershipOrder({ thirdPartyCouponMerchantId: 'tp-2' })] }),
+      GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true },
+    })
+    await loaded(page)
+    // 12000 − 100 = 11900
+    expect(await cards().findByText('扣完後業績:11900')).toBeInTheDocument()
+    expect(summaryValue('業績合計')).toHaveTextContent(/^800$/)
+    expect(summaryValue('現金應收')).toHaveTextContent(/^800$/)
+  })
+
   it('鍵盤 Enter 依序移到下一欄；在備註按 Enter 新增下一列', async () => {
     const page = setupQueue({ queue: baseQueue({ membershipOrders: [membershipOrder()] }) })
     await loaded(page)
@@ -247,6 +262,36 @@ describe('重新開單：會員卡銷售', () => {
     fireEvent.keyDown(remark, { key: 'a' })
     fireEvent.keyDown(remark, { key: 'Enter' })
     await wait(() => expect(cards().getByTestId('merchantSsell-1-employee')).toBeInTheDocument())
+  })
+
+  // 為什麼重要：櫃台以 Enter 逐欄輸入。原本到期日按 Enter 跳「第三方卡券」，略過「永久會籍」；
+  // 店家沒開第三方卡券時欄位不存在，游標就停在到期日，只能改用滑鼠。比照打帳單／帳單詳細／掛單詳細：
+  // 到期日 → 永久會籍 →（有開第三方卡券）第三方卡券，否則備註
+  it('鍵盤：到期日 Enter 跳到「永久會籍」；永久會籍 Enter 沒開第三方卡券時跳備註', async () => {
+    const page = setupQueue({ queue: baseQueue({ membershipOrders: [membershipOrder()] }) })
+    await loaded(page)
+    const date = cards().getByPlaceholderText('YYYY/MM/DD')
+    fireEvent.focusIn(date)
+    fireEvent.keyDown(date, { key: 'Enter' })
+    await wait(() => expect(document.activeElement).toBe(permanent()))
+    // 按 Enter 不會打開月曆
+    expect(screen.queryByRole('dialog', { name: '選擇日期' })).not.toBeInTheDocument()
+    fireEvent.keyDown(permanent(), { key: 'Enter' })
+    await wait(() => expect(document.activeElement).toBe(fieldInput(cards(), '備註')))
+  })
+
+  it('鍵盤：有開第三方卡券時，永久會籍 Enter 跳到第三方卡券', async () => {
+    const page = setupQueue({
+      queue: baseQueue({ membershipOrders: [membershipOrder()] }),
+      GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true },
+    })
+    await loaded(page)
+    const date = cards().getByPlaceholderText('YYYY/MM/DD')
+    fireEvent.focusIn(date)
+    fireEvent.keyDown(date, { key: 'Enter' })
+    await wait(() => expect(document.activeElement).toBe(permanent()))
+    fireEvent.keyDown(permanent(), { key: 'Enter' })
+    await wait(() => expect(document.activeElement).toBe(fieldInput(cards(), '第三方卡券')))
   })
 })
 

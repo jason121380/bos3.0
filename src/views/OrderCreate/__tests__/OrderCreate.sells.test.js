@@ -283,6 +283,30 @@ describe('預收卡販賣', () => {
     await wait(() => expect(document.querySelectorAll('input[name="count"]')[1]).toHaveFocus())
   })
 
+  // 為什麼重要：點另一列的欄位時，該列變成「目前列」會觸發「游標移到第一欄（卡券）」，原本不管焦點是否已在本列欄位上，
+  // 游標會先被拉到卡券欄（打字可能打進卡券搜尋），店販／會員卡已修過，這裡比照
+  it('直接點另一列的價格、備註：游標留在點的欄位，過程中也不會先跳到該列的卡券欄', async () => {
+    const { settle } = await prepare()
+    open()
+    await pickTicket()
+    fireEvent.click(screen.getByTestId('couponSells-0-add'))
+    await wait(() => expect(ticketInputs()).toHaveLength(2))
+    await pickTicket(TICKET, 1)
+    const prices = () => document.querySelectorAll('input[name="price"]')
+    const remarks = () => document.querySelectorAll('input[name="remark"]')
+    await wait(() => expect(prices()).toHaveLength(2))
+    const couponFocused = [jest.fn(), jest.fn()]
+    ticketInputs().forEach((input, i) => input.addEventListener('focus', couponFocused[i]))
+    act(() => prices()[0].focus())
+    await settle()
+    expect(document.activeElement).toBe(prices()[0])
+    act(() => remarks()[1].focus())
+    await settle()
+    expect(document.activeElement).toBe(remarks()[1])
+    expect(couponFocused[0]).not.toHaveBeenCalled()
+    expect(couponFocused[1]).not.toHaveBeenCalled()
+  })
+
   it('清除卡券欄：該列不計入帳單', async () => {
     await prepare()
     open()
@@ -475,6 +499,20 @@ describe('會員卡銷售', () => {
     fireEvent.click(await screen.findByTestId('禮券'))
     const { membershipOrders } = await checkout(calls)
     expect(membershipOrders[0].thirdPartyCouponMerchantId).toBe('tp-2')
+  })
+
+  // 為什麼重要：「扣完後業績」是櫃台判斷這張會員卡實際入多少業績的依據。原本會員卡一律按比例算，
+  // 固定金額（手續費 100 元）的卡券會顯示 3000 ×（100−100）% = 0，與服務、店販（PERCENT 按比例、其他類型減去金額）不一致。
+  it('固定金額的第三方卡券：扣完後業績＝售價－手續費（與服務、店販一致）', async () => {
+    await prepare({ GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true } })
+    open()
+    await pickEmployee(sellerInput(), HELPER)
+    await pickCard()
+    const tp = screen.getByPlaceholderText('第三方卡券')
+    fireEvent.click(tp)
+    fireEvent.click(await screen.findByTestId('禮券'))
+    // 3000 − 100 = 2900
+    expect(await screen.findByText('扣完後業績:2900')).toBeInTheDocument()
   })
 
   it('新增、刪除、清除列：只送出有內容的列', async () => {

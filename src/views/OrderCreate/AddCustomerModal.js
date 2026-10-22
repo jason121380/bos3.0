@@ -263,9 +263,12 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
     history.push(`/management/customers/${values.customerId}/invoices`)
   }
 
+  // ui/combobox 以選項物件（已選的設計師）或 id 字串呼叫：物件直接取姓名；原本物件一律回空字串，選了之後欄位顯示空白
   const optionLabel = (id) => {
-    if (id === '' || typeof id === 'object') {
+    if (id === '' || id === null) {
       return ''
+    } else if (typeof id === 'object') {
+      return id.userName ?? ''
     } else {
       const newOption = customerInModal.find(d => d.userId !== null && d.userId === id)
       // 偏好設計師不在可打單人員中（例如已離職）時顯示空白，不讓整頁出錯

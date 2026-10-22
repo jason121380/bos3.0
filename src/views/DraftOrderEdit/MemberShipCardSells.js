@@ -266,14 +266,17 @@ const MemberShipCardSells = ({
                   handleKeyDown({ event, nextField: "thirdParty" })
                 }
                 onChange={(value) => {
+                  // 有效天數為 0（終身卡）時沒有可帶的到期日：帳單日／購買日當天已過期、早於可選的最早日期，
+                  // 留空（無效日期）待櫃檯選，送出時被擋下（同重新開單，Codex review PR #265）；已購會員卡有剩餘天數（validDayCount）時照舊
                   onChange({
                     index,
                     key: "expiryDate",
                     value:
                       sells.expiryDate === null
                         ? sells.validDayCount === undefined
-                          ? addDays(new Date(bill.date), sells.effecitveDay).getTime()
-                          : sells.validDayCount === null ? addDays(new Date(sells.purchaseDate), sells.effecitveDay).getTime()
+                          ? sells.effecitveDay > 0 ? addDays(new Date(bill.date), sells.effecitveDay).getTime() : NaN
+                          : sells.validDayCount === null
+                            ? sells.effecitveDay > 0 ? addDays(new Date(sells.purchaseDate), sells.effecitveDay).getTime() : NaN
                             : addDays(new Date(sells.purchaseDate), sells.validDayCount).getTime()
                         : null,
                   });
@@ -315,7 +318,10 @@ const MemberShipCardSells = ({
                     return (
                       <p key={data.id} className={`m-0 ${styles.heading2}`} style={{ marginTop: '4px' }}>
                         扣完後業績:
-                        {Math.round((sells.price * (100 - data.fee)) / 100)}
+                        {/* 比照 Services.js：PERCENT 按比例，其他類型（固定金額）減去手續費 */}
+                        {data.type === 'PERCENT'
+                          ? Math.round((sells.price * (100 - data.fee)) / 100)
+                          : Math.round(sells.price - data.fee)}
                       </p>
                     );
                   }

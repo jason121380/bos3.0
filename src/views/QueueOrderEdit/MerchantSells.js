@@ -163,7 +163,11 @@ export default function MerchantSells({
                   if (data.id === sells.thirdPartyCouponMerchantId) {
                     return (
                       <p className="m-0 text-[0.8125rem] font-bold">
-                        扣完後業績:{Math.round((sells.price * (100 - data.fee)) / 100)}
+                        扣完後業績:
+                        {/* 比照打帳單與 Services.js：PERCENT 按比例，其他類型（固定金額）減去手續費 */}
+                        {data.type === 'PERCENT'
+                          ? Math.round((sells.price * (100 - data.fee)) / 100)
+                          : Math.round(sells.price - data.fee)}
                       </p>
                     )
                   }

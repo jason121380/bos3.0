@@ -106,6 +106,14 @@ describe('掛單詳細：店販帶回與修改', () => {
     expect(input.productOrders[0].thirdPartyCouponMerchantId).toBeNull()
   })
 
+  // 為什麼重要：「扣完後業績」是櫃台判斷這筆店販實際入多少業績的依據。原本店販一律按比例算，
+  // 固定金額（手續費 100 元）的卡券會顯示 售價 ×（100−100）% = 0，與打帳單、服務（PERCENT 按比例、其他類型減去金額）不一致。
+  it('掛單帶回固定金額的第三方卡券：扣完後業績＝單價－手續費', async () => {
+    await setup({ thirdPartTicket: true, order: makeOrder({ productOrders: [productOrder(PRODUCT, { thirdPartyPayId: 'tp-2' })] }) })
+    // 單價 1200 − 定額券 100 = 1100（以單價計）
+    await wait(() => expect(products().getByText('扣完後業績:1100')).toBeInTheDocument())
+  })
+
   it('清除商品欄：該列不再有單價與數量欄', async () => {
     await setup()
     clearField(rowInput(0, 'product'))

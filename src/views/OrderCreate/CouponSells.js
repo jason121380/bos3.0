@@ -37,7 +37,12 @@ export default function CouponSells({
   const remarkRef = useRef()
 
   useEffect(() => {
-    if (expanded && focusFirstField) {
+    // 新增列、展開區塊、從上一列按 Enter 移過來時游標跳到卡券；使用者自己點了這一列的欄位（焦點已在本列欄位上）時不搶焦點
+    // （比照店販／會員卡；原本點另一列的欄位會先被拉到該列的卡券欄）
+    const active = document.activeElement
+    const fieldFocused = [couponRef, availableCountRef, priceRef, countRef, remarkRef]
+      .some(ref => ref.current && (ref.current === active || (ref.current.contains && ref.current.contains(active))))
+    if (expanded && focusFirstField && !fieldFocused) {
       idx(couponRef, _ => _.current.focus())
       setFocus('coupon')
     }

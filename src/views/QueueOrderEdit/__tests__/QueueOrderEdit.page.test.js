@@ -117,10 +117,11 @@ const fixtures = ({ queue = queuedInput(), order = makeOrder(), password = false
 })
 
 
-const setup = (options = {}) =>
+const setup = (options = {}, { delays } = {}) =>
   renderPage(<QueueOrderEdit match={{ params: { id: 'queue-1' } }} />, {
     fixtures: fixtures(options),
     route: '/queue-order-edit/queue-1',
+    delays,
   })
 
 beforeEach(() => {
@@ -214,6 +215,50 @@ describe('重新開單：重試', () => {
       fireEvent.click(retry)
       await settle()
       expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(1)
+    })
+  })
+
+  // 為什麼重要：成立帳單（createOrder2）回應前「重試」原本仍可按，網路慢時櫃台連點會送出兩次、重複成立同一張帳單
+  // （顧客被重複扣入金、業績重複）。送出中要立即停用，回應後再依原規則恢復。
+  describe('成立帳單送出中', () => {
+    const createCalls = calls => callsOf(calls, 'FETCH_CREATE_ORDER')
+
+    it('按下「重試」後立即停用，回應前連按不會再送一次', async () => {
+      const { calls, settle } = setup({}, { delays: { FETCH_CREATE_ORDER: 300 } })
+      const retry = await screen.findByTestId('checkout')
+      await wait(() => expect(retry).not.toBeDisabled())
+      fireEvent.click(retry)
+      expect(retry).toBeDisabled()
+      fireEvent.click(retry)
+      fireEvent.click(retry)
+      await settle()
+      expect(createCalls(calls)).toHaveLength(1)
+      await wait(() => expect(currentLocation()).toBe('/management/orders'))
+    })
+
+    it('後端未回傳帳單編號：送出中停用，回應後恢復可按（可以再重試）', async () => {
+      const { calls } = setup({ FETCH_CREATE_ORDER: { createOrder2: null } }, { delays: { FETCH_CREATE_ORDER: 200 } })
+      const retry = await screen.findByTestId('checkout')
+      await wait(() => expect(retry).not.toBeDisabled())
+      fireEvent.click(retry)
+      expect(retry).toBeDisabled()
+      await wait(() => expect(retry).not.toBeDisabled())
+      expect(createCalls(calls)).toHaveLength(1)
+      expect(callsOf(calls, 'DELETE_QUEUE')).toHaveLength(0)
+    })
+
+    it('成立帳單失敗：送出中停用，失敗後恢復可按', async () => {
+      const { calls } = setup({ FETCH_CREATE_ORDER: new Error('伺服器忙碌') }, { delays: { FETCH_CREATE_ORDER: 200 } })
+      const retry = await screen.findByTestId('checkout')
+      await wait(() => expect(retry).not.toBeDisabled())
+      fireEvent.click(retry)
+      expect(retry).toBeDisabled()
+      await wait(() =>
+        expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('重結失敗') }))
+      )
+      await wait(() => expect(retry).not.toBeDisabled())
+      expect(createCalls(calls)).toHaveLength(1)
+      expect(callsOf(calls, 'DELETE_QUEUE')).toHaveLength(0)
     })
   })
 
