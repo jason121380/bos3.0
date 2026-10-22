@@ -174,8 +174,8 @@ describe('查詢與版面', () => {
   })
 
   // Jason 2026/10/22 fix all：index.js 的預約歷史顯示（:158）、取消密碼（:318）讀查詢結果前原本沒有防呆，報到設定失敗時（:145）
-  // 會把 checkinSettings 設成 undefined，三者任一失敗都整頁進錯誤畫面；改以 idx 加預設值（不顯示歷史、不需取消密碼、報到功能關閉）。
-  it('預約歷史顯示、取消密碼或報到設定查詢失敗：各自沿用預設值，週曆照常顯示、可開預約明細並直接取消', async () => {
+  // 會把 checkinSettings 設成 undefined，三者任一失敗都整頁進錯誤畫面；改以 idx 加預設值（不顯示歷史、報到功能關閉）；取消密碼讀不到時一律要求密碼（helper/passwordRequired，Codex review PR #270）。
+  it('預約歷史顯示、取消密碼或報到設定查詢失敗：週曆照常顯示、可開預約明細；取消密碼讀不到時先要求密碼，其餘直接取消', async () => {
     for (const name of ['GET_BOOKING_HISTORY_DISPLAY', 'GET_CANCEL_BOOKING_USING', 'GET_CHECKIN_SETTING_FOR_CALENDAR']) {
       const utils = setup({ fixtures: { [name]: new Error('壞了') } })
       await ready(utils)
@@ -186,9 +186,15 @@ describe('查詢與版面', () => {
       fireEvent.click(block('陳小姐'))
       await screen.findByText('電話: 0912000111')
       fireEvent.click(button('取消預約'))
-      // 沒有取消密碼：直接送出，不跳密碼欄
-      await wait(() => expect(sentOf(utils.calls, 'verifyBooking')).toHaveLength(1))
-      expect(screen.queryByLabelText('取消預約密碼')).toBeNull()
+      if (name === 'GET_CANCEL_BOOKING_USING') {
+        // 讀不到取消密碼設定：一律先要求密碼、不直接送出（fail closed，Codex review PR #270 P1）
+        expect(await screen.findByLabelText('取消預約密碼')).toBeInTheDocument()
+        expect(sentOf(utils.calls, 'verifyBooking')).toHaveLength(0)
+      } else {
+        // 沒有取消密碼：直接送出，不跳密碼欄
+        await wait(() => expect(sentOf(utils.calls, 'verifyBooking')).toHaveLength(1))
+        expect(screen.queryByLabelText('取消預約密碼')).toBeNull()
+      }
       cleanup()
     }
   })

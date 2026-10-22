@@ -9,6 +9,7 @@ import { useFetchGetDeleteOrderUsing } from 'hooks/useFetchMerchantPassword'
 import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
 import isExportCustomerMasked from 'helper/exportCustomerMask'
 import idx from 'idx'
+import isPasswordRequired from 'helper/passwordRequired'
 import produce from 'immer'
 import { useState, useEffect } from 'react'
 import DateSelector from 'components/DateSelector'
@@ -59,9 +60,8 @@ function WebOrderMangagementList() {
   // 匯出是否遮罩客資：比照帳單列表，只有設定查詢成功且為 false 才不遮罩（Jason 2026/10/22）
   const customerDataMarkedData = useFetchCustomerDataMarked()
   const isCustomerDataMarked = isExportCustomerMasked(customerDataMarkedData)
-  // 刪除密碼設定查詢失敗時視同未設定（與載入中相同），列表照常顯示（Jason 2026/10/22）
-  const delOrderPassUsing = !getDeleteOrderUsing.loading &&
-    Boolean(idx(getDeleteOrderUsing, _ => _.data.merchantPassword.deleteOrder.isUsing))
+  // 刪除密碼設定查詢失敗時列表照常顯示，但刪除一律先要求密碼（fail closed，Codex review PR #270）
+  const delOrderPassUsing = isPasswordRequired(getDeleteOrderUsing, 'deleteOrder')
 
   // 同步報到設置（查詢失敗時視為未開啟，不整頁錯誤，Jason 2026/10/22）
   useEffect(() => {

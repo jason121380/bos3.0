@@ -4,7 +4,7 @@
 // - 每筆：狀態、時間、顧客（已刪除顯示「客資已刪除」）、指定、設計師（無設計師／不指定設計師）、來源；已完成的連到帳單、未完成的連到預約
 // - 刪除（取消預約）：只能勾未完成的預約；店家設刪除密碼時先輸入密碼；送出的 orderIds 與密碼正確，成功後清空勾選、重抓
 // - 匯出：比照帳單列表依店家設定遮罩客資（只有設定查詢成功且為 false 才不遮罩）；「來源」欄與表格同讀 source（Jason 2026/10/22）
-// - 報到設定、刪除密碼設定查詢失敗時仍顯示列表（Jason 2026/10/22）
+// - 報到設定、刪除密碼設定查詢失敗時仍顯示列表（Jason 2026/10/22）；刪除密碼設定讀不到時一律先要求密碼（Codex review PR #270）
 // GraphQL 全由 testkit 的模擬 link 回應，不刪除真實資料。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
@@ -270,13 +270,14 @@ describe('預約管理', () => {
     expect(headers()).not.toContain('報到狀態')
   })
 
-  it('刪除密碼設定查詢失敗時列表照常顯示，取消預約不要求密碼（Jason 2026/10/22）', async () => {
+  it('刪除密碼設定查詢失敗時列表照常顯示，取消預約一律先要求密碼（fail closed，Codex review PR #270 P1）', async () => {
     const { calls, settle } = setup({ GET_DELETE_ORDER_USING: new Error('查詢失敗') })
     await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
     expect(screen.getByText('預約管理列表')).toBeInTheDocument()
     fireEvent.click(within(rowByTime('14:30', '2026/10/22')).getByLabelText('選取此筆預約'))
     fireEvent.click(screen.getByText('取消訂單(預約)'))
-    await wait(() => expect(callsOf(calls, 'DELETE_ORDER')).toHaveLength(1))
+    expect(await screen.findByLabelText('刪除預約密碼')).toBeInTheDocument()
+    expect(callsOf(calls, 'DELETE_ORDER')).toHaveLength(0)
   })
 })

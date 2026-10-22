@@ -77,7 +77,8 @@ function AuthorityCreate({ match }) {
               />
             )}
             <div className="flex justify-end">
-              <Button variant="primary" onClick={handleSubmit}>
+              {/* 角色讀到之前（載入中、查詢失敗）不能儲存，避免送出空名稱與空權限（Codex review PR #270 P2） */}
+              <Button variant="primary" onClick={handleSubmit} disabled={userAuthorityName === null}>
                 儲存
               </Button>
             </div>

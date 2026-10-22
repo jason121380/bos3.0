@@ -36,6 +36,7 @@ import { Switch } from 'ui/switch'
 import OrderTable from './OrderTable'
 import cloneDeep from 'lodash/cloneDeep'
 import idx from 'idx'
+import isPasswordRequired from 'helper/passwordRequired'
 
 function Calendar() {
   const reservationData = useSelector(state => state.reservation.reservationData)
@@ -684,7 +685,7 @@ function Calendar() {
             editOrder={editOrder}
             setEditOrder={setEditOrder}
             calendarSize={calendarSize}
-            cancelPasswordUsing={cancelBookingUsing.loading ? false : (idx(cancelBookingUsing, _ => _.data.merchantPassword.cancelReservation.isUsing) || false)}
+            cancelPasswordUsing={isPasswordRequired(cancelBookingUsing, 'cancelReservation')}
           /> : ''
         }
       </div>

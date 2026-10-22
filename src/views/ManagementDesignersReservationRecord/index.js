@@ -8,6 +8,7 @@ import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchMerchant from 'hooks/useFetchMerchant'
 import idx from 'idx'
+import isPasswordRequired from 'helper/passwordRequired'
 import { useState, useEffect, useRef } from 'react'
 import CalendarColorClip from 'components/CalendarColorClip'
 import DateSelector from 'components/DateSelector'
@@ -319,7 +320,7 @@ function Calendar() {
             calendarSize={calendarSize}
             checkinSettings={checkinSettings}
             checkinMode={checkinMode}
-            cancelPasswordUsing={cancelBookingUsing.loading ? false : (idx(cancelBookingUsing, _ => _.data.merchantPassword.cancelReservation.isUsing) || false)}
+            cancelPasswordUsing={isPasswordRequired(cancelBookingUsing, 'cancelReservation')}
           /> : ''
         }
       </div>
