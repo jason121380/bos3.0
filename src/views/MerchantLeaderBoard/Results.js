@@ -10,6 +10,8 @@ function Results({
   monthlyAverageDisplayForMerchantLeaderBoard,
   isIncludeMembershipPerformance
 }) {
+  // 查詢失敗時 merchantLeaderBoard 為 undefined：合計列以空清單計算（原本列表有防呆、合計列沒有，整頁錯誤）
+  const list = (merchantLeaderBoard && merchantLeaderBoard.merchantLeaderBoard) || []
   return (
     isSubmit && (
       <Table dense wrapperClassName="MerchantLeaderBoardTable" className="min-w-[650px]" aria-label="a dense table">
@@ -34,8 +36,7 @@ function Results({
           </TableRow>
         </TableHeader>
         <TableBody id="whiteSpace">
-          {merchantLeaderBoard != null &&
-            merchantLeaderBoard.merchantLeaderBoard.map((data, index) => {
+          {list.map((data, index) => {
               return (
                 <TableRow key={index}>
                   <TableCell>
@@ -69,7 +70,7 @@ function Results({
             <TableCell />
             <TableCell numeric>
               { formatNumber(Math.round(
-                merchantLeaderBoard.merchantLeaderBoard
+                list
                   .map(data => data.businessPerformanceTotal)
                   .reduce((acc, curVal) => acc + curVal, 0)
               ))}
@@ -77,7 +78,7 @@ function Results({
             {monthlyAverageDisplayForMerchantLeaderBoard && (
               <TableCell numeric>
                 {formatNumber(Math.round(
-                  merchantLeaderBoard.merchantLeaderBoard
+                  list
                     .map(data => data.monthlyAveragePerformance)
                     .reduce((acc, curVal) => acc + curVal, 0)
                 ))}
@@ -85,35 +86,35 @@ function Results({
             )}
             <TableCell numeric>
               {formatNumber(Math.round(
-                merchantLeaderBoard.merchantLeaderBoard
+                list
                   .map(data => data.serviceTotal)
                   .reduce((acc, curVal) => acc + curVal, 0)
               ))}
             </TableCell>
             <TableCell numeric>
               {formatNumber(Math.round(
-                merchantLeaderBoard.merchantLeaderBoard
+                list
                   .map(data => data.designateServiceTotal)
                   .reduce((acc, curVal) => acc + curVal, 0)
               ))}
             </TableCell>
             <TableCell numeric>
               {formatNumber(Math.round(
-                merchantLeaderBoard.merchantLeaderBoard
+                list
                   .map(data => data.nonDesignateServiceTotal)
                   .reduce((acc, curVal) => acc + curVal, 0)
               ))}
             </TableCell>
             <TableCell numeric>
               {formatNumber(Math.round(
-                merchantLeaderBoard.merchantLeaderBoard
+                list
                   .map(data => data.usedTicketTotal)
                   .reduce((acc, curVal) => acc + curVal, 0)
               ))}
             </TableCell>
             <TableCell numeric>
               {formatNumber(Math.round(
-                merchantLeaderBoard.merchantLeaderBoard
+                list
                   .map(
                     data =>
                       data.ticketSellIntoPerformanceDesignate +
@@ -124,25 +125,25 @@ function Results({
             </TableCell>
             <TableCell numeric>
               {formatNumber(Math.round(
-                merchantLeaderBoard.merchantLeaderBoard
+                list
                   .map(data => data.productTotal)
                   .reduce((acc, curVal) => acc + curVal, 0)
               ))}
             </TableCell>
             {displayReportWithMembership && <TableCell numeric>{formatNumber(Math.round(
-                merchantLeaderBoard.merchantLeaderBoard
+                list
                   .map(data => data.membershipTotal)
                   .reduce((acc, curVal) => acc + curVal, 0)
               ))}</TableCell>}
             <TableCell numeric>
               {formatNumber(Math.round(
-                merchantLeaderBoard.merchantLeaderBoard
+                list
                   .map(data => data.helperPaidPoint)
                   .reduce((acc, curVal) => acc + curVal, 0)
               ))}
               /
               {formatNumber(Math.round(
-                merchantLeaderBoard.merchantLeaderBoard
+                list
                   .map(data => data.helperPaidPrice)
                   .reduce((acc, curVal) => acc + curVal, 0)
               ))}

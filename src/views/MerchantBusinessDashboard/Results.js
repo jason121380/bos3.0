@@ -3,6 +3,9 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableRow } from 'ui/table'
 
+// 查詢失敗時 results 為 {}：明細當成空清單，不讓整頁拋錯（Jason 2026/10/22）
+const listOf = list => list || []
+
 function Results({ results }) {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -14,7 +17,7 @@ function Results({ results }) {
           <div className="px-5 pb-5">
             <Table aria-label="a dense table">
               <TableBody>
-                {results.otherPayway.map((data, index) => (
+                {listOf(results.otherPayway).map((data, index) => (
                   <TableRow key={index}>
                     <TableCell>{data.paywayName}</TableCell>
                     <TableCell numeric>{formatNumber(data.usedPrice)}</TableCell>
@@ -34,7 +37,7 @@ function Results({ results }) {
           <div className="px-5 pb-5">
             <Table aria-label="a dense table">
               <TableBody>
-                {results.thirdPartTicket.map((data, index) => (
+                {listOf(results.thirdPartTicket).map((data, index) => (
                   <TableRow key={index}>
                     <TableCell>{data.ticketName}</TableCell>
                     <TableCell numeric>{formatNumber(data.usedPrice)}</TableCell>
@@ -54,7 +57,7 @@ function Results({ results }) {
           <div className="px-5 pb-5">
             <Table aria-label="a dense table">
               <TableBody>
-                {results.walletDeposit.map((data, index) => (
+                {listOf(results.walletDeposit).map((data, index) => (
                   <TableRow key={index}>
                     <TableCell>{data.paywayName}</TableCell>
                     <TableCell numeric>{formatNumber(data.usedPrice)}</TableCell>

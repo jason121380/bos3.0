@@ -15,6 +15,9 @@ import { Toolbar } from 'ui/page-header'
 import Results from './Results'
 import cloneDeep from 'lodash/cloneDeep'
 
+// 查詢失敗時的合計（0），避免合計列顯示 NaN
+const EMPTY_SUMMARY = { revenueSummary: 0, expenditureSummary: 0 }
+
 const MoneyFlowCategoryReport = () => {
   const [reportForDisplay, setReportForDisplay] = useState([])
   const [excelData, setExcelData] = useState([])
@@ -31,10 +34,11 @@ const MoneyFlowCategoryReport = () => {
   useEffect(() => {
     if (!moneyFlowCategoryReportData.loading) {
       // 複製再加「小結」列（查詢結果唯讀）；下面的匯出也用這份，才有各分類的小結
+      // 查詢失敗（data 為 undefined）時當成沒有資料，不讓整頁拋錯（Jason 2026/10/22）
       const reportList = cloneDeep(idx(
         moneyFlowCategoryReportData,
         _ => _.data.moneyFlowCategoryReport.moneyFlowCategoryReport
-      ))
+      ) || [])
 
       reportList.forEach((data, index) => {
         reportList[index].moneyFlow.push({
@@ -53,7 +57,7 @@ const MoneyFlowCategoryReport = () => {
       setReportWithAmount(reportList)
 
       const excelData = []
-      const report = idx(moneyFlowCategoryReportData, _ => _.data.moneyFlowCategoryReport)
+      const report = idx(moneyFlowCategoryReportData, _ => _.data.moneyFlowCategoryReport) || EMPTY_SUMMARY
 
       setReportForDisplay(report)
       reportList.forEach(data => {

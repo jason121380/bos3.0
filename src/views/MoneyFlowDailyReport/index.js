@@ -44,8 +44,8 @@ export default function Employees() {
         return '(六)'
       case 'Sunday':
         return '(日)'
-      default:
-        break
+      // format(…, 'eeee') 只會回傳上面 7 個英文星期，原本的 default 分支跑不到，已移除
+      // no default
     }
   }
   useEffect(() => {

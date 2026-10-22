@@ -68,7 +68,11 @@ const MerchantLeaderBoard = () => {
   // 店家排行榜服務業績月平均是否顯示
   useEffect(() => {
     if (!isMonthlyAverageDisplayForMerchantLeaderBoard.loading) {
-      const monthlyAverageDisplayForMerchantLeaderBoard = isMonthlyAverageDisplayForMerchantLeaderBoard.data.getIsMonthlyAverageDisplayForMerchantLeaderBoard
+      // 查詢失敗（data 為 undefined）時視為不顯示，不讓整頁拋錯（Jason 2026/10/22）
+      const monthlyAverageDisplayForMerchantLeaderBoard = idx(
+        isMonthlyAverageDisplayForMerchantLeaderBoard,
+        _ => _.data.getIsMonthlyAverageDisplayForMerchantLeaderBoard
+      )
       setMonthlyAverageDisplayForMerchantLeaderBoard(monthlyAverageDisplayForMerchantLeaderBoard)
     }
   }, [isMonthlyAverageDisplayForMerchantLeaderBoard.loading]);
@@ -87,7 +91,9 @@ const MerchantLeaderBoard = () => {
 
   useEffect(() => {
     if (!merchantLeaderBoard.loading) {
-      const report = idx(merchantLeaderBoard, _ => _.data.merchantLeaderBoard.merchantLeaderBoard)
+      // 查詢失敗時當成沒有資料；查無資料時清空匯出（原本保留上一次搜尋的匯出內容）
+      const report = idx(merchantLeaderBoard, _ => _.data.merchantLeaderBoard.merchantLeaderBoard) || []
+      if (report.length === 0) setExcelData([])
       if (report.length > 0) {
         const excelData = []
         let isDisplayExcelWithMembership = false
@@ -184,7 +190,8 @@ const MerchantLeaderBoard = () => {
             excelData.push({
               所屬店家: data.storeName,
               ...obj2,
-              '總業績': Math.round(data.monthlyAveragePerformance),
+              // 每列總業績與畫面、合計列相同用總業績（原本誤用服務業績月平均，合計≠各列加總）
+              '總業績': Math.round(data.businessPerformanceTotal),
               '服務總業績(實)': Math.round(data.serviceTotal),
               '服務業績(指)(實)': Math.round(data.designateServiceTotal),
               '服務業績(不指)(實)': Math.round(data.nonDesignateServiceTotal),
@@ -230,7 +237,8 @@ const MerchantLeaderBoard = () => {
         }
       }
     }
-  }, [merchantLeaderBoard.loading, valueSelect, isIncludeMembershipPerformance, isMemberShipCardActive])
+    // 月平均設定比報表晚到時也要重算匯出（補上月平均欄）
+  }, [merchantLeaderBoard.loading, valueSelect, isIncludeMembershipPerformance, isMemberShipCardActive, monthlyAverageDisplayForMerchantLeaderBoard])
 
   const handleToggleButtonChange = value => {
     value && setPerformReference(value)
@@ -250,9 +258,10 @@ const MerchantLeaderBoard = () => {
   }, [date])
 
   const handleChecked = value => {
+    // 清單長度只有 > 0 與 0 兩種（原本 else if (length === 0) 的另一條路跑不到，改為 else）
     if (value.length > 0) {
       setValueSelect(value)
-    } else if (value.length === 0) {
+    } else {
       setValueSelect([])
       setIsSubmit(false)
     }

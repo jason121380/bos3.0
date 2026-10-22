@@ -18,7 +18,8 @@ function Results({ className, results, excelData, attributeSwitchs, membershipDi
             <TableHead numeric>男/女/未知 (人次)</TableHead>
             <TableHead numeric>指定/不指定 (人次)</TableHead>
             <TableHead numeric>男/女/未知 (不重複)</TableHead>
-            {results[0].performance.categoryData.map((data, index) => {
+            {/* 沒有任何一天的資料時沒有分類欄（原本 results[0] 不存在整頁錯誤） */}
+            {(results.length ? results[0].performance.categoryData : []).map((data, index) => {
               if (attributeSwitchs[index]) {
                 return <TableHead numeric key={index}>{`${data.categoryName}/人次/單均價`}</TableHead>
               }

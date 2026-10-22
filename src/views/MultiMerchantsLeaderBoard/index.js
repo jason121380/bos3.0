@@ -39,7 +39,8 @@ const MultiMerchantsLeaderBoard = () => {
 
 	useEffect(() => {
 		if (!getMultiMerchantsLeaderBoardLazyData.loading && getMultiMerchantsLeaderBoardLazyData.data !== undefined) {
-			const data = idx(getMultiMerchantsLeaderBoardLazyData, _ => _.data.multiMerchantsLeaderBoard)
+			// 後端回 null 時當成沒有資料，不讓整頁拋錯
+			const data = idx(getMultiMerchantsLeaderBoardLazyData, _ => _.data.multiMerchantsLeaderBoard) || []
 			let sortData
 			if (sort === 'PERFORMANCE') {
 				sortData = [...data].sort((a, b) => a.sorting - b.sorting) // 先複製再排序（查詢結果唯讀）
@@ -183,7 +184,8 @@ const MultiMerchantsLeaderBoard = () => {
 								<ToggleGroup
 									size="small"
 									value={sort}
-									onChange={(e, value) => setSort(value)}
+									// 再按一次已選的排序時 value 為 null：維持原排序（原本變成兩個都未選、匯出送出空的 sortBy）
+									onChange={(e, value) => value && setSort(value)}
 									exclusive
 								>
 									<ToggleGroupItem value='PERFORMANCE'>業績</ToggleGroupItem>

@@ -11,6 +11,8 @@ import { startOfDay, endOfDay, format } from 'date-fns'
 import useFetchNonCashDetailStatement from 'hooks/useFetchNonCashDetailStatement'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusActive'
+import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
+import isExportCustomerMasked, { maskCustomerName } from 'helper/exportCustomerMask'
 import { CSVLink } from "react-csv";
 import Results from './Results'
 import { Download } from 'lucide-react'
@@ -27,6 +29,9 @@ const orderBy = [
   { value: 'DESIGNER', label: '設計師' },
 ]
 
+// 查詢失敗（data 為 undefined）時當成沒有資料，不讓整頁拋錯（Jason 2026/10/22）
+const EMPTY_STATEMENT = { nonCashDetailStatement: [], summary: { walletUsed: 0, bonusDecount: 0 } }
+
 export default function Employees() {
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
   const checkedIcon = <CheckBoxIcon fontSize="small" />
@@ -40,6 +45,8 @@ export default function Employees() {
   const userOrderableList = useFetchUsersOrderableList()
   const designerAll = idx(userOrderableList, _ => _.data.getUserOrderableList)
   const customerBonusActive = useFetchGetIsCustomerBonusActive()
+  // 匯出客戶姓名依客資遮罩設定（只有查詢成功且設定為 false 才不遮罩）
+  const isCustomerDataMarked = isExportCustomerMasked(useFetchCustomerDataMarked())
   const [date, setDate] = useState({
     startDate: startOfDay(new Date()).getTime(),
     endDate: endOfDay(new Date()).getTime(),
@@ -73,16 +80,16 @@ export default function Employees() {
       const objOrderPay = {}
       const objThirdParty = {}
       let total = {}
-      const summaryBonus = nonCashDetailStatement.data.nonCashDetailStatement.summary.bonusDecount
-      const report = idx(nonCashDetailStatement, _ => _.data.nonCashDetailStatement)
-      const bonusActive = summaryBonus !== 0 || customerBonusActive.data.getIsCustomerBonusActive
+      const report = idx(nonCashDetailStatement, _ => _.data.nonCashDetailStatement) || EMPTY_STATEMENT
+      const summaryBonus = report.summary.bonusDecount
+      const bonusActive = summaryBonus !== 0 || Boolean(idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive))
       setBonusDisplay(bonusActive)
       report.nonCashDetailStatement.forEach(d => {
         const obj = {}
         obj['帳單日期'] = format(d.date, 'yyyy/MM/dd')
         obj['序號'] = d.serialNumber
         obj['帳單編號'] = d.orderNo
-        obj['客戶姓名'] = d.customerName
+        obj['客戶姓名'] = isCustomerDataMarked ? maskCustomerName(d.customerName) : d.customerName
         obj['設計師代號'] = d.designerNo
         obj['設計師姓名'] = d.designerName
         d.otherPay.forEach(item => {
@@ -147,13 +154,14 @@ export default function Employees() {
       excelData.push(obj3)
       setExcelData(excelData)
     }
-  }, [nonCashDetailStatement.loading, customerBonusActive.loading])
+  }, [nonCashDetailStatement.loading, customerBonusActive.loading, isCustomerDataMarked])
 
   // 選色設計師
   const handleChecked = value => {
+    // 清單長度只有 > 0 與 0 兩種（原本 else if (length === 0) 的另一條路跑不到，改為 else）
     if (value.length > 0) {
       setValue(value)
-    } else if (value.length === 0) {
+    } else {
       setValue([])
     }
   }

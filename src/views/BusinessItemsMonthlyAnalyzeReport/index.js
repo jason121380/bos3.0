@@ -12,15 +12,18 @@ import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
+// 沒有資料（初始、查詢失敗）時的空報表；月份清單為空（原本放一筆沒有日期的月份，畫面會出現「NaN/NaN」列）
+const EMPTY_REPORT = {
+  businessItemsReportData: [],
+  businessItemsReportDataTotal: { serviceCategoriesPerformance: [] },
+  businessItemsReportDataDesignation: { serviceCategoriesPerformance: [] },
+  businessItemsReportDataNonDesignation: { serviceCategoriesPerformance: [] },
+  businessItemsReportDataDesignationProportion: { serviceCategoriesPerformance: [] },
+  businessItemsReportDataPerformanceProportion: { serviceCategoriesPerformance: [] }
+}
+
 export default function Employees() {
-  const [reportData, setReportData] = useState({
-    businessItemsReportData: [{ serviceCategoriesPerformance: [] }],
-    businessItemsReportDataTotal: { serviceCategoriesPerformance: [] },
-    businessItemsReportDataDesignation: { serviceCategoriesPerformance: [] },
-    businessItemsReportDataNonDesignation: { serviceCategoriesPerformance: [] },
-    businessItemsReportDataDesignationProportion: { serviceCategoriesPerformance: [] },
-    businessItemsReportDataPerformanceProportion: { serviceCategoriesPerformance: [] }
-  })
+  const [reportData, setReportData] = useState(EMPTY_REPORT)
   const [date, setDate] = useState({
     startDate: startOfMonth(new Date()).getTime(),
     endDate: endOfMonth(new Date()).getTime(),
@@ -35,7 +38,8 @@ export default function Employees() {
   useEffect(() => {
     if (!businessItemsMonthlyReport.loading) {
       const data = idx(businessItemsMonthlyReport, _ => _.data.businessItemsMonthlyReport)
-      setReportData(data)
+      // 查詢失敗（data 為 undefined）時顯示空報表，不讓整頁拋錯（Jason 2026/10/22）
+      setReportData(data || EMPTY_REPORT)
     }
   }, [businessItemsMonthlyReport.loading])
 

@@ -18,6 +18,12 @@ const TOTAL_CELL = '[&&]:font-bold [&&]:text-[red]'
 // 列印時表頭維持白底黑字（與舊版 th.MuiTableCell-head 的列印樣式一致）
 const printHeader = 'print:bg-transparent print:[&_th]:text-text'
 
+// 平均：除數為 0 時顯示 0（原本以 `|| 0` 只擋得住 NaN，業績大於 0 而次數為 0 時顯示 Infinity）
+const average = (total, count) => (count ? Math.round(total / count) : 0)
+
+// 查詢失敗時 results 為 {}：明細當成空清單，不讓整頁拋錯（Jason 2026/10/22）
+const listOf = list => list || []
+
 function Results({
   merchantDailyReport,
   isServiceTicketMerged,
@@ -72,7 +78,8 @@ function Results({
       obj2.nowOrderTypeAveragePerformance = data.orderTypeAveragePerformance
       obj2.nowAveragePerformance = data.averagePerformance
       curentDayData.currentDay.categoryPerformance.forEach(curData => {
-        if (obj2.name.indexOf(curData.name) > -1) {
+        // 以分類名稱完全相同對應（原本 indexOf 子字串比對，「護髮療程」會被後面的「護髮」覆蓋成護髮的數字）
+        if (obj2.name === curData.name) {
           obj2.curPerformance = curData.performance
           obj2.curTotalCount = curData.totalCount
           obj2.curDesignationCount = curData.designationCount
@@ -330,17 +337,17 @@ function Results({
 
               {/* 平均項次單價 */}
               <TableCell numeric>
-                {formatNumber(Math.round(
-                  curentDayData.currentDay.performanceIncome /
+                {formatNumber(average(
+                  curentDayData.currentDay.performanceIncome,
                   curentDayData.currentDay.categoryPerformance
                     .map(data => data.orderTypeCount)
                     .reduce((accu, curVal) => (accu += curVal), 0)
-                ) || 0)}
+                ))}
               </TableCell>
 
               {/* 單均價(客次價) */}
               <TableCell numeric>
-                {formatNumber(Math.round(curentDayData.currentDay.performanceIncome / curentDayData.currentDay.orderCount) || 0)}
+                {formatNumber(average(curentDayData.currentDay.performanceIncome, curentDayData.currentDay.orderCount))}
               </TableCell>
 
               {/* 類別總業績(累積) */}
@@ -595,7 +602,7 @@ function Results({
                     <TableContainer component={Paper}>
                       <MuiTable size="small" aria-label="a dense table">
                         <MuiTableBody>
-                          {results.otherPayway.map((data, index) => (
+                          {listOf(results.otherPayway).map((data, index) => (
                             <MuiTableRow key={index}>
                               <MuiTableCell>{data.paywayName}</MuiTableCell>
                               <MuiTableCell>{data.usedPrice}</MuiTableCell>
@@ -618,7 +625,7 @@ function Results({
                     <TableContainer component={Paper}>
                       <MuiTable size="small" aria-label="a dense table">
                         <MuiTableBody>
-                          {results.thirdPartTicket.map((data, index) => (
+                          {listOf(results.thirdPartTicket).map((data, index) => (
                             <MuiTableRow key={index}>
                               <MuiTableCell>{data.ticketName}</MuiTableCell>
                               <MuiTableCell>{data.usedPrice}</MuiTableCell>
@@ -643,7 +650,7 @@ function Results({
                 <TableContainer component={Paper}>
                   <MuiTable size="small" aria-label="a dense table">
                     <MuiTableBody>
-                      {results.walletDeposit.map((data, index) => (
+                      {listOf(results.walletDeposit).map((data, index) => (
                         <MuiTableRow key={index}>
                           <MuiTableCell>{data.paywayName}</MuiTableCell>
                           <MuiTableCell>{data.usedPrice}</MuiTableCell>

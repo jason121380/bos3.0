@@ -19,7 +19,8 @@ export default function Results({ reportData, className }) {
       <TableHeader className={`sticky top-0 z-[100] ${printHeader}`}>
         <TableRow className="hover:bg-transparent">
           <TableHead className={`${STICKY_COL} bg-surface`}>月份</TableHead>
-          {reportData.businessItemsReportData[0].serviceCategoriesPerformance.map((data, index) => (
+          {/* 表頭分類取第一個月；沒有月份資料時改取合計列（原本 [0] 不存在整頁錯誤） */}
+          {(reportData.businessItemsReportData[0] || reportData.businessItemsReportDataTotal).serviceCategoriesPerformance.map((data, index) => (
             <TableHead numeric key={index}>{data.categoriesName}</TableHead>
           ))}
           <TableHead numeric>客數</TableHead>

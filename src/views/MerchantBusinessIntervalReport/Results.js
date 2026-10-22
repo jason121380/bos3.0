@@ -8,6 +8,9 @@ import { Fragment } from 'react'
 import roundDecimal from './../../helper/roundDecimal.js'
 import { formatNumber } from 'ui/format'
 
+// 平均：除數為 0 時顯示 0（原本顯示 NaN／Infinity）
+const average = (total, count) => (count ? Math.round(total / count) : 0)
+
 function Results({
   merchantDailyReport,
   isServiceTicketMerged,
@@ -159,22 +162,20 @@ function Results({
                   data.orderTypeAveragePerformance > 0 ||
                   data.averagePerformance > 0
               )
-              .map(
-                (data, index) =>
-                  !data.isTillNow && (
-                    <TableRow key={index}>
-                      <TableCell>{data.name}</TableCell>
-                      <TableCell>{formatNumber(Math.round(data.performance))}</TableCell>
-                      <TableCell>{formatNumber(Math.round(data.totalCount))}</TableCell>
-                      <TableCell>
-                        {formatNumber(Math.round(data.designationCount))}/{formatNumber(Math.round(data.nonDesignationCount))}
-                      </TableCell>
-                      <TableCell>{formatNumber(Math.round(data.orderTypeCount))}</TableCell>
-                      <TableCell>{formatNumber(Math.round(data.orderTypeAveragePerformance))}</TableCell>
-                      <TableCell>{formatNumber(Math.round(data.averagePerformance))}</TableCell>
-                    </TableRow>
-                  )
-              )}
+              // 查詢沒有取 isTillNow 欄位（一律 undefined），原本的 !data.isTillNow 判斷恆為真，已移除
+              .map((data, index) => (
+                <TableRow key={index}>
+                  <TableCell>{data.name}</TableCell>
+                  <TableCell>{formatNumber(Math.round(data.performance))}</TableCell>
+                  <TableCell>{formatNumber(Math.round(data.totalCount))}</TableCell>
+                  <TableCell>
+                    {formatNumber(Math.round(data.designationCount))}/{formatNumber(Math.round(data.nonDesignationCount))}
+                  </TableCell>
+                  <TableCell>{formatNumber(Math.round(data.orderTypeCount))}</TableCell>
+                  <TableCell>{formatNumber(Math.round(data.orderTypeAveragePerformance))}</TableCell>
+                  <TableCell>{formatNumber(Math.round(data.averagePerformance))}</TableCell>
+                </TableRow>
+              ))}
             <TableRow>
               <TableCell className="font-bold">合計</TableCell>
 
@@ -200,8 +201,8 @@ function Results({
 
               {/* 平均項次單價 */}
               <TableCell>
-                {formatNumber(Math.round(
-                  merchantDailyReport.currentDay.performanceIncome /
+                {formatNumber(average(
+                  merchantDailyReport.currentDay.performanceIncome,
                   merchantDailyReport.currentDay.categoryPerformance
                     .map(data => data.orderTypeCount)
                     .reduce((accu, curVal) => (accu += curVal), 0)
@@ -210,9 +211,7 @@ function Results({
 
               {/* 單均價(客次價) */}
               <TableCell>
-                {formatNumber(Math.round(
-                  merchantDailyReport.currentDay.performanceIncome / merchantDailyReport.currentDay.orderCount
-                ))}
+                {formatNumber(average(merchantDailyReport.currentDay.performanceIncome, merchantDailyReport.currentDay.orderCount))}
               </TableCell>
             </TableRow>
           </TableBody>

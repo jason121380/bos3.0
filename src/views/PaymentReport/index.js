@@ -30,8 +30,9 @@ const PaymentReport = () => {
         merchantOtherPayWayDetailReportData,
         _ => _.data.merchantOtherPayWayDetailReport.usedPayType
       )
-      setPaymentsName(paymentsName)
-      setReportForDisplay(report)
+      // 查詢失敗（data 為 undefined）時當成沒有資料，不讓整頁拋錯（Jason 2026/10/22）
+      setPaymentsName(paymentsName || [])
+      setReportForDisplay(report || [])
     }
   }, [merchantOtherPayWayDetailReportData.loading])
 

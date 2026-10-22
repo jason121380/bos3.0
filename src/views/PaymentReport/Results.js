@@ -16,32 +16,31 @@ function Results({ report, paymentsName }) {
   useEffect(() => {
     const init = []
     const excelData = []
-    if (report !== undefined) {
-      for (let i = 0; i < paymentsName.length; i++) {
-        init.push(0)
-      }
-      report.forEach(data => {
-        const obj = {}
-        obj['日期'] = format(data.date, 'yyyy/MM/dd')
-        if (data.payTypeDetail.length !== 0) {
-          paymentsName.forEach((payment, index) => {
-            if (data.payTypeDetail.find(d => d.name === payment)) {
-              init[index] += data.payTypeDetail.find(d => d.name === payment).price
-              obj[payment] = data.payTypeDetail.find(d => d.name === payment).price
-            }
-          })
-          excelData.push(obj)
-        }
-      })
-      setTotalArr(init)
-      const obj2 = {}
-      obj2['日期'] = '合計'
-      paymentsName.forEach((payment, index) => {
-        obj2[payment] = init[index]
-      })
-      excelData.push(obj2)
-      setExcelData(excelData)
+    // report 有 defaultProps（[]），頁面也一律傳陣列，不會是 undefined（原本的 undefined 判斷跑不到，已移除）
+    for (let i = 0; i < paymentsName.length; i++) {
+      init.push(0)
     }
+    report.forEach(data => {
+      const obj = {}
+      obj['日期'] = format(data.date, 'yyyy/MM/dd')
+      if (data.payTypeDetail.length !== 0) {
+        paymentsName.forEach((payment, index) => {
+          if (data.payTypeDetail.find(d => d.name === payment)) {
+            init[index] += data.payTypeDetail.find(d => d.name === payment).price
+            obj[payment] = data.payTypeDetail.find(d => d.name === payment).price
+          }
+        })
+        excelData.push(obj)
+      }
+    })
+    setTotalArr(init)
+    const obj2 = {}
+    obj2['日期'] = '合計'
+    paymentsName.forEach((payment, index) => {
+      obj2[payment] = init[index]
+    })
+    excelData.push(obj2)
+    setExcelData(excelData)
   }, [report])
   return (
     <Card>

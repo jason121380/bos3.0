@@ -3,6 +3,11 @@ import { useState, useEffect } from 'react'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
+// 支出以負數顯示（原本逐日格就是這樣）；列合計與「支出合計」的合計欄、匯出也用同一個規則，
+// 原本合計顯示正數，與逐日格（負數）加總不符（Jason 2026/10/22 報表規則：合計與明細不符直接修）
+const expenditureSign = price => (price > 0 ? `-${price}` : price)
+const signed = (type, price) => (type === 'REVENUE' ? price : expenditureSign(price))
+
 export default function Results({ moneyFlowDailyReport, displayDate, isMemberShipCardActive, secExcelData }) {
   const [revenueTotals, setRevenueTotals] = useState([])
   const [expenditureTotals, setExpenditureTotals] = useState([])
@@ -16,7 +21,8 @@ export default function Results({ moneyFlowDailyReport, displayDate, isMemberShi
     const initBalanceTotals = []
     let reportDisplay = []
     let isMembershipShow
-    if (moneyFlowDailyReport !== undefined) {
+    // 後端回 null 時當成沒有資料（原本 null.filter 整頁錯誤）
+    if (moneyFlowDailyReport) {
       const membershipValue = moneyFlowDailyReport.filter(result => result.itemName === "會員卡消費")
       membershipValue.forEach(d => {
         const isMembershipIsZero = d.moneyFlowRecord.filter(result => result.price === 0)
@@ -69,19 +75,21 @@ export default function Results({ moneyFlowDailyReport, displayDate, isMemberShi
       const obj = {}
       obj[key[0]] = itemName
       moneyFlowRecord.forEach(({ price }, i) => {
-        obj[key[i + 1]] = type === 'REVENUE' ? price : price > 0 ? `-${price}` : price
+        obj[key[i + 1]] = signed(type, price)
       })
-      obj.合計 = moneyFlowRecord.reduce((a, b) => a + b.price, 0)
+      obj.合計 = signed(type, moneyFlowRecord.reduce((a, b) => a + b.price, 0))
       excelData.push(obj)
     })
     const tidyArr = [initRevenueTotals, initExpenditureTotals, initBalanceTotals]
     tidyArr.forEach((data, i) => {
       const obj = {}
       obj.科目 = arr[i]
+      // 支出合計（第 2 列）與畫面相同以負數匯出
+      const format = i === 1 ? expenditureSign : price => price
       data.forEach((price, i) => {
-        obj[key[i + 1]] = price
+        obj[key[i + 1]] = format(price)
       })
-      obj.合計 = data.reduce((a, b) => a + b, 0)
+      obj.合計 = format(data.reduce((a, b) => a + b, 0))
       excelData.push(obj)
     })
     secExcelData(excelData)
@@ -104,17 +112,13 @@ export default function Results({ moneyFlowDailyReport, displayDate, isMemberShi
               <TableCell style={{ minWidth: 90, whiteSpace: 'nowrap' }}>{data.itemName}</TableCell>
               {data.moneyFlowRecord.map((data2, index) => (
                 <TableCell numeric key={index}>
-                  {formatNumber(data.type === 'REVENUE'
-                    ? data2.price
-                    : data2.price > 0
-                      ? `-${data2.price}`
-                      : data2.price)}
+                  {formatNumber(signed(data.type, data2.price))}
                 </TableCell>
               ))}
               <TableCell numeric>
-                {formatNumber(data.moneyFlowRecord
+                {formatNumber(signed(data.type, data.moneyFlowRecord
                   .map(data2 => data2.price)
-                  .reduce((accu, curVal) => (accu += curVal), 0))}
+                  .reduce((accu, curVal) => (accu += curVal), 0)))}
               </TableCell>
             </TableRow>
           ))}
@@ -130,10 +134,10 @@ export default function Results({ moneyFlowDailyReport, displayDate, isMemberShi
           <TableRow className="bg-surface/60">
             <TableCell className="font-bold">支出合計:</TableCell>
             {expenditureTotals.map((num, index) => (
-              <TableCell numeric key={index}>{formatNumber(num > 0 ? `-${num}` : num)}</TableCell>
+              <TableCell numeric key={index}>{formatNumber(expenditureSign(num))}</TableCell>
             ))}
             <TableCell numeric>
-              {formatNumber(expenditureTotals.reduce((accu, curVal) => accu + curVal, 0))}
+              {formatNumber(expenditureSign(expenditureTotals.reduce((accu, curVal) => accu + curVal, 0)))}
             </TableCell>
           </TableRow>
           <TableRow className="bg-surface/60">

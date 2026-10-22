@@ -50,8 +50,8 @@ const OverallPerformanceAnalysisReport = () => {
         return '(六)'
       case 'Sunday':
         return '(日)'
-      default:
-        break
+      // format(…, 'eeee') 只會回傳上面 7 個英文星期，原本的 default 分支跑不到，已移除
+      // no default
     }
   }
 
@@ -98,7 +98,8 @@ const OverallPerformanceAnalysisReport = () => {
             const correctData = reportData.performanceSummary.filter(d => {
               return d.merchantName === reportData.merchantNameList[index]
             })
-            summeryObj[correctData[0].merchantName] = correctData[0].performance
+            // 與順序相同時一樣四捨五入（原本後端順序不同時匯出未四捨五入，與畫面不一致）
+            summeryObj[correctData[0].merchantName] = Math.round(correctData[0].performance)
           }
         })
         excelData.push(summeryObj)
@@ -152,9 +153,10 @@ const OverallPerformanceAnalysisReport = () => {
   }
 
   const handleChecked = value => {
+    // 清單長度只有 > 0 與 0 兩種（原本 else if (length === 0) 的另一條路跑不到，改為 else）
     if (value.length > 0) {
       setMerchantSelect(value)
-    } else if (value.length === 0) {
+    } else {
       setMerchantSelect([])
       getOverallPerformanceAnalysisReportLazy({
         variables: {

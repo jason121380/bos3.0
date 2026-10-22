@@ -51,10 +51,11 @@ const MerchantDailyReport = () => {
   const nonCashDisplay = idx(nonCashDisplayData, _ => _.data.getParameterReportSetting.nonCashDisplay) || false
 
   const mergeResultData = useMemo(() => {
-    if (merchantDashboardData.loading) {
+    const data = merchantDashboardData.data?.merchantDashboard
+    // 支付方式查詢失敗（data 為 undefined）時當成沒有明細，不讓整頁拋錯（Jason 2026/10/22）
+    if (merchantDashboardData.loading || !data) {
       return [];
     }
-    const data = merchantDashboardData.data.merchantDashboard
     const { otherPayway, thirdPartTicket } = data
     const set = new Set()
     const setArr = []
@@ -110,11 +111,12 @@ const MerchantDailyReport = () => {
         _ => _.data.merchantDailyReportV2
       )
       const merchantDailyReportData = idx(merchantDailyReportDataV3, _ => _.data.merchantDailyReportV2)
-      setCurentDayData(merchantDailyReportCurrentDay)
+      // 當日查詢失敗或為 null 時記為 false（不顯示報表、也不再顯示載入中），不讓整頁拋錯（Jason 2026/10/22）
+      setCurentDayData(merchantDailyReportCurrentDay || false)
 
-      // 如果會員卡的數字不是0就要顯示
-      const a = merchantDailyReportCurrentDay.currentDay.membership !== 0
-      const b = merchantDailyReportData.currentDay.membership !== 0
+      // 如果會員卡的數字不是0就要顯示（查詢失敗／null 當成 0）
+      const a = (idx(merchantDailyReportCurrentDay, _ => _.currentDay.membership) || 0) !== 0
+      const b = (idx(merchantDailyReportData, _ => _.currentDay.membership) || 0) !== 0
       setMembershipDisplay(a || b)
     }
   }, [merchantDailyReportCurrentDayData.loading, merchantDailyReportDataV3.loading])
@@ -165,7 +167,7 @@ const MerchantDailyReport = () => {
         !merchantDailyReportCurrentDayData.loading &&
         !merchantDashboardData.loading &&
         curentDayData !== null ? (
-        idx(
+        curentDayData && idx(
           merchantDailyReportDataV3,
           _ =>
             _.data.merchantDailyReportV2 !== null && (

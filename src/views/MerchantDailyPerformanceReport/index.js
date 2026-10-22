@@ -44,7 +44,8 @@ function DesignerPerformOverview() {
   }
 
   useEffect(() => {
-    if (!isDisplayTogglePerformanceButtonData.loading && !isMemberShipCardActiveData.loading) {
+    // 只看本設定是否載入完成（原本另外要求會員卡設定也已載入，但依賴只有本設定：會員卡設定較晚回來時永遠不套用）
+    if (!isDisplayTogglePerformanceButtonData.loading) {
       const isDisplayTogglePerformanceButton = idx(
         isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
       setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
@@ -53,10 +54,11 @@ function DesignerPerformOverview() {
 
   useEffect(() => {
     if (!merchantDailyPerformanceReportData.loading) {
+      // 查詢失敗（data 為 undefined）時當成沒有資料，不讓整頁拋錯（Jason 2026/10/22）
       const merchantDailyPerformanceReport = idx(
         merchantDailyPerformanceReportData,
         _ => _.data.merchantDailyPerformanceReport
-      )
+      ) || []
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const memberActive = merchantDailyPerformanceReport.some(({ performance }) => performance.isMemberShipCardActive > 0 || performance.membershipPerformance > 0 || performance.membershipAveragePerformance > 0) || isMemberShipCardActive
 

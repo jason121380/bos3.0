@@ -16,20 +16,23 @@ import { Toolbar } from 'ui/page-header'
 import TransferDetail from './TransferDetail'
 import Results from './Results'
 
+// 銀行設定尚未建立（null）或查詢失敗時的空白設定（申請書欄位留白，不讓整頁拋錯；Jason 2026/10/22）
+const EMPTY_BANK_SETTINGS = {
+  remitterBankAccount: '',
+  remitterBankBranchCode: '',
+  remitterBankName: '',
+  remitterBankBranchName: '',
+  remitterName: '',
+  trustorName: '',
+  trustorPhone: '',
+}
+
 export default function MerchantBankTransferReport() {
   const [date, setDate] = useState({
     startDate: subMonths(new Date(), 1).getTime(),
   })
 
-  const [merchantBankSettings, setMerchantBankSettings] = useState({
-    remitterBankAccount: '',
-    remitterBankBranchCode: '',
-    remitterBankName: '',
-    remitterBankBranchName: '',
-    remitterName: '',
-    trustorName: '',
-    trustorPhone: '',
-  })
+  const [merchantBankSettings, setMerchantBankSettings] = useState(EMPTY_BANK_SETTINGS)
   const [salaryData, setSalaryData] = useState([])
   const merchantBankSettingsData = useFetchMerchantBankSettings()
   const getUserSalaryTransferReport = useFetchGetUserSalaryTransferReport({ date: date.startDate })
@@ -40,7 +43,7 @@ export default function MerchantBankTransferReport() {
         getUserSalaryTransferReport,
         _ => _.data.userSalaryTransferReport
       )
-      setSalaryData(data)
+      setSalaryData(data || [])
     }
   }, [getUserSalaryTransferReport.loading])
 
@@ -50,7 +53,7 @@ export default function MerchantBankTransferReport() {
         merchantBankSettingsData,
         _ => _.data.getMerchantBankSettings
       )
-      setMerchantBankSettings(merchantBankSettings)
+      setMerchantBankSettings(merchantBankSettings || EMPTY_BANK_SETTINGS)
     }
   }, [merchantBankSettingsData.loading])
 

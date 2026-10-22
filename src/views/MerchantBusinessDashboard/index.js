@@ -35,7 +35,8 @@ function MerchantBusinessDashboard() {
         _ => _.data.getIsMemberShipCardActive
       )
       const membership = idx(merchantDashboardData, _ => _.data.merchantDashboard.intervalSummary.membership)
-      setMembershipDisplay(isMemberShipCardActive || membership !== 0)
+      // 會員卡金額為 null／查詢失敗時當成沒有金額（原本 undefined !== 0 會顯示「/undefined」）
+      setMembershipDisplay(Boolean(isMemberShipCardActive || membership))
     }
   }, [isMemberShipCardActiveData.loading, merchantDashboardData.loading])
   return (

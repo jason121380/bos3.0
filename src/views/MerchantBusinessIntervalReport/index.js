@@ -38,10 +38,11 @@ const MerchantBusinessIntervalReport = () => {
   const nonCashDisplay = idx(nonCashDisplayData, _ => _.data.getParameterReportSetting.nonCashDisplay) || false
 
   const mergeResultData = useMemo(() => {
-    if (merchantDashboardData.loading) {
+    const data = merchantDashboardData.data?.merchantDashboard
+    // 支付方式查詢失敗（data 為 undefined）時當成沒有明細，不讓整頁拋錯（Jason 2026/10/22）
+    if (merchantDashboardData.loading || !data) {
       return [];
     }
-    const data = merchantDashboardData.data.merchantDashboard
     const { otherPayway, thirdPartTicket } = data
     const set = new Set()
     const setArr = []

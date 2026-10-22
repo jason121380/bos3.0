@@ -26,7 +26,8 @@ const MoneyFlowTransferReport = () => {
 
   useEffect(() => {
     if (!moneyFlowTransferReport.loading) {
-      const data = idx(moneyFlowTransferReport, _ => _.data.moneyFlowTransferReport)
+      // 查詢失敗（data 為 undefined）時當成沒有資料，不讓整頁拋錯（Jason 2026/10/22）
+      const data = idx(moneyFlowTransferReport, _ => _.data.moneyFlowTransferReport) || []
       setReportForDisplay(data)
 
       const excelData = []

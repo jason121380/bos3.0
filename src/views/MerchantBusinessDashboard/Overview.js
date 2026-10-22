@@ -13,7 +13,8 @@ function Overview({ overview, membershipDisplay }) {
     <div className="mb-6 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-solid border-border bg-border sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
       <Stat label="服務消費">{formatNumber(Math.round(overview.service) || 0)}</Stat>
       <Stat label={<>店販消費{membershipDisplay && '/會員卡消費'}</>}>
-        {`${overview.product || 0}${membershipDisplay ? '/' + overview.membership : ''}`}
+        {/* 與其他格相同加千分位；沒有會員卡金額時顯示 0（原本未加千分位，查詢失敗時出現 undefined） */}
+        {`${formatNumber(overview.product || 0)}${membershipDisplay ? '/' + formatNumber(overview.membership || 0) : ''}`}
       </Stat>
       <Stat label="卡券使用 (入業績)">{formatNumber(Math.round(overview.usedTicket) || 0)}</Stat>
       <Stat label="卡券販賣 (入業績)">
