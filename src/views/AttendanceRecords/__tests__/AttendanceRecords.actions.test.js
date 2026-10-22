@@ -308,6 +308,13 @@ describe('編輯與刪除打卡', () => {
     await wait(() => expect(screen.queryByText(/已選取打卡記錄:/)).toBeNull())
   })
 
+  // 刪除先跳確認窗（Jason 2026/10/22「加上」），按「確定」才送出
+  const confirmDelete = async () => {
+    fireEvent.click(screen.getByRole('button', { name: '刪除' }))
+    const dialog = await screen.findByRole('dialog', { name: '確定要刪除這筆打卡紀錄嗎？' })
+    fireEvent.click(within(dialog).getByRole('button', { name: '確定' }))
+  }
+
   it('刪除：送出該筆 uuid，成功後重查；失敗時提示並可再按', async () => {
     let n = 0
     const utils = setup({
@@ -316,10 +323,10 @@ describe('編輯與刪除打卡', () => {
     await ready(utils)
     await openPanel('回13:00')
     expect(screen.getByText(/13:00 - 歸回/)).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: '刪除' }))
+    await confirmDelete()
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '不能刪', variant: 'error' }))
     expect(screen.getByRole('button', { name: '刪除' })).not.toBeDisabled()
-    fireEvent.click(screen.getByRole('button', { name: '刪除' }))
+    await confirmDelete()
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '刪除成功', variant: 'success' }))
     expect(callsOf(utils.calls, 'deleteAttendantRecord').map(c => c.variables)).toEqual([
       { clockInScheduleUUId: 'COMPUTER-5-13' },
@@ -335,7 +342,7 @@ describe('編輯與刪除打卡', () => {
     await openPanel('下18:00')
     expect(screen.getByText(/18:00 - 下班/)).toBeInTheDocument()
     const before = searches(utils.calls).length
-    fireEvent.click(screen.getByRole('button', { name: '刪除' }))
+    await confirmDelete()
     await utils.settle()
     fireEvent.click(screen.getByRole('button', { name: '編輯' }))
     fireEvent.click(await screen.findByRole('button', { name: '確認' }))
