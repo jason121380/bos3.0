@@ -8,6 +8,8 @@
 
 ## 一、今天完成了什麼
 
+- **覆蓋率第三波：頁面 V1～V8＋12 項待決事項（2026/10/22，v3.10222359，Jason「fix all」「都照你的建議 做all」「照建議」）**：預約／排班／打卡（V1）、客戶／入金／紅利（V2）、員工／薪資／個人頁／角色權限（V3）、帳單列表／記帳／付款方式（V4）、服務與卡券設定（V5）、會員卡／第三方卡券／活動規則／互助點數（V6）、商品／進貨／領用／盤點／廠商（V7）、系統參數與抽成設定（V8）整頁測試，各批找到的 bug 直接修（重複送出、查詢失敗整頁錯誤、勾選後改價 0 變 1、盤點更新蓋掉已填數量、清單刪除後不更新、存檔把讀不到的設定蓋回空白、匯出個資遮罩等）並刪除跑不到的程式。12 項待決事項照建議：排班「移到最後」都不標記、第三方卡券百分比 0～100、會員卡分類代號／名稱與互助點數名稱必填、活動規則至少一間店、會員卡紀錄批次刪除確認、收支科目查詢失敗停用儲存、掛單列印合計以打帳單收據（應付帳款）為準、薪資實發＝加項−扣項、個人頁姓／名／手機必填（Enter 送出也擋）、入金選現金時手續費負擔方送「不扣項」；收支刪除密碼列為後端待辦。全站 statements 54.8% → 91.2%。驗證：364 檔／4268 測試（UTC 與洛杉磯）、`test:coverage`、`lint:build`、build。
+
 - **覆蓋率第二波找到的共用層問題全修＋刪死碼（2026/10/22，v3.10221750～v3.10222202，Jason「fix all」）**：報表網址不再寫成整月、報表目錄補漏列 4 張報表／未登入不查詢／移除沒有對應報表的「設計師店販抽成明細」（Jason 選 B）；預約週曆待審核開對窗、「本名＋暱稱」生效、審核窗「關閉」可按；帳單速查第三方卡券、8 個下拉與切換店家查詢失敗不壞；日期起訖交錯為整天、日期欄手打月份、2/29 換年；代號自然排序（`utils/compareNo`）、不顯示「(null)」、助理可用暱稱搜尋；會員卡永久會籍 Enter、服務人員欄與使用預收卡助理欄同高；27 支一律 cache-first 的查詢分類（付款方式登記設定快取，其餘 cache-and-network）；登入頁不讀舊快取、清除快取提示、修改密碼確認欄、compose；員工下拉移除無作用的 initFirst（維持「全部」，Jason）；權限查詢名稱維持 `FETCH_THIRDPARTYS`（後端可能依名稱判斷，不改）。刪除 hooks 57 個未使用 export、TopBar／NavBar 未用函式與系統公告查詢、4 個未用相容元件、serviceWorker 樣板。**長期規則（Jason 2026/10/22）**：頁面測試找到的 bug 直接修，只有改變業務規則（金額、權限、流程）、需判斷設計或 bug、或在列印範本內的才先問。驗證：209 檔／2836 測試（UTC 與洛杉磯）、`test:coverage`、build。
 
 - **覆蓋率第二波：共用層（2026/10/22，v3.10221738，Jason「覆蓋率到 100%」）**：hooks（438 檔契約測試）、components、ui、layouts、elements、lib、helper、utils、context、mixins、路由與入口共新增約 1,400 個測試；共用層 97～100%，全站 statements 35.7% → 54.8%。`coverageThreshold` 加各目錄門檻（hooks／ui 100、components 99、layouts 98…），global 改以其餘檔案（頁面）實測重算。**測試全域封鎖連網**（`setupTests.js`：fetch／XMLHttpRequest／WebSocket，Jason「不可以動到真的資料庫」）。**顧客下拉打字後偶爾不查詢**（計時器比 Date 早 1ms 觸發、牆鐘差 599 時整個不查；改比對最後一次輸入的時間戳）。測試中發現的約 30 個產品問題另開 PR 修正（Jason「fix all」）。驗證：206 檔／2882 測試（UTC 與洛杉磯）、`test:coverage`、build。
@@ -294,6 +296,15 @@
 - ~~功能釘選分頁 `_` 未 import；`SalaryEdit` 日期只在模組載入時計算一次；`UpdateDeductionSetting` 刪除級距把 event 當 index；`CustomerBonusRecordEdit` 對字串呼叫 `splice`；`OrderEdit` 的 `_.cloneDeep` 未 import；三個帳單編輯頁的 `handlePannelClick` 未定義；`AdminPageHeader` 的 `primaryAction.disabled` 無作用。~~
 - `ServicesAutoComplete`：排序直接改動原陣列、`a.no - b.no` 遇非數字代號為 NaN、代號只支援完全比對。
 - [x] 測試：原 13 個既有失敗（ProductCreate、ServiceCategoryEdit／Create、AccountingSubjectsAutocomplete、LoginForm、Products/Results、AccountingRecordCreate/Header）已清零（PR #5 與 2026/10/19 決策改寫），全域 52/52 通過。
+
+### 待 Jason 決定（覆蓋率第三波，2026/10/22）
+- [ ] 掛單列印「點數餘額」：打帳單收據印「目前點數＋增點−扣點」，掛單只印目前點數；需確認後端在掛單儲存時是否已寫入點數，避免重複計算。
+- [ ] 編輯進貨單改日期不會送出（`ProductRestockEdit`）：需確認後端 `UpdatePurchaseInput` 是否接受日期。
+- [ ] 進貨／領用商品清單沒勾選就按「確定」會清掉已填的列，領用另會丟掉 0 元（贈品）列；建議沒勾選時保留原列。
+- [ ] 編輯材料自購換商品帶入店販售價（新增頁帶員工自購價）；要改查詢補自購價欄位。
+- [ ] 材料自購列表固定只查 1000 筆、沒有分頁。
+- [ ] 系統參數營業時間送出 `HH:MM`、讀入 `HH:MM:SS`，是否補秒看後端；業績抽成參數「刪除抽成方式」沒有確認窗。
+- [ ] 顧客篩選「報表匯出」由後端產生檔案，是否遮罩需看後端；顧客入金餘額表匯出含姓名未遮罩。
 
 ### 後端待辦（前端不改，需後端 repo 支援）
 - [ ] **刪除收支紀錄要驗證「編輯收支密碼」（Jason 2026/10/22「照建議」列為後端待辦）**：店家開啟編輯收支密碼時，`AccountingRecordDetail`／`GeneralAccountingRecordDetail` 的刪除只有確認窗、不需密碼——`deleteMoneyFlow` mutation 沒有 `password` 參數，前端無法帶。需後端（`beautyos_api`，前端 session 唯讀）在 `deleteMoneyFlow` 加 `password` 參數並驗證；後端完成後前端比照編輯收支，在刪除確認窗加密碼欄並送出。現況由兩頁測試「後端待辦（Jason 2026/10/22）」鎖住。
