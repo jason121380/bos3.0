@@ -37,9 +37,13 @@ test('同時段的公休（含例假）並排成一組，第二筆依開始時�
   expect(week[2].breakGroup.map(g => g.data.length)).toEqual([2, 1])
   expect(week[2].breakGroup[0].data[1].style.marginTop).toBe('71px')
   expect(week[2].breakLength).toBe(3)
-  // 不可預約時段只以「有沒有」使用（countHoliday[d] 為真即標示）；目前每筆公休會被計兩次（全部項目與公休各算一次），12:30 兩筆公休記為 4
-  expect(week[2].countHoliday[at(2, 12, 30)]).toBe(4)
-  expect(week[2].countHoliday[at(2, 15)]).toBe(2)
+  // 不可預約時段只以「有沒有」使用（countHoliday[d] 為真即標示）。Jason 2026/10/22 fix all：原本每筆公休被計兩次
+  // （全部項目與公休各算一次，12:30 兩筆公休記為 4），改為只在全部項目算一次；畫面只看真假，行為不變
+  expect(week[2].countHoliday[at(2, 12)]).toBe(1)
+  expect(week[2].countHoliday[at(2, 12, 30)]).toBe(2)
+  expect(week[2].countHoliday[at(2, 13)]).toBe(1)
+  expect(week[2].countHoliday[at(2, 15)]).toBe(1)
+  expect(week[2].countHoliday[at(2, 14)]).toBeUndefined()
 })
 
 test('未知的預約狀態、未知的型別不上色（維持原本沒有 default 時的行為）', () => {

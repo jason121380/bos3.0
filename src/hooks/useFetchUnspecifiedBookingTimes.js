@@ -26,16 +26,3 @@ export const useLazyFetchUnspecifiedBookingTimes = ({ storeId, date }) => {
     unspecifiedBookingTimesResponse,
   }
 }
-
-export const useFetchGetUnspecifiedBookingTimesLazy = () => {
-  const [unspecifiedBookingTimesLazy, unspecifiedBookingTimesLazyData] = useLazyQuery(
-    FETCH_UNSPECIFIED_BOOKING_TIMES,
-    {
-      fetchPolicy: 'cache-and-network',
-    }
-  )
-  return {
-    unspecifiedBookingTimesLazy,
-    unspecifiedBookingTimesLazyData,
-  }
-}

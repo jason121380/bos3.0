@@ -5,7 +5,8 @@
 //   原帳單沒存有效天數時用卡的預設天數；新選的卡從帳單日期起算）
 // - 改價格、服務人員、第三方卡券、備註後送出；清除此列、刪除此列、新增項目、從清單選擇會員卡
 // - 鍵盤：服務人員 → 會員卡 →（價格沒鎖）價格 → 到期日 → 永久會籍 → 第三方卡券 → 備註 → 下一列；
-//   鎖價且永久的卡從會員卡直接跳永久會籍、鎖價有期限的卡跳到期日；選定卡後游標自動移到下一欄
+//   鎖價且永久的卡從會員卡直接跳永久會籍、鎖價有期限的卡跳到期日；選定卡後游標自動移到下一欄；
+//   價格沒鎖的永久會籍從價格跳永久會籍（到期日停用跳不過去）
 // - 直接點另一列的欄位：游標留在點的欄位，過程中也不先跳到該列的服務人員
 // GraphQL 全由模擬 link 回應，不連後端、不改真實帳單。
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
@@ -338,5 +339,32 @@ describe('帳單詳細：會員卡鍵盤操作', () => {
     enter(remarkOf(2))
     await wait(() => expect(cardInputs()).toHaveLength(4))
     await focused(sellerOf(3))
+  })
+
+  // 已修正（Jason 2026/10/22 fix all）：「永久會籍」勾選框按 Enter 原本一律跳第三方卡券；店家沒開第三方卡券時欄位不存在，
+  // 游標停在原地。比照重新開單：沒開第三方卡券時跳備註
+  it('沒開第三方卡券：永久會籍 Enter 跳到備註', async () => {
+    const page = open(withCards(membershipOrder(MEMBERSHIP)), { GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: false } })
+    await pageReady(page)
+    expect(within(rowEl(0)).queryByPlaceholderText('第三方卡券')).toBeNull()
+    act(() => lifetimeOf(0).focus())
+    enter(lifetimeOf(0))
+    await focused(remarkOf(0))
+  })
+
+  // 為什麼重要：勾了「永久會籍」時到期日欄停用，原本價格按 Enter 一律跳到期日，焦點跳不過去、游標停在價格，
+  // 只能改用滑鼠。比照打帳單／掛單詳細：永久會籍時價格 Enter 跳「永久會籍」勾選框；取消勾選後照常跳到期日
+  it('價格沒鎖的永久會籍：價格 Enter 跳到「永久會籍」；取消勾選後跳到期日', async () => {
+    const page = open(withCards(membershipOrder(MEMBERSHIP, { expiryDate: null })))
+    await pageReady(page)
+    expect(lifetimeOf(0)).toBeChecked()
+    act(() => priceOf(0).focus())
+    enter(priceOf(0))
+    await focused(lifetimeOf(0))
+    fireEvent.click(lifetimeOf(0))
+    await wait(() => expect(lifetimeOf(0)).not.toBeChecked())
+    act(() => priceOf(0).focus())
+    enter(priceOf(0))
+    await focused(dateOf(0))
   })
 })

@@ -11,6 +11,7 @@ export default function useFetchCustomerWallet({ customerId }) {
     variables: {
       customerId,
     },
+    fetchPolicy: 'cache-and-network',
   })
 }
 

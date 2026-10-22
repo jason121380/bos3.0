@@ -72,6 +72,13 @@ describe('sortInventoryData：盤點排序', () => {
     expect(sortData(noNo).map(d => d.name)).toEqual(['甲', '乙'])
   })
 
+  // 已修正（Jason 2026/10/22 fix all）：原本兩邊都有編號時以 localeCompare 字典序（10 在 2 前、A10 在 A2 前），
+  // 一邊沒有編號時相減得 NaN、排序失效；改用 utils/compareNo：自然排序、沒有編號的排最後
+  it('預設：編號自然排序（2 在 10 前、A2 在 A10 前），沒有編號的排最後', () => {
+    const mixed = ['', 'A10', '10', null, 'A2', '2'].map((productNo, i) => ({ productNo, name: `品${i}` }))
+    expect(sortData(mixed).map(d => d.productNo)).toEqual(['2', '10', 'A2', 'A10', '', null])
+  })
+
   it('不修改傳入的原陣列', () => {
     sortData(items, 'inventory')
     expect(items[0].productNo).toBe('B02')

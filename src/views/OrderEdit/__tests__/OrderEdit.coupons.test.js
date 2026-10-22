@@ -280,6 +280,10 @@ describe('帳單詳細：使用預收卡', () => {
     expect(card).toBeDisabled()
     expect(within(panel).getByDisplayValue('600')).toBeDisabled()
     await wait(() => expect(within(panel).getByPlaceholderText('助理-洗髮')).toHaveValue('李助理-02'))
+    // 助理欄與同列輸入框同高（size medium：36px、手機 40px；原本 small 34px 比同列矮 2px，Jason 2026/10/22 fix all）
+    const helper = within(panel).getByPlaceholderText('助理-洗髮')
+    expect(helper.closest('.min-h-9')).not.toBeNull()
+    expect(helper.closest('.min-h-8')).toBeNull()
     await pickEmployee(within(panel).getByPlaceholderText('助理-洗髮'), DESIGNER.userName)
     const input = await checkoutAndGetInput(page.calls)
     expect(input.useTicketOrders).toEqual([

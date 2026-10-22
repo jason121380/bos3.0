@@ -4,13 +4,12 @@ import { MemoryRouter } from 'react-router-dom'
 
 import { Container, Paper, Typography } from '../display-compat'
 import { CardHeader } from '../card-compat'
-import Link from '../link-compat'
 import { Add, Delete } from '../icons'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroupButton, SidebarHeader, SidebarLabel, SidebarLink } from '../sidebar'
 
-// 保護什麼：舊頁面沿用的 MUI 相容輸出（Paper／Typography／Container／CardHeader／Link／圖示）與側欄。
+// 保護什麼：舊頁面沿用的 MUI 相容輸出（Paper／Typography／Container／CardHeader／圖示）與側欄（link-compat 沒有頁面使用，2026/10/22 已刪除）。
 // initialize.scss 的列印、深色模式與各頁的 '.MuiXxx-root' 選擇器都靠這些 MUI 同名 class；
-// 預設值（Typography body1→p、Container lg、Link primary＋always 底線、圖示 medium）必須與 MUI 相同，舊頁面才不會跑版。
+// 預設值（Typography body1→p、Container lg、圖示 medium）必須與 MUI 相同，舊頁面才不會跑版。
 
 afterEach(cleanup)
 
@@ -54,35 +53,6 @@ describe('card-compat CardHeader', () => {
     const root = container.firstChild
     expect(root.firstChild.className).toContain('MuiCardHeader-avatar')
     expect(screen.getByText('頭')).toBeInTheDocument()
-  })
-})
-
-describe('link-compat', () => {
-  it('預設為 <a>、primary 色、底線 always，style 原樣傳入', () => {
-    render(
-      <Link href="/x" style={{ fontWeight: 600 }}>
-        連結
-      </Link>
-    )
-    const a = screen.getByText('連結')
-    expect(a.tagName).toBe('A')
-    expect(a.className).toContain('MuiLink-colorPrimary')
-    expect(a.className).toContain('MuiLink-underlineAlways')
-    expect(a.className).toContain('MuiTypography-inherit')
-    expect(a.style.fontWeight).toBe('600')
-  })
-
-  it('自訂色值以 CSS 變數＋MuiLink-colorCustom 套用（深色模式規則才蓋得過）', () => {
-    render(
-      <Link href="/x" color="#ff0000" underline="none" style={{ fontWeight: 600 }}>
-        連結
-      </Link>
-    )
-    const a = screen.getByText('連結')
-    expect(a.className).toContain('MuiLink-colorCustom')
-    expect(a.className).toContain('MuiLink-underlineNone')
-    expect(a.style.getPropertyValue('--mui-link-color')).toBe('#ff0000')
-    expect(a.style.fontWeight).toBe('600')
   })
 })
 

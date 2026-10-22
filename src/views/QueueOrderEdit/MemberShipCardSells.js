@@ -17,7 +17,7 @@ import { MobileDatePicker } from 'ui/date-picker'
 import MemberShipCardSellsModal from "views/OrderShared/MemberShipCardSellsModal";
 import { useMembershipPicker } from "views/OrderShared/useItemPicker";
 import { formatNumber } from 'ui/format'
-import { ROW_ICON_ALIGN, ROW_ICON_ALIGN_SMALL } from 'views/OrderShared/rowAlign'
+import { ROW_ICON_ALIGN } from 'views/OrderShared/rowAlign'
 
 const MemberShipCardSells = ({
   sellsItem,
@@ -123,6 +123,8 @@ const MemberShipCardSells = ({
         {/* 必填 *：Footer.js 重試時 helper/billVerify.js checkMembershipOrders 要求 sellerId、membershipUUID、有效到期日；兩者都空的列會被 handleTidyBill 丟掉，所以該列有填任一欄才標必填（同打帳單） */}
         <Field label="服務人員" required={!!sells.sellerId || !!sells.membershipUUID}>
           <EmployeeAutoComplete
+            // 與同列輸入框同高（36px、手機 40px）
+            size="medium"
             placeholder="服務人員姓名/編號"
             className="!mr-[12px] flex w-[200px]"
             value={sells.sellerId}
@@ -142,9 +144,9 @@ const MemberShipCardSells = ({
           />
         </Field>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇會員卡" className={`mx-1.5 ${ROW_ICON_ALIGN_SMALL}`} onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇會員卡" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN_SMALL}`} />
+          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
         <Field label="會員卡" required={!!sells.sellerId || !!sells.membershipUUID}>
           <MemberShipCardAutoComplete
@@ -197,7 +199,8 @@ const MemberShipCardSells = ({
                 }}
                 autoFocus={focus === "price"}
                 onFocus={(event) => handleFocus({ event, field: "price" })}
-                onKeyDown={(event) => handleKeyDown({ event, nextField: "date" })}
+                // 價格 Enter：勾了「永久會籍」時到期日欄停用、焦點跳不過去，改跳「永久會籍」勾選框（同打帳單、掛單詳細）
+                onKeyDown={(event) => handleKeyDown({ event, nextField: sells.expiryDate === null ? 'checkbox' : 'date' })}
                 disabled={!!(sells.isLocked === 'TRUE' || sells.isLocked === 'UNSET')}
               />
             </Field>

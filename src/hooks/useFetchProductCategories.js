@@ -168,34 +168,6 @@ export function useFetchProductCategoriesInCreatePicking(
   })
 }
 
-const FETCH_PRODUCT_CATEGORIES_ANALYTICS = gql`
-  query FETCH_PRODUCT_CATEGORIES_ANALYTICS(
-    $input: ProductCategoriesInput!
-    $date: ProductCategoryAnalyticsInput!
-  ) {
-    productCategories(input: $input) {
-      id
-      no
-      name
-      analytics(input: $date) {
-        #店販業績
-        productAmountTotal
-        #客次
-        customerCount
-      }
-    }
-  }
-`
-
-export const useFetchProductCategoriesAnalytics = ({ input = { paranoid: true }, date }) =>
-  useQuery(FETCH_PRODUCT_CATEGORIES_ANALYTICS, {
-    variables: {
-      input,
-      date,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-
 const MERCHANT_SALES_ANALYTICS = gql`
   query MERCHANT_SALES_ANALYTICS(
     $input: ProductCategoriesInput!
@@ -220,6 +192,7 @@ export const useFetchMerchantSalesAnalytics = variables => {
     MERCHANT_SALES_ANALYTICS,
     {
       variables,
+      fetchPolicy: 'cache-and-network',
     }
   )
   return {

@@ -197,17 +197,6 @@ const ROWS = [
     },
   },
   {
-    id: 'useFetchAttendanceRecords',
-    hook: useFetchAttendanceRecords.default,
-    args: [{ probe: 'input' }],
-    expect: {
-      initial: [{ operationName: 'GET_ALL_ATTENDANCE', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['attendanceRecords'] },
-      policies: { GET_ALL_ATTENDANCE: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
     id: 'useFetchAttendanceRecords.useFetchAttendanceRecordsLazy',
     hook: useFetchAttendanceRecords.useFetchAttendanceRecordsLazy,
     args: [{ probe: 'input' }],
@@ -230,24 +219,6 @@ const ROWS = [
       policies: { GET_ATTENDANCE_STATUS: 'cache-and-network' },
     },
     failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchAttendanceRecordsExcel',
-    hook: useFetchAttendanceRecordsExcel.default,
-    args: [],
-    invoke: [{ fn: 0, args: [{ variables: { input: { probe: 'input' } } }] }],
-    expect: {
-      initial: [],
-      shape: ['function', { loading: false, called: false }],
-      invoked: [
-        {
-          fn: 0,
-          calls: [{ operationName: 'FETCH_ATTENDANCE_RECORDS_EXCEL', variables: { input: { probe: 'input' } } }],
-        },
-      ],
-      shapeAfter: ['function', { loading: false, called: true, data: ['attendanceRecordsExcel'] }],
-      policies: { FETCH_ATTENDANCE_RECORDS_EXCEL: 'cache-and-network' },
-    },
   },
   {
     id: 'useFetchAttendanceRecordsExcel.useFetchAttendanceRecordsExcelV2',
@@ -752,17 +723,6 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchCustomer.useFetchCustomerCellphoneInOrderDetail',
-    hook: useFetchCustomer.useFetchCustomerCellphoneInOrderDetail,
-    args: [{ id: 'id-v' }],
-    expect: {
-      initial: [{ operationName: 'FETCH_CUSTOMER_CELLPHONE_IN_ORDER_DETAIL', variables: { id: 'id-v' } }],
-      shape: { loading: false, called: true, data: ['customer'] },
-      policies: { FETCH_CUSTOMER_CELLPHONE_IN_ORDER_DETAIL: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
     id: 'useFetchCustomerCancelOrder',
     hook: useFetchCustomerCancelOrder.default,
     args: [],
@@ -845,7 +805,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'customerWallet', variables: { customerId: 'customerId-v' } }],
       shape: { loading: false, called: true, data: ['customerWallet'] },
-      policies: { customerWallet: 'default(cache-first)' },
+      policies: { customerWallet: 'cache-and-network' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },
@@ -985,17 +945,6 @@ const ROWS = [
           },
         ],
       },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchCustomersWithoutSortingExcel',
-    hook: useFetchCustomersWithoutSortingExcel.default,
-    args: [{ probe: 'input' }],
-    expect: {
-      initial: [{ operationName: 'FETCH_CUSTOMERS_WITHOUT_SORTING_EXCEL', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['customersWithoutSortingExcel'] },
-      policies: { FETCH_CUSTOMERS_WITHOUT_SORTING_EXCEL: 'cache-and-network' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },
@@ -1530,26 +1479,6 @@ const ROWS = [
       initial: [{ operationName: 'GET_DESIGNER_MONTHLY_REPORT', variables: { input: { probe: 'input' } } }],
       shape: { loading: false, called: true, data: ['designerMonthlyReport'] },
       policies: { GET_DESIGNER_MONTHLY_REPORT: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchDesignerPerforamnceAnalyzeExcel',
-    hook: useFetchDesignerPerforamnceAnalyzeExcel.default,
-    args: [{ input: { probe: 'input' }, designerIds: ['designerIds-1'], displayReference: 'displayReference-v' }],
-    expect: {
-      initial: [
-        {
-          operationName: 'FETCH_DESIGNER_PERFORMANCE_ANALYZE_EXCEL',
-          variables: {
-            input: { probe: 'input' },
-            designerIds: ['designerIds-1'],
-            displayReference: 'displayReference-v',
-          },
-        },
-      ],
-      shape: { loading: false, called: true, data: ['designerPerforamnceAnalyzeExcel'] },
-      policies: { FETCH_DESIGNER_PERFORMANCE_ANALYZE_EXCEL: 'cache-and-network' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },

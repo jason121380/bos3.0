@@ -290,6 +290,9 @@ describe('掛單詳細：使用預收卡', () => {
     expect(summaryValue('業績合計')).toHaveTextContent('1,400')
     // 助理：原本的洗髮-A，加上依卡券服務設定展開的洗髮-B
     const helperB = await usage.findByPlaceholderText('洗髮-B')
+    // 助理欄與同列輸入框同高（size medium：36px、手機 40px；原本 small 34px 比同列矮 2px，Jason 2026/10/22 fix all）
+    expect(helperB.closest('.min-h-9')).not.toBeNull()
+    expect(helperB.closest('.min-h-8')).toBeNull()
     expect(usage.getByPlaceholderText('洗髮-A')).toHaveValue('Lee-02')
     pick(helperB, 'Lee-02')
     // 選定後該欄重新建立（key 含助理 id），重新取欄位

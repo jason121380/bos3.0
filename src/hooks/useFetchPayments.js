@@ -20,18 +20,3 @@ export default function useFetchPayments() {
   })
   return { data, error, loading, refetch }
 }
-const GET_PAYMENTS_NAME = settingsQuery(gql`
-  query GET_PAYMENTS_NAME {
-    merchantPayWays {
-      id
-      name
-    }
-  }
-`)
-
-export function useFetchPaymentsName() {
-  const { data, error, loading, refetch } = useQuery(GET_PAYMENTS_NAME, {
-    fetchPolicy: SETTINGS_FETCH_POLICY,
-  })
-  return { data, error, loading, refetch }
-}

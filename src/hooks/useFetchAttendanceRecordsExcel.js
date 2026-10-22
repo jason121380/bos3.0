@@ -1,17 +1,5 @@
 import { gql, useLazyQuery } from '@apollo/client'
 
-const FETCH_ATTENDANCE_RECORDS_EXCEL = gql`
-  query FETCH_ATTENDANCE_RECORDS_EXCEL($input: AllAttendanceInput!) {
-    attendanceRecordsExcel(input: $input)
-  }
-`
-export default function useFetchAttendanceRecordsExcel() {
-  const [attendanceRecordsExcelLazy, attendanceRecordsExcelLazyData] = useLazyQuery(FETCH_ATTENDANCE_RECORDS_EXCEL, {
-    fetchPolicy: 'cache-and-network',
-  })
-  return [attendanceRecordsExcelLazy, attendanceRecordsExcelLazyData]
-}
-
 const FETCH_ATTENDANCE_RECORDS_EXCELV2 = gql`
   query FETCH_ATTENDANCE_RECORDS_EXCELV2($input: AllAttendanceExcelV2Input!) {
     attendanceRecordsExcelV2(input: $input)

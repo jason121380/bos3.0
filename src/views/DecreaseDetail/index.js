@@ -40,7 +40,6 @@ export default function DecreaseDetail() {
               onFilter={values => setPageSetting(values)}
               outside
               visible={['datePicker', 'employee', 'service']}
-              initFirst={!pageSetting.employeeId ? ['employee'] : []}
               useInDecreaseDetailReport={true}
               lastInLeaderBoard={true}
               uiDateField

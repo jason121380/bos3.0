@@ -66,7 +66,6 @@ function AccountingRecordList() {
             onFilter={values => setPageSetting(values)}
             outside
             visible={['employee', 'subject', 'payType']}
-            initFirst={!pageSetting.accountingSubjectName ? ['subject'] : []}
             relationUserId={true}
             lastInLeaderBoard={true}
           />

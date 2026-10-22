@@ -4,6 +4,7 @@ import { Button } from 'ui/button'
 import useFetchProductTreeview from 'hooks/useFetchProductTreeview'
 import ProductListModal from './ProductListModal'
 import PropTypes from 'prop-types'
+import idx from 'idx'
 import { Autocomplete } from 'ui/combobox'
 
 const ProductListTreeView = ({ onValueChange = () => { } }) => {
@@ -30,7 +31,8 @@ const ProductListTreeView = ({ onValueChange = () => { } }) => {
 
   useEffect(() => {
     if (!productTreeview.loading) {
-      const data = productTreeview.data.productCategories
+      // 查詢失敗時 data 為 undefined：當成沒有商品，不讓整頁拋錯（Jason 2026/10/22 fix all）
+      const data = idx(productTreeview, _ => _.data.productCategories) || []
       const allProducts = []
       data.forEach(({ products }) => {
         products.forEach(d => allProducts.push(d))

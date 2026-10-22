@@ -3,6 +3,7 @@ import { Edit as EditIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
+import compareNo from 'utils/compareNo'
 import TableEditBar from 'components/TableEditBar'
 import produce from 'immer'
 import { useFetchSetUserRake } from 'hooks/useFetchEmployeeSaleSetting'
@@ -206,12 +207,13 @@ export default function Results({
   }
 
   useEffect(() => {
+    // 各組內依編號自然排序（原本 a.designerNo - b.designerNo，英數編號相減得 NaN、維持後端順序；Jason 2026/10/22 fix all）
     const filteredEmployeeHaveDesignerNoIsNum = employees
       .filter(d => d.designerNo !== null && d.designerNo.length > 0 && !isNaN(Number(d.designerNo)))
-      .sort((a, b) => a.designerNo - b.designerNo)
+      .sort((a, b) => compareNo(a.designerNo, b.designerNo))
     const filteredEmployeeHaveDesignerNoIsNotNum = employees
       .filter(d => d.designerNo !== null && d.designerNo.length > 0 && isNaN(Number(d.designerNo)))
-      .sort((a, b) => a.designerNo - b.designerNo)
+      .sort((a, b) => compareNo(a.designerNo, b.designerNo))
     const filteredEmployeeHaveNoDesignerNo = employees.filter(
       d => d.designerNo === null || d.designerNo.length === 0
     )

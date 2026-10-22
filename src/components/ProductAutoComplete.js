@@ -4,6 +4,7 @@ import useToggle from 'hooks/useToggle'
 import idx from 'idx'
 import React, { useState, useEffect } from 'react'
 import { Autocomplete } from 'ui/combobox'
+import compareNo from 'utils/compareNo'
 
 function ProductAutoComplete(
   {
@@ -55,7 +56,8 @@ function ProductAutoComplete(
 
   const filterOptions = (options, state) => {
     const keyWord = state.inputValue.toLowerCase()
-    const filterOptions = [...options].sort((a, b) => a.no - b.no).filter(d => {
+    // 代號自然排序（英數代號也有效）、空代號排最後（原本 a.no - b.no 對英數代號得 NaN、空代號當 0 排最前；Jason 2026/10/22 fix all）
+    const filterOptions = [...options].sort((a, b) => compareNo(a.no, b.no)).filter(d => {
       if (d.no && d.name) {
         const no = d.no.toLowerCase()
         const name = d.name.toLowerCase()

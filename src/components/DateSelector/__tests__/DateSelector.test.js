@@ -99,22 +99,24 @@ describe('DateSelector 手動選日期', () => {
     expect(currentLocation()).toBe(`/page?startDate=${want.startDate}&endDate=${want.endDate}`)
   })
 
-  // 已知缺口（待 Jason 確認）：起訖交錯時直接把另一端設成同一個時間點（起日 00:00 或迄日 23:59:59.999），
-  // 區間只剩一瞬間，不是「那一整天」；查詢可能查不到當天資料
-  it('起日選在迄日之後：迄日改成與起日同一時間點（目前行為）', () => {
+  // 已修正（Jason 2026/10/22 fix all）：起訖交錯時原本直接把另一端設成同一個時間點（起日 00:00 或迄日 23:59:59.999），
+  // 區間只剩一瞬間、查不到當天資料；改為「那一整天」（起日當天 00:00～23:59:59.999）
+  it('起日選在迄日之後：迄日改成起日當天結束（區間為那一整天）', () => {
     const dateChange = jest.fn()
     renderPage(<DateSelector date={base} attributes={['startDate', 'endDate']} dateChange={dateChange} />)
     pickDay('起始時間', '2026年10月25日')
     const start = new Date(2026, 9, 25).getTime()
-    expect(dateChange).toHaveBeenCalledWith({ startDate: start, endDate: start })
+    const want = { startDate: start, endDate: endOfDay(new Date(2026, 9, 25)).getTime() }
+    expect(dateChange).toHaveBeenCalledWith(want)
+    expect(currentLocation()).toBe(`/page?startDate=${want.startDate}&endDate=${want.endDate}`)
   })
 
-  it('迄日保留原本的 23:59:59.999；迄日選在起日之前時起日改成同一時間點（目前行為）；在起日之後只改迄日', () => {
+  it('迄日保留原本的 23:59:59.999；迄日選在起日之前時起日改成迄日當天開始（那一整天）；在起日之後只改迄日', () => {
     const dateChange = jest.fn()
     renderPage(<DateSelector date={base} attributes={['startDate', 'endDate']} dateChange={dateChange} />)
     pickDay('結束時間', '2026年10月5日')
     const end = endOfDay(new Date(2026, 9, 5)).getTime()
-    expect(dateChange).toHaveBeenLastCalledWith({ startDate: end, endDate: end })
+    expect(dateChange).toHaveBeenLastCalledWith({ startDate: new Date(2026, 9, 5).getTime(), endDate: end })
     pickDay('結束時間', '2026年10月15日')
     expect(dateChange).toHaveBeenLastCalledWith({ startDate: base.startDate, endDate: endOfDay(new Date(2026, 9, 15)).getTime() })
   })

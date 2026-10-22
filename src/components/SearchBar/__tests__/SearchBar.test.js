@@ -167,17 +167,26 @@ describe('SearchBar 顧客版（SearchV2）', () => {
     expect(() => fireEvent.click(resetButton())).not.toThrow()
   })
 
-  it('網址帶 pageSetting 時帶回關鍵字（SearchBar 一律開啟）；沒有時維持空白', async () => {
+  // Jason 2026/10/22 fix all：SearchBar 原本寫成 `getQuery`（簡寫一律為 true），沒傳 getQuery 的顧客列表也會讀網址；
+  // 改為傳入呼叫端的值（只有寫 pageSetting 到網址的顧客篩選匯出有傳 getQuery）
+  it('getQuery 時網址帶 pageSetting 會帶回關鍵字、沒有時維持空白；沒傳 getQuery 時不讀網址', async () => {
     const setting = encodeURIComponent(JSON.stringify({ keyword: '陳' }))
-    const { settle } = renderPage(<SearchBar onSearchV2={() => {}} onBirthdayStart={() => {}} disableCustomerSource />, {
+    const { settle } = renderPage(<SearchBar getQuery onSearchV2={() => {}} onBirthdayStart={() => {}} disableCustomerSource />, {
       fixtures,
       route: `/page?pageSetting=${setting}`,
     })
     await settle()
     expect(screen.getByLabelText('關鍵字')).toHaveValue('陳')
     cleanup()
-    const { settle: s2 } = renderPage(<SearchBar onSearchV2={() => {}} onBirthdayStart={() => {}} disableCustomerSource />, { fixtures })
+    const { settle: s2 } = renderPage(<SearchBar getQuery onSearchV2={() => {}} onBirthdayStart={() => {}} disableCustomerSource />, { fixtures })
     await s2()
+    expect(screen.getByLabelText('關鍵字')).toHaveValue('')
+    cleanup()
+    const { settle: s3 } = renderPage(<SearchBar onSearchV2={() => {}} onBirthdayStart={() => {}} disableCustomerSource />, {
+      fixtures,
+      route: `/page?pageSetting=${setting}`,
+    })
+    await s3()
     expect(screen.getByLabelText('關鍵字')).toHaveValue('')
   })
 

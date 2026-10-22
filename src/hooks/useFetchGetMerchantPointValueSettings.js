@@ -1,28 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
 import { settingsQuery, SETTINGS_FETCH_POLICY } from 'lib/settings-cache'
 
-const GET_MERCHANT_POINT_VALUE_SETTING = settingsQuery(gql`
-  query GET_MERCHANT_POINT_VALUE_SETTING {
-    getMerchantPointValueSettings {
-      id
-      name
-      paidFixed
-      retrievePointWay
-      retrieveFixed
-      retrieveSegmentSetting {
-        threshold
-        price
-      }
-    }
-  }
-`)
-
-export default function useFetchGetMerchantPointValueSettings() {
-  return useQuery(GET_MERCHANT_POINT_VALUE_SETTING, {
-    fetchPolicy: SETTINGS_FETCH_POLICY,
-  })
-}
-
 const GET_MERCHANT_POINT_VALUE_SETTING_FOR_SELECT = settingsQuery(gql`
   query GET_MERCHANT_POINT_VALUE_SETTING_FOR_SELECT {
     getMerchantPointValueSettings {

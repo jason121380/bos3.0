@@ -119,17 +119,6 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchGetUserSalaryDetailExcel',
-    hook: useFetchGetUserSalaryDetailExcel.default,
-    args: ['date-v'],
-    expect: {
-      initial: [{ operationName: 'GET_USER_SALARY_DETAIL_EXCEL', variables: { date: 'date-v' } }],
-      shape: { loading: false, called: true, data: ['getUserSalaryDetailExcel'] },
-      policies: { GET_USER_SALARY_DETAIL_EXCEL: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
     id: 'useFetchGetUserSalaryDetailExcel.useFetchGetUserSalaryDetailExceLazy',
     hook: useFetchGetUserSalaryDetailExcel.useFetchGetUserSalaryDetailExceLazy,
     args: [],
@@ -152,17 +141,6 @@ const ROWS = [
       },
       policies: { GET_USER_SALARY_DETAIL_EXCEL: 'cache-and-network' },
     },
-  },
-  {
-    id: 'useFetchGetUserSalaryExcel',
-    hook: useFetchGetUserSalaryExcel.default,
-    args: [{ date: 'date-v', designerId: 'designerId-v' }],
-    expect: {
-      initial: [{ operationName: 'GET_USER_SALARY_EXCEL', variables: { date: 'date-v', designerId: 'designerId-v' } }],
-      shape: { loading: false, called: true, data: ['userSalaryReportExcel'] },
-      policies: { GET_USER_SALARY_EXCEL: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
   },
   {
     id: 'useFetchGetUserSalaryExcel.useFetchGetUserSalaryExcelLazy',
@@ -248,17 +226,6 @@ const ROWS = [
       initial: [{ operationName: 'getMerchantVendor', variables: { input: { probe: 'input' } } }],
       shape: { loading: false, called: true, data: ['getMerchantVendor'] },
       policies: { getMerchantVendor: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchGetVoucherIssuanceRecord',
-    hook: useFetchGetVoucherIssuanceRecord.default,
-    args: [{ input: { probe: 'input' } }],
-    expect: {
-      initial: [{ operationName: 'FETCH_GET_VOUCHER_ISSUANCE_RECORD', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['voucherIssuanceRecord'] },
-      policies: { FETCH_GET_VOUCHER_ISSUANCE_RECORD: 'cache-and-network' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },
@@ -426,15 +393,16 @@ const ROWS = [
     expect: {
       initial: [{ variables: {} }],
       shape: { loading: false, called: true, data: ['merchant'] },
-      policies: { '(anonymous)': 'default(cache-first)' },
+      policies: { '(anonymous)': 'cache-and-network' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },
   {
     id: 'useFetchMerchant.useFetchMerchantPermission',
     hook: useFetchMerchant.useFetchMerchantPermission,
-    args: ['date-v'],
+    args: [],
     expect: {
+      // 查詢名稱維持原本的 FETCH_THIRDPARTYS（與第三方卡券查詢同名；後端可能依名稱記錄或判斷，前端不改名，Jason 2026/10/22）
       initial: [{ operationName: 'FETCH_THIRDPARTYS', variables: {} }],
       shape: { loading: false, called: true, data: ['merchant'] },
       policies: { FETCH_THIRDPARTYS: 'cache-and-network' },
@@ -444,7 +412,7 @@ const ROWS = [
   {
     id: 'useFetchMerchant.useFetchTHirdPartys',
     hook: useFetchMerchant.useFetchTHirdPartys,
-    args: ['date-v'],
+    args: [],
     expect: {
       initial: [{ operationName: 'FETCH_THIRDPARTYS', variables: {} }],
       shape: { loading: false, called: true, data: ['merchant'] },
@@ -455,7 +423,7 @@ const ROWS = [
   {
     id: 'useFetchMerchant.useFetchThirdPartysInOrderDetail',
     hook: useFetchMerchant.useFetchThirdPartysInOrderDetail,
-    args: ['date-v'],
+    args: [],
     expect: {
       initial: [{ operationName: 'FETCH_THIRDPARTYS_IN_ORDER_DETAIL', variables: {} }],
       shape: { loading: false, called: true, data: ['merchant'] },
@@ -466,7 +434,7 @@ const ROWS = [
   {
     id: 'useFetchMerchant.useFetchThirdPartysForCreateOrder',
     hook: useFetchMerchant.useFetchThirdPartysForCreateOrder,
-    args: ['date-v'],
+    args: [],
     expect: {
       initial: [{ operationName: 'FETCH_THIRDPARTYS_FOR_CREATE_ORDER', variables: {} }],
       shape: { loading: false, called: true, data: ['merchant'] },
@@ -482,28 +450,6 @@ const ROWS = [
       initial: [{ operationName: 'FETCH_MONTHLY_CLOSE_STATUS', variables: { date: 'date-v' } }],
       shape: { loading: false, called: true, data: ['merchant'] },
       policies: { FETCH_MONTHLY_CLOSE_STATUS: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchMerchant.useFetchMerchantSalesAnalytics',
-    hook: useFetchMerchant.useFetchMerchantSalesAnalytics,
-    args: [{ probe: 'input' }],
-    expect: {
-      initial: [{ operationName: 'FETCH_MERCHANT_SALES_ANALYTICS', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['merchant'] },
-      policies: { FETCH_MERCHANT_SALES_ANALYTICS: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchMerchant.useFetchCustomerCount',
-    hook: useFetchMerchant.useFetchCustomerCount,
-    args: [{ probe: 'input' }],
-    expect: {
-      initial: [{ operationName: 'FETCH_MERCHANT_CUSTOMER_COUNT', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['merchant'] },
-      policies: { FETCH_MERCHANT_CUSTOMER_COUNT: 'cache-and-network' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },
@@ -599,39 +545,6 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchMerchantDesigner.useFetchUserMerchantIdentity',
-    hook: useFetchMerchantDesigner.useFetchUserMerchantIdentity,
-    args: [{ designerId: 'designerId-v' }],
-    expect: {
-      initial: [{ operationName: 'DESIGNER', variables: { designerId: 'designerId-v' } }],
-      shape: { loading: false, called: true, data: ['merchantDesigner'] },
-      policies: { DESIGNER: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchMerchantDesigner.useFetchUserInsuranceDeductible',
-    hook: useFetchMerchantDesigner.useFetchUserInsuranceDeductible,
-    args: [{ designerId: 'designerId-v' }],
-    expect: {
-      initial: [{ operationName: 'FETCH_DESIGNER_INSURANCE_DEDUCTIBLE', variables: { designerId: 'designerId-v' } }],
-      shape: { loading: false, called: true, data: ['merchantDesigner'] },
-      policies: { FETCH_DESIGNER_INSURANCE_DEDUCTIBLE: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchMerchantDesigner.useFetcDesignerFixedSalaryItems',
-    hook: useFetchMerchantDesigner.useFetcDesignerFixedSalaryItems,
-    args: [{ designerId: 'designerId-v' }],
-    expect: {
-      initial: [{ operationName: 'FETCH_DESIGNER_FIXED_SALARY_ITEMS', variables: { designerId: 'designerId-v' } }],
-      shape: { loading: false, called: true, data: ['merchantDesigner'] },
-      policies: { FETCH_DESIGNER_FIXED_SALARY_ITEMS: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
     id: 'useFetchMerchantDesigner.useFetcDesignerFixedSalaryItemsLazy',
     hook: useFetchMerchantDesigner.useFetcDesignerFixedSalaryItemsLazy,
     args: [],
@@ -673,7 +586,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'FETCH_DESIGNERS', variables: { merchantId: 'merchant-1' } }],
       shape: { loading: false, called: true, data: ['merchantDesigners'] },
-      policies: { FETCH_DESIGNERS: 'default(cache-first)' },
+      policies: { FETCH_DESIGNERS: 'cache-and-network' },
     },
     loggedOut: { initial: [{ operationName: 'FETCH_DESIGNERS', variables: { merchantId: null } }] },
     failure: { loading: false, called: true, error: 'error' },
@@ -895,7 +808,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'merchantPayWays', variables: {} }],
       shape: { loading: false, called: true, data: ['merchantPayWays'] },
-      policies: { merchantPayWays: 'default(cache-first)' },
+      policies: { merchantPayWays: 'cache-first' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },
@@ -1104,19 +1017,6 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchOrder.useFetchLazyQueryOrder',
-    hook: useFetchOrder.useFetchLazyQueryOrder,
-    args: [{ id: 'id-v' }],
-    invoke: [{ fn: 0, args: [] }],
-    expect: {
-      initial: [],
-      shape: ['function', { loading: false, called: false }],
-      invoked: [{ fn: 0, calls: [{ operationName: 'FETCH_ORDER', variables: { orderId: 'id-v' } }] }],
-      shapeAfter: ['function', { loading: false, called: true, data: ['order'] }],
-      policies: { FETCH_ORDER: 'cache-and-network' },
-    },
-  },
-  {
     id: 'useFetchOrder.useFetchProductOrder',
     hook: useFetchOrder.useFetchProductOrder,
     args: [{ id: 'id-v' }],
@@ -1124,28 +1024,6 @@ const ROWS = [
       initial: [{ operationName: 'FETCH_PRODUCT_ORDER', variables: { orderId: 'id-v' } }],
       shape: { loading: false, called: true, data: ['order'] },
       policies: { FETCH_PRODUCT_ORDER: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchOrder.useFetchTicketOrder',
-    hook: useFetchOrder.useFetchTicketOrder,
-    args: [{ id: 'id-v' }],
-    expect: {
-      initial: [{ operationName: 'FETCH_TICKET_ORDER', variables: { orderId: 'id-v' } }],
-      shape: { loading: false, called: true, data: ['order'] },
-      policies: { FETCH_TICKET_ORDER: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchOrder.useFetchUseTicketOrder',
-    hook: useFetchOrder.useFetchUseTicketOrder,
-    args: [{ id: 'id-v' }],
-    expect: {
-      initial: [{ operationName: 'FETCH_USE_TICKET_ORDER', variables: { orderId: 'id-v' } }],
-      shape: { loading: false, called: true, data: ['order'] },
-      policies: { FETCH_USE_TICKET_ORDER: 'cache-and-network' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },
@@ -1205,50 +1083,6 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchOrders',
-    hook: useFetchOrders.default,
-    args: [{ probe: 'input' }],
-    expect: {
-      initial: [{ operationName: 'FETCH_ORDERS', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['orders'] },
-      policies: { FETCH_ORDERS: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchOrders.useFetchOrdersForList',
-    hook: useFetchOrders.useFetchOrdersForList,
-    args: [{ probe: 'input' }],
-    expect: {
-      initial: [{ operationName: 'FETCH_ORDERS_FOR_LIST', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['orders'] },
-      policies: { FETCH_ORDERS_FOR_LIST: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchOrders.useFetchOrdersForDraftList',
-    hook: useFetchOrders.useFetchOrdersForDraftList,
-    args: [{ probe: 'input' }],
-    expect: {
-      initial: [{ operationName: 'FETCH_ORDERS_FOR_DRAFT_LIST', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['orders'] },
-      policies: { FETCH_ORDERS_FOR_DRAFT_LIST: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchOrders.useFetchOrdersForEmployeeDetail',
-    hook: useFetchOrders.useFetchOrdersForEmployeeDetail,
-    args: [{ probe: 'input' }],
-    expect: {
-      initial: [{ operationName: 'FETCH_ORDERS_FOR_EMPLOYEE_DETAIL', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['orders'] },
-      policies: { FETCH_ORDERS_FOR_EMPLOYEE_DETAIL: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
     id: 'useFetchOrders.useFetchOrdersLazy',
     hook: useFetchOrders.useFetchOrdersLazy,
     args: [],
@@ -1265,30 +1099,6 @@ const ROWS = [
       shapeAfter: { fetchOrdersLazy: 'function', ordersLazyData: { loading: false, called: true, data: ['orders'] } },
       policies: { FETCH_ORDERS_FOR_EMPLOYEE_DETAIL: 'cache-and-network' },
     },
-  },
-  {
-    id: 'useFetchOrders.useFetchOrdersForCustomerDetail',
-    hook: useFetchOrders.useFetchOrdersForCustomerDetail,
-    args: [{ probe: 'input' }],
-    expect: {
-      initial: [{ operationName: 'FETCH_ORDERS_FOR_CUSTOMER_DETAIL', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['orders'] },
-      policies: { FETCH_ORDERS_FOR_CUSTOMER_DETAIL: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchOrders.useFetchOrdersForWebOrderManagementList',
-    hook: useFetchOrders.useFetchOrdersForWebOrderManagementList,
-    args: [{ probe: 'input' }],
-    expect: {
-      initial: [
-        { operationName: 'FETCH_ORDERS_FOR_WEB_ORDER_MANAGEMENTLIST', variables: { input: { probe: 'input' } } },
-      ],
-      shape: { loading: false, called: true, data: ['orders'] },
-      policies: { FETCH_ORDERS_FOR_WEB_ORDER_MANAGEMENTLIST: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
   },
   {
     id: 'useFetchOrders.useFetchDesignerOrderRecords',
@@ -1308,30 +1118,8 @@ const ROWS = [
         fetchDesignerOrderRecords: 'function',
         designerOrderRecords: { loading: false, called: true, data: ['orders'] },
       },
-      policies: { DESIGNER_ORDER_RECORDS: 'default(cache-first)' },
+      policies: { DESIGNER_ORDER_RECORDS: 'cache-and-network' },
     },
-  },
-  {
-    id: 'useFetchOrders.useFetchDecreaseDetail',
-    hook: useFetchOrders.useFetchDecreaseDetail,
-    args: [{ probe: 'input' }],
-    expect: {
-      initial: [{ operationName: 'DECREASE_DETAIL', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['orders'] },
-      policies: { DECREASE_DETAIL: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchOrders.useFetchLastOrderNo',
-    hook: useFetchOrders.useFetchLastOrderNo,
-    args: [{ probe: 'input' }],
-    expect: {
-      initial: [{ operationName: 'LAST_ORDER_NO', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['orders'] },
-      policies: { LAST_ORDER_NO: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
   },
   {
     id: 'useFetchOrders.useFetchOrdersFastCheckLazy',
@@ -1390,26 +1178,6 @@ const ROWS = [
     },
   },
   {
-    id: 'useFetchPayments.useFetchPaymentsName',
-    hook: useFetchPayments.useFetchPaymentsName,
-    args: [],
-    expect: {
-      initial: [{ operationName: 'GET_PAYMENTS_NAME', variables: {} }],
-      shape: { data: { merchantPayWays: 'array' }, loading: false, refetch: 'function' },
-      policies: { GET_PAYMENTS_NAME: 'cache-first' },
-    },
-    failure: {
-      error: {
-        graphQLErrors: 'array',
-        clientErrors: 'array',
-        networkError: null,
-        message: '模擬 API 失敗：GET_PAYMENTS_NAME',
-      },
-      loading: false,
-      refetch: 'function',
-    },
-  },
-  {
     id: 'useFetchProduct',
     hook: useFetchProduct.default,
     args: [{ productId: 'productId-v' }],
@@ -1447,33 +1215,6 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchProductCategories.useFetchProductCategoriesAnalytics',
-    hook: useFetchProductCategories.useFetchProductCategoriesAnalytics,
-    args: [{ input: { probe: 'input' }, date: 'date-v' }],
-    expect: {
-      initial: [
-        {
-          operationName: 'FETCH_PRODUCT_CATEGORIES_ANALYTICS',
-          variables: { input: { probe: 'input' }, date: 'date-v' },
-        },
-      ],
-      shape: { loading: false, called: true, data: ['productCategories'] },
-      policies: { FETCH_PRODUCT_CATEGORIES_ANALYTICS: 'cache-and-network' },
-    },
-    withDefaults: {
-      args: [{ date: 'date-v' }],
-      expect: {
-        initial: [
-          {
-            operationName: 'FETCH_PRODUCT_CATEGORIES_ANALYTICS',
-            variables: { input: { paranoid: true }, date: 'date-v' },
-          },
-        ],
-      },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
     id: 'useFetchProductCategories.useFetchMerchantSalesAnalytics',
     hook: useFetchProductCategories.useFetchMerchantSalesAnalytics,
     args: [{ input: { probe: 'input' }, analytics: 'analytics-v' }],
@@ -1496,7 +1237,7 @@ const ROWS = [
         fetchMerchantSalesAnalytics: 'function',
         merchantSalesAnalytics: { loading: false, called: true, data: ['productCategories'] },
       },
-      policies: { MERCHANT_SALES_ANALYTICS: 'default(cache-first)' },
+      policies: { MERCHANT_SALES_ANALYTICS: 'cache-and-network' },
     },
   },
   {
@@ -1506,7 +1247,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'GET_PRODUCT_CATEGORY', variables: { categoryId: 'categoryId-v' } }],
       shape: { data: { productCategory: 'object' }, loading: false, refetch: 'function' },
-      policies: { GET_PRODUCT_CATEGORY: 'default(cache-first)' },
+      policies: { GET_PRODUCT_CATEGORY: 'cache-and-network' },
     },
     failure: {
       loading: false,
@@ -1560,7 +1301,7 @@ const ROWS = [
     expect: {
       initial: [{ variables: { input: { probe: 'input' } } }],
       shape: { loading: false, called: true, data: ['products'] },
-      policies: { '(anonymous)': 'default(cache-first)' },
+      policies: { '(anonymous)': 'cache-and-network' },
     },
     noArgs: { initial: [{ variables: { input: {} } }] },
     failure: { loading: false, called: true, error: 'error' },
@@ -1572,7 +1313,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'GET_PRODUCT_IN_AUTO_COMPLETE', variables: { input: { probe: 'input' } } }],
       shape: { loading: false, called: true, data: ['products'] },
-      policies: { GET_PRODUCT_IN_AUTO_COMPLETE: 'default(cache-first)' },
+      policies: { GET_PRODUCT_IN_AUTO_COMPLETE: 'cache-and-network' },
     },
     noArgs: { initial: [{ operationName: 'GET_PRODUCT_IN_AUTO_COMPLETE', variables: { input: {} } }] },
     failure: { loading: false, called: true, error: 'error' },
@@ -1584,7 +1325,7 @@ const ROWS = [
     expect: {
       initial: [{ variables: { input: { probe: 'input' } } }],
       shape: { loading: false, called: true, data: ['products'] },
-      policies: { '(anonymous)': 'default(cache-first)' },
+      policies: { '(anonymous)': 'cache-and-network' },
     },
     noArgs: { initial: [{ variables: { input: {} } }] },
     failure: { loading: false, called: true, error: 'error' },
@@ -1596,7 +1337,7 @@ const ROWS = [
     expect: {
       initial: [{ variables: { input: { probe: 'input' } } }],
       shape: { loading: false, called: true, data: ['products'] },
-      policies: { '(anonymous)': 'default(cache-first)' },
+      policies: { '(anonymous)': 'cache-and-network' },
     },
     noArgs: { initial: [{ variables: { input: {} } }] },
     failure: { loading: false, called: true, error: 'error' },
@@ -1608,7 +1349,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'GET_PRODUCT_IN_PRODUCT_RESTOCK', variables: { input: { probe: 'input' } } }],
       shape: { loading: false, called: true, data: ['products'] },
-      policies: { GET_PRODUCT_IN_PRODUCT_RESTOCK: 'default(cache-first)' },
+      policies: { GET_PRODUCT_IN_PRODUCT_RESTOCK: 'cache-and-network' },
     },
     noArgs: { initial: [{ operationName: 'GET_PRODUCT_IN_PRODUCT_RESTOCK', variables: { input: {} } }] },
     failure: { loading: false, called: true, error: 'error' },
@@ -1620,7 +1361,7 @@ const ROWS = [
     expect: {
       initial: [{ variables: { input: { probe: 'input' } } }],
       shape: { loading: false, called: true, data: ['products'] },
-      policies: { '(anonymous)': 'default(cache-first)' },
+      policies: { '(anonymous)': 'cache-and-network' },
     },
     noArgs: { initial: [{ variables: { input: {} } }] },
     failure: { loading: false, called: true, error: 'error' },
@@ -1632,7 +1373,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'GET_PRODUCT_IN_TRANSFERLIST', variables: { input: { probe: 'input' } } }],
       shape: { loading: false, called: true, data: ['products'] },
-      policies: { GET_PRODUCT_IN_TRANSFERLIST: 'default(cache-first)' },
+      policies: { GET_PRODUCT_IN_TRANSFERLIST: 'cache-and-network' },
     },
     noArgs: { initial: [{ operationName: 'GET_PRODUCT_IN_TRANSFERLIST', variables: { input: {} } }] },
     failure: { loading: false, called: true, error: 'error' },
@@ -1640,8 +1381,9 @@ const ROWS = [
   {
     id: 'useFetchProfile.useFetchMePermissions',
     hook: useFetchProfile.useFetchMePermissions,
-    args: ['date-v'],
+    args: [],
     expect: {
+      // 查詢名稱維持原本的 FETCH_THIRDPARTYS（同上，不改名）
       initial: [{ operationName: 'FETCH_THIRDPARTYS', variables: {} }],
       shape: { loading: false, called: true, data: ['me'] },
       policies: { FETCH_THIRDPARTYS: 'cache-and-network' },
@@ -1670,51 +1412,19 @@ const ROWS = [
     },
     failure: { loading: false, called: true, error: 'error' },
   },
-  // 已知缺口（待 Jason 決定）：fetchPolicy: 'cache-and-network' 寫在 useLazyQuery 的第三個參數，Apollo 不讀，
-  // 實際為預設的 cache-first（policies 一欄）；另外送出的 orders 變數 PROFILE 查詢沒有宣告，後端不會用到。這裡鎖住目前行為。
+  // Jason 2026/10/22 fix all：原本 fetchPolicy 寫在 useLazyQuery 的第三個參數（Apollo 不讀，實際為 cache-first），
+  // 且送出 PROFILE 查詢沒有宣告的 orders 變數；改為 fetchPolicy 放進第二個參數、不送 orders
   {
     id: 'useFetchProfile.useLazyFetchProfile',
     hook: useFetchProfile.useLazyFetchProfile,
-    args: [{ orders: { pageLimit: 10 } }],
+    args: [],
     invoke: [{ fn: 'fetchProfile', args: [] }],
     expect: {
       initial: [],
       shape: { fetchProfile: 'function', profile: { loading: false, called: false } },
-      invoked: [{ fn: 'fetchProfile', calls: [{ operationName: 'PROFILE', variables: { orders: { pageLimit: 10 } } }] }],
+      invoked: [{ fn: 'fetchProfile', calls: [{ operationName: 'PROFILE', variables: {} }] }],
       shapeAfter: { fetchProfile: 'function', profile: { loading: false, called: true, data: ['me'] } },
-      policies: { PROFILE: 'default(cache-first)' },
-    },
-  },
-  {
-    id: 'useFetchProfile.useFetchProfileOrders',
-    hook: useFetchProfile.useFetchProfileOrders,
-    args: [{ input: { probe: 'input' } }],
-    expect: {
-      initial: [{ operationName: 'FETCH_PROFILE_ORDERS', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['me'] },
-      policies: { FETCH_PROFILE_ORDERS: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchProfile.useFetchProfileOrdersLazy',
-    hook: useFetchProfile.useFetchProfileOrdersLazy,
-    args: [],
-    invoke: [{ fn: 'fetchProfileOrdersLazy', args: [{ variables: { input: { probe: 'input' } } }] }],
-    expect: {
-      initial: [],
-      shape: { fetchProfileOrdersLazy: 'function', profileOrdersLazyData: { loading: false, called: false } },
-      invoked: [
-        {
-          fn: 'fetchProfileOrdersLazy',
-          calls: [{ operationName: 'FETCH_PROFILE_ORDERS', variables: { input: { probe: 'input' } } }],
-        },
-      ],
-      shapeAfter: {
-        fetchProfileOrdersLazy: 'function',
-        profileOrdersLazyData: { loading: false, called: true, data: ['me'] },
-      },
-      policies: { FETCH_PROFILE_ORDERS: 'cache-and-network' },
+      policies: { PROFILE: 'cache-and-network' },
     },
   },
   {
@@ -1796,7 +1506,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'service', variables: { serviceId: 'serviceId-v' } }],
       shape: { loading: false, called: true, data: ['service'] },
-      policies: { service: 'default(cache-first)' },
+      policies: { service: 'cache-and-network' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },
@@ -1810,7 +1520,7 @@ const ROWS = [
       shape: { loading: false, called: false },
       invoked: [{ fn: 'getService', calls: [{ operationName: 'service', variables: { serviceId: 'serviceId-v' } }] }],
       shapeAfter: { loading: false, called: true, data: ['service'] },
-      policies: { service: 'default(cache-first)' },
+      policies: { service: 'cache-and-network' },
     },
   },
   {
@@ -1834,17 +1544,6 @@ const ROWS = [
       initial: [{ operationName: 'ServiceCategories', variables: {} }],
       shape: { loading: false, called: true, data: ['serviceCategories'] },
       policies: { ServiceCategories: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchServiceCategories.useFetchServiceCategoriesAnalytics',
-    hook: useFetchServiceCategories.useFetchServiceCategoriesAnalytics,
-    args: ['date-v'],
-    expect: {
-      initial: [{ operationName: 'FETCH_SERVICE_CATEGORIES', variables: { date: 'date-v' } }],
-      shape: { loading: false, called: true, data: ['serviceCategories'] },
-      policies: { FETCH_SERVICE_CATEGORIES: 'cache-and-network' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },
@@ -1946,17 +1645,6 @@ const ROWS = [
       },
       policies: { SERVICE_ORDER_HELPERS: 'cache-and-network' },
     },
-  },
-  {
-    id: 'useFetchServiceOrderHelpers.useFetchDecreaseHelpRecord',
-    hook: useFetchServiceOrderHelpers.useFetchDecreaseHelpRecord,
-    args: [{ probe: 'input' }],
-    expect: {
-      initial: [{ operationName: 'DECREASE_HELP_RECORD', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['serviceOrderHelpers'] },
-      policies: { DECREASE_HELP_RECORD: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
   },
 ]
 

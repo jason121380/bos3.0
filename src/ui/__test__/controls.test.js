@@ -6,7 +6,6 @@ import CompatButton from '../button-compat'
 import { Checkbox, CheckboxField, FormControlLabel } from '../checkbox'
 import { Switch } from '../switch'
 import { Accordion, AccordionDetails, AccordionSummary } from '../accordion'
-import { Accordion as CompatAccordion, AccordionDetails as CompatDetails, AccordionSummary as CompatSummary } from '../accordion-compat'
 
 // 保護什麼：可操作的基本控制項（按鈕、勾選框、開關、可展開區塊）。
 // - 圖示按鈕必須有可讀名稱（title／aria-label），否則滑鼠停留與報讀器都不知道用途。
@@ -194,58 +193,6 @@ describe('Accordion（新版）', () => {
       </Accordion>
     )
     expect(() => fireEvent.keyDown(screen.getByRole('button'), { key: 'Enter' })).not.toThrow()
-  })
-})
-
-describe('accordion-compat（MUI 相容）', () => {
-  it('停用時不展開、不可 Tab 聚焦，並輸出 Mui-disabled', () => {
-    const onChange = jest.fn()
-    render(
-      <CompatAccordion disabled onChange={onChange} data-testid="root">
-        <CompatSummary>標題</CompatSummary>
-        <CompatDetails>內容</CompatDetails>
-      </CompatAccordion>
-    )
-    const summary = screen.getByRole('button')
-    expect(summary).toHaveAttribute('tabindex', '-1')
-    expect(summary).toHaveAttribute('aria-disabled', 'true')
-    expect(summary.className).toContain('Mui-disabled')
-    expect(screen.getByTestId('root').className).toContain('Mui-disabled')
-    fireEvent.click(summary)
-    expect(onChange).not.toHaveBeenCalled()
-    expect(summary).toHaveAttribute('aria-expanded', 'false')
-  })
-
-  it('空白鍵展開、呼叫標題自己的 onKeyDown；展開後箭頭區帶 Mui-expanded', () => {
-    const onKeyDown = jest.fn()
-    const { container } = render(
-      <CompatAccordion>
-        <CompatSummary expandIcon={<span>v</span>} onKeyDown={onKeyDown}>
-          標題
-        </CompatSummary>
-        <CompatDetails>內容</CompatDetails>
-      </CompatAccordion>
-    )
-    const summary = screen.getByRole('button')
-    fireEvent.keyDown(summary, { key: 'a' })
-    expect(summary).toHaveAttribute('aria-expanded', 'false')
-    fireEvent.keyDown(summary, { key: ' ' })
-    expect(onKeyDown).toHaveBeenCalledTimes(2)
-    expect(summary).toHaveAttribute('aria-expanded', 'true')
-    expect(container.querySelector('.MuiAccordionSummary-expandIconWrapper').className).toContain('Mui-expanded')
-  })
-
-  it('第一個子元素不是元件（純文字）時不拋錯，內容區不帶 aria 連結', () => {
-    render(<CompatAccordion>純文字</CompatAccordion>)
-    const region = screen.getByRole('region')
-    expect(region).not.toHaveAttribute('aria-labelledby')
-    expect(screen.getByText('純文字')).toBeInTheDocument()
-  })
-
-  it('標題放在 Accordion 外（沒有 context）時點擊不拋錯', () => {
-    render(<CompatSummary>孤立標題</CompatSummary>)
-    expect(() => fireEvent.click(screen.getByRole('button'))).not.toThrow()
-    expect(screen.getByRole('button')).toHaveAttribute('aria-expanded', 'false')
   })
 })
 

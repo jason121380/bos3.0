@@ -3,9 +3,8 @@ import React from 'react'
 
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TablePagination, TableRow } from '../table'
 import * as Compat from '../table-compat'
-import { TablePagination as CompatPagination } from '../pagination-compat'
 
-// 保護什麼：新版表格（ui/table）與舊頁面的 MUI 相容表格／分頁（table-compat、pagination-compat）。
+// 保護什麼：新版表格（ui/table，含分頁）與舊頁面的 MUI 相容表格（table-compat；pagination-compat 沒有頁面使用，2026/10/22 已刪除）。
 // - 報表列印（initialize.scss 數十條 .MuiTableCell-* 規則）靠 table-compat 輸出的 MUI class：區段、尺寸、排序、sticky 表頭。
 // - 分頁的筆數文字、可否換頁與每頁筆數回傳的值（數字）決定查詢參數，算錯會查到不存在的頁或少資料。
 
@@ -148,61 +147,5 @@ describe('table-compat（MUI 相容）', () => {
     )
     expect(screen.getByText('x')).toHaveClass('MuiTableCell-sizeMedium')
     expect(screen.getByText('x').className).not.toContain('MuiTableCell-padding')
-  })
-})
-
-describe('pagination-compat（MUI 相容）', () => {
-  it('count=-1（總數未知）顯示 more than，且下一頁永遠可按', () => {
-    const { container } = render(<CompatPagination component="div" count={-1} page={2} rowsPerPage={10} onPageChange={() => {}} />)
-    expect(container.querySelector('.MuiTablePagination-displayedRows').textContent).toBe('21–30 of more than 30')
-    expect(screen.getByLabelText('Go to next page')).not.toBeDisabled()
-  })
-
-  it('預設是表格儲存格（td＋colSpan），預設選項 10／25／50／100', () => {
-    render(
-      <table>
-        <tbody>
-          <tr>
-            <CompatPagination count={5} page={0} rowsPerPage={10} colSpan={3} onPageChange={() => {}} />
-          </tr>
-        </tbody>
-      </table>
-    )
-    const cell = document.querySelector('.MuiTablePagination-root')
-    expect(cell.tagName).toBe('TD')
-    expect(cell).toHaveAttribute('colspan', '3')
-    expect(screen.getAllByRole('option').map(o => o.textContent)).toEqual(['10', '25', '50', '100'])
-  })
-
-  it('每頁全部（-1）時顯示到總數；選項可為物件；目前筆數不在選項內時顯示空白', () => {
-    const { container, rerender } = render(
-      <CompatPagination component="div" count={42} page={0} rowsPerPage={-1} rowsPerPageOptions={[10, { label: 'All', value: -1 }]} onPageChange={() => {}} />
-    )
-    expect(container.querySelector('.MuiTablePagination-displayedRows').textContent).toBe('1–42 of 42')
-    expect(container.querySelector('.MuiTablePagination-select').textContent).toBe('All')
-    rerender(<CompatPagination component="div" count={42} page={0} rowsPerPage={7} rowsPerPageOptions={[10, 20]} onPageChange={() => {}} />)
-    expect(container.querySelector('.MuiTablePagination-select').textContent).toBe('')
-  })
-
-  it('沒給 onRowsPerPageChange 時改筆數不拋錯；上一頁以 (event, page-1) 呼叫；只有一個選項時不畫下拉', () => {
-    const onPageChange = jest.fn()
-    const { container, rerender } = render(<CompatPagination component="div" count={42} page={2} rowsPerPage={10} onPageChange={onPageChange} />)
-    expect(() => fireEvent.change(container.querySelector('select'), { target: { value: '1' } })).not.toThrow()
-    fireEvent.click(screen.getByLabelText('Go to previous page'))
-    expect(onPageChange.mock.calls[0][1]).toBe(1)
-    rerender(<CompatPagination component="div" count={42} page={2} rowsPerPage={10} rowsPerPageOptions={[10]} />)
-    expect(container.querySelector('select')).toBeNull()
-    // 沒有 onPageChange 時按鈕點了也不拋錯
-    expect(() => fireEvent.click(screen.getByLabelText('Go to previous page'))).not.toThrow()
-    expect(() => fireEvent.click(screen.getByLabelText('Go to next page'))).not.toThrow()
-  })
-})
-
-describe('pagination-compat：0 筆', () => {
-  it('沒有資料時顯示 0–0 of 0，兩個換頁鈕都停用', () => {
-    const { container } = render(<CompatPagination component="div" count={0} page={0} rowsPerPage={10} onPageChange={() => {}} />)
-    expect(container.querySelector('.MuiTablePagination-displayedRows').textContent).toBe('0–0 of 0')
-    expect(screen.getByLabelText('Go to previous page')).toBeDisabled()
-    expect(screen.getByLabelText('Go to next page')).toBeDisabled()
   })
 })

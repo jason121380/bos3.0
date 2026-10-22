@@ -110,4 +110,22 @@ describe('員工列表', () => {
     expect(screen.queryByLabelText('選取 王小美')).toBeNull()
     expect(screen.queryByLabelText('全選')).toBeNull()
   })
+
+  // 已修正（Jason 2026/10/22 fix all）：英數編號原本以 a.designerNo - b.designerNo 排序，相減得 NaN、維持後端順序；
+  // 改用 utils/compareNo（自然排序）。數字編號在前、英數編號其次、沒有編號的排最後（分組不變）
+  it('依編號排序：數字編號（2、10）→ 英數編號（A2、A10、B1）→ 沒有編號', async () => {
+    const codes = ['B1', 'A10', '', '10', 'A2', '2', null]
+    const list = codes.map((designerNo, i) => employee({ id: `x${i}`, lastName: '員', firstName: `工${i}`, nickName: '', designerNo }))
+    renderPage(<EmployeeManagementList />, {
+      fixtures: { ...fixtures(), GET_USERS_IN_EMPLOYEE_LIST: { users: { totalCount: list.length, users: list } } },
+      route: '/management/employee',
+    })
+    await screen.findByText(`共 ${list.length} 筆`)
+    const order = screen
+      .getAllByRole('row')
+      .map(r => list.find(e => r.textContent.includes(`${e.lastName}${e.firstName}`)))
+      .filter(Boolean)
+      .map(e => e.designerNo)
+    expect(order).toEqual(['2', '10', 'A2', 'A10', 'B1', '', null])
+  })
 })

@@ -50,15 +50,6 @@ const FETCH_USER_ATTENDANCE = gql`
   }
 `
 
-export function useFetchUserAttendance({ userInput, allAttendanceInput }) {
-  return useQuery(FETCH_USER_ATTENDANCE, {
-    variables: {
-      userInput,
-      allAttendanceInput,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-}
 export function useFetchUserAttendanceLazy() {
   const [fetchUserAttendanceLazy, uerAttendanceLazyData] = useLazyQuery(FETCH_USER_ATTENDANCE, {
     fetchPolicy: 'cache-and-network',
@@ -171,180 +162,6 @@ export const useFetchUserSalary = ({ input, date }) => {
   })
 }
 
-const FETCH_PERFORM_DAILY = gql`
-  query FETCH_PERFORM_DAILY($input: UsersInput!, $startDate: DateTime!, $endDate: DateTime!) {
-    users(input: $input) {
-      users {
-        id
-        name
-        salesReport {
-          # 類別業績
-          serviceOrders(input: { startDate: $startDate, endDate: $endDate }) {
-            id
-            # 項目
-            name
-            price
-            service {
-              # 類別
-              serviceCategory {
-                id
-                name
-              }
-            }
-            order {
-              id
-              no
-              designer {
-                id
-                name
-              }
-            }
-          }
-          # 互助紀錄
-          serviceOrderHelpers(input: { startDate: $startDate, endDate: $endDate }) {
-            id
-            # 點數
-            point
-            # 點數換算
-            pointAmount
-            # 抽固定金額
-            fixCommissionAmount
-            # 抽%
-            commissionPercent
-            # 抽%換算
-            commissionAmount
-            serviceOrder {
-              id
-              # 項目
-              name
-              order {
-                id
-                no
-                designer {
-                  id
-                  # 互助設計師
-                  name
-                }
-              }
-            }
-          }
-          # 店販業績
-          productOrders(input: { startDate: $startDate, endDate: $endDate }) {
-            id
-            price
-            commission
-            seller {
-              id
-              name
-            }
-            product {
-              name
-              productCategory {
-                id
-                name
-              }
-            }
-            order {
-              id
-              no
-            }
-          }
-          # 業績統計（本日）
-          performanceStatisticsToday: performanceStatistics(
-            input: { startDate: $startDate, endDate: $endDate }
-          ) {
-            #服務實業績
-            serviceRealPerformance
-            #指定服務實業績
-            designatedServiceRealPerformance
-            #固定扣項
-            serviceDeductionPrice
-            #助理使用扣項
-            helperDeductionPrice
-            #店販業績
-            productSales
-            #店販抽成
-            productCommission
-            #總客數
-            customerCount
-            #客單價
-            customerAvgPrice
-            #指定客數
-            designateCount
-            #不指定客數
-            notDesignateCount
-            #男客
-            maleCount
-            #女客
-            femaleCount
-            #互助次數
-            helpCount
-            #互助加項
-            helperAmount
-            # 助理欄位========
-            # 抽固定金額
-            fixAmount
-            # 點數
-            point
-            # 點數換算
-            pointAmount
-          }
-          # 業績統計（本月）
-          performanceStatisticsMonthly: performanceStatistics(
-            input: { startDate: $startDate, endDate: $endDate }
-          ) {
-            #服務實業績
-            serviceRealPerformance
-            #指定服務實業績
-            designatedServiceRealPerformance
-            #固定扣項
-            serviceDeductionPrice
-            #助理使用扣項
-            helperDeductionPrice
-            #店販業績
-            productSales
-            #店販抽成
-            productCommission
-            #總客數
-            customerCount
-            #客單價
-            customerAvgPrice
-            #指定客數
-            designateCount
-            #不指定客數
-            notDesignateCount
-            #男客
-            maleCount
-            #女客
-            femaleCount
-            #互助次數
-            helpCount
-            #互助加項
-            helperAmount
-            # 助理欄位
-            # 助理欄位========
-            # 抽固定金額
-            fixAmount
-            # 點數
-            point
-            # 點數換算
-            pointAmount
-          }
-        }
-      }
-    }
-  }
-`
-
-export const useFetchPerformDaily = ({ input, startDate, endDate }) =>
-  useQuery(FETCH_PERFORM_DAILY, {
-    variables: {
-      input,
-      startDate,
-      endDate,
-    },
-  })
-
 const FETCH_DESIGNER_SALES_DETAIL = gql`
   query FETCH_DESIGNER_SALES_DETAIL($input: UserInput, $date: DateTimeInput!) {
     user(input: $input) {
@@ -396,51 +213,6 @@ export const useLazyFetchDesignerSalesDetail = variables => {
   }
 }
 
-const MERCHANT_ORDER_RECORD = gql`
-  query($userInput: UserInput, $merchantOrderRecordsInput: MerchantOrderRecordsInput) {
-    user(input: $userInput) {
-      id
-      name
-      merchantOrderRecords(input: $merchantOrderRecordsInput) {
-        startTime
-        endTime
-        status
-        orders {
-          id
-          no
-          isDesignate
-          status
-          serviceCategory {
-            id
-            name
-          }
-          designer {
-            id
-            name
-          }
-          customer {
-            id
-            name
-            cellphone
-          }
-          friends {
-            customer {
-              id
-              name
-              cellphone
-            }
-          }
-        }
-      }
-    }
-  }
-`
-
-export const useFetchUserMerchantOrderRecords = ({ userInput, merchantOrderRecordsInput }) =>
-  useQuery(MERCHANT_ORDER_RECORD, {
-    variables: { userInput, merchantOrderRecordsInput },
-  })
-
 const FETCH_USER = gql`
   query FETCH_USER($input: UserInput) {
     user(input: $input) {
@@ -472,6 +244,7 @@ export default function useFetchUser(input) {
     variables: {
       input,
     },
+    fetchPolicy: 'cache-and-network',
   })
 }
 
@@ -488,97 +261,7 @@ export function useFetchIsWhiteList(input) {
     variables: {
       input,
     },
-  })
-}
-
-const FETCH_USER_SALES_ANALYTICS = gql`
-  query FETCH_USER($input: UserInput, $dateTimeInput: DateTimeInput!) {
-    user(input: $input) {
-      id
-      salesAnalytics(input: $dateTimeInput) {
-        servicePerformanceFakeTotal
-        servicePerformanceDesignateFakeTotal
-        servicePerformanceNonDesignateFakeTotal
-        serviceThirdPartHandlingFeeOnSales
-        servicePerformanceDecountItem
-        servicePerformanceDecountHelperUsagePrice
-        servicePerformanceDecountHelperUsagePoint
-        servicePerformanceTruthTotal
-        servicePerformanceDesignateTruthTotal
-        servicePerformanceNonDesignateTruthTotal
-        servicePerformanceRake
-        serviceThirdPartHandlingFeeOnSalary
-        serviceSalaryDecountItem
-        serviceSalaryDecountHelperUsagePrice
-        serviceSalaryDecountHelperUsagePoint
-        serviceSalaryShouldBePaid
-        ticketUsagePerformanceFakeTotal
-        ticketThirdPartHandlingFeeOnSales
-        ticketPerformanceDecountItem
-        ticketPerformanceDecountHelperUsage
-        ticketUsagePerformanceTruthTotal
-        ticketPerformanceRake
-        ticketThirdPartHandlingFeeOnSalary
-        ticketSalaryDecountItem
-        ticketSalaryDecountHelperUsagePrice
-        ticketSalaryDecountHelperUsagePoint
-        ticketSalaryShouldBePaid
-        productPerformanceFakeTotal
-        productThirdPartHandlingFee
-        productPerformanceTruthTotal
-        productRakeByFixed
-        productRakeByCost
-        productRakeByPrice
-        productSalaryShouldBePaid
-        helperRetrievePoint
-        helperRetrievePrice
-        totalSalaryShouldBePaid
-        ticketSellingFake
-        ticketSellingTruth
-        walletDepositFake
-        walletDepositTruth
-        customerTotalCount
-        customerMaleCount
-        customerFemaleCount
-        customerUnknownCount
-        customerAveragePrice
-        customerAveragePriceWithProduct
-        orderTotalCount
-        orderMaleCount
-        orderFemaleCount
-        orderUnknownCount
-        orderDesignateCount
-        orderNonDesignateCount
-        orderAveragePrice
-        orderAveragePriceWithProduct
-        hairWashing
-        hairWashingCount
-        hairCutting
-        hairCuttingCount
-        permanent
-        permanentCount
-        hairDying
-        hairDyingCount
-        hairTreatment
-        hairTreatmentCount
-        scalpTreatment
-        scalpTreatmentCount
-        hairExtension
-        hairExtensionCount
-        hairStyling
-        hairStylingCount
-        workingDays
-      }
-    }
-  }
-`
-
-export function useFetchUserSalesAnalytics({ input, dateTimeInput }) {
-  return useQuery(FETCH_USER_SALES_ANALYTICS, {
-    variables: {
-      input,
-      dateTimeInput,
-    },
+    fetchPolicy: 'cache-and-network',
   })
 }
 
@@ -596,30 +279,6 @@ export function useFetchIsUserSalaryChecked({ input, date }) {
       input,
       date,
     },
-  })
-}
-
-const FETCH_USER_LAZY = gql`
-  query FETCH_USER_LAZY($input: UserInput) {
-    user(input: $input) {
-      pageAuthority {
-        authorityName
-        pageAuthority {
-          pageTitle
-          authority
-          pageAuthority {
-            pageName
-            authority
-          }
-        }
-      }
-    }
-  }
-`
-
-export function useFetchUserLazy() {
-  const [userLazy, userLazyData] = useLazyQuery(FETCH_USER_LAZY, {
     fetchPolicy: 'cache-and-network',
   })
-  return [userLazy, userLazyData]
 }

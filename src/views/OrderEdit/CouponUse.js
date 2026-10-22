@@ -56,6 +56,8 @@ export default function CouponUse({
               <React.Fragment key={`${data.id}-ticketOrder-${helperIndex}-${data.helperId}`}>
                 <Field label={data.type}>
                 <EmployeeAutoComplete
+                  // 與同列輸入框同高（36px、手機 40px；原本 small 34px 比同列矮 2px，Jason 2026/10/22 fix all）
+                  size="medium"
                   placeholder={data.type}
                   value={data.helperId}
                   onChange={value =>

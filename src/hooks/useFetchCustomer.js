@@ -74,19 +74,3 @@ export function useFetchCustomerInOrderDetail({ id }) {
     fetchPolicy: 'cache-and-network',
   })
 }
-const FETCH_CUSTOMER_CELLPHONE_IN_ORDER_DETAIL = gql`
-  query FETCH_CUSTOMER_CELLPHONE_IN_ORDER_DETAIL($id: ID) {
-    customer(id: $id) {
-      cellphone
-    }
-  }
-`
-
-export function useFetchCustomerCellphoneInOrderDetail({ id }) {
-  return useQuery(FETCH_CUSTOMER_CELLPHONE_IN_ORDER_DETAIL, {
-    variables: {
-      id,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-}

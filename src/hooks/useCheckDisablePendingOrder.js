@@ -8,7 +8,8 @@ const useCheckDisablePendingOrder = () => {
   const getDisablePendingOrder = useFetchGetDisablePendingOrder()
 
   useEffect(() => {
-    if (!getDisablePendingOrder.loading) {
+    // 查詢失敗時 data 為 undefined：不拋錯、不導頁（errorLink 已提示；Jason 2026/10/22 fix all，原本整頁變成錯誤畫面）
+    if (!getDisablePendingOrder.loading && getDisablePendingOrder.data) {
       const { disablePendingOrder } = getDisablePendingOrder.data.getParameterAboutSettingFunction
       if (disablePendingOrder) {
         openSnackbar({

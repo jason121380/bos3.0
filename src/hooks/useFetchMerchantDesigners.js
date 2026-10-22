@@ -53,5 +53,6 @@ export default function useFetchMerchantDesigners() {
         ? JSON.parse(localStorage.getItem('userMerchant')).id
         : null,
     },
+    fetchPolicy: 'cache-and-network',
   })
 }

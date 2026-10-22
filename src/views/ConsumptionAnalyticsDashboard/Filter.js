@@ -4,6 +4,7 @@ import { TextField } from 'ui/text-field'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import idx from 'idx'
+import compareNo from 'utils/compareNo'
 import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
 import { Button } from 'ui/button'
@@ -19,9 +20,8 @@ const Filter = ({ date, setDate, handleSearch, loading, inputData, setInputData,
 
   const filterOptions = (options, state) => {
     const keyWord = state.inputValue
-    const newOptions = [...options].sort((a, b) => {
-      return a.userNo - b.userNo
-    })
+    // 編號自然排序（英數編號也有效）、空編號排最後（原本 a.userNo - b.userNo 對英數編號得 NaN、空編號當 0 排最前；Jason 2026/10/22 fix all）
+    const newOptions = [...options].sort((a, b) => compareNo(a.userNo, b.userNo))
     if (keyWord !== '' && keyWord.trim() !== '') {
       const filterData = newOptions.filter(data =>
         (data.userNo !== null && data.userNo !== '' && data.userNo.toLowerCase() === keyWord.toLowerCase()) ||

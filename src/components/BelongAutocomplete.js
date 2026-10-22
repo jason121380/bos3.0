@@ -15,10 +15,15 @@ const BelongAutocomplete = ({ value, onChange = () => { }, fetchData = false, op
   useEffect(() => {
     if (fetchData) {
       getAttributionLazy()
-    } else {
-      setAttributions(optionData)
     }
   }, [])
+
+  // 呼叫端給選項時跟著 optionData 更新（原本只在掛載時讀一次，選項較晚到時下拉仍是空的；Jason 2026/10/22 fix all）
+  useEffect(() => {
+    if (!fetchData) {
+      setAttributions(optionData)
+    }
+  }, [fetchData, optionData])
 
   useEffect(() => {
     if (!attributionLazyData.loading && attributionLazyData.data) {

@@ -5,12 +5,15 @@ import cloneDeep from 'lodash/cloneDeep'
 import React, { useEffect, useState, forwardRef } from 'react'
 import { Autocomplete } from 'ui/combobox'
 
+// 沒給 couponUsages 時的預設值放模組層：參數預設 [] 每次渲染都是新陣列，effect（依賴 couponUsages）會每次渲染都 setState 而無限重新渲染
+const NO_COUPON_USAGES = []
+
 function CustomerTicketRecordAutoCompleteForOrderCreate({
   className = '',
   onChange = () => { },
   value,
   customerId,
-  couponUsages = [],
+  couponUsages = NO_COUPON_USAGES,
   editOrderUseTicketDisabled = false,
   inputProps = {
     'data-testid': '',

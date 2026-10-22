@@ -26,16 +26,21 @@ export default function NewChoseEvent({
   const { verifyBooking } = useFetchVerifyBooking()
   const { setBookingNoShow } = useFetchSetBookingNoShow()
   const [btnDisabled, setBtnDisabled] = useState(false)
+  // 送出中（等後端回應）：「取消／關閉」只在這段期間停用。後端回應但沒回 id 時結果不明，動作鈕（btnDisabled）維持停用避免重複送出，
+  // 「取消／關閉」恢復可按（原本也一起停用，只能按 Esc／點背景關；比照 components/ReservationCalendar 同名元件，Jason 2026/10/22 fix all）
+  const [pending, setPending] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [password, setPassword] = useState('')
 
   const closeAllOrderTime = () => {
     setBtnDisabled(true)
+    setPending(true)
     adminBookingTimeAllStore({
       datetime: clickData.dateTime,
       appointable: modaltype === 'openAllOrder' ? true : false,
     })
       .then(res => {
+        setPending(false)
         if (res.data.adminBookingTimeAllStore.storeId) {
           refetchData()
           openSnackbar({ message: '變更成功', variant: 'success' })
@@ -45,17 +50,20 @@ export default function NewChoseEvent({
       .catch(error => {
         openSnackbar({ message: error.message, variant: 'error' })
         setBtnDisabled(false)
+        setPending(false)
       })
   }
 
   const closeOrderTime = () => {
     setBtnDisabled(true)
+    setPending(true)
     adminBookingTime({
       appointable: modaltype === 'openOrder' ? true : false,
       datetime: clickData.dateTime,
       designerId: clickData.designerId,
     })
       .then(res => {
+        setPending(false)
         if (res.data.adminBookingTime.designerId) {
           refetchData()
           openSnackbar({ message: '變更成功', variant: 'success' })
@@ -65,17 +73,20 @@ export default function NewChoseEvent({
       .catch(error => {
         openSnackbar({ message: error.message, variant: 'error' })
         setBtnDisabled(false)
+        setPending(false)
       })
   }
 
   const handleAcceptBooking = status => {
     setBtnDisabled(true)
+    setPending(true)
     verifyBooking({
       orderId: editOrder.id,
       isApproval: status,
       isFromPC: true,
       password
     }).then(res => {
+      setPending(false)
       if (res.data.verifyBooking.id) {
         refetchData()
         if (status) {
@@ -94,12 +105,14 @@ export default function NewChoseEvent({
       }
     }).catch(error => {
       setBtnDisabled(false)
+      setPending(false)
       openSnackbar({ message: error.message, variant: 'error' })
     })
   }
 
   const handleSetBookingNoShow = async () => {
     setBtnDisabled(true) 
+    setPending(true)
     try {
       await setBookingNoShow({
         input: {
@@ -107,11 +120,13 @@ export default function NewChoseEvent({
           isNoShow: !editOrder.isNoShow,
         }
       })
+      setPending(false)
       openSnackbar({ message: '設定成功', variant: 'success' })
       setModalOpen(false)
       refetchData()
     } catch (error) {
       setBtnDisabled(false) 
+      setPending(false)
     }
   }
 
@@ -157,7 +172,7 @@ export default function NewChoseEvent({
           <Button
             variant="secondary"
             type="submit"
-            disabled={btnDisabled}
+            disabled={pending}
             onClick={() => {
               setModalOpen(false)
             }}
@@ -198,7 +213,7 @@ export default function NewChoseEvent({
           <Button
             variant="secondary"
             type="submit"
-            disabled={btnDisabled}
+            disabled={pending}
             onClick={() => {
               setModalOpen(false)
             }}
@@ -292,7 +307,7 @@ export default function NewChoseEvent({
           <Button
             variant="secondary"
             type="submit"
-            disabled={btnDisabled}
+            disabled={pending}
             onClick={() => {
               setModalOpen(false)
             }}

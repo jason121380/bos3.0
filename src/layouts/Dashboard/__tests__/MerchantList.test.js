@@ -110,16 +110,17 @@ describe('MerchantList：點擊', () => {
     expect(screen.getAllByRole('treeitem')[1]).not.toHaveAttribute('aria-expanded')
   })
 
-  it('已知缺口（待 Jason 決定）：群組資料缺少 groups 欄位時，標籤計算 data.groups.length 會拋錯（建立子項時有防呆、標籤沒有）', () => {
-    const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
-    expect(() =>
-      render(
-        <MemoryRouter>
-          <MerchantList merchants={{ allMerchants: [], groups: [{ no: 'X', name: '缺欄位', merchants: [] }], merchants: [] }} searchQuery="" />
-        </MemoryRouter>
-      )
-    ).toThrow()
-    spy.mockRestore()
+  // Jason 2026/10/22 fix all：原本群組缺少 groups 欄位時標籤計算 data.groups.length 會拋錯（建立子項時有防呆、標籤沒有）、
+  // 缺少 allMerchants 時「全部」的數量也會拋錯，整個側欄頂列跟著壞掉；改為缺欄位視為空
+  it('群組缺少 groups／merchants 欄位、資料缺少 allMerchants 時視為空，不拋錯', () => {
+    render(
+      <MemoryRouter>
+        <MerchantList merchants={{ groups: [{ no: 'X', name: '缺欄位', merchants: [{ id: 'm9', name: '新竹店' }] }, { no: 'Y', name: '全缺' }], merchants: [] }} searchQuery="" />
+      </MemoryRouter>
+    )
+    expect(items()).toEqual(['全部(0)', 'X - 缺欄位(1)', 'Y - 全缺(0)'])
+    fireEvent.click(btn('X - 缺欄位'))
+    expect(items()).toContain('新竹店')
   })
 })
 

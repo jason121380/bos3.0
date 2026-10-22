@@ -300,6 +300,9 @@ describe('使用預收卡', () => {
     await pickRecord('剪髮十次卡')
     expect(await screen.findByDisplayValue('700')).toBeDisabled()
     const wash = screen.getByPlaceholderText('助理-洗髮')
+    // 助理欄與同列輸入框同高（size medium：36px、手機 40px；原本 small 34px 比同列矮 2px，Jason 2026/10/22 fix all）
+    expect(wash.closest('.min-h-9')).not.toBeNull()
+    expect(wash.closest('.min-h-8')).toBeNull()
     await pickEmployee(wash, HELPER)
     // 選了助理後焦點到「指定」
     await wait(() => expect(document.activeElement.name).toBe('助理-洗髮designate'))

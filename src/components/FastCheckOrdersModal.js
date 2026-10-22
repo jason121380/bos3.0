@@ -293,8 +293,8 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
                     <TableCell style={{ whiteSpace: 'nowrap'}}>
                       {formatNumber(Math.round(d.thirdPartTicketForDecount))}
                       <p className="m-0 text-[14px] leading-5 text-text-secondary">
-                        {d.serviceOrders.length > 0 &&
-                          d.productOrders.length > 0 &&
+                        {(d.serviceOrders.length > 0 ||
+                          d.productOrders.length > 0) &&
                           thirdParty(d)}
                       </p>
                     </TableCell>

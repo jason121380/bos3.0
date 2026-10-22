@@ -129,10 +129,11 @@ const DateSelector = ({
   const handleDateChange = (value, pickerType) => {
     const newValue = cloneDeep(date)
     newValue[pickerType] = value
+    // 起訖交錯時另一端改成「那一整天」（起日當天 00:00～23:59:59.999）；原本設成同一個時間點，區間只剩一瞬間（Jason 2026/10/22 fix all）
     if (pickerType === 'endDate' && isBefore(newValue.endDate, newValue.startDate)) {
-      newValue.startDate = newValue.endDate
+      newValue.startDate = startOfDay(newValue.endDate).getTime()
     } else if (pickerType === 'startDate' && isBefore(newValue.endDate, newValue.startDate)) {
-      newValue.endDate = newValue.startDate
+      newValue.endDate = endOfDay(newValue.startDate).getTime()
     }
     if (onlyStart) {
       newValue.endDate = endOfDay(newValue.startDate).getTime()

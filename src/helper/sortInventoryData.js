@@ -1,4 +1,5 @@
 import cloneDeep from "lodash/cloneDeep"
+import compareNo from "utils/compareNo"
 
 const sortData = (inventoryData, type) => {
   let data = cloneDeep(inventoryData)
@@ -24,13 +25,9 @@ const sortData = (inventoryData, type) => {
     })
     data = [...b, ...a]
   } else {
-    data = data.sort((a, b) => {
-      if (a.productNo && b.productNo) {
-        return a.productNo.localeCompare(b.productNo)
-      } else {
-        return a.productNo - b.productNo
-      }
-    })
+    // 商品編號自然排序（2 在 10 前、A2 在 A10 前）、沒有編號的排最後（原本兩邊都有編號時字典序、
+    // 一邊沒有時相減得 NaN 而排序失效；Jason 2026/10/22 fix all）
+    data = data.sort((a, b) => compareNo(a.productNo, b.productNo))
   }
   return data
 }

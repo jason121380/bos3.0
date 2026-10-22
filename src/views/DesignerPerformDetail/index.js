@@ -87,7 +87,6 @@ function DesignerPerformDetail({ history, location }) {
         <MerchantSearchBar
           values={pageSetting}
           onFilter={values => setPageSetting(values)}
-          initFirst={!pageSetting.employeeId ? ['employee'] : []}
           outside
           visible={['datePicker', 'employee', 'payment']}
         />

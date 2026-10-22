@@ -46,7 +46,7 @@ function SearchBar({
             inCustomerFilterExport={inCustomerFilterExport}
             setBelong={setBelong}
             setCustomerIsCome={setCustomerIsCome}
-            getQuery
+            getQuery={getQuery}
           />
         </div>
       ) : (

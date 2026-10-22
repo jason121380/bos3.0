@@ -5,18 +5,22 @@ import { useEffect, useState } from 'react'
 import { useFetchTicketsForAutocomplete } from 'hooks/useFetchTickets'
 import idx from 'idx'
 import { Autocomplete } from 'ui/combobox'
+import compareNo from 'utils/compareNo'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
+// 沒給 value 時當成沒選（模組層常數：參數預設 [] 每次渲染都是新陣列，會讓依賴 value 的 effect 每次渲染都 setState）
+const NO_VALUE = []
 
-const TicketsAutocpmplete = ({ value, onChange = () => { }, isReadOnly = false, ...rest }) => {
+const TicketsAutocpmplete = ({ value = NO_VALUE, onChange = () => { }, isReadOnly = false, ...rest }) => {
   const getTickets = useFetchTicketsForAutocomplete()
   const [selectValue, setSelectValue] = useState([])
   const [options, setOptions] = useState([])
 
   useEffect(() => {
     if (!getTickets.loading) {
-      const data = idx(getTickets, _ => _.data.ticketsForList)
+      // 查詢失敗時 data 為 undefined：當成沒有卡券，不讓整頁拋錯（Jason 2026/10/22 fix all）
+      const data = idx(getTickets, _ => _.data.ticketsForList) || []
       const newValue = data.filter(d => value.includes(d.id))
       setSelectValue(newValue)
       setOptions(data)
@@ -25,7 +29,8 @@ const TicketsAutocpmplete = ({ value, onChange = () => { }, isReadOnly = false, 
 
   const filterOptions = (options, state) => {
     const keyWord = state.inputValue.toLowerCase()
-    const filterOptions = [...options].sort((a, b) => a.no - b.no).filter(d => {
+    // 代號自然排序（英數代號也有效）、空代號排最後（原本 a.no - b.no 對英數代號得 NaN；Jason 2026/10/22 fix all）
+    const filterOptions = [...options].sort((a, b) => compareNo(a.no, b.no)).filter(d => {
       if (d.no && d.name) {
         const no = d.no.toLowerCase()
         const name = d.name.toLowerCase()

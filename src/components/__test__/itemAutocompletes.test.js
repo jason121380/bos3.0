@@ -72,8 +72,8 @@ describe('ProductAutoComplete 商品', () => {
     const { settle } = renderPage(<ProductAutoComplete inputProps={{ 'data-testid': 'product' }} />, { fixtures })
     await settle()
     openCombo()
-    // 已知缺口（待 Jason 決定）：排序 a.no - b.no 對英數代號無效（NaN），維持後端順序
-    expect(optionTexts()).toEqual(['B02 - 護髮油 - 500', 'A01 - 洗髮精 - 300'])
+    // 已修正（Jason 2026/10/22 fix all）：排序原本是 a.no - b.no，英數代號相減得 NaN、維持後端順序；改為代號自然排序
+    expect(optionTexts()).toEqual(['A01 - 洗髮精 - 300', 'B02 - 護髮油 - 500'])
     expect(screen.getByTestId('product-洗髮精')).toBeInTheDocument()
     type('a01')
     expect(optionTexts()).toEqual(['A01 - 洗髮精 - 300'])
@@ -202,7 +202,8 @@ describe('ServicesAutoComplete 服務', () => {
   ]
   const fixtures = { GET_SERVICES_FOR_AUTOCOMPLETE: { services: { data: services } } }
 
-  it('帶 orderId 查詢；載入完成通知、getData 拿到全部選項；選項依代號數值排序（空代號視為 0 排最前），顯示「名稱(代號) - 價格」', async () => {
+  // 排序：Jason 2026/10/22 fix all 改為代號自然排序、空代號（空字串／null）排最後（原本 a.no - b.no 把空代號當 0 排最前、英數代號無效）
+  it('帶 orderId 查詢；載入完成通知、getData 拿到全部選項；選項依代號自然排序（空代號排最後），顯示「名稱(代號) - 價格」', async () => {
     const ready = jest.fn()
     const getData = jest.fn()
     const { settle, calls } = renderPage(<ServicesAutoComplete orderId="o-1" setServiceAlready={ready} getData={getData} />, { fixtures })
@@ -211,7 +212,7 @@ describe('ServicesAutoComplete 服務', () => {
     expect(ready).toHaveBeenCalledWith(true)
     expect(getData).toHaveBeenCalledTimes(1)
     openCombo()
-    expect(optionTexts()).toEqual(['加購洗髮 - 50', '護髮 - 800', '洗髮(1) - 200', '洗剪(2) - 500', '剪髮(3) - 300'])
+    expect(optionTexts()).toEqual(['洗髮(1) - 200', '洗剪(2) - 500', '剪髮(3) - 300', '加購洗髮 - 50', '護髮 - 800'])
   })
 
   it('輸入代號：代號完全相同的排最前，接著是名稱包含的，不重複；只打空白時列出全部；查無時顯示中文提示', async () => {
@@ -227,7 +228,7 @@ describe('ServicesAutoComplete 服務', () => {
     openCombo()
     type('洗')
     expect(onFieldChange).toHaveBeenCalled()
-    expect(optionTexts()).toEqual(['洗頭(洗) - 1', '加購洗髮 - 50', '洗髮(1) - 200', '洗剪(2) - 500'])
+    expect(optionTexts()).toEqual(['洗頭(洗) - 1', '洗髮(1) - 200', '洗剪(2) - 500', '加購洗髮 - 50'])
     type('2')
     expect(optionTexts()).toEqual(['洗剪(2) - 500'])
     type('   ')
@@ -261,11 +262,12 @@ describe('ServicesAutoComplete 服務', () => {
     await wait(() => expect(combo()).toHaveValue('加購洗髮'))
   })
 
-  // 已知缺口（待 Jason 決定）：代號為 null 的服務選取後，欄位文字顯示成「護髮(null)」（getOptionLabel 只排除空字串）
-  it('目前行為：代號為 null 的服務，欄位顯示「名稱(null)」', async () => {
+  // 已修正（Jason 2026/10/22 fix all）：代號為 null 的服務選取後，欄位文字原本顯示成「護髮(null)」（getOptionLabel 只排除空字串）；
+  // 改為沒有代號就只顯示名稱
+  it('代號為 null 的服務，欄位只顯示名稱', async () => {
     const { settle } = renderPage(<Controlled Component={ServicesAutoComplete} initial="s5" />, { fixtures })
     await settle()
-    await wait(() => expect(combo()).toHaveValue('護髮(null)'))
+    await wait(() => expect(combo()).toHaveValue('護髮'))
   })
 
   it('查詢失敗不壞；沒給 onChange 時選取不拋錯', async () => {
@@ -329,7 +331,8 @@ describe('TicketAutoComplete 卡券（單選）', () => {
   ]
   const fixtures = { GET_TICKETS: { tickets } }
 
-  it('帶 orderId、isLaunched 查詢；載入通知、getData 拿到全部；選項依代號排序、可用代號或名稱篩選', async () => {
+  // 排序：Jason 2026/10/22 fix all 改為代號自然排序、空代號排最後（原本 a.no - b.no 把空代號當 0 排最前）
+  it('帶 orderId、isLaunched 查詢；載入通知、getData 拿到全部；選項依代號排序（空代號排最後）、可用代號或名稱篩選', async () => {
     const ready = jest.fn()
     const getData = jest.fn()
     const onFieldChange = jest.fn()
@@ -342,7 +345,7 @@ describe('TicketAutoComplete 卡券（單選）', () => {
     expect(ready).toHaveBeenCalledWith(true)
     expect(getData).toHaveBeenCalledTimes(1)
     openCombo()
-    expect(optionTexts()).toEqual(['體驗券', '洗髮五次', '護髮十次'])
+    expect(optionTexts()).toEqual(['洗髮五次', '護髮十次', '體驗券'])
     expect(screen.getByTestId('tk-體驗券')).toBeInTheDocument()
     type('2')
     expect(onFieldChange).toHaveBeenCalled()
@@ -392,12 +395,23 @@ describe('TicketAutoComplete 卡券（單選）', () => {
     expect(() => fireEvent.click(screen.getByRole('option', { name: '體驗券' }))).not.toThrow()
   })
 
-  // 已知缺口（待 Jason 決定）：value 沒給時直接讀 value.length 而拋錯（目前五個呼叫端都有傳）
-  it('目前行為：沒給 value 時拋錯', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
-    const { findByText } = renderPage(<TicketAutoComplete />, { fixtures })
-    expect(await findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
-    console.error.mockRestore()
+  // 已修正（Jason 2026/10/22 fix all）：代號為 null 的卡券選取後，欄位文字原本顯示成「洗髮卡(null)」（getOptionLabel 只排除空字串）；
+  // 改為沒有代號就只顯示名稱（比照 ServicesAutoComplete）
+  it('代號為 null 的卡券，欄位只顯示名稱', async () => {
+    const withNull = { GET_TICKETS: { tickets: [...tickets, { id: 't4', no: null, name: '洗髮卡', price: 500 }] } }
+    const { settle } = renderPage(<Controlled Component={TicketAutoComplete} initial="t4" />, { fixtures: withNull })
+    await settle()
+    await wait(() => expect(combo()).toHaveValue('洗髮卡'))
+  })
+
+  // 已修正（Jason 2026/10/22 fix all）：value 沒給時原本直接讀 value.length 而拋錯；改為當成沒選
+  it('沒給 value 時不拋錯，欄位為空、可選取', async () => {
+    const { settle } = renderPage(<TicketAutoComplete />, { fixtures })
+    await settle()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(combo()).toHaveValue('')
+    openCombo()
+    expect(optionTexts()).toHaveLength(3)
   })
 })
 
@@ -409,7 +423,8 @@ describe('ServicesIncludesTicketsAutoComplete 服務＋卡券', () => {
   ]
   const fixtures = { GET_SERVICES_AND_TICKETS: { getServiecAndTicketList: list } }
 
-  it('列出服務與卡券「名稱 - 價格」依代號排序；代號完全相同優先、名稱包含次之、不重複；載入通知', async () => {
+  // 排序：Jason 2026/10/22 fix all 改為代號自然排序、空代號排最後（原本 a.no - b.no 把空代號當 0 排最前、非數字代號無效）
+  it('列出服務與卡券「名稱 - 價格」依代號排序（空代號排最後）；代號完全相同優先、名稱包含次之、不重複；載入通知', async () => {
     const ready = jest.fn()
     const { settle } = renderPage(<ServicesIncludesTicketsAutoComplete setServiceAlready={ready} />, {
       fixtures: { GET_SERVICES_AND_TICKETS: { getServiecAndTicketList: [...list, { id: 'x', no: '洗', name: '洗頭', price: 1 }] } },
@@ -417,9 +432,9 @@ describe('ServicesIncludesTicketsAutoComplete 服務＋卡券', () => {
     await settle()
     expect(ready).toHaveBeenCalledWith(true)
     openCombo()
-    expect(optionTexts()).toEqual(['洗髮卡 - 1000', '洗髮 - 200', '剪髮 - 300', '洗頭 - 1'])
+    expect(optionTexts()).toEqual(['洗髮 - 200', '剪髮 - 300', '洗頭 - 1', '洗髮卡 - 1000'])
     type('洗')
-    expect(optionTexts()).toEqual(['洗頭 - 1', '洗髮卡 - 1000', '洗髮 - 200'])
+    expect(optionTexts()).toEqual(['洗頭 - 1', '洗髮 - 200', '洗髮卡 - 1000'])
     type('  ')
     expect(optionTexts()).toHaveLength(4)
   })
@@ -445,6 +460,15 @@ describe('ServicesIncludesTicketsAutoComplete 服務＋卡券', () => {
     const { settle: s2 } = renderPage(<Controlled Component={ServicesIncludesTicketsAutoComplete} initial="t9" />, { fixtures })
     await s2()
     await wait(() => expect(combo()).toHaveValue('洗髮卡'))
+  })
+
+  // 已修正（Jason 2026/10/22 fix all）：代號為 null 的項目選取後，欄位文字原本顯示成「護髮卡(null)」（getOptionLabel 只排除空字串）；
+  // 改為沒有代號就只顯示名稱（比照 ServicesAutoComplete）
+  it('代號為 null 的項目，欄位只顯示名稱', async () => {
+    const withNull = { GET_SERVICES_AND_TICKETS: { getServiecAndTicketList: [...list, { id: 't8', no: null, name: '護髮卡', price: 800 }] } }
+    const { settle } = renderPage(<Controlled Component={ServicesIncludesTicketsAutoComplete} initial="t8" />, { fixtures: withNull })
+    await settle()
+    await wait(() => expect(combo()).toHaveValue('護髮卡'))
   })
 
   it('查詢失敗不壞；沒給 onChange 時選取不拋錯', async () => {

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import roundDecimal from './../../helper/roundDecimal.js'
+import compareNo from 'utils/compareNo'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
@@ -21,9 +22,10 @@ function OrderRecord({
   const [sorted, setSorted] = useState([])
 
   useEffect(() => {
+    // 數字開頭的編號依自然排序（原本 a.user.designerNo - b.user.designerNo，「3A」這類編號相減得 NaN、排序失效；Jason 2026/10/22 fix all）
     const sortByNumber = helperReport
       .filter(data => !isNaN(parseInt(data.user.designerNo, 10)) && data.user.designerNo.length > 0)
-      .sort((a, b) => a.user.designerNo - b.user.designerNo)
+      .sort((a, b) => compareNo(a.user.designerNo, b.user.designerNo))
     const sortByCharacter = helperReport
       .filter(data => isNaN(parseInt(data.user.designerNo, 10)) && data.user.designerNo.length > 0)
       .sort((a, b) =>

@@ -1,4 +1,4 @@
-import { gql, useQuery, useLazyQuery } from '@apollo/client'
+import { gql, useLazyQuery } from '@apollo/client'
 
 const FETCH_USED_TICKET_RECORDS = gql`
   query FETCH_USED_TICKET_RECORDS($input: TicketRecordReportInput!, $ticketIds: [ID]) {
@@ -57,15 +57,6 @@ const FETCH_USED_TICKET_RECORDS = gql`
     }
   }
 `
-
-export default function useFetchUsedTicketRecords(input, ticketIds) {
-  return useQuery(FETCH_USED_TICKET_RECORDS, {
-    variables: {
-      input, ticketIds
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-}
 
 export function useFetchUsedTicketRecordsLazy(input, ticketIds) {
   const [getUsedTicketRecords, usedTicketRecordsData] = useLazyQuery(FETCH_USED_TICKET_RECORDS, {

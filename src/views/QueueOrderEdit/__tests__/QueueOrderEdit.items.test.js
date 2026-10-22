@@ -36,6 +36,10 @@ describe('重新開單：佇列帳單的各區項目原樣帶回', () => {
     expect(screen.getByDisplayValue('送一次')).toBeInTheDocument()
     expect(screen.getByDisplayValue('護髮五次卡 剩 4 次')).toBeInTheDocument()
     expect(screen.getByPlaceholderText('助理-護髮')).toHaveValue('李助理-02')
+    // 助理欄與同列輸入框同高（size medium：36px、手機 40px；原本 small 34px 比同列矮 2px，Jason 2026/10/22 fix all）
+    const helper = screen.getByPlaceholderText('助理-護髮')
+    expect(helper.closest('.min-h-9')).not.toBeNull()
+    expect(helper.closest('.min-h-8')).toBeNull()
     expect(screen.getByDisplayValue('年卡-365天')).toBeInTheDocument()
     expect(screen.getByDisplayValue('2027/10/21')).toBeInTheDocument()
 

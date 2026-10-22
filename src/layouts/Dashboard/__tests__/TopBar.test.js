@@ -39,7 +39,7 @@ const mockSocket = {
   },
 }
 jest.mock('socket.io-client', () => () => mockSocket)
-// 首屏延後的查詢（訂單佇列、系統公告）在測試中直接放行
+// 首屏延後的查詢（訂單佇列）在測試中直接放行
 jest.mock('lib/after-first-load', () => ({ __esModule: true, default: () => true, useHoldFirstLoad: () => {} }))
 
 const ROLE = { pageTitle: '櫃檯作業', authority: true, pageAuthority: [{ pageName: '打帳單', authority: true }] }
@@ -51,12 +51,6 @@ const baseFixtures = ({ queue = [], theme = 'DEFAULT', roles, authorityId = 'aut
     getMerchantAuthorities: roles || [{ id: 'auth-1', authorityName: '高階主管', authoritySettings: JSON.stringify([ROLE]) }],
   },
   GET_USING_ORDER_QUEUE: { getUsingOrderQueue: queue },
-  GET_SYSTEM_UPDATE_RECORD: {
-    systemUpdateRecord: [
-      { systemUpdateId: 's2', title: '新版', content: '內容', versionNo: 'v2', updateTime: new Date(2026, 9, 20).getTime() },
-      { systemUpdateId: 's1', title: '舊版', content: '內容', versionNo: 'v1', updateTime: new Date(2026, 9, 1).getTime() },
-    ],
-  },
   SET_THEME: { setTheme: true },
   DELETE_QUEUE: { destroyQueueById: true },
   RECHECKOUT_ORDER_FOM_QUEUE: { reCheckoutOrderFromQueue: true },
@@ -152,10 +146,11 @@ describe('訂單佇列', () => {
     expect(panel).toHaveAttribute('data-align', 'center')
   })
 
-  it('系統公告查詢失敗時不拋錯', async () => {
-    const { settle } = setup({ GET_SYSTEM_UPDATE_RECORD: new Error('壞了') })
+  // Jason 2026/10/22 fix all：系統公告查詢的結果只寫進沒有人讀的狀態，已連同查詢一起移除
+  it('不查系統公告', async () => {
+    const { settle, calls } = setup()
     await settle()
-    expect(bell()).toBeInTheDocument()
+    expect(callsOf(calls, 'GET_SYSTEM_UPDATE_RECORD')).toEqual([])
   })
 
   it('佇列查詢失敗時不拋錯，鈴鐺維持一般狀態', async () => {

@@ -24,7 +24,6 @@ export default function ({
   outside,
   values,
   onChange,
-  initial,
   visible,
   multiple,
   relationUserId,
@@ -79,7 +78,6 @@ export default function ({
             })
           }
           className={FIELD}
-          initFirst={initial.employee}
           multiple={multiple.employee}
         />
       )

@@ -44,7 +44,7 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
 
     const filterMerchantsId = productList.all
       .filter(d => {
-        const name = `${d.no && `${d.no} - `}${d.name}`
+        const name = `${d.no ? `${d.no} - ` : ''}${d.name}`
         return name.toLowerCase().includes(value.toLowerCase())
       })
       .map(d => d.id);
@@ -90,7 +90,7 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
         onClick={() => handleItemClick(data)}
         className={`${isSelect(data.id)} ${itemClass}${filtIds.includes(data.id) ? ` ${outlineClass}` : ''}`}
         nodeId={data.id}
-        label={<span className={spanClass}><Inventory2OutlinedIcon />{`${data.no && `${data.no} - `}${data.name}`}</span>}
+        label={<span className={spanClass}><Inventory2OutlinedIcon />{`${data.no ? `${data.no} - ` : ''}${data.name}`}</span>}
       />
     ))
   }

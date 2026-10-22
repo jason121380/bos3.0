@@ -1,5 +1,7 @@
 import { gql, useLazyQuery, useQuery } from '@apollo/client'
 
+// 查詢名稱為 FETCH_THIRDPARTYS（原本就是，與第三方卡券、店家權限查詢同名）：後端可能依 operation name 記錄或判斷，維持原名不改
+//（曾改名為 FETCH_ME_PERMISSIONS，已撤回，Jason 2026/10/22）
 const FETCH_ME_PERMISSIONS = gql`
   query FETCH_THIRDPARTYS {
     me {
@@ -10,7 +12,7 @@ const FETCH_ME_PERMISSIONS = gql`
     }
   }
 `
-export const useFetchMePermissions = date =>
+export const useFetchMePermissions = () =>
   useQuery(FETCH_ME_PERMISSIONS, {
     fetchPolicy: 'cache-and-network',
   })
@@ -243,81 +245,14 @@ export function useFetchProfileIdentity() {
   })
 }
 
-export const useLazyFetchProfile = function (params) {
-  const orders = params && params.orders ? params.orders : {}
-  const [fetchProfile, profile] = useLazyQuery(
-    FETCH_PROFILE,
-    {
-      variables: {
-        orders,
-      },
-    },
-    {
-      fetchPolicy: 'cache-and-network',
-    }
-  )
+// 登入頁取個人資料。fetchPolicy 放在 useLazyQuery 的第二個參數（原本寫在 Apollo 不讀的第三個參數，實際為 cache-first）；
+// 不送 PROFILE 查詢沒有宣告的 orders 變數（Jason 2026/10/22 fix all）
+export const useLazyFetchProfile = function () {
+  const [fetchProfile, profile] = useLazyQuery(FETCH_PROFILE, {
+    fetchPolicy: 'cache-and-network',
+  })
   return {
     fetchProfile,
     profile,
   }
-}
-
-const FETCH_PROFILE_ORDERS = gql`
-  query FETCH_PROFILE_ORDERS($input: OrdersInput!) {
-    me {
-      id
-      name
-      orders(input: $input) {
-        intervalSummary {
-          bonusDecountForReport
-        }
-        orders {
-          id
-          date
-          no
-          isDesignate
-          serviceFakeTotal
-          serviceOrders {
-            thirdPartyPayName
-          }
-          productFakeTotal
-          useTicketTotal
-          ticketOrders {
-            price
-          }
-          walletPay
-          amountByOtherPay
-          cashTotal
-          remark
-          customer {
-            name
-            cellphone
-          }
-          designer {
-            name
-            designerNo
-          }
-          bonusDecount
-        }
-        pageLimit
-        pageOffset
-        totalCount
-      }
-    }
-  }
-`
-
-export const useFetchProfileOrders = ({ input }) => {
-  return useQuery(FETCH_PROFILE_ORDERS, {
-    variables: {
-      input,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-}
-export const useFetchProfileOrdersLazy = () => {
-  const [fetchProfileOrdersLazy, profileOrdersLazyData] = useLazyQuery(FETCH_PROFILE_ORDERS, {
-    fetchPolicy: 'cache-and-network',
-  })
-  return { fetchProfileOrdersLazy, profileOrdersLazyData }
 }

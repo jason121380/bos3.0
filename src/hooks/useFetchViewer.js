@@ -25,6 +25,7 @@ export default function useFetchViewer(input) {
         ...input,
       },
     },
+    fetchPolicy: 'cache-and-network',
   })
 }
 
@@ -74,21 +75,6 @@ export const useFetchCustomerBookingResults = input => {
   })
 }
 
-export const useLazyFetchCustomerBookingResults = input => {
-  const [fetchCustomerBookingResults, customerBookingResults] = useLazyQuery(
-    CUSTOMER_BOOKING_RESULTS,
-    {
-      variables: {
-        input,
-      },
-      fetchPolicy: 'cache-and-network',
-    }
-  )
-  return {
-    fetchCustomerBookingResults,
-    customerBookingResults,
-  }
-}
 export const useLazyFetchCustomerProfile = input => {
   const [fetchCustomerProfile, customerProfile] = useLazyQuery(CUSTOMER_PROFILE, {
     variables: {
@@ -100,65 +86,6 @@ export const useLazyFetchCustomerProfile = input => {
     fetchCustomerProfile,
     customerProfile,
   }
-}
-
-const FETCH_CUSTOMER_VIEWER_SERVICE_CATEGORY = gql`
-  query($merchantId: ID!, $input: AvailableBookingTimeInput) {
-    viewer {
-      anonymous {
-        merchant(id: $merchantId) {
-          id
-          bookingCategories {
-            id
-            name
-          }
-          availableBookingTime(input: $input) {
-            time
-          }
-        }
-      }
-    }
-  }
-`
-
-export const useLazyFetchViewServicecategory = ({ merchantId, input }) => {
-  const [fetchViewServicecategory, bookingCategories] = useLazyQuery(
-    FETCH_CUSTOMER_VIEWER_SERVICE_CATEGORY,
-    {
-      fetchPolicy: 'cache-and-network',
-      variables: {
-        merchantId,
-        input,
-      },
-    }
-  )
-  return {
-    fetchViewServicecategory,
-    bookingCategories,
-  }
-}
-
-const CUSTOMIZE_MERCHANT_GROUP = gql`
-  {
-    viewer {
-      admin {
-        customizeMerchantGroup {
-          id
-          name
-          merchants {
-            id
-            name
-          }
-        }
-      }
-    }
-  }
-`
-
-export const useFetchCustomizeMerchantGroup = function () {
-  return useQuery(CUSTOMIZE_MERCHANT_GROUP, {
-    fetchPolicy: 'cache-and-network',
-  })
 }
 
 export const useFetchMerchantLiff = ({ merchantId }) =>

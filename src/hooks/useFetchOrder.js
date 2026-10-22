@@ -219,56 +219,6 @@ const FETCH_PRODUCT_ORDER = gql`
   }
 `
 
-const FETCH_TICKET_ORDER = gql`
-  query FETCH_TICKET_ORDER($orderId: ID!) {
-    order(orderId: $orderId) {
-      id
-      ticketOrders {
-        id
-        name
-        price
-        count
-        availableCount
-        service {
-          id
-          no
-          name
-          price
-        }
-      }
-    }
-  }
-`
-
-const FETCH_USE_TICKET_ORDER = gql`
-  query FETCH_USE_TICKET_ORDER($orderId: ID!) {
-    order(orderId: $orderId) {
-      id
-      useTicketOrders {
-        id
-        name
-        price
-        service {
-          id
-          no
-          name
-          price
-        }
-        helperList {
-          id
-          type
-          isDesignate
-          helper {
-            id
-            firstName
-            lastName
-            designerNo
-          }
-        }
-      }
-    }
-  }
-`
 const FETCH_MEMBERSHIP_ORDER = gql`
   query FETCH_MEMBERSHIP_ORDER($orderId: ID!) {
     order(orderId: $orderId) {
@@ -401,15 +351,6 @@ export const useFetchServiceOrders = ({ id }) => {
   })
 }
 
-export const useFetchLazyQueryOrder = ({ id }) => {
-  return useLazyQuery(FETCH_ORDER, {
-    variables: {
-      orderId: id,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-}
-
 export const useFetchProductOrder = ({ id }) => {
   return useQuery(FETCH_PRODUCT_ORDER, {
     variables: {
@@ -419,23 +360,6 @@ export const useFetchProductOrder = ({ id }) => {
   })
 }
 
-export const useFetchTicketOrder = ({ id }) => {
-  return useQuery(FETCH_TICKET_ORDER, {
-    variables: {
-      orderId: id,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-}
-
-export const useFetchUseTicketOrder = ({ id }) => {
-  return useQuery(FETCH_USE_TICKET_ORDER, {
-    variables: {
-      orderId: id,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-}
 export const useFetchUseMembershipOrder = ({ id }) => {
   return useQuery(FETCH_MEMBERSHIP_ORDER, {
     variables: {

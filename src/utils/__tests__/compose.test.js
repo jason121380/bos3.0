@@ -1,41 +1,40 @@
-// 保護：compose(modules, component) 的實際行為——回傳「第一個 module 包住 component」的結果。
-// 已知缺口（待 Jason 決定）：迴圈對第二個之後的 module 只呼叫 first(module) 並丟棄結果，並不是由右到左逐層包裝；
-// 目前唯一使用處（PaymentAutoComplete：compose([memo, forwardRef], C)）因此只得到 memo(C)。
+// 保護：compose(modules, component) 由右到左逐層包裝：compose([f, g], C) === f(g(C))。
+// Jason 2026/10/22 fix all：原本迴圈對第二個之後的 module 只呼叫 first(module) 並丟棄結果，實際只得到 first(C)；
+// 唯一使用處 PaymentAutoComplete 改為 compose([memo, forwardRef], C)，得到 memo(forwardRef(C))（真的被 memo 包起來、ref 仍可用）。
 import React from 'react'
 import compose from 'utils/compose'
+import PaymentAutoComplete from 'components/PaymentAutoComplete'
 
 describe('compose', () => {
-  it('第一個 module 會被呼叫，並以 component 呼叫一次作為回傳值', () => {
-    const spyMemo = jest.spyOn(React, 'memo')
-    const spyForwardRef = jest.spyOn(React, 'forwardRef')
-    const MockedComponent = () => <div>123</div>
-
-    const result = compose([spyMemo, spyForwardRef], MockedComponent)
-
-    expect(spyMemo).toHaveBeenCalledWith(MockedComponent)
-    expect(result).toBe(spyMemo.mock.results[spyMemo.mock.calls.length - 1].value)
-    spyMemo.mockRestore()
-    spyForwardRef.mockRestore()
-  })
-
-  it('目前行為：後面的 module 只被當成參數傳給第一個，本身不會包住 component', () => {
+  it('由右到左逐層包裝，每個 module 各呼叫一次', () => {
     const calls = []
-    const a = x => {
-      calls.push(['a', x])
-      return `a(${typeof x === 'string' ? x : 'fn'})`
+    const wrap = name => x => {
+      calls.push([name, x])
+      return `${name}(${x})`
     }
-    const b = x => {
-      calls.push(['b', x])
-      return `b(${x})`
-    }
-    expect(compose([a, b], 'C')).toBe('a(C)')
+    expect(compose([wrap('a'), wrap('b'), wrap('c')], 'C')).toBe('a(b(c(C)))')
     expect(calls).toEqual([
-      ['a', b],
-      ['a', 'C'],
+      ['c', 'C'],
+      ['b', 'c(C)'],
+      ['a', 'b(c(C))'],
     ])
   })
 
-  it('只有一個 module 時直接包住 component', () => {
+  it('只有一個 module 時直接包住 component；沒有 module 時原樣回傳', () => {
     expect(compose([x => `m(${x})`], 'C')).toBe('m(C)')
+    expect(compose([], 'C')).toBe('C')
+  })
+
+  it('compose([memo, forwardRef], C) 得到 memo(forwardRef(C))', () => {
+    const C = (props, ref) => <div ref={ref} />
+    const result = compose([React.memo, React.forwardRef], C)
+    expect(result.$$typeof).toBe(Symbol.for('react.memo'))
+    expect(result.type.$$typeof).toBe(Symbol.for('react.forward_ref'))
+    expect(result.type.render).toBe(C)
+  })
+
+  it('PaymentAutoComplete 是 memo(forwardRef(...))', () => {
+    expect(PaymentAutoComplete.$$typeof).toBe(Symbol.for('react.memo'))
+    expect(PaymentAutoComplete.type.$$typeof).toBe(Symbol.for('react.forward_ref'))
   })
 })

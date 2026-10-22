@@ -284,7 +284,7 @@ export function tidyWeekCalendar(tidyData, unpointData, startTime, { date, heigh
     for (let i = 0; i < filterBreak.length; i++) {
       const parentStyle = {}
       const time1 = filterBreak[i];
-      checkHorR(time1.timeCost, time1.start, time1.type === 'RESERVATION')
+      // 公休已在上面「全部項目」的迴圈計入 countHoliday，這裡不再重算（原本每筆公休計兩次；畫面只看有沒有，Jason 2026/10/22 fix all）
       if (time1.isProcessed) continue; // 跳過已處理過的時間
 
       const currentGroup = [time1];
