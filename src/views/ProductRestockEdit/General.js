@@ -65,7 +65,7 @@ export default function General({
 
   useEffect(() => {
     if (!productCategoriesData.loading) {
-      const productCategories = idx(productCategoriesData, _ => _.data.productCategories)
+      const productCategories = idx(productCategoriesData, _ => _.data.productCategories) || []
 
       setProductCategories(productCategories)
     }
@@ -105,7 +105,7 @@ export default function General({
   }
   useEffect(() => {
     if (!products.loading) {
-      const productList = idx(products, _ => _.data.products.data)
+      const productList = idx(products, _ => _.data.products.data) || []
       const productsAddCount = productList.map(data => {
         return {
           productCategory: data.productCategory,
@@ -131,34 +131,23 @@ export default function General({
     }
   }, [products.loading])
 
-  const hadnleSelectProduct = (product, index, source) => {
+  const hadnleSelectProduct = (product, index) => {
     const newData = cloneDeep(purchaseRecord)
     if (product === null) {
+      // 清除商品：進貨價與數量一併歸零（原本整列只剩 id／名稱，合計變成 NaN）
       newData.purchaseProduct[index] = {
         productID: '',
         productName: '',
+        count: 0,
+        unitPrice: 0,
       }
     } else {
-      if (source === 'notModal') {
-        newData.purchaseProduct[index] = {
-          ...newData.purchaseProduct[index],
-          productID: product.id,
-          productName: product.name,
-          unitPrice: product.cost,
-        }
-        setPurchaseRecord(newData)
-      } else {
-        newData.purchaseProduct[index] = {
-          ...newData.purchaseProduct[index],
-          productID: product.id,
-        }
-        newData.purchaseProduct.push({
-          productID: '',
-          productName: '',
-          count: '',
-          unitPrice: '',
-        })
-        setPurchaseRecord(newData)
+      // 商品清單彈窗不經過這裡（直接改整張進貨單），只有本列下拉選商品
+      newData.purchaseProduct[index] = {
+        ...newData.purchaseProduct[index],
+        productID: product.id,
+        productName: product.name,
+        unitPrice: product.cost,
       }
     }
     if (newData.purchaseProduct[index].productID !== '') {
@@ -285,9 +274,9 @@ export default function General({
                   options={productOptions || []}
                   autoHighlight
                   filterOptions={productFilter}
-                  getOptionLabel={option => (data ? data.productName : '')}
-                  value={data ? data.productName : ''}
-                  onChange={(_event, value) => hadnleSelectProduct(value, index, 'notModal')}
+                  getOptionLabel={() => data.productName}
+                  value={data.productName}
+                  onChange={(_event, value) => hadnleSelectProduct(value, index)}
                   renderOption={(props, option) => {
                     return (
                       <li {...props} key={option.id}>
@@ -326,7 +315,8 @@ export default function General({
                   onKeyDown={event => {
                     if (event.key === 'Enter') {
                       setFocus('count')
-                      countRef.current.focus()
+                      // 數量欄的 ref 要等重新渲染才接上：沒接上時不呼叫（原本直接呼叫會拋錯）
+                      countRef.current && countRef.current.focus()
                     }
                   }}
                   value={data.unitPrice}
@@ -418,7 +408,6 @@ export default function General({
           selectedCategorie={selectedCategorie}
           selectedCategorieName={selectedCategorieName}
           setSetting={setSetting}
-          onSelectProduct={hadnleSelectProduct}
           productListLength={purchaseRecord.purchaseProduct.length}
           purchaseRecords={purchaseRecord}
           setPurchaseRecords={setPurchaseRecord}

@@ -1,7 +1,6 @@
 import { FormControl, InputLabel, MenuItem, Select, FormHelperText } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
 import clsx from 'clsx'
-import idx from 'idx'
 import PropTypes from 'prop-types'
 import { useEffect, useRef } from 'react'
 import useStore from 'hooks/useStore'
@@ -24,7 +23,8 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
 
   const customerCategories = useFetchMerchantCustomerCategory()
 
-  const { fields } = useFieldArray({
+  // 各顧客分類售價（customerSellSetting）以 setValue 寫入表單值；畫面上不再顯示逐分類售價欄位
+  useFieldArray({
     control,
     name: 'customerSellSetting',
   })
@@ -33,7 +33,8 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
   }
 
   useEffect(() => {
-    if (!customerCategories.loading) {
+    // 查詢失敗時 data 為 undefined：沒有顧客分類，不讓整頁拋錯
+    if (!customerCategories.loading && customerCategories.data) {
       const categories = customerCategories.data.merchantCustomerCategory.map(d => ({
         category: d.name,
         price: watchSellPrice,
@@ -107,56 +108,6 @@ function AboutSalesCommission({ className, product, onChange, ...rest }) {
         </Typography>
         <Divider /> */}
 
-        {fields.map((data, index) => {
-          const error = idx(
-            errors,
-            _ => !!_.customerSellSetting?.find(d => d.price.message.indexOf(data.category) > -1)
-          )
-          const helperText =
-            idx(
-              errors,
-              _ =>
-                _.customerSellSetting.find(d => d.price.message.indexOf(data.category) > -1).price
-                  .message
-            ) || ''
-
-          // return (
-          // <Fragment key={data.id}>
-          //   <TextField
-          //    
-          //     variant="outlined"
-          //     fullWidth
-          //     type="number"
-          //     label={data.category}
-          //     name={`customerSellSetting[${index}].price`}
-          //     defaultValue={data.price}
-          //     error={error}
-          //     helperText={helperText}
-          //     onFocus={handleSelectAllText}
-          //     inputProps={{
-          //       'data-testid': data.category,
-          //       ref: register({
-          //         required: `${data.category} 為必填`,
-          //         min: {
-          //           value: 1,
-          //           message: `${data.category} 必須大於 0`,
-          //         },
-          //         valueAsNumber: true,
-          //       }),
-          //     }}
-          //   />
-          //   <TextField
-          //     name={`customerSellSetting[${index}].category`}
-          //     defaultValue={data.category}
-          //     type="hidden"
-          //     inputRef={register({
-          //       required: `售價類別 為必填`,
-          //     })}
-          //   />
-          // </Fragment>
-          // )
-          return undefined
-        })}
       </CardContent>
     </Card>
   )

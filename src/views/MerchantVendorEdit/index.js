@@ -30,10 +30,13 @@ function MerchantVendorEdit({ match }) {
 
   useEffect(() => {
     if (!merchantVendor.loading && !vendorList.loading) {
-      const option = idx(vendorList, _ => _.data.getVendor)
+      // 查詢失敗時沒有資料：維持空白表單，不讓整頁拋錯
+      const option = idx(vendorList, _ => _.data.getVendor) || []
       const data = idx(merchantVendor, _ => _.data.getMerchantVendor)
-      const vendorUUId = option.find(d => d.uuid === data.vendor.uuid)
       setVendorOption(option)
+      if (!data) return
+      // 原廠商已不在清單時為 null（要求重選；原本為 undefined，儲存時拋錯）
+      const vendorUUId = option.find(d => d.uuid === idx(data, _ => _.vendor.uuid)) || null
       setSubmitData({
         uuid: data.uuid,
         no: data.no,
@@ -68,13 +71,13 @@ function MerchantVendorEdit({ match }) {
       }).then(res => {
         if (res.data.updateMerchantVendor) {
           openSnackbar({
-            message: '新增成功',
+            message: '編輯成功',
             variant: 'success'
           })
           history.push('/merchant-vendor')
         } else {
           openSnackbar({
-            message: '新增失敗',
+            message: '編輯失敗',
             variant: 'error'
           })
           setIsClick(false)

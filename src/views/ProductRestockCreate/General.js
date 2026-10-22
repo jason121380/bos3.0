@@ -91,13 +91,13 @@ export default function General({
 
   useEffect(() => {
     if (!getMerchantVendor.loading) {
-      setVendorOptions(idx(getMerchantVendor, _ => _.data.getMerchantVendorList))
+      setVendorOptions(idx(getMerchantVendor, _ => _.data.getMerchantVendorList) || [])
     }
   }, [getMerchantVendor.loading])
 
   useEffect(() => {
     if (!productCategoriesData.loading) {
-      const productCategories = idx(productCategoriesData, _ => _.data.productCategories)
+      const productCategories = idx(productCategoriesData, _ => _.data.productCategories) || []
 
       setProductCategories(productCategories)
     }
@@ -106,14 +106,14 @@ export default function General({
   useEffect(() => {
     if (!users.loading) {
       setPageLoading(users.loading)
-      const operator = idx(users, _ => _.data.users.users)
+      const operator = idx(users, _ => _.data.users.users) || []
       setOperator(operator)
     }
   }, [users.loading, setPageLoading])
 
   useEffect(() => {
     if (!products.loading) {
-      const data = idx(products, _ => _.data.products.data).filter(d => d.merchantVendor !== null)
+      const data = (idx(products, _ => _.data.products.data) || []).filter(d => d.merchantVendor !== null)
       setProductOptions(data)
     }
   }, [products.loading])
@@ -151,7 +151,7 @@ export default function General({
   }
   useEffect(() => {
     if (!products.loading) {
-      const productList = idx(products, _ => _.data.products.data).filter(d => d.merchantVendor !== null)
+      const productList = (idx(products, _ => _.data.products.data) || []).filter(d => d.merchantVendor !== null)
       const productsAddCount = productList.map(data => {
         return {
           productCategory: data.productCategory,
@@ -172,7 +172,7 @@ export default function General({
     }
   }, [products.loading, picking, setting])
 
-  const hadnleSelectProduct = (product, index, source) => {
+  const hadnleSelectProduct = (product, index) => {
     const newData = cloneDeep(purchaseRecords)
     if (product === null) {
       newData.productList[index] = {
@@ -181,23 +181,11 @@ export default function General({
         unitPrice: 0,
       }
     } else {
-      if (source === 'notModal') {
-        newData.productList[index] = {
-          productId: product.id,
-          count: 0,
-          unitPrice: product.cost,
-        }
-        setPurchaseRecords(newData)
-      } else {
-        newData.productList[index] = {
-          ...newData.productList[index],
-          productId: product.id,
-        }
-        newData.productList.push({
-          productId: '',
-          count: '',
-          unitPrice: '',
-        })
+      // 商品清單彈窗不經過這裡（直接改整張進貨單），只有本列下拉選商品
+      newData.productList[index] = {
+        productId: product.id,
+        count: 0,
+        unitPrice: product.cost,
       }
     }
     if (newData.productList[index].productId !== '') {
@@ -328,7 +316,7 @@ export default function General({
                       </li>
                     )
                   }}
-                  onChange={(_event, value) => hadnleSelectProduct(value, index, 'notModal')}
+                  onChange={(_event, value) => hadnleSelectProduct(value, index)}
                   filterOptions={productFilter}
                   renderInput={params => (
                     <TextField
@@ -480,7 +468,6 @@ export default function General({
           selectedCategorieName={selectedCategorieName}
           setSetting={setSetting}
           setting={setting}
-          onSelectProduct={hadnleSelectProduct}
           productListLength={purchaseRecords.productList.length}
           purchaseRecords={purchaseRecords}
           setPurchaseRecords={setPurchaseRecords}

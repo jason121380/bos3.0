@@ -209,23 +209,17 @@ function AboutProduct({ className, setForSale, merchantVendor, setVendorUUId, ve
             onFocus={handleSelectAllText}
             inputProps={{
               'data-testid': 'sellPrice',
-              ref: register(
-                forSale
-                  ? {
-                      valueAsNumber: true,
-                      min: {
-                        value: watchList.cost,
-                        message: '店販售價 必須至少等於「成本價格」',
-                      },
-                    }
-                  : {}
-              ),
+              // 欄位只在可販售時出現，故直接套用可販售的規則
+              ref: register({
+                valueAsNumber: true,
+                min: {
+                  value: watchList.cost,
+                  message: '店販售價 必須至少等於「成本價格」',
+                },
+              }),
             }}
             onChange={() => {
               trigger('sellPrice')
-              if (errors.customerSellSetting && errors.customerSellSetting.length > 0) {
-                clearErrors(['customerSellSetting'])
-              }
             }}
             helperText={errors.sellPrice && errors.sellPrice.message}
             onWheel={() => document.activeElement.blur()}              

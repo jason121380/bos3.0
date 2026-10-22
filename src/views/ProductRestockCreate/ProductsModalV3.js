@@ -18,14 +18,11 @@ function ProductsModal({
   productList,
   productCategories,
   selectedCategorie,
-  selectedCategorieName,
   setPurchaseRecords,
   purchaseRecords,
   vendorOptions,
 }) {
-  const [categoryNameForDisplay, setCategoryNameForDisplay] = useState('')
   const [selectedCategorieId, setSelectedCategorieId] = useState([])
-  const [clickedProduct, setClickedProduct] = useState([])
   const [selectedProducts, setSelectedProducts] = useState([])
   const [categorie, setCategorie] = useState('')
   const [vendor, setVendor] = useState('')
@@ -37,9 +34,9 @@ function ProductsModal({
     if (!!categorie && !!vendor) {
       productList.filter(product => product.merchantVendor !== null &&
         product.merchantVendor.merchantVendorUUId === vendor &&
-        product.productCategory.id === categorie).map(product => tmpArr.push(product))
+        product.productCategory !== null && product.productCategory.id === categorie).map(product => tmpArr.push(product))
     } else if (!!categorie && vendor === '') {
-      productList.filter(product => product.productCategory.id === categorie)
+      productList.filter(product => product.productCategory !== null && product.productCategory.id === categorie)
         .map(product => tmpArr.push(product))
     } else if (!!vendor && categorie === '') {
       productList
@@ -95,37 +92,6 @@ function ProductsModal({
     }
   }, [productList.loading])
 
-  useEffect(() => {
-    if (!productsModalOpen) {
-      setClickedProduct([])
-    }
-  }, [productsModalOpen])
-
-  useEffect(() => {
-    if (!productList.loading) {
-      if (selectedCategorieName.length === 0) return
-      setCategoryNameForDisplay('')
-      if (selectedCategorieName.length === 1) {
-        selectedCategorieName.forEach(categoryName => {
-          setCategoryNameForDisplay(pre => {
-            return `${pre}${categoryName}`
-          })
-        })
-      } else {
-        selectedCategorieName.forEach((categoryName, index) => {
-          if (index === 0) {
-            setCategoryNameForDisplay(pre => {
-              return `${pre}${categoryName}`
-            })
-          } else {
-            setCategoryNameForDisplay(pre => {
-              return `${pre},${categoryName}`
-            })
-          }
-        })
-      }
-    }
-  }, [selectedCategorieName, productList.loading])
   const handleProductInputOnChange = (e, index, id) => {
     if (e.target.value < 0) {
       e.target.value = 0
@@ -141,10 +107,10 @@ function ProductsModal({
             product.total = priceValue * product.count
             const existedIndex = selectedProducts.map(d => d.productId).indexOf(id)
             if (existedIndex !== -1) {
-              selectedProducts[existedIndex].cost = parseInt(e.target.value, 10) || 1
+              // 已勾選的商品與清單上顯示的進貨價一致（原本 0 會變成 1、小數被捨去，與「先改價格再勾選」的結果不同）
+              selectedProducts[existedIndex].cost = priceValue
 
-              selectedProducts[existedIndex].total =
-                parseInt(e.target.value, 10) * selectedProducts[existedIndex].count
+              selectedProducts[existedIndex].total = priceValue * selectedProducts[existedIndex].count
             }
 
             break
@@ -154,9 +120,9 @@ function ProductsModal({
             product.total = countValue * product.cost
             const existedIndex1 = selectedProducts.map(d => d.productId).indexOf(id)
             if (existedIndex1 !== -1) {
-              selectedProducts[existedIndex1].count = parseInt(e.target.value, 10) || 1
-              selectedProducts[existedIndex1].total =
-                parseInt(e.target.value, 10) * selectedProducts[existedIndex1].cost
+              // 與清單上顯示的數量一致（原本小數被捨去，與「先改數量再勾選」的結果不同）
+              selectedProducts[existedIndex1].count = product.count
+              selectedProducts[existedIndex1].total = product.count * selectedProducts[existedIndex1].cost
             }
 
             break
@@ -235,7 +201,7 @@ function ProductsModal({
   const Header = () => (
     <div className="flex flex-wrap items-center gap-3">
       <span className="text-heading text-text">
-        {selectedCategorieName.length === 0 ? '所有商品' : `${categoryNameForDisplay}類商品`}
+        所有商品
       </span>
       <ToggleGroup
         size="small"
@@ -351,7 +317,8 @@ function ProductsModal({
                     {product.productCategory !== null ? product.productCategory.name : ''}
                   </TableCell>
                   <TableCell>
-                    {product.merchantVendor !== null ? product.merchantVendor.name : ''}
+                    {/* 新增進貨的商品都已綁定廠商（General 只列有廠商的商品） */}
+                    {product.merchantVendor.name}
                   </TableCell>
                   <TableCell>{product.productName}</TableCell>
                   <TableCell className="py-2.5">
@@ -407,13 +374,8 @@ function ProductsModal({
 }
 
 ProductsModal.propTypes = {
-  onClose: PropTypes.func,
-  open: PropTypes.bool,
-}
-
-ProductsModal.defaultProps = {
-  open: false,
-  onClose: () => { },
+  productsModalOpen: PropTypes.bool,
+  closeModal: PropTypes.func,
 }
 
 export default ProductsModal

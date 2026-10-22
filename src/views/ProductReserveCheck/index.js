@@ -60,8 +60,9 @@ const ProductReserveCheck = () => {
       return
     }
     if (!productReserveData.loading && productReserveData.data !== undefined) {
+      // 後端回 null（沒有報表）時當作沒有資料，不讓整頁拋錯
       const data = idx(productReserveData, _ => _.data.productReserveCheck)
-      setReportData(data);
+      setReportData(data || { reserveCheckSummary: [], productReserveChecks: [] })
     }
   }, [productReserveData.loading])
 
@@ -124,7 +125,8 @@ const ProductReserveCheck = () => {
                   checkedIcon={checkedIcon}
                   checked={selected}
                 />
-                {`${option.no === null ? '無代號' : option.no} - ${option.name}`}
+                {/* 選項已先排除沒有代號的商品（filterOptions） */}
+                {`${option.no} - ${option.name}`}
               </li>
             )
           }

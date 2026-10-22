@@ -36,7 +36,8 @@ export default function General({
 
   const options = useMemo(() => {
     if (!products.loading) {
-      const data = idx(products, _ => _.data.products.data)
+      // 查詢失敗時 data 為 undefined：沒有商品可選，不讓整頁拋錯
+      const data = idx(products, _ => _.data.products.data) || []
       return data.filter(d => d.isPublished || d.name === formState.productName)
     }
     return []
@@ -103,8 +104,8 @@ export default function General({
           className={styles.formControl}
           options={options}
           autoHighlight
-          getOptionLabel={() => (formState ? formState.productName : '')}
-          value={formState ? formState.productName : ''}
+          getOptionLabel={() => formState.productName}
+          value={formState.productName}
           onFocus={() => setFocus('product')}
           onKeyDown={event => {
             if (event.key === 'Enter') {
@@ -185,8 +186,9 @@ export default function General({
           className={styles.formControl}
           options={idx(users, _ => _.data.users.users) || []}
           autoHighlight
-          getOptionLabel={option => (formState ? formState.PickerName : '')}
-          value={formState ? formState.PickerName : ''}
+          // 以各選項自己的姓名比對輸入（原本每個選項都回傳目前領料人姓名，打其他人的名字搜尋不到任何人）
+          getOptionLabel={option => (typeof option === 'string' ? option : option.name)}
+          value={formState.PickerName}
           onFocus={() => setFocus('designer')}
           onKeyDown={event => {
             if (event.key === 'Enter') {

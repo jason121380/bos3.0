@@ -5,7 +5,6 @@ import DateSelector from 'components/DateSelector'
 import Page from 'components/Page'
 import { endOfDay, startOfMonth } from 'date-fns'
 import idx from 'idx'
-import produce from 'immer'
 import React, { useState } from 'react'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import useFetchGetPickingRecords from 'hooks/useFetchGetPickingRecords'
@@ -43,21 +42,6 @@ function EmployeePicking() {
 
   const actionsBanned = useFetchGetActionsBannedAfterDailyCheckout()
 
-  const handlePageChange = (event, newPage) => {
-    setPageSetting(
-      produce(draft => {
-        draft.pageOffset = newPage
-      })
-    )
-  }
-  const handleRowsPerPageChange = event => {
-    setPageSetting(
-      produce(draft => {
-        draft.pageLimit = idx(event, _ => _.target.value)
-        draft.pageOffset = 0
-      })
-    )
-  }
   const productCategories = useFetchProductCategories()
   const categories = idx(productCategories, _ => _.data.productCategories)
   const categoriesArr = [{ value: null, label: '全部' }]
@@ -147,8 +131,6 @@ function EmployeePicking() {
           actionsBanned.data.getActionsBannedAfterDailyCheckout && (
             <Results
               pageSetting={pageSetting}
-              onPageChange={handlePageChange}
-              onRowsPerPageChange={handleRowsPerPageChange}
               pickingRecords={_.data.pickingRecords}
               actionsBanned={actionsBanned.data.getActionsBannedAfterDailyCheckout}
             />

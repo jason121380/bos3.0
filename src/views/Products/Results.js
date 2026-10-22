@@ -71,10 +71,9 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
     setSelectedProducts(newSelect)
   }
 
+  // 只有需要刪除密碼時才由批次操作列呼叫（不需要時直接 handleConfirmCancel）
   const handleCancel = () => {
-    if (disableDeleteProduct) {
-      setOpenDialog(true)
-    }
+    setOpenDialog(true)
   }
 
   const handleConfirmCancel = () => {
@@ -210,7 +209,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
 
   useEffect(() => {
     if (!productCategoriesData.loading) {
-      const productCategories = idx(productCategoriesData, _ => _.data.productCategories)
+      const productCategories = idx(productCategoriesData, _ => _.data.productCategories) || []
       setProductCategories(productCategories)
     }
   }, [productCategoriesData.loading])
@@ -254,6 +253,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
     setExcelData(excelData)
   }, [products, isDisplayCost])
 
+  const usingCount = products.data.filter(d => d.isUsing).length
   // 停用商品的編輯連結：連結無 disabled 屬性，比照舊版 IconButton disabled 改用 aria-disabled + 取消指標事件
   const linkDisabled = disabledLink => (disabledLink ? { 'aria-disabled': true, tabIndex: -1, className: 'pointer-events-none opacity-40' } : {})
   return (
@@ -284,14 +284,9 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
                 <TableHead className="w-12">
                   <Checkbox
                     aria-label="全選"
-                    checked={
-                      selectedProducts.length === products.data.length &&
-                      products.data.length > 0
-                    }
-                    indeterminate={
-                      selectedProducts.length > 0 &&
-                      selectedProducts.length < products.data.length
-                    }
+                    // 全選只選啟用中的商品，勾選狀態也以啟用中的筆數比對（原本與全部筆數比，有停用商品時永遠是半選、無法一鍵取消）
+                    checked={selectedProducts.length === usingCount && usingCount > 0}
+                    indeterminate={selectedProducts.length > 0 && selectedProducts.length < usingCount}
                     onChange={handleSelectAll}
                     disabled={
                       products.data.length === 0 ||
@@ -400,7 +395,7 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
         isClick={isClick}
         merchantVendorId={merchantVendorId}
         setMerchantVendorId={setMerchantVendorId}
-        option={merchantVendorList.loading ? [] : merchantVendorList.data.getMerchantVendorList}
+        option={idx(merchantVendorList, _ => _.data.getMerchantVendorList) || []}
       />
       <Dialog
         open={openDialog}

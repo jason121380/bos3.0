@@ -32,7 +32,8 @@ const ProductInventoryList = () => {
 
   useEffect(() => {
     if (!productCategories.loading) {
-      const data = idx(productCategories, _ => _.data.productCategories).map(d => d.name)
+      // 查詢失敗時 data 為 undefined：當作沒有分類，不讓整頁拋錯
+      const data = (idx(productCategories, _ => _.data.productCategories) || []).map(d => d.name)
       setCategoryOption(data)
     }
   }, [productCategories.loading])
@@ -40,7 +41,7 @@ const ProductInventoryList = () => {
   useEffect(() => {
     if (!productInventoryList.loading) {
       // 先複製再排序（查詢結果唯讀；原地排序也會改到快取）
-      let sortData = [...idx(productInventoryList, _ => _.data.productInventoryList)]
+      let sortData = [...(idx(productInventoryList, _ => _.data.productInventoryList) || [])]
       switch (sortType) {
         case 'COUNT':
           sortData = sortData.sort((a, b) => {

@@ -37,12 +37,13 @@ export default function EmployeePickingCreate() {
   useEffect(() => {
     if (!getEmployeePickingPurpose.loading) {
       const data = idx(getEmployeePickingPurpose, _ => _.data.getEmployeePickingPurpose)
-      setPurpose(data)
+      setPurpose(data || [])
     }
   }, [getEmployeePickingPurpose.loading])
 
   useEffect(() => {
-    if (!getPicking.loading) {
+    // 查詢失敗或查無紀錄時沒有資料：維持空白表單，不讓整頁拋錯
+    if (!getPicking.loading && idx(getPicking, _ => _.data.picking)) {
       setFormState({
         date: getPicking.data.picking.date,
         productName: getPicking.data.picking.productName,

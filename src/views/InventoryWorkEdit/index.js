@@ -32,6 +32,8 @@ function InventoryWorkEdit({ match }) {
     if (!products.loading & !getInventory.loading) {
       const productsData = idx(products, _ => _.data.productInventoryList)
       const inventory = idx(getInventory, _ => _.data.getInventory)
+      // 查詢失敗或查無草稿時沒有資料：不建立清單，不讓整頁拋錯
+      if (!productsData || !inventory) return
       const data = productsData.map(({ productId, productNo, productName, count, productCategoryId }) => ({
         productId, productNo, productName, currentCount: count, productCategoryId, inventoryCount: null
       }))
@@ -47,7 +49,8 @@ function InventoryWorkEdit({ match }) {
           }
         })
       })
-      setInventoryData(data)
+      // 依目前選的排序（預設「庫存」）顯示，與排序鈕的選取狀態一致
+      setInventoryData(sortData(data, sort))
       setInfo({ date, creatorName })
     }
   }, [products.loading, getInventory.loading])
@@ -172,7 +175,7 @@ function InventoryWorkEdit({ match }) {
             inventoryData={inventoryData}
             setInventoryData={setInventoryData}
             handleCreateIventory={handleCreateIventory}
-            categoriesData={productCategories.data.productCategories}
+            categoriesData={idx(productCategories, _ => _.data.productCategories) || []}
           />
         }
       </div>

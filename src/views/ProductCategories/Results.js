@@ -42,6 +42,7 @@ function Results({ className, categories, refetchCategories, ...rest }) {
       openSnackbar({ message: error.message, variant: 'error' })
     }
   }
+  const usingCount = categories.filter(d => d.isUsing).length
   return (
     <div {...rest} className={className}>
       <Card>
@@ -60,17 +61,13 @@ function Results({ className, categories, refetchCategories, ...rest }) {
                 <TableHead className="w-12">
                   <Checkbox
                     aria-label="全選"
-                    checked={
-                      selectedCategories.length === categories.length && categories.length > 0
-                    }
-                    indeterminate={
-                      selectedCategories.length > 0 &&
-                      selectedCategories.length < categories.length
-                    }
+                    // 全選只選啟用中的分類，勾選狀態也以啟用中的筆數比對（原本與全部筆數比，有停用分類時永遠半選、無法一鍵取消）
+                    checked={selectedCategories.length === usingCount && usingCount > 0}
+                    indeterminate={selectedCategories.length > 0 && selectedCategories.length < usingCount}
                     onChange={handleSelectAll}
                     disabled={
                       categories.length === 0 ||
-                      categories.filter(d => !d.isUsing).length === categories.length
+                      usingCount === 0
                     }
                   />
                 </TableHead>
