@@ -35,15 +35,6 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
   const [bookTimeOption, setBookTimeOption] = useState([])
   const [btnDisabled, setBtnDisabled] = useState(false)
 
-  useEffect(() => {
-    const start = startOfDay(new Date()).getTime()
-    const arr = []
-    for (let i = 0; i < 48; i++) {
-      arr.push(addMinutes(start, i * 30).getTime())
-    }
-    setBookTimeOption(arr)
-  }, [])
-
   const [values, setValues] = useState({
     merchantId: JSON.parse(localStorage.getItem('userMerchant')).id,
     dateTime: setHours(startOfDay(new Date()),10).getTime(),
@@ -58,6 +49,16 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
     isBookingCostUsing: true,
     isCusCheckRequired: false
   })
+
+  // 時段依目前選定的日期產生（原本固定為今天，換日後再選時間日期會被換回今天；Jason 2026/10/22 fix all）
+  const selectedDayStart = startOfDay(values.dateTime).getTime()
+  useEffect(() => {
+    const arr = []
+    for (let i = 0; i < 48; i++) {
+      arr.push(addMinutes(selectedDayStart, i * 30).getTime())
+    }
+    setBookTimeOption(arr)
+  }, [selectedDayStart])
 
   const createBooking = () => {
     if (values.designerId === '') {
@@ -144,7 +145,8 @@ export default function ChoseEvent({ setModalOpen, cellphone, bookingCusCheck })
         value={values.designerId}
         onChange={value => {
           const data = cloneDeep(values)
-          data.designerId = { id: value.id === '' ? '' : value.userId }
+          // 清除時回到空字串，讓「請選擇設計師」檢查擋下（原本變成 { id: '' }、跳過檢查；Jason 2026/10/22 fix all）
+          data.designerId = value.id === '' ? '' : { id: value.userId }
           setValues(data)
         }}
       />

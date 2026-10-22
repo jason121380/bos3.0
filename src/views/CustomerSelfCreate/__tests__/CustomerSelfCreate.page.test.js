@@ -120,11 +120,19 @@ describe('顧客自助建檔', () => {
     expect(await screen.findByText('此電話已建檔')).toBeInTheDocument()
   })
 
-  // 已知缺口（待 Jason 決定）：開放設定或店名查詢失敗時 data 為 undefined，effect 直接讀欄位拋錯，整頁進入錯誤畫面
-  // （views/CustomerSelfCreate/index.js:125、132）。建議：查詢失敗時視為未開放並顯示提示。
-  it('已知缺口：開放設定查詢失敗時整頁進入錯誤畫面', async () => {
+  // 開放設定查詢失敗時視為未開放、店名查詢失敗時店名留空，不整頁錯誤（錯誤提示由 init-apollo 的 errorLink 統一顯示；
+  // 原本 effect 直接讀 data 欄位拋錯；Jason 2026/10/22 fix all）
+  it('開放設定查詢失敗：顯示未開放此功能、不整頁錯誤', async () => {
     const utils = setup({ fixtures: { GET_CUSTOMER_SELF_CREATE_ACTIVE: new Error('查詢失敗') } })
     await utils.settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
+    expect(screen.getByText('該店未開放此功能')).toBeInTheDocument()
+  })
+
+  it('店名查詢失敗：店名留空，表單仍可填寫', async () => {
+    const utils = setup({ fixtures: { GET_MERCHANT_NAME: new Error('查無店家') } })
+    await utils.settle()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
+    expect(input('姓名')).toBeInTheDocument()
   })
 })

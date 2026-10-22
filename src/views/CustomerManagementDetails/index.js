@@ -18,6 +18,7 @@ import ProgressBar from 'components/ProgressBar'
 import pagenationLabel from './../../helper/pagenationLabel'
 import { CreditCard, Gift, MessageSquare, Receipt, Star, Ticket, User, UserCheck, Wallet } from 'lucide-react'
 import { Breadcrumb, PageHeader } from 'ui/page-header'
+import { EmptyState } from 'ui/empty-state'
 import { Tabs } from 'ui/tabs'
 import { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
 
@@ -185,7 +186,8 @@ function CustomerManagementDetails({ match, history }) {
       if (bonusActive) {
         newTabs.splice(3, 0, { value: 'bonus', label: '紅利點數紀錄' })
       }
-      if (membershipDisplay || customer.data.customer.membershipPurchaseRecord.length) {
+      // 顧客查詢失敗或查無顧客時沒有會員卡紀錄（原本直接讀欄位拋錯；Jason 2026/10/22 fix all）
+      if (membershipDisplay || (idx(customer, _ => _.data.customer.membershipPurchaseRecord) || []).length) {
         newTabs.push({ value: 'membership', label: '會員卡列表' })
       }
       setTabs(newTabs)
@@ -249,20 +251,34 @@ function CustomerManagementDetails({ match, history }) {
     ? { label: '客資篩選匯出', href: '/management/customer-filter-export', onClick: handleBack }
     : { label: '客戶列表', href: '/management/customers', onClick: handleBack }
 
+  // 顧客查詢失敗或查無此顧客：顯示找不到並可返回（原本直接讀 customer.data.customer.name 整頁錯誤；
+  // 錯誤提示由 init-apollo 的 errorLink 統一顯示；Jason 2026/10/22 fix all）
+  if (!idx(customer, _ => _.data.customer)) {
+    return (
+      <Page className="ui-root" title="顧客詳細資料">
+        <div className="mx-auto w-full max-w-6xl">
+          <PageHeader
+            title="顧客詳細資料"
+            breadcrumb={<Breadcrumb items={[parentCrumb]} />}
+            back={{ label: `返回${parentCrumb.label}`, onClick: handleBack }}
+          />
+          <EmptyState title="找不到這位顧客" description="資料可能已刪除或暫時無法讀取，請返回列表後再試一次" />
+        </div>
+      </Page>
+    )
+  }
+
   return (
     <Page className="ui-root" title={`${customer.data.customer.name} - ${currentTabName}`}>
       <Provider value={value}>
         <div className="mx-auto w-full max-w-6xl">
-        {idx(customer, _ =>
-          _.data.customer ? (
-            <PageHeader
-              title={_.data.customer.name}
-              description='顧客詳細資料'
-              breadcrumb={<Breadcrumb items={[parentCrumb, { label: _.data.customer.name }]} />}
-              back={{ label: `返回${parentCrumb.label}`, onClick: handleBack }}
-            />
-          ) : ''
-        )}
+        {/* 查無顧客已在上方提早返回，這裡一定有顧客資料 */}
+        <PageHeader
+          title={customer.data.customer.name}
+          description='顧客詳細資料'
+          breadcrumb={<Breadcrumb items={[parentCrumb, { label: customer.data.customer.name }]} />}
+          back={{ label: `返回${parentCrumb.label}`, onClick: handleBack }}
+        />
         {/* 分頁值皆為字串、handler 只用到 value；activationMode="manual" 與舊版 MUI Tabs 相同：方向鍵只移動焦點，按 Enter／點擊才切換（切換會 history.push） */}
         {/* 設定頁樣板（STYLE §12）：桌機左選單＋右內容（左 surface／右 background、無分隔線由共用 settings-nav 承擔），手機頂部橫向捲動分頁；僅改版面殼，分頁內容元件不動 */}
         <Tabs
@@ -308,7 +324,8 @@ function CustomerManagementDetails({ match, history }) {
               isLoading={customerHairInfo.loading}
               hairCondition={
                 !customerHairInfo.loading ?
-                  idx(customerHairInfo, _ => _.data.getCustomerHairInfo) : hairCondition
+                  // 查詢失敗或沒有髮況資料時以空髮況顯示（原本傳 undefined 整頁錯誤；Jason 2026/10/22 fix all）
+                  idx(customerHairInfo, _ => _.data.getCustomerHairInfo) || hairCondition : hairCondition
               }
             />
           }

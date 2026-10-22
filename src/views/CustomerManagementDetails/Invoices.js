@@ -1,27 +1,21 @@
 import clsx from 'clsx'
 // 分頁使用 ui/table TablePagination（pagenationLabel 找不到 MUI class 即不動作，ui 版自帶中文筆數文字）
 import { ChevronDown, ChevronUp } from 'lucide-react'
-import TableEditBar from 'components/TableEditBar'
 import { format } from 'date-fns'
-import { openSnackbar } from 'elements/snackbars'
-import useFetchDeleteOrder from 'hooks/useFetchDeleteOrder'
 import PropTypes from 'prop-types'
 import { useState, useRef, useEffect, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
-import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { EmptyState } from 'ui/empty-state'
 import { formatNumber } from 'ui/format'
 import truncateDecimal from 'helper/truncateDecimal'
-import { Field, Input } from 'ui/input'
 import { Skeleton } from 'ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
 function Invoices({
   className,
   orders,
-  refetch2,
   pageSetting,
   onPageChange,
   onRowsPerPageChange,
@@ -31,14 +25,10 @@ function Invoices({
   isLoading,
   ...rest
 }) {
-  const [selectedOrders, setSelectedOrders] = useState([])
   const [raffleDisplay, setRaffleDisplay] = useState(false)
-  const { deleteOrders } = useFetchDeleteOrder()
-  const [deleteOrderPwd, setDeleteOrderPwd] = useState('')
   const pageRef = useRef(null)
-  const handleCancel = () => {
-    setOpenDialog(true)
-  }
+  // 已刪除死碼：批次刪除帳單對話框（寫死密碼 0000、呼叫未傳入的 refetch2）——勾選欄早已註解掉，
+  // 批次操作列永遠不會出現，對話框打不開（Jason 2026/10/22 fix all）
   // 檢查是否為首次render
   const isFirstRender = useRef(true)
 
@@ -48,32 +38,6 @@ function Invoices({
     }
   }, [pageRef.current, orders])
 
-  const [openDialog, setOpenDialog] = useState(false)
-
-  const handleConfirmCancel = () => {
-    if (deleteOrderPwd === '0000') {
-      deleteOrders(selectedOrders).then(() => {
-        setOpenDialog(false)
-        setDeleteOrderPwd('')
-        setSelectedOrders([])
-        refetch2()
-        openSnackbar({
-          message: '成功刪除預約',
-          variant: 'success',
-        })
-      })
-    } else {
-      setOpenDialog(false)
-      setDeleteOrderPwd('')
-      openSnackbar({
-        message: '密碼錯誤',
-        variant: 'error',
-      })
-    }
-  }
-  const handleCloseDialog = () => {
-    setOpenDialog(false)
-  }
   const [orderExtendArr, setOrderExtendArr] = useState([])
 
   const handleOrderExtend = id => {
@@ -130,17 +94,6 @@ function Invoices({
               <Table wrapperClassName="max-h-[calc(100vh-300px)] overflow-auto">
                 <TableHeader className="sticky top-0 z-10">
                   <TableRow className="hover:bg-transparent">
-                    {/* <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={selectedOrders.length === orders.length && orders.length > 0}
-                        color="primary"
-                        indeterminate={
-                          selectedOrders.length > 0 && selectedOrders.length < orders.length
-                        }
-                        onChange={handleSelectAll}
-                        disabled={orders.length === 0}
-                      />
-                    </TableCell> */}
                     <TableHead>展開</TableHead>
                     <TableHead>操作</TableHead>
                     <TableHead>帳單編號/時間</TableHead>
@@ -299,38 +252,6 @@ function Invoices({
               />
             </div>
           </Card>
-          <TableEditBar selected={selectedOrders} onCancel={handleCancel} />
-
-          <Dialog
-            open={openDialog}
-            onOpenChange={o => !o && handleCloseDialog()}
-          >
-            <DialogContent size="sm" aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
-              <DialogHeader>
-                <DialogTitle id="alert-dialog-title">{'刪除帳單?'}</DialogTitle>
-                <DialogDescription id="alert-dialog-description">刪除後帳單將無法復原，請輸入刪除密碼確認。</DialogDescription>
-              </DialogHeader>
-              <DialogBody>
-                <Field label="刪除密碼" htmlFor="delete-order-password">
-                  <Input
-                    id="delete-order-password"
-                    type="password"
-                    value={deleteOrderPwd}
-                    onChange={event => setDeleteOrderPwd(event.target.value)}
-                    data-testid="delete-password"
-                  />
-                </Field>
-              </DialogBody>
-              <DialogFooter>
-                <Button variant="secondary" onClick={handleCloseDialog}>
-                  取消
-                </Button>
-                <Button variant="danger" onClick={handleConfirmCancel} autoFocus data-testid="confirm">
-                  確認
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
         </div>
       )}
     </Fragment>

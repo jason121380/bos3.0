@@ -74,12 +74,15 @@ describe('基本資料', () => {
     expect(row('客資建立時間')).toHaveTextContent('2025/01/02')
   })
 
-  // 已知缺口（待 Jason 決定）：性別欄只把 UNKNOWN 轉成「未知」，男／女直接顯示英文代碼 MALE／FEMALE
-  // （views/CustomerManagementDetails/General/CustomerInfo.js:58）。建議：改用 types 的 gender 對照（列表頁已在用）。
-  it('已知缺口：性別顯示英文代碼；未知顯示「未知」；沒有生日、來源、設計師時留白', async () => {
+  // 性別以 types 的 gender 對照顯示中文（原本男／女直接顯示英文代碼 MALE／FEMALE；Jason 2026/10/22 fix all）
+  it('性別顯示中文（女／男／未知）；沒有生日、來源、設計師時留白', async () => {
     const utils = setup()
     await utils.settle()
-    expect(row('性別')).toHaveTextContent('FEMALE')
+    expect(row('性別').querySelector('dd').textContent).toBe('女')
+    cleanup()
+    const male = renderDetails({ fixtures: fixtures({ FETCH_CUSTOMER_DETAIL: { customer: { ...CUSTOMER, gender: 'MALE' } } }) })
+    await male.settle()
+    expect(row('性別').querySelector('dd').textContent).toBe('男')
     cleanup()
     const unknown = renderDetails({
       fixtures: fixtures({
@@ -105,18 +108,22 @@ describe('基本資料', () => {
     expect(screen.getByText('設為黑名單')).not.toBeDisabled()
   })
 
-  // 已知缺口（待 Jason 決定）：判斷成功與否用的是整個 mutation 回應物件（永遠有值），不是 data.setCustomerIsUnwelcome，
-  // 後端回 false 時仍提示「設定成功」，「設定失敗」分支永遠到不了（views/CustomerManagementDetails/General/CustomerInfo.js:36）。
-  it('已知缺口：黑名單顧客顯示解除黑名單（送出 false），後端回 false 仍提示設定成功；錯誤以訊息提示', async () => {
+  // 依 mutation 回傳的 data.setCustomerIsUnwelcome 判斷成功與否（原本判斷整個回應物件，後端回 false 仍提示設定成功；
+  // Jason 2026/10/22 fix all）
+  it('黑名單顧客顯示解除黑名單（送出 false），後端回 false 提示設定失敗、不重新查詢；錯誤以訊息提示', async () => {
     const utils = setup({
       FETCH_CUSTOMER_DETAIL: { customer: { ...CUSTOMER, isUnwelcome: true } },
       SET_CUSTOMER_ISUNWELCOME: { setCustomerIsUnwelcome: false },
     })
     await utils.settle()
+    const before = callsOf(utils.calls, 'FETCH_CUSTOMER_DETAIL').length
     fireEvent.click(screen.getByText('解除黑名單'))
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '設定成功', variant: 'success' }))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '設定失敗', variant: 'warning' }))
     expect(callsOf(utils.calls, 'SET_CUSTOMER_ISUNWELCOME')[0].variables).toEqual({ customerId: 'c1', input: false })
-    expect(openSnackbar).not.toHaveBeenCalledWith({ message: '設定失敗', variant: 'warning' })
+    expect(openSnackbar).not.toHaveBeenCalledWith({ message: '設定成功', variant: 'success' })
+    await utils.settle()
+    expect(callsOf(utils.calls, 'FETCH_CUSTOMER_DETAIL')).toHaveLength(before)
+    expect(screen.getByText('解除黑名單')).not.toBeDisabled()
     cleanup()
     const errored = setup({ SET_CUSTOMER_ISUNWELCOME: new Error('沒有權限') })
     await errored.settle()
@@ -185,17 +192,25 @@ describe('編輯客戶資料', () => {
     await wait(() => expect(callsOf(utils.calls, 'FETCH_CUSTOMER_DETAIL').length).toBeGreaterThan(before))
   })
 
-  // 已知缺口（待 Jason 決定）：彈窗以 customer.PreferDesignerId 帶入偏好設計師，但顧客查詢回的是 preferDesigner { id }，
-  // 所以偏好設計師永遠帶入空白；沒動偏好設計師直接儲存也會送 PreferDesignerId: ''，可能把原本的偏好設計師清掉
-  // （views/CustomerManagementDetails/General/CustomerEditModal.js:70）。建議：改用 customer.preferDesigner?.id 帶入。
-  it('已知缺口：偏好設計師不會帶入，直接儲存送出空白偏好設計師', async () => {
+  // 偏好設計師以顧客查詢回的 preferDesigner.id 帶入（原本讀不存在的 customer.PreferDesignerId，永遠帶入空白，
+  // 沒動就儲存會把原本的偏好設計師清掉；Jason 2026/10/22 fix all）
+  it('偏好設計師帶入原本的設定，沒動直接儲存不清掉；沒有偏好設計師時為空白', async () => {
     const utils = setup()
     await utils.settle()
     await openEdit()
-    expect(screen.getByLabelText('偏好設計師').value).toBe('0')
+    const select = screen.getByLabelText('偏好設計師')
+    expect(select.options[select.selectedIndex].textContent).toBe('Amy')
     fireEvent.click(screen.getByText('儲存'))
     await wait(() => expect(callsOf(utils.calls, 'SET_CUSTOMER')).toHaveLength(1))
-    expect(callsOf(utils.calls, 'SET_CUSTOMER')[0].variables.input.PreferDesignerId).toBe('')
+    expect(callsOf(utils.calls, 'SET_CUSTOMER')[0].variables.input.PreferDesignerId).toBe('d2')
+    cleanup()
+    const none = setup({ FETCH_CUSTOMER_DETAIL: { customer: { ...CUSTOMER, preferDesigner: null } } })
+    await none.settle()
+    await openEdit()
+    expect(screen.getByLabelText('偏好設計師').value).toBe('0')
+    fireEvent.click(screen.getByText('儲存'))
+    await wait(() => expect(callsOf(none.calls, 'SET_CUSTOMER')).toHaveLength(1))
+    expect(callsOf(none.calls, 'SET_CUSTOMER')[0].variables.input.PreferDesignerId).toBe('')
   })
 
   it('顧客編號：改動後 500ms 查重（帶自己的 id 排除自己），重複顯示錯誤；清空不查', async () => {
@@ -310,19 +325,21 @@ describe('建立預約', () => {
     await wait(() => expect(screen.queryByText('預約')).toBeNull())
   })
 
-  // 已知缺口（待 Jason 決定）：時間下拉的選項只有「今天」的 48 個時段，先選其他日期再選時間，日期會被換回今天
-  // （views/CustomerManagementDetails/General/ChoseEvent.js:39-44、130）。建議：時段以目前選定日期產生，或選時間時只換時分。
-  it('已知缺口：選了其他日期後再選時間，預約日期變回今天', async () => {
+  // 時間下拉的時段依目前選定的日期產生，先換日期再選時間不再把日期換回今天
+  // （原本只有「今天」的 48 個時段；Jason 2026/10/22 fix all）
+  it('選了其他日期後再選時間，送出選定日期的該時段', async () => {
     const utils = setup()
     await utils.settle()
     await openBooking()
     fireEvent.click(screen.getByText('選服務人員'))
     fireEvent.change(screen.getByLabelText('預約時間'), { target: { value: '2030/01/15 10:00' } })
-    choose(timeSelect(), '15:00')
+    const select = timeSelect()
+    expect(select.options).toHaveLength(48)
+    expect(select.options[select.selectedIndex].textContent).toBe('10:00')
+    choose(select, '15:00')
     fireEvent.click(screen.getByText('預約'))
     await wait(() => expect(callsOf(utils.calls, 'bookingV2')).toHaveLength(1))
-    const sent = callsOf(utils.calls, 'bookingV2')[0].variables.BookingV2Input.dateTime
-    expect(format(sent, 'yyyy/MM/dd HH:mm')).toBe(format(setHours(startOfDay(new Date()), 15), 'yyyy/MM/dd HH:mm'))
+    expect(callsOf(utils.calls, 'bookingV2')[0].variables.BookingV2Input.dateTime).toBe(new Date(2030, 0, 15, 15).getTime())
   })
 
   it('只換日期：送出選定日期（保留時間）', async () => {
@@ -336,17 +353,22 @@ describe('建立預約', () => {
     expect(callsOf(utils.calls, 'bookingV2')[0].variables.BookingV2Input.dateTime).toBe(new Date(2030, 0, 15, 10).getTime())
   })
 
-  // 已知缺口（待 Jason 決定）：選了服務人員又清除後，designerId 變成 { id: '' } 物件，不再等於 ''，
-  // 「請選擇設計師」的檢查被跳過，直接送出 designerId: ''（views/CustomerManagementDetails/General/ChoseEvent.js:63、147）。
-  it('已知缺口：選了再清除服務人員仍會送出（designerId 為空字串）；後端回錯誤時提示並可再按', async () => {
-    const utils = setup({ bookingV2: new Error('請選擇服務人員') })
+  // 選了服務人員又清除後 designerId 回到空字串，被「請選擇設計師」擋下（原本變成 { id: '' } 物件、跳過檢查直接送出；
+  // Jason 2026/10/22 fix all）
+  it('選了再清除服務人員：提示請選擇設計師、不送出；後端回錯誤時提示並可再按', async () => {
+    const utils = setup({ bookingV2: new Error('時段已滿') })
     await utils.settle()
     await openBooking()
     fireEvent.click(screen.getByText('選服務人員'))
     fireEvent.click(screen.getByText('清除服務人員'))
+    expect(screen.getByTestId('booking-designer')).toHaveAttribute('data-value', '""')
     fireEvent.click(screen.getByText('預約'))
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '請選擇服務人員', variant: 'error' }))
-    expect(callsOf(utils.calls, 'bookingV2')[0].variables.BookingV2Input.designerId).toBe('')
+    expect(openSnackbar).toHaveBeenCalledWith({ message: '請選擇設計師', variant: 'warning' })
+    expect(callsOf(utils.calls, 'bookingV2')).toHaveLength(0)
+    fireEvent.click(screen.getByText('選服務人員'))
+    fireEvent.click(screen.getByText('預約'))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '時段已滿', variant: 'error' }))
+    expect(callsOf(utils.calls, 'bookingV2')[0].variables.BookingV2Input.designerId).toBe('designer-1')
     expect(screen.getByText('預約')).not.toBeDisabled()
   })
 

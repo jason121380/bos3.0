@@ -1,6 +1,7 @@
 // 保護「顧客卡券餘額表」：每張卡券的總量／已使用／剩餘、金額（張數 × 四捨五入後的單張金額）、手續費取絕對值、
 // 其他付款方式（沒有顯示「無」）、是否已先入業績，以及合計列；報表匯出檔與畫面同內容並加合計列；
-// 以顧客、卡券、偏好設計師、最近設計師篩選時送出的參數（顧客／卡券為陣列，設計師清除後為 null）。GraphQL 全由 testkit 的模擬 link 回應。
+// 以顧客、卡券、偏好設計師、最近設計師篩選時送出的參數（顧客／卡券為陣列，設計師清除後為 null）；
+// 匯出檔比照帳單列表：只有「客資遮罩」設定查詢成功且為 false 才匯出完整姓名與手機，否則遮罩。GraphQL 全由 testkit 的模擬 link 回應。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { renderPage, loginAs, callsOf, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
@@ -51,7 +52,11 @@ const REPORT = [
 
 const setup = (fixtures = {}) =>
   renderPage(<CustomerCouponBalance />, {
-    fixtures: { GET_CUSTOMER_COUPON_BALANCE: { customerCouponBalanceReport: REPORT }, ...fixtures },
+    fixtures: {
+      GET_CUSTOMER_COUPON_BALANCE: { customerCouponBalanceReport: REPORT },
+      GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false },
+      ...fixtures,
+    },
   })
 
 const exportedCsv = () => decodeURIComponent(screen.getByText('報表匯出').closest('a').getAttribute('href'))
@@ -112,11 +117,26 @@ describe('顧客卡券餘額表', () => {
     expect(within(screen.getByText('合計').closest('tr')).getAllByText('0').length).toBeGreaterThan(0)
   })
 
-  // 已知缺口（待 Jason 決定）：查詢失敗時資料為 undefined，effect 直接 forEach 拋錯，整頁進入錯誤畫面
-  // （views/CustomerCouponBalance/index.js:44）。建議：查詢失敗時以空陣列處理。
-  it('已知缺口：查詢失敗時整頁進入錯誤畫面', async () => {
+  // 查詢失敗時以空陣列處理：合計 0、不整頁錯誤（錯誤提示由 init-apollo 的 errorLink 統一顯示；
+  // 原本 effect 直接 forEach 拋錯；Jason 2026/10/22 fix all）
+  it('查詢失敗：合計為 0，不整頁錯誤', async () => {
     const utils = setup({ GET_CUSTOMER_COUPON_BALANCE: new Error('查詢失敗') })
     await utils.settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
+    expect(within(screen.getByText('合計').closest('tr')).getAllByText('0').length).toBeGreaterThan(0)
+    expect(exportedCsv()).toContain('"合計","0","0","0","0","0","0","0","0"')
+  })
+
+  // 匯出遮罩比照帳單列表（helper/exportCustomerMask；Jason 2026/10/22 同意）：設定為遮罩、查詢失敗都遮罩姓名與手機
+  it.each([
+    ['設定為遮罩', { getCustomerDataMarkedDefault: true }],
+    ['設定查詢失敗', new Error('查詢失敗')],
+  ])('%s：匯出檔遮罩顧客姓名與手機，畫面照常顯示', async (_, fixture) => {
+    const utils = setup({ GET_CUSTOMER_DATA_MARKED: fixture })
+    await utils.settle()
+    await wait(() => expect(exportedCsv()).toContain('"C01","陳*姐","0912***678","T01"'))
+    expect(exportedCsv()).toContain('"C02","林*生","0922***444","T02"')
+    expect(exportedCsv()).not.toContain('0912345678')
+    expect(within(screen.getByText('護髮五次卡').closest('tr')).getByText('0912345678')).toBeInTheDocument()
   })
 })

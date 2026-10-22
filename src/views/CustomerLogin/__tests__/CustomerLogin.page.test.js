@@ -61,14 +61,26 @@ describe('顧客登入', () => {
     expect(callsOf(utils.calls, 'LoginSMS')).toHaveLength(1)
   })
 
-  // 已知缺口（待 Jason 決定）：已登入的顧客應自動導回 redirect，但 localStorage 取出的是 JSON 字串，
-  // 程式直接讀 customer.userCode（字串沒有這個屬性）永遠是 undefined，自動導回從不發生（views/CustomerLogin/index.js:36-38）。
-  // 建議：JSON.parse 後再判斷（並統一導向寫法：此處 `/${redirect}` 與登入後的 `${redirect}` 不一致，redirect 以 / 開頭時會變成 //）。
-  it('已知缺口：已登入的顧客打開登入頁不會自動導回', async () => {
-    localStorage.setItem('customer', JSON.stringify({ id: 'customer-1', userCode: 'code-1' }))
+  // 已登入的顧客打開登入頁自動導回 redirect：localStorage 取出後 JSON.parse 再讀 userCode，導向寫法與登入後相同
+  // （原本直接讀字串的 userCode 永遠是 undefined，且導向多加一個 / ；Jason 2026/10/22 fix all）
+  // setupTests 的 localStorage 假物件 setItem 會再 stringify：直接傳物件，存進去的就是與瀏覽器相同的 JSON 字串
+  it('已登入的顧客打開登入頁自動導回原頁', async () => {
+    localStorage.setItem('customer', { id: 'customer-1', userCode: 'code-1' })
+    setup()
+    await wait(() => expect(currentLocation()).toBe('/customer/consumption/records?merchantid=m-9'))
+  })
+
+  it('存的顧客資料沒有 userCode 或不是 JSON 時留在登入頁', async () => {
+    localStorage.setItem('customer', { id: 'customer-1' })
     const utils = setup()
     await utils.settle()
     expect(currentLocation()).toBe(ROUTE)
+    cleanup()
+    const spy = jest.spyOn(localStorage, 'getItem').mockImplementation(key => (key === 'customer' ? '{壞掉' : null))
+    const broken = setup()
+    await broken.settle()
+    expect(currentLocation()).toBe(ROUTE)
     expect(screen.getByText('獲取驗證碼')).toBeInTheDocument()
+    spy.mockRestore()
   })
 })

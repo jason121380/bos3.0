@@ -107,11 +107,9 @@ describe('新增客戶', () => {
     choose(screen.getByLabelText('客戶來源'), '網路')
     typeLikeBrowser(fieldInput('備註'), '怕冷')
     fireEvent.click(addButtons()[1])
-    // 送出中底部新增鈕鎖住
+    // 送出中兩個新增鈕都鎖住（卡片右上角的「新增」原本只看手機是否有填，送出中仍可再按；Jason 2026/10/22 fix all）
     expect(addButtons()[1]).toBeDisabled()
-    // 已知缺口（待 Jason 決定）：卡片右上角的「新增」只看手機是否有填，送出中仍可再按，連按會重複建立同一位顧客
-    // （views/CustomerCreate/AboutCustomer.js:216 未接 disableAfterSubmit）。建議：兩個新增鈕共用同一個 disabled 條件。
-    expect(addButtons()[0]).not.toBeDisabled()
+    expect(addButtons()[0]).toBeDisabled()
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '成功新增客戶', variant: 'success' }))
     expect(callsOf(utils.calls, 'FETCH_ADD_CUSTOMER')[0].variables).toEqual({
       input: {
@@ -134,18 +132,21 @@ describe('新增客戶', () => {
     await wait(() => expect(currentLocation()).toBe('/management/customers'))
   })
 
-  // 已知缺口（待 Jason 決定）：性別再按一次已選的選項，ToggleGroup 回傳 null，頁面照存，送出 gender: null
-  // （views/CustomerCreate/AboutCustomer.js:169-177）。建議：比照成為會員頁，newValue 為 null 時忽略。
-  it('已知缺口：再按一次已選的性別會送出 gender: null；沒有選定店家時店家 id 為 null', async () => {
+  // 性別再按一次已選的選項時 ToggleGroup 回傳 null：比照成為會員頁忽略，維持原選擇（原本送出 gender: null；Jason 2026/10/22 fix all）
+  it('再按一次已選的性別維持原選擇；連按右上角新增只建立一次；沒有選定店家時店家 id 為 null', async () => {
     loginAs({ merchant: null })
     const utils = setup()
     await utils.settle()
     typeLikeBrowser(inputOf('手機'), '0912345678')
     fireEvent.click(screen.getByText('男'))
+    expect(screen.getByText('男').closest('button')).toHaveAttribute('aria-pressed', 'true')
+    fireEvent.click(addButtons()[0])
     fireEvent.click(addButtons()[0])
     await wait(() => expect(callsOf(utils.calls, 'FETCH_ADD_CUSTOMER')).toHaveLength(1))
+    await utils.settle()
+    expect(callsOf(utils.calls, 'FETCH_ADD_CUSTOMER')).toHaveLength(1)
     expect(callsOf(utils.calls, 'FETCH_ADD_CUSTOMER')[0].variables.input).toMatchObject({
-      gender: null,
+      gender: 'MALE',
       OfficialBrandMerchantId: null,
       birthday: { year: '', month: '', day: '' },
     })

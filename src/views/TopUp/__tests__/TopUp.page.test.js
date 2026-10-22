@@ -1,6 +1,7 @@
 // 保護「入金管理」：預設查本月 1 日到今天（台灣時間）的入金紀錄與入金使用，日期／篩選（設計師、顧客、付款方式）改變時重新查詢；
 // 入金紀錄的「實際付款金額」在由客人負擔手續費時為入金＋手續費，手續費負擔方文字、合計列與匯出檔一致；
-// 入金使用列出帳單連結、顧客、設計師、金額與合計；兩表各自分頁；按編輯到入金編輯頁，從編輯頁按「上一頁」後再「下一頁」回到編輯頁時自動再前進。
+// 入金使用列出帳單連結、顧客、設計師、金額與合計；兩表各自分頁；按編輯到入金編輯頁（上一頁照常回到編輯頁，不再被推回列表）；
+// 匯出檔比照帳單列表：只有「客資遮罩」設定查詢成功且為 false 才匯出完整姓名與手機，否則遮罩。
 // GraphQL 全由 testkit 的模擬 link 回應；日期選擇與篩選列另有測試，這裡以假元件代替。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
@@ -71,6 +72,7 @@ const setup = (fixtures = {}) =>
       fixtures: {
         walletdepositrecord: { walletDepositRecord: { record: DEPOSITS, totalCount: 120, pageLimit: 50, pageOffset: 0 } },
         WALLET_USE_RECORD: { walletUseRecord: { record: USES, totalCount: 60, pageLimit: 50, pageOffset: 0 } },
+        GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false },
         ...fixtures,
       },
       route: '/topup',
@@ -136,9 +138,8 @@ describe('入金管理', () => {
     expect(csv).toContain('"合計","","1730","1700","","","","-40",""')
   })
 
-  // 已知缺口（待 Jason 決定）：入金使用匯出檔的設計師欄讀 data.designerNo（應為 data.Designer.designerNo），
-  // 有設計師代號時匯出「王小美 / undefined」（views/TopUp/UsagedResult.js:12）。
-  it('入金使用：帳單連結、顧客、設計師、金額與合計；已知缺口：匯出檔設計師代號為 undefined', async () => {
+  // 匯出檔的設計師代號讀 Designer.designerNo（原本讀不存在的 data.designerNo，匯出「王小美 / undefined」；Jason 2026/10/22 fix all）
+  it('入金使用：帳單連結、顧客、設計師、金額與合計；匯出檔含設計師代號', async () => {
     const utils = setup()
     await utils.settle()
     const usage = card('入金使用')
@@ -147,7 +148,7 @@ describe('入金管理', () => {
     ;['2026/10/21', '陳小姐', '0912345678', '王小美 / 01', '300'].forEach(text => expect(within(u1).getByText(text)).toBeInTheDocument())
     expect(within(within(usage).getByText('A002').closest('tr')).getByText('Amy')).toBeInTheDocument()
     expect(within(within(usage).getByText('合計').closest('tr')).getByText('450')).toBeInTheDocument()
-    await wait(() => expect(csvOf('入金使用')).toContain('"#A001-2026/10/21","陳小姐/0912345678","王小美 / undefined","300"'))
+    await wait(() => expect(csvOf('入金使用')).toContain('"#A001-2026/10/21","陳小姐/0912345678","王小美 / 01","300"'))
     expect(csvOf('入金使用')).toContain('"#A002-2026/10/20","林先生/0922333444","Amy","150"')
     expect(csvOf('入金使用')).toContain('"合計","","","450"')
   })
@@ -181,23 +182,20 @@ describe('入金管理', () => {
     await wait(() => expect(useInput(utils.calls).pageLimit).toBe(25))
   })
 
-  it('按編輯到入金編輯頁；編輯完回到列表後按上一頁回到編輯頁時，自動再前進回列表（不停在已編輯過的頁面）', async () => {
+  // 移除「上一頁落在 /topup/edit 就前進」的監聽：編輯頁儲存／刪除後改用 history.replace 回列表（TopUpEdit 測試），
+  // 列表按上一頁照常往回，不再永遠離不開入金管理（Jason 2026/10/22 fix all）
+  it('按編輯到入金編輯頁；回到列表後按上一頁照常回到上一頁、不被推回列表', async () => {
     const utils = setup()
     await utils.settle()
     fireEvent.click(within(screen.getByText('週年慶').closest('tr')).getByText('編輯'))
     expect(currentLocation()).toBe('/topup/edit/r1')
-    // 編輯完成後導回列表
     history.push('/topup')
     const go = jest.spyOn(history, 'go')
     history.goBack()
-    await wait(() => expect(go).toHaveBeenCalledWith(1))
-    await wait(() => expect(currentLocation()).toBe('/topup'))
-    // 已知缺口（待 Jason 決定）：之後在列表再按上一頁，又回到編輯頁並被推回列表，上一頁永遠離不開入金管理
-    // （views/TopUp/RecordResults.js:20-24 只要「上一頁」落在 /topup/edit 就前進）。建議：編輯頁儲存後以 history.replace 回列表，取消這個監聽。
-    go.mockClear()
-    history.goBack()
-    await wait(() => expect(go).toHaveBeenCalledWith(1))
-    await wait(() => expect(currentLocation()).toBe('/topup'))
+    await wait(() => expect(currentLocation()).toBe('/topup/edit/r1'))
+    await new Promise(resolve => setTimeout(resolve, 20))
+    expect(go).not.toHaveBeenCalled()
+    expect(currentLocation()).toBe('/topup/edit/r1')
   })
 
   it('沒有資料時合計為 0、共 0 筆', async () => {
@@ -209,11 +207,30 @@ describe('入金管理', () => {
     expect(screen.getAllByText('共 0 筆')).toHaveLength(2)
   })
 
-  // 已知缺口（待 Jason 決定）：入金紀錄查詢失敗時 data 為 undefined，匯出資料的 effect 直接 forEach 拋錯，整頁進入錯誤畫面
-  // （views/TopUp/RecordResults.js:30；UsagedResult.js:10 相同）。建議：查詢失敗時以空陣列處理。
-  it('已知缺口：入金紀錄查詢失敗時整頁進入錯誤畫面', async () => {
-    const utils = setup({ walletdepositrecord: new Error('查詢失敗') })
+  // 查詢失敗時以空陣列處理：表格與匯出只有合計、不整頁錯誤（錯誤提示由 init-apollo 的 errorLink 統一顯示；
+  // 原本匯出資料的 effect 直接 forEach 拋錯；Jason 2026/10/22 fix all）
+  it('入金紀錄、入金使用查詢失敗：顯示空表格與合計 0，不整頁錯誤', async () => {
+    const utils = setup({ walletdepositrecord: new Error('查詢失敗'), WALLET_USE_RECORD: new Error('查詢失敗') })
     await utils.settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
+    expect(screen.getAllByText('共 0 筆')).toHaveLength(2)
+    await wait(() => expect(csvOf('入金紀錄')).toContain('"合計","","0","0","","","","0",""'))
+    expect(csvOf('入金使用')).toContain('"合計","","","0"')
+  })
+
+  // 匯出遮罩比照帳單列表（helper/exportCustomerMask；Jason 2026/10/22 同意）：設定為遮罩、查詢失敗或還沒回來都遮罩姓名與手機
+  it.each([
+    ['設定為遮罩', { getCustomerDataMarkedDefault: true }],
+    ['設定查詢失敗', new Error('查詢失敗')],
+  ])('%s：入金紀錄與入金使用的匯出檔遮罩顧客姓名與手機', async (_, fixture) => {
+    const utils = setup({ GET_CUSTOMER_DATA_MARKED: fixture })
+    await utils.settle()
+    await wait(() => expect(csvOf('入金紀錄')).toContain('"2026/10/21","陳*姐(C01)/0912***678","1030"'))
+    expect(csvOf('入金紀錄')).toContain('"林*生/0922***444"')
+    expect(csvOf('入金紀錄')).not.toContain('0912345678')
+    expect(csvOf('入金使用')).toContain('"#A001-2026/10/21","陳*姐/0912***678","王小美 / 01","300"')
+    expect(csvOf('入金使用')).not.toContain('0922333444')
+    // 畫面上的表格照常顯示完整資料
+    expect(within(screen.getByText('週年慶').closest('tr')).getByText('0912345678')).toBeInTheDocument()
   })
 })

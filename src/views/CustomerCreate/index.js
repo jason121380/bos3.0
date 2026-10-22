@@ -128,6 +128,7 @@ export default function Customer() {
           customer={customer}
           lastNo={lastNo}
           isLoading={lastCustomerNo.loading}
+          submitting={disableAfterSubmit}
           birthdayObj={birthdayObj}
           handleOnClick={handleOnClick}
           handleBirthdayChange={handleBirthdayChange}

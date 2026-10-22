@@ -107,11 +107,17 @@ describe('顧客詳細：切換分頁與返回', () => {
     await wait(() => expect(currentLocation()).toBe('/management/customer-filter-export'))
   })
 
-  // 已知缺口（待 Jason 決定）：顧客查詢失敗（或查無此顧客回 null）時，頁面直接讀 customer.data.customer.name 拋錯，整頁進入錯誤畫面
-  // （views/CustomerManagementDetails/index.js:253）。建議：查無顧客時顯示「找不到此顧客」並提供返回列表。
-  it('已知缺口：顧客查詢失敗時整頁進入錯誤畫面', async () => {
-    const utils = renderDetails({ fixtures: { FETCH_CUSTOMER_DETAIL: new Error('查無顧客') } })
+  // 顧客查詢失敗（或查無此顧客回 null）時顯示「找不到這位顧客」並可返回列表，不整頁錯誤
+  // （錯誤提示由 init-apollo 的 errorLink 統一顯示；原本直接讀 customer.data.customer.name 拋錯；Jason 2026/10/22 fix all）
+  it.each([
+    ['查詢失敗', new Error('查無顧客')],
+    ['查無此顧客', { customer: null }],
+  ])('顧客%s：顯示找不到這位顧客，返回鈕回客戶列表', async (_, fixture) => {
+    const utils = renderDetails({ fixtures: { FETCH_CUSTOMER_DETAIL: fixture } })
     await utils.settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
+    expect(screen.getByText('找不到這位顧客')).toBeInTheDocument()
+    fireEvent.click(screen.getByLabelText('返回客戶列表'))
+    await wait(() => expect(currentLocation()).toBe('/management/customers'))
   })
 })

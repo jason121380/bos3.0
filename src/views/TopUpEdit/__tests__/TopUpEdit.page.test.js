@@ -1,9 +1,10 @@
 // 保護「編輯入金」（/topup/edit/:id）：載入原入金後帶入日期、設計師、顧客、付款方式、手續費負擔方、備註；
 // 由客人負擔手續費時金額欄顯示「入金＋手續費」（客人實付）；必填欄位缺少時顯示錯誤、選取後清除；
-// 儲存送出 { id, input }，刪除送出 { id }，成功都導回入金管理，後端回 false 或錯誤時提示並可再按。
+// 儲存送出 { id, input }，刪除送出 { id }，成功都以 history.replace 導回入金管理（上一頁不再回到編輯頁），後端回 false 或錯誤時提示並可再按。
 // GraphQL 全由 testkit 的模擬 link 回應，不修改真實入金。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
+import { Route } from 'react-router-dom'
 import { openSnackbar } from 'elements/snackbars'
 import { renderPage, loginAs, callsOf, currentLocation, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import TopUpEdit from '..'
@@ -48,8 +49,13 @@ const DETAIL = {
   handlingFeeDecountPrice: -30,
 }
 
+let history
 const setup = (fixtures = {}, options = {}) =>
-  renderPage(<TopUpEdit match={{ params: { id: 'dep-1' } }} />, {
+  renderPage(
+    <>
+      <TopUpEdit match={{ params: { id: 'dep-1' } }} />
+      <Route render={props => { history = props.history; return null }} />
+    </>, {
     fixtures: {
       PAYMENTS,
       walletDepositDetail: { walletDepositDetail: DETAIL },
@@ -117,6 +123,9 @@ describe('編輯入金', () => {
     })
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '儲存入金成功', variant: 'success' }))
     await wait(() => expect(currentLocation()).toBe('/topup'))
+    // 以 replace 回列表（取代列表原本把上一頁推回列表的監聽；Jason 2026/10/22 fix all）
+    expect(history.action).toBe('REPLACE')
+    expect(history.length).toBe(1)
   })
 
   it('修改日期、金額、設計師、顧客、付款方式、手續費負擔方、備註後儲存', async () => {
@@ -144,16 +153,18 @@ describe('編輯入金', () => {
     })
   })
 
-  // 已知缺口（待 Jason 決定）：改成「現金」時手續費負擔方欄位隱藏，但表單仍保留原本的值（例如 BYCUSTOMER）一起送出
-  // （views/TopUpEdit/General.js:167；新增頁同樣）。若後端依此扣手續費，現金入金會被誤扣。建議：選現金時清空 handlingFeeDecountWay。
-  it('已知缺口：改成現金後仍送出原本的手續費負擔方', async () => {
+  // 改成「現金」時清空手續費負擔方（null），不再把隱藏欄位裡原本的值（例如 BYCUSTOMER）一起送出（Jason 2026/10/22 fix all）
+  it('改成現金後手續費負擔方清空（送出 null）；改回其他付款方式時負擔方為未選', async () => {
     const utils = setup()
     await utils.settle()
     choose(screen.getByLabelText('付款方式'), '現金')
     await wait(() => expect(screen.queryByLabelText('選擇入金儲值手續費負擔方')).toBeNull())
+    choose(screen.getByLabelText('付款方式'), 'LINE Pay')
+    expect(selectedText(screen.getByLabelText('選擇入金儲值手續費負擔方'))).toBe('')
+    choose(screen.getByLabelText('付款方式'), '現金')
     save()
     await wait(() => expect(callsOf(utils.calls, 'SET_WALLET_DEPOSIT')).toHaveLength(1))
-    expect(callsOf(utils.calls, 'SET_WALLET_DEPOSIT')[0].variables.input).toMatchObject({ payType: '現金', handlingFeeDecountWay: 'BYCUSTOMER' })
+    expect(callsOf(utils.calls, 'SET_WALLET_DEPOSIT')[0].variables.input).toMatchObject({ payType: '現金', handlingFeeDecountWay: null })
   })
 
   it('原資料缺必填欄位時：顯示錯誤不送出，選取後錯誤消失；沒有日期時不顯示日期欄', async () => {
@@ -202,6 +213,8 @@ describe('編輯入金', () => {
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '刪除入金成功', variant: 'success' }))
     expect(callsOf(utils.calls, 'DELETE_WALLET_DEPOSIT')[0].variables).toEqual({ id: 'dep-1' })
     await wait(() => expect(currentLocation()).toBe('/topup'))
+    expect(history.action).toBe('REPLACE')
+    expect(history.length).toBe(1)
     cleanup()
 
     const failed = setup({ DELETE_WALLET_DEPOSIT: { deleteWalletDeposit: false } })
@@ -217,11 +230,23 @@ describe('編輯入金', () => {
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '入金已使用', variant: 'error' }))
   })
 
-  // 已知缺口（待 Jason 決定）：讀取原入金失敗時 data 為 undefined，effect 直接讀 .walletDepositDetail 拋錯，整頁進入錯誤畫面
-  // （views/TopUpEdit/TopUpEdit.js:59）。建議：查詢失敗時提示並停留在載入狀態或返回列表。
-  it('已知缺口：讀取原入金失敗時整頁進入錯誤畫面', async () => {
+  // 讀取原入金失敗時以空白表單顯示、不整頁錯誤（錯誤提示由 init-apollo 的 errorLink 統一顯示）；必填檢查擋下儲存
+  // （原本 effect 直接讀 data.walletDepositDetail 拋錯；Jason 2026/10/22 fix all）
+  it('讀取原入金失敗：顯示空白表單、不整頁錯誤，儲存被必填檢查擋下', async () => {
     const utils = setup({ walletDepositDetail: new Error('查無入金') })
     await utils.settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
+    expect(screen.getByTestId('designer')).toHaveAttribute('data-value', '')
+    save()
+    expect(await screen.findByText('設計師為必填')).toBeInTheDocument()
+    expect(callsOf(utils.calls, 'SET_WALLET_DEPOSIT')).toHaveLength(0)
+  })
+
+  it('支付方式查詢失敗：付款方式只有現金、不整頁錯誤', async () => {
+    const utils = setup({ PAYMENTS: new Error('查詢失敗') })
+    await utils.settle()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
+    const options = Array.from(screen.getByLabelText('付款方式').querySelectorAll('option')).map(o => o.textContent).filter(Boolean)
+    expect(options).toEqual(['現金'])
   })
 })

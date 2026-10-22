@@ -1,7 +1,7 @@
 // Snackbar 保留相容層（開關、5 秒自動關閉、點外面關閉的行為由它處理）；提示外觀改 ui/toast 的 ToastCard
 import { Snackbar } from 'ui/feedback-compat'
 import { ToastCard } from 'ui/toast'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Page from 'components/Page'
 import { useParams } from 'react-router'
 import produce from 'immer'
@@ -13,6 +13,8 @@ import { Button } from 'ui/button'
 import { Card, CardContent } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { getApiOrigin } from 'lib/api-base'
+import { httpStatusMessage } from 'lib/friendly-error'
+import idx from 'idx'
 
 const CustomerSendEventTicket = () => {
   const { id } = useParams()
@@ -31,6 +33,7 @@ const CustomerSendEventTicket = () => {
     isExist: false
   })
   const [isClick, setIsClick] = useState(false)
+  const submitRef = useRef(null)
 
   const handleSetInputValue = (value, key) => {
     setData(
@@ -40,7 +43,9 @@ const CustomerSendEventTicket = () => {
     )
   }
 
-  const closeSnackBar = () => {
+  const closeSnackBar = (event, reason) => {
+    // 按「提交」的那次點擊會先顯示新提示、再被提示的「點外面關閉」接到：忽略，新提示才看得到（Jason 2026/10/22 fix all）
+    if (reason === 'clickaway' && submitRef.current.contains(event.target)) return
     if (openSnack.message === '資料建立中請稍候') return
     setOpenSnack(
       produce(draft => {
@@ -49,14 +54,15 @@ const CustomerSendEventTicket = () => {
     )
   }
 
+  // 清空表單時保留查回的店名（原本寫死「測試店家」；Jason 2026/10/22 fix all）
   const restPage = () => {
-    setData({
+    setData(prev => ({
       name: '',
       cellphone: '',
       count: 1,
-      merchantName: '測試店家',
+      merchantName: prev.merchantName,
       isExist: false
-    })
+    }))
   }
 
   const handleSubmit = async () => {
@@ -87,9 +93,12 @@ const CustomerSendEventTicket = () => {
           merchantId: id
         }),
       })
+      // 以 res.ok 判斷成功（原本只把 400 當失敗，500／403 也顯示發券成功；Jason 2026/10/22 fix all）
       if (res.status === 400) {
         const message = await res.json()
         throw new Error(message)
+      } else if (!res.ok) {
+        throw new Error(`發券失敗：${httpStatusMessage(res.status)}`)
       } else {
         restPage()
         setOpenSnack(
@@ -129,7 +138,8 @@ const CustomerSendEventTicket = () => {
 
   useEffect(() => {
     if (!getMerchantName.loading) {
-      const data = getMerchantName.data.getMerchantName
+      // 查詢失敗時店名留空（原本 data 為 undefined 時整頁錯誤；Jason 2026/10/22 fix all）
+      const data = idx(getMerchantName, _ => _.data.getMerchantName) || ''
       handleSetInputValue(data, 'merchantName')
     }
   }, [getMerchantName.loading])
@@ -189,6 +199,7 @@ const CustomerSendEventTicket = () => {
         </CardContent>
       </Card>
       <Button
+        ref={submitRef}
         variant="primary"
         size="lg"
         className="h-11 w-full"

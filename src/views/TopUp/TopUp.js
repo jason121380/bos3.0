@@ -6,6 +6,8 @@ import PageTitle from 'components/PageTitle'
 import { endOfDay, startOfMonth } from 'date-fns'
 import useFetchWalletDepositRecord from 'hooks/useFetchWalletDepositRecord'
 import useFetchWalletUseRecord from 'hooks/useFetchWalletUseRecord'
+import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
+import isExportCustomerMasked from 'helper/exportCustomerMask'
 import idx from 'idx'
 import produce from 'immer'
 import React from 'react'
@@ -54,6 +56,9 @@ function CustomerManagementList() {
     designerId: date.employeeId,
     customerId: date.customerId,
   })
+  // 匯出檔遮罩客資比照帳單列表：只有設定查詢成功且為 false 才不遮罩（Jason 2026/10/22 同意）
+  const customerDataMarkedData = useFetchCustomerDataMarked()
+  const isCustomerDataMarked = isExportCustomerMasked(customerDataMarkedData)
   const handleChangeResult = ({ event, key, name }) => {
     if (event.persist) event.persist()
     setResultSetting(
@@ -100,6 +105,7 @@ function CustomerManagementList() {
           date={{ start: resultSetting.record.start, end: resultSetting.record.end }}
           resultSetting={resultSetting}
           walletDepositRecord={walletDepositRecord}
+          isCustomerDataMarked={isCustomerDataMarked}
           onChange={event => handleChangeResult({ ...event, name: 'record' })}
         />
         <UsagedResult
@@ -107,6 +113,7 @@ function CustomerManagementList() {
           date={{ start: resultSetting.usaged.start, end: resultSetting.usaged.end }}
           resultSetting={resultSetting}
           walletUseRecord={walletUseRecord}
+          isCustomerDataMarked={isCustomerDataMarked}
           onChange={event => handleChangeResult({ ...event, name: 'usaged' })}
         />
         </div>

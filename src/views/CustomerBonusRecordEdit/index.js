@@ -27,7 +27,8 @@ function CustomerBonusRecordCreate() {
   useEffect(() => {
     if (!bonusDepositRecord.loading) {
       const data = idx(bonusDepositRecord, _ => _.data.customerBonusDepositRecord)
-      setSubmitData(data);
+      // 讀取失敗或查無紀錄時保留預設值（原本以 undefined 取代表單資料，整頁錯誤；Jason 2026/10/22 fix all）
+      if (data) setSubmitData(data);
     }
   }, [bonusDepositRecord.loading])
 
@@ -61,7 +62,8 @@ function CustomerBonusRecordCreate() {
       updateBonus({
         input: {
           bonusId: id,
-          bonusInput: submitData
+          // 點數比照新增頁轉整數（輸入框改過後是字串；Jason 2026/10/22 fix all）
+          bonusInput: { ...submitData, bonus: parseInt(submitData.bonus, 10) }
         }
       }).then(res => {
         if (res.data.updateBonusDeposit) {

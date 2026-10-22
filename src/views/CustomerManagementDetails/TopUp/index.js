@@ -40,13 +40,16 @@ export default function TopUp({ customer, pagenationLabel }) {
     setResultSetting(
       produce(draft => {
         draft[name][key] = idx(event, _ => _.target.value)
+        // 改每頁筆數時回第一頁（比照卡券紀錄；Jason 2026/10/22 fix all）
+        if (key === 'pageLimit') draft[name].pageOffset = 0
       })
     )
   }
 
   useEffect(() => {
     if (!customerWallet.loading) {
-      setWalletBalance(customerWallet.data.customerWallet)
+      // 查詢失敗時餘額顯示 0（原本 data 為 undefined 時整頁錯誤；Jason 2026/10/22 fix all）
+      setWalletBalance(idx(customerWallet, _ => _.data.customerWallet) || 0)
     }
   }, [customerWallet.loading])
 

@@ -130,11 +130,16 @@ describe('顧客追蹤', () => {
     expect(within(dialog()).getByText('確認')).not.toBeDisabled()
   })
 
-  // 已知缺口（待 Jason 決定）：髮況查詢失敗（或顧客沒有髮況資料回 null）時，顯示區直接讀 hairCondition[key].length 拋錯，整頁進入錯誤畫面
-  // （views/CustomerManagementDetails/CustomerTracking/index.js:23、37；index.js:311）。建議：沒有資料時以空髮況顯示。
-  it('已知缺口：髮況查詢失敗時整頁進入錯誤畫面', async () => {
-    const utils = setup({ GET_CUSTOMER_HAIR_INFO: new Error('查詢失敗') })
+  // 髮況查詢失敗（或顧客沒有髮況資料回 null、欄位為 null）時以空髮況顯示，不整頁錯誤
+  // （錯誤提示由 init-apollo 的 errorLink 統一顯示；原本直接讀 hairCondition[key].length 拋錯；Jason 2026/10/22 fix all）
+  it.each([
+    ['查詢失敗', new Error('查詢失敗')],
+    ['沒有髮況資料', { getCustomerHairInfo: null }],
+    ['欄位為 null', { getCustomerHairInfo: { hairProperties: null, scalpProperties: null, permAppliance: null, permPotion: null, hairColorCategory: null, hairColor: null, hairDyeFormula: null } }],
+  ])('髮況%s：以空白顯示、不整頁錯誤', async (_, fixture) => {
+    const utils = setup({ GET_CUSTOMER_HAIR_INFO: fixture })
     await utils.settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
+    expect(screen.getByText('髮質屬性：').nextElementSibling.textContent).toBe('')
   })
 })

@@ -61,12 +61,12 @@ describe('卡券紀錄', () => {
     ;['A200', '2026/10/21', 'TK-01', '66.67'].forEach(t => expect(within(used).getByText(t)).toBeInTheDocument())
   })
 
-  // 已知缺口（待 Jason 決定）：卡券紀錄上方的「共 N 筆, 第幾頁/共幾頁」用的是本頁筆數（results.length），不是後端的 totalCount，
-  // 有 80 筆時顯示「共 1 筆, 1 /1」（views/CustomerManagementDetails/Coupon/BoughtResults.js:35、UsagedResults.js 同）。
-  it('已知缺口：筆數顯示本頁筆數；各自換頁與改每頁筆數（改筆數回第一頁）', async () => {
+  // 卡券紀錄上方的「共 N 筆, 第幾頁/共幾頁」以後端的 totalCount 計算（原本用本頁筆數 results.length，
+  // 80 筆時顯示「共 1 筆, 1 /1」；Jason 2026/10/22 fix all）
+  it('筆數與總頁數以總筆數計算；各自換頁與改每頁筆數（改筆數回第一頁）', async () => {
     const utils = renderDetails({ route: '/management/customers/c1/coupon', fixtures })
     await utils.settle()
-    expect(screen.getAllByText('共 1 筆, 1 /1')).toHaveLength(2)
+    expect(screen.getAllByText('共 80 筆, 1 /2')).toHaveLength(2)
     const [boughtNext, usedNext] = screen.getAllByLabelText('下一頁')
     fireEvent.click(boughtNext)
     await wait(() => expect(callsOf(utils.calls, 'GetTicket').pop().variables.input).toEqual({ customerId: 'c1', pageLimit: 50, pageOffset: 1 }))
@@ -80,6 +80,15 @@ describe('卡券紀錄', () => {
     choose(screen.getAllByLabelText('每頁筆數')[1], '25')
     await wait(() => expect(callsOf(utils.calls, 'GetTicket').pop().variables.input).toEqual({ customerId: 'c1', pageLimit: 25, pageOffset: 0, isUseTicket: true }))
     expect(usedNext).toBeTruthy()
+  })
+
+  it('後端沒有回總筆數時顯示共 0 筆', async () => {
+    const utils = renderDetails({
+      route: '/management/customers/c1/coupon',
+      fixtures: { GetTicket: { ticketRecords: { data: [TICKET], pageLimit: 50, pageOffset: 0, totalCount: null } } },
+    })
+    await utils.settle()
+    expect(screen.getAllByText('共 0 筆, 1 /0')).toHaveLength(2)
   })
 
   it('沒有資料（後端回 null）時不顯示表格；載入中顯示佔位', async () => {
@@ -143,21 +152,21 @@ describe('入金紀錄', () => {
     expect(currentLocation()).toBe('/topup/create')
   })
 
-  // 已知缺口（待 Jason 決定）：入金使用上方的總頁數用本頁筆數（record.length）除以每頁筆數，60 筆時顯示「1/1」而非「1/2」
-  // （views/CustomerManagementDetails/TopUp/UsagedResult.js:28）；改每頁筆數時不回第一頁（TopUp/index.js:38-45）。
-  it('已知缺口：入金使用總頁數以本頁筆數計算；兩表各自換頁、改每頁筆數不回第一頁', async () => {
+  // 入金使用上方的總頁數以總筆數計算（原本用本頁筆數 record.length，60 筆時顯示「1/1」）；改每頁筆數時回第一頁
+  // （比照卡券紀錄；Jason 2026/10/22 fix all）
+  it('入金使用總頁數以總筆數計算；兩表各自換頁、改每頁筆數回第一頁', async () => {
     const utils = renderDetails({ route: '/management/customers/c1/topup', fixtures })
     await utils.settle()
-    expect(screen.getByText(/共 60 筆資料/)).toHaveTextContent('共 60 筆資料, 1/1')
+    expect(screen.getByText(/共 60 筆資料/)).toHaveTextContent('共 60 筆資料, 1/2')
     const [depositNext, useNext] = screen.getAllByLabelText('下一頁')
     fireEvent.click(depositNext)
     await wait(() => expect(callsOf(utils.calls, 'walletdepositrecord').pop().variables.input.pageOffset).toBe(1))
     choose(screen.getAllByLabelText('每頁筆數')[0], '10')
-    await wait(() => expect(callsOf(utils.calls, 'walletdepositrecord').pop().variables.input).toMatchObject({ pageLimit: 10, pageOffset: 1 }))
+    await wait(() => expect(callsOf(utils.calls, 'walletdepositrecord').pop().variables.input).toMatchObject({ pageLimit: 10, pageOffset: 0 }))
     fireEvent.click(useNext)
     await wait(() => expect(callsOf(utils.calls, 'WALLET_USE_RECORD').pop().variables.input.pageOffset).toBe(1))
     choose(screen.getAllByLabelText('每頁筆數')[1], '25')
-    await wait(() => expect(callsOf(utils.calls, 'WALLET_USE_RECORD').pop().variables.input).toMatchObject({ pageLimit: 25, pageOffset: 1 }))
+    await wait(() => expect(callsOf(utils.calls, 'WALLET_USE_RECORD').pop().variables.input).toMatchObject({ pageLimit: 25, pageOffset: 0 }))
   })
 
   it('入金紀錄查詢失敗時表格為空、不壞頁', async () => {
@@ -171,12 +180,14 @@ describe('入金紀錄', () => {
     expect(screen.getByText('入金使用')).toBeInTheDocument()
   })
 
-  // 已知缺口（待 Jason 決定）：入金餘額查詢失敗時 data 為 undefined，effect 直接讀 .customerWallet 拋錯，整頁進入錯誤畫面
-  // （views/CustomerManagementDetails/TopUp/index.js:49）。建議：查詢失敗時餘額顯示 0 或「—」。
-  it('已知缺口：入金餘額查詢失敗時整頁進入錯誤畫面', async () => {
+  // 入金餘額查詢失敗時餘額顯示 0、不整頁錯誤（錯誤提示由 init-apollo 的 errorLink 統一顯示；
+  // 原本 effect 直接讀 data.customerWallet 拋錯；Jason 2026/10/22 fix all）
+  it('入金餘額查詢失敗：餘額顯示 0，紀錄照常顯示', async () => {
     const utils = renderDetails({ route: '/management/customers/c1/topup', fixtures: { ...fixtures, customerWallet: new Error('查詢失敗') } })
     await utils.settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getByText('入金餘額').nextElementSibling.textContent).toBe('0')
+    expect(screen.getByText('週年慶')).toBeInTheDocument()
   })
 })
 

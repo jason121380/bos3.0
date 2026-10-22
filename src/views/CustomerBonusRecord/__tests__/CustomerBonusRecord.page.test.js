@@ -107,11 +107,12 @@ describe('紅利點數紀錄列表', () => {
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '紀錄已被使用', variant: 'error' }))
   })
 
-  // 已知缺口（待 Jason 決定）：列表查詢失敗時 data 為 undefined，Results 直接讀 recordData.length 拋錯，整頁進入錯誤畫面
-  // （views/CustomerBonusRecord/index.js:26 傳入 undefined、Results.js:101）。建議：查詢失敗時傳入空陣列。
-  it('已知缺口：列表查詢失敗時整頁進入錯誤畫面', async () => {
+  // 列表查詢失敗時以空陣列顯示、不整頁錯誤（錯誤提示由 init-apollo 的 errorLink 統一顯示；
+  // 原本傳入 undefined 讓 Results 讀 recordData.length 拋錯；Jason 2026/10/22 fix all）
+  it('列表查詢失敗：顯示共 0 筆、不整頁錯誤', async () => {
     const utils = setup({ GET_CUSTOMER_BONUS_DEPOSIT_RECORDS: new Error('查詢失敗') })
     await utils.settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
+    expect(screen.getByText('共 0 筆')).toBeInTheDocument()
   })
 })

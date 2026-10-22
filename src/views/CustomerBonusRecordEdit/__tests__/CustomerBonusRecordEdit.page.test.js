@@ -112,10 +112,8 @@ describe('編輯紅利點數紀錄', () => {
     await wait(() => expect(currentLocation()).toBe('/customer-bonus-record'))
   })
 
-  // 已知缺口（待 Jason 決定）：編輯頁改過點數後送出的是輸入框字串（'45'），新增頁會 parseInt 轉整數，編輯頁沒有
-  // （views/CustomerBonusRecordEdit/index.js:64 直接送 submitData）。若後端 bonus 為 Int，改過點數的編輯會被拒絕。
-  // 建議：比照新增頁送出前 parseInt(bonus, 10)。
-  it('修改日期、設計師、顧客、點數（小數捨去）、備註後送出；已知缺口：點數以字串送出', async () => {
+  // 改過點數後輸入框是字串（'45'）；送出前比照新增頁 parseInt(bonus, 10) 轉整數（原本直接送字串，Jason 2026/10/22 fix all）
+  it('修改日期、設計師、顧客、點數（小數捨去）、備註後送出；點數以整數送出', async () => {
     const utils = setup()
     await utils.settle()
     fireEvent.change(screen.getByLabelText('選擇日期'), { target: { value: '2026/10/01' } })
@@ -133,7 +131,7 @@ describe('編輯紅利點數紀錄', () => {
         customerId: 'customer-2',
         designerId: 'designer-2',
         date: new Date(2026, 9, 1).getTime(),
-        bonus: '45',
+        bonus: 45,
         remark: '補登',
       },
     })
@@ -156,11 +154,18 @@ describe('編輯紅利點數紀錄', () => {
     expect(screen.getByText('儲存')).not.toBeDisabled()
   })
 
-  // 已知缺口（待 Jason 決定）：讀取原紀錄失敗（或查無紀錄回 null）時，effect 以 undefined／null 取代表單資料，
-  // 下一次渲染讀 submitData.date 拋錯，整頁進入錯誤畫面（views/CustomerBonusRecordEdit/index.js:30）。建議：查無資料時保留預設值並提示。
-  it('已知缺口：讀取原紀錄失敗時整頁進入錯誤畫面', async () => {
-    const utils = setup({ GET_CUSTOMER_BONUS_DEPOSIT_RECORD: new Error('查詢失敗') })
+  // 讀取原紀錄失敗（或查無紀錄回 null）時保留表單預設值，不再以 undefined 取代表單資料讓整頁進入錯誤畫面
+  // （錯誤提示由 init-apollo 的 errorLink 統一顯示；Jason 2026/10/22 fix all）
+  it.each([
+    ['讀取失敗', new Error('查詢失敗')],
+    ['查無紀錄', { customerBonusDepositRecord: null }],
+  ])('%s時保留預設值、不整頁錯誤，儲存被必填檢查擋下', async (_, fixture) => {
+    const utils = setup({ GET_CUSTOMER_BONUS_DEPOSIT_RECORD: fixture })
     await utils.settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
+    expect(fieldInput('紅利點數')).toHaveValue(0)
+    save()
+    expect(openSnackbar).toHaveBeenLastCalledWith({ message: '請選擇設計師', variant: 'warning' })
+    expect(callsOf(utils.calls, 'UPDATE_BONUS_DEPOSIT')).toHaveLength(0)
   })
 })

@@ -24,8 +24,9 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
       <p className="mb-2 text-label tabular-nums text-text-secondary">
         共 {idx(walletUseRecord.data, _ => _.walletUseRecord.totalCount)} 筆資料,{' '}
         {resultSetting.usaged.pageOffset + 1}/
+        {/* 總頁數以總筆數計算（原本用本頁筆數 record.length；Jason 2026/10/22 fix all） */}
         {Math.ceil(
-          idx(walletUseRecord.data, _ => _.walletUseRecord.record.length) /
+          (idx(walletUseRecord.data, _ => _.walletUseRecord.totalCount) || 0) /
           resultSetting.usaged.pageLimit
         )}
       </p>

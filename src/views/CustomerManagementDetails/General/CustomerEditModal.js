@@ -67,7 +67,8 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
     nickName: customer.nickName  || '',
     cellphone: customer.cellphone  || 0,
     birthday: customer.birthday || { year: '', month: '', day: '' },
-    PreferDesignerId: customer.PreferDesignerId || '',
+    // 顧客查詢回的是 preferDesigner { id }（原本讀不存在的 PreferDesignerId，永遠帶入空白、沒動就儲存會清掉；Jason 2026/10/22 fix all）
+    PreferDesignerId: (customer.preferDesigner && customer.preferDesigner.id) || '',
     OfficialBrandMerchantId: localStorage.getItem('userMerchant')
       ? JSON.parse(localStorage.getItem('userMerchant')).id
       : null,

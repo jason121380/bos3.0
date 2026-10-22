@@ -151,11 +151,28 @@ describe('新增入金', () => {
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '顧客不存在', variant: 'error' }))
   })
 
-  // 已知缺口（待 Jason 決定）：支付方式查詢失敗時 payments.data 為 undefined，直接 .merchantPayWays.map 拋錯，整頁進入錯誤畫面
-  // （views/TopUpCreate/General.js:53；編輯頁 TopUpEdit/General.js 相同）。建議：查詢失敗時只提供「現金」選項。
-  it('已知缺口：支付方式查詢失敗時整頁進入錯誤畫面', async () => {
+  // 支付方式查詢失敗時只提供「現金」選項、不整頁錯誤（錯誤提示由 init-apollo 的 errorLink 統一顯示；
+  // 原本直接 payments.data.merchantPayWays.map 拋錯；Jason 2026/10/22 fix all）
+  it('支付方式查詢失敗：付款方式只有現金、不整頁錯誤', async () => {
     const utils = setup({ PAYMENTS: new Error('查詢失敗') })
     await utils.settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
+    const options = Array.from(payType().querySelectorAll('option')).map(o => o.textContent).filter(Boolean)
+    expect(options).toEqual(['現金'])
+  })
+
+  // 選過手續費負擔方再改成「現金」時清空（null），不送出隱藏欄位的值（Jason 2026/10/22 fix all）
+  it('選了手續費負擔方後改成現金：送出 handlingFeeDecountWay 為 null', async () => {
+    const utils = setup()
+    await utils.settle()
+    fireEvent.change(money(), { target: { value: '1000' } })
+    fireEvent.click(screen.getByText('選選擇設計師'))
+    fireEvent.click(screen.getByText('選選擇顧客'))
+    choose(payType(), 'LINE Pay')
+    choose(screen.getByLabelText('選擇入金儲值手續費負擔方'), '由客人負擔')
+    choose(payType(), '現金')
+    submit()
+    await wait(() => expect(callsOf(utils.calls, 'walletDeposit')).toHaveLength(1))
+    expect(callsOf(utils.calls, 'walletDeposit')[0].variables.input).toMatchObject({ payType: '現金', handlingFeeDecountWay: null })
   })
 })

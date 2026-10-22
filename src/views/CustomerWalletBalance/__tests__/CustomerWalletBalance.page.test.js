@@ -72,11 +72,13 @@ describe('顧客入金餘額表', () => {
     expect(within(screen.getByText('合計').closest('tr')).getByText('0')).toBeInTheDocument()
   })
 
-  // 已知缺口（待 Jason 決定）：查詢失敗時 report 為 undefined，effect 直接 report.reduce 拋錯，整頁進入錯誤畫面
-  // （views/CustomerWalletBalance/index.js:35）。建議：查詢失敗時以空陣列處理。
-  it('已知缺口：查詢失敗時整頁進入錯誤畫面', async () => {
+  // 查詢失敗時以空陣列處理：合計 0、不整頁錯誤（錯誤提示由 init-apollo 的 errorLink 統一顯示；
+  // 原本 effect 直接 report.reduce 拋錯；Jason 2026/10/22 fix all）
+  it('查詢失敗：合計為 0、匯出只有合計列，不整頁錯誤', async () => {
     const utils = setup({ GET_CUSTOMER_WALLET_BALANCE: new Error('查詢失敗') })
     await utils.settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
+    expect(within(screen.getByText('合計').closest('tr')).getByText('0')).toBeInTheDocument()
+    expect(exportedCsv()).toContain('"合計","0"')
   })
 })
