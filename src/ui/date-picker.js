@@ -248,10 +248,13 @@ function createPicker({ displayName, withTime, mobileOnly }) {
       if (onKeyDown) onKeyDown(event)
       if (tfRest.onKeyDown) tfRest.onKeyDown(event)
     }
-    // 頁面先處理；頁面已 preventDefault（自己處理了 Enter）時不開月曆，沒處理時維持 Enter／空白鍵開月曆
+    // 頁面先處理。頁面有傳按鍵處理時 Enter 歸頁面（各頁都用 Enter 跳下一欄，多數沒有 preventDefault；原本會跳欄又同時開月曆，
+    // Codex review PR #265），不開月曆；空白鍵、或頁面沒傳處理時維持 Enter／空白鍵開月曆；頁面 preventDefault 的按鍵一律不開
+    const hasCallerKeyDown = Boolean(onKeyDown || tfRest.onKeyDown)
     const openOnKey = event => {
       callerKeyDown(event)
       if (event.defaultPrevented) return
+      if (event.key === 'Enter' && hasCallerKeyDown) return
       if (!desktop && (event.key === 'Enter' || event.key === ' ')) {
         event.preventDefault()
         openPicker()
