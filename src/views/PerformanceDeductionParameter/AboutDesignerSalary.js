@@ -27,9 +27,6 @@ export default function AboutDesignerSalary({ className,
   isSubmitForPoint,
   isSubmitForCommission
 }) {
-  const merchantId = localStorage.getItem('userMerchant')
-    ? JSON.parse(localStorage.getItem('userMerchant')).id
-    : null
   const [service, setService] = useState({
     point: [{ 
       jobTitle: '',
@@ -40,11 +37,6 @@ export default function AboutDesignerSalary({ className,
       isDefaultValue: false,
       usingPeopleCount: 0
     }],
-    commission: [{ 
-      id: '',      
-      name: '', 
-      basisForDeduction: ''
-    }],
   })
   const [serviceForType, setServiceForType] = useState({
     helperTypeName: [{ type: '' }],
@@ -54,18 +46,17 @@ export default function AboutDesignerSalary({ className,
   const { setHelperCategory } = useFetchSettingHelperCategory()
 
   const merchantJobTitlePoint = useFetchMerchantJobTitlePoint()
-  const merchantHelperItems = useFetchMerchantHelperItems({ merchantId })
-  const [deductionData, setDeductionData] = useState([])
-  const [merchantPointValueData, setMerchantPointValueData] = useState([])
-  useEffect(() => {
-    if(!deduction.loading && !merchantPointValueSettingsForSelect.loading) {
-      setDeductionData(idx(deduction, _ => _.data.getDeductionSettings))
-      setMerchantPointValueData(idx(merchantPointValueSettingsForSelect.data, _ => _.getMerchantPointValueSettings))
-    }
-  }, [deduction.loading, merchantPointValueSettingsForSelect.loading])
+  // 店家 id 由 hook 自行讀取（hook 不吃參數；原本傳入的 merchantId 沒有作用，2026/10/22 移除）
+  const merchantHelperItems = useFetchMerchantHelperItems()
+  // 下拉選項直接讀查詢結果：其他分頁新增／刪除扣項方式、抽成方式、互助點數後會 refetch（loading 不變），選項要跟著更新；
+  // 查詢失敗時當成沒有選項
+  const deductionData = idx(deduction, _ => _.data.getDeductionSettings) || []
+  const merchantPointValueData = idx(merchantPointValueSettingsForSelect.data, _ => _.getMerchantPointValueSettings) || []
+  const commissionWays = idx(merchantCommissionWay.data, _ => _.merchantCommissionWay)
+  const commissionOptions = Array.isArray(commissionWays) ? commissionWays : []
 
   useEffect(() => {
-    if (!merchantJobTitlePoint.loading && !merchantHelperItems.loading && !merchantCommissionWay.loading) {
+    if (!merchantJobTitlePoint.loading && !merchantHelperItems.loading && merchantJobTitlePoint.data && merchantHelperItems.data) {
       const point = idx(merchantJobTitlePoint.data, _ =>
         _.merchantJobTitlePoint.length > 0
           ? _.merchantJobTitlePoint.map((d, index) => ({
@@ -93,22 +84,10 @@ export default function AboutDesignerSalary({ className,
           ? _.merchantHelperItems.map(d => ({ type: d.type }))
           : [{ type: '' }]
       )
-      const commission = idx(merchantCommissionWay.data, _ =>
-        _.merchantCommissionWay.length > 0
-          ? _.merchantCommissionWay.map(d => ({
-              id: d.id,
-              name: d.name,
-              basisForDeduction: d.basisForDeduction,
-            }))
-          : [{ 
-              id: '',
-              name: '', 
-              basisForDeduction: '' }]
-      )
-      setService({point, commission})
+      setService({point})
       setServiceForType({helperTypeName})
     }
-  }, [merchantJobTitlePoint.loading, merchantHelperItems.loading, merchantCommissionWay.loading])
+  }, [merchantJobTitlePoint.loading, merchantHelperItems.loading])
   const handleServiceChange = ({ changedData, key }) => {
     setService(
       produce(draft => {
@@ -126,7 +105,8 @@ export default function AboutDesignerSalary({ className,
   const handleSubmit = async () => {
     let checkArray = []
     let variable = []
-    const inputValue = service.point.filter(d => d.jobTitle === null).length
+    // 名稱空白（含只有空白字元）視為未填：新增的列預設是空字串，原本只檢查 null 時空白名稱會被存入
+    const inputValue = service.point.filter(d => !(d.jobTitle || '').trim()).length
     const isDefaultValueCount = service.point.filter(d => d.isDefaultValue === true).length
     service.point.forEach(d => {
       if (checkArray.indexOf(d.jobTitle) === -1) {
@@ -238,11 +218,10 @@ export default function AboutDesignerSalary({ className,
         handleServiceChange({ changedData: newService.point, key: 'point' })
         break
       case 'helperTypeName':
-        newServiceForType.helperTypeName.push({})
+        newServiceForType.helperTypeName.push({ type: '' })
         handleServiceForTypeChange({ changedData: newServiceForType.helperTypeName, key: 'helperTypeName' })
         break
-      default:
-        break
+      // no default
     }
   }
 
@@ -258,20 +237,16 @@ export default function AboutDesignerSalary({ className,
         newServiceForType.helperTypeName.splice(rest[1], 1)
         handleServiceForTypeChange({ changedData: newServiceForType.helperTypeName, key: 'helperTypeName' })
         break
-      default:
-        break
+      // no default
     }
   }
 
+  // 畫面上沒有點數欄位（pointValue 原樣送回），只處理實際存在的欄位
   const handlePointSetting = (event, index) => {
     const newService = cloneDeep(service)
     switch (event.target.name) {
       case 'jobTitle':
         newService.point[index].jobTitle = event.target.value
-        handleServiceChange({ changedData: newService.point, key: 'point' })
-        break
-      case 'pointValue':
-        newService.point[index].pointValue = parseInt(event.target.value, 10)
         handleServiceChange({ changedData: newService.point, key: 'point' })
         break
       case 'deductionId':
@@ -296,8 +271,7 @@ export default function AboutDesignerSalary({ className,
         })
         handleServiceChange({ changedData: newService.point, key: 'point' })
         break
-      default:
-        break
+      // no default
     }
   }
 
@@ -337,7 +311,8 @@ return (
                 size="sm"
                 onClick={handleEdit}
                 data-testid="parameter"
-                disabled={(merchantCommissionWay.loading && merchantJobTitlePoint.loading) || isSubmitForCommission || isSubmitForType}
+                // 讀不到人員類別（讀取中或查詢失敗）時不能編輯：存檔會以畫面上的列整批取代後端資料
+                disabled={!merchantJobTitlePoint.data || isSubmitForCommission || isSubmitForType}
               >
                 編輯
               </Button>
@@ -368,7 +343,7 @@ return (
                     <NativeSelectOption value="unset" key="unset">
                       無扣項
                     </NativeSelectOption>
-                    {service.commission.map((data, idx) => (
+                    {commissionOptions.map((data, idx) => (
                       <NativeSelectOption value={data.id} key={`${data.label}-${idx}`}>
                         {data.name}
                       </NativeSelectOption>
@@ -465,7 +440,7 @@ return (
                 size="sm"
                 onClick={handleEditForType}
                 data-testid="parameter"
-                disabled={merchantHelperItems.loading || isSubmitForCommission || isSubmitForPoint}
+                disabled={!merchantHelperItems.data || isSubmitForCommission || isSubmitForPoint}
               >
                 編輯
               </Button>

@@ -1,5 +1,5 @@
 // 保護：系統參數設定頁的「讀取 → 存檔」整體流程。
-// - 讀進來的設定不經修改就存檔時，31 支 mutation 送回的內容與後端給的相同（只去掉查詢多帶的 id／type 等欄位、
+// - 讀進來的設定不經修改就存檔時，29 支 mutation 送回的內容與後端給的相同（只去掉查詢多帶的 id／type 等欄位、
 //   排序依 sorting、必填欄位轉回代碼、不指定預約通知人只送仍綁定 LINE 的人員）；
 // - 查詢回來前輸入與「儲存」都停用（避免把預設值存回去蓋掉店家設定）、存檔中不能重複送出；
 // - 任一 mutation 失敗時提示錯誤並恢復按鈕；
@@ -27,7 +27,7 @@ afterEach(cleanup)
 const saveButton = () => screen.getByTestId('parameter')
 
 describe('讀取後存檔：原樣送回店家目前的設定', () => {
-  it('31 支 mutation 各送一次，內容與後端給的設定相同', async () => {
+  it('29 支 mutation 各送一次，內容與後端給的設定相同', async () => {
     const utils = await renderParameter()
     expect(saveButton()).not.toBeDisabled()
     await save(utils)

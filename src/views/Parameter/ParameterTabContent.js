@@ -190,7 +190,7 @@ export default function ParameterTabContent({
         <BookingNotificationLineAtSetting
           aboutBooking={aboutBooking}
           setAboutBooking={setAboutBooking}
-          lineConnectedUser={!lineConnectedUser.loading ? idx(lineConnectedUser, _ => _.data.getLineConnectedUser) : []}
+          lineConnectedUser={(!lineConnectedUser.loading && idx(lineConnectedUser, _ => _.data.getLineConnectedUser)) || []}
           NDBRecipients={NDBRecipients}
           setNDBRecipients={setNDBRecipients}
           notificationDayCount={notificationDayCount}

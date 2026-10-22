@@ -16,8 +16,6 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
         newService.salaryDecreaseItem.push({ itemSetting: '', sorting: rest[1] + 1 })
         onChange({ changedData: newService.salaryDecreaseItem, key: 'salaryDecreaseItem' })
         break
-      default:
-        break
     }
   }
   const handleDeleteSetting = (...rest) => {
@@ -30,8 +28,6 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
       case 'salaryDecreaseItem':
         newService.salaryDecreaseItem.splice(rest[1], 1)
         onChange({ changedData: newService.salaryDecreaseItem, key: 'salaryDecreaseItem' })
-        break
-      default:
         break
     }
   }

@@ -1,6 +1,6 @@
 // 系統參數設定頁測試共用的假資料與操作（本身也是測試檔：CRA 把 __tests__ 下每個檔都當測試，直接執行時驗證工具本身；
 // 被其他測試 import 時只提供函式）。
-// 為什麼需要：參數頁一次發出 34 支設定查詢、存檔一次送出 31 支 mutation；這裡集中一份「店家目前的設定」假資料、
+// 為什麼需要：參數頁一次發出 33 支設定查詢、存檔一次送出 29 支 mutation；這裡集中一份「店家目前的設定」假資料、
 // 帶正式環境設定快取（settings-cache）的渲染、以標籤找欄位與切換分頁的操作，讓各分頁的測試只寫與業務有關的部分。
 // GraphQL 全由 testkit 的模擬 link 回應，不連後端、不建立真實資料。
 import React from 'react'
@@ -295,7 +295,7 @@ export const baseFixtures = () => ({
   GET_MERCHANT_AUTHORITIES: { getMerchantAuthorities: [{ id: 'auth-1', authorityName: '店長' }, { id: 'auth-2', authorityName: '設計師' }] },
 })
 
-// 存檔送出的 31 支 mutation
+// 存檔送出的 29 支 mutation
 export const SAVE_MUTATIONS = [
   'SEIING_DEDUCTION_ITEMS',
   'SET_MERCHANT_SALARY_INCREASE_ITEM',

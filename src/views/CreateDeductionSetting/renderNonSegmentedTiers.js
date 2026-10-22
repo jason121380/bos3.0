@@ -79,7 +79,7 @@ export function renderNonSegmentedDesignation({ profitSharing, deductionIndex, h
           指定業績
         </h3>
       </div>
-      {profitSharing.nonSegmented.length > 0 && profitSharing.nonSegmented[deductionIndex].rakeData.designate.map(
+      {profitSharing.nonSegmented[deductionIndex].rakeData.designate.map(
         (data, index) => {
           return (
             <div key={index} className="flex flex-wrap items-center gap-x-4 gap-y-2">

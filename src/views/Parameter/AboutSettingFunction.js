@@ -9,13 +9,11 @@ import { Field } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
-import { Check as CheckIcon, EditRounded as EditRoundedIcon, CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
+import { EditRounded as EditRoundedIcon, CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import Resizer from "react-image-file-resizer";
 import Cropper from 'react-easy-crop'
 import CropImage from './CropImage'
-import { memo, Fragment, useState, useEffect, useRef, useCallback } from 'react'
-import QRCode from 'qrcode'
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { memo, Fragment, useState, useRef, useCallback } from 'react'
 import produce from 'immer'
 import { openSnackbar } from 'elements/snackbars';
 
@@ -45,7 +43,6 @@ function AboutSettingFunction({
 }) {
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
   const checkedIcon = <CheckBoxIcon fontSize="small" />
-  const [isCopy, setIsCopy] = useState(false)
   const inputRef = useRef(null)
   const [imageSrc, setImageSrc] = useState('');
   const [open, setOpen] = useState(false)
@@ -126,6 +123,7 @@ function AboutSettingFunction({
     inputRef.current.value = ''
   }
 
+  // 「啟用顧客自行建立客資功能」（顯示建檔連結、複製、下載 QRCode）已不在清單內，相關畫面與函式跑不到，2026/10/22 移除
   const settingArr = [
     { label: '商品自購可低於成本價', key: 'isUnlimProdEmpPrice' },
     { label: '啟用會員卡功能', key: 'isMemberShipCardActive' },
@@ -145,31 +143,6 @@ function AboutSettingFunction({
     { label: '關閉掛單功能', key: 'disablePendingOrder' }
   ]
 
-  const getLink = () => {
-    const merchantId = JSON.parse(localStorage.getItem('userMerchant')).id
-    const url = `${window.location.origin}/customer/self-create/${merchantId}`
-    return url
-  }
-
-  const getQRCode = () => {
-    const newWin = window.open('', '_blank')
-    let url = ''
-    QRCode.toDataURL(getLink(), (err, string) => {
-      if (!err) {
-        url = string
-      }
-    })
-    newWin.document.write(
-      `<html><body><img style="margin: 0 auto; display: flex" src="${url}" width="800" height="800" alt="qrcode"></img></body></html>`
-    )
-  }
-
-  useEffect(() => {
-    return () => {
-      setIsCopy(false)
-    }
-  }, [])
-
   return (
     <Card>
       <CardHeader>
@@ -178,12 +151,7 @@ function AboutSettingFunction({
       <CardContent>
         {settingArr.map(({ label, key }) => (
           <Fragment key={label}>
-            <div
-              style={
-                label === '啟用顧客自行建立客資功能' ? { flexDirection: 'column', alignItems: 'flex-start' } : {}
-              }
-              className="flex items-center mb-[24px]"
-            >
+            <div className="flex items-center mb-[24px]">
               <CheckboxField
                 disabled={!inputEnable}
                 className="mx-[20px] my-0"
@@ -195,22 +163,6 @@ function AboutSettingFunction({
                   )
                 }}
               />
-              {label === '啟用顧客自行建立客資功能' && aboutSettingFunction[key] && (
-                <div className="px-[24px] py-0 flex items-center gap-[10px] grow w-full flex-wrap mb-[12px] [&_button]:[word-break:keep-all] [&_button]:w-fit [&_button]:shrink-0">
-                  <TextField
-                    onFocus={e => e.target.select()}
-                    value={getLink()}
-                    variant='outlined'
-                  />
-                  <CopyToClipboard onCopy={() => setIsCopy(true)} text={getLink()}>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                    >複製連結{isCopy && <CheckIcon size='small' />}</Button>
-                  </CopyToClipboard>
-                  <Button onClick={getQRCode} variant="secondary" size="sm">下載QRCode</Button>
-                </div>
-              )}
             </div>
           </Fragment>
         ))}

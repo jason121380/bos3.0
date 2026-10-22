@@ -215,13 +215,13 @@ function Parameter() {
 
   // loading value
   useEffect(() => {
-    if (!merchantIsLockDateSettingData.loading) {
+    if (!merchantIsLockDateSettingData.loading && merchantIsLockDateSettingData.data) {
       const isLockDate = idx(merchantIsLockDateSettingData, _ => _.data.getIsDateLock)
       setIsLockDate(isLockDate)
     }
   }, [merchantIsLockDateSettingData.loading])
   useEffect(() => {
-    if (!merchantBankSettingsData.loading) {
+    if (!merchantBankSettingsData.loading && merchantBankSettingsData.data) {
       const merchantBankSettings = idx(
         merchantBankSettingsData,
         _ => _.data.getMerchantBankSettings
@@ -230,7 +230,7 @@ function Parameter() {
     }
   }, [merchantBankSettingsData.loading])
   useEffect(() => {
-    if (!merchantFakePerformanceReferData.loading) {
+    if (!merchantFakePerformanceReferData.loading && merchantFakePerformanceReferData.data) {
       const merchantFakePerformanceRefer = idx(
         merchantFakePerformanceReferData,
         _ => _.data.getMerchantFakePerformanceReference
@@ -242,7 +242,10 @@ function Parameter() {
     if (
       !merchantDeductionItems.loading &&
       !merchantSalaryIncreaseItems.loading &&
-      !merchantSalaryDecreaseItems.loading
+      !merchantSalaryDecreaseItems.loading &&
+      merchantDeductionItems.data &&
+      merchantSalaryIncreaseItems.data &&
+      merchantSalaryDecreaseItems.data
     ) {
       const deductionItems = idx(merchantDeductionItems.data, _ =>
         _.merchantDeductionItems.length > 0
@@ -272,13 +275,13 @@ function Parameter() {
     merchantSalaryDecreaseItems.loading
   ])
   useEffect(() => {
-    if (!merchantPassword.loading) {
+    if (!merchantPassword.loading && merchantPassword.data) {
       const merchantPasswordData = idx(merchantPassword, _ => _.data.merchantPassword)
       setPasswordSetting(merchantPasswordData)
     }
   }, [merchantPassword.loading])
   useEffect(() => {
-    if (!merchantClockInSettingData.loading) {
+    if (!merchantClockInSettingData.loading && merchantClockInSettingData.data) {
       const getMerchantClockInSetting = idx(
         merchantClockInSettingData,
         _ => _.data.getMerchantClockInSetting
@@ -287,56 +290,57 @@ function Parameter() {
     }
   }, [merchantClockInSettingData.loading])
   useEffect(() => {
-    if (!isDisplayNonBankAccountInBankTransferReport.loading) {
+    if (!isDisplayNonBankAccountInBankTransferReport.loading && isDisplayNonBankAccountInBankTransferReport.data) {
       const isDisplayNonBankAccountInBankTransferReportData = idx(
         isDisplayNonBankAccountInBankTransferReport, _ => _.data.getIsDisplayNonBankAccountInBankTransferReport)
       setDisplayNonBankAccountInBankTransferReport(isDisplayNonBankAccountInBankTransferReportData)
     }
   }, [isDisplayNonBankAccountInBankTransferReport.loading])
   useEffect(() => {
-    if (!merchantBookingNotificationSetting.loading) {
+    if (!merchantBookingNotificationSetting.loading && merchantBookingNotificationSetting.data) {
       const data = idx(merchantBookingNotificationSetting, _ => _.data.getMerchantBookingNotificationSetting)
       setMerchantBookingNotification(data)
     }
   }, [merchantBookingNotificationSetting.loading])
   useEffect(() => {
-    if (!bookingLineNotifySettings.loading) {
+    if (!bookingLineNotifySettings.loading && bookingLineNotifySettings.data) {
       const data = idx(bookingLineNotifySettings, _ => _.data.getBookingLineNotifySettings)
       setBookingLineNotify(data)
     }
   }, [bookingLineNotifySettings.loading])
   useEffect(() => {
-    if (!getParameterReportSetting.loading) {
+    if (!getParameterReportSetting.loading && getParameterReportSetting.data) {
       const data = idx(getParameterReportSetting, _ => _.data.getParameterReportSetting)
       setAboutReport(data)
     }
   }, [getParameterReportSetting.loading])
   useEffect(() => {
-    if (!getParameterCheckoutAndSalaryItemsSetting.loading) {
+    if (!getParameterCheckoutAndSalaryItemsSetting.loading && getParameterCheckoutAndSalaryItemsSetting.data) {
       const data = idx(getParameterCheckoutAndSalaryItemsSetting, _ => _.data.getParameterCheckoutAndSalaryItemsSetting)
       setCheckoutAndSalaryItem(data)
     }
   }, [getParameterCheckoutAndSalaryItemsSetting.loading])
   useEffect(() => {
-    if (!getMerchantExternalLink.loading) {
+    if (!getMerchantExternalLink.loading && getMerchantExternalLink.data) {
       const data = idx(getMerchantExternalLink, _ => _.data.merchantExternalLink)
       setExternalLink(data)
     }
-  }, [getMerchantExternalLink.loading])
+    // 連結的新增／編輯／刪除／排序直接送出 mutation 後重抓（refetch 不會改變 loading），清單要跟著重抓的資料更新
+  }, [getMerchantExternalLink.loading, getMerchantExternalLink.data])
   useEffect(() => {
-    if (!getMerchantReservationTime.loading) {
+    if (!getMerchantReservationTime.loading && getMerchantReservationTime.data) {
       const data = idx(getMerchantReservationTime, _ => _.data.getMerchantReservationTime)
       setMerchantReservation(data)
     }
   }, [getMerchantReservationTime.loading])
   useEffect(() => {
-    if (!getMerchantHairCondition.loading) {
+    if (!getMerchantHairCondition.loading && getMerchantHairCondition.data) {
       const data = idx(getMerchantHairCondition, _ => _.data.getMerchantHairCondition)
       setHairCondition(data)
     }
   }, [getMerchantHairCondition.loading])
   useEffect(() => {
-    if (!nonDesignateBookingRecipients.loading && !lineConnectedUser.loading) {
+    if (!nonDesignateBookingRecipients.loading && !lineConnectedUser.loading && nonDesignateBookingRecipients.data && lineConnectedUser.data) {
       const idArray = idx(nonDesignateBookingRecipients, _ => _.data.nonDesignateBookingRecipients).map(d => d.id)
       const lineConnectedIds = idx(lineConnectedUser, _ => _.data.getLineConnectedUser)
       const select = lineConnectedIds.filter(d => idArray.includes(d.id))
@@ -344,43 +348,43 @@ function Parameter() {
     }
   }, [nonDesignateBookingRecipients.loading, lineConnectedUser.loading])
   useEffect(() => {
-    if(!getParameterOrderCreateSetting.loading){
+    if (!getParameterOrderCreateSetting.loading && getParameterOrderCreateSetting.data) {
       const data = idx(getParameterOrderCreateSetting,_=>_.data.getParameterOrderCreateSetting)
       setOrderCreateSetting(data)
     }
   }, [getParameterOrderCreateSetting.loading])
   useEffect(() => {
-    if(!getMerchantCusExternalLink.loading){
+    if (!getMerchantCusExternalLink.loading && getMerchantCusExternalLink.data) {
       const data = idx(getMerchantCusExternalLink,_=>_.data.merchantCusExternalLink)
       setCusExternalLink(data)
     }
-  }, [getMerchantCusExternalLink.loading])
+  }, [getMerchantCusExternalLink.loading, getMerchantCusExternalLink.data])
   useEffect(() => {
-    if(!getParameterAboutSettingFunction.loading){
+    if (!getParameterAboutSettingFunction.loading && getParameterAboutSettingFunction.data) {
       const data = idx(getParameterAboutSettingFunction,_=>_.data.getParameterAboutSettingFunction)
       setAboutSettingFunction(data)
     }
   }, [getParameterAboutSettingFunction.loading])
   useEffect(() => {
-    if (!getCustomerReference.loading) {
+    if (!getCustomerReference.loading && getCustomerReference.data) {
       const data = idx(getCustomerReference,_=>_.data.getCustomerReference)
       setReference(data)
     }
   }, [getCustomerReference.loading])
   useEffect(() => {
-    if (!getMerchantAvatar.loading) {
+    if (!getMerchantAvatar.loading && getMerchantAvatar.data) {
       const data = idx(getMerchantAvatar,_=>_.data.getMerchantAvatar)
       setMerchantLogo(data)
     }
   }, [getMerchantAvatar.loading])
   useEffect(() => {
-    if (!getMerchantRakeReference.loading) {
+    if (!getMerchantRakeReference.loading && getMerchantRakeReference.data) {
       const data = idx(getMerchantRakeReference,_=>_.data.getMerchantRakeReference)
       setMerchantRakeReferemce(data)
     }
   }, [getMerchantRakeReference.loading])
   useEffect(() => {
-    if (!getParameterAboutBookingSetting.loading) {
+    if (!getParameterAboutBookingSetting.loading && getParameterAboutBookingSetting.data) {
       // 複製再補預設值（查詢結果唯讀）
       const data = cloneDeep(idx(getParameterAboutBookingSetting,_=>_.data.getParameterAboutBookingSetting))
       const { bookingNotificationPhone } = data
@@ -391,59 +395,73 @@ function Parameter() {
     }
   }, [getParameterAboutBookingSetting.loading])
   useEffect(() => {
-    if (!getParameterAboutCustomerSetting.loading) {
+    if (!getParameterAboutCustomerSetting.loading && getParameterAboutCustomerSetting.data) {
       const data = cloneDeep(idx(getParameterAboutCustomerSetting,_=>_.data.getParameterAboutCustomerSetting))
       data.requiredColumnForNewCustomer = requiredColumnOptions.filter(d => data.requiredColumnForNewCustomer.includes(d.value))
       setAboutCustomer(data)
     }
   }, [getParameterAboutCustomerSetting.loading])
   useEffect(() => {
-    if (!getSpecificBookingNotificationDayCount.loading) {
+    if (!getSpecificBookingNotificationDayCount.loading && getSpecificBookingNotificationDayCount.data) {
       const data = idx(getSpecificBookingNotificationDayCount,_=>_.data.getSpecificBookingNotificationDayCount)
       setNotificationDayCount(data)
     }
   }, [getSpecificBookingNotificationDayCount.loading])
   useEffect(() => {
-    if (!getDisableBookingDayLimit.loading) {
+    if (!getDisableBookingDayLimit.loading && getDisableBookingDayLimit.data) {
       const data = idx(getDisableBookingDayLimit,_=>_.data.getDisableBookingDayLimit)
       setDisableDayLimit(data)
     }
   }, [getDisableBookingDayLimit.loading])
   useEffect(() => {
-    if (!getMerchantCheckinSettings.loading) {
+    if (!getMerchantCheckinSettings.loading && getMerchantCheckinSettings.data) {
       const data = idx(getMerchantCheckinSettings,_=>_.data.getMerchantCheckinSettings)
       setCheckinSettings(data)
     }
   }, [getMerchantCheckinSettings.loading])
   useEffect(() => {
-    if (!getIsBookingCusCheckUsing.loading) {
+    if (!getIsBookingCusCheckUsing.loading && getIsBookingCusCheckUsing.data) {
       const data = idx(getIsBookingCusCheckUsing,_=>_.data.getIsBookingCusCheckUsing)
       setBookingCusCheck(data)
     }
   }, [getIsBookingCusCheckUsing.loading])
   useEffect(() => {
-    if (!getBookingTypeForSocket.loading) {
+    if (!getBookingTypeForSocket.loading && getBookingTypeForSocket.data) {
       const data = idx(getBookingTypeForSocket,_=>_.data.getBookingTypeForSocket)
       setBookingTypeForSocket(data)
     }
   }, [getBookingTypeForSocket.loading])
   useEffect(() => {
-    if (!getUESUsingSetting.loading) {
+    if (!getUESUsingSetting.loading && getUESUsingSetting.data) {
       const data = idx(getUESUsingSetting,_=>_.data.getUESUsingSetting)
       setUESUsing(data)
     }
   }, [getUESUsingSetting.loading])
   useEffect(() => {
-    if (!getIsCBRDStylist.loading) {
+    if (!getIsCBRDStylist.loading && getIsCBRDStylist.data) {
       const data = idx(getIsCBRDStylist,_=>_.data.getIsCBRDStylist)
       setCBRDStylist(data)
     }
   }, [getIsCBRDStylist.loading])
 
+  // 任一設定查詢失敗（查詢結果沒有資料）時不可編輯與存檔：存檔會把所有設定一起送出，讀不到的部分會以空白預設值蓋掉後端設定
+  const queryFailed = [
+    merchantDeductionItems, merchantSalaryIncreaseItems, merchantSalaryDecreaseItems, merchantPassword,
+    merchantFakePerformanceReferData, merchantBankSettingsData, merchantIsLockDateSettingData, merchantClockInSettingData,
+    isDisplayNonBankAccountInBankTransferReport, merchantBookingNotificationSetting, bookingLineNotifySettings,
+    getParameterReportSetting, getParameterCheckoutAndSalaryItemsSetting, getMerchantExternalLink, getMerchantReservationTime,
+    getMerchantHairCondition, lineConnectedUser, nonDesignateBookingRecipients, getParameterOrderCreateSetting,
+    getMerchantCusExternalLink, getParameterAboutSettingFunction, getCustomerReference, getMerchantAvatar,
+    getMerchantRakeReference, getParameterAboutBookingSetting, getParameterAboutCustomerSetting,
+    getSpecificBookingNotificationDayCount, getDisableBookingDayLimit, getMerchantCheckinSettings,
+    getIsBookingCusCheckUsing, getBookingTypeForSocket, getUESUsingSetting, getIsCBRDStylist,
+  ].some(query => Boolean(query.error))
+
     //  判斷頁面資料是否都讀取完成的
   useEffect(() => {
     setInputEnable(
       !isClick &&
+      !queryFailed &&
       !merchantDeductionItems.loading &&
       !merchantSalaryIncreaseItems.loading &&
       !merchantSalaryDecreaseItems.loading &&
@@ -480,6 +498,7 @@ function Parameter() {
     )
   }, [
     isClick,
+    queryFailed,
     merchantDeductionItems.loading,
     merchantSalaryIncreaseItems.loading,
     merchantSalaryDecreaseItems.loading,
@@ -518,7 +537,7 @@ function Parameter() {
 
 
   // useEffect(() => {
-  //   if (!merchantTeachingModeSettingData.loading) {
+  //   if (!merchantTeachingModeSettingData.loading && merchantTeachingModeSettingData.data) {
   //     const teachingModeDisplay = idx(
   //       merchantTeachingModeSettingData,
   //       _ => _.data.getMerchantTeachingModeSetting
