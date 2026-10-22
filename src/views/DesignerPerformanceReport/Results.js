@@ -8,6 +8,12 @@ const STICKY_COL = 'sticky left-0 z-[99] w-[150px] bg-background'
 // 列印時表頭白底黑字，與舊版 th.MuiTableCell-head 的列印樣式一致
 const STICKY_ROW = 'sticky top-0 z-[100] print:bg-transparent print:[&_th]:text-text'
 
+// 客單價＝業績÷客數四捨五入；客數為 0（0÷0 為 NaN、業績÷0 為 Infinity）時顯示 0（原本只擋 NaN，業績不為 0 時會顯示 Infinity）
+const perCustomer = (performance, customers) => {
+  const value = performance / customers
+  return Number.isFinite(value) ? Math.round(value) : 0
+}
+
 export default function Results({ designerPerformance, serviceCategory, membershipDisplay }) {
   return (
     designerPerformance.length === 0 ? 
@@ -51,7 +57,7 @@ export default function Results({ designerPerformance, serviceCategory, membersh
                     })}
                     <TableCell numeric>{formatNumber(data.performance)}</TableCell>
                     <TableCell numeric>
-                      {formatNumber(isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer))}
+                      {formatNumber(perCustomer(data.performance, data.totalCustomer))}
                     </TableCell>
                     <TableCell numeric>{formatNumber(data.productPerformance)}</TableCell>
                     {membershipDisplay && <TableCell numeric>{formatNumber(data.membershipPerformance)}</TableCell>}
@@ -72,7 +78,7 @@ export default function Results({ designerPerformance, serviceCategory, membersh
                     })}
                     <TableCell numeric>{formatNumber(data.designatePerformance)}</TableCell>
                     <TableCell numeric>
-                      {formatNumber(isNaN(data.designatePerformance / data.totalDesignateCustomer) ? 0 : Math.round(data.designatePerformance / data.totalDesignateCustomer))}
+                      {formatNumber(perCustomer(data.designatePerformance, data.totalDesignateCustomer))}
                     </TableCell>
                     <TableCell numeric>{formatNumber(data.designateProductPerformance)}</TableCell>
                     {membershipDisplay && <TableCell numeric>{formatNumber(data.designateMembershipPerformance)}</TableCell>}
@@ -100,7 +106,7 @@ export default function Results({ designerPerformance, serviceCategory, membersh
                     })}
                     <TableCell numeric>{formatNumber(data.performance)}</TableCell>
                     <TableCell numeric>
-                      {formatNumber(isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer))}
+                      {formatNumber(perCustomer(data.performance, data.totalCustomer))}
                     </TableCell>
                     <TableCell numeric>{formatNumber(data.productPerformance)}</TableCell>
                     {membershipDisplay && <TableCell numeric>{formatNumber(data.membershipPerformance)}</TableCell>}
@@ -124,7 +130,7 @@ export default function Results({ designerPerformance, serviceCategory, membersh
                       )
                   })}
                   <TableCell numeric>{formatNumber(data.designatePerformance)}</TableCell>
-                  <TableCell numeric>{formatNumber(isNaN(data.designatePerformance / data.totalDesignateCustomer) ? 0 : Math.round(data.designatePerformance / data.totalDesignateCustomer))}</TableCell>
+                  <TableCell numeric>{formatNumber(perCustomer(data.designatePerformance, data.totalDesignateCustomer))}</TableCell>
                   <TableCell numeric>{formatNumber(data.designateProductPerformance)}</TableCell>
                   {membershipDisplay && <TableCell numeric>{formatNumber(data.designateMembershipPerformance)}</TableCell>}
                   <TableCell numeric>{formatNumber(data.designateTotalPerformance)}</TableCell>
@@ -147,7 +153,7 @@ export default function Results({ designerPerformance, serviceCategory, membersh
                     )
                   })}
                   <TableCell numeric>{formatNumber(data.nonDesignatePerformance)}</TableCell>
-                  <TableCell numeric>{formatNumber(isNaN(data.nonDesignatePerformance / data.totalNonDesignateCustomer) ? 0 : Math.round(data.nonDesignatePerformance / data.totalNonDesignateCustomer))}</TableCell>
+                  <TableCell numeric>{formatNumber(perCustomer(data.nonDesignatePerformance, data.totalNonDesignateCustomer))}</TableCell>
                   <TableCell numeric>{formatNumber(data.nonDesignateProductPerformance)}</TableCell>
                   {membershipDisplay && <TableCell numeric>{formatNumber(data.nonDesignateMembershipPerformance)}</TableCell>}
                   <TableCell numeric>{formatNumber(data.nonDesignateTotalPerformance)}</TableCell>
@@ -194,7 +200,7 @@ export default function Results({ designerPerformance, serviceCategory, membersh
                     })}
                     <TableCell numeric>{formatNumber(data.performance)}</TableCell>
                     <TableCell numeric>
-                      {formatNumber(isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer))}
+                      {formatNumber(perCustomer(data.performance, data.totalCustomer))}
                     </TableCell>
                     <TableCell numeric>{formatNumber(data.productPerformance)}</TableCell>
                     {membershipDisplay && <TableCell numeric>{formatNumber(data.membershipPerformance)}</TableCell>}
@@ -219,7 +225,7 @@ export default function Results({ designerPerformance, serviceCategory, membersh
                     })}
                   <TableCell numeric>{formatNumber(data.performance)}</TableCell>
                   <TableCell numeric>
-                    {formatNumber(isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer))}
+                    {formatNumber(perCustomer(data.performance, data.totalCustomer))}
                   </TableCell>
                   <TableCell numeric>{formatNumber(data.productPerformance)}</TableCell>
                   {membershipDisplay && <TableCell numeric>{formatNumber(data.membershipPerformance)}</TableCell>}
@@ -244,7 +250,7 @@ export default function Results({ designerPerformance, serviceCategory, membersh
                     })}
                   <TableCell numeric>{formatNumber(data.performance)}</TableCell>
                   <TableCell numeric>
-                    {formatNumber(isNaN(data.performance / data.totalCustomer) ? 0 : Math.round(data.performance / data.totalCustomer))}
+                    {formatNumber(perCustomer(data.performance, data.totalCustomer))}
                   </TableCell>
                   <TableCell numeric>{formatNumber(data.productPerformance)}</TableCell>
                   {membershipDisplay && <TableCell numeric>{formatNumber(data.membershipPerformance)}</TableCell>}

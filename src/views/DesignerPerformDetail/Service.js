@@ -1,9 +1,12 @@
 import GenericMoreButton from 'components/GenericMoreButton'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
+import { percent, unitPrice } from './ratio'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Service({ services }) {
+  // 各類別的合計（占比的分母）
+  const totalOf = key => services.reduce((total, item) => total + item.analytics[key], 0)
   return (
     <Card>
       <CardHeader action={<GenericMoreButton />} className="items-center pb-4">
@@ -33,78 +36,15 @@ function Service({ services }) {
                 <TableCell className="tabular-nums">{data.no}</TableCell>
                 <TableCell>{data.name}</TableCell>
                 <TableCell numeric>{formatNumber(Math.round(data.analytics.serviceFakeTotal))}</TableCell>
-                <TableCell numeric>
-                  {(isNaN(
-                    data.analytics.serviceFakeTotal /
-                    services.reduce(
-                      (total, item) => (total = total + item.analytics.serviceFakeTotal),
-                      0
-                    )
-                  )
-                    ? 0
-                    : (data.analytics.serviceFakeTotal /
-                      services.reduce(
-                        (total, item) => (total = total + item.analytics.serviceFakeTotal),
-                        0
-                      )) *
-                    100
-                  ).toFixed(2)}
-                  %
-                </TableCell>
+                <TableCell numeric>{percent(data.analytics.serviceFakeTotal, totalOf('serviceFakeTotal'))}%</TableCell>
                 <TableCell numeric>{formatNumber(data.analytics.useTicketTotal)}</TableCell>
-                <TableCell numeric>
-                  {(isNaN(
-                    data.analytics.useTicketTotal /
-                    services.reduce(
-                      (total, item) => (total = total + item.analytics.useTicketTotal),
-                      0
-                    )
-                  )
-                    ? 0
-                    : (data.analytics.useTicketTotal /
-                      services.reduce(
-                        (total, item) => (total = total + item.analytics.useTicketTotal),
-                        0
-                      )) *
-                    100
-                  ).toFixed(2)}
-                  %
-                </TableCell>
+                <TableCell numeric>{percent(data.analytics.useTicketTotal, totalOf('useTicketTotal'))}%</TableCell>
                 <TableCell numeric>{formatNumber(data.analytics.customerCount)}</TableCell>
-                <TableCell numeric>
-                  {(isNaN(
-                    data.analytics.customerCount /
-                    services.reduce(
-                      (total, item) => (total = total + item.analytics.customerCount),
-                      0
-                    )
-                  )
-                    ? 0
-                    : (data.analytics.customerCount /
-                      services.reduce(
-                        (total, item) => (total = total + item.analytics.customerCount),
-                        0
-                      )) *
-                    100
-                  ).toFixed(2)}
-                  %
-                </TableCell>
+                <TableCell numeric>{percent(data.analytics.customerCount, totalOf('customerCount'))}%</TableCell>
                 <TableCell numeric>{formatNumber(data.analytics.designateCount)}</TableCell>
                 <TableCell numeric>{formatNumber(data.analytics.notDesignateCustomer)}</TableCell>
-                <TableCell numeric>
-                  {(isNaN(data.analytics.designateCount / data.analytics.customerCount)
-                    ? 0
-                    : (data.analytics.designateCount / data.analytics.customerCount) * 100
-                  ).toFixed(2)}
-                  %
-                </TableCell>
-                <TableCell numeric>
-                  {formatNumber(Math.floor(
-                    isNaN(data.analytics.serviceFakeTotal / data.analytics.customerCount)
-                      ? 0
-                      : Math.round(data.analytics.serviceFakeTotal) / data.analytics.customerCount
-                  ))}
-                </TableCell>
+                <TableCell numeric>{percent(data.analytics.designateCount, data.analytics.customerCount)}%</TableCell>
+                <TableCell numeric>{formatNumber(unitPrice(data.analytics.serviceFakeTotal, data.analytics.customerCount))}</TableCell>
               </TableRow>
             ))}
           </TableBody>

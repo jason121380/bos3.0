@@ -50,7 +50,8 @@ const EmployeeDailyReport = () => {
 
   useEffect(() => {
     if (!designerReportData.loading) {
-      const data = idx(designerReportData, _ => _.data.designerDailyReport)
+      // 查詢失敗（data 為 undefined）或回傳 null 時當成沒有資料，不讓整頁拋錯
+      const data = idx(designerReportData, _ => _.data.designerDailyReport) || []
       let group = []
       const report = []
       data.forEach((d, index) => {

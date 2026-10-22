@@ -10,9 +10,11 @@ function Results({ userServiceDeductionDetial, setExcelData }) {
     return floatDisplay(total)
   }
 
+  // 長數字（多半是浮點誤差，如 0.30000000000000004）四捨五入到小數 2 位；原本先 Math.round 到整數再補 .00，
+  // 12345.67 會顯示成 12346.00（Jason 2026/10/22：顯示數字明顯算錯直接修）
   const floatDisplay = num => {
     if (String(num).length > 7) {
-      num = Math.round(num)
+      num = Math.round(num * 100) / 100
       let display = Number(num).toFixed(2)
       if (Number(display) === 0) {
         display = 0
@@ -24,67 +26,66 @@ function Results({ userServiceDeductionDetial, setExcelData }) {
   }
 
   useEffect(() => {
-    if (userServiceDeductionDetial !== null) {
-      const excelData = []
-      userServiceDeductionDetial.forEach(data => {
-        excelData.push({
-          日期: format(new Date(data.date), 'yyyy/MM/dd'),
-          帳單編號: `#${data.orderNo}`,
-          類別: data.type,
-          項目: data.item,
-          設計師: data.designerName,
-          金額: data.cash,
-          '手續費(扣業績)': floatDisplay(data.handlingFeeOnSales),
-          '扣項(扣業績)': floatDisplay(data.deductionOnSales),
-          '互助(扣業績)': floatDisplay(data.helperPriceOnSales),
-          實業績: floatDisplay(data.truthPerformance),
-          '實業績(依特殊抽成)': floatDisplay(data.specialRake_truthPerformance),
-          '特殊抽成(依特殊抽成)': floatDisplay(data.specialRake_specialRake),
-          服務歸屬: data.category_categoryName,
-          '不分實業績(依服務歸屬)': floatDisplay(data.category_normalTruthPerformance),
-          '不分實業績 抽成(依服務歸屬)': floatDisplay(data.category_normalRake),
-          '指定實業績(依服務歸屬)': floatDisplay(data.category_designateTruthPerformance),
-          '指定實業績 抽成(依服務歸屬)': floatDisplay(data.category_designateRake),
-          '不指定實業績(依服務歸屬)': floatDisplay(data.category_nonDesignateTruthPerformance),
-          '不指定實業績 抽成(依服務歸屬)': floatDisplay(data.category_nonDesignateRake),
-          '%': data.percentage,
-          服務抽成: floatDisplay(data.serviceRake),
-          '手續費(扣薪水)': floatDisplay(data.handlingFeeOnSalary),
-          '扣項(扣薪水)': floatDisplay(data.deductionOnSalary),
-          '互助(扣薪水)': floatDisplay(data.helperPriceOnSalary),
-          小計: floatDisplay(data.summary),
-        })
-      })
-
+    // 頁面只在有資料（陣列）時才渲染本元件
+    const excelData = []
+    userServiceDeductionDetial.forEach(data => {
       excelData.push({
-        日期: '合計',
-        帳單編號: '',
-        類別: '',
-        項目: '',
-        設計師: '',
-        金額: countTotal('cash'),
-        '手續費(扣業績)': countTotal('handlingFeeOnSales'),
-        '扣項(扣業績)': countTotal('deductionOnSales'),
-        '互助(扣業績)': countTotal('helperPriceOnSales'),
-        實業績: countTotal('truthPerformance'),
-        '實業績(依特殊抽成)': countTotal('specialRake_truthPerformance'),
-        '特殊抽成(依特殊抽成)': countTotal('specialRake_specialRake'),
-        服務歸屬: '',
-        '不分實業績(依服務歸屬)': countTotal('category_normalTruthPerformance'),
-        '不分實業績 抽成(依服務歸屬)': countTotal('category_normalRake'),
-        '指定實業績(依服務歸屬)': countTotal('category_designateTruthPerformance'),
-        '指定實業績 抽成(依服務歸屬)': countTotal('category_designateRake'),
-        '不指定實業績(依服務歸屬)': countTotal('category_nonDesignateTruthPerformance'),
-        '不指定實業績 抽成(依服務歸屬)': countTotal('category_nonDesignateRake'),
-        '%': '',
-        服務抽成: countTotal('serviceRake'),
-        '手續費(扣薪水)': countTotal('handlingFeeOnSalary'),
-        '扣項(扣薪水)': countTotal('deductionOnSalary'),
-        '互助(扣薪水)': countTotal('helperPriceOnSalary'),
-        小計: countTotal('summary'),
+        日期: format(new Date(data.date), 'yyyy/MM/dd'),
+        帳單編號: `#${data.orderNo}`,
+        類別: data.type,
+        項目: data.item,
+        設計師: data.designerName,
+        金額: data.cash,
+        '手續費(扣業績)': floatDisplay(data.handlingFeeOnSales),
+        '扣項(扣業績)': floatDisplay(data.deductionOnSales),
+        '互助(扣業績)': floatDisplay(data.helperPriceOnSales),
+        實業績: floatDisplay(data.truthPerformance),
+        '實業績(依特殊抽成)': floatDisplay(data.specialRake_truthPerformance),
+        '特殊抽成(依特殊抽成)': floatDisplay(data.specialRake_specialRake),
+        服務歸屬: data.category_categoryName,
+        '不分實業績(依服務歸屬)': floatDisplay(data.category_normalTruthPerformance),
+        '不分實業績 抽成(依服務歸屬)': floatDisplay(data.category_normalRake),
+        '指定實業績(依服務歸屬)': floatDisplay(data.category_designateTruthPerformance),
+        '指定實業績 抽成(依服務歸屬)': floatDisplay(data.category_designateRake),
+        '不指定實業績(依服務歸屬)': floatDisplay(data.category_nonDesignateTruthPerformance),
+        '不指定實業績 抽成(依服務歸屬)': floatDisplay(data.category_nonDesignateRake),
+        '%': data.percentage,
+        服務抽成: floatDisplay(data.serviceRake),
+        '手續費(扣薪水)': floatDisplay(data.handlingFeeOnSalary),
+        '扣項(扣薪水)': floatDisplay(data.deductionOnSalary),
+        '互助(扣薪水)': floatDisplay(data.helperPriceOnSalary),
+        小計: floatDisplay(data.summary),
       })
-      setExcelData(excelData)
-    }
+    })
+
+    excelData.push({
+      日期: '合計',
+      帳單編號: '',
+      類別: '',
+      項目: '',
+      設計師: '',
+      金額: countTotal('cash'),
+      '手續費(扣業績)': countTotal('handlingFeeOnSales'),
+      '扣項(扣業績)': countTotal('deductionOnSales'),
+      '互助(扣業績)': countTotal('helperPriceOnSales'),
+      實業績: countTotal('truthPerformance'),
+      '實業績(依特殊抽成)': countTotal('specialRake_truthPerformance'),
+      '特殊抽成(依特殊抽成)': countTotal('specialRake_specialRake'),
+      服務歸屬: '',
+      '不分實業績(依服務歸屬)': countTotal('category_normalTruthPerformance'),
+      '不分實業績 抽成(依服務歸屬)': countTotal('category_normalRake'),
+      '指定實業績(依服務歸屬)': countTotal('category_designateTruthPerformance'),
+      '指定實業績 抽成(依服務歸屬)': countTotal('category_designateRake'),
+      '不指定實業績(依服務歸屬)': countTotal('category_nonDesignateTruthPerformance'),
+      '不指定實業績 抽成(依服務歸屬)': countTotal('category_nonDesignateRake'),
+      '%': '',
+      服務抽成: countTotal('serviceRake'),
+      '手續費(扣薪水)': countTotal('handlingFeeOnSalary'),
+      '扣項(扣薪水)': countTotal('deductionOnSalary'),
+      '互助(扣薪水)': countTotal('helperPriceOnSalary'),
+      小計: countTotal('summary'),
+    })
+    setExcelData(excelData)
   }, [userServiceDeductionDetial, setExcelData])
 
   return (

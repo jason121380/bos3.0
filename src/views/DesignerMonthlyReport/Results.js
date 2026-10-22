@@ -41,7 +41,8 @@ export default function Results({ designerMontlyListData, performReference, sort
       }
     })
     filterRawData.sort((a, b) => b.performance - a.performance)
-    const membershipTotal = performanceSort.reduce((accu, curVal) => (accu += curVal.membershipFakePerformance), 0) > 0
+    // 區間內有會員卡業績就顯示會員卡欄（原本以此時仍是空陣列的 performanceSort 計算，恒為 false）
+    const membershipTotal = filterRawData.reduce((accu, curVal) => (accu += curVal.membershipFakePerformance), 0) > 0
     const memberDisplay = (membershipTotal || isMemberShipCardActive)
     setMembershipDisplay(memberDisplay)
     const totalPerformance = (data, key) => {
@@ -69,10 +70,9 @@ export default function Results({ designerMontlyListData, performReference, sort
           productFakePerformance: totalPerformance(filterData, 'productFakePerformance'),
           monthIndex: ''
         }
-        if (filterData.length > 0) {
-          month.length > 1 && filterData.push(totalObj)
-          performanceSort.push(...filterData)
-        }
+        // 月份取自 filterRawData，每個月份至少有一列
+        month.length > 1 && filterData.push(totalObj)
+        performanceSort.push(...filterData)
       })
 
       setReportData(performanceSort)
@@ -84,13 +84,8 @@ export default function Results({ designerMontlyListData, performReference, sort
       nameArr.sort((x, y) => {
         const reg = /[a-zA-Z0-9]/
         if (reg.test(x) || reg.test(y)) {
-          if (x > y) {
-            return 1
-          } else if (x < y) {
-            return -1
-          } else {
-            return 0
-          }
+          // nameArr 已去重，不會有相同名稱
+          return x < y ? -1 : 1
         } else {
           return x.localeCompare(y)
         }
@@ -109,10 +104,9 @@ export default function Results({ designerMontlyListData, performReference, sort
           productFakePerformance: totalPerformance(filterData, 'productFakePerformance'),
           monthIndex: ''
         }
-        if (filterData.length > 0) {
-          (nameArr.length > 1 && !filterRawData.every(d => d.monthIndex === 0)) && filterData.push(totalObj)
-          designerSort.push(...filterData)
-        }
+        // 名稱取自 filterRawData，每位設計師至少有一列
+        if (nameArr.length > 1 && !filterRawData.every(d => d.monthIndex === 0)) filterData.push(totalObj)
+        designerSort.push(...filterData)
       })
       setReportData(designerSort)
     }

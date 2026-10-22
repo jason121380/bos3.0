@@ -50,8 +50,9 @@ const DecreaseDailyReport = () => {
 
   useEffect(() => {
     if (!getHelperDailyReport.loading) {
+      // 查詢失敗（data 為 undefined）或回傳 null 時當成沒有資料，不讓整頁拋錯
       const data = idx(getHelperDailyReport, _ => _.data.helperDailyReport)
-      setHelperReport(data)
+      setHelperReport(data || [])
     }
   }, [getHelperDailyReport.loading])
 
@@ -96,12 +97,8 @@ const DecreaseDailyReport = () => {
   const [jobTitle, setJobTitle] = useState([])
   useEffect(() => {
     if (!merchantJobTitlePoint.loading) {
-      const title = merchantJobTitlePoint.data.merchantJobTitlePoint
-      const array = []
-      title.forEach(el => {
-        array.push(el.jobTitle)
-      })
-      setJobTitle(title)
+      // 查詢失敗（data 為 undefined）時沒有可選的人員類別，不讓整頁拋錯
+      setJobTitle(idx(merchantJobTitlePoint, _ => _.data.merchantJobTitlePoint) || [])
     }
   }, [merchantJobTitlePoint.loading])
 

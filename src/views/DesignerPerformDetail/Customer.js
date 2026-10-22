@@ -1,5 +1,6 @@
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
+import { percent } from './ratio'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Customer({ customer }) {
@@ -37,42 +38,23 @@ function Customer({ customer }) {
             </TableRow>
             <TableRow>
               <TableCell numeric className="text-text-secondary">
-                {(isNaN(customer.designateCustomerCount / designateAndNotDesignateCustomerCount)
-                  ? 0
-                  : (customer.designateCustomerCount / designateAndNotDesignateCustomerCount) *
-                  100
-                ).toFixed(2)}
+                {percent(customer.designateCustomerCount, designateAndNotDesignateCustomerCount)}
                 %
               </TableCell>
               <TableCell numeric className="text-text-secondary">
-                {(isNaN(
-                  customer.notDesignateCustomerCount / designateAndNotDesignateCustomerCount
-                )
-                  ? 0
-                  : (customer.notDesignateCustomerCount / designateAndNotDesignateCustomerCount) *
-                  100
-                ).toFixed(2)}
+                {percent(customer.notDesignateCustomerCount, designateAndNotDesignateCustomerCount)}
                 %
               </TableCell>
               <TableCell numeric className="text-text-secondary">
-                {(isNaN(customer.maleCustomerCount / genderCustomerCount)
-                  ? 0
-                  : (customer.maleCustomerCount / genderCustomerCount) * 100
-                ).toFixed(2)}
+                {percent(customer.maleCustomerCount, genderCustomerCount)}
                 %
               </TableCell>
               <TableCell numeric className="text-text-secondary">
-                {(isNaN(customer.femaleCustomerCount / genderCustomerCount)
-                  ? 0
-                  : (customer.femaleCustomerCount / genderCustomerCount) * 100
-                ).toFixed(2)}
+                {percent(customer.femaleCustomerCount, genderCustomerCount)}
                 %
               </TableCell>
               <TableCell numeric className="text-text-secondary">
-                {(isNaN(customer.unKnowCustomerCount / genderCustomerCount)
-                  ? 0
-                  : (customer.unKnowCustomerCount / genderCustomerCount) * 100
-                ).toFixed(2)}
+                {percent(customer.unKnowCustomerCount, genderCustomerCount)}
                 %
               </TableCell>
             </TableRow>

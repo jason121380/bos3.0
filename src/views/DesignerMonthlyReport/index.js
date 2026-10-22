@@ -151,7 +151,8 @@ export default function Employees() {
           }
         />
         {(!designerMontlyListData.loading && !isMemberShipCardActiveData.loading) ?
-          idx(designerMontlyListData, _ => (
+          // 查詢失敗或回傳 null 時不顯示表格，不讓整頁拋錯
+          idx(designerMontlyListData, _ => Array.isArray(_.data.designerMonthlyReport) && (
             <Results
               setExcelData={setExcelData}
               performReference={performReference}

@@ -12,8 +12,6 @@ export default function SalaryIncrease({
   increaseSecondContent,
   increaseCombined,
   setIncreaseCombined,
-  salaryIncreaseItemsReformatted,
-  setSalaryIncreaseItemsReformatted,
   setIncreaseSecondContent,
   isSalaryItemsLock,
   userSalary,
@@ -40,52 +38,20 @@ export default function SalaryIncrease({
     setIncreaseSecondContent(newIncreaseSecondContent)
   }
 
+  // 店家設定的加項只有金額欄（name="price"）；原本另有「沒有店家設定時改寫 salaryIncreaseItemsReformatted」與 itemName 分支，
+  // 畫面上不會觸發（店家設定的加項一定在 increaseCombined 內、且沒有科目輸入框），已移除
   const handleIncreaseInput = (e, index) => {
-    if (increaseCombined.length > 0) {
-      const newIncreaseCombined = cloneDeep(increaseCombined)
-      switch (e.target.name) {
-        case 'price':
-          newIncreaseCombined.forEach((data, index2) => {
-            if (index === index2) {
-              if (e.target.value === '' || e.target.value === null || isNaN(e.target.value)) {
-                data.price = 0
-              } else {
-                data.price = parseFloat(e.target.value)
-              }
-            }
-          })
-          setIncreaseCombined(newIncreaseCombined)
-          break
-        case 'itemName':
-          newIncreaseCombined.forEach((data, index2) => {
-            if (index === index2) {
-              data.itemName = e.target.value
-            }
-          })
-          setIncreaseCombined(newIncreaseCombined)
-          break
-        default:
-          break
+    const newIncreaseCombined = cloneDeep(increaseCombined)
+    newIncreaseCombined.forEach((data, index2) => {
+      if (index === index2) {
+        if (e.target.value === '' || e.target.value === null || isNaN(e.target.value)) {
+          data.price = 0
+        } else {
+          data.price = parseFloat(e.target.value)
+        }
       }
-    } else {
-      const newSalaryIncreaseItemsReformatted = cloneDeep(salaryIncreaseItemsReformatted)
-      switch (e.target.name) {
-        case 'price':
-          newSalaryIncreaseItemsReformatted.forEach((data, index2) => {
-            if (index === index2) {
-              if (e.target.value === '' || e.target.value === null || isNaN(e.target.value)) {
-                data.price = 0
-              } else {
-                data.price = parseFloat(e.target.value)
-              }
-            }
-          })
-          setSalaryIncreaseItemsReformatted(newSalaryIncreaseItemsReformatted)
-          break
-        default:
-          break
-      }
-    }
+    })
+    setIncreaseCombined(newIncreaseCombined)
   }
 
   const handleIncreaseSecondInput = (e, index) => {
@@ -110,8 +76,6 @@ export default function SalaryIncrease({
           }
         })
         setIncreaseSecondContent(newIncreaseSecondContent)
-        break
-      default:
         break
     }
   }
@@ -141,7 +105,7 @@ export default function SalaryIncrease({
               increaseCombined
                 ?.sort((a, b) => a.sorting - b.sorting)
                 .map((data, index) => {
-                  if (data.source === 'parameter') {
+                  // 店家設定的加項（source 皆為 parameter；原本的 else 分支只算出畫面卻沒有回傳，已移除）
                     return (
                       <div
                         key={`increase-${index}`}
@@ -177,49 +141,6 @@ export default function SalaryIncrease({
                         />
                       </div>
                     )
-                  } else {
-                    salaryIncreaseItemsReformatted !== undefined &&
-                      salaryIncreaseItemsReformatted
-                        .sort((a, b) => a.sorting - b.sorting)
-                        .map((data, index) => {
-                          return (
-                            <div
-                              key={`increase-${index}`}
-                              className="col-span-12 flex items-center"
-                            >
-                              <span className="mx-1 w-[25px] shrink-0 text-heading tabular-nums text-text-secondary">
-                                {data.sorting}
-                              </span>
-                              <TextField
-                                variant="outlined"
-                                label={data.itemName}
-                                value={data.price || 0}
-                                name="price"
-                                fullWidth
-                                inputRef={(focus === 'increaseCombined' && index === tabIndex) ? textFieldRef : ''}
-                                onFocus={event => { 
-                                  event.target.select()
-                                  setTabIndex(index)
-                                  setFocus('increaseCombined')
-                                }}
-                                onKeyDown={event => {
-                                  if(event.key === 'Enter') {
-                                    if(index < (salaryIncreaseItemsReformatted.length - 1)){
-                                      setTabIndex(index + 1)
-                                    } else {
-                                      setFocus('increaseItemName')
-                                      setTabIndex(0)
-                                    }
-                                  }
-                                }}
-                                onChange={e => handleIncreaseInput(e, index)}
-                                disabled={isSalaryItemsLock}
-                              />
-                            </div>
-                          )
-                        })
-                  }
-                  return undefined
                 })}
           </div>
         </CardContent>

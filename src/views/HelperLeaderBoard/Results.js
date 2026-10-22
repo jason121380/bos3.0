@@ -130,7 +130,8 @@ function Results({ report, performReference, displayReportWithMembership }) {
               </TableRow>
               {hasMergedDetails &&
                 <TableRow className={isOpen(index) ? 'noprint' : 'noprint border-b-0'}>
-                  <TableCell className="!p-0" colSpan={hasMergedDetailsRows ? 8 : 7}>
+                  {/* 跨欄數＝表格欄數：展開、名次、設計師、所屬店家、點數、金額、店販＝7，顯示會員卡時再加 1 */}
+                  <TableCell className="!p-0" colSpan={displayReportWithMembership ? 8 : 7}>
                     {isOpen(index) && (
                       <div className="m-4">
                         {renderDetailsTable(data)}

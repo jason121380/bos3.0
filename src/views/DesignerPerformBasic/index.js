@@ -68,7 +68,8 @@ const DesignerPerformBasic = () => {
 
   useEffect(() => {
     if (!getDRRDataDisplay.loading) {
-      const { isDRROCDisplay, isDRRPEVDisplay } = idx(getDRRDataDisplay, _ => _.data.getParameterReportSetting)
+      // 查詢失敗（data 為 undefined）時兩項都不顯示，不讓整頁拋錯
+      const { isDRROCDisplay, isDRRPEVDisplay } = idx(getDRRDataDisplay, _ => _.data.getParameterReportSetting) || {}
       setDataDisplay({
         isDRROCDisplay,
         isDRRPEVDisplay
@@ -106,7 +107,8 @@ const DesignerPerformBasic = () => {
 
   useEffect(() => {
     if (!designersLeaboardData.loading && !monthlyAverageDisplayForDesignerLeaderBoardData.loading && !isMemberShipCardActiveData.loading) {
-      const report = idx(designersLeaboardData, _ => _.data.designerLeaderboard.designerLeaderBoard)
+      // 查詢失敗（data 為 undefined）時當成沒有資料，不讓整頁拋錯
+      const report = idx(designersLeaboardData, _ => _.data.designerLeaderboard.designerLeaderBoard) || []
       const excelData = []
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const monthlyAveragePerformanceTotal = idx(
@@ -285,7 +287,7 @@ const DesignerPerformBasic = () => {
   const handleChecked = value => {
     if (value.length > 0) {
       setValueSelect(value)
-    } else if (value.length === 0) {
+    } else {
       setValueSelect([])
       setIsSubmit(false)
     }

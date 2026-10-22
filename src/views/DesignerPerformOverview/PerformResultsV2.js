@@ -21,7 +21,8 @@ function Results({ className, results, excelData, attributeSwitchs, membershipDi
             <TableHead numeric>男/女/未知 (人次)</TableHead>
             <TableHead numeric>指定/不指定 (人次)</TableHead>
             <TableHead numeric>男/女/未知 (不重複)</TableHead>
-            {results.users[0].categoryData.map((data, index) => {
+            {/* 類別表頭取第一位設計師的；沒有任何設計師資料時改用全店的 */}
+            {(results.users[0] || results.wholeStore).categoryData.map((data, index) => {
               if (attributeSwitchs[index]) {
                 return <TableHead numeric key={index}>{`${data.categoryName}/人次/單均價`}</TableHead>
               }

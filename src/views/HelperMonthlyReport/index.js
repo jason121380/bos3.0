@@ -29,7 +29,8 @@ const HelperMontlyReport = () => {
         isMemberShipCardActiveData,
         _ => _.data.getIsMemberShipCardActive
       )
-      const helperMonthlyReport = idx(helperMonthlyData, _ => _.data.helperMonthlyReport)
+      // 查詢失敗（data 為 undefined）或回傳 null 時當成沒有資料，不讓整頁拋錯
+      const helperMonthlyReport = idx(helperMonthlyData, _ => _.data.helperMonthlyReport) || []
       const membershipPerformanceTotal = helperMonthlyReport.reduce((accu, curVal) => accu + curVal.membershipPerformance, 0)
       const membershipRakeTotal = helperMonthlyReport.reduce((accu, curVal) => accu + curVal.membershipRake, 0)
       setMembershipDisplay(

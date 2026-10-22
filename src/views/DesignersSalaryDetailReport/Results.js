@@ -19,28 +19,27 @@ function Results({
   const [decreaseItemsSum, setDecreaseItemsSum] = useState([])
 
   useEffect(() => {
-    if (!designersSalaryDetailReportDataLoading && !merchantSalaryIncreaseItems.loading) {
-      const increaseItemsSum = []
+    // 頁面只在查詢完成後才渲染本元件（原本的「載入中」與 .loading 判斷恒為真，已移除）
+    const increaseItemsSum = []
 
-      merchantSalaryIncreaseItems.forEach(data => {
-        increaseItemsSum.push(0)
-      })
+    merchantSalaryIncreaseItems.forEach(data => {
+      increaseItemsSum.push(0)
+    })
 
-      merchantSalaryIncreaseItems.forEach((data, index) => {
-        salaryDetailReport.userSalaryDetail.forEach(data2 => {
-          if (data2.increase.length === 0) {
-            increaseItemsSum[index] += 0
-          } else {
-            data2.increase.forEach(increaseItem => {
-              if (increaseItem.itemName === data.name) {
-                increaseItemsSum[index] += increaseItem.price
-              }
-            })
-          }
-        })
+    merchantSalaryIncreaseItems.forEach((data, index) => {
+      salaryDetailReport.userSalaryDetail.forEach(data2 => {
+        if (data2.increase.length === 0) {
+          increaseItemsSum[index] += 0
+        } else {
+          data2.increase.forEach(increaseItem => {
+            if (increaseItem.itemName === data.name) {
+              increaseItemsSum[index] += increaseItem.price
+            }
+          })
+        }
       })
-      setIncreaseItemsSum(increaseItemsSum)
-    }
+    })
+    setIncreaseItemsSum(increaseItemsSum)
   }, [merchantSalaryIncreaseItems, designersSalaryDetailReportDataLoading])
 
   useEffect(() => {
@@ -204,7 +203,7 @@ function Results({
                           </TableCell>
                         )
                       } else {
-                        return <TableCell>0</TableCell>
+                        return <TableCell key={merchantDecreaseItemsIndex}>0</TableCell>
                       }
                     }
                   })}

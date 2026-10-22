@@ -111,7 +111,8 @@ export default React.memo(function SalaryEdit(props) {
 
   React.useEffect(() => {
     if (!attendanceStatus.loading) {
-      const data = attendanceStatus.data.attendanceRecords
+      // 查詢失敗（data 為 undefined）時不顯示出勤統計，不讓整頁拋錯
+      const data = idx(attendanceStatus, _ => _.data.attendanceRecords) || []
       if (data[0]) {
         setAttStatus(data[0])
       }
@@ -121,7 +122,7 @@ export default React.memo(function SalaryEdit(props) {
 
   React.useEffect(() => {
     if (!usersMonthCheckoutData.loading) {
-      const isUsersSalaryChacked = idx(usersMonthCheckoutData, _ => _.data.users.users)
+      const isUsersSalaryChacked = idx(usersMonthCheckoutData, _ => _.data.users.users) || []
       // 篩選出已結算的資料
       const correctData = isUsersSalaryChacked.filter(el => {
         return el.isSalaryChecked === true
@@ -147,7 +148,7 @@ export default React.memo(function SalaryEdit(props) {
   React.useEffect(() => {
     if (!usersSalayItemData.loading) {
       // 篩選出已結算的資料
-      const usersArr = idx(usersSalayItemData, _ => _.data.users.users).filter(el => {
+      const usersArr = (idx(usersSalayItemData, _ => _.data.users.users) || []).filter(el => {
         return el.isSalaryChecked === true
       })
       const user = usersArr.find(data => data.id === match.params.id)
@@ -164,6 +165,8 @@ export default React.memo(function SalaryEdit(props) {
   React.useEffect(() => {
     if (
       !userSalayItemData.loading &&
+      // 員工已存的加扣項沒讀到（查詢失敗）時不帶入、不顯示編輯區，避免以空白資料存檔蓋掉已存的薪資項目
+      idx(userSalayItemData, _ => _.data.userSalaryItemRecord) &&
       !merchantSalaryIncreaseItems.loading &&
       !merchantSalaryDecreaseItems.loading &&
       increaseReformatted !== undefined &&
@@ -174,7 +177,7 @@ export default React.memo(function SalaryEdit(props) {
     ) {
       // ==========INCREASE==========
       const initIncrease = []
-      const increaseItem = idx(userSalayItemData, _ => _.data.userSalaryItemRecord.increaseItem)
+      const increaseItem = idx(userSalayItemData, _ => _.data.userSalaryItemRecord.increaseItem) || []
 
       increaseReformatted.forEach(data => {
         const findData = increaseItem.find(data2 => data2.itemName === data.itemName)
@@ -199,7 +202,7 @@ export default React.memo(function SalaryEdit(props) {
 
       const initIncreaseSecond = []
       // separate the increase if add from below(optional)
-      userSalayItemData.data.userSalaryItemRecord.increaseItem.forEach(data => {
+      increaseItem.forEach(data => {
         if (initIncrease.every(data2 => data2.itemName !== data.itemName)) {
           initIncreaseSecond.push({
             itemName: data.itemName,
@@ -212,7 +215,7 @@ export default React.memo(function SalaryEdit(props) {
         setIncreaseSecondContent({ increaseItems: initIncreaseSecond })
       }
 
-      const memberActive = isMemberShipCardActiveData.data.getIsMemberShipCardActive
+      const memberActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const membership = initIncrease.find(d => d.itemName === '會員卡獎金')
       if (!memberActive && membership && membership.price === 0) {
         const index = initIncrease.findIndex(d => d.itemName === '會員卡獎金')
@@ -254,7 +257,8 @@ export default React.memo(function SalaryEdit(props) {
 
       const initDecreaseSecond = []
       // separate the increase if add from below(optional)
-      userSalayItemData.data.userSalaryItemRecord.decreaseItem.forEach(data => {
+      const savedDecreaseItem = idx(userSalayItemData, _ => _.data.userSalaryItemRecord.decreaseItem) || []
+      savedDecreaseItem.forEach(data => {
         if (initDecrease.every(data2 => data2.itemName !== data.itemName)) {
           initDecreaseSecond.push({
             itemName: data.itemName,
@@ -289,6 +293,8 @@ export default React.memo(function SalaryEdit(props) {
     }
   }, [getAttendanceStatistics.loading])
   
+
+  const notReady = increaseCombined === undefined || decreaseCombined === undefined
 
   const handleSave = () => {
     const filteredIncreaseCombined = increaseCombined.map(
@@ -381,26 +387,17 @@ export default React.memo(function SalaryEdit(props) {
       date: date,
       remark: remark,
     }
-    usersIsSalaryChecked.forEach((user, index) => {
+    // usersIsSalaryChecked 已只留已月結的員工
+    usersIsSalaryChecked.forEach(user => {
       if (user.id === usersArr[userIndex - 1].id) {
         // 原本的 index !== 0 會讓第二筆資料無法回到第一筆
-        if (user.isSalaryChecked) {
-          setUserSalaryItem({ input: inputData }).then(() => {
-            openSnackbar({
-              message: '儲存成功',
-              variant: 'success',
-            })
-            window.location.href = `/salary/edit/${usersArr[userIndex - 1].id}?date=${date}`
+        setUserSalaryItem({ input: inputData }).then(() => {
+          openSnackbar({
+            message: '儲存成功',
+            variant: 'success',
           })
-        } else if (user.isSalaryChecked && index > 1) {
-          setUserSalaryItem({ input: inputData }).then(() => {
-            openSnackbar({
-              message: '儲存成功',
-              variant: 'success',
-            })
-            window.location.href = `/salary/edit/${usersArr[userIndex - 2].id}?date=${date}`
-          })
-        }
+          window.location.href = `/salary/edit/${usersArr[userIndex - 1].id}?date=${date}`
+        })
       }
     })
   }
@@ -447,25 +444,16 @@ export default React.memo(function SalaryEdit(props) {
       remark: remark,
     }
 
-    usersIsSalaryChecked.forEach((user, index) => {
+    // usersIsSalaryChecked 已只留已月結的員工
+    usersIsSalaryChecked.forEach(user => {
       if (user.id === usersArr[userIndex + 1].id) {
-        if (user.isSalaryChecked) {
-          setUserSalaryItem({ input: inputData }).then(() => {
-            openSnackbar({
-              message: '儲存成功',
-              variant: 'success',
-            })
-            window.location.href = `/salary/edit/${usersArr[userIndex + 1].id}?date=${date}`
+        setUserSalaryItem({ input: inputData }).then(() => {
+          openSnackbar({
+            message: '儲存成功',
+            variant: 'success',
           })
-        } else if (user.isSalaryChecked && index !== usersArr.length - 1) {
-          setUserSalaryItem({ input: inputData }).then(() => {
-            openSnackbar({
-              message: '儲存成功',
-              variant: 'success',
-            })
-            window.location.href = `/salary/edit/${usersArr[userIndex + 2].id}?date=${date}`
-          })
-        }
+          window.location.href = `/salary/edit/${usersArr[userIndex + 1].id}?date=${date}`
+        })
       }
     })
   }
@@ -495,8 +483,8 @@ export default React.memo(function SalaryEdit(props) {
           <div>
             <DesignerSalaryReportV2
               userSalary={userSalary}
-              designer={designerMonthlyCheckoutRedordData.data.getUserSalaryMonthlyCheckoutRecordV2}
-              memberActive={isMemberShipCardActiveData.data.getIsMemberShipCardActive}
+              designer={idx(designerMonthlyCheckoutRedordData, _ => _.data.getUserSalaryMonthlyCheckoutRecordV2)}
+              memberActive={idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)}
               actualTransferFun={
                 increaseCombined.reduce((accu, curVal) => accu + curVal.price, 0) +
                 increaseSecondContent.increaseItems.reduce((accu, curVal) => accu + curVal.price, 0) -
@@ -561,6 +549,8 @@ export default React.memo(function SalaryEdit(props) {
               {!isSalaryItemsLock && (
                 <Button
                   variant="primary"
+                  // 加扣項尚未帶入（載入中或查詢失敗）時不能存檔：原本按下會整頁拋錯
+                  disabled={notReady}
                   onClick={handleSave}
                 >
                   儲存
@@ -574,7 +564,7 @@ export default React.memo(function SalaryEdit(props) {
                 ) : (
                   <Button
                     variant="secondary"
-                    disabled={userIndex === 0}
+                    disabled={notReady}
                     onClick={handleToLastUser}
                   >
                     儲存並上一筆
@@ -585,7 +575,7 @@ export default React.memo(function SalaryEdit(props) {
                 ) : (
                   <Button
                     variant="secondary"
-                    disabled={userIndex === usersArr.length - 1}
+                    disabled={notReady}
                     onClick={handleToNextUser}
                   >
                     儲存並下一筆

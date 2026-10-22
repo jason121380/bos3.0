@@ -46,61 +46,54 @@ export default function HelperPerformance() {
 
   useEffect(() => {
     if (!merchantJobTitlePoint.loading) {
-      const title = merchantJobTitlePoint.data.merchantJobTitlePoint
-      const array = []
-      title.forEach(el => {
-        array.push(el.jobTitle)
-      })
-      setJobTitle(title)
+      // 查詢失敗（data 為 undefined）時沒有可選的人員類別，不讓整頁拋錯
+      setJobTitle(idx(merchantJobTitlePoint, _ => _.data.merchantJobTitlePoint) || [])
     }
   }, [merchantJobTitlePoint.loading])
 
   useEffect(() => {
     const excelData = []
-    if (
-      !useFetchGetHelperPerformanceData.loading &&
-      !isMemberShipCardActiveData.loading &&
-      useFetchGetHelperPerformanceData.data.helperPerformanceReport.length > 1
-    ) {
-      // 複製：下面會移除會員卡欄（查詢結果唯讀；表格另在 Results 依 membershipDisplay 篩掉）
-      const data = cloneDeep(idx(useFetchGetHelperPerformanceData, _ => _.data.helperPerformanceReport))
-      const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
-      const membershipTotal = data[data.length - 1].helperPerformance.find(d => d.typeName === '會員卡')
-      const showMembership = membershipTotal ? (
-        membershipTotal.count +
-        membershipTotal.designateCount +
-        membershipTotal.point +
-        membershipTotal.priceNoPoint
-      ) !== 0 : false
-      const memberShipCardActive = (showMembership || isMemberShipCardActive)
+    if (useFetchGetHelperPerformanceData.loading || isMemberShipCardActiveData.loading) return
+    // 查詢失敗（data 為 undefined）時當成沒有資料；沒有人員資料（只有合計或空）時清空匯出，不留著上一個區間的資料
+    const report = idx(useFetchGetHelperPerformanceData, _ => _.data.helperPerformanceReport) || []
+    if (report.length <= 1) {
+      setExcelData([])
+      return
+    }
+    // 複製：下面會移除會員卡欄（查詢結果唯讀；表格另在 Results 依 membershipDisplay 篩掉）
+    const data = cloneDeep(report)
+    const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
+    const membershipTotal = data[data.length - 1].helperPerformance.find(d => d.typeName === '會員卡')
+    const showMembership = membershipTotal ? (
+      membershipTotal.count +
+      membershipTotal.designateCount +
+      membershipTotal.point +
+      membershipTotal.priceNoPoint
+    ) !== 0 : false
+    const memberShipCardActive = (showMembership || isMemberShipCardActive)
 
-      setMembershipDisplay(memberShipCardActive)
-      if (!memberShipCardActive) {
-        data.forEach(d => {
-          d.helperPerformance.forEach((a, index) => {
-            if (a.typeName === '會員卡') {
-              d.helperPerformance.splice(index, 1)
-            }
-          })
-        })
-      }
-      const attributeSwitch = []
-      data.forEach(item => {
-        const obj = {}
-        obj['設計名稱'] = item.userName
-        item.helperPerformance.forEach((item2, index) => {
-          attributeSwitch[index] = true
-          if (attributeSwitch[index]) {
-            obj[`${item2.typeName}` + '人數'] = Math.round(item2.count)
-            obj[`${item2.typeName}` + '抽成元'] = Math.round(item2.priceNoPoint)
-            obj[`${item2.typeName}` + '指定'] = Math.round(item2.designateCount)
-            obj[`${item2.typeName}` + '抽成點'] = Math.round(item2.point)
+    setMembershipDisplay(memberShipCardActive)
+    if (!memberShipCardActive) {
+      data.forEach(d => {
+        d.helperPerformance.forEach((a, index) => {
+          if (a.typeName === '會員卡') {
+            d.helperPerformance.splice(index, 1)
           }
         })
-        excelData.push(obj)
       })
-      setExcelData(excelData)
     }
+    data.forEach(item => {
+      const obj = {}
+      obj['設計名稱'] = item.userName
+      item.helperPerformance.forEach(item2 => {
+        obj[`${item2.typeName}` + '人數'] = Math.round(item2.count)
+        obj[`${item2.typeName}` + '抽成元'] = Math.round(item2.priceNoPoint)
+        obj[`${item2.typeName}` + '指定'] = Math.round(item2.designateCount)
+        obj[`${item2.typeName}` + '抽成點'] = Math.round(item2.point)
+      })
+      excelData.push(obj)
+    })
+    setExcelData(excelData)
   }, [useFetchGetHelperPerformanceData.loading, isMemberShipCardActiveData.loading])
   return (
     <Page title="互助業績報表" className="ui-root">

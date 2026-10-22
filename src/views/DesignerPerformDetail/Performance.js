@@ -1,5 +1,6 @@
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
+import { percent } from './ratio'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 
 function Performance({ performance }) {
@@ -31,24 +32,15 @@ function Performance({ performance }) {
             <TableRow>
               <TableCell numeric className="text-text-secondary">100%</TableCell>
               <TableCell numeric className="text-text-secondary">
-                {(isNaN(performance.serviceFake / fakeSaleAndProductSale)
-                  ? 0
-                  : (performance.serviceFake / fakeSaleAndProductSale) * 100
-                ).toFixed(2)}
+                {percent(performance.serviceFake, fakeSaleAndProductSale)}
                 %
               </TableCell>
               <TableCell numeric className="text-text-secondary">
-                {(isNaN(performance.productSales / fakeSaleAndProductSale)
-                  ? 0
-                  : (performance.productSales / fakeSaleAndProductSale) * 100
-                ).toFixed(2)}
+                {percent(performance.productSales, fakeSaleAndProductSale)}
                 %
               </TableCell>
               <TableCell numeric className="text-text-secondary">
-                {(isNaN(performance.useTicketSales / fakeSaleAndProductSale)
-                  ? 0
-                  : (performance.useTicketSales / fakeSaleAndProductSale) * 100
-                ).toFixed(2)}
+                {percent(performance.useTicketSales, fakeSaleAndProductSale)}
                 %
               </TableCell>
             </TableRow>

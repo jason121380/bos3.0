@@ -10,11 +10,12 @@ function OverviewV2({ designer, actualTransferFun, memberActive }) {
   const [membershipDisplay, setMembershipDisplay] = useState(false)
 
   useEffect(() => {
-    const tmp = idx(designer, _ => _.salaryMonthlyCheckoutRecord)
+    // 月結紀錄查詢失敗或後端回 null 時當成沒有紀錄（各欄顯示 0），不讓整頁拋錯
+    const tmp = idx(designer, _ => _.salaryMonthlyCheckoutRecord) || undefined
     const autoSet = idx(designer, _ => _.isHelperRetrireveAutoSet)
     setSalaryCheckoutRecord(tmp)
     setIsHelperRetrireveAutoSet(autoSet)
-    setMembershipDisplay(memberActive || tmp.membershipPerformance !== 0 || tmp.membershipRake !== 0)
+    setMembershipDisplay(memberActive || (tmp !== undefined && (tmp.membershipPerformance !== 0 || tmp.membershipRake !== 0)))
   }, [designer, memberActive])
   return (
     <div className="my-5">
@@ -194,7 +195,7 @@ function OverviewV2({ designer, actualTransferFun, memberActive }) {
                   }(${salaryCheckoutRecord != null
                     ? Math.round(salaryCheckoutRecord.helperPaidPointOnSalary * 10) / 10
                     : 0
-                  })` || 0}
+                  })`}
               </span>
             </div>
           </div>
@@ -218,7 +219,7 @@ function OverviewV2({ designer, actualTransferFun, memberActive }) {
                   }(${salaryCheckoutRecord !== undefined
                     ? Math.round(salaryCheckoutRecord.helperRetrievePoint * 10) / 10
                     : 0
-                  })` || 0}
+                  })`}
               </span>
             </div>
           </div>

@@ -57,7 +57,8 @@ const DesignerPerformanceReport = () => {
 
 	useEffect(() => {
 		if (!getDesignerPerformance.loading && !isMemberShipCardActiveData.loading) {
-			let performanceData = cloneDeep(getDesignerPerformance.data.designerPerformance)
+			// 查詢失敗（data 為 undefined）時當成沒有資料，不讓整頁拋錯
+			let performanceData = cloneDeep(idx(getDesignerPerformance, _ => _.data.designerPerformance) || [])
 			const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
 			if (performanceData.length > 0) {
 				const category = performanceData[0].designerPerformancePercented[0].serviceCategory.map(d => d.categoryName)

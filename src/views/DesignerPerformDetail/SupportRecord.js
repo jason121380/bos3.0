@@ -20,8 +20,8 @@ function OrderRecord({ records }) {
               <TableHead>服務項目</TableHead>
               <TableHead>人員</TableHead>
               <TableHead numeric>抽固定金額</TableHead>
+              {/* 查詢沒有「點數換算」資料：原本表頭有此欄、內容卻多一格重複的設計師姓名，金額全部錯一欄（固定金額落在「點數」） */}
               <TableHead numeric>點數</TableHead>
-              <TableHead numeric>點數換算</TableHead>
               <TableHead numeric>抽%</TableHead>
               <TableHead numeric>抽%換算</TableHead>
             </TableRow>
@@ -41,7 +41,6 @@ function OrderRecord({ records }) {
                     ? ' / ' + data.serviceOrder.order.designer.designerNo
                     : ''}
                 </TableCell>
-                <TableCell>{data.serviceOrder.order.designer.name}</TableCell>
                 <TableCell numeric>{formatNumber(data.fixCommissionAmount)}</TableCell>
                 <TableCell numeric>{formatNumber(data.point)}</TableCell>
                 <TableCell numeric>{formatNumber(data.commissionPercent)}</TableCell>

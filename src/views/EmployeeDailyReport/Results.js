@@ -39,8 +39,9 @@ function Results({
 
   useEffect(() => {
     if (!getIsDisplayHelperRetrieveInDailyReport.loading) {
+      // 查詢失敗（data 為 undefined）時視為不顯示，不讓整頁拋錯
       setDataVisible(
-        getIsDisplayHelperRetrieveInDailyReport.data.getIsDisplayHelperRetrieveInDailyReport
+        idx(getIsDisplayHelperRetrieveInDailyReport, _ => _.data.getIsDisplayHelperRetrieveInDailyReport)
       )
     }
   }, [getIsDisplayHelperRetrieveInDailyReport.loading])
@@ -48,7 +49,7 @@ function Results({
   useEffect(() => {
     if (
       !mathRoundSetting.loading &&
-      mathRoundSetting.data.getIsUsingMathRoundInDesignerDailyReport === true
+      idx(mathRoundSetting, _ => _.data.getIsUsingMathRoundInDesignerDailyReport) === true
     ) {
       setIsMathRound(idx(mathRoundSetting, _ => _.data.getIsUsingMathRoundInDesignerDailyReport))
       const cloneData = cloneDeep(designerDailyReport)
@@ -90,7 +91,8 @@ function Results({
       })
       setMathRoundPrintData(clonePrintData)
     }
-  }, [mathRoundSetting.loading])
+    // 報表與列印分組換了（換日期；列印分組由頁面在本元件掛載後才算好）也要重算，否則列印區塊留著上一次的資料
+  }, [mathRoundSetting.loading, designerDailyReport, printData])
 
   return (
     <Fragment>

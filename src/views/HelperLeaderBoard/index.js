@@ -49,7 +49,8 @@ const HelperLeaderBoard = () => {
     if (!helperLeaboardData.loading && !isMemberShipCardActiveData.loading) {
       const usersReport = idx(helperLeaboardData, _ => _.data.helperLeaderboard)
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
-      if (usersReport !== null) {
+      // 查詢失敗（data 為 undefined）或回傳 null 時不更新，不讓整頁拋錯
+      if (usersReport) {
         const excelData = []
         let isDisplayExcelWithMembership = false
         const isMembershipIsZero = usersReport.filter(result => result.membershipTotal === 0)
@@ -76,7 +77,8 @@ const HelperLeaderBoard = () => {
             設計師: data.userName,
             所屬店家: data.storeName,
             '互助獲得(點數)': Math.round(data.helperReceivedPoint),
-            '互助使用(點數)': Math.round(data.helperReceivedPrice),
+            // 欄名與表格一致：helperReceivedPrice 是「互助獲得(金額)」（原本誤標為「互助使用(點數)」）
+            '互助獲得(金額)': Math.round(data.helperReceivedPrice),
             ...obj,
           })
         })
@@ -88,7 +90,7 @@ const HelperLeaderBoard = () => {
         excelData.push({
           設計師: "合計",
           '互助獲得(點數)': Math.round(usersReport.reduce((accu, curVal) => accu + curVal.helperReceivedPoint, 0)),
-          '互助使用(點數)': Math.round(usersReport.reduce((accu, curVal) => accu + curVal.helperReceivedPrice, 0)),
+          '互助獲得(金額)': Math.round(usersReport.reduce((accu, curVal) => accu + curVal.helperReceivedPrice, 0)),
           ...obj,
         })
         setExcelData(excelData)
@@ -177,7 +179,8 @@ const HelperLeaderBoard = () => {
                   size="small"
                   exclusive
                   value={inputValue.orderBy}
-                  onChange={(e, v) => handleValueChange('orderBy', v)}
+                  // 再按一次已選的排序鈕時 v 為 null：維持原排序，不送出 null
+                  onChange={(e, v) => v && handleValueChange('orderBy', v)}
                 >
                   <ToggleGroupItem value='POINT'>依點數</ToggleGroupItem>
                   <ToggleGroupItem value='PRICE'>依金額</ToggleGroupItem>

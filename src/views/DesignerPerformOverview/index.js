@@ -36,7 +36,8 @@ function DesignerPerformOverview() {
   const isMemberShipCardActiveData = useFetchGetIsMemberShipCardActive()
 
   useEffect(() => {
-    if (!isDisplayTogglePerformanceButtonData.loading && !isMemberShipCardActiveData.loading) {
+    // 只看本身設定是否載入完成（原本還要求會員卡設定也已載入，但依賴只有本設定；會員卡設定較晚回來時切換鈕永遠不會隱藏）
+    if (!isDisplayTogglePerformanceButtonData.loading) {
       const isDisplayTogglePerformanceButton = idx(
         isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
       setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
@@ -55,14 +56,21 @@ function DesignerPerformOverview() {
         _ => _.data.merchantImmediatePerformanceReport
       )
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
-      setMerchantImmediatePerformReport(merchantImmediatePerformReport)
+      // 查詢失敗（data 為 undefined）時不顯示報表、清空匯出，不讓整頁拋錯
+      setMerchantImmediatePerformReport(merchantImmediatePerformReport || null)
+      if (!merchantImmediatePerformReport) {
+        setExcelData([])
+        return
+      }
       const { users, wholeStore } = merchantImmediatePerformReport
       const { membershipPerformance, membershipOrderCount, membershipAveragePerformance } = wholeStore
-      const memberActive = isMemberShipCardActive || membershipPerformance > 0 || membershipOrderCount > 0 | membershipAveragePerformance > 0
+      const memberActive = isMemberShipCardActive || membershipPerformance > 0 || membershipOrderCount > 0 || membershipAveragePerformance > 0
       const excelData = []
       const attributeSwitch = []
       setMembershipDisplay(memberActive)
-      users[0].categoryData.forEach(() => {
+      // 類別清單取第一位設計師的；店家沒有任何設計師資料時改用全店的（原本直接讀 users[0] 會整頁拋錯）
+      const categories = (users[0] || wholeStore).categoryData
+      categories.forEach(() => {
         attributeSwitch.push(false)
       })
       users.forEach(data => {
@@ -77,67 +85,64 @@ function DesignerPerformOverview() {
         })
       })
 
-      if (users != null && wholeStore != null) {
-        users.forEach(element => {
-          const obj = {}
-          const {
-            fakePerformance, orderCount, averagePerformance, productPerformance, productOrderCount,
-            membershipPerformance, membershipOrderCount, membershipAveragePerformance,
-            productAveragePerformance, orderMaleCount, orderFemaleCount, orderUnknownCount, userNo,
-            userName, orderDesignateCount, orderNonDesignatecount, customerMaleCount, customerFemaleCount,
-            customerUnknownCount, categoryData
-          } = element
-          if (
-            fakePerformance > 0 || orderCount > 0 || averagePerformance > 0 ||
-            productPerformance > 0 || productOrderCount > 0 || productAveragePerformance > 0 ||
-            membershipPerformance > 0 || membershipOrderCount > 0 || membershipAveragePerformance > 0 ||
-            orderMaleCount > 0 || orderFemaleCount > 0 || orderUnknownCount > 0
-          ) {
-            obj['編號'] = userNo
-            obj['設計師'] = userName
-            obj['服務業績/人次/單均價'] = `${Math.round(fakePerformance)} / ${Math.round(orderCount)} / ${Math.round(averagePerformance)}`
-            obj['店販業績/人次/單均價'] = `${Math.round(productPerformance)} / ${Math.round(productOrderCount)} / ${Math.round(productAveragePerformance)}`
-            if (memberActive) {
-              obj['會員卡業績/人次/單均價'] = `${Math.round(membershipPerformance)} / ${Math.round(membershipOrderCount)} / ${Math.round(membershipAveragePerformance)}`
-            }
-            obj['男/女/未知 (人次)'] = `${orderMaleCount} / ${orderFemaleCount} / ${orderUnknownCount}`
-            obj['指定/不指定 (人次)'] = `${orderDesignateCount} / ${orderNonDesignatecount}`
-            obj['男/女/未知 (不重複)'] = ` ${customerMaleCount} / ${customerFemaleCount} / ${customerUnknownCount}`
-
-            categoryData.forEach(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
-              if (attributeSwitch[index]) {
-                obj[`${categoryName}` + '/人次/單均價'] = `${Math.round(fakePerformance)} / ${orderCount} / ${Math.round(averagePerformance)}`
-              }
-            })
-            excelData.push(obj)
-          }
-        })
-        const obj2 = {}
+      users.forEach(element => {
+        const obj = {}
         const {
-          categoryData, fakePerformance, orderCount, averagePerformance, productPerformance,
-          productOrderCount, productAveragePerformance, orderMaleCount, orderFemaleCount,
+          fakePerformance, orderCount, averagePerformance, productPerformance, productOrderCount,
           membershipPerformance, membershipOrderCount, membershipAveragePerformance,
-          orderUnknownCount, orderDesignateCount, orderNonDesignatecount, customerMaleCount,
-          customerFemaleCount, customerUnknownCount
-        } = wholeStore
-
-        obj2['設計師'] = '全店'
-        obj2['服務業績/人次/單均價'] = `${Math.round(fakePerformance)} / ${orderCount} / ${Math.round(averagePerformance)}`
-        obj2['店販業績/人次/單均價'] = `${Math.round(productPerformance)} / ${productOrderCount} / ${Math.round(productAveragePerformance)}`
-        if (memberActive) {
-          obj2['會員卡業績/人次/單均價'] = `${Math.round(membershipPerformance)} / ${Math.round(membershipOrderCount)} / ${Math.round(membershipAveragePerformance)}`
-        }
-        obj2['男/女/未知 (人次)'] = `${Math.round(orderMaleCount)} / ${orderFemaleCount} / ${Math.round(orderUnknownCount)}`
-        obj2['指定/不指定 (人次)'] = `${Math.round(orderDesignateCount)} / ${orderNonDesignatecount}`
-        obj2['男/女/未知 (不重複)'] = `${Math.round(customerMaleCount)} / ${customerFemaleCount} / ${Math.round(customerUnknownCount)}`
-
-        categoryData.forEach(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
-          if (attributeSwitch[index]) {
-            obj2[`${categoryName}` + '/人次/單均價'] = `${Math.round(fakePerformance)} / ${orderCount} / ${Math.round(averagePerformance)}`
+          productAveragePerformance, orderMaleCount, orderFemaleCount, orderUnknownCount, userNo,
+          userName, orderDesignateCount, orderNonDesignatecount, customerMaleCount, customerFemaleCount,
+          customerUnknownCount, categoryData
+        } = element
+        if (
+          fakePerformance > 0 || orderCount > 0 || averagePerformance > 0 ||
+          productPerformance > 0 || productOrderCount > 0 || productAveragePerformance > 0 ||
+          membershipPerformance > 0 || membershipOrderCount > 0 || membershipAveragePerformance > 0 ||
+          orderMaleCount > 0 || orderFemaleCount > 0 || orderUnknownCount > 0
+        ) {
+          obj['編號'] = userNo
+          obj['設計師'] = userName
+          obj['服務業績/人次/單均價'] = `${Math.round(fakePerformance)} / ${Math.round(orderCount)} / ${Math.round(averagePerformance)}`
+          obj['店販業績/人次/單均價'] = `${Math.round(productPerformance)} / ${Math.round(productOrderCount)} / ${Math.round(productAveragePerformance)}`
+          if (memberActive) {
+            obj['會員卡業績/人次/單均價'] = `${Math.round(membershipPerformance)} / ${Math.round(membershipOrderCount)} / ${Math.round(membershipAveragePerformance)}`
           }
-        })
-        excelData.push(obj2)
+          obj['男/女/未知 (人次)'] = `${orderMaleCount} / ${orderFemaleCount} / ${orderUnknownCount}`
+          obj['指定/不指定 (人次)'] = `${orderDesignateCount} / ${orderNonDesignatecount}`
+          obj['男/女/未知 (不重複)'] = `${customerMaleCount} / ${customerFemaleCount} / ${customerUnknownCount}`
+
+          categoryData.forEach(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
+            if (attributeSwitch[index]) {
+              obj[`${categoryName}` + '/人次/單均價'] = `${Math.round(fakePerformance)} / ${orderCount} / ${Math.round(averagePerformance)}`
+            }
+          })
+          excelData.push(obj)
+        }
+      })
+      const obj2 = {}
+      const {
+        categoryData, fakePerformance, orderCount, averagePerformance, productPerformance,
+        productOrderCount, productAveragePerformance, orderMaleCount, orderFemaleCount,
+        orderUnknownCount, orderDesignateCount, orderNonDesignatecount, customerMaleCount,
+        customerFemaleCount, customerUnknownCount
+      } = wholeStore
+
+      obj2['設計師'] = '全店'
+      obj2['服務業績/人次/單均價'] = `${Math.round(fakePerformance)} / ${orderCount} / ${Math.round(averagePerformance)}`
+      obj2['店販業績/人次/單均價'] = `${Math.round(productPerformance)} / ${productOrderCount} / ${Math.round(productAveragePerformance)}`
+      if (memberActive) {
+        obj2['會員卡業績/人次/單均價'] = `${Math.round(membershipPerformance)} / ${Math.round(membershipOrderCount)} / ${Math.round(membershipAveragePerformance)}`
       }
+      obj2['男/女/未知 (人次)'] = `${Math.round(orderMaleCount)} / ${orderFemaleCount} / ${Math.round(orderUnknownCount)}`
+      obj2['指定/不指定 (人次)'] = `${Math.round(orderDesignateCount)} / ${orderNonDesignatecount}`
+      obj2['男/女/未知 (不重複)'] = `${Math.round(customerMaleCount)} / ${customerFemaleCount} / ${Math.round(customerUnknownCount)}`
+
+      categoryData.forEach(({ categoryName, fakePerformance, orderCount, averagePerformance }, index) => {
+        if (attributeSwitch[index]) {
+          obj2[`${categoryName}` + '/人次/單均價'] = `${Math.round(fakePerformance)} / ${orderCount} / ${Math.round(averagePerformance)}`
+        }
+      })
+      excelData.push(obj2)
       setExcelData(excelData)
       setAttributeSwitchs(attributeSwitch)
     }
@@ -182,12 +187,14 @@ function DesignerPerformOverview() {
             </div>
           </div>
         </div>
-        {(!merchantImmediatePerformReportData.loading && merchantImmediatePerformReport !== null) ? (
-          <PerformResultsV2
-            results={merchantImmediatePerformReport}
-            membershipDisplay={membershipDisplay}
-            attributeSwitchs={attributeSwitchs}
-          />
+        {!merchantImmediatePerformReportData.loading ? (
+          merchantImmediatePerformReport && (
+            <PerformResultsV2
+              results={merchantImmediatePerformReport}
+              membershipDisplay={membershipDisplay}
+              attributeSwitchs={attributeSwitchs}
+            />
+          )
         ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示
           <div className="mt-2" aria-busy="true" aria-label="載入中">

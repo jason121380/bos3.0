@@ -27,8 +27,8 @@ function Results({ orders, ...rest }) {
                 <TableHead>設計師</TableHead>
                 <TableHead>指定/不指定</TableHead>
                 <TableHead>帳單狀態</TableHead>
-                <TableHead numeric>服務消費(虛虛)</TableHead>
-                <TableHead numeric>店販消費(虛虛)</TableHead>
+                <TableHead numeric>服務消費(虛)</TableHead>
+                <TableHead numeric>店販消費(虛)</TableHead>
                 <TableHead numeric>卡券銷售</TableHead>
                 <TableHead numeric>卡券使用</TableHead>
                 <TableHead numeric>扣入金</TableHead>
@@ -73,9 +73,12 @@ function Results({ orders, ...rest }) {
                     </div>
                   </TableCell>
                   <TableCell numeric>
-                    {formatNumber(order.productFakeTotal -
+                    {/* 與服務、卡券銷售相同四捨五入（原本未取整數，扣手續費後可能顯示 500.29999999999995） */}
+                    {formatNumber(Math.round(
+                      order.productFakeTotal -
                       order.productOtherPayFee -
-                      order.productThirdPartyPayFee)}
+                      order.productThirdPartyPayFee
+                    ))}
                   </TableCell>
                   <TableCell numeric>
                     {formatNumber(Math.round(

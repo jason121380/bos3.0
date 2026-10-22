@@ -135,8 +135,9 @@ const DesignerPerforamnceAnalyzeReport = () => {
 
   useEffect(() => {
     if (!getUserList.loading) {
+      // 查詢失敗（data 為 undefined）時沒有可選的設計師，不讓整頁拋錯
       const data = idx(getUserList, _ => _.data.getUserOrderableList)
-      setUserList(data)
+      setUserList(data || [])
     }
   }, [getUserList.loading])
 
@@ -355,7 +356,8 @@ const DesignerPerforamnceAnalyzeReport = () => {
           actions={
             <Button
               variant="primary"
-              disabled={analyzeReport.loading || !analyzeReport.data}
+              // 原本查詢失敗（沒有 data）後按鈕永遠停用，無法重試
+              disabled={analyzeReport.loading}
               onClick={handleSearch}
             >
               搜尋
@@ -371,7 +373,7 @@ const DesignerPerforamnceAnalyzeReport = () => {
           isMemberShipCardActive={isMemberShipCardActive}
           compareInputData={compareInputData}
         />
-      ) : (!analyzeReport.loading && analyzeReport.data && !isMemberShipCardActiveData.loading && reportForDisplay !== null ? (
+      ) : analyzeReport.error && !analyzeReport.loading ? null : (!analyzeReport.loading && analyzeReport.data && !isMemberShipCardActiveData.loading && reportForDisplay !== null ? (
         <Results
           report={reportForDisplay}
           date={inputData.dateRange}

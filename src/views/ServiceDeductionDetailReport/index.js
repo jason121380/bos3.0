@@ -54,8 +54,9 @@ const ServiceDeductionDetailReport = () => {
 
   useEffect(() => {
     if (!getAttributionForRake.loading) {
+      // 查詢失敗（data 為 undefined）時只剩「全部」，不讓整頁拋錯
       const data = idx(getAttributionForRake, _ => _.data.getAttributionForRake)
-      setAttributions(data)
+      setAttributions(data || [])
     }
   }, [getAttributionForRake.loading])
 
