@@ -70,6 +70,25 @@ describe('CustomerAutoComplete 顧客', () => {
     await wait(() => expect(combo()).toHaveValue('王小明/0912345678/A001'))
   }, 20000)
 
+  // 計時器與時鐘有誤差：600ms 的計時到期時，牆鐘可能只過了 599ms（2026/10/22 全套高負載下實測），
+  // 原本比對牆鐘差 >= 600 會整個不查，櫃檯打完電話找不到人。這裡讓計時器提早到期，仍要以最後一次輸入查詢
+  it('計時器比時鐘早到期：仍以最後一次輸入的關鍵字查詢', async () => {
+    const realSetInterval = global.setInterval
+    const spy = jest.spyOn(global, 'setInterval').mockImplementation((fn, ms, ...rest) => realSetInterval(fn, ms === 600 ? 0 : ms, ...rest))
+    try {
+      const inputOnChange = jest.fn()
+      const { settle } = renderPage(<Controlled inputOnChange={inputOnChange} />, { fixtures })
+      await settle()
+      openCombo()
+      type('09')
+      type('0912')
+      await wait(() => expect(inputOnChange).toHaveBeenCalledWith('0912'), { timeout: DEBOUNCED_QUERY_TIMEOUT })
+      expect(inputOnChange).not.toHaveBeenCalledWith('09')
+    } finally {
+      spy.mockRestore()
+    }
+  }, 20000)
+
   it('打字停 600ms 才以關鍵字查詢並通知 inputOnChange；選項顯示「姓名 / 電話 / 編號」，選取回傳整筆', async () => {
     const inputOnChange = jest.fn()
     const picked = jest.fn()

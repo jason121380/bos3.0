@@ -251,15 +251,18 @@ describe('重新開單：項目消費區塊', () => {
     expect(header).toHaveTextContent('已填 1 筆 · 800')
   })
 
+  // 服務清單延遲要比頁面其他查詢＋畫面就緒的時間長得多：全套高負載時頁面要 1.5 秒以上才畫好，原本 1500ms 的延遲會先回來（2026/10/22）
   it('服務清單還在載入時「從清單選擇服務」不開啟，載入後才開啟', async () => {
-    const page = setupQueue({}, { delays: { FETCH_SERVICES: 1500 } })
+    setupQueue({}, { delays: { FETCH_SERVICES: 4000 } })
     await screen.findByText(/重新開單 \(A777\)/)
     fireEvent.click(await screen.findByLabelText('從清單選擇服務'))
     expect(screen.queryByRole('dialog')).toBeNull()
-    await page.settle()
-    fireEvent.click(screen.getByLabelText('從清單選擇服務'))
-    expect(await screen.findByRole('dialog')).toBeInTheDocument()
-  })
+    // 服務清單回來後再按就會開啟（輪詢到開啟為止）
+    await wait(() => {
+      fireEvent.click(screen.getByLabelText('從清單選擇服務'))
+      expect(screen.getByRole('dialog')).toBeInTheDocument()
+    }, { timeout: 15000 })
+  }, 30000)
 })
 
 describe('重新開單：服務的第三方卡券', () => {

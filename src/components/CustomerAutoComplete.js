@@ -46,11 +46,14 @@ export default React.forwardRef(function CustomerAutoComplete(
   const [currentTime, setCurrentTime] = useState(0)
   const [keyword, setKeyword] = useState('')
 
+  // 打字停 600ms 才查詢：每次輸入記下自己的時間戳，計時到期時回報「是哪一次輸入的計時」，
+  // 只有最後一次輸入的計時到期才查（之後又打字就不查，等新的計時）
   const handleInputChange = event => {
-    setOnChangeTime(new Date().getTime())
+    const changedAt = new Date().getTime()
+    setOnChangeTime(changedAt)
     setKeyword(event.target.value)
     const currentTimer = setInterval(() => {
-      setCurrentTime(new Date().getTime())
+      setCurrentTime(changedAt)
       clearInterval(currentTimer)
     }, 600)
   }
@@ -59,8 +62,10 @@ export default React.forwardRef(function CustomerAutoComplete(
     setCustomerKeyword(value)
   }, [value])
   
+  // 原本比對牆鐘差 currentTime - onChangeTime >= 600：計時器可能比 Date 早 1ms 觸發（實測差 599），該次查詢整個不送出，
+  // 櫃檯打完電話／編號會找不到人（2026/10/22，Jason「fix all」）。改為比對時間戳是否為最後一次輸入
   useEffect(() => {
-    if (currentTime - onChangeTime >= 600) {
+    if (currentTime !== 0 && currentTime === onChangeTime) {
       setCustomerKeyword(keyword)
       inputOnChange(keyword)
     }
