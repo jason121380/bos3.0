@@ -64,6 +64,8 @@ describe('useProductPicker：店販選擇窗', () => {
     await wait(() => expect(latest.modalProps.productList.data).toEqual([]))
     expect(callsOf(calls, undefined)).toHaveLength(1)
     expect(latest.modalProps.productCategories).toEqual([])
+    // 空清單也帶完整分頁欄位：彈窗分頁顯示 0 筆，不是 NaN，按下一頁也不會把 NaN 寫進查詢
+    expect(latest.modalProps.productList).toEqual({ data: [], totalCount: 0, pageOffset: 0, pageLimit: 50 })
     act(() => latest.handleOpenProductsModal())
     expect(latest.productsModalOpen).toBe(true)
   })
@@ -123,6 +125,7 @@ describe('useMembershipPicker：會員卡選擇窗', () => {
     const { latest } = setup(useMembershipPicker, { FETCH_MEMBERSHIPS_FOR_MODAL: new Error('網路錯誤'), FETCH_MEMBERSHIPS_CATEGORY: new Error('網路錯誤') })
     await wait(() => expect(latest.modalProps.productList.data).toEqual([]))
     expect(latest.modalProps.productCategories).toEqual([])
+    expect(latest.modalProps.productList).toEqual({ data: [], totalCount: 0, pageOffset: 0, pageLimit: 50 })
   })
 
   it('清單載入中按「從清單選擇」不開啟；載入後才開啟', async () => {

@@ -28,6 +28,9 @@ export const MEMBERSHIP_PICKER_SETTING = Object.freeze({
   categoryUUIds: [],
 })
 
+// 查詢失敗時的空清單：0 筆，分頁沿用目前的查詢條件
+const emptyPage = setting => ({ data: [], totalCount: 0, pageOffset: setting.pageOffset, pageLimit: setting.pageLimit })
+
 // 店販：只列出可販售的商品
 export function useProductPicker() {
   const [productsModalOpen, setProductsModalOpen] = useState(false)
@@ -41,7 +44,8 @@ export function useProductPicker() {
   useEffect(() => {
     if (!products.loading && !productCategoriesData.loading) {
       // 查詢失敗時 data 為 undefined（錯誤提示由 errorLink 統一跳出）：清單與分類當作空的，帳單頁照常可用
-      const productList = idx(products, _ => _.data.products) || { data: [] }
+      // 分頁欄位一併補上，彈窗的分頁才不會顯示 NaN、按下一頁也不會把 NaN 寫進查詢條件（Codex review PR #263）
+      const productList = idx(products, _ => _.data.products) || emptyPage(setting)
       const productForSell = productList.data.filter(product => product.isAvailableForSale)
       const productCategories = idx(productCategoriesData, _ => _.data.productCategories) || []
 
@@ -107,7 +111,7 @@ export function useMembershipPicker() {
   useEffect(() => {
     if (!products.loading && !productCategoriesData.loading) {
       // 查詢失敗時同店販：清單與分類當作空的（彈窗以 productList.data.length 計筆數）
-      const productList = idx(products, (_) => _.data.memberships) || { data: [] };
+      const productList = idx(products, (_) => _.data.memberships) || emptyPage(setting);
       const productCategories = idx(productCategoriesData, (_) => _.data.membershipCategories) || [];
       setProductList({
         ...productList,
