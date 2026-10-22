@@ -10,6 +10,9 @@ import { createAutoMockLink, callsOf } from '../../../__tests__/testkit.test'
 // - 選卡券時金額帶卡券價格、助理欄位依該服務的助理設定展開（沒有設定就沒有欄位），並通知帳單換卡券
 // - 改助理時只把「有選人」的助理送進帳單；清除時所有助理清空並通知帳單
 // - 金額顯示：過長的小數取一位，四捨五入後為 0 時顯示 0（不顯示 0.0）
+// 已知缺口（TODO P3 覆蓋率 A 級疑似 bug ①，待 Jason 決定）：選卡券時產生的助理類型是「洗髮 - 助理A」，之後重新查詢卡券紀錄時
+// 產生「洗髮-助理A」，以字串完全相等去重，畫面會出現重複的助理欄位。兩種格式哪個才對尚未決定，這裡只比對類型與人員，
+// 也沒有模擬「選完後重新查詢」那一步——本檔不保護「選卡券後不重複」；修正後補上單一格式與重新查詢的斷言。
 // GraphQL 由模擬 link 回應，不連後端。
 
 afterEach(cleanup)
@@ -87,7 +90,7 @@ describe('選卡券、改助理、清除', () => {
     const { latest, onChange } = setup({ customerTicketId: '', useTicketOrderHelpers: [] }, { index: 2 })
     act(() => latest.handleCustomerTicketChange(ticket))
     expect(latest.price).toBe(450)
-    // 類型名稱的分隔格式另見回報（與載入既有帳單時不同），這裡只比對類型與人員
+    // 類型名稱的分隔格式與載入既有帳單時不同（見檔頭已知缺口），這裡只比對類型與人員
     const expected = [['洗髮', '助理A', 'POINT'], ['洗髮', '助理B', 'POINT'], ['吹整', '助理C', 'CASH']]
     expect(latest.ticketOrderHelpers).toHaveLength(3)
     latest.ticketOrderHelpers.forEach((helper, i) => {

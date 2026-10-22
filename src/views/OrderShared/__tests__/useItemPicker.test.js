@@ -6,9 +6,11 @@ import { createAutoMockLink, callsOf } from '../../../__tests__/testkit.test'
 
 // 為什麼重要：店販／會員卡「從清單選擇」彈窗的資料來源（四個帳單頁共用）。
 // 守住：
-// - 店販清單只列「可販售」的商品（停售的商品不能被賣出）；會員卡只查可販售的會員卡
+// - 店販清單只列「可販售」的商品（停售的商品不能被賣出）；會員卡第一次查詢只查可販售的會員卡
 // - 清單還在載入時按「從清單選擇」不開啟（避免開出空的彈窗、選不到東西）
 // - 換頁／每頁筆數寫入查詢條件；關閉彈窗時清掉分類與關鍵字，下次開啟看到全部
+// 已知缺口（TODO P3 覆蓋率 A 級疑似 bug ③，待 Jason 確認後端預設）：關閉彈窗後重設的查詢條件少了 isAvailableForSale 與分頁參數，
+// 可能列出停售會員卡。這裡刻意不斷言重設後的完整條件（不把現況當成正確）；確認並修正後補上完整斷言。
 // GraphQL 由模擬 link 回應，不連後端。
 
 afterEach(cleanup)
@@ -115,7 +117,7 @@ describe('useMembershipPicker：會員卡選擇窗', () => {
     await wait(() => expect(lastInput(calls, 'FETCH_MEMBERSHIPS_FOR_MODAL').pageLimit).toBe(25))
   })
 
-  it('關閉：彈窗關閉、清掉所選分類與關鍵字', async () => {
+  it('關閉：彈窗關閉、清掉所選分類與關鍵字（重設後是否仍只查可販售見檔頭已知缺口）', async () => {
     const { calls, latest } = setup(useMembershipPicker)
     await wait(() => expect(latest.modalProps.productList.data).toBeDefined())
     act(() => latest.handleOpenProductsModal())

@@ -8,7 +8,7 @@
 
 ## 一、今天完成了什麼
 
-- **覆蓋率 A 級核心（2026/10/22，v3.10220824，Jason「覆蓋率要100」→ 選全站 100%，先做 A 級）**：helper、lib、store、OrderShared、DeductionSettingShared、三個 *Requirements 從 68.4→99.3%（敘述）；58 檔中 49 檔四項 100%，其餘 9 檔剩下的皆為跑不到的程式或下方的疑似 bug。新增 206 個測試（12 個新測試檔，各檔開頭寫明保護的業務規則），未改產品程式、未加 istanbul ignore。`package.json` 門檻：達標群組 100，其餘以達成值為門檻；全域下限 30/26/21/30→34/29/24/34。全站覆蓋率 35.7→37.0%。驗證：`lint:build`、103 檔／856 測試（UTC 與洛杉磯）、`test:coverage` 門檻通過、build。
+- **覆蓋率 A 級核心（2026/10/22，v3.10220828，Jason「覆蓋率要100」→ 選全站 100%，先做 A 級）**：helper、lib、store、OrderShared、DeductionSettingShared、三個 *Requirements 從 68.4→99.3%（敘述）；58 檔中 49 檔四項 100%，其餘 9 檔剩下的皆為跑不到的程式或下方的疑似 bug。新增 206 個測試（12 個新測試檔，各檔開頭寫明保護的業務規則），未改產品程式、未加 istanbul ignore。`package.json` 門檻：達標群組 100，其餘以達成值為門檻；全域下限 30/26/21/30→34/29/24/34。全站覆蓋率 35.7→37.0%。驗證：`lint:build`、103 檔／856 測試（UTC 與洛杉磯）、`test:coverage` 門檻通過、build。
 
 - **重新開單扣入金（2026/10/22，v3.10220723，Jason「失敗沒有扣入金、重新要清空」）**：①確認佇列帳單建立失敗時沒有扣入金，可用額度維持＝顧客目前餘額，移除抄自帳單詳細、從不成立的 `order.customerId` 比對與 `walletPayByOrder`；②換成佇列帳單原本以外的顧客時扣入金歸 0（比照掛單詳細，以佇列帳單本身的顧客比對；在重新開單頁改選另一筆佇列帳單時元件沿用，新帳單帶入的扣入金不會被誤清——Codex review PR #261）。新增 `QueueOrderEdit/__tests__/PaymentCustomerWallet.test.js` 3 個（載入保留、換顧客清空、改選另一筆佇列帳單保留）。驗證：`lint:build`、91 檔／650 測試（UTC 與洛杉磯）、build。
 
