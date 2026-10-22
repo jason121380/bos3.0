@@ -14,6 +14,9 @@ import DesignerBeenAssistedAutoComplete from 'components/DesignerBeenAssistedAut
 import BookingRecordListAutoComplete from 'components/BookingRecordListAutoComplete'
 
 afterEach(cleanup)
+// 顧客下拉打字停 600ms 才查詢（真實計時）：全套測試多個 Jest 程序同時執行時，等待查詢回來可能超過 4 秒
+//（2026/10/22 全套高負載下兩個測試逾時、單獨跑都通過），等待上限放寬，邏輯斷言不變
+const DEBOUNCED_QUERY_TIMEOUT = 12000
 
 const combo = () => screen.getByRole('combobox')
 const openCombo = () => fireEvent.click(combo())
@@ -65,7 +68,7 @@ describe('CustomerAutoComplete 顧客', () => {
     expect(ready).toHaveBeenCalledWith(false)
     expect(ready).toHaveBeenLastCalledWith(true)
     await wait(() => expect(combo()).toHaveValue('王小明/0912345678/A001'))
-  }, 15000)
+  }, 20000)
 
   it('打字停 600ms 才以關鍵字查詢並通知 inputOnChange；選項顯示「姓名 / 電話 / 編號」，選取回傳整筆', async () => {
     const inputOnChange = jest.fn()
@@ -76,13 +79,13 @@ describe('CustomerAutoComplete 顧客', () => {
     openCombo()
     type('0912')
     expect(inputOnChange).not.toHaveBeenCalled()
-    await wait(() => expect(inputOnChange).toHaveBeenCalledWith('0912'), { timeout: 4000 })
+    await wait(() => expect(inputOnChange).toHaveBeenCalledWith('0912'), { timeout: DEBOUNCED_QUERY_TIMEOUT })
     await settle()
     expect(callsOf(calls, 'FETCH_CUSTOMERS_IN_AUTO_COMPLETE').slice(before).map(c => c.variables.input.keyword)).toContain('0912')
     await wait(() => expect(optionTexts()).toEqual(['王小明 / 0912345678 / A001', '林大同 / 0912000111 / A002']))
     fireEvent.click(screen.getByRole('option', { name: '林大同 / 0912000111 / A002' }))
     expect(picked).toHaveBeenLastCalledWith(expect.objectContaining({ id: 'c3' }))
-  }, 15000)
+  }, 20000)
 
   it('打完整會員編號：只列編號完全相同的那位', async () => {
     const { settle } = renderPage(<Controlled />, {
@@ -91,8 +94,8 @@ describe('CustomerAutoComplete 顧客', () => {
     await settle()
     openCombo()
     type('A002')
-    await wait(() => expect(optionTexts()).toEqual(['林大同 / 0912000111 / A002']), { timeout: 4000 })
-  }, 15000)
+    await wait(() => expect(optionTexts()).toEqual(['林大同 / 0912000111 / A002']), { timeout: DEBOUNCED_QUERY_TIMEOUT })
+  }, 20000)
 
   it('打電話後按 Enter：查詢回來自動帶入第一位，焦點移到服務人員欄；其他按鍵不觸發', async () => {
     const picked = jest.fn()
@@ -108,16 +111,16 @@ describe('CustomerAutoComplete 顧客', () => {
     fireEvent.keyDown(combo(), { key: 'Enter', keyCode: 13 })
     expect(onKeyDown).toHaveBeenCalledTimes(2)
     expect(designerRef.current.focus).toHaveBeenCalledTimes(1)
-    await wait(() => expect(picked).toHaveBeenCalledWith(expect.objectContaining({ id: 'c2' })), { timeout: 4000 })
+    await wait(() => expect(picked).toHaveBeenCalledWith(expect.objectContaining({ id: 'c2' })), { timeout: DEBOUNCED_QUERY_TIMEOUT })
     await settle()
     expect(picked.mock.calls.every(([c]) => c.id === 'c2')).toBe(true)
-  }, 15000)
+  }, 20000)
 
   it('沒有會員編號的顧客只顯示「姓名/電話」', async () => {
     const { settle } = renderPage(<Controlled initial="c2" />, { fixtures })
     await settle()
     await wait(() => expect(combo()).toHaveValue('陳美麗/0922333444'))
-  }, 15000)
+  }, 20000)
 
   it('按 Enter 但查無顧客時不帶入；沒有 designerRef 也不壞', async () => {
     const picked = jest.fn()
@@ -128,11 +131,11 @@ describe('CustomerAutoComplete 顧客', () => {
     await settle()
     type('0999')
     fireEvent.keyDown(combo(), { key: 'Enter', keyCode: 13 })
-    await wait(() => expect(screen.queryAllByRole('option')).toHaveLength(0), { timeout: 4000 })
+    await wait(() => expect(screen.queryAllByRole('option')).toHaveLength(0), { timeout: DEBOUNCED_QUERY_TIMEOUT })
     await act(() => new Promise(resolve => setTimeout(resolve, 700)))
     await settle()
     expect(picked).not.toHaveBeenCalled()
-  }, 15000)
+  }, 20000)
 
   it('清除回傳 { id: "" }；無顧客（withoutCustomer）或已開單（orderAlready）時停用，已開單顯示載入圖示', async () => {
     const picked = jest.fn()
@@ -149,7 +152,7 @@ describe('CustomerAutoComplete 顧客', () => {
     const { container } = renderPage(<CustomerAutoComplete orderAlready />, { fixtures })
     expect(combo()).toBeDisabled()
     expect(container.querySelector('.animate-spin')).not.toBeNull()
-  }, 15000)
+  }, 20000)
 
   it('查詢失敗：沒有選項也不壞；沒給 onChange 時選取不拋錯', async () => {
     const { settle } = renderPage(<CustomerAutoComplete />, { fallback: 'error' })
@@ -163,7 +166,7 @@ describe('CustomerAutoComplete 顧客', () => {
     await s2()
     openCombo()
     expect(() => fireEvent.click(screen.getAllByRole('option')[0])).not.toThrow()
-  }, 15000)
+  }, 20000)
 })
 
 describe('EmployeeAutoComplete 服務人員', () => {

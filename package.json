@@ -102,10 +102,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 27,
-        "functions": 22,
-        "lines": 31,
-        "statements": 31
+        "branches": 15,
+        "functions": 15,
+        "lines": 21,
+        "statements": 21
       },
       "./src/helper/*.js": {
         "statements": 100,
@@ -172,6 +172,54 @@
         "branches": 99,
         "functions": 99,
         "lines": 99
+      },
+      "./src/hooks/": {
+        "statements": 100,
+        "branches": 99,
+        "functions": 100,
+        "lines": 100
+      },
+      "./src/components/": {
+        "statements": 99,
+        "branches": 98,
+        "functions": 99,
+        "lines": 99
+      },
+      "./src/ui/": {
+        "statements": 100,
+        "branches": 99,
+        "functions": 100,
+        "lines": 100
+      },
+      "./src/layouts/": {
+        "statements": 98,
+        "branches": 96,
+        "functions": 97,
+        "lines": 98
+      },
+      "./src/elements/": {
+        "statements": 99,
+        "branches": 97,
+        "functions": 86,
+        "lines": 99
+      },
+      "./src/utils/": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "./src/context/": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "./src/mixins/": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
       }
     },
     "coverageReporters": [
