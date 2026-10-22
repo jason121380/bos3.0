@@ -49,6 +49,10 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
     setSelectedMembership(newSelect)
   }
 
+  // 表頭全選以「啟用中的會員卡」判斷（Jason 2026/10/22 授權修正：原本與含停用的總數比，有停用的卡時永遠不會全選、再按也無法取消）
+  const usingIds = memberships.data.filter(d => d.isUsing).map(d => d.uuid)
+  const isAllSelected = usingIds.length > 0 && usingIds.every(uuid => selectedMembership.indexOf(uuid) > -1)
+
   // 刪除會員卡
   const handleConfirmCancel = () => {
     deleteMembership(selectedMembership)
@@ -66,22 +70,6 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
           variant: 'error',
         })
       })
-  }
-
-  // 換頁
-  const handleOnChangePage = (_event, nextPage) => {
-    onPageChange({
-      value: nextPage,
-      key: 'pageOffset',
-    })
-  }
-
-  // 換一頁裡面呈現出來的筆數
-  const handleOnChangeRowsPerPage = event => {
-    onPageChange({
-      value: event.target.value,
-      key: 'pageLimit',
-    })
   }
 
   // 關閉批量修改的modal
@@ -164,14 +152,8 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
                 <TableHead className="w-12">
                   <Checkbox
                     aria-label="全選"
-                    checked={
-                      selectedMembership.length === memberships.data.length &&
-                      memberships.data.length > 0
-                    }
-                    indeterminate={
-                      selectedMembership.length > 0 &&
-                      selectedMembership.length < memberships.data.length
-                    }
+                    checked={isAllSelected}
+                    indeterminate={selectedMembership.length > 0 && !isAllSelected}
                     onChange={handleSelectAll}
                     disabled={
                       memberships.data.length === 0 ||
@@ -236,16 +218,6 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
               ))}
             </TableBody>
           </Table>
-          {/* <TablePagination
-            labelRowsPerPage='每頁顯示數量'
-            component="div"
-            count={1}
-            onPageChange={handleOnChangePage}
-            onRowsPerPageChange={handleOnChangeRowsPerPage}
-            page={memberships.pageOffset}
-            rowsPerPage={memberships.pageLimit}
-            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
-          /> */}
         </div>
       </Card>
       <TableEditBar

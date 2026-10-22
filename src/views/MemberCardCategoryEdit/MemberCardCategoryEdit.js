@@ -28,6 +28,8 @@ function MemberCardCategoryEdit({ match }) {
   useEffect(() => {
     if (!membershipCategory.loading) {
       const membershipInfo = idx(membershipCategory, _ => _.data.membershipCategory)
+      // 查詢失敗或查無分類時不帶入（原本讀 undefined.uuid 整頁進入錯誤畫面）
+      if (!membershipInfo) return
       setSubmitValue({
         itemUUID: membershipInfo.uuid,
         no: membershipInfo.no,

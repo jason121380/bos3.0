@@ -28,13 +28,9 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
   }
 
   const handleValueChange = (key, value) => {
-    const checkKey = ['product', 'membershipCard', 'nameForGroup']
     setInputValue(
       produce(draft => {
         draft[key] = value
-        if (value === '' && !checkKey.includes(key)) {
-          draft[key].belong = []
-        }
       })
     )
   }

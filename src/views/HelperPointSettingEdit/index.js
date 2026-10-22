@@ -32,6 +32,8 @@ function HelperPointSettingEdit({ match }) {
   useEffect(() => {
     if (!getMerchantPointValueSettingsForEdit.loading) {
       const data = idx(getMerchantPointValueSettingsForEdit, _ => _.data.getMerchantPointValueSetting)
+      // 查詢失敗或查無設定時不帶入（原本讀 undefined.name 整頁進入錯誤畫面）
+      if (!data) return
       const newSubmitData = cloneDeep(submitData)
       newSubmitData.name = data.name
       newSubmitData.paidFixed = data.paidFixed

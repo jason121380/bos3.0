@@ -266,7 +266,7 @@ describe('編輯規則', () => {
   })
 
   it.each([
-    ['規則名稱空白', { nameForGroup: '  ' }, '請輸入活動名稱。'],
+    ['規則名稱空白', { nameForGroup: '  ' }, '請輸入規則名稱。'],
     ['自訂歸屬但沒有歸屬', { consumptionTypeRules: [SPECIFIC('SERVICE', [])] }, '請選擇服務套用的歸屬。'],
     ['自訂卻沒有任何消費類型', { consumptionTypeRules: [] }, '請選套用的消費類型。'],
     ['沒有付款方式', { payTypeUsing: [] }, '請選擇適用付款方式。'],

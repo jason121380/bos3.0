@@ -237,7 +237,7 @@ describe('建立規則', () => {
     const { calls } = setup()
     await loaded()
     fireEvent.click(submit())
-    await wait(() => expect(openSnackbar).toHaveBeenLastCalledWith({ message: '請輸入活動名稱。', variant: 'error' }))
+    await wait(() => expect(openSnackbar).toHaveBeenLastCalledWith({ message: '請輸入規則名稱。', variant: 'error' }))
     fireEvent.change(fieldByLabel('規則名稱'), { target: { value: '滿千送券' } })
     customize()
     fireEvent.click(submit())

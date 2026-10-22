@@ -71,17 +71,21 @@ function EventRuleCreate({ match }) {
 
   useEffect(() => {
     if (!getAttribution.loading) {
-      const data = idx(getAttribution, _ => _.data.getAttribution).map(({ name }) => name)
+      // 歸屬查詢失敗時當成沒有歸屬選項（原本對 undefined 呼叫 .map 整頁進入錯誤畫面）
+      const data = (idx(getAttribution, _ => _.data.getAttribution) || []).map(({ name }) => name)
       setAttributions(data)
     }
   }, [getAttribution.loading])
 
   useEffect(() => {
     if (!getMainEvent.loading) {
+      const main = idx(getMainEvent, _ => _.data.mainEvent)
+      // 主活動查詢失敗或查無主活動時不帶入（原本解構 undefined 整頁進入錯誤畫面）
+      if (!main) return
       const {
         nameDefault, startDateDefault, endDateDefault,
         isSMSNotifyDefault, maxCountDefault
-      } = idx(getMainEvent, _ => _.data.mainEvent)
+      } = main
 
       const cloneData = cloneDeep(inputValue)
 
@@ -166,7 +170,7 @@ function EventRuleCreate({ match }) {
         },
       ]
 
-      if (!submitData.nameForGroup) throw new Error('請輸入活動名稱。')
+      if (!submitData.nameForGroup) throw new Error('請輸入規則名稱。')
 
       if (consumptionTypeUsing !== 'ALL') {
         if (product) {

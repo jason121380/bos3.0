@@ -9,6 +9,7 @@ import { openSnackbar } from 'elements/snackbars'
 import { useMemo, useState, useEffect } from 'react'
 import { useHistory } from 'react-router'
 import produce from 'immer'
+import idx from 'idx'
 
 import Page from 'components/Page'
 import General from './General'
@@ -111,7 +112,8 @@ function ShortcutCreate() {
 
   useEffect(() => {
     if (!services.loading) {
-      const data = services.data.services.data
+      // 任一清單查詢失敗時該清單當成空的（原本讀 undefined 整頁進入錯誤畫面）
+      const data = idx(services, _ => _.data.services.data) || []
       const filtData = doFilter(data, servicesKeyword)
       setServicesData(filtData)
     }
@@ -119,7 +121,7 @@ function ShortcutCreate() {
 
   useEffect(() => {
     if (!products.loading) {
-      const data = products.data.products.data
+      const data = idx(products, _ => _.data.products.data) || []
       const filtData = doFilter(data, productKeyword)
       setProductData(filtData)
     }
@@ -127,7 +129,7 @@ function ShortcutCreate() {
 
   useEffect(() => {
     if (!tickets.loading) {
-      const data = tickets.data.tickets
+      const data = idx(tickets, _ => _.data.tickets) || []
       const filtData = doFilter(data, ticketKeyword)
       setTicketData(filtData)
     }
@@ -135,7 +137,7 @@ function ShortcutCreate() {
 
   useEffect(() => {
     if (!memberCards.loading) {
-      const data = memberCards.data.memberships.data.map(({ uuid, ...rest }) => (
+      const data = (idx(memberCards, _ => _.data.memberships.data) || []).map(({ uuid, ...rest }) => (
         {
           ...rest,
           id: uuid

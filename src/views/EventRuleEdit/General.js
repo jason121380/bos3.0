@@ -14,6 +14,7 @@ import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'
 
+// 已結束規則的歸屬多選一律以 isReadOnly 唯讀（Jason 2026/10/22 授權修正：服務／賣卡先入／賣卡後入原本傳成 readOnly，被元件的 isReadOnly=false 蓋掉而仍可修改）
 function General({ inputValue, attributions, setInputValue, handleSubmit, isClick, mainEvent, isReadOnly, eventId }) {
   const handleDateChange = (value, pickerType) => {
     const newValue = cloneDeep(inputValue)
@@ -27,13 +28,9 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
   }
 
   const handleValueChange = (key, value) => {
-    const checkKey = ['product', 'membershipCard', 'nameForGroup']
     setInputValue(
       produce(draft => {
         draft[key] = value
-        if (value === '' && !checkKey.includes(key)) {
-          draft[key].belong = []
-        }
       })
     )
   }
@@ -199,7 +196,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                       isloading={attributions.langth === 0}
                       value={inputValue.service.belong}
                       className='Autocomplete'
-                      readOnly={isReadOnly}
+                      isReadOnly={isReadOnly}
                       onChange={value => handleTypeChange('service', 'belong', value)}
                     />
                   )}
@@ -242,7 +239,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                       isloading={attributions.langth === 0}
                       value={inputValue.ticketSellInPerformance.belong}
                       className='Autocomplete'
-                      readOnly={isReadOnly}
+                      isReadOnly={isReadOnly}
                       onChange={value => handleTypeChange('ticketSellInPerformance', 'belong', value)}
                     />
                   )}
@@ -284,7 +281,7 @@ function General({ inputValue, attributions, setInputValue, handleSubmit, isClic
                       isloading={attributions.langth === 0}
                       value={inputValue.ticketSellNotInPerformance.belong}
                       className='Autocomplete'
-                      readOnly={isReadOnly}
+                      isReadOnly={isReadOnly}
                       onChange={value => handleTypeChange('ticketSellNotInPerformance', 'belong', value)}
                     />
                   )}

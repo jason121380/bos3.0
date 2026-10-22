@@ -98,19 +98,19 @@ export default function MemberCardCreate() {
   const handleSubmit = () => {
     //如果抽成card關掉就把抽成的欄位拿掉
     try {
+      // 不販售時送出的抽成一律清回固定 0（Jason 2026/10/22 授權修正：原本只 setState，送出的仍是同一次 render 的舊抽成）
+      const saleFields = forSale
+        ? {}
+        : { commissionWay: 'fixed', commission: 0, isAvailableForSale: false }
       if (!forSale) {
-        setSubmitValue({
-          ...submitValue,
-          commissionWay: 'fixed',
-          commission: 0,
-          isAvailableForSale: false,
-        })
+        setSubmitValue({ ...submitValue, ...saleFields })
       }
       if ( parseInt(submitValue.effecitveDay, 10) < 0) {
         openSnackbar({ message: '請輸入有效期限大於或等於0', variant: 'error' })
       } else {
         createMembership({
           ...submitValue,
+          ...saleFields,
           OfficialBrandMerchantId: merchantId,
         })
           .then(() => {

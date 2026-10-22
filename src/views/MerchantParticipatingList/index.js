@@ -34,7 +34,8 @@ function MerchantParticipatingList() {
 
   useEffect(() => {
     if (!merchantParticipatingList.loading) {
-      const data = idx(merchantParticipatingList, _ => _.data.merchantParticipatingList)
+      // 查詢失敗時當成沒有資料（原本 events 變 undefined、讀 .length 整頁進入錯誤畫面）
+      const data = idx(merchantParticipatingList, _ => _.data.merchantParticipatingList) || []
       setEvents(data)
     }
   }, [merchantParticipatingList.loading])
