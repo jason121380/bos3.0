@@ -21,7 +21,7 @@ BOS 3.0 是美業 ERP 的純前端 SPA（Vite 5 + React 17 + Apollo GraphQL + Re
 2. **列印範本不動**：`#printMain`、`#printThermal`、會被 `innerHTML` 複製到列印視窗的區塊、`className` 含 `print` 的元素。
 3. 保留所有 `data-testid`、`id`、`name`、`ref`、`key`、`aria-*`。
 4. 後端 repo `beautyos_api`、`beautyos_merchant` **唯讀**，不要動。
-5. **不要建立、送出或儲存真實帳單／資料**；測試用模擬後端（mock GraphQL），不連真實資料。
+5. **不要建立、送出或儲存真實帳單／資料，也不可以連到任何真實資料庫（正式與測試後端都不行，Jason 2026/10/22）**；測試用模擬後端（mock GraphQL）。單元測試由 `setupTests.js` 全域封鎖 `fetch`／`XMLHttpRequest`／`WebSocket`（`src/__tests__/networkGuard.test.js` 驗證），不要放寬；瀏覽器腳本除了 `page.route` 回假資料、非本機一律 abort，**還要**在 `chromium.launch` 加 `--host-resolver-rules=MAP *.run.app ~NOTFOUND, MAP *beautyos* ~NOTFOUND, MAP *crt-test* ~NOTFOUND`（`page.route` 攔不到 WebSocket，頂列的 socket.io 會直連後端）。請人員實機操作前，必須先確認有與正式資料完全隔離的測試後端。
 6. 只在指定分支開發與推送；合併流程見下方「Git 與合併」。
 
 ## 常用指令
@@ -31,9 +31,9 @@ npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps（CI／Docke
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
 npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base＋react-hooks/rules-of-hooks 為 error，0 warning）
-CI=true npm run test:nowatch         # 全部單元測試（基準：148 檔／1544 測試全數通過，全套約 8 分鐘）
+CI=true npm run test:nowatch         # 全部單元測試（基準：206 檔／2882 測試全數通過，全套約 14 分鐘）
 TZ=America/Los_Angeles CI=true npm run test:nowatch   # 時區相關修改要另在海外時區跑一次
-CI=true npm run test:coverage        # 覆蓋率（A 級核心 helper／lib／store／OrderShared／DeductionSettingShared／*Requirements 要求 100%，其餘為全域下限；Jason 2026/10/22 定全站 100% 為目標，分波推進）
+CI=true npm run test:coverage        # 覆蓋率（A 級核心 helper／lib／store／OrderShared／DeductionSettingShared／*Requirements 要求 100%；共用層 hooks／ui／utils／context／mixins 100（分支 99）、components 99、elements 99、layouts 98；帳單四頁 99；其餘〔頁面〕為全域下限；Jason 2026/10/22 定全站 100% 為目標，分波推進）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
 node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面驗證
 ```
