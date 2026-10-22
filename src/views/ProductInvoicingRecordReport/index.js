@@ -44,7 +44,8 @@ const ProductInvoicingRecordReport = () => {
 
   const selectAll = event => {
     event.stopPropagation()
-    const data = idx(getAllProducts, _ => _.data.products.data)
+    // 商品查詢失敗時 data 為 undefined：當成沒有商品，不讓整頁拋錯
+    const data = idx(getAllProducts, _ => _.data.products.data) || []
     setSubmitValue({ ...submitValue, selectProduct: data })
   }
 
@@ -60,7 +61,7 @@ const ProductInvoicingRecordReport = () => {
 
   useEffect(() => {
     if (!getAllProducts.loading) {
-      const data = idx(getAllProducts, _ => _.data.products.data)
+      const data = idx(getAllProducts, _ => _.data.products.data) || []
       setProductOptions(data)
     }
   }, [getAllProducts.loading])
@@ -81,6 +82,10 @@ const ProductInvoicingRecordReport = () => {
   useEffect(() => {
     handleSearch()
   }, [date])
+
+  // 報表查詢失敗（error）後條件與「搜尋」仍可操作，讓使用者重試（原本 data 為 undefined 就一直停用）
+  const searchDisabled = getAllProducts.loading || invoicingRecordReportLazyData.loading ||
+    (invoicingRecordReportLazyData.data === undefined && !invoicingRecordReportLazyData.error)
 
   const handleSearch = (inputDate = date) => {
     const productId = submitValue.selectProduct.map(d => d.id)
@@ -138,7 +143,7 @@ const ProductInvoicingRecordReport = () => {
                     size="small"
                     value={submitValue.recordType}
                     onChange={(e, value) => setSubmitValue({ ...submitValue, recordType: value })}
-                    disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
+                    disabled={searchDisabled}
                     exclusive={false}
                   >
                     {performanceEnum.map((data, idx) => (
@@ -158,7 +163,7 @@ const ProductInvoicingRecordReport = () => {
                     variant="secondary"
                     size="sm"
                     style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                    disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
+                    disabled={searchDisabled}
                     onClick={selectAll}>全選</UIButton>
                 }
                 onOpen={() => setOpen(true)}
@@ -184,14 +189,12 @@ const ProductInvoicingRecordReport = () => {
                 }
                 }
                 filterOptions={(options, { inputValue }) => {
+                  // 沒有代號的商品也要能選（選項顯示「無代號」），依名稱比對（原本沒有代號一律濾掉）
                   const keyWord = inputValue.toLocaleLowerCase()
                   const newOptions = options.filter(d => {
-                    if (d.no) {
-                      const no = d.no.toLocaleLowerCase()
-                      const name = d.name.toLocaleLowerCase()
-                      return no.includes(keyWord) || name.includes(keyWord)
-                    }
-                    return false
+                    const no = (d.no || '').toLocaleLowerCase()
+                    const name = d.name.toLocaleLowerCase()
+                    return no.includes(keyWord) || name.includes(keyWord)
                   })
                   return newOptions
                 }}
@@ -214,7 +217,7 @@ const ProductInvoicingRecordReport = () => {
               variant="primary"
               onClick={() => handleSearch()}
               className="w-[100px] shrink-0"
-              disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
+              disabled={searchDisabled}
             >
               搜尋
             </UIButton>

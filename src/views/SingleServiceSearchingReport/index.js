@@ -88,35 +88,14 @@ const DesignerPerformBasic = () => {
 
   useEffect(() => {
     if (!services.loading && !ticket.loading) {
-      const serviceData = idx(services, _ => _.data.services.data)
-      const ticketData = idx(ticket, _ => _.data.tickets)
-      const tmpServiceData = []
-      serviceData.forEach(service => {
-        if (service.no.trim().length > 0) {
-          tmpServiceData.push({
-            label: service.no + ' - ' + service.name,
-            value: service.id,
-          })
-        } else {
-          tmpServiceData.push({
-            label: service.name,
-            value: service.id,
-          })
-        }
+      // 查詢失敗時 data 為 undefined：當成沒有服務／卡券；代號為 null 視為沒有代號（原本兩者都會整頁拋錯）
+      const serviceData = idx(services, _ => _.data.services.data) || []
+      const ticketData = idx(ticket, _ => _.data.tickets) || []
+      const toOption = ({ id, no, name }) => ({
+        label: (no || '').trim().length > 0 ? no + ' - ' + name : name,
+        value: id,
       })
-      ticketData.forEach(ticket => {
-        if (ticket.no.trim().length > 0) {
-          tmpServiceData.push({
-            label: ticket.no + ' - ' + ticket.name,
-            value: ticket.id,
-          })
-        } else {
-          tmpServiceData.push({
-            label: ticket.name,
-            value: ticket.id,
-          })
-        }
-      })
+      const tmpServiceData = [...serviceData, ...ticketData].map(toOption)
       setTmpService(tmpServiceData)
     }
   }, [services.loading, ticket.loading])

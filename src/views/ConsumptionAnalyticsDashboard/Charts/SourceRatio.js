@@ -4,7 +4,7 @@ import React from 'react'
 import {
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts";
-import { gendercolor, performanceColor } from '../Colors';
+import { performanceColor } from '../Colors';
 
 const SourceRatio = ({ data, width }) => {
   const checkSourceRatio = data => {
@@ -13,7 +13,7 @@ const SourceRatio = ({ data, width }) => {
   const renderOrderGenderRatioLabel = ({
     cx, cy, midAngle, innerRadius,
     outerRadius, index, percentage
-  }, isSource = false) => {
+  }) => {
     const RADIAN = Math.PI / 180;
     const radius = 20 + innerRadius + (outerRadius - innerRadius);
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -23,7 +23,7 @@ const SourceRatio = ({ data, width }) => {
         key={`orderGenderRatioText-${index}`}
         x={x}
         y={y}
-        fill={isSource ? performanceColor[index % 30] : gendercolor[index]}
+        fill={performanceColor[index % 30]}
         fontSize={width < 980 && width >= 900 ? '14' : width < 450 ? '12' : '16'}
         textAnchor={x > cx ? "start" : "end"}
         dominantBaseline="central"
@@ -60,7 +60,7 @@ const SourceRatio = ({ data, width }) => {
                       data={data}
                       outerRadius={width < 1330 && width >= 900 ? 90 : width < 450 ? 80 : 120}
                       fill="#8884d8"
-                      label={e => renderOrderGenderRatioLabel(e, true)}
+                      label={renderOrderGenderRatioLabel}
                     >
                       {data.map((e, index) => (
                         <Cell key={`gernerRatioCell-${index}`} fill={performanceColor[index % 30]} />

@@ -38,7 +38,8 @@ function Results({
       } else {
         return `${Math.round(Math.abs(cashRevenue / denominator * 10000)) / 100}%`
       }
-    } else if (cashExpenditure === 0) {
+    } else if (cashExpenditure === 0 || denominator === 0) {
+      // 營收分母為 0（例如該月只有支出）時不顯示佔比（原本顯示「Infinity%」）
       return ''
     } else {
       return `${Math.round(Math.abs(cashRevenue + cashExpenditure) / denominator * 10000) / 100}%`

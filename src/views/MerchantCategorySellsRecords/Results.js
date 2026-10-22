@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { CSVLink } from "react-csv";
 import { startOfDay } from 'date-fns'
 import pagenationLabel from './../../helper/pagenationLabel'
+import { maskCustomerName } from 'helper/exportCustomerMask'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
@@ -17,6 +18,7 @@ function Results({
   handleOnChangePage,
   handleOnChangeRowsPerPage,
   sortWay,
+  isCustomerDataMasked,
   ...rest
 }) {
   const pageRef = useRef(null)
@@ -29,17 +31,20 @@ function Results({
       displayResults.forEach(data => {
         data.result.forEach(result => {
           if (result.designerName !== '小計') {
+            const customerName = isCustomerDataMasked ? maskCustomerName(result.customerName) : result.customerName
             excelData.push({
               日期: format(new Date(result.date), 'yyyy/MM/dd'),
               帳單編號: `#${result.no}`,
               姓名: result.designerName,
               '顧客姓名/代號': result.customerNo
-                ? result.customerName + ' / ' + result.customerNo
-                : result.customerName,
-              商品名稱代號: `${result.productName}/${result.productNo}`,
+                ? customerName + ' / ' + result.customerNo
+                : customerName,
+              // 沒有代號時只寫名稱（與畫面相同；原本寫成「名稱/null」）
+              商品名稱代號: result.productNo === null ? result.productName : `${result.productName}/${result.productNo}`,
               實際售價: Math.round(result.price),
               數量: result.count,
-              小計: result.count * Math.round(result.price),
+              // 小計＝四捨五入(單價×數量)，與合計同一算法（原本是 數量×四捨五入後單價，單價有小數時明細加總與合計不符）
+              小計: Math.round(result.count * result.price),
               手續費: Math.round(result.handlingFee),
               '販賣業績(實)': result.price2,
               '抽成(方式)': `${Math.round(result.commission)}(${result.rakeType === 'fixed'
@@ -86,163 +91,63 @@ function Results({
       '抽成(方式)': totalCommission
     })
     setExcelData(excelData)
-    if (pageRef.current) {
-      pagenationLabel(pageRef.current)
+    pagenationLabel(pageRef.current)
+  }, [results, sortWay, pageRef.current, isCustomerDataMasked])
+  // 依分類依據分組（設計師、商品、帳單日期〔台灣時間的同一天〕），組的順序依第一次出現的順序，每組後接小計列。
+  // 原本三種分組各寫一份相同的程式，合併為一份（結果不變）
+  const groupKeyOf = {
+    DESIGNER: data => data.seller.id,
+    PRODUCTNO: data => data.product.id,
+    DATE: data => startOfDay(data.order.date).getTime(),
+  }[sortWay]
+  const groupKeys = []
+  results.data.forEach(data => {
+    const key = groupKeyOf(data)
+    if (!groupKeys.includes(key)) {
+      groupKeys.push(key)
     }
-  }, [results, sortWay, pageRef.current])
-  const temp = []
-  if (results.data != null && sortWay === 'DESIGNER') {
-    results.data.forEach(data => {
-      if (!temp.includes(data.seller.id)) {
-        temp.push(data.seller.id)
-      }
+  })
+  groupKeys.forEach(key => {
+    const groupResults = []
+    let totalCountPrice = 0
+    let totalHandlingFee = 0
+    let totalCommission = 0
+    let totalPrice2 = 0
+    results.data.filter(data => groupKeyOf(data) === key).forEach(data => {
+      groupResults.push({
+        date: data.order.date,
+        no: data.order.no,
+        designerName: data.seller.name,
+        designerNo: data.seller.designerNo,
+        designerId: data.seller.id,
+        customerNo: data.order.customer.no,
+        customerName: data.order.customer.name,
+        productName: data.product.name,
+        productNo: data.product.no,
+        price: data.price,
+        count: data.count,
+        handlingFee: data.handlingFee,
+        commission: data.commission,
+        rakeType: data.rakeType,
+        price2: data.price2,
+      })
+
+      totalCountPrice += data.count * data.price
+      totalHandlingFee += data.handlingFee
+      totalCommission += data.commission
+      totalPrice2 += data.price2
     })
-    for (let i = 0; i < temp.length; ++i) {
-      const designerResults = []
-      let totalCountPrice = 0
-      let totalHandlingFee = 0
-      let totalCommission = 0
-      let totalPrice2 = 0
-      const filterDesigner = results.data.filter(data => data.seller.id === temp[i])
-      filterDesigner.forEach(data => {
-        designerResults.push({
-          date: data.order.date,
-          no: data.order.no,
-          designerName: data.seller.name,
-          designerNo: data.seller.designerNo,
-          designerId: data.seller.id,
-          customerNo: data.order.customer.no,
-          customerName: data.order.customer.name,
-          productName: data.product.name,
-          productNo: data.product.no,
-          price: data.price,
-          count: data.count,
-          handlingFee: data.handlingFee,
-          commission: data.commission,
-          rakeType: data.rakeType,
-          price2: data.price2,
-        })
-
-        totalCountPrice += data.count * data.price
-        totalHandlingFee += data.handlingFee
-        totalCommission += data.commission
-        totalPrice2 += data.price2
-      })
-      designerResults.push({
-        designerName: '小計',
-        totalCountPrice: totalCountPrice,
-        totalHandlingFee: totalHandlingFee,
-        totalCommission: totalCommission,
-        totalPrice2: totalPrice2,
-      })
-      displayResults.push({
-        result: designerResults,
-      })
-    }
-  }
-  if (results.data != null && sortWay === 'PRODUCTNO') {
-    results.data.forEach(data => {
-      if (!temp.includes(data.product.id)) {
-        temp.push(data.product.id)
-      }
+    groupResults.push({
+      designerName: '小計',
+      totalCountPrice: totalCountPrice,
+      totalHandlingFee: totalHandlingFee,
+      totalCommission: totalCommission,
+      totalPrice2: totalPrice2,
     })
-    for (let i = 0; i < temp.length; ++i) {
-      const productResults = []
-      let totalCountPrice = 0
-      let totalHandlingFee = 0
-      let totalCommission = 0
-      let totalPrice2 = 0
-      const filterDesigner = results.data.filter(data => data.product.id === temp[i])
-      filterDesigner.forEach(data => {
-        productResults.push({
-          date: data.order.date,
-          no: data.order.no,
-          designerName: data.seller.name,
-          designerNo: data.seller.designerNo,
-          designerId: data.seller.id,
-          customerNo: data.order.customer.no,
-          customerName: data.order.customer.name,
-          productName: data.product.name,
-          productNo: data.product.no,
-          price: data.price,
-          count: data.count,
-          handlingFee: data.handlingFee,
-          commission: data.commission,
-          rakeType: data.rakeType,
-          price2: data.price2,
-        })
-
-        totalCountPrice += data.count * data.price
-        totalHandlingFee += data.handlingFee
-        totalCommission += data.commission
-        totalPrice2 += data.price2
-      })
-      productResults.push({
-        designerName: '小計',
-        totalCountPrice: totalCountPrice,
-        totalHandlingFee: totalHandlingFee,
-        totalCommission: totalCommission,
-        totalPrice2: totalPrice2,
-      })
-      displayResults.push({
-        result: productResults,
-      })
-    }
-  }
-  if (results.data != null && sortWay === 'DATE') {
-    results.data.forEach(data => {
-      const orderDate = startOfDay(data.order.date).getTime()
-      if (!temp.includes(orderDate)) {
-        temp.push(orderDate)
-      }
+    displayResults.push({
+      result: groupResults,
     })
-
-    for (let i = 0; i < temp.length; ++i) {
-      const dateResults = []
-      let totalCountPrice = 0
-      let totalHandlingFee = 0
-      let totalCommission = 0
-      let totalPrice2 = 0
-      const filterDate = results.data.filter(data => {
-        const orderDate = startOfDay(data.order.date).getTime()
-        return orderDate === temp[i]
-      })
-      filterDate.forEach(data => {
-        dateResults.push({
-          date: data.order.date,
-          no: data.order.no,
-          designerName: data.seller.name,
-          designerNo: data.seller.designerNo,
-          designerId: data.seller.id,
-          customerNo: data.order.customer.no,
-          customerName: data.order.customer.name,
-          productName: data.product.name,
-          productNo: data.product.no,
-          price: data.price,
-          count: data.count,
-          handlingFee: data.handlingFee,
-          commission: data.commission,
-          rakeType: data.rakeType,
-          price2: data.price2,
-        })
-
-        totalCountPrice += data.count * data.price
-        totalHandlingFee += data.handlingFee
-        totalCommission += data.commission
-        totalPrice2 += data.price2
-      })
-      dateResults.push({
-        designerName: '小計',
-        totalCountPrice: totalCountPrice,
-        totalHandlingFee: totalHandlingFee,
-        totalCommission: totalCommission,
-        totalPrice2: totalPrice2,
-      })
-      displayResults.push({
-        result: dateResults,
-      })
-    }
-  }
+  })
   return (
     <div {...rest} className={className}>
       <p className="pb-2 text-caption tabular-nums text-text-secondary">
@@ -305,7 +210,7 @@ function Results({
                         </TableCell>
                         <TableCell numeric>{formatNumber(Math.round(data.price))}</TableCell>
                         <TableCell numeric>{formatNumber(data.count)}</TableCell>
-                        <TableCell numeric>{formatNumber(data.count * Math.round(data.price))}</TableCell>
+                        <TableCell numeric>{formatNumber(Math.round(data.count * data.price))}</TableCell>
                         <TableCell numeric>{formatNumber(Math.round(data.handlingFee))}</TableCell>
                         <TableCell numeric>{formatNumber(Math.round(data.price2))}</TableCell>
                         <TableCell numeric className="whitespace-nowrap">
@@ -330,7 +235,7 @@ function Results({
                         <TableCell />
                         <TableCell />
                         <TableCell />
-                        <TableCell numeric className="font-bold">{formatNumber(data.totalCountPrice)}</TableCell>
+                        <TableCell numeric className="font-bold">{formatNumber(Math.round(data.totalCountPrice))}</TableCell>
                         <TableCell numeric className="font-bold">{formatNumber(Math.round(data.totalHandlingFee))}</TableCell>
                         <TableCell numeric className="font-bold">{formatNumber(Math.round(data.totalPrice2))}</TableCell>
                         <TableCell numeric className="font-bold">{formatNumber(Math.round(data.totalCommission))}</TableCell>

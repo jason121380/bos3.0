@@ -8,7 +8,6 @@ import CustomerConsumptionPricePerCountRanking from './Charts/CustomerConsumptio
 import WeeklyOrderCountRanking from './Charts/WeeklyOrderCountRanking';
 import ProductSalesVolumeRanking from './Charts/ProductSalesVolumeRanking';
 import ProductSalesPriceRanking from './Charts/ProductSalesPriceRanking';
-// import PerformanceTrend from './Charts/PerformanceTrend';
 import PerformanceDetail from './Charts/PerformanceDetail';
 import ReturnedRatio from './Charts/ReturnedRatio';
 import SourceRatio from './Charts/SourceRatio';
@@ -92,10 +91,6 @@ function Results({
         data={dashboardData.newCusStatistics}
         width={width}
       />
-
-      {/*  <PerformanceTrend // 設計師業績趨勢
-        data={dashboardData.performanceTrend}
-      /> */}
 
     </div>
   )

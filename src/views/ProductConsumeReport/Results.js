@@ -5,6 +5,10 @@ import { Fragment } from 'react'
 import { format } from 'date-fns'
 
 export default function Results({ productConsumeListReport, value }) {
+  // 選了用途時明細與彙總只列該用途（原本兩個表格各寫一份篩選與不篩選的相同畫面，合併為一份，畫面不變）
+  const byPurpose = list => (value !== '' ? list.filter(d => d.purpose === value) : list)
+  const records = byPurpose(productConsumeListReport.productConsumeRecord)
+  const summaries = byPurpose(productConsumeListReport.productConsumeSummary)
   return (
     <Fragment>
       <Table dense aria-label="a dense table">
@@ -24,43 +28,23 @@ export default function Results({ productConsumeListReport, value }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {value !== ''
-              ? productConsumeListReport.productConsumeRecord
-                  .filter(d => d.purpose === value)
-                  .map((data, index) => {
-                    return (
-                      <TableRow key={index}>
-                        <TableCell className="tabular-nums">{format(data.date, 'yyyy/MM/dd')}</TableCell>
-                        <TableCell>{data.designerNo}</TableCell>
-                        <TableCell>{data.designerName}</TableCell>
-                        <TableCell>{data.productNo}</TableCell>
-                        <TableCell>{data.productName}</TableCell>
-                        <TableCell numeric>{formatNumber(data.count)}</TableCell>
-                        <TableCell>{data.unit}</TableCell>
-                        <TableCell numeric>{formatNumber(data.unitCost)}</TableCell>
-                        <TableCell numeric>{formatNumber(data.unitPrice)}</TableCell>
-                        <TableCell numeric>{formatNumber(data.subTotal)}</TableCell>
-                        <TableCell>{data.purpose}</TableCell>
-                      </TableRow>
-                    )
-                  })
-              : productConsumeListReport.productConsumeRecord.map((data, index) => {
-                  return (
-                    <TableRow key={index}>
-                      <TableCell className="tabular-nums">{format(data.date, 'yyyy/MM/dd')}</TableCell>
-                      <TableCell>{data.designerNo}</TableCell>
-                      <TableCell>{data.designerName}</TableCell>
-                      <TableCell>{data.productNo}</TableCell>
-                      <TableCell>{data.productName}</TableCell>
-                      <TableCell numeric>{formatNumber(data.count)}</TableCell>
-                      <TableCell>{data.unit}</TableCell>
-                      <TableCell numeric>{formatNumber(data.unitCost)}</TableCell>
-                      <TableCell numeric>{formatNumber(data.unitPrice)}</TableCell>
-                      <TableCell numeric>{formatNumber(data.subTotal)}</TableCell>
-                      <TableCell>{data.purpose}</TableCell>
-                    </TableRow>
-                  )
-                })}
+            {records.map((data, index) => {
+              return (
+                <TableRow key={index}>
+                  <TableCell className="tabular-nums">{format(data.date, 'yyyy/MM/dd')}</TableCell>
+                  <TableCell>{data.designerNo}</TableCell>
+                  <TableCell>{data.designerName}</TableCell>
+                  <TableCell>{data.productNo}</TableCell>
+                  <TableCell>{data.productName}</TableCell>
+                  <TableCell numeric>{formatNumber(data.count)}</TableCell>
+                  <TableCell>{data.unit}</TableCell>
+                  <TableCell numeric>{formatNumber(data.unitCost)}</TableCell>
+                  <TableCell numeric>{formatNumber(data.unitPrice)}</TableCell>
+                  <TableCell numeric>{formatNumber(data.subTotal)}</TableCell>
+                  <TableCell>{data.purpose}</TableCell>
+                </TableRow>
+              )
+            })}
           </TableBody>
       </Table>
       <Table dense wrapperClassName="mt-6" aria-label="a dense table">
@@ -73,29 +57,16 @@ export default function Results({ productConsumeListReport, value }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {value !== ''
-              ? productConsumeListReport.productConsumeSummary
-                  .filter(d => d.purpose === value)
-                  .map((data, index) => (
-                    <TableRow key={index}>
-                      <TableCell style={data.purpose === '合計' ? { fontWeight: 'bold' } : {}}>
-                        {data.purpose}
-                      </TableCell>
-                      <TableCell numeric>{formatNumber(data.cost)}</TableCell>
-                      <TableCell numeric>{formatNumber(data.price)}</TableCell>
-                      <TableCell numeric>{formatNumber(data.count)}</TableCell>
-                    </TableRow>
-                  ))
-              : productConsumeListReport.productConsumeSummary.map((data, index) => (
-                  <TableRow key={index}> 
-                    <TableCell style={data.purpose === '合計' ? { fontWeight: 'bold' } : {}}>
-                      {data.purpose}
-                    </TableCell>
-                    <TableCell numeric>{formatNumber(data.cost)}</TableCell>
-                    <TableCell numeric>{formatNumber(data.price)}</TableCell>
-                    <TableCell numeric>{formatNumber(data.count)}</TableCell>
-                  </TableRow>
-                ))}
+            {summaries.map((data, index) => (
+              <TableRow key={index}>
+                <TableCell style={data.purpose === '合計' ? { fontWeight: 'bold' } : {}}>
+                  {data.purpose}
+                </TableCell>
+                <TableCell numeric>{formatNumber(data.cost)}</TableCell>
+                <TableCell numeric>{formatNumber(data.price)}</TableCell>
+                <TableCell numeric>{formatNumber(data.count)}</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
       </Table>
     </Fragment>

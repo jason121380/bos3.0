@@ -3,6 +3,8 @@ import Page from 'components/Page'
 import ProductAutoComplete from 'components/ProductAutoComplete'
 import { endOfDay, startOfMonth } from 'date-fns'
 import useFetchProductOrders from 'hooks/useFetchProductOrders'
+import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
+import isExportCustomerMasked from 'helper/exportCustomerMask'
 import idx from 'idx'
 import produce from 'immer'
 import React from 'react'
@@ -34,7 +36,24 @@ export default function DecreaseDetail({ history, location }) {
     sellerId: pageSetting.employeeId.length > 0 ? pageSetting.employeeId : '',
     customerIds: pageSetting.customerId.length > 0 ? [pageSetting.customerId] : [],
   })
-  const handleProductChange = product => setPageSetting({ ...pageSetting, productId: product.id })
+  // 換條件時回到第 1 頁（原本沿用目前頁碼，在後面頁換條件可能整頁空白）
+  const backToFirstPage = () => {
+    setResultSetting(
+      produce(draft => {
+        draft.merchantSell.pageOffset = 0
+      })
+    )
+  }
+  const handleFilter = value => {
+    setPageSetting(value)
+    backToFirstPage()
+  }
+  // 匯出客資一律經 exportCustomerMask：只有遮罩設定查詢成功且為 false 才匯出完整顧客姓名（Jason 2026/10/22 長期授權修正）
+  const isCustomerDataMasked = isExportCustomerMasked(useFetchCustomerDataMarked())
+  const handleProductChange = product => {
+    setPageSetting({ ...pageSetting, productId: product.id })
+    backToFirstPage()
+  }
   const handleOnChangePage = ({ key, page }) => {
     setResultSetting(
       produce(draft => {
@@ -57,7 +76,7 @@ export default function DecreaseDetail({ history, location }) {
         <div>
           <MerchantSearchBar
             values={pageSetting}
-            onFilter={value => setPageSetting(value)}
+            onFilter={handleFilter}
             outside
             visible={['datePicker', 'employee', 'customer']}
             lastInLeaderBoard={true}
@@ -79,6 +98,7 @@ export default function DecreaseDetail({ history, location }) {
             _.data.productOrders && (
               <Results
                 results={_.data.productOrders}
+                isCustomerDataMasked={isCustomerDataMasked}
                 handleOnChangePage={(_event, page) =>
                   handleOnChangePage({ page, key: 'merchantSell' })
                 }

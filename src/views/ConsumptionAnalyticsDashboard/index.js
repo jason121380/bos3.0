@@ -18,7 +18,6 @@ const monthArr = [
 
 function ConsumptionAnalyticsDashboard() {
   const getIsDisplayTogglePerformanceButton = useFetchGetIsDisplayTogglePerformanceButton()
-  const urlParams = new URLSearchParams(window.location.search)
   const [date, setDate] = useState({
     startDate: startOfMonth(new Date()).getTime(),
     endDate: endOfMonth(new Date()).getTime()
@@ -36,7 +35,6 @@ function ConsumptionAnalyticsDashboard() {
     sourceRatio: [],                              // 顧客來源比例
     returnedRatio: [],                            // 顧客回流率
     newCusStatistics: [],                         // 新客比例
-    // performanceTrend: [],                         // 設計師業績趨勢表
     performanceTrendV2: [],                       // 設計師業績趨勢表v2
   })
   const [chartDisplay, setChartDisplay] = useState({
@@ -44,11 +42,9 @@ function ConsumptionAnalyticsDashboard() {
     age: false,
     weekly: false,
   })
+  // 日期在 date（網址的 startDate／endDate 由 DateSelector 帶入）；原本這裡另存一份讀網址的日期，只給進頁時多送的一次查詢用，
+  // 而那次查詢會被同一輪 [date] effect 的查詢取代、從未送出，已移除（行為不變）
   const [inputData, setInputData] = useState({
-    date: {
-      startDate: urlParams.has('startDate') && urlParams.has('endDate') ? +urlParams.get('startDate') : startOfMonth(new Date()).getTime(),
-      endDate: urlParams.has('startDate') && urlParams.has('endDate') ? +urlParams.get('endDate') : endOfMonth(new Date()).getTime()
-    },
     designerIds: [],
     reference: 'FAKE',
     performance: 'SUM'
@@ -69,19 +65,6 @@ function ConsumptionAnalyticsDashboard() {
       setReferDisplay(display)
     }
   }, [getIsDisplayTogglePerformanceButton.loading])
-
-  useEffect(() => {
-    getConsumptionAnalyticsDashboardLazy({
-      variables: {
-        input: {
-          dateRange: inputData.date,
-          designerIds: inputData.designerIds,
-          displayReference: inputData.reference,
-          resultDisplayMode: inputData.performance
-        }
-      }
-    })
-  }, [])
 
   useEffect(() => {
     if (!getConsumptionAnalyticsDashboardLazyData.loading && getConsumptionAnalyticsDashboardLazyData.data !== undefined) {
@@ -123,25 +106,12 @@ function ConsumptionAnalyticsDashboard() {
       const sourceRatioData = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.sourceRatio)
       const returnedRatioData = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.returnedRatio)
       const newCusStatistics = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.orderCustomer.newCusStatistics)
-      const performanceTrendData = idx(getConsumptionAnalyticsDashboardLazyData, _ => _.data.consumptionAnalyticsDashboard.performanceTrend)
 
       const returnedRatioArr = [
         { name: '新客', ...returnedRatioData.new },
         { name: '回流客', ...returnedRatioData.retented },
         { name: '未回流', ...returnedRatioData.unReturned }
       ]
-
-      const tidyData = performanceTrendData.map(({ date, performances }) => {
-        const data = { name: monthArr[getMonth(date)] }
-        performances.forEach(({ userName, performance }) => {
-          if (performances.length === 1 && userName === '') {
-            data['全店'] = performance
-          } else {
-            data[userName] = performance
-          }
-        });
-        return data
-      })
 
       const trendDataV2 = tidyDataV2()
 
@@ -163,7 +133,6 @@ function ConsumptionAnalyticsDashboard() {
         sourceRatio: sourceRatioData,
         returnedRatio: returnedRatioArr,
         newCusStatistics: newCusStatistics,
-        // performanceTrend: tidyData,
         performanceTrendV2: trendDataV2,
       })
       orderGender.forEach(d => d.count > 0 && genderArr.push(d.count))

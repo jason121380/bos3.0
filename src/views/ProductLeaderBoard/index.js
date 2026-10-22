@@ -113,7 +113,8 @@ const ProductLeaderBoard = () => {
               variant='primary'
               className="w-[100px] shrink-0"
               onClick={handleSearch}
-              disabled={productLeaderBoardV2Data.loading || !productLeaderBoardV2Data.data}
+              // 查詢失敗（error）後仍可按，讓使用者重試（原本 data 為 undefined 就一直停用）
+              disabled={productLeaderBoardV2Data.loading || (!productLeaderBoardV2Data.data && !productLeaderBoardV2Data.error)}
             >
               搜尋
             </Button>

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
 import { CSVLink } from "react-csv";
 import pagenationLabel from './../../helper/pagenationLabel'
+import { maskCustomerName } from 'helper/exportCustomerMask'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
@@ -14,6 +15,7 @@ function Results({
   results,
   handleOnChangePage,
   handleOnChangeRowsPerPage,
+  isCustomerDataMasked,
   ...rest
 }) {
   const pageRef = useRef(null)
@@ -25,6 +27,7 @@ function Results({
     const sortedData = [...results.data].sort((a, b) => a.order.date - b.order.date)
     setSortedData(sortedData)
     sortedData.forEach(data => {
+      const customerName = isCustomerDataMasked ? maskCustomerName(data.order.customer.name) : data.order.customer.name
       excelData.push({
         日期: format(new Date(data.order.date), 'yyyy/MM/dd'),
         帳單編號: `#${data.order.no}`,
@@ -32,12 +35,14 @@ function Results({
           ? data.seller.name + ' / ' + data.seller.designerNo
           : data.seller.name,
         顧客姓名代號: data.order.customer.no
-          ? data.order.customer.name + ' / ' + data.order.customer.no
-          : data.order.customer.name,
-        商品名稱代號: `${data.product.name}/${data.product.no}`,
+          ? customerName + ' / ' + data.order.customer.no
+          : customerName,
+        // 沒有代號時只寫名稱（與畫面相同；原本寫成「名稱/null」）
+        商品名稱代號: data.product.no === null ? data.product.name : `${data.product.name}/${data.product.no}`,
         實際售價: Math.round(data.price),
         數量: data.count,
-        小計: data.count * Math.round(data.price),
+        // 小計＝四捨五入(單價×數量)，與合計同一算法（原本是 數量×四捨五入後單價，單價有小數時明細加總與合計不符）
+        小計: Math.round(data.count * data.price),
         手續費: Math.round(data.handlingFee),
         '販賣業績(實)': Math.round(data.price2),
         '抽成(方式)': `${Math.round(data.commission)}(${data.rakeType === 'fixed' ? '固定金額' : data.rakeType === 'byCost' ? '毛利' : '售價'
@@ -71,10 +76,8 @@ function Results({
       ),
     })
     setExcelData(excelData)
-    if (pageRef.current) {
-      pagenationLabel(pageRef.current)
-    }
-  }, [results, pageRef.current])
+    pagenationLabel(pageRef.current)
+  }, [results, pageRef.current, isCustomerDataMasked])
 
   return (
     <div {...rest}>
@@ -135,7 +138,7 @@ function Results({
                   </TableCell>
                   <TableCell numeric>{formatNumber(Math.round(data.price))}</TableCell>
                   <TableCell numeric>{formatNumber(data.count)}</TableCell>
-                  <TableCell numeric>{formatNumber(data.count * Math.round(data.price))}</TableCell>
+                  <TableCell numeric>{formatNumber(Math.round(data.count * data.price))}</TableCell>
                   <TableCell numeric>{formatNumber(Math.round(data.handlingFee))}</TableCell>
                   <TableCell numeric>{formatNumber(Math.round(data.price2))}</TableCell>
                   <TableCell numeric className="whitespace-nowrap">

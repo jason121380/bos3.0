@@ -47,10 +47,11 @@ export default function MerchantIncomeStatementMonthly() {
   useEffect(() => {
     if (!merchantIncomeStatementDataV2.loading && !isMemberShipCardActiveData.loading) {
       try {
+        // 查詢失敗時 data 為 undefined：當成沒有科目（errorLink 已提示，原本 forEach 讀 undefined 再跳一次程式錯誤提示）
         const merchantIncomeStatement = idx(
           merchantIncomeStatementDataV2,
           _ => _.data.merchantIncomeStatementV2.businessIncomeDetail.moneyFlowSetConnection
-        )
+        ) || []
         const isMemberShipCardActive = idx(isMemberShipCardActiveData,
           _ => _.data.getIsMemberShipCardActive
         )

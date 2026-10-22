@@ -84,9 +84,9 @@ const CustomerEventTicketSearch = () => {
   }
 
   useEffect(() => {
-    if (!customerTicketData.loading && customerTicketData.data) {
-      const data = idx(customerTicketData, _ => _.data.customerCheckTicket)
-      setData(data)
+    // 查詢失敗（error）也要重設驗證：reCAPTCHA token 只能用一次，原本只在成功時重設，失敗後會帶著用過的 token 再送
+    if (!customerTicketData.loading && (customerTicketData.data || customerTicketData.error)) {
+      if (customerTicketData.data) setData(idx(customerTicketData, _ => _.data.customerCheckTicket))
       reCaptchaRef.current && reCaptchaRef.current.reset()
       setSubmitData(
         produce(draft => {

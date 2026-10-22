@@ -3,6 +3,8 @@ import idx from 'idx'
 import React, { useEffect, useState } from 'react'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import useFetchGetMembershipSellReport from 'hooks/useFetchGetMembershipSellReport'
+import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
+import isExportCustomerMasked, { maskCustomerName } from 'helper/exportCustomerMask'
 import AdminPageHeader from 'components/AdminPageHeader'
 import { ReportToolbar } from 'ui/page-header'
 import { startOfDay, endOfDay, format } from 'date-fns'
@@ -24,6 +26,9 @@ export default function MembershipSellReport() {
     membershipId: '',
   })
   const [reportData, setReportData] = useState([])
+  // 匯出客資一律經 exportCustomerMask：只有遮罩設定查詢成功且為 false 才匯出完整顧客姓名（Jason 2026/10/22 長期授權修正）
+  const customerDataMarkedData = useFetchCustomerDataMarked()
+  const isCustomerDataMasked = isExportCustomerMasked(customerDataMarkedData)
   const getMembershipSellReport = useFetchGetMembershipSellReport({
     input: {
       dateRange: {
@@ -43,7 +48,8 @@ export default function MembershipSellReport() {
 
   useEffect(() => {
     if (!getMembershipSellReport.loading) {
-      const data = idx(getMembershipSellReport, _ => _.data.membershipSellReport)
+      // 查詢失敗時 data 為 undefined：當成沒有資料，不讓整頁拋錯
+      const data = idx(getMembershipSellReport, _ => _.data.membershipSellReport) || []
       setReportData(data)
     }
   }, [getMembershipSellReport])
@@ -55,7 +61,7 @@ export default function MembershipSellReport() {
         帳單日期: format(d.orderDate, 'yyyy/MM/dd'),
         帳單編號: `#${d.orderNo}`,
         設計師姓名: d.designerName,
-        顧客姓名: d.customerName,
+        顧客姓名: isCustomerDataMasked ? maskCustomerName(d.customerName) : d.customerName,
         會員卡名稱: d.membershipName,
         實際售價: d.sellPrice,
         數量: d.count,
@@ -83,7 +89,7 @@ export default function MembershipSellReport() {
       到期日: '',
     })
     setExcelData(data)
-  }, [reportData])
+  }, [reportData, isCustomerDataMasked])
 
   return (
     <Page className="ui-root" title="會員卡銷售報表">

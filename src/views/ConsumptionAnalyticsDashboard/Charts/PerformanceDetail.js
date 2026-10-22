@@ -23,10 +23,10 @@ const PerformanceDetail = ({
   data, dataType, setDataType, sortType, setSortType
 }) => {
   const PerformanceTrendBarTooltip = ({ active, payload, label }) => {
-    payload.forEach((d, i) => payload[i].color = performanceColor[i % 30])
-    payload.sort((a, b) => b.value - a.value)
     if (active && payload && payload.length) {
-      const sum = payload.reduce((a, b) => a + b.value, 0)
+      // 依線的順序上色後由大到小排（先複製，原本直接改 recharts 傳入的 payload，且在檢查 payload 是否存在之前）
+      const rows = payload.map((d, i) => ({ ...d, color: performanceColor[i % 30] })).sort((a, b) => b.value - a.value)
+      const sum = rows.reduce((a, b) => a + b.value, 0)
       const proportion = value => {
         return (value / sum) ? `${Math.round(value / sum * 10000) / 100}%` : ''
       }
@@ -37,7 +37,7 @@ const PerformanceDetail = ({
             <div>總和:{formatNumber(sum)}</div>
           </div>
           <div className='content'>
-            {payload.map(({ name, value, color }) => (
+            {rows.map(({ name, value, color }) => (
               <div className='row' style={{ color: color }} key={`${name}-${value}`}>
                 <span style={{ maxWidth: 100, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{name}:</span>
                 <span>{formatNumber(value)}</span>
@@ -52,7 +52,11 @@ const PerformanceDetail = ({
   };
 
   const performanceTrendBar = () => {
-    const object = Object.keys(data[0]).filter(d => d !== 'name')
+    // 每位設計師一條線：取所有月份出現過的設計師（原本只看第一個月，第一個月沒有業績的設計師整條線不見）
+    const object = []
+    data.forEach(month => Object.keys(month).forEach(key => {
+      if (key !== 'name' && !object.includes(key)) object.push(key)
+    }))
     return object.map((d, i) => <Line key={d} dataKey={d} strokeWidth={2} stroke={performanceColor[i % 30]} />)
   }
 

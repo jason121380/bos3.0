@@ -16,6 +16,9 @@ import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
+// 明細查詢失敗時（data 為 undefined）表格顯示為空，不讓整頁拋錯
+const EMPTY_REPORT = { productConsumeRecord: [], productConsumeSummary: [] }
+
 export default function Employees() {
   const [excelData, setExcelData] = useState([])
   const [value, setValue] = useState('')
@@ -43,7 +46,8 @@ export default function Employees() {
 
   useEffect(() => {
     if (!getProductPurpose.loading) {
-      const data = idx(getProductPurpose, _ => _.data.getProductPurpose)
+      // 查詢失敗時 data 為 undefined：當成沒有用途（下拉停用），不讓整頁拋錯
+      const data = idx(getProductPurpose, _ => _.data.getProductPurpose) || []
       setPurpose(data)
     }
   }, [getProductPurpose.loading])
@@ -180,8 +184,8 @@ export default function Employees() {
         />
         {!productConsumeListData.loading ? (
           <Results
-            value={value != null ? value : ''}
-            productConsumeListReport={idx(productConsumeListData, _ => _.data.productConsumeList)}
+            value={value}
+            productConsumeListReport={idx(productConsumeListData, _ => _.data.productConsumeList) || EMPTY_REPORT}
           />
         ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示

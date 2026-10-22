@@ -4,13 +4,13 @@ import React from 'react'
 import {
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts";
-import { gendercolor, pieChartColor } from '../Colors';
+import { gendercolor } from '../Colors';
 
 const ReturnedRatio = ({ data, width }) => {
   const renderOrderGenderRatioLabel = ({
     cx, cy, midAngle, innerRadius,
     outerRadius, index, percentage
-  }, isSource = false) => {
+  }) => {
     const RADIAN = Math.PI / 180;
     const radius = 20 + innerRadius + (outerRadius - innerRadius);
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -20,7 +20,7 @@ const ReturnedRatio = ({ data, width }) => {
         key={`orderGenderRatioText-${index}`}
         x={x}
         y={y}
-        fill={isSource ? pieChartColor[index] : gendercolor[index]}
+        fill={gendercolor[index]}
         fontSize={width < 980 && width >= 900 ? '14' : width < 450 ? '12' : '16'}
         textAnchor={x > cx ? "start" : "end"}
         dominantBaseline="central"
