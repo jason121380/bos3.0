@@ -102,10 +102,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 29,
-        "functions": 24,
-        "lines": 34,
-        "statements": 34
+        "branches": 27,
+        "functions": 22,
+        "lines": 31,
+        "statements": 31
       },
       "./src/helper/*.js": {
         "statements": 100,
@@ -148,6 +148,30 @@
         "branches": 100,
         "functions": 100,
         "lines": 100
+      },
+      "./src/views/OrderCreate/": {
+        "statements": 95,
+        "branches": 93,
+        "functions": 94,
+        "lines": 96
+      },
+      "./src/views/OrderEdit/": {
+        "statements": 97,
+        "branches": 97,
+        "functions": 95,
+        "lines": 97
+      },
+      "./src/views/DraftOrderEdit/": {
+        "statements": 95,
+        "branches": 96,
+        "functions": 95,
+        "lines": 95
+      },
+      "./src/views/QueueOrderEdit/": {
+        "statements": 96,
+        "branches": 95,
+        "functions": 95,
+        "lines": 96
       }
     },
     "coverageReporters": [
