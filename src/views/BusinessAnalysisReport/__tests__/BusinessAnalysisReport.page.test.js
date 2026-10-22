@@ -3,7 +3,7 @@
 // - 一般顯示：服務、店販、卡券使用(入業績，小數 2 位)、卡券販賣(入業績)分開；「服務與卡券合併」設定時改為營業總業績＝服務＋卡券使用＋卡券販賣(入業績)
 // - 會員卡欄：啟用會員卡或區間內有會員卡金額才顯示；點數欄：啟用點數或區間內有點數折抵才顯示（合計為 null 時顯示 0）
 // - 匯出 CSV：每日一列＋總計，欄位依會員卡／點數設定增減；列印呼叫瀏覽器列印
-// - 已知缺口：報表查詢失敗時整頁錯誤
+// - 報表查詢失敗時不顯示表格、不整頁錯誤（Jason 2026/10/22）
 // GraphQL 全由 testkit 的模擬 link 回應。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
@@ -140,10 +140,24 @@ describe('營業統計分析表', () => {
     expect(document.querySelector('.merchantNamePrint').textContent).toContain('測試店')
   })
 
-  it('已知缺口（待 Jason 決定）：報表查詢失敗時整頁進入錯誤畫面', async () => {
-    // 會員卡／點數 effect 直接讀 businessAnalysisReport.summary；Results 也直接讀 data.data
+  it('報表查詢失敗時不顯示表格，標題與匯出鈕照常，不整頁錯誤（Jason 2026/10/22）', async () => {
     const { settle } = setup({ GET_BUSINESS_ANALYSIS_DATA: new Error('查詢失敗') })
     await settle()
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getByText('報表匯出')).toBeInTheDocument()
+    expect(document.querySelector('table')).toBeNull()
+    expect(screen.queryByLabelText('載入中')).toBeNull()
+  })
+
+  it('會員卡、點數設定查詢失敗時依報表金額決定欄位，不整頁錯誤（Jason 2026/10/22）', async () => {
+    const { settle } = setup({
+      GET_IS_MEMBERSHIP_CARD_ACTIVE: new Error('查詢失敗'),
+      GET_CUSTOMER_BONUS: new Error('查詢失敗'),
+      GET_BUSINESS_ANALYSIS_DATA: { businessAnalysisReport: { data: ROWS, summary: { ...SUMMARY, membership: 1200, bonusDecountForReport: null } } },
+    })
+    await settle()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    await wait(() => expect(headers()).toContain('會員卡消費'))
+    expect(headers()).not.toContain('點數折抵金額(-)')
   })
 })

@@ -33,13 +33,14 @@ function ThirdPartyAutoComplete(
   }, [designers.loading, setThirdPartyAlready]);
   useEffect(() => {
     if (initFirst && designers.data && !designers.loading) {
-      onChange(designers.data.merchant.thirdpartyCoupons[0])
+      onChange(idx(designers, _ => _.data.merchant.thirdpartyCoupons[0]))
     }
   }, [designers, initFirst, onChange])
 
   useEffect(() => {
     if (!designers.loading) {
-      setOptions(idx(designers, _ => _.data.merchant.thirdpartyCoupons))
+      // 查詢失敗或回 null 時以空清單顯示，Autocomplete 拿到 null 會整頁壞（2026/10/22）
+      setOptions(idx(designers, _ => _.data.merchant.thirdpartyCoupons) || [])
     }
   }, [designers.loading]);
 

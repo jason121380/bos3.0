@@ -6,7 +6,7 @@
 // - 刪除：只能勾「已完成且未日結」的帳單；未設刪除密碼直接刪、設了先輸入密碼；失敗提示並清空勾選
 // - 列印：依列印格式（A4／感熱紙 80mm／57mm／其他）寫入列印視窗；合計＝服務＋店販＋會員卡（不含第三方卡券）＋卡券販賣(不入業績)，
 //   付現＝合計−入金使用−其他付款；點數資訊在啟用點數或該單有點數時才印；延遲關閉設定
-// - 查詢失敗時提示縮小日期區間；日期權限查詢失敗為已知缺口
+// - 查詢失敗時提示縮小日期區間；日期權限查詢失敗時視為沒有日期權限、列表照常顯示（Jason 2026/10/22）
 // GraphQL 全由 testkit 的模擬 link 回應，不刪除真實帳單；列印視窗以假物件取代。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
@@ -226,11 +226,13 @@ describe('帳單列表：日期權限', () => {
     )
   })
 
-  it('已知缺口（待 Jason 決定）：日期權限查詢失敗時整頁進入錯誤畫面', async () => {
-    // effect 直接讀 getOrderListDateAuth.data.orderListDateAuth
+  it('日期權限查詢失敗時視為沒有日期權限（沒有快速選項、沒有日期欄），列表照常顯示（Jason 2026/10/22）', async () => {
     const { settle } = setup({ GET_ORDER_LIST_DATE_AUTH: new Error('查詢失敗') })
     await settle()
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getByText('報表匯出')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: '起始時間' })).toBeNull()
+    expect(screen.queryByRole('combobox', { name: '快速選擇日期區間' })).toBeNull()
   })
 })
 

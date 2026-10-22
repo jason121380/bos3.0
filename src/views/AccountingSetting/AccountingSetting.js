@@ -91,7 +91,8 @@ function AccountingSetting() {
       setAccountingExpenditureSubjects(
         expenditureSubjectsInit.length > 0 ? expenditureSubjectsInit : [{ number: '', name: '' }]
       )
-      setAccountingType(accountingType)
+      // 收付方式查詢失敗時留一列空白（同科目查詢失敗），不整頁錯誤（Jason 2026/10/22）
+      setAccountingType(accountingType || [{ accountingTypeName: '' }])
     }
   }, [
     accountingTypeData.data,

@@ -5,7 +5,6 @@ import { endOfDay, startOfDay } from 'date-fns'
 import useFetchGetOrderList from 'hooks/useFetchGetOrderList'
 import useFetchGetOrderStaticDetail from 'hooks/useFetchGetOrderStaticDetail'
 import idx from 'idx'
-import produce from 'immer'
 import { Fragment, useEffect, useState } from 'react'
 import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
 import useFetchGetIsOpenDateRangeInOrderMangement from 'hooks/useFetchGetIsOpenDateRangeInOrderMangement'
@@ -110,23 +109,6 @@ function OrderManagementList() {
       setSerialNumberUsing(data)
     }
   }, [getSerialNumberUsing.loading])
-  const handlePageChange = (event, newPage) => {
-    setPageSetting(
-      produce(draft => {
-        draft.pageOffset = newPage
-      })
-    )
-  }
-
-  const handleRowsPerPageChange = event => {
-    setPageSetting(
-      produce(draft => {
-        draft.pageLimit = idx(event, _ => _.target.value)
-        draft.pageOffset = 0
-      })
-    )
-  }
-
   useEffect(() => {
     if (!getIsPrintWindowClosureDelayed.loading) {
       const data = idx(getIsPrintWindowClosureDelayed, _ => _.data.getParameterOrderCreateSetting.isPrintWindowClosureDelayed)
@@ -168,7 +150,8 @@ function OrderManagementList() {
         getIsOpenDateRangeInOrderMangement,
         _ => _.data.getIsOpenDateRangeInOrderMangement
       )
-      const dateAuth = getOrderListDateAuth.data.orderListDateAuth
+      // 日期權限查詢失敗時視為沒有日期權限，不整頁錯誤（Jason 2026/10/22）
+      const dateAuth = idx(getOrderListDateAuth, _ => _.data.orderListDateAuth) || {}
       const arr = ['lastmonth', 'thismonth', 'dbyesterday', 'yesterday', 'today', 'selector']
       const attrs = []
       arr.forEach(key => {
@@ -335,8 +318,6 @@ function OrderManagementList() {
               setPageSetting={setPageSetting}
               refetch2={getOrderList.refetch}
               totalCount={idx(getOrderList, _ => _.data.getOrderList.orderList).length || 0}
-              onPageChange={handlePageChange}
-              onRowsPerPageChange={handleRowsPerPageChange}
               isCustomerDataMarked={isCustomerDataMarked}
               membershipDisplay={membershipDisplay}
               bonusDisplay={bonusDisplay}

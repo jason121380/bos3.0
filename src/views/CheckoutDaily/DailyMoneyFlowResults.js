@@ -2,7 +2,7 @@ import { Download, LockOpen } from 'lucide-react'
 import { openSnackbar } from 'elements/snackbars'
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import useFetchSetRestoreDailyAccount from 'hooks/useFetchSettingRestoreDailyAccount'
 import idx from 'idx'
 import useFetchMerchantPassword from 'hooks/useFetchMerchantPassword'
@@ -22,12 +22,9 @@ function Results({
   className,
   dailyMoneyFlowResult,
   pageSetting,
-  onPageChange,
-  onRowsPerPageChange,
   waitCloseOrderDateLoading,
   isMemberShipCardActive,
   bonusDisplay,
-  pagenationLabel,
   ...rest
 }) {
   const [excelData, setExcelData] = useState([])
@@ -37,7 +34,6 @@ function Results({
   const [dateOnDialogTitle, setDateOnDialogTitle] = useState('')
   const [disableRestoreCheckout, setDisableRestoreCheckout] = useState(false)
   const passwordData = useFetchMerchantPassword()
-  const pageRef = useRef(null)
 
   useEffect(() => {
     if (!passwordData.loading) {
@@ -107,10 +103,8 @@ function Results({
       excelData = excelData.map(({ ["點數折抵金額(-)"]: value, ...rest }) => rest)
     }
     setExcelData(excelData)
-    if (pageRef.current) {
-      pagenationLabel(pageRef.current)
-    }
-  }, [dailyMoneyFlowResult, isMemberShipCardActive, pageRef.current])
+    // 點數設定晚到時也要重算，否則表格有點數欄、匯出檔沒有（Jason 2026/10/22）
+  }, [dailyMoneyFlowResult, isMemberShipCardActive, bonusDisplay])
 
   const handleOpenDialog = date => {
     if (disableRestoreCheckout) {

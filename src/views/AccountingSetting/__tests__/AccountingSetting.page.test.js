@@ -170,13 +170,11 @@ describe('收支科目設定', () => {
     expect(byId('accountingTypeName-0')).toHaveValue('現金')
   })
 
-  it('已知缺口（待 Jason 決定）：收付方式查詢失敗時整頁進入錯誤畫面', async () => {
-    // effect 以 idx 讀 getAccountingType，查詢失敗時得到 undefined 並直接 setAccountingType(undefined)，
-    // AccountingItemCreate 的 accountingType.map 拋錯
-    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+  it('收付方式查詢失敗時留一列空白（同科目查詢失敗），不整頁錯誤（Jason 2026/10/22）', async () => {
     const { settle } = setup({ GET_ACCOUNTING_TYPE: new Error('查詢失敗') })
     await settle()
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
-    errorSpy.mockRestore()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(byId('accountingTypeName-0')).toHaveValue('')
+    expect(byId('revenueNumber-0')).not.toHaveValue('')
   })
 })

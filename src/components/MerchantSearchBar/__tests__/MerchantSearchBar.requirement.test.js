@@ -8,6 +8,7 @@ import React from 'react'
 import { PAGE_CRASH_TEXT, callsOf, loginAs, renderPage } from '__tests__/testkit.test'
 import MerchantSearchBar from 'components/MerchantSearchBar'
 import Subject from 'components/MerchantSearchBar/Subject'
+import ThirdPartyAutoComplete from 'components/ThirdPartyAutoComplete'
 
 afterEach(cleanup)
 
@@ -209,6 +210,37 @@ describe('MerchantSearchBar 篩選欄位', () => {
     await wait(() => expect(field('會員卡名稱/代號')).toHaveValue('金卡-30天'))
     clear('會員卡名稱/代號')
     expect(lastFilter(onFilter).membershipId).toBe('')
+  })
+
+  it.each([
+    ['payType', '收付方式', { GET_ACCOUNTING_TYPE: { getAccountingType: null } }],
+    ['payType', '收付方式', { GET_ACCOUNTING_TYPE: new Error('查詢失敗') }],
+    ['source', '帳單來源', { GET_CUSTOMER_REFERENCE: { getCustomerReference: null } }],
+    ['sources', '帳單來源', { GET_CUSTOMER_REFERENCE: { getCustomerReference: null } }],
+    ['sources', '帳單來源', { GET_CUSTOMER_REFERENCE: new Error('查詢失敗') }],
+    ['thirdPartyCoupon', '第三方卡券', { FETCH_THIRDPARTYS: { merchant: { id: 'm', thirdpartyCoupons: null } } }],
+    ['thirdPartyCoupon', '第三方卡券', { FETCH_THIRDPARTYS: new Error('查詢失敗') }],
+  ])('選項查詢回空資料（null）或失敗時不整頁壞，選單沒有選項：%s', async (key, label, extra) => {
+    // 2026/10/22：篩選面板打開時，這幾個欄位的 Autocomplete 曾拿到 options=null 而整頁進入錯誤畫面
+    loginAs()
+    const { settle } = renderPage(<MerchantSearchBar values={{ source: key === 'sources' ? [] : '' }} onFilter={jest.fn()} visible={[key]} />, {
+      fixtures: { ...fixtures, ...extra },
+    })
+    await settle()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    fireEvent.click(field(label))
+    fireEvent.keyDown(field(label), { key: 'ArrowDown' })
+    expect(screen.queryAllByRole('option')).toHaveLength(0)
+  })
+
+  it('第三方卡券 initFirst：查詢回 null 時帶入空值、不拋錯', async () => {
+    const onChange = jest.fn()
+    const { settle } = renderPage(<ThirdPartyAutoComplete initFirst onChange={onChange} />, {
+      fixtures: { FETCH_THIRDPARTYS: { merchant: { id: 'm', thirdpartyCoupons: null } } },
+    })
+    await settle()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(onChange).toHaveBeenCalledWith(null)
   })
 
   it('沒給 visible 時只有搜尋列外框、不顯示任何欄位', () => {

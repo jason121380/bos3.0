@@ -3,7 +3,8 @@
 // - 儲存送出 updateMoneyFlow(id, input, password)：金額轉數字、科目 id 與名稱、關係人 id、有登錄者才送 userId；成功導回現金收支列表
 // - 店家開啟「編輯收支密碼」時，儲存先跳密碼對話框，確認後才送出（帶密碼）；取消清空密碼
 // - 改收支類別（點選或左右鍵）會清空科目與關係人並提示重新選擇；未選科目時儲存提示「請選擇科目」、不送出
-// - 刪除送出 deleteMoneyFlow(id)；成功導回列表；失敗提示錯誤、按鈕恢復
+// - 刪除先確認（「確定要刪除這筆收支紀錄嗎？」）再送出 deleteMoneyFlow(id)；成功導回列表；失敗提示錯誤、按鈕恢復（Jason 2026/10/22）
+// - 點選切換收支類別後焦點落在新選的按鈕；紀錄查詢失敗時以空表單顯示、不整頁錯誤（Jason 2026/10/22）
 // - 鍵盤：日期欄（ui/date-picker，頁面以 slotProps.textField.onKeyDown 處理）Enter 跳到收入／支出、不開月曆，Enter 依序跳欄
 // GraphQL 全由 testkit 的模擬 link 回應，不改真實資料。
 import React from 'react'
@@ -166,14 +167,13 @@ describe('收支紀錄詳細（現金）', () => {
     expect(field('科目')).toHaveValue('5101 房租')
   })
 
-  it('已知缺口（待 Jason 決定）：點選切換收支類別後，焦點跳到「原本」的類別按鈕（收入→支出時焦點在收入）', async () => {
-    // onChange 依切換前的 inoutType 決定焦點：原本是收入就 setFocus('type1')
+  it('點選切換收支類別後，焦點落在新選的類別按鈕（Jason 2026/10/22）', async () => {
     const { settle } = setup()
     await settle()
     fireEvent.click(toggle('支出'))
-    expect(document.activeElement).toBe(toggle('收入'))
-    fireEvent.click(toggle('收入'))
     expect(document.activeElement).toBe(toggle('支出'))
+    fireEvent.click(toggle('收入'))
+    expect(document.activeElement).toBe(toggle('收入'))
   })
 
   it('支出選「員工借支」要再選關係人提示才消失；儲存送出關係人 id', async () => {
@@ -294,36 +294,51 @@ describe('收支紀錄詳細（現金）', () => {
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '更新收借支失敗', variant: 'error' }))
   })
 
-  it('刪除送出紀錄 id，成功後導回列表', async () => {
+  it('刪除先確認：取消不送出；確定後送出紀錄 id，成功後導回列表（Jason 2026/10/22）', async () => {
     const { calls, settle } = setup()
     await settle()
     fireEvent.click(deleteButton())
+    let dialog = within(screen.getByRole('dialog'))
+    expect(dialog.getByText('確定要刪除這筆收支紀錄嗎？')).toBeInTheDocument()
+    fireEvent.click(dialog.getByText('取消'))
+    await wait(() => expect(screen.queryByRole('dialog')).toBeNull())
+    expect(callsOf(calls, 'USE_FETCH_DELETE_MONEY_FLOW')).toHaveLength(0)
+    fireEvent.click(deleteButton())
+    dialog = within(screen.getByRole('dialog'))
+    fireEvent.click(dialog.getByText('確定刪除'))
     await wait(() => expect(callsOf(calls, 'USE_FETCH_DELETE_MONEY_FLOW')).toHaveLength(1))
     expect(callsOf(calls, 'USE_FETCH_DELETE_MONEY_FLOW')[0].variables).toEqual({ id: 'mf-1' })
     await wait(() => expect(currentLocation()).toBe('/general/accounting/records'))
     expect(openSnackbar).toHaveBeenCalledWith({ message: '刪除收借支成功', variant: 'success' })
   })
 
-  it('已知缺口（待 Jason 決定）：店家開啟編輯收支密碼時，刪除仍不需密碼、也沒有確認就直接刪除', async () => {
+  it('已知缺口（待 Jason 決定）：店家開啟編輯收支密碼時，刪除有確認但仍不需密碼（deleteMoneyFlow 沒有 password 參數，需後端支援）', async () => {
     const { calls, settle } = setup({ GET_MERCHANT_PASSWORD: { merchantPassword: { editMoneyFlow: { isUsing: true } } } })
     await settle()
     fireEvent.click(deleteButton())
-    expect(screen.queryByRole('dialog')).toBeNull()
+    const dialog = within(screen.getByRole('dialog'))
+    expect(dialog.queryByLabelText('儲存密碼')).toBeNull()
+    fireEvent.click(dialog.getByText('確定刪除'))
     await wait(() => expect(callsOf(calls, 'USE_FETCH_DELETE_MONEY_FLOW')).toHaveLength(1))
+    expect(callsOf(calls, 'USE_FETCH_DELETE_MONEY_FLOW')[0].variables).toEqual({ id: 'mf-1' })
   })
 
   it('刪除失敗或後端回 null 時提示錯誤、按鈕恢復可按', async () => {
     const { settle } = setup({ USE_FETCH_DELETE_MONEY_FLOW: new Error('已日結不可刪除') })
     await settle()
     fireEvent.click(deleteButton())
+    fireEvent.click(within(screen.getByRole('dialog')).getByText('確定刪除'))
     await wait(() =>
       expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('已日結不可刪除') }))
     )
     await wait(() => expect(deleteButton()).not.toBeDisabled())
+    // 失敗後確認框關閉
+    expect(screen.queryByRole('dialog')).toBeNull()
     cleanup()
     const second = setup({ USE_FETCH_DELETE_MONEY_FLOW: { deleteMoneyFlow: null } })
     await second.settle()
     fireEvent.click(deleteButton())
+    fireEvent.click(within(screen.getByRole('dialog')).getByText('確定刪除'))
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '刪除收借支失敗', variant: 'error' }))
   })
 
@@ -392,10 +407,15 @@ describe('收支紀錄詳細（現金）', () => {
     expect(field('金額')).toHaveValue(1200)
   })
 
-  it('已知缺口（待 Jason 決定）：紀錄查詢失敗（或已被刪除）時整頁進入錯誤畫面', async () => {
-    // 帶入 effect 在 loading 結束後直接讀 getMoneyFlow.data.moneyFlow.date，查詢失敗時 data 為 undefined
-    const { settle } = setup({ GET_MONEY_FLOW: new Error('查無資料') })
+  it('紀錄查詢失敗（或已被刪除）時以空表單顯示，不整頁錯誤（Jason 2026/10/22）', async () => {
+    const { calls, settle } = setup({ GET_MONEY_FLOW: new Error('查無資料') })
     await settle()
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getByText('收支紀錄詳細', { selector: 'h1' })).toBeInTheDocument()
+    // 沒帶入科目：儲存提示選科目、不送出
+    fireEvent.click(toggle('收入'))
+    fireEvent.click(saveButton())
+    expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '請選擇科目', variant: 'warning' }))
+    expect(callsOf(calls, 'USE_FETCH_UPDATE_MONEY_FLOW')).toHaveLength(0)
   })
 })

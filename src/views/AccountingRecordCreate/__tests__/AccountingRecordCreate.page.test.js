@@ -349,8 +349,7 @@ describe('新增收借支紀錄（高階）', () => {
       expect(sent(calls)).toMatchObject({ amount: 800, accountingSubjectId: 'r1', walletType: '轉帳' })
     })
 
-    it('已知缺口（待 Jason 決定）：F8 送出用的是最後一次改科目／金額／收支時的資料，之後才選的登錄者、收付方式、備註不會送出', async () => {
-      // keyDownSubmit 只在 [accountingSubject, amount, inoutType] 改變時重新註冊，閉包裡的 userId／walletType／remark 是舊值
+    it('F8 送出最新的登錄者、收付方式、備註（最後才選的也會送出，Jason 2026/10/22）', async () => {
       const { calls, settle } = setup()
       await settle()
       fillRevenue()
@@ -362,11 +361,12 @@ describe('新增收借支紀錄（高階）', () => {
       expect(sent(calls)).toEqual({
         date: DATE,
         amount: 1500,
-        walletType: '轉帳',
-        remark: '',
+        walletType: '現金',
+        remark: '十月租金',
         accountingSubjectId: 'r1',
         accountingSubjectName: '營業收入',
         relationUserId: null,
+        userId: 'u1',
       })
     })
   })

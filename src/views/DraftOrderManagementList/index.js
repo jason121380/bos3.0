@@ -4,7 +4,6 @@ import Page from 'components/Page'
 import { endOfDay, startOfDay } from 'date-fns'
 import { useFetchPendingOrders } from 'hooks/useFetchOrders'
 import idx from 'idx'
-import produce from 'immer'
 import React from 'react'
 import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
@@ -99,22 +98,6 @@ function DraftOrderManagementList() {
     }
   })
 
-  const handlePageChange = (event, newPage) => {
-    setPageSetting(
-      produce(draft => {
-        draft.pageOffset = newPage
-      })
-    )
-  }
-
-  const handleRowsPerPageChange = event => {
-    setPageSetting(
-      produce(draft => {
-        draft.pageLimit = idx(event, _ => _.target.value)
-        draft.pageOffset = 0
-      })
-    )
-  }
   React.useEffect(() => {
     if (!getIsPrintWindowClosureDelayed.loading) {
       const data = idx(getIsPrintWindowClosureDelayed, _ => _.data.getParameterOrderCreateSetting.isPrintWindowClosureDelayed)
@@ -127,10 +110,12 @@ function DraftOrderManagementList() {
         isMemberShipCardActiveData,
         _ => _.data.getIsMemberShipCardActive
       )
-      const allOrers = orders.data.pendingOrders.orders
+      // 查詢失敗時以空列表計算，不整頁錯誤（Jason 2026/10/22）
+      const allOrers = idx(orders, _ => _.data.pendingOrders.orders) || []
       const memberRecord = allOrers.map(d => d.membershipOrders).flat()
       const membership = memberRecord.some(({ price }) => price !== 0)
-      setMembershipDisplay(isMemberShipCardActive || membership !== 0)
+      // membership 是布林：未啟用會員卡且沒有會員卡金額時不顯示會員卡欄（原本比較 membership !== 0 永遠為 true，Jason 2026/10/22）
+      setMembershipDisplay(Boolean(isMemberShipCardActive || membership))
     }
   }, [isMemberShipCardActiveData.loading, orders.loading])
   React.useEffect(() => {
@@ -139,7 +124,7 @@ function DraftOrderManagementList() {
         customerBonusActive,
         _ => _.data.getIsCustomerBonusActive
       )
-      const allOrers = orders.data.pendingOrders.orders
+      const allOrers = idx(orders, _ => _.data.pendingOrders.orders) || []
       const bonus = allOrers.some(({ bonusDecount }) => bonusDecount !== 0)
       setBonusDisplay(bonusActive || bonus)
     }
@@ -237,8 +222,6 @@ function DraftOrderManagementList() {
           pageSetting={pageSetting}
           refetch2={refetch}
           totalCount={totalCount}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleRowsPerPageChange}
           isCustomerDataMarked={isCustomerDataMarked}
           membershipDisplay={membershipDisplay}
           bonusDisplay={bonusDisplay}

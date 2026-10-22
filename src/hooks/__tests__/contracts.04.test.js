@@ -54,13 +54,11 @@ import * as useFetchMerchantSalaryIncreaseItems from 'hooks/useFetchMerchantSala
 import * as useFetchMoneyAccountDetail from 'hooks/useFetchMoneyAccountDetail'
 import * as useFetchMoneyFlowCategoryReport from 'hooks/useFetchMoneyFlowCategoryReport'
 import * as useFetchMoneyFlowDailyReport from 'hooks/useFetchMoneyFlowDailyReport'
-import * as useFetchMoneyFlowReportExcel from 'hooks/useFetchMoneyFlowReportExcel'
 import * as useFetchMoneyFlowTransferReport from 'hooks/useFetchMoneyFlowTransferReport'
 import * as useFetchMultipleUpdateMembershipCategory from 'hooks/useFetchMultipleUpdateMembershipCategory'
 import * as useFetchNonCashDetailStatement from 'hooks/useFetchNonCashDetailStatement'
 import * as useFetchNonDesignationBooking from 'hooks/useFetchNonDesignationBooking'
 import * as useFetchOrder from 'hooks/useFetchOrder'
-import * as useFetchOrderReport from 'hooks/useFetchOrderReport'
 import * as useFetchOrderWithoutCustomerDefault from 'hooks/useFetchOrderWithoutCustomerDefault'
 import * as useFetchOrders from 'hooks/useFetchOrders'
 import * as useFetchPayment from 'hooks/useFetchPayment'
@@ -916,27 +914,6 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchMoneyFlowReportExcel',
-    hook: useFetchMoneyFlowReportExcel.default,
-    args: [{ input: { probe: 'input' } }],
-    invoke: [{ fn: 'fetchMoneyFlowReportExcel', args: [] }],
-    expect: {
-      initial: [],
-      shape: { fetchMoneyFlowReportExcel: 'function', response: { loading: false, called: false } },
-      invoked: [
-        {
-          fn: 'fetchMoneyFlowReportExcel',
-          calls: [{ operationName: 'moneyFlowReportExcel', variables: { input: { probe: 'input' } } }],
-        },
-      ],
-      shapeAfter: {
-        fetchMoneyFlowReportExcel: 'function',
-        response: { loading: false, called: true, data: ['moneyFlowReportExcel'] },
-      },
-      policies: { moneyFlowReportExcel: 'cache-and-network' },
-    },
-  },
-  {
     id: 'useFetchMoneyFlowTransferReport',
     hook: useFetchMoneyFlowTransferReport.default,
     args: [{ input: { probe: 'input' } }],
@@ -1049,26 +1026,6 @@ const ROWS = [
       invoked: [{ fn: 0, calls: [{ operationName: 'FETCH_ORDER_FOR_PRINT', variables: { orderId: 'orderId-v' } }] }],
       shapeAfter: ['function', { loading: false, called: true, data: ['order'] }],
       policies: { FETCH_ORDER_FOR_PRINT: 'cache-and-network' },
-    },
-  },
-  {
-    id: 'useFetchOrderReport.useFetchDownloadOrderReport',
-    hook: useFetchOrderReport.useFetchDownloadOrderReport,
-    args: ['startDate-v', 'endDate-v'],
-    invoke: [{ fn: 0, args: [] }],
-    expect: {
-      initial: [],
-      shape: ['function', { loading: false, called: false }],
-      invoked: [
-        {
-          fn: 0,
-          calls: [
-            { operationName: 'OrderReport', variables: { input: { startDate: 'startDate-v', endDate: 'endDate-v' } } },
-          ],
-        },
-      ],
-      shapeAfter: ['function', { loading: false, called: true, data: ['orderReport'] }],
-      policies: { OrderReport: 'cache-and-network' },
     },
   },
   {

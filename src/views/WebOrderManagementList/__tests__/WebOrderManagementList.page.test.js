@@ -3,7 +3,8 @@
 // - 店家開啟報到功能時才有報到欄與「報到狀態」篩選（報到成功＝true、未報到＝false、無＝null）；開啟未來預約確認時才有「未來預訂(待確認)」欄
 // - 每筆：狀態、時間、顧客（已刪除顯示「客資已刪除」）、指定、設計師（無設計師／不指定設計師）、來源；已完成的連到帳單、未完成的連到預約
 // - 刪除（取消預約）：只能勾未完成的預約；店家設刪除密碼時先輸入密碼；送出的 orderIds 與密碼正確，成功後清空勾選、重抓
-// - 匯出：已知缺口——沒有依店家設定遮罩客資、「來源」欄讀的是沒有查詢的欄位
+// - 匯出：比照帳單列表依店家設定遮罩客資（只有設定查詢成功且為 false 才不遮罩）；「來源」欄與表格同讀 source（Jason 2026/10/22）
+// - 報到設定、刪除密碼設定查詢失敗時仍顯示列表（Jason 2026/10/22）
 // GraphQL 全由 testkit 的模擬 link 回應，不刪除真實資料。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
@@ -199,20 +200,52 @@ describe('預約管理', () => {
     expect(screen.getByText('已選 1 筆')).toBeInTheDocument()
   })
 
-  it('已知缺口（待 Jason 決定）：匯出檔沒有依店家設定遮罩客資，「來源」欄讀未查詢的 reference 而永遠空白', async () => {
-    // 帳單列表、掛單列表的匯出都經 exportCustomerMask；預約管理沒有。來源欄表格用 source，匯出卻用 reference（查詢沒有這個欄位）
+  it('匯出檔預設遮罩客資（姓名依長度遮、手機留前 4 後 3），「來源」欄讀 source（Jason 2026/10/22）', async () => {
+    // 遮罩設定沒回（null）＝遮罩；與帳單列表、掛單列表同一套規則
     const { settle } = setup()
     await settle()
     await wait(() => expect(exportedCsv()).toContain('#R001(2026/10/22 14:30:00)'))
     const csv = exportedCsv()
-    expect(csv).toContain('"陳小姐(0912345678)"')
+    expect(csv).toContain('"陳*姐(0912***678)"')
+    expect(csv).toContain('"張*姐(0933***)"')
+    expect(csv).not.toContain('陳小姐')
+    expect(csv).not.toContain('0912345678')
     expect(csv).toContain('"客資已刪除"')
     expect(csv).toContain('"王小美 / 01"')
     expect(csv).toContain('"無設計師"')
     expect(csv).toContain('"不指定設計師"')
     expect(csv).toContain('"報到成功"')
     expect(csv).toContain('"未報到"')
-    expect(csv).not.toContain('LINE')
+    expect(csv).toContain('"LINE"')
+    expect(csv).toContain('"現場"')
+  })
+
+  it('店家設定不遮罩客資時匯出完整姓名與手機；設定查詢失敗時仍遮罩（Jason 2026/10/22）', async () => {
+    const { settle } = setup({ GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false } })
+    await settle()
+    await wait(() => expect(exportedCsv()).toContain('"陳小姐(0912345678)"'))
+    cleanup()
+    const failed = setup({ GET_CUSTOMER_DATA_MARKED: new Error('查詢失敗') })
+    await failed.settle()
+    await wait(() => expect(exportedCsv()).toContain('"陳*姐(0912***678)"'))
+  })
+
+  it('遮罩時姓名、手機缺漏不會拋錯', async () => {
+    const { settle } = setup({
+      GET_BOOKING_MANAGEMENT: {
+        bookingManagement: {
+          pageLimit: 1000, pageOffset: 0, totalCount: 2,
+          bookings: [
+            { ...BOOKINGS[0], id: 'n1', no: 'N1', customer: { name: null, cellphone: null, isAlive: true } },
+            { ...BOOKINGS[0], id: 'n2', no: 'N2', customer: { name: '歐陽小明', cellphone: '0911222333', isAlive: true } },
+          ],
+        },
+      },
+    })
+    await settle()
+    await wait(() => expect(exportedCsv()).toContain('#N1('))
+    expect(exportedCsv()).toContain('"*(***)"')
+    expect(exportedCsv()).toContain('"歐陽*小明(0911***333)"')
   })
 
   it('載入中顯示骨架', async () => {
@@ -229,18 +262,21 @@ describe('預約管理', () => {
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 
-  it('已知缺口（待 Jason 決定）：報到設定查詢失敗時整頁進入錯誤畫面', async () => {
-    // effect 直接讀 getCheckinSettings.data.getMerchantCheckinSettings
+  it('報到設定查詢失敗時不顯示報到欄，列表照常顯示（Jason 2026/10/22）', async () => {
     const { settle } = setup({ GET_CHECKIN_SETTING_FOR_MANAGEMENT_LIST: new Error('查詢失敗') })
     await settle()
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getByText('預約管理列表')).toBeInTheDocument()
+    expect(headers()).not.toContain('報到狀態')
   })
 
-  it('已知缺口（待 Jason 決定）：刪除密碼設定查詢失敗時整個預約列表不顯示', async () => {
-    // 傳給列表的 delOrderPassUsing 直接讀 getDeleteOrderUsing.data.merchantPassword，在 idx 內拋錯被吞掉，列表整個不畫
-    const { settle } = setup({ GET_DELETE_ORDER_USING: new Error('查詢失敗') })
+  it('刪除密碼設定查詢失敗時列表照常顯示，取消預約不要求密碼（Jason 2026/10/22）', async () => {
+    const { calls, settle } = setup({ GET_DELETE_ORDER_USING: new Error('查詢失敗') })
     await settle()
-    expect(screen.queryByText('預約管理列表')).toBeNull()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getByText('預約管理列表')).toBeInTheDocument()
+    fireEvent.click(within(rowByTime('14:30', '2026/10/22')).getByLabelText('選取此筆預約'))
+    fireEvent.click(screen.getByText('取消訂單(預約)'))
+    await wait(() => expect(callsOf(calls, 'DELETE_ORDER')).toHaveLength(1))
   })
 })

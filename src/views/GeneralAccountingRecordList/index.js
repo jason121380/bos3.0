@@ -4,7 +4,6 @@ import Page from 'components/Page'
 import { endOfDay, startOfMonth } from 'date-fns'
 import useFetchGetMoneyFlowsForAccounting from 'hooks/useFetchGetMoneyFlowsForAccounting'
 import idx from 'idx'
-import produce from 'immer'
 import React from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { ListFilter, Plus } from 'lucide-react'
@@ -28,21 +27,6 @@ function AccountingRecordList() {
   const [showFilter, setShowFilter] = React.useState(false)
   const getMoneyFlowsForAccounting = useFetchGetMoneyFlowsForAccounting({ input: pageSetting })
 
-  const handlePageChange = (event, newPage) => {
-    setPageSetting(
-      produce(draft => {
-        draft.pageOffset = newPage
-      })
-    )
-  }
-  const handleRowsPerPageChange = event => {
-    setPageSetting(
-      produce(draft => {
-        draft.pageLimit = idx(event, _ => _.target.value)
-        draft.pageOffset = 0
-      })
-    )
-  }
   return (
     <Page className="ui-root" title="現金收支登錄">
       <PageHeader
@@ -63,7 +47,8 @@ function AccountingRecordList() {
             'thismonth', 'lastmonth', 'dbyesterday',
             'yesterday', 'today', 'startDate', 'endDate'
           ]}
-          dateChange={value => setPageSetting(value)}
+          // 快速選擇日期只回傳起訖，合併進原條件：保留「現場現金」限制、篩選與筆數（Jason 2026/10/22）
+          dateChange={value => setPageSetting(prev => ({ ...prev, ...value }))}
         />
         <ToolbarSpacer />
         <Button
@@ -106,8 +91,6 @@ function AccountingRecordList() {
         _ =>
           _.data.moneyFlows && (
             <Results
-              onPageChange={handlePageChange}
-              onRowsPerPageChange={handleRowsPerPageChange}
               moneyFlows={_.data.moneyFlows}
               pageSetting={pageSetting}
             />

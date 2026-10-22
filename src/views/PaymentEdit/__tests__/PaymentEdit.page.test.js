@@ -108,10 +108,11 @@ describe('編輯支付方式', () => {
     expect(document.activeElement).not.toBe(input)
   })
 
-  it('已知缺口（待 Jason 決定）：查不到這筆支付方式（查詢失敗）時整頁進入錯誤畫面', async () => {
-    // 帶入 effect 在 loading 結束後直接讀 paymentDetail.data.merchantPayWay.type，查詢失敗時 data 為 undefined 而拋錯
+  it('查不到這筆支付方式（查詢失敗）時以空表單顯示、儲存不可按，不整頁錯誤（Jason 2026/10/22）', async () => {
     const { settle } = setup({ PAYMENT: new Error('查詢失敗') })
     await settle()
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getByText('編輯支付方式', { selector: 'h1' })).toBeInTheDocument()
+    expect(submit()).toBeDisabled()
   })
 })

@@ -17,8 +17,8 @@ export default function SourcesAutocomplete({
     <Autocomplete
       className={className}
       options={
-        !getReference.loading ?
-          idx(getReference, _ => _.data.getCustomerReference) : []
+        // 查詢失敗或回 null 時以空清單顯示，Autocomplete 拿到 null 會整頁壞（2026/10/22）
+        (!getReference.loading && idx(getReference, _ => _.data.getCustomerReference)) || []
       }
       value={value}
       autoHighlight

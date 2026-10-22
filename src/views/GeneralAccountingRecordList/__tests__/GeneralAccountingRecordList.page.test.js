@@ -4,7 +4,7 @@
 // - 每筆：科目（沒有科目時空白）、收入或支出欄依 inoutType、登錄者「姓名/編號」、收付方式、關係人、備註、編輯連結
 // - 報表匯出（CSV）內容與表格一致
 // - 篩選：只有科目（沒有收付方式欄），選科目後送出科目名稱、仍只查現場現金
-// - 快速選擇日期：已知缺口（待 Jason 決定）——快捷選項只回傳起訖，頁面整個覆蓋查詢條件，連「現場現金」限制都被丟掉
+// - 快速選擇日期只改起訖，保留「現場現金」限制、科目與筆數（Jason 2026/10/22）
 // - 查詢失敗時不整頁壞
 // GraphQL 全由 testkit 的模擬 link 回應。
 import React from 'react'
@@ -131,16 +131,25 @@ describe('現金收支登錄', () => {
     expect(screen.queryByText('選擇科目')).toBeNull()
   })
 
-  it('已知缺口（待 Jason 決定）：快速選擇「昨天」後，查詢只剩起訖，「現場現金」限制被丟掉（會查到非現金的收支）', async () => {
-    // DateSelector 的快捷選項只回傳 { startDate, endDate }，頁面以 setPageSetting(value) 整個覆蓋
+  it('快速選擇「昨天」只改起訖，保留「現場現金」限制、科目與筆數（Jason 2026/10/22）', async () => {
     const { calls, settle } = setup()
+    await settle()
+    fireEvent.click(screen.getByRole('button', { name: '篩選' }))
+    await settle()
+    choose('選擇科目', '雜支')
+    await wait(() => expect(lastInput(calls).accountingSubjectName).toBe('雜支'))
     await settle()
     fireEvent.keyDown(screen.getByRole('combobox', { name: '快速選擇日期區間' }), { key: 'Enter' })
     fireEvent.keyDown(screen.getByRole('option', { name: '昨天' }), { key: 'Enter' })
     await wait(() =>
       expect(lastInput(calls)).toEqual({
+        pageLimit: 1000,
+        pageOffset: 0,
         startDate: startOfDay(subDays(new Date(), 1)).getTime(),
         endDate: endOfDay(subDays(new Date(), 1)).getTime(),
+        accountingSubjectName: '雜支',
+        payTypeKeyWord: '現場現金',
+        relationUserId: '',
       })
     )
   })

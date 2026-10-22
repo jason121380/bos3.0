@@ -6,12 +6,11 @@ import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteOrder from 'hooks/useFetchDeleteOrder'
 import idx from 'idx'
 import PropTypes from 'prop-types'
-import React, { useEffect, useMemo, useRef, useState, Fragment } from 'react'
+import React, { useEffect, useMemo, useState, Fragment } from 'react'
 import { useLocation } from 'react-router'
 import designerNameType from 'helper/designerNameType'
 import truncateDecimal from 'helper/truncateDecimal'
 import { useFetchOrderForPrint } from 'hooks/useFetchOrder'
-import pagenationLabel from './../../helper/pagenationLabel'
 import OrderListTable from './OrderListTable'
 import DeleteOrderDialog from './DeleteOrderDialog'
 import { weekDisplay } from './orderListHelpers'
@@ -25,8 +24,6 @@ function Results({
   refetch2,
   totalCount,
   pageSetting,
-  onPageChange,
-  onRowsPerPageChange,
   isCustomerDataMarked,
   membershipDisplay,
   bonusDisplay,
@@ -44,7 +41,6 @@ function Results({
   serialNumberUsing,
   ...rest
 }) {
-  const pageRef = useRef(null)
   const merchantName = JSON.parse(localStorage.getItem('userMerchant')).name
   const [selectedOrders, setSelectedOrders] = useState([])
   // 勾選狀態查詢用 Set（每列查兩次，避免 indexOf 逐筆掃描）；只換查詢方式，selectedOrders 的結構與 handler 不變
@@ -200,11 +196,8 @@ function Results({
     })
 
     setExcelData(excelData)
-    if (pageRef.current) {
-      pagenationLabel(pageRef.current)
-    }
     // 遮罩設定、活動券欄是否顯示比帳單晚到時要重算：否則匯出檔用到未遮罩的姓名電話、或「活動券」欄落後一批（B2 疑似 bug #1、#10）
-  }, [orders, membershipDisplay, bonusDisplay, pageRef.current, serialNumberUsing, isCustomerDataMarked, raffleDisplay])
+  }, [orders, membershipDisplay, bonusDisplay, serialNumberUsing, isCustomerDataMarked, raffleDisplay])
 
   function printDiv() {
     var printMain = document.getElementById('printMain')

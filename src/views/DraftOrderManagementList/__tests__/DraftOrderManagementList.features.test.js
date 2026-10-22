@@ -4,7 +4,7 @@
 // - 匯出：遮罩依姓名長度；設定不遮罩時完整姓名電話；會員卡／點數欄
 // - 刪除：已日結的不能勾；未設密碼直接刪、設了先輸入密碼；失敗提示並清空勾選
 // - 結帳：未設密碼直接以掛單內容重新結帳（isPending: false），成功導到帳單列表；設密碼時先輸入密碼並帶上；失敗提示
-// - 列印：依列印格式寫入列印視窗；合計＝服務＋店販（不含第三方卡券）＋卡券販賣(不入業績)，付現再扣入金、其他付款、點數折抵
+// - 列印：依列印格式寫入列印視窗；合計＝服務＋店販＋會員卡（皆不含第三方卡券）＋卡券販賣(不入業績)（與帳單列表一致，Jason 2026/10/22），付現再扣入金、其他付款、點數折抵
 // - 店家關閉掛單功能時導回打帳單
 // GraphQL 全由 testkit 的模擬 link 回應，不建立、不刪除真實帳單；列印視窗以假物件取代。
 import React from 'react'
@@ -234,11 +234,11 @@ describe('掛單列表：查詢', () => {
     expect(currentLocation()).toBe('/order/create')
   })
 
-  it('已知缺口（待 Jason 決定）：掛單查詢失敗時整頁進入錯誤畫面', async () => {
-    // 會員卡／點數顯示的 effect 直接讀 orders.data.pendingOrders.orders
+  it('掛單查詢失敗時以空列表顯示，不整頁錯誤（Jason 2026/10/22）', async () => {
     const { settle } = setup({ FETCH_PENDING_ORDERS: new Error('查詢失敗') })
     await settle()
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getByText('此區間沒有掛單')).toBeInTheDocument()
   })
 })
 
@@ -297,23 +297,36 @@ describe('掛單列表：列表與匯出', () => {
     await wait(() => expect(exportedCsv()).toContain('陳小姐 0912345678'))
   })
 
-  it('已知缺口（待 Jason 決定）：設計師沒有編號（null）時匯出成「姓名/null」', async () => {
-    // 匯出只判斷 designerNo !== ''，null 會被串成字串
+  it('設計師沒有編號（null）時匯出只有姓名，不帶「/null」（Jason 2026/10/22）', async () => {
     const { settle } = setup({
       FETCH_PENDING_ORDERS: { pendingOrders: { pageLimit: 1000, pageOffset: 0, totalCount: 1, orders: [draft({ designer: { id: 'u-9', name: '小林', designerNo: null, firstName: '林', lastName: '小' } })] } },
     })
     await settle()
-    await wait(() => expect(exportedCsv()).toContain('"小林/null"'))
+    await wait(() => expect(exportedCsv()).toContain('"小林"'))
+    expect(exportedCsv()).not.toContain('null')
   })
 
-  it('已知缺口（待 Jason 決定）：未啟用會員卡、掛單也沒有會員卡金額，仍顯示「會員卡販賣」欄', async () => {
-    // membership 是布林（some(...)），之後又比較 membership !== 0，永遠為 true
+  it('未啟用會員卡、掛單也沒有會員卡金額時不顯示「會員卡販賣」欄；有會員卡金額或啟用會員卡時顯示（Jason 2026/10/22）', async () => {
     const { settle } = setup({
       FETCH_PENDING_ORDERS: { pendingOrders: { pageLimit: 1000, pageOffset: 0, totalCount: 1, orders: [draft()] } },
     })
     await settle()
+    expect(headers()).not.toContain('會員卡販賣')
+    await wait(() => expect(exportedCsv()).toContain('營業現金應收'))
+    expect(exportedCsv()).not.toContain('會員卡販賣')
+    cleanup()
+    // 有一筆掛單含會員卡金額（D002 900）
+    const withMembership = setup()
+    await withMembership.settle()
     expect(headers()).toContain('會員卡販賣')
     await wait(() => expect(exportedCsv()).toContain('會員卡販賣'))
+    cleanup()
+    const active = setup({
+      GET_IS_MEMBERSHIP_CARD_ACTIVE: { getIsMemberShipCardActive: true },
+      FETCH_PENDING_ORDERS: { pendingOrders: { pageLimit: 1000, pageOffset: 0, totalCount: 1, orders: [draft()] } },
+    })
+    await active.settle()
+    expect(headers()).toContain('會員卡販賣')
   })
 
   it('有點數折抵或啟用點數時顯示點數欄；兩者皆無時不顯示', async () => {
@@ -401,8 +414,8 @@ describe('掛單列表：結帳', () => {
     payType: [],
     isPending: false,
     serviceOrders: [
-      // 已知缺口（待 Jason 決定）：查詢的服務助理欄位叫 helperDeductionType，這裡讀 helperDeductiontype，送出 undefined
-      { serviceId: 'svc-1', price: 1000, serviceOrderHelpers: [{ helperDeductiontype: undefined, helperId: 'h-1', isDesignate: false, type: '助理' }], thirdPartyCouponMerchantId: null },
+      // 服務助理讀查詢的 helperDeductionType（送出的欄位名仍是 helperDeductiontype），Jason 2026/10/22
+      { serviceId: 'svc-1', price: 1000, serviceOrderHelpers: [{ helperDeductiontype: 'PERCENT', helperId: 'h-1', isDesignate: false, type: '助理' }], thirdPartyCouponMerchantId: null },
       { serviceId: 'svc-2', price: 300, serviceOrderHelpers: [], thirdPartyCouponMerchantId: 'tp-1' },
     ],
     productOrders: [
@@ -516,6 +529,27 @@ describe('掛單列表：列印', () => {
     expect(html).toContain('增點：10')
     expect(printWindow.document.close).toHaveBeenCalled()
     expect(printWindow.close).toHaveBeenCalled()
+  })
+
+  it('合計與付現含會員卡（不含第三方卡券付的會員卡），與帳單列表一致（Jason 2026/10/22）', async () => {
+    const { settle } = setup({
+      FETCH_PENDING_ORDERS: {
+        pendingOrders: {
+          pageLimit: 1000, pageOffset: 0, totalCount: 1,
+          orders: [draft({
+            membershipOrders: [
+              { seller: { id: 'u-1' }, purchaseDate: 1, expiryDate: 2, price: 600, thirdPartyPayId: null, thirdPartyPayName: null, remark: '', membership: { uuid: 'm-1', name: '金卡' } },
+              { seller: { id: 'u-1' }, purchaseDate: 1, expiryDate: 2, price: 900, thirdPartyPayId: 'tp-3', thirdPartyPayName: '會員券', remark: '', membership: { uuid: 'm-2', name: '銀卡' } },
+            ],
+          })],
+        },
+      },
+    })
+    await settle()
+    const html = await printOf()
+    // 1000 + 400 + 600 + 300 = 2300；付現 2300 − 200 − 100 − 30 = 1970
+    expect(html).toContain('合計：2300')
+    expect(html).toContain('付現金額：1970')
   })
 
   it.each([

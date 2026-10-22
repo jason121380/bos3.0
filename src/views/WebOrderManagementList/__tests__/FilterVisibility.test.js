@@ -19,6 +19,7 @@ jest.mock('hooks/useFetchMerchantPassword', () => ({
   default: () => ({}),
   useFetchGetDeleteOrderUsing: () => ({ loading: false, data: { merchantPassword: { deleteOrder: { isUsing: false } } } }),
 }))
+jest.mock('hooks/useFetchGetCustomerDataMarkedDefault', () => () => ({ loading: false, data: { getCustomerDataMarkedDefault: true } }))
 jest.mock('../Results', () => () => <div>results</div>)
 
 beforeEach(() => localStorage.setItem('userMerchant', JSON.stringify({ id: 'm1', name: '測試店' })))

@@ -11,14 +11,11 @@ import { cn } from 'ui/utils'
 
 function Results({
   pageSetting,
-  onPageChange,
-  onRowsPerPageChange,
   waitCloseOrderResults,
   refetchDailyMoneyFlowReport,
   refetch,
   loading,
   checkoutStatus,
-  pagenationLabel,
   ...rest
 }) {
   const checkoutStaff = JSON.parse(localStorage.getItem('user'))
@@ -27,7 +24,6 @@ function Results({
   const [checkoutProcessing, setCheckoutProcessing] = React.useState(false)
   const [canCheckoutOrder, setCanCheckoutOrder] = React.useState(0)
   const [expanded, setExpanded] = React.useState(false)
-  const pageRef = React.useRef(null)
 
   const handleExpandClick = () => {
     setExpanded(!expanded)
@@ -37,17 +33,15 @@ function Results({
     if (!loading) {
       const filterResults = waitCloseOrderResults.filter(d => d.date <= startOfDay(new Date()).getTime())
       setResults(filterResults)
+      // 全選框以畫面列出的日期計算（不含今天 00:00 以後、沒列出的時間戳），Jason 2026/10/22
       if (checkoutStatus) {
-        const length = waitCloseOrderResults.filter(d => d.pendingOrderCount === 0).length
+        const length = filterResults.filter(d => d.pendingOrderCount === 0).length
         setCanCheckoutOrder(length)
       } else {
-        setCanCheckoutOrder(waitCloseOrderResults.length)
+        setCanCheckoutOrder(filterResults.length)
       }
     }
-    if (pageRef.current) {
-      pagenationLabel(pageRef.current)
-    }
-  }, [loading, pageRef.current])
+  }, [loading])
   const [selectedOrders, setSelectedOrders] = React.useState([])
   const handleSelectAll = event => {
     if (checkoutStatus) {

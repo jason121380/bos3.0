@@ -4,6 +4,7 @@
 // - 店家設定「有掛單未結不可日結」時，有掛單的日期不能勾、標示掛單筆數，全選只選沒有掛單的日期
 // - 日結紀錄：各欄金額四捨五入、千分位；會員卡／點數折抵欄依設定或區間內有金額才顯示；合計列；匯出 CSV 依日期排序並附合計
 // - 解除日結：未設密碼時直接送出日期並重新整理；有設密碼時先輸入密碼，送出日期與密碼；取消／失敗不重新整理
+// - 全選框以畫面列出的日期計算；點數設定晚到時匯出也重算；日結紀錄查詢失敗不整頁錯誤（Jason 2026/10/22）
 // GraphQL 全由 testkit 的模擬 link 回應，不改真實資料。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
@@ -176,17 +177,25 @@ describe('每日結帳', () => {
       expect(screen.getByLabelText(fmt(D1)).checked).toBe(false)
     })
 
-    it('已知缺口（待 Jason 決定）：有今天 00:00 以後的未日結時間戳時，全選後全選框仍顯示「部分選取」', async () => {
-      // canCheckoutOrder 以全部未日結筆數（含沒列出的今天中午）計算，列出的只有 3 筆
+    it('有今天 00:00 以後的未日結時間戳（不列出）時，全選框以列出的日期計算：全選後為勾選、再按清空（Jason 2026/10/22）', async () => {
       const { settle } = setup()
       await settle()
       expand()
       fireEvent.click(screen.getByLabelText('全選'))
-      expect(screen.getByLabelText('全選').checked).toBe(false)
-      expect(screen.getByLabelText('全選').indeterminate).toBe(true)
-      // 因此再按一次全選不會清空，而是又全選一次
+      expect(screen.getByLabelText('全選').checked).toBe(true)
+      expect(screen.getByLabelText('全選').indeterminate).toBe(false)
       fireEvent.click(screen.getByLabelText('全選'))
-      expect(screen.getByLabelText(fmt(D1)).checked).toBe(true)
+      expect(screen.getByLabelText(fmt(D1)).checked).toBe(false)
+    })
+
+    it('設定有掛單未結不可日結時，全選框也只以列出的日期中沒有掛單的計算（Jason 2026/10/22）', async () => {
+      const { settle } = setup({ GET_IS_DAILY_CHECKOUT_BLOCKED_BY_DRAFT_ORDER: { getIsDailyCheckoutBlockedByDraftOrder: true } })
+      await settle()
+      expand()
+      fireEvent.click(screen.getByLabelText('全選'))
+      expect(screen.getByLabelText('全選').checked).toBe(true)
+      fireEvent.click(screen.getByText('結帳', { selector: 'button' }))
+      expect(openSnackbar).toHaveBeenLastCalledWith(expect.objectContaining({ selectedOrders: [D1, TODAY] }))
     })
 
     it('設定有掛單未結不可日結：有掛單的日期停用並標示筆數，全選只選沒有掛單的日期', async () => {
@@ -231,7 +240,6 @@ describe('每日結帳', () => {
     })
 
     it('啟用會員卡與點數時表格顯示兩欄，匯出含會員卡欄', async () => {
-      // 點數欄的匯出見下方「已知缺口」：點數設定比會員卡設定晚回來時匯出檔沒有點數欄
       const { settle } = setup({
         GET_IS_MEMBERSHIP_CARD_ACTIVE: { getIsMemberShipCardActive: true },
         GET_CUSTOMER_BONUS: { getIsCustomerBonusActive: true },
@@ -242,8 +250,7 @@ describe('每日結帳', () => {
       await wait(() => expect(exportedCsv()).toContain('會員卡消費'))
     })
 
-    it('已知缺口（待 Jason 決定）：啟用點數但未啟用會員卡時，即使設定比報表先回來，匯出檔仍沒有點數欄', async () => {
-      // 表格掛載時 bonusDisplay 尚未算出；之後變成 true，但匯出 effect 只在會員卡顯示改變時重算
+    it('啟用點數但未啟用會員卡、設定比報表先回來時，匯出檔有點數欄（Jason 2026/10/22）', async () => {
       const { settle } = setup(
         { GET_CUSTOMER_BONUS: { getIsCustomerBonusActive: true } },
         { delays: { dailyMoneyFlowReport: 120, GET_IS_DAILY_CHECKOUT_BLOCKED_BY_DRAFT_ORDER: 120 } }
@@ -252,8 +259,8 @@ describe('每日結帳', () => {
       await screen.findByText('尚未日結紀錄')
       await settle()
       expect(reportHeaders()).toContain('點數折抵金額(-)')
-      await wait(() => expect(exportedCsv()).toContain('營業日期'))
-      expect(exportedCsv()).not.toContain('點數折抵金額')
+      await wait(() => expect(exportedCsv()).toContain('點數折抵金額(-)'))
+      expect(exportedCsv()).not.toContain('會員卡消費')
       expect(screen.getByText('共 3 筆')).toBeInTheDocument()
     })
 
@@ -278,12 +285,11 @@ describe('每日結帳', () => {
       expect(reportHeaders()).toContain('點數折抵金額(-)')
     })
 
-    it('已知缺口（待 Jason 決定）：點數設定比報表晚回來時，表格有「點數折抵金額」欄但匯出檔沒有', async () => {
-      // 匯出的 effect 依賴 [dailyMoneyFlowResult, isMemberShipCardActive]，沒有 bonusDisplay，設定晚到時不會重算
+    it('點數設定比報表晚回來時，表格與匯出檔都有「點數折抵金額」欄（Jason 2026/10/22）', async () => {
       const { settle } = setup({ GET_CUSTOMER_BONUS: { getIsCustomerBonusActive: true } }, { delays: { GET_CUSTOMER_BONUS: 80 } })
       await settle()
       await wait(() => expect(reportHeaders()).toContain('點數折抵金額(-)'))
-      expect(exportedCsv()).not.toContain('點數折抵金額')
+      await wait(() => expect(exportedCsv()).toContain('點數折抵金額(-)'))
     })
 
     it('未設解除密碼：按解除日結直接送出該日並重新整理', async () => {
@@ -342,11 +348,12 @@ describe('每日結帳', () => {
     })
   })
 
-  it('已知缺口（待 Jason 決定）：日結紀錄查詢失敗時整頁進入錯誤畫面', async () => {
-    // 會員卡／點數顯示的 effect 直接讀 dailyMoneyFlowReport.data.dailyMoneyFlowReport.summary
+  it('日結紀錄查詢失敗時只少了該區塊，尚未日結照常顯示（Jason 2026/10/22）', async () => {
     const { settle } = setup({ dailyMoneyFlowReport: new Error('查詢失敗') })
     await settle()
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getByText('尚未日結紀錄')).toBeInTheDocument()
+    expect(screen.queryByText('日結紀錄')).toBeNull()
   })
 
   it('尚未日結查詢失敗時只少了該區塊，日結紀錄照常顯示', async () => {

@@ -5,7 +5,6 @@ import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchGetMoneyFlowsForAccounting from 'hooks/useFetchGetMoneyFlowsForAccounting'
 import { endOfDay, startOfMonth } from 'date-fns'
 import idx from 'idx'
-import produce from 'immer'
 import React from 'react'
 import { Card } from 'ui/card'
 
@@ -26,21 +25,6 @@ function AccountingRecordList() {
 
   const getMoneyFlowsForAccounting = useFetchGetMoneyFlowsForAccounting({ input: pageSetting })
 
-  const handlePageChange = (event, newPage) => {
-    setPageSetting(
-      produce(draft => {
-        draft.pageOffset = newPage
-      })
-    )
-  }
-  const handleRowsPerPageChange = event => {
-    setPageSetting(
-      produce(draft => {
-        draft.pageLimit = idx(event, _ => _.target.value)
-        draft.pageOffset = 0
-      })
-    )
-  }
   return (
     <Page className="ui-root" title="高階收支登錄">
       <AdminPageHeader
@@ -55,7 +39,8 @@ function AccountingRecordList() {
         <DateSelector
           date={pageSetting}
           attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-          dateChange={value => setPageSetting(value)}
+          // 快速選擇日期只回傳起訖，合併進原條件：保留「現場現金」限制、篩選與筆數（Jason 2026/10/22）
+          dateChange={value => setPageSetting(prev => ({ ...prev, ...value }))}
         />
       </AdminPageHeader>
 
@@ -88,8 +73,6 @@ function AccountingRecordList() {
         _ =>
           _.data.moneyFlows && (
             <Results
-              onPageChange={handlePageChange}
-              onRowsPerPageChange={handleRowsPerPageChange}
               moneyFlows={_.data.moneyFlows}
               pageSetting={pageSetting}
             />
