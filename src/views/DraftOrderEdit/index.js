@@ -1,6 +1,5 @@
 import Page from 'components/Page'
 import { Provider } from 'context/keyInContext'
-import useFetchCreateOrder from 'hooks/useFetchCreateOrder'
 import useFetchOrder from 'hooks/useFetchOrder'
 import produce from 'immer'
 import { useEffect, useState, useRef } from 'react'
@@ -23,7 +22,6 @@ export default function KeyIn({ match }) {
   const onceRef = useRef(true)
   const order = useFetchOrder({ id: match.params.id })
   const [focus, setFocus] = useState('customer')
-  const { checkOrder } = useFetchCreateOrder()
   const [bill, setBill] = useState({
     isDesignate: false,
     date: new Date().getTime(),
@@ -85,7 +83,6 @@ export default function KeyIn({ match }) {
       [key]: value,
     }))
   }
-  const useCheckOrderRef = useRef(checkOrder)
   const [closureDelayed, setClosureDelayed] = useState(false)
   const [bonusConversion, setBonusConversion] = useState({
     isBonusConversion: false,
@@ -184,6 +181,17 @@ export default function KeyIn({ match }) {
             isLocked: product.isLocked,
             thirdPartyCouponMerchantId: product.thirdPartyPayId,
           }))
+          // 預收卡販賣與服務、店販同時帶入（欄位與 PannelCouponSells 寫回帳單的相同）：原本要等預收卡販賣區塊稍後寫回，
+          // 這段空檔「應收」少算預收卡，原掛單的入金／其他付款／點數折抵會被 useDraftCheckout「應收小於 0 歸零」的檢查清掉
+          draft.ticketOrders = order.data.order.ticketOrders.map(ticketOrder => ({
+            serviceId: ticketOrder.service.id,
+            availableCount: ticketOrder.availableCount,
+            price: ticketOrder.price,
+            count: ticketOrder.count,
+            remark: ticketOrder.remark,
+            isLocked: ticketOrder.service.isLocked,
+            intoPerformanceWhileBuying: ticketOrder.intoPerformanceWhileBuying,
+          }))
           draft.membershipOrders = order.data.order.membershipOrders.map(member => ({
             sellerId: member.seller.id,
             membershipUUID: member.membership.uuid,
@@ -209,20 +217,6 @@ export default function KeyIn({ match }) {
       })
     }
   }, [order.loading, order.data])
-
-  useEffect(() => {
-    if (bill.designerId) {
-      const serviceOrdersNoIsLocked = bill.serviceOrders.map(
-        ({ isLocked, thirdPartyPayName, ...keep }) => keep
-      )
-      bill.serviceOrders = serviceOrdersNoIsLocked
-      const productOrdersNoIsLocked = bill.productOrders.map(({ isLocked, ...keep }) => keep)
-      bill.productOrders = productOrdersNoIsLocked
-      const ticketOrdersNoIsLocked = bill.ticketOrders.map(({ isLocked, ...keep }) => keep)
-      bill.ticketOrders = ticketOrdersNoIsLocked
-      useCheckOrderRef.current(bill)
-    }
-  }, [])
 
   useEffect(() => {
     if (!getBonusRewardRule.loading) {

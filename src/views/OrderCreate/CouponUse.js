@@ -107,19 +107,18 @@ export default function CouponUse({
     }
   }, [couponUsages])
 
+  // render 時已讀 helper[index].map，能執行到這裡 helper[index] 一定存在
   useEffect(() => {
-    if (helper[index]) {
-      setHelperRefs(elRefs =>
-        Array(helper[index].length)
-          .fill()
-          .map((_, i) => elRefs[i] || createRef())
-      )
-      setHelperDesignateRefs(elRefs =>
-        Array(helper[index].length)
-          .fill()
-          .map((_, i) => elRefs[i] || createRef())
-      )
-    }
+    setHelperRefs(elRefs =>
+      Array(helper[index].length)
+        .fill()
+        .map((_, i) => elRefs[i] || createRef())
+    )
+    setHelperDesignateRefs(elRefs =>
+      Array(helper[index].length)
+        .fill()
+        .map((_, i) => elRefs[i] || createRef())
+    )
   }, [helper])
 
   const handleFocus = event => {
@@ -169,13 +168,6 @@ export default function CouponUse({
             <Input
               disabled
               value={Math.round(price)}
-              onChange={event =>
-                onChange({
-                  value: idx(event, _ => _.target.value),
-                  key: 'customerTicketId',
-                  index,
-                })
-              }
             />
           </Field>
         ) : (
@@ -228,7 +220,7 @@ export default function CouponUse({
                 if (event.key === 'Enter') {
                   if (helperIndex < helper[index].length - 1) {
                     helperRefs[helperIndex + 1].current.focus()
-                  } else if (helperIndex === helper[index].length - 1) {
+                  } else {
                     setFocusRow(index + 1)
                     setFocus('coupon')
                     isLast && addCouponUse()

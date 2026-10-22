@@ -421,7 +421,6 @@ OrderDetailModal.propTypes = {
 
 OrderDetailModal.defaultProps = {
   open: false,
-  onClose: () => { },
 }
 
 export default memo(OrderDetailModal)

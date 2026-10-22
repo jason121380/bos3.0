@@ -14,8 +14,6 @@ import Remark from 'views/OrderShared/Remark'
 import PannelMemberShipCardSells from './PannelMemberShipCardSells'
 import PannelBonus from "./PannelBonus";
 
-// import PannelOtherPayment from './PannelOtherPayment'
-
 export default function SimpleAccordion({ children }) {
 
   const { bill, bonusActive } = useContext(billContext)
@@ -65,7 +63,6 @@ export default function SimpleAccordion({ children }) {
       </div>
       {/* 讓出底部固定合計列的高度，動作鈕與「尚缺」說明不會被蓋住 */}
       <div aria-hidden="true" className="h-16" />
-      {/* <PannelOtherPayment /> */}
     </div>
   )
 }

@@ -164,8 +164,9 @@ describe('掛單詳細：紅利點數', () => {
       GET_CUSTOMER_BONUS_RECORD: { customerBonusRecord: [{ bonus: 50 }, { bonus: 30 }] },
       ...options,
     }, delays)
-  // 註：給點設定若比帳單晚到，目前不會自動給點（已回報為 bug，見交接報告），這裡讓帳單晚一點回來（設定先到）
+  // 給點設定與帳單誰先回來都要自動給點：SETTINGS_FIRST 讓帳單晚一點回來，SETTINGS_LATE 讓給點設定晚一點回來
   const SETTINGS_FIRST = { FETCH_ORDER: 300 }
+  const SETTINGS_LATE = { GET_BONUS_REWARD_RULE: 300 }
 
   it('剩餘點數為點數紀錄加總；扣點不得超過剩餘＋給點，折抵不得超過應付；送出點數', async () => {
     const page = await withBonus()
@@ -222,6 +223,13 @@ describe('掛單詳細：紅利點數', () => {
     await wait(() => expect(bonusField('點數給點')).toHaveValue('13'))
     const input = await saveDraft(page.calls)
     expect(input.bonusDeposit).toBe(13)
+  })
+
+  it('店家設定自動給點、給點設定比帳單晚回來：仍依應付金額給點', async () => {
+    const page = await withBonus({}, { bonusRule: { isUsing: true, rule: { price: 100, bonus: 1, mode: 'ROUNDING' } } }, SETTINGS_LATE)
+    fireEvent.click(panelHeader('紅利點數'))
+    await wait(() => expect(bonusField('點數給點')).toHaveValue('8'))
+    expect((await saveDraft(page.calls)).bonusDeposit).toBe(8)
   })
 
   it('自動給點限綁 LINE：未綁 LINE 的顧客不給點，已綁的照金額給', async () => {

@@ -4,7 +4,7 @@ import useFetchCreateOrder from 'hooks/useFetchCreateOrder'
 import { openSnackbar } from 'elements/snackbars'
 import useToggle from 'hooks/useToggle'
 import { useHistory } from 'react-router'
-import { handleTidyBill, checkServicesOrders, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
+import { handleTidyBill, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
 
 // 打帳單「消費明細」彈窗的送出（2026/10/21 自 OrderDetailModal.js 原樣搬出）：結帳／結帳並列印／掛單、F9／F8 快捷鍵、
 // 把 #printMain／#printThermal 的內容寫進列印視窗（printDiv）、返回。列印範本本身仍在 OrderDetailModal.js，
@@ -52,6 +52,10 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
       setIsClick(true)
       setOpen(true)
     } else {
+      // 上面直接停用的 DOM 也要恢復：被逐列檢查擋下時停用與恢復在同一次更新，React 看到 disabled 前後都是 false，
+      // 不會改回 DOM，按鈕原本會一直停用到返回重開明細
+      if (checkOrderRef.current) checkOrderRef.current.disabled = false
+      if (checkOrderPrintRef.current) checkOrderPrintRef.current.disabled = false
       setCheckoutBtn(false);
       setIsClick(false);
       setCheckoutBtnClick(false)
@@ -62,18 +66,10 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
   const usehandleCreateOrder = useCallback(isPrint => {
     handleBtnDisabled(true)
     const tmp = handleTidyBill(bill)
-    const checkService = checkServicesOrders(tmp.serviceOrders)
     const checkProduct = checkProductOrders(tmp.productOrders)
     const checkMember = checkMembershipOrders(tmp.membershipOrders)
 
-    if (!checkService.verify) {
-      openSnackbar({
-        message: checkService.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return;
-    } else if (!checkProduct.verify) {
+    if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
         variant: "error",
@@ -118,6 +114,8 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
             variant: 'error',
           })
           setCheckoutBtnClick(false)
+          // 與「結帳並列印」失敗相同，恢復按鈕讓使用者可再按
+          setIsClick(false)
         })
         .finally(() => {
           setOpen(false)
@@ -126,21 +124,15 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
   }, [bill, history, setCheckoutBtnClick, setOpen, setReset])
 
   const usehandleCreateOrderAndPrint = useCallback(() => {
-    if (!printMainRef.current || !printThermalRef.current) return
+    // 明細還在載入（列印範本尚未掛上）：不送出。回傳 'null dom' 讓 F8 快捷鍵知道沒有送出、保留鍵盤監聽
+    // （原本回傳 undefined，F8 一律移除監聽，之後 F8／F9 都失效）
+    if (!printMainRef.current || !printThermalRef.current) return 'null dom'
     handleBtnDisabled(true)
     const tmp = handleTidyBill(bill)
-    const checkService = checkServicesOrders(tmp.serviceOrders)
     const checkProduct = checkProductOrders(tmp.productOrders)
     const checkMember = checkMembershipOrders(tmp.membershipOrders)
 
-    if (!checkService.verify) {
-      openSnackbar({
-        message: checkService.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return;
-    } else if (!checkProduct.verify) {
+    if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
         variant: "error",
@@ -200,18 +192,10 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
   const usehandleCreateDraftOrder = useCallback(() => {
     handleBtnDisabled(true)
     const tmp = handleTidyBill(bill)
-    const checkService = checkServicesOrders(tmp.serviceOrders)
     const checkProduct = checkProductOrders(tmp.productOrders)
     const checkMember = checkMembershipOrders(tmp.membershipOrders)
 
-    if (!checkService.verify) {
-      openSnackbar({
-        message: checkService.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return;
-    } else if (!checkProduct.verify) {
+    if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
         variant: "error",

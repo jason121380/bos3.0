@@ -1,18 +1,18 @@
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
 import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
-import useFetchOrder from 'hooks/useFetchOrder'
 import cloneDeep from 'lodash/cloneDeep'
 import React from 'react'
 
 import CouponUse from './CouponUse'
 
 export default function PannelCouponUse() {
-  const { handleBillChange, bill, orderId } = React.useContext(billContext)
+  // 帳單直接用頁面（index.js）已查好的同一份結果（orderDetail），不另外重抓：這個區塊有顧客才掛上，
+  // 自己再以 cache-and-network 查 FETCH_ORDER 會在選顧客的當下重抓帳單；四支帳單查詢共用 order(orderId) 根欄位、快取不正規化，
+  // 重抓會連鎖讓頁面與各項目區塊重新帶入原掛單，櫃台改過的內容（價格、取消不留客資、選的顧客）被蓋回原樣
+  const { handleBillChange, bill, orderDetail: order } = React.useContext(billContext)
 
   const [couponUsage, setCouponUsage] = React.useState([])
-
-  const order = useFetchOrder({ id: orderId })
 
   const useHandleBillChangeRef = React.useRef(handleBillChange)
 
@@ -59,51 +59,9 @@ export default function PannelCouponUse() {
     }
   }, [order.loading, order.data])
 
-  function handleAddCouponUse() {
-    const newCouponUsage = cloneDeep(couponUsage)
-    newCouponUsage.push({
-      // id: uuid(),
-      customerTicketId: '',
-      useTicketOrderHelpers: [],
-    })
-    setCouponUsage(newCouponUsage)
-  }
-  function handleRemoveCouponUse({ index }) {
-    const newCouponUsage = cloneDeep(couponUsage)
-    newCouponUsage.splice(index, 1)
-    setCouponUsage(newCouponUsage)
-  }
   function handleFildChange({ index, value, key }) {
     const newCouponUsage = cloneDeep(couponUsage)
     newCouponUsage[index][key] = value
-    setCouponUsage(newCouponUsage)
-    handleBillChange({
-      key: 'useTicketOrders',
-      value: newCouponUsage
-        .filter(d => d.customerTicketId)
-        .map(data => ({
-          customerTicketId: data.customerTicketId,
-          useTicketOrderHelpers: data.useTicketOrderHelpers,
-        })),
-    })
-  }
-
-  function handleClear({ index }) {
-    let newCouponUsage = cloneDeep(couponUsage)
-    if (newCouponUsage.length === 1) {
-      newCouponUsage = [
-        {
-          // id: uuid(),
-          customerTicketId: '',
-          useTicketOrderHelpers: [],
-        },
-      ]
-    }
-    newCouponUsage[index] = {
-      // id: uuid(),
-      customerTicketId: '',
-      useTicketOrderHelpers: [],
-    }
     setCouponUsage(newCouponUsage)
     handleBillChange({
       key: 'useTicketOrders',
@@ -136,12 +94,7 @@ export default function PannelCouponUse() {
                 couponUsages={couponUsage}
                 key={`pannel-couponuse-${index}`}
                 index={index}
-                addCouponUse={handleAddCouponUse}
-                removeCouponUse={handleRemoveCouponUse}
-                first={index === 0}
-                last={index + 1 === couponUsage.length}
                 onChange={handleFildChange}
-                onClear={handleClear}
               />
             ))}
         </div>

@@ -85,12 +85,8 @@ export default function MerchantSells({
   }, [expanded, focusFirstField])
 
   const handleFocus = ({ event, field }) => {
-    let setted = false
-    if (!setted) {
-      setFocus(field)
-      setted = true
-      event.target.focus()
-    }
+    setFocus(field)
+    event.target.focus()
     if (field === 'price' || field === 'count') {
       event.target.select()
     }

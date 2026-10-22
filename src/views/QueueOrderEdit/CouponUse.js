@@ -14,7 +14,6 @@ export default function CouponUse({
   index,
   couponUsages,
   couponUsage,
-  onClear,
   onChange,
 }) {
   const { bill, order } = useContext(billContext)
@@ -97,18 +96,6 @@ export default function CouponUse({
       key: 'useTicketOrderHelpers',
     })
   }
-  function handleClear() {
-    let newTicketOrderHelpers = cloneDeep(ticketOrderHelpers)
-    newTicketOrderHelpers = newTicketOrderHelpers.map(data => ({
-      ...data,
-      helperId: '',
-      isDesignate: false,
-    }))
-    setTicketOrderHelpers(newTicketOrderHelpers)
-    onClear({
-      index,
-    })
-  }
 
   const displayFloat = num => {
     if (String(num).length > 7) {
@@ -138,19 +125,16 @@ export default function CouponUse({
         )}
         {couponUsage.customerTicketId && (
           <Fragment>
+            {/* 金額只顯示卡券單價（送出的使用預收卡不帶金額），唯讀，比照帳單詳細／掛單詳細／打帳單。
+                原本可編輯，輸入的文字被寫進選的預收卡（customerTicketId），送出時換成不存在的卡券（coverage wave 1，2026/10/22） */}
             <Field label="金額" className="!mr-[12px] flex w-[65px]">
               <TextField
                 fullWidth
                 variant="outlined"
                 customerId={bill.customerId}
                 value={displayFloat(price)}
-                onChange={event =>
-                  onChange({
-                    value: idx(event, _ => _.target.value),
-                    key: 'customerTicketId',
-                    index,
-                  })
-                }
+                disabled
+                InputProps={{ readOnly: true }}
               />
             </Field>
             {ticketOrderHelpers.map((data, helperIndex) => (

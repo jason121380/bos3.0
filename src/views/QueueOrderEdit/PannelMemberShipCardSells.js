@@ -138,21 +138,20 @@ const PannelMemberShipCardSells = ({ thirdPartTicket }) => {
   }
   function handleMerchantSellsChange({ key, value, index }) {
     const newSells = cloneDeep(sells)
-    newSells[index][key] = value === NaN ? "Invalid Date" : value
+    newSells[index][key] = value
     setSells(newSells)
-    if (key === 'price' || key === 'date' || key === 'sellerId' || key === 'expiryDate' || key === 'remark') {
-      handleBillChange({
-        key: 'membershipOrders',
-        value: newSells.map(data => ({
-          sellerId: data.sellerId,
-          membershipUUID: data.membershipUUID,
-          price: data.price,
-          expiryDate: data.expiryDate === NaN || data.expiryDate === 'Invalid Date' || data.expiryDate === "Early Date" || data.expiryDate === "Late Date" ? 'Invalid Date' : data.expiryDate,
-          thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
-          remark: data.remark,
-        })),
-      })
-    }
+    // 會員卡列只會改 sellerId、price、expiryDate、remark（換卡走 handleMemberShipCardChange），一律同步到帳單
+    handleBillChange({
+      key: 'membershipOrders',
+      value: newSells.map(data => ({
+        sellerId: data.sellerId,
+        membershipUUID: data.membershipUUID,
+        price: data.price,
+        expiryDate: data.expiryDate === 'Invalid Date' || data.expiryDate === "Early Date" || data.expiryDate === "Late Date" ? 'Invalid Date' : data.expiryDate,
+        thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
+        remark: data.remark,
+      })),
+    })
   }
   const handleAccordionClick = () => {
     setExpanded((val) => !val);

@@ -31,12 +31,10 @@ const orderSettingFixtures = (overrides = {}) => ({
   GET_IS_LBCUS_DISPLAY: { getParameterOrderCreateSetting: { isLBCusDisplay: false } },
   GET_IS_CUS_WALLET_USAGE_FOR_ORDER: { getParameterOrderCreateSetting: { isCusWalletUsageForOrder: true } },
   GET_IS_BONUS_REWARD_WITH_LINE: { getParameterAboutSettingFunction: { isBonusRewardWithLine: false } },
-  GET_IS_COMBO_SETTING: { getParameterAboutSettingFunction: { isComboUsing: false } },
   GET_IS_MEMBERSHIP_CARD_ACTIVE: { getIsMemberShipCardActive: true },
   GET_PRINT_WINDOW_CLOSURE_DELAYED: { getParameterOrderCreateSetting: { isPrintWindowClosureDelayed: false } },
   GET_LAST_ORDER_STATUS: { getLatestOrderStatus: { orderNo: 'A001', isDesignate: true } },
   GET_SERIAL_NUMBER_USING: { getParameterOrderCreateSetting: { isOrderSerialNumberUsing: false } },
-  GET_IS_DETAIL_BOTTOMED: { getIsDetailBottomed: false },
   GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: {
     getBindedThirdPartTicketLockedSetting: { service: false, product: false, membership: false },
   },

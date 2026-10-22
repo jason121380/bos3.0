@@ -112,6 +112,21 @@ describe('掛單詳細：送出中與失敗', () => {
   })
 })
 
+describe('掛單詳細：從帶日期區間的掛單列表進來', () => {
+  // 掛單列表的「查看掛單」連結帶著列表的日期區間（?startDate=…&endDate=…），結帳成功後回到同一區間的帳單列表
+  it('結帳成功：提示成功、不提示錯誤，回到帶同一日期區間的帳單列表', async () => {
+    const search = '?startDate=1760976000000&endDate=1761062399999'
+    const page = setupDraft({}, { route: `/draft-order/order-1${search}` })
+    await pageReady(page)
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await wait(() => expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1))
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent(`/management/orders${search}`))
+    expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'success', message: '掛單結帳成功' }))
+    expect(openSnackbar).not.toHaveBeenCalledWith(expect.objectContaining({ variant: 'error' }))
+  })
+})
+
 describe('掛單詳細：F9 快捷鍵', () => {
   it('沒設重新結帳密碼：按 F9 直接結帳；其他按鍵不動作', async () => {
     const page = setupDraft()

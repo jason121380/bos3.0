@@ -2,7 +2,7 @@ import billContext from 'context/keyInContext'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
 import idx from 'idx'
-import { Fragment, useEffect, useContext } from 'react'
+import { Fragment, useEffect, useContext, useState } from 'react'
 import { useHistory } from 'react-router'
 import useFetchCreateOrder from 'hooks/useFetchCreateOrder'
 import useFetchDestroyQueueById from 'hooks/useFetchDestroyQueueById'
@@ -17,6 +17,8 @@ export default function Footer({ enable }) {
   const history = useHistory()
   const { createOrder } = useFetchCreateOrder()
   const { destroyQueueById } = useFetchDestroyQueueById()
+  // 帳單已成立：之後不論刪除佇列成功與否，「重試」都不能再按，避免重複成立帳單
+  const [created, setCreated] = useState(false)
 
   const handleReCheckoutOrder = () => {
     const tmp = handleTidyBill(bill)
@@ -45,11 +47,24 @@ export default function Footer({ enable }) {
       createOrder(tmp)
         .then(res => {
           if (res.data.createOrder2) {
+            setCreated(true)
+            const listPath = tmp.isPending ? '/management/draft-orders' : '/management/orders'
+            // 帳單已成立但佇列紀錄刪不掉（回傳 false 或 API 錯誤）：說明帳單已成立、不要再重試，並回帳單列表
+            // （原本沒有任何提示、留在本頁且「重試」可再按，再按就重複成立帳單；coverage wave 1，2026/10/22）
+            const queueNotRemoved = () => {
+              openSnackbar({
+                message: `帳單已成立（${res.data.createOrder2}），但未能從訂單佇列移除。請勿再重試這筆，請到「訂單佇列」將它刪除`,
+                variant: 'error',
+              })
+              history.push(listPath)
+            }
             destroyQueueById({ queueId: orderId }).then(res => {
               if (res.data.destroyQueueById) {
-                history.push(tmp.isPending ? '/management/draft-orders' : '/management/orders')
+                history.push(listPath)
+              } else {
+                queueNotRemoved()
               }
-            })
+            }, queueNotRemoved)
           }
         })
         .catch((error) => {
@@ -275,7 +290,7 @@ export default function Footer({ enable }) {
                 size="lg"
                 className="px-6 disabled:bg-surface-active disabled:text-text-secondary disabled:opacity-100"
                 onClick={handleReCheckoutOrder}
-                disabled={vaild || !enable}
+                disabled={vaild || !enable || created}
                 data-testid="checkout"
               >
                 重試

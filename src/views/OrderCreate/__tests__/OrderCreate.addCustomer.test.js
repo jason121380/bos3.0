@@ -95,6 +95,24 @@ describe('新增顧客', () => {
     await wait(() => expect(screen.queryByText('新增客戶')).toBeNull())
   })
 
+  it('新增成功：帳單帶入這位新顧客（與只輸入手機快速建檔相同），結帳送出新顧客 id', async () => {
+    const { calls } = await openNew()
+    typeLikeBrowser(input('name'), ADDED.name)
+    typeLikeBrowser(input('cellphone'), ADDED.cellphone)
+    await wait(() => expect(button('新增')).not.toBeDisabled())
+    fireEvent.click(button('新增'))
+    await wait(() => expect(screen.queryByText('新增客戶')).toBeNull())
+    expect(await findButton('編輯顧客資料')).toBeInTheDocument()
+    expect(screen.getByPlaceholderText('顧客姓名/手機號碼/編號')).toHaveValue(ADDED.cellphone)
+
+    await pickEmployee()
+    await pickService()
+    await wait(() => expect(checkoutButton()).not.toBeDisabled())
+    fireEvent.click(checkoutButton())
+    await wait(() => expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(1))
+    expect(sentOrder(calls).customerId).toBe(ADDED.id)
+  })
+
   it('只填電話沒填姓名：提示「姓名與電話為必填」，不送出', async () => {
     const { calls } = await openNew()
     typeLikeBrowser(input('cellphone'), '0933111222')
@@ -235,11 +253,20 @@ describe('編輯顧客', () => {
     expect(sentOrder(calls).customerId).toBe(CUSTOMER.id)
   })
 
-  it('儲存失敗：提示錯誤，彈窗保留', async () => {
-    await openEdit({ SET_CUSTOMER: new Error('資料格式錯誤') })
+  it('儲存失敗：提示錯誤，彈窗保留；取消後帳單仍帶這位顧客', async () => {
+    const { calls } = await openEdit({ SET_CUSTOMER: new Error('資料格式錯誤') })
     fireEvent.click(button('儲存'))
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('資料格式錯誤') })))
     expect(screen.getByText('編輯客戶資料')).toBeInTheDocument()
+    fireEvent.click(button('取消'))
+    await wait(() => expect(screen.queryByText('編輯客戶資料')).toBeNull())
+
+    await pickEmployee()
+    await pickService()
+    await wait(() => expect(checkoutButton()).not.toBeDisabled())
+    fireEvent.click(checkoutButton())
+    await wait(() => expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(1))
+    expect(sentOrder(calls).customerId).toBe(CUSTOMER.id)
   })
 
   it('查看帳單記錄：前往該顧客的帳單記錄頁', async () => {
@@ -253,6 +280,29 @@ describe('編輯顧客', () => {
     // 已選的偏好設計師（選項中有）
     expect(preferDesigner()).toBeInTheDocument()
     expect(input('name')).toHaveValue(CUSTOMER.name)
+  })
+
+  it('顧客沒有性別資料（null）：性別顯示「未知」，儲存送出 UNKNOWN', async () => {
+    const { calls } = await openEdit({
+      FETCH_CUSTOMER_DETAIL: v => ({ customer: v.id ? { ...CUSTOMER_DETAIL, gender: null } : null }),
+    })
+    const gender = document.querySelector('select[name="gender"]')
+    expect(gender).toHaveValue('0')
+    expect(gender.options[gender.selectedIndex]).toHaveTextContent('未知')
+    fireEvent.click(button('儲存'))
+    await wait(() => expect(callsOf(calls, 'SET_CUSTOMER')).toHaveLength(1))
+    expect(callsOf(calls, 'SET_CUSTOMER')[0].variables.input.gender).toBe('UNKNOWN')
+  })
+
+  it('顧客的偏好設計師不在可打單人員中（例如已離職）：彈窗照常開啟，偏好設計師欄空白，儲存時保留原設定', async () => {
+    const { calls } = await openEdit({
+      FETCH_CUSTOMER_DETAIL: v => ({ customer: v.id ? { ...CUSTOMER_DETAIL, preferDesigner: { id: 'left-1', name: '已離職' } } : null }),
+    })
+    expect(input('name')).toHaveValue(CUSTOMER.name)
+    expect(preferDesigner()).toHaveValue('')
+    fireEvent.click(button('儲存'))
+    await wait(() => expect(callsOf(calls, 'SET_CUSTOMER')).toHaveLength(1))
+    expect(callsOf(calls, 'SET_CUSTOMER')[0].variables.input.PreferDesignerId).toBe('left-1')
   })
 })
 

@@ -3,11 +3,11 @@
 //   打完手機馬上按 Enter、搜尋結果晚到時，結果回來後自動帶入該手機的顧客；按清除鈕清掉顧客後結帳停用並說明缺顧客
 // - 不留客資：勾選後清掉顧客與扣入金、紅利（送出 withoutCustomerData），並記住這個選擇；取消勾選後不再記住
 // - 日期：選另一天後送出新日期（時間不變）
-// - 指定方式：點選或用鍵盤 ←／→ 切換；在服務人員欄按 Enter 跳到目前的指定方式，再按 Enter 跳到服務項目
+// - 指定方式：點選（游標在服務人員欄時也一樣，第一次點就生效）或用鍵盤 ←／→ 切換；在服務人員欄按 Enter 跳到目前的指定方式，再按 Enter 跳到服務項目
 // - 顧客標示：店家開啟 LINE 綁定顯示且顧客已綁定時顯示 LINE 圖示；有會員卡購買紀錄時顯示會員卡
 // GraphQL 全由模擬 link 回應，不連後端、不改真實帳單或顧客。
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
-import { callsOf } from '../../../__tests__/testkit.test'
+import { callsOf, typeLikeBrowser } from '../../../__tests__/testkit.test'
 import {
   setup, pageReady, makeOrder, withCustomer, makeFullOrder, checkoutAndGetInput, loginForTest,
   OTHER_CUSTOMER, CUSTOMER_DETAIL, ASSISTANT, BILL_DATE, pickEmployee,
@@ -182,6 +182,15 @@ describe('帳單詳細：日期、服務人員與指定方式', () => {
     expect((await checkoutAndGetInput(page.calls)).isDesignate).toBe(false)
   })
 
+  it('游標還在服務人員欄時直接點「不指定」：第一次點就是不指定（不會被當成指定）', async () => {
+    const page = setup()
+    await pageReady(page)
+    act(() => designerInput().focus())
+    fireEvent.click(screen.getByTestId('assign-designer-false'))
+    expect(screen.getByTestId('assign-designer-false')).toHaveAttribute('aria-pressed', 'true')
+    expect((await checkoutAndGetInput(page.calls)).isDesignate).toBe(false)
+  })
+
   it('鍵盤：在指定方式按 → 為不指定、← 為指定；按 Enter 跳到服務項目', async () => {
     const page = setup()
     await pageReady(page)
@@ -257,6 +266,27 @@ describe('帳單詳細：新增／編輯顧客彈窗的開啟', () => {
     expect(input.withoutCustomerData).toBe(true)
   })
 
+  it('以完整表單新增顧客成功：新顧客帶進帳單（顧客欄顯示新顧客），重新結帳送出新顧客', async () => {
+    const page = setup({
+      FETCH_ADD_CUSTOMER: {
+        addCustomer: { id: 'customer-new', name: '林先生', gender: 'MALE', cellphone: '0922333444', birthday: { year: '', month: '', day: '' }, category: '' },
+      },
+    })
+    await pageReady(page)
+    enableCustomerField()
+    fireEvent.click(screen.getByLabelText('新增顧客', { selector: 'button' }))
+    const modal = (await modalTitle()).closest('.MuiModal-root')
+    typeLikeBrowser(modal.querySelector('input[name="name"]'), '林先生')
+    typeLikeBrowser(modal.querySelector('input[name="cellphone"]'), '0922333444')
+    const add = within(modal).getByText('新增', { selector: 'button' })
+    await wait(() => expect(add).not.toBeDisabled())
+    fireEvent.click(add)
+    await wait(() => expect(screen.queryByText('新增客戶')).toBeNull())
+    await wait(() => expect(customerInput()).toHaveValue('林先生/0922333444/C02'))
+    const input = await checkoutAndGetInput(page.calls)
+    expect(input).toEqual(expect.objectContaining({ customerId: 'customer-new', customerCellphone: '', withoutCustomerData: false }))
+  })
+
   it('顧客欄沒輸入就按「新增顧客」：開空白的新增客戶彈窗，不先建立顧客', async () => {
     const page = setup()
     await pageReady(page)
@@ -300,5 +330,46 @@ describe('帳單詳細：新增／編輯顧客彈窗的開啟', () => {
     const modal = (await modalTitle()).closest('.MuiModal-root')
     expect(modal.querySelector('input[name="name"]')).toHaveValue('')
     expect(modal.querySelector('input[name="cellphone"]')).toHaveValue('')
+  })
+})
+
+describe('帳單詳細：在彈窗編輯顧客後的帳單顧客', () => {
+  const openEdit = async () => {
+    await customerShown()
+    fireEvent.click(screen.getByLabelText('編輯顧客資料', { selector: 'button' }))
+    return (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+  }
+
+  it('更新顧客失敗後關閉彈窗：帳單仍是原顧客，照樣可重新結帳', async () => {
+    const page = setup({ order: withCustomer(), SET_CUSTOMER: new Error('顧客資料已被刪除') })
+    await pageReady(page)
+    const modal = await openEdit()
+    fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
+    await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))
+    await page.settle()
+    fireEvent.click(within(modal).getByText('取消', { selector: 'button' }))
+    await customerShown()
+    const input = await checkoutAndGetInput(page.calls)
+    expect(input.customerId).toBe(CUSTOMER_DETAIL.id)
+  })
+
+  it('更新顧客成功：顧客欄改顯示更新後的姓名', async () => {
+    let updated = false
+    const page = setup({
+      order: withCustomer(),
+      SET_CUSTOMER: () => {
+        updated = true
+        return { updateCustomer: true }
+      },
+      FETCH_CUSTOMER_DETAIL: v => ({ customer: v.id ? { ...CUSTOMER_DETAIL, name: updated ? '陳美美' : CUSTOMER_DETAIL.name } : null }),
+    })
+    await pageReady(page)
+    const modal = await openEdit()
+    const name = modal.querySelector('input[name="name"]')
+    await wait(() => expect(name).toHaveValue('陳小姐'))
+    typeLikeBrowser(name, '陳美美')
+    fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
+    await wait(() => expect(customerInput()).toHaveValue('陳美美/0912345678/C01'))
+    expect((await checkoutAndGetInput(page.calls)).customerId).toBe(CUSTOMER_DETAIL.id)
   })
 })

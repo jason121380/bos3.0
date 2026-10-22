@@ -289,6 +289,20 @@ describe('打帳單：指定方式', () => {
     expect(sentOrder(calls).isDesignate).toBe(true)
   })
 
+  it('焦點在服務人員欄時第一次點「不指定」：就是不指定（不會被當成指定）', async () => {
+    const { calls } = setupPage()
+    await waitPageReady()
+    await fillMinimal()
+    act(() => designerInputs()[0].focus())
+    fireEvent.focus(designerInputs()[0])
+    fireEvent.click(nonDesignate())
+    expect(nonDesignate()).toHaveAttribute('aria-pressed', 'true')
+    await wait(() => expect(checkoutButton()).not.toBeDisabled())
+    fireEvent.click(checkoutButton())
+    await wait(() => expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(1))
+    expect(sentOrder(calls).isDesignate).toBe(false)
+  })
+
   it('服務人員欄按 Enter：焦點跳到目前選定的指定方式', async () => {
     setupPage()
     await waitPageReady()

@@ -23,7 +23,7 @@ import { GENDER_OPTIONS, makeFieldChange, makeBirthdayChange } from 'views/Order
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 
 
-function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
+function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, onCustomerUpdated }) {
   const inputLabel = useRef()
   const lastCustomerNo = useFetchGetLastCustomerNo()
   const [lastNo, setLastNo] = useState(null)
@@ -49,10 +49,6 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
     cellphone: customer.cellphone || 0,
     birthday: customer.birthday || { year: '', month: '', day: '' },
     PreferDesignerId: customer.PreferDesignerId || '',
-    OfficialBrandMerchantId:
-      customer.OfficialBrandMerchantId || localStorage.getItem('userMerchant')
-        ? JSON.parse(localStorage.getItem('userMerchant')).id
-        : null,
     email: customer.email || '',
     address: customer.address || '',
     lineId: customer.lineId || '',
@@ -71,6 +67,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
       cellphone: customer.cellphone,
       customerId: customer.customerId,
       name: customer.name,
+      // 顧客沒有性別資料（null）時以「未知」顯示與送出；原本變成空字串，選單看起來是「未知」但送出 ''（coverage wave 1，2026/10/22）
+      gender: customer.gender || 'UNKNOWN',
     })
   }, [customer])
 
@@ -103,17 +101,13 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               draft.customerCellphone = ''
             })
           )
+          // 更新成功才重新查詢顧客資料；按下儲存時不再先清掉帳單的顧客（更新失敗時顧客要保留）
+          onCustomerUpdated()
           onClose()
         })
         .catch(error => {
           openSnackbar({ message: error.message, variant: 'error' })
         })
-      setBill(
-        produce(draft => {
-          draft.customerId = null
-          draft.customerCellphone = ''
-        })
-      )
     } else {
       const newValues = cloneDeep(values)
       delete newValues.customerId
@@ -132,6 +126,13 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               name: res.data.addCustomer.name,
               gender: res.data.addCustomer.gender,
             })
+            // 新增的顧客帶進帳單（原本只關閉彈窗，帳單仍沒有顧客；比照顧客欄先輸入手機再新增的流程，coverage wave 1，2026/10/22）
+            setBill(
+              produce(draft => {
+                draft.customerId = res.data.addCustomer.id
+                draft.customerCellphone = ''
+              })
+            )
             openSnackbar({
               message: '成功新增客戶',
               variant: 'success',
@@ -424,12 +425,12 @@ AddCustomerModal.propTypes = {
   className: PropTypes.string,
   customer: PropTypes.any,
   onClose: PropTypes.func,
+  onCustomerUpdated: PropTypes.func.isRequired,
   open: PropTypes.bool,
 }
 
 AddCustomerModal.defaultProps = {
   open: false,
-  onClose: () => { },
 }
 
 export default AddCustomerModal

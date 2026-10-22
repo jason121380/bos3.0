@@ -40,6 +40,7 @@ export default function Services({
     focus,
     setFocus,
     bill,
+    setServiceAlready,
     setServiceDetailAlready,
     setThirdPartyAlready,
   } = useContext(billContext)
@@ -54,9 +55,7 @@ export default function Services({
   const priceRef = useRef()
 
   useEffect(() => {
-    if (setServiceDetailAlready !== undefined) {
-      setServiceDetailAlready(!serviceDetail.loading)
-    }
+    setServiceDetailAlready(!serviceDetail.loading)
   }, [setServiceDetailAlready]);
   useEffect(() => {
     if (expanded && focusFirstField && bill.serviceOrders.length === index && bill.designerId) {
@@ -225,12 +224,8 @@ export default function Services({
   }, [focus, focusRow])
 
   const handleFocus = event => {
-    let setted = false
-    if (!setted) {
-      setFocus(event.target.name)
-      setted = true
-      event.target.focus()
-    }
+    setFocus(event.target.name)
+    event.target.focus()
     if (event.target.name === 'price') {
       event.target.select()
     }
@@ -253,7 +248,8 @@ export default function Services({
         // 其他值不處理（與原本沒有 default 時相同）
         break
     }
-  }, [service])
+    // 店家設定（bindedThirdPart）可能比服務資料晚到，設定回來時也要重新套用（coverage wave 1，2026/10/22）
+  }, [service, bindedThirdPart.service])
   return (
     <Fragment>
       <div className="mb-6 flex flex-wrap items-end justify-start gap-y-[12px]">
@@ -263,8 +259,16 @@ export default function Services({
           <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
         )}
         {/* 必填 *：Footer.js 重試時 helper/billVerify.js checkServicesOrders 要求每一列都有 serviceId（同打帳單） */}
-        <Field label="服務項目" required>
+        <Field
+          label="服務項目"
+          required
+          // 佇列帳單的服務已不在服務清單（PannelService 標示）：欄位顯示不出名稱，說明重試會沿用佇列內容
+          hint={service.missingServiceId && service.missingServiceId === service.serviceId
+            ? '此服務已不在服務清單，重試時沿用佇列帳單的服務與價格'
+            : undefined}
+        >
           <ServicesAutoComplete
+            setServiceAlready={setServiceAlready}
             onChange={handleServiceChange}
             className="mr-[12px] flex w-[250px]"
             value={service.serviceId}
@@ -374,14 +378,6 @@ export default function Services({
                         } else if (event.key === 'Enter' && idx + 1 < helper.length) {
                           setFocus(helper[idx + 1].type)
                           helperRefs[idx + 1].current.focus()
-                        } else if (
-                          event.key === 'Enter' &&
-                          idx + 1 === helper.length &&
-                          isHelperDesignation &&
-                          thirdPartTicket
-                        ) {
-                          setFocus('thirdParty')
-                          thirdPartyRef.current.focus()
                         } else if (
                           event.key === 'Enter' &&
                           idx + 1 === helper.length &&

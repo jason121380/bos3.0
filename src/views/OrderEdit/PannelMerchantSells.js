@@ -7,6 +7,7 @@ import React from 'react'
 import uuid from 'lib/uuid'
 
 import MerchantSells from './MerchantSells'
+import useOncePerOrder from './useOncePerOrder'
 
 
 export default function PannelMerchantSells({ thirdPartTicket, expanded, setExpanded  }) {
@@ -14,6 +15,7 @@ export default function PannelMerchantSells({ thirdPartTicket, expanded, setExpa
     handleBillChange, orderId, sells, setSells, pData, setPData
   } = React.useContext(billContext)
   const productOrder = useFetchProductOrder({ id: orderId })
+  const isFirstLoad = useOncePerOrder()
   const [focusRow, setFocusRow] = React.useState(0)
   
   const getData = value => {
@@ -26,7 +28,8 @@ export default function PannelMerchantSells({ thirdPartTicket, expanded, setExpa
     }
   }, [expanded])
   React.useEffect(() => {
-    if (!productOrder.loading && productOrder.data) {
+    // 同一張帳單只帶入一次（見 useOncePerOrder）
+    if (!productOrder.loading && productOrder.data && isFirstLoad(orderId)) {
       const newSells =
         productOrder.data.order.productOrders.length > 0
           ? productOrder.data.order.productOrders.map(data => ({
@@ -54,7 +57,7 @@ export default function PannelMerchantSells({ thirdPartTicket, expanded, setExpa
       }
       setSells(newSells)
     }
-  }, [productOrder.loading, productOrder.data, setExpanded, setSells])
+  }, [productOrder.loading, productOrder.data, setExpanded, setSells, isFirstLoad, orderId])
 
   function handleClear({ index }) {
     let newSells = cloneDeep(sells)
@@ -100,21 +103,20 @@ export default function PannelMerchantSells({ thirdPartTicket, expanded, setExpa
     const newSells = cloneDeep(sells)
     newSells[index][key] = value
     setSells(newSells)
-    if (key === 'price' || key === 'count' || key === 'sellerId') {
-      handleBillChange({
-        key: 'productOrders',
-        value: newSells
-          .filter(d => d.count > 0)
-          .map(data => ({
-            sellerId: data.sellerId,
-            productId: data.productId,
-            price: data.price,
-            count: data.count,
-            isLocked: data.isLocked,
-            thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
-          })),
-      })
-    }
+    // 呼叫端（MerchantSells）只傳 price、count、sellerId
+    handleBillChange({
+      key: 'productOrders',
+      value: newSells
+        .filter(d => d.count > 0)
+        .map(data => ({
+          sellerId: data.sellerId,
+          productId: data.productId,
+          price: data.price,
+          count: data.count,
+          isLocked: data.isLocked,
+          thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
+        })),
+    })
   }
   function handleAddSells() {
     const newSells = cloneDeep(sells)

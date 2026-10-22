@@ -23,7 +23,7 @@ const styles = {
 function PannelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
   const {
     handleBillChange, bindedThirdPart, bill,
-    services, setServices, sData, setSData
+    services, setServices,
   } = useContext(billContext)
   const techingModeContext = useContext(TeachingModeContext)
   const { teachingMode } = techingModeContext
@@ -49,10 +49,6 @@ function PannelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
 
   const [servicesModalOpen, setServicesModalOpen] = useState(false)
   const [helperFromModal, setHelperFromModal] = useState([])
-
-  const getData = value => {
-    !sData.length && setSData(value)
-  }
 
   useEffect(() => {
     if(reset === 'reset'){
@@ -315,7 +311,6 @@ function PannelService({ expanded, onPanelClick, thirdPartTicket, reset }) {
                 thirdPartTicket={thirdPartTicket}
                 bindedThirdPart={bindedThirdPart}
                 reset={reset}
-                getData={getData}
               />
             </Fragment>
           ))}

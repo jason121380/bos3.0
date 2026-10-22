@@ -10,7 +10,7 @@ const styles = {
   paymentTeachTitle: 'text-[0.8125rem] ml-[34px] font-bold',
 }
 
-export default function PannelPayment({ expanded }) {
+export default function PannelPayment() {
   const techingModeContext = useContext(TeachingModeContext)
   const { teachingMode } = techingModeContext
   const { bill, customerWallet } = useContext(billContext)
@@ -29,7 +29,7 @@ export default function PannelPayment({ expanded }) {
           </p>
         )}
         <div className={styles.fieldOutter}>
-          <Payment expanded={expanded} />
+          <Payment />
         </div>
       </CardContent>
     </Card>

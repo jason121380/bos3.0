@@ -1,7 +1,6 @@
 import billContext from 'context/keyInContext'
 import React, { useState, useEffect } from 'react'
 import idx from 'idx'
-import cloneDeep from 'lodash/cloneDeep'
 import useFetchGetThirdPartTicketSetting from 'hooks/useFetchGetThirdPartTicketSetting'
 
 import PannelCouponSells from './PannelCouponSells'
@@ -32,7 +31,7 @@ const pannelByCode = {
 }
 
 function Pannel() {
-  const { bill, reset, bonusActive, shortcut, setMembershipAlready, memberShipCardActive } = React.useContext(billContext)
+  const { bill, reset, bonusActive, memberShipCardActive } = React.useContext(billContext)
   const thirdPartTicketData = useFetchGetThirdPartTicketSetting()
   const [thirdPartTicket, setthirdPartTicketData] = useState(false)
 
@@ -85,12 +84,6 @@ function Pannel() {
       setthirdPartTicketData(thirdPartTicket)
     }
   }, [thirdPartTicketData.loading])
-
-  useEffect(() => {
-    if (!memberShipCardActive) {
-      setMembershipAlready(true)
-    }
-  }, [memberShipCardActive, setMembershipAlready])
 
   useEffect(() => {
     if (reset === 'reset') {
@@ -182,17 +175,6 @@ function Pannel() {
       document.removeEventListener('keydown', listener)
     }
   }, [])
-
-  React.useEffect(() => {
-    const cloneData = cloneDeep(pannel)
-    const { services, products, tickets, memberships } = shortcut
-    if (services.length) cloneData.service.expaned = true
-    if (products.length) cloneData.merchantSells.expaned = true
-    if (tickets.length) cloneData.couponSells.expaned = true
-    if (memberships.length) cloneData.memberShipCardSells.expaned = true
-
-    setPannel(cloneData)
-  }, [shortcut])
 
   return (
     <div className={styles.root} id="panel">

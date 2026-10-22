@@ -3,7 +3,8 @@
 // 第三方卡券付的服務不收現金。服務綁定且鎖定的第三方卡券不能改。
 // GraphQL 全由 testkit 的模擬 link 回應，不連後端、不建立真實帳單。
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
-import { loginAs, callsOf } from '../../../__tests__/testkit.test'
+import { loginAs, callsOf, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
+import { openSnackbar } from 'elements/snackbars'
 import {
   setupQueue, loaded, baseQueue, retry, summaryValue, pickOption, servicesPage, inputOf, chooseNative,
   DESIGNER, ASSISTANT, SERVICE, SERVICE_DYE,
@@ -300,5 +301,95 @@ describe('重新開單：服務的第三方卡券', () => {
     await loaded(page)
     expect(inputOf(screen.getByTestId('service-0-thirdParty'))).toBeDisabled()
     expect(screen.getByText('扣完後業績:720')).toBeInTheDocument()
+  })
+
+  // 店家設定比服務清單晚到：原本只在服務列變動時套用設定，設定晚到就一直不鎖（coverage wave 1，2026/10/22）
+  it('「依店家設定」且店家設定比服務資料晚到：設定回來後照樣鎖定', async () => {
+    const page = setupQueue({
+      queue: baseQueue({ serviceOrders: [{ serviceId: SERVICE.id, price: 800, serviceOrderHelpers: [], thirdPartyCouponMerchantId: 'tp-1' }] }),
+      GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true },
+      FETCH_SERVICES: servicesPage([{ ...SERVICE, isBindedThirdPartTicketLocked: 'UNSET' }]),
+      GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: {
+        getBindedThirdPartTicketLockedSetting: { service: true, product: false, membership: false },
+      },
+    }, { delays: { GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: 300 } })
+    await screen.findByText(/重新開單 \(A777\)/)
+    await page.settle()
+    expect(inputOf(screen.getByTestId('service-0-thirdParty'))).toHaveValue('團購券')
+    await wait(() => expect(inputOf(screen.getByTestId('service-0-thirdParty'))).toBeDisabled())
+  })
+})
+
+// 佇列帳單裡的服務已不在服務清單（停用、刪除）：原本找不到服務就拋錯、整頁顯示錯誤畫面（coverage wave 1，2026/10/22）。
+// 改為保留該列（佇列帶的服務與價格）並說明，「重試」照佇列內容送出，由後端決定是否接受
+describe('重新開單：佇列帳單的服務已不在服務清單', () => {
+  const GONE = { serviceId: 'service-gone', price: 650, serviceOrderHelpers: [], thirdPartyCouponMerchantId: null }
+
+  it('頁面不壞：保留該列與價格並說明，重試送出佇列中的服務', async () => {
+    const page = setupQueue({
+      queue: baseQueue({ serviceOrders: [{ serviceId: SERVICE.id, price: 800, serviceOrderHelpers: [], thirdPartyCouponMerchantId: null }, GONE] }),
+    })
+    await loaded(page)
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getByText('此服務已不在服務清單，重試時沿用佇列帳單的服務與價格')).toBeInTheDocument()
+    expect(priceInput(1)).toHaveValue('650')
+    expect(summaryValue('服務消費')).toHaveTextContent('1,450')
+    const input = await retry(page.calls)
+    expect(input.serviceOrders).toEqual([
+      expect.objectContaining({ serviceId: SERVICE.id, price: 800 }),
+      expect.objectContaining({ serviceId: GONE.serviceId, price: 650 }),
+    ])
+  })
+
+  it('改選清單中的服務後不再顯示說明', async () => {
+    const page = setupQueue({ queue: baseQueue({ serviceOrders: [GONE] }) })
+    await loaded(page)
+    expect(screen.getByText('此服務已不在服務清單，重試時沿用佇列帳單的服務與價格')).toBeInTheDocument()
+    await pickOption(serviceInput(0), '染髮(S02) - 2000')
+    await wait(() => expect(summaryValue('服務消費')).toHaveTextContent('2,000'))
+    expect(screen.queryByText('此服務已不在服務清單，重試時沿用佇列帳單的服務與價格')).toBeNull()
+  })
+
+  it('服務清單查詢失敗：頁面不壞，佇列中的服務照樣帶回', async () => {
+    const page = setupQueue({ FETCH_SERVICES: new Error('查詢失敗') })
+    await loaded(page)
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(summaryValue('服務消費')).toHaveTextContent('800')
+  })
+
+  it('佇列資料的服務列沒有服務 id：重試時提示「請選擇服務項目」，不送出', async () => {
+    const page = setupQueue({ queue: baseQueue({ serviceOrders: [{ ...GONE, serviceId: '' }] }) })
+    await loaded(page)
+    fireEvent.click(screen.getByTestId('checkout'))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '請選擇服務項目', variant: 'error' }))
+    expect(callsOf(page.calls, 'FETCH_CREATE_ORDER')).toHaveLength(0)
+  })
+})
+
+// 佇列保存的 OrderInput 沒有「鎖價」欄位：原本佇列帶回的鎖價服務價格可以改（coverage wave 1，2026/10/22）。
+// 改為依服務清單的 isLocked 套用到佇列帶回的服務列
+describe('重新開單：佇列帶回的鎖價服務', () => {
+  it('服務清單標示鎖價（TRUE／依店家設定）：價格欄停用；未鎖價的照常可改', async () => {
+    const page = setupQueue({
+      queue: baseQueue({
+        serviceOrders: [
+          { serviceId: SERVICE.id, price: 800, serviceOrderHelpers: [], thirdPartyCouponMerchantId: null },
+          { serviceId: SERVICE_DYE.id, price: 2000, serviceOrderHelpers: [], thirdPartyCouponMerchantId: null },
+          { serviceId: 'service-3', price: 500, serviceOrderHelpers: [], thirdPartyCouponMerchantId: null },
+        ],
+      }),
+      FETCH_SERVICES: servicesPage([SERVICE, SERVICE_DYE, { ...SERVICE, id: 'service-3', no: 'S03', name: '洗髮', price: 500, isLocked: 'UNSET' }]),
+    })
+    await loaded(page)
+    expect(priceInput(0)).not.toBeDisabled()
+    expect(priceInput(1)).toBeDisabled()
+    expect(priceInput(2)).toBeDisabled()
+    const input = await retry(page.calls)
+    expect(input.serviceOrders).toEqual([
+      expect.objectContaining({ serviceId: SERVICE.id, price: 800 }),
+      expect.objectContaining({ serviceId: SERVICE_DYE.id, price: 2000 }),
+      expect.objectContaining({ serviceId: 'service-3', price: 500 }),
+    ])
+    expect(input.serviceOrders[1]).not.toHaveProperty('isLocked')
   })
 })

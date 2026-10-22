@@ -5,7 +5,7 @@ import { cleanup, screen } from '@testing-library/react'
 import { loginAs } from '../../../__tests__/testkit.test'
 import {
   setupQueue, loaded, richQueue, retry, summaryValue, panelOf,
-  DESIGNER, ASSISTANT, SERVICE, SERVICE_DYE, PRODUCT, TICKET, CARD, TICKET_RECORD,
+  DESIGNER, ASSISTANT, SERVICE, SERVICE_DYE, PRODUCT, TICKET, CARD, TICKET_RECORD, CUSTOMER,
 } from './queueKit.test'
 
 jest.setTimeout(20000)
@@ -64,5 +64,47 @@ describe('重新開單：佇列帳單的各區項目原樣帶回', () => {
     expect(input.useTicketOrders).toEqual([expect.objectContaining({ customerTicketId: TICKET_RECORD.id })])
     expect(input.membershipOrders).toEqual([expect.objectContaining({ membershipUUID: CARD.uuid, price: 12000, sellerId: DESIGNER.userId })])
     expect(input).toEqual(expect.objectContaining({ walletPay: 100, bonusDecount: 50, source: '朋友介紹', serialNumber: '0007', isDesignate: true }))
+  })
+})
+
+// 只有「使用預收卡」或總金額為 0 的佇列帳單：沒有要收的金額時不顯示「其他付款方式」，付款方式清單不會載入；
+// 原本「重試」要等付款方式清單載入才可按，這類帳單永遠不能重試（coverage wave 1，2026/10/22 修正）
+describe('重新開單：沒有要收金額的佇列帳單也能重試', () => {
+  const ticketOnly = () =>
+    richQueue({
+      serviceOrders: [],
+      productOrders: [],
+      ticketOrders: [],
+      membershipOrders: [],
+      walletPay: 0,
+      bonusDecount: 0,
+    })
+
+  it('只有使用預收卡：「重試」可按，送出原本的使用預收卡與助理', async () => {
+    const page = setupQueue({ queue: ticketOnly() })
+    await loaded(page)
+    expect(summaryValue('使用預收卡')).toHaveTextContent('200')
+    expect(summaryValue('現金應收')).toHaveTextContent(/^0$/)
+    const input = await retry(page.calls)
+    expect(input.useTicketOrders).toEqual([
+      expect.objectContaining({
+        customerTicketId: TICKET_RECORD.id,
+        useTicketOrderHelpers: [expect.objectContaining({ helperId: ASSISTANT.userId })],
+      }),
+    ])
+    expect(input.serviceOrders).toEqual([])
+    expect(input.customerId).toBe(CUSTOMER.id)
+  })
+
+  it('服務金額為 0：「重試」可按並送出該服務', async () => {
+    const page = setupQueue({
+      queue: richQueue({
+        serviceOrders: [{ serviceId: SERVICE.id, price: 0, serviceOrderHelpers: [], thirdPartyCouponMerchantId: null }],
+        productOrders: [], ticketOrders: [], useTicketOrders: [], membershipOrders: [], walletPay: 0, bonusDecount: 0,
+      }),
+    })
+    await loaded(page)
+    const input = await retry(page.calls)
+    expect(input.serviceOrders).toEqual([expect.objectContaining({ serviceId: SERVICE.id, price: 0 })])
   })
 })

@@ -84,7 +84,6 @@ CouponSellModal.propTypes = {
 
 CouponSellModal.defaultProps = {
   open: false,
-  onClose: () => { },
 }
 
 export default memo(CouponSellModal)

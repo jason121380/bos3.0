@@ -100,6 +100,32 @@ describe('重新開單：會員卡銷售', () => {
     expect(new Date(input.membershipOrders[0].expiryDate).toDateString()).toBe(addDays(new Date(DATE), 365).toDateString())
   })
 
+  // 佇列帶回的永久會籍沒有有效天數：原本取消勾選後到期日變成無效日期、重試被擋「會員卡到期日有誤」（coverage wave 1，2026/10/22）。
+  // 改為依會員卡清單的有效天數，與剛選的卡相同（帳單日＋有效天數）
+  it('佇列帶回的永久會籍取消勾選：到期日依會員卡清單的有效天數（帳單日起算）', async () => {
+    const page = setupQueue({ queue: baseQueue({ membershipOrders: [membershipOrder({ expiryDate: null })] }) })
+    await loaded(page)
+    expect(permanent()).toBeChecked()
+    fireEvent.click(permanent())
+    await wait(() => expect(permanent()).not.toBeChecked())
+    expect(cards().getByPlaceholderText('YYYY/MM/DD')).toHaveValue('2027/10/21')
+    const input = await retry(page.calls)
+    expect(new Date(input.membershipOrders[0].expiryDate).toDateString()).toBe(addDays(new Date(DATE), 365).toDateString())
+  })
+
+  it('佇列帶回的永久會籍、會員卡已不在清單：取消勾選後到期日空白待選，重試提示「會員卡到期日有誤」', async () => {
+    const page = setupQueue({
+      queue: baseQueue({ membershipOrders: [membershipOrder({ membershipUUID: 'card-gone', expiryDate: null })] }),
+    })
+    await loaded(page)
+    fireEvent.click(permanent())
+    await wait(() => expect(permanent()).not.toBeChecked())
+    expect(cards().getByPlaceholderText('YYYY/MM/DD')).not.toBeDisabled()
+    fireEvent.click(screen.getByTestId('checkout'))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '會員卡到期日有誤', variant: 'error' }))
+    expect(callsOf(page.calls, 'FETCH_CREATE_ORDER')).toHaveLength(0)
+  })
+
   it('從日期選擇器改到期日後送出新的到期日', async () => {
     const page = setupQueue({ queue: baseQueue({ membershipOrders: [membershipOrder()] }) })
     await loaded(page)
@@ -239,6 +265,21 @@ describe('重新開單：使用預收卡', () => {
         useTicketOrderHelpers: [expect.objectContaining({ helperId: ASSISTANT.userId, isDesignate: true })],
       },
     ])
+  })
+
+  // 「金額」只顯示卡券單價：原本可編輯，輸入的文字被寫進「選的預收卡」（customerTicketId），送出時換成一張不存在的卡券。
+  // 比照帳單詳細／掛單詳細／打帳單改為唯讀（coverage wave 1，2026/10/22）
+  it('金額欄唯讀：在金額欄輸入不會換掉選的預收卡', async () => {
+    const page = setupQueue({ queue: withCustomer() })
+    await loaded(page)
+    expand('使用預收卡')
+    await pickOption(fieldInput(useRow(), '預收卡'), '護髮五次卡 剩 4 次')
+    const amount = fieldInput(useRow(), '金額')
+    await wait(() => expect(amount).toHaveValue('200'))
+    expect(amount).toBeDisabled()
+    fireEvent.change(amount, { target: { value: '50' } })
+    const input = await retry(page.calls)
+    expect(input.useTicketOrders).toEqual([expect.objectContaining({ customerTicketId: TICKET_RECORD.id })])
   })
 
   it('依預收卡服務的助理設定顯示助理欄：沒有設定時不顯示，兩種設定各一欄', async () => {

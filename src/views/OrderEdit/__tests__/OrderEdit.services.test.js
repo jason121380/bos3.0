@@ -1,6 +1,7 @@
 // 保護「帳單詳細」的項目消費（服務列，PannelService／Services）：既有帳單的服務、助理、第三方卡券要原樣帶回，
 // 櫃檯改動後重新結帳送出的就是改過的內容：
-// - 助理欄位依服務的助理抽成設定展開（同一種助理多個名額各一欄），帶回原本的助理；改助理、勾「指定」後送出
+// - 助理欄位依服務的助理抽成設定展開（同一種助理多個名額各一欄），帶回原本的助理與「指定」（依名額類型對應，
+//   不依位置）；改助理、勾「指定」後送出
 // - 第三方卡券：顯示扣完後業績（百分比或固定金額）；選卡券／清掉卡券後送出；綁定卡券鎖定的服務不能改卡券
 // - 改價格（非數字視為 0）、清除此列、刪除此列、新增項目、在服務欄重新打字（該列先清空）、從清單選擇服務
 // - 收合時標題列顯示已填筆數與金額
@@ -98,6 +99,25 @@ describe('帳單詳細：服務列帶回原帳單', () => {
     expect(await within(panel()).findByText('扣完後業績:700')).toBeInTheDocument()
   })
 
+  it('原帳單只填第二個名額且勾「指定」：指定照樣帶回；改第一個名額的助理後重新結帳，第二位仍是指定', async () => {
+    const order = makeOrder({
+      serviceOrders: [serviceOrderOf(SERVICE, { helperList: [{ ...WASH_HELPER, id: 'h-2', type: '助理-吹整', isDesignate: true }] })],
+    })
+    const page = setup(servicesFixtures({ order }))
+    await pageReady(page)
+    await helpersReady()
+    expect(within(panel()).getByPlaceholderText('助理-吹整')).toHaveValue('李助理-02')
+    const designate = within(panel()).getAllByLabelText('指定')
+    expect(designate[0]).not.toBeChecked()
+    expect(designate[1]).toBeChecked()
+    await pickEmployee(within(panel()).getByPlaceholderText('助理-洗髮'), DESIGNER.userName)
+    const input = await checkoutAndGetInput(page.calls)
+    expect(input.serviceOrders[0].serviceOrderHelpers).toEqual([
+      expect.objectContaining({ type: '助理-洗髮', helperId: DESIGNER.userId, isDesignate: false }),
+      expect.objectContaining({ type: '助理-吹整', helperId: ASSISTANT.userId, isDesignate: true }),
+    ])
+  })
+
   it('原帳單助理的類型與目前設定不同：該名額空白（不誤帶到別的名額）', async () => {
     const order = makeOrder({
       serviceOrders: [serviceOrderOf(SERVICE, { helperList: [{ ...WASH_HELPER, type: '助理-染髮' }] })],
@@ -113,6 +133,21 @@ describe('帳單詳細：服務列帶回原帳單', () => {
     await pageReady(page)
     await wait(() => expect(thirdPartyInputs()).toHaveLength(1))
     expect(thirdPartyInputs()[0]).toBeDisabled()
+  })
+
+  // 帳單服務先到、店家設定後到（設定沒有快取時）
+  it('卡券鎖定方式「依店家設定」、店家設定比帳單晚到：設定到了卡券欄照樣鎖定', async () => {
+    const unset = { ...SERVICE, id: 'service-3', no: 'S03', name: '造型', isBindedThirdPartTicketLocked: 'UNSET' }
+    const order = makeOrder({ serviceOrders: [serviceOrderOf(unset, { thirdPartyPayId: 'tp-1' })] })
+    const page = setup(
+      servicesFixtures({
+        order,
+        GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: { getBindedThirdPartTicketLockedSetting: { service: true, product: false, membership: false } },
+      }),
+      { delays: { GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: 300 } }
+    )
+    await pageReady(page)
+    await wait(() => expect(thirdPartyInputs()[0]).toBeDisabled())
   })
 
   // 店家設定先到、帳單服務後到（設定類查詢已快取時的正式環境順序）

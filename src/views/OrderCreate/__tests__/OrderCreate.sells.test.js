@@ -1,5 +1,5 @@
 // 保護打帳單「店販銷售」「預收卡販賣」「會員卡銷售」三區的櫃台操作與送出內容：
-// - 店販：選服務人員與商品後以售價×數量計入；可改價、改數量（數量清空＝0 不計入），鎖價商品不能改價；可選第三方卡券
+// - 店販：選服務人員與商品後以售價×數量計入；可改價、改數量（數量清空＝0 不計入），鎖價商品不能改價；可選第三方卡券（顯示扣完手續費後業績）
 // - 預收卡：選卡券帶入可用次數與售價，可改次數／價格／張數／備註（可用次數、張數清空視為 1），鎖定的卡券不能改次數與價格
 // - 會員卡：選卡帶入售價與到期日（今天＋有效天數；0 天＝永久會籍），可切換永久會籍、改到期日；到期日早於帳單日或超過 50 年時提示
 // - 三區都可從清單選擇、新增／清除列；收合時標題顯示已填筆數與金額；F1～F7 直接切換展開的區塊
@@ -94,13 +94,31 @@ describe('店販銷售', () => {
     fireEvent.click(tp)
     fireEvent.click(await screen.findByTestId('團購券'))
     await wait(() => expect(tp).toHaveValue('團購券'))
+    // 百分比手續費：450 × 90% = 405
+    expect(await screen.findByText('扣完後業績:405')).toBeInTheDocument()
     act(() => tp.focus())
     fireEvent.mouseDown(buttonsIn(tp.closest('.ui-root'), '清除')[0])
     await wait(() => expect(tp).toHaveValue(''))
+    expect(screen.queryByText(/扣完後業績/)).toBeNull()
     fireEvent.click(tp)
     fireEvent.click(await screen.findByTestId('禮券'))
+    // 固定金額手續費：450 − 100 = 350（與服務項目相同算法）
+    expect(await screen.findByText('扣完後業績:350')).toBeInTheDocument()
     const { productOrders } = await checkout(calls)
     expect(productOrders[0].thirdPartyCouponMerchantId).toBe('tp-2')
+  })
+
+  it('價格改成 0 後再選第三方卡券：以 0 元送出（不是空值）', async () => {
+    const { calls } = await prepare({ GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true } })
+    open()
+    await pickEmployee(designerInputs()[1], HELPER)
+    await pickProduct()
+    fireEvent.change(screen.getByTestId('merchantSsell-0-price'), { target: { value: '' } })
+    await wait(() => expect(screen.getByTestId('merchantSsell-0-price')).toHaveValue('0'))
+    fireEvent.click(screen.getByPlaceholderText('第三方卡券'))
+    fireEvent.click(await screen.findByTestId('團購券'))
+    const { productOrders } = await checkout(calls)
+    expect(productOrders).toEqual([expect.objectContaining({ productId: PRODUCT.id, price: 0, thirdPartyCouponMerchantId: 'tp-1' })])
   })
 
   it('新增、刪除、清除列：只送出仍有內容的列', async () => {
@@ -290,6 +308,20 @@ describe('預收卡販賣', () => {
     await wait(() => expect(summaryValue('預收卡販賣')).toHaveTextContent('5,000'))
     const { ticketOrders } = await checkout(calls)
     expect(ticketOrders).toEqual([expect.objectContaining({ serviceId: TICKET_LOCKED.id })])
+  })
+
+  it('刪除列：刪掉的卡券不再計入合計，也不送出', async () => {
+    const { calls } = await prepare()
+    open()
+    await pickTicket()
+    fireEvent.click(screen.getByTestId('couponSells-0-add'))
+    await pickTicket(TICKET_LOCKED, 1)
+    await wait(() => expect(summaryValue('預收卡販賣')).toHaveTextContent('12,000'))
+    fireEvent.click(screen.getByTestId('couponSells-1-delete'))
+    await wait(() => expect(ticketInputs()).toHaveLength(1))
+    await wait(() => expect(summaryValue('預收卡販賣')).toHaveTextContent('7,000'))
+    const { ticketOrders } = await checkout(calls)
+    expect(ticketOrders).toEqual([expect.objectContaining({ serviceId: TICKET.id })])
   })
 
   it('從清單選擇預收卡（含類別欄）：第一列空白時帶入第一列，否則新增一列；可依分類篩選與清除，關閉不帶入', async () => {
@@ -500,13 +532,19 @@ describe('會員卡銷售', () => {
     open()
     await pickEmployee(sellerInput(), HELPER)
     await pickCard()
+    // 可改價的卡選定後焦點到價格欄
+    await wait(() => expect(screen.getByTestId('memberShipCardSells-0-price')).toHaveFocus())
     enter(sellerInput())
     await wait(() => expect(cardInputs()[0]).toHaveFocus())
-    // 會員卡欄 Enter 應跳到價格欄：目前價格欄沒掛上焦點用的 ref，焦點不會移動（已回報，不在此斷言）
     enter(cardInputs()[0])
+    await wait(() => expect(screen.getByTestId('memberShipCardSells-0-price')).toHaveFocus())
     enter(screen.getByTestId('memberShipCardSells-0-price'))
     await wait(() => expect(expiryInput()).toHaveFocus())
     fireEvent.keyDown(expiryInput(), { key: 'a', keyCode: 65 })
+    // 到期日按 Enter 跳到永久會籍，不打開月曆
+    enter(expiryInput())
+    await wait(() => expect(forever()).toHaveFocus())
+    expect(currentDialog()).toBeNull()
     enter(forever())
     await wait(() => expect(screen.getByPlaceholderText('第三方卡券')).toHaveFocus())
     enter(screen.getByPlaceholderText('第三方卡券'))
@@ -529,9 +567,10 @@ describe('會員卡銷售', () => {
     await wait(() => expect(forever()).toHaveFocus())
     enter(screen.getByTestId('memberShipCardSells-0-price'))
     await wait(() => expect(forever()).toHaveFocus())
-    // 改選可改價的卡：價格欄解除鎖定（焦點應跳到價格欄，但目前不會移動，已回報）
+    // 改選可改價的卡：價格欄解除鎖定，焦點跳到價格欄
     await pickCard(MEMBERSHIP)
     await wait(() => expect(screen.getByTestId('memberShipCardSells-0-price')).not.toBeDisabled())
+    await wait(() => expect(screen.getByTestId('memberShipCardSells-0-price')).toHaveFocus())
   })
 
   it('Enter：鎖價且有期限的卡從會員卡欄跳到到期日', async () => {

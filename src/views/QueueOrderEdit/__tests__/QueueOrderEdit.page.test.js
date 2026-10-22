@@ -180,6 +180,43 @@ describe('重新開單：重試', () => {
     expect(currentLocation()).toBe('/queue-order-edit/queue-1')
   })
 
+  // 帳單已成立但佇列紀錄刪不掉：原本什麼都不提示、留在本頁且「重試」可再按，再按一次就重複成立帳單（coverage wave 1，2026/10/22）
+  describe('帳單已成立但未能從佇列移除', () => {
+    const NOT_REMOVED = '帳單已成立（A777），但未能從訂單佇列移除。請勿再重試這筆，請到「訂單佇列」將它刪除'
+
+    it('刪除佇列回傳 false：提示帳單已成立、請到訂單佇列刪除，回帳單列表，不會再成立一次', async () => {
+      const { calls } = setup({ DELETE_QUEUE: { destroyQueueById: false } })
+      const retry = await screen.findByTestId('checkout')
+      await wait(() => expect(retry).not.toBeDisabled())
+      fireEvent.click(retry)
+      await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: NOT_REMOVED, variant: 'error' }))
+      expect(currentLocation()).toBe('/management/orders')
+      expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(1)
+    })
+
+    it('刪除佇列失敗（API 錯誤）：同樣提示並回帳單列表', async () => {
+      const { calls } = setup({ DELETE_QUEUE: new Error('伺服器忙碌') })
+      const retry = await screen.findByTestId('checkout')
+      await wait(() => expect(retry).not.toBeDisabled())
+      fireEvent.click(retry)
+      await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: NOT_REMOVED, variant: 'error' }))
+      expect(currentLocation()).toBe('/management/orders')
+      expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(1)
+    })
+
+    it('成立帳單後、刪除佇列回應前：「重試」停用，連按不會重複成立', async () => {
+      const { calls, settle } = setup()
+      const retry = await screen.findByTestId('checkout')
+      await wait(() => expect(retry).not.toBeDisabled())
+      fireEvent.click(retry)
+      await wait(() => expect(callsOf(calls, 'DELETE_QUEUE')).toHaveLength(1))
+      expect(retry).toBeDisabled()
+      fireEvent.click(retry)
+      await settle()
+      expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(1)
+    })
+  })
+
   it('後端未回傳帳單編號時不刪除佇列', async () => {
     const { calls } = setup({ FETCH_CREATE_ORDER: { createOrder2: null } })
     const retry = await screen.findByTestId('checkout')

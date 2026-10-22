@@ -200,6 +200,20 @@ describe('掛單詳細：預收卡販賣收合、從清單選擇與 Enter 跳欄
     await expectFocused(couponInput(1))
   })
 
+  it('已選卡券的列在卡券欄打字或退格：焦點留在卡券欄，不跳到可使用次數或備註', async () => {
+    await setup({ order: makeOrder({ ticketOrders: [ticketOrder(), ticketOrder(TICKET_LOCKED)] }) })
+    focusOn(couponInput(0))
+    fireEvent.keyDown(couponInput(0), { key: 'Backspace' })
+    fireEvent.keyDown(couponInput(0), { key: 'a' })
+    await new Promise(resolve => setTimeout(resolve, 20))
+    expect(document.activeElement).toBe(couponInput(0))
+    // 價格鎖定的卡券同樣不跳到備註
+    focusOn(couponInput(1))
+    fireEvent.keyDown(couponInput(1), { key: 'Backspace' })
+    await new Promise(resolve => setTimeout(resolve, 20))
+    expect(document.activeElement).toBe(couponInput(1))
+  })
+
   it('價格鎖定的卡券：卡券 Enter 直接跳到備註；兩列時第一列備註 Enter 只移到下一列', async () => {
     await setup({ order: makeOrder({ ticketOrders: [ticketOrder(TICKET_LOCKED), ticketOrder()] }) })
     focusOn(couponInput(0))

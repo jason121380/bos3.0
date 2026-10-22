@@ -6,8 +6,9 @@
 // - 改價格、服務人員、第三方卡券、備註後送出；清除此列、刪除此列、新增項目、從清單選擇會員卡
 // - 鍵盤：服務人員 → 會員卡 →（價格沒鎖）價格 → 到期日 → 永久會籍 → 第三方卡券 → 備註 → 下一列；
 //   鎖價且永久的卡從會員卡直接跳永久會籍、鎖價有期限的卡跳到期日；選定卡後游標自動移到下一欄
+// - 直接點另一列的欄位：游標留在點的欄位，過程中也不先跳到該列的服務人員
 // GraphQL 全由模擬 link 回應，不連後端、不改真實帳單。
-import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { addDays } from 'date-fns'
 import {
   setup, pageReady, makeOrder, checkoutAndGetInput, summaryValue, loginForTest, pickEmployee,
@@ -235,6 +236,23 @@ describe('帳單詳細：改會員卡後重新結帳', () => {
     await wait(() => expect(queryDialog()).toBeNull())
     await wait(() => expect(cardInputs()[0]).toHaveValue('金卡-365天'))
     expect(summaryValue('會員卡販賣')).toHaveTextContent('3,000')
+  })
+})
+
+describe('帳單詳細：會員卡游標', () => {
+  it('從第 1 列直接點第 2 列的會員卡、價格欄：游標留在點的欄位，過程中也不會先跳到第 2 列的服務人員', async () => {
+    const page = open(withCards(membershipOrder(MEMBERSHIP), membershipOrder(MEMBERSHIP)))
+    await pageReady(page)
+    act(() => sellerOf(0).focus())
+    const sellerFocused = jest.fn()
+    sellerOf(1).addEventListener('focus', sellerFocused)
+    act(() => cardInputs()[1].focus())
+    await page.settle()
+    expect(document.activeElement).toBe(cardInputs()[1])
+    act(() => priceOf(0).focus())
+    await page.settle()
+    expect(document.activeElement).toBe(priceOf(0))
+    expect(sellerFocused).not.toHaveBeenCalled()
   })
 })
 

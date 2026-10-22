@@ -10,6 +10,7 @@ import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import idx from 'idx'
 
 import CouponSells from './CouponSells'
+import useOncePerOrder from './useOncePerOrder'
 import CouponSellModal from 'views/OrderShared/EditCouponSellModal'
 
 
@@ -19,6 +20,7 @@ export default function PannelCouponSells({ expanded, setExpanded }) {
     couponSells, setCouponSells, tData, setTData
   } = React.useContext(billContext)
   const order = useFetchOrder({ id: orderId })
+  const isFirstLoad = useOncePerOrder()
   const useHandleBillChangeRef = React.useRef(handleBillChange)
   const [couponModalOpen, setCouponModalOpen] = React.useState(false)
   const [conpunInModal, setConpunInModal] = React.useState([])
@@ -74,7 +76,8 @@ export default function PannelCouponSells({ expanded, setExpanded }) {
     }
   }, [couponSells])
   React.useEffect(() => {
-    if (!order.loading && order.data) {
+    // 同一張帳單只帶入一次（見 useOncePerOrder）
+    if (!order.loading && order.data && isFirstLoad(orderId)) {
       const newCouponSells =
         order.data.order.ticketOrders.length > 0
           ? order.data.order.ticketOrders.map(ticketOrder => ({
@@ -103,7 +106,7 @@ export default function PannelCouponSells({ expanded, setExpanded }) {
       }
       setCouponSells(newCouponSells)
     }
-  }, [order.loading, order.data, setCouponSells, setExpanded])
+  }, [order.loading, order.data, setCouponSells, setExpanded, isFirstLoad, orderId])
 
   function handleAddCouponSell() {
     const newCouponSells = cloneDeep(couponSells)

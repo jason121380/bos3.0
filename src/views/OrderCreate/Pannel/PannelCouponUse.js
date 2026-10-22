@@ -98,6 +98,16 @@ export default function PannelCouponUse({ expanded, onPanelClick, display, reset
     newHelper.splice(index, 1)
     setCouponUsage(newCouponUsage)
     setHelper(newHelper)
+    // 刪掉的列也要從帳單移除（原本只改畫面，刪掉的預收卡仍計入並送出）
+    handleBillChange({
+      key: 'useTicketOrders',
+      value: newCouponUsage
+        .filter(d => d.customerTicketId)
+        .map(data => ({
+          customerTicketId: data.customerTicketId,
+          useTicketOrderHelpers: data.useTicketOrderHelpers,
+        })),
+    })
   }
   function handleFildChange({ index, value, key, price }) {
     const newCouponUsage = cloneDeep(couponUsage)

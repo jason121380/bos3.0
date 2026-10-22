@@ -1,15 +1,13 @@
 import Page from 'components/Page'
 import { Provider } from 'context/keyInContext'
-import useFetchCreateOrder from 'hooks/useFetchCreateOrder'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import useFetchUpdateUserOrderableList from 'hooks/useFetchSettingUpdateUserOrderableList'
-import useFetchIsDetailBottomed from 'hooks/useFetchGetIsDetailBottomed'
 import useFetchGetDesignationSettingForOrderCreate from 'hooks/useFetchGetDesignationSettingForOrderCreate'
 import useFetchGetLatestOrderStatus from 'hooks/useFetchGetLatestOrderStatus'
 import useFetchGetBindedThirdPartTicketLockedSetting from 'hooks/useFetchGetBindedThirdPartTicketLockedSetting'
 import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusActive'
 import useFetchGetIsBonusConversion from 'hooks/useFetchGetIsBonusConversion'
-import { useFetchGetIsBonusRewardWithLine, useFetchGetIsComboSetting } from 'hooks/useFetchGetParameterAboutSettingFunction'
+import { useFetchGetIsBonusRewardWithLine } from 'hooks/useFetchGetParameterAboutSettingFunction'
 import {
   useFetchGetIsPrintWindowClosureDelayed, useFetchGetSerialNumberUsing,
   useFetchGetIsLBCusDisplay, useFetchGetIsCusWalletUsageForOrder
@@ -19,8 +17,6 @@ import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCard
 import { useFetchGetDisablePendingOrder } from 'hooks/useFetchGetParameterAboutSettingFunction'
 import idx from 'idx'
 import uuid from 'lib/uuid'
-import addDays from 'date-fns/addDays'
-import cloneDeep from 'lodash/cloneDeep'
 import produce from 'immer'
 import billPaymentSummary from 'helper/billPaymentSummary'
 
@@ -30,13 +26,10 @@ import Pannel from './Pannel'
 
 function OrderCreate() {
   const [isClick, setIsClick] = useState(false)
-  const [marginTop, setMarginTop] = useState(83)
-  const footerRef = useRef(null)
   const designationSettingForOrderCreateData = useFetchGetDesignationSettingForOrderCreate()
   const getIsLBCusDisplay = useFetchGetIsLBCusDisplay()
   const getIsCusWalletUsageForOrder = useFetchGetIsCusWalletUsageForOrder()
   const getIsBonusRewardWithLine = useFetchGetIsBonusRewardWithLine()
-  const getIsComboSetting = useFetchGetIsComboSetting()
   const memberShipActive = useFetchGetIsMemberShipCardActive()
   // 指不指定依據
   const [designationSettingForOrderCreate, setDesignationSettingForOrderCreate] = useState(false)
@@ -77,18 +70,9 @@ function OrderCreate() {
   const [checkoutBtn, setCheckoutBtn] = useState(false)
   // 明細彈窗與收據的應付帳款／現金應收，與頁面右側金額彙總同一公式（原本從未計算、永遠是 0）
   const { shouldPay: orderDetailPaymentShouldPay, cashDue: cashPayment } = billPaymentSummary(bill)
-  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions())
-  const { checkOrder } = useFetchCreateOrder()
-  const useCheckOrderRef = useRef(checkOrder)
   const stayInCreateOrderInMemory = JSON.parse(localStorage.getItem('stayInCreateOrder'))
-  const footerSwitchMemory = JSON.parse(localStorage.getItem('footerSwitchMemory'))
-  const isDetailBottomedData = useFetchIsDetailBottomed()
   const [openOrderDetail, setOpenOrderDetail] = useState(false)
   const [updateUserOrderableListDone, setUpdateUserOrderableListDone] = useState(false)
-  const [isFooterFold, setIsFooterFold] = useState(
-    footerSwitchMemory !== null ? footerSwitchMemory : false
-  )
-  const [isFooterFixed, setIsFooterFixed] = useState(false)
   const { setUpdateUserOrderableList } = useFetchUpdateUserOrderableList()
   const [checkoutBtnClick, setCheckoutBtnClick] = useState(false)
   const [focus, setFocus] = useState('customer')
@@ -131,196 +115,19 @@ function OrderCreate() {
   const [walletFuncDisplay, setWalletFuncDisplay] = useState(true)
   const [bonusRewardWithLINE, setBonusRewardWithLINE] = useState(false)
   const [isLineBinded, setIsLineBinded] = useState(false)
-  const [serviceAlready, setServiceAlready] = useState(false)
-  const [productAlready, setProductAlready] = useState(false)
-  const [couponAlready, setCouponAlready] = useState(false)
-  const [membershipAlready, setMembershipAlready] = useState(false)
-  const [shortcut, setShortcut] = useState({
-    services: [],
-    products: [],
-    tickets: [],
-    memberships: []
-  })
   const [services, setServices] = useState([])
-  const [sData, setSData] = useState([])
   const [sells, setSells] = useState([])
-  const [pData, setPData] = useState([])
   const [couponSells, setCouponSells] = useState([])
-  const [tData, setTData] = useState([])
   const [memberCardSells, setMemberCardSells] = useState([])
-  const [mData, setMData] = useState([])
   const [memberShipCardActive, setMemberShipCardActive] = useState(false)
   const getDisablePendingOrder = useFetchGetDisablePendingOrder()
   const disablePendingOrder = getDisablePendingOrder.loading ? true : getDisablePendingOrder.data.getParameterAboutSettingFunction.disablePendingOrder
 
-  const shortBtnDisable = !(serviceAlready && productAlready && couponAlready && membershipAlready)
-
-  const comboActive = !getIsComboSetting.loading
-    ? getIsComboSetting.data.getParameterAboutSettingFunction.isComboUsing
-    : false
-
-  const handleShortcutChange = ({
-    services, products, tickets, memberships
-  }) => {
-    const getIds = arr => arr.map(d => d.id || d.uuid)
-    const obj = {
-      services: getIds(services),
-      products: getIds(products),
-      tickets: getIds(tickets),
-      memberships: memberShipCardActive ? getIds(memberships) : []
-    }
-    setShortcut(obj)
-  }
-
   useEffect(() => {
     if (!memberShipActive.loading) {
       setMemberShipCardActive(memberShipActive.data.getIsMemberShipCardActive)
-      if (!memberShipActive.data.getIsMemberShipCardActive) {
-        setMembershipAlready(true)
-      }
     }
   }, [memberShipActive.loading])
-
-  useEffect(() => {
-    const serviceArr = []
-    const productArr = []
-    const couponArr = []
-    const memberArr = []
-
-    for (let i = 0; i < shortcut.services.length; i++) {
-      const id = shortcut.services[i];
-      const value = sData.find(d => d.id === id)
-      value && serviceArr.push({
-        ...value,
-        serviceId: value.id,
-        price: value.price,
-        isLocked: value.isLocked,
-        isNoCash: value.isNoCash,
-        thirdPartyCouponMerchantId: value.bindedThirdPartTicket === null ? null : value.bindedThirdPartTicket.id,
-        isBindedThirdPartTicketLocked: value.isBindedThirdPartTicketLocked,
-        serviceOrderHelpers: []
-      })
-    }
-    for (let i = 0; i < shortcut.products.length; i++) {
-      const id = shortcut.products[i];
-      const value = pData.find(d => d.id === id)
-      value && productArr.push({
-        ...value,
-        productId: value.id,
-        price: value.sellPrice,
-        count: 1,
-        isLocked: value.isLocked,
-      })
-    }
-    for (let i = 0; i < shortcut.tickets.length; i++) {
-      const id = shortcut.tickets[i];
-      const value = tData.find(d => d.id === id)
-      value && couponArr.push({
-        ...value,
-        serviceId: value.id,
-        availableCount: value.ticketAvailableCount,
-        price: value.price,
-        remark: '',
-        isLocked: value.isLocked,
-        count: 1
-      })
-    }
-    for (let i = 0; i < shortcut.memberships.length; i++) {
-      const id = shortcut.memberships[i];
-      const value = mData.find(d => d.uuid === id)
-      value && memberArr.push({
-        ...value,
-        membershipUUID: value.uuid,
-        price: value.sellPrice,
-        expiryDate: value.effecitveDay === 0 ? null : addDays(new Date(), value.effecitveDay).getTime(),
-        isLocked: value.isLocked,
-        effecitveDay: value.effecitveDay,
-      })
-    }
-
-    let newServices = cloneDeep(services)
-    let newSells = cloneDeep(sells)
-    let newCouponSells = cloneDeep(couponSells)
-    let newMemberCardSells = cloneDeep(memberCardSells)
-
-    if (newServices.length === 1 && newServices[0].serviceId === '' && serviceArr.length > 0) {
-      newServices = serviceArr
-    } else {
-      newServices = [...newServices, ...serviceArr]
-    }
-    if (sells.length === 1 && sells[0].productId === '' && productArr.length > 0) {
-      newSells = productArr
-    } else {
-      newSells = [...newSells, ...productArr]
-    }
-    if (newCouponSells.length === 1 && newCouponSells[0].serviceId === '' && couponArr.length > 0) {
-      newCouponSells = couponArr
-    } else {
-      newCouponSells = [...newCouponSells, ...couponArr]
-    }
-    if (newMemberCardSells.length === 1 && newMemberCardSells[0].membershipUUID === '' && memberArr.length > 0) {
-      newMemberCardSells = memberArr
-    } else {
-      newMemberCardSells = [...newMemberCardSells, ...memberArr]
-    }
-
-    const serviceOrders = newServices
-      .filter(d => d.serviceId)
-      .map(d => ({
-        serviceId: d.serviceId,
-        price: d.price,
-        thirdPartyCouponMerchantId: d.thirdPartyCouponMerchantId,
-        serviceOrderHelpers: d.serviceOrderHelpers.filter(i => i.helperId),
-        isNoCash: d.isNoCash,
-      }))
-
-    const productOrders = newSells
-      .filter(d => d.count > 0)
-      .map(data => ({
-        sellerId: data.sellerId,
-        productId: data.productId,
-        price: data.price || 0,
-        count: data.count,
-        isLocked: data.isLocked,
-        thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
-      }))
-
-    const ticketOrders = newCouponSells
-      .filter(d => d.serviceId)
-      .map(data => ({
-        serviceId: data.serviceId,
-        availableCount: data.availableCount,
-        price: data.price,
-        count: data.count,
-        remark: data.remark,
-        isLocked: data.isLocked,
-        intoPerformanceWhileBuying: data.intoPerformanceWhileBuying,
-      }))
-
-    const membershipOrders = newMemberCardSells.map(data => ({
-      sellerId: data.sellerId,
-      membershipUUID: data.membershipUUID,
-      price: data.price,
-      expiryDate: data.expiryDate === NaN || data.expiryDate === 'Invalid Date' || data.expiryDate === "Early Date" || data.expiryDate === "Late Date" ? 'Invalid Date' : data.expiryDate,
-      thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
-      remark: data.remark,
-    }))
-
-    setServices(newServices)
-    setSells(newSells)
-    setCouponSells(newCouponSells)
-    setMemberCardSells(newMemberCardSells)
-
-    setBill(
-      produce(draft => {
-        draft.serviceOrders = serviceOrders
-        draft.productOrders = productOrders
-        draft.ticketOrders = ticketOrders
-        draft.membershipOrders = membershipOrders
-      })
-    )
-
-  }, [shortcut])
 
   useEffect(() => {
     if (!getIsBonusRewardWithLine.loading) {
@@ -417,13 +224,6 @@ function OrderCreate() {
   }, [reset])
 
   useEffect(() => {
-    if (!isDetailBottomedData.loading) {
-      const isFooterFixed = idx(isDetailBottomedData, _ => _.data.getIsDetailBottomed)
-      setIsFooterFixed(isFooterFixed)
-    }
-  }, [isDetailBottomedData.loading])
-
-  useEffect(() => {
     if (!getBonusRewardRule.loading) {
       const data = idx(getBonusRewardRule, _ => _.data.getParameterAboutSettingFunction.bonusRewardRule)
       setBonusSetting(data)
@@ -443,18 +243,6 @@ function OrderCreate() {
   const handleDisplayOrderDetail = () => {
     setOpenOrderDetail(!openOrderDetail)
   }
-
-  useEffect(() => {
-    if (bill.designerId) {
-      const serviceOrdersNoIsLocked = bill.serviceOrders.map(({ isLocked, ...keep }) => keep)
-      bill.serviceOrders = serviceOrdersNoIsLocked
-      const productOrdersNoIsLocked = bill.productOrders.map(({ isLocked, ...keep }) => keep)
-      bill.productOrders = productOrdersNoIsLocked
-      const ticketOrdersNoIsLocked = bill.ticketOrders.map(({ isLocked, ...keep }) => keep)
-      bill.ticketOrders = ticketOrdersNoIsLocked
-      useCheckOrderRef.current(bill)
-    }
-  }, [])
 
   useEffect(() => {
     setBill(prev => ({
@@ -508,33 +296,7 @@ function OrderCreate() {
     }
   }, [reset])
 
-  function getWindowDimensions() {
-    const { innerWidth: width, innerHeight: height } = window
-    return {
-      width,
-      height,
-    }
-  }
-
-  function useWindowDimensions() {
-    useEffect(() => {
-      function handleResize() {
-        setWindowDimensions(getWindowDimensions())
-      }
-
-      window.addEventListener('resize', handleResize)
-      return () => window.removeEventListener('resize', handleResize)
-    }, [])
-    return windowDimensions
-  }
-  const { height, width } = useWindowDimensions()
   const [addKeydown, setAddKeyDown] = useState(0)
-
-  useEffect(() => {
-    if (footerRef.current) {
-      setMarginTop(footerRef.current.clientHeight - 10)
-    }
-  }, [height, width, footerRef.current, isFooterFold])
 
   return (
     <Page title="打帳單" className="ui-root">
@@ -588,34 +350,14 @@ function OrderCreate() {
             isLineBinded,
             setIsLineBinded,
             bonusRewardWithLINE,
-            shortcut,
-            handleShortcutChange,
-            setServiceAlready,
-            setProductAlready,
-            setCouponAlready,
-            setMembershipAlready,
-            serviceAlready,
-            productAlready,
-            couponAlready,
-            membershipAlready,
-            shortBtnDisable,
-            comboActive,
             services,
             setServices,
-            sData,
-            setSData,
             sells,
             setSells,
-            pData,
-            setPData,
             couponSells,
             setCouponSells,
-            tData,
-            setTData,
             memberCardSells,
             setMemberCardSells,
-            mData,
-            setMData,
             memberShipCardActive,
             disablePendingOrder
           }}

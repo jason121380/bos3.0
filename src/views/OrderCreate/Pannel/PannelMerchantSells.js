@@ -14,13 +14,8 @@ const styles = {
 function PannelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset }) {
   const {
     handleBillChange, sells, setSells, bill,
-    pData, setPData
   } = React.useContext(billContext)
   const [focusRow, setFocusRow] = React.useState(0)
-
-  const getData = value => {
-    !pData.length && setPData(value)
-  }
 
   React.useEffect(() => {
     if (expanded) {
@@ -94,21 +89,20 @@ function PannelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset })
     const newSells = cloneDeep(sells)
     newSells[index][key] = value
     setSells(newSells)
-    if (key === 'price' || key === 'count' || key === 'sellerId') {
-      handleBillChange({
-        key: 'productOrders',
-        value: newSells
-          .filter(d => d.count > 0)
-          .map(data => ({
-            sellerId: data.sellerId,
-            productId: data.productId,
-            price: data.price,
-            count: data.count,
-            isLocked: data.isLocked,
-            thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
-          })),
-      })
-    }
+    // 呼叫端（MerchantSells）只會傳 sellerId／price／count，原本的 key 判斷永遠成立
+    handleBillChange({
+      key: 'productOrders',
+      value: newSells
+        .filter(d => d.count > 0)
+        .map(data => ({
+          sellerId: data.sellerId,
+          productId: data.productId,
+          price: data.price,
+          count: data.count,
+          isLocked: data.isLocked,
+          thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
+        })),
+    })
   }
   function handleAddSells() {
     const newSells = cloneDeep(sells)
@@ -193,7 +187,6 @@ function PannelMerchantSells({ expanded, onPanelClick, thirdPartTicket, reset })
               sells={sells}
               productLength={sells.length}
               thirdPartTicket={thirdPartTicket}
-              getData={getData}
             />
           ))}
         </div>

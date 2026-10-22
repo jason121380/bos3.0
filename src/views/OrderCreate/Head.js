@@ -97,11 +97,7 @@ export default function Head() {
   // 會員卡的State
   const [membershipPurchase, setMembershipPurchase] = useState([])
 
-  const [checkoutWithoutCustomer, setCheckoutWithoutCustomer] = useState(
-    stayInCheckoutWithoutCustomer !== null || stayInCheckoutWithoutCustomer !== undefined
-      ? stayInCheckoutWithoutCustomer
-      : false
-  )
+  const [checkoutWithoutCustomer, setCheckoutWithoutCustomer] = useState(stayInCheckoutWithoutCustomer)
   const [orderWithoutCustomer, setOrderWithoutCustomer] = useState(false)
   const orderWithoutCustomerSetting = useFetchOrderWithoutCustomerSetting()
   const getIsAutoSetPreferDesignerForOrderCreate = useFetchGetIsAutoSetPreferDesignerForOrderCreate()
@@ -265,7 +261,7 @@ export default function Head() {
       handleBillChange({ key: 'withoutCustomerData', value: false })
       setMembershipPurchase([])
       setIsLineBinded(false)
-    } else if (!checkoutWithoutCustomer) {
+    } else {
       // checked => 不留客資
       localStorage.setItem('stayInCheckoutWithoutCustomer', true)
       setCheckoutWithoutCustomer(!checkoutWithoutCustomer)
@@ -370,18 +366,25 @@ export default function Head() {
     setOpenModal(true)
   }
 
+  // 從新增客戶彈窗（完整表單）新增成功：帳單與顧客欄帶入新顧客
+  const handleCustomerAdded = added => {
+    setBill(
+      produce(draft => {
+        draft.customerId = added.id
+        draft.customerCellphone = added.cellphone
+      })
+    )
+    setValue(added.cellphone)
+  }
+
   const handleEditClose = () => {
     setOpenModal(false)
     setCustomer(emptyCustomerForm())
   }
 
   const handleFocus = event => {
-    let setted = false
-    if (!setted) {
-      setFocus(event.target.name)
-      setted = true
-      event.target.focus()
-    }
+    setFocus(event.target.name)
+    event.target.focus()
   }
 
   const handleDesignateBtnKeyDown = e => {
@@ -465,7 +468,8 @@ export default function Head() {
                 labelClassName="font-bold"
                 label="鎖定日期"
                 onChange={handleLockDate}
-                checked={JSON.parse(localStorage.getItem('lockDate'))}
+                // 一律給布林：沒鎖定時 localStorage 是 null，原本讓勾選框變成非受控，23:59 自動解除後畫面仍顯示勾選
+                checked={!!JSON.parse(localStorage.getItem('lockDate'))}
               />
             )}
           </div>
@@ -484,11 +488,7 @@ export default function Head() {
                   clearOnBlur={true}
                   onFocus={handleFocus}
                   onChange={(event, newValue) => {
-                    if (typeof newValue === 'string') {
-                      setValue(newValue)
-                      setBill(produce(draft => { draft.customerId = undefined; draft.customerCellphone = newValue }))
-                      designerRef.current.focus()
-                    } else if (newValue && newValue.inputValue) {
+                    if (newValue && newValue.inputValue) {
                       setValue(newValue.inputValue)
                       setBill(produce(draft => { draft.customerId = undefined; draft.customerCellphone = newValue.inputValue }))
                       setIsLineBinded(false)
@@ -499,7 +499,7 @@ export default function Head() {
                       setValue(newValue)
                       designerRef.current.focus()
                       getCustomerLazy({ variables: { id: newValue.id } })
-                    } else if (newValue === null) {
+                    } else {
                       setBill(produce(draft => { draft.customerId = undefined; draft.customerCellphone = '' }))
                       setKeyCode(null); setValue(''); setTmpCustomerKeyword(''); setMembershipPurchase([]); setIsLineBinded(false)
                       setCustomer({ customerId: '', category: '', name: '', cellphone: '', birthday: { year: '', month: '', day: '' }, OfficialBrandMerchantId: localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null, gender: 'MALE', no: '', nickName: '', PreferDesignerId: '', email: '', address: '', lineId: '', remark: '' })
@@ -642,6 +642,7 @@ export default function Head() {
           setCustomer={setCustomer}
           setBill={setBill}
           customerInModal={customerInModal}
+          onCustomerAdded={handleCustomerAdded}
         />
       )}
     </Card>

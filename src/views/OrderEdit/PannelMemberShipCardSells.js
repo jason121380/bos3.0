@@ -147,16 +147,16 @@ const PannelMemberShipCardSells = ({ thirdPartTicket, expanded, setExpanded }) =
   }
   function handleMerchantSellsChange({ key, value, index }) {
     const newSells = cloneDeep(memberCardSells)
-    newSells[index][key] = value === NaN ? "Invalid Date" : value
+    newSells[index][key] = value
     setMemberCardSells(newSells)
-    if (key === 'price' || key === 'date' || key === 'sellerId' || key === 'expiryDate' || key === 'remark') {
+    if (key === 'price' || key === 'sellerId' || key === 'expiryDate' || key === 'remark') {
       handleBillChange({
         key: 'membershipOrders',
         value: newSells.map(data => ({
           sellerId: data.sellerId,
           membershipUUID: data.membershipUUID,
           price: data.price,
-          expiryDate: data.expiryDate === NaN || data.expiryDate === 'Invalid Date' || data.expiryDate === "Early Date" || data.expiryDate === "Late Date" ? 'Invalid Date' : data.expiryDate,
+          expiryDate: data.expiryDate,
           thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
           remark: data.remark,
         })),

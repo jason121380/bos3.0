@@ -427,6 +427,21 @@ describe('使用預收卡', () => {
     expect(useTicketOrders).toEqual([{ customerTicketId: 'tr-1', useTicketOrderHelpers: [] }])
   })
 
+  it('刪除列：刪掉的預收卡不再使用，也不送出', async () => {
+    const { calls } = await prepare()
+    await pickRecord('護髮五次卡')
+    fireEvent.click(button('新增項目', screen.getByTestId('panelCouponUse').parentElement))
+    await wait(() => expect(couponInputs()).toHaveLength(2))
+    await pickRecord('剪髮十次卡', 1)
+    await screen.findByPlaceholderText('助理-洗髮')
+    await wait(() => expect(summaryValue('使用預收卡')).toHaveTextContent('1,700'))
+    fireEvent.click(button('刪除此列', screen.getByTestId('panelCouponUse').parentElement))
+    await wait(() => expect(couponInputs()).toHaveLength(1))
+    await wait(() => expect(summaryValue('使用預收卡')).toHaveTextContent('1,000'))
+    const { useTicketOrders } = await checkout(calls)
+    expect(useTicketOrders).toEqual([{ customerTicketId: 'tr-3', useTicketOrderHelpers: [] }])
+  })
+
   it('收合時標題顯示已使用張數；不留客資時不顯示使用預收卡', async () => {
     await prepare()
     await pickRecord('護髮五次卡')

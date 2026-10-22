@@ -54,12 +54,11 @@ function PaymentCustomerWallet(props, ref) {
     setWalletPayBalanceForDetail(usableCustomerWallet - bill.walletPay)
   }, [bill.walletPay, setWalletPayBalanceForDetail])
 
+  // 本元件只在帳單有顧客時掛上（Payment.js），customerId 一定有值
   useEffect(() => {
-    if (customerId) {
-      useFetchCustomerWalletRef.current({
-        customerId,
-      })
-    }
+    useFetchCustomerWalletRef.current({
+      customerId,
+    })
   }, [customerId])
 
   useEffect(() => {
@@ -89,9 +88,7 @@ function PaymentCustomerWallet(props, ref) {
     })
   }
   useEffect(() => {
-    if (customerId) {
-      initWalletPay()
-    }
+    initWalletPay()
   }, [customerId])
 
   const servicesWithThirdPartyCount = []
@@ -160,11 +157,7 @@ function PaymentCustomerWallet(props, ref) {
     setCustomerWallet(usableCustomerWallet)
   }, [usableCustomerWallet, setCustomerWallet])
   const handleFocus = event => {
-    let called = false
-    if (!called) {
-      called = true
-      event.target.focus()
-    }
+    event.target.focus()
   }
 
   const handleCheckWalletPay = () => {

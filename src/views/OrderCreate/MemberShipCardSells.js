@@ -42,11 +42,10 @@ const MemberShipCardSells = ({
   sells,
   productLength,
   thirdPartTicket,
-  getData
 }) => {
   const techingModeContext = useContext(TeachingModeContext);
   const { teachingMode } = techingModeContext;
-  const { bill, setMembershipAlready } = React.useContext(billContext)
+  const { bill } = React.useContext(billContext)
 
   const thirdPartyCouponsData = useFetchThirdPartysForCreateOrder();
 
@@ -70,12 +69,8 @@ const MemberShipCardSells = ({
   }, [expanded, focusFirstField]);
 
   const handleFocus = ({ event, field }) => {
-    let setted = false;
-    if (!setted) {
-      setFocus(field);
-      setted = true;
-      event.target.focus();
-    }
+    setFocus(field);
+    event.target.focus();
     if (field === "price" || field === "count") {
       event.target.select();
     }
@@ -117,8 +112,6 @@ const MemberShipCardSells = ({
 
   const checkMessage = (msg) => {
     switch (msg) {
-      case NaN:
-        return "時間有誤";
       case "invalidDate":
         return "時間有誤";
       case "minDate":
@@ -169,8 +162,6 @@ const MemberShipCardSells = ({
             ref={productRef}
             autoFocus={focus === "product"}
             onFocus={(event) => handleFocus({ event, field: "product" })}
-            setMembershipAlready={setMembershipAlready}
-            getData={getData}
             onKeyDown={(event) => {
               if (event.key === 'Enter') {
                 if (sellsItem.isLocked !== 'FALSE' && sellsItem.expiryDate === null) {
@@ -212,7 +203,7 @@ const MemberShipCardSells = ({
             <Field label="價格" className={styles.priceField}>
               <Input
                 value={sellsItem.price}
-                ref={dateRef}
+                ref={priceRef}
                 data-testid={`memberShipCardSells-${index}-price`}
                 onChange={(value) => {
                   setFocus("price");
@@ -249,7 +240,11 @@ const MemberShipCardSells = ({
                   slotProps={{
                     textField: {
                       onFocus: event => handleFocus({ event, field: "date" }),
-                      onKeyDown: event => handleKeyDown({ event, nextField: "checkbox" }),
+                      onKeyDown: event => {
+                        // Enter 跳到永久會籍：preventDefault 讓日期選擇器不打開月曆
+                        if (event.key === 'Enter') event.preventDefault()
+                        handleKeyDown({ event, nextField: "checkbox" })
+                      },
                       helperText: checkMessage(dateError)
                     },
                   }}
