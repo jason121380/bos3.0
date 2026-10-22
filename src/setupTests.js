@@ -2,6 +2,33 @@ import '@testing-library/jest-dom/extend-expect'
 import '@testing-library/jest-dom'
 import 'mutationobserver-shim'
 
+// ========== 測試中一律不得連網（Jason 2026/10/22：不可以動到真的資料庫） ==========
+// CRA 的 jsdom 環境會補上真的 fetch／XMLHttpRequest，沒走 testkit 的測試若不小心呼叫到，就會真的連到後端。
+// 這裡在每個測試檔開始前把三種出口都換掉：fetch 一律回傳失敗、XMLHttpRequest 送出即拋錯、WebSocket 建立即拋錯，
+// 並把被擋下的網址記在 global.__blockedNetwork__ 供測試檢查。testkit 的 blockNetwork() 之後會再把 fetch 換成回傳空內容的假版本，同樣不連網。
+// 用一般函式而非 jest.fn：CRA 的 resetMocks 會在每個測試前清掉 jest.fn 的實作。
+global.__blockedNetwork__ = []
+const denyNetwork = (kind, url) => {
+  global.__blockedNetwork__.push(`${kind} ${url}`)
+  return new Error(`測試中禁止連網（${kind}）：${url}`)
+}
+const deniedFetch = url => Promise.reject(denyNetwork('fetch', url))
+window.fetch = deniedFetch
+global.fetch = deniedFetch
+const xhrOpen = window.XMLHttpRequest.prototype.open
+window.XMLHttpRequest.prototype.open = function (method, url, ...rest) {
+  this.__blockedUrl__ = url
+  return xhrOpen.call(this, method, url, ...rest)
+}
+window.XMLHttpRequest.prototype.send = function () {
+  throw denyNetwork('XMLHttpRequest', this.__blockedUrl__)
+}
+const DeniedWebSocket = function (url) {
+  throw denyNetwork('WebSocket', url)
+}
+window.WebSocket = DeniedWebSocket
+global.WebSocket = DeniedWebSocket
+
 // import { configure } from 'enzyme'
 // import Adapter from 'enzyme-adapter-react-16'
 

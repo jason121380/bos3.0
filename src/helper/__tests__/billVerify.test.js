@@ -56,6 +56,11 @@ describe('handleTidyBill：送出前整理帳單', () => {
     expect(handleTidyBill(baseBill()).customerCellphone).toBe('')
   })
 
+  it('沒有選顧客（customerId 未設定）時保留手打的電話', () => {
+    const { customerId, ...walkIn } = baseBill()
+    expect(handleTidyBill(walkIn).customerCellphone).toBe('0912345678')
+  })
+
   it('不建立顧客資料的帳單不可動到紅利點數', () => {
     const tidy = handleTidyBill({ ...baseBill(), withoutCustomerData: true })
     expect([tidy.bonusDecount, tidy.bonusDeposit, tidy.bonusUsed]).toEqual([0, 0, 0])
