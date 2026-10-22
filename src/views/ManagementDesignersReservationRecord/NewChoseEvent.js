@@ -281,7 +281,8 @@ export default function NewChoseEvent({
           </RouterLink>
 
           {editOrder.status !== '預約成功' && editOrder.status !== '已完成' && (
-            <button type="button" className={fieldRow} onClick={() => handleAcceptBooking(true)}>
+            // 送出中停用，避免重複送出（原本沒有停用；Jason 2026/10/22 fix all）
+            <button type="button" className={fieldRow} disabled={pending} onClick={() => handleAcceptBooking(true)}>
               <Avatar className="bg-accent/8 text-accent">
                 <CheckIcon />
               </Avatar>
@@ -289,7 +290,7 @@ export default function NewChoseEvent({
             </button>
           )}
           {editOrder.status !== '設計師已取消' && (
-            <button type="button" className={fieldRow} onClick={() => cancelPasswordUsing ? openPassworDialog('cancel') : handleAcceptBooking(false)}>
+            <button type="button" className={fieldRow} disabled={pending} onClick={() => cancelPasswordUsing ? openPassworDialog('cancel') : handleAcceptBooking(false)}>
               <Avatar className="bg-accent/8 text-accent">
                 <CancelIcon />
               </Avatar>
@@ -323,6 +324,8 @@ export default function NewChoseEvent({
         handleOnCancel={closePassworDialog}
         handleOnConfirm={() => handleAcceptBooking(false)}
         isLoading={btnDisabled}
+        // 「取消」只在送出中停用（原本與「確認」共用 btnDisabled，後端沒回 id 時一直停用、關不掉；Jason 2026/10/22 fix all）
+        cancelDisabled={pending}
         inputOnChange={value => setPassword(value)}
       />
     </div>

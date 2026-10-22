@@ -13,7 +13,9 @@ const PannelMemberShipCardSells = ({ thirdPartTicket }) => {
   const [sells, setSells] = React.useState([]);
   const membershipOrder = useFetchUseMembershipOrder({ id: orderId });
   const [expanded, setExpanded] = React.useState(false);
-  const [focusRow, setFocusRow] = React.useState(0)
+  // 要聚焦的列：開頁時 -1（沒有）。帶入既有會員卡時會自動展開區塊，原本初始值 0 讓第 1 列的「展開＋本列要聚焦」effect
+  // 一展開就把焦點移到服務人員欄（掛單詳細還會往下捲）；改為使用者展開區塊、新增／刪除列、換列時才指定（比照打帳單；Jason 2026/10/22 fix all）
+  const [focusRow, setFocusRow] = React.useState(-1)
 
 
   React.useEffect(() => {
@@ -159,6 +161,8 @@ const PannelMemberShipCardSells = ({ thirdPartTicket }) => {
   }
   const handleAccordionClick = () => {
     setExpanded((val) => !val);
+    // 使用者展開：還沒指定列時聚焦第 1 列
+    setFocusRow(row => (row < 0 ? 0 : row));
   };
   const handleChangeFocusRow = index => {
     if (index < sells.length) {

@@ -223,3 +223,25 @@ describe('掛單詳細：店販列 Enter 跳欄', () => {
     expect(products().getAllByPlaceholderText('第三方卡券')).toHaveLength(2)
   })
 })
+// 已修正（Jason 2026/10/22 fix all）：帶入既有店販時自動展開區塊會觸發第 1 列「展開＋本列要聚焦」的 effect，開頁焦點就跳進這一區
+// （與會員卡銷售同一個原因；會員卡修好後焦點改落在這裡）。改為帶入時沒有要聚焦的列（focusRow -1），使用者展開／新增／換列時才聚焦
+// 掛單詳細的店販列另補「使用者自己點了本列欄位時不搶焦點」（比照帳單詳細）
+describe('掛單詳細：店販帶入時不自動聚焦', () => {
+  it('開頁帶入店販：焦點不在店販區塊；使用者收合再展開時游標到第 1 列銷售人員', async () => {
+    await setup()
+    expect(panelHeader('店販銷售')).toHaveAttribute('aria-expanded', 'true')
+    const seller = products().getAllByPlaceholderText('服務人員姓名/編號')[0]
+    expect(seller.closest('[data-state]').contains(document.activeElement)).toBe(false)
+    fireEvent.click(panelHeader('店販銷售'))
+    await wait(() => expect(panelHeader('店販銷售')).toHaveAttribute('aria-expanded', 'false'))
+    fireEvent.click(panelHeader('店販銷售'))
+    await expectFocused(products().getAllByPlaceholderText('服務人員姓名/編號')[0])
+  })
+
+  it('開頁後直接點第 1 列的價格：游標留在價格', async () => {
+    const page = await setup()
+    focusOn(rowInput(0, 'price'))
+    await page.settle()
+    expect(document.activeElement).toBe(rowInput(0, 'price'))
+  })
+})

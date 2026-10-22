@@ -298,6 +298,30 @@ describe('帳單詳細：會員卡游標', () => {
   })
 })
 
+// 已修正（Jason 2026/10/22 fix all）：有會員卡的帳單開頁時，帶入資料自動展開區塊會觸發第 1 列「展開＋本列要聚焦」的 effect，
+// 焦點落在會員卡的服務人員欄。改為帶入既有資料時沒有要聚焦的列（focusRow -1）；使用者展開區塊、新增列、Enter 換列時才聚焦（比照打帳單）
+describe('帳單詳細：會員卡帶入時不自動聚焦', () => {
+  it('開頁帶入會員卡：焦點不在會員卡列；使用者收合再展開時游標到第 1 列服務人員', async () => {
+    const page = open(withCards(membershipOrder(MEMBERSHIP), membershipOrder(MEMBERSHIP)))
+    await pageReady(page)
+    expect(membershipHeader()).toHaveAttribute('aria-expanded', 'true')
+    expect(rowEl(0).contains(document.activeElement)).toBe(false)
+    expect(rowEl(1).contains(document.activeElement)).toBe(false)
+    fireEvent.click(membershipHeader())
+    await wait(() => expect(membershipHeader()).toHaveAttribute('aria-expanded', 'false'))
+    fireEvent.click(membershipHeader())
+    await focused(sellerOf(0))
+  })
+
+  it('開頁後直接點第 1 列的價格：游標留在價格', async () => {
+    const page = open(withCards(membershipOrder(MEMBERSHIP)))
+    await pageReady(page)
+    act(() => priceOf(0).focus())
+    await page.settle()
+    expect(document.activeElement).toBe(priceOf(0))
+  })
+})
+
 describe('帳單詳細：會員卡鍵盤操作', () => {
   it('服務人員 → 會員卡 → 價格 → 到期日 → 永久會籍 → 第三方卡券 → 備註 → 下一列（最後一列新增一列）', async () => {
     const page = open(withCards(membershipOrder(MEMBERSHIP), membershipOrder(LIFETIME, { expiryDate: null }), membershipOrder(LOCKED_YEAR)))

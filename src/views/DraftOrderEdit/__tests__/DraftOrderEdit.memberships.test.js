@@ -306,6 +306,29 @@ describe('掛單詳細：會員卡列的新增、清除與刪除', () => {
   })
 })
 
+// 已修正（Jason 2026/10/22 fix all）：有會員卡的掛單開頁時，帶入資料自動展開區塊會觸發第 1 列「展開＋本列要聚焦」的 effect，
+// 焦點落在會員卡的銷售人員欄、頁面自動往下捲。改為帶入既有資料時沒有要聚焦的列（focusRow -1）；使用者展開區塊、新增列、
+// Enter 換列時才聚焦（比照打帳單）。使用者直接點本列其他欄位時不搶焦點（比照帳單詳細）
+describe('掛單詳細：會員卡帶入時不自動聚焦', () => {
+  it('開頁帶入會員卡：焦點不在會員卡區塊；使用者收合再展開時游標到第 1 列銷售人員', async () => {
+    await setup()
+    expect(panelHeader('會員卡銷售')).toHaveAttribute('aria-expanded', 'true')
+    expect(sellerInput(0)).toHaveValue('Amy-01')
+    expect(sellerInput(0).closest('[data-state]').contains(document.activeElement)).toBe(false)
+    fireEvent.click(panelHeader('會員卡銷售'))
+    await wait(() => expect(panelHeader('會員卡銷售')).toHaveAttribute('aria-expanded', 'false'))
+    fireEvent.click(panelHeader('會員卡銷售'))
+    await expectFocused(sellerInput(0))
+  })
+
+  it('開頁後直接點第 1 列的價格：游標留在價格', async () => {
+    const page = await setup()
+    focusOn(field('價格'))
+    await page.settle()
+    expect(document.activeElement).toBe(field('價格'))
+  })
+})
+
 describe('掛單詳細：會員卡列 Enter 跳欄', () => {
   it('銷售人員 → 會員卡 → 價格 → 到期日；永久會籍 → 第三方卡券 → 備註 → 自動新增下一列', async () => {
     await setup({ thirdPartTicket: true })

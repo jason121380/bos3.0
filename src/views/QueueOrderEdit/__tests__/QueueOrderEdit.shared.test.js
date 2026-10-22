@@ -133,3 +133,22 @@ describe('重新開單：紅利點數折抵上限', () => {
     expect(callsOf(calls, 'FETCH_CREATE_ORDER')[0].variables.input.bonusDecount).toBe(300)
   })
 })
+
+// 已修正（Jason 2026/10/22 fix all）：手機底部固定列原本一律讓出 56px 給底部導覽列，但重新開單的路由不顯示底部導覽列
+// （layouts/Dashboard/MobileNav 的 FLOW），列下方露出頁面內容；改為貼齊畫面底部（只讓出 iPhone 安全區）
+describe('重新開單：底部固定列貼齊畫面底部', () => {
+  it('沒有底部導覽列：固定列不讓出 56px', async () => {
+    setup()
+    await screen.findByText(/重新開單 \(/)
+    const bar = screen.getByRole('button', { name: '金額彙總明細' }).closest('.fixed')
+    expect(bar.className).not.toMatch(/56px/)
+    expect(bar.className).toMatch(/(^| )bottom-0( |$)/)
+  })
+
+  // 已修正（Jason 2026/10/22 fix all）：「重試」下方的停用原因（處理中，請稍候）會被底部固定列遮住；內容區下方留白比照掛單詳細加高（h-12 → h-16）
+  it('內容區下方留白足以露出「重試」下方的停用原因（比照掛單詳細 h-16）', async () => {
+    setup()
+    await screen.findByText(/重新開單 \(/)
+    expect(screen.getByTestId('checkout').closest('.grid').parentElement.lastElementChild).toHaveClass('h-16')
+  })
+})

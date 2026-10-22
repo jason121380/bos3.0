@@ -46,3 +46,12 @@ describe('打帳單 金額彙總（手機收進底部固定列）', () => {
     expect(document.getElementById('order-summary-details')).toBeNull()
   })
 })
+
+// 打帳單（/order/create）是底部導覽列的分頁之一，手機有底部導覽列：固定列照舊讓出 56px＋安全區（帳單詳細等三個編輯頁才貼齊底部）
+describe('打帳單 底部固定列位置', () => {
+  it('讓出底部導覽列的 56px', () => {
+    setup()
+    const bar = screen.getByRole('button', { name: '金額彙總明細' }).closest('.fixed')
+    expect(bar).toHaveClass('bottom-[calc(56px+env(safe-area-inset-bottom))]')
+  })
+})

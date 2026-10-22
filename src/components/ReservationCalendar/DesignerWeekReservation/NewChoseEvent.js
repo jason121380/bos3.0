@@ -242,7 +242,8 @@ export default function NewChoseEvent({
           </RouterLink>
 
           {editOrder.status !== '預約成功' && editOrder.status !== '已完成' && (
-            <button type="button" onClick={() => handleAcceptBooking(true)} className={rowClass}>
+            // 送出中停用，避免重複送出（原本沒有停用；Jason 2026/10/22 fix all）
+            <button type="button" onClick={() => handleAcceptBooking(true)} disabled={pending} className={rowClass}>
               <AvatarSlot>
                 <Avatar className="bg-accent/8 text-accent">
                   <CheckIcon />
@@ -252,7 +253,7 @@ export default function NewChoseEvent({
             </button>
           )}
           {editOrder.status !== '設計師已取消' && (
-            <button type="button" onClick={() => handleAcceptBooking(false)} className={rowClass}>
+            <button type="button" onClick={() => handleAcceptBooking(false)} disabled={pending} className={rowClass}>
               <AvatarSlot>
                 <Avatar className="bg-accent/8 text-accent">
                   <CancelIcon />

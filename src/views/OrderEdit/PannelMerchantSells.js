@@ -16,17 +16,14 @@ export default function PannelMerchantSells({ thirdPartTicket, expanded, setExpa
   } = React.useContext(billContext)
   const productOrder = useFetchProductOrder({ id: orderId })
   const isFirstLoad = useOncePerOrder()
-  const [focusRow, setFocusRow] = React.useState(0)
+  // 要聚焦的列：開頁時 -1（沒有）。帶入既有資料時會自動展開區塊，原本「展開就設第 1 列」的 effect（[expanded]）讓第 1 列的
+  // 「展開＋本列要聚焦」effect 一展開就搶走焦點；改為使用者按標題展開、新增／刪除列、換列時才指定（比照打帳單；Jason 2026/10/22 fix all）
+  const [focusRow, setFocusRow] = React.useState(-1)
   
   const getData = value => {
     !pData.length && setPData(value)
   }
 
-  React.useEffect(() => {
-    if (expanded) {
-      setFocusRow(0)
-    }
-  }, [expanded])
   React.useEffect(() => {
     // 同一張帳單只帶入一次（見 useOncePerOrder）
     if (!productOrder.loading && productOrder.data && isFirstLoad(orderId)) {
@@ -164,6 +161,8 @@ export default function PannelMerchantSells({ thirdPartTicket, expanded, setExpa
   }
   const handleAccordionClick = () => {
     setExpanded(val => !val)
+    // 使用者按標題展開時聚焦第 1 列（原本由 [expanded] effect 設定，帶入資料自動展開時也會觸發）
+    setFocusRow(0)
   }
   const handleChangeFocusRow = index => {
     if (index < sells.length) {

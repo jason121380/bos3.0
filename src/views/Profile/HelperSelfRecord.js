@@ -23,20 +23,22 @@ function OrderRecord({
 
   useEffect(() => {
     // 數字開頭的編號依自然排序（原本 a.user.designerNo - b.user.designerNo，「3A」這類編號相減得 NaN、排序失效；Jason 2026/10/22 fix all）
+    // designerNo 為 null 視為空代號（原本第二個 filter 讀 null.length 整頁拋錯；Jason 2026/10/22 fix all）
+    const noOf = data => data.user.designerNo ?? ''
     const sortByNumber = helperReport
-      .filter(data => !isNaN(parseInt(data.user.designerNo, 10)) && data.user.designerNo.length > 0)
+      .filter(data => !isNaN(parseInt(noOf(data), 10)) && noOf(data).length > 0)
       .sort((a, b) => compareNo(a.user.designerNo, b.user.designerNo))
     const sortByCharacter = helperReport
-      .filter(data => isNaN(parseInt(data.user.designerNo, 10)) && data.user.designerNo.length > 0)
+      .filter(data => isNaN(parseInt(noOf(data), 10)) && noOf(data).length > 0)
       .sort((a, b) =>
         a.user.designerNo.localeCompare(b.user.designerNo, 'en', { sensitivity: 'base' })
       )
     const sortByNickName = helperReport
-      .filter(data => data.user.designerNo === '' && data.user.nickName !== null)
+      .filter(data => noOf(data) === '' && data.user.nickName !== null)
       .sort((a, b) => a.user.nickName.localeCompare(b.user.nickName, 'en', { sensitivity: 'base' }))
 
     const sortByName = helperReport
-      .filter(data => data.user.designerNo === '' && data.user.nickName === null)
+      .filter(data => noOf(data) === '' && data.user.nickName === null)
       .sort((a, b) => a.user.name.localeCompare(b.user.name, 'en', { sensitivity: 'base' }))
 
     const sorted = [...sortByNumber, ...sortByCharacter, ...sortByNickName, ...sortByName]

@@ -91,10 +91,16 @@ export function EditSummaryCard({ details, performanceTotal, cashDue, actions, c
 // 左側讓出側欄（lg 以上依 layouts/Dashboard 提供的 --sidebar-w：展開 264px、收合 0）；手機讓出底部導覽列（56px＋iPhone 安全區——
 // PWA 全螢幕時導覽列會加高，只讓 56px 會被蓋住）；列印時不顯示。手機版（< 640px）由左側展開鈕往上展開完整明細（純畫面開合）。
 // detailsId：展開區的 id（aria-controls 指向它），各頁不同
-export function StickySummaryBar({ detailsId, details, performanceTotal, cashDue }) {
+// aboveTabBar：該頁手機是否顯示底部導覽列。只有打帳單（導覽列的分頁之一）有；帳單詳細／掛單詳細／重新開單的路由不顯示導覽列
+// （layouts/Dashboard/MobileNav 的 FLOW），傳 false 讓固定列貼齊畫面底部、只以下內距讓出 iPhone 安全區
+// （原本一律讓出 56px，列下方露出頁面內容；Jason 2026/10/22 fix all）
+export function StickySummaryBar({ detailsId, details, performanceTotal, cashDue, aboveTabBar = true }) {
   const [summaryOpen, setSummaryOpen] = useState(false)
+  const position = aboveTabBar
+    ? 'bottom-[calc(56px+env(safe-area-inset-bottom))] py-2'
+    : 'bottom-0 pt-2 pb-[calc(8px+env(safe-area-inset-bottom))]'
   return (
-    <div className="ui-root fixed inset-x-0 bottom-[calc(56px+env(safe-area-inset-bottom))] z-[1050] border-0 border-t border-solid border-border bg-background px-4 py-2 shadow-[0_-2px_8px_rgba(0,0,0,0.06)] print:hidden lg:bottom-0 lg:left-[var(--sidebar-w,264px)]">
+    <div className={`ui-root fixed inset-x-0 ${position} z-[1050] border-0 border-t border-solid border-border bg-background px-4 shadow-[0_-2px_8px_rgba(0,0,0,0.06)] print:hidden lg:bottom-0 lg:left-[var(--sidebar-w,264px)]`}>
       {summaryOpen && (
         <div id={detailsId} className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto border-0 border-b border-solid border-border pb-2 sm:hidden">
           <p className="m-0 pb-1 pt-1 text-heading font-bold text-text">金額彙總</p>
