@@ -38,12 +38,8 @@ const SaleStatusEditModal = ({
 }
 
 SaleStatusEditModal.propTypes = {
-  onClose: PropTypes.func,
+  onClose: PropTypes.func.isRequired,
   saleStatus: PropTypes.bool
-}
-
-SaleStatusEditModal.defaultProps = {
-  onClose: () => { },
 }
 
 export default SaleStatusEditModal

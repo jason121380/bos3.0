@@ -3,11 +3,10 @@
 import ManagementTable from 'components/ManagementTable'
 import { TableBody, TableCell, TableHead, TableRow } from 'ui/table'
 import idx from 'idx'
+import { maskCustomerForExport } from 'helper/exportCustomerMask'
 import format from 'date-fns/format'
-import { useState, useEffect, useRef } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
+import { useState, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { CSVLink } from "react-csv";
 import { Button } from 'ui/button'
 
 export default function UsagedResults({
@@ -17,11 +16,10 @@ export default function UsagedResults({
   onChangeRowsPerPage,
   page,
   results,
-  pagenationLabel,
+  isCustomerDataMarked = true,
   roundDecimal,
   ...rest
 }) {
-  const pageRef = useRef(null)
   const [csvData, setCsvData] = useState([])
   const totalPrice = () => {
     const price = results.reduce((acc, cur) => acc + roundDecimal(cur.price), 0)
@@ -34,8 +32,12 @@ export default function UsagedResults({
       csvData.push({
         '使用卡券之帳單編號/時間': `#${data.usageOrder.no}_${format(data.usageOrder.date, 'yyyy/MM/dd')}`,
         '購買卡券之帳單編號/時間': `#${data.order.no}_${format(data.order.date, 'yyyy/MM/dd')}`,
-        '客戶': `${data.order.customer.name} ${data.order.customer.cellphone}`,
-        '設計師': `${data.order.designer.name} ${data.order.designer.designerNo}`,
+        // 依店家設定遮罩姓名與手機（helper/exportCustomerMask，與帳單列表相同）
+        '客戶': isCustomerDataMarked
+          ? maskCustomerForExport(data.order.customer.name, data.order.customer.cellphone)
+          : `${data.order.customer.name} ${data.order.customer.cellphone}`,
+        // 與畫面「設計師」欄一致：使用卡券那張帳單的設計師
+        '設計師': `${idx(data, _ => _.usageOrder.designer.name) || ''} ${idx(data, _ => _.usageOrder.designer.designerNo) || ''}`,
         '卡券代號': `${data.no}`,
         '卡券使用': `${data.service.name}`,
         '卡券使用金額': `${roundDecimal(data.price)}`
@@ -51,10 +53,7 @@ export default function UsagedResults({
       '卡券使用金額': totalPrice()
     })
     setCsvData(csvData)
-    if (pageRef.current) {
-      pagenationLabel(pageRef.current)
-    }
-  }, [results, pageRef.current])
+  }, [results, isCustomerDataMarked])
 
   return (
     <div {...rest}>

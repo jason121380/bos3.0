@@ -92,22 +92,6 @@ function AboutDeduction({ className, deductionItem, onChange, ServiceDeductionIt
     })
   }
 
-  const handleDeductionName = (type, event, index) => {
-    const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
-    newServiceDeductionItems.forEach(data => {
-      if (data.type === type) {
-        data.itemSettings.forEach((data2, index2) => {
-          if (index === index2) {
-            data2.name = event.target.value
-          }
-        })
-      }
-    })
-    onChange({
-      key: 'ServiceDeductionItems',
-      event: { target: { value: newServiceDeductionItems } },
-    })
-  }
   const handleDeductionTypeChange = (type, event, index) => {
     const newServiceDeductionItems = cloneDeep(ServiceDeductionItems)
     newServiceDeductionItems.forEach(data => {

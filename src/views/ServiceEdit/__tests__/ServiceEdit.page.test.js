@@ -147,7 +147,7 @@ describe('編輯服務項目：帶入原資料與儲存', () => {
     expect(controlByLabel('名稱')).toHaveValue('精緻剪髮')
     expect(controlByLabel('價格')).toHaveValue(1000)
     expect(selectedText(controlByLabel('服務類別'))).toBe('剪髮')
-    expect(selectedText(controlByLabel('打帳單是否能更改預設價格'))).toBe('不可更改')
+    expect(selectedText(controlByLabel('打帳單是否能更改預設價格'))).toBe('依系統參數設定')
     expect(checkboxByLabel('特殊抽成')).toBeChecked()
     expect(controlByLabel('%數')).toHaveValue(5)
     expect(selectedText(controlByLabel('綁定第三方卡券'))).toBe('團購券')
@@ -155,15 +155,14 @@ describe('編輯服務項目：帶入原資料與儲存', () => {
     expect(callsOf(calls, 'service')[0].variables).toEqual({ serviceId: 's1' })
   })
 
-  // 已知缺口（待 Jason 決定）：編輯頁的鎖價帶入 service.isLocked（ServiceEdit/index.js:191），
-  // 但卡券編輯與商品編輯帶入的是 isLockedOriginalValue（店家原本的設定值，可能是 UNSET「依系統參數設定」）。
-  // 若後端的 isLocked 是套用系統參數後的結果，編輯服務後儲存會把「依系統參數設定」改成固定值。這裡鎖住目前行為。
-  it('鎖價帶入 isLocked（不是 isLockedOriginalValue），原樣送出', async () => {
+  // Jason 2026/10/22：比照卡券編輯與商品編輯，鎖價帶入 isLockedOriginalValue（店家原本的設定值，可能是 UNSET「依系統參數設定」），
+  // 不帶套用系統參數後的 isLocked，避免編輯後儲存把「依系統參數設定」改成固定值
+  it('鎖價帶入 isLockedOriginalValue（不是 isLocked），原樣送出', async () => {
     const { calls, settle } = setup()
     await settle()
     fireEvent.click(button('儲存'))
     await wait(() => expect(callsOf(calls, 'UPDATE_SERVICE')).toHaveLength(1))
-    expect(callsOf(calls, 'UPDATE_SERVICE')[0].variables.input.isLocked).toBe('TRUE')
+    expect(callsOf(calls, 'UPDATE_SERVICE')[0].variables.input.isLocked).toBe('UNSET')
   })
 
   it('儲存：送出 UPDATE_SERVICE（含 itemId、整理過的扣項與互助、販售設定），成功後提示並回列表', async () => {
@@ -196,7 +195,7 @@ describe('編輯服務項目：帶入原資料與儲存', () => {
         { category: 'VIP', percent: 100, birthday: 100 },
       ],
       ServiceCategoryId: 'cat-1',
-      isLocked: 'TRUE',
+      isLocked: 'UNSET',
       isNoCash: false,
       isSpecialRakeUsing: true,
       specialRake: 5,
@@ -212,7 +211,7 @@ describe('編輯服務項目：帶入原資料與儲存', () => {
     fireEvent.click(checkboxByLabel('特殊抽成'))
     expect(controlsByLabel('%數')).toHaveLength(0)
     pick(controlByLabel('是否鎖定第三方卡券'), '鎖定')
-    pick(controlByLabel('打帳單是否能更改預設價格'), '依系統參數設定')
+    pick(controlByLabel('打帳單是否能更改預設價格'), '不可更改')
     fireEvent.click(button('儲存'))
     await wait(() => expect(callsOf(calls, 'UPDATE_SERVICE')).toHaveLength(1))
     expect(callsOf(calls, 'UPDATE_SERVICE')[0].variables.input).toMatchObject({
@@ -220,7 +219,7 @@ describe('編輯服務項目：帶入原資料與儲存', () => {
       isSpecialRakeUsing: false,
       specialRake: 0,
       isBindedThirdPartTicketLocked: 'TRUE',
-      isLocked: 'UNSET',
+      isLocked: 'TRUE',
     })
   })
 
@@ -387,13 +386,19 @@ describe('編輯服務項目：扣項設定', () => {
     ])
   })
 
-  // 已知缺口（待 Jason 決定）：扣項排序（ServiceEdit/index.js:399-409、414-426）一律把「系統預設」那筆推到最後，
-  // 沒有「系統預設」時推入的是空物件 {}，接著讀 {}.itemSettings 拋錯，整頁進入錯誤畫面。
-  it('服務的扣項沒有「系統預設」時整頁進入錯誤畫面（鎖住目前行為）', async () => {
+  // Jason 2026/10/22：扣項排序把「系統預設」移到最後；沒有「系統預設」時不推入空物件，頁面正常顯示既有扣項並可儲存
+  it('服務的扣項沒有「系統預設」時頁面正常顯示，可儲存', async () => {
     const service = makeService({ serviceDetail: { serviceDeductionItems: [{ type: '設計師抽成', itemSettings: [item()] }] } })
-    const { settle } = setup({ service })
+    const { calls, settle } = setup({ service })
     await settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(sectionOf(DESIGNER_SECTION)).toBeTruthy()
+    expect(screen.queryByText(DEFAULT_SECTION)).toBeNull()
+    fireEvent.click(button('儲存'))
+    await wait(() => expect(callsOf(calls, 'UPDATE_SERVICE')).toHaveLength(1))
+    expect(callsOf(calls, 'UPDATE_SERVICE')[0].variables.input.serviceDeductionItems).toEqual([
+      { type: '設計師抽成', itemSettings: [item()] },
+    ])
   })
 
   it('實業績預估：%數／固定金額 × 分指定與否 × 扣業績／扣薪水，基準點引用前一筆剩餘業績；只有扣薪水的卡等於價格', async () => {
@@ -598,11 +603,21 @@ describe('編輯服務項目：查詢失敗與登入狀態', () => {
     await wait(() => expect(callsOf(calls, 'UPDATE_SERVICE')).toHaveLength(1))
   })
 
-  // 已知缺口（待 Jason 決定）：服務列表（上一筆／下一筆用）查詢失敗時 servicesArr 為 undefined，
-  // 接著 servicesArr.forEach 拋錯，整頁進入錯誤畫面（ServiceEdit/index.js:387-390）。
-  it('服務列表查詢失敗時整頁進入錯誤畫面（鎖住目前行為）', async () => {
+  // Jason 2026/10/22：第三方卡券查詢失敗時以空清單處理（與新增頁同寫法），綁定選單只剩「無」
+  it('第三方卡券查詢失敗時頁面正常，綁定選單只有「無」', async () => {
+    const { settle } = setup({ service: makeService({ bindedThirdPartTicket: null }), FETCH_THIRDPARTYS: new Error('壞了') })
+    await settle()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect([...controlByLabel('綁定第三方卡券').options].map(o => o.textContent)).toEqual(['無'])
+  })
+
+  // Jason 2026/10/22：服務列表（上一筆／下一筆用）查詢失敗時以空清單處理，頁面正常、上一筆／下一筆停用，仍可儲存
+  it('服務列表查詢失敗時頁面正常，上一筆／下一筆停用', async () => {
     const { settle } = setup({ FETCH_SERVICES: new Error('壞了') })
     await settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(button('儲存並上一筆')).toBeDisabled()
+    expect(button('儲存並下一筆')).toBeDisabled()
+    expect(button('儲存')).not.toBeDisabled()
   })
 })

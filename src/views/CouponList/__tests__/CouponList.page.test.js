@@ -126,7 +126,8 @@ describe('預收卡設定：列表與匯出', () => {
     expect(within(row('護髮十次卡')).getByLabelText('編輯卡券')).toHaveAttribute('href', '/coupon/edit/t1')
   })
 
-  it('報表匯出內容（業績模式只分販賣時／使用時）', async () => {
+  // Jason 2026/10/22：匯出的業績模式文字與畫面一致（USINGSAVEDEDUCT 為「使用時入業績（扣項依販賣時設定）」）
+  it('報表匯出內容（業績模式文字與畫面一致）', async () => {
     const { settle } = setup()
     await ready(settle)
     const link = screen.getByText('報表匯出').closest('a')
@@ -135,6 +136,7 @@ describe('預收卡設定：列表與匯出', () => {
     expect(csv).toContain('"代號","類別","名稱","參考價格","可使用次數","業績","變更者","扣項設定數量","互助設定數量","上架狀態","變更時間"')
     expect(csv).toContain('"T01","護髮","護髮十次卡","12000","1000","販賣時入業績","店長","2","1","上架","2026/10/01"')
     expect(csv).toContain('"T02","無類別","染髮三次卡","3000","3","使用時入業績","","無設定","無設定","下架","2026/10/01"')
+    expect(csv).toMatch(/"T03",[^\n]*"舊卡",[^\n]*"使用時入業績（扣項依販賣時設定）"/)
   })
 
   it('篩選：點服務類別送出 categoryIds、清除送空陣列', async () => {
@@ -150,11 +152,13 @@ describe('預收卡設定：列表與匯出', () => {
     await wait(() => expect(callsOf(calls, 'GET_TICKETS_FOR_LIST').slice(-1)[0].variables).toEqual({ keyword: '', categoryIds: [] }))
   })
 
-  // 已知缺口（待 Jason 決定）：卡券列表查詢失敗時 coupons 被設成 undefined，表頭讀 coupons.length 拋錯（CouponList/index.js:36、Results.js:358）
-  it('卡券列表查詢失敗時整頁進入錯誤畫面（鎖住目前行為）', async () => {
+  // Jason 2026/10/22：卡券列表查詢失敗時以空清單顯示（共 0 筆、全選停用），不整頁錯誤
+  it('卡券列表查詢失敗時頁面正常，顯示 0 筆', async () => {
     const { settle } = setup({ GET_TICKETS_FOR_LIST: new Error('壞了') })
     await settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.getByText('共 0 筆')).toBeInTheDocument()
+    expect(screen.getByLabelText('全選')).toBeDisabled()
   })
 })
 
@@ -165,6 +169,12 @@ describe('預收卡設定：勾選與刪除', () => {
     fireEvent.click(screen.getByLabelText('全選'))
     expect(screen.getByText('已選 3 筆')).toBeInTheDocument()
     expect(screen.getByLabelText('選取 舊卡')).not.toBeChecked()
+    // Jason 2026/10/22：全選框以可選取（啟用中）的筆數判斷，含停用卡券時全選後全選框為勾選，再按一次全部取消
+    expect(screen.getByLabelText('全選')).toBeChecked()
+    fireEvent.click(screen.getByLabelText('全選'))
+    expect(screen.getByLabelText('全選')).not.toBeChecked()
+    expect(screen.getByLabelText('選取 護髮十次卡')).not.toBeChecked()
+    fireEvent.click(screen.getByLabelText('全選'))
     fireEvent.click(screen.getByLabelText('選取 護髮十次卡'))
     expect(screen.getByText('已選 2 筆')).toBeInTheDocument()
   })
@@ -347,12 +357,12 @@ describe('預收卡設定：批次互助與扣項', () => {
     expect(screen.getByLabelText('選取 護髮十次卡')).not.toBeChecked()
   })
 
-  // 已知缺口（待 Jason 決定）：批次送出失敗時以 err.msg 提示（CouponList/Results.js:225、300），Apollo 錯誤沒有 msg，訊息為 undefined
-  it('互助送出失敗時提示（訊息為 undefined）；關閉彈窗清除勾選', async () => {
+  // Jason 2026/10/22：批次送出失敗時以 err.message 提示
+  it('互助送出失敗時以錯誤訊息提示；關閉彈窗清除勾選', async () => {
     await openHelper({ SET_BATCH_SETTING_FOR_HELPER: new Error('失敗') })
     fireEvent.click(screen.getByText('儲存', { selector: 'button' }))
     await confirmWarning('handleSubmitHelperDeductionSetting')
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'error', message: undefined }))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'error', message: '失敗' }))
     fireEvent.click(screen.getByText('關閉', { selector: 'button' }))
     await wait(() => expect(screen.queryByText('互助點數設定')).toBeNull())
     expect(screen.getByLabelText('選取 護髮十次卡')).not.toBeChecked()
@@ -375,7 +385,9 @@ describe('預收卡設定：批次互助與扣項', () => {
     fillDeductionRow(SECTION, 0, { way: '依業績%數', price: 10 }, opts)
     addDeductionRow(SECTION, opts)
     fillDeductionRow(SECTION, 1, { type: '扣業績', way: '依固定金額', special: true, designate: 50, nonDesignate: 30, ref: '1' }, opts)
-    fireEvent.click(buttonIn(rowsUnderHeading(SECTION)[0], '新增扣項'))
+    // Jason 2026/10/22：只有最後一列有「新增扣項」（比照新增頁），避免重複順序編號
+    expect(buttonIn(rowsUnderHeading(SECTION)[0], '新增扣項')).toBeNull()
+    fireEvent.click(buttonIn(rowsUnderHeading(SECTION)[1], '新增扣項'))
     fillDeductionRow(SECTION, 2, { type: '扣薪水' }, opts)
     expect(buttonIn(rowsUnderHeading(SECTION)[2], '刪除此扣項')).toBeNull()
     fillDeductionRow(SECTION, 2, { type: '扣業績' }, opts)
@@ -415,12 +427,12 @@ describe('預收卡設定：批次互助與扣項', () => {
     await wait(() => expect(screen.queryByText('扣項項目設定')).toBeNull())
   })
 
-  it('扣項送出失敗時提示（訊息為 undefined）；關閉彈窗清除勾選並還原預設扣項', async () => {
+  it('扣項送出失敗時以錯誤訊息提示；關閉彈窗清除勾選並還原預設扣項', async () => {
     await openDeduction({ SET_BATCH_SETTING_FOR_DEDUCTION: new Error('失敗') })
     fillDeductionRow(SECTION, 0, { way: '依業績%數', price: 10 }, opts)
     fireEvent.click(screen.getByText('儲存', { selector: 'button' }))
     await confirmWarning('handleSubmitDeductionSetting')
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'error', message: undefined }))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'error', message: '失敗' }))
     fireEvent.click(screen.getByText('關閉', { selector: 'button' }))
     await wait(() => expect(screen.queryByText('扣項項目設定')).toBeNull())
     expect(screen.getByLabelText('選取 染髮三次卡')).not.toBeChecked()

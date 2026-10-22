@@ -7,4 +7,17 @@ const isExportCustomerMasked = queryResult => {
   return setting !== false
 }
 
+// 遮罩後的「姓名 手機」文字，格式與帳單列表、掛單列表匯出相同：
+// 姓名 1～2 字留第 1 字＋*；3 字留頭尾、中間 *；4 字以上留前 2 字＋*＋第 3～5 字；手機留前 4 碼＋***＋第 8～10 碼
+export const maskCustomerForExport = (name, cellphone) => {
+  const n = name || ''
+  const phone = cellphone || ''
+  const maskedName = n.length < 3
+    ? `${n.substring(0, 1)}*`
+    : n.length < 4
+      ? `${n.substring(0, 1)}*${n.substring(2, 3)}`
+      : `${n.substring(0, 2)}*${n.substring(2, 5)}`
+  return `${maskedName} ${phone.substring(0, 4)}***${phone.substring(7, 10)}`
+}
+
 export default isExportCustomerMasked

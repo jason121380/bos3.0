@@ -1,7 +1,7 @@
 // 保護「服務項目設定」列表的勾選、分頁、匯出與批次編輯：
-// - 全選只選啟用中的服務、再按一次全部取消；單筆勾選可取消
+// - 全選只選啟用中的服務（全選框以可選取筆數判斷）、再按一次全部取消；單筆勾選可取消
 // - 刪除密碼對話框可取消；刪除成功後提示、重抓列表、清除勾選
-// - 分頁：換頁送出 pageOffset、改每頁筆數送出 pageLimit（並重抓）
+// - 分頁：換頁送出 pageOffset、改每頁筆數送出 pageLimit 並把頁碼歸 0（並重抓）
 // - 報表匯出內容（代號、名稱、類別、價格、扣項／互助數量「無扣項／無設定」、變更日期以台灣時間）
 // - 批次編輯互助點數／項目扣項：先跳「會覆蓋原先設定」確認，確認後才送 SET_BATCH_SETTING_FOR_HELPER／_FOR_DEDUCTION，
 //   送出的是勾選的服務 id 與彈窗內的設定（互助去掉畫面用的 deductionWay／isDesignate）；關閉彈窗清除勾選
@@ -106,13 +106,14 @@ describe('服務項目設定：勾選與刪除', () => {
     expect(screen.getByText('已選 2 筆')).toBeInTheDocument()
     fireEvent.click(screen.getByLabelText('選取 頭皮護理'))
     expect(screen.getByText('已選 1 筆')).toBeInTheDocument()
-    // 已知缺口（待 Jason 決定）：列表含停用服務時，全選的 checked 以「已選數＝全部筆數（含停用）」判斷（Services/Results.js:355-358），
-    // 選完啟用中的服務後全選框仍是未勾選，再按一次又是「全選」，無法用全選框一次取消；只能逐筆取消。鎖住目前行為。
+    // Jason 2026/10/22：全選框以「可選取（啟用中）的筆數」判斷，含停用服務時全選後全選框為勾選，再按一次全部取消
+    fireEvent.click(all)
+    expect(all).toBeChecked()
+    expect(screen.getByText('已選 2 筆')).toBeInTheDocument()
     fireEvent.click(all)
     expect(all).not.toBeChecked()
-    fireEvent.click(all)
-    expect(screen.getByLabelText('選取 精緻剪髮')).toBeChecked()
-    expect(screen.getByText('已選 2 筆')).toBeInTheDocument()
+    expect(screen.getByLabelText('選取 精緻剪髮')).not.toBeChecked()
+    expect(screen.getByLabelText('選取 頭皮護理')).not.toBeChecked()
   })
 
   it('全部都是啟用中的服務時，全選框可勾選並再按一次全部取消', async () => {
@@ -198,8 +199,8 @@ describe('服務項目設定：分頁與匯出', () => {
     await settle()
     pick(screen.getByLabelText('每頁筆數'), '25')
     await wait(() => expect(callsOf(calls, 'FETCH_SERVICES').some(c => c.variables.input.pageLimit === 25)).toBe(true))
-    // 已知缺口（待 Jason 決定）：改每頁筆數不會把頁碼歸 0（Services/Results.js:292-297；index.js 有歸 0 的 handleRowsPerPageChange 但沒被使用）
-    expect(callsOf(calls, 'FETCH_SERVICES').find(c => c.variables.input.pageLimit === 25).variables.input.pageOffset).toBe(1)
+    // Jason 2026/10/22：改每頁筆數時頁碼歸 0
+    expect(callsOf(calls, 'FETCH_SERVICES').find(c => c.variables.input.pageLimit === 25).variables.input.pageOffset).toBe(0)
   })
 
   it('報表匯出：代號、名稱、類別、參考價格、扣項／互助數量（0 顯示無扣項／無設定）、變更時間（台灣日期）', async () => {
@@ -339,8 +340,8 @@ describe('服務項目設定：批次編輯互助點數', () => {
     })
   })
 
-  // 已知缺口（待 Jason 決定）：批次送出失敗時以 err.msg 顯示（Services/Results.js:369），Apollo 錯誤沒有 msg，提示內容是空的
-  it('送出失敗時以 err.msg 提示（Apollo 錯誤沒有 msg → 訊息為 undefined）；彈窗不關閉', async () => {
+  // Jason 2026/10/22：批次送出失敗時以 err.message 提示
+  it('送出失敗時以錯誤訊息提示；彈窗不關閉', async () => {
     const utils = setup({ SET_BATCH_SETTING_FOR_HELPER: new Error('批次失敗') })
     await ready(utils.settle)
     fireEvent.click(screen.getByLabelText('選取 精緻剪髮'))
@@ -348,7 +349,7 @@ describe('服務項目設定：批次編輯互助點數', () => {
     await screen.findByText('互助點數設定')
     fireEvent.click(screen.getByText('儲存', { selector: 'button' }))
     await confirmWarning('handleSubmitHelperDeductionSetting')
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'error', message: undefined }))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'error', message: '批次失敗' }))
     expect(screen.getByText('互助點數設定')).toBeInTheDocument()
   })
 
@@ -386,8 +387,9 @@ describe('服務項目設定：批次編輯項目扣項', () => {
     fillDeductionRow(SECTION, 0, { way: '依業績%數', price: 10 }, opts)
     addDeductionRow(SECTION, opts)
     fillDeductionRow(SECTION, 1, { type: '扣業績', way: '依固定金額', special: true, designate: 50, nonDesignate: 30, ref: '1' }, opts)
-    // 每一列都有「新增扣項」：從第 1 列再新增一筆（順序沿用第 1 列 +1）
-    fireEvent.click(buttonIn(rowsUnderHeading(SECTION)[0], '新增扣項'))
+    // Jason 2026/10/22：只有最後一列有「新增扣項」（比照新增頁），避免重複順序編號
+    expect(buttonIn(rowsUnderHeading(SECTION)[0], '新增扣項')).toBeNull()
+    fireEvent.click(buttonIn(rowsUnderHeading(SECTION)[1], '新增扣項'))
     expect(rowsUnderHeading(SECTION)).toHaveLength(3)
     // 扣薪水的列沒有刪除鈕；扣業績的非第一列才有
     fillDeductionRow(SECTION, 2, { type: '扣薪水' }, opts)
@@ -446,12 +448,12 @@ describe('服務項目設定：批次編輯項目扣項', () => {
     })
   })
 
-  // 已知缺口（待 Jason 決定）：同 Results.js:442，失敗提示讀 err.msg（undefined）
-  it('送出失敗時提示（訊息為 undefined）、彈窗不關閉；關閉彈窗清除勾選', async () => {
+  // Jason 2026/10/22：失敗提示讀 err.message
+  it('送出失敗時以錯誤訊息提示、彈窗不關閉；關閉彈窗清除勾選', async () => {
     const { calls } = await open({ SET_BATCH_SETTING_FOR_DEDUCTION: new Error('批次失敗') })
     fireEvent.click(screen.getByText('儲存', { selector: 'button' }))
     await confirmWarning('handleSubmitDeductionSetting')
-    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'error', message: undefined }))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'error', message: '批次失敗' }))
     expect(screen.getByText('扣項項目設定')).toBeInTheDocument()
     fireEvent.click(screen.getByText('關閉', { selector: 'button' }))
     await wait(() => expect(screen.queryByText('扣項項目設定')).toBeNull())

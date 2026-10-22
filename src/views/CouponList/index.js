@@ -33,7 +33,8 @@ function CouponList() {
 
   useEffect(() => {
     if (!couponsData.loading) {
-      setCoupons(idx(couponsData, _ => _.data.ticketsForList))
+      // 查詢失敗時以空清單顯示，不整頁錯誤
+      setCoupons(idx(couponsData, _ => _.data.ticketsForList) || [])
     }
   }, [couponsData.loading])
 

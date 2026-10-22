@@ -1,4 +1,4 @@
-import isExportCustomerMasked from '../exportCustomerMask'
+import isExportCustomerMasked, { maskCustomerForExport } from '../exportCustomerMask'
 
 // 為什麼重要：匯出檔會被下載、轉寄；只要無法確定店家選了「不遮罩」，就必須遮罩姓名與手機。
 
@@ -24,4 +24,16 @@ test('沒有資料或值不明時遮罩', () => {
   expect(isExportCustomerMasked(result({ data: undefined }))).toBe(true)
   expect(isExportCustomerMasked(result({ data: { getCustomerDataMarkedDefault: null } }))).toBe(true)
   expect(isExportCustomerMasked(undefined)).toBe(true)
+})
+
+// 卡券管理匯出（2026/10/22 起遮罩）沿用帳單列表的遮罩格式
+test('遮罩格式：姓名依長度保留部分字、手機留前 4 碼與第 8～10 碼', () => {
+  expect(maskCustomerForExport('王', '0912345678')).toBe('王* 0912***678')
+  expect(maskCustomerForExport('王美', '0912345678')).toBe('王* 0912***678')
+  expect(maskCustomerForExport('陳小姐', '0912345678')).toBe('陳*姐 0912***678')
+  expect(maskCustomerForExport('歐陽小美', '0912345678')).toBe('歐陽*小美 0912***678')
+})
+
+test('姓名或手機缺漏時不拋錯', () => {
+  expect(maskCustomerForExport(null, undefined)).toBe('* ***')
 })

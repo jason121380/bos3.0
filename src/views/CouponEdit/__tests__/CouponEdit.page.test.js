@@ -313,13 +313,19 @@ describe('編輯卡券項目：扣項', () => {
     ])
   })
 
-  // 已知缺口（待 Jason 決定）：與服務編輯相同，扣項沒有「系統預設」時排序推入空物件 {}（CouponEdit/index.js:394-404），
-  // 扣項卡讀 {}.itemSettings 拋錯，整頁進入錯誤畫面（店家開啟卡券扣項顯示時）。
-  it('卡券的扣項沒有「系統預設」時整頁進入錯誤畫面（鎖住目前行為）', async () => {
+  // Jason 2026/10/22：與服務編輯相同，扣項沒有「系統預設」時不推入空物件，頁面正常顯示既有扣項並可儲存
+  it('卡券的扣項沒有「系統預設」時頁面正常顯示，可儲存', async () => {
     const ticket = makeTicket({ serviceDetail: { ticketAvailableCount: 1, serviceDeductionItems: [{ type: '設計師抽成', itemSettings: [item()] }] } })
-    const { settle } = setup({ ticket })
+    const { calls, settle } = setup({ ticket })
     await settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(sectionOf(DESIGNER_SECTION)).toBeTruthy()
+    expect(screen.queryByText(DEFAULT_SECTION)).toBeNull()
+    fireEvent.click(button('儲存'))
+    await wait(() => expect(callsOf(calls, 'UPDATE_SERVICE')).toHaveLength(1))
+    expect(callsOf(calls, 'UPDATE_SERVICE')[0].variables.input.serviceDeductionItems).toEqual([
+      { type: '設計師抽成', itemSettings: [item()] },
+    ])
   })
 
   it('在畫面上編輯扣項（類別、方式、分指定、數字、基準點、新增、刪除、清除），送出編輯後的內容', async () => {
@@ -454,11 +460,13 @@ describe('編輯卡券項目：互助', () => {
 })
 
 describe('編輯卡券項目：查詢失敗與登入狀態', () => {
-  // 已知缺口（待 Jason 決定）：卡券列表（上一筆／下一筆用）查詢失敗時 couponsArr 為 undefined，forEach 拋錯（CouponEdit/index.js:383-386）
-  it('卡券列表查詢失敗時整頁進入錯誤畫面（鎖住目前行為）', async () => {
+  // Jason 2026/10/22：卡券列表（上一筆／下一筆用）查詢失敗時以空清單處理，頁面正常、上一筆／下一筆停用
+  it('卡券列表查詢失敗時頁面正常，上一筆／下一筆停用', async () => {
     const { settle } = setup({ GET_TICKETS_FOR_LIST: new Error('壞了') })
     await settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(button('儲存並上一筆')).toBeDisabled()
+    expect(button('儲存並下一筆')).toBeDisabled()
   })
 
   it('原卡券沒有互助設定時給一列空白設定；次數清空時視為 1', async () => {

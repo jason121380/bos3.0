@@ -2,7 +2,7 @@
 // - 進頁面即以本月（台灣時間月初～今天結束）或網址帶的 startDate／endDate 查詢兩份報表；查詢條件（日期、設計師、顧客、卡券）
 //   以「查詢」一次送出：販賣紀錄的 input 帶 dateRange 與 ticketIds，使用紀錄的 input 帶分頁、ticketIds 放在 input 外
 // - 販賣紀錄在前端分頁、合計金額（四捨五入到小數 2 位）與張數；使用紀錄由後端分頁，換頁／改每頁筆數重新查詢
-// - 兩份報表的匯出內容與合計列；查詢中顯示載入骨架
+// - 兩份報表的匯出內容與合計列（顧客姓名與手機依 exportCustomerMask 遮罩）；查詢中顯示載入骨架
 // 共用的 DateSelector／MerchantSearchBar／TicketsAutocpmplete 以替身取代（各自另有測試），這裡只驗證頁面如何接它們的值。
 // GraphQL 全由 MockedProvider（testkit 的模擬 link）回應，不連後端。
 import React from 'react'
@@ -164,12 +164,20 @@ describe('卡券管理：卡券販賣紀錄', () => {
     expect(sold().getByText('A006').closest('tr').querySelector('a')).toHaveAttribute('href', '/order/o6')
   })
 
-  it('匯出內容：帳單編號／日期、客戶、設計師、卡券、金額與合計列', async () => {
+  // Jason 2026/10/22：匯出的顧客姓名與手機比照帳單列表經 exportCustomerMask 遮罩（設定查詢沒回 false 一律遮罩）
+  it('匯出內容：帳單編號／日期、客戶（預設遮罩）、設計師、卡券、金額與合計列', async () => {
     const { settle } = setup()
     await settle()
     const csv = csvOf('卡券販賣紀錄')
-    expect(csv).toContain('"#A001_2026/10/01","顧客1 091200001","王小美 D01","T01","護髮十次卡","333.34","10","0"')
+    expect(csv).toContain('"#A001_2026/10/01","顧*1 0912***01","王小美 D01","T01","護髮十次卡","333.34","10","0"')
+    expect(csv).not.toContain('091200001')
     expect(csv).toContain('"","","","","合計","2333.38","70","21"')
+  })
+
+  it('店家設定不遮罩時匯出完整姓名與手機', async () => {
+    const { settle } = setup({ GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false } })
+    await settle()
+    expect(csvOf('卡券販賣紀錄')).toContain('"#A001_2026/10/01","顧客1 091200001","王小美 D01"')
   })
 })
 
@@ -190,15 +198,24 @@ describe('卡券管理：卡券使用紀錄', () => {
     expect(within(used.getByText('合計').closest('tr')).getByText('150.01')).toBeInTheDocument()
   })
 
-  // 已知缺口（待 Jason 決定）：使用紀錄的匯出「設計師」欄取購買帳單的設計師（ManagementCoupons/UsagedResults.js:26），
-  // 畫面上同一欄顯示的是使用帳單的設計師（:102-104），兩者不一致；匯出內容也未經 exportCustomerMask 遮罩顧客姓名與手機
-  // （販賣紀錄 BoughtResults.js:43 同樣未遮罩）。鎖住目前行為。
-  it('匯出內容：使用／購買帳單、客戶（未遮罩）、購買帳單的設計師、卡券、金額與合計列', async () => {
+  // Jason 2026/10/22：匯出「設計師」欄與畫面一致取使用帳單的設計師；顧客姓名與手機經 exportCustomerMask 遮罩
+  it('匯出內容：使用／購買帳單、客戶（預設遮罩）、使用帳單的設計師、卡券、金額與合計列', async () => {
     const { settle } = setup()
     await settle()
     const csv = csvOf('卡券使用紀錄')
-    expect(csv).toContain('"#U001_2026/10/02","#B001_2026/09/01","陳小姐 0912345678","李店長 D02","T01","護髮十次卡","100.01"')
+    expect(csv).toContain('"#U001_2026/10/02","#B001_2026/09/01","陳*姐 0912***678","王小美 D01","T01","護髮十次卡","100.01"')
+    expect(csv).not.toContain('李店長')
     expect(csv).toContain('"","","","","","合計","150.01"')
+  })
+
+  it('店家設定不遮罩時匯出完整姓名與手機；設定查詢失敗時遮罩', async () => {
+    const { settle } = setup({ GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false } })
+    await settle()
+    expect(csvOf('卡券使用紀錄')).toContain('"#U001_2026/10/02","#B001_2026/09/01","陳小姐 0912345678","王小美 D01"')
+    cleanup()
+    const failed = setup({ GET_CUSTOMER_DATA_MARKED: new Error('x') })
+    await failed.settle()
+    expect(csvOf('卡券使用紀錄')).toContain('"陳*姐 0912***678"')
   })
 
   it('後端分頁：換頁送出 pageOffset、改每頁筆數送出 pageLimit 並回到第一頁', async () => {

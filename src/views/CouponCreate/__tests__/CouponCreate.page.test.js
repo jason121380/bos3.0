@@ -175,11 +175,16 @@ describe('新增卡券項目：送出', () => {
     expect(callsOf(calls, 'MERCHANT_HELPER_ITEMS')).toHaveLength(2)
   })
 
-  // 已知缺口（待 Jason 決定）：抽成方式查詢失敗時 ServiceDeductionItems 為 undefined，扣項卡讀 .map 拋錯（CouponCreate/index.js:34,152）
-  it('抽成方式查詢失敗時整頁進入錯誤畫面（鎖住目前行為）', async () => {
-    const { settle } = setup({ MERCHANT_COMMISSION_WAY: new Error('x') })
+  // Jason 2026/10/22：抽成方式查詢失敗時扣項以空清單處理（沒有扣項卡），頁面正常且可送出
+  it('抽成方式查詢失敗時頁面正常（沒有扣項卡），可送出', async () => {
+    const { calls, settle } = setup({ MERCHANT_COMMISSION_WAY: new Error('x') })
     await settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.queryByText(DEFAULT_SECTION)).toBeNull()
+    await fillBasics()
+    fireEvent.click(submitButton())
+    await wait(() => expect(callsOf(calls, 'CREATE_COUPON')).toHaveLength(1))
+    expect(callsOf(calls, 'CREATE_COUPON')[0].variables.input.ServiceDeductionItems).toEqual([])
   })
 })
 

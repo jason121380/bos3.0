@@ -10,7 +10,8 @@ import { useFetchUsedTicketRecordsLazy } from 'hooks/useFetchUsedTicketRecords.j
 import idx from 'idx'
 import produce from 'immer'
 import { useState, useEffect } from 'react'
-import pagenationLabel from './../../helper/pagenationLabel'
+import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
+import isExportCustomerMasked from 'helper/exportCustomerMask'
 import useQueryString from 'hooks/useQueryString'
 import roundDecimal from './../../helper/roundDecimal.js'
 import { Search } from 'lucide-react'
@@ -33,6 +34,14 @@ export default function ManagementCoupons() {
     ticketIds: []
   })
   const [showFilter, setShowFilter] = useState(false)
+  // 匯出是否遮罩顧客姓名與手機（與帳單列表相同：只有設定查詢成功且為 false 才不遮罩）
+  const customerDataMarkedData = useFetchCustomerDataMarked()
+  const [isCustomerDataMarked, setIsCustomerDataMarked] = useState(true)
+  useEffect(() => {
+    if (!customerDataMarkedData.loading) {
+      setIsCustomerDataMarked(isExportCustomerMasked(customerDataMarkedData))
+    }
+  }, [customerDataMarkedData.loading, customerDataMarkedData.error])
 
   const [resultSetting, setResultSetting] = useState({
     boughtRecords: {
@@ -154,7 +163,7 @@ export default function ManagementCoupons() {
         <div className="flex flex-col gap-6">
           {!ticketSellOverviewData.loading && ticketSellOverviewData.data ?
             <BoughtResults
-              pagenationLabel={pagenationLabel}
+              isCustomerDataMarked={isCustomerDataMarked}
               results={ticketSellOverviewData.data.ticketSellOverview}
               page={resultSetting.boughtRecords}
               onChangePage={(_event, page) =>
@@ -179,7 +188,7 @@ export default function ManagementCoupons() {
               idx(usedTicketRecordsData,
                 _ => (
                   <UsagedResults
-                    pagenationLabel={pagenationLabel}
+                    isCustomerDataMarked={isCustomerDataMarked}
                     results={_.data.usedTicketRecords.data}
                     page={{
                       limit: _.data.usedTicketRecords.pageLimit,

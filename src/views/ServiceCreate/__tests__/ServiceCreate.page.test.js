@@ -465,20 +465,24 @@ describe('新增服務項目：互助點數設定', () => {
 })
 
 describe('新增服務項目：設定查詢失敗', () => {
-  // 已知缺口（待 Jason 決定）：第三方卡券查詢失敗時 AboutService 把 undefined 存進 thirdParty，
-  // 接著 thirdParty.map 拋錯，整頁進入錯誤畫面（ServiceCreate/AboutService.js:13-14,137）。
-  it('第三方卡券查詢失敗時整頁進入錯誤畫面（鎖住目前行為）', async () => {
+  // Jason 2026/10/22：第三方卡券查詢失敗時以空清單處理，綁定選單只剩「無」，頁面正常
+  it('第三方卡券查詢失敗時頁面正常，綁定選單只有「無」', async () => {
     const { settle } = setup({ FETCH_THIRDPARTYS: new Error('壞了') })
     await settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect([...controlByLabel('綁定第三方卡券').options].map(o => o.textContent)).toEqual(['無'])
   })
 
-  // 已知缺口（待 Jason 決定）：抽成方式查詢失敗時 ServiceDeductionItems 被設成 undefined，
-  // 實業績預估的 effect 讀 .length 拋錯，整頁進入錯誤畫面（ServiceCreate/index.js:38,170）。
-  it('抽成方式查詢失敗時整頁進入錯誤畫面（鎖住目前行為）', async () => {
-    const { settle } = setup({ MERCHANT_COMMISSION_WAY: new Error('x') })
+  // Jason 2026/10/22：抽成方式查詢失敗時扣項以空清單處理（沒有扣項卡），頁面正常且可送出
+  it('抽成方式查詢失敗時頁面正常（沒有扣項卡），可送出', async () => {
+    const { calls, settle } = setup({ MERCHANT_COMMISSION_WAY: new Error('x') })
     await settle()
-    expect(screen.getByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.queryByText(DEFAULT_SECTION)).toBeNull()
+    await fillBasics()
+    fireEvent.click(submitButton())
+    await wait(() => expect(callsOf(calls, 'CREATE_SERVICE')).toHaveLength(1))
+    expect(callsOf(calls, 'CREATE_SERVICE')[0].variables.input.ServiceDeductionItems).toEqual([])
   })
 
   it('顧客分類、互助類別、服務類別查詢失敗時頁面仍可顯示並送出（販售設定為空、類別選單只有提示）', async () => {

@@ -15,6 +15,8 @@ import { cn } from 'ui/utils'
 function Results({ className, categories, refetchCategories, ...rest }) {
   const [selectedCategories, setSelectedCategories] = useState([])
   const { delServiceCategories } = useFetchDeleteServiceCategories()
+  // 只有啟用中的分類可勾選；全選框以可選取的筆數判斷
+  const selectableCount = categories.filter(category => category.isUsing).length
   const handleSelectAll = event => {
     const selectedCategories = event.target.checked
       ? categories.filter(category => category.isUsing).map(category => category.id)
@@ -65,10 +67,10 @@ function Results({ className, categories, refetchCategories, ...rest }) {
                 <TableHead className="w-12">
                   <Checkbox
                     aria-label="全選"
-                    checked={selectedCategories.length === categories.length && categories.length > 0}
+                    checked={selectedCategories.length === selectableCount && selectableCount > 0}
                     indeterminate={
                       selectedCategories.length > 0 &&
-                      selectedCategories.length < categories.length
+                      selectedCategories.length < selectableCount
                     }
                     onChange={handleSelectAll}
                   />

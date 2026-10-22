@@ -56,10 +56,12 @@ describe('服務分類設定', () => {
     // 全選框目前為「部分選取」，按下後再全選、再按全部取消
     fireEvent.click(all)
     expect(screen.getByText('已選 2 筆')).toBeInTheDocument()
-    // 已知缺口（待 Jason 決定）：含停用分類時全選框以「已選數＝全部筆數」判斷是否勾選（ServiceCategories/Results.js:68），
-    // 全選後仍顯示未勾選，再按又是全選；鎖住目前行為
+    // Jason 2026/10/22：全選框以可選取（啟用中）的筆數判斷，含停用分類時全選後全選框為勾選，再按一次全部取消
+    expect(all).toBeChecked()
     fireEvent.click(all)
-    expect(screen.getByText('已選 2 筆')).toBeInTheDocument()
+    expect(all).not.toBeChecked()
+    expect(screen.getByLabelText('選取 剪髮')).not.toBeChecked()
+    expect(screen.getByLabelText('選取 染髮')).not.toBeChecked()
   })
 
   it('全部啟用時全選後再按全部取消', async () => {

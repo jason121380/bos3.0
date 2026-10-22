@@ -3,10 +3,9 @@
 import ManagementTable from 'components/ManagementTable'
 import { TableBody, TableCell, TableHead, TableRow } from 'ui/table'
 import { format } from 'date-fns'
-import { useState, useEffect, useRef } from 'react'
-import PerfectScrollbar from 'react-perfect-scrollbar'
+import { maskCustomerForExport } from 'helper/exportCustomerMask'
+import { useState, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { CSVLink } from "react-csv";
 import { Button } from 'ui/button'
 
 export default function BoughtResults({
@@ -15,14 +14,13 @@ export default function BoughtResults({
   page,
   onChangePage,
   onChangeRowsPerPage,
-  pagenationLabel,
+  isCustomerDataMarked = true,
   roundDecimal,
   ...rest
 }) {
   const { pageOffset, pageLimit } = page
   const [csvData, setCsvData] = useState([])
   const [reportData, setReportData] = useState([])
-  const pageRef = useRef(null)
 
   const handleCountTotal = key => {
     if (key === 'price') {
@@ -41,7 +39,10 @@ export default function BoughtResults({
     reportData.forEach(data => {
       csvData.push({
         '帳單編號/時間': `#${data.orderNo}_${format(data.orderDate, 'yyyy/MM/dd')}`,
-        '客戶': `${data.customerName} ${data.customerPhone}`,
+        // 依店家設定遮罩姓名與手機（helper/exportCustomerMask，與帳單列表相同）
+        '客戶': isCustomerDataMarked
+          ? maskCustomerForExport(data.customerName, data.customerPhone)
+          : `${data.customerName} ${data.customerPhone}`,
         '設計師': `${data.designerName} ${data.designerNo}`,
         '卡券代號': `${data.ticketNo}`,
         '卡券販賣': `${data.ticketName}`,
@@ -61,10 +62,7 @@ export default function BoughtResults({
       '剩餘張數': `${handleCountTotal('leftCount')}`
     })
     setCsvData(csvData)
-    if (pageRef.current) {
-      pagenationLabel(pageRef.current)
-    }
-  }, [reportData, pageRef.current])
+  }, [reportData, isCustomerDataMarked])
 
 
   return (

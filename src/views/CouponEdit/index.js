@@ -380,7 +380,8 @@ function ServiceCategoryEdit({ match }) {
 
   useEffect(() => {
     if (!tickets.loading && !ticket.loading) {
-      const couponsArr = idx(tickets, _ => _.data.ticketsForList)
+      // 列表查詢失敗時以空陣列處理（只影響上一筆／下一筆），不整頁錯誤
+      const couponsArr = idx(tickets, _ => _.data.ticketsForList) || []
       const ticketId = idx(ticket.data, _ => _.service.id)
       setCouponsArr(couponsArr)
       couponsArr.forEach((coupon, index) => {
@@ -392,7 +393,8 @@ function ServiceCategoryEdit({ match }) {
   }, [tickets.loading, ticket.loading])
 
   useEffect(() => {
-    let defaultSetting = {}
+    // 把「系統預設」移到最後；沒有「系統預設」時不推入空物件（否則扣項卡讀 {}.itemSettings 整頁錯誤）
+    let defaultSetting = null
     const newCoupon = cloneDeep(coupon)
     newCoupon.serviceDeductionItems.forEach((data, index) => {
       if (data.type === '系統預設') {
@@ -400,7 +402,7 @@ function ServiceCategoryEdit({ match }) {
         newCoupon.serviceDeductionItems.splice(index, 1)
       }
     })
-    newCoupon.serviceDeductionItems.push(defaultSetting)
+    if (defaultSetting) newCoupon.serviceDeductionItems.push(defaultSetting)
     setCoupon2(newCoupon)
     const vaild = !(coupon.name && coupon.ServiceCategoryId && coupon.ticketAvailableCount)
     setVaild(vaild)
@@ -445,7 +447,7 @@ function ServiceCategoryEdit({ match }) {
               </Button>
               <Button
                 variant="secondary"
-                disabled={couponIndex === couponsArr.length - 1 || saveBtn || vaild}
+                disabled={couponIndex >= couponsArr.length - 1 || saveBtn || vaild}
                 onClick={() => handleSubmit('toNext')}
               >
                 儲存並下一筆
