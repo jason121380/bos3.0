@@ -11,9 +11,11 @@ import { useFetchThirdPartysForCreateOrder } from 'hooks/useFetchMerchant'
 
 import ProductsModal from 'views/OrderShared/ProductsModal'
 import { useProductPicker } from 'views/OrderShared/useItemPicker'
+import { formatNumber } from 'ui/format'
+import { ROW_ICON_ALIGN, ROW_ICON_ALIGN_SMALL } from 'views/OrderShared/rowAlign'
 
 const styles = {
-  merchantSells: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  merchantSells: 'flex items-start justify-start flex-wrap gap-y-[12px] mb-[24px]',
   field: '!min-w-[150px] flex mr-[12px]',
   productField: 'w-[250px] flex mr-[12px]',
   priceField: 'w-[65px] flex !mr-[12px]',
@@ -118,9 +120,9 @@ function MerchantSells({
           />
         </Field>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇商品" className="mx-1.5" onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇商品" className={`mx-1.5 ${ROW_ICON_ALIGN_SMALL}`} onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
+          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN_SMALL}`} />
         )}
         <Field label="商品" required={!!sellsItem.sellerId || !!sellsItem.productId}>
           <ProductAutoComplete
@@ -233,13 +235,13 @@ function MerchantSells({
                       if (data.type === 'PERCENT') {
                         return (
                           <p className={`m-0 ${styles.heading2}`} key={data.id} style={{ marginTop: '4px' }}>
-                            {`扣完後業績:${Math.round((sellsItem.price * (100 - data.fee)) / 100)}`}
+                            {`扣完後業績:${formatNumber(Math.round((sellsItem.price * (100 - data.fee)) / 100))}`}
                           </p>
                         )
                       } else {
                         return (
                           <p className={`m-0 ${styles.heading2}`} key={data.id} style={{ marginTop: '4px' }}>
-                            {`扣完後業績:${Math.round(sellsItem.price - data.fee)}`}
+                            {`扣完後業績:${formatNumber(Math.round(sellsItem.price - data.fee))}`}
                           </p>
                         )
                       }
@@ -255,7 +257,7 @@ function MerchantSells({
         )}
 
         <RowIconButton
-          label="清除此列" className="mr-1.5"
+          label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
           onClick={() => {
             onClear({ index })
             setFocus('employee')
@@ -266,7 +268,7 @@ function MerchantSells({
         </RowIconButton>
         {!first && (
           <RowIconButton
-            label="刪除此列" className="mr-1.5"
+            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={() => {
               removeSells({ index })
               setFocus('employee')

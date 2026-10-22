@@ -136,15 +136,49 @@ describe('掛單詳細：會員卡帶回與修改', () => {
     await wait(() => expect(save).not.toBeDisabled())
   })
 
+  // 為什麼重要：終身卡（有效天數 0）沒有可帶的到期日。原本取消「永久會籍」時到期日＝購買日（掛單帶回的卡）＋0，
+  // 也就是購買當天就到期。購買日早於帳單隔天時，日期欄的 onError 會把它改成無效日期而擋下；
+  // 但補登較早帳單日期的掛單（帳單日期 10/21、購買日 10/25）時購買日落在可選範圍內，儲存就照樣送出「購買當天到期」的會員卡。
+  // 改為到期日一律留空待櫃檯選，儲存時以 checkMembershipOrders 擋下「會員卡到期日有誤」（同重新開單，Codex review PR #265）
+  it('掛單帶回的終身卡（沒存有效天數）取消「永久會籍」：到期日留空、不帶購買日，儲存提示「會員卡到期日有誤」不送出', async () => {
+    const page = await setup({
+      order: makeOrder({
+        membershipOrders: [membershipOrder({
+          price: 30000, purchaseDate: new Date(2026, 9, 25, 9, 0).getTime(), validDayCount: null, expiryDate: null,
+          membership: { uuid: FOREVER_CARD.uuid, isLocked: 'TRUE', effecitveDay: 0 },
+        })],
+      }),
+    })
+    expect(foreverBox()).toBeChecked()
+    fireEvent.click(foreverBox())
+    await wait(() => expect(foreverBox()).not.toBeChecked())
+    expect(field('到期日')).toHaveValue('')
+    expect(field('到期日')).not.toBeDisabled()
+    const save = screen.getByTestId('savedraft')
+    await wait(() => expect(save).not.toBeDisabled())
+    fireEvent.click(save)
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: '會員卡到期日有誤' })))
+    expect(page.calls.filter(c => c.operationName === 'reCheckoutOrder')).toHaveLength(0)
+  })
+
+  // 為什麼重要：「扣完後業績」是櫃台判斷這張會員卡實際入多少業績的依據。原本會員卡一律按比例算，
+  // 固定金額（手續費 100 元）的卡券會顯示 12000 ×（100−100）% = 0，與服務、店販（PERCENT 按比例、其他類型減去金額）不一致。
+  it('固定金額的第三方卡券：扣完後業績＝售價－手續費', async () => {
+    await setup({ thirdPartTicket: true })
+    pick(cards().getByPlaceholderText('第三方卡券'), '定額券')
+    // 12000 − 100 = 11900
+    await wait(() => expect(cards().getByText('扣完後業績:11,900')).toBeInTheDocument())
+  })
+
   it('第三方卡券：選卡券後顯示扣完手續費的業績並送出；清除後不再送出', async () => {
     const page = await setup({ thirdPartTicket: true })
     const thirdParty = cards().getByPlaceholderText('第三方卡券')
     pick(thirdParty, '街口券')
-    await wait(() => expect(cards().getByText('扣完後業績:10800')).toBeInTheDocument())
+    await wait(() => expect(cards().getByText('扣完後業績:10,800')).toBeInTheDocument())
     let input = await saveDraft(page.calls)
     expect(input.membershipOrders[0].thirdPartyCouponMerchantId).toBe('tp-1')
     clearField(thirdParty)
-    await wait(() => expect(cards().queryByText('扣完後業績:10800')).toBeNull())
+    await wait(() => expect(cards().queryByText('扣完後業績:10,800')).toBeNull())
     page.calls.length = 0
     input = await saveDraft(page.calls)
     expect(input.membershipOrders[0].thirdPartyCouponMerchantId).toBeNull()
@@ -177,6 +211,22 @@ describe('掛單詳細：選會員卡', () => {
     await expectFocused(foreverBox())
     const input = await saveDraft(page.calls)
     expect(input.membershipOrders[0]).toEqual(expect.objectContaining({ membershipUUID: FOREVER_CARD.uuid, price: 30000, expiryDate: null }))
+  })
+
+  // 為什麼重要：新選的終身卡取消「永久會籍」時，原本到期日＝帳單日當天（已過期、早於可選最早日期），改為留空待櫃檯選。
+  // 本頁日期欄的 onError 原本就會把帳單日當天改成無效日期而擋下，這個測試確保改寫後仍擋下（不會送出帳單日當天）
+  it('新選的終身卡取消「永久會籍」：到期日留空，儲存提示「會員卡到期日有誤」不送出', async () => {
+    const page = await emptyRow()
+    pick(cardInput(0), '永久卡 - M02')
+    await wait(() => expect(foreverBox()).toBeChecked())
+    fireEvent.click(foreverBox())
+    await wait(() => expect(foreverBox()).not.toBeChecked())
+    expect(field('到期日')).toHaveValue('')
+    const save = screen.getByTestId('savedraft')
+    await wait(() => expect(save).not.toBeDisabled())
+    fireEvent.click(save)
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: '會員卡到期日有誤' })))
+    expect(page.calls.filter(c => c.operationName === 'reCheckoutOrder')).toHaveLength(0)
   })
 
   it('鎖價、有期限的卡：焦點跳到到期日；取消再勾選永久後再取消，到期日＝帳單日期＋有效天數', async () => {

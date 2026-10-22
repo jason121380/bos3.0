@@ -96,6 +96,20 @@ describe('重新開單：店販銷售', () => {
     expect(input.productOrders).toEqual([expect.objectContaining({ productId: PRODUCT.id, thirdPartyCouponMerchantId: 'tp-1' })])
   })
 
+  // 為什麼重要：「扣完後業績」是櫃台判斷這筆店販實際入多少業績的依據。原本店販一律按比例算，
+  // 固定金額（手續費 100 元）的卡券會顯示 售價 ×（100−100）% = 0，與打帳單、服務（PERCENT 按比例、其他類型減去金額）不一致。
+  // 金額彙總的規則不變：店販用第三方卡券時不收現金。
+  it('固定金額的第三方卡券：扣完後業績＝價格－手續費；現金應收仍不含這筆店販', async () => {
+    const page = setupQueue({
+      queue: baseQueue({ productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 1, thirdPartyCouponMerchantId: 'tp-2' }] }),
+      GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true },
+    })
+    await loaded(page)
+    // 300 − 100 = 200
+    expect(await products().findByText('扣完後業績:200')).toBeInTheDocument()
+    expect(summaryValue('現金應收')).toHaveTextContent(/^800$/)
+  })
+
   it('取消第三方卡券後恢復收現金', async () => {
     const page = setupQueue({
       queue: baseQueue({ productOrders: [{ sellerId: DESIGNER.userId, productId: PRODUCT.id, price: 300, count: 1, thirdPartyCouponMerchantId: 'tp-1' }] }),

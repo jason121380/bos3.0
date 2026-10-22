@@ -15,6 +15,8 @@ import { MobileDatePicker } from 'ui/date-picker'
 
 import MemberShipCardSellsModal from "views/OrderShared/MemberShipCardSellsModal";
 import { useMembershipPicker } from "views/OrderShared/useItemPicker";
+import { formatNumber } from 'ui/format'
+import { ROW_ICON_ALIGN, ROW_ICON_ALIGN_SMALL } from 'views/OrderShared/rowAlign'
 
 
 const MemberShipCardSells = ({
@@ -119,7 +121,7 @@ const MemberShipCardSells = ({
   };
   return (
     <Fragment>
-      <div className="mb-6 flex flex-wrap items-end justify-start gap-y-[12px]">
+      <div className="mb-6 flex flex-wrap items-start justify-start gap-y-[12px]">
         {/* 必填 *：Footer 送出前 helper/billVerify.js checkMembershipOrders 要求 sellerId、membershipUUID 與有效到期日；sellerId 與 membershipUUID 皆空的列會被 handleTidyBill 丟掉，所以該列有填任一欄才標必填 */}
         <Field label="服務人員" required={!!sells.sellerId || !!sells.membershipUUID}>
         <EmployeeAutoComplete
@@ -146,9 +148,9 @@ const MemberShipCardSells = ({
         />
         </Field>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇會員卡" className="mx-1.5" onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇會員卡" className={`mx-1.5 ${ROW_ICON_ALIGN_SMALL}`} onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
+          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN_SMALL}`} />
         )}
         <Field label="會員卡" required={!!sells.sellerId || !!sells.membershipUUID}>
         <MemberShipCardAutoComplete
@@ -197,7 +199,7 @@ const MemberShipCardSells = ({
         </Field>
         {sells.membershipUUID ? (
           <React.Fragment>
-            <Field label="價格" className="!mr-[12px] flex w-[65px]">
+            <Field label="價格" className="!mr-[12px] flex w-[90px]">
             <TextField
               fullWidth
               variant="outlined"
@@ -262,14 +264,17 @@ const MemberShipCardSells = ({
                   handleKeyDown({ event, nextField: "thirdParty" })
                 }
                 onChange={(value) => {
+                  // 有效天數為 0（終身卡）時沒有可帶的到期日：帳單日／購買日當天已過期、早於可選的最早日期，
+                  // 留空（無效日期）待櫃檯選，送出時被擋下（同重新開單，Codex review PR #265）；已購會員卡有剩餘天數（validDayCount）時照舊
                   onChange({
                     index,
                     key: "expiryDate",
                     value:
                       sells.expiryDate === null
                         ? sells.validDayCount === undefined
-                          ? addDays(new Date(bill.date), sells.effecitveDay).getTime()
-                          : sells.validDayCount === null ? addDays(new Date(sells.purchaseDate), sells.effecitveDay).getTime()
+                          ? sells.effecitveDay > 0 ? addDays(new Date(bill.date), sells.effecitveDay).getTime() : NaN
+                          : sells.validDayCount === null
+                            ? sells.effecitveDay > 0 ? addDays(new Date(sells.purchaseDate), sells.effecitveDay).getTime() : NaN
                             : addDays(new Date(sells.purchaseDate), sells.validDayCount).getTime()
                         : null,
                   });
@@ -311,7 +316,10 @@ const MemberShipCardSells = ({
                     return (
                       <p className="m-0 text-[0.8125rem] font-bold" key={data.id} style={{ marginTop: '4px' }}>
                         扣完後業績:
-                        {Math.round((sells.price * (100 - data.fee)) / 100)}
+                        {/* 比照 Services.js：PERCENT 按比例，其他類型（固定金額）減去手續費 */}
+                        {data.type === 'PERCENT'
+                          ? formatNumber(Math.round((sells.price * (100 - data.fee)) / 100))
+                          : formatNumber(Math.round(sells.price - data.fee))}
                       </p>
                     );
                   }
@@ -352,7 +360,7 @@ const MemberShipCardSells = ({
         )}
 
         <RowIconButton
-          label="清除此列" className="mr-1.5"
+          label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
           onClick={function () {
             onClear({ index });
           }}
@@ -362,7 +370,7 @@ const MemberShipCardSells = ({
         </RowIconButton>
         {!first ? (
           <RowIconButton
-            label="刪除此列" className="mr-1.5"
+            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               removeSells({ index });
             }}

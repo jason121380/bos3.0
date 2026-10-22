@@ -13,8 +13,6 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
   const {
     bill,
     stayInCreateOrder,
-    addKeydown,
-    setAddKeyDown,
     setCheckoutBtnClick,
     setReset,
     closureDelayed,
@@ -32,6 +30,9 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
   const checkOrderPrintRef = useRef(null)
   const printMainRef = useRef()
   const printThermalRef = useRef()
+  // 已送出帳單（結帳／結帳並列印／掛單）、還沒失敗：F9／F8 不再送。原本按 F9／F8 一律先移除鍵盤監聽，
+  // 被逐列檢查擋下（缺店販商品、會員卡缺欄位等）或送出失敗時監聽不會掛回，之後再按 F9／F8 都沒反應
+  const sentRef = useRef(false)
 
   const valid = !(
     bill.date &&
@@ -84,6 +85,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
       handleBtnDisabled(false)
       return;
     } else {
+      sentRef.current = true
       useCreateOrder
         .current(tmp)
         .then(res => {
@@ -108,6 +110,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
           }
         })
         .catch(err => {
+          sentRef.current = false
           setCheckoutBtn(false)
           openSnackbar({
             message: err.message,
@@ -147,6 +150,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
       handleBtnDisabled(false)
       return;
     } else {
+      sentRef.current = true
       useCreateOrder
         .current(tmp)
         .then(res => {
@@ -175,6 +179,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
           }
         })
         .catch(err => {
+          sentRef.current = false
           openSnackbar({
             message: err.message,
             variant: 'error',
@@ -210,6 +215,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
       handleBtnDisabled(false)
       return;
     } else {
+      sentRef.current = true
       useCreateOrder
         .current({ ...tmp, isPending: true })
         .then(() => {
@@ -224,6 +230,7 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
           }
         })
         .catch(err => {
+          sentRef.current = false
           openSnackbar({
             message: err.message,
             variant: 'error',
@@ -239,15 +246,13 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
   }, [bill, history, setCheckoutBtnClick, setOpen])
 
   useEffect(() => {
+    // 監聽一直掛著（彈窗關閉時由 cleanup 移除），以 sentRef 防重複送出：被檢查擋下或送出失敗後可再按
     const handleCreateOrderShortCut = event => {
-      if (event.code === 'F9') {
-        document.removeEventListener('keydown', handleCreateOrderShortCut)
-        usehandleCreateOrder()
-      }
-      if (event.code === 'F8') {
-        const returnString = usehandleCreateOrderAndPrint()
-        returnString !== 'null dom' && document.removeEventListener('keydown', handleCreateOrderShortCut)
-      }
+      if (event.code !== 'F9' && event.code !== 'F8') return
+      if (sentRef.current) return
+      if (event.code === 'F9') usehandleCreateOrder()
+      // 明細還在載入時回傳 'null dom'、不送出（sentRef 不變），載入完成後可再按
+      else usehandleCreateOrderAndPrint()
     }
     document.addEventListener('keydown', handleCreateOrderShortCut, false)
     return () => {
@@ -315,7 +320,6 @@ export default function useOrderDetailCheckout({ onClose, orderDetailPrintLayout
   // 移除座位掛單相關功能
   const closeModal = () => {
     onClose()
-    setAddKeyDown(addKeydown + 1)
   }
 
   return {

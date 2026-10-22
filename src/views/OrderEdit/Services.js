@@ -11,6 +11,8 @@ import { useLazyFetchServiceNew } from 'hooks/useFetchService'
 import idx from 'idx'
 import cloneDeep from 'lodash/cloneDeep'
 import { Fragment, useRef, useEffect, useState, useContext, createRef } from 'react'
+import { formatNumber } from 'ui/format'
+import { ROW_ICON_ALIGN } from 'views/OrderShared/rowAlign'
 
 
 export default function Services({
@@ -261,11 +263,11 @@ export default function Services({
   }, [service, bindedThirdPart.service])
   return (
     <Fragment>
-      <div className="mb-6 flex flex-wrap items-end justify-start gap-y-[12px]">
+      <div className="mb-6 flex flex-wrap items-start justify-start gap-y-[12px]">
         {index === 0 ? (
-          <RowIconButton label="從清單選擇服務" className="mx-1.5" onClick={handleOpenServicesModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇服務" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenServicesModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
+          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
         {/* 必填 *：Footer 送出前 helper/billVerify.js checkServicesOrders 要求每一列都有 serviceId（空列不會被丟掉） */}
         <Field label="服務項目" required>
@@ -475,13 +477,13 @@ export default function Services({
                 if (data.type === 'PERCENT') {
                   return (
                     <p className="m-0 text-[0.8125rem] font-bold" key={index} style={{ marginTop: '4px' }}>
-                      扣完後業績:{Math.round((service.price * (100 - data.fee)) / 100)}
+                      扣完後業績:{formatNumber(Math.round((service.price * (100 - data.fee)) / 100))}
                     </p>
                   )
                 } else {
                   return (
                     <p className="m-0 text-[0.8125rem] font-bold" key={index} style={{ marginTop: '4px' }}>
-                      扣完後業績:{Math.round(service.price - data.fee)}
+                      扣完後業績:{formatNumber(Math.round(service.price - data.fee))}
                     </p>
                   )
                 }
@@ -490,7 +492,7 @@ export default function Services({
             })}
         </div>
         <RowIconButton
-          label="清除此列" className="mr-1.5"
+          label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
           onClick={handleClear}
           data-testid={`service-${index}-clear`}
         >
@@ -499,7 +501,7 @@ export default function Services({
 
         {!first ? (
           <RowIconButton
-            label="刪除此列" className="mr-1.5"
+            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               removeService(index)
             }}

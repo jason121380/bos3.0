@@ -10,6 +10,8 @@
 // GraphQL 全由模擬 link 回應，不連後端、不改真實帳單。
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { addDays } from 'date-fns'
+import { openSnackbar } from 'elements/snackbars'
+import { callsOf } from '../../../__tests__/testkit.test'
 import {
   setup, pageReady, makeOrder, checkoutAndGetInput, summaryValue, loginForTest, pickEmployee,
   MEMBERSHIP, DESIGNER, ASSISTANT, BILL_DATE,
@@ -145,6 +147,36 @@ describe('帳單詳細：會員卡到期日', () => {
     await wait(() => expect(dateOf(0)).toHaveValue('2027/10/21'))
     expect((await checkoutAndGetInput(page.calls)).membershipOrders[0].expiryDate).toBe(addDays(BILL_DATE, 365).getTime())
   })
+
+  // 為什麼重要：終身卡（有效天數 0）沒有可帶的到期日。原本取消「永久會籍」時到期日＝帳單日（新選的卡）或購買日（原帳單的卡）＋0，
+  // 是已經過期、又早於日期欄可選最早日期（帳單隔天）的日子，重新結帳照樣送出「當天就到期」的會員卡。
+  // 改為到期日留空待櫃檯選，重新結帳時以 checkMembershipOrders 擋下「會員卡到期日有誤」（同重新開單，Codex review PR #265）
+  it('新選的終身卡取消「永久會籍」：到期日留空，重新結帳提示「會員卡到期日有誤」不送出', async () => {
+    const page = open(makeOrder())
+    await pageReady(page)
+    await pickEmployee(sellerOf(0), DESIGNER.userName)
+    await pickCard(cardInputs()[0], LIFETIME)
+    await wait(() => expect(lifetimeOf(0)).toBeChecked())
+    fireEvent.click(lifetimeOf(0))
+    await wait(() => expect(lifetimeOf(0)).not.toBeChecked())
+    expect(dateOf(0)).toHaveValue('')
+    expect(dateOf(0)).not.toBeDisabled()
+    fireEvent.click(await screen.findByTestId('checkout'))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '會員卡到期日有誤', variant: 'error' })))
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(0)
+  })
+
+  it('原帳單的終身卡（沒存有效天數）取消「永久會籍」：不以購買日當天為到期日，重新結帳提示「會員卡到期日有誤」', async () => {
+    const page = open(withCards(membershipOrder(LIFETIME, { expiryDate: null, validDayCount: null })))
+    await pageReady(page)
+    expect(lifetimeOf(0)).toBeChecked()
+    fireEvent.click(lifetimeOf(0))
+    await wait(() => expect(lifetimeOf(0)).not.toBeChecked())
+    expect(dateOf(0)).toHaveValue('')
+    fireEvent.click(await screen.findByTestId('checkout'))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '會員卡到期日有誤', variant: 'error' })))
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(0)
+  })
 })
 
 describe('帳單詳細：改會員卡後重新結帳', () => {
@@ -157,7 +189,7 @@ describe('帳單詳細：改會員卡後重新結帳', () => {
     await pickEmployee(sellerOf(0), ASSISTANT.userName)
     fireEvent.click(thirdPartyOf(0))
     fireEvent.click(await within(document.body).findByTestId('團購券'))
-    expect(await within(rowEl(0)).findByText('扣完後業績:2520')).toBeInTheDocument()
+    expect(await within(rowEl(0)).findByText('扣完後業績:2,520')).toBeInTheDocument()
     fireEvent.change(remarkOf(0), { target: { value: '生日禮' } })
     const input = await checkoutAndGetInput(page.calls)
     expect(input.membershipOrders).toEqual([
@@ -172,6 +204,15 @@ describe('帳單詳細：改會員卡後重新結帳', () => {
     fireEvent.mouseDown(await within(rowEl(0)).findByLabelText('清除', { selector: 'button' }))
     await wait(() => expect(within(rowEl(0)).queryByText(/扣完後業績/)).toBeNull())
     expect((await checkoutAndGetInput(page.calls)).membershipOrders[0].thirdPartyCouponMerchantId).toBeNull()
+  })
+
+  // 為什麼重要：「扣完後業績」是櫃台判斷這張會員卡實際入多少業績的依據。原本會員卡一律按比例算，
+  // 固定金額（手續費 100 元）的卡券會顯示 3000 ×（100−100）% = 0，與服務、店販（PERCENT 按比例、其他類型減去金額）不一致。
+  it('原帳單用固定金額的第三方卡券：扣完後業績＝價格－手續費', async () => {
+    const page = open(withCards(membershipOrder(MEMBERSHIP, { thirdPartyPayId: 'tp-2' })))
+    await pageReady(page)
+    // 3000 − 100 = 2900
+    expect(await within(rowEl(0)).findByText('扣完後業績:2,900')).toBeInTheDocument()
   })
 
   it('清除第 2 列、刪除第 2 列：該列不送出', async () => {

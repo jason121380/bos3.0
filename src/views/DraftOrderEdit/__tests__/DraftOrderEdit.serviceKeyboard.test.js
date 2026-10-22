@@ -204,7 +204,7 @@ describe('服務列 Enter 跳欄：卡券被服務鎖定（ticketDisabled）', (
     const thirdParty = screen.getByPlaceholderText('第三方卡券')
     await wait(() => expect(thirdParty).toHaveValue('街口券'))
     expect(thirdParty).toBeDisabled()
-    expect(screen.getByText('扣完後業績:1800')).toBeInTheDocument()
+    expect(screen.getByText('扣完後業績:1,800')).toBeInTheDocument()
   })
 
   // 註：店家設定若比服務列晚到，這個鎖定目前不會套用（已回報為 bug，見交接報告），這裡只測「設定先到」

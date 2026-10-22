@@ -7,6 +7,7 @@ import idx from 'idx'
 import cloneDeep from 'lodash/cloneDeep'
 import React, { Fragment, useState, useEffect, useRef } from 'react'
 import billContext from 'context/keyInContext'
+import { ROW_ICON_ALIGN } from 'views/OrderShared/rowAlign'
 
 
 export default function CouponSells({
@@ -37,7 +38,12 @@ export default function CouponSells({
   const remarkRef = useRef()
 
   useEffect(() => {
-    if (expanded && focusFirstField) {
+    // 新增列、展開區塊、從上一列按 Enter 移過來時游標跳到卡券；使用者自己點了這一列的欄位（焦點已在本列欄位上）時不搶焦點
+    // （比照店販／會員卡；原本點另一列的欄位會先被拉到該列的卡券欄）
+    const active = document.activeElement
+    const fieldFocused = [couponRef, availableCountRef, priceRef, countRef, remarkRef]
+      .some(ref => ref.current && (ref.current === active || (ref.current.contains && ref.current.contains(active))))
+    if (expanded && focusFirstField && !fieldFocused) {
       idx(couponRef, _ => _.current.focus())
       setFocus('coupon')
     }
@@ -80,11 +86,11 @@ export default function CouponSells({
   }
   return (
     <Fragment>
-      <div className="mb-6 flex flex-wrap items-end justify-start gap-y-[12px]">
+      <div className="mb-6 flex flex-wrap items-start justify-start gap-y-[12px]">
         {index === 0 ? (
-          <RowIconButton label="從清單選擇預收卡" className="mx-1.5" onClick={handleOpenCouponModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇預收卡" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenCouponModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
+          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
         <Field label="卡券">
         <TicketAutoComplete
@@ -129,7 +135,7 @@ export default function CouponSells({
         </Field>
         {couponSell.serviceId ? (
           <React.Fragment>
-            <Field label="可使用次數" className="!mr-[12px] flex w-[65px]">
+            <Field label="可使用次數" className="!mr-[12px] flex w-[80px]">
             <TextField
               fullWidth
               variant="outlined"
@@ -238,7 +244,7 @@ export default function CouponSells({
         )}
         {isTicketSellingEditable && (
           <RowIconButton
-            label="清除此列" className="mr-1.5"
+            label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               onClear({ index })
             }}
@@ -249,7 +255,7 @@ export default function CouponSells({
         )}
         {!first && isTicketSellingEditable ? (
           <RowIconButton
-            label="刪除此列" className="mr-1.5"
+            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               removeCouponSell({
                 index,

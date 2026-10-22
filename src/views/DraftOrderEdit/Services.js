@@ -10,11 +10,13 @@ import { useLazyFetchServiceNew } from 'hooks/useFetchService'
 import idx from 'idx'
 import cloneDeep from 'lodash/cloneDeep'
 import React, { Fragment, useRef, useEffect } from 'react'
+import { formatNumber } from 'ui/format'
+import { ROW_ICON_ALIGN } from 'views/OrderShared/rowAlign'
 
-// 版面比照打帳單（views/OrderCreate/styles/Services）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
+// 版面比照打帳單（views/OrderCreate/styles/Services）：欄位上方標籤、上緣對齊（OrderShared/rowAlign）、窄螢幕換行不擠壓
 // 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px；pxToRem 以 16px 換算）。自動完成元件的 className／assistField 原以 css 套在根節點
 const styles = {
-  service: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  service: 'flex items-start justify-start flex-wrap gap-y-[12px] mb-[24px]',
   field: 'w-[150px] min-w-[150px] flex mr-[12px]',
   servicesField: 'w-[250px] flex mr-[12px]',
   assistField: 'w-[120px] min-w-[120px] flex mr-[12px]',
@@ -258,11 +260,11 @@ export default function Services({
     <Fragment>
       <div className={styles.service}>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇服務" className="mx-1.5" onClick={handleOpenServicesModal}>
+          <RowIconButton label="從清單選擇服務" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenServicesModal}>
             <Copy aria-hidden="true" strokeWidth={1.75} />
           </RowIconButton>
         ) : (
-          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
+          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
         {/* 不標必填 *：本頁 PannelService 寫入 bill.serviceOrders 前一律 filter(d => d.serviceId)，
             沒選服務的列會被略過，不會被 helper/billVerify.js 的 checkServicesOrders 擋下 */}
@@ -476,13 +478,13 @@ export default function Services({
                 if (data.type === 'PERCENT') {
                   return (
                     <p key={index} className={`m-0 ${styles.heading2}`} style={{ marginTop: '4px' }}>
-                      扣完後業績:{Math.round((service.price * (100 - data.fee)) / 100)}
+                      扣完後業績:{formatNumber(Math.round((service.price * (100 - data.fee)) / 100))}
                     </p>
                   )
                 } else {
                   return (
                     <p key={index} className={`m-0 ${styles.heading2}`} style={{ marginTop: '4px' }}>
-                      扣完後業績:{Math.round(service.price - data.fee)}
+                      扣完後業績:{formatNumber(Math.round(service.price - data.fee))}
                     </p>
                   )
                 }
@@ -492,7 +494,7 @@ export default function Services({
         </div>
         <RowIconButton
           label="清除此列"
-          className="mr-1.5"
+          className={`mr-1.5 ${ROW_ICON_ALIGN}`}
           onClick={handleClear}
           data-testid={`service-${index}-clear`}
         >
@@ -502,7 +504,7 @@ export default function Services({
         {!first ? (
           <RowIconButton
             label="刪除此列"
-            className="mr-1.5"
+            className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               removeService(index)
             }}

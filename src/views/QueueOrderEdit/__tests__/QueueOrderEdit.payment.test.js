@@ -209,6 +209,19 @@ describe('重新開單：紅利點數', () => {
     expect(callsOf(page.calls, 'GET_CUSTOMER_BONUS_RECORD')[0].variables).toEqual({ customerId: CUSTOMER.id })
   })
 
+  // 為什麼：四頁金額彙總的預覽以打帳單為準（Jason 2026/10/22）。打帳單的現金應收會扣紅利點數折抵、付款與折抵列出這一項；
+  // 重新開單原本漏扣（佇列帶 50 元折抵時現金應收仍顯示 800），也沒列出折抵。預覽只顯示在畫面，送出的 bonusDecount 不變。
+  it('紅利點數折抵：金額彙總列出折抵，現金應收扣掉折抵（比照打帳單）', async () => {
+    const page = setupQueue({ queue: withCustomer({ bonusDecount: 50 }), ...bonusOn })
+    await loaded(page)
+    expect(summaryValue('紅利點數折抵')).toHaveTextContent(/^50$/)
+    // 服務 800－紅利折抵 50
+    expect(summaryValue('現金應收')).toHaveTextContent(/^750$/)
+    expect(summaryValue('業績合計')).toHaveTextContent(/^800$/)
+    const input = await retry(page.calls)
+    expect(input.bonusDecount).toBe(50)
+  })
+
   it('收合時標題顯示折抵金額', async () => {
     const page = setupQueue({ queue: withCustomer({ bonusDecount: 50 }), ...bonusOn })
     await loaded(page)

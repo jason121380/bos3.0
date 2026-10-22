@@ -225,6 +225,25 @@ describe('掛單詳細：預收卡販賣收合、從清單選擇與 Enter 跳欄
   })
 })
 
+describe('掛單詳細：預收卡販賣游標', () => {
+  // 為什麼重要：點另一列的欄位時該列變成「目前列」，不能把游標先拉到該列的卡券欄（打字可能打進卡券搜尋）。
+  // 本頁原本靠「只有尚未存進帳單的新列才跳卡券」擋住，這裡另加「焦點已在本列欄位上不搶」（比照店販／會員卡），以測試鎖住
+  it('從第 1 列直接點第 2 列的價格、再點回第 1 列的備註：游標留在點的欄位，不會先跳到該列的卡券欄', async () => {
+    const page = await setup({ order: makeOrder({ ticketOrders: [ticketOrder(), ticketOrder(TICKET, { id: 'to-2' })] }) })
+    focusOn(couponInput(0))
+    const couponFocused = [jest.fn(), jest.fn()]
+    ;[0, 1].forEach(i => couponInput(i).addEventListener('focus', couponFocused[i]))
+    focusOn(field('價格', 1))
+    await page.settle()
+    expect(document.activeElement).toBe(field('價格', 1))
+    focusOn(field('備註', 0))
+    await page.settle()
+    expect(document.activeElement).toBe(field('備註', 0))
+    expect(couponFocused[0]).not.toHaveBeenCalled()
+    expect(couponFocused[1]).not.toHaveBeenCalled()
+  })
+})
+
 describe('掛單詳細：使用預收卡', () => {
   const USED = {
     id: 'record-1',

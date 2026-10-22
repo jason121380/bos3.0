@@ -13,9 +13,11 @@ import cloneDeep from 'lodash/cloneDeep'
 import { Fragment, createRef, memo, useEffect, useRef, useState, useContext } from 'react'
 import TeachingModeContext from 'context/teachingModeContext'
 import { useFetchThirdPartysForCreateOrder } from 'hooks/useFetchMerchant'
+import { formatNumber } from 'ui/format'
+import { ROW_ICON_ALIGN, ROW_INLINE_ALIGN } from 'views/OrderShared/rowAlign'
 
 const styles = {
-  service: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  service: 'flex items-start justify-start flex-wrap gap-y-[12px] mb-[24px]',
   field: 'w-[150px] min-w-[150px] flex mr-[12px]',
   servicesField: 'w-[250px] flex mr-[12px]',
   assistField: 'w-[120px] min-w-[120px] flex mr-[12px]',
@@ -297,9 +299,9 @@ function Services({
     <Fragment>
       <div className={styles.service}>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇服務" className="mx-1.5" onClick={handleOpenServicesModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇服務" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenServicesModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
+          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
         {/* 必填 *：helper/billVerify.js checkServicesOrders 要求每一列都有 serviceId（空列不會被丟掉） */}
         <Field label="服務項目" required>
@@ -489,13 +491,13 @@ function Services({
                         if (data.type === 'PERCENT') {
                           return (
                             <p className={`m-0 ${styles.heading2}`} key={index} style={{ marginTop: '4px' }}>
-                              {`扣完後業績:${Math.round((service.price * (100 - data.fee)) / 100)}`}
+                              {`扣完後業績:${formatNumber(Math.round((service.price * (100 - data.fee)) / 100))}`}
                             </p>
                           )
                         } else {
                           return (
                             <p className={`m-0 ${styles.heading2}`} key={index} style={{ marginTop: '4px' }}>
-                              {`扣完後業績:${Math.round(service.price - data.fee)}`}
+                              {`扣完後業績:${formatNumber(Math.round(service.price - data.fee))}`}
                             </p>
                           )
                         }
@@ -506,12 +508,12 @@ function Services({
               </div>
             )}
             {teachingMode && (
-              <p className={`m-0 ${styles.heading2}`}>勾選將入業績但不收費用**</p>
+              <p className={`m-0 ${styles.heading2} ${ROW_INLINE_ALIGN}`}>勾選將入業績但不收費用**</p>
             )}
           </Fragment>
         )}
         <RowIconButton
-          label="清除此列" className="mr-1.5"
+          label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
           onClick={handleClear}
           data-testid={`service-${index}-clear`}
         >
@@ -519,7 +521,7 @@ function Services({
         </RowIconButton>
         {!first && (
           <RowIconButton
-            label="刪除此列" className="mr-1.5"
+            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={() => {
               removeService(index)
               setFocus('service')

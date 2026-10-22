@@ -87,7 +87,7 @@ describe('帳單詳細：服務列帶回原帳單', () => {
     expect(priceInputs()[0]).not.toBeDisabled()
     expect(priceInputs()[1]).toBeDisabled()
     // 團購券 10%：1500 扣完 1350；綁定且鎖定的卡券不能改
-    expect(within(panel()).getByText('扣完後業績:1350')).toBeInTheDocument()
+    expect(within(panel()).getByText('扣完後業績:1,350')).toBeInTheDocument()
     expect(thirdPartyInputs()[1]).toBeDisabled()
     expect(thirdPartyInputs()[1]).toHaveValue('團購券')
   })

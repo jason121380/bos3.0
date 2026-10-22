@@ -7,6 +7,7 @@ import billContext from 'context/keyInContext'
 import idx from 'idx'
 import React, { Fragment } from 'react'
 import useCouponUseRow from 'views/OrderShared/useCouponUseRow'
+import { ROW_INLINE_ALIGN } from 'views/OrderShared/rowAlign'
 
 
 export default function CouponUse({
@@ -25,7 +26,7 @@ export default function CouponUse({
 
   return (
     <Fragment>
-      <div className="mb-6 flex flex-wrap items-end justify-start gap-y-[12px]">
+      <div className="mb-6 flex flex-wrap items-start justify-start gap-y-[12px]">
         {bill.customerId && (
           <Field label="預收卡">
           <CustomerTicketRecordAutoComplete
@@ -70,7 +71,7 @@ export default function CouponUse({
                 <CheckboxField
                   label="指定"
                   checked={data.isDesignate}
-                  className="mr-[12px] flex w-[100px] last:mr-0"
+                  className={`mr-[12px] flex w-[100px] last:mr-0 ${ROW_INLINE_ALIGN}`}
                   disabled
                 />
               </React.Fragment>

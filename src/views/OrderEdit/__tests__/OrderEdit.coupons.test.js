@@ -5,7 +5,7 @@
 // - 鍵盤：卡券 →（價格沒鎖）可使用次數 → 價格 → 張數 → 備註 → 下一列；鎖價卡券從卡券直接跳備註；選定卡券後游標自動移到下一欄
 // - 使用預收卡：有顧客的帳單才顯示；帶回原本用的卡、金額與助理；卡券不能改（編輯帳單不得編輯預收卡使用），可以改助理並送出
 // GraphQL 全由模擬 link 回應，不連後端、不改真實帳單。
-import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { callsOf } from '../../../__tests__/testkit.test'
 import {
   setup, pageReady, makeOrder, withCustomer, checkoutAndGetInput, summaryValue, loginForTest, pickEmployee,
@@ -165,6 +165,26 @@ describe('帳單詳細：預收卡販賣帶回與修改', () => {
     await pageReady(page)
     fireEvent.click(screen.getByTestId('couponSells'))
     await wait(() => expect(screen.getByTestId('couponSells')).toHaveTextContent('已填 2 筆 · 10,000'))
+  })
+})
+
+describe('帳單詳細：預收卡販賣游標', () => {
+  // 為什麼重要：點另一列的欄位時，該列變成「目前列」會觸發「游標移到第一欄（卡券）」，原本不管焦點是否已在本列欄位上，
+  // 游標會先被拉到卡券欄（打字可能打進卡券搜尋），店販／會員卡已修過，這裡比照
+  it('從第 1 列直接點第 2 列的價格、再點回第 1 列的備註：游標留在點的欄位，過程中也不會先跳到該列的卡券欄', async () => {
+    const page = open({ order: makeOrder({ ticketOrders: [ticketOrder(TICKET), ticketOrder(TICKET, { id: 'to-2' })] }) })
+    await pageReady(page)
+    await focused(couponInputs()[0])
+    const couponFocused = [jest.fn(), jest.fn()]
+    couponInputs().forEach((input, i) => input.addEventListener('focus', couponFocused[i]))
+    act(() => fieldOf(1, 'price').focus())
+    await page.settle()
+    expect(document.activeElement).toBe(fieldOf(1, 'price'))
+    act(() => fieldOf(0, 'remark').focus())
+    await page.settle()
+    expect(document.activeElement).toBe(fieldOf(0, 'remark'))
+    expect(couponFocused[0]).not.toHaveBeenCalled()
+    expect(couponFocused[1]).not.toHaveBeenCalled()
   })
 })
 

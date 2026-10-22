@@ -365,12 +365,16 @@ export default function Footer({ enable }) {
     bonusSetting,
   ])
 
-  // 業績合計、現金應收：運算式與舊版相同，只是算一次，下方彙總卡與底部固定列共用同一個值
+  // 業績合計、現金應收：只顯示在金額彙總（彙總卡與底部固定列共用），不送後端（後端依品項明細自己算業績）。
+  // 四頁預覽以打帳單（PannelPerformance）為準（Jason 2026/10/22）：
+  // - 業績合計：會員卡用第三方卡券時照樣計入售價全額（原本排除，與打帳單、掛單詳細不一致）
+  // - 現金應收：寫法與打帳單 billPaymentSummary 不同（另排除「未選商品」的店販列），但未選商品的列價格一律是 0，結果相同，維持原式
+  // 上方「付款超過應付時歸零」與紅利給點的 effect 用的是各自的運算式，不受影響
   const performanceTotal = Math.round(
     serviceTotalPrice +
     merchantSellTotalPrice +
     couponUsageTotalPrice +
-    merberShipCardTotalPriceWithoutThirdPartyCoupon
+    merberShipCardTotalPrice
   )
   const cashDue = serviceTotalPriceWithoutThirdPartyCoupon +
     productTotalPriceWithoutThirdPartyCoupon +
@@ -402,7 +406,7 @@ export default function Footer({ enable }) {
         ? saveDisabledReason
         : ''
 
-  // 金額彙總：各數值的運算式與舊版相同；排版與千分位在 OrderShared/BillSummary（四頁共用）
+  // 金額彙總：各列數值與打帳單相同（業績合計、現金應收見上方）；排版與千分位在 OrderShared/BillSummary（四頁共用）
   // 消費明細／付款與折抵：彙總卡與手機底部展開共用同一份畫面（比照打帳單）
   const details = (
     <SummaryDetails

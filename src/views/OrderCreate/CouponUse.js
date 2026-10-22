@@ -8,13 +8,14 @@ import billContext from 'context/keyInContext'
 import idx from 'idx'
 import cloneDeep from 'lodash/cloneDeep'
 import { Fragment, useState, useEffect, useContext, createRef, useRef } from 'react'
+import { ROW_ICON_ALIGN, ROW_INLINE_ALIGN } from 'views/OrderShared/rowAlign'
 
 const styles = {
-  couponUse: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  couponUse: 'flex items-start justify-start flex-wrap gap-y-[12px] mb-[24px]',
   field: 'w-[150px] min-w-[150px] flex mr-[12px]',
   priceField: 'w-[65px] flex mr-[12px]',
   couponField: 'w-[250px] flex mr-[12px]',
-  checkbox: 'w-[100px] flex mr-[12px] last:mr-0',
+  checkbox: `w-[100px] flex mr-[12px] last:mr-0 ${ROW_INLINE_ALIGN}`,
 }
 
 export default function CouponUse({
@@ -230,12 +231,12 @@ export default function CouponUse({
             />
           </Fragment>
         ))}
-        <RowIconButton label="清除此列" className="mr-1.5" onClick={handleClear} >
+        <RowIconButton label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`} onClick={handleClear} >
 <Eraser aria-hidden="true" strokeWidth={1.75} />
 </RowIconButton>
         {!first ? (
           <RowIconButton
-            label="刪除此列" className="mr-1.5"
+            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               removeCouponUse({ index })
             }}
