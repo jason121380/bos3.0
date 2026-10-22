@@ -73,7 +73,8 @@ beforeEach(() => {
     init: jest.fn(() => Promise.resolve()),
     isLoggedIn: jest.fn(() => true),
     getProfile: jest.fn(() => Promise.resolve({ userId: 'U-line-1' })),
-    login: jest.fn(() => Promise.resolve()),
+    // 與 LIFF v2 相同：login() 導向 LINE 登入頁，不回傳 Promise
+    login: jest.fn(),
     closeWindow: jest.fn(),
     sendMessages: jest.fn(),
   }
@@ -127,6 +128,13 @@ describe('不指定設計師', () => {
     expect(openSnackbar).toHaveBeenCalledWith({ message: '預約成功', variant: 'success' })
     expect(liff.init).not.toHaveBeenCalled()
     expect(liff.sendMessages).not.toHaveBeenCalled()
+  })
+
+  it('網址帶的日期為 0（無效）時不查時段、不顯示服務時間', async () => {
+    const utils = setup({ search: '?usingLineLogin=0&date=0' })
+    await utils.settle()
+    expect(callsOf(utils.calls, 'unspecifiedBookingTimes')).toHaveLength(0)
+    expect(screen.queryByTestId('service-time')).toBeNull()
   })
 
   it('換日期：重新查該日的時段；無效日期不理會', async () => {
@@ -288,12 +296,16 @@ describe('從 LINE 進來', () => {
     await wait(() => expect(liff.sendMessages).toHaveBeenCalledWith([]))
   })
 
-  it('尚未登入 LINE：先登入再取 userId；沒有上次的顧客資料時姓名電話留空', async () => {
+  // LIFF v2 的 login() 不回傳 Promise：原本接 .then 會拋 TypeError（沒人接的 rejection），之後取 userId 的程式實際上不會執行。
+  // 改為只導向登入，登入後 LINE 重新開啟本頁再走已登入流程（V11，2026/10/22）
+  it('尚未登入 LINE：導向 LINE 登入，不取 userId、不提示錯誤；姓名電話留空', async () => {
     liff.isLoggedIn.mockReturnValue(false)
     const utils = setup({ search: '' })
     await utils.settle()
     await wait(() => expect(liff.login).toHaveBeenCalled())
-    await wait(() => expect(liff.getProfile).toHaveBeenCalled())
+    await new Promise(r => setTimeout(r, 0))
+    expect(liff.getProfile).not.toHaveBeenCalled()
+    expect(openSnackbar).not.toHaveBeenCalled()
     expect(screen.getByTestId('customer-name-0')).toHaveValue('')
   })
 
@@ -359,25 +371,39 @@ describe('失敗與版面', () => {
     await wait(() => expect(submit()).not.toBeDisabled())
   })
 
-  it('LINE 登入後取不到 userId：提示錯誤訊息、不帶入、頁面照常可用', async () => {
-    liff.isLoggedIn.mockReturnValue(false)
+  // 已登入時取個人資料原本沒有 catch（沒人接的 rejection、畫面沒有提示）；V11 補上提示（2026/10/22）
+  it('已登入但取不到 LINE 個人資料：提示錯誤訊息、不帶入、頁面照常可用', async () => {
+    localStorage.setItem('customer', { name: '老客人', cellphone: '0987654321' })
     liff.getProfile.mockImplementation(() => Promise.reject({ code: '401', message: 'no profile' }))
     const utils = setup({ search: '?usingLineLogin=1' })
     await utils.settle()
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: 'no profile', variant: 'error' }))
+    expect(screen.getByTestId('customer-name-0')).toHaveValue('')
     expect(screen.getByTestId('booking-submit')).toBeInTheDocument()
   })
 
-  it('標籤寬度：依實際排版量測（jsdom 以假寬度模擬）', async () => {
-    const w = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth')
-    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', { configurable: true, get: () => 120 })
-    try {
-      const utils = setup({ search: '?usingLineLogin=0&designerId=d-1' })
-      await utils.settle()
-      expect(screen.getByText('服務時間')).toBeInTheDocument()
-      expect(screen.getByText('您是如何知道我們的呢')).toBeInTheDocument()
-    } finally {
-      Object.defineProperty(HTMLElement.prototype, 'offsetWidth', w)
-    }
+  it('LINE 初始化失敗：提示錯誤訊息、不取個人資料，頁面照常可用', async () => {
+    liff.init.mockImplementation(() => Promise.reject(new Error('invalid liffId')))
+    const utils = setup({ search: '?usingLineLogin=1' })
+    await utils.settle()
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: 'invalid liffId', variant: 'error' }))
+    expect(liff.getProfile).not.toHaveBeenCalled()
+    expect(screen.getByTestId('booking-submit')).toBeInTheDocument()
+  })
+
+  it('預約訊息的「服務」欄維持空白（頁面沒有選服務項目的欄位）；姓名改動不保留電話格式錯誤提示（與原本相同）', async () => {
+    const utils = setup({ search: `?usingLineLogin=1&designerId=d-1&date=${at(10)}`, extra: { bookingV2: { bookingV2: { id: 'b-1', status: '預約成功' } } } })
+    await utils.settle()
+    choose(screen.getByTestId('designer-name'), 'Amy')
+    await utils.settle()
+    choose(screen.getByTestId('service-time'), '10:00')
+    fireEvent.change(screen.getByTestId('customer-cellphone-0'), { target: { value: '0912' } })
+    expect(screen.getByText('＊請輸入有效手機號碼')).toBeInTheDocument()
+    fireEvent.change(screen.getByTestId('customer-name-0'), { target: { value: '吳小姐' } })
+    expect(screen.queryByText('＊請輸入有效手機號碼')).toBeNull()
+    fireEvent.change(screen.getByTestId('customer-cellphone-0'), { target: { value: '0912345678' } })
+    fireEvent.click(submit())
+    await wait(() => expect(liff.sendMessages).toHaveBeenCalled())
+    expect(liff.sendMessages.mock.calls[0][0][0].text.endsWith('設計師: Amy\n服務: ')).toBe(true)
   })
 })
