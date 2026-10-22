@@ -1,6 +1,6 @@
 # 階段 2 驗證報告
 
-> **現行基準（2026/10/22，v3.10221302）**：`CI=true npm run test:nowatch` 為 **147 檔／1516 測試全數通過**，`TZ=America/Los_Angeles` 再跑一次結果相同；`npm run lint:build` 0 warning；`npm run build`（Vite）成功。GitHub Actions 目前不會執行，以本機結果為準。以下為 2026/10/19 階段 2 當時的紀錄，數字不再更新。
+> **現行基準（2026/10/22，v3.10221302）**：`CI=true npm run test:nowatch` 為 **148 檔／1518 測試全數通過**，`TZ=America/Los_Angeles` 再跑一次結果相同；`npm run lint:build` 0 warning；`npm run build`（Vite）成功。GitHub Actions 目前不會執行，以本機結果為準。以下為 2026/10/19 階段 2 當時的紀錄，數字不再更新。
 
 > 範圍：分支 `claude/upbeat-carson-pdc7rf`（commit `dc82823`）對改版前基準 `c41b604`。
 > 未納入：第二輪第 4 批（表單頁）與第 6 批（其他 63 頁），它們的成果還在代理的工作區，沒有合併進分支。
