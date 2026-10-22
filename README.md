@@ -37,7 +37,7 @@ BeautyOS 是一套專為**美髮 / 美容 / 美甲 / SPA 產業**設計的全方
 
 | 項目 | 版本 |
 |---|---|
-| Node.js | `v20.12.1` (建議，或 v22.x) |
+| Node.js | `v24.22.1`（2026-10-21 安全更新；Node 20 已結束支援） |
 | npm | `v10+` |
 | 瀏覽器 | Chrome / Edge / Safari (最新版本) |
 
@@ -666,12 +666,12 @@ docker run -p 3000:3000 beautyos-frontend
 #### Dockerfile 架構 (Multi-Stage)
 
 ```dockerfile
-# Stage 1: Builder (node:20.12.1-alpine)
+# Stage 1: Builder (node:24.22.1-alpine)
 # - npm config (fetch-retries: 5, timeout: 20s~120s)
 # - npm ci --legacy-peer-deps（依 package-lock.json，與 CI 相同）
 # - npm run build
 
-# Stage 2: Runtime (node:20.12.1-alpine)
+# Stage 2: Runtime (node:24.22.1-alpine)
 # - 只複製 build/ 資料夾
 # - serve@14 -s build (port 3000)
 # - build/serve.json（來自 public/serve.json）：/assets/** 為 hash 檔名，Cache-Control 一年 immutable；*.html no-cache
@@ -739,7 +739,7 @@ const handleSubmit = () => createOrder({ variables: { input } })
 | ⚠️ 項目 | 說明 |
 |---|---|
 | **依賴安裝** | 必須使用 `npm install --legacy-peer-deps`，否則會遇到 ERESOLVE 錯誤 |
-| **Node 版本** | 建議使用 `v20.12.1`，高版本可能有相容性問題 |
+| **Node 版本** | 使用 `v24.22.1`（2026/10/21 安全更新）。Node 20 已結束支援且受該次漏洞影響 |
 | **時區** | 日期時間一律以台灣時間（全域已處理，見〈時區〉），不要自行以裝置時區換算 |
 | **API 位址** | 一律從 `lib/api-base` 取，不要在頁面寫死網址 |
 | **查詢結果防呆** | API 失敗時 `data` 為 undefined，讀陣列前先判斷，避免整頁拋錯 |
