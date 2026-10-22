@@ -228,6 +228,8 @@ function EventRuleEdit({ match }) {
       ]
 
       if (!submitData.nameForGroup) throw new Error('請輸入規則名稱。')
+      // 至少選一間適用店家（Jason 2026/10/22「照建議」）
+      if (!submitData.merchants || !submitData.merchants.length) throw new Error('請選擇適用店家。')
 
       if (consumptionTypeUsing !== 'ALL') {
         if (product) {

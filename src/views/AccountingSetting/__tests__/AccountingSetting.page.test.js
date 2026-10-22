@@ -3,7 +3,7 @@
 // - 新增列、刪除列、修改代號／名稱／收付方式後儲存：送出 setAccountingSubjects({ revenue, expenditure }) 與
 //   setAccountingType(typeList)，typeList 去掉空白的收付方式；儲存後提示並停留在本頁網址
 // - 切換分頁只切換顯示，三區保持掛載、編輯中的內容不會因切換而消失
-// - 儲存失敗時不整頁壞（錯誤只記在 console）
+// - 儲存失敗時不整頁壞（錯誤只記在 console）；科目或收付方式查詢失敗時停用儲存並提示
 // GraphQL 全由 testkit 的模擬 link 回應，不改真實設定。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
@@ -162,19 +162,39 @@ describe('收支科目設定', () => {
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 
-  it('科目查詢失敗時收入、支出各留一列空白', async () => {
-    const { settle } = setup({ GET_ACCOUNTING_SUBJECTS: new Error('查詢失敗') })
+  // Jason 2026/10/22「照建議」：任一查詢失敗時停用「儲存」並提示，避免把讀不到的科目／收付方式存成空白（覆蓋後端既有設定）。
+  const saveButton = () => screen.getByText('儲存').closest('button')
+  const LOAD_FAILED = '收支科目或收付方式讀取失敗，請重新整理後再設定'
+
+  it('科目查詢失敗時收入、支出各留一列空白；停用儲存並提示', async () => {
+    const { settle, calls } = setup({ GET_ACCOUNTING_SUBJECTS: new Error('查詢失敗') })
     await settle()
     expect(byId('revenueNumber-0')).toHaveValue('')
     expect(byId('expenditureNumber-0')).toHaveValue('')
     expect(byId('accountingTypeName-0')).toHaveValue('現金')
+    expect(saveButton()).toBeDisabled()
+    expect(screen.getByText(LOAD_FAILED)).toBeInTheDocument()
+    fireEvent.click(saveButton())
+    expect(callsOf(calls, 'SET_ACCOUNTING_SUBJECTS')).toHaveLength(0)
+    expect(callsOf(calls, 'SET_ACCOUNTING_TYPE')).toHaveLength(0)
   })
 
-  it('收付方式查詢失敗時留一列空白（同科目查詢失敗），不整頁錯誤（Jason 2026/10/22）', async () => {
-    const { settle } = setup({ GET_ACCOUNTING_TYPE: new Error('查詢失敗') })
+  it('收付方式查詢失敗時留一列空白（同科目查詢失敗），不整頁錯誤；停用儲存並提示', async () => {
+    const { settle, calls } = setup({ GET_ACCOUNTING_TYPE: new Error('查詢失敗') })
     await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
     expect(byId('accountingTypeName-0')).toHaveValue('')
     expect(byId('revenueNumber-0')).not.toHaveValue('')
+    expect(saveButton()).toBeDisabled()
+    expect(screen.getByText(LOAD_FAILED)).toBeInTheDocument()
+    fireEvent.click(saveButton())
+    expect(callsOf(calls, 'SET_ACCOUNTING_TYPE')).toHaveLength(0)
+  })
+
+  it('兩個查詢都成功時可儲存、不顯示讀取失敗提示', async () => {
+    const { settle } = setup()
+    await settle()
+    expect(saveButton()).toBeEnabled()
+    expect(screen.queryByText(LOAD_FAILED)).toBeNull()
   })
 })

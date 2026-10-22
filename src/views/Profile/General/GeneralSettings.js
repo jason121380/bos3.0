@@ -49,6 +49,11 @@ function GeneralSettings({
   }
   const handleSubmit = event => {
     event.preventDefault()
+    // 姓、名、手機必填：按鈕已停用，表單以 Enter 送出時也提示且不送出（Jason 2026/10/22「照建議」）
+    if (missingFields.length > 0) {
+      openSnackbar({ message: `請填寫${missingFields.join('、')}後再儲存`, variant: 'warning' })
+      return
+    }
     if (values.cellphone.trim().length < 7) {
       openSnackbar({ message: '手機長度必須大於六碼', variant: 'warning' })
     } else {

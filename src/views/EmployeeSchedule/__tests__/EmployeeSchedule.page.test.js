@@ -224,15 +224,16 @@ describe('人員順序', () => {
     expect(order((await savedAfter(again, 1)).schedule)).toEqual(['張三', 'Amy', '李大華*'])
   })
 
-  // Jason 2026/10/22 fix all：ScheduleCard.js「移到最後」最後一位的分支原本欄位名稱打錯（timeAddd／timeAdd），
-  // 只記時間、多存一個 timeAdd 欄位而沒有標記；改為 timeAdded：記下時間並標記，不再多存 timeAdd。已有時間時原樣存回。
-  it('最後一位按「移到最後」：記下時間並標記，不多存其他欄位', async () => {
+  // ScheduleCard.js「移到最後」最後一位的分支原本欄位名稱打錯（timeAddd／timeAdd），只記時間、多存一個 timeAdd 欄位。
+  // Jason 2026/10/22「照建議」：最後一位比照中間的人，只記下時間、不標記（timeAdded 維持 false），不多存其他欄位。
+  // 已有時間時原樣存回。
+  it('最後一位按「移到最後」：只記下時間、不標記，不多存其他欄位', async () => {
     const utils = setup()
     await ready(utils)
     act$('阿四', '移到最後')
     const last = (await savedAfter(utils, 1)).schedule[0].scheduleRow[3]
     expect(Object.keys(last).sort()).toEqual(['designerId', 'time', 'timeAdded'])
-    expect(last).toMatchObject({ designerId: 'u4', timeAdded: true })
+    expect(last).toMatchObject({ designerId: 'u4', timeAdded: false })
     expect(last.time).toBeGreaterThan(0)
     cleanup()
     const stamped = setup({ cards: [card('早班', [row('u1'), { designerId: 'u4', timeAdded: false, time: T }])] })

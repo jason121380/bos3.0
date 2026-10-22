@@ -46,6 +46,11 @@ function HelperPointSettingEdit({ match }) {
   }, [getMerchantPointValueSettingsForEdit.loading])
 
   const handleUpdate = () => {
+    // 名稱必填（Jason 2026/10/22「照建議」）
+    if (!String(submitData.name || '').trim()) {
+      openSnackbar({ variant: 'warning', message: '請輸入互助點數設定名稱' })
+      return
+    }
     setIsClick(true)
     const data = {
       name: submitData.name,

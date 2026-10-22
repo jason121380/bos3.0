@@ -10,7 +10,7 @@ import { Download, Pencil } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import { cn } from 'ui/utils'
@@ -53,8 +53,9 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
   const usingIds = memberships.data.filter(d => d.isUsing).map(d => d.uuid)
   const isAllSelected = usingIds.length > 0 && usingIds.every(uuid => selectedMembership.indexOf(uuid) > -1)
 
-  // 刪除會員卡
+  // 刪除會員卡（確認視窗按「確定」後才送出；先關窗避免重複送出）
   const handleConfirmCancel = () => {
+    setOpenDialog(false)
     deleteMembership(selectedMembership)
       .then(() => {
         setSelectedMembership([])
@@ -222,23 +223,25 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
       </Card>
       <TableEditBar
         selected={selectedMembership}
-        onDelete={handleConfirmCancel}
+        onDelete={() => setOpenDialog(true)}
         onEditMembershipCategory={handleOpenEditMembershipCategoryModal}
       />
+      {/* 批次刪除確認（比照打卡記錄刪除的確認窗，Jason 2026/10/22「照建議」）：確定才送出刪除，取消保留勾選 */}
       <Dialog
         open={openDialog}
         onOpenChange={o => !o && handleCloseDialog()}
       >
         <DialogContent size="sm">
           <DialogHeader>
-            <DialogTitle id="alert-dialog-title">{'刪除會員卡'}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">{`確定要刪除選取的 ${selectedMembership.length} 張會員卡嗎？`}</DialogTitle>
+            <DialogDescription>刪除後無法復原。</DialogDescription>
           </DialogHeader>
-          <DialogFooter className="mt-4">
-            <Button onClick={handleCloseDialog} variant="secondary">
+          <DialogFooter>
+            <Button onClick={handleCloseDialog} variant="ghost">
               取消
             </Button>
             <Button onClick={handleConfirmCancel} variant="danger" autoFocus data-testid="confirm">
-              確認
+              確定
             </Button>
           </DialogFooter>
         </DialogContent>

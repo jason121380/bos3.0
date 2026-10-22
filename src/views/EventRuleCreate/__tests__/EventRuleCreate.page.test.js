@@ -1,5 +1,5 @@
 // 保護「建立規則」（活動底下的發券規則）：帶入主活動的期間、簡訊與張數上限；起訖日限在主活動期間內、以台灣時間整天送出；
-// 適用店家（依此活動參與的店家選）、付款方式、門檻、每單上限、總張數（不得超過主活動上限）、入金儲值門檻；
+// 適用店家（依此活動參與的店家選，至少一間）、付款方式、門檻、每單上限、總張數（不得超過主活動上限）、入金儲值門檻；
 // 自訂消費類型時依店販／會員卡／服務／四種卡券組出 consumptionTypeRules（全部套用＝ALL、自訂歸屬＝SPECIFIC＋歸屬）；
 // 各種漏填的錯誤訊息；成功導回活動列表、失敗與錯誤提示。日期、店家、歸屬、付款方式選擇器以替身代替（各有自己的測試）。
 // GraphQL 全由 testkit 的模擬 link 回應，不連任何後端、不建立真實規則。
@@ -45,6 +45,7 @@ const submit = () => screen.getByText('新增').closest('button')
 const sent = calls => callsOf(calls, 'CREATE_EVENT_RULE_GROUP')[0].variables.input
 const fillBasics = () => {
   fireEvent.change(fieldByLabel('規則名稱'), { target: { value: '  滿千送券 ' } })
+  fireEvent.click(screen.getByText('選擇店家（測試）'))
   fireEvent.click(screen.getByText('選付款方式（測試）'))
 }
 const customize = () => fireEvent.click(screen.getByText('自訂'))
@@ -233,12 +234,15 @@ describe('建立規則', () => {
     }
   )
 
-  it('漏填的錯誤訊息：規則名稱、自訂卻沒選任何消費類型、付款方式、入金門檻為 0', async () => {
+  it('漏填的錯誤訊息：規則名稱、適用店家、自訂卻沒選任何消費類型、付款方式、入金門檻為 0', async () => {
     const { calls } = setup()
     await loaded()
     fireEvent.click(submit())
     await wait(() => expect(openSnackbar).toHaveBeenLastCalledWith({ message: '請輸入規則名稱。', variant: 'error' }))
     fireEvent.change(fieldByLabel('規則名稱'), { target: { value: '滿千送券' } })
+    fireEvent.click(submit())
+    await wait(() => expect(openSnackbar).toHaveBeenLastCalledWith({ message: '請選擇適用店家。', variant: 'error' }))
+    fireEvent.click(screen.getByText('選擇店家（測試）'))
     customize()
     fireEvent.click(submit())
     await wait(() => expect(openSnackbar).toHaveBeenLastCalledWith({ message: '請選套用的消費類型。', variant: 'error' }))
@@ -272,14 +276,27 @@ describe('建立規則', () => {
     expect(Number(screen.getByLabelText('起始時間').value)).toBe(dec1.getTime())
   })
 
-  // 已知缺口（待 Jason 決定）：沒選適用店家也能建立規則（merchants 送空陣列），規則可能不適用任何店家。建議確認後端語意，必要時加檢查。
-  it('後端回 false 提示建立失敗；錯誤時提示錯誤；都留在本頁可再按；沒選店家也照送（已知缺口）', async () => {
+  // 原本沒選適用店家也能建立規則（merchants 送空陣列），規則可能不適用任何店家。
+  // Jason 2026/10/22「照建議」：至少選一間適用店家，否則提示且不送出。
+  it('沒選適用店家：提示「請選擇適用店家。」、不送出、按鈕可再按', async () => {
+    const { calls } = setup()
+    await loaded()
+    fireEvent.change(fieldByLabel('規則名稱'), { target: { value: '滿千送券' } })
+    fireEvent.click(screen.getByText('選付款方式（測試）'))
+    fireEvent.click(submit())
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '請選擇適用店家。', variant: 'error' }))
+    expect(callsOf(calls, 'CREATE_EVENT_RULE_GROUP')).toHaveLength(0)
+    expect(submit()).toBeEnabled()
+    expect(currentLocation()).toBe('/event-rule-create/e1')
+  })
+
+  it('後端回 false 提示建立失敗；錯誤時提示錯誤；都留在本頁可再按', async () => {
     const first = setup({ CREATE_EVENT_RULE_GROUP: { createEventRuleGroup: false } })
     await loaded()
     fillBasics()
     fireEvent.click(submit())
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '建立失敗', variant: 'warning' }))
-    expect(sent(first.calls).merchants).toEqual([])
+    expect(sent(first.calls).merchants).toEqual(['m1', 'm2'])
     expect(submit()).toBeEnabled()
     cleanup()
 

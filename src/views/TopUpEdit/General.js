@@ -190,8 +190,10 @@ export default function General() {
             defaultValue={defaultValue.payType}
             onChange={event => {
               setValue('payType', event.target.value)
-              // 現金不收手續費：清空隱藏的手續費負擔方，不把原本的值一起送出（Jason 2026/10/22 fix all）
-              if (event.target.value === '現金') setValue('handlingFeeDecountWay', null)
+              // 現金不收手續費：手續費負擔方送「不扣項」（WITHOUTHANDLINGFEE，與顧客詳細的入金彈窗相同），不把原本的值一起送出；
+              // 從現金改回其他付款方式時負擔方回到未選（Jason 2026/10/22 fix all；「照建議」改送 WITHOUTHANDLINGFEE，原本送 null）
+              if (event.target.value === '現金') setValue('handlingFeeDecountWay', 'WITHOUTHANDLINGFEE')
+              else if (payType === '現金') setValue('handlingFeeDecountWay', null)
               if (errors?.payType) {
                 clearErrors(['payType'])
               }

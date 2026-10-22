@@ -334,8 +334,8 @@ export default function ScheduleCard({
             !data.scheduleRow[data.scheduleRow.length - 1].timeAdded &&
             data.scheduleRow[data.scheduleRow.length - 1].time === 0
           ) {
+            // 最後一位比照中間的人：只記下時間、不標記（Jason 2026/10/22「照建議」）
             data.scheduleRow[data.scheduleRow.length - 1].time = new Date().getTime()
-            data.scheduleRow[data.scheduleRow.length - 1].timeAdded = true
           }
         }
       }

@@ -1,5 +1,5 @@
 // 保護「編輯第三方卡券」：從卡券清單找出網址 id 的那張並帶入名稱、手續費、扣項方式（PERCENT／AMOUNT）與金額呈現為 0；
-// 儲存送出 id 與修改後的內容、成功重抓並導回列表；必填與手續費不得為負的檢查。
+// 儲存送出 id 與修改後的內容、成功重抓並導回列表；必填與手續費不得為負、百分比不得超過 100 的檢查。
 // GraphQL 全由 testkit 的模擬 link 回應，不連任何後端。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
@@ -68,5 +68,30 @@ describe('編輯第三方卡券', () => {
     expect(save()).toBeEnabled()
     typeLikeBrowser(screen.getByTestId('name'), '')
     expect(save()).toBeDisabled()
+  })
+
+  // Jason 2026/10/22「照建議」：百分比手續費限制 0～100，超過時提示且不送出；固定金額不受此限。
+  it('百分比手續費超過 100 時提示且不儲存；改回 100 才送出', async () => {
+    const utils = setup('t1')
+    await wait(() => expect(screen.getByTestId('name')).toHaveValue('街口券'))
+    fireEvent.change(fieldByLabel('手續費'), { target: { value: '100.5' } })
+    fireEvent.click(save())
+    expect(openSnackbar).toHaveBeenCalledWith({ message: '百分比手續費請輸入 0～100', variant: 'warning' })
+    await utils.settle()
+    expect(callsOf(utils.calls, 'UPDATE_UPDATE_THIRD_PARTY_COUPON')).toHaveLength(0)
+    expect(currentLocation()).toBe('/thirdPartyCoupon/edit/t1')
+    fireEvent.change(fieldByLabel('手續費'), { target: { value: '100' } })
+    fireEvent.click(save())
+    await wait(() => expect(callsOf(utils.calls, 'UPDATE_UPDATE_THIRD_PARTY_COUPON')).toHaveLength(1))
+    expect(callsOf(utils.calls, 'UPDATE_UPDATE_THIRD_PARTY_COUPON')[0].variables.input).toMatchObject({ type: 'PERCENT', handlingFee: 100 })
+  })
+
+  it('固定金額超過 100 照常儲存', async () => {
+    const utils = setup('t2')
+    await wait(() => expect(screen.getByTestId('name')).toHaveValue('百貨禮券'))
+    fireEvent.change(fieldByLabel('手續費'), { target: { value: '150' } })
+    fireEvent.click(save())
+    await wait(() => expect(callsOf(utils.calls, 'UPDATE_UPDATE_THIRD_PARTY_COUPON')).toHaveLength(1))
+    expect(callsOf(utils.calls, 'UPDATE_UPDATE_THIRD_PARTY_COUPON')[0].variables.input).toMatchObject({ type: 'AMOUNT', handlingFee: 150 })
   })
 })

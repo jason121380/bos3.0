@@ -267,6 +267,8 @@ describe('編輯規則', () => {
 
   it.each([
     ['規則名稱空白', { nameForGroup: '  ' }, '請輸入規則名稱。'],
+    // Jason 2026/10/22「照建議」：至少選一間適用店家
+    ['沒有適用店家', { merchants: [] }, '請選擇適用店家。'],
     ['自訂歸屬但沒有歸屬', { consumptionTypeRules: [SPECIFIC('SERVICE', [])] }, '請選擇服務套用的歸屬。'],
     ['自訂卻沒有任何消費類型', { consumptionTypeRules: [] }, '請選套用的消費類型。'],
     ['沒有付款方式', { payTypeUsing: [] }, '請選擇適用付款方式。'],

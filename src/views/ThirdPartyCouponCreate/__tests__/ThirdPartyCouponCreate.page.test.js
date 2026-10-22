@@ -1,4 +1,4 @@
-// 保護「新增第三方卡券」：名稱、手續費扣項方式（PERCENT 百分比／AMOUNT 固定金額）都填、手續費 ≥ 0 才能新增；
+// 保護「新增第三方卡券」：名稱、手續費扣項方式（PERCENT 百分比／AMOUNT 固定金額）都填、手續費 ≥ 0 才能新增，百分比不得超過 100；
 // 送出的名稱、手續費（數字）、扣項方式與「金額呈現為 0」；成功重抓列表、導回列表並提示。
 // GraphQL 全由 testkit 的模擬 link 回應，不連任何後端、不建立真實資料。
 import React from 'react'
@@ -59,8 +59,9 @@ describe('新增第三方卡券', () => {
     expect(openSnackbar).toHaveBeenCalledWith({ message: '新增第三方卡券成功', variant: 'success' })
   })
 
-  // 已知缺口（待 Jason 決定）：百分比手續費沒有上限檢查，150% 也能新增（帳單扣手續費會超過卡券金額）。建議：PERCENT 時限制 0～100。
-  it('固定金額：送出 AMOUNT；百分比超過 100 目前也能送出（已知缺口）', async () => {
+  // 百分比手續費原本沒有上限檢查，150% 也能新增（帳單扣手續費會超過卡券金額）。
+  // Jason 2026/10/22「照建議」：PERCENT 限制 0～100，超過時提示且不送出；100 整可以送出；固定金額不受此限。
+  it('固定金額：送出 AMOUNT（超過 100 也可）；百分比超過 100 提示且不送出，100 可以送出', async () => {
     const { calls } = setup()
     typeLikeBrowser(screen.getByTestId('name'), '百貨禮券')
     pickOption(fieldByLabel('手續費扣項方式'), '固定金額')
@@ -71,10 +72,18 @@ describe('新增第三方卡券', () => {
       name: '百貨禮券', type: 'AMOUNT', handlingFee: 30, isNoCash: false,
     })
     cleanup()
-    setup()
+    const pct = setup()
     typeLikeBrowser(screen.getByTestId('name'), '高手續費券')
     pickOption(fieldByLabel('手續費扣項方式'), '百分比')
     fireEvent.change(fieldByLabel('手續費'), { target: { value: '150' } })
-    expect(submit()).toBeEnabled()
+    fireEvent.click(submit())
+    expect(openSnackbar).toHaveBeenCalledWith({ message: '百分比手續費請輸入 0～100', variant: 'warning' })
+    await pct.settle()
+    expect(callsOf(pct.calls, 'CREATE_THIRD_PARTY_COUPON')).toHaveLength(0)
+    expect(currentLocation()).toBe('/thirdPartyCoupon/create')
+    fireEvent.change(fieldByLabel('手續費'), { target: { value: '100' } })
+    fireEvent.click(submit())
+    await wait(() => expect(callsOf(pct.calls, 'CREATE_THIRD_PARTY_COUPON')).toHaveLength(1))
+    expect(callsOf(pct.calls, 'CREATE_THIRD_PARTY_COUPON')[0].variables.input).toMatchObject({ type: 'PERCENT', handlingFee: 100 })
   })
 })

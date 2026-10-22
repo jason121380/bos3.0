@@ -1,6 +1,6 @@
 // 保護「新增互助點數設定」：名稱、點數使用成本（換算金額、是否依互助人固定金額）與點數獲得方式——固定金額送 retrieveFixed，
 // 全段／分段送 retrieveSegmentSetting（可增刪段落、第一段不能刪）；數字欄位取絕對值的整數；成功導回業績抽成參數頁、
-// 後端回 false 或錯誤時提示並可再按。GraphQL 全由 testkit 的模擬 link 回應，不連任何後端、不建立真實資料。
+// 名稱必填；後端回 false 或錯誤時提示並可再按。GraphQL 全由 testkit 的模擬 link 回應，不連任何後端、不建立真實資料。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
@@ -74,6 +74,7 @@ describe('新增互助點數設定', () => {
 
   it('全段與分段各自保留段落；再按已選的方式不會取消選取', async () => {
     const { calls } = setup()
+    type(screen.getByLabelText('互助點數設定名稱'), '全段互助')
     fireEvent.click(screen.getByText('分段'))
     type(document.getElementById('helperPointThreshold-0'), '999')
     fireEvent.click(screen.getByText('全段'))
@@ -88,15 +89,30 @@ describe('新增互助點數設定', () => {
     )
   })
 
-  // 已知缺口（待 Jason 決定）：名稱沒有必填檢查，空白也會送出（由後端決定是否擋）。建議：名稱空白時提示。
-  it('後端回 false 提示新增失敗；錯誤時提示錯誤；都可再按；名稱空白也照送（已知缺口）', async () => {
+  // 名稱原本沒有必填檢查，空白也會送出。Jason 2026/10/22「照建議」：名稱去掉前後空白後為空時提示且不送出，按鈕維持可按。
+  it('名稱空白（含只有空白）時提示且不送出', async () => {
+    const utils = setup()
+    fireEvent.click(confirm())
+    expect(openSnackbar).toHaveBeenLastCalledWith({ variant: 'warning', message: '請輸入互助點數設定名稱' })
+    type(screen.getByLabelText('互助點數設定名稱'), '   ')
+    fireEvent.click(confirm())
+    expect(openSnackbar).toHaveBeenCalledTimes(2)
+    await utils.settle()
+    expect(callsOf(utils.calls, 'CREATE_MERCHANT_POINT_VALUE_SETTING')).toHaveLength(0)
+    expect(confirm()).toBeEnabled()
+    expect(currentLocation()).toBe('/helper-point-setting/create')
+  })
+
+  it('後端回 false 提示新增失敗；錯誤時提示錯誤；都可再按', async () => {
     const first = setup({ CREATE_MERCHANT_POINT_VALUE_SETTING: { createMerchantPointValueSetting: false } })
+    type(screen.getByLabelText('互助點數設定名稱'), '一般互助')
     fireEvent.click(confirm())
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'warning', message: '新增失敗' }))
-    expect(sent(first.calls).name).toBe('')
+    expect(sent(first.calls).name).toBe('一般互助')
     expect(confirm()).toBeEnabled()
     cleanup()
     setup({ CREATE_MERCHANT_POINT_VALUE_SETTING: new Error('名稱重複') })
+    type(screen.getByLabelText('互助點數設定名稱'), '一般互助')
     fireEvent.click(confirm())
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'error', message: '名稱重複' }))
     await wait(() => expect(confirm()).toBeEnabled())

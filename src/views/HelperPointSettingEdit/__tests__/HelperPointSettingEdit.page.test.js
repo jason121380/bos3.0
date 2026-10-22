@@ -1,6 +1,6 @@
 // 保護「編輯互助點數設定」：依網址 id 帶入名稱、換算金額、依互助人固定金額與點數獲得方式（固定金額或全段／分段的段落）；
 // 儲存送出 updateSettingId 與內容（固定金額送 retrieveFixed、段落送 retrieveSegmentSetting）；成功導回業績抽成參數頁、
-// 後端回 false 或錯誤時提示並可再按。GraphQL 全由 testkit 的模擬 link 回應，不連任何後端。
+// 名稱必填；後端回 false 或錯誤時提示並可再按。GraphQL 全由 testkit 的模擬 link 回應，不連任何後端。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
@@ -121,5 +121,18 @@ describe('編輯互助點數設定', () => {
     fireEvent.click(save())
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'error', message: '設定使用中' }))
     await wait(() => expect(save()).toBeEnabled())
+  })
+
+  // Jason 2026/10/22「照建議」：名稱必填，去掉前後空白後為空時提示且不送出，按鈕維持可按。
+  it('名稱清空（含只有空白）時提示且不儲存', async () => {
+    const utils = setup()
+    await loaded()
+    type(screen.getByLabelText('互助點數設定名稱'), '  ')
+    fireEvent.click(save())
+    expect(openSnackbar).toHaveBeenLastCalledWith({ variant: 'warning', message: '請輸入互助點數設定名稱' })
+    await utils.settle()
+    expect(callsOf(utils.calls, 'UPDATE_MERCHANT_POINT_VALUE_SETTING')).toHaveLength(0)
+    expect(save()).toBeEnabled()
+    expect(currentLocation()).toBe('/helper-point-setting/edit/hp1')
   })
 })

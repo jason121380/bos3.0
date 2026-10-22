@@ -1,5 +1,5 @@
 // 保護「編輯會員卡分類」：依網址的分類 uuid 讀取並帶入代號、名稱；儲存時送出 itemUUID 與修改後的值（保留原啟用狀態），
-// 成功導回分類列表、失敗提示錯誤。GraphQL 全由 testkit 的模擬 link 回應，不連任何後端。
+// 代號、名稱必填；成功導回分類列表、失敗提示錯誤。GraphQL 全由 testkit 的模擬 link 回應，不連任何後端。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
@@ -48,6 +48,22 @@ describe('編輯會員卡分類', () => {
     await wait(() => expect(fieldByLabel('名稱')).toHaveValue('金卡'))
     fireEvent.click(screen.getByTestId('save'))
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '代號重複', variant: 'error' }))
+    expect(window.location.href).toBe('http://localhost/')
+  })
+
+  // Jason 2026/10/22「照建議」：代號、名稱必填，去掉前後空白後為空時提示且不送出。
+  it('代號或名稱清空（含只有空白）時提示且不儲存', async () => {
+    const utils = setup({ updateMembershipCategory: { updateMembershipCategory: true } })
+    await wait(() => expect(fieldByLabel('名稱')).toHaveValue('金卡'))
+    fireEvent.change(fieldByLabel('代號'), { target: { value: ' ' } })
+    fireEvent.click(screen.getByTestId('save'))
+    expect(openSnackbar).toHaveBeenLastCalledWith({ message: '請輸入代號', variant: 'warning' })
+    fireEvent.change(fieldByLabel('代號'), { target: { value: 'A01' } })
+    fireEvent.change(fieldByLabel('名稱'), { target: { value: '' } })
+    fireEvent.click(screen.getByTestId('save'))
+    expect(openSnackbar).toHaveBeenLastCalledWith({ message: '請輸入名稱', variant: 'warning' })
+    await utils.settle()
+    expect(callsOf(utils.calls, 'updateMembershipCategory')).toHaveLength(0)
     expect(window.location.href).toBe('http://localhost/')
   })
 })

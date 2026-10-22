@@ -295,6 +295,9 @@
 - `ServicesAutoComplete`：排序直接改動原陣列、`a.no - b.no` 遇非數字代號為 NaN、代號只支援完全比對。
 - [x] 測試：原 13 個既有失敗（ProductCreate、ServiceCategoryEdit／Create、AccountingSubjectsAutocomplete、LoginForm、Products/Results、AccountingRecordCreate/Header）已清零（PR #5 與 2026/10/19 決策改寫），全域 52/52 通過。
 
+### 後端待辦（前端不改，需後端 repo 支援）
+- [ ] **刪除收支紀錄要驗證「編輯收支密碼」（Jason 2026/10/22「照建議」列為後端待辦）**：店家開啟編輯收支密碼時，`AccountingRecordDetail`／`GeneralAccountingRecordDetail` 的刪除只有確認窗、不需密碼——`deleteMoneyFlow` mutation 沒有 `password` 參數，前端無法帶。需後端（`beautyos_api`，前端 session 唯讀）在 `deleteMoneyFlow` 加 `password` 參數並驗證；後端完成後前端比照編輯收支，在刪除確認窗加密碼欄並送出。現況由兩頁測試「後端待辦（Jason 2026/10/22）」鎖住。
+
 ---
 
 ## 三、階段 4：半遷移盤點結果（2026/10/19 重新掃描，取代 10/18 舊數字）

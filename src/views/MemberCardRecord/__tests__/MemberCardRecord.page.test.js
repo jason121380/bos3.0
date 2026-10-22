@@ -1,5 +1,5 @@
 // 保護「會員卡列表」：列出會員卡（類別、成本、價格、變更者、台灣日期；沒有類別顯示未分類），停用的卡不能進編輯；
-// 篩選送出的關鍵字與類別、清除條件；報表匯出內容；勾選（全選只選啟用中的）後批次刪除、批次改類別送出的 uuid，
+// 篩選送出的關鍵字與類別、清除條件；報表匯出內容；勾選（全選只選啟用中的）後批次刪除（先確認）、批次改類別送出的 uuid，
 // 成功重新整理、失敗提示錯誤並清除勾選。GraphQL 全由 testkit 的模擬 link 回應，不連任何後端。
 import 'lib/install-business-timezone'
 import React from 'react'
@@ -150,12 +150,31 @@ describe('會員卡列表', () => {
     expect(screen.getByLabelText('全選')).toBeDisabled()
   })
 
-  it('批次刪除送出勾選的 uuid，成功後提示並重新整理', async () => {
+  // Jason 2026/10/22「照建議」：批次刪除原本按下即刪，改為先跳確認視窗（比照打卡記錄刪除），確定才送出；取消不送出、保留勾選。
+  it('批次刪除先確認：取消不送出、保留勾選', async () => {
+    const { calls, settle } = setup({ deleteMembership: { deleteMembership: true } })
+    await screen.findByText('共 3 筆')
+    fireEvent.click(screen.getByTestId('membership-萬元儲值卡-checkbox'))
+    fireEvent.click(screen.getByTestId('membership-年卡-checkbox'))
+    fireEvent.click(toolbar().getByText('刪除'))
+    const dialog = within(await screen.findByRole('dialog'))
+    expect(dialog.getByText('確定要刪除選取的 2 張會員卡嗎？')).toBeInTheDocument()
+    expect(dialog.getByText('刪除後無法復原。')).toBeInTheDocument()
+    fireEvent.click(dialog.getByText('取消'))
+    await wait(() => expect(screen.queryByRole('dialog')).toBeNull())
+    await settle()
+    expect(callsOf(calls, 'deleteMembership')).toHaveLength(0)
+    expect(screen.getByTestId('membership-年卡-checkbox')).toBeChecked()
+  })
+
+  it('批次刪除確認後送出勾選的 uuid，成功後提示並重新整理', async () => {
     const { calls } = setup({ deleteMembership: { deleteMembership: true } })
     await screen.findByText('共 3 筆')
     fireEvent.click(screen.getByTestId('membership-萬元儲值卡-checkbox'))
     fireEvent.click(screen.getByTestId('membership-年卡-checkbox'))
     fireEvent.click(toolbar().getByText('刪除'))
+    expect(callsOf(calls, 'deleteMembership')).toHaveLength(0)
+    fireEvent.click(await screen.findByTestId('confirm'))
     await wait(() => expect(window.location.reload).toHaveBeenCalled())
     expect(callsOf(calls, 'deleteMembership')[0].variables).toEqual({ itemUUIDs: ['m1', 'm2'] })
     expect(openSnackbar).toHaveBeenCalledWith({ message: '成功刪除會員卡', variant: 'success' })
@@ -166,6 +185,7 @@ describe('會員卡列表', () => {
     await screen.findByText('共 3 筆')
     fireEvent.click(screen.getByTestId('membership-萬元儲值卡-checkbox'))
     fireEvent.click(toolbar().getByText('刪除'))
+    fireEvent.click(await screen.findByTestId('confirm'))
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '會員卡已售出', variant: 'error' }))
     expect(screen.getByTestId('membership-萬元儲值卡-checkbox')).not.toBeChecked()
     expect(window.location.reload).not.toHaveBeenCalled()

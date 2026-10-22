@@ -30,6 +30,10 @@ const EMPTY_SALARY = {
   derelictionOfDuty: 0,
 }
 
+// 一位員工的扣項合計（21 個扣項；沒有當月薪資資料時為 0）。加項總覽的「實發金額」也用這一份（Jason 2026/10/22）
+export const decreaseTotalOf = salary =>
+  salary ? Object.keys(EMPTY_SALARY).reduce((total, key) => total + salary[key], 0) : 0
+
 function Results({
   className = '',
   pageSetting,

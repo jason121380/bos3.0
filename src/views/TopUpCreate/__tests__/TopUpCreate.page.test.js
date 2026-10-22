@@ -161,8 +161,9 @@ describe('新增入金', () => {
     expect(options).toEqual(['現金'])
   })
 
-  // 選過手續費負擔方再改成「現金」時清空（null），不送出隱藏欄位的值（Jason 2026/10/22 fix all）
-  it('選了手續費負擔方後改成現金：送出 handlingFeeDecountWay 為 null', async () => {
+  // 選過手續費負擔方再改成「現金」時不送出隱藏欄位的值（Jason 2026/10/22 fix all）；現金送 WITHOUTHANDLINGFEE（不扣項），
+  // 與顧客詳細的入金彈窗相同（後端已確認接受；原本送 null，後端可能不接受，Jason 2026/10/22「照建議」）
+  it('選了手續費負擔方後改成現金：送出 handlingFeeDecountWay 為 WITHOUTHANDLINGFEE', async () => {
     const utils = setup()
     await utils.settle()
     fireEvent.change(money(), { target: { value: '1000' } })
@@ -173,6 +174,19 @@ describe('新增入金', () => {
     choose(payType(), '現金')
     submit()
     await wait(() => expect(callsOf(utils.calls, 'walletDeposit')).toHaveLength(1))
-    expect(callsOf(utils.calls, 'walletDeposit')[0].variables.input).toMatchObject({ payType: '現金', handlingFeeDecountWay: null })
+    expect(callsOf(utils.calls, 'walletDeposit')[0].variables.input).toMatchObject({ payType: '現金', handlingFeeDecountWay: 'WITHOUTHANDLINGFEE' })
+  })
+
+  it('現金改回其他付款方式：負擔方回到未選（不沿用現金的不扣項），重新選取後送出所選', async () => {
+    const utils = setup()
+    await utils.settle()
+    fireEvent.change(money(), { target: { value: '1000' } })
+    fireEvent.click(screen.getByText('選選擇設計師'))
+    fireEvent.click(screen.getByText('選選擇顧客'))
+    choose(payType(), '現金')
+    choose(payType(), 'LINE Pay')
+    submit()
+    await wait(() => expect(callsOf(utils.calls, 'walletDeposit')).toHaveLength(1))
+    expect(callsOf(utils.calls, 'walletDeposit')[0].variables.input).toMatchObject({ payType: 'LINE Pay', handlingFeeDecountWay: null })
   })
 })

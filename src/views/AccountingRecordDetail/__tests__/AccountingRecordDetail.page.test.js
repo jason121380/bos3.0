@@ -317,7 +317,8 @@ describe('收支紀錄詳細（高階）', () => {
     expect(openSnackbar).toHaveBeenCalledWith({ message: '刪除收借支成功', variant: 'success' })
   })
 
-  it('已知缺口（待 Jason 決定）：店家開啟編輯收支密碼時，刪除有確認但仍不需密碼（deleteMoneyFlow 沒有 password 參數，需後端支援）', async () => {
+  // Jason 2026/10/22「照建議」：前端不改，列為後端待辦（docs/redesign/TODO.md）——後端 deleteMoneyFlow 加 password 參數後，前端再比照編輯收支要求輸入密碼。
+  it('後端待辦（Jason 2026/10/22）：店家開啟編輯收支密碼時，刪除有確認但仍不需密碼（deleteMoneyFlow 沒有 password 參數，需後端支援）', async () => {
     const { calls, settle } = setup({ GET_MERCHANT_PASSWORD: { merchantPassword: { editMoneyFlow: { isUsing: true } } } })
     await settle()
     fireEvent.click(deleteButton())

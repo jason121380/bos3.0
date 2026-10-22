@@ -129,6 +129,17 @@ describe('個人頁：基本資料', () => {
     expect(screen.queryByText(/後再儲存/)).toBeNull()
   })
 
+  // Jason 2026/10/22「照建議」：姓、名、手機必填——停用按鈕之外，送出表單（例如在欄位按 Enter）時也提示且不送出。
+  it('必填空白時直接送出表單（Enter）：提示缺少的欄位且不送出', async () => {
+    const { calls, settle } = renderProfile('general', { me: { ...ME, cellphone: null }, fixtures: { UPDATE_USER_INFO: { setUserInfo: true } } })
+    await screen.findByLabelText('姓氏')
+    type('名字', ' ')
+    fireEvent.submit(screen.getByLabelText('名字').closest('form'))
+    expect(openSnackbar).toHaveBeenLastCalledWith({ message: '請填寫名字、手機號碼後再儲存', variant: 'warning' })
+    await settle()
+    expect(callsOf(calls, 'UPDATE_USER_INFO')).toHaveLength(0)
+  })
+
   it('姓名為 null 時欄位顯示空白、「儲存變更」停用並列出姓氏與名字', async () => {
     renderProfile('general', { me: { ...ME, firstName: null, lastName: null } })
     await ready()

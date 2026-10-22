@@ -101,6 +101,9 @@ function AccountingSetting() {
     accountingSubjectsData.loading,
   ])
 
+  // 科目或收付方式查詢失敗時畫面只有空白列，此時儲存會把設定存成空白：停用儲存（Jason 2026/10/22「照建議」）
+  const loadFailed = Boolean(accountingTypeData.error || accountingSubjectsData.error)
+
   const handleSave = () => {
     const accountSubjectsInputData = {
       revenue: accountingRevenueSubjects,
@@ -151,8 +154,13 @@ function AccountingSetting() {
             />
           </div>
         </Tabs>
-        <div className="mt-6 flex justify-end">
-          <Button variant="primary" onClick={handleSave}>
+        <div className="mt-6 flex items-center justify-end gap-3">
+          {loadFailed && (
+            <p className="m-0 text-label text-danger" role="alert">
+              收支科目或收付方式讀取失敗，請重新整理後再設定
+            </p>
+          )}
+          <Button variant="primary" disabled={loadFailed} onClick={handleSave}>
             儲存
           </Button>
         </div>

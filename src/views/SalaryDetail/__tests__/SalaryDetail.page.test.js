@@ -1,4 +1,5 @@
-// 保護「薪資明細表」的金額：加項總覽每位員工的「加項合計」＝16 個加項之和、「實發金額」只算加項、不含指定／不指定業績（Jason 2026/10/22），
+// 保護「薪資明細表」的金額：加項總覽每位員工的「加項合計」＝16 個加項之和、「實發金額」＝加項合計 − 扣項合計（同一位員工、同月），
+// 不含指定／不指定業績（Jason 2026/10/22「只算加扣項」）；扣項讀不到時實發金額顯示「—」；
 // 合計列為各欄全部員工加總；扣項總覽的「減項合計」＝21 個扣項之和、合計列為各欄加總。
 // 分頁（換頁、每頁筆數）只影響該表的查詢參數；網址帶的日期換算成該月 1 日（台灣時間）再查詢。
 // GraphQL 全由模擬 link 回應，不連後端。
@@ -56,6 +57,8 @@ const totalIn = title => cellsOf(within(card(title)).getByText('合 計:').close
 beforeEach(() => loginAs())
 afterEach(cleanup)
 
+const decTotalOf = user => sum(DECREASE.map(f => user.salary[f]))
+
 describe('薪資明細表：加項總覽', () => {
   it('每位員工各加項、加項合計、實發金額與業績、點數', async () => {
     setup()
@@ -63,10 +66,11 @@ describe('薪資明細表：加項總覽', () => {
     const s = INC_USERS[0].salary
     const items = INCREASE.map(f => s[f])
     const itemsTotal = sum(items)
+    await wait(() => expect(rowIn('加項總覽', '小美')[3]).not.toBe('—'))
     expect(rowIn('加項總覽', '小美')).toEqual([
       'N1', '小美', '設計師',
-      // 實發金額只算加項（加項總覽沒有扣項資料），不再加入指定／不指定業績（營業額）（Jason 2026/10/22 視為 bug）
-      formatNumber(itemsTotal),
+      // 實發金額＝加項合計 − 同一位員工的扣項合計，不加入指定／不指定業績（營業額）（Jason 2026/10/22「只算加扣項」）
+      formatNumber(itemsTotal - decTotalOf(DEC_USERS[0])),
       ...items.map(formatNumber),
       formatNumber(itemsTotal),
       formatNumber(s.designateSales), formatNumber(s.notDesignateSales), formatNumber(s.points),
@@ -78,9 +82,11 @@ describe('薪資明細表：加項總覽', () => {
     await screen.findByText('加項總覽')
     const col = f => sum(INC_USERS.map(u => u.salary[f]))
     const itemsTotal = sum(INCREASE.map(col))
+    await wait(() => expect(totalIn('加項總覽')[2]).not.toBe('—'))
     expect(totalIn('加項總覽')).toEqual([
       '合 計:', '',
-      formatNumber(itemsTotal),
+      // 實發金額合計＝加項合計 − 扣項合計（全部員工）
+      formatNumber(itemsTotal - sum(DEC_USERS.map(decTotalOf))),
       ...INCREASE.map(f => formatNumber(col(f))),
       formatNumber(itemsTotal),
       formatNumber(col('designateSales')), formatNumber(col('notDesignateSales')), formatNumber(col('points')),
@@ -95,13 +101,66 @@ describe('薪資明細表：加項總覽', () => {
     expect(within(card('扣項總覽')).getByText('共 45 筆資料, 1/3 頁')).toBeInTheDocument()
   })
 
+  // 實發金額要扣同一頁員工的扣項：以扣項總覽的同一支查詢（FETCH_USER_SALARY_DECREASE）、加項總覽的分頁查詢；
+  // 兩表分頁相同時與扣項總覽共用同一份結果（不多送查詢）。
+  it('實發金額只扣同一位員工的扣項（依 id 對應，不依列順序）', async () => {
+    setup({ dec: [DEC_USERS[1], DEC_USERS[0]] })
+    await screen.findByText('加項總覽')
+    const net = (inc, dec) => formatNumber(sum(INCREASE.map(f => inc.salary[f])) - decTotalOf(dec))
+    await wait(() => expect(rowIn('加項總覽', '小美')[3]).toBe(net(INC_USERS[0], DEC_USERS[0])))
+    expect(rowIn('加項總覽', '阿明')[3]).toBe(net(INC_USERS[1], DEC_USERS[1]))
+  })
+
+  it('扣項讀不到（查詢失敗）時實發金額顯示「—」，不誤顯示成只有加項', async () => {
+    renderPage(<SalaryDetail />, {
+      fixtures: {
+        FETCH_USER_SALARY_INCREASE: v => ({ users: { totalCount: 2, pageLimit: v.input.pageLimit, pageOffset: v.input.pageOffset, users: INC_USERS } }),
+        FETCH_USER_SALARY_DECREASE: new Error('查詢失敗'),
+      },
+    })
+    await screen.findByText('加項總覽')
+    await wait(() => expect(rowIn('加項總覽', '小美')[3]).toBe('—'))
+    expect(rowIn('加項總覽', '阿明')[3]).toBe('—')
+    expect(totalIn('加項總覽')[2]).toBe('—')
+    // 加項合計照常顯示
+    expect(rowIn('加項總覽', '小美')[20]).toBe(formatNumber(sum(INCREASE.map(f => INC_USERS[0].salary[f]))))
+  })
+
+  // 兩支查詢共用 users 根欄位的快取（同一位員工的薪資資料會合併），以元件直接驗證扣項缺漏的情況
+  it('扣項中沒有這位員工或薪資資料為 null 時扣項視為 0', () => {
+    const page = { totalCount: 2, pageLimit: 20, pageOffset: 0 }
+    renderPage(
+      <IncreaseResult
+        users={INC_USERS}
+        decreaseUsers={[{ ...DEC_USERS[0], salary: null }]}
+        pageSetting={page}
+        handleOnChangePage={() => {}}
+        handleOnChangeRowsPerPage={() => {}}
+      />
+    )
+    const incTotalOf = user => sum(INCREASE.map(f => user.salary[f]))
+    expect(rowIn('加項總覽', '小美')[3]).toBe(formatNumber(incTotalOf(INC_USERS[0])))
+    expect(rowIn('加項總覽', '阿明')[3]).toBe(formatNumber(incTotalOf(INC_USERS[1])))
+    expect(totalIn('加項總覽')[2]).toBe(formatNumber(incTotalOf(INC_USERS[0]) + incTotalOf(INC_USERS[1])))
+  })
+
   it('換頁與每頁筆數只改加項總覽的查詢；每頁筆數改變時回到第一頁', async () => {
     const { calls, settle } = setup()
     await screen.findByText('加項總覽')
     await settle()
+    // 兩表分頁相同：實發金額與扣項總覽共用同一份扣項查詢
+    expect(callsOf(calls, 'FETCH_USER_SALARY_DECREASE')).toHaveLength(1)
     fireEvent.click(within(card('加項總覽')).getByLabelText('下一頁'))
     await wait(() => expect(callsOf(calls, 'FETCH_USER_SALARY_INCREASE').map(c => c.variables.input.pageOffset)).toContain(1))
-    expect(callsOf(calls, 'FETCH_USER_SALARY_DECREASE').every(c => c.variables.input.pageOffset === 0)).toBe(true)
+    // 加項換到第 2 頁：另以同一支扣項查詢、加項的分頁取得這一頁員工的扣項（算實發金額）；扣項總覽仍在第 1 頁
+    await wait(() => expect(callsOf(calls, 'FETCH_USER_SALARY_DECREASE').map(c => c.variables.input.pageOffset)).toContain(1))
+    expect(within(card('扣項總覽')).getByText('共 45 筆資料, 1/3 頁')).toBeInTheDocument()
+    // 加項、扣項查詢共用 users 根欄位的快取（既有情況，換頁前第 1 頁也一樣）：互相覆蓋時各重抓一次後就穩定，不會反覆重抓
+    await settle()
+    const settledCount = calls.length
+    await settle()
+    expect(calls.length).toBe(settledCount)
+    expect(callsOf(calls, 'FETCH_USER_SALARY_DECREASE').filter(c => c.variables.input.pageOffset === 1)).toHaveLength(1)
     await settle()
     choose(within(card('加項總覽')).getByLabelText('每頁筆數'), '5')
     await wait(() =>
@@ -159,8 +218,10 @@ describe('薪資明細表：月份', () => {
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
     expect(rowIn('加項總覽', '新人').slice(3).every(v => v === '0')).toBe(true)
     expect(rowIn('扣項總覽', '新人').slice(3).every(v => v === '0')).toBe(true)
-    // 合計列不受影響
-    expect(totalIn('加項總覽')[2]).toBe(formatNumber(sum(INCREASE.map(f => sum(INC_USERS.map(u => u.salary[f]))))))
+    // 合計列不受影響（實發金額合計＝加項合計 − 扣項合計）
+    expect(totalIn('加項總覽')[2]).toBe(
+      formatNumber(sum(INCREASE.map(f => sum(INC_USERS.map(u => u.salary[f])))) - sum(DEC_USERS.map(decTotalOf)))
+    )
   })
 })
 
@@ -169,11 +230,18 @@ describe('薪資明細表：沒有員工', () => {
     const page = { totalCount: 0, pageLimit: 20, pageOffset: 0 }
     renderPage(
       <>
-        <IncreaseResult users={[]} pageSetting={page} handleOnChangePage={() => {}} handleOnChangeRowsPerPage={() => {}} />
+        <IncreaseResult users={[]} decreaseUsers={[]} pageSetting={page} handleOnChangePage={() => {}} handleOnChangeRowsPerPage={() => {}} />
         <DecreaseResult users={[]} pageSetting={page} handleOnChangePage={() => {}} handleOnChangeRowsPerPage={() => {}} />
       </>
     )
     expect(totalIn('加項總覽').slice(2).every(v => v === '0')).toBe(true)
     expect(totalIn('扣項總覽').slice(2).every(v => v === '0')).toBe(true)
+  })
+
+  it('加項總覽沒有給扣項資料時實發金額合計顯示「—」', () => {
+    const page = { totalCount: 0, pageLimit: 20, pageOffset: 0 }
+    renderPage(<IncreaseResult users={[]} pageSetting={page} handleOnChangePage={() => {}} handleOnChangeRowsPerPage={() => {}} />)
+    expect(totalIn('加項總覽')[2]).toBe('—')
+    expect(totalIn('加項總覽').slice(3).every(v => v === '0')).toBe(true)
   })
 })

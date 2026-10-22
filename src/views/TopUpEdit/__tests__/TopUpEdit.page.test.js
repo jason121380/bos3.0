@@ -153,8 +153,9 @@ describe('編輯入金', () => {
     })
   })
 
-  // 改成「現金」時清空手續費負擔方（null），不再把隱藏欄位裡原本的值（例如 BYCUSTOMER）一起送出（Jason 2026/10/22 fix all）
-  it('改成現金後手續費負擔方清空（送出 null）；改回其他付款方式時負擔方為未選', async () => {
+  // 改成「現金」時不再把隱藏欄位裡原本的值（例如 BYCUSTOMER）一起送出（Jason 2026/10/22 fix all）；現金送 WITHOUTHANDLINGFEE（不扣項），
+  // 與顧客詳細的入金彈窗相同（後端已確認接受；原本送 null，Jason 2026/10/22「照建議」）
+  it('改成現金後手續費負擔方送 WITHOUTHANDLINGFEE；改回其他付款方式時負擔方為未選', async () => {
     const utils = setup()
     await utils.settle()
     choose(screen.getByLabelText('付款方式'), '現金')
@@ -164,7 +165,7 @@ describe('編輯入金', () => {
     choose(screen.getByLabelText('付款方式'), '現金')
     save()
     await wait(() => expect(callsOf(utils.calls, 'SET_WALLET_DEPOSIT')).toHaveLength(1))
-    expect(callsOf(utils.calls, 'SET_WALLET_DEPOSIT')[0].variables.input).toMatchObject({ payType: '現金', handlingFeeDecountWay: null })
+    expect(callsOf(utils.calls, 'SET_WALLET_DEPOSIT')[0].variables.input).toMatchObject({ payType: '現金', handlingFeeDecountWay: 'WITHOUTHANDLINGFEE' })
   })
 
   it('原資料缺必填欄位時：顯示錯誤不送出，選取後錯誤消失；沒有日期時不顯示日期欄', async () => {

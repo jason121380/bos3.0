@@ -41,6 +41,15 @@ function MemberCardCategoryEdit({ match }) {
 
   // 新增的submit
   const onSubmit = () => {
+    // 代號、名稱必填（Jason 2026/10/22「照建議」）
+    if (!String(submitValue.no || '').trim()) {
+      openSnackbar({ message: '請輸入代號', variant: 'warning' })
+      return
+    }
+    if (!String(submitValue.name || '').trim()) {
+      openSnackbar({ message: '請輸入名稱', variant: 'warning' })
+      return
+    }
     updateMembershipCategory(submitValue)
       .then(() => {
         openSnackbar({
