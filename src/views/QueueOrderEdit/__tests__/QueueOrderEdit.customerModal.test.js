@@ -1,0 +1,198 @@
+// 保護「重新開單」的新增／編輯顧客彈窗：
+// - 顧客欄已輸入手機時按「新增顧客」：先以該手機建立顧客並帶進帳單，彈窗改為編輯這位新顧客，儲存送出填寫的資料；
+// - 沒輸入手機時按「新增顧客」：填完整資料（姓名＋10 碼手機才能按「新增」）送出新增，姓名或電話空白時提示必填；
+// - 客戶編號：輸入後檢查是否重複，重複時顯示「客戶編號重複」；
+// - 送出失敗時以後端訊息提示，彈窗不關閉；「取消」關閉彈窗不送出。
+// GraphQL 全由 testkit 的模擬 link 回應，不連後端、不建立真實顧客。
+import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
+import { openSnackbar } from 'elements/snackbars'
+import { loginAs, callsOf, typeLikeBrowser } from '../../../__tests__/testkit.test'
+import { setupQueue, loaded, baseQueue, chooseNative, CUSTOMER, DESIGNER } from './queueKit.test'
+
+jest.setTimeout(20000)
+
+jest.mock('elements/snackbars', () => ({
+  ...jest.requireActual('elements/snackbars'),
+  openSnackbar: jest.fn(),
+}))
+
+beforeEach(() => loginAs())
+afterEach(cleanup)
+
+const customerInput = () => screen.getByPlaceholderText('顧客姓名/手機號碼/編號')
+const noCustomerYet = () => baseQueue({ withoutCustomerData: false })
+const NEW_CUSTOMER = { id: 'customer-9', category: '', name: '', cellphone: '0955666777', gender: 'MALE', birthday: { year: '', month: '', day: '' }, preferDesigner: null, source: null }
+const openModal = async title => {
+  fireEvent.click(screen.getByRole('button', { name: '新增顧客' }))
+  return (await screen.findByText(title)).closest('.MuiModal-root')
+}
+const field = (modal, name) => modal.querySelector(`[name="${name}"]`)
+const button = (modal, text) => within(modal).getByText(text, { selector: 'button' })
+
+describe('重新開單：顧客欄已輸入手機時新增顧客', () => {
+  it('先以手機建立顧客並帶入帳單；彈窗編輯這位新顧客，儲存送出填寫的姓名', async () => {
+    const page = setupQueue({
+      queue: noCustomerYet(),
+      FETCH_ADD_CUSTOMER: { addCustomer: NEW_CUSTOMER },
+      SET_CUSTOMER: { updateCustomer: true },
+    })
+    await loaded(page)
+    fireEvent.focusIn(customerInput())
+    fireEvent.change(customerInput(), { target: { value: NEW_CUSTOMER.cellphone } })
+    fireEvent.keyDown(customerInput(), { key: 'Enter', keyCode: 13 })
+    await wait(() => expect(customerInput()).toHaveValue(NEW_CUSTOMER.cellphone))
+    const modal = await openModal('編輯客戶資料')
+    expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')[0].variables.input).toEqual(
+      expect.objectContaining({ cellphone: NEW_CUSTOMER.cellphone, OfficialBrandMerchantId: 'merchant-1', name: '' })
+    )
+    await wait(() => expect(field(modal, 'cellphone')).toHaveValue(NEW_CUSTOMER.cellphone))
+    expect(within(modal).getByText('最新顧客編號: C99')).toBeInTheDocument()
+    typeLikeBrowser(field(modal, 'name'), '張新客')
+    typeLikeBrowser(field(modal, 'month'), '13')
+    expect(field(modal, 'month')).toHaveValue('')
+    typeLikeBrowser(field(modal, 'month'), '5')
+    typeLikeBrowser(field(modal, 'day'), '32')
+    typeLikeBrowser(field(modal, 'day'), '20')
+    chooseNative(field(modal, 'gender'), '女')
+    chooseNative(field(modal, 'PreferDesignerId'), DESIGNER.userName)
+    fireEvent.click(button(modal, '儲存'))
+    await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))
+    expect(callsOf(page.calls, 'SET_CUSTOMER')[0].variables.input).toEqual(
+      expect.objectContaining({
+        customerId: NEW_CUSTOMER.id,
+        name: '張新客',
+        gender: 'FEMALE',
+        PreferDesignerId: DESIGNER.userId,
+        birthday: { year: '', month: '5', day: '20' },
+      })
+    )
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'success', message: '成功更新顧客資訊' }))
+    await wait(() => expect(screen.queryByText('編輯客戶資料')).toBeNull())
+    // 帳單上的顧客是剛建立的顧客
+    fireEvent.click(screen.getByTestId('checkout'))
+    await wait(() => expect(callsOf(page.calls, 'FETCH_CREATE_ORDER')).toHaveLength(1))
+    expect(callsOf(page.calls, 'FETCH_CREATE_ORDER')[0].variables.input.customerId).toBe(NEW_CUSTOMER.id)
+  })
+
+  it('更新顧客失敗：以後端訊息提示，彈窗不關閉', async () => {
+    const page = setupQueue({
+      queue: baseQueue({ customerId: CUSTOMER.id, withoutCustomerData: false }),
+      SET_CUSTOMER: new Error('手機號碼已被使用'),
+    })
+    await loaded(page)
+    await wait(() => expect(customerInput().value).toContain('陳小姐'))
+    fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
+    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    await wait(() => expect(field(modal, 'name')).toHaveValue('陳小姐'))
+    fireEvent.click(button(modal, '儲存'))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '手機號碼已被使用', variant: 'error' }))
+    expect(screen.getByText('編輯客戶資料')).toBeInTheDocument()
+  })
+})
+
+describe('重新開單：編輯沒有生日資料的顧客', () => {
+  it('生日欄空白；儲存送出空白生日，不會帶入其他值', async () => {
+    const page = setupQueue({
+      queue: baseQueue({ customerId: CUSTOMER.id, withoutCustomerData: false }),
+      FETCH_CUSTOMER_DETAIL: { customer: { ...CUSTOMER, birthday: null, gender: 'MALE', remark: null, source: null, preferDesigner: { id: DESIGNER.userId, name: DESIGNER.userName }, membershipPurchaseRecord: [], isLineBinded: false } },
+      SET_CUSTOMER: { updateCustomer: true },
+    })
+    await loaded(page)
+    await wait(() => expect(customerInput().value).toContain('陳小姐'))
+    fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
+    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    expect(field(modal, 'year')).toHaveValue('')
+    expect(field(modal, 'month')).toHaveValue('')
+    expect(field(modal, 'day')).toHaveValue('')
+    const prefer = field(modal, 'PreferDesignerId')
+    expect(prefer.options[prefer.selectedIndex].textContent).toBe(DESIGNER.userName)
+    fireEvent.click(button(modal, '儲存'))
+    await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))
+    expect(callsOf(page.calls, 'SET_CUSTOMER')[0].variables.input).toEqual(
+      expect.objectContaining({ customerId: CUSTOMER.id, birthday: { year: '', month: '', day: '' }, PreferDesignerId: DESIGNER.userId })
+    )
+  })
+})
+
+describe('重新開單：沒輸入手機時新增顧客', () => {
+  it('姓名與 10 碼手機填好才能按「新增」；送出填寫的資料（不帶顧客 id 與來源），成功後關閉', async () => {
+    const page = setupQueue({ queue: noCustomerYet(), FETCH_ADD_CUSTOMER: { addCustomer: { ...NEW_CUSTOMER, name: '吳小姐' } } })
+    await loaded(page)
+    const modal = await openModal('新增客戶')
+    expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')).toHaveLength(0)
+    expect(button(modal, '新增')).toBeDisabled()
+    typeLikeBrowser(field(modal, 'name'), '吳小姐')
+    typeLikeBrowser(field(modal, 'cellphone'), '0955666777')
+    await wait(() => expect(button(modal, '新增')).not.toBeDisabled())
+    typeLikeBrowser(field(modal, 'email'), 'wu@example.com')
+    typeLikeBrowser(field(modal, 'lineId'), 'wu-line')
+    typeLikeBrowser(field(modal, 'address'), '台北市')
+    typeLikeBrowser(field(modal, 'nickName'), '小吳')
+    typeLikeBrowser(field(modal, 'remark'), '怕冷')
+    typeLikeBrowser(field(modal, 'year'), '1234')
+    typeLikeBrowser(field(modal, 'year'), '85')
+    fireEvent.click(button(modal, '新增'))
+    await wait(() => expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')).toHaveLength(1))
+    const { input } = callsOf(page.calls, 'FETCH_ADD_CUSTOMER')[0].variables
+    expect(input).toEqual(
+      expect.objectContaining({
+        name: '吳小姐', cellphone: '0955666777', email: 'wu@example.com', lineId: 'wu-line', address: '台北市', nickName: '小吳', remark: '怕冷',
+        birthday: { year: '85', month: '', day: '' },
+      })
+    )
+    expect(input).not.toHaveProperty('customerId')
+    expect(input).not.toHaveProperty('source')
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '成功新增客戶', variant: 'success' }))
+    await wait(() => expect(screen.queryByText('新增客戶')).toBeNull())
+  })
+
+  it('姓名空白：提示「姓名與電話為必填」，不送出', async () => {
+    const page = setupQueue({ queue: noCustomerYet() })
+    await loaded(page)
+    const modal = await openModal('新增客戶')
+    typeLikeBrowser(field(modal, 'cellphone'), '0955666777')
+    await wait(() => expect(button(modal, '新增')).not.toBeDisabled())
+    fireEvent.click(button(modal, '新增'))
+    expect(openSnackbar).toHaveBeenCalledWith({ variant: 'warning', message: '姓名與電話為必填' })
+    expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')).toHaveLength(0)
+  })
+
+  it('新增失敗：以後端訊息提示', async () => {
+    const page = setupQueue({ queue: noCustomerYet(), FETCH_ADD_CUSTOMER: new Error('顧客已存在') })
+    await loaded(page)
+    const modal = await openModal('新增客戶')
+    typeLikeBrowser(field(modal, 'name'), '吳小姐')
+    typeLikeBrowser(field(modal, 'cellphone'), '0955666777')
+    await wait(() => expect(button(modal, '新增')).not.toBeDisabled())
+    fireEvent.click(button(modal, '新增'))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '顧客已存在', variant: 'error' }))
+  })
+
+  it('客戶編號：輸入後檢查是否重複，重複時顯示「客戶編號重複」；清空後不再提示', async () => {
+    const page = setupQueue({
+      queue: noCustomerYet(),
+      GET_CHECK_IS_CUSTOMER_NO_USED: ({ input }) => ({ checkIsCustomerNoUsed: input === 'C01' }),
+    })
+    await loaded(page)
+    const modal = await openModal('新增客戶')
+    typeLikeBrowser(field(modal, 'no'), 'C01')
+    await wait(() => expect(within(modal).getByText('客戶編號重複')).toBeInTheDocument(), { timeout: 3000 })
+    expect(callsOf(page.calls, 'GET_CHECK_IS_CUSTOMER_NO_USED').pop().variables).toEqual({ input: 'C01', customerId: null })
+    typeLikeBrowser(field(modal, 'no'), 'C77')
+    await wait(() => expect(within(modal).queryByText('客戶編號重複')).toBeNull(), { timeout: 3000 })
+    await wait(() => expect(callsOf(page.calls, 'GET_CHECK_IS_CUSTOMER_NO_USED').pop().variables.input).toBe('C77'), { timeout: 3000 })
+    typeLikeBrowser(field(modal, 'no'), '')
+    expect(within(modal).queryByText('客戶編號重複')).toBeNull()
+  })
+
+  it('偏好設計師清單載入中顯示載入狀態；「取消」關閉彈窗不送出', async () => {
+    const page = setupQueue({ queue: noCustomerYet() }, { delays: { FETCH_USERS: 300 } })
+    await screen.findByText(/重新開單 \(A777\)/)
+    const modal = await openModal('新增客戶')
+    expect(within(modal).getByText('Loading...')).toBeInTheDocument()
+    await wait(() => expect(within(modal).queryByText('Loading...')).toBeNull())
+    fireEvent.click(button(modal, '取消'))
+    await wait(() => expect(screen.queryByText('新增客戶')).toBeNull())
+    expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')).toHaveLength(0)
+  })
+})
