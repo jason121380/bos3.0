@@ -51,4 +51,13 @@ describe('ui/pagination-compat（與 MUI TablePagination 相容）', () => {
     pagenationLabel(container)
     expect(label.textContent.replace(/ /g, ' ')).toBe('第 6–10 筆   共 23 筆')
   })
+
+  // 選擇窗每 100 毫秒重跑一次改寫（等分頁出現）：已改成中文的文字不可再被包一次（變成「第 第 … 筆 筆」）
+  it('重複改寫不會疊加', () => {
+    const { container } = renderPagination({ page: 1 })
+    pagenationLabel(container)
+    pagenationLabel(container)
+    const label = container.querySelector('.MuiTablePagination-displayedRows')
+    expect(label.textContent.replace(/ /g, ' ')).toBe('第 6–10 筆   共 23 筆')
+  })
 })

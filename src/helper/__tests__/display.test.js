@@ -22,6 +22,12 @@ describe('designerName：發票／明細上的設計師名稱依店家設定顯�
   it('沒有設計師時回傳空字串，不讓明細出現 undefined', () => {
     expect(designerName(null, 'NAME')).toBe('')
   })
+
+  // 店家設定尚未載入（undefined）或是未知值時不顯示名稱（與合併前沒有 default 時相同），列印範本以空白呈現
+  it('設定尚未載入或未知值：不回傳名稱', () => {
+    expect(designerName(designer, undefined)).toBeUndefined()
+    expect(designerName(designer, 'OTHER')).toBeUndefined()
+  })
 })
 
 describe('getQueryStringValue：讀網址參數（LINE 登入的 liffId、storeId 等）', () => {
@@ -55,6 +61,15 @@ describe('sortInventoryData：盤點排序', () => {
 
   it('預設：依商品編號排序', () => {
     expect(sortData(items).map(d => d.productNo)).toEqual(['A01', 'B02', 'C03'])
+  })
+
+  // 部分商品沒有編號（舊資料）時不可拋錯；兩者都沒有編號時維持原本順序
+  it('預設：沒有商品編號的商品不拋錯、維持原順序', () => {
+    const noNo = [
+      { productNo: '', name: '甲' },
+      { productNo: null, name: '乙' },
+    ]
+    expect(sortData(noNo).map(d => d.name)).toEqual(['甲', '乙'])
   })
 
   it('不修改傳入的原陣列', () => {

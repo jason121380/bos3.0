@@ -151,3 +151,23 @@ test('登入後站內換頁：lazy 頁面還在下載時不放行，頁面掛載
   act(() => runIdle())
   expect(latest()).toBe(true)
 })
+
+test('已因空閒放行後，10 秒保底計時器到期不會再觸發任何更新', () => {
+  const values = []
+  render(<Probe onValue={value => values.push(value)} />)
+  act(() => fireLoad())
+  act(() => runIdle())
+  expect(values[values.length - 1]).toBe(true)
+  const rendersAfterReady = values.length
+  act(() => jest.advanceTimersByTime(10000))
+  expect(values).toHaveLength(rendersAfterReady)
+})
+
+test('版面有多個元件同時等待（鈴鐺、店家清單）：一起放行', () => {
+  const first = renderProbe()
+  const second = renderProbe()
+  act(() => fireLoad())
+  expect(window.requestIdleCallback).toHaveBeenCalledTimes(1)
+  act(() => runIdle())
+  expect([first(), second()]).toEqual([true, true])
+})

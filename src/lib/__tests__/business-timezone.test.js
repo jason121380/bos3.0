@@ -153,6 +153,46 @@ describe('與原生 Date 相容', () => {
     expect(iso(bad)).toBe('2025-12-31T16:00:00.000Z')
   })
 
+  it('以既有 Date 複製（date-fns 的 toDate、new Date(d)）得到同一個時間', () => {
+    const d = new Date(TAIPEI_1021_1000)
+    expect(new Date(d).getTime()).toBe(TAIPEI_1021_1000)
+    expect(new Date(new NativeDate(TAIPEI_1021_1000)).getTime()).toBe(TAIPEI_1021_1000)
+  })
+
+  it('new Date(年, 月, 日, 時, 分, 秒, 毫秒) 的秒與毫秒照字面記錄', () => {
+    expect(iso(new Date(2026, 9, 21, 10, 0, 30, 500))).toBe('2026-10-21T02:00:30.500Z')
+    expect(iso(new Date(2026, 9, 21, 10, 0, 30))).toBe('2026-10-21T02:00:30.000Z')
+  })
+
+  it('toDateString／toTimeString 以台灣時間顯示（與原生格式相同）', () => {
+    const d = new Date(TAIPEI_1021_0130)
+    expect(d.toDateString()).toBe('Wed Oct 21 2026')
+    expect(d.toTimeString()).toBe('01:30:00 GMT+0800 (Taipei Standard Time)')
+    const bad = new Date('nope')
+    expect(bad.toDateString()).toBe('Invalid Date')
+    expect(bad.toTimeString()).toBe('Invalid Date')
+  })
+
+  it('舊式 getYear（年−1900）依台灣日期；無效日期回 NaN', () => {
+    // 台灣 2027/1/1 00:30 在 UTC 仍是 2026 年
+    expect(new Date(NativeDate.UTC(2026, 11, 31, 16, 30)).getYear()).toBe(127)
+    expect(new Date('nope').getYear()).toBeNaN()
+  })
+
+  it('無效日期的 getTimezoneOffset 與原生相同為 NaN', () => {
+    expect(new Date('nope').getTimezoneOffset()).toBeNaN()
+  })
+
+  it('英文月份等非數字格式先經裝置解析再以台灣時間解讀（測試環境裝置時區見檔頭）', () => {
+    // 這類格式依裝置時區解析後取字面欄位：字面 10:00 → 台灣 10:00（非日光節約切換時刻皆成立）
+    expect(iso(new Date('Oct 21, 2026 10:00'))).toBe('2026-10-21T02:00:00.000Z')
+    expect(iso(new Date('October 21, 2026'))).toBe('2026-10-20T16:00:00.000Z')
+  })
+
+  it('Intl.DateTimeFormat.supportedLocalesOf 照常可用（日期選擇器的語系判斷用）', () => {
+    expect(Intl.DateTimeFormat.supportedLocalesOf(['en-US'])).toEqual(NativeDateTimeFormat.supportedLocalesOf(['en-US']))
+  })
+
   it('不加 new 呼叫 Date() 回傳字串；Date.now／Date.UTC 照常', () => {
     expect(typeof Date()).toBe('string')
     expect(typeof Date.now()).toBe('number')
@@ -166,6 +206,29 @@ describe('啟用條件', () => {
     const expected = new NativeDateTimeFormat().resolvedOptions().timeZone === 'Asia/Taipei' ||
       [0, 6].every(m => new NativeDate(2026, m, 1).getTimezoneOffset() === -480)
     expect(deviceMatchesBusinessTime(NativeDate, NativeDateTimeFormat)).toBe(expected)
+  })
+
+  it('不傳參數時檢查目前的全域 Date／Intl（此檔已強制啟用台灣時間，因此視為已是台灣時間）', () => {
+    expect(deviceMatchesBusinessTime()).toBe(true)
+  })
+
+  it('裝置時區名稱就是 Asia/Taipei 時直接視為相同，不必再比對時差', () => {
+    function TaipeiFormat() {
+      return { resolvedOptions: () => ({ timeZone: 'Asia/Taipei' }) }
+    }
+    const UtcLikeDate = function () {}
+    expect(deviceMatchesBusinessTime(UtcLikeDate, TaipeiFormat)).toBe(true)
+  })
+
+  it('沒有 Intl 時改看冬夏時差：都是 −480 分鐘才視為台灣時間', () => {
+    const fixedOffset = offset =>
+      class extends NativeDate {
+        getTimezoneOffset() {
+          return offset
+        }
+      }
+    expect(deviceMatchesBusinessTime(fixedOffset(-480), null)).toBe(true)
+    expect(deviceMatchesBusinessTime(fixedOffset(-540), null)).toBe(false)
   })
 
   it('建構子工廠可獨立使用，不需替換全域', () => {

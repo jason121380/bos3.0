@@ -77,3 +77,55 @@ test('未知的主題值不處理', () => {
   expect(isDark()).toBe(false)
   expect(readStoredTheme()).toBeNull()
 })
+
+describe('登入狀態異常時不記憶、也不拋錯', () => {
+  test('未登入：讀不到記憶，後端主題照樣套用但不寫入', () => {
+    realStore.delete('user')
+    expect(readStoredTheme()).toBeNull()
+    syncThemeFromServer('DARK')
+    expect(isDark()).toBe(true)
+    expect([...realStore.keys()].filter(key => key.startsWith('bosTheme'))).toEqual([])
+  })
+
+  test('登入資料沒有 id 或已損壞：視為未登入', () => {
+    localStorage.setItem('user', JSON.stringify({ name: '沒有 id' }))
+    expect(readStoredTheme()).toBeNull()
+    realStore.set('user', '{壞掉')
+    expect(readStoredTheme()).toBeNull()
+  })
+
+  test('瀏覽器禁止讀寫 localStorage（私密模式等）：讀不到記憶、切換照常生效', () => {
+    window.localStorage.getItem.mockImplementation(key => {
+      if (key === 'user') return JSON.stringify({ id: 'u1' })
+      throw new Error('SecurityError')
+    })
+    window.localStorage.setItem.mockImplementation(() => {
+      throw new Error('QuotaExceededError')
+    })
+    expect(readStoredTheme()).toBeNull()
+    const settle = switchThemeByUser('DARK')
+    expect(isDark()).toBe(true)
+    settle(true)
+    expect(isDark()).toBe(true)
+  })
+})
+
+test('第一次切換就存檔失敗（之前沒有套用過主題）：還原成另一個主題', () => {
+  const settleDark = switchThemeByUser('DARK')
+  settleDark(false)
+  expect(isDark()).toBe(false)
+  expect(readStoredTheme()).toBe('DEFAULT')
+  __resetThemeModeForTest()
+  const settleLight = switchThemeByUser('DEFAULT')
+  settleLight(false)
+  expect(isDark()).toBe(true)
+  expect(readStoredTheme()).toBe('DARK')
+})
+
+test('切換成未知的主題值：畫面不變', () => {
+  syncThemeFromServer('DARK')
+  const settle = switchThemeByUser('PURPLE')
+  expect(isDark()).toBe(true)
+  settle(true)
+  expect(isDark()).toBe(true)
+})

@@ -121,4 +121,9 @@ describe('帳單詳細 停用原因', () => {
       getDisabledReason({ busy: false, invalid: false, isCloseAccount: false, missing: getMissingForCheckout(bill) })
     ).toBe('')
   })
+
+  // 防呆：Footer 日後若多了一個停用條件、這裡還沒同步，缺項會是空的；此時不顯示只有「尚缺：」三個字的說明
+  it('停用但缺項清單是空的：不顯示空白的「尚缺：」', () => {
+    expect(getDisabledReason({ busy: false, invalid: true, isCloseAccount: false, missing: [] })).toBe('')
+  })
 })
