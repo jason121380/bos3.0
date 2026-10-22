@@ -126,6 +126,21 @@ describe('重新開單：會員卡銷售', () => {
     expect(callsOf(page.calls, 'FETCH_CREATE_ORDER')).toHaveLength(0)
   })
 
+  // 終身卡（有效天數 0）取消勾選：原本到期日＝帳單日當天（已過期、早於日期欄最早可選日），重試照樣送出（Codex review PR #265）
+  it('有效天數為 0 的卡取消「永久會籍」：到期日空白待選，重試提示「會員卡到期日有誤」', async () => {
+    const page = setupQueue({ FETCH_MEMBERSHIPS_FOR_AUTOCOMPLETE: { memberships: { data: [{ ...CARD, uuid: 'card-0', no: 'M00', name: '終身卡', effecitveDay: 0 }] } } })
+    await loaded(page)
+    await pickOption(cardRow(0).seller(), 'Amy-01')
+    await pickOption(cardRow(0).card(), '終身卡 - M00')
+    await wait(() => expect(permanent()).toBeChecked())
+    fireEvent.click(permanent())
+    await wait(() => expect(permanent()).not.toBeChecked())
+    expect(cards().getByPlaceholderText('YYYY/MM/DD')).toHaveValue('')
+    fireEvent.click(screen.getByTestId('checkout'))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '會員卡到期日有誤', variant: 'error' }))
+    expect(callsOf(page.calls, 'FETCH_CREATE_ORDER')).toHaveLength(0)
+  })
+
   it('從日期選擇器改到期日後送出新的到期日', async () => {
     const page = setupQueue({ queue: baseQueue({ membershipOrders: [membershipOrder()] }) })
     await loaded(page)

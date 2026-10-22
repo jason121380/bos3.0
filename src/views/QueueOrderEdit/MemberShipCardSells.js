@@ -236,6 +236,7 @@ const MemberShipCardSells = ({
                   // 取消勾選：到期日＝帳單日＋有效天數（同剛選的卡）。佇列帶回的列沒有有效天數，依會員卡清單查；
                   // 卡已不在清單時查不到，到期日為無效日期待櫃檯選，重試時提示「會員卡到期日有誤」（coverage wave 1，2026/10/22）。
                   // 原本的 validDayCount 分支（帳單詳細的已購會員卡）本頁的列不會有，已移除
+                  // 有效天數為 0（終身卡）時沒有可帶的到期日：帳單日當天已早於可選的最早日期，視同查不到，留空待櫃檯選（Codex review PR #265）
                   const effecitveDay = sells.effecitveDay ?? idx(
                     membershipOptions.find((d) => d.uuid === sells.membershipUUID),
                     (_) => _.effecitveDay
@@ -245,7 +246,7 @@ const MemberShipCardSells = ({
                     key: "expiryDate",
                     value:
                       sells.expiryDate === null
-                        ? addDays(new Date(bill.date), effecitveDay).getTime()
+                        ? effecitveDay > 0 ? addDays(new Date(bill.date), effecitveDay).getTime() : NaN
                         : null,
                   });
                 }}
