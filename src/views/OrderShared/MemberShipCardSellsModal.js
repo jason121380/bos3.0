@@ -3,6 +3,7 @@ import idx from 'idx'
 import { addDays } from 'date-fns'
 import { formatNumber } from 'ui/format'
 import ItemPickerModal from './ItemPickerModal'
+import { MEMBERSHIP_PICKER_SETTING } from './useItemPicker'
 
 // 會員卡販賣「選會員卡」彈窗：四頁原本各一份，2026/10/21 合併。各頁差異以 props 表達（預設值＝打帳單／帳單詳細）：
 // - showEffectiveDays：「天數」欄（掛單詳細原本沒有，傳 false）
@@ -59,10 +60,8 @@ const MemberShipCardSellsModal = ({
   const handleClearCategorie = () => {
     setSelectedCategorie([])
     setSelectedCategorieName('')
-    setSetting({
-      keyword: '',
-      categoryUUIds: [],
-    })
+    // 回到第一次開啟時的完整查詢條件（OrderShared/useItemPicker），只清掉關鍵字與分類
+    setSetting(MEMBERSHIP_PICKER_SETTING)
   }
 
   return (
@@ -108,6 +107,5 @@ MemberShipCardSellsModal.propTypes = {
 
 MemberShipCardSellsModal.defaultProps = {
   open: false,
-  onClose: () => { },
 }
 export default MemberShipCardSellsModal

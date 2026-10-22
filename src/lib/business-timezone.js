@@ -116,12 +116,11 @@ export function createBusinessDate(OrigDate) {
       return proto[utc].call(wallClock(this))
     })
   })
-  if (proto.getYear) {
-    define('getYear', function () {
-      const year = this.getFullYear()
-      return isNaN(year) ? NaN : year - 1900
-    })
-  }
+  // getYear 是所有支援的瀏覽器都有的舊式 API（ECMAScript Annex B），原本「沒有 getYear」的分支跑不到，2026/10/22 經 Jason 同意刪除
+  define('getYear', function () {
+    const year = this.getFullYear()
+    return isNaN(year) ? NaN : year - 1900
+  })
   define('getTimezoneOffset', function () {
     return isNaN(timeOf(this)) ? NaN : -OFFSET_MINUTES
   })

@@ -13,12 +13,9 @@ export default function PannelPayment({ Payment }) {
       setExpanded(true)
     }
   }, [bill.payType])
-  // 付款／備註改為與打帳單相同的常駐卡片（不可收合）：原本的展開 state、自動展開 effect 與 handler 依規則保留不刪，
-  // expanded 仍標在卡片的 data-state（與原 Accordion 根節點相同）；收合時內容本來就保持掛載，改常駐不影響查詢與副作用
-  // eslint-disable-next-line no-unused-vars
-  const handleAccordionClick = () => {
-    setExpanded(val => !val)
-  }
+  // 付款／備註改為與打帳單相同的常駐卡片（不可收合）：原本的展開 state 與自動展開 effect 保留，
+  // expanded 仍標在卡片的 data-state（與原 Accordion 根節點相同）；收合時內容本來就保持掛載，改常駐不影響查詢與副作用。
+  // 沒有地方呼叫的收合 handler（handleAccordionClick）2026/10/22 經 Jason 同意刪除
   return (
     <Card data-state={expanded ? 'open' : 'closed'}>
       <CardContent>

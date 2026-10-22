@@ -5,7 +5,7 @@ import createRakeHandlers, { checkInputEmptyAsZero, checkInputRangeOnly } from '
 // 守住：
 // - 切換「指定／不指定」「全段／分段」時，換成對應的空白級距（只留一列 0），不殘留另一種模式的級距（否則存檔會混入舊資料）；
 // - 新增／刪除／輸入級距只改目前選取的那一組（deductionIndex）與那一列，不動其他組；
-// - 抽成 % 只能 0～100、門檻不可為負，超出時改成 0 並提示；設定頁把空字串當 0，彈窗不處理空字串（兩者原樣保留）；
+// - 抽成 % 只能 0～100（含小數，以存檔的同一個數值檢查）、門檻不可為負，超出時改成 0 並提示；設定頁把空字串當 0，彈窗不處理空字串（兩者原樣保留）；
 // - 一律回傳新物件，不直接改 React state（原地修改畫面不會更新）。
 
 jest.mock('elements/snackbars', () => ({ openSnackbar: jest.fn() }))
@@ -109,14 +109,18 @@ describe('切換「全段／分段」', () => {
     unchanged()
   })
 
-  it('分段 → 全段（不指定）：只剩「預設」一組、不分指定一列 0', () => {
-    const { handlers, changes, unchanged } = setup(segmentedSharing(false))
+  it('分段 → 全段（不指定）：只剩「預設」一組、不分指定一列 0，分頁回到預設', () => {
+    // 先前停在全段第 3 組（deductionIndex 2）後切到分段、取消指定，再回全段：組別索引要歸零，否則讀不到「預設」以外的組別
+    // （2026/10/22 修正前這個分支沒有歸零，回全段時整頁錯誤，見 CreateDeductionSetting/__tests__/segmentedToggle.page.test.js）
+    const { handlers, changes, setTabValue, setDeductionIndex, unchanged } = setup(segmentedSharing(false), { deductionIndex: 2 })
     handlers.handleToggleButtonChange()
     expect(changes.isSegmented).toBe(false)
     expect(changes.segmented).toEqual([])
     expect(changes.nonSegmented).toEqual([
       { attribute: '預設', rakeData: { designate: [], nonDesignate: [], nonDistinguish: [tier(0, 0)] } },
     ])
+    expect(setTabValue).toHaveBeenCalledWith('預設')
+    expect(setDeductionIndex).toHaveBeenCalledWith(0)
     unchanged()
   })
 
@@ -290,6 +294,10 @@ describe('欄位檢查（checkInput）', () => {
       ['-1', 0, true],
       ['100', '100', false],
       ['0', '0', false],
+      // 小數：檢查與存檔用同一個數值（parseFloat），超出 0～100 一樣擋下（2026/10/22 修正前以 parseInt 檢查，會被存入）
+      ['100.5', 0, true],
+      ['-0.5', 0, true],
+      ['12.5', '12.5', false],
     ])('抽成 %s：結果 %p、是否提示 %p', (value, expected, warned) => {
       const event = inputEvent(value)
       checkInput(event, 'rake')
@@ -303,6 +311,22 @@ describe('欄位檢查（checkInput）', () => {
       expect(event.target.value).toBe('-5')
       expect(openSnackbar).not.toHaveBeenCalled()
     })
+  })
+
+  it.each([
+    ['新增／編輯抽成設定、員工抽成設定（checkInputEmptyAsZero）', checkInputEmptyAsZero],
+    ['員工批量抽成彈窗（checkInputRangeOnly）', checkInputRangeOnly],
+  ])('%s：超出範圍的小數不會被存入，範圍內的小數照存', (_name, checkInput) => {
+    const { handlers, changes } = setup(nonSegmentedSharing(), { checkInput })
+    handlers.handleNonSegmentedRakeInput(inputEvent('100.5'), 0, 'rake')
+    expect(changes.nonSegmented[1].rakeData.nonDistinguish[0].rake).toBe(0)
+    handlers.handleNonSegmentedRakeInput(inputEvent('-0.5'), 0, 'rake')
+    expect(changes.nonSegmented[1].rakeData.nonDistinguish[0].rake).toBe(0)
+    const seg = setup(segmentedSharing(), { checkInput })
+    seg.handlers.handleSegmentedInput(inputEvent('100.5'), 0, 'rake')
+    expect(seg.changes.segmented[0].nonDistinguish[0].rake).toBe(0)
+    seg.handlers.handleSegmentedInput(inputEvent('12.5'), 0, 'rake')
+    expect(seg.changes.segmented[0].nonDistinguish[0].rake).toBe(12.5)
   })
 
   it('設定頁：清空欄位視為 0（避免存成 NaN）', () => {

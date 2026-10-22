@@ -5,6 +5,7 @@ import CustomerTicketRecordAutoCompleteForQueueOrder from 'components/CustomerTi
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import billContext from 'context/keyInContext'
 import { useFetchLazyTicketRecords } from 'hooks/useFetchTicketRecords'
+import { ticketHelperType, isSameHelperType } from 'views/OrderShared/ticketHelperType'
 import idx from 'idx'
 import cloneDeep from 'lodash/cloneDeep'
 import { Fragment, useContext, useState, useEffect, useRef } from 'react'
@@ -32,13 +33,13 @@ export default function CouponUse({
             .map(data =>
               data.nameList.map(name => {
                 return {
-                  type: `${data.type}-${name}`,
+                  type: ticketHelperType(data.type, name),
                   helperDeductiontype: data.helperDeductionType,
                 }
               })
             )
             .reduce((a, b) => a.concat(b), [])
-            .filter(data => !prev.find(i => i.type === data.type))
+            .filter(data => !prev.find(i => isSameHelperType(i.type, data.type)))
             .map(data => ({
               type: data.type,
               isDesignate: false,
@@ -74,7 +75,7 @@ export default function CouponUse({
           ? _.service.helperDeductionSetting
             .map(data =>
               data.nameList.map(name => ({
-                type: `${data.type} - ${name}`,
+                type: ticketHelperType(data.type, name),
                 helperId: '',
                 isDesignate: false,
                 helperDeductiontype: data.helperDeductionType,

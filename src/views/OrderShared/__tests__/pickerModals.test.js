@@ -14,6 +14,7 @@ import { createAutoMockLink, callsOf } from '../../../__tests__/testkit.test'
 // - 第一列還是空白時替換第一列，否則新增在最後（不覆蓋已輸入的項目）
 // - 服務選取後依服務的助理設定展開助理欄位（類型-人員），才關閉彈窗
 // - 分類篩選寫入查詢條件（服務／商品／卡券用 categoryIds、會員卡用 categoryUUIds），清除時回到全部
+//   （商品／會員卡的「清除」回到第一次開啟時的完整條件：會員卡仍只查可販售、分頁參數保留預設；2026/10/22 修正前會少掉這幾個參數）
 // - 共用畫面（ItemPickerModal）：標題、分類鈕、加入、分頁、關閉；按 Esc／點背景不關閉（原本就沒有）
 // GraphQL 由模擬 link 回應，不連後端。
 
@@ -201,9 +202,11 @@ describe('ProductsModal：選商品', () => {
     expect(setters.setSelectedCategorie).toHaveBeenCalledWith(['pc-1'])
     expect(setters.setSelectedCategorieName).toHaveBeenCalledWith(['洗護'])
     expect(setters.state.setting).toEqual({ pageLimit: 50, pageOffset: 0, keyword: '', categoryIds: ['pc-1'] })
+    // 清除：回到第一次開啟時的完整查詢條件（分頁參數保留預設，不只清分類與關鍵字）
+    act(() => setters.setSetting(prev => ({ ...prev, pageOffset: 2, keyword: '洗' })))
     fireEvent.click(within(dialog()).getByRole('button', { name: '清除' }))
     expect(setters.setSelectedCategorie).toHaveBeenLastCalledWith([])
-    expect(setters.state.setting).toEqual(expect.objectContaining({ keyword: '', categoryIds: [] }))
+    expect(setters.state.setting).toEqual({ pageLimit: 50, pageOffset: 0, keyword: '', categoryIds: [] })
   })
 })
 
@@ -291,9 +294,11 @@ describe('MemberShipCardSellsModal：選會員卡', () => {
     fireEvent.click(within(dialog()).getByRole('button', { name: 'VIP' }))
     expect(setters.setSelectedCategorie).toHaveBeenCalledWith(['mc-1'])
     expect(setters.state.setting.categoryUUIds).toEqual(['mc-1'])
+    // 清除：回到第一次開啟時的完整查詢條件——仍只查可販售的會員卡、分頁參數保留預設
+    act(() => setters.setSetting(prev => ({ ...prev, pageOffset: 2, keyword: '年' })))
     fireEvent.click(within(dialog()).getByRole('button', { name: '清除' }))
     expect(setters.setSelectedCategorie).toHaveBeenLastCalledWith([])
-    expect(setters.state.setting).toEqual(expect.objectContaining({ keyword: '', categoryUUIds: [] }))
+    expect(setters.state.setting).toEqual({ isAvailableForSale: true, pageLimit: 50, pageOffset: 0, keyword: '', categoryUUIds: [] })
   })
 })
 

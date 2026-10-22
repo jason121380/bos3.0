@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import idx from 'idx'
 import { formatNumber } from 'ui/format'
 import ItemPickerModal from './ItemPickerModal'
+import { PRODUCT_PICKER_SETTING } from './useItemPicker'
 
 // 店販「選商品」彈窗：打帳單／帳單詳細／掛單詳細／重新開單四頁原本各一份、內容相同（只有 effect 宣告順序不同），2026/10/21 合併
 function ProductsModal({
@@ -51,10 +52,8 @@ function ProductsModal({
   const handleClearCategorie = () => {
     setSelectedCategorie([])
     setSelectedCategorieName('')
-    setSetting({
-      keyword: '',
-      categoryIds: [],
-    })
+    // 回到第一次開啟時的完整查詢條件（OrderShared/useItemPicker），只清掉關鍵字與分類
+    setSetting(PRODUCT_PICKER_SETTING)
   }
 
   return (
@@ -97,7 +96,6 @@ ProductsModal.propTypes = {
 
 ProductsModal.defaultProps = {
   open: false,
-  onClose: () => { },
 }
 
 export default ProductsModal
