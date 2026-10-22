@@ -55,7 +55,7 @@ const OrderTable = ({
     let name = designerName
     if (designerNameType === 'NICKNAME') {
       name = designerNickname || designerName
-    } else if (designerName === 'BOTH') {
+    } else if (designerNameType === 'BOTH') {
       name = `${designerName}${designerNickname ? `(${designerNickname})` : ''}`
     }
     return name

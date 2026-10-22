@@ -64,7 +64,8 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
     return (
       <Fragment>
         {checkBreakTime(breakTime) && <b style={{ color: 'rgb(var(--text))' }} id='breakTime'>外出時間：</b>}
-        {breakTime.map((d, index) => {
+        {/* 開始、結束都沒有時間的外出紀錄整筆不顯示（原本會留下「, - 」，Jason 2026/10/22 fix all） */}
+        {breakTime.filter(d => d.start.time !== null || (d.end !== null && d.end.time !== null)).map((d, index) => {
           if (index === 0) {
             if (d.end === null) {
               if (d.start.time !== null) {

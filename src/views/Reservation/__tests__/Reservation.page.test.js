@@ -3,7 +3,7 @@
 // - 換設計師時清空已選的時間；手機號碼須為 09 開頭 10 碼，姓名、時間（指定時含設計師）都有才能送出
 // - 指定送 bookingV2（含 LINE userId）、不指定送 nonDesignationBooking；成功後記住顧客姓名電話、導到預約行事曆並提示
 // - 從 LINE 進來（usingLineLogin 未帶或為 1）：登入 LIFF 取 userId、帶入上次的姓名電話；預約完成後把預約資訊傳回 LINE 並關閉視窗
-// 已知缺口（待 Jason 決定）見各測試註解。日期選擇器以簡化版代替；LIFF SDK 以假物件代替；GraphQL 全由模擬 link 回應，不建立真實預約。
+// 原本的已知缺口已於 2026/10/22 修正（Jason fix all，見各測試註解）。日期選擇器以簡化版代替；LIFF SDK 以假物件代替；GraphQL 全由模擬 link 回應，不建立真實預約。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
@@ -64,39 +64,10 @@ const fillCustomer = (name, phone) => {
 }
 const submit = () => screen.getByTestId('booking-submit')
 
-// 預約失敗、取不到 LINE 資料時，頁面在 catch 裡把錯誤再拋出（使用者看到的錯誤提示由 init-apollo 的 errorLink 負責），
-// 形成沒人接的 rejection，Jest 會把它當成測試失敗。測失敗流程時暫時讓 catch／finally 產生的 Promise 都有人接，並收集錯誤。
-const rejections = []
-let restorePromise = null
-const captureRejections = () => {
-  const { catch: origCatch, finally: origFinally } = Promise.prototype
-  const watch = p => {
-    origCatch.call(p, e => rejections.push(e))
-    return p
-  }
-  // eslint-disable-next-line no-extend-native
-  Promise.prototype.catch = function (fn) {
-    return watch(origCatch.call(this, fn))
-  }
-  // eslint-disable-next-line no-extend-native
-  Promise.prototype.finally = function (fn) {
-    return watch(origFinally.call(this, fn))
-  }
-  restorePromise = () => {
-    // eslint-disable-next-line no-extend-native
-    Promise.prototype.catch = origCatch
-    // eslint-disable-next-line no-extend-native
-    Promise.prototype.finally = origFinally
-  }
-}
-afterEach(() => {
-  if (restorePromise) restorePromise()
-  restorePromise = null
-})
-
+// 預約失敗、取不到 LINE 資料時，頁面原本在 catch 裡把錯誤再拋出（訊息變成「undefined: …」），形成沒人接的 rejection；
+// 2026/10/22 改為提示錯誤、不再拋出（Jason fix all）。沒人接的 rejection 會讓 Jest 判測試失敗，因此這裡不再攔截。
 let liff
 beforeEach(() => {
-  rejections.length = 0
   localStorage.clear()
   liff = {
     init: jest.fn(() => Promise.resolve()),
@@ -254,9 +225,9 @@ describe('從 LINE 進來', () => {
     expect(messages[0].text).toContain('預約時間: 10:00')
   })
 
-  // 已知缺口（待 Jason 決定）：Basic.js:455 以 `designers.data.nickName` 判斷（data 是陣列，永遠沒有 nickName），
-  // 傳回 LINE 的「設計師」一律是本名，與下拉選單顯示的暱稱不一致。建議改為找到該設計師後取 `nickName || name`。
-  it('已知缺口：待審核的預約傳回「審核中」訊息，設計師用本名（不是選單上顯示的暱稱）', async () => {
+  // Jason 2026/10/22 fix all：Basic.js 原本以 `designers.data.nickName` 判斷（data 是陣列，永遠沒有 nickName），
+  // 傳回 LINE 的「設計師」一律是本名，與下拉選單顯示的暱稱不一致；改為找到該設計師後取 `nickName || name`。
+  it('待審核的預約傳回「審核中」訊息，設計師與選單一致（有暱稱用暱稱，沒有用本名）', async () => {
     const utils = setup({ search: '?usingLineLogin=1&designerId=d-1', extra: { bookingV2: { bookingV2: { id: 'b-1', status: '待審核' } } } })
     await utils.settle()
     choose(screen.getByTestId('designer-name'), 'Amy')
@@ -267,7 +238,22 @@ describe('從 LINE 進來', () => {
     await wait(() => expect(liff.sendMessages).toHaveBeenCalled())
     const text = liff.sendMessages.mock.calls[0][0][0].text
     expect(text).toContain('預約正在審核中...')
-    expect(text).toContain('設計師: 王小美')
+    expect(text).toContain('設計師: Amy')
+  })
+
+  it('沒有暱稱的設計師傳回本名；選回空白不拋錯', async () => {
+    const again = setup({ search: '?usingLineLogin=1&designerId=d-2', extra: { bookingV2: { bookingV2: { id: 'b-2', status: '待審核' } } } })
+    await again.settle()
+    // 先選回空白（不拋錯；設計師清空後回到不指定），再切回指定、選設計師
+    choose(screen.getByTestId('designer-name'), '')
+    fireEvent.click(screen.getByTestId('designer-assigned'))
+    choose(screen.getByTestId('designer-name'), '李大華')
+    await again.settle()
+    choose(screen.getByTestId('service-time'), '10:00')
+    fillCustomer('吳小姐', '0912345678')
+    fireEvent.click(submit())
+    await wait(() => expect(liff.sendMessages).toHaveBeenCalledTimes(1))
+    expect(liff.sendMessages.mock.calls[0][0][0].text).toContain('設計師: 李大華')
   })
 
   it('其他狀態不傳訊息內容（空陣列）；不指定預約的待審核／成功訊息設計師為「不指定」', async () => {
@@ -325,38 +311,60 @@ describe('從 LINE 進來', () => {
 })
 
 describe('失敗與版面', () => {
+  // GraphQL 錯誤的提示由 init-apollo 的 errorLink 負責（測試的模擬 client 沒有 errorLink），頁面不重複提示、也不再拋出
   it('不指定預約失敗：不導頁、不記住顧客，按鈕恢復可按', async () => {
-    captureRejections()
     const utils = setup({ extra: { NON_DESIGNATION_BOOKING: new Error('時段已滿') } })
     await utils.settle()
     choose(screen.getByTestId('service-time'), '14:00')
     fillCustomer('吳小姐', '0912345678')
     fireEvent.click(submit())
-    await wait(() => expect(rejections.some(e => /時段已滿/.test(e.message))).toBe(true))
+    await wait(() => expect(callsOf(utils.calls, 'NON_DESIGNATION_BOOKING')).toHaveLength(1))
     await wait(() => expect(submit()).not.toBeDisabled())
+    await utils.settle()
     expect(currentLocation()).not.toBe('/management/reservation/calendar')
     expect(localStorage.getItem('customer')).toBeNull()
     expect(openSnackbar).not.toHaveBeenCalled()
   })
 
   it('指定預約失敗：不導頁、按鈕恢復可按', async () => {
-    captureRejections()
     const utils = setup({ search: `?usingLineLogin=0&designerId=d-1&date=${at(10)}`, extra: { bookingV2: new Error('設計師休假') } })
     await utils.settle()
     fillCustomer('吳小姐', '0912345678')
     fireEvent.click(submit())
-    await wait(() => expect(rejections.some(e => /設計師休假/.test(e.message))).toBe(true))
+    await wait(() => expect(callsOf(utils.calls, 'bookingV2')).toHaveLength(1))
     await wait(() => expect(submit()).not.toBeDisabled())
+    await utils.settle()
+    expect(currentLocation()).not.toBe('/management/reservation/calendar')
     expect(openSnackbar).not.toHaveBeenCalled()
   })
 
-  it('LINE 登入後取不到 userId：不帶入、頁面照常可用', async () => {
+  it('預約後的處理出錯（非 GraphQL 錯誤，例如傳回 LINE 失敗）：提示錯誤訊息、按鈕恢復可按', async () => {
+    liff.sendMessages.mockImplementation(() => {
+      throw new Error('LINE 傳送失敗')
+    })
+    const assigned = setup({ search: `?usingLineLogin=1&designerId=d-1&date=${at(10)}`, extra: { bookingV2: { bookingV2: { id: 'b-1', status: '預約成功' } } } })
+    await assigned.settle()
+    fillCustomer('吳小姐', '0912345678')
+    fireEvent.click(submit())
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: 'LINE 傳送失敗', variant: 'error' }))
+    await wait(() => expect(submit()).not.toBeDisabled())
+    cleanup()
+    openSnackbar.mockClear()
+    const nds = setup({ search: '?usingLineLogin=1', extra: { NON_DESIGNATION_BOOKING: { nonDesignationBooking: { id: 'nd-1', status: '預約成功' } } } })
+    await nds.settle()
+    choose(screen.getByTestId('service-time'), '14:00')
+    fillCustomer('吳小姐', '0912345678')
+    fireEvent.click(submit())
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: 'LINE 傳送失敗', variant: 'error' }))
+    await wait(() => expect(submit()).not.toBeDisabled())
+  })
+
+  it('LINE 登入後取不到 userId：提示錯誤訊息、不帶入、頁面照常可用', async () => {
     liff.isLoggedIn.mockReturnValue(false)
-    captureRejections()
     liff.getProfile.mockImplementation(() => Promise.reject({ code: '401', message: 'no profile' }))
     const utils = setup({ search: '?usingLineLogin=1' })
     await utils.settle()
-    await wait(() => expect(rejections.some(e => e.message === '401: no profile')).toBe(true))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: 'no profile', variant: 'error' }))
     expect(screen.getByTestId('booking-submit')).toBeInTheDocument()
   })
 

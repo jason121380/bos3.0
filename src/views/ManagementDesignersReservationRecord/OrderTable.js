@@ -44,7 +44,6 @@ const OrderTable = ({
   const [editOrder, setEditOrder] = useState({})
   const [holidayData, setHolidayData] = useState({})
   const [clickData, setClickData] = useState({})
-  const ndWidth = 30
 
   const renderName = data => {
     const { designerName, designerNickname } = data
@@ -61,33 +60,6 @@ const OrderTable = ({
     if (!count) return limit
     return (limit - count) < 0 ? 0 : limit - count
   }
-
-  const findTitleWidth = (length, breakLength) => {
-    let width = calendarSize.width
-    if (length > 1) {
-      width = (length - 1) * calendarSize.width
-    }
-    if (breakLength > 0) {
-      width += calendarSize.breakWidth
-    }
-    if (length > 1 || breakLength > 0) {
-      width += ndWidth
-    }
-    if (length <= 1 && breakLength > 0) {
-      width = calendarSize.width + ndWidth
-    }
-    if (length === 1 && breakLength === 2) {
-      width = calendarSize.width
-    }
-    return width
-  }
-
-  const findOrderWidth = length => {
-    const width = calendarSize.width * Math.max(0, length - 1)
-    return width
-  };
-
-
 
   useEffect(() => {
     ndsRef.current.forEach(element => {

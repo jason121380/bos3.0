@@ -3,9 +3,10 @@
 // - 全店模式：顯示全店不可預約時段，點空白格可新預約（帶日期時間的預約連結）、關閉全店預約；點全店不可預約可開啟
 // - 指定一位設計師：顯示可預約人數與公休，點空白格關閉該設計師的預約、點公休開「編輯公休」
 // - 預約明細：接受／取消（取消密碼）、未出席；已開單的預約另開帳單頁；報到圖示、報到模式與報到狀態篩選
-// - 設定或行事曆查詢失敗時不整頁壞（顯示空的週曆）——例外見已知缺口
-// 已知缺口（修正中，另一個 PR）：OrderTable.js 的待審核判斷（rest.status→rest.bookingStatus）與本名＋暱稱設定
-// （designerName→designerNameType），這裡照目前行為鎖住、不改產品碼。GraphQL 全由模擬 link 回應，不連後端、不建立真實預約。
+// - 設定或行事曆查詢失敗時不整頁壞（顯示空的週曆）
+// 原本的已知缺口已於 2026/10/22 修正（Jason fix all）：OrderTable.js 的待審核判斷（rest.status→rest.bookingStatus）、
+// 本名＋暱稱設定（designerName→designerNameType）、審核窗後端沒回 id 時「取消」仍可按、預約歷史／取消密碼／報到設定查詢失敗不整頁壞。
+// GraphQL 全由模擬 link 回應，不連後端、不建立真實預約。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
@@ -153,10 +154,13 @@ describe('查詢與版面', () => {
     })
   })
 
-  it('行事曆與設定查詢失敗（取消密碼、歷史顯示除外）：顯示空的週曆，不進錯誤畫面', async () => {
+  it('行事曆與設定查詢失敗：顯示空的週曆，不進錯誤畫面', async () => {
     const utils = setup({
       fixtures: {
         getMerchantDesignerCalendar: new Error('壞了'),
+        GET_BOOKING_HISTORY_DISPLAY: new Error('壞了'),
+        GET_CANCEL_BOOKING_USING: new Error('壞了'),
+        GET_CHECKIN_SETTING_FOR_CALENDAR: new Error('壞了'),
         getDesignerNameForCustomerSide: new Error('壞了'),
         GET_BOOKING_REMARK_DISPLAY: new Error('壞了'),
         GET_CUS_BOOKING_REMARK_DISPLAY: new Error('壞了'),
@@ -169,12 +173,24 @@ describe('查詢與版面', () => {
     expect(document.querySelectorAll('#darkBorder')).toHaveLength(0)
   })
 
-  // 已知缺口（待 Jason 決定）：index.js:158（預約歷史顯示設定）與 :318（取消密碼設定）讀查詢結果前沒有防呆，
-  // 這兩支查詢失敗時整頁進錯誤畫面。報到設定失敗時 :145 會把 checkinSettings 設成 undefined，畫面讀 .isBookingCheckinEnabled 也會拋錯。
-  // 建議：與其他設定一樣用 idx 並給預設值。
-  it('已知缺口：預約歷史顯示或取消密碼設定查詢失敗時整頁進錯誤畫面', async () => {
-    setup({ fixtures: { GET_BOOKING_HISTORY_DISPLAY: new Error('壞了') } })
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+  // Jason 2026/10/22 fix all：index.js 的預約歷史顯示（:158）、取消密碼（:318）讀查詢結果前原本沒有防呆，報到設定失敗時（:145）
+  // 會把 checkinSettings 設成 undefined，三者任一失敗都整頁進錯誤畫面；改以 idx 加預設值（不顯示歷史、不需取消密碼、報到功能關閉）。
+  it('預約歷史顯示、取消密碼或報到設定查詢失敗：各自沿用預設值，週曆照常顯示、可開預約明細並直接取消', async () => {
+    for (const name of ['GET_BOOKING_HISTORY_DISPLAY', 'GET_CANCEL_BOOKING_USING', 'GET_CHECKIN_SETTING_FOR_CALENDAR']) {
+      const utils = setup({ fixtures: { [name]: new Error('壞了') } })
+      await ready(utils)
+      expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+      expect(hasBlock('陳小姐')).toBe(true)
+      // 報到功能未開啟時不顯示報到圖示
+      expect(block('陳小姐').querySelector('.lucide-square-x')).toBeNull()
+      fireEvent.click(block('陳小姐'))
+      await screen.findByText('電話: 0912000111')
+      fireEvent.click(button('取消預約'))
+      // 沒有取消密碼：直接送出，不跳密碼欄
+      await wait(() => expect(sentOf(utils.calls, 'verifyBooking')).toHaveLength(1))
+      expect(screen.queryByLabelText('取消預約密碼')).toBeNull()
+      cleanup()
+    }
   })
 })
 
@@ -268,7 +284,11 @@ describe('指定一位設計師', () => {
     await wait(() => expect(sentOf(utils.calls, 'adminBookingTime')).toHaveLength(2))
     await utils.settle()
     expect(dialog()).not.toBeNull()
-    expect(button('取消')).toBeDisabled()
+    // 後端沒回設計師（結果不明）：「關閉預約」維持停用避免重複送出，「取消」可按來關窗（af7ec13 修正，Jason 2026/10/22 fix all）
+    expect(button('關閉預約')).toBeDisabled()
+    expect(button('取消')).not.toBeDisabled()
+    fireEvent.click(button('取消'))
+    await closedDialog()
   })
 
   it('點公休開「編輯公休」，列出該段的每 30 分', async () => {
@@ -322,14 +342,14 @@ describe('預約明細', () => {
     expect(window.open).toHaveBeenCalledWith('/order/o-9', '_blank')
   })
 
-  // 已知缺口（修正中，另一個 PR）：OrderTable.js:254 以 `rest.status` 判斷待審核，但週曆資料的欄位是 bookingStatus，
-  // 待審核的預約目前也開成「預約成功」的明細（有「編輯」連結）。「接受預約」仍依 bookingStatus 顯示。
-  it('已知缺口：待審核的預約目前也顯示「編輯」連結；接受預約送 isApproval: true', async () => {
+  // af7ec13 修正（Jason 2026/10/22 fix all）：OrderTable.js 原本以 `rest.status` 判斷待審核（週曆資料的欄位是 bookingStatus），
+  // 待審核的預約也開成「預約成功」的明細（有「編輯」連結）；改讀 bookingStatus 後開審核窗，沒有「編輯」。
+  it('待審核的預約開審核窗（沒有「編輯」連結）；接受預約送 isApproval: true', async () => {
     const utils = setup({ fixtures: { verifyBooking: sequence(new Error('已過期'), { verifyBooking: { id: null } }, { verifyBooking: { id: 'b-2' } }) } })
     await ready(utils)
     fireEvent.click(block('林先生'))
     await screen.findByText('電話: 0922')
-    expect(within(dialog()).getByText('編輯')).toBeInTheDocument()
+    expect(within(dialog()).queryByText('編輯')).toBeNull()
     fireEvent.click(button('接受預約'))
     await wait(() => expect(openSnackbar).toHaveBeenLastCalledWith({ message: '已過期', variant: 'error' }))
     fireEvent.click(button('接受預約'))
@@ -469,13 +489,13 @@ describe('報到、名稱、格子', () => {
     expect(await screen.findByText('設計師: 王小美')).toBeInTheDocument()
   })
 
-  // 已知缺口（修正中，另一個 PR）：OrderTable.js:54 以 `designerName === 'BOTH'` 判斷，應為 designerNameType；
-  // 設定為「本名＋暱稱」時目前只顯示本名，只有設計師本名剛好叫 BOTH 才加暱稱。
-  it('已知缺口：名稱設定為「本名＋暱稱」時只顯示本名', async () => {
+  // af7ec13 修正（Jason 2026/10/22 fix all）：OrderTable.js 原本以 `designerName === 'BOTH'` 判斷（比對本名），
+  // 設定為「本名＋暱稱」時只顯示本名；改為 designerNameType 後顯示「本名(暱稱)」，沒有暱稱時只顯示本名。
+  it('名稱設定為「本名＋暱稱」：顯示「本名(暱稱)」，沒有暱稱時只顯示本名', async () => {
     const utils = setup({ nameType: 'BOTH' })
     await ready(utils)
     fireEvent.click(block('陳小姐'))
-    expect(await screen.findByText('設計師: 王小美')).toBeInTheDocument()
+    expect(await screen.findByText('設計師: 王小美(Amy)')).toBeInTheDocument()
     cleanup()
     setup({ nameType: 'BOTH', designers: [{ ...AMY, designerName: 'BOTH' }] })
     await wait(() => expect(hasBlock('陳小姐')).toBe(true))

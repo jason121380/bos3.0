@@ -6,7 +6,7 @@
 // - 店家設定不推播待審核時，待審核預約不顯示；即時推播（socket）同一天的異動會更新表格並提示，開著的預約被改時關閉彈窗
 // - 點各種格子開啟對應的彈窗（新增預約／開放預約／不指定預約／預約明細／事件／公休／已開單的帳單）
 // - 格子寬高可調；小格子裡備註太長時改為跑馬燈
-// 已知缺口（待 Jason 決定）見各測試註解。GraphQL 全由模擬 link 回應，不連後端、不建立真實預約。
+// 原本的已知缺口已於 2026/10/22 修正（Jason fix all，見各測試註解）。GraphQL 全由模擬 link 回應，不連後端、不建立真實預約。
 import React from 'react'
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
@@ -15,7 +15,7 @@ import { RESERVATION_COLORS } from 'components/CalendarColorClip'
 import { loginAs, callsOf, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import {
   setupRecord, pageReady, hasBlock, timeLabels, designerHeaders, designerColumn, designerCell, ndsCell, block, table,
-  reservation, entry, at, AMY, DAY, DAY_START, DAY_END, SLOT,
+  reservation, entry, at, AMY, NDS, calendarResponse, DAY, DAY_START, DAY_END, SLOT,
 } from './recordKit.test'
 
 jest.setTimeout(30000)
@@ -133,12 +133,47 @@ describe('查詢與時間軸', () => {
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 
-  // 已知缺口（待 Jason 決定）：頁面讀設定與行事曆查詢結果前沒有防呆，任一查詢失敗（data 為 undefined）整頁進錯誤畫面，
-  // 連日期都無法切換。建議：各 effect 讀 data 前先判斷（例如 idx 或 `data && data.xxx`），失敗時沿用預設值。
-  it('已知缺口：設定查詢失敗時整頁進錯誤畫面', async () => {
-    const utils = setupRecord({ fixtures: { getDesignerNameForCustomerSide: new Error('壞了') } })
+  // Jason 2026/10/22 fix all：頁面讀設定與行事曆查詢結果前原本沒有防呆，任一查詢失敗（data 為 undefined）整頁進錯誤畫面、
+  // 連日期都無法切換；改以 idx 加預設值（與查詢回來前的初始值相同），失敗的那一項沿用預設、其餘照常。
+  it('任一設定查詢失敗：沿用預設值，表格照常顯示', async () => {
+    const names = [
+      'getDesignerNameForCustomerSide', 'GET_BOOKING_REMARK_DISPLAY', 'GET_CUS_BOOKING_REMARK_DISPLAY',
+      'GET_PARAMETER_ABOUT_SETTING_FUNCTION', 'GET_CHECKIN_SETTING_FOR_CALENDAR', 'GET_IS_BOOKING_CUS_CHECK_USING',
+      'GET_IS_BOOKING_TYPE_FOR_SOCKET', 'GET_BOOKING_HISTORY_DISPLAY', 'GET_CANCEL_BOOKING_USING',
+    ]
+    for (const name of names) {
+      const utils = setupRecord({ fixtures: { [name]: new Error('壞了') } })
+      await pageReady(utils)
+      expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+      expect(designerHeaders()).toEqual(['王小美'])
+      expect(hasBlock('陳小姐')).toBe(true)
+      cleanup()
+    }
+    // 全部一起失敗也一樣；推播類型讀不到時預設提示待審核
+    const utils = setupRecord({ fixtures: Object.fromEntries(names.map(n => [n, new Error('壞了')])) })
+    await pageReady(utils)
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(hasBlock('林先生')).toBe(true)
+  })
+
+  it('行事曆查詢失敗：顯示空的時間軸與不指定欄，可切換日期', async () => {
+    let fail = true
+    const utils = setupRecord({
+      fixtures: {
+        getMerchantDesignerCalendar: vars => (fail ? new Error('壞了') : calendarResponse([AMY], NDS)(vars)),
+      },
+    })
+    await pageReady(utils)
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(designerHeaders()).toEqual([])
+    expect(screen.getByText('不指定')).toBeInTheDocument()
+    expect(timeLabels()[0]).toBe('10:00')
+    expect(document.getElementById('Backdrop')).toHaveStyle('visibility: hidden')
+    fail = false
+    fireEvent.change(screen.getByLabelText('選擇日期'), { target: { value: String(new Date(2025, 2, 11).getTime()) } })
     await utils.settle()
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    await wait(() => expect(hasBlock('陳小姐')).toBe(true))
+    expect(designerHeaders()).toEqual(['王小美'])
   })
 })
 
@@ -262,15 +297,13 @@ describe('色塊、名額與名稱', () => {
     expect(designerHeaders()).toEqual(['Amy', '李大華'])
   })
 
-  // 已知缺口（修正中，另一個 PR 處理 ManagementDesignersReservationRecord 的同一問題；本檔 OrderTable.js:58 寫法相同）：
-  // 「本名＋暱稱」判斷寫成 `designerName === 'BOTH'`（比對設計師本名），應為 `designerNameType === 'BOTH'`。
-  // 目前設定為 BOTH 時只顯示本名；只有設計師本名剛好叫「BOTH」才會加上暱稱。
-  it('已知缺口：顧客端名稱設定為「本名＋暱稱」時目前只顯示本名', async () => {
-    const BOTH_NAMED = { ...ZHANG, designerId: 'd-7', designerName: 'BOTH', designerNickname: '阿B' }
-    const BOTH_NO_NICK = { ...ZHANG, designerId: 'd-6', designerName: 'BOTH', designerNickname: null }
-    const utils = setupRecord({ designers: [FULL_DAY, BOTH_NAMED, BOTH_NO_NICK], settings: { nameType: 'BOTH' } })
+  // Jason 2026/10/22 fix all：OrderTable.js「本名＋暱稱」判斷原本寫成 `designerName === 'BOTH'`（比對設計師本名），
+  // 設定為 BOTH 時只顯示本名；改為 `designerNameType === 'BOTH'`（與單週預約紀錄、共用週曆相同）。
+  it('顧客端名稱設定為「本名＋暱稱」：表頭顯示「本名(暱稱)」，沒有暱稱的只顯示本名', async () => {
+    const NO_NICK = { ...ZHANG, designerId: 'd-6', designerName: '無暱稱', designerNickname: null }
+    const utils = setupRecord({ designers: [FULL_DAY, NO_NICK], settings: { nameType: 'BOTH' } })
     await pageReady(utils)
-    expect(designerHeaders()).toEqual(['王小美', 'BOTH(阿B)', 'BOTH'])
+    expect(designerHeaders()).toEqual(['王小美(Amy)', '無暱稱'])
   })
 })
 
@@ -416,17 +449,26 @@ describe('即時推播（socket）', () => {
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ variant: 'success', message: '有一筆新預約' }))
   })
 
-  // 已知缺口（待 Jason 決定）：推播的異動資訊（changeData）留在 state 裡，之後調整格子大小、切換報到模式等任何會重算表格的操作，
-  // 都會再跳一次「有一筆新預約／預約紀錄已更新」。建議：提示後把 changeData 清掉，或把提示移到處理推播的 effect。
-  it('已知缺口：收到推播後調整格子大小，會再提示一次', async () => {
-    const utils = setupRecord()
+  // Jason 2026/10/22 fix all：推播的異動資訊（changeData）原本留在 state 裡，之後調整格子大小、切換報到模式等任何會重算表格的操作，
+  // 都會再跳一次「有一筆新預約／預約紀錄已更新」；改為同一筆推播只提示一次。
+  it('收到推播後調整格子大小、切換報到模式，不再重複提示；下一筆推播照常提示', async () => {
+    const utils = setupRecord({ settings: { checkin: true } })
     await pageReady(utils)
     push(utils.store, pushed(DAY_START, { actionType: 'CREATE', bookingDataId: 'b-new' }))
     await screen.findByText('新客人')
     expect(openSnackbar).toHaveBeenCalledTimes(1)
     fireEvent.click(screen.getByRole('button', { name: '調整格子寬度與高度' }))
-    fireEvent.change((await screen.findAllByRole('slider'))[0], { target: { value: '120' } })
+    const slider = (await screen.findAllByRole('slider'))[0]
+    const before = designerColumn(0).style.width
+    fireEvent.change(slider, { target: { value: '70' } })
+    await wait(() => expect(designerColumn(0).style.width).not.toBe(before))
+    fireEvent.click(screen.getByRole('button', { name: /篩選/ }))
+    fireEvent.click(await screen.findByRole('switch', { name: '報到模式' }))
+    await utils.settle()
+    expect(openSnackbar).toHaveBeenCalledTimes(1)
+    push(utils.store, pushed(DAY_START, { actionType: 'UPDATE', bookingDataId: 'b-2' }))
     await wait(() => expect(openSnackbar).toHaveBeenCalledTimes(2))
+    expect(openSnackbar).toHaveBeenLastCalledWith({ variant: 'warning', message: '預約紀錄已更新' })
   })
 })
 

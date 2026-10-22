@@ -178,9 +178,9 @@ describe('時間欄', () => {
     expect(within(five).getByText('13:00')).toHaveStyle('color: rgb(var(--warning))')
     expect(within(five).getByText('17:00')).toHaveStyle('color: rgb(var(--danger))')
     expect(within(five).getByText('15:30')).toHaveStyle('color: rgb(var(--danger))')
-    // 缺時間的紀錄：只顯示有的部分（全空的外出紀錄仍留下「, - 」分隔符號，純顯示）
+    // 缺時間的紀錄：只顯示有的部分；全空的外出紀錄整筆不顯示（原本會留下「, - 」分隔符號，Jason 2026/10/22 fix all）
     const six = timeCell('孫六')
-    expect(six.textContent).toBe('上班時間： - 08:00,  -  - 上班時間：10:00上班時間： - 19:00上班時間：20:00')
+    expect(six.textContent).toBe('上班時間： - 08:00上班時間：10:00上班時間： - 19:00上班時間：20:00')
     expect(six.querySelectorAll('hr')).toHaveLength(3)
     expect(timeCell('周七').textContent).toBe('上班時間：09:00外出時間： - 11:00')
   })

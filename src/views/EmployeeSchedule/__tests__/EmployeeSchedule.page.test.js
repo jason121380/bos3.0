@@ -5,7 +5,7 @@
 // - 新增／刪除班表（刪除需確認）、改班表名稱（Enter 才存）、新增人員（加在原有人員後面；班表原本是空的則取代空列）
 // - 復原／重做只在店家開啟時顯示，依是否為第一版／最後一版停用；後端回「當前班表已過期」時重抓班表
 // - 其他電腦更新（socket）時套用新班表、提示並關閉開著的視窗
-// 已知缺口（待 Jason 決定）見各測試註解。人員自動完成以簡化版代替；GraphQL 全由模擬 link 回應，不連後端、不改真實班表。
+// 已知缺口於 2026/10/22 修正（Jason fix all，見各測試註解）。人員自動完成以簡化版代替；GraphQL 全由模擬 link 回應，不連後端、不改真實班表。
 import React from 'react'
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
@@ -185,29 +185,27 @@ describe('人員順序', () => {
     expect(order((await savedAfter(again, 1)).schedule)).toEqual(['張三', 'Amy', '李大華*'])
   })
 
-  // 已知缺口（待 Jason 決定）：ScheduleCard.js:161 迴圈寫成 `i <= length`，第一位下移而後面全是已標記的人時讀到
-  // scheduleRow[length]（undefined）拋錯：班表不變、不送出，且按鈕在 :155 已停用、之後一直停用到重新整理。
-  // 建議：迴圈改 `i < length`，找不到可交換的人時恢復按鈕。
-  it('已知缺口：第一位下移而後面都是已標記的人時拋錯，班表不送出、按鈕停用', async () => {
+  // Jason 2026/10/22 fix all：ScheduleCard.js 的下移迴圈原本寫成 `i <= length`，第一位下移而後面全是已標記的人時
+  // 讀到 scheduleRow[length]（undefined）拋錯、按鈕一直停用；改為 `i < length`，找不到可交換的人時不送出並恢復按鈕。
+  it('第一位下移而後面都是已標記的人：不拋錯、不送出，按鈕恢復可用', async () => {
     const errors = []
     const onError = e => {
       errors.push(e.error || e.message)
       e.preventDefault()
     }
     window.addEventListener('error', onError)
-    const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
     try {
       const utils = setup({ cards: [card('早班', [row('u1'), row('u2', true)])] })
       await ready(utils)
       act$('Amy', '下移')
-      expect(errors.length).toBeGreaterThan(0)
-      expect(String(errors[0])).toMatch(/timeAdded/)
       await utils.settle()
+      expect(errors).toEqual([])
       expect(saves(utils.calls)).toHaveLength(0)
-      expect(screen.getByRole('button', { name: /新增$/ })).toBeDisabled()
+      // 順序不變：Amy 仍在第一列
+      expect(cards()[0].querySelector('[class*="min-h-[48px]"]')).toBe(personRow('Amy'))
+      expect(screen.getByRole('button', { name: /新增$/ })).not.toBeDisabled()
     } finally {
       window.removeEventListener('error', onError)
-      spy.mockRestore()
     }
   })
 
@@ -226,14 +224,15 @@ describe('人員順序', () => {
     expect(order((await savedAfter(again, 1)).schedule)).toEqual(['張三', 'Amy', '李大華*'])
   })
 
-  // 已知缺口（待 Jason 決定）：ScheduleCard.js:327-331 欄位名稱打錯（timeAddd／timeAdd），最後一位按「移到最後」時
-  // 只記下時間、寫入多餘的 timeAdd 欄位，並沒有標記（timeAdded 仍為 false）；已有時間時則原樣存回。
-  it('已知缺口：最後一位按「移到最後」只記時間、不標記，並多存一個 timeAdd 欄位', async () => {
+  // Jason 2026/10/22 fix all：ScheduleCard.js「移到最後」最後一位的分支原本欄位名稱打錯（timeAddd／timeAdd），
+  // 只記時間、多存一個 timeAdd 欄位而沒有標記；改為 timeAdded：記下時間並標記，不再多存 timeAdd。已有時間時原樣存回。
+  it('最後一位按「移到最後」：記下時間並標記，不多存其他欄位', async () => {
     const utils = setup()
     await ready(utils)
     act$('阿四', '移到最後')
     const last = (await savedAfter(utils, 1)).schedule[0].scheduleRow[3]
-    expect(last).toMatchObject({ designerId: 'u4', timeAdded: false, timeAdd: true })
+    expect(Object.keys(last).sort()).toEqual(['designerId', 'time', 'timeAdded'])
+    expect(last).toMatchObject({ designerId: 'u4', timeAdded: true })
     expect(last.time).toBeGreaterThan(0)
     cleanup()
     const stamped = setup({ cards: [card('早班', [row('u1'), { designerId: 'u4', timeAdded: false, time: T }])] })
@@ -465,37 +464,42 @@ describe('復原、重做、存檔失敗與同步', () => {
     expect(callsOf(utils.calls, 'UNDO_EMPLOYEE_SCHEDULE').map(c => c.variables)).toEqual([{ currentScheduleId: 's-1' }])
   })
 
-  // 已知缺口（待 Jason 決定）：index.js:62 判斷「回應有沒有資料」時讀的是頁面查詢（employeeScheduleData）而不是這次的回應，
-  // 存檔／復原／重做的回應因此一律被略過：畫面上的班表 id 不更新（下一次存檔仍送舊 id）、復原／重做後的班表不套用、
-  // 復原與重做後所有按鈕維持停用，要等 socket 推播或重新整理才恢復。建議：改成 `idx(newSchedule, _ => _.data[key])`。
-  it('已知缺口：存檔、復原的回應不套用（班表 id 不更新、復原後按鈕停用），要等 socket 推播', async () => {
+  // Jason 2026/10/22 fix all：index.js 的 handleSetData 原本讀頁面查詢（employeeScheduleData）判斷回應有沒有資料，
+  // 存檔／復原／重做的回應一律被略過（班表 id 不更新、復原後按鈕停用，要等 socket 推播）；改讀這次的回應。
+  it('存檔、復原、重做的回應會套用：班表 id、畫面與按鈕狀態都更新', async () => {
     const utils = setup({
       extra: { isLast: false },
       fixtures: {
-        UNDO_EMPLOYEE_SCHEDULE: { undoEmployeeSchedule: scheduleOf([card('舊版', [row('u1')])], { id: 's-0', isFirst: true }) },
-        REDO_EMPLOYEE_SCHEDULE: { redoEmployeeSchedule: scheduleOf([MORNING], { id: 's-1' }) },
+        UNDO_EMPLOYEE_SCHEDULE: { undoEmployeeSchedule: scheduleOf([card('舊版', [row('u1')])], { id: 's-0', isFirst: true, isLast: false }) },
+        REDO_EMPLOYEE_SCHEDULE: { redoEmployeeSchedule: scheduleOf([MORNING], { id: 's-3', isFirst: false, isLast: true }) },
       },
     })
     await ready(utils)
     act$('張三', '移除人員')
     await savedAfter(utils, 1)
+    await ready(utils)
     act$('阿四', '移除人員')
-    // 第一次存檔回了新 id s-2，第二次仍送 s-1
-    expect((await savedAfter(utils, 2)).currentScheduleId).toBe('s-1')
+    // 第一次存檔回了新 id s-2，第二次送 s-2
+    expect((await savedAfter(utils, 2)).currentScheduleId).toBe('s-2')
+    await ready(utils)
     fireEvent.click(screen.getByRole('button', { name: /復原/ }))
-    await utils.settle()
-    expect(screen.queryByText('舊版')).toBeNull()
-    expect(screen.getByRole('button', { name: /新增$/ })).toBeDisabled()
-    // socket 推播後才恢復
-    act(() => {
-      utils.store.dispatch(socketActions.setSchedule(scheduleOf([card('舊版', [row('u1')])], { id: 's-0', isFirst: true, isLast: false })))
-    })
     expect(await screen.findByText('舊版')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /新增$/ })).not.toBeDisabled()
+    await ready(utils)
+    expect(callsOf(utils.calls, 'UNDO_EMPLOYEE_SCHEDULE').map(c => c.variables)).toEqual([{ currentScheduleId: 's-2' }])
+    // 第一版：復原停用、重做可用
     expect(screen.getByRole('button', { name: /復原/ })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /重做/ })).not.toBeDisabled()
     fireEvent.click(screen.getByRole('button', { name: /重做/ }))
-    await utils.settle()
+    expect(await screen.findByText('早班')).toBeInTheDocument()
+    await ready(utils)
     expect(callsOf(utils.calls, 'REDO_EMPLOYEE_SCHEDULE').map(c => c.variables)).toEqual([{ currentScheduleId: 's-0' }])
+    expect(screen.getByRole('button', { name: /重做/ })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /復原/ })).not.toBeDisabled()
+    // 之後存檔送重做回來的班表 id
+    act$('張三', '移除人員')
+    expect((await savedAfter(utils, 3)).currentScheduleId).toBe('s-3')
+    // 推播的提示只在 socket 更新時出現，自己的存檔／復原／重做不提示
+    expect(openSnackbar).not.toHaveBeenCalledWith({ message: '排班表已更新', variant: 'success' })
   })
 
   it('後端回「當前班表已過期」：提示並重抓班表；其他錯誤只提示', async () => {

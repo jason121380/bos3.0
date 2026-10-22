@@ -235,7 +235,8 @@ export default function ChoseEvent({
   }
 
   const updateLimitCount = () => {
-    if (limitCount.limit === '' || limitCount.limit < 0) {
+    // 人數清空時 parseInt('') 為 NaN，一併擋下（Jason 2026/10/22 fix all）
+    if (!Number.isInteger(limitCount.limit) || limitCount.limit < 0) {
       openSnackbar({
         message: '預約人數有誤',
         variant: 'warning',

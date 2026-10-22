@@ -1,7 +1,7 @@
 // 班表格線使用 sticky 欄列、動態班別色與 .AttendanceEmployeeScheduleTable / .beforeToday 全域樣式（選擇器只認 table／thead／tr／td，不依賴 MUI class），
 // 表格改 ui/table（外框 div 掛原 class 與最大高度，原 Paper 外觀以 rounded-md bg-background 保留）；班別按鈕為 ui/button（動態班別色以 CSS 變數＋!important 保留原權重）
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
-import { format, isBefore, isAfter, isToday } from 'date-fns'
+import { format, isBefore, isToday } from 'date-fns'
 import PropTypes from 'prop-types'
 import cloneDeep from 'lodash/cloneDeep'
 import { Button as UiButton } from 'ui/button'
@@ -28,10 +28,10 @@ export default function Results({
     }
   }
 
+  // 今天以後一律可編輯；打開「編輯過往班別」時額外允許今天以前（原本會整個換成只能改過去，Jason 2026/10/22 決定視為 bug）
   const checkTime = time => {
-    if (isToday(time)) return true
-    const checkFunc = editBefore ? isAfter : isBefore
-    return checkFunc(new Date(), time)
+    if (isToday(time) || editBefore) return true
+    return isBefore(new Date(), time)
   }
 
   const editSchedule = (scheduleId, dataIndex, time) => {

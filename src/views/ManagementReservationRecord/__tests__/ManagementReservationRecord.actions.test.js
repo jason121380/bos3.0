@@ -4,7 +4,7 @@
 // - 預約明細：接受／取消（店家設定取消密碼時先輸入密碼）、報到／取消報到、延遲服務通知、未出席、未來預訂待確認
 // - 編輯預約：時間只能是整點或半點、一定要有顧客、指定時一定要有服務人員；送出的 updateOrder 內容就是畫面上的值
 // - 每個動作成功才提示、重抓行事曆並關窗；失敗時提示原因、按鈕恢復可按、彈窗不關
-// 已知缺口（待 Jason 決定）見各測試註解。顧客／服務人員自動完成與日期選擇器以簡化版代替（各自另有測試）；
+// 原本的已知缺口已於 2026/10/22 修正（Jason fix all，見各測試註解）。顧客／服務人員自動完成與日期選擇器以簡化版代替（各自另有測試）；
 // GraphQL 全由模擬 link 回應，不連後端、不建立或修改真實預約。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
@@ -310,9 +310,9 @@ describe('不指定時段：預約與可預約人數', () => {
     expect(openSnackbar).toHaveBeenLastCalledWith({ message: '設定完成', variant: 'success' })
   })
 
-  // 已知缺口（待 Jason 決定）：人數欄清空時 parseInt('') 得到 NaN，ChoseEvent.js:238 只擋 '' 與負數，
-  // NaN 會照送（JSON 變成 null）。建議：改判 `!Number.isInteger(limitCount.limit) || limitCount.limit < 0`。
-  it('已知缺口：人數清空時仍送出（limit 為 NaN → null）；後端回失敗或錯誤時提示且不關窗', async () => {
+  // Jason 2026/10/22 fix all：人數欄清空時 parseInt('') 得到 NaN，ChoseEvent.js 原本只擋 '' 與負數，NaN 會照送（JSON 變成 null）；
+  // 改判 `!Number.isInteger(limit) || limit < 0`，清空時提示「預約人數有誤」、不送出。
+  it('人數清空時擋下、不送出；後端回失敗或錯誤時提示且不關窗', async () => {
     const utils = setup({
       fixtures: {
         ...LIMIT(2),
@@ -328,8 +328,13 @@ describe('不指定時段：預約與可預約人數', () => {
     await utils.settle()
     fireEvent.change(field('人數'), { target: { value: '' } })
     fireEvent.click(button('儲存'))
+    expect(openSnackbar).toHaveBeenLastCalledWith({ message: '預約人數有誤', variant: 'warning' })
+    await utils.settle()
+    expect(sentOf(utils.calls, 'SET_MERCHANT_NON_DESIGNATE_BOOKING_LIMIT')).toEqual([])
+    fireEvent.change(field('人數'), { target: { value: '3' } })
+    fireEvent.click(button('儲存'))
     await wait(() => expect(openSnackbar).toHaveBeenLastCalledWith({ message: '設定失敗', variant: 'error' }))
-    expect(sentOf(utils.calls, 'SET_MERCHANT_NON_DESIGNATE_BOOKING_LIMIT')[0].input.limit).toBeNaN()
+    expect(sentOf(utils.calls, 'SET_MERCHANT_NON_DESIGNATE_BOOKING_LIMIT')[0].input.limit).toBe(3)
     fireEvent.click(button('儲存'))
     await wait(() => expect(openSnackbar).toHaveBeenLastCalledWith({ message: '沒有權限', variant: 'error' }))
     expect(button('儲存')).not.toBeDisabled()

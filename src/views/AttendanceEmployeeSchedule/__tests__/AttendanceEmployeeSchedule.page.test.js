@@ -99,12 +99,13 @@ describe('顯示', () => {
     expect(tagButton('早班').textContent).toBe('早班')
   })
 
-  // 已知缺口（待 Jason 決定）：班表查詢失敗時 index.js:177 把 employeeSchedule 設成 undefined，Results.js:230 讀 .length
-  // 整頁進錯誤畫面（煙霧測試只驗空資料）。建議：`idx(...) || []`。
-  it('已知缺口：班表查詢失敗時整頁進錯誤畫面', async () => {
+  // Jason 2026/10/22 fix all：班表查詢失敗時 index.js 原本把 employeeSchedule 設成 undefined，Results.js 讀 .length 整頁進錯誤畫面；
+  // 改為 `idx(...) || []`，顯示「共 0 人」的空表。
+  it('班表查詢失敗：顯示空表（共 0 人），不進錯誤畫面', async () => {
     const utils = renderPage(<AttendanceEmployeeSchedule />, { route: routeFor(NEXT), fallback: 'error' })
     await utils.settle()
-    expect(await screen.findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(await screen.findByText('共 0 人')).toBeInTheDocument()
   })
 })
 
@@ -256,17 +257,17 @@ describe('過去的日子', () => {
     expect(cell('李大華', 3)).not.toHaveClass('beforeToday')
   })
 
-  // 已知缺口（待 Jason 確認是否為設計）：「編輯過往班別」打開後，可編輯的範圍從「今天以後」整個換成「今天以前」，
-  // 未來的日子反而變成灰底不能改（Results.js:33 `editBefore ? isAfter : isBefore`）。
-  it('已知缺口：打開「編輯過往班別」後，未來的日子變成不能改', async () => {
+  // Jason 2026/10/22 決定視為 bug（fix all）：「編輯過往班別」打開後，可編輯的範圍原本從「今天以後」整個換成「今天以前」，
+  // 未來的日子反而變成灰底不能改（Results.js `editBefore ? isAfter : isBefore`）；改為額外允許今天以前，今天以後照樣可編輯。
+  it('打開「編輯過往班別」後，未來的日子仍可排班', async () => {
     const utils = setup({ month: NEXT, ues: true })
     await ready(utils)
     startEditing()
     fireEvent.click(screen.getByRole('switch'))
-    expect(cell('李大華', 3)).toHaveClass('beforeToday')
+    expect(cell('李大華', 3)).not.toHaveClass('beforeToday')
     pickTag('晚班')
     fireEvent.click(cell('李大華', 3))
-    expect(cell('李大華', 3).textContent).toBe('')
+    expect(within(cell('李大華', 3)).getByText('晚班')).toBeInTheDocument()
   })
 
   it('本月：今天可以排班', async () => {

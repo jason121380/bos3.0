@@ -173,7 +173,10 @@ export default function () {
           })
         })
         .catch(err => {
-          throw new Error(`${err.code}: ${err.message}`)
+          // GraphQL／網路錯誤已由 init-apollo 的 errorLink 提示；其餘（例如傳回 LINE 失敗）在這裡提示，不再拋出（Jason 2026/10/22 fix all）
+          if (!(err.graphQLErrors && err.graphQLErrors.length) && !err.networkError) {
+            openSnackbar({ message: err.message, variant: 'error' })
+          }
         })
         .finally(() => {
           setDisabled(false)
@@ -255,7 +258,10 @@ export default function () {
           })
         })
         .catch(err => {
-          throw new Error(`${err.code}: ${err.message}`)
+          // GraphQL／網路錯誤已由 init-apollo 的 errorLink 提示；其餘（例如傳回 LINE 失敗）在這裡提示，不再拋出（Jason 2026/10/22 fix all）
+          if (!(err.graphQLErrors && err.graphQLErrors.length) && !err.networkError) {
+            openSnackbar({ message: err.message, variant: 'error' })
+          }
         })
         .finally(() => {
           setDisabled(false)

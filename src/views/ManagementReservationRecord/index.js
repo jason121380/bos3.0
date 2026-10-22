@@ -35,6 +35,7 @@ import { Switch } from 'ui/switch'
 
 import OrderTable from './OrderTable'
 import cloneDeep from 'lodash/cloneDeep'
+import idx from 'idx'
 
 function Calendar() {
   const reservationData = useSelector(state => state.reservation.reservationData)
@@ -93,6 +94,7 @@ function Calendar() {
   const [showFilter, setShowFilter] = useState(false);
   const open = Boolean(anchorEl);
   const ndsRef = useRef([])
+  const notifiedChangeRef = useRef(null)
 
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -405,11 +407,12 @@ function Calendar() {
 
   useEffect(() => {
     if (!DesignerCalendar.loading) {
-      const data = DesignerCalendar.data.getMerchantDesignerCalendar
+      // 查詢失敗（data 為 undefined）時顯示空的時間軸與不指定欄，不整頁壞（Jason 2026/10/22 fix all）
+      const data = idx(DesignerCalendar, _ => _.data.getMerchantDesignerCalendar) || {}
       // 深拷貝：handleTidyOrder 會排序、改型別，不直接改查詢結果（Apollo v3 開發模式為唯讀，也避免改到快取）
       setCalendarRowData({
-        designate: cloneDeep(data.merchantDesignerCalendar),
-        nonDesignate: cloneDeep(data.nonDesignateCalendar),
+        designate: cloneDeep(data.merchantDesignerCalendar || []),
+        nonDesignate: cloneDeep(data.nonDesignateCalendar || { designerName: null, calendar: [] }),
         changeData: null
       })
     }
@@ -436,7 +439,10 @@ function Calendar() {
       setCalendarData({
         designate, nonDesignate: nonDesignate[0]
       })
-      if (calendarRowData.changeData && (unCheckDisplay || calendarRowData.changeData.bookingStatus !== 'UNCHECK')) {
+      // 同一筆推播只提示一次：之後調整格子、切換報到模式等重算表格時不再提示（Jason 2026/10/22 fix all）
+      if (calendarRowData.changeData && calendarRowData.changeData !== notifiedChangeRef.current &&
+        (unCheckDisplay || calendarRowData.changeData.bookingStatus !== 'UNCHECK')) {
+        notifiedChangeRef.current = calendarRowData.changeData
         const { actionType, bookingDataId } = calendarRowData.changeData
         switch (actionType) {
           case 'CREATE':
@@ -465,58 +471,63 @@ function Calendar() {
     calendarSize
   ])
 
+  // 以下設定查詢失敗（data 為 undefined）時沿用與初始值相同的預設，不整頁壞（Jason 2026/10/22 fix all）
   useEffect(() => {
     if (!nameType.loading) {
-      const data = nameType.data.getDesignerNameForCustomerSide
+      const data = idx(nameType, _ => _.data.getDesignerNameForCustomerSide) || 'NAME'
       setDesignerName(data)
     }
   }, [nameType.loading])
 
   useEffect(() => {
     if (!bookingRemarkDisplay.loading) {
-      const data = bookingRemarkDisplay.data.getIsBookingRemarkDisplay
+      const data = idx(bookingRemarkDisplay, _ => _.data.getIsBookingRemarkDisplay) || false
       setRemarkDisplay(data)
     }
   }, [bookingRemarkDisplay.loading])
 
   useEffect(() => {
     if (!cusBookingRemarkDisplay.loading) {
-      const data = cusBookingRemarkDisplay.data.getIsCusBookingRemarkDisplay
+      const data = idx(cusBookingRemarkDisplay, _ => _.data.getIsCusBookingRemarkDisplay) || false
       setCusRemarkDisplay(data)
     }
   }, [cusBookingRemarkDisplay.loading])
 
   useEffect(() => {
     if (!getEventDisplay.loading) {
-      const data = getEventDisplay.data.getParameterAboutSettingFunction.isEventDisplayOnDayBookingRecord
+      const data = idx(getEventDisplay, _ => _.data.getParameterAboutSettingFunction.isEventDisplayOnDayBookingRecord) || false
       setEventDisplay(data)
     }
   }, [getEventDisplay.loading])
 
   useEffect(() => {
     if (!getMerchantCheckinSettings.loading) {
-      const data = getMerchantCheckinSettings.data.getMerchantCheckinSettings
+      const data = idx(getMerchantCheckinSettings, _ => _.data.getMerchantCheckinSettings) || {
+        isBookingCheckinEnabled: false,
+        isUnDoneBookingManualNotify: false,
+      }
       setCheckinSettings(data)
     }
   }, [getMerchantCheckinSettings.loading])
 
   useEffect(() => {
     if (!getIsBookingCusCheckUsing.loading) {
-      const data = getIsBookingCusCheckUsing.data.getIsBookingCusCheckUsing
+      const data = idx(getIsBookingCusCheckUsing, _ => _.data.getIsBookingCusCheckUsing) || false
       setBookingCusCheck(data)
     }
   }, [getIsBookingCusCheckUsing.loading])
 
   useEffect(() => {
     if (!getBookingTypeForSocket.loading) {
-      const data = getBookingTypeForSocket.data.getBookingTypeForSocket
-      setUnCheckDisplay(data.includes('UNCHECK'))
+      const data = idx(getBookingTypeForSocket, _ => _.data.getBookingTypeForSocket)
+      // 讀不到推播類型時維持預設（提示待審核）
+      setUnCheckDisplay(data ? data.includes('UNCHECK') : true)
     }
   }, [getBookingTypeForSocket.loading])
 
   useEffect(() => {
     if (!getBookinHistoryDisplay.loading) {
-      const data = getBookinHistoryDisplay.data.getParameterAboutBookingSetting.isBookingHistoryDisplay
+      const data = idx(getBookinHistoryDisplay, _ => _.data.getParameterAboutBookingSetting.isBookingHistoryDisplay) || false
       setBookingHistoryDisplay(data)
     }
   }, [getBookinHistoryDisplay.loading])
@@ -673,7 +684,7 @@ function Calendar() {
             editOrder={editOrder}
             setEditOrder={setEditOrder}
             calendarSize={calendarSize}
-            cancelPasswordUsing={cancelBookingUsing.loading ? false : cancelBookingUsing.data.merchantPassword.cancelReservation.isUsing}
+            cancelPasswordUsing={cancelBookingUsing.loading ? false : (idx(cancelBookingUsing, _ => _.data.merchantPassword.cancelReservation.isUsing) || false)}
           /> : ''
         }
       </div>

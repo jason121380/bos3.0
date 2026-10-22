@@ -59,8 +59,10 @@ const EmployeeSchedule = () => {
   const usersData = useFetchUsersInEmployeeSchedule({ pageLimit: 9999 })
 
   const handleSetData = (newSchedule, key = 'setEmployeeSchedule', isSocket = false) => {
-    if (!isSocket && !idx(employeeScheduleData, _ => _.data[key])) return
-    const { id, schedule, isFirst, isLast } = isSocket ? newSchedule : idx(newSchedule, _ => _.data[key])
+    // 讀這次的回應（存檔／復原／重做的 mutation 結果、頁面查詢或 socket 推播），不是頁面查詢（Jason 2026/10/22 fix all）
+    const payload = isSocket ? newSchedule : idx(newSchedule, _ => _.data[key])
+    if (!payload) return
+    const { id, schedule, isFirst, isLast } = payload
     const data = JSON.parse(schedule)
     setScheduleId(id)
     setDisableButtonUndo(isFirst)

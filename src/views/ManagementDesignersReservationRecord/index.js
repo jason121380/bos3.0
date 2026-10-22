@@ -141,7 +141,11 @@ function Calendar() {
 
   useEffect(() => {
     if (!getMerchantCheckinSettings.loading) {
-      const data = idx(getMerchantCheckinSettings, _ => _.data.getMerchantCheckinSettings)
+      // 查詢失敗時視為報到功能關閉，不設成 undefined（畫面會讀 .isBookingCheckinEnabled；Jason 2026/10/22 fix all）
+      const data = idx(getMerchantCheckinSettings, _ => _.data.getMerchantCheckinSettings) || {
+        isBookingCheckinEnabled: false,
+        isUnDoneBookingManualNotify: false,
+      }
       setCheckinSettings(data)
     }
   }, [getMerchantCheckinSettings.loading])
@@ -155,7 +159,7 @@ function Calendar() {
 
   useEffect(() => {
     if (!getBookinHistoryDisplay.loading) {
-      const data = getBookinHistoryDisplay.data.getParameterAboutBookingSetting.isBookingHistoryDisplay
+      const data = idx(getBookinHistoryDisplay, _ => _.data.getParameterAboutBookingSetting.isBookingHistoryDisplay) || false
       setBookingHistoryDisplay(data)
     }
   }, [getBookinHistoryDisplay.loading])
@@ -315,7 +319,7 @@ function Calendar() {
             calendarSize={calendarSize}
             checkinSettings={checkinSettings}
             checkinMode={checkinMode}
-            cancelPasswordUsing={cancelBookingUsing.loading ? false : cancelBookingUsing.data.merchantPassword.cancelReservation.isUsing}
+            cancelPasswordUsing={cancelBookingUsing.loading ? false : (idx(cancelBookingUsing, _ => _.data.merchantPassword.cancelReservation.isUsing) || false)}
           /> : ''
         }
       </div>

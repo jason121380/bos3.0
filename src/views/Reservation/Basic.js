@@ -119,17 +119,9 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
                       key: 'designerId',
                       value: idx(event, _ => idx(event, _ => _.target.value)),
                     })
-                    if (_.data.viewer.anonymous.designers.data.nickName) {
-                      onDesignerChange(
-                        _.data.viewer.anonymous.designers.data.find(d => d.id === event.target.value)
-                          .nickName
-                      )
-                    } else {
-                      onDesignerChange(
-                        _.data.viewer.anonymous.designers.data.find(d => d.id === event.target.value)
-                          .name
-                      )
-                    }
+                    // 與選單顯示一致：有暱稱用暱稱，沒有用本名；選回空白時清空（原本判斷陣列的 nickName、永遠用本名，Jason 2026/10/22 fix all）
+                    const picked = _.data.viewer.anonymous.designers.data.find(d => d.id === event.target.value)
+                    onDesignerChange(picked ? picked.nickName || picked.name : '')
                   }}
                   label="服務設計師"
                   value={values.designerId}
