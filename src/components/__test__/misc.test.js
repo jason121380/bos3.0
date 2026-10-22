@@ -60,6 +60,32 @@ describe('ChangePassword 強制改密碼', () => {
     expect(handleClose).not.toHaveBeenCalled()
   })
 
+  // Jason 2026/10/22 fix all：送出前的檢查原本寫了兩次 password.error（第二個應為 secondPassword.error）；
+  // 只改檢查會讓「確認密碼先標錯、再把密碼改成一致」時被殘留的錯誤擋下，因此兩欄一致時一併清除兩欄的錯誤標示
+  it('先打錯確認密碼、再把密碼改成一致：兩欄都不再標示錯誤，可送出', async () => {
+    const { password, second, calls, handleClose, settle } = renderDialog()
+    typeLikeBrowser(password, 'abc123')
+    typeLikeBrowser(second, 'abc124')
+    expect(second).toHaveAttribute('aria-invalid', 'true')
+    typeLikeBrowser(password, 'abc124')
+    expect(password).not.toHaveAttribute('aria-invalid', 'true')
+    expect(second).not.toHaveAttribute('aria-invalid', 'true')
+    fireEvent.click(screen.getByRole('button', { name: '更新密碼' }))
+    await settle()
+    expect(callsOf(calls, 'CHANGE_PASSWORD')[0].variables).toEqual({ input: { password: 'abc124', secondPassword: 'abc124' } })
+    await wait(() => expect(handleClose).toHaveBeenCalledTimes(1))
+  })
+
+  it('確認密碼標示錯誤時按更新：提示不送出', async () => {
+    const { password, second, calls } = renderDialog()
+    typeLikeBrowser(password, 'abc123')
+    typeLikeBrowser(second, 'abc12')
+    expect(second).toHaveAttribute('aria-invalid', 'true')
+    fireEvent.click(screen.getByRole('button', { name: '更新密碼' }))
+    expect(await screen.findByRole('alert', { hidden: true })).toHaveTextContent('確認密碼是否填寫正確')
+    expect(callsOf(calls, 'CHANGE_PASSWORD')).toHaveLength(0)
+  })
+
   it('沒填就按更新：提示不送出', async () => {
     const { calls } = renderDialog()
     fireEvent.click(screen.getByRole('button', { name: '更新密碼' }))

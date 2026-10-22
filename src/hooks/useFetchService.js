@@ -96,11 +96,14 @@ export default function useFetchService({ serviceId }) {
     variables: {
       serviceId,
     },
+    fetchPolicy: 'cache-and-network',
   })
 }
 
 export const useLazyFetchService = () => {
-  const [getService, response] = useLazyQuery(GET_SERVICE_FOR_RENDER_HELPER)
+  const [getService, response] = useLazyQuery(GET_SERVICE_FOR_RENDER_HELPER, {
+    fetchPolicy: 'cache-and-network',
+  })
   return {
     getService: ({ serviceId }) =>
       getService({

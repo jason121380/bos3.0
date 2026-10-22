@@ -79,6 +79,7 @@ describe('MerchantSearchBar 快捷鈕', () => {
     fireEvent.click(field)
     fireEvent.click(within(screen.getByRole('dialog')).getAllByRole('gridcell').find(c => c.textContent === '15'))
     expect(lastFilter(onFilter)).toEqual(thisMonth())
+    expect(currentLocation()).toBe(url(thisMonth()))
   })
 
   it('店家日報：今天／昨天／前天為「本月 1 日到該日」的累計', () => {
@@ -132,12 +133,12 @@ describe('MerchantSearchBar 手動選日', () => {
     })
   })
 
-  // 已知缺口（待 Jason 決定）：handleChange 的 `setting.startDate || setting.endDate && onlyMonthYear` 少了括號，
-  // 只要已有起日就走「整月」分支——一般報表手動選 10/10～10/20，網址卻寫成整個 10 月；重新整理或分享網址後區間變成整月
-  it('目前行為：一般報表手動選日後，網址寫成迄日所在的整個月份', () => {
+  // 已修正（Jason 2026/10/22 fix all）：handleChange 原本寫成 `setting.startDate || setting.endDate && onlyMonthYear`（少括號），
+  // 只要已有起日就走「整月」分支，一般報表手動選日後網址被寫成整個月；改為 `(setting.startDate || setting.endDate) && onlyMonthYear`
+  it('一般報表手動選日後，網址寫入「起日當天開始～迄日當天結束」（不是整月）', () => {
     renderBar()
     pickIn('2026/10/10', '2026年10月12日')
-    expect(currentLocation()).toBe(url({ startDate: startOfMonth(E).getTime(), endDate: endOfMonth(E).getTime() }))
+    expect(currentLocation()).toBe(url({ startDate: startOfDay(new Date(2026, 9, 12)).getTime(), endDate: E }))
   })
 
   it('個人頁（店家日報＋只看單日）選迄日：起訖都設成該日，網址為該日', () => {

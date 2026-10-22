@@ -10,26 +10,37 @@ import { Tabs } from 'ui/tabs'
 import { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
 import { cn, focusRing } from 'ui/utils'
 
-// 頁面外距由 layouts/Dashboard 的 #printContainer 提供（與其他頁一致），此處不再另加
+// 登入者 id（沒有 id 時為 undefined，下方以 null 查詢）；沒有登入資料的情況已由外層 DashBoardListDetail 導向登入
+const storedUserId = () => (JSON.parse(localStorage.getItem('user')) || {}).id
+
+// 沒有登入資料時導向登入並直接結束：不送權限查詢、不畫內容（Jason 2026/10/22 fix all；原本同一次渲染仍以 "/auth/login" 當 id 查詢）
 export default function DashBoardListDetail() {
+  if (localStorage.getItem('user') === null) {
+    window.location = '/auth/login'
+    return null
+  }
+  return <DashBoardListContent />
+}
+
+// 頁面外距由 layouts/Dashboard 的 #printContainer 提供（與其他頁一致），此處不再另加
+function DashBoardListContent() {
   function LinkItem(props) {
     // 拿權限
     const [userPageAuth, setUserPageAuth] = useState([])
 
-    const designerId =
-      localStorage.getItem('user') === null
-        ? (window.location = '/auth/login')
-        : JSON.parse(localStorage.getItem('user')).id
+    const designerId = storedUserId()
     const apiUserPermissions = useFetchUserPermission({
       id: designerId === undefined ? null : designerId,
     })
 
+    // LinkItem 每次切換分類都會重新掛載；權限查詢是 cache-and-network（2026/10/22），重新掛載時先有快取資料、loading 仍為 true，
+    // 有資料就先用（不等重抓完成），否則切換分類後連結會先消失到重抓回來
     useEffect(() => {
-      if (apiUserPermissions.data && !apiUserPermissions.loading) {
+      if (apiUserPermissions.data) {
         const userPageAuth = idx(apiUserPermissions, _ => _.data.user.pageAuthority.pageAuthority)
         setUserPageAuth(userPageAuth)
       }
-    }, [apiUserPermissions.data, apiUserPermissions.loading])
+    }, [apiUserPermissions.data])
     let item = ''
     userPageAuth
       .filter(a => a.pageTitle === '報表及分析')
@@ -60,10 +71,7 @@ export default function DashBoardListDetail() {
     // 拿權限
     const [userPageAuth, setUserPageAuth] = useState([])
 
-    const designerId =
-      localStorage.getItem('user') === null
-        ? (window.location = '/auth/login')
-        : JSON.parse(localStorage.getItem('user')).id
+    const designerId = storedUserId()
     const apiUserPermissions = useFetchUserPermission({
       id: designerId === undefined ? null : designerId,
     })
@@ -94,8 +102,9 @@ export default function DashBoardListDetail() {
     }
   }
   const [selectTab, setSelectTab] = useState('daily')
-  // SubMenuItem 內含 hooks，必須以固定順序、固定次數無條件呼叫六次（與舊版相同順序與參數），
+  // SubMenuItem 內含 hooks，必須以固定順序、固定次數無條件呼叫六次（與舊版相同順序），
   // 不得依權限結果條件式呼叫；權限只決定下方選單是否顯示該分類。
+  // 各分類的清單須包含下方所有連結的報表名稱（Jason 2026/10/22 fix all：補上原本漏列的設計師業績分析表、商品庫存表、顧客消費／入金排行榜）
   const canDaily = SubMenuItem(['店家日報表', '設計師日報表', '互助日報表'])
   const canBusiness = SubMenuItem([
     '店家區間累計表',
@@ -113,10 +122,11 @@ export default function DashBoardListDetail() {
     '顧客卡券餘額表',
     '營業項目月分析表',
   ])
-  const canDesigner = SubMenuItem(['設計師排行榜', '設計師抽成報表', '設計師業績月報表', '服務扣項明細表', '設計師業績表'])
+  const canDesigner = SubMenuItem(['設計師業績分析表', '設計師排行榜', '設計師抽成報表', '設計師業績月報表', '服務扣項明細表', '設計師業績表'])
   const canHelper = SubMenuItem(['互助排行榜', '互助點數明細', '互助月報表', '互助業績報表'])
-  const canProduct = SubMenuItem(['店販抽成明細', '店販分類抽成明細', '商品銷售排行榜', '商品消耗明細', '設計師店販抽成明細', '商品進銷貨報表', '會員卡銷售報表', '商品庫存盤點表'])
-  const canManagement = SubMenuItem(['費用分析表', '損益表', '多店業績統計表', '消費分析儀表板', '多店店販銷售排行'])
+  // 「設計師店販抽成明細」前端沒有這張報表，只有這個權限時分類會是空的；Jason 2026/10/22 選擇從清單移除
+  const canProduct = SubMenuItem(['店販抽成明細', '店販分類抽成明細', '商品銷售排行榜', '商品消耗明細', '商品進銷貨報表', '會員卡銷售報表', '商品庫存表', '商品庫存盤點表'])
+  const canManagement = SubMenuItem(['費用分析表', '損益表', '多店業績統計表', '顧客消費排行榜', '顧客入金排行榜', '消費分析儀表板', '多店店販銷售排行'])
   const categories = [
     {
       value: 'daily',

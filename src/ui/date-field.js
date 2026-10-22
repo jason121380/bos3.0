@@ -138,14 +138,11 @@ const DateField = React.forwardRef(function DateField(
     const meta = TOKENS[tokens[idx]]
     if (/^\d$/.test(event.key)) {
       event.preventDefault()
-      const query = (buffer.current + event.key).slice(-meta.len)
+      let query = (buffer.current + event.key).slice(-meta.len)
+      // 超過上限：以這一位重新開始（重新開始後同樣適用下方的跳段規則：月份打 1、3 → 03 並跳到日，同 MUI；Jason 2026/10/22 fix all）
+      if (Number(query) > meta.max) query = event.key
       const num = Number(query)
-      // 超過上限：以這一位重新開始；填滿或下一位必定超過上限：跳下一段
-      if (num > meta.max) {
-        buffer.current = event.key
-        setSection(idx, event.key)
-        return
-      }
+      // 填滿或下一位必定超過上限：跳下一段
       setSection(idx, query)
       if (query.length >= meta.len || num * 10 > meta.max) {
         buffer.current = ''

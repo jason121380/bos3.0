@@ -83,35 +83,6 @@ export default function useFetchServiceCategories() {
   })
 }
 
-const FETCH_SERVICE_CATEGORIES_ANALYTICS = gql`
-  query FETCH_SERVICE_CATEGORIES($date: ServiceCategoryAnalyticsInput!) {
-    serviceCategories {
-      id
-      no
-      name
-      analytics(input: $date) {
-        #服務業績
-        serviceFakeTotal
-        #卷使用業績
-        useTicketTotal
-        #客次
-        customerCount
-        #指定客次
-        designateCount
-        #不指定客次
-        notDesignateCustomer
-      }
-    }
-  }
-`
-export const useFetchServiceCategoriesAnalytics = date =>
-  useQuery(FETCH_SERVICE_CATEGORIES_ANALYTICS, {
-    variables: {
-      date,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-
 const FETCH_SERVICE_CATEGORY_ANALYTICS = gql`
   query FETCH_SERVICE_CATEGORY_ANALYTICS($input: ServiceCategoryAnalyticsInput!) {
     serviceCategories {

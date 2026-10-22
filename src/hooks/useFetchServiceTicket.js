@@ -1,4 +1,4 @@
-import { gql, useLazyQuery, useQuery } from '@apollo/client'
+import { gql, useQuery } from '@apollo/client'
 
 const GET_SERVICE_TICKET = gql`
   query service($serviceId: ID!) {
@@ -80,20 +80,8 @@ export default function useFetchServiceTicket({ serviceId }) {
     variables: {
       serviceId,
     },
+    fetchPolicy: 'cache-and-network',
   })
-}
-
-export const useLazyFetchService = () => {
-  const [getService, response] = useLazyQuery(GET_SERVICE_TICKET)
-  return {
-    getService: ({ serviceId }) =>
-      getService({
-        variables: {
-          serviceId,
-        },
-      }),
-    ...response,
-  }
 }
 
 // const GET_SERVICE_TICKET = gql`

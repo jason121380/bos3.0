@@ -51,7 +51,7 @@ const OrderTable = ({
     let name = designerName
     if (designerNameType === 'NICKNAME') {
       name = designerNickname || designerName
-    } else if (designerName === 'BOTH') {
+    } else if (designerNameType === 'BOTH') {
       name = `${designerName}${designerNickname ? `(${designerNickname})` : ''}`
     }
     return name
@@ -251,7 +251,7 @@ const OrderTable = ({
                                   isNoShow: rest.isNoShow
                                 })
                                 setModalOpen(true)
-                                setModalType(rest.status === '待審核' ? 'orderCheck' : 'orderSuccess')
+                                setModalType(rest.bookingStatus === '待審核' ? 'orderCheck' : 'orderSuccess')
                               }
                             }}
                           >

@@ -28,7 +28,8 @@ const SourceSelect = ({
         name="source"
       >
         {emptyOption && <MenuItem value=""><em>無</em></MenuItem>}
-        {getReference.data.getCustomerReference.map(data => (
+        {/* 查詢失敗時 data 為 undefined：當成沒有來源，不讓整頁拋錯（Jason 2026/10/22 fix all） */}
+        {(idx(getReference, _ => _.data.getCustomerReference) || []).map(data => (
           <MenuItem key={data} value={data}>{data}</MenuItem>
         ))}
       </Select>

@@ -88,4 +88,5 @@ function PaymentAutoComplete(
   )
 }
 
-export default compose([forwardRef, memo], PaymentAutoComplete)
+// memo(forwardRef(PaymentAutoComplete))：compose 由右到左包裝（Jason 2026/10/22 fix all；原本 compose 只套用第一個 module）
+export default compose([memo, forwardRef], PaymentAutoComplete)

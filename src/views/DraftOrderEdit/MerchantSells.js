@@ -12,7 +12,7 @@ import billContext from 'context/keyInContext'
 import ProductsModal from 'views/OrderShared/ProductsModal'
 import { useProductPicker } from 'views/OrderShared/useItemPicker'
 import { formatNumber } from 'ui/format'
-import { ROW_ICON_ALIGN, ROW_ICON_ALIGN_SMALL } from 'views/OrderShared/rowAlign'
+import { ROW_ICON_ALIGN } from 'views/OrderShared/rowAlign'
 
 // 版面比照打帳單（views/OrderCreate/styles/MerchantSells）：欄位上方標籤、上緣對齊（OrderShared/rowAlign）、窄螢幕換行不擠壓
 // 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px；pxToRem 以 16px 換算）。自動完成元件的 className 原以 css={className} 套在根節點
@@ -108,6 +108,8 @@ export default function MerchantSells({
             handleTidyBill 再丟掉兩欄皆空的列，所以：選了商品、或填了服務人員且數量 > 0 的列才標必填 */}
         <Field label="服務人員" required={!!sells.productId || (!!sells.sellerId && sells.count > 0)}>
           <EmployeeAutoComplete
+            // 與同列輸入框同高（36px、手機 40px）
+            size="medium"
             className={styles.employeeField}
             placeholder="服務人員姓名/編號"
             value={sells.sellerId}
@@ -128,11 +130,11 @@ export default function MerchantSells({
           />
         </Field>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇商品" className={`mx-1.5 ${ROW_ICON_ALIGN_SMALL}`} onClick={handleOpenProductsModal}>
+          <RowIconButton label="從清單選擇商品" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenProductsModal}>
             <Copy aria-hidden="true" strokeWidth={1.75} />
           </RowIconButton>
         ) : (
-          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN_SMALL}`} />
+          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
         <Field label="商品" required={!!sells.productId || (!!sells.sellerId && sells.count > 0)}>
           <ProductAutoComplete

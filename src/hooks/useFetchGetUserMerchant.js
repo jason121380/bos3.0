@@ -20,12 +20,6 @@ const GET_USER_MERCHANTS_FOR_MANAGEMENT = gql`
   }
 `
 
-export function useFetchGetUserMerchantForManagement() {
-  return useQuery(GET_USER_MERCHANTS_FOR_MANAGEMENT, {
-    fetchPolicy: 'cache-and-network',
-  })
-}
-
 export function useFetchGetUserMerchantForManagementLazy() {
   const [merchantForManagement, merchantForManagementData] = useLazyQuery(GET_USER_MERCHANTS_FOR_MANAGEMENT, {
     fetchPolicy: 'cache-and-network',
@@ -51,7 +45,6 @@ const GET_USER_GROUPS_WOCS = gql`
     getUserGroupWOCS
   }
 `
-
 
 export function useFetchGetUserGroupsWOCS() {
   return useQuery(GET_USER_GROUPS_WOCS, {

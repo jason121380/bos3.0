@@ -13,7 +13,6 @@ function MerchantSearchBar({
   onFilter,
   onSearch,
   values,
-  initFirst = [],
   outside,
   visible = [],
   multiple = [],
@@ -68,7 +67,7 @@ function MerchantSearchBar({
           date.endDate
         ).getTime()}`
       )
-    } else if (setting.startDate || setting.endDate && onlyMonthYear) {
+    } else if ((setting.startDate || setting.endDate) && onlyMonthYear) {
       history.push(
         `${location.pathname}?startDate=${startOfMonth(date.endDate).getTime()}&endDate=${endOfMonth(
           date.endDate
@@ -341,7 +340,6 @@ function MerchantSearchBar({
     }
   }, [])
 
-  const initial = initFirst.reduce((total, item) => ({ ...total, [item]: true }), {})
   multiple = multiple.reduce((total, item) => ({ ...total, [item]: true }), {})
   return (
     <div className='MerchantSearchBar box-border flex flex-wrap items-center gap-[10px]'>
@@ -378,7 +376,6 @@ function MerchantSearchBar({
 
       <Requirement
         values={setting}
-        initial={initial}
         multiple={multiple}
         visible={visible}
         onChange={handleChange}

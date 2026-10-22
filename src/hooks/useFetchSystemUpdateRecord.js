@@ -12,12 +12,10 @@ const GET_SYSTEM_UPDATE_RECORD = gql`
   }
 `
 
-// skip：版面以 useAfterFirstLoad 延後到首屏完成後再查（lib/after-first-load）；其他頁面不帶參數，行為不變
-export default function useFetchSystemUpdateRecord({ skip = false } = {}) {
+export default function useFetchSystemUpdateRecord() {
   return useQuery(GET_SYSTEM_UPDATE_RECORD, {
     variables: {},
     fetchPolicy: 'cache-and-network',
-    skip,
   })
 }
 

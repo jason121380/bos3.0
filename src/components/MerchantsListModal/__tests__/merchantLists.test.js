@@ -172,13 +172,17 @@ describe('MerchantListAutocpmplete 選擇店家（跨店報表）', () => {
     expect(within(dialog()).queryAllByRole('treeitem')).toHaveLength(1)
   })
 
-  // 已知缺口（待 Jason 決定）：查詢失敗時 data 為 undefined，元件直接 JSON.parse(data.getUserMerchant) 而拋錯，整頁變成錯誤畫面
-  it('目前行為：店家清單查詢失敗時拋錯', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
-    const { settle, findByText } = renderPage(<MerchantListAutocpmplete />, { fallback: 'error' })
+  // 已修正（Jason 2026/10/22 fix all）：查詢失敗時 data 為 undefined，原本直接 JSON.parse(data.getUserMerchant) 而拋錯（整頁錯誤畫面）；
+  // 改為當成沒有店家
+  it('店家清單查詢失敗時不拋錯，當成沒有店家（全選回傳空陣列、樹狀窗為空）', async () => {
+    const onValueChange = jest.fn()
+    const { settle } = renderPage(<MerchantListAutocpmplete onValueChange={onValueChange} />, { fallback: 'error' })
     await settle()
-    expect(await findByText('這個頁面發生錯誤')).toBeInTheDocument()
-    console.error.mockRestore()
+    expect(screen.queryByText('這個頁面發生錯誤')).toBeNull()
+    fireEvent.click(screen.getByText('全選'))
+    expect(onValueChange).toHaveBeenLastCalledWith([])
+    fireEvent.click(screen.getByRole('button', { name: '選擇店家' }))
+    expect(treeLabel('全部(0)')).toBeInTheDocument()
   })
 })
 

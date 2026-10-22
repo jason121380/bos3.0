@@ -11,9 +11,13 @@ const MERCHANT = gql`
 `
 
 export default function useFetchMerchant() {
-  return useQuery(MERCHANT)
+  return useQuery(MERCHANT, {
+    fetchPolicy: 'cache-and-network',
+  })
 }
 
+// 查詢名稱與第三方卡券查詢同為 FETCH_THIRDPARTYS（原本就同名）：後端可能依 operation name 記錄或判斷，前端無法確認，維持原名不改
+//（曾改名為 FETCH_MERCHANT_PERMISSION，已撤回，Jason 2026/10/22）
 const FETCH_MERCHANT_PERMISSION = gql`
   query FETCH_THIRDPARTYS {
     merchant {
@@ -31,7 +35,7 @@ const FETCH_MERCHANT_PERMISSION = gql`
     }
   }
 `
-export const useFetchMerchantPermission = date =>
+export const useFetchMerchantPermission = () =>
   useQuery(FETCH_MERCHANT_PERMISSION, {
     fetchPolicy: 'cache-and-network',
   })
@@ -49,7 +53,7 @@ const FETCH_THIRDPARTYS = gql`
     }
   }
 `
-export const useFetchTHirdPartys = date =>
+export const useFetchTHirdPartys = () =>
   useQuery(FETCH_THIRDPARTYS, {
     fetchPolicy: 'cache-and-network',
   })
@@ -64,7 +68,7 @@ const FETCH_THIRDPARTYS_IN_ORDER_DETAIL = gql`
     }
   }
 `
-export const useFetchThirdPartysInOrderDetail = date =>
+export const useFetchThirdPartysInOrderDetail = () =>
   useQuery(FETCH_THIRDPARTYS_IN_ORDER_DETAIL, {
     fetchPolicy: 'cache-and-network',
   })
@@ -80,7 +84,7 @@ const FETCH_THIRDPARTYS_FOR_CREATE_ORDER = gql`
     }
   }
 `
-export const useFetchThirdPartysForCreateOrder = date =>
+export const useFetchThirdPartysForCreateOrder = () =>
   useQuery(FETCH_THIRDPARTYS_FOR_CREATE_ORDER, {
     fetchPolicy: 'cache-and-network',
   })
@@ -101,66 +105,6 @@ export const useFethcMonthlyCloseStatus = date =>
   useQuery(FETCH_MONTHLY_CLOSE_STATUS, {
     variables: {
       date,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-
-const FETCH_MERCHANT_SALES_ANALYTICS = gql`
-  query FETCH_MERCHANT_SALES_ANALYTICS($input: DateTimeInput) {
-    merchant {
-      salesAnalytics(input: $input) {
-        serviceFakeTotal
-        productTotal
-        useTicketTotal
-        sellTicketTotal
-      }
-    }
-  }
-`
-
-export const useFetchMerchantSalesAnalytics = input =>
-  useQuery(FETCH_MERCHANT_SALES_ANALYTICS, {
-    variables: {
-      input,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-
-const FETCH_MERCHANT_CUSTOMER_COUNT = gql`
-  query FETCH_MERCHANT_CUSTOMER_COUNT($input: DateTimeInput) {
-    merchant {
-      salesAnalytics(input: $input) {
-        #服務消費虛業績
-        serviceFakeTotal
-        #店販消費
-        productTotal
-        #卡券使用
-        useTicketTotal
-        #卡卷銷售
-        sellTicketTotal
-        #總客數
-        customerCount
-        #客單價
-        customerAvgAmount
-        #指定客
-        designateCount
-        #不指定
-        notDesignateCount
-        #男客
-        maleCount
-        #女客
-        femaleCount
-        #未知性別
-        unknowGenderCount
-      }
-    }
-  }
-`
-
-export const useFetchCustomerCount = input =>
-  useQuery(FETCH_MERCHANT_CUSTOMER_COUNT, {
-    variables: {
-      input,
     },
     fetchPolicy: 'cache-and-network',
   })

@@ -59,15 +59,6 @@ const GET_ALL_ATTENDANCE = gql`
   }
 `
 
-export default function useFetchAttendanceRecords(input) {
-  return useQuery(GET_ALL_ATTENDANCE, {
-    variables: {
-      input,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-}
-
 export function useFetchAttendanceRecordsLazy(input) {
   const [attendanceRecordsLazy , attendanceRecordsLazyData] = useLazyQuery(GET_ALL_ATTENDANCE, {
     fetchPolicy: 'cache-and-network',

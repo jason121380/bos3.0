@@ -174,8 +174,15 @@ describe('CustomerTicketRecordAutoCompleteForOrderCreate 使用卡券（打帳�
     expect(onChange).toHaveBeenLastCalledWith(null)
   })
 
-  // 已知缺口（待 Jason 決定）：沒給 couponUsages 時預設 [] 每次渲染都是新陣列，資料到齊後 effect（依賴 couponUsages）每次渲染都 setState，
-  // 形成無限重新渲染（測試只驗證載入中的狀態）。目前唯一呼叫端（打帳單 CouponUse）都有傳。
+  // 已修正（Jason 2026/10/22 fix all）：沒給 couponUsages 時預設值原本是參數上的 []，每次渲染都是新陣列，資料到齊後 effect
+  // （依賴 couponUsages）每次渲染都 setState 而無限重新渲染；改用模組層的空陣列常數
+  it('沒給 couponUsages：資料到齊後列出全部種類（不會無限重新渲染）', async () => {
+    render(<CustomerTicketRecordAutoCompleteForOrderCreate ticketRecordsForOrderLazyDataV2={lazy(groups)} />)
+    await wait(() => expect(combo()).toBeInTheDocument())
+    openCombo()
+    expect(optionTexts()).toEqual(['洗髮券 剩餘2張 ', '護髮券 剩餘1張 生日', '剪髮券 剩餘1張 '])
+  })
+
   it('載入中顯示載入圖示；停用時不可操作；沒給 onChange 時選取不拋錯', () => {
     const none = []
     const { container, rerender } = render(

@@ -3,7 +3,8 @@
 // - useQueryString：報表與搜尋列從網址讀查詢參數（designerId、date…），讀錯會查到別的員工或日期
 // - useMounted／usePageLoading：清除快取頁、新增顧客彈窗依賴的掛載時機
 // - useStore：商品分類編輯頁以 Provider 把表單狀態傳給子元件
-// - 預設值分支：顧客搜尋的 keyword 預設、票券查詢的空條件、登入資料的 orders、服務分類假資料的店家 id
+// - 預設值分支：顧客搜尋的 keyword 預設、票券查詢的空條件、登入取個人資料不帶變數、服務分類假資料的店家 id
+// - 同名查詢：店家權限、登入者權限、第三方卡券三支查詢的 operation name 都是 FETCH_THIRDPARTYS（維持原名），各自拿到自己的欄位
 // GraphQL 一律由 testkit 的模擬 link 回應，不連後端。
 import { MockedProvider } from '@apollo/client/testing'
 import { act, cleanup, render, wait } from '@testing-library/react'
@@ -19,7 +20,8 @@ import usePageLoading from 'hooks/usePageLoading'
 import useStore, { Provider as StoreProvider } from 'hooks/useStore'
 import { useFetchCustomersInAutoComplete } from 'hooks/useFetchCustomers'
 import { useFetchTicketsInOrderDetail, useFetchTicketsForList } from 'hooks/useFetchTickets'
-import { useLazyFetchProfile } from 'hooks/useFetchProfile'
+import { useLazyFetchProfile, useFetchMePermissions } from 'hooks/useFetchProfile'
+import { useFetchMerchantPermission, useFetchTHirdPartys } from 'hooks/useFetchMerchant'
 
 jest.mock('elements/snackbars', () => ({ openSnackbar: jest.fn() }))
 
@@ -99,13 +101,19 @@ describe('useCheckDisablePendingOrder：掛單功能關閉時導回打帳單', (
     expect(openSnackbar).not.toHaveBeenCalled()
   })
 
-  // 已知缺口（待 Jason 決定）：查詢失敗時 data 為 undefined，hook 直接讀 data.getParameterAboutSettingFunction 而拋錯，
-  // 掛單列表／掛單詳細整頁變成錯誤畫面（PageErrorBoundary），而不是只跳 errorLink 的提示。這裡鎖住目前行為。
-  it('已知缺口：設定查詢失敗時拋 TypeError（整頁錯誤）', async () => {
+  // Jason 2026/10/22 fix all：原本查詢失敗時 data 為 undefined，hook 直接讀 data.getParameterAboutSettingFunction 而拋錯，
+  // 掛單列表／掛單詳細整頁變成錯誤畫面；改為查詢失敗時不拋錯、不導頁（errorLink 已跳錯誤提示）
+  it('設定查詢失敗時不拋錯、不導頁、不提示', async () => {
     const errors = []
-    const { findByText } = mount(() => useCheckDisablePendingOrder(), { fallback: 'error', onError: e => errors.push(e) })
-    await findByText('頁面錯誤')
-    expect(errors[0]).toBeInstanceOf(TypeError)
+    const { calls, link, location, queryByText } = mount(() => useCheckDisablePendingOrder(), { fallback: 'error', onError: e => errors.push(e) })
+    await wait(() => expect(calls).toHaveLength(1))
+    await wait(() => expect(link.pending).toBe(0))
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 0))
+    })
+    expect(errors).toEqual([])
+    expect(queryByText('頁面錯誤')).toBeNull()
+    expect(location.current).toBe('/draft-order/list')
     expect(openSnackbar).not.toHaveBeenCalled()
   })
 })
@@ -145,8 +153,10 @@ describe('useQueryString：從網址讀查詢參數', () => {
   })
 })
 
+// Jason 2026/10/22 fix all：原本 useMounted 回傳 ref（第一次 render 為 false），清除快取頁第一次 render 就走 Redirect，
+// 「清除快取中...」永遠不顯示；改為回傳「callback 是否已執行」的 state：執行前為 false、執行後重新 render 為 true
 describe('useMounted：掛載後執行一次 callback', () => {
-  it('掛載後執行 callback 一次；第一次 render 回傳 false、重新 render 也不再執行', () => {
+  it('掛載後執行 callback 一次；執行前回傳 false、執行後重新 render 為 true，之後 render 也不再執行', () => {
     const callback = jest.fn()
     const values = []
     function Probe({ tick }) {
@@ -155,11 +165,10 @@ describe('useMounted：掛載後執行一次 callback', () => {
     }
     const { rerender } = render(<Probe tick={1} />)
     expect(callback).toHaveBeenCalledTimes(1)
-    expect(values[0]).toBe(false)
+    expect(values).toEqual([false, true])
     rerender(<Probe tick={2} />)
     expect(callback).toHaveBeenCalledTimes(1)
-    // 掛載後再 render 時 ref 已為 true（清除快取頁只有第一次 render，因此一律走 Redirect）
-    expect(values[1]).toBe(true)
+    expect(values).toEqual([false, true, true])
   })
 
   it('清除快取頁的用法：callback 清空 localStorage', () => {
@@ -236,9 +245,10 @@ describe('預設值分支', () => {
     expect(obs.initial).toEqual([{ operationName, variables: { keyword: '', categoryIds: [] } }])
   })
 
-  it('登入取個人資料：有 params 但沒有 orders 時以空物件查詢', async () => {
-    const obs = await observeHook(useLazyFetchProfile, { args: [{}], invoke: [{ fn: 'fetchProfile' }] })
-    expect(obs.invoked[0].calls).toEqual([{ operationName: 'PROFILE', variables: { orders: {} } }])
+  // Jason 2026/10/22 fix all：原本送出 PROFILE 查詢沒有宣告的 orders 變數（後端不會用到），已移除
+  it('登入取個人資料：不帶變數查詢', async () => {
+    const obs = await observeHook(useLazyFetchProfile, { invoke: [{ fn: 'fetchProfile' }] })
+    expect(obs.invoked[0].calls).toEqual([{ operationName: 'PROFILE', variables: {} }])
   })
 
   it('服務分類假資料（ServiceCategoryCreate 頁面測試用）在載入模組時讀店家 id', () => {
@@ -252,5 +262,32 @@ describe('預設值分支', () => {
       const { mockServiceCreateRes } = require('hooks/useFetchServiceCategoryCreate')
       expect(mockServiceCreateRes.data.createServiceCategory[0].OfficialBrandMerchantId).toBeNull()
     })
+  })
+})
+
+// 三支查詢原本就同名 FETCH_THIRDPARTYS。曾改名為 FETCH_MERCHANT_PERMISSION／FETCH_ME_PERMISSIONS，已撤回：
+// 後端可能依 operation name 記錄或判斷，前端無法確認，不冒險（Jason 2026/10/22）。
+// 測試的 fixture 以名稱對應，同名時用函式依查詢的根欄位與選取欄位回應（不改產品碼的名稱）。
+describe('同名查詢 FETCH_THIRDPARTYS：店家權限、登入者權限、第三方卡券', () => {
+  const PERMISSIONS = [{ id: 'p1', name: '帳單', code: 'ORDER', actions: [{ id: 'a1', name: '新增', code: 'CREATE' }] }]
+  const COUPONS = [{ id: 't1', name: '街口', fee: 1, type: 'A' }]
+  const byQuery = (_variables, operation) => {
+    const root = operation.query.definitions.find(d => d.kind === 'OperationDefinition').selectionSet.selections[0]
+    if (root.name.value === 'me') return { me: { id: 'u1', permissionActions: [{ id: 'a1' }] } }
+    const fields = root.selectionSet.selections.map(sel => sel.name.value)
+    return fields.includes('permissions')
+      ? { merchant: { id: 'm1', permissions: PERMISSIONS } }
+      : { merchant: { id: 'm1', thirdpartyCoupons: COUPONS } }
+  }
+
+  it.each([
+    ['useFetchMerchantPermission', useFetchMerchantPermission, { merchant: { id: 'm1', permissions: PERMISSIONS } }],
+    ['useFetchMePermissions', useFetchMePermissions, { me: { id: 'u1', permissionActions: [{ id: 'a1' }] } }],
+    ['useFetchTHirdPartys', useFetchTHirdPartys, { merchant: { id: 'm1', thirdpartyCoupons: COUPONS } }],
+  ])('%s：送出 FETCH_THIRDPARTYS，拿到自己的欄位', async (_name, useHook, expected) => {
+    loginAs()
+    const { result, calls } = mount(useHook, { fixtures: { FETCH_THIRDPARTYS: byQuery } })
+    await wait(() => expect(result.current.data).toEqual(expected))
+    expect(calls.map(c => c.operationName)).toEqual(['FETCH_THIRDPARTYS'])
   })
 })

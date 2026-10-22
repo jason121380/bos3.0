@@ -16,7 +16,7 @@ import { MobileDatePicker } from 'ui/date-picker'
 import MemberShipCardSellsModal from "views/OrderShared/MemberShipCardSellsModal";
 import { useMembershipPicker } from "views/OrderShared/useItemPicker";
 import { formatNumber } from 'ui/format'
-import { ROW_ICON_ALIGN, ROW_ICON_ALIGN_SMALL } from 'views/OrderShared/rowAlign'
+import { ROW_ICON_ALIGN } from 'views/OrderShared/rowAlign'
 
 
 const MemberShipCardSells = ({
@@ -125,6 +125,8 @@ const MemberShipCardSells = ({
         {/* 必填 *：Footer 送出前 helper/billVerify.js checkMembershipOrders 要求 sellerId、membershipUUID 與有效到期日；sellerId 與 membershipUUID 皆空的列會被 handleTidyBill 丟掉，所以該列有填任一欄才標必填 */}
         <Field label="服務人員" required={!!sells.sellerId || !!sells.membershipUUID}>
         <EmployeeAutoComplete
+          // 與同列輸入框同高（36px、手機 40px）
+          size="medium"
           className="!mr-[12px] flex w-[200px]"
           placeholder="服務人員姓名/編號"
           value={sells.sellerId}
@@ -148,9 +150,9 @@ const MemberShipCardSells = ({
         />
         </Field>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇會員卡" className={`mx-1.5 ${ROW_ICON_ALIGN_SMALL}`} onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇會員卡" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN_SMALL}`} />
+          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
         <Field label="會員卡" required={!!sells.sellerId || !!sells.membershipUUID}>
         <MemberShipCardAutoComplete
@@ -218,7 +220,8 @@ const MemberShipCardSells = ({
               }}
               autoFocus={focus === "price"}
               onFocus={(event) => handleFocus({ event, field: "price" })}
-              onKeyDown={(event) => handleKeyDown({ event, nextField: "date" })}
+              // 價格 Enter：勾了「永久會籍」時到期日欄停用、焦點跳不過去，改跳「永久會籍」勾選框（同打帳單、掛單詳細）
+              onKeyDown={(event) => handleKeyDown({ event, nextField: sells.expiryDate === null ? 'checkbox' : 'date' })}
               disabled={!!(sells.isLocked === 'TRUE' || sells.isLocked === 'UNSET')}
             />
             </Field>
@@ -260,8 +263,10 @@ const MemberShipCardSells = ({
                 ref={checkbox}
                 checked={sells.expiryDate === null}
                 onFocus={(event) => handleFocus({ event, field: "checkbox" })}
+                // 永久會籍 Enter：有開第三方卡券時跳第三方卡券，否則跳備註（原本一律跳第三方卡券，沒開時游標停在原地；
+                // 比照重新開單，Jason 2026/10/22 fix all）
                 onKeyDown={(event) =>
-                  handleKeyDown({ event, nextField: "thirdParty" })
+                  handleKeyDown({ event, nextField: thirdPartTicket ? "thirdParty" : "remark" })
                 }
                 onChange={(value) => {
                   // 有效天數為 0（終身卡）時沒有可帶的到期日：帳單日／購買日當天已過期、早於可選的最早日期，

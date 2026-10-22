@@ -128,6 +128,7 @@ export default function useFetchProducts(input = {}) {
     variables: {
       input,
     },
+    fetchPolicy: 'cache-and-network',
   })
   return products
 }
@@ -151,6 +152,7 @@ export function useFetchProductsInAutoComplete(input = {}) {
     variables: {
       input,
     },
+    fetchPolicy: 'cache-and-network',
   })
   return products
 }
@@ -178,6 +180,7 @@ export function useFetchProductsInEmployeePicking(input = {}) {
     variables: {
       input,
     },
+    fetchPolicy: 'cache-and-network',
   })
   return products
 }
@@ -201,6 +204,7 @@ export function useFetchProductsInEmployeePickingEdit(input = {}) {
     variables: {
       input,
     },
+    fetchPolicy: 'cache-and-network',
   })
   return products
 }
@@ -232,6 +236,7 @@ export function useFetchProductsInProductRestock(input = {}) {
     variables: {
       input,
     },
+    fetchPolicy: 'cache-and-network',
   })
   return products
 }
@@ -252,6 +257,7 @@ export function useFetchProductsInOrderDetail(input = {}) {
     variables: {
       input,
     },
+    fetchPolicy: 'cache-and-network',
   })
   return products
 }
@@ -274,6 +280,7 @@ export function useFetchProductsInTransferList(input = {}) {
     variables: {
       input,
     },
+    fetchPolicy: 'cache-and-network',
   })
   return products
 }

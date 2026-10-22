@@ -12,7 +12,8 @@ export default function Subject({ onChange, value, className = '' }) {
   const [options, setOptions] = useState([])
   useEffect(() => {
     if (!accountingSubjects.loading) {
-      const data = idx(accountingSubjects, _ => _.data.accountingSubjects)
+      // 查詢失敗時 data 為 undefined：當成沒有科目，不讓整個報表頁拋錯（Jason 2026/10/22 fix all）
+      const data = idx(accountingSubjects, _ => _.data.accountingSubjects) || []
       const arr = data.filter(({ name, isUsing }, index, arr) => {
         const objIdx = findIndex(arr, (data) => data.name === name)
         return objIdx === index && isUsing

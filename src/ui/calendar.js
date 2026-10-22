@@ -5,7 +5,10 @@ import {
   endOfDay,
   endOfMonth,
   format as formatDate,
+  getDate,
+  getDaysInMonth,
   getYear,
+  setDate,
   isSameDay,
   isSameMonth,
   setHours,
@@ -27,6 +30,12 @@ export const LOCALE = zhTW
 const fmt = (date, pattern) => formatDate(date, pattern, { locale: zhTW })
 
 export const isValidDate = d => d instanceof Date && !Number.isNaN(d.getTime())
+
+// 換年份並保留月、日、時間；日超過該年該月天數時夾到月底（2/29 換到平年為 2/28，不溢位成 3/1；Jason 2026/10/22 fix all）
+const setYearClamped = (date, year) => {
+  const firstOfMonth = setYear(setDate(date, 1), year)
+  return setDate(firstOfMonth, Math.min(getDate(date), getDaysInMonth(firstOfMonth)))
+}
 
 // 日期是否超出限制（以「日」為單位比較；maxDateTime 另以時間比較）
 export function isDayDisabled(day, { minDate, maxDate, disableFuture, disablePast, maxDateTime, minDateTime, shouldDisableDate } = {}) {
@@ -191,7 +200,7 @@ export function YearView({ value, month, onSelect, constraints }) {
             role="radio"
             aria-checked={isSelected}
             disabled={disabled}
-            onClick={() => onSelect(setYear(isValidDate(value) ? value : month, y))}
+            onClick={() => onSelect(setYearClamped(isValidDate(value) ? value : month, y))}
             className={cn(
               'mx-auto h-9 w-[72px] rounded-lg text-body text-text transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
               y === thisYear && !isSelected && 'font-semibold',

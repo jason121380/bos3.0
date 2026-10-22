@@ -297,6 +297,23 @@ describe('重新開單：會員卡銷售', () => {
     fireEvent.keyDown(permanent(), { key: 'Enter' })
     await wait(() => expect(document.activeElement).toBe(fieldInput(cards(), '第三方卡券')))
   })
+
+  // 為什麼重要：勾了「永久會籍」時到期日欄停用，原本價格按 Enter 一律跳到期日，焦點跳不過去、游標停在價格，
+  // 只能改用滑鼠。比照打帳單／掛單詳細：永久會籍時價格 Enter 跳「永久會籍」勾選框；取消勾選後照常跳到期日
+  it('鍵盤：永久會籍時價格 Enter 跳到「永久會籍」；取消勾選後跳到期日', async () => {
+    const page = setupQueue({ queue: baseQueue({ membershipOrders: [membershipOrder({ expiryDate: null })] }) })
+    await loaded(page)
+    const row = cardRow(0)
+    expect(permanent()).toBeChecked()
+    fireEvent.focusIn(row.price())
+    fireEvent.keyDown(row.price(), { key: 'Enter' })
+    await wait(() => expect(document.activeElement).toBe(permanent()))
+    fireEvent.click(permanent())
+    await wait(() => expect(permanent()).not.toBeChecked())
+    fireEvent.focusIn(row.price())
+    fireEvent.keyDown(row.price(), { key: 'Enter' })
+    await wait(() => expect(document.activeElement).toBe(cards().getByPlaceholderText('YYYY/MM/DD')))
+  })
 })
 
 const useRow = () => panel('使用預收卡')

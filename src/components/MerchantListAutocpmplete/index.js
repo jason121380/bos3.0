@@ -5,10 +5,15 @@ import useFetchGetUserMerchant from 'hooks/useFetchGetUserMerchant'
 import MerchantsListModal from 'components/MerchantsListModal'
 import PropTypes from 'prop-types'
 import { Autocomplete } from 'ui/combobox'
+import idx from 'idx'
+
+// 查詢失敗（data 為 undefined）時當成沒有店家，不讓整頁拋錯（Jason 2026/10/22 fix all）
+const EMPTY_MERCHANT_LIST = { allMerchants: [], groups: [], merchants: [] }
 
 const MerchantListAutocpmplete = ({ onValueChange = () => { } }) => {
   const userMerchants = useFetchGetUserMerchant()
-  const merchantList = !userMerchants.loading ? JSON.parse(userMerchants.data.getUserMerchant) : {}
+  const userMerchantJson = idx(userMerchants, _ => _.data.getUserMerchant)
+  const merchantList = !userMerchants.loading ? (userMerchantJson ? JSON.parse(userMerchantJson) : EMPTY_MERCHANT_LIST) : {}
   const [values, setValues] = useState([])
   const [open, setOpen] = useState(false)
 

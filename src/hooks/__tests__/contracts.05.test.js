@@ -91,22 +91,9 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'service', variables: { serviceId: 'serviceId-v' } }],
       shape: { loading: false, called: true, data: ['service'] },
-      policies: { service: 'default(cache-first)' },
+      policies: { service: 'cache-and-network' },
     },
     failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchServiceTicket.useLazyFetchService',
-    hook: useFetchServiceTicket.useLazyFetchService,
-    args: [],
-    invoke: [{ fn: 'getService', args: [{ serviceId: 'serviceId-v' }] }],
-    expect: {
-      initial: [],
-      shape: { loading: false, called: false },
-      invoked: [{ fn: 'getService', calls: [{ operationName: 'service', variables: { serviceId: 'serviceId-v' } }] }],
-      shapeAfter: { loading: false, called: true, data: ['service'] },
-      policies: { service: 'default(cache-first)' },
-    },
   },
   {
     id: 'useFetchServices',
@@ -160,13 +147,12 @@ const ROWS = [
   {
     id: 'useFetchServiecAndTicketList',
     hook: useFetchServiecAndTicketList.default,
-    args: [{ probe: 'input' }],
+    args: [],
     expect: {
       initial: [{ operationName: 'GET_SERVICES_AND_TICKETS', variables: {} }],
       shape: { loading: false, called: true, data: ['getServiecAndTicketList'] },
       policies: { GET_SERVICES_AND_TICKETS: 'cache-and-network' },
     },
-    noArgs: { initial: [{ operationName: 'GET_SERVICES_AND_TICKETS', variables: {} }] },
     failure: { loading: false, called: true, error: 'error' },
   },
   {

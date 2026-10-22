@@ -261,6 +261,19 @@ describe('PasswordDialog', () => {
     expect(screen.getByRole('button', { name: '取消' })).toBeDisabled()
     expect(screen.getByRole('button', { name: '確認' })).toBeDisabled()
   })
+
+  // Jason 2026/10/22 fix all：原本寫成 PasswordDialog.prototype = {…}（不是 propTypes，型別檢查沒有作用，且列的是不存在的 props）
+  it('propTypes 檢查實際使用的 props：型別不對時開發模式會警告', () => {
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    render(
+      <PasswordDialog open="no" title={1} inputLabel={2} isLoading="yes" handleOnCancel="x" handleOnConfirm="y" inputOnChange="z" />
+    )
+    const warned = spy.mock.calls.map(args => args.map(String).join(' ')).filter(text => /Failed (%s|prop) type/.test(text))
+    ;['open', 'title', 'inputLabel', 'isLoading', 'handleOnCancel', 'handleOnConfirm', 'inputOnChange'].forEach(prop => {
+      expect(warned.some(text => text.includes(`\`${prop}\``))).toBe(true)
+    })
+    spy.mockRestore()
+  })
 })
 
 describe('ReferToggleButton 虛／實業績', () => {
@@ -367,14 +380,13 @@ describe('SourceSelect 客戶來源', () => {
     expect([...container.querySelector('select').options].map(o => o.textContent).filter(Boolean)).toEqual(['路過'])
   })
 
-  // 已知缺口（待 Jason 決定）：查詢失敗時 data 為 undefined，元件直接讀 data.getCustomerReference.map 而拋錯，
-  // 整個內容區變成錯誤畫面（顧客新增／編輯表單都用它）。這裡鎖住目前行為。
-  it('目前行為：查詢失敗時拋錯，由頁面錯誤邊界接住', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
-    const { settle, findByText } = renderPage(<SourceSelect onChange={() => {}} />, { fallback: 'error' })
+  // 已修正（Jason 2026/10/22 fix all）：查詢失敗時 data 為 undefined，原本直接讀 data.getCustomerReference.map 而拋錯，
+  // 整個內容區變成錯誤畫面（顧客新增／編輯表單都用它）；改為當成沒有來源選項
+  it('查詢失敗時不拋錯：只剩「無」選項（沒有來源可選）', async () => {
+    const { container, settle } = renderPage(<SourceSelect onChange={() => {}} emptyOption />, { fallback: 'error' })
     await settle()
-    expect(await findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
-    console.error.mockRestore()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect([...container.querySelector('select[name="source"]').options].map(o => o.textContent).filter(Boolean)).toEqual(['無'])
   })
 })
 

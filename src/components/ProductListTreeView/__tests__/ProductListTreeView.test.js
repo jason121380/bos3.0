@@ -119,8 +119,9 @@ describe('ProductListTreeView 選擇商品', () => {
     await wait(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  // 已知缺口（待 Jason 決定）：商品代號為 null 時，顯示與搜尋用的文字是「null洗髮精」（`${d.no && …}` 把 null 轉成字串）
-  it('目前行為：代號為 null 的商品顯示成「null名稱」', async () => {
+  // 已修正（Jason 2026/10/22 fix all）：代號為 null 時，顯示與搜尋用的文字原本是「null贈品」（`${d.no && …}` 把 null 轉成字串）；
+  // 改為沒有代號就只用名稱
+  it('代號為 null 的商品只顯示名稱；搜尋「null」不會比對到', async () => {
     const onValueChange = jest.fn()
     const { settle } = renderPage(<ProductListTreeView onValueChange={onValueChange} />, {
       fixtures: { GET_PRODUCT_CATEGORIES_TREEVIEW: { productCategories: [{ id: 'c', name: '其他', products: [{ id: 'x', no: null, name: '贈品' }] }] } },
@@ -128,7 +129,12 @@ describe('ProductListTreeView 選擇商品', () => {
     await settle()
     fireEvent.click(screen.getByRole('button', { name: '選擇商品' }))
     toggleNode('全部(1)')
-    expect(itemsIn('全部(1)')[0]).toHaveTextContent('null贈品')
+    expect(itemsIn('全部(1)')[0].textContent).toBe('贈品')
+    const search = within(dialog()).getByPlaceholderText('搜尋商品')
+    fireEvent.change(search, { target: { value: 'null' } })
+    expect(itemsIn('全部(1)').some(li => li.className.includes('outline'))).toBe(false)
+    fireEvent.change(search, { target: { value: '贈品' } })
+    expect(itemsIn('全部(1)')[0].className).toContain('outline')
   })
 
   it('沒有任何商品時全選停用；沒給 onValueChange 不拋錯', async () => {
@@ -139,12 +145,14 @@ describe('ProductListTreeView 選擇商品', () => {
     expect(label('全部(0)')).toBeInTheDocument()
   })
 
-  // 已知缺口（待 Jason 決定）：查詢失敗時 data 為 undefined，直接讀 data.productCategories 而拋錯
-  it('目前行為：商品類別查詢失敗時拋錯', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
-    const { settle, findByText } = renderPage(<ProductListTreeView />, { fallback: 'error' })
+  // 已修正（Jason 2026/10/22 fix all）：查詢失敗時 data 為 undefined，原本直接讀 data.productCategories 而拋錯（整頁錯誤畫面）；
+  // 改為當成沒有商品
+  it('商品類別查詢失敗時不拋錯，當成沒有商品（全選停用）', async () => {
+    const { settle } = renderPage(<ProductListTreeView />, { fallback: 'error' })
     await settle()
-    expect(await findByText('這個頁面發生錯誤')).toBeInTheDocument()
-    console.error.mockRestore()
+    expect(screen.queryByText('這個頁面發生錯誤')).toBeNull()
+    expect(screen.getByRole('combobox')).toBeDisabled()
+    fireEvent.click(screen.getByRole('button', { name: '選擇商品' }))
+    expect(label('全部(0)')).toBeInTheDocument()
   })
 })

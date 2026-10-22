@@ -71,7 +71,7 @@ describe('MerchantSearchBar 篩選欄位', () => {
     clear('關係人編號/姓名')
     expect(lastFilter(onFilter)).toEqual({ relationUserId: '' })
     cleanup()
-    const { settle: s2 } = renderBar({ visible: ['employee'], useInDecreaseDetailReport: true, initFirst: ['employee'] })
+    const { settle: s2 } = renderBar({ visible: ['employee'], useInDecreaseDetailReport: true })
     await s2()
     expect(field('互助人編號/姓名')).toBeInTheDocument()
     cleanup()
@@ -79,6 +79,15 @@ describe('MerchantSearchBar 篩選欄位', () => {
     await s3()
     choose('設計師編號/姓名', '設計師甲-1')
     expect(lastFilter(f3).designers).toEqual(expect.objectContaining({ userId: 'u1' }))
+  })
+
+  // Jason 2026/10/22 決定設計師欄維持預設「全部」：不自動帶入第一位設計師。
+  // 頁面原本傳的 initFirst={['employee']} 轉給 EmployeeAutoComplete 後沒有作用（它不支援），已移除（Jason 2026/10/22 fix all）
+  it('設計師欄預設為空（全部）：載入設計師清單後不自動帶入、不通知 onFilter', async () => {
+    const { settle, onFilter } = renderBar({ visible: ['employee'] })
+    await settle()
+    expect(field('設計師編號/姓名')).toHaveValue('')
+    expect(onFilter.mock.calls.some(([v]) => v.employeeId || v.designers)).toBe(false)
   })
 
   it('顧客：選取回傳 customerId、清除回傳空字串', async () => {
@@ -103,13 +112,13 @@ describe('MerchantSearchBar 篩選欄位', () => {
     expect(lastFilter(onFilter)).toEqual({ accountingSubjectName: '' })
   })
 
-  // 已知缺口（待 Jason 決定）：科目查詢失敗時直接 .filter 而拋錯，整個報表頁變成錯誤畫面
-  it('目前行為：科目查詢失敗時拋錯', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
-    const { settle, findByText } = renderBar({ visible: ['subject'] }, { fixtures: {}, fallback: 'error' })
+  // 已修正（Jason 2026/10/22 fix all）：科目查詢失敗時原本直接 .filter 而拋錯，整個報表頁變成錯誤畫面；改為當成沒有科目
+  it('科目查詢失敗時不拋錯，沒有科目可選', async () => {
+    const { settle } = renderBar({ visible: ['subject'] }, { fixtures: {}, fallback: 'error' })
     await settle()
-    expect(await findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
-    console.error.mockRestore()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    fireEvent.click(field('選擇科目'))
+    expect(screen.queryAllByRole('option')).toEqual([])
   })
 
   it('日期：輸入日期回傳時間戳；清空時用現在時間', async () => {

@@ -42,6 +42,11 @@ export default function ChangePassword({ open, handleClose }) {
                 !!formData.password.value
               )
               : false
+        // 兩欄一致時一併清除兩欄的錯誤標示：原本只更新正在打的那欄，先標錯的另一欄會殘留錯誤（送出檢查改看 secondPassword.error 後會被擋下）
+        if (formData.password.value === formData.secondPassword.value) {
+          formData.password.error = false
+          formData.secondPassword.error = false
+        }
       })
     )
   }
@@ -61,7 +66,7 @@ export default function ChangePassword({ open, handleClose }) {
     const user = JSON.parse(localStorage.getItem('user'))
     if (
       !formData.password.error &&
-      !formData.password.error &&
+      !formData.secondPassword.error && // 原本重複寫了兩次 password.error（Jason 2026/10/22 fix all）
       formData.password.value &&
       formData.secondPassword.value &&
       formData.password.value === formData.secondPassword.value

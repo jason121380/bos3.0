@@ -4,6 +4,7 @@ import useToggle from 'hooks/useToggle'
 import idx from 'idx'
 import React, { useEffect } from 'react'
 import { Autocomplete } from 'ui/combobox'
+import compareNo from 'utils/compareNo'
 
 function EmployeeAutoComplete(
   {
@@ -26,6 +27,8 @@ function EmployeeAutoComplete(
     name,
     setEmployeeAlready,
     placeholder,
+    // 欄位尺寸：預設小尺寸（34px）；帳單項目列的服務人員傳 'medium'，與同列輸入框同高（36px、手機 40px）
+    size = 'small',
   },
   ref
 ) {
@@ -60,9 +63,8 @@ function EmployeeAutoComplete(
 
   const filterOptions = (options, state) => {
     const keyWord = state.inputValue
-    const newOptions = [...options].sort((a, b) => {
-      return a.userNo - b.userNo
-    })
+    // 編號自然排序（英數編號也有效）、空編號排最後（原本 a.userNo - b.userNo 對英數編號得 NaN、空編號當 0 排最前；Jason 2026/10/22 fix all）
+    const newOptions = [...options].sort((a, b) => compareNo(a.userNo, b.userNo))
     let userNo = []
     let userNickName = []
     let userName = []
@@ -204,8 +206,8 @@ function EmployeeAutoComplete(
             onKeyDown={onKeyDown}
             onChange={handleInputChange}
             variant="outlined"
-            // 帳單服務列的協助人員（isAssist）與同列的價格、服務項目同高（一般尺寸，手機 40px）；其餘用法維持小尺寸
-            size={isAssist ? undefined : 'small'}
+            // 帳單服務列的協助人員（isAssist）與同列的價格、服務項目同高（一般尺寸，手機 40px）；其餘用法依 size（預設小尺寸）
+            size={isAssist ? undefined : size}
             InputProps={{
               ...params.InputProps,
               ...inputProps,

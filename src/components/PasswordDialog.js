@@ -31,12 +31,15 @@ const PasswordDialog = ({
   )
 }
 
-PasswordDialog.prototype = {
+// 原本寫成 PasswordDialog.prototype（型別檢查沒有作用）且列的是不存在的 props（handleOnClose、Submit）；改為 propTypes、對齊實際 props（Jason 2026/10/22 fix all）
+PasswordDialog.propTypes = {
   title: PropTypes.string,
   inputLabel: PropTypes.string,
   open: PropTypes.bool,
-  handleOnClose: PropTypes.func,
-  Submit: PropTypes.func,
+  handleOnCancel: PropTypes.func,
+  handleOnConfirm: PropTypes.func,
+  isLoading: PropTypes.bool,
+  inputOnChange: PropTypes.func,
 }
 
 export default PasswordDialog

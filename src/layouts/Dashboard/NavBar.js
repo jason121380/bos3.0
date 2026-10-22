@@ -82,7 +82,6 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
   const getUserPinnedTable = useFetchGetUserPinnedTable({ skip: !useAfterFirstLoad() })
   if (merchantName) merchantName = JSON.parse(merchantName).name
   // 宣告usestate變數
-  const [status, setStatus] = useState('online')
   const [userPageAuth, setUserPageAuth] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   // 搜尋選單：頂列的放大鏡鈕開關搜尋框；關閉時清空關鍵字、恢復完整選單
@@ -394,16 +393,6 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
     }
   }, [userData.data, userData.loading])
 
-  // status按鈕
-  const handleStatusToggle = () => {
-    const statusSeq = {
-      online: 'away',
-      away: 'busy',
-      busy: 'offline',
-      offline: 'online',
-    }
-    setStatus(prevStatus => statusSeq[prevStatus])
-  }
   // 登出按鈕
   const handleLogOut = () => {
     document.cookie.split(';').forEach(function (c) {
@@ -578,7 +567,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       {!profile.loading && (
         <SidebarFooter className="flex items-center gap-2">
           <RouterLink to="/profile/general" className={cn('flex min-w-0 flex-1 items-center gap-2 rounded-md p-1 hover:bg-surface-hover', focusRing)}>
-            {/* 頭像只是呈現：原 onClick={handleStatusToggle} 只輪替一個畫面上沒用到的 status state（無可見效果），點擊仍由外層連結前往個人頁 */}
+            {/* 頭像只是呈現，點擊由外層連結前往個人頁 */}
             {avatar ? (
               <img alt="" src={avatar} className="h-8 w-8 shrink-0 rounded-full border border-solid border-border object-cover" />
             ) : (

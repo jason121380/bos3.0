@@ -197,7 +197,8 @@ describe('EmployeeAutoComplete 服務人員', () => {
   ]
   const fixtures = { GET_USERS_ORDERABLE_LIST: { getUserOrderableList: users } }
 
-  it('選項依代號數值排序（空代號視為 0）；顯示暱稱或姓名＋代號，沒代號顯示（無代號）；載入通知、getCustomerData 拿到全部', async () => {
+  // 排序：Jason 2026/10/22 fix all 改為代號自然排序、空代號排最後（原本 a.userNo - b.userNo 把空代號當 0 排最前、英數代號無效）
+  it('選項依代號自然排序（空代號排最後）；顯示暱稱或姓名＋代號，沒代號顯示（無代號）；載入通知、getCustomerData 拿到全部', async () => {
     const ready = jest.fn()
     const getData = jest.fn()
     const { settle } = renderPage(<EmployeeAutoComplete setEmployeeAlready={ready} getCustomerData={getData} />, { fixtures })
@@ -205,7 +206,7 @@ describe('EmployeeAutoComplete 服務人員', () => {
     expect(ready).toHaveBeenCalledWith(true)
     expect(getData).toHaveBeenCalledWith(users.map(u => expect.objectContaining({ userId: u.userId })))
     openCombo()
-    expect(optionTexts()).toEqual(['王二(無代號)', '阿毛(無代號)', '李一-1', '小三-3'])
+    expect(optionTexts()).toEqual(['李一-1', '小三-3', '王二(無代號)', '阿毛(無代號)'])
     expect(screen.getByTestId('employee-李一')).toBeInTheDocument()
   })
 
@@ -336,15 +337,25 @@ describe('DesignerBeenAssistedAutoComplete 被互助設計師', () => {
     expect(picked).toHaveBeenLastCalledWith({ id: '' })
   })
 
-  // 已知缺口（待 Jason 決定）：本元件用預設篩選（比對選項標籤），而代號不含關鍵字時標籤是「姓名」，
-  // 所以選單上顯示的暱稱（小王）打了找不到，只能打姓名或代號
-  it('目前行為：打暱稱找不到人，打姓名才找得到；頁面沒存回 value 時欄位顯示姓名；預設回呼不拋錯；查詢失敗不壞', async () => {
+  // 已修正（Jason 2026/10/22 fix all）：原本用預設篩選（比對選項標籤），代號不含關鍵字時標籤是「姓名」，選單上顯示的暱稱（小王）打了找不到；
+  // 改為比照 EmployeeAutoComplete：代號完全相同優先，再列暱稱、姓名包含的（不分大小寫、不重複），只打空白列出全部；
+  // 原本打部分代號（d）可找到代號含該字的人，保留在最後（避免退步）
+  it('可用暱稱、姓名或代號搜尋；頁面沒存回 value 時欄位顯示姓名；預設回呼不拋錯；查詢失敗不壞', async () => {
     const { settle } = renderPage(<DesignerBeenAssistedAutoComplete />, { fixtures })
     await settle()
     openCombo()
     type('小王')
-    expect(optionTexts()).toEqual([])
+    expect(optionTexts()).toEqual(['小王(無代號)'])
+    type('阿')
+    expect(optionTexts()).toEqual(['阿三-D3'])
+    type('張')
+    expect(optionTexts()).toEqual(['阿三-D3'])
+    type('d')
+    expect(optionTexts()).toEqual(['李一-D1', '阿三-D3'])
+    type('  ')
+    expect(optionTexts()).toHaveLength(3)
     type('王')
+    expect(optionTexts()).toEqual(['小王(無代號)'])
     fireEvent.keyDown(combo(), { key: 'a' })
     fireEvent.click(optionByText('小王(無代號)'))
     expect(combo()).toHaveValue('王二')
@@ -364,7 +375,8 @@ describe('BookingRecordListAutoComplete 預約紀錄人員', () => {
   ]
   const fixtures = { GET_USER_BOOKING_RECORD_LIST: { getUserBookingRecordList: users } }
 
-  it('依代號排序列出；代號完全相同優先、再列暱稱與姓名包含的；載入通知、getCustomerData 拿到全部', async () => {
+  // 排序：Jason 2026/10/22 fix all 改為代號自然排序、空代號排最後（原本空代號當 0 排最前）
+  it('依代號排序列出（空代號排最後）；代號完全相同優先、再列暱稱與姓名包含的；載入通知、getCustomerData 拿到全部', async () => {
     const ready = jest.fn()
     const getData = jest.fn()
     const inputOnChange = jest.fn()
@@ -376,7 +388,7 @@ describe('BookingRecordListAutoComplete 預約紀錄人員', () => {
     expect(ready).toHaveBeenCalledWith(true)
     expect(getData).toHaveBeenCalledWith(users.map(u => expect.objectContaining({ userId: u.userId })))
     openCombo()
-    expect(optionTexts()).toEqual(['王二(無代號)', '李一-1', '小三-3'])
+    expect(optionTexts()).toEqual(['李一-1', '小三-3', '王二(無代號)'])
     type('1')
     expect(inputOnChange).toHaveBeenLastCalledWith('1')
     expect(optionTexts()).toEqual(['李一-1'])

@@ -60,14 +60,25 @@ describe('DateField 數字輸入', () => {
     expect(input).toHaveValue('2026/03/05')
   })
 
-  it('已知缺口（待 Jason 決定）：月份打 1 再打 3（13 超過上限）時，以 3 重新開始但不跳到日——再打的數字仍落在月份', () => {
-    const { input, type, focus } = setup()
+  // Jason 2026/10/22 fix all：原本超過上限以這一位重新開始後不跳段，再打的數字仍落在月份（打 1、3、1、5 得到 05 月、日空白）；
+  // 改為重新開始的這一位若不可能再接第二位（num*10 > 上限）也跳到下一段，與原 MUI 相同
+  it('月份打 1 再打 3（13 超過上限）時以 3 重新開始並跳到日，再打 1、5 填入日', () => {
+    const { input, onChange, type, focus } = setup()
     focus()
     type('2', '0', '2', '6', '1', '3')
     expect(input).toHaveValue('2026/03/DD')
     type('1', '5')
-    // 原 MUI 會得到 2026/03/15；目前結果是月份被改成 05、日仍空白
-    expect(input).toHaveValue('2026/05/DD')
+    expect(input).toHaveValue('2026/03/15')
+    expect(iso(onChange.mock.calls[onChange.mock.calls.length - 1][0])).toBe('2026-3-15')
+  })
+
+  it('超過上限重新開始的這一位還能接第二位時留在原段（日打 3、2 → 以 2 重新開始，再打 9 → 29）', () => {
+    const { input, type, focus } = setup()
+    focus()
+    type('2', '0', '2', '6', '0', '1', '3', '2')
+    expect(input).toHaveValue('2026/01/02')
+    type('9')
+    expect(input).toHaveValue('2026/01/29')
   })
 
   it('不存在的日期（2/30）回傳 Invalid Date', () => {

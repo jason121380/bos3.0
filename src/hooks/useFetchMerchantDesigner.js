@@ -115,41 +115,6 @@ export default function useFetchMerchantDesigner({ designerId }) {
   })
 }
 
-const FETCH_DESIGNER_MERCHANT_IDENTITY = gql`
-  query DESIGNER($designerId: ID) {
-    merchantDesigner(designerId: $designerId) {
-      merchantIdentity {
-        authorityName
-        authorityId
-      }
-    }
-  }
-`
-
-export function useFetchUserMerchantIdentity({ designerId }) {
-  return useQuery(FETCH_DESIGNER_MERCHANT_IDENTITY, {
-    variables: {
-      designerId,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-}
-const FETCH_DESIGNER_INSURANCE_DEDUCTIBLE = gql`
-  query FETCH_DESIGNER_INSURANCE_DEDUCTIBLE($designerId: ID) {
-    merchantDesigner(designerId: $designerId) {
-      insuranceDeductible
-    }
-  }
-`
-
-export function useFetchUserInsuranceDeductible({ designerId }) {
-  return useQuery(FETCH_DESIGNER_INSURANCE_DEDUCTIBLE, {
-    variables: {
-      designerId,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-}
 const FETCH_DESIGNER_FIXED_SALARY_ITEMS = gql`
   query FETCH_DESIGNER_FIXED_SALARY_ITEMS($designerId: ID) {
     merchantDesigner(designerId: $designerId) {
@@ -167,14 +132,6 @@ const FETCH_DESIGNER_FIXED_SALARY_ITEMS = gql`
   }
 `
 
-export function useFetcDesignerFixedSalaryItems({ designerId }) {
-  return useQuery(FETCH_DESIGNER_FIXED_SALARY_ITEMS, {
-    variables: {
-      designerId,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-}
 export function useFetcDesignerFixedSalaryItemsLazy() {
   const [fetcDesignerFixedSalaryItemsLazy, designerFixedSalaryItemsLazyData] = useLazyQuery(
     FETCH_DESIGNER_FIXED_SALARY_ITEMS,

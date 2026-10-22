@@ -5,7 +5,6 @@ import { Popover, PopoverAnchor, PopoverContent } from 'ui/popover'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from 'ui/dropdown-menu'
 import { cn, focusRing } from 'ui/utils'
 import { APP_VERSION } from '../../version'
-import useFetchSystemUpdateRecord from 'hooks/useFetchSystemUpdateRecord'
 import useToggle from 'hooks/useToggle'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, useRef, Fragment } from 'react'
@@ -69,7 +68,6 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
   const [loginUserAuth, setLoginUserAuth] = useState(false)
   // 開關圖示先依記住的主題顯示（後端使用者資料回來後再同步），避免深色使用者看到錯的圖示
   const [moodChange, setMoodChange] = useState(() => readStoredTheme() === 'DARK')
-  const [anchorEl, setAnchorEl] = useState(null)
   const [openButton, setOpenButton] = useState(false)
   const [placement, setPlacement] = useState()
   const [isNotification, setIsNotification] = useState(true)
@@ -78,22 +76,13 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
   const [targetID, setTargetID] = useState(null)
   const [anchorElForMoreBtn, setAnchorElForMoreBtn] = React.useState(null)
   const openForMoreBtn = Boolean(anchorElForMoreBtn)
-  const [record, setRecord] = useState({
-    content: '',
-    systemUpdateId: '',
-    title: '',
-    updateTime: '',
-    versionNo: ''
-  })
   const [orderDetail, setOrderDetail] = useState([])
   const [ws, setWs] = useState(null)
-  // 系統公告與訂單佇列不影響畫面主體，延後到首屏完成後再查（lib/after-first-load）
+  // 訂單佇列不影響畫面主體，延後到首屏完成後再查（lib/after-first-load）
   const afterFirstLoad = useAfterFirstLoad()
   const usingOrderQueue = useFetchGetUsingOrderQueue({ skip: !afterFirstLoad })
-  const [isClick, setIsClick] = useState(false)
   const { destroyQueueById } = useFetchDestroyQueueById()
   const { reCheckoutOrderFromQueue } = useFetchReCheckoutOrderFromQueue()
-  const systemUpdateRecord = useFetchSystemUpdateRecord({ skip: !afterFirstLoad })
 
   const handlesetOrderDetail = tmpData => {
     const errorDataCount = tmpData.filter(d => d.status === 'fail')
@@ -262,27 +251,6 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
     }
   }, [usingOrderQueue.loading])
 
-  // 版本記錄
-  useEffect(() => {
-    if (!systemUpdateRecord.loading) {
-      let tmp = {}
-      const data = idx(systemUpdateRecord, _ => _.data.systemUpdateRecord)
-      if (!Array.isArray(data)) return // 版本記錄查詢失敗時略過，不讓版面拋錯
-      data.forEach((d, index) => {
-        if (index === 0) {
-          tmp = {
-            content: d.content,
-            systemUpdateId: d.systemUpdateId,
-            title: d.title,
-            updateTime: format(d.updateTime, 'yyyy/MM/dd'),
-            versionNo: d.versionNo
-          }
-        }
-      })
-      setRecord(tmp)
-    }
-  }, [systemUpdateRecord.loading])
-
   // click away
   useEffect(() => {
     const checkIfClickedOutside = e => {
@@ -303,7 +271,6 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
 
   // open notification button handle
   const handleClickOpenNotification = newPlacement => event => {
-    setAnchorEl(event.currentTarget)
     setOpenButton(prev => placement !== newPlacement || !prev)
     setPlacement(newPlacement)
   }
@@ -333,17 +300,6 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
         setMoodChange(!nextDark)
         setThemeSaving(false)
       })
-  }
-  // log out button handle
-  const handleLogout = () => {
-    document.cookie.split(';').forEach(function (c) {
-      document.cookie = c
-        .replace(/^ +/, '')
-        .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/')
-    })
-    localStorage.clear()
-    history.push('/auth/login')
-    window.location.reload()
   }
   // open more button handle when order error
   const handleClickForMoreBtn = (event, id) => {
@@ -483,16 +439,16 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
-                          <DropdownMenuItem disabled={isClick} onSelect={handleEditOrder}>
+                          <DropdownMenuItem onSelect={handleEditOrder}>
                             <Pencil strokeWidth={1.75} />
                             編輯
                           </DropdownMenuItem>
-                          <DropdownMenuItem disabled={isClick} onSelect={handleReCheckoutOrder}>
+                          <DropdownMenuItem onSelect={handleReCheckoutOrder}>
                             <RotateCcw strokeWidth={1.75} />
                             重試
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem danger disabled={isClick} onSelect={handleDeleteOrder}>
+                          <DropdownMenuItem danger onSelect={handleDeleteOrder}>
                             <Trash2 strokeWidth={1.75} />
                             刪除
                           </DropdownMenuItem>

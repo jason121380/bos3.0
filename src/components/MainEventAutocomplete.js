@@ -8,15 +8,18 @@ import { Autocomplete } from 'ui/combobox'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
+// 沒給 value 時的預設值放模組層：參數預設 [] 每次渲染都是新陣列，effect（依賴 value）會每次渲染都 setState 而無限重新渲染
+const NO_VALUE = []
 
-const MainEventAutocomplete = ({ value = [], onChange = () => { }, isReadOnly = false, ...rest }) => {
+const MainEventAutocomplete = ({ value = NO_VALUE, onChange = () => { }, isReadOnly = false, ...rest }) => {
   const getMainEvents= useFetchGetMainEventsForAutocomplete()
   const [selectValue, setSelectValue] = useState([])
   const [options, setOptions] = useState([])
 
   useEffect(() => {
     if (!getMainEvents.loading) {
-      const data = idx(getMainEvents, _ => _.data.mainEvents)
+      // 查詢失敗時 data 為 undefined：當成沒有活動，不讓整頁拋錯（Jason 2026/10/22 fix all）
+      const data = idx(getMainEvents, _ => _.data.mainEvents) || []
       const newValue = data.filter(d => value.includes(d.id))
       setSelectValue(newValue)
       setOptions(data)

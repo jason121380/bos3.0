@@ -61,8 +61,16 @@ describe('NewChoseEvent 全店模式', () => {
     expect(open).not.toBeDisabled()
     mockApi.allStore = jest.fn(() => Promise.resolve({ data: { adminBookingTimeAllStore: {} } }))
     fireEvent.click(open)
+    // 送出中：動作鈕與取消都停用
+    expect(open).toBeDisabled()
+    expect(screen.getByRole('button', { name: '取消' })).toBeDisabled()
     await act(() => Promise.resolve())
     expect(setModalOpen).not.toHaveBeenCalled()
+    // 已修正（Jason 2026/10/22 fix all）：後端沒回店家 id 時原本連「取消」也一直停用；改為回應後「取消」可按，
+    // 動作鈕維持停用（結果不明，避免重複送出）
+    expect(open).toBeDisabled()
+    fireEvent.click(screen.getByRole('button', { name: '取消' }))
+    expect(setModalOpen).toHaveBeenCalledWith(false)
     cleanup()
     const second = renderEvent({ modaltype: 'openAllOrder' })
     fireEvent.click(screen.getByRole('button', { name: '取消' }))

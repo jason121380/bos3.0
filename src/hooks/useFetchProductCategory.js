@@ -25,6 +25,7 @@ export default function useFetchProductCategory({ categoryId }) {
     variables: {
       categoryId,
     },
+    fetchPolicy: 'cache-and-network',
   })
   return { data, loading, error, refetch }
 }

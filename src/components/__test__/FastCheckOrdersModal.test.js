@@ -161,15 +161,20 @@ describe('FastCheckOrdersModal 帳單速查', () => {
     expect(within(total).getAllByRole('cell').map(c => c.textContent)[8]).toBe('0')
   })
 
-  // 已知缺口（待 Jason 決定）：第三方卡券欄的「含 …」只有服務與店販「都有」項目時才顯示（&&），只有服務用第三方券的帳單不會列出
-  it('目前行為：只有服務項目（沒有店販）時，第三方卡券欄不列出第三方名稱', async () => {
-    const onlyService = order({ productOrders: [] })
-    const { settle } = renderPage(<Harness />, { fixtures: fixturesWith({ orders: [onlyService] }) })
+  // 已修正（Jason 2026/10/22 fix all）：第三方卡券欄的「含 …」原本只有服務與店販「都有」項目時才顯示（&&），
+  // 只有服務或只有店販用第三方券的帳單不會列出；改為任一邊有項目就列出（||）
+  it('只有服務或只有店販項目時，第三方卡券欄也列出第三方名稱；都沒有項目時只顯示金額', async () => {
+    const onlyService = order({ id: 'o-s', productOrders: [] })
+    const onlyProduct = order({ id: 'o-p', serviceOrders: [] })
+    const neither = order({ id: 'o-n', serviceOrders: [], productOrders: [] })
+    const { settle } = renderPage(<Harness />, { fixtures: fixturesWith({ orders: [onlyService, onlyProduct, neither] }) })
     await settle()
     const table = await screen.findByRole('table')
-    const cells = within(within(table).getAllByRole('row')[1]).getAllByRole('cell').map(c => c.textContent)
-    expect(cells[6]).toBe('1,001含 街口, 含 悠遊付')
-    expect(cells[14]).toBe('100')
+    const rows = within(table).getAllByRole('row')
+    const thirdPartyCell = i => within(rows[i]).getAllByRole('cell')[14].textContent
+    expect(thirdPartyCell(1)).toBe('100含 街口, 含 悠遊付')
+    expect(thirdPartyCell(2)).toBe('100含 街口, 含 全支付')
+    expect(thirdPartyCell(3)).toBe('100')
   })
 
   it('沒有帳單顯示無資料', async () => {

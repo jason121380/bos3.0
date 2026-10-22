@@ -15,7 +15,7 @@ import { MobileDatePicker } from 'ui/date-picker'
 import MemberShipCardSellsModal from "views/OrderShared/MemberShipCardSellsModal";
 import { useMembershipPicker } from "views/OrderShared/useItemPicker";
 import { formatNumber } from 'ui/format'
-import { ROW_ICON_ALIGN, ROW_ICON_ALIGN_SMALL } from 'views/OrderShared/rowAlign'
+import { ROW_ICON_ALIGN } from 'views/OrderShared/rowAlign'
 
 // 版面比照打帳單（views/OrderCreate/styles/MemberShipCardSells）：欄位上方標籤、上緣對齊（OrderShared/rowAlign）、窄螢幕換行不擠壓
 // 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px；pxToRem 以 16px 換算；原 `!important` 以 `!` 前綴保留）。
@@ -119,6 +119,8 @@ const MemberShipCardSells = ({
             handleTidyBill 會丟掉兩者皆空的列，所以該列有填任一欄才標必填 */}
         <Field label="服務人員" required={!!sells.sellerId || !!sells.membershipUUID}>
           <EmployeeAutoComplete
+            // 與同列輸入框同高（36px、手機 40px）
+            size="medium"
             className={styles.field}
             placeholder="服務人員姓名/編號"
             value={sells.sellerId}
@@ -145,11 +147,11 @@ const MemberShipCardSells = ({
           />
         </Field>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇會員卡" className={`mx-1.5 ${ROW_ICON_ALIGN_SMALL}`} onClick={handleOpenProductsModal}>
+          <RowIconButton label="從清單選擇會員卡" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenProductsModal}>
             <Copy aria-hidden="true" strokeWidth={1.75} />
           </RowIconButton>
         ) : (
-          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN_SMALL}`} />
+          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
         <Field label="會員卡" required={!!sells.sellerId || !!sells.membershipUUID}>
           <MemberShipCardAutoComplete

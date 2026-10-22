@@ -3,6 +3,12 @@ import { useHistory } from 'react-router';
 
 import React, { useState, useEffect, useRef } from 'react'
 
+// 群組標籤「代號 - 名稱(數量)」：數量為子群組數，沒有子群組時為店家數；缺欄位視為空（Jason 2026/10/22 fix all，原本缺 groups 會拋錯、TopBar 跟著壞掉）
+const groupLabel = data => {
+  const groupCount = (data.groups || []).length
+  return `${data.no ? data.no : ''} - ${data.name}(${groupCount || (data.merchants || []).length})`
+}
+
 const MerchantList = ({ merchants, searchQuery }) => {
   const history = useHistory()
   const [expanded, setExpanded] = useState([])
@@ -44,7 +50,7 @@ const MerchantList = ({ merchants, searchQuery }) => {
       <span className="flex items-center gap-[12px] [word-break:keep-all] whitespace-nowrap text-[14px] font-normal text-text">
         {isGroup ? <GroupsRoundedIcon className="text-text-secondary" style={{ fontSize: '16px' }} /> : <StorefrontIcon className="text-text-secondary" style={{ fontSize: '16px' }} />}
         {isGroup ?
-          `${data.no ? data.no : ''} - ${data.name}(${data.groups.length ? data.groups.length : data.merchants.length})` : data.name
+          groupLabel(data) : data.name
         }
       </span>
     )
@@ -75,7 +81,7 @@ const MerchantList = ({ merchants, searchQuery }) => {
       isGroup: true,
       data,
       parentKey,
-      labelText: `${data.no ? data.no : ''} - ${data.name}(${data.groups.length ? data.groups.length : data.merchants.length})`,
+      labelText: groupLabel(data),
       children
     }
   }
@@ -87,7 +93,7 @@ const MerchantList = ({ merchants, searchQuery }) => {
     isAll: true,
     data: merchants,
     parentKey: null,
-    labelText: `全部(${merchants.allMerchants.length})`,
+    labelText: `全部(${(merchants.allMerchants || []).length})`,
     children: (merchants.allMerchants || []).map(merchant => buildMerchantNode(merchant, '全部'))
   }
 
@@ -193,7 +199,7 @@ const MerchantList = ({ merchants, searchQuery }) => {
             : null}
           {node.isAll ? (
             <span className="flex items-center gap-[12px] [word-break:keep-all] whitespace-nowrap text-[14px] font-normal text-text">
-              <GroupsRoundedIcon className="text-text-secondary" style={{ fontSize: '16px' }} />{`全部(${merchants.allMerchants.length})`}
+              <GroupsRoundedIcon className="text-text-secondary" style={{ fontSize: '16px' }} />{node.labelText}
             </span>
           ) : (
             <RenderLabel isGroup={node.isGroup} data={node.data} />

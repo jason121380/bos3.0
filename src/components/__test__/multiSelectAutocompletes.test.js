@@ -1,6 +1,6 @@
 // 保護：活動規則、報表篩選共用的多選下拉（歸屬、活動、付款方式、卡券、帳單來源）與會員卡清單、儲值／扣除切換、快捷組合彈窗。
 // 重點：選項來自正確的查詢、選取後回傳給頁面的是 id／value 陣列（後端吃的格式）、已選值以 id 對回選項、
-// 卡券依編號排序並可用編號或名稱篩選、沒有權限的儲值動作不顯示；查詢失敗時的行為要明確（目前有幾個會拋錯，標為已知缺口）。
+// 卡券依編號排序並可用編號或名稱篩選、沒有權限的儲值動作不顯示；查詢失敗或沒給 value 時不拋錯、當成沒有選項（Jason 2026/10/22 fix all）。
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import React from 'react'
 
@@ -18,7 +18,6 @@ afterEach(cleanup)
 
 const openCombo = () => fireEvent.click(screen.getByRole('combobox'))
 const optionTexts = () => screen.queryAllByRole('option').map(o => o.textContent)
-const silenceErrors = () => jest.spyOn(console, 'error').mockImplementation(() => {})
 
 describe('BelongAutocomplete 歸屬', () => {
   it('fetchData：自行查詢歸屬，選項為名稱；勾選回傳名稱陣列', async () => {
@@ -49,8 +48,8 @@ describe('BelongAutocomplete 歸屬', () => {
     expect(optionTexts()).toEqual([])
   })
 
-  // 已知缺口（待 Jason 決定）：optionData 只在掛載時讀一次；呼叫端的選項較晚才到時下拉仍是空的（目前活動規則頁在選「自訂」後才掛載，多半已載入）
-  it('目前行為：掛載後才傳入的 optionData 不會更新選項', async () => {
+  // 已修正（Jason 2026/10/22 fix all）：optionData 原本只在掛載時讀一次，呼叫端的選項較晚才到時下拉仍是空的；改為跟著 optionData 更新
+  it('掛載後才傳入的 optionData 會更新選項', async () => {
     const Wrapper = () => {
       const [data, setData] = React.useState([])
       return (
@@ -65,7 +64,7 @@ describe('BelongAutocomplete 歸屬', () => {
     renderPage(<Wrapper />)
     fireEvent.click(screen.getByRole('button', { name: '載入選項' }))
     openCombo()
-    expect(optionTexts()).toEqual([])
+    expect(optionTexts()).toEqual(['晚到'])
   })
 })
 
@@ -85,22 +84,25 @@ describe('MainEventAutocomplete 活動', () => {
     expect(onChange).toHaveBeenLastCalledWith([])
   })
 
-  // 已知缺口（待 Jason 決定）：沒給 value 時預設值 [] 每次渲染都是新陣列，查詢回來後 effect（依賴 value）每次渲染都 setState，
-  // 形成無限重新渲染（測試會卡住，因此只驗證查詢回來之前）。目前兩個呼叫端都有傳 value。
-  it('沒給 value：查詢回來前不選任何活動、選單停用', () => {
-    const { unmount } = renderPage(<MainEventAutocomplete />, { fixtures, delays: { GET_MAIN_EVENTS_FOR_AUTOCOMPLETE: 60000 } })
+  // 已修正（Jason 2026/10/22 fix all）：沒給 value 時預設值原本是參數上的 []，每次渲染都是新陣列，查詢回來後 effect（依賴 value）
+  // 每次渲染都 setState，形成無限重新渲染；改用模組層的空陣列常數
+  it('沒給 value：查詢回來前選單停用；回來後列出活動、不選任何活動（不會無限重新渲染）', async () => {
+    const { settle } = renderPage(<MainEventAutocomplete />, { fixtures, delays: { GET_MAIN_EVENTS_FOR_AUTOCOMPLETE: 30 } })
     expect(screen.getByRole('combobox')).toBeDisabled()
+    await settle()
+    expect(screen.getByRole('combobox')).not.toBeDisabled()
     expect(screen.queryByRole('button', { name: /移除/ })).toBeNull()
-    unmount()
+    openCombo()
+    expect(optionTexts()).toEqual(['母親節', '週年慶'])
   })
 
-  // 已知缺口（待 Jason 決定）：查詢失敗時 data 為 undefined，元件直接 .filter 而拋錯，整個內容區變成錯誤畫面
-  it('目前行為：查詢失敗時拋錯', async () => {
-    silenceErrors()
-    const { settle, findByText } = renderPage(<MainEventAutocomplete value={[]} />, { fallback: 'error' })
+  // 已修正（Jason 2026/10/22 fix all）：查詢失敗時 data 為 undefined，原本直接 .filter 而拋錯（整個內容區變成錯誤畫面）；改為當成沒有活動
+  it('查詢失敗時不拋錯，沒有選項', async () => {
+    const { settle } = renderPage(<MainEventAutocomplete value={['e1']} />, { fallback: 'error' })
     await settle()
-    expect(await findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
-    console.error.mockRestore()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    openCombo()
+    expect(optionTexts()).toEqual([])
   })
 })
 
@@ -120,13 +122,20 @@ describe('PaywayAutocomplete 付款方式', () => {
     expect(onChange).toHaveBeenLastCalledWith([])
   })
 
-  // 已知缺口（待 Jason 決定）：value 沒給或查詢失敗時都直接 .includes／.filter 而拋錯
-  it('目前行為：沒給 value 時拋錯', async () => {
-    silenceErrors()
-    const { settle, findByText } = renderPage(<PaywayAutocomplete />, { fixtures })
+  // 已修正（Jason 2026/10/22 fix all）：value 沒給或查詢失敗時原本直接 .includes／.filter 而拋錯；改為當成沒選／沒有選項
+  it('沒給 value 時不拋錯、不選任何方式；查詢失敗時沒有選項', async () => {
+    const { settle } = renderPage(<PaywayAutocomplete />, { fixtures })
     await settle()
-    expect(await findByText(PAGE_CRASH_TEXT)).toBeInTheDocument()
-    console.error.mockRestore()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    openCombo()
+    expect(optionTexts()).toEqual(['現金', '信用卡'])
+    expect(screen.getByRole('option', { name: '現金' })).toHaveAttribute('aria-selected', 'false')
+    cleanup()
+    const { settle: s2 } = renderPage(<PaywayAutocomplete value={['CASH']} />, { fallback: 'error' })
+    await s2()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    openCombo()
+    expect(optionTexts()).toEqual([])
   })
 })
 
@@ -142,12 +151,27 @@ describe('TicketsAutocpmplete 卡券', () => {
     },
   }
 
-  // 已知缺口（待 Jason 決定）：排序寫成 a.no - b.no，只對純數字編號有效；英數編號（A01、B02）相減得 NaN，維持後端順序
-  it('沒有編號的卡券不列出；空白編號仍列出但不加前綴；英數編號維持後端順序（目前行為）', async () => {
+  // 已修正（Jason 2026/10/22 fix all）：排序原本寫成 a.no - b.no，英數編號（A01、B02）相減得 NaN、維持後端順序；
+  // 改為字串自然排序（utils/compareNo），空白編號排最後
+  it('沒有編號的卡券不列出；空白編號仍列出但不加前綴、排最後；英數編號依自然順序', async () => {
     const { settle } = renderPage(<TicketsAutocpmplete value={[]} />, { fixtures })
     await settle()
     openCombo()
-    expect(optionTexts()).toEqual(['B02 - 護髮十次', 'A01 - 洗髮五次', '空白編號'])
+    expect(optionTexts()).toEqual(['A01 - 洗髮五次', 'B02 - 護髮十次', '空白編號'])
+  })
+
+  it('沒給 value 時不拋錯；查詢失敗時沒有選項（Jason 2026/10/22 fix all）', async () => {
+    const { settle } = renderPage(<TicketsAutocpmplete />, { fixtures })
+    await settle()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    openCombo()
+    expect(optionTexts()).toHaveLength(3)
+    cleanup()
+    const { settle: s2 } = renderPage(<TicketsAutocpmplete value={['t1']} />, { fallback: 'error' })
+    await s2()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    openCombo()
+    expect(optionTexts()).toEqual([])
   })
 
   it('純數字編號依數值排序（2 排在 10 前面）', async () => {

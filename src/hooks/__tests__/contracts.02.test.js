@@ -811,17 +811,6 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchGetInventorys',
-    hook: useFetchGetInventorys.default,
-    args: [{ input: { probe: 'input' } }],
-    expect: {
-      initial: [{ operationName: 'GET_INVENTORYS', variables: { input: { probe: 'input' } } }],
-      shape: { loading: false, called: true, data: ['getInventorys'] },
-      policies: { GET_INVENTORYS: 'cache-and-network' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
     id: 'useFetchGetInventorys.useFetchGetInventorysLazy',
     hook: useFetchGetInventorys.useFetchGetInventorysLazy,
     args: [{ input: { probe: 'input' } }],

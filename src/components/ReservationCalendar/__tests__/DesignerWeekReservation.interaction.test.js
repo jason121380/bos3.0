@@ -238,22 +238,23 @@ describe('點預約色塊', () => {
     expect(mockApi.refetch).toHaveBeenCalledTimes(1)
   })
 
-  // 已知缺口（待 Jason 決定）：判斷待審核用的是 rest.status，但週曆資料只有 bookingStatus，
-  // 所以待審核的預約也被當成「預約成功」開啟（多一個「編輯」連結）；接受／取消仍依 bookingStatus 顯示
-  it('待審核預約：可接受預約（目前也顯示編輯）；不指定時設計師顯示不指定、未報到', async () => {
+  // 已修正（Jason 2026/10/22 fix all）：判斷待審核原本讀 rest.status（週曆資料沒有這個欄位，只有 bookingStatus），
+  // 待審核的預約被當成「預約成功」開啟、多一個「編輯」連結；改讀 rest.bookingStatus
+  it('待審核預約：可接受預約、沒有編輯（只有結帳）；不指定時設計師顯示不指定、未報到', async () => {
     renderTab()
     fireEvent.click(chip('陳小美'))
     const body = dialogBody()
     expect(body).toHaveTextContent('設計師: 不指定')
     expect(body).toHaveTextContent('報到狀態: 未報到')
     expect(body).not.toHaveTextContent('提醒日期')
-    expect(within(body).getByText('編輯')).toBeInTheDocument()
+    expect(within(body).queryByText('編輯')).toBeNull()
+    expect(within(body).getByText('結帳').closest('a')).toHaveAttribute('href', '/order/r2?status=checkout')
     fireEvent.click(within(body).getByText('接受預約'))
     expect(mockApi.verifyBooking).toHaveBeenCalledWith({ orderId: 'r2', isApproval: true })
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '已接受預約', variant: 'success' }))
   })
 
-  it('審核失敗提示錯誤；後端沒回 id 時不關窗', async () => {
+  it('審核失敗提示錯誤；後端沒回 id 時不關窗，但「關閉」可按', async () => {
     mockApi.verifyBooking = jest.fn(() => Promise.reject(new Error('已被取消')))
     renderTab()
     fireEvent.click(chip('陳小美'))
@@ -263,9 +264,8 @@ describe('點預約色塊', () => {
     fireEvent.click(within(dialogBody()).getByText('接受預約'))
     await act(() => Promise.resolve())
     expect(screen.getByRole('dialog')).toBeInTheDocument()
-    // 已知缺口（待 Jason 決定）：後端沒回 id 時按鈕維持「處理中」停用，「關閉」也按不了，只能按 Esc／點背景關
-    expect(within(dialogBody()).getByRole('button', { name: '關閉' })).toBeDisabled()
-    fireEvent.keyDown(dialogBody(), { key: 'Escape' })
+    // 已修正（Jason 2026/10/22 fix all）：後端沒回 id 時「關閉」原本維持停用，只能按 Esc／點背景關；改為回應後即可按
+    fireEvent.click(within(dialogBody()).getByRole('button', { name: '關閉' }))
     await wait(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
@@ -290,21 +290,23 @@ describe('點預約色塊', () => {
     expect(dialogBody()).toHaveTextContent('設計師: 王大明')
   })
 
-  // 已知缺口（待 Jason 決定）：「本名＋暱稱」設定判斷寫成 designerName === 'BOTH'（應為 designerNameType），永遠不會成立，只顯示本名
-  it('目前行為：顯示設定為 BOTH 時仍只顯示本名；只有設計師本名剛好是「BOTH」時才加上暱稱', () => {
+  // 已修正（Jason 2026/10/22 fix all）：「本名＋暱稱」原本判斷 designerName === 'BOTH'（永遠不成立，只顯示本名；
+  // 本名剛好是「BOTH」時反而加上暱稱），改為 designerNameType === 'BOTH'
+  it('顯示設定為 BOTH：本名(暱稱)；沒有暱稱只顯示本名；本名剛好是「BOTH」不影響', () => {
     mockNameType = 'BOTH'
     renderTab()
     fireEvent.click(chip('王小明'))
-    expect(dialogBody()).toHaveTextContent('設計師: 王大明')
-    expect(dialogBody()).not.toHaveTextContent('王大明(小明)')
+    expect(dialogBody()).toHaveTextContent('設計師: 王大明(小明)')
     fireEvent.click(within(dialogBody()).getByRole('button', { name: '關閉' }))
     cleanup()
-    mockApi.calendar = () => calendarResult(WEEK, { designerName: 'BOTH' })
+    mockApi.calendar = () => calendarResult(WEEK, { designerNickname: '' })
     renderTab()
     fireEvent.click(chip('王小明'))
-    expect(dialogBody()).toHaveTextContent('設計師: BOTH(小明)')
+    expect(dialogBody()).toHaveTextContent('設計師: 王大明')
+    expect(dialogBody()).not.toHaveTextContent('王大明(')
     cleanup()
-    mockApi.calendar = () => calendarResult(WEEK, { designerName: 'BOTH', designerNickname: '' })
+    mockNameType = 'NAME'
+    mockApi.calendar = () => calendarResult(WEEK, { designerName: 'BOTH' })
     renderTab()
     fireEvent.click(chip('王小明'))
     expect(dialogBody()).toHaveTextContent('設計師: BOTH')

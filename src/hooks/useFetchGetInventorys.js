@@ -19,15 +19,6 @@ const GET_INVENTORYS = gql`
   }
 `
 
-export default function useFetchGetInventorys({ input }) {
-  return useQuery(GET_INVENTORYS, {
-    variables: {
-      input,
-    },
-    fetchPolicy: 'cache-and-network',
-  })
-}
-
 export function useFetchGetInventorysLazy({ input }) {
   const [getInventorysLazy, inventorysData] = useLazyQuery(GET_INVENTORYS, {
     variables: {

@@ -5,6 +5,7 @@ import idx from 'idx'
 
 import React, { useEffect } from 'react'
 import { Autocomplete } from 'ui/combobox'
+import compareNo from 'utils/compareNo'
 
 function TicketAutoComplete(
   {
@@ -14,7 +15,7 @@ function TicketAutoComplete(
     orderId,
 
     onFieldChange = () => {},
-    value,
+    value = '', // 沒給時當成沒選（原本直接讀 value.length 而拋錯；Jason 2026/10/22 fix all）
     onKeyDown,
     onFocus,
     autoFocus,
@@ -76,9 +77,8 @@ function TicketAutoComplete(
   }, [value])
   const filterOptions = (options, state) => {
     const keyWord = state.inputValue
-    const newOptions = [...options].sort((a, b) => {
-      return a.no - b.no
-    })
+    // 代號自然排序（英數代號也有效）、空代號排最後（原本 a.no - b.no 對英數代號得 NaN、空代號當 0 排最前；Jason 2026/10/22 fix all）
+    const newOptions = [...options].sort((a, b) => compareNo(a.no, b.no))
     let filterByNo = []
     let filterByName = []
     if (keyWord !== '' && keyWord.trim() !== '') {
@@ -120,10 +120,11 @@ function TicketAutoComplete(
       value={selectedValue}
       autoHighlight
       filterOptions={filterOptions}
+      // 沒有代號（空字串或 null）時只顯示名稱（原本只排除空字串，null 顯示成「名稱(null)」；比照 ServicesAutoComplete，Jason 2026/10/22 fix all）
       getOptionLabel={option =>
         ticketsKeyword === option.no
-          ? option.no === '' ? `${option.name}${option.no !== '' ? `(${option.no})` : ''}` : option.no
-          : `${option.name}${option.no !== '' ? `(${option.no})` : ''}`
+          ? option.no === '' ? `${option.name}${option.no ? `(${option.no})` : ''}` : option.no
+          : `${option.name}${option.no ? `(${option.no})` : ''}`
       }
       loading={tickets.loading}
       onChange={(_event, value) => onChange(idx(value, _ => value) || { id: '' })}

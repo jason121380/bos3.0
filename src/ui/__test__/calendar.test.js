@@ -191,9 +191,11 @@ describe('YearView', () => {
     expect(screen.getByText('2026').className).toContain('font-semibold')
     fireEvent.click(screen.getByText('2024'))
     expect(onSelect).toHaveBeenLastCalledWith(new Date(2024, 1, 29))
-    // 已知缺口（待 Jason 決定）：2/29 換到平年時 date-fns setYear 會溢位成 3/1（與原 MUI 相同行為），這裡鎖住目前行為
+    // Jason 2026/10/22 fix all：原本 2/29 換到平年時 date-fns setYear 會溢位成 3/1；改為夾到該月最後一天（2/28）
     fireEvent.click(screen.getByText('2025'))
-    expect(onSelect).toHaveBeenLastCalledWith(new Date(2025, 2, 1))
+    expect(onSelect).toHaveBeenLastCalledWith(new Date(2025, 1, 28))
+    fireEvent.click(screen.getByText('2028'))
+    expect(onSelect).toHaveBeenLastCalledWith(new Date(2028, 1, 29))
   })
 
   it('沒有有效值時以顯示中的月份為準；disableFuture 時今年以後停用；年份不在清單內時不聚焦', () => {

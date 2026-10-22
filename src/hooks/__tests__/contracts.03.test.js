@@ -569,17 +569,6 @@ const ROWS = [
     failure: { loading: false, called: true, error: 'error' },
   },
   {
-    id: 'useFetchGetMerchantPointValueSettings',
-    hook: useFetchGetMerchantPointValueSettings.default,
-    args: [],
-    expect: {
-      initial: [{ operationName: 'GET_MERCHANT_POINT_VALUE_SETTING', variables: {} }],
-      shape: { loading: false, called: true, data: ['getMerchantPointValueSettings'] },
-      policies: { GET_MERCHANT_POINT_VALUE_SETTING: 'cache-first' },
-    },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
     id: 'useFetchGetMerchantPointValueSettings.useFetchGetMerchantPointValueSettingsForSelect',
     hook: useFetchGetMerchantPointValueSettings.useFetchGetMerchantPointValueSettingsForSelect,
     args: [],
@@ -1444,17 +1433,6 @@ const ROWS = [
       policies: { GET_USER_MERCHANTS: 'cache-and-network' },
     },
     noArgs: { initial: [{ operationName: 'GET_USER_MERCHANTS', variables: {} }] },
-    failure: { loading: false, called: true, error: 'error' },
-  },
-  {
-    id: 'useFetchGetUserMerchant.useFetchGetUserMerchantForManagement',
-    hook: useFetchGetUserMerchant.useFetchGetUserMerchantForManagement,
-    args: [],
-    expect: {
-      initial: [{ operationName: 'GET_USER_MERCHANTS_FOR_MANAGEMENT', variables: {} }],
-      shape: { loading: false, called: true, data: ['advancedManagerMerchants'] },
-      policies: { GET_USER_MERCHANTS_FOR_MANAGEMENT: 'cache-and-network' },
-    },
     failure: { loading: false, called: true, error: 'error' },
   },
   {

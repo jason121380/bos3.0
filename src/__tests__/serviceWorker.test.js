@@ -1,6 +1,6 @@
 // 保護什麼：本系統不使用 service worker（離線快取會讓使用者一直看到舊版）。入口檔只呼叫 unregister：
 // 瀏覽器支援時把已安裝的舊版移除；不支援時什麼都不做、不拋錯。
-// （register 等其餘函式是 CRA 樣板、全站沒有呼叫，列為 dead code，不在此測試。）
+// （register 等其餘 CRA 樣板函式全站沒有呼叫，2026/10/22 已刪除，只留 unregister。）
 import { unregister } from '../serviceWorker'
 
 afterEach(() => {
