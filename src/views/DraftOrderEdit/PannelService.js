@@ -187,23 +187,6 @@ export default function PannelService({ thirdPartTicket }) {
     })
   }
 
-  const handleChange = ({ index, value }) => {
-    const newServices = cloneDeep(services)
-    newServices[index] = value
-    setServices(newServices)
-    handleBillChange({
-      key: 'serviceOrders',
-      value: newServices
-        .filter(d => d.serviceId)
-        .map(d => ({
-          serviceId: d.serviceId,
-          price: d.price,
-          serviceOrderHelpers: d.serviceOrderHelpers.filter(i => i.helperId),
-          isLocked: d.isLocked,
-          isNoCash: d.isNoCash,
-        })),
-    })
-  }
   function handleServiceOnChange({ index, value }) {
     const newServices = cloneDeep(services)
     newServices[index] = value
@@ -315,7 +298,6 @@ export default function PannelService({ thirdPartTicket }) {
               onClear={handleClear}
               focusFirstField={index === focusRow}
               expanded={expanded}
-              onChange={handleChange}
               handleOpenServicesModal={handleOpenServicesModal}
               changeRowFocus={handleChangeFocusRow}
               services={services}

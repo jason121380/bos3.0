@@ -3,9 +3,10 @@
 // - 改價格、數量（非數字視為 0）；鎖價商品的價格不能改；第三方卡券顯示扣完後業績，選／清卡券後送出
 // - 清除此列（只有一列時清成空白列、不送出）、刪除此列、新增項目
 // - 鍵盤：服務人員 → 商品 → 價格 → 數量 →（店家開第三方卡券）卡券 → 下一列（最後一列自動新增）；聚焦價格／數量時整段選取
+// - 直接點另一列的欄位：游標留在點的欄位（不會被拉回該列的服務人員）
 // - 收合時標題列顯示已填筆數與金額
 // GraphQL 全由模擬 link 回應，不連後端、不改真實帳單。
-import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import {
   setup, pageReady, makeOrder, checkoutAndGetInput, summaryValue, loginForTest, pickEmployee,
   DESIGNER, ASSISTANT, PRODUCT,
@@ -181,6 +182,18 @@ describe('帳單詳細：店販鍵盤操作', () => {
     enter(thirdPartyOf(1))
     await wait(() => expect(productInputs()).toHaveLength(3))
     await focused(sellerOf(2))
+  })
+
+  it('從第 1 列直接點第 2 列的商品、價格欄：游標留在點的欄位（不會被拉回第 2 列的服務人員）', async () => {
+    const page = open()
+    await pageReady(page)
+    act(() => sellerOf(0).focus())
+    act(() => productOf(1).focus())
+    await page.settle()
+    expect(document.activeElement).toBe(productOf(1))
+    act(() => priceOf(0).focus())
+    await page.settle()
+    expect(document.activeElement).toBe(priceOf(0))
   })
 
   it('店家沒開第三方卡券：數量按 Enter 不移動', async () => {

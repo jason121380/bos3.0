@@ -240,6 +240,18 @@ describe('重新開單：服務人員與指定方式', () => {
     expect(input.isDesignate).toBe(false)
   })
 
+  // 焦點在服務人員欄時第一次點「不指定」：原本一律被當成「指定」，要點第二次才生效（coverage wave 1；2026/10/22 Jason 決定修正）
+  it('焦點在服務人員欄時點「不指定」：第一次點就生效，重試送出不指定', async () => {
+    const page = setupQueue({ queue: baseQueue({ isDesignate: true }) })
+    await loaded(page)
+    designerInput().focus()
+    fireEvent.focusIn(designerInput())
+    fireEvent.click(screen.getByTestId('assign-designer-false'))
+    await wait(() => expect(screen.getByTestId('assign-designer-false')).toHaveAttribute('aria-pressed', 'true'))
+    const input = await retry(page.calls)
+    expect(input.isDesignate).toBe(false)
+  })
+
   it('改選服務人員、切換「指定」：重試送出新的服務人員與指定', async () => {
     const page = setupQueue()
     await loaded(page)

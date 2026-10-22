@@ -9,9 +9,8 @@ import useFetchMerchantOrderDetailPrintLayout from 'hooks/useFetchGetMerchantPri
 import idx from 'idx'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import FastCheckOrdersModal from 'components/FastCheckOrdersModal'
-import { handleTidyBill, checkServicesOrders, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
+import { handleTidyBill, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
 import produce from 'immer'
-import ShortcutDialog from '../../components/ShortcutDialog'
 
 import { History, ReceiptText } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -44,10 +43,7 @@ function Header({ forceUpdate, ...rest }) {
     setReset,
     setBill,
     serialNumberUsing,
-    shortBtnDisable,
-    comboActive,
     disablePendingOrder,
-    handleShortcutChange
   } = useContext(billContext)
   const useCreateOrder = useRef(createOrder)
   const stayInCreateOrderInMemory = JSON.parse(
@@ -66,7 +62,6 @@ function Header({ forceUpdate, ...rest }) {
   const [lastOrderStatus, setLastOrderStatus] = useState()
   const [openModal, setOpenModal] = useState(false)
   const [route, setRoute] = useState()
-  const [shortcutModal, setShortcutModal] = useState(false)
 
   useEffect(() => {
     if (!merchantOrderDetailPrintLayoutData.loading) {
@@ -121,18 +116,10 @@ function Header({ forceUpdate, ...rest }) {
   const usehandleCreateOrder = useCallback(() => {
     handleBtnDisabled(true)
     const tmp = handleTidyBill(bill)
-    const checkService = checkServicesOrders(tmp.serviceOrders)
     const checkProduct = checkProductOrders(tmp.productOrders)
     const checkMember = checkMembershipOrders(tmp.membershipOrders)
 
-    if (!checkService.verify) {
-      openSnackbar({
-        message: checkService.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return
-    } else if (!checkProduct.verify) {
+    if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
         variant: "error",
@@ -198,17 +185,9 @@ function Header({ forceUpdate, ...rest }) {
     setCheckoutBtn(true);
     setOpen(true)
     const tmp = handleTidyBill(bill)
-    const checkService = checkServicesOrders(tmp.serviceOrders)
     const checkProduct = checkProductOrders(tmp.productOrders)
     const checkMember = checkMembershipOrders(tmp.membershipOrders)
-    if (!checkService.verify) {
-      openSnackbar({
-        message: checkService.message,
-        variant: "error",
-      });
-      handleBtnDisabled(false)
-      return
-    } else if (!checkProduct.verify) {
+    if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
         variant: "error",
@@ -290,10 +269,6 @@ function Header({ forceUpdate, ...rest }) {
 
   // 移除座位開單相關功能函式
 
-  const shortCutClose = () => {
-    setShortcutModal(false)
-  }
-
   const actionDisabled = valid || checkoutBtn || isClick || checkoutBtnClick
   // 按鈕停用時說明原因，不讓使用者猜：缺什麼（與上面的 valid 同一組條件，見 orderRequirements.js）或處理中
   const missing = getMissingForOrder(bill)
@@ -372,7 +347,6 @@ function Header({ forceUpdate, ...rest }) {
           getHelperForPrint={getHelperForPrint}
         />
       )}
-      <ShortcutDialog open={shortcutModal} handleOnClose={shortCutClose} handleShortcutChange={handleShortcutChange} />
     </Fragment>
   );
 }

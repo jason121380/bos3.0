@@ -72,6 +72,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
       cellphone: customer.cellphone,
       customerId: customer.customerId,
       name: customer.name,
+      // 顧客沒填性別（null）時顯示並送出「未知」，與初始值相同（原本變成空字串：下拉沒有對應選項、送出空白）
+      gender: customer.gender || 'UNKNOWN',
     })
   }, [customer])
 
@@ -98,6 +100,14 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
       updateCustomer({ input: { ...newValues, birthday: birthdayObj } })
         .then(() => {
           openSnackbar({ variant: 'success', message: '成功更新顧客資訊' })
+          // 先清空再指回同一位顧客：頁首依顧客 id 重新查詢，顯示更新後的姓名（原本在送出當下就清空，
+          // 失敗時帳單的顧客就此被清掉；改成成功後才做，兩次更新在 Promise 回呼中各自渲染一次）
+          setBill(
+            produce(draft => {
+              draft.customerId = null
+              draft.customerCellphone = ''
+            })
+          )
           setBill(
             produce(draft => {
               draft.customerId = values.customerId
@@ -109,12 +119,6 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
         .catch(error => {
           openSnackbar({ message: error.message, variant: 'error' })
         })
-      setBill(
-        produce(draft => {
-          draft.customerId = null
-          draft.customerCellphone = ''
-        })
-      )
     } else {
       const newValues = cloneDeep(values)
       delete newValues.customerId
@@ -133,6 +137,13 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               name: res.data.addCustomer.name,
               gender: res.data.addCustomer.gender,
             })
+            // 新顧客直接帶進帳單（與只輸入手機的快速新增相同，見 Head handleOpenAddCustomerModal）
+            setBill(
+              produce(draft => {
+                draft.customerId = res.data.addCustomer.id
+                draft.customerCellphone = ''
+              })
+            )
             openSnackbar({
               message: '成功新增客戶',
               variant: 'success',
@@ -473,7 +484,6 @@ AddCustomerModal.propTypes = {
 
 AddCustomerModal.defaultProps = {
   open: false,
-  onClose: () => { },
 }
 
 export default AddCustomerModal

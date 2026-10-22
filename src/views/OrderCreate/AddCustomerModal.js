@@ -24,7 +24,7 @@ import { GENDER_OPTIONS, makeFieldChange, makeBirthdayChange } from 'views/Order
 import { Autocomplete } from 'ui/combobox'
 
 
-function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, customerInModal }) {
+function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, customerInModal, onCustomerAdded }) {
   const lastCustomerNo = useFetchGetLastCustomerNo()
   const inputLabel = React.useRef()
   const noRef = React.useRef()
@@ -92,6 +92,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
       cellphone: customer.cellphone,
       customerId: customer.customerId,
       name: customer.name,
+      // 顧客沒有性別資料（null）時與新增時相同視為「未知」，不顯示空白、也不送出空字串
+      gender: customer.gender || 'UNKNOWN',
     })
   }, [customer])
 
@@ -136,6 +138,13 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
       }).catch(error => {
         openSnackbar({ variant: 'error', message: error.message })
         setQuickAddCustomer(false)
+        // 更新失敗：把下方先清掉的顧客帶回帳單（原本失敗時帳單的顧客被悄悄清空）
+        setBill(
+          produce(draft => {
+            draft.customerId = values.customerId
+            draft.customerCellphone = ''
+          })
+        )
       })
       setBill(
         produce(draft => {
@@ -163,6 +172,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
             message: '成功新增客戶',
             variant: 'success',
           })
+          // 新增成功後帳單帶入這位新顧客（與只輸入手機時的快速建檔相同；原本新增完帳單仍沒有顧客）
+          onCustomerAdded && onCustomerAdded(res.data.addCustomer)
           onClose()
           setCustomer({
             customerId: '',
@@ -257,7 +268,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
       return ''
     } else {
       const newOption = customerInModal.find(d => d.userId !== null && d.userId === id)
-      return newOption.userName
+      // 偏好設計師不在可打單人員中（例如已離職）時顯示空白，不讓整頁出錯
+      return newOption ? newOption.userName : ''
     }
   }
   // 固定同一個函式參照：原本每次 render 都是新函式，每次 focus 都多掛一個 keydown 監聽且移除不掉
@@ -596,12 +608,12 @@ AddCustomerModal.propTypes = {
   className: PropTypes.string,
   customer: PropTypes.any,
   onClose: PropTypes.func,
+  onCustomerAdded: PropTypes.func,
   open: PropTypes.bool,
 }
 
 AddCustomerModal.defaultProps = {
   open: false,
-  onClose: () => { },
 }
 
 export default AddCustomerModal

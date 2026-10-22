@@ -117,6 +117,59 @@ describe('重新開單：扣入金', () => {
   })
 })
 
+// 換顧客時扣入金清空（2026/10/22 Jason：換顧客要清空）。原本清空的程式在扣入金欄元件裡，但沒有顧客時那個元件不顯示，
+// 清除顧客或改輸入新手機時清空不會執行，原顧客的扣入金照樣送出（coverage wave 1）
+describe('重新開單：清除顧客或改輸入新手機時扣入金清空', () => {
+  const customerInput = () => screen.getByPlaceholderText('顧客姓名/手機號碼/編號')
+  const queuedWithWallet = () => withCustomer({ walletPay: 300 })
+
+  it('改輸入新手機：扣入金歸 0，重試送出的扣入金為 0', async () => {
+    const page = setupQueue({ queue: queuedWithWallet(), customerWallet: { customerWallet: 1000 } })
+    await loaded(page)
+    await wait(() => expect(summaryValue('扣入金')).toHaveTextContent('300'))
+    fireEvent.focusIn(customerInput())
+    fireEvent.change(customerInput(), { target: { value: '0933000111' } })
+    fireEvent.keyDown(customerInput(), { key: 'Enter', keyCode: 13 })
+    await wait(() => expect(summaryValue('扣入金')).toHaveTextContent(/^0$/))
+    expect(summaryValue('現金應收')).toHaveTextContent('800')
+    const input = await retry(page.calls)
+    expect(input.customerId).toBeUndefined()
+    expect(input.customerCellphone).toBe('0933000111')
+    expect(input.walletPay).toBe(0)
+  })
+
+  it('清除顧客：扣入金歸 0（之後再輸入手機，送出的扣入金也是 0）', async () => {
+    const page = setupQueue({ queue: queuedWithWallet(), customerWallet: { customerWallet: 1000 } })
+    await loaded(page)
+    await wait(() => expect(customerInput().value).toContain('陳小姐'))
+    await wait(() => expect(summaryValue('扣入金')).toHaveTextContent('300'))
+    fireEvent.focusIn(customerInput())
+    fireEvent.mouseDown(customerInput().parentElement.querySelector('[aria-label="清除"]'))
+    await wait(() => expect(customerInput()).toHaveValue(''))
+    await wait(() => expect(summaryValue('扣入金')).toHaveTextContent(/^0$/))
+    fireEvent.change(customerInput(), { target: { value: '0933000222' } })
+    fireEvent.keyDown(customerInput(), { key: 'Enter', keyCode: 13 })
+    const input = await retry(page.calls)
+    expect(input.walletPay).toBe(0)
+  })
+
+  it('原顧客不變（含編輯顧客資料儲存後）：佇列帶入的扣入金照原值送出', async () => {
+    const page = setupQueue({
+      queue: queuedWithWallet(), customerWallet: { customerWallet: 1000 }, SET_CUSTOMER: { updateCustomer: true },
+    })
+    await loaded(page)
+    await wait(() => expect(customerInput().value).toContain('陳小姐'))
+    fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
+    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
+    await wait(() => expect(screen.queryByText('編輯客戶資料')).toBeNull())
+    await page.settle()
+    expect(summaryValue('扣入金')).toHaveTextContent('300')
+    const input = await retry(page.calls)
+    expect(input.walletPay).toBe(300)
+  })
+})
+
 describe('重新開單：項目金額減少', () => {
   it('項目金額減到比扣入金與其他付款還少時，扣入金、其他付款、點數折抵一起歸 0', async () => {
     const page = setupQueue({

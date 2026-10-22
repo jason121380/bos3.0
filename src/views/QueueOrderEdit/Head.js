@@ -30,7 +30,7 @@ const designate = [
 
 export default function Head() {
   const {
-    bill, handleBillChange, setBill, setFocus, focus, setEmployeeAlready, LBCusDisplay,
+    bill, handleBillChange, setBill, setFocus, setEmployeeAlready, setCustomerAlready, LBCusDisplay,
     isLineBinded, setIsLineBinded,
   } = useContext(billContext)
   const [openModal, setOpenModal] = useState(false)
@@ -80,6 +80,12 @@ export default function Head() {
 
   // customer autocomplte query return data options
   const options = idx(customers, _ => _.data.customers.customers) || []
+  // 顧客清單載入完成：「重試」的資料載入判斷（index.js enable）才算客資已就緒（比照帳單詳細 OrderEdit/Head）
+  useEffect(() => {
+    if (!customers.loading) {
+      setCustomerAlready(!customers.loading)
+    }
+  }, [customers.loading, setCustomerAlready])
   // 儲存會員卡
   useEffect(() => {
     if (!customerData.loading) {
@@ -106,7 +112,7 @@ export default function Head() {
         setMembershipPurchase(tmp)
       }
     }
-  }, [customerData.loading, setIsLineBinded])
+  }, [customerData.loading, customerData.data, setIsLineBinded])
 
   // delay send query customers
   useEffect(() => {
@@ -141,9 +147,10 @@ export default function Head() {
     }
   }
 
+  // 依點的項目設定指定／不指定。原本焦點在服務人員欄時一律設成「指定」，第一次點「不指定」不生效（coverage wave 1，2026/10/22 Jason 決定修正）
   const handleToggleButtonChange = (_event, state) => {
     state !== null &&
-      handleBillChange({ key: 'isDesignate', value: focus === 'designer' ? true : state })
+      handleBillChange({ key: 'isDesignate', value: state })
     setFocus('')
   }
   // 不留客資 button
@@ -231,18 +238,20 @@ export default function Head() {
       })
     }
   }
+  // 編輯顧客儲存成功：重新查詢顧客資料，顧客欄（上方 effect 依查詢結果更新）與之後再開的編輯彈窗顯示更新後的資料。
+  // 原本靠「按儲存時先清掉帳單的顧客、成功後放回」觸發重新查詢，更新失敗時帳單就沒有顧客（coverage wave 1，2026/10/22）。
+  // 重新查詢失敗時 errorLink 已提示，顧客欄維持原本顯示
+  const handleCustomerUpdated = () => {
+    customerData.refetch().catch(() => {})
+  }
   // 取消 modal button
   const handleEditClose = () => {
     setOpenModal(false)
   }
 
   const handleFocus = event => {
-    let setted = false
-    if (!setted) {
-      setFocus(event.target.name)
-      setted = true
-      event.target.focus()
-    }
+    setFocus(event.target.name)
+    event.target.focus()
   }
 
   const handleDesignateBtnKeyDown = e => {
@@ -344,8 +353,8 @@ export default function Head() {
                       )
                       setValue(newValue)
                       designerRef.current.focus()
-                      // press clear button
-                    } else if (newValue === null) {
+                      // press clear button（newValue === null）
+                    } else {
                       setBill(
                         produce(draft => {
                           draft.customerId = undefined
@@ -498,6 +507,7 @@ export default function Head() {
           customer={customer}
           setCustomer={setCustomer}
           setBill={setBill}
+          onCustomerUpdated={handleCustomerUpdated}
         />
       )}
     </Card>

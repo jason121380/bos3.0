@@ -4,8 +4,7 @@ import { RowIconButton, AddRowButton } from './RowAction'
 import TicketAutoComplete from 'components/TicketAutoComplete'
 import idx from 'idx'
 import cloneDeep from 'lodash/cloneDeep'
-import { Fragment, useEffect, useRef, useState, useContext } from 'react'
-import billContext from 'context/keyInContext'
+import { Fragment, useEffect, useRef, useState } from 'react'
 
 const styles = {
   couponSells: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
@@ -29,16 +28,13 @@ export default function CouponSells({
   focusRow,
   handleOpenCouponModal,
   setFocusRow,
-  getData
 }) {
-  const { setCouponAlready } = useContext(billContext)
   const [focus, setFocus] = useState('')
   const couponRef = useRef()
   const availableCountRef = useRef()
   const priceRef = useRef()
   const countRef = useRef()
   const remarkRef = useRef()
-  const checkboxRef = useRef()
 
   useEffect(() => {
     if (expanded && focusFirstField) {
@@ -64,21 +60,14 @@ export default function CouponSells({
       case 'remark':
         idx(remarkRef, _ => _.current.focus())
         break
-      case 'checkbox':
-        idx(checkboxRef, _ => _.current.focus())
-        break
       default:
         break
     }
   }, [focus])
 
   const handleFocus = event => {
-    let setted = false
-    if (!setted) {
-      setFocus(event.target.name)
-      setted = true
-      event.target.focus()
-    }
+    setFocus(event.target.name)
+    event.target.focus()
     if (event.target.name === 'price' || event.target.name === 'availableCount') {
       event.target.select()
     }
@@ -106,8 +95,6 @@ export default function CouponSells({
             autoFocus={focus === 'coupon'}
             onFocus={handleFocus}
             isLaunched
-            setCouponAlready={setCouponAlready}
-            getData={getData}
             onKeyDown={event => {
               if (couponSell.isLocked !== 'FALSE') {
                 handleKeyDown({ event, nextField: "count" })
@@ -154,7 +141,6 @@ export default function CouponSells({
                   const newCouponSell = cloneDeep(couponSell)
                   newCouponSell.availableCount = idx(event, _ => +_.target.value || 1)
                   onChange({ index, value: newCouponSell })
-                  if (event.keyCode === 13) setFocus('availableCount')
                 }}
                 disabled={!!(couponSell.isLocked === 'TRUE' || couponSell.isLocked === 'UNSET')}
               />
@@ -172,7 +158,6 @@ export default function CouponSells({
                   const newCouponSell = cloneDeep(couponSell)
                   newCouponSell.price = idx(event, _ => +_.target.value || 0)
                   onChange({ index, value: newCouponSell })
-                  if (event.keyCode === 13) setFocus('count')
                 }}
                 disabled={!!(couponSell.isLocked === 'TRUE' || couponSell.isLocked === 'UNSET')}
               />
@@ -190,7 +175,6 @@ export default function CouponSells({
                   const newCouponSell = cloneDeep(couponSell)
                   newCouponSell.count = idx(event, _ => +_.target.value || 1)
                   onChange({ index, value: newCouponSell })
-                  if (event.keyCode === 13) setFocus('remark')
                 }}
               />
             </Field>

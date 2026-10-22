@@ -58,14 +58,11 @@ export default function Services({
 
 
   useEffect(() => {
-    if (setServiceDetailAlready !== undefined) {
-      setServiceDetailAlready(!serviceDetail.loading)
-    }
+    setServiceDetailAlready(!serviceDetail.loading)
   }, [setServiceDetailAlready]);
   useEffect(() => {
     if (expanded && focusFirstField && bill.serviceOrders.length === index && bill.designerId) {
       idx(serviceRef, _ => _.current.focus())
-    } else {
     }
   }, [expanded, focusFirstField])
 
@@ -104,6 +101,8 @@ export default function Services({
         newHelper.forEach(data2 => {
           if (data.type === data2.type && data.helperDeductiontype === data2.helperDeductiontype) {
             data2.helperId = data.helperId
+            // 「指定」與助理一起依名額類型帶回（上方依位置對應時，只填第二個名額的帳單會漏掉指定）
+            data2.isDesignate = data.isDesignate ?? data2.isDesignate
           }
         })
       })
@@ -234,12 +233,8 @@ export default function Services({
   }, [focus, focusRow])
 
   const handleFocus = event => {
-    let setted = false
-    if (!setted) {
-      setFocus(event.target.name)
-      setted = true
-      event.target.focus()
-    }
+    setFocus(event.target.name)
+    event.target.focus()
     if (event.target.name === 'price') {
       event.target.select()
     }
@@ -262,7 +257,8 @@ export default function Services({
         // 其他值不處理（與原本沒有 default 時相同）
         break
     }
-  }, [service])
+    // 店家的卡券鎖定設定比帳單服務晚到時，設定到了也要重算（UNSET 依店家設定）
+  }, [service, bindedThirdPart.service])
   return (
     <Fragment>
       <div className="mb-6 flex flex-wrap items-end justify-start gap-y-[12px]">
@@ -382,14 +378,6 @@ export default function Services({
                       } else if (event.key === 'Enter' && idx + 1 < helper.length) {
                         setFocus(helper[idx + 1].type)
                         helperRefs[idx + 1].current.focus()
-                      } else if (
-                        event.key === 'Enter' &&
-                        idx + 1 === helper.length &&
-                        isHelperDesignation &&
-                        thirdPartTicket
-                      ) {
-                        setFocus('thirdParty')
-                        thirdPartyRef.current.focus()
                       } else if (
                         event.key === 'Enter' &&
                         idx + 1 === helper.length &&

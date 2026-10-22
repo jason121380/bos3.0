@@ -199,6 +199,16 @@ describe('掛單詳細：服務人員、指定方式與帳單日期', () => {
     expect(input.isDesignate).toBe(false)
   })
 
+  it('焦點在服務人員時直接點「不指定」：第一下就是不指定', async () => {
+    const page = await ready(setupDraft())
+    act(() => designerInput().focus())
+    fireEvent.focus(designerInput())
+    fireEvent.click(screen.getByTestId('assign-designer-false'))
+    await wait(() => expect(screen.getByTestId('assign-designer-false')).toHaveAttribute('aria-pressed', 'true'))
+    const input = await saveDraft(page.calls)
+    expect(input.isDesignate).toBe(false)
+  })
+
   it('服務人員 Enter 跳到目前的指定方式；指定方式 Enter 跳到服務項目', async () => {
     await ready(setupDraft())
     act(() => designerInput().focus())
@@ -250,11 +260,12 @@ describe('掛單詳細：新增顧客', () => {
   }
   const input = (modal, name) => modal.querySelector(`input[name="${name}"]`)
 
-  it('不留客資的掛單：取消不留客資後按「新增顧客」，填姓名與電話新增；送出姓名、電話、性別、生日', async () => {
+  it('不留客資的掛單：取消不留客資後按「新增顧客」，填姓名與電話新增；送出姓名、電話、性別、生日，新顧客帶入掛單', async () => {
     const page = await ready(
       setupDraft({
         FETCH_ADD_CUSTOMER: { addCustomer: { id: 'customer-new', name: '張小姐', gender: 'FEMALE', birthday: { year: '85', month: '3', day: '4' } } },
         FETCH_USERS: { users: { users: [{ id: DESIGNER.userId, name: DESIGNER.userName }] } },
+        otherCustomers: { 'customer-new': customerDetail({ id: 'customer-new', no: 'C100', name: '張小姐', cellphone: '0966777888' }) },
       })
     )
     fireEvent.click(screen.getByLabelText('不留客資'))
@@ -285,6 +296,10 @@ describe('掛單詳細：新增顧客', () => {
     expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')[0].variables.input.customerId).toBeUndefined()
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'success', message: '成功新增客戶' })))
     await wait(() => expect(screen.queryByText('新增客戶')).toBeNull())
+    // 新增成功的顧客帶入掛單（比照只輸入手機的快速新增）
+    await wait(() => expect(customerInput()).toHaveValue('張小姐/0966777888/C100'))
+    const saved = await saveDraft(page.calls)
+    expect(saved).toEqual(expect.objectContaining({ customerId: 'customer-new', withoutCustomerData: false }))
   })
 
   it('客戶編號：輸入後檢查是否重複，重複時提示；清空編號後不再提示', async () => {
@@ -306,9 +321,8 @@ describe('掛單詳細：新增顧客', () => {
     await wait(() => expect(screen.queryByText('新增客戶')).toBeNull())
   })
 
-  // 註：建立後掛單改指向新顧客，會讓「使用預收卡」區塊掛載並重抓帳單，整張掛單被重設回原內容（已回報為 bug，見交接報告），
-  // 這裡只驗證到「建立顧客、改指向新顧客、開啟編輯窗」為止，不驗證之後儲存的內容
-  it('只輸入手機就按「新增顧客」：先以該手機建立顧客，掛單改指向新顧客並開啟這位顧客的編輯窗', async () => {
+  // 建立後掛單改指向新顧客，「使用預收卡」區塊隨之掛上；掛單不會被重設回原內容（另見 DraftOrderEdit.reload.test.js）
+  it('只輸入手機就按「新增顧客」：先以該手機建立顧客，掛單改指向新顧客並開啟這位顧客的編輯窗；儲存送出新顧客', async () => {
     const page = await ready(
       setupDraft({
         FETCH_CUSTOMERS_IN_AUTO_COMPLETE: { customers: { customers: [] } },
@@ -327,6 +341,11 @@ describe('掛單詳細：新增顧客', () => {
     const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
     expect(modal.querySelector('input[name="cellphone"]')).toHaveValue('0911222333')
     await wait(() => expect(callsOf(page.calls, 'FETCH_CUSTOMER_DETAIL').some(c => c.variables.id === 'customer-new')).toBe(true))
+    fireEvent.click(within(modal).getByText('取消', { selector: 'button' }))
+    await wait(() => expect(screen.queryByText('編輯客戶資料')).toBeNull())
+    expect(screen.getByLabelText('不留客資')).not.toBeChecked()
+    const saved = await saveDraft(page.calls)
+    expect(saved).toEqual(expect.objectContaining({ customerId: 'customer-new', withoutCustomerData: false }))
   })
 })
 
@@ -352,6 +371,58 @@ describe('掛單詳細：編輯顧客', () => {
     await wait(() => expect(screen.queryByText('編輯客戶資料')).toBeNull())
     const input = await saveDraft(page.calls)
     expect(input.customerId).toBe(CUSTOMER.id)
+  })
+
+  it('改顧客姓名後儲存成功：頁首重新讀取並顯示新姓名，掛單仍是同一位顧客', async () => {
+    let updated = false
+    const page = await ready(
+      withCustomer(customerDetail(), {
+        SET_CUSTOMER: () => {
+          updated = true
+          return { updateCustomer: true }
+        },
+        FETCH_CUSTOMER_DETAIL: ({ id }) => ({ customer: id === CUSTOMER.id ? customerDetail(updated ? { name: '陳太太' } : {}) : null }),
+      })
+    )
+    await wait(() => expect(customerInput()).toHaveValue('陳小姐/0912345678/C01'))
+    fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
+    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    typeLikeBrowser(modal.querySelector('input[name="name"]'), '陳太太')
+    fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
+    await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))
+    expect(callsOf(page.calls, 'SET_CUSTOMER')[0].variables.input.name).toBe('陳太太')
+    await wait(() => expect(screen.queryByText('編輯客戶資料')).toBeNull())
+    await wait(() => expect(customerInput()).toHaveValue('陳太太/0912345678/C01'))
+    const input = await saveDraft(page.calls)
+    expect(input.customerId).toBe(CUSTOMER.id)
+  })
+
+  it('編輯顧客儲存失敗：掛單的顧客不被清掉，編輯窗留著可再按', async () => {
+    const page = await ready(withCustomer(customerDetail(), { SET_CUSTOMER: new Error('更新失敗') }))
+    await wait(() => expect(customerInput()).toHaveValue('陳小姐/0912345678/C01'))
+    fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
+    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
+    await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))
+    await page.settle()
+    expect(screen.getByText('編輯客戶資料')).toBeInTheDocument()
+    expect(customerInput()).toHaveValue('陳小姐/0912345678/C01')
+    expect(saveButton()).not.toBeDisabled()
+    fireEvent.click(within(modal).getByText('取消', { selector: 'button' }))
+    await wait(() => expect(screen.queryByText('編輯客戶資料')).toBeNull())
+    const input = await saveDraft(page.calls)
+    expect(input.customerId).toBe(CUSTOMER.id)
+  })
+
+  it('顧客沒有性別資料（null）：編輯窗性別顯示「未知」，儲存送出 UNKNOWN', async () => {
+    const page = await ready(withCustomer(customerDetail({ gender: null }), { SET_CUSTOMER: { updateCustomer: true } }))
+    await wait(() => expect(customerInput()).toHaveValue('陳小姐/0912345678/C01'))
+    fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
+    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    expect(selectedLabel(modal.querySelector('#addCustomerModal-gender'))).toBe('未知')
+    fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
+    await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))
+    expect(callsOf(page.calls, 'SET_CUSTOMER')[0].variables.input.gender).toBe('UNKNOWN')
   })
 
   it('顧客資料欄位空白（無偏好設計師、備註、來源、生日、性別）：編輯窗顯示空白；改客戶編號時以這位顧客檢查是否重複', async () => {

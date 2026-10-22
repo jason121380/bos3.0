@@ -34,7 +34,8 @@ it('鎖定中到了解除時間：解除鎖定、清掉記住的日期，帳單�
   await wait(() => expect(localStorage.getItem('lockDate')).toBeNull())
   expect(localStorage.getItem('lockDateTimeStamp')).toBeNull()
   await wait(() => expect(dateInput().value).toContain(format(new Date(), 'yyyy/MM/dd')))
-  // 畫面上的「鎖定日期」勾選應跟著取消：目前仍顯示勾選（checked 讀 localStorage 得到 null，React 視為非受控而不更新），已回報，這裡不斷言
+  // 畫面上的「鎖定日期」勾選跟著取消
+  await wait(() => expect(screen.getByLabelText('鎖定日期')).not.toBeChecked())
   expect(msUntilDailyUnlock).toHaveBeenLastCalledWith(expect.any(Date), false)
 })
 

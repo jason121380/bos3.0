@@ -35,7 +35,6 @@ export default function CouponSells({
   const priceRef = useRef()
   const countRef = useRef()
   const remarkRef = useRef()
-  const checkboxRef = useRef()
 
   useEffect(() => {
     if (expanded && focusFirstField) {
@@ -61,21 +60,14 @@ export default function CouponSells({
       case 'remark':
         idx(remarkRef, _ => _.current.focus())
         break
-      case 'checkbox':
-        idx(checkboxRef, _ => _.current.focus())
-        break
       default:
         break
     }
   }, [focus])
 
   const handleFocus = event => {
-    let setted = false
-    if (!setted) {
-      setFocus(event.target.name)
-      setted = true
-      event.target.focus()
-    }
+    setFocus(event.target.name)
+    event.target.focus()
     if (event.target.name === 'price' || event.target.name === 'availableCount') {
       event.target.select()
     }

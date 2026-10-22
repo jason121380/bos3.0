@@ -6,7 +6,7 @@ import useFetchTicketRecords from 'hooks/useFetchTicketRecords'
 import useToggle from 'hooks/useToggle'
 import idx from 'idx'
 import { useHistory, useLocation } from 'react-router'
-import { handleTidyBill, checkServicesOrders, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
+import { handleTidyBill, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
 import produce from 'immer'
 import giveBonus from 'helper/giveBonus'
 import { getMissingForDraftOrder } from './draftOrderRequirements'
@@ -51,18 +51,11 @@ export default function useDraftCheckout({ passwordData }) {
     setIsClick(true)
     setIsRecheckoutOrders(true)
     const tmp = handleTidyBill(bill)
-    const checkService = checkServicesOrders(tmp.serviceOrders)
+    // 不檢查服務：bill.serviceOrders 寫入前一律 filter(d => d.serviceId)，checkServicesOrders 不會不通過
     const checkProduct = checkProductOrders(tmp.productOrders)
     const checkMember = checkMembershipOrders(tmp.membershipOrders)
 
-    if (!checkService.verify) {
-      openSnackbar({
-        message: checkService.message,
-        variant: "error",
-      });
-      setIsClick(false)
-      setIsRecheckoutOrders(false)
-    } else if (!checkProduct.verify) {
+    if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
         variant: "error",
@@ -92,7 +85,7 @@ export default function useDraftCheckout({ passwordData }) {
           })
           history.push(
             `/management/${location.search.length > 0
-              ? `orders?startDate=${location.search.split('=').substring(0, 13)}&endDate=${location.search.split('=')[1]
+              ? `orders?startDate=${location.search.split('=')[1].substring(0, 13)}&endDate=${location.search.split('=')[2]
               }`
               : 'orders'
             }`
@@ -117,19 +110,11 @@ export default function useDraftCheckout({ passwordData }) {
     setIsRecheckoutOrders(true)
     setOpen(true)
     const tmp = handleTidyBill(bill)
-    const checkService = checkServicesOrders(tmp.serviceOrders)
+    // 不檢查服務：理由同 handleReCheckoutOrder
     const checkProduct = checkProductOrders(tmp.productOrders)
     const checkMember = checkMembershipOrders(tmp.membershipOrders)
 
-    if (!checkService.verify) {
-      openSnackbar({
-        message: checkService.message,
-        variant: "error",
-      });
-      setIsClick(false)
-      setIsRecheckoutOrders(false)
-      setOpen(false)
-    } else if (!checkProduct.verify) {
+    if (!checkProduct.verify) {
       openSnackbar({
         message: checkProduct.message,
         variant: "error",
@@ -266,10 +251,9 @@ export default function useDraftCheckout({ passwordData }) {
         : 0
   ) ?? 0
 
+  // 只在店家設了重新結帳密碼（disableRecheckoutOrders）時由 Footer 與 F9 呼叫
   const handleOpenReCheckout = () => {
-    if (disableRecheckoutOrders) {
-      setOpenDialog(true)
-    }
+    setOpenDialog(true)
   }
 
   const handleCloseDialog = () => {
@@ -328,7 +312,8 @@ export default function useDraftCheckout({ passwordData }) {
     serviceTotalPriceWithoutThirdPartyCoupon, productTotalPriceWithoutThirdPartyCoupon,
     couponSellPrice, membershipTotalPriceWithoutThirdPartyCoupon, bill.walletPay,
     bill.amountByOtherPay, bill.bonusDecount, bill.customerId, bonusRewardWithLINE,
-    isLineBinded, setBill
+    // 給點設定可能比帳單晚回來，回來後也要重新計算
+    isLineBinded, setBill, bonusSetting
   ])
 
   // 金額彙總：各數值的運算式與舊版相同，只加千分位與新版樣式。

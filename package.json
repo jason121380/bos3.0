@@ -150,28 +150,28 @@
         "lines": 100
       },
       "./src/views/OrderCreate/": {
-        "statements": 95,
-        "branches": 93,
-        "functions": 94,
-        "lines": 96
+        "statements": 99,
+        "branches": 99,
+        "functions": 100,
+        "lines": 99
       },
       "./src/views/OrderEdit/": {
-        "statements": 97,
-        "branches": 97,
-        "functions": 95,
-        "lines": 97
+        "statements": 99,
+        "branches": 99,
+        "functions": 99,
+        "lines": 99
       },
       "./src/views/DraftOrderEdit/": {
-        "statements": 95,
-        "branches": 96,
-        "functions": 95,
-        "lines": 95
+        "statements": 99,
+        "branches": 99,
+        "functions": 99,
+        "lines": 99
       },
       "./src/views/QueueOrderEdit/": {
-        "statements": 96,
-        "branches": 95,
-        "functions": 95,
-        "lines": 96
+        "statements": 99,
+        "branches": 99,
+        "functions": 99,
+        "lines": 99
       }
     },
     "coverageReporters": [

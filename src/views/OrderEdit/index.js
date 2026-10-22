@@ -1,6 +1,5 @@
 import Page from 'components/Page'
 import { Provider } from 'context/keyInContext'
-import useFetchCreateOrder from 'hooks/useFetchCreateOrder'
 import useFetchOrder from 'hooks/useFetchOrder'
 import produce from 'immer'
 import { useState, useRef, useEffect } from 'react'
@@ -19,17 +18,18 @@ import Footer from './Footer'
 import Head from './Head'
 import Header from './Header'
 import Pannel from './Pannel'
+import useOncePerOrder from './useOncePerOrder'
 
 export default function KeyIn({ match }) {
   const onceRef = useRef(true)
   const order = useFetchOrder({ id: match.params.id })
+  const isFirstLoad = useOncePerOrder()
   const getSerialNumberUsing = useFetchGetSerialNumberUsing()
   const getIsBonusRewardWithLine = useFetchGetIsBonusRewardWithLine()
   const [focus, setFocus] = useState('customer')
   const [thirdPartyCoupons, setThirdPartyCoupons] = useState([])
   const thirdPartyCouponsData = useFetchTHirdPartys()
   const getIsLBCusDisplay = useFetchGetIsLBCusDisplay()
-  const { checkOrder } = useFetchCreateOrder()
   const [orderStatus, serOrderStatus] = useState('')
   const [orderSetting, setOrderSetting] = useState({
     orderId: '',
@@ -144,7 +144,8 @@ export default function KeyIn({ match }) {
     }
   }, [thirdPartyCouponsData.loading])
   useEffect(() => {
-    if (!order.loading) {
+    // 同一張帳單只帶入一次：之後重新查詢（loading 再變回 false）不再把原帳單蓋回櫃檯改過的內容（見 useOncePerOrder）
+    if (!order.loading && isFirstLoad(match.params.id)) {
       setOrderSetting(
         produce(draft => {
           draft.orderId = order.data.order.id
@@ -224,29 +225,13 @@ export default function KeyIn({ match }) {
       })
 
     }
-  }, [order.loading])
+  }, [order.loading, isFirstLoad, match.params.id])
   const handleBillChange = ({ value, key }) => {
     setBill(prev => ({
       ...prev,
       [key]: value,
     }))
   }
-  const useCheckOrderRef = useRef(checkOrder)
-
-  useEffect(() => {
-    if (bill.designerId) {
-      const serviceOrdersNoIsLocked = bill.serviceOrders.map(
-        ({ isLocked, thirdPartyPayName, ...keep }) => keep
-      )
-      bill.serviceOrders = serviceOrdersNoIsLocked
-      const productOrdersNoIsLocked = bill.productOrders.map(({ isLocked, ...keep }) => keep)
-      bill.productOrders = productOrdersNoIsLocked
-      const ticketOrdersNoIsLocked = bill.ticketOrders.map(({ isLocked, ...keep }) => keep)
-      bill.ticketOrders = ticketOrdersNoIsLocked
-      useCheckOrderRef.current(bill)
-    }
-  }, [])
-
   useEffect(() => {
     if (!getBonusRewardRule.loading) {
       const data = idx(getBonusRewardRule, _ => _.data.getParameterAboutSettingFunction.bonusRewardRule)
@@ -374,7 +359,7 @@ export default function KeyIn({ match }) {
       sellerId: data.sellerId,
       membershipUUID: data.membershipUUID,
       price: data.price,
-      expiryDate: data.expiryDate === NaN || data.expiryDate === 'Invalid Date' || data.expiryDate === "Early Date" ||data.expiryDate === "Late Date"?'Invalid Date':data.expiryDate,
+      expiryDate: data.expiryDate,
       thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
       remark: data.remark,
     }))

@@ -69,19 +69,18 @@ export default function MerchantSells({
   }, [focus])
 
   useEffect(() => {
-    if (expanded && focusFirstField) {
+    // 新增列、展開區塊、從上一列按 Enter 移過來時游標跳到服務人員；使用者自己點了這一列的欄位（焦點已在本列欄位上）時不搶焦點
+    const fieldFocused = [employeeRef, productRef, priceRef, countRef, thirdPartyRef]
+      .some(ref => ref.current && ref.current === document.activeElement)
+    if (expanded && focusFirstField && !fieldFocused) {
       idx(employeeRef, _ => _.current.focus())
       setFocus('employee')
     }
   }, [expanded, focusFirstField])
 
   const handleFocus = ({ event, field }) => {
-    let setted = false
-    if (!setted) {
-      setFocus(field)
-      setted = true
-      event.target.focus()
-    }
+    setFocus(field)
+    event.target.focus()
     if (field === 'price' || field === 'count') {
       event.target.select()
     }

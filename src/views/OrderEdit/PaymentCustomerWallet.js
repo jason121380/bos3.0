@@ -8,12 +8,11 @@ import useFetchGetMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities
 import { roleSectionAuthority, hasPageAuthority } from 'helper/rolePageAuthority'
 import idx from 'idx'
 import React from 'react'
-import produce from 'immer'
 import WalletDepositModal from 'views/OrderShared/WalletDepositModal'
 
 
 export default function PaymentCustomerWallet() {
-  const { bill, handleBillChange, order, setBill } = React.useContext(billContext)
+  const { bill, handleBillChange, order } = React.useContext(billContext)
   const [walletPayByOrder, setWalletPayByOrder] = React.useState(0)
   const [openWalletDeposit, setOpenWalletDeposit] = React.useState(false)
   const [identity, setIdentity] = React.useState({
@@ -30,23 +29,12 @@ export default function PaymentCustomerWallet() {
 
   // 可用餘額 = 訂單的walletPay + 顧客剩下的餘額
   const usableCustomerWallet = idx(response, _ => _.data.customerWallet + walletPayByOrder)
+  // 找顧客本身的入金餘額（這個元件只在帳單有顧客時掛載：Payment 依 bill.customerId 決定）
   React.useEffect(() => {
-    // 找顧客本身的入金餘額
-    if (bill.customerId) {
-      useFetchCustomerWalletRef.current({
-        customerId: bill.customerId,
-      })
-    }
-    // 不留客資或新顧客， 就把walletPay的欄位清空
-    if (bill.customerId === undefined) {
-      setBill(
-        produce(draft => {
-          draft.walletPay = 0
-        })
-      )
-      setWalletPayByOrder(0)
-    }
-  }, [bill.customerId, setBill])
+    useFetchCustomerWalletRef.current({
+      customerId: bill.customerId,
+    })
+  }, [bill.customerId])
 
   React.useEffect(() => {
     if (!order.loading) {

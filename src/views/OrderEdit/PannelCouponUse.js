@@ -60,51 +60,9 @@ export default function PannelCouponUse() {
     }
   }, [order.loading, order.data])
 
-  function handleAddCouponUse() {
-    const newCouponUsage = cloneDeep(couponUsage)
-    newCouponUsage.push({
-      // id: uuid(),
-      customerTicketId: '',
-      useTicketOrderHelpers: [],
-    })
-    setCouponUsage(newCouponUsage)
-  }
-  function handleRemoveCouponUse({ index }) {
-    const newCouponUsage = cloneDeep(couponUsage)
-    newCouponUsage.splice(index, 1)
-    setCouponUsage(newCouponUsage)
-  }
   function handleFildChange({ index, value, key }) {
     const newCouponUsage = cloneDeep(couponUsage)
     newCouponUsage[index][key] = value
-    setCouponUsage(newCouponUsage)
-    handleBillChange({
-      key: 'useTicketOrders',
-      value: newCouponUsage
-        .filter(d => d.customerTicketId)
-        .map(data => ({
-          customerTicketId: data.customerTicketId,
-          useTicketOrderHelpers: data.useTicketOrderHelpers,
-        })),
-    })
-  }
-
-  function handleClear({ index }) {
-    let newCouponUsage = cloneDeep(couponUsage)
-    if (newCouponUsage.length === 1) {
-      newCouponUsage = [
-        {
-          // id: uuid(),
-          customerTicketId: '',
-          useTicketOrderHelpers: [],
-        },
-      ]
-    }
-    newCouponUsage[index] = {
-      // id: uuid(),
-      customerTicketId: '',
-      useTicketOrderHelpers: [],
-    }
     setCouponUsage(newCouponUsage)
     handleBillChange({
       key: 'useTicketOrders',
@@ -138,12 +96,7 @@ export default function PannelCouponUse() {
                 couponUsages={couponUsage}
                 key={`pannel-couponuse-${index}`}
                 index={index}
-                addCouponUse={handleAddCouponUse}
-                removeCouponUse={handleRemoveCouponUse}
-                first={index === 0}
-                last={index + 1 === couponUsage.length}
                 onChange={handleFildChange}
-                onClear={handleClear}
               />
             ))}
         </div>

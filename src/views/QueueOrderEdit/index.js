@@ -16,6 +16,7 @@ import Footer from './Footer'
 import Head from './Head'
 import Header from './Header'
 import Pannel from './Pannel'
+import { useClearWalletPayOnCustomerChange } from './PaymentCustomerWallet'
 
 export default function KeyIn({ match }) {
   const onceRef = useRef(true)
@@ -143,26 +144,14 @@ export default function KeyIn({ match }) {
       )
     }
   }, [order.loading])
+  // 換顧客（含清除顧客、改輸入新手機）時清空扣入金；寫在一直顯示的本頁，見 PaymentCustomerWallet
+  useClearWalletPayOnCustomerChange({ bill, order, setBill })
   const handleBillChange = ({ value, key }) => {
     setBill(prev => ({
       ...prev,
       [key]: value,
     }))
   }
-
-  useEffect(() => {
-    if (bill.designerId) {
-      const serviceOrdersNoIsLocked = bill.serviceOrders.map(
-        ({ isLocked, thirdPartyPayName, ...keep }) => keep
-      )
-      bill.serviceOrders = serviceOrdersNoIsLocked
-      const productOrdersNoIsLocked = bill.productOrders.map(({ isLocked, ...keep }) => keep)
-      bill.productOrders = productOrdersNoIsLocked
-      const ticketOrdersNoIsLocked = bill.ticketOrders.map(({ isLocked, ...keep }) => keep)
-      bill.ticketOrders = ticketOrdersNoIsLocked
-      // useCheckOrderRef.current(bill)
-    }
-  }, [])
 
   useEffect(() => {
     if (!getBonusRewardRule.loading) {
@@ -188,6 +177,16 @@ export default function KeyIn({ match }) {
   const [paymentAlready, setPaymentAlready] = useState(false) // 其他付款方式
   const [membershipAlready, setMembershipAlready] = useState(false) // 會員卡販賣
 
+  // 沒有要收的金額（服務、店販、預收卡、會員卡合計為 0，例如只有使用預收卡）時不顯示「其他付款方式」（Pannel 同一算式），
+  // 付款方式清單不會載入、paymentAlready 不會變成 true；這時不必等付款方式清單，視為已載入。
+  // 以目前帳單即時判斷、不寫入 paymentAlready：帳單從空白載入成有金額時，仍要等付款方式清單載入（2026/10/22）
+  const otherPayLimit =
+    bill.serviceOrders.reduce((total, item) => total + item.price, 0) +
+    bill.productOrders.reduce((total, item) => (total = total + item.price * item.count), 0) +
+    bill.ticketOrders.reduce((total, item) => (total = total + item.price * item.count), 0) +
+    bill.membershipOrders.reduce((total, item) => (total = total + item.price), 0)
+  const paymentReady = paymentAlready || (!order.loading && otherPayLimit === 0)
+
   // 重新結帳按鈕是否disabled
   const enable =
     !thirdPartyCouponsData.loading &&
@@ -199,11 +198,11 @@ export default function KeyIn({ match }) {
       thirdPartyAlready &&
       productAlready &&
       couponAlready &&
-      paymentAlready &&
+      paymentReady &&
       membershipAlready &&
       bill.amountByOtherPay === 0
       ? true
-      : paymentAlready
+      : paymentReady
 
 
   return (

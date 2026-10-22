@@ -107,6 +107,22 @@ describe('掛單詳細：服務帶回與修改', () => {
     ])
   })
 
+  it('服務的卡券鎖定為「依店家設定」、店家設定鎖定：設定比服務晚回來時，第三方卡券欄仍停用', async () => {
+    const UNSET_SERVICE = { ...SERVICE, isBindedThirdPartTicketLocked: 'UNSET' }
+    const page = setupDraft(
+      {
+        thirdPartTicket: true,
+        order: makeOrder({ serviceOrders: [serviceOrder(UNSET_SERVICE)] }),
+        GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: {
+          getBindedThirdPartTicketLockedSetting: { service: true, product: false, membership: false },
+        },
+      },
+      { delays: { GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: 300 } }
+    )
+    await pageReady(page)
+    await wait(() => expect(screen.getAllByPlaceholderText('第三方卡券')[0]).toBeDisabled())
+  })
+
   it('第三方卡券：固定手續費顯示扣完後業績，清除卡券後不再送出卡券', async () => {
     const page = setupDraft({ thirdPartTicket: true })
     await pageReady(page)

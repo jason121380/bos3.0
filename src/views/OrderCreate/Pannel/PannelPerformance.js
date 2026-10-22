@@ -13,16 +13,6 @@ function PannelPerformance() {
         ids: bill.useTicketOrders.map(d => d.customerTicketId),
     })
 
-    // 賣卡券先入業績的price array
-    const ticketOrdersWithIntoPerformPriceArray = idx(bill, _ =>
-        _.ticketOrders.map(d => (d.intoPerformanceWhileBuying ? d.price * d.count : 0))
-    )
-    // 賣卡先入業績的價格合計
-    const ticketOrdersWithIntoPerformPrice = ticketOrdersWithIntoPerformPriceArray.reduce(
-        (total, item) => (total = total + item),
-        0
-    )
-
     // 包含第三方卡券的金額總計
     const serviceTotalPrice = bill.serviceOrders
         .map(d => d.price)
@@ -44,12 +34,13 @@ function PannelPerformance() {
         _.data.ticketRecords.data.reduce((total, item) => (total = total + item.price), 0)
     ) ?? 0
 
-    // 業績合計、現金應收：運算式與舊版相同，只是算一次，下方彙總卡與底部固定列共用同一個值
+    // 業績合計、現金應收：運算式與舊版相同，只是算一次，下方彙總卡與底部固定列共用同一個值。
+    // 原本另加「賣卡券先入業績」（intoPerformanceWhileBuying）的金額：打帳單沒有任何地方把它設為 true
+    // （新列、清除、從清單選擇都帶 false），這一項永遠是 0，已移除
     const performanceTotal = Math.round(
         serviceTotalPrice +
         merchantSellTotalPrice +
         couponUsageTotalPrice +
-        ticketOrdersWithIntoPerformPrice +
         merberShipCardTotalPrice
     )
     // 現金應收：與明細彈窗、收據共用 billPaymentSummary（同一公式）

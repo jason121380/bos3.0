@@ -1,8 +1,9 @@
 // 保護帳單詳細的「新增／編輯顧客」彈窗（AddCustomerModal）：
 // - 新增：手機滿 10 碼才能按「新增」；姓名必填（只填手機會提示「姓名與電話為必填」、不送出）；送出帶目前店家、
-//   生日三格與表單內容（不帶顧客 id 與來源），成功提示並關窗；失敗提示原因、彈窗留著
-// - 編輯：送出顧客 id 與改過的欄位（偏好設計師、性別、Email、生日月日…），成功後帳單的顧客重新指向這位顧客；
-//   失敗提示原因、彈窗留著
+//   生日三格與表單內容（不帶顧客 id 與來源），成功提示並關窗、新顧客帶進帳單；失敗提示原因、彈窗留著
+// - 編輯：送出顧客 id 與改過的欄位（偏好設計師、性別、Email、生日月日…；沒填性別的顧客顯示並送出「未知」），
+//   成功後帳單的顧客重新指向這位顧客；
+//   失敗提示原因、彈窗留著，帳單的顧客不變
 // - 客戶編號：輸入後稍候向後端確認是否重複，確認中顯示轉圈、重複時標示「客戶編號重複」、清空後不標示
 // - 標題列顯示最新顧客編號，方便櫃檯編下一號
 // 只渲染彈窗本身（以測試用的外層保管顧客與帳單狀態），GraphQL 全由模擬 link 回應，不建立或修改真實顧客。
@@ -119,6 +120,8 @@ describe('新增顧客', () => {
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '成功新增客戶', variant: 'success' })))
     await wait(() => expect(screen.queryByText('新增客戶')).toBeNull())
     expect(screen.getByTestId('customer')).toHaveTextContent('customer-new')
+    // 新顧客直接帶進帳單（與只輸入手機的快速新增相同）
+    expect(bill()).toEqual({ customerId: 'customer-new', customerCellphone: '' })
   })
 
   it('只填手機沒填姓名：提示「姓名與電話為必填」，不送出', async () => {
@@ -194,14 +197,18 @@ describe('編輯顧客', () => {
     expect(screen.queryByText('編輯客戶資料')).toBeNull()
   })
 
-  it('顧客沒填生日與性別：生日三格空白，儲存時送出空白生日、不拋錯', async () => {
+  it('顧客沒填生日與性別：生日三格空白、性別顯示「未知」，儲存時送出空白生日與未知（UNKNOWN）、不拋錯', async () => {
     const page = renderModal({ ...EXISTING, birthday: null, gender: null })
     await screen.findByText('編輯客戶資料')
     expect(field('year')).toHaveValue('')
     expect(field('month')).toHaveValue('')
+    // 原生下拉的選項值是序號，以選取中的選項文字判斷
+    const gender = modal().querySelector('#orderEditAddCustomer-gender')
+    expect(gender.selectedOptions[0] && gender.selectedOptions[0].textContent).toBe('未知')
     fireEvent.click(within(modal()).getByText('儲存', { selector: 'button' }))
     await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))
     expect(callsOf(page.calls, 'SET_CUSTOMER')[0].variables.input.birthday).toEqual({ year: '', month: '', day: '' })
+    expect(callsOf(page.calls, 'SET_CUSTOMER')[0].variables.input.gender).toBe('UNKNOWN')
   })
 
   it('更新失敗：提示原因，彈窗留著', async () => {
@@ -212,6 +219,8 @@ describe('編輯顧客', () => {
       expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('顧客資料已被刪除') }))
     )
     expect(screen.getByText('編輯客戶資料')).toBeInTheDocument()
+    // 帳單的顧客不變（原本送出當下就先清掉顧客，只有成功才帶回）
+    expect(bill()).toEqual({ customerId: 'before', customerCellphone: '0900' })
   })
 
   it('設計師名單還在載入：偏好設計師顯示載入中，不可選', async () => {

@@ -3,10 +3,9 @@ import billContext from 'context/keyInContext'
 import { useLazyFetchCustomerWallet } from 'hooks/useFetchCustomerWallet'
 import idx from 'idx'
 import React from 'react'
-import produce from 'immer'
 
 export default function PaymentCustomerWallet() {
-  const { bill, handleBillChange, orderDetail, setBill } = React.useContext(billContext)
+  const { bill, handleBillChange, orderDetail } = React.useContext(billContext)
   const [walletPayByOrder, setWalletPayByOrder] = React.useState(0)
   const { fetchCustomerWallet, response } = useLazyFetchCustomerWallet({
     customerId: bill.customerId,
@@ -15,22 +14,11 @@ export default function PaymentCustomerWallet() {
   const useFetchCustomerWalletRef = React.useRef(fetchCustomerWallet)
   const usableCustomerWallet = idx(response, _ => _.data.customerWallet + walletPayByOrder)
   React.useEffect(() => {
-    // 找顧客本身的入金餘額
-    if (bill.customerId) {
-      useFetchCustomerWalletRef.current({
-        customerId: bill.customerId,
-      })
-    }
-    // 不留客資或新顧客， 就把walletPay的欄位清空
-    if (bill.customerId === undefined) {
-      setBill(
-        produce(draft => {
-          draft.walletPay = 0
-        })
-      )
-      setWalletPayByOrder(0)
-    }
-  }, [bill.customerId, setBill])
+    // 找顧客本身的入金餘額（本元件只在有顧客時由 Payment 掛上，bill.customerId 必有值；沒有顧客時已卸載）
+    useFetchCustomerWalletRef.current({
+      customerId: bill.customerId,
+    })
+  }, [bill.customerId])
 
   React.useEffect(() => {
     if (!orderDetail.loading) {

@@ -173,6 +173,19 @@ describe('項目消費：第三方卡券', () => {
     await pickService(SERVICE_UNSET)
     await wait(() => expect(thirdPartyInput()).toBeDisabled())
   })
+
+  it('綁定設定 UNSET、店家設定比服務晚到：設定到了才套用鎖定', async () => {
+    await prepare({
+      GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true },
+      GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: {
+        getBindedThirdPartTicketLockedSetting: { service: true, product: false, membership: false },
+      },
+    }, { delays: { GET_BINDED_THIRD_PART_TICKET_LOCKED_SETTING: 3000 } })
+    await pickService(SERVICE_UNSET)
+    // 設定還沒到：先依預設（不鎖定）
+    expect(thirdPartyInput()).not.toBeDisabled()
+    await wait(() => expect(thirdPartyInput()).toBeDisabled(), { timeout: 5000 })
+  })
 })
 
 describe('項目消費：列操作', () => {

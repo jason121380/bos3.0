@@ -47,14 +47,13 @@ function Services({
   thirdPartTicket,
   bindedThirdPart,
   reset,
-  getData
 }) {
   const techingModeContext = useContext(TeachingModeContext)
   const { teachingMode } = techingModeContext
   const [helper, setHelper] = useState([])
   const [isHelperChange, setIsHelperChange] = useState(false)
   const [getService, serviceDetail] = useLazyFetchServiceNew()
-  const { focus, setFocus, bill, setServiceAlready } = useContext(billContext)
+  const { focus, setFocus, bill } = useContext(billContext)
   const [helperRefs, setHelperRefs] = useState([])
   const [helperDesignateRefs, setHelperDesignateRefs] = useState([])
   const thirdPartyRef = useRef()
@@ -262,12 +261,8 @@ function Services({
   }, [focus])
 
   const handleFocus = event => {
-    let setted = false
-    if (!setted) {
-      setFocus(event.target.name)
-      setted = true
-      event.target.focus()
-    }
+    setFocus(event.target.name)
+    event.target.focus()
     if (event.target.name === 'price') {
       event.target.select()
     }
@@ -296,7 +291,8 @@ function Services({
         // 其他值不處理（與原本沒有 default 時相同）
         break
     }
-  }, [service])
+    // 店家的綁定鎖定設定（bindedThirdPart）可能比服務晚到：設定到了也要重算，否則 UNSET 一直用預設的不鎖定
+  }, [service, bindedThirdPart])
   return (
     <Fragment>
       <div className={styles.service}>
@@ -312,8 +308,6 @@ function Services({
             className={styles.servicesField}
             value={service.serviceId}
             onFieldChange={handleServiceFieldChange}
-            setServiceAlready={setServiceAlready}
-            getData={getData}
             onKeyDown={event => {
               if (event.key === 'Enter' && servicesOnPannel[index].serviceId !== '') {
                 if (!(service.isLocked === 'TRUE' || service.isLocked === 'UNSET')) {
@@ -356,7 +350,7 @@ function Services({
                     if (ticketDisabled) {
                       changeRowFocus(index + 1)
                       setFocus('service')
-                    } else if (!(thirdPartTicket || (ticketDisabled && service.thirdPartyCouponMerchantId))) {
+                    } else if (!thirdPartTicket) {
                       changeRowFocus(index + 1)
                       setFocus('service')
                     } else {
@@ -400,14 +394,6 @@ function Services({
                           } else if (event.key === 'Enter' && helperIdx + 1 < helper.length) {
                             setFocus(helper[helperIdx + 1].type)
                             helperRefs[helperIdx + 1].current.focus()
-                          } else if (
-                            event.key === 'Enter' &&
-                            helperIdx + 1 === helper.length &&
-                            isHelperDesignation &&
-                            thirdPartTicket
-                          ) {
-                            setFocus('thirdParty')
-                            thirdPartyRef.current.focus()
                           } else if (
                             event.key === 'Enter' &&
                             helperIdx + 1 === helper.length &&

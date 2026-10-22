@@ -3,10 +3,11 @@
 //   （業績合計含第三方卡券金額，現金應收扣掉第三方卡券、扣入金、其他付款與紅利折抵），重新結帳送出的內容與原帳單一致
 // - 送出前的檢查：店販缺服務人員／商品、會員卡缺服務人員／會員卡、到期日無效、服務缺項目時擋下並提示原因，不送出
 // - 送出成功後依進來的網址回到正確的列表（訂單列表、帶日期區間的訂單列表、掛單列表、網路訂單）
+// - 送出失敗（儲存、重新結帳）：留在本頁，按鈕恢復可按、可以再送一次
 // - 狀態：待付款也是「重新結帳」、從網路訂單進來（status=edit）只能儲存、從結帳進來（status=checkout）不顯示儲存
 // - F9 快捷鍵：與按下主要按鈕相同（店家開啟重新結帳密碼時先跳密碼視窗）
 // - 付款金額超過應付時（例如改低服務價格），扣入金、其他付款與紅利折抵自動歸零，現金應收不會變負數
-// - 紅利給點規則：依現金應收自動算給點；店家設定「需綁定 LINE 才給點」而顧客沒綁定時不給點
+// - 紅利給點規則：依現金應收自動算給點（規則比帳單晚到也一樣）；店家設定「需綁定 LINE 才給點」而顧客沒綁定時不給點
 // GraphQL 全由模擬 link 回應，不連後端、不改真實帳單。
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
@@ -136,6 +137,27 @@ describe('帳單詳細：送出後回到哪一頁', () => {
     await pageReady(page)
     fireEvent.click(button('儲存'))
     await wait(() => expect(currentLocation()).toBe('/management/weborders'))
+  })
+
+  it('儲存失敗（例如網路中斷）：留在本頁，儲存、掛單、結帳恢復可按，可以再試一次', async () => {
+    const page = setup({ order: withCustomer({ status: '預約成功', isReserved: true }), UpdateOrder: new Error('網路中斷') })
+    await pageReady(page)
+    fireEvent.click(button('儲存'))
+    await wait(() => expect(callsOf(page.calls, 'UpdateOrder')).toHaveLength(1))
+    await wait(() => expect(button('儲存')).not.toBeDisabled())
+    expect(button('掛單')).not.toBeDisabled()
+    expect(screen.getByTestId('checkout')).not.toBeDisabled()
+    expect(currentLocation()).toBe('/order/order-1')
+    fireEvent.click(button('儲存'))
+    await wait(() => expect(callsOf(page.calls, 'UpdateOrder')).toHaveLength(2))
+  })
+
+  it('重新結帳失敗：留在本頁，按鈕恢復可按', async () => {
+    const page = setup({ reCheckoutOrder: new Error('網路中斷') })
+    await pageReady(page)
+    await checkoutAndGetInput(page.calls)
+    await wait(() => expect(screen.getByTestId('checkout')).not.toBeDisabled())
+    expect(currentLocation()).toBe('/order/order-1')
   })
 })
 
@@ -336,6 +358,12 @@ describe('帳單詳細：付款與紅利的自動調整', () => {
   it('店家設定自動給點（每 100 元 1 點）：現金應收改成 900 元，送出給點 9 點', async () => {
     const input = await changePriceAndCheckout(setup({ order: withCustomer(), GET_BONUS_REWARD_RULE: bonusRule }))
     expect(input.bonusDeposit).toBe(9)
+  })
+
+  it('給點規則比帳單晚到（帳單金額先算好）：規則到了照樣依現金應收給點', async () => {
+    const page = setup({ order: withCustomer({ bonusDeposit: 0 }), GET_BONUS_REWARD_RULE: bonusRule }, { delays: { GET_BONUS_REWARD_RULE: 300 } })
+    await pageReady(page)
+    expect((await checkoutAndGetInput(page.calls)).bonusDeposit).toBe(8)
   })
 
   it('限 LINE 綁定才給點：顧客沒綁定 LINE 給 0 點', async () => {

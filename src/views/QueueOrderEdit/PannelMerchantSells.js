@@ -82,21 +82,20 @@ export default function PannelMerchantSells({ thirdPartTicket }) {
     const newSells = cloneDeep(sells)
     newSells[index][key] = value
     setSells(newSells)
-    if (key === 'price' || key === 'count' || key === 'sellerId') {
-      handleBillChange({
-        key: 'productOrders',
-        value: newSells
-          .filter(d => d.count > 0)
-          .map(data => ({
-            sellerId: data.sellerId,
-            productId: data.productId,
-            price: data.price,
-            count: data.count,
-            isLocked: data.isLocked,
-            thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
-          })),
-      })
-    }
+    // 店販列只會改 sellerId、price、count（換商品、卡券走其他 handler），一律同步到帳單
+    handleBillChange({
+      key: 'productOrders',
+      value: newSells
+        .filter(d => d.count > 0)
+        .map(data => ({
+          sellerId: data.sellerId,
+          productId: data.productId,
+          price: data.price,
+          count: data.count,
+          isLocked: data.isLocked,
+          thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
+        })),
+    })
   }
   function handleAddSells() {
     const newSells = cloneDeep(sells)

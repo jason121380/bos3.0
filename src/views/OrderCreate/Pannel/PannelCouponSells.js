@@ -23,7 +23,7 @@ export default function PannelCouponSells({ expanded, onPanelClick, reset }) {
   const techingModeContext = useContext(TeachingModeContext)
   const { teachingMode } = techingModeContext
   const {
-    handleBillChange, couponSells, setCouponSells, tData, setTData, bill
+    handleBillChange, couponSells, setCouponSells, bill
   } = React.useContext(billContext)
   const [couponModalOpen, setCouponModalOpen] = React.useState(false)
   const [conpunInModal, setConpunInModal] = React.useState([])
@@ -39,10 +39,6 @@ export default function PannelCouponSells({ expanded, onPanelClick, reset }) {
   
   const tickets = useFetchTickets(pageSetting)
   const serviceCategoriesData = useFetchServiceCategories()
-
-  const getData = value => {
-    !tData.length && setTData(value)
-  }
 
   React.useEffect(() => {
     if (!tickets.loading && !serviceCategoriesData.loading) {
@@ -108,6 +104,21 @@ export default function PannelCouponSells({ expanded, onPanelClick, reset }) {
     let newCouponSells = cloneDeep(couponSells)
     newCouponSells = newCouponSells.filter((_d, idx) => idx !== index)
     setCouponSells(newCouponSells)
+    // 刪掉的列也要從帳單移除（原本只改畫面，刪掉的卡券仍計入合計並送出）
+    handleBillChange({
+      key: 'ticketOrders',
+      value: newCouponSells
+        .filter(d => d.serviceId)
+        .map(data => ({
+          serviceId: data.serviceId,
+          availableCount: data.availableCount,
+          price: data.price,
+          count: data.count,
+          remark: data.remark,
+          isLocked: data.isLocked,
+          intoPerformanceWhileBuying: data.intoPerformanceWhileBuying,
+        })),
+    })
     setFocusRow(newCouponSells.length - 1)
   }
 
@@ -246,7 +257,6 @@ export default function PannelCouponSells({ expanded, onPanelClick, reset }) {
               changeRowFocus={handleChangeFocusRow}
               handleOpenCouponModal={handleOpenCouponModal}
               setFocusRow={setFocusRow}
-              getData={getData}
             />
           ))}
         </div>

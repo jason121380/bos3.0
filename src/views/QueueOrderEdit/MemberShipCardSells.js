@@ -50,6 +50,8 @@ const MemberShipCardSells = ({
   // 「從清單選擇」彈窗的狀態與清單查詢（OrderShared/useItemPicker，四頁共用）
   const { productsModalOpen, handleOpenProductsModal, modalProps: pickerModalProps } = useMembershipPicker();
   const [dateError, setDateError] = useState('')
+  // 會員卡清單（MemberShipCardAutoComplete 載入後回傳）：佇列帶回的會員卡列沒有有效天數，取消「永久會籍」時從清單查
+  const [membershipOptions, setMembershipOptions] = useState([])
 
   useEffect(() => {
     if (expanded && focusFirstField) {
@@ -59,12 +61,8 @@ const MemberShipCardSells = ({
   }, [expanded, focusFirstField]);
 
   const handleFocus = ({ event, field }) => {
-    let setted = false;
-    if (!setted) {
-      setFocus(field);
-      setted = true;
-      event.target.focus();
-    }
+    setFocus(field);
+    event.target.focus();
     if (field === "price" || field === "count") {
       event.target.select();
     }
@@ -101,29 +99,8 @@ const MemberShipCardSells = ({
     }
   }, [focus]);
 
-  const selectThirdParty = (e) => {
-    if (e !== null) {
-      onCardChange({
-        index,
-        value: {
-          ...sells,
-          thirdPartyCouponMerchantId: e.id,
-        },
-      });
-    } else {
-      onCardChange({
-        index,
-        value: {
-          ...sells,
-          thirdPartyCouponMerchantId: null,
-        },
-      });
-    }
-  };
   const checkMessage = (msg) => {
     switch (msg) {
-      case NaN:
-        return "時間有誤";
       case "invalidDate":
         return "時間有誤";
       case "minDate":
@@ -166,6 +143,7 @@ const MemberShipCardSells = ({
         <Field label="會員卡" required={!!sells.sellerId || !!sells.membershipUUID}>
           <MemberShipCardAutoComplete
             setMembershipAlready={setMembershipAlready}
+            getData={setMembershipOptions}
             className="mr-[12px] flex w-[250px]"
             value={sells.membershipUUID}
             ref={productRef}
@@ -255,15 +233,20 @@ const MemberShipCardSells = ({
                 label="永久會籍"
                 checked={sells.expiryDate === null}
                 onChange={(value) => {
+                  // 取消勾選：到期日＝帳單日＋有效天數（同剛選的卡）。佇列帶回的列沒有有效天數，依會員卡清單查；
+                  // 卡已不在清單時查不到，到期日為無效日期待櫃檯選，重試時提示「會員卡到期日有誤」（coverage wave 1，2026/10/22）。
+                  // 原本的 validDayCount 分支（帳單詳細的已購會員卡）本頁的列不會有，已移除
+                  // 有效天數為 0（終身卡）時沒有可帶的到期日：帳單日當天已早於可選的最早日期，視同查不到，留空待櫃檯選（Codex review PR #265）
+                  const effecitveDay = sells.effecitveDay ?? idx(
+                    membershipOptions.find((d) => d.uuid === sells.membershipUUID),
+                    (_) => _.effecitveDay
+                  );
                   onChange({
                     index,
                     key: "expiryDate",
                     value:
                       sells.expiryDate === null
-                        ? sells.validDayCount === undefined
-                          ? addDays(new Date(bill.date), sells.effecitveDay).getTime()
-                          : sells.validDayCount === null ? addDays(new Date(sells.purchaseDate), sells.effecitveDay).getTime()
-                            : addDays(new Date(sells.purchaseDate), sells.validDayCount).getTime()
+                        ? effecitveDay > 0 ? addDays(new Date(bill.date), effecitveDay).getTime() : NaN
                         : null,
                   });
                 }}

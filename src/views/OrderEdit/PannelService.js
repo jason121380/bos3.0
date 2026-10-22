@@ -13,6 +13,7 @@ import produce from 'immer'
 
 import ServicesModal from 'views/OrderShared/EditServicesModal'
 import Services from './Services'
+import useOncePerOrder from './useOncePerOrder'
 
 
 export default function PannelService({ thirdPartTicket, expanded, setExpanded }) {
@@ -21,6 +22,7 @@ export default function PannelService({ thirdPartTicket, expanded, setExpanded }
     services, setServices, sData, setSData
   } = useContext(billContext)
   const servicesOrder = useFetchServiceOrders({ id: orderId })
+  const isFirstLoad = useOncePerOrder()
   const [focusRow, setFocusRow] = React.useState(0)
 
   const [servicesModalOpen, setServicesModalOpen] = React.useState(false)
@@ -63,12 +65,12 @@ export default function PannelService({ thirdPartTicket, expanded, setExpanded }
 
       setServiceCategories(serviceCategories)
       setServicesInModal(servicesInModal)
-    } else {
     }
   }, [serviceCategoriesData.loading, servicesData.loading])
 
   React.useEffect(() => {
-    if (!servicesOrder.loading) {
+    // 同一張帳單只帶入一次（見 useOncePerOrder）
+    if (!servicesOrder.loading && isFirstLoad(orderId)) {
       const newServices =
         servicesOrder.data.order.serviceOrders.length > 0
           ? servicesOrder.data.order.serviceOrders.map(data => ({
@@ -101,7 +103,7 @@ export default function PannelService({ thirdPartTicket, expanded, setExpanded }
       }
       setServices(newServices)
     }
-  }, [servicesOrder.loading, setExpanded, setServices])
+  }, [servicesOrder.loading, setExpanded, setServices, isFirstLoad, orderId])
   function handleAddService() {
     const newServices = cloneDeep(services)
     newServices.push({
@@ -193,23 +195,6 @@ export default function PannelService({ thirdPartTicket, expanded, setExpanded }
     })
   }
 
-  const handleChange = ({ index, value }) => {
-    const newServices = cloneDeep(services)
-    newServices[index] = value
-    setServices(newServices)
-    handleBillChange({
-      key: 'serviceOrders',
-      value: newServices
-        .filter(d => d.serviceId)
-        .map(d => ({
-          serviceId: d.serviceId,
-          price: d.price,
-          serviceOrderHelpers: d.serviceOrderHelpers.filter(i => i.helperId),
-          isLocked: d.isLocked,
-          isNoCash: d.isNoCash,
-        })),
-    })
-  }
   function handleServiceOnChange({ index, value }) {
     const newServices = cloneDeep(services)
     newServices[index] = value
@@ -322,7 +307,6 @@ export default function PannelService({ thirdPartTicket, expanded, setExpanded }
               onClear={handleClear}
               focusFirstField={index === focusRow}
               expanded={expanded}
-              onChange={handleChange}
               handleOpenServicesModal={handleOpenServicesModal}
               changeRowFocus={handleChangeFocusRow}
               services={services}

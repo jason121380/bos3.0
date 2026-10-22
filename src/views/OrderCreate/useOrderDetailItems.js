@@ -32,7 +32,8 @@ export default function useOrderDetailItems() {
     id: bill.customerId === undefined ? null : bill.customerId,
   })
   const designer = useFetcDesignerInOrderDetail({
-    designerId: bill.designerId === '' || bill.designerId === undefined ? null : bill.designerId,
+    // 明細只在帳單已選服務人員時才能開啟（Header 的 valid），designerId 一定有值
+    designerId: bill.designerId,
   })
 
   const servicesData = useFetchServicesInOrderDetail({})
@@ -81,7 +82,8 @@ export default function useOrderDetailItems() {
 
   useEffect(() => {
     if (!ticketRecordsForOrderLazyData.loading && ticketRecordsForOrderLazyData.data) {
-      const ticketsRecords = bill.customerId ? idx(ticketRecordsForOrderLazyData, _ => _.data.ticketRecordsForOrder) : []
+      // 只有帳單有顧客時才會查（上方 effect），有資料就一定有顧客
+      const ticketsRecords = idx(ticketRecordsForOrderLazyData, _ => _.data.ticketRecordsForOrder)
       const useTicketsArr = []
       for (let i = 0; i < bill.useTicketOrders.length; i++) {
         ticketsRecords.forEach(ticketRecord => {

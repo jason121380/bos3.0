@@ -23,8 +23,7 @@ const styles = {
   otherPaymentDiv: 'flex',
 }
 
-function Payment(props) {
-  const { expanded } = props
+function Payment() {
   const { bill, handleBillChange } = useContext(billContext)
   const [priceRefs, setPriceRefs] = useState([])
 
@@ -52,13 +51,6 @@ function Payment(props) {
     setPriceRefs(Array({ length: bill.payType.length }).map(createRef))
   }, [bill.payType.length])
 
-  useEffect(() => {
-    if (expanded) {
-      setFocus('payType')
-      idx(payTypeRef, _ => _.current.focus())
-    }
-  }, [expanded])
-
   const otherPayLimit =
     bill.serviceOrders
       .map(d => typeof d.thirdPartyCouponMerchantId !== 'string' && d.price)
@@ -78,12 +70,8 @@ function Payment(props) {
   }
 
   const handlePayFocus = event => {
-    let called = false
-    if (!called) {
-      called = true
-      event.target.focus()
-      setFocus(event.target.name)
-    }
+    event.target.focus()
+    setFocus(event.target.name)
   }
 
   const servicesWithThirdPartyCount = []

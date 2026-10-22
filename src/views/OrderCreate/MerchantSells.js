@@ -8,7 +8,6 @@ import idx from 'idx'
 import React, { Fragment, useState, useEffect, useContext } from 'react'
 import TeachingModeContext from 'context/teachingModeContext'
 import { useFetchThirdPartysForCreateOrder } from 'hooks/useFetchMerchant'
-import billContext from 'context/keyInContext'
 
 import ProductsModal from 'views/OrderShared/ProductsModal'
 import { useProductPicker } from 'views/OrderShared/useItemPicker'
@@ -38,10 +37,8 @@ function MerchantSells({
   sells,
   productLength,
   thirdPartTicket,
-  getData
 }) {
   const techingModeContext = useContext(TeachingModeContext)
-  const { setProductAlready } = useContext(billContext)
   const { teachingMode } = techingModeContext
 
   const thirdPartyCouponsData = useFetchThirdPartysForCreateOrder()
@@ -63,12 +60,8 @@ function MerchantSells({
   }, [expanded, focusFirstField])
 
   const handleFocus = ({ event, field }) => {
-    let setted = false
-    if (!setted) {
-      setFocus(field)
-      setted = true
-      event.target.focus()
-    }
+    setFocus(field)
+    event.target.focus()
     if (field === 'price' || field === 'count') {
       event.target.select()
     }
@@ -137,9 +130,7 @@ function MerchantSells({
             autoFocus={focus === 'product'}
             onFocus={event => handleFocus({ event, field: 'product' })}
             onKeyDown={event => handleKeyDown({ event, nextField: 'price' })}
-            getData={getData}
             isPublished
-            setProductAlready={setProductAlready}
             onChange={value => {
               idx(value, _ => {
                 onProductChange({
@@ -235,13 +226,23 @@ function MerchantSells({
               {!thirdPartyCouponsData.loading &&
                 sellsItem.thirdPartyCouponMerchantId &&
                 idx(thirdPartyCouponsData, _ =>
-                  _.merchant.thirdpartyCoupons.map(data => {
+                  // 原本少了 .data（永遠讀不到、不顯示），且一律以百分比計算；改與服務項目（Services.js）相同：
+                  // PERCENT 依百分比扣、其他（固定金額）直接扣手續費
+                  _.data.merchant.thirdpartyCoupons.map(data => {
                     if (data.id === sellsItem.thirdPartyCouponMerchantId) {
-                      return (
-                        <p className={`m-0 ${styles.heading2}`} style={{ marginTop: '4px' }}>
-                          {`扣完後業績:${Math.round((sellsItem.price * (100 - data.fee)) / 100)}`}
-                        </p>
-                      )
+                      if (data.type === 'PERCENT') {
+                        return (
+                          <p className={`m-0 ${styles.heading2}`} key={data.id} style={{ marginTop: '4px' }}>
+                            {`扣完後業績:${Math.round((sellsItem.price * (100 - data.fee)) / 100)}`}
+                          </p>
+                        )
+                      } else {
+                        return (
+                          <p className={`m-0 ${styles.heading2}`} key={data.id} style={{ marginTop: '4px' }}>
+                            {`扣完後業績:${Math.round(sellsItem.price - data.fee)}`}
+                          </p>
+                        )
+                      }
                     }
                     return undefined
                   })

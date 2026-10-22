@@ -40,7 +40,6 @@ export default function CouponSells({
   const priceRef = useRef()
   const countRef = useRef()
   const remarkRef = useRef()
-  const checkboxRef = useRef()
   const { bill, orderId } = React.useContext(billContext)
   useEffect(() => {
     if (expanded && focusFirstField && bill.ticketOrders.length === index) {
@@ -66,21 +65,14 @@ export default function CouponSells({
       case 'remark':
         idx(remarkRef, _ => _.current.focus())
         break
-      case 'checkbox':
-        idx(checkboxRef, _ => _.current.focus())
-        break
       default:
         break
     }
   }, [focus])
 
   const handleFocus = event => {
-    let setted = false
-    if (!setted) {
-      setFocus(event.target.name)
-      setted = true
-      event.target.focus()
-    }
+    setFocus(event.target.name)
+    event.target.focus()
     if (event.target.name === 'price' || event.target.name === 'availableCount') {
       event.target.select()
     }
@@ -113,6 +105,8 @@ export default function CouponSells({
             orderId={orderId}
             onFocus={handleFocus}
             onKeyDown={event => {
+              // 只有 Enter 跳欄（比照帳單詳細 OrderEdit/CouponSells）；打字、退格留在卡券欄
+              if (event.key !== 'Enter') return
               if ((couponSell.isLocked !== 'FALSE' || !isTicketSellingEditable)) {
                 setFocus('remark')
                 idx(remarkRef, _ => _.current.focus())

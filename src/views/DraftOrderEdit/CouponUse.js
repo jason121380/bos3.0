@@ -19,20 +19,15 @@ const styles = {
 
 export default function CouponUse({
   index,
-  first,
-  last,
-  addCouponUse,
-  removeCouponUse,
   couponUsages,
   couponUsage,
-  onClear,
   onChange,
 }) {
   const { bill, orderId } = React.useContext(billContext)
-  // 金額、助理欄位與選卡券／改助理／清除的處理（OrderShared/useCouponUseRow，與帳單詳細／掛單詳細共用）
+  // 金額、助理欄位與選卡券／改助理的處理（OrderShared/useCouponUseRow，與帳單詳細／掛單詳細共用）
   const {
-    price, ticketOrderHelpers, handleCustomerTicketChange, handleAssistantChange, handleClear, displayFloat,
-  } = useCouponUseRow({ index, couponUsage, onChange, onClear })
+    price, ticketOrderHelpers, handleCustomerTicketChange, handleAssistantChange, displayFloat,
+  } = useCouponUseRow({ index, couponUsage, onChange })
 
 
   return (
@@ -59,13 +54,6 @@ export default function CouponUse({
               <Input
                 disabled
                 value={displayFloat(price)}
-                onChange={event =>
-                  onChange({
-                    value: idx(event, _ => _.target.value),
-                    key: 'customerTicketId',
-                    index,
-                  })
-                }
               />
             </Field>
             {ticketOrderHelpers.map((data, helperIndex) => (
@@ -88,32 +76,13 @@ export default function CouponUse({
                   label="指定"
                   checked={data.isDesignate}
                   className={styles.checkbox}
-                  onChange={(_event, state) =>
-                    handleAssistantChange({
-                      value: state,
-                      assistantIndex: helperIndex,
-                      key: 'isDesignate',
-                    })
-                  }
                   disabled
                 />
               </React.Fragment>
             ))}
           </React.Fragment>
         )}
-        {/* <BackspaceOutlinedIcon className={classes.action} onClick={handleClear} /> */}
-        {/* {!first && couponUsage.customerTicketId && (
-          <DeleteForeverIcon
-            className={classes.action}
-            onClick={function () {
-              removeCouponUse({ index })
-            }}
-          />
-        )} */}
       </div>
-      {/* {last && couponUsage.customerTicketId && (
-        <AddIcon className={classes.action} onClick={addCouponUse} />
-      )} */}
     </Fragment>
   )
 }

@@ -31,7 +31,7 @@ const designate = [
 
 export default function Head() {
   const {
-    bill, handleBillChange, setBill, setFocus, focus,
+    bill, handleBillChange, setBill, setFocus,
     setEmployeeAlready, setCustomerAlready, LBCusDisplay,
     isLineBinded, setIsLineBinded,
   } = useContext(billContext)
@@ -152,7 +152,7 @@ export default function Head() {
 
   const handleToggleButtonChange = (_event, state) => {
     state !== null &&
-      handleBillChange({ key: 'isDesignate', value: focus === 'designer' ? true : state })
+      handleBillChange({ key: 'isDesignate', value: state })
     setFocus('')
   }
   // 不留客資 button
@@ -246,12 +246,8 @@ export default function Head() {
   }
 
   const handleFocus = event => {
-    let setted = false
-    if (!setted) {
-      setFocus(event.target.name)
-      setted = true
-      event.target.focus()
-    }
+    setFocus(event.target.name)
+    event.target.focus()
   }
 
   const handleDesignateBtnKeyDown = e => {
@@ -347,8 +343,8 @@ export default function Head() {
                       )
                       setValue(newValue)
                       designerRef.current.focus()
-                      // press clear button
-                    } else if (newValue === null) {
+                      // press clear button（newValue === null）
+                    } else {
                       setBill(
                         produce(draft => {
                           draft.customerId = undefined

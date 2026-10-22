@@ -65,11 +65,11 @@ export default function PannelService({ thirdPartTicket }) {
     if (!order.loading && !servicesForTicketLocked.loading) {
       let newServices = []
       const orderDetail = JSON.parse(idx(order, _ => _.data.getOrderInputByQueueId))
-      const findTicketDisabled = id => {
-        const services = idx(servicesForTicketLocked, _ => _.data.services.data)
-        const data = services.find(d => d.id === id).isBindedThirdPartTicketLocked
-        return data
-      }
+      // 佇列帳單的服務可能已不在服務清單（停用、刪除），清單查詢也可能失敗：找不到時保留佇列帶的服務與價格，
+      // 以 missingServiceId 標示（Services 顯示說明，改選別的服務後不再顯示），「重試」照佇列內容送出。
+      // 原本找不到就拋錯、整頁顯示錯誤畫面（coverage wave 1，2026/10/22）
+      const listedServices = idx(servicesForTicketLocked, _ => _.data.services.data) || []
+      const findListedService = id => listedServices.find(d => d.id === id)
       if (orderDetail.serviceOrders.length > 0) {
         orderDetail.serviceOrders.map(data =>
           newServices.push({
@@ -77,7 +77,10 @@ export default function PannelService({ thirdPartTicket }) {
             price: data.price,
             serviceId: data.serviceId,
             thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
-            isBindedThirdPartTicketLocked: findTicketDisabled(data.serviceId),
+            isBindedThirdPartTicketLocked: idx(findListedService(data.serviceId), _ => _.isBindedThirdPartTicketLocked),
+            // 佇列保存的 OrderInput 沒有鎖價欄位：依服務清單套用，鎖價服務的價格不能改（coverage wave 1，2026/10/22）
+            isLocked: idx(findListedService(data.serviceId), _ => _.isLocked),
+            missingServiceId: data.serviceId && !findListedService(data.serviceId) ? data.serviceId : undefined,
             serviceOrderHelpers: data.serviceOrderHelpers.map(helper => ({
               type: helper.type,
               helperId: helper.helperId,
@@ -194,23 +197,6 @@ export default function PannelService({ thirdPartTicket }) {
     })
   }
 
-  const handleChange = ({ index, value }) => {
-    const newServices = cloneDeep(services)
-    newServices[index] = value
-    setServices(newServices)
-    handleBillChange({
-      key: 'serviceOrders',
-      value: newServices
-        .filter(d => d.serviceId)
-        .map(d => ({
-          serviceId: d.serviceId,
-          price: d.price,
-          serviceOrderHelpers: d.serviceOrderHelpers.filter(i => i.helperId),
-          isLocked: d.isLocked,
-          isNoCash: d.isNoCash,
-        })),
-    })
-  }
   function handleServiceOnChange({ index, value }) {
     const newServices = cloneDeep(services)
     newServices[index] = value
@@ -324,7 +310,6 @@ export default function PannelService({ thirdPartTicket }) {
               onClear={handleClear}
               focusFirstField={index === focusRow}
               expanded={expanded}
-              onChange={handleChange}
               handleOpenServicesModal={handleOpenServicesModal}
               changeRowFocus={handleChangeFocusRow}
               services={services}

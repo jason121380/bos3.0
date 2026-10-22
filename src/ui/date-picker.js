@@ -242,8 +242,19 @@ function createPicker({ displayName, withTime, mobileOnly }) {
     const textField = typeof rawTextField === 'function' ? rawTextField({}) : rawTextField || {}
     const { variant: _variant, error: tfError, InputProps: tfInputProps, inputProps: tfInputProps2, ...tfRest } = textField
     const ariaLabel = isValidDate(value) ? `選擇日期，目前為 ${formatValue(value, 'yyyy/MM/dd')}` : '選擇日期'
-    const openOnKey = event => {
+    // 頁面傳入的按鍵處理：props.onKeyDown 與 slotProps.textField.onKeyDown 都呼叫（原本 textField 的被欄位自己的處理蓋掉，
+    // 會員卡到期日等頁面的「Enter 跳下一欄」失效、Enter 一律開月曆）
+    const callerKeyDown = event => {
       if (onKeyDown) onKeyDown(event)
+      if (tfRest.onKeyDown) tfRest.onKeyDown(event)
+    }
+    // 頁面先處理。頁面有傳按鍵處理時 Enter 歸頁面（各頁都用 Enter 跳下一欄，多數沒有 preventDefault；原本會跳欄又同時開月曆，
+    // Codex review PR #265），不開月曆；空白鍵、或頁面沒傳處理時維持 Enter／空白鍵開月曆；頁面 preventDefault 的按鍵一律不開
+    const hasCallerKeyDown = Boolean(onKeyDown || tfRest.onKeyDown)
+    const openOnKey = event => {
+      callerKeyDown(event)
+      if (event.defaultPrevented) return
+      if (event.key === 'Enter' && hasCallerKeyDown) return
       if (!desktop && (event.key === 'Enter' || event.key === ' ')) {
         event.preventDefault()
         openPicker()
@@ -281,7 +292,7 @@ function createPicker({ displayName, withTime, mobileOnly }) {
           inputRef={inputRef}
           autoFocus={autoFocus}
           error={tfError !== undefined ? tfError : !!error}
-          onKeyDown={onKeyDown}
+          onKeyDown={callerKeyDown}
           fullWidth
           className={tfRest.className}
           inputProps={tfInputProps2}

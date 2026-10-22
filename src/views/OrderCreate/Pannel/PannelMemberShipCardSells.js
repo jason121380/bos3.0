@@ -15,13 +15,8 @@ const styles = {
 const PannelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, reset }) => {
   const {
     handleBillChange, memberCardSells, setMemberCardSells, bill,
-    mData, setMData
   } = React.useContext(billContext)
   const [focusRow, setFocusRow] = React.useState(0)
-
-  const getData = value => {
-    !mData.length && setMData(value)
-  }
 
   React.useEffect(() => {
     if (expanded) {
@@ -96,21 +91,21 @@ const PannelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, re
 
   function handleMerchantSellsChange({ key, value, index }) {
     const newSells = cloneDeep(memberCardSells)
-    newSells[index][key] = value === NaN ? "Invalid Date" :value
+    newSells[index][key] = value
     setMemberCardSells(newSells)
-    if (key === 'price' || key === 'date' || key === 'sellerId' || key === 'expiryDate' || key === 'remark') {
-      handleBillChange({
-        key: 'membershipOrders',
-        value: newSells.map(data => ({
-          sellerId: data.sellerId,
-          membershipUUID: data.membershipUUID,
-          price: data.price,
-          expiryDate: data.expiryDate === NaN || data.expiryDate === 'Invalid Date' || data.expiryDate === "Early Date" ||data.expiryDate === "Late Date"?'Invalid Date':data.expiryDate,
-          thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
-          remark: data.remark,
-        })),
-      })
-    }
+    // 呼叫端（MemberShipCardSells）只會傳 sellerId／price／expiryDate／remark，原本的 key 判斷永遠成立；
+    // expiryDate 一律是時間戳、NaN 或 null（不會是 'Invalid Date' 等字串，=== NaN 也永遠不成立），原樣送出
+    handleBillChange({
+      key: 'membershipOrders',
+      value: newSells.map(data => ({
+        sellerId: data.sellerId,
+        membershipUUID: data.membershipUUID,
+        price: data.price,
+        expiryDate: data.expiryDate,
+        thirdPartyCouponMerchantId: data.thirdPartyCouponMerchantId,
+        remark: data.remark,
+      })),
+    })
   }
   function handleAddSells() {
     const newSells = cloneDeep(memberCardSells)
@@ -202,7 +197,6 @@ const PannelMemberShipCardSells = ({ expanded, onPanelClick, thirdPartTicket, re
               sells={memberCardSells}
               productLength={memberCardSells.length}
               thirdPartTicket={thirdPartTicket}
-              getData={getData}
             />
           ))}
         </div>

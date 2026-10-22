@@ -126,6 +126,58 @@ describe('ui/date-picker（取代 @mui/x-date-pickers）', () => {
     expect(container.firstChild.firstChild).toHaveClass('w-full')
   })
 
+  // 會員卡到期日、記帳日期：頁面以 slotProps.textField.onKeyDown 處理 Enter 跳下一欄。原本這個 handler 被欄位自己的按鍵處理蓋掉，
+  // Enter 一律打開月曆。現在先呼叫頁面的 handler；頁面有傳 handler 時 Enter 歸頁面、不開月曆（多數頁面跳欄後沒有 preventDefault，
+  // 原本會跳欄又開月曆，Codex review PR #265）；沒傳 handler 時維持 Enter／空白鍵開月曆
+  it('手機版：slotProps.textField.onKeyDown 會被呼叫；它 preventDefault 時 Enter 不開月曆', () => {
+    const onKeyDown = jest.fn(event => {
+      if (event.key === 'Enter') event.preventDefault()
+    })
+    render(<MobileDatePicker value={new Date(2026, 9, 20)} onChange={() => {}} slotProps={{ textField: { onKeyDown } }} />)
+    const input = screen.getByRole('textbox')
+    fireEvent.keyDown(input, { key: 'Enter' })
+    expect(onKeyDown).toHaveBeenCalledTimes(1)
+    expect(screen.queryByRole('dialog')).toBeNull()
+    // 頁面沒處理的按鍵（空白鍵）照常開月曆
+    fireEvent.keyDown(input, { key: ' ' })
+    expect(onKeyDown).toHaveBeenCalledTimes(2)
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('手機版：頁面的 handler 沒有 preventDefault 時 Enter 也不開月曆（頁面用 Enter 跳下一欄）；空白鍵照常開；props.onKeyDown 也會被呼叫', () => {
+    const slotKeyDown = jest.fn()
+    const propKeyDown = jest.fn()
+    render(<MobileDatePicker value={new Date(2026, 9, 20)} onChange={() => {}} onKeyDown={propKeyDown} slotProps={{ textField: { onKeyDown: slotKeyDown } }} />)
+    fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' })
+    expect(propKeyDown).toHaveBeenCalledTimes(1)
+    expect(slotKeyDown).toHaveBeenCalledTimes(1)
+    expect(screen.queryByRole('dialog')).toBeNull()
+    fireEvent.keyDown(screen.getByRole('textbox'), { key: ' ' })
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    cleanup()
+
+    // 只傳 props.onKeyDown（員工領用編輯）也一樣
+    render(<MobileDatePicker value={new Date(2026, 9, 20)} onChange={() => {}} onKeyDown={propKeyDown} />)
+    fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' })
+    expect(screen.queryByRole('dialog')).toBeNull()
+    cleanup()
+
+    // 沒傳 handler：Enter 照常開月曆
+
+    render(<MobileDatePicker value={new Date(2026, 9, 20)} onChange={() => {}} />)
+    fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' })
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('桌機版：slotProps.textField.onKeyDown 也會被呼叫（原本被 props.onKeyDown 蓋掉）', () => {
+    withDesktop(() => {
+      const slotKeyDown = jest.fn()
+      render(<DatePicker value={new Date(2026, 9, 20)} onChange={() => {}} slotProps={{ textField: { onKeyDown: slotKeyDown } }} />)
+      fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' })
+      expect(slotKeyDown).toHaveBeenCalledTimes(1)
+    })
+  })
+
   // 自訂欄位（DateSelector 的月份按鈕）：收到 value、format 與開啟用的 onClick
   it('slots.field 收到 value／format／onClick', () => {
     const Field = ({ value, format, onClick }) => (

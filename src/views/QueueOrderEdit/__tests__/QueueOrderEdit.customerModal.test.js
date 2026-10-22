@@ -7,7 +7,7 @@
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
 import { loginAs, callsOf, typeLikeBrowser } from '../../../__tests__/testkit.test'
-import { setupQueue, loaded, baseQueue, chooseNative, CUSTOMER, DESIGNER } from './queueKit.test'
+import { setupQueue, loaded, baseQueue, chooseNative, retry, CUSTOMER, DESIGNER } from './queueKit.test'
 
 jest.setTimeout(20000)
 
@@ -90,6 +90,97 @@ describe('重新開單：顧客欄已輸入手機時新增顧客', () => {
   })
 })
 
+// 編輯顧客儲存：原本按下「儲存」就先把帳單的顧客清掉、成功後才放回，更新失敗時帳單就沒有顧客了（coverage wave 1，2026/10/22 修正）
+describe('重新開單：編輯顧客儲存成功／失敗時帳單上的顧客', () => {
+  const withCustomer = () => baseQueue({ customerId: CUSTOMER.id, withoutCustomerData: false })
+  const openEdit = async () => {
+    await wait(() => expect(customerInput().value).toContain('陳小姐'))
+    fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
+    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    await wait(() => expect(field(modal, 'name')).toHaveValue('陳小姐'))
+    return modal
+  }
+
+  it('更新失敗：帳單上的顧客保留，關閉彈窗後重試照樣送出原顧客', async () => {
+    const page = setupQueue({ queue: withCustomer(), SET_CUSTOMER: new Error('手機號碼已被使用') })
+    await loaded(page)
+    const modal = await openEdit()
+    fireEvent.click(button(modal, '儲存'))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '手機號碼已被使用', variant: 'error' }))
+    fireEvent.click(button(modal, '取消'))
+    await wait(() => expect(screen.queryByText('編輯客戶資料')).toBeNull())
+    expect(customerInput().value).toContain('陳小姐')
+    expect(screen.getByRole('button', { name: '編輯顧客資料' })).toBeInTheDocument()
+    await page.settle()
+    expect(screen.getByTestId('checkout')).not.toBeDisabled()
+    const input = await retry(page.calls)
+    expect(input.customerId).toBe(CUSTOMER.id)
+  })
+
+  it('更新成功：顧客欄顯示新姓名，重試送出同一位顧客', async () => {
+    let name = '陳小姐'
+    const page = setupQueue({
+      queue: withCustomer(),
+      FETCH_CUSTOMER_DETAIL: ({ id }) => ({ customer: id ? { ...CUSTOMER, name, membershipPurchaseRecord: [], isLineBinded: false } : null }),
+      SET_CUSTOMER: ({ input }) => {
+        name = input.name
+        return { updateCustomer: true }
+      },
+    })
+    await loaded(page)
+    const modal = await openEdit()
+    typeLikeBrowser(field(modal, 'name'), '陳美美')
+    fireEvent.click(button(modal, '儲存'))
+    await wait(() => expect(screen.queryByText('編輯客戶資料')).toBeNull())
+    await wait(() => expect(customerInput().value).toContain('陳美美'))
+    const input = await retry(page.calls)
+    expect(input.customerId).toBe(CUSTOMER.id)
+  })
+
+  it('更新成功但重新查詢顧客失敗：顧客欄維持原本顯示，帳單上的顧客保留', async () => {
+    let detailCalls = 0
+    const page = setupQueue({
+      queue: withCustomer(),
+      FETCH_CUSTOMER_DETAIL: ({ id }) => {
+        if (!id) return { customer: null }
+        detailCalls += 1
+        return detailCalls > 1 ? new Error('查詢失敗') : { customer: { ...CUSTOMER, membershipPurchaseRecord: [], isLineBinded: false } }
+      },
+      SET_CUSTOMER: { updateCustomer: true },
+    })
+    await loaded(page)
+    const modal = await openEdit()
+    fireEvent.click(button(modal, '儲存'))
+    await wait(() => expect(screen.queryByText('編輯客戶資料')).toBeNull())
+    await wait(() => expect(detailCalls).toBe(2))
+    await page.settle()
+    expect(customerInput().value).toContain('陳小姐')
+    const input = await retry(page.calls)
+    expect(input.customerId).toBe(CUSTOMER.id)
+  })
+})
+
+// 顧客沒有性別資料（null）：原本選單顯示「未知」但送出空字串；改為一律以 UNKNOWN 顯示與送出（coverage wave 1，2026/10/22）
+describe('重新開單：編輯沒有性別資料的顧客', () => {
+  it('性別顯示「未知」，儲存送出 UNKNOWN', async () => {
+    const page = setupQueue({
+      queue: baseQueue({ customerId: CUSTOMER.id, withoutCustomerData: false }),
+      FETCH_CUSTOMER_DETAIL: { customer: { ...CUSTOMER, gender: null, membershipPurchaseRecord: [], isLineBinded: false } },
+      SET_CUSTOMER: { updateCustomer: true },
+    })
+    await loaded(page)
+    await wait(() => expect(customerInput().value).toContain('陳小姐'))
+    fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
+    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    await wait(() => expect(field(modal, 'name')).toHaveValue('陳小姐'))
+    const gender = field(modal, 'gender')
+    expect(gender.options[gender.selectedIndex].textContent).toBe('未知')
+    fireEvent.click(button(modal, '儲存'))
+    await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))
+    expect(callsOf(page.calls, 'SET_CUSTOMER')[0].variables.input.gender).toBe('UNKNOWN')
+  })
+})
+
 describe('重新開單：編輯沒有生日資料的顧客', () => {
   it('生日欄空白；儲存送出空白生日，不會帶入其他值', async () => {
     const page = setupQueue({
@@ -144,6 +235,29 @@ describe('重新開單：沒輸入手機時新增顧客', () => {
     expect(input).not.toHaveProperty('source')
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '成功新增客戶', variant: 'success' }))
     await wait(() => expect(screen.queryByText('新增客戶')).toBeNull())
+  })
+
+  // 填完整資料新增成功後，新顧客帶進帳單：原本只關閉彈窗，帳單仍沒有顧客（coverage wave 1，2026/10/22）
+  it('新增成功：新顧客帶進帳單，顧客欄顯示新顧客，重試送出新顧客', async () => {
+    const page = setupQueue({
+      queue: noCustomerYet(),
+      FETCH_ADD_CUSTOMER: { addCustomer: { ...NEW_CUSTOMER, name: '吳小姐' } },
+      FETCH_CUSTOMER_DETAIL: ({ id }) => ({
+        customer: id ? { ...NEW_CUSTOMER, no: 'C100', name: '吳小姐', membershipPurchaseRecord: [], isLineBinded: false } : null,
+      }),
+    })
+    await loaded(page)
+    const modal = await openModal('新增客戶')
+    typeLikeBrowser(field(modal, 'name'), '吳小姐')
+    typeLikeBrowser(field(modal, 'cellphone'), '0955666777')
+    await wait(() => expect(button(modal, '新增')).not.toBeDisabled())
+    fireEvent.click(button(modal, '新增'))
+    await wait(() => expect(screen.queryByText('新增客戶')).toBeNull())
+    await wait(() => expect(customerInput().value).toContain('吳小姐'))
+    expect(screen.getByRole('button', { name: '編輯顧客資料' })).toBeInTheDocument()
+    const input = await retry(page.calls)
+    expect(input.customerId).toBe(NEW_CUSTOMER.id)
+    expect(input.customerCellphone).toBe('')
   })
 
   it('姓名空白：提示「姓名與電話為必填」，不送出', async () => {

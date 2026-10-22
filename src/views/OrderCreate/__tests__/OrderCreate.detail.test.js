@@ -280,8 +280,12 @@ describe('消費明細：送出', () => {
     const inDetail = buttons('結帳')
     fireEvent.click(inDetail[inDetail.length - 1])
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'error', message: expect.stringContaining('庫存不足') })))
-    // 失敗後應恢復按鈕：目前明細內「結帳」失敗後按鈕維持停用（已回報），須返回重開明細，這裡不斷言
     expect(callsOf(calls2, 'FETCH_CREATE_ORDER')).toHaveLength(1)
+    // 失敗後按鈕恢復，可直接再按（不必返回重開明細）
+    await wait(() => expect(buttons('結帳').slice(-1)[0]).not.toBeDisabled())
+    expect(button('結帳並列印')).not.toBeDisabled()
+    fireEvent.click(buttons('結帳').slice(-1)[0])
+    await wait(() => expect(callsOf(calls2, 'FETCH_CREATE_ORDER')).toHaveLength(2))
   })
 
   it('連續打單：結帳並列印成功後列印、0.5 秒後關閉明細並清空帳單', async () => {
@@ -356,25 +360,24 @@ describe('消費明細：送出', () => {
     expect(queryButton('掛單')).toBeNull()
   })
 
-  // 已知問題（已回報）：明細內被逐列檢查擋下後，「結帳」「結帳並列印」維持停用，必須返回再重開明細才能再按；
-  // 因此這裡每種送出都重開一次明細
-  const reopenDetail = async () => {
-    fireEvent.click(button('返回'))
-    await wait(() => expect(queryButton('結帳並列印')).toBeNull())
-    await openDetail()
+  // 明細內被逐列檢查擋下後，「結帳」「結帳並列印」恢復可按：不必返回重開明細，就能在同一個明細內依序試三種送出
+  const expectEnabled = async () => {
+    await wait(() => expect(buttons('結帳').slice(-1)[0]).not.toBeDisabled())
+    expect(button('結帳並列印')).not.toBeDisabled()
   }
   const submitAllWays = async count => {
     await openDetail()
     fireEvent.click(buttons('結帳').slice(-1)[0])
     await wait(() => expect(count()).toBe(1))
-    await reopenDetail()
+    await expectEnabled()
     fireEvent.click(button('結帳並列印'))
     await wait(() => expect(count()).toBe(2))
-    await reopenDetail()
+    await expectEnabled()
     const pending = buttons('掛單')
     fireEvent.click(pending[pending.length - 1])
     act(() => pendingConfirm().usehandleCreateDraftOrder())
     await wait(() => expect(count()).toBe(3))
+    await expectEnabled()
   }
 
   it('店販缺商品：明細內結帳、結帳並列印、掛單都擋下並提示', async () => {
@@ -459,13 +462,41 @@ describe('消費明細：載入中與收據邊界', () => {
     return page
   }
 
-  it('明細資料還在載入時按 F8：不送出也不列印', async () => {
+  it('明細資料還在載入時按 F8：不送出也不列印；快捷鍵仍有效，載入完成後再按 F8 照常結帳並列印', async () => {
     const { calls } = await ready({}, { delays: { GET_SERVICES_IN_ORDER_DETAIL: 1500 } })
     fireEvent.click(button('明細'))
     fireEvent.keyDown(document, { code: 'F8' })
     expect(window.open).not.toHaveBeenCalled()
     expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(0)
-    // 已知問題（已回報）：這時 F8 會把快捷鍵監聽移除，載入完成前 F8／F9 都失效
+    await findButton('結帳並列印')
+    fireEvent.keyDown(document, { code: 'F8' })
+    await wait(() => expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(1))
+    await wait(() => expect(window.open).toHaveBeenCalledTimes(1))
+  })
+
+  it('明細資料還在載入時先按 F8 再按 F9：F9 照常結帳', async () => {
+    const { calls } = await ready({}, { delays: { GET_SERVICES_IN_ORDER_DETAIL: 1500 } })
+    fireEvent.click(button('明細'))
+    fireEvent.keyDown(document, { code: 'F8' })
+    fireEvent.keyDown(document, { code: 'F9' })
+    await wait(() => expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(1))
+    expect(window.open).not.toHaveBeenCalled()
+  })
+
+  it('明細資料還在載入時按 F9、帳單被逐列檢查擋下：提示缺什麼、不送出；載入完成後按鈕可按', async () => {
+    const { calls } = setupPage({}, { delays: { GET_SERVICES_IN_ORDER_DETAIL: 1500 } })
+    await waitPageReady()
+    await pickEmployee()
+    fireEvent.click(screen.getByLabelText('不留客資'))
+    fireEvent.click(screen.getByTestId('merchantSell'))
+    await pickEmployee(designerInputs()[1], HELPER)
+    await wait(() => expect(checkoutButton()).not.toBeDisabled())
+    fireEvent.click(button('明細'))
+    fireEvent.keyDown(document, { code: 'F9' })
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ message: '請選擇店販商品' })))
+    expect(callsOf(calls, 'FETCH_CREATE_ORDER')).toHaveLength(0)
+    await findButton('結帳並列印')
+    await wait(() => expect(button('結帳並列印')).not.toBeDisabled())
   })
 
   it('明細資料還在載入時按 F9：等同按結帳（送出一次、不列印）', async () => {

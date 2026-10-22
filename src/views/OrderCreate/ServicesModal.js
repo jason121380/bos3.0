@@ -124,7 +124,6 @@ ServicesModal.propTypes = {
 
 ServicesModal.defaultProps = {
   open: false,
-  onClose: () => { },
 }
 
 export default memo(ServicesModal)

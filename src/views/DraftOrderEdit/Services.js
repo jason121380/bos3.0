@@ -228,12 +228,8 @@ export default function Services({
   }, [focus, focusRow])
 
   const handleFocus = event => {
-    let setted = false
-    if (!setted) {
-      setFocus(event.target.name)
-      setted = true
-      event.target.focus()
-    }
+    setFocus(event.target.name)
+    event.target.focus()
     if (event.target.name === 'price') {
       event.target.select()
     }
@@ -256,7 +252,8 @@ export default function Services({
         // 其他值不處理（與原本沒有 default 時相同）
         break
     }
-  }, [service])
+    // 店家的鎖定設定（bindedThirdPart）可能比服務晚回來，也要重新判斷「依店家設定」
+  }, [service, bindedThirdPart])
   return (
     <Fragment>
       <div className={styles.service}>
@@ -380,14 +377,6 @@ export default function Services({
                           } else if (event.key === 'Enter' && idx + 1 < helper.length) {
                             setFocus(helper[idx + 1].type)
                             helperRefs[idx + 1].current.focus()
-                          } else if (
-                            event.key === 'Enter' &&
-                            idx + 1 === helper.length &&
-                            isHelperDesignation &&
-                            thirdPartTicket
-                          ) {
-                            setFocus('thirdParty')
-                            thirdPartyRef.current.focus()
                           } else if (
                             event.key === 'Enter' &&
                             idx + 1 === helper.length &&

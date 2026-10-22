@@ -9,7 +9,7 @@ import idx from "idx";
 import React, { Fragment, useState, useEffect, useContext } from "react";
 import TeachingModeContext from "context/teachingModeContext";
 import billContext from "context/keyInContext";
-import { addDays, addYears, format, startOfDay } from "date-fns";
+import { addDays, addYears } from "date-fns";
 import { MobileDatePicker } from 'ui/date-picker'
 
 import MemberShipCardSellsModal from "views/OrderShared/MemberShipCardSellsModal";
@@ -69,12 +69,8 @@ const MemberShipCardSells = ({
   }, [expanded, focusFirstField]);
 
   const handleFocus = ({ event, field }) => {
-    let setted = false;
-    if (!setted) {
-      setFocus(field);
-      setted = true;
-      event.target.focus();
-    }
+    setFocus(field);
+    event.target.focus();
     if (field === "price" || field === "count") {
       event.target.select();
     }
@@ -114,47 +110,6 @@ const MemberShipCardSells = ({
     }
   }, [focus]);
 
-  const selectThirdParty = (e) => {
-    if (e !== null) {
-      onCardChange({
-        index,
-        value: {
-          ...sells,
-          thirdPartyCouponMerchantId: e.id,
-        },
-      });
-    } else {
-      onCardChange({
-        index,
-        value: {
-          ...sells,
-          thirdPartyCouponMerchantId: null,
-        },
-      });
-    }
-  };
-  const checkMessage = (msg) => {
-    switch (msg) {
-      case NaN:
-        return "時間有誤";
-        break;
-      case "Invalid Date":
-        return "時間有誤";
-        break;
-      case "Early Date":
-        return `時間不得小於${format(addDays(startOfDay(new Date(bill.date)), 1), "yyyy/MM/dd")}`;
-        break;
-      case "Late Date":
-        return `時間不得小於${format(addDays(startOfDay(new Date(bill.date)), 1), "yyyy/MM/dd")}`;
-        break;
-
-      default:
-        return "時間格式有誤";
-    }
-  };
-  const checkData = {
-
-  }
   return (
     <Fragment>
       <div className={styles.merchantSells}>

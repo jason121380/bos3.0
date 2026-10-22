@@ -42,7 +42,7 @@ export default function Footer({ enable }) {
   const { updateOrder } = useFetchUpdateOrder()
   const history = useHistory()
 
-  const { open, toggle, setOpen } = useToggle()
+  const { open, setOpen } = useToggle()
 
   const location = useLocation()
   const status = getQueryString({ key: 'status', location })
@@ -240,7 +240,8 @@ export default function Footer({ enable }) {
     }
   }
   const handleSaveOrder = () => {
-    toggle()
+    // 送出中停用按鈕；失敗時恢復（原本用 toggle() 切換，閉包讀到送出前的 open，失敗後按鈕永遠停用）
+    setOpen(true)
     const tmp = handleTidyBill(bill)
     const checkService = checkServicesOrders(tmp.serviceOrders)
     const checkProduct = checkProductOrders(tmp.productOrders)
@@ -272,21 +273,19 @@ export default function Footer({ enable }) {
         orderInput: tmp,
       })
         .then(() => {
-          toggle()
           openSnackbar({
             message: '帳單儲存成功',
             variant: 'success',
           })
           history.push('/management/weborders')
         })
-        .catch(() => toggle())
+        .catch(() => setOpen(false))
     }
   }
 
+  // 只在店家開啟重新結帳密碼（disableRecheckoutOrders）時呼叫（主要按鈕與 F9 都先判斷）
   const handleOpenReCheckout = () => {
-    if (disableRecheckoutOrders) {
-      setOpenDialog(true)
-    }
+    setOpenDialog(true)
   }
 
   const handleCloseDialog = () => {
@@ -361,7 +360,9 @@ export default function Footer({ enable }) {
     serviceTotalPriceWithoutThirdPartyCoupon, productTotalPriceWithoutThirdPartyCoupon,
     couponSellPrice, merberShipCardTotalPriceWithoutThirdPartyCoupon, bill.walletPay,
     bill.amountByOtherPay, bill.bonusDecount, bill.customerId, bonusRewardWithLINE,
-    isLineBinded, setBill
+    isLineBinded, setBill,
+    // 給點規則比帳單晚到時（規則只在查詢回來時設定一次），到了也要依規則重算
+    bonusSetting,
   ])
 
   // 業績合計、現金應收：運算式與舊版相同，只是算一次，下方彙總卡與底部固定列共用同一個值

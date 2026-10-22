@@ -49,10 +49,10 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
     cellphone: customer.cellphone || 0,
     birthday: customer.birthday || { year: '', month: '', day: '' },
     PreferDesignerId: customer.PreferDesignerId || '',
+    // 顧客已有所屬店家就沿用，沒有才用目前店家（原寫法 a || b ? x : y 的優先順序讓已有的值永遠被忽略）
     OfficialBrandMerchantId:
-      customer.OfficialBrandMerchantId || localStorage.getItem('userMerchant')
-        ? JSON.parse(localStorage.getItem('userMerchant')).id
-        : null,
+      customer.OfficialBrandMerchantId ||
+      (localStorage.getItem('userMerchant') ? JSON.parse(localStorage.getItem('userMerchant')).id : null),
     email: customer.email || '',
     address: customer.address || '',
     lineId: customer.lineId || '',
@@ -71,6 +71,8 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
       cellphone: customer.cellphone,
       customerId: customer.customerId,
       name: customer.name,
+      // 顧客沒有性別資料（null）時與初始值一致為「未知」：否則選單顯示空白、儲存送出空字串
+      gender: customer.gender || 'UNKNOWN',
     })
   }, [customer])
 
@@ -96,6 +98,14 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
       delete newValues.latestDesigner
       updateCustomer({ input: { ...newValues, birthday: birthdayObj } }).then(() => {
         openSnackbar({ variant: 'success', message: '成功更新顧客資訊' })
+        // 更新成功才先清掉再設回同一位顧客：頁首因顧客 id 改變而重新讀取，顯示更新後的資料。
+        // 原本在送出當下就清掉、只在成功時設回，更新失敗時掛單的顧客就被清空
+        setBill(
+          produce(draft => {
+            draft.customerId = null
+            draft.customerCellphone = ''
+          })
+        )
         setBill(
           produce(draft => {
             draft.customerId = values.customerId
@@ -103,13 +113,9 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
           })
         )
         onClose()
+      }).catch(() => {
+        // 失敗提示由 init-apollo 的 errorLink 統一顯示（這裡不重複提示）；顧客與編輯窗保持原樣，可修正後再按
       })
-      setBill(
-        produce(draft => {
-          draft.customerId = null
-          draft.customerCellphone = ''
-        })
-      )
     } else {
       delete newValues.customerId
       if (newValues.name.length === 0 || newValues.cellphone.length === 0) {
@@ -125,6 +131,13 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
             name: res.data.addCustomer.name,
             gender: res.data.addCustomer.gender,
           })
+          // 新增的顧客帶入掛單（比照頁首只輸入手機的快速新增）；原本只關窗，櫃台還得再搜尋選一次
+          setBill(
+            produce(draft => {
+              draft.customerId = res.data.addCustomer.id
+              draft.customerCellphone = ''
+            })
+          )
           openSnackbar({
             message: '成功新增客戶',
             variant: 'success',
@@ -463,7 +476,6 @@ AddCustomerModal.propTypes = {
 
 AddCustomerModal.defaultProps = {
   open: false,
-  onClose: () => { },
 }
 
 export default AddCustomerModal
