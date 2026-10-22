@@ -216,9 +216,10 @@ describe('重新開單：會員卡銷售', () => {
     expect(summaryValue('現金應收')).toHaveTextContent('12,800')
     const ticket = fieldInput(cards(), '第三方卡券')
     await pickOption(ticket, '團購券')
-    expect(await cards().findByText('扣完後業績:10800')).toBeInTheDocument()
+    expect(await cards().findByText('扣完後業績:10,800')).toBeInTheDocument()
     await wait(() => expect(summaryValue('現金應收')).toHaveTextContent(/^800$/))
-    expect(summaryValue('業績合計')).toHaveTextContent(/^800$/)
+    // 業績合計照樣計入會員卡售價全額（四頁預覽以打帳單為準，Jason 2026/10/22）
+    expect(summaryValue('業績合計')).toHaveTextContent('12,800')
     // 在第三方卡券按 Enter 跳到備註
     fireEvent.focusIn(ticket)
     fireEvent.keyDown(ticket, { key: 'Enter' })
@@ -230,16 +231,19 @@ describe('重新開單：會員卡銷售', () => {
 
   // 為什麼重要：「扣完後業績」是櫃台判斷這張會員卡實際入多少業績的依據。原本會員卡一律按比例算，
   // 固定金額（手續費 100 元）的卡券會顯示 12000 ×（100−100）% = 0，與服務、店販（PERCENT 按比例、其他類型減去金額）不一致。
-  // 金額彙總的規則不變：會員卡用第三方卡券時不計入業績合計與現金應收。
-  it('固定金額的第三方卡券：扣完後業績＝售價－手續費；業績合計仍不含這張會員卡', async () => {
+  // 金額彙總：會員卡用第三方卡券時不計入現金應收（不由店家收款），但業績合計照樣計入售價全額。
+  // 為什麼：四頁金額彙總的預覽以打帳單為準（Jason 2026/10/22）；重新開單原本把這張會員卡排除在業績合計外，
+  // 同一張帳單在打帳單、掛單詳細顯示 12,800、在這裡卻顯示 800。預覽只顯示在畫面，不送後端（後端依品項明細自己算業績）。
+  it('固定金額的第三方卡券：扣完後業績＝售價－手續費；會員卡用第三方卡券：業績合計計入售價全額、不收現金', async () => {
     const page = setupQueue({
       queue: baseQueue({ membershipOrders: [membershipOrder({ thirdPartyCouponMerchantId: 'tp-2' })] }),
       GET_THIRD_PART_DISPLAY: { getIsThirdPartTicketDisplay: true },
     })
     await loaded(page)
     // 12000 − 100 = 11900
-    expect(await cards().findByText('扣完後業績:11900')).toBeInTheDocument()
-    expect(summaryValue('業績合計')).toHaveTextContent(/^800$/)
+    expect(await cards().findByText('扣完後業績:11,900')).toBeInTheDocument()
+    // 服務 800＋會員卡 12000
+    expect(summaryValue('業績合計')).toHaveTextContent('12,800')
     expect(summaryValue('現金應收')).toHaveTextContent(/^800$/)
   })
 

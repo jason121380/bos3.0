@@ -7,6 +7,7 @@ import idx from 'idx'
 import cloneDeep from 'lodash/cloneDeep'
 import React, { Fragment, useState, useEffect, useRef } from 'react'
 import billContext from 'context/keyInContext'
+import { ROW_ICON_ALIGN } from 'views/OrderShared/rowAlign'
 
 
 export default function CouponSells({
@@ -85,11 +86,11 @@ export default function CouponSells({
   }
   return (
     <Fragment>
-      <div className="mb-6 flex flex-wrap items-end justify-start gap-y-[12px]">
+      <div className="mb-6 flex flex-wrap items-start justify-start gap-y-[12px]">
         {index === 0 ? (
-          <RowIconButton label="從清單選擇預收卡" className="mx-1.5" onClick={handleOpenCouponModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇預收卡" className={`mx-1.5 ${ROW_ICON_ALIGN}`} onClick={handleOpenCouponModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
+          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN}`} />
         )}
         <Field label="卡券">
         <TicketAutoComplete
@@ -134,7 +135,7 @@ export default function CouponSells({
         </Field>
         {couponSell.serviceId ? (
           <React.Fragment>
-            <Field label="可使用次數" className="!mr-[12px] flex w-[65px]">
+            <Field label="可使用次數" className="!mr-[12px] flex w-[80px]">
             <TextField
               fullWidth
               variant="outlined"
@@ -243,7 +244,7 @@ export default function CouponSells({
         )}
         {isTicketSellingEditable && (
           <RowIconButton
-            label="清除此列" className="mr-1.5"
+            label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               onClear({ index })
             }}
@@ -254,7 +255,7 @@ export default function CouponSells({
         )}
         {!first && isTicketSellingEditable ? (
           <RowIconButton
-            label="刪除此列" className="mr-1.5"
+            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               removeCouponSell({
                 index,

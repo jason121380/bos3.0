@@ -189,7 +189,7 @@ describe('帳單詳細：改會員卡後重新結帳', () => {
     await pickEmployee(sellerOf(0), ASSISTANT.userName)
     fireEvent.click(thirdPartyOf(0))
     fireEvent.click(await within(document.body).findByTestId('團購券'))
-    expect(await within(rowEl(0)).findByText('扣完後業績:2520')).toBeInTheDocument()
+    expect(await within(rowEl(0)).findByText('扣完後業績:2,520')).toBeInTheDocument()
     fireEvent.change(remarkOf(0), { target: { value: '生日禮' } })
     const input = await checkoutAndGetInput(page.calls)
     expect(input.membershipOrders).toEqual([
@@ -212,7 +212,7 @@ describe('帳單詳細：改會員卡後重新結帳', () => {
     const page = open(withCards(membershipOrder(MEMBERSHIP, { thirdPartyPayId: 'tp-2' })))
     await pageReady(page)
     // 3000 − 100 = 2900
-    expect(await within(rowEl(0)).findByText('扣完後業績:2900')).toBeInTheDocument()
+    expect(await within(rowEl(0)).findByText('扣完後業績:2,900')).toBeInTheDocument()
   })
 
   it('清除第 2 列、刪除第 2 列：該列不送出', async () => {

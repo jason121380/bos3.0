@@ -29,7 +29,7 @@ describe('重新開單：佇列帳單的各區項目原樣帶回', () => {
     expect(screen.getByDisplayValue('精緻剪髮(S01)')).toBeInTheDocument()
     expect(screen.getByDisplayValue('染髮(S02)')).toBeInTheDocument()
     // 第三方卡券（團購券，抽成 10%）：顯示扣完後業績；服務綁定且鎖定的卡券不能改
-    expect(screen.getByText('扣完後業績:1800')).toBeInTheDocument()
+    expect(screen.getByText('扣完後業績:1,800')).toBeInTheDocument()
     expect(screen.getByDisplayValue('團購券')).toBeDisabled()
     expect(screen.getByDisplayValue('洗髮精')).toBeInTheDocument()
     expect(screen.getByDisplayValue('護髮五次卡(T01)')).toBeInTheDocument()
@@ -45,10 +45,13 @@ describe('重新開單：佇列帳單的各區項目原樣帶回', () => {
     expect(summaryValue('使用預收卡')).toHaveTextContent('200')
     expect(summaryValue('會員卡販賣')).toHaveTextContent('12,000')
     expect(summaryValue('扣入金')).toHaveTextContent('100')
+    expect(summaryValue('紅利點數折抵')).toHaveTextContent(/^50$/)
     // 業績合計＝服務＋店販＋使用預收卡＋會員卡（預收卡販賣在使用時才入業績）
     expect(summaryValue('業績合計')).toHaveTextContent('15,600')
-    // 現金應收不含第三方卡券付的服務（染髮 2000），再扣入金 100
-    expect(summaryValue('現金應收')).toHaveTextContent('14,300')
+    // 現金應收不含第三方卡券付的服務（染髮 2000），再扣入金 100 與紅利折抵 50。
+    // 為什麼：四頁金額彙總的預覽以打帳單為準（Jason 2026/10/22），打帳單的現金應收會扣紅利點數折抵；
+    // 重新開單原本漏扣（顯示 14,300），付款與折抵也沒列出紅利點數折抵
+    expect(summaryValue('現金應收')).toHaveTextContent('14,250')
 
     const input = await retry(page.calls)
     expect(input.serviceOrders).toEqual([

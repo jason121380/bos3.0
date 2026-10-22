@@ -9,6 +9,7 @@ import useFetchDestroyQueueById from 'hooks/useFetchDestroyQueueById'
 import { handleTidyBill, checkServicesOrders, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
 import produce from 'immer'
 import giveBonus from 'helper/giveBonus'
+import billPaymentSummary from 'helper/billPaymentSummary'
 import { Button } from 'ui/button'
 import { SummaryDetails, EditSummaryCard, BillActions, StickySummaryBar } from 'views/OrderShared/BillSummary'
 
@@ -229,19 +230,19 @@ export default function Footer({ enable }) {
     isLineBinded, setBill
   ])
 
-  // 業績合計、現金應收：運算式與舊版逐字相同，只是算一次，下方彙總卡與底部固定列共用同一個值（比照打帳單 PannelPerformance）
+  // 業績合計、現金應收：只顯示在金額彙總（彙總卡與底部固定列共用），不送後端（後端依品項明細自己算業績）。
+  // 四頁預覽以打帳單（PannelPerformance）為準（Jason 2026/10/22）：
+  // - 業績合計：會員卡用第三方卡券時照樣計入售價全額（原本排除，與打帳單、掛單詳細不一致）
+  // - 現金應收：與打帳單共用 billPaymentSummary——扣掉紅利點數折抵（原本漏扣）。
+  //   （另一個寫法差異：原式排除「未選商品」的店販列，但這種列價格一律是 0，結果相同）
+  // 上方「付款超過應付時歸零」與紅利給點的 effect 用的是各自的運算式（含紅利折抵），不受影響
   const performanceTotal = Math.round(
     serviceTotalPrice +
     merchantSellTotalPrice +
     couponUsageTotalPrice +
-    merberShipCardTotalPriceWithoutThirdPartyCoupon
+    merberShipCardTotalPrice
   )
-  const cashDue = serviceTotalPriceWithoutThirdPartyCoupon +
-    productTotalPriceWithoutThirdPartyCoupon +
-    couponSellPrice +
-    merberShipCardTotalPriceWithoutThirdPartyCoupon -
-    bill.walletPay -
-    bill.amountByOtherPay
+  const { cashDue } = billPaymentSummary(bill)
 
   // 「重試」停用時說明原因（STYLE §6「按鈕停用要說明原因」）：只用於顯示，不參與任何啟用／停用判斷。
   // 逐條對照上方 vaild 與按鈕的 disabled={vaild || !enable || created || submitting}：
@@ -276,6 +277,8 @@ export default function Footer({ enable }) {
       payments={[
         { label: '扣入金', value: bill.walletPay },
         { label: '其他付款方式', value: bill.amountByOtherPay },
+        // 比照打帳單列出紅利點數折抵（現金應收已扣這一項）
+        { label: '紅利點數折抵', value: bill.bonusDecount },
       ]}
     />
   )

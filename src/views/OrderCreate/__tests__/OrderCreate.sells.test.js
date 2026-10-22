@@ -491,7 +491,7 @@ describe('會員卡銷售', () => {
     fireEvent.click(tp)
     fireEvent.click(await screen.findByTestId('團購券'))
     // 3000 × 90% = 2700
-    expect(await screen.findByText('扣完後業績:2700')).toBeInTheDocument()
+    expect(await screen.findByText('扣完後業績:2,700')).toBeInTheDocument()
     act(() => tp.focus())
     fireEvent.mouseDown(buttonsIn(tp.closest('.ui-root'), '清除')[0])
     await wait(() => expect(screen.queryByText(/扣完後業績/)).toBeNull())
@@ -512,7 +512,7 @@ describe('會員卡銷售', () => {
     fireEvent.click(tp)
     fireEvent.click(await screen.findByTestId('禮券'))
     // 3000 − 100 = 2900
-    expect(await screen.findByText('扣完後業績:2900')).toBeInTheDocument()
+    expect(await screen.findByText('扣完後業績:2,900')).toBeInTheDocument()
   })
 
   it('新增、刪除、清除列：只送出有內容的列', async () => {

@@ -1,6 +1,7 @@
 // 保護「帳單詳細」的金額彙總與送出（Footer）：
 // - 一張含服務（含助理、第三方卡券）、店販、預收卡、使用預收卡、會員卡的既有帳單，金額彙總要照原帳單算對
-//   （業績合計含第三方卡券金額，現金應收扣掉第三方卡券、扣入金、其他付款與紅利折抵），重新結帳送出的內容與原帳單一致
+//   （業績合計含第三方卡券付的服務、店販、會員卡金額〔四頁以打帳單為準〕，現金應收扣掉第三方卡券、扣入金、其他付款與紅利折抵），
+//   重新結帳送出的內容與原帳單一致
 // - 送出前的檢查：店販缺服務人員／商品、會員卡缺服務人員／會員卡、到期日無效、服務缺項目時擋下並提示原因，不送出
 // - 送出成功後依進來的網址回到正確的列表（訂單列表、帶日期區間的訂單列表、掛單列表、網路訂單）
 // - 送出失敗（儲存、重新結帳）：留在本頁，按鈕恢復可按、可以再送一次
@@ -53,10 +54,27 @@ describe('帳單詳細：完整帳單的金額彙總與重新結帳', () => {
     expect(summaryValue('扣入金')).toHaveTextContent('200')
     expect(summaryValue('其他付款方式')).toHaveTextContent('300')
     expect(summaryValue('紅利點數折抵')).toHaveTextContent('10')
-    // 業績合計＝服務 2300＋店販 2400＋使用預收卡 600＋會員卡 3000（第三方卡券照樣入業績）
+    // 業績合計＝服務 2300＋店販 2400＋使用預收卡 600＋會員卡 3000（第三方卡券付的服務 1500、店販 2400 照樣入業績）
     expect(summaryValue('業績合計')).toHaveTextContent('8,300')
     // 現金應收＝不含第三方卡券的服務 800＋店販 0＋預收卡 6000＋會員卡 3000－扣入金 200－其他付款 300－紅利折抵 10
     expect(summaryValue('現金應收')).toHaveTextContent('9,290')
+  })
+
+  // 為什麼：四頁金額彙總的預覽以打帳單為準（Jason 2026/10/22）。打帳單、掛單詳細的業績合計計入第三方卡券付的會員卡售價全額，
+  // 帳單詳細原本排除（這張帳單會顯示 5,300），同一張帳單在不同頁數字不同。預覽只顯示在畫面，不送後端（後端依品項明細自己算業績）；
+  // 現金應收照舊不含這張會員卡（不由店家收款）。
+  it('會員卡用第三方卡券：業績合計計入售價全額，現金應收不含這張會員卡', async () => {
+    const full = makeFullOrder()
+    const page = setup(fullOrderFixtures({
+      order: makeFullOrder({ membershipOrders: [{ ...full.membershipOrders[0], thirdPartyPayId: 'tp-1' }] }),
+    }))
+    await pageReady(page)
+    await wait(() => expect(summaryValue('使用預收卡')).toHaveTextContent('600'))
+    expect(summaryValue('會員卡販賣')).toHaveTextContent('3,000')
+    // 服務 2300＋店販 2400＋使用預收卡 600＋會員卡 3000
+    expect(summaryValue('業績合計')).toHaveTextContent('8,300')
+    // 服務 800＋預收卡 6000－扣入金 200－其他付款 300－紅利折抵 10
+    expect(summaryValue('現金應收')).toHaveTextContent('6,290')
   })
 
   it('重新結帳送出原帳單的顧客、各項消費、付款與紅利（不帶手機、不帶鎖定欄位）', async () => {

@@ -14,14 +14,16 @@ import { MobileDatePicker } from 'ui/date-picker'
 
 import MemberShipCardSellsModal from "views/OrderShared/MemberShipCardSellsModal";
 import { useMembershipPicker } from "views/OrderShared/useItemPicker";
+import { formatNumber } from 'ui/format'
+import { ROW_ICON_ALIGN, ROW_ICON_ALIGN_SMALL } from 'views/OrderShared/rowAlign'
 
-// 版面比照打帳單（views/OrderCreate/styles/MemberShipCardSells）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
+// 版面比照打帳單（views/OrderCreate/styles/MemberShipCardSells）：欄位上方標籤、上緣對齊（OrderShared/rowAlign）、窄螢幕換行不擠壓
 // 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px；pxToRem 以 16px 換算；原 `!important` 以 `!` 前綴保留）。
 // 自動完成元件與 MobileDatePicker 的 className 原以 css 套在根節點
 const styles = {
-  merchantSells: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  merchantSells: 'flex items-start justify-start flex-wrap gap-y-[12px] mb-[24px]',
   field: 'w-[200px] flex !mr-[12px]',
-  priceField: 'w-[65px] flex !mr-[12px]',
+  priceField: 'w-[90px] flex !mr-[12px]', // 會員卡價格常為 5 位數，65px 會截成「1200(」
   heading2: 'text-[0.8125rem] font-bold',
   productField: 'w-[250px] flex mr-[12px]',
   dateField: 'w-[200px] flex !mr-[12px]',
@@ -143,11 +145,11 @@ const MemberShipCardSells = ({
           />
         </Field>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇會員卡" className="mx-1.5" onClick={handleOpenProductsModal}>
+          <RowIconButton label="從清單選擇會員卡" className={`mx-1.5 ${ROW_ICON_ALIGN_SMALL}`} onClick={handleOpenProductsModal}>
             <Copy aria-hidden="true" strokeWidth={1.75} />
           </RowIconButton>
         ) : (
-          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
+          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN_SMALL}`} />
         )}
         <Field label="會員卡" required={!!sells.sellerId || !!sells.membershipUUID}>
           <MemberShipCardAutoComplete
@@ -320,8 +322,8 @@ const MemberShipCardSells = ({
                         扣完後業績:
                         {/* 比照 Services.js：PERCENT 按比例，其他類型（固定金額）減去手續費 */}
                         {data.type === 'PERCENT'
-                          ? Math.round((sells.price * (100 - data.fee)) / 100)
-                          : Math.round(sells.price - data.fee)}
+                          ? formatNumber(Math.round((sells.price * (100 - data.fee)) / 100))
+                          : formatNumber(Math.round(sells.price - data.fee))}
                       </p>
                     );
                   }
@@ -357,7 +359,7 @@ const MemberShipCardSells = ({
 
         <RowIconButton
           label="清除此列"
-          className="mr-1.5"
+          className={`mr-1.5 ${ROW_ICON_ALIGN}`}
           onClick={function () {
             onClear({ index });
           }}
@@ -368,7 +370,7 @@ const MemberShipCardSells = ({
         {!first ? (
           <RowIconButton
             label="刪除此列"
-            className="mr-1.5"
+            className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               removeSells({ index });
             }}

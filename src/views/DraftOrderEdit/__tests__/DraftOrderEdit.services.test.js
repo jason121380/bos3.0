@@ -99,8 +99,8 @@ describe('掛單詳細：服務帶回與修改', () => {
     const thirdParty = screen.getAllByPlaceholderText('第三方卡券')[0]
     await wait(() => expect(thirdParty).toHaveValue('街口券'))
     expect(thirdParty).toBeDisabled()
-    // 街口券手續費 10%：扣完後業績 1800
-    expect(screen.getByText('扣完後業績:1800')).toBeInTheDocument()
+    // 街口券手續費 10%：扣完後業績 1,800
+    expect(screen.getByText('扣完後業績:1,800')).toBeInTheDocument()
     const input = await saveDraft(page.calls)
     expect(input.serviceOrders).toEqual([
       expect.objectContaining({ serviceId: SERVICE2.id, price: 2000, thirdPartyCouponMerchantId: 'tp-1' }),

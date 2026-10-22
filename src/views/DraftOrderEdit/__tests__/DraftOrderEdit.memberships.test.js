@@ -167,18 +167,18 @@ describe('掛單詳細：會員卡帶回與修改', () => {
     await setup({ thirdPartTicket: true })
     pick(cards().getByPlaceholderText('第三方卡券'), '定額券')
     // 12000 − 100 = 11900
-    await wait(() => expect(cards().getByText('扣完後業績:11900')).toBeInTheDocument())
+    await wait(() => expect(cards().getByText('扣完後業績:11,900')).toBeInTheDocument())
   })
 
   it('第三方卡券：選卡券後顯示扣完手續費的業績並送出；清除後不再送出', async () => {
     const page = await setup({ thirdPartTicket: true })
     const thirdParty = cards().getByPlaceholderText('第三方卡券')
     pick(thirdParty, '街口券')
-    await wait(() => expect(cards().getByText('扣完後業績:10800')).toBeInTheDocument())
+    await wait(() => expect(cards().getByText('扣完後業績:10,800')).toBeInTheDocument())
     let input = await saveDraft(page.calls)
     expect(input.membershipOrders[0].thirdPartyCouponMerchantId).toBe('tp-1')
     clearField(thirdParty)
-    await wait(() => expect(cards().queryByText('扣完後業績:10800')).toBeNull())
+    await wait(() => expect(cards().queryByText('扣完後業績:10,800')).toBeNull())
     page.calls.length = 0
     input = await saveDraft(page.calls)
     expect(input.membershipOrders[0].thirdPartyCouponMerchantId).toBeNull()

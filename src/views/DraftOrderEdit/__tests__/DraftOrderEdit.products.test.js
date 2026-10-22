@@ -95,12 +95,12 @@ describe('掛單詳細：店販帶回與修改', () => {
     const page = await setup({ thirdPartTicket: true })
     const thirdParty = products().getByPlaceholderText('第三方卡券')
     pick(thirdParty, '街口券')
-    // 單價 1200、手續費 10%：扣完後業績 1080（以單價計）
-    await wait(() => expect(products().getByText('扣完後業績:1080')).toBeInTheDocument())
+    // 單價 1200、手續費 10%：扣完後業績 1,080（以單價計）
+    await wait(() => expect(products().getByText('扣完後業績:1,080')).toBeInTheDocument())
     let input = await saveDraft(page.calls)
     expect(input.productOrders[0].thirdPartyCouponMerchantId).toBe('tp-1')
     clearField(thirdParty)
-    await wait(() => expect(products().queryByText('扣完後業績:1080')).toBeNull())
+    await wait(() => expect(products().queryByText('扣完後業績:1,080')).toBeNull())
     page.calls.length = 0
     input = await saveDraft(page.calls)
     expect(input.productOrders[0].thirdPartyCouponMerchantId).toBeNull()
@@ -111,7 +111,7 @@ describe('掛單詳細：店販帶回與修改', () => {
   it('掛單帶回固定金額的第三方卡券：扣完後業績＝單價－手續費', async () => {
     await setup({ thirdPartTicket: true, order: makeOrder({ productOrders: [productOrder(PRODUCT, { thirdPartyPayId: 'tp-2' })] }) })
     // 單價 1200 − 定額券 100 = 1100（以單價計）
-    await wait(() => expect(products().getByText('扣完後業績:1100')).toBeInTheDocument())
+    await wait(() => expect(products().getByText('扣完後業績:1,100')).toBeInTheDocument())
   })
 
   it('清除商品欄：該列不再有單價與數量欄', async () => {

@@ -6,15 +6,16 @@ import billContext from 'context/keyInContext'
 import idx from 'idx'
 import React, { Fragment } from 'react'
 import useCouponUseRow from 'views/OrderShared/useCouponUseRow'
+import { ROW_INLINE_ALIGN } from 'views/OrderShared/rowAlign'
 
-// 版面比照打帳單（views/OrderCreate/styles/CouponUse）：欄位上方標籤、靠底對齊、窄螢幕換行不擠壓
+// 版面比照打帳單（views/OrderCreate/styles/CouponUse）：欄位上方標籤、上緣對齊（OrderShared/rowAlign）、窄螢幕換行不擠壓
 // 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px）。className 傳給自動完成元件（原以 css={className} 套在根節點）
 const styles = {
-  couponUse: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  couponUse: 'flex items-start justify-start flex-wrap gap-y-[12px] mb-[24px]',
   field: 'w-[150px] min-w-[150px] flex mr-[12px]',
   couponField: 'w-[250px] flex mr-[12px]',
   priceField: 'w-[65px] flex mr-[12px]',
-  checkbox: 'w-[100px] flex mr-[12px] last:mr-0',
+  checkbox: `w-[100px] flex mr-[12px] last:mr-0 ${ROW_INLINE_ALIGN}`,
 }
 
 export default function CouponUse({

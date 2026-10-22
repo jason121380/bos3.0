@@ -65,7 +65,7 @@ describe('帳單詳細：店販帶回原帳單', () => {
     expect(productOf(0)).toHaveValue('洗髮精')
     expect(sellerOf(0)).toHaveValue('Amy-01')
     expect(countOf(0)).toHaveValue('2')
-    expect(within(rowEl(0)).getByText('扣完後業績:1080')).toBeInTheDocument()
+    expect(within(rowEl(0)).getByText('扣完後業績:1,080')).toBeInTheDocument()
     expect(priceOf(1)).toBeDisabled()
     expect(priceOf(0)).not.toBeDisabled()
   })
@@ -76,7 +76,7 @@ describe('帳單詳細：店販帶回原帳單', () => {
     const page = open({ order: makeOrder({ productOrders: [productOrder(PRODUCT, { thirdPartyPayId: 'tp-2' })] }) })
     await pageReady(page)
     // 1200 − 100 = 1100
-    expect(await within(rowEl(0)).findByText('扣完後業績:1100')).toBeInTheDocument()
+    expect(await within(rowEl(0)).findByText('扣完後業績:1,100')).toBeInTheDocument()
   })
 
   it('收合店販：標題列顯示已填筆數與金額', async () => {
@@ -161,7 +161,7 @@ describe('帳單詳細：改店販後重新結帳', () => {
     await pageReady(page)
     fireEvent.click(thirdPartyOf(0))
     fireEvent.click(await within(document.body).findByTestId('團購券'))
-    expect(await within(rowEl(0)).findByText('扣完後業績:1080')).toBeInTheDocument()
+    expect(await within(rowEl(0)).findByText('扣完後業績:1,080')).toBeInTheDocument()
     thirdPartyOf(0).focus()
     fireEvent.mouseDown(await within(rowEl(0)).findByLabelText('清除', { selector: 'button' }))
     await wait(() => expect(within(rowEl(0)).queryByText(/扣完後業績/)).toBeNull())

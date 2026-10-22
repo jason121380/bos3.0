@@ -15,13 +15,15 @@ import billContext from 'context/keyInContext'
 
 import MemberShipCardSellsModal from "views/OrderShared/MemberShipCardSellsModal";
 import { useMembershipPicker } from "views/OrderShared/useItemPicker";
+import { formatNumber } from 'ui/format'
+import { ROW_ICON_ALIGN, ROW_ICON_ALIGN_SMALL } from 'views/OrderShared/rowAlign'
 
 const styles = {
-  merchantSells: 'flex items-end justify-start flex-wrap gap-y-[12px] mb-[24px]',
+  merchantSells: 'flex items-start justify-start flex-wrap gap-y-[12px] mb-[24px]',
   field: 'w-[200px] flex !mr-[12px]',
   productField: 'w-[250px] flex !mr-[12px]',
   dateField: 'w-[200px] flex !mr-[12px]',
-  priceField: 'w-[65px] flex !mr-[12px]',
+  priceField: 'w-[90px] flex !mr-[12px]', // 會員卡價格常為 5 位數，65px 會截成「1200(」
   heading2: 'text-[0.8125rem] font-bold',
 }
 
@@ -151,9 +153,9 @@ const MemberShipCardSells = ({
           />
         </Field>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇會員卡" className="mx-1.5" onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇會員卡" className={`mx-1.5 ${ROW_ICON_ALIGN_SMALL}`} onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
+          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN_SMALL}`} />
         )}
         <Field label="會員卡" required={!!sellsItem.sellerId || !!sellsItem.membershipUUID}>
           <MemberShipCardAutoComplete
@@ -321,8 +323,8 @@ const MemberShipCardSells = ({
                         <p className={`m-0 ${styles.heading2}`} key={data.id} style={{ marginTop: '4px' }}>
                           {/* 比照 Services.js：PERCENT 按比例，其他類型（固定金額）減去手續費 */}
                           {data.type === 'PERCENT'
-                            ? `扣完後業績:${Math.round((sellsItem.price * (100 - data.fee)) / 100)}`
-                            : `扣完後業績:${Math.round(sellsItem.price - data.fee)}`}
+                            ? `扣完後業績:${formatNumber(Math.round((sellsItem.price * (100 - data.fee)) / 100))}`
+                            : `扣完後業績:${formatNumber(Math.round(sellsItem.price - data.fee))}`}
                         </p>
                       );
                     }
@@ -359,7 +361,7 @@ const MemberShipCardSells = ({
         )}
 
         <RowIconButton
-          label="清除此列" className="mr-1.5"
+          label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
           onClick={() => {
             onClear({ index });
             setFocus("employee");
@@ -370,7 +372,7 @@ const MemberShipCardSells = ({
         </RowIconButton>
         {!first && (
           <RowIconButton
-            label="刪除此列" className="mr-1.5"
+            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={() => {
               removeSells({ index });
               setFocus("employee");

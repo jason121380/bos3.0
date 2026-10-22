@@ -12,6 +12,8 @@ import billContext from 'context/keyInContext'
 
 import ProductsModal from 'views/OrderShared/ProductsModal'
 import { useProductPicker } from 'views/OrderShared/useItemPicker'
+import { formatNumber } from 'ui/format'
+import { ROW_ICON_ALIGN, ROW_ICON_ALIGN_SMALL } from 'views/OrderShared/rowAlign'
 
 export default function MerchantSells({
   sells,
@@ -55,7 +57,7 @@ export default function MerchantSells({
   }
   return (
     <Fragment>
-      <div className="mb-6 flex flex-wrap items-end justify-start gap-y-[12px]">
+      <div className="mb-6 flex flex-wrap items-start justify-start gap-y-[12px]">
         {/* 必填 *：Footer.js 重試時 helper/billVerify.js checkProductOrders 要求 sellerId 與 productId；兩者都空的列會被 handleTidyBill 丟掉，所以該列有填任一欄才標必填（同打帳單） */}
         <Field label="服務人員" required={!!sells.sellerId || !!sells.productId}>
           <EmployeeAutoComplete
@@ -75,9 +77,9 @@ export default function MerchantSells({
           />
         </Field>
         {index === 0 ? (
-          <RowIconButton label="從清單選擇商品" className="mx-1.5" onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
+          <RowIconButton label="從清單選擇商品" className={`mx-1.5 ${ROW_ICON_ALIGN_SMALL}`} onClick={handleOpenProductsModal}><Copy aria-hidden="true" strokeWidth={1.75} /></RowIconButton>
         ) : (
-          <span aria-hidden="true" className="mx-1.5 h-8 w-8 shrink-0" />
+          <span aria-hidden="true" className={`mx-1.5 h-8 w-8 shrink-0 ${ROW_ICON_ALIGN_SMALL}`} />
         )}
         <Field label="商品" required={!!sells.sellerId || !!sells.productId}>
           <ProductAutoComplete
@@ -166,8 +168,8 @@ export default function MerchantSells({
                         扣完後業績:
                         {/* 比照打帳單與 Services.js：PERCENT 按比例，其他類型（固定金額）減去手續費 */}
                         {data.type === 'PERCENT'
-                          ? Math.round((sells.price * (100 - data.fee)) / 100)
-                          : Math.round(sells.price - data.fee)}
+                          ? formatNumber(Math.round((sells.price * (100 - data.fee)) / 100))
+                          : formatNumber(Math.round(sells.price - data.fee))}
                       </p>
                     )
                   }
@@ -180,7 +182,7 @@ export default function MerchantSells({
         )}
 
         <RowIconButton
-          label="清除此列" className="mr-1.5"
+          label="清除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
           onClick={function () {
             onClear({ index })
           }}
@@ -190,7 +192,7 @@ export default function MerchantSells({
         </RowIconButton>
         {!first ? (
           <RowIconButton
-            label="刪除此列" className="mr-1.5"
+            label="刪除此列" className={`mr-1.5 ${ROW_ICON_ALIGN}`}
             onClick={function () {
               removeSells({ index })
             }}

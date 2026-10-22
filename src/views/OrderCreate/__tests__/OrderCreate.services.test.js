@@ -160,7 +160,7 @@ describe('項目消費：第三方卡券', () => {
     await wait(() => expect(thirdPartyInput()).toBeDisabled())
     expect(thirdPartyInput()).toHaveValue('團購券')
     // 2000 × 90% = 1800
-    expect(screen.getByText('扣完後業績:1800')).toBeInTheDocument()
+    expect(screen.getByText('扣完後業績:1,800')).toBeInTheDocument()
   })
 
   it('綁定設定 UNSET：是否鎖定依店家「服務綁定第三方卡券鎖定」設定', async () => {
