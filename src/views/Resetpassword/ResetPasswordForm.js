@@ -10,9 +10,10 @@ import { Field, Input } from 'ui/input'
 import { saveStoredUser } from 'lib/stored-user'
 
 function ResetPasswordForm({ className, ...rest }) {
+  // 訊息前加 ^：validate.js 預設會在訊息前加英文欄位名（原本畫面顯示「Phone 必填」「Verification code 必填」）
   const [schema, setSchema] = useState({
     phone: {
-      presence: { allowEmpty: false, message: '必填' },
+      presence: { allowEmpty: false, message: '^必填' },
     },
   })
   const showVerification = useToggle()
@@ -32,8 +33,8 @@ function ResetPasswordForm({ className, ...rest }) {
       ...prevFormState,
       values: {
         ...prevFormState.values,
-        [event.target.name]:
-          event.target.type === 'checkbox' ? event.target.checked : event.target.value,
+        // 表單只有電話、驗證碼兩個文字欄（原本的 checkbox 分支跑不到，已移除）
+        [event.target.name]: event.target.value,
       },
       touched: {
         ...prevFormState.touched,
@@ -53,7 +54,7 @@ function ResetPasswordForm({ className, ...rest }) {
       setSchema({
         ...schema,
         verificationCode: {
-          presence: { allowEmpty: false, message: '必填' },
+          presence: { allowEmpty: false, message: '^必填' },
         },
       })
 
@@ -61,17 +62,26 @@ function ResetPasswordForm({ className, ...rest }) {
         .then(() => {
           localStorage.setItem('countdownForVerify', true)
         })
-        .catch(err => console.log(err.message))
+        .catch(() => {
+          // 寄送失敗（提示由 errorLink 負責）：回到輸入電話，可修改後再寄；原本停在驗證碼欄、電話鎖住無法重寄
+          showVerification.setOpen(false)
+          setSchema(schema)
+        })
     } else {
       forgotPasswordVerify({
         cellphone: formState.values.phone,
         verifyCode: formState.values.verificationCode,
-      }).then(({ data }) => {
-        saveStoredUser(data.forgetPasswordVerify)
-        localStorage.setItem('userMerchant', JSON.stringify(data.forgetPasswordVerify.merchants[0]))
-        localStorage.removeItem('countdownForVerify')
-        history.push('/')
       })
+        .then(({ data }) => {
+          saveStoredUser(data.forgetPasswordVerify)
+          localStorage.setItem('userMerchant', JSON.stringify(data.forgetPasswordVerify.merchants[0]))
+          localStorage.removeItem('countdownForVerify')
+          history.push('/')
+        })
+        .catch(() => {
+          // 驗證失敗（提示由 errorLink 負責）：按鈕恢復可按；原本要改驗證碼才會重新檢查、才能再按
+          setFormState(prevFormState => ({ ...prevFormState, isValid: !validate(prevFormState.values, schema) }))
+        })
     }
   }
 

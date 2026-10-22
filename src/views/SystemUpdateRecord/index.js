@@ -26,7 +26,8 @@ const SystemUpdateRecord = () => {
 
   useEffect(() => {
     if (!systemUpdateRecord.loading) {
-      setRecord(idx(systemUpdateRecord, _ => _.data.systemUpdateRecord))
+      // 查詢失敗時 data 為 undefined：以空清單帶過（提示由 errorLink 負責），原本 Results 讀 undefined.length 整頁錯誤
+      setRecord(idx(systemUpdateRecord, _ => _.data.systemUpdateRecord) || [])
     }
   }, [systemUpdateRecord.loading])
 

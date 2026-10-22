@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { gql, useMutation } from '@apollo/client'
+import { gql, isApolloError, useMutation } from '@apollo/client'
 import { Card } from 'ui/card'
 import { openSnackbar } from 'elements/snackbars'
 import Page from 'components/Page'
@@ -31,47 +31,29 @@ function Reservation({ match, location }) {
           liffId: liffId,
         })
         .then(() => {
-          if (window.liff.isLoggedIn()) {
-            window.liff
-              .getProfile()
-              .then(async profile => {
-                const a = await changeLineMenu({
-                  variables: {
-                    input: {
-                      lineId: profile.userId,
-                      menuId: menuId,
-                      storeId: storeId,
-                    },
-                  },
-                })
-                window.liff.closeWindow()
-              })
-              .catch(err => {
-                openSnackbar({ message: `內部錯誤:${err.message}`, variant: 'error' })
-                throw new Error(`${err.code}: ${err.message}`)
-              })
-          } else {
-            window.liff.login().then(() => {
-              window.liff
-                .getProfile()
-                .then(async profile => {
-                  const a = await changeLineMenu({
-                    variables: {
-                      input: {
-                        lineId: profile.userId,
-                        menuId: menuId,
-                        storeId: storeId,
-                      },
-                    },
-                  })
-                  window.liff.closeWindow()
-                })
-                .catch(err => {
-                  openSnackbar({ message: `內部錯誤:${err.message}`, variant: 'error' })
-                  throw new Error(`${err.code}: ${err.message}`)
-                })
-            })
+          if (!window.liff.isLoggedIn()) {
+            // 尚未登入：導向 LINE 登入。LIFF v2 的 login() 不回傳 Promise（原本接 .then 會拋 TypeError），
+            // 登入後 LINE 會重新開啟本頁，再走下面已登入的流程
+            window.liff.login()
+            return undefined
           }
+          return window.liff.getProfile().then(async profile => {
+            await changeLineMenu({
+              variables: {
+                input: {
+                  lineId: profile.userId,
+                  menuId: menuId,
+                  storeId: storeId,
+                },
+              },
+            })
+            window.liff.closeWindow()
+          })
+        })
+        .catch(err => {
+          // 原本 LINE 初始化失敗沒有 catch、取個人資料失敗提示後又把錯誤拋出（都是沒人接的 rejection）；
+          // GraphQL／網路錯誤已由 init-apollo 的 errorLink 提示，不重複提示
+          if (!isApolloError(err)) openSnackbar({ message: `內部錯誤:${err.message}`, variant: 'error' })
         })
     }
     LIFFLogin()

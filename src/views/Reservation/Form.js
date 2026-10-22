@@ -15,11 +15,9 @@ import Customer from './Customer'
 
 export default function () {
   const history = useHistory()
-  const { merchantId, values, setValues, location } = React.useContext(useReservationContext)
+  const { values, setValues, location } = React.useContext(useReservationContext)
   const [selectedDesigner, setSelectedDesigner] = React.useState('')
-  const [bookingCategoryNames, setBookingCategoryNames] = React.useState([])
   const [isAssign, setIsAssign] = React.useState(false)
-  const [isClickFriends, setIsClickFriends] = React.useState(false)
   const [isDisabled, setDisabled] = React.useState(false)
 
   React.useEffect(() => {
@@ -51,29 +49,14 @@ export default function () {
       values.customers.main.name &&
       cellphoneRegex.test(values.customers.main.cellphone)
 
-  const isValidFriendsInput = Object.keys(values.customers)
-    .filter(key => key !== 'main')
-    .every(key =>
-      isAssign
-        ? values.customers[key].name && cellphoneRegex.test(values.customers[key].cellphone)
-        : values.customers[key].name && cellphoneRegex.test(values.customers[key].cellphone)
-    )
-
   const { booking } = useFetchBooking()
   const { nonDesignationBooking } = useFetchNonDesignationBooking()
   const handleChange = ({ key, value }) => {
-    const _values = cloneDeep(values)
     setValues(
       produce(draft => {
-        if (key === 'designerId') {
-          // 若更換設計師，「服務時間」欄位清空
-          draft.dateTime = ''
-          // 若更換設計師，「服務項目」欄位清空
-          Object.keys(_values.customers).map(key => (draft.customers[key].designerService = []))
-          draft[key] = value
-        } else {
-          draft[key] = value
-        }
+        // 若更換設計師，「服務時間」欄位清空
+        if (key === 'designerId') draft.dateTime = ''
+        draft[key] = value
       })
     )
   }
@@ -106,13 +89,8 @@ export default function () {
             })
           )
 
-          const service = isAssign
-            ? values.customers.main.designerService.length !== 0
-              ? values.customers.main.designerService.map(data => data.name).toString()
-              : []
-            : bookingCategoryNames.length !== 0
-            ? bookingCategoryNames.find(data => data.type === 'main').name
-            : []
+          // 頁面沒有選服務項目的欄位，訊息的「服務」維持原本的空白；不指定預約的設計師一律「不指定」
+          const service = ''
 
           const messaes = []
           if (data.nonDesignationBooking.status === '待審核') {
@@ -125,7 +103,7 @@ export default function () {
 電話: ${values.customers.main.cellphone}
 預約日期: ${format(new Date(values.dateTime), 'yyyy/MM/dd')}
 預約時間: ${format(new Date(values.dateTime), 'HH:mm')}
-設計師: ${isAssign ? selectedDesigner : '不指定'}
+設計師: 不指定
 服務: ${service}
           `,
             })
@@ -139,7 +117,7 @@ export default function () {
 電話: ${values.customers.main.cellphone}
 預約日期: ${format(new Date(values.dateTime), 'yyyy/MM/dd')}
 預約時間: ${format(new Date(values.dateTime), 'HH:mm')}
-設計師: ${isAssign ? selectedDesigner : '不指定'}
+設計師: 不指定
 服務: ${service}`,
             })
           }
@@ -154,22 +132,6 @@ export default function () {
           openSnackbar({
             message: '預約成功',
             variant: 'success',
-          })
-        })
-        .then(() => {
-          setValues({
-            ...values,
-            merchantId,
-            dateTime: '',
-            reference: '',
-            customers: Object.keys(values.customers).map(() => {
-              return {
-                name: '',
-                cellphone: '',
-                bookingCategoryId: '',
-                designerService: [],
-              }
-            }),
           })
         })
         .catch(err => {
@@ -192,13 +154,8 @@ export default function () {
               cellphone: values.customers.main.cellphone,
             })
           )
-          const service = isAssign
-            ? values.customers.main.designerService.length !== 0
-              ? values.customers.main.designerService.map(data => data.name).toString()
-              : []
-            : bookingCategoryNames.length !== 0
-            ? bookingCategoryNames.find(data => data.type === 'main').name
-            : []
+          // 頁面沒有選服務項目的欄位，訊息的「服務」維持原本的空白；指定預約一律帶選定的設計師
+          const service = ''
 
           const messaes = []
           if (data.bookingV2.status === '待審核') {
@@ -211,7 +168,7 @@ export default function () {
 電話: ${values.customers.main.cellphone}
 預約日期: ${format(new Date(values.dateTime), 'yyyy/MM/dd')}
 預約時間: ${format(new Date(values.dateTime), 'HH:mm')}
-設計師: ${isAssign ? selectedDesigner : '不指定'}
+設計師: ${selectedDesigner}
 服務: ${service}`,
             })
           } else if (data.bookingV2.status === '預約成功') {
@@ -224,7 +181,7 @@ export default function () {
 電話: ${values.customers.main.cellphone}
 預約日期: ${format(new Date(values.dateTime), 'yyyy/MM/dd')}
 預約時間: ${format(new Date(values.dateTime), 'HH:mm')}
-設計師: ${isAssign ? selectedDesigner : '不指定'}
+設計師: ${selectedDesigner}
 服務: ${service}`,
             })
           }
@@ -239,22 +196,6 @@ export default function () {
           openSnackbar({
             message: '預約成功',
             variant: 'success',
-          })
-        })
-        .then(() => {
-          setValues({
-            ...values,
-            merchantId,
-            dateTime: format(new Date(), 'yyyy/MM/dd'),
-            reference: '',
-            customers: Object.keys(values.customers).map(() => {
-              return {
-                name: '',
-                cellphone: '',
-                bookingCategoryId: '',
-                designerService: [],
-              }
-            }),
           })
         })
         .catch(err => {
@@ -273,15 +214,6 @@ export default function () {
     setSelectedDesigner(name)
   }
 
-  React.useEffect(() => {
-    if (isClickFriends) {
-      const timer = setTimeout(() => {
-        setIsClickFriends(false)
-      }, 1500)
-      return () => clearTimeout(timer)
-    }
-  }, [isClickFriends])
-
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <Basic
@@ -291,45 +223,26 @@ export default function () {
         onDesignerChange={handleDesignerChange}
       />
 
-      {Object.keys(values.customers).map((customer, index) => (
-        <Customer
-          customerKey={customer}
-          key={customer}
-          customer={values.customers[customer]}
-          friendsNumber={`${index}`}
-          onDelete={e => {
-            e.preventDefault()
-            const newCustomers = cloneDeep(values.customers)
-            delete newCustomers[customer]
-            handleChange({
-              key: 'customers',
-              value: newCustomers,
-            })
-          }}
-          cellphoneRegex={cellphoneRegex}
-          onCustomerChange={({ value, customerKey }) => {
-            const newCustomers = cloneDeep(values.customers)
-            newCustomers[customer][customerKey] = value
-            if (customerKey === 'cellphone' && value && !cellphoneRegex.test(value)) {
-              newCustomers[customer].cellphoneErr = true
-            } else {
-              newCustomers[customer].cellphoneErr = false
-            }
-
-            handleChange({
-              key: 'customers',
-              value: newCustomers,
-            })
-          }}
-        />
-      ))}
+      {/* 只有預約人本人（main）：原本預留的「好友」欄位沒有新增入口，已移除 */}
+      <Customer
+        customer={values.customers.main}
+        onCustomerChange={({ value, customerKey }) => {
+          const newCustomers = cloneDeep(values.customers)
+          newCustomers.main[customerKey] = value
+          newCustomers.main.cellphoneErr = customerKey === 'cellphone' && !!value && !cellphoneRegex.test(value)
+          handleChange({
+            key: 'customers',
+            value: newCustomers,
+          })
+        }}
+      />
 
       <Button
         type="submit"
         variant="primary"
         size="lg"
         className="h-11 w-full"
-        disabled={!isValidInput || !isValidFriendsInput || isDisabled}
+        disabled={!isValidInput || isDisabled}
         data-testid="booking-submit"
       >
         預約

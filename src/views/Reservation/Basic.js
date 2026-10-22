@@ -17,17 +17,8 @@ export default function ({ asignDesigner, onChange, onAssignChange, onDesignerCh
   const selectRef = React.useRef()
   const serviceTimeRef = React.useRef()
   const referenceRef = React.useRef()
-  const [serviceTimeLabelWidth, setServiceTimeLabelWidth] = React.useState(0)
-  const [referenceWidth, setReferenceWidth] = React.useState(0)
+  // 原本在這裡量兩個標籤寬度存進 state，但量到的值沒有任何地方使用（MUI 外框標籤的遺留），已移除
   const designers = useFetchViewer({ merchantId, usagelimit: 'BOOKING' })
-  React.useEffect(() => {
-    if (serviceTimeRef.current && serviceTimeRef.current.offsetWidth) {
-      setServiceTimeLabelWidth(serviceTimeRef.current.offsetWidth)
-    }
-    if (referenceRef.current && referenceRef.current.offsetWidth) {
-      setReferenceWidth(referenceRef.current.offsetWidth)
-    }
-  }, [])
 
   const {
     fetchUnspecifiedBookingTimes,

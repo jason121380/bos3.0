@@ -41,6 +41,11 @@ function Map({ className, match, location, ...rest }) {
     }
   }
   const checkIn = () => {
+    // 取不到 LINE 個人資料時不能打卡：原本讀 null.profile 拋錯，畫面卡在「努力提交中」
+    if (!profile) {
+      alert('無法取得 LINE 個人資料，請重新開啟此頁')
+      return
+    }
     setLoading(true)
     const data = {
       storeId: storeId,

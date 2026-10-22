@@ -1,45 +1,13 @@
-import { X } from 'lucide-react'
 import React from 'react'
-import { Button } from 'ui/button'
 import { Card, CardContent } from 'ui/card'
 import { Field, Input } from 'ui/input'
 
-export default function Customer({
-  onDelete,
-  customer,
-  friendsNumber,
-  onCustomerChange,
-  customerKey,
-}) {
-  const [serviceCategoryLabelWidth, setServiceCategoryLabelWidth] = React.useState(0)
-  const serviceCategoryRef = React.useRef()
-  let FN
-  if (friendsNumber) {
-    FN = friendsNumber
-  } else {
-    FN = 0
-  }
-  React.useEffect(() => {
-    setServiceCategoryLabelWidth(
-      serviceCategoryRef.current && serviceCategoryRef.current.offsetWidth
-        ? serviceCategoryRef.current.offsetWidth
-        : 0
-    )
-  }, [])
-
+// 預約人的姓名、電話。原本預留的「好友」標題列與移除鈕（沒有新增好友的入口，永遠不會出現）與沒有掛到元素上的標籤寬度量測已移除；
+// data-testid 維持原本預約人（第 0 位）的 customer-name-0／customer-cellphone-0
+export default function Customer({ customer, onCustomerChange }) {
   return (
     <Card>
       <CardContent className="flex flex-col gap-4">
-        {customerKey !== 'main' ? (
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-heading text-text">{`好友 ${friendsNumber}`}</h2>
-            <Button variant="ghost" size="icon" className="h-11 w-11" aria-label="移除好友" onClick={onDelete} data-testid="remove-friend">
-              <X strokeWidth={1.75} />
-            </Button>
-          </div>
-        ) : (
-          ''
-        )}
         <Field label="顧客姓名" required>
           <Input
             className="h-11"
@@ -49,7 +17,7 @@ export default function Customer({
               onCustomerChange({ value: e.target.value, customerKey: 'name' })
             }}
             required
-            data-testid={`customer-name-${FN}`}
+            data-testid="customer-name-0"
           />
         </Field>
 
@@ -64,7 +32,7 @@ export default function Customer({
               onCustomerChange({ value: e.target.value, customerKey: 'cellphone' })
             }}
             required
-            data-testid={`customer-cellphone-${FN}`}
+            data-testid="customer-cellphone-0"
           />
           {customer.cellphoneErr ? <p className="text-caption text-danger">＊請輸入有效手機號碼</p> : ''}
         </Field>

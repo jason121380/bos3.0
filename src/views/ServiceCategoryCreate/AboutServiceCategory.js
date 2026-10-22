@@ -1,5 +1,5 @@
 // 代號／類別名稱改 Field＋ui Input：register 仍以 ref 掛 react-hook-form、error 訊息由 Field 呈現（文字／驗證時機不變）；備註 multiline 與 Select 保留 MUI
-import { FormControl, InputLabel, Select, FormHelperText, MenuItem } from 'ui/form-control'
+import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
 import PropTypes from 'prop-types'
 import useStore from 'hooks/useStore'
@@ -38,11 +38,8 @@ function AboutServiceCategory({ className, attributions, setAttr, attr, ...rest 
             })}
           />
         </Field>
-        <FormControl
-          variant="outlined"
-          fullWidth
-          error={!!errors.attribution}
-        >
+        {/* 服務歸屬是受控下拉（預設「燙」），沒有交給 react-hook-form 驗證，不會有錯誤訊息；原本的 errors.attribution 判斷跑不到，已移除 */}
+        <FormControl variant="outlined" fullWidth>
           <InputLabel>服務歸屬</InputLabel>
           <Select
             label="服務歸屬"
@@ -59,7 +56,6 @@ function AboutServiceCategory({ className, attributions, setAttr, attr, ...rest 
               </MenuItem>
             ))}
           </Select>
-          {errors.attribution && <FormHelperText>{errors.attribution.message}</FormHelperText>}
         </FormControl>
         <TextField
           name="remark"

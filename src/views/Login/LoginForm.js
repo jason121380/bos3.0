@@ -6,14 +6,12 @@ import { useRef, useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { useForm } from 'react-hook-form'
 import { openSnackbar } from 'elements/snackbars'
-import getQueryString from 'helper/getQueryString'
 import { Button } from 'ui/button'
 import { Checkbox } from 'ui/checkbox'
 import { Field, Input } from 'ui/input'
 import { saveStoredUser } from 'lib/stored-user'
 
 function LoginForm({ className, location, ...rest }) {
-  const liffId = getQueryString({ key: 'liffId', location })
   const { loginV2 } = useFetchLoginV2()
   const { loginForLine } = useFetchLoginForLine()
   const history = useHistory()
@@ -85,6 +83,10 @@ function LoginForm({ className, location, ...rest }) {
       )
     )
   }
+  // 登入成功但讀個人資料失敗（提示由 errorLink 負責）：按鈕恢復可按，可以再登入一次；原本永遠停在「登入中」
+  useEffect(() => {
+    if (profile.error) setDisabledLoginBtn(false)
+  }, [profile.error])
   useEffect(() => {
     if (!profile.loading && profile.data) {
       if (localStorage.getItem('userMerchant') && localStorage.getItem('user')) {

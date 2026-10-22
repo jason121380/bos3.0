@@ -57,8 +57,9 @@ function ServiceCategoryCreate() {
 
   useEffect(() => {
     if (!getAttribution.loading) {
+      // 查詢失敗時 data 為 undefined：以空清單帶過（提示由 errorLink 負責），原本讀 undefined.map 整頁錯誤
       const data = idx(getAttribution, _ => _.data.getAttribution)
-      setAttributions(data)
+      setAttributions(data || [])
     }
   }, [getAttribution.loading])
 

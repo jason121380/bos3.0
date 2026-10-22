@@ -53,37 +53,27 @@ function Reservation({ match, location }) {
           liffId: '1654347144-w0mKXyWa',
         })
         .then(() => {
-          if (window.liff.isLoggedIn()) {
-            window.liff.getProfile().then(profile => {
-              setLineId(profile.userId)
-              setDisplayName(profile.displayName)
-              setPictureUrl(profile.pictureUrl)
-
-              checkLineId({
-                variables: {
-                  lineId: profile.userId,
-                },
-              })
-            })
-          } else {
-            window.liff.login().then(() => {
-              window.liff
-                .getProfile()
-                .then(profile => {
-                  setLineId(profile.userId)
-                  setDisplayName(profile.displayName)
-                  setPictureUrl(profile.pictureUrl)
-                  checkLineId({
-                    variables: {
-                      lineId: profile.userId,
-                    },
-                  })
-                })
-                .catch(err => {
-                  throw new Error(`${err.code}: ${err.message}`)
-                })
-            })
+          if (!window.liff.isLoggedIn()) {
+            // 尚未登入：導向 LINE 登入。LIFF v2 的 login() 不回傳 Promise（原本接 .then 會拋 TypeError），
+            // 登入後 LINE 會重新開啟本頁，再走下面已登入的流程
+            window.liff.login()
+            return undefined
           }
+          return window.liff.getProfile().then(profile => {
+            setLineId(profile.userId)
+            setDisplayName(profile.displayName)
+            setPictureUrl(profile.pictureUrl)
+
+            checkLineId({
+              variables: {
+                lineId: profile.userId,
+              },
+            })
+          })
+        })
+        .catch(() => {
+          // LINE 初始化或取個人資料失敗：原本沒有 catch（沒人接的 rejection），畫面沒有任何提示
+          alert('無法取得 LINE 個人資料，請重新開啟此頁')
         })
     }
     LIFFLogin()
@@ -108,16 +98,27 @@ function Reservation({ match, location }) {
       displayName,
       pictureUrl,
     }
-    const resp = await createMember({
-      variables: {
-        input: data,
-      },
-    })
+    let resp
+    try {
+      resp = await createMember({
+        variables: {
+          input: data,
+        },
+      })
+    } catch (e) {
+      // GraphQL／網路錯誤的提示由 errorLink 負責；按鈕恢復可按（原本永遠停在「努力加入中」）
+      setBtnLoading(false)
+      return ''
+    }
     const result = JSON.parse(resp.data.createMLGMember)
     if (result.returnCode === '0000') {
       history.push(`/ehs2/ehs2?isMember=false&reg=${result.registerResult}`)
     } else if (result.returnCode === '0302') {
       history.push(`/ehs2/ehs2?isMember=true&reg=${result.registerResult}`)
+    } else {
+      // 其他回傳碼：提示並恢復按鈕（原本沒有任何提示、永遠停在「努力加入中」）
+      alert('加入會員失敗，請稍後再試')
+      setBtnLoading(false)
     }
   }
 

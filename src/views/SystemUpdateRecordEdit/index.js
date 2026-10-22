@@ -16,26 +16,28 @@ const SystemUpdateRecordCreate = props => {
     updateTime: new Date().getTime(),
   })
   const [mdValue, setMdValue] = useState('')
+  // 查詢失敗或清單裡沒有這筆：不顯示表單（原本讀 undefined[0] 整頁錯誤；也避免把空白表單存成這筆紀錄）
+  const [notFound, setNotFound] = useState(false)
 
   useEffect(() => {
-    let cleanUp = true
-    if (!systemUpdateRecord.loading && cleanUp) {
-      const data = idx(systemUpdateRecord, _ =>
-        _.data.systemUpdateRecord.filter(d => {
-          return d.systemUpdateId === props.match.params.id
-        })
+    if (!systemUpdateRecord.loading) {
+      const record = (idx(systemUpdateRecord, _ => _.data.systemUpdateRecord) || []).find(
+        d => d.systemUpdateId === props.match.params.id
       )
-      setEditData({ ...editData, ...data[0] })
-      setMdValue(data[0].content)
+      setNotFound(!record)
+      if (record) {
+        setEditData({ ...editData, ...record })
+        setMdValue(record.content)
+      }
     }
-    return () => (cleanUp = false)
   }, [systemUpdateRecord.loading])
 
   return (
     <Page className="ui-root" title="編輯版本紀錄">
       <div>
         <PageHeader title="編輯版本紀錄" />
-        {!systemUpdateRecord.loading && <General editData={editData} setEditData={setEditData} mdValue={mdValue} setMdValue={setMdValue} />}
+        {!systemUpdateRecord.loading && notFound && <p className="text-body text-text-secondary">找不到這筆版本紀錄</p>}
+        {!systemUpdateRecord.loading && !notFound && <General editData={editData} setEditData={setEditData} mdValue={mdValue} setMdValue={setMdValue} />}
       </div>
     </Page>
   )
