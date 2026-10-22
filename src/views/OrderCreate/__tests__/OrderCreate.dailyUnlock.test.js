@@ -39,8 +39,13 @@ it('鎖定中到了解除時間：解除鎖定、清掉記住的日期，帳單�
 })
 
 it('沒有鎖定時到了解除時間：帳單日期不變，仍排下一次', async () => {
+  // 解除時間排在選完日期之後（1.5 秒）；選日期前後都先確認解除還沒發生，順序才成立——
+  // 否則在慢的機器上，解除可能在選日期之前就跑完，即使解除錯把日期改回今天，測試也會通過（Codex review PR #264）
+  msUntilDailyUnlock.mockImplementation((_now, initial) => (initial ? 1500 : 24 * 60 * 60 * 1000))
+  const unlocked = () => msUntilDailyUnlock.mock.calls.some(([, initial]) => initial === false)
   setupPage(lockFixtures)
   await waitPageReady()
+  expect(unlocked()).toBe(false)
   // 先選一個日期（未鎖定）
   fireEvent.click(dateInput())
   const today = new Date()
@@ -48,7 +53,9 @@ it('沒有鎖定時到了解除時間：帳單日期不變，仍排下一次', a
   fireEvent.click(await screen.findByLabelText(format(day15, 'yyyy年M月d日')))
   fireEvent.click(screen.getByText('確認'))
   await wait(() => expect(dateInput().value).toContain(format(day15, 'yyyy/MM/dd')))
-  await wait(() => expect(msUntilDailyUnlock).toHaveBeenCalledWith(expect.any(Date), false))
+  // 選完日期時解除仍未發生；若這裡失敗代表機器太慢、順序不成立，而不是行為錯誤
+  expect(unlocked()).toBe(false)
+  await wait(() => expect(unlocked()).toBe(true), { timeout: 5000 })
   expect(dateInput().value).toContain(format(day15, 'yyyy/MM/dd'))
   expect(localStorage.getItem('lockDate')).toBeNull()
 })
