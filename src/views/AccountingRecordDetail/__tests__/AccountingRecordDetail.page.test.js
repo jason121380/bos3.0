@@ -411,7 +411,8 @@ describe('收支紀錄詳細（高階）', () => {
   })
 
   it('收付方式還沒載入時選單為空，載入後才有選項', async () => {
-    const { settle } = setup({}, { delays: { GET_ACCOUNTING_TYPE: 300 } })
+    // 延遲要比「等金額帶入」長：全套高負載時 300ms 會在斷言前就回來（2026/10/23 洛杉磯時區全套曾失敗）
+    const { settle } = setup({}, { delays: { GET_ACCOUNTING_TYPE: 3000 } })
     await screen.findByText('收支紀錄詳細', { selector: 'h1' })
     await wait(() => expect(field('金額')).toHaveValue(1200))
     expect(options('收付方式')).toEqual([])
