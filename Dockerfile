@@ -1,4 +1,4 @@
-FROM node:20.12.1-alpine AS builder
+FROM node:24.22.1-alpine AS builder
 WORKDIR /usr/app
 
 # 複製 package 檔案
@@ -21,7 +21,7 @@ COPY . .
 RUN npm run build
 
 # 執行階段
-FROM node:20.12.1-alpine
+FROM node:24.22.1-alpine
 WORKDIR /usr/app
 
 # 從編譯階段複製 build 資料夾
