@@ -24,4 +24,7 @@ test('缺區塊、找不到角色、設定格式壞掉、查詢失敗時一律�
   expect(roleSectionAuthority([{ id: 'a1', authoritySettings: '{壞掉' }], 'a1', '打卡權限設定')).toEqual([])
   expect(roleSectionAuthority([role('a1', '店長', [{ pageTitle: '打卡權限設定' }])], 'a1', '打卡權限設定')).toEqual([])
   expect(roleSectionAuthority(undefined, 'a1', '打卡權限設定')).toEqual([])
+  // JSON 合法但不是區塊陣列（例如被存成物件或 null）也視為沒有權限，不可讓 .find 拋錯
+  expect(roleSectionAuthority([{ id: 'a1', authoritySettings: '{"pageTitle":"打卡權限設定"}' }], 'a1', '打卡權限設定')).toEqual([])
+  expect(roleSectionAuthority([{ id: 'a1', authoritySettings: 'null' }], 'a1', '打卡權限設定')).toEqual([])
 })

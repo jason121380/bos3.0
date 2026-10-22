@@ -52,6 +52,10 @@ describe('helperDeduction：助理扣項計算', () => {
       expect(run([rule({ deductionWay: '業績%數', isSplitted: true, percent: 5 })]).cash).toBe(50)
     })
 
+    it('非指定、不均分：每位助理各扣一次百分比', () => {
+      expect(run([rule({ deductionWay: '業績%數', percent: 5 })]).cash).toBe(100)
+    })
+
     it('金額無條件捨去到整數元', () => {
       expect(run([rule({ deductionWay: '業績%數', isSplitted: true, percent: 3.33 })], 999).cash).toBe(33)
     })
@@ -66,6 +70,10 @@ describe('helperDeduction：助理扣項計算', () => {
       expect(result).toEqual({ point: 4, cash: 100 })
     })
 
+    it('非指定、均分：整筆只算一次點數', () => {
+      expect(run([rule({ deductionWay: '點數', isSplitted: true, point: 3 })]).point).toBe(3)
+    })
+
     it('指定：取較高點數 × 人數', () => {
       expect(run([rule({ deductionWay: '點數', isDesignate: true, designatePoint: 3, nonDesignatePoint: 1 })]).point).toBe(6)
     })
@@ -77,6 +85,11 @@ describe('helperDeduction：助理扣項計算', () => {
       rule({ deductionWay: '業績%數', isSplitted: true, percent: 10 }),
     ])
     expect(result.cash).toBe(200)
+  })
+
+  // 服務的助理設定若出現未知的扣項方式（後台新增種類、前端尚未支援），不可算出任何扣項，也不可讓其他規則失效
+  it('未知的扣項方式不計入金額與點數，其他規則照算', () => {
+    expect(run([rule({ deductionWay: '其他', cash: 999, point: 9 }), rule({ deductionWay: '固定金額', cash: 50 })])).toEqual({ point: 0, cash: 100 })
   })
 
   it('沒有規則時金額與點數皆為 0', () => {

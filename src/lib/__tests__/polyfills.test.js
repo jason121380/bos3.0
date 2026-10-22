@@ -30,3 +30,23 @@ test('Date、Map、Set 與循環參照', () => {
 test('全域 structuredClone 可用（瀏覽器原生或補上的版本）', () => {
   expect(typeof window.structuredClone).toBe('function')
 })
+
+// 瀏覽器已有原生 structuredClone 時必須用原生的（支援更多型別、效能較好），不可被簡易版蓋掉
+test('已有原生 structuredClone 時不覆蓋；沒有時才補上', () => {
+  const saved = window.structuredClone
+  const native = jest.fn()
+  try {
+    window.structuredClone = native
+    jest.isolateModules(() => require('../polyfills'))
+    expect(window.structuredClone).toBe(native)
+
+    delete window.structuredClone
+    let fallback
+    jest.isolateModules(() => {
+      fallback = require('../polyfills').structuredCloneFallback
+    })
+    expect(window.structuredClone).toBe(fallback)
+  } finally {
+    window.structuredClone = saved
+  }
+})

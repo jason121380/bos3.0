@@ -22,6 +22,10 @@ describe('msUntilDailyUnlock：每天 23:59 解除鎖定日期', () => {
     expect(msUntilDailyUnlock(new Date(2026, 9, 20, 23, 59, 0, 5), false)).toBe(24 * HOUR - 5)
   })
 
+  it('不指定 initial 時視為「解除後再排」：23:59 這一分鐘內也排到隔天，不會立即再解除', () => {
+    expect(msUntilDailyUnlock(new Date(2026, 9, 20, 23, 59, 30))).toBe(24 * HOUR - 30 * 1000)
+  })
+
   it('跨月：10/31 解除後下一次是 11/1 23:59', () => {
     const now = new Date(2026, 9, 31, 23, 59, 1)
     const next = new Date(now.getTime() + msUntilDailyUnlock(now, false))

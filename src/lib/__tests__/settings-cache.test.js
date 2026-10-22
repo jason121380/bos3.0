@@ -1,5 +1,5 @@
 import { ApolloClient, ApolloLink, InMemoryCache, Observable, gql } from '@apollo/client'
-import { settingsQuery, settingsCacheLink, bindSettingsCache, evictSettings, SETTINGS_MAX_AGE_MS } from '../settings-cache'
+import { settingsQuery, settingsCacheLink, bindSettingsCache, evictSettings, registeredSettingsFields, SETTINGS_MAX_AGE_MS } from '../settings-cache'
 
 // 為什麼重要：設定類查詢改成 cache-first 後，換頁不再重抓（省掉大量重複請求）；
 // 但店家在任何地方存檔後、或過了 10 分鐘，畫面上的設定一定要重新抓，否則會用到舊設定（例如會員卡開關、商品分類）。
@@ -15,7 +15,8 @@ const SAVE = gql`
   }
 `
 
-function setup({ staggerSaves = false } = {}) {
+// saveResult：存檔的回應方式——'ok'（成功）、'graphqlError'（後端回業務錯誤）、'networkError'（斷線）
+function setup({ staggerSaves = false, saveResult = 'ok' } = {}) {
   const calls = []
   let value = true
   let saveCount = 0
@@ -24,7 +25,15 @@ function setup({ staggerSaves = false } = {}) {
     return new Observable(observer => {
       const isSave = operation.operationName === 'TEST_SAVE'
       const respond = () => {
-        observer.next({ data: isSave ? { saveSomething: true } : { getIsMemberShipCardActive: value } })
+        if (isSave && saveResult === 'networkError') {
+          observer.error(new Error('Failed to fetch'))
+          return
+        }
+        if (isSave && saveResult === 'graphqlError') {
+          observer.next({ errors: [{ message: '欄位格式錯誤' }] })
+        } else {
+          observer.next({ data: isSave ? { saveSomething: true } : { getIsMemberShipCardActive: value } })
+        }
         observer.complete()
       }
       // 真實後端的多個存檔回應會在不同時間點回來
@@ -86,6 +95,79 @@ test('每 10 分鐘自動清除設定快取，畫面上的設定會重抓', asyn
   expect(calls.filter(c => c === 'TEST_SETTING')).toHaveLength(2)
   sub.unsubscribe()
   bindSettingsCache(client.cache, { expire: false })
+})
+
+// 存檔失敗時設定沒有改變：不清快取（否則每次失敗都讓畫面上所有設定重抓一次）
+test('存檔回業務錯誤：不清除設定快取', async () => {
+  const { client, calls } = setup({ saveResult: 'graphqlError' })
+  const sub = client.watchQuery({ query: SETTING, fetchPolicy: 'cache-first' }).subscribe(() => {})
+  await flush()
+  await expect(client.mutate({ mutation: SAVE })).rejects.toThrow('欄位格式錯誤')
+  await flush()
+  await flush()
+  expect(calls.filter(c => c === 'TEST_SETTING')).toHaveLength(1)
+  sub.unsubscribe()
+})
+
+test('存檔時斷線：錯誤照樣傳回頁面（才能提示使用者），且不清除設定快取', async () => {
+  const { client, calls } = setup({ saveResult: 'networkError' })
+  const sub = client.watchQuery({ query: SETTING, fetchPolicy: 'cache-first' }).subscribe(() => {})
+  await flush()
+  await expect(client.mutate({ mutation: SAVE })).rejects.toThrow('Failed to fetch')
+  await flush()
+  await flush()
+  expect(calls.filter(c => c === 'TEST_SETTING')).toHaveLength(1)
+  sub.unsubscribe()
+})
+
+// 一個存檔剛完成、清除還沒執行時又送出下一個存檔（連續按兩次儲存）：等第二個也完成才清一次，不重抓兩次
+test('清除排定後又有新的存檔：延到新的存檔完成才清，只重抓一次', async () => {
+  const { client, calls } = setup()
+  const sub = client.watchQuery({ query: SETTING, fetchPolicy: 'cache-first' }).subscribe(() => {})
+  await flush()
+  await client.mutate({ mutation: SAVE }) // 完成後排定清除（下一個事件迴圈）
+  await client.mutate({ mutation: SAVE }) // 清除執行前送出：取消先前排定的清除
+  await flush()
+  await flush()
+  expect(calls.filter(c => c === 'TEST_SAVE')).toHaveLength(2)
+  expect(calls.filter(c => c === 'TEST_SETTING')).toHaveLength(2)
+  sub.unsubscribe()
+})
+
+test('App 綁定 cache 時預設啟用 10 分鐘自動清除', async () => {
+  jest.useFakeTimers()
+  const { client, calls } = setup()
+  bindSettingsCache(client.cache)
+  const sub = client.watchQuery({ query: SETTING, fetchPolicy: 'cache-first' }).subscribe(() => {})
+  await Promise.resolve()
+  jest.advanceTimersByTime(SETTINGS_MAX_AGE_MS + 1)
+  await Promise.resolve()
+  jest.useRealTimers()
+  await flush()
+  expect(calls.filter(c => c === 'TEST_SETTING')).toHaveLength(2)
+  sub.unsubscribe()
+  bindSettingsCache(client.cache, { expire: false })
+})
+
+test('登記的設定根欄位可列出（清除時逐一移除的就是這些）', () => {
+  expect(registeredSettingsFields()).toContain('getIsMemberShipCardActive')
+  expect(registeredSettingsFields()).not.toContain('saveSomething')
+})
+
+// 以 fragment 展開的根層選取沒有欄位名稱，不登記也不拋錯（只登記直接寫出的根欄位）
+test('根層的 fragment 展開不登記、不拋錯', () => {
+  const doc = gql`
+    query TEST_FRAGMENT_ROOT {
+      ...RootFields
+      getTestFragmentFlag
+    }
+    fragment RootFields on Query {
+      getTestFragmentInner
+    }
+  `
+  expect(settingsQuery(doc)).toBe(doc)
+  expect(registeredSettingsFields()).toContain('getTestFragmentFlag')
+  expect(registeredSettingsFields()).not.toContain('RootFields')
 })
 
 test('沒有綁定 cache 時清除不拋錯', () => {

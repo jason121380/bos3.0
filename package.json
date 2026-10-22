@@ -102,27 +102,99 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 26,
-        "functions": 21,
-        "lines": 30,
-        "statements": 30
+        "branches": 29,
+        "functions": 24,
+        "lines": 34,
+        "statements": 34
       },
-      "./src/lib/api-base.js": {
-        "lines": 90
-      },
-      "./src/lib/init-apollo.js": {
-        "lines": 85
-      },
-      "./src/helper/billVerify.js": {
-        "lines": 95
-      },
-      "./src/helper/helperDeduction.js": {
-        "lines": 85
-      },
-      "./src/helper/truncateDecimal.js": {
+      "./src/helper/*.js": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
         "lines": 100
       },
-      "./src/helper/dailyUnlock.js": {
+      "./src/store/*.js": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "./src/lib/!(business-timezone).js": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "./src/lib/business-timezone.js": {
+        "statements": 100,
+        "branches": 96,
+        "functions": 100,
+        "lines": 100
+      },
+      "./src/views/DeductionSettingShared/*.js": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "./src/views/*/*equirements.js": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "./src/views/OrderShared/!(EditCouponSellModal|EditServicesModal|ItemPickerModal|MemberShipCardSellsModal|PannelPayment|PannelRemark|ProductsModal|WalletDepositModal).js": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "./src/views/OrderShared/EditCouponSellModal.js": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 87,
+        "lines": 100
+      },
+      "./src/views/OrderShared/EditServicesModal.js": {
+        "statements": 100,
+        "branches": 91,
+        "functions": 92,
+        "lines": 100
+      },
+      "./src/views/OrderShared/ItemPickerModal.js": {
+        "statements": 86,
+        "branches": 82,
+        "functions": 85,
+        "lines": 86
+      },
+      "./src/views/OrderShared/MemberShipCardSellsModal.js": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 91,
+        "lines": 100
+      },
+      "./src/views/OrderShared/PannelPayment.js": {
+        "statements": 77,
+        "branches": 100,
+        "functions": 50,
+        "lines": 87
+      },
+      "./src/views/OrderShared/PannelRemark.js": {
+        "statements": 77,
+        "branches": 100,
+        "functions": 50,
+        "lines": 87
+      },
+      "./src/views/OrderShared/ProductsModal.js": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 90,
+        "lines": 100
+      },
+      "./src/views/OrderShared/WalletDepositModal.js": {
+        "statements": 98,
+        "branches": 95,
+        "functions": 94,
         "lines": 100
       }
     },

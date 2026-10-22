@@ -47,3 +47,30 @@ test('未登入或資料損壞時不動', () => {
   sanitizeStoredUser()
   expect(store.user).toBe('not-json')
 })
+
+// 登入 API 偶爾少給欄位（例如舊帳號沒有 isNeedChangePassword）：不可存成 undefined 或補上不存在的欄位
+test('只留實際有值的欄位', () => {
+  expect(storableUser({ id: 'u2', name: '小美', cellphone: '0911' })).toEqual({ id: 'u2', name: '小美' })
+})
+
+test('不是物件（未登入的 null、字串）時原樣回傳，交給呼叫端原本的登入檢查', () => {
+  expect(storableUser(null)).toBeNull()
+  expect(storableUser('u1')).toBe('u1')
+})
+
+test('已經是瘦身後的資料：不重寫 localStorage', () => {
+  store.user = JSON.stringify({ id: 'u1', name: '王小明' })
+  window.localStorage.setItem.mockClear()
+  sanitizeStoredUser()
+  expect(window.localStorage.setItem).not.toHaveBeenCalled()
+  expect(JSON.parse(store.user)).toEqual({ id: 'u1', name: '王小明' })
+})
+
+test('存的是 JSON 但不是物件（"null"、數字）時不動', () => {
+  store.user = 'null'
+  sanitizeStoredUser()
+  expect(store.user).toBe('null')
+  store.user = '42'
+  sanitizeStoredUser()
+  expect(store.user).toBe('42')
+})
