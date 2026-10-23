@@ -70,7 +70,7 @@ function Harness({ initialCustomer }) {
 
 const renderModal = (initialCustomer, overrides) =>
   renderPage(<Harness initialCustomer={initialCustomer} />, { fixtures: fixtures(overrides) })
-const modal = () => screen.getByText(/^(新增客戶|編輯客戶資料)$/).closest('.MuiModal-root')
+const modal = () => screen.getByText(/^(新增客戶|編輯客戶資料)$/).closest('[role="dialog"]')
 const field = name => modal().querySelector(`input[name="${name}"]`)
 const bill = () => JSON.parse(screen.getByTestId('bill').textContent)
 // 下拉選單以瀏覽器的方式改值（欄位處理在 setState updater 內才讀 event.target，理由同 testkit 的 typeLikeBrowser）

@@ -1,12 +1,11 @@
-// 保留相容層 Modal：內含 EmployeeAutoComplete（Autocomplete 彈出選單），Radix Dialog 會與其焦點鎖互搶、擋住彈出層點擊
-import { Modal } from 'ui/modal-compat'
+// 共用圖層支援窗內 picker；保留原受控開關與表單行為。
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter } from 'ui/dialog'
 import PropTypes from 'prop-types'
 import { memo } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import { Trash2 } from 'lucide-react'
 import { Button } from 'ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 
 function AddDesignersModal({
   designers,
@@ -102,19 +101,24 @@ function AddDesignersModal({
   }
 
   return (
-    <Modal open={openAddDesignerModal}>
-      <Card className="ui-root absolute left-1/2 top-1/2 max-h-full w-[500px] max-w-full -translate-x-1/2 -translate-y-1/2 overflow-y-auto shadow-float outline-none">
-        <CardHeader
-          className="items-center"
-          action={
+    <Dialog open={openAddDesignerModal}>
+      {/* 保留原表單寬 500px；本批僅替換彈窗外殼。 */}
+      <DialogContent hideClose
+        onOpenAutoFocus={event => {
+          // 沿用舊 Modal：已有欄位焦點就保留，否則先聚焦面板，避免選人窗自動叫出手機鍵盤。
+          event.preventDefault()
+          if (!event.target.contains(document.activeElement)) event.target.focus()
+        }}
+        className="sm:max-w-[500px]" aria-describedby={undefined}>
+        <DialogHeader className="items-center">
+          <div className="flex w-full items-center justify-between gap-4">
+            <DialogTitle>新增設計師</DialogTitle>
             <Button variant="secondary" onClick={onClose}>
               返回
             </Button>
-          }
-        >
-          <CardTitle>新增設計師</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
+          </div>
+        </DialogHeader>
+        <DialogBody className="flex flex-col gap-4">
           {designers.map((designer, index) => (
             <div
               className="flex items-center justify-center gap-2"
@@ -146,8 +150,8 @@ function AddDesignersModal({
               )}
             </div>
           ))}
-        </CardContent>
-        <div className="flex items-center justify-center px-5 pb-5">
+        </DialogBody>
+        <DialogFooter className="justify-center">
           <Button
             variant="primary"
             onClick={handleAddDesignersToSchedule}
@@ -155,9 +159,9 @@ function AddDesignersModal({
           >
             新增
           </Button>
-        </div>
-      </Card>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 

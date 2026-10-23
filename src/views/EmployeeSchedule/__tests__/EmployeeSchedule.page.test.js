@@ -389,7 +389,7 @@ describe('班表', () => {
     await ready(utils)
     fireEvent.click(screen.getByRole('button', { name: /新增人員/ }))
     expect(await screen.findByText('新增設計師')).toBeInTheDocument()
-    const addButton = () => screen.getAllByRole('button', { name: '新增' }).find(b => !b.textContent.includes('人員') && b.closest('.ui-root.absolute'))
+    const addButton = () => screen.getAllByRole('button', { name: '新增' }).find(b => !b.textContent.includes('人員') && b.closest('[role="dialog"]'))
     expect(addButton()).toBeDisabled()
     // 選第一位後自動多一列空白可再選
     fireEvent.click(screen.getAllByRole('button', { name: '選小陳' })[0])
@@ -440,7 +440,7 @@ describe('班表', () => {
     fireEvent.click(screen.getAllByRole('button', { name: '選小陳' })[1])
     fireEvent.keyDown(screen.getAllByLabelText('人員')[0], { key: 'Backspace', keyCode: 8 })
     expect(screen.getAllByTestId('employee-picker').map(p => p.dataset.value)).toEqual(['u5', ''])
-    fireEvent.click(screen.getAllByRole('button', { name: '新增' }).find(b => b.closest('.ui-root.absolute') && b.textContent === '新增'))
+    fireEvent.click(screen.getAllByRole('button', { name: '新增' }).find(b => b.closest('[role="dialog"]') && b.textContent === '新增'))
     expect(order((await savedAfter(utils, 1)).schedule)).toEqual(['小陳'])
     // 清除到只剩空列
     fireEvent.click(screen.getByRole('button', { name: /新增人員/ }))

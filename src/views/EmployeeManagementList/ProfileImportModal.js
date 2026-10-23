@@ -1,5 +1,5 @@
-// 彈窗內有 MUI Select（Radix Dialog 會擋住其彈出層），保留 MUI Dialog；只換按鈕與分隔線
-import { Dialog, DialogTitle, DialogContent, DialogActions } from 'ui/modal-compat'
+// 共用圖層支援窗內 Select；保留無 onClose 的受控開關。
+import { Dialog, DialogTitle, DialogContent, DialogHeader, DialogBody, DialogFooter } from 'ui/dialog'
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
 import { useEffect, useState } from "react"
@@ -101,37 +101,46 @@ const ProfileImportModal = ({ open, onClose, selectedDesigners, setSelectedDesig
   }, [inputData])
 
   return (
-    <Dialog fullWidth maxWidth='sm' open={open}>
-      <DialogTitle>由人員身分設定檔導入</DialogTitle>
-      <div className="h-px bg-border" />
-      <DialogContent>
-        <FormControl fullWidth variant="outlined" >
-          <InputLabel>選擇人員身份類別</InputLabel>
-          <Select
-            label='選擇人員身份類別'
-            value={inputData.jobTitlePointId}
-            onChange={({ target }) => handleSetInputData('jobTitlePointId', target.value)}
-          >
-            {jobTitle.map(({ id, jobTitle }) => (
-              <MenuItem value={id} key={id}>{jobTitle}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        {options.map(({ label, key }) => (
-          <div key={label}>
-            <FormControlLabel
-              control={<Checkbox color="primary" />}
-              label={label}
-              checked={inputData[key]}
-              onChange={(e, v) => handleSetInputData(key, v)}
-            />
-          </div>
-        ))}
+    <Dialog open={open}>
+      {/* 保留舊 sm Dialog 的 600px 寬度。 */}
+      <DialogContent hideClose
+        onOpenAutoFocus={event => {
+          // 沿用舊 Modal：已有欄位焦點就保留，否則先聚焦面板，避免選人窗自動叫出手機鍵盤。
+          event.preventDefault()
+          if (!event.target.contains(document.activeElement)) event.target.focus()
+        }}
+        className="sm:max-w-[600px]" aria-describedby={undefined}>
+        <DialogHeader><DialogTitle>由人員身分設定檔導入</DialogTitle></DialogHeader>
+        <div className="h-px bg-border" />
+        <DialogBody>
+          <FormControl fullWidth variant="outlined" >
+            <InputLabel>選擇人員身份類別</InputLabel>
+            <Select
+              label='選擇人員身份類別'
+              value={inputData.jobTitlePointId}
+              onChange={({ target }) => handleSetInputData('jobTitlePointId', target.value)}
+            >
+              {jobTitle.map(({ id, jobTitle }) => (
+                <MenuItem value={id} key={id}>{jobTitle}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {options.map(({ label, key }) => (
+            <div key={label}>
+              <FormControlLabel
+                control={<Checkbox color="primary" />}
+                label={label}
+                checked={inputData[key]}
+                onChange={(e, v) => handleSetInputData(key, v)}
+              />
+            </div>
+          ))}
+        </DialogBody>
+        <DialogFooter className="ui-root">
+          <Button variant='secondary' onClick={onClose} disabled={onSubmit}>關閉</Button>
+          <Button variant='primary' onClick={handleSetProfileData} disabled={!vaild || onSubmit}>確認</Button>
+        </DialogFooter>
       </DialogContent>
-      <DialogActions className="ui-root">
-        <Button variant='secondary' onClick={onClose} disabled={onSubmit}>關閉</Button>
-        <Button variant='primary' onClick={handleSetProfileData} disabled={!vaild || onSubmit}>確認</Button>
-      </DialogActions>
     </Dialog>
   )
 }

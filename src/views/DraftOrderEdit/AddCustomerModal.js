@@ -1,6 +1,5 @@
-import { Modal } from 'ui/modal-compat'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter } from 'ui/dialog'
 import { Button } from 'ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { LoaderCircle } from 'lucide-react'
 import { Field, Input } from 'ui/input'
@@ -186,16 +185,23 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
   }, [lastCustomerNo.loading])
 
   return (
-    <Modal open={open}>
-      <Card className="absolute left-1/2 top-1/2 max-h-[calc(100%-32px)] w-[700px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl bg-background shadow-float outline-none">
-        <CardHeader
-          className="items-center pb-4"
-          action={!lastCustomerNo.loading && <span className="text-body text-text">{`最新顧客編號: ${lastNo}`}</span>}
-        >
-          <CardTitle>{values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}</CardTitle>
-        </CardHeader>
+    <Dialog open={open}>
+      {/* 保留原表單寬 700px；本批僅替換彈窗外殼。 */}
+      <DialogContent hideClose
+        onOpenAutoFocus={event => {
+          // 沿用舊 Modal：已有欄位焦點就保留，否則先聚焦面板，避免選人窗自動叫出手機鍵盤。
+          event.preventDefault()
+          if (!event.target.contains(document.activeElement)) event.target.focus()
+        }}
+        className="sm:max-w-[700px]" aria-describedby={undefined}>
+        <DialogHeader className="items-center pb-4">
+          <div className="flex w-full items-center justify-between gap-4">
+            <DialogTitle>{values.customerId.length > 0 ? '編輯客戶資料' : '新增客戶'}</DialogTitle>
+            {!lastCustomerNo.loading && <span className="text-body text-text">{`最新顧客編號: ${lastNo}`}</span>}
+          </div>
+        </DialogHeader>
         <div className="h-px bg-border" />
-        <CardContent>
+        <DialogBody>
           <div className="grid grid-cols-1 gap-x-6 gap-y-4 min-[900px]:grid-cols-2">
             <div className="min-w-0">
               {/* 欄位上方標籤，與同彈窗其他欄位及打帳單的新增顧客彈窗一致；檢查圖示改放輸入框右側 */}
@@ -451,9 +457,9 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
               </Field>
             </div>
           </div>
-        </CardContent>
+        </DialogBody>
         <div className="h-px bg-border" />
-        <CardFooter>
+        <DialogFooter className="border-t-0">
           <Button variant="secondary" onClick={onClose}>取消</Button>
           <Button
             variant="primary"
@@ -462,9 +468,9 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
           >
             {values.customerId.length > 0 ? '儲存' : '新增'}
           </Button>
-        </CardFooter>
-      </Card>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
