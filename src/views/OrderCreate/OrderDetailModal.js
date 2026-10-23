@@ -1,6 +1,7 @@
+// 保留 Modal 的焦點／關閉行為；Card 不加 ui-root，避免影響內部 innerHTML 列印複本。
 import { Modal } from 'ui/modal-compat'
 import { Divider } from 'ui/display-compat'
-import { Button } from 'ui/button-compat'
+import { Button } from 'ui/button'
 import { Card, CardHeader } from 'ui/card-compat'
 import PropTypes from 'prop-types'
 import React, {
@@ -18,7 +19,7 @@ import useOrderDetailCheckout from './useOrderDetailCheckout'
 const styles = {
   root: 'absolute top-[50%] left-[50%] [transform:translate(-50%,-50%)] [outline:none] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)] w-[500px] max-h-[100%] overflow-y-auto max-w-[100%]',
   header: 'flex justify-between items-center',
-  backBtn: 'm-[16px_24px]',
+  backBtn: 'm-[16px_24px] h-auto min-h-9 min-w-[64px] whitespace-normal py-0 max-sm:h-auto',
   btnDiv: 'm-[10px_0] flex items-center justify-center',
 }
 
@@ -56,7 +57,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
             <CardHeader title="消費明細" />
             {/* 按鈕階層（STYLE §2／§6：一個畫面最多一個 primary、紅色只給破壞性操作）：返回＝ghost、掛單／結帳＝secondary、結帳並列印＝primary；handler 不變 */}
             <Button
-              variant="text"
+              variant="ghost"
               onClick={closeModal}
               className={styles.backBtn}
               disabled={checkoutBtnClick}
@@ -74,35 +75,32 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
           <div className={styles.btnDiv}>
             {!disablePendingOrder && (
               <Button
-                color="secondary"
-                variant="contained"
-                size="small"
+                variant="secondary"
+                size="sm"
                 onClick={handleOrderPendingConfirm}
                 disabled={valid || isClick || checkoutBtn}
-                style={{ margin: '0 3px' }}
+                className="mx-[3px] h-auto min-h-8 min-w-[64px] whitespace-normal px-3 py-0 text-[13px] max-sm:h-auto"
               >
                 掛單
               </Button>
             )}
             <Button
-              color="secondary"
-              variant="contained"
-              size="small"
+              variant="secondary"
+              size="sm"
               ref={checkOrderRef}
               onClick={usehandleCreateOrder}
-              style={{ margin: '0 3px' }}
+              className="mx-[3px] h-auto min-h-8 min-w-[64px] whitespace-normal px-3 py-0 text-[13px] max-sm:h-auto"
               disabled={valid || checkoutBtn || isClick}
             >
               結帳
             </Button>
 
             <Button
-              color="primary"
-              variant="contained"
-              size="small"
+              variant="primary"
+              size="sm"
               ref={checkOrderPrintRef}
               onClick={usehandleCreateOrderAndPrint}
-              style={{ margin: '0 3px' }}
+              className="mx-[3px] h-auto min-h-8 min-w-[64px] whitespace-normal px-3 py-0 text-[13px] max-sm:h-auto"
               disabled={valid || checkoutBtn || isClick}
             >
               結帳並列印
