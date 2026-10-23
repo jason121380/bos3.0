@@ -1,5 +1,4 @@
-import { Divider } from 'ui/display-compat'
-import { Card, CardContent, CardHeader } from 'ui/card-compat'
+import { Card, CardContent, CardHeader } from 'ui/card'
 import { Table, TableBody, TableCell, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'
 import { Fragment, useState, useEffect } from 'react'
@@ -28,20 +27,17 @@ function Results({ designerRakeReport, isMemberShipCardActive }) {
     <Fragment>
       {designerRakeReport.map((designer, index) => (
         <div key={designer.user.id} className="my-5 min-w-0">
-          {/* printCard 卡片依規則（className 含 print）原封保留 MUI */}
-          <Card className="printCard">
-            <CardHeader
-              title={`${designer.user.designerNo !== null && designer.user.designerNo !== ''
+          {/* 保留 printCard 掛點與原有卡片內距。 */}
+          <Card className="printCard overflow-hidden text-text">
+            <CardHeader className="[&>div:first-child]:flex-auto !min-h-0 !items-center !gap-0 !px-4 !pb-2 !pt-4 text-center"><span className="block text-heading text-text">{`${designer.user.designerNo !== null && designer.user.designerNo !== ''
                 ? designer.user.designerNo
                 : ''
                 } ${designer.user.nickName !== null && designer.user.nickName !== ''
                   ? designer.user.nickName
                   : ''
-                } ${designer.user.name}`}
-              className="text-center"
-            />
-            <Divider />
-            <CardContent className="p-0">
+                } ${designer.user.name}`}</span></CardHeader>
+            <hr className="m-0 shrink-0 border-0 border-b border-solid border-border" />
+            <CardContent className="p-0 last:pb-4">
               <div>
                 <Table dense aria-label="a dense table">
                     <TableBody>

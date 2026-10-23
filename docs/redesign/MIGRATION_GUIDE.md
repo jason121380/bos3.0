@@ -2,7 +2,7 @@
 
 > 給執行改版的工程師（含 AI 代理）。規範以根目錄 `STYLE.md` 為準。
 > 參考範例 commit：`27de2d2`（帳單列表，完整替換）、`a718658`（打帳單，大型頁結構替換）、`66f5d92`（報表目錄）。
-> **現況（2026/10/23）**：`package.json` 已無 MUI 套件。相容元件仍有 59 個使用檔案（頁面層 53 檔／38 個目錄，共用層 6 檔）；本指南用於逐步收尾並換成正式 `ui` 元件。尚待處理：結帳（billing）4 頁、報表列印、選擇器（pickers）與全域 toast。Autocomplete（PR #178–#181）與滑桿泡泡（PR #197）已自製完成。日期時間以 `lib/business-timezone.js` 固定為台灣時間，改版時不要自行加時區換算。下文未標為歷史的「MUI 元件」均指目前輸出同名 class 的相容元件，不可重新安裝或引入 `@mui/*`。
+> **現況（2026/10/23）**：`package.json` 已無 MUI 套件。項目 3 第一批完成後，相容元件剩 15 個非 ui、非測試使用檔案（本批 23 → 15）；逐檔替換與列印證據見下方「項目 3」。日期時間沿用 `lib/business-timezone.js`，不得自行加時區換算。下文未標為歷史的「MUI 元件」均指目前輸出同名 class 的相容元件，不可重新安裝或引入 `@mui/*`。
 
 > 正式站僅供唯讀查看；寫入、送出及列印測試只用 mock／隔離測試資料。刪檔先經 Jason 同意。
 
@@ -221,3 +221,42 @@ Phase 2 測試檔：`components/MerchantsListModal/__tests__/merchantLists.test.
 邏輯檢查：原 verify-logic 因 sandbox 中 Node 啟動 git 受限而 SKIP；改由 shell 匯出 HEAD 快照，使用同一分析器在 /tmp 重跑。Rating／Tag 使用端 OK；四個樹檔的 FAIL 全部只有移除／替換的樣式常數（treeClass／ulGroup*／itemClass／outlineClass／spanClass／defaultTreeClasses／managementTreeClasses），沒有遺失 handler、資料敘述或事件／值運算式，已逐項審視。
 
 compat importer 以 `rg "from 'ui/[a-z-]*-compat'" src` 排除 src/ui 與測試檔，29 → **23 檔**（檔案數，不是 import 行數）；保留者多為列印與 misc-compat 的 useMediaQuery。
+
+
+## 項目 3：列印相依頁面移除相容層（Jason 2026/10/23）
+
+本項目限定放寬 CLAUDE.md 規則 2：允許調整列印 CSS／`print:`，但每份報表必須使用 `scripts/redesign/compat-harness/e2e/print-compare.sh <repoTree> <outDir>` 比較修改前後。只改 JSX／樣式，保留資料、GraphQL、state、handlers、文字與測試掛點；不修改相容層本身。`src/ui` 沒有獨立 separator，使用原生 `hr` 與既有 border token。
+
+### 第一批：8 檔、6 張報表與分析比較模式
+
+| 檔案（`src/views/` 下） | 替換 | 列印差異 |
+|---|---|---|
+| `CostAnalysisReport/Results.js` | card-compat → ui/card；CardHeader title 改 children；明確保留表格灰線、表頭水平線及列印底部內距 0 | 無；cost |
+| `CostAnalysisReport/index.js` | grid-compat → div；保留 printGrid 並明確 print:hidden | 無；cost |
+| `IncomeStatementReport/Results.js` | card-compat → ui/card；保留列印表頭水平線、儲存格灰色底線及黑色直線 | 無；income |
+| `DesignerPerforamnceAnalyzeReport/Compare.js` | card-compat → ui/card；保留 printLongCard 與原始內距、欄寬 | 無；compare |
+| `DesignerPerforamnceAnalyzeReport/Results.js` | grid-compat → flex／div；card-compat → ui/card；明確保留卡片標題框線、30px 卡片間距與避免跨頁 | 無；analysis |
+| `DesignerRakeReport/Results.js` | card-compat → ui/card；Divider → 原生 hr；保留 printCard、標題置中與最後內容底距 | 無；rake |
+| `MerchantBusinessIntervalReport/Results.js` | grid-compat → flex／div；card-compat → ui/card；保留 900／1200px 原始斷點、負外距、欄寬與列印黑框 | 無；interval |
+| `HelperMonthlyReport/index.js` | grid-compat → div；保留 printGrid 並明確 print:hidden | 無；helper |
+
+### 離線比較工具與證據
+
+- 入口 `print-compare-entry.js`：費用、損益、抽成、區間累計、互助月報渲染真實 index，使用無 HttpLink 的 Apollo 模擬 client；分析一般／比較模式以 index 傳入的 props 渲染 Results／Compare，重現列印頁首。僅用「測試門市A／設計師甲」等假資料、整數、固定 2026/01/01～2026/01/31，Date 固定在 2026/01/01 08:00 台灣時間。財務 36 列、互助 50 列、分析／抽成各 6 張卡片，涵蓋跨頁。
+- `print-compare.sh` 使用指定樹的 build.js／esbuild、Tailwind 設定、tokens.css、main.scss、initialize.scss 與捲軸 CSS；Tailwind cwd 為該樹。**入口先從本腳本目錄複製到 /tmp**，避免入口所在工作樹的 jsconfig.baseUrl 優先於 build.js.nodePaths，導致 before 誤用 after 的 src。不可直接拿工作樹內的絕對入口路徑建置另一棵樹。相同入口只 import 兩樹皆存在的模組。
+- runner 以 Playwright context.route 供應本機靜態檔；非本機一律 abort，Chrome DNS 封鎖所有外部主機，service worker 停用，不開伺服器、不連後端。逐份檢查載入完成與 console／page errors，輸出 print PNG（794px）、A4 PDF（含背景）、pdftoppm 80dpi 全頁 PNG、screen PNG（1280px）；錯誤結束碼非 0。
+- 外部 Chrome 最終結果：before／after 各 **7/7，exit 0**。輸出根目錄 `/workspace/bos3-print-compare/batch1/{before,after}`。已目視並以 Pillow 比對 **30 張 PNG，全部尺寸與像素相同**；包含 7 張 print、7 張 screen、16 張 PDF 頁面。PDF 二進位不作比對（可能含中繼資料時間差）。
+
+| 報表／key | 影像名稱（兩側同名） | PDF 頁數 | 可見差異 |
+|---|---|---:|---|
+| 費用分析 cost | `cost-print.png`、`cost-screen.png`、`cost-pdf-1.png`～`cost-pdf-2.png` | 2 | 無 |
+| 損益 income | `income-print.png`、`income-screen.png`、`income-pdf-1.png`～`income-pdf-2.png` | 2 | 無 |
+| 設計師業績分析 analysis | `analysis-print.png`、`analysis-screen.png`、`analysis-pdf-1.png`～`analysis-pdf-3.png` | 3 | 無 |
+| 分析比較 compare | `compare-print.png`、`compare-screen.png`、`compare-pdf-1.png`～`compare-pdf-2.png` | 2 | 無 |
+| 設計師抽成 rake | `rake-print.png`、`rake-screen.png`、`rake-pdf-1.png`～`rake-pdf-3.png` | 3 | 無 |
+| 店家區間累計 interval | `interval-print.png`、`interval-screen.png`、`interval-pdf-1.png`～`interval-pdf-2.png` | 2 | 無 |
+| 互助月報 helper | `helper-print.png`、`helper-screen.png`、`helper-pdf-1.png`～`helper-pdf-2.png` | 2 | 無 |
+
+驗證：指定六個 view 目錄＋src/ui 的 Jest 39 suites／436 tests 全過；npm run lint、dialog-layers 13/13（exit 0）通過；verify-logic 8 檔全過（沙箱內 Node 啟動 git 受限，使用 shell 匯出的 origin/main 原檔作為同一檢查器的基準）。另跑相關測試 `--changedSince=origin/main` 10 suites／102 tests 與 `npm run build` 皆通過（依 Jason 2026/10/23 指示，全站 suite 改為當日最終合併前統一跑一次）；未連真實後端。相容 importer 依指定 rg 口徑為 **15（原 23）**。
+
+限制：這是固定假資料的 Chrome 比較，尚未實機紙本驗收。分析比較模式的 650px 最小表寬在 A4 雙欄下會裁切右側欄位；比較／抽成長卡片仍可能跨頁，均為修改前既有輸出，本批保留，沒有額外改版。後續批次仍須自行提供 before／after 證據。

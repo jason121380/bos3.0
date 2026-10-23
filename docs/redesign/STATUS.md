@@ -12,7 +12,10 @@
 
 ## 現況摘要（2026/10/23）
 
-- MUI 套件已整包移除；`src/ui/*-compat` 目前有 23 個非 ui、非測試使用檔案（本批 29 → 23，以 import 檔案數計）。收尾項目：結帳（billing）4 頁、報表列印、選擇器（pickers）、全域 toast。
+- **2026/10/23 項目 3 列印遷移第一批（v3.10232225）**：指定 8 檔已由 card／grid／Divider 相容層換成 ui/card、Tailwind flex／div 與原生 hr，所有資料與操作邏輯保留。六張報表＋分析比較模式，外部 Chrome before／after 各 7/7；30 張 print／screen／PDF PNG 尺寸與像素全相同。指定 Jest 39 suites／436 tests、相關測試（--changedSince=origin/main）10 suites／102 tests、lint、build、dialog-layers 13/13 通過，verify-logic 8 檔全過。相容 importer **23 → 15**。新增可重用 print-compare.sh，Jason 限定允許本項目調整列印 CSS；逐檔對照、影像名稱及既有裁切／分頁限制見 MIGRATION_GUIDE「項目 3」。尚待實機紙本驗收，後續批次仍須逐份比較。
+
+
+- MUI 套件已整包移除；`src/ui/*-compat` 目前有 15 個非 ui、非測試使用檔案（項目 4 為 29 → 23，項目 3 第一批再降為 15，以 import 檔案數計）。收尾項目：結帳（billing）4 頁、報表列印、選擇器（pickers）、全域 toast。
 - Autocomplete 已於 PR #178–#181 自製；滑桿泡泡已於 PR #197 完成。
 - 正式站為 Railway 自動部署；以正式站左上角版號 `v3.10230759` 確認上線。Cloud Build 檔為 legacy。
 - GitHub Actions Node.js CI 已手動停用；合併前本機執行 `npm run lint`、`npm run test:nowatch`、`npm run build`。作者回報 4,268 項測試通過。
@@ -346,6 +349,8 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 | v3.0-1019-1546 | 2026-10-19 15:34 | A3 第二份：`OrderEdit/AddCustomerModal.js` 7 個單純 MUI `TextField`（客戶姓名、Email、lineId、地址、客戶暱稱、電話、備註）浮動標籤改為 `Field` 上方標籤＋`ui/input` `Input`（AGY 線，`agy/ui-a3-addcustomer-edit-box`）；客戶編號（含重複檢查 `error`／`helperText`／`InputProps.endAdornment`）、民國年／月／日三格並排 `TextField`、性別與最近設計師 `NativeSelect`、客戶來源 `SourceSelect`、偏好設計師 MUI `FormControl`＋`Select`（含 `inputLabel` ref 與 `renderValue` 載入態）、MUI `Modal`／`Card` 及所有 handler／state／GraphQL／存值一字不動（本檔原無 Enter 焦點鏈；STYLE.md §6 與 MEMORY.md 已涵蓋，皆不需改） | 待開 | 待補 | 驗證：eslint 0 新增 error（3 既有 hooks warning）、verify-logic 通過、portal-root-scan 0/0、全域測試 52/52、`CI=true npm run build` 成功且含新版號；待實機確認 Modal 內 7 欄上方標籤與保留欄位並排高度、編號重複檢查、生日三格與下拉選取 |
 
 ## 刻意不改（需另外決定）
+
+> 2026/10/23 更新：下表列印限制已對「項目 3」限定放寬；第一批 8 檔已完成遷移與逐份 before／after 比較，其餘範圍仍依原規則。
 
 | 項目 | 原因 |
 |---|---|
