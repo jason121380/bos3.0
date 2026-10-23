@@ -1,16 +1,18 @@
-# 第二層遷移指南：把頁面中的 MUI 換成 `src/ui/`
+# 第二層遷移指南：把頁面中的相容元件換成 `src/ui/`
 
 > 給執行改版的工程師（含 AI 代理）。規範以根目錄 `STYLE.md` 為準。
 > 參考範例 commit：`27de2d2`（帳單列表，完整替換）、`a718658`（打帳單，大型頁結構替換）、`66f5d92`（報表目錄）。
-> **現況（2026/10/21）**：MUI 套件已於 2026/10/20 全數移除。尚未重新設計的頁面改 import `src/ui/*-compat`（如 `ui/modal-compat`、`ui/card-compat`、`ui/grid-compat`，輸出 MUI 同名 class、外觀不變）；本指南現在用於把這些相容元件換成正式的 `ui` 元件，下文的「MUI 元件」請讀作「相容層元件」，對照與鐵則不變。日期時間已由 `lib/business-timezone.js` 固定為台灣時間，改版時不要自行加時區換算。
+> **現況（2026/10/23）**：`package.json` 已無 MUI 套件。相容元件仍有 59 個使用檔案（頁面層 53 檔／38 個目錄，共用層 6 檔）；本指南用於逐步收尾並換成正式 `ui` 元件。尚待處理：結帳（billing）4 頁、報表列印、選擇器（pickers）與全域 toast。Autocomplete（PR #178–#181）與滑桿泡泡（PR #197）已自製完成。日期時間以 `lib/business-timezone.js` 固定為台灣時間，改版時不要自行加時區換算。下文未標為歷史的「MUI 元件」均指目前輸出同名 class 的相容元件，不可重新安裝或引入 `@mui/*`。
+
+> 正式站僅供唯讀查看；寫入、送出及列印測試只用 mock／隔離測試資料。刪檔先經 Jason 同意。
 
 ## 0. 鐵則（違反任何一條，該頁不得 commit）
 
 1. **只改畫面**：JSX 結構、樣式、import。**不得**修改任何 state、hooks、handler、useEffect、GraphQL query/mutation、Redux、驗證、權限、金額或日期運算、路由跳轉、localStorage／cookie。
 2. **不得修改指派範圍以外的檔案**。特別是 `src/ui/`、`src/components/`、`src/layouts/`、`src/theme/`、`src/hooks/`、`package.json`、`scripts/`。缺元件就在回報中提出，不要自己加。
-3. **列印範本不動**：`id="printMain"`、`id="printThermal"`、任何會被 `innerHTML` 複製到列印視窗的區塊、`className` 含 `forPrint` / `print` 的元素，一律原封保留（包含 inline style 與 MUI 元件）。
+3. **列印範本不動**：`id="printMain"`、`id="printThermal"`、任何會被 `innerHTML` 複製到列印視窗的區塊、`className` 含 `forPrint` / `print` 的元素，一律原封保留（包含 inline style 與相容元件）。
 4. **保留所有 `data-testid`、`id`、`name`、`ref`、`key`、`aria-*`**。
-5. **不安裝套件、不啟動 dev server、不跑 build**（記憶體不足會讓環境重啟）。只跑下面第 4 節的檢查。
+5. **不自行安裝套件**。第 4 節是局部檢查；合併前仍須在本機完成 `npm run lint`、`npm run test:nowatch`、`npm run build`。Node.js CI 已手動停用，不可省略本機驗證。
 6. 文案維持原樣；只允許移除純裝飾的英文 overline。
 
 ## 1. 可用元件（`src/ui/`，import 路徑以 `ui/xxx` 開頭）
@@ -19,12 +21,12 @@
 |---|---|---|
 | `ui/button` | `Button` | `variant`: primary（主題藍，每頁最多一個）/ secondary（淺灰實心）/ ghost / danger；`size`: sm / md / lg / icon；`asChild` 可包 `RouterLink` |
 | `ui/input` | `Input`, `Textarea`, `Label`, `Field` | `Field label required hint error htmlFor`；`Input invalid` |
-| `ui/select` | `Select`, `SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`, `SelectGroup`, `SelectLabel` | Radix：`value` 必須是**非空字串**，用 `onValueChange(v)`。舊值若為數字／物件／可為空字串，**保留 MUI Select** |
+| `ui/select` | `Select`, `SelectTrigger`, `SelectValue`, `SelectContent`, `SelectItem`, `SelectGroup`, `SelectLabel` | Radix：`value` 必須是**非空字串**，用 `onValueChange(v)`。舊值若為數字／物件／可為空字串，**保留既有 Select 相容元件** |
 | `ui/table` | `Table`, `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableHead`, `TableCell`, `TablePagination` | `TableHead/TableCell numeric` 右對齊＋等寬數字；`TablePagination` 與 MUI 同名 props（`count page rowsPerPage onPageChange(e, p) rowsPerPageOptions onRowsPerPageChange(e)`） |
 | `ui/card` | `Card`, `CardHeader`（`action` prop 放右側按鈕）, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter` | 取代 MUI Card / Paper |
 | `ui/page-header` | `PageHeader`（`title description actions`）, `Toolbar`, `ToolbarSpacer` | 頁首。既有 `AdminPageHeader` 已是新外觀，可保留不換 |
-| `ui/dialog` | `Dialog`(`open onOpenChange`), `DialogContent`(`size` sm/md/lg), `DialogHeader`, `DialogTitle`, `DialogDescription`, `DialogBody`, `DialogFooter`, `DialogClose` | `onClose={fn}` → `onOpenChange={o => !o && fn()}`。**Dialog 內若有 MUI Autocomplete / Select / DatePicker / Menu，保留 MUI Dialog**（Radix 會擋住 MUI 彈出層的點擊） |
-| `ui/tabs` | `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent` | 值必須是字串；舊值為數字或 handler 用到 event 時，保留 MUI Tabs |
+| `ui/dialog` | `Dialog`(`open onOpenChange`), `DialogContent`(`size` sm/md/lg), `DialogHeader`, `DialogTitle`, `DialogDescription`, `DialogBody`, `DialogFooter`, `DialogClose` | `onClose={fn}` → `onOpenChange={o => !o && fn()}`。**歷史規則（MUI 時期）**：Dialog 內若有 MUI Autocomplete / Select / DatePicker / Menu，當時保留 MUI Dialog（Radix 會擋住 MUI 彈出層的點擊） |
+| `ui/tabs` | `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent` | 值必須是字串；舊值為數字或 handler 用到 event 時，保留既有 Tabs 相容元件 |
 | `ui/badge` | `Badge`（`variant`: neutral / success / warning / danger / accent） | 取代不可點的 Chip、狀態文字 |
 | `ui/checkbox` | `Checkbox`（原生，支援 `indeterminate`） | 表格勾選；`onChange` 簽名與原生相同 |
 | `ui/skeleton` | `Skeleton` | 取代 CircularProgress / LinearProgress 的整區載入 |
@@ -48,10 +50,10 @@
 | `Chip`（僅顯示） | `ui/badge` | 可點擊／可刪除的 Chip 保留 MUI |
 | `Collapse in={x}` | `{x && (…)}` | 若內容有 ref / 需要保留 state，保留 MUI Collapse |
 | `CircularProgress`（按鈕內） | `<LoaderCircle className="animate-spin" />`（lucide） | |
-| `Checkbox`（表格勾選） | `ui/checkbox` | 表單內配 `FormControlLabel` 的可保留 MUI |
+| `Checkbox`（表格勾選） | `ui/checkbox` | 表單內配 `FormControlLabel` 的可保留既有相容元件 |
 | `Dialog*`（簡單確認框） | `ui/dialog` | 見上表限制；危險操作確認框按鈕用 `variant="danger"`，說明寫出後果 |
 
-### 可以保留 MUI（橋接主題已套新外觀）
+### 歷史：當時可保留既有相容元件（橋接主題已套新外觀）
 
 `TextField`（有 `select`、`InputProps` adornment、`helperText` 邏輯者）、`Autocomplete`、所有日期／時間選擇器、`Switch`、`Radio`/`RadioGroup`、`FormControlLabel`、`Slider`、`Tooltip`、`Menu`（複雜者）、`Drawer`、`TreeView`、`Stepper`、含上述元件的 `Dialog`。
 簡單的 `TextField`（只有 `value onChange label placeholder type disabled error helperText`）請換成 `Field` + `Input`；`onChange` 一律原樣沿用（原生 event 與 MUI 相同）。
@@ -115,7 +117,7 @@ Claude-Session: https://claude.ai/code/session_01BUenXFDZo7NpQzri398TMd
 | 密集表格 | `<Table dense>` | 列高 32px |
 | 第一輪留下的 `Card` / `Typography` / `Grid` / `Button` / `IconButton` / `Divider` / `CircularProgress` / `Collapse` / `Paper` / `Container` | 依第 2 節對照表 | 第一輪因為「大型頁只換結構」而留下的，這一輪可以繼續往深層換，但仍以「寧可少換」為原則 |
 
-## 7. 第二輪仍然保留 MUI 的情況
+## 7. 歷史：第二輪仍然保留 MUI 的情況
 
 - **列印**：第 0 節第 3 條，加上 **`src/initialize.scss` 的 `@media print` 規則選取到的元素**。改任何區塊前，先用 `grep -n "<該區塊的 className>" src/initialize.scss` 檢查；列印規則若寫在 `.MuiCard-root`、`.MuiTableContainer-root`、`.MuiTableCell-root`、`.MuiGrid-item`、`.MuiContainer-root`、`.MuiPaper-root`、`.MuiCardHeader-root`、`.MuiCardContent-root` 底下，且該頁會 `window.print()`，該頁的這些元件**整段保留**。
 - `TextField`（有 `helperText` 邏輯、adornment、`inputRef`、`onWheel` 等）、`Autocomplete`、日期／時間選擇器、`Radio`、`Slider`、`Tooltip`、`Drawer`、`Tabs`（handler 用 event）、`Accordion`、含上述元件的 `Dialog` / `Modal`、`Menu`（複雜）。

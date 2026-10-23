@@ -10,7 +10,7 @@ BOS 3.0 是美業 ERP 的純前端 SPA（Vite 5 + React 17 + Apollo GraphQL + Re
 | `docs/redesign/TODO.md` | **待辦清單**（已完成／待實機／待 Jason 決定） |
 | `docs/redesign/STATUS.md` | 改版進度與刻意不改的項目 |
 | `docs/redesign/MEMORY.md` | 決策與教訓（為什麼這樣做、踩過的坑） |
-| `docs/redesign/MIGRATION_GUIDE.md` | 把頁面的 MUI 換成 `src/ui/` 的步驟與鐵則 |
+| `docs/redesign/MIGRATION_GUIDE.md` | 把頁面的相容元件換成正式 `src/ui/` 元件 的步驟與鐵則 |
 | `docs/redesign/VERIFY_REPORT.md` | 驗證方式與測試基準 |
 | `docs/redesign/B2_EXHAUSTIVE_DEPS.md` | effect 依賴警告分類與疑似 bug 清單（改 effect 前先看） |
 | `README.md` | 專案總覽、環境變數、API、時區、路由、部署 |
@@ -21,7 +21,7 @@ BOS 3.0 是美業 ERP 的純前端 SPA（Vite 5 + React 17 + Apollo GraphQL + Re
 2. **列印範本不動**：`#printMain`、`#printThermal`、會被 `innerHTML` 複製到列印視窗的區塊、`className` 含 `print` 的元素。
 3. 保留所有 `data-testid`、`id`、`name`、`ref`、`key`、`aria-*`。
 4. 後端 repo `beautyos_api`、`beautyos_merchant` **唯讀**，不要動。
-5. **不要建立、送出或儲存真實帳單／資料，也不可以連到任何真實資料庫（正式與測試後端都不行，Jason 2026/10/22）**；測試用模擬後端（mock GraphQL）。單元測試由 `setupTests.js` 全域封鎖 `fetch`／`XMLHttpRequest`／`WebSocket`（`src/__tests__/networkGuard.test.js` 驗證），不要放寬；瀏覽器腳本除了 `page.route` 回假資料、非本機一律 abort，**還要**在 `chromium.launch` 加 `--host-resolver-rules=MAP *.run.app ~NOTFOUND, MAP *beautyos* ~NOTFOUND, MAP *crt-test* ~NOTFOUND`（`page.route` 攔不到 WebSocket，頂列的 socket.io 會直連後端）。請人員實機操作前，必須先確認有與正式資料完全隔離的測試後端。
+5. **正式站僅可唯讀查看，禁止新增、修改、送出或列印真實資料；刪檔先經 Jason 同意。不要建立、送出或儲存真實帳單／資料，也不可以連到任何真實資料庫（正式與測試後端都不行，Jason 2026/10/22）**；測試用模擬後端（mock GraphQL）。單元測試由 `setupTests.js` 全域封鎖 `fetch`／`XMLHttpRequest`／`WebSocket`（`src/__tests__/networkGuard.test.js` 驗證），不要放寬；瀏覽器腳本除了 `page.route` 回假資料、非本機一律 abort，**還要**在 `chromium.launch` 加 `--host-resolver-rules=MAP *.run.app ~NOTFOUND, MAP *beautyos* ~NOTFOUND, MAP *crt-test* ~NOTFOUND`（`page.route` 攔不到 WebSocket，頂列的 socket.io 會直連後端）。請人員實機操作前，必須先確認有與正式資料完全隔離的測試後端。
 6. 只在指定分支開發與推送；合併流程見下方「Git 與合併」。
 
 ## 常用指令
@@ -30,15 +30,15 @@ BOS 3.0 是美業 ERP 的純前端 SPA（Vite 5 + React 17 + Apollo GraphQL + Re
 npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps（CI／Docker 用 npm ci --legacy-peer-deps）
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
-npm run lint:build                   # 等同原 CRA build 內建的 ESLint（react-app/base＋react-hooks/rules-of-hooks 為 error，0 warning）
-CI=true npm run test:nowatch         # 全部單元測試（基準：364 檔／4268 測試全數通過，全套約 20 分鐘）
+npm run lint                         # ESLint（實際 script：lint:build）
+npm run test:nowatch                 # 全部單元測試（作者回報基準：4,268 項通過）
 TZ=America/Los_Angeles CI=true npm run test:nowatch   # 時區相關修改要另在海外時區跑一次
 CI=true npm run test:coverage        # 覆蓋率（A 級核心 helper／lib／store／OrderShared／DeductionSettingShared／*Requirements 要求 100%；共用層 hooks／ui／utils／context／mixins 100（分支 99）、components 99、elements 99、layouts 98；帳單四頁 99；其餘〔頁面〕為全域下限；Jason 2026/10/22 定全站 100% 為目標，分波推進）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
 node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面驗證
 ```
 
-驗證標準：`verify-logic` 的 FAIL 必須逐項說明是純畫面差異；eslint 0 新增 error；`lint:build` 通過且 build 成功；測試**必須全數通過**。動到 `package.json` 相依時，另在乾淨資料夾跑一次 `npm ci --legacy-peer-deps` 確認 lockfile 同步。
+GitHub Actions 的 Node.js CI 已手動停用（disabled_manually）。合併前本機執行 `npm run lint`、`npm run test:nowatch`、`npm run build`；作者回報目前有 4,268 項測試通過。驗證標準：`verify-logic` 的 FAIL 必須逐項說明是純畫面差異；lint 通過且 build 成功；測試**必須全數通過**。動到 `package.json` 相依時，另在乾淨資料夾跑一次 `npm ci --legacy-peer-deps` 確認 lockfile 同步。
 
 ## Git 與合併
 
@@ -47,13 +47,13 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - **可能有多個 session 同時開發**：合併前一定先 `git fetch origin main` 並 merge 進自己的分支，重跑 lint／測試／build 再合併；衝突逐一解，不覆蓋對方的內容。`MEMORY.md` 的教訓編號、`TODO.md` 的條目合併後要檢查重號，後到者順延編號並同步文件內的引用。
 - PR 開啟後 Codex 會自動 review：等它完成；有 finding 就驗證是否成立、修正或在討論串說明理由，再合併。GitHub Actions（`.github/workflows/node.js.yml`）目前在 GitHub 上不會執行，以本機驗證為準。
 - PR 合併後，分支從最新 `main` 重置再繼續（`git fetch origin main && git checkout -B <branch> origin/main`），不在已合併的歷史上堆疊。
-- 每個完整 commit 都要更新 `src/version.js` 的 `APP_VERSION`（格式 `v3.MMDDHHmm`，Asia/Taipei，例如 `v3.10210047`），commit 訊息第一行以 `[版號]` 開頭；不自行升大版號。
+- 每個完整 commit 都要更新 `src/version.js` 的 `APP_VERSION`（格式 `v3.MMDDHHmm`，台灣時間 UTC+8，例如 `v3.10230759`），commit 訊息第一行以 `[版號]` 開頭；不自行升大版號。
 - Commit 訊息遵守 Angular 格式；沒有 `gh`，PR 用 GitHub MCP 工具。
-- 部署：合併進 `main` 後由 Cloud Build 以 Dockerfile 建置（`npm ci` → `npm run build` → `serve@14`），不要在 cloudbuild 另加 yarn 步驟。
+- 部署：正式站 https://bos.lure.com.tw 位於 Railway，push／合併到 `main` 會自動部署。合併不等於上線，須確認正式站左上角版號。`cloudbuild.yaml`、`cloudbuild_dev.yaml` 是舊的 legacy 設定，目前未使用。
 
 ## 架構速記
 
-- `src/ui/`：新元件（Button、Input／Field、Select、NativeSelect、Table、Card、Dialog、Accordion、ToggleGroup、Switch、Checkbox、Badge、Avatar、Stat、Toast、Popover、DropdownMenu、Sidebar、PageHeader、EmptyState…）與 `icons`（lucide 轉接層）、`*-compat`（舊頁面用、輸出 MUI 同名 class 的相容元件，MUI 套件已移除）、`format`（`formatNumber`／`formatMoney`）。
+- `src/ui/`：新元件（Button、Input／Field、Select、NativeSelect、Table、Card、Dialog、Accordion、ToggleGroup、Switch、Checkbox、Badge、Avatar、Stat、Toast、Popover、DropdownMenu、Sidebar、PageHeader、EmptyState…）與 `icons`（lucide 轉接層）、`*-compat`（舊頁面用、輸出 MUI 同名 class 的相容元件；目前共 59 個使用檔案，其中 53 檔位於 38 個頁面目錄，另 6 檔在共用元件層）、`format`（`formatNumber`／`formatMoney`）。
 - `src/styles/tokens.css`：CSS 變數 tokens＋`.ui-root` 基礎層（preflight 關閉）；淺色文字與狀態色已調到 WCAG AA。
 - `src/lib/api-base.js`：後端位址單一來源（GraphQL、WebSocket、REST outer_store、Sentry environment 都從這裡取）；不要在頁面寫死網址。
 - `src/lib/init-apollo.js`：Apollo client 單例；errorLink 統一提示 GraphQL／網路錯誤（`TKN_ERROR` 導回登入）；`inflightLink` 只計數進行中的查詢（給 `after-first-load` 用）。client 為 `@apollo/client` 3（2026/10/21 自 apollo-boost 換版、舊套件已移除，實驗報告 `docs/redesign/APOLLO_V3_EXPERIMENT.md`）；`createApolloClient` 不開 `notifyOnNetworkStatusChange`（refetch 的 loading 行為與 v2 相同，有測試）。
@@ -74,7 +74,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - `src/views/OrderCreate/`：打帳單。`orderRequirements.js` 與 `Header.js` 的 `valid` 同步（有測試比對）；`RowAction.js` 是項目列的圖示鈕與「新增項目」。
 - `src/helper/`：`billPaymentSummary`（打帳單應付帳款／現金應收，明細彈窗、收據、金額彙總共用）、`exportCustomerMask`（列表匯出是否遮罩客資：只有查詢成功且設定為 false 才不遮罩）、`rolePageAuthority`（讀登入者角色某區塊的頁面權限：以角色 id 比對，缺區塊／找不到角色／格式壞掉一律視為沒有權限；新頁面讀角色權限一律用它）、`billVerify`、`helperDeduction`、`giveBonus`、`truncateDecimal`（卡券金額無條件捨去）、`dailyUnlock`（鎖定日期 23:59 解除）等，皆有單元測試。
 - `src/__tests__/testkit.test.js`：頁面測試共用工具（依查詢名稱回應的模擬 link、沒寫到的欄位自動補齊、記錄送出的 variables、擋住 `fetch`、`settle()` 等所有查詢回來；`renderPage(…, { delays: { 查詢名稱: 毫秒 } })` 讓指定查詢晚回，測「設定比資料晚到」）。檔名帶 `.test` 是因為 CRA 把 `__tests__` 下每個檔都當測試；被 import 時只提供函式。新的整頁測試照四個帳單頁與 `views` 煙霧測試的寫法。**受控輸入框且 onChange 在 setState updater（如 `produce`）裡才讀 `event.target.value` 的，用 `typeLikeBrowser(input, value)` 輸入**：`fireEvent.change` 包在 `act` 裡，React 會先把受控值還原再跑 updater，讀到舊值（真實瀏覽器不會），2026/10/22 曾因此誤判「編輯顧客改名不生效」。
-- `scripts/redesign/compat-harness/`：MUI 相容層的 computed style 比對頁（MUI 需臨時 `npm i --no-save` 安裝，用法見 `build.js` 檔頭）。
+- `scripts/redesign/compat-harness/`：相容層的 computed style 比對頁（歷史工具；MUI 套件已移除）。
 - `scripts/redesign/`：verify-logic／verify-style-only／verify-imports-only、tokenize-colors、swap-icons、page-checklist、portal-root-scan、inventory-scan（改版盤點數字，口徑見 `docs/redesign/TODO.md` §三）。
 
 ## 踩雷清單
@@ -84,7 +84,7 @@ node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面�
 - emotion 已於 2026/10/20 全面移除（MEMORY #163）：樣式一律用 Tailwind className；共用元件的 `className` 是字串直通（`cn` 合併）。`ui/icons` 預設尺寸在 `src/ui/icons.css`（同權重、排在 Tailwind 之後），頁面要覆蓋圖示尺寸需加 `!`。
 - flex 子層沒有 `min-width:0`／`max-width:100%` 會被內容撐寬；欄位列要 `flex-wrap`。
 - `overflow-x:auto` 會連帶裁掉上下溢出內容（浮動標籤、外側焦點框），因此標籤統一放欄位上方；捲動容器內的元件焦點框用 `focus-visible:ring-inset`（`ui/tabs` 已內建，MEMORY #171）。
-- MUI Autocomplete：沒有選項／載入中時 `aria-expanded=false` 但彈出層可見（MUI 行為）；選項標籤相同會造成重複 key，要自己給 `key`。
+- 打字搜尋下拉 Autocomplete 已於 PR #178–#181 改為自製元件；滑桿數值泡泡已於 PR #197 完成自製。
 - 讀查詢結果前先防呆：API 失敗時 `data` 為 undefined，直接 `.filter`／`.map` 會讓整頁拋錯（版面層已加防呆與錯誤邊界，頁面層仍要注意）。
 - `.then(fn, openSnackbar(...))` 的第二參數會在送出當下就執行；成功後才做的事一律寫在第一個 callback 內。GraphQL mutation 的 `.then` 沒接 `.catch` 不必補：`init-apollo` 的 errorLink 已對每個 GraphQL／網路錯誤跳提示，頁面再 catch 會重複提示；只有非 GraphQL 的 Promise（`fetch`、LIFF SDK）要自己接 catch。
 - `parseInt` 一律帶 radix 10（2026/10/21 已全站補齊 182 處，`lint:build` 的 `radix` 規則未開，靠 review）。
