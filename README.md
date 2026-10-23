@@ -1,7 +1,7 @@
 # 💄 BeautyOS (BOS v3.0) — 美業智慧管理系統
 
 > **專案代號**：`beautyos_website`
-> **版本**：v3（畫面版號見 `src/version.js`，格式 `v3.MMDDHHmm`）| **最後更新**：2026-10-21（UI 改版進行中，見 [改版進度](docs/redesign/STATUS.md)）
+> **版本**：v3（正式站目前 `v3.10230759`；版號來源 `src/version.js`，格式 `v3.MMDDHHmm`，台灣時間 UTC+8）| **最後更新**：2026-10-23（改版進度見 [STATUS](docs/redesign/STATUS.md)）
 > **技術責任人**：名留集團技術團隊
 
 BeautyOS 是一套專為**美髮 / 美容 / 美甲 / SPA 產業**設計的全方位管理系統（ERP / CRM），
@@ -13,6 +13,7 @@ BeautyOS 是一套專為**美髮 / 美容 / 美甲 / SPA 產業**設計的全方
 ## 📑 目錄
 
 - [快速開始](#-快速開始)
+- [交接說明](#交接說明)
 - [技術堆疊](#️-技術堆疊-tech-stack)
 - [專案架構](#-專案架構)
 - [目錄結構](#-目錄結構)
@@ -65,12 +66,21 @@ npm run build
 | `npm start` | 啟動開發伺服器（Vite，hot reload） |
 | `npm run build` | 生產環境建置（Vite，輸出 `build/`，不含 source map） |
 | `npm run preview` | 以正式 build 啟動本機預覽 |
-| `npm run lint:build` | 建置用 ESLint 檢查（與原 CRA build 相同規則，CI 執行） |
+| `npm run lint`（別名：`npm run lint:build`） | ESLint 檢查（Node.js CI 已手動停用，合併前請本機執行） |
 | `npm test` | 執行測試 (watch mode) |
-| `npm run test:nowatch` | 執行測試 (單次) |
+| `npm run test:nowatch` | 執行測試 (單次；合併前本機執行) |
 | `npm run test:coverage` | 覆蓋率測試（門檻：現況下限＋金額／API 模組逐檔門檻） |
 | `TZ=America/Los_Angeles CI=true npm run test:nowatch` | 在海外時區跑全部測試（時區相關修改必跑） |
 | `npm run cy:open` | 啟動 Cypress E2E 測試 |
+
+## 交接說明
+
+- **Repo 結構**：`src/views/` 放業務頁面，`src/components/` 與 `src/ui/` 放共用元件，`src/lib/`、`src/helper/`、`src/store/` 放資料與狀態邏輯；主要守則在 `CLAUDE.md`、設計規則在 `STYLE.md`。
+- **本機開發**：使用 Node.js 24、npm；執行 `npm install --legacy-peer-deps` 後以 `npm start` 啟動 Vite。API 連線設定依 `src/lib/api-base.js` 與本機既有環境設定，不要把憑證寫入文件。
+- **合併前本機驗證**：GitHub Actions Node.js CI 已手動停用，請自行執行 `npm run lint`、`npm run test:nowatch`、`npm run build`。單元測試使用 mock，不連正式資料。
+- **部署**：合併／push 到 `main` 會由 Railway 自動部署至正式站 https://bos.lure.com.tw。GitHub 合併成功不代表已上線；確認正式站左上角版號為預期版本才算完成。`cloudbuild.yaml`、`cloudbuild_dev.yaml` 是未使用的 legacy 檔案。
+- **改版文件**：`docs/redesign/STATUS.md` 記錄進度；`TODO.md` 集中待辦與待實機項目；根目錄 `STYLE.md` 是現行設計依據，`MEMORY.md` 記決策教訓；`MIGRATION_GUIDE.md` 說明相容元件收尾方式；`INVENTORY.md` 是元件盤點；`DATE_PICKER.md`、`REPORT_COMPACT.md` 各記日期選擇器與報表列印規格／歷史；`PAGE_CHECKLIST.md`、`VERIFY_REPORT.md` 是逐頁檢查與驗證紀錄；`APOLLO_V3_EXPERIMENT.md`、`B2_EXHAUSTIVE_DEPS.md` 為專項報告。
+- **正式站安全**：正式站僅供唯讀查看；測試不可新增、修改、送出或列印真實資料。刪除檔案前須先取得 Jason 同意。
 
 ---
 
@@ -157,8 +167,8 @@ bos3.0/
 ├── .github/                    # GitHub Issue/PR 模板、CI workflows
 ├── Dockerfile                  # Docker 多階段建置
 ├── .dockerignore               # Docker 忽略清單
-├── cloudbuild.yaml             # GCP Cloud Build (正式環境)
-├── cloudbuild_dev.yaml         # GCP Cloud Build (開發環境)
+├── cloudbuild.yaml             # legacy：舊 Cloud Build 設定，目前未使用
+├── cloudbuild_dev.yaml         # legacy：舊 Cloud Build 設定，目前未使用
 ├── package.json                # 專案建置配置
 │
 └── src/
@@ -278,7 +288,7 @@ bos3.0/
 5. 其他（正式環境）       → https://beautyos-api-prod-htlfg34mhq-de.a.run.app/graphql
 ```
 
-> ⚠️ **重要**：在 Zeabur 等第三方平台部署時，**必須**設定 `REACT_APP_API_URL` 環境變數，否則會連到正式環境。WebSocket 與 REST 會跟著改用同一台主機（取該 URL 的 origin）。
+> ⚠️ **重要**：部署測試環境時，**必須**設定 `REACT_APP_API_URL` 環境變數，否則會連到正式環境。WebSocket 與 REST 會跟著改用同一台主機（取該 URL 的 origin）。
 
 ---
 
@@ -384,7 +394,7 @@ localStorage 儲存：
 
 ### 舊頁面（相容層）
 
-尚未重新設計的頁面使用 `src/ui/*-compat`（Dialog、Table、Grid、Snackbar…），輸出與 MUI 相同的 class 名稱，讓 `initialize(-dark).scss` 與列印樣式照常生效。改版這些頁面時依 `docs/redesign/MIGRATION_GUIDE.md` 換成 `src/ui/` 元件；相容層的 computed style 比對工具在 `scripts/redesign/compat-harness/`。
+尚未重新設計的頁面使用 `src/ui/*-compat`（Dialog、Table、Grid、Snackbar…），輸出與 MUI 相同的 class 名稱，讓 `initialize(-dark).scss` 與列印樣式照常生效。改版這些頁面時依 `docs/redesign/MIGRATION_GUIDE.md` 換成 `src/ui/` 元件；相容層的 computed style 比對工具在 `scripts/redesign/compat-harness/`（歷史比對工具）。
 
 ---
 
@@ -627,33 +637,13 @@ Dialog 模式的店家切換器，含搜尋過濾功能。
 
 ## 🚢 部署指南
 
-### 方式一：Zeabur 部署
+### Railway（正式環境）
 
-1. 連接 GitHub Repository
-2. 設定環境變數：
-   ```
-   REACT_APP_API_URL=https://crt-test-htlfg34mhq-de.a.run.app/graphql  (測試環境)
-   ```
-3. 使用 Dockerfile 自動建置
+正式站 https://bos.lure.com.tw 部署在 Railway（workspace「Jason C's Projects」的 project「bos3.0」）。push 或合併到 `main` 會自動部署；合併本身不等於已上線，須查看 App 左上角版號確認部署完成。目前正式版為 `v3.10230759`。
 
-### 方式二：GCP Cloud Build (正式/開發)
+`cloudbuild.yaml` 與 `cloudbuild_dev.yaml` 是舊的 Cloud Build 設定，目前未使用，不屬現行部署流程。
 
-**正式環境** (`cloudbuild.yaml`)：
-```bash
-# 觸發流程（安裝與建置都在 Dockerfile 內完成）：
-# 1. Docker build（npm ci → npm run build）→ push to asia-east1-docker.pkg.dev
-# 2. kubectl set image → update deployment/mlg-beautyos-deployment
-# 註：2026/10/20 前另有 `yarn --production`＋`yarn build` 兩步，改用 Vite 後會失敗（建置工具在 devDependencies）且與 Docker 內建置重複，已移除
-```
-
-**開發環境** (`cloudbuild_dev.yaml`)：
-```bash
-# 同正式，但 image tag 與 deployment name 不同：
-# - Image: beautyos-frontend-repo/dev:$SHORT_SHA
-# - Deployment: mlg-beautyosdev-deployment
-```
-
-### 方式三：Docker 手動建置
+### Docker 本機手動建置
 
 ```bash
 # 建置映像檔 (Multi-stage)
@@ -676,13 +666,6 @@ docker run -p 3000:3000 beautyos-frontend
 # - serve@14 -s build (port 3000)
 # - build/serve.json（來自 public/serve.json）：/assets/** 為 hash 檔名，Cache-Control 一年 immutable；*.html no-cache
 ```
-
-### GCP 部署架構
-
-| 環境 | Registry | Deployment | Cluster |
-|---|---|---|---|
-| **正式** | `beautyos-frontend-repo/prod` | `mlg-beautyos-deployment` | `cluster-1 (asia-east1-a)` |
-| **開發** | `beautyos-frontend-repo/dev` | `mlg-beautyosdev-deployment` | `cluster-1 (asia-east1-a)` |
 
 ---
 
@@ -757,12 +740,12 @@ const handleSubmit = () => createOrder({ variables: { input } })
 
 | 分支 | 用途 |
 |---|---|
-| `main` | 主要分支；合併後由 Cloud Build 部署 |
+| `main` | 主要分支；push／合併後 Railway 自動部署，須以正式站版號確認上線 |
 | `claude/*` 等功能分支 | 驗證通過（lint、測試全過、build 成功）後以 PR 合併（merge commit）；合併前先把最新 `main` 合進來重跑驗證（可能有多個 session 同時開發） |
 
 ### Commit Message 格式
 
-第一行以畫面版號開頭（`src/version.js`，格式 `v3.MMDDHHmm`），其後為 Angular 格式：
+第一行以畫面版號開頭（`src/version.js`，格式 `v3.MMDDHHmm`，台灣時間 UTC+8），其後為 Angular 格式：
 
 ```
 [v3.10210047] feat: 新增功能

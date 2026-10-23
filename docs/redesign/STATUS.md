@@ -1,6 +1,16 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10212046，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/23（正式站版號 v3.10230759，PR #270；改版歷史仍保留原紀錄）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+
+## 現況摘要（2026/10/23）
+
+- MUI 套件已整包移除；`src/ui/*-compat` 仍有 59 個使用檔案（頁面層 53 檔／38 個目錄，共用層 6 檔）。收尾項目：結帳（billing）4 頁、報表列印、選擇器（pickers）、全域 toast。
+- Autocomplete 已於 PR #178–#181 自製；滑桿泡泡已於 PR #197 完成。
+- 正式站為 Railway 自動部署；以正式站左上角版號 `v3.10230759` 確認上線。Cloud Build 檔為 legacy。
+- GitHub Actions Node.js CI 已手動停用；合併前本機執行 `npm run lint`、`npm run test:nowatch`、`npm run build`。作者回報 4,268 項測試通過。
+- `TODO.md` 約 221 處「待實機」項目需要實機確認。正式站唯讀，絕不建立、修改、送出或列印真實資料；刪除檔案須先經 Jason 同意。
+
+> 以下完成清單、刻意保留項目與版本表保留各批次的歷史狀態；早期「保留 MUI」與「泡泡待做」已由上方現況摘要取代。列印驗收僅用 mock／隔離測試資料，不在正式站列印真實資料。
 
 ## 已完成
 
