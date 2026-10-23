@@ -1,13 +1,12 @@
-// 保留 Modal 的焦點／關閉行為；Card 不加 ui-root，避免影響內部 innerHTML 列印複本。
-import { Modal } from 'ui/modal-compat'
-import { Divider } from 'ui/display-compat'
+import { Dialog, DialogContent, DialogTitle } from 'ui/dialog'
 import { Button } from 'ui/button'
-import { Card, CardHeader } from 'ui/card-compat'
+import { Card, CardHeader } from 'ui/card'
 import PropTypes from 'prop-types'
 import React, {
   memo,
   useContext,
   Fragment,
+  useRef,
 } from 'react'
 import { format } from 'date-fns'
 import billContext from 'context/keyInContext'
@@ -17,7 +16,7 @@ import useOrderDetailItems from './useOrderDetailItems'
 import useOrderDetailCheckout from './useOrderDetailCheckout'
 
 const styles = {
-  root: 'absolute top-[50%] left-[50%] [transform:translate(-50%,-50%)] [outline:none] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)] w-[500px] max-h-[100%] overflow-y-auto max-w-[100%]',
+  root: '!max-w-[500px] !w-[500px] !max-h-[100%] overflow-y-auto [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)] max-sm:!w-full',
   header: 'flex justify-between items-center',
   backBtn: 'm-[16px_24px] h-auto min-h-9 min-w-[64px] whitespace-normal py-0 max-sm:h-auto',
   btnDiv: 'm-[10px_0] flex items-center justify-center',
@@ -45,16 +44,25 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
     checkOrderRef, checkOrderPrintRef, printMainRef, printThermalRef,
     valid, usehandleCreateOrder, usehandleCreateOrderAndPrint, handleOrderPendingConfirm, closeModal,
   } = useOrderDetailCheckout({ onClose, orderDetailPrintLayout })
+  const panelRef = useRef(null)
   const getHelper = id => {
     const helper = getHelperForPrint.filter(d => d.userId === id)
     return helper[0].userNo || helper[0].userName
   }
   return (
     ready && (
-      <Modal open={openOrderDetail}>
-        <Card className={styles.root}>
+      <Fragment>
+      <Dialog open={openOrderDetail}>
+        <DialogContent ref={panelRef} hideClose aria-describedby={undefined} className={styles.root}
+          onOpenAutoFocus={event => {
+            event.preventDefault()
+            const panel = panelRef.current
+            if (panel && !panel.contains(document.activeElement)) panel.focus()
+          }}
+        >
+        <Card>
           <div className={styles.header}>
-            <CardHeader title="消費明細" />
+            <CardHeader className="pb-2"><DialogTitle>消費明細</DialogTitle></CardHeader>
             {/* 按鈕階層（STYLE §2／§6：一個畫面最多一個 primary、紅色只給破壞性操作）：返回＝ghost、掛單／結帳＝secondary、結帳並列印＝primary；handler 不變 */}
             <Button
               variant="ghost"
@@ -107,6 +115,11 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
             </Button>
           </div>
 
+        </Card>
+        </DialogContent>
+      </Dialog>
+      {/* 收據不隨 Portal 延後掛載或退場動畫保留；關閉同次 commit 清 refs，避免舊收據仍可讀。 */}
+      {openOrderDetail && <Fragment>
           <div style={{ display: 'none' }} ref={printMainRef} >
             {
               (!detailInfo.logo.isDisplay || !detailInfo.logo.imageUrl) &&
@@ -236,7 +249,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                     </div>
                   ))}
               </div>
-              <Divider style={{ width: '100%' }} />
+              <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
               <div>合計：{orderDetailPaymentShouldPay}</div>
               <div>結帳：</div>
               <div style={{ display: 'flex', margin: '0 15px', justifyContent: 'space-between' }}>
@@ -313,7 +326,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
               <div>
                 顧客：{customer.data.customer === null ? '未選擇' : customer.data.customer.name}
               </div>
-              <Divider style={{ width: '100%' }} />
+              <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
               <table style={{ width: '100%' }}>
                 <thead style={{ sizeWidth: 'bold' }}>
                   <td style={{ minWidth: '4ch' }}>名稱</td>
@@ -383,7 +396,7 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
                     ))}
                 </tbody>
               </table>
-              <Divider style={{ width: '100%' }} />
+              <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
               <div>合計：{orderDetailPaymentShouldPay}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div>扣入金：{bill.walletPay}</div>
@@ -406,8 +419,8 @@ function OrderDetailModal({ openOrderDetail, orderDetailPrintLayout, onClose, ge
               <div>謝謝惠顧,歡迎下次光臨!</div>
             </div>
           </div>
-        </Card>
-      </Modal>
+      </Fragment>}
+      </Fragment>
     )
   )
 }

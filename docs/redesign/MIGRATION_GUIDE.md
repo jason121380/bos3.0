@@ -168,7 +168,7 @@ Part B 共 17 個頁面／共用 importers；B1 已完成 9 檔，B2 完成 7 �
 | `views/EmployeeSchedule/AddDesignersModal` | **B1 完成**；Modal → `ui/dialog`；人員搜尋，無 onClose |
 | `views/Services/AboutDeductionEditModal` | **B1 完成**；Modal → `ui/dialog`；Select／抽成數值，無 onClose |
 | `views/Services/AssistantSettingEditModal` | **B1 完成**；Modal → `ui/dialog`；Select／助理抽成數值，無 onClose |
-| `views/OrderCreate/OrderDetailModal` | **B2 保留**；Modal；**列印範本禁止動**、結帳及確認疊層，無 onClose |
+| `views/OrderCreate/OrderDetailModal` | **項目 3 第三批完成**；Dialog；列印 refs 與動畫外殼分開，無 onOpenChange，詳見第三批 |
 
 另有 `ui/date-picker`、`ui/misc-compat`、`ui/overlay-compat` 三個內部使用者，與頁面遷移分開計數。
 
@@ -186,9 +186,9 @@ OuterLink 原 MuiDialog 後代樣式逐項移至 DialogContent／Header／Body�
 
 七檔僅換外殼，沿用舊 Modal 開窗先聚焦面板（已有欄位焦點則保留），handlers／state／GraphQL／refs／驗證／後端值原樣保留；未修改 `src/ui`。FastCheckOrdersModal 保留 xl 1536px 與寬 sticky 表格；AttendanceRecords 保留 onClose 與 hidden 篩選掛載；CustomerFilterExport 保留 600px 與原 md 以下全高視窗；CustomerEditModal 保留 700px、表單 refs 與原 onClose；CustomerInfo 保留 600px、無 onOpenChange＋hideClose；兩個 OrderTable 保留 xs 444px、樣式掛點及原公休窗。正式 Dialog 採既有圓角／遮罩／退場動畫及手機底部面板；沒有新增 X 關閉路徑。
 
-**OrderDetailModal 刻意保留 modal-compat，原檔零變更**：舊 `<Modal open={openOrderDetail}>` 沒有 keepMounted，關閉即卸載；開啟內容直接經 ReactDOM portal 掛到 body。`useOrderDetailCheckout` 的 F8 流程先同步檢查 printMainRef／printThermalRef，缺 ref 回傳 `null dom` 以保留快捷鍵；mutation 非同步成功回呼再經 `printDiv()` 直接讀兩個 ref 的 innerHTML 寫入新視窗，另有 500ms 後 closeModal／重設流程。正式 Dialog 的 Portal 有自己的掛載時序，且 Content 退場期間仍保留 DOM，不能保證 refs 的可讀期間與原本「關閉即卸載」完全相同。依本批條件，不為移除 import 改列印掛載／hooks／forceMount；printMainRef／printThermalRef、checkOrderPrintRef、全部列印 class 與 card-compat／display-compat 原樣保留。useDraftPrint 屬 DraftOrderEdit，未改動。
+**OrderDetailModal 的 B2 延後原因與第三批完成補註（2026/10/23）**：B2 當時保留原檔，是因為舊 Modal 關閉立即卸載，而正式 Dialog 的 Portal 掛載及退場動畫會改變列印 refs 存活時間。`useOrderDetailCheckout` 先同步檢查兩個 ref（缺少回傳 `null dom`，F8 仍可重試），mutation 成功後才由 `printDiv()` 讀 innerHTML，500ms 後 closeModal。Jason 於項目 3 第三批核准處理收據後，已完成 `ui/dialog`／`ui/card` 遷移：兩塊隱藏收據放在動畫 Content 外，仍以 `ready && openOrderDetail` 同步掛載／卸載，不使用 forceMount。按鈕可操作前 refs 已掛上，成功回呼仍可讀，關閉同次 commit 即清 refs；Header 既有條件亦會卸載整個元件。保留 hideClose、無 onOpenChange、開窗聚焦面板及全部 checkout handlers；printDiv／document.write／hooks 均未改。完整 HTML fixture、瀏覽器流程與比較證據見下方「項目 3／第三批」。
 
-剩餘 modal-compat 使用者：頁面只有 OrderCreate/OrderDetailModal；內部為 ui/date-picker、ui/misc-compat、ui/overlay-compat。CLAUDE 的列印與共用圖層規則不變；本次沒有新教訓，不新增 MEMORY。
+頁面已無 modal-compat importer；內部仍有 ui/date-picker、ui/misc-compat、ui/overlay-compat，分開計數。B2 原驗證結果如下，第三批結果另列。
 
 瀏覽器：離線 harness 新增 reservation（ui/dialog → ui/dialog＋combobox／日期 → 真實 PasswordDialog），外部 runner 13/13 通過（exit 0）。picker Esc 只關 picker；PasswordDialog 原無 onClose，Esc 不關任何父窗，取消後還原預約觸發鈕焦點，再按 Esc 才關預約窗。保留原 12 個情境及全部關閉後的捲動／指標鎖檢查。Jest 加強真實 OrderTable → ChoseEvent → PasswordDialog 的 Esc 隔離與取消返回，並新增真實查帳日期／人員搜尋及顧客 Select 回歸；不連真實後端，網路 guard 原樣保留。
 
@@ -260,3 +260,34 @@ compat importer 以 `rg "from 'ui/[a-z-]*-compat'" src` 排除 src/ui 與測試�
 驗證：指定六個 view 目錄＋src/ui 的 Jest 39 suites／436 tests 全過；npm run lint、dialog-layers 13/13（exit 0）通過；verify-logic 8 檔全過（沙箱內 Node 啟動 git 受限，使用 shell 匯出的 origin/main 原檔作為同一檢查器的基準）。另跑相關測試 `--changedSince=origin/main` 10 suites／102 tests 與 `npm run build` 皆通過（依 Jason 2026/10/23 指示，全站 suite 改為當日最終合併前統一跑一次）；未連真實後端。相容 importer 依指定 rg 口徑為 **15（原 23）**。
 
 限制：這是固定假資料的 Chrome 比較，尚未實機紙本驗收。分析比較模式的 650px 最小表寬在 A4 雙欄下會裁切右側欄位；比較／抽成長卡片仍可能跨頁，均為修改前既有輸出，本批保留，沒有額外改版。後續批次仍須自行提供 before／after 證據。
+
+
+### 第三批：收據列印流程（2026/10/23）
+
+本節獨立於並行的第二批表格報表；沒有修改 print-compare-entry.js／print-compare-run.js／print-compare.sh。
+
+| 檔案（`src/views/` 下） | 替換 | 收據 key／差異 |
+|---|---|---|
+| `OrderCreate/OrderDetailModal.js` | modal-compat → ui/dialog；card-compat → ui/card；Divider → 原生 hr | order-detail；三種紙寬 HTML／影像相同 |
+| `DraftOrderEdit/Footer.js` | Divider → 原生 hr | draft-footer；三種紙寬 HTML／影像相同 |
+| `DraftOrderManagementList/ResultsV2.js` | Divider → 原生 hr | draft-list；三種紙寬 HTML／影像相同 |
+| `OrderManagementList/ResultsV2.js` | Divider → 原生 hr | order-list；三種紙寬 HTML／影像相同 |
+
+**生命週期選擇**：收據維持兩塊原本的隱藏 div／ref，移到 Dialog 的動畫 Content 外，以開啟狀態控制；不使用 forceMount，避免關閉後仍留下舊收據。正式 Dialog 無 onOpenChange＋hideClose，Esc／背景仍不關閉；onOpenAutoFocus preventDefault 後聚焦 panelRef，aria-describedby={undefined}，DialogTitle 保留「消費明細」，寬度 !max-w-[500px] 與原陰影／捲動上限保留。Card 改成 ui/card，手機沿用正式 Dialog 底部面板。收據不繼承 ui-root，複製到新視窗後本來也沒有 app CSS。原生 hr 刻意保留原 MuiDivider-root／MuiDivider-fullWidth 字串與 width:100% inline style：這是為了完整 HTML 逐字一致，沒有再引用 compat 模組。沒有改任何收據文字、資料、計算、id、既有 ref、GraphQL 或 printDiv／document.write。
+
+**比較工具**：新增 `scripts/redesign/compat-harness/e2e/receipt-compare-{entry,run}.js` 與 `receipt-compare.sh <repoTree> <outDir>`，入口先複製到 /tmp，再以指定樹建置；`PRINT_KEYS=order-detail,draft-footer,draft-list,order-list` 可選子集。Apollo 只有記憶體 link，未知根查詢失敗；假資料固定測試門市A／測試客戶甲／設計師甲／整數金額／2026/01/01 08:00。window.open 攔截真實列印流程的 document.write 原字串，保存 HTML，再以全新頁面 setContent 重播，僅移除 onload window.print，不載入 app CSS。print media 螢幕 PNG、A4 或 78／56mm PDF、pdftoppm 80dpi PNG；網路 route／DNS guard 保留，圖片 fetch 僅供應登記的記憶體空白圖。
+
+輸出根目錄 `/workspace/bos3-print-compare/batch3/{before,after}`，before 為 origin/main。每列 `{main,t78,t56}` 分別代表 A4、78mm、56mm；PDF 每份一頁，PDF 二進位不比較中繼資料。
+
+| 收據 | 完整 HTML（兩側同名） | 影像（兩側同名） | 結果 |
+|---|---|---|---|
+| 打帳單 | `order-detail-{main,t78,t56}.html` | `order-detail-{main,t78,t56}-print.png`、`order-detail-{main,t78,t56}-pdf-1.png` | HTML 逐字相同；PNG 0 像素差 |
+| 掛單詳細 | `draft-footer-{main,t78,t56}.html` | `draft-footer-{main,t78,t56}-print.png`、`draft-footer-{main,t78,t56}-pdf-1.png` | HTML 逐字相同；PNG 0 像素差 |
+| 掛單列表 | `draft-list-{main,t78,t56}.html` | `draft-list-{main,t78,t56}-print.png`、`draft-list-{main,t78,t56}-pdf-1.png` | HTML 逐字相同；PNG 0 像素差 |
+| 帳單列表 | `order-list-{main,t78,t56}.html` | `order-list-{main,t78,t56}-print.png`、`order-list-{main,t78,t56}-pdf-1.png` | HTML 逐字相同；PNG 0 像素差 |
+
+**測試證據**：`OrderDetailModal.timing.test.js` 的完整 expected HTML 字串，於編輯前以 origin/main 的 OrderDetailModal 另存基準元件實跑產生（暫存元件已移至 /tmp，沒有留在 src）；逐字比對開窗／mutation 成功時 main 與 thermal innerHTML，以及三種紙寬的 document.write。真實 checkout hook＋延後完成的假 mutation，涵蓋 F8 載入未完成可重試、重按只送一次、直接點結帳並列印、成功仍可讀 refs、列印後 499ms 不關／500ms 關閉、關閉後即使 hook 仍掛載亦不印舊資料。既有列印測試只改 Modal 外殼 selectors，未刪減斷言。瀏覽器 harness 使用真實 OrderDetailModal 開窗 → F8 兩次 → mutation 成功 → print capture → 500ms 關閉 → F8 不再送出／列印。
+
+外部 Chrome 收據 before／after 各 **12/12，exit 0**；Pillow 比對 **24 張 PNG 尺寸與每個像素完全相同**，diff／位元組比較 **12 份 HTML 完全相同**。指定六個目錄＋networkGuard＋version 最終 Jest **83 suites／1,028 tests 全過**（含新增六項 timing 回歸）；`npm run lint` 通過。外部 Chrome `dialog-layers` **13/13，exit 0**（desktop、mobile、combobox、select、popover、compat-radix、radix-compat、keep-mounted、dropdown、nested-password、nested-date、customer-form、reservation）。verify-logic 原指令因 Node 內啟動 git 受限而 SKIP；改由 shell 匯出 origin/main 快照後使用同一 AST 分析器，四檔均沒有遺失舊敘述或邏輯運算式。`git diff --check` 通過。指定範圍以外不跑全套，不執行應用 build。既有風險：57mm 設定實際使用 56mm，原生瀏覽器字型、長明細分頁、實體印表機不可列印邊界仍須隔離假資料紙本驗收；本批沒有重排範本。React 17 成功 setState 後同步讀 HTML 的既有契約保留，升 React 18 時須另外處理。compat importer 本分支 **15 → 11**（排除 src/ui 與測試）；第二批亦落地後剩 **2**：OrderEdit/Header、CustomerFilterExport。
+
+**第三批補充驗證（審查時加跑）**：`--changedSince=origin/main` 相關測試 40 suites／560 tests、`npm run lint`、`npm run build` 通過（依 Jason 2026/10/23 指示，全站 suite 於當日最終合併前統一跑一次）。消費明細視窗畫面另截 `order-detail-dialog-screen.png`（batch3 before／after）：版面、文字與按鈕相同；差異僅為（1）開窗焦點改落在面板，舊版焦點停在「返回」而顯示灰底，新版「返回」無灰底；（2）遮罩改為 ui/dialog 的半透明色，略淺；（3）內容整體位移 1～3px。皆為螢幕外觀，不影響收據列印。

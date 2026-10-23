@@ -1,5 +1,12 @@
 # 待辦清單（TODO）
 
+## 項目 3 第三批：收據列印流程（2026/10/23）
+
+四個指定收據檔完成 compat 遷移：OrderDetailModal 改 ui/dialog／ui/card，兩塊 print refs 放在動畫 Content 外並依開啟狀態同步掛載／卸載；其餘三檔 Divider 改原生 hr，保留收據完整 HTML。handlers、GraphQL、列印程式、網路 guard 均未改。獨立 receipt-compare 入口／runner／shell，避免與第二批共用腳本衝突。詳細時序、fixture、逐份 HTML／PNG 名稱及驗證見 MIGRATION_GUIDE「項目 3／第三批」。外部 Chrome 收據 before／after 各 12/12，12 份 HTML 逐字相同、24 張 PNG 像素相同；指定六目錄＋網路 guard／版號最終 Jest **83 suites／1,028 tests 全過**；lint 通過。外部 Chrome `dialog-layers` **13/13，exit 0**（desktop、mobile、combobox、select、popover、compat-radix、radix-compat、keep-mounted、dropdown、nested-password、nested-date、customer-form、reservation）。
+
+本分支 compat importer 最新為 **15 → 11**；下方 15 檔為第一批歷史紀錄。並行第二批亦落地後剩 **2**（OrderEdit/Header、CustomerFilterExport）。未連真實後端或正式站，未 commit；未跑全套／應用 build。仍待使用隔離假資料的實體紙本驗收。
+
+
 - **2026/10/23 項目 4：Tree／Rating／Tag**：新增三個 tokens 元件與單元／離線瀏覽器測試；六個 compat 使用檔完成 UI 遷移，handlers／GraphQL／回傳值與搜尋／確認／取消保留。Phase 1／2 拆分、API、視覺差異與驗證見 MIGRATION_GUIDE §9；compat importer 29 → 23。全站 375 suites／4,350 tests 全過；lint／build／diff check 通過；外部 Chrome 新元件 4/4、Dialog 回歸 13/13（exit 0）。分兩個 PR（元件／使用端）；未觸及正式站。
 
 - **2026/10/23 共用 Dialog 圖層 Part B2**：七檔外殼完成；OrderDetailModal 因列印 refs 同步檢查／非同步讀取與 Portal／退場生命週期差異保留原檔。剩餘僅此頁與三個 ui 內部使用者；未改 src/ui、列印範本與網路 guard。外部 Chrome 13/13、lint 通過；限定 Jest 首輪 87 suites（顧客追蹤單項逾時重跑通過），最終相關頁面 16 suites／188 tests 全過，網路 guard／版號 4 tests 通過；全站 371 suites／4,332 tests 全過、build 通過；頁面 compat importer 35 → 29；細節與驗證見 MIGRATION_GUIDE §8。
