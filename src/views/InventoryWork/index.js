@@ -1,6 +1,4 @@
-// Snackbar 保留相容層（開關與 3 秒自動關閉由它處理）；提示外觀改 ui/toast 的 ToastCard
-import { Snackbar } from 'ui/feedback-compat'
-import { ToastCard } from 'ui/toast'
+import { openSnackbar } from 'elements/snackbars'
 import { TextField } from 'ui/text-field'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
@@ -21,7 +19,6 @@ import { Autocomplete } from 'ui/combobox'
 
 function InventoryWork() {
   const [draftId, setDraftId] = useState(null)
-  const [open, setOpen] = useState(false)
   const [first, setFirst] = useState(1)
   const [creatorId, setCreatorId] = useState(null)
   const [creatorKeyword, setCreatorKeyword] = useState('')
@@ -56,7 +53,7 @@ function InventoryWork() {
       setDraftId(data.draft?.id || null)
 
       if (data.draft !== null && first === 1) {
-        setOpen(true)
+        openSnackbar({ message: '尚有未完成的盤點草稿，請按右上角按鈕完成盤點。', variant: 'warning' })
         setFirst(2)
       }
     }
@@ -69,17 +66,6 @@ function InventoryWork() {
 
   return (
     <Page className="ui-root" title="盤點作業">
-      <Snackbar open={open}
-        style={{ top: '40vh' }}
-        autoHideDuration={3000}
-        onClose={() => setOpen(false)}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center'
-        }}
-      >
-        <ToastCard className="w-full sm:w-[400px]" variant="warning" title="尚有未完成的盤點草稿，請按右上角按鈕完成盤點。" />
-      </Snackbar>
       <AdminPageHeader
         title="盤點作業"
         showFilter={showFilter}

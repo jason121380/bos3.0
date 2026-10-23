@@ -5,8 +5,7 @@
 //   標題＋寫出後果的說明＋「取消／確認」兩鈕；Esc、點背景、取消都只關閉，不會觸發確認；確認鈕呼叫的 callback 與原本完全相同。
 //   用 ui/modal-compat 的 Dialog（不用 Radix）：確認可能從相容層彈窗內開啟（打帳單明細、批次編輯），Radix 的 body pointer-events 會與相容層焦點鎖互搶。
 // - 訊息槽元件（SnackbarContentWrapper）在開啟期間保持同一個實例：確認後的月結／日結進度（progress state）會接著畫在提示卡上。
-// 保留定值 CircularProgress：結帳進度「定值圓＋%」依 STYLE §6 Empty/Loading 另案，不以轉圈冒充
-import { CircularProgress } from 'ui/display-compat'
+// 結帳進度以 inline SVG 定值圓環＋百分比呈現。
 import { Dialog, DialogTitle, DialogContent, DialogActions } from 'ui/modal-compat'
 import { Button } from 'ui/button'
 import { Toaster, ToastCard } from 'ui/toast'
@@ -293,7 +292,26 @@ const SnackbarContentWrapper = forwardRef((props, ref) => {
       trailing={
         checkoutProcessing && (
           <div className="relative inline-flex shrink-0">
-            <CircularProgress variant="determinate" value={progress <= 100 ? progress : 99} />
+            <svg
+              width="40"
+              height="40"
+              viewBox="0 0 40 40"
+              role="progressbar"
+              aria-label="結帳進度"
+              aria-valuenow={progress <= 100 ? progress : 99}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
+              <circle cx="20" cy="20" r="18" fill="none" stroke="rgb(var(--border))" strokeWidth="3.6" />
+              <circle
+                cx="20" cy="20" r="18" fill="none"
+                stroke="rgb(var(--primary))" strokeWidth="3.6"
+                pathLength="100"
+                strokeDasharray="100"
+                strokeDashoffset={100 - (progress <= 100 ? progress : 99)}
+                transform="rotate(-90 20 20)"
+              />
+            </svg>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-caption tabular-nums text-text-secondary">{progress <= 100 ? progress : 99}%</div>
             </div>

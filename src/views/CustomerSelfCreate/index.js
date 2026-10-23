@@ -1,3 +1,4 @@
+import { openSnackbar } from 'elements/snackbars'
 import React, { /* useRef, */ useState, useEffect, Fragment } from 'react'
 import idx from 'idx'
 import Page from 'components/Page'
@@ -19,11 +20,6 @@ const CustomerSelfCreate = () => {
   const { setCustomerCreate } = useFetchCustomerSelfCreate()
   const getMerchantName = useFetchGetMerchantName({ input: id })
   const customerSelfCreateActive = useFetchGetIsCustomerSelfCreateActive({ input: id })
-  const [openSnack, setOpenSnack] = useState({
-    open: false,
-    severity: '',
-    message: ''
-  })
   const [data, setData] = useState({
     name: '',
     cellphone: '',
@@ -48,15 +44,6 @@ const CustomerSelfCreate = () => {
     )
   }
 
-  const closeSnackBar = () => {
-    if (openSnack.message === '資料建立中請稍候') return
-    setOpenSnack(
-      produce(draft => {
-        draft.open = false
-      })
-    )
-  }
-
   // const resetRecaptcha = () => {
   //   reCaptchaRef.current && reCaptchaRef.current.reset()
   //     setData(
@@ -70,13 +57,7 @@ const CustomerSelfCreate = () => {
     setIsClick(true)
     const { merchantName, recaptchaToken, ...submitData } = { ...cloneDeep(data), merchantId: id }
     if (!submitData.name.trim() || !submitData.cellphone.trim()) {
-      setOpenSnack(
-        produce(draft => {
-          draft.open = true
-          draft.severity = 'warning'
-          draft.message = '姓名、電話不得為空'
-        })
-      )
+      openSnackbar({ message: '姓名、電話不得為空', variant: 'warning' })
       // resetRecaptcha()
       setIsClick(false)
       return
@@ -87,34 +68,16 @@ const CustomerSelfCreate = () => {
     }
 
     try {
-      setOpenSnack(
-        produce(draft => {
-          draft.open = true
-          draft.severity = 'warning'
-          draft.message = '資料建立中請稍候'
-        })
-      )
+      openSnackbar({ message: '資料建立中請稍候', variant: 'warning' })
       const res = await setCustomerCreate(submitData)
       if (res.data.customerSelfCreateV2) {
-        setOpenSnack(
-          produce(draft => {
-            draft.open = true
-            draft.severity = 'success'
-            draft.message = '建立成功'
-          })
-        )
+        openSnackbar({ message: '建立成功', variant: 'success' })
         setIsSuccess(true)
       } else {
         throw new Error('建立失敗')
       }
     } catch (error) {
-      setOpenSnack(
-        produce(draft => {
-          draft.open = true
-          draft.severity = 'error'
-          draft.message = error.message
-        })
-      )
+      openSnackbar({ message: error.message, variant: 'error' })
       // resetRecaptcha()
     } finally {
       setIsClick(false)
@@ -147,8 +110,6 @@ const CustomerSelfCreate = () => {
             data={data}
             handleSetInputValue={handleSetInputValue}
             isClick={isClick}
-            closeSnackBar={closeSnackBar}
-            openSnack={openSnack}
             // reCaptchaRef={reCaptchaRef}
             handleSubmit={handleSubmit}
           />
