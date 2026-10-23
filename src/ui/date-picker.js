@@ -3,8 +3,8 @@ import { startOfDay, startOfMinute, startOfMonth } from 'date-fns'
 import { Field } from 'ui/input'
 import { cn } from './utils'
 import { TextField, InputAdornment } from './text-field'
-import { Dialog } from './modal-compat'
-import { Popper } from './overlay-compat'
+import { Dialog, DialogContent } from './dialog'
+import { Popover, PopoverAnchor, PopoverContent } from './popover'
 import { DateField } from './date-field'
 import { DayView, MonthView, YearView, TimeView, formatValue, isDayDisabled, isValidDate } from './calendar'
 
@@ -151,6 +151,11 @@ function createPicker({ displayName, withTime, mobileOnly }) {
     const published = React.useRef(value) // 最後一次送出的值
     const rootRef = React.useRef(null)
     const paperRef = React.useRef(null)
+    const openerRef = React.useRef(null)
+    const wasOpen = React.useRef(false)
+    // 受控 open 也可能由外層開啟；必須在日視圖掛載、移動焦點前記住原焦點。
+    if (open && !wasOpen.current) openerRef.current = document.activeElement
+    wasOpen.current = open
 
     React.useEffect(() => {
       published.current = value
@@ -363,30 +368,50 @@ function createPicker({ displayName, withTime, mobileOnly }) {
     let overlay = null
     if (open && desktop) {
       overlay = (
-        <Popper open onEscapeKeyDown={event => { event.preventDefault(); dismiss() }} anchorEl={rootRef.current} placement="bottom-start" style={{ zIndex: 1300 }}>
-          <div ref={paperRef} role="dialog" aria-label={title} className="ui-root mt-1 overflow-hidden rounded-xl border border-solid border-border bg-background shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
+        <Popover open onOpenChange={next => { if (!next) dismiss() }}>
+          <PopoverAnchor virtualRef={rootRef} />
+          <PopoverContent ref={paperRef} role="dialog" aria-label={title} side="bottom" align="start" sideOffset={4}
+            // 保留原 mousedown 外點規則：欄位、焦點移出及 pointerdown 均不額外關閉。
+            onInteractOutside={event => event.preventDefault()}
+            onOpenAutoFocus={event => event.preventDefault()}
+            onEscapeKeyDown={event => { event.preventDefault(); dismiss() }}
+            onCloseAutoFocus={event => {
+              event.preventDefault()
+              const target = openerRef.current
+              // 外點已聚焦其他欄位時不搶回焦點；Esc／選值後則回到開啟欄位。
+              if (target && target.isConnected && document.activeElement === document.body) target.focus()
+            }}
+            className="ui-root overflow-hidden rounded-xl border border-solid border-border bg-background shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
             {panel}
-          </div>
-        </Popper>
+          </PopoverContent>
+        </Popover>
       )
     } else if (open) {
       overlay = (
-        <Dialog open onClose={dismiss} className="ui-dialog-centered" PaperProps={{ className: 'ui-root min-w-[320px]', 'aria-label': title, 'aria-labelledby': undefined }}>
-          {!toolbar.hidden && (
-            <div className="flex flex-col gap-1 border-0 border-b border-solid border-border px-6 pb-4 pt-4">
-              <span className="text-caption font-medium text-text-secondary">{title}</span>
-              <span className="text-[26px] font-normal leading-9 text-text">{isValidDate(value) ? formatValue(value, toolbarFormat) : '––'}</span>
+        <Dialog open onOpenChange={next => { if (!next) dismiss() }}>
+          <DialogContent hideClose aria-label={title} aria-labelledby={undefined} aria-describedby={undefined}
+            onOpenAutoFocus={event => { if (view === 'day') event.preventDefault() }}
+            onCloseAutoFocus={event => {
+              event.preventDefault()
+              if (openerRef.current && openerRef.current.isConnected) openerRef.current.focus()
+            }}
+            className="ui-dialog-centered min-w-[320px] w-auto max-w-[calc(100vw-32px)] max-sm:inset-x-auto max-sm:bottom-auto max-sm:left-1/2 max-sm:top-1/2 max-sm:w-auto max-sm:max-w-[calc(100vw-32px)] max-sm:-translate-x-1/2 max-sm:-translate-y-1/2 max-sm:rounded-2xl max-sm:border max-sm:pb-0 max-sm:data-[state=open]:slide-in-from-bottom-0 max-sm:data-[state=closed]:slide-out-to-bottom-0 [&>div[aria-hidden]]:hidden">
+            {!toolbar.hidden && (
+              <div className="flex flex-col gap-1 border-0 border-b border-solid border-border px-6 pb-4 pt-4">
+                <span className="text-caption font-medium text-text-secondary">{title}</span>
+                <span className="text-[26px] font-normal leading-9 text-text">{isValidDate(value) ? formatValue(value, toolbarFormat) : '––'}</span>
+              </div>
+            )}
+            {panel}
+            <div className="flex justify-end gap-2 px-4 pb-3 pt-1">
+              <button type="button" onClick={cancel} className="h-9 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover">
+                {DEFAULT_ACTIONS_TEXT.cancel}
+              </button>
+              <button type="button" onClick={() => accept(published.current)} className="h-9 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover">
+                {DEFAULT_ACTIONS_TEXT.ok}
+              </button>
             </div>
-          )}
-          {panel}
-          <div className="flex justify-end gap-2 px-4 pb-3 pt-1">
-            <button type="button" onClick={cancel} className="h-9 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover">
-              {DEFAULT_ACTIONS_TEXT.cancel}
-            </button>
-            <button type="button" onClick={() => accept(published.current)} className="h-9 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover">
-              {DEFAULT_ACTIONS_TEXT.ok}
-            </button>
-          </div>
+          </DialogContent>
         </Dialog>
       )
     }

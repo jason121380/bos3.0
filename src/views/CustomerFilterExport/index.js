@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { DatePicker } from 'ui/date-picker'
 import { ChevronDown, Trash2 } from 'lucide-react'
-import { useMediaQuery } from 'ui/misc-compat'
+import useMediaQuery from 'hooks/useMediaQuery'
 import { useFetchCustomersWithoutSortingExcelLazy } from 'hooks/useFetchCustomersWithoutSortingExcel'
 import { theme } from '../../theme'
 import { Button } from 'ui/button'
@@ -54,7 +54,7 @@ const selecterCustomer = [
 function CustomerFilterExport() {
   const history = useHistory()
   const location = useLocation()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md').replace(/^@media( ?)/m, ''))
   const [timeValue, setTimeValue] = useState({
     startDate: null,
     endDate: null,

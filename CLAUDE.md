@@ -54,7 +54,7 @@ GitHub Actions 的 Node.js CI 已手動停用（disabled_manually）。合併前
 
 ## 架構速記
 
-- `src/ui/`：新元件（Button、Input／Field、Select、NativeSelect、Table、Card、Dialog、Accordion、ToggleGroup、Switch、Checkbox、Badge、Avatar、Stat、Toast、Popover、DropdownMenu、Sidebar、PageHeader、EmptyState…）與 `icons`（lucide 轉接層）、`*-compat`（舊頁面用、輸出 MUI 同名 class 的相容元件；目前共 59 個使用檔案，其中 53 檔位於 38 個頁面目錄，另 6 檔在共用元件層）、`format`（`formatNumber`／`formatMoney`）。
+- `src/ui/`：新元件（Button、Input／Field、Select、NativeSelect、Table、Card、Dialog、Accordion、ToggleGroup、Switch、Checkbox、Badge、Avatar、Stat、Toast、Popover、DropdownMenu、Sidebar、PageHeader、EmptyState…）與 `icons`（lucide 轉接層）、`*-compat`（輸出 MUI 同名 class 的相容元件；目前頁面使用檔案 0 檔，共用元件及日期選擇器內部亦為 0，僅相容檔自身、單元測試與歷史 compat-harness 引用，刪除待 Jason 核准）、`format`（`formatNumber`／`formatMoney`）。
 - `src/styles/tokens.css`：CSS 變數 tokens＋`.ui-root` 基礎層（preflight 關閉）；淺色文字與狀態色已調到 WCAG AA。
 - `src/lib/api-base.js`：後端位址單一來源（GraphQL、WebSocket、REST outer_store、Sentry environment 都從這裡取）；不要在頁面寫死網址。
 - `src/lib/init-apollo.js`：Apollo client 單例；errorLink 統一提示 GraphQL／網路錯誤（`TKN_ERROR` 導回登入）；`inflightLink` 只計數進行中的查詢（給 `after-first-load` 用）。client 為 `@apollo/client` 3（2026/10/21 自 apollo-boost 換版、舊套件已移除，實驗報告 `docs/redesign/APOLLO_V3_EXPERIMENT.md`）；`createApolloClient` 不開 `notifyOnNetworkStatusChange`（refetch 的 loading 行為與 v2 相同，有測試）。

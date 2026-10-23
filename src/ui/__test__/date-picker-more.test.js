@@ -111,7 +111,10 @@ describe('開關生命週期（手機版）', () => {
     expect(within(dialog).getByRole('grid')).toHaveAttribute('aria-label', expect.stringContaining('2026'))
     // 沒有 onChange 也能選（不拋錯）
     fireEvent.click(within(dialog).getByRole('gridcell', { name: '2026年10月3日' }))
-    fireEvent.click(document.querySelector('.MuiBackdrop-root'))
+    act(() => jest.advanceTimersByTime(0))
+    const backdrop = document.querySelector('[data-state="open"].fixed.inset-0')
+    fireEvent(backdrop, new MouseEvent('pointerdown', { bubbles: true, button: 0 }))
+    fireEvent.click(backdrop)
     expect(onClose).toHaveBeenCalled()
     expect(screen.queryByRole('dialog')).toBeNull()
   })

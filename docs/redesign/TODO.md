@@ -1,5 +1,8 @@
 # 待辦清單（TODO）
 
+- **最後一批（2026/10/23，Jason 核准）**：頁面 compat importers **2 → 0**；`CustomerFilterExport` 改用既有 `hooks/useMediaQuery`（呼叫處正規化，md 899.95px／jsdom false 保留），`OrderEdit/Header` 抽獎流水號改正式 Popover；`ui/date-picker` 內部不再依賴 modal／overlay-compat，手機用置中 Dialog、桌機用錨定欄位的 Popover。相容模組 `button-compat`、`card-compat`、`display-compat`、`feedback-compat`、`grid-compat`、`misc-compat`、`modal-compat`、`overlay-compat`、`standard-input-compat`、`table-compat`、`tree-compat` 全部保留，現在僅相容檔內部、其自身／跨圖層單元測試與 `scripts/redesign/compat-harness/**` 歷史比較工具引用；**刪除仍待 Jason 核准**。`ui/compat-layer.js` 是共用 Radix 行為 helper，保留 combobox 引用。本批不刪檔、不 commit、不改後端／網路 guard，不跑 Chrome／e2e；瀏覽器定位、手機置中與巢狀焦點待 Jason 實機驗收。 **驗證**：全套 Jest 377 suites／4,372 tests 全過（`--maxWorkers=50%`，合併前最終一次）；補充焦點案例後，最終指定範圍（全部 ui＋rg 找出的 picker 使用測試＋Header）55 suites／670 tests 全過，版本／網路 guard 2 suites／4 tests 全過；最終 lint、build、git diff --check 通過。唯讀審查未發現需修正問題。build 仍有既有重複 object key 與 Browserslist 資料過舊提示，未擴大修改。
+
+
 - **2026/10/23 項目 3 列印遷移第二批**：指定 9 檔完成正式 ui/card、ui/table、ui/input、Tailwind flex／div 與原生 hr 遷移。第一批七個 key 保留，第二批新增八個 key；逐檔替換、影像名稱與限制見 MIGRATION_GUIDE「項目 3／第二批」。限定 Jest **53 suites／573 tests 全過**、版號 1 test、lint／diff check、dialog-layers **13/13（exit 0）** 通過；外部列印比較 before／after 各 **15/15**，15 張 print＋48 張 PDF PNG 像素相同；螢幕僅薪資條圓角 247 個淡灰抗鋸齒像素差異（最大色階差 8），詳見 MIGRATION_GUIDE。相容 importer **15 → 6**。尚待實機紙本驗收（v3.10232307）。
 
 ## 項目 3 第三批：收據列印流程（2026/10/23）

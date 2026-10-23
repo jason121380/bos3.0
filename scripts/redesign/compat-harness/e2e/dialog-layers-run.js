@@ -103,7 +103,7 @@ async function main() {
         assert(!(await page.evaluate(() => window.__events)).some(e => e[0] === 'lower'), '點選日期不可呼叫 onOpenChange')
         await open()
         await page.locator('button[role="gridcell"]').filter({ hasText: /^24$/ }).first().focus()
-        await focusInside(page, kind === 'desktop' ? '[role="dialog"]:has([role="gridcell"])' : '.MuiDialog-paper:has([role="gridcell"])')
+        await focusInside(page, '[role="dialog"]:has([role="gridcell"])') // 日期層改正式 ui/dialog 後不再輸出 .MuiDialog-paper；桌機與手機共用同一選擇器
         await page.keyboard.press('Escape'); await delay(page)
         assert.equal(await page.locator('button[role="gridcell"]').count(), 0, '第一次 Esc 僅關閉日期層')
         await exists(page, '#lower')
