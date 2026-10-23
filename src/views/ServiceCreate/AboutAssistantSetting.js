@@ -1,4 +1,4 @@
-// 選項值可能為空字串或數字（協助人員人數），保留 MUI Select；同列的數字欄位也保留 MUI TextField 以維持標籤樣式一致
+// 選項值可能為空字串或數字（協助人員人數），使用 ui/form-control Select；同列的數字欄位也使用 ui/text-field TextField 以維持標籤樣式一致
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'

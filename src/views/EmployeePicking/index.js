@@ -1,4 +1,4 @@
-// 分類篩選 Autocomplete 保留 MUI
+// 分類篩選 Autocomplete 使用 ui/combobox
 import { TextField } from 'ui/text-field'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import DateSelector from 'components/DateSelector'

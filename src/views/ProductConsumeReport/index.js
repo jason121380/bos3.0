@@ -1,4 +1,4 @@
-// 用途下拉含空字串選項（全部），Radix Select 不支援空值，保留 MUI Select
+// 用途下拉含空字串選項（全部），Radix Select 不支援空值，使用 ui/form-control Select
 import { MenuItem, InputLabel, FormControl, Select } from 'ui/form-control'
 import Page from 'components/Page'
 import idx from 'idx'

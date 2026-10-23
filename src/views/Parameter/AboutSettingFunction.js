@@ -1,4 +1,4 @@
-// 裁切對話框 Slider 已換 ui/slider、Dialog 已換 ui/dialog；多選 Autocomplete、數字欄位保留 MUI
+// 裁切對話框 Slider 已換 ui/slider、Dialog 已換 ui/dialog；多選 Autocomplete、數字欄位使用正式 ui 元件
 import { Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'

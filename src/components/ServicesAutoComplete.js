@@ -115,11 +115,11 @@ function ServicesAutoComplete(
       }
       loading={services.loading}
       onChange={(_event, value) => onChange(idx(value, _ => value))}
-      // 顯示代號讓同名同價的服務分得出來；key 用 id，避免 MUI 預設用標籤當 key 時出現重複 key
+      // 顯示代號讓同名同價的服務分得出來；key 用 id，避免同名服務以標籤作 key 時出現重複 key
       renderOption={(props, option) => (
         <span {...props} key={option.id} data-testid={option.no}>{`${option.name}${option.no ? `(${option.no})` : ''} - ${option.price}`}</span>
       )}
-      // 沒有選項、載入中時 MUI 的彈出層顯示英文，這裡改成中文
+      // 自動完成選單的無選項與載入中文提示
       noOptionsText="查無符合的服務"
       loadingText="載入中…"
       renderInput={params => (

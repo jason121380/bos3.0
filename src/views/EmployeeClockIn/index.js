@@ -1,7 +1,7 @@
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import React, { useState, useEffect } from 'react'
-// 篩選用 Autocomplete（multiple＋選項內 Checkbox）保留 MUI
+// 篩選用 Autocomplete（multiple＋選項內 Checkbox）使用正式 ui 元件
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import Page from 'components/Page'
 import useFetchDailyClockInRecord, { useFetchDailyClockInRecordLazy } from 'hooks/useFetchDailyClockInRecord'

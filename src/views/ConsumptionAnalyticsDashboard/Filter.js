@@ -1,4 +1,4 @@
-// 設計師多選（Autocomplete）保留 MUI
+// 設計師多選（Autocomplete）使用 ui/combobox
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'

@@ -1,4 +1,6 @@
 import React from 'react'
+import { gql } from '@apollo/client'
+import { GET_PRODUCT_CATEGORIES } from 'hooks/useFetchProductCategories'
 import CustomMockedProvider from 'components/CustomMockedProvider'
 import { render, fireEvent } from '@testing-library/react'
 import { mockedProducts, GET_PRODUCT } from 'hooks/useFetchProducts'
@@ -16,11 +18,70 @@ jest.mock('hooks/useFetchGetVendor', () => ({
   }),
 }))
 
+const GET_MERCHANT_PASSWORD = gql`
+  query GET_MERCHANT_PASSWORD {
+    merchantPassword {
+      superPassword
+      reCheckoutOrder {
+        password
+        isUsing
+      }
+      deleteOrder {
+        password
+        isUsing
+      }
+      restoreCheckout {
+        password
+        isUsing
+      }
+      deleteProduct {
+        password
+        isUsing
+      }
+      deleteCustomer {
+        password
+        isUsing
+      }
+      deleteService {
+        password
+        isUsing
+      }
+      editMoneyFlow {
+        password
+        isUsing
+      }
+      purchaseStockIn {
+        password
+        isUsing
+      }
+      purchaseStockInUndo {
+        password
+        isUsing
+      }
+      cancelReservation {
+        password
+        isUsing
+      }
+    }
+  }
+`
+const GET_PRODUCT_COST_IS_DISPLAY = gql`
+  query GET_PRODUCT_COST_IS_DISPLAY {
+    getIsProductCostDisplay
+  }
+`
+
 const mockedRefetch = jest.fn()
 
 const createWrapper = mocks => {
   return render(
-    <CustomMockedProvider mocks={mocks}>
+    <CustomMockedProvider mocks={[...mocks,
+      { request: { query: GET_MERCHANT_PASSWORD }, result: { data: { merchantPassword: {
+        superPassword: '', ...Object.fromEntries(['reCheckoutOrder', 'deleteOrder', 'restoreCheckout', 'deleteProduct', 'deleteCustomer', 'deleteService', 'editMoneyFlow', 'purchaseStockIn', 'purchaseStockInUndo', 'cancelReservation'].map(key => [key, { password: '', isUsing: false }]))
+      } } } },
+      { request: { query: GET_PRODUCT_COST_IS_DISPLAY }, result: { data: { getIsProductCostDisplay: false } } },
+      { request: { query: GET_PRODUCT_CATEGORIES, variables: { input: { paranoid: true } } }, result: { data: { productCategories: [] } } },
+    ]}>
       <Results
         products={{
           data: mockedProducts.data.products,

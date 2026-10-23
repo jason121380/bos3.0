@@ -1,5 +1,5 @@
 // 欄位標籤放在上方（Field＋Input／NativeSelect）。扣項基準點的選項值是數字，NativeSelect 的 event.target.value 回傳原始數字，
-// 所以 handleDeductionReference 的 parseInt 等既有處理原樣保留；分指定／不指定的 Checkbox 仍用 MUI
+// 所以 handleDeductionReference 的 parseInt 等既有處理原樣保留；分指定／不指定的 Checkbox 使用 ui/checkbox
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { Delete, Plus, Trash2 } from 'lucide-react'
 // import useFetchMerchantDeductionItems from 'hooks/useFetchMerchantDeductionItems'

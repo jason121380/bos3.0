@@ -3,7 +3,7 @@ import { DismissableLayer } from '@radix-ui/react-dismissable-layer'
 import { FocusScope } from '@radix-ui/react-focus-scope'
 
 // 行為節點與內容分開：關閉時卸載 Radix 登記，keepMounted／淡出的內容仍保留同一棵子樹。
-// 焦點強制與初始聚焦沿用相容層；此 Scope 只讓下層 Radix 暫停，避免兩個焦點鎖互搶。
+// combobox 自行管理初始聚焦；此 Scope 讓下層 Radix 暫停，也供多選清單交接焦點，避免焦點鎖互搶。
 function CompatLayer({ open, modal = false, onEscapeKeyDown, restoreFocus = false, contentRef, onPointerEventsChange }) {
   const markerRef = React.useRef(null)
   const restoreTo = React.useRef(null)

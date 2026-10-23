@@ -9,7 +9,7 @@ jest.mock('elements/snackbars', () => {
   return { __esModule: true, ...actual, openSnackbar: jest.fn(actual.openSnackbar) }
 })
 beforeEach(() => openSnackbar.mockImplementation(jest.requireActual('elements/snackbars').openSnackbar))
-import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { endOfMonth, startOfMonth, subMonths } from 'date-fns'
 import { callsOf, loginAs, renderPage, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import { USERS, clearCombo, inputsByLabel, pickOption, pickQuickDate } from '../../__tests__/stockKit.test'
@@ -62,21 +62,38 @@ describe('盤點作業列表', () => {
   })
 
   it('有未完成草稿：提示完成盤點（3 秒後自動關閉），主要按鈕改為繼續盤點該草稿', async () => {
-    const { settle } = renderList({
-      GET_INVENTORYS: { getInventorys: { draft: { id: 'draft-9', date: DATE, isDraft: true, creatorName: '店長' }, checked: [] } },
-    })
-    await settle()
-    expect(screen.getByText('尚有未完成的盤點草稿，請按右上角按鈕完成盤點。')).toBeInTheDocument()
-    expect(openSnackbar).toHaveBeenCalledTimes(1)
-    expect(openSnackbar).toHaveBeenCalledWith({ message: '尚有未完成的盤點草稿，請按右上角按鈕完成盤點。', variant: 'warning' })
-    fireEvent.click(screen.getByRole('button', { name: /篩選/ }))
-    expect(openSnackbar).toHaveBeenCalledTimes(1)
-    fireEvent.click(screen.getByRole('button', { name: /查詢/ }))
-    await settle()
-    expect(openSnackbar).toHaveBeenCalledTimes(1)
-    expect(screen.getAllByRole('link', { name: '繼續盤點' })[0]).toHaveAttribute('href', '/inventory-work/edit/draft-9')
-    expect(screen.getByText('目前沒有盤點紀錄')).toBeInTheDocument()
-    await wait(() => expect(screen.queryByText('尚有未完成的盤點草稿，請按右上角按鈕完成盤點。')).toBeNull(), { timeout: 8000 })
+    // 只接管三秒提示計時；查詢與 testkit 的穩定檢查仍使用真正的非同步排程。
+    const nativeSetTimeout = window.setTimeout
+    const notifications = []
+    window.setTimeout = (callback, delay, ...args) => {
+      if (delay === 3000) {
+        notifications.push(() => callback(...args))
+        return nativeSetTimeout(() => {}, 0)
+      }
+      return nativeSetTimeout(callback, delay, ...args)
+    }
+    try {
+      const { settle } = renderList({
+        GET_INVENTORYS: { getInventorys: { draft: { id: 'draft-9', date: DATE, isDraft: true, creatorName: '店長' }, checked: [] } },
+      })
+      await settle()
+      expect(screen.getByText('尚有未完成的盤點草稿，請按右上角按鈕完成盤點。')).toBeInTheDocument()
+      expect(openSnackbar).toHaveBeenCalledTimes(1)
+      expect(openSnackbar).toHaveBeenCalledWith({ message: '尚有未完成的盤點草稿，請按右上角按鈕完成盤點。', variant: 'warning' })
+      fireEvent.click(screen.getByRole('button', { name: /篩選/ }))
+      expect(openSnackbar).toHaveBeenCalledTimes(1)
+      fireEvent.click(screen.getByRole('button', { name: /查詢/ }))
+      await settle()
+      expect(openSnackbar).toHaveBeenCalledTimes(1)
+      expect(screen.getAllByRole('link', { name: '繼續盤點' })[0]).toHaveAttribute('href', '/inventory-work/edit/draft-9')
+      expect(screen.getByText('目前沒有盤點紀錄')).toBeInTheDocument()
+      expect(notifications.length).toBeGreaterThan(0)
+      act(() => notifications.forEach(expire => expire()))
+      await wait(() => expect(screen.queryByText('尚有未完成的盤點草稿，請按右上角按鈕完成盤點。')).toBeNull(), { timeout: 8000 })
+    } finally {
+      cleanup()
+      window.setTimeout = nativeSetTimeout
+    }
   })
 
   it('依盤點人員篩選送出人員 id；清除送 null；換成上個月重查', async () => {

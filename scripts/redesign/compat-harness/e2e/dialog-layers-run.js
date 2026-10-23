@@ -16,7 +16,7 @@ const delay = page => page.waitForTimeout(150)
 async function main() {
   const browser = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1'] })
   let failed = 0
-  for (const kind of ['desktop', 'mobile', 'combobox', 'select', 'popover', 'dropdown', 'nested-password', 'nested-date', 'customer-form', 'reservation']) {
+  for (const kind of ['desktop', 'mobile', 'combobox', 'select', 'popover', 'dropdown', 'nested-password', 'nested-date', 'customer-form', 'reservation', 'click-away']) {
     const context = await browser.newContext({ viewport: { width: 1000, height: 850 }, hasTouch: false })
     // 以路由直接提供靜態檔，受限環境也不必開監聽埠；所有非本機請求一律中止。
     await context.route('**/*', route => {
@@ -34,7 +34,35 @@ async function main() {
     try {
       await page.goto(`http://127.0.0.1/?${kind}`)
       await delay(page)
-      if (kind === 'reservation') {
+      if (kind === 'click-away') {
+        const after = page.locator('#after-btn')
+        for (const [trigger, popup, modal] of [
+          ['#away-select', '[role="listbox"]', true],
+          ['#away-popover', '#away-panel', false],
+          ['button[aria-label^="選擇日期"]', '[role="grid"]', false],
+          ['button[aria-haspopup="listbox"]:not(#away-select)', '[role="listbox"]', false],
+        ]) {
+          await page.locator(trigger).click()
+          await exists(page, popup)
+          // modal Select 封鎖背景指標；實際滑鼠第一下只解散選單，再點一次才操作背景按鈕。
+          // 用座標送真實滑鼠事件，不以 force 繞過瀏覽器命中測試。
+          const box = await after.boundingBox()
+          assert(box, '下一個按鈕必須可見')
+          if (!modal) assert(await after.evaluate(el => {
+            const r = el.getBoundingClientRect()
+            return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2))
+          }), '下一個按鈕不可被浮層覆蓋')
+          await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2)
+          await page.locator(popup).waitFor({ state: 'detached' })
+          await exists(page, '#lower')
+          if (modal) {
+            await focusInside(page, trigger)
+            await after.click()
+          }
+          await page.waitForFunction(() => document.activeElement === document.getElementById('after-btn'))
+          await exists(page, '#lower')
+        }
+      } else if (kind === 'reservation') {
         await page.locator('#open-upper').click()
         await page.getByRole('combobox').click()
         await page.getByRole('option', { name: '染髮' }).click()

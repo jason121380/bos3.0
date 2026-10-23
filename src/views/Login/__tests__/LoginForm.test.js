@@ -33,9 +33,7 @@ const createWrapper = () => {
     {
       request: {
         query: FETCH_PROFILE,
-        variables: {
-          orders: {},
-        },
+        variables: {},
       },
       result: mockedProfile,
     },

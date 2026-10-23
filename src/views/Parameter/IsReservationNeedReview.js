@@ -1,4 +1,4 @@
-// 數字欄位（onWheel 失焦、onFocus 全選）與多行文字保留 MUI TextField
+// 數字欄位（onWheel 失焦、onFocus 全選）與多行文字使用 ui/text-field TextField
 import { TextField } from 'ui/text-field'
 import { CheckboxField } from 'ui/checkbox'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'

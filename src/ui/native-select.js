@@ -7,10 +7,10 @@ import { cn } from './utils'
 // 與 Radix Select（ui/select）的差別：
 //   - 選項值可以是任何型別（空字串、數字、布林、null），以索引對應，onChange 拿回原始值
 //   - onChange(event) 與 MUI Select 相容：event.target.value 為原始值、event.target.name 為 name
-//   - 可放在 MUI Dialog / Modal 內（沒有 portal，不會被 MUI 的 focus trap 擋住）；自帶 ui-root，放在 MUI 浮層內也有基礎樣式
+//   - 可放在 ui/dialog 內；沒有 portal，系統選單由瀏覽器管理，自帶 ui-root 基礎樣式
 //   - 手機上叫出系統原生選單
-// label：顯示在外框上緣（與 MUI 外框欄位的縮小標籤一致，方便和 MUI TextField 並排）
-// 不支援 multiple、renderValue；那些情況保留 MUI Select。
+// label：顯示在外框上緣，可和 ui/text-field 並排
+// 不支援 multiple、renderValue；那些情況使用 ui/form-control Select。
 
 const NativeSelectOption = () => null
 NativeSelectOption.displayName = 'NativeSelectOption'

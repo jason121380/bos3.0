@@ -50,8 +50,8 @@
 }
 
 /*
- * 遷移期 preflight 關閉，改用限定範圍的基礎樣式：只作用在 .ui-root 之內，
- * 不影響仍使用 MUI 的舊頁面。新骨架與 src/ui 的浮層都會帶上 .ui-root。
+ * 全域 preflight 維持關閉，基礎樣式只作用在 .ui-root 之內，
+ * 避免覆寫沿用的全域與列印樣式。骨架與 src/ui 浮層都會帶上 .ui-root。
  */
 @layer base {
   /* 手機 App 化：點擊不閃灰底、橫向時不自動放大字級 */
@@ -103,12 +103,6 @@
     display: block;
     flex-shrink: 0;
   }
-}
-
-/* 舊手機底部面板進場動畫：相容層移除後無使用者，暫留規則；正式 ui/dialog 使用 Tailwind 動畫。 */
-@keyframes ui-sheet-in {
-  from { transform: translateY(32px); opacity: 0.6; }
-  to { transform: none; opacity: 1; }
 }
 
 /* 常駐可見的橫向捲軸：macOS 預設把細捲軸隱藏到滑動時才出現，寬表格（例如訂單列表）使用者會以為不能左右滑 */
