@@ -16,7 +16,7 @@ const delay = page => page.waitForTimeout(150)
 async function main() {
   const browser = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1'] })
   let failed = 0
-  for (const kind of ['desktop', 'mobile', 'combobox', 'select', 'popover', 'compat-radix', 'radix-compat', 'keep-mounted', 'dropdown', 'nested-password', 'nested-date', 'customer-form']) {
+  for (const kind of ['desktop', 'mobile', 'combobox', 'select', 'popover', 'compat-radix', 'radix-compat', 'keep-mounted', 'dropdown', 'nested-password', 'nested-date', 'customer-form', 'reservation']) {
     const context = await browser.newContext({ viewport: { width: 1000, height: 850 }, hasTouch: false })
     // 以路由直接提供靜態檔，受限環境也不必開監聽埠；所有非本機請求一律中止。
     await context.route('**/*', route => {
@@ -34,7 +34,34 @@ async function main() {
     try {
       await page.goto(`http://127.0.0.1/?${kind}`)
       await delay(page)
-      if (kind === 'customer-form') {
+      if (kind === 'reservation') {
+        await page.locator('#open-upper').click()
+        await page.getByRole('combobox').click()
+        await page.getByRole('option', { name: '染髮' }).click()
+        assert.equal(await page.getByRole('combobox').inputValue(), '染髮')
+        await page.getByRole('combobox').click()
+        await page.keyboard.press('Escape')
+        await page.getByRole('listbox').waitFor({ state: 'detached' })
+        await exists(page, '#upper')
+        await page.locator('#upper button[aria-label^="選擇日期"]').click()
+        await page.getByRole('gridcell', { name: '2026年10月25日', exact: true }).focus()
+        await page.keyboard.press('Escape')
+        await page.getByRole('gridcell').first().waitFor({ state: 'detached' })
+        await exists(page, '#upper')
+        await page.locator('#open-password').click()
+        const password = page.getByRole('dialog', { name: '預約取消密碼' })
+        await password.getByLabel('取消密碼').fill('測試密碼')
+        await page.keyboard.press('Escape')
+        assert(await password.isVisible(), '無 onClose 的密碼窗不可因 Esc 關閉')
+        await exists(page, '#upper')
+        await exists(page, '#lower')
+        await password.getByRole('button', { name: '取消', exact: true }).click()
+        await password.waitFor({ state: 'detached' })
+        await focusInside(page, '#open-password')
+        await page.keyboard.press('Escape')
+        await page.locator('#upper').waitFor({ state: 'detached' })
+        await exists(page, '#lower')
+      } else if (kind === 'customer-form') {
         await page.locator('input[role="combobox"]').click()
         await page.getByRole('option', { name: '染髮' }).click()
         assert.equal(await page.locator('#value').textContent(), '染髮')

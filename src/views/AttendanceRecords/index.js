@@ -1,6 +1,5 @@
-// 篩選區的員工 Autocomplete 未受控（選取值存在元件內）：收合時以 hidden 隱藏、不卸載（同原 Collapse），以免遺失；
-// 補打卡彈窗內有 Autocomplete / DateTimePicker，保留相容層 Dialog（Radix Dialog 會與其彈出層焦點鎖互搶）
-import { DialogActions, Dialog, DialogContent, DialogTitle } from 'ui/modal-compat'
+// 篩選員工搜尋為非受控欄位；收合仍以 hidden 保留掛載與選值。
+import { DialogFooter as DialogActions, Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
@@ -356,9 +355,16 @@ export default function Employees() {
           </div>
         }
       </div>
-      <Dialog open={openDateModal} onClose={handleClose}>
-        <DialogTitle>補打卡</DialogTitle>
-        <DialogContent style={{ overflow: 'visible', display: 'flex' }} >
+      <Dialog open={openDateModal} onOpenChange={o => { if (!o) handleClose() }}>
+        {/* 保留原預設 600px 寬度。 */}
+        <DialogContent hideClose
+          onOpenAutoFocus={event => {
+            // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
+            event.preventDefault()
+            if (!event.target.contains(document.activeElement)) event.target.focus()
+          }} aria-describedby={undefined} className="!max-w-[600px] overflow-hidden">
+        <DialogHeader><DialogTitle>補打卡</DialogTitle></DialogHeader>
+        <DialogBody style={{ overflow: 'visible', display: 'flex' }} >
           <div style={{ width: '350px' }}>
             <ToggleGroup
               size="small"
@@ -405,7 +411,7 @@ export default function Employees() {
               renderInput={(params) => <TextField {...params} label="員工姓名/編號" variant='outlined' />}
             />
           </div>
-        </DialogContent>
+        </DialogBody>
         <DialogActions className="ui-root" style={{ margin: '10px' }}>
           <Button onClick={handleClose} variant="secondary">
             取消
@@ -418,7 +424,7 @@ export default function Employees() {
             確認
           </Button>
         </DialogActions>
-      </Dialog>
+      </DialogContent></Dialog>
     </Page>
   )
 }

@@ -435,9 +435,14 @@ describe('預約明細', () => {
     fireEvent.click(block('陳小姐'))
     fireEvent.click(await screen.findByRole('button', { name: '取消預約' }))
     const pwd = await screen.findByLabelText('取消預約密碼')
+    // 真實 OrderTable → ChoseEvent → PasswordDialog：密碼窗原無 onClose，Esc 不可傳到父窗。
+    fireEvent.keyDown(pwd, { key: 'Escape', keyCode: 27 })
+    expect(pwd).toBeInTheDocument()
+    expect(document.querySelectorAll('[role="dialog"]')).toHaveLength(2)
     fireEvent.change(pwd, { target: { value: 'wrong' } })
     fireEvent.click(screen.getByRole('button', { name: '取消' }))
     await wait(() => expect(screen.queryByLabelText('取消預約密碼')).toBeNull())
+    expect(button('取消預約')).toBeInTheDocument()
     // 重開後沒輸入密碼直接確認：送出空密碼（先前輸入的已清除）
     fireEvent.click(button('取消預約'))
     await screen.findByLabelText('取消預約密碼')

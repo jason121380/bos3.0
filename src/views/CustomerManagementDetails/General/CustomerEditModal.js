@@ -1,7 +1,7 @@
 // 大型表單彈窗：外框（卡片、標題、底部動作）換成 ui/card、ui/button，欄位排版改 Tailwind grid（MUI md 900px 起兩欄）；
-// 內有 Select（彈出選單），保留相容層 Modal（Radix Dialog 會與其彈出層焦點鎖互搶）與內部表單欄位
+// 只換彈窗外殼，保留內部欄位、驗證與表單 refs。
 import clsx from 'clsx'
-import { Modal } from 'ui/modal-compat'
+import { Dialog, DialogContent } from 'ui/dialog'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { TextField, InputAdornment } from 'ui/text-field'
 import { LoaderCircle } from 'lucide-react'
@@ -19,7 +19,7 @@ import useStore from 'hooks/useStore'
 import useFetchGetCheckIsCustomerNoUsed from 'hooks/useFetchGetCheckIsCustomerNoUsed'
 import SourceSelect from 'components/SourceSelect'
 import { Button } from 'ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
+import { CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 
 const gender = [
   {
@@ -204,8 +204,14 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
   }
 
   return (
-    <Modal onClose={onClose} open={open}>
-      <Card {...rest} className={clsx('ui-root absolute left-1/2 top-1/2 max-h-full w-[700px] max-w-full overflow-y-auto [outline:none] [transform:translate(-50%,-50%)] [box-shadow:0px_10px_13px_-6px_rgba(0,0,0,0.2),0px_20px_31px_3px_rgba(0,0,0,0.14),0px_8px_38px_7px_rgba(0,0,0,0.12)]', className)}>
+    <Dialog open={open} onOpenChange={o => { if (!o) onClose() }}>
+      {/* 保留原 700px 寬度。 */}
+      <DialogContent hideClose
+          onOpenAutoFocus={event => {
+            // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
+            event.preventDefault()
+            if (!event.target.contains(document.activeElement)) event.target.focus()
+          }} aria-describedby={undefined} {...rest} className={clsx('!max-w-[700px] overflow-y-auto', className)}>
         <CardHeader className="pb-4">
           <CardTitle>編輯客戶資料</CardTitle>
         </CardHeader>
@@ -461,8 +467,8 @@ function CustomerEditModal({ open, onClose, customer, className, ...rest }) {
             儲存
           </Button>
         </CardFooter>
-      </Card>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   )
 }
 

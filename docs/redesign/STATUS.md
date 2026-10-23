@@ -1,5 +1,7 @@
 # BOS 3.0 改版進度
 
+- **2026/10/23 共用 Dialog 圖層 Part B2**：七檔外殼完成；OrderDetailModal 因列印 refs 同步檢查／非同步讀取與 Portal／退場生命週期差異保留原檔。剩餘僅此頁與三個 ui 內部使用者；未改 src/ui、列印範本與網路 guard。外部 Chrome 13/13、lint 通過；限定 Jest 首輪 87 suites（顧客追蹤單項逾時重跑通過），最終相關頁面 16 suites／188 tests 全過，網路 guard／版號 4 tests 通過；全站 371 suites／4,332 tests 全過、build 通過；頁面 compat importer 35 → 29；細節與驗證見 MIGRATION_GUIDE §8。
+
 - **2026/10/23 共用 Dialog 圖層 Part B1**：指定九檔外殼遷移完成；保留原關閉路徑、特殊寬度、欄位／picker 與 Enter 跳欄。B2 八檔留待後續；限定 Jest 107 suites／1,352 tests（舊定位失敗修正後重跑通過）、網路封鎖／版號與 lint 通過，外部 Chrome 12/12；細節見 MIGRATION_GUIDE §8。
 - **2026/10/23 共用 Dialog 圖層 Part A**：共享 Radix 圖層與首批七檔遷移完成修改；保留 Part B 17 個頁面／共用 importer。限定 Jest 89 suites／1,099 tests、網路封鎖／版號 4 tests 與 lint 通過；外部 Chrome 原九種＋真實 PasswordDialog／三層日期共 11/11 連續兩輪通過；keepMounted 兩次開關、焦點還原、全部關閉後指標／捲動鎖解除均已驗證（MEMORY #195、#196）。
 
