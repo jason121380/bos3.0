@@ -1,14 +1,27 @@
-// 下方明細卡片區（MerchantDailyReportCardContainer）的列印樣式依賴 MUI 結構：改用輸出相同 DOM／class 的相容層（ui/*-compat）
-import { Grid } from 'ui/grid-compat'
-import { Table as MuiTable, TableBody as MuiTableBody, TableCell as MuiTableCell, TableHead as MuiTableHead, TableRow as MuiTableRow, TableContainer } from 'ui/table-compat'
-import { Paper, Divider } from 'ui/display-compat'
-import { Card, CardContent, CardHeader } from 'ui/card-compat'
+import clsx from 'clsx'
+// 下方明細卡片使用正式 ui 元件，明確保留原列印框線。
+
+import { Table as MuiTable, TableBody as MuiTableBody, TableCell as MuiTableCell, TableHeader as MuiTableHead, TableRow as MuiTableRow, TableHead as ReportTableHead } from 'ui/table'
+
+import { Card, CardContent, CardHeader } from 'ui/card'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import { format, startOfMonth } from 'date-fns'
 import roundDecimal from './../../helper/roundDecimal.js'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+
+const reportCellClass = 'h-auto px-4 py-2 text-left align-middle whitespace-pre-line text-[14px] leading-5'
+const reportHeadClass = 'h-auto px-4 py-3 align-middle whitespace-pre text-[14px] leading-6 font-semibold text-black'
+const reportCardClass = 'overflow-hidden text-text print:rounded-none print:shadow-none print:border print:border-solid print:border-black'
+const reportScrollClass = 'ui-scroll-x w-full overflow-x-auto rounded-md bg-background text-text print:rounded-none print:shadow-none'
+const reportColumnClass = 'box-border basis-[100%] max-w-[100%] grow-0 min-[900px]:basis-[50%] min-[900px]:max-w-[50%] min-[900px]:grow-0 min-[1200px]:basis-[33.33333333333333%] min-[1200px]:max-w-[33.33333333333333%] min-[1200px]:grow-0 MerchantDailyReportCard'
+const reportCardHeaderClass = '!min-h-0 !items-center !gap-0 !px-4 !pb-2 !pt-4 [&>div]:flex-auto [&>div]:block'
+const reportDividerClass = 'm-0 shrink-0 border-0 border-b border-solid border-border'
+
+// 明確保留舊表格內距與列印框線，避免依賴相容層 class。
+const reportTableClass = 'print:[&_td]:text-text text-[14px] leading-5 [&_tr]:border-0 [&_tr]:hover:bg-transparent [&_td]:border-0 [&_td]:[border-bottom:1px_solid_rgba(0,0,0,0.03)] [&_th]:border-0 [&_th]:[border-bottom:2px_solid_rgba(0,0,0,0.05)] print:[&_td]:!border-0 print:[&_th]:!border-0 print:[&_th]:![border-bottom:2px_solid_rgba(0,0,0,0.05)] print:[&_th]:bg-white print:!border-0 print:!border-b print:!border-black print:[&_tr]:!border-0 print:[&_tbody_tr]:!border-t print:[&_tbody_tr]:!border-black print:[&_td]:![border-bottom:0]'
+const mergedReportTableClass = 'print:[&_td]:text-text text-[14px] leading-5 [&_tr]:border-0 [&_tr]:hover:bg-transparent [&_td]:border-0 [&_td]:[border-bottom:1px_solid_rgba(0,0,0,0.03)] [&_th]:border-0 [&_th]:[border-bottom:2px_solid_rgba(0,0,0,0.05)] print:[&_td]:!border-0 print:[&_th]:!border-0 print:[&_th]:![border-bottom:1px_solid_black] print:[&_th]:bg-white print:!border-0 print:!border-b print:!border-black print:[&_tr]:!border-0 print:[&_td]:![border-bottom:1px_solid_black]'
 
 // 相容層儲存格（table-compat.css 隨頁面 chunk 載入、排在 Tailwind 之後）：原 emotion css 執行期插入、同權重時勝出，
 // 改以 [&&] 疊成雙 class 權重保住「勝過相容層單一 class」；initialize(-dark).scss 較高權重的 th／深色規則仍照舊勝出（同原本）
@@ -547,117 +560,117 @@ function Results({
           ))}
         </TableBody>
       </Table>
-      {/* 下方明細卡片：@media print 依 .MuiCard-root / .MuiTableContainer-root 排版（MerchantDailyReportCardContainer），以相容層維持 MUI 的 DOM 與 class，列印輸出不變 */}
-      <Grid container spacing={3} className="MerchantDailyReportCardContainer">
+      {/* 下方明細卡片：@media print 依 .MuiCard-root / .MuiTableContainer-root 排版（MerchantDailyReportCardContainer），以明確樣式維持原列印輸出，列印輸出不變 */}
+      <div className="box-border flex flex-wrap -mt-6 -ml-6 w-[calc(100%+24px)] [&>div]:pt-6 [&>div]:pl-6 MerchantDailyReportCardContainer">
         {nonCashDisplay ? (
-          <Grid item xs={12} md={12} lg={8} className="MergeResultCard">
-            <Card>
-              <TableContainer component={Paper}>
-                <MuiTable size="small" aria-label="a dense table">
+          <div className="box-border basis-[100%] max-w-[100%] grow-0 min-[900px]:basis-[100%] min-[900px]:max-w-[100%] min-[900px]:grow-0 min-[1200px]:basis-[66.66666666666666%] min-[1200px]:max-w-[66.66666666666666%] min-[1200px]:grow-0 MergeResultCard">
+            <Card className={reportCardClass}>
+              <div className={reportScrollClass}>
+                <MuiTable className={mergedReportTableClass} aria-label="a dense table">
                   <MuiTableHead>
                     <MuiTableRow>
-                      <MuiTableCell></MuiTableCell>
-                      <MuiTableCell>其他支付方式明細</MuiTableCell>
-                      <MuiTableCell>第三方卡券明細</MuiTableCell>
-                      <MuiTableCell className={BOLD_CELL}>小計</MuiTableCell>
+                      <ReportTableHead className={reportHeadClass}></ReportTableHead>
+                      <ReportTableHead className={reportHeadClass}>其他支付方式明細</ReportTableHead>
+                      <ReportTableHead className={reportHeadClass}>第三方卡券明細</ReportTableHead>
+                      <ReportTableHead className={clsx(reportHeadClass, BOLD_CELL)}>小計</ReportTableHead>
                     </MuiTableRow>
 
                   </MuiTableHead>
                   <MuiTableBody>
                     {mergeData.map(({ name, otherPayment, thirdParty }) => (
-                      <MuiTableRow key={name} hover>
-                        <MuiTableCell>{name}</MuiTableCell>
-                        <MuiTableCell>{`${otherPayment.usedPrice} / (${otherPayment.usedPriceWithNoCash})`}</MuiTableCell>
-                        <MuiTableCell>{`${thirdParty.usedPrice} / (${thirdParty.usedPriceWithNoCash})`}</MuiTableCell>
-                        <MuiTableCell className={BOLD_CELL}>{
+                      <MuiTableRow key={name}>
+                        <MuiTableCell className={reportCellClass}>{name}</MuiTableCell>
+                        <MuiTableCell className={reportCellClass}>{`${otherPayment.usedPrice} / (${otherPayment.usedPriceWithNoCash})`}</MuiTableCell>
+                        <MuiTableCell className={reportCellClass}>{`${thirdParty.usedPrice} / (${thirdParty.usedPriceWithNoCash})`}</MuiTableCell>
+                        <MuiTableCell className={clsx(reportCellClass, BOLD_CELL)}>{
                           `${otherPayment.usedPrice + thirdParty.usedPrice} / (${otherPayment.usedPriceWithNoCash + thirdParty.usedPriceWithNoCash})`
                         }</MuiTableCell>
                       </MuiTableRow>
                     ))}
-                    <MuiTableRow hover>
-                      <MuiTableCell colSpan={2} />
-                      <MuiTableCell className={TOTAL_CELL}>合計</MuiTableCell>
-                      <MuiTableCell className={TOTAL_CELL}>{`${totalSummury('usedPrice')} / ${totalSummury('usedPriceWithNoCash')}`}</MuiTableCell>
+                    <MuiTableRow>
+                      <MuiTableCell className={reportCellClass} colSpan={2} />
+                      <MuiTableCell className={clsx(reportCellClass, TOTAL_CELL)}>合計</MuiTableCell>
+                      <MuiTableCell className={clsx(reportCellClass, TOTAL_CELL)}>{`${totalSummury('usedPrice')} / ${totalSummury('usedPriceWithNoCash')}`}</MuiTableCell>
                     </MuiTableRow>
                   </MuiTableBody>
                 </MuiTable>
-              </TableContainer>
+              </div>
             </Card>
-          </Grid>
+          </div>
         ) : (
           <>
-            <Grid item xs={12} md={6} lg={4} className="MerchantDailyReportCard">
-              <Card>
-                <CardHeader title="其他支付方式明細" />
-                <Divider />
-                <CardContent className="p-0">
+            <div className={reportColumnClass}>
+              <Card className={reportCardClass}>
+                <CardHeader className={reportCardHeaderClass}><span className="block text-heading text-text">其他支付方式明細</span></CardHeader>
+                <hr className={reportDividerClass} />
+                <CardContent className="last:pb-4 p-0">
                   <div>
-                    <TableContainer component={Paper}>
-                      <MuiTable size="small" aria-label="a dense table">
+                    <div className={reportScrollClass}>
+                      <MuiTable className={reportTableClass} aria-label="a dense table">
                         <MuiTableBody>
                           {results.otherPayway.map((data, index) => (
                             <MuiTableRow key={index}>
-                              <MuiTableCell>{data.paywayName}</MuiTableCell>
-                              <MuiTableCell>{data.usedPrice}</MuiTableCell>
-                              <MuiTableCell>({data.usedPriceWithNoCash})</MuiTableCell>
+                              <MuiTableCell className={reportCellClass}>{data.paywayName}</MuiTableCell>
+                              <MuiTableCell className={reportCellClass}>{data.usedPrice}</MuiTableCell>
+                              <MuiTableCell className={reportCellClass}>({data.usedPriceWithNoCash})</MuiTableCell>
                             </MuiTableRow>
                           ))}
                         </MuiTableBody>
                       </MuiTable>
-                    </TableContainer>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4} className="MerchantDailyReportCard">
-              <Card>
-                <CardHeader title="第三方卡券明細" />
-                <Divider />
-                <CardContent className="p-0">
+            </div>
+            <div className={reportColumnClass}>
+              <Card className={reportCardClass}>
+                <CardHeader className={reportCardHeaderClass}><span className="block text-heading text-text">第三方卡券明細</span></CardHeader>
+                <hr className={reportDividerClass} />
+                <CardContent className="last:pb-4 p-0">
                   <div>
-                    <TableContainer component={Paper}>
-                      <MuiTable size="small" aria-label="a dense table">
+                    <div className={reportScrollClass}>
+                      <MuiTable className={reportTableClass} aria-label="a dense table">
                         <MuiTableBody>
                           {results.thirdPartTicket.map((data, index) => (
                             <MuiTableRow key={index}>
-                              <MuiTableCell>{data.ticketName}</MuiTableCell>
-                              <MuiTableCell>{data.usedPrice}</MuiTableCell>
-                              <MuiTableCell>({data.usedPriceWithNoCash})</MuiTableCell>
+                              <MuiTableCell className={reportCellClass}>{data.ticketName}</MuiTableCell>
+                              <MuiTableCell className={reportCellClass}>{data.usedPrice}</MuiTableCell>
+                              <MuiTableCell className={reportCellClass}>({data.usedPriceWithNoCash})</MuiTableCell>
                             </MuiTableRow>
                           ))}
                         </MuiTableBody>
                       </MuiTable>
-                    </TableContainer>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
-            </Grid>
+            </div>
           </>
         )}
-        <Grid item xs={12} md={6} lg={4} className="MerchantDailyReportCard">
-          <Card>
-            <CardHeader title="入金儲值明細" />
-            <Divider />
-            <CardContent className="p-0">
+        <div className={reportColumnClass}>
+          <Card className={reportCardClass}>
+            <CardHeader className={reportCardHeaderClass}><span className="block text-heading text-text">入金儲值明細</span></CardHeader>
+            <hr className={reportDividerClass} />
+            <CardContent className="last:pb-4 p-0">
               <div>
-                <TableContainer component={Paper}>
-                  <MuiTable size="small" aria-label="a dense table">
+                <div className={reportScrollClass}>
+                  <MuiTable className={reportTableClass} aria-label="a dense table">
                     <MuiTableBody>
                       {results.walletDeposit.map((data, index) => (
                         <MuiTableRow key={index}>
-                          <MuiTableCell>{data.paywayName}</MuiTableCell>
-                          <MuiTableCell>{data.usedPrice}</MuiTableCell>
-                          <MuiTableCell>({data.usedPriceWithNoCash})</MuiTableCell>
+                          <MuiTableCell className={reportCellClass}>{data.paywayName}</MuiTableCell>
+                          <MuiTableCell className={reportCellClass}>{data.usedPrice}</MuiTableCell>
+                          <MuiTableCell className={reportCellClass}>({data.usedPriceWithNoCash})</MuiTableCell>
                         </MuiTableRow>
                       ))}
                     </MuiTableBody>
                   </MuiTable>
-                </TableContainer>
+                </div>
               </div>
             </CardContent>
           </Card>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </Fragment>
   )
 }
