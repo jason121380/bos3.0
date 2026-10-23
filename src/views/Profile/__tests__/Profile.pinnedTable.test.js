@@ -96,11 +96,11 @@ describe('功能釘選', () => {
     await screen.findByText('打帳單', { selector: 'span' })
     fireEvent.change(screen.getByPlaceholderText('搜尋頁面'), { target: { value: '帳單' } })
     const item = name => screen.getByText(name, { selector: 'span' }).closest('li')
-    await wait(() => expect(item('打帳單').className).toContain('outline'))
-    expect(item('帳單列表').className).toContain('outline')
-    expect(item('預約紀錄').className).not.toContain('outline')
+    await wait(() => expect(item('打帳單').classList).toContain('outline-danger'))
+    expect(item('帳單列表').classList).toContain('outline-danger')
+    expect(item('預約紀錄').classList).not.toContain('outline-danger')
     fireEvent.click(screen.getByRole('button', { name: '清除搜尋文字' }))
-    await wait(() => expect(item('打帳單').className).not.toContain('outline'))
+    await wait(() => expect(item('打帳單').classList).not.toContain('outline-danger'))
   })
 
   it('套用店家：全選所有店家後送出', async () => {
@@ -143,3 +143,24 @@ describe('功能釘選', () => {
   })
 })
 
+
+
+it('樹鍵盤展開與選取後，儲存保留原釘選值與店家', async () => {
+  const { calls } = setup()
+  await ready()
+  expect(screen.getByRole('tree')).toHaveAttribute('aria-multiselectable', 'true')
+  const group = screen.getByRole('treeitem', { name: '櫃檯作業' })
+  group.focus()
+  fireEvent.keyDown(group, { key: 'ArrowRight' })
+  fireEvent.keyDown(group, { key: 'ArrowRight' })
+  const page = screen.getByRole('treeitem', { name: '打帳單' })
+  expect(page).toHaveFocus()
+  fireEvent.keyDown(page, { key: 'Enter' })
+  expect(page).toHaveAttribute('aria-selected', 'true')
+  save()
+  await wait(() => expect(callsOf(calls, 'SET_PINNED_TABLE')).toHaveLength(1))
+  expect(sent(calls)).toEqual({
+    otherAppliedStoreIds: ['merchant-2'],
+    pinnedTables: [{ title: '櫃檯作業', name: '帳單列表' }, { title: '櫃檯作業', name: '打帳單' }],
+  })
+})
