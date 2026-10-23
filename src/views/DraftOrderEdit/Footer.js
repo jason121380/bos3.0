@@ -1,8 +1,7 @@
 // 掛單詳細的金額彙總卡、動作按鈕與列印範本。資料與送出邏輯在 useDraftPrint（列印）與 useDraftCheckout（儲存／結帳、金額），
 // 2026/10/21 自本檔原樣搬出；本檔只留畫面。
-// Divider 只用於下方列印範本（#printMain / #printThermal），維持列印輸出不變；
+// 原生 hr 保留舊 class 與 inline style，讓複製到無 app CSS 的新視窗之 HTML 逐字相同；
 // 重新結帳密碼視窗在 OrderShared/ReCheckoutPasswordDialog（與帳單詳細共用）
-import { Divider } from 'ui/display-compat'
 import billContext from 'context/keyInContext'
 import { format } from 'date-fns'
 import React, { Fragment } from 'react'
@@ -231,7 +230,7 @@ export default function Footer() {
                   )
                 })}
             </div>
-            <Divider style={{ width: '100%' }} />
+            <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
             <div>
               合計：{printShouldPay}
             </div>
@@ -321,7 +320,7 @@ export default function Footer() {
               </div>
             )}
 
-            <Divider style={{ width: '100%' }} />
+            <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>名稱</div>
               <div style={{ display: 'flex', width: 100, justifyContent: 'space-between' }}>
@@ -401,7 +400,7 @@ export default function Footer() {
                   </div>
                 )
               })}
-            <Divider style={{ width: '100%' }} />
+            <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
             <div>
               合計：{printShouldPay}
             </div>
