@@ -69,9 +69,9 @@ import {
 } from 'lucide-react'
 import { cn } from './utils'
 
-// MUI 圖示轉接層（STYLE.md §8：圖示統一用 lucide）
+// lucide 圖示轉接（沿用原 MUI 介面）（STYLE.md §8：圖示統一用 lucide）
 // 沿用 @mui/icons-material 的元件名稱與 props（fontSize、color、htmlColor、sx、className、style、onClick…），
-// 讓尚未改版的頁面只改 import 就換成 lucide 線條圖示，JSX 不必改動。
+// 頁面現已使用 lucide 線條圖示，保留既有 JSX 與 props 契約。
 // 保留 MuiSvgIcon-root 等 class，讓舊頁面針對 .MuiSvgIcon-root 的樣式仍然有效。
 const FONT_SIZES = ['small', 'medium', 'large', 'inherit']
 const COLORS = ['primary', 'secondary', 'action', 'disabled', 'error', 'warning', 'success', 'info']

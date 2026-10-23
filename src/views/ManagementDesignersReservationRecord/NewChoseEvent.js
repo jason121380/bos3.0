@@ -1,6 +1,6 @@
 import { Button } from 'ui/button'
 import { useState, Fragment } from 'react'
-// 外層為相容層 Dialog（OrderTable；窗內有相容層 PasswordDialog）；內容區、動作列與按鈕改原生元素＋ui/button
+// 外層為 ui/dialog（OrderTable；窗內有 PasswordDialog（ui/dialog））；內容區、動作列與按鈕改原生元素＋ui/button
 import { Avatar } from 'ui/avatar'
 import { Cancel as CancelIcon, Check as CheckIcon, Lock as LockIcon, LockOpen as LockOpenIcon, Edit as EditIcon, ShoppingCart as ShoppingCartIcon, EventSeat as EventSeatIcon, EventBusy as EventBusyIcon } from 'ui/icons'
 import { openSnackbar } from 'elements/snackbars'

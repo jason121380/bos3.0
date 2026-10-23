@@ -59,7 +59,7 @@ const ToggleGroupItem = React.forwardRef(({ value, selected, onChange, onClick, 
       disabled={isDisabled}
       onClick={handleClick}
       className={cn(
-        !group && 'ui-root', // 單獨使用（可能放在未改版的 MUI 區塊中）時自帶基礎樣式
+        !group && 'ui-root', // 單獨使用時自帶 ui-root 基礎樣式
         'inline-flex shrink-0 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-full border-0 font-medium transition-colors',
         'disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-4',
         sizes[sizeKey(size || (group && group.size))] || sizes.md,

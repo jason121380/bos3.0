@@ -24,7 +24,7 @@ import { DayView, MonthView, YearView, TimeView, formatValue, isDayDisabled, isV
 // 6. 自訂欄位 slots.field 收到 value（Date）、format、onClick（開啟）、onKeyDown、readOnly、disabled、inputRef、inputProps 等（同 MUI）。
 // 手機對話框置中顯示（ui-dialog-centered），不使用底部面板（Jason 2026/10/20）。
 // 7. label 放在欄位上方（ui/input 的 Field）；slotProps.textField 的 variant 一律忽略（全站同一種外框）。
-// 8. className（含 emotion css prop）落在最外層 .ui-date-picker（同 MUI 落在 TextField 根節點），欄位撐滿它；有 className 時不套預設寬 220px，
+// 8. className 落在最外層 .ui-date-picker（同 MUI 落在 TextField 根節點），欄位撐滿它；有 className 時不套預設寬 220px，
 //    以免與頁面的 width 同權重而先後不定（打帳單四兄弟靠 width:100% 撐滿欄位）。sx 不支援，頁面改用 className。
 
 const DEFAULT_ACTIONS_TEXT = { cancel: '取消', ok: '確認' }
@@ -373,7 +373,13 @@ function createPicker({ displayName, withTime, mobileOnly }) {
           <PopoverContent ref={paperRef} role="dialog" aria-label={title} side="bottom" align="start" sideOffset={4}
             // 保留原 mousedown 外點規則：欄位、焦點移出及 pointerdown 均不額外關閉。
             onInteractOutside={event => event.preventDefault()}
-            onOpenAutoFocus={event => event.preventDefault()}
+            onOpenAutoFocus={event => {
+              event.preventDefault()
+              // 日格的 React autoFocus 早於浮層 Scope 掛載，外窗可能先把焦點拉回；
+              // 等 Radix 暫停外窗後，再聚焦所選日，保留其他視圖原本的不自動移焦契約。
+              const day = paperRef.current && paperRef.current.querySelector('[role="gridcell"][tabindex="0"]:not(:disabled)')
+              if (day) day.focus()
+            }}
             onEscapeKeyDown={event => { event.preventDefault(); dismiss() }}
             onCloseAutoFocus={event => {
               event.preventDefault()
@@ -389,8 +395,13 @@ function createPicker({ displayName, withTime, mobileOnly }) {
     } else if (open) {
       overlay = (
         <Dialog open onOpenChange={next => { if (!next) dismiss() }}>
-          <DialogContent hideClose aria-label={title} aria-labelledby={undefined} aria-describedby={undefined}
-            onOpenAutoFocus={event => { if (view === 'day') event.preventDefault() }}
+          <DialogContent ref={paperRef} hideClose aria-label={title} aria-labelledby={undefined} aria-describedby={undefined}
+            onOpenAutoFocus={event => {
+              if (view !== 'day') return
+              event.preventDefault()
+              const day = paperRef.current && paperRef.current.querySelector('[role="gridcell"][tabindex="0"]:not(:disabled)')
+              if (day) day.focus()
+            }}
             onCloseAutoFocus={event => {
               event.preventDefault()
               if (openerRef.current && openerRef.current.isConnected) openerRef.current.focus()

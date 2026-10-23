@@ -1,4 +1,4 @@
-// FormControlLabel＋Checkbox、ToggleButtonGroup 保留 MUI（橋接主題已套新外觀）
+// FormControlLabel＋Checkbox、ToggleButtonGroup 使用正式 ui 元件（樣式由正式 ui 元件提供）
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { Plus, Trash2 } from 'lucide-react'
 import cloneDeep from 'lodash/cloneDeep'

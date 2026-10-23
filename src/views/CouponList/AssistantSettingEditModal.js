@@ -1,4 +1,4 @@
-// 下拉改為 NativeSelect（值可能為空字串，以索引對應、回傳原始型別）；外框已換 ui/dialog（舊 Modal 無 onClose，點背景/Esc 不關閉）、MUI Checkbox 保留，欄位與按鈕為 src/ui
+// 下拉改為 NativeSelect（值可能為空字串，以索引對應、回傳原始型別）；外框已換 ui/dialog（舊 Modal 無 onClose，點背景/Esc 不關閉）、Checkbox 使用 ui/checkbox，欄位與按鈕為 src/ui
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import PropTypes from 'prop-types'
 import { useState } from 'react'

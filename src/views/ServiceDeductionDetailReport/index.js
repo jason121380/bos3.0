@@ -1,6 +1,6 @@
 import { Select, InputLabel, FormControl, MenuItem } from 'ui/form-control'
 import { useState, useEffect } from 'react'
-// 抽成類別的選項含 value={null}（全部），Radix Select 不支援空值，保留 MUI Select
+// 抽成類別的選項含 value={null}（全部），Radix Select 不支援空值，使用 ui/form-control Select
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import ServicesIncludesTicketsAutoComplete from 'components/ServicesIncludesTicketsAutoComplete'
 import { useFetchGetAttributionForRake } from 'hooks/useFetchGetAttribution'
@@ -19,7 +19,7 @@ import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 
-// MerchantSearchBar 內部為 MUI Grid container，沿用舊版取消其寬度
+// MerchantSearchBar 已使用 flex 排版；下方舊 MuiGrid 後代選擇器目前不命中，保留既有 class 字串
 const topDiv = 'flex flex-row flex-wrap items-center gap-2.5 [&_.MuiGrid-container]:!w-[unset]'
 
 const ServiceDeductionDetailReport = () => {

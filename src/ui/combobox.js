@@ -46,7 +46,7 @@ const assignRef = (ref, node) => {
   else ref.current = node
 }
 
-// 選單掛載點：在對話框內就掛在對話框裡（避免 MUI／Radix 的焦點鎖與點擊外部關閉），否則掛在 body
+// 選單掛載點：在對話框內就掛在對話框裡（配合 Radix 焦點鎖與外點關閉），否則掛在 body
 const findPortalHost = node => (node && node.closest('[role="dialog"], .MuiDialog-paper, .MuiPopover-paper')) || document.body
 
 function usePopupPosition(anchorRef, open) {
@@ -446,7 +446,7 @@ const Autocomplete = React.forwardRef(function Autocomplete(
     <ul
       {...menuProps}
       ref={setMenuRef}
-      // 不讓點選單時輸入框失焦（避免 MUI 焦點鎖搶回焦點、選單先關閉）
+      // 不讓點選單時輸入框失焦（避免 Radix 焦點鎖搶回焦點、選單先關閉）
       onMouseDown={event => event.preventDefault()}
       onPointerDown={() => {
         menuPointerAt.current = Date.now()

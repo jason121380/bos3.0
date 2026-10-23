@@ -1,4 +1,4 @@
-// 廠商選擇 Autocomplete 保留 MUI
+// 廠商選擇 Autocomplete 使用 ui/combobox
 import { TextField } from 'ui/text-field'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'
 import { Field, Input } from 'ui/input'

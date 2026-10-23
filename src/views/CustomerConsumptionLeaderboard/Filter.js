@@ -1,4 +1,4 @@
-// 排序依據保留 MUI Select（與同列 MUI Autocomplete 的浮動標籤外框一致）
+// 排序依據使用 ui/form-control Select（與同列 ui/combobox Autocomplete 並排）
 import { Checkbox } from 'ui/checkbox'
 import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
 import { TextField } from 'ui/text-field'

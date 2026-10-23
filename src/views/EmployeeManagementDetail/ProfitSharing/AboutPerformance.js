@@ -1,5 +1,5 @@
-// 大型頁策略：抽成級距表單（TextField）保留 MUI、排版改 Tailwind flex；Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）
-// 「分指定/不指定」的 handler 掛在 FormControlLabel 的 onClick（label 上），換成 CheckboxField 會改變點擊文字時的觸發次數，保留 MUI
+// 大型頁策略：抽成級距表單（TextField）使用正式 ui 元件、排版改 Tailwind flex；Tabs 改 ui/tabs（value 為字串、activationMode="manual"，onValueChange 以 (null, value) 轉接原 handler）
+// 「分指定/不指定」的 handler 掛在 FormControlLabel 的 onClick（label 上），換成 CheckboxField 會改變點擊文字時的觸發次數，使用正式 ui 元件
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Tabs, TabsList, TabsTrigger } from 'ui/tabs'

@@ -1,4 +1,4 @@
-// 裁切對話框 Slider 已換 ui/slider、Dialog 已換 ui/dialog；多行與 InputLabelProps 的文字欄位保留 MUI TextField
+// 裁切對話框 Slider 已換 ui/slider、Dialog 已換 ui/dialog；多行與 InputLabelProps 的文字欄位使用 ui/text-field TextField
 import { Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from 'ui/dialog'
 import { TextField } from 'ui/text-field'
 import { Avatar } from 'ui/avatar'

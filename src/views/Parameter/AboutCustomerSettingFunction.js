@@ -1,4 +1,4 @@
-// 「完全新客必填欄位」為多選 Autocomplete（含勾選圖示的選項），標籤改上方 Field、本體保留 MUI
+// 「完全新客必填欄位」為多選 Autocomplete（含勾選圖示的選項），標籤改上方 Field、本體使用正式 ui 元件
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { CheckboxField } from 'ui/checkbox'

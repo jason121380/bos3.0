@@ -1,4 +1,4 @@
-// 多選篩選（值為陣列）保留 MUI
+// 多選篩選（值為陣列）使用正式 ui 元件
 import { InputLabel, MenuItem, FormControl, Select } from 'ui/form-control'
 import { Checkbox } from 'ui/checkbox'
 import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'

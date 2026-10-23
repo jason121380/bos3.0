@@ -1,4 +1,4 @@
-// 數字欄位（onWheel 失焦、onFocus 全選）保留 MUI TextField
+// 數字欄位（onWheel 失焦、onFocus 全選）使用 ui/text-field TextField
 import { TextField } from 'ui/text-field'
 import { CheckboxField } from 'ui/checkbox'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'

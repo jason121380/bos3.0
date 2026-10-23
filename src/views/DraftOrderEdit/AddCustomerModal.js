@@ -430,7 +430,7 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill }) {
                   </NativeSelect>
                 </Field>
               ) : (
-                // 載入中用 renderValue 顯示轉圈，保留 MUI Select
+                // 載入中用 renderValue 顯示轉圈，使用 ui/form-control Select
                 <FormControl variant="outlined" fullWidth>
                   <InputLabel ref={inputLabel}>偏好設計師</InputLabel>
                   <Select

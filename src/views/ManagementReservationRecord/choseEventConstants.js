@@ -7,7 +7,7 @@ export const actionRow = 'ui-root flex min-h-12 w-full items-center gap-4 rounde
 // breakWord／eventWrap 仍掛在保留的 .MuiTypography-body1 字串上；initialize.scss 無此 class 規則，
 // initialize-dark.scss 僅設定文字顏色，不設定字級。[&&] 保留原 14px 字級的雙 class 權重。
 // eventWrap 的 '& .MuiInputBase-multiline' 在 ui/text-field 不命中，textarea 原為空規則，皆未轉換；
-// datepicker 的 '.MuiSelect-select' 保留原選擇器。
+// datepicker 的 '.MuiSelect-select' 為舊選擇器，目前原生 select 不輸出該 class。
 export const styles = {
   field: '!mb-[16px]',
   field2: 'flex items-end mb-[16px]',

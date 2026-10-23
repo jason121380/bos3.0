@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-// 外層為相容層 Dialog（OrderTable；窗內有 MobileDatePicker、Autocomplete、相容層 PasswordDialog）；內容區、動作列與按鈕改原生元素＋ui/button
+// 外層為 ui/dialog（OrderTable；窗內有 MobileDatePicker、Autocomplete、PasswordDialog（ui/dialog））；內容區、動作列與按鈕改原生元素＋ui/button
 import { openSnackbar } from 'elements/snackbars'
 import { getMinutes, startOfDay, addMinutes } from 'date-fns'
 import useFetchAdminBookingTime from 'hooks/useFetchAdminBookingTime'

@@ -8,7 +8,7 @@ import useFetchBooking from 'hooks/useFetchBooking'
 import BookingRecordListAutoComplete from 'components/BookingRecordListAutoComplete'
 import { MobileDatePicker } from 'ui/date-picker'
 import cloneDeep from 'lodash/cloneDeep'
-// 外層為相容層 Dialog（CustomerInfo；窗內有日期選擇器、Select、Autocomplete）；內容區改原生 div，表單細節維持原樣，底部動作按鈕為 ui/button
+// 外層為 ui/dialog（CustomerInfo；窗內有日期選擇器、Select、Autocomplete）；內容區改原生 div，表單細節維持原樣，底部動作按鈕為 ui/button
 import { Button as UiButton } from 'ui/button'
 
 const timeCostArray = [

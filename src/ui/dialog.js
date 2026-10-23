@@ -4,7 +4,7 @@ import { X } from 'lucide-react'
 import { cn, focusRing } from './utils'
 import { useLayerRef } from './layer-stack'
 
-// 與相容層共用 Radix DismissableLayer／FocusScope，讓後開的日期、下拉與彈窗
+// 與 combobox 的共用 helper 及其他浮層共用 Radix DismissableLayer／FocusScope，讓後開的日期、下拉與彈窗
 // 自動接管焦點與 Esc；不改成非 modal，保留背景隔離與既有受控開關契約。
 // layer-stack 管理視覺順序與較晚 portal 的外部事件防護，避免兩套焦點鎖與 document Esc 互搶（MEMORY #195）。
 // STYLE.md §6：寬 480 / 640 / 800；標題、內容、底部動作三段

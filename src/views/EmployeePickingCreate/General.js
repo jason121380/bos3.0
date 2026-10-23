@@ -1,4 +1,4 @@
-// 欄位使用 Autocomplete / Select / DatePicker 與 inputRef 焦點串接，沿用 MUI
+// 欄位使用 Autocomplete / Select / DatePicker 與 inputRef 焦點串接，使用正式 ui 元件
 import { Select, MenuItem, FormControl, InputLabel } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
 import { DatePicker } from 'ui/date-picker'

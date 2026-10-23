@@ -1,5 +1,5 @@
 // 欄位標籤放在上方（Field＋Input／NativeSelect）；手續費類別、扣項方式的值可為空字串，NativeSelect 以 disabled 空值選項顯示提示、onChange 回原始值。
-// 下拉選項改為原生 <option>，不再帶 data-testid（Cypress 改用 .select('顯示文字')）；Checkbox 保留 MUI
+// 下拉選項改為原生 <option>，不再帶 data-testid（Cypress 改用 .select('顯示文字')）；Checkbox 使用 ui/checkbox
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { PaymentEnum } from 'helper/enum'
 import idx from 'idx'

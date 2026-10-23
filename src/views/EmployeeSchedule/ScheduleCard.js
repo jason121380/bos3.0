@@ -1,4 +1,4 @@
-// 標題輸入框保留 MUI FormControl/OutlinedInput：MyFormHelperText 依賴 useFormControl 的 focused 狀態顯示提示
+// 標題輸入框使用 ui/form-control 與 ui/text-field：MyFormHelperText 依賴 useFormControl 的 focused 狀態顯示提示
 import { OutlinedInput } from 'ui/text-field'
 import { FormHelperText, FormControl, useFormControl } from 'ui/form-control'
 import { ArrowDown, ArrowUp, ChevronsDown, Pencil, Trash2, UserPlus, X } from 'lucide-react'

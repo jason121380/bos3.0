@@ -1,5 +1,5 @@
 // 欄位標籤放在上方（Field＋Input／NativeSelect）；扣項方式的值可為空字串，NativeSelect 以 disabled 空值選項顯示提示、onChange 回原始值。
-// Checkbox 保留 MUI
+// Checkbox 使用 ui/checkbox
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import idx from 'idx'
 import PropTypes from 'prop-types'

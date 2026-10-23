@@ -1,4 +1,4 @@
-// 金額輸入框（浮動標籤為科目名稱、onWheel 失焦）保留 MUI TextField；科目名稱單行文字欄改 ui Input（列內不加可見標籤，原 label 改 aria-label）
+// 金額輸入框（標籤為科目名稱、onWheel 失焦）使用 ui/text-field TextField；科目名稱單行文字欄改 ui Input（列內不加可見標籤，原 label 改 aria-label）
 import { TextField } from 'ui/text-field'
 import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 import cloneDeep from 'lodash/cloneDeep'

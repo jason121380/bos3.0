@@ -1,4 +1,4 @@
-// 名稱欄位（endAdornment、onBlur 檢查）保留 MUI TextField
+// 名稱欄位（endAdornment、onBlur 檢查）使用 ui/text-field TextField
 import { TextField, InputAdornment } from 'ui/text-field'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Field } from 'ui/input'

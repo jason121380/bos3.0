@@ -2,6 +2,8 @@ import React from 'react'
 import { ChevronDown } from 'lucide-react'
 import { inputClass } from './input'
 import { cn } from './utils'
+import { CompatLayer } from './compat-layer'
+import { useLayerRef } from './layer-stack'
 
 // 自家下拉組（取代 MUI FormControl／InputLabel／Select／MenuItem／FormHelperText，Jason 2026/10/20 拍版「MUI 整包移除」）。
 // 介面與 MUI 相容：頁面只換 import，<FormControl><InputLabel/><Select value onChange><MenuItem value/></Select></FormControl> 原樣保留。
@@ -107,13 +109,29 @@ const FormHelperText = ({ children, className, error, ...rest }) => {
 function MultipleSelect({ id, value, onChange, name, options, renderValue, disabled, className, labelId }) {
   const [open, setOpen] = React.useState(false)
   const rootRef = React.useRef(null)
+  const triggerRef = React.useRef(null)
+  // 多選清單登記共用圖層與 Scope，避免 Escape 關閉外窗、外點移除 DOM 時搶焦點。
+  const escape = event => {
+    event.preventDefault()
+    setOpen(false)
+    if (triggerRef.current) triggerRef.current.focus()
+  }
+  const { ref: listRef, zIndex } = useLayerRef(null, open, escape)
   React.useEffect(() => {
     if (!open) return undefined
+    let pendingClose
     const close = event => {
-      if (rootRef.current && !rootRef.current.contains(event.target)) setOpen(false)
+      if (!rootRef.current || rootRef.current.contains(event.target)) return
+      const dialog = rootRef.current.closest('[role="dialog"]')
+      // 同窗滑鼠預設聚焦尚未完成，先保留 DOM，讓 FocusScope observer 不會插隊。
+      if (dialog && dialog.contains(event.target)) pendingClose = setTimeout(() => setOpen(false), 0)
+      else setOpen(false)
     }
     document.addEventListener('mousedown', close)
-    return () => document.removeEventListener('mousedown', close)
+    return () => {
+      document.removeEventListener('mousedown', close)
+      clearTimeout(pendingClose)
+    }
   }, [open])
   const list = Array.isArray(value) ? value : []
   const toggle = (event, optionValue) => {
@@ -124,7 +142,8 @@ function MultipleSelect({ id, value, onChange, name, options, renderValue, disab
   }
   return (
     <div ref={rootRef} className={cn('relative w-full', className)}>
-      <button
+      <CompatLayer open={open} onEscapeKeyDown={escape} />
+      <button ref={triggerRef}
         type="button"
         id={id}
         aria-haspopup="listbox"
@@ -138,7 +157,7 @@ function MultipleSelect({ id, value, onChange, name, options, renderValue, disab
       </button>
       <ChevronDown aria-hidden="true" strokeWidth={1.75} className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
       {open && (
-        <ul role="listbox" aria-multiselectable="true" className="absolute left-0 right-0 top-full z-[1500] m-0 mt-1 max-h-80 list-none overflow-y-auto rounded-lg border border-solid border-border bg-background p-1 shadow-float">
+        <ul ref={listRef} style={{ zIndex }} role="listbox" aria-multiselectable="true" className="absolute left-0 right-0 top-full z-[1500] m-0 mt-1 max-h-80 list-none overflow-y-auto rounded-lg border border-solid border-border bg-background p-1 shadow-float">
           {options.map((o, i) => {
             const selected = list.some(v => same(v, o.value))
             return (
