@@ -1,5 +1,7 @@
 # BOS 3.0 改版進度
 
+- **2026/10/24 Autocomplete／正式 Dialog 焦點修正（v3.10240242，Jason 核准）**：窗內按鈕 mousedown 引發 input blur 時，activeElement 暫為 body；同步移除選單內容／圖層節點會觸發 Radix FocusScope MutationObserver 聚焦容器，使巢狀 PasswordDialog 記錯還原焦點。僅在窗內有 relatedTarget 且焦點處於 body 交接空檔時，阻止 downshift 提早關閉並延至下一個 task 收尾；保留失焦當下 autoSelect 候選項並讀最新欄位值，重聚焦／卸載取消待辦，保留一般表單同步 blur、觸控與 Escape 行為。新增真實 Dialog／PasswordDialog 的受控、非受控焦點交接及選值移焦測試；暫時還原原碼已確認兩個焦點案例失敗於容器搶焦點。驗證：changedSince 169 suites／2,014 tests、全套 365 suites／4,239 tests 全過；指定 combobox／dialog-layers 加新增顧客 5 suites／90 tests、lint／build 通過。未刪檔、未動網路 guard；Chrome dialog-layers e2e 10／10 通過（含 nested-password，連跑兩次）。
+
 - **相容層刪除（v3.10240102，2026/10/23 Jason 23:33 核准）**：刪除 48 檔（11 個未使用相容模組＋10 份 CSS〔含 accordion-compat.css〕、14 個相容專屬測試、12 個舊相容比對 harness／gen-grid-css.py）；混合測試只移除相容案例，Switch／Slider 兩個正式案例移至 `switch-slider-extra.test.js`。保留 combobox 使用的 `ui/compat-layer.js` 與日期／圖層／元件／列印工具；完整清單見 MIGRATION_GUIDE 同名章節。下方舊條目的「待核准」為歷史狀態。驗證：完整 Jest **364 suites／4,236 tests 全過**（前 377／4,372：−14 刪除測試檔 103 tests、混合檔 −35、新增 1 檔 +2）；lint、build 通過；dialog-layers Chrome 10 種情境 **9 過 1 敗**：nested-password 下層由相容窗改 ui/dialog 後，暴露正式 Autocomplete 的既有行為——選單開啟時點同窗按鈕，焦點落到對話框容器，PasswordDialog 關閉後還原到容器而非觸發鈕（斷言未放寬，待另案修 combobox）。`ui-sheet-in` 已無使用者，僅更新註解並保留規則。
 
 

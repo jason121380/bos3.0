@@ -237,7 +237,15 @@ const Autocomplete = React.forwardRef(function Autocomplete(
     },
   })
 
-  const handleBlur = event => {
+  const blurTimer = React.useRef(null)
+  const cancelPendingBlur = () => {
+    clearTimeout(blurTimer.current)
+    blurTimer.current = null
+  }
+  React.useEffect(() => () => clearTimeout(blurTimer.current), [])
+
+  const getBlurOption = () => autoSelect && highlightedIndex >= 0 ? filtered[highlightedIndex] : undefined
+  const finishBlur = (event, blurOption) => {
     if (inMenuInteraction()) {
       setFocused(false)
       // downshift 自己也會在失焦時關選單（它以「滑鼠按住中」判斷是否在點選單，觸控時失焦早於模擬的 mousedown，判斷不到），一併略過
@@ -245,8 +253,8 @@ const Autocomplete = React.forwardRef(function Autocomplete(
       return
     }
     setFocused(false)
-    if (autoSelect && highlightedIndex >= 0 && filtered[highlightedIndex] !== undefined) {
-      selectOption(event, filtered[highlightedIndex])
+    if (blurOption !== undefined) {
+      selectOption(event, blurOption)
     } else if (freeSolo && dirty && !multiple) {
       // freeSolo：失焦時把輸入文字當作值（比照 MUI autoSelect 以外的行為，只在 clearOnBlur 為 false 時保留）
       if (clearOnBlur) setInputText(selectedLabel, event, 'reset')
@@ -255,6 +263,33 @@ const Autocomplete = React.forwardRef(function Autocomplete(
     }
     setDirty(false)
     setOpen(false, event)
+  }
+
+  const finishBlurRef = React.useRef(finishBlur)
+  finishBlurRef.current = finishBlur
+
+  const handleBlur = event => {
+    if (inMenuInteraction()) {
+      finishBlur(event)
+      return
+    }
+    cancelPendingBlur()
+    if (event.relatedTarget && event.relatedTarget !== document.body && event.relatedTarget !== document &&
+        document.activeElement === document.body && inputEl.current && inputEl.current.closest('[role="dialog"]')) {
+      // 滑鼠移焦時 activeElement 會短暫是 body；此時同步移除選項／圖層節點，
+      // 會讓 Dialog 的 FocusScope MutationObserver 搶先聚焦容器，打斷按鈕聚焦。
+      // 等下一個 task 才完成 blur，讓原生焦點先落定；同時阻止 downshift 提早關閉。
+      // 僅處理窗內 body 的交接空檔；一般表單、觸控選取仍走原路徑。
+      // 保留失焦當下的 autoSelect 選項，收尾讀最新欄位值，避免移焦後寫回舊值；重聚焦或卸載時取消。
+      event.nativeEvent.preventDownshiftDefault = true
+      const blurOption = getBlurOption()
+      blurTimer.current = setTimeout(() => {
+        blurTimer.current = null
+        finishBlurRef.current(event, blurOption)
+      }, 0)
+      return
+    }
+    finishBlur(event, getBlurOption())
   }
 
   const handleKeyDown = event => {
@@ -301,6 +336,7 @@ const Autocomplete = React.forwardRef(function Autocomplete(
     onKeyDown: handleKeyDown,
     onBlur: handleBlur,
     onFocus: event => {
+      cancelPendingBlur()
       setFocused(true)
       const fp = fieldPropsRef.current
       if (fp.onFocus) fp.onFocus(event)
