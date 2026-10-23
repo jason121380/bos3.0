@@ -1,5 +1,4 @@
-import { Grid } from 'ui/grid-compat'
-import { Card, CardContent, CardHeader } from 'ui/card-compat'
+import { Card, CardContent, CardHeader } from 'ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'
 import { Fragment, useEffect, useState } from 'react'
@@ -95,7 +94,7 @@ function Results({
   return (
     <Fragment>
       {(isMathRound ? mathRoundData : designerDailyReport).map((designer, index) => (
-        <Grid item xs={12} sm={6} md={4} key={designer.user.id + index} className="EmployeeDailyReportCard, noprint">
+        <div key={designer.user.id + index} className="box-border pt-6 pl-6 basis-[100%] max-w-[100%] grow-0 min-[600px]:basis-[50%] min-[600px]:max-w-[50%] min-[600px]:grow-0 min-[900px]:basis-[33.33333333333333%] min-[900px]:max-w-[33.33333333333333%] min-[900px]:grow-0 EmployeeDailyReportCard, noprint">
           <UICard className="overflow-hidden">
             <UICardHeader className="justify-center pb-4 text-center">
               <CardTitle>
@@ -509,17 +508,18 @@ function Results({
               </div>
             </div>
           </UICard>
-        </Grid>
+        </div>
       ))}
       {(isMathRound ? mathRoundPrintData : printData).map((data, index) => {
         return (
           <div key={`printWrap-${index}`} className='EmployeeDailyReportCardPrintContainer'>
             {data.map((designer, index) => {
               return (
-                <Grid item xs={12} sm={6} md={4} key={`print-${designer.user.id}-${index}`} className="EmployeeDailyReportCardPrint">
-                  <Card>
+                <div key={`print-${designer.user.id}-${index}`} className="box-border pt-6 pl-6 basis-[100%] max-w-[100%] grow-0 min-[600px]:basis-[50%] min-[600px]:max-w-[50%] min-[600px]:grow-0 min-[900px]:basis-[33.33333333333333%] min-[900px]:max-w-[33.33333333333333%] min-[900px]:grow-0 EmployeeDailyReportCardPrint">
+                  <Card className="overflow-hidden text-text print:rounded-none print:shadow-none">
                     <CardHeader
-                      title={`${designer.user.designerNo !== null && designer.user.designerNo !== ''
+                      className="print:border print:border-solid print:border-black print:border-b-0 !min-h-0 !items-center !gap-0 !px-4 !pb-2 !pt-4 [&>div]:flex-auto [&>div]:block text-center"
+                    ><span className="block text-heading text-text">{`${designer.user.designerNo !== null && designer.user.designerNo !== ''
                         ? designer.user.designerNo
                         : ''
                         } ${designer.user.nickName !== null && designer.user.nickName !== ''
@@ -528,10 +528,8 @@ function Results({
                         } ${designer.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 日報表 ${Number(designer.totalPageCount) !== 1
                           ? `- ${designer.currentPageOrder}/${designer.totalPageCount}`
                           : ''
-                        }`}
-                      className="text-center"
-                    />
-                    <CardContent className="p-0">
+                        }`}</span></CardHeader>
+                    <CardContent className="last:pb-4 print:!pb-0 p-0">
                       <div className="printCard">
                         <Table dense aria-label="a dense table">
                           <TableHeader>
@@ -928,7 +926,7 @@ function Results({
                       </div>
                     </CardContent>
                   </Card>
-                </Grid>
+                </div>
               )
             })
             }

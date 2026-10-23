@@ -1,82 +1,83 @@
-import { Grid } from 'ui/grid-compat'
-import { Typography } from 'ui/display-compat'
-import { Card } from 'ui/card-compat'
-import { TextField } from 'ui/standard-input-compat'
+import { Card } from 'ui/card'
+import { Input } from 'ui/input'
 import PropTypes from 'prop-types'
 import { format } from 'date-fns'
 
+const transferTextClass = 'm-0 text-[16px] font-normal leading-6 text-text'
+
+// 保留行內底線欄位的盒模型與聚焦底線，輸入行為交給正式 ui/input。
+const inputWrapperClass = "relative -mt-[5px] inline-flex min-w-0 flex-col align-top before:pointer-events-none before:absolute before:inset-x-0 before:bottom-0 before:border-0 before:border-b before:border-solid before:border-[rgb(173,173,173)] before:content-[''] after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:border-0 after:border-b-2 after:border-solid after:border-primary after:content-[''] after:scale-x-0 focus-within:after:scale-x-100"
+const transferInputClass = '!block !box-content !h-[1.4375em] !rounded-none !border-0 !bg-transparent !p-[7px_0_2px] !text-[16px] !font-normal !leading-[1.4375em] !outline-none focus-visible:!ring-0 print:!text-[9px] print:!leading-[1.3em]'
+
 function TransferDetail({ merchantBankSettings }) {
   return (
-    <Card className="mb-6 rounded-[16px] border border-solid border-border bg-background p-6 [box-shadow:none]">
-      <Grid container className="flex justify-between">
+    <Card className="overflow-hidden text-text mb-6 rounded-[16px] border border-solid border-border bg-background p-6 [box-shadow:none]">
+      <div className="box-border flex w-full flex-wrap justify-between">
         <div className='MerchantBankTransferReportTransferDetail' style={{ width: '100%' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <Typography variant="subtitle1" component="div">
+            <div className="m-0 text-[14px] font-medium leading-5 text-text">
               列印日期：{format(new Date(), 'yyyy/MM/dd')}
-            </Typography>
+            </div>
           </div>
           <div className="TransferDetailpPrint TransferDetailDateInput" style={{ marginBottom: '8px' }}>
-            <Typography variant="body1" component="div">
+            <div className={transferTextClass}>
               本公司於
-              <TextField variant="standard" size="small" style={{ width: 60 }} defaultValue={format(new Date(), 'yyyy')} />
+              <span style={{ width: 60 }} className={inputWrapperClass}><Input className={transferInputClass} aria-invalid={false} defaultValue={format(new Date(), 'yyyy')} /></span>
               年
-              <TextField variant="standard" size="small" style={{ width: 40 }} defaultValue={format(new Date(), 'MM')} />
+              <span style={{ width: 40 }} className={inputWrapperClass}><Input className={transferInputClass} aria-invalid={false} defaultValue={format(new Date(), 'MM')} /></span>
               月
-              <TextField variant="standard" size="small" style={{ width: 40 }} defaultValue={format(new Date(), 'dd')} />日
-            </Typography>
+              <span style={{ width: 40 }} className={inputWrapperClass}><Input className={transferInputClass} aria-invalid={false} defaultValue={format(new Date(), 'dd')} /></span>日
+            </div>
           </div>
           <div className="TransferDetailpPrint" style={{ marginBottom: '8px' }}>
-            <Typography variant="body1" component="div">
+            <div className={transferTextClass}>
               指定由存款帳戶
-              <TextField variant="standard" size="small" style={{ width: 200 }} value={merchantBankSettings.remitterBankAccount !== null ? merchantBankSettings.remitterBankAccount : " "} /> 提領
-            </Typography>
+              <span style={{ width: 200 }} className={inputWrapperClass}><Input className={transferInputClass} aria-invalid={false} value={merchantBankSettings.remitterBankAccount !== null ? merchantBankSettings.remitterBankAccount : " "} /></span> 提領
+            </div>
           </div>
           <div className="TransferDetailpPrint" style={{ marginBottom: '8px' }}>
-            <Typography variant="body1" component="div">
+            <div className={transferTextClass}>
               合計新台幣：
-              <TextField
-                variant="standard"
-                size="small"
-                style={{ width: 200 }}
-              />
+              <span style={{ width: 200 }} className={inputWrapperClass}><Input className={transferInputClass} aria-invalid={false}
+              /></span>
               元整
-            </Typography>
+            </div>
           </div>
           <div className="TransferDetailpPrint" style={{ marginBottom: '16px' }}>
-            <Typography variant="body1" component="div">
+            <div className={transferTextClass}>
               煩請依下列名冊悉數入該活存帳戶內
-            </Typography>
+            </div>
           </div>
           <div style={{ marginBottom: '8px' }}>
-            <Typography variant="body1" component="div">
+            <div className={transferTextClass}>
               至此
-            </Typography>
+            </div>
           </div>
           <div className="TransferDetailpPrint" style={{ marginBottom: '16px' }}>
-            <Typography variant="body1" component="div">
-              <TextField variant="standard" size="small" style={{ width: 120 }} value={merchantBankSettings.remitterBankName !== null ? merchantBankSettings.remitterBankName : ""} /> 銀行
-              <TextField variant="standard" size="small" style={{ width: 120 }} value={merchantBankSettings.remitterBankBranchName !== null ? merchantBankSettings.remitterBankBranchName : ""} />
+            <div className={transferTextClass}>
+              <span style={{ width: 120 }} className={inputWrapperClass}><Input className={transferInputClass} aria-invalid={false} value={merchantBankSettings.remitterBankName !== null ? merchantBankSettings.remitterBankName : ""} /></span> 銀行
+              <span style={{ width: 120 }} className={inputWrapperClass}><Input className={transferInputClass} aria-invalid={false} value={merchantBankSettings.remitterBankBranchName !== null ? merchantBankSettings.remitterBankBranchName : ""} /></span>
               分行
-            </Typography>
+            </div>
           </div>
           <div className="mt-6 flex gap-12">
             <div>
-              <Typography variant="body1" component="div" style={{ marginBottom: '8px' }}>
+              <div className={transferTextClass} style={{ marginBottom: '8px' }}>
                 簽章：
-              </Typography>
+              </div>
               <div style={{ height: 60 }}></div>
             </div>
             <div>
-              <Typography variant="body1" component="div" style={{ marginBottom: '8px' }}>
+              <div className={transferTextClass} style={{ marginBottom: '8px' }}>
                 聯絡人：{merchantBankSettings.trustorName !== null ? merchantBankSettings.trustorName : ""}
-              </Typography>
-              <Typography variant="body1" component="div">
+              </div>
+              <div className={transferTextClass}>
                 電話：{merchantBankSettings.trustorPhone !== null ? merchantBankSettings.trustorPhone : ""}
-              </Typography>
+              </div>
             </div>
           </div>
         </div>
-      </Grid>
+      </div>
     </Card>
   )
 }

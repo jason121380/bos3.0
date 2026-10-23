@@ -1,5 +1,7 @@
 # 待辦清單（TODO）
 
+- **2026/10/23 項目 3 列印遷移第二批**：指定 9 檔完成正式 ui/card、ui/table、ui/input、Tailwind flex／div 與原生 hr 遷移。第一批七個 key 保留，第二批新增八個 key；逐檔替換、影像名稱與限制見 MIGRATION_GUIDE「項目 3／第二批」。限定 Jest **53 suites／573 tests 全過**、版號 1 test、lint／diff check、dialog-layers **13/13（exit 0）** 通過；外部列印比較 before／after 各 **15/15**，15 張 print＋48 張 PDF PNG 像素相同；螢幕僅薪資條圓角 247 個淡灰抗鋸齒像素差異（最大色階差 8），詳見 MIGRATION_GUIDE。相容 importer **15 → 6**。尚待實機紙本驗收；本批未 commit、未建立 PR。
+
 - **2026/10/23 項目 4：Tree／Rating／Tag**：新增三個 tokens 元件與單元／離線瀏覽器測試；六個 compat 使用檔完成 UI 遷移，handlers／GraphQL／回傳值與搜尋／確認／取消保留。Phase 1／2 拆分、API、視覺差異與驗證見 MIGRATION_GUIDE §9；compat importer 29 → 23。全站 375 suites／4,350 tests 全過；lint／build／diff check 通過；外部 Chrome 新元件 4/4、Dialog 回歸 13/13（exit 0）。分兩個 PR（元件／使用端）；未觸及正式站。
 
 - **2026/10/23 共用 Dialog 圖層 Part B2**：七檔外殼完成；OrderDetailModal 因列印 refs 同步檢查／非同步讀取與 Portal／退場生命週期差異保留原檔。剩餘僅此頁與三個 ui 內部使用者；未改 src/ui、列印範本與網路 guard。外部 Chrome 13/13、lint 通過；限定 Jest 首輪 87 suites（顧客追蹤單項逾時重跑通過），最終相關頁面 16 suites／188 tests 全過，網路 guard／版號 4 tests 通過；全站 371 suites／4,332 tests 全過、build 通過；頁面 compat importer 35 → 29；細節與驗證見 MIGRATION_GUIDE §8。
@@ -14,7 +16,7 @@
 
 ---
 
-> **現況補充（2026/10/23）**：相容元件使用量為 15 個非 ui、非測試檔案（項目 4：29 → 23；項目 3 第一批：23 → 15）；收尾為 billing 4 頁、報表列印、pickers 與全域 toast。Autocomplete（PR #178–#181）與滑桿泡泡（PR #197）已完成自製。交接估計約 221 處「待實機」；本次補註前全文實查為 225 次字串出現，包含標題、說明與重複引用，並非獨立驗收項目數；下列歷史項目即使寫「唯讀」或「列印預覽」，也不可在正式站送出或列印真實資料，須改用 mock／隔離測試資料。
+> **現況補充（2026/10/23）**：相容元件使用量為 6 個非 ui、非測試檔案（項目 4：29 → 23；項目 3 第一批：23 → 15；第二批：15 → 6）；收尾為 billing 4 頁、報表列印、pickers 與全域 toast。Autocomplete（PR #178–#181）與滑桿泡泡（PR #197）已完成自製。交接估計約 221 處「待實機」；本次補註前全文實查為 225 次字串出現，包含標題、說明與重複引用，並非獨立驗收項目數；下列歷史項目即使寫「唯讀」或「列印預覽」，也不可在正式站送出或列印真實資料，須改用 mock／隔離測試資料。
 
 ## 一、今天完成了什麼
 

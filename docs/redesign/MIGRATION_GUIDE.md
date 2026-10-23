@@ -260,3 +260,29 @@ compat importer 以 `rg "from 'ui/[a-z-]*-compat'" src` 排除 src/ui 與測試�
 驗證：指定六個 view 目錄＋src/ui 的 Jest 39 suites／436 tests 全過；npm run lint、dialog-layers 13/13（exit 0）通過；verify-logic 8 檔全過（沙箱內 Node 啟動 git 受限，使用 shell 匯出的 origin/main 原檔作為同一檢查器的基準）。另跑相關測試 `--changedSince=origin/main` 10 suites／102 tests 與 `npm run build` 皆通過（依 Jason 2026/10/23 指示，全站 suite 改為當日最終合併前統一跑一次）；未連真實後端。相容 importer 依指定 rg 口徑為 **15（原 23）**。
 
 限制：這是固定假資料的 Chrome 比較，尚未實機紙本驗收。分析比較模式的 650px 最小表寬在 A4 雙欄下會裁切右側欄位；比較／抽成長卡片仍可能跨頁，均為修改前既有輸出，本批保留，沒有額外改版。後續批次仍須自行提供 before／after 證據。
+
+### 第二批：9 檔、8 份報表
+
+同第一批，只替換 JSX／樣式；未修改 `initialize.scss` 或任何 compat 檔案。卡片改 `ui/card`；相容表格改 `ui/table`，明確保留舊儲存格內距、字色、水平線與表頭語意，避免新表格預設列印黑字／全格線改變輸出。Grid 改 Tailwind flex／div，沿用原 600／900／1200px 斷點與 24px 間距；Paper／Typography 改普通元素，Divider 改原生 `hr`。
+
+| 檔案（`src/views/` 下） | 替換與列印樣式 | 列印差異／影像名稱 |
+|---|---|---|
+| `DecreaseDailyReport/Results.js` | grid／card／Paper／table → flex、ui/card、div、ui/table；四欄卡片標題黑框、表格水平黑線、內容底距 0 | 無；`decrease-print.png`、`decrease-pdf-1.png`～`decrease-pdf-4.png` |
+| `MerchantDailyReport/Results.js` | grid／card／Paper／Divider／table → flex、ui/card、div、hr、ui/table；保留一般及合併明細兩種框線 | 無；`merchantDaily-print.png`、`merchantDaily-pdf-1.png`～`merchantDaily-pdf-2.png` |
+| `EmployeePayslip/Results.js` | grid／card／Paper／Divider／table → div、ui/card、div、hr、ui/table；保留薪資條不跨頁、15px 容器底距與既有欄位樣式 | 無；`payslip-print.png`、`payslip-pdf-1.png`～`payslip-pdf-2.png` |
+| `MerchantBankTransferReport/TransferDetail.js` | grid／Typography／card／standard-input TextField → flex、div、ui/card、ui/input 的 Input；保留輸入框寬度、底線、內距與行內對齊 | 無；`transfer-print.png`、`transfer-pdf-1.png`～`transfer-pdf-2.png` |
+| `Profile/RakeReport.js` | card／Paper／Divider／table → ui/card、div、hr、ui/table；保留原抽成卡片內距與 8px 表格容器圓角 | 無；`profileRake-print.png`、`profileRake-pdf-1.png`～`profileRake-pdf-3.png` |
+| `EmployeeManagementDetail/RakeReport.js` | 同個人頁抽成報表，保留原日期列與卡片排列 | 無；`employeeRake-print.png`、`employeeRake-pdf-1.png`～`employeeRake-pdf-3.png` |
+| `Profile/DesignerSelfRecord.js` | card／Paper／table → ui/card、div、ui/table；明確保留 categoryPrint 儲存格原內距，不改欄位隱藏規則 | 無；`selfRecord-print.png`、`selfRecord-pdf-01.png`～`selfRecord-pdf-12.png` |
+| `EmployeeDailyReport/Results.js` | grid／card → flex、ui/card；保留四欄列印卡片黑框、內容底距 0；原 ui/table 不動 | 無；`employeeDaily-print.png`、`employeeDaily-pdf-1.png`～`employeeDaily-pdf-4.png` |
+| `EmployeeDailyReport/index.js` | grid → flex／div；保留列印頁首、報表根掛點與螢幕負外距 | 無；同 `employeeDaily` |
+
+第二批 harness：新增 `decrease,merchantDaily,payslip,transfer,profileRake,employeeRake,selfRecord,employeeDaily`；原第一批七個 key 保留。runner 的 `PRINT_KEYS` 可傳逗號分隔清單，未設定時跑全部 15 個 key。互助／店家／薪資條／轉帳／設計師日報渲染真實 index，包含其頁首與外框；個人／員工抽成與個人日報依頁面傳入相同 props 渲染元件。所有模擬回覆由無 HttpLink 的 Apollo client 依正式 query 選取欄位產生，未知查詢會報錯；補齊個人日報搜尋列的 `getAccountingType`，不略過未完成查詢。Date 固定 2026/01/01，搜尋區間 2026/01/01～01/31；6 位假資料、每位 18 筆日報／互助紀錄、50 筆轉帳明細，涵蓋跨頁。轉帳單另斷言七個輸入框預設值，實際輸入假金額 1000 並確認保留，再比照點列印按鈕時移開焦點並等待底線動畫退場，避免 PDF 閃爍游標干擾像素比較。
+
+輸出根目錄 `/workspace/bos3-print-compare/batch2/{before,after}`；before 為 `origin/main`（不含第一批），after 為本工作樹。各 key 另有同名 `*-screen.png`；`*-dom.json` 記錄列印 computed style 與位置，失敗時另存 `*-error.png`，錯誤影像不列入成功比較。只比對本次 key 的 print／screen／PDF 全頁 PNG，避免把歷次失敗診斷圖誤計為報表差異。PDF 二進位不作比較。
+
+最終外部 Chrome before／after 各 **15/15，exit 0**；Pillow 比較 **78 張 PNG**：**15 張 print 與 48 張 PDF 全頁 PNG 全部尺寸、像素相同**；15 張 screen 中 14 張像素相同，僅 `payslip-screen.png` 的後續卡片圓角有 **247 個淡灰抗鋸齒像素差異、單通道最大差 8**，沒有尺寸、文字或欄位位置差異。此為正式 Card 加入 ui-root 後的螢幕圓角繪製差異，本批保留；薪資條 print／PDF 仍完全相同。第二批八份報表共 48 張 PNG，第一批七個 key 共 30 張 PNG。已目視第二批八份報表的並排預覽與差異區域。
+
+限定 Jest **53 suites／573 tests 全過**，另版號 **1 test 通過**；轉帳頁無獨立 Jest 測試，七欄預設值與金額輸入由上述 Chrome harness 斷言；`npm run lint`、`git diff --check`、`dialog-layers` **13/13（exit 0）** 通過，未跑全站 suite 或 build。資料／GraphQL／state／handlers／文字／測試掛點保留；同一 verify-logic 分析器搭配 shell 匯出的 HEAD 原檔，9 檔全部通過。相容 importer 依指定 rg 口徑 **15 → 6**。剩餘六檔屬後續批次，未修改或刪除相容層。這是離線 Chrome 固定假資料證據，尚未實機紙本驗收；既有個人日報長表分頁、薪資條密集欄位與長卡片分頁維持原輸出。
+
+**第二批補充驗證（審查時加跑）**：審查後再整理重複 class 為常數（不改 class 集合），重跑比較 15/15、print／PDF 63 張 PNG 仍像素相同。`--changedSince=origin/main` 相關測試 24 suites／237 tests、`npm run lint`、`npm run build` 通過（依 Jason 2026/10/23 指示，全站 suite 於當日最終合併前統一跑一次）。
