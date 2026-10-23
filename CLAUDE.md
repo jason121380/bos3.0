@@ -43,12 +43,12 @@ GitHub Actions 的 Node.js CI 已手動停用（disabled_manually）。合併前
 ## Git 與合併
 
 - 功能分支以當次 session 指定的為準（例如 `claude/pensive-fermi-v6ufcq`、`claude/upbeat-carson-pdc7rf`）；PR 範本在 `.github/PULL_REQUEST_TEMPLATE.md`（沿用其標題結構）。
-- **使用者已指示「always merge」**：一批工作做完且驗證通過（build 成功、測試全過），就開 PR 並 merge 進 `main`（merge commit），不必再問。驗證沒過就停下來回報，不硬 merge。
+- **Codex／代理只開 PR，不自行 merge**：由 CEO（Jason 的助理）逐行審查，並在本機跑 lint／測試／build 全部通過後才合併；或由 Jason 決定合併。驗證沒過就停下來回報。
 - **可能有多個 session 同時開發**：合併前一定先 `git fetch origin main` 並 merge 進自己的分支，重跑 lint／測試／build 再合併；衝突逐一解，不覆蓋對方的內容。`MEMORY.md` 的教訓編號、`TODO.md` 的條目合併後要檢查重號，後到者順延編號並同步文件內的引用。
-- PR 開啟後 Codex 會自動 review：等它完成；有 finding 就驗證是否成立、修正或在討論串說明理由，再合併。GitHub Actions（`.github/workflows/node.js.yml`）目前在 GitHub 上不會執行，以本機驗證為準。
+- PR 開啟後若有 Codex 自動 review：等它完成；有 finding 就驗證是否成立、修正或在討論串說明理由；合併仍依上方流程（CEO 審查後合併或由 Jason 決定）。GitHub Actions（`.github/workflows/node.js.yml`）目前在 GitHub 上不會執行，以本機驗證為準。
 - PR 合併後，分支從最新 `main` 重置再繼續（`git fetch origin main && git checkout -B <branch> origin/main`），不在已合併的歷史上堆疊。
 - 每個完整 commit 都要更新 `src/version.js` 的 `APP_VERSION`（格式 `v3.MMDDHHmm`，台灣時間 UTC+8，例如 `v3.10230759`），commit 訊息第一行以 `[版號]` 開頭；不自行升大版號。
-- Commit 訊息遵守 Angular 格式；沒有 `gh`，PR 用 GitHub MCP 工具。
+- Commit 訊息遵守 Angular 格式；可以使用 `gh`（例如 `gh pr create`）開 PR，也可用 GitHub MCP 工具。
 - 部署：正式站 https://bos.lure.com.tw 位於 Railway，push／合併到 `main` 會自動部署。合併不等於上線，須確認正式站左上角版號。`cloudbuild.yaml`、`cloudbuild_dev.yaml` 是舊的 legacy 設定，目前未使用。
 
 ## 架構速記
