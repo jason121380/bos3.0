@@ -1,6 +1,5 @@
 import { maskCustomerForExport } from 'helper/exportCustomerMask'
-// Divider 只用於下方列印範本（#printMain / #printThermal），維持列印輸出不變
-import { Divider } from 'ui/display-compat'
+// 原生 hr 保留舊 class 與 inline style，讓複製到無 app CSS 的新視窗之 HTML 逐字相同
 import TableEditBar from 'components/TableEditBar'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
@@ -717,7 +716,7 @@ function Results({
                 return undefined
               })}
           </div>
-          <Divider style={{ width: '100%' }} />
+          <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
           <div>合計：{orderDetailPaymentShouldPay}</div>
           <div>結帳：</div>
           <div style={{ display: 'flex', margin: '0 15px', justifyContent: 'space-between' }}>
@@ -784,7 +783,7 @@ function Results({
           <div>帳單編號：{printOrderDetail.length !== 0 && printOrderDetail[0].no}</div>
           <div>設計師:{printOrderDetail.length !== 0 && designerNameType(printOrderDetail[0].designer, nameDisplayOnInvoice)}</div>
           <div>顧客:{printOrderDetail.length !== 0 && printOrderDetail[0].customer.name}</div>
-          <Divider style={{ width: '100%' }} />
+          <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div>名稱</div>
             <div style={{ display: 'flex', width: 100, justifyContent: 'space-between' }}>
@@ -882,7 +881,7 @@ function Results({
               }
               return undefined
             })}
-          <Divider style={{ width: '100%' }} />
+          <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
           <div>合計：{orderDetailPaymentShouldPay}</div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div>
