@@ -1,7 +1,7 @@
 // 用法：NODE_PATH=<playwright 所在 node_modules> node run.js <outDir> <buildDir> [width] [--dark] [--print]
 // buildDir＝mock build（REACT_APP_API_URL=http://127.0.0.1:9/graphql BUILD_PATH=… npm run build）
-// 載入比對頁：main.css（Tailwind＋tokens）→ 打包的相容 CSS → initialize(.dark).scss（後載入，同實際 App）
-// 逐一比對 #mui 與 #compat 兩棵 DOM 樹對應元素的 computed style 與尺寸，印出差異
+// 載入比對頁：main.css（Tailwind＋tokens）→ 入口打包的 CSS → initialize(.dark).scss（後載入，同實際 App）
+// 通用歷史比較 runner（舊相容元件入口已退役）；逐一比對 #mui 與 #compat 兩棵 DOM 樹對應元素的 computed style 與尺寸，印出差異
 const fs = require('fs'), path = require('path'), http = require('http')
 const { chromium } = require('playwright')
 const [outDir, buildDir, widthArg] = process.argv.slice(2)

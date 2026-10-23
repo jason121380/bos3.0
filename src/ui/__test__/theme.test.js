@@ -1,8 +1,6 @@
-import { act, cleanup, render, screen } from '@testing-library/react'
-import React from 'react'
+import { cleanup } from '@testing-library/react'
 
 import { theme } from 'theme'
-import { useMediaQuery } from '../misc-compat'
 
 afterEach(cleanup)
 
@@ -25,30 +23,5 @@ describe('theme（取代 MUI createTheme 的純物件）', () => {
     expect(theme.typography.pxToRem(14)).toBe('0.875rem')
     expect(theme.shadows).toHaveLength(25)
     expect(theme.palette.common.white).toBe('#fff')
-  })
-})
-
-describe('useMediaQuery（取代 MUI）', () => {
-  // 預約行事曆 hook 依 MUI 時序：第一次渲染為 false（桌機視圖），掛載後才切成手機結果
-  it('接受 @media 字串，第一次渲染為 false、掛載後為實際結果', () => {
-    const original = window.matchMedia
-    const queries = []
-    window.matchMedia = query => {
-      queries.push(query)
-      return { matches: true, addEventListener() {}, removeEventListener() {} }
-    }
-    const renders = []
-    const Probe = () => {
-      const mobile = useMediaQuery(theme.breakpoints.down('sm'))
-      renders.push(mobile)
-      return <span>{String(mobile)}</span>
-    }
-    act(() => {
-      render(<Probe />)
-    })
-    expect(renders[0]).toBe(false)
-    expect(screen.getByText('true')).toBeInTheDocument()
-    expect(queries[0]).toBe('(max-width:599.95px)')
-    window.matchMedia = original
   })
 })

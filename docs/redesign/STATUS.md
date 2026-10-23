@@ -1,5 +1,8 @@
 # BOS 3.0 改版進度
 
+- **相容層刪除（v3.10240102，2026/10/23 Jason 23:33 核准）**：刪除 48 檔（11 個未使用相容模組＋10 份 CSS〔含 accordion-compat.css〕、14 個相容專屬測試、12 個舊相容比對 harness／gen-grid-css.py）；混合測試只移除相容案例，Switch／Slider 兩個正式案例移至 `switch-slider-extra.test.js`。保留 combobox 使用的 `ui/compat-layer.js` 與日期／圖層／元件／列印工具；完整清單見 MIGRATION_GUIDE 同名章節。下方舊條目的「待核准」為歷史狀態。驗證：完整 Jest **364 suites／4,236 tests 全過**（前 377／4,372：−14 刪除測試檔 103 tests、混合檔 −35、新增 1 檔 +2）；lint、build 通過；dialog-layers Chrome 10 種情境 **9 過 1 敗**：nested-password 下層由相容窗改 ui/dialog 後，暴露正式 Autocomplete 的既有行為——選單開啟時點同窗按鈕，焦點落到對話框容器，PasswordDialog 關閉後還原到容器而非觸發鈕（斷言未放寬，待另案修 combobox）。`ui-sheet-in` 已無使用者，僅更新註解並保留規則。
+
+
 - **最後一批（2026/10/23，Jason 核准）**：頁面 compat importers **2 → 0**；`CustomerFilterExport` 改用既有 `hooks/useMediaQuery`（呼叫處正規化，md 899.95px／jsdom false 保留），`OrderEdit/Header` 抽獎流水號改正式 Popover；`ui/date-picker` 內部不再依賴 modal／overlay-compat，手機用置中 Dialog、桌機用錨定欄位的 Popover。相容模組 `button-compat`、`card-compat`、`display-compat`、`feedback-compat`、`grid-compat`、`misc-compat`、`modal-compat`、`overlay-compat`、`standard-input-compat`、`table-compat`、`tree-compat` 全部保留，現在僅相容檔內部、其自身／跨圖層單元測試與 `scripts/redesign/compat-harness/**` 歷史比較工具引用；**刪除仍待 Jason 核准**。`ui/compat-layer.js` 是共用 Radix 行為 helper，保留 combobox 引用。本批不刪檔、不 commit、不改後端／網路 guard，不跑 Chrome／e2e；瀏覽器定位、手機置中與巢狀焦點待 Jason 實機驗收。 **驗證**：全套 Jest 377 suites／4,372 tests 全過（`--maxWorkers=50%`，合併前最終一次）；補充焦點案例後，最終指定範圍（全部 ui＋rg 找出的 picker 使用測試＋Header）55 suites／670 tests 全過，版本／網路 guard 2 suites／4 tests 全過；最終 lint、build、git diff --check 通過。唯讀審查未發現需修正問題。build 仍有既有重複 object key 與 Browserslist 資料過舊提示，未擴大修改。
 
 

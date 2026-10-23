@@ -105,7 +105,7 @@
   }
 }
 
-/* 手機底部面板（ui/modal-compat 的 Dialog）的進場動畫 */
+/* 舊手機底部面板進場動畫：相容層移除後無使用者，暫留規則；正式 ui/dialog 使用 Tailwind 動畫。 */
 @keyframes ui-sheet-in {
   from { transform: translateY(32px); opacity: 0.6; }
   to { transform: none; opacity: 1; }

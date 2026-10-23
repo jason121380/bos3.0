@@ -3,7 +3,7 @@ import React from 'react'
 
 import { NativeSelect, NativeSelectOption } from '../native-select'
 import TextField, { InputBase } from '../text-field'
-import { TextField as StandardTextField } from '../standard-input-compat'
+
 import { Slider } from '../slider'
 import { ToggleGroup, ToggleGroupItem } from '../toggle-group'
 
@@ -131,29 +131,6 @@ describe('TextField／InputBase', () => {
     expect(input.className).toContain('x')
     fireEvent.click(input)
     expect(onClick).toHaveBeenCalledTimes(1)
-  })
-})
-
-describe('standard-input-compat（薪資轉帳單底線輸入框）', () => {
-  it('預設 medium；停用與錯誤輸出 MUI 同名 class', () => {
-    const { container } = render(<StandardTextField disabled error inputProps={{ className: 'yy' }} />)
-    const base = container.firstChild.firstChild
-    expect(base).not.toHaveClass('MuiInputBase-sizeSmall')
-    expect(base).toHaveClass('Mui-disabled', 'Mui-error')
-    const input = container.querySelector('input')
-    expect(input).toHaveClass('Mui-disabled', 'yy')
-    expect(input).toHaveAttribute('aria-invalid', 'true')
-  })
-
-  it('聚焦／離開時照常呼叫頁面的 onFocus／onBlur', () => {
-    const onFocus = jest.fn()
-    const onBlur = jest.fn()
-    render(<StandardTextField onFocus={onFocus} onBlur={onBlur} />)
-    const input = screen.getByRole('textbox')
-    act(() => input.focus())
-    act(() => input.blur())
-    expect(onFocus).toHaveBeenCalledTimes(1)
-    expect(onBlur).toHaveBeenCalledTimes(1)
   })
 })
 
