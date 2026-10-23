@@ -2,6 +2,12 @@
 // 查完後重設驗證（token 清空、需重新驗證才可再查）；結果依活動分組，有券的活動點開才列出流水號、發券日期（台灣時間）、發券店家，
 // 沒有券時顯示後端訊息。GraphQL 全由 testkit 的模擬 link 回應；reCAPTCHA 以假元件代替，不連 Google。
 import React from 'react'
+import CustomizedSnackbars, { openSnackbar } from 'elements/snackbars'
+jest.mock('elements/snackbars', () => {
+  const actual = jest.requireActual('elements/snackbars')
+  return { __esModule: true, ...actual, openSnackbar: jest.fn(actual.openSnackbar) }
+})
+beforeEach(() => openSnackbar.mockImplementation(jest.requireActual('elements/snackbars').openSnackbar))
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { renderPage, callsOf } from '../../../__tests__/testkit.test'
 import CustomerEventTicketSearch from '..'
@@ -32,7 +38,7 @@ const RESULT = {
 }
 
 const setup = (result = RESULT) =>
-  renderPage(<CustomerEventTicketSearch />, { fixtures: { GET_CUSTOMER_CHECK_TICKET: { customerCheckTicket: result } } })
+  renderPage(<><CustomizedSnackbars /><CustomerEventTicketSearch /></>, { fixtures: { GET_CUSTOMER_CHECK_TICKET: { customerCheckTicket: result } } })
 
 const submit = () => screen.getByText('提交')
 
@@ -42,7 +48,7 @@ beforeEach(() => {
 afterEach(cleanup)
 
 describe('抽獎券查詢', () => {
-  it('未通過驗證不可送出；電話空白提示不送出，點畫面其他地方關閉提示', async () => {
+  it('未通過驗證不可送出；電話空白提示不送出，按關閉鈕關閉提示', async () => {
     const utils = setup()
     expect(submit()).toBeDisabled()
     fireEvent.click(screen.getByText('完成驗證'))
@@ -50,9 +56,10 @@ describe('抽獎券查詢', () => {
     fireEvent.change(screen.getByLabelText(/^電話/), { target: { value: '   ' } })
     fireEvent.click(submit())
     expect(await screen.findByText('電話不得為空')).toBeInTheDocument()
+    expect(openSnackbar).toHaveBeenCalledWith({ message: '電話不得為空', variant: 'warning' })
     expect(callsOf(utils.calls, 'GET_CUSTOMER_CHECK_TICKET')).toHaveLength(0)
     await new Promise(resolve => setTimeout(resolve, 10))
-    fireEvent.click(document.body)
+    fireEvent.click(screen.getByRole('button', { name: '關閉' }))
     await wait(() => expect(screen.queryByText('電話不得為空')).toBeNull())
   })
 
@@ -88,4 +95,15 @@ describe('抽獎券查詢', () => {
     fireEvent.click(submit())
     expect(await screen.findByText('查無抽獎券')).toBeInTheDocument()
   })
+})
+
+it('查詢拋錯時呼叫全域錯誤提示', () => {
+  const error = new Error('查詢失敗')
+  jest.spyOn(require('hooks/useFetchGetCustomerCheckTicket'), 'default').mockReturnValue([() => { throw error }, { loading: false }])
+  setup()
+  fireEvent.click(screen.getByText('完成驗證'))
+  fireEvent.change(screen.getByLabelText(/^電話/), { target: { value: '0912345678' } })
+  fireEvent.click(submit())
+  expect(openSnackbar).toHaveBeenCalledWith({ message: '查詢失敗', variant: 'error' })
+  jest.restoreAllMocks()
 })

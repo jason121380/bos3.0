@@ -3,6 +3,12 @@
 // 送出以 POST 打同一個後端的 /outer_store/send_event_ticket，body 為 { name, cellphone, count, merchantId }；
 // 以 res.ok 判斷成功：後端 400 顯示其訊息、其他非 2xx 顯示發券失敗，成功顯示發券成功並清空表單（店名保留）；「資料建立中」提示不可被點掉。fetch 以假函式代替，不連後端、不發真實抽獎券。
 import React from 'react'
+import CustomizedSnackbars, { openSnackbar } from 'elements/snackbars'
+jest.mock('elements/snackbars', () => {
+  const actual = jest.requireActual('elements/snackbars')
+  return { __esModule: true, ...actual, openSnackbar: jest.fn(actual.openSnackbar) }
+})
+beforeEach(() => openSnackbar.mockImplementation(jest.requireActual('elements/snackbars').openSnackbar))
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { getApiOrigin } from 'lib/api-base'
 import { httpStatusMessage } from 'lib/friendly-error'
@@ -12,7 +18,7 @@ import CustomerSendEventTicket from '..'
 jest.setTimeout(20000)
 
 const setup = (fixtures = {}) =>
-  renderPage(<CustomerSendEventTicket />, {
+  renderPage(<><CustomizedSnackbars /><CustomerSendEventTicket /></>, {
     fixtures: {
       GET_MERCHANT_NAME: { getMerchantName: '信義店' },
       CHECK_IS_CUSTOMER_EXIST: { checkIsCustomerExistForOuterStore: { isExist: true, customerName: '陳小姐' } },
@@ -38,7 +44,7 @@ const clickAway = async () => {
 }
 
 const closeToast = async text => {
-  await clickAway()
+  fireEvent.click(screen.getByRole('button', { name: '關閉' }))
   await wait(() => expect(screen.queryByText(text)).toBeNull())
 }
 
@@ -109,7 +115,7 @@ describe('抽獎資格登錄', () => {
   })
 
   // 錯誤提示還開著時再按「提交」，新的錯誤提示不再被同一次點擊的「點外面關閉」關掉
-  // （原本 closeSnackBar 會接到這次點擊；Jason 2026/10/22 fix all）；點畫面其他地方仍可關閉
+  // 全域提示不因點擊背景關閉，改由關閉鈕關閉。
   it('上一個錯誤提示未關閉時再提交，新的錯誤提示照常顯示', async () => {
     setup({ CHECK_IS_CUSTOMER_EXIST: { checkIsCustomerExistForOuterStore: { isExist: false, customerName: null } } })
     await screen.findByText('信義店 抽獎資格登錄')
@@ -126,7 +132,7 @@ describe('抽獎資格登錄', () => {
     await closeToast('張數為必填欄位')
   })
 
-  it('送出成功：POST 正確內容、顯示發券成功並清空表單；點畫面其他地方關閉提示', async () => {
+  it('送出成功：POST 正確內容、顯示發券成功並清空表單；按關閉鈕關閉提示', async () => {
     setup({ CHECK_IS_CUSTOMER_EXIST: { checkIsCustomerExistForOuterStore: { isExist: false, customerName: null } } })
     await screen.findByText('信義店 抽獎資格登錄')
     const fetchFn = mockFetch(() => Promise.resolve({ ok: true, status: 200 }))
@@ -135,6 +141,7 @@ describe('抽獎資格登錄', () => {
     fireEvent.change(name(), { target: { value: '林先生' } })
     fireEvent.click(submit())
     expect(await screen.findByText('發券成功')).toBeInTheDocument()
+    expect(openSnackbar).toHaveBeenCalledWith({ message: '發券成功', variant: 'success' })
     expect(fetchFn).toHaveBeenCalledWith(`${getApiOrigin()}/outer_store/send_event_ticket`, {
       method: 'POST',
       headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
@@ -143,7 +150,7 @@ describe('抽獎資格登錄', () => {
     expect(phone()).toHaveValue('')
     expect(count()).toHaveValue('1')
     expect(name()).toHaveValue('')
-    await clickAway()
+    fireEvent.click(screen.getByRole('button', { name: '關閉' }))
     await wait(() => expect(screen.queryByText('發券成功')).toBeNull())
   })
 
@@ -156,6 +163,7 @@ describe('抽獎資格登錄', () => {
     fireEvent.change(name(), { target: { value: '林先生' } })
     fireEvent.click(submit())
     expect(await screen.findByText('發券成功')).toBeInTheDocument()
+    expect(openSnackbar).toHaveBeenCalledWith({ message: '發券成功', variant: 'success' })
     expect(screen.getByText('信義店 抽獎資格登錄')).toBeInTheDocument()
     expect(screen.queryByText(/測試店家/)).toBeNull()
   })
@@ -199,8 +207,10 @@ describe('抽獎資格登錄', () => {
     expect(await screen.findByText('資料建立中請稍候')).toBeInTheDocument()
     await clickAway()
     expect(screen.getByText('資料建立中請稍候')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: '關閉' }))
+    expect(screen.queryByText('資料建立中請稍候')).toBeNull()
     fail(new Error('Failed to fetch'))
-    expect(await screen.findByText('Failed to fetch')).toBeInTheDocument()
+    expect(await screen.findByText('網路連線異常，請檢查網路後再試一次')).toBeInTheDocument()
   })
 
   // 店名查詢失敗時店名留空、不整頁錯誤（原本 effect 讀 data.getMerchantName 拋錯；Jason 2026/10/22 fix all）
@@ -211,4 +221,20 @@ describe('抽獎資格登錄', () => {
     expect(screen.getByRole('heading').textContent).toBe('  抽獎資格登錄')
     expect(phone()).toBeInTheDocument()
   })
+})
+
+it('建立中提示遵循全域 3 秒時限；較慢的請求完成後仍顯示成功提示', async () => {
+  setup({ CHECK_IS_CUSTOMER_EXIST: { checkIsCustomerExistForOuterStore: { isExist: false, customerName: null } } })
+  await screen.findByText('信義店 抽獎資格登錄')
+  let finish
+  mockFetch(() => new Promise(resolve => { finish = resolve }))
+  fireEvent.change(phone(), { target: { value: '0912345678' } })
+  fireEvent.change(name(), { target: { value: '林先生' } })
+  fireEvent.click(submit())
+  expect(openSnackbar).toHaveBeenCalledWith({ message: '資料建立中請稍候', variant: 'warning' })
+  expect(await screen.findByText('資料建立中請稍候')).toBeInTheDocument()
+  await wait(() => expect(screen.queryByText('資料建立中請稍候')).toBeNull(), { timeout: 8000 })
+  finish({ ok: true, status: 200 })
+  expect(await screen.findByText('發券成功')).toBeInTheDocument()
+  expect(openSnackbar).toHaveBeenLastCalledWith({ message: '發券成功', variant: 'success' })
 })

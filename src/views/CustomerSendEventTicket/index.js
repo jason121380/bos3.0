@@ -1,6 +1,4 @@
-// Snackbar 保留相容層（開關、5 秒自動關閉、點外面關閉的行為由它處理）；提示外觀改 ui/toast 的 ToastCard
-import { Snackbar } from 'ui/feedback-compat'
-import { ToastCard } from 'ui/toast'
+import { openSnackbar } from 'elements/snackbars'
 import { useState, useEffect, useRef } from 'react'
 import Page from 'components/Page'
 import { useParams } from 'react-router'
@@ -20,11 +18,6 @@ const CustomerSendEventTicket = () => {
   const { id } = useParams()
   const [checkExist, checkExistData] = useFetchCheckIsCustomerExistForOuterStore()
   const getMerchantName = useFetchGetMerchantName({ input: id })
-  const [openSnack, setOpenSnack] = useState({
-    open: false,
-    severity: '',
-    message: ''
-  })
   const [data, setData] = useState({
     name: '',
     cellphone: '',
@@ -39,17 +32,6 @@ const CustomerSendEventTicket = () => {
     setData(
       produce(draft => {
         draft[key] = value
-      })
-    )
-  }
-
-  const closeSnackBar = (event, reason) => {
-    // 按「提交」的那次點擊會先顯示新提示、再被提示的「點外面關閉」接到：忽略，新提示才看得到（Jason 2026/10/22 fix all）
-    if (reason === 'clickaway' && submitRef.current.contains(event.target)) return
-    if (openSnack.message === '資料建立中請稍候') return
-    setOpenSnack(
-      produce(draft => {
-        draft.open = false
       })
     )
   }
@@ -69,13 +51,8 @@ const CustomerSendEventTicket = () => {
     setIsClick(true)
     const { name, cellphone, count } = cloneDeep(data)
     try {
-      setOpenSnack(
-        produce(draft => {
-          draft.open = true
-          draft.severity = 'warning'
-          draft.message = '資料建立中請稍候'
-        })
-      )
+      // 沿用全域 warning 的 3 秒時限；完成／失敗後的提示取代此訊息，避免等待提示永久留存。
+      openSnackbar({ message: '資料建立中請稍候', variant: 'warning' })
       if (!cellphone.match(/^[0-9]{5,20}$/)) throw new Error('電話格式有誤: 請輸入5-20碼的數字。')
       if (!count) throw new Error('張數為必填欄位')
       if (count > 500) throw new Error('單次發券張數不可超過500張')
@@ -101,23 +78,11 @@ const CustomerSendEventTicket = () => {
         throw new Error(`發券失敗：${httpStatusMessage(res.status)}`)
       } else {
         restPage()
-        setOpenSnack(
-          produce(draft => {
-            draft.open = true
-            draft.severity = 'success'
-            draft.message = '發券成功'
-          })
-        )
+        openSnackbar({ message: '發券成功', variant: 'success' })
       }
     } catch (error) {
       setIsClick(false)
-      setOpenSnack(
-        produce(draft => {
-          draft.open = true
-          draft.severity = 'error'
-          draft.message = error.message
-        })
-      )
+      openSnackbar({ message: error.message, variant: 'error' })
     } finally {
       setIsClick(false)
     }
@@ -206,14 +171,6 @@ const CustomerSendEventTicket = () => {
         disabled={checkExistData.loading || !data.name.trim()}
         onClick={handleSubmit}
       >{isClick ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : '提交'}</Button>
-      <Snackbar
-        onClose={closeSnackBar}
-        open={openSnack.open}
-        autoHideDuration={5000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <ToastCard className="w-full sm:w-[400px]" variant={openSnack.severity} title={openSnack.message} />
-      </Snackbar>
     </Page>
   )
 }
