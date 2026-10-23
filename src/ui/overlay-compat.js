@@ -1,5 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { CompatLayer } from './compat-layer'
+import { useLayerRef } from './layer-stack'
 import { useFloating, autoUpdate, flip, shift } from '@floating-ui/react-dom'
 import { cn } from './utils'
 import { Paper } from './display-compat'
@@ -23,9 +25,10 @@ const assignRef = (ref, node) => {
 const resolveAnchor = anchorEl => (typeof anchorEl === 'function' ? anchorEl() : anchorEl)
 
 const Popper = React.forwardRef(function Popper(
-  { open, anchorEl, placement = 'bottom', transition = false, keepMounted = false, disablePortal = false, container, children, className, style, modifiers, popperOptions, popperRef, ...rest },
+  { open, anchorEl, placement = 'bottom', transition = false, keepMounted = false, disablePortal = false, container, children, className, style, modifiers, popperOptions, popperRef, onEscapeKeyDown, ...rest },
   ref
 ) {
+  const [pointerEvents, setPointerEvents] = React.useState('auto')
   const [exited, setExited] = React.useState(!open)
   React.useEffect(() => {
     if (open) setExited(false)
@@ -41,26 +44,34 @@ const Popper = React.forwardRef(function Popper(
     refs.setReference(resolveAnchor(anchorEl) || null)
   }, [anchorEl, refs])
 
+  const { ref: layerRef, zIndex } = useLayerRef(ref, open)
+  const setFloating = refs.setFloating
+  const setRoot = React.useCallback(el => {
+    setFloating(el)
+    layerRef(el)
+  }, [setFloating, layerRef])
+
   if (!keepMounted && !open && (!transition || exited)) return null
   const childProps = { placement: finalPlacement }
   if (transition) childProps.TransitionProps = { in: open, onEnter: () => setExited(false), onExited: () => setExited(true) }
   const node = (
     <div
-      ref={el => {
-        refs.setFloating(el)
-        assignRef(ref, el)
-      }}
+      ref={setRoot}
       role="tooltip"
       className={cn('base-Popper-root', className)}
-      style={{ ...floatingStyles, ...(!open && keepMounted && !transition ? { display: 'none' } : null), ...style }}
+      style={{ ...floatingStyles, ...(!open && keepMounted && !transition ? { display: 'none' } : null), ...style, zIndex, pointerEvents: open ? pointerEvents : undefined }}
       {...rest}
     >
       {typeof children === 'function' ? children(childProps) : children}
     </div>
   )
-  if (disablePortal) return node
+  const layeredNode = <>
+    <CompatLayer open={open} contentRef={refs.floating} onPointerEventsChange={setPointerEvents} onEscapeKeyDown={onEscapeKeyDown} restoreFocus />
+    {node}
+  </>
+  if (disablePortal) return layeredNode
   const mount = typeof container === 'function' ? container() : container
-  return ReactDOM.createPortal(node, mount || document.body)
+  return ReactDOM.createPortal(layeredNode, mount || document.body)
 })
 
 const EASING = 'cubic-bezier(0.4, 0, 0.2, 1)'

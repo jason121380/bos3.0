@@ -1,5 +1,8 @@
 # 待辦清單（TODO）
 
+- **2026/10/23 共用 Dialog 圖層 Part A**：共享 Radix 圖層與首批七檔遷移完成修改；保留 Part B 17 個頁面／共用 importer。限定 Jest 89 suites／1,099 tests、網路封鎖／版號 4 tests 與 lint 通過；外部 Chrome 原九種＋真實 PasswordDialog／三層日期共 11/11 連續兩輪通過；keepMounted 兩次開關、焦點還原、全部關閉後指標／捲動鎖解除均已驗證（MEMORY #195、#196）。
+
+
 > 更新：2026/10/23（正式站 v3.10230759，PR #270）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；正式站唯讀，禁止建立／修改／送出／列印真實資料，刪檔先經 Jason 同意。GitHub Actions Node.js CI 已手動停用，合併前本機跑 `npm run lint`／`npm run test:nowatch`／`npm run build`；作者回報 4,268 項測試通過。下方帶日期的條目為歷史紀錄，舊版號與部署方式僅代表當時狀態。
 > **歷史摘要（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。

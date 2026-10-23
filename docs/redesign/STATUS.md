@@ -1,5 +1,8 @@
 # BOS 3.0 改版進度
 
+- **2026/10/23 共用 Dialog 圖層 Part A**：共享 Radix 圖層與首批七檔遷移完成修改；保留 Part B 17 個頁面／共用 importer。限定 Jest 89 suites／1,099 tests、網路封鎖／版號 4 tests 與 lint 通過；外部 Chrome 原九種＋真實 PasswordDialog／三層日期共 11/11 連續兩輪通過；keepMounted 兩次開關、焦點還原、全部關閉後指標／捲動鎖解除均已驗證（MEMORY #195、#196）。
+
+
 > 更新：2026/10/23（正式站版號 v3.10230759，PR #270；改版歷史仍保留原紀錄）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 現況摘要（2026/10/23）

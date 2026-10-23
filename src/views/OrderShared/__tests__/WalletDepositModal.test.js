@@ -232,3 +232,13 @@ describe('金額欄的操作', () => {
     expect(sent(page.calls)).toEqual([])
   })
 })
+
+test('異動入金保留受控開啟：Esc 不關閉，只能由原返回按鈕關閉', async () => {
+  const { settle, onClose } = setup()
+  await settle()
+  fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' })
+  expect(onClose).not.toHaveBeenCalled()
+  expect(screen.queryByRole('button', { name: '關閉' })).toBeNull()
+  fireEvent.click(screen.getByRole('button', { name: '返回' }))
+  expect(onClose).toHaveBeenCalledTimes(1)
+})

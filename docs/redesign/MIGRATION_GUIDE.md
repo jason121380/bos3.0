@@ -25,7 +25,7 @@
 | `ui/table` | `Table`, `TableHeader`, `TableBody`, `TableFooter`, `TableRow`, `TableHead`, `TableCell`, `TablePagination` | `TableHead/TableCell numeric` 右對齊＋等寬數字；`TablePagination` 與 MUI 同名 props（`count page rowsPerPage onPageChange(e, p) rowsPerPageOptions onRowsPerPageChange(e)`） |
 | `ui/card` | `Card`, `CardHeader`（`action` prop 放右側按鈕）, `CardTitle`, `CardDescription`, `CardContent`, `CardFooter` | 取代 MUI Card / Paper |
 | `ui/page-header` | `PageHeader`（`title description actions`）, `Toolbar`, `ToolbarSpacer` | 頁首。既有 `AdminPageHeader` 已是新外觀，可保留不換 |
-| `ui/dialog` | `Dialog`(`open onOpenChange`), `DialogContent`(`size` sm/md/lg), `DialogHeader`, `DialogTitle`, `DialogDescription`, `DialogBody`, `DialogFooter`, `DialogClose` | `onClose={fn}` → `onOpenChange={o => !o && fn()}`。**歷史規則（MUI 時期）**：Dialog 內若有 MUI Autocomplete / Select / DatePicker / Menu，當時保留 MUI Dialog（Radix 會擋住 MUI 彈出層的點擊） |
+| `ui/dialog` | `Dialog`(`open onOpenChange`), `DialogContent`(`size` sm/md/lg), `DialogHeader`, `DialogTitle`, `DialogDescription`, `DialogBody`, `DialogFooter`, `DialogClose` | `onClose={fn}` → `onOpenChange={o => !o && fn()}`。**共用圖層（MEMORY #195）**：可包含正式／相容日期、Autocomplete、Select、Popover，亦可與 compat Dialog 雙向堆疊；焦點／指標使用 Radix 共用圖層，`ui/layer-stack` 管理視覺順序並同步交接 Esc。原無 `onClose` 者維持不傳 `onOpenChange`＋`hideClose`；有 `onClose` 者映射，沒有舊關閉鈕則加 `hideClose`。保持 `onOpenAutoFocus`／外部事件的 preventDefault。不要自行改成 `modal={false}` |
 | `ui/tabs` | `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent` | 值必須是字串；舊值為數字或 handler 用到 event 時，保留既有 Tabs 相容元件 |
 | `ui/badge` | `Badge`（`variant`: neutral / success / warning / danger / accent） | 取代不可點的 Chip、狀態文字 |
 | `ui/checkbox` | `Checkbox`（原生，支援 `indeterminate`） | 表格勾選；`onChange` 簽名與原生相同 |
@@ -126,3 +126,48 @@ Claude-Session: https://claude.ai/code/session_01BUenXFDZo7NpQzri398TMd
 ## 8. 第二輪的檢查與 commit
 
 與第 4、5 節相同。commit 標題改為：`feat(ui): 第二輪——<頁面中文名>（<views 目錄名>）`。
+
+### Dialog 共用圖層 Part A（2026/10/23）
+
+`ui/dialog`、正式 Popover／Select／DropdownMenu 與相容 Modal／Popper 共用 Radix 行為堆疊。相容層以獨立行為節點登記，內容保持原 DOM，避免 keepMounted／Fade 在開關時重掛載。`layer-stack` 管理視覺順序與較晚圖層的外部事件防護；不可用全域 Branch 包住整個舊視窗，否則上層浮層點回下層不會關閉。相容層的實際 pointer-events 跟隨 Radix 行為節點，不能固定 auto 繞過上層 modal。
+
+本批遷移七檔：`elements/snackbars`、`components/PasswordDialog`、`OrderShared/ReCheckoutPasswordDialog`、`OrderShared/WalletDepositModal`、`DesignerPerforamnceAnalyzeReport/CompareFilter`、`Products/VendorDialog`、`Products/PublishedDialog`。不新增關閉路徑，不改 handlers／後端值；舊有 500／900px 特例保留並註解。PasswordDialog 原無 onClose，因此 Esc／背景仍不關閉。
+
+離線真瀏覽器 harness（不安裝瀏覽器、不連後端）：
+
+```bash
+ESBUILD=$PWD/node_modules/esbuild node scripts/redesign/compat-harness/build.js scripts/redesign/compat-harness/e2e/dialog-layers-entry.js /tmp/dialog-layers-harness
+printf '@tailwind base;\n@tailwind components;\n@tailwind utilities;\n' > /tmp/dialog-layers-tailwind.css
+node_modules/.bin/tailwindcss -i /tmp/dialog-layers-tailwind.css -o /tmp/dialog-layers-harness/tailwind.css --minify
+NODE_PATH=/home/box/.npm/_npx/e41f203b7505f1fb/node_modules node scripts/redesign/compat-harness/e2e/dialog-layers-run.js /tmp/dialog-layers-harness
+```
+
+腳本使用 `/usr/bin/google-chrome`，DNS 規則為 `MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1`；route 僅提供本機靜態內容。此 sandbox 無法啟動 Chrome；已透過 Jason 提供的外部 runner 反覆實跑，十一個情境連續兩輪全數通過（原九種＋真實 PasswordDialog 巢狀重開＋compat → ui/dialog → 桌機／手機日期）。驗證包含原觸發鈕焦點還原、keepMounted 輸入保留，以及全部關閉後 pointer-events／捲動鎖／overflow 解除。Jest 不能代替這些瀏覽器驗收。
+
+**瀏覽器回歸的必要修正**：Radix 的 passive effect 在 combobox 重開時可能尚未交接 Esc；共享登記改以 ref 同步判斷頂層，Dialog 只處理自己擁有的 Esc。Select 關閉後會把內容保存在 DocumentFragment、ref 未必清除，須以公開 open 狀態解除登記；closed／離線節點不擁有鍵盤。Dialog 必須在 Root 開啟轉換、Portal 掛載前記錄觸發焦點，不能等第二次 FocusScope autofocus 才讀 activeElement（當時可能已是 body）。keepMounted Popper 在 Scope 清理後才失焦，還原須等下層 Scope 恢復後執行，且不搶走已移到其他欄位的焦點。
+
+**Harness 修正理由**：Select／Popover／Dropdown 與外層視窗必須等待退場節點真正卸載再送下一次 Esc，不能用固定 150ms 推測動畫完成。Toaster 位於被 aria-hidden 隱藏的應用程式根節點，getByRole 查不到既有 alert；改用 CSS role 定位，仍檢查可見性與 elementFromPoint 的實際命中。新增手機日期欄位使用明確 id 定位，避免把 facade 顯示標籤誤當輸入框的 aria-label。
+
+Part B 頁面／共用 importers 剩 17 檔（本批不改）：
+
+| 檔案（`src/` 下，省略 `.js`） | 類型與風險 |
+|---|---|
+| `components/FastCheckOrdersModal` | Dialog；DateSelector／人員搜尋、xl 寬與 sticky 表格 |
+| `views/AttendanceRecords/index` | Dialog；日期時間／搜尋、原 onClose、hidden 篩選狀態 |
+| `views/CustomerFilterExport/index` | Dialog；多日期／Select、響應式 fullScreen |
+| `views/EmployeeManagementList/ProfileImportModal` | Dialog；Select，無 onClose |
+| `views/Parameter/OuterLinkModal` | Dialog；搜尋、MuiDialog 後代樣式掛點，無 onClose |
+| `views/CustomerManagementDetails/General/CustomerInfo` | Dialog；ChoseEvent 的日期／搜尋／Select 與另一個編輯窗 |
+| `views/ManagementReservationRecord/OrderTable` | Dialog；ChoseEvent 與 PasswordDialog，須父子聯測 |
+| `views/ManagementDesignersReservationRecord/OrderTable` | Dialog；NewChoseEvent／PasswordDialog／公休窗共存 |
+| `views/CustomerManagementDetails/General/CustomerEditModal` | Modal；Select、表單 refs／驗證、原 onClose |
+| `views/OrderCreate/AddCustomerModal` | Modal；搜尋／Select、refs／鍵盤跳欄，無 onClose |
+| `views/OrderEdit/AddCustomerModal` | Modal；日期／Select、既有顧客資料，無 onClose |
+| `views/DraftOrderEdit/AddCustomerModal` | Modal；日期／Select，測試依賴 MuiModal 結構，無 onClose |
+| `views/QueueOrderEdit/AddCustomerModal` | Modal；Select，測試依賴 MuiModal 結構，無 onClose |
+| `views/EmployeeSchedule/AddDesignersModal` | Modal；人員搜尋，無 onClose |
+| `views/Services/AboutDeductionEditModal` | Modal；Select／抽成數值，無 onClose |
+| `views/Services/AssistantSettingEditModal` | Modal；Select／助理抽成數值，無 onClose |
+| `views/OrderCreate/OrderDetailModal` | Modal；**列印範本禁止動**、結帳及確認疊層，無 onClose |
+
+另有 `ui/date-picker`、`ui/misc-compat`、`ui/overlay-compat` 三個內部使用者，與頁面遷移分開計數。

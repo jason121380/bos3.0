@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogActions, DialogContent } from 'ui/modal-compat'
+import { Dialog, DialogTitle, DialogContent, DialogHeader, DialogBody, DialogFooter } from 'ui/dialog'
 import { TextField } from 'ui/text-field'
 import { Button } from 'ui/button'
 import PropTypes from 'prop-types'
@@ -8,26 +8,28 @@ const PasswordDialog = ({
 }) => {
   return (
     <Dialog open={open}>
-      <DialogTitle>{title}</DialogTitle>
-      <DialogContent style={{ overflow: 'visible' }}>
-        <TextField
-          // value={editPwd}
-          label={inputLabel}
-          onChange={e => inputOnChange(e.target.value)}
-          inputProps={{
-            type: 'password',
-          }}
-        />
+      <DialogContent size="sm" hideClose aria-describedby={undefined}>
+        <DialogHeader><DialogTitle>{title}</DialogTitle></DialogHeader>
+        <DialogBody style={{ overflow: 'visible' }}>
+          <TextField
+            // value={editPwd}
+            label={inputLabel}
+            onChange={e => inputOnChange(e.target.value)}
+            inputProps={{
+              type: 'password',
+            }}
+          />
+        </DialogBody>
+        <DialogFooter>
+          {/* cancelDisabled：「取消」另用的停用狀態（單日預約紀錄只在送出中停用）；沒給時與「確認」相同（isLoading），其他呼叫端不受影響（Jason 2026/10/22 fix all） */}
+          <Button disabled={cancelDisabled ?? isLoading} variant="secondary" onClick={handleOnCancel}>
+            取消
+          </Button>
+          <Button disabled={isLoading} variant="primary" onClick={handleOnConfirm}>
+            確認
+          </Button>
+        </DialogFooter>
       </DialogContent>
-      <DialogActions>
-        {/* cancelDisabled：「取消」另用的停用狀態（單日預約紀錄只在送出中停用）；沒給時與「確認」相同（isLoading），其他呼叫端不受影響（Jason 2026/10/22 fix all） */}
-        <Button disabled={cancelDisabled ?? isLoading} variant="secondary" onClick={handleOnCancel}>
-          取消
-        </Button>
-        <Button disabled={isLoading} variant="primary" onClick={handleOnConfirm}>
-          確認
-        </Button>
-      </DialogActions>
     </Dialog>
   )
 }

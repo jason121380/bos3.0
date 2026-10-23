@@ -1,8 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { CompatLayer } from './compat-layer'
 import { useCombobox } from 'downshift'
 import { ChevronDown, X } from 'lucide-react'
 import { cn } from './utils'
+import { useLayerRef } from './layer-stack'
 
 // 自家搜尋下拉（取代 MUI Autocomplete，Jason 2026/10/20 拍版「Autocomplete 自己做」）。
 // 行為（鍵盤、無障礙）交給 headless 的 downshift，外觀全部依 STYLE.md。
@@ -396,9 +398,18 @@ const Autocomplete = React.forwardRef(function Autocomplete(
 
   const { style: popupStyle, host } = usePopupPosition(anchorRef, showPopup)
 
+  const menuProps = getMenuProps({}, { suppressRefError: true })
+  const downshiftMenuRef = React.useRef(null)
+  downshiftMenuRef.current = menuProps.ref
+  const { ref: layerRef, zIndex } = useLayerRef(undefined, showPopup)
+  const setMenuRef = React.useCallback(node => {
+    assignRef(downshiftMenuRef.current, node)
+    layerRef(node)
+  }, [layerRef])
   const menu = (
     <ul
-      {...getMenuProps({}, { suppressRefError: true })}
+      {...menuProps}
+      ref={setMenuRef}
       // 不讓點選單時輸入框失焦（避免 MUI 焦點鎖搶回焦點、選單先關閉）
       onMouseDown={event => event.preventDefault()}
       onPointerDown={() => {
@@ -408,7 +419,7 @@ const Autocomplete = React.forwardRef(function Autocomplete(
         'ui-root z-[1500] m-0 max-h-80 list-none overflow-y-auto rounded-lg border border-solid border-border bg-background p-1 shadow-float',
         !showPopup && 'hidden'
       )}
-      style={{ ...(popupStyle || {}), pointerEvents: 'auto' }}
+      style={{ ...(popupStyle || {}), zIndex, pointerEvents: 'auto' }}
     >
       {showPopup &&
         (filtered.length === 0 ? (
@@ -483,6 +494,8 @@ const Autocomplete = React.forwardRef(function Autocomplete(
         {endNode}
       </div>
       {helperText && <p className={cn('m-0 text-caption', error ? 'text-danger' : 'text-text-tertiary')}>{helperText}</p>}
+      {/* 行為登記獨立於選單，開關／重開時不重新掛載 downshift 的選單與 ref。 */}
+      <CompatLayer open={showPopup} onEscapeKeyDown={event => event.preventDefault()} />
       {host ? ReactDOM.createPortal(menu, host) : null}
     </div>
   )

@@ -80,7 +80,7 @@ GitHub Actions 的 Node.js CI 已手動停用（disabled_manually）。合併前
 ## 踩雷清單
 
 - **`ui` 元件放在 MUI Dialog／Popper（Portal）內要有 `.ui-root`**，否則沒有 box-sizing／邊框重置（8 個 `ui` 元件已自帶 `ui-root`，`portal-root-scan` 為 0；新增 `ui` 元件要記得自帶）。
-- Radix Dialog 會把 body 設 `pointer-events:none`，與相容層 Dialog（`ui/modal-compat`）的焦點鎖互搶；Dialog 內有 Autocomplete／Select／日期選擇器時用 `ui/modal-compat` 的 Dialog。
+- `ui/dialog`、相容層 Modal／Popper 與正式浮層共用 Radix 圖層；窗內可用 Autocomplete／Select／日期選擇器。新浮層須加入同一套 DismissableLayer／FocusScope 與 `layer-stack`，不可另掛 document Esc 或另造焦點鎖；保留無 onClose 的受控開啟＋hideClose（MEMORY #195）。跨層焦點仍須跑離線瀏覽器 harness。
 - emotion 已於 2026/10/20 全面移除（MEMORY #163）：樣式一律用 Tailwind className；共用元件的 `className` 是字串直通（`cn` 合併）。`ui/icons` 預設尺寸在 `src/ui/icons.css`（同權重、排在 Tailwind 之後），頁面要覆蓋圖示尺寸需加 `!`。
 - flex 子層沒有 `min-width:0`／`max-width:100%` 會被內容撐寬；欄位列要 `flex-wrap`。
 - `overflow-x:auto` 會連帶裁掉上下溢出內容（浮動標籤、外側焦點框），因此標籤統一放欄位上方；捲動容器內的元件焦點框用 `focus-visible:ring-inset`（`ui/tabs` 已內建，MEMORY #171）。
