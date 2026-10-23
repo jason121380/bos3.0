@@ -1,7 +1,5 @@
-// 報表外框（DesignerPerforamnceAnalyzeReportPrint）與 printLongCard 卡片的 className 含 print，列印規則以 .MuiCardHeader-root／.MuiPaper-root 排版：
-// 依列印範本規則保留相容層 Grid／Card，只把「無資料」的 Typography 換成原生標籤
-import { Grid } from 'ui/grid-compat'
-import { Card, CardHeader, CardContent } from 'ui/card-compat'
+// 正式卡片與 flex 外框：以明確列印樣式重現原框線、內距及避免卡片跨頁。
+import { Card, CardHeader, CardContent } from 'ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
@@ -11,17 +9,15 @@ import roundDecimal from './../../helper/roundDecimal.js'
 
 function Results({ report, date, isMemberShipCardActive }) {
   return (
-    <Grid container style={{ marginTop: 0 }} spacing={3} className="DesignerPerforamnceAnalyzeReportPrint">
+    <div style={{ marginTop: 0 }} className="DesignerPerforamnceAnalyzeReportPrint -ml-6 flex w-[calc(100%+24px)] flex-wrap print:!m-0 print:!block print:!w-full">
       {report.length ? report.map((data, index) => (
-        <Grid item xs={12} className="DesignerPerforamnceAnalyzeReportTableContainer" key={index}>
-          <Card className="printLongCard">
-            <CardHeader
-              title={`${data.merchantName}      ${format(date.startDate, 'yyyy/MM/dd')}~ ${format(
+        <div className="DesignerPerforamnceAnalyzeReportTableContainer m-0 w-full pl-6 pt-6 print:!p-0" key={index}>
+          <Card className="printLongCard overflow-hidden text-text print:rounded-none print:shadow-none print:break-inside-avoid print:mb-[30px] print:[&>div:first-child]:!border print:[&>div:first-child]:!border-b-0 print:[&>div:first-child]:!border-solid print:[&>div:first-child]:!border-black">
+            <CardHeader className="[&>div:first-child]:flex-auto !min-h-0 !items-center !gap-0 !px-4 !pb-2 !pt-4"><span className="block text-heading text-text">{`${data.merchantName}      ${format(date.startDate, 'yyyy/MM/dd')}~ ${format(
                 date.endDate,
                 'yyyy/MM/dd'
-              )}  ${data.designerName}`}
-            />
-            <CardContent style={{ padding: 0 }}>
+              )}  ${data.designerName}`}</span></CardHeader>
+            <CardContent className="last:pb-4" style={{ padding: 0 }}>
               <Table dense className="min-w-[650px]" aria-label="a dense table">
                 <TableHeader>
                   <TableRow>
@@ -145,16 +141,16 @@ function Results({ report, date, isMemberShipCardActive }) {
               </Table>
             </CardContent>
           </Card>
-        </Grid>
+        </div>
       )) : (
-        <Grid item>
+        <div className="m-0 pl-6 pt-6">
           <div className="mb-[0.35em] text-center text-title font-bold text-text">
             無資料
           </div>
-        </Grid>
+        </div>
 
       )}
-    </Grid>
+    </div>
   )
 }
 

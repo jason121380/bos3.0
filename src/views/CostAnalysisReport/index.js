@@ -1,5 +1,3 @@
-// printGrid 外框（列印時隱藏）依規則保留 MUI Grid
-import { Grid } from 'ui/grid-compat'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
@@ -110,7 +108,7 @@ export default function MerchantIncomeStatementMonthly() {
         actions={
           <>
           <HeaderActionsSlot />
-          <Grid item className="printGrid">
+          <div className="printGrid print:hidden">
             <Button
               className="noprint"
               variant="secondary"
@@ -119,7 +117,7 @@ export default function MerchantIncomeStatementMonthly() {
               <Printer strokeWidth={1.75} />
               列印
             </Button>
-          </Grid>
+          </div>
           </>
         }
       />

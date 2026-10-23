@@ -1,5 +1,4 @@
-// 內層 printLongCard 卡片（className 含 print）依列印範本規則保留相容層 Card；其餘排版改為 div＋Tailwind、外層卡片改 ui/card
-import { Card, CardHeader, CardContent } from 'ui/card-compat'
+import { Card, CardHeader, CardContent } from 'ui/card'
 import { Card as UiCard } from 'ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table'
 import { Fragment } from 'react'
@@ -23,14 +22,12 @@ const Compare = ({ compareData, loading, isMemberShipCardActive, compareInputDat
                     {rowData.length ? rowData.map((data, index) => (
                       <div key={index}>
                         {index === 0 && <h3 style={{ textAlign: 'center', marginBottom: 6 }}>{i + 1}</h3>}
-                        <Card className="printLongCard">
-                          <CardHeader
-                            title={`${data.merchantName}      ${format(compareInputData[i].dateRange.startDate, 'yyyy/MM/dd')}~ ${format(
+                        <Card className="printLongCard overflow-hidden text-text">
+                          <CardHeader className="[&>div:first-child]:flex-auto !min-h-0 !items-center !gap-0 !px-4 !pb-2 !pt-4"><span className="block text-heading text-text">{`${data.merchantName}      ${format(compareInputData[i].dateRange.startDate, 'yyyy/MM/dd')}~ ${format(
                               compareInputData[i].dateRange.endDate,
                               'yyyy/MM/dd'
-                            )}  ${data.designerName}`}
-                          />
-                          <CardContent style={{ padding: 0 }}>
+                            )}  ${data.designerName}`}</span></CardHeader>
+                          <CardContent className="last:pb-4" style={{ padding: 0 }}>
                             <Table dense className="min-w-[650px]" aria-label="a dense table">
                               <TableHeader>
                                 <TableRow>
