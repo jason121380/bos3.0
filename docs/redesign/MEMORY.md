@@ -21,7 +21,7 @@
 | 收合卡片以 `summaryMeta` 顯示「已填 N 筆 · NT$ 小計」 | 第 4 組 |
 | 金額一律 `NT$` ＋千分位；長帳單用**底部固定合計列**（方案 B）而非 sticky 側欄卡 | sticky 卡只能在並排區內移動，幾乎沒效果；整頁兩欄會壓縮項目列 |
 | 服務下拉：選項顯示 `名稱(代號) - 價格`、以 `id` 當 key、中文「查無符合／載入中」 | 同名同價服務分不出來；MUI 以標籤當 key 會重複 |
-| 「always merge」：驗證通過就開 PR 並 merge 進 main，不必再問 | 使用者 2026/10/18 指示 |
+| ~~「always merge」：驗證通過就開 PR 並 merge 進 main，不必再問~~ **已於 2026-10-23 廢止（superseded）** | 使用者 2026/10/18 指示；現行流程：Codex／代理只開 PR，由 CEO 逐行審查且本機 lint／測試／build 全部通過後合併，或由 Jason 決定；見 CLAUDE.md「Git 與合併」。 |
 | 電話不限 10 碼：LoginForm 不做 10～13 碼長度驗證，只有 required | Jason 2026/10/19 拍版；改版前（c41b604）本來就沒有。測試改為驗證非 10 碼電話不會被長度規則擋下 |
 | 店販售價可以低於成本：不做 `sellPrice >= cost` 驗證 | Jason 2026/10/19 拍版；ProductCreate 測試改為 cost=9、sellPrice=5 不報錯，sellPrice<0 仍被擋 |
 | `handleToggleNavBar` 判斷寬度 1280→1024 | 側欄改用 Tailwind `lg`(1024)，判斷值必須與 CSS 斷點一致（唯一的邏輯常數修改） |
