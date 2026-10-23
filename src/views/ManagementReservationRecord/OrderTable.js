@@ -1,5 +1,3 @@
-// 預約動作彈窗內有日期選擇器／下拉／Autocomplete 與相容層 PasswordDialog，保留相容層 Dialog；公休彈窗只有切換鈕與按鈕，改 ui/dialog
-import { Dialog } from 'ui/modal-compat'
 import { Dialog as UiDialog, DialogContent as UiDialogContent } from 'ui/dialog'
 import React, { useState, useEffect } from 'react'
 import { AssignmentTurnedInRounded as AssignmentTurnedInRoundedIcon, DisabledByDefaultRounded as DisabledByDefaultRoundedIcon, EventBusy as EventBusyIcon } from 'ui/icons'
@@ -402,7 +400,14 @@ const OrderTable = ({
       </div>
 
       {/* 彈窗 */}
-      <Dialog className='ManagementReservationRecordDialog' fullWidth maxWidth="xs" open={modalOpen} onClose={() => setModalOpen(false)}>
+      <UiDialog open={modalOpen} onOpenChange={o => { if (!o) setModalOpen(false) }}>
+        {/* 保留原 xs 444px 寬度與既有片段樣式掛點。 */}
+        <UiDialogContent hideClose
+          onOpenAutoFocus={event => {
+            // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
+            event.preventDefault()
+            if (!event.target.contains(document.activeElement)) event.target.focus()
+          }} aria-describedby={undefined} className="ManagementReservationRecordDialog !max-w-[444px] overflow-y-auto">
         <ChoseEvent
           editOrder={editOrder}
           setEditOrder={setEditOrder}
@@ -419,7 +424,7 @@ const OrderTable = ({
           checkinMode={checkinMode}
           cancelPasswordUsing={cancelPasswordUsing}
         />
-      </Dialog>
+      </UiDialogContent></UiDialog>
       <UiDialog open={holidayModel} onOpenChange={o => !o && setHolidayModel(false)}>
         <UiDialogContent size="md" aria-describedby={undefined} className='ManagementReservationRecordDialog'>
           <HolidayEdit

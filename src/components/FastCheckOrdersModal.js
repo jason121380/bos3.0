@@ -1,5 +1,4 @@
-// 窗內有日期選擇器（DateSelector）與設計師下拉，依踩雷清單保留相容層 Dialog（Radix Dialog 會擋住彈出層）
-import { Dialog, DialogTitle, DialogContent } from 'ui/modal-compat'
+import { Dialog, DialogTitle, DialogContent, DialogBody } from 'ui/dialog'
 import { Table, TableHeader, TableHead, TableBody, TableCell, TableRow } from 'ui/table'
 import { Button } from 'ui/button'
 import { useState, useEffect } from 'react'
@@ -183,7 +182,14 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
   }, [submitData, open])
 
   return (
-    <Dialog className='FastCheckOrdersModal' maxWidth='xl' fullWidth open={open} onClose={handleCloseModal}>
+    <Dialog open={open} onOpenChange={o => { if (!o) handleCloseModal() }}>
+      {/* 保留原 xl 1536px 寬度與寬表捲動。 */}
+      <DialogContent hideClose
+          onOpenAutoFocus={event => {
+            // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
+            event.preventDefault()
+            if (!event.target.contains(document.activeElement)) event.target.focus()
+          }} aria-describedby={undefined} className='FastCheckOrdersModal !max-w-[1536px] overflow-hidden'>
       <DialogTitle className="flex items-center justify-between !p-[8px_8px_8px_24px]">
         帳單速查
         <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label="關閉" title="關閉" onClick={handleCloseModal}>
@@ -191,7 +197,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
         </Button>
       </DialogTitle>
       <div className="h-px bg-border" />
-      <DialogContent style={{ padding: '0px 24px 24px' }}>
+      <DialogBody style={{ padding: '0px 24px 24px' }}>
         <div className="flex flex-wrap items-center gap-x-[20px] gap-y-[10px] py-[14px]">
           <DateSelector
             date={{ startDate: submitData.date, endDate: submitData.date }}
@@ -336,6 +342,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
             無資料
           </h3>
         }
+      </DialogBody>
       </DialogContent>
     </Dialog>
   )
