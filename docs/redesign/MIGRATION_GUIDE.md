@@ -2,7 +2,7 @@
 
 > 給執行改版的工程師（含 AI 代理）。規範以根目錄 `STYLE.md` 為準。
 > 參考範例 commit：`27de2d2`（帳單列表，完整替換）、`a718658`（打帳單，大型頁結構替換）、`66f5d92`（報表目錄）。
-> **現況（2026/10/23）**：`package.json` 已無 MUI 套件。項目 3 第一批完成後，相容元件剩 15 個非 ui、非測試使用檔案（本批 23 → 15）；逐檔替換與列印證據見下方「項目 3」。日期時間沿用 `lib/business-timezone.js`，不得自行加時區換算。下文未標為歷史的「MUI 元件」均指目前輸出同名 class 的相容元件，不可重新安裝或引入 `@mui/*`。
+> **現況（2026/10/23）**：`package.json` 已無 MUI 套件。最後一批完成後，相容元件頁面使用檔案 2 → 0，日期選擇器內部亦不再引用 modal／overlay-compat；歷史批次與列印證據保留於下文。日期時間沿用 `lib/business-timezone.js`，不得自行加時區換算。下文未標為歷史的「MUI 元件」均指目前輸出同名 class 的相容元件，不可重新安裝或引入 `@mui/*`。
 
 > 正式站僅供唯讀查看；寫入、送出及列印測試只用 mock／隔離測試資料。刪檔先經 Jason 同意。
 
@@ -317,3 +317,27 @@ compat importer 以 `rg "from 'ui/[a-z-]*-compat'" src` 排除 src/ui 與測試�
 外部 Chrome 收據 before／after 各 **12/12，exit 0**；Pillow 比對 **24 張 PNG 尺寸與每個像素完全相同**，diff／位元組比較 **12 份 HTML 完全相同**。指定六個目錄＋networkGuard＋version 最終 Jest **83 suites／1,028 tests 全過**（含新增六項 timing 回歸）；`npm run lint` 通過。外部 Chrome `dialog-layers` **13/13，exit 0**（desktop、mobile、combobox、select、popover、compat-radix、radix-compat、keep-mounted、dropdown、nested-password、nested-date、customer-form、reservation）。verify-logic 原指令因 Node 內啟動 git 受限而 SKIP；改由 shell 匯出 origin/main 快照後使用同一 AST 分析器，四檔均沒有遺失舊敘述或邏輯運算式。`git diff --check` 通過。指定範圍以外不跑全套，不執行應用 build。既有風險：57mm 設定實際使用 56mm，原生瀏覽器字型、長明細分頁、實體印表機不可列印邊界仍須隔離假資料紙本驗收；本批沒有重排範本。React 17 成功 setState 後同步讀 HTML 的既有契約保留，升 React 18 時須另外處理。compat importer 本分支 **15 → 11**（排除 src/ui 與測試）；第二批亦落地後剩 **2**：OrderEdit/Header、CustomerFilterExport。
 
 **第三批補充驗證（審查時加跑）**：`--changedSince=origin/main` 相關測試 40 suites／560 tests、`npm run lint`、`npm run build` 通過（依 Jason 2026/10/23 指示，全站 suite 於當日最終合併前統一跑一次）。消費明細視窗畫面另截 `order-detail-dialog-screen.png`（batch3 before／after）：版面、文字與按鈕相同；差異僅為（1）開窗焦點改落在面板，舊版焦點停在「返回」而顯示灰底，新版「返回」無灰底；（2）遮罩改為 ui/dialog 的半透明色，略淺；（3）內容整體位移 1～3px。皆為螢幕外觀，不影響收據列印。
+
+
+## 最後一批（2026/10/23）
+
+Jason 核准範圍：最後兩個頁面 importer 與日期選擇器內部浮層。頁面使用檔案 **2 → 0**，非測試產品程式在相容檔以外已無 `*-compat` import；不得將 `ui/compat-layer.js` 視為待刪相容模組，它仍為 combobox 提供共用 DismissableLayer／FocusScope。
+
+- `CustomerFilterExport/index.js`：用既有 default export `hooks/useMediaQuery`，只在呼叫處以相容層同一個 `/^@media( ?)/m` 移除前綴，查詢仍為 `(max-width:899.95px)`，不是 Tailwind md；無 matchMedia 時仍為 false。共用 hook 不改。
+- `OrderEdit/Header.js`：PopoverAnchor 以 virtualRef 錨定原 RowIconButton；該按鈕沒有 forwardRef，不可直接作為 asChild 錨點。原 label、aria-describedby／expanded、handleClick toggle、Card／Table 文字與浮層 id `simple-popper` 保留，下方置中並保留原 10px 間距。舊 Popper 的 CompatLayer 會阻止外點關閉，未提供 Esc handler 時也不會關閉；本批採用 Jason 允許的 UX 改善：非 modal Popover 外點／Esc 只清空 anchorEl，不動帳單狀態。點回錨點不先 dismiss，避免同一個 click 重新打開。視覺順序沿用共用 layer-stack（1300 起），不硬寫舊 zIndex=1；舊 Popper 實際也由 layer-stack 覆蓋為此順序。
+- `ui/date-picker.js` 桌機：正式 Popover、rootRef virtual anchor、bottom-start、sideOffset=4（原 mt-1 視覺間距），paperRef 留在 role=dialog／aria-label 面板。保留原 document mousedown effect；面板／欄位內不關閉，焦點移出及額外 pointerdown 不新增關閉路徑。Esc preventDefault 後 dismiss，不關下層 Dialog；onOpenChange 僅將 false 對映到 dismiss，由原 openProp 契約決定是否真的關閉。關閉後還原開啟焦點，但不搶已點到其他欄位的焦點。
+- 手機：正式 Dialog／DialogContent，hideClose、min-w-[320px]，保留 ui-dialog-centered 並以 Tailwind 覆寫手機底部面板的定位、圓角及滑動動畫。aria-label 使用原 title，aria-labelledby／describedby 明確為 undefined；日視圖保持自身 autofocus，關閉焦點還原至開啟欄位。只在 open 時掛載整個 Root，取消／確認／dismiss 同步卸載，不因 Radix exit Presence 留下舊日期內容；不使用 forceMount。選值立即 onChange、取消還原、確認 onAccept、背景／Esc 保留當前值、closeOnSelect、受控 open 皆保留。
+
+保留的相容模組（及對應 CSS／測試），**刪除待 Jason 核准**：`button-compat`、`card-compat`、`display-compat`、`feedback-compat`、`grid-compat`、`misc-compat`、`modal-compat`、`overlay-compat`、`standard-input-compat`、`table-compat`、`tree-compat`。它們只由相容檔本身、相容／圖層測試與歷史 `scripts/redesign/compat-harness/**` 引用；歷史工具未改。Harness 直接 import 的檔案為 table-entry、misc-entry、overlay-entry、display-entry、feedback-entry、tree-entry、dialog-entry，及 e2e/misc-entry、e2e/modal-layers-entry、e2e/dialog-layers-entry（皆 `.js`）。
+
+檢查：
+
+```bash
+rg -n "compat'" src scripts --glob '!**/__test*/**' --glob '!**/*.test.js' --glob '!src/ui/*-compat.*'
+```
+
+結果只剩歷史 compat-harness（其中部分是字串而非 import）；產品程式為 0。Jest 涵蓋全部 ui、日期選擇器及 rg 找出的 DatePicker／MobileDatePicker／DateTimePicker 使用測試，另加 Header 與 CustomerFilterExport 回歸。舊測試僅因 Radix 背景改用 pointerdown／click 與新 selector 調整操作，原關閉斷言保留；fake timers 先推進 0ms，讓 Radix 外點監聽安裝。另測取消還原、確認接受、Esc／背景保留值、受控 open、日視圖焦點、巢狀 Dialog Esc 及還原焦點。離線 Chrome dialog-layers e2e 13/13（手機案例焦點選擇器 `.MuiDialog-paper` → `[role="dialog"]`，僅改選擇器）；日期選擇器前後截圖 `/workspace/bos3-print-compare/final-datepicker/pairs/`，版面相同，僅遮罩較淺。
+
+**靜態檢查差異**：`verify-logic` 的 Node 子程序在本沙箱遇到 `spawnSync git EPERM`，原工具會誤報「無基準版本」而略過。以 shell `git show HEAD:<path>` 匯出原始快照到 `/tmp`，僅替換工具的基準讀取後重跑相同分析：date-picker 通過；其餘兩項預期 FAIL 已逐項審視：CustomerFilterExport 的 useMediaQuery 引數加入相同的 @media 正規化；Header 的 TransitionProps render function 隨 Popper／Fade 換為 PopoverContent 而移除。兩者皆屬本批明確核准的畫面相容遷移，不涉及帳單／日期值運算。
+
+**驗證**：全套 Jest 377 suites／4,372 tests 全過（`--maxWorkers=50%`，合併前最終一次）；補充焦點案例後，最終指定範圍（全部 ui＋rg 找出的 picker 使用測試＋Header）55 suites／670 tests 全過，版本／網路 guard 2 suites／4 tests 全過；最終 lint、build、git diff --check 通過。唯讀審查未發現需修正問題。build 仍有既有重複 object key 與 Browserslist 資料過舊提示，未擴大修改。

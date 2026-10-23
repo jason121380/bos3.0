@@ -336,3 +336,41 @@ describe('客資篩選匯出：匯出與刪除', () => {
     expect(callsOf(utils.calls, 'DELETE_CUSTOMERS')[0].variables).toEqual({ customerIds: ['c2'], password: '1234' })
   })
 })
+
+// 保護原 md 斷點：只正規化查詢，不改共用 hook 或其他呼叫端。
+describe('客資篩選匯出：全螢幕斷點', () => {
+  it.each([899, 899.95, 900])('寬度 %s：fullScreen 與原 899.95px 斷點一致', async width => {
+    const original = window.matchMedia
+    const queries = []
+    window.matchMedia = query => {
+      queries.push(query)
+      return { matches: query === '(max-width:899.95px)' && width <= 899.95, addEventListener() {}, removeEventListener() {} }
+    }
+    try {
+      const utils = setup()
+      await utils.settle()
+      openDialog()
+      const dialog = screen.getByRole('dialog', { name: '更多篩選' })
+      expect(dialog.classList.contains('!inset-0')).toBe(width <= 899.95)
+      expect(queries).toContain('(max-width:899.95px)')
+      expect(queries.some(query => query.startsWith('@media'))).toBe(false)
+    } finally {
+      cleanup()
+      window.matchMedia = original
+    }
+  })
+
+  it('jsdom 沒有 matchMedia 時 fullScreen 為 false', async () => {
+    const original = window.matchMedia
+    delete window.matchMedia
+    try {
+      const utils = setup()
+      await utils.settle()
+      openDialog()
+      expect(screen.getByRole('dialog', { name: '更多篩選' })).not.toHaveClass('!inset-0')
+    } finally {
+      cleanup()
+      window.matchMedia = original
+    }
+  })
+})
