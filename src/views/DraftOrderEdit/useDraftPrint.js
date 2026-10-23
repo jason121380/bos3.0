@@ -13,6 +13,7 @@ import { useFetchTicketRecordsInOrderDetail } from 'hooks/useFetchTicketRecords'
 import useFetchUsersOrderableList from 'hooks/useFetchGetUserOrderableList'
 import useFetchGetDesignerNameDisplayOnInvoice from 'hooks/useFetchGetDesignerNameDisplayOnInvoice'
 import useInvoiceDecorations from 'views/OrderShared/useInvoiceDecorations'
+import billPaymentSummary from 'helper/billPaymentSummary'
 
 // 掛單詳細「列印」用的資料（2026/10/21 自 Footer.js 原樣搬出，Footer 只留畫面與列印範本）：
 // 列印格式設定、帳單各項目對應的名稱（服務／店販／卡券／會員卡／使用預收卡）、顧客與設計師、助理編號、收據 Logo／QR code／訊息，
@@ -59,6 +60,9 @@ export default function useDraftPrint() {
   )
   const userOrderableList = useFetchUsersOrderableList()
   const getHelperForPrint = idx(userOrderableList, _ => _.data.getUserOrderableList)
+  // 收據的「合計」與「付現金額」以打帳單收據為準（Jason 2026/10/22「照建議」）：合計＝應付帳款（第三方卡券支付的項目不計、
+  // 預收卡販賣計入），付現金額＝合計扣掉扣入金、其他付款方式與紅利點數折抵（helper/billPaymentSummary，與打帳單同一份）
+  const { shouldPay: printShouldPay, cashDue: printCashDue } = billPaymentSummary(bill)
   const getHelper = id => {
     const helper = getHelperForPrint.filter(d => d.userId === id)
     return helper[0].userNo || helper[0].userName
@@ -268,5 +272,7 @@ export default function useDraftPrint() {
     getQrcodeDisplayOnInvoice,
     getMessageDisplayOnInvoice,
     printDiv,
+    printShouldPay,
+    printCashDue,
   }
 }

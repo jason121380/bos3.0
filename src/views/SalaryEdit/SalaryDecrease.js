@@ -119,7 +119,7 @@ export default function SalaryIncrease({
 
   const textFieldRef = useRef()
   useEffect(() => {
-    if(textFieldRef.current !== undefined && focus.includes('decrease')) {
+    if(textFieldRef.current && focus.includes('decrease')) {
       textFieldRef.current.focus()
     }
   }, [focus, tabIndex])

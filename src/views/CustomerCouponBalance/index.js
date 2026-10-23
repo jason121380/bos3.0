@@ -11,6 +11,9 @@ import { Button } from 'ui/button'
 import { PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
+import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
+import isExportCustomerMasked, { maskCustomerName, maskCellphone } from 'helper/exportCustomerMask'
+
 import Results from './Results'
 
 const CustomerWalletBalance = () => {
@@ -26,6 +29,9 @@ const CustomerWalletBalance = () => {
   const customerCouponBalanceData = useFetchCustomerCouponReport({
     input: pageSetting,
   })
+  // 匯出檔遮罩客資比照帳單列表：只有設定查詢成功且為 false 才不遮罩（Jason 2026/10/22 同意）
+  const customerDataMarkedData = useFetchCustomerDataMarked()
+  const isCustomerDataMarked = isExportCustomerMasked(customerDataMarkedData)
 
   const handleCountTotalPrice = (report, key) => {
     if (report === null) return report
@@ -40,7 +46,7 @@ const CustomerWalletBalance = () => {
       const customerCouponBalance = idx(
         customerCouponBalanceData,
         _ => _.data.customerCouponBalanceReport
-      )
+      ) || [] // 查詢失敗時以空陣列處理（原本 forEach 拋錯整頁錯誤；Jason 2026/10/22 fix all）
       customerCouponBalance.forEach(d => {
         tempArray.push(d)
       })
@@ -54,8 +60,8 @@ const CustomerWalletBalance = () => {
       tempArrayTotal.forEach(d => {
         excelData.push({
           顧客編號: d.customerNo,
-          顧客姓名: d.customerName,
-          顧客手機: d.customerCellPhone,
+          顧客姓名: isCustomerDataMarked ? maskCustomerName(d.customerName) : d.customerName,
+          顧客手機: isCustomerDataMarked ? maskCellphone(d.customerCellPhone) : d.customerCellPhone,
           卡券編號: d.couponNo,
           卡券名稱: d.couponName,
           總金額: d.totalCount * Math.round(d.singleCouponPrice),
@@ -89,7 +95,7 @@ const CustomerWalletBalance = () => {
       })
       setExcelData(excelData)
     }
-  }, [customerCouponBalanceData.loading])
+  }, [customerCouponBalanceData.loading, isCustomerDataMarked])
 
   let customerIdValue = ''
   if (pageSetting.customerId.length > 0) {

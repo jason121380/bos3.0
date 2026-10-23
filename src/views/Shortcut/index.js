@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { useShortcuts } from 'hooks/useFetchShortcut'
 import { Skeleton } from 'ui/skeleton'
+import idx from 'idx'
 
 import Results from './Results'
 import AdminPageHeader from 'components/AdminPageHeader'
@@ -33,7 +34,8 @@ const Shortcut = () => {
 
 	useEffect(() => {
 		if (!shortcuts.loading) {
-			const data = shortcuts.data.shortcuts
+			// 查詢失敗時當成沒有組合（原本讀 undefined.shortcuts 整頁進入錯誤畫面）
+			const data = idx(shortcuts, _ => _.data.shortcuts) || []
 			const tidyData = []
 			data.forEach(({
 				services, products, memberships, tickets, ...d

@@ -260,3 +260,15 @@ describe('掛單詳細：編輯顧客資料', () => {
     )
   })
 })
+
+// 已修正（Jason 2026/10/22 fix all）：手機底部固定列原本一律讓出 56px 給底部導覽列，但掛單詳細的路由不顯示底部導覽列
+// （layouts/Dashboard/MobileNav 的 FLOW），列下方露出頁面內容；改為貼齊畫面底部（只讓出 iPhone 安全區）
+describe('掛單詳細：底部固定列貼齊畫面底部', () => {
+  it('沒有底部導覽列：固定列不讓出 56px', async () => {
+    setup()
+    await screen.findByText(/掛單詳細 \(/)
+    const bar = screen.getByRole('button', { name: '金額彙總明細' }).closest('.fixed')
+    expect(bar.className).not.toMatch(/56px/)
+    expect(bar.className).toMatch(/(^| )bottom-0( |$)/)
+  })
+})

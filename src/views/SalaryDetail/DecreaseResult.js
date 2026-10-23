@@ -5,6 +5,35 @@ import { Card, CardHeader, CardTitle } from 'ui/card'
 import { formatNumber } from 'ui/format'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePagination } from 'ui/table'
 
+// 員工沒有當月薪資資料（salary 為 null）時各欄以 0 顯示（Jason 2026/10/22；原本讀 null.xxx 整頁錯誤）
+const EMPTY_SALARY = {
+  tuition: 0,
+  educationFee: 0,
+  tourismFund: 0,
+  savings: 0,
+  welfare: 0,
+  laborHealthPremium: 0,
+  selfPurchasedMaterials: 0,
+  employeeLoan: 0,
+  deductionForSickLeave: 0,
+  illegalCharge: 0,
+  lateRetreat: 0,
+  DeductionOfLiabilityDue: 0,
+  giftdeduction: 0,
+  managementOfficeEquipment: 0,
+  mutualDeduction: 0,
+  advances: 0,
+  dormitoryCosts: 0,
+  creditCardFee: 0,
+  salaryArrears: 0,
+  customerArrears: 0,
+  derelictionOfDuty: 0,
+}
+
+// 一位員工的扣項合計（21 個扣項；沒有當月薪資資料時為 0）。加項總覽的「實發金額」也用這一份（Jason 2026/10/22）
+export const decreaseTotalOf = salary =>
+  salary ? Object.keys(EMPTY_SALARY).reduce((total, key) => total + salary[key], 0) : 0
+
 function Results({
   className = '',
   pageSetting,
@@ -13,6 +42,9 @@ function Results({
   handleOnChangeRowsPerPage,
   ...rest
 }) {
+  const rows = users.map(user => (user.salary ? user : { ...user, salary: EMPTY_SALARY }))
+  // 筆數與頁數用後端 totalCount（Jason 2026/10/22）；沒有回傳時以本頁人數代替
+  const totalCount = typeof pageSetting.totalCount === 'number' ? pageSetting.totalCount : users.length
   return (
     <div {...rest} className={className}>
       <Card>
@@ -20,7 +52,7 @@ function Results({
           <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <CardTitle>扣項總覽</CardTitle>
             <span className="whitespace-nowrap text-label tabular-nums text-text-secondary">
-              共 {pageSetting.totalCount} 筆資料, {pageSetting.pageOffset + 1}/{Math.ceil(pageSetting.totalCount / pageSetting.pageLimit)} 頁
+              共 {totalCount} 筆資料, {pageSetting.pageOffset + 1}/{Math.ceil(totalCount / pageSetting.pageLimit)} 頁
             </span>
           </div>
         </CardHeader>
@@ -56,7 +88,7 @@ function Results({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users.map(data => (
+                  {rows.map(data => (
                     <TableRow key={data.id}>
                       <TableCell>{data.designerNo}</TableCell>
                       <TableCell>{data.name}</TableCell>
@@ -112,109 +144,109 @@ function Results({
                     <TableCell>合 計:</TableCell>
                     <TableCell colSpan={2}></TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce((total, data) => (total = total + data.salary.tuition), 0))}
+                      {formatNumber(rows.reduce((total, data) => (total = total + data.salary.tuition), 0))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce((total, data) => (total = total + data.salary.educationFee), 0))}
+                      {formatNumber(rows.reduce((total, data) => (total = total + data.salary.educationFee), 0))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce((total, data) => (total = total + data.salary.tourismFund), 0))}
+                      {formatNumber(rows.reduce((total, data) => (total = total + data.salary.tourismFund), 0))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce((total, data) => (total = total + data.salary.savings), 0))}
+                      {formatNumber(rows.reduce((total, data) => (total = total + data.salary.savings), 0))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce((total, data) => (total = total + data.salary.welfare), 0))}
+                      {formatNumber(rows.reduce((total, data) => (total = total + data.salary.welfare), 0))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, data) => (total = total + data.salary.laborHealthPremium),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, data) => (total = total + data.salary.selfPurchasedMaterials),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce((total, data) => (total = total + data.salary.employeeLoan), 0))}
+                      {formatNumber(rows.reduce((total, data) => (total = total + data.salary.employeeLoan), 0))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, data) => (total = total + data.salary.deductionForSickLeave),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, data) => (total = total + data.salary.illegalCharge),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce((total, data) => (total = total + data.salary.lateRetreat), 0))}
+                      {formatNumber(rows.reduce((total, data) => (total = total + data.salary.lateRetreat), 0))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, data) => (total = total + data.salary.DeductionOfLiabilityDue),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, data) => (total = total + data.salary.giftdeduction),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, data) => (total = total + data.salary.managementOfficeEquipment),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, data) => (total = total + data.salary.mutualDeduction),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce((total, data) => (total = total + data.salary.advances), 0))}
+                      {formatNumber(rows.reduce((total, data) => (total = total + data.salary.advances), 0))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, data) => (total = total + data.salary.dormitoryCosts),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, data) => (total = total + data.salary.creditCardFee),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, data) => (total = total + data.salary.salaryArrears),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, data) => (total = total + data.salary.customerArrears),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, data) => (total = total + data.salary.derelictionOfDuty),
                         0
                       ))}
                     </TableCell>
                     <TableCell numeric>
-                      {formatNumber(users.reduce(
+                      {formatNumber(rows.reduce(
                         (total, data) =>
                         (total =
                           total +

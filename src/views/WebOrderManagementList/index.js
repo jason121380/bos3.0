@@ -6,7 +6,10 @@ import useFetchGetBookingManagement from 'hooks/useFetchGetBookingManagement'
 import { useFetchGetCheckinSettingsForManagementList } from 'hooks/useFetchGetMerchantCheckinSettings'
 import useFetchGetIsBookingCusCheckUsing from 'hooks/useFetchGetIsBookingCusCheckUsing'
 import { useFetchGetDeleteOrderUsing } from 'hooks/useFetchMerchantPassword'
+import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
+import isExportCustomerMasked from 'helper/exportCustomerMask'
 import idx from 'idx'
+import isPasswordRequired from 'helper/passwordRequired'
 import produce from 'immer'
 import { useState, useEffect } from 'react'
 import DateSelector from 'components/DateSelector'
@@ -54,34 +57,16 @@ function WebOrderMangagementList() {
   })
   const getCheckinSettings = useFetchGetCheckinSettingsForManagementList()
   const getDeleteOrderUsing = useFetchGetDeleteOrderUsing()
+  // 匯出是否遮罩客資：比照帳單列表，只有設定查詢成功且為 false 才不遮罩（Jason 2026/10/22）
+  const customerDataMarkedData = useFetchCustomerDataMarked()
+  const isCustomerDataMarked = isExportCustomerMasked(customerDataMarkedData)
+  // 刪除密碼設定查詢失敗時列表照常顯示，但刪除一律先要求密碼（fail closed，Codex review PR #270）
+  const delOrderPassUsing = isPasswordRequired(getDeleteOrderUsing, 'deleteOrder')
 
-  /**
-   * 處理分頁切換
-   */
-  const handlePageChange = (event, newPage) => {
-    setPageSetting(
-      produce(draft => {
-        draft.pageOffset = newPage
-      })
-    )
-  }
-
-  /**
-   * 處理每頁顯示筆數切換
-   */
-  const handleRowsPerPageChange = event => {
-    setPageSetting(
-      produce(draft => {
-        draft.pageLimit = idx(event, _ => _.target.value)
-        draft.pageOffset = 0
-      })
-    )
-  }
-
-  // 同步報到設置
+  // 同步報到設置（查詢失敗時視為未開啟，不整頁錯誤，Jason 2026/10/22）
   useEffect(() => {
     if (!getCheckinSettings.loading) {
-      const res = getCheckinSettings.data.getMerchantCheckinSettings.isBookingCheckinEnabled
+      const res = Boolean(idx(getCheckinSettings, _ => _.data.getMerchantCheckinSettings.isBookingCheckinEnabled))
       setCheclInDisplay(res)
     }
   }, [getCheckinSettings.loading])
@@ -152,14 +137,11 @@ function WebOrderMangagementList() {
               <Results
                 orders={_.data.bookingManagement.bookings}
                 checkInDisplay={checkInDisplay}
-                startDate={pageSetting.startDate}
-                endDate={pageSetting.endDate}
                 bookingCusCheck={bookingCusCheck}
                 pageSetting={_.data.bookingManagement}
-                onPageChange={handlePageChange}
-                onRowsPerPageChange={handleRowsPerPageChange}
                 refetch={_.refetch}
-                delOrderPassUsing={getDeleteOrderUsing.loading ? false : getDeleteOrderUsing.data.merchantPassword.deleteOrder.isUsing}
+                delOrderPassUsing={delOrderPassUsing}
+                isCustomerDataMarked={isCustomerDataMarked}
               />
             )
         ) : (

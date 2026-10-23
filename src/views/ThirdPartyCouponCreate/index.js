@@ -30,6 +30,11 @@ function ServiceCategoryCreate() {
     )
   }
   const handleSubmit = () => {
+    // 百分比手續費限制 0～100（Jason 2026/10/22「照建議」）
+    if (thirdPartyCoupon.type === 'PERCENT' && Number(thirdPartyCoupon.handlingFee) > 100) {
+      openSnackbar({ message: '百分比手續費請輸入 0～100', variant: 'warning' })
+      return
+    }
     createThirdPartyCoupon({ input: thirdPartyCoupon }).then(() => {
       thirdPartyCoupons.refetch()
       history.push('/third-party-coupons')

@@ -26,10 +26,10 @@ function ServiceCategoryEdit(props) {
 
   React.useEffect(() => {
     if (!thirdPartyCouponsData.loading) {
-      const thirdPartyCouponDetail = idx(thirdPartyCouponsData, _ =>
-        _.data.getThirdPartTicket.filter(data => data.id === props.match.params.id)
-      )
-      setThirdPartyCouponDetail(thirdPartyCouponDetail[0])
+      const list = idx(thirdPartyCouponsData, _ => _.data.getThirdPartTicket) || []
+      // 清單查詢失敗或找不到這張卡券時不帶入（原本讀 undefined 整頁進入錯誤畫面）
+      const found = list.find(data => data.id === props.match.params.id)
+      if (found) setThirdPartyCouponDetail(found)
     }
   }, [thirdPartyCouponsData.loading])
 
@@ -56,6 +56,11 @@ function ServiceCategoryEdit(props) {
   }
 
   const handleSubmit = () => {
+    // 百分比手續費限制 0～100（Jason 2026/10/22「照建議」）
+    if (thirdPartyCoupon.type === 'PERCENT' && Number(thirdPartyCoupon.handlingFee) > 100) {
+      openSnackbar({ message: '百分比手續費請輸入 0～100', variant: 'warning' })
+      return
+    }
     updateThirdPartyCoupon({
       id: props.match.params.id,
       input: thirdPartyCoupon,

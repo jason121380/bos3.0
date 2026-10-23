@@ -119,7 +119,7 @@ export default function SalaryIncrease({
 
   const textFieldRef = useRef()
   useEffect(() => {
-    if(textFieldRef.current !== undefined && focus.includes('increase')) {
+    if(textFieldRef.current && focus.includes('increase')) {
       textFieldRef.current.focus()
     }
   }, [focus, tabIndex])
@@ -164,7 +164,7 @@ export default function SalaryIncrease({
                           }}
                           onKeyDown={event => {
                             if(event.key === 'Enter') {
-                              if(index < (salaryIncreaseItemsReformatted.length - 1)){
+                              if(index < (increaseCombined.length - 1)){
                                 setTabIndex(index + 1)
                               } else {
                                 setFocus('increaseItemName')

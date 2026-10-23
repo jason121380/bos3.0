@@ -80,6 +80,8 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
   ])
   const [serviceDeductionItems, setServiceDeductionItems] = useState([])
 
+  // 只有啟用中的服務可勾選；全選框以可選取的筆數判斷
+  const selectableCount = services.data.filter(d => d.isUsing).length
   const handleSelectAll = event => {
     const newSelectedService = event.target.checked
       ? services.data.filter(d => d.isUsing).map(service => service.id)
@@ -141,11 +143,9 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
     refetchService()
   }
 
+  // 改每頁筆數時頁碼歸 0（index.js 的 handleRowsPerPageChange）
   const handleOnChangeRowsPerPage = event => {
-    onPageChange({
-      value: event.target.value,
-      key: 'pageLimit',
-    })
+    onRowsPerPageChange(event)
     refetchService()
   }
 
@@ -218,7 +218,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
         ])
       })
       .catch(err => {
-        openSnackbar({ variant: 'error', message: err.msg })
+        openSnackbar({ variant: 'error', message: err.message })
       })
   }
 
@@ -291,7 +291,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
         setSelectedService([])
       })
       .catch(err => {
-        openSnackbar({ variant: 'error', message: err.msg })
+        openSnackbar({ variant: 'error', message: err.message })
       })
   }
 
@@ -352,12 +352,12 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
                   <Checkbox
                     aria-label="全選"
                     checked={
-                      selectedService.length === services.data.length &&
-                      services.data.length > 0
+                      selectedService.length === selectableCount &&
+                      selectableCount > 0
                     }
                     indeterminate={
                       selectedService.length > 0 &&
-                      selectedService.length < services.data.length
+                      selectedService.length < selectableCount
                     }
                     onChange={handleSelectAll}
                     disabled={

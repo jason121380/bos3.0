@@ -469,13 +469,12 @@ function AssistantSettingEditModal({
 }
 
 AssistantSettingEditModal.propTypes = {
-  onClose: PropTypes.func,
+  onClose: PropTypes.func.isRequired,
   open: PropTypes.bool,
 }
 
 AssistantSettingEditModal.defaultProps = {
   open: false,
-  onClose: () => { },
 }
 
 export default AssistantSettingEditModal

@@ -32,6 +32,8 @@ function CustomerManagementList() {
     setSetting(
       produce(draft => {
         draft[key] = value
+        // 換關鍵字：回到第一頁（停在後面的頁數可能沒有資料）
+        if (key === 'keyword') draft.pageOffset = 0
       })
     )
   }
@@ -41,6 +43,7 @@ function CustomerManagementList() {
     setSetting(pre => {
       return {
         ...pre,
+        pageOffset: 0,
         categoryIds: [categorieId],
       }
     })
@@ -48,16 +51,20 @@ function CustomerManagementList() {
 
   const handleClearCategorie = () => {
     setSelectedCategorie([])
-    setSetting({
+    // 保留每頁筆數、回到第一頁（原本整個換掉，每頁筆數與頁數都被拿掉）
+    setSetting(pre => ({
+      ...pre,
+      pageOffset: 0,
       keyword: '',
       categoryIds: [],
-    })
+    }))
   }
 
   useEffect(() => {
     if (!productCategoriesData.loading && !products.loading) {
-      const productList = idx(products, _ => _.data.products)
-      const productCategories = idx(productCategoriesData, _ => _.data.productCategories)
+      // 查詢失敗時 data 為 undefined：當作沒有資料，不讓整頁拋錯
+      const productList = idx(products, _ => _.data.products) || []
+      const productCategories = idx(productCategoriesData, _ => _.data.productCategories) || []
 
       setProductList(productList)
       setProductCategories(productCategories)

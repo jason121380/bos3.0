@@ -1,19 +1,15 @@
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle, CardContent } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
-import { memo, Fragment, useState, useEffect } from 'react'
+import { memo, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import HelperPointResults from './HelperPointResults'
 import idx from 'idx'
 
 function HelperPoint({ className, merchantPointValueSettings }) {
-  const [merchantPointValueData, setMerchantPointValueData] = useState([])
-  useEffect(() => {
-    if (!merchantPointValueSettings.loading) {
-      setMerchantPointValueData(idx(merchantPointValueSettings.data, _ => _.getMerchantPointValueSettings))
-    }
-  }, [merchantPointValueSettings.loading])
-  
+  // 直接讀查詢結果：刪除後 refetch 不會改變 loading，存在 state 裡的清單不會更新；查詢失敗時當成沒有資料
+  const merchantPointValueData = idx(merchantPointValueSettings.data, _ => _.getMerchantPointValueSettings) || []
+
   return (
     <Fragment>
       <Card>

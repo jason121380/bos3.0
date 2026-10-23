@@ -15,7 +15,7 @@ jest.mock('hooks/useFetchAdminBookingTime', () => ({
   default: () => ({ adminBookingTime: (...a) => mockApi.adminBookingTime(...a) }),
   useFetchAdminBookingTimeAllStore: () => ({ adminBookingTimeAllStore: (...a) => mockApi.allStore(...a) }),
 }))
-jest.mock('hooks/useFetchVerifyBooking', () => () => ({ verifyBooking: jest.fn() }))
+jest.mock('hooks/useFetchVerifyBooking', () => () => ({ verifyBooking: (...a) => mockApi.verifyBooking(...a) }))
 
 afterEach(cleanup)
 
@@ -88,5 +88,35 @@ describe('NewChoseEvent 全店模式', () => {
     renderEvent({ modaltype: 'unknown' })
     expect(screen.queryByRole('button')).toBeNull()
     expect(screen.queryByRole('link')).toBeNull()
+  })
+})
+
+// 已修正（Jason 2026/10/22 fix all）：審核窗的「接受預約」「取消預約」列原本送出中沒有停用，可重複送出；
+// 改為送出中（pending）停用，後端回應後恢復
+describe('NewChoseEvent 審核窗：接受／取消預約送出中停用', () => {
+  const ORDER = {
+    id: 'b1', date: T, status: '待審核', isDesignate: false, companionCount: 0, remark: '', remarkForCustomer: '',
+    customer: { id: 'c1', name: '王小明', cellphone: '0912' },
+  }
+  const deferred = () => {
+    let resolve
+    const promise = new Promise(res => { resolve = res })
+    return { promise, resolve }
+  }
+  const row = text => screen.getByText(text).closest('button')
+
+  it.each([['接受預約', true], ['取消預約', false]])('%s：送出中兩列都停用、不會重複送出；回應後恢復', async (text, isApproval) => {
+    const pending = deferred()
+    mockApi.verifyBooking = jest.fn(() => pending.promise)
+    renderEvent({ modaltype: 'orderCheck', editOrder: ORDER })
+    fireEvent.click(row(text))
+    fireEvent.click(row(text))
+    expect(mockApi.verifyBooking).toHaveBeenCalledTimes(1)
+    expect(mockApi.verifyBooking).toHaveBeenCalledWith({ orderId: 'b1', isApproval })
+    expect(row('接受預約')).toBeDisabled()
+    expect(row('取消預約')).toBeDisabled()
+    await act(async () => pending.resolve({ data: { verifyBooking: {} } }))
+    expect(row('接受預約')).not.toBeDisabled()
+    expect(row('取消預約')).not.toBeDisabled()
   })
 })

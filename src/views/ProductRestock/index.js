@@ -168,8 +168,10 @@ function ProductRestock() {
   }, [vendorUUId])
 
   useEffect(() => {
-    if (!getStockInIsUsing.loading) {
-      const { purchaseStockIn, purchaseStockInUndo } = getStockInIsUsing.data.merchantPassword
+    // 查詢失敗時 data 為 undefined：維持預設「需要密碼」，不讓整頁拋錯
+    const merchantPassword = idx(getStockInIsUsing, _ => _.data.merchantPassword)
+    if (!getStockInIsUsing.loading && merchantPassword) {
+      const { purchaseStockIn, purchaseStockInUndo } = merchantPassword
       setIsUsing({
         stockIn: purchaseStockIn.isUsing,
         stockInUndo: purchaseStockInUndo.isUsing

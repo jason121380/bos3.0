@@ -64,4 +64,22 @@ describe('個人頁互助報表：依設計師編號排序', () => {
     const titles = screen.getAllByText(/互助報表$/).map(el => el.textContent.split(' 10/20/2026')[0].trim())
     expect(titles).toEqual(['2  二號', '3A  三甲', '10  十號', 'B  乙號', '小無 無編號'])
   })
+
+  // 已修正（Jason 2026/10/22 fix all）：designerNo 為 null 時，第二個 filter 讀 null.length 整頁拋錯；改為 null 視為空代號（依暱稱／姓名排在最後）
+  it('編號為 null 視為沒有編號，不會整頁拋錯', async () => {
+    const T = new Date(2026, 9, 20).getTime()
+    const { settle } = renderPage(
+      <HelperSelfRecord
+        helperReport={[record(null, '乙員'), record('2', '二號'), record(null, '甲員', '小甲')]}
+        titleDate={T}
+        dateForHelper={{ startDate: T, endDate: T }}
+        setDateForHelper={() => {}}
+        priceDisplayOnReport
+        isLoading={false}
+      />
+    )
+    await settle()
+    const titles = screen.getAllByText(/互助報表$/).map(el => el.textContent.split(' 10/20/2026')[0].trim())
+    expect(titles).toEqual(['2  二號', '小甲 甲員', '乙員'])
+  })
 })

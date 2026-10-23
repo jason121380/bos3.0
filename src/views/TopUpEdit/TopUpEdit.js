@@ -44,7 +44,8 @@ export default function TopUpCreate({ match }) {
       })
       if (res.data.updateWalletDeposit) {
         openSnackbar({ message: '儲存入金成功', variant: 'success' })
-        history.push('/topup')
+        // replace：列表按上一頁不會再回到這張已編輯的入金（取代列表原本的 history.go(1) 監聽；Jason 2026/10/22 fix all）
+        history.replace('/topup')
       } else throw new Error('儲存入金失敗')
     } catch (error) {
       openSnackbar({
@@ -55,7 +56,8 @@ export default function TopUpCreate({ match }) {
     }
   }
   useEffect(() => {
-    if (!walletDepositDetail.loading) {
+    // 讀取失敗（或查無入金）時保留空白表單（原本直接讀 data.walletDepositDetail 整頁錯誤；Jason 2026/10/22 fix all）
+    if (!walletDepositDetail.loading && idx(walletDepositDetail, _ => _.data.walletDepositDetail)) {
       const { money, payType } = walletDepositDetail.data.walletDepositDetail
       const customerId = walletDepositDetail.data.walletDepositDetail.Customer.id
       const designerId = walletDepositDetail.data.walletDepositDetail.Maker.id
@@ -91,7 +93,7 @@ export default function TopUpCreate({ match }) {
           message: '刪除入金成功',
           variant: 'success',
         })
-        history.push('/topup')
+        history.replace('/topup')
       } else throw new Error('刪除失敗')
     } catch (error) {
       openSnackbar({

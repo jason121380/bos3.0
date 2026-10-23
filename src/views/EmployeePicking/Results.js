@@ -1,13 +1,12 @@
 // 勾選後出現的底部操作列：比照 components/TableEditBar 的浮動批次操作列（原 persistent Drawer：未勾選時仍在 DOM、隱藏）
 import { Download, Pencil, Trash2 } from 'lucide-react'
 import PropTypes from 'prop-types'
-import { useState, useEffect, Fragment, useRef } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
 import { CSVLink } from "react-csv";
 import useFetchDeletePicking from 'hooks/useFetchDeletePicking'
 import { openSnackbar } from 'elements/snackbars'
-import pagenationLabel from './../../helper/pagenationLabel'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
@@ -23,12 +22,9 @@ function Results({
   pageSetting,
   className,
   pickingRecords,
-  onPageChange,
-  onRowsPerPageChange,
   actionsBanned,
   ...rest
 }) {
-  const pageRef = useRef(null)
   const blockPicking = actionsBanned.includes('PICKING')
   const [excelData, setExcelData] = useState([])
   const [selectedOrders, setSelectedOrders] = useState([])
@@ -64,10 +60,7 @@ function Results({
       小計: total('total'),
     })
     setExcelData(excelData)
-    if (pageRef.current) {
-      pagenationLabel(pageRef.current)
-    }
-  }, [pickingRecords, pageRef.current])
+  }, [pickingRecords])
 
   const total = key => {
     return pickingRecords.PickingRecord.reduce((accu, curVal) => accu + curVal[key], 0)
@@ -237,7 +230,7 @@ function Results({
           {...rest}
           role="toolbar"
           aria-label="批次操作"
-          className={`pointer-events-auto flex max-w-full flex-wrap items-center gap-1 rounded-lg border border-solid border-border bg-background py-1.5 pl-4 pr-1.5 shadow-float${className ? ` ${className}` : ''}`}
+          className={`pointer-events-auto flex max-w-full flex-wrap items-center gap-1 rounded-lg border border-solid border-border bg-background py-1.5 pl-4 pr-1.5 shadow-float`}
         >
           <span className="mr-2 text-label tabular-nums text-text">
             {selectedOrders.length} selected

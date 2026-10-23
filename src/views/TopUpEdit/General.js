@@ -5,6 +5,7 @@ import CustomerAutoComplete from 'components/CustomerAutoComplete'
 import EmployeeAutoComplete from 'components/EmployeeAutoComplete'
 import React from 'react'
 import { useFormContext } from 'react-hook-form'
+import idx from 'idx'
 import useFetchPayments from 'hooks/useFetchPayments'
 import { MobileDateTimePicker } from 'ui/date-picker'
 import format from 'date-fns/format';
@@ -72,7 +73,8 @@ export default function General() {
         <em>None</em>
       </MenuItem>
     ) : (
-      payments.data.merchantPayWays.map((data, index) => (
+      // 查詢失敗時只留「現金」（原本 data 為 undefined 時整頁錯誤；Jason 2026/10/22 fix all）
+      (idx(payments, _ => _.data.merchantPayWays) || []).map((data, index) => (
         <MenuItem value={data.name} key={index}>
           {data.name}
         </MenuItem>
@@ -188,6 +190,10 @@ export default function General() {
             defaultValue={defaultValue.payType}
             onChange={event => {
               setValue('payType', event.target.value)
+              // 現金不收手續費：手續費負擔方送「不扣項」（WITHOUTHANDLINGFEE，與顧客詳細的入金彈窗相同），不把原本的值一起送出；
+              // 從現金改回其他付款方式時負擔方回到未選（Jason 2026/10/22 fix all；「照建議」改送 WITHOUTHANDLINGFEE，原本送 null）
+              if (event.target.value === '現金') setValue('handlingFeeDecountWay', 'WITHOUTHANDLINGFEE')
+              else if (payType === '現金') setValue('handlingFeeDecountWay', null)
               if (errors?.payType) {
                 clearErrors(['payType'])
               }

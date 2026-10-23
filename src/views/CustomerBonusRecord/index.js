@@ -23,7 +23,8 @@ function CustomerBonusRecord() {
         />
         {!customerBonusDepositRecords.loading ?
           <Results
-            recordData={idx(customerBonusDepositRecords, _ => _.data.customerBonusDepositRecords)}
+            // 查詢失敗時傳空陣列（原本傳 undefined 整頁錯誤；Jason 2026/10/22 fix all）
+            recordData={idx(customerBonusDepositRecords, _ => _.data.customerBonusDepositRecords) || []}
             refetch={() => customerBonusDepositRecords.refetch()}
           /> : <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>}
       </div>

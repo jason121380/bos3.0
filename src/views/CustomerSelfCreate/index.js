@@ -1,4 +1,5 @@
 import React, { /* useRef, */ useState, useEffect, Fragment } from 'react'
+import idx from 'idx'
 import Page from 'components/Page'
 import { useParams, useLocation } from 'react-router'
 import produce from 'immer'
@@ -122,14 +123,16 @@ const CustomerSelfCreate = () => {
 
   useEffect(() => {
     if (!customerSelfCreateActive.loading) {
-      const data = customerSelfCreateActive.data.getIsCustomerSelfCreateActive
+      // 查詢失敗時視為未開放（原本 data 為 undefined 時整頁錯誤；Jason 2026/10/22 fix all）
+      const data = Boolean(idx(customerSelfCreateActive, _ => _.data.getIsCustomerSelfCreateActive))
       setPageEnable(data)
     }
   }, [customerSelfCreateActive.loading])
 
   useEffect(() => {
     if (!getMerchantName.loading) {
-      const data = getMerchantName.data.getMerchantName
+      // 查詢失敗時店名留空（原本 data 為 undefined 時整頁錯誤；Jason 2026/10/22 fix all）
+      const data = idx(getMerchantName, _ => _.data.getMerchantName) || ''
       handleSetInputValue(data, 'merchantName')
     }
   }, [getMerchantName.loading])

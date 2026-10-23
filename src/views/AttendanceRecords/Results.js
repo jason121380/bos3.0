@@ -1,7 +1,7 @@
 // 打卡記錄操作面板（原底部 Drawer）與編輯彈窗皆改 ui/dialog（手機為底部面板）：兩者內容只有按鈕與原生 time 欄位，
 // 沒有 Autocomplete／Select／日期選擇器，兩個 Radix Dialog 疊開由 Radix 管理焦點與圖層（Esc／點背景只關最上層）；
 // 打卡時間格內的分隔線改 Tailwind
-import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
+import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { LocationOn as LocationOnIcon, ManageAccountsRounded as ManageAccountsRoundedIcon, DesktopWindowsRounded as DesktopWindows, PhoneIphone as PhoneIphoneIcon, QrCode as QrCodeIcon } from 'ui/icons'
 import { format, setHours, setMinutes } from 'date-fns'
@@ -38,6 +38,8 @@ export default function Results({
   const [open, setOpen] = useState(false)
   const [openModal, setOpenModal] = useState(false)
   const [delBtn, setDelBtn] = useState(false)
+  // 刪除確認窗（原本按「刪除」直接送出；Jason 2026/10/22「加上」確認）
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
   const [editBtn, setEditBtn] = useState(false)
   const [googleMapUrl, setGoogleMapUrl] = useState('')
   const [showSelectDate, setShowSelectDate] = useState('')
@@ -516,7 +518,34 @@ export default function Results({
           </DialogBody>
           <DialogFooter className="empty:hidden">
             {identity.edit && <Button onClick={() => setOpenModal(true)} variant='primary'>編輯</Button>}
-            {identity.delete && <Button variant='danger' disabled={delBtn} onClick={handleDeleteRecord}>刪除</Button>}
+            {identity.delete && <Button variant='danger' disabled={delBtn} onClick={() => setConfirmDeleteOpen(true)}>刪除</Button>}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* 刪除確認（比照班表刪除的確認窗）：確定才送出刪除，取消回到操作面板 */}
+      <Dialog open={confirmDeleteOpen} onOpenChange={o => !o && setConfirmDeleteOpen(false)}>
+        <DialogContent size="sm">
+          <DialogHeader>
+            <DialogTitle>確定要刪除這筆打卡紀錄嗎？</DialogTitle>
+            <DialogDescription>
+              {showSelectDate && `${format(showSelectDate, 'yyyy/MM/dd  HH:mm')} - ${findClockInType(editData.clockInType)}，`}刪除後無法復原。
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setConfirmDeleteOpen(false)}>
+              取消
+            </Button>
+            <Button
+              variant="danger"
+              disabled={delBtn}
+              autoFocus
+              onClick={() => {
+                setConfirmDeleteOpen(false)
+                handleDeleteRecord()
+              }}
+            >
+              確定
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

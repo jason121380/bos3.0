@@ -95,8 +95,7 @@ function MainEventList() {
         getMainEvents.refetch()
         setClickData({
           name: '',
-          id: '',
-          func: () => { }
+          id: ''
         })
         handleCloseDialog()
       } else {
@@ -127,8 +126,7 @@ function MainEventList() {
         getMainEvents.refetch()
         setClickData({
           name: '',
-          id: '',
-          func: () => { }
+          id: ''
         })
         handleCloseDialog()
       } else {
@@ -174,7 +172,8 @@ function MainEventList() {
 
   useEffect(() => {
     if (!getMainEvents.loading) {
-      const data = idx(getMainEvents, _ => _.data.mainEvents)
+      // 查詢失敗時當成沒有活動（原本 events 變 undefined、讀 .length 整頁進入錯誤畫面）
+      const data = idx(getMainEvents, _ => _.data.mainEvents) || []
       setEvents(data)
     }
   }, [getMainEvents.loading])

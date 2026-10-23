@@ -22,15 +22,13 @@ export default function Footer() {
     merchantName, nameDisplayOnInvoice, orderDetail, customer, designer, userOrderableList, getHelper,
     detailInfo, qrcodeUrl, imgUrl,
     getLogoDisplayOnInvoice, getQrcodeDisplayOnInvoice, getMessageDisplayOnInvoice,
-    printDiv,
+    printDiv, printShouldPay, printCashDue,
   } = useDraftPrint()
   const {
     open, isClick, isRecheckoutOrders, vaild, disableRecheckoutOrders,
     openDialog, reCheckoutPwd, setReCheckoutPwd,
     handleReCheckoutOrder, usehandleSaveDraftOrder, handleOpenReCheckout, handleCloseDialog,
     serviceTotalPrice, merchantSellTotalPrice, couponSellPrice, couponUsageTotalPrice, membershipTotalPrice,
-    serviceTotalPriceWithoutThirdPartyCoupon, productTotalPriceWithoutThirdPartyCoupon,
-    membershipTotalPriceWithoutThirdPartyCoupon,
     performanceTotal, cashDue, disabledReason,
   } = useDraftCheckout({ passwordData })
   const { bill, order, bonusActive, customerBonus } = React.useContext(billContext)
@@ -235,7 +233,7 @@ export default function Footer() {
             </div>
             <Divider style={{ width: '100%' }} />
             <div>
-              合計：{Math.round(serviceTotalPrice + merchantSellTotalPrice + couponUsageTotalPrice + membershipTotalPrice)}
+              合計：{printShouldPay}
             </div>
             <div>結帳：</div>
             <div style={{ display: 'flex', margin: '0 15px', justifyContent: 'space-between' }}>
@@ -255,13 +253,7 @@ export default function Footer() {
               <div>卡券金額：{couponSellPrice}</div>
               <div style={{ color: '#EE0000' }}>
                 付現金額：
-                {serviceTotalPriceWithoutThirdPartyCoupon +
-                  productTotalPriceWithoutThirdPartyCoupon +
-                  membershipTotalPriceWithoutThirdPartyCoupon +
-                  couponSellPrice -
-                  bill.walletPay -
-                  bill.amountByOtherPay -
-                  bill.bonusDecount}
+                {printCashDue}
               </div>
             </div>
           </div>
@@ -411,7 +403,7 @@ export default function Footer() {
               })}
             <Divider style={{ width: '100%' }} />
             <div>
-              合計：{Math.round(serviceTotalPrice + merchantSellTotalPrice + couponUsageTotalPrice + membershipTotalPrice)}
+              合計：{printShouldPay}
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>
@@ -435,13 +427,7 @@ export default function Footer() {
             <div>卡券金額：{couponSellPrice}</div>
             <div>
               付現金額：
-              {serviceTotalPriceWithoutThirdPartyCoupon +
-                productTotalPriceWithoutThirdPartyCoupon +
-                membershipTotalPriceWithoutThirdPartyCoupon +
-                couponSellPrice -
-                bill.walletPay -
-                bill.amountByOtherPay -
-                bill.bonusDecount}
+              {printCashDue}
             </div>
             <div>謝謝惠顧,歡迎下次光臨!</div>
           </div>
@@ -462,6 +448,7 @@ export default function Footer() {
       details={details}
       performanceTotal={performanceTotal}
       cashDue={cashDue}
+      aboveTabBar={false}
     />
     </Fragment>
   )

@@ -59,11 +59,12 @@ const pickTicket = async (input, name) => {
 }
 
 describe('帳單詳細：預收卡販賣帶回與修改', () => {
-  it('有卡券的帳單自動展開、游標在第一張卡；鎖價卡券不能改次數、價格與張數', async () => {
+  // 開頁時游標原本會跳進第一張卡（帶入資料自動展開觸發聚焦）；Jason 2026/10/22 fix all 改為帶入既有資料時不自動聚焦（見檔尾）
+  it('有卡券的帳單自動展開、游標不會自動跳進卡券列；鎖價卡券不能改次數、價格與張數', async () => {
     const page = open()
     await pageReady(page)
     expect(screen.getByTestId('couponSells')).toHaveAttribute('aria-expanded', 'true')
-    await focused(couponInputs()[0])
+    expect(rowEl(0).contains(document.activeElement)).toBe(false)
     expect(fieldOf(0, 'remark')).toHaveValue('週年慶')
     expect(fieldOf(0, 'price')).not.toBeDisabled()
     expect(fieldOf(1, 'availableCount')).toBeDisabled()
@@ -174,6 +175,7 @@ describe('帳單詳細：預收卡販賣游標', () => {
   it('從第 1 列直接點第 2 列的價格、再點回第 1 列的備註：游標留在點的欄位，過程中也不會先跳到該列的卡券欄', async () => {
     const page = open({ order: makeOrder({ ticketOrders: [ticketOrder(TICKET), ticketOrder(TICKET, { id: 'to-2' })] }) })
     await pageReady(page)
+    act(() => couponInputs()[0].focus())
     await focused(couponInputs()[0])
     const couponFocused = [jest.fn(), jest.fn()]
     couponInputs().forEach((input, i) => input.addEventListener('focus', couponFocused[i]))
@@ -304,5 +306,21 @@ describe('帳單詳細：使用預收卡', () => {
     const panel = header.closest('[data-state]')
     expect(within(panel).getByPlaceholderText('卡券名稱/代號')).toHaveValue('')
     expect(within(panel).queryByText('金額')).toBeNull()
+  })
+})
+// 已修正（Jason 2026/10/22 fix all）：帶入既有預收卡販賣時自動展開區塊會觸發第 1 列「展開＋本列要聚焦」的 effect，開頁焦點就跳進這一區
+// （與會員卡銷售同一個原因；會員卡修好後焦點改落在這裡）。改為帶入時沒有要聚焦的列（focusRow -1），使用者展開／新增／換列時才聚焦
+describe('帳單詳細：預收卡販賣帶入時不自動聚焦', () => {
+  const header = () => screen.getByText('預收卡販賣', { selector: 'p' }).closest('[role="button"]')
+  it('開頁帶入預收卡：焦點不在預收卡列；使用者收合再展開時游標到第 1 列卡券', async () => {
+    const page = open()
+    await pageReady(page)
+    expect(header()).toHaveAttribute('aria-expanded', 'true')
+    expect(rowEl(0).contains(document.activeElement)).toBe(false)
+    expect(rowEl(1).contains(document.activeElement)).toBe(false)
+    fireEvent.click(header())
+    await wait(() => expect(header()).toHaveAttribute('aria-expanded', 'false'))
+    fireEvent.click(header())
+    await focused(couponInputs()[0])
   })
 })

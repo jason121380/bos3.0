@@ -78,6 +78,8 @@ export default function AccountingRecordDetail(props) {
   const [editPwd, setEditPwd] = useState('')
   const [editPwdIsUsing, setEditPwdIsUsing] = useState(false)
   const [showMessage, setShowMessage] = useState(false)
+  // 刪除前確認（Jason 2026/10/22）
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [isClick, setIsClick] = useState(false)
 
   const [focus, setFocus] = useState('')
@@ -147,7 +149,8 @@ export default function AccountingRecordDetail(props) {
     }
   }, [accountingTypeData.data, accountingTypeData.loading])
   useEffect(() => {
-    if (!getMoneyFlow.loading) {
+    // 紀錄查詢失敗（或已被刪除）時不帶入，以空表單顯示、不整頁錯誤（Jason 2026/10/22）
+    if (!getMoneyFlow.loading && idx(getMoneyFlow, _ => _.data.moneyFlow)) {
       setDate(getMoneyFlow.data.moneyFlow.date)
       setAccountingSubjects({
         title:
@@ -277,6 +280,7 @@ export default function AccountingRecordDetail(props) {
   // 刪除收支
   const Delete = async () => {
     setIsClick(true)
+    setOpenDeleteDialog(false)
     try {
       const res = await deleteMoneyFlow(match.params.id)
       if (res.data.deleteMoneyFlow) {
@@ -401,7 +405,8 @@ export default function AccountingRecordDetail(props) {
                       if (type !== inoutType) {
                         setInoutType(type)
                         resetData()
-                        if (inoutType === 'REVENUE') {
+                        // 焦點落在新選的類別按鈕（原本依切換前的類別，會跳到舊按鈕，Jason 2026/10/22）
+                        if (type === 'REVENUE') {
                           setFocus('type1')
                         } else {
                           setFocus('type2')
@@ -673,7 +678,7 @@ export default function AccountingRecordDetail(props) {
             </Button>
             <Button
               disabled={isClick}
-              onClick={Delete}
+              onClick={() => setOpenDeleteDialog(true)}
               variant="danger"
             >
               <Trash2 strokeWidth={1.75} />
@@ -714,6 +719,25 @@ export default function AccountingRecordDetail(props) {
             </Button>
             <Button variant="primary" autoFocus data-testid="confirm" onClick={Submit}>
               確認
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* 刪除確認：與儲存密碼對話框相同，點背景／Esc 不關閉 */}
+      <Dialog open={openDeleteDialog}>
+        <DialogContent size="sm" hideClose aria-describedby={undefined}>
+          <DialogHeader>
+            <DialogTitle>刪除收支紀錄</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <p className="text-body text-text">確定要刪除這筆收支紀錄嗎？</p>
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setOpenDeleteDialog(false)}>
+              取消
+            </Button>
+            <Button variant="danger" autoFocus disabled={isClick} onClick={Delete}>
+              確定刪除
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -94,7 +94,8 @@ function MainEventEdit({ match }) {
   useEffect(() => {
     if (!getMainEvent.loading) {
       const data = idx(getMainEvent, _ => _.data.mainEvent)
-      setInputValue(data)
+      // 查詢失敗或查無活動時不帶入（原本表單資料變 undefined 整頁進入錯誤畫面）
+      if (data) setInputValue(data)
     }
   }, [getMainEvent.loading])
 

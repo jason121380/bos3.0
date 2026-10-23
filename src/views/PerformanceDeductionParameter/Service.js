@@ -38,7 +38,7 @@ function Service({ className,
   const { setCommission } = useFetchSettingCommissionWay()
 
   useEffect(() => {
-    if (!merchantCommissionWay.loading) {
+    if (!merchantCommissionWay.loading && merchantCommissionWay.data) {
       const commission = idx(merchantCommissionWay.data, _ =>
         _.merchantCommissionWay.length > 0
           ? _.merchantCommissionWay.map(d => ({
@@ -111,6 +111,7 @@ function Service({ className,
     
   }
 
+  // 本區只有服務扣項（commission）；原本的 deductionItems 分支沒有呼叫端（service 也沒有該欄位），2026/10/22 移除
   const handleAddSetting = (...rest) => {
     const newService = cloneDeep(service)
     switch (rest[0]) {
@@ -118,12 +119,7 @@ function Service({ className,
         newService.commission.push({ name: '', basisForDeduction: '' })
         handleServiceChange({ changedData: newService.commission, key: 'commission' })
         break
-      case 'deductionItems':
-        newService.deductionItems.push({ name: '' })
-        handleServiceChange({ changedData: newService.deductionItems, key: 'deductionItems' })
-        break
-      default:
-        break
+      // no default
     }
   }
   const handleDeleteSetting = (...rest) => {
@@ -133,12 +129,7 @@ function Service({ className,
         newService.commission.splice(rest[1], 1)
         handleServiceChange({ changedData: newService.commission, key: 'commission' })
         break
-      case 'deductionItems':
-        newService.deductionItems.splice(rest[1], 1)
-        handleServiceChange({ changedData: newService.deductionItems, key: 'deductionItems' })
-        break
-      default:
-        break
+      // no default
     }
   }
 
@@ -177,7 +168,8 @@ function Service({ className,
               size="sm"
               onClick={handleEdit}
               data-testid="parameter"
-              disabled={merchantCommissionWay.loading || isSubmitForType || isSubmitForPoint}
+              // 讀不到扣項方式（讀取中或查詢失敗）時不能編輯：存檔會以畫面上的列整批取代後端資料
+              disabled={!merchantCommissionWay.data || isSubmitForType || isSubmitForPoint}
             >
               編輯
             </Button>

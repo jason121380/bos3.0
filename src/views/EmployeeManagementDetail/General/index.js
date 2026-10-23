@@ -81,19 +81,14 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
     increaseItems: [{ itemName: '', price: 0, type: 'INCREASE' }],
   })
 
-  const [profitSharing, setProfitSharing] = useState({
-    userId: '',
-    MerchantJobTitlePointId: '',
-    deductionWay: '系統預設',
-  })
-
   const [bookingLimitInput, setBookingLimitInput] = useState({
     designerId: '',
     bookingLimit: 0,
   })
 
   useEffect(() => {
-    if (!designerDetail.loading) {
+    // 查無此員工（merchantDesigner 為 null）時不帶入，由下方 Redirect 導回員工列表（Jason 2026/10/22）
+    if (!designerDetail.loading && idx(designerDetail, _ => _.data.merchantDesigner)) {
       setBookingLimitInput({
         designerId: designerDetail.data.merchantDesigner.id,
         bookingLimit: designerDetail.data.merchantDesigner.bookingLimit,
@@ -221,14 +216,6 @@ function General({ itemAuthority, designerId, setNameInHeader, ...rest }) {
 
   const handleBookingLimit = ({ key, value }) => {
     setBookingLimitInput(
-      produce(draft => {
-        draft[key] = value
-      })
-    )
-  }
-
-  const handleSalesWayChange = ({ key, value }) => {
-    setProfitSharing(
       produce(draft => {
         draft[key] = value
       })

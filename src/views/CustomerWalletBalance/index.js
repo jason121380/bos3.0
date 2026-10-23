@@ -31,7 +31,7 @@ const CustomerWalletBalance = () => {
       const report = idx(
         customerWalletBalanceData,
         _ => _.data.customerWalletReport.customerWalletReport
-      )
+      ) || [] // 查詢失敗時以空陣列處理（原本 reduce 拋錯整頁錯誤；Jason 2026/10/22 fix all）
       const sum = report.reduce((accu, curVal) => accu + curVal.leftWallet, 0)
       setReportForDisplay(report)
       report.forEach(data => {

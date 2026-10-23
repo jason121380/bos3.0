@@ -2,8 +2,8 @@
 // 規則：有編輯或刪除權限、或這筆打卡有定位，才能點開；面板內的編輯／刪除鈕各自依權限顯示。
 // 也保護角色缺「打卡權限設定」區塊（舊角色）時頁面照常顯示、視為沒有權限（原本整頁變錯誤畫面）。
 import React from 'react'
-import { cleanup, fireEvent, screen } from '@testing-library/react'
-import { renderPage, loginAs, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
+import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
+import { renderPage, loginAs, callsOf, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import AttendanceRecords from '..'
 
 jest.setTimeout(20000)
@@ -80,6 +80,28 @@ it('有編輯／刪除權限：點打卡格開啟面板，面板內有編輯與�
   await screen.findByText('設計師小美')
   fireEvent.keyDown(cell('上09:00'), { key: 'Enter' })
   expect(await screen.findByText(/已選取打卡記錄:.*09:00 - 上班/)).toBeInTheDocument()
+})
+
+// 已修正（Jason 2026/10/22「加上」）：面板的「刪除」原本按下就直接送出刪除；改為先跳確認窗，確認後才送出、取消則不送
+it('刪除打卡：先跳「確定要刪除這筆打卡紀錄嗎？」，取消不送出；確定才送出刪除', async () => {
+  const { calls, settle } = setup({ settings: [clockInSection({ del: true })] })
+  await screen.findByText('設計師小美')
+  fireEvent.click(cell('上09:00'))
+  await screen.findByText(/已選取打卡記錄:.*09:00 - 上班/)
+  fireEvent.click(screen.getByRole('button', { name: '刪除' }))
+  await settle()
+  expect(callsOf(calls, 'deleteAttendantRecord')).toHaveLength(0)
+  const confirm = await screen.findByRole('dialog', { name: '確定要刪除這筆打卡紀錄嗎？' })
+  fireEvent.click(within(confirm).getByRole('button', { name: '取消' }))
+  await wait(() => expect(screen.queryByRole('dialog', { name: '確定要刪除這筆打卡紀錄嗎？' })).toBeNull())
+  expect(callsOf(calls, 'deleteAttendantRecord')).toHaveLength(0)
+  // 取消後回到操作面板，可再按刪除並確定
+  fireEvent.click(screen.getByRole('button', { name: '刪除' }))
+  const again = await screen.findByRole('dialog', { name: '確定要刪除這筆打卡紀錄嗎？' })
+  fireEvent.click(within(again).getByRole('button', { name: '確定' }))
+  await wait(() => expect(callsOf(calls, 'deleteAttendantRecord')).toEqual([
+    { operationName: 'deleteAttendantRecord', variables: { clockInScheduleUUId: 'p-in' } },
+  ]))
 })
 
 it('沒有編輯／刪除權限：沒有定位的打卡格不能點；有定位的可點開看位置，但沒有編輯與刪除', async () => {

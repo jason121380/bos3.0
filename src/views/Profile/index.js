@@ -6,6 +6,7 @@ import AdminPageHeader from 'components/AdminPageHeader'
 import { Switch } from 'ui/switch'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
+import { Redirect } from 'react-router-dom'
 import idx from 'idx'
 import { useFetchUserSalaryReportLazy } from 'hooks/useFetchUserSalaryReport'
 import { startOfMonth, startOfDay, endOfDay } from 'date-fns'
@@ -152,7 +153,8 @@ function Settings({ match, history }) {
 
   useEffect(() => {
     if (!getBookinHistoryDisplay.loading) {
-      const data = getBookinHistoryDisplay.data.getParameterAboutBookingSetting.isBookingHistoryDisplay
+      // 查詢失敗時以 false（不顯示）為預設（Jason 2026/10/22；原本整頁錯誤）
+      const data = Boolean(idx(getBookinHistoryDisplay, _ => _.data.getParameterAboutBookingSetting.isBookingHistoryDisplay))
       setBookingHistoryDisplay(data)
     }
   }, [getBookinHistoryDisplay.loading])
@@ -263,18 +265,20 @@ function Settings({ match, history }) {
   useEffect(() => {
     if (
       !getOrderListLazyData.loading && getOrderListLazyData.data !== undefined &&
-      !memberActiveLazyData.loading && memberActiveLazyData.data !== undefined
+      !memberActiveLazyData.loading && memberActiveLazyData.data !== undefined &&
+      // 等紅利設定查詢回來再讀（Jason 2026/10/22；原本紅利設定比帳單晚回時讀 undefined 整頁錯誤）
+      !customerBonusActiveData.loading
     ) {
       const performance = idx(getOrderListLazyData, _ => _.data.getOrderList.intervalSummary.membership)
       const active = idx(memberActiveLazyData, _ => _.data.getIsMemberShipCardActive)
       const length = idx(getOrderListLazyData, _ => _.data.getOrderList.orderList.length)
       const bonusDecount = getOrderListLazyData.data.getOrderList.intervalSummary.bonusDecountForReport
       setOrderRecords(getOrderListLazyData)
-      setBonusDisplay(customerBonusActiveData.data.getIsCustomerBonusActive || bonusDecount !== 0)
+      setBonusDisplay(idx(customerBonusActiveData, _ => _.data.getIsCustomerBonusActive) || bonusDecount !== 0)
       setOrderLength(length)
       setMembershipDisplay(active || performance !== 0)
     }
-  }, [getOrderListLazyData.loading, memberActiveLazyData.loading])
+  }, [getOrderListLazyData.loading, memberActiveLazyData.loading, customerBonusActiveData.loading])
 
   // 設計師日報表 ------------------------------------------------------------------------------------------------------
   const [designerReportData, setDesignerReportData] = useState([])
@@ -347,12 +351,26 @@ function Settings({ match, history }) {
     fetchUserHelperRetrieveLazy,
     userHelperRetrieveLazyData,
   } = useFetchUserHelperRetrieveLazy()
+  // 「累計」欄：同一支查詢另查當月 1 日到所選日期（Jason 2026/10/22；原本累計欄只初始化為 0、從未填入）
+  const {
+    fetchUserHelperRetrieveLazy: fetchUserHelperRetrieveMonthLazy,
+    userHelperRetrieveLazyData: userHelperRetrieveMonthLazyData,
+  } = useFetchUserHelperRetrieveLazy()
   const [helperPointPriceDisplay, setHelperPointPriceDisplay] = useState(false)
   const getHelperSelfRecord = () => {
     fetchUserHelperRetrieveLazy({
       variables: {
         input: {
           startDate: dateForHelper.endDate,
+          endDate: dateForHelper.endDate,
+          designerId: employeeId,
+        },
+      },
+    })
+    fetchUserHelperRetrieveMonthLazy({
+      variables: {
+        input: {
+          startDate: startOfMonth(dateForHelper.endDate).getTime(),
           endDate: dateForHelper.endDate,
           designerId: employeeId,
         },
@@ -420,10 +438,27 @@ function Settings({ match, history }) {
           })
         )
       })
-      setReport(reportData)
+      // 累計：依互助者加總當月 1 日到所選日期的紀錄（整月查詢還沒回來時為 0）
+      const monthHelperRecord = idx(userHelperRetrieveMonthLazyData, _ => _.data.getUserHelperRetrieve.helperRecord) || []
+      const monthProductRecord = idx(userHelperRetrieveMonthLazyData, _ => _.data.getUserHelperRetrieve.productRecord) || []
+      const sumOf = (list, pick) => list.reduce((accu, curVal) => accu + (pick(curVal) || 0), 0)
+      const tillNowReport = reportData.map(data => {
+        const helperRecordTillNow = monthHelperRecord.filter(d => idx(d, _ => _.helper.id) === data.user.id)
+        const productRecordTillNow = monthProductRecord.filter(d => idx(d, _ => _.seller.id) === data.user.id)
+        return {
+          ...data,
+          helperFeeTillNow: sumOf(helperRecordTillNow, d => d.helperFee),
+          helperPointTillNow: sumOf(helperRecordTillNow, d => d.helperPoint),
+          productPerformanceTillNow: sumOf(productRecordTillNow, d => d.productUnitPrice * d.productCount),
+          productRakeTillNow: sumOf(productRecordTillNow, d => d.productRake),
+          summaryNoPoint: sumOf(helperRecordTillNow, d => d.helperFeeNoPoint),
+          summaryOnlyPoint: sumOf(helperRecordTillNow, d => d.helperFeeOnlyPoint),
+        }
+      })
+      setReport(tillNowReport)
       setDisplayReport(false)
     }
-  }, [userHelperRetrieveLazyData.loading])
+  }, [userHelperRetrieveLazyData.loading, userHelperRetrieveMonthLazyData.loading])
 
   useEffect(() => {
     if (
@@ -552,10 +587,10 @@ function Settings({ match, history }) {
 
   if (profile.loading) return 'Loading...'
 
-  const findTabName = () => {
-    const findData = tabValue.find(itemValue => itemValue.value === currentTab)
-    return findData.label
-  }
+  // 網址分頁不在分頁清單（permission 分頁自初版起不在清單、角色也沒有對應頁面權限）時導回基本資料
+  const currentTabItem = tabValue.find(itemValue => itemValue.value === currentTab)
+  if (!currentTabItem) return <Redirect to="/profile/general" />
+  const findTabName = () => currentTabItem.label
 
   // 頁面外距由 #printContainer 提供；分頁籤用 ui/tabs（onValueChange 以 (null, value) 轉接原 handleTabsChange，activationMode="manual" 保留鍵盤以 Enter/Space 選取）。
   // 設定頁樣板（STYLE §12）：所有分頁（含訂單／預約／日報／抽成／薪資條／打卡等報表型分頁）一律桌機左選單＋右分段標題、手機頂部橫向捲動分頁

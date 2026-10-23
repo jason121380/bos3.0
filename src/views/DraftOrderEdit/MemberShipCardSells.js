@@ -64,7 +64,10 @@ const MemberShipCardSells = ({
   const { productsModalOpen, handleOpenProductsModal, modalProps: pickerModalProps } = useMembershipPicker();
 
   useEffect(() => {
-    if (expanded && focusFirstField) {
+    // 使用者自己點了這一列的欄位（焦點已在本列欄位上）時不搶焦點（比照帳單詳細；開頁時沒有要聚焦的列，第一次點欄位才指定本列，Jason 2026/10/22 fix all）
+    const fieldFocused = [employeeRef, productRef, priceRef, checkbox, dateRef, thirdPartyRef, remarkRef]
+      .some(ref => ref.current && ref.current === document.activeElement);
+    if (expanded && focusFirstField && !fieldFocused) {
       idx(employeeRef, (_) => _.current.focus());
       setFocus("employee");
     }

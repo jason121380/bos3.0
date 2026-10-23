@@ -42,7 +42,7 @@ export default function EmployeePickingCreate({ location }) {
   useEffect(() => {
     if (!getEmployeePickingPurpose.loading) {
       const data = idx(getEmployeePickingPurpose, _ => _.data.getEmployeePickingPurpose)
-      setPurpose(data)
+      setPurpose(data || [])
     }
   }, [getEmployeePickingPurpose.loading])
 
@@ -73,10 +73,7 @@ export default function EmployeePickingCreate({ location }) {
     setIsClick(true)
 
     const newPicking = cloneDeep(picking)
-    let newProductList = newPicking.productList.filter(
-      data => data.productName !== '' || data.productNo !== ''
-    )
-    newProductList = newPicking.productList.map(({ productCategory, selected, ...keep }) => keep)
+    let newProductList = newPicking.productList.map(({ productCategory, selected, ...keep }) => keep)
     newProductList = newProductList.filter(data => data.productName !== '' || data.productNo !== '')
     const subData = { ...picking, productList: newProductList }
 

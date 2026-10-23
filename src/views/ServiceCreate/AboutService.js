@@ -48,7 +48,8 @@ function AboutService({ className, onChange, service, handleCheckboxChange, ...r
 
   useEffect(() => {
     if (!getThirdPartys.loading) {
-      const data = idx(getThirdPartys, _ => _.data.merchant.thirdpartyCoupons)
+      // 查詢失敗時以空清單處理（選單只剩「無」），不整頁錯誤
+      const data = idx(getThirdPartys, _ => _.data.merchant.thirdpartyCoupons) || []
       setThirdParty(data)
     }
   }, [getThirdPartys.loading])

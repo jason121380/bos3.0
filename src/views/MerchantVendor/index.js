@@ -15,7 +15,8 @@ function MerchantVendor() {
   useEffect(() => {
     if (!merchantVendorList.loading) {
       const data = idx(merchantVendorList, _ => _.data.getMerchantVendorList)
-      setMerchantVendor(data)
+      // 查詢失敗時 data 為 undefined：當作沒有廠商，不讓整頁拋錯
+      setMerchantVendor(data || [])
     }
   }, [merchantVendorList.loading])
 

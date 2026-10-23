@@ -156,7 +156,9 @@ export default function ProductRestockEdit() {
 
   useEffect(() => {
     if (!getPurchaseRecord.loading) {
+      // 查詢失敗或查無此單時 data 為空：不讓整頁拋錯（維持唯讀）
       const data = idx(getPurchaseRecord, _ => _.data.purchaseRecord)
+      if (!data) return
       setDisabled(!!data.stockInDate)
       setPurchaseRecord(data)
     }
@@ -174,8 +176,10 @@ export default function ProductRestockEdit() {
   }, [purchaseRecord])
 
   useEffect(() => {
-    if (!getStockInIsUsing.loading) {
-      const { purchaseStockIn, purchaseStockInUndo } = getStockInIsUsing.data.merchantPassword
+    // 查詢失敗時 data 為 undefined：維持預設「需要密碼」，不讓整頁拋錯
+    const merchantPassword = idx(getStockInIsUsing, _ => _.data.merchantPassword)
+    if (!getStockInIsUsing.loading && merchantPassword) {
+      const { purchaseStockIn, purchaseStockInUndo } = merchantPassword
       setIsUsing({
         stockIn: purchaseStockIn.isUsing,
         stockInUndo: purchaseStockInUndo.isUsing

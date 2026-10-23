@@ -1,18 +1,17 @@
+import { maskCustomerForExport } from 'helper/exportCustomerMask'
 // Divider 只用於下方列印範本（#printMain / #printThermal），維持列印輸出不變
 import { Divider } from 'ui/display-compat'
 import TableEditBar from 'components/TableEditBar'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteOrder from 'hooks/useFetchDeleteOrder'
-import { useFetchDownloadOrderReport } from 'hooks/useFetchOrderReport'
 import PropTypes from 'prop-types'
-import React, { useEffect, useMemo, useRef, useState, Fragment } from 'react'
+import React, { useEffect, useMemo, useState, Fragment } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useLocation } from 'react-router'
 import useFetchReCheckoutOrder from 'hooks/useFetchReCheckoutOrder'
 import designerNameType from 'helper/designerNameType'
 import cloneDeep from 'lodash/cloneDeep'
-import pagenationLabel from './../../helper/pagenationLabel'
 import DraftOrderTable from './DraftOrderTable'
 import DraftOrderPasswordDialog from './DraftOrderPasswordDialog'
 import { weekDisplay } from './draftOrderListHelpers'
@@ -26,8 +25,6 @@ function Results({
   refetch2,
   totalCount,
   pageSetting,
-  onPageChange,
-  onRowsPerPageChange,
   isCustomerDataMarked,
   membershipDisplay,
   bonusDisplay,
@@ -44,7 +41,6 @@ function Results({
 }) {
   const history = useHistory()
   const location = useLocation()
-  const pageRef = useRef(null)
   const merchantName = JSON.parse(localStorage.getItem('userMerchant')).name
   const [selectedOrders, setSelectedOrders] = useState([])
   // 勾選狀態查詢用 Set（每列查兩次，避免 indexOf 逐筆掃描）；只換查詢方式，selectedOrders 的結構與 handler 不變
@@ -62,14 +58,8 @@ function Results({
   const [isClick, setIsClick] = useState(false)
   const [dialogType, setDialogType] = useState('delete')
   const [orderIndex, setOrderIndex] = useState(0)
-  const [fetchOrderReport, { called, loading, data, refetch }] = useFetchDownloadOrderReport(
-    pageSetting.startDate,
-    pageSetting.endDate
-  )
   const { fetchReCheckoutOrder } = useFetchReCheckoutOrder()
   const { deleteOrders } = useFetchDeleteOrder()
-  // 檢查是否為首次render
-  const isFirstRender = useRef(true)
 
   useEffect(() => {
     if (allExtend) {
@@ -80,12 +70,6 @@ function Results({
     }
   }, [allExtend])
   useEffect(() => {
-    if (called && data && !loading && isFirstRender.current) {
-      window.open(data.orderReport)
-      isFirstRender.current = false
-    }
-  }, [called, loading, data])
-  useEffect(() => {
     const excelData = []
     orders.forEach(order => {
       excelData.push({
@@ -94,18 +78,10 @@ function Results({
           format(new Date(order.date), 'eeee')
         )}`,
         客戶: isCustomerDataMarked
-          ? `${order.customer.name.length < 3
-            ? `${order.customer.name.substring(0, 1)}*`
-            : order.customer.name.length < 4
-              ? `${order.customer.name.substring(0, 1)}*${order.customer.name.substring(2, 3)}`
-              : `${order.customer.name.substring(0, 2)}*${order.customer.name.substring(2, 5)}`
-          } ${`${order.customer.cellphone.substring(0, 4)}***${order.customer.cellphone.substring(
-            7,
-            10
-          )}`}`
+          ? maskCustomerForExport(order.customer.name, order.customer.cellphone)
           : `${order.customer.name} ${order.customer.cellphone}`,
-        設計師: `${order.designer.name}${order.designer.designerNo !== '' ? `/${order.designer.designerNo}` : ''
-          }`,
+        // 設計師沒有編號（空字串或 null）時只有姓名，不帶「/null」（Jason 2026/10/22）
+        設計師: `${order.designer.name}${order.designer.designerNo ? `/${order.designer.designerNo}` : ''}`,
         '指定/不指定': order.isDesignate ? 'Y' : 'N',
         營業現金應收: Math.round(order.businessCash),
         服務消費: Math.round(order.serviceFakeTotal),
@@ -135,9 +111,6 @@ function Results({
       })
     }
     setExcelData(excelData)
-    if (pageRef.current) {
-      pagenationLabel(pageRef.current)
-    }
     // 遮罩設定比帳單晚到時要重算，否則匯出檔用到未遮罩的姓名電話（B2 疑似 bug #11）
   }, [orders, membershipDisplay, bonusDisplay, isCustomerDataMarked])
   useEffect(() => {
@@ -226,15 +199,6 @@ function Results({
     setOrderIndex(index)
     setDialogType('checkout')
   }
-  const handleDownload = () => {
-    if (!called) {
-      fetchOrderReport()
-    } else {
-      // 若已變更選擇日期範圍之情況
-      isFirstRender.current = true
-      refetch()
-    }
-  }
   const handleConfirmCancel = () => {
     setEditBarOnClick(true)
     openSnackbar({
@@ -274,16 +238,21 @@ function Results({
     const productPriceWithoutThirdPartyCoupon = filterOrder[0].productOrders
       .map(d => (typeof d.thirdPartyPayName !== 'string' ? d.price * d.count : 0))
       .reduce((accu, curVal) => (accu += curVal), 0)
+    // 合計含會員卡（不含第三方卡券付的），與帳單列表一致（Jason 2026/10/22）
+    const membershipWithoutThirdPartyCoupon = filterOrder[0].membershipOrders
+      .map(d => (typeof d.thirdPartyPayName !== 'string' ? d.price : 0))
+      .reduce((accu, curVal) => (accu += curVal), 0)
     const couponSellPrice = filterOrder[0].staticDetail
       .filter(d => d.serviceType === '卡券販賣(不入業績)')
       .map(d => d.price * d.count)
       .reduce((accu, curVal) => (accu += curVal), 0)
     setOrderDetailPaymentShouldPay(
-      servicePriceWithoutThirdPartyCoupon + productPriceWithoutThirdPartyCoupon + couponSellPrice
+      servicePriceWithoutThirdPartyCoupon + productPriceWithoutThirdPartyCoupon + membershipWithoutThirdPartyCoupon + couponSellPrice
     )
     setCashPayment(
       servicePriceWithoutThirdPartyCoupon +
       productPriceWithoutThirdPartyCoupon +
+      membershipWithoutThirdPartyCoupon +
       couponSellPrice -
       Math.abs(filterOrder[0].walletUsedForDecount) -
       Math.abs(filterOrder[0].otherPayWayForDecount) -
@@ -308,7 +277,8 @@ function Results({
           price: data.price,
           serviceOrderHelpers: data.helperList.map(d => {
             return {
-              helperDeductiontype: d.helperDeductiontype,
+              // 查詢的服務助理欄位是 helperDeductionType（送出的欄位名仍是 helperDeductiontype），Jason 2026/10/22
+              helperDeductiontype: d.helperDeductionType,
               helperId: d.helper.id,
               isDesignate: d.isDesignate,
               type: d.type,
@@ -416,7 +386,8 @@ function Results({
           price: data.price,
           serviceOrderHelpers: data.helperList.map(d => {
             return {
-              helperDeductiontype: d.helperDeductiontype,
+              // 查詢的服務助理欄位是 helperDeductionType（送出的欄位名仍是 helperDeductiontype），Jason 2026/10/22
+              helperDeductiontype: d.helperDeductionType,
               helperId: d.helper.id,
               isDesignate: d.isDesignate,
               type: d.type,

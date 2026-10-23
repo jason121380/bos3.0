@@ -52,7 +52,7 @@ function ServiceCategoryCreate() {
                 },
               ],
             }))
-          )
+          ) || [] // 查詢失敗時沒有扣項卡，不整頁錯誤
           draft.customerSellSetting = idx(customerCategory.data, _ =>
             _.merchantCustomerCategory.map(data => ({
               category: data.name,

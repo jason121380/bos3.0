@@ -69,8 +69,8 @@ export default function SimpleAccordion({ children }) {
           {children}
         </div>
       </div>
-      {/* 讓出底部固定合計列的高度，最後一張卡不會被蓋住 */}
-      <div aria-hidden="true" className="h-12" />
+      {/* 讓出底部固定合計列的高度，「重試」與下方的停用原因不會被蓋住（比照掛單詳細 h-16；原本 h-12，Jason 2026/10/22 fix all） */}
+      <div aria-hidden="true" className="h-16" />
     </div>
   );
 }

@@ -87,7 +87,8 @@ export default function ProductRestockCreate() {
   }
 
   const handleAddPurchaseAndStockIn = async () => {
-    setCheckPurchaseRecords(false)
+    // 送出中停用按鈕（原本設成 false，送出中可重複按、重複建立進貨單）
+    setCheckPurchaseRecords(true)
 
     try {
       const promise = []
@@ -98,6 +99,9 @@ export default function ProductRestockCreate() {
         await Promise.all(promise)
         openSnackbar({ message: '成功新增進貨並入庫', variant: 'success' })
         history.push('/product/restock/')
+      } else {
+        openSnackbar({ message: '新增進貨失敗', variant: 'error' })
+        setCheckPurchaseRecords(false)
       }
     } catch (error) {
       openSnackbar({
@@ -119,8 +123,10 @@ export default function ProductRestockCreate() {
   }, [purchaseRecords])
 
   useEffect(() => {
-    if (!getStockInIsUsing.loading) {
-      const { purchaseStockIn } = getStockInIsUsing.data.merchantPassword
+    // 查詢失敗時 data 為 undefined：維持預設「需要密碼」，不讓整頁拋錯
+    const merchantPassword = getStockInIsUsing.data && getStockInIsUsing.data.merchantPassword
+    if (!getStockInIsUsing.loading && merchantPassword) {
+      const { purchaseStockIn } = merchantPassword
       setIsUsing({
         stockIn: purchaseStockIn.isUsing,
       })

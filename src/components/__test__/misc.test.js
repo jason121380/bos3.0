@@ -361,7 +361,8 @@ describe('GoogleAnalytics／Page（依環境變數決定是否送 GA）', () => 
     expect(gtag).toHaveBeenCalledWith('config', 'G-TEST', { page_path: '/order/create', page_name: '打帳單' })
     prod.unmount()
 
-    delete window.gtag
+    // 前一個測試的 Helmet 內嵌 script 若被 jsdom 執行，會以全域 function 宣告 gtag（不可 delete），改用指定為 undefined
+    window.gtag = undefined
     const noGtag = mount({ NODE_ENV: 'production' }, '/x', { title: '無 gtag' })
     expect(noGtag.container.firstChild).not.toBeNull()
     noGtag.unmount()

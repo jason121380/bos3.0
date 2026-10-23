@@ -183,7 +183,7 @@ export default React.memo(function SalaryEdit(props) {
             itemName: findData.itemName,
             price: findData.price,
             type: findData.type,
-            sorting: findData.sorting,
+            sorting: data.sorting,
             source: 'parameter',
           })
         } else {

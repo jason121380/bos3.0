@@ -188,7 +188,8 @@ function ServiceCategoryEdit({ match }) {
                 },
               ]
           )
-          draft.isLocked = idx(serviceDetail.data, _ => _.service.isLocked)
+          // 比照卡券／商品編輯帶入店家原本的設定值（可能是 UNSET「依系統參數設定」），不帶套用系統參數後的 isLocked
+          draft.isLocked = idx(serviceDetail.data, _ => _.service.isLockedOriginalValue)
           draft.isNoCash = idx(serviceDetail.data, _ => _.service.isNoCash)
           draft.isSpecialRakeUsing = idx(serviceDetail.data, _ => _.service.isSpecialRakeUsing)
           draft.specialRake = idx(serviceDetail.data, _ => _.service.specialRake)
@@ -384,7 +385,8 @@ function ServiceCategoryEdit({ match }) {
   useEffect(() => {
     setSaveBtn(false)
     if (!services.loading && !serviceDetail.loading) {
-      const servicesArr = idx(services, _ => _.data.services.data)
+      // 列表查詢失敗時以空陣列處理（只影響上一筆／下一筆），不整頁錯誤
+      const servicesArr = idx(services, _ => _.data.services.data) || []
       const serviceId = idx(serviceDetail.data, _ => _.service.id)
       setServicesArr(servicesArr)
       servicesArr.forEach((service, index) => {
@@ -397,7 +399,8 @@ function ServiceCategoryEdit({ match }) {
 
   
   useEffect(() => {
-    let defaultSetting = {}
+    // 把「系統預設」移到最後；沒有「系統預設」時不推入空物件（否則扣項卡讀 {}.itemSettings 整頁錯誤）
+    let defaultSetting = null
     const newService = cloneDeep(service)
     newService.serviceDeductionItems.forEach((data, index) => {
       if (data.type === '系統預設') {
@@ -405,7 +408,7 @@ function ServiceCategoryEdit({ match }) {
         newService.serviceDeductionItems.splice(index, 1)
       }
     })
-    newService.serviceDeductionItems.push(defaultSetting)
+    if (defaultSetting) newService.serviceDeductionItems.push(defaultSetting)
     setService2(newService)
     const vaild = !(service.name && service.ServiceCategoryId)
     setVaild(vaild)
@@ -414,7 +417,7 @@ function ServiceCategoryEdit({ match }) {
   useEffect(() => {
     // 計算預估實業績 完整邏輯要問後端
     const newService = cloneDeep(service)
-    let defaultSetting = {}
+    let defaultSetting = null
     if (newService.serviceDeductionItems.length > 0) {
       newService.serviceDeductionItems.forEach((data, index) => {
         if (data.type === '系統預設') {
@@ -422,7 +425,7 @@ function ServiceCategoryEdit({ match }) {
           newService.serviceDeductionItems.splice(index, 1)
         }
       })
-      newService.serviceDeductionItems.push(defaultSetting)
+      if (defaultSetting) newService.serviceDeductionItems.push(defaultSetting)
     }
     const servicePrice = newService.price
 
@@ -576,7 +579,7 @@ function ServiceCategoryEdit({ match }) {
                 </Button>
                 <Button
                   variant="secondary"
-                  disabled={serviceIndex === servicesArr.length - 1 || saveBtn || vaild}
+                  disabled={serviceIndex >= servicesArr.length - 1 || saveBtn || vaild}
                   onClick={() => handleSubmit('toNext')}
                 >
                   儲存並下一筆

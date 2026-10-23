@@ -42,12 +42,13 @@ const PaymentReport = () => {
 
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading && !customerBonusActive.loading && !businessAnalysisReportData.loading) {
-      const memberShipCardActive = isMemberShipCardActiveData.data.getIsMemberShipCardActive
-      const bonusActive = customerBonusActive.data.getIsCustomerBonusActive
-      const membershipTotal = businessAnalysisReportData.data.businessAnalysisReport.summary.membership
-      const bonusTotal = businessAnalysisReportData.data.businessAnalysisReport.summary.bonusDecountForReport
-      setIsMemberShipCardActive(memberShipCardActive || membershipTotal !== 0)
-      setBonusDisplay(bonusActive || (bonusTotal !== null && bonusTotal !== 0))
+      // 任一查詢失敗時以空資料計算，不整頁錯誤（Jason 2026/10/22）
+      const memberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
+      const bonusActive = idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive)
+      const membershipTotal = idx(businessAnalysisReportData, _ => _.data.businessAnalysisReport.summary.membership) || 0
+      const bonusTotal = idx(businessAnalysisReportData, _ => _.data.businessAnalysisReport.summary.bonusDecountForReport)
+      setIsMemberShipCardActive(Boolean(memberShipCardActive || membershipTotal !== 0))
+      setBonusDisplay(Boolean(bonusActive || (bonusTotal != null && bonusTotal !== 0)))
     }
   }, [isMemberShipCardActiveData.loading, customerBonusActive.loading, businessAnalysisReportData.loading])
 
@@ -161,7 +162,8 @@ const PaymentReport = () => {
           />
         </Toolbar>
         {!businessAnalysisReportData.loading && !isMemberShipCardActive.loading ? (
-          <Results
+          // 報表查詢失敗時不顯示表格（errorLink 已提示），不整頁錯誤（Jason 2026/10/22）
+          idx(businessAnalysisReportData, _ => _.data.businessAnalysisReport.data) && <Results
             isServiceTicketMerged={isServiceTicketMerged}
             data={idx(businessAnalysisReportData, _ => _.data.businessAnalysisReport)}
             displayReportWithMembership={displayReportWithMembership}

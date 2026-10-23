@@ -19,6 +19,8 @@ function ProfitSharing({ match }) {
   const getDeductionSetting = useFetchDeductionSetting(match.params.id)
   const getAttributionForRake = useFetchGetAttributionForRake()
   const [attributions, setAttributions] = React.useState([])
+  // 原設定已帶入畫面：之前不顯示級距、不能存檔（設定常比已在快取的類別清單晚回來；讀不到時存檔會把空白設定蓋回去）
+  const [settingLoaded, setSettingLoaded] = useState(false)
   const [profitSharing, setProfitSharing] = useState({
     id: match.params.id,
     designationUsage: false,
@@ -30,12 +32,13 @@ function ProfitSharing({ match }) {
   })
   useEffect(() => {
     if (!getAttributionForRake.loading) {
-      const data = idx(getAttributionForRake, _ => _.data.getAttributionForRake)
+      // 查詢失敗時沒有類別分頁（仍可編輯讀到的設定），不整頁錯誤
+      const data = idx(getAttributionForRake, _ => _.data.getAttributionForRake) || []
       setAttributions(data)
     }
   }, [getAttributionForRake.loading])
   useEffect(() => {
-    if (!getDeductionSetting.loading) {
+    if (!getDeductionSetting.loading && idx(getDeductionSetting, _ => _.data.getDeductionSetting)) {
       setProfitSharing(
         produce(draft => {
           draft.deductionNo = idx(getDeductionSetting, _ =>
@@ -88,6 +91,7 @@ function ProfitSharing({ match }) {
           draft.segmented = idx(getDeductionSetting, _ => _.data.getDeductionSetting.segmented)
         })
       )
+      setSettingLoaded(true)
     }
   }, [getDeductionSetting.loading])
   const handleSave = () => {
@@ -125,12 +129,12 @@ function ProfitSharing({ match }) {
         <PageHeader
           title="編輯抽成方式設定"
           actions={
-            <Button variant="primary" onClick={handleSave}>
+            <Button variant="primary" onClick={handleSave} disabled={!settingLoaded}>
               儲存
             </Button>
           }
         />
-        {!getAttributionForRake.loading ? (
+        {!getAttributionForRake.loading && settingLoaded ? (
           <Results
             profitSharing={profitSharing}
             onChange={handleSalesWayChange}

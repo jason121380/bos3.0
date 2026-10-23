@@ -60,7 +60,7 @@ export default function General({
 
   useEffect(() => {
     if (!productCategoriesData.loading) {
-      const productCategories = idx(productCategoriesData, _ => _.data.productCategories)
+      const productCategories = idx(productCategoriesData, _ => _.data.productCategories) || []
 
       setProductCategories(productCategories)
     }
@@ -76,14 +76,17 @@ export default function General({
     setProductsModalOpen(false)
     setSelectedCategorie([])
     setSelectedCategorieName([])
+    // 保留「只查已上架」（原本關閉清單後條件被換掉，商品選項變成連已下架的都列出）
     setSetting({
       keyword: '',
       categoryIds: [],
+      isPublished: true,
     })
   }
   useEffect(() => {
     if (!products.loading) {
-      const productList = idx(products, _ => _.data.products.data)
+      // 查詢失敗時 data 為 undefined：沒有商品可選，不讓整頁拋錯
+      const productList = idx(products, _ => _.data.products.data) || []
       setProductsOption(productList)
       const productsAddCount = productList.map(data => {
         return {
@@ -106,9 +109,11 @@ export default function General({
   useEffect(() => {
     if (!users.loading) {
       setPageLoading(users.loading)
-      setPickerOption(idx(users, _ => _.data.users.users))
+      setPickerOption(idx(users, _ => _.data.users.users) || [])
     }
   }, [users.loading, setPageLoading])
+
+  const productLabel = option => `${option.no === null ? '無代號' : option.no} ${option.name}`
 
   const handleInputChange = event => {
     idx(event, _ => {
@@ -133,7 +138,7 @@ export default function General({
     }
   }
 
-  const hadnleSelectProduct = (product, index, source) => {
+  const hadnleSelectProduct = (product, index) => {
     const newPicking = cloneDeep(picking)
     if (product === null) {
       newPicking.productList.forEach((data, index1) => {
@@ -150,46 +155,21 @@ export default function General({
         }
       })
     } else {
-      if (source === 'notModal') {
-        newPicking.productList.forEach((data, index1) => {
-          if (index1 === index) {
-            newPicking.productList[index] = {
-              ...newPicking.productList[index],
-              price: product.employeePrice,
-              cost: product.cost,
-              unit: product.stockUnit,
-              productName: product.name,
-              productNo: product.no,
-              total: product.employeePrice * 1,
-              count: 1,
-            }
+      // 商品清單彈窗不經過這裡（直接改整張領料單），只有本列下拉選商品
+      newPicking.productList.forEach((data, index1) => {
+        if (index1 === index) {
+          newPicking.productList[index] = {
+            ...newPicking.productList[index],
+            price: product.employeePrice,
+            cost: product.cost,
+            unit: product.stockUnit,
+            productName: product.name,
+            productNo: product.no,
+            total: product.employeePrice * 1,
+            count: 1,
           }
-        })
-      } else {
-        newPicking.productList.forEach((data, index1) => {
-          if (index1 === index) {
-            newPicking.productList[index] = {
-              ...newPicking.productList[index],
-              price: product.employeePrice,
-              cost: product.cost,
-              unit: product.stockUnit,
-              productName: product.name,
-              productNo: product.no,
-              total: product.employeePrice * 1,
-              count: 1,
-            }
-          }
-        })
-        newPicking.productList.push({
-          productName: '',
-          productNo: '',
-          price: 0,
-          count: 0,
-          total: 0,
-          cost: 0,
-          unit: '',
-        })
-      }
+        }
+      })
     }
     setFocus('price')
     priceRef.current.focus()
@@ -355,14 +335,10 @@ export default function General({
                 onFocus={() => setTabIndex(index)}
                 inputValue={data.productName || productKeyword}
                 autoHighlight
-                getOptionLabel={option =>
-                  (option.no !== null && option.no !== '' && option.no.includes(productKeyword)) ||
-                    option.name.includes(productKeyword)
-                    ? `${option.no === null ? '無代號' : option.no} ${option.name}`
-                    : `${option.no === null ? '無代號' : option.no} ${option.name}`
-                }
+                // 原本以關鍵字分兩支，但兩支組出的文字相同；選項顯示也與此相同
+                getOptionLabel={productLabel}
                 renderOption={(props, option) =>
-                  <li {...props} key={option.id}>{`${option.no === null && option.no !== '' ? '無代號' : option.no} ${option.name}`}</li>
+                  <li {...props} key={option.id}>{productLabel(option)}</li>
                 }
                 onKeyDown={event => {
                   if (event.key === 'Enter' && picking.productList[index].productName !== '') {
@@ -370,7 +346,7 @@ export default function General({
                     setFocus('price')
                   }
                 }}
-                onChange={(_event, value) => hadnleSelectProduct(value, index, 'notModal')}
+                onChange={(_event, value) => hadnleSelectProduct(value, index)}
                 renderInput={params => (
                   <TextField
                     {...params}
@@ -556,7 +532,6 @@ export default function General({
           selectedCategorie={selectedCategorie}
           selectedCategorieName={selectedCategorieName}
           setSetting={setSetting}
-          onSelectProduct={hadnleSelectProduct}
           productListLength={picking.productList.length}
           setPicking={setPicking}
           picking={picking}

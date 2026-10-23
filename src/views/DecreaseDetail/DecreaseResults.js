@@ -28,10 +28,34 @@ function Results({
       setSummary2(summary2)
       setPointSummary2(pointSummary2)
     }
-    if (results.length > 0) {
-      const excelData = []
-      if (beenAssistedDesigner === undefined) {
-        results.forEach(order => {
+    // 只有在有紀錄時才會顯示本元件（頁面在沒有紀錄時顯示「無資料」）
+    const excelData = []
+    if (beenAssistedDesigner === undefined) {
+      results.forEach(order => {
+        excelData.push({
+          日期: format(new Date(order.date), 'yyyy/MM/dd'),
+          帳單編號: `#${order.orderNo}`,
+          ' 服務項目(互助項目)': `${order.service.name}(${order.helperType})`,
+          設計師: order.designer.name,
+          互助人: order.helper.name,
+          '互助換算金額(方式)': `${order.helperFee}(${order.helperMoneyGivenWay})`,
+          點數: order.helperPoint,
+          互助扣項方式: order.helperDeductionType === 'onSales'
+            ? '依業績'
+            : order.helperDeductionType === 'onSalary'
+              ? '依薪水'
+              : '無扣項',
+        })
+      })
+      excelData.push({
+        日期: '合計',
+        '互助換算金額(方式)': summary,
+        點數: pointSummary,
+      })
+    } else {
+      results
+        .filter(data => data.designer.id === beenAssistedDesigner)
+        .forEach(order => {
           excelData.push({
             日期: format(new Date(order.date), 'yyyy/MM/dd'),
             帳單編號: `#${order.orderNo}`,
@@ -47,45 +71,22 @@ function Results({
                 : '無扣項',
           })
         })
-        excelData.push({
-          日期: '合計',
-          '互助換算金額(方式)': summary,
-          點數: pointSummary,
-        })
-      } else if (beenAssistedDesigner != null) {
-        results
-          .filter(data => data.designer.id === beenAssistedDesigner)
-          .forEach(order => {
-            excelData.push({
-              日期: format(new Date(order.date), 'yyyy/MM/dd'),
-              帳單編號: `#${order.orderNo}`,
-              ' 服務項目(互助項目)': `${order.service.name}(${order.helperType})`,
-              設計師: order.designer.name,
-              互助人: order.helper.name,
-              '互助換算金額(方式)': `${order.helperFee}(${order.helperMoneyGivenWay})`,
-              點數: order.helperPoint,
-              互助扣項方式: order.helperDeductionType === 'onSales'
-                ? '依業績'
-                : order.helperDeductionType === 'onSalary'
-                  ? '依薪水'
-                  : '無扣項',
-            })
-          })
-        excelData.push({
-          日期: '合計',
-          '互助換算金額(方式)': summary2,
-          點數: pointSummary2,
-        })
-      }
-      setExcelData(excelData)
+      excelData.push({
+        日期: '合計',
+        '互助換算金額(方式)': summary2,
+        點數: pointSummary2,
+      })
     }
+    setExcelData(excelData)
   }, [results, beenAssistedDesigner, summary2, pointSummary2])
 
+  // 點數顯示截短小數（最多 4 個字元），但不可截掉整數位數（原本 12345 會顯示成 1234）
   const pointFloatDisplay = point => {
     if (point.toString().length <= 3) {
       return point
     } else {
-      return point.toString().substring(0, 4)
+      const intLength = Math.trunc(point).toString().length
+      return point.toString().substring(0, Math.max(4, intLength))
     }
   }
 

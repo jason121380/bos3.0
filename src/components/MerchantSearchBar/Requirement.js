@@ -45,14 +45,16 @@ export default function ({
 
   useEffect(() => {
     if (!referenceLazyData.loading && referenceLazyData.data) {
-      const data = idx(referenceLazyData, _ => _.data.getCustomerReference)
+      // 後端回 null（沒有來源）時以空清單顯示，Autocomplete 拿到 null 會整頁壞（2026/10/22）
+      const data = idx(referenceLazyData, _ => _.data.getCustomerReference) || []
       setSourceOption(data)
     }
   }, [referenceLazyData.loading])
 
   useEffect(() => {
     if (!accountingTypeData.loading) {
-      const payType = idx(accountingTypeData, _ => _.data.getAccountingType)
+      // 查詢失敗或回 null 時以空清單顯示（同上）
+      const payType = idx(accountingTypeData, _ => _.data.getAccountingType) || []
       setPayType(payType)
     }
   }, [accountingTypeData.loading])

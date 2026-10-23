@@ -6,9 +6,7 @@ import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCard
 import useFetchGetIsCustomerBonusActive from 'hooks/useFetchGetIsCustomerBonusActive'
 import useFetchGetisDailyCheckoutBlockedByDraftOrder from 'hooks/useFetchGetisDailyCheckoutBlockedByDraftOrder'
 import idx from 'idx'
-import produce from 'immer'
 import { useState, useEffect } from 'react'
-import pagenationLabel from './../../helper/pagenationLabel'
 import DateSelector from 'components/DateSelector'
 import { PageHeader, Toolbar } from 'ui/page-header'
 
@@ -24,7 +22,7 @@ function CheckoutDaily() {
   })
   const [isMemberShipCardActive, setIsMemberShipCardActive] = useState(false)
   const [bonusDisplay, setBonusDisplay] = useState(false)
-  const [resultsSetting, setResultsSetting] = useState({
+  const [resultsSetting] = useState({
     dailyMoneyFlowReport: {
       pageLimit: 1000,
       pageOffset: 0,
@@ -58,7 +56,8 @@ function CheckoutDaily() {
         isMemberShipCardActiveData,
         _ => _.data.getIsMemberShipCardActive
       )
-      const membership = dailyMoneyFlowReport.data.dailyMoneyFlowReport.summary.membership !== 0
+      // 查詢失敗時不整頁錯誤（日結紀錄區塊本身不顯示），Jason 2026/10/22
+      const membership = (idx(dailyMoneyFlowReport, _ => _.data.dailyMoneyFlowReport.summary.membership) || 0) !== 0
       setIsMemberShipCardActive(isMemberShipCardActive || membership)
     }
   }, [isMemberShipCardActiveData.loading, dailyMoneyFlowReport.loading])
@@ -69,27 +68,10 @@ function CheckoutDaily() {
         customerBonusActive,
         _ => _.data.getIsCustomerBonusActive
       )
-      const bonus = dailyMoneyFlowReport.data.dailyMoneyFlowReport.summary.bonusDecountForReport !== 0
+      const bonus = (idx(dailyMoneyFlowReport, _ => _.data.dailyMoneyFlowReport.summary.bonusDecountForReport) || 0) !== 0
       setBonusDisplay(bonusActive || bonus)
     }
   }, [customerBonusActive.loading, dailyMoneyFlowReport.loading])
-
-  const handlePageChange = ({ page, key }) => {
-    setResultsSetting(
-      produce(draft => {
-        draft[key].pageOffset = page
-      })
-    )
-  }
-
-  const handleRowsPerPageChange = ({ event, key }) => {
-    setResultsSetting(
-      produce(draft => {
-        draft[key].pageLimit = idx(event, _ => _.target.value)
-        draft[key].pageOffset = 0
-      })
-    )
-  }
 
   return (
     <Page className="ui-root" title="每日結帳">
@@ -113,13 +95,6 @@ function CheckoutDaily() {
                 pageSetting={_.data.waitCloseOrderDate}
                 checkoutStatus={dailyCheckoutBlockedByDraftOrder}
                 loading={waitCloseOrderDate.loading || getisDailyCheckoutBlockedByDraftOrder.loading}
-                onPageChange={(_event, newPage) =>
-                  handlePageChange({ page: newPage, key: 'waitCloseOrderDate' })
-                }
-                onRowsPerPageChange={event =>
-                  handleRowsPerPageChange({ event, key: 'waitCloseOrderDate' })
-                }
-                pagenationLabel={pagenationLabel}
               />
             )
         )}
@@ -133,14 +108,7 @@ function CheckoutDaily() {
                 pageSetting={pageSetting}
                 isMemberShipCardActive={isMemberShipCardActive}
                 bonusDisplay={bonusDisplay}
-                onPageChange={(_event, newPage) =>
-                  handlePageChange({ page: newPage, key: 'dailyMoneyFlowReport' })
-                }
-                onRowsPerPageChange={event =>
-                  handleRowsPerPageChange({ event, key: 'dailyMoneyFlowReport' })
-                }
                 waitCloseOrderDateLoading={waitCloseOrderDate.loading}
-                pagenationLabel={pagenationLabel}
               />
             )
         )}

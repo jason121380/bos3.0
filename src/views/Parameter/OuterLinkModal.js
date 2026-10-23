@@ -71,23 +71,21 @@ const OuterLinkModal = ({
     setIsClick(true)
     if (handleCheckData(createData)) return
     try {
-      const returnData = isCus ? 
-        await createCusLink({
+      // mutation 失敗會拋錯（進 catch），成功一定有回傳
+      await (isCus ?
+        createCusLink({
           name: createData.name,
           url:  createData.url,
           isTop: createData.isTop
         })
-        : await createLink({
+        : createLink({
           name: createData.name,
           url:  createData.url,
           userAuthIds: createData.userAuthIds.map(d => d.id)
-        })
-
-      if (returnData) {
-        openSnack('新增成功', 'success')
-        refetchLink()
-        onModalClose()
-      }
+        }))
+      openSnack('新增成功', 'success')
+      refetchLink()
+      onModalClose()
     } catch (error) {
       openSnack(error.message, 'error')
     }
@@ -97,25 +95,22 @@ const OuterLinkModal = ({
     setIsClick(true)
     if (handleCheckData(updateData)) return
     try {
-      const returnData = isCus ? 
-        await updateCusLink({
+      await (isCus ?
+        updateCusLink({
           id: updateData.id,
           name: updateData.name,
           url:  updateData.url,
           isTop:  updateData.isTop
         })
-        : await updateLink({
+        : updateLink({
           id: updateData.id,
           name: updateData.name,
           url:  updateData.url,
           userAuthIds: updateData.userAuthIds.map(d => d.id)
-        })
-        
-      if (returnData) {
-        openSnack('儲存成功', 'success')
-        refetchLink()
-        onModalClose()
-      }
+        }))
+      openSnack('儲存成功', 'success')
+      refetchLink()
+      onModalClose()
     } catch (error) {
       openSnack(error.message, 'error')
     }
@@ -124,12 +119,10 @@ const OuterLinkModal = ({
   const handleDeleteLink = async() => {
     setIsClick(true)
     try {
-      const returnData = isCus ? await deleteCusLink(updateData.id) : await deleteLink(updateData.id)
-      if (returnData) {
-        openSnack('刪除成功', 'success')
-        refetchLink()
-        onModalClose()
-      }
+      await (isCus ? deleteCusLink(updateData.id) : deleteLink(updateData.id))
+      openSnack('刪除成功', 'success')
+      refetchLink()
+      onModalClose()
     } catch (error) {
       openSnack(error.message, 'error')
     }

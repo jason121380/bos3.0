@@ -105,6 +105,8 @@ export default function MemberCardEdit({ match }) {
   useEffect(() => {
     if (!membership.loading) {
       const tmp = idx(membership, _ => _.data.membership)
+      // 查詢失敗或查無此卡時不帶入（原本讀 undefined.uuid 整頁進入錯誤畫面）
+      if (!tmp) return
       setSubmitValue(
         produce(draft => {
           draft.itemUUID = tmp.uuid
@@ -119,7 +121,8 @@ export default function MemberCardEdit({ match }) {
           }
           draft.employeePrice = tmp.employeePrice
           draft.commission = tmp.commission
-          draft.MembershipCategoryUUID = tmp.membershipCategory.uuid
+          // 未分類的會員卡（membershipCategory 為 null）類別留空（原本讀 null.uuid 整頁進入錯誤畫面）
+          draft.MembershipCategoryUUID = tmp.membershipCategory ? tmp.membershipCategory.uuid : ''
           draft.isAvailableForSale = tmp.isAvailableForSale
           draft.isLocked = tmp.isLocked
           draft.effecitveDay = tmp.effecitveDay

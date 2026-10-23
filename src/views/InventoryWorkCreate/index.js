@@ -3,7 +3,7 @@ import { useFetchProductCategoriesInCreatePicking } from 'hooks/useFetchProductC
 import useFetchSetCreateInventory from 'hooks/useFetchSetCreateInventory'
 import { useFetchGetProductInventory, useFetchGetProductInventoryLazy } from 'hooks/useFetchGetProductInventoryList'
 import { openSnackbar } from 'elements/snackbars'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useHistory } from 'react-router'
 import idx from 'idx'
 import cloneDeep from 'lodash/cloneDeep'
@@ -25,13 +25,19 @@ function InventoryWorkCreate() {
   const [isClick, setIsClick] = useState(false)
   const [sort, setSort] = useState('inventory')
 
+  // 只在第一次載入時建立盤點清單（之後「更新即時庫存」會讓這支查詢也重新回應，原本會把已填的盤點數量全部蓋回庫存數）
+  const loadedRef = useRef(false)
   useEffect(() => {
-    if (!products.loading) {
+    if (!products.loading && !loadedRef.current) {
+      // 查詢失敗時 data 為 undefined：當作沒有商品，不讓整頁拋錯
       const productsData = idx(products, _ => _.data.productInventoryList)
+      if (!productsData) return
+      loadedRef.current = true
       const data = productsData.map(({ productId, productNo, productName, count, productCategoryId }) => ({
         productId, productNo, productName, currentCount: count, productCategoryId, inventoryCount: count < 0 ? 0 : count
       }))
-      setInventoryData(data)
+      // 依目前選的排序（預設「庫存」）顯示，與排序鈕的選取狀態一致
+      setInventoryData(sortData(data, sort))
     }
   }, [products.loading])
 
@@ -43,10 +49,11 @@ function InventoryWorkCreate() {
   useEffect(() => {
     if (!productInventoryData.loading && productInventoryData.data) {
       const newData = cloneDeep(inventoryData)
-      const productsData = idx(products, _ => _.data.productInventoryList)
+      // 以「更新即時庫存」查回的最新庫存更新目前庫存（已不在清單的商品維持原數字）
+      const productsData = idx(productInventoryData, _ => _.data.productInventoryList) || []
       newData.forEach(({ productId }, index, arr) => {
         const findData = productsData.find(d => d.productId === productId)
-        arr[index].currentCount = findData.count
+        if (findData) arr[index].currentCount = findData.count
       })
       setInventoryData(newData)
     }
@@ -131,7 +138,7 @@ function InventoryWorkCreate() {
             inventoryData={inventoryData}
             setInventoryData={setInventoryData}
             handleCreateIventory={handleCreateIventory}
-            categoriesData={productCategories.data.productCategories}
+            categoriesData={idx(productCategories, _ => _.data.productCategories) || []}
           />
         }
       </div>

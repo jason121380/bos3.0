@@ -197,7 +197,8 @@ function Summary({ stayInCreateAccount, ...rest }) {
     return () => {
       window.removeEventListener('keydown', keyDownSubmit)
     }
-  }, [accountingSubject, amount, inoutType])
+    // F8 送出時要讀到最新的日期、登錄者、收付方式、關係人、備註：這些改變時也重新註冊（Jason 2026/10/22）
+  }, [accountingSubject, amount, inoutType, date, walletType, userId, relationUserId, remark, stayInCreateAccount, location])
 
   const employeeOptions =
     idx(users, _ =>

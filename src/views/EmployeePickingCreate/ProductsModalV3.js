@@ -17,21 +17,18 @@ function ProductsModal({
   setSelectedCategorie,
   setSelectedCategorieName,
   selectedCategorie,
-  selectedCategorieName,
   setSetting,
   setPicking,
   picking,
 }) {
-  const [categoryNameForDisplay, setCategoryNameForDisplay] = useState('')
   const [selectedCategorieId, setSelectedCategorieId] = useState([])
-  const [clickedProduct, setClickedProduct] = useState([])
   const [selectedProducts, setSelectedProducts] = useState([])
 
   const handleClickCategorie = (categorieId, categorieName) => {
     const tmpArr = []
     if (categorieId) {
       productList
-        .filter(product => product.productCategory.id === categorieId)
+        .filter(product => product.productCategory !== null && product.productCategory.id === categorieId)
         .map(product => tmpArr.push(product))
     } else {
       productList.map(product => tmpArr.push(product))
@@ -59,37 +56,6 @@ function ProductsModal({
       setSelectedCategorieId(productList)
     }
   }, [productList.loading])
-  useEffect(() => {
-    if (!productsModalOpen) {
-      setClickedProduct([])
-    }
-  }, [productsModalOpen])
-
-  useEffect(() => {
-    if (!productList.loading) {
-      if (selectedCategorieName.length === 0) return
-      setCategoryNameForDisplay('')
-      if (selectedCategorieName.length === 1) {
-        selectedCategorieName.forEach(categoryName => {
-          setCategoryNameForDisplay(pre => {
-            return `${pre}${categoryName}`
-          })
-        })
-      } else {
-        selectedCategorieName.forEach((categoryName, index) => {
-          if (index === 0) {
-            setCategoryNameForDisplay(pre => {
-              return `${pre}${categoryName}`
-            })
-          } else {
-            setCategoryNameForDisplay(pre => {
-              return `${pre},${categoryName}`
-            })
-          }
-        })
-      }
-    }
-  }, [selectedCategorieName, productList.loading])
   const handleProductInputOnChange = (e, index, id) => {
     const productForModified = cloneDeep(selectedCategorieId)
     switch (e.target.name) {
@@ -98,10 +64,10 @@ function ProductsModal({
         productForModified[index].total = productForModified[index].price * productForModified[index].count
         const existedIndex = selectedProducts.map(d => d.productId).indexOf(id)
         if (existedIndex !== -1) {
-          selectedProducts[existedIndex].price = parseInt(e.target.value, 10) || 1
+          // 已勾選的商品與清單上顯示的價格一致（原本 0 會變成 1，與「先改價格再勾選」的結果不同）
+          selectedProducts[existedIndex].price = productForModified[index].price
 
-          selectedProducts[existedIndex].total =
-            parseInt(e.target.value, 10) * selectedProducts[existedIndex].count
+          selectedProducts[existedIndex].total = productForModified[index].price * selectedProducts[existedIndex].count
         }
         break
       case 'count':
@@ -202,7 +168,7 @@ function ProductsModal({
       <DialogContent size="md" className="EmployeePickingCreateProductsModal max-w-[700px]" hideClose aria-describedby={undefined}>
         <DialogHeader className="flex-row items-center justify-between pr-6">
           <DialogTitle>
-            {selectedCategorieName.length === 0 ? '所有商品' : `${categoryNameForDisplay}類商品`}
+            所有商品
           </DialogTitle>
           <div className="flex items-center gap-2">
             <Button
@@ -324,13 +290,8 @@ function ProductsModal({
 }
 
 ProductsModal.propTypes = {
-  onClose: PropTypes.func,
-  open: PropTypes.bool,
-}
-
-ProductsModal.defaultProps = {
-  open: false,
-  onClose: () => { },
+  productsModalOpen: PropTypes.bool,
+  closeModal: PropTypes.func,
 }
 
 export default ProductsModal

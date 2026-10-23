@@ -69,9 +69,9 @@ function Results({ reportData }) {
                 {productReserveChecks[0].reserveChecks.map((d, i) => (
                   <TableRow key={`${d.title}-${i}`}>
                     <TableCell className={`${STICKY_COL} ${GROUP_END} bg-background`}>{d.title}</TableCell>
-                    {productReserveChecks.map(({ reserveChecks }) => {
+                    {productReserveChecks.map(({ id, reserveChecks }) => {
                       return (
-                        <Fragment>
+                        <Fragment key={id}>
                           <TableCell className={`${SEP} text-center tabular-nums text-accent`}>{reserveChecks[i].isCreated ? reserveChecks[i].in : '-'}</TableCell>
                           <TableCell className={`${SEP} text-center tabular-nums text-danger`}>{reserveChecks[i].isCreated ? reserveChecks[i].out : '-'}</TableCell>
                           <TableCell className={`${GROUP_END} text-center tabular-nums`}>{reserveChecks[i].isCreated ? reserveChecks[i].balance : '-'}</TableCell>

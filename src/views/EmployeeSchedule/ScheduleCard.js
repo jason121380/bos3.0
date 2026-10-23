@@ -156,19 +156,26 @@ export default function ScheduleCard({
     const newScheduleCard = cloneDeep(scheduleCard)
     const clickedRowData = rowData
     if (rowIndex === 0) {
+      let swapped = false
       newScheduleCard.forEach((data, index) => {
         if (index === cardIndex) {
-          for (let i = 1; i <= data.scheduleRow.length; i++) {
+          for (let i = 1; i < data.scheduleRow.length; i++) {
             if (!data.scheduleRow[i].timeAdded) {
               data.scheduleRow[rowIndex] = data.scheduleRow[i]
               data.scheduleRow[i] = {
                 ...clickedRowData,
               }
+              swapped = true
               break
             }
           }
         }
       })
+      // 後面都是已標記的人：沒有可交換的人，不送出並恢復按鈕（Jason 2026/10/22 fix all）
+      if (!swapped) {
+        setDisableButton(false)
+        return
+      }
     } else if (
       rowIndex === newScheduleCard[cardIndex].scheduleRow.length - 1 &&
       newScheduleCard[cardIndex].scheduleRow.length - 1 !== 0
@@ -324,11 +331,11 @@ export default function ScheduleCard({
           data.scheduleRow = [...arr, lastData]
         } else {
           if (
-            !data.scheduleRow[data.scheduleRow.length - 1].timeAddd &&
+            !data.scheduleRow[data.scheduleRow.length - 1].timeAdded &&
             data.scheduleRow[data.scheduleRow.length - 1].time === 0
           ) {
+            // 最後一位比照中間的人：只記下時間、不標記（Jason 2026/10/22「照建議」）
             data.scheduleRow[data.scheduleRow.length - 1].time = new Date().getTime()
-            data.scheduleRow[data.scheduleRow.length - 1].timeAdd = true
           }
         }
       }

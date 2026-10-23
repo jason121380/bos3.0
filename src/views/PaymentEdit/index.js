@@ -27,7 +27,8 @@ function ServiceCategoryEdit(props) {
     isNoCash: false,
   })
   React.useEffect(() => {
-    if (!paymentDetail.loading) {
+    // 查詢失敗（或查不到）時不帶入，以空表單顯示、不整頁錯誤（Jason 2026/10/22）
+    if (!paymentDetail.loading && idx(paymentDetail, _ => _.data.merchantPayWay)) {
       setPayment(
         produce(draft => {
           draft.type = paymentDetail.data.merchantPayWay.type

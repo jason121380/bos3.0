@@ -8,8 +8,7 @@ import { Add as AddIcon, DeleteForever as DeleteForeverIcon } from 'ui/icons'
 // 不分指定：總業績級距
 export function renderNonSegmentedNonDistinguish({ profitSharing, deductionIndex, handleAddSetDeductionNum, handleDeleteSetDeductionNum, handleNonSegmentedThresholdInput, handleNonSegmentedRakeInput }) {
   return (
-    profitSharing.nonSegmented.length > 0 
-    && profitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.map(
+    profitSharing.nonSegmented[deductionIndex].rakeData.nonDistinguish.map(
       (data, index) => (
         <div className="mb-2.5 flex items-center" key={index}>
           <span className="ml-5 whitespace-nowrap text-body text-text-secondary">

@@ -4,7 +4,7 @@
 // 已修正（Jason 2026/10/22 fix all）：原本「取消／關閉」與動作鈕共用 btnDisabled，後端沒回 id 時一直停用，只能按 Esc／點背景關；
 // 比照 components/ReservationCalendar 的同名元件改為只在等待回應時停用。
 // hooks 以替身回應（不連後端、不改真實預約）。
-import { act, cleanup, fireEvent, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import React from 'react'
 
 import { renderPage } from '__tests__/testkit.test'
@@ -115,5 +115,46 @@ describe('NewChoseEvent（單日預約紀錄）：「取消／關閉」只在等
     await act(async () => pending.reject(new Error('失敗')))
     expect(actionButton('未出席')).not.toBeDisabled()
     expect(screen.getByRole('button', { name: '關閉' })).not.toBeDisabled()
+  })
+})
+
+// 已修正（Jason 2026/10/22 fix all）：審核窗的「接受預約」「取消預約」列原本送出中沒有停用，可重複送出；
+// 改為送出中（pending）停用，後端回應後恢復
+describe('NewChoseEvent（單日預約紀錄）審核窗：接受／取消預約送出中停用', () => {
+  it.each([['接受預約', true], ['取消預約', false]])('%s：送出中兩列都停用、不會重複送出；回應後恢復', async (text, isApproval) => {
+    const pending = deferred()
+    mockApi.verifyBooking = jest.fn(() => pending.promise)
+    renderEvent({ modaltype: 'orderCheck' })
+    fireEvent.click(actionButton(text))
+    fireEvent.click(actionButton(text))
+    expect(mockApi.verifyBooking).toHaveBeenCalledTimes(1)
+    expect(mockApi.verifyBooking).toHaveBeenCalledWith({ orderId: 'b1', isApproval, isFromPC: true, password: '' })
+    expect(actionButton('接受預約')).toBeDisabled()
+    expect(actionButton('取消預約')).toBeDisabled()
+    await act(async () => pending.resolve({ data: { verifyBooking: {} } }))
+    expect(actionButton('接受預約')).not.toBeDisabled()
+    expect(actionButton('取消預約')).not.toBeDisabled()
+  })
+})
+
+// 已修正（Jason 2026/10/22 fix all）：取消預約密碼窗的「取消」原本與「確認」共用 btnDisabled，後端沒回 id 時一直停用、關不掉；
+// 改為「取消」只在送出中停用（PasswordDialog 的 cancelDisabled），「確認」維持原行為（結果不明時停用，避免重複送出）
+describe('NewChoseEvent（單日預約紀錄）取消預約密碼窗', () => {
+  it('送出中「取消」「確認」都停用；後端沒回 id 時「取消」可按並關窗、「確認」維持停用', async () => {
+    const pending = deferred()
+    mockApi.verifyBooking = jest.fn(() => pending.promise)
+    renderEvent({ modaltype: 'orderCheck', cancelPasswordUsing: true })
+    fireEvent.click(actionButton('取消預約'))
+    const dialog = screen.getByRole('dialog')
+    fireEvent.change(dialog.querySelector('input'), { target: { value: '1234' } })
+    fireEvent.click(within(dialog).getByRole('button', { name: '確認' }))
+    expect(mockApi.verifyBooking).toHaveBeenCalledWith({ orderId: 'b1', isApproval: false, isFromPC: true, password: '1234' })
+    expect(within(dialog).getByRole('button', { name: '取消' })).toBeDisabled()
+    expect(within(dialog).getByRole('button', { name: '確認' })).toBeDisabled()
+    await act(async () => pending.resolve({ data: { verifyBooking: {} } }))
+    expect(within(dialog).getByRole('button', { name: '確認' })).toBeDisabled()
+    expect(within(dialog).getByRole('button', { name: '取消' })).not.toBeDisabled()
+    fireEvent.click(within(dialog).getByRole('button', { name: '取消' }))
+    await wait(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 })

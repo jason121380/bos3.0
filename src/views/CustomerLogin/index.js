@@ -33,9 +33,16 @@ export default function Reservation(props) {
   const useGetQueryStringValueRef = React.useRef(getQueryStringValue)
 
   React.useEffect(() => {
-    const customer = localStorage.getItem('customer') || ''
+    // localStorage 存的是 JSON 字串：解析後再讀 userCode；導向寫法與登入成功後相同
+    // （原本直接讀字串的 userCode，已登入的顧客從不自動導回；Jason 2026/10/22 fix all）
+    let customer = null
+    try {
+      customer = JSON.parse(localStorage.getItem('customer'))
+    } catch (error) {
+      customer = null
+    }
     if (customer && customer.userCode) {
-      history.push(`/${useGetQueryStringValueRef.current('redirect')}`)
+      history.push(`${useGetQueryStringValueRef.current('redirect')}`)
     }
   }, [history])
 

@@ -1,15 +1,11 @@
 import Page from 'components/Page'
-import SearchBar from 'components/SearchBar'
 import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchServices from 'hooks/useFetchServices'
 import idx from 'idx'
 import produce from 'immer'
 import React, { useState, useEffect } from 'react'
 import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
-import { Button } from 'ui/button'
-import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
-import { cn } from 'ui/utils'
 
 import Results from './Results'
 
@@ -20,10 +16,7 @@ function Services() {
     keyword: '',
     categoryIds: [],
   })
-  const [showFilter, setShowFilter] = useState(false)
-  const [serviceCategories, setServiceCategories] = useState([])
   const [services, setServices] = useState()
-  const [selectedCategorie, setSelectedCategorie] = useState([])
 
   const servicesData = useFetchServices(pageSetting)
   const serviceCategoriesData = useFetchServiceCategories()
@@ -31,31 +24,10 @@ function Services() {
   useEffect(() => {
     if (!serviceCategoriesData.loading && !servicesData.loading) {
       const services = idx(servicesData, _ => _.data.services)
-      const serviceCategories = idx(serviceCategoriesData, _ => _.data.serviceCategories)
       setServices(services)
-      setServiceCategories(serviceCategories)
     }
   }, [serviceCategoriesData.loading, servicesData.loading])
 
-  const handleClickCategorie = categorieId => {
-    setSelectedCategorie([categorieId])
-    setPageSetting(pre => {
-      return {
-        ...pre,
-        categoryIds: [categorieId],
-      }
-    })
-  }
-
-  const handleClearCategorie = () => {
-    setSelectedCategorie([])
-    setPageSetting(pre => {
-      return {
-        ...pre,
-        categoryIds: [],
-      }
-    })
-  }
   const handlePageChange = ({ value, key }) => {
     setPageSetting(
       produce(draft => {
@@ -65,16 +37,17 @@ function Services() {
   }
 
   const handleRowsPerPageChange = event => {
+    const pageLimit = idx(event, _ => _.target.value)
     setPageSetting(
       produce(draft => {
-        draft.pageLimit = idx(event, _ => _.target.value)
+        draft.pageLimit = pageLimit
         draft.pageOffset = 0
       })
     )
   }
   return (
     <Page className="ui-root" title="服務項目設定">
-      {/* 舊版的篩選開關以 secondaryAction 傳入，但 AdminPageHeader 不支援這個 prop，按鈕從未顯示；維持原行為 */}
+      {/* 舊版的篩選區（關鍵字、服務類別）開關從未接上、永遠不顯示，已刪除（2026/10/22）；服務類別查詢仍保留在載入條件中 */}
       <AdminPageHeader
         title="服務項目設定"
         primaryAction={{
@@ -83,48 +56,6 @@ function Services() {
         }}
       />
 
-      {showFilter && (
-        <Card className="mb-6 flex flex-col gap-4 px-5 py-4">
-          <SearchBar
-            onSearch={event =>
-              handlePageChange({
-                key: 'keyword',
-                value: event,
-              })
-            }
-          />
-          <div className="flex flex-col gap-2">
-            <div className="divText text-caption text-text-secondary">點選服務類別進行篩選</div>
-            <div className="flex flex-wrap items-center gap-2">
-              {serviceCategories.map(serviceCategorie => (
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  aria-pressed={selectedCategorie.indexOf(serviceCategorie.id) !== -1}
-                  className={cn(
-                    'rounded-md',
-                    selectedCategorie.indexOf(serviceCategorie.id) !== -1
-                      ? 'bg-accent/8 text-accent hover:bg-accent/15'
-                      : 'bg-transparent text-text-secondary shadow-[inset_0_0_0_1px_rgb(var(--border))] hover:bg-surface-hover'
-                  )}
-                  onClick={() => handleClickCategorie(serviceCategorie.id, serviceCategorie.name)}
-                  key={serviceCategorie.id}
-                >
-                  {serviceCategorie.name}
-                </Button>
-              ))}
-              <Button
-                size="sm"
-                variant="ghost"
-                className="text-danger hover:bg-danger/8"
-                onClick={handleClearCategorie}
-              >
-                清除
-              </Button>
-            </div>
-          </div>
-        </Card>
-      )}
       {!servicesData.loading ?
         services !== undefined && (
           <Results

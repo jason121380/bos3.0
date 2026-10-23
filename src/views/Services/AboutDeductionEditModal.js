@@ -350,15 +350,18 @@ function AboutDeductionEditModal({
                             <Trash2 strokeWidth={1.75} />
                           </Button>
                         )}
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-text-secondary"
-                          aria-label="新增扣項"
-                          onClick={() => handleAddDeductionContent(data.type, content.deductionOrder)}
-                        >
-                          <Plus strokeWidth={1.75} />
-                        </Button>
+                        {/* 只有最後一列可新增（比照新增頁），避免從中間列新增產生重複的順序編號 */}
+                        {index === data.itemSettings.length - 1 && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-text-secondary"
+                            aria-label="新增扣項"
+                            onClick={() => handleAddDeductionContent(data.type, content.deductionOrder)}
+                          >
+                            <Plus strokeWidth={1.75} />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   )
@@ -380,13 +383,12 @@ function AboutDeductionEditModal({
 
 AboutDeductionEditModal.propTypes = {
   css: PropTypes.string,
-  onClose: PropTypes.func,
+  onClose: PropTypes.func.isRequired,
   open: PropTypes.bool,
 }
 
 AboutDeductionEditModal.defaultProps = {
   open: false,
-  onClose: () => { },
 }
 
 export default AboutDeductionEditModal

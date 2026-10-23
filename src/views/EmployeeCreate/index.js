@@ -44,8 +44,13 @@ function ServiceCategoryCreate() {
             jobTitle: '',
             pointValue: 0,
           }]
-      ))
-      const point = idx(merchantJobTitlePoint.data, _ => _.merchantJobTitlePoint)
+      // 人員身分查詢失敗時以空清單處理（只有「未設定」），仍可新增員工（Jason 2026/10/22；原本整頁錯誤）
+      ) || [{
+        id: '',
+        jobTitle: '',
+        pointValue: 0,
+      }])
+      const point = idx(merchantJobTitlePoint.data, _ => _.merchantJobTitlePoint) || []
       point.forEach(d => {
         if (d.isDefaultValue === true) {
           setEmployee({

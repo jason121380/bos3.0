@@ -16,6 +16,10 @@ function Results({ className, categories, ...rest }) {
   // 被選的checkbox
   const [selectedCategories, setSelectedCcategories] = useState([])
 
+  // 可勾選的分類（停用中的不能勾）：表頭全選以此判斷是否已全選（Jason 2026/10/22 授權修正：原本與含停用的總數比，有停用分類時永遠不會全選、再按也無法取消）
+  const selectableCount = categories.filter(d => d.isUsing).length
+  const isAllSelected = selectableCount > 0 && selectedCategories.length === selectableCount
+
   // 刪除會員卡的mutation
   const { deleteMembershipCategory } = useFetchDeleteMembershipCategory()
 
@@ -66,13 +70,8 @@ function Results({ className, categories, ...rest }) {
                 <TableHead className="w-12">
                   <Checkbox
                     aria-label="全選"
-                    checked={
-                      selectedCategories.length === categories.length && categories.length > 0
-                    }
-                    indeterminate={
-                      selectedCategories.length > 0 &&
-                      selectedCategories.length < categories.length
-                    }
+                    checked={isAllSelected}
+                    indeterminate={selectedCategories.length > 0 && !isAllSelected}
                     onChange={handleSelectAll}
                     disabled={
                       categories.length === 0 ||

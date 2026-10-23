@@ -97,52 +97,52 @@ function Security({ designerId, refetch, ...rest }) {
       lastName: designerSetting.lastName,
       isCellphoneLogin: designerSetting.isCellphoneLogin,
     }
+    // 把自己的帳號設為不可登入：比照基本資料分頁，以畫面上的狀態與登入者 id 判斷，提示停用並登出
+    // （Jason 2026/10/22；原本用 mutation 回傳判斷，回傳沒有 status，永遠不會登出）
+    const loginUserId = idx(JSON.parse(localStorage.getItem('user')), _ => _.id)
+    const isBanningSelf = updateStatus.status === 'banned' && designerId === loginUserId
+    const logoutAfterBanned = () => {
+      openSnackbar({ message: '已將此帳號設為停用', variant: 'error' })
+      const timeout = setTimeout(() => {
+        localStorage.clear()
+        history.push('/auth/login')
+        clearTimeout(timeout)
+      }, 150)
+    }
+    const updateIdentity = () =>
+      updateUserMerchantIdentity({
+        designerId: designer.id,
+        MerchantUserAuthorityId: designerSetting.merchantIdentity,
+      }).then(() => {
+        // 停用自己時即將登出，不再導回員工列表
+        if (isBanningSelf) return
+        openSnackbar({ message: '更新成功', variant: 'success' })
+        window.location.href = '/management/employee'
+      })
     if (values.password.length > 0 && values.confirm.length > 0) {
       changePassword({
         password: values.password,
         secondPassword: values.confirm,
         userId: designerId,
       }).then(() => {
-        fetchUpdateUserGeneral(updateStatus).then(designer => {
-          if (designer.status === 'banned' && designer.id === designerId) {
-            openSnackbar({ message: '已將此帳號設為停用', variant: 'error' })
-            const timeout = setTimeout(() => {
-              localStorage.clear()
-              history.push('/auth/login')
-              clearTimeout(timeout)
-            }, 150)
+        fetchUpdateUserGeneral(updateStatus).then(() => {
+          if (isBanningSelf) {
+            logoutAfterBanned()
           }
         })
-        updateUserMerchantIdentity({
-          designerId: designer.id,
-          MerchantUserAuthorityId: designerSetting.merchantIdentity,
-        }).then(() => {
-          openSnackbar({ message: '更新成功', variant: 'success' })
-          window.location.href = '/management/employee'
-        })
+        updateIdentity()
       })
     } else {
-      fetchUpdateUserGeneral(updateStatus).then(designer => {
-        if (designer.status === 'banned' && designer.id === designerId) {
-          openSnackbar({ message: '已將此帳號設為停用', variant: 'error' })
-          const timeout = setTimeout(() => {
-            localStorage.clear()
-            history.push('/auth/login')
-            clearTimeout(timeout)
-          }, 150)
+      fetchUpdateUserGeneral(updateStatus).then(() => {
+        if (isBanningSelf) {
+          logoutAfterBanned()
         } else {
           refetch()
           openSnackbar({ message: '更新成功', variant: 'success' })
           window.location.href = '/management/employee'
         }
       })
-      updateUserMerchantIdentity({
-        designerId: designer.id,
-        MerchantUserAuthorityId: designerSetting.merchantIdentity,
-      }).then(() => {
-        openSnackbar({ message: '更新成功', variant: 'success' })
-        window.location.href = '/management/employee'
-      })
+      updateIdentity()
     }
   }
   return (

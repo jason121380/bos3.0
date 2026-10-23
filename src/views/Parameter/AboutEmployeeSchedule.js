@@ -80,13 +80,13 @@ const AboutEmployeeSchedule = ({
       case 'bufferTime':
         newSchedule[index].isClockOutBufferMinutesUsing = !using
         break
-      default:
-        break
     }
     setIsMerchantClockInSetting(newSchedule)
   }
 
   const handleChangetime = (name, index, value) => {
+    // 時間欄位被清空（瀏覽器刪掉時或分時回傳空字串）時保留原時間，避免存成 NaN
+    if (!/^\d{2}:\d{2}/.test(value)) return
     const newIsMerchantClockInSetting = cloneDeep(isMerchantClockInSetting)
     const hour = parseInt(value.substr(0, 2), 10)
     const minute = parseInt(value.substr(3, 5), 10)
@@ -107,8 +107,6 @@ const AboutEmployeeSchedule = ({
       case 'breakEnd':
         newIsMerchantClockInSetting[index].breakTimeSetting[0].endHour = hour
         newIsMerchantClockInSetting[index].breakTimeSetting[0].endMinute = minute
-        break
-      default:
         break
     }
     setIsMerchantClockInSetting(newIsMerchantClockInSetting)
@@ -148,6 +146,10 @@ const AboutEmployeeSchedule = ({
       ],
       allowedDelayMinutes: 0,
       color: randomColor[randNum],
+      // 與查詢回來的班別欄位一致（加班相關預設不啟用），畫面勾選框與分鐘欄位才是受控的、存檔不缺欄位
+      isWorkOverMinutesCalculated: false,
+      isClockOutBufferMinutesUsing: false,
+      clockOutBufferMinutes: 0,
     })
     setIsMerchantClockInSetting(newIsMerchantClockInSetting)
   }

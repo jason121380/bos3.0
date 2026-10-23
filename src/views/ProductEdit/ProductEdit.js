@@ -75,7 +75,8 @@ export default function ProductCreate({ match }) {
         history.push('/products')
       } else if (status === 'toLast') {
         history.push(`/product/edit/${productsArr[productIndex - 1].id}`)
-      } else if (status === 'toNext') {
+      } else {
+        // toNext
         history.push(`/product/edit/${productsArr[productIndex + 1].id}`)
       }
     } catch (error) {
@@ -109,7 +110,8 @@ export default function ProductCreate({ match }) {
   }, [getisUnlimProdEmpPrice.loading, getisUnlimProdEmpPrice.data])
 
   useEffect(() => {
-    if (!productDetail.loading) {
+    // 查詢失敗或查無此商品時沒有資料：維持空白表單（儲存鈕停用），不讓整頁拋錯
+    if (!productDetail.loading && idx(productDetail.data, _ => _.product)) {
       const noIsNull = idx(productDetail.data, _ => _.product.no) === null
       setProduct(
         produce(draft => {
@@ -149,7 +151,7 @@ export default function ProductCreate({ match }) {
   useEffect(() => {
     setSaveBtn(false)
     if (!products.loading && !productDetail.loading) {
-      const productsArr = idx(products, _ => _.data.products.data)
+      const productsArr = idx(products, _ => _.data.products.data) || []
       const productId = idx(productDetail.data, _ => _.product.id)
       setProductsArr(productsArr)
       productsArr.forEach((product, index) => {
@@ -163,7 +165,7 @@ export default function ProductCreate({ match }) {
   useEffect(() => {
     if (!merchantVendorList.loading) {
       const data = idx(merchantVendorList,_=>_.data.getMerchantVendorList)
-      setMerchantVendor(data)
+      setMerchantVendor(data || [])
     }
   }, [merchantVendorList.loading])
 

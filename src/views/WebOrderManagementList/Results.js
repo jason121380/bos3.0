@@ -4,33 +4,28 @@ import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteOrder from 'hooks/useFetchDeleteOrder'
 import idx from 'idx'
 import PropTypes from 'prop-types'
-import { useMemo, useRef, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from 'react-csv'
 import { Download } from 'lucide-react'
 import PasswordDialog from 'components/PasswordDialog'
-// 舊版缺少此 import（下方 useEffect 內呼叫）；該段只在 pageRef／pageRef2 有值時執行，而兩者從未掛到任何元素上，補上 import 僅為消除 no-undef，不改變行為
-import pagenationLabel from './../../helper/pagenationLabel'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
 import { Checkbox } from 'ui/checkbox'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
+import { maskCustomerName, maskCellphone } from 'helper/exportCustomerMask'
+
 
 function Results({
   orders,
   pageSetting,
-  startDate,
-  endDate,
-  onPageChange,
-  onRowsPerPageChange,
   refetch,
   checkInDisplay,
   bookingCusCheck,
   delOrderPassUsing,
+  isCustomerDataMarked,
   ...rest
 }) {
-  const pageRef = useRef(null)
-  const pageRef2 = useRef(null)
   const { deleteOrders } = useFetchDeleteOrder()
   const [selectedOrders, setSelectedOrders] = useState([])
   // 勾選狀態查詢用 Set（每列查兩次，避免 indexOf 逐筆掃描）；只換查詢方式，selectedOrders 的結構與 handler 不變
@@ -116,7 +111,11 @@ function Results({
     orders.forEach(order => {
       const data = {
         預約日期及時間: `#${order.no}(${format(new Date(order.date), 'yyyy/MM/dd HH:mm:ss')})`,
-        客戶資訊: idx(order, _ => _.customer.isAlive) ? `${idx(order, _ => _.customer.name)}(${idx(order, _ => _.customer.cellphone)})` : '客資已刪除',
+        客戶資訊: idx(order, _ => _.customer.isAlive)
+          ? isCustomerDataMarked
+            ? `${maskCustomerName(order.customer.name || '')}(${maskCellphone(order.customer.cellphone || '')})`
+            : `${idx(order, _ => _.customer.name)}(${idx(order, _ => _.customer.cellphone)})`
+          : '客資已刪除',
         '指定/不指定': order.isDesignate ? '指定' : '不指定',
         設計師: order.designer ? order.designer.name ? idx(
           order,
@@ -126,7 +125,7 @@ function Results({
           idx(order, _ => _.serviceCategory.name) !== null
             ? idx(order, _ => _.serviceCategory.name)
             : '',
-        來源: order.reference !== null ? order.reference : '',
+        來源: order.source || '',
         訂單狀態: order.status,
       }
       if (checkInDisplay) {
@@ -136,14 +135,7 @@ function Results({
 
     })
     setExcelData(excelData)
-  }, [orders, checkInDisplay])
-
-  useEffect(() => {
-    if (pageRef.current && pageRef2.current) {
-      pagenationLabel(pageRef.current)
-      pagenationLabel(pageRef2.current)
-    }
-  }, [orders, pageRef.current, pageRef2.current])
+  }, [orders, checkInDisplay, isCustomerDataMarked])
 
 
   return (
@@ -267,10 +259,13 @@ function Results({
 
 Results.propTypes = {
   orders: PropTypes.array,
+  isCustomerDataMarked: PropTypes.bool,
 }
 
 Results.defaultProps = {
   orders: [],
+  // 沒傳時一律遮罩（個資寧可多遮）
+  isCustomerDataMarked: true,
 }
 
 export default Results

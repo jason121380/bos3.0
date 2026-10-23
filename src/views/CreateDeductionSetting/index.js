@@ -71,7 +71,8 @@ function Deduction() {
 
   React.useEffect(() => {
     if (!getAttributionForRake.loading) {
-      const data = idx(getAttributionForRake, _ => _.data.getAttributionForRake)
+      // 查詢失敗時沒有類別分頁（仍可設定預設組），不整頁錯誤
+      const data = idx(getAttributionForRake, _ => _.data.getAttributionForRake) || []
       setAttributions(data)
     }
   }, [getAttributionForRake.loading])

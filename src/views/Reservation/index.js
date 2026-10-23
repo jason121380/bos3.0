@@ -1,6 +1,7 @@
 import Page from 'components/Page'
 import { Provider } from 'context/useReservationContext'
 import getQueryString from 'helper/getQueryString'
+import { openSnackbar } from 'elements/snackbars'
 import { useFetchMerchantLiff } from 'hooks/useFetchViewer'
 import produce from 'immer'
 import React from 'react'
@@ -67,7 +68,8 @@ function Reservation({ match, location }) {
                     )
                   })
                   .catch(err => {
-                    throw new Error(`${err.code}: ${err.message}`)
+                    // 提示錯誤訊息、不再拋出（原本造成沒人接的 rejection，Jason 2026/10/22 fix all）
+                    openSnackbar({ message: err.message, variant: 'error' })
                   })
               })
             }

@@ -20,7 +20,8 @@ export default function CustomerTracking({ customerId, className, hairCondition,
     setOpen(true)
   }
   const handleRenderOptions = data => {
-    if (!data.length) return ''
+    // 欄位為 null 時留白（原本讀 null.length 整頁錯誤；Jason 2026/10/22 fix all）
+    if (!data || !data.length) return ''
     return data.join('、')
   }
 

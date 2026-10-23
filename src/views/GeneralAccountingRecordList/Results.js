@@ -15,8 +15,6 @@ const sticky2 = 'sticky left-[54px] z-[1] w-[120px] bg-background'
 
 function Results({
   className,
-  onPageChange,
-  onRowsPerPageChange,
   moneyFlows,
   pageSetting,
   ...rest

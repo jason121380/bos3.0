@@ -8,30 +8,31 @@ import format from 'date-fns/format'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { CSVLink } from "react-csv"
+import { maskCustomerName, maskCellphone } from 'helper/exportCustomerMask'
 
-function Results({ className, date, walletDepositRecord, onChange, resultSetting, pagenationLabel, ...rest }) {
+function Results({ className, date, walletDepositRecord, onChange, resultSetting, pagenationLabel, isCustomerDataMarked, ...rest }) {
   const history = useHistory()
   const [excelData, setExcelData] = useState([])
 
   const handleEdit = id => {
     history.push(`/topup/edit/${id}`)
   }
-  // 回傳 unlisten：原本離開此頁後監聽仍在，每來一次就多一個，返回時會重複 history.go(1)
-  useEffect(() => history.listen((newLocation, action) => {
-    if (action === 'POP' && newLocation.pathname.match('/topup/edit')) {
-      history.go(1)
-    }
-  }), [history])
+  // 已移除「上一頁落在 /topup/edit 就 history.go(1)」的監聽：編輯頁儲存／刪除後改以 history.replace 回列表，
+  // 原本列表按上一頁會被推回列表、永遠離不開入金管理（Jason 2026/10/22 fix all）
 
   useEffect(() => {
     if (!walletDepositRecord.loading) {
       const excelData = []
-      const recordData = idx(walletDepositRecord.data, _ => _.walletDepositRecord.record)
+      // 查詢失敗時以空陣列處理（原本 forEach 拋錯整頁錯誤；Jason 2026/10/22 fix all）
+      const recordData = idx(walletDepositRecord.data, _ => _.walletDepositRecord.record) || []
       recordData.forEach(record => {
+        // 匯出檔依設定遮罩姓名與手機（比照帳單列表；Jason 2026/10/22 同意）
+        const name = isCustomerDataMarked !== false ? maskCustomerName(record.Customer.name) : record.Customer.name
+        const cellphone = isCustomerDataMarked !== false ? maskCellphone(record.Customer.cellphone) : record.Customer.cellphone
         excelData.push({
           日期: format(record.date, 'yyyy/MM/dd'),
-          '客戶(編號)': `${record.Customer.name}${record.Customer.no ? `(${record.Customer.no})` : ''
-            }/${record.Customer.cellphone}`,
+          '客戶(編號)': `${name}${record.Customer.no ? `(${record.Customer.no})` : ''
+            }/${cellphone}`,
           實際付款金額: record.handlingFeeDecountWay === 'BYCUSTOMER'
             ? record.money + Math.abs(record.handlingFeeDecountPrice)
             : record.money,
@@ -68,7 +69,7 @@ function Results({ className, date, walletDepositRecord, onChange, resultSetting
 
       setExcelData(excelData)
     }
-  }, [walletDepositRecord.loading])
+  }, [walletDepositRecord.loading, isCustomerDataMarked])
   let total = 0
   if (walletDepositRecord != null) {
     idx(walletDepositRecord.data, _ =>

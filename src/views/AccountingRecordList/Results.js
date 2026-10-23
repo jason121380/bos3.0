@@ -1,8 +1,7 @@
 import { Download, Pencil } from 'lucide-react'
 import { format } from 'date-fns'
-import useFetchMoneyFlowReportExcel from 'hooks/useFetchMoneyFlowReportExcel'
 import PropTypes from 'prop-types'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from 'react-csv'
 import { Button } from 'ui/button'
@@ -16,31 +15,11 @@ const sticky2 = 'sticky left-[54px] z-[1] w-[120px] bg-background'
 
 function Results({
   className,
-  onPageChange,
-  onRowsPerPageChange,
   moneyFlows,
   pageSetting,
   ...rest
 }) {
   const [excelData, setExcelData] = useState([])
-  const pageRef = useRef(null)
-
-  const { fetchMoneyFlowReportExcel, response } = useFetchMoneyFlowReportExcel({
-    input: {
-      startDate: pageSetting.startDate,
-      endDate: pageSetting.endDate,
-    },
-  })
-
-  const handleMenuItem = () => {
-    fetchMoneyFlowReportExcel()
-  }
-
-  useEffect(() => {
-    if (response.data) {
-      window.location.href = response.data.moneyFlowReportExcel
-    }
-  }, [response])
 
   useEffect(() => {
     const excelData = []

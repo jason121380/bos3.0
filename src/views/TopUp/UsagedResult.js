@@ -9,19 +9,25 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { CSVLink } from "react-csv"
+import { maskCustomerName, maskCellphone } from 'helper/exportCustomerMask'
 
-function UsagedResult({ className, walletUseRecord, resultSetting, onChange, date, pagenationLabel, ...rest }) {
+function UsagedResult({ className, walletUseRecord, resultSetting, onChange, date, pagenationLabel, isCustomerDataMarked, ...rest }) {
   const [excelData, setExcelData] = useState([])
 
   useEffect(() => {
     if (!walletUseRecord.loading) {
       const excelData = []
-      const useRecords = idx(walletUseRecord.data, _ => _.walletUseRecord.record)
+      // 查詢失敗時以空陣列處理（原本 forEach 拋錯整頁錯誤；Jason 2026/10/22 fix all）
+      const useRecords = idx(walletUseRecord.data, _ => _.walletUseRecord.record) || []
       useRecords.forEach(data => {
         excelData.push({
           '帳單編號/時間': `#${data.orderNo}-` + format(data.date, 'yyyy/MM/dd'),
-          客戶: `${data.Customer.name}/${data.Customer.cellphone}`,
-          設計師: `${data.Designer.name}` + `${data.Designer.designerNo ? ' / ' + data.designerNo : ''}`,
+          // 匯出檔依設定遮罩姓名與手機（比照帳單列表；Jason 2026/10/22 同意）
+          客戶: isCustomerDataMarked !== false
+            ? `${maskCustomerName(data.Customer.name)}/${maskCellphone(data.Customer.cellphone)}`
+            : `${data.Customer.name}/${data.Customer.cellphone}`,
+          // 設計師代號讀 Designer.designerNo（原本讀不存在的 data.designerNo 匯出 undefined；Jason 2026/10/22 fix all）
+          設計師: `${data.Designer.name}` + `${data.Designer.designerNo ? ' / ' + data.Designer.designerNo : ''}`,
           使用金額: data.money,
         })
       })
@@ -33,7 +39,7 @@ function UsagedResult({ className, walletUseRecord, resultSetting, onChange, dat
       })
       setExcelData(excelData)
     }
-  }, [walletUseRecord.loading])
+  }, [walletUseRecord.loading, isCustomerDataMarked])
   return (
     <div {...rest} className={className}>
       <ManagementTable

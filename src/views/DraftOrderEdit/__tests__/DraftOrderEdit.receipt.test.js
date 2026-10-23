@@ -1,7 +1,8 @@
 // 保護「掛單詳細」列印收據的其餘內容與格式（A4／80mm 的基本內容見 DraftOrderEdit.print.test.js）：
 // - 收據上方依店家設定顯示 Logo、QR code、訊息（任一項開啟才有這一列）；
 // - 每個項目都要列出：服務（助理沒有編號時印姓名）、店販、預收卡販賣、會員卡（感熱紙）、使用預收卡；第三方卡券的項目照常列出；
-// - 有顧客且有紅利時印增點／扣點／折抵／點數餘額；沒選設計師或不留客資時印「未選擇」；
+// - 有顧客且有紅利時印增點／扣點／折抵／點數餘額；合計與付現金額與打帳單收據同一算法（billPaymentSummary）；
+//   沒選設計師或不留客資時印「未選擇」；
 // - 57mm 感熱紙與其他格式的紙寬；店家設定「延後關閉列印視窗」時先列印、10 秒後才關，否則 1 秒後關閉。
 // 收據是交給顧客的對帳依據，少印或印錯就會有糾紛。GraphQL 全由模擬 link 回應，不連後端、不建立或修改真實帳單；列印視窗以假物件攔截。
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
@@ -138,6 +139,23 @@ describe('掛單詳細：收據內容', () => {
     expect(t).toMatch(/剪髮10次卡 6000 1 6000/)
     expect(t).toContain('增點：8 扣點：20')
     expect(t).toContain('折抵：20 點數餘額：100')
+  })
+
+  // Jason 2026/10/22「照建議」：掛單列印的合計／付現金額（含紅利點數折抵的處理）以打帳單收據為準（helper/billPaymentSummary）：
+  // 合計＝應付帳款（第三方卡券支付的服務／店販／會員卡不計、預收卡販賣計入、使用預收卡不計）；
+  // 付現金額＝合計 − 扣入金 − 其他付款方式 − 紅利點數折抵。原本合計印業績合計（含第三方卡券與使用預收卡、不含預收卡販賣）。
+  it.each([
+    ['A4', 'A4'],
+    ['感熱紙', '感熱紙(80mm)'],
+  ])('%s：合計與付現金額與打帳單收據同一算法（第三方卡券不計、預收卡販賣計入、扣掉紅利點數折抵）', async (_, layout) => {
+    const page = setupDraft(fullFixtures({ layout }))
+    await pageReady(page)
+    await wait(() => expect(document.getElementById(layout === 'A4' ? 'printMain' : 'printThermal')).toHaveTextContent('洗髮精'))
+    const t = text(await print())
+    // 服務 800、店販 2400、會員卡 12000 都用第三方卡券 → 不計；預收卡販賣 6000 計入；使用預收卡 600 不計
+    expect(t).toContain('合計：6000')
+    // 6000 − 扣入金 0 − 其他付款 0 − 紅利點數折抵 20
+    expect(t).toContain('付現金額：5980')
   })
 
   it('沒選設計師、不留客資：設計師與顧客都印「未選擇」，不印紅利', async () => {

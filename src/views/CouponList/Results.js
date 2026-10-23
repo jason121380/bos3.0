@@ -30,6 +30,23 @@ import AboutDeductionEditModal from './AboutDeductionEditModal'
 import AssistantSettingEditModal from './AssistantSettingEditModal'
 import SaleStatusEditModal from './SaleStatusEditModal'
 
+// 業績入帳模式文字（列表與報表匯出共用）
+const calcModeText = mode => {
+  switch (mode) {
+    case 'SELLING':
+      return '販賣時入業績'
+
+    case 'USING':
+      return '使用時入業績'
+
+    case 'USINGSAVEDEDUCT':
+      return '使用時入業績（扣項依販賣時設定）'
+    default:
+      // 其他值不處理（與原本沒有 default 時相同）
+      break
+  }
+}
+
 function Results({ className, coupons, refetch, ...rest }) {
   const merchantId = localStorage.getItem('userMerchant')
     ? JSON.parse(localStorage.getItem('userMerchant')).id
@@ -86,6 +103,8 @@ function Results({ className, coupons, refetch, ...rest }) {
       setDeleteCouponIsUsing(deleteCouponIsUsing)
     }
   }, [merchantPassword.loading])
+  // 只有啟用中的卡券可勾選；全選框以可選取的筆數判斷
+  const selectableCount = coupons.filter(coupon => coupon.isUsing).length
   const handleSelectAll = event => {
     const selectedCoupon = event.target.checked
       ? coupons.filter(coupon => coupon.isUsing).map(coupon => coupon.id)
@@ -142,7 +161,7 @@ function Results({ className, coupons, refetch, ...rest }) {
         名稱: data.name,
         參考價格: data.price,
         可使用次數: data.ticketAvailableCount,
-        業績: data.performanceCalculationMode === "SELLING" ? '販賣時入業績' : '使用時入業績',
+        業績: calcModeText(data.performanceCalculationMode),
         變更者: data.creator === null ? '' : data.creator.name,
         扣項設定數量: data.ticketDeductionCount === 0 ? '無設定' : data.ticketDeductionCount,
         互助設定數量: data.helperDeductionCount === 0 ? '無設定' : data.helperDeductionCount,
@@ -222,7 +241,7 @@ function Results({ className, coupons, refetch, ...rest }) {
         ])
       })
       .catch(err => {
-        openSnackbar({ variant: 'error', message: err.msg })
+        openSnackbar({ variant: 'error', message: err.message })
       })
   }
 
@@ -300,7 +319,7 @@ function Results({ className, coupons, refetch, ...rest }) {
         setSelectedCoupons([])
       })
       .catch(err => {
-        openSnackbar({ variant: 'error', message: err.msg })
+        openSnackbar({ variant: 'error', message: err.message })
       })
   }
 
@@ -323,22 +342,6 @@ function Results({ className, coupons, refetch, ...rest }) {
       serviceHelperGroupEdit: true,
       handleSubmitHelperDeductionSetting: handleSubmitHelperDeductionSetting,
     })
-  }
-
-  const calcModeText = mode => {
-    switch (mode) {
-      case 'SELLING':
-        return '販賣時入業績'
-
-      case 'USING':
-        return '使用時入業績'
-
-      case 'USINGSAVEDEDUCT':
-        return '使用時入業績（扣項依販賣時設定）'
-      default:
-        // 其他值不處理（與原本沒有 default 時相同）
-        break
-    }
   }
 
   // 不可點的列操作（停用的卡券）：連結無 disabled 屬性，比照 MUI ButtonBase 改用 aria-disabled + 取消指標事件
@@ -371,9 +374,9 @@ function Results({ className, coupons, refetch, ...rest }) {
                 <TableHead className="w-12">
                   <Checkbox
                     aria-label="全選"
-                    checked={selectedCoupons.length === coupons.length}
+                    checked={selectableCount > 0 && selectedCoupons.length === selectableCount}
                     indeterminate={
-                      selectedCoupons.length > 0 && selectedCoupons.length < coupons.length
+                      selectedCoupons.length > 0 && selectedCoupons.length < selectableCount
                     }
                     onChange={handleSelectAll}
                     disabled={coupons.filter(d => !d.isUsing).length === coupons.length}

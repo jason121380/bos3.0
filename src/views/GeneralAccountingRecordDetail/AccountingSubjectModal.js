@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types'
 import { Button } from 'ui/button'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
@@ -62,16 +61,6 @@ function AccountingSubjectModal({
       </DialogContent>
     </Dialog>
   )
-}
-
-AccountingSubjectModal.propTypes = {
-  onClose: PropTypes.func,
-  open: PropTypes.bool,
-}
-
-AccountingSubjectModal.defaultProps = {
-  open: false,
-  onClose: () => { },
 }
 
 export default AccountingSubjectModal

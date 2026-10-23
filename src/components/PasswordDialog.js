@@ -4,7 +4,7 @@ import { Button } from 'ui/button'
 import PropTypes from 'prop-types'
 
 const PasswordDialog = ({
-  title, inputLabel, open, handleOnCancel, handleOnConfirm, isLoading, inputOnChange
+  title, inputLabel, open, handleOnCancel, handleOnConfirm, isLoading, inputOnChange, cancelDisabled
 }) => {
   return (
     <Dialog open={open}>
@@ -20,7 +20,8 @@ const PasswordDialog = ({
         />
       </DialogContent>
       <DialogActions>
-        <Button disabled={isLoading} variant="secondary" onClick={handleOnCancel}>
+        {/* cancelDisabled：「取消」另用的停用狀態（單日預約紀錄只在送出中停用）；沒給時與「確認」相同（isLoading），其他呼叫端不受影響（Jason 2026/10/22 fix all） */}
+        <Button disabled={cancelDisabled ?? isLoading} variant="secondary" onClick={handleOnCancel}>
           取消
         </Button>
         <Button disabled={isLoading} variant="primary" onClick={handleOnConfirm}>
@@ -40,6 +41,7 @@ PasswordDialog.propTypes = {
   handleOnConfirm: PropTypes.func,
   isLoading: PropTypes.bool,
   inputOnChange: PropTypes.func,
+  cancelDisabled: PropTypes.bool,
 }
 
 export default PasswordDialog

@@ -58,13 +58,8 @@ function EditProductsCategoryModal({
 }
 
 EditProductsCategoryModal.propTypes = {
+  openEditProductsCategoryModal: PropTypes.bool,
   onClose: PropTypes.func,
-  open: PropTypes.bool,
-}
-
-EditProductsCategoryModal.defaultProps = {
-  open: false,
-  onClose: () => { },
 }
 
 export default EditProductsCategoryModal

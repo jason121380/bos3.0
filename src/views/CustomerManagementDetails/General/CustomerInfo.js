@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import useFetchSetCustomerIsUnwelcome from 'hooks/useFetchSetCustomerIsUnwelcome'
 import { openSnackbar } from 'elements/snackbars'
+import idx from 'idx'
+import { gender } from 'types'
 import useStore from 'hooks/useStore'
 import ChoseEvent from './ChoseEvent'
 import format from 'date-fns/format'
@@ -33,7 +35,8 @@ function CustomerInfo({ customer, className, isLoading, bookingCusCheck, ...rest
         input: !customer.isUnwelcome,
         customerId: customer.id
       })
-      if (returnData) {
+      // 依 mutation 回傳的實際結果判斷（原本判斷整個回應物件，後端回 false 仍提示成功；Jason 2026/10/22 fix all）
+      if (idx(returnData, _ => _.data.setCustomerIsUnwelcome)) {
         openSnackbar({
           message: '設定成功',
           variant: 'success'
@@ -69,7 +72,7 @@ function CustomerInfo({ customer, className, isLoading, bookingCusCheck, ...rest
       <dl className="m-0 border-0 border-t border-solid border-border">
         <Row label="客戶編號">{customer.no}</Row>
         <Row label="姓名">{customer.name}</Row>
-        <Row label="性別">{customer.gender === 'UNKNOWN' ? '未知' : customer.gender}</Row>
+        <Row label="性別">{gender[customer.gender] || customer.gender}</Row>
         <Row label="Email">{customer.email}</Row>
         <Row label="LineID">{customer.lineId}</Row>
         <Row label="客戶暱稱">{customer.nickName}</Row>

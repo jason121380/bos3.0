@@ -33,7 +33,8 @@ export default function UsagedResults({
   return (
     <div {...rest} className={className}>
       <p className="mb-2 text-label tabular-nums text-text-secondary">
-        共 {results.length} 筆, {page.offset + 1} /{Math.ceil(results.length / page.limit)}
+        {/* 以後端的總筆數計算（原本用本頁筆數 results.length；Jason 2026/10/22 fix all） */}
+        共 {page.count || 0} 筆, {page.offset + 1} /{Math.ceil((page.count || 0) / page.limit)}
       </p>
       <Card>
         <CardHeader className="pb-4">

@@ -215,3 +215,18 @@ describe('帳單詳細：店販鍵盤操作', () => {
     expect(within(rowEl(0)).queryByPlaceholderText('第三方卡券')).toBeNull()
   })
 })
+// 已修正（Jason 2026/10/22 fix all）：帶入既有店販時自動展開區塊會觸發第 1 列「展開＋本列要聚焦」的 effect，開頁焦點就跳進這一區
+// （與會員卡銷售同一個原因；會員卡修好後焦點改落在這裡）。改為帶入時沒有要聚焦的列（focusRow -1），使用者展開／新增／換列時才聚焦
+describe('帳單詳細：店販帶入時不自動聚焦', () => {
+  it('開頁帶入店販：焦點不在店販列；使用者收合再展開時游標到第 1 列服務人員', async () => {
+    const page = open()
+    await pageReady(page)
+    expect(productsHeader()).toHaveAttribute('aria-expanded', 'true')
+    expect(rowEl(0).contains(document.activeElement)).toBe(false)
+    expect(rowEl(1).contains(document.activeElement)).toBe(false)
+    fireEvent.click(productsHeader())
+    await wait(() => expect(productsHeader()).toHaveAttribute('aria-expanded', 'false'))
+    fireEvent.click(productsHeader())
+    await focused(sellerOf(0))
+  })
+})

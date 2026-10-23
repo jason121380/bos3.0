@@ -32,6 +32,8 @@ function HelperPointSettingEdit({ match }) {
   useEffect(() => {
     if (!getMerchantPointValueSettingsForEdit.loading) {
       const data = idx(getMerchantPointValueSettingsForEdit, _ => _.data.getMerchantPointValueSetting)
+      // 查詢失敗或查無設定時不帶入（原本讀 undefined.name 整頁進入錯誤畫面）
+      if (!data) return
       const newSubmitData = cloneDeep(submitData)
       newSubmitData.name = data.name
       newSubmitData.paidFixed = data.paidFixed
@@ -44,6 +46,11 @@ function HelperPointSettingEdit({ match }) {
   }, [getMerchantPointValueSettingsForEdit.loading])
 
   const handleUpdate = () => {
+    // 名稱必填（Jason 2026/10/22「照建議」）
+    if (!String(submitData.name || '').trim()) {
+      openSnackbar({ variant: 'warning', message: '請輸入互助點數設定名稱' })
+      return
+    }
     setIsClick(true)
     const data = {
       name: submitData.name,

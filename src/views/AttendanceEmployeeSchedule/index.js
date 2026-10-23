@@ -174,7 +174,8 @@ export default function Employees() {
 
   useEffect(() => {
     if (!employeeClockInSchedule.loading) {
-      setEmployeeSchedule(idx(employeeClockInSchedule, _ => _.data.getEmployeeClockInSchedule))
+      // 查詢失敗時給空陣列，不整頁壞（Jason 2026/10/22 fix all）
+      setEmployeeSchedule(idx(employeeClockInSchedule, _ => _.data.getEmployeeClockInSchedule) || [])
     }
   }, [employeeClockInSchedule.loading])
 

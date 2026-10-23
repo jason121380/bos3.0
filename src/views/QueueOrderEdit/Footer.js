@@ -313,6 +313,7 @@ export default function Footer({ enable }) {
         details={details}
         performanceTotal={performanceTotal}
         cashDue={cashDue}
+        aboveTabBar={false}
       />
     </Fragment>
   )

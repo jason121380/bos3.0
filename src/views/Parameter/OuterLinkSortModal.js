@@ -15,7 +15,7 @@ const sortButtonClass =
   'text-[#fff] w-[200px] px-[16px] py-[8px] relative bg-[#26a69a] rounded-[4px] text-center font-medium leading-[1.75] text-[0.93rem] mt-[15px] first:mt-0 [&_span]:break-all [&_.svgWrap]:w-[25px] [&_.svgWrap]:h-[25px] [&_.svgWrap]:[transform:translate(-50%,-50%)] [&_.svgWrap]:rounded-[50%] [&_.svgWrap]:bg-[#bf3939] [&_.svgWrap]:flex [&_.svgWrap]:justify-center [&_.svgWrap]:items-center [&_.svgWrap]:absolute [&_.svgWrap]:top-0 [&_.svgWrap]:left-0 [&_.svgWrap_svg]:w-[20px] [&_.svgWrap_svg]:h-[20px]'
 
 const OuterLinkSortModal = ({
-  isCus = false, open, onModalClose, data, refetchLink
+  isCus, open, onModalClose, data, refetchLink
 }) => {
   const [isClick, setIsClick] = useState(false)
   const [sortData, setSortData] = useState([])
@@ -42,17 +42,16 @@ const OuterLinkSortModal = ({
   const handleSubmitData = async () => {
     setIsClick(true)
     try {
-      const res = await sortExternalLink({
+      // mutation 失敗會拋錯（進 catch），成功一定有回傳
+      await sortExternalLink({
         input: sortData.map(d => d.id)
       })
-      if (res) {
-        openSnackbar({
-          message: '儲存成功',
-          variant: 'success'
-        })
-        refetchLink()
-        onModalClose()
-      }
+      openSnackbar({
+        message: '儲存成功',
+        variant: 'success'
+      })
+      refetchLink()
+      onModalClose()
     } catch (error) {
       openSnackbar({
         message: error.message,

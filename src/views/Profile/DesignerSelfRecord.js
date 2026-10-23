@@ -10,6 +10,9 @@ import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
 import { formatNumber } from 'ui/format'
 
+// 客單價／平均項次單價：沒有客人（分母為 0）時顯示 0，不顯示 NaN（Jason 2026/10/22）
+const averageOf = (total, count) => (count ? total / count : 0)
+
 function OrderRecord({
   designerDailyReport,
   titleDate,
@@ -322,14 +325,12 @@ function OrderRecord({
                               <TableCell className="forPrint4">客單價</TableCell>
                               <TableCell>
                                 {formatNumber(displayFloat(
-                                  designer.currentDay.performanceFakeTotal /
-                                    designer.currentDay.orderTotalCount
+                                  averageOf(designer.currentDay.performanceFakeTotal, designer.currentDay.orderTotalCount)
                                 ))}
                               </TableCell>
                               <TableCell>
                                 {formatNumber(displayFloat(
-                                  designer.tillNow.performanceFakeTotal /
-                                    designer.tillNow.orderTotalCount
+                                  averageOf(designer.tillNow.performanceFakeTotal, designer.tillNow.orderTotalCount)
                                 ))}
                               </TableCell>
                             </TableRow>
@@ -352,14 +353,12 @@ function OrderRecord({
                               <TableCell className="forPrint4">平均項次單價</TableCell>
                               <TableCell>
                                 {formatNumber(displayFloat(
-                                  designer.currentDay.performanceFakeTotal /
-                                    designer.currentDay.orderTypeCount
+                                  averageOf(designer.currentDay.performanceFakeTotal, designer.currentDay.orderTypeCount)
                                 ))}
                               </TableCell>
                               <TableCell>
                                 {formatNumber(displayFloat(
-                                  designer.tillNow.performanceFakeTotal /
-                                    designer.tillNow.orderTypeCount
+                                  averageOf(designer.tillNow.performanceFakeTotal, designer.tillNow.orderTypeCount)
                                 ))}
                               </TableCell>
                             </TableRow>

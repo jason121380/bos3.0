@@ -49,6 +49,11 @@ function GeneralSettings({
   }
   const handleSubmit = event => {
     event.preventDefault()
+    // 姓、名、手機必填：按鈕已停用，表單以 Enter 送出時也提示且不送出（Jason 2026/10/22「照建議」）
+    if (missingFields.length > 0) {
+      openSnackbar({ message: `請填寫${missingFields.join('、')}後再儲存`, variant: 'warning' })
+      return
+    }
     if (values.cellphone.trim().length < 7) {
       openSnackbar({ message: '手機長度必須大於六碼', variant: 'warning' })
     } else {
@@ -85,10 +90,16 @@ function GeneralSettings({
       })
     )
   }
-  const vaild =
-    !Object.keys(values)
-      .filter(d => values[d] === '' || (values[d] === 0 && d !== 'designerNo'))
-      .indexOf(true) !== -1
+  // 必填（比照新增員工：姓氏、名字、手機號碼）未填時停用「儲存變更」並說明原因（Jason 2026/10/22；
+  // 原本 .filter(...).indexOf(true) 永遠是 -1，按鈕永遠可按）
+  const missingFields = [
+    { key: 'lastName', label: '姓氏' },
+    { key: 'firstName', label: '名字' },
+    { key: 'cellphone', label: '手機號碼' },
+  ]
+    .filter(({ key }) => !String(values[key] || '').trim())
+    .map(({ label }) => label)
+  const vaild = missingFields.length === 0
   return (
     <Card {...rest}>
       <form onSubmit={handleSubmit}>
@@ -122,7 +133,7 @@ function GeneralSettings({
                 // 月曆 facade：label 改由 ui/date-picker 放在欄位上方；textField 的 variant 由 facade 統一成 outlined
                 // （原 standard，屬本批預期的視覺改變）
                 label="生日"
-                value={profile.birthday !== null ? profile.birthday : ""}
+                value={values.birthday !== null ? values.birthday : ""}
                 format='yyyy/MM/dd'
                 openTo='year'
                 orientation='portrait'
@@ -272,10 +283,16 @@ function GeneralSettings({
           </div>
         </CardContent>
         <CardFooter>
+          {!vaild && (
+            <p id="profile-general-missing" className="text-caption text-text-secondary">
+              {`請填寫${missingFields.join('、')}後再儲存`}
+            </p>
+          )}
           <Button
             type="submit"
             variant="primary"
             disabled={!vaild}
+            aria-describedby={!vaild ? 'profile-general-missing' : undefined}
           >
             儲存變更
           </Button>

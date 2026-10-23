@@ -43,18 +43,6 @@ const clockInFilter = [
   { label: '超過50M', value: 'MORETHAN50' },
 ]
 
-const HR_USERID_LIST = [
-  'e8241adb-29ec-4c89-9180-0c2ea5b54480', // 林秀香
-  '685b8f6a-f928-4cb2-86f1-7f41bd4c4855', // WangIan
-  'ad9a4a1c-8a8d-481a-aee0-f7f16c5613d4', // WangIan
-  '7afce29a-7759-40df-a378-d31cb7c01306', // 科技部人員(S)
-  '9f6cc8ab-f465-40f7-871e-86dee1561a39', // JasonCheng
-  'f6c5ef06-d215-4f7c-af23-27c4ea16bf61', // 鄭家明
-  'bf8dfc12-b584-48a4-8a22-0dcd6892c816', // 廖靜媛
-  '43e22ff1-51b3-45c4-b484-ca2cf08d8a35', // 賴冠吩
-  '46fb33c9-0950-4ec4-8a58-3730eb1ca5f6', // 呂欣倫
-]
-
 export default function Employees() {
   const urlParams = new URLSearchParams(window.location.search)
   const [userId, setUserId] = useState('')

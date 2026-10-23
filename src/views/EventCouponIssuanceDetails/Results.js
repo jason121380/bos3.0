@@ -7,16 +7,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TablePag
 
 function Results({ recordData, pageSetting, onPageChange, onRowsPerPageChange }) {
   const pageRef1 = useRef(null)
-  const pageRef2 = useRef(null)
 
   useEffect(() => {
     if (pageRef1.current) {
       pagenationLabel(pageRef1.current)
     }
-    if (pageRef2.current) {
-      pagenationLabel(pageRef2.current)
-    }
-  }, [pageRef1.current, pageRef2.current, pageSetting])
+  }, [pageRef1.current, pageSetting])
 
   return (
     <div>

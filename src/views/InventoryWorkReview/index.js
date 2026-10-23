@@ -17,6 +17,8 @@ function InventoryWorkEdit({ match }) {
   useEffect(() => {
     if (!getInventory.loading) {
       const inventory = idx(getInventory, _ => _.data.getInventory)
+      // 查詢失敗或查無紀錄時沒有資料：不讓整頁拋錯
+      if (!inventory) return
       const { date, creatorName, details } = inventory
       setInventoryData(details)
       setInfo({ date, creatorName })
@@ -27,7 +29,8 @@ function InventoryWorkEdit({ match }) {
         } else if (count > 0) {
           return '+' + count
         } else {
-          return '-' + count
+          // count 已是負數（原本再加一個「-」，匯出成「--3」）
+          return String(count)
         }
       }
 
