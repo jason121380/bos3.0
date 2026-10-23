@@ -226,14 +226,9 @@ function createPicker({ displayName, withTime, mobileOnly }) {
         if (rootRef.current && rootRef.current.contains(event.target)) return
         dismiss()
       }
-      const onKey = event => {
-        if (event.key === 'Escape') dismiss()
-      }
       document.addEventListener('mousedown', onDown)
-      document.addEventListener('keydown', onKey)
       return () => {
         document.removeEventListener('mousedown', onDown)
-        document.removeEventListener('keydown', onKey)
       }
     })
 
@@ -368,7 +363,7 @@ function createPicker({ displayName, withTime, mobileOnly }) {
     let overlay = null
     if (open && desktop) {
       overlay = (
-        <Popper open anchorEl={rootRef.current} placement="bottom-start" style={{ zIndex: 1300 }}>
+        <Popper open onEscapeKeyDown={event => { event.preventDefault(); dismiss() }} anchorEl={rootRef.current} placement="bottom-start" style={{ zIndex: 1300 }}>
           <div ref={paperRef} role="dialog" aria-label={title} className="ui-root mt-1 overflow-hidden rounded-xl border border-solid border-border bg-background shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
             {panel}
           </div>

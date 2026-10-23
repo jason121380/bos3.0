@@ -472,3 +472,11 @@ describe('AccountingSubjectsAutocomplete 會計科目', () => {
     expect(screen.getByRole('combobox')).toHaveValue('')
   })
 })
+
+test('操作密碼保留受控開啟：Esc 不呼叫取消、不新增關閉圖示', () => {
+  const handleOnCancel = jest.fn()
+  render(<PasswordDialog open title="操作密碼" inputLabel="密碼" handleOnCancel={handleOnCancel} inputOnChange={() => {}} />)
+  fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' })
+  expect(handleOnCancel).not.toHaveBeenCalled()
+  expect(screen.queryByRole('button', { name: '關閉' })).toBeNull()
+})

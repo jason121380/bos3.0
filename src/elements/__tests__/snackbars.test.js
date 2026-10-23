@@ -106,9 +106,10 @@ describe('openSnackbar 確認型（對話框）', () => {
     expect(screen.queryByRole('alertdialog')).toBeNull()
 
     openDeleteConfirm(onConfirm)
-    const container = screen.getByRole('alertdialog').parentElement
-    fireEvent.mouseDown(container)
-    fireEvent.click(container)
+    // Radix 背景是內容前一個同層節點，以原生 pointerdown 模擬點背景。
+    const backdrop = screen.getByRole('alertdialog').previousElementSibling
+    act(() => jest.advanceTimersByTime(0))
+    fireEvent.pointerDown(backdrop, { pointerType: 'mouse', button: 0 })
     expect(screen.queryByRole('alertdialog')).toBeNull()
 
     openDeleteConfirm(onConfirm)

@@ -149,3 +149,11 @@ test('關閉後才執行的游標調整不拋錯', () => {
   unmount()
   expect(() => act(() => jest.runOnlyPendingTimers())).not.toThrow()
 })
+
+test('Esc 沿用關閉回呼且不新增關閉圖示', () => {
+  const onClose = jest.fn()
+  render(<Harness onClose={onClose} />)
+  fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' })
+  expect(onClose).toHaveBeenCalledTimes(1)
+  expect(screen.queryByRole('button', { name: '關閉' })).toBeNull()
+})

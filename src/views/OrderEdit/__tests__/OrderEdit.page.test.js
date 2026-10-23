@@ -295,7 +295,7 @@ describe('帳單詳細：入金異動權限', () => {
     await pageReady(page)
     fireEvent.click(await screen.findByRole('button', { name: '異動入金' }))
     // 彈窗標題（h3）；頁面上的「異動入金」按鈕不算
-    return (await screen.findByText('異動入金', { selector: 'h3' })).closest('.MuiModal-root')
+    return (await screen.findByRole('heading', { name: '異動入金' })).closest('[role=dialog]')
   }
   const walletActions = modal => ['儲值', '扣除'].filter(label => within(modal).queryByText(label, { selector: 'button' }))
 

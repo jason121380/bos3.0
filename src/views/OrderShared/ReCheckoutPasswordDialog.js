@@ -1,8 +1,8 @@
 // 重新結帳密碼視窗（帳單詳細、掛單詳細原本各一份，2026/10/21 合併）。
-// 密碼欄位有游標位置與貼上處理，保留 MUI 相容層 Dialog / TextField；只有按鈕是新元件。
+// 密碼欄位有游標位置與貼上處理，保留 TextField 與原輸入處理。
 // 密碼本身（reCheckoutPwd）仍由各頁保管，送出時帶入；這裡只負責遮罩顯示與輸入處理，處理函式自兩頁原樣搬來、一字未改。
 import { useRef, useState } from 'react'
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from 'ui/modal-compat'
+import { Dialog, DialogTitle, DialogContent, DialogHeader, DialogBody, DialogFooter } from 'ui/dialog'
 import { TextField } from 'ui/text-field'
 import cloneDeep from 'lodash/cloneDeep'
 import { Button } from 'ui/button'
@@ -97,34 +97,37 @@ export default function ReCheckoutPasswordDialog({
   return (
     <Dialog
       open={open}
-      onClose={onClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
+      onOpenChange={onClose ? value => { if (!value) onClose() } : undefined}
     >
-      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
-      <DialogContent style={{ overflow: 'visible' }}>
-        <DialogContentText id="alert-dialog-description">
-          <TextField
-            label="密碼"
-            inputRef={inputRef}
-            value={new Array(reCheckoutPwd.length).fill('*').join('')}
-            onChange={handlePasswordChange}
-            onSelect={handleSelect}
-            onCopy={e => e.preventDefault()}
-            onKeyDown={handleKeyDown}
-            onPaste={handlePaste}
-            type='text'
-          />
-        </DialogContentText>
+      <DialogContent size="sm" hideClose
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogHeader><DialogTitle id="alert-dialog-title">{title}</DialogTitle></DialogHeader>
+        <DialogBody style={{ overflow: 'visible' }}>
+          <div id="alert-dialog-description">
+            <TextField
+              label="密碼"
+              inputRef={inputRef}
+              value={new Array(reCheckoutPwd.length).fill('*').join('')}
+              onChange={handlePasswordChange}
+              onSelect={handleSelect}
+              onCopy={e => e.preventDefault()}
+              onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
+              type='text'
+            />
+          </div>
+        </DialogBody>
+        <DialogFooter className="ui-root">
+          <Button variant="ghost" onClick={onClose}>
+            取消
+          </Button>
+          <Button variant="primary" disabled={confirmDisabled} onClick={onConfirm} autoFocus data-testid="confirm">
+            確認
+          </Button>
+        </DialogFooter>
       </DialogContent>
-      <DialogActions className="ui-root">
-        <Button variant="ghost" onClick={onClose}>
-          取消
-        </Button>
-        <Button variant="primary" disabled={confirmDisabled} onClick={onConfirm} autoFocus data-testid="confirm">
-          確認
-        </Button>
-      </DialogActions>
     </Dialog>
   )
 }

@@ -1,5 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { CompatLayer } from './compat-layer'
+import { useLayerRef, isTopLayer } from './layer-stack'
 import { cn } from './utils'
 import { Paper } from './display-compat'
 import './display-compat.css'
@@ -12,11 +14,11 @@ import './modal-compat.css'
 // - 開啟時鎖住 body 捲動（有捲軸時補 padding-right 避免畫面跳動），並把 body 其他子節點設 aria-hidden
 // - 焦點：開啟時移入彈窗、Tab 在彈窗內循環（前後哨兵）、焦點跑到「彈窗之前」的頁面內容時拉回；關閉時還給原本的元素
 //   之後才開的圖層（例如 MUI 日期選擇器的對話框、搜尋下拉選單）掛在 body 更後面，焦點移過去不會被拉回
+// - FocusScope 與正式 Dialog 共用暫停順序；保留相容層的自動聚焦、還原及較晚 portal 放行契約
 // - Esc：onClose(event, 'escapeKeyDown')；點背景：onClose(event, 'backdropClick')；多層時只有最上層回應
 // - 不做淡出動畫：關閉即卸載（MUI 會延遲 195ms）
 // 新畫面請用 ui/dialog。
 
-const stack = [] // 開啟中的相容彈窗（最上層在最後）
 let lockCount = 0
 let savedBodyStyle = null
 
@@ -84,26 +86,25 @@ function ModalBase({
   content,
 }) {
   const nodeRef = React.useRef(null)
+  const ownedEscapes = React.useRef(new WeakSet())
+  const [pointerEvents, setPointerEvents] = React.useState('auto')
   const contentRef = React.useRef(null)
-  const entry = React.useRef({})
-  const isTop = () => stack[stack.length - 1] === entry.current
+  const { ref: layerRef, zIndex } = useLayerRef(rootRef, open)
   // 開啟期間的行為旗標放在 ref：effect 只隨 open 開關重建
   const flags = React.useRef({})
   flags.current = { disableScrollLock, disablePortal, disableAutoFocus, disableEnforceFocus, disableRestoreFocus }
 
   React.useEffect(() => {
     if (!open) return undefined
-    const me = entry.current
     const opts = flags.current
-    stack.push(me)
     const restoreTo = document.activeElement
     if (!opts.disableScrollLock) lockScroll()
     const hidden = opts.disablePortal ? [] : hideSiblings(nodeRef.current)
     if (!opts.disableAutoFocus && contentRef.current && !contentRef.current.contains(document.activeElement)) contentRef.current.focus()
     const onFocusIn = event => {
       const root = nodeRef.current
-      if (flags.current.disableEnforceFocus || !root || stack[stack.length - 1] !== me || root.contains(event.target)) return
-      // 只把焦點從「彈窗之前」的頁面內容拉回；之後才開的圖層（掛在後面）放行
+      if (flags.current.disableEnforceFocus || !root || !isTopLayer(root) || root.contains(event.target)) return
+      // 保留相容層既有契約：較晚掛載的非正式浮層仍可接焦點。
       if (root.compareDocumentPosition(event.target) & Node.DOCUMENT_POSITION_PRECEDING && contentRef.current) contentRef.current.focus()
     }
     document.addEventListener('focusin', onFocusIn)
@@ -111,11 +112,14 @@ function ModalBase({
       document.removeEventListener('focusin', onFocusIn)
       hidden.forEach(el => el.removeAttribute('aria-hidden'))
       if (!opts.disableScrollLock) unlockScroll()
-      const i = stack.indexOf(me)
-      if (i >= 0) stack.splice(i, 1)
       if (!opts.disableRestoreFocus && restoreTo && typeof restoreTo.focus === 'function' && document.contains(restoreTo)) restoreTo.focus()
     }
   }, [open])
+
+  const setRootRef = React.useCallback(el => {
+    nodeRef.current = el
+    layerRef(el)
+  }, [layerRef])
 
   if (!open && !keepMounted) return null
 
@@ -128,18 +132,19 @@ function ModalBase({
 
   const node = (
     <div
-      ref={el => {
-        nodeRef.current = el
-        assignRef(rootRef, el)
-      }}
+      ref={setRootRef}
       role="presentation"
       {...rootProps}
+      style={{ ...(rootProps && rootProps.style), zIndex, pointerEvents: open ? pointerEvents : undefined }}
       className={cn(rootClassName, !open && 'MuiModal-hidden', rootProps && rootProps.className)}
       onKeyDown={event => {
         if (rootProps && rootProps.onKeyDown) rootProps.onKeyDown(event)
-        if (event.key !== 'Escape' || !isTop() || disableEscapeKeyDown) return
-        event.stopPropagation()
-        if (onClose) onClose(event, 'escapeKeyDown')
+        // capture 只登記所有權，仍在原本 root callback 之後以 React 事件通知 onClose。
+        if (event.key === 'Escape' && ownedEscapes.current.has(event.nativeEvent) && !disableEscapeKeyDown) {
+          ownedEscapes.current.delete(event.nativeEvent)
+          event.stopPropagation()
+          if (onClose) onClose(event, 'escapeKeyDown')
+        }
       }}
     >
       {!hideBackdrop && (
@@ -160,9 +165,15 @@ function ModalBase({
       <div tabIndex={open ? 0 : -1} data-testid="sentinelEnd" data-sentinel="" onFocus={focusEdge('end')} />
     </div>
   )
-  if (disablePortal) return node
+  const layeredNode = <>
+    <CompatLayer open={open} modal onPointerEventsChange={setPointerEvents} onEscapeKeyDown={event => {
+      if (nodeRef.current && nodeRef.current.contains(event.target)) ownedEscapes.current.add(event)
+    }} />
+    {node}
+  </>
+  if (disablePortal) return layeredNode
   const mount = typeof container === 'function' ? container() : container
-  return ReactDOM.createPortal(node, mount || document.body)
+  return ReactDOM.createPortal(layeredNode, mount || document.body)
 }
 
 const Modal = React.forwardRef(function Modal({ open, onClose, children, className, style, hideBackdrop, BackdropProps, keepMounted, disablePortal, container, disableEscapeKeyDown, disableAutoFocus, disableEnforceFocus, disableRestoreFocus, disableScrollLock, onBackdropClick, closeAfterTransition, BackdropComponent, slotProps, slots, ...rest }, ref) {
