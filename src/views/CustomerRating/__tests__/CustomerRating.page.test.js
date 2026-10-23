@@ -38,17 +38,17 @@ describe('顧客服務評價', () => {
     expect(callsOf(utils.calls, 'SET_ORDER_RANKING')[0].variables).toEqual({ input: { orderId: 'order-1', rank: 4 } })
     expect(document.querySelector('img')).toHaveAttribute('src', RANKING.avatar)
     expect(screen.getByText('對於王小美的服務，您給幾顆星呢？')).toBeInTheDocument()
-    expect(screen.getByLabelText('4 Stars')).toBeChecked()
+    expect(screen.getByLabelText('4 星')).toBeChecked()
   })
 
   it('改星等、留言後送出，送出目前內容並顯示感謝畫面', async () => {
     const utils = setup()
     await screen.findByText('設計師: 王小美')
-    fireEvent.click(screen.getByLabelText('2 Stars'))
-    expect(screen.getByLabelText('2 Stars')).toBeChecked()
+    fireEvent.click(screen.getByLabelText('2 星'))
+    expect(screen.getByLabelText('2 星')).toBeChecked()
     // 再點目前星等：MUI 會回傳 null，頁面忽略，星等不變
-    fireEvent.click(screen.getByLabelText('2 Stars'))
-    expect(screen.getByLabelText('2 Stars')).toBeChecked()
+    fireEvent.click(screen.getByLabelText('2 星'))
+    expect(screen.getByLabelText('2 星')).toBeChecked()
     fireEvent.change(screen.getByPlaceholderText('留下您的評論'), { target: { value: '很專業' } })
     fireEvent.click(screen.getByText('送出'))
     await screen.findByText('感謝您的評論，可關閉本視窗。')
@@ -97,5 +97,23 @@ describe('評價結果畫面（Status）', () => {
     expect(container.textContent).toBe('')
     rerender(<Status open isComment="other" />)
     expect(container.textContent).toBe('')
+  })
+})
+
+
+it('鍵盤改星等後送出數字值，清空回呼仍由頁面忽略', async () => {
+  const utils = setup()
+  await screen.findByText('設計師: 王小美')
+  const four = screen.getByRole('radio', { name: '4 星' })
+  four.focus()
+  fireEvent.keyDown(four, { key: 'ArrowRight' })
+  const five = screen.getByRole('radio', { name: '5 星' })
+  expect(five).toBeChecked()
+  fireEvent.keyDown(five, { key: ' ' })
+  expect(five).toBeChecked()
+  fireEvent.click(screen.getByText('送出'))
+  await wait(() => expect(callsOf(utils.calls, 'SET_ORDER_RANKING_AND_COMMENT')).toHaveLength(1))
+  expect(callsOf(utils.calls, 'SET_ORDER_RANKING_AND_COMMENT')[0].variables).toEqual({
+    input: { orderId: 'order-1', rank: 5, comment: null },
   })
 })

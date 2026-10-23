@@ -75,7 +75,7 @@ describe('顧客追蹤', () => {
     fireEvent.click(within(picker).getByText('確認'))
     await wait(() => expect(screen.queryByText('選擇髮質屬性')).toBeNull())
     // 燙髮用具：刪除「冷燙」標籤
-    fireEvent.keyUp(within(dialog()).getByText('冷燙').closest('[role="button"]'), { key: 'Delete' })
+    fireEvent.keyUp(within(dialog()).getByText('冷燙').closest('[tabindex="0"]'), { key: 'Delete' })
     expect(within(dialog()).queryByText('冷燙')).toBeNull()
     fireEvent.change(within(dialog()).getByLabelText('染髮配方'), { target: { value: '7/1' } })
     const before = callsOf(utils.calls, 'GET_CUSTOMER_HAIR_INFO').length
@@ -141,5 +141,25 @@ describe('顧客追蹤', () => {
     await utils.settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
     expect(screen.getByText('髮質屬性：').nextElementSibling.textContent).toBe('')
+  })
+})
+
+
+it('標籤滑鼠刪除與 Backspace 刪除後，確認送出相同欄位與其餘髮況', async () => {
+  const utils = setup()
+  await utils.settle()
+  fireEvent.click(screen.getByText('編輯'))
+  await wait(() => expect(editOption(0)).not.toBeDisabled())
+  fireEvent.click(within(dialog()).getByRole('button', { name: '刪除「受損」' }))
+  const tag = within(dialog()).getByText('冷燙').closest('[tabindex="0"]')
+  tag.focus()
+  fireEvent.keyDown(tag, { key: 'Backspace' })
+  fireEvent.keyUp(tag, { key: 'Backspace' })
+  expect(within(dialog()).queryByText('受損')).toBeNull()
+  expect(within(dialog()).queryByText('冷燙')).toBeNull()
+  fireEvent.click(within(dialog()).getByText('確認'))
+  await wait(() => expect(callsOf(utils.calls, 'SET_CUSTOMER_HAIR_INFO')).toHaveLength(1))
+  expect(callsOf(utils.calls, 'SET_CUSTOMER_HAIR_INFO')[0].variables).toEqual({
+    input: { ...HAIR, hairProperties: ['細軟'], permAppliance: [], customerId: 'c1' },
   })
 })

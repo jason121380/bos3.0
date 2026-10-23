@@ -47,7 +47,7 @@
 | `Button`, `IconButton` | `ui/button` | `component={RouterLink} to=…` → `<Button asChild><RouterLink to=…>…</RouterLink></Button>`；`IconButton` → `size="icon"` 並加 `aria-label` |
 | `Table*`, `TablePagination` | `ui/table` | 數字欄加 `numeric` |
 | `Divider` | `<div className="h-px bg-border" />` | |
-| `Chip`（僅顯示） | `ui/badge` | 可點擊／可刪除的 Chip 保留 MUI |
+| `Chip`（僅顯示） | `ui/badge` | 可刪除的選取值用 `ui/tag`；見項目 4 |
 | `Collapse in={x}` | `{x && (…)}` | 若內容有 ref / 需要保留 state，保留 MUI Collapse |
 | `CircularProgress`（按鈕內） | `<LoaderCircle className="animate-spin" />`（lucide） | |
 | `Checkbox`（表格勾選） | `ui/checkbox` | 表單內配 `FormControlLabel` 的可保留既有相容元件 |
@@ -193,3 +193,31 @@ OuterLink 原 MuiDialog 後代樣式逐項移至 DialogContent／Header／Body�
 瀏覽器：離線 harness 新增 reservation（ui/dialog → ui/dialog＋combobox／日期 → 真實 PasswordDialog），外部 runner 13/13 通過（exit 0）。picker Esc 只關 picker；PasswordDialog 原無 onClose，Esc 不關任何父窗，取消後還原預約觸發鈕焦點，再按 Esc 才關預約窗。保留原 12 個情境及全部關閉後的捲動／指標鎖檢查。Jest 加強真實 OrderTable → ChoseEvent → PasswordDialog 的 Esc 隔離與取消返回，並新增真實查帳日期／人員搜尋及顧客 Select 回歸；不連真實後端，網路 guard 原樣保留。
 
 驗證結果：`CI=true` 限定 touched 頁面＋src/ui＋src/components（含原 OrderCreate 列印測試）首輪 87 suites／1,145 tests，唯一失敗為未修改的 CustomerTracking 單項 20 秒逾時；獨立重跑 2 suites／10 tests 全過，沒有修改該檔或斷言。保留開窗聚焦行為後，相關六個頁面目錄與 B2 picker 最終重跑 16 suites／188 tests 全過；新增 picker 四項、真實預約父子流程皆通過。網路 guard／版號 2 suites／4 tests 全過；最終 `npm run lint` 與 `git diff --check` 通過。OrderDetailModal 與 HEAD 逐位元組相同（SHA-256：39eb7a8f3e5119c8fd6bc1710fd982dd4e7646ce08c1d389fe75d705871fd525）。合併前全站 `CI=true npm run test:nowatch` 單獨執行（未與 build 並行）371 suites／4,332 tests 全過；`npm run build` 通過；外部 Chrome 13/13 重跑通過。頁面 compat importer 35 → 29（CustomerFilterExport 仍用 misc-compat 的 useMediaQuery，非彈窗，留待後續）。
+
+
+## 9. 項目 4：Tree／Rating／可刪除 Tag（2026/10/23）
+
+本批可拆成兩個 PR，沒有修改或刪除 `tree-compat`／`misc-compat`，不動列印、GraphQL、state、搜尋與確認／取消 handlers，不連任何真實後端。
+
+**Phase 1：新元件與離線 harness**
+
+- `src/ui/tree.js`：`TreeView` 接受 `expanded`／`defaultExpanded`、`onToggle(event, ids)`、`selected`／`defaultSelected`、`onSelect(event, nodeId)`、`defaultExpandIcon`／`defaultCollapseIcon`；`TreeItem` 接受 `nodeId`、自訂 `label` 節點、個別 `selected`、`disabled`、`onClick`、`icon`／`expandIcon`／`collapseIcon`、`groupClassName`／`contentClassName`。`tree`／`treeitem`／`group`、`aria-expanded`／`aria-selected`、單一可見 Tab 入口；↑↓略過停用項目、←→收合／展開或移至父／子、Home／End、Enter／Space 走列 click。滑鼠回呼的 `currentTarget` 是列 div，方向鍵展開回呼為 treeitem li；兩者第一個 span 皆是原標籤，原 `handleNodeFocus` 不必改。收合卸載子層；重複出現在「全部」與分類的同一資料，DOM id／焦點以節點實例區分。未實作可選的 type-ahead。
+- `src/ui/rating.js`：`value`／`defaultValue`、`onChange(event, number|null)`、`readOnly`／`disabled`、`size=small|medium|large`、`max`、`name`、`aria-label`；本批僅整數星等（接受舊 `precision={1}`，不提供半星）。radio 每星名稱「N 星」，方向鍵循環、Space 選取／清空、hover 預覽；點目前值只通知一次 null。唯讀不進 Tab 順序；未提供 name 時每個實例自動產生獨立群組名。
+- `src/ui/tag.js`：`Tag` 接受 `label`、可選 `onDelete(event)`／`deleteLabel`；刪除為獨立具名 button，本體 Tab 聚焦後 Backspace／Delete 在 keyup 觸發；純顯示無 Tab 停點。複合 label 可另給 `deleteLabel`。
+- 新增三個 `src/ui/__test__/{tree,rating,tag}.test.js` 與 `scripts/redesign/compat-harness/e2e/ui-components-{entry,run}.js`。建置／route／host resolver／Chrome 路徑完全沿用 dialog-layers；只供應本機靜態內容，不建立後端 client。情境為 tree-mouse、tree-keyboard、rating、tag；逐項印 PASS，失敗 exit 非零。樹的 Esc 不攔截，交給 Dialog；方向鍵不關閉 Dialog。
+
+**Phase 2：使用端與回歸**
+
+- 四個樹使用檔：`components/MerchantListAutocpmpleteForPinnedTable/MerchantsListModal`、`components/MerchantsListModal/index`（包含一般／管理兩個入口）、`components/ProductListTreeView/ProductListModal`、`views/Profile/PinnedTable`。只改 import、`onNodeToggle` → `onToggle`、群組排列 props、葉節點 `selected`；保留 `.onSelect`、標籤 span id 與全部 handler。根 `aria-multiselectable="true"` 宣告多選，`selected={null}` 避免把最後點過的群組當作業務選值高亮。移除所有 MuiTreeItem／MuiCollapse 後代覆寫。
+- `views/CustomerRating/index` 只換 Rating import；原 handler 忽略 null，因此再點目前星仍保留目前提交值。`views/CustomerManagementDetails/CustomerTracking/TrackingEditModal` 只換 Tag 名稱／import，刪除索引與提交內容原樣。
+- 測試只調整原英文星等 accessible name、標籤定位與搜尋框線 class；搜尋仍驗證正確項目加框／其他項目無框，不再以含 `outline` 字串判定（新元件有 `outline-none`）。新增一般／管理／釘選店家與商品的鍵盤展開→選取→確認、釘選儲存、星等鍵盤送出數字值、標籤滑鼠／Backspace 刪除後 GraphQL variables 回歸。
+
+Phase 2 測試檔：`components/MerchantsListModal/__tests__/merchantLists.test.js`、新增 `treeMigration.test.js`、`components/ProductListTreeView/__tests__/ProductListTreeView.test.js`、`views/Profile/__tests__/Profile.pinnedTable.test.js`、`views/CustomerRating/__tests__/CustomerRating.page.test.js`、`views/CustomerManagementDetails/__tests__/CustomerTracking.test.js`。文件為本節、STATUS、TODO、STYLE；版號在 `src/version.js`。MEMORY 沒有新增通則，不修改。
+
+視覺差異：列高 38px 提高至 40px；樹群組排列與 24／20px 縮排保留，MUI wrapper 移除。星形改 lucide 的 1.75 線寬與 warning token（不是舊固定金色），每星操作區至少 40px。可刪除 Tag 高度與刪除區為 40px，因此髮況多標籤欄位可能比舊 Chip 高；沿用淡底／字色／圓角。此為觸控目標規範帶來的預期差異。
+
+限定 `CI=true` Jest **77 suites／882 tests 全過**（src/ui＋src/components＋Profile／CustomerRating／CustomerManagementDetails＋網路 guard），另版號 **1 test 通過**；`npm run lint`、`git diff --check` 與 production build 通過。Build 仍有既有帳單／Parameter 未修改檔案的重複鍵警告。外部 Chrome 最終 **ui-components 4/4、dialog-layers 13/13，exit 0**；ui-components 額外檢查選取底色 accent 12%，等待 transition 到達最終色再斷言。合併前全站 `CI=true npm run test:nowatch` 單獨執行（未與 build 並行）**375 suites／4,350 tests 全過**；之後 `npm run build` 通過。PinnedTable 補回原 `.Mui-expanded` 的 12px 群組列下距（改以 `aria-expanded` 選取）；ui-components 的 tree-mouse 同時等待底色與字色 transition 到終值（曾因字色仍在過渡而偶發失敗），連跑三輪 4/4。首輪限定 Jest 的未修改 itemAutocompletes 曾逾時並影響後續測試，獨立重跑 27/27，最終整輪重跑亦全過，沒有改該測試或放寬斷言。
+
+邏輯檢查：原 verify-logic 因 sandbox 中 Node 啟動 git 受限而 SKIP；改由 shell 匯出 HEAD 快照，使用同一分析器在 /tmp 重跑。Rating／Tag 使用端 OK；四個樹檔的 FAIL 全部只有移除／替換的樣式常數（treeClass／ulGroup*／itemClass／outlineClass／spanClass／defaultTreeClasses／managementTreeClasses），沒有遺失 handler、資料敘述或事件／值運算式，已逐項審視。
+
+compat importer 以 `rg "from 'ui/[a-z-]*-compat'" src` 排除 src/ui 與測試檔，29 → **23 檔**（檔案數，不是 import 行數）；保留者多為列印與 misc-compat 的 useMediaQuery。

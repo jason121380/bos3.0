@@ -3,23 +3,18 @@ import { TextField, InputAdornment } from 'ui/text-field'
 import { useState, useEffect } from 'react'
 import { Button } from 'ui/button'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
-import { TreeView, TreeItem } from 'ui/tree-compat'
+import { TreeView, TreeItem } from 'ui/tree'
 import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, Inventory2Outlined as Inventory2OutlinedIcon, DashboardOutlined as DashboardOutlinedIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import cloneDeep from 'lodash/cloneDeep';
 
-// 樹狀本體為 ui/tree-compat（輸出 MUI 同名 class），以下為原 emotion styles 等值轉 Tailwind；tree-compat.css 在路由 chunk（晚於 Tailwind 與 emotion），同權重勝負不變，故不加 !
-const treeClass = [
-  'flex gap-[20px] flex-col',
-  '[&_.Mui-expanded]:![background-color:unset] [&_.Mui-selected]:![background-color:unset]',
-  '[&_.MuiTreeItem-content]:[transition:.2s] [&_.MuiTreeItem-content]:w-fit',
-  '[&_.MuiTreeItem-content:hover]:[background:rgb(var(--accent)/0.08)]',
-  '[&_li]:rounded-[5px]',
-].join(' ')
-const ulGroupAllMerchantClass = '[&_ul]:ml-[20px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-wrap [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:gap-[10px]'
-const itemClass = 'rounded-[5px] overflow-hidden [&_.MuiTreeItem-label]:!pl-0 [&_.MuiTreeItem-iconContainer]:!hidden'
-const outlineClass = '![outline:2px_solid_rgb(var(--danger))]'
-const spanClass = 'flex items-center gap-[5px] [word-break:keep-all] whitespace-nowrap text-[1rem]'
+// 列樣式由 ui/tree 提供；保留群組間距、20px 縮排與子項換行。
+const treeClass = 'gap-5'
+const ulGroupAllMerchantClass = 'ml-5 flex-row flex-wrap gap-2.5'
+const itemClass = 'rounded-md'
+const outlineClass = 'outline outline-2 outline-danger'
+const spanClass = 'flex items-center gap-1 whitespace-nowrap text-base'
+
 // 原 height: fit-content 為 emotion（晚於 Tailwind）會連手機的 max-sm:h-10 一起蓋掉，故同時給 max-sm:h-fit
 const buttonClass = 'shrink-0 h-fit max-sm:h-fit'
 
@@ -72,7 +67,7 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
             style={{ marginTop: -9 }}
           />
           <TreeItem
-            className={ulGroupAllMerchantClass}
+            groupClassName={ulGroupAllMerchantClass}
             nodeId={`${data.name}(${data.products.length})`}
             label={<span id={`${data.name}(${data.products.length})`} className={spanClass}><DashboardOutlinedIcon />{`${data.name}(${data.products.length})`}</span>}
           >
@@ -89,6 +84,7 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
         key={data.id}
         onClick={() => handleItemClick(data)}
         className={`${isSelect(data.id)} ${itemClass}${filtIds.includes(data.id) ? ` ${outlineClass}` : ''}`}
+        selected={!!isSelect(data.id)}
         nodeId={data.id}
         label={<span className={spanClass}><Inventory2OutlinedIcon />{`${data.no ? `${data.no} - ` : ''}${data.name}`}</span>}
       />
@@ -234,11 +230,14 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
       </DialogHeader>
       <DialogBody>
         <TreeView
+          aria-label="商品列表"
+          aria-multiselectable="true"
           className={treeClass}
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
+          selected={null}
           expanded={expandedArr}
-          onNodeToggle={handleNodeFocus}
+          onToggle={handleNodeFocus}
         >
           <div style={{ display: 'flex', alignItems: 'flex-start'}}>
             <Checkbox
@@ -248,7 +247,7 @@ const ProductListModal = ({ open, setOpen, productList, values, setValues }) => 
               style={{ marginTop: -9 }}
             />
             <TreeItem
-              className={ulGroupAllMerchantClass}
+              groupClassName={ulGroupAllMerchantClass}
               style={{ overflow: 'visible' }}
               nodeId='ALL'
               label={

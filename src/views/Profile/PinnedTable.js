@@ -2,7 +2,7 @@ import { Checkbox } from 'ui/checkbox'
 import { TextField, InputAdornment } from 'ui/text-field'
 import MerchantListAutocpmpleteForPinnedTable from 'components/MerchantListAutocpmpleteForPinnedTable'
 import useFetchSetPinnedTable from 'hooks/useFetchSetPinnedTable'
-import { TreeView, TreeItem } from 'ui/tree-compat'
+import { TreeView, TreeItem } from 'ui/tree'
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { ArticleOutlined as ArticleOutlinedIcon, DescriptionOutlined as DescriptionOutlinedIcon, ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import { useDispatch } from 'react-redux'
@@ -16,20 +16,13 @@ import { Button } from 'ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 
-// 樹狀本體為 ui/tree-compat（輸出 MUI 同名 class），以下為原 emotion styles 等值轉 Tailwind（寫法同 ProductListTreeView/ProductListModal）
-const treeClass = [
-  'flex gap-[20px] flex-col',
-  '[&_.Mui-expanded]:![background-color:unset] [&_.Mui-selected]:![background-color:unset]',
-  '[&_.MuiTreeItem-content]:[transition:.2s] [&_.MuiTreeItem-content]:w-fit',
-  '[&_.MuiTreeItem-content:hover]:[background:rgb(var(--accent)/0.08)]',
-  '[&_.Mui-expanded]:mb-[12px]',
-  '[&_li]:rounded-[5px] [&_li]:w-fit',
-  '[&_.onSelect]:[background:rgb(var(--accent)/0.12)]',
-].join(' ')
-const ulGroupAllMerchantClass = '[&_ul]:ml-[20px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-wrap [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:gap-[10px]'
-const itemClass = 'rounded-[5px] overflow-hidden [&_.MuiTreeItem-label]:!pl-0 [&_.MuiTreeItem-iconContainer]:!hidden'
-const outlineClass = '![outline:2px_solid_rgb(var(--danger))]'
-const spanClass = 'flex items-center gap-[5px] [word-break:keep-all] whitespace-nowrap text-[1rem]'
+// 列樣式由 ui/tree 提供；保留群組間距、20px 縮排與子項換行。
+// 原 .Mui-expanded 的 12px 下距：展開中的群組列與子項之間保留間距
+const treeClass = 'gap-5 [&_[aria-expanded=true]>[data-tree-content]]:mb-3'
+const ulGroupAllMerchantClass = 'ml-5 flex-row flex-wrap gap-2.5'
+const itemClass = 'rounded-md'
+const outlineClass = 'outline outline-2 outline-danger'
+const spanClass = 'flex items-center gap-1 whitespace-nowrap text-base'
 
 function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
   const allNodeIds = []
@@ -65,7 +58,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
             disabled={isClick}
           />
           <TreeItem
-            className={ulGroupAllMerchantClass}
+            groupClassName={ulGroupAllMerchantClass}
             nodeId={title}
             disabled={isClick}
             label={<span id={title} className={spanClass}><ArticleOutlinedIcon />{data.pageTitle}</span>}
@@ -83,6 +76,7 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
         key={pageName}
         onClick={() => handleItemClick(pageName)}
         className={`${isSelect(pageName)} ${itemClass}${filtIds.includes(pageName) ? ` ${outlineClass}` : ''}`}
+        selected={!!isSelect(pageName)}
         nodeId={pageName}
         disabled={isClick}
         label={<span className={spanClass}><DescriptionOutlinedIcon />{pageName}</span>}
@@ -304,11 +298,14 @@ function PinnedTable({ isLoading, pages, submitValue, setSubmitValue }) {
               <div className="grid h-full grid-cols-3 gap-4">
                 <div className="col-span-2 h-full overflow-y-auto overflow-x-hidden border-0 border-r border-solid border-border pr-3">
                   <TreeView
+                    aria-label="功能釘選"
+                    aria-multiselectable="true"
                     className={treeClass}
                     defaultCollapseIcon={<ExpandMoreIcon />}
                     defaultExpandIcon={<ChevronRightIcon />}
+                    selected={null}
                     expanded={expandedArr}
-                    onNodeToggle={handleNodeFocus}
+                    onToggle={handleNodeFocus}
                   >
                     {pages.length ? renderGroup(pages) : ''}
                   </TreeView>
