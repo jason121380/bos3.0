@@ -2,8 +2,6 @@ import React from 'react'
 import { cleanup, fireEvent, render, screen, wait as waitFor } from '@testing-library/react'
 import PasswordDialog from '../../components/PasswordDialog'
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../dialog'
-import { Dialog as CompatDialog, Modal } from '../modal-compat'
-import { Popper, Fade } from '../overlay-compat'
 import { DatePicker, MobileDatePicker } from '../date-picker'
 import Autocomplete from '../combobox'
 import { Popover, PopoverTrigger, PopoverContent } from '../popover'
@@ -115,13 +113,11 @@ describe('共用對話框跨圖層互動', () => {
     expect(onOpenChange).not.toHaveBeenCalled()
   })
 
-  test.each([true, false])('雙向堆疊：上層為 Radix=%s，焦點與 Esc 只屬於最上層', async radixOnTop => {
+  test('Radix 雙層堆疊：焦點與 Esc 只屬於最上層', async () => {
     const lowerClose = jest.fn()
     const Harness = () => {
       const [upper, setUpper] = React.useState(false)
-      const lower = <button onClick={() => setUpper(true)}>開啟上層</button>
-      const top = <input aria-label="上層輸入" />
-      return radixOnTop ? <><CompatDialog open onClose={lowerClose} aria-label="下層相容對話框">{lower}</CompatDialog><Dialog open={upper} onOpenChange={setUpper}><DialogContent aria-describedby={undefined}><DialogTitle>上層對話框</DialogTitle>{top}</DialogContent></Dialog></> : <><Shell onOpenChange={lowerClose}>{lower}</Shell><CompatDialog open={upper} onClose={() => setUpper(false)} aria-label="上層相容對話框">{top}</CompatDialog></>
+      return <><Shell onOpenChange={lowerClose}><button onClick={() => setUpper(true)}>開啟上層</button></Shell><Dialog open={upper} onOpenChange={setUpper}><DialogContent aria-describedby={undefined}><DialogTitle>上層對話框</DialogTitle><input aria-label="上層輸入" /></DialogContent></Dialog></>
     }
     render(<Harness />)
     const opener = screen.getByText('開啟上層')
@@ -157,35 +153,13 @@ describe('共用對話框跨圖層互動', () => {
   })
 })
 
-
-describe('保留掛載與圖層重新開啟', () => {
-  test.each(['相容彈窗', '相容浮層'])('%s keepMounted 關閉後不占焦點或 Esc', async kind => {
-    const lowerClose = jest.fn()
-    const upperClose = jest.fn()
-    const Harness = ({ open }) => <Shell onOpenChange={lowerClose}>
-      <input aria-label="下層欄位" />
-      {kind === '相容彈窗'
-        ? <Modal open={open} keepMounted onClose={upperClose}><div><input aria-label="保留欄位" /></div></Modal>
-        : <Popper open={open} keepMounted onEscapeKeyDown={upperClose}><input aria-label="保留欄位" /></Popper>}
-    </Shell>
-    const { rerender } = render(<Harness open />)
-    rerender(<Harness open={false} />)
-    expect(screen.getByLabelText('保留欄位')).toBeInTheDocument()
-    const input = screen.getByLabelText('下層欄位')
-    input.focus()
-    expect(input).toHaveFocus()
-    pressEscape(input)
-    expect(lowerClose).toHaveBeenCalledWith(false)
-    expect(upperClose).not.toHaveBeenCalled()
-  })
-
-  test.each(['正式彈窗', '相容彈窗', 'Popover', 'Select'])('%s 關閉再開啟後仍高於下層', async kind => {
+describe('圖層重新開啟', () => {
+  test.each(['正式彈窗', 'Popover', 'Select'])('%s 關閉再開啟後仍高於下層', async kind => {
     const Harness = () => {
       const [open, setOpen] = React.useState(false)
       return <Shell data-testid="順序下層">
         <button onClick={() => setOpen(true)}>開啟順序上層</button>
         {kind === '正式彈窗' && <Dialog open={open} onOpenChange={setOpen}><DialogContent data-testid="順序上層" aria-describedby={undefined}><DialogTitle>順序上層</DialogTitle><button onClick={() => setOpen(false)}>關閉順序上層</button></DialogContent></Dialog>}
-        {kind === '相容彈窗' && <CompatDialog open={open} onClose={() => setOpen(false)} data-testid="順序上層"><button onClick={() => setOpen(false)}>關閉順序上層</button></CompatDialog>}
         {kind === 'Popover' && <Popover open={open} onOpenChange={setOpen}><PopoverTrigger>浮層錨點</PopoverTrigger><PopoverContent data-testid="順序上層"><button onClick={() => setOpen(false)}>關閉順序上層</button></PopoverContent></Popover>}
         {kind === 'Select' && <Select open={open} onOpenChange={setOpen}><SelectTrigger aria-label="順序選單"><SelectValue /></SelectTrigger><SelectContent data-testid="順序上層"><SelectItem value="關閉">關閉順序上層</SelectItem></SelectContent></Select>}
       </Shell>
@@ -202,32 +176,11 @@ describe('保留掛載與圖層重新開啟', () => {
     }
   })
 
-  test('較晚開啟的相容 Popper 不觸發下層的外部點擊或焦點事件', () => {
-    const outside = jest.fn()
-    const action = jest.fn()
-    const Harness = () => {
-      const [open, setOpen] = React.useState(false)
-      const anchor = React.useRef(null)
-      return <Shell onOpenChange={outside} onPointerDownOutside={outside} onFocusOutside={outside} onInteractOutside={outside}>
-        <button ref={anchor} onClick={() => setOpen(true)}>開啟相容浮層</button>
-        <Popper open={open} anchorEl={anchor.current}><button onClick={action}>相容浮層動作</button></Popper>
-      </Shell>
-    }
-    render(<Harness />)
-    clickPointer(screen.getByText('開啟相容浮層'))
-    const button = screen.getByText('相容浮層動作')
-    button.focus()
-    expect(button).toHaveFocus()
-    clickPointer(button)
-    expect(action).toHaveBeenCalledTimes(1)
-    expect(outside).not.toHaveBeenCalled()
-  })
 })
 
-
-describe('相容層保留內容與內層互動', () => {
-  test('相容 Dialog 內 Popover 點回下層內容會關閉浮層', async () => {
-    render(<CompatDialog open><button>浮層外動作</button><Popover><PopoverTrigger>開啟內層浮層</PopoverTrigger><PopoverContent><button>內層內容</button></PopoverContent></Popover></CompatDialog>)
+describe('正式對話框內層互動', () => {
+  test('正式 Dialog 內 Popover 點回下層內容會關閉浮層', async () => {
+    render(<Dialog open><DialogContent hideClose aria-label="下層對話框" aria-labelledby={undefined} aria-describedby={undefined}><button>浮層外動作</button><Popover><PopoverTrigger>開啟內層浮層</PopoverTrigger><PopoverContent><button>內層內容</button></PopoverContent></Popover></DialogContent></Dialog>)
     clickPointer(screen.getByText('開啟內層浮層'))
     expect(screen.getByText('內層內容')).toBeInTheDocument()
     // Radix 的 pointerdown outside listener 於下一個 task 安裝。
@@ -236,8 +189,8 @@ describe('相容層保留內容與內層互動', () => {
     await waitFor(() => expect(screen.queryByText('內層內容')).toBeNull())
   })
 
-  test('相容 Dialog 內 Dropdown 開啟時禁用下層 pointer，關閉後還原', async () => {
-    render(<CompatDialog open data-testid="下拉相容根"><DropdownMenu><DropdownMenuTrigger>開啟操作選單</DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem>操作項目</DropdownMenuItem></DropdownMenuContent></DropdownMenu></CompatDialog>)
+  test('正式 Dialog 內 Dropdown 開啟時禁用下層 pointer，關閉後還原', async () => {
+    render(<Dialog open><DialogContent hideClose aria-label="下層對話框" aria-labelledby={undefined} aria-describedby={undefined} data-testid="下拉相容根"><DropdownMenu><DropdownMenuTrigger>開啟操作選單</DropdownMenuTrigger><DropdownMenuContent><DropdownMenuItem>操作項目</DropdownMenuItem></DropdownMenuContent></DropdownMenu></DialogContent></Dialog>)
     const root = screen.getByTestId('下拉相容根')
     fireEvent.keyDown(screen.getByText('開啟操作選單'), { key: 'ArrowDown' })
     const item = await screen.findByRole('menuitem')
@@ -265,8 +218,8 @@ describe('相容層保留內容與內層互動', () => {
     expect(lowerClose).not.toHaveBeenCalled()
   })
 
-  test('相容 Dialog 內 Select 開啟時禁用下層 pointer，關閉後還原', async () => {
-    render(<CompatDialog open data-testid="相容根"><Select><SelectTrigger aria-label="內層選單"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="甲">甲選項</SelectItem></SelectContent></Select></CompatDialog>)
+  test('正式 Dialog 內 Select 開啟時禁用下層 pointer，關閉後還原', async () => {
+    render(<Dialog open><DialogContent hideClose aria-label="下層對話框" aria-labelledby={undefined} aria-describedby={undefined} data-testid="相容根"><Select><SelectTrigger aria-label="內層選單"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="甲">甲選項</SelectItem></SelectContent></Select></DialogContent></Dialog>)
     const root = screen.getByTestId('相容根')
     fireEvent.keyDown(screen.getByRole('combobox'), { key: 'ArrowDown' })
     const option = await screen.findByRole('option')
@@ -276,28 +229,6 @@ describe('相容層保留內容與內層互動', () => {
     await waitFor(() => expect(root.style.pointerEvents).toBe('auto'))
   })
 
-  test.each(['Modal', 'Popper', 'Popper 淡出'])('%s 開關重開保留 DOM、未受控輸入與子元件狀態', kind => {
-    const Child = () => {
-      const [count, setCount] = React.useState(0)
-      return <div><input aria-label="保留輸入" defaultValue="原值" /><button onClick={() => setCount(count + 1)}>次數：{count}</button></div>
-    }
-    const Harness = ({ open }) => kindNode(open)
-    const kindNode = open => kind === 'Modal'
-      ? <Modal open={open} keepMounted><div><Child /></div></Modal>
-      : <Popper open={open} keepMounted transition={kind === 'Popper 淡出'}>{kind === 'Popper 淡出' ? ({ TransitionProps }) => <Fade {...TransitionProps}><div><Child /></div></Fade> : <Child />}</Popper>
-    const { rerender } = render(<Harness open />)
-    const input = screen.getByLabelText('保留輸入')
-    fireEvent.change(input, { target: { value: '使用者輸入' } })
-    fireEvent.click(screen.getByText('次數：0'))
-    rerender(<Harness open={false} />)
-    expect(screen.getByLabelText('保留輸入')).toBe(input)
-    expect(input).toHaveValue('使用者輸入')
-    expect(screen.getByText('次數：1')).toBeInTheDocument()
-    rerender(<Harness open />)
-    expect(screen.getByLabelText('保留輸入')).toBe(input)
-    expect(input).toHaveValue('使用者輸入')
-    expect(screen.getByText('次數：1')).toBeInTheDocument()
-  })
 })
 
 test('正式對話框更換 ref 時清除舊 ref 並交出同一個面板', () => {
@@ -310,14 +241,6 @@ test('正式對話框更換 ref 時清除舊 ref 並交出同一個面板', () =
   expect(first).toHaveBeenLastCalledWith(null)
   expect(second.current).toBe(content)
 })
-
-test('相容層 Esc 保留 root 按鍵回呼先於 onClose 的順序', () => {
-  const calls = []
-  render(<CompatDialog open onKeyDown={event => calls.push(['按鍵', event.key, event.defaultPrevented])} onClose={(event, reason) => calls.push(['關閉', event.key, reason])}><button>相容層按鍵</button></CompatDialog>)
-  pressEscape(screen.getByText('相容層按鍵'))
-  expect(calls).toEqual([['按鍵', 'Escape', false], ['關閉', 'Escape', 'escapeKeyDown']])
-})
-
 
 test('非受控 DialogTrigger 開窗後 Esc 只通知一次並還原觸發鈕', async () => {
   const changed = jest.fn()
@@ -333,17 +256,17 @@ test('非受控 DialogTrigger 開窗後 Esc 只通知一次並還原觸發鈕', 
   expect(escaped).toHaveBeenCalledTimes(1)
 })
 
-test('實際 PasswordDialog 在相容窗內開關兩次，Esc 不關窗且每次還原原焦點', async () => {
+test('實際 PasswordDialog 在正式窗內開關兩次，Esc 不關窗且每次還原原焦點', async () => {
   const closeLower = jest.fn()
   const confirm = jest.fn()
   const Harness = () => {
     const [open, setOpen] = React.useState(false)
     const [password, setPassword] = React.useState('')
-    return <CompatDialog open onClose={closeLower}>
+    return <Dialog open onOpenChange={closeLower}><DialogContent hideClose aria-label="下層對話框" aria-labelledby={undefined} aria-describedby={undefined}>
       <Autocomplete options={['剪髮', '染髮']} />
       <button onClick={() => setOpen(true)}>開啟真實密碼窗</button>
       <PasswordDialog open={open} title="真實密碼" inputLabel="操作密碼" inputOnChange={setPassword} handleOnCancel={() => setOpen(false)} handleOnConfirm={() => { confirm(password); setOpen(false) }} />
-    </CompatDialog>
+    </DialogContent></Dialog>
   }
   render(<Harness />)
   const opener = screen.getByText('開啟真實密碼窗')

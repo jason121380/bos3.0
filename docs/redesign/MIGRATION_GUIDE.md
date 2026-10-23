@@ -328,7 +328,7 @@ Jason 核准範圍：最後兩個頁面 importer 與日期選擇器內部浮層�
 - `ui/date-picker.js` 桌機：正式 Popover、rootRef virtual anchor、bottom-start、sideOffset=4（原 mt-1 視覺間距），paperRef 留在 role=dialog／aria-label 面板。保留原 document mousedown effect；面板／欄位內不關閉，焦點移出及額外 pointerdown 不新增關閉路徑。Esc preventDefault 後 dismiss，不關下層 Dialog；onOpenChange 僅將 false 對映到 dismiss，由原 openProp 契約決定是否真的關閉。關閉後還原開啟焦點，但不搶已點到其他欄位的焦點。
 - 手機：正式 Dialog／DialogContent，hideClose、min-w-[320px]，保留 ui-dialog-centered 並以 Tailwind 覆寫手機底部面板的定位、圓角及滑動動畫。aria-label 使用原 title，aria-labelledby／describedby 明確為 undefined；日視圖保持自身 autofocus，關閉焦點還原至開啟欄位。只在 open 時掛載整個 Root，取消／確認／dismiss 同步卸載，不因 Radix exit Presence 留下舊日期內容；不使用 forceMount。選值立即 onChange、取消還原、確認 onAccept、背景／Esc 保留當前值、closeOnSelect、受控 open 皆保留。
 
-保留的相容模組（及對應 CSS／測試），**刪除待 Jason 核准**：`button-compat`、`card-compat`、`display-compat`、`feedback-compat`、`grid-compat`、`misc-compat`、`modal-compat`、`overlay-compat`、`standard-input-compat`、`table-compat`、`tree-compat`。它們只由相容檔本身、相容／圖層測試與歷史 `scripts/redesign/compat-harness/**` 引用；歷史工具未改。Harness 直接 import 的檔案為 table-entry、misc-entry、overlay-entry、display-entry、feedback-entry、tree-entry、dialog-entry，及 e2e/misc-entry、e2e/modal-layers-entry、e2e/dialog-layers-entry（皆 `.js`）。
+保留的相容模組（及對應 CSS／測試），**Jason 已於 2026/10/23 23:33 核准刪除，清單與保留項目見下節**：`button-compat`、`card-compat`、`display-compat`、`feedback-compat`、`grid-compat`、`misc-compat`、`modal-compat`、`overlay-compat`、`standard-input-compat`、`table-compat`、`tree-compat`。它們只由相容檔本身、相容／圖層測試與歷史 `scripts/redesign/compat-harness/**` 引用；歷史工具未改。Harness 直接 import 的檔案為 table-entry、misc-entry、overlay-entry、display-entry、feedback-entry、tree-entry、dialog-entry，及 e2e/misc-entry、e2e/modal-layers-entry、e2e/dialog-layers-entry（皆 `.js`）。
 
 檢查：
 
@@ -341,3 +341,128 @@ rg -n "compat'" src scripts --glob '!**/__test*/**' --glob '!**/*.test.js' --glo
 **靜態檢查差異**：`verify-logic` 的 Node 子程序在本沙箱遇到 `spawnSync git EPERM`，原工具會誤報「無基準版本」而略過。以 shell `git show HEAD:<path>` 匯出原始快照到 `/tmp`，僅替換工具的基準讀取後重跑相同分析：date-picker 通過；其餘兩項預期 FAIL 已逐項審視：CustomerFilterExport 的 useMediaQuery 引數加入相同的 @media 正規化；Header 的 TransitionProps render function 隨 Popper／Fade 換為 PopoverContent 而移除。兩者皆屬本批明確核准的畫面相容遷移，不涉及帳單／日期值運算。
 
 **驗證**：全套 Jest 377 suites／4,372 tests 全過（`--maxWorkers=50%`，合併前最終一次）；補充焦點案例後，最終指定範圍（全部 ui＋rg 找出的 picker 使用測試＋Header）55 suites／670 tests 全過，版本／網路 guard 2 suites／4 tests 全過；最終 lint、build、git diff --check 通過。唯讀審查未發現需修正問題。build 仍有既有重複 object key 與 Browserslist 資料過舊提示，未擴大修改。
+
+
+## 相容層刪除（2026/10/23，Jason 核准）
+
+Jason 於 23:33 核准移除下列未使用檔案。本次先整理仍保留的程式與測試，實體檔案由審查者執行 `git rm`；代理不刪檔、不 commit。上節的「保留」與歷史 harness 引用清單代表刪除準備前狀態。
+
+- `src/ui/button-compat.js`
+- `src/ui/card-compat.js`
+- `src/ui/display-compat.js`
+- `src/ui/feedback-compat.js`
+- `src/ui/grid-compat.js`
+- `src/ui/misc-compat.js`
+- `src/ui/modal-compat.js`
+- `src/ui/overlay-compat.js`
+- `src/ui/standard-input-compat.js`
+- `src/ui/table-compat.js`
+- `src/ui/tree-compat.js`
+- `src/ui/accordion-compat.css`
+- `src/ui/display-compat.css`
+- `src/ui/feedback-compat.css`
+- `src/ui/grid-compat.css`
+- `src/ui/misc-compat.css`
+- `src/ui/modal-compat.css`
+- `src/ui/overlay-compat.css`
+- `src/ui/standard-input-compat.css`
+- `src/ui/table-compat.css`
+- `src/ui/tree-compat.css`
+- `src/ui/__test__/button-compat.test.js`
+- `src/ui/__test__/card-compat.test.js`
+- `src/ui/__test__/display-compat.test.js`
+- `src/ui/__test__/grid-compat.test.js`
+- `src/ui/__test__/list-feedback-compat.test.js`
+- `src/ui/__test__/misc-compat.test.js`
+- `src/ui/__test__/misc-compat-more.test.js`
+- `src/ui/__test__/modal-compat.test.js`
+- `src/ui/__test__/modal-compat-focus.test.js`
+- `src/ui/__test__/overlay-compat.test.js`
+- `src/ui/__test__/standard-input-compat.test.js`
+- `src/ui/__test__/table-compat.test.js`
+- `src/ui/__test__/tree-compat.test.js`
+- `src/ui/__test__/tree-compat-keyboard.test.js`
+- `scripts/redesign/compat-harness/dialog-entry.js`
+- `scripts/redesign/compat-harness/display-entry.js`
+- `scripts/redesign/compat-harness/feedback-entry.js`
+- `scripts/redesign/compat-harness/misc-entry.js`
+- `scripts/redesign/compat-harness/overlay-entry.js`
+- `scripts/redesign/compat-harness/table-entry.js`
+- `scripts/redesign/compat-harness/tree-entry.js`
+- `scripts/redesign/compat-harness/e2e/misc-entry.js`
+- `scripts/redesign/compat-harness/e2e/misc-run.js`
+- `scripts/redesign/compat-harness/e2e/modal-layers-entry.js`
+- `scripts/redesign/compat-harness/e2e/modal-layers-run.js`
+- `scripts/redesign/compat-harness/e2e/tree-run.js`
+- `scripts/redesign/gen-grid-css.py`
+
+保留 `src/ui/compat-layer.js`：combobox 仍使用其共用 DismissableLayer／FocusScope；它不是待刪模組。
+保留 harness 的 build.js、run.js、mui-theme.js、e2e/print-entry.js、print-px.js、date-picker-entry/run、dialog-layers-entry/run、ui-components-entry/run、print-compare*、receipt-compare*。
+
+混合測試僅移除相容元件案例；Switch inputRef 與 Slider valueLabelDisplay 的原始案例／斷言複製至 switch-slider-extra.test.js。圖層測試的正式元件改以 ui/dialog 為外殼，雙向相容堆疊整併成 Radix 雙層堆疊；keepMounted、相容 Esc 順序與相容 Popper 外部事件案例移除。Chrome runner 移除 compat-radix、radix-compat、keep-mounted，保留十種正式情境與原斷言；nested-password／nested-date 下層改 radix helper。Chrome 實跑 9／10 通過：nested-password 改正式下層後於「取消後焦點回到觸發鈕」斷言失敗（正式 Autocomplete 選單開啟時點同窗按鈕，焦點落到對話框容器；既有行為、原由相容下層掩蓋），斷言保留、待另案修正。
+
+`ui-sheet-in` 已無保留程式使用；本次只更新註解，仍保留 keyframe 規則。
+
+### 移除案例明細（保留檔案）
+
+以下案例只驗證已退役模組的 API、MUI class 或生命週期；正式元件案例與其斷言保留。
+
+**`src/ui/__test__/controls.test.js`**：button-compat 的 variant／color／尺寸對映。
+
+- contained＋secondary／inherit 為次要按鈕；未知尺寸退回 medium
+- text／outlined＋error 以紅字標示危險操作；fullWidth 撐滿
+
+**`src/ui/__test__/form-inputs.test.js`**：standard-input-compat 的 MUI class 與事件轉接。
+
+- 預設 medium；停用與錯誤輸出 MUI 同名 class
+- 聚焦／離開時照常呼叫頁面的 onFocus／onBlur
+
+**`src/ui/__test__/tables.test.js`**：table-compat 的 MUI class、context 預設值與語意轉接。
+
+- 預設 medium／normal；表頭 th 帶 scope=col；區段外的儲存格為 body
+- stickyHeader 傳到每個儲存格；selected／footer 列；排序欄位標 aria-sort
+- Table 的 size／padding 為 null 時儲存格退回 medium／normal（不輸出 sizeNull）
+
+**`src/ui/__test__/theme.test.js`**：misc-compat 的 useMediaQuery 包裝，非現行 hooks/useMediaQuery。
+
+- 接受 @media 字串，第一次渲染為 false、掛載後為實際結果
+
+**`src/ui/__test__/compat-display.test.js`**：display-compat 的 Paper／Typography／Container 及 card-compat CardHeader。
+
+- Paper variant=outlined 輸出 MuiPaper-outlined（不帶 elevation class）
+- Typography 預設 body1＝<p>；paragraph 一律 <p>；未知 variant 退回 span
+- Container 預設 maxWidth=lg；maxWidth=false 不輸出寬度 class
+- 有 avatar 時畫 MuiCardHeader-avatar（排在標題左側）
+
+**`src/ui/__test__/overlay-feedback-layout.test.js`**：overlay／feedback／grid 相容模組的 portal、動畫、計時、MUI class 與 inline fallback。
+
+- anchorEl 可為函式；container 可為函式；ref 交給呼叫端
+- disablePortal 時畫在原地；keepMounted 關閉時保留節點但 display:none
+- 進場先 opacity 0、下一個 frame 變 1，並呼叫 onEnter；離場以 exit 時間後呼叫 onExited 並隱藏
+- 沒給 in 時預設隱藏；timeout 物件缺值時退回 MUI 預設 225／195ms
+- 預設 anchor=left、temporary 且關閉；permanent 不做滑動
+- SnackbarContent 有 action 時畫動作區
+- 滑鼠移出後以 resumeHideDuration 重新計時；onMouseEnter／onMouseLeave 照常回呼；ref 可為物件或函式
+- Alert 預設 success；iconMapping 優先；未知 severity 用成功圖示；icon=false 不畫圖示
+- Alert 有 action 時不畫關閉鈕；只有 onClose 時畫關閉鈕並回呼
+- 未知 justify／align 與非預設 gap（數字以 8px 為單位、字串原樣）
+- zeroMinWidth、wrap 與 flexWrap 輸出對應 class
+- Snackbar 計時結束或點外部時若 onClose 已被拿掉，不拋錯
+- Fade 離場沒有 onExited 時照樣隱藏
+- grid-compat：非 xs 斷點的非整數欄寬不輸出 class 也不加 inline 寬度
+
+**`src/ui/__test__/dialog-layers.test.js`**：相容 Popper 外部事件與相容 Dialog 的 root Esc／onClose 順序。
+
+- 較晚開啟的相容 Popper 不觸發下層的外部點擊或焦點事件
+- 相容層 Esc 保留 root 按鍵回呼先於 onClose 的順序
+
+`dialog-layers.test.js` 另移除參數化案例：
+
+- `%s keepMounted 關閉後不占焦點或 Esc`（相容彈窗、相容浮層）：只驗證 Compat Modal／Popper 隱藏後的焦點與 Esc 解除。
+- `%s 開關重開保留 DOM、未受控輸入與子元件狀態`（Modal、Popper、Popper 淡出）：只驗證相容 keepMounted／Fade 保留 DOM 契約。
+- `%s 關閉再開啟後仍高於下層` 僅移除「相容彈窗」參數，正式 Dialog／Popover／Select 三參數與斷言不變。
+- 原 `雙向堆疊：上層為 Radix=%s，焦點與 Esc 只屬於最上層` 的兩個相容方向改為 `Radix 雙層堆疊：焦點與 Esc 只屬於最上層`，保留全部原斷言，避免正式元件組合重複兩次。
+
+轉換案例：`正式 Dialog 內 Popover 點回下層內容會關閉浮層`、`正式 Dialog 內 Dropdown 開啟時禁用下層 pointer，關閉後還原`、`正式 Dialog 內 Select 開啟時禁用下層 pointer，關閉後還原`、`實際 PasswordDialog 在正式窗內開關兩次，Esc 不關窗且每次還原原焦點`，均只替換外殼並保留斷言；沒有因正式 Dialog 語意而無法保留的斷言。
+
+驗證：刪檔後完整 `CI=true npx react-scripts test --watchAll=false --maxWorkers=50%`：364 suites／4,236 tests 全過（刪檔前 377／4,372；差額＝14 個相容專屬測試檔 103 tests＋混合檔移除 35 個相容案例－新增 switch-slider-extra 2 tests）；`npm run lint`、`npm run build` 通過。刪檔後全 repo（排除文件）對已刪模組／工具零引用，`compat-layer` 僅 combobox 引用。dialog-layers Chrome 9／10（nested-password 見上）。

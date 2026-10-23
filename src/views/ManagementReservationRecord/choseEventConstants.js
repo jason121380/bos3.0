@@ -4,9 +4,10 @@
 export const actionRow = 'ui-root flex min-h-12 w-full items-center gap-4 rounded-md border-0 bg-transparent px-4 py-2 text-left text-body text-text no-underline transition-colors hover:bg-surface-hover disabled:pointer-events-none disabled:opacity-40 aria-disabled:opacity-40 outline-none focus-visible:ring-2 focus-visible:ring-accent'
 
 // 原 emotion styles 逐值轉 Tailwind（spacing 單位 8px；原 `!important` 以 `!` 前綴保留）。
-// breakWord／eventWrap 掛在 .MuiTypography-body1 上：display-compat 的 .MuiTypography-body1（單一 class、排在 Tailwind 之後）原本被
-// 後插入的 emotion 蓋過，字級改用 [&&]（雙 class 權重）維持 14px。eventWrap 的 '& .MuiInputBase-multiline' 在 ui/text-field
-// （不輸出該 class）不命中、textarea 為空規則，皆為死碼不轉；datepicker 的 '.MuiSelect-select' 一併保留原選擇器
+// breakWord／eventWrap 仍掛在保留的 .MuiTypography-body1 字串上；initialize.scss 無此 class 規則，
+// initialize-dark.scss 僅設定文字顏色，不設定字級。[&&] 保留原 14px 字級的雙 class 權重。
+// eventWrap 的 '& .MuiInputBase-multiline' 在 ui/text-field 不命中，textarea 原為空規則，皆未轉換；
+// datepicker 的 '.MuiSelect-select' 保留原選擇器。
 export const styles = {
   field: '!mb-[16px]',
   field2: 'flex items-end mb-[16px]',

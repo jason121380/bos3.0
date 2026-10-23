@@ -2,59 +2,12 @@ import { cleanup, render, screen } from '@testing-library/react'
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 
-import { Container, Paper, Typography } from '../display-compat'
-import { CardHeader } from '../card-compat'
 import { Add, Delete } from '../icons'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroupButton, SidebarHeader, SidebarLabel, SidebarLink } from '../sidebar'
 
-// 保護什麼：舊頁面沿用的 MUI 相容輸出（Paper／Typography／Container／CardHeader／圖示）與側欄（link-compat 沒有頁面使用，2026/10/22 已刪除）。
-// initialize.scss 的列印、深色模式與各頁的 '.MuiXxx-root' 選擇器都靠這些 MUI 同名 class；
-// 預設值（Typography body1→p、Container lg、圖示 medium）必須與 MUI 相同，舊頁面才不會跑版。
+// 保護什麼：圖示轉接層的名稱、尺寸與樣式，以及 Sidebar 的導覽、群組與手機抽屜。
 
 afterEach(cleanup)
-
-describe('display-compat', () => {
-  it('Paper variant=outlined 輸出 MuiPaper-outlined（不帶 elevation class）', () => {
-    render(<Paper data-testid="p" variant="outlined" square />)
-    const p = screen.getByTestId('p')
-    expect(p.className).toContain('MuiPaper-outlined')
-    expect(p.className).not.toContain('MuiPaper-elevation')
-    expect(p.className).not.toContain('MuiPaper-rounded')
-  })
-
-  it('Typography 預設 body1＝<p>；paragraph 一律 <p>；未知 variant 退回 span', () => {
-    const { rerender } = render(<Typography>內文</Typography>)
-    expect(screen.getByText('內文').tagName).toBe('P')
-    expect(screen.getByText('內文').className).toContain('MuiTypography-body1')
-    rerender(
-      <Typography variant="caption" paragraph noWrap>
-        內文
-      </Typography>
-    )
-    const el = screen.getByText('內文')
-    expect(el.tagName).toBe('P')
-    expect(el.className).toContain('MuiTypography-paragraph')
-    expect(el.className).toContain('MuiTypography-noWrap')
-    rerender(<Typography variant="caption">內文</Typography>)
-    expect(screen.getByText('內文').tagName).toBe('SPAN')
-  })
-
-  it('Container 預設 maxWidth=lg；maxWidth=false 不輸出寬度 class', () => {
-    const { rerender } = render(<Container data-testid="c" />)
-    expect(screen.getByTestId('c').className).toContain('MuiContainer-maxWidthLg')
-    rerender(<Container data-testid="c" maxWidth={false} />)
-    expect(screen.getByTestId('c').className).not.toContain('MuiContainer-maxWidth')
-  })
-})
-
-describe('card-compat CardHeader', () => {
-  it('有 avatar 時畫 MuiCardHeader-avatar（排在標題左側）', () => {
-    const { container } = render(<CardHeader avatar={<span>頭</span>} title="標題" />)
-    const root = container.firstChild
-    expect(root.firstChild.className).toContain('MuiCardHeader-avatar')
-    expect(screen.getByText('頭')).toBeInTheDocument()
-  })
-})
 
 describe('icons：MUI 圖示轉接', () => {
   it('預設 medium、對報讀器隱藏；titleAccess 時改以 aria-label 朗讀', () => {

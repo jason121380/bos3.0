@@ -1,5 +1,5 @@
 // 列印範本三檔（MerchantDailyReport／DecreaseDailyReport 的 Results、MerchantBankTransferReport/TransferDetail）MUI → 相容層的比對頁：
-// 同一份模擬資料，#mui 渲染換檔前的原檔（*.orig.js），#compat 渲染換成 ui/*-compat 的新檔；網址 ?mdr／?ddr／?td 只渲染其一，#m／#c 只渲染一側。
+// 同一份模擬資料，#mui 渲染換檔前的原檔（*.orig.js），#compat 渲染待比較的新檔（容器名稱沿用歷史 #compat）；網址 ?mdr／?ddr／?td 只渲染其一，#m／#c 只渲染一側。
 // 準備：git show <換檔前 commit>:src/views/MerchantDailyReport/Results.js > src/views/MerchantDailyReport/Results.orig.js（另兩檔同理，用完刪除，不要 commit）
 // 比對：ESBUILD=… node ../build.js print-entry.js <out>；node ../run.js <out> <mock build> [--dark] [--print]（computed style）；
 //      SIDE='#m'／'#c' node print-px.js <out> <mock build>（兩側各自單獨截圖，螢幕與列印模式逐像素比對）

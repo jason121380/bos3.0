@@ -1,6 +1,6 @@
 # 月曆 date-picker 專項（盤點＋設計）
 
-> **現況（2026/10/23）**：MUI 套件已移除，日期選擇器為自家實作並使用主題色；最後一批已移除 picker 內部 modal／overlay-compat 依賴，改用正式 ui/dialog 與 ui/popover。下方 10/19–10/20 的盤點數字與「仍使用 MUI」文字是歷史快照，不代表目前 package 狀態。正式設計以根目錄 `STYLE.md` 為準。
+> **現況（2026/10/23）**：MUI 套件已移除，日期選擇器為自家實作並使用主題色；picker 已使用正式 ui/dialog 與 ui/popover；舊相容模組已於 2026/10/23 經 Jason 核准退役。下方 10/19–10/20 的盤點數字與「仍使用 MUI」文字是歷史快照，不代表目前 package 狀態。正式設計以根目錄 `STYLE.md` 為準。
 
 > 專項第 1 批（2026/10/19，分支 `claude/ui-datepicker-spec-box`，v3.0-1019-0908 暫定）：**只有文件，沒有換任何元件、沒有改任何程式**。
 > 專項第 2 批（試行，2026/10/19，分支 `claude/ui-datepicker-pilot-box`，v3.0-1019-0958 暫定）：已建立 `src/ui/date-picker.js` facade，並換 2 檔（`MemberCreate/index.js`、`Profile/General/GeneralSettings.js`）。**目前已換 facade 的檔數：2／37**（下方盤點數字仍是第 1 批當時口徑，其餘 35 檔仍直接用 `@mui/x-date-pickers`）。

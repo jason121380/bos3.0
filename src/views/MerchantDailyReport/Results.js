@@ -23,8 +23,8 @@ const reportDividerClass = 'm-0 shrink-0 border-0 border-b border-solid border-b
 const reportTableClass = 'print:[&_td]:text-text text-[14px] leading-5 [&_tr]:border-0 [&_tr]:hover:bg-transparent [&_td]:border-0 [&_td]:[border-bottom:1px_solid_rgba(0,0,0,0.03)] [&_th]:border-0 [&_th]:[border-bottom:2px_solid_rgba(0,0,0,0.05)] print:[&_td]:!border-0 print:[&_th]:!border-0 print:[&_th]:![border-bottom:2px_solid_rgba(0,0,0,0.05)] print:[&_th]:bg-white print:!border-0 print:!border-b print:!border-black print:[&_tr]:!border-0 print:[&_tbody_tr]:!border-t print:[&_tbody_tr]:!border-black print:[&_td]:![border-bottom:0]'
 const mergedReportTableClass = 'print:[&_td]:text-text text-[14px] leading-5 [&_tr]:border-0 [&_tr]:hover:bg-transparent [&_td]:border-0 [&_td]:[border-bottom:1px_solid_rgba(0,0,0,0.03)] [&_th]:border-0 [&_th]:[border-bottom:2px_solid_rgba(0,0,0,0.05)] print:[&_td]:!border-0 print:[&_th]:!border-0 print:[&_th]:![border-bottom:1px_solid_black] print:[&_th]:bg-white print:!border-0 print:!border-b print:!border-black print:[&_tr]:!border-0 print:[&_td]:![border-bottom:1px_solid_black]'
 
-// 相容層儲存格（table-compat.css 隨頁面 chunk 載入、排在 Tailwind 之後）：原 emotion css 執行期插入、同權重時勝出，
-// 改以 [&&] 疊成雙 class 權重保住「勝過相容層單一 class」；initialize(-dark).scss 較高權重的 th／深色規則仍照舊勝出（同原本）
+// [&&] 雙 class 權重保留小計粗體／合計紅字，勝過 表頭的 font-semibold、ui/table 的 text-text-tertiary 與列印文字規則。
+// 此處已使用正式表格，不輸出 MuiTableCell class，因此不會命中 initialize(-dark).scss 的舊儲存格選擇器。
 const BOLD_CELL = '[&&]:font-bold'
 const TOTAL_CELL = '[&&]:font-bold [&&]:text-[red]'
 

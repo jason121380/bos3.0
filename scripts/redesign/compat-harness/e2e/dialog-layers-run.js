@@ -16,7 +16,7 @@ const delay = page => page.waitForTimeout(150)
 async function main() {
   const browser = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1'] })
   let failed = 0
-  for (const kind of ['desktop', 'mobile', 'combobox', 'select', 'popover', 'compat-radix', 'radix-compat', 'keep-mounted', 'dropdown', 'nested-password', 'nested-date', 'customer-form', 'reservation']) {
+  for (const kind of ['desktop', 'mobile', 'combobox', 'select', 'popover', 'dropdown', 'nested-password', 'nested-date', 'customer-form', 'reservation']) {
     const context = await browser.newContext({ viewport: { width: 1000, height: 850 }, hasTouch: false })
     // 以路由直接提供靜態檔，受限環境也不必開監聽埠；所有非本機請求一律中止。
     await context.route('**/*', route => {
@@ -135,19 +135,6 @@ async function main() {
         await page.keyboard.press('Escape')
         await page.locator('#popover-input').waitFor({ state: 'detached' })
         await exists(page, '#lower')
-      } else if (kind === 'keep-mounted') {
-        for (const layer of ['popper', 'modal']) {
-          for (let round = 0; round < 2; round += 1) {
-            await page.locator(`#open-${layer}`).click(); await delay(page)
-            if (round === 1) assert.equal(await page.locator(`#${layer}-input`).inputValue(), '可以輸入', 'keepMounted 必須保留輸入值')
-            await page.locator(`#${layer}-input`).fill('可以輸入')
-            await focusInside(page, `#compat-${layer}`)
-            await page.keyboard.press('Escape'); await delay(page)
-            assert(!(await page.locator(`#compat-${layer}`).isVisible()), '保留掛載的浮層應已隱藏')
-            await exists(page, '#lower')
-            await focusInside(page, `#open-${layer}`)
-          }
-        }
       } else if (kind === 'nested-password') {
         await page.getByRole('combobox').click()
         await page.getByRole('option', { name: '染髮' }).click()
