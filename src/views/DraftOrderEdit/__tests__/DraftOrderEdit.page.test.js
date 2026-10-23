@@ -233,7 +233,7 @@ const editCustomerAndSave = async calls => {
   // 顧客資料載入後（顧客欄顯示姓名）才開彈窗，彈窗才會帶入這位顧客
   await wait(() => expect(screen.getByPlaceholderText('顧客姓名/手機號碼/編號').value).toContain('陳小姐'))
   fireEvent.click(await screen.findByRole('button', { name: '編輯顧客資料' }))
-  const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+  const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
   const nameInput = within(modal).getByText('客戶姓名').parentElement.querySelector('input[name="name"]')
   await wait(() => expect(nameInput).toHaveValue('陳小姐'))
   typeLikeBrowser(nameInput, '陳美美')

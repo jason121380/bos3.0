@@ -6,6 +6,7 @@ import { Dialog as CompatDialog, Modal } from 'ui/modal-compat'
 import { DatePicker, MobileDatePicker } from 'ui/date-picker'
 import { Autocomplete } from 'ui/combobox'
 import PasswordDialog from 'components/PasswordDialog'
+import { Select as CompatSelect, MenuItem } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from 'ui/select'
 import { Popover, PopoverTrigger, PopoverContent } from 'ui/popover'
@@ -38,11 +39,11 @@ function App() {
   const changeUpper = open => { window.__events.push(['upper', open]); setUpper(open) }
   const content = <>
     <input id="lower-input" aria-label="下層輸入" />
-    {(kind === 'desktop' || kind === 'mobile') && React.createElement(kind === 'mobile' ? MobileDatePicker : DatePicker, {
+    {(kind === 'desktop' || kind === 'mobile' || kind === 'customer-form') && React.createElement(kind === 'mobile' ? MobileDatePicker : DatePicker, {
       value: date, closeOnSelect: true, onChange: next => { setDate(next); window.__events.push(['date', next.getDate()]) },
       slotProps: { textField: { id: 'date-field' } },
     })}
-    {['combobox', 'nested-password'].includes(kind) && <Autocomplete onOpen={() => window.__events.push(['選單開啟'])} onClose={(event, reason) => window.__events.push(['選單關閉', reason])} options={['剪髮', '染髮']} value={value} onChange={(e, next) => setValue(next)} renderInput={p => <TextField {...p} label="服務" />} />}
+    {['combobox', 'nested-password', 'customer-form'].includes(kind) && <Autocomplete onOpen={() => window.__events.push(['選單開啟'])} onClose={(event, reason) => window.__events.push(['選單關閉', reason])} options={['剪髮', '染髮']} value={value} onChange={(e, next) => setValue(next)} renderInput={p => <TextField {...p} label="服務" />} />}
     {kind === 'select' && <Select onValueChange={setValue}><SelectTrigger id="select-trigger"><SelectValue placeholder="選擇服務" /></SelectTrigger><SelectContent><SelectItem value="染髮">染髮</SelectItem></SelectContent></Select>}
     {kind === 'popover' && <Popover><PopoverTrigger id="popover-trigger">開啟浮層</PopoverTrigger><PopoverContent><input id="popover-input" aria-label="浮層輸入" /><button id="popover-button" onClick={() => setValue('已點擊')}>浮層按鈕</button></PopoverContent></Popover>}
     {kind === 'keep-mounted' && <>
@@ -51,11 +52,12 @@ function App() {
       <button id="open-modal" onClick={() => setModalOpen(true)}>開啟保留掛載視窗</button>
       <Modal open={modalOpen} keepMounted onClose={() => setModalOpen(false)}><div id="compat-modal" style={{ position: 'absolute', top: 100, left: 100, padding: 24, background: 'white' }}><input id="modal-input" aria-label="保留掛載輸入" /></div></Modal>
     </>}
+    {kind === 'customer-form' && <><CompatSelect name="gender" value={password} onChange={e => setPassword(e.target.value)}><MenuItem value="UNKNOWN">未知</MenuItem><MenuItem value="FEMALE">女</MenuItem></CompatSelect><button id="close-customer" onClick={() => setLower(false)}>取消</button></>}
     <output id="value">{value}</output>
     <button id="open-upper" onClick={() => setUpper(true)}>開啟上層</button>
     <button id="show-toast" onClick={() => toast.error('全站提示')}>顯示提示</button>
   </>
-  const radix = (open, change, id, children) => <Dialog open={open} onOpenChange={change}><DialogContent id={id} aria-describedby={undefined}
+  const radix = (open, change, id, children) => <Dialog open={open} onOpenChange={kind === 'customer-form' ? undefined : change}><DialogContent hideClose={kind === 'customer-form'} id={id} aria-describedby={undefined}
     onEscapeKeyDown={event => window.__events.push(['對話框Esc', id, event.defaultPrevented])}
     onPointerDownOutside={event => window.__events.push(['外部指標', event.target && event.target.outerHTML.slice(0, 180), event.target && event.target.isConnected])}
     onFocusOutside={event => window.__events.push(['外部焦點', event.target && event.target.outerHTML.slice(0, 180)])}

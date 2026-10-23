@@ -24,7 +24,7 @@ const noCustomerYet = () => baseQueue({ withoutCustomerData: false })
 const NEW_CUSTOMER = { id: 'customer-9', category: '', name: '', cellphone: '0955666777', gender: 'MALE', birthday: { year: '', month: '', day: '' }, preferDesigner: null, source: null }
 const openModal = async title => {
   fireEvent.click(screen.getByRole('button', { name: '新增顧客' }))
-  return (await screen.findByText(title)).closest('.MuiModal-root')
+  return (await screen.findByText(title)).closest('[role="dialog"]')
 }
 const field = (modal, name) => modal.querySelector(`[name="${name}"]`)
 const button = (modal, text) => within(modal).getByText(text, { selector: 'button' })
@@ -82,7 +82,7 @@ describe('重新開單：顧客欄已輸入手機時新增顧客', () => {
     await loaded(page)
     await wait(() => expect(customerInput().value).toContain('陳小姐'))
     fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
-    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
     await wait(() => expect(field(modal, 'name')).toHaveValue('陳小姐'))
     fireEvent.click(button(modal, '儲存'))
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '手機號碼已被使用', variant: 'error' }))
@@ -96,7 +96,7 @@ describe('重新開單：編輯顧客儲存成功／失敗時帳單上的顧客'
   const openEdit = async () => {
     await wait(() => expect(customerInput().value).toContain('陳小姐'))
     fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
-    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
     await wait(() => expect(field(modal, 'name')).toHaveValue('陳小姐'))
     return modal
   }
@@ -171,7 +171,7 @@ describe('重新開單：編輯沒有性別資料的顧客', () => {
     await loaded(page)
     await wait(() => expect(customerInput().value).toContain('陳小姐'))
     fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
-    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
     await wait(() => expect(field(modal, 'name')).toHaveValue('陳小姐'))
     const gender = field(modal, 'gender')
     expect(gender.options[gender.selectedIndex].textContent).toBe('未知')
@@ -191,7 +191,7 @@ describe('重新開單：編輯沒有生日資料的顧客', () => {
     await loaded(page)
     await wait(() => expect(customerInput().value).toContain('陳小姐'))
     fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
-    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
     expect(field(modal, 'year')).toHaveValue('')
     expect(field(modal, 'month')).toHaveValue('')
     expect(field(modal, 'day')).toHaveValue('')

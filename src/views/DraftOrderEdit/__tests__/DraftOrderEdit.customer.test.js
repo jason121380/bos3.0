@@ -255,7 +255,7 @@ describe('掛單詳細：服務人員、指定方式與帳單日期', () => {
 describe('掛單詳細：新增顧客', () => {
   const openAddModal = async page => {
     fireEvent.click(screen.getByRole('button', { name: '新增顧客' }))
-    const modal = (await screen.findByText('新增客戶')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('新增客戶')).closest('[role="dialog"]')
     return { modal, page }
   }
   const input = (modal, name) => modal.querySelector(`input[name="${name}"]`)
@@ -338,7 +338,7 @@ describe('掛單詳細：新增顧客', () => {
     expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')[0].variables.input).toEqual(
       expect.objectContaining({ cellphone: '0911222333', name: '', gender: 'MALE', OfficialBrandMerchantId: 'merchant-1' })
     )
-    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
     expect(modal.querySelector('input[name="cellphone"]')).toHaveValue('0911222333')
     await wait(() => expect(callsOf(page.calls, 'FETCH_CUSTOMER_DETAIL').some(c => c.variables.id === 'customer-new')).toBe(true))
     fireEvent.click(within(modal).getByText('取消', { selector: 'button' }))
@@ -359,7 +359,7 @@ describe('掛單詳細：編輯顧客', () => {
     )
     await wait(() => expect(customerInput()).toHaveValue('陳小姐/0912345678/C01'))
     fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
-    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
     await wait(() => expect(selectedLabel(modal.querySelector('#addCustomerModal-preferDesigner'))).toBe(DESIGNER.userName))
     expect(modal.querySelector('input[name="remark"]')).toHaveValue('敏感肌')
     fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
@@ -386,7 +386,7 @@ describe('掛單詳細：編輯顧客', () => {
     )
     await wait(() => expect(customerInput()).toHaveValue('陳小姐/0912345678/C01'))
     fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
-    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
     typeLikeBrowser(modal.querySelector('input[name="name"]'), '陳太太')
     fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
     await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))
@@ -401,7 +401,7 @@ describe('掛單詳細：編輯顧客', () => {
     const page = await ready(withCustomer(customerDetail(), { SET_CUSTOMER: new Error('更新失敗') }))
     await wait(() => expect(customerInput()).toHaveValue('陳小姐/0912345678/C01'))
     fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
-    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
     fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
     await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))
     await page.settle()
@@ -418,7 +418,7 @@ describe('掛單詳細：編輯顧客', () => {
     const page = await ready(withCustomer(customerDetail({ gender: null }), { SET_CUSTOMER: { updateCustomer: true } }))
     await wait(() => expect(customerInput()).toHaveValue('陳小姐/0912345678/C01'))
     fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
-    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
     expect(selectedLabel(modal.querySelector('#addCustomerModal-gender'))).toBe('未知')
     fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
     await wait(() => expect(callsOf(page.calls, 'SET_CUSTOMER')).toHaveLength(1))
@@ -437,7 +437,7 @@ describe('掛單詳細：編輯顧客', () => {
     act(() => editButton.focus())
     expect(document.activeElement).toBe(editButton)
     fireEvent.click(editButton)
-    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
     expect(modal.querySelector('input[name="remark"]')).toHaveValue('')
     expect(modal.querySelector('input[name="year"]')).toHaveValue('')
     typeLikeBrowser(modal.querySelector('input[name="no"]'), 'C77')
@@ -460,7 +460,7 @@ describe('掛單詳細：編輯顧客', () => {
   it('顧客資料讀不到時按「編輯顧客資料」：開啟空白表單（不帶入錯誤資料），設計師清單載入中顯示轉圈', async () => {
     await ready(withCustomer(null, { FETCH_USERS: new Error('讀取失敗') }))
     fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
-    const modal = (await screen.findByText('新增客戶')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('新增客戶')).closest('[role="dialog"]')
     expect(modal.querySelector('input[name="name"]')).toHaveValue('')
     expect(within(modal).getByText('偏好設計師')).toBeInTheDocument()
   })

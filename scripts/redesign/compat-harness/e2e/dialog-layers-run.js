@@ -16,7 +16,7 @@ const delay = page => page.waitForTimeout(150)
 async function main() {
   const browser = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost, EXCLUDE 127.0.0.1'] })
   let failed = 0
-  for (const kind of ['desktop', 'mobile', 'combobox', 'select', 'popover', 'compat-radix', 'radix-compat', 'keep-mounted', 'dropdown', 'nested-password', 'nested-date']) {
+  for (const kind of ['desktop', 'mobile', 'combobox', 'select', 'popover', 'compat-radix', 'radix-compat', 'keep-mounted', 'dropdown', 'nested-password', 'nested-date', 'customer-form']) {
     const context = await browser.newContext({ viewport: { width: 1000, height: 850 }, hasTouch: false })
     // 以路由直接提供靜態檔，受限環境也不必開監聽埠；所有非本機請求一律中止。
     await context.route('**/*', route => {
@@ -34,7 +34,39 @@ async function main() {
     try {
       await page.goto(`http://127.0.0.1/?${kind}`)
       await delay(page)
-      if (kind === 'desktop' || kind === 'mobile') {
+      if (kind === 'customer-form') {
+        await page.locator('input[role="combobox"]').click()
+        await page.getByRole('option', { name: '染髮' }).click()
+        assert.equal(await page.locator('#value').textContent(), '染髮')
+        await exists(page, '#lower')
+        await page.locator('input[role="combobox"]').click()
+        await exists(page, '[role="listbox"]')
+        await page.keyboard.press('Escape')
+        await page.getByRole('listbox').waitFor({ state: 'detached' })
+        await exists(page, '#lower')
+        // 相容 Select 使用原生 select，選值型別與既有表單相同。
+        await page.locator('select[name="gender"]').selectOption({ label: '女' })
+        assert.equal(await page.locator('select[name="gender"] option:checked').textContent(), '女')
+        await exists(page, '#lower')
+        const openDate = async () => page.locator('button[aria-label^="選擇日期"]').click()
+        await openDate()
+        await page.getByRole('gridcell', { name: '2026年10月25日', exact: true }).click()
+        assert((await page.evaluate(() => window.__events)).some(e => e[0] === 'date' && e[1] === 25))
+        await exists(page, '#lower')
+        await openDate()
+        await page.getByRole('gridcell', { name: '2026年10月24日', exact: true }).focus()
+        await page.keyboard.press('Escape')
+        await page.getByRole('gridcell').first().waitFor({ state: 'detached' })
+        await exists(page, '#lower')
+        await focusInside(page, '#lower')
+        await page.keyboard.press('Escape')
+        await exists(page, '#lower')
+        await page.mouse.click(5, 5)
+        await exists(page, '#lower')
+        assert.equal(await page.locator('#lower button[aria-label="關閉"]').count(), 0)
+        assert(!(await page.evaluate(() => window.__events)).some(e => e[0] === 'lower'), 'Esc／背景不可要求關閉受控表單')
+        await page.locator('#close-customer').click()
+      } else if (kind === 'desktop'  || kind === 'mobile') {
         const open = async () => { if (kind === 'mobile') await page.locator('#date-field').click(); else await page.locator('button[aria-label^="選擇日期"]').click(); await delay(page) }
         await open()
         const cell = page.locator('button[role="gridcell"]').filter({ hasText: /^25$/ }).first()
@@ -165,7 +197,7 @@ async function main() {
         await exists(page, '#lower')
         await focusInside(page, '#open-upper')
       }
-      await page.keyboard.press('Escape'); await delay(page)
+      if (kind !== 'customer-form') await page.keyboard.press('Escape'); await delay(page)
       await page.locator('#lower').waitFor({ state: 'detached' })
       assert.equal(await page.locator('#lower').count(), 0, '最後 Esc 關閉下層')
       await page.waitForFunction(() => !document.body.style.pointerEvents && !document.body.hasAttribute('data-scroll-locked') && document.body.style.overflow !== 'hidden')

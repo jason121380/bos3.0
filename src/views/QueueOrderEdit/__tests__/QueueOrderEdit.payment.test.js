@@ -160,7 +160,7 @@ describe('重新開單：清除顧客或改輸入新手機時扣入金清空', (
     await loaded(page)
     await wait(() => expect(customerInput().value).toContain('陳小姐'))
     fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
-    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
     fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
     await wait(() => expect(screen.queryByText('編輯客戶資料')).toBeNull())
     await page.settle()

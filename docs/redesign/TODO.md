@@ -1,5 +1,6 @@
 # 待辦清單（TODO）
 
+- **2026/10/23 共用 Dialog 圖層 Part B1**：指定九檔外殼遷移完成；保留原關閉路徑、特殊寬度、欄位／picker 與 Enter 跳欄。B2 八檔留待後續；限定 Jest 107 suites／1,352 tests（舊定位失敗修正後重跑通過）、網路封鎖／版號與 lint 通過，外部 Chrome 12/12；細節見 MIGRATION_GUIDE §8。
 - **2026/10/23 共用 Dialog 圖層 Part A**：共享 Radix 圖層與首批七檔遷移完成修改；保留 Part B 17 個頁面／共用 importer。限定 Jest 89 suites／1,099 tests、網路封鎖／版號 4 tests 與 lint 通過；外部 Chrome 原九種＋真實 PasswordDialog／三層日期共 11/11 連續兩輪通過；keepMounted 兩次開關、焦點還原、全部關閉後指標／捲動鎖解除均已驗證（MEMORY #195、#196）。
 
 

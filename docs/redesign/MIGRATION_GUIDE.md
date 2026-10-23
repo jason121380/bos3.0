@@ -148,26 +148,36 @@ NODE_PATH=/home/box/.npm/_npx/e41f203b7505f1fb/node_modules node scripts/redesig
 
 **Harness 修正理由**：Select／Popover／Dropdown 與外層視窗必須等待退場節點真正卸載再送下一次 Esc，不能用固定 150ms 推測動畫完成。Toaster 位於被 aria-hidden 隱藏的應用程式根節點，getByRole 查不到既有 alert；改用 CSS role 定位，仍檢查可見性與 elementFromPoint 的實際命中。新增手機日期欄位使用明確 id 定位，避免把 facade 顯示標籤誤當輸入框的 aria-label。
 
-Part B 頁面／共用 importers 剩 17 檔（本批不改）：
+Part B 共 17 個頁面／共用 importers；B1 已完成 9 檔，B2 留待後續 8 檔：
 
 | 檔案（`src/` 下，省略 `.js`） | 類型與風險 |
 |---|---|
 | `components/FastCheckOrdersModal` | Dialog；DateSelector／人員搜尋、xl 寬與 sticky 表格 |
 | `views/AttendanceRecords/index` | Dialog；日期時間／搜尋、原 onClose、hidden 篩選狀態 |
 | `views/CustomerFilterExport/index` | Dialog；多日期／Select、響應式 fullScreen |
-| `views/EmployeeManagementList/ProfileImportModal` | Dialog；Select，無 onClose |
-| `views/Parameter/OuterLinkModal` | Dialog；搜尋、MuiDialog 後代樣式掛點，無 onClose |
+| `views/EmployeeManagementList/ProfileImportModal` | **B1 完成**；Dialog → `ui/dialog`；Select，無 onClose |
+| `views/Parameter/OuterLinkModal` | **B1 完成**；Dialog → `ui/dialog`；搜尋、MuiDialog 後代樣式掛點，無 onClose |
 | `views/CustomerManagementDetails/General/CustomerInfo` | Dialog；ChoseEvent 的日期／搜尋／Select 與另一個編輯窗 |
 | `views/ManagementReservationRecord/OrderTable` | Dialog；ChoseEvent 與 PasswordDialog，須父子聯測 |
 | `views/ManagementDesignersReservationRecord/OrderTable` | Dialog；NewChoseEvent／PasswordDialog／公休窗共存 |
 | `views/CustomerManagementDetails/General/CustomerEditModal` | Modal；Select、表單 refs／驗證、原 onClose |
-| `views/OrderCreate/AddCustomerModal` | Modal；搜尋／Select、refs／鍵盤跳欄，無 onClose |
-| `views/OrderEdit/AddCustomerModal` | Modal；日期／Select、既有顧客資料，無 onClose |
-| `views/DraftOrderEdit/AddCustomerModal` | Modal；日期／Select，測試依賴 MuiModal 結構，無 onClose |
-| `views/QueueOrderEdit/AddCustomerModal` | Modal；Select，測試依賴 MuiModal 結構，無 onClose |
-| `views/EmployeeSchedule/AddDesignersModal` | Modal；人員搜尋，無 onClose |
-| `views/Services/AboutDeductionEditModal` | Modal；Select／抽成數值，無 onClose |
-| `views/Services/AssistantSettingEditModal` | Modal；Select／助理抽成數值，無 onClose |
+| `views/OrderCreate/AddCustomerModal` | **B1 完成**；Modal → `ui/dialog`；搜尋／Select、refs／鍵盤跳欄，無 onClose |
+| `views/OrderEdit/AddCustomerModal` | **B1 完成**；Modal → `ui/dialog`；日期／Select、既有顧客資料，無 onClose |
+| `views/DraftOrderEdit/AddCustomerModal` | **B1 完成**；Modal → `ui/dialog`；日期／Select，測試已改 role=dialog，無 onClose |
+| `views/QueueOrderEdit/AddCustomerModal` | **B1 完成**；Modal → `ui/dialog`；Select，測試已改 role=dialog，無 onClose |
+| `views/EmployeeSchedule/AddDesignersModal` | **B1 完成**；Modal → `ui/dialog`；人員搜尋，無 onClose |
+| `views/Services/AboutDeductionEditModal` | **B1 完成**；Modal → `ui/dialog`；Select／抽成數值，無 onClose |
+| `views/Services/AssistantSettingEditModal` | **B1 完成**；Modal → `ui/dialog`；Select／助理抽成數值，無 onClose |
 | `views/OrderCreate/OrderDetailModal` | Modal；**列印範本禁止動**、結帳及確認疊層，無 onClose |
 
 另有 `ui/date-picker`、`ui/misc-compat`、`ui/overlay-compat` 三個內部使用者，與頁面遷移分開計數。
+
+### Dialog 共用圖層 Part B1（2026/10/23）
+
+上表 B1 九檔僅換 `ui/dialog` 外殼；無 `onOpenChange`＋`hideClose`，Esc／背景不關閉，原按鈕、表單 refs／Enter 跳欄與後端值不變。保留 700px（顧客）、500px（排班）、912px（服務設定）、600px（身份導入／外部連結）特例。開窗沿用舊 Modal 面板聚焦策略，已有欄位焦點時不搶走。正式 Dialog 手機採底部面板，長表單內容獨立捲動。
+
+OuterLink 原 MuiDialog 後代樣式逐項移至 DialogContent／Header／Body／Footer：保留可見 overflow、標題 16px、內容 24／16px 內距及底部兩側對齊／換行／10px 間距；不留下失效的 MuiDialog 選擇器。B2、列印及 `src/ui` 不動。既有頁面測試只調整外殼選擇器；新增九檔 picker 選值與不關閉回歸，以及新增顧客 Enter 焦點鏈。
+
+離線 harness 新增 `customer-form`（第十二種）：無 onOpenChange 的正式 Dialog 內含 combobox、相容原生 Select、日期；選值後保持開窗，picker Esc 只關 picker、面板 Esc／背景不關，取消後檢查指標與捲動鎖解除。
+
+驗證：`CI=true` 指定八個頁面測試目錄＋`src/ui` 共 107 suites／1,352 tests；首輪 2 suites 的 5 個失敗皆為舊 Card／absolute 外殼定位，僅改 selector helper 後 Services（2 suites／23 tests）與 EmployeeSchedule（1 suite／27 tests）重跑全過。新增 picker 10 tests、網路封鎖 3 tests、版號 1 test 通過；`npm run lint` 通過。外部 Chrome 原 11 種＋customer-form 共 12/12 通過（exit 0）。未跑全站 suite，未連真實後端。
