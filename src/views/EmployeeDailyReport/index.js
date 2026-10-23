@@ -1,6 +1,5 @@
-import { Grid } from 'ui/grid-compat'
 import { useState, useEffect } from 'react'
-// Grid 只保留在報表外框（className="EmployeeDailyReport"）：列印樣式以此為根排版，且內含列印用卡片
+// 報表外框保留 EmployeeDailyReport 掛點，使用 flex 排列螢幕卡片。
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchDesignerReport from 'hooks/useFetchDesignerDailyReport'
@@ -67,7 +66,6 @@ const EmployeeDailyReport = () => {
     }
   }, [designerReportData.loading])
 
-
   useEffect(() => {
     if (!isMemberShipCardActiveData.loading) {
       const isMemberShipCardActive = idx(
@@ -131,7 +129,7 @@ const EmployeeDailyReport = () => {
       {!designerReportData.loading && !isPriceDisplayOnDailyReportData.loading ? (
         idx(designerReportData, _ =>
           _.data.designerDailyReport.length > 0 ? (
-            <Grid container spacing={3} className='EmployeeDailyReport'>
+            <div className="box-border flex flex-wrap -mt-6 -ml-6 w-[calc(100%+24px)] EmployeeDailyReport">
               <Results
                 designerDailyReport={_.data.designerDailyReport}
                 printData={printData}
@@ -142,7 +140,7 @@ const EmployeeDailyReport = () => {
                 isMemberShipCardActive={isMemberShipCardActive}
                 printMode={printMode}
               />
-            </Grid>
+            </div>
           ) : (
             <Card>
               <EmptyState title="無資料" />
