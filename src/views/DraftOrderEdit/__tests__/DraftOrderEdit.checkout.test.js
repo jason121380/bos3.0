@@ -8,9 +8,11 @@
 import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
 import { loginAs, callsOf } from '../../../__tests__/testkit.test'
+import billPaymentSummary from 'helper/billPaymentSummary'
+import { formatNumber } from 'ui/format'
 import {
-  setupDraft, pageReady, pick, saveDraft, summaryValue, makeOrder, panel, panelHeader, customerDetail,
-  CUSTOMER, DESIGNER, TICKET,
+  setupDraft, pageReady, pick, saveDraft, summaryValue, makeOrder, serviceOrder, panel, panelHeader, customerDetail,
+  CUSTOMER, DESIGNER, SERVICE, SERVICE2, TICKET,
 } from './draftPageKit.test'
 
 jest.setTimeout(20000)
@@ -195,6 +197,74 @@ describe('掛單詳細：金額彙總', () => {
     // 業績合計不含預收卡販賣（購買當下不入業績），現金應收含
     expect(summaryValue('業績合計')).toHaveTextContent('3,700')
     expect(summaryValue('現金應收')).toHaveTextContent('15,700')
+  })
+
+  // 為什麼：v3.10241410 實機驗收時，帳單詳細的現金應收已改呼叫 billPaymentSummary（PR #297），
+  // 掛單詳細畫面仍用本地算式。同一張帳單的預覽必須與打帳單、帳單詳細同一個 helper。
+  // 使用預收卡只進業績合計、不進現金應收；第三方卡券付的服務／店販／會員卡相反（進業績、不進現金應收）。
+  // 未選商品的店販列價格為 0，算進去與排除的結果相同。
+  it('現金應收與打帳單同一支 billPaymentSummary：扣第三方卡券、扣入金、其他付款與紅利折抵', async () => {
+    const order = makeOrder({
+      customer: CUSTOMER,
+      payType: ['轉帳'],
+      walletPay: 100,
+      amountByOtherPay: 50,
+      bonusDecount: 20,
+      serviceOrders: [serviceOrder(SERVICE), serviceOrder(SERVICE2, { thirdPartyPayId: 'tp-1' })],
+      productOrders: [
+        { id: 'po-1', name: '洗髮精', count: 2, price: 1200, thirdPartyPayId: null, seller: { id: DESIGNER.userId }, product: { id: 'product-1', isLocked: 'FALSE' } },
+        { id: 'po-2', name: '護髮油', count: 1, price: 500, thirdPartyPayId: 'tp-1', seller: { id: DESIGNER.userId }, product: { id: 'product-2', isLocked: 'FALSE' } },
+        { id: 'po-empty', name: '', count: 1, price: 0, thirdPartyPayId: null, seller: { id: DESIGNER.userId }, product: { id: '', isLocked: 'FALSE' } },
+      ],
+      ticketOrders: [ticket(TICKET.id, 6000, 1)],
+      membershipOrders: [
+        { purchaseDate: null, validDayCount: null, expiryDate: null, price: 3000, thirdPartyPayId: null, remark: '', seller: { id: DESIGNER.userId }, membership: { uuid: 'card-2', isLocked: 'TRUE', effecitveDay: 0 } },
+        { purchaseDate: null, validDayCount: null, expiryDate: null, price: 12000, thirdPartyPayId: 'tp-1', remark: '', seller: { id: DESIGNER.userId }, membership: { uuid: 'card-1', isLocked: 'FALSE', effecitveDay: 365 } },
+      ],
+      useTicketOrders: [
+        { id: 'record-1', name: '剪髮10次卡', price: 600, pricePerCount: 600, service: { id: TICKET.id }, helperList: [] },
+        { id: 'record-2', name: '剪髮10次卡', price: 650, pricePerCount: 650, service: { id: TICKET.id }, helperList: [] },
+      ],
+    })
+    const page = setupDraft({
+      order,
+      customer: customerDetail(),
+      merchantPayWays: { merchantPayWays: [{ id: 'pay-2', type: 'OTHER', name: '轉帳', fee: 0 }] },
+      GetTicket: ({ input }) => ({
+        ticketRecords: {
+          data: [
+            { id: 'record-1', name: '剪髮10次卡', price: 600, remark: '', service: { id: TICKET.id, helperDeductionSetting: [] } },
+            { id: 'record-2', name: '剪髮10次卡', price: 650, remark: '', service: { id: TICKET.id, helperDeductionSetting: [] } },
+          ].filter(r => !input.ids || input.ids.includes(r.id)),
+        },
+      }),
+    })
+    await pageReady(page)
+    await wait(() => expect(summaryValue('使用預收卡')).toHaveTextContent('1,250'))
+
+    // 頁面寫回 bill 的形狀（thirdPartyPayId → thirdPartyCouponMerchantId）。helper 只讀這些欄位。
+    const { cashDue } = billPaymentSummary({
+      serviceOrders: order.serviceOrders.map(d => ({ price: d.price, thirdPartyCouponMerchantId: d.thirdPartyPayId })),
+      productOrders: order.productOrders.map(d => ({ price: d.price, count: d.count, productId: d.product.id, thirdPartyCouponMerchantId: d.thirdPartyPayId })),
+      membershipOrders: order.membershipOrders.map(d => ({ price: d.price, thirdPartyCouponMerchantId: d.thirdPartyPayId })),
+      ticketOrders: order.ticketOrders.map(d => ({ price: d.price, count: d.count })),
+      walletPay: order.walletPay,
+      amountByOtherPay: order.amountByOtherPay,
+      bonusDecount: order.bonusDecount,
+    })
+    // 800＋店販 2400＋預收卡販賣 6000＋會員卡 3000－扣入金 100－其他付款 50－紅利折抵 20。
+    // 第三方卡券（染髮 2000、護髮油 500、年卡 12000）與使用預收卡 1250 不計。未選商品列價格 0。
+    expect(cashDue).toBe(12030)
+    const cashDueText = formatNumber(cashDue)
+    screen.getAllByText('現金應收', { selector: 'span' }).forEach(label => {
+      expect(label.nextSibling).toHaveTextContent(cashDueText)
+    })
+    // 業績合計仍含第三方卡券與使用預收卡、不含預收卡販賣：2800＋2900＋1250＋15000
+    expect(summaryValue('業績合計')).toHaveTextContent('21,950')
+    expect(summaryValue('服務消費')).toHaveTextContent('2,800')
+    expect(summaryValue('店販消費')).toHaveTextContent('2,900')
+    expect(summaryValue('預收卡販賣')).toHaveTextContent('6,000')
+    expect(summaryValue('會員卡銷售')).toHaveTextContent('15,000')
   })
 
   it('使用兩張預收卡：使用預收卡金額為兩張合計並計入業績', async () => {
