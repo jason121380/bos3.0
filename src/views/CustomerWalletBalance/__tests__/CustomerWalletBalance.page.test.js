@@ -1,4 +1,6 @@
-// 保護「顧客入金餘額表」：每位顧客的編號、姓名、所屬設計師、儲值餘額與合計；報表匯出檔與畫面同內容並加合計列；
+// 保護「顧客入金餘額表」：每位顧客的編號、姓名、所屬設計師、儲值餘額與合計；
+// 報表匯出比照顧客卡券餘額表讀「報表匯出客資遮碼」（getCustomerDataMarkedDefault）：只有查詢成功且為 false 才匯出完整姓名，
+// 設定為遮罩、查詢失敗或尚未回來都遮罩姓名；畫面表格不遮罩。開關關閉時匯出檔與畫面同內容並加合計列。
 // 以設計師／顧客篩選時送出的 designerId／customerId 為陣列（清除後為空陣列）。GraphQL 全由 testkit 的模擬 link 回應。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
@@ -27,7 +29,12 @@ const REPORT = [
 
 const setup = (fixtures = {}) =>
   renderPage(<CustomerWalletBalance />, {
-    fixtures: { GET_CUSTOMER_WALLET_BALANCE: { customerWalletReport: { customerWalletReport: REPORT } }, ...fixtures },
+    fixtures: {
+      GET_CUSTOMER_WALLET_BALANCE: { customerWalletReport: { customerWalletReport: REPORT } },
+      // 既有「匯出與畫面相同」鎖的是開關關閉；沒給這筆時模擬 link 會補 null，匯出會改成遮罩
+      GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false },
+      ...fixtures,
+    },
   })
 
 const exportedCsv = () => decodeURIComponent(screen.getByText('報表匯出').closest('a').getAttribute('href'))
@@ -80,5 +87,35 @@ describe('顧客入金餘額表', () => {
     expect(screen.queryByText(PAGE_CRASH_TEXT)).not.toBeInTheDocument()
     expect(within(screen.getByText('合計').closest('tr')).getByText('0')).toBeInTheDocument()
     expect(exportedCsv()).toContain('"合計","0"')
+  })
+
+  // 匯出遮罩比照顧客卡券餘額表（helper/exportCustomerMask）。這份表沒有手機，只遮姓名；畫面維持完整姓名。
+  it.each([
+    ['設定為遮罩', { getCustomerDataMarkedDefault: true }],
+    ['設定查詢失敗', new Error('查詢失敗')],
+  ])('%s：匯出檔遮罩顧客姓名，畫面照常顯示', async (_, fixture) => {
+    const utils = setup({ GET_CUSTOMER_DATA_MARKED: fixture })
+    await utils.settle()
+    await wait(() => expect(exportedCsv()).toContain('"C01","陳*姐","王小美","12000"'))
+    expect(exportedCsv()).toContain('"C02","林*生","Amy","500"')
+    expect(exportedCsv()).not.toContain('陳小姐')
+    expect(exportedCsv()).not.toContain('林先生')
+    expect(screen.getByText('陳小姐')).toBeInTheDocument()
+    expect(screen.getByText('林先生')).toBeInTheDocument()
+  })
+
+  // 載入中一律先遮罩；設定晚回且確定為 false 時必須重算，否則開關關閉仍下載到遮罩姓名
+  it('店家設定不遮罩、且設定比餘額晚回來時，匯出檔才是完整姓名', async () => {
+    const { settle } = renderPage(<CustomerWalletBalance />, {
+      fixtures: {
+        GET_CUSTOMER_WALLET_BALANCE: { customerWalletReport: { customerWalletReport: REPORT } },
+        GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false },
+      },
+      delays: { GET_CUSTOMER_DATA_MARKED: 50 },
+    })
+    await screen.findByText('陳小姐')
+    await settle()
+    await wait(() => expect(exportedCsv()).toContain('"C01","陳小姐","王小美","12000"'))
+    expect(exportedCsv()).toContain('"C02","林先生","Amy","500"')
   })
 })
