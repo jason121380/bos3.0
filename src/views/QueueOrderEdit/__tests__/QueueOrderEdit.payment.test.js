@@ -246,6 +246,26 @@ describe('重新開單：紅利點數', () => {
     expect(input).toEqual(expect.objectContaining({ bonusUsed: 45, bonusDecount: 4 }))
   })
 
+  it('給點規則比帳單晚到：規則到了仍依應收金額給點', async () => {
+    const page = setupQueue({
+      queue: withCustomer({
+        serviceOrders: [{ serviceId: SERVICE.id, price: 800, thirdPartyCouponMerchantId: null, serviceOrderHelpers: [] }],
+        productOrders: [],
+        ticketOrders: [],
+        useTicketOrders: [],
+        membershipOrders: [],
+        walletPay: 0,
+        amountByOtherPay: 0,
+        bonusDecount: 0,
+        bonusDeposit: 0,
+      }),
+      ...bonusOn,
+      GET_BONUS_REWARD_RULE: { getParameterAboutSettingFunction: { bonusRewardRule: { isUsing: true, rule: { price: 100, bonus: 1, mode: 'ROUNDING' } } } },
+    }, { delays: { GET_BONUS_REWARD_RULE: 400 } })
+    await loaded(page)
+    expect((await retry(page.calls)).bonusDeposit).toBe(8)
+  })
+
   it('店家開自動給點：依應收金額給點且給點欄停用', async () => {
     const page = setupQueue({
       queue: withCustomer(),

@@ -1,7 +1,7 @@
 # 💄 BeautyOS (BOS v3.0) — 美業智慧管理系統
 
 > **專案代號**：`beautyos_website`
-> **版本**：v3（正式站目前 `v3.10230759`；版號來源 `src/version.js`，格式 `v3.MMDDHHmm`，台灣時間 UTC+8）| **最後更新**：2026-10-23（改版進度見 [STATUS](docs/redesign/STATUS.md)）
+> **版本**：v3（版號來源 `src/version.js`，格式 `v3.MMDDHHmm`，台灣時間 UTC+8；正式站以左上角版號為準，文件不把尚未部署的版號寫成已上線）| **最後更新**：2026-10-24（改版進度見 [STATUS](docs/redesign/STATUS.md)）
 > **技術責任人**：名留集團技術團隊
 
 BeautyOS 是一套專為**美髮 / 美容 / 美甲 / SPA 產業**設計的全方位管理系統（ERP / CRM），
@@ -639,7 +639,7 @@ Dialog 模式的店家切換器，含搜尋過濾功能。
 
 ### Railway（正式環境）
 
-正式站 https://bos.lure.com.tw 部署在 Railway（workspace「Jason C's Projects」的 project「bos3.0」）。push 或合併到 `main` 會自動部署；合併本身不等於已上線，須查看 App 左上角版號確認部署完成。目前正式版為 `v3.10230759`。
+正式站 https://bos.lure.com.tw 部署在 Railway（workspace「Jason C's Projects」的 project「bos3.0」）。push 或合併到 `main` 會自動部署；合併本身不等於已上線，須查看 App 左上角版號確認部署完成。repo 內的版號以 `src/version.js` 為準。2026/10/23 曾核對正式站為 `v3.10230759`，之後以左上角為準。
 
 `cloudbuild.yaml` 與 `cloudbuild_dev.yaml` 是舊的 Cloud Build 設定，目前未使用，不屬現行部署流程。
 

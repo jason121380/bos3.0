@@ -32,14 +32,14 @@ npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps（CI／Docke
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
 npm run lint                         # ESLint（實際 script：lint:build）
-npm run test:nowatch                 # 全部單元測試（作者回報基準：4,268 項通過）
+npm run test:nowatch                 # 全部單元測試（2026/10/24 本機全套：368 suites／4,283 tests；不要再用 4,268）
 TZ=America/Los_Angeles CI=true npm run test:nowatch   # 時區相關修改要另在海外時區跑一次
 CI=true npm run test:coverage        # 覆蓋率（A 級核心 helper／lib／store／OrderShared／DeductionSettingShared／*Requirements 要求 100%；共用層 hooks／ui／utils／context／mixins 100（分支 99）、components 99、elements 99、layouts 98；帳單四頁 99；其餘〔頁面〕為全域下限；Jason 2026/10/22 定全站 100% 為目標，分波推進）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
 node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面驗證
 ```
 
-GitHub Actions 的 Node.js CI 已手動停用（disabled_manually）。合併前本機執行 `npm run lint`、`npm run test:nowatch`、`npm run build`；作者回報目前有 4,268 項測試通過。驗證標準：`verify-logic` 的 FAIL 必須逐項說明是純畫面差異；lint 通過且 build 成功；測試**必須全數通過**。動到 `package.json` 相依時，另在乾淨資料夾跑一次 `npm ci --legacy-peer-deps` 確認 lockfile 同步。
+GitHub Actions 的 Node.js CI 在 GitHub 設定被手動停用（disabled_manually）；workflow 檔本身是 Node 24.22.1、`npm ci --legacy-peer-deps`、lint／build／test，要在 GitHub 網頁重新啟用才會跑。合併前本機執行 `npm run lint`、`npm run test:nowatch`、`npm run build`。2026/10/24 本機全套 368 suites／4,283 tests 通過；不要再引用 4,268。驗證標準：`verify-logic` 的 FAIL 必須逐項說明是純畫面差異；lint 通過且 build 成功；測試**必須全數通過**。動到 `package.json` 相依時，另在乾淨資料夾跑一次 `npm ci --legacy-peer-deps` 確認 lockfile 同步。
 
 ## Git 與合併
 

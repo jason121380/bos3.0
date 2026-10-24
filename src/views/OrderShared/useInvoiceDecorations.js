@@ -47,16 +47,19 @@ export default function useInvoiceDecorations() {
       QRCode.toDataURL(qrcode.url, (err, string) => {
         !err && setQrcodeUrl(string)
       })
-      const getDataUrl = async () => {
-        let blob = await fetch(logo.imageUrl).then(r => r.blob());
-        let dataUrl = await new Promise(resolve => {
-          let reader = new FileReader()
-          reader.onload = () => resolve(reader.result)
-          reader.readAsDataURL(blob)
-        })
-        setImgUrl(dataUrl)
+      // 沒啟用或沒有 logo 網址時 imageUrl 是 null；不要 fetch(null)（會打到 /null）
+      if (logo && logo.imageUrl) {
+        const getDataUrl = async () => {
+          let blob = await fetch(logo.imageUrl).then(r => r.blob());
+          let dataUrl = await new Promise(resolve => {
+            let reader = new FileReader()
+            reader.onload = () => resolve(reader.result)
+            reader.readAsDataURL(blob)
+          })
+          setImgUrl(dataUrl)
+        }
+        getDataUrl().catch(() => {})
       }
-      getDataUrl()
     }
   }, [
     getLogoDisplayOnInvoice.loading,

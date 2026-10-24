@@ -51,3 +51,21 @@ test('現金應收＝應付帳款扣掉扣入金、其他付款方式、紅利�
 test('沒有任何項目時兩者都是 0', () => {
   expect(billPaymentSummary(emptyBill)).toEqual({ shouldPay: 0, cashDue: 0 })
 })
+
+// 帳單詳細的現金應收改呼叫這支函式。舊式另外排除「還沒選商品」的店販列，
+// 但那種列的價格一律是 0（見 OrderEdit/PannelMerchantSells），結果必須與這裡相同。
+test('未選商品的店販列價格為 0 時，現金應收與只算已選項目相同', () => {
+  const selected = {
+    ...emptyBill,
+    serviceOrders: [{ price: 800, thirdPartyCouponMerchantId: null }],
+    walletPay: 100,
+    amountByOtherPay: 50,
+    bonusDecount: 20,
+  }
+  const withEmptyProductRow = {
+    ...selected,
+    productOrders: [{ price: 0, count: 1, productId: '', thirdPartyCouponMerchantId: null }],
+  }
+  expect(billPaymentSummary(withEmptyProductRow)).toEqual(billPaymentSummary(selected))
+  expect(billPaymentSummary(withEmptyProductRow)).toEqual({ shouldPay: 800, cashDue: 630 })
+})

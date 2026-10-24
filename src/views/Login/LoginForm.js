@@ -1,5 +1,5 @@
 import useFetchLoginV2 from 'hooks/useFetchLoginV2'
-import useFetchLoginForLine from 'hooks/useFetchUserLoginForLine'
+import useFetchLoginForLine, { persistLineLoginSession } from 'hooks/useFetchUserLoginForLine'
 import { useLazyFetchProfile } from 'hooks/useFetchProfile'
 import PropTypes from 'prop-types'
 import { useRef, useEffect, useState } from 'react'
@@ -39,9 +39,13 @@ function LoginForm({ className, location, ...rest }) {
       if (liffIdFromStorage !== null) {
         loginForLine(data)
           .then(({ data }) => {
-            const user = data.userLoginForLine
+            // userLoginForLine 沒有 token 欄位（見 persistLineLoginSession）。沒有使用者物件就不算登入成功。
+            if (!persistLineLoginSession(data && data.userLoginForLine)) {
+              setDisabledLoginBtn(false)
+              if (accountRef.current) accountRef.current.focus()
+              return
+            }
             fetchProfile()
-            saveStoredUser(user)
             localStorage.setItem('keepLogin', JSON.stringify(isKeepLogin))
             document.cookie = 'keepLogin=hello;expires=0;path=/'
           })

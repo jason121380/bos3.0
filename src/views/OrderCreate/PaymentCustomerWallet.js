@@ -184,6 +184,18 @@ function PaymentCustomerWallet(props, ref) {
       })
     }
   }, [walletPayCheckBox])
+  // 勾「整筆扣入金」之後如果項目變少，上限會下降，但上面的 effect 只在勾選當下寫入。
+  // 扣入金留在舊金額會讓現金應收變負數。只往下夾到新上限，不把手動改小的金額拉回去。
+  useEffect(() => {
+    if (!(bill.walletPay > walletPayLimit)) return
+    const next = walletPayLimit > 0 ? walletPayLimit : 0
+    // 上限已是負數、扣入金已是 0 時不要再寫一次，否則每次 render 都 setState
+    if (next === bill.walletPay) return
+    handleBillChange({
+      key: 'walletPay',
+      value: next,
+    })
+  }, [bill.walletPay, walletPayLimit, handleBillChange])
   const handleOpenWalletDepositModal = () => {
     setOpenWalletDeposit(true)
   }
