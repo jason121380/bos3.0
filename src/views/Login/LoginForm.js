@@ -22,12 +22,14 @@ function LoginForm({ className, location, ...rest }) {
   const liffIdFromStorage = storedLiffId === 'null' || storedLiffId === '' ? null : storedLiffId
   const accountRef = useRef()
   const [disabledLoginBtn, setDisabledLoginBtn] = useState(false)
+  const [profileError, setProfileError] = useState('')
   const { fetchProfile, profile } = useLazyFetchProfile()
   const { register, handleSubmit, errors } = useForm()
   const [isKeepLogin, setIsKeepLogin] = useState(false)
   const useGetQueryStringValueRef = useRef(getQueryStringValue)
   const [merchantData, setMerchantData] = useState({})
   const onSubmit = async data => {
+    setProfileError('')
     setDisabledLoginBtn(true)
     if (data.cellphone.includes(' ')) {
       openSnackbar({
@@ -89,16 +91,25 @@ function LoginForm({ className, location, ...rest }) {
       )
     )
   }
+  // 登入 mutation 成功後還要等 PROFILE。查詢失敗時按鈕不能停在「登入中」，要顯示錯誤並允許再按一次。
   useEffect(() => {
-    if (!profile.loading && profile.data) {
+    if (!profile.called || profile.loading) return
+    if (profile.data) {
+      setProfileError('')
       if (localStorage.getItem('userMerchant') && localStorage.getItem('user')) {
         history.push(`${useGetQueryStringValueRef.current('redirect')}`)
       } else {
         localStorage.setItem('userMerchant', JSON.stringify(merchantData))
         history.push(`${useGetQueryStringValueRef.current('redirect')}`)
       }
+      return
     }
-  }, [profile.data, profile.loading, history])
+    if (profile.error) {
+      setProfileError('登入成功，但讀取個人資料失敗，請再試一次')
+      setDisabledLoginBtn(false)
+      if (accountRef.current) accountRef.current.focus()
+    }
+  }, [profile.called, profile.data, profile.loading, profile.error, history, merchantData])
 
   // 保持登入
   const handleLoginSession = event => {
@@ -147,6 +158,11 @@ function LoginForm({ className, location, ...rest }) {
         <Checkbox onChange={handleLoginSession} />
         保持登入狀態
       </label>
+      {profileError ? (
+        <p role="alert" className="mt-4 text-label text-danger">
+          {profileError}
+        </p>
+      ) : null}
       <Button
         className="mt-6 w-full"
         variant="primary"

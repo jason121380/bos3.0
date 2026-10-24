@@ -77,7 +77,7 @@ npm run build
 
 - **Repo 結構**：`src/views/` 放業務頁面，`src/components/` 與 `src/ui/` 放共用元件，`src/lib/`、`src/helper/`、`src/store/` 放資料與狀態邏輯；主要守則在 `CLAUDE.md`、設計規則在 `STYLE.md`。
 - **本機開發**：使用 Node.js 24、npm；執行 `npm install --legacy-peer-deps` 後以 `npm start` 啟動 Vite。API 連線設定依 `src/lib/api-base.js` 與本機既有環境設定，不要把憑證寫入文件。
-- **合併前本機驗證**：GitHub Actions Node.js CI 已手動停用，請自行執行 `npm run lint`、`npm run test:nowatch`、`npm run build`。單元測試使用 mock，不連正式資料。
+- **合併前本機驗證**：GitHub Actions Node.js CI 在 GitHub 設定被手動停用（`disabled_manually`；workflow 檔仍是 Node 24.22.1、`npm ci --legacy-peer-deps`、lint／build／test），要在網頁重新啟用才會跑。請自行執行 `npm run lint`、`npm run test:nowatch`、`npm run build`。單元測試使用 mock，不連正式資料。2026/10/24 審查紀錄：`main` 分支保護是關閉的（沒有要求 PR 審查或狀態檢查）。本倉庫的自動化 token 讀寫分支保護會 403，所以沒有代為打開；也沒有改 Railway 自動部署。全套單元測試最近一次完整數字是 **368 suites／4,283 tests**（v3.10241447 當時；不要再用 61／339 或 4,268）。
 - **部署**：合併／push 到 `main` 會由 Railway 自動部署至正式站 https://bos.lure.com.tw。GitHub 合併成功不代表已上線；確認正式站左上角版號為預期版本才算完成。`cloudbuild.yaml`、`cloudbuild_dev.yaml` 是未使用的 legacy 檔案。
 - **改版文件**：`docs/redesign/STATUS.md` 記錄進度；`TODO.md` 集中待辦與待實機項目；根目錄 `STYLE.md` 是現行設計依據，`MEMORY.md` 記決策教訓；`MIGRATION_GUIDE.md` 說明相容元件收尾方式；`INVENTORY.md` 是元件盤點；`DATE_PICKER.md`、`REPORT_COMPACT.md` 各記日期選擇器與報表列印規格／歷史；`PAGE_CHECKLIST.md`、`VERIFY_REPORT.md` 是逐頁檢查與驗證紀錄；`APOLLO_V3_EXPERIMENT.md`、`B2_EXHAUSTIVE_DEPS.md` 為專項報告。
 - **正式站安全**：正式站僅供唯讀查看；測試不可新增、修改、送出或列印真實資料。刪除檔案前須先取得 Jason 同意。
@@ -280,15 +280,19 @@ bos3.0/
 
 後端位址的單一來源是 `src/lib/api-base.js`（`getGraphqlUrl`／`getApiOrigin`）。GraphQL（`init-apollo.js`）、WebSocket（`TopBar.js`）與 REST（`outer_store`）都由它推得，三者一定連到同一個後端。依以下優先順序決定：
 
+判斷只看 **hostname**（路徑、查詢、hash 裡的 `dev` 不算）。實作在 `src/lib/api-base.js`。
+
 ```
-1. 環境變數 REACT_APP_API_URL（最高優先）
-2. URL 包含 'dev'       → https://crt-test-htlfg34mhq-de.a.run.app/graphql (測試)
-3. URL 包含 'beautyos2'  → https://crt-test-htlfg34mhq-de.a.run.app/graphql (測試)
-4. URL 包含 'localhost'  → https://crt-test-htlfg34mhq-de.a.run.app/graphql (測試)
-5. 其他（正式環境）       → https://beautyos-api-prod-htlfg34mhq-de.a.run.app/graphql
+1. 環境變數 REACT_APP_API_URL（最高優先；有設就不看網址）
+2. 核准的正式站網域（bos.lure.com.tw、www.bos.lure.com.tw、app.beautyos.co）
+   → https://beautyos-api-prod-htlfg34mhq-de.a.run.app/graphql
+3. localhost、*.localhost，或 hostname 含 dev／beautyos2
+   → https://crt-test-htlfg34mhq-de.a.run.app/graphql
+4. 其餘（127.0.0.1 等 IP、含 preview 的網域、*.up.railway.app／*.railway.app、認不得的網域、沒有 window）
+   → 同一支測試 API，並在畫面上方顯示「未設定 REACT_APP_API_URL…不會連正式 API」
 ```
 
-> ⚠️ **重要**：部署測試環境時，**必須**設定 `REACT_APP_API_URL` 環境變數，否則會連到正式環境。WebSocket 與 REST 會跟著改用同一台主機（取該 URL 的 origin）。
+> ⚠️ **重要**：正式站以外的部署（測試、預覽、用 IP 開）**必須**設定 `REACT_APP_API_URL`。沒設定時不會再默默連正式 API，而是改連測試 API 並顯示提示。新的正式網域要加進 `PRODUCTION_HOSTS`，或在建置時設定這個變數。WebSocket 與 REST 使用同一台主機（取該 URL 的 origin）。
 
 ---
 
@@ -803,7 +807,7 @@ Dockerfile 已內建 npm 網路重試配置（5 次重試、20s~120s 超時）�
 | 頁面模組 | **170** 個目錄 |
 | 自定義 Hooks | **596** 個 |
 | 共用元件 | **55** 個 |
-| 單元測試 | **61** 檔／**339** 項 |
+| 單元測試 | **368** suites／**4,283** tests（2026/10/24 全套，v3.10241447；其後以當次 PR 的相關測試為準，不要再用 61／339 或 4,268） |
 | Redux Slices | **5** 個 |
 | 總原始碼行數 | **~150,000+** 行 |
 

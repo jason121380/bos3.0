@@ -90,7 +90,7 @@ export const mockedProfile = {
           id: '3f33dbc7-0fd1-4504-9ab3-0c43a41ef603',
           name: 'Envy Studio',
           pairId: '695573',
-          solmateKey: 'bWxncm91cF9hcGlAc29sbWF0ZS5jYzpzb2xtYXRlWG1sZ3JvdXA',
+          solmateKey: 'TEST_SOLMATE_KEY_INVALID',
         },
         {
           id: '23a222fb-9d9b-4434-89d2-35e05fe5e5b9',

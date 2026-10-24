@@ -1,5 +1,5 @@
 // 保護什麼：切換店家視窗（MerchantBar＋MerchantList）。多店老闆靠它在分店間切換，選錯店會把帳單打到別家店。
-// - 店家清單來自 getUserMerchant（JSON 字串）：解析失敗或尚未載入時顯示載入中，不拋錯。
+// - 店家清單來自 getUserMerchant（JSON 字串）：載入中顯示轉圈；查詢失敗顯示錯誤與重新查詢；解析失敗或沒有資料顯示空狀態，不拋錯、不一直轉圈。
 // - 搜尋：依店名篩選「全部」、群組（含子群組）與未分組店家；群組名稱符合時保留群組；搜尋時自動展開所有群組。
 // - 樹狀清單：群組顯示「代號 - 名稱(數量)」，點群組展開／收合；點店家時記住新店家並回到打帳單、重新整理頁面。
 // - 鍵盤（比照原 MUI TreeView）：上下移動、右展開／進入子項、左收合／回父層、Home／End、打字跳到字首相符的項目。
@@ -41,15 +41,30 @@ const items = () => screen.getAllByRole('treeitem').map(li => li.firstChild.text
 const btn = text => screen.getByText(text, { exact: false, selector: 'button, button *' }).closest('button')
 
 describe('MerchantBar：資料與搜尋', () => {
-  it('尚未載入、沒有資料或 JSON 壞掉時顯示載入中，不拋錯', () => {
+  it('尚未載入顯示載入中；沒有資料或 JSON 壞掉顯示空狀態，不拋錯', () => {
     const { unmount } = renderBar({ loading: true, data: null })
     expect(screen.queryByRole('tree')).toBeNull()
+    expect(screen.getByRole('status', { name: '載入中' })).toBeInTheDocument()
+    expect(screen.queryByText('沒有可顯示的店家')).toBeNull()
     unmount()
     const { unmount: u2 } = renderBar({ loading: false, data: { getUserMerchant: '{壞掉' } })
     expect(screen.queryByRole('tree')).toBeNull()
+    expect(screen.queryByRole('status', { name: '載入中' })).toBeNull()
+    expect(screen.getByText('沒有可顯示的店家')).toBeInTheDocument()
     u2()
     renderBar({ loading: false, data: {} })
     expect(screen.queryByRole('tree')).toBeNull()
+    expect(screen.getByText('沒有可顯示的店家')).toBeInTheDocument()
+  })
+
+  it('查詢失敗時顯示錯誤與重新查詢，不是一直轉圈', () => {
+    const refetch = jest.fn()
+    renderBar({ loading: false, error: new Error('店家查詢失敗'), data: null, refetch })
+    expect(screen.queryByRole('tree')).toBeNull()
+    expect(screen.queryByRole('status', { name: '載入中' })).toBeNull()
+    expect(screen.getByText('無法載入店家清單')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: '重新查詢' }))
+    expect(refetch).toHaveBeenCalledTimes(1)
   })
 
   it('未搜尋時顯示「全部」、各群組（代號 - 名稱(數量)）與未分組店家，群組預設收合', () => {
@@ -100,7 +115,7 @@ describe('MerchantList：點擊', () => {
     expect(items()).not.toContain('台中店')
     fireEvent.click(btn('高雄店'))
     spy.mockRestore()
-    expect(JSON.parse(localStorage.getItem('userMerchant'))).toBe(JSON.stringify({ id: 'm3', name: '高雄店' }))
+    expect(JSON.parse(localStorage.getItem('userMerchant'))).toEqual({ id: 'm3', name: '高雄店' })
     expect(screen.getByTestId('loc')).toHaveTextContent('/order/create')
   })
 

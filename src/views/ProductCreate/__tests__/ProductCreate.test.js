@@ -78,10 +78,9 @@ describe('<ProductCreate />', () => {
     mockCreateProduct.mockReset()
     cleanup()
     localStorage.clear()
-    // setupTests 的 localStorage mock 的 setItem 會自行 JSON.stringify，所以直接傳物件
-    localStorage.setItem('userMerchant', {
+    localStorage.setItem('userMerchant', JSON.stringify({
       id: '3f33dbc7-0fd1-4504-9ab3-0c43a41ef603',
-    })
+    }))
   })
 
   it('should submit successful', async () => {

@@ -147,11 +147,11 @@ export function createTestStore() {
   })
 }
 
-// 登入狀態：setupTests 的 localStorage 假物件 setItem 會再 JSON.stringify，因此直接傳物件
+// 登入狀態：與瀏覽器相同，物件要先 JSON.stringify，頁面用 JSON.parse(getItem) 讀回
 export function loginAs({ merchant = { id: MERCHANT_ID, name: '測試店' }, user = { id: USER_ID, name: '店長' } } = {}) {
   localStorage.clear()
-  if (merchant) localStorage.setItem('userMerchant', merchant)
-  if (user) localStorage.setItem('user', user)
+  if (merchant) localStorage.setItem('userMerchant', JSON.stringify(merchant))
+  if (user) localStorage.setItem('user', JSON.stringify(user))
 }
 
 // 測試中不得連網：以假的 fetch 取代（回傳空內容），並記錄被要求的網址供斷言

@@ -123,7 +123,7 @@ describe('不指定設計師', () => {
     expect(callsOf(utils.calls, 'NON_DESIGNATION_BOOKING').map(c => c.variables)).toEqual([
       { input: { bookingDate: at(14), cellphone: '0912345678', customerName: '吳小姐', storeId: MERCHANT } },
     ])
-    expect(JSON.parse(JSON.parse(localStorage.getItem('customer')))).toEqual({ name: '吳小姐', cellphone: '0912345678' })
+    expect(JSON.parse(localStorage.getItem('customer'))).toEqual({ name: '吳小姐', cellphone: '0912345678' })
     expect(openSnackbar).toHaveBeenCalledWith({ message: '預約成功', variant: 'success' })
     expect(liff.init).not.toHaveBeenCalled()
     expect(liff.sendMessages).not.toHaveBeenCalled()
@@ -204,7 +204,7 @@ describe('指定設計師', () => {
 
 describe('從 LINE 進來', () => {
   it('已登入 LINE：以店家的 LIFF id 初始化，帶入上次的姓名電話與 LINE userId；預約成功後把預約資訊傳回 LINE 並關閉視窗', async () => {
-    localStorage.setItem('customer', { name: '老客人', cellphone: '0987654321' })
+    localStorage.setItem('customer', JSON.stringify({ name: '老客人', cellphone: '0987654321' }))
     const utils = setup({ search: '?designerId=d-1', extra: { bookingV2: { bookingV2: { id: 'b-1', status: '預約成功' } } } })
     await utils.settle()
     expect(liff.init).toHaveBeenCalledWith({ liffId: 'liff-123' })
@@ -302,7 +302,7 @@ describe('從 LINE 進來', () => {
     await utils.settle()
     await wait(() => expect(liff.getProfile).toHaveBeenCalled())
     expect(screen.getByTestId('customer-name-0')).toHaveValue('')
-    localStorage.setItem('customer', {})
+    localStorage.setItem('customer', JSON.stringify({}))
     cleanup()
     setup({ search: '?usingLineLogin=1' })
     await wait(() => expect(liff.getProfile).toHaveBeenCalledTimes(2))

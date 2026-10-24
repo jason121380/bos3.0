@@ -60,13 +60,13 @@ describe('顧客消費記錄', () => {
   })
 
   it('登入資料沒有 userCode 也視為未登入', async () => {
-    localStorage.setItem('customer', { name: '陳小姐' })
+    localStorage.setItem('customer', JSON.stringify({ name: '陳小姐' }))
     setup()
     await wait(() => expect(currentLocation()).toMatch(/^\/customer\/login\?/))
   })
 
   it('顯示每筆消費的編號、日期、項目、金額加總、設計師與付款方式', async () => {
-    localStorage.setItem('customer', { userCode: 'code-1' })
+    localStorage.setItem('customer', JSON.stringify({ userCode: 'code-1' }))
     const utils = setup()
     await utils.settle()
     expect(currentLocation()).toBe('/customer/consumption/records?merchantid=m-9')
@@ -82,7 +82,7 @@ describe('顧客消費記錄', () => {
   })
 
   it('換頁送出下一頁；改每頁筆數時回到第一頁', async () => {
-    localStorage.setItem('customer', { userCode: 'code-1' })
+    localStorage.setItem('customer', JSON.stringify({ userCode: 'code-1' }))
     const utils = setup()
     await utils.settle()
     fireEvent.click(screen.getByLabelText('下一頁'))
@@ -93,7 +93,7 @@ describe('顧客消費記錄', () => {
   })
 
   it('沒有消費時顯示空狀態；後端沒回清單時不顯示列表也不壞頁', async () => {
-    localStorage.setItem('customer', { userCode: 'code-1' })
+    localStorage.setItem('customer', JSON.stringify({ userCode: 'code-1' }))
     const utils = setup({ FETCH_CUSTOMER_ORDERS: ordersFixture([], { totalCount: 0 }) })
     await utils.settle()
     expect(screen.getByText('目前沒有資料')).toBeInTheDocument()
