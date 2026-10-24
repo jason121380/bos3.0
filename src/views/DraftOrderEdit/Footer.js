@@ -28,7 +28,7 @@ export default function Footer() {
     openDialog, reCheckoutPwd, setReCheckoutPwd,
     handleReCheckoutOrder, usehandleSaveDraftOrder, handleOpenReCheckout, handleCloseDialog,
     serviceTotalPrice, merchantSellTotalPrice, couponSellPrice, couponUsageTotalPrice, membershipTotalPrice,
-    performanceTotal, cashDue, disabledReason,
+    performanceTotal, cashDue, disabledReason, checkoutLocked,
   } = useDraftCheckout({ passwordData })
   const { bill, order, bonusActive } = React.useContext(billContext)
   // 消費明細／付款與折抵：彙總卡與手機底部展開共用同一份畫面（排版在 OrderShared/BillSummary，四頁共用）
@@ -77,7 +77,7 @@ export default function Footer() {
                 variant="secondary"
                 size="lg"
                 onClick={usehandleSaveDraftOrder}
-                disabled={open || vaild || isClick}
+                disabled={open || vaild || isClick || checkoutLocked}
                 data-testid="savedraft"
               >
                 儲存
@@ -90,7 +90,7 @@ export default function Footer() {
                 size="lg"
                 className="px-6 disabled:bg-surface-active disabled:text-text-secondary disabled:opacity-100"
                 onClick={disableRecheckoutOrders ? handleOpenReCheckout : handleReCheckoutOrder}
-                disabled={open || vaild || isRecheckoutOrders}
+                disabled={open || vaild || isRecheckoutOrders || checkoutLocked}
                 data-testid="checkout"
               >
                 結帳

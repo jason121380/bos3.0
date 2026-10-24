@@ -1,6 +1,7 @@
 import Customer from 'layouts/Customer'
 import Line from 'layouts/Line'
-import React, { lazy, Suspense } from 'react'
+import React, { Suspense } from 'react'
+import { lazyWithRetry as lazy } from 'lib/lazy-with-retry'
 import { Redirect } from 'react-router-dom'
 
 import AuthLayout from './layouts/Auth'

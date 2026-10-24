@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/react'
 import { TriangleAlert } from 'lucide-react'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { clearChunkReloadFlag } from 'lib/lazy-with-retry'
 import { Button } from 'ui/button'
 import { EmptyState } from 'ui/empty-state'
 
@@ -15,7 +16,10 @@ export const PageErrorFallback = () => (
       title="這個頁面發生錯誤"
       description="資料可能暫時無法載入。請重新整理，或先切換到其他頁面；若持續發生請聯絡系統管理員。"
       action={
-        <Button variant="primary" onClick={() => window.location.reload()}>
+        <Button variant="primary" onClick={() => {
+          clearChunkReloadFlag()
+          window.location.reload()
+        }}>
           重新整理
         </Button>
       }

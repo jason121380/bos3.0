@@ -459,6 +459,49 @@ describe('掛單列表：結帳', () => {
     })
   })
 
+  it('結帳成功且後端回了新帳單 id：改開那張帳單詳細', async () => {
+    const { settle } = setup({ reCheckoutOrder: { reCheckoutOrder: { id: 'closed-bill' } } })
+    await settle()
+    fireEvent.click(within(rowOf('D001')).getByLabelText('結帳'))
+    await wait(() => expect(currentLocation()).toBe('/order/closed-bill'))
+    expect(openSnackbar).toHaveBeenCalledWith({ message: '結帳成功', variant: 'success' })
+  })
+
+  it('結帳連線失敗但掛單已不在清單：不再送第二次，改到帳單列表', async () => {
+    const { calls, settle } = setup({
+      reCheckoutOrder: () => {
+        throw new Error('Failed to fetch')
+      },
+      DRAFT_STILL_PENDING: { pendingOrders: { totalCount: 0, orders: [] } },
+    })
+    await settle()
+    fireEvent.click(within(rowOf('D001')).getByLabelText('結帳'))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      variant: 'warning',
+      message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+    })))
+    expect(callsOf(calls, 'reCheckoutOrder')).toHaveLength(1)
+    await wait(() => expect(currentLocation()).toBe('/management/orders'))
+  })
+
+  it('結帳連線失敗且無法確認掛單狀態：按鈕保持停用，不再送出', async () => {
+    const { calls, settle } = setup({
+      reCheckoutOrder: () => {
+        throw new Error('Failed to fetch')
+      },
+      DRAFT_STILL_PENDING: { pendingOrders: { orders: [] } },
+    })
+    await settle()
+    fireEvent.click(within(rowOf('D001')).getByLabelText('結帳'))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      message: '無法確認結帳是否成功。請先到帳單列表查看，不要重複結帳。',
+    })))
+    expect(callsOf(calls, 'reCheckoutOrder')).toHaveLength(1)
+    expect(within(rowOf('D001')).getByLabelText('結帳')).toBeDisabled()
+    fireEvent.click(within(rowOf('D001')).getByLabelText('結帳'))
+    expect(callsOf(calls, 'reCheckoutOrder')).toHaveLength(1)
+  })
+
   it('結帳失敗時提示錯誤、可再按', async () => {
     const { calls, settle } = setup({ reCheckoutOrder: new Error('已日結') })
     await settle()

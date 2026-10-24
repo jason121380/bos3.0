@@ -14,6 +14,7 @@ import {
   setupDraft, pageReady, pick, saveDraft, summaryValue, makeOrder, serviceOrder, panel, panelHeader, customerDetail,
   CUSTOMER, DESIGNER, SERVICE, SERVICE2, TICKET,
 } from './draftPageKit.test'
+import { ordersListPathForOrderDate } from '../ordersListPath'
 
 jest.setTimeout(20000)
 
@@ -292,5 +293,123 @@ describe('掛單詳細：金額彙總', () => {
     await wait(() => expect(summaryValue('現金應收')).toHaveTextContent('800'))
     const input = await saveDraft(page.calls)
     expect(input).toEqual(expect.objectContaining({ amountByOtherPay: 0, walletPay: 0, bonusDecount: 0 }))
+  })
+})
+
+describe('掛單詳細：結帳成功後不能再結一次', () => {
+  const confirmPassword = async () => {
+    const pwd = await screen.findByLabelText('密碼')
+    fireEvent.change(pwd, { target: { value: '9999' } })
+    fireEvent.click(screen.getByTestId('confirm'))
+  }
+
+  it('密碼結帳成功且後端回了新帳單：改開帳單詳細，原掛單網址不再出現結帳', async () => {
+    const page = setupDraft({
+      password: true,
+      reCheckoutOrder: { reCheckoutOrder: { id: 'b95c9c1f' } },
+    })
+    await pageReady(page)
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await confirmPassword()
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent('/order/b95c9c1f'))
+    expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'success', message: '掛單結帳成功' }))
+    expect(screen.queryByTestId('checkout')).toBeNull()
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+
+    cleanup()
+    setupDraft({}, { keepCheckoutMemory: true })
+    expect(screen.queryByTestId('checkout')).toBeNull()
+    expect(screen.getByText('這張掛單已結帳，正在前往帳單。')).toBeInTheDocument()
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent('/order/b95c9c1f'))
+  })
+
+  it('直接打開已不在掛單清單的原網址：不顯示結帳，改到當天帳單列表', async () => {
+    const date = makeOrder().date
+    setupDraft({
+      DRAFT_STILL_PENDING: { pendingOrders: { totalCount: 0, orders: [] } },
+    })
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent(ordersListPathForOrderDate(date)))
+    expect(screen.queryByTestId('checkout')).toBeNull()
+    expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      variant: 'warning',
+      message: '這張掛單已結帳，不能再次結帳',
+    }))
+  })
+
+  it('密碼結帳逾時，但掛單已不在清單：不再送第二次', async () => {
+    let stillPending = true
+    const page = setupDraft({
+      password: true,
+      reCheckoutOrder: () => {
+        stillPending = false
+        throw new Error('Failed to fetch')
+      },
+      DRAFT_STILL_PENDING: () => ({
+        pendingOrders: stillPending
+          ? { totalCount: 1, orders: [{ id: 'order-1' }] }
+          : { totalCount: 0, orders: [] },
+      }),
+    })
+    await pageReady(page)
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await confirmPassword()
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      variant: 'warning',
+      message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+    })))
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent(ordersListPathForOrderDate(makeOrder().date)))
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+  })
+
+  it('密碼結帳逾時且掛單仍在：可以再確認一次，成功後前往新帳單', async () => {
+    let attempts = 0
+    const page = setupDraft({
+      password: true,
+      reCheckoutOrder: () => {
+        attempts += 1
+        if (attempts === 1) throw new Error('Failed to fetch')
+        return { reCheckoutOrder: { id: 'closed-bill' } }
+      },
+      DRAFT_STILL_PENDING: { pendingOrders: { totalCount: 1, orders: [{ id: 'order-1' }] } },
+    })
+    await pageReady(page)
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await confirmPassword()
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      message: '網路連線異常，這張掛單尚未結帳，請再確認一次',
+    })))
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+    await wait(() => expect(screen.getByTestId('confirm')).not.toBeDisabled())
+    fireEvent.click(screen.getByTestId('confirm'))
+    await wait(() => expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(2))
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent('/order/closed-bill'))
+    expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'success', message: '掛單結帳成功' }))
+  })
+
+  it('密碼結帳逾時且查不到掛單狀態：停用結帳，不再送出', async () => {
+    const page = setupDraft({
+      password: true,
+      reCheckoutOrder: () => {
+        throw new Error('Failed to fetch')
+      },
+      DRAFT_STILL_PENDING: { pendingOrders: { orders: [] } },
+    })
+    await pageReady(page)
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await confirmPassword()
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      message: '無法確認結帳是否成功。請先到帳單列表查看，不要重複結帳。',
+    })))
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+    await wait(() => expect(checkout()).toBeDisabled())
+    expect(checkout().parentElement.getAttribute('title')).toBe('無法確認是否已結帳，請到帳單列表確認')
+    fireEvent.click(checkout())
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+    expect(screen.getByTestId('testkit-location')).toHaveTextContent('/draft-order/order-1')
   })
 })
