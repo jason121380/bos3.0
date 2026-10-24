@@ -151,11 +151,13 @@ describe('帳單列表：報表匯出', () => {
     expect(exportedCsv()).not.toContain('0912345678')
   })
 
-  it('店家設定不遮罩時，匯出檔才是完整姓名電話', async () => {
+  it('店家設定不遮罩時，前端 CSV 仍遮罩姓名電話', async () => {
     const { settle } = setup([order()])
     await screen.findByText('#A001')
     await settle()
-    await wait(() => expect(exportedCsv()).toContain('陳小姐 0912345678'))
+    await wait(() => expect(exportedCsv()).toContain('陳*姐 0912***678'))
+    expect(exportedCsv()).not.toContain('0912345678')
+    expect(screen.getByText('陳小姐')).toBeInTheDocument()
   })
 
   it('第一次載入就有活動券的帳單時，匯出檔就要有「活動券」欄（與表格一致）', async () => {

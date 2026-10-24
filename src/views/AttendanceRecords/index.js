@@ -21,6 +21,7 @@ import { openSnackbar } from 'elements/snackbars'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 
 import Results from './Results'
 import { Autocomplete } from 'ui/combobox'
@@ -334,7 +335,9 @@ export default function Employees() {
             </div>
           </Card>
         </div>
-        {attendanceRecordsLazyData.data !== undefined && !attendanceRecordsLazyData.loading ? idx(attendanceRecordsLazyData, _ => (
+        {attendanceRecordsLazyData.error ? (
+          <QueryFailed onRetry={() => handleSearch()} />
+        ) : attendanceRecordsLazyData.data !== undefined && !attendanceRecordsLazyData.loading ? idx(attendanceRecordsLazyData, _ => (
           <Results
             identity={identity}
             handleSearch={handleSearch}

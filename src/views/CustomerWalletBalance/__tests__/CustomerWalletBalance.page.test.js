@@ -53,7 +53,8 @@ describe('顧客入金餘額表', () => {
     expect(within(row).getByText('王小美')).toBeInTheDocument()
     expect(within(row).getByText('12,000')).toBeInTheDocument()
     expect(within(screen.getByText('合計').closest('tr')).getByText('12,500')).toBeInTheDocument()
-    await wait(() => expect(exportedCsv()).toContain('"C01","陳小姐","王小美","12000"'))
+    await wait(() => expect(exportedCsv()).toContain('"C01","陳*姐","王小美","12000"'))
+    expect(exportedCsv()).not.toContain('陳小姐')
     expect(exportedCsv()).toContain('"合計","","","12500"')
   })
 
@@ -105,7 +106,7 @@ describe('顧客入金餘額表', () => {
   })
 
   // 載入中一律先遮罩；設定晚回且確定為 false 時必須重算，否則開關關閉仍下載到遮罩姓名
-  it('店家設定不遮罩、且設定比餘額晚回來時，匯出檔才是完整姓名', async () => {
+  it('店家設定不遮罩、且設定比餘額晚回來時，前端 CSV 仍遮罩姓名', async () => {
     const { settle } = renderPage(<CustomerWalletBalance />, {
       fixtures: {
         GET_CUSTOMER_WALLET_BALANCE: { customerWalletReport: { customerWalletReport: REPORT } },
@@ -115,7 +116,8 @@ describe('顧客入金餘額表', () => {
     })
     await screen.findByText('陳小姐')
     await settle()
-    await wait(() => expect(exportedCsv()).toContain('"C01","陳小姐","王小美","12000"'))
-    expect(exportedCsv()).toContain('"C02","林先生","Amy","500"')
+    await wait(() => expect(exportedCsv()).toContain('"C01","陳*姐","王小美","12000"'))
+    expect(exportedCsv()).toContain('"C02","林*生","Amy","500"')
+    expect(exportedCsv()).not.toContain('陳小姐')
   })
 })

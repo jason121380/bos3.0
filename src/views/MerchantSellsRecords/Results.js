@@ -2,6 +2,7 @@ import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
 import { CSVLink } from "react-csv";
+import { maskCustomerName } from 'helper/exportCustomerMask'
 import pagenationLabel from './../../helper/pagenationLabel'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -32,8 +33,8 @@ function Results({
           ? data.seller.name + ' / ' + data.seller.designerNo
           : data.seller.name,
         顧客姓名代號: data.order.customer.no
-          ? data.order.customer.name + ' / ' + data.order.customer.no
-          : data.order.customer.name,
+          ? maskCustomerName(data.order.customer.name) + ' / ' + data.order.customer.no
+          : maskCustomerName(data.order.customer.name),
         商品名稱代號: `${data.product.name}/${data.product.no}`,
         實際售價: Math.round(data.price),
         數量: data.count,

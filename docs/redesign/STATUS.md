@@ -1,5 +1,7 @@
 # BOS 3.0 改版進度
 
+現況（版號、測試數字、CI）只看 [`docs/CURRENT.md`](../CURRENT.md)。下面每一則的 suite／test 數字是該則當時的結果，不是現在的基線。
+
 - **2026/10/24 前端審查修正（v3.10241522；API 環境、登入 PROFILE、查詢錯誤、localStorage mock）**：未設定 `REACT_APP_API_URL` 時，只有 `bos.lure.com.tw`、`www.bos.lure.com.tw`、`app.beautyos.co` 連正式 API。`127.0.0.1`、預覽網址、Railway 預設網域、認不得的網域與沒有 window 改連測試 API，並顯示提示，不再默默連正式。登入成功但 PROFILE 失敗時，按鈕離開「登入中」、顯示錯誤、可再試。盤點作業與切換店家在查詢失敗時顯示錯誤與重新查詢，不再一直骨架／轉圈。`setupTests` 的 `localStorage.setItem` 改為與瀏覽器相同的字串儲存。`useFetchProfile` 的 mock `solmateKey` 改成 `TEST_SOLMATE_KEY_INVALID`；正式 PROFILE 查詢仍會向後端要這個欄位（前端沒有刪欄位）。治理紀錄：GitHub Actions 仍是手動停用。2026/10/24 審查寫 `main` 分支保護是關閉的；這次的 token 讀寫分支保護回 403，沒有代為打開，也沒有改 Railway 自動部署或後端。全套基線仍是 v3.10241447 的 368 suites／4,283 tests；本批只跑相關測試，數字見該 PR。
 
 - **2026/10/24 掛單詳細現金應收（v3.10241447）**：金額彙總（彙總卡與底部固定列）的現金應收改呼叫 `helper/billPaymentSummary`，與打帳單、帳單詳細同一支。業績合計、付款超過應付時歸零、紅利給點、列印範本與送出內容維持原式。相關 Jest：掛單詳細 15 檔與 `billPaymentSummary` 共 16 suites／187 tests 通過。

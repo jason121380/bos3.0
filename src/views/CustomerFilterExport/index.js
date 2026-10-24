@@ -20,6 +20,10 @@ import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
+import BackendExportNotice from 'components/BackendExportNotice'
+import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
+import { isCustomerExportMaskSettingOff } from 'helper/exportCustomerMask'
 
 import Results from './Results'
 
@@ -90,9 +94,12 @@ function CustomerFilterExport() {
   const [customerIsCome, setCustomerIsCome] = useState(null)
   const [showFilter, setShowFilter] = useState(false)
   const customerList = useFetchCustomersWithoutSorting(pageSetting)
+  const customerDataMarked = useFetchCustomerDataMarked()
+  const exportMaskOff = isCustomerExportMaskSettingOff(customerDataMarked)
   const [getCustomersWithoutSortingExcelLazy, getCustomersWithoutSortingExcelLazyData] = useFetchCustomersWithoutSortingExcelLazy()
 
   const handleExcel = () => {
+    if (exportMaskOff) return
     getCustomersWithoutSortingExcelLazy({
       variables: {
         input: pageSetting
@@ -235,9 +242,10 @@ function CustomerFilterExport() {
           primaryAction={{
             label: '報表匯出',
             onClick: handleExcel,
-            disabled: getCustomersWithoutSortingExcelLazyData.loading
+            disabled: getCustomersWithoutSortingExcelLazyData.loading || exportMaskOff
           }}
         />
+        <BackendExportNotice settingOff={exportMaskOff} />
         {/* 以 hidden 收合（取代 MUI Collapse）：SearchBar 內有非受控輸入，保持掛載，收合後內容與舊版一樣保留 */}
         <div hidden={!showFilter}>
           <Card className="mb-6 p-4">
@@ -456,7 +464,9 @@ function CustomerFilterExport() {
             </div>
           </Card>
         </div>
-        {!customerList.loading ?
+        {customerList.error ? (
+          <QueryFailed onRetry={() => customerList.refetch()} />
+        ) : !customerList.loading ?
           idx(customerList.data, _ => (
             <Results
               customers={_.customersWithoutSorting.customers}

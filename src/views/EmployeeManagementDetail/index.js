@@ -43,6 +43,7 @@ import PaySlip from './PaySlip'
 import RakeReport from './RakeReport'
 import SalaryItems from './SalaryItems'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 import { roleSectionAuthority } from 'helper/rolePageAuthority'
 
 // 分頁載入中：與舊版 CircularProgress 相同時機顯示
@@ -574,7 +575,7 @@ function Settings({ match, history }) {
                 />
               )}
               {
-                currentTab === 'orderRecord' && (orderRecords.loading || orderRecords.data === undefined ?
+                currentTab === 'orderRecord' && (getOrderListLazyData.error ? <QueryFailed onRetry={getOrderRecordsData} /> : orderRecords.loading || orderRecords.data === undefined ?
                   <TabLoading /> :
                   idx(
                     orderRecords,
@@ -606,7 +607,7 @@ function Settings({ match, history }) {
                         />
                       )
                   ))}
-              {currentTab === 'AttendanceRecord' && (uerAttendanceLazyData.loading || uerAttendanceLazyData.data === undefined ?
+              {currentTab === 'AttendanceRecord' && (uerAttendanceLazyData.error ? <QueryFailed onRetry={getAttendanceRecord} /> : uerAttendanceLazyData.loading || uerAttendanceLazyData.data === undefined ?
                 <TabLoading /> : idx(attendance, _ =>
                   _.data.user.attendanceRecords && (
                     <AttendanceRecord
@@ -634,6 +635,7 @@ function Settings({ match, history }) {
                   )
                 ))}
               {currentTab === 'rakeReport' && (
+                designerRakeReportLazyData.error ? <QueryFailed onRetry={getRakeReport} /> :
                 <RakeReport
                   rakeReportDate={rakeReportDate}
                   setRakeReportDate={setRakeReportDate}
@@ -697,7 +699,9 @@ function Settings({ match, history }) {
                           merchantSalaryIncreaseItemsLazyData.data === undefined ||
                           designerFixedSalaryItemsLazyData.loading ||
                           designerFixedSalaryItemsLazyData.data === undefined
-                        ) ? <TabLoading />
+                        ) ? (merchantSalaryIncreaseItemsLazyData.error || designerFixedSalaryItemsLazyData.error
+                          ? <QueryFailed onRetry={getSalaryItems} />
+                          : <TabLoading />)
                           : <SalaryItems
                             salaryIncreaseItemsReformatted={salaryIncreaseItemsReformatted}
                             setSalaryIncreaseItemsReformatted={setSalaryIncreaseItemsReformatted}

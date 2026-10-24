@@ -139,7 +139,9 @@ describe('卡券管理：查詢條件', () => {
     const failed = setup({ FETCH_TICKET_SELL_OVERVIEW: new Error('x'), FETCH_USED_TICKET_RECORDS: new Error('x') })
     await failed.settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-    expect(screen.getAllByLabelText('載入中')).toHaveLength(2)
+    expect(screen.queryByLabelText('載入中')).toBeNull()
+    expect(screen.getAllByText('無法載入資料')).toHaveLength(2)
+    expect(screen.getAllByRole('button', { name: '重新查詢' })).toHaveLength(2)
   })
 })
 
@@ -174,10 +176,11 @@ describe('卡券管理：卡券販賣紀錄', () => {
     expect(csv).toContain('"","","","","合計","2333.38","70","21"')
   })
 
-  it('店家設定不遮罩時匯出完整姓名與手機', async () => {
+  it('店家設定不遮罩時，前端 CSV 仍遮罩姓名與手機', async () => {
     const { settle } = setup({ GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false } })
     await settle()
-    expect(csvOf('卡券販賣紀錄')).toContain('"#A001_2026/10/01","顧客1 091200001","王小美 D01"')
+    expect(csvOf('卡券販賣紀錄')).toContain('"#A001_2026/10/01","顧*1 0912***01","王小美 D01"')
+    expect(csvOf('卡券販賣紀錄')).not.toContain('091200001')
   })
 })
 
@@ -208,10 +211,11 @@ describe('卡券管理：卡券使用紀錄', () => {
     expect(csv).toContain('"","","","","","合計","150.01"')
   })
 
-  it('店家設定不遮罩時匯出完整姓名與手機；設定查詢失敗時遮罩', async () => {
+  it('店家設定不遮罩時前端 CSV 仍遮罩；設定查詢失敗時也遮罩', async () => {
     const { settle } = setup({ GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false } })
     await settle()
-    expect(csvOf('卡券使用紀錄')).toContain('"#U001_2026/10/02","#B001_2026/09/01","陳小姐 0912345678","王小美 D01"')
+    expect(csvOf('卡券使用紀錄')).toContain('"#U001_2026/10/02","#B001_2026/09/01","陳*姐 0912***678","王小美 D01"')
+    expect(csvOf('卡券使用紀錄')).not.toContain('0912345678')
     cleanup()
     const failed = setup({ GET_CUSTOMER_DATA_MARKED: new Error('x') })
     await failed.settle()

@@ -55,12 +55,12 @@ beforeEach(() => loginAs())
 afterEach(cleanup)
 
 describe('活動發券明細匯出遮罩', () => {
-  it('遮罩設定為 false 時匯出完整姓名與手機', async () => {
+  it('遮罩設定為 false 時，前端 CSV 仍遮罩姓名與手機', async () => {
     const { settle } = setup({ GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false } })
     const rows = await exported(settle)
     expect(rows[0]).toEqual({
       流水號: 'V0001', 活動名稱: '周年慶', 規則名稱: '滿千送券', 帳單日期: '2026/10/22', 帳單編號: '#123',
-      顧客姓名: '陳小美', 顧客手機: '0911222333', 使用手機端: '是', 寄送簡訊: '否',
+      顧客姓名: '陳*美', 顧客手機: '0911***333', 使用手機端: '是', 寄送簡訊: '否',
     })
   })
 

@@ -19,6 +19,7 @@ import useFetchGetSalaryUserList from 'hooks/useFetchGetSalaryUserList'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 
 import useQueryString from 'hooks/useQueryString'
 import DateSelector from 'components/DateSelector'
@@ -208,7 +209,9 @@ export default function SalaryOverview() {
           margin={false}
         />
       </AdminPageHeader>
-      {idx(salaryUserList, _ => _.data.getSalaryUserList) ?
+      {salaryUserList.error ? (
+        <QueryFailed onRetry={() => salaryUserList.refetch()} />
+      ) : idx(salaryUserList, _ => _.data.getSalaryUserList) ?
         idx(
           salaryUserList,
           _ =>

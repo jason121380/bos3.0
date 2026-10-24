@@ -32,21 +32,21 @@ npm install --legacy-peer-deps       # 必須加 --legacy-peer-deps（CI／Docke
 npm start                            # 開發（Vite，http://localhost:3000）
 npm run build                        # 正式 build（Vite，輸出 build/；可用 BUILD_PATH 改輸出位置）
 npm run lint                         # ESLint（實際 script：lint:build）
-npm run test:nowatch                 # 全部單元測試（2026/10/24 本機全套：368 suites／4,283 tests；不要再用 4,268）
+npm run test:nowatch                 # 全部單元測試（數字以 docs/CURRENT.md 為準）
 TZ=America/Los_Angeles CI=true npm run test:nowatch   # 時區相關修改要另在海外時區跑一次
 CI=true npm run test:coverage        # 覆蓋率（A 級核心 helper／lib／store／OrderShared／DeductionSettingShared／*Requirements 要求 100%；共用層 hooks／ui／utils／context／mixins 100（分支 99）、components 99、elements 99、layouts 98；帳單四頁 99；其餘〔頁面〕為全域下限；Jason 2026/10/22 定全站 100% 為目標，分波推進）
 npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
 node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面驗證
 ```
 
-GitHub Actions 的 Node.js CI 在 GitHub 設定被手動停用（disabled_manually）；workflow 檔本身是 Node 24.22.1、`npm ci --legacy-peer-deps`、lint／build／test，要在 GitHub 網頁重新啟用才會跑。2026/10/24 審查紀錄：`main` 分支保護是關閉的（沒有要求 PR 審查或狀態檢查）。自動化 token 讀寫分支保護會 403，沒有代為打開；不要為此關掉 Railway 對 `main` 的自動部署。合併前本機執行 `npm run lint`、`npm run test:nowatch`、`npm run build`。2026/10/24 本機全套 368 suites／4,283 tests 通過（v3.10241447）；不要再引用 4,268 或 README 舊的 61／339。驗證標準：`verify-logic` 的 FAIL 必須逐項說明是純畫面差異；lint 通過且 build 成功；測試**必須全數通過**。動到 `package.json` 相依時，另在乾淨資料夾跑一次 `npm ci --legacy-peer-deps` 確認 lockfile 同步。
+現況數字與 CI 只看 `docs/CURRENT.md`（不要用本檔或 STATUS／TODO／README 裡的舊 suite 數字）。CI 是 `.github/workflows/frontend-ci.yml`。`main` 分支保護是關閉的。自動化 token 讀寫分支保護會 403，沒有代為打開；不要為此關掉 Railway 對 `main` 的自動部署。合併前本機執行 `npm run lint`、相關測試或 `npm run test:nowatch`、`npm run build`。驗證標準：`verify-logic` 的 FAIL 必須逐項說明是純畫面差異；lint 通過且 build 成功；測試**必須全數通過**。動到 `package.json` 相依時，另在乾淨資料夾跑一次 `npm ci --legacy-peer-deps` 確認 lockfile 同步。
 
 ## Git 與合併
 
 - 功能分支以當次 session 指定的為準（例如 `claude/pensive-fermi-v6ufcq`、`claude/upbeat-carson-pdc7rf`）；PR 範本在 `.github/PULL_REQUEST_TEMPLATE.md`（沿用其標題結構）。
 - **Codex／代理只開 PR，不自行 merge**：由 CEO（Jason 的助理）逐行審查，並在本機跑 lint／測試／build 全部通過後才合併；或由 Jason 決定合併。驗證沒過就停下來回報。
 - **可能有多個 session 同時開發**：合併前一定先 `git fetch origin main` 並 merge 進自己的分支，重跑 lint／測試／build 再合併；衝突逐一解，不覆蓋對方的內容。`MEMORY.md` 的教訓編號、`TODO.md` 的條目合併後要檢查重號，後到者順延編號並同步文件內的引用。
-- PR 開啟後若有 Codex 自動 review：等它完成；有 finding 就驗證是否成立、修正或在討論串說明理由；合併仍依上方流程（CEO 審查後合併或由 Jason 決定）。GitHub Actions（`.github/workflows/node.js.yml`）目前在 GitHub 上不會執行，以本機驗證為準。
+- PR 開啟後若有 Codex 自動 review：等它完成；有 finding 就驗證是否成立、修正或在討論串說明理由；合併仍依上方流程（CEO 審查後合併或由 Jason 決定）。GitHub Actions 見 `.github/workflows/frontend-ci.yml`（現況見 `docs/CURRENT.md`）。
 - PR 合併後，分支從最新 `main` 重置再繼續（`git fetch origin main && git checkout -B <branch> origin/main`），不在已合併的歷史上堆疊。
 - 每個完整 commit 都要更新 `src/version.js` 的 `APP_VERSION`（格式 `v3.MMDDHHmm`，台灣時間 UTC+8，例如 `v3.10230759`），commit 訊息第一行以 `[版號]` 開頭；不自行升大版號。
 - Commit 訊息遵守 Angular 格式；可以使用 `gh`（例如 `gh pr create`）開 PR，也可用 GitHub MCP 工具。

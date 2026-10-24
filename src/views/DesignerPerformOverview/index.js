@@ -12,6 +12,7 @@ import DateSelector from 'components/DateSelector'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 
 import PerformResultsV2 from './PerformResultsV2'
 
@@ -49,11 +50,13 @@ function DesignerPerformOverview() {
   })
 
   useEffect(() => {
+    if (merchantImmediatePerformReportData.loading || merchantImmediatePerformReportData.error) return
     if (!merchantImmediatePerformReportData.loading) {
       const merchantImmediatePerformReport = idx(
         merchantImmediatePerformReportData,
         _ => _.data.merchantImmediatePerformanceReport
       )
+      if (!merchantImmediatePerformReport) return
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       setMerchantImmediatePerformReport(merchantImmediatePerformReport)
       const { users, wholeStore } = merchantImmediatePerformReport
@@ -182,7 +185,9 @@ function DesignerPerformOverview() {
             </div>
           </div>
         </div>
-        {(!merchantImmediatePerformReportData.loading && merchantImmediatePerformReport !== null) ? (
+        {merchantImmediatePerformReportData.error ? (
+          <QueryFailed onRetry={() => merchantImmediatePerformReportData.refetch()} />
+        ) : (!merchantImmediatePerformReportData.loading && merchantImmediatePerformReport !== null) ? (
           <PerformResultsV2
             results={merchantImmediatePerformReport}
             membershipDisplay={membershipDisplay}

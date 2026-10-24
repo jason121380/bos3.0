@@ -15,6 +15,7 @@ import { Printer } from 'lucide-react'
 import { Button as UIButton } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 import { ReportToolbar } from 'ui/page-header'
 
 const performanceEnum = [
@@ -220,7 +221,9 @@ const ProductInvoicingRecordReport = () => {
             </UIButton>
           }
         />
-        {(!getAllProducts.loading && !invoicingRecordReportLazyData.loading && invoicingRecordReportLazyData.data !== undefined) ?
+        {invoicingRecordReportLazyData.error || getAllProducts.error ? (
+          <QueryFailed onRetry={() => handleSearch()} />
+        ) : (!getAllProducts.loading && !invoicingRecordReportLazyData.loading && invoicingRecordReportLazyData.data !== undefined) ?
           <Results reportData={reportData} /> : (
             // 載入中：與舊版 CircularProgress 相同時機顯示
             <div className="noprint mt-3" aria-busy="true" aria-label="載入中">
