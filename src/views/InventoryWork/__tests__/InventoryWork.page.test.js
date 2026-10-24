@@ -118,10 +118,42 @@ describe('盤點作業列表', () => {
     expect(lastInput(calls).dateRange).toEqual({ startDate: startOfMonth(last).getTime(), endDate: endOfMonth(last).getTime() })
   })
 
-  it('查詢失敗：不進錯誤畫面', async () => {
-    const { settle } = renderPage(<><CustomizedSnackbars /><InventoryWork /></>, { fallback: 'error' })
+  it('查詢失敗：顯示錯誤與重新查詢，不是一直載入、也不進錯誤畫面', async () => {
+    const { settle, calls } = renderPage(<><CustomizedSnackbars /><InventoryWork /></>, {
+      fixtures: {
+        GET_USERS_FOR_CREATE_PICKING: { users: { users: USERS } },
+        GET_INVENTORYS: new Error('盤點查詢失敗'),
+      },
+      route: '/inventory-work',
+    })
     await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-    expect(screen.getAllByText('盤點作業')[0]).toBeInTheDocument()
+    expect(screen.queryByLabelText('載入中')).toBeNull()
+    expect(screen.getByText('無法載入盤點資料')).toBeInTheDocument()
+    expect(screen.queryByText('目前沒有盤點紀錄')).toBeNull()
+    const before = callsOf(calls, 'GET_INVENTORYS').length
+    fireEvent.click(screen.getByRole('button', { name: '重新查詢' }))
+    await settle()
+    expect(callsOf(calls, 'GET_INVENTORYS').length).toBeGreaterThan(before)
+    expect(screen.getByText('無法載入盤點資料')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '重新查詢' })).toBeEnabled()
+  })
+
+  it('盤點人員查詢失敗：篩選區顯示錯誤與重查，列表仍可依盤點單結果顯示', async () => {
+    const { settle } = renderPage(<><CustomizedSnackbars /><InventoryWork /></>, {
+      fixtures: {
+        GET_USERS_FOR_CREATE_PICKING: new Error('人員查詢失敗'),
+        GET_INVENTORYS: { getInventorys: { draft: null, checked: CHECKED } },
+      },
+      route: '/inventory-work',
+    })
+    await settle()
+    expect(screen.getByText('共 2 筆資料')).toBeInTheDocument()
+    expect(screen.queryByLabelText('載入中')).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: /篩選/ }))
+    expect(screen.getByText('無法載入盤點人員')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: '重新查詢盤點人員' }))
+    await settle()
+    expect(screen.getByText('無法載入盤點人員')).toBeInTheDocument()
   })
 })

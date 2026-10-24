@@ -39,7 +39,7 @@ npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json <檔案…>
 node scripts/redesign/verify-logic.js [--base <ref>] <檔案…>   # 純畫面驗證
 ```
 
-GitHub Actions 的 Node.js CI 在 GitHub 設定被手動停用（disabled_manually）；workflow 檔本身是 Node 24.22.1、`npm ci --legacy-peer-deps`、lint／build／test，要在 GitHub 網頁重新啟用才會跑。合併前本機執行 `npm run lint`、`npm run test:nowatch`、`npm run build`。2026/10/24 本機全套 368 suites／4,283 tests 通過；不要再引用 4,268。驗證標準：`verify-logic` 的 FAIL 必須逐項說明是純畫面差異；lint 通過且 build 成功；測試**必須全數通過**。動到 `package.json` 相依時，另在乾淨資料夾跑一次 `npm ci --legacy-peer-deps` 確認 lockfile 同步。
+GitHub Actions 的 Node.js CI 在 GitHub 設定被手動停用（disabled_manually）；workflow 檔本身是 Node 24.22.1、`npm ci --legacy-peer-deps`、lint／build／test，要在 GitHub 網頁重新啟用才會跑。2026/10/24 審查紀錄：`main` 分支保護是關閉的（沒有要求 PR 審查或狀態檢查）。自動化 token 讀寫分支保護會 403，沒有代為打開；不要為此關掉 Railway 對 `main` 的自動部署。合併前本機執行 `npm run lint`、`npm run test:nowatch`、`npm run build`。2026/10/24 本機全套 368 suites／4,283 tests 通過（v3.10241447）；不要再引用 4,268 或 README 舊的 61／339。驗證標準：`verify-logic` 的 FAIL 必須逐項說明是純畫面差異；lint 通過且 build 成功；測試**必須全數通過**。動到 `package.json` 相依時，另在乾淨資料夾跑一次 `npm ci --legacy-peer-deps` 確認 lockfile 同步。
 
 ## Git 與合併
 
@@ -56,7 +56,7 @@ GitHub Actions 的 Node.js CI 在 GitHub 設定被手動停用（disabled_manual
 
 - `src/ui/`：新元件（Button、Input／Field、Select、NativeSelect、Table、Card、Dialog、Accordion、ToggleGroup、Switch、Checkbox、Badge、Avatar、Stat、Toast、Popover、DropdownMenu、Sidebar、PageHeader、EmptyState…）與 `icons`（lucide 轉接層）、`compat-layer.js`（combobox 與 form-control 多選清單使用的共用 Radix DismissableLayer／FocusScope helper；其餘舊相容元件已退役）、`format`（`formatNumber`／`formatMoney`）。
 - `src/styles/tokens.css`：CSS 變數 tokens＋`.ui-root` 基礎層（preflight 關閉）；淺色文字與狀態色已調到 WCAG AA。
-- `src/lib/api-base.js`：後端位址單一來源（GraphQL、WebSocket、REST outer_store、Sentry environment 都從這裡取）；不要在頁面寫死網址。
+- `src/lib/api-base.js`：後端位址單一來源（GraphQL、WebSocket、REST outer_store、Sentry environment 都從這裡取）；不要在頁面寫死網址。有 `REACT_APP_API_URL` 就用它。沒有時只有核准的正式站網域（`bos.lure.com.tw`、`www.bos.lure.com.tw`、`app.beautyos.co`）連正式 API；localhost／含 `dev`／`beautyos2` 連測試 API；IP、預覽網址、Railway 預設網域、認不得的網域與沒有 window 改連測試 API，並由 `ApiEnvBanner` 提示，不得默默連正式（2026/10/24）。
 - `src/lib/init-apollo.js`：Apollo client 單例；errorLink 統一提示 GraphQL／網路錯誤（`TKN_ERROR` 導回登入）；`inflightLink` 只計數進行中的查詢（給 `after-first-load` 用）。client 為 `@apollo/client` 3（2026/10/21 自 apollo-boost 換版、舊套件已移除，實驗報告 `docs/redesign/APOLLO_V3_EXPERIMENT.md`）；`createApolloClient` 不開 `notifyOnNetworkStatusChange`（refetch 的 loading 行為與 v2 相同，有測試）。
 - `src/lib/business-timezone.js`＋`install-business-timezone.js`（在 `src/index.js` 最早載入）：裝置不在 UTC+8 時把全域 `Date` 與 `Intl.DateTimeFormat` 換成台灣時間；date-fns、日期選擇器與所有顯示因此自動以台灣時間運作，新程式照常用 date-fns 即可。
 - `src/lib/theme-mode.js`：深淺色模式。依使用者記住主題、版面掛載時（繪製前）套用；舊版全域樣式 `initialize(-dark).scss` 以 `?inline` 字串放進同一個 `<style>`，切換時替換內容，不必重新整理。不要再用 `import('…scss')` 直接載入這兩檔。
@@ -94,7 +94,7 @@ GitHub Actions 的 Node.js CI 在 GitHub 設定被手動停用（disabled_manual
 - 背景伺服器用 PID 關閉：命令列本身含相同字串時 `pgrep -f`／`pkill -f` 也會抓到自己的 shell；用 `ps -eo pid,args | awk '/pattern/ && !/awk/'` 取 PID。dev server 啟動前清 log，啟動後用 `curl` 確認。
 - 新程式用到較新的瀏覽器功能（如 `structuredClone`、`Array.prototype.findLast`、`Object.hasOwn`、`crypto.randomUUID`）時，先確認 Safari 14 是否支援；不支援就在 `lib/polyfills.js` 補，或改寫法（2026/10/21 起不再載入整包 core-js）。
 - 元件一律大寫開頭（不要 `const index = () =>`），自訂 hook 一律 `use` 開頭、不是 hook 的函式不要用 `use` 開頭：`react-hooks/rules-of-hooks` 靠名稱判斷，命名錯會誤報（10 個 `index` 元件曾被報成 67 個「條件式呼叫」）或漏報。2026/10/21 起 `lint:build` 已把 `react-hooks/rules-of-hooks` 設為 error（全站 0），新程式違反會擋 build；`exhaustive-deps` 仍只在 `eslint-check` 以 warning 顯示。
-- `setupTests.js` 的 localStorage 假物件 `setItem` 會再 `JSON.stringify` 一次（與瀏覽器不同）；需要真實行為的測試在 `beforeEach` 以 `jest.spyOn` 改寫（CRA 的 `resetMocks` 會在每個測試前清掉 mock 實作，寫在 `beforeAll` 無效）。
+- `setupTests.js` 的 localStorage 假物件與瀏覽器相同：`setItem` 把值轉成字串存入，不再多 `JSON.stringify` 一次（2026/10/24 對齊）。要存物件就自己 `JSON.stringify`，讀的時候 `JSON.parse` 一次。`fetch`／`XMLHttpRequest`／`WebSocket` 仍全部封鎖。CRA 的 `resetMocks` 會在每個測試前清掉 `jest.spyOn` 的實作，寫在 `beforeAll` 無效，要改行為就放 `beforeEach`。
 - 刪檔前用「從 `src/index.js` 走訪 import 圖」找出到不了的檔案，並以完整檔名搜尋字串引用；scss／css 的 `@import`／`@use`／`url()` 也是引用（本地檔不見時 Vite 可能改抓同名 npm 套件，build 照樣成功，MEMORY #172⑦）；`public/` 的檔案可能被外部網址引用，刪前確認用途。
 - lodash 一律逐方法引入（`import cloneDeep from 'lodash/cloneDeep'`），不要 `import _ from 'lodash'`／`import { x } from 'lodash'`：整包 71 KB 會進入口 chunk（2026/10/21 已全面改掉，目前只用 `cloneDeep`、`clone`、`findIndex`）。`idx(x, _ => _.data)` 的 `_` 是箭頭參數，不是 lodash。
 - 效能要先量再改：首屏的瓶頸是 CPU（重新渲染、舊版 Apollo 快取），不是網路（後端在 Cloud Run，HTTP/2 並行）；量測工具與方法見 MEMORY #173。

@@ -3,7 +3,7 @@ import { __resetThemeModeForTest, applyStoredTheme, readStoredTheme, switchTheme
 // 為什麼重要：深色使用者每次開頁原本先看到淺色（要等後端個人資料），切換深色模式要整頁重新整理約 3 秒。
 // 改為記住主題、開頁即套用、切換立即生效；這些測試守住「不閃、不被舊值蓋回、失敗會還原、不同使用者不互相影響」。
 
-// setupTests 的 localStorage 假物件會把值再 JSON.stringify 一次（與瀏覽器不同），本檔改用與瀏覽器一致的存取
+// 全域 mock 已與瀏覽器相同。本檔仍用獨立 store，避免其他測試殘留主題。
 // （CRA 的 resetMocks 會在每個測試前清掉 mock 實作，所以在 beforeEach 設定）
 const realStore = new Map()
 beforeEach(() => {

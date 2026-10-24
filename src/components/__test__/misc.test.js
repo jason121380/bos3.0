@@ -102,8 +102,7 @@ describe('ChangePassword 強制改密碼', () => {
     await settle()
     expect(callsOf(calls, 'CHANGE_PASSWORD')[0].variables).toEqual({ input: { password: 'newpass', secondPassword: 'newpass' } })
     await wait(() => expect(handleClose).toHaveBeenCalledTimes(1))
-    // setupTests 的 localStorage 假物件會再 JSON.stringify 一次
-    expect(JSON.parse(JSON.parse(localStorage.getItem('user')))).toEqual({ id: 'user-1', name: '店長', isNeedChangePassword: false })
+    expect(JSON.parse(localStorage.getItem('user'))).toEqual({ id: 'user-1', name: '店長', isNeedChangePassword: false })
     expect(screen.getByRole('status', { hidden: true })).toHaveTextContent('成功變更密碼')
   })
 })

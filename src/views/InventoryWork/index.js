@@ -12,6 +12,7 @@ import AdminPageHeader from 'components/AdminPageHeader'
 import { Search } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
@@ -89,7 +90,7 @@ function InventoryWork() {
           <span className="text-label text-text-secondary">篩選條件：</span>
           <Autocomplete
             options={
-              !users.loading ? idx(users, _ => _.data.users.users) : []
+              !users.loading && users.data ? (idx(users, _ => _.data.users.users) || []) : []
             }
             disabled={users.loading}
             size="small"
@@ -119,6 +120,14 @@ function InventoryWork() {
               />
             )}
           />
+          {users.error ? (
+            <div role="alert" className="flex flex-wrap items-center gap-2 text-label text-danger">
+              <span>無法載入盤點人員</span>
+              <Button type="button" variant="ghost" size="sm" onClick={() => users.refetch()}>
+                重新查詢盤點人員
+              </Button>
+            </div>
+          ) : null}
           <Button
             variant="secondary"
             onClick={() => getInventorysLazy()}
@@ -128,12 +137,23 @@ function InventoryWork() {
           </Button>
         </Card>
       </div>
-      {(!inventorysData.loading && inventorysData.data) ?
-        <Results inventorys={inventorys} /> :
+      {inventorysData.error ? (
+        <EmptyState
+          title="無法載入盤點資料"
+          description="請再試一次。列表不會一直停在載入中。"
+          action={(
+            <Button type="button" variant="secondary" onClick={() => getInventorysLazy()}>
+              重新查詢
+            </Button>
+          )}
+        />
+      ) : (!inventorysData.loading && inventorysData.data) ? (
+        <Results inventorys={inventorys} />
+      ) : (
         <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
           <Skeleton className="h-[320px] w-full rounded-lg" />
         </div>
-      }
+      )}
     </Page>
   )
 }

@@ -66,17 +66,19 @@ var localStorageMock = (function () {
   var store = {}
   return {
     getItem: function (key) {
-      // 與真實 localStorage 一致：不存在的 key 回傳 null（元件以 !== null 判斷 liffId）
-      return key in store ? store[key] : null
+      // 與真實 localStorage 一致：鍵轉成字串；不存在的 key 回傳 null（元件以 !== null 判斷 liffId）
+      const storedKey = String(key)
+      return storedKey in store ? store[storedKey] : null
     },
+    // 與瀏覽器相同：把值轉成字串後存入，不再多 JSON.stringify 一次（物件要由呼叫端自己 JSON.stringify）
     setItem: function (key, value) {
-      store[key] = JSON.stringify(value)
+      store[String(key)] = String(value)
     },
     clear: function () {
       store = {}
     },
     removeItem: function (key) {
-      delete store[key]
+      delete store[String(key)]
     },
   }
 })()

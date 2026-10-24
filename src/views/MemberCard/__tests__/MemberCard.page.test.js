@@ -36,7 +36,7 @@ describe('顧客端會員卡', () => {
     ['PLATINUM', 'https://i.imgur.com/bYYLUme.jpg', '10% off'],
     ['DIAMOND', 'https://i.imgur.com/P84SfZc.jpg', '20% off'],
   ])('會員等級 %s 顯示對應卡面與折扣', async (type, src, text) => {
-    localStorage.setItem('customer', { id: 'cu1' })
+    localStorage.setItem('customer', JSON.stringify({ id: 'cu1' }))
     setup({ undefined: { viewer: { customer: customer({ type }) } } })
     expect(await screen.findByText(`0911222333 | ${type}`)).toBeInTheDocument()
     expect(cardImage()).toHaveAttribute('src', src)
@@ -45,7 +45,7 @@ describe('顧客端會員卡', () => {
   })
 
   it('其他等級（一般會員）沒有卡面圖片與折扣文字', async () => {
-    localStorage.setItem('customer', { id: 'cu1' })
+    localStorage.setItem('customer', JSON.stringify({ id: 'cu1' }))
     setup({ undefined: { viewer: { customer: customer({ type: 'NORMAL' }) } } })
     expect(await screen.findByText('0911222333 | NORMAL')).toBeInTheDocument()
     expect(cardImage().getAttribute('src')).toBe('')
@@ -53,13 +53,13 @@ describe('顧客端會員卡', () => {
   })
 
   it('會員資料未填完（性別 UNKNOW）導到建立會員資料', async () => {
-    localStorage.setItem('customer', { id: 'cu1' })
+    localStorage.setItem('customer', JSON.stringify({ id: 'cu1' }))
     setup({ undefined: { viewer: { customer: customer({ gender: 'UNKNOW' }) } } })
     await wait(() => expect(currentLocation()).toBe('/customer/member/create'))
   })
 
   it('送出推薦碼更新會員等級，成功後提示並清空輸入', async () => {
-    localStorage.setItem('customer', { id: 'cu1' })
+    localStorage.setItem('customer', JSON.stringify({ id: 'cu1' }))
     const { calls } = setup({
       undefined: { viewer: { customer: customer() } },
       UpdateCustomerType: { updateCustomerType: { id: 'cu1', type: 'PLATINUM' } },

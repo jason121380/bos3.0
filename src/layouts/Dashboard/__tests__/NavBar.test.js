@@ -48,7 +48,7 @@ const clearCookies = () => {
 beforeEach(() => {
   loginAs()
   clearCookies()
-  // setupTests 的 localStorage 假物件會再 JSON.stringify：傳布林值存成 'true'／'false'，與瀏覽器存字串的結果相同
+  // 與瀏覽器相同：布林值存成 'true'／'false'
   localStorage.setItem('keepLogin', true)
 })
 afterEach(() => {
