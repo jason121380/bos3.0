@@ -479,9 +479,10 @@ function Results({
       })
   }
 
+  // Jason 2026/10/24：掛單收據不印點數餘額。增點／扣點／折抵仍印。已結帳收據（帳單列表）仍印點數餘額。
   const renderPrintDetail = isPrintMain => {
     if (printOrderDetail.length !== 0 && printOrderDetail[0].customer.name !== '不留客資') {
-      const { bonusDeposit, bonusUsed, bonusDecountForReport, customerLeftBonus } = printOrderDetail[0]
+      const { bonusDeposit, bonusUsed, bonusDecountForReport } = printOrderDetail[0]
       const bonus = bonusDeposit !== 0 || bonusUsed !== 0 || bonusDecountForReport !== 0
       if (bonusActive || bonus) {
         return (
@@ -490,7 +491,6 @@ function Results({
               <div>增點：{bonusDeposit}</div>
               <div>扣點：{bonusUsed}</div>
               <div>折抵：{Math.abs(bonusDecountForReport)}</div>
-              <div>點數餘額：{customerLeftBonus}</div>
             </> :
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -499,7 +499,6 @@ function Results({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div>折抵：{Math.abs(bonusDecountForReport)}</div>
-                <div>點數餘額：{customerLeftBonus}</div>
               </div>
             </>
         )

@@ -527,6 +527,8 @@ describe('掛單列表：列印', () => {
     expect(html).toContain('付現金額：1370')
     expect(html).toContain('卡券金額：300')
     expect(html).toContain('增點：10')
+    // 顧客點數餘額 88 有資料，掛單收據仍不印（Jason 2026/10/24）
+    expect(html).not.toContain('點數餘額')
     expect(printWindow.document.close).toHaveBeenCalled()
     expect(printWindow.close).toHaveBeenCalled()
   })
@@ -564,6 +566,7 @@ describe('掛單列表：列印', () => {
     expect(html).toContain('謝謝惠顧,歡迎下次光臨!')
     expect(html).toContain('洗髮精')
     expect(html).toContain('折抵：30')
+    expect(html).not.toContain('點數餘額')
   })
 
   it('延遲關閉：100 毫秒後列印、10 秒後關閉', async () => {
@@ -593,7 +596,9 @@ describe('掛單列表：列印', () => {
     written = []
     ctx = setup({ FETCH_PENDING_ORDERS: noBonus, GET_CUSTOMER_BONUS: { getIsCustomerBonusActive: true } })
     await ctx.settle()
-    expect(await printOf()).toContain('增點：0')
+    const zeroBonus = await printOf()
+    expect(zeroBonus).toContain('增點：0')
+    expect(zeroBonus).not.toContain('點數餘額')
   })
 
   it('收據抬頭：logo（轉 data URL）、QR code、訊息；只開訊息但沒內容時不印抬頭；logo 抓不到不影響', async () => {

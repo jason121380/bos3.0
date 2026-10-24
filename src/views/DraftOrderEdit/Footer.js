@@ -30,7 +30,7 @@ export default function Footer() {
     serviceTotalPrice, merchantSellTotalPrice, couponSellPrice, couponUsageTotalPrice, membershipTotalPrice,
     performanceTotal, cashDue, disabledReason,
   } = useDraftCheckout({ passwordData })
-  const { bill, order, bonusActive, customerBonus } = React.useContext(billContext)
+  const { bill, order, bonusActive } = React.useContext(billContext)
   // 消費明細／付款與折抵：彙總卡與手機底部展開共用同一份畫面（排版在 OrderShared/BillSummary，四頁共用）
   const details = (
     <SummaryDetails
@@ -100,7 +100,7 @@ export default function Footer() {
         </BillActions>
       }
     >
-        {/* 以下列印範本（#printMain / #printThermal）原封不動 */}
+        {/* 列印範本（#printMain / #printThermal）。Jason 2026/10/24：掛單收據不印點數餘額；增點／扣點／折抵仍印。已結帳收據不受影響。 */}
         <div style={{ display: 'none' }} id="printMain">
           {
             (!detailInfo.logo.isDisplay || !detailInfo.logo.imageUrl) &&
@@ -246,7 +246,6 @@ export default function Footer() {
                   <div>增點：{bill.bonusDeposit}</div>
                   <div>扣點：{bill.bonusUsed}</div>
                   <div>折抵：{bill.bonusDecount}</div>
-                  <div>點數餘額：{customerBonus}</div>
                 </>
               )}
               <div>卡券金額：{couponSellPrice}</div>
@@ -419,7 +418,6 @@ export default function Footer() {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <div>折抵：{bill.bonusDecount}</div>
-                  <div>點數餘額：{customerBonus}</div>
                 </div>
               </>
             )}

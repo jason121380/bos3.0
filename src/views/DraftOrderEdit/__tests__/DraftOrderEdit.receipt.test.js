@@ -1,7 +1,7 @@
 // 保護「掛單詳細」列印收據的其餘內容與格式（A4／80mm 的基本內容見 DraftOrderEdit.print.test.js）：
 // - 收據上方依店家設定顯示 Logo、QR code、訊息（任一項開啟才有這一列）；
 // - 每個項目都要列出：服務（助理沒有編號時印姓名）、店販、預收卡販賣、會員卡（感熱紙）、使用預收卡；第三方卡券的項目照常列出；
-// - 有顧客且有紅利時印增點／扣點／折抵／點數餘額；合計與付現金額與打帳單收據同一算法（billPaymentSummary）；
+// - 有顧客且有紅利時印增點／扣點／折抵，不印點數餘額（Jason 2026/10/24）；合計與付現金額與打帳單收據同一算法（billPaymentSummary）；
 //   沒選設計師或不留客資時印「未選擇」；
 // - 57mm 感熱紙與其他格式的紙寬；店家設定「延後關閉列印視窗」時先列印、10 秒後才關，否則 1 秒後關閉。
 // 收據是交給顧客的對帳依據，少印或印錯就會有糾紛。GraphQL 全由模擬 link 回應，不連後端、不建立或修改真實帳單；列印視窗以假物件攔截。
@@ -93,7 +93,7 @@ const fullFixtures = (options = {}) => ({
 })
 
 describe('掛單詳細：收據內容', () => {
-  it('A4：Logo、QR code、訊息都開啟時印在上方；所有項目、紅利與點數餘額都印出', async () => {
+  it('A4：Logo、QR code、訊息都開啟時印在上方；所有項目與紅利都印出，不印點數餘額', async () => {
     const page = setupDraft(
       fullFixtures({
         GET_LOGO_DISPLAY_INVOICE: { getLogoDisplayOnInvoice: { isDisplay: true, imageUrl: 'https://example.com/logo.png' } },
@@ -117,7 +117,7 @@ describe('掛單詳細：收據內容', () => {
     expect(t).toContain('增點：8')
     expect(t).toContain('扣點：20')
     expect(t).toContain('折抵：20')
-    expect(t).toContain('點數餘額：100')
+    expect(t).not.toContain('點數餘額')
     expect(t).toContain('卡券金額：6000')
   })
 
@@ -138,7 +138,8 @@ describe('掛單詳細：收據內容', () => {
     expect(t).toMatch(/年卡 12000 1 12000/)
     expect(t).toMatch(/剪髮10次卡 6000 1 6000/)
     expect(t).toContain('增點：8 扣點：20')
-    expect(t).toContain('折抵：20 點數餘額：100')
+    expect(t).toContain('折抵：20')
+    expect(t).not.toContain('點數餘額')
   })
 
   // Jason 2026/10/22「照建議」：掛單列印的合計／付現金額（含紅利點數折抵的處理）以打帳單收據為準（helper/billPaymentSummary）：
