@@ -9,6 +9,7 @@ import { useHistory, useLocation } from 'react-router'
 import { handleTidyBill, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
 import produce from 'immer'
 import giveBonus from 'helper/giveBonus'
+import billPaymentSummary from 'helper/billPaymentSummary'
 import { getMissingForDraftOrder } from './draftOrderRequirements'
 import { ordersListPath } from './ordersListPath'
 
@@ -316,21 +317,20 @@ export default function useDraftCheckout({ passwordData }) {
     isLineBinded, setBill, bonusSetting
   ])
 
-  // 金額彙總：各數值的運算式與舊版相同，只加千分位與新版樣式。
-  // 業績合計、現金應收的運算式原封不動，只是算一次，彙總卡與底部固定列共用同一個值（比照打帳單 PannelPerformance）
+  // 金額彙總：各列明細的運算式與舊版相同，只加千分位與新版樣式。
+  // 業績合計、現金應收只顯示在金額彙總（彙總卡與底部固定列共用），不送後端。
+  // 四頁預覽以打帳單為準（Jason 2026/10/22）：
+  // - 業績合計維持本頁原式（含第三方卡券、使用預收卡，不含預收卡販賣）
+  // - 現金應收與打帳單、帳單詳細、明細、收據共用 billPaymentSummary
+  //   （未選商品的店販列價格是 0，與舊式把該列算進去的結果相同）
+  // 上方「付款超過應付時歸零」與紅利給點的 effect 用的是各自的運算式，不受影響
   const performanceTotal = Math.round(
     serviceTotalPrice +
     merchantSellTotalPrice +
     couponUsageTotalPrice +
     membershipTotalPrice
   )
-  const cashDue = serviceTotalPriceWithoutThirdPartyCoupon +
-    productTotalPriceWithoutThirdPartyCoupon +
-    membershipTotalPriceWithoutThirdPartyCoupon +
-    couponSellPrice -
-    bill.walletPay -
-    bill.amountByOtherPay -
-    bill.bonusDecount
+  const { cashDue } = billPaymentSummary(bill)
   // 按鈕停用時說明原因（只顯示，不參與停用判斷）：缺什麼與上面的 vaild 同一組條件（見 draftOrderRequirements.js），否則是處理中
   const missing = getMissingForDraftOrder(bill)
   const disabledReason = missing.length > 0 ? `尚缺：${missing.join('、')}` : open || isClick || isRecheckoutOrders ? '處理中，請稍候' : ''

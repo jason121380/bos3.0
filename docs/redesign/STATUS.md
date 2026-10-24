@@ -1,5 +1,7 @@
 # BOS 3.0 改版進度
 
+- **2026/10/24 掛單詳細現金應收（v3.10241447）**：金額彙總（彙總卡與底部固定列）的現金應收改呼叫 `helper/billPaymentSummary`，與打帳單、帳單詳細同一支。業績合計、付款超過應付時歸零、紅利給點、列印範本與送出內容維持原式。相關 Jest：掛單詳細 15 檔與 `billPaymentSummary` 共 16 suites／187 tests 通過。
+
 - **2026/10/24 repo 健康報告（前端）**：帳單詳細現金應收改走 `src/helper/billPaymentSummary.js`（與打帳單、掛單詳細同一公式）。掛單結帳成功後，網址沒有日期或查詢不是 `startDate`／`endDate` 時不再被當成結帳失敗。`userLoginForLine` 的 selection set 沒有 token，不發明欄位；回應上若已有非空字串 token 才寫入。`detectApiEnv` 只看 hostname。沒有店章網址時，四個列印面不 `fetch(null)`。重新開單給點補上 `bonusSetting`；打帳單扣入金只在超過新上限時往下夾。Services 篩選維持隱藏（2026/10/24 已拍板）。`PerformanceTrend` 本批不刪。後端 repo 本批不碰。GitHub Actions workflow 維持 Node 24.22.1，需在 GitHub 網頁重新啟用才會跑。全套 368 suites／4,283 tests 全過。
 
 - **2026/10/24 收尾盤點**：清除無 live class 來源的舊 Mui CSS 與未使用的 ui-sheet-in 動畫，修正過時遷移註解、Products／Login 測試 mock 與盤點草稿提示計時；新增正式 Dialog 焦點回歸測試，修正多選 CompatSelect 外點搶焦點及 Escape 穿透、日期浮層初始聚焦。離線 harness 新增 click-away（原 10 種情境與 assertions 保留），（v3.10240343）Chrome 11／11 通過；完整測試 366 suites／4,262 tests 全過、無 console 輸出；lint／build 通過。未刪檔，未改後端／網路防護／環境／套件或 effect 依賴。逐項 CSS 表、待決事項、候選檔與驗證見 [收尾稽核報告](AUDIT_20261024.md)。
