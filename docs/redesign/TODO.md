@@ -1,5 +1,7 @@
 # 待辦清單（TODO）
 
+- **2026/10/24 Jason 拍板四項（畫面，v3.10241257）**：表單／帳單標籤在欄位上方（員工資料「性別」由外框改到上方；`NativeSelect` 自帶標籤不再浮在框上）。消費分析「業績明細」折線圖加回圖例。服務項目設定不顯示篩選鈕。下拉改自家清單（按鈕＋選項），不再叫出系統選單；同層留一個不可聚焦、不顯示的 `<select>`，只為了既有測試讀 `.options` 與依索引改值。不顯示掛單點數。顧客匯出遮罩另案，本批未動。
+
 - **2026/10/24 收尾盤點**：清除無 live class 來源的舊 Mui CSS 與未使用的 ui-sheet-in 動畫，修正過時遷移註解、Products／Login 測試 mock 與盤點草稿提示計時；新增正式 Dialog 焦點回歸測試，修正多選 CompatSelect 外點搶焦點及 Escape 穿透、日期浮層初始聚焦。離線 harness 新增 click-away（原 10 種情境與 assertions 保留），（v3.10240343）Chrome 11／11 通過；完整測試 366 suites／4,262 tests 全過、無 console 輸出；lint／build 通過。未刪檔，未改後端／網路防護／環境／套件或 effect 依賴。逐項 CSS 表、待決事項、候選檔與驗證見 [收尾稽核報告](AUDIT_20261024.md)。
 
 - **2026/10/24 Autocomplete／正式 Dialog 焦點修正（v3.10240242，Jason 核准）**：窗內按鈕 mousedown 引發 input blur 時，activeElement 暫為 body；同步移除選單內容／圖層節點會觸發 Radix FocusScope MutationObserver 聚焦容器，使巢狀 PasswordDialog 記錯還原焦點。僅在窗內有 relatedTarget 且焦點處於 body 交接空檔時，阻止 downshift 提早關閉並延至下一個 task 收尾；保留失焦當下 autoSelect 候選項並讀最新欄位值，重聚焦／卸載取消待辦，保留一般表單同步 blur、觸控與 Escape 行為。新增真實 Dialog／PasswordDialog 的受控、非受控焦點交接及選值移焦測試；暫時還原原碼已確認兩個焦點案例失敗於容器搶焦點。驗證：changedSince 169 suites／2,014 tests、全套 365 suites／4,239 tests 全過；指定 combobox／dialog-layers 加新增顧客 5 suites／90 tests、lint／build 通過。未刪檔、未動網路 guard；Chrome dialog-layers e2e 10／10 通過（含 nested-password，連跑兩次）。
@@ -302,7 +304,7 @@
 
 - **（2026/10/22 覆蓋率 A 級發現的低影響項目，未修）**：`business-timezone` 西元前年份字串、無 Intl 環境的預設參數（支援的瀏覽器不會發生）；異動入金金額輸入科學記號（`1e21`、`0.0000001`）會變成 1；庫存預設排序只有一邊有商品編號時結果依瀏覽器而定。①～⑤已修（見 §一）。
 
-1. `Services`（服務項目設定）的篩選按鈕：舊版因 prop 名稱錯誤從未顯示，要顯示嗎？
+1. ~~`Services`（服務項目設定）的篩選按鈕：舊版因 prop 名稱錯誤從未顯示，要顯示嗎？~~ **已拍板（Jason 2026/10/24）：不要顯示。**
 2. ~~直接列印的報表是否要改版~~ **已拍版（Jason 2026/10/19）**：所有報表樣式一致、以 compact 緊湊呈現；只改 presentation／print CSS，不改內容欄位與數字計算。**下一組優先：報表 compact 專項**（先盤點共用層，再逐目錄）。2026/10/19 實測：`window.print` 出現在 28 個檔案，其中 22 個是報表目錄的 `index`（約 15 頁是舊口徑，實際更多），另 6 個是 `OrderManagementList/ResultsV2`、`DraftOrderManagementList/ResultsV2`、`DraftOrderEdit/Footer`、`OrderCreate/OrderDetailModal`、`InventoryWorkReview/General`、`ProductInventoryList/Results`。
 3. ~~是否要新增 `ui/combobox` 與 `ui/date-picker`~~ **2026/10/20 Jason 新拍版取代下方 10/19 內容：兩者都改為自己做，目標徹底移除 MUI（見 MEMORY 決策表）**。以下為 10/19 歷史紀錄：**已拍版（Jason 2026/10/19，四點新拍版）**：
    - **Autocomplete**：不新造 combobox；不動打字／選取行為；其他頁只改外層標籤（`Field` 上方標籤＋`placeholder`）。

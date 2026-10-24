@@ -170,8 +170,8 @@ describe('新增顧客', () => {
     await openNew()
     const order = [
       [input('no'), input('name')],
-      [input('name'), document.querySelector('select[name="gender"]')],
-      [document.querySelector('select[name="gender"]'), input('email')],
+      [input('name'), document.querySelector('select[name="gender"]').parentElement.querySelector('[data-ui-select]')],
+      [document.querySelector('select[name="gender"]').parentElement.querySelector('[data-ui-select]'), input('email')],
       [input('email'), input('lineId')],
       [input('lineId'), input('address')],
       [input('address'), input('nickName')],
@@ -179,8 +179,8 @@ describe('新增顧客', () => {
       [input('year'), input('month')],
       [input('month'), input('day')],
       [input('day'), input('cellphone')],
-      [input('cellphone'), sourceSelect()],
-      [sourceSelect(), preferDesigner()],
+      [input('cellphone'), sourceSelect().parentElement.querySelector('[data-ui-select]')],
+      [sourceSelect().parentElement.querySelector('[data-ui-select]'), preferDesigner()],
     ]
     for (const [from, to] of order) {
       enter(from)

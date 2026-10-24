@@ -4,11 +4,12 @@ import { inputClass } from './input'
 import { cn } from './utils'
 import { CompatLayer } from './compat-layer'
 import { useLayerRef } from './layer-stack'
+import { IndexSelect } from './index-select'
 
 // 自家下拉組（取代 MUI FormControl／InputLabel／Select／MenuItem／FormHelperText，Jason 2026/10/20 拍版「MUI 整包移除」）。
 // 介面與 MUI 相容：頁面只換 import，<FormControl><InputLabel/><Select value onChange><MenuItem value/></Select></FormControl> 原樣保留。
-// - 單選：原生 <select>（手機叫出系統選單、可放在任何 Dialog 內），選項值可為任何型別，以索引對應；onChange 與 MUI 相同（event.target.value 為原始值、event.target.name 為 name）
-// - renderValue：在原生 select 上疊一層自訂顯示（如載入中轉圈），點選仍由原生 select 處理
+// - 單選：自家清單（Jason 2026/10/24 不使用原生系統選單），選項值可為任何型別，以索引對應；onChange 與 MUI 相同（event.target.value 為原始值、event.target.name 為 name）
+// - renderValue：在按鈕上顯示自訂內容（如載入中轉圈）
 // - multiple：自家勾選清單（MenuItem 內容原樣渲染）
 // - InputLabel 一律成為欄位上方標籤（STYLE §6）；Select 的 label、variant、sx 只影響 MUI 外框，接收後忽略
 
@@ -255,51 +256,32 @@ const Select = React.forwardRef(function Select(
   const small = size === 'small' || (ctx && ctx.size === 'small')
   // 比照 MUI：值為空（''／null／undefined）且未設 displayEmpty 時欄位顯示空白，即使有對應選項（如 <MenuItem value=''>None</MenuItem>）
   const showBlank = !displayEmpty && (value === '' || value === null || value === undefined)
+  const inputRest = inputProps ? Object.fromEntries(Object.entries(inputProps).filter(([k]) => k !== 'ref')) : {}
+  const selected = index === -1 ? null : options[index]
   return (
     <div ref={ref} className={cn('relative w-full min-w-0', className)} style={style}>
-      <select
-        ref={node => {
+      <IndexSelect
+        inputRef={node => {
           assignRef(inputRef, node)
           if (inputProps && inputProps.ref) assignRef(inputProps.ref, node)
         }}
         id={id}
         name={name}
-        value={index === -1 ? '' : String(index)}
+        valueIndex={index}
+        options={options.map(o => ({ disabled: o.disabled, text: textOf(o.children) }))}
+        blank={showBlank}
+        display={renderValue ? renderValue(value) : selected ? textOf(selected.children) : ''}
         onChange={handleChange}
-        onKeyDown={event => {
-          // readOnly：比照 MUI，不允許以鍵盤改值，但保留其他按鍵（Enter 跳欄）
-          if (readOnly && event.key !== 'Enter' && event.key !== 'Tab') event.preventDefault()
-          if (onKeyDown) onKeyDown(event)
-        }}
+        onKeyDown={onKeyDown}
         onFocus={onFocus}
         onBlur={onBlur}
         disabled={disabled}
-        aria-labelledby={labelId}
-        aria-readonly={readOnly || undefined}
-        aria-invalid={error || undefined}
-        className={cn(
-          inputClass,
-          'cursor-pointer appearance-none pr-9 disabled:cursor-not-allowed',
-          small && 'h-8',
-          readOnly && 'pointer-events-none',
-          (renderValue || showBlank) && 'text-transparent',
-          index === -1 && 'text-text-tertiary',
-          error && 'border-danger hover:border-danger'
-        )}
-        {...(inputProps ? Object.fromEntries(Object.entries(inputProps).filter(([k]) => k !== 'ref')) : {})}
-        {...rest}
-      >
-        {index === -1 && <option value="" disabled hidden />}
-        {options.map((o, i) => (
-          <option key={i} value={String(i)} disabled={o.disabled}>
-            {textOf(o.children)}
-          </option>
-        ))}
-      </select>
-      {renderValue && (
-        <span className="pointer-events-none absolute inset-y-0 left-3 right-9 flex items-center text-body text-text">{renderValue(value)}</span>
-      )}
-      <ChevronDown aria-hidden="true" strokeWidth={1.75} className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
+        readOnly={readOnly}
+        invalid={error}
+        small={small}
+        labelledBy={labelId}
+        buttonProps={{ ...inputRest, ...rest }}
+      />
     </div>
   )
 })

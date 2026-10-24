@@ -56,7 +56,7 @@ it('新增顧客的設計師搜尋可選取，Enter 跳欄保留', async () => {
   await page.settle()
   const name = dialog().querySelector('input[name="name"]')
   fireEvent.keyDown(name, { key: 'Enter' })
-  await wait(() => expect(dialog().querySelector('select[name="gender"]')).toHaveFocus())
+  await wait(() => expect(dialog().querySelector('select[name="gender"]').parentElement.querySelector('[data-ui-select]')).toHaveFocus())
   fireEvent.click(dialog().querySelector('input[role="combobox"]'))
   fireEvent.click(await screen.findByRole('option', { name: '王小美-01' }))
   expect(dialog().querySelector('input[name="remark"]')).toHaveFocus()

@@ -99,8 +99,8 @@ describe('新增顧客', () => {
     typeLikeBrowser(field('year'), '85')
     typeLikeBrowser(field('month'), '7')
     typeLikeBrowser(field('day'), '15')
-    // 性別（原生下拉；選項值是選項序號：未知、男、女）
-    const gender = modal().querySelector('#orderEditAddCustomer-gender')
+    // 性別（自家下拉；選項值是選項序號：未知、男、女。改值打在同層的 select 上）
+    const gender = modal().querySelector('select[name="gender"]')
     selectLikeBrowser(gender, within(gender).getByText('女').value)
     fireEvent.click(add)
     await wait(() => expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')).toHaveLength(1))

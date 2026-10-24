@@ -61,8 +61,8 @@ function GeneralSettings({ profile, onSubmit, onChange, onEmployeeResign, ...res
               />
             </div>
             <div>
-              <div className="relative">
-                <span className="absolute -top-2 left-2.5 z-[1] bg-background px-1 text-caption text-text-secondary">性別</span>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-label text-text-secondary">性別</span>
                 <div className="box-border flex h-[42px] items-center gap-6 rounded-md border border-solid border-border-strong px-3.5 hover:border-accent">
                   <div role="radiogroup" aria-label="性別" className="flex items-center gap-4">
                     <RadioField name="gender" value="MALE" checked={(profile.gender || "") === 'MALE'} onChange={event => onChange({ value: event.target.value, key: 'gender' })} label="男" />

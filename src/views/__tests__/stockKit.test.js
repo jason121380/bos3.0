@@ -73,7 +73,7 @@ export const comboOptions = () => screen.queryAllByRole('option').filter(o => o.
 
 // 以標籤找輸入框（下拉的選單 ul 也以 aria-labelledby 指向同一個標籤，要排除）
 // 欄位標籤沒有以 for 關聯時（ui/input 的 Field 未給 htmlFor），改找標籤所在欄位容器內的輸入框
-const isField = el => el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT'
+const isField = el => el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.hasAttribute('data-ui-select')
 export const inputsByLabel = (label, container = document.body) => {
   const linked = within(container).queryAllByLabelText(label).filter(isField)
   if (linked.length) return linked
