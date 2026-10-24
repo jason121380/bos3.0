@@ -19,6 +19,7 @@ import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 import { Switch } from 'ui/switch'
 import CompareFilter from './CompareFilter'
 import Compare from './Compare'
@@ -371,6 +372,8 @@ const DesignerPerforamnceAnalyzeReport = () => {
           isMemberShipCardActive={isMemberShipCardActive}
           compareInputData={compareInputData}
         />
+      ) : analyzeReport.error ? (
+        <QueryFailed onRetry={handleSearch} />
       ) : (!analyzeReport.loading && analyzeReport.data && !isMemberShipCardActiveData.loading && reportForDisplay !== null ? (
         <Results
           report={reportForDisplay}

@@ -1,5 +1,6 @@
 # BOS 3.0 設計規範（STYLE.md）
 
+> **本檔是畫面規範，不是現況分數。** 版號、測試總數、CI、健康分、後端債只看 [`docs/CURRENT.md`](docs/CURRENT.md)（健康分程式 `v3.10241717`，CI 為 `frontend-ci.yml`）。下文若出現舊的「CI 已停用」或相容檔案數，都是 **歷史／已過時**。
 > 方向：現代、簡約、清楚。參考 OpenAI 產品介面的克制感——大量留白、中性色、黑白灰為底、以品牌藍為唯一主題色點綴、極少陰影。
 > 技術：Tailwind CSS + shadcn/ui（Radix）。本文件是所有新畫面的唯一依據；與本文件衝突的舊樣式一律以本文件為準。
 
@@ -140,7 +141,7 @@
 
 ## 10. 遷移規則（相容層 → Tailwind + `src/ui/`）
 
-> **現況（2026/10/23）**：MUI 已從 `package.json` 移除；相容元件仍有 59 個使用檔案（頁面層 53 檔／38 個目錄，共用層 6 檔）。收尾範圍包括結帳（billing）4 頁、報表列印、選擇器（pickers）與全域 toast。Autocomplete 已於 PR #178–#181 自製，滑桿泡泡已於 PR #197 完成。日期選擇器使用主題色；22 張列印報表採一致精簡版；PWA 狀態列為白色。設定、參數、個人資料、報表目錄與顧客詳情頁使用左側淺灰選單＋右側白底內容，中間不加分隔線。
+> **2026/10/23 快照（不是現況數字）**：MUI 已從 `package.json` 移除；當時把相容元件記成 59 個使用檔案（頁面層 53 檔／38 個目錄，共用層 6 檔）。其後未使用的相容模組已刪，不要用 59 或 6 當現況。Autocomplete 已於 PR #178–#181 自製，滑桿泡泡已於 PR #197 完成。日期選擇器使用主題色；22 張列印報表採一致精簡版；PWA 狀態列為白色。設定、參數、個人資料、報表目錄與顧客詳情頁使用左側淺灰選單＋右側白底內容，中間不加分隔線。
 
 1. Tailwind 關閉 `preflight`（`corePlugins.preflight: false`），以免改動仍使用相容層的舊頁面；目前 MUI 套件已移除。
 2. 新元件一律放 `src/ui/`；不得新增 `@mui/*` import（套件已整包移除）。
@@ -150,7 +151,7 @@
 6. **`.ui-root`**：preflight 關閉，基礎樣式（box-sizing、邊框重置、字型）只作用在 `.ui-root` 之內。`ui` 元件放在 **相容層 Dialog／Popper 等 Portal 內**時不在頁面的 `.ui-root` 底下，外層要自己加 `ui-root`（`ui/accordion`、`ui/native-select`、`ui/toggle-group` 已自帶）。
 7. **版面不可靠擠壓或超出**：欄位列用 `flex-wrap` 換行，不要讓操作鈕被推出可視範圍；flex 子層加 `min-width:0`／`max-width:100%`，並扣掉 `margin`；`overflow-x:auto` 會裁掉上方溢出的內容（浮動標籤），所以標籤才統一放上方。
 8. **層級（z-index）**：手機頂／底列 1100；側欄 1190/1200；相容層 modal／popper 與 Radix Dialog 1300；Radix select／popover／dropdown 與 相容層 snackbar 1400；toast 與 相容層 tooltip 1500；底部固定合計列 1050。
-9. **驗證**：合併前本機跑 `npm run lint`、`npm run test:nowatch`、`npm run build`；GitHub Actions Node.js CI 已手動停用。需要檢視純畫面差異時再跑 `scripts/redesign/verify-logic.js`。
+9. **驗證**：合併前本機跑 `npm run lint`、`npm run test:nowatch`、`npm run build`。CI 見 [`docs/CURRENT.md`](docs/CURRENT.md)，不要假設 Actions 已停用。需要檢視純畫面差異時再跑 `scripts/redesign/verify-logic.js`。
 10. **MUI Typography 字級映射**（沿用原 MUI 橋接主題的 Typography 字級，對照 §3）：`h1`→`text-display`、`h3`→`text-title`、`h5`→`text-heading`、`subtitle1`→`text-body font-medium`、`subtitle2`→`text-label`（色 `text-text-secondary`）、`body1`→`text-body`、`caption`→`text-caption`（色 `text-text-secondary`）、`overline`→`text-caption font-medium`（色 `text-text-secondary`、不全大寫）；主色用 `text-text`、`color="textSecondary"` 改 `text-text-secondary`。`h2`（24px）、`h4`（18px）、`h6`（15px）、`body2`（13px/20px/400）在 §3 無對應級距，**不硬套**，保留原字級或另案拍版；`gutterBottom` 以 `mb-[0.35em]` 保留。`Box` 純排版改原生 div（系統 props 逐鍵轉 className/style）；`Paper` 改 `rounded-md bg-background` 原生 div（橋接主題 elevation 預設 0、paper 底色即 background token，陰影不保留），原 emotion `css` 掛點保留。
 
 11. **emotion `css` 清理（MUI 整包移除）**：順序不可反——先清頁面/元件的 emotion 引用，再清 `mui-theme` 與 scss 的 `.Mui` 規則，最後才刪 `@emotion`／`@mui` package。換置只做視覺等效：扁平 margin/padding/顏色/寬高逐值換 Tailwind（`theme.spacing(n)`＝`n×8px`，如 spacing 4→`p-8`、3→`mt-6`、2→`mb-4`；任意 px 用任意值如 `w-[150px]`／`min-w-[275px]`／`my-[30px]` 等原值；原 `!important` 值以 `!` 前綴如 `!text-danger` 保留），不自創間距或改版面結構。pragma-only 判定須逐檔 grep 證明無 `css={}`／`css()` 使用才刪 pragma；仍以 `css()` 定義 styles 物件者（即使無 css prop）不算 pragma-only。含巢狀 `&`、`.Mui*` 選擇器、`@media`、動態/條件 css、共用 `styles/` 模組（56 檔）者不機械直換，須先定共用轉換方式或另開專項；`className` 契約為 emotion 物件的共用元件（下游以 `css={className}` 套用）不可逕換字串，屬跨元件契約專項；套用點元件不吃 `className` 者跳過。列印檔不碰（列印專項）。

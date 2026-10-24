@@ -1,6 +1,8 @@
 # 改版決策與教訓（MEMORY）
 
-> **閱讀基準（2026/10/23）**：本檔保留帶日期的歷史決策與教訓；舊版號、MUI 保留／移除計畫、Cloud Build 與歷史測試數字不代表現況。MUI 套件已移除，Autocomplete（PR #178–#181）及滑桿泡泡（PR #197）已自製完成。正式前端由 Railway 自動部署，以左上角版號確認上線（目前 v3.10230759）；Node.js CI 已手動停用，合併前本機跑 `npm run lint`、`npm run test:nowatch`、`npm run build`。正式站僅可唯讀查看，禁止新增、修改、送出或列印真實資料；歷史中的寫入／列印驗收請改用 mock／隔離測試資料。刪檔先經 Jason 同意。
+> **歷史／已過時的教訓冊。** 版號、測試總數、CI、健康分、後端債只看 [`docs/CURRENT.md`](../CURRENT.md)。健康分程式是 `v3.10241717`。CI 是 `.github/workflows/frontend-ci.yml`。查詢失敗用 `QueryFailed`。四份收據有欄位契約，掛單不印點數餘額。前端 CSV 一律遮罩。後端債未修：卡券授權、跨店 userMerchantId、伺服器端匯出遮罩、訂單 UUID isPending。
+>
+> 舊版號、MUI 計畫、Cloud Build 與下文測試數字都不是現況。2026/10/23 曾核對正式站 `v3.10230759`，不是現在的上線版號。該日寫過「Node.js CI 已手動停用」，現況不是這樣。正式站只可唯讀。刪檔先經 Jason 同意。
 
 
 > 目的：記下「為什麼這樣做」，避免日後重複討論或重踩坑。規範本身見 `STYLE.md`，守則見根目錄 `CLAUDE.md`。更新：2026/10/21

@@ -9,6 +9,7 @@ import DateSelector from 'components/DateSelector'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 import { ReportToolbar } from 'ui/page-header'
 import ProductListTreeView from 'components/ProductListTreeView'
 
@@ -119,7 +120,9 @@ const ProductLeaderBoard = () => {
             </Button>
           }
         />
-        {!productLeaderBoardV2Data.loading && productLeaderBoardV2Data.data ? (
+        {productLeaderBoardV2Data.error ? (
+          <QueryFailed onRetry={handleSearch} />
+        ) : !productLeaderBoardV2Data.loading && productLeaderBoardV2Data.data ? (
           <Results report={reportForDisplay} />
         ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示

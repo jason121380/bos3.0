@@ -220,10 +220,11 @@ describe('預約管理', () => {
     expect(csv).toContain('"現場"')
   })
 
-  it('店家設定不遮罩客資時匯出完整姓名與手機；設定查詢失敗時仍遮罩（Jason 2026/10/22）', async () => {
+  it('店家設定不遮罩客資時前端 CSV 仍遮罩；設定查詢失敗時也遮罩', async () => {
     const { settle } = setup({ GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false } })
     await settle()
-    await wait(() => expect(exportedCsv()).toContain('"陳小姐(0912345678)"'))
+    await wait(() => expect(exportedCsv()).toContain('"陳*姐(0912***678)"'))
+    expect(exportedCsv()).not.toContain('0912345678')
     cleanup()
     const failed = setup({ GET_CUSTOMER_DATA_MARKED: new Error('查詢失敗') })
     await failed.settle()

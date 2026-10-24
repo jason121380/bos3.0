@@ -10,7 +10,7 @@ import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { startOfMonth, subMonths } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
-import { renderPage, loginAs, callsOf, currentLocation } from '../../../__tests__/testkit.test'
+import { renderPage, loginAs, callsOf, currentLocation, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import SalaryOverview from '..'
 
 jest.setTimeout(20000)
@@ -146,10 +146,13 @@ describe('薪資總表：金額', () => {
     expect(callsOf(calls, 'FETCH_MONTHLY_CLOSE_STATUS')[0].variables).toEqual({ date: lastMonth })
   })
 
-  it('查詢失敗時維持載入中畫面，不整頁壞', async () => {
+  it('查詢失敗時顯示錯誤與重新查詢，不是一直載入', async () => {
     const { settle } = renderPage(<SalaryOverview />, { route: ROUTE, fallback: 'error' })
     await settle()
-    expect(screen.getByLabelText('載入中')).toBeInTheDocument()
+    expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
+    expect(screen.queryByLabelText('載入中')).toBeNull()
+    expect(screen.getByText('無法載入資料')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '重新查詢' })).toBeEnabled()
   })
 })
 

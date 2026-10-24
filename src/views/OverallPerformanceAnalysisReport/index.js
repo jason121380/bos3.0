@@ -12,6 +12,7 @@ import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 
 import Results from './Results'
 
@@ -244,7 +245,9 @@ const OverallPerformanceAnalysisReport = () => {
           </Button>
         }
       />
-      {!overallPerformanceAnalysisReportLazyData.loading && overallPerformanceAnalysisReportLazyData.data !== undefined ? (
+      {overallPerformanceAnalysisReportLazyData.error ? (
+        <QueryFailed onRetry={handleSearchReport} />
+      ) : !overallPerformanceAnalysisReportLazyData.loading && overallPerformanceAnalysisReportLazyData.data !== undefined ? (
         <Results
           weekDisplay={weekDisplay}
           overAllReport={overAllReport}

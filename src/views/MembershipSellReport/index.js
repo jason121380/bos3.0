@@ -7,6 +7,7 @@ import AdminPageHeader from 'components/AdminPageHeader'
 import { ReportToolbar } from 'ui/page-header'
 import { startOfDay, endOfDay, format } from 'date-fns'
 import { CSVLink } from "react-csv";
+import { maskCustomerName } from 'helper/exportCustomerMask'
 import roundDecimal from './../../helper/roundDecimal.js'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
@@ -55,7 +56,7 @@ export default function MembershipSellReport() {
         帳單日期: format(d.orderDate, 'yyyy/MM/dd'),
         帳單編號: `#${d.orderNo}`,
         設計師姓名: d.designerName,
-        顧客姓名: d.customerName,
+        顧客姓名: maskCustomerName(d.customerName),
         會員卡名稱: d.membershipName,
         實際售價: d.sellPrice,
         數量: d.count,

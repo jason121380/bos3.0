@@ -9,12 +9,18 @@ import produce from 'immer'
 import useFetchGetCustomerConsumptionLeaderboard from 'hooks/useFetchGetCustomerConsumptionLeaderboard'
 import useFetchGetCustomerConsumptionLeaderboardExcel from 'hooks/useFetchGetCustomerConsumptionLeaderboardExcel'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
+import BackendExportNotice from 'components/BackendExportNotice'
+import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
+import { isCustomerExportMaskSettingOff } from 'helper/exportCustomerMask'
 
 import Filter from './Filter'
 import Results from './Results'
 
 function CustomerConsumptionLeaderboard() {
   const [getCustomerConsumption, customerConsumptionData] = useFetchGetCustomerConsumptionLeaderboard()
+  const customerDataMarked = useFetchCustomerDataMarked()
+  const exportMaskOff = isCustomerExportMaskSettingOff(customerDataMarked)
   const [getCustomerConsumptionExcel, customerConsumptionDataExcel] = useFetchGetCustomerConsumptionLeaderboardExcel()
   const [reportData, setReportData] = useState([])
   const [inputData, setInputData] = useState({
@@ -67,6 +73,7 @@ function CustomerConsumptionLeaderboard() {
   }
 
   const handleGetExcelData = () => {
+    if (exportMaskOff) return
     if (rangeLimit(inputData.dateRange)) {
       openSnackbar({
         message: '時間篩選區間不可超過一年',
@@ -95,10 +102,11 @@ function CustomerConsumptionLeaderboard() {
         <AdminPageHeader title='顧客消費排行榜'>
           <Button
             variant='secondary'
-            disabled={customerConsumptionDataExcel.loading}
+            disabled={customerConsumptionDataExcel.loading || exportMaskOff}
             onClick={handleGetExcelData}
           ><Download strokeWidth={1.75} />報表匯出</Button>
         </AdminPageHeader>
+        <BackendExportNotice settingOff={exportMaskOff} />
         <Filter
           rangeLimit={rangeLimit}
           dataChange={handleDataChange}
@@ -106,7 +114,9 @@ function CustomerConsumptionLeaderboard() {
           handleSearch={handleSearch}
           loading={customerConsumptionData.loading}
         />
-        {(!customerConsumptionData.loading && customerConsumptionData.data) ? (
+        {customerConsumptionData.error ? (
+          <QueryFailed onRetry={handleSearch} />
+        ) : (!customerConsumptionData.loading && customerConsumptionData.data) ? (
           <Results reportData={reportData} />
         ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示

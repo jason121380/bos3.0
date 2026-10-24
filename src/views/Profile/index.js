@@ -31,6 +31,7 @@ import useFetchGetUserPinnedTableSettings from 'hooks/useFetchGetUserPinnedTable
 import useFetchGetPinnedTableDefStructures from 'hooks/useFetchGetPinnedTableDefStructures'
 import pagenationLabel from './../../helper/pagenationLabel'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 
 import General from './General'
 import OrderRecord from './OrderRecord'
@@ -625,6 +626,7 @@ function Settings({ match, history }) {
             <div>
           {currentTab === 'general' && <General />}
           {currentTab === 'orderRecord' && (
+            getOrderListLazyData.error ? <QueryFailed onRetry={getOrderRecordsData} /> :
             getOrderListLazyData.loading || getOrderListLazyData.data === undefined ?
               <div className="flex flex-col gap-3">
                 <Skeleton className="h-10 w-full" />
@@ -654,6 +656,7 @@ function Settings({ match, history }) {
             />
           )}
           {currentTab === 'helperSelfRecord' && (
+            userHelperRetrieveLazyData.error ? <QueryFailed onRetry={getHelperSelfRecord} /> :
             <HelperSelfRecord
               setDateForHelper={setDateForHelper}
               dateForHelper={dateForHelper}
@@ -666,6 +669,7 @@ function Settings({ match, history }) {
             />
           )}
           {currentTab === 'designerSelfRecord' && (
+            designerReportLazyData.error ? <QueryFailed onRetry={getDesignerSelfRecord} /> :
             <DesignerSelfRecord
               setDateForHelper={setDateForDailyReport}
               dateForHelper={dateForDailyReport}
@@ -685,6 +689,7 @@ function Settings({ match, history }) {
           {currentTab === 'security' && <Security />}
           {currentTab === 'permission' && <Permission />}
           {currentTab === 'paySlip' && (
+            userSalaryReportLazyData.error ? <QueryFailed onRetry={getPaySlip} /> :
             <PaySlip
               userPaySlip={idx(userPaySlip, _ =>
                 _.data.userSalaryReport.filter(data => data.userId === employeeId)
@@ -699,6 +704,7 @@ function Settings({ match, history }) {
             />
           )}
           {currentTab === 'AttendanceRecord' && (
+            uerAttendanceLazyData.error ? <QueryFailed onRetry={getAttendanceRecord} /> :
             uerAttendanceLazyData.loading || uerAttendanceLazyData.data === undefined ?
               <div className="flex flex-col gap-3">
                 <Skeleton className="h-10 w-full" />
@@ -730,6 +736,7 @@ function Settings({ match, history }) {
           )
           }
           {currentTab === 'rakeReport' && (
+            designerRakeReportLazyData.error ? <QueryFailed onRetry={getRakeReport} /> :
             <RakeReport
               loading={
                 designerRakeReportLazyData.loading || designerRakeReportLazyData.data === undefined

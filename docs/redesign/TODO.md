@@ -1,10 +1,12 @@
 # 待辦清單（TODO）
 
+> **歷史／已過時。** 現況（版號、測試總數、CI、健康分、後端債）只看 [`docs/CURRENT.md`](../CURRENT.md)。健康分程式是 `v3.10241717`。下面的「CI 被手動停用」、舊 suite 數，以及「顧客匯出遮罩另案未動」都只描述該則當時。PR #301 已做前端 CSV 一律遮罩，並在伺服器檔案網址的按鈕上停用說明。後端的伺服器端遮罩仍未修。
+
 - **2026/10/24 前端審查（已做／未做）**：已做（只動 bos3.0 前端）：API 環境 fail closed、登入 PROFILE 失敗可重試、盤點作業與切換店家的錯誤狀態、`setupTests` localStorage 與瀏覽器對齊、profile mock 的 `solmateKey` 改假值、文件上的 suite 數字與 CI／分支保護紀錄。未做：後端、GraphQL schema、Railway、PWA 縮放政策、React 升級、列印範本合併、全套 4,283 重跑（本批只跑相關 Jest）。PROFILE 查詢仍請求 `solmateKey`（畫面需要店家欄位；不在這次刪查詢欄位）。這次 token 讀寫分支保護回 403，只留下紀錄、沒有打開。
 
 - **2026/10/24 掛單詳細現金應收（v3.10241447）**：v3.10241410 實機驗收時，掛單詳細畫面仍用本地現金應收算式（帳單詳細已在 PR #297 改走 `billPaymentSummary`）。畫面改呼叫同一支 helper。業績合計、超額歸零、給點、列印與送出未改。待實機：同一張掛單在掛單詳細與打帳單／帳單詳細的現金應收相同（第三方卡券不計、預收卡販賣計入、扣入金／其他付款／紅利折抵要扣）。
 
-- **2026/10/24 Jason 拍板四項（畫面，v3.10241257）**：表單／帳單標籤在欄位上方（員工資料「性別」由外框改到上方；`NativeSelect` 自帶標籤不再浮在框上）。消費分析「業績明細」折線圖加回圖例。服務項目設定不顯示篩選鈕。下拉改自家清單（按鈕＋選項），不再叫出系統選單；同層留一個不可聚焦、不顯示的 `<select>`，只為了既有測試讀 `.options` 與依索引改值。不顯示掛單點數。顧客匯出遮罩另案，本批未動。
+- **2026/10/24 Jason 拍板四項（畫面，v3.10241257）**：表單／帳單標籤在欄位上方（員工資料「性別」由外框改到上方；`NativeSelect` 自帶標籤不再浮在框上）。消費分析「業績明細」折線圖加回圖例。服務項目設定不顯示篩選鈕。下拉改自家清單（按鈕＋選項），不再叫出系統選單；同層留一個不可聚焦、不顯示的 `<select>`，只為了既有測試讀 `.options` 與依索引改值。不顯示掛單點數。顧客匯出遮罩另案，本批未動（這句只對 v3.10241257；其後見 [`docs/CURRENT.md`](../CURRENT.md)）。
 
 - **2026/10/24 收尾盤點**：清除無 live class 來源的舊 Mui CSS 與未使用的 ui-sheet-in 動畫，修正過時遷移註解、Products／Login 測試 mock 與盤點草稿提示計時；新增正式 Dialog 焦點回歸測試，修正多選 CompatSelect 外點搶焦點及 Escape 穿透、日期浮層初始聚焦。離線 harness 新增 click-away（原 10 種情境與 assertions 保留），（v3.10240343）Chrome 11／11 通過；完整測試 366 suites／4,262 tests 全過、無 console 輸出；lint／build 通過。未刪檔，未改後端／網路防護／環境／套件或 effect 依賴。逐項 CSS 表、待決事項、候選檔與驗證見 [收尾稽核報告](AUDIT_20261024.md)。
 
@@ -33,13 +35,13 @@
 - **2026/10/23 共用 Dialog 圖層 Part A**：共享 Radix 圖層與首批七檔遷移完成修改；保留 Part B 17 個頁面／共用 importer。限定 Jest 89 suites／1,099 tests、網路封鎖／版號 4 tests 與 lint 通過；外部 Chrome 原九種＋真實 PasswordDialog／三層日期共 11/11 連續兩輪通過；keepMounted 兩次開關、焦點還原、全部關閉後指標／捲動鎖解除均已驗證（MEMORY #195、#196）。
 
 
-> 更新：2026/10/24（repo 版號以 `src/version.js` 為準；正式站左上角才是已上線版號，不要把尚未部署的版號寫成已在正式站）　給：Jason　規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；正式站唯讀，禁止建立／修改／送出／列印真實資料，刪檔先經 Jason 同意。GitHub Actions 的 workflow 檔（Node 24.22.1、`npm ci --legacy-peer-deps`、lint／build／test）是對的，但 Actions 在 GitHub 設定裡被手動停用，要在網頁重新啟用才會跑。合併前本機跑 `npm run lint`／`npm run test:nowatch`／`npm run build`。2026/10/24 本機全套（含健康報告前端修正）**368 suites／4,283 tests** 全過（`--maxWorkers=50%`）。收尾稽核當時是 366／4,262（v3.10240343）。不要再引用 4,268。下方帶日期的條目為歷史紀錄，舊版號與部署方式僅代表當時狀態。
+> 給：Jason。規則：只改畫面、不動邏輯（畫面以外的修正須 Jason 當次同意）；正式站唯讀，禁止建立／修改／送出／列印真實資料，刪檔先經 Jason 同意。版號、測試總數、CI 只看 [`docs/CURRENT.md`](../CURRENT.md)。2026/10/24 寫這段時，舊 workflow 被手動停用，本機全套是 368 suites／4,283 tests（`--maxWorkers=50%`），收尾稽核當時是 366／4,262（v3.10240343）。這些是當時紀錄，不要再引用 4,268，也不要把「CI 已停用」或 4,283 當成現況。下方帶日期的條目為歷史。
 > **歷史摘要（2026/10/21）**：main 已含 PR #224（健康報告修正、深色開關、側欄頂列）、#225（預約表白屏）、#226（PWA 狀態列）。可能有多個 session 同時開發，合併前一律先拉最新 main 再驗證（CLAUDE.md「Git 與合併」）。下一步待 Jason 拍板與實機驗收（見 §二 P3 與各項「待實機」）。下方「本輪」段落為 10/19 歷史紀錄。
 > **本輪驗證（2026-10-19 指揮者獨立驗證）**：`inventory-scan.js` 已實跑（§三 以腳本輸出為準）；`portal-root-scan` 缺 `ui-root` 0、`ui` 元件未自帶 0（已重跑）；eslint（`eslint-check.json`，`WalletDepositModal.js`＋`inventory-scan.js`）0 error；`verify-logic`（`WalletDepositModal.js`）FAIL 3 項，皆純 presentation——`slotProps` 的 textField `variant` standard→outlined、兩個 `fieldProps` 的 `label` 改為 `Field` 上方標籤＋`placeholder`，無邏輯差異；全域 unit（本分支基於 main，未含 PR #6）17 suites，51 passed＋1 skipped（LoginForm 電話長度 skip，待 PR #6 合併後消除），0 failed；`CI=true npm run build` 成功。
 
 ---
 
-> **現況補充（2026/10/23）**：相容元件使用量為 6 個非 ui、非測試檔案（項目 4：29 → 23；項目 3 第一批：23 → 15；第二批：15 → 6）；收尾為 billing 4 頁、報表列印、pickers 與全域 toast。Autocomplete（PR #178–#181）與滑桿泡泡（PR #197）已完成自製。交接估計約 221 處「待實機」；本次補註前全文實查為 225 次字串出現，包含標題、說明與重複引用，並非獨立驗收項目數；下列歷史項目即使寫「唯讀」或「列印預覽」，也不可在正式站送出或列印真實資料，須改用 mock／隔離測試資料。
+> **2026/10/23 補充（歷史，不是現況）**：當時把相容元件使用量記成 6 個非 ui、非測試檔案（項目 4：29 → 23；項目 3 第一批：23 → 15；第二批：15 → 6）；收尾為 billing 4 頁、報表列印、pickers 與全域 toast。不要把 6 當成現況。Autocomplete（PR #178–#181）與滑桿泡泡（PR #197）已完成自製。交接估計約 221 處「待實機」；本次補註前全文實查為 225 次字串出現，包含標題、說明與重複引用，並非獨立驗收項目數；下列歷史項目即使寫「唯讀」或「列印預覽」，也不可在正式站送出或列印真實資料，須改用 mock／隔離測試資料。
 
 ## 一、今天完成了什麼
 

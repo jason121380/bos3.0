@@ -1,7 +1,9 @@
-# 任何 branch 的 push 與所有 PR 都會跑：安裝一次、build 與 test 各自獨立一個 job（其中一個失敗不會遮住另一個的結果）。
-# 套件安裝方式與 Dockerfile 一致：npm + --legacy-peer-deps（專案只有 package-lock.json，沒有 yarn.lock）。
+# 前端 CI。舊檔 .github/workflows/node.js.yml 在 GitHub 上被手動停用（disabled_manually），
+# 停用狀態綁在那個檔案路徑，沒有分支保護也無法用 token 重新啟用。
+# 這個新路徑會註冊成另一個 workflow，預設啟用，不需要 GitHub Pro 或分支保護。
+# 任何 branch 的 push 與所有 PR 都會跑：安裝一次、lint／build 與 test 各自獨立。
 
-name: Node.js CI
+name: Frontend CI
 
 on:
   push:
@@ -9,18 +11,17 @@ on:
   pull_request:
   workflow_dispatch:
 
-# 同一個 branch 連續 push 時，取消尚未跑完的舊執行
 concurrency:
-  group: ci-${{ github.ref }}
+  group: frontend-ci-${{ github.ref }}
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: 24.22.1 # 與 Dockerfile 的 node:24.22.1-alpine 相同（Cloud Build 直接建該 Dockerfile）
-  CYPRESS_INSTALL_BINARY: 0 # build 與單元測試不需要 Cypress 執行檔，略過下載
+  NODE_VERSION: 24.22.1
+  CYPRESS_INSTALL_BINARY: 0
 
 jobs:
   build:
-    name: Build
+    name: Lint and build
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -31,7 +32,6 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
-      # 與原 CRA build 內建的 ESLint 檢查相同（react-app/base；Vite 不跑 ESLint，改為獨立步驟）
       - name: Lint (build rules)
         run: npm run lint:build
       - name: Build
@@ -42,7 +42,7 @@ jobs:
   test:
     name: Unit tests
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -53,3 +53,5 @@ jobs:
         run: npm ci --legacy-peer-deps
       - name: Test
         run: npm run test:nowatch
+        env:
+          CI: true

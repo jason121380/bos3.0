@@ -291,10 +291,11 @@ describe('掛單列表：列表與匯出', () => {
     expect(csv).toContain('"王小美/01","Y","1500","1300","450"')
   })
 
-  it('店家設定不遮罩時，匯出完整姓名電話', async () => {
+  it('店家設定不遮罩時，前端 CSV 仍遮罩姓名電話', async () => {
     const { settle } = setup({ GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false } })
     await settle()
-    await wait(() => expect(exportedCsv()).toContain('陳小姐 0912345678'))
+    await wait(() => expect(exportedCsv()).toContain('陳*姐 0912***678'))
+    expect(exportedCsv()).not.toContain('0912345678')
   })
 
   it('設計師沒有編號（null）時匯出只有姓名，不帶「/null」（Jason 2026/10/22）', async () => {

@@ -1,11 +1,21 @@
-import isExportCustomerMasked, { maskCustomerForExport, maskCustomerName, maskCellphone } from '../exportCustomerMask'
+import isExportCustomerMasked, { isCustomerExportMaskSettingOff, maskCustomerForExport, maskCustomerName, maskCellphone } from '../exportCustomerMask'
 
-// 為什麼重要：匯出檔會被下載、轉寄；只要無法確定店家選了「不遮罩」，就必須遮罩姓名與手機。
+// 為什麼重要：匯出檔會被下載、轉寄。瀏覽器自己組的 CSV 一律遮罩，即使店家把遮罩關掉。
 
 const result = (overrides = {}) => ({ loading: false, error: undefined, data: { getCustomerDataMarkedDefault: false }, ...overrides })
 
-test('店家設定不遮罩、且這次查詢成功時，才匯出完整資料', () => {
-  expect(isExportCustomerMasked(result())).toBe(false)
+test('店家設定不遮罩時，前端 CSV 仍遮罩', () => {
+  expect(isExportCustomerMasked(result())).toBe(true)
+  expect(isCustomerExportMaskSettingOff(result())).toBe(true)
+})
+
+test('只有查詢成功且設定確定為 false，才視為店家關閉遮罩', () => {
+  expect(isCustomerExportMaskSettingOff(result({ data: { getCustomerDataMarkedDefault: true } }))).toBe(false)
+  expect(isCustomerExportMaskSettingOff(result({ loading: true, data: undefined }))).toBe(false)
+  expect(isCustomerExportMaskSettingOff(result({ error: new Error('設定查詢失敗') }))).toBe(false)
+  expect(isCustomerExportMaskSettingOff(result({ data: undefined }))).toBe(false)
+  expect(isCustomerExportMaskSettingOff(result({ data: { getCustomerDataMarkedDefault: null } }))).toBe(false)
+  expect(isCustomerExportMaskSettingOff(undefined)).toBe(false)
 })
 
 test('店家設定遮罩時遮罩', () => {

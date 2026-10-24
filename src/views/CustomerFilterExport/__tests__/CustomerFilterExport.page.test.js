@@ -1,8 +1,8 @@
 // 保護「客資篩選匯出」：查詢條件（關鍵字、偏好／最近設計師、生日、來源、黑名單、來店消費＋所屬、最後消費區間或基準日前後天數、分頁）送出正確，
 // 條件寫回網址（?pageSetting=）且從網址帶回時還原篩選與日期欄的啟用狀態；列表顯示個資欄位（電話、生日）與黑名單紅字，
 // 連到顧客詳細時帶 backto=customer-filter；「報表匯出」以目前條件向後端要檔案網址並開啟；刪除客人同客戶列表（密碼確認）。
-// 注意：本頁匯出檔由後端產生（含完整姓名、手機、生日），前端沒有套用 helper/exportCustomerMask 的遮罩設定——本測試鎖住
-// 「送出的是目前篩選條件、開啟後端回的網址」，遮罩與否由後端決定（已列入回報）。GraphQL 全由 testkit 的模擬 link 回應，不刪除真實顧客。
+// 匯出檔由後端產生。店家關掉「報表匯出客資遮碼」時，按鈕停用並說明原因；設定不是明確關閉時仍開啟後端回的網址。
+// GraphQL 全由 testkit 的模擬 link 回應，不刪除真實顧客。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
@@ -298,6 +298,16 @@ describe('客資篩選匯出：匯出與刪除', () => {
     await empty.settle()
     expect(callsOf(empty.calls, 'FETCH_CUSTOMERS_WITHOUT_SORTING_EXCEL')).toHaveLength(1)
     expect(openSpy).not.toHaveBeenCalled()
+  })
+
+  it('店家關閉客資遮罩時停用匯出，並說明伺服器檔無法由前端遮罩', async () => {
+    const utils = setup({ fixtures: { GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false } } })
+    await utils.settle()
+    expect(screen.getByRole('alert')).toHaveTextContent('停用下載')
+    expect(screen.getByRole('button', { name: '報表匯出' })).toBeDisabled()
+    fireEvent.click(screen.getByRole('button', { name: '報表匯出' }))
+    expect(openSpy).not.toHaveBeenCalled()
+    expect(callsOf(utils.calls, 'FETCH_CUSTOMERS_WITHOUT_SORTING_EXCEL')).toHaveLength(0)
   })
 
   it('勾選與直接刪除（未設刪除密碼）：送出勾選的顧客 id，成功清除勾選並重新查詢', async () => {
