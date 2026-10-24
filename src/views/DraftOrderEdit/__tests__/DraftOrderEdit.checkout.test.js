@@ -125,6 +125,29 @@ describe('掛單詳細：從帶日期區間的掛單列表進來', () => {
     expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'success', message: '掛單結帳成功' }))
     expect(openSnackbar).not.toHaveBeenCalledWith(expect.objectContaining({ variant: 'error' }))
   })
+
+  // 舊寫法 split('=')[1].substring：查詢沒有「=」時拋 TypeError，結帳已成功卻被當成失敗
+  it('網址查詢不是日期區間：結帳成功仍回到帳單列表，不提示錯誤', async () => {
+    const page = setupDraft({}, { route: '/draft-order/order-1?reprint' })
+    await pageReady(page)
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await wait(() => expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1))
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent('/management/orders'))
+    expect(screen.getByTestId('testkit-location')).not.toHaveTextContent('startDate')
+    expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'success', message: '掛單結帳成功' }))
+    expect(openSnackbar).not.toHaveBeenCalledWith(expect.objectContaining({ variant: 'error' }))
+  })
+
+  it('日期區間前面還有其他參數：結帳成功仍帶回 startDate 與 endDate', async () => {
+    const search = '?source=LINE&startDate=1760976000000&endDate=1761062399999'
+    const page = setupDraft({}, { route: `/draft-order/order-1${search}` })
+    await pageReady(page)
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent('/management/orders?startDate=1760976000000&endDate=1761062399999'))
+    expect(openSnackbar).not.toHaveBeenCalledWith(expect.objectContaining({ variant: 'error' }))
+  })
 })
 
 describe('掛單詳細：F9 快捷鍵', () => {

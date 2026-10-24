@@ -9,6 +9,11 @@ describe('api-base：後端位址單一來源', () => {
       ['https://beautyos-dev.example.com/', 'test'],
       ['https://beautyos2.example.com/', 'test'],
       ['http://localhost:3000/', 'test'],
+      // 路徑或查詢含 dev／beautyos2，主機不是測試站
+      ['https://bos.lure.com.tw/device/list', 'production'],
+      ['https://bos.lure.com.tw/orders?note=dev', 'production'],
+      ['https://bos.lure.com.tw/beautyos2/orders', 'production'],
+      ['https://app.beautyos.co/order/create#device', 'production'],
     ])('%s → %s', (href, env) => {
       expect(detectApiEnv(href)).toBe(env)
     })

@@ -227,6 +227,45 @@ describe('打帳單：結帳送出', () => {
     expect(callsOf(calls, 'FETCH_CREATE_ORDER')[0].variables.input.walletPay).toBe(300)
   })
 
+  const bonusInput = label => screen.getByText(label, { selector: 'label' }).parentElement.querySelector('input')
+
+  // 改服務售價會換掉 serviceOrders，打帳單既有 effect 會把扣入金歸 0，測不到「上限下降」。
+  // 點數換算折抵不換品項陣列：先整筆扣入金，再扣點讓折抵出現，扣入金必須降到新上限，現金應收不能變負。
+  it('整筆扣入金後點數折抵讓上限下降：扣入金跟著降，現金應收不會變負', async () => {
+    const { calls } = setup({
+      GET_IS_BONUS_CONVERSION: { getParameterAboutSettingFunction: { isBonusConversion: true, bonusConversionRate: 1 } },
+    })
+    await screen.findByText(/#A001/)
+    await selectCustomerDesignerService(calls)
+    await wait(() => expect(screen.getAllByText('服務消費')[0].nextSibling).toHaveTextContent('800'))
+    await screen.findByText('剩餘點數: 20')
+    fireEvent.click(screen.getByLabelText('整筆扣入金'))
+    const walletInput = document.querySelector('input[name="walletPay"]')
+    await wait(() => expect(walletInput).toHaveValue('800'))
+    fireEvent.change(bonusInput('點數扣點'), { target: { value: '20' } })
+    await wait(() => expect(bonusInput('點數折抵金額')).toHaveValue('20'))
+    await wait(() => expect(walletInput).toHaveValue('780'))
+    await wait(() => expect(screen.getAllByText('現金應收')[0].nextSibling).toHaveTextContent(/^0$/))
+  })
+
+  it('整筆扣入金後取消點數折抵：不把已扣的入金再調高', async () => {
+    const { calls } = setup({
+      GET_IS_BONUS_CONVERSION: { getParameterAboutSettingFunction: { isBonusConversion: true, bonusConversionRate: 1 } },
+    })
+    await screen.findByText(/#A001/)
+    await selectCustomerDesignerService(calls)
+    await screen.findByText('剩餘點數: 20')
+    fireEvent.change(bonusInput('點數扣點'), { target: { value: '20' } })
+    await wait(() => expect(bonusInput('點數折抵金額')).toHaveValue('20'))
+    fireEvent.click(screen.getByLabelText('整筆扣入金'))
+    const walletInput = document.querySelector('input[name="walletPay"]')
+    await wait(() => expect(walletInput).toHaveValue('780'))
+    fireEvent.change(bonusInput('點數扣點'), { target: { value: '0' } })
+    await wait(() => expect(bonusInput('點數折抵金額')).toHaveValue('0'))
+    expect(walletInput).toHaveValue('780')
+    expect(screen.getAllByText('現金應收')[0].nextSibling).toHaveTextContent('20')
+  })
+
   it('扣入金：入金餘額不足時整筆扣入金只扣餘額', async () => {
     const { calls } = setup({ customerWallet: { customerWallet: 500 } })
     await screen.findByText(/#A001/)

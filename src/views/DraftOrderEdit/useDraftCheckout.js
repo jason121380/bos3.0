@@ -10,6 +10,7 @@ import { handleTidyBill, checkProductOrders, checkMembershipOrders } from 'helpe
 import produce from 'immer'
 import giveBonus from 'helper/giveBonus'
 import { getMissingForDraftOrder } from './draftOrderRequirements'
+import { ordersListPath } from './ordersListPath'
 
 // 掛單詳細的「儲存／結帳」與金額彙總（2026/10/21 自 Footer.js 原樣搬出，Footer 只留畫面與列印範本）：
 // 送出前檢查、重新結帳密碼、F9 快捷鍵、各項金額與紅利給點、按鈕停用原因。
@@ -83,13 +84,12 @@ export default function useDraftCheckout({ passwordData }) {
             message: `掛單結帳成功`,
             variant: 'success',
           })
-          history.push(
-            `/management/${location.search.length > 0
-              ? `orders?startDate=${location.search.split('=')[1].substring(0, 13)}&endDate=${location.search.split('=')[2]
-              }`
-              : 'orders'
-            }`
-          )
+          // 結帳已成功；導頁失敗不能再被下面的 catch 當成結帳失敗
+          try {
+            history.push(ordersListPath(location.search))
+          } catch (navError) {
+            history.push('/management/orders')
+          }
           setIsClick(false)
           setOpenDialog(false)
           setIsRecheckoutOrders(false)

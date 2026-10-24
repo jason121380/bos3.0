@@ -11,7 +11,7 @@ import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { endOfDay, startOfDay, subDays } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
-import { renderPage, loginAs, callsOf, currentLocation, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
+import { renderPage, loginAs, callsOf, currentLocation, PAGE_CRASH_TEXT, networkRequests } from '../../../__tests__/testkit.test'
 import DraftOrderManagementList from '..'
 import { serviceOrders, productOrders, membershipOrders, thirdParty, weekDisplay } from '../draftOrderListHelpers'
 
@@ -617,12 +617,14 @@ describe('掛單列表：列印', () => {
     cleanup()
     window.open.mockClear()
     written = []
+    const beforeLogo = networkRequests.length
     ctx = setup({
       GET_LOGO_DISPLAY_INVOICE: { getLogoDisplayOnInvoice: { isDisplay: false, imageUrl: null } },
       GET_QRCODE_DISPLAY_ON_INVOICE: { getQrcodeDisplayOnInvoice: { isDisplay: true, url: null, imageUrl: null } },
       GET_MESSAGE_DISPLAY_ON_INVOICE: { getMessageDisplayOnInvoice: { isDisplay: true, message: '週一公休' } },
     })
     await ctx.settle()
+    expect(networkRequests.slice(beforeLogo)).not.toContain('null')
     html = await printOf()
     expect(html).toContain('週一公休')
     expect(html).not.toContain('<img')

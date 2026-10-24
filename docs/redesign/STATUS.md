@@ -1,5 +1,7 @@
 # BOS 3.0 改版進度
 
+- **2026/10/24 repo 健康報告（前端）**：帳單詳細現金應收改走 `src/helper/billPaymentSummary.js`（與打帳單、掛單詳細同一公式）。掛單結帳成功後，網址沒有日期或查詢不是 `startDate`／`endDate` 時不再被當成結帳失敗。`userLoginForLine` 的 selection set 沒有 token，不發明欄位；回應上若已有非空字串 token 才寫入。`detectApiEnv` 只看 hostname。沒有店章網址時，四個列印面不 `fetch(null)`。重新開單給點補上 `bonusSetting`；打帳單扣入金只在超過新上限時往下夾。Services 篩選維持隱藏（2026/10/24 已拍板）。`PerformanceTrend` 本批不刪。後端 repo 本批不碰。GitHub Actions workflow 維持 Node 24.22.1，需在 GitHub 網頁重新啟用才會跑。全套 368 suites／4,283 tests 全過。
+
 - **2026/10/24 收尾盤點**：清除無 live class 來源的舊 Mui CSS 與未使用的 ui-sheet-in 動畫，修正過時遷移註解、Products／Login 測試 mock 與盤點草稿提示計時；新增正式 Dialog 焦點回歸測試，修正多選 CompatSelect 外點搶焦點及 Escape 穿透、日期浮層初始聚焦。離線 harness 新增 click-away（原 10 種情境與 assertions 保留），（v3.10240343）Chrome 11／11 通過；完整測試 366 suites／4,262 tests 全過、無 console 輸出；lint／build 通過。未刪檔，未改後端／網路防護／環境／套件或 effect 依賴。逐項 CSS 表、待決事項、候選檔與驗證見 [收尾稽核報告](AUDIT_20261024.md)。
 
 - **2026/10/24 Autocomplete／正式 Dialog 焦點修正（v3.10240242，Jason 核准）**：窗內按鈕 mousedown 引發 input blur 時，activeElement 暫為 body；同步移除選單內容／圖層節點會觸發 Radix FocusScope MutationObserver 聚焦容器，使巢狀 PasswordDialog 記錯還原焦點。僅在窗內有 relatedTarget 且焦點處於 body 交接空檔時，阻止 downshift 提早關閉並延至下一個 task 收尾；保留失焦當下 autoSelect 候選項並讀最新欄位值，重聚焦／卸載取消待辦，保留一般表單同步 blur、觸控與 Escape 行為。新增真實 Dialog／PasswordDialog 的受控、非受控焦點交接及選值移焦測試；暫時還原原碼已確認兩個焦點案例失敗於容器搶焦點。驗證：changedSince 169 suites／2,014 tests、全套 365 suites／4,239 tests 全過；指定 combobox／dialog-layers 加新增顧客 5 suites／90 tests、lint／build 通過。未刪檔、未動網路 guard；Chrome dialog-layers e2e 10／10 通過（含 nested-password，連跑兩次）。
@@ -27,17 +29,17 @@
 - **2026/10/23 共用 Dialog 圖層 Part A**：共享 Radix 圖層與首批七檔遷移完成修改；保留 Part B 17 個頁面／共用 importer。限定 Jest 89 suites／1,099 tests、網路封鎖／版號 4 tests 與 lint 通過；外部 Chrome 原九種＋真實 PasswordDialog／三層日期共 11/11 連續兩輪通過；keepMounted 兩次開關、焦點還原、全部關閉後指標／捲動鎖解除均已驗證（MEMORY #195、#196）。
 
 
-> 更新：2026/10/23（正式站版號 v3.10230759，PR #270；改版歷史仍保留原紀錄）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 更新：2026/10/24（repo 版號看 `src/version.js`；正式站以左上角版號為準，文件裡的 v3.10230759 是 10/23 當時的上線紀錄）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
-## 現況摘要（2026/10/23）
+## 現況摘要（2026/10/24）
 
 - **2026/10/23 項目 3 列印遷移第一批（v3.10232225）**：指定 8 檔已由 card／grid／Divider 相容層換成 ui/card、Tailwind flex／div 與原生 hr，所有資料與操作邏輯保留。六張報表＋分析比較模式，外部 Chrome before／after 各 7/7；30 張 print／screen／PDF PNG 尺寸與像素全相同。指定 Jest 39 suites／436 tests、相關測試（--changedSince=origin/main）10 suites／102 tests、lint、build、dialog-layers 13/13 通過，verify-logic 8 檔全過。相容 importer **23 → 15**。新增可重用 print-compare.sh，Jason 限定允許本項目調整列印 CSS；逐檔對照、影像名稱及既有裁切／分頁限制見 MIGRATION_GUIDE「項目 3」。尚待實機紙本驗收，後續批次仍須逐份比較。
 
 
 - MUI 套件已整包移除；`src/ui/*-compat` 目前有 6 個非 ui、非測試使用檔案（項目 4 為 29 → 23，項目 3 第一批 23 → 15、第二批 15 → 6，以 import 檔案數計）。收尾項目：結帳（billing）4 頁、報表列印、選擇器（pickers）、全域 toast。
 - Autocomplete 已於 PR #178–#181 自製；滑桿泡泡已於 PR #197 完成。
-- 正式站為 Railway 自動部署；以正式站左上角版號 `v3.10230759` 確認上線。Cloud Build 檔為 legacy。
-- GitHub Actions Node.js CI 已手動停用；合併前本機執行 `npm run lint`、`npm run test:nowatch`、`npm run build`。作者回報 4,268 項測試通過。
+- 正式站為 Railway 自動部署；上線以正式站左上角版號為準（2026/10/23 當時為 `v3.10230759`）。Cloud Build 檔為 legacy。repo 版號以 `src/version.js` 為準。
+- GitHub Actions 的 `.github/workflows/node.js.yml` 已是 Node 24.22.1、lint、build、test；Actions 在 GitHub 設定被手動停用，要在網頁重新啟用才會跑。合併前本機執行 `npm run lint`、`npm run test:nowatch`、`npm run build`。2026/10/24 本機全套（含健康報告前端修正）**368 suites／4,283 tests** 全過。收尾稽核當時是 366／4,262（v3.10240343）。不要再把 4,268 當成現況。
 - `TODO.md` 約 221 處「待實機」項目需要實機確認。正式站唯讀，絕不建立、修改、送出或列印真實資料；刪除檔案須先經 Jason 同意。
 
 > 以下完成清單、刻意保留項目與版本表保留各批次的歷史狀態；早期「保留 MUI」與「泡泡待做」已由上方現況摘要取代。列印驗收僅用 mock／隔離測試資料，不在正式站列印真實資料。
@@ -381,10 +383,10 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 
 ## 需要使用者決定
 
-1. Services（服務項目設定）的篩選按鈕：舊版因 prop 名稱錯誤從未顯示，目前維持隱藏。要顯示嗎？
+1. ~~Services（服務項目設定）的篩選按鈕~~ **已拍板（Jason 2026/10/24）：不要顯示。** 舊版因 prop 名稱錯誤從未顯示，維持隱藏。
 2. ~~直接列印的報表是否改版~~ **已拍版（Jason 2026-10-19）**：所有報表樣式一致，以 compact 緊湊呈現。範圍只改 presentation／print CSS，不改內容欄位與數字計算。下一組優先做「報表 compact 專項」（先盤點共用層，再逐目錄）；本批只記錄決定，不做報表本體。（實測 28 檔含 22 個報表 index。）**四點新拍版補充（Jason 2026-10-19）**：22 張列印報表併入 compact 專項，只改樣式、列印預覽唯讀確認。
 3. ~~是否新增 `ui/combobox`~~ **已拍版（Jason 2026-10-19）**：不新造 combobox；Autocomplete 不動打字／選取，其他頁只改外層標籤。~~`ui/date-picker`~~ **已拍版**：月曆排 `ui/date-picker` 專項（先盤點 39–43 檔，保留民國年／格式／locale／存值，分批）。
-4. `ui/native-select` 外框標籤是否整批改上方標籤（約 21 處）。
+4. ~~`ui/native-select` 外框標籤是否整批改上方標籤~~ **已出貨（Jason 2026/10/24，v3.10241257）**：標籤在欄位上方（`src/ui/native-select.js`）。
 
 ## 發現但未修的既有問題（修了會動到邏輯）
 

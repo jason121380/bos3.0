@@ -227,7 +227,9 @@ export default function Footer({ enable }) {
     serviceTotalPriceWithoutThirdPartyCoupon, productTotalPriceWithoutThirdPartyCoupon,
     couponSellPrice, merberShipCardTotalPriceWithoutThirdPartyCoupon, bill.walletPay,
     bill.amountByOtherPay, bill.bonusDecount, bill.customerId, bonusRewardWithLINE,
-    isLineBinded, setBill
+    isLineBinded, setBill,
+    // 給點規則比帳單晚到時（規則只在查詢回來時設定一次），到了也要依規則重算（與帳單詳細、掛單詳細相同）
+    bonusSetting,
   ])
 
   // 業績合計、現金應收：只顯示在金額彙總（彙總卡與底部固定列共用），不送後端（後端依品項明細自己算業績）。
