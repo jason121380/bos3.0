@@ -64,8 +64,11 @@ describe('MerchantListAutocpmplete 選擇店家（跨店報表）', () => {
     fireEvent.click(input.parentElement)
     expect(screen.queryByRole('dialog')).toBeNull()
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+    const bare = document.createElement('span')
     input.parentElement.appendChild(path)
-    fireEvent.click(path)
+    input.parentElement.appendChild(bare)
+    expect(() => fireEvent.click(path)).not.toThrow()
+    expect(() => fireEvent.click(bare)).not.toThrow()
     expect(screen.queryByRole('dialog')).toBeNull()
     // 輸入框一取得焦點就移開（不讓手機跳出鍵盤），點擊才開窗
     fireEvent.focusIn(input)
@@ -209,8 +212,12 @@ describe('MerchantListAutocpmpleteForManagement 選擇店家（活動）', () =>
     fireEvent.click(screen.getByRole('combobox').parentElement)
     expect(screen.queryByRole('dialog')).toBeNull()
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-    screen.getByRole('combobox').parentElement.appendChild(path)
-    fireEvent.click(path)
+    const bare = document.createElement('span')
+    const field = screen.getByRole('combobox').parentElement
+    field.appendChild(path)
+    field.appendChild(bare)
+    expect(() => fireEvent.click(path)).not.toThrow()
+    expect(() => fireEvent.click(bare)).not.toThrow()
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 
@@ -349,8 +356,12 @@ describe('MerchantListAutocpmpleteForPinnedTable 選擇店家（個人頁釘選�
     await setup()
     fireEvent.click(screen.getByRole('combobox').parentElement)
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-    screen.getByRole('combobox').parentElement.appendChild(path)
-    fireEvent.click(path)
+    const bare = document.createElement('span')
+    const field = screen.getByRole('combobox').parentElement
+    field.appendChild(path)
+    field.appendChild(bare)
+    expect(() => fireEvent.click(path)).not.toThrow()
+    expect(() => fireEvent.click(bare)).not.toThrow()
     expect(screen.queryByRole('dialog')).toBeNull()
     cleanup()
     const Bare = () => {
