@@ -74,6 +74,12 @@ describe('服務項目設定：列表', () => {
     expect(screen.getByLabelText('選取 精緻剪髮')).not.toBeDisabled()
   })
 
+  it('不顯示篩選鈕', async () => {
+    setup()
+    await screen.findByText('共 3 筆')
+    expect(screen.queryByRole('button', { name: '篩選' })).not.toBeInTheDocument()
+  })
+
   it('查詢條件帶目前店家', async () => {
     const { calls } = setup()
     await screen.findByText('共 3 筆')

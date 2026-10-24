@@ -22,7 +22,8 @@ describe('ui/form-control（與 MUI FormControl／InputLabel／Select／MenuItem
   // InputLabel 成為欄位上方標籤，並與 select 關聯（無障礙與 STYLE「標籤在上」）
   it('InputLabel 關聯到 Select', () => {
     renderSelect({ value: 1, onChange: () => {} })
-    expect(screen.getByLabelText('抽成類別').tagName).toBe('SELECT')
+    expect(screen.getByLabelText('抽成類別').tagName).toBe('BUTTON')
+    expect(screen.getByLabelText('抽成類別')).toHaveAttribute('aria-haspopup', 'listbox')
   })
 
   // 頁面沿用 MUI handler：event.target.value 是 MenuItem 的原始值（null、數字、字串都不能被轉成字串）

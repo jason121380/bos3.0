@@ -33,8 +33,8 @@ describe('NativeSelect', () => {
         <NativeSelectOption value={3}>{() => '不是文字'}</NativeSelectOption>
       </NativeSelect>
     )
-    const options = screen.getAllByRole('option')
-    expect(options.map(o => o.textContent)).toEqual(['A店', 'B2', ''])
+    const options = document.querySelectorAll('option')
+    expect([...options].map(o => o.textContent)).toEqual(['A店', 'B2', ''])
     expect(screen.getByLabelText('店家')).toHaveValue('1')
     fireEvent.change(screen.getByLabelText('店家'), { target: { value: '0' } })
     expect(onChange.mock.calls[0][0].target).toEqual({ value: 1, name: 'store' })

@@ -64,7 +64,7 @@ const rowByTime = (time, day) =>
   screen.getAllByText(time).map(el => el.closest('tr')).find(tr => within(tr).queryByText(day))
 const headers = () => [...document.querySelectorAll('thead th')].map(th => th.textContent)
 const exportedCsv = () => decodeURIComponent(screen.getByText('報表匯出').closest('a').getAttribute('href'))
-const checkinSelect = () => screen.getAllByLabelText('報到狀態').find(el => el.tagName === 'SELECT')
+const checkinSelect = () => screen.getAllByLabelText('報到狀態').find(el => el.tagName === 'SELECT' || el.hasAttribute('data-ui-select'))
 
 describe('預約管理', () => {
   it('預設查本月 1 日到 90 天後整天、1000 筆、不篩報到狀態；新預約連到本店預約頁', async () => {

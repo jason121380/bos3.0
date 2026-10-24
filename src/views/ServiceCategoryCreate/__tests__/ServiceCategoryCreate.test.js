@@ -53,7 +53,7 @@ describe('<ServiceCategoryCreate />', () => {
   })
 
   it('Should display no, name, attribution is required', async () => {
-    const { getByText, getByTestId } = createWrapper()
+    const { getByText, getAllByText, getByTestId } = createWrapper()
 
     const submit = getByTestId('submit')
 
@@ -65,11 +65,11 @@ describe('<ServiceCategoryCreate />', () => {
     )
     const requireNo = getByText('請填入代號')
     const requireName = getByText('請填入類別')
-    const requireAttribution = getByText('燙')
+    // 預設歸屬「燙」同時出現在按鈕與選項清單
+    expect(getAllByText('燙').length).toBeGreaterThan(0)
 
     expect(requireNo).toBeTruthy()
     expect(requireName).toBeTruthy()
-    expect(requireAttribution).toBeTruthy()
   })
 
   it('Should create new service successful', async () => {
