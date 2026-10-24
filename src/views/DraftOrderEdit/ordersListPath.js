@@ -1,3 +1,5 @@
+import { endOfDay, startOfDay } from 'date-fns'
+
 // 掛單結帳成功後要回到的帳單列表。
 // 掛單列表的「查看掛單」會把當時的日期區間放在網址（?startDate=…&endDate=…），結帳成功後回到同一區間。
 // 舊寫法用 location.search.split('=')[1].substring：查詢沒有「=」、或切出來的不是字串時會拋 TypeError。
@@ -16,4 +18,14 @@ export function ordersListPath(search) {
     return `/management/orders?startDate=${startDate}&endDate=${endDate}`
   }
   return '/management/orders'
+}
+
+// 逾時後確認掛單已不在清單、但沒拿到新帳單 id 時，回到這張掛單日期當天的帳單列表。
+export function ordersListPathForOrderDate(date) {
+  const time = new Date(date).getTime()
+  if (!Number.isFinite(time)) return '/management/orders'
+  const startDate = startOfDay(new Date(time)).getTime()
+  const endDate = endOfDay(new Date(time)).getTime()
+  if (!Number.isFinite(startDate) || !Number.isFinite(endDate)) return '/management/orders'
+  return `/management/orders?startDate=${startDate}&endDate=${endDate}`
 }

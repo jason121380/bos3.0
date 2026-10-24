@@ -3,6 +3,7 @@ import { Provider } from 'context/keyInContext'
 import useFetchOrder from 'hooks/useFetchOrder'
 import produce from 'immer'
 import { useEffect, useState, useRef } from 'react'
+import { useHistory, useLocation } from 'react-router'
 import { useFetchTHirdPartys } from 'hooks/useFetchMerchant'
 import idx from 'idx'
 import useFetchGetBindedThirdPartTicketLockedSetting from 'hooks/useFetchGetBindedThirdPartTicketLockedSetting'
@@ -13,12 +14,18 @@ import useFetchGetBonusRewardRule from 'hooks/useFetchGetBonusRewardRule'
 import useFetchGetIsBonusConversion from 'hooks/useFetchGetIsBonusConversion'
 import useCheckDisablePendingOrder from 'hooks/useCheckDisablePendingOrder'
 
+import { checkedOutDraft, checkedOutDraftPath } from './draftCheckoutGuard'
 import Footer from './Footer'
 import Head from './Head'
 import Header from './Header'
 import Pannel from './Pannel'
 
 export default function KeyIn({ match }) {
+  const history = useHistory()
+  // useLocation 讓結帳成功後的 replace 重新渲染本頁，才能讀到剛寫下的「已結帳」並收起表單
+  const { pathname } = useLocation()
+  const storedCheckout = checkedOutDraft(match.params.id)
+  const storedKey = storedCheckout ? `${storedCheckout.orderId}|${storedCheckout.listPath}` : ''
   const onceRef = useRef(true)
   const order = useFetchOrder({ id: match.params.id })
   const [focus, setFocus] = useState('customer')
@@ -231,6 +238,19 @@ export default function KeyIn({ match }) {
       setBonusConversion(data)
     }
   }, [getIsBonusConversion.loading])
+
+  useEffect(() => {
+    if (!storedKey || !pathname.startsWith('/draft-order/')) return
+    history.replace(checkedOutDraftPath(checkedOutDraft(match.params.id), match.params.id))
+  }, [storedKey, match.params.id, history, pathname])
+
+  if (storedCheckout) {
+    return (
+      <Page title="掛單詳細" className="ui-root">
+        <p className="p-6 text-text-secondary">這張掛單已結帳，正在前往帳單。</p>
+      </Page>
+    )
+  }
 
   return (
     <Page title={`掛單詳細 ${orderNo && `(${orderNo})`}`} className="ui-root">
