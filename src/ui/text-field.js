@@ -3,7 +3,8 @@ import { cn } from './utils'
 
 // 自家輸入框（取代 MUI TextField／InputAdornment，Jason 2026/10/20 拍版「MUI 整包移除」）。
 // 介面刻意與 MUI TextField 相容：呼叫端只換 import，props 原樣保留；外觀依 STYLE.md（標籤一律在欄位上方、36px、rounded-md）。
-// 事件落點比照 MUI：onChange／onFocus／onBlur／onClick 掛在輸入元素；onKeyDown、onWheel、tabIndex 等其餘 props 落在外層（MUI 的 FormControl 根），
+// 事件落點：onChange／onFocus／onBlur 掛在輸入元素。onClick 掛在欄位外框（點輸入框、內距、圖示都會冒泡，event.target 是實際點到的節點）；
+// 標籤在外框外面，點標籤不會觸發 onClick。onKeyDown、onWheel、tabIndex 等其餘 props 落在最外層，
 // 鍵盤事件由輸入框冒泡上來，event.target 仍是輸入框。variant（outlined／standard）、color、focused、InputLabelProps 只影響 MUI 外觀，接收後忽略。
 
 let autoIdSeed = 0

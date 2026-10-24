@@ -46,8 +46,9 @@ const assignRef = (ref, node) => {
   else ref.current = node
 }
 
-// 選單掛載點：在對話框內就掛在對話框裡（配合 Radix 焦點鎖與外點關閉），否則掛在 body
-const findPortalHost = node => (node && node.closest('[role="dialog"], .MuiDialog-paper, .MuiPopover-paper')) || document.body
+// 選單掛載點：在對話框內就掛在對話框裡（配合 Radix 焦點鎖與外點關閉），否則掛在 body。
+// 正式對話框與日期浮層都是 role=dialog，不再輸出 MuiDialog-paper／MuiPopover-paper。
+const findPortalHost = node => (node && node.closest('[role="dialog"]')) || document.body
 
 function usePopupPosition(anchorRef, open) {
   const [style, setStyle] = React.useState(null)
