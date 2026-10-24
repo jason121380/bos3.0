@@ -6,6 +6,7 @@ import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react
 import { openSnackbar } from 'elements/snackbars'
 import { renderPage, loginAs, callsOf, currentLocation, typeLikeBrowser } from '../../../__tests__/testkit.test'
 import DraftOrderEdit from '..'
+import { clearCheckedOutDrafts } from '../draftCheckoutGuard'
 
 jest.setTimeout(20000)
 
@@ -142,6 +143,7 @@ const setup = (options = {}) =>
 
 beforeEach(() => {
   loginAs()
+  clearCheckedOutDrafts()
 })
 afterEach(cleanup)
 

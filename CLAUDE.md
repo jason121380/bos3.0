@@ -2,16 +2,19 @@
 
 BOS 3.0 是美業 ERP 的純前端 SPA（Vite 5 + React 17 + Apollo GraphQL + Redux Toolkit；2026/10/20 由 CRA 改為 Vite，單元測試仍用 react-scripts 的 Jest）。畫面已從 MUI 改版為 **Tailwind + `src/ui/`（shadcn/Radix 風格）**；MUI 套件已於 2026/10/20 全數移除，頁面與共用元件已完成正式 `src/ui/` 遷移；未使用的相容元件已於 2026/10/23 經 Jason 核准移除，僅保留 combobox 與 form-control 多選清單使用的 `src/ui/compat-layer.js` 共用行為 helper。日期時間一律以**台灣時間**計算與顯示（見架構速記）。回覆一律使用專業、清楚的**繁體中文**。
 
+> **現況只看 `docs/CURRENT.md`。** 本檔與 STATUS／TODO／README 裡的 suite 數、「CI 已手動停用」是 **歷史／已過時**。健康分程式是 `v3.10241717`（PR #301）：CI 為 `.github/workflows/frontend-ci.yml`；查詢失敗用 `src/components/QueryFailed.js`；四份收據有 `src/views/OrderShared/receiptFieldChecklist.js`（掛單不印點數餘額）；前端 CSV 一律遮罩。後端債（卡券授權、跨店 userMerchantId、伺服器端匯出遮罩、訂單 UUID isPending）沒有修。產品版號以 `src/version.js` 為準。
+
 ## 文件地圖
 
 | 文件 | 看什麼 |
 |---|---|
+| `docs/CURRENT.md` | **現況**：版號、測試總數、CI、健康分、後端債。其他文件的數字與「CI 已停用」都是歷史 |
 | `STYLE.md` | 設計規範（色彩、字型、元件、文案、遷移規則）——所有新畫面的唯一依據 |
-| `docs/redesign/TODO.md` | **待辦清單**（已完成／待實機／待 Jason 決定） |
-| `docs/redesign/STATUS.md` | 改版進度與刻意不改的項目 |
-| `docs/redesign/MEMORY.md` | 決策與教訓（為什麼這樣做、踩過的坑） |
-| `docs/redesign/MIGRATION_GUIDE.md` | 把頁面的相容元件換成正式 `src/ui/` 元件 的步驟與鐵則 |
-| `docs/redesign/VERIFY_REPORT.md` | 驗證方式與測試基準 |
+| `docs/redesign/TODO.md` | **歷史／已過時** 的待辦。現況待辦與後端債看 `docs/CURRENT.md` |
+| `docs/redesign/STATUS.md` | **歷史／已過時** 的改版進度。不要抄裡面的 suite 數 |
+| `docs/redesign/MEMORY.md` | 決策與教訓（為什麼這樣做、踩過的坑）。開頭的舊版號不是現況 |
+| `docs/redesign/MIGRATION_GUIDE.md` | 把頁面的相容元件換成正式 `src/ui/` 元件 的步驟與鐵則。歷史批次留在下文 |
+| `docs/redesign/VERIFY_REPORT.md` | **歷史／已過時** 的驗證紀錄。4,268 不是現況基線 |
 | `docs/redesign/B2_EXHAUSTIVE_DEPS.md` | effect 依賴警告分類與疑似 bug 清單（改 effect 前先看） |
 | `README.md` | 專案總覽、環境變數、API、時區、路由、部署 |
 

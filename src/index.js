@@ -7,6 +7,7 @@ import './lib/immer-config'
 import './lib/install-business-timezone'
 // 登入者資料只留畫面用得到的欄位：改版前已登入的使用者在開啟頁面時就地瘦身（不影響登入狀態）
 import { sanitizeStoredUser } from './lib/stored-user'
+import { installChunkReload } from './lib/lazy-with-retry'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -17,6 +18,7 @@ import App from './App'
 import * as serviceWorker from './serviceWorker'
 
 sanitizeStoredUser()
+installChunkReload()
 
 // 不使用 service worker（離線快取），確保已安裝的舊版會被移除
 serviceWorker.unregister()

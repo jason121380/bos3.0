@@ -1,7 +1,8 @@
 // 後台（DashboardLayout）路由表：自 routes.js 的萬用路由（route: '*'）原樣搬出（2026/10/21）。
 // 陣列順序即 renderRoutes 的比對順序，最後一筆為 404 導向，新增路由請放在它之前。
-import React, { lazy } from 'react'
+import React from 'react'
 import { Redirect } from 'react-router-dom'
+import { lazyWithRetry as lazy } from 'lib/lazy-with-retry'
 
 export default [
   {

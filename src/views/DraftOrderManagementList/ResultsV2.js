@@ -6,9 +6,16 @@ import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteOrder from 'hooks/useFetchDeleteOrder'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState, Fragment } from 'react'
+import { useApolloClient } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
 import { useLocation } from 'react-router'
 import useFetchReCheckoutOrder from 'hooks/useFetchReCheckoutOrder'
+import {
+  confirmDraftStillPending,
+  evictCheckedOutDraft,
+  isUncertainCheckoutError,
+  rememberCheckedOutDraft,
+} from 'views/DraftOrderEdit/draftCheckoutGuard'
 import designerNameType from 'helper/designerNameType'
 import cloneDeep from 'lodash/cloneDeep'
 import DraftOrderTable from './DraftOrderTable'
@@ -59,6 +66,53 @@ function Results({
   const [orderIndex, setOrderIndex] = useState(0)
   const { fetchReCheckoutOrder } = useFetchReCheckoutOrder()
   const { deleteOrders } = useFetchDeleteOrder()
+  const client = useApolloClient()
+
+  const settleListCheckout = (draftOrder, result) => {
+    const closedId = result && result.data && result.data.reCheckoutOrder && result.data.reCheckoutOrder.id
+    const draftId = draftOrder.id
+    rememberCheckedOutDraft(draftId, closedId || '', '/management/orders')
+    evictCheckedOutDraft(client.cache, draftId)
+    if (closedId && closedId !== draftId) {
+      history.replace(`/order/${closedId}`)
+      return
+    }
+    history.push('/management/orders')
+  }
+
+  const failListCheckout = (draftOrder, err) => {
+    if (!isUncertainCheckoutError(err)) {
+      setPassword('')
+      openSnackbar({ message: err.message, variant: 'error' })
+      setIsClick(false)
+      return
+    }
+    confirmDraftStillPending(client, draftOrder.id, draftOrder.date).then(status => {
+      if (status === 'closed') {
+        rememberCheckedOutDraft(draftOrder.id, '', '/management/orders')
+        evictCheckedOutDraft(client.cache, draftOrder.id)
+        setPassword('')
+        setIsClick(false)
+        openSnackbar({
+          message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+          variant: 'warning',
+        })
+        history.push('/management/orders')
+        return
+      }
+      if (status === 'unknown') {
+        setPassword('')
+        openSnackbar({
+          message: '無法確認結帳是否成功。請先到帳單列表查看，不要重複結帳。',
+          variant: 'error',
+        })
+        return
+      }
+      setPassword('')
+      openSnackbar({ message: err.message, variant: 'error' })
+      setIsClick(false)
+    })
+  }
 
   useEffect(() => {
     if (allExtend) {
@@ -342,7 +396,7 @@ function Results({
       updateOrderId: Order.id,
       orderInput: orderForInput,
     })
-      .then(() => {
+      .then(result => {
         openSnackbar({
           message: '結帳成功',
           variant: 'success',
@@ -350,19 +404,11 @@ function Results({
         // setOpenDialog(false)
         setPassword('')
         // setCheckoutBtn(false)
-        history.push('/management/orders')
-
-        // history.push('/management/orders')
+        settleListCheckout(Order, result)
       })
       .catch(err => {
         // setOpenDialog(false)
-        setPassword('')
-        openSnackbar({
-          message: err.message,
-          variant: 'error',
-        })
-        setIsClick(false)
-        // toggle()
+        failListCheckout(Order, err)
       })
       .finally(() => {
         // useToggleRef.current()
@@ -452,7 +498,7 @@ function Results({
       orderInput: orderForInput,
       password: password,
     })
-      .then(() => {
+      .then(result => {
         openSnackbar({
           message: '結帳成功',
           variant: 'success',
@@ -460,19 +506,11 @@ function Results({
         // setOpenDialog(false)
         setPassword('')
         // setCheckoutBtn(false)
-        history.push('/management/orders')
-
-        // history.push('/management/orders')
+        settleListCheckout(Order, result)
       })
       .catch(err => {
         // setOpenDialog(false)
-        setPassword('')
-        openSnackbar({
-          message: err.message,
-          variant: 'error',
-        })
-        setIsClick(false)
-        // toggle()
+        failListCheckout(Order, err)
       })
       .finally(() => {
         // useToggleRef.current()

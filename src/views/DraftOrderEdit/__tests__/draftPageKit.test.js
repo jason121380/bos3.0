@@ -6,6 +6,7 @@ import React from 'react'
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { renderPage, loginAs, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import DraftOrderEdit from '..'
+import { clearCheckedOutDrafts } from '../draftCheckoutGuard'
 
 const isMain = expect.getState().testPath === __filename
 
@@ -191,12 +192,14 @@ export const draftFixtures = ({
   ...overrides,
 })
 
-export const setupDraft = (options = {}, { route = '/draft-order/order-1', delays } = {}) =>
-  renderPage(<DraftOrderEdit match={{ params: { id: 'order-1' } }} />, {
+export const setupDraft = (options = {}, { route = '/draft-order/order-1', delays, keepCheckoutMemory = false } = {}) => {
+  if (!keepCheckoutMemory) clearCheckedOutDrafts()
+  return renderPage(<DraftOrderEdit match={{ params: { id: 'order-1' } }} />, {
     fixtures: draftFixtures(options),
     route,
     delays,
   })
+}
 
 // 等頁面載入完成（標題出現、所有查詢都回來）
 export const pageReady = async ({ settle }) => {

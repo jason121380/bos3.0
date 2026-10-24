@@ -2,7 +2,8 @@
 
 > 給執行改版的工程師（含 AI 代理）。規範以根目錄 `STYLE.md` 為準。
 > 參考範例 commit：`27de2d2`（帳單列表，完整替換）、`a718658`（打帳單，大型頁結構替換）、`66f5d92`（報表目錄）。
-> **現況（2026/10/23）**：`package.json` 已無 MUI 套件。最後一批完成後，相容元件頁面使用檔案 2 → 0，日期選擇器內部亦不再引用 modal／overlay-compat；歷史批次與列印證據保留於下文。日期時間沿用 `lib/business-timezone.js`，不得自行加時區換算。下文未標為歷史的「MUI 元件」均指目前輸出同名 class 的相容元件，不可重新安裝或引入 `@mui/*`。
+> **下文批次是歷史／已過時。** 版號、測試總數、CI、健康分、後端債只看 [`docs/CURRENT.md`](../CURRENT.md)（健康分程式 `v3.10241717`，CI 為 `frontend-ci.yml`）。不要假設 Actions 已停用。
+> **2026/10/23 快照**：`package.json` 已無 MUI 套件。最後一批完成後，相容元件頁面使用檔案 2 → 0，日期選擇器內部亦不再引用 modal／overlay-compat；歷史批次與列印證據保留於下文。日期時間沿用 `lib/business-timezone.js`，不得自行加時區換算。下文未標為歷史的「MUI 元件」是遷移當時的叫法，不可重新安裝或引入 `@mui/*`。
 
 > 正式站僅供唯讀查看；寫入、送出及列印測試只用 mock／隔離測試資料。刪檔先經 Jason 同意。
 
@@ -12,7 +13,7 @@
 2. **不得修改指派範圍以外的檔案**。特別是 `src/ui/`、`src/components/`、`src/layouts/`、`src/theme/`、`src/hooks/`、`package.json`、`scripts/`。缺元件就在回報中提出，不要自己加。
 3. **列印範本不動**：`id="printMain"`、`id="printThermal"`、任何會被 `innerHTML` 複製到列印視窗的區塊、`className` 含 `forPrint` / `print` 的元素，一律原封保留（包含 inline style 與相容元件）。
 4. **保留所有 `data-testid`、`id`、`name`、`ref`、`key`、`aria-*`**。
-5. **不自行安裝套件**。第 4 節是局部檢查；合併前仍須在本機完成 `npm run lint`、`npm run test:nowatch`、`npm run build`。Node.js CI 已手動停用，不可省略本機驗證。
+5. **不自行安裝套件**。第 4 節是局部檢查；合併前仍須在本機完成 `npm run lint`、`npm run test:nowatch`、`npm run build`。CI 是否在跑見 [`docs/CURRENT.md`](../CURRENT.md)，不要假設 Actions 已停用。
 6. 文案維持原樣；只允許移除純裝飾的英文 overline。
 
 ## 1. 可用元件（`src/ui/`，import 路徑以 `ui/xxx` 開頭）

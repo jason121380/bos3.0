@@ -1,5 +1,7 @@
 # B2：react-hooks/exhaustive-deps 分類與 R 類分析
 
+> **歷史／已過時。** 這是基準 commit `ce9a6bb` 的分類，不是現在的全站警告總數。版號、測試總數、CI、健康分只看 [`docs/CURRENT.md`](../CURRENT.md)（程式 `v3.10241717`）。PR #301 沒有一次清掉這些警告。
+
 範圍：`npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json -f json src`，基準 commit `ce9a6bb`。
 
 ## 一、總覽

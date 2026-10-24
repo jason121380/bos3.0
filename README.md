@@ -1,7 +1,7 @@
 # 💄 BeautyOS (BOS v3.0) — 美業智慧管理系統
 
 > **專案代號**：`beautyos_website`
-> **版本**：v3（版號來源 `src/version.js`，格式 `v3.MMDDHHmm`，台灣時間 UTC+8；正式站以左上角版號為準，文件不把尚未部署的版號寫成已上線）| **最後更新**：2026-10-24（改版進度見 [STATUS](docs/redesign/STATUS.md)）
+> **版本**：v3（版號來源 `src/version.js`，格式 `v3.MMDDHHmm`，台灣時間 UTC+8；正式站以左上角版號為準，文件不把尚未部署的版號寫成已上線）| **現況**：[`docs/CURRENT.md`](docs/CURRENT.md)（2026-10-24）。改版沿革見 [STATUS](docs/redesign/STATUS.md)，那裡的數字不是基線 |
 > **技術責任人**：名留集團技術團隊
 
 BeautyOS 是一套專為**美髮 / 美容 / 美甲 / SPA 產業**設計的全方位管理系統（ERP / CRM），
@@ -66,7 +66,7 @@ npm run build
 | `npm start` | 啟動開發伺服器（Vite，hot reload） |
 | `npm run build` | 生產環境建置（Vite，輸出 `build/`，不含 source map） |
 | `npm run preview` | 以正式 build 啟動本機預覽 |
-| `npm run lint`（別名：`npm run lint:build`） | ESLint 檢查（Node.js CI 已手動停用，合併前請本機執行） |
+| `npm run lint`（別名：`npm run lint:build`） | ESLint 檢查。CI 見 [`docs/CURRENT.md`](docs/CURRENT.md) 的 `frontend-ci.yml`；合併前仍請本機執行 |
 | `npm test` | 執行測試 (watch mode) |
 | `npm run test:nowatch` | 執行測試 (單次；合併前本機執行) |
 | `npm run test:coverage` | 覆蓋率測試（門檻：現況下限＋金額／API 模組逐檔門檻） |
@@ -75,9 +75,9 @@ npm run build
 
 ## 交接說明
 
+- **現況**：只看 [`docs/CURRENT.md`](docs/CURRENT.md)。那裡有前端健康分 Before 92 → After 100、CI（`.github/workflows/frontend-ci.yml`）、`QueryFailed`、收據欄位契約、匯出遮罩、怎麼驗證，以及未修的後端債。健康分程式版號是 `v3.10241717`。本檔與 `docs/redesign/` 裡帶日期的 suite 數是 **歷史／已過時**，不要當基線。
 - **Repo 結構**：`src/views/` 放業務頁面，`src/components/` 與 `src/ui/` 放共用元件，`src/lib/`、`src/helper/`、`src/store/` 放資料與狀態邏輯；主要守則在 `CLAUDE.md`、設計規則在 `STYLE.md`。
 - **本機開發**：使用 Node.js 24、npm；執行 `npm install --legacy-peer-deps` 後以 `npm start` 啟動 Vite。API 連線設定依 `src/lib/api-base.js` 與本機既有環境設定，不要把憑證寫入文件。
-- **現況數字與 CI**：只看 [`docs/CURRENT.md`](docs/CURRENT.md)。下面 STATUS／TODO 與本檔其他段落裡的 suite 數字是歷史紀錄。CI 檔是 `.github/workflows/frontend-ci.yml`。
 - **部署**：合併／push 到 `main` 會由 Railway 自動部署至正式站 https://bos.lure.com.tw。GitHub 合併成功不代表已上線；確認正式站左上角版號為預期版本才算完成。`cloudbuild.yaml`、`cloudbuild_dev.yaml` 是未使用的 legacy 檔案。
 - **改版文件**：`docs/redesign/STATUS.md` 記錄進度；`TODO.md` 集中待辦與待實機項目；根目錄 `STYLE.md` 是現行設計依據，`MEMORY.md` 記決策教訓；`MIGRATION_GUIDE.md` 說明相容元件收尾方式；`INVENTORY.md` 是元件盤點；`DATE_PICKER.md`、`REPORT_COMPACT.md` 各記日期選擇器與報表列印規格／歷史；`PAGE_CHECKLIST.md`、`VERIFY_REPORT.md` 是逐頁檢查與驗證紀錄；`APOLLO_V3_EXPERIMENT.md`、`B2_EXHAUSTIVE_DEPS.md` 為專項報告。
 - **正式站安全**：正式站僅供唯讀查看；測試不可新增、修改、送出或列印真實資料。刪除檔案前須先取得 Jason 同意。
