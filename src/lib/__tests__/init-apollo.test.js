@@ -3,6 +3,7 @@ import { ApolloLink, Observable, execute } from '@apollo/client'
 import { gql } from '@apollo/client'
 import { beginRequest } from '../after-first-load'
 import { buildAuthHeaders, handleApolloError, inflightLink, networkErrorMessage } from '../init-apollo'
+import { ENGINEERING_GATE_PASSWORD, isEngineeringUnlocked, tryUnlockEngineering } from '../../helper/engineeringMode'
 
 jest.mock('elements/snackbars', () => ({ openSnackbar: jest.fn() }))
 jest.mock('../after-first-load', () => ({ beginRequest: jest.fn() }))
@@ -38,8 +39,11 @@ describe('handleApolloError：API 錯誤一定要讓使用者知道', () => {
   })
 
   it('登入逾期（TKN_ERROR）清除登入資料並導回登入頁，不另外跳錯誤訊息', () => {
+    tryUnlockEngineering(ENGINEERING_GATE_PASSWORD)
+    expect(isEngineeringUnlocked()).toBe(true)
     handleApolloError({ graphQLErrors: [{ message: 'token expired', extensions: { code: 'TKN_ERROR' } }] })
     expect(window.localStorage.clear).toHaveBeenCalled()
+    expect(isEngineeringUnlocked()).toBe(false)
     expect(window.location.href).toBe('/auth/login')
     expect(openSnackbar).not.toHaveBeenCalled()
   })
