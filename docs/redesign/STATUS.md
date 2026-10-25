@@ -1,8 +1,8 @@
 # BOS 3.0 改版進度
 
-> **歷史／已過時。** 版號、測試總數、CI、前端健康分（Before 92 → After 100）、`QueryFailed`、收據契約、匯出遮罩、後端債，只看 [`docs/CURRENT.md`](../CURRENT.md)。健康分程式是 `v3.10241717`。CI 是 `.github/workflows/frontend-ci.yml`，不是已刪除的 `node.js.yml`。
+> **歷史／已過時。** 版號、測試總數、CI、前端健康分（Before 92 → After 100）、`QueryFailed`、收據契約、匯出遮罩、後端債，只看 [`docs/CURRENT.md`](../CURRENT.md)。正式站已上線版號是 `v3.10251208`（PR #302，commit `abe02de`）。前端可控制的健康分仍是 100。`v3.10241717` 是 PR #301 健康分程式當時的版號，不是現在的正式站版號。CI 是 `.github/workflows/frontend-ci.yml`，不是已刪除的 `node.js.yml`。
 >
-> 下面每一則的 suite／test 數字是該則當時的結果。不要把「CI 要在網頁重新啟用」或 368／4,283 當成這支 PR 之後的新基線。
+> 下面每一則的 suite／test 數字是該則當時的結果。不要把「CI 要在網頁重新啟用」或 368／4,283 當成現況基線。現況總數在 [`docs/CURRENT.md`](../CURRENT.md)。
 
 - **2026/10/24 前端審查修正（v3.10241522；API 環境、登入 PROFILE、查詢錯誤、localStorage mock）**：未設定 `REACT_APP_API_URL` 時，只有 `bos.lure.com.tw`、`www.bos.lure.com.tw`、`app.beautyos.co` 連正式 API。`127.0.0.1`、預覽網址、Railway 預設網域、認不得的網域與沒有 window 改連測試 API，並顯示提示，不再默默連正式。登入成功但 PROFILE 失敗時，按鈕離開「登入中」、顯示錯誤、可再試。盤點作業與切換店家在查詢失敗時顯示錯誤與重新查詢，不再一直骨架／轉圈。`setupTests` 的 `localStorage.setItem` 改為與瀏覽器相同的字串儲存。`useFetchProfile` 的 mock `solmateKey` 改成 `TEST_SOLMATE_KEY_INVALID`；正式 PROFILE 查詢仍會向後端要這個欄位（前端沒有刪欄位）。治理紀錄（只描述 v3.10241522 當時）：舊的 GitHub Actions workflow 仍是手動停用；`main` 分支保護是關閉的，token 讀寫回 403，沒有打開，也沒有改 Railway。該則沒有重跑全套，沿用 v3.10241447 的 368 suites／4,283 tests。CI 與測試總數的現況見 [`docs/CURRENT.md`](../CURRENT.md)。
 
@@ -37,7 +37,7 @@
 - **2026/10/23 共用 Dialog 圖層 Part A**：共享 Radix 圖層與首批七檔遷移完成修改；保留 Part B 17 個頁面／共用 importer。限定 Jest 89 suites／1,099 tests、網路封鎖／版號 4 tests 與 lint 通過；外部 Chrome 原九種＋真實 PasswordDialog／三層日期共 11/11 連續兩輪通過；keepMounted 兩次開關、焦點還原、全部關閉後指標／捲動鎖解除均已驗證（MEMORY #195、#196）。
 
 
-> 更新：2026/10/24（repo 版號看 `src/version.js`；正式站以左上角版號為準，文件裡的 v3.10230759 是 10/23 當時的上線紀錄）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> 以下摘要寫於 2026/10/24，不是現況更新日（當時 repo 版號看 `src/version.js`；正式站以左上角版號為準。文件裡的 v3.10230759 是 10/23 當時的上線紀錄）。現況看 [`docs/CURRENT.md`](../CURRENT.md)。規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
 
 ## 2026/10/24 以前的進度摘要（歷史，不是現況）
 
