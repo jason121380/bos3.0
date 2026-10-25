@@ -134,6 +134,32 @@ describe('MerchantList：點擊', () => {
     expect(screen.getByTestId('loc')).toHaveTextContent('/order/create')
   })
 
+  it('滑鼠 pointerup 第一次就選店，不必再送 click；店名節點在聚焦後仍在', () => {
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    localStorage.removeItem('userMerchant')
+    renderBar(loaded())
+    const store = btn('高雄店')
+    const label = store.querySelector('.max-sm\\:truncate')
+    fireEvent.pointerDown(store, { pointerType: 'mouse', pointerId: 1, clientX: 8, clientY: 8 })
+    fireEvent.mouseDown(label)
+    act(() => store.focus())
+    expect(label.isConnected).toBe(true)
+    fireEvent.pointerUp(store, { pointerType: 'mouse', pointerId: 1, clientX: 9, clientY: 9 })
+    expect(JSON.parse(localStorage.getItem('userMerchant'))).toEqual({ id: 'm3', name: '高雄店' })
+    expect(screen.getByTestId('loc')).toHaveTextContent('/order/create')
+    spy.mockRestore()
+  })
+
+  it('滑鼠先放開再送 click，群組只展開一次', () => {
+    renderBar(loaded())
+    const group = btn('G2 - 中區')
+    fireEvent.pointerDown(group, { pointerType: 'mouse', pointerId: 1, clientX: 4, clientY: 4 })
+    fireEvent.pointerUp(group, { pointerType: 'mouse', pointerId: 1, clientX: 5, clientY: 4 })
+    fireEvent.click(group)
+    expect(group.parentElement).toHaveAttribute('aria-expanded', 'true')
+    expect(items()).toContain('台中店')
+  })
+
   it('觸控 pointerup 第一次就選店；手指滑動不選，接著的 click 也不選', () => {
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
     localStorage.removeItem('userMerchant')

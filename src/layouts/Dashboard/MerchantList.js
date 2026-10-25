@@ -9,13 +9,26 @@ const groupLabel = data => {
   return `${data.no ? data.no : ''} - ${data.name}(${groupCount || (data.merchants || []).length})`
 }
 
+// 必須是穩定的元件。寫在 MerchantList 裡面的話，每次聚焦重繪都會換成新的函式型別，
+// React 會拆掉店名節點。Chrome 看到按下與放開不是同一個節點，就不送 click，於是要點第二次。
+// 圖示 16px 用 inline style：ui/icons 的預設尺寸晚於 Tailwind；
+// inline 會輸給列印的 html * { font-size: 9px !important }（用 ! 會連列印一起蓋掉）
+function MerchantRowLabel({ isGroup, labelText }) {
+  return (
+    <span className="flex min-w-0 flex-1 items-center gap-[12px] text-[14px] font-normal text-text">
+      {isGroup ? <GroupsRoundedIcon className="shrink-0 text-text-secondary" style={{ fontSize: '16px' }} /> : <StorefrontIcon className="shrink-0 text-text-secondary" style={{ fontSize: '16px' }} />}
+      <span className="min-w-0 whitespace-nowrap max-sm:truncate">{labelText}</span>
+    </span>
+  )
+}
+
 const MerchantList = ({ merchants, searchQuery }) => {
   const history = useHistory()
   const [expanded, setExpanded] = useState([])
   const [focusedKey, setFocusedKey] = useState(null)
   const itemRefs = useRef({})
   const typeAheadRef = useRef({ buffer: '', time: 0 })
-  // 可捲動清單裡的按鈕：iOS 第一次輕點常常只聚焦並套上 hover，click 被取消。觸控改在 pointerup 選取。
+  // 可捲動清單：觸控第一次常常沒有 click；滑鼠則會在聚焦時重繪。兩者都在 pointerup 選取。
   const touchPressRef = useRef(null)
   const suppressClickRef = useRef(null)
   const suppressTimerRef = useRef(null)
@@ -79,17 +92,6 @@ const MerchantList = ({ merchants, searchQuery }) => {
     } else {
       handleItemClick(node.data)
     }
-  }
-
-  // 圖示 16px 用 inline style：ui/icons 的預設 font-size 由執行期插入的樣式給定（晚於 Tailwind）；
-  // inline 同樣會輸給列印的 html * { font-size: 9px !important }（用 ! 會連列印一起蓋掉）
-  const RenderLabel = ({ isGroup, labelText }) => {
-    return (
-      <span className="flex min-w-0 flex-1 items-center gap-[12px] text-[14px] font-normal text-text">
-        {isGroup ? <GroupsRoundedIcon className="shrink-0 text-text-secondary" style={{ fontSize: '16px' }} /> : <StorefrontIcon className="shrink-0 text-text-secondary" style={{ fontSize: '16px' }} />}
-        <span className="min-w-0 whitespace-nowrap max-sm:truncate">{labelText}</span>
-      </span>
-    )
   }
 
   // 節點 id 規則與原 MUI TreeView 完全相同（group-${name}-${index}／全部／店家 id），搜尋自動展開的 id 集合才能原樣套用
@@ -219,13 +221,12 @@ const MerchantList = ({ merchants, searchQuery }) => {
           title={node.labelText}
           className={`flex min-w-0 items-center w-full overflow-hidden py-[8px] [border:none] rounded-[8px] bg-transparent cursor-pointer text-left [font:inherit] [transition:.2s] hover:bg-surface-hover focus-visible:[outline:2px_solid_rgb(var(--accent))] focus-visible:[outline-offset:-2px] ${(node.isGroup || depth > 0) ? 'pl-[24px] pr-[16px]' : 'px-[16px]'}`}
           onPointerDown={event => {
-            if (event.pointerType === 'mouse') return
             touchPressRef.current = { key: node.key, x: event.clientX, y: event.clientY }
           }}
           onPointerUp={event => {
             const press = touchPressRef.current
             touchPressRef.current = null
-            if (event.pointerType === 'mouse' || !press || press.key !== node.key) return
+            if (!press || press.key !== node.key) return
             const moved = Math.abs(event.clientX - press.x) > 10 || Math.abs(event.clientY - press.y) > 10
             armSuppressClick(node.key)
             if (!moved) activateNode(node)
@@ -247,14 +248,7 @@ const MerchantList = ({ merchants, searchQuery }) => {
               ? <ExpandMoreIcon className="shrink-0 text-text-tertiary" sx={{ color: 'rgb(var(--text-tertiary))' }} />
               : <ChevronRightIcon className="shrink-0 text-text-tertiary" sx={{ color: 'rgb(var(--text-tertiary))' }} />)
             : null}
-          {node.isAll ? (
-            <span className="flex min-w-0 flex-1 items-center gap-[12px] text-[14px] font-normal text-text">
-              <GroupsRoundedIcon className="shrink-0 text-text-secondary" style={{ fontSize: '16px' }} />
-              <span className="min-w-0 whitespace-nowrap max-sm:truncate">{node.labelText}</span>
-            </span>
-          ) : (
-            <RenderLabel isGroup={node.isGroup} labelText={node.labelText} />
-          )}
+          <MerchantRowLabel isGroup={node.isGroup} labelText={node.labelText} />
         </button>
         {node.isGroup && hasChildren && isExpanded ? (
           <ul role="group" className="!ml-[12px] [border-left:1px_solid_rgb(var(--border))]">
