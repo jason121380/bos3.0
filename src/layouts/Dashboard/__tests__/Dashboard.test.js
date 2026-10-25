@@ -1,9 +1,10 @@
-// 保護後台版面的權限與防呆：側欄選單依「角色權限」隱藏整個分類或單一頁面、只有高階主管看得到角色權限管理、
+// 保護後台版面的權限與防呆：側欄選單依「角色權限」隱藏整個分類或單一頁面、只有高階主管看得到角色權限管理與工程模式、
 // 依店家參數顯示會員卡／紅利／掛單、搜尋選單、單頁出錯只影響內容區、沒有頁面權限時導回個人頁、登出清除登入資料。
 // GraphQL 全由 MockedProvider（testkit 的模擬 link）回應；WebSocket 以假物件取代，不連後端。
 import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { renderPage, loginAs, callsOf, currentLocation, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
+import { ENGINEERING_UNLOCK_KEY } from 'helper/engineeringMode'
 import Dashboard from '..'
 
 jest.setTimeout(20000)
@@ -128,12 +129,14 @@ describe('側欄選單：角色權限', () => {
     openGroup('資料設定')
     expect(link('系統參數設定')).toBeInTheDocument()
     expect(link('角色權限管理')).toBeNull()
+    expect(link('工程模式')).toBeNull()
     cleanup()
 
     setup({ authorityName: '高階主管' })
     await screen.findByText('店長小林')
     openGroup('資料設定')
     expect(link('角色權限管理')).toBeInTheDocument()
+    expect(link('工程模式')).toBeInTheDocument()
   })
 
   it('底部顯示登入者名稱與角色', async () => {
@@ -203,6 +206,15 @@ describe('內容區與頁面權限', () => {
     expect(callsOf(calls, 'CHECK_PAGE_AUTHORITY')[0].variables.input).toEqual(
       expect.objectContaining({ id: 'user-1', url: '/management/orders' })
     )
+  })
+
+  it('工程模式不送頁面權限查詢，未知網址也不導回個人頁', async () => {
+    const { calls, settle } = setup({ pageAllowed: false }, { route: '/engineering' })
+    await screen.findByText('店長小林')
+    await settle()
+    expect(currentLocation()).toBe('/engineering')
+    expect(screen.getByText('內容頁')).toBeInTheDocument()
+    expect(callsOf(calls, 'CHECK_PAGE_AUTHORITY')).toHaveLength(0)
   })
 
   it('有權限時留在原頁', async () => {
@@ -282,12 +294,14 @@ describe('同名角色', () => {
 
 describe('登出', () => {
   it('清除 localStorage 的登入資料並導到登入頁', async () => {
+    sessionStorage.setItem(ENGINEERING_UNLOCK_KEY, '1')
     setup()
     await screen.findByText('店長小林')
     const footer = screen.getByLabelText('登出').parentElement
     fireEvent.click(within(footer).getByLabelText('登出'))
     expect(localStorage.getItem('user')).toBeNull()
     expect(localStorage.getItem('userMerchant')).toBeNull()
+    expect(sessionStorage.getItem(ENGINEERING_UNLOCK_KEY)).toBeNull()
     await wait(() => expect(currentLocation()).toBe('/auth/login'))
   })
 })

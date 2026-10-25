@@ -78,7 +78,8 @@ function NavItem({
       key={title}
       to={href}
       icon={Icon}
-      indent={!Icon}
+      // 子層可以帶圖示（工程模式），仍維持與其他子頁相同的縮排
+      indent={!Icon || depth > 0}
       active={active}
       // 本頁為 page；子頁（如顧客詳細）只標示所在區段
       aria-current={exact ? 'page' : active ? 'true' : undefined}

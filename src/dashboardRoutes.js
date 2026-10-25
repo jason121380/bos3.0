@@ -445,6 +445,11 @@ export default [
     component: lazy(() => import('views/Authority')),
   },
   {
+    path: '/engineering',
+    exact: true,
+    component: lazy(() => import('views/EngineeringMode')),
+  },
+  {
     path: '/role/create',
     exact: true,
     component: lazy(() => import('views/AuthorityCreate')),
