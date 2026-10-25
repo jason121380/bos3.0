@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ChevronDown } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -12,14 +12,31 @@ export const SIDEBAR_RAIL_MAIN_CLASS = '[--sidebar-w:80px] lg:pl-[80px]'
 export const SIDEBAR_EXPANDED_MAIN_CLASS = '[--sidebar-w:264px] lg:pl-[264px]'
 // 桌機圖示欄才藏的操作（搜尋、通知、深淺色、切換店家、登出）。必須帶 lg：窄屏抽屜不是圖示欄，這些操作仍要在。
 export const SIDEBAR_RAIL_HIDDEN_CLASS = 'lg:group-data-[rail=true]/sidebar:hidden'
-const SIDEBAR_FLYOUT_MARGIN = 8
-// 浮層單欄最多 8 項；超過就往右加欄，不再把整份清單拉成一長條。
-export const SIDEBAR_FLYOUT_COLUMN_SIZE = 8
+// 浮層左緣貼側欄右緣，只留這一小段（不要再加一層大空白）。
+export const SIDEBAR_FLYOUT_GAP = 4
+// 浮層上下都貼近視窗，留這一圈，整塊留在視窗內。
+export const SIDEBAR_FLYOUT_VIEWPORT_MARGIN = 8
+// 一欄最多這個數量；超過才換下一欄（11 項＝10＋1）。
+export const SIDEBAR_FLYOUT_ITEMS_PER_COLUMN = 10
 
-export function sidebarFlyoutColumnCount(itemCount) {
-  const count = itemCount > 0 ? itemCount : 0
-  if (count <= SIDEBAR_FLYOUT_COLUMN_SIZE) return 1
-  return Math.ceil(count / SIDEBAR_FLYOUT_COLUMN_SIZE)
+export function splitSidebarFlyoutColumns(items, perColumn = SIDEBAR_FLYOUT_ITEMS_PER_COLUMN) {
+  const list = Array.from(items || [])
+  if (list.length <= perColumn) return [list]
+  const columns = []
+  for (let index = 0; index < list.length; index += perColumn) {
+    columns.push(list.slice(index, index + perColumn))
+  }
+  return columns
+}
+
+export function sidebarFlyoutColumnCount(itemCount, perColumn = SIDEBAR_FLYOUT_ITEMS_PER_COLUMN) {
+  return splitSidebarFlyoutColumns(Array.from({ length: Math.max(0, itemCount) }), perColumn).length
+}
+
+export function sidebarFlyoutShellWidth(columnCount, paddingLeft = SIDEBAR_FLYOUT_GAP) {
+  const pad = Number.isFinite(paddingLeft) ? paddingLeft : 0
+  if (columnCount <= 1) return `calc(15rem + ${pad}px)`
+  return `calc(${columnCount} * 15rem + 1rem + ${pad}px)`
 }
 
 // 主側欄收合（桌機圖示欄）。窄屏抽屜不讀這個值來藏文字，文字是否隱藏由 lg: 樣式決定。
@@ -127,27 +144,35 @@ const SidebarLink = ({ to, active, icon: Icon, indent, className, children, ...p
   </Link>
 )
 
-// 主側欄細項浮層的位置。優先貼齊項目上緣；放不下就整塊上移，讓全部項目留在視窗內。
-// 內容比視窗還高時，高度限制在上下內距之間，由浮層自己捲動。contentHeight <= 0 代表還沒量到，先用視窗可用高度。
-export function placeSidebarFlyout({ anchorTop, anchorRight, viewportHeight, viewportWidth, contentHeight, margin = SIDEBAR_FLYOUT_MARGIN }) {
-  const available = Math.max(0, viewportHeight - margin * 2)
-  const known = contentHeight > 0
-  const height = known ? Math.min(contentHeight, available) : available
-  let top = anchorTop
-  if (top + height > viewportHeight - margin) {
-    top = viewportHeight - margin - height
+// 卡片左緣在側欄右緣再留 gap。外殼則向左接到按鈕右緣，滑鼠才不會在側欄內距上斷掉。
+// 按鈕若比側欄更右，仍以側欄右緣為準，不跟著那一列往右推。
+// 垂直不跟被 hover 的那一列走：頂端固定貼近視窗上緣，高度貼近視窗上下。
+export function placeSidebarFlyout({
+  sidebarRight = 0,
+  anchorRight,
+  viewportWidth = 0,
+  viewportHeight = 0,
+  gap = SIDEBAR_FLYOUT_GAP,
+  margin = SIDEBAR_FLYOUT_VIEWPORT_MARGIN,
+} = {}) {
+  const edge = Number.isFinite(sidebarRight) ? sidebarRight : 0
+  const width = Number.isFinite(viewportWidth) ? viewportWidth : 0
+  const height = Number.isFinite(viewportHeight) ? viewportHeight : 0
+  const maxRight = width - margin
+  const minPanel = 160
+  let cardLeft = edge + gap
+  if (maxRight - cardLeft < minPanel) cardLeft = Math.max(margin, maxRight - minPanel)
+  const anchor = Number.isFinite(anchorRight) ? anchorRight : edge
+  let left = Math.min(anchor, edge, cardLeft)
+  if (left < margin) left = margin
+  if (left > cardLeft) left = cardLeft
+  return {
+    top: margin,
+    left,
+    height: Math.max(0, height - margin * 2),
+    maxWidth: Math.max(0, maxRight - left),
+    paddingLeft: cardLeft - left,
   }
-  if (top < margin) top = margin
-  const room = Math.max(0, viewportHeight - margin - top)
-  const box = {
-    top,
-    left: anchorRight,
-    maxHeight: Math.min(height, room),
-  }
-  if (typeof viewportWidth === 'number') {
-    box.maxWidth = Math.max(0, viewportWidth - anchorRight - margin)
-  }
-  return box
 }
 
 // renderItems 會包一層 div。多欄要算裡面的連結，不能把那層 div 當成一項。
@@ -159,40 +184,49 @@ function flyoutEntries(children) {
   return nodes
 }
 
-// border-box 下要把框線算進高度，maxHeight 才不會比內容少一圈而多出捲軸。
-function readFlyoutContentHeight(panel) {
-  if (!panel) return 0
-  const style = window.getComputedStyle(panel)
-  const border = (parseFloat(style.borderTopWidth) || 0) + (parseFloat(style.borderBottomWidth) || 0)
-  return panel.scrollHeight + border
+function readSidebarEdge(el) {
+  const aside = el && typeof el.closest === 'function' ? el.closest('aside') : null
+  return (aside || el).getBoundingClientRect().right
+}
+
+function renderFlyoutItems(children) {
+  const items = flyoutEntries(children)
+  const columns = splitSidebarFlyoutColumns(items)
+  if (columns.length <= 1) return children
+  return (
+    <div className="flex items-start">
+      {columns.map((column, index) => (
+        <div key={index} data-flyout-column="true" className="flex w-60 shrink-0 flex-col gap-0.5">
+          {column}
+        </div>
+      ))}
+    </div>
+  )
 }
 
 // 桌機 hover／圖示欄點選時，把子項畫到側欄外面（側欄自己的 overflow 會裁掉絕對定位）。
+// 左緣貼側欄（aside）右緣，不跟被 hover 那一列的 right／top 走；視窗滿高，內容由上往下，超出在浮層內捲動。
 // 圓角用既有 rounded-2xl（卡片 16px）、項目沿用 SidebarLink 的 rounded-md 與 text-body。
-// 外層與內層都用像素 maxHeight（百分比在父層高度未定時會失效）。內層 overflow-y-auto，超出才捲。
 function SidebarFlyout({ anchorRef, label, onMouseEnter, onMouseLeave, onKeyDown, children }) {
-  const panelRef = useRef(null)
   const [box, setBox] = useState(null)
+  const columnCount = sidebarFlyoutColumnCount(flyoutEntries(children).length)
   useLayoutEffect(() => {
-    const update = event => {
+    const update = () => {
       const el = anchorRef.current
-      const panel = panelRef.current
-      if (!el || !panel) return
-      if (event && event.target instanceof Node && (event.target === panel || panel.contains(event.target))) return
-      const rect = el.getBoundingClientRect()
+      if (!el) return
       const next = placeSidebarFlyout({
-        anchorTop: rect.top,
-        anchorRight: rect.right,
-        viewportHeight: window.innerHeight,
+        sidebarRight: readSidebarEdge(el),
+        anchorRight: el.getBoundingClientRect().right,
         viewportWidth: window.innerWidth,
-        contentHeight: readFlyoutContentHeight(panel),
+        viewportHeight: window.innerHeight,
       })
       setBox(prev => (
         prev
         && prev.top === next.top
         && prev.left === next.left
-        && prev.maxHeight === next.maxHeight
+        && prev.height === next.height
         && prev.maxWidth === next.maxWidth
+        && prev.paddingLeft === next.paddingLeft
           ? prev
           : next
       ))
@@ -200,29 +234,19 @@ function SidebarFlyout({ anchorRef, label, onMouseEnter, onMouseLeave, onKeyDown
     update()
     window.addEventListener('resize', update)
     window.addEventListener('scroll', update, true)
+    const aside = anchorRef.current && anchorRef.current.closest('aside')
+    let observer
+    if (aside && typeof ResizeObserver === 'function') {
+      observer = new ResizeObserver(update)
+      observer.observe(aside)
+    }
     return () => {
       window.removeEventListener('resize', update)
       window.removeEventListener('scroll', update, true)
+      if (observer) observer.disconnect()
     }
   }, [anchorRef])
-  const anchorRect = anchorRef.current ? anchorRef.current.getBoundingClientRect() : null
-  const placed = box || (anchorRect
-    ? placeSidebarFlyout({
-      anchorTop: anchorRect.top,
-      anchorRight: anchorRect.right,
-      viewportHeight: window.innerHeight,
-      viewportWidth: window.innerWidth,
-      contentHeight: 0,
-    })
-    : {
-      top: SIDEBAR_FLYOUT_MARGIN,
-      left: 0,
-      maxHeight: Math.max(0, window.innerHeight - SIDEBAR_FLYOUT_MARGIN * 2),
-      maxWidth: Math.max(0, window.innerWidth - SIDEBAR_FLYOUT_MARGIN * 2),
-    })
-  const entries = flyoutEntries(children)
-  const multi = sidebarFlyoutColumnCount(entries.length) > 1
-  const panelMaxWidth = placed.maxWidth == null ? undefined : Math.max(0, placed.maxWidth - SIDEBAR_FLYOUT_MARGIN)
+  if (!box) return null
   return createPortal(
     <div
       role="region"
@@ -230,22 +254,18 @@ function SidebarFlyout({ anchorRef, label, onMouseEnter, onMouseLeave, onKeyDown
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onKeyDown={onKeyDown}
-      style={{ top: placed.top, left: placed.left, maxHeight: placed.maxHeight, maxWidth: placed.maxWidth }}
-      className="ui-root noprint fixed z-[1200] flex overflow-hidden pl-2"
+      style={{
+        top: box.top,
+        left: box.left,
+        height: box.height,
+        maxWidth: box.maxWidth,
+        paddingLeft: box.paddingLeft,
+        width: sidebarFlyoutShellWidth(columnCount, box.paddingLeft),
+      }}
+      className="ui-root noprint fixed z-[1200] flex"
     >
-      <div
-        ref={panelRef}
-        style={{
-          maxHeight: placed.maxHeight,
-          maxWidth: panelMaxWidth,
-          gridTemplateRows: multi ? `repeat(${SIDEBAR_FLYOUT_COLUMN_SIZE}, auto)` : undefined,
-        }}
-        className={cn(
-          'overflow-auto rounded-2xl border border-solid border-border bg-surface p-2 shadow-float [&_a]:!pl-2.5',
-          multi ? 'grid w-max grid-flow-col auto-cols-[15rem] gap-x-1 gap-y-0.5' : 'flex w-60 flex-col gap-0.5'
-        )}
-      >
-        {entries}
+      <div className="h-full min-h-0 min-w-0 flex-1 overflow-auto rounded-2xl border border-solid border-border bg-surface p-2 shadow-float [&_a]:!pl-2.5">
+        {renderFlyoutItems(children)}
       </div>
     </div>,
     document.body

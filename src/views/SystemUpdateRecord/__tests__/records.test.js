@@ -11,24 +11,25 @@ const displayDate = record => format(record.updateTime, 'yyyy/MM/dd')
 
 describe('靜態清單', () => {
   it('新紀錄在最前面，接著是匯出的 18 筆，日期不改寫到 2026', () => {
-    expect(systemUpdateRecordSource).toHaveLength(22)
-    expect(systemUpdateRecords).toHaveLength(22)
+    expect(systemUpdateRecordSource).toHaveLength(23)
+    expect(systemUpdateRecords).toHaveLength(23)
 
-    const head = systemUpdateRecordSource.slice(0, 5).map(record => [
+    const head = systemUpdateRecordSource.slice(0, 6).map(record => [
       record.title,
       record.versionNo,
       record.updateTime,
     ])
     expect(systemUpdateRecordSource[0].versionNo).toBe(APP_VERSION)
     expect(head).toEqual([
-      ['2026/10/26 側欄', APP_VERSION, '2026-10-26'],
+      ['2026/10/26 側欄細項', APP_VERSION, '2026-10-26'],
+      ['2026/10/26 側欄', 'v3.10260058', '2026-10-26'],
       ['2026/10/25 更新', 'v3.10251924', '2026-10-25'],
       ['2026/10/25 元件 UI', 'v3.10251859', '2026-10-25'],
       ['2026/10/25 工程模式', 'v3.10251836', '2026-10-25'],
       ['更新統整', '23.053~23.061', '2023-06-07'],
     ])
 
-    expect(systemUpdateRecordSource.slice(4)).toEqual(historicalRecords)
+    expect(systemUpdateRecordSource.slice(5)).toEqual(historicalRecords)
     expect(historicalRecords.map(record => record.updateTime)).toEqual([
       '2023-06-07',
       '2023-04-21',
@@ -52,7 +53,8 @@ describe('靜態清單', () => {
     expect(historicalRecords.find(record => record.versionNo === '22.399').title).toBe('10/04 - 10/21 更新')
     expect(historicalRecords.find(record => record.versionNo === '22.386').content).toContain('```mermaid')
 
-    expect(systemUpdateRecords.slice(0, 5).map(record => [record.title, displayDate(record)])).toEqual([
+    expect(systemUpdateRecords.slice(0, 6).map(record => [record.title, displayDate(record)])).toEqual([
+      ['2026/10/26 側欄細項', '2026/10/26'],
       ['2026/10/26 側欄', '2026/10/26'],
       ['2026/10/25 更新', '2026/10/25'],
       ['2026/10/25 元件 UI', '2026/10/25'],
@@ -76,8 +78,9 @@ describe('清單頁', () => {
 
     expect(screen.getByRole('heading', { name: '版本更新紀錄' })).toBeInTheDocument()
     const titles = Array.from(container.querySelectorAll('h2')).map(node => node.textContent)
-    expect(titles).toHaveLength(22)
-    expect(titles.slice(0, 5)).toEqual([
+    expect(titles).toHaveLength(23)
+    expect(titles.slice(0, 6)).toEqual([
+      '2026/10/26 側欄細項',
       '2026/10/26 側欄',
       '2026/10/25 更新',
       '2026/10/25 元件 UI',
@@ -89,16 +92,20 @@ describe('清單頁', () => {
     expect(screen.getAllByText('更新日期:2023/06/07').length).toBeGreaterThan(0)
     expect(screen.getAllByText('更新日期:2022/10/21').length).toBeGreaterThan(0)
     expect(screen.getByText(`版本:${APP_VERSION}`)).toBeInTheDocument()
+    expect(screen.getByText('版本:v3.10260058')).toBeInTheDocument()
     expect(screen.getByText('版本:v3.10251924')).toBeInTheDocument()
     expect(screen.getByText('版本:22.399')).toBeInTheDocument()
 
+    expect(screen.getByText(/主側欄 hover 細項改貼近側欄右緣/)).toBeInTheDocument()
+    expect(screen.getByText(/細項超過 10 項才換下一欄/)).toBeInTheDocument()
+    expect(screen.getByText(/浮層改為貼近視窗上下的滿高/)).toBeInTheDocument()
     expect(screen.getByText(/主側欄收合為圖示欄時，隱藏搜尋/)).toBeInTheDocument()
     expect(screen.getByText(/細項浮層整塊留在視窗內/)).toBeInTheDocument()
     expect(screen.getByText(/不再用上下開合展開子選單/)).toBeInTheDocument()
     expect(screen.getByText(/浮層超過 8 項時改為往右多欄/)).toBeInTheDocument()
     expect(screen.getByText(/日期改由前端以 yyyy\/MM\/dd 顯示（#308）/)).toBeInTheDocument()
     const octoberTitle = titles.indexOf('10/04 - 10/21 更新')
-    expect(octoberTitle).toBeGreaterThan(4)
+    expect(octoberTitle).toBeGreaterThan(5)
     fireEvent.click(container.querySelectorAll('h2')[octoberTitle])
     expect(screen.getAllByText('更新日期:2022/10/21').length).toBeGreaterThan(0)
     expect(screen.getByText(/設計師業績分析表 要有虛實切換/)).toBeInTheDocument()
