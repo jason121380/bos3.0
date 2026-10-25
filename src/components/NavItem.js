@@ -3,6 +3,7 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import useMediaQuery from 'hooks/useMediaQuery'
 import {
+  SIDEBAR_FLYOUT_MEDIA,
   SidebarFlyout,
   SidebarGroupButton,
   SidebarLink,
@@ -36,6 +37,7 @@ function NavItem({
   icon: Icon,
   className,
   open: openProp,
+  forceOpen,
   label: Label,
   reportListExtended,
   ...rest
@@ -54,9 +56,13 @@ function NavItem({
   if (!tokenRef.current) tokenRef.current = () => closeFlyoutRef.current()
   const collapsed = useContext(SidebarRailContext)
   const isLg = useMediaQuery('(min-width: 1024px)')
+  const hoverFlyout = useMediaQuery(SIDEBAR_FLYOUT_MEDIA)
   const iconRail = collapsed && isLg
   const hideChevron = title === '報表及分析' && !reportListExtended
   const hasSubmenu = Boolean(renderItems || children)
+  // 有 hover 的桌機改看浮層，不再點了讓子項在側欄裡上下開合。左右收合圖示欄不受影響。
+  // 搜尋的 forceOpen 仍嵌進側欄，否則篩選結果要逐項 hover 才看得到。
+  const useHoverMenu = hoverFlyout && hasSubmenu && !hideChevron
 
   const clearCloseTimer = () => {
     if (closeTimer.current != null) {
@@ -113,7 +119,9 @@ function NavItem({
   }, [active])
 
   // 內嵌子項已經展開時不再浮出第二份；圖示欄的內嵌子項被收起，仍要浮出。
-  const showFlyout = hasSubmenu && !hideChevron && (hovering || pinned) && (iconRail || !open)
+  // 桌機 hover 沒有上下開合，子項只在浮層。
+  const showInline = Boolean(open && !hideChevron && (!useHoverMenu || forceOpen))
+  const showFlyout = hasSubmenu && !hideChevron && (hovering || pinned) && (iconRail || !showInline)
 
   const openHover = () => {
     if (!hasSubmenu || hideChevron || !canHoverSidebarFlyout()) return
@@ -142,9 +150,10 @@ function NavItem({
         <SidebarGroupButton
           icon={Icon}
           open={open}
-          hideChevron={hideChevron}
+          hideChevron={hideChevron || (useHoverMenu && !showInline)}
+          {...(useHoverMenu && !showInline ? { 'aria-expanded': showFlyout, 'aria-haspopup': 'true' } : {})}
           onClick={() => {
-            handleToggle()
+            if (!useHoverMenu) handleToggle()
             goReportList()
             if (iconRail && !hideChevron) {
               const next = !pinnedRef.current
@@ -157,7 +166,7 @@ function NavItem({
         >
           {title}
         </SidebarGroupButton>
-        {open && !hideChevron && (
+        {showInline && (
           <div className="flex flex-col gap-0.5 pt-0.5 lg:group-data-[rail=true]/sidebar:hidden">{renderSubmenu()}</div>
         )}
         {showFlyout && (
@@ -211,11 +220,13 @@ NavItem.propTypes = {
   icon: PropTypes.any,
   label: PropTypes.any,
   open: PropTypes.bool,
+  forceOpen: PropTypes.bool,
   title: PropTypes.string.isRequired,
 }
 
 NavItem.defaultProps = {
   open: false,
+  forceOpen: false,
   className: {}
 }
 

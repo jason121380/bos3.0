@@ -1,32 +1,34 @@
-// 版本更新紀錄改為前端靜態清單：新的三筆在最上面，歷史 18 筆的標題、版本、日期、內文與匯出檔相同。
+// 版本更新紀錄改為前端靜態清單：新的紀錄在最上面，歷史 18 筆的標題、版本、日期、內文與匯出檔相同。
 import { format } from 'date-fns'
 import { cleanup, fireEvent, screen } from '@testing-library/react'
 import { renderPage, loginAs, callsOf } from '../../../__tests__/testkit.test'
 import SystemUpdateRecord from '..'
 import { historicalRecords } from '../historicalRecords'
 import { systemUpdateRecordSource, systemUpdateRecords } from '../records'
+import { APP_VERSION } from '../../../version'
 
 const displayDate = record => format(record.updateTime, 'yyyy/MM/dd')
 
 describe('靜態清單', () => {
-  it('本週三筆在最前面，接著是匯出的 18 筆，日期不改寫到 2026', () => {
-    expect(systemUpdateRecordSource).toHaveLength(21)
-    expect(systemUpdateRecords).toHaveLength(21)
+  it('新紀錄在最前面，接著是匯出的 18 筆，日期不改寫到 2026', () => {
+    expect(systemUpdateRecordSource).toHaveLength(22)
+    expect(systemUpdateRecords).toHaveLength(22)
 
     const head = systemUpdateRecordSource.slice(0, 5).map(record => [
       record.title,
       record.versionNo,
       record.updateTime,
     ])
+    expect(systemUpdateRecordSource[0].versionNo).toBe(APP_VERSION)
     expect(head).toEqual([
+      ['2026/10/26 側欄', APP_VERSION, '2026-10-26'],
       ['2026/10/25 更新', 'v3.10251924', '2026-10-25'],
       ['2026/10/25 元件 UI', 'v3.10251859', '2026-10-25'],
       ['2026/10/25 工程模式', 'v3.10251836', '2026-10-25'],
       ['更新統整', '23.053~23.061', '2023-06-07'],
-      ['更新統整', '23.035~23.052', '2023-04-21'],
     ])
 
-    expect(systemUpdateRecordSource.slice(3)).toEqual(historicalRecords)
+    expect(systemUpdateRecordSource.slice(4)).toEqual(historicalRecords)
     expect(historicalRecords.map(record => record.updateTime)).toEqual([
       '2023-06-07',
       '2023-04-21',
@@ -51,11 +53,11 @@ describe('靜態清單', () => {
     expect(historicalRecords.find(record => record.versionNo === '22.386').content).toContain('```mermaid')
 
     expect(systemUpdateRecords.slice(0, 5).map(record => [record.title, displayDate(record)])).toEqual([
+      ['2026/10/26 側欄', '2026/10/26'],
       ['2026/10/25 更新', '2026/10/25'],
       ['2026/10/25 元件 UI', '2026/10/25'],
       ['2026/10/25 工程模式', '2026/10/25'],
       ['更新統整', '2023/06/07'],
-      ['更新統整', '2023/04/21'],
     ])
     expect(displayDate(systemUpdateRecords.find(record => record.versionNo === '22.399'))).toBe('2022/10/21')
     expect(displayDate(systemUpdateRecords[systemUpdateRecords.length - 1])).toBe('2022/07/27')
@@ -74,23 +76,29 @@ describe('清單頁', () => {
 
     expect(screen.getByRole('heading', { name: '版本更新紀錄' })).toBeInTheDocument()
     const titles = Array.from(container.querySelectorAll('h2')).map(node => node.textContent)
-    expect(titles).toHaveLength(21)
+    expect(titles).toHaveLength(22)
     expect(titles.slice(0, 5)).toEqual([
+      '2026/10/26 側欄',
       '2026/10/25 更新',
       '2026/10/25 元件 UI',
       '2026/10/25 工程模式',
       '更新統整',
-      '更新統整',
     ])
+    expect(screen.getAllByText('更新日期:2026/10/26').length).toBeGreaterThan(0)
     expect(screen.getAllByText('更新日期:2026/10/25').length).toBeGreaterThan(0)
     expect(screen.getAllByText('更新日期:2023/06/07').length).toBeGreaterThan(0)
     expect(screen.getAllByText('更新日期:2022/10/21').length).toBeGreaterThan(0)
+    expect(screen.getByText(`版本:${APP_VERSION}`)).toBeInTheDocument()
     expect(screen.getByText('版本:v3.10251924')).toBeInTheDocument()
     expect(screen.getByText('版本:22.399')).toBeInTheDocument()
 
+    expect(screen.getByText(/主側欄收合為圖示欄時，隱藏搜尋/)).toBeInTheDocument()
+    expect(screen.getByText(/細項浮層整塊留在視窗內/)).toBeInTheDocument()
+    expect(screen.getByText(/不再用上下開合展開子選單/)).toBeInTheDocument()
+    expect(screen.getByText(/浮層超過 8 項時改為往右多欄/)).toBeInTheDocument()
     expect(screen.getByText(/日期改由前端以 yyyy\/MM\/dd 顯示（#308）/)).toBeInTheDocument()
     const octoberTitle = titles.indexOf('10/04 - 10/21 更新')
-    expect(octoberTitle).toBeGreaterThan(3)
+    expect(octoberTitle).toBeGreaterThan(4)
     fireEvent.click(container.querySelectorAll('h2')[octoberTitle])
     expect(screen.getAllByText('更新日期:2022/10/21').length).toBeGreaterThan(0)
     expect(screen.getByText(/設計師業績分析表 要有虛實切換/)).toBeInTheDocument()

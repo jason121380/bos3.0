@@ -22,7 +22,7 @@ import { ENGINEERING_MENU_TITLE, ENGINEERING_PATH, clearEngineeringUnlock, isExe
 import { APP_VERSION } from '../../version'
 import { Button } from 'ui/button'
 import { Input } from 'ui/input'
-import { SidebarContent, SidebarFooter, SidebarLabel } from 'ui/sidebar'
+import { SidebarContent, SidebarFooter, SidebarLabel, SIDEBAR_RAIL_HIDDEN_CLASS } from 'ui/sidebar'
 import { cn, focusRing } from 'ui/utils'
 import { syncThemeFromServer } from 'lib/theme-mode'
 
@@ -49,6 +49,7 @@ function reduceChildRoutes({ acc, pathname, item, reportListExtended, depth = 0 
         key={item.title}
         label={item.label}
         open={Boolean(open) || item.forceOpen || containsCurrent}
+        forceOpen={Boolean(item.forceOpen)}
         title={item.title}
         reportListExtended={reportListExtended}
         renderItems={() => renderNavItems({
@@ -502,7 +503,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
           aria-label="搜尋選單"
           aria-expanded={searchOpen}
           aria-controls="sidebar-menu-search"
-          className={cn(searchOpen && 'bg-surface-hover')}
+          className={cn(SIDEBAR_RAIL_HIDDEN_CLASS, searchOpen && 'bg-surface-hover')}
           onClick={() => (searchOpen ? closeSearch() : openSearch())}
         >
           <Search strokeWidth={1.75} />
@@ -554,6 +555,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
                   title="釘選頁面"
                   icon={Pin}
                   open={searchTerm.trim() !== ''}
+                  forceOpen={searchTerm.trim() !== ''}
                   renderItems={() => (
                     <div className="flex flex-col gap-0.5">
                       {filteredPinnedTable.map(d => (
@@ -597,7 +599,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
           </RouterLink>
           {/* 切換店家圖示鈕由 TopBar 以 Portal 畫進這個插槽（開關狀態與店家清單仍在 TopBar），位置在登出左側（Jason 2026/10/20） */}
           <span id="sidebar-merchant-switch-slot" className="contents" />
-          <Button variant="ghost" size="icon" className="shrink-0" aria-label="登出" title="登出" onClick={handleLogOut}>
+          <Button variant="ghost" size="icon" className={cn('shrink-0', SIDEBAR_RAIL_HIDDEN_CLASS)} aria-label="登出" title="登出" onClick={handleLogOut}>
             <LogOut strokeWidth={1.75} />
           </Button>
         </SidebarFooter>

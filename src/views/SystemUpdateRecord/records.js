@@ -10,6 +10,17 @@ export function calendarUpdateTime(isoDate) {
 
 const shippedRecords = [
   {
+    title: '2026/10/26 側欄',
+    versionNo: 'v3.10260058',
+    updateTime: '2026-10-26',
+    content: [
+      '- 主側欄收合為圖示欄時，隱藏搜尋、通知、深淺色切換、切換店家與登出；展開後這些操作仍可使用',
+      '- 主側欄桌機 hover 細項浮層整塊留在視窗內；靠近底部時往上移，比視窗高才在浮層內捲動',
+      '- 有 hover 的桌機不再用上下開合展開子選單，改以 hover 浮層顯示；左右收合側欄維持不變',
+      '- 浮層超過 8 項時改為往右多欄，8 項以內維持單欄',
+    ].join('\n'),
+  },
+  {
     title: '2026/10/25 更新',
     versionNo: 'v3.10251924',
     updateTime: '2026-10-25',
@@ -37,7 +48,7 @@ const shippedRecords = [
   },
 ]
 
-// 標題、版本、日期字串、內文。歷史 18 筆與匯出檔相同，前面加上本週已出貨的三筆。
+// 標題、版本、日期字串、內文。歷史 18 筆與匯出檔相同，前面加上已出貨的紀錄。
 export const systemUpdateRecordSource = [...shippedRecords, ...historicalRecords]
 
 export const systemUpdateRecords = systemUpdateRecordSource.map(record => ({
