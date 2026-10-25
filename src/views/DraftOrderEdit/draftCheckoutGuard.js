@@ -149,3 +149,32 @@ export async function confirmDraftStillPending(client, orderId, date) {
     return 'unknown'
   }
 }
+
+function draftDayKey(date) {
+  if (date === undefined || date === null || date === '') return null
+  const time = new Date(date).getTime()
+  if (!Number.isFinite(time)) return null
+  return startOfDay(new Date(time)).getTime()
+}
+
+// 結帳結果不確定時，畫面上的帳單日期可能已經被改到另一天，掛單仍留在當初存下的日期。
+// 只查編輯後那天、而且那天的清單完整又沒有這張，不能當成已結帳。
+// 任一天還看得到這張掛單就仍可結帳；有一天查不完整就不能當成已結帳。同一天只查一次。
+export async function confirmDraftStillPendingOnDates(client, orderId, dates) {
+  const seen = new Set()
+  const unique = []
+  ;(Array.isArray(dates) ? dates : [dates]).forEach(date => {
+    const key = draftDayKey(date)
+    if (key === null || seen.has(key)) return
+    seen.add(key)
+    unique.push(date)
+  })
+  if (!unique.length) return 'unknown'
+  let sawUnknown = false
+  for (let i = 0; i < unique.length; i += 1) {
+    const status = await confirmDraftStillPending(client, orderId, unique[i])
+    if (status === 'open') return 'open'
+    if (status !== 'closed') sawUnknown = true
+  }
+  return sawUnknown ? 'unknown' : 'closed'
+}
