@@ -1,49 +1,17 @@
-import { useState, useEffect } from 'react'
 import Page from 'components/Page'
-import useFetchSystemUpdateRecord from 'hooks/useFetchSystemUpdateRecord'
-import { useFetchIsWhiteList } from 'hooks/useFetchUser'
-import idx from 'idx'
-import { Link as RouterLink } from 'react-router-dom'
-import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
 
 import Results from './Results'
+import { systemUpdateRecords } from './records'
 
+// 清單來自前端靜態資料，不查 systemUpdateRecord，也不依白名單顯示新增／編輯／刪除。
+// 新增與編輯頁仍留在路由上，這頁不再連過去，避免使用者以為還會寫進後端。
 const SystemUpdateRecord = () => {
-  const systemUpdateRecord = useFetchSystemUpdateRecord()
-  const [record, setRecord] = useState([])
-  const [isWhiteList, setIsWhiteList] = useState(false)
-  const isWhiteListData = useFetchIsWhiteList({
-    id: JSON.parse(localStorage.getItem('user')).id,
-  })
-
-  useEffect(() => {
-    if (!isWhiteListData.loading) {
-      setIsWhiteList(idx(isWhiteListData, _ => _.data.user.isWhiteList))
-    }
-  }, [isWhiteListData.loading])
-
-
-  useEffect(() => {
-    if (!systemUpdateRecord.loading) {
-      setRecord(idx(systemUpdateRecord, _ => _.data.systemUpdateRecord))
-    }
-  }, [systemUpdateRecord.loading])
-
   return (
     // 不在 Page 加 ui-root：Results 內的 Markdown 預覽需避開 ui-root 的基礎樣式（PageHeader 本身已帶 ui-root）
     <Page title="版本紀錄">
-      <PageHeader
-        title='版本更新紀錄'
-        actions={isWhiteList && (
-          <Button asChild variant="primary">
-            <RouterLink to="/system-update-record/create" data-testid="createSystemUpdate">
-              新增
-            </RouterLink>
-          </Button>
-        )}
-      />
-      <Results data={record} systemUpdateRecord={systemUpdateRecord} isWhiteList={isWhiteList} />
+      <PageHeader title='版本更新紀錄' />
+      <Results data={systemUpdateRecords} />
     </Page>
   )
 }
