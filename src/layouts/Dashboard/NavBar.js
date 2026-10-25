@@ -1,4 +1,4 @@
-import { CalendarDays, ChartColumn, Contact, CreditCard, Gift, LogOut, Megaphone, Package, Pin, Receipt, Search, Settings, Store, Users, X } from 'lucide-react'
+import { CalendarDays, ChartColumn, Contact, CreditCard, Gift, LogOut, Megaphone, Package, Pin, Receipt, Search, Settings, Store, Users, Wrench, X } from 'lucide-react'
 import SlotPortal from 'components/SlotPortal'
 import { SIDEBAR_SEARCH_SLOT_ID } from './TopBar'
 import NavItem, { isWithinHref } from 'components/NavItem'
@@ -18,6 +18,7 @@ import { useFetchGetDisablePendingOrder } from 'hooks/useFetchGetParameterAboutS
 import { useDispatch, useSelector } from 'react-redux'
 import { pinnedTableActions } from './../../store/pinnedTable'
 import pageData from 'helper/pageData'
+import { ENGINEERING_MENU_TITLE, ENGINEERING_PATH, clearEngineeringUnlock, isExecutiveAuthority } from 'helper/engineeringMode'
 import { Button } from 'ui/button'
 import { Input } from 'ui/input'
 import { SidebarContent, SidebarFooter, SidebarLabel } from 'ui/sidebar'
@@ -327,6 +328,10 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       itemArr[idx].items.splice(2, 0, ...[{ title: '掛單列表', href: '/management/draft-orders' }])
     }
   }
+  // 工程模式只給高階主管，且在搜尋之前放進選單，避免其他角色用關鍵字看到空的分類。
+  if (isExecutiveAuthority(idx(profile, _ => _.data.me.merchantIdentity.authorityName))) {
+    settingItem.items.push({ title: ENGINEERING_MENU_TITLE, href: ENGINEERING_PATH, icon: Wrench })
+  }
   itemArr.push(settingItem)
   // render出來的Array
   const filteredPinnedTable = pinnedTable.filter(d =>
@@ -368,6 +373,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
     if (!profile.loading) {
       const statue = idx(profile, _ => _.data.me.status)
       if (statue === 'banned') {
+        clearEngineeringUnlock()
         localStorage.clear()
         window.location = '/auth/login'
         // history.push('/auth/login')
@@ -400,6 +406,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
         .replace(/^ +/, '')
         .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/')
     })
+    clearEngineeringUnlock()
     localStorage.clear()
     history.push('/auth/login')
     window.location.reload()
@@ -416,6 +423,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
     checkCookie()
     config.forEach(list => (list.subheader = JSON.parse(localStorage.getItem('userMerchant')).name))
   } else {
+    clearEngineeringUnlock()
     localStorage.clear()
     window.location = '/auth/login'
   }
@@ -472,6 +480,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
     if (keepLogin === null && localStorage.getItem('keepLogin') === 'true') {
       document.cookie = 'keepLogin=hello;expires=0;path=/'
     } else if (keepLogin === null && localStorage.getItem('keepLogin') === 'false') {
+      clearEngineeringUnlock()
       localStorage.clear()
       window.location = '/auth/login'
     }

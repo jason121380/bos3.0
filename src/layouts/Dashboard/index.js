@@ -9,6 +9,7 @@ import React, { Suspense, useEffect, useLayoutEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { renderRoutes } from 'react-router-config'
 import useFetchCheckPageAuthority from 'hooks/useFetchCheckPageAuthority'
+import { shouldBypassPageAuthority } from 'helper/engineeringMode'
 import useFetchGetUserMerchant from 'hooks/useFetchGetUserMerchant'
 import useAfterFirstLoad, { useHoldFirstLoad } from 'lib/after-first-load'
 import idx from 'idx'
@@ -66,6 +67,8 @@ function Dashboard({ route, location }) {
   }, [])
 
   useEffect(() => {
+    // 工程模式沒有後端頁面權限項目。若仍送 checkPageAuthority，未知網址會被導回個人頁，高階主管也進不去。
+    if (shouldBypassPageAuthority(url)) return
     const user = JSON.parse(localStorage.getItem('user'))
     // 未登入（無 user）時由 NavBar 導向登入頁；這裡直接略過，避免讀 null.id 拋錯
     if (!user) return
@@ -92,6 +95,7 @@ function Dashboard({ route, location }) {
   }, [url])
 
   useEffect(() => {
+    if (shouldBypassPageAuthority(url)) return
     if (!checkPageAuthorityData.loading && checkPageAuthorityData.data) {
       const data = idx(checkPageAuthorityData, _ => _.data.checkPageAuthority)
       if (!data && url === '/profile/general') {
