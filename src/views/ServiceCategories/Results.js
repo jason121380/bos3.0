@@ -107,7 +107,7 @@ function Results({ className, categories, refetchCategories, ...rest }) {
                       asChild
                       variant="ghost"
                       size="icon"
-                      className={cn('h-8 w-8 text-text-secondary', !data.isUsing && 'pointer-events-none opacity-40')}
+                      className={cn('text-text-secondary', !data.isUsing && 'pointer-events-none opacity-40')}
                     >
                       <RouterLink
                         aria-label={`編輯 ${data.name}`}

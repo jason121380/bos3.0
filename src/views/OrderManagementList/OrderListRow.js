@@ -48,7 +48,7 @@ export default function OrderListRow({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-text-secondary"
+              className="text-text-secondary"
               aria-label={isExtended(order.id) ? '收合明細' : '展開明細'}
               aria-expanded={isExtended(order.id)}
               disabled={orderStaticDetailLoading || order.status === '建立中'}
@@ -59,7 +59,7 @@ export default function OrderListRow({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-text-secondary"
+              className="text-text-secondary"
               aria-label="列印帳單"
               onClick={() => {
                 getOrderLazy({
@@ -74,7 +74,7 @@ export default function OrderListRow({
             >
               {orderDataLazy.loading && printOrderId === order.id ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : <Printer strokeWidth={1.75} />}
             </Button>
-            <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+            <Button asChild variant="ghost" size="icon" className="text-text-secondary">
               <RouterLink
                 aria-label="查看帳單"
                 to={`/order/${location.search.length > 0

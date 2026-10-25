@@ -114,7 +114,7 @@ export function StickySummaryBar({ detailsId, details, performanceTotal, cashDue
           aria-expanded={summaryOpen}
           aria-controls={detailsId}
           onClick={() => setSummaryOpen(!summaryOpen)}
-          className="mr-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-text-secondary hover:bg-surface-hover sm:hidden"
+          className="mr-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-text-secondary hover:bg-surface-hover sm:hidden"
         >
           <ChevronUp className={summaryOpen ? 'h-5 w-5 rotate-180 transition-transform' : 'h-5 w-5 transition-transform'} strokeWidth={1.75} />
         </button>

@@ -119,6 +119,12 @@ const IndexSelect = React.forwardRef(function IndexSelect(
   const buttonRef = React.useRef(null)
   const selectRef = React.useRef(null)
   const menuRef = React.useRef(null)
+  // 觸控點在可捲動清單上時，Safari 常常第一次只套上 hover／作用中樣式、不送 click。
+  // 選取改在 pointerup 完成；緊接著的相容 click 用這個記號吞掉，避免選兩次。
+  const touchPressRef = React.useRef(null)
+  const suppressClickRef = React.useRef(null)
+  const suppressTimerRef = React.useRef(null)
+  const swallowClickRef = React.useRef(null)
   const autoId = React.useRef(`idxsel-${Math.random().toString(36).slice(2, 8)}`).current
   const index = valueIndex < 0 ? -1 : valueIndex
   const listId = id ? `${id}-list` : `${autoId}-list`
@@ -172,6 +178,10 @@ const IndexSelect = React.forwardRef(function IndexSelect(
     const onDomChange = event => changeRef.current(event)
     button.addEventListener('change', onDomChange)
     return () => button.removeEventListener('change', onDomChange)
+  }, [])
+  React.useEffect(() => () => {
+    clearTimeout(suppressTimerRef.current)
+    if (swallowClickRef.current) window.removeEventListener('click', swallowClickRef.current, true)
   }, [])
 
   const escape = event => {
@@ -240,6 +250,25 @@ const IndexSelect = React.forwardRef(function IndexSelect(
     emit(next, event)
     closeAndFocus()
   }
+  const armSuppressClick = key => {
+    suppressClickRef.current = key
+    if (swallowClickRef.current) window.removeEventListener('click', swallowClickRef.current, true)
+    clearTimeout(suppressTimerRef.current)
+    // 清單在 pointerup 後可能先卸載，相容 click 會落在下方元件。在 window 捕獲階段吞掉下一擊。
+    const swallow = event => {
+      event.preventDefault()
+      event.stopPropagation()
+      window.removeEventListener('click', swallow, true)
+      if (swallowClickRef.current === swallow) swallowClickRef.current = null
+    }
+    swallowClickRef.current = swallow
+    window.addEventListener('click', swallow, true)
+    suppressTimerRef.current = setTimeout(() => {
+      window.removeEventListener('click', swallow, true)
+      if (swallowClickRef.current === swallow) swallowClickRef.current = null
+      if (suppressClickRef.current === key) suppressClickRef.current = null
+    }, 500)
+  }
 
   const onMenuKey = event => {
     if (readOnly || disabled) return
@@ -295,7 +324,23 @@ const IndexSelect = React.forwardRef(function IndexSelect(
           aria-selected={i === index}
           aria-disabled={option.disabled || undefined}
           data-active={i === active ? 'true' : undefined}
-          onMouseDown={event => event.preventDefault()}
+          onMouseDown={event => {
+            // 不要把焦點移進選項，否則按鈕失焦、清單先關，click 來不及選取。
+            event.preventDefault()
+          }}
+          onPointerDown={event => {
+            if (option.disabled || event.pointerType === 'mouse') return
+            touchPressRef.current = { index: i, x: event.clientX, y: event.clientY }
+          }}
+          onPointerUp={event => {
+            const press = touchPressRef.current
+            touchPressRef.current = null
+            if (event.pointerType === 'mouse' || !press || press.index !== i || option.disabled) return
+            const moved = Math.abs(event.clientX - press.x) > 10 || Math.abs(event.clientY - press.y) > 10
+            armSuppressClick(i)
+            if (!moved) activate(i, event)
+          }}
+          onPointerCancel={() => { touchPressRef.current = null }}
           onMouseMove={() => {
             if (!option.disabled && active !== i) setActive(i)
           }}
@@ -310,6 +355,11 @@ const IndexSelect = React.forwardRef(function IndexSelect(
             if (event.key === 'Escape' && open) escape(event)
           }}
           onClick={event => {
+            if (suppressClickRef.current === i) {
+              suppressClickRef.current = null
+              clearTimeout(suppressTimerRef.current)
+              return
+            }
             if (option.disabled) return
             activate(i, event)
           }}

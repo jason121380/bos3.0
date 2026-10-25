@@ -57,7 +57,8 @@ const NavButton = ({ label, onClick, disabled, children }) => (
     title={label}
     disabled={disabled}
     onClick={onClick}
-    className="flex h-8 w-8 items-center justify-center rounded-full text-text-secondary hover:bg-surface-hover disabled:pointer-events-none disabled:opacity-40"
+    // 視覺維持 32px；手機以透明偽元素把命中區放到 40px（STYLE §9），不撐開月曆列
+    className="relative flex h-8 w-8 items-center justify-center rounded-full text-text-secondary hover:bg-surface-hover disabled:pointer-events-none disabled:opacity-40 max-sm:before:absolute max-sm:before:-inset-1 max-sm:before:content-['']"
   >
     <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
       <path d={children} />

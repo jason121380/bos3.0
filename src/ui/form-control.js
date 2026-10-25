@@ -111,6 +111,11 @@ function MultipleSelect({ id, value, onChange, name, options, renderValue, disab
   const [open, setOpen] = React.useState(false)
   const rootRef = React.useRef(null)
   const triggerRef = React.useRef(null)
+  // 與 IndexSelect 相同：可捲動清單裡第一次觸控常常沒有 click，改在 pointerup 選取。
+  const touchPressRef = React.useRef(null)
+  const suppressClickRef = React.useRef(null)
+  const suppressTimerRef = React.useRef(null)
+  const swallowClickRef = React.useRef(null)
   // 多選清單登記共用圖層與 Scope，避免 Escape 關閉外窗、外點移除 DOM 時搶焦點。
   const escape = event => {
     event.preventDefault()
@@ -134,12 +139,34 @@ function MultipleSelect({ id, value, onChange, name, options, renderValue, disab
       clearTimeout(pendingClose)
     }
   }, [open])
+  React.useEffect(() => () => {
+    clearTimeout(suppressTimerRef.current)
+    if (swallowClickRef.current) window.removeEventListener('click', swallowClickRef.current, true)
+  }, [])
   const list = Array.isArray(value) ? value : []
   const toggle = (event, optionValue) => {
     const exists = list.some(v => same(v, optionValue))
     const next = exists ? list.filter(v => !same(v, optionValue)) : [...list, optionValue]
     const target = { value: next, name }
     if (onChange) onChange(Object.assign(Object.create(event), { target, currentTarget: target }))
+  }
+  const armSuppressClick = key => {
+    suppressClickRef.current = key
+    if (swallowClickRef.current) window.removeEventListener('click', swallowClickRef.current, true)
+    clearTimeout(suppressTimerRef.current)
+    const swallow = event => {
+      event.preventDefault()
+      event.stopPropagation()
+      window.removeEventListener('click', swallow, true)
+      if (swallowClickRef.current === swallow) swallowClickRef.current = null
+    }
+    swallowClickRef.current = swallow
+    window.addEventListener('click', swallow, true)
+    suppressTimerRef.current = setTimeout(() => {
+      window.removeEventListener('click', swallow, true)
+      if (swallowClickRef.current === swallow) swallowClickRef.current = null
+      if (suppressClickRef.current === key) suppressClickRef.current = null
+    }, 500)
   }
   return (
     <div ref={rootRef} className={cn('relative w-full', className)}>
@@ -167,7 +194,27 @@ function MultipleSelect({ id, value, onChange, name, options, renderValue, disab
                 role="option"
                 aria-selected={selected}
                 aria-disabled={o.disabled || undefined}
-                onClick={event => !o.disabled && toggle(event, o.value)}
+                onPointerDown={event => {
+                  if (o.disabled || event.pointerType === 'mouse') return
+                  touchPressRef.current = { index: i, x: event.clientX, y: event.clientY }
+                }}
+                onPointerUp={event => {
+                  const press = touchPressRef.current
+                  touchPressRef.current = null
+                  if (event.pointerType === 'mouse' || !press || press.index !== i || o.disabled) return
+                  const moved = Math.abs(event.clientX - press.x) > 10 || Math.abs(event.clientY - press.y) > 10
+                  armSuppressClick(i)
+                  if (!moved) toggle(event, o.value)
+                }}
+                onPointerCancel={() => { touchPressRef.current = null }}
+                onClick={event => {
+                  if (suppressClickRef.current === i) {
+                    suppressClickRef.current = null
+                    clearTimeout(suppressTimerRef.current)
+                    return
+                  }
+                  if (!o.disabled) toggle(event, o.value)
+                }}
                 className={cn('flex min-h-9 cursor-pointer select-none items-center gap-2 rounded-md px-3 py-1.5 text-body text-text hover:bg-surface-hover', o.disabled && 'pointer-events-none opacity-40')}
               >
                 {o.children}

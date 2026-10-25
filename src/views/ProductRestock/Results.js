@@ -138,7 +138,7 @@ function Results({
                         >{data.stockInDate ? '取消入庫' : '確認入庫'}</Button>
                       </TableCell>
                       <TableCell className="w-[60px] text-right">
-                        <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                        <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                           <RouterLink
                             aria-label={data.stockInDate ? '查看進貨單' : '編輯進貨單'}
                             to={`/product/restock/edit/${data.uuid}`}

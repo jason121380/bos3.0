@@ -91,7 +91,7 @@ function Results({ className, paymentList = [], ...rest }) {
                     />
                   </TableCell>
                   <TableCell>
-                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                    <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                       <RouterLink
                         aria-label={`編輯 ${data.name}`}
                         to={`/payment/edit/${data.id}`}

@@ -103,7 +103,7 @@ function Results({ className, categories, ...rest }) {
                     />
                   </TableCell>
                   <TableCell>
-                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-tertiary" aria-label="編輯分類">
+                    <Button asChild variant="ghost" size="icon" className="text-text-tertiary" aria-label="編輯分類">
                       <RouterLink to={`/member-card-category/edit/${data.uuid}`}>
                         <Pencil strokeWidth={1.75} />
                       </RouterLink>

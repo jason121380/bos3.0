@@ -41,7 +41,7 @@ export function renderNonSegmentedNonDistinguish({ profitSharing, deductionIndex
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-text-tertiary hover:text-danger"
+                className="text-text-tertiary hover:text-danger"
                 aria-label="刪除此級距"
                 onClick={() => handleDeleteSetDeductionNum(index)}
               >
@@ -55,7 +55,7 @@ export function renderNonSegmentedNonDistinguish({ profitSharing, deductionIndex
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-text-tertiary"
+                className="text-text-tertiary"
                 aria-label="新增級距"
                 onClick={() => handleAddSetDeductionNum('nonDistinguish')}
               >
@@ -124,7 +124,7 @@ export function renderNonSegmentedDesignation({ profitSharing, deductionIndex, h
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-text-tertiary hover:text-danger"
+                      className="text-text-tertiary hover:text-danger"
                       aria-label="刪除此級距"
                       onClick={() => handleDeleteNonSegmentedDesignate(index)}
                     >
@@ -138,7 +138,7 @@ export function renderNonSegmentedDesignation({ profitSharing, deductionIndex, h
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-text-tertiary"
+                      className="text-text-tertiary"
                       aria-label="新增級距"
                       onClick={() => handleAddSetDeductionNum('designate')}
                     >
@@ -202,7 +202,7 @@ export function renderNonSegmentedDesignation({ profitSharing, deductionIndex, h
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-text-tertiary hover:text-danger"
+                      className="text-text-tertiary hover:text-danger"
                       aria-label="刪除此級距"
                       onClick={() => handleDeleteNonSegmentedNonDesignate(index)}
                     >
@@ -216,7 +216,7 @@ export function renderNonSegmentedDesignation({ profitSharing, deductionIndex, h
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-text-tertiary"
+                      className="text-text-tertiary"
                       aria-label="新增級距"
                       onClick={() => handleAddSetDeductionNum('nonDesignate')}
                     >

@@ -177,7 +177,7 @@ function Results({
                         />
                       </TableCell>
                       <TableCell className={`${sticky2} px-2`}>
-                        <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-accent">
+                        <Button asChild variant="ghost" size="icon" className="text-accent">
                           <RouterLink
                             aria-label="編輯"
                             to={`/employee/picking/edit/${record.id}`}

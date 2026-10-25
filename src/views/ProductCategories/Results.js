@@ -101,7 +101,7 @@ function Results({ className, categories, refetchCategories, ...rest }) {
                     <TableCell>{idx(data, _ => _.creator.name)}</TableCell>
                     <TableCell className="tabular-nums">{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
                     <TableCell className="text-right">
-                      <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                      <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                         <RouterLink
                           aria-label="編輯類別"
                           to={`/product/category/edit/${data.id}`}

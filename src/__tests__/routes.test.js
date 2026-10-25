@@ -70,6 +70,21 @@ describe('路由表結構', () => {
   it('後台路由除 404 導向外都是 exact（避免 /services 吃掉 /services/create）', () => {
     expect(dashboardRoutes.filter(r => r.path && !r.exact).map(r => r.path)).toEqual([])
   })
+
+  it('帳務明細舊拼字路徑導向正確路徑，書籤仍可用', () => {
+    const cases = [
+      ['/accounting/deatil/:id', '/accounting/detail/:id', '/accounting/detail/mf-1', 'mf-1'],
+      ['/general/accounting/deatil/:id', '/general/accounting/detail/:id', '/general/accounting/detail/mf-1', 'mf-1'],
+    ]
+    cases.forEach(([legacyPath, canonicalPath, to, id]) => {
+      const legacy = dashboardRoutes.find(r => r.path === legacyPath)
+      const canonical = dashboardRoutes.find(r => r.path === canonicalPath)
+      expect(isLazy(canonical.component)).toBe(true)
+      const node = legacy.component({ match: { params: { id } } })
+      expect(node.type).toBe(Redirect)
+      expect(node.props.to).toBe(to)
+    })
+  })
 })
 
 describe('延遲載入的頁面', () => {

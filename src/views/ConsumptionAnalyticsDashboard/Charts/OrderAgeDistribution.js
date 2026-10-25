@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import React from 'react'
 import {
-  Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
+  Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell,
 } from "recharts";
 import { pieChartColor } from '../Colors';
 
@@ -54,6 +54,7 @@ const OrderAgeDistribution = ({ display, data, width }) => {
                   <PieChart>
                     <Pie
                       dataKey="percentage"
+                      nameKey="ageRange"
                       data={data}
                       outerRadius={width < 1330 && width >= 900 ? 90 : width < 450 ? 80 : 120}
                       label={renderorderAgeDistributionLabel}
@@ -62,6 +63,7 @@ const OrderAgeDistribution = ({ display, data, width }) => {
                       {data.map((entry, index) => <Cell key={`agePercentageCell-${index}`} fill={pieChartColor[index % pieChartColor.length]} />)}
                     </Pie>
                     <Tooltip content={<CustomOrderAgeDistributionTooltip />} />
+                    <Legend wrapperStyle={{ maxHeight: 200, overflowY: 'auto' }} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>

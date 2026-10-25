@@ -1,7 +1,22 @@
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import React from 'react'
 
 import { NativeSelect, NativeSelectOption } from '../native-select'
+
+const installedPointerEvent = typeof window.PointerEvent !== 'function'
+if (installedPointerEvent) {
+  window.PointerEvent = class PointerEvent extends window.MouseEvent {
+    constructor(type, props = {}) {
+      super(type, props)
+      this.pointerId = props.pointerId == null ? 1 : props.pointerId
+      this.pointerType = props.pointerType || ''
+      this.isPrimary = props.isPrimary !== false
+    }
+  }
+}
+afterAll(() => {
+  if (installedPointerEvent) delete window.PointerEvent
+})
 import TextField, { InputBase } from '../text-field'
 
 import { Slider } from '../slider'
@@ -16,6 +31,22 @@ import { ToggleGroup, ToggleGroupItem } from '../toggle-group'
 afterEach(cleanup)
 
 describe('NativeSelect', () => {
+  it('觸控 pointerup 第一次就回傳原始選項值', () => {
+    const onChange = jest.fn()
+    render(
+      <NativeSelect label="狀態" value="a" onChange={onChange} name="status">
+        <NativeSelectOption value="a">甲</NativeSelectOption>
+        <NativeSelectOption value="c">丙</NativeSelectOption>
+      </NativeSelect>
+    )
+    fireEvent.click(screen.getByLabelText('狀態'))
+    const option = within(screen.getByRole('listbox')).getByRole('option', { name: '丙' })
+    fireEvent.pointerDown(option, { pointerType: 'touch', pointerId: 1, clientX: 8, clientY: 8 })
+    fireEvent.pointerUp(option, { pointerType: 'touch', pointerId: 1, clientX: 8, clientY: 9 })
+    expect(onChange).toHaveBeenCalledTimes(1)
+    expect(onChange.mock.calls[0][0].target).toEqual({ value: 'c', name: 'status' })
+  })
+
   it('Fragment 內的選項也收得到，非元素子節點略過；選項文字取自巢狀節點', () => {
     const onChange = jest.fn()
     render(

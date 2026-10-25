@@ -87,12 +87,14 @@ function ReportToolbar({ date, filters, actions, className }) {
   const [open, setOpen] = React.useState(false)
   return (
     <>
-      <Toolbar className={className}>
+      {/* STYLE §11：一列間距 8px。日期與「篩選」「搜尋」高 36px（md／h-9），手機 40px；圖示鈕桌機 32px。 */}
+      <Toolbar className={cn('gap-2', className)}>
         {date}
         <ToolbarSpacer />
         {filters && (
           <Button
             variant="secondary"
+            size="md"
             aria-pressed={open}
             aria-expanded={open}
             className={open ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}

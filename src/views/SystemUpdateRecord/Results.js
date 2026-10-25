@@ -72,7 +72,7 @@ const Results = ({ data, systemUpdateRecord, isWhiteList }) => {
                     更新日期:{format(d.updateTime, 'MM/dd')}
                   </div>
                   {isWhiteList && <Fragment>
-                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                    <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                       <RouterLink
                         aria-label="編輯版本紀錄"
                         to={`/system-update-record/edit/${d.systemUpdateId}`}
@@ -83,7 +83,7 @@ const Results = ({ data, systemUpdateRecord, isWhiteList }) => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-text-secondary hover:text-danger"
+                      className="text-text-secondary hover:text-danger"
                       aria-label="刪除版本紀錄"
                       onClick={() => { handleDeleteRecord(d.systemUpdateId) }}
                     >

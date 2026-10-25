@@ -107,9 +107,9 @@ describe('現金收支登錄', () => {
     expect(cells('會計/')).toEqual(['', '2026/10/04', '', '', '3,500', '會計/', '匯款', '', ''])
     expect(cells('雜支')).toEqual(['', '2026/10/05', '雜支', '', '80', '', '現金', '', ''])
     expect(screen.getAllByLabelText('編輯').map(a => a.getAttribute('href'))).toEqual([
-      '/general/accounting/deatil/f-1',
-      '/general/accounting/deatil/f-2',
-      '/general/accounting/deatil/f-3',
+      '/general/accounting/detail/f-1',
+      '/general/accounting/detail/f-2',
+      '/general/accounting/detail/f-3',
     ])
     await wait(() => expect(exportedCsv()).toContain('"2026/10/03","技術收入","12000","","店長/A1","現金","王小美","十月第一週"'))
     expect(exportedCsv()).toContain('"2026/10/04","","","3500","會計/","匯款","",""')

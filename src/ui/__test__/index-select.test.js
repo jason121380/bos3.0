@@ -5,6 +5,22 @@ import { cleanup, fireEvent, render, screen, within } from '@testing-library/rea
 import { Dialog, DialogBody, DialogContent, DialogTitle } from '../dialog'
 import { IndexSelect } from '../index-select'
 
+// 這個 jsdom 沒有 PointerEvent，fireEvent.pointer* 會退成沒有座標的 Event。補上才能測滑動與觸控。
+const installedPointerEvent = typeof window.PointerEvent !== 'function'
+if (installedPointerEvent) {
+  window.PointerEvent = class PointerEvent extends window.MouseEvent {
+    constructor(type, props = {}) {
+      super(type, props)
+      this.pointerId = props.pointerId == null ? 1 : props.pointerId
+      this.pointerType = props.pointerType || ''
+      this.isPrimary = props.isPrimary !== false
+    }
+  }
+}
+afterAll(() => {
+  if (installedPointerEvent) delete window.PointerEvent
+})
+
 afterEach(cleanup)
 
 const OPTIONS = [
@@ -89,6 +105,42 @@ describe('IndexSelect 鍵盤選取', () => {
 
     fireEvent.change(trigger(), { target: { value: '0' } })
     expect(onChange.mock.calls[1][0].target.value).toBe('0')
+  })
+})
+
+const touch = (node, type, x, y) => fireEvent[type](node, { pointerType: 'touch', pointerId: 1, clientX: x, clientY: y, button: 0 })
+
+describe('IndexSelect 觸控第一次就選取', () => {
+  it('pointerup 選取，不需要再送 click；接著的 click 不會再選一次', () => {
+    const onChange = renderSelect()
+    fireEvent.click(trigger())
+    const option = listOption('丙')
+    touch(option, 'pointerDown', 10, 10)
+    touch(option, 'pointerUp', 12, 11)
+    expect(onChange).toHaveBeenCalledTimes(1)
+    expect(onChange.mock.calls[0][0].target.value).toBe('2')
+    fireEvent.click(option)
+    expect(onChange).toHaveBeenCalledTimes(1)
+  })
+
+  it('手指移動超過 10px 當成捲動，不選取，接著的 click 也不選', () => {
+    const onChange = renderSelect()
+    fireEvent.click(trigger())
+    const option = listOption('丙')
+    touch(option, 'pointerDown', 0, 0)
+    touch(option, 'pointerUp', 0, 24)
+    fireEvent.click(option)
+    expect(onChange).not.toHaveBeenCalled()
+    expect(screen.getByRole('listbox')).toBeInTheDocument()
+  })
+
+  it('停用項目的觸控不選取', () => {
+    const onChange = renderSelect()
+    fireEvent.click(trigger())
+    const option = listOption('乙')
+    touch(option, 'pointerDown', 4, 4)
+    touch(option, 'pointerUp', 4, 4)
+    expect(onChange).not.toHaveBeenCalled()
   })
 })
 

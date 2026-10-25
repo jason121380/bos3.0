@@ -46,7 +46,7 @@ function Results({ inventorys }) {
                     </TableCell>
                     <TableCell>{d.creatorName}</TableCell>
                     <TableCell className="text-right">
-                      <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                      <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                         <RouterLink
                           aria-label={d.isDraft ? '繼續盤點' : '查看盤點單'}
                           to={d.isDraft ? `inventory-work/edit/${d.id}` : `inventory-work/review/${d.id}`}
