@@ -10,6 +10,16 @@ export function calendarUpdateTime(isoDate) {
 
 const shippedRecords = [
   {
+    title: '2026/10/26 側欄細項',
+    versionNo: 'v3.10260211',
+    updateTime: '2026-10-26',
+    content: [
+      '- 主側欄 hover 細項改貼近側欄右緣，只留一小段間距',
+      '- 細項超過 10 項才換下一欄（一欄最多 10 項）',
+      '- 浮層改為貼近視窗上下的滿高，內容由上往下排，超出在浮層內捲動',
+    ].join('\n'),
+  },
+  {
     title: '2026/10/26 側欄',
     versionNo: 'v3.10260058',
     updateTime: '2026-10-26',
