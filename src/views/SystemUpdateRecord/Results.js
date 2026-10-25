@@ -69,7 +69,7 @@ const Results = ({ data, systemUpdateRecord, isWhiteList }) => {
                 <MdEditor theme={theme} modelValue={d.content} previewOnly language='en-US' />
                 <div className="ui-root flex w-full items-center justify-end gap-1 pt-3 text-caption text-text-secondary">
                   <div className="mr-2 tabular-nums">
-                    更新日期:{format(d.updateTime, 'MM/dd')}
+                    更新日期:{format(d.updateTime, 'yyyy/MM/dd')}
                   </div>
                   {isWhiteList && <Fragment>
                     <Button asChild variant="ghost" size="icon" className="text-text-secondary">
