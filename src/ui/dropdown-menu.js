@@ -35,7 +35,7 @@ const DropdownMenuItem = React.forwardRef(({ className, danger, ...props }, ref)
   <MenuPrimitive.Item
     ref={ref}
     className={cn(
-      'flex h-9 cursor-pointer select-none items-center gap-2 rounded-md px-2 text-body outline-none [&_svg]:size-4',
+      'flex h-9 max-sm:min-h-10 cursor-pointer select-none items-center gap-2 rounded-md px-2 text-body outline-none [&_svg]:size-4',
       'data-[highlighted]:bg-surface-hover data-[disabled]:pointer-events-none data-[disabled]:text-text-tertiary',
       danger ? 'text-danger' : 'text-text',
       className

@@ -215,7 +215,7 @@ function MultipleSelect({ id, value, onChange, name, options, renderValue, disab
                   }
                   if (!o.disabled) toggle(event, o.value)
                 }}
-                className={cn('flex min-h-9 cursor-pointer select-none items-center gap-2 rounded-md px-3 py-1.5 text-body text-text hover:bg-surface-hover', o.disabled && 'pointer-events-none opacity-40')}
+                className={cn('flex min-h-9 max-sm:min-h-10 cursor-pointer select-none items-center gap-2 rounded-md px-3 py-1.5 text-body text-text hover:bg-surface-hover', o.disabled && 'pointer-events-none opacity-40')}
               >
                 {o.children}
               </li>

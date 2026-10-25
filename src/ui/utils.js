@@ -18,3 +18,7 @@ export function cn(...inputs) {
 // 所有可點元素共用的 focus 樣式：2px accent 外框（STYLE.md §6、§9）
 export const focusRing =
   'outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1 focus-visible:ring-offset-background'
+
+// 視覺小於 40px 的圖示鈕：手機以置中的透明 40×40 偽元素擴大命中區，不改外框尺寸（STYLE §9）
+export const phoneIconHit =
+  "relative max-sm:before:pointer-events-auto max-sm:before:absolute max-sm:before:left-1/2 max-sm:before:top-1/2 max-sm:before:h-10 max-sm:before:w-10 max-sm:before:-translate-x-1/2 max-sm:before:-translate-y-1/2 max-sm:before:content-['']"

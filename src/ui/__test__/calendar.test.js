@@ -137,6 +137,9 @@ describe('DayView', () => {
       />
     )
     expect(screen.getByLabelText('上個月')).toBeDisabled()
+    expect(screen.getByLabelText('下個月').className).toContain('focus-visible:ring-2')
+    expect(screen.getByLabelText('下個月').className).toContain('max-sm:before:-inset-1')
+    expect(screen.getByRole('button', { name: '選擇年份' }).className).toContain('min-h-10')
     expect(screen.getByLabelText('下個月')).toBeDisabled()
     expect(cell('2026年10月4日')).toBeDisabled()
     expect(cell('2026年10月4日').className).toContain('pointer-events-none')

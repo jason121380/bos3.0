@@ -3,7 +3,7 @@
 import React from 'react'
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { Dialog, DialogBody, DialogContent, DialogTitle } from '../dialog'
-import { IndexSelect } from '../index-select'
+import { IndexSelect, placeAnchoredMenu } from '../index-select'
 
 // 這個 jsdom 沒有 PointerEvent，fireEvent.pointer* 會退成沒有座標的 Event。補上才能測滑動與觸控。
 const installedPointerEvent = typeof window.PointerEvent !== 'function'
@@ -141,6 +141,54 @@ describe('IndexSelect 觸控第一次就選取', () => {
     touch(option, 'pointerDown', 4, 4)
     touch(option, 'pointerUp', 4, 4)
     expect(onChange).not.toHaveBeenCalled()
+  })
+})
+
+describe('IndexSelect 清單留在視窗內', () => {
+  it('下方空間較少時改向上展開，底緣不越過觸發器、頂緣不越出視窗', () => {
+    const style = placeAnchoredMenu(
+      { top: 700, bottom: 740, left: 16, width: 200 },
+      { viewport: { width: 1024, height: 768 } }
+    )
+    expect(style.position).toBe('fixed')
+    expect(style.maxHeight).toBeLessThanOrEqual(320)
+    expect(style.top).toBeGreaterThanOrEqual(8)
+    expect(style.top + style.maxHeight).toBeLessThanOrEqual(700 - 4)
+  })
+
+  it('下方空間足夠時往下開，底緣停在視窗內；貼齊右緣時往左收', () => {
+    const style = placeAnchoredMenu(
+      { top: 40, bottom: 76, left: 900, width: 200 },
+      { viewport: { width: 1024, height: 800 } }
+    )
+    expect(style.top).toBe(80)
+    expect(style.top + style.maxHeight).toBeLessThanOrEqual(800 - 8)
+    expect(style.left + style.width).toBeLessThanOrEqual(1024 - 8)
+  })
+
+  it('在對話框裡仍用 absolute，座標相對宿主', () => {
+    const style = placeAnchoredMenu(
+      { top: 100, bottom: 136, left: 40, width: 180 },
+      { viewport: { width: 800, height: 600 }, hostRect: { top: 50, left: 20 } }
+    )
+    expect(style.position).toBe('absolute')
+    expect(style.top).toBe(90)
+    expect(style.left).toBe(20)
+  })
+
+  it('打開的清單套用視窗內定位', () => {
+    const rect = { top: 700, bottom: 740, left: 16, right: 216, width: 200, height: 40, x: 16, y: 700, toJSON() { return {} } }
+    const spy = jest.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(() => rect)
+    const previous = window.innerHeight
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: 768 })
+    renderSelect()
+    fireEvent.click(trigger())
+    const list = screen.getByRole('listbox')
+    expect(list.style.position).toBe('fixed')
+    expect(Number.parseFloat(list.style.maxHeight)).toBeLessThanOrEqual(320)
+    expect(Number.parseFloat(list.style.top) + Number.parseFloat(list.style.maxHeight)).toBeLessThanOrEqual(700 - 4)
+    spy.mockRestore()
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: previous })
   })
 })
 

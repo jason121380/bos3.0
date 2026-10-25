@@ -1,7 +1,7 @@
 import React from 'react'
 import { startOfDay, startOfMinute, startOfMonth } from 'date-fns'
 import { Field } from 'ui/input'
-import { cn } from './utils'
+import { cn, focusRing } from './utils'
 import { TextField, InputAdornment } from './text-field'
 import { Dialog, DialogContent } from './dialog'
 import { Popover, PopoverAnchor, PopoverContent } from './popover'
@@ -300,17 +300,24 @@ function createPicker({ displayName, withTime, mobileOnly }) {
             ...tfInputProps,
             endAdornment: (
               <InputAdornment position="end">
-                <button
-                  type="button"
-                  aria-label={ariaLabel}
-                  disabled={disabled || readOnly}
-                  onClick={openPicker}
-                  className="-mr-1 flex h-7 w-7 items-center justify-center rounded-full text-text-tertiary hover:bg-surface-hover disabled:opacity-40"
-                >
-                  <svg viewBox="0 0 24 24" className="h-[18px] w-[18px] fill-current" aria-hidden="true">
-                    <path d={CALENDAR_ICON} />
-                  </svg>
-                </button>
+                {/* 排版槽維持 28px（-mr-1 與原本相同）；按鈕本體 40×40，圖示仍 18px，不把輸入框撐高 */}
+                <span className="relative -mr-1 inline-flex h-7 w-7 shrink-0">
+                  <button
+                    type="button"
+                    aria-label={ariaLabel}
+                    title={ariaLabel}
+                    disabled={disabled || readOnly}
+                    onClick={openPicker}
+                    className={cn(
+                      'absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-text-tertiary hover:bg-surface-hover disabled:pointer-events-none disabled:opacity-40',
+                      focusRing
+                    )}
+                  >
+                    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px] fill-current" aria-hidden="true">
+                      <path d={CALENDAR_ICON} />
+                    </svg>
+                  </button>
+                </span>
               </InputAdornment>
             ),
           }}
@@ -415,10 +422,10 @@ function createPicker({ displayName, withTime, mobileOnly }) {
             )}
             {panel}
             <div className="flex justify-end gap-2 px-4 pb-3 pt-1">
-              <button type="button" onClick={cancel} className="h-9 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover">
+              <button type="button" onClick={cancel} className={cn('h-10 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover', focusRing)}>
                 {DEFAULT_ACTIONS_TEXT.cancel}
               </button>
-              <button type="button" onClick={() => accept(published.current)} className="h-9 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover">
+              <button type="button" onClick={() => accept(published.current)} className={cn('h-10 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover', focusRing)}>
                 {DEFAULT_ACTIONS_TEXT.ok}
               </button>
             </div>

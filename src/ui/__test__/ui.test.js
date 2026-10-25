@@ -10,7 +10,7 @@ import { Avatar } from '../avatar'
 import { Accordion, AccordionSummary, AccordionDetails } from '../accordion'
 import { toast, Toaster } from '../toast'
 import { cn } from '../utils'
-import { Field, Input } from '../input'
+import { Field, Input, Textarea } from '../input'
 import { Tabs, TabsList, TabsTrigger } from '../tabs'
 
 afterEach(cleanup)
@@ -51,6 +51,31 @@ describe('toast', () => {
     fireEvent.click(screen.getByLabelText('關閉'))
     expect(screen.queryByText('儲存失敗')).toBeNull()
   })
+
+  // STYLE §6：滑鼠移入或聚焦時暫停；移出後以一半時間（1.5 秒）重新計時。錯誤仍不自動消失。
+  it('滑過或聚焦時暫停倒數，離開後 1.5 秒才消失；錯誤不受影響', () => {
+    render(<Toaster />)
+    act(() => {
+      toast.success('已儲存')
+      toast.error('儲存失敗')
+    })
+    const saved = screen.getByText('已儲存').closest('[role="status"]')
+    const failed = screen.getByRole('alert')
+    fireEvent.mouseEnter(saved)
+    fireEvent.mouseEnter(failed)
+    act(() => jest.advanceTimersByTime(3000))
+    expect(screen.getByText('已儲存')).toBeInTheDocument()
+    expect(screen.getByText('儲存失敗')).toBeInTheDocument()
+    fireEvent.mouseLeave(saved)
+    fireEvent.mouseLeave(failed)
+    act(() => jest.advanceTimersByTime(1499))
+    expect(screen.getByText('已儲存')).toBeInTheDocument()
+    act(() => jest.advanceTimersByTime(1))
+    expect(screen.queryByText('已儲存')).toBeNull()
+    act(() => jest.advanceTimersByTime(3000))
+    expect(screen.getByText('儲存失敗')).toBeInTheDocument()
+    fireEvent.click(screen.getByLabelText('關閉'))
+  })
 })
 
 describe('Field / Input（RHF error 等效）', () => {
@@ -75,6 +100,14 @@ describe('Field / Input（RHF error 等效）', () => {
     )
     expect(screen.getByText('說明')).not.toHaveAttribute('id')
     expect(screen.getByLabelText('名稱')).not.toHaveAttribute('aria-invalid')
+  })
+
+  it('Textarea 錯誤時焦點框維持 danger', () => {
+    render(<Textarea aria-label="備註" invalid />)
+    const box = screen.getByLabelText('備註')
+    expect(box.className).toContain('border-danger')
+    expect(box.className).toContain('focus-visible:border-danger')
+    expect(box.className).toContain('focus-visible:ring-danger/30')
   })
 })
 
@@ -161,6 +194,7 @@ describe('ToggleGroup', () => {
     fireEvent.click(screen.getByText('日'))
     expect(onChange.mock.calls.map(c => c[1])).toEqual([2, null])
     expect(screen.getByText('日')).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByText('日').className).toContain('max-sm:min-h-10')
   })
 
   it('非 exclusive：回傳加入或移除後的新陣列', () => {

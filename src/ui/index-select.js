@@ -49,6 +49,29 @@ const mirrorSelect = (button, select) => {
 // 與 combobox 相同：在對話框內就掛在對話框上（配合焦點鎖，且脫離 DialogBody 的 overflow），否則掛在 body。
 const findPortalHost = node => (node && node.closest('[role="dialog"]')) || document.body
 
+// 清單固定在視窗內：空間不夠就改向上開，高度夾在視窗剩餘空間裡，由清單自己捲動。
+// hostRect 有值時座標改相對該宿主（對話框）；沒有時用 fixed 對齊視窗，避免跟著文件捲出畫面。
+export function placeAnchoredMenu(anchorRect, { viewport, hostRect = null, scrollTop = 0, scrollLeft = 0, gap = 4, margin = 8, maxMenu = 320 } = {}) {
+  const viewBottom = viewport.height - margin
+  const viewRight = viewport.width - margin
+  const spaceBelow = Math.max(0, viewBottom - anchorRect.bottom - gap)
+  const spaceAbove = Math.max(0, anchorRect.top - margin - gap)
+  const openBelow = spaceBelow >= spaceAbove
+  const maxHeight = Math.min(maxMenu, openBelow ? spaceBelow : spaceAbove)
+  let left = anchorRect.left
+  if (left + anchorRect.width > viewRight) left = Math.max(margin, viewRight - anchorRect.width)
+  const topViewport = openBelow ? anchorRect.bottom + gap : Math.max(margin, anchorRect.top - gap - maxHeight)
+  const width = anchorRect.width
+  if (!hostRect) return { position: 'fixed', top: topViewport, left, width, maxHeight }
+  return {
+    position: 'absolute',
+    top: topViewport - hostRect.top + scrollTop,
+    left: left - hostRect.left + scrollLeft,
+    width,
+    maxHeight,
+  }
+}
+
 function useAnchoredMenu(anchorRef, open) {
   const [style, setStyle] = React.useState(null)
   const [host, setHost] = React.useState(null)
@@ -60,21 +83,16 @@ function useAnchoredMenu(anchorRef, open) {
     setHost(target)
     const update = () => {
       const rect = anchor.getBoundingClientRect()
+      const viewport = { width: window.innerWidth, height: window.innerHeight }
       if (target === document.body) {
-        setStyle({
-          position: 'absolute',
-          top: rect.bottom + window.scrollY + 4,
-          left: rect.left + window.scrollX,
-          width: rect.width,
-        })
+        setStyle(placeAnchoredMenu(rect, { viewport }))
       } else {
-        const box = target.getBoundingClientRect()
-        setStyle({
-          position: 'absolute',
-          top: rect.bottom - box.top + target.scrollTop + 4,
-          left: rect.left - box.left + target.scrollLeft,
-          width: rect.width,
-        })
+        setStyle(placeAnchoredMenu(rect, {
+          viewport,
+          hostRect: target.getBoundingClientRect(),
+          scrollTop: target.scrollTop,
+          scrollLeft: target.scrollLeft,
+        }))
       }
     }
     update()
@@ -364,7 +382,7 @@ const IndexSelect = React.forwardRef(function IndexSelect(
             activate(i, event)
           }}
           className={cn(
-            'flex min-h-9 cursor-pointer select-none items-center rounded-md px-3 py-1.5 text-body text-text hover:bg-surface-hover',
+            'flex min-h-9 max-sm:min-h-10 cursor-pointer select-none items-center rounded-md px-3 py-1.5 text-body text-text hover:bg-surface-hover',
             (i === index || i === active) && 'bg-surface-hover',
             i === active && 'outline outline-1 -outline-offset-1 outline-accent',
             option.disabled && 'pointer-events-none text-text-tertiary'
@@ -425,7 +443,7 @@ const IndexSelect = React.forwardRef(function IndexSelect(
           className
         )}
       >
-        <span className="min-w-0 truncate">{shown}</span>
+        <span className={cn('min-w-0 flex-1 truncate text-left', shown !== '' && 'text-text')}>{shown}</span>
         <ChevronDown aria-hidden="true" strokeWidth={1.75} className="h-4 w-4 shrink-0 text-text-tertiary" />
       </button>
       {open && host && menuStyle ? ReactDOM.createPortal(menu, host) : null}

@@ -75,11 +75,20 @@ describe('備註與帳單來源欄位', () => {
   it('選來源寫入來源名稱；選「無」寫入 null', async () => {
     const { handleBillChange, settle } = renderRemark({ source: '網路' })
     await settle()
+    expect(screen.getByRole('combobox')).toHaveTextContent('網路')
     const select = sourceSelect()
     fireEvent.change(select, { target: { value: within(select).getByText('朋友介紹').value } })
     expect(handleBillChange).toHaveBeenLastCalledWith({ key: 'source', value: '朋友介紹' })
     fireEvent.change(select, { target: { value: within(select).getByText('無').value } })
     expect(handleBillChange).toHaveBeenLastCalledWith({ key: 'source', value: null })
+  })
+
+  it('沒有來源時關閉的按鈕顯示「無」，不是空白', async () => {
+    const { settle } = renderRemark({ source: null })
+    await settle()
+    const trigger = screen.getByRole('combobox')
+    expect(trigger).toHaveTextContent('無')
+    expect(trigger.className).not.toContain('text-transparent')
   })
 })
 

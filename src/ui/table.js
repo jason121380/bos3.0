@@ -92,7 +92,7 @@ const TablePagination = React.forwardRef(function TablePagination(
             aria-label="每頁筆數"
             value={rowsPerPage}
             onChange={e => onRowsPerPageChange(Object.assign(Object.create(e), { target: { value: Number(e.target.value) } }))}
-            className="[&_[data-ui-select]]:h-8 [&_[data-ui-select]]:w-[84px]"
+            className="[&_[data-ui-select]]:h-8 [&_[data-ui-select]]:w-[84px] max-sm:[&_[data-ui-select]]:min-h-10"
           >
             {rowsPerPageOptions.map(o => {
               const value = typeof o === 'object' ? o.value : o
