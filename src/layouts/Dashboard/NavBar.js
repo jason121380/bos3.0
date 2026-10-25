@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { pinnedTableActions } from './../../store/pinnedTable'
 import pageData from 'helper/pageData'
 import { ENGINEERING_MENU_TITLE, ENGINEERING_PATH, clearEngineeringUnlock, isExecutiveAuthority } from 'helper/engineeringMode'
+import { APP_VERSION } from '../../version'
 import { Button } from 'ui/button'
 import { Input } from 'ui/input'
 import { SidebarContent, SidebarFooter, SidebarLabel } from 'ui/sidebar'
@@ -50,14 +51,13 @@ function reduceChildRoutes({ acc, pathname, item, reportListExtended, depth = 0 
         open={Boolean(open) || item.forceOpen || containsCurrent}
         title={item.title}
         reportListExtended={reportListExtended}
-      >
-        {renderNavItems({
+        renderItems={() => renderNavItems({
           depth: depth + 1,
           pathname,
           items: item.items,
           reportListExtended: reportListExtended
         })}
-      </NavItem>
+      />
     )
   } else {
     acc.push(
@@ -509,7 +509,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
         </Button>
       </SlotPortal>
       {searchOpen && (
-        <div className="px-3 pb-2">
+        <div className="px-3 pb-2 lg:group-data-[rail=true]/sidebar:hidden">
           <div className="relative">
             <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.75} />
             <Input
@@ -538,7 +538,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
         {/* 目前店家（Jason 2026/10/21「要呈現現在在哪家店」；同日「不用目前店家的標籤」→ 只留圖示＋店名，標題文字僅供讀屏）：
             只顯示、不可點；切換仍用底部的店家圖示。店名取自 userMerchant，切換店家後整頁重新載入即更新 */}
         {merchantName && (
-          <div className="mb-1 flex items-center gap-2.5 px-2.5 pb-2 pt-1" title={`目前店家：${merchantName}`}>
+          <div className="mb-1 flex items-center gap-2.5 px-2.5 pb-2 pt-1 lg:group-data-[rail=true]/sidebar:hidden" title={`目前店家：${merchantName}`}>
             <Store className="h-4 w-4 shrink-0 text-text-secondary" strokeWidth={1.75} aria-hidden="true" />
             <span className="sr-only">目前店家：</span>
             <span className="min-w-0 truncate text-body font-medium text-text">{merchantName}</span>
@@ -549,13 +549,19 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
             {filteredPinnedTable.length > 0 && (
               <Fragment>
                 <SidebarLabel className="pt-1">釘選</SidebarLabel>
-                <NavItem depth={0} title="釘選頁面" icon={Pin} open={searchTerm.trim() !== ''}>
-                  <div className="flex flex-col gap-0.5">
-                    {filteredPinnedTable.map(d => (
-                      <NavItem key={d.title} depth={0} href={d.href} title={d.title} reportListExtended={reportListExtended} />
-                    ))}
-                  </div>
-                </NavItem>
+                <NavItem
+                  depth={0}
+                  title="釘選頁面"
+                  icon={Pin}
+                  open={searchTerm.trim() !== ''}
+                  renderItems={() => (
+                    <div className="flex flex-col gap-0.5">
+                      {filteredPinnedTable.map(d => (
+                        <NavItem key={d.title} depth={0} href={d.href} title={d.title} reportListExtended={reportListExtended} />
+                      ))}
+                    </div>
+                  )}
+                />
               </Fragment>
             )}
             {/* 「選單」標題已移除（Jason 2026/10/21）；有釘選群組時以間距與選單分開 */}
@@ -574,8 +580,8 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
         )}
       </SidebarContent>
       {!profile.loading && (
-        <SidebarFooter className="flex items-center gap-2">
-          <RouterLink to="/profile/general" className={cn('flex min-w-0 flex-1 items-center gap-2 rounded-md p-1 hover:bg-surface-hover', focusRing)}>
+        <SidebarFooter className="flex items-center gap-2 lg:group-data-[rail=true]/sidebar:flex-col">
+          <RouterLink to="/profile/general" className={cn('flex min-w-0 flex-1 items-center gap-2 rounded-md p-1 hover:bg-surface-hover lg:group-data-[rail=true]/sidebar:flex-none lg:group-data-[rail=true]/sidebar:justify-center', focusRing)}>
             {/* 頭像只是呈現，點擊由外層連結前往個人頁 */}
             {avatar ? (
               <img alt="" src={avatar} className="h-8 w-8 shrink-0 rounded-full border border-solid border-border object-cover" />
@@ -584,7 +590,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
                 {String(userName).slice(0, 1)}
               </span>
             )}
-            <span className="flex min-w-0 flex-col">
+            <span className="flex min-w-0 flex-col lg:group-data-[rail=true]/sidebar:hidden">
               <span className="truncate text-body font-medium text-text">{userName}</span>
               <span className="truncate text-caption text-text-secondary">{userRole}</span>
             </span>
@@ -596,6 +602,9 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
           </Button>
         </SidebarFooter>
       )}
+      <p data-testid="sidebar-app-version" className="m-0 shrink-0 px-3 pb-3 text-center text-caption text-text-tertiary lg:group-data-[rail=true]/sidebar:break-all lg:group-data-[rail=true]/sidebar:px-1">
+        {APP_VERSION}
+      </p>
     </Fragment>
   )
 }
@@ -603,11 +612,11 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
 NavBar.propTypes = {
   onMobileClose: PropTypes.func,
   openMobile: PropTypes.bool,
+  openDesktop: PropTypes.bool,
 }
+// 父層每次渲染都會換 onMobileClose。只在抽屜開關或桌機收合改變時重繪，
+// 收合時子項才讀得到圖示欄，點主項才能浮出細項。
 function areEqual(prevProps, nextProps) {
-  if (prevProps.openMobile === nextProps.openMobile) {
-    return true
-  }
-  return false
+  return prevProps.openMobile === nextProps.openMobile && prevProps.openDesktop === nextProps.openDesktop
 }
 export default React.memo(NavBar, areEqual)

@@ -8,6 +8,7 @@
 import React from 'react'
 import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { renderPage, loginAs, callsOf } from '../../../__tests__/testkit.test'
+import { Sidebar } from 'ui/sidebar'
 import NavBar from '../NavBar'
 
 jest.setTimeout(20000)
@@ -203,5 +204,40 @@ describe('重新渲染條件', () => {
     expect(group('櫃檯作業')).toBeInTheDocument()
     fireEvent.click(link('帳單列表'))
     await wait(() => expect(onMobileClose).toHaveBeenCalledTimes(2))
+  })
+
+  it('桌機收合後，已展開的群組改以點選浮出細項', async () => {
+    const originalMatchMedia = window.matchMedia
+    window.matchMedia = query => ({
+      matches: query === '(min-width: 1024px)',
+      media: query,
+      addEventListener() {},
+      removeEventListener() {},
+      addListener() {},
+      removeListener() {},
+    })
+    const Harness = () => {
+      const [desktopOpen, setDesktopOpen] = React.useState(true)
+      return (
+        <Sidebar desktopOpen={desktopOpen}>
+          <span id="sidebar-search-slot" />
+          <button type="button" onClick={() => setDesktopOpen(false)}>改為圖示欄</button>
+          <NavBar onMobileClose={() => {}} openMobile={false} openDesktop={desktopOpen} />
+        </Sidebar>
+      )
+    }
+    try {
+      const { settle } = renderPage(<Harness />, { fixtures: fixtures(), route: '/order/create' })
+      await settle()
+      fireEvent.click(group('資料設定'))
+      expect(screen.getByRole('button', { name: '資料設定' })).toHaveAttribute('aria-expanded', 'true')
+      expect(screen.queryByRole('region', { name: '資料設定的細項' })).toBeNull()
+      fireEvent.click(screen.getByText('改為圖示欄'))
+      fireEvent.click(screen.getByRole('button', { name: '資料設定' }))
+      const flyout = screen.getByRole('region', { name: '資料設定的細項' })
+      expect(within(flyout).getByText('系統參數設定')).toBeInTheDocument()
+    } finally {
+      window.matchMedia = originalMatchMedia
+    }
   })
 })

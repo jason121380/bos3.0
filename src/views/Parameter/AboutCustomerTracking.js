@@ -39,7 +39,7 @@ function AboutCustomerTracking({ className, inputEnable, hairCondition, setHairC
         const [[key, title]] = Object.entries(d)
         const options = hairCondition[key]
         return (
-          <Card key={`${title}-${i}`} id={`parameter-tracking-${key}`} className="scroll-mt-6">
+          <Card key={`${title}-${i}`}>
             <CardHeader>
               <CardTitle>{`${title}設定`}</CardTitle>
             </CardHeader>

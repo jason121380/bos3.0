@@ -13,9 +13,7 @@ import { shouldBypassPageAuthority } from 'helper/engineeringMode'
 import useFetchGetUserMerchant from 'hooks/useFetchGetUserMerchant'
 import useAfterFirstLoad, { useHoldFirstLoad } from 'lib/after-first-load'
 import idx from 'idx'
-import { PanelLeftOpen } from 'lucide-react'
-import { Button } from 'ui/button'
-import { Sidebar, SidebarHeader } from 'ui/sidebar'
+import { Sidebar, SidebarHeader, SIDEBAR_EXPANDED_MAIN_CLASS, SIDEBAR_RAIL_MAIN_CLASS } from 'ui/sidebar'
 import { cn } from 'ui/utils'
 
 import { MobileAppBar, MobileTabBar, useMobileTabs, useShowTabBar } from './MobileNav'
@@ -142,34 +140,22 @@ function Dashboard({ route, location }) {
       <Snackbar />
       <Sidebar mobileOpen={openNavBarMobile} onMobileClose={() => setOpenNavBarMobile(false)} desktopOpen={openNavBarDesktop}>
         <SidebarHeader>
-          <TopBar userMerchants={userMerchants} onOpenNavBarMobile={handleToggleNavBar} />
+          <TopBar userMerchants={userMerchants} onOpenNavBarMobile={handleToggleNavBar} desktopOpen={openNavBarDesktop} />
         </SidebarHeader>
         <NavBar onMobileClose={() => setOpenNavBarMobile(false)} openMobile={openNavBarMobile} openDesktop={openNavBarDesktop} />
       </Sidebar>
       {/* 平板與手機：App 式頂部列＋底部分頁列（選單鈕開啟側欄抽屜） */}
       <MobileAppBar tabs={mobileTabs} showTabBar={showTabBar} onOpenMenu={handleToggleNavBar} />
       {showTabBar && <MobileTabBar tabs={mobileTabs} menuOpen={openNavBarMobile} onOpenMenu={handleToggleNavBar} />}
-      {!openNavBarDesktop && (
-        <Button
-          variant="secondary"
-          size="icon"
-          aria-label="展開側欄"
-          className="ui-root noprint fixed left-3 top-3 z-[1100] hidden bg-background lg:inline-flex"
-          onClick={handleToggleNavBar}
-        >
-          <PanelLeftOpen strokeWidth={1.75} />
-        </Button>
-      )}
-      {/* 全站唯一的 main（Page 元件是 div，不會再產生第二個）；--sidebar-w 供底部固定列（如打帳單合計列）在 lg 以上讓出側欄：展開 264px、收合 0 */}
+      {/* 全站唯一的 main（Page 元件是 div，不會再產生第二個）；--sidebar-w 供底部固定列（如打帳單合計列）在 lg 以上讓出側欄：展開 264px、收合 80px 圖示欄 */}
       <main
         id="main-content"
         className={cn(
           'flow-root min-h-screen bg-canvas outline-none transition-[padding] duration-200 print:pl-0',
-          openNavBarDesktop ? '[--sidebar-w:264px]' : '[--sidebar-w:0px]',
+          openNavBarDesktop ? SIDEBAR_EXPANDED_MAIN_CLASS : SIDEBAR_RAIL_MAIN_CLASS,
           // iOS：輸入框字級小於 16px 時聚焦會自動放大畫面
           'max-sm:[&_input]:!text-[16px] max-sm:[&_select]:!text-[16px] max-sm:[&_[data-ui-select]]:!text-[16px] max-sm:[&_textarea]:!text-[16px]',
-          showTabBar && 'max-lg:pb-[calc(56px+env(safe-area-inset-bottom))] print:pb-0',
-          openNavBarDesktop && 'lg:pl-[264px]'
+          showTabBar && 'max-lg:pb-[calc(56px+env(safe-area-inset-bottom))] print:pb-0'
         )}
       >
         <div id="printContainer" className="max-w-full overflow-x-hidden">

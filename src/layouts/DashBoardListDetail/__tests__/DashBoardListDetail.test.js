@@ -4,10 +4,9 @@
 // - 權限尚未載入或沒有任何權限時不畫分類（不會切到無權限分類）。
 // GraphQL 一律由 testkit 的模擬 link 回應（FETCH_USER）。
 import React from 'react'
-import { act, fireEvent, screen, within } from '@testing-library/react'
+import { fireEvent, screen } from '@testing-library/react'
 import { renderPage, loginAs, callsOf } from '../../../__tests__/testkit.test'
 import DashBoardListDetail from '..'
-import { SETTINGS_FLYOUT_MEDIA } from 'ui/settings-nav'
 
 const pages = names => names.map(pageName => ({ pageName, authority: true }))
 const userFixture = pageAuthority => ({ FETCH_USER: { user: { id: 'user-1', pageAuthority: { authorityName: '店長', pageAuthority } } } })
@@ -102,70 +101,5 @@ describe('報表目錄', () => {
     expect(callsOf(calls, 'FETCH_USER')).toEqual([])
     expect(links()).toEqual([])
     expect(screen.queryByRole('heading', { name: '報表目錄' })).toBeNull()
-  })
-
-  it('左選單外框使用與右側卡片相同的 rounded-2xl', async () => {
-    await renderList(userFixture(reports(['店家日報表'])))
-    expect(screen.getByRole('tablist').className).toContain('md:rounded-2xl')
-    const card = screen.getByRole('heading', { name: '日報表' }).nextElementSibling
-    expect(card.className).toContain('rounded-2xl')
-  })
-
-  it('桌機滑過分類時浮出該分類報表，不改右側選中內容；移出後關閉', async () => {
-    const original = window.matchMedia
-    window.matchMedia = query => ({
-      matches: query === SETTINGS_FLYOUT_MEDIA,
-      media: query,
-      addEventListener() {},
-      removeEventListener() {},
-    })
-    try {
-      const utils = await renderList(userFixture(reports(['店家日報表', '店家排行榜'])))
-      expect(screen.queryByRole('region', { name: '營業的報表' })).toBeNull()
-      fireEvent.mouseEnter(screen.getByRole('tab', { name: '營業' }))
-      await utils.settle()
-      const flyout = screen.getByRole('region', { name: '營業的報表' })
-      expect(flyout.className).toContain('max-md:hidden')
-      const flyoutLink = within(flyout).getByRole('link', { name: '店家排行榜' })
-      expect(flyoutLink).toHaveAttribute('href', '/merchant-leader-board')
-      expect(flyoutLink.className).toContain('text-body')
-      expect(flyout.querySelector('.rounded-2xl')).not.toBeNull()
-      // 滑過不切換右側；日報表仍是選中分類
-      expect(screen.getByRole('heading', { name: '日報表' })).toBeInTheDocument()
-      // 細項在左側選單裡，DOM 順序先於右側卡片
-      expect(links()).toEqual([
-        ['店家排行榜', '/merchant-leader-board'],
-        ['店家日報表', '/merchant-daily-report'],
-      ])
-      fireEvent.mouseLeave(screen.getByRole('tab', { name: '營業' }).parentElement)
-      await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 200))
-      })
-      expect(screen.queryByRole('region', { name: '營業的報表' })).toBeNull()
-      // 點擊仍切換右側內容
-      fireEvent.mouseDown(screen.getByRole('tab', { name: '營業' }), { button: 0 })
-      expect(screen.getByRole('heading', { name: '營業' })).toBeInTheDocument()
-      expect(links()).toEqual([['店家排行榜', '/merchant-leader-board']])
-    } finally {
-      window.matchMedia = original
-    }
-  })
-
-  it('觸控或窄屏滑過分類不浮出細項', async () => {
-    const original = window.matchMedia
-    window.matchMedia = query => ({
-      matches: false,
-      media: query,
-      addEventListener() {},
-      removeEventListener() {},
-    })
-    try {
-      await renderList(userFixture(reports(['店家日報表', '店家排行榜'])))
-      fireEvent.mouseEnter(screen.getByRole('tab', { name: '營業' }))
-      expect(screen.queryByRole('region', { name: '營業的報表' })).toBeNull()
-      expect(links()).toEqual([['店家日報表', '/merchant-daily-report']])
-    } finally {
-      window.matchMedia = original
-    }
   })
 })

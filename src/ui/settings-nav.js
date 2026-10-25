@@ -1,141 +1,130 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { TabsList, TabsTrigger } from './tabs'
-import { Card } from './card'
-import { cn, focusRing } from './utils'
+import { cn } from './utils'
 
 // 設定頁樣板（STYLE.md §12）：桌機左側窄選單（surface 淺灰、圓角與 Card 的 rounded-2xl 相同）、手機回到頂部橫向捲動分頁。
 // 沿用 ui/tabs 的 Radix 行為（value/onValueChange/activationMode 由呼叫端原樣傳入）。
-// 分類若有子項，由呼叫端把內容放進 detail；桌機滑鼠滑過才浮出，點擊分類仍走原本的 onValueChange。窄屏與觸控不浮出。
-export const SETTINGS_FLYOUT_MEDIA = '(min-width: 768px) and (hover: hover) and (pointer: fine)'
+// 本元件只提供選單呈現，不自帶分頁狀態、不在這裡做 hover 浮出（細項浮出在主側欄）。
+// 桌機左欄高度貼內容，不跟右側拉滿；頁面往下捲時留在可視區。
+const DESKTOP_NAV_MEDIA = '(min-width: 768px)'
+const STICKY_TOP = 16
 
-// 斜向移到下方細項時，指標會先離開分類、經過空隙或下一個分類。立刻關閉或立刻改開下一個分類，
-// 面板會在抵達前被換掉。移出後稍等；這段時間內回到原分類（含面板）就取消關閉，只是掠過下一個分類也不改開。
-const FLYOUT_CLOSE_DELAY = 160
-let openFlyoutCount = 0
-
-export function canHoverSettingsFlyout() {
-  return typeof window.matchMedia === 'function' && window.matchMedia(SETTINGS_FLYOUT_MEDIA).matches
+function assignRef(ref, node) {
+  if (typeof ref === 'function') ref(node)
+  else if (ref) ref.current = node
 }
 
-// 細項列：字級與列高比照報表目錄右側連結（text-body、h-10），面板圓角由外層 Card 負責。
-function SettingsFlyoutButton({ children, onClick }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        'flex h-10 w-full items-center rounded-md px-3 text-left text-body text-text hover:bg-surface-hover',
-        focusRing
-      )}
-    >
-      {children}
-    </button>
-  )
+function readBox(el) {
+  const box = el.getBoundingClientRect()
+  return { top: box.top, bottom: box.bottom, left: box.left, width: box.width, height: box.height }
 }
 
-const SettingsTabsList = React.forwardRef(({ className, ...props }, ref) => (
-  <TabsList
-    ref={ref}
-    aria-label="設定分類"
-    className={cn(
-      'md:relative md:z-10 md:w-60 md:shrink-0 md:flex-col md:items-stretch md:gap-1 md:overflow-x-visible md:rounded-2xl md:border-b-0 md:bg-surface md:p-3',
-      className
-    )}
-    {...props}
-  />
-))
-SettingsTabsList.displayName = 'SettingsTabsList'
+const SettingsTabsList = React.forwardRef(({ className, style, ...props }, ref) => {
+  const slotRef = useRef(null)
+  const listRef = useRef(null)
+  // #printContainer 的 overflow-x:hidden 會讓純 CSS sticky 黏不住視窗，桌機改在捲動時用 fixed 補上。
+  const [fixedBox, setFixedBox] = useState(null)
 
-const SettingsTabsTrigger = React.forwardRef(({ icon: Icon, className, children, detail, detailLabel, ...props }, ref) => {
-  const [open, setOpen] = useState(false)
-  const [maxHeight, setMaxHeight] = useState(320)
-  const closeTimer = useRef(null)
-  const openTimer = useRef(null)
-  const isOpen = useRef(false)
-  const clearTimer = timer => {
-    if (timer.current != null) {
-      clearTimeout(timer.current)
-      timer.current = null
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return undefined
+    const mq = window.matchMedia(DESKTOP_NAV_MEDIA)
+    const update = () => {
+      const slot = slotRef.current
+      const list = listRef.current
+      const desktop = window.matchMedia(DESKTOP_NAV_MEDIA).matches
+      const printing = window.matchMedia('print').matches
+      if (!slot || !list || !desktop || printing) {
+        setFixedBox(prev => (prev == null ? prev : null))
+        return
+      }
+      const slotBox = readBox(slot)
+      const listBox = readBox(list)
+      const parent = slot.parentElement
+      const parentBox = parent ? readBox(parent) : slotBox
+      const height = listBox.height || slotBox.height
+      const width = slotBox.width || listBox.width
+      // CSS sticky 若已把欄位停在 top，就不要再改成 fixed。
+      const shouldStick = width > 0 && height > 0 && slotBox.top < STICKY_TOP - 1 && parentBox.bottom > height + STICKY_TOP
+      if (!shouldStick) {
+        setFixedBox(prev => (prev == null ? prev : null))
+        return
+      }
+      const next = { left: slotBox.left, width, height }
+      setFixedBox(prev => {
+        if (prev && Math.abs(prev.left - next.left) < 0.5 && Math.abs(prev.width - next.width) < 0.5 && Math.abs(prev.height - next.height) < 0.5) return prev
+        return next
+      })
     }
-  }
-  const reallyClose = () => {
-    if (!isOpen.current) return
-    isOpen.current = false
-    openFlyoutCount = Math.max(0, openFlyoutCount - 1)
-    setOpen(false)
-  }
-  const reallyOpen = top => {
-    if (!detail || !canHoverSettingsFlyout()) return
-    if (!isOpen.current) {
-      isOpen.current = true
-      openFlyoutCount += 1
+    update()
+    window.addEventListener('scroll', update, true)
+    window.addEventListener('resize', update)
+    window.addEventListener('beforeprint', update)
+    if (mq.addEventListener) mq.addEventListener('change', update)
+    let observer
+    if (typeof ResizeObserver === 'function') {
+      observer = new ResizeObserver(update)
+      const main = document.getElementById('main-content')
+      if (main) observer.observe(main)
+      if (slotRef.current) observer.observe(slotRef.current)
     }
-    setMaxHeight(Math.max(160, window.innerHeight - top - 16))
-    setOpen(true)
-  }
-  useEffect(() => () => {
-    clearTimer(closeTimer)
-    clearTimer(openTimer)
-    if (isOpen.current) {
-      isOpen.current = false
-      openFlyoutCount = Math.max(0, openFlyoutCount - 1)
+    return () => {
+      window.removeEventListener('scroll', update, true)
+      window.removeEventListener('resize', update)
+      window.removeEventListener('beforeprint', update)
+      if (mq.removeEventListener) mq.removeEventListener('change', update)
+      if (observer) observer.disconnect()
     }
   }, [])
-  const showDetail = event => {
-    clearTimer(closeTimer)
-    clearTimer(openTimer)
-    if (!detail || !canHoverSettingsFlyout()) return
-    const top = event.currentTarget.getBoundingClientRect().top
-    // 已有別的分類面板開著時，先不要改開這一個，避免斜向滑過途中的分類把目標面板換掉。
-    if (openFlyoutCount > 0 && !isOpen.current) {
-      openTimer.current = setTimeout(() => {
-        openTimer.current = null
-        reallyOpen(top)
-      }, FLYOUT_CLOSE_DELAY)
-      return
-    }
-    reallyOpen(top)
+
+  const setListRef = node => {
+    listRef.current = node
+    assignRef(ref, node)
   }
-  const hideDetail = () => {
-    clearTimer(openTimer)
-    clearTimer(closeTimer)
-    closeTimer.current = setTimeout(() => {
-      closeTimer.current = null
-      reallyClose()
-    }, FLYOUT_CLOSE_DELAY)
-  }
-  const label = detailLabel || (typeof children === 'string' ? `${children}的細項` : '分類細項')
+
   return (
-    <div className="relative md:w-full" onMouseEnter={showDetail} onMouseLeave={hideDetail}>
-      <TabsTrigger
-        ref={ref}
+    <div
+      ref={slotRef}
+      data-settings-nav=""
+      className="md:sticky md:top-4 md:z-10 md:h-fit md:w-60 md:max-w-full md:shrink-0 md:self-start"
+      style={fixedBox ? { minHeight: fixedBox.height } : undefined}
+    >
+      <TabsList
+        ref={setListRef}
+        aria-label="設定分類"
+        {...props}
         className={cn(
-          'max-md:min-h-10 md:mb-0 md:h-9 md:w-full md:justify-start md:gap-2 md:rounded-md md:border-b-0 md:px-3 md:text-left',
-          'md:hover:bg-surface-hover md:hover:text-text',
-          'data-[state=active]:md:bg-accent/8 data-[state=active]:md:text-accent',
+          'md:h-fit md:max-h-[calc(100dvh-2rem)] md:w-full md:flex-col md:items-stretch md:gap-1 md:overflow-x-visible md:overflow-y-auto md:rounded-2xl md:border-b-0 md:bg-surface md:p-3',
           className
         )}
-        {...props}
-      >
-        {Icon && <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />}
-        <span className="truncate">{children}</span>
-      </TabsTrigger>
-      {open && detail ? (
-        <div
-          role="region"
-          aria-label={label}
-          className="absolute left-full top-0 z-20 -translate-x-1 pl-3 max-md:hidden"
-        >
-          <Card>
-            <div className="flex w-60 flex-col overflow-y-auto p-2 pt-3" style={{ maxHeight }}>
-              {detail}
-            </div>
-          </Card>
-        </div>
-      ) : null}
+        style={fixedBox ? {
+          position: 'fixed',
+          top: STICKY_TOP,
+          left: fixedBox.left,
+          width: fixedBox.width,
+          maxHeight: 'calc(100dvh - 2rem)',
+          zIndex: 10,
+        } : (style || {})}
+      />
     </div>
   )
 })
+SettingsTabsList.displayName = 'SettingsTabsList'
+
+const SettingsTabsTrigger = React.forwardRef(({ icon: Icon, className, children, ...props }, ref) => (
+  <TabsTrigger
+    ref={ref}
+    className={cn(
+      'max-md:min-h-10 md:mb-0 md:h-9 md:w-full md:justify-start md:gap-2 md:rounded-md md:border-b-0 md:px-3 md:text-left',
+      'md:hover:bg-surface-hover md:hover:text-text',
+      'data-[state=active]:md:bg-accent/8 data-[state=active]:md:text-accent',
+      className
+    )}
+    {...props}
+  >
+    {Icon && <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />}
+    <span className="truncate">{children}</span>
+  </TabsTrigger>
+))
 SettingsTabsTrigger.displayName = 'SettingsTabsTrigger'
 
 // 右側內容區的分段標題：只呈現目前分類，不帶說明文案（說明留給各卡片既有標題／描述）。
@@ -146,4 +135,4 @@ function SettingsSectionHeading({ title, className }) {
   )
 }
 
-export { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading, SettingsFlyoutButton }
+export { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading }

@@ -37,7 +37,6 @@ export default function Coupon({ customer, pagenationLabel }) {
     <Fragment>
       {!boughtTicketRecords.loading && !usagedTicketRecoeds.loading ? (
         <div className="flex flex-col gap-6">
-          <div id="customer-coupon-bought" className="scroll-mt-6">
           {idx(
             boughtTicketRecords,
             _ =>
@@ -64,8 +63,6 @@ export default function Coupon({ customer, pagenationLabel }) {
                 />
               )
           )}
-          </div>
-          <div id="customer-coupon-used" className="scroll-mt-6">
           {idx(
             usagedTicketRecoeds,
             _ =>
@@ -92,7 +89,6 @@ export default function Coupon({ customer, pagenationLabel }) {
                 />
               )
           )}
-          </div>
         </div>
       ) : <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中"><Skeleton className="h-[320px] w-full rounded-lg" /></div>}
     </Fragment>
