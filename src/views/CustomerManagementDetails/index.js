@@ -12,7 +12,7 @@ import useFetchGetIsBookingCusCheckUsing from 'hooks/useFetchGetIsBookingCusChec
 import idx from 'idx'
 import produce from 'immer'
 import PropTypes from 'prop-types'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
 import ProgressBar from 'components/ProgressBar'
 import pagenationLabel from './../../helper/pagenationLabel'
@@ -20,7 +20,7 @@ import { CreditCard, Gift, MessageSquare, Receipt, Star, Ticket, User, UserCheck
 import { Breadcrumb, PageHeader } from 'ui/page-header'
 import { EmptyState } from 'ui/empty-state'
 import { Tabs } from 'ui/tabs'
-import { SettingsFlyoutButton, SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
+import { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
 
 import { Provider } from '../../hooks/useStore'
 
@@ -171,31 +171,6 @@ function CustomerManagementDetails({ match, history }) {
       history.push(value)
     }
   }
-  const pendingSection = useRef(null)
-  const tabDetails = {
-    coupon: [
-      { id: 'customer-coupon-bought', label: '卡券購買紀錄' },
-      { id: 'customer-coupon-used', label: '卡券使用紀錄' },
-    ],
-    topup: [
-      { id: 'customer-topup-record', label: '入金紀錄' },
-      { id: 'customer-topup-used', label: '入金使用' },
-    ],
-  }
-  const openSection = (value, id) => {
-    if (currentTab === value) {
-      document.getElementById(id)?.scrollIntoView({ block: 'start' })
-      return
-    }
-    pendingSection.current = id
-    handleTabsChange(null, value)
-  }
-  useEffect(() => {
-    const id = pendingSection.current
-    if (!id) return
-    pendingSection.current = null
-    document.getElementById(id)?.scrollIntoView({ block: 'start' })
-  }, [currentTab])
   useEffect(() => {
     if (!customerBonusRecords.loading && !getIsCustomerBonusActive.loading && membershipDisplay !== null && !loading) {
       const bonusActive = customerBonusRecords.data.customerBonusRecord.length > 0 || getIsCustomerBonusActive.data.getIsCustomerBonusActive
@@ -313,24 +288,9 @@ function CustomerManagementDetails({ match, history }) {
           activationMode="manual"
         >
           <SettingsTabsList aria-label="顧客詳細資料分類" className="noprint">
-            {tabs.map(tab => {
-              const sections = tabDetails[tab.value]
-              return (
-                <SettingsTabsTrigger
-                  key={tab.value}
-                  value={tab.value}
-                  icon={tabIcons[tab.value]}
-                  detailLabel={sections ? `${tab.label}的細項` : undefined}
-                  detail={sections ? sections.map(section => (
-                    <SettingsFlyoutButton key={section.id} onClick={() => openSection(tab.value, section.id)}>
-                      {section.label}
-                    </SettingsFlyoutButton>
-                  )) : undefined}
-                >
-                  {tab.label}
-                </SettingsTabsTrigger>
-              )
-            })}
+            {tabs.map(tab => (
+              <SettingsTabsTrigger key={tab.value} value={tab.value} icon={tabIcons[tab.value]}>{tab.label}</SettingsTabsTrigger>
+            ))}
           </SettingsTabsList>
           <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">
             <SettingsSectionHeading title={currentTabName} />

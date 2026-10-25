@@ -1,10 +1,9 @@
 import { Link as RouterLink } from 'react-router-dom'
-import { Bell, BellRing, CircleAlert, CircleCheck, EllipsisVertical, LoaderCircle, Moon, PanelLeftClose, Pencil, RotateCcw, Store, Sun, Trash2 } from 'lucide-react'
+import { Bell, BellRing, CircleAlert, CircleCheck, EllipsisVertical, LoaderCircle, Moon, PanelLeftClose, PanelLeftOpen, Pencil, RotateCcw, Store, Sun, Trash2 } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Popover, PopoverAnchor, PopoverContent } from 'ui/popover'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from 'ui/dropdown-menu'
 import { cn, focusRing } from 'ui/utils'
-import { APP_VERSION } from '../../version'
 import useToggle from 'hooks/useToggle'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, useRef, Fragment } from 'react'
@@ -41,7 +40,7 @@ function SidebarFooterPortal({ children }) {
   return <SlotPortal slotId={SIDEBAR_FOOTER_SLOT_ID}>{children}</SlotPortal>
 }
 
-function TopBar({ onOpenNavBarMobile, userMerchants }) {
+function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
   const dispatch = useDispatch()
   const history = useHistory()
   const ref = useRef()
@@ -381,13 +380,12 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
   )
   return (
     <Fragment>
-      <div className="flex h-10 items-center gap-1">
-        {/* 桌機側欄 264px 放不下「Logo＋版號＋搜尋／鈴鐺／收合三顆鈕」一列，版號改疊在 Logo 下方（仍在 40px 列高內）；手機抽屜沒有收合鈕，維持同一列 */}
-        <RouterLink to={loginUserAuth ? '/' : '/profile/general'} className={cn('flex min-w-0 items-center gap-2 rounded-md px-1 lg:flex-col lg:items-start lg:gap-0', focusRing)}>
+      <div className="flex h-10 items-center gap-1 lg:group-data-[rail=true]/sidebar:h-auto lg:group-data-[rail=true]/sidebar:flex-col">
+        {/* 版號在側欄最底部（NavBar），不疊在 Logo 下方。圖示欄放不下字標，只留收合／搜尋／鈴鐺圖示 */}
+        <RouterLink to={loginUserAuth ? '/' : '/profile/general'} className={cn('flex min-w-0 items-center gap-2 rounded-md px-1 lg:group-data-[rail=true]/sidebar:hidden', focusRing)}>
           <img alt="BeautyOS" className="h-6 w-auto invert dark:invert-0" src={bosLogo} />
-          <span className="whitespace-nowrap text-caption text-text-tertiary">{APP_VERSION}</span>
         </RouterLink>
-        <div className="flex-1" />
+        <div className="flex-1 lg:group-data-[rail=true]/sidebar:hidden" />
         {/* 搜尋選單鈕由 NavBar 畫進這個插槽（搜尋狀態在 NavBar），位置在通知鈴鐺左側（Jason 2026/10/21） */}
         <span id={SIDEBAR_SEARCH_SLOT_ID} className="contents" />
         <Popover open={openButton} onOpenChange={o => !o && setOpenButton(false)}>
@@ -466,8 +464,8 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
             </div>
           </PopoverContent>
         </Popover>
-        <Button variant="ghost" size="icon" className="hidden lg:inline-flex" aria-label="收合側欄" onClick={onOpenNavBarMobile}>
-          <PanelLeftClose strokeWidth={1.75} />
+        <Button variant="ghost" size="icon" className="hidden lg:inline-flex lg:group-data-[rail=true]/sidebar:order-first" aria-label={desktopOpen ? '收合側欄' : '展開側欄'} onClick={onOpenNavBarMobile}>
+          {desktopOpen ? <PanelLeftClose strokeWidth={1.75} /> : <PanelLeftOpen strokeWidth={1.75} />}
         </Button>
       </div>
       {/* 切換店家：圖示鈕放在側欄底部登出鈕旁（Jason 2026/10/20）；以 Portal 畫到 NavBar 的插槽，toggle／MerchantBar 仍在本元件 */}
@@ -507,6 +505,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants }) {
 }
 TopBar.propTypes = {
   onOpenNavBarMobile: PropTypes.func,
+  desktopOpen: PropTypes.bool,
 }
 
 

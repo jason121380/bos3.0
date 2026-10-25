@@ -42,10 +42,15 @@ describe('icons：MUI 圖示轉接', () => {
 })
 
 describe('Sidebar', () => {
-  it('桌機收合時移出畫面；手機抽屜關閉時不畫遮罩', () => {
+  it('桌機收合時留在畫面上並改為圖示欄寬度；手機抽屜關閉時不畫遮罩', () => {
     const { container } = render(<Sidebar desktopOpen={false}>內容</Sidebar>)
     const aside = container.querySelector('aside')
-    expect(aside.className).toContain('lg:-translate-x-full')
+    const classes = aside.className.split(/\s+/)
+    expect(classes).toContain('lg:w-[80px]')
+    expect(classes).toContain('lg:translate-x-0')
+    expect(classes).not.toContain('lg:-translate-x-full')
+    expect(classes).toContain('max-lg:-translate-x-full')
+    expect(aside).toHaveAttribute('data-rail', 'true')
     expect(container.querySelectorAll('[aria-hidden="true"]')).toHaveLength(0)
   })
 

@@ -161,18 +161,30 @@ describe('頁面權限檢查的參數', () => {
 })
 
 describe('側欄收合與抽屜', () => {
-  it('桌機：收合側欄後內容不再留側欄寬度，出現「展開側欄」鈕；按下恢復', async () => {
+  it('桌機：收合側欄後改留圖示欄寬度，同一顆鈕改為展開；按下恢復', async () => {
     window.innerWidth = 1280
     const { settle } = setup()
     await settle()
     expect(main().className).toContain('lg:pl-[264px]')
+    expect(main().className).toContain('[--sidebar-w:264px]')
+    const version = screen.getByTestId('sidebar-app-version')
+    expect(version.tagName).toBe('P')
+    expect(version.closest('a')).toBeNull()
+    expect(version.closest('button')).toBeNull()
     fireEvent.click(screen.getByLabelText('收合側欄'))
     expect(main().className).not.toContain('lg:pl-[264px]')
-    expect(main().className).toContain('[--sidebar-w:0px]')
-    expect(document.querySelector('aside').className).toContain('lg:-translate-x-full')
+    expect(main().className).toContain('lg:pl-[80px]')
+    expect(main().className).toContain('[--sidebar-w:80px]')
+    const aside = document.querySelector('aside')
+    const classes = aside.className.split(/\s+/)
+    expect(classes).toContain('lg:w-[80px]')
+    expect(classes).toContain('lg:translate-x-0')
+    expect(classes).not.toContain('lg:-translate-x-full')
+    expect(aside).toHaveAttribute('data-rail', 'true')
     fireEvent.click(screen.getByLabelText('展開側欄'))
     expect(main().className).toContain('lg:pl-[264px]')
     expect(screen.queryByLabelText('展開側欄')).toBeNull()
+    expect(screen.getByLabelText('收合側欄')).toBeInTheDocument()
   })
 
   it('手機：選單鈕開啟抽屜（分頁列的選單標示開啟中），點遮罩關閉', async () => {
@@ -181,12 +193,13 @@ describe('側欄收合與抽屜', () => {
     await settle()
     const menuBtn = within(tabBar()).getByLabelText('開啟選單')
     fireEvent.click(menuBtn)
-    expect(document.querySelector('aside').className).toContain('translate-x-0')
+    expect(document.querySelector('aside').className).toContain('max-lg:translate-x-0')
+    expect(document.querySelector('aside').className).not.toContain('max-lg:-translate-x-full')
     expect(menuBtn).toHaveAttribute('aria-expanded', 'true')
     // 抽屜開啟時分頁列不標示目前頁
     expect(within(tabBar()).getByText('打帳單').closest('a')).not.toHaveAttribute('aria-current')
     fireEvent.click(document.querySelector('.bg-black\\/40'))
-    expect(document.querySelector('aside').className).toContain('-translate-x-full')
+    expect(document.querySelector('aside').className).toContain('max-lg:-translate-x-full')
   })
 
   it('「跳至主要內容」把焦點移到 main（暫時可聚焦，失焦後還原），不改網址', async () => {

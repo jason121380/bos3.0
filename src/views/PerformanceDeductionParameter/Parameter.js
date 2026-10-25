@@ -1,9 +1,9 @@
 import Page from 'components/Page'
 import { PageHeader } from 'ui/page-header'
 import { Tabs } from 'ui/tabs'
-import { SettingsFlyoutButton, SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
+import { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
 import { CircleDollarSign, Percent, SlidersHorizontal, Users } from 'lucide-react'
-import { memo, useEffect, useRef, useState } from 'react'
+import { memo, useState } from 'react'
 import { useFetchDeductionSettings } from 'hooks/useFetchGetDeductionSettings'
 import useFetchMerchantCommissionWay from 'hooks/useFetchMerchantCommissionWay'
 import { useFetchGetMerchantPointValueSettingsForSelect } from 'hooks/useFetchGetMerchantPointValueSettings'
@@ -25,25 +25,6 @@ function Parameter() {
   // 子元件 props、編輯/儲存 handler 與存值一字未動，初始掛載與 fetch 時序與原直疊版相同。
   const [selectTab, setSelectTab] = useState('commissionWay')
   const handleTabsChange = (event, value) => setSelectTab(value)
-  const pendingSection = useRef(null)
-  const openSection = (value, id) => {
-    if (selectTab === value) {
-      document.getElementById(id)?.scrollIntoView({ block: 'start' })
-      return
-    }
-    pendingSection.current = id
-    setSelectTab(value)
-  }
-  useEffect(() => {
-    const id = pendingSection.current
-    if (!id) return
-    pendingSection.current = null
-    document.getElementById(id)?.scrollIntoView({ block: 'start' })
-  }, [selectTab])
-  const personnelSections = [
-    { id: 'deduction-job-title', label: '人員身分類別設定' },
-    { id: 'deduction-helper-category', label: '互助類別名稱設定' },
-  ]
   const tabs = [
     { value: 'commissionWay', label: '服務扣項方式命名', icon: SlidersHorizontal },
     { value: 'personnel', label: '人員身分類別', icon: Users },
@@ -62,19 +43,7 @@ function Parameter() {
         >
           <SettingsTabsList>
             {tabs.map((tab, index) => (
-              <SettingsTabsTrigger
-                key={index}
-                value={tab.value}
-                icon={tab.icon}
-                detailLabel={tab.value === 'personnel' ? `${tab.label}的設定` : undefined}
-                detail={tab.value === 'personnel' ? personnelSections.map(section => (
-                  <SettingsFlyoutButton key={section.id} onClick={() => openSection(tab.value, section.id)}>
-                    {section.label}
-                  </SettingsFlyoutButton>
-                )) : undefined}
-              >
-                {tab.label}
-              </SettingsTabsTrigger>
+              <SettingsTabsTrigger key={index} value={tab.value} icon={tab.icon}>{tab.label}</SettingsTabsTrigger>
             ))}
           </SettingsTabsList>
           <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">
