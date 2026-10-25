@@ -110,11 +110,13 @@ describe('主側欄桌機 hover 細項', () => {
     return history
   }
 
-  it('桌機滑過有子項的主選單會浮出細項，移出後關閉；點主項仍可展開', async () => {
+  it('桌機滑過有子項的主選單會浮出細項，移出後關閉；點主項不再上下開合', async () => {
     hoverMedia(true)
     const history = renderGroup()
     const group = screen.getByRole('button', { name: '資料設定' })
     expect(group).toHaveAttribute('aria-expanded', 'false')
+    expect(group).toHaveAttribute('aria-haspopup', 'true')
+    expect(group.querySelector('svg')).toBeNull()
     fireEvent.mouseEnter(group.parentElement)
     const flyout = screen.getByRole('region', { name: '資料設定的細項' })
     expect(flyout.querySelector('.rounded-2xl')).not.toBeNull()
@@ -129,8 +131,32 @@ describe('主側欄桌機 hover 細項', () => {
     })
     expect(screen.queryByRole('region', { name: '資料設定的細項' })).toBeNull()
     fireEvent.click(group)
-    expect(group).toHaveAttribute('aria-expanded', 'true')
-    expect(screen.getByRole('link', { name: '服務分類設定' })).toBeInTheDocument()
+    expect(group).toHaveAttribute('aria-expanded', 'false')
+    expect(group.parentElement.querySelector('a')).toBeNull()
+  })
+
+  it('桌機 hover 時搜尋強制展開仍把子項嵌進側欄，不另開浮層', () => {
+    hoverMedia(true)
+    const history = createMemoryHistory({ initialEntries: ['/order/create'] })
+    render(
+      <Router history={history}>
+        <NavItem
+          depth={0}
+          title="資料設定"
+          open
+          forceOpen
+          renderItems={() => (
+            <div>
+              <NavItem depth={1} href="/parameter" title="系統參數設定" />
+            </div>
+          )}
+        />
+      </Router>
+    )
+    expect(screen.getByRole('link', { name: '系統參數設定' })).toBeInTheDocument()
+    expect(screen.queryByRole('region')).toBeNull()
+    fireEvent.mouseEnter(screen.getByRole('button', { name: '資料設定' }).parentElement)
+    expect(screen.queryByRole('region')).toBeNull()
   })
 
   it('窄屏或觸控不靠 hover 浮出；圖示欄改以點選打開細項', () => {

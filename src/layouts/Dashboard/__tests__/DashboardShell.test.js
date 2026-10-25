@@ -181,10 +181,34 @@ describe('側欄收合與抽屜', () => {
     expect(classes).toContain('lg:translate-x-0')
     expect(classes).not.toContain('lg:-translate-x-full')
     expect(aside).toHaveAttribute('data-rail', 'true')
+    // 圖示欄不顯示搜尋、通知、深淺色、切換店家、登出；收合鈕、主選單、頭像、版號仍在。
+    // 樣式帶 lg，窄屏抽屜不受影響。測試環境不套用 Tailwind，改鎖定 class。
+    const railHidden = 'lg:group-data-[rail=true]/sidebar:hidden'
+    const hiddenOnRail = [
+      screen.getByRole('button', { name: '搜尋選單' }),
+      screen.getByRole('button', { name: '訂單佇列' }),
+      screen.getByTestId('theme-toggle'),
+      screen.getByRole('button', { name: '切換店家（目前：測試店）' }),
+      screen.getByRole('button', { name: '登出' }),
+    ]
+    hiddenOnRail.forEach(el => {
+      expect(el.className).toContain(railHidden)
+      expect(el.className.split(/\s+/)).not.toContain('hidden')
+    })
+    expect(screen.getByLabelText('展開側欄').className).not.toContain(railHidden)
+    expect(screen.getByRole('button', { name: '櫃檯作業' }).className).not.toContain(railHidden)
+    const footer = screen.getByRole('button', { name: '登出' }).parentElement
+    const profile = within(footer).getByRole('link')
+    expect(profile).toHaveAttribute('href', '/profile/general')
+    expect(profile.className).not.toContain(railHidden)
+    expect(version.className).not.toContain(railHidden)
+    expect(version).toBeInTheDocument()
     fireEvent.click(screen.getByLabelText('展開側欄'))
     expect(main().className).toContain('lg:pl-[264px]')
     expect(screen.queryByLabelText('展開側欄')).toBeNull()
     expect(screen.getByLabelText('收合側欄')).toBeInTheDocument()
+    expect(aside).not.toHaveAttribute('data-rail')
+    hiddenOnRail.forEach(el => expect(el).toBeInTheDocument())
   })
 
   it('手機：選單鈕開啟抽屜（分頁列的選單標示開啟中），點遮罩關閉', async () => {

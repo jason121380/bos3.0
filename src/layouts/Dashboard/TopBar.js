@@ -4,6 +4,7 @@ import { Button } from 'ui/button'
 import { Popover, PopoverAnchor, PopoverContent } from 'ui/popover'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from 'ui/dropdown-menu'
 import { cn, focusRing } from 'ui/utils'
+import { SIDEBAR_RAIL_HIDDEN_CLASS } from 'ui/sidebar'
 import useToggle from 'hooks/useToggle'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, useRef, Fragment } from 'react'
@@ -366,7 +367,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
       ref={ref}
       variant="ghost"
       size="icon"
-      className="relative"
+      className={cn('relative', SIDEBAR_RAIL_HIDDEN_CLASS)}
       aria-label={error ? `訂單佇列：${errorCount} 筆失敗` : '訂單佇列'}
       onClick={handleClickOpenNotification('bottom-end')}
     >
@@ -381,7 +382,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
   return (
     <Fragment>
       <div className="flex h-10 items-center gap-1 lg:group-data-[rail=true]/sidebar:h-auto lg:group-data-[rail=true]/sidebar:flex-col">
-        {/* 版號在側欄最底部（NavBar），不疊在 Logo 下方。圖示欄放不下字標，只留收合／搜尋／鈴鐺圖示 */}
+        {/* 版號在側欄最底部（NavBar），不疊在 Logo 下方。圖示欄不顯示字標、搜尋與通知，只留收合鈕 */}
         <RouterLink to={loginUserAuth ? '/' : '/profile/general'} className={cn('flex min-w-0 items-center gap-2 rounded-md px-1 lg:group-data-[rail=true]/sidebar:hidden', focusRing)}>
           <img alt="BeautyOS" className="h-6 w-auto invert dark:invert-0" src={bosLogo} />
         </RouterLink>
@@ -473,7 +474,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
         <Button
           variant="ghost"
           size="icon"
-          className="shrink-0"
+          className={cn('shrink-0', SIDEBAR_RAIL_HIDDEN_CLASS)}
           aria-label={moodChange ? '切換為淺色模式' : '切換為深色模式'}
           aria-pressed={moodChange}
           disabled={themeSaving}
@@ -491,7 +492,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
         <Button
           variant="ghost"
           size="icon"
-          className="shrink-0"
+          className={cn('shrink-0', SIDEBAR_RAIL_HIDDEN_CLASS)}
           aria-label={`切換店家（目前：${JSON.parse(localStorage.getItem('userMerchant')).name}）`}
           title={`切換店家（目前：${JSON.parse(localStorage.getItem('userMerchant')).name}）`}
           onClick={toggle}
