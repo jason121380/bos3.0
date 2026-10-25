@@ -1,5 +1,5 @@
 // 側欄抽屜：iPhone PWA 狀態列（頂部安全區）白條只在抽屜打開時出現，且不攔點擊（fix/pwa-statusbar-white）
-// 主側欄細項浮層：左緣貼側欄、視窗滿高、由上往下；超過 10 項才換欄。
+// 主側欄細項浮層：左緣貼側欄、視窗滿高、由上往下；超過 16 項才換欄。
 import React from 'react'
 import { cleanup, render, screen } from '@testing-library/react'
 import { Sidebar, SidebarFlyout, placeSidebarFlyout, sidebarFlyoutColumnCount, sidebarFlyoutShellWidth, splitSidebarFlyoutColumns, SIDEBAR_FLYOUT_GAP, SIDEBAR_FLYOUT_VIEWPORT_MARGIN } from '../sidebar'
@@ -86,12 +86,13 @@ describe('側欄細項浮層位置與換欄', () => {
     return screen.getByRole('region', { name: '櫃檯作業的細項' })
   }
 
-  it('10 項維持一欄；11 項才換成 10＋1', () => {
-    expect(sidebarFlyoutColumnCount(10)).toBe(1)
-    expect(sidebarFlyoutColumnCount(11)).toBe(2)
-    expect(sidebarFlyoutColumnCount(20)).toBe(2)
-    expect(sidebarFlyoutColumnCount(21)).toBe(3)
-    expect(splitSidebarFlyoutColumns(names(11)).map(column => column.length)).toEqual([10, 1])
+  it('16 項維持一欄；17 項才換成 16＋1', () => {
+    expect(sidebarFlyoutColumnCount(16)).toBe(1)
+    expect(sidebarFlyoutColumnCount(17)).toBe(2)
+    expect(sidebarFlyoutColumnCount(32)).toBe(2)
+    expect(sidebarFlyoutColumnCount(33)).toBe(3)
+    expect(splitSidebarFlyoutColumns(names(16))).toHaveLength(1)
+    expect(splitSidebarFlyoutColumns(names(17)).map(column => column.length)).toEqual([16, 1])
     expect(sidebarFlyoutShellWidth(1, SIDEBAR_FLYOUT_GAP)).toBe('calc(15rem + 4px)')
     expect(sidebarFlyoutShellWidth(2, SIDEBAR_FLYOUT_GAP)).toBe('calc(2 * 15rem + 1rem + 4px)')
   })
@@ -133,7 +134,7 @@ describe('側欄細項浮層位置與換欄', () => {
       maxWidth: 160,
     })
 
-    const flyout = renderFlyout(11)
+    const flyout = renderFlyout(17)
     expect(flyout.style.left).toBe('264px')
     expect(flyout.style.top).toBe('8px')
     expect(flyout.style.height).toBe('784px')
@@ -145,19 +146,19 @@ describe('側欄細項浮層位置與換欄', () => {
     expect(flyout.style.left).not.toBe('480px')
     const columns = flyout.querySelectorAll('[data-flyout-column]')
     expect(columns).toHaveLength(2)
-    expect(Array.from(columns[0].querySelectorAll('a')).map(node => node.textContent)).toEqual(names(10))
-    expect(columns[1].textContent).toBe('項目11')
+    expect(Array.from(columns[0].querySelectorAll('a')).map(node => node.textContent)).toEqual(names(16))
+    expect(columns[1].textContent).toBe('項目17')
     expect(flyout.querySelector('.rounded-2xl')).not.toBeNull()
     expect(flyout.querySelector('.overflow-auto')).not.toBeNull()
   })
 
-  it('沒有側欄外框時退回錨點右緣；10 項不拆欄', () => {
-    const flyout = renderFlyout(10, { withAside: false })
+  it('沒有側欄外框時退回錨點右緣；16 項不拆欄', () => {
+    const flyout = renderFlyout(16, { withAside: false })
     expect(flyout.style.left).toBe('480px')
     expect(flyout.style.top).toBe('8px')
     expect(flyout.style.height).toBe('784px')
     expect(flyout.style.width).toBe('calc(15rem + 4px)')
     expect(flyout.querySelector('[data-flyout-column]')).toBeNull()
-    expect(flyout.querySelectorAll('a')).toHaveLength(10)
+    expect(flyout.querySelectorAll('a')).toHaveLength(16)
   })
 })
