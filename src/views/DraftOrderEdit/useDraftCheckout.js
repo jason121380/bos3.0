@@ -15,6 +15,7 @@ import { getMissingForDraftOrder } from './draftOrderRequirements'
 import { ordersListPath, ordersListPathForOrderDate } from './ordersListPath'
 import {
   confirmDraftStillPending,
+  confirmDraftStillPendingOnDates,
   evictCheckedOutDraft,
   isUncertainCheckoutError,
   rememberCheckedOutDraft,
@@ -109,7 +110,7 @@ export default function useDraftCheckout({ passwordData }) {
   }, [orderId, orderDate])
 
   const handleReCheckoutOrder = () => {
-    if (isRecheckoutOrders || draftGate === 'blocked' || draftGate === 'closed') return
+    if (isRecheckoutOrders || draftGate === 'checking' || draftGate === 'blocked' || draftGate === 'closed') return
     setIsClick(true)
     setIsRecheckoutOrders(true)
     const tmp = handleTidyBill(bill)
@@ -168,7 +169,8 @@ export default function useDraftCheckout({ passwordData }) {
             return
           }
           const date = bill.date || orderDate
-          confirmDraftStillPending(client, draftId, date).then(status => {
+          // 編輯過的帳單日期與當初存下的掛單日期可能不同；只查一邊會把仍掛著的草稿誤判成已結帳
+          confirmDraftStillPendingOnDates(client, draftId, [orderDate, bill.date]).then(status => {
             if (!mountedRef.current || leaveDraftRef.current) return
             if (status === 'closed') {
               const listPath = date ? ordersListPathForOrderDate(date) : ordersListPath(location.search)
@@ -282,7 +284,7 @@ export default function useDraftCheckout({ passwordData }) {
   useEffect(() => {
     const handleEditOrderShortCut = event => {
       if (event.code === 'F9') {
-        if (draftGate === 'blocked' || draftGate === 'closed') return
+        if (draftGate === 'checking' || draftGate === 'blocked' || draftGate === 'closed') return
         disableRecheckoutOrders ? handleOpenReCheckout() : handleReCheckoutOrder()
       }
     }

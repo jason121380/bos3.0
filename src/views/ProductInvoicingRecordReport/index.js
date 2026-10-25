@@ -94,6 +94,12 @@ const ProductInvoicingRecordReport = () => {
     })
   }
 
+  // 商品清單失敗時，只重跑報表不會清掉 getAllProducts.error，頁面會一直停在失敗畫面
+  const retryFailedQueries = () => {
+    if (getAllProducts.error) getAllProducts.refetch()
+    handleSearch()
+  }
+
   return (
     <Page className='ProductInvoicingRecordReport ui-root' title="商品進銷貨報表">
       <div>
@@ -222,7 +228,7 @@ const ProductInvoicingRecordReport = () => {
           }
         />
         {invoicingRecordReportLazyData.error || getAllProducts.error ? (
-          <QueryFailed onRetry={() => handleSearch()} />
+          <QueryFailed onRetry={retryFailedQueries} />
         ) : (!getAllProducts.loading && !invoicingRecordReportLazyData.loading && invoicingRecordReportLazyData.data !== undefined) ?
           <Results reportData={reportData} /> : (
             // 載入中：與舊版 CircularProgress 相同時機顯示

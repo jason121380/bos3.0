@@ -1,8 +1,10 @@
+import { startOfDay } from 'date-fns'
 import {
   checkedOutDraft,
   checkedOutDraftPath,
   classifyDraftPending,
   clearCheckedOutDrafts,
+  confirmDraftStillPendingOnDates,
   isUncertainCheckoutError,
   rememberCheckedOutDraft,
 } from '../draftCheckoutGuard'
@@ -42,6 +44,58 @@ describe('結帳錯誤能不能再送', () => {
       message: '密碼錯誤',
     })).toBe(false)
     expect(isUncertainCheckoutError(new Error('庫存不足'))).toBe(false)
+  })
+})
+
+describe('結帳不確定時要同時看編輯日期與原掛單日期', () => {
+  const edited = new Date(2026, 9, 18, 15).getTime()
+  const original = new Date(2026, 9, 21, 10, 30).getTime()
+  const editedStart = startOfDay(new Date(edited)).getTime()
+  const originalStart = startOfDay(new Date(original)).getTime()
+
+  const clientFor = byStart => {
+    const query = jest.fn(({ variables }) => {
+      const payload = byStart(variables.input.dateRange.startDate)
+      if (payload instanceof Error) return Promise.reject(payload)
+      return Promise.resolve({ data: { pendingOrders: payload } })
+    })
+    return { client: { query }, query }
+  }
+
+  it('編輯那天的清單沒有這張，但原日期仍有：還是掛單', async () => {
+    const { client, query } = clientFor(start => (
+      start === editedStart
+        ? { totalCount: 0, orders: [] }
+        : { totalCount: 1, orders: [{ id: 'draft-1' }] }
+    ))
+    await expect(confirmDraftStillPendingOnDates(client, 'draft-1', [edited, original])).resolves.toBe('open')
+    expect(query.mock.calls.map(call => call[0].variables.input.dateRange.startDate)).toEqual([
+      editedStart,
+      originalStart,
+    ])
+  })
+
+  it('兩天的完整清單都沒有這張：已結帳', async () => {
+    const { client } = clientFor(() => ({ totalCount: 0, orders: [] }))
+    await expect(confirmDraftStillPendingOnDates(client, 'draft-1', [edited, original])).resolves.toBe('closed')
+  })
+
+  it('編輯那天沒有這張，但原日期查詢失敗：不能當成已結帳', async () => {
+    const { client } = clientFor(start => (
+      start === originalStart ? new Error('Failed to fetch') : { totalCount: 0, orders: [] }
+    ))
+    await expect(confirmDraftStillPendingOnDates(client, 'draft-1', [edited, original])).resolves.toBe('unknown')
+  })
+
+  it('同一天只查一次；沒有日期則不查', async () => {
+    const morning = new Date(2026, 9, 21, 10).getTime()
+    const evening = new Date(2026, 9, 21, 18).getTime()
+    const { client, query } = clientFor(() => ({ totalCount: 0, orders: [] }))
+    await expect(confirmDraftStillPendingOnDates(client, 'draft-1', [morning, evening])).resolves.toBe('closed')
+    expect(query).toHaveBeenCalledTimes(1)
+    query.mockClear()
+    await expect(confirmDraftStillPendingOnDates(client, 'draft-1', [null, ''])).resolves.toBe('unknown')
+    expect(query).not.toHaveBeenCalled()
   })
 })
 

@@ -5,7 +5,8 @@
 // - 金額彙總：多筆店販、預收卡、使用預收卡的合計正確；其他付款＋扣入金＋折抵超過應付時三者歸零（避免現金應收變負數）；
 // - 掛單沒有服務人員時說明尚缺。
 // 檢查漏掉就會送出殘缺的帳單；金額錯就是收錢錯。GraphQL 全由模擬 link 回應，不連後端、不建立或修改真實帳單。
-import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
+import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
+import { startOfDay } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import { loginAs, callsOf } from '../../../__tests__/testkit.test'
 import billPaymentSummary from 'helper/billPaymentSummary'
@@ -15,6 +16,7 @@ import {
   CUSTOMER, DESIGNER, SERVICE, SERVICE2, TICKET,
 } from './draftPageKit.test'
 import { ordersListPathForOrderDate } from '../ordersListPath'
+import { checkedOutDraft } from '../draftCheckoutGuard'
 
 jest.setTimeout(20000)
 
@@ -410,6 +412,124 @@ describe('掛單詳細：結帳成功後不能再結一次', () => {
     expect(checkout().parentElement.getAttribute('title')).toBe('無法確認是否已結帳，請到帳單列表確認')
     fireEvent.click(checkout())
     expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+    expect(screen.getByTestId('testkit-location')).toHaveTextContent('/draft-order/order-1')
+  })
+})
+
+describe('掛單詳細：結帳結果不確定時的日期與確認中鎖定', () => {
+  const original = makeOrder().date
+  const edited = new Date(2026, 9, 18, 10, 30).getTime()
+  const originalStart = startOfDay(new Date(original)).getTime()
+  const editedStart = startOfDay(new Date(edited)).getTime()
+  const pendingStarts = calls => callsOf(calls, 'DRAFT_STILL_PENDING').map(call => call.variables.input.dateRange.startDate)
+
+  // 確認中按鈕是 disabled，fireEvent.click 不會執行 onClick。
+  // F9 與密碼窗「確認」走的是同一個結帳處理，這裡直接呼叫按鈕上的 onClick。
+  const invokeCheckoutClick = () => {
+    const button = checkout()
+    const key = Object.keys(button).find(name => name.startsWith('__reactFiber') || name.startsWith('__reactInternalInstance'))
+    let fiber = key ? button[key] : null
+    while (fiber) {
+      if (fiber.memoizedProps && typeof fiber.memoizedProps.onClick === 'function') {
+        act(() => fiber.memoizedProps.onClick({ preventDefault() {}, stopPropagation() {} }))
+        return
+      }
+      fiber = fiber.return
+    }
+    throw new Error('結帳按鈕沒有 onClick')
+  }
+
+  const changeBillDate = async () => {
+    fireEvent.click(screen.getByText('帳單日期').parentElement.querySelector('input'))
+    const dialog = within(await screen.findByRole('dialog'))
+    fireEvent.click(dialog.getByRole('gridcell', { name: '2026年10月18日' }))
+  }
+
+  it('改了帳單日期後結帳逾時，原日期仍有這張掛單：不當成已結帳、也不鎖住', async () => {
+    const page = setupDraft({
+      reCheckoutOrder: () => {
+        throw new Error('Failed to fetch')
+      },
+      DRAFT_STILL_PENDING: ({ input }) => (
+        input.dateRange.startDate === editedStart
+          ? { pendingOrders: { totalCount: 0, orders: [] } }
+          : { pendingOrders: { totalCount: 1, orders: [{ id: 'order-1' }] } }
+      ),
+    })
+    await pageReady(page)
+    const originalQueriesBefore = pendingStarts(page.calls).filter(start => start === originalStart).length
+    await changeBillDate()
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      message: '網路連線異常，這張掛單尚未結帳，請再確認一次',
+    })))
+    const sent = callsOf(page.calls, 'reCheckoutOrder')[0].variables.input.orderInput.date
+    expect(startOfDay(new Date(sent)).getTime()).toBe(editedStart)
+    expect(pendingStarts(page.calls).filter(start => start === originalStart).length).toBeGreaterThan(originalQueriesBefore)
+    expect(openSnackbar).not.toHaveBeenCalledWith(expect.objectContaining({
+      message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+    }))
+    expect(checkedOutDraft('order-1')).toBeNull()
+    expect(screen.getByTestId('testkit-location')).toHaveTextContent('/draft-order/order-1')
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+  })
+
+  it('改了帳單日期後結帳逾時，兩個日期都沒有這張掛單：仍視為已結帳', async () => {
+    let afterCheckout = false
+    const page = setupDraft({
+      reCheckoutOrder: () => {
+        afterCheckout = true
+        throw new Error('Failed to fetch')
+      },
+      DRAFT_STILL_PENDING: () => ({
+        pendingOrders: afterCheckout
+          ? { totalCount: 0, orders: [] }
+          : { totalCount: 1, orders: [{ id: 'order-1' }] },
+      }),
+    })
+    await pageReady(page)
+    await changeBillDate()
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      variant: 'warning',
+      message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+    })))
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent(ordersListPathForOrderDate(edited)))
+  })
+
+  it('進頁還在確認掛單時，F9 與結帳處理都不送出；確認完仍可結帳', async () => {
+    const page = setupDraft({}, { delays: { DRAFT_STILL_PENDING: 2000 } })
+    await screen.findByText(/掛單詳細 \(A123\)/)
+    await wait(() => expect(checkout().parentElement.getAttribute('title')).toBe('處理中，請稍候'), { timeout: 8000 })
+    fireEvent.keyDown(document, { code: 'F9' })
+    invokeCheckoutClick()
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(0)
+    await wait(() => {
+      expect(checkout()).not.toBeDisabled()
+      expect(checkout().parentElement.getAttribute('title') || '').not.toBe('處理中，請稍候')
+    }, { timeout: 8000 })
+    fireEvent.keyDown(document, { code: 'F9' })
+    await wait(() => expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1))
+  })
+
+  it('進頁還在確認掛單時，F9 不開密碼窗；密碼窗確認也不送出', async () => {
+    const page = setupDraft({ password: true }, { delays: { DRAFT_STILL_PENDING: 2000 } })
+    await screen.findByText(/掛單詳細 \(A123\)/)
+    await wait(() => expect(checkout().parentElement.getAttribute('title')).toBe('處理中，請稍候'), { timeout: 8000 })
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 50))
+    })
+    expect(checkout().parentElement.getAttribute('title')).toBe('處理中，請稍候')
+    fireEvent.keyDown(document, { code: 'F9' })
+    expect(screen.queryByLabelText('密碼')).toBeNull()
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(0)
+    invokeCheckoutClick()
+    fireEvent.click(await screen.findByTestId('confirm'))
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(0)
     expect(screen.getByTestId('testkit-location')).toHaveTextContent('/draft-order/order-1')
   })
 })

@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import { ChevronDown } from 'lucide-react'
 import { inputClass } from './input'
 import { cn } from './utils'
@@ -9,6 +10,8 @@ import { useLayerRef } from './layer-stack'
 // 畫面是按鈕＋清單；onChange 仍與舊原生 select 相同：event.target.value 為選項索引字串。
 // 同層留一顆 role=presentation 的 select：不進定位順序、點不到、不會叫出系統選單，
 // 只為了既有測試依 name 找到它、讀 .options，以及 fireEvent.change 仍走索引。
+// 鍵盤：方向鍵移動作用中的選項（略過停用），Enter／空白鍵選取；清單用 portal 掛到對話框或 body，
+// 避免被 DialogBody 的 overflow 裁掉。
 
 const assignRef = (ref, node) => {
   if (!ref) return
@@ -43,6 +46,48 @@ const mirrorSelect = (button, select) => {
   }
 }
 
+// 與 combobox 相同：在對話框內就掛在對話框上（配合焦點鎖，且脫離 DialogBody 的 overflow），否則掛在 body。
+const findPortalHost = node => (node && node.closest('[role="dialog"]')) || document.body
+
+function useAnchoredMenu(anchorRef, open) {
+  const [style, setStyle] = React.useState(null)
+  const [host, setHost] = React.useState(null)
+  React.useLayoutEffect(() => {
+    if (!open) return undefined
+    const anchor = anchorRef.current
+    if (!anchor || typeof document === 'undefined') return undefined
+    const target = findPortalHost(anchor)
+    setHost(target)
+    const update = () => {
+      const rect = anchor.getBoundingClientRect()
+      if (target === document.body) {
+        setStyle({
+          position: 'absolute',
+          top: rect.bottom + window.scrollY + 4,
+          left: rect.left + window.scrollX,
+          width: rect.width,
+        })
+      } else {
+        const box = target.getBoundingClientRect()
+        setStyle({
+          position: 'absolute',
+          top: rect.bottom - box.top + target.scrollTop + 4,
+          left: rect.left - box.left + target.scrollLeft,
+          width: rect.width,
+        })
+      }
+    }
+    update()
+    window.addEventListener('resize', update)
+    window.addEventListener('scroll', update, true)
+    return () => {
+      window.removeEventListener('resize', update)
+      window.removeEventListener('scroll', update, true)
+    }
+  }, [open, anchorRef])
+  return { style, host }
+}
+
 const IndexSelect = React.forwardRef(function IndexSelect(
   {
     id,
@@ -69,11 +114,15 @@ const IndexSelect = React.forwardRef(function IndexSelect(
   ref
 ) {
   const [open, setOpen] = React.useState(false)
+  const [active, setActive] = React.useState(-1)
   const rootRef = React.useRef(null)
   const buttonRef = React.useRef(null)
   const selectRef = React.useRef(null)
+  const menuRef = React.useRef(null)
+  const autoId = React.useRef(`idxsel-${Math.random().toString(36).slice(2, 8)}`).current
   const index = valueIndex < 0 ? -1 : valueIndex
-  const listId = id ? `${id}-list` : undefined
+  const listId = id ? `${id}-list` : `${autoId}-list`
+  const optionDomId = i => `${listId}-option-${i}`
 
   const setButton = node => {
     buttonRef.current = node
@@ -130,15 +179,22 @@ const IndexSelect = React.forwardRef(function IndexSelect(
     setOpen(false)
     if (buttonRef.current) buttonRef.current.focus()
   }
-  const { ref: listRef, zIndex } = useLayerRef(null, open, escape)
+  const { ref: layerRef, zIndex } = useLayerRef(null, open, escape)
+  const setMenu = node => {
+    menuRef.current = node
+    layerRef(node)
+  }
+  const { style: menuStyle, host } = useAnchoredMenu(rootRef, open)
 
   React.useEffect(() => {
     if (!open) return undefined
     let pendingClose
     const close = event => {
-      if (!rootRef.current || rootRef.current.contains(event.target)) return
-      const dialog = rootRef.current.closest('[role="dialog"]')
-      if (dialog && dialog.contains(event.target)) pendingClose = setTimeout(() => setOpen(false), 0)
+      const target = event.target
+      if (rootRef.current && rootRef.current.contains(target)) return
+      if (menuRef.current && menuRef.current.contains(target)) return
+      const dialog = rootRef.current && rootRef.current.closest('[role="dialog"]')
+      if (dialog && dialog.contains(target)) pendingClose = setTimeout(() => setOpen(false), 0)
       else setOpen(false)
     }
     document.addEventListener('mousedown', close)
@@ -154,11 +210,121 @@ const IndexSelect = React.forwardRef(function IndexSelect(
     onChange(Object.assign(Object.create(event), { target, currentTarget: target }))
   }
 
+  const isEnabled = i => i >= 0 && i < options.length && !options[i].disabled
+  const moveEnabled = (from, delta) => {
+    const count = options.length
+    if (!count || !delta) return isEnabled(from) ? from : -1
+    let cursor = from
+    for (let n = 0; n < count; n += 1) {
+      cursor += delta
+      if (cursor < 0 || cursor >= count) break
+      if (!options[cursor].disabled) return cursor
+    }
+    return isEnabled(from) ? from : -1
+  }
+  const firstEnabled = () => moveEnabled(-1, 1)
+  const lastEnabled = () => {
+    for (let i = options.length - 1; i >= 0; i -= 1) {
+      if (!options[i].disabled) return i
+    }
+    return -1
+  }
+  const edgeEnabled = delta => (delta < 0 ? lastEnabled() : firstEnabled())
+
+  const closeAndFocus = () => {
+    setOpen(false)
+    if (buttonRef.current) buttonRef.current.focus()
+  }
+  const activate = (next, event) => {
+    if (!isEnabled(next)) return
+    emit(next, event)
+    closeAndFocus()
+  }
+
+  const onMenuKey = event => {
+    if (readOnly || disabled) return
+    const key = event.key
+    if (key === 'ArrowDown' || key === 'ArrowUp') {
+      const delta = key === 'ArrowDown' ? 1 : -1
+      if (!open) {
+        const current = isEnabled(index) ? index : edgeEnabled(delta)
+        setActive(current)
+        setOpen(true)
+        return
+      }
+      // 已打開才擋下預設行為。關閉時不 preventDefault，既有 readOnly 測試才對得起來。
+      event.preventDefault()
+      setActive(current => {
+        const origin = current >= 0 ? current : index
+        if (origin < 0) return edgeEnabled(delta)
+        return moveEnabled(origin, delta)
+      })
+      return
+    }
+    if (!open || (key !== 'Enter' && key !== ' ')) return
+    event.preventDefault()
+    if (isEnabled(active)) activate(active, event)
+  }
+
   const handleChange = event => changeRef.current(event)
 
   const shown = blank ? '' : display
   const extra = buttonProps || {}
   const { className: extraClass, ...extraRest } = extra
+
+  React.useLayoutEffect(() => {
+    if (!open || active < 0 || !host) return
+    const node = document.getElementById(`${listId}-option-${active}`)
+    if (node && typeof node.scrollIntoView === 'function') node.scrollIntoView({ block: 'nearest' })
+  }, [open, active, host, listId])
+
+  const menu = (
+    <ul
+      ref={setMenu}
+      id={listId}
+      role="listbox"
+      style={{ ...(menuStyle || {}), zIndex }}
+      className="ui-root z-[1500] m-0 max-h-80 list-none overflow-y-auto rounded-lg border border-solid border-border bg-background p-1 shadow-float"
+    >
+      {options.map((option, i) => (
+        <li
+          key={i}
+          id={optionDomId(i)}
+          role="option"
+          tabIndex={-1}
+          aria-selected={i === index}
+          aria-disabled={option.disabled || undefined}
+          data-active={i === active ? 'true' : undefined}
+          onMouseDown={event => event.preventDefault()}
+          onMouseMove={() => {
+            if (!option.disabled && active !== i) setActive(i)
+          }}
+          onKeyDown={event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault()
+              event.stopPropagation()
+              if (!option.disabled) activate(i, event)
+              return
+            }
+            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') onMenuKey(event)
+            if (event.key === 'Escape' && open) escape(event)
+          }}
+          onClick={event => {
+            if (option.disabled) return
+            activate(i, event)
+          }}
+          className={cn(
+            'flex min-h-9 cursor-pointer select-none items-center rounded-md px-3 py-1.5 text-body text-text hover:bg-surface-hover',
+            (i === index || i === active) && 'bg-surface-hover',
+            i === active && 'outline outline-1 -outline-offset-1 outline-accent',
+            option.disabled && 'pointer-events-none text-text-tertiary'
+          )}
+        >
+          {option.text}
+        </li>
+      ))}
+    </ul>
+  )
 
   return (
     <div ref={rootRef} className="relative w-full min-w-0">
@@ -173,6 +339,7 @@ const IndexSelect = React.forwardRef(function IndexSelect(
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={open ? listId : undefined}
+        aria-activedescendant={open && active >= 0 ? optionDomId(active) : undefined}
         aria-labelledby={labelledBy}
         aria-readonly={readOnly || undefined}
         aria-invalid={invalid || undefined}
@@ -181,11 +348,16 @@ const IndexSelect = React.forwardRef(function IndexSelect(
         value={index === -1 ? '' : String(index)}
         onClick={() => {
           if (disabled || readOnly) return
-          setOpen(o => !o)
+          if (open) {
+            setOpen(false)
+            return
+          }
+          setActive(isEnabled(index) ? index : firstEnabled())
+          setOpen(true)
         }}
         onKeyDown={event => {
           if (readOnly && event.key !== 'Enter' && event.key !== 'Tab') event.preventDefault()
-          if (!readOnly && !disabled && (event.key === 'ArrowDown' || event.key === 'ArrowUp') && !open) setOpen(true)
+          if (!readOnly && !disabled) onMenuKey(event)
           if (event.key === 'Escape' && open) escape(event)
           if (onKeyDown) onKeyDown(event)
         }}
@@ -206,38 +378,7 @@ const IndexSelect = React.forwardRef(function IndexSelect(
         <span className="min-w-0 truncate">{shown}</span>
         <ChevronDown aria-hidden="true" strokeWidth={1.75} className="h-4 w-4 shrink-0 text-text-tertiary" />
       </button>
-      {open && (
-        <ul
-          ref={listRef}
-          id={listId}
-          role="listbox"
-          style={{ zIndex }}
-          className="absolute left-0 right-0 top-full z-[1500] m-0 mt-1 max-h-80 list-none overflow-y-auto rounded-lg border border-solid border-border bg-background p-1 shadow-float"
-        >
-          {options.map((option, i) => (
-            <li
-              key={i}
-              role="option"
-              aria-selected={i === index}
-              aria-disabled={option.disabled || undefined}
-              onMouseDown={event => event.preventDefault()}
-              onClick={event => {
-                if (option.disabled) return
-                emit(i, event)
-                setOpen(false)
-                if (buttonRef.current) buttonRef.current.focus()
-              }}
-              className={cn(
-                'flex min-h-9 cursor-pointer select-none items-center rounded-md px-3 py-1.5 text-body text-text hover:bg-surface-hover',
-                i === index && 'bg-surface-hover',
-                option.disabled && 'pointer-events-none text-text-tertiary'
-              )}
-            >
-              {option.text}
-            </li>
-          ))}
-        </ul>
-      )}
+      {open && host && menuStyle ? ReactDOM.createPortal(menu, host) : null}
       {/* 不顯示、點不到、不進定位順序。role=presentation 避免再被當成系統下拉；
           不用 hidden／display:none，既有測試才能在這顆 select 裡讀到選項文字。 */}
       <select
