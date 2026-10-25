@@ -129,5 +129,7 @@ describe('ui/text-field Input／OutlinedInput（與 MUI Input／OutlinedInput �
     const input = document.getElementById('password')
     expect(input).toHaveAttribute('aria-invalid', 'true')
     expect(input.parentElement).toHaveClass('border-danger', 'w-full')
+    expect(input.parentElement.className).toContain('focus-within:border-danger')
+    expect(input.parentElement.className).not.toContain('focus-within:border-accent')
   })
 })

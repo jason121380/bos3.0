@@ -22,7 +22,7 @@ const SettingsTabsTrigger = React.forwardRef(({ icon: Icon, className, children,
   <TabsTrigger
     ref={ref}
     className={cn(
-      'md:mb-0 md:h-9 md:justify-start md:gap-2 md:rounded-md md:border-b-0 md:px-3 md:text-left',
+      'max-md:min-h-10 md:mb-0 md:h-9 md:justify-start md:gap-2 md:rounded-md md:border-b-0 md:px-3 md:text-left',
       'md:hover:bg-surface-hover md:hover:text-text',
       'data-[state=active]:md:bg-accent/8 data-[state=active]:md:text-accent',
       className

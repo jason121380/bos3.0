@@ -25,8 +25,9 @@ const fieldBoxClass = ({ multiline = false, small = false, error = false, disabl
   cn(
     'flex w-full min-w-0 items-center gap-2 rounded-md border border-solid bg-background px-3 text-body text-text transition-colors',
     multiline ? 'py-1.5' : small ? 'h-8' : 'h-9 max-sm:h-10',
-    error ? 'border-danger' : 'border-border-strong hover:border-border-strong-hover',
-    'focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/25',
+    error
+      ? 'border-danger hover:border-danger focus-within:border-danger focus-within:ring-2 focus-within:ring-danger/25'
+      : 'border-border-strong hover:border-border-strong-hover focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/25',
     disabled && 'pointer-events-none bg-surface opacity-60',
     className
   )

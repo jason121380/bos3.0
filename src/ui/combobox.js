@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { CompatLayer } from './compat-layer'
 import { useCombobox } from 'downshift'
 import { ChevronDown, X } from 'lucide-react'
-import { cn } from './utils'
+import { cn, focusRing, phoneIconHit } from './utils'
 import { useLayerRef } from './layer-stack'
 
 // 自家搜尋下拉（取代 MUI Autocomplete，Jason 2026/10/20 拍版「Autocomplete 自己做」）。
@@ -363,7 +363,7 @@ const Autocomplete = React.forwardRef(function Autocomplete(
   const endAdornment = (
     <span className="flex shrink-0 items-center gap-0.5">
       {showClear && (
-        <button type="button" tabIndex={-1} aria-label="清除" className="flex h-6 w-6 items-center justify-center rounded-full text-text-tertiary hover:bg-surface-hover hover:text-text" onMouseDown={clear}>
+        <button type="button" tabIndex={-1} aria-label="清除" title="清除" className={cn(phoneIconHit, 'flex h-6 w-6 items-center justify-center rounded-full text-text-tertiary hover:bg-surface-hover hover:text-text', focusRing)} onMouseDown={clear}>
           <X className="h-4 w-4" strokeWidth={1.75} />
         </button>
       )}
@@ -393,7 +393,8 @@ const Autocomplete = React.forwardRef(function Autocomplete(
               type="button"
               tabIndex={-1}
               aria-label={`移除 ${labelOf(getOptionLabel, item)}`}
-              className="flex h-4 w-4 items-center justify-center rounded-full text-text-tertiary hover:text-text"
+              title={`移除 ${labelOf(getOptionLabel, item)}`}
+              className={cn(phoneIconHit, 'flex h-4 w-4 items-center justify-center rounded-full text-text-tertiary hover:text-text', focusRing)}
               onMouseDown={event => {
                 event.preventDefault()
                 commit(event, selectedList.filter((_, i) => i !== index), 'removeOption', { option: item })

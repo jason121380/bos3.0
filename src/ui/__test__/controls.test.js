@@ -56,6 +56,14 @@ describe('Button：圖示按鈕的名稱', () => {
     expect(screen.getByRole('button')).not.toHaveAttribute('title')
   })
 
+  it('size=icon 被壓成 28px 時仍保留手機 40px 命中區', () => {
+    render(<Button size="icon" className="h-7 w-7" aria-label="清除" />)
+    const button = screen.getByRole('button')
+    expect(button.className).toContain('h-7')
+    expect(button.className).toContain('before:h-10')
+    expect(button.className).toContain('before:w-10')
+  })
+
   it('一般尺寸不自動加 title；type 可改為 submit', () => {
     render(
       <Button aria-label="儲存" type="submit">
@@ -113,6 +121,10 @@ describe('Switch：開關', () => {
     const label = input.closest('label')
     expect(label.className).toContain('cursor-not-allowed')
     expect(label.className).toContain('flex-row-reverse')
+    expect(label.className).toContain('max-sm:before:-inset-y-2')
+    const { unmount } = render(<Switch aria-label="通知" />)
+    expect(screen.getByRole('switch', { name: '通知' }).closest('label').className).toContain('before:h-10')
+    unmount()
     // 原生 disabled 由瀏覽器擋點擊（jsdom 的 fireEvent 不模擬這點，故不在此點擊）
   })
 })

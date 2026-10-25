@@ -50,7 +50,7 @@ const SidebarLabel = ({ className, ...props }) => (
 )
 
 const rowClass = cn(
-  'flex h-9 w-full items-center gap-2.5 rounded-md px-2.5 text-left text-body text-text-secondary transition-colors duration-150',
+  'flex h-9 max-lg:min-h-10 w-full items-center gap-2.5 rounded-md px-2.5 text-left text-body text-text-secondary transition-colors duration-150',
   'hover:bg-surface-hover hover:text-text',
   focusRing
 )
