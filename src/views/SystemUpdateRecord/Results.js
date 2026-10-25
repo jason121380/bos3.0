@@ -2,16 +2,13 @@
 // ui-root 的基礎重置以 :where() 零權重撰寫，Markdown 預覽（md-editor-rt .default-theme）的清單編號、邊距規則權重較高，照常生效。
 // 外觀比照 Grok 式卡片（surface 底、16px 圓角、無框），與相容層原外觀一致
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
-import React, { useState, useEffect, Fragment } from 'react'
-import { ChevronDown, Pencil, Trash2 } from 'lucide-react'
-import { Link as RouterLink } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { ChevronDown } from 'lucide-react'
 import { format } from 'date-fns'
 import MdEditor from 'md-editor-rt';
 import 'md-editor-rt/lib/style.css';
-import { openSnackbar } from 'elements/snackbars'
-import { Button } from 'ui/button'
 
-const Results = ({ data, systemUpdateRecord, isWhiteList }) => {
+const Results = ({ data }) => {
   const [open, setOpen] = useState(0)
   const [theme, setTheme] = useState('')
   // 等 data-color-mode 出現後讀一次主題。原本 setInterval 寫在 render 本體：每次 render 多一個計時器、卸載後仍會 setState
@@ -25,18 +22,6 @@ const Results = ({ data, systemUpdateRecord, isWhiteList }) => {
     }, 500)
     return () => clearInterval(getTheme)
   }, [])
-
-  const handleDeleteRecord = id => {
-    openSnackbar({
-      message: '確定要刪除此筆版本更新紀錄？',
-      variant: 'error',
-      disableHide: true,
-      resign: true,
-      deleteSystemRecordPending: true,
-      systemUpdateId: id,
-      systemUpdateRecord: systemUpdateRecord,
-    })
-  }
 
   MdEditor.config({
     markedRenderer(renderer) {
@@ -76,25 +61,6 @@ const Results = ({ data, systemUpdateRecord, isWhiteList }) => {
                   <div className="mr-2 tabular-nums">
                     更新日期:{format(d.updateTime, 'yyyy/MM/dd')}
                   </div>
-                  {isWhiteList && <Fragment>
-                    <Button asChild variant="ghost" size="icon" className="text-text-secondary">
-                      <RouterLink
-                        aria-label="編輯版本紀錄"
-                        to={`/system-update-record/edit/${d.systemUpdateId}`}
-                      >
-                        <Pencil strokeWidth={1.75} />
-                      </RouterLink>
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-text-secondary hover:text-danger"
-                      aria-label="刪除版本紀錄"
-                      onClick={() => { handleDeleteRecord(d.systemUpdateId) }}
-                    >
-                      <Trash2 strokeWidth={1.75} />
-                    </Button>
-                  </Fragment>}
                 </div>
               </AccordionDetails>
             </Accordion>
