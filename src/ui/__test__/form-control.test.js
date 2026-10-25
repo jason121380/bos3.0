@@ -1,7 +1,22 @@
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import React from 'react'
 
 import { FormControl, InputLabel, Select, MenuItem, useFormControl } from '../form-control'
+
+const installedPointerEvent = typeof window.PointerEvent !== 'function'
+if (installedPointerEvent) {
+  window.PointerEvent = class PointerEvent extends window.MouseEvent {
+    constructor(type, props = {}) {
+      super(type, props)
+      this.pointerId = props.pointerId == null ? 1 : props.pointerId
+      this.pointerType = props.pointerType || ''
+      this.isPrimary = props.isPrimary !== false
+    }
+  }
+}
+afterAll(() => {
+  if (installedPointerEvent) delete window.PointerEvent
+})
 import { Checkbox, FormControlLabel } from '../checkbox'
 
 afterEach(cleanup)
@@ -97,6 +112,33 @@ describe('ui/form-control（與 MUI FormControl／InputLabel／Select／MenuItem
     )
     fireEvent.click(screen.getByRole('button'))
     fireEvent.click(screen.getByText('乙'))
+    expect(seen).toEqual([['a', 'b']])
+  })
+
+  it('單選觸控 pointerup 第一次就選到原始值', () => {
+    const seen = []
+    renderSelect({ value: 1, onChange: event => seen.push(event.target.value) })
+    fireEvent.click(screen.getByLabelText('抽成類別'))
+    const option = within(screen.getByRole('listbox')).getByRole('option', { name: '不指定' })
+    fireEvent.pointerDown(option, { pointerType: 'touch', pointerId: 1, clientX: 2, clientY: 2 })
+    fireEvent.pointerUp(option, { pointerType: 'touch', pointerId: 1, clientX: 3, clientY: 2 })
+    fireEvent.click(option)
+    expect(seen).toEqual(['NONE'])
+  })
+
+  it('多選觸控 pointerup 加入一次，接著的 click 不重複切換', () => {
+    const seen = []
+    render(
+      <Select multiple value={['a']} onChange={event => seen.push(event.target.value)} renderValue={v => v.join('+')}>
+        <MenuItem value="a">甲</MenuItem>
+        <MenuItem value="b">乙</MenuItem>
+      </Select>
+    )
+    fireEvent.click(screen.getByRole('button'))
+    const option = screen.getByRole('option', { name: '乙' })
+    fireEvent.pointerDown(option, { pointerType: 'touch', pointerId: 1, clientX: 1, clientY: 1 })
+    fireEvent.pointerUp(option, { pointerType: 'touch', pointerId: 1, clientX: 2, clientY: 1 })
+    fireEvent.click(option)
     expect(seen).toEqual([['a', 'b']])
   })
 })

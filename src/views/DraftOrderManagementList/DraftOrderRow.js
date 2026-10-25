@@ -53,7 +53,7 @@ export default function DraftOrderRow({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-text-secondary"
+              className="text-text-secondary"
               aria-label={orderExtendArr.find(id => id === order.id) !== undefined ? '收合明細' : '展開明細'}
               aria-expanded={orderExtendArr.find(id => id === order.id) !== undefined}
               onClick={() => handleOrderExtend(order.id)}
@@ -67,14 +67,14 @@ export default function DraftOrderRow({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-text-secondary"
+              className="text-text-secondary"
               aria-label="列印帳單"
               disabled={disabled}
               onClick={() => handlePrintOrderDetail(order.id)}
             >
               <Printer strokeWidth={1.75} />
             </Button>
-            <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+            <Button asChild variant="ghost" size="icon" className="text-text-secondary">
               <RouterLink
                 aria-label="查看掛單"
                 to={`/draft-order/${location.search.length > 0
@@ -91,7 +91,7 @@ export default function DraftOrderRow({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-text-secondary"
+              className="text-text-secondary"
               aria-label="結帳"
               disabled={isClick}
               onClick={() => {

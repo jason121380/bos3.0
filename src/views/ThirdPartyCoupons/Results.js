@@ -93,7 +93,7 @@ function Results({ className, thirdPartyCouponList = [], thirdPartyCouponsRefetc
                     />
                   </TableCell>
                   <TableCell>
-                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                    <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                       <RouterLink aria-label="編輯第三方卡券" to={`/thirdPartyCoupon/edit/${data.id}`}>
                         <Pencil strokeWidth={1.75} />
                       </RouterLink>

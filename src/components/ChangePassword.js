@@ -108,7 +108,7 @@ export default function ChangePassword({ open, handleClose }) {
                 endAdornment={
                   <InputAdornment position="end">
                     <Button
-                      variant="ghost" size="icon" className="h-8 w-8"
+                      variant="ghost" size="icon"
                       aria-label="toggle password visibility" title="切換密碼顯示"
                       onClick={() => handleClickShowPassword('password')}
                     >
@@ -130,7 +130,7 @@ export default function ChangePassword({ open, handleClose }) {
                 endAdornment={
                   <InputAdornment position="end">
                     <Button
-                      variant="ghost" size="icon" className="h-8 w-8"
+                      variant="ghost" size="icon"
                       aria-label="toggle password visibility" title="切換密碼顯示"
                       onClick={() => handleClickShowPassword('secondPassword')}
                       onMouseDown={handleMouseDownPassword}

@@ -55,7 +55,7 @@ export default function Results({ reportData, open, openCollapse, onToggleAll })
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 text-text-secondary"
+                      className="text-text-secondary"
                       aria-label={open.indexOf(d.id) > -1 ? '收合組合內容' : '展開組合內容'}
                       aria-expanded={open.indexOf(d.id) > -1}
                       onClick={() => openCollapse(d.id)}
@@ -64,7 +64,7 @@ export default function Results({ reportData, open, openCollapse, onToggleAll })
                     </Button>
                   </TableCell>
                   <TableCell>
-                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                    <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                       <Link
                         aria-label={`編輯 ${d.name}`}
                         to={`/shortcut/edit/${d.id}`}

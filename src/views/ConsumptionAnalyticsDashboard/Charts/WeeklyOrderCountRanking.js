@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import React from 'react'
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer, LabelList
 } from "recharts";
 import { formatNumber } from 'ui/format'
@@ -53,6 +53,7 @@ const WeeklyOrderCountRanking = ({ display, data }) => {
                   <XAxis type='number' />
                   <YAxis label={{ fill: '#faf' }} tickSize={15} dataKey="name" type="category" />
                   <Tooltip cursor={{ fill: 'rgba(0, 136, 254, .2)' }} content={<CustomWeeklyOrderCountTooltip />} />
+                  <Legend wrapperStyle={{ maxHeight: 200, overflowY: 'auto' }} />
                   <Bar name='來客數' dataKey="orderCount" fill="#0088FE">
                     <LabelList fill='#fff' content={renderOrderCountLabel} />
                   </Bar>

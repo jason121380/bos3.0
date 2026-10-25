@@ -171,11 +171,11 @@ Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現*
 | 金額 | 一律 `formatMoney`（`1,234`，千分位、不加幣別；空值顯示 0）或 `formatNumber`（空值留白）；數量用 `formatNumber`；同一畫面格式一致（§7）。 |
 | 列印 | `Table` 內建 `print:`：黑色細格線、白底黑字、表頭／表尾底色透明、外框不裁切（`print:overflow-visible`）；頁面自己的 `@media print` 權重較高，仍以頁面為準。 |
 | 分頁 | `TablePagination` 固定在表格下方右側。 |
+| 篩選列 | 共用 `ReportToolbar`（2026/10/25）。一列 `items-center`、間距 `gap-2`（8px）。日期輸入與「篩選」「搜尋」高 36px（`h-9`／Button `md`），手機 40px（`max-sm:h-10`）。列內圖示鈕桌機 32px（`size="icon"` 或 `sm`），手機 40px。篩選卡片維持 `gap-4`、`p-4`。頁面不要在這一列再加 `my-*`。 |
 
 ### 待盤點（尚未實作，不得寫進頁面當成既有）
 
 - `dense` 以 `Table` 層級的後代選擇器實作，**沒有** `TableHead`／`TableCell` 層級的 compact prop（水平內距 `px-2` 已於報表 compact 第一批補上，PR #20）。2026/10/19 的 41 個報表目錄盤點與 MUI 數字見 `docs/redesign/REPORT_COMPACT.md`，僅為歷史記錄；目前列印報表採一致精簡版。實機驗收進度見 `docs/redesign/TODO.md`。
-- **篩選／工具列密度**：目前沒有共用的報表工具列元件；各報表篩選列的間距、控制項高度（36px／32px）尚未統一，待盤點後訂規格。
 - **列印邊界（`@page` margin）與換頁**：尚無共用規則；`thead` 跨頁重複、`tr` 避免被切斷、表尾合計只出現一次，皆待盤點現有 `initialize.scss` 列印規則後再訂，且不得動 `#printMain`／`#printThermal` 與 `className` 含 `print` 的元素。
 - 報表頁仍可能使用相容表格與自訂 CSS；逐頁收尾時先對照欄位與數字一致（§10 第 4 點）。
 

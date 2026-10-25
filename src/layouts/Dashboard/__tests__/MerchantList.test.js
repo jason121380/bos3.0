@@ -9,6 +9,21 @@ import { MemoryRouter, Route } from 'react-router-dom'
 import MerchantBar from '../MerchantBar'
 import MerchantList from '../MerchantList'
 
+const installedPointerEvent = typeof window.PointerEvent !== 'function'
+if (installedPointerEvent) {
+  window.PointerEvent = class PointerEvent extends window.MouseEvent {
+    constructor(type, props = {}) {
+      super(type, props)
+      this.pointerId = props.pointerId == null ? 1 : props.pointerId
+      this.pointerType = props.pointerType || ''
+      this.isPrimary = props.isPrimary !== false
+    }
+  }
+}
+afterAll(() => {
+  if (installedPointerEvent) delete window.PointerEvent
+})
+
 const data = {
   allMerchants: [
     { id: 'm1', name: '台北店' },
@@ -117,6 +132,47 @@ describe('MerchantList：點擊', () => {
     spy.mockRestore()
     expect(JSON.parse(localStorage.getItem('userMerchant'))).toEqual({ id: 'm3', name: '高雄店' })
     expect(screen.getByTestId('loc')).toHaveTextContent('/order/create')
+  })
+
+  it('觸控 pointerup 第一次就選店；手指滑動不選，接著的 click 也不選', () => {
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    localStorage.removeItem('userMerchant')
+    renderBar(loaded())
+    const store = btn('高雄店')
+    fireEvent.pointerDown(store, { pointerType: 'touch', pointerId: 1, clientX: 10, clientY: 10 })
+    fireEvent.pointerUp(store, { pointerType: 'touch', pointerId: 1, clientX: 11, clientY: 12 })
+    expect(JSON.parse(localStorage.getItem('userMerchant'))).toEqual({ id: 'm3', name: '高雄店' })
+    expect(screen.getByTestId('loc')).toHaveTextContent('/order/create')
+    spy.mockRestore()
+  })
+
+  it('觸控先放開再送 click，群組只展開一次', () => {
+    renderBar(loaded())
+    const group = btn('G2 - 中區')
+    fireEvent.pointerDown(group, { pointerType: 'touch', pointerId: 1, clientX: 4, clientY: 4 })
+    fireEvent.pointerUp(group, { pointerType: 'touch', pointerId: 1, clientX: 5, clientY: 4 })
+    fireEvent.click(group)
+    expect(group.parentElement).toHaveAttribute('aria-expanded', 'true')
+    expect(items()).toContain('台中店')
+  })
+
+  it('手指移動超過 10px 不切換店家', () => {
+    localStorage.removeItem('userMerchant')
+    renderBar(loaded())
+    const store = btn('高雄店')
+    fireEvent.pointerDown(store, { pointerType: 'touch', pointerId: 1, clientX: 0, clientY: 0 })
+    fireEvent.pointerUp(store, { pointerType: 'touch', pointerId: 1, clientX: 0, clientY: 30 })
+    fireEvent.click(store)
+    expect(localStorage.getItem('userMerchant')).toBeNull()
+    expect(screen.getByTestId('loc')).toHaveTextContent('/management/orders')
+  })
+
+  it('店名在手機截斷，按鈕 title 保留全名', () => {
+    const longName = 'A Quality 旗艦概念店台北信義區遠東店'
+    renderBar(loaded({ allMerchants: [{ id: 'm9', name: longName }], groups: [], merchants: [{ id: 'm9', name: longName }] }))
+    const store = btn(longName)
+    expect(store).toHaveAttribute('title', longName)
+    expect(store.querySelector('.max-sm\\:truncate')).toBeTruthy()
   })
 
   it('沒有子項的群組點了不展開', () => {

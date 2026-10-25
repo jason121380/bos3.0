@@ -132,7 +132,7 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
                       }}
                     />
                     <UiButton
-                      variant="ghost" size="icon" className="h-8 w-8" aria-label="編輯選項" title="編輯選項"
+                      variant="ghost" size="icon" aria-label="編輯選項" title="編輯選項"
                       disabled={merchantHairConditionData.loading || !merchantHairConditionData.data}
                       onClick={() => handleOpenOptionModal({ key: key, title: title })}
                     >

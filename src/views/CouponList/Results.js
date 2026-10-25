@@ -415,7 +415,7 @@ function Results({ className, coupons, refetch, ...rest }) {
                     />
                   </TableCell>
                   <TableCell>
-                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                    <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                       <RouterLink
                         aria-label="編輯卡券"
                         to={`/coupon/edit/${data.id}`}
@@ -445,7 +445,7 @@ function Results({ className, coupons, refetch, ...rest }) {
                   </TableCell>
                   <TableCell className="tabular-nums">{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
                   <TableCell>
-                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                    <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                       <Link to={`coupon/duplicate/${data.id}`} aria-label="建立副本">
                         <Copy strokeWidth={1.75} />
                       </Link>

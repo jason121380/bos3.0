@@ -4,6 +4,10 @@ import React from 'react'
 import { Redirect } from 'react-router-dom'
 import { lazyWithRetry as lazy } from 'lib/lazy-with-retry'
 
+// 舊路徑拼字 deatil 仍留著，書籤與外部連結導向正確的 detail（2026/10/25）
+const redirectAccountingDetail = ({ match }) => <Redirect to={`/accounting/detail/${match.params.id}`} />
+const redirectGeneralAccountingDetail = ({ match }) => <Redirect to={`/general/accounting/detail/${match.params.id}`} />
+
 export default [
   {
     path: '/management/reservation/designers/calendar',
@@ -111,14 +115,24 @@ export default [
     component: lazy(() => import('views/GeneralAccountingRecordCreate')),
   },
   {
-    path: '/general/accounting/deatil/:id',
+    path: '/general/accounting/detail/:id',
     exact: true,
     component: lazy(() => import('views/GeneralAccountingRecordDetail')),
   },
   {
-    path: '/accounting/deatil/:id',
+    path: '/general/accounting/deatil/:id',
+    exact: true,
+    component: redirectGeneralAccountingDetail,
+  },
+  {
+    path: '/accounting/detail/:id',
     exact: true,
     component: lazy(() => import('views/AccountingRecordDetail')),
+  },
+  {
+    path: '/accounting/deatil/:id',
+    exact: true,
+    component: redirectAccountingDetail,
   },
   {
     path: '/accounting/records',

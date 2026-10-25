@@ -123,7 +123,7 @@ function Invoices({
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 text-text-secondary"
+                              className="text-text-secondary"
                               aria-label={isExtended(order.id) ? '收合明細' : '展開明細'}
                               aria-expanded={isExtended(order.id)}
                               onClick={() => handleOrderExtend(order.id)}

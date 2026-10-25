@@ -254,7 +254,7 @@ export default function SalaryInems({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 shrink-0 text-text-secondary"
+                        className="shrink-0 text-text-secondary"
                         aria-label="刪除此項"
                         onClick={() => handleDeductIncreaseItem(index)}
                       >
@@ -265,7 +265,7 @@ export default function SalaryInems({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 shrink-0 text-text-secondary"
+                        className="shrink-0 text-text-secondary"
                         aria-label="新增一項"
                         onClick={() => handleAddItem()}
                       >
@@ -352,7 +352,7 @@ export default function SalaryInems({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 shrink-0 text-text-secondary"
+                        className="shrink-0 text-text-secondary"
                         aria-label="刪除此項"
                         onClick={() => handleDeductDecreaseItem(index)}
                       >
@@ -363,7 +363,7 @@ export default function SalaryInems({
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-8 w-8 shrink-0 text-text-secondary"
+                        className="shrink-0 text-text-secondary"
                         aria-label="新增一項"
                         onClick={() => handleAddDecreaseItem()}
                       >

@@ -161,7 +161,7 @@ function Results({
                 />
               </TableCell>
               <TableCell className={styles.compactCell}>
-                <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                   <RouterLink
                     aria-label="編輯客戶"
                     to={`/management/customers/${data.id}/general?backto=customer-filter`}

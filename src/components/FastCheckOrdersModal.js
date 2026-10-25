@@ -192,7 +192,7 @@ const FastCheckOrdersModal = ({ open, setOpenModal, date }) => {
           }} aria-describedby={undefined} className='FastCheckOrdersModal !max-w-[1536px] overflow-hidden'>
       <DialogTitle className="flex items-center justify-between !p-[8px_8px_8px_24px]">
         帳單速查
-        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label="關閉" title="關閉" onClick={handleCloseModal}>
+        <Button variant="ghost" size="icon" className="shrink-0" aria-label="關閉" title="關閉" onClick={handleCloseModal}>
           <CloseIcon/>
         </Button>
       </DialogTitle>

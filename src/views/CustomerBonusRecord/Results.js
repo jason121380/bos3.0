@@ -110,7 +110,7 @@ function Results({ className, recordData, refetch, ...rest }) {
                     />
                   </TableCell>
                   <TableCell>
-                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-tertiary" aria-label="編輯紀錄">
+                    <Button asChild variant="ghost" size="icon" className="text-text-tertiary" aria-label="編輯紀錄">
                       <RouterLink to={`/customer-bonus-record/edit/${data.id}`}>
                         <Pencil strokeWidth={1.75} />
                       </RouterLink>

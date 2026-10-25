@@ -15,6 +15,16 @@ const MerchantList = ({ merchants, searchQuery }) => {
   const [focusedKey, setFocusedKey] = useState(null)
   const itemRefs = useRef({})
   const typeAheadRef = useRef({ buffer: '', time: 0 })
+  // 可捲動清單裡的按鈕：iOS 第一次輕點常常只聚焦並套上 hover，click 被取消。觸控改在 pointerup 選取。
+  const touchPressRef = useRef(null)
+  const suppressClickRef = useRef(null)
+  const suppressTimerRef = useRef(null)
+  const swallowClickRef = useRef(null)
+
+  useEffect(() => () => {
+    clearTimeout(suppressTimerRef.current)
+    if (swallowClickRef.current) window.removeEventListener('click', swallowClickRef.current, true)
+  }, [])
 
   useEffect(() => {
     if (searchQuery) {
@@ -43,15 +53,41 @@ const MerchantList = ({ merchants, searchQuery }) => {
     setExpanded(prev => prev.includes(id) ? prev.filter(nodeId => nodeId !== id) : [...prev, id])
   }
 
-  // 圖示 16px 用 inline style：ui/icons 的預設 font-size 由執行期插入的 emotion class 給定（晚於 Tailwind），原 css prop 併入同一 class 覆蓋；
-  // inline 同樣勝過它、但與原本一樣會輸給列印的 html * { font-size: 9px !important }（用 ! 會連列印一起蓋掉）
-  const RenderLabel = ({ isGroup, data }) => {
+  const armSuppressClick = key => {
+    suppressClickRef.current = key
+    if (swallowClickRef.current) window.removeEventListener('click', swallowClickRef.current, true)
+    clearTimeout(suppressTimerRef.current)
+    const swallow = event => {
+      event.preventDefault()
+      event.stopPropagation()
+      window.removeEventListener('click', swallow, true)
+      if (swallowClickRef.current === swallow) swallowClickRef.current = null
+    }
+    swallowClickRef.current = swallow
+    window.addEventListener('click', swallow, true)
+    suppressTimerRef.current = setTimeout(() => {
+      window.removeEventListener('click', swallow, true)
+      if (swallowClickRef.current === swallow) swallowClickRef.current = null
+      if (suppressClickRef.current === key) suppressClickRef.current = null
+    }, 500)
+  }
+
+  const activateNode = node => {
+    setFocusedKey(node.key)
+    if (node.isGroup) {
+      if (node.children.length) toggleNode(node.id)
+    } else {
+      handleItemClick(node.data)
+    }
+  }
+
+  // 圖示 16px 用 inline style：ui/icons 的預設 font-size 由執行期插入的樣式給定（晚於 Tailwind）；
+  // inline 同樣會輸給列印的 html * { font-size: 9px !important }（用 ! 會連列印一起蓋掉）
+  const RenderLabel = ({ isGroup, labelText }) => {
     return (
-      <span className="flex items-center gap-[12px] [word-break:keep-all] whitespace-nowrap text-[14px] font-normal text-text">
-        {isGroup ? <GroupsRoundedIcon className="text-text-secondary" style={{ fontSize: '16px' }} /> : <StorefrontIcon className="text-text-secondary" style={{ fontSize: '16px' }} />}
-        {isGroup ?
-          groupLabel(data) : data.name
-        }
+      <span className="flex min-w-0 flex-1 items-center gap-[12px] text-[14px] font-normal text-text">
+        {isGroup ? <GroupsRoundedIcon className="shrink-0 text-text-secondary" style={{ fontSize: '16px' }} /> : <StorefrontIcon className="shrink-0 text-text-secondary" style={{ fontSize: '16px' }} />}
+        <span className="min-w-0 whitespace-nowrap max-sm:truncate">{labelText}</span>
       </span>
     )
   }
@@ -180,14 +216,28 @@ const MerchantList = ({ merchants, searchQuery }) => {
           type="button"
           ref={el => { itemRefs.current[node.key] = el }}
           tabIndex={node.key === effectiveFocusedKey ? 0 : -1}
-          className={`flex items-center w-full py-[8px] [border:none] rounded-[8px] bg-transparent cursor-pointer text-left [font:inherit] [transition:.2s] hover:bg-surface-hover focus-visible:[outline:2px_solid_rgb(var(--accent))] focus-visible:[outline-offset:-2px] ${(node.isGroup || depth > 0) ? 'pl-[24px] pr-[16px]' : 'px-[16px]'}`}
+          title={node.labelText}
+          className={`flex min-w-0 items-center w-full overflow-hidden py-[8px] [border:none] rounded-[8px] bg-transparent cursor-pointer text-left [font:inherit] [transition:.2s] hover:bg-surface-hover focus-visible:[outline:2px_solid_rgb(var(--accent))] focus-visible:[outline-offset:-2px] ${(node.isGroup || depth > 0) ? 'pl-[24px] pr-[16px]' : 'px-[16px]'}`}
+          onPointerDown={event => {
+            if (event.pointerType === 'mouse') return
+            touchPressRef.current = { key: node.key, x: event.clientX, y: event.clientY }
+          }}
+          onPointerUp={event => {
+            const press = touchPressRef.current
+            touchPressRef.current = null
+            if (event.pointerType === 'mouse' || !press || press.key !== node.key) return
+            const moved = Math.abs(event.clientX - press.x) > 10 || Math.abs(event.clientY - press.y) > 10
+            armSuppressClick(node.key)
+            if (!moved) activateNode(node)
+          }}
+          onPointerCancel={() => { touchPressRef.current = null }}
           onClick={() => {
-            setFocusedKey(node.key)
-            if (node.isGroup) {
-              if (hasChildren) toggleNode(node.id)
-            } else {
-              handleItemClick(node.data)
+            if (suppressClickRef.current === node.key) {
+              suppressClickRef.current = null
+              clearTimeout(suppressTimerRef.current)
+              return
             }
+            activateNode(node)
           }}
           onFocus={() => setFocusedKey(node.key)}
           onKeyDown={event => handleKeyDown(event, node)}
@@ -198,11 +248,12 @@ const MerchantList = ({ merchants, searchQuery }) => {
               : <ChevronRightIcon className="shrink-0 text-text-tertiary" sx={{ color: 'rgb(var(--text-tertiary))' }} />)
             : null}
           {node.isAll ? (
-            <span className="flex items-center gap-[12px] [word-break:keep-all] whitespace-nowrap text-[14px] font-normal text-text">
-              <GroupsRoundedIcon className="text-text-secondary" style={{ fontSize: '16px' }} />{node.labelText}
+            <span className="flex min-w-0 flex-1 items-center gap-[12px] text-[14px] font-normal text-text">
+              <GroupsRoundedIcon className="shrink-0 text-text-secondary" style={{ fontSize: '16px' }} />
+              <span className="min-w-0 whitespace-nowrap max-sm:truncate">{node.labelText}</span>
             </span>
           ) : (
-            <RenderLabel isGroup={node.isGroup} data={node.data} />
+            <RenderLabel isGroup={node.isGroup} labelText={node.labelText} />
           )}
         </button>
         {node.isGroup && hasChildren && isExpanded ? (

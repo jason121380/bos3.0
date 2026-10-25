@@ -392,7 +392,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
                     />
                   </TableCell>
                   <TableCell>
-                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                    <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                       <RouterLink
                         aria-label="編輯服務"
                         to={`/service/edit/${data.id}`}
@@ -418,7 +418,7 @@ function Results({ className, services, refetchService, onPageChange, onRowsPerP
                   </TableCell>
                   <TableCell className="tabular-nums">{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
                   <TableCell>
-                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                    <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                       <Link to={`service/duplicate/${data.id}`} aria-label="建立副本">
                         <Copy strokeWidth={1.75} />
                       </Link>
