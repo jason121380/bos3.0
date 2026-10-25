@@ -16,8 +16,8 @@ export const SIDEBAR_RAIL_HIDDEN_CLASS = 'lg:group-data-[rail=true]/sidebar:hidd
 export const SIDEBAR_FLYOUT_GAP = 4
 // 浮層上下都貼近視窗，留這一圈，整塊留在視窗內。
 export const SIDEBAR_FLYOUT_VIEWPORT_MARGIN = 8
-// 一欄最多這個數量；超過才換下一欄（11 項＝10＋1）。
-export const SIDEBAR_FLYOUT_ITEMS_PER_COLUMN = 10
+// 一欄最多這個數量；超過才換下一欄（17 項＝16＋1）。
+export const SIDEBAR_FLYOUT_ITEMS_PER_COLUMN = 16
 
 export function splitSidebarFlyoutColumns(items, perColumn = SIDEBAR_FLYOUT_ITEMS_PER_COLUMN) {
   const list = Array.from(items || [])

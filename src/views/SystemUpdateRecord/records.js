@@ -10,6 +10,12 @@ export function calendarUpdateTime(isoDate) {
 
 const shippedRecords = [
   {
+    title: '2026/10/26 側欄換欄',
+    versionNo: 'v3.10260256',
+    updateTime: '2026-10-26',
+    content: '- 主側欄桌機 hover 細項超過 16 項才換欄（17 項＝第一欄 16＋第二欄 1；16 項以內維持單欄）',
+  },
+  {
     title: '2026/10/26 側欄細項',
     versionNo: 'v3.10260211',
     updateTime: '2026-10-26',
