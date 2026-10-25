@@ -51,7 +51,7 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
   }
   return (
     <Fragment>
-      <Card>
+      <Card id="parameter-salary-increase" className="scroll-mt-6">
         <CardHeader>
           <CardTitle>薪資加項科目設定</CardTitle>
         </CardHeader>
@@ -96,7 +96,7 @@ function AboutSalaryAddAndDeduction({ className, service, onChange, inputEnable 
           </div>
         </CardContent>
       </Card>
-      <Card>
+      <Card id="parameter-salary-decrease" className="scroll-mt-6">
         <CardHeader>
           <CardTitle>薪資扣項科目設定</CardTitle>
         </CardHeader>

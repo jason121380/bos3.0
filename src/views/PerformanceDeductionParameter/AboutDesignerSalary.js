@@ -293,7 +293,7 @@ export default function AboutDesignerSalary({ className,
   }  
 return (
     <Fragment>
-      <Card>
+      <Card id="deduction-job-title" className="scroll-mt-6">
         <CardHeader
           action={
             isSubmitForPoint ? (
@@ -422,7 +422,7 @@ return (
           )}
         </CardContent>
       </Card>
-      <Card>
+      <Card id="deduction-helper-category" className="scroll-mt-6">
         <CardHeader
           action={
             isSubmitForType ? (

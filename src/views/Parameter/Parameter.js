@@ -1,5 +1,5 @@
 import { Tabs } from 'ui/tabs'
-import { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
+import { SettingsFlyoutButton, SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
 import Page from 'components/Page'
 import { Button } from 'ui/button'
 import { PageHeader } from 'ui/page-header'
@@ -70,7 +70,7 @@ import useFetchSetUESUsingSetting from 'hooks/useFetchSetUESUsingSetting'
 import useFetchGetIsCBRDStylist from 'hooks/useFetchGetIsCBRDStylist'
 import useFetchSetIsCBRDStylist from 'hooks/useFetchSetIsCBRDStylist'
 
-import ParameterTabContent from './ParameterTabContent'
+import ParameterTabContent, { PARAMETER_SECTIONS } from './ParameterTabContent'
 import {
   requiredColumnOptions,
   createDefaultPasswordSetting,
@@ -89,7 +89,7 @@ import {
 
 import produce from 'immer'
 import idx from 'idx'
-import { memo, useState, useEffect, Fragment } from 'react'
+import { memo, useState, useEffect, useRef, Fragment } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 
 // 初始值（parameterDefaults）與各分頁區塊（ParameterTabContent）已拆到同資料夾；查詢、effect、儲存仍在此檔，內容不變
@@ -636,6 +636,21 @@ function Parameter() {
 
   const [selectTab, setSelectTab] = useState('orderCreate')
   const handleTabsChange = (event, value) => setSelectTab(value)
+  const pendingSection = useRef(null)
+  const openSection = (value, id) => {
+    if (selectTab === value) {
+      document.getElementById(id)?.scrollIntoView({ block: 'start' })
+      return
+    }
+    pendingSection.current = id
+    setSelectTab(value)
+  }
+  useEffect(() => {
+    const id = pendingSection.current
+    if (!id) return
+    pendingSection.current = null
+    document.getElementById(id)?.scrollIntoView({ block: 'start' })
+  }, [selectTab])
   const tabs = [
     { value: 'orderCreate', label: '打帳單', icon: Receipt },
     { value: 'employeeSchedule', label: '排班及打卡', icon: Timer },
@@ -660,9 +675,24 @@ function Parameter() {
           activationMode="manual"
         >
           <SettingsTabsList>
-            {tabs.map((tab, index) => (
-              <SettingsTabsTrigger key={index} value={tab.value} icon={tab.icon}>{tab.label}</SettingsTabsTrigger>
-            ))}
+            {tabs.map((tab, index) => {
+              const sections = PARAMETER_SECTIONS[tab.value] || []
+              return (
+                <SettingsTabsTrigger
+                  key={index}
+                  value={tab.value}
+                  icon={tab.icon}
+                  detailLabel={sections.length > 1 ? `${tab.label}的設定` : undefined}
+                  detail={sections.length > 1 ? sections.map(section => (
+                    <SettingsFlyoutButton key={section.id} onClick={() => openSection(tab.value, section.id)}>
+                      {section.label}
+                    </SettingsFlyoutButton>
+                  )) : undefined}
+                >
+                  {tab.label}
+                </SettingsTabsTrigger>
+              )
+            })}
           </SettingsTabsList>
           <div className="min-w-0 flex-1 md:bg-background md:px-6 md:py-6">
             <SettingsSectionHeading title={tabs.find(tab => tab.value === selectTab)?.label} />

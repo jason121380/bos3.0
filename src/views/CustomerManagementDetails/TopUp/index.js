@@ -55,6 +55,7 @@ export default function TopUp({ customer, pagenationLabel }) {
 
   return (
     <div className="flex flex-col gap-6">
+      <div id="customer-topup-record" className="scroll-mt-6">
       <RecordResults
         date={{ start: resultSetting.record.start, end: resultSetting.record.end }}
         resultSetting={resultSetting}
@@ -63,6 +64,8 @@ export default function TopUp({ customer, pagenationLabel }) {
         walletBalance={walletBalance}
         pagenationLabel={pagenationLabel}
       />
+      </div>
+      <div id="customer-topup-used" className="scroll-mt-6">
       <UsagedResult
         date={{ start: resultSetting.usaged.start, end: resultSetting.usaged.end }}
         resultSetting={resultSetting}
@@ -70,6 +73,7 @@ export default function TopUp({ customer, pagenationLabel }) {
         onChange={event => handleChangeResult({ ...event, name: 'usaged' })}
         pagenationLabel={pagenationLabel}
       />
+      </div>
     </div>
   )
 }

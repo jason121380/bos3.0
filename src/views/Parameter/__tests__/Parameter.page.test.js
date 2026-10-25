@@ -7,12 +7,13 @@
 // - 存檔成功後設定類查詢（settings-cache）被清除重抓；操作密碼查詢不在設定快取內。
 // GraphQL 全由模擬 link 回應，不連後端、不建立真實資料。
 import React from 'react'
-import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
+import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { openSnackbar } from 'elements/snackbars'
 import { loginAs, callsOf, renderPage, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
 import { registeredSettingsFields } from 'lib/settings-cache'
 import Parameter from '..'
 import { baseFixtures, renderParameter, renderWithSettingsCache, openTab, save, sent, SAVE_MUTATIONS, controlByLabel } from './parameterKit.test'
+import { SETTINGS_FLYOUT_MEDIA } from 'ui/settings-nav'
 
 jest.setTimeout(30000)
 
@@ -177,5 +178,35 @@ describe('設定快取（settings-cache）', () => {
     // 操作密碼（cache-and-network）不因清除設定快取而重抓
     expect(callsOf(utils.calls, 'GET_MERCHANT_PASSWORD')).toHaveLength(1)
     expect(openSnackbar).toHaveBeenLastCalledWith({ message: '儲存成功!', variant: 'success' })
+  })
+})
+
+describe('分類細項', () => {
+  it('桌機滑過多分頁浮出設定卡，點細項切到該分頁並捲到卡片；只有一張卡的分頁不浮出', async () => {
+    const original = window.matchMedia
+    window.matchMedia = query => ({
+      matches: query === SETTINGS_FLYOUT_MEDIA,
+      media: query,
+      addEventListener() {},
+      removeEventListener() {},
+    })
+    const scrolled = []
+    const realScroll = Element.prototype.scrollIntoView
+    Element.prototype.scrollIntoView = function scrollIntoView() { scrolled.push(this.id) }
+    try {
+      await renderParameter()
+      fireEvent.mouseEnter(screen.getByRole('tab', { name: '密碼' }))
+      expect(screen.queryByRole('region', { name: '密碼的設定' })).toBeNull()
+      fireEvent.mouseEnter(screen.getByRole('tab', { name: '薪資' }))
+      const flyout = screen.getByRole('region', { name: '薪資的設定' })
+      fireEvent.click(within(flyout).getByRole('button', { name: '薪資加項科目設定' }))
+      await wait(() => expect(screen.getByRole('tab', { name: '薪資' })).toHaveAttribute('aria-selected', 'true'))
+      expect(scrolled).toContain('parameter-salary-increase')
+      fireEvent.click(within(flyout).getByRole('button', { name: '薪資轉帳設定' }))
+      expect(scrolled).toContain('parameter-bank')
+    } finally {
+      Element.prototype.scrollIntoView = realScroll
+      window.matchMedia = original
+    }
   })
 })
