@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import React from 'react'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSeparator, SelectTrigger, SelectValue } from '../select'
@@ -6,7 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Popover, PopoverContent, PopoverTrigger } from '../popover'
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../dialog'
 import { Tabs, TabsContent } from '../tabs'
-import { SettingsSectionHeading, SettingsTabsList, SettingsTabsTrigger } from '../settings-nav'
+import { SettingsFlyoutButton, SettingsSectionHeading, SettingsTabsList, SettingsTabsTrigger, SETTINGS_FLYOUT_MEDIA } from '../settings-nav'
 
 // 保護什麼：包在 Radix 之上的浮層／選單元件（Select、DropdownMenu、Popover、Dialog、Tabs、設定頁選單）。
 // 這些元件畫在 Portal（body 底下），必須自帶 .ui-root（CLAUDE.md 踩雷：Portal 內沒有 ui-root 就沒有 box-sizing 重置），
@@ -188,6 +188,7 @@ describe('TabsContent／設定頁選單', () => {
     )
     expect(screen.getByRole('tablist')).toHaveAttribute('aria-label', '設定分類')
     expect(screen.getByRole('tablist').className).toContain('list')
+    expect(screen.getByRole('tablist').className).toContain('md:rounded-2xl')
     expect(screen.getAllByTestId('icon')).toHaveLength(1)
     expect(screen.getByTestId('icon')).toHaveAttribute('aria-hidden', 'true')
     expect(screen.getByText('A 內容').className).toContain('panel')
@@ -195,6 +196,87 @@ describe('TabsContent／設定頁選單', () => {
     const tabB = screen.getByRole('tab', { name: '權限' })
     fireEvent.mouseDown(tabB, { button: 0 })
     expect(onValueChange).toHaveBeenCalledWith('b')
+  })
+
+  it('桌機滑過有細項的分類才浮出面板，移出或窄屏不留', async () => {
+    const original = window.matchMedia
+    window.matchMedia = query => ({
+      matches: query === SETTINGS_FLYOUT_MEDIA,
+      media: query,
+      addEventListener() {},
+      removeEventListener() {},
+    })
+    const onOpen = jest.fn()
+    render(
+      <Tabs value="a" onValueChange={() => {}}>
+        <SettingsTabsList>
+          <SettingsTabsTrigger value="a" detailLabel="打帳單的設定" detail={<SettingsFlyoutButton onClick={onOpen}>打帳單相關設定</SettingsFlyoutButton>}>
+            打帳單
+          </SettingsTabsTrigger>
+          <SettingsTabsTrigger value="b">密碼</SettingsTabsTrigger>
+        </SettingsTabsList>
+      </Tabs>
+    )
+    fireEvent.mouseEnter(screen.getByRole('tab', { name: '密碼' }))
+    expect(screen.queryByRole('region')).toBeNull()
+    fireEvent.mouseEnter(screen.getByRole('tab', { name: '打帳單' }))
+    const flyout = screen.getByRole('region', { name: '打帳單的設定' })
+    expect(flyout.querySelector('.rounded-2xl')).not.toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: '打帳單相關設定' }))
+    expect(onOpen).toHaveBeenCalled()
+    fireEvent.mouseLeave(screen.getByRole('tab', { name: '打帳單' }).parentElement)
+    expect(screen.getByRole('region', { name: '打帳單的設定' })).toBeInTheDocument()
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 200))
+    })
+    expect(screen.queryByRole('region', { name: '打帳單的設定' })).toBeNull()
+    window.matchMedia = () => ({ matches: false, media: '', addEventListener() {}, removeEventListener() {} })
+    fireEvent.mouseEnter(screen.getByRole('tab', { name: '打帳單' }))
+    expect(screen.queryByRole('region', { name: '打帳單的設定' })).toBeNull()
+    window.matchMedia = original
+  })
+
+  it('斜向掠過下一個分類時維持原來的面板，停留下一個分類才改開', async () => {
+    const original = window.matchMedia
+    window.matchMedia = query => ({
+      matches: query === SETTINGS_FLYOUT_MEDIA,
+      media: query,
+      addEventListener() {},
+      removeEventListener() {},
+    })
+    render(
+      <Tabs value="a" onValueChange={() => {}}>
+        <SettingsTabsList>
+          <SettingsTabsTrigger value="a" detailLabel="打帳單的設定" detail={<SettingsFlyoutButton>打帳單相關設定</SettingsFlyoutButton>}>
+            打帳單
+          </SettingsTabsTrigger>
+          <SettingsTabsTrigger value="b" detailLabel="權限的設定" detail={<SettingsFlyoutButton>角色權限</SettingsFlyoutButton>}>
+            權限
+          </SettingsTabsTrigger>
+        </SettingsTabsList>
+      </Tabs>
+    )
+    fireEvent.mouseEnter(screen.getByRole('tab', { name: '打帳單' }))
+    fireEvent.mouseLeave(screen.getByRole('tab', { name: '打帳單' }).parentElement)
+    fireEvent.mouseEnter(screen.getByRole('tab', { name: '權限' }))
+    expect(screen.getByRole('region', { name: '打帳單的設定' })).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: '權限的設定' })).toBeNull()
+    fireEvent.mouseLeave(screen.getByRole('tab', { name: '權限' }).parentElement)
+    fireEvent.mouseEnter(screen.getByRole('tab', { name: '打帳單' }).parentElement)
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 200))
+    })
+    expect(screen.getByRole('region', { name: '打帳單的設定' })).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: '權限的設定' })).toBeNull()
+
+    fireEvent.mouseLeave(screen.getByRole('tab', { name: '打帳單' }).parentElement)
+    fireEvent.mouseEnter(screen.getByRole('tab', { name: '權限' }))
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 200))
+    })
+    expect(screen.queryByRole('region', { name: '打帳單的設定' })).toBeNull()
+    expect(screen.getByRole('region', { name: '權限的設定' })).toBeInTheDocument()
+    window.matchMedia = original
   })
 
   it('SettingsSectionHeading 沒有標題時不輸出空的 h2', () => {

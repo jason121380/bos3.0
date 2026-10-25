@@ -181,7 +181,7 @@ Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現*
 
 ## 12. 設定頁樣板（OpenAI 設定頁式，Jason 2026/10/19 拍版）
 
-Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比照其設計語言統一。本節只適用設定類（系統參數、個人檔案內的設定分頁、業績／抽成參數等），**報表、帳單四兄弟、列印頁不適用**——那些維持 §11 compact 與既有合計／列印規範，不得因本節改成寬鬆留白。**唯一例外（Jason 2026/10/19 新指示，覆蓋先前「報表不套設定樣板」僅限本頁）：報表目錄頁（`/dashboard-list-detail`）套左選單＋右側內容**，僅目錄頁本身比照本節版面，各報表頁、帳單頁仍不套、維持原規範。此頁桌機再依 Jason 同日追加指示採 Billing 式左右底色：左選單欄整欄 `bg-surface` 淺灰、右內容 `bg-background` 白，兩欄相接不加 border／shadow 分隔（手機維持頂部橫向分頁、不套底色）。
+Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比照其設計語言統一。本節只適用設定類（系統參數、個人檔案內的設定分頁、業績／抽成參數等），**報表、帳單四兄弟、列印頁不適用**——那些維持 §11 compact 與既有合計／列印規範，不得因本節改成寬鬆留白。**唯一例外（Jason 2026/10/19 新指示，覆蓋先前「報表不套設定樣板」僅限本頁）：報表目錄頁（`/dashboard-list-detail`）套左選單＋右側內容**，僅目錄頁本身比照本節版面，各報表頁、帳單頁仍不套、維持原規範。此頁桌機再依 Jason 同日追加指示採 Billing 式左右底色：左選單欄整欄 `bg-surface` 淺灰、右內容 `bg-background` 白，兩欄相接不加 border／shadow 分隔（手機維持頂部橫向分頁、不套底色）。左欄外框圓角在共用 `settings-nav`（`md:rounded-2xl`，16px，與 `Card` 相同），系統參數、業績抽成參數、收支科目、個人檔案、員工資料、顧客詳細資料同一套選單一起套用。桌機滑鼠滑過「有子項」的分類才浮出細項（報表連結，或參數／顧客頁裡同一分類的多張卡片），移出即關；窄屏與觸控不浮出，點擊分類仍只切換右側內容。沒有子項的分類不造空選單。
 
 ### 版面（共用元件 `src/ui/settings-nav.js`）
 
@@ -212,6 +212,7 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
   - `/authority` **本批跳過**：角色權限管理為單一清單卡＋`min-w-[700px]` 寬表，無表單分區；套左選單只剩單一項目屬假選單且會擠壓寬表，故維持原清單版面（compact），日後如改版走清單／表格規範另案，不在本樣板批硬套。
 - 2026/10/19 Jason 新指示例外（`claude/report-catalog-nav-box`，v3.0-1020-0019）：報表目錄 `/dashboard-list-detail` 原六分類卡片 grid 改比照 Parameter：`ui/tabs`＋`ui/settings-nav` 左選單（桌機 240px、選中 `bg-accent/8`＋主題藍字）＋右側分類標題與單張連結卡，手機回到頂部橫向捲動分頁；六分類順序與圖示（日報表 CalendarDays／營業 ChartColumn／設計師 Users／互助 HeartHandshake／商品 Package／管理分析 LayoutDashboard）、各連結列樣式與權限判斷全保留，左選單只列有權限分類並預設第一個有權限者；桌機左欄整欄 `bg-surface`、右側 `bg-background` 白、兩欄 `gap-0` 相接無分隔線（Jason 追加 Billing 截圖指示，不新色票、不動共用 `settings-nav`、手機不套）。此例外僅限目錄頁本身，各報表頁與帳單頁不套本樣板。
 - 2026/10/20 顧客詳細資料推廣（`claude/customer-detail-nav-box`，v3.0-1020-0108）：Jason 新指示「顧客詳細資料這邊也要跟系統參數設定一樣排好」——`CustomerManagementDetails/index.js` 頂部橫向 Tabs 改比照 Parameter 的 `ui/tabs`＋`ui/settings-nav` 左選單（桌機 240px、左 `surface`／右 `background`、無分隔線由共用層承擔，見 #115／MEMORY #125）＋右側 `SettingsSectionHeading` 目前分頁名，手機頂部橫向捲動分頁，容器 `max-w-6xl`；九分頁圖示 基本資料 User／消費記錄 Receipt／卡券紀錄 Ticket／入金紀錄 Wallet／紅利點數紀錄 Star／顧客追蹤 UserCheck／簡訊發送紀錄 MessageSquare／抽獎券紀錄 Gift／會員卡列表 CreditCard。分頁 value、條件分頁（bonus 插於 topup 後、membership 尾加）出現條件與順序、`handleTabsChange` 的 `history.push`＋`backto=customer-filter`、`activationMode="manual"`、各分頁內容元件與參數、返回按鈕（移至右內容下方原相對位置）一字未動；各分頁內容（General／Invoices 等）不動，底色僅 `md` 生效。
+- 2026/10/25 左欄圓角與分類細項（共用 `ui/settings-nav`）：`SettingsTabsList` 加 `md:rounded-2xl`（16px，與 `Card` 相同）。用到這套選單的頁面一起套用：報表目錄、系統參數、業績抽成參數、收支科目、個人檔案、員工資料、顧客詳細資料。桌機滑鼠滑過分類時，若該分類有子項才浮出面板（`Card` 圓角、`text-body`）：報表目錄是該分類的報表連結；系統參數是該分頁裡的設定卡；業績抽成參數的「人員身分類別」是兩張設定卡；顧客詳細資料的卡券／入金是兩張紀錄卡。點子項會切到該分類並捲到對應區塊。點分類本身仍只切換右側內容。沒有子項的分類（收支科目、個人檔案、員工資料，以及參數裡只有一張卡的分頁）不浮出。窄屏與觸控不浮出。
 
 
 
