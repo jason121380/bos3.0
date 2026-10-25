@@ -60,9 +60,14 @@ const Results = ({ data, systemUpdateRecord, isWhiteList }) => {
                   index === open ? setOpen(-1) : setOpen(index)
                 }}
               >
-                <div className="flex w-full items-center justify-between gap-4 pr-2">
-                  <h2 className="m-0 text-heading text-text">{d.title}</h2>
-                  <div className="shrink-0 text-label tabular-nums text-text-secondary">版本:{d.versionNo}</div>
+                <div className="flex w-full min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 pr-2">
+                  <h2 className="m-0 min-w-0 max-w-full text-heading text-text">{d.title}</h2>
+                  <div className="flex w-full max-w-full flex-wrap items-center gap-x-3 gap-y-0.5 sm:w-auto sm:justify-end">
+                    <span className="whitespace-nowrap text-caption tabular-nums text-text-secondary">
+                      更新日期:{format(d.updateTime, 'yyyy/MM/dd')}
+                    </span>
+                    <div className="whitespace-nowrap text-label tabular-nums text-text-secondary">版本:{d.versionNo}</div>
+                  </div>
                 </div>
               </AccordionSummary>
               <AccordionDetails className="flex flex-col overflow-x-auto">
