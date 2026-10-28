@@ -10,13 +10,14 @@ import idx from 'idx'
 import useFetchSetUserClockIn from 'hooks/useFetchSettingUserClockIn'
 import { useFetchGetEmployeeClockInDisplay } from 'hooks/useFetchGetParameterReportSetting'
 import { openSnackbar } from 'elements/snackbars'
-import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 
 import Results from './Results'
 import { Autocomplete } from 'ui/combobox'
+import { ListFilter } from 'lucide-react'
+import { PageHeader } from 'ui/page-header'
 
 const clockInFilter = [
   { label: '未知', value: 'NULL' },
@@ -107,18 +108,30 @@ const EmployeeClockIn = () => {
 
   return (
     <Page className="ui-root" title="現場電腦打卡">
-      <AdminPageHeader
+      <PageHeader
         title='現場電腦打卡'
-        onFilterClick={filterDisplay ? () => setShowFilter(!showFilter) : null}
-        showFilter={showFilter}
-      >
-        <DateSelector
-          date={date}
-          attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
-          dateChange={value => setDate(value)}
-          margin={false}
-        />
-      </AdminPageHeader>
+        actions={
+          <>
+            <DateSelector
+              date={date}
+              attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
+              dateChange={value => setDate(value)}
+              margin={false}
+            />
+            {filterDisplay && (
+              <Button
+                variant="secondary"
+                aria-pressed={!!showFilter}
+                onClick={() => setShowFilter(!showFilter)}
+                className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+              >
+                <ListFilter strokeWidth={1.75} />
+                篩選
+              </Button>
+            )}
+          </>
+        }
+      />
 
       {showFilter && (
         <Card className="mb-6 flex items-center gap-3 p-4">

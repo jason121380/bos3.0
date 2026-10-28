@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon, CheckBox as CheckBoxIcon } from 'ui/icons'
 import Autocomplete from 'ui/combobox'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import DateSelector from 'components/DateSelector'
 import { useFetchProductsInAutoComplete } from 'hooks/useFetchProducts'
 import { endOfDay, startOfMonth, format } from 'date-fns'
@@ -16,7 +15,7 @@ import { Button as UIButton } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
 import QueryFailed from 'components/QueryFailed'
-import { ReportToolbar } from 'ui/page-header'
+import { ReportToolbar, PageHeader } from 'ui/page-header'
 
 const performanceEnum = [
   { label: '店販', value: 'SALE' },
@@ -118,16 +117,21 @@ const ProductInvoicingRecordReport = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <AdminPageHeader title='商品進銷貨報表'>
-          <UIButton
-            onClick={() => window.print()}
-            variant="secondary"
-            disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
-          >
-            <Printer strokeWidth={1.75} />
-            列印
-          </UIButton>
-        </AdminPageHeader>
+        <PageHeader
+          title='商品進銷貨報表'
+          actions={
+            <>
+              <UIButton
+                onClick={() => window.print()}
+                variant="secondary"
+                disabled={getAllProducts.loading || invoicingRecordReportLazyData.loading || invoicingRecordReportLazyData.data === undefined}
+              >
+                <Printer strokeWidth={1.75} />
+                列印
+              </UIButton>
+            </>
+          }
+        />
         <ReportToolbar
           date={
             <DateSelector

@@ -1,5 +1,4 @@
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { Switch } from 'ui/switch'
 import { Tabs } from 'ui/tabs'
 import { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
@@ -45,6 +44,7 @@ import SalaryItems from './SalaryItems'
 import { Skeleton } from 'ui/skeleton'
 import QueryFailed from 'components/QueryFailed'
 import { roleSectionAuthority } from 'helper/rolePageAuthority'
+import { PageHeader } from 'ui/page-header'
 
 // 分頁載入中：與舊版 CircularProgress 相同時機顯示
 const TabLoading = () => (
@@ -538,7 +538,9 @@ function Settings({ match, history }) {
 
   return (
     <Page className="ui-root min-h-screen" title={`${designerName} - ${findTabName()}`}>
-      <AdminPageHeader title={`${designerName} - 個人設定`} />
+      <PageHeader
+        title={`${designerName} - 個人設定`}
+      />
 
       {/* 設定頁樣板（STYLE §12，比照顧客詳細資料）：桌機左選單＋右內容、手機頂部橫向捲動分頁；
           分頁切換仍是 history.push(分頁值)（同舊版點選），activationMode="manual"：方向鍵只移動焦點，Enter／點擊才切換；分頁內容元件不動 */}

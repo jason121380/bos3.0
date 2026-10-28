@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
 import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
@@ -15,7 +14,7 @@ import Results from './Results'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
-import { ReportToolbar } from 'ui/page-header'
+import { ReportToolbar, PageHeader } from 'ui/page-header'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import QueryFailed from 'components/QueryFailed'
 
@@ -146,22 +145,27 @@ const HelperLeaderBoard = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <AdminPageHeader title='互助排行榜'>
-          <CSVLink
-            data={excelData}
-            filename="互助排行榜.csv"
-            style={{ display: 'inline' }}
-          >
-            <Button variant="secondary">
-              <Download strokeWidth={1.75} />
-              報表匯出
-            </Button>
-          </CSVLink>
-          <Button onClick={() => window.print()} variant="secondary">
-            <Printer strokeWidth={1.75} />
-            列印
-          </Button>
-        </AdminPageHeader>
+        <PageHeader
+          title='互助排行榜'
+          actions={
+            <>
+              <CSVLink
+                data={excelData}
+                filename="互助排行榜.csv"
+                style={{ display: 'inline' }}
+              >
+                <Button variant="secondary">
+                  <Download strokeWidth={1.75} />
+                  報表匯出
+                </Button>
+              </CSVLink>
+              <Button onClick={() => window.print()} variant="secondary">
+                <Printer strokeWidth={1.75} />
+                列印
+              </Button>
+            </>
+          }
+        />
         <ReportToolbar
           date={
             <DateSelector

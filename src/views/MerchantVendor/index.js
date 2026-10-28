@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { Skeleton } from 'ui/skeleton'
 
-import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
 import QueryFailed from 'components/QueryFailed'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 function MerchantVendor() {
   const merchantVendorList = useFetchGetMerchantVendorList()
@@ -23,12 +24,15 @@ function MerchantVendor() {
 
   return (
     <Page className="ui-root" title="廠商列表">
-      <AdminPageHeader
+      <PageHeader
         title="廠商列表"
-        primaryAction={{
-          label: '新增廠商',
-          to: '/merchant-vendor/create'
-        }}
+        actions={
+          <>
+            <Button asChild variant="primary">
+              <RouterLink to={'/merchant-vendor/create'}>{'新增廠商'}</RouterLink>
+            </Button>
+          </>
+        }
       />
       {merchantVendorList.error ? (
           <QueryFailed onRetry={() => merchantVendorList.refetch()} />

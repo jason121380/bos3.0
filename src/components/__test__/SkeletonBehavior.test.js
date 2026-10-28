@@ -3,7 +3,6 @@ import { createMemoryHistory } from 'history'
 import React from 'react'
 import { Router } from 'react-router-dom'
 
-import AdminPageHeader from '../AdminPageHeader'
 import NavItem from '../NavItem'
 
 afterEach(cleanup)
@@ -50,44 +49,6 @@ describe('NavItem（側欄改版後行為不變）', () => {
     )
     expect(screen.getByRole('link', { name: '帳單列表' })).toHaveAttribute('aria-current', 'page')
     expect(screen.getByRole('link', { name: '打帳單' })).not.toHaveAttribute('aria-current')
-  })
-})
-
-describe('AdminPageHeader（外觀改版、props 介面不變）', () => {
-  it('主要動作、次要動作、篩選開關都呼叫原本的 handler', () => {
-    const onPrimary = jest.fn()
-    const onSecondary = jest.fn()
-    const onFilter = jest.fn()
-    renderWithRouter(
-      <AdminPageHeader
-        title="帳單列表"
-        primaryAction={{ label: '新開單', onClick: onPrimary }}
-        secondaryActions={[{ label: '匯出', onClick: onSecondary }]}
-        onFilterClick={onFilter}
-        showFilter
-      />
-    )
-    fireEvent.click(screen.getByRole('button', { name: '新開單' }))
-    fireEvent.click(screen.getByRole('button', { name: '匯出' }))
-    fireEvent.click(screen.getByRole('button', { name: '篩選' }))
-    expect([onPrimary, onSecondary, onFilter].map(f => f.mock.calls.length)).toEqual([1, 1, 1])
-    expect(screen.getByRole('button', { name: '篩選' })).toHaveAttribute('aria-pressed', 'true')
-  })
-
-  it('primaryAction.to 時渲染為連結並導向該路由', () => {
-    const history = renderWithRouter(<AdminPageHeader title="卡券" primaryAction={{ label: '新增', to: '/coupons/create' }} />)
-    fireEvent.click(screen.getByRole('link', { name: '新增' }))
-    expect(history.location.pathname).toBe('/coupons/create')
-  })
-
-  // 匯出／儲存載入中要擋重複點擊：呼叫端傳的 primaryAction.disabled 必須真的讓按鈕停用
-  it('primaryAction.disabled 為 true 時按鈕停用、點擊不觸發 handler', () => {
-    const onPrimary = jest.fn()
-    renderWithRouter(<AdminPageHeader title="匯出" primaryAction={{ label: '匯出', onClick: onPrimary, disabled: true }} />)
-    const button = screen.getByRole('button', { name: '匯出' })
-    expect(button).toBeDisabled()
-    fireEvent.click(button)
-    expect(onPrimary).not.toHaveBeenCalled()
   })
 })
 

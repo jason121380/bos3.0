@@ -3,8 +3,7 @@ import idx from 'idx'
 import React, { useEffect, useState } from 'react'
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import useFetchGetMembershipSellReport from 'hooks/useFetchGetMembershipSellReport'
-import AdminPageHeader from 'components/AdminPageHeader'
-import { ReportToolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { startOfDay, endOfDay, format } from 'date-fns'
 import { CSVLink } from "react-csv";
 import { maskCustomerName } from 'helper/exportCustomerMask'
@@ -90,14 +89,14 @@ export default function MembershipSellReport() {
   return (
     <Page className="ui-root" title="會員卡銷售報表">
       <div>
-        <AdminPageHeader title='會員卡銷售報表'>
+        <PageHeader title='會員卡銷售報表'>
           <Button asChild variant="secondary">
             <CSVLink data={excelData} filename="會員卡銷售報表.csv">
               <Download strokeWidth={1.75} />
               報表匯出
             </CSVLink>
           </Button>
-        </AdminPageHeader>
+        </PageHeader>
         {/* 日期留在篩選列；其餘條件收進「篩選」（STYLE §14）。MerchantSearchBar 拆兩個實例共用同一份 values（同帳單列表），收合區的那個不讀網址日期 */}
         <ReportToolbar
           date={

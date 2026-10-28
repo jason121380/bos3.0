@@ -1,6 +1,6 @@
 import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { endOfDay, startOfMonth } from 'date-fns'
 import { useFetchUserHelperRetrieve } from 'hooks/useFetchGetUserHelperRetrieve'
 import idx from 'idx'
@@ -33,25 +33,38 @@ export default function DecreaseDetail() {
   return (
     <Page title="互助點數明細" className="ui-root">
       <div>
-        <AdminPageHeader title='互助點數明細' />
-        <div className="mb-3 flex flex-wrap items-center gap-x-2.5 gap-y-[15px]">
-          <div>
+        <PageHeader title='互助點數明細' />
+        {/* 日期留在篩選列；人員、服務、被協助設計師收進「篩選」（STYLE §14）。MerchantSearchBar 拆兩個實例共用同一份 values，收合區的那個不讀網址日期 */}
+        <ReportToolbar
+          date={
             <MerchantSearchBar
               values={pageSetting}
               onFilter={values => setPageSetting(values)}
               outside
-              visible={['datePicker', 'employee', 'service']}
-              useInDecreaseDetailReport={true}
+              visible={['datePicker']}
               lastInLeaderBoard={true}
               uiDateField
             />
-          </div>
-          <DesignerBeenAssistedAutoComplete
-            label="設計師編號/姓名"
-            value={beenAssistedDesigner}
-            onChange={value => setBeenAssistedDesigner(value.userId)}
-          />
-        </div>
+          }
+          filters={
+            <>
+              <MerchantSearchBar
+                values={pageSetting}
+                onFilter={values => setPageSetting(values)}
+                outside
+                stopGetQueryString={true}
+                visible={['employee', 'service']}
+                useInDecreaseDetailReport={true}
+                lastInLeaderBoard={true}
+              />
+              <DesignerBeenAssistedAutoComplete
+                label="設計師編號/姓名"
+                value={beenAssistedDesigner}
+                onChange={value => setBeenAssistedDesigner(value.userId)}
+              />
+            </>
+          }
+        />
         {userHelperRetrieveData.error ? (
           <QueryFailed onRetry={() => userHelperRetrieveData.refetch()} />
         ) : !userHelperRetrieveData.loading ? (

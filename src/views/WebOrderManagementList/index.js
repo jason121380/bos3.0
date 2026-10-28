@@ -13,12 +13,15 @@ import isPasswordRequired from 'helper/passwordRequired'
 import produce from 'immer'
 import { useState, useEffect } from 'react'
 import DateSelector from 'components/DateSelector'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import QueryFailed from 'components/QueryFailed'
+import { Link as RouterLink } from 'react-router-dom'
+import { ListFilter } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 function WebOrderMangagementList() {
   // 從本地存儲獲取商戶 ID
@@ -82,29 +85,39 @@ function WebOrderMangagementList() {
 
   return (
     <Page className="ui-root" title="預約管理">
-      <AdminPageHeader
+      <PageHeader
         title='預約管理'
-        showFilter={showFilter}
-        // 篩選面板只有「報到狀態」一項，且只在店家開啟報到功能時出現；未開啟時不顯示篩選鈕（Jason 2026/10/21：按了只有空白卡片）
-        onFilterClick={checkInDisplay ? () => setShowFilter(!showFilter) : undefined}
-        primaryAction={{
-          label: '新預約',
-          to: `/customer/reservation/${merchantid}?usingLineLogin=0`
-        }}
-      >
-        <DateSelector
-          date={{ startDate: pageSetting.startDate, endDate: pageSetting.endDate }}
-          attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-          dateChange={({ startDate, endDate }) => {
-            setPageSetting(
-              produce(draft => {
-                draft.startDate = startDate
-                draft.endDate = endDate
-              })
-            )
-          }}
-        />
-      </AdminPageHeader>
+        actions={
+          <>
+            <DateSelector
+              date={{ startDate: pageSetting.startDate, endDate: pageSetting.endDate }}
+              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              dateChange={({ startDate, endDate }) => {
+                setPageSetting(
+                  produce(draft => {
+                    draft.startDate = startDate
+                    draft.endDate = endDate
+                  })
+                )
+              }}
+            />
+            {checkInDisplay && (
+              <Button
+                variant="secondary"
+                aria-pressed={!!showFilter}
+                onClick={() => setShowFilter(!showFilter)}
+                className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+              >
+                <ListFilter strokeWidth={1.75} />
+                篩選
+              </Button>
+            )}
+            <Button asChild variant="primary">
+              <RouterLink to={`/customer/reservation/${merchantid}?usingLineLogin=0`}>{'新預約'}</RouterLink>
+            </Button>
+          </>
+        }
+      />
 
       {showFilter && checkInDisplay && (
         <Card className="mb-6 flex flex-wrap items-center gap-4 p-4">

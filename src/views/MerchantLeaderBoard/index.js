@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
 import ReferToggleButton from 'components/ReferToggleButton'
 import DateSelector from 'components/DateSelector'
@@ -16,7 +15,7 @@ import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
-import { ReportToolbar } from 'ui/page-header'
+import { ReportToolbar, PageHeader } from 'ui/page-header'
 import QueryFailed from 'components/QueryFailed'
 
 const isIncludeProductPerformanceValue = [
@@ -288,22 +287,27 @@ const MerchantLeaderBoard = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <AdminPageHeader title='店家排行榜'>
-          <CSVLink data={excelData} filename="店家排行榜.csv">
-            <Button variant="secondary" disabled={merchantLeaderBoard.loading}>
-              <Download strokeWidth={1.75} />
-              報表匯出
-            </Button>
-          </CSVLink>
-          <Button
-            variant="secondary"
-            disabled={merchantLeaderBoard.loading}
-            onClick={() => window.print()}
-          >
-            <Printer strokeWidth={1.75} />
-            列印
-          </Button>
-        </AdminPageHeader>
+        <PageHeader
+          title='店家排行榜'
+          actions={
+            <>
+              <CSVLink data={excelData} filename="店家排行榜.csv">
+                <Button variant="secondary" disabled={merchantLeaderBoard.loading}>
+                  <Download strokeWidth={1.75} />
+                  報表匯出
+                </Button>
+              </CSVLink>
+              <Button
+                variant="secondary"
+                disabled={merchantLeaderBoard.loading}
+                onClick={() => window.print()}
+              >
+                <Printer strokeWidth={1.75} />
+                列印
+              </Button>
+            </>
+          }
+        />
         <ReportToolbar
           date={
             <DateSelector

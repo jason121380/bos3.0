@@ -1,6 +1,5 @@
 import Page from 'components/Page'
 import { useFetchTicketsForList } from 'hooks/useFetchTickets'
-import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
 import { useState, useEffect } from 'react'
 import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
@@ -11,6 +10,9 @@ import { cn } from 'ui/utils'
 
 import Results from './Results'
 import QueryFailed from 'components/QueryFailed'
+import { Link as RouterLink } from 'react-router-dom'
+import { ListFilter } from 'lucide-react'
+import { PageHeader } from 'ui/page-header'
 
 function CouponList() {
   const [pageSetting, setPageSetting] = useState({
@@ -61,14 +63,24 @@ function CouponList() {
 
   return (
     <Page className="ui-root" title="卡券列表">
-      <AdminPageHeader
+      <PageHeader
         title="預收卡設定"
-        showFilter={showFilter}
-        onFilterClick={() => setShowFilter(!showFilter)}
-        primaryAction={{
-          label: '新增預收卡',
-          to: '/coupon/create'
-        }}
+        actions={
+          <>
+            <Button
+              variant="secondary"
+              aria-pressed={!!showFilter}
+              onClick={() => setShowFilter(!showFilter)}
+              className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+            >
+              <ListFilter strokeWidth={1.75} />
+              篩選
+            </Button>
+            <Button asChild variant="primary">
+              <RouterLink to={'/coupon/create'}>{'新增預收卡'}</RouterLink>
+            </Button>
+          </>
+        }
       />
       {showFilter && (
         <Card className="mb-6 flex flex-wrap items-center gap-2 px-5 py-4">

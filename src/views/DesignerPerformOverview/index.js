@@ -1,5 +1,5 @@
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import ReferToggleButton from 'components/ReferToggleButton'
 import { endOfDay, startOfMonth } from 'date-fns'
 import useFetchGetIsDisplayTogglePerformanceButton from 'hooks/useFetchGetIsDisplayTogglePerformanceButton'
@@ -154,38 +154,43 @@ function DesignerPerformOverview() {
   return (
     <Page className="ui-root" title="全店業績分析表">
       <div>
-        <AdminPageHeader title='全店業績分析表' />
-        <div className="flex flex-row flex-wrap items-center gap-5">
-          <div>
+        {/* 頁首只放「報表匯出」（STYLE §14） */}
+        <PageHeader
+          title='全店業績分析表'
+          actions={
+            <CSVLink
+              data={excelData}
+              filename="全店業績分析表.csv"
+              style={{ display: 'inline' }}
+            >
+              <Button variant="secondary">
+                <Download strokeWidth={1.75} />
+                報表匯出
+              </Button>
+            </CSVLink>
+          }
+        />
+        {/* 日期留在篩選列；「業績依據」收進「篩選」，店家設定隱藏切換鈕時沒有可用條件、不顯示篩選鈕（STYLE §14） */}
+        <ReportToolbar
+          date={
             <DateSelector
               date={date}
               attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
               dateChange={value => setDate(value)}
-              margin
             />
-          </div>
-          <div className="flex flex-grow flex-wrap items-center justify-between gap-x-5">
-            {!isDisplayTogglePerformanceButton && <div style={{ marginTop: -22 }} >
-              <div className="divText">業績依據：</div>
-              <ReferToggleButton
-                value={performReference}
-                onChange={handleToggleButtonChange}
-              />
-            </div>}
-            <div>
-              <CSVLink
-                data={excelData}
-                filename="全店業績分析表.csv"
-                style={{ display: 'inline' }}
-              >
-                <Button variant="secondary">
-                  <Download strokeWidth={1.75} />
-                  報表匯出
-                </Button>
-              </CSVLink>
-            </div>
-          </div>
-        </div>
+          }
+          filters={
+            !isDisplayTogglePerformanceButton ? (
+              <div className="flex flex-col gap-1.5">
+                <div className="divText text-label text-text-secondary">業績依據：</div>
+                <ReferToggleButton
+                  value={performReference}
+                  onChange={handleToggleButtonChange}
+                />
+              </div>
+            ) : undefined
+          }
+        />
         {merchantImmediatePerformReportData.error ? (
           <QueryFailed onRetry={() => merchantImmediatePerformReportData.refetch()} />
         ) : (!merchantImmediatePerformReportData.loading && merchantImmediatePerformReport !== null) ? (

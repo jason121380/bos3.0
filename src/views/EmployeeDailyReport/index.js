@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 // 報表外框保留 EmployeeDailyReport 掛點，使用 flex 排列螢幕卡片。
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchDesignerReport from 'hooks/useFetchDesignerDailyReport'
 import { format } from 'date-fns'
 import idx from 'idx'
@@ -14,7 +13,7 @@ import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
-import { ReportToolbar } from 'ui/page-header'
+import { ReportToolbar, PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
@@ -107,16 +106,21 @@ const EmployeeDailyReport = () => {
             format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
         </div>
       </div>
-      <AdminPageHeader title='設計師日報表'>
-        <Button
-          className="noprint shrink-0"
-          variant="secondary"
-          onClick={() => window.print()}
-        >
-          <Printer strokeWidth={1.75} />
-          列印
-        </Button>
-      </AdminPageHeader>
+      <PageHeader
+        title='設計師日報表'
+        actions={
+          <>
+            <Button
+              className="noprint shrink-0"
+              variant="secondary"
+              onClick={() => window.print()}
+            >
+              <Printer strokeWidth={1.75} />
+              列印
+            </Button>
+          </>
+        }
+      />
       <ReportToolbar
         date={
           <DateSelector

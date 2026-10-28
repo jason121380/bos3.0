@@ -1,6 +1,5 @@
 // 薪資條外框（.EmployeePayslipTableContainer，列印時以 initialize.scss 改為 display:block）改原生 div：
 // 保留同一個 className，螢幕上維持原 Grid container 的 flex-wrap 滿寬排版，內層 Results 的 Grid item 不動
-import AdminPageHeader from 'components/AdminPageHeader'
 import Page from 'components/Page'
 import idx from 'idx'
 import { format } from 'date-fns'
@@ -22,6 +21,9 @@ import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
+import { ListFilter } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 export default function Payroll() {
   const [date, setDate] = useState({
@@ -61,35 +63,38 @@ export default function Payroll() {
   return (
     <Page title="薪資條" className='EmployeePayslip'>
       <div>
-        <AdminPageHeader
+        <PageHeader
           title="薪資條"
-          showFilter={showFilter}
-          onFilterClick={() => setShowFilter(!showFilter)}
-          secondaryActions={[
-            {
-              label: '報表匯出',
-              onClick: handleExcel,
-              disabled: getUserSalaryExcelLazyData.loading,
-              className: "noprint"
-            },
-            {
-              label: '列印',
-              onClick: () => window.print(),
-              className: "noprint"
-            }
-          ]}
-        >
-          <DateSelector
-            date={date}
-            attributes={['lastmonth', 'thismonth', 'startDate']}
-            dateChange={value => setDate(value)}
-            onlyStart
-            inputFormat='yyyy/MM'
-            pickerOption={{
-              views: ['month', 'year']
-            }}
-          />
-        </AdminPageHeader>
+          actions={
+            <>
+              <DateSelector
+                date={date}
+                attributes={['lastmonth', 'thismonth', 'startDate']}
+                dateChange={value => setDate(value)}
+                onlyStart
+                inputFormat='yyyy/MM'
+                pickerOption={{
+                  views: ['month', 'year']
+                }}
+              />
+              <Button variant="secondary" onClick={handleExcel} disabled={getUserSalaryExcelLazyData.loading} className={"noprint"}>
+                {'報表匯出'}
+              </Button>
+              <Button variant="secondary" onClick={() => window.print()} className={"noprint"}>
+                {'列印'}
+              </Button>
+              <Button
+                variant="secondary"
+                aria-pressed={!!showFilter}
+                onClick={() => setShowFilter(!showFilter)}
+                className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+              >
+                <ListFilter strokeWidth={1.75} />
+                篩選
+              </Button>
+            </>
+          }
+        />
 
         {showFilter && (
           <Card className="mb-3 flex items-center gap-3 p-4">

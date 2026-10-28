@@ -8,8 +8,7 @@ import { useState, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { useFetchUsersForCreatePicking } from 'hooks/useFetchUsers'
 import { useFetchGetInventorysLazy } from 'hooks/useFetchGetInventorys'
-import AdminPageHeader from 'components/AdminPageHeader'
-import { Search } from 'lucide-react'
+import { Search, ListFilter } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
@@ -17,6 +16,7 @@ import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import { Autocomplete } from 'ui/combobox'
+import { PageHeader } from 'ui/page-header'
 
 function InventoryWork() {
   const [draftId, setDraftId] = useState(null)
@@ -67,22 +67,30 @@ function InventoryWork() {
 
   return (
     <Page className="ui-root" title="盤點作業">
-      <AdminPageHeader
+      <PageHeader
         title="盤點作業"
-        showFilter={showFilter}
-        onFilterClick={() => setShowFilter(!showFilter)}
-        primaryAction={{
-          label: draftId === null ? '開始盤點' : '繼續盤點',
-          disabled: inventorysData.loading || !inventorysData.data,
-          to: draftId === null ? '/inventory-work/create' : `/inventory-work/edit/${draftId}`
-        }}
-      >
-        <DateSelector
-          date={date}
-          attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
-          dateChange={value => setDate(value)}
-        />
-      </AdminPageHeader>
+        actions={
+          <>
+            <DateSelector
+              date={date}
+              attributes={['lastmonth', 'thismonth', 'startDate', 'endDate']}
+              dateChange={value => setDate(value)}
+            />
+            <Button
+              variant="secondary"
+              aria-pressed={!!showFilter}
+              onClick={() => setShowFilter(!showFilter)}
+              className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+            >
+              <ListFilter strokeWidth={1.75} />
+              篩選
+            </Button>
+            <Button asChild variant="primary">
+              <RouterLink to={draftId === null ? '/inventory-work/create' : `/inventory-work/edit/${draftId}`}>{draftId === null ? '開始盤點' : '繼續盤點'}</RouterLink>
+            </Button>
+          </>
+        }
+      />
 
       {/* 以 hidden 收合（取代 MUI Collapse）：盤點人員 Autocomplete 為非受控，保持掛載，收合後選取內容與舊版一樣保留 */}
       <div hidden={!showFilter}>

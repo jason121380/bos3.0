@@ -1,7 +1,6 @@
 import { TextField } from 'ui/text-field'
 import Page from 'components/Page'
 import { useState, useEffect } from 'react'
-import AdminPageHeader from 'components/AdminPageHeader'
 import MerchantListAutocpmplete from 'components/MerchantListAutocpmplete'
 import DateSelector from 'components/DateSelector'
 import { startOfDay, endOfDay, format } from 'date-fns'
@@ -14,7 +13,7 @@ import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
-import { ReportToolbar } from 'ui/page-header'
+import { ReportToolbar, PageHeader } from 'ui/page-header'
 import { Autocomplete } from 'ui/combobox'
 import QueryFailed from 'components/QueryFailed'
 
@@ -109,24 +108,29 @@ const MultiMerchantsLeaderBoard = () => {
 							format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
 					</div>
 				</div>
-				<AdminPageHeader title='多店店販銷售排行'>
-					<Button
-						variant="secondary"
-						disabled={getMultiMerchantsLeaderBoardExcelLazyData.loading}
-						onClick={handleGetExcelUrl}
-					>
-						<Download strokeWidth={1.75} />
-						報表匯出
-					</Button>
-					<Button
-						variant="secondary"
-						disabled={getMultiMerchantsLeaderBoardLazyData.loading}
-						onClick={() => window.print()}
-					>
-						<Printer strokeWidth={1.75} />
-						列印
-					</Button>
-				</AdminPageHeader>
+				<PageHeader
+				  title='多店店販銷售排行'
+				  actions={
+				    <>
+				      <Button
+    						variant="secondary"
+    						disabled={getMultiMerchantsLeaderBoardExcelLazyData.loading}
+    						onClick={handleGetExcelUrl}
+    					>
+    						<Download strokeWidth={1.75} />
+    						報表匯出
+    					</Button>
+				      <Button
+    						variant="secondary"
+    						disabled={getMultiMerchantsLeaderBoardLazyData.loading}
+    						onClick={() => window.print()}
+    					>
+    						<Printer strokeWidth={1.75} />
+    						列印
+    					</Button>
+				    </>
+				  }
+				/>
 				<ReportToolbar
 					date={
 						<DateSelector

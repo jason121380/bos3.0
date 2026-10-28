@@ -2,7 +2,6 @@ import { Tabs } from 'ui/tabs'
 import { SettingsTabsList, SettingsTabsTrigger, SettingsSectionHeading } from 'ui/settings-nav'
 import { CalendarDays, ChartColumn, CircleDollarSign, Lock, Pin, Receipt, Star, Timer, User, Users } from 'lucide-react'
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { Switch } from 'ui/switch'
 import PropTypes from 'prop-types'
 import { useState, useEffect } from 'react'
@@ -45,6 +44,7 @@ import RakeReport from './RakeReport'
 import AttendanceRecord from './AttendanceRecord'
 import DesignerSelfRecord from './DesignerSelfRecord'
 import { roleSectionAuthority } from 'helper/rolePageAuthority'
+import { PageHeader } from 'ui/page-header'
 
 function Settings({ match, history }) {
   const employeeId = JSON.parse(localStorage.getItem('user')).id
@@ -599,13 +599,19 @@ function Settings({ match, history }) {
   return (
     <Page className="ui-root" title={`${profile.data.me.name} - ${findTabName()}`}>
       <div className="w-full">
-        <AdminPageHeader title='變更帳戶資訊' subTitle='設定'>
-          {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
-            <div className='CheckinMode flex items-center gap-1 text-body text-text'>
-              <span>報到模式</span><Switch aria-label="報到模式" checked={checkinMode} onChange={(e, v) => setCheckinMode(v)} />
-            </div>
-          )}
-        </AdminPageHeader>
+        <PageHeader
+          title='變更帳戶資訊'
+          breadcrumb={<span className="text-caption text-text-tertiary">{'設定'}</span>}
+          actions={
+            <>
+              {checkinSettings.isBookingCheckinEnabled && currentTab === 'reservation' && (
+                <div className='CheckinMode flex items-center gap-1 text-body text-text'>
+                  <span>報到模式</span><Switch aria-label="報到模式" checked={checkinMode} onChange={(e, v) => setCheckinMode(v)} />
+                </div>
+              )}
+            </>
+          }
+        />
         <Tabs
           onValueChange={value => handleTabsChange(null, value)}
           value={currentTab}

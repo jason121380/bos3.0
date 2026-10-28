@@ -7,10 +7,10 @@ import React from 'react'
 
 import { startOfMonth } from 'date-fns'
 import DateSelector from 'components/DateSelector'
-import AdminPageHeader from 'components/AdminPageHeader'
 
 import DecreaseResult from './DecreaseResult'
 import IncreaseResult from './IncreaseResult'
+import { PageHeader } from 'ui/page-header'
 
 function CustomerManagementList() {
   const [setting, setSetting] = React.useState({
@@ -69,18 +69,23 @@ function CustomerManagementList() {
   return (
     <Page className="ui-root" title="薪資明細表">
       <div>
-        <AdminPageHeader title="薪資明細表">
-          <DateSelector
-            date={{ startDate: setting.date }}
-            attributes={['startDate']}
-            dateChange={({ startDate }) => handleDateChange(startOfMonth(new Date(startDate)).getTime())}
-            onlyStart
-            inputFormat='yyyy/MM'
-            pickerOption={{
-              views: ['month', 'year']
-            }}
-          />
-        </AdminPageHeader>
+        <PageHeader
+          title="薪資明細表"
+          actions={
+            <>
+              <DateSelector
+                date={{ startDate: setting.date }}
+                attributes={['startDate']}
+                dateChange={({ startDate }) => handleDateChange(startOfMonth(new Date(startDate)).getTime())}
+                onlyStart
+                inputFormat='yyyy/MM'
+                pickerOption={{
+                  views: ['month', 'year']
+                }}
+              />
+            </>
+          }
+        />
         {idx(
           userIncrease,
           _ =>

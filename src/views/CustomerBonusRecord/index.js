@@ -1,5 +1,4 @@
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchGetCustomerBonusDepositRecords from 'hooks/useFetchGetCustomerBonusDepositRecords'
 import idx from 'idx'
 import { Link as RouterLink } from 'react-router-dom'
@@ -7,6 +6,8 @@ import { Link as RouterLink } from 'react-router-dom'
 import Results from './Results'
 import { Skeleton } from 'ui/skeleton'
 import QueryFailed from 'components/QueryFailed'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 function CustomerBonusRecord() {
   const customerBonusDepositRecords = useFetchGetCustomerBonusDepositRecords()
@@ -14,13 +15,15 @@ function CustomerBonusRecord() {
   return (
     <Page className="ui-root" title="紅利點數紀錄">
       <div>
-        <AdminPageHeader
+        <PageHeader
           title="紅利點數紀錄"
-          sx={{ backgroundColor: 'transparent', mb: 0 }}
-          primaryAction={{
-            label: '新增紀錄',
-            to: '/customer-bonus-record/create'
-          }}
+          actions={
+            <>
+              <Button asChild variant="primary">
+                <RouterLink to={'/customer-bonus-record/create'}>{'新增紀錄'}</RouterLink>
+              </Button>
+            </>
+          }
         />
         {customerBonusDepositRecords.error ? (
           <QueryFailed onRetry={() => customerBonusDepositRecords.refetch()} />

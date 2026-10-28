@@ -4,8 +4,6 @@ import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
 import useFetchCustomers from 'hooks/useFetchCustomers'
-import AdminPageHeader from 'components/AdminPageHeader'
-import PageTitle from 'components/PageTitle'
 import idx from 'idx'
 import produce from 'immer'
 import React, { Fragment, useEffect, useState } from 'react'
@@ -16,6 +14,9 @@ import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import QueryFailed from 'components/QueryFailed'
+import { ListFilter } from 'lucide-react'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 // 排序
 const sortByA = [
@@ -162,14 +163,24 @@ function CustomerManagementList() {
 
   return (
     <Page className="ui-root" title="客戶列表">
-        <AdminPageHeader
+        <PageHeader
           title='客戶列表'
-          showFilter={showFilter}
-          onFilterClick={() => setShowFilter(!showFilter)}
-          primaryAction={{
-            label: '新增',
-            to: '/management/customer/create'
-          }}
+          actions={
+            <>
+              <Button
+                variant="secondary"
+                aria-pressed={!!showFilter}
+                onClick={() => setShowFilter(!showFilter)}
+                className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+              >
+                <ListFilter strokeWidth={1.75} />
+                篩選
+              </Button>
+              <Button asChild variant="primary">
+                <RouterLink to={'/management/customer/create'}>{'新增'}</RouterLink>
+              </Button>
+            </>
+          }
         />
 
         {/* 以 hidden 收合（取代 MUI Collapse）：SearchBar 內有非受控輸入，保持掛載，收合後內容與舊版一樣保留 */}

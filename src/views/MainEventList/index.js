@@ -10,11 +10,12 @@ import useFetchSetEndMainEvent from 'hooks/useFetchSetEndMainEvent'
 import useFetchEndEventRuleGroup from 'hooks/useFetchEndEventRuleGroup'
 import { openSnackbar } from 'elements/snackbars'
 import cloneDeep from 'lodash/cloneDeep'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import QueryFailed from 'components/QueryFailed'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 function MainEventList() {
   const getMainEvents = useFetchGetMainEvents()
@@ -183,12 +184,15 @@ function MainEventList() {
     <Fragment>
       <Page className="ui-root" title="活動列表">
         <div>
-          <AdminPageHeader
+          <PageHeader
             title="活動列表"
-            primaryAction={{
-              label: '建立活動',
-              to: '/main-event-create'
-            }}
+            actions={
+              <>
+                <Button asChild variant="primary">
+                  <RouterLink to={'/main-event-create'}>{'建立活動'}</RouterLink>
+                </Button>
+              </>
+            }
           />
           {getMainEvents.error ? (
           <QueryFailed onRetry={() => getMainEvents.refetch()} />

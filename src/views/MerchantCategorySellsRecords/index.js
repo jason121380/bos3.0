@@ -7,7 +7,7 @@ import useFetchProductOrders from 'hooks/useFetchProductOrders'
 import idx from 'idx'
 import produce from 'immer'
 import React, { useState } from 'react'
-import { PageHeader } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
@@ -92,47 +92,60 @@ export default function DecreaseDetail({ history, location }) {
   return (
     <Page className="ui-root" title="店販分類抽成明細">
       <PageHeader title="店販分類抽成明細" />
-      <div className="flex flex-wrap items-center gap-2.5 pb-4">
-        <div>
+      {/* 日期留在篩選列；設計師、顧客、商品與兩組排序收進「篩選」，標籤在上（STYLE §14）。MerchantSearchBar 拆兩個實例共用同一份 values，收合區的那個不讀網址日期 */}
+      <ReportToolbar
+        date={
           <MerchantSearchBar
             values={pageSetting}
             onFilter={value => setPageSetting(value)}
             outside
-            visible={['datePicker', 'employee', 'customer', 'product']}
+            visible={['datePicker']}
             lastInLeaderBoard={true}
           />
-        </div>
-        <div className="flex items-center gap-2 self-start">
-          <div className="divText text-label text-text-secondary">分類依據</div>
-          <ToggleGroup
-            size="small"
-            value={sortWay}
-            onChange={handleToggleButtonChange}
-            exclusive
-          >
-            {sortBy.map((data, idx) => (
-              <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                {data.label}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </div>
-        <div className="flex items-center gap-2 self-start">
-          <div className="divText text-label text-text-secondary">時間排序依據</div>
-          <ToggleGroup
-            size="small"
-            value={sortTime}
-            onChange={handleToggleButtonTimeChange}
-            exclusive
-          >
-            {sortByTime.map((data, idx) => (
-              <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
-                {data.label}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </div>
-      </div>
+        }
+        filters={
+          <>
+            <MerchantSearchBar
+              values={pageSetting}
+              onFilter={value => setPageSetting(value)}
+              outside
+              stopGetQueryString={true}
+              visible={['employee', 'customer', 'product']}
+              lastInLeaderBoard={true}
+            />
+            <div className="flex flex-col gap-1.5">
+              <div className="divText text-label text-text-secondary">分類依據</div>
+              <ToggleGroup
+                size="small"
+                value={sortWay}
+                onChange={handleToggleButtonChange}
+                exclusive
+              >
+                {sortBy.map((data, idx) => (
+                  <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                    {data.label}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <div className="divText text-label text-text-secondary">時間排序依據</div>
+              <ToggleGroup
+                size="small"
+                value={sortTime}
+                onChange={handleToggleButtonTimeChange}
+                exclusive
+              >
+                {sortByTime.map((data, idx) => (
+                  <ToggleGroupItem key={`${data.label}-${idx}`} value={data.value} name={data.label}>
+                    {data.label}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            </div>
+          </>
+        }
+      />
 
       {productOrders.error ? (
           <QueryFailed onRetry={() => productOrders.refetch()} />

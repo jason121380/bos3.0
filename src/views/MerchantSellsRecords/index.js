@@ -6,7 +6,7 @@ import useFetchProductOrders from 'hooks/useFetchProductOrders'
 import idx from 'idx'
 import produce from 'immer'
 import React from 'react'
-import { PageHeader } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
@@ -54,24 +54,35 @@ export default function DecreaseDetail({ history, location }) {
   return (
     <Page title="店販抽成明細" className="ui-root">
       <PageHeader title="店販抽成明細" />
-      <div className="flex flex-wrap items-center gap-2.5 pb-4">
-        <div>
+      {/* 日期留在篩選列；設計師、顧客、商品收進「篩選」（STYLE §14）。MerchantSearchBar 拆兩個實例共用同一份 values，收合區的那個不讀網址日期 */}
+      <ReportToolbar
+        date={
           <MerchantSearchBar
             values={pageSetting}
             onFilter={value => setPageSetting(value)}
             outside
-            visible={['datePicker', 'employee', 'customer']}
+            visible={['datePicker']}
             lastInLeaderBoard={true}
           />
-        </div>
-        <div className="mt-2 w-[150px]">
-          <ProductAutoComplete
-            label="商品名稱"
-            value={pageSetting.productId}
-            onChange={handleProductChange}
-          />
-        </div>
-      </div>
+        }
+        filters={
+          <>
+            <MerchantSearchBar
+              values={pageSetting}
+              onFilter={value => setPageSetting(value)}
+              outside
+              stopGetQueryString={true}
+              visible={['employee', 'customer']}
+              lastInLeaderBoard={true}
+            />
+            <ProductAutoComplete
+              label="商品名稱"
+              value={pageSetting.productId}
+              onChange={handleProductChange}
+            />
+          </>
+        }
+      />
 
       {productOrders.error ? (
           <QueryFailed onRetry={() => productOrders.refetch()} />

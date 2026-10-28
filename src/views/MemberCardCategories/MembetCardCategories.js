@@ -1,10 +1,12 @@
 import Page from 'components/Page'
-import AdminPageHeader from 'components/AdminPageHeader'
 import idx from 'idx'
 import { useFetchGetMembershipCategories } from 'hooks/useFetchGetMembershipCategory'
 
 import Results from './Results'
 import { Skeleton } from 'ui/skeleton'
+import { Link as RouterLink } from 'react-router-dom'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 function ComodityCategories() {
   // 拿到會員卡全部類別
@@ -17,13 +19,15 @@ function ComodityCategories() {
   return (
     <Page className="ui-root" title="會員卡分類設定">
       <div>
-        <AdminPageHeader
+        <PageHeader
           title="會員卡分類設定"
-          sx={{ backgroundColor: 'transparent', mb: 0 }}
-          primaryAction={{
-            label: '新增',
-            to: '/member-card-category/create'
-          }}
+          actions={
+            <>
+              <Button asChild variant="primary">
+                <RouterLink to={'/member-card-category/create'}>{'新增'}</RouterLink>
+              </Button>
+            </>
+          }
         />
         {!useFetchGetMembershipCategories({ paranoid: true, }).loading ?
           <Results categories={categories} /> :

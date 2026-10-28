@@ -4,8 +4,6 @@ import { TextField } from 'ui/text-field'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import Page from 'components/Page'
 import SearchBar from 'components/SearchBar'
-import AdminPageHeader from 'components/AdminPageHeader'
-import PageTitle from 'components/PageTitle'
 import BelongAutocomplete from 'components/BelongAutocomplete'
 import { useFetchCustomersWithoutSorting } from 'hooks/useFetchCustomers'
 import idx from 'idx'
@@ -13,7 +11,7 @@ import produce from 'immer'
 import React, { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { DatePicker } from 'ui/date-picker'
-import { ChevronDown, Trash2 } from 'lucide-react'
+import { ChevronDown, Trash2, ListFilter } from 'lucide-react'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useFetchCustomersWithoutSortingExcelLazy } from 'hooks/useFetchCustomersWithoutSortingExcel'
 import { theme } from '../../theme'
@@ -26,6 +24,7 @@ import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefau
 import { isCustomerExportMaskSettingOff } from 'helper/exportCustomerMask'
 
 import Results from './Results'
+import { PageHeader } from 'ui/page-header'
 
 let once = false
 
@@ -235,15 +234,24 @@ function CustomerFilterExport() {
 
   return (
     <Page className="ui-root" title="客資篩選匯出">
-        <AdminPageHeader
+        <PageHeader
           title='客資篩選匯出'
-          showFilter={showFilter}
-          onFilterClick={() => setShowFilter(!showFilter)}
-          primaryAction={{
-            label: '報表匯出',
-            onClick: handleExcel,
-            disabled: getCustomersWithoutSortingExcelLazyData.loading || exportMaskOff
-          }}
+          actions={
+            <>
+              <Button
+                variant="secondary"
+                aria-pressed={!!showFilter}
+                onClick={() => setShowFilter(!showFilter)}
+                className={showFilter ? 'border-accent bg-accent/8 text-accent hover:bg-accent/8' : undefined}
+              >
+                <ListFilter strokeWidth={1.75} />
+                篩選
+              </Button>
+              <Button variant="primary" onClick={handleExcel} disabled={getCustomersWithoutSortingExcelLazyData.loading || exportMaskOff}>
+                {'報表匯出'}
+              </Button>
+            </>
+          }
         />
         <BackendExportNotice settingOff={exportMaskOff} />
         {/* 以 hidden 收合（取代 MUI Collapse）：SearchBar 內有非受控輸入，保持掛載，收合後內容與舊版一樣保留 */}

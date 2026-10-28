@@ -3,21 +3,25 @@ import useFetchProductCategories from 'hooks/useFetchProductCategories'
 import idx from 'idx'
 import { Link as RouterLink } from 'react-router-dom'
 
-import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
 import { Skeleton } from 'ui/skeleton'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 function ComodityCategories() {
   const productCategories = useFetchProductCategories()
   const categories = idx(productCategories, _ => _.data.productCategories)
   return (
     <Page className="ui-root" title="商品分類設定">
-      <AdminPageHeader
+      <PageHeader
         title="商品分類設定"
-        primaryAction={{
-          label: '新增分類',
-          to: '/product/category/create'
-        }}
+        actions={
+          <>
+            <Button asChild variant="primary">
+              <RouterLink to={'/product/category/create'}>{'新增分類'}</RouterLink>
+            </Button>
+          </>
+        }
       />
       {!productCategories.loading ?
         <Results

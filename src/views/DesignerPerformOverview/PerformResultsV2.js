@@ -10,7 +10,7 @@ function Results({ className, results, excelData, attributeSwitchs, membershipDi
   return (
     <div {...rest} className={cn('mt-2', className)}>
       {/* 舊版 maxHeight 為 'calc(100vh - 280px'（少右括號，瀏覽器不採用），故不加高度限制以維持相同捲動行為 */}
-      <Table>
+      <Table dense>
         <TableHeader className="sticky top-0 z-[100]">
           <TableRow className="hover:bg-transparent">
             <TableHead className={cn(sticky, 'bg-surface')}>編號</TableHead>

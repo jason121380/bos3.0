@@ -3,10 +3,10 @@ import idx from 'idx'
 import { useState, useEffect, Fragment } from 'react'
 import useFetchGetMerchantParticipatingList from 'hooks/useFetchGetMerchantParticipatingList'
 import cloneDeep from 'lodash/cloneDeep'
-import AdminPageHeader from 'components/AdminPageHeader'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import { PageHeader } from 'ui/page-header'
 
 function MerchantParticipatingList() {
   const merchantParticipatingList = useFetchGetMerchantParticipatingList()
@@ -44,7 +44,9 @@ function MerchantParticipatingList() {
     <Fragment>
       <Page className="ui-root" title="活動店家參與列表">
         <div>
-          <AdminPageHeader title="活動店家參與列表" />
+          <PageHeader
+            title="活動店家參與列表"
+          />
           {merchantParticipatingList.loading ?
             <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
             : <Results

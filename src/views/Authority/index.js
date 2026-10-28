@@ -3,20 +3,25 @@ import idx from 'idx'
 import useFetchMerchantAuthorities from 'hooks/useFetchGetMerchantAuthorities'
 import { Skeleton } from 'ui/skeleton'
 
-import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
 import QueryFailed from 'components/QueryFailed'
+import { Link as RouterLink } from 'react-router-dom'
+import { Button } from 'ui/button'
+import { PageHeader } from 'ui/page-header'
 
 function Authority() {
   const merchantAuthData = useFetchMerchantAuthorities()
   return (
     <Page className="ui-root" title="角色權限管理">
-      <AdminPageHeader
+      <PageHeader
         title="角色權限管理"
-        primaryAction={{
-          label: '新增角色',
-          to: '/role/create'
-        }}
+        actions={
+          <>
+            <Button asChild variant="primary">
+              <RouterLink to={'/role/create'}>{'新增角色'}</RouterLink>
+            </Button>
+          </>
+        }
       />
       {merchantAuthData.error ? (
           <QueryFailed onRetry={() => merchantAuthData.refetch()} />

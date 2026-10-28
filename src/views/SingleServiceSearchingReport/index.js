@@ -13,11 +13,10 @@ import produce from 'immer'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
-import { ReportToolbar } from 'ui/page-header'
+import { ReportToolbar, PageHeader } from 'ui/page-header'
 
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
-import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
 import { Autocomplete } from 'ui/combobox'
 import QueryFailed from 'components/QueryFailed'
@@ -127,21 +126,26 @@ const DesignerPerformBasic = () => {
   return (
     <Page className="ui-root" title="單一服務項目查詢">
       <div>
-        <AdminPageHeader title='單一服務項目查詢'>
-          <Button
-            variant="secondary"
-            disabled={singleServiceReportExcelData.loading}
-            onClick={() => singleServiceReportExcel({
-              variables: {
-                input: {
-                  dateRange: inputData.dateRange,
-                  serviceIds: inputData.serviceIds.map(d => d.value)
-                },
-                sortBy: sort
-              }
-            })}
-          ><Download strokeWidth={1.75} />報表匯出</Button>
-        </AdminPageHeader>
+        <PageHeader
+          title='單一服務項目查詢'
+          actions={
+            <>
+              <Button
+                variant="secondary"
+                disabled={singleServiceReportExcelData.loading}
+                onClick={() => singleServiceReportExcel({
+                  variables: {
+                    input: {
+                      dateRange: inputData.dateRange,
+                      serviceIds: inputData.serviceIds.map(d => d.value)
+                    },
+                    sortBy: sort
+                  }
+                })}
+              ><Download strokeWidth={1.75} />報表匯出</Button>
+            </>
+          }
+        />
         <ReportToolbar
           date={
             <DateSelector

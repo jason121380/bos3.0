@@ -8,9 +8,8 @@ import { format } from 'date-fns'
 import { Skeleton } from 'ui/skeleton'
 import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
-import { Toolbar } from 'ui/page-header'
+import { Toolbar, PageHeader } from 'ui/page-header'
 
-import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
 
 const DesignersSalaryDetailReport = () => {
@@ -39,25 +38,30 @@ const DesignersSalaryDetailReport = () => {
   return (
     <Page className='DesignersSalaryDetailReport' title="薪資明細表">
       <div>
-        <AdminPageHeader title="薪資明細表">
-          <Button
-            variant="secondary"
-            className="noprint"
-            onClick={handleExportExcel}
-            disabled={getUserSalaryDetailExceLazyData.loading}
-          >
-            <Download strokeWidth={1.75} />
-            報表匯出
-          </Button>
-          <Button
-            variant="secondary"
-            className="noprint"
-            onClick={() => window.print()}
-          >
-            <Printer strokeWidth={1.75} />
-            列印
-          </Button>
-        </AdminPageHeader>
+        <PageHeader
+          title="薪資明細表"
+          actions={
+            <>
+              <Button
+                variant="secondary"
+                className="noprint"
+                onClick={handleExportExcel}
+                disabled={getUserSalaryDetailExceLazyData.loading}
+              >
+                <Download strokeWidth={1.75} />
+                報表匯出
+              </Button>
+              <Button
+                variant="secondary"
+                className="noprint"
+                onClick={() => window.print()}
+              >
+                <Printer strokeWidth={1.75} />
+                列印
+              </Button>
+            </>
+          }
+        />
         <Toolbar>
           <DateSelector
             date={date}

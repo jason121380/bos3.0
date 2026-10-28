@@ -10,6 +10,15 @@ export function calendarUpdateTime(isoDate) {
 
 const shippedRecords = [
   {
+    title: '2026/10/28 頁首與報表篩選統一',
+    versionNo: 'v3.10282101',
+    updateTime: '2026-10-28',
+    content: [
+      '- 所有報表的日期放在同一列，其他條件收進「篩選」卡片，按「篩選」才展開',
+      '- 所有頁面的頁首改用同一種樣式，標題與右側按鈕位置一致',
+    ].join('\n'),
+  },
+  {
     title: '2026/10/28 穩定性與介面修正',
     versionNo: 'v3.10282028',
     updateTime: '2026-10-28',

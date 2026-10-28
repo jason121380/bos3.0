@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import Page from 'components/Page'
 import idx from 'idx'
-import AdminPageHeader from 'components/AdminPageHeader'
-import { ReportToolbar } from 'ui/page-header'
+import { ReportToolbar, PageHeader } from 'ui/page-header'
 import DateSelector from 'components/DateSelector'
 import useFetchGetBusinessAnalysisReport from 'hooks/useFetchGetBusinessAnalysisReport'
 import { startOfMonth, format } from 'date-fns'
@@ -139,22 +138,27 @@ const PaymentReport = () => {
               format(new Date(), 'yyyy-MM-dd-HH:mm').toLocaleString()}
           </div>
         </div>
-        <AdminPageHeader title='營業統計分析表'>
-          <CSVLink
-            data={excelData}
-            filename="營業統計分析表.csv"
-            style={{ display: 'inline' }}
-          >
-            <Button variant="secondary">
-              <Download strokeWidth={1.75} />
-              報表匯出
-            </Button>
-          </CSVLink>
-          <Button
-            variant="secondary"
-            onClick={() => window.print()}
-          ><Printer strokeWidth={1.75} />列印</Button>
-        </AdminPageHeader>
+        <PageHeader
+          title='營業統計分析表'
+          actions={
+            <>
+              <CSVLink
+                data={excelData}
+                filename="營業統計分析表.csv"
+                style={{ display: 'inline' }}
+              >
+                <Button variant="secondary">
+                  <Download strokeWidth={1.75} />
+                  報表匯出
+                </Button>
+              </CSVLink>
+              <Button
+                variant="secondary"
+                onClick={() => window.print()}
+              ><Printer strokeWidth={1.75} />列印</Button>
+            </>
+          }
+        />
         <ReportToolbar
           date={
             <DateSelector
