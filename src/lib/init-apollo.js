@@ -7,6 +7,7 @@ import { getGraphqlUrl } from './api-base'
 import { beginRequest } from './after-first-load'
 import { httpStatusMessage } from './friendly-error'
 import { settingsCacheLink, bindSettingsCache } from './settings-cache'
+import { clearEngineeringUnlock } from 'helper/engineeringMode'
 
 // 網路錯誤提示的節流間隔：斷線時多支查詢同時失敗，只提示一次
 const NETWORK_ERROR_NOTICE_INTERVAL = 5000
@@ -23,6 +24,7 @@ export function handleApolloError({ graphQLErrors, networkError }) {
     graphQLErrors.forEach(({ message, extensions }) => {
       const code = extensions && extensions.code
       if (code === 'TKN_ERROR') {
+        clearEngineeringUnlock()
         localStorage.clear()
         window.location.href = '/auth/login'
         return

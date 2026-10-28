@@ -9,12 +9,18 @@ import useFetchGetCustomerWalletLeaderboard from 'hooks/useFetchGetCustomerWalle
 import useFetchGetCustomerWalletLeaderboardExcel from 'hooks/useFetchGetCustomerWalletLeaderboardExcel'
 import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
+import BackendExportNotice from 'components/BackendExportNotice'
+import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
+import { isCustomerExportMaskSettingOff } from 'helper/exportCustomerMask'
 
 import Filter from './Filter'
 import Results from './Results'
 
 function CustomerWalletLeaderboard() {
   const [getCustomerWallet, customerWalletData] = useFetchGetCustomerWalletLeaderboard()
+  const customerDataMarked = useFetchCustomerDataMarked()
+  const exportMaskOff = isCustomerExportMaskSettingOff(customerDataMarked)
   const [getCustomerWalletExcel, customerWalletDateExcel] = useFetchGetCustomerWalletLeaderboardExcel()
   const [reportData, setReportData] = useState([])
   const [inputData, setInputData] = useState({
@@ -66,6 +72,7 @@ function CustomerWalletLeaderboard() {
   }
 
   const handleGetExcelData = () => {
+    if (exportMaskOff) return
     if (rangeLimit(inputData.dateRange)) {
       openSnackbar({
         message: '時間篩選區間不可超過一年',
@@ -95,11 +102,12 @@ function CustomerWalletLeaderboard() {
         actions={
           <Button
             variant='secondary'
-            disabled={customerWalletDateExcel.loading}
+            disabled={customerWalletDateExcel.loading || exportMaskOff}
             onClick={handleGetExcelData}
           ><Download strokeWidth={1.75} />報表匯出</Button>
         }
       />
+      <BackendExportNotice settingOff={exportMaskOff} />
       <Filter
         rangeLimit={rangeLimit}
         dataChange={handleDataChange}
@@ -107,7 +115,9 @@ function CustomerWalletLeaderboard() {
         handleSearch={handleSearch}
         loading={customerWalletData.loading}
       />
-      {(!customerWalletData.loading && customerWalletData.data) ? (
+      {customerWalletData.error ? (
+        <QueryFailed onRetry={handleSearch} />
+      ) : (!customerWalletData.loading && customerWalletData.data) ? (
         <Results reportData={reportData} />
       ) : (
         <Skeleton className="h-96" aria-busy="true" />

@@ -2,11 +2,14 @@ import React from 'react'
 import { ChevronDown } from 'lucide-react'
 import { inputClass } from './input'
 import { cn } from './utils'
+import { CompatLayer } from './compat-layer'
+import { useLayerRef } from './layer-stack'
+import { IndexSelect } from './index-select'
 
 // 自家下拉組（取代 MUI FormControl／InputLabel／Select／MenuItem／FormHelperText，Jason 2026/10/20 拍版「MUI 整包移除」）。
 // 介面與 MUI 相容：頁面只換 import，<FormControl><InputLabel/><Select value onChange><MenuItem value/></Select></FormControl> 原樣保留。
-// - 單選：原生 <select>（手機叫出系統選單、可放在任何 Dialog 內），選項值可為任何型別，以索引對應；onChange 與 MUI 相同（event.target.value 為原始值、event.target.name 為 name）
-// - renderValue：在原生 select 上疊一層自訂顯示（如載入中轉圈），點選仍由原生 select 處理
+// - 單選：自家清單（Jason 2026/10/24 不使用原生系統選單），選項值可為任何型別，以索引對應；onChange 與 MUI 相同（event.target.value 為原始值、event.target.name 為 name）
+// - renderValue：在按鈕上顯示自訂內容（如載入中轉圈）
 // - multiple：自家勾選清單（MenuItem 內容原樣渲染）
 // - InputLabel 一律成為欄位上方標籤（STYLE §6）；Select 的 label、variant、sx 只影響 MUI 外框，接收後忽略
 
@@ -107,14 +110,39 @@ const FormHelperText = ({ children, className, error, ...rest }) => {
 function MultipleSelect({ id, value, onChange, name, options, renderValue, disabled, className, labelId }) {
   const [open, setOpen] = React.useState(false)
   const rootRef = React.useRef(null)
+  const triggerRef = React.useRef(null)
+  // 與 IndexSelect 相同：可捲動清單裡第一次觸控常常沒有 click，改在 pointerup 選取。
+  const touchPressRef = React.useRef(null)
+  const suppressClickRef = React.useRef(null)
+  const suppressTimerRef = React.useRef(null)
+  const swallowClickRef = React.useRef(null)
+  // 多選清單登記共用圖層與 Scope，避免 Escape 關閉外窗、外點移除 DOM 時搶焦點。
+  const escape = event => {
+    event.preventDefault()
+    setOpen(false)
+    if (triggerRef.current) triggerRef.current.focus()
+  }
+  const { ref: listRef, zIndex } = useLayerRef(null, open, escape)
   React.useEffect(() => {
     if (!open) return undefined
+    let pendingClose
     const close = event => {
-      if (rootRef.current && !rootRef.current.contains(event.target)) setOpen(false)
+      if (!rootRef.current || rootRef.current.contains(event.target)) return
+      const dialog = rootRef.current.closest('[role="dialog"]')
+      // 同窗滑鼠預設聚焦尚未完成，先保留 DOM，讓 FocusScope observer 不會插隊。
+      if (dialog && dialog.contains(event.target)) pendingClose = setTimeout(() => setOpen(false), 0)
+      else setOpen(false)
     }
     document.addEventListener('mousedown', close)
-    return () => document.removeEventListener('mousedown', close)
+    return () => {
+      document.removeEventListener('mousedown', close)
+      clearTimeout(pendingClose)
+    }
   }, [open])
+  React.useEffect(() => () => {
+    clearTimeout(suppressTimerRef.current)
+    if (swallowClickRef.current) window.removeEventListener('click', swallowClickRef.current, true)
+  }, [])
   const list = Array.isArray(value) ? value : []
   const toggle = (event, optionValue) => {
     const exists = list.some(v => same(v, optionValue))
@@ -122,9 +150,28 @@ function MultipleSelect({ id, value, onChange, name, options, renderValue, disab
     const target = { value: next, name }
     if (onChange) onChange(Object.assign(Object.create(event), { target, currentTarget: target }))
   }
+  const armSuppressClick = key => {
+    suppressClickRef.current = key
+    if (swallowClickRef.current) window.removeEventListener('click', swallowClickRef.current, true)
+    clearTimeout(suppressTimerRef.current)
+    const swallow = event => {
+      event.preventDefault()
+      event.stopPropagation()
+      window.removeEventListener('click', swallow, true)
+      if (swallowClickRef.current === swallow) swallowClickRef.current = null
+    }
+    swallowClickRef.current = swallow
+    window.addEventListener('click', swallow, true)
+    suppressTimerRef.current = setTimeout(() => {
+      window.removeEventListener('click', swallow, true)
+      if (swallowClickRef.current === swallow) swallowClickRef.current = null
+      if (suppressClickRef.current === key) suppressClickRef.current = null
+    }, 500)
+  }
   return (
     <div ref={rootRef} className={cn('relative w-full', className)}>
-      <button
+      <CompatLayer open={open} onEscapeKeyDown={escape} />
+      <button ref={triggerRef}
         type="button"
         id={id}
         aria-haspopup="listbox"
@@ -138,7 +185,7 @@ function MultipleSelect({ id, value, onChange, name, options, renderValue, disab
       </button>
       <ChevronDown aria-hidden="true" strokeWidth={1.75} className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
       {open && (
-        <ul role="listbox" aria-multiselectable="true" className="absolute left-0 right-0 top-full z-[1500] m-0 mt-1 max-h-80 list-none overflow-y-auto rounded-lg border border-solid border-border bg-background p-1 shadow-float">
+        <ul ref={listRef} style={{ zIndex }} role="listbox" aria-multiselectable="true" className="absolute left-0 right-0 top-full z-[1500] m-0 mt-1 max-h-80 list-none overflow-y-auto rounded-lg border border-solid border-border bg-background p-1 shadow-float">
           {options.map((o, i) => {
             const selected = list.some(v => same(v, o.value))
             return (
@@ -147,8 +194,28 @@ function MultipleSelect({ id, value, onChange, name, options, renderValue, disab
                 role="option"
                 aria-selected={selected}
                 aria-disabled={o.disabled || undefined}
-                onClick={event => !o.disabled && toggle(event, o.value)}
-                className={cn('flex min-h-9 cursor-pointer select-none items-center gap-2 rounded-md px-3 py-1.5 text-body text-text hover:bg-surface-hover', o.disabled && 'pointer-events-none opacity-40')}
+                onPointerDown={event => {
+                  if (o.disabled || event.pointerType === 'mouse') return
+                  touchPressRef.current = { index: i, x: event.clientX, y: event.clientY }
+                }}
+                onPointerUp={event => {
+                  const press = touchPressRef.current
+                  touchPressRef.current = null
+                  if (event.pointerType === 'mouse' || !press || press.index !== i || o.disabled) return
+                  const moved = Math.abs(event.clientX - press.x) > 10 || Math.abs(event.clientY - press.y) > 10
+                  armSuppressClick(i)
+                  if (!moved) toggle(event, o.value)
+                }}
+                onPointerCancel={() => { touchPressRef.current = null }}
+                onClick={event => {
+                  if (suppressClickRef.current === i) {
+                    suppressClickRef.current = null
+                    clearTimeout(suppressTimerRef.current)
+                    return
+                  }
+                  if (!o.disabled) toggle(event, o.value)
+                }}
+                className={cn('flex min-h-9 max-sm:min-h-10 cursor-pointer select-none items-center gap-2 rounded-md px-3 py-1.5 text-body text-text hover:bg-surface-hover', o.disabled && 'pointer-events-none opacity-40')}
               >
                 {o.children}
               </li>
@@ -236,51 +303,32 @@ const Select = React.forwardRef(function Select(
   const small = size === 'small' || (ctx && ctx.size === 'small')
   // 比照 MUI：值為空（''／null／undefined）且未設 displayEmpty 時欄位顯示空白，即使有對應選項（如 <MenuItem value=''>None</MenuItem>）
   const showBlank = !displayEmpty && (value === '' || value === null || value === undefined)
+  const inputRest = inputProps ? Object.fromEntries(Object.entries(inputProps).filter(([k]) => k !== 'ref')) : {}
+  const selected = index === -1 ? null : options[index]
   return (
     <div ref={ref} className={cn('relative w-full min-w-0', className)} style={style}>
-      <select
-        ref={node => {
+      <IndexSelect
+        inputRef={node => {
           assignRef(inputRef, node)
           if (inputProps && inputProps.ref) assignRef(inputProps.ref, node)
         }}
         id={id}
         name={name}
-        value={index === -1 ? '' : String(index)}
+        valueIndex={index}
+        options={options.map(o => ({ disabled: o.disabled, text: textOf(o.children) }))}
+        blank={showBlank}
+        display={renderValue ? renderValue(value) : selected ? textOf(selected.children) : ''}
         onChange={handleChange}
-        onKeyDown={event => {
-          // readOnly：比照 MUI，不允許以鍵盤改值，但保留其他按鍵（Enter 跳欄）
-          if (readOnly && event.key !== 'Enter' && event.key !== 'Tab') event.preventDefault()
-          if (onKeyDown) onKeyDown(event)
-        }}
+        onKeyDown={onKeyDown}
         onFocus={onFocus}
         onBlur={onBlur}
         disabled={disabled}
-        aria-labelledby={labelId}
-        aria-readonly={readOnly || undefined}
-        aria-invalid={error || undefined}
-        className={cn(
-          inputClass,
-          'cursor-pointer appearance-none pr-9 disabled:cursor-not-allowed',
-          small && 'h-8',
-          readOnly && 'pointer-events-none',
-          (renderValue || showBlank) && 'text-transparent',
-          index === -1 && 'text-text-tertiary',
-          error && 'border-danger hover:border-danger'
-        )}
-        {...(inputProps ? Object.fromEntries(Object.entries(inputProps).filter(([k]) => k !== 'ref')) : {})}
-        {...rest}
-      >
-        {index === -1 && <option value="" disabled hidden />}
-        {options.map((o, i) => (
-          <option key={i} value={String(i)} disabled={o.disabled}>
-            {textOf(o.children)}
-          </option>
-        ))}
-      </select>
-      {renderValue && (
-        <span className="pointer-events-none absolute inset-y-0 left-3 right-9 flex items-center text-body text-text">{renderValue(value)}</span>
-      )}
-      <ChevronDown aria-hidden="true" strokeWidth={1.75} className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" />
+        readOnly={readOnly}
+        invalid={error}
+        small={small}
+        labelledBy={labelId}
+        buttonProps={{ ...inputRest, ...rest }}
+      />
     </div>
   )
 })

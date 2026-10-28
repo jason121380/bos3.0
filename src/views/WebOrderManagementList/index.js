@@ -1,4 +1,4 @@
-// 報到狀態篩選 Select 保留 MUI（值為 true／false／空字串，不適用 Radix Select）
+// 報到狀態篩選 Select 使用 ui/form-control（值為 true／false／空字串，不適用 Radix Select）
 import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
 import Page from 'components/Page'
 import { addDays, endOfDay, startOfMonth } from 'date-fns'

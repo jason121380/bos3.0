@@ -1,6 +1,6 @@
 // 為什麼重要：api-base（後端位址單一來源）與 liffHelper 在模組載入時就讀 window。
 // 這兩支會被建置工具、Node 腳本與日後的預先渲染（沒有 window 的環境）載入；
-// 讀不到 window 時不可拋錯，且後端位址必須退回正式站（不能因為沒有網址就連到測試站、把正式店的資料寫進測試環境）。
+// 讀不到 window 時不可拋錯。未設定 REACT_APP_API_URL 時不得默默連正式站（fail closed，改連測試站）。
 
 const windowDescriptor = Object.getOwnPropertyDescriptor(global, 'window')
 
@@ -19,27 +19,31 @@ function loadWithoutWindow(modulePath) {
 }
 
 describe('沒有 window 的環境', () => {
-  it('api-base：未設定 REACT_APP_API_URL 時一律指向正式後端，不拋錯', () => {
+  it('api-base：未設定 REACT_APP_API_URL 且沒有網址時改連測試站，不拋錯、不連正式', () => {
     let result
     delete global.window
     try {
       jest.isolateModules(() => {
-        const { detectApiEnv, getApiEnvironment, getApiOrigin, getGraphqlUrl, PROD_ORIGIN } = require('../api-base')
+        const { detectApiEnv, getApiEnvironment, getApiOrigin, getGraphqlUrl, implicitApiNotice, TEST_ORIGIN, PROD_ORIGIN } = require('../api-base')
         result = {
           env: detectApiEnv(),
           graphql: getGraphqlUrl(undefined),
           origin: getApiOrigin(undefined),
           environment: getApiEnvironment(undefined),
-          expectedOrigin: PROD_ORIGIN,
+          notice: implicitApiNotice(undefined),
+          expectedOrigin: TEST_ORIGIN,
+          prodOrigin: PROD_ORIGIN,
         }
       })
     } finally {
       Object.defineProperty(global, 'window', windowDescriptor)
     }
-    expect(result.env).toBe('production')
+    expect(result.env).toBe('closed')
     expect(result.graphql).toBe(`${result.expectedOrigin}/graphql`)
     expect(result.origin).toBe(result.expectedOrigin)
-    expect(result.environment).toBe('production')
+    expect(result.environment).toBe('staging')
+    expect(result.notice).toEqual(expect.stringContaining('不會連正式 API'))
+    expect(result.graphql.startsWith(result.prodOrigin)).toBe(false)
   })
 
   it('liffHelper：載入不拋錯（LINE SDK 只在瀏覽器內才會用到）', () => {

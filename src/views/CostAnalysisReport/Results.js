@@ -1,5 +1,4 @@
-// 卡片保留相容層：列印樣式以 .CostAnalysisReportTableContainer .MuiCard-root／.MuiCardContent-root 排版表格（initialize.scss）
-import { Card, CardContent, CardHeader } from 'ui/card-compat'
+import { Card, CardContent, CardHeader } from 'ui/card'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
@@ -11,7 +10,7 @@ import roundDecimal from './../../helper/roundDecimal.js'
 
 const styles = {
   root: 'flex justify-between',
-  content: 'p-0',
+  content: 'p-0 last:pb-4 print:!pb-0',
   subtotal: 'text-[red] font-bold',
   width: 'min-w-[250px]',
 }
@@ -81,11 +80,8 @@ function Results({
               報表匯出
             </Button>
           </HeaderActionsPortal>
-          <Card>
-            <CardHeader
-              className="CostAnalysisReportCardHeader noprint"
-              title="費用分析表"
-            />
+          <Card className="overflow-hidden text-text print:rounded-none print:shadow-none print:[&_table]:!border print:[&_table]:!border-solid print:[&_table]:!border-black print:[&_th]:!border-y print:[&_th]:!border-x-0 print:[&_th]:!border-solid print:[&_th]:!border-black print:[&_td]:!border print:[&_td]:!border-solid print:[&_td]:!border-[rgb(135,135,135)] print:[&_td:first-child]:!w-[220px] print:[&_td:first-child]:!border-l-0 print:[&_td:last-child]:!border-r-0">
+            <CardHeader className="[&>div:first-child]:flex-auto !min-h-0 !items-center !gap-0 !px-4 !pb-2 !pt-4 CostAnalysisReportCardHeader noprint"><span className="block text-heading text-text">費用分析表</span></CardHeader>
             {/* 原生 hr：列印規則以 hr 選擇器隱藏分隔線 */}
             <hr className="m-0 shrink-0 border-0 border-b border-solid border-border" />
             <CardContent className={styles.content}>

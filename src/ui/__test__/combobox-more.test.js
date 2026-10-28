@@ -223,7 +223,10 @@ describe('清除鈕、箭頭與標籤', () => {
     expect(screen.queryByLabelText('清除')).toBeNull()
     fireEvent.focus(input)
     fireEvent.focusIn(input)
-    fireEvent.mouseDown(screen.getByLabelText('清除'))
+    const clear = screen.getByLabelText('清除')
+    expect(clear).toHaveAttribute('title', '清除')
+    expect(clear.className).toContain('before:h-10')
+    fireEvent.mouseDown(clear)
     expect(onChange).toHaveBeenCalledWith(expect.anything(), null, 'clear', undefined)
     expect(document.activeElement).toBe(input)
   })
@@ -262,7 +265,10 @@ describe('清除鈕、箭頭與標籤', () => {
 
   it('多選標籤的移除鈕：按下移除該項（reason=removeOption）；點已選項目也會移除', () => {
     const { input, onChange } = renderAc({ multiple: true, value: [options[0], options[1]] })
-    fireEvent.mouseDown(screen.getByLabelText('移除 洗髮'))
+    const remove = screen.getByLabelText('移除 洗髮')
+    expect(remove.className).toContain('before:h-10')
+    expect(remove).toHaveAttribute('title', '移除 洗髮')
+    fireEvent.mouseDown(remove)
     expect(onChange).toHaveBeenLastCalledWith(expect.anything(), [options[1]], 'removeOption', { option: options[0] })
     fireEvent.click(input)
     fireEvent.click(screen.getByRole('option', { name: '剪髮' }))

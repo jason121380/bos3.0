@@ -86,6 +86,22 @@ const openDetail = async () => {
 }
 
 describe('打帳單 消費明細：結帳並列印', () => {
+  it('Esc 與點背景維持明細開啟，返回按鈕仍可關閉', async () => {
+    setup()
+    const modal = await openDetail()
+    const title = screen.getByRole('heading', { name: '消費明細' })
+    const root = title.closest('[role="dialog"]')
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(title).toBeInTheDocument()
+    fireEvent.pointerDown(root.previousElementSibling)
+    fireEvent.click(root.previousElementSibling)
+    expect(title).toBeInTheDocument()
+    const back = modal.getByRole('button', { name: '返回' })
+    expect(back).toBeEnabled()
+    fireEvent.click(back)
+    await wait(() => expect(title).not.toBeInTheDocument())
+  })
+
   it('A4：只成立一張帳單，成立後以後端回傳的帳單編號列印 #printMain 收據', async () => {
     const { calls } = setup()
     const modal = await openDetail()

@@ -9,6 +9,7 @@ import DateSelector from 'components/DateSelector'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 import { Toolbar } from 'ui/page-header'
 
 import Results from './Results'
@@ -25,9 +26,10 @@ const MoneyFlowTransferReport = () => {
   })
 
   useEffect(() => {
+    if (moneyFlowTransferReport.loading || moneyFlowTransferReport.error) return
     if (!moneyFlowTransferReport.loading) {
-      // 查詢失敗（data 為 undefined）時當成沒有資料，不讓整頁拋錯（Jason 2026/10/22）
-      const data = idx(moneyFlowTransferReport, _ => _.data.moneyFlowTransferReport) || []
+      const data = idx(moneyFlowTransferReport, _ => _.data.moneyFlowTransferReport)
+      if (!data) return
       setReportForDisplay(data)
 
       const excelData = []
@@ -77,7 +79,9 @@ const MoneyFlowTransferReport = () => {
             dateChange={value => setDate(value)}
           />
         </Toolbar>
-        {!moneyFlowTransferReport.loading && reportForDisplay && excelData ? (
+        {moneyFlowTransferReport.error ? (
+          <QueryFailed onRetry={() => moneyFlowTransferReport.refetch()} />
+        ) : !moneyFlowTransferReport.loading && reportForDisplay && excelData ? (
           <Results reportForDisplay={reportForDisplay} />
         ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示

@@ -12,6 +12,7 @@ import DateSelector from 'components/DateSelector'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 
 import PerformResultsV2 from './PerformResultsV2'
 
@@ -50,11 +51,13 @@ function DesignerPerformOverview() {
   })
 
   useEffect(() => {
+    if (merchantImmediatePerformReportData.loading || merchantImmediatePerformReportData.error) return
     if (!merchantImmediatePerformReportData.loading) {
       const merchantImmediatePerformReport = idx(
         merchantImmediatePerformReportData,
         _ => _.data.merchantImmediatePerformanceReport
       )
+      if (!merchantImmediatePerformReport) return
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       // 查詢失敗（data 為 undefined）時不顯示報表、清空匯出，不讓整頁拋錯
       setMerchantImmediatePerformReport(merchantImmediatePerformReport || null)
@@ -187,14 +190,14 @@ function DesignerPerformOverview() {
             </div>
           </div>
         </div>
-        {!merchantImmediatePerformReportData.loading ? (
-          merchantImmediatePerformReport && (
-            <PerformResultsV2
-              results={merchantImmediatePerformReport}
-              membershipDisplay={membershipDisplay}
-              attributeSwitchs={attributeSwitchs}
-            />
-          )
+        {merchantImmediatePerformReportData.error ? (
+          <QueryFailed onRetry={() => merchantImmediatePerformReportData.refetch()} />
+        ) : (!merchantImmediatePerformReportData.loading && merchantImmediatePerformReport !== null) ? (
+          <PerformResultsV2
+            results={merchantImmediatePerformReport}
+            membershipDisplay={membershipDisplay}
+            attributeSwitchs={attributeSwitchs}
+          />
         ) : (
           // 載入中：與舊版 CircularProgress 相同時機顯示
           <div className="mt-2" aria-busy="true" aria-label="載入中">

@@ -24,8 +24,11 @@ const MerchantListAutocpmpleteForManagement = ({ onValueChange = () => { }, sele
   }
 
   const handleOnClick = ({ target }) => {
+    // 正式輸入框沒有 MuiInputBase-root。沒有 class 的節點冒泡時 getAttribute 為 null，不可 .includes。
+    // 只在點到輸入框（或仍帶舊 class 的外框）時開窗；點外框內距、全選鈕、圖示維持不開。
     if (target.tagName === 'path') return
-    if (target.tagName === 'INPUT' || target.getAttribute('class').includes('MuiInputBase-root')) setOpen(true)
+    const className = target.getAttribute('class') || ''
+    if (target.tagName === 'INPUT' || className.includes('MuiInputBase-root')) setOpen(true)
   }
 
   const handleSetData = merchantData => {

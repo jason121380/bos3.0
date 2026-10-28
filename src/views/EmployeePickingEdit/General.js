@@ -1,4 +1,4 @@
-// 表單欄位以 inputRef 串接 Enter 跳下一欄（含 Autocomplete、DatePicker、Select），保留 MUI；只換卡片外框
+// 表單欄位以 inputRef 串接 Enter 跳下一欄（含 Autocomplete、DatePicker、Select），使用正式 ui 元件；保留原焦點流程
 import { Select, MenuItem, FormControl, InputLabel } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
 import { useFetchProductsInEmployeePickingEdit } from 'hooks/useFetchProducts'

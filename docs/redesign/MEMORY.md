@@ -1,5 +1,10 @@
 # 改版決策與教訓（MEMORY）
 
+> **歷史／已過時的教訓冊。** 版號、測試總數、CI、健康分、後端債只看 [`docs/CURRENT.md`](../CURRENT.md)。健康分程式是 `v3.10241717`。CI 是 `.github/workflows/frontend-ci.yml`。查詢失敗用 `QueryFailed`。四份收據有欄位契約，掛單不印點數餘額。前端 CSV 一律遮罩。後端債未修：卡券授權、跨店 userMerchantId、伺服器端匯出遮罩、訂單 UUID isPending。
+>
+> 舊版號、MUI 計畫、Cloud Build 與下文測試數字都不是現況。2026/10/23 曾核對正式站 `v3.10230759`，不是現在的上線版號。該日寫過「Node.js CI 已手動停用」，現況不是這樣。正式站只可唯讀。刪檔先經 Jason 同意。
+
+
 > 目的：記下「為什麼這樣做」，避免日後重複討論或重踩坑。規範本身見 `STYLE.md`，守則見根目錄 `CLAUDE.md`。更新：2026/10/21
 
 ## 已定案的決策
@@ -18,7 +23,7 @@
 | 收合卡片以 `summaryMeta` 顯示「已填 N 筆 · NT$ 小計」 | 第 4 組 |
 | 金額一律 `NT$` ＋千分位；長帳單用**底部固定合計列**（方案 B）而非 sticky 側欄卡 | sticky 卡只能在並排區內移動，幾乎沒效果；整頁兩欄會壓縮項目列 |
 | 服務下拉：選項顯示 `名稱(代號) - 價格`、以 `id` 當 key、中文「查無符合／載入中」 | 同名同價服務分不出來；MUI 以標籤當 key 會重複 |
-| 「always merge」：驗證通過就開 PR 並 merge 進 main，不必再問 | 使用者 2026/10/18 指示 |
+| ~~「always merge」：驗證通過就開 PR 並 merge 進 main，不必再問~~ **已於 2026-10-23 廢止（superseded）** | 使用者 2026/10/18 指示；現行流程：Codex／代理只開 PR，由 CEO 逐行審查且本機 lint／測試／build 全部通過後合併，或由 Jason 決定；見 CLAUDE.md「Git 與合併」。 |
 | 電話不限 10 碼：LoginForm 不做 10～13 碼長度驗證，只有 required | Jason 2026/10/19 拍版；改版前（c41b604）本來就沒有。測試改為驗證非 10 碼電話不會被長度規則擋下 |
 | 店販售價可以低於成本：不做 `sellPrice >= cost` 驗證 | Jason 2026/10/19 拍版；ProductCreate 測試改為 cost=9、sellPrice=5 不報錯，sellPrice<0 仍被擋 |
 | `handleToggleNavBar` 判斷寬度 1280→1024 | 側欄改用 Tailwind `lg`(1024)，判斷值必須與 CSS 斷點一致（唯一的邏輯常數修改） |
@@ -40,6 +45,7 @@
 | 錯誤提示的友善化集中在 `lib/friendly-error`，由 `openSnackbar` 的錯誤／警告提示自動套用；中文業務訊息原樣（2026/10/21 Jason「錯誤訊息友善化」） | 約 170 處 catch 共用一個入口，逐頁改容易漏又難維護；英文技術訊息櫃台看不懂、不知道下一步（#175） |
 | 預約週曆只有一份規則：資料整理在 `components/ReservationCalendar/weekCalendar`，個人頁與員工資料共用 `DesignerWeekReservation`，公休彈窗共用 `HolidayEdit`；可預約人數不算已完成的預約（2026/10/21 Jason「四份預約週曆合併成一個元件」） | 原本四份各改各的，個人頁的可預約人數算法已與其他三頁不同；之後改預約規則只改一處（#174） |
 | lodash 一律逐方法引入 `lodash/<方法>`（2026/10/21） | 整包 lodash 占入口 chunk 71 KB，實際只用 `cloneDeep`／`clone`／`findIndex`（#173） |
+| **Jason 2026/10/24 四項**：表單／帳單標籤一律在上方；消費分析折線圖圖例加回；服務項目設定不顯示篩選鈕；下拉不要原生系統選單（自家清單，`onChange` 仍回選項原值）。不做掛單點數 | 標籤在框上會被捲動容器裁掉（STYLE §6）。圖例在 emotion 時期沒畫出來後被拿掉，改版後加回。篩選鈕舊版從未接上。系統選單在對話框裡會被挡住，且各平台長相不同；值仍以索引對回原始型別，頁面 handler 不改 |
 
 ## 驗證基準
 
@@ -347,3 +353,9 @@
 193. **同一個數字在多頁出現，公式要先對齊再談規則（帳單金額彙總，2026/10/22，v3.10221451）**：「業績合計」在打帳單／掛單詳細計入第三方卡券付的會員卡，帳單詳細／重新開單卻排除；重新開單的現金應收少扣紅利。這些是前端畫面預覽（不送後端），但櫃檯會拿來對報表。釐清順序：①先確認數字是否送後端（`performanceTotal` 只傳給 `BillSummary`），②逐列比對四頁公式、分出「寫法不同但結果相同」與「結果不同」，③由 Jason 指定基準（打帳單），④會用同一個變數的非預覽邏輯（給點、超額歸零、送出檢查）不跟著改。另：手動改版號要用完整的 `export const APP_VERSION = …` 樣式比對，曾因 grep 抓到註解裡的 `v3.` 把兩個版號接在一起（已加 `src/version.test.js`）。
 
 194. **「測試不連網」要從出口封鎖，不能靠每個測試自律；Playwright 的 page.route 攔不到 WebSocket（覆蓋率第二波，2026/10/22，v3.10221738）**：Jason 問「以前的測試有動到真的資料嗎」——證據：GraphQL 讀寫全部走模擬；但截圖腳本開的頁面有頂列 socket.io（`transports: ['websocket']`），`page.route` 不攔 WebSocket，瀏覽器曾三次嘗試連正式後端，被環境網路閘道以 403 拒絕、未建立連線（閘道紀錄只保留最近，舊紀錄查不到）。對策：`setupTests.js` 全域封鎖 fetch／XHR／WebSocket；瀏覽器以 `--host-resolver-rules` 讓後端網域在 DNS 層就連不上。另：以「兩次讀牆鐘相減」做 debounce 不可靠——Node／瀏覽器的計時器可能比 `Date` 早 1ms 到期（實測 599），要比對「是不是最後一次輸入」的識別值。全套在多個 Jest 程序同時跑時，真實計時的等待要放寬、`delays` 要遠大於畫面就緒時間，或改用輪詢等待結果。
+
+
+195. **彈窗共用圖層 Part A：沿用 Radix 的行為堆疊，不另外模擬焦點鎖（2026/10/23，Jason 授權修改 src/ui）**：①`ui/modal-compat` 的開啟中 Modal 與 `ui/overlay-compat` 的開啟中 Popper 加入已安裝的 Radix DismissableLayer／FocusScope；行為節點與內容使用穩定的兄弟節點，開關時只卸載行為登記，不重建 keepMounted／淡出的內容；正式 Dialog 以開啟順序判斷較晚 portal 的外部事件。不可把整個相容層根設為全域 Branch，否則之後開的 Popover 點回下層也不會關閉。Modal 的原捲動鎖、ARIA、reason、disableXxx 與較晚非正式 portal 放行契約保留，FocusScope 只負責與正式層互相暫停，不取代相容層既有聚焦策略。②實查本版 Radix Esc 在 document **capture** 處理，舊根節點 stopPropagation 來不及；桌機日期不再另掛 document keydown，改用 Popper 的 onEscapeKeyDown，只有最上層處理。combobox 保持最近 dialog 掛點，只讓開啟的選單占用 DismissableLayer 的 Esc 所有權，實際按鍵仍交給原 downshift，保留 defaultMuiPrevented。③`ui/layer-stack` 只登記已掛載的開啟圖層與視覺順序（1300 起依後開順序增加），正式 Dialog／Popover／Select／DropdownMenu 亦共用；combobox 選單亦登記順序，保留最近 dialog 的掛點與父層 stacking context，全站 Toaster 原 1500 保留。keepMounted 關閉層不占 Radix 行為堆疊。④無 DialogTrigger 的受控 Dialog 在 Root 開啟轉換、Portal 掛載前記錄原焦點，關閉還原，尊重呼叫端 preventDefault；主動 blur 到 document/body 時焦點轉面板而非拉回輸入框，保留金額欄滾輪 blur。MerchantBar 不自動聚焦、ItemPicker Esc／背景不關與 #95 無 onClose 模式不變。⑤此次只遷移確認 Snackbar、PasswordDialog、ReCheckoutPasswordDialog、WalletDepositModal、CompareFilter、VendorDialog、PublishedDialog；Published 的相容 Select 是原生選單，布林值維持原型別。其餘留 Part B，不動列印元素。⑥單元測試不等同可點擊的瀏覽器證據；離線 harness 為 `scripts/redesign/compat-harness/e2e/dialog-layers-{entry,run}.js`，DNS 封鎖所有外部主機、route 只供應本機靜態檔。此 sandbox Chrome 因 setsockopt EPERM／SIGTRAP 無法啟動；Jason 提供外部 runner 後實跑最初只有 2/9 通過，修正後原九種及新增的真實 PasswordDialog／三層日期共 11/11 連續兩輪通過，並驗證全部關閉後指標／捲動鎖與 overflow 解除。舊版隔離測試重現桌機焦點被拉回、桌機／手機 Esc 同時通知下層，以及無 Trigger 的焦點還原失敗。
+
+
+196. **瀏覽器才會暴露的圖層生命週期：ref 不等於可見／開啟、FocusScope 回呼不等於開窗當下（Dialog Part A 瀏覽器修正，2026/10/23）**：①Select 關閉後會把內容移入 DocumentFragment，ref 未必解除；以公開 open 狀態登記／解除共享圖層，closed／離線節點不擁有 Esc，避免消失的選單吞掉下一次 Esc。②combobox 選值後重開時 Radix 的 passive effect 監聽交接可能落後於鍵盤事件；選單 DOM 保持穩定，Dialog 由 ref 同步登記的真正頂層接收 Esc，原 onEscapeKeyDown 仍只通知一次並尊重 preventDefault。③真實 PasswordDialog 在 compat 窗上第二次開啟，onOpenAutoFocus 讀到的可能是 body；必須在 Dialog Root 的 open 轉換、Portal 掛載前記錄原觸發鈕。④Chrome 隱藏 keepMounted Popper 的失焦可能晚於 FocusScope 清理；延後到下層 Scope 恢復後還原，且只有焦點仍在 body／已關閉內容時還原，不能搶走使用者點到其他欄位的焦點。⑤harness 不可用固定 150ms 代替退場完成；以節點卸載作為下一次 Esc 的前提。aria-hidden 會使 getByRole 排除仍可見的 Toaster，CSS role 定位仍須通過可見性與真實命中檢查。⑥外部 runner 實跑 11/11 連續兩輪通過：日期桌機／手機、combobox、Select、Popover、兩方向 Dialog、keepMounted、Dropdown、真實巢狀 PasswordDialog、三層桌機／手機日期；不得只憑 Jest 宣稱行為通過。

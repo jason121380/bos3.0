@@ -46,9 +46,9 @@ const createWrapper = () => {
 
 describe('<ProductCategoryCreate />', () => {
   beforeEach(() => {
-    localStorage.setItem('userMerchant', {
+    localStorage.setItem('userMerchant', JSON.stringify({
       id: 'id',
-    })
+    }))
   })
   it('should create product category successful', async () => {
     const { getByTestId } = createWrapper()

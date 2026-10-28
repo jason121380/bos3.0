@@ -1,7 +1,4 @@
-// 底部明細卡片（MerchantDailyReportCardContainer／MergeResultCard／MerchantDailyReportCard）保留相容層 Grid／Card：
-// 列印規則以 .MuiCard-root 與 div.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-md-6.MuiGrid-grid-lg-4 排版（initialize.scss）
-import { Grid } from 'ui/grid-compat'
-import { Card, CardContent, CardHeader } from 'ui/card-compat'
+import { Card, CardContent, CardHeader } from 'ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
 import PropTypes from 'prop-types'
 import { Fragment } from 'react'
@@ -323,9 +320,9 @@ function Results({
         </TableBody>
       </Table>
       {nonCashDisplay && (
-        <Grid container spacing={3} className="MerchantDailyReportCardContainer">
-          <Grid item xs={12} md={12} lg={8} className="MergeResultCard">
-            <Card>
+        <div className="MerchantDailyReportCardContainer -ml-6 -mt-6 flex w-[calc(100%+24px)] flex-wrap">
+          <div className="MergeResultCard m-0 w-full max-w-full shrink pl-6 pt-6 min-[1200px]:basis-2/3 min-[1200px]:max-w-[66.666667%]">
+            <Card className="overflow-hidden text-text print:rounded-none print:shadow-none print:!border print:!border-solid print:!border-black">
               <Table dense aria-label="a dense table">
                 <TableHeader>
                   <TableRow>
@@ -355,13 +352,13 @@ function Results({
                 </TableBody>
               </Table>
             </Card>
-          </Grid>
-          <Grid item xs={12} md={6} lg={4} className="MerchantDailyReportCard">
-            <Card>
-              <CardHeader title="入金儲值明細" />
+          </div>
+          <div className="MerchantDailyReportCard m-0 w-full max-w-full shrink pl-6 pt-6 min-[900px]:basis-1/2 min-[900px]:max-w-[50%] min-[1200px]:basis-1/3 min-[1200px]:max-w-[33.333333%]">
+            <Card className="overflow-hidden text-text print:rounded-none print:shadow-none print:!border print:!border-solid print:!border-black">
+              <CardHeader className="[&>div:first-child]:flex-auto !min-h-0 !items-center !gap-0 !px-4 !pb-2 !pt-4"><span className="block text-heading text-text">入金儲值明細</span></CardHeader>
               {/* 原生 hr：列印規則以 hr 選擇器隱藏分隔線 */}
               <hr className="m-0 shrink-0 border-0 border-b border-solid border-border" />
-              <CardContent style={{ padding: 0 }}>
+              <CardContent className="last:pb-4" style={{ padding: 0 }}>
                 <div>
                   <Table dense aria-label="a dense table">
                     <TableBody>
@@ -377,8 +374,8 @@ function Results({
                 </div>
               </CardContent>
             </Card>
-          </Grid>
-        </Grid>
+          </div>
+        </div>
       )}
     </div>
   )

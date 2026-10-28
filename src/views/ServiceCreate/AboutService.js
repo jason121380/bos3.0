@@ -1,4 +1,4 @@
-// 純文字欄（代號／名稱）改 Field 上方標籤＋ui Input（TextField 試點）；Select 與金額／%數欄位保留 MUI
+// 純文字欄（代號／名稱）改 Field 上方標籤＋ui Input（TextField 試點）；Select 與金額／%數欄位使用正式 ui 元件
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'

@@ -32,8 +32,8 @@ describe('<TeachingModeState />', () => {
     ctx = useContext(teachingModeContext)
     return <span>child</span>
   }
-  // setupTests 的 localStorage 假物件 setItem 會再 JSON.stringify 一次
-  const stored = () => JSON.parse(JSON.parse(localStorage.getItem('teachingMode')))
+  // setItem 與瀏覽器相同，布林值存成 'true'／'false'
+  const stored = () => JSON.parse(localStorage.getItem('teachingMode'))
 
   beforeEach(() => {
     localStorage.clear()

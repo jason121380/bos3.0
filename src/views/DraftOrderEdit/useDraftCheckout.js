@@ -1,4 +1,5 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
+import { useApolloClient } from '@apollo/client'
 import billContext from 'context/keyInContext'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchReCheckoutOrder from 'hooks/useFetchReCheckoutOrder'
@@ -9,7 +10,16 @@ import { useHistory, useLocation } from 'react-router'
 import { handleTidyBill, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
 import produce from 'immer'
 import giveBonus from 'helper/giveBonus'
+import billPaymentSummary from 'helper/billPaymentSummary'
 import { getMissingForDraftOrder } from './draftOrderRequirements'
+import { ordersListPath, ordersListPathForOrderDate } from './ordersListPath'
+import {
+  confirmDraftStillPending,
+  confirmDraftStillPendingOnDates,
+  evictCheckedOutDraft,
+  isUncertainCheckoutError,
+  rememberCheckedOutDraft,
+} from './draftCheckoutGuard'
 
 // 掛單詳細的「儲存／結帳」與金額彙總（2026/10/21 自 Footer.js 原樣搬出，Footer 只留畫面與列印範本）：
 // 送出前檢查、重新結帳密碼、F9 快捷鍵、各項金額與紅利給點、按鈕停用原因。
@@ -28,6 +38,14 @@ export default function useDraftCheckout({ passwordData }) {
   const [openDialog, setOpenDialog] = useState(false)
   const [disableRecheckoutOrders, setDisableRecheckoutOrders] = useState(false)
   const [isRecheckoutOrders, setIsRecheckoutOrders] = useState(false)
+  // checking：進頁先確認還是不是掛單；blocked：逾時後查不到狀態，禁止再結帳；closed：已結帳
+  const [draftGate, setDraftGate] = useState('checking')
+  const client = useApolloClient()
+  const mountedRef = useRef(true)
+  const leaveDraftRef = useRef(false)
+  useEffect(() => () => {
+    mountedRef.current = false
+  }, [])
   useEffect(() => {
     if (order) {
       const filterOrder = order
@@ -47,7 +65,52 @@ export default function useDraftCheckout({ passwordData }) {
   const { fetchReCheckoutOrder } = useFetchReCheckoutOrder()
 
   const location = useLocation()
+  const orderDate = order && order.date
+
+  const leaveCheckedOutDraft = (draftId, closedId, listPath) => {
+    leaveDraftRef.current = true
+    rememberCheckedOutDraft(draftId, closedId, listPath)
+    evictCheckedOutDraft(client.cache, draftId)
+    if (mountedRef.current) setDraftGate('closed')
+  }
+
+  const goToClosedBill = (draftId, closedId, listPath) => {
+    const target = closedId && closedId !== draftId ? `/order/${closedId}` : (listPath || '/management/orders')
+    try {
+      history.replace(target)
+    } catch (navError) {
+      history.replace('/management/orders')
+    }
+  }
+
+  // 進頁就查這張掛單是否還在當天掛單清單。不在（且清單完整）就離開，避免已結帳的網址還能再結一次。
+  useEffect(() => {
+    if (!orderId) return undefined
+    if (!orderDate) {
+      if (order && typeof order === 'object') {
+        setDraftGate(gate => (gate === 'checking' ? 'open' : gate))
+      }
+      return undefined
+    }
+    let cancelled = false
+    confirmDraftStillPending(client, orderId, orderDate).then(status => {
+      if (cancelled || leaveDraftRef.current || !mountedRef.current) return
+      if (status === 'closed') {
+        const listPath = ordersListPathForOrderDate(orderDate)
+        leaveCheckedOutDraft(orderId, '', listPath)
+        openSnackbar({ message: '這張掛單已結帳，不能再次結帳', variant: 'warning' })
+        goToClosedBill(orderId, '', listPath)
+        return
+      }
+      setDraftGate(gate => (gate === 'checking' ? 'open' : gate))
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [orderId, orderDate])
+
   const handleReCheckoutOrder = () => {
+    if (isRecheckoutOrders || draftGate === 'checking' || draftGate === 'blocked' || draftGate === 'closed') return
     setIsClick(true)
     setIsRecheckoutOrders(true)
     const tmp = handleTidyBill(bill)
@@ -72,40 +135,80 @@ export default function useDraftCheckout({ passwordData }) {
       setIsRecheckoutOrders(false)
       return;
     } else {
+      const draftId = orderSetting.orderId
       fetchReCheckoutOrder({
-        updateOrderId: orderSetting.orderId,
+        updateOrderId: draftId,
         orderInput: { ...tmp, isPending: false },
         password: reCheckoutPwd,
       })
-        .then(() => {
+        .then(result => {
+          const closedId = result && result.data && result.data.reCheckoutOrder && result.data.reCheckoutOrder.id
+          const listPath = ordersListPath(location.search)
+          // 先記住再導頁：導頁若因 chunk 失敗白屏，重新整理或再開原掛單網址也不會再結一次
+          leaveCheckedOutDraft(draftId, closedId || '', listPath)
           toggle()
           openSnackbar({
             message: `掛單結帳成功`,
             variant: 'success',
           })
-          history.push(
-            `/management/${location.search.length > 0
-              ? `orders?startDate=${location.search.split('=')[1].substring(0, 13)}&endDate=${location.search.split('=')[2]
-              }`
-              : 'orders'
-            }`
-          )
+          // 後端若回了另一張帳單 id（正式站結帳會換 UUID），直接打開那張帳單詳細；否則回原日期的帳單列表
+          goToClosedBill(draftId, closedId, listPath)
+          if (!mountedRef.current) return
           setIsClick(false)
           setOpenDialog(false)
           setIsRecheckoutOrders(false)
           setReCheckoutPwd('')
         }).catch(err => {
-          openSnackbar({
-            message: err.message,
-            variant: 'error',
+          if (!isUncertainCheckoutError(err)) {
+            openSnackbar({
+              message: err.message,
+              variant: 'error',
+            })
+            setIsClick(false)
+            setIsRecheckoutOrders(false)
+            return
+          }
+          const date = bill.date || orderDate
+          // 編輯過的帳單日期與當初存下的掛單日期可能不同；只查一邊會把仍掛著的草稿誤判成已結帳
+          confirmDraftStillPendingOnDates(client, draftId, [orderDate, bill.date]).then(status => {
+            if (!mountedRef.current || leaveDraftRef.current) return
+            if (status === 'closed') {
+              const listPath = date ? ordersListPathForOrderDate(date) : ordersListPath(location.search)
+              leaveCheckedOutDraft(draftId, '', listPath)
+              openSnackbar({
+                message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+                variant: 'warning',
+              })
+              setOpenDialog(false)
+              setIsClick(false)
+              setIsRecheckoutOrders(false)
+              goToClosedBill(draftId, '', listPath)
+              return
+            }
+            if (status === 'unknown') {
+              setDraftGate('blocked')
+              setOpenDialog(false)
+              setIsClick(false)
+              setIsRecheckoutOrders(false)
+              openSnackbar({
+                message: '無法確認結帳是否成功。請先到帳單列表查看，不要重複結帳。',
+                variant: 'error',
+              })
+              return
+            }
+            openSnackbar({
+              message: '網路連線異常，這張掛單尚未結帳，請再確認一次',
+              variant: 'error',
+            })
+            setIsClick(false)
+            setIsRecheckoutOrders(false)
           })
-          setIsClick(false)
-          setIsRecheckoutOrders(false)
         })
     }
   }
 
   const usehandleSaveDraftOrder = useCallback(() => {
+    if (draftGate === 'checking' || draftGate === 'blocked' || draftGate === 'closed') return
     setIsClick(true)
     setIsRecheckoutOrders(true)
     setOpen(true)
@@ -159,7 +262,7 @@ export default function useDraftCheckout({ passwordData }) {
           setOpen(false)
         })
     }
-  }, [bill, history, setOpen])
+  }, [bill, history, setOpen, draftGate])
 
   const customerTicketRecords = useFetchTicketRecords({
     ids: bill.useTicketOrders.map(d => d.customerTicketId),
@@ -181,6 +284,7 @@ export default function useDraftCheckout({ passwordData }) {
   useEffect(() => {
     const handleEditOrderShortCut = event => {
       if (event.code === 'F9') {
+        if (draftGate === 'checking' || draftGate === 'blocked' || draftGate === 'closed') return
         disableRecheckoutOrders ? handleOpenReCheckout() : handleReCheckoutOrder()
       }
     }
@@ -188,7 +292,7 @@ export default function useDraftCheckout({ passwordData }) {
     return () => {
       document.removeEventListener('keydown', handleEditOrderShortCut)
     }
-  }, [disabledEditOrder, handleReCheckoutOrder, disableRecheckoutOrders])
+  }, [disabledEditOrder, handleReCheckoutOrder, disableRecheckoutOrders, draftGate])
 
   const serviceTotalPriceArray = idx(bill, _ =>
     _.serviceOrders.map(d =>
@@ -316,24 +420,32 @@ export default function useDraftCheckout({ passwordData }) {
     isLineBinded, setBill, bonusSetting
   ])
 
-  // 金額彙總：各數值的運算式與舊版相同，只加千分位與新版樣式。
-  // 業績合計、現金應收的運算式原封不動，只是算一次，彙總卡與底部固定列共用同一個值（比照打帳單 PannelPerformance）
+  // 金額彙總：各列明細的運算式與舊版相同，只加千分位與新版樣式。
+  // 業績合計、現金應收只顯示在金額彙總（彙總卡與底部固定列共用），不送後端。
+  // 四頁預覽以打帳單為準（Jason 2026/10/22）：
+  // - 業績合計維持本頁原式（含第三方卡券、使用預收卡，不含預收卡販賣）
+  // - 現金應收與打帳單、帳單詳細、明細、收據共用 billPaymentSummary
+  //   （未選商品的店販列價格是 0，與舊式把該列算進去的結果相同）
+  // 上方「付款超過應付時歸零」與紅利給點的 effect 用的是各自的運算式，不受影響
   const performanceTotal = Math.round(
     serviceTotalPrice +
     merchantSellTotalPrice +
     couponUsageTotalPrice +
     membershipTotalPrice
   )
-  const cashDue = serviceTotalPriceWithoutThirdPartyCoupon +
-    productTotalPriceWithoutThirdPartyCoupon +
-    membershipTotalPriceWithoutThirdPartyCoupon +
-    couponSellPrice -
-    bill.walletPay -
-    bill.amountByOtherPay -
-    bill.bonusDecount
+  const { cashDue } = billPaymentSummary(bill)
   // 按鈕停用時說明原因（只顯示，不參與停用判斷）：缺什麼與上面的 vaild 同一組條件（見 draftOrderRequirements.js），否則是處理中
   const missing = getMissingForDraftOrder(bill)
-  const disabledReason = missing.length > 0 ? `尚缺：${missing.join('、')}` : open || isClick || isRecheckoutOrders ? '處理中，請稍候' : ''
+  const checkoutLocked = draftGate === 'checking' || draftGate === 'blocked' || draftGate === 'closed'
+  const disabledReason = missing.length > 0
+    ? `尚缺：${missing.join('、')}`
+    : draftGate === 'blocked'
+      ? '無法確認是否已結帳，請到帳單列表確認'
+      : draftGate === 'closed'
+        ? '這張掛單已結帳'
+        : open || isClick || isRecheckoutOrders || draftGate === 'checking'
+          ? '處理中，請稍候'
+          : ''
 
   return {
     open,
@@ -359,5 +471,6 @@ export default function useDraftCheckout({ passwordData }) {
     performanceTotal,
     cashDue,
     disabledReason,
+    checkoutLocked,
   }
 }

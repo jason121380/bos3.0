@@ -11,7 +11,7 @@ import React from 'react'
 import { cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
 import { endOfDay, startOfDay, subDays } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
-import { renderPage, loginAs, callsOf, currentLocation, PAGE_CRASH_TEXT } from '../../../__tests__/testkit.test'
+import { renderPage, loginAs, callsOf, currentLocation, PAGE_CRASH_TEXT, networkRequests } from '../../../__tests__/testkit.test'
 import DraftOrderManagementList from '..'
 import { serviceOrders, productOrders, membershipOrders, thirdParty, weekDisplay } from '../draftOrderListHelpers'
 
@@ -291,10 +291,11 @@ describe('掛單列表：列表與匯出', () => {
     expect(csv).toContain('"王小美/01","Y","1500","1300","450"')
   })
 
-  it('店家設定不遮罩時，匯出完整姓名電話', async () => {
+  it('店家設定不遮罩時，前端 CSV 仍遮罩姓名電話', async () => {
     const { settle } = setup({ GET_CUSTOMER_DATA_MARKED: { getCustomerDataMarkedDefault: false } })
     await settle()
-    await wait(() => expect(exportedCsv()).toContain('陳小姐 0912345678'))
+    await wait(() => expect(exportedCsv()).toContain('陳*姐 0912***678'))
+    expect(exportedCsv()).not.toContain('0912345678')
   })
 
   it('設計師沒有編號（null）時匯出只有姓名，不帶「/null」（Jason 2026/10/22）', async () => {
@@ -459,6 +460,49 @@ describe('掛單列表：結帳', () => {
     })
   })
 
+  it('結帳成功且後端回了新帳單 id：改開那張帳單詳細', async () => {
+    const { settle } = setup({ reCheckoutOrder: { reCheckoutOrder: { id: 'closed-bill' } } })
+    await settle()
+    fireEvent.click(within(rowOf('D001')).getByLabelText('結帳'))
+    await wait(() => expect(currentLocation()).toBe('/order/closed-bill'))
+    expect(openSnackbar).toHaveBeenCalledWith({ message: '結帳成功', variant: 'success' })
+  })
+
+  it('結帳連線失敗但掛單已不在清單：不再送第二次，改到帳單列表', async () => {
+    const { calls, settle } = setup({
+      reCheckoutOrder: () => {
+        throw new Error('Failed to fetch')
+      },
+      DRAFT_STILL_PENDING: { pendingOrders: { totalCount: 0, orders: [] } },
+    })
+    await settle()
+    fireEvent.click(within(rowOf('D001')).getByLabelText('結帳'))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      variant: 'warning',
+      message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+    })))
+    expect(callsOf(calls, 'reCheckoutOrder')).toHaveLength(1)
+    await wait(() => expect(currentLocation()).toBe('/management/orders'))
+  })
+
+  it('結帳連線失敗且無法確認掛單狀態：按鈕保持停用，不再送出', async () => {
+    const { calls, settle } = setup({
+      reCheckoutOrder: () => {
+        throw new Error('Failed to fetch')
+      },
+      DRAFT_STILL_PENDING: { pendingOrders: { orders: [] } },
+    })
+    await settle()
+    fireEvent.click(within(rowOf('D001')).getByLabelText('結帳'))
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      message: '無法確認結帳是否成功。請先到帳單列表查看，不要重複結帳。',
+    })))
+    expect(callsOf(calls, 'reCheckoutOrder')).toHaveLength(1)
+    expect(within(rowOf('D001')).getByLabelText('結帳')).toBeDisabled()
+    fireEvent.click(within(rowOf('D001')).getByLabelText('結帳'))
+    expect(callsOf(calls, 'reCheckoutOrder')).toHaveLength(1)
+  })
+
   it('結帳失敗時提示錯誤、可再按', async () => {
     const { calls, settle } = setup({ reCheckoutOrder: new Error('已日結') })
     await settle()
@@ -527,6 +571,8 @@ describe('掛單列表：列印', () => {
     expect(html).toContain('付現金額：1370')
     expect(html).toContain('卡券金額：300')
     expect(html).toContain('增點：10')
+    // 顧客點數餘額 88 有資料，掛單收據仍不印（Jason 2026/10/24）
+    expect(html).not.toContain('點數餘額')
     expect(printWindow.document.close).toHaveBeenCalled()
     expect(printWindow.close).toHaveBeenCalled()
   })
@@ -564,6 +610,7 @@ describe('掛單列表：列印', () => {
     expect(html).toContain('謝謝惠顧,歡迎下次光臨!')
     expect(html).toContain('洗髮精')
     expect(html).toContain('折抵：30')
+    expect(html).not.toContain('點數餘額')
   })
 
   it('延遲關閉：100 毫秒後列印、10 秒後關閉', async () => {
@@ -593,7 +640,9 @@ describe('掛單列表：列印', () => {
     written = []
     ctx = setup({ FETCH_PENDING_ORDERS: noBonus, GET_CUSTOMER_BONUS: { getIsCustomerBonusActive: true } })
     await ctx.settle()
-    expect(await printOf()).toContain('增點：0')
+    const zeroBonus = await printOf()
+    expect(zeroBonus).toContain('增點：0')
+    expect(zeroBonus).not.toContain('點數餘額')
   })
 
   it('收據抬頭：logo（轉 data URL）、QR code、訊息；只開訊息但沒內容時不印抬頭；logo 抓不到不影響', async () => {
@@ -612,12 +661,14 @@ describe('掛單列表：列印', () => {
     cleanup()
     window.open.mockClear()
     written = []
+    const beforeLogo = networkRequests.length
     ctx = setup({
       GET_LOGO_DISPLAY_INVOICE: { getLogoDisplayOnInvoice: { isDisplay: false, imageUrl: null } },
       GET_QRCODE_DISPLAY_ON_INVOICE: { getQrcodeDisplayOnInvoice: { isDisplay: true, url: null, imageUrl: null } },
       GET_MESSAGE_DISPLAY_ON_INVOICE: { getMessageDisplayOnInvoice: { isDisplay: true, message: '週一公休' } },
     })
     await ctx.settle()
+    expect(networkRequests.slice(beforeLogo)).not.toContain('null')
     html = await printOf()
     expect(html).toContain('週一公休')
     expect(html).not.toContain('<img')

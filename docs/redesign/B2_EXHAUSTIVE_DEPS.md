@@ -1,5 +1,7 @@
 # B2：react-hooks/exhaustive-deps 分類與 R 類分析
 
+> **歷史／已過時。** 這是基準 commit `ce9a6bb` 的分類，不是現在的全站警告總數。版號、測試總數、CI、健康分只看 [`docs/CURRENT.md`](../CURRENT.md)（程式 `v3.10241717`）。PR #301 沒有一次清掉這些警告。
+
 範圍：`npx eslint --no-eslintrc -c scripts/redesign/eslint-check.json -f json src`，基準 commit `ce9a6bb`。
 
 ## 一、總覽
@@ -63,13 +65,13 @@
 - 情境：店家啟用紅利點數、但會員卡功能未啟用（`isMemberShipCardActive` 維持 false、依賴不變）→ 匯出的 CSV 少了「點數折抵金額(-)」欄，直到資料重新載入才會出現。會員卡狀態也一起改變時剛好會重跑，所以不是每家店都會遇到。
 - 建議：依賴加 `bonusDisplay`。風險低（只重算匯出資料）。
 
-### 3. 個人頁「訂單記錄」分頁可能整頁錯誤（待確認）
+### 3. ~~個人頁「訂單記錄」分頁可能整頁錯誤（待確認）~~ 已修（2026/10/22）
 - `src/views/Profile/index.js:263`（依賴 `[getOrderListLazyData.loading, memberActiveLazyData.loading]`，缺 `customerBonusActiveData`）
 - ```js
   setBonusDisplay(customerBonusActiveData.data.getIsCustomerBonusActive || bonusDecount !== 0)
   ```
 - 情境：`getOrderRecordsData()` 同時發出三個 lazy 查詢；若「紅利是否啟用」這個查詢比另外兩個晚回來，`customerBonusActiveData.data` 為 undefined → TypeError → 內容區顯示錯誤畫面；即使沒拋錯，之後它回來也不會重算 `bonusDisplay`。同樣的邏輯在 `EmployeeManagementDetail/index.js:211` 已寫對（有防呆，依賴也有 `customerBonusActiveData.loading`）。
-- 建議：比照員工資料頁補防呆並加 `customerBonusActiveData.loading`。風險低。
+- 建議：比照員工資料頁補防呆並加 `customerBonusActiveData.loading`。風險低。**已於 2026/10/22 照此寫入** `Profile/index.js`（`idx` 讀紅利設定，依賴含 `customerBonusActiveData.loading`）。本批不改該檔。
 
 ### 4. 全店業績分析：「隱藏虛實業績切換」設定可能失效（待確認）
 - `src/views/DesignerPerformOverview/index.js:38`（依賴 `[isDisplayTogglePerformanceButtonData.loading]`，條件卻也看 `isMemberShipCardActiveData.loading`）
@@ -79,27 +81,27 @@
 ### 5. 同上：店家每日業績報表（待確認）
 - `src/views/MerchantDailyPerformanceReport/index.js:46`，與 #4 相同寫法、相同修法。
 
-### 6. 排隊單轉帳單：回饋點數可能沒算（待確認，影響點數）
+### 6. ~~排隊單轉帳單：回饋點數可能沒算（待確認，影響點數）~~ 已修
 - `src/views/QueueOrderEdit/Footer.js:185`（缺 `bonusSetting.isUsing`、`bonusSetting.rule.*`）
 - ```js
   if (bonusSetting.isUsing) { … bonusDeposit = giveBonus[bonusSetting.rule.mode](total, …); setBill(…bonusDeposit) }
   ```
 - `bonusSetting` 是 Provider 的 state，初值 `isUsing:false`，等 `getBonusRewardRule` 查詢回來才更新。情境：若帳單資料與金額先算好、紅利規則較晚回來，effect 只在金額相關值變化時才跑 → `bonusDeposit` 停在原值（排隊單通常是 0），使用者不再動任何項目就結帳 → 這筆不給回饋點數。
-- 建議：依賴加 `bonusSetting`（整個物件；它只在查詢回來時 set 一次）。屬金額／點數邏輯，需 Jason 確認並實機驗證。
+- 建議：依賴加 `bonusSetting`（整個物件；它只在查詢回來時 set 一次）。**已修**：`QueueOrderEdit/Footer.js` 給點 effect 已加入 `bonusSetting`（與帳單詳細、掛單詳細相同；Jason 2026/10/22 給點規則晚到也要重算）。有測試：規則晚回時仍依應收給點。
 
-### 7. 同上：改帳單（待確認）
-- `src/views/OrderEdit/Footer.js:404`。編輯舊帳單時 `bonusDeposit` 會停在原帳單的值；若規則已改過，重存時不會依新規則重算（這也可能正是想要的行為 → 待確認）。
+### 7. ~~同上：改帳單（待確認）~~ 已修
+- `src/views/OrderEdit/Footer.js` 給點 effect 已含 `bonusSetting`（Jason 2026/10/22：修改帳單時依現行給點規則重算，規則晚到也一致）。有測試。
 
-### 8. 同上：草稿單（待確認）
-- `src/views/DraftOrderEdit/Footer.js:692`。
+### 8. ~~同上：草稿單（待確認）~~ 已修
+- `src/views/DraftOrderEdit/useDraftCheckout.js` 給點 effect 已含 `bonusSetting`（註解：給點設定比帳單晚回來也要重算）。
 
-### 9. 打帳單：勾「使用入金」後再改項目，入金扣款不會重算（待確認，影響金額）
+### 9. ~~打帳單：勾「使用入金」後再改項目，入金扣款不會重算（待確認，影響金額）~~ 已修（只往下夾）
 - `src/views/OrderCreate/PaymentCustomerWallet.js:180`（依賴 `[walletPayCheckBox]`，缺 `usableCustomerWallet`、`walletPayLimit`）
 - ```js
   if (walletPayCheckBox) handleBillChange({ key: 'walletPay', value: Math.min(usableCustomerWallet, walletPayLimit) 的等價寫法 })
   ```
 - 情境：先加項目 → 勾選使用入金（walletPay＝應付金額）→ 再刪項目、改價或加其他付款方式，`walletPayLimit` 變小但 `walletPay` 不變 → 入金扣款大於應付金額，「營業現金應收」可能變負數。需確認後端是否擋、或結帳前驗證（`billVerify`）是否攔。
-- 建議：另寫一個 effect，在 `walletPayLimit` 小於 `bill.walletPay` 時夾回上限（不要直接把兩個值加進這個 effect 的依賴，否則會覆蓋使用者手動輸入的金額）。需 Jason 決定。
+- 建議：另寫一個 effect，在 `walletPayLimit` 小於 `bill.walletPay` 時夾回上限（不要直接把兩個值加進勾選 effect 的依賴，否則會覆蓋使用者手動輸入的金額）。**已修**：`OrderCreate/PaymentCustomerWallet.js` 另有一個 effect，只在扣入金大於新上限時夾下來；金額變大時不把已扣的入金調高。改服務售價會換掉 `serviceOrders`，`OrderCreate.js` 既有 effect 會把扣入金歸 0，所以測試改走點數換算折抵（不換品項陣列）。上限已是 0 且扣入金已是 0 時不再寫入，避免空轉 setState。
 
 ### 10. ~~帳單列表匯出可能未遮罩客戶姓名／電話（待確認，個資）~~ 已修（v3.10212046，補 `isCustomerDataMarked` 依賴，有測試：遮罩設定晚到時重現）
 - `src/views/OrderManagementList/ResultsV2.js:196`（缺 `isCustomerDataMarked`）

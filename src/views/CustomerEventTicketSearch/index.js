@@ -1,7 +1,4 @@
-// 提示：自動關閉（autoHideDuration）與點外面關閉（clickaway）的計時行為仍由相容層 Snackbar 負責（ui/toast 是命令式 API，改用要動 state／effect）；
-// 訊息卡改 ui/toast 的 ToastCard（與全站提示同外觀）
-import { Snackbar } from 'ui/feedback-compat'
-import { ToastCard } from 'ui/toast'
+import { openSnackbar } from 'elements/snackbars'
 import { useRef, useState, useEffect } from 'react'
 import Page from 'components/Page'
 import ReCAPTCHA from "react-google-recaptcha-enterprise"
@@ -18,11 +15,6 @@ import EventTicketsRecord from './EventTicketsRecord'
 const CustomerEventTicketSearch = () => {
   const [getCustomerTicket, customerTicketData] = useFetchGetCustomerCheckTicket()
   const reCaptchaRef = useRef(null)
-  const [openSnack, setOpenSnack] = useState({
-    open: false,
-    severity: '',
-    message: ''
-  })
   const [submitData, setSubmitData] = useState({
     name: '',
     cellphone: '',
@@ -45,13 +37,7 @@ const CustomerEventTicketSearch = () => {
     const { name, cellphone, recaptchaToken } = cloneDeep(submitData)
     try {
       if (/* !name.trim() ||  */!cellphone.trim()) {
-        setOpenSnack(
-          produce(draft => {
-            draft.open = true
-            draft.severity = 'warning'
-            draft.message = '電話不得為空'
-          })
-        )
+        openSnackbar({ message: '電話不得為空', variant: 'warning' })
       } else {
         getCustomerTicket({
           variables: {
@@ -64,23 +50,9 @@ const CustomerEventTicketSearch = () => {
         })
       }
     } catch (error) {
-      setOpenSnack(
-        produce(draft => {
-          draft.open = true
-          draft.severity = 'error'
-          draft.message = error.message
-        })
-      )
+      openSnackbar({ message: error.message, variant: 'error' })
       reCaptchaRef.current && reCaptchaRef.current.reset()
     }
-  }
-
-  const closeSnackBar = () => {
-    setOpenSnack(
-      produce(draft => {
-        draft.open = false
-      })
-    )
   }
 
   useEffect(() => {
@@ -142,14 +114,6 @@ const CustomerEventTicketSearch = () => {
       {!customerTicketData.loading && customerTicketData.data && (
         <EventTicketsRecord data={data} />
       )}
-      <Snackbar
-        onClose={closeSnackBar}
-        open={openSnack.open}
-        autoHideDuration={5000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <ToastCard className="ui-root sm:w-auto sm:min-w-[288px] sm:max-w-[400px]" variant={openSnack.severity} title={openSnack.message} />
-      </Snackbar>
     </Page>
   )
 }

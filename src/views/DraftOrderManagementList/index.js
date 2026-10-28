@@ -152,17 +152,20 @@ function DraftOrderManagementList() {
       QRCode.toDataURL(qrcode.url, (err, string) => {
         !err && setQrcodeUrl(string)
       })
-      const getDataUrl = async () => {
-        let blob = await fetch(logo.imageUrl).then(r => r.blob());
-        let dataUrl = await new Promise(resolve => {
-          let reader = new FileReader()
-          reader.onload = () => resolve(reader.result)
-          reader.readAsDataURL(blob)
-        })
-        setImgUrl(dataUrl)
+      // 沒啟用或沒有 logo 網址時 imageUrl 是 null；不要 fetch(null)（會打到 /null）
+      if (logo && logo.imageUrl) {
+        const getDataUrl = async () => {
+          let blob = await fetch(logo.imageUrl).then(r => r.blob());
+          let dataUrl = await new Promise(resolve => {
+            let reader = new FileReader()
+            reader.onload = () => resolve(reader.result)
+            reader.readAsDataURL(blob)
+          })
+          setImgUrl(dataUrl)
+        }
+        // 商家 logo 抓不到時列印不印 logo（原本就是如此）；補 catch 只為不留下未處理的 Promise 錯誤
+        getDataUrl().catch(() => {})
       }
-      // 商家 logo 抓不到時列印不印 logo（原本就是如此）；補 catch 只為不留下未處理的 Promise 錯誤
-      getDataUrl().catch(() => {})
     }
   }, [
     getLogoDisplayOnInvoice.loading,

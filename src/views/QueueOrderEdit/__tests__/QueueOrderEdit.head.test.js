@@ -224,7 +224,7 @@ describe('重新開單：新增／編輯顧客按鈕', () => {
     edit.focus()
     expect(document.activeElement).toBe(edit)
     fireEvent.click(edit)
-    const modal = (await screen.findByText('新增客戶')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('新增客戶')).closest('[role="dialog"]')
     expect(modal.querySelector('[name="name"]')).toHaveValue('')
     expect(modal.querySelector('[name="cellphone"]')).toHaveValue('')
   })

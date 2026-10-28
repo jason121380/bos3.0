@@ -87,6 +87,7 @@ describe('Radio／RadioField：原生單選', () => {
     expect(screen.getByLabelText('A')).toBeDisabled()
     expect(screen.getByText('A').className).toBe('lbl')
     expect(screen.getByText('A').parentElement.className).toContain('cursor-not-allowed')
+    expect(screen.getByText('A').parentElement.className).toContain('max-sm:before:-inset-y-2')
   })
 
   it('Radio 單獨使用時仍是 type=radio、可帶 className', () => {

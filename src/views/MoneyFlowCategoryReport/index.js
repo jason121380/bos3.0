@@ -10,6 +10,7 @@ import roundDecimal from './../../helper/roundDecimal.js'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 import { Toolbar } from 'ui/page-header'
 
 import Results from './Results'
@@ -32,13 +33,15 @@ const MoneyFlowCategoryReport = () => {
   })
 
   useEffect(() => {
+    if (moneyFlowCategoryReportData.loading || moneyFlowCategoryReportData.error) return
     if (!moneyFlowCategoryReportData.loading) {
       // 複製再加「小結」列（查詢結果唯讀）；下面的匯出也用這份，才有各分類的小結
       // 查詢失敗（data 為 undefined）時當成沒有資料，不讓整頁拋錯（Jason 2026/10/22）
       const reportList = cloneDeep(idx(
         moneyFlowCategoryReportData,
         _ => _.data.moneyFlowCategoryReport.moneyFlowCategoryReport
-      ) || [])
+      ))
+      if (!reportList) return
 
       reportList.forEach((data, index) => {
         reportList[index].moneyFlow.push({
@@ -116,7 +119,9 @@ const MoneyFlowCategoryReport = () => {
             dateChange={value => setDate(value)}
           />
         </Toolbar>
-        {!moneyFlowCategoryReportData.loading &&
+        {moneyFlowCategoryReportData.error ? (
+          <QueryFailed onRetry={() => moneyFlowCategoryReportData.refetch()} />
+        ) : !moneyFlowCategoryReportData.loading &&
           reportForDisplay !== null &&
           reportWithAmount !== null ? (
           <Results report={reportForDisplay} reportWithAmount={reportWithAmount} roundDecimal={roundDecimal} />

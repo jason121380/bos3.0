@@ -1,4 +1,4 @@
-// 手機號碼欄位（helperText 驗證）與帳號欄位（InputLabelProps）保留 MUI TextField
+// 手機號碼欄位（helperText 驗證）與帳號欄位（InputLabelProps）使用 ui/text-field TextField
 import { TextField } from 'ui/text-field'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { Field } from 'ui/input'

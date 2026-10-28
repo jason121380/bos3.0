@@ -1,5 +1,5 @@
-// 彈窗內有 MUI Select（值可能為空字串），依遷移指南保留 MUI Modal；外框、標題、按鈕改為 src/ui
-import { Modal } from 'ui/modal-compat'
+// 共用圖層支援窗內 picker；保留原受控開關與表單行為。
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter } from 'ui/dialog'
 import { FormControl, InputLabel, Select, MenuItem } from 'ui/form-control'
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
@@ -7,7 +7,6 @@ import PropTypes from 'prop-types'
 import cloneDeep from 'lodash/cloneDeep'
 import { Delete, Plus, Trash2 } from 'lucide-react'
 import { Button } from 'ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'ui/card'
 
 const deductions = [
   {
@@ -246,20 +245,25 @@ function AssistantSettingEditModal({
   }
 
   return (
-    <Modal open={openEditAssistantModal}>
-      <Card className="ui-root absolute left-1/2 top-1/2 flex max-h-full w-[912px] max-w-full -translate-x-1/2 -translate-y-1/2 flex-col shadow-float outline-none">
-        <CardHeader
-          className="items-center pb-4"
-          action={
+    <Dialog open={openEditAssistantModal}>
+      {/* 保留原表單寬 912px；本批僅替換彈窗外殼。 */}
+      <DialogContent hideClose
+        onOpenAutoFocus={event => {
+          // 沿用舊 Modal：已有欄位焦點就保留，否則先聚焦面板，避免選人窗自動叫出手機鍵盤。
+          event.preventDefault()
+          if (!event.target.contains(document.activeElement)) event.target.focus()
+        }}
+        className="sm:max-w-[912px]" aria-describedby={undefined}>
+        <DialogHeader className="items-center pb-4">
+          <div className="flex w-full items-center justify-between gap-4">
+            <DialogTitle>互助點數設定</DialogTitle>
             <Button variant="secondary" onClick={onClose}>
               關閉
             </Button>
-          }
-        >
-          <CardTitle>互助點數設定</CardTitle>
-        </CardHeader>
+          </div>
+        </DialogHeader>
 
-        <CardContent className="flex flex-col gap-4 overflow-y-auto pt-0">
+        <DialogBody className="flex flex-col gap-4 overflow-y-auto pt-0">
           {helperDeductionSetting.map((content, index) => (
             <div className="flex flex-wrap items-center gap-3" key={index}>
               <FormControl variant="outlined" style={{ width: '6rem' }} fullWidth>
@@ -466,15 +470,15 @@ function AssistantSettingEditModal({
               </div>
             </div>
           ))}
-        </CardContent>
-        <CardFooter>
+        </DialogBody>
+        <DialogFooter>
           {/* 批次儲存會覆蓋原先設定（送出前另有確認提示），以 danger 表示 */}
           <Button variant="danger" onClick={handleSubmitHelperDeductionSettingWarning}>
             儲存
           </Button>
-        </CardFooter>
-      </Card>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 

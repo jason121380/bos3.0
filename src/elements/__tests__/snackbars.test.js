@@ -8,7 +8,8 @@ jest.mock('hooks/useRemoveUserFromMerchant', () => () => ({ setRemoveUserFromMer
 jest.mock('hooks/useFetchSetUserSalaryMonthlyCheckoutV2', () => () => ({ setUserSalaryMonthlyCheckoutV2: jest.fn() }))
 jest.mock('hooks/useFetchSettingUpdateUserOrderableList', () => () => ({ setUpdateUserOrderableList: jest.fn() }))
 jest.mock('hooks/useFetchSetLockUserSalaryItem', () => () => ({ setUserSalaryItemLock: jest.fn() }))
-jest.mock('hooks/useFetchCloseDailyAccountV3', () => () => ({ closeDailyAccountV3: jest.fn() }))
+const mockCloseDailyAccountV3 = jest.fn()
+jest.mock('hooks/useFetchCloseDailyAccountV3', () => () => ({ closeDailyAccountV3: mockCloseDailyAccountV3 }))
 jest.mock('hooks/useFetchSystemUpdateRecord', () => ({ useFetchCreateSystemUpdateDelete: () => ({ SystemUpdateDelete: jest.fn() }) }))
 
 beforeEach(() => jest.useFakeTimers())
@@ -105,9 +106,10 @@ describe('openSnackbar 確認型（對話框）', () => {
     expect(screen.queryByRole('alertdialog')).toBeNull()
 
     openDeleteConfirm(onConfirm)
-    const container = screen.getByRole('alertdialog').parentElement
-    fireEvent.mouseDown(container)
-    fireEvent.click(container)
+    // Radix 背景是內容前一個同層節點，以原生 pointerdown 模擬點背景。
+    const backdrop = screen.getByRole('alertdialog').previousElementSibling
+    act(() => jest.advanceTimersByTime(0))
+    fireEvent.pointerDown(backdrop, { pointerType: 'mouse', button: 0 })
     expect(screen.queryByRole('alertdialog')).toBeNull()
 
     openDeleteConfirm(onConfirm)
@@ -138,4 +140,33 @@ describe('openSnackbar 確認型（對話框）', () => {
     expect(submit).toHaveBeenCalledTimes(1)
     expect(submitHelper).not.toHaveBeenCalled()
   })
+})
+
+it('結帳定值圓環使用 SVG，百分比與無障礙數值一致', () => {
+  render(<CustomizedSnackbars />)
+  act(() => openSnackbar({ message: '結帳中', variant: 'warning', disableHide: true, checkoutProcessing: true }))
+  const progress = screen.getByRole('progressbar')
+  expect(progress.tagName.toLowerCase()).toBe('svg')
+  expect(progress).toHaveAttribute('aria-valuenow', '0')
+  expect(progress).toHaveAttribute('aria-valuemin', '0')
+  expect(progress).toHaveAttribute('aria-valuemax', '100')
+  expect(screen.getByText('0%')).toBeInTheDocument()
+  expect(screen.queryByRole('button', { name: '關閉' })).toBeNull()
+})
+
+it('日結完成一半時圓環與中央文字均更新為 50%', async () => {
+  mockCloseDailyAccountV3.mockResolvedValueOnce({}).mockImplementationOnce(() => new Promise(() => {}))
+  render(<CustomizedSnackbars />)
+  act(() => openSnackbar({
+    message: '確定日結？', variant: 'warning', resign: true, isDailyCheckout: true,
+    selectedOrders: [{ date: 1 }, { date: 2 }], waitCloseOrderResults: [{ date: 1 }, { date: 2 }],
+    checkoutStaff: { id: 'staff-1' },
+  }))
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: '確定日結' })))
+  expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '50')
+  expect(screen.getByText('50%')).toBeInTheDocument()
+  const ring = screen.getByRole('progressbar').querySelectorAll('circle')[1]
+  expect(ring).toHaveAttribute('stroke-dashoffset', '50')
+  expect(ring).toHaveAttribute('pathLength', '100')
+  expect(ring).toHaveAttribute('stroke', 'rgb(var(--primary))')
 })

@@ -56,7 +56,7 @@ function Results({ events, setCollapse, selectIds, onToggleAll, isAllExpanded })
                                                         <Button
                                                             variant="ghost"
                                                             size="icon"
-                                                            className="h-8 w-8 text-text-tertiary"
+                                                            className="text-text-tertiary"
                                                             aria-label={isSelect ? '收合店家' : '展開店家'}
                                                             aria-expanded={isSelect}
                                                             onClick={() => setCollapse(id)}

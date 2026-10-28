@@ -273,7 +273,7 @@ export default function Results({
                   )}
                   <TableCell>
                     {/* 無權限時與舊版 IconButton disabled 相同：不可點（pointer-events-none）、不可聚焦 */}
-                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary aria-disabled:pointer-events-none aria-disabled:opacity-40">
+                    <Button asChild variant="ghost" size="icon" className="text-text-secondary aria-disabled:pointer-events-none aria-disabled:opacity-40">
                       <RouterLink
                         aria-label="編輯員工"
                         to={`/management/employee/${data.id}/general`}

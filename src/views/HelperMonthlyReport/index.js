@@ -1,6 +1,4 @@
-import { Grid } from 'ui/grid-compat'
 import React, { useState, useEffect } from 'react'
-// printGrid 外框（列印時隱藏）依規則保留 MUI Grid
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
 import { format } from 'date-fns'
@@ -60,7 +58,7 @@ const HelperMontlyReport = () => {
       <PageHeader
         title="互助月報表"
         actions={
-          <Grid className="printGrid">
+          <div className="printGrid print:hidden">
             <Button
               variant="secondary"
               onClick={() => window.print()}
@@ -68,7 +66,7 @@ const HelperMontlyReport = () => {
               <Printer strokeWidth={1.75} />
               列印
             </Button>
-          </Grid>
+          </div>
         }
       />
       <Toolbar>

@@ -19,7 +19,7 @@ const fixtures = {
 }
 // 「清除」（重設條件）鈕有文字；下拉的清除鈕只有 aria-label，以文字區分
 const resetButton = () => screen.getByText('清除').closest('button')
-const inputOf = label => screen.getAllByLabelText(label).find(el => el.tagName === 'INPUT' || el.tagName === 'SELECT')
+const inputOf = label => screen.getAllByLabelText(label).find(el => el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.hasAttribute('data-ui-select'))
 
 describe('SearchBar 簡易搜尋', () => {
   it('Enter 或按「搜尋」帶出關鍵字；其他按鍵不搜尋；只有簡易版時不顯示顧客版欄位', () => {

@@ -3,7 +3,7 @@ import { EmptyState } from 'ui/empty-state'
 import { gendercolor } from '../Colors';
 import React from 'react'
 import {
-  Tooltip, ResponsiveContainer, PieChart, Pie, Cell
+  Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts";
 
 const OrderGender = ({ display, data, width }) => {
@@ -64,6 +64,7 @@ const OrderGender = ({ display, data, width }) => {
                       ))}
                     </Pie>
                     <Tooltip content={<CustomOrderGenderRatioTooltip />} />
+                    <Legend wrapperStyle={{ maxHeight: 200, overflowY: 'auto' }} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>

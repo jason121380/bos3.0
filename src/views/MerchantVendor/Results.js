@@ -97,7 +97,7 @@ function Results({ className, merchantVendor, merchantVendorList, ...rest }) {
                   <TableCell>{data.nickname}</TableCell>
                   <TableCell>{data.remark}</TableCell>
                   <TableCell className="w-[60px] text-right">
-                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                    <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                       <RouterLink
                         aria-label="編輯廠商"
                         to={`/merchant-vendor/edit/${data.uuid}`}

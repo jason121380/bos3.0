@@ -1,4 +1,4 @@
-// 多選篩選（值為陣列）保留 MUI
+// 多選篩選（值為陣列）使用正式 ui 元件
 import { InputLabel, MenuItem, FormControl, Select } from 'ui/form-control'
 import { Checkbox } from 'ui/checkbox'
 import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
@@ -6,7 +6,7 @@ import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { EmptyState } from 'ui/empty-state'
 import React from 'react'
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from "recharts";
 import { performanceColor } from '../Colors';
 import { formatNumber } from 'ui/format'
@@ -129,7 +129,8 @@ const PerformanceDetail = ({
                   <XAxis interval='equidistantPreserveStart' dataKey='name' />
                   <YAxis />
                   <Tooltip offset={-20} wrapperStyle={{ zIndex: 99, pointerEvents: '' }} content={<PerformanceTrendBarTooltip />}/>
-                  {/* 圖例：原本 <Legend css={…}> 經 emotion jsx 包裝後元素型別不再是 recharts Legend，圖表找不到而從未顯示；移除 emotion 後為維持畫面等價一併移除（要顯示圖例屬產品變更） */}
+                  {/* Jason 2026/10/24：圖例加回。字級由 Results 的 .recharts-legend-item-text 規則負責；過長可捲動 */}
+                  <Legend wrapperStyle={{ maxHeight: 200, overflowY: 'auto' }} />
                   {performanceTrendBar()}
                 </LineChart>
               </ResponsiveContainer>

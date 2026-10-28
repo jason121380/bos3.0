@@ -1,10 +1,10 @@
 import React from 'react'
 import { startOfDay, startOfMinute, startOfMonth } from 'date-fns'
 import { Field } from 'ui/input'
-import { cn } from './utils'
+import { cn, focusRing } from './utils'
 import { TextField, InputAdornment } from './text-field'
-import { Dialog } from './modal-compat'
-import { Popper } from './overlay-compat'
+import { Dialog, DialogContent } from './dialog'
+import { Popover, PopoverAnchor, PopoverContent } from './popover'
 import { DateField } from './date-field'
 import { DayView, MonthView, YearView, TimeView, formatValue, isDayDisabled, isValidDate } from './calendar'
 
@@ -24,7 +24,7 @@ import { DayView, MonthView, YearView, TimeView, formatValue, isDayDisabled, isV
 // 6. 自訂欄位 slots.field 收到 value（Date）、format、onClick（開啟）、onKeyDown、readOnly、disabled、inputRef、inputProps 等（同 MUI）。
 // 手機對話框置中顯示（ui-dialog-centered），不使用底部面板（Jason 2026/10/20）。
 // 7. label 放在欄位上方（ui/input 的 Field）；slotProps.textField 的 variant 一律忽略（全站同一種外框）。
-// 8. className（含 emotion css prop）落在最外層 .ui-date-picker（同 MUI 落在 TextField 根節點），欄位撐滿它；有 className 時不套預設寬 220px，
+// 8. className 落在最外層 .ui-date-picker（同 MUI 落在 TextField 根節點），欄位撐滿它；有 className 時不套預設寬 220px，
 //    以免與頁面的 width 同權重而先後不定（打帳單四兄弟靠 width:100% 撐滿欄位）。sx 不支援，頁面改用 className。
 
 const DEFAULT_ACTIONS_TEXT = { cancel: '取消', ok: '確認' }
@@ -151,6 +151,11 @@ function createPicker({ displayName, withTime, mobileOnly }) {
     const published = React.useRef(value) // 最後一次送出的值
     const rootRef = React.useRef(null)
     const paperRef = React.useRef(null)
+    const openerRef = React.useRef(null)
+    const wasOpen = React.useRef(false)
+    // 受控 open 也可能由外層開啟；必須在日視圖掛載、移動焦點前記住原焦點。
+    if (open && !wasOpen.current) openerRef.current = document.activeElement
+    wasOpen.current = open
 
     React.useEffect(() => {
       published.current = value
@@ -226,14 +231,9 @@ function createPicker({ displayName, withTime, mobileOnly }) {
         if (rootRef.current && rootRef.current.contains(event.target)) return
         dismiss()
       }
-      const onKey = event => {
-        if (event.key === 'Escape') dismiss()
-      }
       document.addEventListener('mousedown', onDown)
-      document.addEventListener('keydown', onKey)
       return () => {
         document.removeEventListener('mousedown', onDown)
-        document.removeEventListener('keydown', onKey)
       }
     })
 
@@ -300,17 +300,24 @@ function createPicker({ displayName, withTime, mobileOnly }) {
             ...tfInputProps,
             endAdornment: (
               <InputAdornment position="end">
-                <button
-                  type="button"
-                  aria-label={ariaLabel}
-                  disabled={disabled || readOnly}
-                  onClick={openPicker}
-                  className="-mr-1 flex h-7 w-7 items-center justify-center rounded-full text-text-tertiary hover:bg-surface-hover disabled:opacity-40"
-                >
-                  <svg viewBox="0 0 24 24" className="h-[18px] w-[18px] fill-current" aria-hidden="true">
-                    <path d={CALENDAR_ICON} />
-                  </svg>
-                </button>
+                {/* 排版槽維持 28px（-mr-1 與原本相同）；按鈕本體 40×40，圖示仍 18px，不把輸入框撐高 */}
+                <span className="relative -mr-1 inline-flex h-7 w-7 shrink-0">
+                  <button
+                    type="button"
+                    aria-label={ariaLabel}
+                    title={ariaLabel}
+                    disabled={disabled || readOnly}
+                    onClick={openPicker}
+                    className={cn(
+                      'absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full text-text-tertiary hover:bg-surface-hover disabled:pointer-events-none disabled:opacity-40',
+                      focusRing
+                    )}
+                  >
+                    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px] fill-current" aria-hidden="true">
+                      <path d={CALENDAR_ICON} />
+                    </svg>
+                  </button>
+                </span>
               </InputAdornment>
             ),
           }}
@@ -368,30 +375,61 @@ function createPicker({ displayName, withTime, mobileOnly }) {
     let overlay = null
     if (open && desktop) {
       overlay = (
-        <Popper open anchorEl={rootRef.current} placement="bottom-start" style={{ zIndex: 1300 }}>
-          <div ref={paperRef} role="dialog" aria-label={title} className="ui-root mt-1 overflow-hidden rounded-xl border border-solid border-border bg-background shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
+        <Popover open onOpenChange={next => { if (!next) dismiss() }}>
+          <PopoverAnchor virtualRef={rootRef} />
+          <PopoverContent ref={paperRef} role="dialog" aria-label={title} side="bottom" align="start" sideOffset={4}
+            // 保留原 mousedown 外點規則：欄位、焦點移出及 pointerdown 均不額外關閉。
+            onInteractOutside={event => event.preventDefault()}
+            onOpenAutoFocus={event => {
+              event.preventDefault()
+              // 日格的 React autoFocus 早於浮層 Scope 掛載，外窗可能先把焦點拉回；
+              // 等 Radix 暫停外窗後，再聚焦所選日，保留其他視圖原本的不自動移焦契約。
+              const day = paperRef.current && paperRef.current.querySelector('[role="gridcell"][tabindex="0"]:not(:disabled)')
+              if (day) day.focus()
+            }}
+            onEscapeKeyDown={event => { event.preventDefault(); dismiss() }}
+            onCloseAutoFocus={event => {
+              event.preventDefault()
+              const target = openerRef.current
+              // 外點已聚焦其他欄位時不搶回焦點；Esc／選值後則回到開啟欄位。
+              if (target && target.isConnected && document.activeElement === document.body) target.focus()
+            }}
+            className="ui-root overflow-hidden rounded-xl border border-solid border-border bg-background shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
             {panel}
-          </div>
-        </Popper>
+          </PopoverContent>
+        </Popover>
       )
     } else if (open) {
       overlay = (
-        <Dialog open onClose={dismiss} className="ui-dialog-centered" PaperProps={{ className: 'ui-root min-w-[320px]', 'aria-label': title, 'aria-labelledby': undefined }}>
-          {!toolbar.hidden && (
-            <div className="flex flex-col gap-1 border-0 border-b border-solid border-border px-6 pb-4 pt-4">
-              <span className="text-caption font-medium text-text-secondary">{title}</span>
-              <span className="text-[26px] font-normal leading-9 text-text">{isValidDate(value) ? formatValue(value, toolbarFormat) : '––'}</span>
+        <Dialog open onOpenChange={next => { if (!next) dismiss() }}>
+          <DialogContent ref={paperRef} hideClose aria-label={title} aria-labelledby={undefined} aria-describedby={undefined}
+            onOpenAutoFocus={event => {
+              if (view !== 'day') return
+              event.preventDefault()
+              const day = paperRef.current && paperRef.current.querySelector('[role="gridcell"][tabindex="0"]:not(:disabled)')
+              if (day) day.focus()
+            }}
+            onCloseAutoFocus={event => {
+              event.preventDefault()
+              if (openerRef.current && openerRef.current.isConnected) openerRef.current.focus()
+            }}
+            className="ui-dialog-centered min-w-[320px] w-auto max-w-[calc(100vw-32px)] max-sm:inset-x-auto max-sm:bottom-auto max-sm:left-1/2 max-sm:top-1/2 max-sm:w-auto max-sm:max-w-[calc(100vw-32px)] max-sm:-translate-x-1/2 max-sm:-translate-y-1/2 max-sm:rounded-2xl max-sm:border max-sm:pb-0 max-sm:data-[state=open]:slide-in-from-bottom-0 max-sm:data-[state=closed]:slide-out-to-bottom-0 [&>div[aria-hidden]]:hidden">
+            {!toolbar.hidden && (
+              <div className="flex flex-col gap-1 border-0 border-b border-solid border-border px-6 pb-4 pt-4">
+                <span className="text-caption font-medium text-text-secondary">{title}</span>
+                <span className="text-[26px] font-normal leading-9 text-text">{isValidDate(value) ? formatValue(value, toolbarFormat) : '––'}</span>
+              </div>
+            )}
+            {panel}
+            <div className="flex justify-end gap-2 px-4 pb-3 pt-1">
+              <button type="button" onClick={cancel} className={cn('h-10 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover', focusRing)}>
+                {DEFAULT_ACTIONS_TEXT.cancel}
+              </button>
+              <button type="button" onClick={() => accept(published.current)} className={cn('h-10 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover', focusRing)}>
+                {DEFAULT_ACTIONS_TEXT.ok}
+              </button>
             </div>
-          )}
-          {panel}
-          <div className="flex justify-end gap-2 px-4 pb-3 pt-1">
-            <button type="button" onClick={cancel} className="h-9 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover">
-              {DEFAULT_ACTIONS_TEXT.cancel}
-            </button>
-            <button type="button" onClick={() => accept(published.current)} className="h-9 rounded-full px-4 text-label font-medium text-accent hover:bg-surface-hover">
-              {DEFAULT_ACTIONS_TEXT.ok}
-            </button>
-          </div>
+          </DialogContent>
         </Dialog>
       )
     }

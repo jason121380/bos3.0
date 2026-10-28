@@ -1,4 +1,4 @@
-// 純文字欄（姓名／暱稱／Email／地址／LINE ID／備註）改 Field 上方標籤＋ui Input（TextField 試點）；代號（重複檢查 error／endAdornment）、手機 tel、民國年生日、Select／來源下拉保留 MUI；性別 ToggleButton 為 ui/toggle-group（合成 event.target.value 傳遞不變）
+// 純文字欄（姓名／暱稱／Email／地址／LINE ID／備註）改 Field 上方標籤＋ui Input（TextField 試點）；代號（重複檢查 error／endAdornment）、手機 tel、民國年生日、Select／來源下拉使用正式 ui 元件；性別 ToggleButton 為 ui/toggle-group（合成 event.target.value 傳遞不變）
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { TextField, InputAdornment } from 'ui/text-field'
 import { LoaderCircle } from 'lucide-react'

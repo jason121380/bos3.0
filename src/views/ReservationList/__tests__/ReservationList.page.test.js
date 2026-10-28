@@ -27,7 +27,7 @@ const setup = (search = '?merchantid=m-1') =>
 
 beforeEach(() => {
   localStorage.clear()
-  localStorage.setItem('customer', { name: '吳小姐', userCode: 'u-1' })
+  localStorage.setItem('customer', JSON.stringify({ name: '吳小姐', userCode: 'u-1' }))
 })
 afterEach(cleanup)
 
@@ -58,7 +58,7 @@ it('取消預約：送該筆 id，成功後提示並重新查詢', async () => {
 })
 
 it('顧客資料缺 userCode：導到顧客登入頁並帶回跳網址與店家', async () => {
-  localStorage.setItem('customer', { name: '吳小姐' })
+  localStorage.setItem('customer', JSON.stringify({ name: '吳小姐' }))
   setup('?merchantid=m-9')
   await wait(() => expect(currentLocation()).toBe('/customer/login?merchantid=m-9&redirect=/customer/reservation/list?merchantid=m-9'))
 })

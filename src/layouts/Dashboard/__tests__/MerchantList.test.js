@@ -1,5 +1,5 @@
 // 保護什麼：切換店家視窗（MerchantBar＋MerchantList）。多店老闆靠它在分店間切換，選錯店會把帳單打到別家店。
-// - 店家清單來自 getUserMerchant（JSON 字串）：解析失敗或尚未載入時顯示載入中，不拋錯。
+// - 店家清單來自 getUserMerchant（JSON 字串）：載入中顯示轉圈；查詢失敗顯示錯誤與重新查詢；解析失敗或沒有資料顯示空狀態，不拋錯、不一直轉圈。
 // - 搜尋：依店名篩選「全部」、群組（含子群組）與未分組店家；群組名稱符合時保留群組；搜尋時自動展開所有群組。
 // - 樹狀清單：群組顯示「代號 - 名稱(數量)」，點群組展開／收合；點店家時記住新店家並回到打帳單、重新整理頁面。
 // - 鍵盤（比照原 MUI TreeView）：上下移動、右展開／進入子項、左收合／回父層、Home／End、打字跳到字首相符的項目。
@@ -8,6 +8,21 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter, Route } from 'react-router-dom'
 import MerchantBar from '../MerchantBar'
 import MerchantList from '../MerchantList'
+
+const installedPointerEvent = typeof window.PointerEvent !== 'function'
+if (installedPointerEvent) {
+  window.PointerEvent = class PointerEvent extends window.MouseEvent {
+    constructor(type, props = {}) {
+      super(type, props)
+      this.pointerId = props.pointerId == null ? 1 : props.pointerId
+      this.pointerType = props.pointerType || ''
+      this.isPrimary = props.isPrimary !== false
+    }
+  }
+}
+afterAll(() => {
+  if (installedPointerEvent) delete window.PointerEvent
+})
 
 const data = {
   allMerchants: [
@@ -41,15 +56,30 @@ const items = () => screen.getAllByRole('treeitem').map(li => li.firstChild.text
 const btn = text => screen.getByText(text, { exact: false, selector: 'button, button *' }).closest('button')
 
 describe('MerchantBar：資料與搜尋', () => {
-  it('尚未載入、沒有資料或 JSON 壞掉時顯示載入中，不拋錯', () => {
+  it('尚未載入顯示載入中；沒有資料或 JSON 壞掉顯示空狀態，不拋錯', () => {
     const { unmount } = renderBar({ loading: true, data: null })
     expect(screen.queryByRole('tree')).toBeNull()
+    expect(screen.getByRole('status', { name: '載入中' })).toBeInTheDocument()
+    expect(screen.queryByText('沒有可顯示的店家')).toBeNull()
     unmount()
     const { unmount: u2 } = renderBar({ loading: false, data: { getUserMerchant: '{壞掉' } })
     expect(screen.queryByRole('tree')).toBeNull()
+    expect(screen.queryByRole('status', { name: '載入中' })).toBeNull()
+    expect(screen.getByText('沒有可顯示的店家')).toBeInTheDocument()
     u2()
     renderBar({ loading: false, data: {} })
     expect(screen.queryByRole('tree')).toBeNull()
+    expect(screen.getByText('沒有可顯示的店家')).toBeInTheDocument()
+  })
+
+  it('查詢失敗時顯示錯誤與重新查詢，不是一直轉圈', () => {
+    const refetch = jest.fn()
+    renderBar({ loading: false, error: new Error('店家查詢失敗'), data: null, refetch })
+    expect(screen.queryByRole('tree')).toBeNull()
+    expect(screen.queryByRole('status', { name: '載入中' })).toBeNull()
+    expect(screen.getByText('無法載入店家清單')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: '重新查詢' }))
+    expect(refetch).toHaveBeenCalledTimes(1)
   })
 
   it('未搜尋時顯示「全部」、各群組（代號 - 名稱(數量)）與未分組店家，群組預設收合', () => {
@@ -100,8 +130,75 @@ describe('MerchantList：點擊', () => {
     expect(items()).not.toContain('台中店')
     fireEvent.click(btn('高雄店'))
     spy.mockRestore()
-    expect(JSON.parse(localStorage.getItem('userMerchant'))).toBe(JSON.stringify({ id: 'm3', name: '高雄店' }))
+    expect(JSON.parse(localStorage.getItem('userMerchant'))).toEqual({ id: 'm3', name: '高雄店' })
     expect(screen.getByTestId('loc')).toHaveTextContent('/order/create')
+  })
+
+  it('滑鼠 pointerup 第一次就選店，不必再送 click；店名節點在聚焦後仍在', () => {
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    localStorage.removeItem('userMerchant')
+    renderBar(loaded())
+    const store = btn('高雄店')
+    const label = store.querySelector('.max-sm\\:truncate')
+    fireEvent.pointerDown(store, { pointerType: 'mouse', pointerId: 1, clientX: 8, clientY: 8 })
+    fireEvent.mouseDown(label)
+    act(() => store.focus())
+    expect(label.isConnected).toBe(true)
+    fireEvent.pointerUp(store, { pointerType: 'mouse', pointerId: 1, clientX: 9, clientY: 9 })
+    expect(JSON.parse(localStorage.getItem('userMerchant'))).toEqual({ id: 'm3', name: '高雄店' })
+    expect(screen.getByTestId('loc')).toHaveTextContent('/order/create')
+    spy.mockRestore()
+  })
+
+  it('滑鼠先放開再送 click，群組只展開一次', () => {
+    renderBar(loaded())
+    const group = btn('G2 - 中區')
+    fireEvent.pointerDown(group, { pointerType: 'mouse', pointerId: 1, clientX: 4, clientY: 4 })
+    fireEvent.pointerUp(group, { pointerType: 'mouse', pointerId: 1, clientX: 5, clientY: 4 })
+    fireEvent.click(group)
+    expect(group.parentElement).toHaveAttribute('aria-expanded', 'true')
+    expect(items()).toContain('台中店')
+  })
+
+  it('觸控 pointerup 第一次就選店；手指滑動不選，接著的 click 也不選', () => {
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    localStorage.removeItem('userMerchant')
+    renderBar(loaded())
+    const store = btn('高雄店')
+    fireEvent.pointerDown(store, { pointerType: 'touch', pointerId: 1, clientX: 10, clientY: 10 })
+    fireEvent.pointerUp(store, { pointerType: 'touch', pointerId: 1, clientX: 11, clientY: 12 })
+    expect(JSON.parse(localStorage.getItem('userMerchant'))).toEqual({ id: 'm3', name: '高雄店' })
+    expect(screen.getByTestId('loc')).toHaveTextContent('/order/create')
+    spy.mockRestore()
+  })
+
+  it('觸控先放開再送 click，群組只展開一次', () => {
+    renderBar(loaded())
+    const group = btn('G2 - 中區')
+    fireEvent.pointerDown(group, { pointerType: 'touch', pointerId: 1, clientX: 4, clientY: 4 })
+    fireEvent.pointerUp(group, { pointerType: 'touch', pointerId: 1, clientX: 5, clientY: 4 })
+    fireEvent.click(group)
+    expect(group.parentElement).toHaveAttribute('aria-expanded', 'true')
+    expect(items()).toContain('台中店')
+  })
+
+  it('手指移動超過 10px 不切換店家', () => {
+    localStorage.removeItem('userMerchant')
+    renderBar(loaded())
+    const store = btn('高雄店')
+    fireEvent.pointerDown(store, { pointerType: 'touch', pointerId: 1, clientX: 0, clientY: 0 })
+    fireEvent.pointerUp(store, { pointerType: 'touch', pointerId: 1, clientX: 0, clientY: 30 })
+    fireEvent.click(store)
+    expect(localStorage.getItem('userMerchant')).toBeNull()
+    expect(screen.getByTestId('loc')).toHaveTextContent('/management/orders')
+  })
+
+  it('店名在手機截斷，按鈕 title 保留全名', () => {
+    const longName = 'A Quality 旗艦概念店台北信義區遠東店'
+    renderBar(loaded({ allMerchants: [{ id: 'm9', name: longName }], groups: [], merchants: [{ id: 'm9', name: longName }] }))
+    const store = btn(longName)
+    expect(store).toHaveAttribute('title', longName)
+    expect(store.querySelector('.max-sm\\:truncate')).toBeTruthy()
   })
 
   it('沒有子項的群組點了不展開', () => {

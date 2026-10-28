@@ -1,4 +1,4 @@
-import { Dialog } from 'ui/modal-compat'
+import { Dialog, DialogContent } from 'ui/dialog'
 import { Pencil } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
@@ -109,15 +109,21 @@ function CustomerInfo({ customer, className, isLoading, bookingCusCheck, ...rest
       ) : (
         ''
       )}
-      {/* MUI Dialog 保留：舊版無 onClose，內含 MUI 日期選擇器、Select、Autocomplete */}
+      {/* 保留原預設 600px 寬度；原無 onClose，不增加關閉路徑。 */}
       <Dialog open={modalOpen}>
+        <DialogContent hideClose
+          onOpenAutoFocus={event => {
+            // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
+            event.preventDefault()
+            if (!event.target.contains(document.activeElement)) event.target.focus()
+          }} aria-describedby={undefined} className="!max-w-[600px] overflow-y-auto">
         <ChoseEvent
           bookingCusCheck={bookingCusCheck}
           modalOpen={modalOpen}
           cellphone={customer.cellphone}
           setModalOpen={setModalOpen}
         />
-      </Dialog>
+      </DialogContent></Dialog>
     </Card>
   )
 }

@@ -2,10 +2,8 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import React from 'react'
 
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TablePagination, TableRow } from '../table'
-import * as Compat from '../table-compat'
 
-// 保護什麼：新版表格（ui/table，含分頁）與舊頁面的 MUI 相容表格（table-compat；pagination-compat 沒有頁面使用，2026/10/22 已刪除）。
-// - 報表列印（initialize.scss 數十條 .MuiTableCell-* 規則）靠 table-compat 輸出的 MUI class：區段、尺寸、排序、sticky 表頭。
+// 保護什麼：正式 ui/table 的區段、ref、密度、數字對齊與分頁。
 // - 分頁的筆數文字、可否換頁與每頁筆數回傳的值（數字）決定查詢參數，算錯會查到不存在的頁或少資料。
 
 afterEach(cleanup)
@@ -77,75 +75,5 @@ describe('ui/table', () => {
     expect(screen.getAllByRole('option').map(o => o.textContent)).toEqual(['10', '全部'])
     fireEvent.change(screen.getByLabelText('每頁筆數'), { target: { value: '0' } })
     expect(onRows.mock.calls[0][0].target.value).toBe(10)
-  })
-})
-
-describe('table-compat（MUI 相容）', () => {
-  it('預設 medium／normal；表頭 th 帶 scope=col；區段外的儲存格為 body', () => {
-    const { container } = render(
-      <Compat.Table>
-        <Compat.TableHead>
-          <Compat.TableRow>
-            <Compat.TableCell>名稱</Compat.TableCell>
-          </Compat.TableRow>
-        </Compat.TableHead>
-        <tbody>
-          <tr>
-            <Compat.TableCell>區段外</Compat.TableCell>
-          </tr>
-        </tbody>
-      </Compat.Table>
-    )
-    const th = screen.getByText('名稱')
-    expect(th.tagName).toBe('TH')
-    expect(th).toHaveAttribute('scope', 'col')
-    expect(th).toHaveClass('MuiTableCell-head', 'MuiTableCell-sizeMedium')
-    expect(th.parentElement).toHaveClass('MuiTableRow-head')
-    expect(screen.getByText('區段外')).toHaveClass('MuiTableCell-body')
-    expect(container.querySelector('table')).not.toHaveClass('MuiTable-stickyHeader')
-  })
-
-  it('stickyHeader 傳到每個儲存格；selected／footer 列；排序欄位標 aria-sort', () => {
-    render(
-      <Compat.Table stickyHeader size="small" padding="checkbox">
-        <Compat.TableBody>
-          <Compat.TableRow selected hover>
-            <Compat.TableCell sortDirection="asc">升冪</Compat.TableCell>
-            <Compat.TableCell sortDirection="desc" align="right">
-              降冪
-            </Compat.TableCell>
-            <Compat.TableCell>不排序</Compat.TableCell>
-          </Compat.TableRow>
-        </Compat.TableBody>
-        <Compat.TableFooter>
-          <Compat.TableRow>
-            <Compat.TableCell>合計</Compat.TableCell>
-          </Compat.TableRow>
-        </Compat.TableFooter>
-      </Compat.Table>
-    )
-    const asc = screen.getByText('升冪')
-    expect(asc).toHaveAttribute('aria-sort', 'ascending')
-    expect(asc).toHaveClass('MuiTableCell-stickyHeader', 'MuiTableCell-sizeSmall', 'MuiTableCell-paddingCheckbox')
-    expect(asc.parentElement).toHaveClass('Mui-selected', 'MuiTableRow-hover')
-    expect(screen.getByText('降冪')).toHaveAttribute('aria-sort', 'descending')
-    expect(screen.getByText('降冪')).toHaveClass('MuiTableCell-alignRight')
-    expect(screen.getByText('不排序')).not.toHaveAttribute('aria-sort')
-    expect(screen.getByText('合計').parentElement).toHaveClass('MuiTableRow-footer')
-    expect(screen.getByText('合計')).toHaveClass('MuiTableCell-footer')
-  })
-
-  it('Table 的 size／padding 為 null 時儲存格退回 medium／normal（不輸出 sizeNull）', () => {
-    render(
-      <Compat.Table size={null} padding={null}>
-        <Compat.TableBody>
-          <Compat.TableRow>
-            <Compat.TableCell>x</Compat.TableCell>
-          </Compat.TableRow>
-        </Compat.TableBody>
-      </Compat.Table>
-    )
-    expect(screen.getByText('x')).toHaveClass('MuiTableCell-sizeMedium')
-    expect(screen.getByText('x').className).not.toContain('MuiTableCell-padding')
   })
 })

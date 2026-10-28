@@ -1,88 +1,25 @@
-// 店家樹狀選擇窗：樹狀本體改用 ui/tree-compat（與 MUI 同 DOM／class／行為；展開/勾選/搜尋/確認回傳邏輯不動），僅換 ui/dialog 殼、ui Input/Button/Checkbox 視覺與 TreeView 列高/hover/縮排覆寫
+// 店家樹狀選擇窗：使用 ui/tree，展開／勾選／搜尋／確認回傳邏輯保留。
 import { useState, useEffect } from 'react'
 import { Button } from 'ui/button'
 import { Checkbox } from 'ui/checkbox'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { Input } from 'ui/input'
-import { TreeView, TreeItem } from 'ui/tree-compat'
+import { TreeView, TreeItem } from 'ui/tree'
 import { ExpandMore as ExpandMoreIcon, ChevronRight as ChevronRightIcon, GroupsRounded as GroupsRoundedIcon, Storefront as StorefrontIcon, SearchRounded as SearchRoundedIcon, ClearRounded as ClearRoundedIcon } from 'ui/icons'
 import PropTypes from 'prop-types'
 import cloneDeep from 'lodash/cloneDeep';
 
-// 樹狀本體為 ui/tree-compat（輸出 MUI 同名 class），以下覆寫統一 compact 列高、hover、縮排與箭頭對齊（原 emotion styles 等值轉 Tailwind）。
-// 權重說明：tree-compat.css 在路由 chunk（晚於 emotion 與 Tailwind 載入），同權重時兩者皆輸給它，故不加 !；
-// 原本同為 (0,3,0) 的 hover → focused／selected 取消底色 → 已選店家底色三條規則靠 emotion 插入順序決定勝負，Tailwind 任意變體的輸出順序不固定，
-// 改以 :where＋元素選擇器把前兩條排成 (0,2,1) < (0,2,2) < (0,3,0)：仍高於 tree-compat 的 (0,2,0)、仍輸給其 (0,3,0)（如深色 focused），勝負與原本相同；
-// 店家 label 內距（item 的 !important 蓋 root 的 !important）以 && 提高權重保留原本順序。
-const treeClass = [
-  'flex gap-[2px] flex-col',
-  '[&_.MuiTreeItem-content]:flex [&_.MuiTreeItem-content]:items-center [&_.MuiTreeItem-content]:min-h-[38px] [&_.MuiTreeItem-content]:px-[8px] [&_.MuiTreeItem-content]:py-[4px]',
-  '[&_.MuiTreeItem-content]:rounded-[6px] [&_.MuiTreeItem-content]:w-auto [&_.MuiTreeItem-content]:[transition:background-color_.15s]',
-  '[&_div:where(.MuiTreeItem-content):hover]:bg-surface-hover',
-  '[&_li>div:where(.MuiTreeItem-content).Mui-focused]:[background-color:unset] [&_li>div:where(.MuiTreeItem-content).Mui-selected]:[background-color:unset]',
-  '[&_.MuiTreeItem-content.Mui-selected.Mui-focused]:[background-color:unset]',
-  '[&_.Mui-expanded]:![background-color:unset] [&_.Mui-selected]:![background-color:unset]',
-  '[&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:w-[20px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:h-[20px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:mr-[2px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:p-0',
-  '[&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:flex [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:items-center [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:justify-center [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:shrink-0',
-  '[&_.MuiTreeItem-content_.MuiTreeItem-iconContainer_svg]:w-[16px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer_svg]:h-[16px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer_svg]:text-text-tertiary',
-  '[&_.MuiTreeItem-label]:text-[14px] [&_.MuiTreeItem-label]:leading-[20px] [&_.MuiTreeItem-label]:!pl-[2px]',
-  '[&_li]:rounded-[6px] [&_li]:w-auto',
-  '[&_.onSelect]:bg-[rgb(var(--accent)/0.12)] [&_.onSelect]:text-accent [&_.onSelect]:font-medium',
-  '[&_.onSelect>.MuiTreeItem-content]:bg-[rgb(var(--accent)/0.12)] [&_.onSelect>.MuiTreeItem-content]:text-accent [&_.onSelect>.MuiTreeItem-content]:font-medium',
-  '[&_.onSelect>.MuiTreeItem-content:hover]:bg-[rgb(var(--accent)/0.12)]',
-  '[&_.onSelect_.MuiTreeItem-label]:text-accent [&_.onSelect_.MuiTreeItem-label]:font-medium [&_.onSelect_.MuiTreeItem-label_svg]:text-accent',
-].join(' ')
-// 群組（無子群組）：子店家橫向排列
-const ulGroupClass = '[&_ul]:!ml-[24px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:!gap-[4px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:!flex-row [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-wrap [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:mt-[2px]'
-// 群組（含子群組）：子項目直向排列
-const ulGroupAllClass = '[&_ul]:ml-[24px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:gap-[4px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-col'
-// 「全部」：店家換行排列
-const ulGroupAllMerchantClass = '[&_ul]:ml-[24px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-wrap [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:gap-[4px]'
-const itemClass = 'rounded-[6px] overflow-hidden [&&_.MuiTreeItem-label]:!pl-0 [&_.MuiTreeItem-iconContainer]:!hidden'
-const outlineClass = '![outline:2px_solid_rgb(var(--danger))] rounded-[6px]'
-const spanClass = 'flex items-center gap-[6px] [word-break:keep-all] whitespace-nowrap text-[14px] leading-[20px] [&_svg]:w-[16px] [&_svg]:h-[16px] [&_svg]:shrink-0 [&_svg]:text-text-secondary'
-// 以上為 MerchantListAutocpmplete 的樣式（預設）
+// 列高、hover 與選取色由 ui/tree 提供；此處只定義群組排列與搜尋框線。
 export const defaultTreeClasses = {
-  root: treeClass,
-  ulGroup: ulGroupClass,
-  ulGroupAll: ulGroupAllClass,
-  ulGroupAllMerchant: ulGroupAllMerchantClass,
-  item: itemClass,
-  outline: outlineClass,
-  span: spanClass,
+  root: 'gap-0.5',
+  ulGroup: 'flex-row flex-wrap gap-1',
+  ulGroupAll: 'flex-col gap-1',
+  ulGroupAllMerchant: 'flex-row flex-wrap gap-1',
+  item: 'rounded-md',
+  outline: 'outline outline-2 outline-danger rounded-md',
+  span: 'flex items-center gap-1.5 whitespace-nowrap text-[14px] leading-5 [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0',
 }
-
-// MerchantListAutocpmpleteForManagement 的樣式：自原 MerchantListAutocpmpleteForManagement/MerchantsListModal.js 原樣搬來（原名 styles）。
-// 與上方預設等值但寫法不同（class 字串不同、hover／focused 的權重排法不同），為維持兩處 DOM 與 class 完全不變，合併時不統一。
-// 樹狀本體為 ui/tree-compat（輸出 MUI 同名 class），以下覆寫統一 compact 列高、hover、縮排與箭頭對齊
-export const managementTreeClasses = {
-  root: [
-    'flex flex-col gap-[2px]',
-    '[&_.MuiTreeItem-content]:flex [&_.MuiTreeItem-content]:items-center [&_.MuiTreeItem-content]:min-h-[38px] [&_.MuiTreeItem-content]:p-[4px_8px] [&_.MuiTreeItem-content]:rounded-[6px] [&_.MuiTreeItem-content]:w-auto [&_.MuiTreeItem-content]:[transition:background-color_.15s]',
-    '[&_.MuiTreeItem-content:hover]:[background-color:rgb(var(--surface-hover))]',
-    '[&_.MuiTreeItem-content.Mui-focused]:[background-color:unset] [&_.MuiTreeItem-content.Mui-selected]:[background-color:unset] [&_.MuiTreeItem-content.Mui-selected.Mui-focused]:[background-color:unset]',
-    '[&_.Mui-expanded]:![background-color:unset] [&_.Mui-selected]:![background-color:unset]',
-    '[&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:w-[20px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:h-[20px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:mr-[2px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:p-0 [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:flex [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:items-center [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:justify-center [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer]:shrink-0',
-    '[&_.MuiTreeItem-content_.MuiTreeItem-iconContainer_svg]:w-[16px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer_svg]:h-[16px] [&_.MuiTreeItem-content_.MuiTreeItem-iconContainer_svg]:[color:rgb(var(--text-tertiary))]',
-    '[&_.MuiTreeItem-label]:text-[14px] [&_.MuiTreeItem-label]:leading-[20px] [&_.MuiTreeItem-label]:!pl-[2px]',
-    '[&_li]:rounded-[6px] [&_li]:w-auto',
-    '[&_.onSelect]:[background-color:rgb(var(--accent)/0.12)] [&_.onSelect]:[color:rgb(var(--accent))] [&_.onSelect]:font-medium',
-    '[&_.onSelect>.MuiTreeItem-content]:[background-color:rgb(var(--accent)/0.12)] [&_.onSelect>.MuiTreeItem-content]:[color:rgb(var(--accent))] [&_.onSelect>.MuiTreeItem-content]:font-medium',
-    '[&_.onSelect>.MuiTreeItem-content:hover]:[background-color:rgb(var(--accent)/0.12)]',
-    '[&_.onSelect_.MuiTreeItem-label]:[color:rgb(var(--accent))] [&_.onSelect_.MuiTreeItem-label]:font-medium',
-    '[&_.onSelect_.MuiTreeItem-label_svg]:[color:rgb(var(--accent))]',
-  ].join(' '),
-  ulGroup:
-    '[&_ul]:!ml-[24px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:!gap-[4px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:!flex-row [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-wrap [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:mt-[2px]',
-  ulGroupAll:
-    '[&_ul]:ml-[24px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:gap-[4px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-col',
-  ulGroupAllMerchant:
-    '[&_ul]:ml-[24px] [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:flex-wrap [&_ul_.MuiCollapse-wrapper_.MuiCollapse-wrapperInner]:gap-[4px]',
-  // 店家項目的 label 內距需壓過樹根的 !pl-[2px]（原 emotion 以插入順序取勝），以 [&&_…] 提高一級權重
-  item: 'rounded-[6px] overflow-hidden [&&_.MuiTreeItem-label]:!pl-0 [&_.MuiTreeItem-iconContainer]:!hidden',
-  span: 'flex items-center gap-[6px] break-keep whitespace-nowrap text-[14px] leading-[20px] [&_svg]:w-[16px] [&_svg]:h-[16px] [&_svg]:shrink-0 [&_svg]:[color:rgb(var(--text-secondary))]',
-  outline: '![outline:2px_solid_rgb(var(--danger))] rounded-[6px]',
-}
+export const managementTreeClasses = { ...defaultTreeClasses }
 
 const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, classes = defaultTreeClasses }) => {
   const allNodeIds = ['ALL']
@@ -129,7 +66,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, cl
             style={{ flexShrink: 0, margin: '11px 4px 0 8px' }}
           />
           <TreeItem
-            className={!(data.groups && data.groups.length) ? classes.ulGroup : classes.ulGroupAll}
+            groupClassName={!(data.groups && data.groups.length) ? classes.ulGroup : classes.ulGroupAll}
             nodeId={`${data.no ? data.no : ''} - ${data.name}(${data.groups.length ? data.groups.length : data.merchants.length})`}
             label={<RenderLabel isGroup={true} data={data} />}
           >
@@ -147,6 +84,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, cl
         key={data.id}
         onClick={() => handleItemClick(data)}
         className={`${isSelect(data.id)} ${classes.item}${filtIds.includes(data.id) ? ` ${classes.outline}` : ''}`}
+        selected={!!isSelect(data.id)}
         nodeId={data.id}
         label={<RenderLabel isGroup={false} data={data} />}
       />
@@ -316,11 +254,14 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, cl
         </DialogHeader>
         <DialogBody className="py-3">
         <TreeView
+          aria-label="店家列表"
+          aria-multiselectable="true"
           className={classes.root}
           defaultCollapseIcon={<ExpandMoreIcon />}
           defaultExpandIcon={<ChevronRightIcon />}
+          selected={null}
           expanded={expandedArr}
-          onNodeToggle={handleNodeFocus}
+          onToggle={handleNodeFocus}
         >
           <div style={{ display: 'flex', alignItems: 'flex-start' }}>
             <Checkbox
@@ -330,7 +271,7 @@ const MerchantsListModal = ({ open, setOpen, merchantList, values, setValues, cl
               style={{ flexShrink: 0, margin: '11px 4px 0 8px' }}
             />
             <TreeItem
-              className={classes.ulGroupAllMerchant}
+              groupClassName={classes.ulGroupAllMerchant}
               style={{ overflow: 'visible' }}
               nodeId='ALL'
               label={

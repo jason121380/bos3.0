@@ -10,6 +10,9 @@ import { Button } from 'ui/button'
 import { PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
+import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
+import isExportCustomerMasked, { maskCustomerName } from 'helper/exportCustomerMask'
+
 import Results from './Results'
 
 const CustomerWalletBalance = () => {
@@ -25,6 +28,10 @@ const CustomerWalletBalance = () => {
   const customerWalletBalanceData = useFetchCustomerWalletBalance({
     input: pageSetting,
   })
+  // 匯出檔遮罩客資比照顧客卡券餘額表：只有「報表匯出客資遮碼」查詢成功且為 false 才不遮罩。
+  // 畫面表格維持完整姓名（Jason 2026/10/24：參數設定開關要接到這份匯出）。
+  const customerDataMarkedData = useFetchCustomerDataMarked()
+  const isCustomerDataMarked = isExportCustomerMasked(customerDataMarkedData)
   useEffect(() => {
     if (!customerWalletBalanceData.loading) {
       const excelData = []
@@ -37,7 +44,7 @@ const CustomerWalletBalance = () => {
       report.forEach(data => {
         excelData.push({
           客戶編號: data.customerNo,
-          客戶姓名: data.customerName,
+          客戶姓名: isCustomerDataMarked ? maskCustomerName(data.customerName) : data.customerName,
           所屬設計師: data.preferDesignerName,
           儲值餘額: data.leftWallet,
         })
@@ -48,7 +55,7 @@ const CustomerWalletBalance = () => {
       })
       setExcelData(excelData)
     }
-  }, [customerWalletBalanceData.loading])
+  }, [customerWalletBalanceData.loading, isCustomerDataMarked])
   let customerIdValue = ''
   if (pageSetting.customerId.length > 0) {
     pageSetting.customerId.forEach(id => {

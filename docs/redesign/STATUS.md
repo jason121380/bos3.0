@@ -1,6 +1,58 @@
 # BOS 3.0 改版進度
 
-> 更新：2026/10/21（v3.10212046，main 已含 PR #1～#240）　規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+> **歷史／已過時。** 版號、測試總數、CI、前端健康分（Before 92 → After 100）、`QueryFailed`、收據契約、匯出遮罩、後端債，只看 [`docs/CURRENT.md`](../CURRENT.md)。正式站已上線版號是 `v3.10251208`（PR #302，commit `abe02de`）。前端可控制的健康分仍是 100。`v3.10241717` 是 PR #301 健康分程式當時的版號，不是現在的正式站版號。CI 是 `.github/workflows/frontend-ci.yml`，不是已刪除的 `node.js.yml`。
+>
+> 下面每一則的 suite／test 數字是該則當時的結果。不要把「CI 要在網頁重新啟用」或 368／4,283 當成現況基線。現況總數在 [`docs/CURRENT.md`](../CURRENT.md)。
+
+- **2026/10/24 前端審查修正（v3.10241522；API 環境、登入 PROFILE、查詢錯誤、localStorage mock）**：未設定 `REACT_APP_API_URL` 時，只有 `bos.lure.com.tw`、`www.bos.lure.com.tw`、`app.beautyos.co` 連正式 API。`127.0.0.1`、預覽網址、Railway 預設網域、認不得的網域與沒有 window 改連測試 API，並顯示提示，不再默默連正式。登入成功但 PROFILE 失敗時，按鈕離開「登入中」、顯示錯誤、可再試。盤點作業與切換店家在查詢失敗時顯示錯誤與重新查詢，不再一直骨架／轉圈。`setupTests` 的 `localStorage.setItem` 改為與瀏覽器相同的字串儲存。`useFetchProfile` 的 mock `solmateKey` 改成 `TEST_SOLMATE_KEY_INVALID`；正式 PROFILE 查詢仍會向後端要這個欄位（前端沒有刪欄位）。治理紀錄（只描述 v3.10241522 當時）：舊的 GitHub Actions workflow 仍是手動停用；`main` 分支保護是關閉的，token 讀寫回 403，沒有打開，也沒有改 Railway。該則沒有重跑全套，沿用 v3.10241447 的 368 suites／4,283 tests。CI 與測試總數的現況見 [`docs/CURRENT.md`](../CURRENT.md)。
+
+- **2026/10/24 掛單詳細現金應收（v3.10241447）**：金額彙總（彙總卡與底部固定列）的現金應收改呼叫 `helper/billPaymentSummary`，與打帳單、帳單詳細同一支。業績合計、付款超過應付時歸零、紅利給點、列印範本與送出內容維持原式。相關 Jest：掛單詳細 15 檔與 `billPaymentSummary` 共 16 suites／187 tests 通過。
+
+- **2026/10/24 repo 健康報告（前端）**：帳單詳細現金應收改走 `src/helper/billPaymentSummary.js`（與打帳單、掛單詳細同一公式）。掛單結帳成功後，網址沒有日期或查詢不是 `startDate`／`endDate` 時不再被當成結帳失敗。`userLoginForLine` 的 selection set 沒有 token，不發明欄位；回應上若已有非空字串 token 才寫入。`detectApiEnv` 只看 hostname。沒有店章網址時，四個列印面不 `fetch(null)`。重新開單給點補上 `bonusSetting`；打帳單扣入金只在超過新上限時往下夾。Services 篩選維持隱藏（2026/10/24 已拍板）。`PerformanceTrend` 本批不刪。後端 repo 本批不碰。該則當時：舊的 GitHub Actions workflow 需在網頁重新啟用才會跑，並回報全套 368 suites／4,283 tests 全過。這不是其後的 CI 或基線，見 [`docs/CURRENT.md`](../CURRENT.md)。
+
+- **2026/10/24 收尾盤點**：清除無 live class 來源的舊 Mui CSS 與未使用的 ui-sheet-in 動畫，修正過時遷移註解、Products／Login 測試 mock 與盤點草稿提示計時；新增正式 Dialog 焦點回歸測試，修正多選 CompatSelect 外點搶焦點及 Escape 穿透、日期浮層初始聚焦。離線 harness 新增 click-away（原 10 種情境與 assertions 保留），（v3.10240343）Chrome 11／11 通過；完整測試 366 suites／4,262 tests 全過、無 console 輸出；lint／build 通過。未刪檔，未改後端／網路防護／環境／套件或 effect 依賴。逐項 CSS 表、待決事項、候選檔與驗證見 [收尾稽核報告](AUDIT_20261024.md)。
+
+- **2026/10/24 Autocomplete／正式 Dialog 焦點修正（v3.10240242，Jason 核准）**：窗內按鈕 mousedown 引發 input blur 時，activeElement 暫為 body；同步移除選單內容／圖層節點會觸發 Radix FocusScope MutationObserver 聚焦容器，使巢狀 PasswordDialog 記錯還原焦點。僅在窗內有 relatedTarget 且焦點處於 body 交接空檔時，阻止 downshift 提早關閉並延至下一個 task 收尾；保留失焦當下 autoSelect 候選項並讀最新欄位值，重聚焦／卸載取消待辦，保留一般表單同步 blur、觸控與 Escape 行為。新增真實 Dialog／PasswordDialog 的受控、非受控焦點交接及選值移焦測試；暫時還原原碼已確認兩個焦點案例失敗於容器搶焦點。驗證：changedSince 169 suites／2,014 tests、全套 365 suites／4,239 tests 全過；指定 combobox／dialog-layers 加新增顧客 5 suites／90 tests、lint／build 通過。未刪檔、未動網路 guard；Chrome dialog-layers e2e 10／10 通過（含 nested-password，連跑兩次）。
+
+- **相容層刪除（v3.10240102，2026/10/23 Jason 23:33 核准）**：刪除 48 檔（11 個未使用相容模組＋10 份 CSS〔含 accordion-compat.css〕、14 個相容專屬測試、12 個舊相容比對 harness／gen-grid-css.py）；混合測試只移除相容案例，Switch／Slider 兩個正式案例移至 `switch-slider-extra.test.js`。保留 combobox 使用的 `ui/compat-layer.js` 與日期／圖層／元件／列印工具；完整清單見 MIGRATION_GUIDE 同名章節。下方舊條目的「待核准」為歷史狀態。驗證：完整 Jest **364 suites／4,236 tests 全過**（前 377／4,372：−14 刪除測試檔 103 tests、混合檔 −35、新增 1 檔 +2）；lint、build 通過；dialog-layers Chrome 10 種情境 **9 過 1 敗**：nested-password 下層由相容窗改 ui/dialog 後，暴露正式 Autocomplete 的既有行為——選單開啟時點同窗按鈕，焦點落到對話框容器，PasswordDialog 關閉後還原到容器而非觸發鈕（斷言未放寬，待另案修 combobox）。`ui-sheet-in` 已無使用者，僅更新註解並保留規則。
+
+
+- **最後一批（2026/10/23，Jason 核准）**：頁面 compat importers **2 → 0**；`CustomerFilterExport` 改用既有 `hooks/useMediaQuery`（呼叫處正規化，md 899.95px／jsdom false 保留），`OrderEdit/Header` 抽獎流水號改正式 Popover；`ui/date-picker` 內部不再依賴 modal／overlay-compat，手機用置中 Dialog、桌機用錨定欄位的 Popover。相容模組 `button-compat`、`card-compat`、`display-compat`、`feedback-compat`、`grid-compat`、`misc-compat`、`modal-compat`、`overlay-compat`、`standard-input-compat`、`table-compat`、`tree-compat` 全部保留，現在僅相容檔內部、其自身／跨圖層單元測試與 `scripts/redesign/compat-harness/**` 歷史比較工具引用；**刪除仍待 Jason 核准**。`ui/compat-layer.js` 是共用 Radix 行為 helper，保留 combobox 引用。本批不刪檔、不 commit、不改後端／網路 guard，不跑 Chrome／e2e；瀏覽器定位、手機置中與巢狀焦點待 Jason 實機驗收。 **驗證**：全套 Jest 377 suites／4,372 tests 全過（`--maxWorkers=50%`，合併前最終一次）；補充焦點案例後，最終指定範圍（全部 ui＋rg 找出的 picker 使用測試＋Header）55 suites／670 tests 全過，版本／網路 guard 2 suites／4 tests 全過；最終 lint、build、git diff --check 通過。唯讀審查未發現需修正問題。build 仍有既有重複 object key 與 Browserslist 資料過舊提示，未擴大修改。
+
+
+- **2026/10/23 項目 3 列印遷移第二批**：指定 9 檔完成正式 ui/card、ui/table、ui/input、Tailwind flex／div 與原生 hr 遷移。第一批七個 key 保留，第二批新增八個 key；逐檔替換、影像名稱與限制見 MIGRATION_GUIDE「項目 3／第二批」。限定 Jest **53 suites／573 tests 全過**、版號 1 test、lint／diff check、dialog-layers **13/13（exit 0）** 通過；外部列印比較 before／after 各 **15/15**，15 張 print＋48 張 PDF PNG 像素相同；螢幕僅薪資條圓角 247 個淡灰抗鋸齒像素差異（最大色階差 8），詳見 MIGRATION_GUIDE。相容 importer **15 → 6**。尚待實機紙本驗收（v3.10232307）。
+
+## 項目 3 第三批：收據列印流程（2026/10/23）
+
+四個指定收據檔完成 compat 遷移：OrderDetailModal 改 ui/dialog／ui/card，兩塊 print refs 放在動畫 Content 外並依開啟狀態同步掛載／卸載；其餘三檔 Divider 改原生 hr，保留收據完整 HTML。handlers、GraphQL、列印程式、網路 guard 均未改。獨立 receipt-compare 入口／runner／shell，避免與第二批共用腳本衝突。詳細時序、fixture、逐份 HTML／PNG 名稱及驗證見 MIGRATION_GUIDE「項目 3／第三批」。外部 Chrome 收據 before／after 各 12/12，12 份 HTML 逐字相同、24 張 PNG 像素相同；指定六目錄＋網路 guard／版號最終 Jest **83 suites／1,028 tests 全過**；lint 通過。外部 Chrome `dialog-layers` **13/13，exit 0**（desktop、mobile、combobox、select、popover、compat-radix、radix-compat、keep-mounted、dropdown、nested-password、nested-date、customer-form、reservation）。
+
+本批疊在第二批之上：compat importer **6 → 2**（剩 OrderEdit/Header、CustomerFilterExport，皆非列印頁）。未連真實後端或正式站；相關測試、lint、build 通過，全站 suite 留待當日最終合併前統一跑。仍待使用隔離假資料的實體紙本驗收。
+
+
+- **2026/10/23 項目 4：Tree／Rating／Tag**：新增三個 tokens 元件與單元／離線瀏覽器測試；六個 compat 使用檔完成 UI 遷移，handlers／GraphQL／回傳值與搜尋／確認／取消保留。Phase 1／2 拆分、API、視覺差異與驗證見 MIGRATION_GUIDE §9；compat importer 29 → 23。全站 375 suites／4,350 tests 全過；lint／build／diff check 通過；外部 Chrome 新元件 4/4、Dialog 回歸 13/13（exit 0）。分兩個 PR（元件／使用端）；未觸及正式站。
+
+- **2026/10/23 共用 Dialog 圖層 Part B2**：七檔外殼完成；OrderDetailModal 因列印 refs 同步檢查／非同步讀取與 Portal／退場生命週期差異保留原檔。剩餘僅此頁與三個 ui 內部使用者；未改 src/ui、列印範本與網路 guard。外部 Chrome 13/13、lint 通過；限定 Jest 首輪 87 suites（顧客追蹤單項逾時重跑通過），最終相關頁面 16 suites／188 tests 全過，網路 guard／版號 4 tests 通過；全站 371 suites／4,332 tests 全過、build 通過；頁面 compat importer 35 → 29；細節與驗證見 MIGRATION_GUIDE §8。
+
+- **2026/10/23 共用 Dialog 圖層 Part B1**：指定九檔外殼遷移完成；保留原關閉路徑、特殊寬度、欄位／picker 與 Enter 跳欄。B2 八檔留待後續；限定 Jest 107 suites／1,352 tests（舊定位失敗修正後重跑通過）、網路封鎖／版號與 lint 通過，外部 Chrome 12/12；細節見 MIGRATION_GUIDE §8。
+- **2026/10/23 共用 Dialog 圖層 Part A**：共享 Radix 圖層與首批七檔遷移完成修改；保留 Part B 17 個頁面／共用 importer。限定 Jest 89 suites／1,099 tests、網路封鎖／版號 4 tests 與 lint 通過；外部 Chrome 原九種＋真實 PasswordDialog／三層日期共 11/11 連續兩輪通過；keepMounted 兩次開關、焦點還原、全部關閉後指標／捲動鎖解除均已驗證（MEMORY #195、#196）。
+
+
+> 以下摘要寫於 2026/10/24，不是現況更新日（當時 repo 版號看 `src/version.js`；正式站以左上角版號為準。文件裡的 v3.10230759 是 10/23 當時的上線紀錄）。現況看 [`docs/CURRENT.md`](../CURRENT.md)。規範：根目錄 `STYLE.md`　遷移規則：`MIGRATION_GUIDE.md`　待辦：`TODO.md`
+
+## 2026/10/24 以前的進度摘要（歷史，不是現況）
+
+版號、測試總數、CI、健康分與後端債只看 [`docs/CURRENT.md`](../CURRENT.md)。下面幾點是 10/24 寫摘要時的快照。
+
+- **2026/10/23 項目 3 列印遷移第一批（v3.10232225）**：指定 8 檔已由 card／grid／Divider 相容層換成 ui/card、Tailwind flex／div 與原生 hr，所有資料與操作邏輯保留。六張報表＋分析比較模式，外部 Chrome before／after 各 7/7；30 張 print／screen／PDF PNG 尺寸與像素全相同。指定 Jest 39 suites／436 tests、相關測試（--changedSince=origin/main）10 suites／102 tests、lint、build、dialog-layers 13/13 通過，verify-logic 8 檔全過。相容 importer **23 → 15**。新增可重用 print-compare.sh，Jason 限定允許本項目調整列印 CSS；逐檔對照、影像名稱及既有裁切／分頁限制見 MIGRATION_GUIDE「項目 3」。尚待實機紙本驗收，後續批次仍須逐份比較。
+
+
+- MUI 套件已整包移除。寫這段時把 `src/ui/*-compat` 記成 6 個非 ui、非測試使用檔案（項目 4 為 29 → 23，項目 3 第一批 23 → 15、第二批 15 → 6）。其後的相容模組刪除見上方 v3.10240102，不要把 6 當成現況。
+- Autocomplete 已於 PR #178–#181 自製；滑桿泡泡已於 PR #197 完成。
+- 正式站為 Railway 自動部署；上線以正式站左上角版號為準（2026/10/23 當時核對為 `v3.10230759`，不是現在的上線版號）。Cloud Build 檔為 legacy。repo 版號以 `src/version.js` 為準。
+- 寫這段時：`.github/workflows/node.js.yml` 是 Node 24.22.1、lint、build、test，但 Actions 被手動停用。該路徑後來已移除。當時本機全套是 368 suites／4,283 tests（v3.10241447）；收尾稽核當時是 366／4,262（v3.10240343）。不要把這些當成現況，也不要再引用 4,268。
+- `TODO.md` 約 221 處「待實機」項目需要實機確認。正式站唯讀，絕不建立、修改、送出或列印真實資料；刪除檔案須先經 Jason 同意。
+
+> 以下完成清單、刻意保留項目與版本表保留各批次的歷史狀態；早期「保留 MUI」與「泡泡待做」已由上方現況摘要取代。列印驗收僅用 mock／隔離測試資料，不在正式站列印真實資料。
 
 ## 已完成
 
@@ -329,6 +381,8 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 
 ## 刻意不改（需另外決定）
 
+> 2026/10/23 更新：下表列印限制已對「項目 3」限定放寬；第一批 8 檔已完成遷移與逐份 before／after 比較，其餘範圍仍依原規則。
+
 | 項目 | 原因 |
 |---|---|
 | 會直接 `window.print()` 的報表表格（10/18 估約 15 頁，10/19 實測 22 個報表 index，例如店家區間累計表、費用分析表、損益表、日報表明細卡片、設計師抽成報表、商品庫存表等） | `src/initialize.scss` 約 70 條列印規則直接寫在 MUI class 上；要換就得改寫列印規則，與鐵則「列印範本不動」衝突 |
@@ -339,10 +393,10 @@ verify-logic 差異（純畫面）說明：移除 `TextField` import、新增 `F
 
 ## 需要使用者決定
 
-1. Services（服務項目設定）的篩選按鈕：舊版因 prop 名稱錯誤從未顯示，目前維持隱藏。要顯示嗎？
+1. ~~Services（服務項目設定）的篩選按鈕~~ **已拍板（Jason 2026/10/24）：不要顯示。** 舊版因 prop 名稱錯誤從未顯示，維持隱藏。
 2. ~~直接列印的報表是否改版~~ **已拍版（Jason 2026-10-19）**：所有報表樣式一致，以 compact 緊湊呈現。範圍只改 presentation／print CSS，不改內容欄位與數字計算。下一組優先做「報表 compact 專項」（先盤點共用層，再逐目錄）；本批只記錄決定，不做報表本體。（實測 28 檔含 22 個報表 index。）**四點新拍版補充（Jason 2026-10-19）**：22 張列印報表併入 compact 專項，只改樣式、列印預覽唯讀確認。
 3. ~~是否新增 `ui/combobox`~~ **已拍版（Jason 2026-10-19）**：不新造 combobox；Autocomplete 不動打字／選取，其他頁只改外層標籤。~~`ui/date-picker`~~ **已拍版**：月曆排 `ui/date-picker` 專項（先盤點 39–43 檔，保留民國年／格式／locale／存值，分批）。
-4. `ui/native-select` 外框標籤是否整批改上方標籤（約 21 處）。
+4. ~~`ui/native-select` 外框標籤是否整批改上方標籤~~ **已出貨（Jason 2026/10/24，v3.10241257）**：標籤在欄位上方（`src/ui/native-select.js`）。
 
 ## 發現但未修的既有問題（修了會動到邏輯）
 

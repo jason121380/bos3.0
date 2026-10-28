@@ -194,7 +194,7 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
                       asChild
                       variant="ghost"
                       size="icon"
-                      className={cn('h-8 w-8 text-text-tertiary', !data.isUsing && 'pointer-events-none opacity-40')}
+                      className={cn('text-text-tertiary', !data.isUsing && 'pointer-events-none opacity-40')}
                       aria-label="編輯會員卡"
                     >
                       <RouterLink

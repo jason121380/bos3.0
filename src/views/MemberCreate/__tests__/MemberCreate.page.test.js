@@ -48,7 +48,7 @@ describe('成為會員', () => {
   })
 
   it('登入後：姓名未填不可註冊；填寫後送出姓名、性別、生日、推薦碼', async () => {
-    localStorage.setItem('customer', { userCode: 'code-1' })
+    localStorage.setItem('customer', JSON.stringify({ userCode: 'code-1' }))
     const utils = setup()
     expect(currentLocation()).toBe('/customer/member/create?merchantid=m-9')
     const submit = screen.getByText('註冊')

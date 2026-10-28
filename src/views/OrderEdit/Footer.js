@@ -12,6 +12,7 @@ import useFetchMerchantPassword from 'hooks/useFetchMerchantPassword'
 import { handleTidyBill, checkServicesOrders, checkProductOrders, checkMembershipOrders } from 'helper/billVerify'
 import produce from 'immer'
 import giveBonus from 'helper/giveBonus'
+import billPaymentSummary from 'helper/billPaymentSummary'
 import { Button } from 'ui/button'
 import { SummaryDetails, EditSummaryCard, BillActions, StickySummaryBar } from 'views/OrderShared/BillSummary'
 import ReCheckoutPasswordDialog from 'views/OrderShared/ReCheckoutPasswordDialog'
@@ -368,7 +369,7 @@ export default function Footer({ enable }) {
   // 業績合計、現金應收：只顯示在金額彙總（彙總卡與底部固定列共用），不送後端（後端依品項明細自己算業績）。
   // 四頁預覽以打帳單（PannelPerformance）為準（Jason 2026/10/22）：
   // - 業績合計：會員卡用第三方卡券時照樣計入售價全額（原本排除，與打帳單、掛單詳細不一致）
-  // - 現金應收：寫法與打帳單 billPaymentSummary 不同（另排除「未選商品」的店販列），但未選商品的列價格一律是 0，結果相同，維持原式
+  // - 現金應收：與打帳單、明細、收據共用 billPaymentSummary（未選商品的店販列價格是 0，與舊式排除 productId 空白列的結果相同）
   // 上方「付款超過應付時歸零」與紅利給點的 effect 用的是各自的運算式，不受影響
   const performanceTotal = Math.round(
     serviceTotalPrice +
@@ -376,13 +377,7 @@ export default function Footer({ enable }) {
     couponUsageTotalPrice +
     merberShipCardTotalPrice
   )
-  const cashDue = serviceTotalPriceWithoutThirdPartyCoupon +
-    productTotalPriceWithoutThirdPartyCoupon +
-    couponSellPrice +
-    merberShipCardTotalPriceWithoutThirdPartyCoupon -
-    bill.walletPay -
-    bill.amountByOtherPay -
-    bill.bonusDecount
+  const { cashDue } = billPaymentSummary(bill)
 
   // 按鈕停用時說明原因（只用於顯示）：開關就是下方按鈕的 disabled 條件本身，見 orderRequirements.js
   const checkoutDisabledReason = getDisabledReason({

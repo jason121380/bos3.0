@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import React from 'react'
 import {
-  Tooltip, ResponsiveContainer, PieChart, Pie, Cell
+  Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts";
 import { performanceColor } from '../Colors';
 
@@ -74,6 +74,14 @@ const NewCusStatistics = ({ data, width }) => {
                       ))}
                     </Pie>
                     <Tooltip content={<CustomOrderGenderRatioTooltip />} />
+                    <Legend
+                      wrapperStyle={{ maxHeight: 200, overflowY: 'auto' }}
+                      formatter={(_value, entry) => {
+                        const item = entry && entry.payload
+                        if (!item || !item.designer || !item.designer.name) return '未設定'
+                        return item.designer.name
+                      }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>

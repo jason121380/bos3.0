@@ -16,7 +16,7 @@ const loginUser = {
   isAdmin: true,
 }
 
-// setupTests 的 localStorage 假物件會再 JSON.stringify 一次，這裡改成與瀏覽器相同的行為
+// 全域 mock 已與瀏覽器相同（setItem 存字串）。本檔用獨立 store，避免其他測試殘留。
 let store
 beforeEach(() => {
   store = {}

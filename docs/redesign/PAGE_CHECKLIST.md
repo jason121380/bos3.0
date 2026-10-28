@@ -2,10 +2,12 @@
 
 > 自動產生（`node scripts/redesign/page-checklist.js`），產生時間：2026-10-18 13:50　改版前基準：`c41b604`
 >
-> 網址欄的連結指向 `http://localhost:3000`（本機執行 `npm start` 後可直接點；後端接測試機）。要換成別的網址：`node scripts/redesign/page-checklist.js --url https://你的測試網址`。有 `:id` 的頁面要從列表頁點進去。
+> 網址欄的連結指向 `http://localhost:3000`（本機執行 `npm start` 後可直接點；未覆寫 API 設定時 localhost 預設接測試機，仍須核對 `src/lib/api-base.js` 與本機環境設定）。要換成別的網址：`node scripts/redesign/page-checklist.js --url https://你的測試網址`。有 `:id` 的頁面要從列表頁點進去。
 >
 > 狀態說明：🟢 已改版＝頁面的 MUI 元件已換成新元件；🟡 只換外觀＝只有色碼與圖示統一，版面是舊的；⚪ 沒改。
-> 「殘留 MUI」是這個頁面目錄裡還在用 MUI 的檔案數，不為 0 不代表有問題（日期選擇器、Autocomplete、列印表格等刻意保留）。
+> **歷史／已過時。** 「殘留 MUI」是產生清單時的檔案數，不代表現在還有 MUI 套件。2026/10/23 曾摘要 59 檔／38 頁面目錄，不要當成現況。版號、測試總數、CI、健康分只看 [`docs/CURRENT.md`](../CURRENT.md)（程式 `v3.10241717`，CI 為 `frontend-ci.yml`）。
+
+> 下方狀態與數量均為產生當時的歷史快照；實機寫入、送出及列印測試僅限 mock／隔離測試資料，正式站一律唯讀。
 
 ## 總覽
 

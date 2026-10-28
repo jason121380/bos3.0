@@ -1,9 +1,24 @@
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import React from 'react'
 
 import { NativeSelect, NativeSelectOption } from '../native-select'
+
+const installedPointerEvent = typeof window.PointerEvent !== 'function'
+if (installedPointerEvent) {
+  window.PointerEvent = class PointerEvent extends window.MouseEvent {
+    constructor(type, props = {}) {
+      super(type, props)
+      this.pointerId = props.pointerId == null ? 1 : props.pointerId
+      this.pointerType = props.pointerType || ''
+      this.isPrimary = props.isPrimary !== false
+    }
+  }
+}
+afterAll(() => {
+  if (installedPointerEvent) delete window.PointerEvent
+})
 import TextField, { InputBase } from '../text-field'
-import { TextField as StandardTextField } from '../standard-input-compat'
+
 import { Slider } from '../slider'
 import { ToggleGroup, ToggleGroupItem } from '../toggle-group'
 
@@ -16,6 +31,22 @@ import { ToggleGroup, ToggleGroupItem } from '../toggle-group'
 afterEach(cleanup)
 
 describe('NativeSelect', () => {
+  it('觸控 pointerup 第一次就回傳原始選項值', () => {
+    const onChange = jest.fn()
+    render(
+      <NativeSelect label="狀態" value="a" onChange={onChange} name="status">
+        <NativeSelectOption value="a">甲</NativeSelectOption>
+        <NativeSelectOption value="c">丙</NativeSelectOption>
+      </NativeSelect>
+    )
+    fireEvent.click(screen.getByLabelText('狀態'))
+    const option = within(screen.getByRole('listbox')).getByRole('option', { name: '丙' })
+    fireEvent.pointerDown(option, { pointerType: 'touch', pointerId: 1, clientX: 8, clientY: 8 })
+    fireEvent.pointerUp(option, { pointerType: 'touch', pointerId: 1, clientX: 8, clientY: 9 })
+    expect(onChange).toHaveBeenCalledTimes(1)
+    expect(onChange.mock.calls[0][0].target).toEqual({ value: 'c', name: 'status' })
+  })
+
   it('Fragment 內的選項也收得到，非元素子節點略過；選項文字取自巢狀節點', () => {
     const onChange = jest.fn()
     render(
@@ -33,8 +64,8 @@ describe('NativeSelect', () => {
         <NativeSelectOption value={3}>{() => '不是文字'}</NativeSelectOption>
       </NativeSelect>
     )
-    const options = screen.getAllByRole('option')
-    expect(options.map(o => o.textContent)).toEqual(['A店', 'B2', ''])
+    const options = document.querySelectorAll('option')
+    expect([...options].map(o => o.textContent)).toEqual(['A店', 'B2', ''])
     expect(screen.getByLabelText('店家')).toHaveValue('1')
     fireEvent.change(screen.getByLabelText('店家'), { target: { value: '0' } })
     expect(onChange.mock.calls[0][0].target).toEqual({ value: 1, name: 'store' })
@@ -131,29 +162,6 @@ describe('TextField／InputBase', () => {
     expect(input.className).toContain('x')
     fireEvent.click(input)
     expect(onClick).toHaveBeenCalledTimes(1)
-  })
-})
-
-describe('standard-input-compat（薪資轉帳單底線輸入框）', () => {
-  it('預設 medium；停用與錯誤輸出 MUI 同名 class', () => {
-    const { container } = render(<StandardTextField disabled error inputProps={{ className: 'yy' }} />)
-    const base = container.firstChild.firstChild
-    expect(base).not.toHaveClass('MuiInputBase-sizeSmall')
-    expect(base).toHaveClass('Mui-disabled', 'Mui-error')
-    const input = container.querySelector('input')
-    expect(input).toHaveClass('Mui-disabled', 'yy')
-    expect(input).toHaveAttribute('aria-invalid', 'true')
-  })
-
-  it('聚焦／離開時照常呼叫頁面的 onFocus／onBlur', () => {
-    const onFocus = jest.fn()
-    const onBlur = jest.fn()
-    render(<StandardTextField onFocus={onFocus} onBlur={onBlur} />)
-    const input = screen.getByRole('textbox')
-    act(() => input.focus())
-    act(() => input.blur())
-    expect(onFocus).toHaveBeenCalledTimes(1)
-    expect(onBlur).toHaveBeenCalledTimes(1)
   })
 })
 

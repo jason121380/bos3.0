@@ -1,5 +1,5 @@
-// 對話框內有 MUI Autocomplete，保留 MUI Dialog；名稱／網址已換 Field＋Input
-import { Dialog, DialogContent, DialogTitle, DialogActions } from 'ui/modal-compat'
+// 共用圖層支援窗內 Autocomplete；保留名稱／網址與權限選取行為。
+import { Dialog, DialogContent, DialogTitle, DialogHeader, DialogBody, DialogFooter } from 'ui/dialog'
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { CheckboxField } from 'ui/checkbox'
@@ -135,89 +135,96 @@ const OuterLinkModal = ({
   }
   
   return (
-    <Dialog
-      className="[&_.MuiDialog-paper]:overflow-y-visible [&_.MuiDialogContent-root]:overflow-y-visible [&_.MuiTypography-root]:text-[16px] [&_div.MuiDialogContent-root]:px-[24px] [&_div.MuiDialogContent-root]:py-[16px] [&_.MuiDialogActions-root]:flex [&_.MuiDialogActions-root]:justify-between [&_.MuiDialogActions-root]:px-[24px] [&_.MuiDialogActions-root]:pt-0 [&_.MuiDialogActions-root]:pb-[16px] [&_.MuiDialogActions-root]:flex-wrap [&_.MuiDialogActions-root]:gap-[10px] [&_.MuiDialogActions-spacing>:not(:first-child)]:ml-0 [&_.MuiDialogTitle-root]:pt-[8px] [&_.MuiDialogTitle-root]:pb-0"
-      open={open}
-      fullWidth
-    >
-      <DialogTitle>
-        {`${isCreate ? '新增' : '編輯'}外部連結`}
-        {isCus && (
-          <CheckboxField
-            className="ml-3"
-            label="置頂"
-            checked={handleGetValue('isTop')}
-            onChange={(e, v) => handleInputOnChange('isTop', v)}
-          />
-        )}
-      </DialogTitle>
-      <div className="h-px bg-border" />
-      <DialogContent className="flex flex-col gap-[10px]">
-        <Field label="名稱">
-          <Input
-            placeholder='請輸入名稱'
-            value={handleGetValue('name')}
-            onChange={e => handleInputOnChange('name', e.target.value)}
-          />
-        </Field>
-        <Field label="網址">
-          <Input
-            placeholder='請輸入網址 ex:https://www.mlgroup.io'
-            value={handleGetValue('url')}
-            onChange={e => handleInputOnChange('url', e.target.value)}
-          />
-        </Field>
-        {!isCus && (
-          <Field label="套用的角色權限">
-            <Autocomplete
-              multiple
-              fullWidth
-              autoHighlight
-              options={!authoritiesNameAndId.loading ? idx(authoritiesNameAndId, _ => _.data.getMerchantAuthorities) : []}
-              disableCloseOnSelect
-              disabled={authoritiesNameAndId.loading}
-              getOptionLabel={option => option.authorityName}
-              value={handleGetValue('userAuthIds')}
-              onChange={(e, v) => handleInputOnChange('userAuthIds', v)}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              renderOption={(props, option, { selected }) => (
-                <li {...props}>
-                  <Checkbox
-                    style={{ color: 'rgb(var(--text))', marginRight: 8 }}
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    checked={selected}
-                  />
-                  {option.authorityName}
-                </li>
-              )}
-              renderInput={params => (
-                <TextField {...params} variant="outlined" placeholder="選擇權限" />
-              )}
+    <Dialog open={open}>
+      {/* 保留舊預設 600px 寬；原 MuiDialog 後代掛點改對應正式三段，避免舊 class 失效。 */}
+      <DialogContent hideClose
+        onOpenAutoFocus={event => {
+          // 沿用舊 Modal：已有欄位焦點就保留，否則先聚焦面板，避免選人窗自動叫出手機鍵盤。
+          event.preventDefault()
+          if (!event.target.contains(document.activeElement)) event.target.focus()
+        }}
+        size="md" aria-describedby={undefined} className="sm:max-w-[600px] overflow-y-visible [&_[data-outer-title]]:text-[16px]">
+        <DialogHeader className="pt-2 pb-0">
+          <DialogTitle data-outer-title>
+            {`${isCreate ? '新增' : '編輯'}外部連結`}
+            {isCus && (
+              <CheckboxField
+                className="ml-3"
+                label="置頂"
+                checked={handleGetValue('isTop')}
+                onChange={(e, v) => handleInputOnChange('isTop', v)}
+              />
+            )}
+          </DialogTitle>
+        </DialogHeader>
+        <div className="h-px bg-border" />
+        <DialogBody className="flex flex-col gap-[10px] overflow-y-visible">
+          <Field label="名稱">
+            <Input
+              placeholder='請輸入名稱'
+              value={handleGetValue('name')}
+              onChange={e => handleInputOnChange('name', e.target.value)}
             />
           </Field>
-        )}
-      </DialogContent>
-      <DialogActions>
-        <div>
-          {isCreate ? '' :
+          <Field label="網址">
+            <Input
+              placeholder='請輸入網址 ex:https://www.mlgroup.io'
+              value={handleGetValue('url')}
+              onChange={e => handleInputOnChange('url', e.target.value)}
+            />
+          </Field>
+          {!isCus && (
+            <Field label="套用的角色權限">
+              <Autocomplete
+                multiple
+                fullWidth
+                autoHighlight
+                options={!authoritiesNameAndId.loading ? idx(authoritiesNameAndId, _ => _.data.getMerchantAuthorities) : []}
+                disableCloseOnSelect
+                disabled={authoritiesNameAndId.loading}
+                getOptionLabel={option => option.authorityName}
+                value={handleGetValue('userAuthIds')}
+                onChange={(e, v) => handleInputOnChange('userAuthIds', v)}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox
+                      style={{ color: 'rgb(var(--text))', marginRight: 8 }}
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      checked={selected}
+                    />
+                    {option.authorityName}
+                  </li>
+                )}
+                renderInput={params => (
+                  <TextField {...params} variant="outlined" placeholder="選擇權限" />
+                )}
+              />
+            </Field>
+          )}
+        </DialogBody>
+        <DialogFooter className="flex-wrap justify-between gap-[10px] border-t-0 pt-0">
+          <div>
+            {isCreate ? '' :
+              <Button
+                onClick={handleDeleteLink}
+                disabled={isClick}
+                variant="danger">刪除</Button>
+            }
+          </div>
+          <div className="flex gap-[10px] flex-wrap">
+            <Button disabled={isClick} variant="secondary" onClick={onModalClose}>取消</Button>
             <Button
-              onClick={handleDeleteLink}
               disabled={isClick}
-              variant="danger">刪除</Button>
-          }
-        </div>
-        <div className="flex gap-[10px] flex-wrap">
-          <Button disabled={isClick} variant="secondary" onClick={onModalClose}>取消</Button>
-          <Button
-            disabled={isClick}
-            variant="primary"
-            onClick={() => isCreate ? handleCreateLink() : handleUpdateLink()}
-            >
-            {isCreate ? '新增' : '儲存'}
-          </Button>
-        </div>
-      </DialogActions>
+              variant="primary"
+              onClick={() => isCreate ? handleCreateLink() : handleUpdateLink()}
+              >
+              {isCreate ? '新增' : '儲存'}
+            </Button>
+          </div>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   )
 }

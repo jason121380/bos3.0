@@ -553,11 +553,14 @@ describe('帳單列表：列印', () => {
   })
 
   it('收據抬頭：只開 QR code 但沒有圖、只開訊息時只印訊息；只開訊息但沒有內容時不印抬頭', async () => {
+    const before = networkRequests.length
     const { calls, settle } = setup({
       GET_QRCODE_DISPLAY_ON_INVOICE: { getQrcodeDisplayOnInvoice: { isDisplay: true, url: 'https://line.me/x', imageUrl: null } },
       GET_MESSAGE_DISPLAY_ON_INVOICE: { getMessageDisplayOnInvoice: { isDisplay: true, message: '週一公休' } },
     })
     await settle()
+    // 預設 logo 沒有網址（isDisplay false、imageUrl null），不該 fetch(null)
+    expect(networkRequests.slice(before)).not.toContain('null')
     // 抬頭訊息欄是唯讀（onChange 不動作）
     const textarea = document.querySelector('#printMain textarea')
     fireEvent.change(textarea, { target: { value: '改不了' } })

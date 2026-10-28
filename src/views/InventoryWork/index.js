@@ -1,6 +1,4 @@
-// Snackbar 保留相容層（開關與 3 秒自動關閉由它處理）；提示外觀改 ui/toast 的 ToastCard
-import { Snackbar } from 'ui/feedback-compat'
-import { ToastCard } from 'ui/toast'
+import { openSnackbar } from 'elements/snackbars'
 import { TextField } from 'ui/text-field'
 import Page from 'components/Page'
 import DateSelector from 'components/DateSelector'
@@ -14,6 +12,7 @@ import AdminPageHeader from 'components/AdminPageHeader'
 import { Search } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
+import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
@@ -21,7 +20,6 @@ import { Autocomplete } from 'ui/combobox'
 
 function InventoryWork() {
   const [draftId, setDraftId] = useState(null)
-  const [open, setOpen] = useState(false)
   const [first, setFirst] = useState(1)
   const [creatorId, setCreatorId] = useState(null)
   const [creatorKeyword, setCreatorKeyword] = useState('')
@@ -56,7 +54,7 @@ function InventoryWork() {
       setDraftId(data.draft?.id || null)
 
       if (data.draft !== null && first === 1) {
-        setOpen(true)
+        openSnackbar({ message: '尚有未完成的盤點草稿，請按右上角按鈕完成盤點。', variant: 'warning' })
         setFirst(2)
       }
     }
@@ -69,17 +67,6 @@ function InventoryWork() {
 
   return (
     <Page className="ui-root" title="盤點作業">
-      <Snackbar open={open}
-        style={{ top: '40vh' }}
-        autoHideDuration={3000}
-        onClose={() => setOpen(false)}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center'
-        }}
-      >
-        <ToastCard className="w-full sm:w-[400px]" variant="warning" title="尚有未完成的盤點草稿，請按右上角按鈕完成盤點。" />
-      </Snackbar>
       <AdminPageHeader
         title="盤點作業"
         showFilter={showFilter}
@@ -103,7 +90,7 @@ function InventoryWork() {
           <span className="text-label text-text-secondary">篩選條件：</span>
           <Autocomplete
             options={
-              !users.loading ? idx(users, _ => _.data.users.users) : []
+              !users.loading && users.data ? (idx(users, _ => _.data.users.users) || []) : []
             }
             disabled={users.loading}
             size="small"
@@ -133,6 +120,14 @@ function InventoryWork() {
               />
             )}
           />
+          {users.error ? (
+            <div role="alert" className="flex flex-wrap items-center gap-2 text-label text-danger">
+              <span>無法載入盤點人員</span>
+              <Button type="button" variant="ghost" size="sm" onClick={() => users.refetch()}>
+                重新查詢盤點人員
+              </Button>
+            </div>
+          ) : null}
           <Button
             variant="secondary"
             onClick={() => getInventorysLazy()}
@@ -142,12 +137,23 @@ function InventoryWork() {
           </Button>
         </Card>
       </div>
-      {(!inventorysData.loading && inventorysData.data) ?
-        <Results inventorys={inventorys} /> :
+      {inventorysData.error ? (
+        <EmptyState
+          title="無法載入盤點資料"
+          description="請再試一次。列表不會一直停在載入中。"
+          action={(
+            <Button type="button" variant="secondary" onClick={() => getInventorysLazy()}>
+              重新查詢
+            </Button>
+          )}
+        />
+      ) : (!inventorysData.loading && inventorysData.data) ? (
+        <Results inventorys={inventorys} />
+      ) : (
         <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中">
           <Skeleton className="h-[320px] w-full rounded-lg" />
         </div>
-      }
+      )}
     </Page>
   )
 }

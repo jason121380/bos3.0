@@ -24,7 +24,13 @@ const Textarea = React.forwardRef(({ className, invalid, ...props }, ref) => (
   <textarea
     ref={ref}
     aria-invalid={invalid || undefined}
-    className={cn('ui-root', inputClass, 'h-auto min-h-[80px] py-2', invalid && 'border-danger', className)}
+    className={cn(
+      'ui-root',
+      inputClass,
+      'h-auto min-h-[80px] py-2',
+      invalid && 'border-danger focus-visible:border-danger focus-visible:ring-danger/30',
+      className
+    )}
     {...props}
   />
 ))

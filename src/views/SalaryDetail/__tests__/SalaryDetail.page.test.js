@@ -94,9 +94,10 @@ describe('薪資明細表：加項總覽', () => {
   })
 
   // 標題的筆數與頁數用後端 totalCount（Jason 2026/10/22，與扣項總覽相同；修正前用本頁人數）。
+  // 加項、扣項是兩支獨立查詢，加項先畫出來時扣項總覽還沒掛上；要等兩支都回來再斷言。
   it('標題的筆數與頁數以 totalCount 計算', async () => {
-    setup()
-    await screen.findByText('加項總覽')
+    const { settle } = setup()
+    await settle()
     expect(within(card('加項總覽')).getByText('共 45 筆資料, 1/3 頁')).toBeInTheDocument()
     expect(within(card('扣項總覽')).getByText('共 45 筆資料, 1/3 頁')).toBeInTheDocument()
   })
@@ -210,11 +211,11 @@ describe('薪資明細表：月份', () => {
 
   // 員工沒有當月薪資資料（salary 為 null）時各欄以 0 顯示（Jason 2026/10/22；修正前整頁錯誤）。
   it('員工薪資資料為 null 時各欄以 0 顯示', async () => {
-    setup({
+    const { settle } = setup({
       inc: [{ id: '9', name: '新人', designerNo: 'N9', jobTitle: '助理', salary: null }, ...INC_USERS],
       dec: [{ id: '9', name: '新人', designerNo: 'N9', jobTitle: '助理', salary: null }, ...DEC_USERS],
     })
-    await screen.findByText('加項總覽')
+    await settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
     expect(rowIn('加項總覽', '新人').slice(3).every(v => v === '0')).toBe(true)
     expect(rowIn('扣項總覽', '新人').slice(3).every(v => v === '0')).toBe(true)

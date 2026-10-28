@@ -1,15 +1,21 @@
 import { maskCustomerForExport } from 'helper/exportCustomerMask'
-// Divider 只用於下方列印範本（#printMain / #printThermal），維持列印輸出不變
-import { Divider } from 'ui/display-compat'
+// 原生 hr 保留舊 class 與 inline style，讓複製到無 app CSS 的新視窗之 HTML 逐字相同
 import TableEditBar from 'components/TableEditBar'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchDeleteOrder from 'hooks/useFetchDeleteOrder'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState, Fragment } from 'react'
+import { useApolloClient } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
 import { useLocation } from 'react-router'
 import useFetchReCheckoutOrder from 'hooks/useFetchReCheckoutOrder'
+import {
+  confirmDraftStillPending,
+  evictCheckedOutDraft,
+  isUncertainCheckoutError,
+  rememberCheckedOutDraft,
+} from 'views/DraftOrderEdit/draftCheckoutGuard'
 import designerNameType from 'helper/designerNameType'
 import cloneDeep from 'lodash/cloneDeep'
 import DraftOrderTable from './DraftOrderTable'
@@ -60,6 +66,53 @@ function Results({
   const [orderIndex, setOrderIndex] = useState(0)
   const { fetchReCheckoutOrder } = useFetchReCheckoutOrder()
   const { deleteOrders } = useFetchDeleteOrder()
+  const client = useApolloClient()
+
+  const settleListCheckout = (draftOrder, result) => {
+    const closedId = result && result.data && result.data.reCheckoutOrder && result.data.reCheckoutOrder.id
+    const draftId = draftOrder.id
+    rememberCheckedOutDraft(draftId, closedId || '', '/management/orders')
+    evictCheckedOutDraft(client.cache, draftId)
+    if (closedId && closedId !== draftId) {
+      history.replace(`/order/${closedId}`)
+      return
+    }
+    history.push('/management/orders')
+  }
+
+  const failListCheckout = (draftOrder, err) => {
+    if (!isUncertainCheckoutError(err)) {
+      setPassword('')
+      openSnackbar({ message: err.message, variant: 'error' })
+      setIsClick(false)
+      return
+    }
+    confirmDraftStillPending(client, draftOrder.id, draftOrder.date).then(status => {
+      if (status === 'closed') {
+        rememberCheckedOutDraft(draftOrder.id, '', '/management/orders')
+        evictCheckedOutDraft(client.cache, draftOrder.id)
+        setPassword('')
+        setIsClick(false)
+        openSnackbar({
+          message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+          variant: 'warning',
+        })
+        history.push('/management/orders')
+        return
+      }
+      if (status === 'unknown') {
+        setPassword('')
+        openSnackbar({
+          message: '無法確認結帳是否成功。請先到帳單列表查看，不要重複結帳。',
+          variant: 'error',
+        })
+        return
+      }
+      setPassword('')
+      openSnackbar({ message: err.message, variant: 'error' })
+      setIsClick(false)
+    })
+  }
 
   useEffect(() => {
     if (allExtend) {
@@ -343,7 +396,7 @@ function Results({
       updateOrderId: Order.id,
       orderInput: orderForInput,
     })
-      .then(() => {
+      .then(result => {
         openSnackbar({
           message: '結帳成功',
           variant: 'success',
@@ -351,19 +404,11 @@ function Results({
         // setOpenDialog(false)
         setPassword('')
         // setCheckoutBtn(false)
-        history.push('/management/orders')
-
-        // history.push('/management/orders')
+        settleListCheckout(Order, result)
       })
       .catch(err => {
         // setOpenDialog(false)
-        setPassword('')
-        openSnackbar({
-          message: err.message,
-          variant: 'error',
-        })
-        setIsClick(false)
-        // toggle()
+        failListCheckout(Order, err)
       })
       .finally(() => {
         // useToggleRef.current()
@@ -453,7 +498,7 @@ function Results({
       orderInput: orderForInput,
       password: password,
     })
-      .then(() => {
+      .then(result => {
         openSnackbar({
           message: '結帳成功',
           variant: 'success',
@@ -461,28 +506,21 @@ function Results({
         // setOpenDialog(false)
         setPassword('')
         // setCheckoutBtn(false)
-        history.push('/management/orders')
-
-        // history.push('/management/orders')
+        settleListCheckout(Order, result)
       })
       .catch(err => {
         // setOpenDialog(false)
-        setPassword('')
-        openSnackbar({
-          message: err.message,
-          variant: 'error',
-        })
-        setIsClick(false)
-        // toggle()
+        failListCheckout(Order, err)
       })
       .finally(() => {
         // useToggleRef.current()
       })
   }
 
+  // Jason 2026/10/24：掛單收據不印點數餘額。增點／扣點／折抵仍印。已結帳收據（帳單列表）仍印點數餘額。
   const renderPrintDetail = isPrintMain => {
     if (printOrderDetail.length !== 0 && printOrderDetail[0].customer.name !== '不留客資') {
-      const { bonusDeposit, bonusUsed, bonusDecountForReport, customerLeftBonus } = printOrderDetail[0]
+      const { bonusDeposit, bonusUsed, bonusDecountForReport } = printOrderDetail[0]
       const bonus = bonusDeposit !== 0 || bonusUsed !== 0 || bonusDecountForReport !== 0
       if (bonusActive || bonus) {
         return (
@@ -491,7 +529,6 @@ function Results({
               <div>增點：{bonusDeposit}</div>
               <div>扣點：{bonusUsed}</div>
               <div>折抵：{Math.abs(bonusDecountForReport)}</div>
-              <div>點數餘額：{customerLeftBonus}</div>
             </> :
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -500,7 +537,6 @@ function Results({
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div>折抵：{Math.abs(bonusDecountForReport)}</div>
-                <div>點數餘額：{customerLeftBonus}</div>
               </div>
             </>
         )
@@ -717,7 +753,7 @@ function Results({
                 return undefined
               })}
           </div>
-          <Divider style={{ width: '100%' }} />
+          <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
           <div>合計：{orderDetailPaymentShouldPay}</div>
           <div>結帳：</div>
           <div style={{ display: 'flex', margin: '0 15px', justifyContent: 'space-between' }}>
@@ -784,7 +820,7 @@ function Results({
           <div>帳單編號：{printOrderDetail.length !== 0 && printOrderDetail[0].no}</div>
           <div>設計師:{printOrderDetail.length !== 0 && designerNameType(printOrderDetail[0].designer, nameDisplayOnInvoice)}</div>
           <div>顧客:{printOrderDetail.length !== 0 && printOrderDetail[0].customer.name}</div>
-          <Divider style={{ width: '100%' }} />
+          <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div>名稱</div>
             <div style={{ display: 'flex', width: 100, justifyContent: 'space-between' }}>
@@ -882,7 +918,7 @@ function Results({
               }
               return undefined
             })}
-          <Divider style={{ width: '100%' }} />
+          <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
           <div>合計：{orderDetailPaymentShouldPay}</div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div>

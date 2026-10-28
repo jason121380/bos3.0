@@ -5,7 +5,7 @@ import PannelPayment from '../PannelPayment'
 import PannelRemark from '../PannelRemark'
 import Remark from '../Remark'
 import useInvoiceDecorations from '../useInvoiceDecorations'
-import { renderPage } from '../../../__tests__/testkit.test'
+import { renderPage, networkRequests } from '../../../__tests__/testkit.test'
 
 // 為什麼重要：
 // - 帳單詳細／掛單詳細／重新開單的「其他付款方式」「備註及來源」卡片：已有付款資料或備註／來源的帳單要標成展開（open），
@@ -75,11 +75,20 @@ describe('備註與帳單來源欄位', () => {
   it('選來源寫入來源名稱；選「無」寫入 null', async () => {
     const { handleBillChange, settle } = renderRemark({ source: '網路' })
     await settle()
+    expect(screen.getByRole('combobox')).toHaveTextContent('網路')
     const select = sourceSelect()
     fireEvent.change(select, { target: { value: within(select).getByText('朋友介紹').value } })
     expect(handleBillChange).toHaveBeenLastCalledWith({ key: 'source', value: '朋友介紹' })
     fireEvent.change(select, { target: { value: within(select).getByText('無').value } })
     expect(handleBillChange).toHaveBeenLastCalledWith({ key: 'source', value: null })
+  })
+
+  it('沒有來源時關閉的按鈕顯示「無」，不是空白', async () => {
+    const { settle } = renderRemark({ source: null })
+    await settle()
+    const trigger = screen.getByRole('combobox')
+    expect(trigger).toHaveTextContent('無')
+    expect(trigger.className).not.toContain('text-transparent')
   })
 })
 
@@ -104,6 +113,13 @@ describe('收據 QR code', () => {
     const { latest, settle } = renderDecorations({ isDisplay: true, url: 'https://line.me/R/ti/p/@shop', imageUrl: null })
     await settle()
     await wait(() => expect(latest.qrcodeUrl).toMatch(/^data:image\/png;base64,/))
+  })
+
+  it('沒有 logo 網址時不 fetch（避免打到 /null）', async () => {
+    const before = networkRequests.length
+    const { settle } = renderDecorations({ isDisplay: false, url: null, imageUrl: null })
+    await settle()
+    expect(networkRequests.slice(before)).not.toContain('null')
   })
 
   it('開啟 QR code 但網址空白：不產生圖片、不拋錯', async () => {

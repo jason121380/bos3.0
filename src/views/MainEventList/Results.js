@@ -75,7 +75,7 @@ function Results({
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 text-text-tertiary"
+                              className="text-text-tertiary"
                               aria-label={isSelect ? '收合規則' : '展開規則'}
                               aria-expanded={isSelect}
                               onClick={() => setCollapse(id)}
@@ -95,7 +95,7 @@ function Results({
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-2">
                             {event.endDateActual ? (
-                              <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-tertiary" aria-label="檢視活動">
+                              <Button asChild variant="ghost" size="icon" className="text-text-tertiary" aria-label="檢視活動">
                                 <RouterLink to={`/main-event-edit/${id}`}>
                                   <VisibilityIcon fontSize="small" />
                                 </RouterLink>
@@ -105,7 +105,7 @@ function Results({
                                 <Button asChild size="sm" variant="secondary">
                                   <RouterLink to={`/event-rule-create/${id}`}>建立規則</RouterLink>
                                 </Button>
-                                <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-tertiary" aria-label="編輯活動">
+                                <Button asChild variant="ghost" size="icon" className="text-text-tertiary" aria-label="編輯活動">
                                   <RouterLink to={`/main-event-edit/${id}`}>
                                     <EditIconSlot fontSize="small" />
                                   </RouterLink>
@@ -167,7 +167,7 @@ function Results({
                                       <TableCell>{rule.isSMSNotifyForGroup ? '是' : '否'}</TableCell>
                                       <TableCell>
                                         <div className="flex items-center gap-2">
-                                          <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-tertiary" aria-label={rule.endDateActual ? '檢視規則' : '編輯規則'}>
+                                          <Button asChild variant="ghost" size="icon" className="text-text-tertiary" aria-label={rule.endDateActual ? '檢視規則' : '編輯規則'}>
                                             <RouterLink to={`/event-rule-edit/${rule.id}`}>
                                               {rule.endDateActual ? <VisibilityIcon fontSize="small" /> : <EditIconSlot fontSize="small" />}
                                             </RouterLink>

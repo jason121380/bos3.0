@@ -1,4 +1,4 @@
-// 多選 Autocomplete（含勾選圖示的選項）與數字欄位（onWheel）保留 MUI
+// 多選 Autocomplete（含勾選圖示的選項）與數字欄位（onWheel）使用正式 ui 元件
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { CheckboxField } from 'ui/checkbox'

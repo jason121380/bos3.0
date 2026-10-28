@@ -1,4 +1,4 @@
-import { Rating } from 'ui/misc-compat'
+import { Rating } from 'ui/rating'
 import { useState, useEffect } from 'react'
 import Page from 'components/Page'
 import Status from './Status'

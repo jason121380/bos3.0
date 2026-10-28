@@ -15,7 +15,7 @@ import { MobileDatePicker } from 'ui/date-picker'
 import cloneDeep from 'lodash/cloneDeep'
 import { actionRow, styles, designate, timeCostArray } from './choseEventConstants'
 
-// 預約時間的時段下拉與 standard 變體的 MobileDatePicker 並排、樣式依 .MuiSelect-select 撰寫，保留 MUI Select
+// 預約時間的時段下拉與 standard 變體的 MobileDatePicker 並排、使用 ui/form-control 原生 Select；舊 .MuiSelect-select 樣式不再命中
 // 預約彈窗（ChoseEvent）的編輯預約區塊：自 ChoseEvent.js 原樣搬出，state 與 handler 仍在 ChoseEvent，由 props 傳入；
 // 在 ChoseEvent 原位置以相同條件渲染（{條件 && <區塊 />}），掛載／卸載時機與原本的 <Fragment> 相同
 

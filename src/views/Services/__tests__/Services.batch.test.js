@@ -233,7 +233,7 @@ describe('服務項目設定：批次編輯互助點數', () => {
     await screen.findByText('互助點數設定')
     return utils
   }
-  const helperRows = () => rowsOf(sectionOf('互助點數設定'))
+  const helperRows = () => rowsOf(screen.getByText('互助點數設定').closest('[role="dialog"]').querySelector('.overflow-y-auto'))
 
   it('確認後才送出：勾選的服務 id 與互助設定（數字、去掉 deductionWay／isDesignate），成功後關閉並清除勾選', async () => {
     const { calls } = await open()

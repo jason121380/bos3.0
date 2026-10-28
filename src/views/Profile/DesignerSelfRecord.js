@@ -1,6 +1,6 @@
-import { Paper } from 'ui/display-compat'
-import { Table, TableBody, TableCell, TableHead, TableRow, TableContainer } from 'ui/table-compat'
-import { Card, CardContent, CardHeader } from 'ui/card-compat'
+import clsx from 'clsx'
+import { Table, TableBody, TableCell, TableHeader as TableHead, TableRow, TableHead as ReportTableHead } from 'ui/table'
+import { Card, CardContent, CardHeader } from 'ui/card'
 import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -9,6 +9,12 @@ import { Card as UiCard } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
 import { formatNumber } from 'ui/format'
+
+const reportCellClass = 'h-auto px-4 py-2 text-left align-middle whitespace-pre-line text-[14px] leading-5'
+const reportHeadClass = 'h-auto px-4 py-3 align-middle whitespace-pre text-[14px] leading-6 font-semibold text-black'
+
+// 明確保留舊表格內距與列印框線，避免依賴相容層 class。
+const reportTableClass = 'print:[&_td.categoryPrint2]:px-4 print:[&_td.categoryPrint2]:py-2 print:[&_th.categoryPrint]:px-4 print:[&_th.categoryPrint]:py-3 print:[&_td]:text-text text-[14px] leading-5 [&_tr]:border-0 [&_tr]:hover:bg-transparent [&_td]:border-0 [&_td]:[border-bottom:1px_solid_rgba(0,0,0,0.03)] [&_th]:border-0 [&_th]:[border-bottom:2px_solid_rgba(0,0,0,0.05)] print:[&_td]:!border-0 print:[&_td]:![border-bottom:1px_solid_rgba(0,0,0,0.03)] print:[&_th]:!border-0 print:[&_th]:![border-bottom:2px_solid_rgba(0,0,0,0.05)] print:[&_th]:bg-white'
 
 // 客單價／平均項次單價：沒有客人（分母為 0）時顯示 0，不顯示 NaN（Jason 2026/10/22）
 const averageOf = (total, count) => (count ? total / count : 0)
@@ -53,9 +59,10 @@ function OrderRecord({
           <EmptyState title="無資料" />
         </UiCard>
         : designerDailyReport.map(designer => (
-          <Card style={{ margin: '0 auto', minWidth: '500px', maxWidth: '800px' }}>
+          <Card className="overflow-hidden text-text" style={{ margin: '0 auto', minWidth: '500px', maxWidth: '800px' }}>
             <CardHeader
-              title={`${
+              className="!min-h-0 !items-center !gap-0 !px-4 !pb-2 !pt-4 [&>div]:flex-auto [&>div]:block text-center"
+            ><span className="block text-heading text-text">{`${
                 designer.user.designerNo !== null && designer.user.designerNo !== ''
                   ? designer.user.designerNo
                   : ''
@@ -67,27 +74,25 @@ function OrderRecord({
                 Number(designer.totalPageCount) !== 1
                   ? `- ${designer.currentPageOrder}/${designer.totalPageCount}`
                   : ``
-              }`}
-              className="text-center"
-            />
+              }`}</span></CardHeader>
             <div className="h-px bg-border" />
-            <CardContent>
+            <CardContent className="last:pb-4">
               <PerfectScrollbar>
                 <div>
-                  <Table size="small" aria-label="a dense table">
+                  <Table className={reportTableClass} aria-label="a dense table">
                     <TableHead>
                       <TableRow>
-                        <TableCell className="categoryPrint">單號</TableCell>
-                        <TableCell className="categoryPrintService2">類別</TableCell>
-                        <TableCell className="itemPrint">項目</TableCell>
-                        <TableCell className="categoryPrint">金額</TableCell>
-                        <TableCell className="categoryPrint">業績</TableCell>
+                        <ReportTableHead className={clsx(reportHeadClass, 'categoryPrint')}>單號</ReportTableHead>
+                        <ReportTableHead className={clsx(reportHeadClass, 'categoryPrintService2')}>類別</ReportTableHead>
+                        <ReportTableHead className={clsx(reportHeadClass, 'itemPrint')}>項目</ReportTableHead>
+                        <ReportTableHead className={clsx(reportHeadClass, 'categoryPrint')}>金額</ReportTableHead>
+                        <ReportTableHead className={clsx(reportHeadClass, 'categoryPrint')}>業績</ReportTableHead>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {Number(designer.currentPageOrder) !== 1 && (
                         <TableRow>
-                          <TableCell colSpan="5" style={{ textAlign: 'center' }}>
+                          <TableCell className={reportCellClass} colSpan="5" style={{ textAlign: 'center' }}>
                             承上張
                           </TableCell>
                         </TableRow>
@@ -95,7 +100,7 @@ function OrderRecord({
                       {designer.orderRecord.length > 0
                         ? designer.orderRecord.map((orderRecord, index) => (
                             <TableRow>
-                              <TableCell className="categoryPrint2">
+                              <TableCell className={clsx(reportCellClass, 'categoryPrint2')}>
                                 <a
                                   target="_blank"
                                   href={`/order/${orderRecord.orderId}`}
@@ -105,16 +110,16 @@ function OrderRecord({
                                   {orderRecord.designation ? `*` : ``}
                                 </a>
                               </TableCell>
-                              <TableCell className="categoryPrintService2">
+                              <TableCell className={clsx(reportCellClass, 'categoryPrintService2')}>
                                 {orderRecord.category === '項目消費'
                                   ? `${orderRecord.category[2]}${orderRecord.category[3]}`
                                   : orderRecord.category}
                               </TableCell>
-                              <TableCell className="itemPrint">{orderRecord.itemName}</TableCell>
-                              <TableCell className="categoryPrint2">
+                              <TableCell className={clsx(reportCellClass, 'itemPrint')}>{orderRecord.itemName}</TableCell>
+                              <TableCell className={clsx(reportCellClass, 'categoryPrint2')}>
                                 {formatNumber(displayFloat(orderRecord.fakePerformance))}
                               </TableCell>
-                              <TableCell className="categoryPrint2">
+                              <TableCell className={clsx(reportCellClass, 'categoryPrint2')}>
                                 {formatNumber(displayFloat(orderRecord.truthPerformance))}
                               </TableCell>
                             </TableRow>
@@ -123,19 +128,19 @@ function OrderRecord({
 
                       {designer.isLastPage ? (
                         <TableRow>
-                          <TableCell style={{ fontWeight: '500' }}>合計</TableCell>
-                          <TableCell className="categoryPrintService2"></TableCell>
-                          <TableCell></TableCell>
+                          <TableCell className={reportCellClass} style={{ fontWeight: '500' }}>合計</TableCell>
+                          <TableCell className={clsx(reportCellClass, 'categoryPrintService2')}></TableCell>
+                          <TableCell className={reportCellClass}></TableCell>
                           {priceDisplayOnReport ? (
-                            <TableCell>{formatNumber(displayFloat(designer.currentFakeSummary))}</TableCell>
+                            <TableCell className={reportCellClass}>{formatNumber(displayFloat(designer.currentFakeSummary))}</TableCell>
                           ) : (
-                            <TableCell />
+                            <TableCell className={reportCellClass} />
                           )}
-                          <TableCell>{formatNumber(displayFloat(designer.currentTruthSummary))}</TableCell>
+                          <TableCell className={reportCellClass}>{formatNumber(displayFloat(designer.currentTruthSummary))}</TableCell>
                         </TableRow>
                       ) : (
                         <TableRow>
-                          <TableCell colSpan="5" style={{ textAlign: 'center' }}>
+                          <TableCell className={reportCellClass} colSpan="5" style={{ textAlign: 'center' }}>
                             接續下張
                           </TableCell>
                         </TableRow>
@@ -143,23 +148,23 @@ function OrderRecord({
                     </TableBody>
                   </Table>
                   {designer.isLastPage && (
-                    <TableContainer component={Paper}>
-                      <Table size="small" aria-label="a dense table">
+                    <div className="ui-scroll-x w-full overflow-x-auto rounded-md bg-background text-text">
+                      <Table className={reportTableClass} aria-label="a dense table">
                         <TableHead>
                           <TableRow>
-                            <TableCell className="forPrint3"></TableCell>
-                            <TableCell>日合計</TableCell>
-                            <TableCell>累計</TableCell>
+                            <ReportTableHead className={clsx(reportHeadClass, 'forPrint3')}></ReportTableHead>
+                            <ReportTableHead className={reportHeadClass}>日合計</ReportTableHead>
+                            <ReportTableHead className={reportHeadClass}>累計</ReportTableHead>
                           </TableRow>
                         </TableHead>
                         <TableBody>
                           {priceDisplayOnReport && (
                             <TableRow>
-                              <TableCell className="forPrint4">金額(虛)</TableCell>
-                              <TableCell>
+                              <TableCell className={clsx(reportCellClass, 'forPrint4')}>金額(虛)</TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(designer.currentDay.performanceFakeTotal))}
                               </TableCell>
-                              <TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(designer.tillNow.performanceFakeTotal))}
                               </TableCell>
                             </TableRow>
@@ -169,11 +174,11 @@ function OrderRecord({
                               designer.tillNow.performanceTruthTotal !== 0) &&
                               isHiddenZero)) && (
                             <TableRow>
-                              <TableCell className="forPrint4">實業績</TableCell>
-                              <TableCell>
+                              <TableCell className={clsx(reportCellClass, 'forPrint4')}>實業績</TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(designer.currentDay.performanceTruthTotal))}
                               </TableCell>
-                              <TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(designer.tillNow.performanceTruthTotal))}
                               </TableCell>
                             </TableRow>
@@ -183,11 +188,11 @@ function OrderRecord({
                               designer.tillNow.performanceDesignateTruthTotal !== 0) &&
                               isHiddenZero)) && (
                             <TableRow>
-                              <TableCell className="forPrint4">指定實業績</TableCell>
-                              <TableCell>
+                              <TableCell className={clsx(reportCellClass, 'forPrint4')}>指定實業績</TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(designer.currentDay.performanceDesignateTruthTotal))}
                               </TableCell>
-                              <TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(designer.tillNow.performanceDesignateTruthTotal))}
                               </TableCell>
                             </TableRow>
@@ -197,13 +202,13 @@ function OrderRecord({
                               designer.tillNow.performanceNonDesignateTruthTotal !== 0) &&
                               isHiddenZero)) && (
                             <TableRow>
-                              <TableCell className="forPrint4">不指定實業績</TableCell>
-                              <TableCell>
+                              <TableCell className={clsx(reportCellClass, 'forPrint4')}>不指定實業績</TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(
                                   designer.currentDay.performanceNonDesignateTruthTotal
                                 ))}
                               </TableCell>
-                              <TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(designer.tillNow.performanceNonDesignateTruthTotal))}
                               </TableCell>
                             </TableRow>
@@ -213,58 +218,58 @@ function OrderRecord({
                               designer.tillNow.thirdPartHandlingFee !== 0) &&
                               isHiddenZero)) && (
                             <TableRow>
-                              <TableCell className="forPrint4">手續費</TableCell>
-                              <TableCell>
+                              <TableCell className={clsx(reportCellClass, 'forPrint4')}>手續費</TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(designer.currentDay.thirdPartHandlingFee))}
                               </TableCell>
-                              <TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(designer.tillNow.thirdPartHandlingFee))}
                               </TableCell>
                             </TableRow>
                           )}
                           <TableRow>
-                            <TableCell className="forPrint4">特殊抽成</TableCell>
-                            <TableCell>
+                            <TableCell className={clsx(reportCellClass, 'forPrint4')}>特殊抽成</TableCell>
+                            <TableCell className={reportCellClass}>
                               {formatNumber(displayFloat(designer.currentDay.performanceWithSpecialRake))}
                             </TableCell>
-                            <TableCell>
+                            <TableCell className={reportCellClass}>
                               {formatNumber(displayFloat(designer.tillNow.performanceWithSpecialRake))}
                             </TableCell>
                           </TableRow>
                           <TableRow>
-                            <TableCell className="forPrint4">店販金額</TableCell>
-                            <TableCell>
+                            <TableCell className={clsx(reportCellClass, 'forPrint4')}>店販金額</TableCell>
+                            <TableCell className={reportCellClass}>
                               {formatNumber(displayFloat(designer.currentDay.productFakeTotal))}
                             </TableCell>
-                            <TableCell>{formatNumber(displayFloat(designer.tillNow.productFakeTotal))}</TableCell>
+                            <TableCell className={reportCellClass}>{formatNumber(displayFloat(designer.tillNow.productFakeTotal))}</TableCell>
                           </TableRow>
 
                           <TableRow>
-                            <TableCell className="forPrint4">店販抽成</TableCell>
-                            <TableCell>{formatNumber(displayFloat(designer.currentDay.productRake))}</TableCell>
-                            <TableCell>{formatNumber(displayFloat(designer.tillNow.productRake))}</TableCell>
+                            <TableCell className={clsx(reportCellClass, 'forPrint4')}>店販抽成</TableCell>
+                            <TableCell className={reportCellClass}>{formatNumber(displayFloat(designer.currentDay.productRake))}</TableCell>
+                            <TableCell className={reportCellClass}>{formatNumber(displayFloat(designer.tillNow.productRake))}</TableCell>
                           </TableRow>
 
                           <TableRow>
-                            <TableCell className="forPrint4">互助使用(不含點)</TableCell>
-                            <TableCell>{`${formatNumber(displayFloat(
+                            <TableCell className={clsx(reportCellClass, 'forPrint4')}>互助使用(不含點)</TableCell>
+                            <TableCell className={reportCellClass}>{`${formatNumber(displayFloat(
                               designer.currentDay.helperPaidPrice
                             ))}`}</TableCell>
-                            <TableCell>{`${formatNumber(displayFloat(
+                            <TableCell className={reportCellClass}>{`${formatNumber(displayFloat(
                               designer.tillNow.helperPaidPrice
                             ))}`}</TableCell>
                           </TableRow>
                           {
                             <TableRow>
-                              <TableCell className="forPrint4">互助使用(點)</TableCell>
-                              <TableCell>{`${formatNumber(displayFloat(designer.currentDay.helperPaidPoint))}${
+                              <TableCell className={clsx(reportCellClass, 'forPrint4')}>互助使用(點)</TableCell>
+                              <TableCell className={reportCellClass}>{`${formatNumber(displayFloat(designer.currentDay.helperPaidPoint))}${
                                 isHelperPointPriceDisplay
                                   ? `/${formatNumber(Math.abs(
                                       displayFloat(designer.currentDay.helperPaidPriceFromPoint)
                                     ))}`
                                   : ''
                               }`}</TableCell>
-                              <TableCell>{`${formatNumber(displayFloat(designer.tillNow.helperPaidPoint))}${
+                              <TableCell className={reportCellClass}>{`${formatNumber(displayFloat(designer.tillNow.helperPaidPoint))}${
                                 isHelperPointPriceDisplay
                                   ? `/${formatNumber(Math.abs(
                                       displayFloat(designer.tillNow.helperPaidPriceFromPoint)
@@ -278,11 +283,11 @@ function OrderRecord({
                               designer.tillNow.helperRetrievePoint !== 0) &&
                               isHiddenZero)) && (
                             <TableRow>
-                              <TableCell className="forPrint4">互助獲得</TableCell>
-                              <TableCell>{`${formatNumber(displayFloat(
+                              <TableCell className={clsx(reportCellClass, 'forPrint4')}>互助獲得</TableCell>
+                              <TableCell className={reportCellClass}>{`${formatNumber(displayFloat(
                                 designer.currentDay.helperRetrievePoint
                               ))}`}</TableCell>
-                              <TableCell>{`${formatNumber(displayFloat(
+                              <TableCell className={reportCellClass}>{`${formatNumber(displayFloat(
                                 designer.tillNow.helperRetrievePoint
                               ))}`}</TableCell>
                             </TableRow>
@@ -292,9 +297,9 @@ function OrderRecord({
                               designer.tillNow.orderTotalCount !== 0) &&
                               isHiddenZero)) && (
                             <TableRow>
-                              <TableCell className="forPrint4">總客數</TableCell>
-                              <TableCell>{formatNumber(designer.currentDay.orderTotalCount)}</TableCell>
-                              <TableCell>{formatNumber(designer.tillNow.orderTotalCount)}</TableCell>
+                              <TableCell className={clsx(reportCellClass, 'forPrint4')}>總客數</TableCell>
+                              <TableCell className={reportCellClass}>{formatNumber(designer.currentDay.orderTotalCount)}</TableCell>
+                              <TableCell className={reportCellClass}>{formatNumber(designer.tillNow.orderTotalCount)}</TableCell>
                             </TableRow>
                           )}
                           {(!isHiddenZero ||
@@ -302,9 +307,9 @@ function OrderRecord({
                               designer.tillNow.designateOrderCount !== 0) &&
                               isHiddenZero)) && (
                             <TableRow>
-                              <TableCell className="forPrint4">指定客</TableCell>
-                              <TableCell>{formatNumber(designer.currentDay.designateOrderCount)}</TableCell>
-                              <TableCell>{formatNumber(designer.tillNow.designateOrderCount)}</TableCell>
+                              <TableCell className={clsx(reportCellClass, 'forPrint4')}>指定客</TableCell>
+                              <TableCell className={reportCellClass}>{formatNumber(designer.currentDay.designateOrderCount)}</TableCell>
+                              <TableCell className={reportCellClass}>{formatNumber(designer.tillNow.designateOrderCount)}</TableCell>
                             </TableRow>
                           )}
                           {(!isHiddenZero ||
@@ -312,9 +317,9 @@ function OrderRecord({
                               designer.tillNow.nonDesignateOrderCount !== 0) &&
                               isHiddenZero)) && (
                             <TableRow>
-                              <TableCell className="forPrint4">不指定客</TableCell>
-                              <TableCell>{formatNumber(designer.currentDay.nonDesignateOrderCount)}</TableCell>
-                              <TableCell>{formatNumber(designer.tillNow.nonDesignateOrderCount)}</TableCell>
+                              <TableCell className={clsx(reportCellClass, 'forPrint4')}>不指定客</TableCell>
+                              <TableCell className={reportCellClass}>{formatNumber(designer.currentDay.nonDesignateOrderCount)}</TableCell>
+                              <TableCell className={reportCellClass}>{formatNumber(designer.tillNow.nonDesignateOrderCount)}</TableCell>
                             </TableRow>
                           )}
                           {(!isHiddenZero ||
@@ -322,13 +327,13 @@ function OrderRecord({
                               designer.tillNow.orderAveragePrice !== 0) &&
                               isHiddenZero)) && (
                             <TableRow>
-                              <TableCell className="forPrint4">客單價</TableCell>
-                              <TableCell>
+                              <TableCell className={clsx(reportCellClass, 'forPrint4')}>客單價</TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(
                                   averageOf(designer.currentDay.performanceFakeTotal, designer.currentDay.orderTotalCount)
                                 ))}
                               </TableCell>
-                              <TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(
                                   averageOf(designer.tillNow.performanceFakeTotal, designer.tillNow.orderTotalCount)
                                 ))}
@@ -340,9 +345,9 @@ function OrderRecord({
                               designer.tillNow.orderTypeCount !== 0) &&
                               isHiddenZero)) && (
                             <TableRow>
-                              <TableCell className="forPrint4">客項次(服務)</TableCell>
-                              <TableCell>{formatNumber(designer.currentDay.orderTypeCount)}</TableCell>
-                              <TableCell>{formatNumber(designer.tillNow.orderTypeCount)}</TableCell>
+                              <TableCell className={clsx(reportCellClass, 'forPrint4')}>客項次(服務)</TableCell>
+                              <TableCell className={reportCellClass}>{formatNumber(designer.currentDay.orderTypeCount)}</TableCell>
+                              <TableCell className={reportCellClass}>{formatNumber(designer.tillNow.orderTypeCount)}</TableCell>
                             </TableRow>
                           )}
                           {(!isHiddenZero ||
@@ -350,13 +355,13 @@ function OrderRecord({
                               designer.tillNow.orderTypeAveragePrice !== 0) &&
                               isHiddenZero)) && (
                             <TableRow>
-                              <TableCell className="forPrint4">平均項次單價</TableCell>
-                              <TableCell>
+                              <TableCell className={clsx(reportCellClass, 'forPrint4')}>平均項次單價</TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(
                                   averageOf(designer.currentDay.performanceFakeTotal, designer.currentDay.orderTypeCount)
                                 ))}
                               </TableCell>
-                              <TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(
                                   averageOf(designer.tillNow.performanceFakeTotal, designer.tillNow.orderTypeCount)
                                 ))}
@@ -368,16 +373,16 @@ function OrderRecord({
                               designer.tillNow.walletDeposit !== 0) &&
                               isHiddenZero)) && (
                             <TableRow>
-                              <TableCell className="forPrint4">入金儲值</TableCell>
-                              <TableCell>
+                              <TableCell className={clsx(reportCellClass, 'forPrint4')}>入金儲值</TableCell>
+                              <TableCell className={reportCellClass}>
                                 {formatNumber(displayFloat(designer.currentDay.walletDeposit))}
                               </TableCell>
-                              <TableCell>{formatNumber(displayFloat(designer.tillNow.walletDeposit))}</TableCell>
+                              <TableCell className={reportCellClass}>{formatNumber(displayFloat(designer.tillNow.walletDeposit))}</TableCell>
                             </TableRow>
                           )}
                         </TableBody>
                       </Table>
-                    </TableContainer>
+                    </div>
                   )}
                 </div>
               </PerfectScrollbar>

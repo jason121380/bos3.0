@@ -1,4 +1,4 @@
-// 外框已換 ui/dialog；內部 Select 已換 NativeSelect（原生 select 無彈層，不受 Radix／MUI 影響）
+// 外框已換 ui/dialog；內部下拉是自家清單（不是系統選單）
 import PropTypes from 'prop-types'
 import { Button } from 'ui/button'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'

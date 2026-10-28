@@ -1,5 +1,4 @@
-// 卡片保留相容層：列印樣式以 .IncomeStatementReportTableContainer .MuiCard-root／.MuiCardContent-root 排版表格（initialize.scss）
-import { Card, CardContent, CardHeader } from 'ui/card-compat'
+import { Card, CardContent, CardHeader } from 'ui/card'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'ui/table'
@@ -102,7 +101,7 @@ function Results({ className, incomeStatement }) {
       className={clsx('IncomeStatementReportTableContainer flex w-full flex-wrap justify-between', className)}
     >
       <div className="w-full min-[900px]:w-7/12">
-        <Card>
+        <Card className="overflow-hidden text-text print:rounded-none print:shadow-none print:[&_table]:!border print:[&_table]:!border-solid print:[&_table]:!border-black print:[&_th]:!border-y print:[&_th]:!border-x-0 print:[&_th]:!border-solid print:[&_th]:!border-black print:[&_td]:!border-b print:[&_td]:!border-solid print:[&_td]:!border-b-[rgb(135,135,135)]">
           {/* 報表匯出：畫到頁首列印鈕左側（STYLE §14），匯出資料不變 */}
           <HeaderActionsPortal>
             <CSVLink
@@ -116,13 +115,10 @@ function Results({ className, incomeStatement }) {
               </Button>
             </CSVLink>
           </HeaderActionsPortal>
-          <CardHeader
-            className="IncomeStatementReportHeader"
-            title="損益表"
-          />
+          <CardHeader className="[&>div:first-child]:flex-auto !min-h-0 !items-center !gap-0 !px-4 !pb-2 !pt-4 IncomeStatementReportHeader"><span className="block text-heading text-text">損益表</span></CardHeader>
           {/* 原生 hr：列印規則以 hr 選擇器隱藏分隔線 */}
           <hr className="m-0 shrink-0 border-0 border-b border-solid border-border" />
-          <CardContent className="p-0">
+          <CardContent className="p-0 last:pb-4 print:!p-0">
             <PerfectScrollbar>
               <div>
                 <Table dense>

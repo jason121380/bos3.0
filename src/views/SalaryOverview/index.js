@@ -1,4 +1,4 @@
-// 狀態下拉的 onChange 依賴 event.target.value，保留 MUI Select
+// 狀態下拉的 onChange 依賴 event.target.value，使用 ui/form-control Select
 import { FormControl, Select, InputLabel, MenuItem } from 'ui/form-control'
 import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
@@ -19,6 +19,7 @@ import useFetchGetSalaryUserList from 'hooks/useFetchGetSalaryUserList'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 
 import useQueryString from 'hooks/useQueryString'
 import DateSelector from 'components/DateSelector'
@@ -208,7 +209,9 @@ export default function SalaryOverview() {
           margin={false}
         />
       </AdminPageHeader>
-      {idx(salaryUserList, _ => _.data.getSalaryUserList) ?
+      {salaryUserList.error ? (
+        <QueryFailed onRetry={() => salaryUserList.refetch()} />
+      ) : idx(salaryUserList, _ => _.data.getSalaryUserList) ?
         idx(
           salaryUserList,
           _ =>

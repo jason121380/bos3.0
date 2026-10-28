@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardTitle } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
 import React from 'react'
 import {
-  Tooltip, ResponsiveContainer, PieChart, Pie, Cell
+  Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts";
 import { gendercolor } from '../Colors';
 
@@ -67,6 +67,7 @@ const ReturnedRatio = ({ data, width }) => {
                       ))}
                     </Pie>
                     <Tooltip content={<CustomOrderGenderRatioTooltip />} />
+                    <Legend wrapperStyle={{ maxHeight: 200, overflowY: 'auto' }} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>

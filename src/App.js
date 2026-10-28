@@ -14,6 +14,7 @@ import { renderRoutes } from 'react-router-config'
 import { Router } from 'react-router-dom'
 import * as Sentry from '@sentry/react'
 
+import ApiEnvBanner from './components/ApiEnvBanner'
 import GoogleAnalytics from './components/GoogleAnalytics'
 import ScrollReset from './components/ScrollReset'
 import routes from './routes'
@@ -42,6 +43,7 @@ function App() {
     <ApolloProvider client={client()}>
       <TeachingModeState>
         <Router history={history}>
+          <ApiEnvBanner />
           <ScrollReset />
           <GoogleAnalytics />
           {renderRoutes(routes)}

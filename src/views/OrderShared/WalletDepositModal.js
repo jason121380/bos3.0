@@ -1,6 +1,5 @@
-import { Modal } from 'ui/modal-compat'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter } from 'ui/dialog'
 import { Button } from 'ui/button'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from 'ui/card'
 import { Field, Input } from 'ui/input'
 import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import PropTypes from 'prop-types'
@@ -118,20 +117,17 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
     }
   }
   return (
-    <Modal open={openWalletDeposit}>
-      <Card className="absolute left-1/2 top-1/2 max-h-[calc(100%-32px)] w-[500px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl bg-background shadow-float outline-none">
-        <CardHeader
-          className="items-center pb-4"
-          action={
-            <Button variant="secondary" size="sm" onClick={onClose}>
-              返回
-            </Button>
-          }
-        >
-          <CardTitle>異動入金</CardTitle>
-        </CardHeader>
+    <Dialog open={openWalletDeposit}>
+      {/* 保留原異動入金表單 500px 寬度。 */}
+      <DialogContent size="md" className="max-w-[500px]" hideClose aria-describedby={undefined}>
+        <DialogHeader className="flex-row items-center justify-between pr-6">
+          <DialogTitle>異動入金</DialogTitle>
+          <Button variant="secondary" size="sm" onClick={onClose}>
+            返回
+          </Button>
+        </DialogHeader>
         <div className="h-px bg-border" />
-        <CardContent>
+        <DialogBody>
           {/* 標籤統一放欄位上方（與打帳單主表一致）。必填 *：依據 handleSubWalletDeposit 的檢查
               （日期／金額／設計師／顧客／付款方式為空會中止）；備註與手續費負擔方不必填 */}
           <Field label="日期" required className="mb-6">
@@ -240,8 +236,8 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
               }}
             />
           </Field>
-        </CardContent>
-        <CardFooter>
+        </DialogBody>
+        <DialogFooter>
           <Button
             variant="primary"
             onClick={handleSubWalletDeposit}
@@ -249,9 +245,9 @@ function WalletDepositModal({ openWalletDeposit, onClose, response, identity }) 
           >
             確認{statusText[moneyStatus]}
           </Button>
-        </CardFooter>
-      </Card>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 

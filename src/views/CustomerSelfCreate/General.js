@@ -1,7 +1,3 @@
-// 提示：自動關閉（autoHideDuration）與點外面關閉（clickaway）的計時行為仍由相容層 Snackbar 負責（ui/toast 是命令式 API，改用要動 state／effect）；
-// 訊息卡改 ui/toast 的 ToastCard（與全站提示同外觀）
-import { Snackbar } from 'ui/feedback-compat'
-import { ToastCard } from 'ui/toast'
 import React, { Fragment } from 'react'
 import { MobileDatePicker } from 'ui/date-picker'
 // import ReCAPTCHA from "react-google-recaptcha-enterprise"
@@ -12,8 +8,8 @@ import { Field, Input } from 'ui/input'
 import { RadioField } from 'ui/radio'
 
 const General = ({
-  data, handleSetInputValue, isClick, closeSnackBar,
-  openSnack, handleSubmit, /* reCaptchaRef */
+  data, handleSetInputValue, isClick,
+  handleSubmit, /* reCaptchaRef */
 }) => {
   return (
     <Fragment>
@@ -124,14 +120,6 @@ const General = ({
           onClick={handleSubmit}
         >{isClick ? <LoaderCircle className="animate-spin" strokeWidth={1.75} /> : '提交'}</Button>
       </div>
-      <Snackbar
-        onClose={closeSnackBar}
-        open={openSnack.open}
-        autoHideDuration={5000}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <ToastCard className="ui-root sm:w-auto sm:min-w-[288px] sm:max-w-[400px]" variant={openSnack.severity} title={openSnack.message} />
-      </Snackbar>
     </Fragment>
   )
 }

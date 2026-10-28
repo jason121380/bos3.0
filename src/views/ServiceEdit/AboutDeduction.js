@@ -1,4 +1,4 @@
-// 扣項欄位的值可能為空字串或數字（扣項基準點），保留 MUI Select；同列的數字欄位也保留 MUI TextField 以維持標籤樣式一致
+// 扣項欄位的值可能為空字串或數字（扣項基準點），使用 ui/form-control Select；同列的數字欄位也使用 ui/text-field TextField 以維持標籤樣式一致
 import { Checkbox, FormControlLabel } from 'ui/checkbox'
 import { FormControl, InputLabel, MenuItem, Select } from 'ui/form-control'
 import { TextField } from 'ui/text-field'

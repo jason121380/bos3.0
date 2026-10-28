@@ -18,6 +18,7 @@ import { Search } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 
 import BoughtResults from './BoughtResults'
 import UsagedResults from './UsagedResults'
@@ -34,7 +35,7 @@ export default function ManagementCoupons() {
     ticketIds: []
   })
   const [showFilter, setShowFilter] = useState(false)
-  // 匯出是否遮罩顧客姓名與手機（與帳單列表相同：只有設定查詢成功且為 false 才不遮罩）
+  // 匯出是否遮罩顧客姓名與手機。前端 CSV 一律遮罩（helper/exportCustomerMask）。
   const customerDataMarkedData = useFetchCustomerDataMarked()
   const [isCustomerDataMarked, setIsCustomerDataMarked] = useState(true)
   useEffect(() => {
@@ -161,7 +162,9 @@ export default function ManagementCoupons() {
           </Card>
         </div>
         <div className="flex flex-col gap-6">
-          {!ticketSellOverviewData.loading && ticketSellOverviewData.data ?
+          {ticketSellOverviewData.error ? (
+            <QueryFailed onRetry={handleSearch} />
+          ) : !ticketSellOverviewData.loading && ticketSellOverviewData.data ?
             <BoughtResults
               isCustomerDataMarked={isCustomerDataMarked}
               results={ticketSellOverviewData.data.ticketSellOverview}
@@ -184,7 +187,9 @@ export default function ManagementCoupons() {
             /> : <div className="flex flex-col gap-3" aria-busy="true" aria-label="載入中"><Skeleton className="h-[320px] w-full rounded-lg" /></div>
           }
           {
-            !usedTicketRecordsData.loading && usedTicketRecordsData.data ? (
+            usedTicketRecordsData.error ? (
+              <QueryFailed onRetry={handleSearch} />
+            ) : !usedTicketRecordsData.loading && usedTicketRecordsData.data ? (
               idx(usedTicketRecordsData,
                 _ => (
                   <UsagedResults

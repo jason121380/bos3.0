@@ -88,7 +88,7 @@ export function EditSummaryCard({ details, performanceTotal, cashDue, actions, c
 }
 
 // 底部固定列：長帳單捲動時，業績合計與現金應收隨時看得到。
-// 左側讓出側欄（lg 以上依 layouts/Dashboard 提供的 --sidebar-w：展開 264px、收合 0）；手機讓出底部導覽列（56px＋iPhone 安全區——
+// 左側讓出側欄（lg 以上依 layouts/Dashboard 提供的 --sidebar-w：展開 264px、收合 80px 圖示欄）；手機讓出底部導覽列（56px＋iPhone 安全區——
 // PWA 全螢幕時導覽列會加高，只讓 56px 會被蓋住）；列印時不顯示。手機版（< 640px）由左側展開鈕往上展開完整明細（純畫面開合）。
 // detailsId：展開區的 id（aria-controls 指向它），各頁不同
 // aboveTabBar：該頁手機是否顯示底部導覽列。只有打帳單（導覽列的分頁之一）有；帳單詳細／掛單詳細／重新開單的路由不顯示導覽列
@@ -114,7 +114,7 @@ export function StickySummaryBar({ detailsId, details, performanceTotal, cashDue
           aria-expanded={summaryOpen}
           aria-controls={detailsId}
           onClick={() => setSummaryOpen(!summaryOpen)}
-          className="mr-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-text-secondary hover:bg-surface-hover sm:hidden"
+          className="mr-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-text-secondary hover:bg-surface-hover sm:hidden"
         >
           <ChevronUp className={summaryOpen ? 'h-5 w-5 rotate-180 transition-transform' : 'h-5 w-5 transition-transform'} strokeWidth={1.75} />
         </button>

@@ -1,7 +1,12 @@
 // 後台（DashboardLayout）路由表：自 routes.js 的萬用路由（route: '*'）原樣搬出（2026/10/21）。
 // 陣列順序即 renderRoutes 的比對順序，最後一筆為 404 導向，新增路由請放在它之前。
-import React, { lazy } from 'react'
+import React from 'react'
 import { Redirect } from 'react-router-dom'
+import { lazyWithRetry as lazy } from 'lib/lazy-with-retry'
+
+// 舊路徑拼字 deatil 仍留著，書籤與外部連結導向正確的 detail（2026/10/25）
+const redirectAccountingDetail = ({ match }) => <Redirect to={`/accounting/detail/${match.params.id}`} />
+const redirectGeneralAccountingDetail = ({ match }) => <Redirect to={`/general/accounting/detail/${match.params.id}`} />
 
 export default [
   {
@@ -110,14 +115,24 @@ export default [
     component: lazy(() => import('views/GeneralAccountingRecordCreate')),
   },
   {
-    path: '/general/accounting/deatil/:id',
+    path: '/general/accounting/detail/:id',
     exact: true,
     component: lazy(() => import('views/GeneralAccountingRecordDetail')),
   },
   {
-    path: '/accounting/deatil/:id',
+    path: '/general/accounting/deatil/:id',
+    exact: true,
+    component: redirectGeneralAccountingDetail,
+  },
+  {
+    path: '/accounting/detail/:id',
     exact: true,
     component: lazy(() => import('views/AccountingRecordDetail')),
+  },
+  {
+    path: '/accounting/deatil/:id',
+    exact: true,
+    component: redirectAccountingDetail,
   },
   {
     path: '/accounting/records',
@@ -428,6 +443,11 @@ export default [
     path: '/authority',
     exact: true,
     component: lazy(() => import('views/Authority')),
+  },
+  {
+    path: '/engineering',
+    exact: true,
+    component: lazy(() => import('views/EngineeringMode')),
   },
   {
     path: '/role/create',

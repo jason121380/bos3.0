@@ -1,6 +1,7 @@
 # 階段 2 驗證報告
-
-> **現行基準（2026/10/22，v3.10222359）**：`CI=true npm run test:nowatch` 為 **364 檔／4268 測試全數通過**（全站覆蓋率 statements 91.2%／branches 88.5%），`TZ=America/Los_Angeles` 再跑一次結果相同；`npm run lint:build` 0 warning；`npm run build`（Vite）成功。GitHub Actions 目前不會執行，以本機結果為準。以下為 2026/10/19 階段 2 當時的紀錄，數字不再更新。
+> **歷史／已過時。** 版號、測試總數、CI、健康分、後端債只看 [`docs/CURRENT.md`](../CURRENT.md)。健康分程式是 `v3.10241717`。不要把下面的 4,268 或「CI 已停用」當成現在。全套最後一次完整數字仍是 v3.10241447 的 368／4,283，而且那不是更晚 PR 的新總數。
+>
+> **作者回報基準（2026/10/22，v3.10222359，歷史）**：`npm run test:nowatch` 為 **364 檔／4,268 測試全數通過**（全站覆蓋率 statements 91.2%／branches 88.5%），`TZ=America/Los_Angeles` 再跑一次結果相同；`npm run lint`（實際 script `lint:build`）0 warning；`npm run build`（Vite）成功。該日 GitHub Actions Node.js CI 是手動停用。2026/10/23 曾核對正式站為 `v3.10230759`。以下是歷史驗證記錄，未逐項重跑。
 
 > 範圍：分支 `claude/upbeat-carson-pdc7rf`（commit `dc82823`）對改版前基準 `c41b604`。
 > 未納入：第二輪第 4 批（表單頁）與第 6 批（其他 63 頁），它們的成果還在代理的工作區，沒有合併進分支。

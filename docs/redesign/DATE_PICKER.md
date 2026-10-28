@@ -1,13 +1,23 @@
 # 月曆 date-picker 專項（盤點＋設計）
 
-> **最新（2026/10/20，v3.0-1020-1053）**：依 Jason 決策①，`src/ui/date-picker.js` 已改為自家實作（`ui/calendar`、`ui/date-field`），不再使用 `@mui/x-date-pickers`；對外介面不變，行為規則見 `date-picker.js` 檔頭與 MEMORY #150。下方為 10/19 的盤點與設計歷史紀錄。
+> **下文 10/19 的檔數是歷史／已過時。** 版號、測試總數、CI、健康分只看 [`docs/CURRENT.md`](../CURRENT.md)（程式 `v3.10241717`）。正式設計以根目錄 `STYLE.md` 為準。
+> **2026/10/23**：MUI 套件已移除，日期選擇器為自家實作並使用主題色；picker 已使用正式 ui/dialog 與 ui/popover；舊相容模組已於 2026/10/23 經 Jason 核准退役。下方 10/19–10/20 的盤點數字與「仍使用 MUI」文字是歷史快照，不代表目前 package 狀態。
 
 > 專項第 1 批（2026/10/19，分支 `claude/ui-datepicker-spec-box`，v3.0-1019-0908 暫定）：**只有文件，沒有換任何元件、沒有改任何程式**。
-> 專項第 2 批（試行，2026/10/19，分支 `claude/ui-datepicker-pilot-box`，v3.0-1019-0958 暫定）：已建立 `src/ui/date-picker.js` facade，並換 2 檔（`MemberCreate/index.js`、`Profile/General/GeneralSettings.js`）。**目前已換 facade 的檔數：2／37**（下方盤點數字仍是第 1 批當時口徑，其餘 35 檔仍直接用 `@mui/x-date-pickers`）。
+> 專項第 2 批（試行，2026/10/19，分支 `claude/ui-datepicker-pilot-box`，v3.0-1019-0958 暫定）：已建立 `src/ui/date-picker.js` facade，並換 2 檔（`MemberCreate/index.js`、`Profile/General/GeneralSettings.js`）。**該批當時已換 facade 的檔數：2／37**（下方盤點數字仍是第 1 批當時口徑；當時其餘 35 檔仍直接用 `@mui/x-date-pickers`。MUI 套件後來已移除，不要把 2／37 當成現況）。
 > 依據：Jason 2026/10/19 拍版「月曆排入 `ui/date-picker` 專項，先盤點、分批進行」（見 `TODO.md` P3 第 3 點）。
 > 盤點口徑：`rg` 實查 `src/`，套件 `@mui/x-date-pickers` **6.19.4**（`package.json`）。
 
 > **時區（2026/10/21，v3.10210742）**：日期選擇器選出的日期時間一律是**台灣時間**。`src/lib/business-timezone.js` 在裝置不在 UTC+8 時替換全域 `Date`，`ui/calendar`／`ui/date-field` 與 date-fns 因此自動以台灣時間組出時間點，`date-picker.js` 不需處理時區；新 picker 照常用 `new Date(y, m, d, h, mm)` 與 date-fns 即可（MEMORY #169）。
+
+## 正式浮層實作（2026/10/23 最後一批）
+
+- **手機**：`ui/dialog` 的 Dialog／DialogContent（hideClose、min-w-[320px]），保留 `.ui-dialog-centered`、手機仍置中；覆寫預設 bottom sheet 定位／滑動動畫並隱藏拖曳提示。標題由原 title 提供 aria-label，aria-labelledby／aria-describedby 明確不設，避免不存在的關聯。只在 open 時掛載 Root，關閉同步卸載內容，既有關閉測試不必等待 exit animation。
+- **桌機**：非 modal `ui/popover`；PopoverAnchor virtualRef 使用 rootRef，PopoverContent 本身帶 paperRef、role="dialog"、aria-label，bottom-start＋sideOffset=4 維持原 mt-1 距離。保留 document mousedown 外點 effect：點面板／root 不關閉、其他地方 dismiss；阻止 Radix 額外 pointer／focus outside 關閉以維持原契約。Esc preventDefault 再 dismiss，巢狀父 Dialog 不會一起關閉。
+- **焦點及圖層**：兩者均沿用正式 Content 的 useLayerRef／layer-stack，依開啟順序高於父正式／相容 Dialog，不自行建立焦點鎖或 document Esc。日視圖自行 autofocus，禁止浮層重新聚焦第一個按鈕；手機月份／時間視圖沿用 Dialog 預設聚焦以確保焦點進入窗內；開啟轉換時記住原焦點（含受控 open），關閉還原。桌機外點已移到其他欄位時不搶焦點。
+- **原公開介面與值契約不變**：選取立即 onChange；取消還原開啟時的值；確認接受 published.current；Esc／背景只 dismiss 並保留目前值；closeOnSelect、視圖順序、限制／驗證、分段輸入及自訂 field 原樣。onOpenChange(false) 僅呼叫 dismiss，openProp 有值時不自行改內部 openState。`.ui-date-picker` 外框、內容結構與 action 文案保留。
+
+回歸測試見 `src/ui/__test__/date-picker{,-more,-overlays}.test.js` 及 `dialog-layers.test.js`；涵蓋開啟／選取／取消／確認、Esc／外點、欄位內不關、焦點、受控 open 與巢狀 Dialog。離線 Chrome：dialog-layers e2e 13/13（desktop／mobile／nested-date 等；`dialog-layers-run.js` 手機案例的焦點選擇器由 `.MuiDialog-paper` 改為 `[role="dialog"]`，僅改選擇器），前後截圖見 `/workspace/bos3-print-compare/final-datepicker/pairs/`：月曆版面與位置相同，差異僅背景遮罩較淺（正式 Dialog bg-black/40）。實機仍留待 Jason 使用隔離假資料驗收。
 
 ## 一、盤點數字（實查）
 

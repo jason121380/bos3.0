@@ -12,19 +12,58 @@ const ICON_COLOR = { success: 'text-success', info: 'text-text-secondary', warni
 let listeners = []
 let items = []
 let seq = 0
+const timers = new Map()
+const holds = new Map()
 const emit = () => listeners.forEach(l => l(items))
 
+function clearTimer(id) {
+  const handle = timers.get(id)
+  if (handle) clearTimeout(handle)
+  timers.delete(id)
+}
+
+function scheduleDismiss(id, ms) {
+  clearTimer(id)
+  if (!ms) return
+  timers.set(id, setTimeout(() => dismiss(id), ms))
+}
+
 function dismiss(id) {
-  items = items.filter(t => t.id !== id)
+  clearTimer(id)
+  holds.delete(id)
+  const next = items.filter(t => t.id !== id)
+  if (next.length === items.length) return
+  items = next
   emit()
 }
 
 function show(variant, title, description) {
   const id = ++seq
-  items = [...items, { id, variant, title, description }]
+  const duration = DURATION[variant]
+  items = [...items, { id, variant, title, description, duration }]
   emit()
-  if (DURATION[variant]) setTimeout(() => dismiss(id), DURATION[variant])
+  scheduleDismiss(id, duration)
   return id
+}
+
+// 滑鼠移入或聚焦時暫停；移出且不再聚焦後以一半時間重新計時（與 elements/snackbars 的 openSnackbar 相同）
+function holdToast(id) {
+  const item = items.find(t => t.id === id)
+  if (!item || !item.duration) return
+  holds.set(id, (holds.get(id) || 0) + 1)
+  clearTimer(id)
+}
+
+function releaseToast(id) {
+  const item = items.find(t => t.id === id)
+  if (!item || !item.duration) return
+  const current = holds.get(id) || 0
+  if (current <= 1) {
+    holds.delete(id)
+    scheduleDismiss(id, item.duration / 2)
+    return
+  }
+  holds.set(id, current - 1)
 }
 
 const toast = {
@@ -90,7 +129,17 @@ function Toaster({ children }) {
     <div className="ui-root pointer-events-none fixed bottom-0 right-0 z-[1500] flex w-full max-w-[400px] flex-col gap-2 p-6 max-lg:pb-[calc(72px+env(safe-area-inset-bottom))] max-sm:px-4 print:hidden">
       {children}
       {list.map(({ id, variant, title, description }) => (
-        <ToastCard key={id} variant={variant} title={title} description={description} onClose={() => dismiss(id)} />
+        <ToastCard
+          key={id}
+          variant={variant}
+          title={title}
+          description={description}
+          onClose={() => dismiss(id)}
+          onMouseEnter={() => holdToast(id)}
+          onMouseLeave={() => releaseToast(id)}
+          onFocus={() => holdToast(id)}
+          onBlur={() => releaseToast(id)}
+        />
       ))}
     </div>
   )

@@ -1,4 +1,4 @@
-// 設計師多選（Autocomplete）保留 MUI；排序切換鈕改 ui/toggle-group（handler (event, value) 原樣、`state !== null` 守衛不變）
+// 設計師多選（Autocomplete）使用 ui/combobox；排序切換鈕改 ui/toggle-group（handler (event, value) 原樣、`state !== null` 守衛不變）
 import { Checkbox } from 'ui/checkbox'
 import { TextField } from 'ui/text-field'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'

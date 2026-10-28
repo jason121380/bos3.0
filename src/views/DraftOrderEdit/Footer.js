@@ -1,8 +1,7 @@
 // 掛單詳細的金額彙總卡、動作按鈕與列印範本。資料與送出邏輯在 useDraftPrint（列印）與 useDraftCheckout（儲存／結帳、金額），
 // 2026/10/21 自本檔原樣搬出；本檔只留畫面。
-// Divider 只用於下方列印範本（#printMain / #printThermal），維持列印輸出不變；
+// 原生 hr 保留舊 class 與 inline style，讓複製到無 app CSS 的新視窗之 HTML 逐字相同；
 // 重新結帳密碼視窗在 OrderShared/ReCheckoutPasswordDialog（與帳單詳細共用）
-import { Divider } from 'ui/display-compat'
 import billContext from 'context/keyInContext'
 import { format } from 'date-fns'
 import React, { Fragment } from 'react'
@@ -29,9 +28,9 @@ export default function Footer() {
     openDialog, reCheckoutPwd, setReCheckoutPwd,
     handleReCheckoutOrder, usehandleSaveDraftOrder, handleOpenReCheckout, handleCloseDialog,
     serviceTotalPrice, merchantSellTotalPrice, couponSellPrice, couponUsageTotalPrice, membershipTotalPrice,
-    performanceTotal, cashDue, disabledReason,
+    performanceTotal, cashDue, disabledReason, checkoutLocked,
   } = useDraftCheckout({ passwordData })
-  const { bill, order, bonusActive, customerBonus } = React.useContext(billContext)
+  const { bill, order, bonusActive } = React.useContext(billContext)
   // 消費明細／付款與折抵：彙總卡與手機底部展開共用同一份畫面（排版在 OrderShared/BillSummary，四頁共用）
   const details = (
     <SummaryDetails
@@ -78,7 +77,7 @@ export default function Footer() {
                 variant="secondary"
                 size="lg"
                 onClick={usehandleSaveDraftOrder}
-                disabled={open || vaild || isClick}
+                disabled={open || vaild || isClick || checkoutLocked}
                 data-testid="savedraft"
               >
                 儲存
@@ -91,7 +90,7 @@ export default function Footer() {
                 size="lg"
                 className="px-6 disabled:bg-surface-active disabled:text-text-secondary disabled:opacity-100"
                 onClick={disableRecheckoutOrders ? handleOpenReCheckout : handleReCheckoutOrder}
-                disabled={open || vaild || isRecheckoutOrders}
+                disabled={open || vaild || isRecheckoutOrders || checkoutLocked}
                 data-testid="checkout"
               >
                 結帳
@@ -101,7 +100,7 @@ export default function Footer() {
         </BillActions>
       }
     >
-        {/* 以下列印範本（#printMain / #printThermal）原封不動 */}
+        {/* 列印範本（#printMain / #printThermal）。Jason 2026/10/24：掛單收據不印點數餘額；增點／扣點／折抵仍印。已結帳收據不受影響。 */}
         <div style={{ display: 'none' }} id="printMain">
           {
             (!detailInfo.logo.isDisplay || !detailInfo.logo.imageUrl) &&
@@ -231,7 +230,7 @@ export default function Footer() {
                   )
                 })}
             </div>
-            <Divider style={{ width: '100%' }} />
+            <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
             <div>
               合計：{printShouldPay}
             </div>
@@ -247,7 +246,6 @@ export default function Footer() {
                   <div>增點：{bill.bonusDeposit}</div>
                   <div>扣點：{bill.bonusUsed}</div>
                   <div>折抵：{bill.bonusDecount}</div>
-                  <div>點數餘額：{customerBonus}</div>
                 </>
               )}
               <div>卡券金額：{couponSellPrice}</div>
@@ -321,7 +319,7 @@ export default function Footer() {
               </div>
             )}
 
-            <Divider style={{ width: '100%' }} />
+            <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>名稱</div>
               <div style={{ display: 'flex', width: 100, justifyContent: 'space-between' }}>
@@ -401,7 +399,7 @@ export default function Footer() {
                   </div>
                 )
               })}
-            <Divider style={{ width: '100%' }} />
+            <hr className="MuiDivider-root MuiDivider-fullWidth" style={{ width: '100%' }} />
             <div>
               合計：{printShouldPay}
             </div>
@@ -420,7 +418,6 @@ export default function Footer() {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <div>折抵：{bill.bonusDecount}</div>
-                  <div>點數餘額：{customerBonus}</div>
                 </div>
               </>
             )}

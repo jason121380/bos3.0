@@ -1,4 +1,4 @@
-// 標題輸入框保留 MUI FormControl/OutlinedInput：MyFormHelperText 依賴 useFormControl 的 focused 狀態顯示提示
+// 標題輸入框使用 ui/form-control 與 ui/text-field：MyFormHelperText 依賴 useFormControl 的 focused 狀態顯示提示
 import { OutlinedInput } from 'ui/text-field'
 import { FormHelperText, FormControl, useFormControl } from 'ui/form-control'
 import { ArrowDown, ArrowUp, ChevronsDown, Pencil, Trash2, UserPlus, X } from 'lucide-react'
@@ -374,7 +374,7 @@ export default function ScheduleCard({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-text-secondary"
+                className="text-text-secondary"
                 aria-label="編輯班表名稱"
                 disabled={disableButton}
                 onClick={() => handleClickTitle(cardIndex)}
@@ -384,7 +384,7 @@ export default function ScheduleCard({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-text-secondary hover:text-danger"
+                className="text-text-secondary hover:text-danger"
                 aria-label="刪除班表"
                 disabled={disableButton}
                 onClick={() => handleClickOpen(cardIndex)}
@@ -426,7 +426,6 @@ export default function ScheduleCard({
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="h-8 w-8"
                                   aria-label="上移"
                                   disabled={disableButton}
                                   onClick={() => handlePersonGoUp(cardIndex, rowIndex, eachRow)}
@@ -436,7 +435,6 @@ export default function ScheduleCard({
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="h-8 w-8"
                                   aria-label="下移"
                                   disabled={disableButton}
                                   onClick={() => handlePersonGoDown(cardIndex, rowIndex, eachRow)}
@@ -446,7 +444,6 @@ export default function ScheduleCard({
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="h-8 w-8"
                                   aria-label="移到最後"
                                   disabled={disableButton}
                                   onClick={() => handlePersonGoBottom(cardIndex, rowIndex, eachRow)}
@@ -470,7 +467,7 @@ export default function ScheduleCard({
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="ml-1 h-8 w-8 hover:text-danger"
+                              className="ml-1 hover:text-danger"
                               aria-label="移除人員"
                               disabled={disableButton}
                               onClick={() => handleDeleteDesigner(cardIndex, rowIndex)}

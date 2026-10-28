@@ -2,7 +2,9 @@ import { LoaderCircle, Search } from 'lucide-react'
 import PropTypes from 'prop-types'
 import React, { useState, useMemo, useRef } from 'react'
 import MerchantList from './MerchantList'
+import { Button } from 'ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogBody } from 'ui/dialog'
+import { EmptyState } from 'ui/empty-state'
 import { Input } from 'ui/input'
 
 function MerchantBar({ open, onClose, userMerchants }) {
@@ -74,12 +76,24 @@ function MerchantBar({ open, onClose, userMerchants }) {
           </div>
         </div>
         <DialogBody className="px-2 pb-4 pt-0">
-          {!userMerchants.loading && filteredMerchants ? (
+          {filteredMerchants ? (
             <MerchantList merchants={filteredMerchants} searchQuery={searchQuery} />
-          ) : (
-            <div className="flex justify-center py-10">
+          ) : userMerchants.loading ? (
+            <div className="flex justify-center py-10" role="status" aria-label="載入中">
               <LoaderCircle className="h-6 w-6 animate-spin text-text-tertiary" strokeWidth={1.75} />
             </div>
+          ) : userMerchants.error ? (
+            <EmptyState
+              title="無法載入店家清單"
+              description="請再試一次。"
+              action={typeof userMerchants.refetch === 'function' ? (
+                <Button type="button" variant="secondary" onClick={() => userMerchants.refetch()}>
+                  重新查詢
+                </Button>
+              ) : null}
+            />
+          ) : (
+            <EmptyState title="沒有可顯示的店家" description="店家資料是空的或格式不正確。" />
           )}
         </DialogBody>
       </DialogContent>

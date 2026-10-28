@@ -62,7 +62,7 @@ const setup = (fixtures = {}, options = {}) =>
 beforeEach(() => loginAs())
 afterEach(cleanup)
 
-const field = label => screen.getAllByLabelText(label).find(el => ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName))
+const field = label => screen.getAllByLabelText(label).find(el => ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName) || el.hasAttribute('data-ui-select'))
 const listOptions = () => screen.queryAllByRole('option').filter(o => o.tagName !== 'OPTION')
 const options = label => {
   fireEvent.click(field(label))

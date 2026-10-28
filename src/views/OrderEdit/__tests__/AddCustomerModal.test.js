@@ -70,7 +70,7 @@ function Harness({ initialCustomer }) {
 
 const renderModal = (initialCustomer, overrides) =>
   renderPage(<Harness initialCustomer={initialCustomer} />, { fixtures: fixtures(overrides) })
-const modal = () => screen.getByText(/^(新增客戶|編輯客戶資料)$/).closest('.MuiModal-root')
+const modal = () => screen.getByText(/^(新增客戶|編輯客戶資料)$/).closest('[role="dialog"]')
 const field = name => modal().querySelector(`input[name="${name}"]`)
 const bill = () => JSON.parse(screen.getByTestId('bill').textContent)
 // 下拉選單以瀏覽器的方式改值（欄位處理在 setState updater 內才讀 event.target，理由同 testkit 的 typeLikeBrowser）
@@ -99,8 +99,8 @@ describe('新增顧客', () => {
     typeLikeBrowser(field('year'), '85')
     typeLikeBrowser(field('month'), '7')
     typeLikeBrowser(field('day'), '15')
-    // 性別（原生下拉；選項值是選項序號：未知、男、女）
-    const gender = modal().querySelector('#orderEditAddCustomer-gender')
+    // 性別（自家下拉；選項值是選項序號：未知、男、女。改值打在同層的 select 上）
+    const gender = modal().querySelector('select[name="gender"]')
     selectLikeBrowser(gender, within(gender).getByText('女').value)
     fireEvent.click(add)
     await wait(() => expect(callsOf(page.calls, 'FETCH_ADD_CUSTOMER')).toHaveLength(1))

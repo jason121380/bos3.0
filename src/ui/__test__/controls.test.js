@@ -2,14 +2,13 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import React from 'react'
 
 import { Button } from '../button'
-import CompatButton from '../button-compat'
+
 import { Checkbox, CheckboxField, FormControlLabel } from '../checkbox'
 import { Switch } from '../switch'
 import { Accordion, AccordionDetails, AccordionSummary } from '../accordion'
 
 // 保護什麼：可操作的基本控制項（按鈕、勾選框、開關、可展開區塊）。
 // - 圖示按鈕必須有可讀名稱（title／aria-label），否則滑鼠停留與報讀器都不知道用途。
-// - 舊頁面把 MUI 的 variant×color 原樣傳進來，對應錯會讓「刪除」變成一般按鈕。
 // - inputRef／ref 要拿得到原生 input（react-hook-form 以 inputRef={register} 註冊欄位，拿不到就收不到值）。
 // - 停用狀態不得觸發 onChange／展開；鍵盤 Enter／空白鍵要等同點擊。
 
@@ -57,6 +56,14 @@ describe('Button：圖示按鈕的名稱', () => {
     expect(screen.getByRole('button')).not.toHaveAttribute('title')
   })
 
+  it('size=icon 被壓成 28px 時仍保留手機 40px 命中區', () => {
+    render(<Button size="icon" className="h-7 w-7" aria-label="清除" />)
+    const button = screen.getByRole('button')
+    expect(button.className).toContain('h-7')
+    expect(button.className).toContain('before:h-10')
+    expect(button.className).toContain('before:w-10')
+  })
+
   it('一般尺寸不自動加 title；type 可改為 submit', () => {
     render(
       <Button aria-label="儲存" type="submit">
@@ -65,36 +72,6 @@ describe('Button：圖示按鈕的名稱', () => {
     )
     expect(screen.getByRole('button')).not.toHaveAttribute('title')
     expect(screen.getByRole('button')).toHaveAttribute('type', 'submit')
-  })
-})
-
-describe('button-compat：MUI variant×color 對應', () => {
-  it('contained＋secondary／inherit 為次要按鈕；未知尺寸退回 medium', () => {
-    const { rerender } = render(
-      <CompatButton variant="contained" color="secondary" size="huge">
-        送出
-      </CompatButton>
-    )
-    expect(screen.getByRole('button').className).toContain('bg-surface-hover')
-    expect(screen.getByRole('button').className).toContain('min-h-9')
-    rerender(
-      <CompatButton variant="contained" color="inherit">
-        送出
-      </CompatButton>
-    )
-    expect(screen.getByRole('button').className).toContain('bg-surface-hover')
-  })
-
-  it('text／outlined＋error 以紅字標示危險操作；fullWidth 撐滿', () => {
-    const { rerender } = render(<CompatButton color="error">刪除</CompatButton>)
-    expect(screen.getByRole('button').className).toContain('text-danger')
-    rerender(
-      <CompatButton variant="outlined" color="error" fullWidth>
-        刪除
-      </CompatButton>
-    )
-    expect(screen.getByRole('button').className).toContain('text-danger')
-    expect(screen.getByRole('button').className).toContain('w-full')
   })
 })
 
@@ -144,6 +121,10 @@ describe('Switch：開關', () => {
     const label = input.closest('label')
     expect(label.className).toContain('cursor-not-allowed')
     expect(label.className).toContain('flex-row-reverse')
+    expect(label.className).toContain('max-sm:before:-inset-y-2')
+    const { unmount } = render(<Switch aria-label="通知" />)
+    expect(screen.getByRole('switch', { name: '通知' }).closest('label').className).toContain('before:h-10')
+    unmount()
     // 原生 disabled 由瀏覽器擋點擊（jsdom 的 fireEvent 不模擬這點，故不在此點擊）
   })
 })

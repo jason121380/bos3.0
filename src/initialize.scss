@@ -61,35 +61,12 @@ div.versionUpdateTime {
   font-size: 15px;
 }
 
-td.MuiTableCell-sizeSmall,
-th.MuiTableCell-sizeSmall {
-  padding: 2px 5px;
-  white-space: pre;
-}
-
 @media (max-width: 576px) {
 
   .teachingMode span,
   div.versionUpdateTime {
     display: none;
   }
-}
-
-th.MuiTableCell-root.MuiTableCell-head {
-  padding: 12px 16px;
-  white-space: pre;
-  font-weight: 600;
-  background-color: transparent;
-  /* iPadOS Secondary background for headers */
-  color: #000000;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.05);
-  font-size: 14px;
-}
-
-td.MuiTableCell-root.MuiTableCell-body {
-  padding: 8px 16px;
-  white-space: pre;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 /* tr.MuiTableRow-root:nth-of-type(even) {*/
@@ -109,33 +86,15 @@ td.MuiTableCell-root.MuiTableCell-body {
     padding: 0;
   }
 
-  div.MuiContainer-root {
-    padding: 0;
-  }
-
-  th.MuiTableCell-root.MuiTableCell-head {
-    background-color: #ffffff;
-    color: #000000 !important;
-  }
-
   div.forPrint {
     display: grid;
     grid-template-columns: 190px 190px 190px 190px;
-    padding-top: 20px;
-
-    .MuiGrid-item {
-      padding: 0 !important;
-    }
+    padding-top: 20px
   }
 
   div.forPrintHelper {
     display: grid;
     grid-template-columns: 250px 250px 250px;
-  }
-
-  div.MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-md-6.MuiGrid-grid-lg-4 {
-    padding: 10px;
-    line-height: 2em;
   }
 
   th.forPrint3,
@@ -191,11 +150,6 @@ td.MuiTableCell-root.MuiTableCell-body {
     margin: 7mm;
   }
 
-  div.printGrid,
-  div.MuiToolbar-regular {
-    display: none;
-  }
-
   .merchantNamePrint {
     display: flex !important;
     font-weight: bold;
@@ -241,10 +195,6 @@ td.MuiTableCell-root.MuiTableCell-body {
     line-height: 1.3em !important;
   }
 
-  td.MuiTableCell-root.MuiTableCell-body {
-    white-space: pre-line;
-  }
-
   .DesignerPerforamnceAnalyzeReportPrint {
     display: block;
     margin: 0;
@@ -257,25 +207,7 @@ td.MuiTableCell-root.MuiTableCell-body {
       page-break-before: auto;
       page-break-inside: avoid;
       page-break-after: auto;
-      margin-bottom: 30px;
-
-      .MuiPaper-root {
-        border: 1px solid black;
-
-        &:first-child {
-          border-bottom: none;
-        }
-      }
-    }
-
-    .MuiCardHeader-root {
-      border: 1px solid black;
-      border-bottom: none;
-    }
-
-    .MuiTableContainer-root {
-      box-shadow: none;
-      border-radius: 0px;
+      margin-bottom: 30px
     }
 
     table {
@@ -292,12 +224,6 @@ td.MuiTableCell-root.MuiTableCell-body {
     .DesignerPerforamnceAnalyzeReportTableContainer {
       padding: 0;
     }
-  }
-
-  .MuiTableCell-root.MuiTableCell-body.lineHeight.MuiTableCell-sizeSmall,
-  .MuiCardHeader-root.lineHeight {
-    line-height: 1.2em !important;
-    border-bottom: 2px solid;
   }
 
   .DesignersSalaryDetailReport {
@@ -396,47 +322,7 @@ td.MuiTableCell-root.MuiTableCell-body {
     }
   }
 
-  .TransferDetailpPrint .MuiTypography-subtitle1 {
-    line-height: unset;
-    margin-bottom: 10px;
-
-    &:first-child {
-      margin-top: 10px;
-    }
-  }
-
-  .TransferDetailpPrint .MuiTypography-subtitle1 .MuiInput-input {
-    margin-top: -2px;
-    padding-bottom: 2px;
-  }
-
-  .TransferDetailDateInput .MuiTypography-subtitle1 .MuiInput-input {
-    width: 20px;
-    text-align: center;
-  }
-
-  .TransferDetailDateInput .MuiTypography-subtitle1 .MuiTextField-root {
-    &:first-child {
-      .MuiInput-input {
-        width: 30px;
-      }
-    }
-  }
-
   .MerchantBusinessIntervalReportTopTable {
-    .MuiTableContainer-root {
-      box-shadow: none;
-      border-radius: 0px;
-
-      table {
-        border: 1px solid black;
-
-        thead tr th,
-        tbody tr td {
-          border-bottom: 1px solid black;
-        }
-      }
-    }
   }
 
   .CostAnalysisReportCardHeader,
@@ -461,10 +347,6 @@ td.MuiTableCell-root.MuiTableCell-body {
         /* border-collapse: collapse !important;*/
         border: 1px solid black;
         border-top: none;
-
-        .MuiTableCell-root {
-          border-bottom: none;
-        }
 
         thead tr th:first-child,
         tbody tr td:first-child {
@@ -575,33 +457,6 @@ td.MuiTableCell-root.MuiTableCell-body {
       hr {
         display: none;
       }
-
-      .MuiCard-root {
-        box-shadow: none;
-        border-radius: 0px;
-        border: 1px solid black;
-
-        .MuiTableContainer-root {
-          border-radius: 0px;
-          box-shadow: none;
-
-          table {
-            border: none;
-            border-bottom: 1px solid black;
-
-            tbody {
-              tr {
-                border: none;
-                border-top: 1px solid black;
-
-                td {
-                  border: none;
-                }
-              }
-            }
-          }
-        }
-      }
     }
 
     .MergeResultCard {
@@ -609,27 +464,6 @@ td.MuiTableCell-root.MuiTableCell-body {
 
       hr {
         display: none;
-      }
-
-      .MuiCard-root {
-        box-shadow: none;
-        border-radius: 0px;
-        border: 1px solid black;
-
-        .MuiTableContainer-root {
-          border-radius: 0px;
-          box-shadow: none;
-
-          table {
-            border: none;
-            border-bottom: 1px solid black;
-
-            thead tr th,
-            tbody tr td {
-              border-bottom: 1px solid black;
-            }
-          }
-        }
       }
     }
   }
@@ -664,51 +498,6 @@ td.MuiTableCell-root.MuiTableCell-body {
       hr {
         display: none;
       }
-
-      .MuiCardContent-root {
-        padding-bottom: 0;
-      }
-
-      .MuiCard-root {
-        box-shadow: none;
-        border-radius: 0px;
-
-        .MuiCardHeader-root {
-          border: none;
-        }
-
-        table {
-          border: 1px solid black;
-          margin: 0;
-
-          thead {
-            tr {
-              th {
-                border: 1px solid black;
-                border-right: none;
-                border-left: none;
-              }
-            }
-          }
-
-          tbody {
-            tr {
-              td {
-                border: 1px solid rgb(135, 135, 135);
-
-                &:first-child {
-                  width: 220px;
-                  border-left: none;
-                }
-
-                &:last-child {
-                  border-right: none;
-                }
-              }
-            }
-          }
-        }
-      }
     }
   }
 
@@ -724,37 +513,6 @@ td.MuiTableCell-root.MuiTableCell-body {
 
       .IncomeStatementReportHeader {
         display: none;
-      }
-
-      .MuiCard-root {
-        box-shadow: none;
-        border-radius: 0px;
-
-        .MuiCardContent-root {
-          padding: 0;
-        }
-
-        table {
-          border: 1px solid black;
-
-          thead {
-            tr {
-              th {
-                border: 1px solid black;
-                border-right: none;
-                border-left: none;
-              }
-            }
-          }
-
-          tbody {
-            tr {
-              td {
-                border-bottom: 1px solid rgb(135, 135, 135);
-              }
-            }
-          }
-        }
       }
     }
   }
@@ -784,25 +542,6 @@ td.MuiTableCell-root.MuiTableCell-body {
         padding: 0;
         display: block;
         margin-right: -1px;
-
-        .MuiPaper-root {
-          border-radius: 0px;
-          box-shadow: none;
-        }
-
-        .MuiCardContent-root {
-          padding-bottom: 0;
-        }
-
-        .MuiCardHeader-root {
-          border: 1px solid black;
-          border-bottom: none;
-          border-radius: 0px;
-        }
-
-        .MuiTableContainer-root {
-          overflow-x: visible;
-        }
 
         .DecreaseDailyReportCardTable {
           tr {
@@ -854,11 +593,6 @@ td.MuiTableCell-root.MuiTableCell-body {
   .EmployeePayslip {
     padding: 0;
 
-    .MuiPaper-root {
-      border-radius: 0;
-      box-shadow: none;
-    }
-
     .EmployeePayslipTableContainer {
       display: block !important;
 
@@ -880,19 +614,6 @@ td.MuiTableCell-root.MuiTableCell-body {
         border: 1px solid black;
         page-break-inside: avoid;
         margin-bottom: 0;
-
-        .MuiTableContainer-root {
-          padding-bottom: 15px !important;
-        }
-
-        .MuiCardHeader-root {
-          border-bottom: 1px solid black;
-
-          span {
-            font-weight: 800;
-            font-size: 16px !important;
-          }
-        }
 
         table td {
           border-bottom: .5px solid black;
@@ -1266,17 +987,6 @@ td.MuiTableCell-root.MuiTableCell-body {
   .InventoryWorkReview {
     padding: 0;
 
-    .MuiPaper-root,
-    .MuiCardContent-root,
-    .MuiContainer-root {
-      margin: 0;
-      padding: 0;
-      max-width: unset;
-      border-radius: 0;
-      box-shadow: none;
-      overflow: visible
-    }
-
     .InventoryWorkReviewTable {
       border-radius: 0;
       border: 1px solid black;
@@ -1290,17 +1000,8 @@ td.MuiTableCell-root.MuiTableCell-body {
   }
 }
 
-td.MuiTableCell-root.MuiTableCell-body {
-  white-space: pre-line;
-}
-
 #whiteSpace>tr>td {
   white-space: pre;
-}
-
-#printObjectSalary>.MuiTable-root>.MuiTableBody-root>td.MuiTableCell-root.MuiTableCell-body {
-  white-space: pre !important;
-  min-width: 93px !important;
 }
 
 #printObjectSalary {
@@ -1443,10 +1144,6 @@ td.MuiTableCell-root.MuiTableCell-body {
   table tbody tr {
     height: 50px;
   }
-
-  table tbody tr td.MuiTableCell-root.MuiTableCell-body {
-    white-space: pre;
-  }
 }
 
 .AttendanceRecordsTable {
@@ -1469,14 +1166,6 @@ td.MuiTableCell-root.MuiTableCell-body {
       background-image: url('./static/images/lineIcon.svg');
     }
 
-    div button.MuiButtonBase-root {
-      padding: 4px;
-
-      &:hover {
-        background-color: rgba(173, 216, 230, 0.65);
-      }
-    }
-
     &:nth-child(2) {
       border: none;
     }
@@ -1492,17 +1181,10 @@ td.MuiTableCell-root.MuiTableCell-body {
 }
 
 .MerchantBankTransferReportTransferDetail {
-  .MuiFormControl-root {
-    margin-top: -5px;
-  }
 
   input {
     text-align: center;
     padding: 7px 0 2px !important;
-  }
-
-  .MuiInput-underline:before {
-    border-bottom: 1px solid #adadad;
   }
 }
 
@@ -1574,21 +1256,9 @@ input[type=number] {
 }
 
 .ProfileDetails {
-  .MuiDialog-paperWidthSm {
-    width: 100%;
-
-    .reactEasyCrop_Container {
-      width: 100%;
-      height: 300px;
-      position: relative !important;
-    }
-  }
 }
 
 .FastCheckOrdersModal {
-  .MuiPaper-root {
-    height: 80vh;
-  }
 }
 
 .HelperPerformanceReportTable {

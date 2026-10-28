@@ -144,14 +144,14 @@ function Results({ className, merchantAuth, merchantAuthDataRefetch, ...rest }) 
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 text-text-secondary"
+                          className="text-text-secondary"
                           aria-label="編輯角色"
                           disabled={data.authorityName === '高階主管'}
                         >
                           <Pencil strokeWidth={1.75} />
                         </Button>
                       ) : (
-                        <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                        <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                           <RouterLink
                             aria-label="編輯角色"
                             to={data.authorityName === '高階主管' ? undefined : `/role/edit/${data.id}`}

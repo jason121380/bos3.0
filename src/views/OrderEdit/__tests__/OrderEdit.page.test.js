@@ -257,7 +257,7 @@ const editCustomerAndSave = async calls => {
   // 顧客資料載入後（顧客欄顯示姓名）才開彈窗，彈窗才會帶入這位顧客
   await wait(() => expect(screen.getByPlaceholderText('顧客姓名/手機號碼/編號').value).toContain('陳小姐'))
   fireEvent.click(await screen.findByRole('button', { name: '編輯顧客資料' }))
-  const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+  const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
   const nameInput = within(modal).getByText('客戶姓名').parentElement.querySelector('input[name="name"]')
   await wait(() => expect(nameInput).toHaveValue('陳小姐'))
   typeLikeBrowser(nameInput, '陳美美')
@@ -295,7 +295,7 @@ describe('帳單詳細：入金異動權限', () => {
     await pageReady(page)
     fireEvent.click(await screen.findByRole('button', { name: '異動入金' }))
     // 彈窗標題（h3）；頁面上的「異動入金」按鈕不算
-    return (await screen.findByText('異動入金', { selector: 'h3' })).closest('.MuiModal-root')
+    return (await screen.findByRole('heading', { name: '異動入金' })).closest('[role=dialog]')
   }
   const walletActions = modal => ['儲值', '扣除'].filter(label => within(modal).queryByText(label, { selector: 'button' }))
 

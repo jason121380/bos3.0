@@ -4,6 +4,7 @@ import React from 'react'
 import { Router } from 'react-router-dom'
 
 import NavItem, { isWithinHref } from '../NavItem'
+import { SIDEBAR_FLYOUT_MEDIA, SidebarRailContext } from 'ui/sidebar'
 
 afterEach(cleanup)
 
@@ -68,3 +69,121 @@ describe('側欄揭露目前位置', () => {
     expect(screen.queryByRole('link', { name: '客戶列表' })).toBeNull()
   })
 })
+
+const hoverMedia = matches => {
+  window.matchMedia = query => ({
+    matches: matches && (query === SIDEBAR_FLYOUT_MEDIA || query === '(min-width: 1024px)'),
+    media: query,
+    addEventListener() {},
+    removeEventListener() {},
+    removeListener() {},
+  })
+}
+
+describe('主側欄桌機 hover 細項', () => {
+  const original = window.matchMedia
+
+  afterEach(() => {
+    window.matchMedia = original
+  })
+
+  const renderGroup = ({ rail = false } = {}) => {
+    const history = createMemoryHistory({ initialEntries: ['/order/create'] })
+    const items = [
+      { title: '服務分類設定', href: '/service/categories' },
+      { title: '系統參數設定', href: '/parameter' },
+    ]
+    render(
+      <Router history={history}>
+        <SidebarRailContext.Provider value={rail}>
+          <NavItem
+            depth={0}
+            title="資料設定"
+            open={false}
+            renderItems={() => items.map(item => (
+              <NavItem key={item.href} depth={1} href={item.href} title={item.title} />
+            ))}
+          />
+        </SidebarRailContext.Provider>
+      </Router>
+    )
+    return history
+  }
+
+  it('桌機滑過有子項的主選單會浮出細項，移出後關閉；點主項不再上下開合', async () => {
+    hoverMedia(true)
+    const history = renderGroup()
+    const group = screen.getByRole('button', { name: '資料設定' })
+    expect(group).toHaveAttribute('aria-expanded', 'false')
+    expect(group).toHaveAttribute('aria-haspopup', 'true')
+    expect(group.querySelector('svg')).toBeNull()
+    fireEvent.mouseEnter(group.parentElement)
+    const flyout = screen.getByRole('region', { name: '資料設定的細項' })
+    expect(flyout.querySelector('.rounded-2xl')).not.toBeNull()
+    const link = withinFlyout(flyout, '系統參數設定')
+    expect(link.className).toContain('rounded-md')
+    expect(link.className).toContain('text-body')
+    fireEvent.click(link)
+    expect(history.location.pathname).toBe('/parameter')
+    fireEvent.mouseLeave(group.parentElement)
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 200))
+    })
+    expect(screen.queryByRole('region', { name: '資料設定的細項' })).toBeNull()
+    fireEvent.click(group)
+    expect(group).toHaveAttribute('aria-expanded', 'false')
+    expect(group.parentElement.querySelector('a')).toBeNull()
+  })
+
+  it('桌機 hover 時搜尋強制展開仍把子項嵌進側欄，不另開浮層', () => {
+    hoverMedia(true)
+    const history = createMemoryHistory({ initialEntries: ['/order/create'] })
+    render(
+      <Router history={history}>
+        <NavItem
+          depth={0}
+          title="資料設定"
+          open
+          forceOpen
+          renderItems={() => (
+            <div>
+              <NavItem depth={1} href="/parameter" title="系統參數設定" />
+            </div>
+          )}
+        />
+      </Router>
+    )
+    expect(screen.getByRole('link', { name: '系統參數設定' })).toBeInTheDocument()
+    expect(screen.queryByRole('region')).toBeNull()
+    fireEvent.mouseEnter(screen.getByRole('button', { name: '資料設定' }).parentElement)
+    expect(screen.queryByRole('region')).toBeNull()
+  })
+
+  it('窄屏或觸控不靠 hover 浮出；圖示欄改以點選打開細項', () => {
+    hoverMedia(false)
+    renderGroup()
+    fireEvent.mouseEnter(screen.getByRole('button', { name: '資料設定' }).parentElement)
+    expect(screen.queryByRole('region')).toBeNull()
+
+    cleanup()
+    hoverMedia(false)
+    window.matchMedia = query => ({
+      matches: query === '(min-width: 1024px)',
+      media: query,
+      addEventListener() {},
+      removeEventListener() {},
+      removeListener() {},
+    })
+    renderGroup({ rail: true })
+    fireEvent.mouseEnter(screen.getByRole('button', { name: '資料設定' }).parentElement)
+    expect(screen.queryByRole('region')).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: '資料設定' }))
+    expect(screen.getByRole('region', { name: '資料設定的細項' })).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: '資料設定' }))
+    expect(screen.queryByRole('region', { name: '資料設定的細項' })).toBeNull()
+  })
+})
+
+function withinFlyout(flyout, name) {
+  return Array.from(flyout.querySelectorAll('a')).find(el => el.textContent === name)
+}

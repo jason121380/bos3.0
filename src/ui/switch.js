@@ -1,5 +1,6 @@
 import React from 'react'
-import { cn } from './utils'
+import { cn, phoneIconHit } from './utils'
+import { checkboxHitArea } from './checkbox'
 
 const assignRef = (ref, node) => {
   if (!ref) return
@@ -45,10 +46,16 @@ const Switch = React.forwardRef(
         />
       </span>
     )
-    if (!label) return <span className={cn('ui-root inline-flex', className)}>{control}</span>
+    if (!label) return <label className={cn('ui-root inline-flex cursor-pointer', phoneIconHit, className)}>{control}</label>
     return (
       <label
-        className={cn('ui-root inline-flex cursor-pointer select-none items-center gap-2 text-body text-text', disabled && 'cursor-not-allowed opacity-60', labelPlacement === 'start' && 'flex-row-reverse', className)}
+        className={cn(
+          'ui-root inline-flex cursor-pointer select-none items-center gap-2 text-body text-text',
+          checkboxHitArea,
+          disabled && 'cursor-not-allowed opacity-60',
+          labelPlacement === 'start' && 'flex-row-reverse',
+          className
+        )}
       >
         {control}
         <span>{label}</span>

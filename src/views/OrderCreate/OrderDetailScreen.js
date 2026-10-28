@@ -1,6 +1,4 @@
-import { Divider } from 'ui/display-compat'
-import { Grid } from 'ui/grid-compat'
-import { CardContent } from 'ui/card-compat'
+import { CardContent } from 'ui/card'
 import React, { Fragment, useContext } from 'react'
 import { format } from 'date-fns'
 import billContext from 'context/keyInContext'
@@ -23,267 +21,267 @@ export default function OrderDetailScreen({ merchantName, customer, designer, na
     walletPayBalanceForDetail,
   } = useContext(billContext)
   return (
-    <CardContent id="DivIdToPrint">
-      <Grid container>
-        <Grid container className={styles.rowOfGrid}>
-          <Grid item xs={8}>
+    <CardContent id="DivIdToPrint" className="dark:bg-[#202020]">
+      <div className="box-border flex w-full flex-wrap">
+        <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+          <div className="box-border m-0 grow-0 basis-[66.666667%] max-w-[66.666667%]">
             {merchantName}
-          </Grid>
-          <Grid item xs={4}>
+          </div>
+          <div className="box-border m-0 grow-0 basis-[33.333333%] max-w-[33.333333%]">
             {format(new Date(bill.date), 'yyyy/MM/dd HH:mm')}
-          </Grid>
-        </Grid>
-        <Grid container className={styles.rowOfGrid}>
-          <Grid item xs={2}>
+          </div>
+        </div>
+        <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+          <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
             {bill.isDesignate ? '指定' : '不指定'}
-          </Grid>
-          <Grid item xs={5}>
+          </div>
+          <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
             顧客:{customer.data.customer === null ? '未選擇' : customer.data.customer.name}
-          </Grid>
-          <Grid item xs={5}>
+          </div>
+          <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
             設計師:{designerNameType(designer.data.merchantDesigner, nameDisplayOnInvoice)}
-          </Grid>
-        </Grid>
-        <Grid container className={styles.dividerDiv}>
-          <Divider style={{ width: '100%' }} />
-        </Grid>
-        <Grid container className={styles.rowOfGrid}>
+          </div>
+        </div>
+        <div className={`box-border flex w-full flex-wrap ${styles.dividerDiv}`}>
+          <div className="h-px w-full bg-border dark:bg-[#5c5c5c]" />
+        </div>
+        <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
           {orderDetail.servicesDetail.length === 0 ? (
-            <Grid container className={styles.rowOfGrid}>
-              <Grid item xs={2}>
+            <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                 項目消費
-              </Grid>
-              <Grid item xs={5}>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
                 未選擇
-              </Grid>
-              <Grid item xs={2}></Grid>
-              <Grid item xs={3}></Grid>
-            </Grid>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]"></div>
+              <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
+            </div>
           ) : (
             orderDetail.servicesDetail.length > 0 &&
             orderDetail.servicesDetail.map((service, index) => (
               <Fragment key={index}>
-                <Grid item xs={2}>
+                <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                   項目消費
-                </Grid>
-                <Grid item xs={5}>
+                </div>
+                <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
                   {service.name}
-                </Grid>
-                <Grid item xs={2}>
+                </div>
+                <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                   {formatNumber(service.price)}
-                </Grid>
+                </div>
                 {service.thirdPartyCoupon === null ? (
-                  <Grid item xs={3}></Grid>
+                  <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
                 ) : (
-                  <Grid item xs={3}>
+                  <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]">
                     {service.thirdPartyCoupon}
-                  </Grid>
+                  </div>
                 )}
               </Fragment>
             ))
           )}
           {orderDetail.productsDetail.length === 0 ? (
-            <Grid container className={styles.rowOfGrid}>
-              <Grid item xs={2}>
+            <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                 店販銷售
-              </Grid>
-              <Grid item xs={5}>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
                 未選擇
-              </Grid>
-              <Grid item xs={2}></Grid>
-              <Grid item xs={3}></Grid>
-            </Grid>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]"></div>
+              <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
+            </div>
           ) : (
             orderDetail.productsDetail.length > 0 &&
             orderDetail.productsDetail.map((product, index) => (
               <Fragment key={index}>
-                <Grid item xs={2}>
+                <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                   店販銷售
-                </Grid>
-                <Grid item xs={5}>
+                </div>
+                <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
                   {`${product.name}*${product.count}`}
-                </Grid>
-                <Grid item xs={2}>
+                </div>
+                <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                   {formatNumber(product.price * product.count)}
-                </Grid>
+                </div>
                 {product.thirdPartyCoupon === null ? (
-                  <Grid item xs={3}></Grid>
+                  <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
                 ) : (
-                  <Grid item xs={3}>
+                  <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]">
                     {product.thirdPartyCoupon}
-                  </Grid>
+                  </div>
                 )}
               </Fragment>
             ))
           )}
           {orderDetail.sellTicketsDetail.length === 0 ? (
-            <Grid container className={styles.rowOfGrid}>
-              <Grid item xs={2}>
+            <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                 卡券銷售
-              </Grid>
-              <Grid item xs={5}>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
                 未選擇
-              </Grid>
-              <Grid item xs={2}></Grid>
-              <Grid item xs={3}></Grid>
-            </Grid>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]"></div>
+              <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
+            </div>
           ) : (
             orderDetail.sellTicketsDetail.length > 0 &&
             orderDetail.sellTicketsDetail.map((sellTicket, index) => (
               <Fragment key={index}>
-                <Grid item xs={2}>
+                <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                   卡券銷售
-                </Grid>
-                <Grid item xs={5}>
+                </div>
+                <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
                   {`${sellTicket.name}含(${sellTicket.availableCount})次*${sellTicket.count}`}
-                </Grid>
-                <Grid item xs={2}>
+                </div>
+                <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                   {formatNumber(sellTicket.price * sellTicket.count)}
-                </Grid>
-                <Grid item xs={3}></Grid>
+                </div>
+                <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
               </Fragment>
             ))
           )}
           {orderDetail.useTicketsDetail.length === 0 ? (
-            <Grid container className={styles.rowOfGrid}>
-              <Grid item xs={2}>
+            <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                 卡券使用
-              </Grid>
-              <Grid item xs={5}>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
                 未選擇
-              </Grid>
-              <Grid item xs={2}></Grid>
-              <Grid item xs={3}></Grid>
-            </Grid>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]"></div>
+              <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
+            </div>
           ) : (
             orderDetail.useTicketsDetail.length > 0 &&
             orderDetail.useTicketsDetail.map((useTicket, index) => (
               <Fragment key={index}>
-                <Grid item xs={2}>
+                <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                   卡券使用
-                </Grid>
-                <Grid item xs={5}>
+                </div>
+                <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
                   {useTicket.name}
-                </Grid>
-                <Grid item xs={2}>
+                </div>
+                <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                   {formatNumber(useTicket.price)}
-                </Grid>
-                <Grid item xs={3}></Grid>
+                </div>
+                <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
               </Fragment>
             ))
           )}
-        </Grid>
+        </div>
         {orderDetail.membershipOrders.length === 0 ? (
-          <Grid container className={styles.rowOfGrid}>
-            <Grid item xs={3}>
+          <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+            <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]">
               會員卡銷售
-            </Grid>
-            <Grid item xs={5}>
+            </div>
+            <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
               未選擇
-            </Grid>
-            <Grid item xs={2}></Grid>
-            <Grid item xs={2}></Grid>
-          </Grid>
+            </div>
+            <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]"></div>
+            <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]"></div>
+          </div>
         ) : (
           orderDetail.membershipOrders.length > 0 &&
           orderDetail.membershipOrders.map((memberShipCard, index) => (
             <Fragment key={index}>
-              <Grid item xs={3}>
+              <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]">
                 會員卡銷售
-              </Grid>
-              <Grid item xs={4}>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[33.333333%] max-w-[33.333333%]">
                 {memberShipCard.name}
-              </Grid>
-              <Grid item xs={2}>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                 {formatNumber(memberShipCard.price)}
-              </Grid>
-              <Grid item xs={2}></Grid>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]"></div>
             </Fragment>
           ))
         )}
-        <Grid container className={styles.dividerDiv}>
-          <Divider style={{ width: '100%' }} />
-        </Grid>
-        <Grid container className={styles.rowOfGrid}>
-          <Grid item xs={2}>
+        <div className={`box-border flex w-full flex-wrap ${styles.dividerDiv}`}>
+          <div className="h-px w-full bg-border dark:bg-[#5c5c5c]" />
+        </div>
+        <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+          <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
             應付帳款
-          </Grid>
-          <Grid item xs={5}></Grid>
-          <Grid item xs={2}>
+          </div>
+          <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]"></div>
+          <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
             {orderDetailPaymentShouldPay}
-          </Grid>
-          <Grid item xs={3}></Grid>
-        </Grid>
-        <Grid container className={styles.rowOfGrid}>
-          <Grid container className={styles.rowOfGrid}>
-            <Grid item xs={4}>
+          </div>
+          <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
+        </div>
+        <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+          <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+            <div className="box-border m-0 grow-0 basis-[33.333333%] max-w-[33.333333%]">
               其他支付方式
-            </Grid>
-            <Grid item xs={3}></Grid>
-            <Grid item xs={2}></Grid>
-            <Grid item xs={3}></Grid>
-          </Grid>
+            </div>
+            <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
+            <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]"></div>
+            <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
+          </div>
           {bill.payType.length === 0 && bill.walletPay === 0 && (
-            <Grid container className={styles.rowOfGrid}>
-              <Grid item xs={2}></Grid>
-              <Grid item xs={5}>
+            <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]"></div>
+              <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
                 無
-              </Grid>
-              <Grid item xs={2}></Grid>
-              <Grid item xs={3}></Grid>
-            </Grid>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]"></div>
+              <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
+            </div>
           )}
           {bill.payType.length > 0 && (
-            <Grid container className={styles.rowOfGrid}>
-              <Grid item xs={2}></Grid>
-              <Grid item xs={5}>
+            <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]"></div>
+              <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
                 {bill.payType[0]}
-              </Grid>
-              <Grid item xs={2}>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                 {bill.amountByOtherPay}
-              </Grid>
-              <Grid item xs={3}></Grid>
-            </Grid>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
+            </div>
           )}
           {bill.walletPay > 0 && (
-            <Grid container className={styles.rowOfGrid}>
-              <Grid item xs={2}></Grid>
-              <Grid item xs={5}>
+            <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]"></div>
+              <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
                 扣入金
-              </Grid>
-              <Grid item xs={2}>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                 {formatNumber(bill.walletPay)}
-              </Grid>
-              <Grid item xs={3}></Grid>
-            </Grid>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
+            </div>
           )}
           {bill.walletPay > 0 && (
-            <Grid container className={styles.rowOfGrid}>
-              <Grid item xs={2}></Grid>
-              <Grid item xs={5}>
+            <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]"></div>
+              <div className="box-border m-0 grow-0 basis-[41.666667%] max-w-[41.666667%]">
                 入金剩餘
-              </Grid>
-              <Grid item xs={2}>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%]">
                 {formatNumber(walletPayBalanceForDetail)}
-              </Grid>
-              <Grid item xs={3}></Grid>
-            </Grid>
+              </div>
+              <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
+            </div>
           )}
-        </Grid>
-        <Grid container className={styles.dividerDiv}>
-          <Divider style={{ width: '100%' }} />
-        </Grid>
-        <Grid container className={styles.rowOfGrid}>
-          <Grid item xs={3} className={styles.detailBottomCash}>
+        </div>
+        <div className={`box-border flex w-full flex-wrap ${styles.dividerDiv}`}>
+          <div className="h-px w-full bg-border dark:bg-[#5c5c5c]" />
+        </div>
+        <div className={`box-border flex w-full flex-wrap ${styles.rowOfGrid}`}>
+          <div className={`box-border m-0 grow-0 basis-[25%] max-w-[25%] ${styles.detailBottomCash}`}>
             現金應收
-          </Grid>
-          <Grid item xs={4}></Grid>
-          <Grid item xs={2} className={styles.detailBottomCash}>
+          </div>
+          <div className="box-border m-0 grow-0 basis-[33.333333%] max-w-[33.333333%]"></div>
+          <div className={`box-border m-0 grow-0 basis-[16.666667%] max-w-[16.666667%] ${styles.detailBottomCash}`}>
             {formatNumber(cashPayment)}
-          </Grid>
-          <Grid item xs={3}></Grid>
-        </Grid>
-      </Grid>
+          </div>
+          <div className="box-border m-0 grow-0 basis-[25%] max-w-[25%]"></div>
+        </div>
+      </div>
     </CardContent>
   )
 }

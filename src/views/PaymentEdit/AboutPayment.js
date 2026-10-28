@@ -1,5 +1,5 @@
 // 欄位標籤放在上方（Field＋Input／NativeSelect）；下拉選項值為字串（含空字串），event.target.value 回傳選項原值，onChange 原樣保留。
-// 原生 option 無法帶 data-testid，Cypress 改以 .select('顯示文字') 選取；FormControlLabel＋Checkbox 保留 MUI
+// 下拉是自家清單（不是系統選單）；FormControlLabel＋Checkbox 使用 ui/checkbox
 import { FormControlLabel, Checkbox } from 'ui/checkbox'
 import { PaymentEnum } from 'helper/enum'
 import idx from 'idx'

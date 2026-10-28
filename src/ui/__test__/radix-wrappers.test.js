@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import React from 'react'
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSeparator, SelectTrigger, SelectValue } from '../select'
@@ -188,6 +188,16 @@ describe('TabsContent／設定頁選單', () => {
     )
     expect(screen.getByRole('tablist')).toHaveAttribute('aria-label', '設定分類')
     expect(screen.getByRole('tablist').className).toContain('list')
+    expect(screen.getByRole('tablist').className).toContain('md:rounded-2xl')
+    expect(screen.getByRole('tablist').className).toContain('md:h-fit')
+    expect(screen.getByRole('tablist').className).not.toContain('h-full')
+    expect(screen.getByRole('tablist').className).not.toContain('flex-1')
+    const slot = screen.getByRole('tablist').parentElement
+    expect(slot).toHaveAttribute('data-settings-nav')
+    expect(slot.className).toContain('md:self-start')
+    expect(slot.className).toContain('md:h-fit')
+    expect(slot.className).toContain('md:sticky')
+    expect(slot.className).toContain('md:top-4')
     expect(screen.getAllByTestId('icon')).toHaveLength(1)
     expect(screen.getByTestId('icon')).toHaveAttribute('aria-hidden', 'true')
     expect(screen.getByText('A 內容').className).toContain('panel')
@@ -195,6 +205,62 @@ describe('TabsContent／設定頁選單', () => {
     const tabB = screen.getByRole('tab', { name: '權限' })
     fireEvent.mouseDown(tabB, { button: 0 })
     expect(onValueChange).toHaveBeenCalledWith('b')
+  })
+
+  it('滑過分類不會浮出細項', () => {
+    render(
+      <Tabs value="a" onValueChange={() => {}}>
+        <SettingsTabsList>
+          <SettingsTabsTrigger value="a">打帳單</SettingsTabsTrigger>
+          <SettingsTabsTrigger value="b">密碼</SettingsTabsTrigger>
+        </SettingsTabsList>
+      </Tabs>
+    )
+    fireEvent.mouseEnter(screen.getByRole('tab', { name: '打帳單' }))
+    fireEvent.mouseEnter(screen.getByRole('tab', { name: '密碼' }))
+    expect(screen.queryByRole('region')).toBeNull()
+  })
+
+  it('桌機往下捲過左欄時把選單固定在可視區，捲回或窄屏則回到文件流', () => {
+    const originalMedia = window.matchMedia
+    const originalRect = Element.prototype.getBoundingClientRect
+    window.matchMedia = query => ({
+      matches: query === '(min-width: 768px)',
+      media: query,
+      addEventListener() {},
+      removeEventListener() {},
+    })
+    let slotTop = -80
+    Element.prototype.getBoundingClientRect = function readRect() {
+      if (this.getAttribute('role') === 'tablist' || this.hasAttribute('data-settings-nav')) {
+        return { top: slotTop, bottom: slotTop + 200, left: 300, right: 540, width: 240, height: 200, x: 300, y: slotTop }
+      }
+      return { top: slotTop, bottom: 1600, left: 280, right: 1000, width: 720, height: 1680, x: 280, y: slotTop }
+    }
+    render(
+      <Tabs value="a" onValueChange={() => {}}>
+        <SettingsTabsList>
+          <SettingsTabsTrigger value="a">打帳單</SettingsTabsTrigger>
+        </SettingsTabsList>
+      </Tabs>
+    )
+    const list = screen.getByRole('tablist')
+    expect(list.style.position).toBe('fixed')
+    expect(list.style.top).toBe('16px')
+    expect(list.style.left).toBe('300px')
+    slotTop = 40
+    act(() => {
+      window.dispatchEvent(new Event('scroll'))
+    })
+    expect(list.style.position).toBe('')
+    window.matchMedia = () => ({ matches: false, media: '', addEventListener() {}, removeEventListener() {} })
+    slotTop = -80
+    act(() => {
+      window.dispatchEvent(new Event('scroll'))
+    })
+    expect(list.style.position).toBe('')
+    window.matchMedia = originalMedia
+    Element.prototype.getBoundingClientRect = originalRect
   })
 
   it('SettingsSectionHeading 沒有標題時不輸出空的 h2', () => {

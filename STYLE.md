@@ -1,5 +1,6 @@
 # BOS 3.0 設計規範（STYLE.md）
 
+> **本檔是畫面規範，不是現況分數。** 版號、測試總數、CI、健康分、後端債只看 [`docs/CURRENT.md`](docs/CURRENT.md)（健康分程式 `v3.10241717`，CI 為 `frontend-ci.yml`）。下文若出現舊的「CI 已停用」或相容檔案數，都是 **歷史／已過時**。
 > 方向：現代、簡約、清楚。參考 OpenAI 產品介面的克制感——大量留白、中性色、黑白灰為底、以品牌藍為唯一主題色點綴、極少陰影。
 > 技術：Tailwind CSS + shadcn/ui（Radix）。本文件是所有新畫面的唯一依據；與本文件衝突的舊樣式一律以本文件為準。
 
@@ -101,13 +102,15 @@
 | **Card** | `rounded-lg`、1px border、內距 20px；標題用 `heading`。 |
 | **Accordion（可展開卡片）** | 用 `ui/accordion`（與 MUI 介面相容）。收合時標題右側以 `summaryMeta` 顯示摘要（「已填 N 筆 · NT$ 小計」，沒填就不顯示），一眼看得到內容概況。 |
 | **圖示按鈕** | 一律是真的 `<button>`，帶 `title` 與 `aria-label`；「新增」類動作要有文字（例如「新增項目」），不能只放「+」。 |
-| **總計列** | 長表單的「業績合計／現金應收」另放底部固定列（`fixed`，lg 以上以 `lg:left-[var(--sidebar-w,264px)]` 讓出側欄——`--sidebar-w` 由 `layouts/Dashboard` 提供，展開 264px、收合 0；手機讓出 56px 底部導覽、列印隱藏），不靠 `sticky` 側欄卡。 |
-| **Dialog** | 寬 480 / 640 / 800；標題、內容、底部動作三段；危險操作需二次確認並寫出後果。<br>**確認框**：`openSnackbar` 的確認型（`resign`／`groupEdit`）由 `elements/snackbars` 畫成 `ui/modal-compat` 的 `alertdialog`：動詞標題＋呼叫端訊息＋後果說明，「取消」（secondary）／確認（動詞，刪除與離職用 danger）；Esc、點背景、取消只關閉，不觸發確認。<br>**開啟時的焦點**：以「點選」為主的彈窗（切換店家、選店、選人）開啟時不自動聚焦搜尋框，焦點放在彈窗本身（`onOpenAutoFocus` 中 `preventDefault` 後 focus 彈窗），避免手機一開就彈出鍵盤擋住清單；以輸入為主的彈窗（新增、編輯）可聚焦第一個欄位。 |
-| **樹狀選擇（TreeView）** | 共用選店等樹狀窗保留 `@mui/x-tree-view` 行為時只做視覺覆寫：列高 38px compact、整列 hover `surface-hover`、層級縮排 24px、展開箭頭 16px 置中對齊、勾選框 `ui` Checkbox 16px、群組／店家圖示 16px＋間距 6px；已選店家（`.onSelect`）一律主題色選中態：`accent` 12% 底＋`accent` 文字／店家圖示＋字重 500（淺色 `#1A73E8`、深色 `#4C8DF6`，皆走 `--accent` token，不得寫死水藍／灰藍），未選中維持原文字色與 `surface-hover` hover；搜尋用 `ui` Input、頂部動作 ghost 描邊 `sm` 同高、底部關閉 `secondary`／確認 `primary`。不為換而換自寫樹，避免勾選／展開／搜尋行為回歸。 |**例外（專項試點）**：無 checkbox、展開為標準受控 state 的單純樹（如側欄 `Dashboard/MerchantList`）可自寫 `ul[role=tree]`＋原生 `<button>` 列取代，但必須自補 MUI 原有鍵盤模型（roving tabindex、↑↓←→/Home/End、Enter/Space、type-ahead）並保留原節點 id 規則與列 padding/縮排/左線/hover；含群組半選或 DOM 反查展開的樹不在此例外，仍逐檔專項。 |
+| **總計列** | 長表單的「業績合計／現金應收」另放底部固定列（`fixed`，lg 以上以 `lg:left-[var(--sidebar-w,264px)]` 讓出側欄——`--sidebar-w` 由 `layouts/Dashboard` 提供，展開 264px、收合 80px 圖示欄；手機讓出 56px 底部導覽、列印隱藏），不靠 `sticky` 側欄卡。 |
+| **Dialog** | 正式與相容浮層共用 Radix 圖層，後開者接管焦點／Esc 並排在上方（MEMORY #195）；日期／下拉可在窗內使用，combobox 選單仍掛在最近的 dialog。寬 480 / 640 / 800；標題、內容、底部動作三段；危險操作需二次確認並寫出後果。<br>**確認框**：`openSnackbar` 的確認型（`resign`／`groupEdit`）由 `elements/snackbars` 畫成 `ui/dialog` 的 `alertdialog`：動詞標題＋呼叫端訊息＋後果說明，「取消」（secondary）／確認（動詞，刪除與離職用 danger）；Esc、點背景、取消只關閉，不觸發確認。<br>**開啟時的焦點**：以「點選」為主的彈窗（切換店家、選店、選人）開啟時不自動聚焦搜尋框，焦點放在彈窗本身（`onOpenAutoFocus` 中 `preventDefault` 後 focus 彈窗），避免手機一開就彈出鍵盤擋住清單；以輸入為主的彈窗（新增、編輯）可聚焦第一個欄位。 |
+| **樹狀選擇（TreeView）** | 用 `ui/tree` 的 `TreeView`／`TreeItem`；列高至少 40px、hover `surface-hover`、預設縮排 24px（商品／釘選可 20px）、箭頭與店家圖示 16px。`selected` 呈現 `accent` 12% 底＋主題字色／圖示＋字重 500；既有 `.onSelect` 保留但不作新元件樣式 API。`expanded`／`onToggle(event, ids)` 受控，收合卸載；方向鍵、Home／End、Enter／Space、roving tabindex，Esc 留給外層 Dialog。群組橫排／換行由 `groupClassName` 設定，不覆寫 MUI classes。 |
+| **Rating** | 用 `ui/rating`：原生 radio、每星名稱「N 星」、方向鍵選值、hover 預覽；再次點目前星回傳 `onChange(event, null)`。星形走 `warning` token，空星 `text-tertiary`；每星操作區至少 40px。唯讀可呈現但不可變更。 |
+| **Tag** | 用 `ui/tag` 呈現可刪除選取值；沿用 Badge 的淡底、字色與圓角；純展示仍可用 Badge。刪除鈕至少 40px，命名 `刪除「標籤」`，本體聚焦後 Backspace／Delete 刪除；共用 `focusRing`。 |
 | **Toast** | 右下角；成功／一般提示 3 秒自動消失（滑鼠移入或聚焦時暫停），錯誤需手動關閉。全站唯一提示區：各版面經 `elements/snackbars` 掛一個 `ui/toast` 的 `<Toaster>`，`openSnackbar`（純訊息）與 `toast.*` 都畫成同一個 `ToastCard`；錯誤 `role="alert"`，其餘 `role="status"`（`aria-live=polite`）；關閉鈕 `aria-label="關閉"`。錯誤文案在入口統一處理：去掉 Apollo 的 `GraphQL error:`／`Network error:` 前綴，連線失敗改顯示「網路連線異常，請檢查網路後再試一次」，其餘後端訊息原樣。 |
 | **Sidebar** | 240px；群組標題 `caption` + `text-tertiary`；項目高 36px、`rounded-md`；選取為主題色 8% 底（`bg-accent/8`）+ 主題色文字 + 字重 500。 |
 | **Tabs** | 底線式；選取為 `text` + 2px 主題色底線，未選 `text-secondary`。 |
-| **Slider** | 用 `ui/slider`（原生 `<input type="range">`）：主色深藍 `accent-[rgb(var(--primary))]`（對齊 Checkbox／Radio）；對外維持 MUI 簽名 `onChange(event, Number(value))`，`min`／`max`／`step` 原生傳遞，浮點 `step` 依其小數位數四捨五入修正（避免 0.1 步進產生 1.200000047）；`disabled` 與 `aria-label` 原生透傳；鍵盤用原生方向鍵／PageUp／Down／Home／End。**不做數值泡泡**：`valueLabelDisplay` 不支援（行事曆格子尺寸的泡泡去留待 Jason 拍板後另案，不得默默以本元件替換該兩檔）。 |
+| **Slider** | 用 `ui/slider`（原生 `<input type="range">`）：主色深藍 `accent-[rgb(var(--primary))]`（對齊 Checkbox／Radio）；對外維持 MUI 簽名 `onChange(event, Number(value))`，`min`／`max`／`step` 原生傳遞，浮點 `step` 依其小數位數四捨五入修正（避免 0.1 步進產生 1.200000047）；`disabled` 與 `aria-label` 原生透傳；鍵盤用原生方向鍵／PageUp／Down／Home／End。**數值泡泡已完成**：行事曆格子尺寸滑桿泡泡由自製元件呈現（PR #197）；維持各頁原有數值與互動語意。 |
 | **Radio** | 用 `ui/radio` 的 `Radio`／`RadioField`（原生 `<input type="radio">`，16px 圓點、`accent` 主色 `primary`、focus 2px `accent` 外框、disabled 40% 透明）：保留圓點外觀，不改成分段按鈕；`RadioField` 以 `<label>` 包覆使點文字可選，`onChange(event, value)` 對齊 MUI `RadioGroup` 簽名（只讀 `event.target.value` 的 handler 亦相容）。同組必須給相同 `name`，互斥、方向鍵移動＋選取、Tab 只停已選／第一顆、空白鍵選取皆由原生行為保留；未選狀態以 `checked` 皆 false 表示，不以空字串另設狀態。 一列一顆「預設」型（如業績扣點參數）同樣用 `RadioField`：各列共用同一 `name`、`value="true"`、`checked` 由資料布林決定、互斥靠 handler 資料回寫（點已選者不取消，不改 checkbox）、`disabled` 原樣傳入。 |
 | **Progress（定值線）** | 用 `ui/progress` 的 `Progress`：只做定值線條（`value` 0–100，超出夾限顯示），高 4px、圓角 3px、軌道 `surface-hover`、進度桿 `primary` 深藍、`role="progressbar"`＋`aria-valuenow`（四捨五入）；寬度以 300ms linear 過渡對齊原呼叫端 timer 節奏。元件只呈現、不計算百分比、不判斷顯示條件；百分比計算／假進度 timer／載入邏輯留在呼叫端，不得搬進元件。定值圓＋%（如結帳 snackbar）與不定值頂線（Suspense）不在此元件範圍，待拍板另案。 |
 | **Empty / Loading** | 一律用 `EmptyState`、`Skeleton` 元件，不得各頁自寫。不定值載入轉圈用 lucide `LoaderCircle`＋`animate-spin`＋`strokeWidth={1.75}`：置中大圈 `h-10 w-10 text-accent`（對原 MUI `CircularProgress` 預設 40px 與主題色）、欄位小圈依原尺寸（如 20px→`h-5 w-5`），原置中容器與間距不動；Backdrop 內轉圈只換圈本體（`h-10 w-10`）、Backdrop 的 open／z-index／透明度不動，MUI Select `renderValue` 的載入小圈同以 20px `LoaderCircle` 回傳、不改 Select 本體與顯示寬度邏輯；定值線用 `ui/progress`（見上列 Progress），定值圓＋% 另案，不以轉圈冒充。 |
@@ -136,24 +139,26 @@
 - 版面殼層：`layouts/Dashboard` 輸出全站唯一的 `<main id="main-content">`，最前面有「跳至主要內容」skip link（平時隱藏、聚焦出現）；`Page` 元件是 `div`，頁面不得再自己輸出 `<main>`。
 - 詳細頁頁首：`PageHeader` 的 `breadcrumb`（`Breadcrumb` 元件，最後一項 `aria-current="page"`）＋`back`（標題左側返回鈕），返回沿用頁面原本的返回行為。
 
-## 10. 遷移規則（MUI → Tailwind + shadcn）
+## 10. 遷移規則（相容層 → Tailwind + `src/ui/`）
 
-1. Tailwind 關閉 `preflight`（`corePlugins.preflight: false`），避免在遷移期間破壞仍使用 MUI 的頁面；全部遷移完成後再開啟。
-2. 新元件一律放 `src/ui/`；頁面不得直接 import `@mui/*`（已遷移的頁面）。
+> **2026/10/23 快照（不是現況數字）**：MUI 已從 `package.json` 移除；當時把相容元件記成 59 個使用檔案（頁面層 53 檔／38 個目錄，共用層 6 檔）。其後未使用的相容模組已刪，不要用 59 或 6 當現況。Autocomplete 已於 PR #178–#181 自製，滑桿泡泡已於 PR #197 完成。日期選擇器使用主題色；22 張列印報表採一致精簡版；PWA 狀態列為白色。設定、參數、個人資料、報表目錄與顧客詳情頁使用左側淺灰選單＋右側白底內容，中間不加分隔線。
+
+1. Tailwind 關閉 `preflight`（`corePlugins.preflight: false`），以免改動仍使用相容層的舊頁面；目前 MUI 套件已移除。
+2. 新元件一律放 `src/ui/`；不得新增 `@mui/*` import（套件已整包移除）。
 3. **一頁一個 PR**：只改 JSX 與樣式，資料取得（Apollo query / mutation）、Redux、hooks、驗證邏輯原封不動；PR 說明需列出「未變更的邏輯」。
 4. 每頁遷移後在預覽環境（接測試後端）驗收：功能逐項點過、與舊版比對欄位與數字一致。
-5. 全部頁面完成後：移除 MUI、emotion、jss 相依套件與 `src/theme/`。（MUI 已於 2026/10/20 移除；emotion 已於 2026/10/20 移除；`src/theme/` 仍供 `useMediaQuery(theme.breakpoints…)` 等邏輯使用。）
-6. **`.ui-root`**：preflight 關閉，基礎樣式（box-sizing、邊框重置、字型）只作用在 `.ui-root` 之內。`ui` 元件放在 **MUI Dialog／Popper 等 Portal 內**時不在頁面的 `.ui-root` 底下，外層要自己加 `ui-root`（`ui/accordion`、`ui/native-select`、`ui/toggle-group` 已自帶）。
+5. MUI、emotion 相依套件已移除；`src/theme/` 仍供 `useMediaQuery(theme.breakpoints…)` 等邏輯使用。相容元件已退役，新畫面直接使用正式 `src/ui/` 元件。
+6. **`.ui-root`**：preflight 關閉，基礎樣式（box-sizing、邊框重置、字型）只作用在 `.ui-root` 之內。`ui` 元件放在 **相容層 Dialog／Popper 等 Portal 內**時不在頁面的 `.ui-root` 底下，外層要自己加 `ui-root`（`ui/accordion`、`ui/native-select`、`ui/toggle-group` 已自帶）。
 7. **版面不可靠擠壓或超出**：欄位列用 `flex-wrap` 換行，不要讓操作鈕被推出可視範圍；flex 子層加 `min-width:0`／`max-width:100%`，並扣掉 `margin`；`overflow-x:auto` 會裁掉上方溢出的內容（浮動標籤），所以標籤才統一放上方。
-8. **層級（z-index）**：手機頂／底列 1100；側欄 1190/1200；MUI modal／popper 與 Radix Dialog 1300；Radix select／popover／dropdown 與 MUI snackbar 1400；toast 與 MUI tooltip 1500；底部固定合計列 1050。
-9. **驗證**：每次改動跑 `scripts/redesign/verify-logic.js`（FAIL 必須逐項說明是純畫面差異）、`eslint-check.json`（0 新增 error）、`CI=true npm run build`，測試不得有新增失敗（基準 13 個既有失敗）。
-10. **MUI Typography 字級映射**（以 `src/ui/display-compat.css` 的 Typography 字級為準——即原 MUI 橋接主題字級，對照 §3）：`h1`→`text-display`、`h3`→`text-title`、`h5`→`text-heading`、`subtitle1`→`text-body font-medium`、`subtitle2`→`text-label`（色 `text-text-secondary`）、`body1`→`text-body`、`caption`→`text-caption`（色 `text-text-secondary`）、`overline`→`text-caption font-medium`（色 `text-text-secondary`、不全大寫）；主色用 `text-text`、`color="textSecondary"` 改 `text-text-secondary`。`h2`（24px）、`h4`（18px）、`h6`（15px）、`body2`（13px/20px/400）在 §3 無對應級距，**不硬套**，留原 Typography 或另案拍版；`gutterBottom` 以 `mb-[0.35em]` 保留。`Box` 純排版改原生 div（系統 props 逐鍵轉 className/style）；`Paper` 改 `rounded-md bg-background` 原生 div（橋接主題 elevation 預設 0、paper 底色即 background token，陰影不保留），原 emotion `css` 掛點保留。
+8. **層級（z-index）**：手機頂／底列 1100；側欄 1190/1200；相容層 modal／popper 與 Radix Dialog 1300；Radix select／popover／dropdown 與 相容層 snackbar 1400；toast 與 相容層 tooltip 1500；底部固定合計列 1050。
+9. **驗證**：合併前本機跑 `npm run lint`、`npm run test:nowatch`、`npm run build`。CI 見 [`docs/CURRENT.md`](docs/CURRENT.md)，不要假設 Actions 已停用。需要檢視純畫面差異時再跑 `scripts/redesign/verify-logic.js`。
+10. **MUI Typography 字級映射**（沿用原 MUI 橋接主題的 Typography 字級，對照 §3）：`h1`→`text-display`、`h3`→`text-title`、`h5`→`text-heading`、`subtitle1`→`text-body font-medium`、`subtitle2`→`text-label`（色 `text-text-secondary`）、`body1`→`text-body`、`caption`→`text-caption`（色 `text-text-secondary`）、`overline`→`text-caption font-medium`（色 `text-text-secondary`、不全大寫）；主色用 `text-text`、`color="textSecondary"` 改 `text-text-secondary`。`h2`（24px）、`h4`（18px）、`h6`（15px）、`body2`（13px/20px/400）在 §3 無對應級距，**不硬套**，保留原字級或另案拍版；`gutterBottom` 以 `mb-[0.35em]` 保留。`Box` 純排版改原生 div（系統 props 逐鍵轉 className/style）；`Paper` 改 `rounded-md bg-background` 原生 div（橋接主題 elevation 預設 0、paper 底色即 background token，陰影不保留），原 emotion `css` 掛點保留。
 
 11. **emotion `css` 清理（MUI 整包移除）**：順序不可反——先清頁面/元件的 emotion 引用，再清 `mui-theme` 與 scss 的 `.Mui` 規則，最後才刪 `@emotion`／`@mui` package。換置只做視覺等效：扁平 margin/padding/顏色/寬高逐值換 Tailwind（`theme.spacing(n)`＝`n×8px`，如 spacing 4→`p-8`、3→`mt-6`、2→`mb-4`；任意 px 用任意值如 `w-[150px]`／`min-w-[275px]`／`my-[30px]` 等原值；原 `!important` 值以 `!` 前綴如 `!text-danger` 保留），不自創間距或改版面結構。pragma-only 判定須逐檔 grep 證明無 `css={}`／`css()` 使用才刪 pragma；仍以 `css()` 定義 styles 物件者（即使無 css prop）不算 pragma-only。含巢狀 `&`、`.Mui*` 選擇器、`@media`、動態/條件 css、共用 `styles/` 模組（56 檔）者不機械直換，須先定共用轉換方式或另開專項；`className` 契約為 emotion 物件的共用元件（下游以 `css={className}` 套用）不可逕換字串，屬跨元件契約專項；套用點元件不吃 `className` 者跳過。列印檔不碰（列印專項）。
 
 ## 11. 報表 compact 規格
 
-Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現**。範圍只限 presentation／print CSS；欄位、數字、計算、查詢、列印觸發（`window.print`、`#printMain` 等）一律不動。本節只寫「已有的能力」與「待盤點」，沒落地的不當成已實作。22 張會直接列印的報表同樣適用 compact（Jason 2026-10-19 拍版併入專項），只改樣式、不改欄位與數字，列印預覽僅唯讀確認。
+Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現**。範圍只限 presentation／print CSS；欄位、數字、計算、查詢、列印觸發（`window.print`、`#printMain` 等）一律不動。本節只寫「已有的能力」與「待盤點」，沒落地的不當成已實作。22 張會直接列印的報表同樣採精簡版且樣式一致（Jason 2026-10-19 拍版併入專項），只改樣式、不改欄位與數字，列印預覽僅唯讀確認。
 
 ### 已有能力（以 `src/ui/table.js`、`src/ui/format.js` 為準）
 
@@ -166,17 +171,17 @@ Jason 2026-10-19 拍版：**所有報表樣式一致，以 compact 緊湊呈現*
 | 金額 | 一律 `formatMoney`（`1,234`，千分位、不加幣別；空值顯示 0）或 `formatNumber`（空值留白）；數量用 `formatNumber`；同一畫面格式一致（§7）。 |
 | 列印 | `Table` 內建 `print:`：黑色細格線、白底黑字、表頭／表尾底色透明、外框不裁切（`print:overflow-visible`）；頁面自己的 `@media print` 權重較高，仍以頁面為準。 |
 | 分頁 | `TablePagination` 固定在表格下方右側。 |
+| 篩選列 | 共用 `ReportToolbar`（2026/10/25）。一列 `items-center`、間距 `gap-2`（8px）。日期輸入與「篩選」「搜尋」高 36px（`h-9`／Button `md`），手機 40px（`max-sm:h-10`）。列內圖示鈕桌機 32px（`size="icon"` 或 `sm`），手機 40px。篩選卡片維持 `gap-4`、`p-4`。頁面不要在這一列再加 `my-*`。 |
 
 ### 待盤點（尚未實作，不得寫進頁面當成既有）
 
-- `dense` 以 `Table` 層級的後代選擇器實作，**沒有** `TableHead`／`TableCell` 層級的 compact prop（水平內距 `px-2` 已於報表 compact 第一批補上，PR #20）。2026/10/19 全面複查 41 個報表目錄（詳 `docs/redesign/REPORT_COMPACT.md`）：已 compact 35 目錄（含互助點數明細與本批漏改補正），其餘 7 目錄仍用 MUI 表格（排班格線、薪資條、排行榜展開列等）與 2 個巢狀表風險頁待專批；欄寬變窄對列印版面的影響待實機列印預覽確認。
-- **篩選／工具列密度**：目前沒有共用的報表工具列元件；各報表篩選列的間距、控制項高度（36px／32px）尚未統一，待盤點後訂規格。
+- `dense` 以 `Table` 層級的後代選擇器實作，**沒有** `TableHead`／`TableCell` 層級的 compact prop（水平內距 `px-2` 已於報表 compact 第一批補上，PR #20）。2026/10/19 的 41 個報表目錄盤點與 MUI 數字見 `docs/redesign/REPORT_COMPACT.md`，僅為歷史記錄；目前列印報表採一致精簡版。實機驗收進度見 `docs/redesign/TODO.md`。
 - **列印邊界（`@page` margin）與換頁**：尚無共用規則；`thead` 跨頁重複、`tr` 避免被切斷、表尾合計只出現一次，皆待盤點現有 `initialize.scss` 列印規則後再訂，且不得動 `#printMain`／`#printThermal` 與 `className` 含 `print` 的元素。
-- 各報表目前仍有 MUI Table 與自訂 CSS 混用；逐目錄改為 `ui/table` 時，先對照舊版欄位與數字一致（§10 第 4 點）。
+- 報表頁仍可能使用相容表格與自訂 CSS；逐頁收尾時先對照欄位與數字一致（§10 第 4 點）。
 
 ## 12. 設定頁樣板（OpenAI 設定頁式，Jason 2026/10/19 拍版）
 
-Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比照其設計語言統一。本節只適用設定類（系統參數、個人檔案內的設定分頁、業績／抽成參數等），**報表、帳單四兄弟、列印頁不適用**——那些維持 §11 compact 與既有合計／列印規範，不得因本節改成寬鬆留白。**唯一例外（Jason 2026/10/19 新指示，覆蓋先前「報表不套設定樣板」僅限本頁）：報表目錄頁（`/dashboard-list-detail`）套左選單＋右側內容**，僅目錄頁本身比照本節版面，各報表頁、帳單頁仍不套、維持原規範。此頁桌機再依 Jason 同日追加指示採 Billing 式左右底色：左選單欄整欄 `bg-surface` 淺灰、右內容 `bg-background` 白，兩欄相接不加 border／shadow 分隔（手機維持頂部橫向分頁、不套底色）。
+Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比照其設計語言統一。本節只適用設定類（系統參數、個人檔案內的設定分頁、業績／抽成參數等），**報表、帳單四兄弟、列印頁不適用**——那些維持 §11 compact 與既有合計／列印規範，不得因本節改成寬鬆留白。**唯一例外（Jason 2026/10/19 新指示，覆蓋先前「報表不套設定樣板」僅限本頁）：報表目錄頁（`/dashboard-list-detail`）套左選單＋右側內容**，僅目錄頁本身比照本節版面，各報表頁、帳單頁仍不套、維持原規範。此頁桌機再依 Jason 同日追加指示採 Billing 式左右底色：左選單欄整欄 `bg-surface` 淺灰、右內容 `bg-background` 白，兩欄相接不加 border／shadow 分隔（手機維持頂部橫向分頁、不套底色）。左欄外框圓角在共用 `settings-nav`（`md:rounded-2xl`，16px，與 `Card` 相同），高度貼內容（`md:h-fit`／`md:self-start`，不要被父層拉成滿高），頁面往下捲時黏在可視區（`md:sticky md:top-4`；`#printContainer` 的橫向 overflow 會擋住純 CSS sticky 時，由元件改以 fixed 補上）。系統參數、業績抽成參數、收支科目、個人檔案、員工資料、顧客詳細資料、報表目錄同一套選單一起套用。這個左欄**不要**做 hover 浮出細項；點分類只切換右側內容。桌機滑過主側欄有子項的項目才浮出細項，見 §15。
 
 ### 版面（共用元件 `src/ui/settings-nav.js`）
 
@@ -184,7 +189,7 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
 |---|---|
 | 頁首 | 沿用 `PageHeader`（頁面標題一個）；不在右側內容區再重複大標題。 |
 | 左選單（桌機 `md` 以上） | 頁內窄選單寬 `w-60`（240px）、整欄 `bg-surface` 淺灰底（深色以 token 自動對應，不得寫死淺色）＋內距 `p-3`；項目高 36px、`rounded-md`、左圖示 16px（lucide）＋標籤；未選 `text-secondary`＋hover `surface-hover`；選中比照 §6 Sidebar：`bg-accent/8`＋`text-accent`＋字重 500（在 `surface` 上仍須清楚可辨）。**不用截圖的粉紅色**，開關與選取一律既有品牌藍 token。 |
-| 左右底色（桌機 `md` 以上，Jason 2026/10/19 以 Cursor Billing 截圖指定） | 左選單欄 `surface` 淺灰、右內容區 `background` 白底（右欄 `md:bg-background md:px-6 md:py-6`）；兩欄以 `md:items-stretch` 等高、直接相鄰，Tabs 容器**不得**用 `gap` 留白溝槽，兩欄相接處**不得**加 `border`、陰影或分隔線。右側既有白色卡片在白底上仍保留既有 1px 卡片邊框辨識，不得拿掉。 |
+| 左右底色（桌機 `md` 以上，Jason 2026/10/19 以 Cursor Billing 截圖指定） | 左選單欄 `surface` 淺灰、右內容區 `background` 白底（右欄 `md:bg-background md:px-6 md:py-6`）；兩欄直接相鄰，Tabs 容器**不得**用 `gap` 留白溝槽，兩欄相接處**不得**加 `border`、陰影或分隔線。左欄灰底高度貼選項（`self-start`／`h-fit`），不要跟右欄拉成一樣高。右側既有白色卡片在白底上仍保留既有 1px 卡片邊框辨識，不得拿掉。 |
 | 左選單（手機） | 不做第二套側欄：退回頁面頂部橫向可捲動的分頁列（底線式，與 `ui/tabs` 既有呈現一致），避免 390px 擠壓；觸控目標仍 ≥40px 由分頁列高度承擔。 |
 | 右內容 | `min-w-0 flex-1 md:bg-background md:px-6 md:py-6`（桌機白底，與左灰欄等高相鄰、無分隔線）；先一段分段標題（`heading`，即目前分類名），其下既有卡片以 `gap-6` 直疊。每張卡片沿用 §6 Card（`rounded-lg`、1px `border`、`bg-background`、內距 20px、無陰影）；卡片內每列維持「標題／說明在左、控制在右」的既有表單結構，本樣板不發明新欄位列元件。 |
 | 容器寬度 | 有頁內左選單的設定頁容器上限 `max-w-6xl`（選單 240＋內容約 880），內容卡片內的欄位寬度維持各頁既有值；無頁內選單的表單頁仍依 §4 `max-w-3xl`／設定頁 `max-w-4xl`。 |
@@ -207,6 +212,7 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
   - `/authority` **本批跳過**：角色權限管理為單一清單卡＋`min-w-[700px]` 寬表，無表單分區；套左選單只剩單一項目屬假選單且會擠壓寬表，故維持原清單版面（compact），日後如改版走清單／表格規範另案，不在本樣板批硬套。
 - 2026/10/19 Jason 新指示例外（`claude/report-catalog-nav-box`，v3.0-1020-0019）：報表目錄 `/dashboard-list-detail` 原六分類卡片 grid 改比照 Parameter：`ui/tabs`＋`ui/settings-nav` 左選單（桌機 240px、選中 `bg-accent/8`＋主題藍字）＋右側分類標題與單張連結卡，手機回到頂部橫向捲動分頁；六分類順序與圖示（日報表 CalendarDays／營業 ChartColumn／設計師 Users／互助 HeartHandshake／商品 Package／管理分析 LayoutDashboard）、各連結列樣式與權限判斷全保留，左選單只列有權限分類並預設第一個有權限者；桌機左欄整欄 `bg-surface`、右側 `bg-background` 白、兩欄 `gap-0` 相接無分隔線（Jason 追加 Billing 截圖指示，不新色票、不動共用 `settings-nav`、手機不套）。此例外僅限目錄頁本身，各報表頁與帳單頁不套本樣板。
 - 2026/10/20 顧客詳細資料推廣（`claude/customer-detail-nav-box`，v3.0-1020-0108）：Jason 新指示「顧客詳細資料這邊也要跟系統參數設定一樣排好」——`CustomerManagementDetails/index.js` 頂部橫向 Tabs 改比照 Parameter 的 `ui/tabs`＋`ui/settings-nav` 左選單（桌機 240px、左 `surface`／右 `background`、無分隔線由共用層承擔，見 #115／MEMORY #125）＋右側 `SettingsSectionHeading` 目前分頁名，手機頂部橫向捲動分頁，容器 `max-w-6xl`；九分頁圖示 基本資料 User／消費記錄 Receipt／卡券紀錄 Ticket／入金紀錄 Wallet／紅利點數紀錄 Star／顧客追蹤 UserCheck／簡訊發送紀錄 MessageSquare／抽獎券紀錄 Gift／會員卡列表 CreditCard。分頁 value、條件分頁（bonus 插於 topup 後、membership 尾加）出現條件與順序、`handleTabsChange` 的 `history.push`＋`backto=customer-filter`、`activationMode="manual"`、各分頁內容元件與參數、返回按鈕（移至右內容下方原相對位置）一字未動；各分頁內容（General／Invoices 等）不動，底色僅 `md` 生效。
+- 2026/10/25 左欄圓角、高度與黏住（共用 `ui/settings-nav`，糾正 #310 把 hover 浮出做在這個選單）：`SettingsTabsList` 保留 `md:rounded-2xl`（16px，與 `Card` 相同），灰底改為貼內容高度，桌機往下捲時留在可視區。用到這套選單的頁面一起套用：報表目錄、系統參數、業績抽成參數、收支科目、個人檔案、員工資料、顧客詳細資料。點分類仍只切換右側內容。hover 細項改到主側欄（§15），這個左欄不再浮出。
 
 
 
@@ -256,7 +262,7 @@ Jason 提供 OpenAI「安全性與登入」截圖拍版：**設定類頁面**比
 | 卡片 | `Card`＝`surface` 底、16px 圓角、內距 16px、無框無影；`CardFooter` 不再有上框線。MUI `Card`／`Accordion` 經橋接主題同樣套用。 |
 | 分頁 | `ui/tabs` 改膠囊：高 32px、`px-4`、間距 4px；選中為品牌藍 10% 淡底＋品牌藍字。 |
 | 表格 | 無外框；表頭透明底、14px tertiary medium、高 36px、底線；資料列高 40px、內距 `8px 12px`。 |
-| 側欄 | 寬 264px、`surface` 底、無右框線與底部框線；項目 `px-2.5`、圖示與文字間距 10px；分組標籤 14px tertiary。<br>**頂列**（2026/10/21 Jason 截圖指示）：Logo＋版號（桌機版號疊在 Logo 下方）、右側依序為搜尋鈕（放大鏡，按下才展開搜尋框，自動聚焦，Esc 或 ✕ 關閉並清空）、訂單佇列鈴鐺、收合鈕；選單區不放「選單」標題。鈴鐺面板在手機水平置中、緊接頂列下方（左右各 16px），桌機往右開並限制在視窗內。<br>**目前店家**（Jason 2026/10/21）：選單最上方一行，店家圖示＋店名（粗體、過長截斷，`title` 顯示全名；不顯示「目前店家」標題，僅讀屏可讀）；只顯示、不可點。<br>**底部使用者列**：深淺色切換、切換店家（圖示鈕，`aria-label` 顯示目前店家）、登出，皆為 `ghost size=icon`。 |
+| 側欄 | 展開寬 264px、收合留 80px 圖示欄（`lg` 以上不整欄藏起；窄屏仍是抽屜）。`surface` 底、無右框線與底部框線；項目 `px-2.5`、`rounded-md`、`text-body`、圖示與文字間距 10px；分組標籤 14px tertiary。<br>**頂列**：Logo（版號不放這裡）、右側依序為搜尋鈕（放大鏡，按下才展開搜尋框，自動聚焦，Esc 或 ✕ 關閉並清空）、訂單佇列鈴鐺、收合／展開鈕；選單區不放「選單」標題。鈴鐺面板在手機水平置中、緊接頂列下方（左右各 16px），桌機往右開並限制在視窗內。<br>**桌機 hover 細項**（寬 ≥768、滑鼠、精細指標）：滑過有子項的主選單即浮出該組細項，不必先點展開。浮出面板用既有 `rounded-2xl`，細項沿用選單項目的 `rounded-md` 與 `text-body`。點主項仍展開／收合，點細項仍導頁。窄屏與觸控不靠 hover；圖示欄改以點選打開細項。手機抽屜維持點選展開。<br>**目前店家**（Jason 2026/10/21）：選單最上方一行，店家圖示＋店名（粗體、過長截斷，`title` 顯示全名；不顯示「目前店家」標題，僅讀屏可讀）；只顯示、不可點。圖示欄不顯示這一行文字。<br>**底部**：深淺色切換、切換店家（圖示鈕，`aria-label` 顯示目前店家）、登出，皆為 `ghost size=icon`。最底一行是版號（`text-caption`、`text-tertiary`），只顯示、不是按鈕、不開更新紀錄。 |
 | 深色模式 | 依同規則推導：`canvas` `#0B0B0B`、`background` `#111`、`surface` `#161616`、`surface-hover` `#1F1F1F`、文字 `#EDEDED`／`#A8A8A8`／`#8A8A8A`（在 canvas／background／surface／surface-hover 上皆 ≥ 4.5:1，`text-tertiary` 最低 4.77）；狀態色 `#19C37D`／`#F0B429`／`#F97066` 皆 ≥ 5.9:1，不需調整。 |
 | 搜尋下拉 | `ui/combobox`（取代 MUI Autocomplete，行為由 headless 的 downshift 處理）：介面與 MUI Autocomplete 相容，頁面只換 import；`renderInput` 的 TextField 只當 props 載體，`label` 一律成為欄位上方標籤，旁邊的搜尋鈕要底部對齊（`items-end`）；多選已選項目為膠囊、可 Backspace 移除；選單在對話框內會掛在對話框裡。 |
 | 未採用 | 主內容 `max-width 1136px`（ERP 報表與列表需要寬度，維持滿版；設定頁已是 `max-w-6xl`）；Inter 字型（全站沿用 Roboto＋Noto Sans TC）；內容區外距沿用舊全域 `#printContainer`（約 40px，與 Grok 32px 接近，避免動到列印相關樣式）。 |

@@ -84,7 +84,7 @@ const slotOf = (dayIndex, time) => {
 }
 
 beforeEach(() => {
-  localStorage.setItem('userMerchant', { id: 'm1' })
+  localStorage.setItem('userMerchant', JSON.stringify({ id: 'm1' }))
   mockNameType = 'NAME'
   mockApi.remarkDisplay = true
   mockApi.cusRemarkDisplay = true

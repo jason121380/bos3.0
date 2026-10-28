@@ -275,7 +275,7 @@ describe('帳單詳細：新增／編輯顧客彈窗的開啟', () => {
     await pageReady(page)
     enableCustomerField()
     fireEvent.click(screen.getByLabelText('新增顧客', { selector: 'button' }))
-    const modal = (await modalTitle()).closest('.MuiModal-root')
+    const modal = (await modalTitle()).closest('[role="dialog"]')
     typeLikeBrowser(modal.querySelector('input[name="name"]'), '林先生')
     typeLikeBrowser(modal.querySelector('input[name="cellphone"]'), '0922333444')
     const add = within(modal).getByText('新增', { selector: 'button' })
@@ -307,7 +307,7 @@ describe('帳單詳細：新增／編輯顧客彈窗的開啟', () => {
     await pageReady(page)
     await customerShown()
     fireEvent.click(screen.getByLabelText('編輯顧客資料', { selector: 'button' }))
-    const modal = (await modalTitle()).closest('.MuiModal-root')
+    const modal = (await modalTitle()).closest('[role="dialog"]')
     expect(modal.querySelector('input[name="remark"]')).toHaveValue('對洗髮精過敏')
     await wait(() => expect(within(modal).getByDisplayValue('網路')).toBeInTheDocument())
     await wait(() => expect(within(modal).getByDisplayValue('王小美')).toBeInTheDocument())
@@ -318,7 +318,7 @@ describe('帳單詳細：新增／編輯顧客彈窗的開啟', () => {
     await pageReady(page)
     await customerShown()
     fireEvent.click(screen.getByLabelText('編輯顧客資料', { selector: 'button' }))
-    const modal = (await modalTitle()).closest('.MuiModal-root')
+    const modal = (await modalTitle()).closest('[role="dialog"]')
     expect(modal.querySelector('input[name="remark"]')).toHaveValue('')
     expect(within(modal).queryByDisplayValue('null')).toBeNull()
   })
@@ -327,7 +327,7 @@ describe('帳單詳細：新增／編輯顧客彈窗的開啟', () => {
     const page = setup({ order: withCustomer(), FETCH_CUSTOMER_DETAIL: { customer: null } })
     await pageReady(page)
     fireEvent.click(screen.getByLabelText('編輯顧客資料', { selector: 'button' }))
-    const modal = (await modalTitle()).closest('.MuiModal-root')
+    const modal = (await modalTitle()).closest('[role="dialog"]')
     expect(modal.querySelector('input[name="name"]')).toHaveValue('')
     expect(modal.querySelector('input[name="cellphone"]')).toHaveValue('')
   })
@@ -337,7 +337,7 @@ describe('帳單詳細：在彈窗編輯顧客後的帳單顧客', () => {
   const openEdit = async () => {
     await customerShown()
     fireEvent.click(screen.getByLabelText('編輯顧客資料', { selector: 'button' }))
-    return (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    return (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
   }
 
   it('更新顧客失敗後關閉彈窗：帳單仍是原顧客，照樣可重新結帳', async () => {

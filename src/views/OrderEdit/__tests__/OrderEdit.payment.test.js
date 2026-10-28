@@ -110,7 +110,7 @@ describe('帳單詳細：扣入金', () => {
     const page = setup({ order: withCustomer() })
     await pageReady(page)
     fireEvent.click(await screen.findByText('異動入金', { selector: 'button' }))
-    const modal = (await screen.findByText('異動入金', { selector: 'h3' })).closest('.MuiModal-root')
+    const modal = (await screen.findByRole('heading', { name: '異動入金' })).closest('[role=dialog]')
     fireEvent.click(within(modal).getByText('返回', { selector: 'button' }))
     await wait(() => expect(screen.queryByText('異動入金', { selector: 'h3' })).toBeNull())
   })

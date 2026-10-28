@@ -84,10 +84,10 @@ function Results({
                 return (
                   <TableRow key={index}>
                     <TableCell className={`${sticky1} px-2`}>
-                      <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-accent">
+                      <Button asChild variant="ghost" size="icon" className="text-accent">
                         <RouterLink
                           aria-label="編輯"
-                          to={`/accounting/deatil/${data.id}`}
+                          to={`/accounting/detail/${data.id}`}
                         >
                           <Pencil strokeWidth={1.75} />
                         </RouterLink>

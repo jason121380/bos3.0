@@ -1,0 +1,57 @@
+# 前端 CI。舊檔 .github/workflows/node.js.yml 在 GitHub 上被手動停用（disabled_manually），
+# 停用狀態綁在那個檔案路徑，沒有分支保護也無法用 token 重新啟用。
+# 這個新路徑會註冊成另一個 workflow，預設啟用，不需要 GitHub Pro 或分支保護。
+# 任何 branch 的 push 與所有 PR 都會跑：安裝一次、lint／build 與 test 各自獨立。
+
+name: Frontend CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: frontend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: 24.22.1
+  CYPRESS_INSTALL_BINARY: 0
+
+jobs:
+  build:
+    name: Lint and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+      - name: Lint (build rules)
+        run: npm run lint:build
+      - name: Build
+        run: npm run build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+      - name: Test
+        run: npm run test:nowatch
+        env:
+          CI: true

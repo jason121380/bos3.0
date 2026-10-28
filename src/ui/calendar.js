@@ -19,7 +19,7 @@ import {
   startOfWeek,
 } from 'date-fns'
 import zhTW from 'date-fns/locale/zh-TW'
-import { cn } from './utils'
+import { cn, focusRing } from './utils'
 
 // 自家月曆視圖（日期選擇器本體，Jason 2026/10/20 拍版「日期選擇器本體自己做」）：日格、年份格、時間清單。
 // 規則比照原 MUI x-date-pickers（zh-TW）：一週從星期一開始（date-fns zh-TW weekStartsOn=1）、星期標題取單字（一二三四五六日）、
@@ -57,7 +57,13 @@ const NavButton = ({ label, onClick, disabled, children }) => (
     title={label}
     disabled={disabled}
     onClick={onClick}
-    className="flex h-8 w-8 items-center justify-center rounded-full text-text-secondary hover:bg-surface-hover disabled:pointer-events-none disabled:opacity-40"
+    // 視覺維持 32px；手機以透明偽元素把命中區放到 40px（STYLE §9），不撐開月曆列
+    className={cn(
+      "relative flex h-8 w-8 items-center justify-center rounded-full text-text-secondary hover:bg-surface-hover disabled:pointer-events-none disabled:opacity-40 max-sm:before:absolute max-sm:before:-inset-1 max-sm:before:content-['']",
+      focusRing,
+      // 月曆彈層 overflow-hidden，焦點框畫在內側才不會被裁掉
+      'focus-visible:ring-inset focus-visible:ring-offset-0'
+    )}
   >
     <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current" aria-hidden="true">
       <path d={children} />
@@ -107,7 +113,7 @@ export function DayView({ value, month, onMonthChange, onSelect, onOpenYear, con
   return (
     <div className="flex w-[320px] max-w-full flex-col">
       <div className="flex h-12 items-center justify-between pl-6 pr-3">
-        <button type="button" onClick={onOpenYear} aria-label="選擇年份" className="flex items-center gap-1 rounded-md px-1 text-label font-semibold text-text hover:bg-surface-hover">
+        <button type="button" onClick={onOpenYear} aria-label="選擇年份" title="選擇年份" className={cn('flex min-h-10 items-center gap-1 rounded-md px-2 text-label font-semibold text-text hover:bg-surface-hover', focusRing, 'focus-visible:ring-inset focus-visible:ring-offset-0')}>
           <span aria-live="polite">{fmt(month, 'LLLL yyyy')}</span>
           <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current text-text-secondary" aria-hidden="true">
             <path d={DROP} />
@@ -202,7 +208,7 @@ export function YearView({ value, month, onSelect, constraints }) {
             disabled={disabled}
             onClick={() => onSelect(setYearClamped(isValidDate(value) ? value : month, y))}
             className={cn(
-              'mx-auto h-9 w-[72px] rounded-lg text-body text-text transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+              'mx-auto h-9 w-[72px] max-sm:min-h-10 rounded-lg text-body text-text transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
               y === thisYear && !isSelected && 'font-semibold',
               isSelected && 'bg-accent font-semibold text-white hover:bg-accent',
               disabled && 'pointer-events-none opacity-40'
@@ -225,7 +231,7 @@ export function MonthView({ value, month, onSelect, onOpenYear, constraints }) {
     <div className="flex w-[320px] max-w-full flex-col">
       {/* 同 MUI：月份視圖上方也有「十月 2026 ▾」標頭，點擊切換到年份 */}
       <div className="flex h-12 items-center pl-6 pr-3">
-        <button type="button" onClick={onOpenYear} aria-label="選擇年份" className="flex items-center gap-1 rounded-md px-1 text-label font-semibold text-text hover:bg-surface-hover">
+        <button type="button" onClick={onOpenYear} aria-label="選擇年份" title="選擇年份" className={cn('flex min-h-10 items-center gap-1 rounded-md px-2 text-label font-semibold text-text hover:bg-surface-hover', focusRing, 'focus-visible:ring-inset focus-visible:ring-offset-0')}>
           <span aria-live="polite">{fmt(base, 'LLLL yyyy')}</span>
           <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current text-text-secondary" aria-hidden="true">
             <path d={DROP} />
@@ -249,7 +255,7 @@ export function MonthView({ value, month, onSelect, onOpenYear, constraints }) {
             disabled={disabled}
             onClick={() => onSelect(new Date(year, m, Math.min(base.getDate(), endOfMonth(first).getDate()), base.getHours(), base.getMinutes()))}
             className={cn(
-              'mx-auto h-9 w-[84px] rounded-lg text-body text-text transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+              'mx-auto h-9 w-[84px] max-sm:min-h-10 rounded-lg text-body text-text transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
               isSelected && 'bg-accent font-semibold text-white hover:bg-accent',
               disabled && 'pointer-events-none opacity-40'
             )}
@@ -288,7 +294,7 @@ export function TimeView({ value, onSelectHour, onSelectMinute, maxDateTime, min
               disabled={disabled}
               onClick={() => onPick(candidate)}
               className={cn(
-                'my-0.5 h-9 w-full rounded-lg text-[14px] text-text tabular-nums hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+                'my-0.5 h-9 w-full max-sm:min-h-10 rounded-lg text-[14px] text-text tabular-nums hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
                 isSelected && 'bg-accent font-semibold text-white hover:bg-accent',
                 disabled && 'pointer-events-none opacity-40'
               )}

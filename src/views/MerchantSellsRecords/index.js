@@ -3,8 +3,6 @@ import Page from 'components/Page'
 import ProductAutoComplete from 'components/ProductAutoComplete'
 import { endOfDay, startOfMonth } from 'date-fns'
 import useFetchProductOrders from 'hooks/useFetchProductOrders'
-import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
-import isExportCustomerMasked from 'helper/exportCustomerMask'
 import idx from 'idx'
 import produce from 'immer'
 import React from 'react'
@@ -48,8 +46,6 @@ export default function DecreaseDetail({ history, location }) {
     setPageSetting(value)
     backToFirstPage()
   }
-  // 匯出客資一律經 exportCustomerMask：只有遮罩設定查詢成功且為 false 才匯出完整顧客姓名（Jason 2026/10/22 長期授權修正）
-  const isCustomerDataMasked = isExportCustomerMasked(useFetchCustomerDataMarked())
   const handleProductChange = product => {
     setPageSetting({ ...pageSetting, productId: product.id })
     backToFirstPage()
@@ -98,7 +94,6 @@ export default function DecreaseDetail({ history, location }) {
             _.data.productOrders && (
               <Results
                 results={_.data.productOrders}
-                isCustomerDataMasked={isCustomerDataMasked}
                 handleOnChangePage={(_event, page) =>
                   handleOnChangePage({ page, key: 'merchantSell' })
                 }

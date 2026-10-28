@@ -1,8 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { CompatLayer } from './compat-layer'
 import { useCombobox } from 'downshift'
 import { ChevronDown, X } from 'lucide-react'
-import { cn } from './utils'
+import { cn, focusRing, phoneIconHit } from './utils'
+import { useLayerRef } from './layer-stack'
 
 // 自家搜尋下拉（取代 MUI Autocomplete，Jason 2026/10/20 拍版「Autocomplete 自己做」）。
 // 行為（鍵盤、無障礙）交給 headless 的 downshift，外觀全部依 STYLE.md。
@@ -44,8 +46,9 @@ const assignRef = (ref, node) => {
   else ref.current = node
 }
 
-// 選單掛載點：在對話框內就掛在對話框裡（避免 MUI／Radix 的焦點鎖與點擊外部關閉），否則掛在 body
-const findPortalHost = node => (node && node.closest('[role="dialog"], .MuiDialog-paper, .MuiPopover-paper')) || document.body
+// 選單掛載點：在對話框內就掛在對話框裡（配合 Radix 焦點鎖與外點關閉），否則掛在 body。
+// 正式對話框與日期浮層都是 role=dialog，不再輸出 MuiDialog-paper／MuiPopover-paper。
+const findPortalHost = node => (node && node.closest('[role="dialog"]')) || document.body
 
 function usePopupPosition(anchorRef, open) {
   const [style, setStyle] = React.useState(null)
@@ -235,7 +238,15 @@ const Autocomplete = React.forwardRef(function Autocomplete(
     },
   })
 
-  const handleBlur = event => {
+  const blurTimer = React.useRef(null)
+  const cancelPendingBlur = () => {
+    clearTimeout(blurTimer.current)
+    blurTimer.current = null
+  }
+  React.useEffect(() => () => clearTimeout(blurTimer.current), [])
+
+  const getBlurOption = () => autoSelect && highlightedIndex >= 0 ? filtered[highlightedIndex] : undefined
+  const finishBlur = (event, blurOption) => {
     if (inMenuInteraction()) {
       setFocused(false)
       // downshift 自己也會在失焦時關選單（它以「滑鼠按住中」判斷是否在點選單，觸控時失焦早於模擬的 mousedown，判斷不到），一併略過
@@ -243,8 +254,8 @@ const Autocomplete = React.forwardRef(function Autocomplete(
       return
     }
     setFocused(false)
-    if (autoSelect && highlightedIndex >= 0 && filtered[highlightedIndex] !== undefined) {
-      selectOption(event, filtered[highlightedIndex])
+    if (blurOption !== undefined) {
+      selectOption(event, blurOption)
     } else if (freeSolo && dirty && !multiple) {
       // freeSolo：失焦時把輸入文字當作值（比照 MUI autoSelect 以外的行為，只在 clearOnBlur 為 false 時保留）
       if (clearOnBlur) setInputText(selectedLabel, event, 'reset')
@@ -253,6 +264,33 @@ const Autocomplete = React.forwardRef(function Autocomplete(
     }
     setDirty(false)
     setOpen(false, event)
+  }
+
+  const finishBlurRef = React.useRef(finishBlur)
+  finishBlurRef.current = finishBlur
+
+  const handleBlur = event => {
+    if (inMenuInteraction()) {
+      finishBlur(event)
+      return
+    }
+    cancelPendingBlur()
+    if (event.relatedTarget && event.relatedTarget !== document.body && event.relatedTarget !== document &&
+        document.activeElement === document.body && inputEl.current && inputEl.current.closest('[role="dialog"]')) {
+      // 滑鼠移焦時 activeElement 會短暫是 body；此時同步移除選項／圖層節點，
+      // 會讓 Dialog 的 FocusScope MutationObserver 搶先聚焦容器，打斷按鈕聚焦。
+      // 等下一個 task 才完成 blur，讓原生焦點先落定；同時阻止 downshift 提早關閉。
+      // 僅處理窗內 body 的交接空檔；一般表單、觸控選取仍走原路徑。
+      // 保留失焦當下的 autoSelect 選項，收尾讀最新欄位值，避免移焦後寫回舊值；重聚焦或卸載時取消。
+      event.nativeEvent.preventDownshiftDefault = true
+      const blurOption = getBlurOption()
+      blurTimer.current = setTimeout(() => {
+        blurTimer.current = null
+        finishBlurRef.current(event, blurOption)
+      }, 0)
+      return
+    }
+    finishBlur(event, getBlurOption())
   }
 
   const handleKeyDown = event => {
@@ -299,6 +337,7 @@ const Autocomplete = React.forwardRef(function Autocomplete(
     onKeyDown: handleKeyDown,
     onBlur: handleBlur,
     onFocus: event => {
+      cancelPendingBlur()
       setFocused(true)
       const fp = fieldPropsRef.current
       if (fp.onFocus) fp.onFocus(event)
@@ -324,7 +363,7 @@ const Autocomplete = React.forwardRef(function Autocomplete(
   const endAdornment = (
     <span className="flex shrink-0 items-center gap-0.5">
       {showClear && (
-        <button type="button" tabIndex={-1} aria-label="清除" className="flex h-6 w-6 items-center justify-center rounded-full text-text-tertiary hover:bg-surface-hover hover:text-text" onMouseDown={clear}>
+        <button type="button" tabIndex={-1} aria-label="清除" title="清除" className={cn(phoneIconHit, 'flex h-6 w-6 items-center justify-center rounded-full text-text-tertiary hover:bg-surface-hover hover:text-text', focusRing)} onMouseDown={clear}>
           <X className="h-4 w-4" strokeWidth={1.75} />
         </button>
       )}
@@ -354,7 +393,8 @@ const Autocomplete = React.forwardRef(function Autocomplete(
               type="button"
               tabIndex={-1}
               aria-label={`移除 ${labelOf(getOptionLabel, item)}`}
-              className="flex h-4 w-4 items-center justify-center rounded-full text-text-tertiary hover:text-text"
+              title={`移除 ${labelOf(getOptionLabel, item)}`}
+              className={cn(phoneIconHit, 'flex h-4 w-4 items-center justify-center rounded-full text-text-tertiary hover:text-text', focusRing)}
               onMouseDown={event => {
                 event.preventDefault()
                 commit(event, selectedList.filter((_, i) => i !== index), 'removeOption', { option: item })
@@ -396,10 +436,19 @@ const Autocomplete = React.forwardRef(function Autocomplete(
 
   const { style: popupStyle, host } = usePopupPosition(anchorRef, showPopup)
 
+  const menuProps = getMenuProps({}, { suppressRefError: true })
+  const downshiftMenuRef = React.useRef(null)
+  downshiftMenuRef.current = menuProps.ref
+  const { ref: layerRef, zIndex } = useLayerRef(undefined, showPopup)
+  const setMenuRef = React.useCallback(node => {
+    assignRef(downshiftMenuRef.current, node)
+    layerRef(node)
+  }, [layerRef])
   const menu = (
     <ul
-      {...getMenuProps({}, { suppressRefError: true })}
-      // 不讓點選單時輸入框失焦（避免 MUI 焦點鎖搶回焦點、選單先關閉）
+      {...menuProps}
+      ref={setMenuRef}
+      // 不讓點選單時輸入框失焦（避免 Radix 焦點鎖搶回焦點、選單先關閉）
       onMouseDown={event => event.preventDefault()}
       onPointerDown={() => {
         menuPointerAt.current = Date.now()
@@ -408,7 +457,7 @@ const Autocomplete = React.forwardRef(function Autocomplete(
         'ui-root z-[1500] m-0 max-h-80 list-none overflow-y-auto rounded-lg border border-solid border-border bg-background p-1 shadow-float',
         !showPopup && 'hidden'
       )}
-      style={{ ...(popupStyle || {}), pointerEvents: 'auto' }}
+      style={{ ...(popupStyle || {}), zIndex, pointerEvents: 'auto' }}
     >
       {showPopup &&
         (filtered.length === 0 ? (
@@ -483,6 +532,8 @@ const Autocomplete = React.forwardRef(function Autocomplete(
         {endNode}
       </div>
       {helperText && <p className={cn('m-0 text-caption', error ? 'text-danger' : 'text-text-tertiary')}>{helperText}</p>}
+      {/* 行為登記獨立於選單，開關／重開時不重新掛載 downshift 的選單與 ref。 */}
+      <CompatLayer open={showPopup} onEscapeKeyDown={event => event.preventDefault()} />
       {host ? ReactDOM.createPortal(menu, host) : null}
     </div>
   )

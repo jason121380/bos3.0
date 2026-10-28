@@ -13,7 +13,7 @@ import { cn, focusRing } from './utils'
 
 const GroupContext = createContext(null)
 
-const sizes = { sm: 'h-7 px-2.5 text-label', md: 'h-8 px-3.5 text-label max-sm:h-9' }
+const sizes = { sm: 'h-7 px-2.5 text-label max-sm:min-h-10', md: 'h-8 px-3.5 text-label max-sm:min-h-10' }
 // 也接受 MUI 的 size 名稱，替換時可原樣保留
 const sizeKey = size => ({ small: 'sm', medium: 'md', large: 'md' }[size] || size)
 
@@ -59,7 +59,7 @@ const ToggleGroupItem = React.forwardRef(({ value, selected, onChange, onClick, 
       disabled={isDisabled}
       onClick={handleClick}
       className={cn(
-        !group && 'ui-root', // 單獨使用（可能放在未改版的 MUI 區塊中）時自帶基礎樣式
+        !group && 'ui-root', // 單獨使用時自帶 ui-root 基礎樣式
         'inline-flex shrink-0 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-full border-0 font-medium transition-colors',
         'disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-4',
         sizes[sizeKey(size || (group && group.size))] || sizes.md,

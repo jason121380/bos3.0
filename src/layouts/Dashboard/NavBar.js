@@ -1,4 +1,4 @@
-import { CalendarDays, ChartColumn, Contact, CreditCard, Gift, LogOut, Megaphone, Package, Pin, Receipt, Search, Settings, Store, Users, X } from 'lucide-react'
+import { CalendarDays, ChartColumn, Contact, CreditCard, Gift, LogOut, Megaphone, Package, Pin, Receipt, Search, Settings, Store, Users, Wrench, X } from 'lucide-react'
 import SlotPortal from 'components/SlotPortal'
 import { SIDEBAR_SEARCH_SLOT_ID } from './TopBar'
 import NavItem, { isWithinHref } from 'components/NavItem'
@@ -18,9 +18,11 @@ import { useFetchGetDisablePendingOrder } from 'hooks/useFetchGetParameterAboutS
 import { useDispatch, useSelector } from 'react-redux'
 import { pinnedTableActions } from './../../store/pinnedTable'
 import pageData from 'helper/pageData'
+import { ENGINEERING_MENU_TITLE, ENGINEERING_PATH, clearEngineeringUnlock, isExecutiveAuthority } from 'helper/engineeringMode'
+import { APP_VERSION } from '../../version'
 import { Button } from 'ui/button'
 import { Input } from 'ui/input'
-import { SidebarContent, SidebarFooter, SidebarLabel } from 'ui/sidebar'
+import { SidebarContent, SidebarFooter, SidebarLabel, SIDEBAR_RAIL_HIDDEN_CLASS } from 'ui/sidebar'
 import { cn, focusRing } from 'ui/utils'
 import { syncThemeFromServer } from 'lib/theme-mode'
 
@@ -47,16 +49,16 @@ function reduceChildRoutes({ acc, pathname, item, reportListExtended, depth = 0 
         key={item.title}
         label={item.label}
         open={Boolean(open) || item.forceOpen || containsCurrent}
+        forceOpen={Boolean(item.forceOpen)}
         title={item.title}
         reportListExtended={reportListExtended}
-      >
-        {renderNavItems({
+        renderItems={() => renderNavItems({
           depth: depth + 1,
           pathname,
           items: item.items,
           reportListExtended: reportListExtended
         })}
-      </NavItem>
+      />
     )
   } else {
     acc.push(
@@ -327,6 +329,10 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
       itemArr[idx].items.splice(2, 0, ...[{ title: '掛單列表', href: '/management/draft-orders' }])
     }
   }
+  // 工程模式只給高階主管，且在搜尋之前放進選單，避免其他角色用關鍵字看到空的分類。
+  if (isExecutiveAuthority(idx(profile, _ => _.data.me.merchantIdentity.authorityName))) {
+    settingItem.items.push({ title: ENGINEERING_MENU_TITLE, href: ENGINEERING_PATH, icon: Wrench })
+  }
   itemArr.push(settingItem)
   // render出來的Array
   const filteredPinnedTable = pinnedTable.filter(d =>
@@ -368,6 +374,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
     if (!profile.loading) {
       const statue = idx(profile, _ => _.data.me.status)
       if (statue === 'banned') {
+        clearEngineeringUnlock()
         localStorage.clear()
         window.location = '/auth/login'
         // history.push('/auth/login')
@@ -400,6 +407,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
         .replace(/^ +/, '')
         .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/')
     })
+    clearEngineeringUnlock()
     localStorage.clear()
     history.push('/auth/login')
     window.location.reload()
@@ -416,6 +424,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
     checkCookie()
     config.forEach(list => (list.subheader = JSON.parse(localStorage.getItem('userMerchant')).name))
   } else {
+    clearEngineeringUnlock()
     localStorage.clear()
     window.location = '/auth/login'
   }
@@ -472,6 +481,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
     if (keepLogin === null && localStorage.getItem('keepLogin') === 'true') {
       document.cookie = 'keepLogin=hello;expires=0;path=/'
     } else if (keepLogin === null && localStorage.getItem('keepLogin') === 'false') {
+      clearEngineeringUnlock()
       localStorage.clear()
       window.location = '/auth/login'
     }
@@ -493,14 +503,14 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
           aria-label="搜尋選單"
           aria-expanded={searchOpen}
           aria-controls="sidebar-menu-search"
-          className={cn(searchOpen && 'bg-surface-hover')}
+          className={cn(SIDEBAR_RAIL_HIDDEN_CLASS, searchOpen && 'bg-surface-hover')}
           onClick={() => (searchOpen ? closeSearch() : openSearch())}
         >
           <Search strokeWidth={1.75} />
         </Button>
       </SlotPortal>
       {searchOpen && (
-        <div className="px-3 pb-2">
+        <div className="px-3 pb-2 lg:group-data-[rail=true]/sidebar:hidden">
           <div className="relative">
             <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-text-tertiary" strokeWidth={1.75} />
             <Input
@@ -529,7 +539,7 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
         {/* 目前店家（Jason 2026/10/21「要呈現現在在哪家店」；同日「不用目前店家的標籤」→ 只留圖示＋店名，標題文字僅供讀屏）：
             只顯示、不可點；切換仍用底部的店家圖示。店名取自 userMerchant，切換店家後整頁重新載入即更新 */}
         {merchantName && (
-          <div className="mb-1 flex items-center gap-2.5 px-2.5 pb-2 pt-1" title={`目前店家：${merchantName}`}>
+          <div className="mb-1 flex items-center gap-2.5 px-2.5 pb-2 pt-1 lg:group-data-[rail=true]/sidebar:hidden" title={`目前店家：${merchantName}`}>
             <Store className="h-4 w-4 shrink-0 text-text-secondary" strokeWidth={1.75} aria-hidden="true" />
             <span className="sr-only">目前店家：</span>
             <span className="min-w-0 truncate text-body font-medium text-text">{merchantName}</span>
@@ -540,13 +550,20 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
             {filteredPinnedTable.length > 0 && (
               <Fragment>
                 <SidebarLabel className="pt-1">釘選</SidebarLabel>
-                <NavItem depth={0} title="釘選頁面" icon={Pin} open={searchTerm.trim() !== ''}>
-                  <div className="flex flex-col gap-0.5">
-                    {filteredPinnedTable.map(d => (
-                      <NavItem key={d.title} depth={0} href={d.href} title={d.title} reportListExtended={reportListExtended} />
-                    ))}
-                  </div>
-                </NavItem>
+                <NavItem
+                  depth={0}
+                  title="釘選頁面"
+                  icon={Pin}
+                  open={searchTerm.trim() !== ''}
+                  forceOpen={searchTerm.trim() !== ''}
+                  renderItems={() => (
+                    <div className="flex flex-col gap-0.5">
+                      {filteredPinnedTable.map(d => (
+                        <NavItem key={d.title} depth={0} href={d.href} title={d.title} reportListExtended={reportListExtended} />
+                      ))}
+                    </div>
+                  )}
+                />
               </Fragment>
             )}
             {/* 「選單」標題已移除（Jason 2026/10/21）；有釘選群組時以間距與選單分開 */}
@@ -565,8 +582,8 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
         )}
       </SidebarContent>
       {!profile.loading && (
-        <SidebarFooter className="flex items-center gap-2">
-          <RouterLink to="/profile/general" className={cn('flex min-w-0 flex-1 items-center gap-2 rounded-md p-1 hover:bg-surface-hover', focusRing)}>
+        <SidebarFooter className="flex items-center gap-2 lg:group-data-[rail=true]/sidebar:flex-col">
+          <RouterLink to="/profile/general" className={cn('flex min-w-0 flex-1 items-center gap-2 rounded-md p-1 hover:bg-surface-hover lg:group-data-[rail=true]/sidebar:flex-none lg:group-data-[rail=true]/sidebar:justify-center', focusRing)}>
             {/* 頭像只是呈現，點擊由外層連結前往個人頁 */}
             {avatar ? (
               <img alt="" src={avatar} className="h-8 w-8 shrink-0 rounded-full border border-solid border-border object-cover" />
@@ -575,18 +592,21 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
                 {String(userName).slice(0, 1)}
               </span>
             )}
-            <span className="flex min-w-0 flex-col">
+            <span className="flex min-w-0 flex-col lg:group-data-[rail=true]/sidebar:hidden">
               <span className="truncate text-body font-medium text-text">{userName}</span>
               <span className="truncate text-caption text-text-secondary">{userRole}</span>
             </span>
           </RouterLink>
           {/* 切換店家圖示鈕由 TopBar 以 Portal 畫進這個插槽（開關狀態與店家清單仍在 TopBar），位置在登出左側（Jason 2026/10/20） */}
           <span id="sidebar-merchant-switch-slot" className="contents" />
-          <Button variant="ghost" size="icon" className="shrink-0" aria-label="登出" title="登出" onClick={handleLogOut}>
+          <Button variant="ghost" size="icon" className={cn('shrink-0', SIDEBAR_RAIL_HIDDEN_CLASS)} aria-label="登出" title="登出" onClick={handleLogOut}>
             <LogOut strokeWidth={1.75} />
           </Button>
         </SidebarFooter>
       )}
+      <p data-testid="sidebar-app-version" className="m-0 shrink-0 px-3 pb-3 text-center text-caption text-text-tertiary lg:group-data-[rail=true]/sidebar:break-all lg:group-data-[rail=true]/sidebar:px-1">
+        {APP_VERSION}
+      </p>
     </Fragment>
   )
 }
@@ -594,11 +614,11 @@ function NavBar({ openMobile, onMobileClose, openDesktop }) {
 NavBar.propTypes = {
   onMobileClose: PropTypes.func,
   openMobile: PropTypes.bool,
+  openDesktop: PropTypes.bool,
 }
+// 父層每次渲染都會換 onMobileClose。只在抽屜開關或桌機收合改變時重繪，
+// 收合時子項才讀得到圖示欄，點主項才能浮出細項。
 function areEqual(prevProps, nextProps) {
-  if (prevProps.openMobile === nextProps.openMobile) {
-    return true
-  }
-  return false
+  return prevProps.openMobile === nextProps.openMobile && prevProps.openDesktop === nextProps.openDesktop
 }
 export default React.memo(NavBar, areEqual)

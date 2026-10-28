@@ -21,7 +21,11 @@ const ProductListTreeView = ({ onValueChange = () => { } }) => {
   }
 
   const handleOnClick = ({ target }) => {
-    if (target.tagName === 'INPUT' || target.getAttribute('class').includes('MuiInputBase-root')) setOpen(true)
+    // 正式輸入框沒有 MuiInputBase-root。圖示 path 或沒有 class 的節點冒泡時，getAttribute 為 null，不可 .includes。
+    // 只在點到輸入框（或仍帶舊 class 的外框）時開窗；點外框內距、全選鈕、圖示維持不開。
+    if (target.tagName === 'path') return
+    const className = target.getAttribute('class') || ''
+    if (target.tagName === 'INPUT' || className.includes('MuiInputBase-root')) setOpen(true)
   }
 
   useEffect(() => {

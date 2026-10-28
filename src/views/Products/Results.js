@@ -336,14 +336,14 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
                   <TableCell>{data.creator !== null ? data.creator.name : ''}</TableCell>
                   <TableCell className="tabular-nums">{format(data.updatedAt, 'yyyy/MM/dd')}</TableCell>
                   <TableCell>
-                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                    <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                       <Link to={`product/duplicate/${data.id}`} aria-label="複製商品">
                         <Copy strokeWidth={1.75} />
                       </Link>
                     </Button>
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button asChild variant="ghost" size="icon" className="h-8 w-8 text-text-secondary">
+                    <Button asChild variant="ghost" size="icon" className="text-text-secondary">
                       <RouterLink
                         aria-label="編輯商品"
                         to={`/product/edit/${data.id}`}

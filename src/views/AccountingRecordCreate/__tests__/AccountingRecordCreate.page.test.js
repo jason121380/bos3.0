@@ -48,7 +48,7 @@ const setup = (fixtures = {}, route = `/accounting/create?date=${DATE}`) =>
 beforeEach(() => loginAs())
 afterEach(cleanup)
 
-const field = label => screen.getAllByLabelText(label).find(el => el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT')
+const field = label => screen.getAllByLabelText(label).find(el => el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.hasAttribute('data-ui-select'))
 // 下拉選單的選項（不含原生 <select> 的 <option>）
 const listOptions = () => screen.queryAllByRole('option').filter(o => o.tagName !== 'OPTION')
 const options = label => {

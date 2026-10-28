@@ -1,5 +1,4 @@
-// 「更多篩選」保留 MUI Dialog：內含 MUI DatePicker / Select（Radix Dialog 會擋住其彈出層）
-import { DialogActions, Dialog, DialogContent, DialogTitle } from 'ui/modal-compat'
+import { DialogFooter as DialogActions, Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from 'ui/dialog'
 import { InputLabel, Select, FormControl, MenuItem } from 'ui/form-control'
 import { TextField } from 'ui/text-field'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
@@ -15,12 +14,16 @@ import React, { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { DatePicker } from 'ui/date-picker'
 import { ChevronDown, Trash2 } from 'lucide-react'
-import { useMediaQuery } from 'ui/misc-compat'
+import useMediaQuery from 'hooks/useMediaQuery'
 import { useFetchCustomersWithoutSortingExcelLazy } from 'hooks/useFetchCustomersWithoutSortingExcel'
 import { theme } from '../../theme'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
+import BackendExportNotice from 'components/BackendExportNotice'
+import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
+import { isCustomerExportMaskSettingOff } from 'helper/exportCustomerMask'
 
 import Results from './Results'
 
@@ -55,7 +58,7 @@ const selecterCustomer = [
 function CustomerFilterExport() {
   const history = useHistory()
   const location = useLocation()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md').replace(/^@media( ?)/m, ''))
   const [timeValue, setTimeValue] = useState({
     startDate: null,
     endDate: null,
@@ -91,9 +94,12 @@ function CustomerFilterExport() {
   const [customerIsCome, setCustomerIsCome] = useState(null)
   const [showFilter, setShowFilter] = useState(false)
   const customerList = useFetchCustomersWithoutSorting(pageSetting)
+  const customerDataMarked = useFetchCustomerDataMarked()
+  const exportMaskOff = isCustomerExportMaskSettingOff(customerDataMarked)
   const [getCustomersWithoutSortingExcelLazy, getCustomersWithoutSortingExcelLazyData] = useFetchCustomersWithoutSortingExcelLazy()
 
   const handleExcel = () => {
+    if (exportMaskOff) return
     getCustomersWithoutSortingExcelLazy({
       variables: {
         input: pageSetting
@@ -236,9 +242,10 @@ function CustomerFilterExport() {
           primaryAction={{
             label: '報表匯出',
             onClick: handleExcel,
-            disabled: getCustomersWithoutSortingExcelLazyData.loading
+            disabled: getCustomersWithoutSortingExcelLazyData.loading || exportMaskOff
           }}
         />
+        <BackendExportNotice settingOff={exportMaskOff} />
         {/* 以 hidden 收合（取代 MUI Collapse）：SearchBar 內有非受控輸入，保持掛載，收合後內容與舊版一樣保留 */}
         <div hidden={!showFilter}>
           <Card className="mb-6 p-4">
@@ -316,9 +323,16 @@ function CustomerFilterExport() {
                   />
                 </div>
               )}
-              <Dialog open={open} onClose={handleClose} fullScreen={fullScreen}>
-                <DialogTitle>更多篩選</DialogTitle>
-                <DialogContent>
+              <Dialog open={open} onOpenChange={o => { if (!o) handleClose() }}>
+                {/* 保留原 600px；原 md 以下全螢幕。 */}
+                <DialogContent hideClose
+          onOpenAutoFocus={event => {
+            // 沿用舊 Modal：保留已有欄位焦點，否則聚焦面板，避免手機自動叫出鍵盤。
+            event.preventDefault()
+            if (!event.target.contains(document.activeElement)) event.target.focus()
+          }} aria-describedby={undefined} className={fullScreen ? "!inset-0 !h-[100dvh] !max-h-[100dvh] !w-full !max-w-none !translate-x-0 !translate-y-0 !rounded-none overflow-hidden" : "!max-w-[600px] overflow-hidden"}>
+                <DialogHeader><DialogTitle>更多篩選</DialogTitle></DialogHeader>
+                <DialogBody>
                   <div
                     className={styles.formGroup}
                     style={{
@@ -426,7 +440,7 @@ function CustomerFilterExport() {
                       />
                     </div>
                   </div>
-                </DialogContent>
+                </DialogBody>
                 <DialogActions className="ui-root gap-2" style={{ margin: '10px' }}>
                   <Button
                     variant="ghost"
@@ -446,11 +460,13 @@ function CustomerFilterExport() {
                     確認
                   </Button>
                 </DialogActions>
-              </Dialog>
+              </DialogContent></Dialog>
             </div>
           </Card>
         </div>
-        {!customerList.loading ?
+        {customerList.error ? (
+          <QueryFailed onRetry={() => customerList.refetch()} />
+        ) : !customerList.loading ?
           idx(customerList.data, _ => (
             <Results
               customers={_.customersWithoutSorting.customers}

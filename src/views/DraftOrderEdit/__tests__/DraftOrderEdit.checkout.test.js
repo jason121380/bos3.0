@@ -5,13 +5,18 @@
 // - 金額彙總：多筆店販、預收卡、使用預收卡的合計正確；其他付款＋扣入金＋折抵超過應付時三者歸零（避免現金應收變負數）；
 // - 掛單沒有服務人員時說明尚缺。
 // 檢查漏掉就會送出殘缺的帳單；金額錯就是收錢錯。GraphQL 全由模擬 link 回應，不連後端、不建立或修改真實帳單。
-import { cleanup, fireEvent, screen, wait } from '@testing-library/react'
+import { act, cleanup, fireEvent, screen, wait, within } from '@testing-library/react'
+import { startOfDay } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
 import { loginAs, callsOf } from '../../../__tests__/testkit.test'
+import billPaymentSummary from 'helper/billPaymentSummary'
+import { formatNumber } from 'ui/format'
 import {
-  setupDraft, pageReady, pick, saveDraft, summaryValue, makeOrder, panel, panelHeader, customerDetail,
-  CUSTOMER, DESIGNER, TICKET,
+  setupDraft, pageReady, pick, saveDraft, summaryValue, makeOrder, serviceOrder, panel, panelHeader, customerDetail,
+  CUSTOMER, DESIGNER, SERVICE, SERVICE2, TICKET,
 } from './draftPageKit.test'
+import { ordersListPathForOrderDate } from '../ordersListPath'
+import { checkedOutDraft } from '../draftCheckoutGuard'
 
 jest.setTimeout(20000)
 
@@ -125,6 +130,29 @@ describe('掛單詳細：從帶日期區間的掛單列表進來', () => {
     expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'success', message: '掛單結帳成功' }))
     expect(openSnackbar).not.toHaveBeenCalledWith(expect.objectContaining({ variant: 'error' }))
   })
+
+  // 舊寫法 split('=')[1].substring：查詢沒有「=」時拋 TypeError，結帳已成功卻被當成失敗
+  it('網址查詢不是日期區間：結帳成功仍回到帳單列表，不提示錯誤', async () => {
+    const page = setupDraft({}, { route: '/draft-order/order-1?reprint' })
+    await pageReady(page)
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await wait(() => expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1))
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent('/management/orders'))
+    expect(screen.getByTestId('testkit-location')).not.toHaveTextContent('startDate')
+    expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'success', message: '掛單結帳成功' }))
+    expect(openSnackbar).not.toHaveBeenCalledWith(expect.objectContaining({ variant: 'error' }))
+  })
+
+  it('日期區間前面還有其他參數：結帳成功仍帶回 startDate 與 endDate', async () => {
+    const search = '?source=LINE&startDate=1760976000000&endDate=1761062399999'
+    const page = setupDraft({}, { route: `/draft-order/order-1${search}` })
+    await pageReady(page)
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent('/management/orders?startDate=1760976000000&endDate=1761062399999'))
+    expect(openSnackbar).not.toHaveBeenCalledWith(expect.objectContaining({ variant: 'error' }))
+  })
 })
 
 describe('掛單詳細：F9 快捷鍵', () => {
@@ -174,6 +202,74 @@ describe('掛單詳細：金額彙總', () => {
     expect(summaryValue('現金應收')).toHaveTextContent('15,700')
   })
 
+  // 為什麼：v3.10241410 實機驗收時，帳單詳細的現金應收已改呼叫 billPaymentSummary（PR #297），
+  // 掛單詳細畫面仍用本地算式。同一張帳單的預覽必須與打帳單、帳單詳細同一個 helper。
+  // 使用預收卡只進業績合計、不進現金應收；第三方卡券付的服務／店販／會員卡相反（進業績、不進現金應收）。
+  // 未選商品的店販列價格為 0，算進去與排除的結果相同。
+  it('現金應收與打帳單同一支 billPaymentSummary：扣第三方卡券、扣入金、其他付款與紅利折抵', async () => {
+    const order = makeOrder({
+      customer: CUSTOMER,
+      payType: ['轉帳'],
+      walletPay: 100,
+      amountByOtherPay: 50,
+      bonusDecount: 20,
+      serviceOrders: [serviceOrder(SERVICE), serviceOrder(SERVICE2, { thirdPartyPayId: 'tp-1' })],
+      productOrders: [
+        { id: 'po-1', name: '洗髮精', count: 2, price: 1200, thirdPartyPayId: null, seller: { id: DESIGNER.userId }, product: { id: 'product-1', isLocked: 'FALSE' } },
+        { id: 'po-2', name: '護髮油', count: 1, price: 500, thirdPartyPayId: 'tp-1', seller: { id: DESIGNER.userId }, product: { id: 'product-2', isLocked: 'FALSE' } },
+        { id: 'po-empty', name: '', count: 1, price: 0, thirdPartyPayId: null, seller: { id: DESIGNER.userId }, product: { id: '', isLocked: 'FALSE' } },
+      ],
+      ticketOrders: [ticket(TICKET.id, 6000, 1)],
+      membershipOrders: [
+        { purchaseDate: null, validDayCount: null, expiryDate: null, price: 3000, thirdPartyPayId: null, remark: '', seller: { id: DESIGNER.userId }, membership: { uuid: 'card-2', isLocked: 'TRUE', effecitveDay: 0 } },
+        { purchaseDate: null, validDayCount: null, expiryDate: null, price: 12000, thirdPartyPayId: 'tp-1', remark: '', seller: { id: DESIGNER.userId }, membership: { uuid: 'card-1', isLocked: 'FALSE', effecitveDay: 365 } },
+      ],
+      useTicketOrders: [
+        { id: 'record-1', name: '剪髮10次卡', price: 600, pricePerCount: 600, service: { id: TICKET.id }, helperList: [] },
+        { id: 'record-2', name: '剪髮10次卡', price: 650, pricePerCount: 650, service: { id: TICKET.id }, helperList: [] },
+      ],
+    })
+    const page = setupDraft({
+      order,
+      customer: customerDetail(),
+      merchantPayWays: { merchantPayWays: [{ id: 'pay-2', type: 'OTHER', name: '轉帳', fee: 0 }] },
+      GetTicket: ({ input }) => ({
+        ticketRecords: {
+          data: [
+            { id: 'record-1', name: '剪髮10次卡', price: 600, remark: '', service: { id: TICKET.id, helperDeductionSetting: [] } },
+            { id: 'record-2', name: '剪髮10次卡', price: 650, remark: '', service: { id: TICKET.id, helperDeductionSetting: [] } },
+          ].filter(r => !input.ids || input.ids.includes(r.id)),
+        },
+      }),
+    })
+    await pageReady(page)
+    await wait(() => expect(summaryValue('使用預收卡')).toHaveTextContent('1,250'))
+
+    // 頁面寫回 bill 的形狀（thirdPartyPayId → thirdPartyCouponMerchantId）。helper 只讀這些欄位。
+    const { cashDue } = billPaymentSummary({
+      serviceOrders: order.serviceOrders.map(d => ({ price: d.price, thirdPartyCouponMerchantId: d.thirdPartyPayId })),
+      productOrders: order.productOrders.map(d => ({ price: d.price, count: d.count, productId: d.product.id, thirdPartyCouponMerchantId: d.thirdPartyPayId })),
+      membershipOrders: order.membershipOrders.map(d => ({ price: d.price, thirdPartyCouponMerchantId: d.thirdPartyPayId })),
+      ticketOrders: order.ticketOrders.map(d => ({ price: d.price, count: d.count })),
+      walletPay: order.walletPay,
+      amountByOtherPay: order.amountByOtherPay,
+      bonusDecount: order.bonusDecount,
+    })
+    // 800＋店販 2400＋預收卡販賣 6000＋會員卡 3000－扣入金 100－其他付款 50－紅利折抵 20。
+    // 第三方卡券（染髮 2000、護髮油 500、年卡 12000）與使用預收卡 1250 不計。未選商品列價格 0。
+    expect(cashDue).toBe(12030)
+    const cashDueText = formatNumber(cashDue)
+    screen.getAllByText('現金應收', { selector: 'span' }).forEach(label => {
+      expect(label.nextSibling).toHaveTextContent(cashDueText)
+    })
+    // 業績合計仍含第三方卡券與使用預收卡、不含預收卡販賣：2800＋2900＋1250＋15000
+    expect(summaryValue('業績合計')).toHaveTextContent('21,950')
+    expect(summaryValue('服務消費')).toHaveTextContent('2,800')
+    expect(summaryValue('店販消費')).toHaveTextContent('2,900')
+    expect(summaryValue('預收卡販賣')).toHaveTextContent('6,000')
+    expect(summaryValue('會員卡銷售')).toHaveTextContent('15,000')
+  })
+
   it('使用兩張預收卡：使用預收卡金額為兩張合計並計入業績', async () => {
     const used = id => ({ id, name: '剪髮10次卡', price: 600, pricePerCount: 600, service: { id: TICKET.id }, helperList: [] })
     const page = setupDraft({
@@ -199,5 +295,241 @@ describe('掛單詳細：金額彙總', () => {
     await wait(() => expect(summaryValue('現金應收')).toHaveTextContent('800'))
     const input = await saveDraft(page.calls)
     expect(input).toEqual(expect.objectContaining({ amountByOtherPay: 0, walletPay: 0, bonusDecount: 0 }))
+  })
+})
+
+describe('掛單詳細：結帳成功後不能再結一次', () => {
+  const confirmPassword = async () => {
+    const pwd = await screen.findByLabelText('密碼')
+    fireEvent.change(pwd, { target: { value: '9999' } })
+    fireEvent.click(screen.getByTestId('confirm'))
+  }
+
+  it('密碼結帳成功且後端回了新帳單：改開帳單詳細，原掛單網址不再出現結帳', async () => {
+    const page = setupDraft({
+      password: true,
+      reCheckoutOrder: { reCheckoutOrder: { id: 'b95c9c1f' } },
+    })
+    await pageReady(page)
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await confirmPassword()
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent('/order/b95c9c1f'))
+    expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'success', message: '掛單結帳成功' }))
+    expect(screen.queryByTestId('checkout')).toBeNull()
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+
+    cleanup()
+    setupDraft({}, { keepCheckoutMemory: true })
+    expect(screen.queryByTestId('checkout')).toBeNull()
+    expect(screen.getByText('這張掛單已結帳，正在前往帳單。')).toBeInTheDocument()
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent('/order/b95c9c1f'))
+  })
+
+  it('直接打開已不在掛單清單的原網址：不顯示結帳，改到當天帳單列表', async () => {
+    const date = makeOrder().date
+    setupDraft({
+      DRAFT_STILL_PENDING: { pendingOrders: { totalCount: 0, orders: [] } },
+    })
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent(ordersListPathForOrderDate(date)))
+    expect(screen.queryByTestId('checkout')).toBeNull()
+    expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      variant: 'warning',
+      message: '這張掛單已結帳，不能再次結帳',
+    }))
+  })
+
+  it('密碼結帳逾時，但掛單已不在清單：不再送第二次', async () => {
+    let stillPending = true
+    const page = setupDraft({
+      password: true,
+      reCheckoutOrder: () => {
+        stillPending = false
+        throw new Error('Failed to fetch')
+      },
+      DRAFT_STILL_PENDING: () => ({
+        pendingOrders: stillPending
+          ? { totalCount: 1, orders: [{ id: 'order-1' }] }
+          : { totalCount: 0, orders: [] },
+      }),
+    })
+    await pageReady(page)
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await confirmPassword()
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      variant: 'warning',
+      message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+    })))
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent(ordersListPathForOrderDate(makeOrder().date)))
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+  })
+
+  it('密碼結帳逾時且掛單仍在：可以再確認一次，成功後前往新帳單', async () => {
+    let attempts = 0
+    const page = setupDraft({
+      password: true,
+      reCheckoutOrder: () => {
+        attempts += 1
+        if (attempts === 1) throw new Error('Failed to fetch')
+        return { reCheckoutOrder: { id: 'closed-bill' } }
+      },
+      DRAFT_STILL_PENDING: { pendingOrders: { totalCount: 1, orders: [{ id: 'order-1' }] } },
+    })
+    await pageReady(page)
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await confirmPassword()
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      message: '網路連線異常，這張掛單尚未結帳，請再確認一次',
+    })))
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+    await wait(() => expect(screen.getByTestId('confirm')).not.toBeDisabled())
+    fireEvent.click(screen.getByTestId('confirm'))
+    await wait(() => expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(2))
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent('/order/closed-bill'))
+    expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({ variant: 'success', message: '掛單結帳成功' }))
+  })
+
+  it('密碼結帳逾時且查不到掛單狀態：停用結帳，不再送出', async () => {
+    const page = setupDraft({
+      password: true,
+      reCheckoutOrder: () => {
+        throw new Error('Failed to fetch')
+      },
+      DRAFT_STILL_PENDING: { pendingOrders: { orders: [] } },
+    })
+    await pageReady(page)
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await confirmPassword()
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      message: '無法確認結帳是否成功。請先到帳單列表查看，不要重複結帳。',
+    })))
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+    await wait(() => expect(checkout()).toBeDisabled())
+    expect(checkout().parentElement.getAttribute('title')).toBe('無法確認是否已結帳，請到帳單列表確認')
+    fireEvent.click(checkout())
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+    expect(screen.getByTestId('testkit-location')).toHaveTextContent('/draft-order/order-1')
+  })
+})
+
+describe('掛單詳細：結帳結果不確定時的日期與確認中鎖定', () => {
+  const original = makeOrder().date
+  const edited = new Date(2026, 9, 18, 10, 30).getTime()
+  const originalStart = startOfDay(new Date(original)).getTime()
+  const editedStart = startOfDay(new Date(edited)).getTime()
+  const pendingStarts = calls => callsOf(calls, 'DRAFT_STILL_PENDING').map(call => call.variables.input.dateRange.startDate)
+
+  // 確認中按鈕是 disabled，fireEvent.click 不會執行 onClick。
+  // F9 與密碼窗「確認」走的是同一個結帳處理，這裡直接呼叫按鈕上的 onClick。
+  const invokeCheckoutClick = () => {
+    const button = checkout()
+    const key = Object.keys(button).find(name => name.startsWith('__reactFiber') || name.startsWith('__reactInternalInstance'))
+    let fiber = key ? button[key] : null
+    while (fiber) {
+      if (fiber.memoizedProps && typeof fiber.memoizedProps.onClick === 'function') {
+        act(() => fiber.memoizedProps.onClick({ preventDefault() {}, stopPropagation() {} }))
+        return
+      }
+      fiber = fiber.return
+    }
+    throw new Error('結帳按鈕沒有 onClick')
+  }
+
+  const changeBillDate = async () => {
+    fireEvent.click(screen.getByText('帳單日期').parentElement.querySelector('input'))
+    const dialog = within(await screen.findByRole('dialog'))
+    fireEvent.click(dialog.getByRole('gridcell', { name: '2026年10月18日' }))
+  }
+
+  it('改了帳單日期後結帳逾時，原日期仍有這張掛單：不當成已結帳、也不鎖住', async () => {
+    const page = setupDraft({
+      reCheckoutOrder: () => {
+        throw new Error('Failed to fetch')
+      },
+      DRAFT_STILL_PENDING: ({ input }) => (
+        input.dateRange.startDate === editedStart
+          ? { pendingOrders: { totalCount: 0, orders: [] } }
+          : { pendingOrders: { totalCount: 1, orders: [{ id: 'order-1' }] } }
+      ),
+    })
+    await pageReady(page)
+    const originalQueriesBefore = pendingStarts(page.calls).filter(start => start === originalStart).length
+    await changeBillDate()
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      message: '網路連線異常，這張掛單尚未結帳，請再確認一次',
+    })))
+    const sent = callsOf(page.calls, 'reCheckoutOrder')[0].variables.input.orderInput.date
+    expect(startOfDay(new Date(sent)).getTime()).toBe(editedStart)
+    expect(pendingStarts(page.calls).filter(start => start === originalStart).length).toBeGreaterThan(originalQueriesBefore)
+    expect(openSnackbar).not.toHaveBeenCalledWith(expect.objectContaining({
+      message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+    }))
+    expect(checkedOutDraft('order-1')).toBeNull()
+    expect(screen.getByTestId('testkit-location')).toHaveTextContent('/draft-order/order-1')
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+  })
+
+  it('改了帳單日期後結帳逾時，兩個日期都沒有這張掛單：仍視為已結帳', async () => {
+    let afterCheckout = false
+    const page = setupDraft({
+      reCheckoutOrder: () => {
+        afterCheckout = true
+        throw new Error('Failed to fetch')
+      },
+      DRAFT_STILL_PENDING: () => ({
+        pendingOrders: afterCheckout
+          ? { totalCount: 0, orders: [] }
+          : { totalCount: 1, orders: [{ id: 'order-1' }] },
+      }),
+    })
+    await pageReady(page)
+    await changeBillDate()
+    await wait(() => expect(checkout()).not.toBeDisabled())
+    fireEvent.click(checkout())
+    await wait(() => expect(openSnackbar).toHaveBeenCalledWith(expect.objectContaining({
+      variant: 'warning',
+      message: '這張掛單已結帳，請到帳單列表確認，不要重複結帳',
+    })))
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1)
+    await wait(() => expect(screen.getByTestId('testkit-location')).toHaveTextContent(ordersListPathForOrderDate(edited)))
+  })
+
+  it('進頁還在確認掛單時，F9 與結帳處理都不送出；確認完仍可結帳', async () => {
+    const page = setupDraft({}, { delays: { DRAFT_STILL_PENDING: 2000 } })
+    await screen.findByText(/掛單詳細 \(A123\)/)
+    await wait(() => expect(checkout().parentElement.getAttribute('title')).toBe('處理中，請稍候'), { timeout: 8000 })
+    fireEvent.keyDown(document, { code: 'F9' })
+    invokeCheckoutClick()
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(0)
+    await wait(() => {
+      expect(checkout()).not.toBeDisabled()
+      expect(checkout().parentElement.getAttribute('title') || '').not.toBe('處理中，請稍候')
+    }, { timeout: 8000 })
+    fireEvent.keyDown(document, { code: 'F9' })
+    await wait(() => expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(1))
+  })
+
+  it('進頁還在確認掛單時，F9 不開密碼窗；密碼窗確認也不送出', async () => {
+    const page = setupDraft({ password: true }, { delays: { DRAFT_STILL_PENDING: 2000 } })
+    await screen.findByText(/掛單詳細 \(A123\)/)
+    await wait(() => expect(checkout().parentElement.getAttribute('title')).toBe('處理中，請稍候'), { timeout: 8000 })
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 50))
+    })
+    expect(checkout().parentElement.getAttribute('title')).toBe('處理中，請稍候')
+    fireEvent.keyDown(document, { code: 'F9' })
+    expect(screen.queryByLabelText('密碼')).toBeNull()
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(0)
+    invokeCheckoutClick()
+    fireEvent.click(await screen.findByTestId('confirm'))
+    expect(callsOf(page.calls, 'reCheckoutOrder')).toHaveLength(0)
+    expect(screen.getByTestId('testkit-location')).toHaveTextContent('/draft-order/order-1')
   })
 })

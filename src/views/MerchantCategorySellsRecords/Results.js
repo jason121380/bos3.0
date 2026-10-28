@@ -2,9 +2,9 @@ import { format } from 'date-fns'
 import PropTypes from 'prop-types'
 import { useState, useEffect, useRef } from 'react'
 import { CSVLink } from "react-csv";
+import { maskCustomerName } from 'helper/exportCustomerMask'
 import { startOfDay } from 'date-fns'
 import pagenationLabel from './../../helper/pagenationLabel'
-import { maskCustomerName } from 'helper/exportCustomerMask'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card, CardHeader, CardTitle } from 'ui/card'
@@ -18,7 +18,6 @@ function Results({
   handleOnChangePage,
   handleOnChangeRowsPerPage,
   sortWay,
-  isCustomerDataMasked,
   ...rest
 }) {
   const pageRef = useRef(null)
@@ -31,14 +30,13 @@ function Results({
       displayResults.forEach(data => {
         data.result.forEach(result => {
           if (result.designerName !== '小計') {
-            const customerName = isCustomerDataMasked ? maskCustomerName(result.customerName) : result.customerName
             excelData.push({
               日期: format(new Date(result.date), 'yyyy/MM/dd'),
               帳單編號: `#${result.no}`,
               姓名: result.designerName,
               '顧客姓名/代號': result.customerNo
-                ? customerName + ' / ' + result.customerNo
-                : customerName,
+                ? maskCustomerName(result.customerName) + ' / ' + result.customerNo
+                : maskCustomerName(result.customerName),
               // 沒有代號時只寫名稱（與畫面相同；原本寫成「名稱/null」）
               商品名稱代號: result.productNo === null ? result.productName : `${result.productName}/${result.productNo}`,
               實際售價: Math.round(result.price),
@@ -92,7 +90,7 @@ function Results({
     })
     setExcelData(excelData)
     pagenationLabel(pageRef.current)
-  }, [results, sortWay, pageRef.current, isCustomerDataMasked])
+  }, [results, sortWay, pageRef.current])
   // 依分類依據分組（設計師、商品、帳單日期〔台灣時間的同一天〕），組的順序依第一次出現的順序，每組後接小計列。
   // 原本三種分組各寫一份相同的程式，合併為一份（結果不變）
   const groupKeyOf = {

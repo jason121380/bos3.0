@@ -4,8 +4,6 @@ import MerchantSearchBar from 'components/MerchantSearchBar/index'
 import Page from 'components/Page'
 import { endOfDay, startOfMonth } from 'date-fns'
 import useFetchProductOrders from 'hooks/useFetchProductOrders'
-import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefault'
-import isExportCustomerMasked from 'helper/exportCustomerMask'
 import idx from 'idx'
 import produce from 'immer'
 import React, { useState } from 'react'
@@ -41,8 +39,6 @@ export default function DecreaseDetail({ history, location }) {
     sortWay: sortTime,
     productOrderWay: sortWay,
   })
-  // 匯出客資一律經 exportCustomerMask：只有遮罩設定查詢成功且為 false 才匯出完整顧客姓名（Jason 2026/10/22 長期授權修正）
-  const isCustomerDataMasked = isExportCustomerMasked(useFetchCustomerDataMarked())
   // 換篩選條件時回到第 1 頁（原本沿用目前頁碼，在後面頁換條件可能整頁空白）
   const handleFilter = value => {
     setPageSetting(value)
@@ -154,7 +150,6 @@ export default function DecreaseDetail({ history, location }) {
                   handleOnChangePage({ page, key: 'merchantSell' })
                 }
                 sortWay={sortWay}
-                isCustomerDataMasked={isCustomerDataMasked}
                 handleOnChangeRowsPerPage={event =>
                   handleOnChangeRowsPerPage({
                     value: idx(event, _ => _.target.value),

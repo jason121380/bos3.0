@@ -1,4 +1,4 @@
-// 廠商選擇保留 MUI Autocomplete（橋接主題已套新外觀）
+// 廠商選擇使用 ui/combobox Autocomplete（樣式由正式 ui 元件提供）
 import { TextField } from 'ui/text-field'
 import cloneDeep from 'lodash/cloneDeep'
 import { Card, CardContent, CardHeader, CardTitle } from 'ui/card'

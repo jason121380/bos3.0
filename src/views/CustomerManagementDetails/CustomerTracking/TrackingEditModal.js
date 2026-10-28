@@ -1,5 +1,5 @@
-// 可刪除的 Chip 保留相容層（ui/badge 不可刪除）；兩層彈窗內只有 TextField、按鈕，改 ui/dialog
-import { Chip } from 'ui/misc-compat'
+// 可刪除標籤使用 ui/tag；原有刪除索引與兩層視窗流程保留。
+import { Tag } from 'ui/tag'
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTitle } from 'ui/dialog'
 import { TextField } from 'ui/text-field'
 import { useState, useEffect, useRef, Fragment } from 'react'
@@ -126,13 +126,13 @@ const TrackingEditModal = ({ open, setOpen, isLoading, hairCondition, optionsArr
                       label={title}
                       InputProps={{
                         startAdornment: submitValue?.[key] && submitValue[key].map((value, i) => (
-                          <Chip key={`${value}-${i}`} label={value} onDelete={() => handleDelete(key, i)} />
+                          <Tag key={`${value}-${i}`} label={value} onDelete={() => handleDelete(key, i)} />
                         )),
                         readOnly: true
                       }}
                     />
                     <UiButton
-                      variant="ghost" size="icon" className="h-8 w-8" aria-label="編輯選項" title="編輯選項"
+                      variant="ghost" size="icon" aria-label="編輯選項" title="編輯選項"
                       disabled={merchantHairConditionData.loading || !merchantHairConditionData.data}
                       onClick={() => handleOpenOptionModal({ key: key, title: title })}
                     >

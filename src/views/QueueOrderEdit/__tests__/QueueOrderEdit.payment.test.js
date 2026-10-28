@@ -160,7 +160,7 @@ describe('重新開單：清除顧客或改輸入新手機時扣入金清空', (
     await loaded(page)
     await wait(() => expect(customerInput().value).toContain('陳小姐'))
     fireEvent.click(screen.getByRole('button', { name: '編輯顧客資料' }))
-    const modal = (await screen.findByText('編輯客戶資料')).closest('.MuiModal-root')
+    const modal = (await screen.findByText('編輯客戶資料')).closest('[role="dialog"]')
     fireEvent.click(within(modal).getByText('儲存', { selector: 'button' }))
     await wait(() => expect(screen.queryByText('編輯客戶資料')).toBeNull())
     await page.settle()
@@ -244,6 +244,26 @@ describe('重新開單：紅利點數', () => {
     await wait(() => expect(bonusField('點數折抵金額')).toHaveValue('4'))
     const input = await retry(page.calls)
     expect(input).toEqual(expect.objectContaining({ bonusUsed: 45, bonusDecount: 4 }))
+  })
+
+  it('給點規則比帳單晚到：規則到了仍依應收金額給點', async () => {
+    const page = setupQueue({
+      queue: withCustomer({
+        serviceOrders: [{ serviceId: SERVICE.id, price: 800, thirdPartyCouponMerchantId: null, serviceOrderHelpers: [] }],
+        productOrders: [],
+        ticketOrders: [],
+        useTicketOrders: [],
+        membershipOrders: [],
+        walletPay: 0,
+        amountByOtherPay: 0,
+        bonusDecount: 0,
+        bonusDeposit: 0,
+      }),
+      ...bonusOn,
+      GET_BONUS_REWARD_RULE: { getParameterAboutSettingFunction: { bonusRewardRule: { isUsing: true, rule: { price: 100, bonus: 1, mode: 'ROUNDING' } } } },
+    }, { delays: { GET_BONUS_REWARD_RULE: 400 } })
+    await loaded(page)
+    expect((await retry(page.calls)).bonusDeposit).toBe(8)
   })
 
   it('店家開自動給點：依應收金額給點且給點欄停用', async () => {

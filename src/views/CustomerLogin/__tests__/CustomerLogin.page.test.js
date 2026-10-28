@@ -54,8 +54,7 @@ describe('顧客登入', () => {
     expect(callsOf(utils.calls, 'CustomerVerifySMS')[0].variables).toEqual({
       input: { merchantId: 'm-9', code: '1234', cellphone: '0912345678' },
     })
-    // setupTests 的 localStorage 假物件會再 stringify 一次：解兩次得到後端回的顧客資料
-    expect(JSON.parse(JSON.parse(localStorage.getItem('customer')))).toEqual({ id: 'customer-1', userCode: 'code-1' })
+    expect(JSON.parse(localStorage.getItem('customer'))).toEqual({ id: 'customer-1', userCode: 'code-1' })
     await wait(() => expect(currentLocation()).toBe('/customer/consumption/records?merchantid=m-9'))
     // 只送一次要求驗證碼
     expect(callsOf(utils.calls, 'LoginSMS')).toHaveLength(1)
@@ -63,15 +62,14 @@ describe('顧客登入', () => {
 
   // 已登入的顧客打開登入頁自動導回 redirect：localStorage 取出後 JSON.parse 再讀 userCode，導向寫法與登入後相同
   // （原本直接讀字串的 userCode 永遠是 undefined，且導向多加一個 / ；Jason 2026/10/22 fix all）
-  // setupTests 的 localStorage 假物件 setItem 會再 stringify：直接傳物件，存進去的就是與瀏覽器相同的 JSON 字串
   it('已登入的顧客打開登入頁自動導回原頁', async () => {
-    localStorage.setItem('customer', { id: 'customer-1', userCode: 'code-1' })
+    localStorage.setItem('customer', JSON.stringify({ id: 'customer-1', userCode: 'code-1' }))
     setup()
     await wait(() => expect(currentLocation()).toBe('/customer/consumption/records?merchantid=m-9'))
   })
 
   it('存的顧客資料沒有 userCode 或不是 JSON 時留在登入頁', async () => {
-    localStorage.setItem('customer', { id: 'customer-1' })
+    localStorage.setItem('customer', JSON.stringify({ id: 'customer-1' }))
     const utils = setup()
     await utils.settle()
     expect(currentLocation()).toBe(ROUTE)

@@ -26,7 +26,7 @@ const ShortcutDialog = ({ open, handleOnClose, handleShortcutChange }) => {
       <DialogContent size="md" hideClose aria-describedby={undefined}>
         <DialogHeader className="flex-row border-0 border-b border-solid border-border !py-[8px] !pr-[8px] !pl-[24px] flex justify-between items-center">
           <DialogTitle>快捷組合</DialogTitle>
-          <UiButton variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label="關閉" title="關閉" onClick={handleOnClose}>
+          <UiButton variant="ghost" size="icon" className="shrink-0" aria-label="關閉" title="關閉" onClick={handleOnClose}>
             <CloseIcon />
           </UiButton>
         </DialogHeader>
