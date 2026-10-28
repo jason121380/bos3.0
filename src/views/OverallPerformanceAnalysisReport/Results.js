@@ -11,7 +11,6 @@ function Results({ overAllReport, weekDisplay }) {
     !!overAllReport.merchantNameList && (
       <Table
         dense
-        dense
         wrapperClassName="h-[calc(100vh-340px)] overflow-auto"
         className="min-w-[650px]"
         aria-label="a dense table"

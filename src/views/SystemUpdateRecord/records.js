@@ -11,7 +11,7 @@ export function calendarUpdateTime(isoDate) {
 const shippedRecords = [
   {
     title: '2026/10/28 載入畫面',
-    versionNo: 'v3.10282233',
+    versionNo: 'v3.10282323',
     updateTime: '2026-10-28',
     content: [
       '- 頁面載入較久時，內容區中央顯示轉圈與「載入中…」，不再只有頂端一條細線、看起來像白頁',

@@ -104,7 +104,6 @@ function OrderRecord({
                                 <a
                                   target="_blank"
                                  rel="noopener noreferrer"
-                                  rel="noopener noreferrer"
                                   href={`/order/${orderRecord.orderId}`}
                                   className="text-text underline"
                                 >

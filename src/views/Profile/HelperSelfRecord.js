@@ -92,7 +92,6 @@ function OrderRecord({
                                 <a
                                   target="_blank"
                                  rel="noopener noreferrer"
-                                  rel="noopener noreferrer"
                                   href={`/order/${record.orderId}`}
                                   className="text-text underline"
                                 >
@@ -121,7 +120,6 @@ function OrderRecord({
                                 <a
                                   target="_blank"
                                  rel="noopener noreferrer"
-                                  rel="noopener noreferrer"
                                   href={`/order/${record.orderId}`}
                                   className="text-text underline"
                                 >

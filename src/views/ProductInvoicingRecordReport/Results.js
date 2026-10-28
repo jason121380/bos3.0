@@ -22,7 +22,6 @@ function Results({ reportData }) {
   return (
     <Table
       dense
-      dense
       className="min-w-[650px]"
       wrapperClassName="ProductInvoicingRecordReportTable mt-3 max-h-[calc(100vh-340px)] overflow-y-auto"
       aria-label="a dense table"
