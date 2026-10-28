@@ -1,5 +1,5 @@
 import Page from 'components/Page'
-import { Provider } from 'context/useReservationContext'
+import { Provider } from 'context/ReservationContext'
 import getQueryString from 'helper/getQueryString'
 import { openSnackbar } from 'elements/snackbars'
 import { useFetchMerchantLiff } from 'hooks/useFetchViewer'

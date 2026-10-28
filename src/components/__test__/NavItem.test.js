@@ -130,9 +130,38 @@ describe('主側欄桌機 hover 細項', () => {
       await new Promise(resolve => setTimeout(resolve, 200))
     })
     expect(screen.queryByRole('region', { name: '資料設定的細項' })).toBeNull()
-    fireEvent.click(group)
+    // 滑鼠點主項（detail > 0）不上下開合也不釘住浮層
+    fireEvent.click(group, { detail: 1 })
     expect(group).toHaveAttribute('aria-expanded', 'false')
     expect(group.parentElement.querySelector('a')).toBeNull()
+    expect(screen.queryByRole('region', { name: '資料設定的細項' })).toBeNull()
+  })
+
+  it('鍵盤：Tab 到群組鈕按 Enter 打開浮層並把焦點移進第一個細項，Esc 關閉並回到群組鈕', () => {
+    hoverMedia(true)
+    renderGroup()
+    const group = screen.getByRole('button', { name: '資料設定' })
+    act(() => group.focus())
+    // 焦點停在群組鈕就先浮出（與滑鼠滑過相同），但焦點不移動
+    expect(screen.getByRole('region', { name: '資料設定的細項' })).toBeInTheDocument()
+    expect(document.activeElement).toBe(group)
+    // Enter／空白鍵在瀏覽器會觸發 detail 為 0 的 click
+    fireEvent.click(group, { detail: 0 })
+    const flyout = screen.getByRole('region', { name: '資料設定的細項' })
+    expect(group).toHaveAttribute('aria-expanded', 'true')
+    expect(group).toHaveAttribute('aria-controls', flyout.id)
+    expect(document.activeElement).toBe(withinFlyout(flyout, '服務分類設定'))
+    fireEvent.keyDown(document.activeElement, { key: 'Escape' })
+    expect(screen.queryByRole('region', { name: '資料設定的細項' })).toBeNull()
+    expect(document.activeElement).toBe(group)
+    // 再按一次 Enter 打開，焦點移到浮層外（例如主內容）就關閉
+    fireEvent.click(group, { detail: 0 })
+    expect(screen.getByRole('region', { name: '資料設定的細項' })).toBeInTheDocument()
+    const outside = document.createElement('button')
+    document.body.appendChild(outside)
+    fireEvent.focusOut(document.activeElement, { relatedTarget: outside })
+    expect(screen.queryByRole('region', { name: '資料設定的細項' })).toBeNull()
+    outside.remove()
   })
 
   it('桌機 hover 時搜尋強制展開仍把子項嵌進側欄，不另開浮層', () => {

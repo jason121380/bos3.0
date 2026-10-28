@@ -74,7 +74,7 @@ export default function PannelCouponSells({ expanded, setExpanded }) {
   }, [couponSells])
   React.useEffect(() => {
     // 同一張帳單只帶入一次（見 useOncePerOrder）
-    if (!order.loading && order.data && isFirstLoad(orderId)) {
+    if (!order.loading && idx(order, _ => _.data.order) && isFirstLoad(orderId)) {
       const newCouponSells =
         order.data.order.ticketOrders.length > 0
           ? order.data.order.ticketOrders.map(ticketOrder => ({

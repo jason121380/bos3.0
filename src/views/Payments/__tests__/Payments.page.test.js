@@ -65,6 +65,7 @@ describe('支付方式設定', () => {
     expect(screen.getByText('已選 2 筆')).toBeInTheDocument()
     const before = callsOf(calls, 'PAYMENTS').length
     fireEvent.click(screen.getByText('刪除'))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(callsOf(calls, 'DELETE_PAYMENT')).toHaveLength(1))
     expect(callsOf(calls, 'DELETE_PAYMENT')[0].variables).toEqual({ ids: ['p-1', 'p-3'] })
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '刪除支付方式成功', variant: 'success' }))
@@ -83,6 +84,7 @@ describe('支付方式設定', () => {
     expect(screen.getByLabelText('全選').checked).toBe(true)
     expect(screen.getByText('已選 3 筆')).toBeInTheDocument()
     fireEvent.click(screen.getByText('刪除'))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(callsOf(calls, 'DELETE_PAYMENT')).toHaveLength(1))
     expect(callsOf(calls, 'DELETE_PAYMENT')[0].variables.ids).toEqual(['p-1', 'p-2', 'p-3'])
     await wait(() => expect(screen.getByLabelText('全選').checked).toBe(false))
@@ -91,11 +93,12 @@ describe('支付方式設定', () => {
     expect(screen.getByLabelText('選取 LINE Pay').checked).toBe(false)
   })
 
-  it('查詢失敗時顯示 0 筆、全選停用，不進錯誤畫面', async () => {
+  it('查詢失敗時顯示無法載入資料與重新查詢，不進錯誤畫面', async () => {
+    // 2026/10/28 稽核 C-1：查詢失敗改顯示 QueryFailed（「無法載入資料」＋「重新查詢」），不再顯示成空表／0 筆，避免誤以為真的沒有資料
     const { settle } = setup({ PAYMENTS: new Error('查詢失敗') })
-    expect(await screen.findByText('共 0 筆')).toBeInTheDocument()
     await settle()
-    expect(screen.getByLabelText('全選')).toBeDisabled()
+    expect(screen.getByText('無法載入資料')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '重新查詢' })).toBeEnabled()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 })

@@ -148,14 +148,14 @@ function ServiceCategoryEdit({ match }) {
                     return {
                       ...data,
                       // eslint-disable-next-line eqeqeq -- 刻意保留寬鬆比較：值可能是輸入框字串或 null，改成 !== 會改變結果
-                      isDesignate: !(data.point != 0),
+                      isDesignate: Number(data.point || 0) === 0,
                       deductionWay: '點數',
                     }
                   } else if (data.cash || data.designateCash || data.nonDesignateCash > 0) {
                     return {
                       ...data,
                       // eslint-disable-next-line eqeqeq -- 刻意保留寬鬆比較：值可能是輸入框字串或 null，改成 !== 會改變結果
-                      isDesignate: !(data.cash != 0),
+                      isDesignate: Number(data.cash || 0) === 0,
                       deductionWay: '固定金額',
                     }
                   } else {
@@ -397,7 +397,6 @@ function ServiceCategoryEdit({ match }) {
     }
   }, [services.loading, serviceDetail.loading, match.params.id])
 
-  
   useEffect(() => {
     // 把「系統預設」移到最後；沒有「系統預設」時不推入空物件（否則扣項卡讀 {}.itemSettings 整頁錯誤）
     let defaultSetting = null

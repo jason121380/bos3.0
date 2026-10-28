@@ -1,4 +1,5 @@
 import Page from 'components/Page'
+import QueryFailed from 'components/QueryFailed'
 import { Provider } from 'context/keyInContext'
 import useFetchOrder from 'hooks/useFetchOrder'
 import produce from 'immer'
@@ -124,7 +125,7 @@ export default function KeyIn({ match }) {
 
   useEffect(() => {
     if (!customerBonusActive.loading && onceRef.current) {
-      const active = customerBonusActive.data.getIsCustomerBonusActive || bill.bonusDecount > 0 || bill.bonusDeposit > 0 || bill.bonusUsed > 0
+      const active = idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) || bill.bonusDecount > 0 || bill.bonusDeposit > 0 || bill.bonusUsed > 0
       setBonusActive(active)
     }
   }, [customerBonusActive.loading, bill])
@@ -144,7 +145,8 @@ export default function KeyIn({ match }) {
   }, [thirdPartyCouponsData.loading])
 
   useEffect(() => {
-    if (!order.loading && order.data) {
+    // 查無此掛單（order 為 null）或查詢失敗時不帶入，由下方 QueryFailed 顯示並可重新查詢
+    if (!order.loading && idx(order, _ => _.data.order)) {
       setOrderSetting(
         produce(draft => {
           draft.orderId = order.data.order.id
@@ -252,6 +254,18 @@ export default function KeyIn({ match }) {
     )
   }
 
+  if (!order.loading && !idx(order, _ => _.data.order)) {
+    return (
+      <Page title="掛單詳細" className="ui-root">
+        <QueryFailed
+          title="無法載入掛單"
+          description="這張掛單不存在、已被刪除，或查詢失敗。"
+          onRetry={() => order.refetch()}
+        />
+      </Page>
+    )
+  }
+
   return (
     <Page title={`掛單詳細 ${orderNo && `(${orderNo})`}`} className="ui-root">
       <>
@@ -262,7 +276,6 @@ export default function KeyIn({ match }) {
           setBill,
           orderId: match.params.id,
           orderSetting,
-          setBill,
           orderStatus,
           orderNo,
           pannelEditable,

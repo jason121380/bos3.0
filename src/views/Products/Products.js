@@ -11,6 +11,7 @@ import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 function CustomerManagementList() {
   const [setting, setSetting] = useState({
@@ -124,7 +125,9 @@ function CustomerManagementList() {
           </div>
         </Card>
       </div>
-      {productList.length !== 0 ? (
+      {products.error ? (
+          <QueryFailed onRetry={() => products.refetch()} />
+        ) : productList.length !== 0 ? (
         <Results
           products={productList}
           refetchProducts={products.refetch}

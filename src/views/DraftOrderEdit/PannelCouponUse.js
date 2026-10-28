@@ -25,7 +25,7 @@ export default function PannelCouponUse() {
   }, [couponUsage])
 
   React.useEffect(() => {
-    if (!order.loading && order.data) {
+    if (!order.loading && order.data?.order) {
       const newCouponUsage =
         order.data.order.useTicketOrders.length > 0
           ? order.data.order.useTicketOrders.map(data => ({

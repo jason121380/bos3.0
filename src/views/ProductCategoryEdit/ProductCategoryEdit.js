@@ -1,3 +1,4 @@
+import idx from 'idx'
 import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
 import useFetchProductCategories from 'hooks/useFetchProductCategories'
@@ -23,7 +24,8 @@ function ServiceCategoryCreate({ match }) {
   const { register, handleSubmit, errors, setValue } = useForm()
 
   useEffect(() => {
-    if (!productCategoryDetail.loading) {
+    // 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
+    if (!productCategoryDetail.loading && idx(productCategoryDetail, _ => _.data.productCategory)) {
       setValue('no', productCategoryDetail.data.productCategory.no)
       setValue('name', productCategoryDetail.data.productCategory.name)
 

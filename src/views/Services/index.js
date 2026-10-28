@@ -8,6 +8,7 @@ import useFetchServiceCategories from 'hooks/useFetchServiceCategories'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 function Services() {
   const [pageSetting, setPageSetting] = useState({
@@ -56,7 +57,9 @@ function Services() {
         }}
       />
 
-      {!servicesData.loading ?
+      {servicesData.error ? (
+          <QueryFailed onRetry={() => servicesData.refetch()} />
+        ) : !servicesData.loading ?
         services !== undefined && (
           <Results
             services={services}

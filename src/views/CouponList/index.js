@@ -10,6 +10,7 @@ import { Skeleton } from 'ui/skeleton'
 import { cn } from 'ui/utils'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 function CouponList() {
   const [pageSetting, setPageSetting] = useState({
@@ -98,7 +99,9 @@ function CouponList() {
           </Button>
         </Card>
       )}
-      {!couponsData.loading ?
+      {couponsData.error ? (
+          <QueryFailed onRetry={() => couponsData.refetch()} />
+        ) : !couponsData.loading ?
         <Results
           refetch={couponsData.refetch}
           coupons={coupons}

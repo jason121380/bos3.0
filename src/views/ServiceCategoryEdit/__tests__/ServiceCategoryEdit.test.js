@@ -1,7 +1,7 @@
 import React from 'react'
 import { GET_SERVICE_CATEGORY, mockedServiceCategoryResp } from 'hooks/useFetchServiceCategory'
 import { UPDATE_SERVICE_CATEGORY, updateServiceCategory } from 'hooks/useFetchUpdateServiceCategory'
-import CustomMockedProvider from 'components/CustomMockedProvider'
+import CustomMockedProvider from '__tests__/CustomMockedProvider.test'
 import { render, fireEvent, within } from '@testing-library/react'
 import { Router } from 'react-router-dom'
 

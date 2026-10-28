@@ -173,7 +173,7 @@ function CustomerManagementDetails({ match, history }) {
   }
   useEffect(() => {
     if (!customerBonusRecords.loading && !getIsCustomerBonusActive.loading && membershipDisplay !== null && !loading) {
-      const bonusActive = customerBonusRecords.data.customerBonusRecord.length > 0 || getIsCustomerBonusActive.data.getIsCustomerBonusActive
+      const bonusActive = (idx(customerBonusRecords, _ => _.data.customerBonusRecord) || []).length > 0 || idx(getIsCustomerBonusActive, _ => _.data.getIsCustomerBonusActive)
       const newTabs = [
         { value: 'general', label: '基本資料' },
         { value: 'invoices', label: '消費記錄' },
@@ -198,8 +198,8 @@ function CustomerManagementDetails({ match, history }) {
   useEffect(() => {
     if (!customerBonusActive.loading && !getCustomerOrders.loading) {
       const orders = idx(getCustomerOrders,_ => _.data.getCustomerOrders.orderList)
-      const bonusDecount = orders.reduce((a, b) => a + b.bonusDecountForReport , 0)
-      setBonusDisplay(customerBonusActive.data.getIsCustomerBonusActive || bonusDecount !== 0)
+      const bonusDecount = (orders || []).reduce((a, b) => a + b.bonusDecountForReport , 0)
+      setBonusDisplay(idx(customerBonusActive, _ => _.data.getIsCustomerBonusActive) || bonusDecount !== 0)
     }
   }, [customerBonusActive.loading, getCustomerOrders.loading])
 

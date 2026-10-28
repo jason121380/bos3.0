@@ -300,19 +300,15 @@ describe('GoogleAnalytics／Page（依環境變數決定是否送 GA）', () => 
     })
   })
 
-  it('有設定時以 Helmet 載入 gtag 並設定量測 ID', async () => {
-    let Helmet
-    jest.isolateModules(() => {
-      process.env = { ...env, REACT_APP_GA_MEASUREMENT_ID: 'G-TEST' }
-      Helmet = require('react-helmet').Helmet
-      const GoogleAnalytics = require('components/GoogleAnalytics').default
-      renderPage(<GoogleAnalytics />)
-    })
-    await wait(() => {
-      const scripts = Helmet.peek().scriptTags
-      expect(scripts.map(s => s.src).filter(Boolean)).toContain('https://www.googletagmanager.com/gtag/js?id=G-TEST')
-      expect(scripts.some(s => (s.innerHTML || '').includes("gtag('config', 'G-TEST')"))).toBe(true)
-    })
+  it('有設定時把 gtag 載入腳本插進 <head> 並設定量測 ID（只插一次）', async () => {
+    // isolateModules 內載入的元件用的是另一份 React，不能用外層的 render 跑 effect；直接呼叫元件掛載時執行的 installGtag
+    const { installGtag } = require('components/GoogleAnalytics')
+    installGtag('G-TEST')
+    installGtag('G-TEST')
+    const scripts = Array.from(document.head.querySelectorAll('script'))
+    expect(scripts.filter(s => s.src === 'https://www.googletagmanager.com/gtag/js?id=G-TEST')).toHaveLength(1)
+    expect(scripts.filter(s => (s.text || '').includes("gtag('config', 'G-TEST')"))).toHaveLength(1)
+    document.head.querySelectorAll('script').forEach(s => s.remove())
   })
 
   it('Page：設定頁面標題；非正式環境不送 GA；正式環境有 gtag 時以路徑與標題送出', async () => {
@@ -329,7 +325,6 @@ describe('GoogleAnalytics／Page（依環境變數決定是否送 GA）', () => 
         const { act: actIn } = require('react-dom/test-utils')
         const { MemoryRouter } = require('react-router-dom')
         require('react-router')
-        const { Helmet } = require('react-helmet')
         require('prop-types')
         process.env = { ...env, ...vars }
         const Page = require('components/Page').default
@@ -341,7 +336,6 @@ describe('GoogleAnalytics／Page（依環境變數決定是否送 GA）', () => 
         })
         out = {
           container,
-          Helmet,
           unmount: () => {
             ReactDOM.unmountComponentAtNode(container)
             container.remove()
@@ -352,7 +346,7 @@ describe('GoogleAnalytics／Page（依環境變數決定是否送 GA）', () => 
     }
     const dev = mount({ NODE_ENV: 'test' }, '/orders', { title: '帳單列表', className: 'page' }, '內容')
     expect(dev.container.querySelector('.page')).toHaveTextContent('內容')
-    await wait(() => expect(dev.Helmet.peek().title).toBe('帳單列表'))
+    await wait(() => expect(document.title).toBe('帳單列表'))
     expect(gtag).not.toHaveBeenCalled()
     dev.unmount()
 
@@ -360,7 +354,7 @@ describe('GoogleAnalytics／Page（依環境變數決定是否送 GA）', () => 
     expect(gtag).toHaveBeenCalledWith('config', 'G-TEST', { page_path: '/order/create', page_name: '打帳單' })
     prod.unmount()
 
-    // 前一個測試的 Helmet 內嵌 script 若被 jsdom 執行，會以全域 function 宣告 gtag（不可 delete），改用指定為 undefined
+    // 前一個測試的內嵌 script 若被 jsdom 執行，會以全域 function 宣告 gtag（不可 delete），改用指定為 undefined
     window.gtag = undefined
     const noGtag = mount({ NODE_ENV: 'production' }, '/x', { title: '無 gtag' })
     expect(noGtag.container.firstChild).not.toBeNull()

@@ -2,6 +2,7 @@ import Page from 'components/Page'
 import PageTitle from 'components/PageTitle'
 import { useFetchGetInventory } from 'hooks/useFetchGetInventorys'
 import { useState, useEffect, Fragment } from 'react'
+import { storedMerchantName } from 'lib/stored-merchant'
 import format from 'date-fns/format'
 import idx from 'idx'
 import { Skeleton } from 'ui/skeleton'
@@ -53,7 +54,7 @@ function InventoryWorkEdit({ match }) {
         <Fragment>
           <div className="merchantNamePrint" style={{ marginBottom: '4px', display: "none", justifyContent: "space-between" }}>
             <div className="merchantNamePrint">
-              {JSON.parse(localStorage.getItem('userMerchant')).name + '   ' + '盤點紀錄'}
+              {storedMerchantName() + '   ' + '盤點紀錄'}
             </div>
             <div className="merchantNamePrint">
               {'列印時間： ' +

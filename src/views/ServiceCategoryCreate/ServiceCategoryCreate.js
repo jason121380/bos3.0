@@ -43,10 +43,7 @@ function ServiceCategoryCreate() {
       })
       history.push('/service/categories')
     }).catch(error => {
-      openSnackbar({
-        variant: 'error',
-        message: error.message,
-      })
+      // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
     })
   }
 

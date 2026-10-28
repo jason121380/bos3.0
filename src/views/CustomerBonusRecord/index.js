@@ -6,6 +6,7 @@ import { Link as RouterLink } from 'react-router-dom'
 
 import Results from './Results'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 
 function CustomerBonusRecord() {
   const customerBonusDepositRecords = useFetchGetCustomerBonusDepositRecords()
@@ -21,7 +22,9 @@ function CustomerBonusRecord() {
             to: '/customer-bonus-record/create'
           }}
         />
-        {!customerBonusDepositRecords.loading ?
+        {customerBonusDepositRecords.error ? (
+          <QueryFailed onRetry={() => customerBonusDepositRecords.refetch()} />
+        ) : !customerBonusDepositRecords.loading ?
           <Results
             // 查詢失敗時傳空陣列（原本傳 undefined 整頁錯誤；Jason 2026/10/22 fix all）
             recordData={idx(customerBonusDepositRecords, _ => _.data.customerBonusDepositRecords) || []}

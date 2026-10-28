@@ -5,6 +5,7 @@ import { Skeleton } from 'ui/skeleton'
 
 import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 function Authority() {
   const merchantAuthData = useFetchMerchantAuthorities()
@@ -17,7 +18,9 @@ function Authority() {
           to: '/role/create'
         }}
       />
-      {!merchantAuthData.loading ?
+      {merchantAuthData.error ? (
+          <QueryFailed onRetry={() => merchantAuthData.refetch()} />
+        ) : !merchantAuthData.loading ?
         idx(merchantAuthData, _ => (
           <Results
             merchantAuth={_.data.getMerchantAuthorities}

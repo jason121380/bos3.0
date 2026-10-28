@@ -323,7 +323,9 @@ describe('失敗與版面', () => {
     await utils.settle()
     expect(currentLocation()).not.toBe('/management/reservation/calendar')
     expect(localStorage.getItem('customer')).toBeNull()
-    expect(openSnackbar).not.toHaveBeenCalled()
+    // 錯誤提示由 init-apollo 的 errorLink 跳一次（後端訊息原樣），頁面不再自己補第二張
+    expect(openSnackbar).toHaveBeenCalledTimes(1)
+    expect(openSnackbar).toHaveBeenCalledWith({ message: '時段已滿', variant: 'error' })
   })
 
   it('指定預約失敗：不導頁、按鈕恢復可按', async () => {
@@ -335,7 +337,8 @@ describe('失敗與版面', () => {
     await wait(() => expect(submit()).not.toBeDisabled())
     await utils.settle()
     expect(currentLocation()).not.toBe('/management/reservation/calendar')
-    expect(openSnackbar).not.toHaveBeenCalled()
+    expect(openSnackbar).toHaveBeenCalledTimes(1)
+    expect(openSnackbar).toHaveBeenCalledWith({ message: '設計師休假', variant: 'error' })
   })
 
   it('預約後的處理出錯（非 GraphQL 錯誤，例如傳回 LINE 失敗）：提示錯誤訊息、按鈕恢復可按', async () => {

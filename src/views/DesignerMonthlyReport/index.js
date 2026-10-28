@@ -16,6 +16,7 @@ import { Skeleton } from 'ui/skeleton'
 import { ReportToolbar } from 'ui/page-header'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const sortEnum = [
   { label: '業績', value: 'performance' },
@@ -150,7 +151,9 @@ export default function Employees() {
             </>
           }
         />
-        {(!designerMontlyListData.loading && !isMemberShipCardActiveData.loading) ?
+        {designerMontlyListData.error ? (
+          <QueryFailed onRetry={() => designerMontlyListData.refetch()} />
+        ) : (!designerMontlyListData.loading && !isMemberShipCardActiveData.loading) ?
           idx(designerMontlyListData, _ => (
             <Results
               setExcelData={setExcelData}

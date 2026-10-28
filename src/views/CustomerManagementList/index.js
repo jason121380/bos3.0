@@ -15,6 +15,7 @@ import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 // 排序
 const sortByA = [
@@ -270,7 +271,9 @@ function CustomerManagementList() {
             </div>
           </Card>
         </div>
-        {(!isMemberShipCardActive.loading && !customerList.loading) ?
+        {customerList.error ? (
+          <QueryFailed onRetry={() => customerList.refetch()} />
+        ) : (!isMemberShipCardActive.loading && !customerList.loading) ?
           idx(customerList.data, _ => (
             <Results
               customers={_.customers.customers}

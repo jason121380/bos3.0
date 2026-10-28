@@ -1,5 +1,5 @@
 import React from 'react'
-import CustomMockedProvider from 'components/CustomMockedProvider'
+import CustomMockedProvider from '__tests__/CustomMockedProvider.test'
 import { render, fireEvent, cleanup, wait } from '@testing-library/react'
 import { REGISTER } from 'hooks/useFetchRegister'
 import { Router } from 'react-router-dom'

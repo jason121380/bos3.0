@@ -1,4 +1,5 @@
 import { Accordion, AccordionDetails, AccordionSummary } from 'ui/accordion'
+import idx from 'idx'
 import { panelSummary } from 'views/OrderCreate/Pannel/summary'
 import billContext from 'context/keyInContext'
 import useFetchOrder from 'hooks/useFetchOrder'
@@ -26,7 +27,7 @@ export default function PannelCouponUse() {
   }, [couponUsage])
 
   React.useEffect(() => {
-    if (!order.loading && order.data) {
+    if (!order.loading && idx(order, _ => _.data.order)) {
       const newCouponUsage =
         order.data.order.useTicketOrders.length > 0
           ? order.data.order.useTicketOrders.map(data => ({

@@ -98,7 +98,7 @@ function Results({
           <CardTitle>抽成明細</CardTitle>
         </CardHeader>
         <div className="px-5 pb-5">
-          <Table className="min-w-[900px]">
+          <Table dense className="min-w-[900px]">
             <TableHeader>
               <TableRow className="hover:bg-transparent">
                 <TableHead>日期</TableHead>

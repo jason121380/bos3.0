@@ -107,7 +107,7 @@ export default function ChoseEvent({
         }
       })
       .catch(error => {
-        openSnackbar({ message: error.message, variant: 'error' })
+        // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
         setBtnDisabled(false)
       })
   }
@@ -135,7 +135,7 @@ export default function ChoseEvent({
         setModalOpen(false)
       }
     }).catch(error => {
-      openSnackbar({ message: error.message, variant: 'error' })
+      // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
       setBtnDisabled(false)
     })
   }
@@ -166,7 +166,7 @@ export default function ChoseEvent({
       }
     }).catch(error => {
       setBtnDisabled(false)
-      openSnackbar({ message: error.message, variant: 'error' })
+      // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
     })
   }
 
@@ -229,7 +229,7 @@ export default function ChoseEvent({
         }
       }).catch(error => {
         setBtnDisabled(false)
-        openSnackbar({ message: error.message, variant: 'error' })
+        // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
       })
     }
   }
@@ -253,7 +253,7 @@ export default function ChoseEvent({
         setBtnDisabled(false)
       }
     }).catch(error => {
-      openSnackbar({ message: error.message, variant: 'error' })
+      // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
       setBtnDisabled(false)
     })
 
@@ -297,7 +297,7 @@ export default function ChoseEvent({
         }
       }).catch(error => {
         setBtnDisabled(false)
-        openSnackbar({ message: error.message, variant: 'error' })
+        // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
       })
     }
   }
@@ -321,7 +321,7 @@ export default function ChoseEvent({
         refetchData()
       }
     } catch (error) {
-      openSnackbar({ message: error.message, variant: 'error' })
+      // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
     } finally {
       setBtnDisabled(false)
     }
@@ -344,7 +344,7 @@ export default function ChoseEvent({
       refetchData()
     } catch (error) {
       setBtnDisabled(false)
-      openSnackbar({ message: error.message, variant: 'error' })
+      // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
     }
   }
   
@@ -360,7 +360,7 @@ export default function ChoseEvent({
       refetchData()
     } catch (error) {
       setBtnDisabled(false)
-      openSnackbar({ message: error.message, variant: 'error' })
+      // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
     }
   }
 

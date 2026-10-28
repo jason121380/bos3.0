@@ -17,7 +17,7 @@ import { NativeSelect, NativeSelectOption } from 'ui/native-select'
 import { PageHeader } from 'ui/page-header'
 
 // 色票浮層：沿用舊版置中固定定位（CirclePicker 接受 className）
-const colorPickerClass = 'fixed left-1/2 top-1/2 z-[999] box-content -translate-x-1/2 -translate-y-1/2 rounded-md border border-solid border-border-strong bg-background pb-3 pl-5 pr-3 pt-5 shadow-float'
+const colorPickerClass = 'fixed left-1/2 top-1/2 z-[1400] box-content -translate-x-1/2 -translate-y-1/2 rounded-md border border-solid border-border-strong bg-background pb-3 pl-5 pr-3 pt-5 shadow-float'
 // 顏色預覽按鈕：背景色由 style 帶入目前色碼
 const swatchClass = 'h-9 w-16 shrink-0 rounded-md border border-solid border-border-strong p-0'
 
@@ -191,7 +191,7 @@ export default function MemberCardEdit({ match }) {
           history.push('/member-card-record')
         })
         .catch(err => {
-          openSnackbar({ message: err.message, variant: 'error' })
+          // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
         })
     }
   }
@@ -214,7 +214,7 @@ export default function MemberCardEdit({ match }) {
           window.location.href = `/member-card/edit/${membershipIndexArray[membershipIndex - 1].uuid}`
         })
         .catch(err => {
-          openSnackbar({ message: err.message, variant: 'error' })
+          // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
         })
     }
   }
@@ -236,7 +236,7 @@ export default function MemberCardEdit({ match }) {
           window.location.href = `/member-card/edit/${membershipIndexArray[membershipIndex + 1].uuid}`
         })
         .catch(err => {
-          openSnackbar({ message: err.message, variant: 'error' })
+          // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
         })
     }
   }

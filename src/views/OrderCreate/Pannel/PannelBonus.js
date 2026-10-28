@@ -56,11 +56,11 @@ export default function PannelBonus({ expanded, onPanelClick, bonusActive }) {
         data-testid="panelRemark"
       >
         <p className={`m-0 ${styles.heading}`}>紅利點數
-          <span style={{ marginLeft: '10px', fontSize: '10px' }}>
+          <span className="ml-2.5 text-caption">
             {bill.customerId ? `剩餘點數: ${customerBonus}` : ''}
           </span>
           {bonusConversion.isBonusConversion && (
-            <span style={{ marginLeft: '10px', fontSize: '10px' }}>
+            <span className="ml-2.5 text-caption">
               {`換算比率: ${bonusConversion.bonusConversionRate}`}
             </span>
           )}

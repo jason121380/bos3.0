@@ -11,6 +11,7 @@ import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
 
 import DecreaseResults from './DecreaseResults'
+import QueryFailed from 'components/QueryFailed'
 
 export default function DecreaseDetail() {
   const [pageSetting, setPageSetting] = React.useState({
@@ -51,7 +52,9 @@ export default function DecreaseDetail() {
             onChange={value => setBeenAssistedDesigner(value.userId)}
           />
         </div>
-        {!userHelperRetrieveData.loading ? (
+        {userHelperRetrieveData.error ? (
+          <QueryFailed onRetry={() => userHelperRetrieveData.refetch()} />
+        ) : !userHelperRetrieveData.loading ? (
           idx(userHelperRetrieveData, _ =>
             _.data.getUserHelperRetrieve.helperRecord.length > 0 ? (
               <DecreaseResults

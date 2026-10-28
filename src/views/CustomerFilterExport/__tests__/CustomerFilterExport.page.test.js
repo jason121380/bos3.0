@@ -274,8 +274,8 @@ describe('客資篩選匯出：查詢條件', () => {
     fireEvent.click(screen.getByLabelText('下一頁'))
     await wait(() => expect(lastInput(utils.calls).pageOffset).toBe(1))
     await utils.settle()
-    choose(screen.getByLabelText('每頁筆數'), '500')
-    await wait(() => expect(lastInput(utils.calls).pageLimit).toBe(500))
+    choose(screen.getByLabelText('每頁筆數'), '1000')
+    await wait(() => expect(lastInput(utils.calls).pageLimit).toBe(1000))
   })
 })
 

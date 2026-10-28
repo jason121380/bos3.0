@@ -8,7 +8,7 @@ import React from 'react'
 import { Router } from 'react-router-dom'
 
 import { PAGE_CRASH_TEXT, renderPage } from '__tests__/testkit.test'
-import CustomMockedProvider from 'components/CustomMockedProvider'
+import CustomMockedProvider from '__tests__/CustomMockedProvider.test'
 import GenericMoreButton from 'components/GenericMoreButton'
 import Markdown from 'components/Markdown'
 import NavItem from 'components/NavItem'

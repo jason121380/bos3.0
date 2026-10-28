@@ -163,14 +163,14 @@ function ServiceCategoryEdit({ match }) {
                     return {
                       ...data,
                       // eslint-disable-next-line eqeqeq -- 刻意保留寬鬆比較：值可能是輸入框字串或 null，改成 !== 會改變結果
-                      isDesignate: !(data.point != 0),
+                      isDesignate: Number(data.point || 0) === 0,
                       deductionWay: '點數',
                     }
                   } else if (data.cash || data.designateCash || data.nonDesignateCash > 0) {
                     return {
                       ...data,
                       // eslint-disable-next-line eqeqeq -- 刻意保留寬鬆比較：值可能是輸入框字串或 null，改成 !== 會改變結果
-                      isDesignate: !(data.cash != 0),
+                      isDesignate: Number(data.cash || 0) === 0,
                       deductionWay: '固定金額',
                     }
                   } else {

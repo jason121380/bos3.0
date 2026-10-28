@@ -167,10 +167,6 @@ function Header({ forceUpdate, ...rest }) {
           }
         })
         .catch((err) => {
-          openSnackbar({
-            message: err.message,
-            variant: 'error',
-          })
           handleBtnDisabled(false)
         })
         .finally(() => {
@@ -216,10 +212,6 @@ function Header({ forceUpdate, ...rest }) {
         .catch((err) => {
           setIsClick(false);
           setCheckoutBtn(false);
-          openSnackbar({
-            message: err.message,
-            variant: "error",
-          });
         })
         .finally(() => {
           setOpen(false)

@@ -18,6 +18,7 @@ import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import { openSnackbar } from 'elements/snackbars'
+import QueryFailed from 'components/QueryFailed'
 
 function ProductRestock() {
   const [purchaseRecords, setPurchaseRecords] = useState([])
@@ -234,7 +235,9 @@ function ProductRestock() {
           </div>
         </Card>
       </div>
-      {!getPurchaseRecordsLazyData.loading && purchaseRecords !== undefined ? (
+      {getPurchaseRecordsLazyData.error ? (
+          <QueryFailed onRetry={handleSearch} />
+        ) : !getPurchaseRecordsLazyData.loading && purchaseRecords !== undefined ? (
         <Results
           handleSearch={handleSearch}
           purchaseRecords={purchaseRecords}

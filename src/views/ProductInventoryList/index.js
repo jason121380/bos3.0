@@ -13,6 +13,7 @@ import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 import { Autocomplete } from 'ui/combobox'
+import QueryFailed from 'components/QueryFailed'
 
 const sortEnum = [
   { label: '數量', value: 'COUNT' },
@@ -242,7 +243,9 @@ const ProductInventoryList = () => {
             </Button>
           </div>
         </div> */}
-        {!productInventoryList.loading ? <Results reportData={reportData} /> : (
+        {productInventoryList.error ? (
+          <QueryFailed onRetry={() => productInventoryList.refetch()} />
+        ) : !productInventoryList.loading ? <Results reportData={reportData} /> : (
           // 載入中：與舊版 CircularProgress 相同時機顯示
           <div className="noprint" aria-busy="true" aria-label="載入中">
             <Skeleton className="h-[320px] w-full rounded-lg" />

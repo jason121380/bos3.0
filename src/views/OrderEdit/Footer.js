@@ -105,10 +105,6 @@ export default function Footer({ enable }) {
         })
         .catch((error) => {
           setOpen(false)
-          openSnackbar({
-            message: error.message,
-            variant: 'error',
-          })
           setReCheckoutPwd('')
         })
     }
@@ -317,11 +313,9 @@ export default function Footer({ enable }) {
     couponSellPrice, merberShipCardTotalPriceWithoutThirdPartyCoupon, bill.walletPay,
     bill.amountByOtherPay, bill.bonusDecount, setBill
   ])
-  
   useEffect(() => {
     if (bonusSetting.isUsing) {
       let bonusDeposit = 0; // 預設為 0
-    
       if (!bonusRewardWithLINE || (bonusRewardWithLINE && isLineBinded)) {
         const total =
           serviceTotalPriceWithoutThirdPartyCoupon +
@@ -331,10 +325,8 @@ export default function Footer({ enable }) {
           bill.walletPay -
           bill.amountByOtherPay -
           bill.bonusDecount;
-    
         bonusDeposit = giveBonus[bonusSetting.rule.mode](total, bonusSetting.rule.price, bonusSetting.rule.bonus);
       }
-    
       setBill(
         produce(draft => {
           draft.bonusDeposit = bonusDeposit;

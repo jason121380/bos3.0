@@ -350,7 +350,7 @@ function AboutSettingFunction({
                 </li>
               )}
               renderInput={params => (
-                <TextField {...params} variant="outlined" placeholder="功能名稱" />
+                <TextField {...params} variant="outlined" label="功能名稱" placeholder="功能名稱" />
               )}
             />
           </Field>

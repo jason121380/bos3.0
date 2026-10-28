@@ -248,7 +248,7 @@ const DesignerPerforamnceAnalyzeReport = () => {
           <>
             {compareDisplay && (
               <Button
-                variant="primary"
+                variant="secondary"
                 disabled={getUserList.loading}
                 onClick={() => setOpenModal(true)}
               >

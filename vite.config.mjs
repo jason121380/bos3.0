@@ -58,6 +58,9 @@ export default defineConfig(({ mode }) => {
       chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {
+          // 小於 10 KB 的共用小檔（多半是被多頁共用的單一 useFetch* hook）併進鄰近 chunk：
+          // 原本 371 個 chunk 中 145 個不到 2 KB，換頁常一次拉 5–10 個 1 KB 檔（2026/10/28 稽核 O-9）
+          experimentalMinChunkSize: 10000,
           // 每頁都會用到的核心套件獨立成 vendor chunk：一天多次部署時，使用者只需重新下載有變動的 App 程式碼。
           // 只列「首屏一定會載」的套件；圖表、編輯器、地圖等只在特定頁面用的維持隨頁面延遲載入。
           manualChunks(id) {

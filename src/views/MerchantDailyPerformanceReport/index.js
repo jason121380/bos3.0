@@ -15,6 +15,7 @@ import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 function DesignerPerformOverview() {
   const [dailyPerformanceData, setDailyPerformanceData] = useState(null)
@@ -49,7 +50,8 @@ function DesignerPerformOverview() {
         isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
       setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
     }
-  }, [isDisplayTogglePerformanceButtonData.loading])
+    // 兩支查詢都要等：會員卡查詢較晚回來時也要再跑一次（B2 清單 #4／#5）
+  }, [isDisplayTogglePerformanceButtonData.loading, isMemberShipCardActiveData.loading])
 
   useEffect(() => {
     if (!merchantDailyPerformanceReportData.loading) {
@@ -58,7 +60,7 @@ function DesignerPerformOverview() {
         _ => _.data.merchantDailyPerformanceReport
       )
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
-      const memberActive = merchantDailyPerformanceReport.some(({ performance }) => performance.isMemberShipCardActive > 0 || performance.membershipPerformance > 0 || performance.membershipAveragePerformance > 0) || isMemberShipCardActive
+      const memberActive = (merchantDailyPerformanceReport || []).some(({ performance }) => performance.isMemberShipCardActive > 0 || performance.membershipPerformance > 0 || performance.membershipAveragePerformance > 0) || isMemberShipCardActive
 
       setMembershipDisplay(memberActive)
       setDailyPerformanceData(merchantDailyPerformanceReport)
@@ -66,7 +68,8 @@ function DesignerPerformOverview() {
       const excelData = []
       const attributeSwitch = []
 
-      merchantDailyPerformanceReport.forEach(({ performance }) => {
+      const dailyRows = merchantDailyPerformanceReport || []
+      dailyRows.forEach(({ performance }) => {
         performance.categoryData.forEach((category, index) => {
           if (attributeSwitch[index]) {
             return
@@ -76,7 +79,7 @@ function DesignerPerformOverview() {
         })
       })
 
-      merchantDailyPerformanceReport.forEach(({ date, performance }) => {
+      dailyRows.forEach(({ date, performance }) => {
         const {
           fakePerformance, orderCount, averagePerformance, productPerformance, productOrderCount,
           membershipPerformance, membershipOrderCount, membershipAveragePerformance, customerUnknownCount,
@@ -141,7 +144,9 @@ function DesignerPerformOverview() {
           </div>
         )}
       />
-      {(!merchantDailyPerformanceReportData.loading && dailyPerformanceData !== null) ? (
+      {merchantDailyPerformanceReportData.error ? (
+          <QueryFailed onRetry={() => merchantDailyPerformanceReportData.refetch()} />
+        ) : (!merchantDailyPerformanceReportData.loading && dailyPerformanceData !== null) ? (
         <Results
           className="mt-2"
           results={dailyPerformanceData}

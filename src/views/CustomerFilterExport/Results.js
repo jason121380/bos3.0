@@ -114,7 +114,7 @@ function Results({
         pageOffset={pageOffset}
         onPageChange={handleOnChangePage}
         onRowsPerPageChange={handleOnChangeRowsPerPage}
-        rowsPerPageOptions={[5, 10, 25, 50, 500, 1000]}
+        rowsPerPageOptions={[5, 10, 25, 50, 1000]}
         minWidth={700}
         size="small"
         tableHead={

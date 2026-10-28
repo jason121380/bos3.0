@@ -23,7 +23,7 @@ const styles = {
   assistField: 'w-[120px] min-w-[120px] flex mr-[12px]',
   priceField: 'w-[65px] flex mr-[12px]',
   checkbox: 'w-[100px] flex mr-[12px] last:mr-0',
-  heading2: 'text-[0.8125rem] font-bold',
+  heading2: 'text-label font-bold',
 }
 
 function Services({

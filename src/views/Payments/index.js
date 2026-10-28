@@ -6,6 +6,7 @@ import { Skeleton } from 'ui/skeleton'
 
 import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 function CustomerManagementList() {
   const payments = useFetchPayments()
@@ -20,7 +21,9 @@ function CustomerManagementList() {
             to: '/payment/create'
           }}
         />
-        {!payments.loading ?
+        {payments.error ? (
+          <QueryFailed onRetry={() => payments.refetch()} />
+        ) : !payments.loading ?
           <Results
             paymentList={idx(payments, _ => _.data.merchantPayWays)}
           />

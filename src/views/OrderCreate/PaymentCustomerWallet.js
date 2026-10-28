@@ -1,4 +1,5 @@
 import { Button } from 'ui/button'
+import { formatNumber } from 'ui/format'
 import { CheckboxField } from 'ui/checkbox'
 import { Input } from 'ui/input'
 import billContext from 'context/keyInContext'
@@ -207,7 +208,7 @@ function PaymentCustomerWallet(props, ref) {
           <div style={{ display: 'flex', gap: 8, alignItems: 'center', paddingBottom: 36, flexWrap: 'wrap' }}>
             {walletFuncDisplay ? (
               <>
-                <p>入金剩餘：<strong style={{ color: 'red' }}>{`${usableCustomerWallet}元`}</strong></p>
+                <p>入金剩餘：<strong className="text-danger">{formatNumber(usableCustomerWallet)} 元</strong></p>
                 <RemoveRoundedIcon />
                 <div style={{ position: 'relative' }} className={styles.walletDiv}>
                   <Input
@@ -237,7 +238,7 @@ function PaymentCustomerWallet(props, ref) {
                   </div>
                 </div>
                 <DragHandleRoundedIcon />
-                <strong style={{ color: 'red' }}>{`${usableCustomerWallet - bill.walletPay}元`}</strong>
+                <strong className="text-danger">{formatNumber(usableCustomerWallet - bill.walletPay)} 元</strong>
                 {(identity.allowDepositAddition || identity.allowDepositDeduction) &&
                   <Button
                     variant="primary"
@@ -249,7 +250,7 @@ function PaymentCustomerWallet(props, ref) {
               </>
             ) : (
               <>
-                <p>入金剩餘：<strong style={{ color: 'red' }}>{`${usableCustomerWallet}元`}</strong></p>
+                <p>入金剩餘：<strong className="text-danger">{formatNumber(usableCustomerWallet)} 元</strong></p>
                 {(identity.allowDepositAddition || identity.allowDepositDeduction) &&
                   <Button
                     variant="primary"

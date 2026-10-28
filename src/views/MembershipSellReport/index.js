@@ -14,6 +14,7 @@ import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 export default function MembershipSellReport() {
   const [excelData, setExcelData] = useState([])
@@ -45,7 +46,7 @@ export default function MembershipSellReport() {
   useEffect(() => {
     if (!getMembershipSellReport.loading) {
       const data = idx(getMembershipSellReport, _ => _.data.membershipSellReport)
-      setReportData(data)
+      setReportData(data || [])
     }
   }, [getMembershipSellReport])
 
@@ -119,7 +120,9 @@ export default function MembershipSellReport() {
             />
           }
         />
-        {!getMembershipSellReport.loading ? (
+        {getMembershipSellReport.error ? (
+          <QueryFailed onRetry={() => getMembershipSellReport.refetch()} />
+        ) : !getMembershipSellReport.loading ? (
           <Results
             reportData={reportData}
             format={format}

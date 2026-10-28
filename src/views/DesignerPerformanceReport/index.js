@@ -16,6 +16,7 @@ import { Download, Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
+import QueryFailed from 'components/QueryFailed'
 
 const DesignerPerformanceReport = () => {
 	const [type, setType] = useState('FAKE')
@@ -56,7 +57,8 @@ const DesignerPerformanceReport = () => {
 	}, [isDisplayTogglePerformanceButtonData.loading])
 
 	useEffect(() => {
-		if (!getDesignerPerformance.loading && !isMemberShipCardActiveData.loading) {
+		// 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
+		if (!getDesignerPerformance.loading && !isMemberShipCardActiveData.loading && idx(getDesignerPerformance, _ => _.data.designerPerformance)) {
 			let performanceData = cloneDeep(getDesignerPerformance.data.designerPerformance)
 			const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
 			if (performanceData.length > 0) {
@@ -194,7 +196,9 @@ const DesignerPerformanceReport = () => {
 					</div>
 				}
 			/>
-			{getDesignerPerformance.loading ?
+			{getDesignerPerformance.error ? (
+          <QueryFailed onRetry={() => getDesignerPerformance.refetch()} />
+        ) : getDesignerPerformance.loading ?
 				<Skeleton className="h-96" aria-busy="true" />
 				:
 				<Results

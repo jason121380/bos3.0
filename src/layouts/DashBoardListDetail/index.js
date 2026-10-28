@@ -23,84 +23,52 @@ export default function DashBoardListDetail() {
 }
 
 // 頁面外距由 layouts/Dashboard 的 #printContainer 提供（與其他頁一致），此處不再另加
+// 單一報表連結：只在登入者有該報表權限時顯示。定義在模組層（不在父元件內），切換分類時不會重新掛載整批連結。
+function LinkItem({ userPageAuth, itemName, link }) {
+  const item = hasReportAuthority(userPageAuth, [itemName]) ? itemName : ''
+  if (!item) return ''
+  return (
+    <RouterLink
+      to={link}
+      className={cn('group flex h-10 items-center justify-between rounded-md px-3 text-body text-text hover:bg-surface-hover', focusRing)}
+    >
+      {item}
+      <ChevronRight className="h-4 w-4 text-text-tertiary opacity-0 transition-opacity group-hover:opacity-100" strokeWidth={1.75} />
+    </RouterLink>
+  )
+}
+
+// 「報表及分析」區塊內，names 任一報表有權限即為 true（分類是否顯示、連結是否顯示共用同一判斷）
+function hasReportAuthority(userPageAuth, names) {
+  let found = false
+  userPageAuth
+    .filter(a => a.pageTitle === '報表及分析')
+    .forEach(a => {
+      a.pageAuthority.filter(a => {
+        names.forEach(i => {
+          if (a.pageName === i && a.authority === true) found = true
+        })
+        return false
+      })
+    })
+  return found
+}
+
 function DashBoardListContent() {
-  function LinkItem(props) {
-    // 拿權限
-    const [userPageAuth, setUserPageAuth] = useState([])
-
-    const designerId = storedUserId()
-    const apiUserPermissions = useFetchUserPermission({
-      id: designerId === undefined ? null : designerId,
-    })
-
-    // LinkItem 每次切換分類都會重新掛載；權限查詢是 cache-and-network（2026/10/22），重新掛載時先有快取資料、loading 仍為 true，
-    // 有資料就先用（不等重抓完成），否則切換分類後連結會先消失到重抓回來
-    useEffect(() => {
-      if (apiUserPermissions.data) {
-        const userPageAuth = idx(apiUserPermissions, _ => _.data.user.pageAuthority.pageAuthority)
-        setUserPageAuth(userPageAuth)
-      }
-    }, [apiUserPermissions.data])
-    let item = ''
-    userPageAuth
-      .filter(a => a.pageTitle === '報表及分析')
-      .forEach(a => {
-        a.pageAuthority.filter(a => {
-          if (a.pageName === props.itemName && a.authority === true) {
-            item = props.itemName
-          }
-          return false
-        })
-      })
-
-    if (item) {
-      return (
-        <RouterLink
-          to={props.link}
-          className={cn('group flex h-10 items-center justify-between rounded-md px-3 text-body text-text hover:bg-surface-hover', focusRing)}
-        >
-          {item}
-          <ChevronRight className="h-4 w-4 text-text-tertiary opacity-0 transition-opacity group-hover:opacity-100" strokeWidth={1.75} />
-        </RouterLink>
-      )
-    } else {
-      return ''
+  // 權限只查一次（原本 41 個 LinkItem 與 6 個分類各自呼叫同一支查詢、每次切換分類全部重新掛載）；
+  // 權限查詢是 cache-and-network（2026/10/22），有資料就先用（不等重抓完成），否則切換分類後連結會先消失到重抓回來
+  const [userPageAuth, setUserPageAuth] = useState([])
+  const designerId = storedUserId()
+  const apiUserPermissions = useFetchUserPermission({
+    id: designerId === undefined ? null : designerId,
+  })
+  useEffect(() => {
+    if (apiUserPermissions.data) {
+      const userPageAuth = idx(apiUserPermissions, _ => _.data.user.pageAuthority.pageAuthority)
+      setUserPageAuth(userPageAuth || [])
     }
-  }
-  function SubMenuItem(Arr) {
-    // 拿權限
-    const [userPageAuth, setUserPageAuth] = useState([])
-
-    const designerId = storedUserId()
-    const apiUserPermissions = useFetchUserPermission({
-      id: designerId === undefined ? null : designerId,
-    })
-
-    useEffect(() => {
-      if (apiUserPermissions.data && !apiUserPermissions.loading) {
-        const userPageAuth = idx(apiUserPermissions, _ => _.data.user.pageAuthority.pageAuthority)
-        setUserPageAuth(userPageAuth)
-      }
-    }, [apiUserPermissions.data, apiUserPermissions.loading])
-    const subItem = []
-    userPageAuth
-      .filter(a => a.pageTitle === '報表及分析')
-      .forEach(a => {
-        a.pageAuthority.filter(a => {
-          Arr.forEach(i => {
-            if (a.pageName === i && a.authority === true) {
-              subItem.push(i)
-            }
-          })
-          return false
-        })
-      })
-    if (subItem.length > 0) {
-      return true
-    } else {
-      return false
-    }
-  }
+  }, [apiUserPermissions.data])
+  const SubMenuItem = Arr => hasReportAuthority(userPageAuth, Arr)
   const [selectTab, setSelectTab] = useState('daily')
   // SubMenuItem 內含 hooks，必須以固定順序、固定次數無條件呼叫六次（與舊版相同順序），
   // 不得依權限結果條件式呼叫；權限只決定下方選單是否顯示該分類。
@@ -135,9 +103,9 @@ function DashBoardListContent() {
       visible: canDaily,
       children: (
         <>
-          <LinkItem itemName={'店家日報表'} link={'/merchant-daily-report'} />
-          <LinkItem itemName={'設計師日報表'} link={'/employee-daily-report'} />
-          <LinkItem itemName={'互助日報表'} link={'/decrease-daily-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'店家日報表'} link={'/merchant-daily-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'設計師日報表'} link={'/employee-daily-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'互助日報表'} link={'/decrease-daily-report'} />
         </>
       ),
     },
@@ -148,20 +116,20 @@ function DashBoardListContent() {
       visible: canBusiness,
       children: (
         <>
-          <LinkItem itemName={'店家區間累計表'} link={'/merchant-business-interval-report'} />
-          <LinkItem itemName={'店家排行榜'} link={'/merchant-leader-board'} />
-          <LinkItem itemName={'全店業績分析表'} link={'/designer/perform/overview'} />
-          <LinkItem itemName={'每日業績分析表'} link={'/merchant-daily-performance-report'} />
-          <LinkItem itemName={'每日收支明細'} link={'/money-flow-daily-report'} />
-          <LinkItem itemName={'收支分類明細表'} link={'/money-flow-category-report'} />
-          <LinkItem itemName={'收支匯款表'} link={'/money-flow-transfer-report'} />
-          <LinkItem itemName={'每日非現金明細'} link={'/payment-report'} />
-          <LinkItem itemName={'單一服務項目查詢'} link={'/single-service-report'} />
-          <LinkItem itemName={'非現金明細對帳單'} link={'/non-cash-statement-report'} />
-          <LinkItem itemName={'顧客卡券餘額表'} link={'/customer-coupon-report'} />
-          <LinkItem itemName={'顧客入金餘額表'} link={'/customer-wallet-balance'} />
-          <LinkItem itemName={'營業統計分析表'} link={'/business-analysis-report'} />
-          <LinkItem itemName={'營業項目月分析表'} link={'/business-items-monthly-analyze-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'店家區間累計表'} link={'/merchant-business-interval-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'店家排行榜'} link={'/merchant-leader-board'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'全店業績分析表'} link={'/designer/perform/overview'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'每日業績分析表'} link={'/merchant-daily-performance-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'每日收支明細'} link={'/money-flow-daily-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'收支分類明細表'} link={'/money-flow-category-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'收支匯款表'} link={'/money-flow-transfer-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'每日非現金明細'} link={'/payment-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'單一服務項目查詢'} link={'/single-service-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'非現金明細對帳單'} link={'/non-cash-statement-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'顧客卡券餘額表'} link={'/customer-coupon-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'顧客入金餘額表'} link={'/customer-wallet-balance'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'營業統計分析表'} link={'/business-analysis-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'營業項目月分析表'} link={'/business-items-monthly-analyze-report'} />
         </>
       ),
     },
@@ -172,12 +140,12 @@ function DashBoardListContent() {
       visible: canDesigner,
       children: (
         <>
-          <LinkItem itemName={'設計師業績分析表'} link={'/designer-perforamnce-analyze-report'} />
-          <LinkItem itemName={'設計師排行榜'} link={'/designer-perform-basic'} />
-          <LinkItem itemName={'設計師抽成報表'} link={'/designer-rake-report'} />
-          <LinkItem itemName={'設計師業績月報表'} link={'/designer-monthly-report'} />
-          <LinkItem itemName={'服務扣項明細表'} link={'/service-deduction-detail-report'} />
-          <LinkItem itemName={'設計師業績表'} link={'/designer-performance-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'設計師業績分析表'} link={'/designer-perforamnce-analyze-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'設計師排行榜'} link={'/designer-perform-basic'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'設計師抽成報表'} link={'/designer-rake-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'設計師業績月報表'} link={'/designer-monthly-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'服務扣項明細表'} link={'/service-deduction-detail-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'設計師業績表'} link={'/designer-performance-report'} />
         </>
       ),
     },
@@ -188,10 +156,10 @@ function DashBoardListContent() {
       visible: canHelper,
       children: (
         <>
-          <LinkItem itemName={'互助排行榜'} link={'/helper-leaderboard'} />
-          <LinkItem itemName={'互助點數明細'} link={'/decrease/detail'} />
-          <LinkItem itemName={'互助月報表'} link={'/helper-monthly-report'} />
-          <LinkItem itemName={'互助業績報表'} link={'/helper-performance'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'互助排行榜'} link={'/helper-leaderboard'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'互助點數明細'} link={'/decrease/detail'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'互助月報表'} link={'/helper-monthly-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'互助業績報表'} link={'/helper-performance'} />
         </>
       ),
     },
@@ -202,14 +170,14 @@ function DashBoardListContent() {
       visible: canProduct,
       children: (
         <>
-          <LinkItem itemName={'店販抽成明細'} link={'/merchant/sells/records'} />
-          <LinkItem itemName={'店販分類抽成明細'} link={'/merchant/category/sells/records'} />
-          <LinkItem itemName={'商品銷售排行榜'} link={'/product-leader-board'} />
-          <LinkItem itemName={'商品消耗明細'} link={'/product-consume-report'} />
-          <LinkItem itemName={'商品進銷貨報表'} link={'/product-invoicing-record-report'} />
-          <LinkItem itemName={'商品庫存表'} link={'/product-inventoryList'} />
-          <LinkItem itemName={'商品庫存盤點表'} link={'/product-reserve-check'} />
-          <LinkItem itemName={'會員卡銷售報表'} link={'/membership-sell-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'店販抽成明細'} link={'/merchant/sells/records'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'店販分類抽成明細'} link={'/merchant/category/sells/records'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'商品銷售排行榜'} link={'/product-leader-board'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'商品消耗明細'} link={'/product-consume-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'商品進銷貨報表'} link={'/product-invoicing-record-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'商品庫存表'} link={'/product-inventoryList'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'商品庫存盤點表'} link={'/product-reserve-check'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'會員卡銷售報表'} link={'/membership-sell-report'} />
         </>
       ),
     },
@@ -220,13 +188,13 @@ function DashBoardListContent() {
       visible: canManagement,
       children: (
         <>
-          <LinkItem itemName={'費用分析表'} link={'/cost-analysis-report'} />
-          <LinkItem itemName={'損益表'} link={'/income-statement-report'} />
-          <LinkItem itemName={'多店業績統計表'} link={'/overall-performance-analysis-report'} />
-          <LinkItem itemName={'顧客消費排行榜'} link={'/customer-consumption-leaderboard'} />
-          <LinkItem itemName={'顧客入金排行榜'} link={'/customer-wallet-leaderboard'} />
-          <LinkItem itemName={'消費分析儀表板'} link={'/consumption-analytics-dashboard'} />
-          <LinkItem itemName={'多店店販銷售排行'} link={'/multi-merchants-leader-board'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'費用分析表'} link={'/cost-analysis-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'損益表'} link={'/income-statement-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'多店業績統計表'} link={'/overall-performance-analysis-report'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'顧客消費排行榜'} link={'/customer-consumption-leaderboard'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'顧客入金排行榜'} link={'/customer-wallet-leaderboard'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'消費分析儀表板'} link={'/consumption-analytics-dashboard'} />
+          <LinkItem userPageAuth={userPageAuth} itemName={'多店店販銷售排行'} link={'/multi-merchants-leader-board'} />
         </>
       ),
     },

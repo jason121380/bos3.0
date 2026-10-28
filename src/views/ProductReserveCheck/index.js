@@ -10,9 +10,10 @@ import useFetchGetProductReserveCheck from 'hooks/useFetchGetProductReserveCheck
 import idx from 'idx'
 import Results from './Results'
 import { Button } from 'ui/button'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 import { Autocomplete } from 'ui/combobox'
+import QueryFailed from 'components/QueryFailed'
 
 
 const ProductReserveCheck = () => {
@@ -87,14 +88,16 @@ const ProductReserveCheck = () => {
   return (
     <Page className="ui-root" title="商品庫存盤點表">
       <PageHeader title="商品庫存盤點表" />
-      <Toolbar>
-        <DateSelector
-          date={date}
-          attributes={['lastmonth', 'thismonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-          dateChange={value => setDate(value)}
-          margin
-        />
-      </Toolbar>
+      <ReportToolbar
+        date={
+          <DateSelector
+            date={date}
+            attributes={['lastmonth', 'thismonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+            dateChange={value => setDate(value)}
+            margin
+          />
+        }
+      />
       <div className="flex items-center gap-2.5 pb-6">
         <Autocomplete
           multiple
@@ -166,7 +169,9 @@ const ProductReserveCheck = () => {
           </Button>
         </div>
       </div>
-      {productReserveData.loading || (productReserveData.data === undefined && !productReserveData.error) ? (
+      {productReserveData.error ? (
+          <QueryFailed onRetry={() => handleSearch()} />
+        ) : productReserveData.loading || (productReserveData.data === undefined && !productReserveData.error) ? (
         <Skeleton className="h-96" aria-busy="true" />
       ) : (
         <Results reportData={reportData} />

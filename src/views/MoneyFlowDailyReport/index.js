@@ -11,7 +11,8 @@ import DateSelector from 'components/DateSelector'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar } from 'ui/page-header'
+import QueryFailed from 'components/QueryFailed'
 
 export default function Employees() {
   const [displayDate, setDisplayDate] = useState([])
@@ -84,14 +85,18 @@ export default function Employees() {
             </CSVLink>
           </Button>
         </AdminPageHeader>
-        <Toolbar>
-          <DateSelector
-            date={date}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-          />
-        </Toolbar>
-        {!moneyFlowDailyReportData.loading && !isMemberShipCardActiveData.loading ?
+        <ReportToolbar
+          date={
+            <DateSelector
+              date={date}
+              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              dateChange={value => setDate(value)}
+            />
+          }
+        />
+        {moneyFlowDailyReportData.error ? (
+          <QueryFailed onRetry={() => moneyFlowDailyReportData.refetch()} />
+        ) : !moneyFlowDailyReportData.loading && !isMemberShipCardActiveData.loading ?
           (idx(moneyFlowDailyReportData, _ => (
             <Results
               moneyFlowDailyReport={_.data.moneyFlowDailyReport}

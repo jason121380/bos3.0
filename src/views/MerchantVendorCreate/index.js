@@ -68,10 +68,6 @@ function MerchantVendorCreate() {
           setIsClick(false)
         }
       }).catch(error => {
-        openSnackbar({
-          message: error.message,
-          variant: 'error'
-        })
         setIsClick(false)
       })
     }

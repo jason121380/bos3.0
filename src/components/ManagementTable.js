@@ -21,7 +21,7 @@ const ManagementTable = ({
     pageOffset,
     onPageChange,
     onRowsPerPageChange,
-    rowsPerPageOptions = [5, 10, 25, 50, 100],
+    rowsPerPageOptions = [5, 10, 25, 50, 1000],
     minWidth = 1000,
     headerAction,
     className,

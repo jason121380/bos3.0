@@ -6,10 +6,11 @@ import React from 'react'
 import useFetchMerchantIncomeStatementV2OuterStore from 'hooks/useFetchMerchantIncomeStatementV2ForOuterStore'
 import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
-import { HeaderActionsSlot, PageHeader, Toolbar } from 'ui/page-header'
+import { HeaderActionsSlot, PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 export default function IncomeStatementReport() {
   const [date, setDate] = React.useState({
@@ -50,19 +51,23 @@ export default function IncomeStatementReport() {
           </>
         }
       />
-      <Toolbar>
-        <DateSelector
-          date={date}
-          attributes={['lastmonth', 'thismonth', 'startDate']}
-          dateChange={value => setDate(value)}
-          onlyStart
-          inputFormat='yyyy/MM'
-          pickerOption={{
-            views: ['month', 'year']
-          }}
-        />
-      </Toolbar>
-      {merchantIncomeStatementDataV2OuterStore.loading ? (
+      <ReportToolbar
+        date={
+          <DateSelector
+            date={date}
+            attributes={['lastmonth', 'thismonth', 'startDate']}
+            dateChange={value => setDate(value)}
+            onlyStart
+            inputFormat='yyyy/MM'
+            pickerOption={{
+              views: ['month', 'year']
+            }}
+          />
+        }
+      />
+      {merchantIncomeStatementDataV2OuterStore.error ? (
+          <QueryFailed onRetry={() => merchantIncomeStatementDataV2OuterStore.refetch()} />
+        ) : merchantIncomeStatementDataV2OuterStore.loading ? (
         <Skeleton className="h-96" aria-busy="true" />
       ) : (
         idx(merchantIncomeStatementDataV2OuterStore, _ => (

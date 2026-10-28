@@ -7,6 +7,7 @@ import { Skeleton } from 'ui/skeleton'
 
 import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 function MerchantVendor() {
   const merchantVendorList = useFetchGetMerchantVendorList()
@@ -29,7 +30,9 @@ function MerchantVendor() {
           to: '/merchant-vendor/create'
         }}
       />
-      {!merchantVendorList.loading ? (
+      {merchantVendorList.error ? (
+          <QueryFailed onRetry={() => merchantVendorList.refetch()} />
+        ) : !merchantVendorList.loading ? (
         <Results
           merchantVendor={merchantVendor}
           merchantVendorList={merchantVendorList}

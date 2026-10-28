@@ -128,6 +128,7 @@ describe('材料自購登錄列表', () => {
     fireEvent.click(screen.getByTestId('order-checkbox-0'))
     fireEvent.click(screen.getByTestId('order-checkbox-0'))
     fireEvent.click(within(screen.getByRole('toolbar', { name: '批次操作' })).getByRole('button', { name: /刪除/ }))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '刪除 員工領料/自購 成功', variant: 'success' }))
     expect(callsOf(calls, 'deletePicking')[0].variables).toEqual({ id: ['pk-2'] })
   })

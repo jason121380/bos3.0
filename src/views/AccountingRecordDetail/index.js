@@ -26,7 +26,7 @@ import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogTi
 import { Field, Input as UiInput } from 'ui/input'
 import { PageHeader } from 'ui/page-header'
 
-import AccountingSubjectModal from './AccountingSubjectModal'
+import AccountingSubjectModal from 'views/AccountingShared/AccountingSubjectModal'
 import { Autocomplete } from 'ui/combobox'
 
 //備註快捷

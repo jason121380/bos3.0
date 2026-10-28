@@ -9,8 +9,8 @@ function Results({ data, isServiceTicketMerged, isMemberShipCardActive, bonusDis
   return (
       <Table dense wrapperClassName="BusinessAnalysisReportTable" className="min-w-[650px]" aria-label="a dense table">
         <TableHeader>
-          <TableRow className="sticky top-0 z-[100] bg-white [outline:1px_solid_rgb(var(--border))]">
-            <TableHead className="sticky left-0 z-[99] bg-white [outline:1px_solid_rgb(var(--border))]">營業日期</TableHead>
+          <TableRow className="sticky top-0 z-[100] bg-background [outline:1px_solid_rgb(var(--border))]">
+            <TableHead className="sticky left-0 z-[99] bg-background [outline:1px_solid_rgb(var(--border))]">營業日期</TableHead>
             {isServiceTicketMerged ? (
               <Fragment>
                 <TableHead>營業總業績</TableHead>
@@ -45,7 +45,7 @@ function Results({ data, isServiceTicketMerged, isMemberShipCardActive, bonusDis
         <TableBody>
           {data.data.map(row => (
             <TableRow key={row.date}>
-              <TableCell className="sticky left-0 z-[99] bg-white [outline:1px_solid_rgb(var(--border))]">{format(row.date, 'yyyy/MM/dd')}</TableCell>
+              <TableCell className="sticky left-0 z-[99] bg-background [outline:1px_solid_rgb(var(--border))]">{format(row.date, 'yyyy/MM/dd')}</TableCell>
               {isServiceTicketMerged ? (
                 <Fragment>
                   <TableCell>
@@ -80,7 +80,7 @@ function Results({ data, isServiceTicketMerged, isMemberShipCardActive, bonusDis
             </TableRow>
           ))}
           <TableRow>
-            <TableCell className="sticky left-0 z-[99] bg-white [outline:1px_solid_rgb(var(--border))]">
+            <TableCell className="sticky left-0 z-[99] bg-background [outline:1px_solid_rgb(var(--border))]">
               <b>合計</b>
             </TableCell>
             {isServiceTicketMerged ? (

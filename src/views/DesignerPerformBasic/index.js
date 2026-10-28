@@ -18,6 +18,7 @@ import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const isIncludeProductPerformanceValue = [
   { label: '含店販', value: true },
@@ -68,7 +69,7 @@ const DesignerPerformBasic = () => {
 
   useEffect(() => {
     if (!getDRRDataDisplay.loading) {
-      const { isDRROCDisplay, isDRRPEVDisplay } = idx(getDRRDataDisplay, _ => _.data.getParameterReportSetting)
+      const { isDRROCDisplay, isDRRPEVDisplay } = idx(getDRRDataDisplay, _ => _.data.getParameterReportSetting) || {}
       setDataDisplay({
         isDRROCDisplay,
         isDRRPEVDisplay
@@ -107,6 +108,8 @@ const DesignerPerformBasic = () => {
   useEffect(() => {
     if (!designersLeaboardData.loading && !monthlyAverageDisplayForDesignerLeaderBoardData.loading && !isMemberShipCardActiveData.loading) {
       const report = idx(designersLeaboardData, _ => _.data.designerLeaderboard.designerLeaderBoard)
+      // 查詢失敗時沒有資料，不整理報表（畫面另有 QueryFailed）
+      if (!report) return
       const excelData = []
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const monthlyAveragePerformanceTotal = idx(
@@ -117,7 +120,7 @@ const DesignerPerformBasic = () => {
         monthlyAverageDisplayForDesignerLeaderBoardData,
         _ => _.data.getMonthlyAverageDisplayForDesignerLeaderBoard
       )
-      const membershipTotal = report.reduce((acc, curVal) => acc + curVal.membershipTotal, 0)
+      const membershipTotal = (report || []).reduce((acc, curVal) => acc + curVal.membershipTotal, 0)
       const membershipDisplay = (isMemberShipCardActive || membershipTotal !== 0)
       
       // 是否顯示會員卡欄位
@@ -427,7 +430,9 @@ const DesignerPerformBasic = () => {
             </Button>
           </div>
         </div>
-        {!designersLeaboardData.loading && !monthlyAverageDisplayForDesignerLeaderBoard.loading ? (
+        {designersLeaboardData.error ? (
+          <QueryFailed onRetry={() => designersLeaboardData.refetch()} />
+        ) : !designersLeaboardData.loading && !monthlyAverageDisplayForDesignerLeaderBoard.loading ? (
           <Results
             report={idx(designersLeaboardData, _ => _.data.designerLeaderboard.designerLeaderBoard)}
             performReference={performReference}

@@ -70,7 +70,8 @@ export default function PannelService({ thirdPartTicket, expanded, setExpanded }
 
   React.useEffect(() => {
     // 同一張帳單只帶入一次（見 useOncePerOrder）
-    if (!servicesOrder.loading && isFirstLoad(orderId)) {
+    // 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
+    if (!servicesOrder.loading && idx(servicesOrder, _ => _.data.order.serviceOrders) && isFirstLoad(orderId)) {
       const newServices =
         servicesOrder.data.order.serviceOrders.length > 0
           ? servicesOrder.data.order.serviceOrders.map(data => ({

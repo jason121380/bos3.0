@@ -9,7 +9,8 @@ import React from 'react'
 import { Card } from 'ui/card'
 
 import Results from './Results'
-import TotalPrice from './TotalPrice'
+import TotalPrice from 'views/AccountingShared/TotalPrice'
+import QueryFailed from 'components/QueryFailed'
 
 function AccountingRecordList() {
   const [pageSetting, setPageSetting] = React.useState({
@@ -68,7 +69,9 @@ function AccountingRecordList() {
             />
           )
       )}
-      {idx(
+      {getMoneyFlowsForAccounting.error ? (
+        <QueryFailed onRetry={() => getMoneyFlowsForAccounting.refetch()} />
+      ) : idx(
         getMoneyFlowsForAccounting,
         _ =>
           _.data.moneyFlows && (

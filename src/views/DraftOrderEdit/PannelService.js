@@ -62,7 +62,8 @@ export default function PannelService({ thirdPartTicket }) {
   }, [serviceCategoriesData.loading, servicesData.loading])
 
   React.useEffect(() => {
-    if (!servicesOrder.loading) {
+    // 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
+    if (!servicesOrder.loading && idx(servicesOrder, _ => _.data.order.serviceOrders)) {
       const newServices =
         servicesOrder.data.order.serviceOrders.length > 0
           ? servicesOrder.data.order.serviceOrders.map(data => ({

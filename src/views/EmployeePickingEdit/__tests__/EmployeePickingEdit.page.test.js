@@ -144,6 +144,7 @@ describe('編輯材料自購', () => {
     const { settle, calls } = renderEdit()
     await settle()
     fireEvent.click(screen.getByRole('button', { name: '刪除' }))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '刪除 員工領料/自購 成功', variant: 'success' }))
     expect(callsOf(calls, 'deletePicking')[0].variables).toEqual({ id: 'pk-1' })
     await wait(() => expect(currentLocation()).toBe('/employee/picking'))

@@ -7,6 +7,7 @@ import idx from 'idx'
 
 import Results from './Results'
 import AdminPageHeader from 'components/AdminPageHeader'
+import QueryFailed from 'components/QueryFailed'
 
 const Shortcut = () => {
 	const shortcuts = useShortcuts()
@@ -104,7 +105,9 @@ const Shortcut = () => {
 						to: '/shortcut/create'
 					}}
 				/>
-				{shortcuts.loading ? (
+				{shortcuts.error ? (
+          <QueryFailed onRetry={() => shortcuts.refetch()} />
+        ) : shortcuts.loading ? (
 					<Skeleton className="h-[320px] w-full rounded-lg" aria-label="載入中" />
 				) : (
 					<Results reportData={reportData} open={open} openCollapse={handleOpenCollapse} onToggleAll={handleToggleAll} />

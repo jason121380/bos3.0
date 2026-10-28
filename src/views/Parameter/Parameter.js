@@ -630,7 +630,7 @@ function Parameter() {
     ]).then(() => {
       openSnackbar({ message: '儲存成功!', variant: 'success' })
     }).catch(error => {
-      openSnackbar({ message: error.message, variant: 'error' })
+      // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
     }).finally(() => setIsClick(false))
   }
 

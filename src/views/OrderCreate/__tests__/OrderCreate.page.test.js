@@ -205,7 +205,7 @@ describe('打帳單：結帳送出', () => {
     const { calls } = setup()
     await screen.findByText(/#A001/)
     await selectCustomerDesignerService(calls)
-    expect(await screen.findByText(/入金剩餘/)).toHaveTextContent('入金剩餘：1500元')
+    expect(await screen.findByText(/入金剩餘/)).toHaveTextContent('入金剩餘：1,500 元')
     // 有「入金(儲值)」權限即可看到異動入金
     expect(screen.getByRole('button', { name: '異動入金' })).toBeInTheDocument()
 
@@ -214,7 +214,7 @@ describe('打帳單：結帳送出', () => {
     const walletInput = document.querySelector('input[name="walletPay"]')
     await wait(() => expect(walletInput).toHaveValue('800'))
     // 扣除後剩餘
-    expect(screen.getByText('700元')).toBeInTheDocument()
+    expect(screen.getByText('700 元')).toBeInTheDocument()
 
     // 超過入金餘額與應付金額的輸入不接受，維持原值
     fireEvent.change(walletInput, { target: { value: '2000' } })
@@ -270,11 +270,11 @@ describe('打帳單：結帳送出', () => {
     const { calls } = setup({ customerWallet: { customerWallet: 500 } })
     await screen.findByText(/#A001/)
     await selectCustomerDesignerService(calls)
-    expect(await screen.findByText(/入金剩餘/)).toHaveTextContent('入金剩餘：500元')
+    expect(await screen.findByText(/入金剩餘/)).toHaveTextContent('入金剩餘：500 元')
     await wait(() => expect(screen.getAllByText('服務消費')[0].nextSibling).toHaveTextContent('800'))
     fireEvent.click(screen.getByLabelText('整筆扣入金'))
     await wait(() => expect(document.querySelector('input[name="walletPay"]')).toHaveValue('500'))
-    expect(screen.getByText('0元')).toBeInTheDocument()
+    expect(screen.getByText('0 元')).toBeInTheDocument()
   })
 
   it('沒有入金儲值／扣除權限的身分看不到「異動入金」', async () => {
@@ -297,7 +297,7 @@ describe('打帳單：結帳送出', () => {
     const { calls } = setup({ GET_MERCHANT_AUTHORITIES: noAuthority })
     await screen.findByText(/#A001/)
     await selectCustomerDesignerService(calls)
-    expect(await screen.findByText(/入金剩餘/)).toHaveTextContent('入金剩餘：1500元')
+    expect(await screen.findByText(/入金剩餘/)).toHaveTextContent('入金剩餘：1,500 元')
     expect(screen.queryByRole('button', { name: '異動入金' })).toBeNull()
   })
 

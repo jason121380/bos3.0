@@ -486,7 +486,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'GET_CUSTOMER_DATA_MARKED', variables: {} }],
       shape: { loading: false, called: true, data: ['getCustomerDataMarkedDefault'] },
-      policies: { GET_CUSTOMER_DATA_MARKED: 'cache-and-network' },
+      policies: { GET_CUSTOMER_DATA_MARKED: 'cache-first' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },
@@ -645,7 +645,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'getDesignerNameForCustomerSide', variables: {} }],
       shape: { loading: false, called: true, data: ['getDesignerNameForCustomerSide'] },
-      policies: { getDesignerNameForCustomerSide: 'cache-and-network' },
+      policies: { getDesignerNameForCustomerSide: 'cache-first' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },
@@ -656,7 +656,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'GET_DESIGNER_NAME_FOR_REPORT_TYPE', variables: {} }],
       shape: { loading: false, called: true, data: ['getDesignerNameForReportType'] },
-      policies: { GET_DESIGNER_NAME_FOR_REPORT_TYPE: 'cache-and-network' },
+      policies: { GET_DESIGNER_NAME_FOR_REPORT_TYPE: 'cache-first' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },
@@ -749,7 +749,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'GET_EMPLOYEE_PICKING_PURPOSE', variables: {} }],
       shape: { loading: false, called: true, data: ['getEmployeePickingPurpose'] },
-      policies: { GET_EMPLOYEE_PICKING_PURPOSE: 'cache-and-network' },
+      policies: { GET_EMPLOYEE_PICKING_PURPOSE: 'cache-first' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },
@@ -1104,7 +1104,7 @@ const ROWS = [
     expect: {
       initial: [{ operationName: 'GET_IS_LOCK_DATE', variables: {} }],
       shape: { loading: false, called: true, data: ['getIsDateLock'] },
-      policies: { GET_IS_LOCK_DATE: 'cache-and-network' },
+      policies: { GET_IS_LOCK_DATE: 'cache-first' },
     },
     failure: { loading: false, called: true, error: 'error' },
   },

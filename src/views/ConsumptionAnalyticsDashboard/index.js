@@ -10,6 +10,7 @@ import { Skeleton } from 'ui/skeleton'
 
 import Filter from './Filter'
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const monthArr = [
   '1月', '2月', '3月', '4月', '5月', '6月',
@@ -242,7 +243,9 @@ function ConsumptionAnalyticsDashboard() {
         setInputData={setInputData}
         referDisplay={referDisplay}
       />
-      {getConsumptionAnalyticsDashboardLazyData.loading ?
+      {getConsumptionAnalyticsDashboardLazyData.error ? (
+          <QueryFailed onRetry={handleSearch} />
+        ) : getConsumptionAnalyticsDashboardLazyData.loading ?
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2" aria-busy="true">
           <Skeleton className="h-[390px] lg:col-span-2" />
           <Skeleton className="h-[390px]" />

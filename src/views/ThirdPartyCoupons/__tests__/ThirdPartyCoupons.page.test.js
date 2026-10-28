@@ -62,6 +62,7 @@ describe('第三方卡券設定', () => {
     await screen.findByText('共 2 筆')
     fireEvent.click(screen.getByLabelText('全選'))
     fireEvent.click(toolbar().getByText('刪除'))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(callsOf(calls, 'DELETE_THIRD_PARTY_COUPON')).toHaveLength(2))
     expect(callsOf(calls, 'DELETE_THIRD_PARTY_COUPON').map(c => c.variables)).toEqual([{ id: 't1' }, { id: 't2' }])
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '刪除第三方卡券成功', variant: 'success' }))
@@ -73,15 +74,19 @@ describe('第三方卡券設定', () => {
     await screen.findByText('共 2 筆')
     // 批次列在沒勾選時隱藏（仍在 DOM），直接觸發也不送出
     fireEvent.click(toolbar().getByText('刪除'))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     expect(callsOf(calls, 'DELETE_THIRD_PARTY_COUPON')).toHaveLength(0)
     fireEvent.click(screen.getByLabelText('選取 街口券'))
     fireEvent.click(toolbar().getByText('刪除'))
+    fireEvent.click(screen.getByTestId('confirm-delete')) // 二次確認
     await wait(() => expect(openSnackbar).toHaveBeenCalledWith({ message: '已有帳單使用', variant: 'error' }))
   })
 
-  it('查詢失敗時顯示 0 筆，不整頁壞', async () => {
+  it('查詢失敗時顯示無法載入資料與重新查詢，不整頁壞', async () => {
+    // 2026/10/28 稽核 C-1：查詢失敗改顯示 QueryFailed（「無法載入資料」＋「重新查詢」），不再顯示成空表／0 筆，避免誤以為真的沒有資料
     renderPage(<ThirdPartyCoupons />, { fallback: 'error', route: '/third-party-coupons' })
-    expect(await screen.findByText('共 0 筆')).toBeInTheDocument()
+    expect(await screen.findByText('無法載入資料')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '重新查詢' })).toBeEnabled()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
   })
 })

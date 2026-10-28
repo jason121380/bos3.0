@@ -18,6 +18,7 @@ import { Card } from 'ui/card'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 function WebOrderMangagementList() {
   // 從本地存儲獲取商戶 ID
@@ -129,7 +130,9 @@ function WebOrderMangagementList() {
           )}
         </Card>
       )}
-      {!getBookingManagement.loading ?
+      {getBookingManagement.error ? (
+          <QueryFailed onRetry={() => getBookingManagement.refetch()} />
+        ) : !getBookingManagement.loading ?
         idx(
           getBookingManagement,
           _ =>

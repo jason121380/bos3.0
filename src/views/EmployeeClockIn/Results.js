@@ -9,6 +9,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'u
 const clockBtn = 'h-7 px-3 text-caption font-medium'
 
 function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
+  // 顏色之外再給文字標記（WCAG 1.4.1）
+  const distanceMark = value => {
+    if (value === 'MORETHAN50') return <span className="text-caption">（距門市 50m+）</span>
+    if (value === 'BETWEEN25AND50') return <span className="text-caption">（距門市 25–50m）</span>
+    return null
+  }
   const color = value => {
     switch (value) {
       case 'BETWEEN25AND50':
@@ -71,15 +77,15 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
               if (d.start.time !== null) {
                 return (
                   <Fragment key={`breakTime=${index}`}>
-                    <span className='time' style={{ color: color(d.start.distanceValue) }}>{format(d.start.time, 'HH:mm')}</span>
+                    <span className='time' style={{ color: color(d.start.distanceValue) }}>{format(d.start.time, 'HH:mm')}{distanceMark(d.start.distanceValue)}</span>
                   </Fragment>
                 )
               }
             } else {
               return (
                 <Fragment key={`breakTime=${index}`}>
-                  {d.start.time !== null && <span className='time' style={{ color: color(d.start.distanceValue) }}>{format(d.start.time, 'HH:mm')}</span>}
-                  {' - '}{d.end !== null && d.end.time !== null && <span className='time' style={{ color: color(d.end.distanceValue) }}>{format(d.end.time, 'HH:mm')}</span>}
+                  {d.start.time !== null && <span className='time' style={{ color: color(d.start.distanceValue) }}>{format(d.start.time, 'HH:mm')}{distanceMark(d.start.distanceValue)}</span>}
+                  {' - '}{d.end !== null && d.end.time !== null && <span className='time' style={{ color: color(d.end.distanceValue) }}>{format(d.end.time, 'HH:mm')}{distanceMark(d.end.distanceValue)}</span>}
                 </Fragment>
               )
             }
@@ -88,7 +94,7 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
               if (d.start.time !== null) {
                 return (
                   <Fragment key={`breakTime=${index}`}>
-                    {', '}<span className='time' style={{ color: color(d.start.distanceValue) }}>{format(d.start.time, 'HH:mm')}</span>
+                    {', '}<span className='time' style={{ color: color(d.start.distanceValue) }}>{format(d.start.time, 'HH:mm')}{distanceMark(d.start.distanceValue)}</span>
                   </Fragment>
                 )
               }
@@ -96,8 +102,8 @@ function Results({ clockInRecord, handleClockIn, isToday, btnStatus }) {
               return (
                 <Fragment key={`breakTime=${index}`}>
                   {', '}
-                  {d.start.time !== null && <span className='time' style={{ color: color(d.start.distanceValue) }}>{format(d.start.time, 'HH:mm')}</span>}
-                  {' - '}{d.end !== null && d.end.time !== null && <span className='time' style={{ color: color(d.end.distanceValue) }}>{format(d.end.time, 'HH:mm')}</span>}
+                  {d.start.time !== null && <span className='time' style={{ color: color(d.start.distanceValue) }}>{format(d.start.time, 'HH:mm')}{distanceMark(d.start.distanceValue)}</span>}
+                  {' - '}{d.end !== null && d.end.time !== null && <span className='time' style={{ color: color(d.end.distanceValue) }}>{format(d.end.time, 'HH:mm')}{distanceMark(d.end.distanceValue)}</span>}
                 </Fragment>
               )
             }

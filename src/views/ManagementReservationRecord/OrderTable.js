@@ -12,7 +12,7 @@ import HolidayEdit from 'components/ReservationCalendar/HolidayEdit'
 // title 與 ndsTitle／timeTitle 合併時 title 的 borderRight 在後、覆蓋 ndsTitle，故 ndsTitle 不另輸出。
 const styles = {
   TableContainer: 'min-h-[60vh] h-[calc(100vh-260px)] overflow-scroll relative !rounded-[16px] ![box-shadow:none] ![border:1px_solid_rgb(var(--border))] [&>div]:flex',
-  title: 'p-[12px_16px] break-all font-[800] bg-[rgb(var(--surface))] text-[rgb(var(--text))] min-h-[56px] flex items-center justify-center shrink-0 [border-right:1px_solid_rgb(var(--border))] text-[14px] tracking-[0.5px] uppercase',
+  title: 'p-[12px_16px] break-all font-[800] bg-[rgb(var(--surface))] text-[rgb(var(--text))] min-h-[56px] flex items-center justify-center shrink-0 [border-right:1px_solid_rgb(var(--border))] text-[14px] tracking-[0.5px]',
   timeTitle: 'w-[60px] !px-1', // 60px 欄寬扣掉左右 16px 內距放不下「時間」兩字會斷行
   ndsItem: '[border-top:1px_solid_rgb(var(--border))] [border-right:1px_solid_rgb(var(--border))] [border-left:1px_solid_rgb(var(--border))] flex justify-end bg-[rgb(var(--surface))]',
   ndsWrap: 'w-[100px] shrink-0 flex flex-col items-end',

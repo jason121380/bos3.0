@@ -166,7 +166,6 @@ function Settings({ match, history }) {
       setCheckinSettings(data)
     }
   }, [getMerchantCheckinSettings.loading])
-  
   useEffect(() => {
     if (!getIsBookingCusCheckUsing.loading) {
       const data = idx(getIsBookingCusCheckUsing,_=>_.data.getIsBookingCusCheckUsing)
@@ -308,7 +307,7 @@ function Settings({ match, history }) {
     })
   }
   useEffect(() => {
-    if ((!designerReportLazyData.loading, designerReportLazyData.data !== undefined)) {
+    if (!designerReportLazyData.loading && designerReportLazyData.data !== undefined) {
       setDesignerReportData(designerReportLazyData)
     }
   }, [designerReportLazyData.loading])
@@ -381,7 +380,7 @@ function Settings({ match, history }) {
   }
 
   useEffect(() => {
-    if ((!userHelperRetrieveLazyData.loading, userHelperRetrieveLazyData.data !== undefined)) {
+    if (!userHelperRetrieveLazyData.loading && userHelperRetrieveLazyData.data !== undefined) {
       const usersName = []
       const reportData = []
       idx(userHelperRetrieveLazyData, _ =>
@@ -586,7 +585,7 @@ function Settings({ match, history }) {
     history.push(value)
   }
 
-  if (profile.loading) return 'Loading...'
+  if (profile.loading) return '載入中…'
 
   // 網址分頁不在分頁清單（permission 分頁自初版起不在清單、角色也沒有對應頁面權限）時導回基本資料
   const currentTabItem = tabValue.find(itemValue => itemValue.value === currentTab)

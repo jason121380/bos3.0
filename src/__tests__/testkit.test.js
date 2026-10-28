@@ -5,6 +5,8 @@
 // 不連任何真實後端、不建立真實資料。
 import { ApolloLink, Observable, gql } from '@apollo/client'
 import { MockedProvider } from '@apollo/client/testing'
+import { onError } from '@apollo/client/link/error'
+import { handleApolloError } from 'lib/init-apollo'
 import { configureStore } from '@reduxjs/toolkit'
 import { render, wait } from '@testing-library/react'
 
@@ -175,7 +177,12 @@ export function blockNetwork() {
 export function renderPage(ui, { fixtures = {}, fallback = 'empty', missing = 'empty', route = '/page', path, store, delays } = {}) {
   const calls = []
   blockNetwork()
-  const link = createAutoMockLink(fixtures, { fallback, missing, calls, delays })
+  const mockLink = createAutoMockLink(fixtures, { fallback, missing, calls, delays })
+  // 與正式 client 相同：GraphQL／網路錯誤先經 init-apollo 的 errorLink 跳一次全站錯誤提示（頁面層不再自己 catch 重複提示，2026/10/28），
+  // 測試斷言「失敗時提示錯誤」看到的就是這一層的 openSnackbar
+  const link = ApolloLink.from([onError(handleApolloError), mockLink])
+  link.calls = mockLink.calls
+  Object.defineProperty(link, 'pending', { get: () => mockLink.pending })
   const testStore = store || createTestStore()
   const content = path ? <Route path={path} render={() => ui} /> : ui
   const utils = render(

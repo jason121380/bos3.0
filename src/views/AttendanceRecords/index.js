@@ -190,7 +190,6 @@ export default function Employees() {
           handleClose()
         }
       }).catch(error => {
-        openSnackbar({ message: error.message, variant: 'error' })
         setOnClick(false)
       })
     }

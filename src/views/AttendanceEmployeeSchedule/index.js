@@ -17,6 +17,7 @@ import { openSnackbar } from 'elements/snackbars'
 import { Skeleton } from 'ui/skeleton'
 import ScheduleTags from './ScheduleTags'
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 export default function Employees() {
   const [date, setDate] = useState({
@@ -239,7 +240,9 @@ export default function Employees() {
             />
           )}
         </div>
-        {((!employeeClockInSchedule.loading && !merchantClockInSchedule.loading)) ? (
+        {employeeClockInSchedule.error ? (
+          <QueryFailed onRetry={() => employeeClockInSchedule.refetch()} />
+        ) : ((!employeeClockInSchedule.loading && !merchantClockInSchedule.loading)) ? (
           <Results
             displayDate={displayDate}
             rawTime={rawTime}

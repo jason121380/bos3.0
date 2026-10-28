@@ -46,10 +46,6 @@ const General = ({ editData, setEditData, mdValue, setMdValue }) => {
         }
       })
       .catch(error => {
-        openSnackbar({
-          message: error.message,
-          variant: 'error',
-        })
         setEnable(true)
       })
   }

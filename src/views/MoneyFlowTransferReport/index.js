@@ -10,7 +10,7 @@ import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
 import QueryFailed from 'components/QueryFailed'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar } from 'ui/page-header'
 
 import Results from './Results'
 
@@ -72,13 +72,15 @@ const MoneyFlowTransferReport = () => {
             </Button>
           </CSVLink>
         </AdminPageHeader>
-        <Toolbar>
-          <DateSelector
-            date={date}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-          />
-        </Toolbar>
+        <ReportToolbar
+          date={
+            <DateSelector
+              date={date}
+              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              dateChange={value => setDate(value)}
+            />
+          }
+        />
         {moneyFlowTransferReport.error ? (
           <QueryFailed onRetry={() => moneyFlowTransferReport.refetch()} />
         ) : !moneyFlowTransferReport.loading && reportForDisplay && excelData ? (

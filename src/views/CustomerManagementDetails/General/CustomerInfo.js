@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from 'ui/dialog'
+import { Dialog, DialogContent, DialogTitle } from 'ui/dialog'
 import { Pencil } from 'lucide-react'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
@@ -117,6 +117,7 @@ function CustomerInfo({ customer, className, isLoading, bookingCusCheck, ...rest
             event.preventDefault()
             if (!event.target.contains(document.activeElement)) event.target.focus()
           }} aria-describedby={undefined} className="!max-w-[600px] overflow-y-auto">
+        <DialogTitle className="sr-only">選擇活動</DialogTitle>
         <ChoseEvent
           bookingCusCheck={bookingCusCheck}
           modalOpen={modalOpen}

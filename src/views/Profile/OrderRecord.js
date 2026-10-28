@@ -188,7 +188,7 @@ function OrderRecord({
             onRowsPerPageChange={handleOnChangeRowsPerPage}
             page={page}
             rowsPerPage={rowsPerPage}
-            rowsPerPageOptions={[1, 5, 10, 25, 50, 1000]}
+            rowsPerPageOptions={[5, 10, 25, 50, 1000]}
           />
         </div>
       </Card>

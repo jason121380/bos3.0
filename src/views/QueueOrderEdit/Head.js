@@ -226,13 +226,11 @@ export default function Head() {
         name: customer.name,
         category: customer.category,
         no: customer.no,
-        category: customer.category,
         nickName: customer.nickName,
         PreferDesignerId: customer.preferDesigner !== null ? customer.preferDesigner.id : '',
         email: customer.email,
         address: customer.address,
         lineId: customer.lineId,
-        gender: customer.gender,
         remark: customer.remark !== null ? customer.remark : '',
         source: customer.source !== null ? customer.source : '',
       })

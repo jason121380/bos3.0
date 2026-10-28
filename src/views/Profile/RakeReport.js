@@ -364,10 +364,10 @@ function RakeReport({ loading, designerRakeReport, setRakeReportDate, rakeReport
                             </TableCell>
                           </TableRow>
                           <TableRow>
-                            <TableCell className={reportCellClass} style={{ color: 'red', fontWeight: '500' }}>
+                            <TableCell className={`${reportCellClass} text-danger font-medium`}>
                               總應領薪資
                             </TableCell>
-                            <TableCell className={reportCellClass} style={{ color: 'red', fontWeight: '500' }}>
+                            <TableCell className={`${reportCellClass} text-danger font-medium`}>
                               {Math.round(designer.salesAnalytics.totalSalaryShouldBePaid)}
                             </TableCell>
                           </TableRow>

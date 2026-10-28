@@ -61,7 +61,7 @@ describe('個人頁互助報表：依設計師編號排序', () => {
       />
     )
     await settle()
-    const titles = screen.getAllByText(/互助報表$/).map(el => el.textContent.split(' 10/20/2026')[0].trim())
+    const titles = screen.getAllByText(/互助報表$/).map(el => el.textContent.split(' 2026/10/20')[0].trim())
     expect(titles).toEqual(['2  二號', '3A  三甲', '10  十號', 'B  乙號', '小無 無編號'])
   })
 
@@ -79,7 +79,7 @@ describe('個人頁互助報表：依設計師編號排序', () => {
       />
     )
     await settle()
-    const titles = screen.getAllByText(/互助報表$/).map(el => el.textContent.split(' 10/20/2026')[0].trim())
+    const titles = screen.getAllByText(/互助報表$/).map(el => el.textContent.split(' 2026/10/20')[0].trim())
     expect(titles).toEqual(['2  二號', '小甲 甲員', '乙員'])
   })
 })

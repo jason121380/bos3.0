@@ -7,10 +7,11 @@ import { useFetchGetHelperMonthlyReport } from 'hooks/useFetchGetHelperMonthlyRe
 import useFetchGetIsMemberShipCardActive from 'hooks/useFetchGetIsMemberShipCardActive'
 import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const HelperMontlyReport = () => {
   const [date, setDate] = useState({
@@ -28,8 +29,8 @@ const HelperMontlyReport = () => {
         _ => _.data.getIsMemberShipCardActive
       )
       const helperMonthlyReport = idx(helperMonthlyData, _ => _.data.helperMonthlyReport)
-      const membershipPerformanceTotal = helperMonthlyReport.reduce((accu, curVal) => accu + curVal.membershipPerformance, 0)
-      const membershipRakeTotal = helperMonthlyReport.reduce((accu, curVal) => accu + curVal.membershipRake, 0)
+      const membershipPerformanceTotal = (helperMonthlyReport || []).reduce((accu, curVal) => accu + curVal.membershipPerformance, 0)
+      const membershipRakeTotal = (helperMonthlyReport || []).reduce((accu, curVal) => accu + curVal.membershipRake, 0)
       setMembershipDisplay(
         (membershipPerformanceTotal !== 0 || membershipRakeTotal !== 0) ||
         isMemberShipCardActive
@@ -68,17 +69,19 @@ const HelperMontlyReport = () => {
           </div>
         }
       />
-      <Toolbar>
-        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+      <ReportToolbar
+        date={
           <DateSelector
             date={date}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setDate(value)}
           />
-        </div>
-      </Toolbar>
+        }
+      />
 
-      {!helperMonthlyData.loading ? (
+      {helperMonthlyData.error ? (
+          <QueryFailed onRetry={() => helperMonthlyData.refetch()} />
+        ) : !helperMonthlyData.loading ? (
         idx(
           helperMonthlyData,
           _ =>

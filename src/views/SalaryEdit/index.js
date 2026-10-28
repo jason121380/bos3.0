@@ -111,7 +111,7 @@ export default React.memo(function SalaryEdit(props) {
 
   React.useEffect(() => {
     if (!attendanceStatus.loading) {
-      const data = attendanceStatus.data.attendanceRecords
+      const data = idx(attendanceStatus, _ => _.data.attendanceRecords) || []
       if (data[0]) {
         setAttStatus(data[0])
       }
@@ -170,7 +170,9 @@ export default React.memo(function SalaryEdit(props) {
       decreaseReformatted !== undefined &&
       !designerMonthlyCheckoutRedordData.loading &&
       !usersSalayItemData.loading &&
-      !isMemberShipCardActiveData.loading
+      !isMemberShipCardActiveData.loading &&
+      // 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
+      idx(userSalayItemData, _ => _.data.userSalaryItemRecord)
     ) {
       // ==========INCREASE==========
       const initIncrease = []
@@ -212,7 +214,7 @@ export default React.memo(function SalaryEdit(props) {
         setIncreaseSecondContent({ increaseItems: initIncreaseSecond })
       }
 
-      const memberActive = isMemberShipCardActiveData.data.getIsMemberShipCardActive
+      const memberActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
       const membership = initIncrease.find(d => d.itemName === '會員卡獎金')
       if (!memberActive && membership && membership.price === 0) {
         const index = initIncrease.findIndex(d => d.itemName === '會員卡獎金')

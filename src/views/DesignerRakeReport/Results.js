@@ -291,10 +291,10 @@ function Results({ designerRakeReport, isMemberShipCardActive }) {
                         </TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell style={{ color: 'red', fontWeight: '500' }}>
+                        <TableCell className="text-danger font-medium">
                           總應領薪資
                         </TableCell>
-                        <TableCell style={{ color: 'red', fontWeight: '500' }}>
+                        <TableCell className="text-danger font-medium">
                           {Math.round(designer.salesAnalytics.totalSalaryShouldBePaid)}
                         </TableCell>
                       </TableRow>

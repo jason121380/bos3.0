@@ -77,7 +77,7 @@ export default function Services({
   }, [service.serviceId])
 
   useEffect(() => {
-    if (!serviceDetail.loading && serviceDetail.data) {
+    if (!serviceDetail.loading && serviceDetail.data?.service) {
       const newHelper = serviceDetail.data.service.helperDeductionSetting
         .map(data =>
           data.nameList.map(name => {

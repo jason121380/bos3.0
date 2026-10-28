@@ -68,7 +68,7 @@ export default function PannelCouponSells() {
     }
   }, [couponSells])
   React.useEffect(() => {
-    if (!order.loading && order.data) {
+    if (!order.loading && order.data?.order) {
       const newCouponSells =
         order.data.order.ticketOrders.length > 0
           ? order.data.order.ticketOrders.map(ticketOrder => ({

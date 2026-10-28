@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { Fragment } from 'react'
 import roundDecimal from './../../helper/roundDecimal.js'
 import { formatNumber } from 'ui/format'
+import averageOf from 'helper/averageOf'
 
 function Results({
   merchantDailyReport,
@@ -198,17 +199,19 @@ function Results({
               {/* 平均項次單價 */}
               <TableCell>
                 {formatNumber(Math.round(
-                  merchantDailyReport.currentDay.performanceIncome /
-                  merchantDailyReport.currentDay.categoryPerformance
-                    .map(data => data.orderTypeCount)
-                    .reduce((accu, curVal) => (accu += curVal), 0)
+                  averageOf(
+                    merchantDailyReport.currentDay.performanceIncome,
+                    merchantDailyReport.currentDay.categoryPerformance
+                      .map(data => data.orderTypeCount)
+                      .reduce((accu, curVal) => (accu += curVal), 0)
+                  )
                 ))}
               </TableCell>
 
               {/* 單均價(客次價) */}
               <TableCell>
                 {formatNumber(Math.round(
-                  merchantDailyReport.currentDay.performanceIncome / merchantDailyReport.currentDay.orderCount
+                  averageOf(merchantDailyReport.currentDay.performanceIncome, merchantDailyReport.currentDay.orderCount)
                 ))}
               </TableCell>
             </TableRow>
@@ -293,7 +296,7 @@ function Results({
           </TableRow>
           <TableRow>
             <TableCell></TableCell>
-            <TableCell className="font-bold text-red-600">{`區間累計現金結存:${formatNumber(Math.round(
+            <TableCell className="font-bold text-danger">{`區間累計現金結存:${formatNumber(Math.round(
               merchantDailyReport.cashBalance
             ))}`}</TableCell>
             <TableCell></TableCell>
@@ -347,8 +350,8 @@ function Results({
                   ))}
                   <TableRow>
                     <TableCell colSpan={2} />
-                    <TableCell className="font-bold text-red-600">合計</TableCell>
-                    <TableCell className="font-bold text-red-600">{`${totalSummury('usedPrice')} / ${totalSummury('usedPriceWithNoCash')}`}</TableCell>
+                    <TableCell className="font-bold text-danger">合計</TableCell>
+                    <TableCell className="font-bold text-danger">{`${totalSummury('usedPrice')} / ${totalSummury('usedPriceWithNoCash')}`}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

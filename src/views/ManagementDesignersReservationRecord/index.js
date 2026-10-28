@@ -8,6 +8,7 @@ import Page from 'components/Page'
 import AdminPageHeader from 'components/AdminPageHeader'
 import useFetchMerchant from 'hooks/useFetchMerchant'
 import idx from 'idx'
+import { storedMerchantId } from 'lib/stored-merchant'
 import isPasswordRequired from 'helper/passwordRequired'
 import { useState, useEffect, useRef } from 'react'
 import CalendarColorClip from 'components/CalendarColorClip'
@@ -33,7 +34,7 @@ import { buildWeekCalendar } from 'components/ReservationCalendar/weekCalendar'
 import OrderTable from './OrderTable'
 
 function Calendar() {
-  const merchantId = JSON.parse(localStorage.getItem('userMerchant')).id
+  const merchantId = storedMerchantId()
   const nameType = useFetchGetDesignerNameForCustomerSide()
   const bookingRemarkDisplay = useFetchGetIsBookingRemarkDisplay()
   const cusBookingRemarkDisplay = useFetchGetIsCusBookingRemarkDisplay()
@@ -173,7 +174,7 @@ function Calendar() {
         id='Backdrop'
         role="status"
         aria-live="polite"
-        className="fixed inset-0 flex items-center justify-center !opacity-100 z-[999] ![background:rgba(0,0,0,0)]"
+        className="fixed inset-0 flex items-center justify-center !opacity-100 z-[1300] ![background:rgba(0,0,0,0)]"
         style={{ visibility: (merchant.loading || DesignerCalendar.loading) ? undefined : 'hidden' }}
       >
         <LoaderCircle aria-hidden="true" className="h-10 w-10 animate-spin text-accent" strokeWidth={1.75} />

@@ -15,6 +15,7 @@ import { HeaderActionsSlot, PageHeader, Toolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const styles = {
   result: 'mt-[8px]',
@@ -133,7 +134,9 @@ export default function MerchantIncomeStatementMonthly() {
           }}
         />
       </Toolbar>
-      {!merchantIncomeStatementDataV2.loading && merchantIncomeStatement !== undefined ? (
+      {merchantIncomeStatementDataV2.error ? (
+          <QueryFailed onRetry={() => merchantIncomeStatementDataV2.refetch()} />
+        ) : !merchantIncomeStatementDataV2.loading && merchantIncomeStatement !== undefined ? (
         <Results
           className={styles.result}
           merchantIncomeStatement={merchantIncomeStatement}

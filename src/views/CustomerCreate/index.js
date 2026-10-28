@@ -104,10 +104,6 @@ export default function Customer() {
       history.push('/management/customers')
       setDisableAfterSubmit(false)
     }).catch((error) => {
-      openSnackbar({
-        message: error.message,
-        variant: 'error',
-      })
       setDisableAfterSubmit(false)
     })
   }

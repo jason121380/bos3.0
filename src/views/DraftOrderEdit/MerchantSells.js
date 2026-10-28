@@ -22,7 +22,7 @@ const styles = {
   employeeField: 'w-[200px] min-w-[150px] flex mr-[12px]',
   thirdPartyField: 'w-[150px] min-w-[150px] flex mr-[12px]',
   priceField: 'w-[65px] flex mr-[12px]',
-  heading2: 'text-[0.8125rem] font-bold',
+  heading2: 'text-label font-bold',
 }
 
 export default function MerchantSells({

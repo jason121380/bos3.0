@@ -24,7 +24,7 @@ const styles = {
   merchantSells: 'flex items-start justify-start flex-wrap gap-y-[12px] mb-[24px]',
   field: 'w-[200px] flex !mr-[12px]',
   priceField: 'w-[90px] flex !mr-[12px]', // 會員卡價格常為 5 位數，65px 會截成「1200(」
-  heading2: 'text-[0.8125rem] font-bold',
+  heading2: 'text-label font-bold',
   productField: 'w-[250px] flex mr-[12px]',
   dateField: 'w-[200px] flex !mr-[12px]',
 }

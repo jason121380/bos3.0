@@ -51,7 +51,7 @@ const PaywayAutocomplete = ({ value = NO_VALUE, onChange = () => { }, isReadOnly
         </span>
       )}
       renderInput={params => (
-        <TextField {...params} variant="outlined" placeholder='選擇方式' />
+        <TextField {...params} variant="outlined" label="支付方式" placeholder='選擇方式' />
       )}
     />
   )

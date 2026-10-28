@@ -101,11 +101,13 @@ describe('顯示', () => {
 
   // Jason 2026/10/22 fix all：班表查詢失敗時 index.js 原本把 employeeSchedule 設成 undefined，Results.js 讀 .length 整頁進錯誤畫面；
   // 改為 `idx(...) || []`，顯示「共 0 人」的空表。
-  it('班表查詢失敗：顯示空表（共 0 人），不進錯誤畫面', async () => {
+  it('班表查詢失敗：顯示無法載入資料與重新查詢，不進錯誤畫面', async () => {
+    // 2026/10/28 稽核 C-1：查詢失敗改顯示 QueryFailed（「無法載入資料」＋「重新查詢」），不再顯示成空表／0 筆，避免誤以為真的沒有資料
     const utils = renderPage(<AttendanceEmployeeSchedule />, { route: routeFor(NEXT), fallback: 'error' })
     await utils.settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-    expect(await screen.findByText('共 0 人')).toBeInTheDocument()
+    expect(await screen.findByText('無法載入資料')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '重新查詢' })).toBeEnabled()
   })
 })
 

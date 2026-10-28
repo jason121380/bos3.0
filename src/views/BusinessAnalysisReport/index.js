@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Page from 'components/Page'
 import idx from 'idx'
 import AdminPageHeader from 'components/AdminPageHeader'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar } from 'ui/page-header'
 import DateSelector from 'components/DateSelector'
 import useFetchGetBusinessAnalysisReport from 'hooks/useFetchGetBusinessAnalysisReport'
 import { startOfMonth, format } from 'date-fns'
@@ -15,6 +15,7 @@ import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const PaymentReport = () => {
   const [excelData, setExcelData] = useState([])
@@ -154,14 +155,18 @@ const PaymentReport = () => {
             onClick={() => window.print()}
           ><Printer strokeWidth={1.75} />列印</Button>
         </AdminPageHeader>
-        <Toolbar>
-          <DateSelector
-            date={date}
-            attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
-            dateChange={value => setDate(value)}
-          />
-        </Toolbar>
-        {!businessAnalysisReportData.loading && !isMemberShipCardActive.loading ? (
+        <ReportToolbar
+          date={
+            <DateSelector
+              date={date}
+              attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
+              dateChange={value => setDate(value)}
+            />
+          }
+        />
+        {businessAnalysisReportData.error ? (
+          <QueryFailed onRetry={() => businessAnalysisReportData.refetch()} />
+        ) : !businessAnalysisReportData.loading && !isMemberShipCardActive.loading ? (
           // 報表查詢失敗時不顯示表格（errorLink 已提示），不整頁錯誤（Jason 2026/10/22）
           idx(businessAnalysisReportData, _ => _.data.businessAnalysisReport.data) && <Results
             isServiceTicketMerged={isServiceTicketMerged}

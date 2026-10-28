@@ -88,7 +88,7 @@ describe('班別設定', () => {
     expect(swatch).not.toBeNull()
     fireEvent.click(swatch)
     // 點背景關閉取色器
-    fireEvent.click(document.querySelector('.fixed.z-\\[998\\]'))
+    fireEvent.click(document.querySelector('.fixed.z-\\[1300\\]'))
     expect(document.querySelector('[title="#2196f3"]')).toBeNull()
     await save(utils)
     expect(clockIn(utils)[0].color).toBe('#2196f3')

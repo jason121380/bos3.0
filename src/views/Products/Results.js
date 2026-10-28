@@ -93,10 +93,6 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
         setSelectedProducts([])
         setOpenDialog(false)
         setDeleteOrderPwd('')
-        openSnackbar({
-          message: err.message,
-          variant: 'error',
-        })
       })
   }
 
@@ -135,10 +131,6 @@ function Results({ className = '', products, refetchProducts, onPageChange, ...r
         setSelectedProducts([])
         setSelectedCategoryId('')
         setOpenEditProductsCategoryModal(false)
-        openSnackbar({
-          message: err.message,
-          variant: 'error',
-        })
       })
   }
 

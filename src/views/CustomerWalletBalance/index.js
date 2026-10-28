@@ -14,6 +14,7 @@ import useFetchCustomerDataMarked from 'hooks/useFetchGetCustomerDataMarkedDefau
 import isExportCustomerMasked, { maskCustomerName } from 'helper/exportCustomerMask'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const CustomerWalletBalance = () => {
   const [reportForDisplay, setReportForDisplay] = useState(null)
@@ -106,7 +107,9 @@ const CustomerWalletBalance = () => {
           />
         </div>
       </Toolbar>
-      {!customerWalletBalanceData.loading && reportForDisplay !== null ? (
+      {customerWalletBalanceData.error ? (
+          <QueryFailed onRetry={() => customerWalletBalanceData.refetch()} />
+        ) : !customerWalletBalanceData.loading && reportForDisplay !== null ? (
         <Results report={reportForDisplay} />
       ) : (
         <Skeleton className="h-96" aria-busy="true" />

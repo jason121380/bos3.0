@@ -14,12 +14,13 @@ import useFetchMerchantJobTitlePoint from 'hooks/useFetchMerchantJobTitlePoint'
 import { Download } from 'lucide-react'
 import { Button } from 'ui/button'
 import { EmptyState } from 'ui/empty-state'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import { CSVLink } from "react-csv";
 import { Autocomplete } from 'ui/combobox'
+import QueryFailed from 'components/QueryFailed'
 
 export default function HelperPerformance() {
   const [excelData, setExcelData] = useState([])
@@ -45,7 +46,8 @@ export default function HelperPerformance() {
   const merchantJobTitlePoint = useFetchMerchantJobTitlePoint()
 
   useEffect(() => {
-    if (!merchantJobTitlePoint.loading) {
+    // 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
+    if (!merchantJobTitlePoint.loading && idx(merchantJobTitlePoint, _ => _.data.merchantJobTitlePoint)) {
       const title = merchantJobTitlePoint.data.merchantJobTitlePoint
       const array = []
       title.forEach(el => {
@@ -60,7 +62,7 @@ export default function HelperPerformance() {
     if (
       !useFetchGetHelperPerformanceData.loading &&
       !isMemberShipCardActiveData.loading &&
-      useFetchGetHelperPerformanceData.data.helperPerformanceReport.length > 1
+      idx(useFetchGetHelperPerformanceData, _ => _.data.helperPerformanceReport.length) > 1
     ) {
       // 複製：下面會移除會員卡欄（查詢結果唯讀；表格另在 Results 依 membershipDisplay 篩掉）
       const data = cloneDeep(idx(useFetchGetHelperPerformanceData, _ => _.data.helperPerformanceReport))
@@ -118,15 +120,15 @@ export default function HelperPerformance() {
           </Button>
         }
       />
-      <Toolbar>
-        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+      <ReportToolbar
+        date={
           <DateSelector
             date={pageSetting}
             attributes={['thismonth', 'lastmonth', 'dbyesterday', 'yesterday', 'today', 'startDate', 'endDate']}
             dateChange={value => setPageSetting(value)}
           />
-        </div>
-      </Toolbar>
+        }
+      />
       <div className="noprint pb-4">
         <Autocomplete
           multiple
@@ -150,7 +152,9 @@ export default function HelperPerformance() {
           )}
         />
       </div>
-      {!useFetchGetHelperPerformanceData.loading ? (
+      {useFetchGetHelperPerformanceData.error ? (
+          <QueryFailed onRetry={() => useFetchGetHelperPerformanceData.refetch()} />
+        ) : !useFetchGetHelperPerformanceData.loading ? (
         idx(useFetchGetHelperPerformanceData, _ =>
           _.data.helperPerformanceReport.length > 0 ? (
             <Results

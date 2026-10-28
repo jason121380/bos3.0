@@ -17,6 +17,7 @@ import { Card } from 'ui/card'
 import { PageHeader, Toolbar, ToolbarSpacer } from 'ui/page-header'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 function EmployeePicking() {
   const [categoryValue, setCategoryValue] = useState([])
@@ -126,12 +127,15 @@ function EmployeePicking() {
           </div>
         </Card>
       )}
-      {idx(
+      {getPickingRecords.error ? (
+          <QueryFailed onRetry={() => getPickingRecords.refetch()} />
+        ) : idx(
         getPickingRecords, _ => _.data.pickingRecords &&
           actionsBanned.data.getActionsBannedAfterDailyCheckout && (
             <Results
               pageSetting={pageSetting}
               pickingRecords={_.data.pickingRecords}
+              refetch={getPickingRecords.refetch}
               actionsBanned={actionsBanned.data.getActionsBannedAfterDailyCheckout}
             />
           )

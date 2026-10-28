@@ -8,6 +8,7 @@ import useFetchSetCreateResignedUser from 'hooks/useFetchSetCreateResignedUser'
 
 import { Skeleton } from 'ui/skeleton'
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 
 export default function Employees() {
@@ -31,7 +32,9 @@ export default function Employees() {
       <Page className="ui-root" title="員工離職列表">
         <div>
           <AdminPageHeader title='員工離職列表' />
-          {!resignationList.loading ? idx(resignationList, _ => (
+          {resignationList.error ? (
+          <QueryFailed onRetry={() => resignationList.refetch()} />
+        ) : !resignationList.loading ? idx(resignationList, _ => (
             <Results
               className="mt-4"
               employees={_.data.getEmployeeResignationList}

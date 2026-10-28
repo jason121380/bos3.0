@@ -21,7 +21,8 @@ export default function PaymentCustomerWallet() {
   }, [bill.customerId])
 
   React.useEffect(() => {
-    if (!orderDetail.loading) {
+    // 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
+    if (!orderDetail.loading && idx(orderDetail, _ => _.data.order.customer)) {
       // 如果訂單的顧客跟現在的顧客是一樣就把原本他被扣的入金餘額放上去
       if (orderDetail.data.order.customer.id === bill.customerId) {
         setWalletPayByOrder(

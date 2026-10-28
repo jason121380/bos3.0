@@ -16,11 +16,12 @@ import useFetchGetHelperDailyReport from 'hooks/useFetchGetHelperDailyReport'
 import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { EmptyState } from 'ui/empty-state'
-import { PageHeader, Toolbar } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
 import { Autocomplete } from 'ui/combobox'
+import QueryFailed from 'components/QueryFailed'
 
 const DecreaseDailyReport = () => {
   const [sortJobTitle, setSortJobtitle] = useState([])
@@ -95,7 +96,8 @@ const DecreaseDailyReport = () => {
   const merchantJobTitlePoint = useFetchMerchantJobTitlePoint()
   const [jobTitle, setJobTitle] = useState([])
   useEffect(() => {
-    if (!merchantJobTitlePoint.loading) {
+    // 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
+    if (!merchantJobTitlePoint.loading && idx(merchantJobTitlePoint, _ => _.data.merchantJobTitlePoint)) {
       const title = merchantJobTitlePoint.data.merchantJobTitlePoint
       const array = []
       title.forEach(el => {
@@ -136,14 +138,16 @@ const DecreaseDailyReport = () => {
           </Button>
         }
       />
-      <Toolbar>
-        <DateSelector
-          date={date}
-          attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
-          onlyStart
-          dateChange={value => setDate(value)}
-        />
-      </Toolbar>
+      <ReportToolbar
+        date={
+          <DateSelector
+            date={date}
+            attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
+            onlyStart
+            dateChange={value => setDate(value)}
+          />
+        }
+      />
       <div className="noprint pb-6">
         <Autocomplete
           multiple
@@ -167,7 +171,9 @@ const DecreaseDailyReport = () => {
           )}
         />
       </div>
-      {!getHelperDailyReport.loading ? (
+      {getHelperDailyReport.error ? (
+          <QueryFailed onRetry={() => getHelperDailyReport.refetch()} />
+        ) : !getHelperDailyReport.loading ? (
         helperReport.length > 0 ? (
           <div className="DecreaseDailyReport grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 print:block">
             <Results

@@ -66,10 +66,6 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
       .catch(err => {
         setSelectedMembership([])
         setOpenDialog(false)
-        openSnackbar({
-          message: err.message,
-          variant: 'error',
-        })
       })
   }
 
@@ -101,10 +97,6 @@ function Results({ className, memberships, setCategoryFilter, onPageChange, cate
         setSelectedMembership([])
         setSelectedCategoryId('')
         setOpenEditMembershipsCategoryModal(false)
-        openSnackbar({
-          message: err.message,
-          variant: 'error',
-        })
       })
   }
 

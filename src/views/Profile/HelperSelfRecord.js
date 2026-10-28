@@ -70,7 +70,7 @@ function OrderRecord({
                       : ''
                   } ${
                     data.user.nickName !== null && data.user.nickName !== '' ? data.user.nickName : ''
-                  } ${data.user.name} ${format(new Date(titleDate), 'MM/dd/yyyy')} 互助報表`}
+                  } ${data.user.name} ${format(new Date(titleDate), 'yyyy/MM/dd')} 互助報表`}
                 </CardTitle>
               </CardHeader>
               <div className="px-5 pb-5">
@@ -91,6 +91,8 @@ function OrderRecord({
                               <TableCell>
                                 <a
                                   target="_blank"
+                                 rel="noopener noreferrer"
+                                  rel="noopener noreferrer"
                                   href={`/order/${record.orderId}`}
                                   className="text-text underline"
                                 >
@@ -118,6 +120,8 @@ function OrderRecord({
                               <TableCell>
                                 <a
                                   target="_blank"
+                                 rel="noopener noreferrer"
+                                  rel="noopener noreferrer"
                                   href={`/order/${record.orderId}`}
                                   className="text-text underline"
                                 >

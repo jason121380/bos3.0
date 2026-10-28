@@ -17,6 +17,7 @@ import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
 import { ReportToolbar } from 'ui/page-header'
 import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
+import QueryFailed from 'components/QueryFailed'
 
 const HelperLeaderBoard = () => {
   const [reportForDisplay, setReportForDisplay] = useState(null)
@@ -49,7 +50,7 @@ const HelperLeaderBoard = () => {
     if (!helperLeaboardData.loading && !isMemberShipCardActiveData.loading) {
       const usersReport = idx(helperLeaboardData, _ => _.data.helperLeaderboard)
       const isMemberShipCardActive = idx(isMemberShipCardActiveData, _ => _.data.getIsMemberShipCardActive)
-      if (usersReport !== null) {
+      if (usersReport) {
         const excelData = []
         let isDisplayExcelWithMembership = false
         const isMembershipIsZero = usersReport.filter(result => result.membershipTotal === 0)
@@ -211,7 +212,9 @@ const HelperLeaderBoard = () => {
           }
         />
 
-        {helperLeaboardData.loading ? (
+        {helperLeaboardData.error ? (
+          <QueryFailed onRetry={() => helperLeaboardData.refetch()} />
+        ) : helperLeaboardData.loading ? (
           // 載入中：與舊版 CircularProgress 相同時機顯示
           <div className="noprint mt-3" aria-busy="true" aria-label="載入中">
             <Skeleton className="h-[320px] w-full rounded-lg" />

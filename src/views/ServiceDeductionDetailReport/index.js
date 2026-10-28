@@ -18,6 +18,7 @@ import { EmptyState } from 'ui/empty-state'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 // MerchantSearchBar 已使用 flex 排版；下方舊 MuiGrid 後代選擇器目前不命中，保留既有 class 字串
 const topDiv = 'flex flex-row flex-wrap items-center gap-2.5 [&_.MuiGrid-container]:!w-[unset]'
@@ -55,7 +56,7 @@ const ServiceDeductionDetailReport = () => {
   useEffect(() => {
     if (!getAttributionForRake.loading) {
       const data = idx(getAttributionForRake, _ => _.data.getAttributionForRake)
-      setAttributions(data)
+      setAttributions(data || [])
     }
   }, [getAttributionForRake.loading])
 
@@ -117,7 +118,9 @@ const ServiceDeductionDetailReport = () => {
             </div>
           }
         />
-        {!serviceDedcutionDetailData.loading ? (
+        {serviceDedcutionDetailData.error ? (
+          <QueryFailed onRetry={() => serviceDedcutionDetailData.refetch()} />
+        ) : !serviceDedcutionDetailData.loading ? (
           idx(serviceDedcutionDetailData, _ =>
             _.data.getUserServiceDeductionDetialMultiple !== null ? (
               _.data.getUserServiceDeductionDetialMultiple.length > 0 ? (

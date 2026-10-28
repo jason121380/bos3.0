@@ -117,10 +117,12 @@ describe('商品庫存盤點表', () => {
     expect(comboOptions().length).toBeGreaterThan(0)
   })
 
-  it('查詢失敗或沒有資料：顯示「無資料」，不進錯誤畫面', async () => {
+  it('查詢失敗顯示「無法載入資料」與重新查詢；沒有資料顯示「無資料」，都不進錯誤畫面', async () => {
+    // 2026/10/28 稽核 C-1：查詢失敗改顯示 QueryFailed（可重試），不再與「沒有資料」混用同一個空狀態
     const { settle } = renderReport({ GET_PRODUCT_RESERVE_CHECK: new Error('報表逾時') })
     await settle()
-    expect(screen.getByText('無資料')).toBeInTheDocument()
+    expect(screen.getByText('無法載入資料')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '重新查詢' })).toBeEnabled()
     cleanup()
     const empty = renderReport({ GET_PRODUCT_RESERVE_CHECK: { productReserveCheck: null } })
     await empty.settle()
@@ -130,6 +132,6 @@ describe('商品庫存盤點表', () => {
     const failed = renderPage(<ProductReserveCheck />, { fallback: 'error' })
     await failed.settle()
     expect(screen.queryByText(PAGE_CRASH_TEXT)).toBeNull()
-    await wait(() => expect(screen.getByText('無資料')).toBeInTheDocument())
+    await wait(() => expect(screen.getByText('無法載入資料')).toBeInTheDocument())
   })
 })

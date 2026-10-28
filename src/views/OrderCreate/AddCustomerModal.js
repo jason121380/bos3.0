@@ -135,7 +135,6 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
         )
         onClose()
       }).catch(error => {
-        openSnackbar({ variant: 'error', message: error.message })
         setQuickAddCustomer(false)
         // 更新失敗：把下方先清掉的顧客帶回帳單（原本失敗時帳單的顧客被悄悄清空）
         setBill(
@@ -197,7 +196,6 @@ function AddCustomerModal({ open, onClose, customer, setCustomer, setBill, custo
             remark: '',
           })
         }).catch(error => {
-          openSnackbar({ variant: 'error', message: error.message })
           setQuickAddCustomer(false)
         })
       }

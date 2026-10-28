@@ -5,6 +5,7 @@ import { Skeleton } from 'ui/skeleton'
 
 import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 function ThirdPartyCoupons() {
   const thirdPartyCoupons = useFetchThirdPartyCoupons()
@@ -18,7 +19,9 @@ function ThirdPartyCoupons() {
           to: '/thirdPartyCoupon/create'
         }}
       />
-      {!thirdPartyCoupons.loading ?
+      {thirdPartyCoupons.error ? (
+          <QueryFailed onRetry={() => thirdPartyCoupons.refetch()} />
+        ) : !thirdPartyCoupons.loading ?
         <Results
           thirdPartyCouponList={idx(thirdPartyCoupons, _ => _.data.getThirdPartTicket)}
           thirdPartyCouponsRefetch={thirdPartyCoupons.refetch}

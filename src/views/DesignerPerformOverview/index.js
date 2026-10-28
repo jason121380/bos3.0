@@ -42,7 +42,8 @@ function DesignerPerformOverview() {
         isDisplayTogglePerformanceButtonData, _ => _.data.getIsDisplayTogglePerformanceButton)
       setIsDisplayTogglePerformanceButton(isDisplayTogglePerformanceButton)
     }
-  }, [isDisplayTogglePerformanceButtonData.loading])
+    // 兩支查詢都要等：會員卡查詢較晚回來時也要再跑一次（B2 清單 #4／#5）
+  }, [isDisplayTogglePerformanceButtonData.loading, isMemberShipCardActiveData.loading])
   // ---------------------------------------------------------------------------------------------------
   const merchantImmediatePerformReportData = useFetchMerchantImmediatePerformReport({
     input: date,

@@ -16,6 +16,7 @@ import { ToggleGroup, ToggleGroupItem } from 'ui/toggle-group'
 import { Skeleton } from 'ui/skeleton'
 import { ReportToolbar } from 'ui/page-header'
 import { Autocomplete } from 'ui/combobox'
+import QueryFailed from 'components/QueryFailed'
 
 const MultiMerchantsLeaderBoard = () => {
 	const [date, setDate] = useState({
@@ -211,7 +212,9 @@ const MultiMerchantsLeaderBoard = () => {
 						</Button>
 					}
 				/>
-				{getMultiMerchantsLeaderBoardLazyData.loading && getMultiMerchantsLeaderBoardLazyData.data === undefined ?
+				{getMultiMerchantsLeaderBoardLazyData.error ? (
+          <QueryFailed onRetry={() => getMultiMerchantsLeaderBoardLazyData.refetch()} />
+        ) : getMultiMerchantsLeaderBoardLazyData.loading && getMultiMerchantsLeaderBoardLazyData.data === undefined ?
 					// 載入中：與舊版 CircularProgress 相同時機顯示
 					<div className="noprint" aria-busy="true" aria-label="載入中">
 						<Skeleton className="h-[320px] w-full rounded-lg" />

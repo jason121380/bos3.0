@@ -1,3 +1,4 @@
+import idx from 'idx'
 import { TextField } from 'ui/text-field'
 import { useState, useEffect, Fragment } from 'react'
 import { Button } from 'ui/button'
@@ -30,7 +31,8 @@ const MerchantListAutocpmpleteForPinnedTable = ({
   }
 
   useEffect(() => {
-    if (!getUserGroupsWOCS.loading) {
+    // 查詢失敗時 data 為 undefined，不讀欄位（2026/10/28 稽核 B-04）
+    if (!getUserGroupsWOCS.loading && idx(getUserGroupsWOCS, _ => _.data.getUserGroupWOCS)) {
       const data = JSON.parse(getUserGroupsWOCS.data.getUserGroupWOCS)
       setMerchantList(data)
     }

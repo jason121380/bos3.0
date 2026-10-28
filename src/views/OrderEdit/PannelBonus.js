@@ -33,7 +33,7 @@ export default function PannelBonus({ bonusActive }) {
   }, [customerBonusRecordData.loading])
 
   useEffect(() => {
-    if (!order.loading && order.data) {
+    if (!order.loading && order.data?.order) {
       const isExpanded = 
         order.data.order.bonusDecount > 0 ||
         order.data.order.bonusDeposit > 0 ||
@@ -52,11 +52,11 @@ export default function PannelBonus({ bonusActive }) {
         summaryMeta={!expanded && bill.bonusDecount > 0 ? `折抵 ${formatMoney(bill.bonusDecount)}` : ''}
       >
         <p className="m-0 flex items-center !text-[16px] font-bold text-text">紅利點數
-          <span style={{ marginLeft: '10px', fontSize: 10 }}>
+          <span className="ml-2.5 text-caption">
             {bill.customerId ? `剩餘點數: ${customerBonus}` : ''}
           </span>
           {bonusConversion.isBonusConversion && (
-            <span style={{ marginLeft: '10px', fontSize: '10px' }}>
+            <span className="ml-2.5 text-caption">
               {`換算比率: ${bonusConversion.bonusConversionRate}`}
             </span>
           )}

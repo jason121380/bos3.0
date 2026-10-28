@@ -14,10 +14,11 @@ import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Card } from 'ui/card'
 import { EmptyState } from 'ui/empty-state'
-import { Toolbar } from 'ui/page-header'
+import { ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const EmployeeDailyReport = () => {
   const [date, setDate] = useState({
@@ -52,7 +53,8 @@ const EmployeeDailyReport = () => {
       const data = idx(designerReportData, _ => _.data.designerDailyReport)
       let group = []
       const report = []
-      data.forEach((d, index) => {
+      const dailyReport = data || []
+      dailyReport.forEach((d, index) => {
         group.push((d))
         if (group.length === 4) {
           report.push(group)
@@ -115,18 +117,20 @@ const EmployeeDailyReport = () => {
           列印
         </Button>
       </AdminPageHeader>
-      <Toolbar className="min-w-0 flex-wrap">
-        <div className="w-full min-w-0 sm:w-auto sm:shrink-0">
+      <ReportToolbar
+        date={
           <DateSelector
             date={date}
             attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
             onlyStart
             dateChange={value => setDate(value)}
           />
-        </div>
-      </Toolbar>
+        }
+      />
 
-      {!designerReportData.loading && !isPriceDisplayOnDailyReportData.loading ? (
+      {designerReportData.error ? (
+          <QueryFailed onRetry={() => designerReportData.refetch()} />
+        ) : !designerReportData.loading && !isPriceDisplayOnDailyReportData.loading ? (
         idx(designerReportData, _ =>
           _.data.designerDailyReport.length > 0 ? (
             <div className="box-border flex flex-wrap -mt-6 -ml-6 w-[calc(100%+24px)] EmployeeDailyReport">

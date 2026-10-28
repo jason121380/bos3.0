@@ -15,6 +15,7 @@ import { Button } from 'ui/button'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 export default function Employees() {
   const [excelData, setExcelData] = useState([])
@@ -44,7 +45,7 @@ export default function Employees() {
   useEffect(() => {
     if (!getProductPurpose.loading) {
       const data = idx(getProductPurpose, _ => _.data.getProductPurpose)
-      setPurpose(data)
+      setPurpose(data || [])
     }
   }, [getProductPurpose.loading])
 
@@ -178,7 +179,9 @@ export default function Employees() {
             </div>
           }
         />
-        {!productConsumeListData.loading ? (
+        {productConsumeListData.error ? (
+          <QueryFailed onRetry={() => productConsumeListData.refetch()} />
+        ) : !productConsumeListData.loading ? (
           <Results
             value={value != null ? value : ''}
             productConsumeListReport={idx(productConsumeListData, _ => _.data.productConsumeList)}

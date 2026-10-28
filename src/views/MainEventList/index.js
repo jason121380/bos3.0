@@ -14,6 +14,7 @@ import AdminPageHeader from 'components/AdminPageHeader'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 function MainEventList() {
   const getMainEvents = useFetchGetMainEvents()
@@ -189,7 +190,9 @@ function MainEventList() {
               to: '/main-event-create'
             }}
           />
-          {getMainEvents.loading ?
+          {getMainEvents.error ? (
+          <QueryFailed onRetry={() => getMainEvents.refetch()} />
+        ) : getMainEvents.loading ?
             <div className="flex flex-col gap-3"><Skeleton className="h-14 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
             : <Results
               events={events}

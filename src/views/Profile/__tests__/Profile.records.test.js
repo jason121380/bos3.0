@@ -312,7 +312,7 @@ describe('個人頁：設計師日報表', () => {
     const { calls } = renderProfile('designerSelfRecord', { fixtures: fixtures() })
     await screen.findByText('A001*')
     expect(callsOf(calls, 'FETCH_DESIGNER_DAILY_REPORT')[0].variables.designerIds).toEqual([USER_ID])
-    expect(screen.getByText(`07 Amy 王小美 ${format(new Date(), 'MM/dd/yyyy')} 日報表`)).toBeInTheDocument()
+    expect(screen.getByText(`07 Amy 王小美 ${format(new Date(), 'yyyy/MM/dd')} 日報表`)).toBeInTheDocument()
     expect(cellsOfRow(screen.getByText('A001*').closest('tr'))).toEqual(['A001*', '消費', '剪髮', '1,000', '950.1'])
     // 超過六位數不顯示小數
     expect(cellsOfRow(screen.getByText('A002').closest('tr'))).toEqual(['A002', '店販', '洗髮精', '123,457', '100,000'])
@@ -345,8 +345,8 @@ describe('個人頁：設計師日報表', () => {
     renderProfile('designerSelfRecord', { fixtures: fixtures({ reports }) })
     expect(await screen.findByText('接續下張')).toBeInTheDocument()
     expect(screen.getByText('承上張')).toBeInTheDocument()
-    expect(screen.getByText(`07 Amy 王小美 ${format(new Date(), 'MM/dd/yyyy')} 日報表 - 1/2`)).toBeInTheDocument()
-    expect(screen.getByText(`王小美 ${format(new Date(), 'MM/dd/yyyy')} 日報表 - 2/2`)).toBeInTheDocument()
+    expect(screen.getByText(`07 Amy 王小美 ${format(new Date(), 'yyyy/MM/dd')} 日報表 - 1/2`)).toBeInTheDocument()
+    expect(screen.getByText(`王小美 ${format(new Date(), 'yyyy/MM/dd')} 日報表 - 2/2`)).toBeInTheDocument()
   })
 
   it('隱藏 0 值時：當日為 0 但累計不為 0 的列照常顯示', async () => {
@@ -445,7 +445,7 @@ describe('個人頁：互助日報表', () => {
     const { variables } = callsOf(calls, 'GET_USER_HELPER_RETRIEVE')[0]
     expect(variables.input.designerId).toBe(USER_ID)
     expect(variables.input.startDate).toBe(variables.input.endDate)
-    const titles = screen.getAllByText(/互助報表$/).map(n => n.textContent.split(` ${format(new Date(), 'MM/dd/yyyy')}`)[0])
+    const titles = screen.getAllByText(/互助報表$/).map(n => n.textContent.split(` ${format(new Date(), 'yyyy/MM/dd')}`)[0])
     expect(titles).toEqual(['2  二號', '10  十號', 'A9  店販王', 'B1  字母', ' Bella 暱稱二', ' 小可 暱稱者', '  Ann', '  阿名'])
     const two = cardOf('2  二號')
     // 顯示金額：點數換算金額的互助也列出金額

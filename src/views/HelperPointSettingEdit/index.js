@@ -82,10 +82,6 @@ function HelperPointSettingEdit({ match }) {
         setIsClick(false)
       }
     }).catch(error => {
-      openSnackbar({
-        variant: 'error',
-        message: error.message,
-      })
       setIsClick(false)
     })
   }

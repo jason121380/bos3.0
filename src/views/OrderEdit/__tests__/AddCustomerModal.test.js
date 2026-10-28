@@ -226,7 +226,7 @@ describe('編輯顧客', () => {
   it('設計師名單還在載入：偏好設計師顯示載入中，不可選', async () => {
     renderPage(<Harness initialCustomer={EXISTING} />, { fixtures: fixtures(), delays: { FETCH_USERS: 200 } })
     await screen.findByText('編輯客戶資料')
-    expect(within(preferSelect()).getByText('Loading...')).toBeInTheDocument()
+    expect(within(preferSelect()).getByText('載入中…')).toBeInTheDocument()
     expect(within(preferSelect()).queryByText('王小美')).toBeNull()
   })
 })

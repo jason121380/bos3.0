@@ -11,6 +11,7 @@ import { Field, Input } from 'ui/input'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 export default function Employees() {
   const designerId = JSON.parse(localStorage.getItem('user')).id
@@ -93,7 +94,9 @@ export default function Employees() {
             </Field>
           </Card>
         )}
-        {!users.loading ? idx(users, _ => (
+        {users.error ? (
+          <QueryFailed onRetry={() => users.refetch()} />
+        ) : !users.loading ? idx(users, _ => (
           <Results
             employees={_.data.users.users}
             handleOnChangePage={handleOnChangePage}

@@ -1,4 +1,5 @@
 import { Link as RouterLink } from 'react-router-dom'
+import { storedMerchantName } from 'lib/stored-merchant'
 import { Bell, BellRing, CircleAlert, CircleCheck, EllipsisVertical, LoaderCircle, Moon, PanelLeftClose, PanelLeftOpen, Pencil, RotateCcw, Store, Sun, Trash2 } from 'lucide-react'
 import { Button } from 'ui/button'
 import { Popover, PopoverAnchor, PopoverContent } from 'ui/popover'
@@ -23,7 +24,6 @@ import useFetchDestroyQueueById from 'hooks/useFetchDestroyQueueById'
 import MerchantBar from './MerchantBar'
 import { format } from 'date-fns'
 import { openSnackbar } from 'elements/snackbars'
-import webSocket from "socket.io-client";
 import { getApiOrigin } from 'lib/api-base'
 import { useDispatch } from 'react-redux'
 import { socketActions } from './../../store/socket'
@@ -102,19 +102,33 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
   }
 
   // 建立 WebSocket 連線：位址與 GraphQL 同一個後端（api-base），斷線由 socket.io 內建機制自動重連；
-  // 離開版面時關閉連線並移除所有監聽（原本重連時舊連線與監聽都沒釋放，事件會被重複處理）
+  // 離開版面時關閉連線並移除所有監聽（原本重連時舊連線與監聽都沒釋放，事件會被重複處理）。
+  // socket.io-client 改為要連線時才載入（不進入口 chunk，2026/10/28 稽核 O-3）；載入完成前就離開版面則不建立連線，
+  // 載入失敗只記到 console（訂單佇列仍有 10 秒輪詢的 refetch 備援）
   useEffect(() => {
-    const socket = webSocket(getApiOrigin(), {
-      transports: ['websocket'],
-      autoConnect: true,
-      reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 10000,
-    })
-    setWs(socket)
+    let socket
+    let cancelled = false
+    import('socket.io-client')
+      .then(({ default: webSocket }) => {
+        if (cancelled) return
+        socket = webSocket(getApiOrigin(), {
+          transports: ['websocket'],
+          autoConnect: true,
+          reconnection: true,
+          reconnectionDelay: 1000,
+          reconnectionDelayMax: 10000,
+        })
+        setWs(socket)
+      })
+      .catch(error => {
+        if (!cancelled) console.error('socket.io-client 載入失敗', error)
+      })
     return () => {
-      socket.off()
-      socket.disconnect()
+      cancelled = true
+      if (socket) {
+        socket.off()
+        socket.disconnect()
+      }
     }
   }, [])
 
@@ -327,7 +341,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
         })
         .catch((error) => {
           openSnackbar({
-            message: `刪除訂單失敗: ${error}`,
+            message: `刪除訂單失敗：${error}`,
             variant: 'error',
           })
           setAnchorElForMoreBtn(null)
@@ -346,7 +360,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
         })
         .catch((error) => {
           openSnackbar({
-            message: `重結失敗: ${error}`,
+            message: `重結失敗：${error}`,
             variant: 'error',
           })
           setAnchorElForMoreBtn(null)
@@ -373,7 +387,7 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
     >
       {queueIcon}
       {error && (
-        <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-[11px] font-medium leading-none text-white tabular-nums">
+        <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-danger px-1 text-caption font-medium leading-none text-white tabular-nums">
           {errorCount}
         </span>
       )}
@@ -493,8 +507,8 @@ function TopBar({ onOpenNavBarMobile, userMerchants, desktopOpen = true }) {
           variant="ghost"
           size="icon"
           className={cn('shrink-0', SIDEBAR_RAIL_HIDDEN_CLASS)}
-          aria-label={`切換店家（目前：${JSON.parse(localStorage.getItem('userMerchant')).name}）`}
-          title={`切換店家（目前：${JSON.parse(localStorage.getItem('userMerchant')).name}）`}
+          aria-label={`切換店家（目前：${storedMerchantName()}）`}
+          title={`切換店家（目前：${storedMerchantName()}）`}
           onClick={toggle}
         >
           <Store strokeWidth={1.75} />

@@ -1,5 +1,6 @@
 import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
+import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
 import { useState, useEffect } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { Provider } from 'hooks/useStore'
@@ -22,6 +23,7 @@ export default function EmployeePickingCreate() {
   const getPicking = useFetchGetPicking(params.id)
   const { updatePicking } = useFetchUpdatePicking()
   const [purpose, setPurpose] = useState([])
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [formState, setFormState] = useState({
     date: new Date().getTime(),
     productName: '',
@@ -122,11 +124,21 @@ export default function EmployeePickingCreate() {
             actions={
               <Button
                 variant="danger"
-                onClick={handleDelete}
+                onClick={() => setConfirmingDelete(true)}
               >
                 刪除
               </Button>
             }
+          />
+          <ConfirmDeleteDialog
+            open={confirmingDelete}
+            onClose={() => setConfirmingDelete(false)}
+            title="刪除領料／自購紀錄"
+            message="刪除這筆領料／自購紀錄？"
+            onConfirm={() => {
+              setConfirmingDelete(false)
+              handleDelete()
+            }}
           />
           <General
             formState={formState}

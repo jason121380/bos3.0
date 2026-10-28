@@ -1,5 +1,6 @@
 import Page from 'components/Page'
 import { openSnackbar } from 'elements/snackbars'
+import ConfirmDeleteDialog from 'components/ConfirmDeleteDialog'
 import { useFetchGetPurchaseRecordForEdit } from 'hooks/useFetchGetPurchaseRecords'
 import PasswordDialog from 'components/PasswordDialog'
 import useFetchDeletePurchase from 'hooks/useFetchDeletePurchase'
@@ -20,6 +21,7 @@ export default function ProductRestockEdit() {
   const params = useParams()
   const [purchaseRecord, setPurchaseRecord] = useState({})
   const [disabled, setDisabled] = useState(true)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [checkPurchaseRecords, setCheckPurchaseRecords] = useState(false)
   const [password, setPassword] = useState('')
@@ -47,7 +49,7 @@ export default function ProductRestockEdit() {
         }
       })
       .catch(error => {
-        openSnackbar({ message: error.message, variant: 'error' })
+        // 錯誤提示由 init-apollo 的 errorLink 統一處理，頁面不再重複 openSnackbar
       })
   }
 
@@ -79,7 +81,6 @@ export default function ProductRestockEdit() {
       }
     })
       .catch(error => {
-        openSnackbar({ message: error.message, variant: 'error' })
         setCheckPurchaseRecords(false)
       })
   }
@@ -195,14 +196,23 @@ export default function ProductRestockEdit() {
           !disabled && (
             <Button
               variant="danger"
-              onClick={() => {
-                handleDelete()
-              }}
+              onClick={() => setConfirmingDelete(true)}
             >
               刪除
             </Button>
           )
         }
+      />
+      <ConfirmDeleteDialog
+        open={confirmingDelete}
+        onClose={() => setConfirmingDelete(false)}
+        title="刪除進貨單"
+        message="刪除這張進貨單？"
+        consequence="刪除後無法復原，已入庫的數量不會自動退回。"
+        onConfirm={() => {
+          setConfirmingDelete(false)
+          handleDelete()
+        }}
       />
       {!getPurchaseRecord.loading && purchaseRecord.uuid && (
         <General

@@ -10,10 +10,11 @@ import { useFetchGetNonCashDisplay } from 'hooks/useFetchGetParameterReportSetti
 import DateSelector from 'components/DateSelector'
 import { Printer } from 'lucide-react'
 import { Button } from 'ui/button'
-import { PageHeader, Toolbar, ToolbarSpacer } from 'ui/page-header'
+import { PageHeader, ReportToolbar } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 const MerchantDailyReport = () => {
   const [date, setDate] = useState({
@@ -51,7 +52,8 @@ const MerchantDailyReport = () => {
   const nonCashDisplay = idx(nonCashDisplayData, _ => _.data.getParameterReportSetting.nonCashDisplay) || false
 
   const mergeResultData = useMemo(() => {
-    if (merchantDashboardData.loading) {
+    // 查詢失敗（data 為 undefined）時與載入中一樣回空陣列，不在 render 階段拋錯
+    if (merchantDashboardData.loading || !merchantDashboardData.data?.merchantDashboard) {
       return [];
     }
     const data = merchantDashboardData.data.merchantDashboard
@@ -113,8 +115,9 @@ const MerchantDailyReport = () => {
       setCurentDayData(merchantDailyReportCurrentDay)
 
       // 如果會員卡的數字不是0就要顯示
-      const a = merchantDailyReportCurrentDay.currentDay.membership !== 0
-      const b = merchantDailyReportData.currentDay.membership !== 0
+      // 查詢失敗時兩份資料都是 undefined，不在這裡拋錯（畫面另有 QueryFailed）
+      const a = Boolean(merchantDailyReportCurrentDay) && merchantDailyReportCurrentDay.currentDay.membership !== 0
+      const b = Boolean(merchantDailyReportData) && merchantDailyReportData.currentDay.membership !== 0
       setMembershipDisplay(a || b)
     }
   }, [merchantDailyReportCurrentDayData.loading, merchantDailyReportDataV3.loading])
@@ -151,16 +154,20 @@ const MerchantDailyReport = () => {
           </Button>
         }
       />
-      <Toolbar>
-        <DateSelector
-          date={date}
-          attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
-          onlyStart
-          dateChange={value => setDate(value)}
-        />
-      </Toolbar>
+      <ReportToolbar
+        date={
+          <DateSelector
+            date={date}
+            attributes={['dbyesterday', 'yesterday', 'today', 'startDate']}
+            onlyStart
+            dateChange={value => setDate(value)}
+          />
+        }
+      />
 
-      {!merchantDailyReportDataV3.loading &&
+      {merchantDailyReportDataV3.error ? (
+          <QueryFailed onRetry={() => merchantDailyReportDataV3.refetch()} />
+        ) : !merchantDailyReportDataV3.loading &&
         !isServiceTicketMergedData.loading &&
         !merchantDailyReportCurrentDayData.loading &&
         !merchantDashboardData.loading &&

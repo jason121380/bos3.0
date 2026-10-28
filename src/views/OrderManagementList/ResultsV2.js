@@ -137,10 +137,6 @@ function Results({
         // setOpenDialog(false)
         setSelectedOrders([])
         setDeleteOrderPwd('')
-        openSnackbar({
-          message: err.message,
-          variant: 'error',
-        })
         setEditBarOnClick(false)
         setIcClick(false)
       })

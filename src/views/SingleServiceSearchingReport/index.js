@@ -20,6 +20,7 @@ import DateSelector from 'components/DateSelector'
 import AdminPageHeader from 'components/AdminPageHeader'
 import Results from './Results'
 import { Autocomplete } from 'ui/combobox'
+import QueryFailed from 'components/QueryFailed'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />
 const checkedIcon = <CheckBoxIcon fontSize="small" />
@@ -91,7 +92,8 @@ const DesignerPerformBasic = () => {
       const serviceData = idx(services, _ => _.data.services.data)
       const ticketData = idx(ticket, _ => _.data.tickets)
       const tmpServiceData = []
-      serviceData.forEach(service => {
+      const serviceList = serviceData || []
+      serviceList.forEach(service => {
         if (service.no.trim().length > 0) {
           tmpServiceData.push({
             label: service.no + ' - ' + service.name,
@@ -104,7 +106,8 @@ const DesignerPerformBasic = () => {
           })
         }
       })
-      ticketData.forEach(ticket => {
+      const ticketList = ticketData || []
+      ticketList.forEach(ticket => {
         if (ticket.no.trim().length > 0) {
           tmpServiceData.push({
             label: ticket.no + ' - ' + ticket.name,
@@ -208,7 +211,9 @@ const DesignerPerformBasic = () => {
             </Button>
           }
         />
-        {!serviceItemData.loading ? (
+        {serviceItemData.error ? (
+          <QueryFailed onRetry={() => serviceItemData.refetch()} />
+        ) : !serviceItemData.loading ? (
           <Results
             reportData={reportData}
             inputData={inputData}

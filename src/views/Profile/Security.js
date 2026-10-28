@@ -19,6 +19,8 @@ function Security({ className, ...rest }) {
   }
 
   const valid = values.password && values.password === values.confirm
+  // 停用原因（STYLE.md §6）：依上方 valid 的判斷
+  const missing = !values.password ? '新密碼' : values.password !== values.confirm ? '兩次密碼相同' : ''
 
   const { changePassword } = useFetchChangePassword()
   const handleOnChangePassword = () => {
@@ -65,9 +67,15 @@ function Security({ className, ...rest }) {
           </div>
         </form>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex flex-wrap items-center justify-end gap-3">
+        {!valid && (
+          <p id="profile-security-missing" role="status" className="text-caption text-text-secondary">
+            {`尚缺：${missing}`}
+          </p>
+        )}
         <Button
           disabled={!valid}
+          aria-describedby={!valid ? 'profile-security-missing' : undefined}
           variant="primary"
           onClick={handleOnChangePassword}
         >

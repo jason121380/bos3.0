@@ -113,7 +113,7 @@ function Results({ className, paymentList = [], ...rest }) {
           </Table>
         </div>
       </Card>
-      <TableEditBar selected={selectedPayment} onDelete={handleSeletedDelete} />
+      <TableEditBar selected={selectedPayment} onDelete={handleSeletedDelete} confirmDelete />
     </div>
   )
 }

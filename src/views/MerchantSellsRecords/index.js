@@ -10,6 +10,7 @@ import { PageHeader } from 'ui/page-header'
 import { Skeleton } from 'ui/skeleton'
 
 import Results from './Results'
+import QueryFailed from 'components/QueryFailed'
 
 export default function DecreaseDetail({ history, location }) {
   const [pageSetting, setPageSetting] = React.useState({
@@ -72,7 +73,9 @@ export default function DecreaseDetail({ history, location }) {
         </div>
       </div>
 
-      {!productOrders.loading ? (
+      {productOrders.error ? (
+          <QueryFailed onRetry={() => productOrders.refetch()} />
+        ) : !productOrders.loading ? (
         idx(
           productOrders,
           _ =>
